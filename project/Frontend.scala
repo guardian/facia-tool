@@ -149,7 +149,7 @@ object Frontend extends Build with Prototypes {
   val commercial = application("commercial").dependsOn(commonWithTests).aggregate(common)
 
   val onward = application("onward").dependsOn(commonWithTests).aggregate(common)
-
+//exlcude admin package
   val dev = application("dev-build")
     .dependsOn(
       withTests(article)
@@ -161,7 +161,6 @@ object Frontend extends Build with Prototypes {
       discussion,
       diagnostics,
       identity,
-//      admin,
       commercial,
       onward
     ).settings(
@@ -215,7 +214,6 @@ object Frontend extends Build with Prototypes {
     discussion,
     router,
     diagnostics,
-//    admin,
     identity,
     commercial,
     onward,

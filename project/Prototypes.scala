@@ -81,8 +81,6 @@ trait Prototypes {
     // Use ScalaTest https://groups.google.com/d/topic/play-framework/rZBfNoGtC0M/discussion
     testOptions in Test := Nil,
 
-//    fork in Test := false,
-
     concurrentRestrictions in Global := List(Tags.limit(Tags.Test, 4)),
 
     // Copy unit test resources https://groups.google.com/d/topic/play-framework/XD3X6R-s5Mc/discussion
