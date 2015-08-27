@@ -10,7 +10,7 @@ import * as mockjax from 'test/utils/mockjax';
 import tick from 'test/utils/tick';
 import textInside from 'test/utils/text-inside';
 
-describe('Sparklines', function () {
+xdescribe('Sparklines', function () {
     var originalsparksBatchQueue = vars.CONST.sparksBatchQueue;
     var originalsparksRefreshMs = vars.CONST.sparksRefreshMs;
     beforeEach(function () {
