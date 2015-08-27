@@ -81,7 +81,7 @@ trait Prototypes {
     // Use ScalaTest https://groups.google.com/d/topic/play-framework/rZBfNoGtC0M/discussion
     testOptions in Test := Nil,
 
-    fork in Test := false,
+//    fork in Test := false,
 
     concurrentRestrictions in Global := List(Tags.limit(Tags.Test, 4)),
 
