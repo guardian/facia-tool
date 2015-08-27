@@ -20,8 +20,7 @@ set -x
 
 rm -rf "dist"
 
-configurations="admin applications archive article commercial diagnostics discussion "\
-"facia facia-tool facia-press identity image onward preview training-preview router sport rss"
+configurations="facia-tool"
 
 for config in $configurations
 do
@@ -39,7 +38,7 @@ do
     cp static/abtests.json                                  "$app_folder/packages/frontend-abtests"
 
     pushd $app_folder
-    zip -r "../$config.zip" .
+    zip -r "../artifacts.zip" .
     popd
 
     rm -rf $app_folder
