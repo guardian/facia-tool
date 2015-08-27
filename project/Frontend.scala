@@ -161,7 +161,7 @@ object Frontend extends Build with Prototypes {
       discussion,
       diagnostics,
       identity,
-      admin,
+//      admin,
       commercial,
       onward
     ).settings(
@@ -215,7 +215,7 @@ object Frontend extends Build with Prototypes {
     discussion,
     router,
     diagnostics,
-    admin,
+//    admin,
     identity,
     commercial,
     onward,
