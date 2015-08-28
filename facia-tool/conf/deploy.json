@@ -2,7 +2,7 @@
     "packages":{
         "facia-tool":{
             "type":"autoscaling",
-            "apps":[ "frontend::facia-tool" ],
+            "apps":[ "Digital CMS::facia:facia-tool::root" ],
             "data":{
                 "secondsToWait":1200,
                 "port":18080,
