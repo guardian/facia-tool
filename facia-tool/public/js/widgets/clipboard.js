@@ -53,7 +53,7 @@ class Clipboard extends BaseWidget {
         this.inCopiedArticle = ko.pureComputed(this.getCopiedArticle, this);
         this.dropdownOpen = ko.observable(false);
 
-        globalListeners.on('paste', this.onGlobalPaste, this);
+        this.listenOn(globalListeners, 'paste', this.onGlobalPaste);
     }
 
     getCopiedArticle() {
@@ -94,11 +94,11 @@ class Clipboard extends BaseWidget {
             return;
         }
 
-        this.group.drop({
+        mediator.emit('drop', {
             sourceItem: {
                 id: clipboard
             }
-        }, this.group, false);
+        }, this.group, this.group);
     }
 
     getItemsFromStorage() {
@@ -132,7 +132,6 @@ class Clipboard extends BaseWidget {
     dispose() {
         super.dispose();
         this.group.dispose();
-        globalListeners.off('paste', null, this);
         clearInterval(this.pollID);
         classCount -= 1;
     }
