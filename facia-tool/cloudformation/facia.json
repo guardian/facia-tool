@@ -227,7 +227,7 @@
                     },
                     {
                         "Key": "Stack",
-                        "Value": "fronts",
+                        "Value": "cms-fronts",
                         "PropagateAtLaunch": "true"
                     },
                     {
@@ -289,7 +289,7 @@
             },
             "Properties": {
                 "KeyName": "fronts",
-                "ImageId": "ami-f44a1683",
+                "ImageId": "ami-3b082c4c",
                 "InstanceType": "m3.medium",
                 "SecurityGroups": [
                     {
