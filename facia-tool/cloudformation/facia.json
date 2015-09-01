@@ -1,0 +1,343 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Facia Tool Service",
+    "Parameters": {
+        "GuardianIP": {
+            "Description": "Ip range for the office",
+            "Type": "String",
+            "Default": "77.91.248.0/21"
+        },
+        "Stage": {
+            "Description": "Environment name",
+            "Type": "String",
+            "AllowedValues": [
+                "CODE",
+                "PROD"
+            ],
+            "Default": "PROD"
+        }
+    },
+    "Mappings": {
+        "FaciaToolCertMap": {
+            "PROD": {
+                "CertName": "arn:aws:iam::753338109777:server-certificate/sites.gutools.co.uk-exp2015-10-20"
+            },
+            "CODE": {
+                "CertName": "arn:aws:iam::753338109777:server-certificate/sites.code.dev-gutools.co.uk-exp2023-07-16"
+            }
+        }
+    },
+    "Resources": {
+        "DistributionInstanceProfile": {
+            "Type": "AWS::IAM::InstanceProfile",
+            "Properties": {
+                "Path": "/",
+                "Roles": [
+                    {
+                        "Ref": "DistributionRole"
+                    }
+                ]
+            }
+        },
+        "DistributionRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "ec2.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "Path": "/",
+                "Policies": [
+                    {
+                        "PolicyName": "root",
+                        "PolicyDocument": {
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "s3:GetObject"
+                                    ],
+                                    "Resource": [
+                                        "arn:aws:s3:::facia-dist/*"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "SSHSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "Allow SSH access from the office",
+                "SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "22",
+                        "ToPort": "22",
+                        "CidrIp": {
+                            "Ref": "GuardianIP"
+                        }
+                    }
+                ]
+            }
+        },
+        "AppServerSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "Application servers",
+                "SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": 9000,
+                        "ToPort": 9000,
+                        "CidrIp": "87.238.84.64/29"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": 9000,
+                        "ToPort": 9000,
+                        "CidrIp": "87.238.80.64/29"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": 9000,
+                        "ToPort": 9000,
+                        "CidrIp": "54.240.197.0/24"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": 9000,
+                        "ToPort": 9000,
+                        "CidrIp": {
+                            "Ref": "GuardianIP"
+                        }
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": 9000,
+                        "ToPort": 9000,
+                        "SourceSecurityGroupName": {
+                            "Fn::GetAtt": [
+                                "FaciaLoadBalancer",
+                                "SourceSecurityGroup.GroupName"
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "LoadBalancerSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "Facia application load balancer",
+                "SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "80",
+                        "ToPort": "80",
+                        "CidrIp": "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "9080",
+                        "ToPort": "9080",
+                        "CidrIp": "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "443",
+                        "ToPort": "443",
+                        "CidrIp": "0.0.0.0/0"
+                    }
+                ]
+            }
+        },
+        "FaciaLoadBalancer": {
+            "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+            "Properties": {
+                "AvailabilityZones": [
+                    "eu-west-1a",
+                    "eu-west-1b"
+                ],
+                "SecurityGroups": [
+                    {
+                        "Fn::GetAtt": [
+                            "LoadBalancerSecurityGroup",
+                            "GroupId"
+                        ]
+                    }
+                ],
+                "Listeners": [
+                    {
+                        "LoadBalancerPort": "80",
+                        "InstancePort": "9000",
+                        "Protocol": "HTTP"
+                    }
+                ],
+                "HealthCheck": {
+                    "Target": "HTTP:9000/status",
+                    "HealthyThreshold": "2",
+                    "UnhealthyThreshold": "10",
+                    "Interval": "100",
+                    "Timeout": "5"
+                }
+            }
+        },
+        "FaciaAutoscalingGroup": {
+            "Type": "AWS::AutoScaling::AutoScalingGroup",
+            "Properties": {
+                "AvailabilityZones": [
+                    "eu-west-1a",
+                    "eu-west-1b"
+                ],
+                "LaunchConfigurationName": {
+                    "Ref": "FaciaLaunchConfig"
+                },
+                "MinSize": "2",
+                "MaxSize": "4",
+                "DesiredCapacity": "2",
+                "Cooldown": "180",
+                "HealthCheckType": "ELB",
+                "HealthCheckGracePeriod": 300,
+                "LoadBalancerNames": [
+                    {
+                        "Ref": "FaciaLoadBalancer"
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Stage",
+                        "Value": {
+                            "Ref": "Stage"
+                        },
+                        "PropagateAtLaunch": "true"
+                    },
+                    {
+                        "Key": "Stack",
+                        "Value": "fronts",
+                        "PropagateAtLaunch": "true"
+                    },
+                    {
+                        "Key": "App",
+                        "Value": "facia",
+                        "PropagateAtLaunch": "true"
+                    }
+                ]
+            }
+        },
+        "FaciaLaunchConfig": {
+            "Type": "AWS::AutoScaling::LaunchConfiguration",
+            "Metadata": {
+                "AWS::CloudFormation::Authentication": {
+                    "distributionAuthentication": {
+                        "type": "S3",
+                        "roleName": {
+                            "Ref": "DistributionRole"
+                        },
+                        "buckets": [
+                            "facia-dist"
+                        ]
+                    }
+                },
+                "AWS::CloudFormation::Init": {
+                    "config": {
+                        "users": {
+                            "facia": {
+                                "homeDir": "/home/facia"
+                            }
+                        },
+                        "files": {
+                            "/etc/init/facia.conf": {
+                                "source": { "Fn::Join" : ["", [
+                                    "https://s3-eu-west-1.amazonaws.com/facia-dist/fronts/",
+                                    { "Ref": "Stage" },
+                                    "/facia/facia.conf"
+                                ]]},
+                                "authentication": "distributionAuthentication"
+                            },
+                            "/home/facia/facia.zip": {
+                                "source": {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "https://s3-eu-west-1.amazonaws.com/facia-dist/fronts/",
+                                            {
+                                                "Ref": "Stage"
+                                            },
+                                            "/facia/facia-tool-0.1-SNAPSHOT.zip"
+                                        ]
+                                    ]
+                                },
+                                "authentication": "distributionAuthentication"
+                            }
+                        }
+                    }
+                }
+            },
+            "Properties": {
+                "KeyName": "fronts",
+                "ImageId": "ami-f44a1683",
+                "InstanceType": "m3.medium",
+                "SecurityGroups": [
+                    {
+                        "Ref": "AppServerSecurityGroup"
+                    },
+                    {
+                        "Ref": "SSHSecurityGroup"
+                    }
+                ],
+                "IamInstanceProfile": {
+                    "Ref": "DistributionInstanceProfile"
+                },
+                "UserData": {
+                    "Fn::Base64": {
+                        "Fn::Join": [
+                            "",
+                            [
+                                "#!/bin/bash -ev\n",
+                                "apt-get -y update\n",
+                                "cfn-init -s ",
+                                {
+                                    "Ref": "AWS::StackId"
+                                },
+                                " -r FaciaLaunchConfig ",
+                                "  --region ",
+                                {
+                                    "Ref": "AWS::Region"
+                                },
+                                " || error_exit 'Failed to run cfn-init'\n",
+
+                                "unzip -d /home/facia /home/facia/facia.zip \n",
+                                "start facia\n"
+                            ]
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "Outputs": {
+        "FaciaLoadBalancerDNS": {
+            "Description": "Load balancer DNS",
+            "Value": {
+                "Fn::GetAtt": [
+                    "FaciaLoadBalancer",
+                    "DNSName"
+                ]
+            }
+        }
+    }
+}
