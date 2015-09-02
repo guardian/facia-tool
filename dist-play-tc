@@ -42,7 +42,7 @@ do
     rm -rf $app_folder
 
     set +o xtrace
-    echo "##teamcity[publishArtifacts 'dist/$config.zip']"
+    echo "##teamcity[publishArtifacts 'dist/artifacts.zip']"
     set -o xtrace
 done
 
