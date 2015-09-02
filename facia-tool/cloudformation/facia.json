@@ -262,7 +262,7 @@
                         "files": {
                             "/etc/init/facia-tool.conf": {
                                 "source": { "Fn::Join" : ["", [
-                                    "https://s3-eu-west-1.amazonaws.com/facia-dist/fronts/",
+                                    "https://s3-eu-west-1.amazonaws.com/facia-dist/cms-fronts/",
                                     { "Ref": "Stage" },
                                     "/facia-tool/facia-tool.conf"
                                 ]]},

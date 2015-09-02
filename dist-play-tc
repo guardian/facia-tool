@@ -31,7 +31,7 @@ do
 
     mkdir -p "$app_folder/packages/frontend-static"
     mkdir -p "$app_folder/packages/$config"
-
+#todo - figure out how to put the startup script in the right place
     mv "$config/target/universal/$config-0.1-SNAPSHOT.zip"  "$app_folder/packages/$config/$config.zip"
     cp "$config/conf/deploy.json"                           "$app_folder"
     cp "$config/conf/facia-tool.conf"                        "$app_folder"
