@@ -232,7 +232,7 @@
                     },
                     {
                         "Key": "App",
-                        "Value": "facia",
+                        "Value": "facia-tool",
                         "PropagateAtLaunch": "true"
                     }
                 ]
@@ -255,29 +255,29 @@
                 "AWS::CloudFormation::Init": {
                     "config": {
                         "users": {
-                            "facia": {
-                                "homeDir": "/home/facia"
+                            "facia-tool": {
+                                "homeDir": "/home/facia-tool"
                             }
                         },
                         "files": {
-                            "/etc/init/facia.conf": {
+                            "/etc/init/facia-tool.conf": {
                                 "source": { "Fn::Join" : ["", [
                                     "https://s3-eu-west-1.amazonaws.com/facia-dist/fronts/",
                                     { "Ref": "Stage" },
-                                    "/facia/facia.conf"
+                                    "/facia-tool/facia-tool.conf"
                                 ]]},
                                 "authentication": "distributionAuthentication"
                             },
-                            "/home/facia/facia.zip": {
+                            "/home/facia-tool/facia-tool.zip": {
                                 "source": {
                                     "Fn::Join": [
                                         "",
                                         [
-                                            "https://s3-eu-west-1.amazonaws.com/facia-dist/fronts/",
+                                            "https://s3-eu-west-1.amazonaws.com/facia-dist/cms-fronts/",
                                             {
                                                 "Ref": "Stage"
                                             },
-                                            "/facia/facia-tool-0.1-SNAPSHOT.zip"
+                                            "/facia-tool/facia-tool.zip"
                                         ]
                                     ]
                                 },
@@ -320,8 +320,8 @@
                                 },
                                 " || error_exit 'Failed to run cfn-init'\n",
 
-                                "unzip -d /home/facia /home/facia/facia.zip \n",
-                                "start facia\n"
+                                "unzip -d /home/facia-tool /home/facia-tool/facia-tool.zip \n",
+                                "start facia-tool\n"
                             ]
                         ]
                     }
