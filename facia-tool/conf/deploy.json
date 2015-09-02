@@ -1,5 +1,5 @@
 {
-    "defaultStack": ["cms-fronts"],
+    "defaultStacks": ["cms-fronts"],
     "packages":{
         "facia-tool": {
             "type": "autoscaling",
