@@ -10,6 +10,7 @@ import conf.{Configuration, Switches}
 import org.apache.commons.io.IOUtils
 import play.api.Play
 import play.api.Play.current
+import play.api.{Configuration => PlayConfiguration, Play}
 
 import scala.util.Try
 
@@ -21,8 +22,17 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
 
   protected val configuration = ConfigurationFactory.getConfiguration(application, webappConfDirectory)
 
+  import play.api.Play.current
+  protected val playConfiguration = play.api.Play.configuration
+
   private implicit class OptionalString2MandatoryString(conf: com.gu.conf.Configuration) {
     def getMandatoryStringProperty(property: String) = configuration.getStringProperty(property)
+      .getOrElse(throw new BadConfigurationException(s"$property not configured"))
+  }
+
+  //todo - rename
+  private implicit class Tmp(conf: PlayConfiguration) {
+    def getMandatoryStringProperty(property: String) = playConfiguration.getString(property)
       .getOrElse(throw new BadConfigurationException(s"$property not configured"))
   }
 
@@ -87,7 +97,7 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
   case class Auth(user: String, password: String)
 
   object contentApi {
-    val contentApiLiveHost: String = configuration.getMandatoryStringProperty("content.api.host")
+    val contentApiLiveHost: String = playConfiguration.getMandatoryStringProperty("content.api.host")
 
     def contentApiDraftHost: String =
         configuration.getStringProperty("content.api.draft.host")
@@ -347,10 +357,10 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
       size
     }
 
-    lazy val pandomainHost = configuration.getStringProperty("faciatool.pandomain.host")
-    lazy val pandomainDomain = configuration.getStringProperty("faciatool.pandomain.domain")
-    lazy val pandomainSecret = configuration.getStringProperty("pandomain.aws.secret")
-    lazy val pandomainKey = configuration.getStringProperty("pandomain.aws.key")
+    lazy val pandomainHost = playConfiguration.getMandatoryStringProperty("faciatool.pandomain.host")
+    lazy val pandomainDomain = playConfiguration.getMandatoryStringProperty("faciatool.pandomain.domain")
+    lazy val pandomainSecret = playConfiguration.getString("pandomain.aws.secret")
+    lazy val pandomainKey = playConfiguration.getString("pandomain.aws.key")
 
     lazy val configBeforePressTimeout: Int = 1000
 
@@ -387,8 +397,8 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
 
   object aws {
 
-    lazy val region = configuration.getMandatoryStringProperty("aws.region")
-    lazy val bucket = configuration.getMandatoryStringProperty("aws.bucket")
+    lazy val region = playConfiguration.getMandatoryStringProperty("aws.region")
+    lazy val bucket = playConfiguration.getMandatoryStringProperty("aws.bucket")
     lazy val notificationSns: String = configuration.getMandatoryStringProperty("sns.notification.topic.arn")
     lazy val videoEncodingsSns: String = configuration.getMandatoryStringProperty("sns.missing_video_encodings.topic.arn")
     lazy val frontPressSns: Option[String] = configuration.getStringProperty("frontpress.sns.topic")
