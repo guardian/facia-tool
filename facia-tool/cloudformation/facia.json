@@ -308,6 +308,7 @@
                             "",
                             [
                                 "#!/bin/bash -ev\n",
+                                "sudo apt-get install upstart\n",
                                 "apt-get -y update\n",
                                 "cfn-init -s ",
                                 {
