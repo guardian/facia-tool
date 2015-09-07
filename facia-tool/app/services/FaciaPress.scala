@@ -44,6 +44,14 @@ object FaciaPressQueue extends ExecutionContexts {
   }
 }
 
+object FaciaPressSNS {
+  val snsTopic = Configuration.faciatool.frontPressSnsTopic
+
+  def send(job: PressJob) = {
+    println("********** topic " + snsTopic)
+  }
+}
+
 object FaciaPress extends Logging with ExecutionContexts {
   def press(pressCommand: PressCommand): Future[List[SendMessageResult]] = {
     ConfigAgent.refreshAndReturn() flatMap { _ =>
