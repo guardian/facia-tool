@@ -9,10 +9,10 @@ import common.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}
 import common.{ExecutionContexts, JsonMessageQueue, Logging}
 import conf.Configuration
 import config.aws
-import play.libs.Json
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 import awswrappers.sns._
+import play.api.libs.json.{Writes, Json, Reads}
 
 case class PressCommand(
   collectionIds: Set[String],
@@ -58,6 +58,9 @@ object FaciaPressSNS {
   topicClient.setRegion(Region.getRegion(Regions.EU_WEST_1))
 
   def send(job: PressJob): Future[PublishResult] = {
+    val json = Json.stringify(Json.toJson(job))
+    println("*******" + json)
+    println("*******" + job)
     topicClient.publishFuture(new PublishRequest(snsTopic, Json.toJson(job).toString))
   }
 
