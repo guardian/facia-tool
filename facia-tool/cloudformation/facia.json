@@ -78,6 +78,22 @@
                 ]
             }
         },
+        "PanDomainPolicy": {
+          "Type": "AWS::IAM::Policy",
+          "Properties": {
+            "PolicyName": "PanDomainPolicy",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": ["s3:GetObject"],
+                  "Resource": ["arn:aws:s3:::pan-domain-auth-settings/*"]
+                }
+              ]
+            },
+            "Roles": [{"Ref": "DistributionRole"}]
+          }
+        },
         "SSHSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
             "Properties": {
