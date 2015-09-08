@@ -20,10 +20,10 @@
     "Mappings": {
         "FaciaToolCertMap": {
             "PROD": {
-                "CertName": "arn:aws:iam::753338109777:server-certificate/sites.gutools.co.uk-exp2015-10-20"
+                "CertName": "arn:aws:iam::163592447864:server-certificate/sites.gutools.co.uk-exp20151019"
             },
             "CODE": {
-                "CertName": "arn:aws:iam::753338109777:server-certificate/sites.code.dev-gutools.co.uk-exp2023-07-16"
+                "CertName": "arn:aws:iam::163592447864:server-certificate/sites.code.dev-gutools.co.uk"
             }
         }
     },
@@ -185,6 +185,21 @@
                         "LoadBalancerPort": "80",
                         "InstancePort": "9000",
                         "Protocol": "HTTP"
+                    },
+                    {
+                        "LoadBalancerPort": "443",
+                        "InstancePort": "9000",
+                        "Protocol": "HTTPS",
+                        "InstanceProtocol": "HTTP",
+                        "SSLCertificateId": {
+                            "Fn::FindInMap": [
+                                "FaciaToolCertMap",
+                                {
+                                    "Ref": "Stage"
+                                },
+                                "CertName"
+                            ]
+                        }
                     }
                 ],
                 "HealthCheck": {
