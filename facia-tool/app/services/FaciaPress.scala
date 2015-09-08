@@ -9,17 +9,15 @@ import common.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}
 import common.{ExecutionContexts, JsonMessageQueue, Logging}
 import conf.Configuration
 import config.aws
-<<<<<<< HEAD
-import play.libs.Json
+
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
-import awswrappers.sns._
-=======
+
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 import awswrappers.sns._
 import play.api.libs.json.{Writes, Json, Reads}
->>>>>>> origin/sns-feed
+
 
 case class PressCommand(
   collectionIds: Set[String],
