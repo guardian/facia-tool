@@ -58,9 +58,9 @@ object FaciaPressSNS {
   topicClient.setRegion(Region.getRegion(Regions.EU_WEST_1))
 
   def send(job: PressJob): Future[PublishResult] = {
+    println("*******" + job)
     val json = Json.stringify(Json.toJson(job))
     println("*******" + json)
-    println("*******" + job)
     topicClient.publishFuture(new PublishRequest(snsTopic, Json.toJson(job).toString))
   }
 
