@@ -78,6 +78,22 @@
                 ]
             }
         },
+        "PanDomainPolicy": {
+          "Type": "AWS::IAM::Policy",
+          "Properties": {
+            "PolicyName": "PanDomainPolicy",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": ["s3:GetObject"],
+                  "Resource": ["arn:aws:s3:::pan-domain-auth-settings/*"]
+                }
+              ]
+            },
+            "Roles": [{"Ref": "DistributionRole"}]
+          }
+        },
         "SSHSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
             "Properties": {
@@ -323,7 +339,6 @@
                             "",
                             [
                                 "#!/bin/bash -ev\n",
-                                "sudo apt-get install upstart\n",
                                 "apt-get -y update\n",
                                 "cfn-init -s ",
                                 {
@@ -337,7 +352,11 @@
                                 " || error_exit 'Failed to run cfn-init'\n",
 
                                 "unzip -d /home/facia-tool /home/facia-tool/facia-tool.zip \n",
-                                "start facia-tool\n"
+
+                                "chown -R facia-tool /home/facia-tool\n",
+                                "chgrp -R facia-tool /home/facia-tool\n",
+
+                                "/home/facia-tool/facia-tool/bin/facia-tool&\n"
                             ]
                         ]
                     }

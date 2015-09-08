@@ -180,7 +180,7 @@ object FaciaToolController extends Controller with Logging with ExecutionContext
 
   def pressDraftPath(path: String) = Action { request =>
     println("********************* draft " + path)
-    FaciaPressQueue.enqueue(PressJob(FrontPath(path), Draft, forceConfigUpdate = Option(true)))
+    // FaciaPressQueue.enqueue(PressJob(FrontPath(path), Draft, forceConfigUpdate = Option(true)))
     FaciaPressSNS.send(PressJob(FrontPath(path), Draft, forceConfigUpdate = Option(true)))
     NoCache(Ok)
   }
