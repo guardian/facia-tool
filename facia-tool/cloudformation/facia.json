@@ -71,6 +71,18 @@
                                     "Resource": [
                                         "arn:aws:s3:::facia-dist/*"
                                     ]
+                                },
+                                {
+                                    "Sid":"AllowSubscribeToMyTopic",
+                                    "Effect":"Allow",
+                                    "Action":"sns:Subscribe",
+                                    "Resource": "arn:aws:sns:eu-west-1:163592447864:Facia-TEST"
+                                },
+                                {
+                                    "Sid":"AllowPublishToMyTopic",
+                                    "Effect":"Allow",
+                                    "Action":"sns:Publish",
+                                    "Resource": "arn:aws:sns:eu-west-1:163592447864:Facia-TEST"
                                 }
                             ]
                         }
