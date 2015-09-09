@@ -1,0 +1,73 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Facia tool template to create cross account roles.",
+  "Parameters": {
+    "CMSFrontsAccountId": {
+      "Description": "The AWS account ID for CMS Fronts",
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "FaciaToolRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "Path": "/",
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "CMSFrontsAccountId"
+                      },
+                      ":root"
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "S3StoragePolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "s3-storage",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:ListBucket"
+              ],
+              "Resource": "arn:aws:s3:::aws-frontend-store/*"
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "FaciaToolRole"
+          }
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "FaciaToolRole": {
+      "Description": "The name of the FaciaToolRole",
+      "Value": {
+        "Ref": "FaciaToolRole"
+      }
+    }
+  }
+}
