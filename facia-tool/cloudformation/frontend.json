@@ -36,10 +36,10 @@
         }
       }
     },
-    "S3StoragePolicy": {
+    "CrossAccountPolicies": {
       "Type": "AWS::IAM::Policy",
       "Properties": {
-        "PolicyName": "s3-storage",
+        "PolicyName": "cms-front",
         "PolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
@@ -51,6 +51,23 @@
                 "s3:ListBucket"
               ],
               "Resource": "arn:aws:s3:::aws-frontend-store/*"
+            },
+            {
+                "Effect": "Allow",
+                "Action": [
+                  "cloudwatch:PutMetricData"
+                ],
+                "Resource": "*"
+            },
+            {
+
+                "Effect": "Allow",
+                "Action": [
+                  "sqs:SendMessage",
+                  "sqs:ReceiveMessage",
+                  "sqs:DeleteMessage"
+                ],
+                "Resource": "*"
             }
           ]
         },
