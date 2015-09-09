@@ -19,7 +19,7 @@
         "FrontendRoleToAssume": {
             "Description": "Frontend Role to assume for cross account policies",
             "Type": "String",
-            "Default": "CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX"
+            "Default": "arn:aws:iam::642631414762:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX"
         }
     },
     "Mappings": {
