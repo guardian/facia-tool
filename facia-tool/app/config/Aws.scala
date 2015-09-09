@@ -12,7 +12,6 @@ object aws {
   def mandatoryCredentials: AWSCredentialsProvider = credentials.getOrElse(throw new BadConfigurationException("AWS credentials are not configured"))
   val roleToAssumeArn ="arn:aws:iam::642631414762:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX"
 
-
   val credentials: Option[AWSCredentialsProvider] = {
     val sessionId = UUID.randomUUID().toString()
     val provider = new AWSCredentialsProviderChain(

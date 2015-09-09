@@ -36,7 +36,7 @@ object PressCommand {
 
 object FaciaPressQueue extends ExecutionContexts {
   val maybeQueue = Configuration.faciatool.frontPressToolQueue map { queueUrl =>
-    val credentials = Configuration.aws.mandatoryCredentials
+    val credentials = aws.mandatoryCredentials
     JsonMessageQueue[PressJob](
       new AmazonSQSAsyncClient(credentials).withRegion(Region.getRegion(Regions.EU_WEST_1)),
       queueUrl
@@ -63,7 +63,6 @@ object FaciaPressSNS {
   topicClient.setRegion(Region.getRegion(Regions.EU_WEST_1))
 
   def send(job: PressJob): Future[PublishResult] = {
-
     println("*******" + job)
     val json = Json.stringify(Json.toJson(job))
     println("*******" + json)
