@@ -74,7 +74,7 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
   }
 
   object switches {
-    lazy val key = configuration.getMandatoryStringProperty("switches.key")
+    lazy val key = playConfiguration.getMandatoryStringProperty("switches.key")
   }
 
   object healthcheck {
