@@ -62,7 +62,8 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
 
     def apply(key: String, default: String) = properties.getOrElse(key, default).toLowerCase
 
-    val stage = apply("STAGE", "unknown")
+    val stage = playConfiguration.getMandatoryStringProperty("facia.stage")
+    // val stage = apply("STAGE", "unknown")
 
     lazy val projectName = Play.application.configuration.getString("guardian.projectName").getOrElse("frontend")
     lazy val secure = Play.application.configuration.getBoolean("guardian.secure").getOrElse(false)
@@ -100,12 +101,12 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
     val contentApiLiveHost: String = playConfiguration.getMandatoryStringProperty("content.api.host")
 
     def contentApiDraftHost: String =
-        configuration.getStringProperty("content.api.draft.host")
+        playConfiguration.getString("content.api.draft.host")
           .filter(_ => Switches.FaciaToolDraftContent.isSwitchedOn)
           .getOrElse(contentApiLiveHost)
 
-    lazy val key: Option[String] = configuration.getStringProperty("content.api.key")
-    lazy val timeout: Int = configuration.getIntegerProperty("content.api.timeout.millis").getOrElse(2000)
+    lazy val key: Option[String] = playConfiguration.getString("content.api.key")
+    lazy val timeout: Int = playConfiguration.getInt("content.api.timeout.millis").getOrElse(2000)
 
     lazy val circuitBreakerErrorThreshold =
       configuration.getIntegerProperty("content.api.circuit_breaker.max_failures").getOrElse(5)
@@ -114,8 +115,8 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
       configuration.getIntegerProperty("content.api.circuit_breaker.reset_timeout").getOrElse(20000)
 
     lazy val previewAuth: Option[Auth] = for {
-      user <- configuration.getStringProperty("content.api.preview.user")
-      password <- configuration.getStringProperty("content.api.preview.password")
+      user <- playConfiguration.getString("content.api.preview.user")
+      password <- playConfiguration.getString("content.api.preview.password")
     } yield Auth(user, password)
   }
 
@@ -340,13 +341,13 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
   }
 
   object facia {
-    lazy val stage = configuration.getStringProperty("facia.stage").getOrElse(Configuration.environment.stage)
+    lazy val stage = playConfiguration.getString("facia.stage").getOrElse(Configuration.environment.stage)
     lazy val collectionCap: Int = 35
   }
 
   object faciatool {
     lazy val contentApiPostEndpoint = configuration.getStringProperty("contentapi.post.endpoint")
-    lazy val frontPressCronQueue = configuration.getStringProperty("frontpress.sqs.cron_queue_url")
+    lazy val frontPressCronQueue = playConfiguration.getMandatoryStringProperty("frontpress.sqs.cron_queue_url")
     lazy val frontPressToolQueue = playConfiguration.getString("frontpress.sqs.tool_queue_url")
     lazy val frontPressSnsTopic = playConfiguration.getMandatoryStringProperty("frontpress.sns.topic")
     /** When retrieving items from Content API, maximum number of requests to make concurrently */
@@ -373,23 +374,23 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
       } yield OAuthCredentials(oauthClientId, oauthSecret, oauthCallback)
 
     val showTestContainers =
-      configuration.getStringProperty("faciatool.show_test_containers").contains("true")
+      playConfiguration.getString("faciatool.show_test_containers").contains("true")
 
     lazy val adminPressJobStandardPushRateInMinutes: Int =
-      Try(configuration.getStringProperty("admin.pressjob.standard.push.rate.inminutes").get.toInt)
+      Try(playConfiguration.getString("admin.pressjob.standard.push.rate.inminutes").get.toInt)
         .getOrElse(5)
 
     lazy val adminPressJobHighPushRateInMinutes: Int =
-      Try(configuration.getStringProperty("admin.pressjob.high.push.rate.inminutes").get.toInt)
+      Try(playConfiguration.getString("admin.pressjob.high.push.rate.inminutes").get.toInt)
         .getOrElse(1)
 
     lazy val adminPressJobLowPushRateInMinutes: Int =
-      Try(configuration.getStringProperty("admin.pressjob.low.push.rate.inminutes").get.toInt)
+      Try(playConfiguration.getString("admin.pressjob.low.push.rate.inminutes").get.toInt)
         .getOrElse(60)
 
     lazy val faciaToolUpdatesStream: Option[String] = configuration.getStringProperty("faciatool.updates.stream")
 
-    lazy val sentryPublicDSN = configuration.getStringProperty("faciatool.sentryPublicDSN")
+    lazy val sentryPublicDSN = playConfiguration.getString("faciatool.sentryPublicDSN")
   }
 
   object memcached {
