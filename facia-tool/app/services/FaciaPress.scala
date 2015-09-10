@@ -44,8 +44,11 @@ object FaciaPressQueue extends ExecutionContexts {
   }
 
   def enqueue(job: PressJob): Future[SendMessageResult] = {
+    println("** maybe ")
     maybeQueue match {
       case Some(queue) =>
+        println("** send " + job)
+        println("** queue " + queue)
         queue.send(job)
 
       case None =>
