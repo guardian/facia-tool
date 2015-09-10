@@ -40,14 +40,30 @@ object FaciaToolController extends Controller with Logging with ExecutionContext
   }
 
   def getConfig = APIAuthAction.async { request =>
-    FaciaToolMetrics.ApiUsageCount.increment()
-    FrontsApi.amazonClient.config.map { configJson =>
+    // FaciaToolMetrics.ApiUsageCount.increment()
+    val amazonClient: ApiClient = {
+      val client = new AmazonS3Client(aws.mandatoryCredentials)
+      client.setEndpoint(AwsEndpoints.s3)
+      val bucket = Configuration.aws.bucket.getOrElse("aws-frontend-store");
+      val stage = Configuration.facia.stage.toUpperCase;
+      println("* S3 config on bucket " + bucket + " and stage " + stage)
+      ApiClient(bucket, stage, AmazonSdkS3Client(client))
+    }
+    amazonClient.config.map { configJson =>
       NoCache {
         Ok(Json.toJson(configJson)).as("application/json")}}}
 
   def getCollection(collectionId: String) = APIAuthAction.async { request =>
-    FaciaToolMetrics.ApiUsageCount.increment()
-    FrontsApi.amazonClient.collection(collectionId).map { configJson =>
+    // FaciaToolMetrics.ApiUsageCount.increment()
+    val amazonClient: ApiClient = {
+      val client = new AmazonS3Client(aws.mandatoryCredentials)
+      client.setEndpoint(AwsEndpoints.s3)
+      val bucket = Configuration.aws.bucket.getOrElse("aws-frontend-store");
+      val stage = Configuration.facia.stage.toUpperCase;
+      println("* S3 collection on bucket " + bucket + " and stage " + stage)
+      ApiClient(bucket, stage, AmazonSdkS3Client(client))
+    }
+    amazonClient.collection(collectionId).map { configJson =>
       NoCache {
         Ok(Json.toJson(configJson)).as("application/json")}}}
 
