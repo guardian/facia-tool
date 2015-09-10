@@ -15,6 +15,7 @@ import akka.actor.ActorSystem
 import scala.concurrent.Future
 import play.api.Logger
 import auth.PanDomainAuthActions
+import scala.util._
 
 object FaciaToolController extends Controller with Logging with ExecutionContexts with PanDomainAuthActions {
 
@@ -182,7 +183,11 @@ object FaciaToolController extends Controller with Logging with ExecutionContext
 
   def pressDraftPath(path: String) = Action { request =>
     println("********************* draft " + path)
-    FaciaPressQueue.enqueue(PressJob(FrontPath(path), Draft, forceConfigUpdate = Option(true)))
+    val f = FaciaPressQueue.enqueue(PressJob(FrontPath(path), Draft, forceConfigUpdate = Option(true)))
+    f.onComplete{
+      case Success(_) => println("successful queue" + path)
+      case Failure(t) => println(s"failed with $path $t")
+    }
     FaciaPressSNS.send(PressJob(FrontPath(path), Draft, forceConfigUpdate = Option(true)))
     NoCache(Ok)
   }
