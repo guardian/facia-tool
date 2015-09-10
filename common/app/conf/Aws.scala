@@ -16,8 +16,8 @@ object aws {
     val sessionId = UUID.randomUUID().toString()
     val provider = new AWSCredentialsProviderChain(
       new ProfileCredentialsProvider("CMS Fronts"),
-      new InstanceProfileCredentialsProvider,
-      new STSAssumeRoleSessionCredentialsProvider(roleToAssumeArn, sessionId)
+      new STSAssumeRoleSessionCredentialsProvider(roleToAssumeArn, sessionId),
+      new InstanceProfileCredentialsProvider
     )
 
     // this is a bit of a convoluted way to check whether we actually have credentials.
