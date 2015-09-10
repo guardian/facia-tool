@@ -6,8 +6,8 @@ import common.ExecutionContexts
 import conf.Configuration
 import services.AwsEndpoints
 import config.aws
-
-object FrontsApi extends ExecutionContexts {
+//todo - move the api client
+object FrontsApiTMP extends ExecutionContexts {
   val amazonClient: ApiClient = {
     val client = new AmazonS3Client(aws.mandatoryCredentials)
     client.setEndpoint(AwsEndpoints.s3)
