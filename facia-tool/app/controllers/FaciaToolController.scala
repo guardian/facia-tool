@@ -4,7 +4,7 @@ import common.{ExecutionContexts, FaciaToolMetrics, Logging}
 import com.amazonaws.services.s3.AmazonS3Client
 import com.gu.facia.client.{AmazonSdkS3Client, ApiClient}
 import conf.Configuration
-import fronts.{FrontsApiTMP, FrontsApi}
+import fronts.FrontsApi
 import frontsapi.model._
 import model.{Cached, NoCache}
 import play.api.libs.json._
@@ -44,13 +44,13 @@ object FaciaToolController extends Controller with Logging with ExecutionContext
 
   def getConfig = APIAuthAction.async { request =>
     // FaciaToolMetrics.ApiUsageCount.increment()
-    FrontsApiTMP.amazonClient.config.map { configJson =>
+    FrontsApi.amazonClient.config.map { configJson =>
       NoCache {
         Ok(Json.toJson(configJson)).as("application/json")}}}
 
   def getCollection(collectionId: String) = APIAuthAction.async { request =>
     // FaciaToolMetrics.ApiUsageCount.increment()
-    FrontsApiTMP.amazonClient.collection(collectionId).map { configJson =>
+    FrontsApi.amazonClient.collection(collectionId).map { configJson =>
       NoCache {
         Ok(Json.toJson(configJson)).as("application/json")}}}
 

@@ -3,7 +3,7 @@ package tools
 import com.gu.facia.client.models.{CollectionJson, ConfigJson}
 import com.gu.pandomainauth.model.User
 import common.{Logging, ExecutionContexts}
-import fronts.FrontsApiTMP
+import fronts.FrontsApi
 import frontsapi.model.CollectionJsonFunctions
 import org.joda.time.DateTime
 import play.api.libs.json.{JsValue, Json}
@@ -28,7 +28,7 @@ object FaciaApiIO extends FaciaApiRead with FaciaApiWrite with ExecutionContexts
 
   def getSchema = S3FrontsApi.getSchema
 
-  def getCollectionJson(id: String): Future[Option[CollectionJson]] = FrontsApiTMP.amazonClient.collection(id)
+  def getCollectionJson(id: String): Future[Option[CollectionJson]] = FrontsApi.amazonClient.collection(id)
 
   def putCollectionJson(id: String, collectionJson: CollectionJson): CollectionJson = {
     Try(S3FrontsApi.putCollectionJson(id, Json.prettyPrint(Json.toJson(collectionJson))))

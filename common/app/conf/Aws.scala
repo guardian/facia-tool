@@ -1,4 +1,4 @@
-package config
+package conf
 
 import com.amazonaws.AmazonClientException
 import com.amazonaws.auth._

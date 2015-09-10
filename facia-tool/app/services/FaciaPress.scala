@@ -8,7 +8,7 @@ import com.amazonaws.services.sqs.model.SendMessageResult
 import common.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}
 import common.{ExecutionContexts, JsonMessageQueue, Logging}
 import conf.Configuration
-import config.aws
+import conf.aws
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success}

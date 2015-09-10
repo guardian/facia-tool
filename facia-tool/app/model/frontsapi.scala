@@ -4,7 +4,7 @@ import com.gu.facia.client.models.{CollectionJson, ConfigJson, Trail, TrailMetaD
 import com.gu.pandomainauth.model.User
 import common.{ExecutionContexts, Logging}
 import conf.Configuration
-import fronts.FrontsApiTMP
+import fronts.FrontsApi
 import julienrf.variants.Variants
 import org.joda.time.DateTime
 import play.api.libs.json.{Format, JsString, JsValue, Json}
@@ -167,7 +167,7 @@ trait UpdateActions extends Logging with ExecutionContexts {
 
   def updateCollectionList(id: String, update: UpdateList, identity: User): Future[Option[CollectionJson]] = {
     lazy val updateJson = Json.toJson(update)
-    FrontsApiTMP.amazonClient.collection(id).map { maybeCollectionJson =>
+    FrontsApi.amazonClient.collection(id).map { maybeCollectionJson =>
       maybeCollectionJson
         .map(insertIntoLive(update, _))
         .map(insertIntoDraft(update, _))
@@ -183,7 +183,7 @@ trait UpdateActions extends Logging with ExecutionContexts {
 
   def updateCollectionFilter(id: String, update: UpdateList, identity: User): Future[Option[CollectionJson]] = {
     lazy val updateJson = Json.toJson(update)
-    FrontsApiTMP.amazonClient.collection(id).map { maybeCollectionJson =>
+    FrontsApi.amazonClient.collection(id).map { maybeCollectionJson =>
       maybeCollectionJson
         .map(CollectionJsonFunctions.updatePreviously(_, update))
         .map(deleteFromLive(update, _))
