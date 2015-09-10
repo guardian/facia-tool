@@ -1,6 +1,8 @@
 package controllers
 
 import common.{ExecutionContexts, FaciaToolMetrics, Logging}
+import com.amazonaws.services.s3.AmazonS3Client
+import com.gu.facia.client.{AmazonSdkS3Client, ApiClient}
 import conf.Configuration
 import fronts.FrontsApi
 import frontsapi.model._
