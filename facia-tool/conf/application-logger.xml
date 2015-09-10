@@ -15,6 +15,9 @@
         </encoder>
     </appender>
 
+    <logger name="com.amazonaws" level="TRACE" />
+    <logger name="org.apache.http.wire" level="TRACE" />
+
     <root level="INFO">
         <appender-ref ref="LOGFILE"/>
     </root>
