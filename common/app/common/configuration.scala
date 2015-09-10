@@ -347,7 +347,7 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
 
   object faciatool {
     lazy val contentApiPostEndpoint = configuration.getStringProperty("contentapi.post.endpoint")
-    lazy val frontPressCronQueue = playConfiguration.getMandatoryStringProperty("frontpress.sqs.cron_queue_url")
+    lazy val frontPressCronQueue = configuration.getStringProperty("frontpress.sqs.cron_queue_url")
     lazy val frontPressToolQueue = playConfiguration.getString("frontpress.sqs.tool_queue_url")
     lazy val frontPressSnsTopic = playConfiguration.getMandatoryStringProperty("frontpress.sns.topic")
     /** When retrieving items from Content API, maximum number of requests to make concurrently */
