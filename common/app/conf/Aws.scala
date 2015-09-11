@@ -39,7 +39,7 @@ object aws {
   var crossAccount: Option[AWSCredentialsProvider] = {
     val sessionId = UUID.randomUUID().toString()
     val provider = new AWSCredentialsProviderChain(
-      new STSAssumeRoleSessionCredentialsProvider(roleToAssumeArn, sessionId)
+      new STSAssumeRoleSessionCredentialsProvider(roleToAssumeArn, "frontend")
     )
 
     // this is a bit of a convoluted way to check whether we actually have credentials.
