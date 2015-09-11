@@ -36,7 +36,7 @@ object PressCommand {
 
 object FaciaPressQueue extends ExecutionContexts {
   val maybeQueue = Configuration.faciatool.frontPressToolQueue map { queueUrl =>
-    val credentials = aws.mandatoryCredentials
+    val credentials = aws.mandatoryCrossAccountCredentials
     JsonMessageQueue[PressJob](
       new AmazonSQSAsyncClient(credentials).withRegion(Region.getRegion(Regions.EU_WEST_1)),
       queueUrl
@@ -60,7 +60,7 @@ object FaciaPressQueue extends ExecutionContexts {
 object FaciaPressSNS {
   val snsTopic = Configuration.faciatool.frontPressSnsTopic
 
-  val faciaCreds = aws.mandatoryCredentials
+  val faciaCreds = aws.mandatoryCrossAccountCredentials
 
   val topicClient = new AmazonSNSAsyncClient(faciaCreds)
   topicClient.setRegion(Region.getRegion(Regions.EU_WEST_1))
