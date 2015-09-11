@@ -182,11 +182,11 @@ object FaciaToolController extends Controller with Logging with ExecutionContext
   }
 
   def pressDraftPath(path: String) = Action { request =>
-    println("********************* draft " + path)
+    Logger.info("************* press draft " + path)
     val f = FaciaPressQueue.enqueue(PressJob(FrontPath(path), Draft, forceConfigUpdate = Option(true)))
     f.onComplete{
-      case Success(_) => println("successful queue" + path)
-      case Failure(t) => println(s"failed with $path $t")
+      case Success(_) => Logger.info("successful queued " + path)
+      case Failure(t) => Logger.info(s"failed with $path $t")
     }
     FaciaPressSNS.send(PressJob(FrontPath(path), Draft, forceConfigUpdate = Option(true)))
     NoCache(Ok)

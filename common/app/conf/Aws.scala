@@ -22,7 +22,8 @@ object aws {
     // I guess in an ideal world there would be some sort of isConfigued() method...
     try {
       val creds = provider.getCredentials
-      Logger.info("-=-=-= standard account" + creds)
+      Logger.info("-=-=-= standard account " + creds)
+      Logger.info("-=-=-= standard provider " + provider)
       Some(provider)
     } catch {
       case ex: AmazonClientException =>
@@ -35,7 +36,7 @@ object aws {
     }
   }
 
-  def mandatoryCrossAccountCredentials: AWSCredentialsProvider = credentials.getOrElse(throw new BadConfigurationException("AWS credentials are not configured for cross account"))
+  def mandatoryCrossAccountCredentials: AWSCredentialsProvider = crossAccount.getOrElse(throw new BadConfigurationException("AWS credentials are not configured for cross account"))
   var crossAccount: Option[AWSCredentialsProvider] = {
     val sessionId = UUID.randomUUID().toString()
     val provider = new AWSCredentialsProviderChain(
@@ -46,7 +47,8 @@ object aws {
     // I guess in an ideal world there would be some sort of isConfigued() method...
     try {
       val creds = provider.getCredentials
-      Logger.info("-=-=-= cross account" + creds)
+      Logger.info("-=-=-= cross account " + creds)
+      Logger.info("-=-=-= cross provider " + provider)
       Some(provider)
     } catch {
       case ex: AmazonClientException =>
