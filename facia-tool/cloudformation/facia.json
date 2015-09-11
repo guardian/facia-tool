@@ -347,6 +347,12 @@
                                     ]
                                 },
                                 "authentication": "distributionAuthentication"
+                            },
+                            "/etc/gu/facia-tool.application.secrets.conf": {
+                                "source": { "Fn::Join" : ["", [
+                                    "https://s3-eu-west-1.amazonaws.com/facia-private/facia-tool.application.secrets.conf"
+                                ]]},
+                                "authentication": "distributionAuthentication"
                             }
                         }
                     }
