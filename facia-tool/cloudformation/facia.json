@@ -30,6 +30,18 @@
             "CODE": {
                 "CertName": "arn:aws:iam::163592447864:server-certificate/sites.code.dev-gutools.co.uk"
             }
+        },
+        "StageMap": {
+            "PROD": {
+                "MinSize": 3,
+                "MaxSize": 6,
+                "DesiredCapacity": 3
+            },
+            "CODE": {
+                "MinSize": 1,
+                "MaxSize": 2,
+                "DesiredCapacity": 1
+            }
         }
     },
     "Resources": {
@@ -272,9 +284,15 @@
                 "LaunchConfigurationName": {
                     "Ref": "FaciaLaunchConfig"
                 },
-                "MinSize": "2",
-                "MaxSize": "4",
-                "DesiredCapacity": "2",
+                "MinSize": {
+                    "Fn::FindInMap": ["StageMap", { "Ref": "Stage" }, "MinSize" ]
+                },
+                "MaxSize": {
+                    "Fn::FindInMap": ["StageMap", { "Ref": "Stage" }, "MaxSize" ]
+                },
+                "DesiredCapacity": {
+                    "Fn::FindInMap": ["StageMap", { "Ref": "Stage" }, "DesiredCapacity" ]
+                },
                 "Cooldown": "180",
                 "HealthCheckType": "ELB",
                 "HealthCheckGracePeriod": 300,
