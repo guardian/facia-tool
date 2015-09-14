@@ -334,6 +334,14 @@
                                 ]]},
                                 "authentication": "distributionAuthentication"
                             },
+                            "/etc/init/facia-tool.conf": {
+                                "source": { "Fn::Join" : ["", [
+                                    "https://s3-eu-west-1.amazonaws.com/facia-dist/cms-fronts/",
+                                    { "Ref": "Stage" },
+                                    "/facia-tool/facia-tool.conf"
+                                ]]},
+                                "authentication": "distributionAuthentication"
+                            },
                             "/home/facia-tool/facia-tool.zip": {
                                 "source": {
                                     "Fn::Join": [
@@ -347,6 +355,14 @@
                                         ]
                                     ]
                                 },
+                                "authentication": "distributionAuthentication"
+                            },
+                            "/home/facia-tool/facia-tool.all.deb": {
+                                "source": { "Fn::Join" : ["", [
+                                    "https://s3-eu-west-1.amazonaws.com/facia-dist/cms-fronts/",
+                                    { "Ref": "Stage" },
+                                    "/facia-tool/facia-tool_0.1-SNAPSHOT_all.deb"
+                                ]]},
                                 "authentication": "distributionAuthentication"
                             },
                             "/etc/gu/facia-tool.application.secrets.conf": {
