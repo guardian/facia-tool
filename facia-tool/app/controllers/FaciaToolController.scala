@@ -43,13 +43,13 @@ object FaciaToolController extends Controller with Logging with ExecutionContext
   }
 
   def getConfig = APIAuthAction.async { request =>
-    // FaciaToolMetrics.ApiUsageCount.increment()
+    FaciaToolMetrics.ApiUsageCount.increment()
     FrontsApi.amazonClient.config.map { configJson =>
       NoCache {
         Ok(Json.toJson(configJson)).as("application/json")}}}
 
   def getCollection(collectionId: String) = APIAuthAction.async { request =>
-    // FaciaToolMetrics.ApiUsageCount.increment()
+    FaciaToolMetrics.ApiUsageCount.increment()
     FrontsApi.amazonClient.collection(collectionId).map { configJson =>
       NoCache {
         Ok(Json.toJson(configJson)).as("application/json")}}}

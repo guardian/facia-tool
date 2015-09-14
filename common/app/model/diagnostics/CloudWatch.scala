@@ -6,6 +6,7 @@ import com.amazonaws.services.cloudwatch.model._
 import common.Logging
 import conf.Configuration
 import conf.Configuration._
+import conf.aws
 import metrics.{FrontendStatisticSet, DataPoint, FrontendMetric}
 import services.AwsEndpoints
 
@@ -15,7 +16,7 @@ trait CloudWatch extends Logging {
 
   lazy val stageDimension = new Dimension().withName("Stage").withValue(environment.stage)
 
-  lazy val cloudwatch: Option[AmazonCloudWatchAsyncClient] = Configuration.aws.credentials.map{ credentials =>
+  lazy val cloudwatch: Option[AmazonCloudWatchAsyncClient] = aws.crossAccount.map{ credentials =>
     val client = new AmazonCloudWatchAsyncClient(credentials)
     client.setEndpoint(AwsEndpoints.monitoring)
     client
