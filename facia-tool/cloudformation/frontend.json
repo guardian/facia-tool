@@ -57,6 +57,8 @@
             {
                 "Effect": "Allow",
                 "Action": [
+                  "cloudwatch:GetMetricStatistics",
+                  "cloudwatch:ListMetrics",
                   "cloudwatch:PutMetricData"
                 ],
                 "Resource": "*"
