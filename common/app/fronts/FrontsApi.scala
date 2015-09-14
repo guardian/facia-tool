@@ -12,7 +12,6 @@ object FrontsApi extends ExecutionContexts {
     client.setEndpoint(AwsEndpoints.s3)
     val bucket = Configuration.aws.bucket;
     val stage = Configuration.facia.stage.toUpperCase;
-    println("* S3 config on bucket " + bucket + " and stage " + stage)
     ApiClient(bucket, stage, AmazonSdkS3Client(client))
   }
 }
