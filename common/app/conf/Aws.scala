@@ -40,6 +40,7 @@ object aws {
   var crossAccount: Option[AWSCredentialsProvider] = {
     val sessionId = UUID.randomUUID().toString()
     val provider = new AWSCredentialsProviderChain(
+      new ProfileCredentialsProvider("nextgen"),
       new STSAssumeRoleSessionCredentialsProvider(roleToAssumeArn, "frontend")
     )
 
