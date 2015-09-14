@@ -353,7 +353,14 @@
                                 "source": { "Fn::Join" : ["", [
                                     "https://s3-eu-west-1.amazonaws.com/facia-private/facia-tool.application.secrets.conf"
                                 ]]},
+                                "mode": "000400",
+                                "owner": "facia-tool",
                                 "authentication": "distributionAuthentication"
+                            },
+                            "/etc/gu/facia_tool_stage": {
+                                "content": { "Fn::Join" : ["", [
+                                    "STAGE=", { "Ref" : "Stage" }, "\n"
+                                ]]}
                             }
                         }
                     }
