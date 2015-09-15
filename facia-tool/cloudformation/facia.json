@@ -344,14 +344,6 @@
                             }
                         },
                         "files": {
-                            "/etc/init/facia-tool.conf": {
-                                "source": { "Fn::Join" : ["", [
-                                    "https://s3-eu-west-1.amazonaws.com/facia-dist/cms-fronts/",
-                                    { "Ref": "Stage" },
-                                    "/facia-tool/facia-tool.conf"
-                                ]]},
-                                "authentication": "distributionAuthentication"
-                            },
                             "/home/facia-tool/facia-tool.zip": {
                                 "source": {
                                     "Fn::Join": [
