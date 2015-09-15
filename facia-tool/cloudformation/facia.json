@@ -422,7 +422,7 @@
                                 "chown -R facia-tool /home/facia-tool\n",
                                 "chgrp -R facia-tool /home/facia-tool\n",
 
-                                "/home/facia-tool/facia-tool/bin/facia-tool&\n"
+                                "dpkg -i /home/facia-tool/facia-tool.all.deb"
                             ]
                         ]
                     }

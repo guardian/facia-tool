@@ -11,7 +11,6 @@ import play.twirl.sbt.Import._
 import Dependencies._
 
 trait Prototypes {
-  val version = "1-SNAPSHOT"
 
   val frontendCompilationSettings = Seq(
     organization := "com.gu",
