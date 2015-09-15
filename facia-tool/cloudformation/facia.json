@@ -367,9 +367,10 @@
                                 "owner": "facia-tool",
                                 "authentication": "distributionAuthentication"
                             },
-                            "/etc/gu/facia_tool_stage": {
+                            "/etc/gu/facia-tool.properties": {
                                 "content": { "Fn::Join" : ["", [
-                                    "STAGE=", { "Ref" : "Stage" }, "\n"
+                                    "STAGE=", { "Ref" : "Stage" }, "\n",
+                                    "STS_ROLE=", { "Ref" : "FrontendRoleToAssume" }, "\n"
                                 ]]}
                             }
                         }

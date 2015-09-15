@@ -9,8 +9,6 @@ import play.api.Play.current
 
 object aws {
   def mandatoryCredentials: AWSCredentialsProvider = credentials.getOrElse(throw new BadConfigurationException("AWS credentials are not configured"))
-  val roleToAssumeArn ="arn:aws:iam::642631414762:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX"
-
   val credentials: Option[AWSCredentialsProvider] = {
     val provider = new AWSCredentialsProviderChain(
       new ProfileCredentialsProvider("CMS Fronts"),
@@ -37,7 +35,7 @@ object aws {
   var crossAccount: Option[AWSCredentialsProvider] = {
     val provider = new AWSCredentialsProviderChain(
       new ProfileCredentialsProvider("nextgen"),
-      new STSAssumeRoleSessionCredentialsProvider(roleToAssumeArn, "frontend")
+      new STSAssumeRoleSessionCredentialsProvider(Configuration.faciatool.stsRoleToAssume, "frontend")
     )
 
     // this is a bit of a convoluted way to check whether we actually have credentials.

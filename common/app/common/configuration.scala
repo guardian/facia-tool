@@ -32,6 +32,7 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
 
   private val properties = Properties(installVars)
   private val stageFromProperties = properties.getOrElse("STAGE", "CODE")
+  private val stsRoleToAssumeFromProperties = properties.getOrElse("STS_ROLE", "unknown")
 
   private implicit class OptionalString2MandatoryString(conf: com.gu.conf.Configuration) {
     def getMandatoryStringProperty(property: String) = configuration.getStringProperty(property)
@@ -393,6 +394,8 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
     lazy val faciaToolUpdatesStream: Option[String] = configuration.getStringProperty("faciatool.updates.stream")
 
     lazy val sentryPublicDSN = playConfiguration.getStringFromStage("faciatool.sentryPublicDSN")
+
+    val stsRoleToAssume = playConfiguration.getStringFromStage("faciatool.sts.role.to.assume").getOrElse(stsRoleToAssumeFromProperties)
   }
 
   object memcached {
