@@ -6,7 +6,6 @@ import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import common.BadConfigurationException
 import play.api.{Logger, Play}
 import play.api.Play.current
-import java.util.UUID
 
 object aws {
   def mandatoryCredentials: AWSCredentialsProvider = credentials.getOrElse(throw new BadConfigurationException("AWS credentials are not configured"))
@@ -22,8 +21,6 @@ object aws {
     // I guess in an ideal world there would be some sort of isConfigued() method...
     try {
       val creds = provider.getCredentials
-      Logger.info("-=-=-= standard account " + creds)
-      Logger.info("-=-=-= standard provider " + provider)
       Some(provider)
     } catch {
       case ex: AmazonClientException =>
@@ -38,8 +35,8 @@ object aws {
 
   def mandatoryCrossAccountCredentials: AWSCredentialsProvider = crossAccount.getOrElse(throw new BadConfigurationException("AWS credentials are not configured for cross account"))
   var crossAccount: Option[AWSCredentialsProvider] = {
-    val sessionId = UUID.randomUUID().toString()
     val provider = new AWSCredentialsProviderChain(
+      new ProfileCredentialsProvider("nextgen"),
       new STSAssumeRoleSessionCredentialsProvider(roleToAssumeArn, "frontend")
     )
 
@@ -47,12 +44,10 @@ object aws {
     // I guess in an ideal world there would be some sort of isConfigued() method...
     try {
       val creds = provider.getCredentials
-      Logger.info("-=-=-= cross account " + creds)
-      Logger.info("-=-=-= cross provider " + provider)
       Some(provider)
     } catch {
       case ex: AmazonClientException =>
-        Logger.error("amazon client exception")
+        Logger.error("amazon client cross account exception")
 
         // We really, really want to ensure that PROD is configured before saying a box is OK
         if (Play.isProd) throw ex

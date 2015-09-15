@@ -25,7 +25,7 @@ object FastlyCloudwatchLoadJob extends Logging {
 
     log.info("Uploading %d new metric data points" format fresh.size)
     Configuration.environment.stage.toUpperCase match {
-//      case "PROD" => CloudWatch.put("Fastly", fresh)
+      case "PROD" => CloudWatch.put("Fastly", fresh)
       case _ => log.info("DISABLED: Metrics uploaded only to limit duplication.")
     }
 
