@@ -37,7 +37,6 @@ object PressCommand {
 
 object FaciaPressQueue extends ExecutionContexts {
   val maybeQueue = Configuration.faciatool.frontPressToolQueue map { queueUrl =>
-    Logger.info("** in press queue " + queueUrl)
     val credentials = aws.mandatoryCrossAccountCredentials
     JsonMessageQueue[PressJob](
       new AmazonSQSAsyncClient(credentials).withRegion(Region.getRegion(Regions.EU_WEST_1)),
@@ -46,11 +45,8 @@ object FaciaPressQueue extends ExecutionContexts {
   }
 
   def enqueue(job: PressJob): Future[SendMessageResult] = {
-    Logger.info("** maybe ")
     maybeQueue match {
       case Some(queue) =>
-        Logger.info("** send " + job)
-        Logger.info("** queue " + queue)
         queue.send(job)
 
       case None =>
@@ -68,9 +64,7 @@ object FaciaPressSNS {
   topicClient.setRegion(Region.getRegion(Regions.EU_WEST_1))
 
   def send(job: PressJob): Future[PublishResult] = {
-    Logger.info("*******" + job)
     val json = Json.stringify(Json.toJson(job))
-    Logger.info("*******" + json)
     topicClient.publishFuture(new PublishRequest(snsTopic, Json.toJson(job).toString))
   }
 
