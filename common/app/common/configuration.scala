@@ -391,7 +391,7 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
       Try(playConfiguration.getStringFromStage("admin.pressjob.low.push.rate.inminutes").get.toInt)
         .getOrElse(60)
 
-    lazy val faciaToolUpdatesStream: Option[String] = configuration.getStringProperty("faciatool.updates.stream")
+    lazy val faciaToolUpdatesStream: Option[String] = playConfiguration.getStringFromStage("faciatool.updates.stream")
 
     lazy val sentryPublicDSN = playConfiguration.getStringFromStage("faciatool.sentryPublicDSN")
 

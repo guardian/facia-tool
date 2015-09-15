@@ -74,6 +74,16 @@
                   "arn:aws:sqs:eu-west-1:642631414762:frontend-CODE-FrontPressToolJobQueue-MY0QBVOOIECN",
                   "arn:aws:sqs:eu-west-1:642631414762:frontend-PROD-FrontPressToolJobQueue-1V3225WE1LWQI"
                 ]
+            },
+            {
+                "Effect": "Allow",
+                "Action": [
+                  "kinesis:PutRecord"
+                ],
+                "Resource": [
+                  "arn:aws:kinesis:eu-west-1:642631414762:stream/frontend-CODE-FaciaToolUpdatesStream-XWJ5HJQM1DWF",
+                  "arn:aws:kinesis:eu-west-1:642631414762:stream/frontend-PROD-FaciaToolUpdatesStream-Q4W8OIS2J79E"
+                ]
             }
           ]
         },
