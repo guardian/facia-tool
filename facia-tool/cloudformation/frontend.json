@@ -64,14 +64,16 @@
                 "Resource": "*"
             },
             {
-
                 "Effect": "Allow",
                 "Action": [
                   "sqs:SendMessage",
                   "sqs:ReceiveMessage",
                   "sqs:DeleteMessage"
                 ],
-                "Resource": "*"
+                "Resource": [
+                  "arn:aws:sqs:eu-west-1:642631414762:frontend-CODE-FrontPressToolJobQueue-MY0QBVOOIECN",
+                  "arn:aws:sqs:eu-west-1:642631414762:frontend-PROD-FrontPressToolJobQueue-1V3225WE1LWQI"
+                ]
             }
           ]
         },
