@@ -25,7 +25,7 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
   import play.api.Play.current
   protected val playConfiguration = play.api.Play.configuration
 
-  private val installVars = new File("/etc/gu/facia_tool_stage") match {
+  private val installVars = new File("/etc/gu/facia-tool.properties") match {
     case f if f.exists => IOUtils.toString(new FileInputStream(f))
     case _ => ""
   }
