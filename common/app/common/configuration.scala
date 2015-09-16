@@ -22,7 +22,6 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
 
   protected val configuration = ConfigurationFactory.getConfiguration(application, webappConfDirectory)
 
-  import play.api.Play.current
   protected val playConfiguration = play.api.Play.configuration
 
   private val installVars = new File("/etc/gu/facia-tool.properties") match {
