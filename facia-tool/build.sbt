@@ -2,12 +2,11 @@ name := "facia-tool"
 
 version := "0.1-SNAPSHOT"
 
-maintainer := "Max Smith <max.smith@yourcompany.io>"
+maintainer := "CMS Fronts <aws-cms-fronts@theguardian.com>"
 
-packageSummary := "Hello World Debian Package"
+packageSummary := "Facia tool"
 
-packageDescription := """A fun package description of our software,
-  with multiple lines."""
+packageDescription := "Guardian front pages editor"
 
 import com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd
 serverLoading in Debian := Systemd
