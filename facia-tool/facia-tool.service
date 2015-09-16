@@ -3,7 +3,7 @@ Description=Facia tool
 
 [Service]
 Environment='MANAGEMENT_PORT=9000'
-ExecStart=facia-tool/bin/facia-tool -mem 512
+ExecStart=/home/facia-tool/facia-tool/bin/facia-tool -mem 512
 User=facia-tool
 WorkingDirectory=/home/facia-tool
 
