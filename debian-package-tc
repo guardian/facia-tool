@@ -7,28 +7,24 @@ set -o errexit
 echo "Package play jars."
 
 set +x
-echo "##teamcity[progressStart 'sbt test and dist']"
+echo "##teamcity[progressStart 'sbt test and package']"
 set -x
 
-./sbt-tc "project facia-tool" compile debian:packageBin
+./sbt-tc "project facia-tool" compile assets debian:packageBin
 
 set +x
-echo "##teamcity[progressFinish 'sbt test and dist']"
+echo "##teamcity[progressFinish 'sbt test and package']"
 
 echo "##teamcity[progressStart 'zipping and publishing']"
 set -x
 
 rm -rf "dist"
 
-configurations="facia-tool"
-
-
 echo "package for facia-tool"
 
 # Generate folder for the application zip.
 app_folder="dist/facia-tool"
 
-mkdir -p "$app_folder/packages/frontend-static"
 mkdir -p "$app_folder/packages/facia-tool"
 cp "facia-tool/conf/deploy.json"                        "$app_folder"
 cp "facia-tool/target/facia-tool_0.1-SNAPSHOT_all.deb"  "$app_folder/packages/facia-tool"
@@ -49,4 +45,3 @@ echo "##teamcity[progressFinish 'zipping and publishing']"
 set -x
 
 echo "Done disting."
-
