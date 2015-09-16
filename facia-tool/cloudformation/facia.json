@@ -359,6 +359,14 @@
                                 },
                                 "authentication": "distributionAuthentication"
                             },
+                            "/home/facia-tool/facia-tool.all.deb": {
+                                "source": { "Fn::Join" : ["", [
+                                    "https://s3-eu-west-1.amazonaws.com/facia-dist/cms-fronts/",
+                                    { "Ref": "Stage" },
+                                    "/facia-tool/facia-tool_0.1-SNAPSHOT_all.deb"
+                                ]]},
+                                "authentication": "distributionAuthentication"
+                            },
                             "/etc/gu/facia-tool.application.secrets.conf": {
                                 "source": { "Fn::Join" : ["", [
                                     "https://s3-eu-west-1.amazonaws.com/facia-private/facia-tool.application.secrets.conf"
@@ -415,7 +423,7 @@
                                 "chown -R facia-tool /home/facia-tool\n",
                                 "chgrp -R facia-tool /home/facia-tool\n",
 
-                                "/home/facia-tool/facia-tool/bin/facia-tool&\n"
+                                "dpkg -i /home/facia-tool/facia-tool.all.deb"
                             ]
                         ]
                     }

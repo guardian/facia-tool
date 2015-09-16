@@ -1,0 +1,10 @@
+[Unit]
+Description="Facia tool status
+
+[Service]
+ExecStart=/home/facia-tool/facia-tool/bin/facia-tool -mem 512
+User=facia-tool
+WorkingDirectory=/home/facia-tool
+
+[Install]
+WantedBy=multi-user.target
