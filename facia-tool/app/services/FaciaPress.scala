@@ -55,21 +55,6 @@ object FaciaPressQueue extends ExecutionContexts {
   }
 }
 
-object FaciaPressSNS {
-  val snsTopic = Configuration.faciatool.frontPressSnsTopic
-
-  val faciaCreds = aws.mandatoryCrossAccountCredentials
-
-  val topicClient = new AmazonSNSAsyncClient(faciaCreds)
-  topicClient.setRegion(Region.getRegion(Regions.EU_WEST_1))
-
-  def send(job: PressJob): Future[PublishResult] = {
-    val json = Json.stringify(Json.toJson(job))
-    topicClient.publishFuture(new PublishRequest(snsTopic, Json.toJson(job).toString))
-  }
-
-}
-
 object FaciaPress extends Logging with ExecutionContexts {
   def press(pressCommand: PressCommand): Future[List[SendMessageResult]] = {
     ConfigAgent.refreshAndReturn() flatMap { _ =>
