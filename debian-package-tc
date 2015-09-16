@@ -10,7 +10,7 @@ set +x
 echo "##teamcity[progressStart 'sbt test and dist']"
 set -x
 
-./sbt-tc "project root" compile dist debian:packageBin
+./sbt-tc "project root" compile debian:packageBin
 
 set +x
 echo "##teamcity[progressFinish 'sbt test and dist']"
@@ -31,9 +31,7 @@ do
 
     mkdir -p "$app_folder/packages/frontend-static"
     mkdir -p "$app_folder/packages/$config"
-    mv "$config/target/universal/$config-0.1-SNAPSHOT.zip"  "$app_folder/packages/$config/$config.zip"
     cp "$config/conf/deploy.json"                           "$app_folder"
-    cp "$config/conf/facia-tool.conf"                       "$app_folder"
     cp "$config/target/facia-tool_0.1-SNAPSHOT_all.deb"     "$app_folder"
 
     pushd $app_folder
