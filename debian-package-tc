@@ -1,0 +1,55 @@
+#!/bin/bash
+
+set -o xtrace
+set -o nounset
+set -o errexit
+
+echo "Package play jars."
+
+set +x
+echo "##teamcity[progressStart 'sbt test and dist']"
+set -x
+
+./sbt-tc "project root" compile dist debian:packageBin
+
+set +x
+echo "##teamcity[progressFinish 'sbt test and dist']"
+
+echo "##teamcity[progressStart 'zipping and publishing']"
+set -x
+
+rm -rf "dist"
+
+configurations="facia-tool"
+
+for config in $configurations
+do
+    echo "Dist for $config"
+
+    # Generate folder for the application zip.
+    app_folder="dist/$config"
+
+    mkdir -p "$app_folder/packages/frontend-static"
+    mkdir -p "$app_folder/packages/$config"
+    mv "$config/target/universal/$config-0.1-SNAPSHOT.zip"  "$app_folder/packages/$config/$config.zip"
+    cp "$config/conf/deploy.json"                           "$app_folder"
+    cp "$config/conf/facia-tool.conf"                       "$app_folder"
+    cp "$config/target/facia-tool_0.1-SNAPSHOT_all.deb"     "$app_folder"
+
+    pushd $app_folder
+    zip -r "../artifacts.zip" .
+    popd
+
+    rm -rf $app_folder
+
+    set +o xtrace
+    echo "##teamcity[publishArtifacts 'dist/artifacts.zip']"
+    set -o xtrace
+done
+
+set +x
+echo "##teamcity[progressFinish 'zipping and publishing']"
+set -x
+
+echo "Done disting."
+
