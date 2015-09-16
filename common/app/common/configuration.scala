@@ -362,6 +362,7 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
 
     lazy val pandomainHost = playConfiguration.getMandatoryStringFromStage("faciatool.pandomain.host")
     lazy val pandomainDomain = playConfiguration.getMandatoryStringFromStage("faciatool.pandomain.domain")
+    lazy val pandomainService = playConfiguration.getMandatoryStringFromStage("faciatool.pandomain.service")
     lazy val pandomainSecret = playConfiguration.getStringFromStage("pandomain.aws.secret")
     lazy val pandomainKey = playConfiguration.getStringFromStage("pandomain.aws.key")
 

@@ -41,7 +41,7 @@ trait PanDomainAuthActions extends AuthActions with Results {
   }
 
   override lazy val domain: String = Configuration.faciatool.pandomainDomain
-  override lazy val system: String = "facia-test"
+  override lazy val system: String = Configuration.faciatool.pandomainService
 
   override lazy val awsCredentials =
     for (key <- Configuration.faciatool.pandomainKey; secret <- Configuration.faciatool.pandomainSecret)
