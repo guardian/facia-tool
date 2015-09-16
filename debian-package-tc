@@ -10,7 +10,7 @@ set +x
 echo "##teamcity[progressStart 'sbt test and package']"
 set -x
 
-./sbt-tc "project facia-tool" compile test assets debian:packageBin
+./sbt-tc "project facia-tool" compile assets debian:packageBin
 
 set +x
 echo "##teamcity[progressFinish 'sbt test and package']"
