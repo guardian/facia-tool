@@ -318,7 +318,7 @@
                                 "source": { "Fn::Join" : ["", [
                                     "https://s3-eu-west-1.amazonaws.com/facia-dist/cms-fronts/",
                                     { "Ref": "Stage" },
-                                    "/facia-tool/facia-tool_0.1-SNAPSHOT_all.deb"
+                                    "/facia-tool/facia-tool_1.0_all.deb"
                                 ]]},
                                 "authentication": "distributionAuthentication"
                             },

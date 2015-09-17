@@ -27,7 +27,7 @@ app_folder="dist/facia-tool"
 
 mkdir -p "$app_folder/packages/facia-tool"
 cp "facia-tool/conf/deploy.json"                        "$app_folder"
-cp "facia-tool/target/facia-tool_0.1-SNAPSHOT_all.deb"  "$app_folder/packages/facia-tool"
+cp "facia-tool/target/facia-tool_1.0_all.deb"  "$app_folder/packages/facia-tool"
 
 pushd $app_folder
 zip -r "../artifacts.zip" .

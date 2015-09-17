@@ -1,6 +1,6 @@
 name := "facia-tool"
 
-version := "0.1-SNAPSHOT"
+version := "1.0"
 
 maintainer := "CMS Fronts <aws-cms-fronts@theguardian.com>"
 
