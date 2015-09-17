@@ -35,12 +35,14 @@
             "PROD": {
                 "MinSize": 3,
                 "MaxSize": 6,
-                "DesiredCapacity": 3
+                "DesiredCapacity": 3,
+                "InstanceType": "c3.large"
             },
             "CODE": {
                 "MinSize": 1,
                 "MaxSize": 2,
-                "DesiredCapacity": 1
+                "DesiredCapacity": 1,
+                "InstanceType": "m3.medium"
             }
         }
     },
@@ -148,24 +150,6 @@
             "Properties": {
                 "GroupDescription": "Application servers",
                 "SecurityGroupIngress": [
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": 9000,
-                        "ToPort": 9000,
-                        "CidrIp": "87.238.84.64/29"
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": 9000,
-                        "ToPort": 9000,
-                        "CidrIp": "87.238.80.64/29"
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": 9000,
-                        "ToPort": 9000,
-                        "CidrIp": "54.240.197.0/24"
-                    },
                     {
                         "IpProtocol": "tcp",
                         "FromPort": 9000,
@@ -359,7 +343,15 @@
             "Properties": {
                 "KeyName": "fronts",
                 "ImageId": "ami-3b082c4c",
-                "InstanceType": "m3.medium",
+                "InstanceType": {
+                    "Fn::FindInMap": [
+                        "StageMap",
+                        {
+                            "Ref": "Stage"
+                        },
+                        "InstanceType"
+                    ]
+                },
                 "SecurityGroups": [
                     {
                         "Ref": "AppServerSecurityGroup"
