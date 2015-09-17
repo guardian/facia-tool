@@ -22,7 +22,6 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
 
   protected val configuration = ConfigurationFactory.getConfiguration(application, webappConfDirectory)
 
-  import play.api.Play.current
   protected val playConfiguration = play.api.Play.configuration
 
   private val installVars = new File("/etc/gu/facia-tool.properties") match {
@@ -352,7 +351,6 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
     lazy val contentApiPostEndpoint = configuration.getStringProperty("contentapi.post.endpoint")
     lazy val frontPressCronQueue = configuration.getStringProperty("frontpress.sqs.cron_queue_url")
     lazy val frontPressToolQueue = playConfiguration.getStringFromStage("frontpress.sqs.tool_queue_url")
-    lazy val frontPressSnsTopic = playConfiguration.getMandatoryStringFromStage("frontpress.sns.topic")
     /** When retrieving items from Content API, maximum number of requests to make concurrently */
     lazy val frontPressItemBatchSize = configuration.getIntegerProperty("frontpress.item_batch_size", 30)
     /** When retrieving items from Content API, maximum number of items to request per concurrent request */
@@ -364,6 +362,7 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
 
     lazy val pandomainHost = playConfiguration.getMandatoryStringFromStage("faciatool.pandomain.host")
     lazy val pandomainDomain = playConfiguration.getMandatoryStringFromStage("faciatool.pandomain.domain")
+    lazy val pandomainService = playConfiguration.getMandatoryStringFromStage("faciatool.pandomain.service")
     lazy val pandomainSecret = playConfiguration.getStringFromStage("pandomain.aws.secret")
     lazy val pandomainKey = playConfiguration.getStringFromStage("pandomain.aws.key")
 

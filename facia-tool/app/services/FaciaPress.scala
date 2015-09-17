@@ -1,8 +1,6 @@
 package services
 
 import com.amazonaws.regions.{Region, Regions}
-import com.amazonaws.services.sns.AmazonSNSAsyncClient
-import com.amazonaws.services.sns.model.{PublishRequest, PublishResult}
 import com.amazonaws.services.sqs.AmazonSQSAsyncClient
 import com.amazonaws.services.sqs.model.SendMessageResult
 import common.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}
@@ -12,13 +10,6 @@ import conf.aws
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
-
-import scala.concurrent.Future
-import scala.util.{Failure, Success}
-import awswrappers.sns._
-import play.api.libs.json.{Writes, Json, Reads}
-import play.api.Logger
-
 
 case class PressCommand(
   collectionIds: Set[String],
@@ -53,21 +44,6 @@ object FaciaPressQueue extends ExecutionContexts {
         Future.failed(new RuntimeException("`facia.press.queue_url` property not in config, could not enqueue job."))
     }
   }
-}
-
-object FaciaPressSNS {
-  val snsTopic = Configuration.faciatool.frontPressSnsTopic
-
-  val faciaCreds = aws.mandatoryCrossAccountCredentials
-
-  val topicClient = new AmazonSNSAsyncClient(faciaCreds)
-  topicClient.setRegion(Region.getRegion(Regions.EU_WEST_1))
-
-  def send(job: PressJob): Future[PublishResult] = {
-    val json = Json.stringify(Json.toJson(job))
-    topicClient.publishFuture(new PublishRequest(snsTopic, Json.toJson(job).toString))
-  }
-
 }
 
 object FaciaPress extends Logging with ExecutionContexts {
