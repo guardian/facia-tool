@@ -344,21 +344,6 @@
                             }
                         },
                         "files": {
-                            "/home/facia-tool/facia-tool.zip": {
-                                "source": {
-                                    "Fn::Join": [
-                                        "",
-                                        [
-                                            "https://s3-eu-west-1.amazonaws.com/facia-dist/cms-fronts/",
-                                            {
-                                                "Ref": "Stage"
-                                            },
-                                            "/facia-tool/facia-tool.zip"
-                                        ]
-                                    ]
-                                },
-                                "authentication": "distributionAuthentication"
-                            },
                             "/home/facia-tool/facia-tool.all.deb": {
                                 "source": { "Fn::Join" : ["", [
                                     "https://s3-eu-west-1.amazonaws.com/facia-dist/cms-fronts/",
@@ -417,11 +402,6 @@
                                     "Ref": "AWS::Region"
                                 },
                                 " || error_exit 'Failed to run cfn-init'\n",
-
-                                "unzip -d /home/facia-tool /home/facia-tool/facia-tool.zip \n",
-
-                                "chown -R facia-tool /home/facia-tool\n",
-                                "chgrp -R facia-tool /home/facia-tool\n",
 
                                 "dpkg -i /home/facia-tool/facia-tool.all.deb"
                             ]
