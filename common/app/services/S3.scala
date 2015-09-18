@@ -20,12 +20,13 @@ import common.S3Metrics.S3ClientExceptionsMetric
 import com.gu.googleauth.UserIdentity
 import java.util.zip.GZIPOutputStream
 import java.io._
+import conf.aws
 
 trait S3 extends Logging {
 
   lazy val bucket = Configuration.aws.bucket
 
-  lazy val client: Option[AmazonS3Client] = Configuration.aws.credentials.map{ credentials =>
+  lazy val client: Option[AmazonS3Client] = aws.crossAccount.map{ credentials =>
     val client = new AmazonS3Client(credentials)
     client.setEndpoint(AwsEndpoints.s3)
     client
@@ -222,7 +223,7 @@ trait SecureS3Request extends implicits.Dates with Logging {
 
   private def url(httpVerb: String, id: String): WSRequest = {
 
-    val headers = Configuration.aws.credentials.map(_.getCredentials).map{ credentials =>
+    val headers = aws.crossAccount.map(_.getCredentials).map{ credentials =>
       val sessionTokenHeaders: Seq[(String, String)] = credentials match {
         case sessionCredentials: AWSSessionCredentials => Seq("x-amz-security-token" -> sessionCredentials.getSessionToken)
         case _ => Nil

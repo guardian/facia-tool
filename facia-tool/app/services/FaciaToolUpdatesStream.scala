@@ -12,6 +12,7 @@ import com.amazonaws.services.kinesis.AmazonKinesisAsyncClient
 import com.amazonaws.services.kinesis.model.{PutRecordResult, PutRecordRequest}
 import common.Logging
 import conf.Configuration
+import conf.aws
 
 object FaciaToolUpdatesStream extends Logging {
   val partitionKey: String = "facia-tool-updates"
@@ -26,7 +27,7 @@ object FaciaToolUpdatesStream extends Logging {
   }
 
   val client: AmazonKinesisAsyncClient = {
-    val c = new AmazonKinesisAsyncClient(Configuration.aws.mandatoryCredentials)
+    val c = new AmazonKinesisAsyncClient(aws.mandatoryCrossAccountCredentials)
     c.setRegion(Region.getRegion(Regions.EU_WEST_1))
     c
   }

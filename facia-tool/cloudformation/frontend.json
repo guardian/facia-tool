@@ -1,0 +1,106 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Facia tool template to create cross account roles.",
+  "Parameters": {
+    "CMSFrontsAccountId": {
+      "Description": "The AWS account ID for CMS Fronts",
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "FaciaToolRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "Path": "/",
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "CMSFrontsAccountId"
+                      },
+                      ":root"
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "CrossAccountPolicies": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "cms-front",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:PutObjectAcl",
+                "s3:DeleteObject",
+                "s3:ListBucket"
+              ],
+              "Resource": "arn:aws:s3:::aws-frontend-store/*"
+            },
+            {
+                "Effect": "Allow",
+                "Action": [
+                  "cloudwatch:GetMetricStatistics",
+                  "cloudwatch:ListMetrics",
+                  "cloudwatch:PutMetricData"
+                ],
+                "Resource": "*"
+            },
+            {
+                "Effect": "Allow",
+                "Action": [
+                  "sqs:SendMessage",
+                  "sqs:ReceiveMessage",
+                  "sqs:DeleteMessage"
+                ],
+                "Resource": [
+                  "arn:aws:sqs:eu-west-1:642631414762:frontend-CODE-FrontPressToolJobQueue-MY0QBVOOIECN",
+                  "arn:aws:sqs:eu-west-1:642631414762:frontend-PROD-FrontPressToolJobQueue-1V3225WE1LWQI"
+                ]
+            },
+            {
+                "Effect": "Allow",
+                "Action": [
+                  "kinesis:PutRecord"
+                ],
+                "Resource": [
+                  "arn:aws:kinesis:eu-west-1:642631414762:stream/frontend-CODE-FaciaToolUpdatesStream-XWJ5HJQM1DWF",
+                  "arn:aws:kinesis:eu-west-1:642631414762:stream/frontend-PROD-FaciaToolUpdatesStream-Q4W8OIS2J79E"
+                ]
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "FaciaToolRole"
+          }
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "FaciaToolRole": {
+      "Description": "The name of the FaciaToolRole",
+      "Value": {
+        "Ref": "FaciaToolRole"
+      }
+    }
+  }
+}

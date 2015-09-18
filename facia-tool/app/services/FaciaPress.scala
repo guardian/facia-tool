@@ -6,6 +6,8 @@ import com.amazonaws.services.sqs.model.SendMessageResult
 import common.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}
 import common.{ExecutionContexts, JsonMessageQueue, Logging}
 import conf.Configuration
+import conf.aws
+
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
@@ -26,7 +28,7 @@ object PressCommand {
 
 object FaciaPressQueue extends ExecutionContexts {
   val maybeQueue = Configuration.faciatool.frontPressToolQueue map { queueUrl =>
-    val credentials = Configuration.aws.mandatoryCredentials
+    val credentials = aws.mandatoryCrossAccountCredentials
     JsonMessageQueue[PressJob](
       new AmazonSQSAsyncClient(credentials).withRegion(Region.getRegion(Regions.EU_WEST_1)),
       queueUrl

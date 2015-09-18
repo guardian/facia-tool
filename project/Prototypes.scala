@@ -1,6 +1,7 @@
 package com.gu
 
 import com.gu.versioninfo.VersionInfo
+import com.typesafe.sbt.packager.debian.JDebPackaging
 import sbt._
 import sbt.Keys._
 import com.typesafe.sbt.web.SbtWeb.autoImport._
@@ -10,7 +11,6 @@ import play.twirl.sbt.Import._
 import Dependencies._
 
 trait Prototypes {
-  val version = "1-SNAPSHOT"
 
   val frontendCompilationSettings = Seq(
     organization := "com.gu",
@@ -105,11 +105,11 @@ trait Prototypes {
     concurrentRestrictions in Universal := List(Tags.limit(Tags.All, 1))
   )
 
-  def root() = Project("root", base = file(".")).enablePlugins(play.PlayScala)
+  def root() = Project("root", base = file(".")).enablePlugins(play.PlayScala, JDebPackaging)
     .settings(frontendCompilationSettings)
 
   def application(applicationName: String) = {
-    Project(applicationName, file(applicationName)).enablePlugins(play.PlayScala)
+    Project(applicationName, file(applicationName)).enablePlugins(play.PlayScala, JDebPackaging)
     .settings(frontendDependencyManagementSettings)
     .settings(frontendCompilationSettings)
     .settings(frontendClientSideSettings)

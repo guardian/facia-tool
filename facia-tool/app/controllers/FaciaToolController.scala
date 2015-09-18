@@ -1,7 +1,6 @@
 package controllers
 
 import common.{ExecutionContexts, FaciaToolMetrics, Logging}
-import conf.Configuration
 import fronts.FrontsApi
 import frontsapi.model._
 import model.{Cached, NoCache}
@@ -13,6 +12,7 @@ import akka.actor.ActorSystem
 import scala.concurrent.Future
 import play.api.Logger
 import auth.PanDomainAuthActions
+import scala.util._
 
 object FaciaToolController extends Controller with Logging with ExecutionContexts with PanDomainAuthActions {
 
