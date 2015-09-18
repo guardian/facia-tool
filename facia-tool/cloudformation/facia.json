@@ -79,7 +79,7 @@
                 "Path": "/",
                 "Policies": [
                     {
-                        "PolicyName": "ConfigurationAndDeploy",
+                        "PolicyName": "root",
                         "PolicyDocument": {
                             "Statement": [
                                 {
@@ -94,31 +94,39 @@
                                 }
                             ]
                         }
-                    },
-                    {
-                        "PolicyName": "PanDomainPolicy",
-                        "PolicyDocument": {
-                          "Statement": [
-                            {
-                              "Effect": "Allow",
-                              "Action": ["s3:GetObject"],
-                              "Resource": ["arn:aws:s3:::pan-domain-auth-settings/*"]
-                            }
-                          ]
-                        }
-                    },
-                    {
-                        "PolicyName": "CrossAccountPolicy",
-                        "PolicyDocument": {
-                            "Version" : "2012-10-17",
-                            "Statement": [{
-                                "Effect": "Allow",
-                                "Action": "sts:AssumeRole",
-                                "Resource": { "Ref" : "FrontendRoleToAssume" }
-                            } ]
-                        }
                     }
                 ]
+            }
+        },
+        "PanDomainPolicy": {
+          "Type": "AWS::IAM::Policy",
+          "Properties": {
+            "PolicyName": "PanDomainPolicy",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": ["s3:GetObject"],
+                  "Resource": ["arn:aws:s3:::pan-domain-auth-settings/*"]
+                }
+              ]
+            },
+            "Roles": [{"Ref": "DistributionRole"}]
+          }
+        },
+        "CrossAccountPolicy": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "CrossAccountPolicy",
+                "PolicyDocument": {
+                    "Version" : "2012-10-17",
+                    "Statement": [{
+                        "Effect": "Allow",
+                        "Action": "sts:AssumeRole",
+                        "Resource": { "Ref" : "FrontendRoleToAssume" }
+                    } ]
+                },
+                "Roles": [{ "Ref": "DistributionRole" }]
             }
         },
         "SSHSecurityGroup": {
