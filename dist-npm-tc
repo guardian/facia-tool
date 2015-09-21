@@ -4,8 +4,8 @@ set -o xtrace
 set -o nounset
 set -o errexit
 
-echo "Npm installation."
+echo "Npm and JSPM installation."
 npm prune --production
 npm install --production
 
-./grunt-tc clean shell:npmInstallFaciaTool install:jspm
+./grunt-tc clean install

@@ -34,24 +34,11 @@ conditionallyGrunt() {
     fi
 }
 
-
-# Validate CSS
-CSS_SRC_PATTERN="\.scss$"
-conditionallyGrunt "$CSS_SRC_PATTERN" "validate:css"
-cssValidateResult1=$?
-conditionallyGrunt "$CSS_SRC_PATTERN" "validate:sass"
-cssValidateResult2=$?
-
 # Validate JS
 JS_SRC_PATTERN="\.js$"
 conditionallyGrunt "$JS_SRC_PATTERN" "validate:js"
 jsValidateResult=$?
 
-# Test JS
-conditionallyGrunt "[^/]\+/\(app\|test\)/assets/javascripts/.*$JS_SRC_PATTERN" "test:unit"
-jsTestResult=$?
-
-
 # Exit code 1 means don't commit and 0 means do commit
-[ $cssValidateResult1 -ne 0 ] || [ $cssValidateResult2 -ne 0 ] || [ $jsValidateResult -ne 0 ] || [ $jsTestResult -ne 0 ] && exit 1
+[ $jsValidateResult -ne 0 ] && exit 1
 exit 0
