@@ -112,6 +112,51 @@ describe('Clipboard', function () {
             expect(getArticles()[0].headline).toBe('Open Source');
         }
     });
+
+    it('global copy paste events', function (done) {
+        var scope = this.scope;
+
+        injectClipboard()
+        .then(pasteLink)
+        .then(expectLinkAdded)
+        .then(done)
+        .catch(done.fail);
+
+        function pasteLink (clipboard) {
+            return new Promise(resolve => {
+                scope({
+                    url: /\/api\/proxy\/\?/,
+                    status: 404
+                }, {
+                    url: /\/http\/proxy\/.*twitter\.com\/piuccio/,
+                    responseText: `
+                        <html>
+                            <head>
+                                <meta property="og:title" content="OG Title" />
+                                <meta property="og:description" content="Description" />
+                            </head>
+                            <body></body>
+                        </html>
+                    `,
+                    onAfterComplete: resolve
+                });
+
+                clipboard.onGlobalPaste({
+                    originalEvent: {
+                        clipboardData: {
+                            getData: () => 'http://twitter.com/piuccio'
+                        }
+                    }
+                });
+            });
+        }
+        function expectLinkAdded () {
+            expect($('.article').length).toBe(1);
+            expect(textInside('.element__headline')).toBe('OG Title');
+            expect(textInside('.trailText')).toBe('Description');
+            expect(textInside('.label--snap-uri')).toBe('http://twitter.com/piuccio');
+        }
+    });
 });
 
 function injectClipboard () {
