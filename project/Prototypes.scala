@@ -28,19 +28,6 @@ trait Prototypes {
     }
   )
 
-  val frontendIntegrationTestsSettings = Seq (
-    concurrentRestrictions in ThisProject := List(Tags.limit(Tags.Test, 1)),
-    testOptions in Test += Tests.Argument("-oDF"),
-    resolvers ++= Seq(Resolver.typesafeRepo("releases")),
-    libraryDependencies ++= Seq(
-      scalaTestPlus,
-      seleniumJava % Test,
-      jodaTime % Test,
-      jodaConvert % Test,
-      akkaAgent % Test
-    )
-  )
-
   val frontendDependencyManagementSettings = Seq(
     ivyXML :=
       <dependencies>

@@ -5,7 +5,6 @@ import sbt._
 object Dependencies {
   val cucumberVersion = "1.1.5"
   val identityLibVersion = "3.46"
-  val seleniumVersion = "2.44.0"
   val slf4jVersion = "1.7.5"
   val awsVersion = "1.9.16"
 
@@ -60,18 +59,10 @@ object Dependencies {
   val scalaTest = "org.scalatest" %% "scalatest" % "2.2.1" % Test
   val scalaz = "org.scalaz" %% "scalaz-core" % "7.0.6"
   val seeGuice = "com.tzavellas" % "sse-guice" % "0.7.1"
-  val seleniumJava = "org.seleniumhq.selenium" % "selenium-java" % seleniumVersion
   val shadeMemcached = "com.bionicspirit" %% "shade" % "1.6.0"
   val slf4jExt = "org.slf4j" % "slf4j-ext" % slf4jVersion
   val snappyJava = "org.xerial.snappy" % "snappy-java" % "1.0.5.1"
   val uaDetectorResources = "net.sf.uadetector" % "uadetector-resources" % "2013.04"
   val scalaTestPlus = "org.scalatestplus" %% "play" % "1.4.0-M3" % "test"
   val anormModule = "com.typesafe.play" %% "anorm" % "2.4.0"
-
-  // Web jars
-  val bootstrap = "org.webjars" % "bootstrap" % "3.3.5"
-  val jquery = "org.webjars" % "jquery" % "2.1.4"
-  val jqueryui = "org.webjars" % "jquery-ui" % "1.11.4"
-  val lodash = "org.webjars" % "lodash" % "3.9.0"
-  val react = "org.webjars" % "react" % "0.13.3"
 }
