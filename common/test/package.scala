@@ -11,54 +11,6 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatestplus.play._
 import play.api.GlobalSettings
 import play.api.test._
-import recorder.ContentApiHttpRecorder
-
-trait TestSettings {
-  def globalSettingsOverride: Option[GlobalSettings] = None
-
-  val recorder = new ContentApiHttpRecorder {
-    override lazy val baseDir = new File(System.getProperty("user.dir"), "data/database")
-  }
-
-  private def verify(property: String, hash: String, message: String) {
-    if (DigestUtils.sha256Hex(property) != hash) {
-
-      // the println makes it easier to spot what is wrong in tests
-      println()
-      println(s"----------- $message -----------")
-      println()
-
-      throw new RuntimeException(message)
-    }
-  }
-
-  private def toRecorderHttp(http: Http) = new Http {
-
-    val originalHttp = http
-
-    verify(
-      Configuration.contentApi.contentApiLiveHost,
-      "5f755b14e59810c1c7ed8a79dfe9bc132340d22ee255f3b41bd4f3e2af5e5393",
-      "YOU ARE NOT USING THE CORRECT ELASTIC SEARCH LIVE CONTENT API HOST"
-    )
-
-    Configuration.contentApi.key.map { k =>
-        verify(
-          k,
-          "a4eb3e728596c7d6ba43e3885c80afcb16bc24d22fc0215409392bac242bed96",
-          "YOU ARE NOT USING THE CORRECT CONTENT API KEY"
-        )
-    }
-
-    override def GET(url: String, headers: Iterable[(String, String)]) = {
-      recorder.load(url, headers.toMap) {
-        originalHttp.GET(url, headers)
-      }
-    }
-  }
-
-  LiveContentApi._http = toRecorderHttp(LiveContentApi._http)
-}
 
 trait ConfiguredTestSuite extends ConfiguredServer with ConfiguredBrowser with ExecutionContexts {
   this: ConfiguredTestSuite with org.scalatest.Suite =>
@@ -92,13 +44,13 @@ trait ConfiguredTestSuite extends ConfiguredServer with ConfiguredBrowser with E
 
 }
 
-trait SingleServerSuite extends OneServerPerSuite with TestSettings with OneBrowserPerSuite with HtmlUnitFactory {
+trait SingleServerSuite extends OneServerPerSuite with OneBrowserPerSuite with HtmlUnitFactory {
   this: SingleServerSuite with org.scalatest.Suite =>
 
   BrowserVersion.setDefault(BrowserVersion.CHROME)
 
   implicit override lazy val app = FakeApplication(
-      withGlobal = globalSettingsOverride,
+      withGlobal = None,
       additionalConfiguration = Map(
         ("application.secret", "this_is_not_a_real_secret_just_for_tests"),
         ("guardian.projectName", "test-project"),

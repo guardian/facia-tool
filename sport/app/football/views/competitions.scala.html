@@ -1,8 +1,0 @@
-@(competitions: Map[String, Seq[CompetitionFilter]], page: Page, competitionList: List[String])(implicit request: RequestHeader)
-
-@main(page, "football"){
-}{
-
-    @football.views.html.fragments.competitionsBody(competitions, page, competitionList)
-
-}
