@@ -1,17 +1,5 @@
 artifacts.zip
-/dist
 
-frontend-article.properties
-frontend-core-navigation.properties
-frontend-front.properties
-frontend-gallery.properties
-frontend-tag.properties
-frontend-section.properties
-frontend-video.properties
-frontend-applications.properties
-
-*.min.css
-*.min.css.map
 *.csv
 *.iml
 *.box
@@ -30,7 +18,6 @@ log
 logs
 ivy-sbt
 
-ivy-sbt
 tmp
 old
 target
@@ -49,21 +36,9 @@ screenshots
 
 common/conf/assets
 
-dev/gems
-dev/casperjs
-integration-tests/target/*
-
 developer.properties
 
 *-spec-runner.html
-
-static/hash
-static/requirejs
-static/target
-
-static/src/bundles
-static/src/systemjs-bundle-config.js
-static/src/stylesheets/icons/*
 
 # Eclipse #
 .project
@@ -73,15 +48,10 @@ static/src/stylesheets/icons/*
 .classpath
 .springBeans
 .cache
-bower_components
 
 # Scala test framework #
 local.conf
 application.local.conf
-
-# Generared styleguide files #
-docs/styleguide/*.html
-docs/styleguide/assets/css
 
 #Node Version Manager
 .nvmrc

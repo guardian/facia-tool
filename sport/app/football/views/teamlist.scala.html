@@ -1,8 +1,0 @@
-@(pageModel: TablesPage, comps: Seq[model.Competition])(implicit request: RequestHeader)
-
-@main(pageModel.page, "football"){
-}{
-
-    @football.views.html.fragments.teamlistBody(pageModel, comps)
-
-}
