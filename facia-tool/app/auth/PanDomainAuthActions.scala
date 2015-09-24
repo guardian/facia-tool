@@ -19,7 +19,7 @@ trait PanDomainAuthActions extends AuthActions with Results {
       (authedUser.multiFactor || (config.getString("no2faUser").exists(user => user.length > 0 && user == authedUser.user.email)))
   }
 
-  override def authCallbackUrl: String = Configuration.faciatool.pandomainHost + "/oauthCallback"
+  override def authCallbackUrl: String = "https://fronts.local.dev-gutools.co.uk/oauthCallback"
 
   override def showUnauthedMessage(message: String)(implicit request: RequestHeader): Result = {
     Logger.info(message)
@@ -40,7 +40,7 @@ trait PanDomainAuthActions extends AuthActions with Results {
     }
   }
 
-  override lazy val domain: String = Configuration.faciatool.pandomainDomain
+  override lazy val domain: String = "local.dev-gutools.co.uk"
   override lazy val system: String = Configuration.faciatool.pandomainService
 
   override lazy val awsCredentials =

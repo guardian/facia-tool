@@ -1,8 +1,12 @@
 import java.io.File
 
+import akka.actor.Status.Success
+import com.amazonaws.regions.Regions
+import com.amazonaws.services.s3.AmazonS3Client
 import common._
-import conf.{Configuration => GuardianConfiguration, SwitchboardLifecycle, Gzipper}
+import conf.{Configuration => GuardianConfiguration, aws, SwitchboardLifecycle, Gzipper}
 import metrics.FrontendMetric
+import permissions.{PermissionsReader, ScheduledJob}
 import play.api._
 import play.api.mvc.WithFilters
 import services.ConfigAgentLifecycle
@@ -27,4 +31,9 @@ object Global extends WithFilters(Gzipper)
     ContentApiMetrics.ContentApiErrorMetric,
     S3Metrics.S3ClientExceptionsMetric
   )
+
+  override def onStart(app: Application) = {
+   val job = new ScheduledJob()
+   job.start()
+  }
 }
