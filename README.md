@@ -11,6 +11,7 @@ New developers quick-start
 1. [Local test server](#local-test-server)
 1. [Code Dependencies](#code-dependencies)
 1. [Run the App](#run-the-app)
+1. [Unit tests](#unit-tests)
 
 
 ### Application dependencies
@@ -184,5 +185,22 @@ This also can take a while the first time.
 Now check that you are up and running by hitting the following URL
 
 [https://fronts.local.dev-gutools.co.uk](https://fronts.local.dev-gutools.co.uk)
+
+
+### Unit tests
+
+Unit tests run with `grunt`, `karma` and `jasmine`.
+
+```bash
+grunt test
+```
+Runs the tests once in PhantomJS and exits with an error if tests fails
+
+```bash
+grunt test --no-single-run
+```
+Starts `karma` in debug mode, you can connect your browser at [http://localhost:9876?debug.html](http://localhost:9876?debug.html)
+
+You can run a single test going to [http://localhost:9876?debug.html?test=collections](http://localhost:9876?debug.html?test=collections), spec files are inside `faia-tool/test/public/spec`.
 
 Enjoy!
