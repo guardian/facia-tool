@@ -6,6 +6,7 @@ import drag from 'test/utils/drag';
 import editAction from 'test/utils/edit-actions';
 import publishAction from 'test/utils/publish-actions';
 import * as wait from 'test/utils/wait';
+import textInside from 'test/utils/text-inside';
 
 describe('Collections', function () {
     beforeEach(function () {
@@ -397,7 +398,19 @@ describe('Collections', function () {
         .catch(done.fail);
     });
 
-    it('copy paste abouve an article', function (done) {
+    it('copy to clipboard', function (done) {
+        this.testInstance.load()
+        .then(() => {
+            $('.tool--small--copy-to-clipboard', dom.latestArticle(5)).click();
+        })
+        .then(() => {
+            expect(textInside('.clipboard .element__headline')).toBe('Nothing happened for once');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('copy paste above an article', function (done) {
         var mockCollection = this.testInstance.mockCollections;
 
         this.testInstance.load()

@@ -46,6 +46,7 @@ class Clipboard extends BaseWidget {
         this.group.items(this.getItemsFromStorage());
 
         this.listenOn(mediator, 'ui:open', this.onUIOpen);
+        this.listenOn(mediator, 'copy:to:clipboard', this.copy);
         this.listenOn(copiedArticle, 'change', this.onCopiedChange);
         this.pollArticlesChange(this.saveInStorage.bind(this));
 
@@ -127,6 +128,12 @@ class Clipboard extends BaseWidget {
         // Because I want to save intermediate states, in case the browser crashes
         // before the user clicks on 'save article', save regularly the current state
         this.pollID = setInterval(callback, vars.CONST.detectPendingChangesInClipboard);
+    }
+
+    copy(sourceItem) {
+        mediator.emit('drop', {
+            sourceItem: sourceItem
+        }, this.group, this.group);
     }
 
     dispose() {

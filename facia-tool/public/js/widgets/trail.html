@@ -60,28 +60,36 @@
         <div data-bind="sparklines: $root.isSparklinesEnabled" class="sparkline"></div>
 
         <div class="article__tools">
-            <a class="tool tool--small tool--small--paste" data-bind="
+            <a class="tool tool--small tool--small--paste" title="Paste" data-bind="
                 visible: $root.isPasteActive && $root.isPasteActive(),
                 clickBubble: false,
-                click: paste">paste</a>
+                click: paste">
+                <i class="fa fa-arrow-up"></i></a>
 
-            <a class="tool tool--small tool--small--copy" data-bind="
+            <a class="tool tool--small tool--small--copy" title="Copy" data-bind="
                 css: {'large': $root.isPasteActive && !$root.isPasteActive()},
                 clickBubble: false,
-                click: copy">copy</a>
+                click: copy">
+                <i class="fa fa-clone"></i></a>
 
-            <a class="tool tool--small tool--small--remove" data-bind="
+            <a class="tool tool--small tool--small--copy-to-clipboard" title="Copy to Clipboard" data-bind="
+                css: {'large': $root.isPasteActive && !$root.isPasteActive()},
+                clickBubble: false,
+                click: copyToClipboard">
+                <i class="fa fa-clipboard"></i></a>
+
+            <a class="tool tool--small tool--small--remove" title="Remove" data-bind="
                 clickBubble: false,
                 click: omitItem">
                 <i class="fa fa-trash"></i></a>
 
-            <a class="tool tool--small tool--small--ophan" target="_blank" data-bind="
+            <a class="tool tool--small tool--small--ophan" target="_blank" title="Ophan" data-bind="
                 click: function() { return true; },
                 clickBubble: false,
                 attr: {href: state.ophanUrl}">
                 <i class="fa fa-signal"></i></a>
 
-            <a class="tool tool--small tool--small--href" target="_blank" data-bind="
+            <a class="tool tool--small tool--small--href" target="_blank" title="View" data-bind="
                 click: function() { return true; },
                 clickBubble: false,
                 attr: {href: viewUrl}">
