@@ -2,6 +2,7 @@
   "name": "facia-tool",
   "version": "1.0.0",
   "private": true,
+  "description": "Guardian front pages editor",
   "dependencies": {
     "babel": "^4.7.16",
     "grunt": "0.4.5",
