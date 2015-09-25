@@ -156,6 +156,9 @@ object ContainerThumbnails {
       case "dynamic/package" =>
         Some(Seq(ThreeQuarterTallQuarter2))
 
+      case "dynamic/slow-mpu" =>
+        Some(Seq(HalfHalf, Hl3Mpu))
+
       case _ =>
         FixedContainers.unapply(Some(id)).map(_.slices)
     }
