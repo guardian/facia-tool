@@ -1523,6 +1523,9 @@ button {
     text-align: center;
 }
 
+.tool--small--copy,
+.tool--small--copy-to-clipboard,
+.tool--small--paste,
 .tool--small--href,
 .tool--small--ophan,
 .tool--small--remove {
@@ -1533,9 +1536,9 @@ button {
     width: 120px;
 }
 
-.latest-articles .tool--small--copy,
-.latest-articles .tool--small--copy.large {
-    width: 83px;
+.latest-articles .tool--small--copy.large,
+.latest-articles .tool--small--copy-to-clipboard.large {
+    width: 41px;
 }
 
 .latest-articles .tool--small--remove,
@@ -1543,8 +1546,9 @@ button {
     display: none;
 }
 
+.tool--small--copy-to-clipboard.large,
 .tool--small--copy.large {
-    width: 100%;
+    width: 50%;
 }
 
 .article > .closed .tool--small:hover {

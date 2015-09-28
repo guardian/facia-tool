@@ -485,6 +485,10 @@ define([
             copiedArticle.set(this);
         };
 
+        Article.prototype.copyToClipboard = function () {
+            mediator.emit('copy:to:clipboard', this.get());
+        };
+
         Article.prototype.paste = function () {
             var sourceItem = copiedArticle.get(true);
 
