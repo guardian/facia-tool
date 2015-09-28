@@ -2150,3 +2150,26 @@ hr {
     right: 0;
     top: 15px;
 }
+
+.unauthorizedMessage {
+    background-color: #b51800;
+}
+.unauthorizedMessage {
+    color: #FFF;
+    text-align: center;
+}
+.frownFace {
+    width: 300px;
+    margin: 3em auto;
+    color: rgba(255, 255, 255, 0.9);
+}
+.frownFace svg {
+    fill: currentColor;
+}
+.unauthorizedMessage_text {
+    line-height: 200%;
+    font-size: 22px;
+}
+.unauthorizedMessage_link {
+    color: #2ea3eb;
+}
