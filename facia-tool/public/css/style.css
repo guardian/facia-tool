@@ -1025,6 +1025,7 @@ collection-widget:first-child .collection {
 
 .supporting .trailText,
 .supporting .tool--done,
+.supporting .tool--cancel,
 .supporting .image__overrides,
 .supporting .supporting-message {
     display: none !important;
@@ -1480,6 +1481,10 @@ button {
     color: #ddd;
 }
 
+.article-edit {
+  max-width: 55%;
+}
+
 .article__tools {
     display: none;
     position: absolute;
@@ -1518,6 +1523,12 @@ button {
 }
 
 .tool--done {
+    float: right;
+    line-height: 30px;
+    text-align: center;
+}
+
+.tool--cancel {
     float: right;
     line-height: 30px;
     text-align: center;

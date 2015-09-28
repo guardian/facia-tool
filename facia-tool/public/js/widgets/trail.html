@@ -46,13 +46,17 @@
                         </div>
                 </div>
             </div>
-            <span class="supporting-message">Drop content above, hold Ctrl key to replace item</span>
+            <span class="article-edit supporting-message">Drop content above, hold Ctrl key to replace item</span>
         </div>
 
         <div class="tools article-tools">
             <a class="tool tool--done" data-bind="
                 clickBubble: false,
                 click: closeAndSave">Save edits</a>
+            <a class="tool tool--cancel" data-bind="
+                visible: front,
+                clickBubble: false,
+                click: closeWithoutSaving">Close</a>
         </div>
     </div>
 
