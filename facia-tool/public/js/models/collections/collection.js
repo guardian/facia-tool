@@ -319,6 +319,26 @@ define([
         return this.front.mode() !== 'treats' && this.history().length;
     };
 
+    Collection.prototype.replaceArticle = function(articleId) {
+        var self = this;
+        var collectionList = this.front.getCollectionList(this.raw);
+
+        _.find(collectionList, function(item, index) {
+            if (item.id === articleId) {
+                var group = _.find(self.groups, function(g) {
+                    return (parseInt((item.meta || {}).group, 10) || 0) === g.index;
+                });
+                var article = new Article(_.extend(item, {
+                    group: group,
+                    slimEditor: self.front.slimEditor()
+                }));
+
+                group.items.splice(index, 1, article);
+                return true;
+            }
+        });
+        this.decorate();
+    };
 
     Collection.prototype.populate = function(rawCollection, callback) {
         callback = callback || function () {};
