@@ -65,7 +65,9 @@ object Frontend extends Build with Prototypes {
   val faciaTool = application("facia-tool").dependsOn(commonWithTests).aggregate(common).settings(
     libraryDependencies ++= Seq(
       playJsonVariants,
-      awsKinesis
+      awsKinesis,
+      logStash,
+      kinesisLogBack
     )
   )
 

@@ -102,7 +102,7 @@ trait Prototypes {
     .settings(frontendClientSideSettings)
     .settings(frontendTestSettings)
     .settings(VersionInfo.settings)
-    .settings(libraryDependencies ++= Seq(commonsIo))
+    .settings(libraryDependencies ++= Seq(commonsIo, logStash))
     .settings(frontendDistSettings(applicationName))
   }
 }

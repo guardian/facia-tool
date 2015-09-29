@@ -6,11 +6,13 @@ import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model.{GetObjectRequest, S3Object}
 import java.util.Date
 import com.gu.pandomainauth.model.User
-import conf.aws
+import conf.{Configuration, aws}
 import dispatch.Http
+import org.joda.time.DateTime
 import org.quartz._
 import org.quartz.impl.StdSchedulerFactory
 import permissions.ScheduledJob.FunctionJob
+import play.api.Logger
 import play.api.libs.json._
 
 import scala.collection.mutable
@@ -18,6 +20,9 @@ import scala.concurrent.{Future, ExecutionContext}
 import scala.io.Source
 import scala.util.Try
 import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.{Logger => PlayLogger, LoggerLike}
+
+import scala.util.control.NonFatal
 
 
 class ScheduledJob(callback: Try[Map[String, String]] => Unit = _ => (), scheduler:Scheduler = StdSchedulerFactory.getDefaultScheduler()) {
@@ -47,11 +52,10 @@ class ScheduledJob(callback: Try[Map[String, String]] => Unit = _ => (), schedul
   }
 
   def refresh() = {
-    println("CALLING REFRESH")
-    val s3Client = new AmazonS3Client(aws.permissionsCreds)
-    s3Client.setRegion(Regions.fromName("eu-west-1"))
-    val permissionsReader = new PermissionsReader("permissions.json", "permissions-cache/CODE", s3Client)
-    permissionsReader.storePermissions("permissions.json", "permissions-cache/CODE")
+    PermissionsReader.populateCache() match {
+      case Right(_) => Logger.info("successfully updated permissions cache")
+      case Left(error) => Logger.error("error updating permissions cache " + error)
+    }
   }
 }
 
@@ -67,7 +71,6 @@ object ScheduledJob {
 }
 
 case class SimplePermission(name: String, app: String, defaultValue: Boolean = true)
-
 
 object SimplePermission {
   implicit val json = Json.format[SimplePermission]
@@ -92,68 +95,106 @@ object PermissionCacheEntry {
   implicit val jsonFormats = Json.format[PermissionCacheEntry]
 }
 
-class PermissionsReader(key: String, bucket: String, s3Client: AmazonS3Client)  {
+object PermissionsReader  {
+
+  val s3Client = new AmazonS3Client(aws.mandatoryCredentials)
+  s3Client.configureRegion(Regions.fromName("eu-west-1"))
+  val bucket = Configuration.faciatool.permissionsCache
+  val key = "permissions.json"
 
   private val agent = Agent[List[PermissionCacheEntry]](List[PermissionCacheEntry]())
 
-  private def getObject(key: String, bucketName: String): S3Object = s3Client.getObject(new GetObjectRequest(bucketName, key))
+  private def getObject(key: String, bucketName: String): Either[PermissionsReaderError, S3Object] = {
+    try {
+      Right(s3Client.getObject(new GetObjectRequest(bucketName, key)))
+    } catch {
+      case NonFatal(e) => Left(ErrorLevel("error reading the s3 cache", Some(e)))
+    }
+  }
   // Get object contents and ensure stream is closed
   //to do - move the parsing and storing somewhere
-  def storePermissions(key: String, bucketName: String): (String, Date) = {
-    val obj = getObject(key, bucketName)
+  private def getObjectContents(obj: S3Object): Either[PermissionsReaderError, PermissionsData] = {
     try {
-      val (contents, date) = (Source.fromInputStream(obj.getObjectContent, "UTF-8").mkString, obj.getObjectMetadata.getLastModified)
-      val jsValue = Json.parse(contents)
-      val permissionCache = jsValue.validate[List[PermissionCacheEntry]]
-      permissionCache match {
-        case JsSuccess(perm, _) => {
-          println("STORING PERMS " + perm)
-          agent.alter(_ => perm)
-        }
-        case JsError(error) => println(s"could not format ${error}")
-      }
-      (contents, date)
+      val contents = Source.fromInputStream(obj.getObjectContent, "UTF-8").mkString
+      val lastMod  = obj.getObjectMetadata.getLastModified
+      Right(PermissionsData(contents, lastMod))
     } catch {
-      case e: Exception => {
-        ("Contents", new Date)
-      }
+      case NonFatal(e)=> Left(ErrorLevel("error reading the S3 cache", Some(e)))
     } finally {
       obj.close()
     }
   }
 
+  def parseS3data(contents: String): Either[PermissionsReaderError, List[PermissionCacheEntry]] = {
+    Json.parse(contents).validate[List[PermissionCacheEntry]].fold(error =>
+       Left(ErrorLevel(s"error processing data ${error}", None)),
+       Right(_)
+    )
+  }
+
+  private def storePermissionsData(permissions: List[PermissionCacheEntry]) = {
+    agent.send(permissions)
+  }
+
+  def populateCache(): Either[PermissionsReaderError, Unit] = {
+    for {
+      obj <- getObject(key, bucket).right
+      data <- getObjectContents(obj).right
+      permissions <- parseS3data(data.contents).right
+      _ <- Right(storePermissionsData(permissions)).right
+    } yield ()
+  }
+
+  def checkCacheIsPopulated(p: SimplePermission, cache: List[PermissionCacheEntry]): Either[PermissionDefault, List[PermissionCacheEntry]] = {
+    if(cache.nonEmpty) Right(cache)
+    else Left(PermissionDefault(p.defaultValue, ErrorLevel("Permissions cache not populated, using default value")))
+  }
+
+  def getPermission(p: SimplePermission, cache: List[PermissionCacheEntry]): Either[PermissionDefault, PermissionCacheEntry] = {
+    cache.find(_.permission==p).map(
+      Right(_)
+    ).getOrElse(Left(PermissionDefault(p.defaultValue, ErrorLevel(s"Could not find permission ${p.name}}"))))
+  }
+
+  def getOverridesForPerm(p: PermissionCacheEntry, user: User): PermissionAuth = {
+    p.overrides.find(_.userId==user.email).fold(
+      PermissionAuth(p.permission.defaultValue, InfoLevel(s"no override set for permission ${p.permission.name}, using default from service"))
+    )(user => PermissionAuth(user.active, InfoLevel(s"user override set to ${user.active} for permission ${p.permission.name}")))
+  }
+
+  def readCache(p: SimplePermission, user: User, cache: List[PermissionCacheEntry]): Either[PermissionDefault, PermissionAuth] = {
+    for {
+      perms <- checkCacheIsPopulated(p, cache).right
+      cacheEntry <- getPermission(p, perms).right
+      auth <- Right(getOverridesForPerm(cacheEntry, user)).right
+    } yield auth
+  }
+
   def get(p: SimplePermission, user: User): Future[Boolean] = {
-    println("****************** CHECKING THE PERM *************")
-    val psFt = agent.future()
-    psFt.map { ps =>
-      println("ARE THERE ANY PERMS " + ps)
-      val permission = ps.find(_.permission==p)
-      permission match {
-        case Some(tmp) => {
-          val overrides = tmp.overrides
-          val users = overrides.find(_.userId==user.email)
-          users match {
-            case Some(u) => {
-              println(s"permission override for ${u.active}")
-              u.active
-            }
-            case None => {
-              println("no overrides for user")
-              p.defaultValue
-            }
-          }
+    agent.future().map { cache =>
+      readCache(p, user, cache) match {
+        case Left(perm) => {
+          Logger.error(perm.logMessage.message)
+          perm.active
         }
-        case None => {
-          println("defaulting default")
-          p.defaultValue
+        case Right(auth) => {
+          Logger.info(auth.logMessage.message)
+          auth.active
         }
       }
     }
-
   }
 }
 
+sealed trait PermissionsReaderError
 
+case class InfoLevel(message: String, ex: Option[Throwable]=None) extends PermissionsReaderError
+case class ErrorLevel(message: String, ex: Option[Throwable]=None) extends PermissionsReaderError
+
+case class PermissionsData(contents: String, lastMod: Date)
+
+case class PermissionAuth(active: Boolean, logMessage: InfoLevel)
+case class PermissionDefault(active: Boolean, logMessage: ErrorLevel)
 
 
 

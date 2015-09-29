@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.AmazonS3Client
 import com.gu.facia.client.models.{FrontJson, CollectionConfigJson}
 import com.gu.pandomainauth.action.UserRequest
 import permissions.{SimplePermission, PermissionsReader}
+import play.api.Logger
 import play.api.mvc.Controller
 import services.Press
 import util.Requests._
@@ -64,16 +65,13 @@ object FrontController extends Controller with PanDomainAuthActions {
 import play.api.mvc._
 
 object PermissionCheckAction extends ActionFilter[UserRequest] {
-
   override def filter[A](request: UserRequest[A]) = {
-    val s3Client = new AmazonS3Client(aws.permissionsCreds)
-    s3Client.setRegion(Regions.fromName("eu-west-1"))
-    val permissionsReader = new PermissionsReader("permissions.json", "permissions-cache/CODE", s3Client)
     import scala.concurrent.ExecutionContext.Implicits.global
     for {
-      b <- permissionsReader.get(SimplePermission.ConfigureFronts, request.user)
+      b <- PermissionsReader.get(SimplePermission.ConfigureFronts, request.user)
     } yield
     (if(b) {
+      Logger.info("user not authenticated")
       None
     }
     else {
