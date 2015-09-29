@@ -410,6 +410,26 @@ describe('Collections', function () {
         .catch(done.fail);
     });
 
+    it('closes without saving', function (done) {
+
+        this.testInstance.load()
+        .then(() => {
+            $('.element__headline', dom.collection(0)).click();
+        })
+        .then(() => {
+            $('.element__headline', dom.collection(0)).val('different').change();
+        })
+        .then(() => {
+            $('.tool--cancel', dom.collection(0)).click();
+        })
+        .then(() => {
+            expect(textInside('.collection .element__headline')).toBe('I won the elections');
+            expect($('.editor', dom.collection(0)).is(':visible')).toBe(false);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
     it('copy paste above an article', function (done) {
         var mockCollection = this.testInstance.mockCollections;
 
