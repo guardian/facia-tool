@@ -21,3 +21,9 @@ cache:
         - ~/.ivy2/cache
         - ~/.sbt/boot/
         - ~/.nvm/
+before_cache:
+    - du -h -d 1 $HOME/.ivy2/
+    - du -h -d 2 $HOME/.sbt/
+    # Tricks to avoid unnecessary cache updates
+    - find $HOME/.sbt -name "*.lock" -type f -delete
+    - find $HOME/.ivy2 -name "ivydata-*.properties" -type f -delete
