@@ -10,6 +10,8 @@ import play.sbt.routes.RoutesKeys
 import play.twirl.sbt.Import._
 import com.typesafe.sbt.web.Import._
 import Dependencies._
+import com.typesafe.sbt.packager.debian.JDebPackaging
+import com.gu.riffraff.artifact.RiffRaffArtifact
 
 object Frontend extends Build with Prototypes {
 
@@ -62,7 +64,11 @@ object Frontend extends Build with Prototypes {
 
   val commonWithTests = withTests(common)
 
-  val faciaTool = application("facia-tool").dependsOn(commonWithTests).aggregate(common).settings(
+  val faciaTool = application("facia-tool")
+    .dependsOn(commonWithTests)
+    .aggregate(common)
+    .enablePlugins(JDebPackaging, RiffRaffArtifact)
+    .settings(
     libraryDependencies ++= Seq(
       playJsonVariants,
       awsKinesis
