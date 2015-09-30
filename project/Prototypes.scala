@@ -74,8 +74,7 @@ trait Prototypes {
     unmanagedClasspath in Test <+= baseDirectory map { bd => Attributed.blank(bd / "test") },
 
     libraryDependencies ++= Seq(
-      scalaTest,
-      mockito
+      scalaTest
     ),
 
     // These settings are needed for forking, which in turn is needed for concurrent restrictions.
