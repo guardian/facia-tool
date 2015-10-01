@@ -920,6 +920,14 @@ define([
             return false;
         };
 
+        Article.prototype.closeWithoutSaving = function() {
+            this.close();
+            if ( this.group && this.group.parentType === 'Collection' ) {
+                this.group.parent.replaceArticle(this.id());
+            }
+            return false;
+        };
+
         Article.prototype.omitItem = function () {
             this.group.omitItem(this);
         };
