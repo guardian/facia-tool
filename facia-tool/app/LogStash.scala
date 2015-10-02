@@ -15,15 +15,13 @@ object LogStash {
   lazy val loggingContext = LoggerFactory.getILoggerFactory.asInstanceOf[LoggerContext]
   import play.api.Play.current
 
-  val config = play.api.Play.configuration
-
   case class KinesisAppenderConfig(stream: String, region: String, roleArn: String, bufferSize: Int)
 
-  lazy val enabled = config.getBoolean("logging.logstash.enabled").getOrElse(false)
+  lazy val enabled = Configuration.faciatool.logEnabled
 
   lazy val customFields = Map(
       "stack" -> "fronts",
-      "stage" -> Configuration.facia.stage.toUpperCase,
+      "stage" ->Configuration.environment.stage.toUpperCase,
       "app"   -> Configuration.faciatool.logApp
     )
   def makeCustomFields: String = {
@@ -63,27 +61,6 @@ object LogStash {
     a.start()
     a
   }
-
-  def makeTcpAppender(context: LoggerContext, host: String, port: Int) = {
-    val a = new LogstashTcpSocketAppender()
-    a.setContext(context)
-    a.setEncoder(makeEncoder(context))
-    a.setKeepAliveDuration(Duration.buildBySeconds(30.0))
-    a.setRemoteHost(host)
-    a.setPort(port)
-    a.start()
-    a
-  }
-
-  def makeFileAppender(context: LoggerContext, filePath: String) = {
-    val f = new FileAppender[ILoggingEvent]()
-    f.setFile(filePath)
-    f.setContext(context)
-    f.setEncoder(makeEncoder(context))
-    f.start()
-    f
-  }
-
 
   def init() = {
     if(enabled) {
