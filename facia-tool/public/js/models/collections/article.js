@@ -496,6 +496,7 @@ define([
 
         Article.prototype.setVisitedToTrue = function () {
             visitedArticleStorage.addArticleToStorage(this.id());
+            mediator.emit('set:article:to:visited', this.id());
             return true;
         };
 

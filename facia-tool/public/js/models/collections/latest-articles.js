@@ -130,6 +130,15 @@ class Latest extends BaseClass {
         });
     }
 
+    setArticleToVisited(articleId) {
+        _.find(this.articles(), function (article) {
+            if (article.id() === articleId) {
+                article.visited(true);
+                return true;
+            }
+        });
+    }
+
     isTermAnItem() {
         return (this.term() || '').match(/\//);
     }
