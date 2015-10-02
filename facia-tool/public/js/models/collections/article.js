@@ -20,6 +20,7 @@ define([
     'utils/url-abs-path',
     'utils/url-host',
     'utils/validate-image-src',
+    'utils/visited-article-storage',
     'modules/copied-article',
     'modules/authed-ajax',
     'modules/content-api',
@@ -47,6 +48,7 @@ define([
         urlAbsPath,
         urlHost,
         validateImageSrc,
+        visitedArticleStorage,
         copiedArticle,
         authedAjax,
         contentApi,
@@ -64,6 +66,7 @@ define([
         mediator = mediator.default;
         humanTime = humanTime.default;
         validateImageSrc = validateImageSrc.default;
+        visitedArticleStorage = visitedArticleStorage.default;
         copiedArticle = copiedArticle.default;
         logger = logger.default;
         Group = Group.default;
@@ -373,6 +376,8 @@ define([
 
             this.slimEditor = opts.slimEditor;
 
+            this.visited = ko.observable(opts.visited);
+
             this.state = asObservableProps([
                 'enableContentOverrides',
                 'underDrag',
@@ -487,6 +492,11 @@ define([
 
         Article.prototype.copyToClipboard = function () {
             mediator.emit('copy:to:clipboard', this.get());
+        };
+
+        Article.prototype.setVisitedToTrue = function () {
+            visitedArticleStorage.addArticleToStorage(this.id());
+            return true;
         };
 
         Article.prototype.paste = function () {

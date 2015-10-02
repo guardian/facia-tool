@@ -12,6 +12,7 @@ import mediator from 'utils/mediator';
 import parseQueryParams from 'utils/parse-query-params';
 import urlAbsPath from 'utils/url-abs-path';
 import AutoComplete from 'widgets/autocomplete';
+import visitedArticleStorage from 'utils/visited-article-storage';
 
 var pollerSym = Symbol();
 var debounceSym = Symbol();
@@ -49,6 +50,8 @@ class Latest extends BaseClass {
             }
             return title;
         }, this);
+
+        this.listenOn(mediator, 'set:article:to:visited', this.setArticleToVisited);
 
         this[debounceSym] = debounce((opts = {}) => {
             if (!opts.noFlushFirst) {
@@ -209,6 +212,8 @@ function createNewArticle (opts) {
     cache.put('contentApi', icc, opts);
 
     opts.uneditable = true;
+
+    opts.visited = visitedArticleStorage.isArticleVisited(icc);
     return new Article(opts, true);
 }
 
