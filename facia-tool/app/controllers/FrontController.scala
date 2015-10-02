@@ -71,10 +71,10 @@ object PermissionCheckAction extends ActionFilter[UserRequest] {
       b <- PermissionsReader.get(SimplePermission.ConfigureFronts, request.user)
     } yield
     (if(b) {
-      Logger.info("user not authenticated")
       None
     }
     else {
+      Logger.info("user not authorized to configure fronts")
       Some(Results.Unauthorized(views.html.unauthorized()))
     })
   }
