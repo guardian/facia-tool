@@ -62,30 +62,6 @@ object LogStash {
     a
   }
 
-<<<<<<< HEAD
-  def makeTcpAppender(context: LoggerContext, host: String, port: Int) = {
-    val a = new LogstashTcpSocketAppender()
-    a.setContext(context)
-    a.setEncoder(makeEncoder(context))
-    a.setKeepAliveDuration(Duration.buildBySeconds(30.0))
-    a.setRemoteHost(host)
-    a.setPort(port)
-    a.start()
-    a
-  }
-
-  def makeFileAppender(context: LoggerContext, filePath: String) = {
-    val f = new FileAppender[ILoggingEvent]()
-    f.setFile(filePath)
-    f.setContext(context)
-    f.setEncoder(makeEncoder(context))
-    f.start()
-    f
-  }
-
-
-=======
->>>>>>> ld-add-logging
   def init() = {
     if(enabled) {
       PlayLogger.info("LogConfig initializing")
