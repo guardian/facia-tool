@@ -826,7 +826,7 @@ collection-widget:first-child .collection {
             transition: border-color 150ms;
 }
 
-.visited_article {
+.visitedArticle {
   opacity: 0.5;
 }
 
