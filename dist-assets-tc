@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -o xtrace
+set -o nounset
+set -o errexit
+
+echo "Asset compilation"
+
+set +x
+echo "##teamcity[progressStart 'asset validation and tests']"
+set -x
+
+./grunt-tc validate test
+
+set +x
+echo "##teamcity[progressFinish 'asset validation and tests']"
