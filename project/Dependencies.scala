@@ -44,6 +44,7 @@ object Dependencies {
   val jSoup = "org.jsoup" % "jsoup" % "1.7.3"
   val kinesisLogBack = "com.gu" % "kinesis-logback-appender" % "1.0.5"
   val liftJson = "net.liftweb" %% "lift-json" % "2.6-RC2"
+  val logStash = "net.logstash.logback" % "logstash-logback-encoder" % "4.2"
   val mockito = "org.mockito" % "mockito-all" % "1.9.5" % Test
   val nScalaTime = "com.github.nscala-time" %% "nscala-time" % "1.2.0"
   val openCsv = "net.sf.opencsv" % "opencsv" % "2.3"
