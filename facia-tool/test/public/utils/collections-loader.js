@@ -48,8 +48,10 @@ export default class Loader {
         });
     }
 
-    load() {
-        localStorage.clear();
+    load(keepLocalStorage) {
+        if (!keepLocalStorage) {
+            localStorage.clear();
+        }
         this.baseModule = this.router.load(clone(testConfig));
         this.ko.apply(this.baseModule);
         return this.baseModule.loaded;
