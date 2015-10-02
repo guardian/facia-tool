@@ -41,9 +41,11 @@ export default class Front extends ColumnWidget {
         });
 
         this.previewUrl = ko.pureComputed(() => {
-            var path = this.mode() === 'live' ? 'http://' + CONST.mainDomain : CONST.previewBase;
-
-            return CONST.previewBase + '/responsive-viewer/' + path + '/' + this.front();
+            return [
+                CONST.viewerBase,
+                (this.mode() === 'live' ? 'live' : 'preview'),
+                this.front()
+            ].join('/');
         });
 
         this.isControlsVisible = ko.observable(sparklines.isEnabled());
