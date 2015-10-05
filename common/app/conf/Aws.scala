@@ -31,8 +31,6 @@ object aws {
     }
   }
 
-  def permissionsCreds = new AWSCredentialsProviderChain(new ProfileCredentialsProvider("workflow")).getCredentials
-
   def mandatoryCrossAccountCredentials: AWSCredentialsProvider = crossAccount.getOrElse(throw new BadConfigurationException("AWS credentials are not configured for cross account"))
   var crossAccount: Option[AWSCredentialsProvider] = {
     val provider = new AWSCredentialsProviderChain(
