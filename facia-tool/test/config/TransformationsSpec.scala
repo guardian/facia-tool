@@ -33,7 +33,8 @@ import test.ConfiguredTestSuite
     isImageDisplayed = None,
     isHidden = None,
     priority = Some("high"),
-    initialCollection = collectionFixture
+    initialCollection = collectionFixture,
+    group = Some("Masterclasses")
   )
 
   val emptyCollectionFixture = CollectionConfig(
@@ -50,10 +51,11 @@ import test.ConfiguredTestSuite
     None,
     None,
     None,
+    None,
     None
   )
 
-  val emptyFrontFixture = Front(Nil, None, None, None, None, None, None, None, None, None, None, None, None)
+  val emptyFrontFixture = Front(Nil, None, None, None, None, None, None, None, None, None, None, None, None, None)
 
   val validConfigFixture = Config.empty.copy(
     fronts = Map("foo" -> emptyFrontFixture.copy(collections = List("bar"))),
@@ -80,7 +82,8 @@ import test.ConfiguredTestSuite
         isImageDisplayed = None,
         isHidden = None,
         priority = Some("high"),
-        canonical = Some("new collection id")
+        canonical = Some("new collection id"),
+        group = Some("Masterclasses")
       ))
   }
 

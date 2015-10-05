@@ -33,7 +33,8 @@ case class CreateFront(
   onPageDescription: Option[String],
   priority: Option[String],
   isHidden: Option[Boolean],
-  initialCollection: CollectionConfigJson
+  initialCollection: CollectionConfigJson,
+  group: Option[String]
 )
 
 object FrontController extends Controller with PanDomainAuthActions {

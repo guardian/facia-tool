@@ -34,6 +34,7 @@ export default class ConfigFront extends BaseClass {
             'isImageDisplayed',
             'isHidden',
             'priority',
+            'group',
             'canonical']);
 
         populateObservables(this.props, opts);
@@ -47,8 +48,10 @@ export default class ConfigFront extends BaseClass {
             'collectionsCreated',
             'isOpen',
             'isOpenProps',
+            'showGroups',
             'isValidMetadata']);
         this.state.isValidMetadata(true);
+        this.state.showGroups(_.contains(vars.CONST.prioritiesWithGroups, this.props.priority()));
 
         this.applyConstraints();
 
@@ -132,6 +135,8 @@ export default class ConfigFront extends BaseClass {
         this.ophanPerformances = ko.pureComputed(() => {
             return vars.CONST.ophanFrontBase + encodeURIComponent('/' + this.id());
         });
+
+        this.groups = ko.observableArray(vars.CONST.frontGroups);
     }
 
     updateConfig(config) {
