@@ -366,6 +366,12 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
     lazy val pandomainSecret = playConfiguration.getStringFromStage("pandomain.aws.secret")
     lazy val pandomainKey = playConfiguration.getStringFromStage("pandomain.aws.key")
 
+    lazy val logStream = playConfiguration.getMandatoryStringFromStage("logging.kinesis.stream")
+    lazy val logStreamRegion = playConfiguration.getMandatoryStringFromStage("logging.kinesis.region")
+    lazy val logStreamRole = playConfiguration.getMandatoryStringFromStage("logging.kinesis.roleArn")
+    lazy val logApp = playConfiguration.getMandatoryStringFromStage("logging.fields.app")
+    lazy val logEnabled = playConfiguration.getBoolean("logging.enabled").getOrElse(false)
+
     lazy val configBeforePressTimeout: Int = 1000
 
     val oauthCredentials: Option[OAuthCredentials] =

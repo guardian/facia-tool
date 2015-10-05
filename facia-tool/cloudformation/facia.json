@@ -20,6 +20,11 @@
             "Description": "Frontend Role to assume for cross account policies",
             "Type": "String",
             "Default": "arn:aws:iam::642631414762:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX"
+        },
+        "LogServerRoleToAssume": {
+            "Description": "Composer role to assume access to the kinesis log stash stream",
+            "Type": "String",
+            "Default": "arn:aws:iam::743583969668:role/FrontsRoleForLogStash-FaciaToolRole-GX5KBXQZGL5X"
         }
     },
     "Mappings": {
@@ -114,6 +119,22 @@
             "Roles": [{"Ref": "DistributionRole"}]
           }
         },
+        "PermissionsPolicy": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "PermissionsPolicy",
+                "PolicyDocument": {
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": ["s3:GetObject"],
+                            "Resource": ["arn:aws:s3:::permissions-cache/*"]
+                        }
+                    ]
+                },
+                "Roles": [{"Ref": "DistributionRole"}]
+            }
+        },
         "CrossAccountPolicy": {
             "Type": "AWS::IAM::Policy",
             "Properties": {
@@ -124,6 +145,21 @@
                         "Effect": "Allow",
                         "Action": "sts:AssumeRole",
                         "Resource": { "Ref" : "FrontendRoleToAssume" }
+                    } ]
+                },
+                "Roles": [{ "Ref": "DistributionRole" }]
+            }
+        },
+        "LogServerPolicy": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "LogServerPolicy",
+                "PolicyDocument": {
+                    "Version" : "2012-10-17",
+                    "Statement": [{
+                        "Effect": "Allow",
+                        "Action": "sts:AssumeRole",
+                        "Resource": { "Ref" : "LogServerRoleToAssume" }
                     } ]
                 },
                 "Roles": [{ "Ref": "DistributionRole" }]
