@@ -1,20 +1,19 @@
 import java.io.File
 
 import common._
-import conf.{Configuration => GuardianConfiguration, LogStashConfig, SwitchboardLifecycle, Gzipper}
+import conf.{PermissionsCache, LogStashConfig, SwitchboardLifecycle, Gzipper}
 import metrics.FrontendMetric
 import play.api._
 import play.api.mvc.WithFilters
 import services.ConfigAgentLifecycle
-
-import scala.util.control.NonFatal
 
 object Global extends WithFilters(Gzipper)
   with GlobalSettings
   with CloudWatchApplicationMetrics
   with ConfigAgentLifecycle
   with SwitchboardLifecycle
-  with LogStashConfig {
+  with LogStashConfig
+  with PermissionsCache {
 
   override lazy val applicationName = "frontend-facia-tool"
 
@@ -30,6 +29,5 @@ object Global extends WithFilters(Gzipper)
     ContentApiMetrics.ContentApiErrorMetric,
     S3Metrics.S3ClientExceptionsMetric
   )
-
 
 }

@@ -73,7 +73,6 @@ trait SwitchboardLifecycle extends GlobalSettings with ExecutionContexts with Lo
 
 trait LogStashConfig extends GlobalSettings with Logging {
 
-
   override def onStart(app: Application) {
     super.onStart(app)
     Logger.info("configuring log stash")

@@ -372,6 +372,8 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
     lazy val logApp = playConfiguration.getMandatoryStringFromStage("logging.fields.app")
     lazy val logEnabled = playConfiguration.getBoolean("logging.enabled").getOrElse(false)
 
+    lazy val permissionsCache = playConfiguration.getMandatoryStringFromStage("permissions.cache")
+
     lazy val configBeforePressTimeout: Int = 1000
 
     val oauthCredentials: Option[OAuthCredentials] =

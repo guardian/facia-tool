@@ -29,7 +29,7 @@ object FaciaToolController extends Controller with Logging with ExecutionContext
     Cached(60) { Ok(views.html.admin_main(Option(identity))) }
   }
 
-  def configEditor() = AuthAction { request =>
+  def configEditor() = (AuthAction andThen PermissionCheckAction) { request =>
     val identity = request.user
     Cached(60) { Ok(views.html.admin_main(Option(identity))) }
   }
