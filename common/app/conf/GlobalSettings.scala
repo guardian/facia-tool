@@ -2,10 +2,11 @@ package conf
 
 import common._
 import model.Cors
-import play.api.{Application, GlobalSettings}
+import play.api.{Logger, Application, GlobalSettings}
 import play.api.mvc.{Result, RequestHeader, Results}
 
 import scala.concurrent.Future
+import scala.util.control.NonFatal
 
 trait CorsErrorHandler extends GlobalSettings with Results with common.ExecutionContexts {
 
@@ -68,4 +69,18 @@ trait SwitchboardLifecycle extends GlobalSettings with ExecutionContexts with Lo
       }
     }
   }
+}
+
+trait LogStashConfig extends GlobalSettings with Logging {
+
+
+  override def onStart(app: Application) {
+    super.onStart(app)
+    Logger.info("configuring log stash")
+    try LogStash.init()
+    catch {
+      case NonFatal(e) => Logger.error(s"could not configure log stream ${e}")
+    }
+  }
+
 }

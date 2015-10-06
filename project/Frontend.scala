@@ -33,7 +33,9 @@ object Frontend extends Build with Prototypes {
       jacksonCore,
       jacksonMapper,
       jSoup,
+      kinesisLogBack,
       liftJson,
+      logStash,
       playGoogleAuth,
       panDomainAuth,
       quartzScheduler,
@@ -65,9 +67,7 @@ object Frontend extends Build with Prototypes {
   val faciaTool = application("facia-tool").dependsOn(commonWithTests).aggregate(common).settings(
     libraryDependencies ++= Seq(
       playJsonVariants,
-      awsKinesis,
-      logStash,
-      kinesisLogBack
+      awsKinesis
     )
   )
 

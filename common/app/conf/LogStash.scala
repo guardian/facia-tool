@@ -1,19 +1,15 @@
-import ch.qos.logback.classic.spi.ILoggingEvent
+package conf
+
 import ch.qos.logback.classic.{Logger => LogbackLogger, LoggerContext}
-import ch.qos.logback.core.FileAppender
-import ch.qos.logback.core.util.Duration
 import com.gu.logback.appender.kinesis.KinesisAppender
-import conf.Configuration
-import net.logstash.logback.appender.LogstashTcpSocketAppender
 import net.logstash.logback.encoder.LogstashEncoder
 import net.logstash.logback.layout.LogstashLayout
-import org.slf4j.{Logger, LoggerFactory}
+import org.slf4j.LoggerFactory
 import play.api.{Logger => PlayLogger, LoggerLike}
 
 object LogStash {
 
   lazy val loggingContext = LoggerFactory.getILoggerFactory.asInstanceOf[LoggerContext]
-  import play.api.Play.current
 
   case class KinesisAppenderConfig(stream: String, region: String, roleArn: String, bufferSize: Int)
 
