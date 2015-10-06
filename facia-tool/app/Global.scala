@@ -1,7 +1,7 @@
 import java.io.File
 
 import common._
-import conf.{LogStashConfig, SwitchboardLifecycle, Gzipper}
+import conf.{PermissionsCache, LogStashConfig, SwitchboardLifecycle, Gzipper}
 import metrics.FrontendMetric
 import play.api._
 import play.api.mvc.WithFilters
@@ -12,7 +12,8 @@ object Global extends WithFilters(Gzipper)
   with CloudWatchApplicationMetrics
   with ConfigAgentLifecycle
   with SwitchboardLifecycle
-  with LogStashConfig {
+  with LogStashConfig
+  with PermissionsCache {
 
   override lazy val applicationName = "frontend-facia-tool"
 
