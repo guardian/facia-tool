@@ -3,12 +3,9 @@ import java.io.File
 import common._
 import conf.{LogStashConfig, SwitchboardLifecycle, Gzipper}
 import metrics.FrontendMetric
-import permissions.ScheduledJob
 import play.api._
 import play.api.mvc.WithFilters
 import services.ConfigAgentLifecycle
-
-import scala.util.control.NonFatal
 
 object Global extends WithFilters(Gzipper)
   with GlobalSettings
@@ -31,5 +28,5 @@ object Global extends WithFilters(Gzipper)
     ContentApiMetrics.ContentApiErrorMetric,
     S3Metrics.S3ClientExceptionsMetric
   )
-  
+
 }

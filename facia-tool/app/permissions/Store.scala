@@ -11,7 +11,7 @@ import dispatch.Http
 import org.joda.time.DateTime
 import org.quartz._
 import org.quartz.impl.StdSchedulerFactory
-import permissions.ScheduledJob.FunctionJob
+import permissions.PermissionsJob.FunctionJob
 import play.api.Logger
 import play.api.libs.json._
 
@@ -25,7 +25,7 @@ import play.api.{Logger => PlayLogger, LoggerLike}
 import scala.util.control.NonFatal
 
 
-class ScheduledJob(callback: Try[Map[String, String]] => Unit = _ => (), scheduler:Scheduler = StdSchedulerFactory.getDefaultScheduler()) {
+class PermissionsJob(callback: Try[Map[String, String]] => Unit = _ => (), scheduler:Scheduler = StdSchedulerFactory.getDefaultScheduler()) {
 
   private val job = JobBuilder.newJob(classOf[FunctionJob])
                     .withIdentity(s"refresh")
@@ -41,7 +41,7 @@ class ScheduledJob(callback: Try[Map[String, String]] => Unit = _ => (), schedul
       .withSchedule(schedule)
       .build
 
-    ScheduledJob.jobs.put(job.getKey,() => refresh())
+    PermissionsJob.jobs.put(job.getKey,() => refresh())
 
     if (scheduler.checkExists(job.getKey)) {
       scheduler.deleteJob(job.getKey)
@@ -59,7 +59,7 @@ class ScheduledJob(callback: Try[Map[String, String]] => Unit = _ => (), schedul
   }
 }
 
-object ScheduledJob {
+object PermissionsJob {
   // globally accessible state for the scheduler
   private val jobs = mutable.Map[JobKey, () => Unit]()
   class FunctionJob extends Job {
