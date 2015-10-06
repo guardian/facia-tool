@@ -1,7 +1,7 @@
 import java.io.File
 
 import common._
-import conf.{Configuration => GuardianConfiguration, SwitchboardLifecycle, Gzipper}
+import conf.{Configuration => GuardianConfiguration, LogStashConfig, SwitchboardLifecycle, Gzipper}
 import metrics.FrontendMetric
 import play.api._
 import play.api.mvc.WithFilters
@@ -13,7 +13,8 @@ object Global extends WithFilters(Gzipper)
   with GlobalSettings
   with CloudWatchApplicationMetrics
   with ConfigAgentLifecycle
-  with SwitchboardLifecycle {
+  with SwitchboardLifecycle
+  with LogStashConfig {
 
   override lazy val applicationName = "frontend-facia-tool"
 
@@ -30,12 +31,5 @@ object Global extends WithFilters(Gzipper)
     S3Metrics.S3ClientExceptionsMetric
   )
 
-  override def onStart(app: Application) = {
-    Logger.info("configuring log stash")
-    try LogStash.init()
-    catch {
-      case NonFatal(e) => Logger.error(s"could not configure log stream ${e}")
-    }
-  }
 
 }

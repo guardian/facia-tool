@@ -2,10 +2,11 @@ package conf
 
 import common._
 import model.Cors
-import play.api.{Application, GlobalSettings}
+import play.api.{Logger, Application, GlobalSettings}
 import play.api.mvc.{Result, RequestHeader, Results}
 
 import scala.concurrent.Future
+import scala.util.control.NonFatal
 
 trait CorsErrorHandler extends GlobalSettings with Results with common.ExecutionContexts {
 
@@ -54,7 +55,7 @@ trait SwitchboardLifecycle extends GlobalSettings with ExecutionContexts with Lo
   }
 
   def refresh() {
-    log.info("Refreshing switches")
+    Logger.info("Refreshing switches")
     services.S3.get(Configuration.switches.key) map { response =>
 
       val nextState = Properties(response)
@@ -63,9 +64,23 @@ trait SwitchboardLifecycle extends GlobalSettings with ExecutionContexts with Lo
         nextState.get(switch.name) foreach {
           case "on" => switch.switchOn()
           case "off" => switch.switchOff()
-          case other => log.warn(s"Badly configured switch ${switch.name} -> $other")
+          case other => Logger.warn(s"Badly configured switch ${switch.name} -> $other")
         }
       }
     }
   }
+}
+
+trait LogStashConfig extends GlobalSettings with Logging {
+
+
+  override def onStart(app: Application) {
+    super.onStart(app)
+    Logger.info("configuring log stash")
+    try LogStash.init()
+    catch {
+      case NonFatal(e) => Logger.error(s"could not configure log stream ${e}")
+    }
+  }
+
 }
