@@ -55,7 +55,7 @@ trait SwitchboardLifecycle extends GlobalSettings with ExecutionContexts with Lo
   }
 
   def refresh() {
-    log.info("Refreshing switches")
+    Logger.info("Refreshing switches")
     services.S3.get(Configuration.switches.key) map { response =>
 
       val nextState = Properties(response)
@@ -64,7 +64,7 @@ trait SwitchboardLifecycle extends GlobalSettings with ExecutionContexts with Lo
         nextState.get(switch.name) foreach {
           case "on" => switch.switchOn()
           case "off" => switch.switchOff()
-          case other => log.warn(s"Badly configured switch ${switch.name} -> $other")
+          case other => Logger.warn(s"Badly configured switch ${switch.name} -> $other")
         }
       }
     }
