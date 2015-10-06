@@ -1,7 +1,7 @@
 import java.io.File
 
 import common._
-import conf.{SwitchboardLifecycle, Gzipper}
+import conf.{LogStashConfig, SwitchboardLifecycle, Gzipper}
 import metrics.FrontendMetric
 import permissions.ScheduledJob
 import play.api._
@@ -14,7 +14,8 @@ object Global extends WithFilters(Gzipper)
   with GlobalSettings
   with CloudWatchApplicationMetrics
   with ConfigAgentLifecycle
-  with SwitchboardLifecycle {
+  with SwitchboardLifecycle
+  with LogStashConfig {
 
   override lazy val applicationName = "frontend-facia-tool"
 
@@ -30,14 +31,5 @@ object Global extends WithFilters(Gzipper)
     ContentApiMetrics.ContentApiErrorMetric,
     S3Metrics.S3ClientExceptionsMetric
   )
-
-  override def onStart(app: Application) = {
-    val job = new ScheduledJob()
-    job.start()
-    Logger.info("configuring log stash")
-    try LogStash.init()
-    catch {
-      case NonFatal(e) => Logger.error(s"could not configure log stream ${e}")
-    }
-  }
+  
 }
