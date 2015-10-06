@@ -5,13 +5,11 @@ import java.net.URL
 import com.gu.contentapi.client.model.{Asset, Content => ApiContent, Element => ApiElement, Tag => ApiTag}
 import com.gu.facia.api.utils._
 import com.gu.facia.client.models.TrailMetaData
-import com.gu.util.liveblogs.{Parser => LiveBlogParser}
 import common.dfp.DfpAgent
 import common.{LinkCounts, LinkTo, Reference}
 import conf.Configuration.facebook
 import conf.Switches.FacebookShareUseTrailPicFirstSwitch
 import layout.ContentWidths.GalleryMedia
-import ophan.SurgingContentAgent
 import org.joda.time.DateTime
 import org.jsoup.Jsoup
 import org.jsoup.safety.Whitelist
@@ -180,8 +178,6 @@ class Content protected (val delegate: contentapi.Content) extends Trail with Me
   // old bylines can have html http://content.guardianapis.com/commentisfree/2012/nov/10/cocoa-chocolate-fix-under-threat?show-fields=byline
   override lazy val byline: Option[String] = fields.get("byline").map(stripHtml)
   override val showByline = resolvedMetaData.showByline
-
-  override def isSurging: Seq[Int] = SurgingContentAgent.getSurgingLevelsFor(id)
 
   // Static Meta Data used by plugins on the page. People (including 3rd parties) rely on the names of these things,
   // think carefully before changing them.
@@ -410,8 +406,6 @@ class LiveBlog(delegate: contentapi.Content) extends Article(delegate) {
   )
 
   override lazy val lightboxImages = mainFiltered
-
-  lazy val blocks = LiveBlogParser.parse(body)
 }
 
 abstract class Media(delegate: contentapi.Content) extends Content(delegate) {
