@@ -53,7 +53,7 @@ class PermissionsJob(callback: Try[Map[String, String]] => Unit = _ => (), sched
 
   def refresh() = {
     PermissionsReader.populateCache() match {
-      case Right(_) => Logger.info("successfully updated permissions cache")
+      case Right(d) => Logger.info(s"successfully updated permissions cache with last modified time ${d}")
       case Left(error) => Logger.error("error updating permissions cache " + error)
     }
   }
@@ -136,13 +136,13 @@ object PermissionsReader  {
     agent.send(permissions)
   }
 
-  def populateCache(): Either[PermissionsReaderError, Unit] = {
+  def populateCache(): Either[PermissionsReaderError, Date] = {
     for {
       obj <- getObject(key, bucket).right
       data <- getObjectContents(obj).right
       permissions <- parseS3data(data.contents).right
       _ <- Right(storePermissionsData(permissions)).right
-    } yield ()
+    } yield data.lastMod
   }
 
   def checkCacheIsPopulated(p: SimplePermission, cache: List[PermissionCacheEntry]): Either[PermissionDefault, List[PermissionCacheEntry]] = {
@@ -153,7 +153,7 @@ object PermissionsReader  {
   def getPermission(p: SimplePermission, cache: List[PermissionCacheEntry]): Either[PermissionDefault, PermissionCacheEntry] = {
     cache.find(_.permission==p).map(
       Right(_)
-    ).getOrElse(Left(PermissionDefault(p.defaultValue, ErrorLevel(s"Could not find permission ${p.name}}"))))
+    ).getOrElse(Left(PermissionDefault(p.defaultValue, ErrorLevel(s"Could not find permission ${p.name}"))))
   }
 
   def getOverridesForPerm(p: PermissionCacheEntry, user: User): PermissionAuth = {
