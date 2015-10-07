@@ -376,8 +376,6 @@ define([
 
             this.slimEditor = opts.slimEditor;
 
-            this.visited = ko.observable(opts.visited);
-
             this.state = asObservableProps([
                 'enableContentOverrides',
                 'underDrag',
@@ -386,6 +384,7 @@ define([
                 'isLiveBlog',
                 'isLoaded',
                 'isEmpty',
+                'visited',
                 'inDynamicCollection',
                 'tone',
                 'primaryTag',
@@ -398,6 +397,7 @@ define([
 
             this.state.enableContentOverrides(this.meta.snapType() !== 'latest');
             this.state.inDynamicCollection(deepGet(opts, '.group.parent.isDynamic'));
+            this.state.visited(opts.visited);
 
             this.frontPublicationDate = opts.frontPublicationDate;
             this.frontPublicationTime = ko.observable();

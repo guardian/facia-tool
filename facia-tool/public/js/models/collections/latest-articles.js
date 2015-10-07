@@ -133,7 +133,7 @@ class Latest extends BaseClass {
     setArticleToVisited(articleId) {
         _.find(this.articles(), function (article) {
             if (article.id() === articleId) {
-                article.visited(true);
+                article.state.visited(true);
                 return true;
             }
         });
