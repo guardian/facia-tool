@@ -6,7 +6,7 @@ import * as cache from 'modules/cache';
 import modalDialog from 'modules/modal-dialog';
 import internalPageCode from 'utils/internal-page-code';
 import internalContentCode from 'utils/internal-content-code';
-import urlAbsPath from 'utils/url-abs-path';
+import articlePath from 'utils/article-path';
 import identity from 'utils/identity';
 import isGuardianUrl from 'utils/is-guardian-url';
 import * as snap from 'utils/snap';
@@ -55,7 +55,7 @@ function fetchContent(apiUrl) {
 function validateItem (item) {
     return new Promise(function (resolve, reject) {
         var snapId = snap.validateId(item.id()),
-            capiId = urlAbsPath(item.id()),
+            capiId = articlePath(item.id()),
             data = cache.get('contentApi', capiId);
 
         if (snapId) {
