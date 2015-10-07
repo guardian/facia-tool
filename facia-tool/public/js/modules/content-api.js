@@ -78,9 +78,7 @@ function validateItem (item) {
             capiId += CONST.apiSearchParams;
 
             fetchContent(capiId)
-            .then(function(res) {
-                // TODO Phantom Babel bug
-                if (!res) { res = {}; }
+            .then(function(res = {}) {
                 var results = res.content,
                     resultsTitle = res.title,
                     capiItem,
@@ -189,9 +187,7 @@ function decorateBatch (articles) {
     });
 
     return fetchContentByIds(ids)
-    .then(function(res) {
-        // TODO Phantom Babel bug
-        if (!res) { res = {}; }
+    .then(function(res = {}) {
         var results = res.content;
         if (!_.isArray(results)) {
             return;

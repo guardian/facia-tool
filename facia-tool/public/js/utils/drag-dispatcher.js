@@ -17,9 +17,7 @@ export default function (source, targetItem, targetGroup, alternate) {
     return (alternate ? alternateAction : defaultAction)(source, targetItem, targetGroup);
 }
 
-function alternateAction (source, targetItem, targetGroup) {
-    // TODO Phantom babel bug
-    var sourceItem = source.sourceItem;
+function alternateAction ({sourceItem}, targetItem, targetGroup) {
     if (targetItem.parentType !== 'Article') {
         alert('You can only do this action on an opened article.');
     } else {
@@ -37,9 +35,7 @@ function defaultAction (source, targetItem, targetGroup) {
     return (source.mediaItem ? handleMedia : handleInternalClass)(source, targetItem, targetGroup);
 }
 
-function handleMedia (source, targetItem, targetGroup) {
-    // TODO Phantom babel bug
-    var sourceItem = source.sourceItem, mediaItem = source.mediaItem;
+function handleMedia ({sourceItem, mediaItem}, targetItem, targetGroup) {
     if (sourceItem.type === vars.CONST.draggableTypes.configCollection) {
         alert('Unhandled media item');
     } else {
@@ -58,9 +54,7 @@ function handleMedia (source, targetItem, targetGroup) {
     }
 }
 
-function handleInternalClass (source, targetItem, targetGroup) {
-    // TODO Phantom babel bug
-    var sourceItem = source.sourceItem, sourceGroup = source.sourceGroup;
+function handleInternalClass ({sourceItem, sourceGroup}, targetItem, targetGroup) {
     var {position, target, isAfter} = normalizeTarget(sourceItem, targetItem, targetGroup);
 
     removeById(targetGroup.items, urlAbsPath(sourceItem.id));
@@ -156,9 +150,7 @@ function normalizeTarget (sourceItem, targetItem, targetGroup) {
     return {isAfter, target, position};
 }
 
-function newItemsConstructor (sourceItem, targetGroup) {
-    // TODO Phantom babel bug
-    if (!sourceItem) { sourceItem = {}; }
+function newItemsConstructor (sourceItem = {}, targetGroup) {
     if (sourceItem.type === vars.CONST.draggableTypes.configCollection) {
         var collectionConfig = cloneWithKey(vars.model.state().config.collections[sourceItem.id], sourceItem.id);
         return [new ConfigCollection(collectionConfig)];

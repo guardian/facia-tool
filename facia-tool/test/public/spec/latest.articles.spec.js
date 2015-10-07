@@ -14,8 +14,6 @@ describe('Latest widget', function () {
         this.originallatestArticlesPollMs = CONST.latestArticlesPollMs;
         this.ko = inject(`
             <latest-widget params="position: 0, column: $data.testColumn"></latest-widget>
-            <script type="text/html" id="template_article">
-            </script>
         `);
         this.scope = mockjax.scope();
         CONST.latestArticlesDebounce = 30;
@@ -28,10 +26,6 @@ describe('Latest widget', function () {
         this.scope.clear();
         this.ko.dispose();
     });
-    function getLatest (host) {
-        return ko.contextFor(host.container.querySelector('latest-widget').firstChild)
-            .$component.latestArticles;
-    }
     function getAutocomplete (host) {
         return ko.contextFor(host.container.querySelector('autocomplete').firstChild)
             .$component;
@@ -48,15 +42,17 @@ describe('Latest widget', function () {
         // short time for polling
         CONST.latestArticlesPollMs = 6 * CONST.searchDebounceMs;
 
+        var waitingOn = wait.event('main:widget:loaded').then(widget => {
+            latest = widget.latestArticles;
+            return widget.loaded;
+        });
+
         this.ko.apply({
             switches: ko.observable({
                 'facia-tool-draft-content': true
             })
         })
-        .then(() => wait.event('latest:loaded'))
-        .then(() => {
-            latest = getLatest(this.ko);
-        })
+        .then(() => waitingOn)
         .then(() => {
             expect(capi.fetchLatest.calls.count()).toBe(1);
             expect(capi.fetchLatest.calls.argsFor(0)[0].isDraft).toBe(false);
@@ -100,16 +96,22 @@ describe('Latest widget', function () {
             }
         });
 
+        var waitingOn = Promise.all([
+            wait.event('main:widget:loaded').then(widget => {
+                latest = widget.latestArticles;
+                return widget.loaded;
+            }),
+            wait.event('widget:load').then(() => {
+                autocomplete = getAutocomplete(this.ko);
+            })
+        ]);
+
         this.ko.apply({
             switches: ko.observable({
                 'facia-tool-draft-content': false
             })
-        }, true)
-        .then(() => wait.event('latest:loaded'))
-        .then(() => {
-            latest = getLatest(this.ko);
-            autocomplete = getAutocomplete(this.ko);
         })
+        .then(() => waitingOn)
         .then(() => {
             expect(capi.fetchLatest).toHaveBeenCalled();
             expect(capi.fetchLatest.calls.argsFor(0)[0].term).toBe('');
@@ -179,15 +181,17 @@ describe('Latest widget', function () {
             return textInside('.finder__controls:nth(0)').toLowerCase();
         }
 
+        var waitingOn = wait.event('main:widget:loaded').then(widget => {
+            latest = widget.latestArticles;
+            return widget.loaded;
+        });
+
         this.ko.apply({
             switches: ko.observable({
                 'facia-tool-draft-content': false
             })
         })
-        .then(() => wait.event('latest:loaded'))
-        .then(() => {
-            latest = getLatest(this.ko);
-        })
+        .then(() => waitingOn)
         .then(() => {
             expect(paginationText()).toBe('page 1 next');
 
@@ -241,11 +245,13 @@ describe('Latest widget', function () {
             });
         });
 
+        var waitingOn = wait.event('main:widget:loaded').then(widget => {
+            latest = widget.latestArticles;
+            return widget.loaded;
+        });
+
         this.ko.apply({ switches })
-        .then(() => wait.event('latest:loaded'))
-        .then(() => {
-            latest = getLatest(this.ko);
-        })
+        .then(() => waitingOn)
         .then(() => {
             expect($('a.live-mode').hasClass('active')).toBe(true);
             expect($('a.draft-mode').hasClass('active')).toBe(false);

@@ -6,7 +6,7 @@ import * as mockjax from 'test/utils/mockjax';
 import textInside from 'test/utils/text-inside';
 import * as wait from 'test/utils/wait';
 
-xdescribe('Breaking News', function () {
+describe('Breaking News', function () {
     beforeEach(function (done) {
         this.loader = new Loader(this, done);
         this.scope = mockjax.scope();

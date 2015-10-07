@@ -50,9 +50,7 @@ class Latest extends BaseClass {
             return title;
         }, this);
 
-        this[debounceSym] = debounce(opts => {
-            // TODO Phantom Babel bug
-            if (!opts) { opts = {}; }
+        this[debounceSym] = debounce((opts = {}) => {
             if (!opts.noFlushFirst) {
                 this.flush('searching...');
             }
@@ -120,9 +118,8 @@ class Latest extends BaseClass {
             loadCallback();
             this.emit('search:update');
         })
-        .catch(error => {
-            // TODO Phantom Babel bug
-            var errMsg = (error || {}).message || 'Invalid CAPI result. Please try again';
+        .catch((error = {}) => {
+            var errMsg = error.message || 'Invalid CAPI result. Please try again';
             mediator.emit('capi:error', errMsg);
             this.flush(errMsg);
             loadCallback();

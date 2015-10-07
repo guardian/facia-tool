@@ -140,7 +140,8 @@ describe('Collections', function () {
         .then(function (collection) {
             expect(collection).toEqual('latest');
         })
-        .then(done);
+        .then(done)
+        .catch(done.fail);
 
         function insertInEmptyGroup () {
             return editAction(mockCollection, function () {

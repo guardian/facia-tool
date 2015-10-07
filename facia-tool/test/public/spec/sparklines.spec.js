@@ -10,20 +10,17 @@ import * as mockjax from 'test/utils/mockjax';
 import tick from 'test/utils/tick';
 import textInside from 'test/utils/text-inside';
 
-xdescribe('Sparklines', function () {
+describe('Sparklines', function () {
     var originalsparksBatchQueue = vars.CONST.sparksBatchQueue;
     var originalsparksRefreshMs = vars.CONST.sparksRefreshMs;
     beforeEach(function () {
         this.mockHistogram = new MockHistogram();
         setUpMockRequest(this.mockHistogram);
-        if (!vars.model) {
-            vars.setModel({
-                switches: ko.observable({})
-            });
-        }
-        var switches = vars.model.switches();
-        switches['facia-tool-sparklines'] = true;
-        vars.model.switches(switches);
+        vars.setModel({
+            switches: ko.observable({
+                'facia-tool-sparklines': true
+            })
+        });
     });
     afterEach(function () {
         this.mockHistogram.dispose();

@@ -492,6 +492,9 @@ define([
         this.groups.forEach(function (group) {
             group.dispose();
         });
+        if (this.visibleStories) {
+            this.visibleStories.dispose();
+        }
     };
 
     ko.bindingHandlers.indicatorHeight = {

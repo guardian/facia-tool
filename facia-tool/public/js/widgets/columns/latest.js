@@ -1,7 +1,7 @@
 import ko from 'knockout';
 import _ from 'underscore';
+import Promise from 'Promise';
 import LatestArticles from 'models/collections/latest-articles';
-import mediator from 'utils/mediator';
 import updateScrollables from 'utils/update-scrollables';
 import ColumnWidget from 'widgets/column-widget';
 
@@ -10,12 +10,13 @@ class Latest extends ColumnWidget {
         super(params, element);
 
         this.showingDrafts = ko.observable(false);
+
+        let resolveLatestLoaded;
+        this.loaded = new Promise(resolve => resolveLatestLoaded = resolve);
         this.latestArticles = new LatestArticles({
             container: element,
             showingDrafts: this.showingDrafts,
-            callback: _.once(function () {
-                mediator.emit('latest:loaded');
-            })
+            callback: _.once(() => resolveLatestLoaded(this))
         });
 
         this.latestArticles.search();

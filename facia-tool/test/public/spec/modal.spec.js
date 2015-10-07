@@ -4,6 +4,7 @@ import modalDialog from 'modules/modal-dialog';
 import alert from 'utils/alert';
 import sinon from 'sinon';
 import $ from 'jquery';
+import textInside from 'test/utils/text-inside';
 import {register} from 'models/widgets';
 import 'widgets/modal_dialog.html!text';
 import 'widgets/text_alert.html!text';
@@ -24,7 +25,7 @@ describe('Modal Dialog', function () {
             fruit: 'apple'
         }, ok, cancel)
         .then(function () {
-            expect($('.test-container .what-i-like').text()).toBe('apple');
+            expect(textInside('.test-container .what-i-like')).toBe('apple');
 
             return click('ok');
         })
@@ -38,16 +39,16 @@ describe('Modal Dialog', function () {
             }, ok, cancel);
         })
         .then(function () {
-            expect($('.test-container .what-i-like').text()).toBe('banana');
+            expect(textInside('.test-container .what-i-like')).toBe('banana');
 
             return click('cancel');
         })
         .then(function () {
             expect(cancel.called).toBe(true);
             expect($('.test-container .what-i-like').length).toBe(0);
-
-            done();
-        });
+        })
+        .then(done)
+        .catch(done.fail);
     });
 });
 
@@ -62,9 +63,9 @@ describe('Alert', function () {
     it('shows an error', function (done) {
         alert('expected error');
         setTimeout(function () {
-            expect($('.test-container .modalDialog-message').text()).toMatch(/expected error/);
+            expect(textInside('.test-container .modalDialog-message')).toMatch(/expected error/);
             done();
-        }, 40);
+        }, 100);
     });
 });
 
@@ -75,11 +76,11 @@ ko.components.register('modal_template', {
             return params;
         }
     },
-    template: [
-        '<div class="what-i-like" data-bind="text: fruit"></div>',
-        '<button class="ok" data-bind="click: ok">OK</button>',
-        '<button class="cancel" data-bind="click: cancel">Cancel</button>',
-    ].join('')
+    template: `
+        <div class="what-i-like" data-bind="text: fruit"></div>
+        <button class="ok" data-bind="click: ok">OK</button>
+        <button class="cancel" data-bind="click: cancel">Cancel</button>
+    `
 });
 
 var container;
@@ -111,7 +112,7 @@ function openDialog (data, ok, cancel) {
         // Knockout has to refresh the view
         setTimeout(function () {
             resolve();
-        }, 50);
+        }, 100);
     });
 }
 

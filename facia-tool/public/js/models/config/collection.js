@@ -14,10 +14,8 @@ import urlAbsPath from 'utils/url-abs-path';
 var apiQuerySym = Symbol();
 
 export default class ConfigCollection extends DropTarget {
-    constructor(opts ) {
+    constructor(opts = {}) {
         super();
-        // TODO Phantom Babel bug
-        if (!opts) { opts = {}; }
 
         this.id = opts.id;
 
@@ -133,9 +131,7 @@ export default class ConfigCollection extends DropTarget {
             if (apiQuery) {
                 this.meta.apiQuery(apiQuery);
                 this[apiQuerySym](apiQuery)
-                .then(res => {
-                    // TODO Phantom Babel bug
-                    if (!res) { res = {}; }
+                .then((res = {}) => {
                     var results = res.content || [];
                     this.capiResults(results);
                     this.state.apiQueryStatus(results.length ? 'valid' : 'invalid');

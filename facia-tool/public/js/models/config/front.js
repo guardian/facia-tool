@@ -13,9 +13,7 @@ import populateObservables from 'utils/populate-observables';
 import validateImageSrc from 'utils/validate-image-src';
 
 export default class ConfigFront extends BaseClass {
-    constructor(opts) {
-        // TODO Phantom Babel bug
-        if (!opts) { opts = {}; }
+    constructor(opts = {}) {
         super();
 
         this.id = ko.observable(opts.id);
@@ -185,9 +183,7 @@ export default class ConfigFront extends BaseClass {
         this.collections.items().forEach(collection => collection.close());
 
         contentApi.fetchMetaForPath(this.id())
-        .then(meta => {
-            // TODO Phantom Babel bug
-            if (!meta) { meta = {}; }
+        .then((meta = {}) => {
             _.each(this.capiProps, (val, key) => val(meta[key]));
         });
     }

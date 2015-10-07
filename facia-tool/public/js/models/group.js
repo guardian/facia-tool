@@ -5,9 +5,7 @@ import copiedArticle from 'modules/copied-article';
 import mediator from 'utils/mediator';
 
 export default class Group extends DropTarget {
-    constructor(opts) {
-        // TODO Phantom Babel bug
-        if (!opts) { opts = {}; }
+    constructor(opts = {}) {
         super();
 
         this.items = ko.isObservable(opts.items) && opts.items.push ? opts.items : ko.observableArray(opts.items);

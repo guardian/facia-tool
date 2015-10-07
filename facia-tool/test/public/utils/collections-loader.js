@@ -14,7 +14,6 @@ import clone from 'utils/clean-clone';
 import 'widgets/collection.html!text';
 import inject from 'test/utils/inject';
 import fakePushState from 'test/utils/push-state';
-import * as wait from 'test/utils/wait';
 
 export default class Loader {
     constructor() {
@@ -50,11 +49,10 @@ export default class Loader {
     }
 
     load() {
+        localStorage.clear();
         this.baseModule = this.router.load(clone(testConfig));
         this.ko.apply(this.baseModule);
-        return this.baseModule.loaded
-            .then(() => wait.event('latest:loaded'))
-            .then(() => wait.ms(10));
+        return this.baseModule.loaded;
     }
 
     dispose() {

@@ -167,10 +167,7 @@ export default class Front extends ColumnWidget {
         });
     }
 
-    getFrontAge(opts) {
-        // TODO Phantom Babel bug
-        if (!opts) { opts = {}; }
-        var alertIfStale = opts.alertIfStale;
+    getFrontAge({alertIfStale = false} = {}) {
         if (this.front()) {
             lastModified(this.front()).then(last => {
                 this.frontAge(last.human);
@@ -270,11 +267,6 @@ export default class Front extends ColumnWidget {
     }
 
     newItemValidator(item) {
-        if (this.mode() === 'treats' && item.meta.snapType() !== 'link') {
-            // TODO uncomment when we want to restrict to snap link
-            // return 'Sorry, you can only add links to treats.';
-            return false;
-        }
         if (this.confirmSendingAlert() && !isOnlyArticle(item, this)) {
             return 'You can only have one article in this collection.';
         }
@@ -282,8 +274,8 @@ export default class Front extends ColumnWidget {
 
     dispose() {
         super.dispose();
-        _.each(this.setIntervals, timeout => clearInterval(timeout));
-        _.each(this.setTimeouts, timeout => clearTimeout(timeout));
+        _.each(this.setIntervals, clearInterval);
+        _.each(this.setTimeouts, clearTimeout);
         sparklines.unsubscribe(this);
         this.presser.dispose();
     }
