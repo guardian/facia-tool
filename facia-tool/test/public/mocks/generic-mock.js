@@ -5,17 +5,8 @@ import EventEmitter from 'EventEmitter';
 
 class Mock extends EventEmitter {
 
-    constructor(path, urlParams, type) {
+    constructor(path, urlParams = [], type = 'get') {
         super();
-        // TODO I'd like to use default parameters, but this bug
-        // https://github.com/babel/babel/issues/1405
-        // makes the tests fail on phantom 1.9
-        if (!urlParams) {
-            urlParams = [];
-        }
-        if (!type) {
-            type = 'get';
-        }
         let me = this;
         let lastRequest;
         this.defaultResponse = {};

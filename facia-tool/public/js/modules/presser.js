@@ -15,13 +15,8 @@ export default class Presser extends BaseClass {
             return request({
                 url: '/front/lastmodified/' + front
             })
-            .catch(res => {
-                // TODO Phantom Babel bug
-                if (!res) { res = {}; }
-                return {
-                    responseText: res.responseText
-                };
-            });
+            .then(({responseText} = {}) => responseText)
+            .catch(({responseText} = {}) => responseText);
         }, CONST.detectPressFailureMs || 10000);
 
         this.listenOn(mediator, 'presser:detectfailures', this.detectFailures);
@@ -29,10 +24,8 @@ export default class Presser extends BaseClass {
 
     detectFailures(front) {
         return this[detectFailuresSym](front)
-        .then(resp => {
-            // TODO Phantom Babel bug
-            if (!resp) { resp = {}; }
-            var lastPressed = new Date(resp.responseText);
+        .then(responseText => {
+            var lastPressed = new Date(responseText);
 
             if (_.isDate(lastPressed)) {
                 mediator.emit('presser:lastupdate', front, lastPressed);

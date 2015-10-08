@@ -1,6 +1,7 @@
 import _ from 'underscore';
 import fetch from 'utils/fetch-visible-stories';
 import Mock from 'mock/stories-visible';
+import * as wait from 'test/utils/wait';
 
 describe('Fetch visible stories', function () {
     function createGroups() {
@@ -35,16 +36,18 @@ describe('Fetch visible stories', function () {
         fetch('anything', createGroups())
         .then(done.fail, function (err) {
             expect(err.message).toMatch(/Empty collection/i);
-            done();
-        });
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('fails if the network fails', function (done) {
         return fetch('fail', createGroups([false]))
         .then(done.fail, function (err) {
             expect(err).toMatch(/fail/i);
-            done();
-        });
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('gets the visible stories', function (done) {
@@ -55,14 +58,18 @@ describe('Fetch visible stories', function () {
         });
 
         return fetch('collection', createGroups([false], [false, true]))
-        .then(function (response) {
+        .then(response => {
             expect(response).toEqual({
                 mobile: 1
             });
-            done();
-        }, function (err) {
-            expect(NaN).toBe(err);
-            done();
-        });
+        })
+        .then(() => wait.event('visible:stories:fetch'))
+        .then(event => {
+            expect(event).toEqual({
+                mobile: 1
+            });
+        })
+        .then(done)
+        .catch(done.fail);
     });
 });

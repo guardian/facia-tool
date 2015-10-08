@@ -11,7 +11,6 @@ import Router from 'modules/router';
 import handlers from 'modules/route-handlers';
 import fakePushState from 'test/utils/push-state';
 import inject from 'test/utils/inject';
-import * as wait from 'test/utils/wait';
 
 export default class Loader {
     constructor(scope, done) {
@@ -40,8 +39,6 @@ export default class Loader {
         scope.baseModule = scope.router.load(testConfig);
         scope.ko.apply(scope.baseModule)
             .then(() => scope.baseModule.loaded)
-            .then(() => wait.event('latest:loaded'))
-            .then(() => wait.ms(10))
             .then(done)
             .catch(done.fail);
     }

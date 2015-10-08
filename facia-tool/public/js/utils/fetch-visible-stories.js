@@ -4,6 +4,7 @@ import {request} from 'modules/authed-ajax';
 import mediator from 'utils/mediator';
 
 export default function(type, groups) {
+    var promisedAction;
     var stories = [];
     _.each(groups, function (group) {
         _.each(group.items(), function (story) {
@@ -14,10 +15,11 @@ export default function(type, groups) {
         });
     });
 
+
     if (!stories.length) {
-        return Promise.reject(new Error('Empty collection'));
+        promisedAction = Promise.reject(new Error('Empty collection'));
     } else {
-        return request({
+        promisedAction = request({
             url: '/stories-visible/' + type,
             method: 'POST',
             data: JSON.stringify({
@@ -26,11 +28,16 @@ export default function(type, groups) {
             dataType: 'json'
         })
         .then(result => {
-            setTimeout(() => mediator.emit('visible:stories:fetch', result), 10);
+            promisedAction.timeoutId = setTimeout(() => mediator.emit('visible:stories:fetch', result), 10);
             return result;
         })
         .catch(function (error) {
             throw new Error(error.statusText);
         });
     }
+
+    promisedAction.dispose = function () {
+        clearTimeout(promisedAction.timeoutId);
+    };
+    return promisedAction;
 }

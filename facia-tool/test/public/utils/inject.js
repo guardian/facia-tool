@@ -5,6 +5,7 @@ import modal from 'modules/modal-dialog';
 import * as vars from 'modules/vars';
 import {register} from 'models/widgets';
 import * as wait from 'test/utils/wait';
+import mediator from 'utils/mediator';
 
 export default function (html) {
     register();
@@ -28,7 +29,9 @@ export default function (html) {
                     modalDialog: modal,
                     extensions: [],
                     registerExtension: () => {},
-                    testColumn: { registerMainWidget: () => {}},
+                    testColumn: { registerMainWidget: widget => {
+                        mediator.emit('main:widget:loaded', widget);
+                    }},
                     identity: { email: 'someone@theguardian.com' },
                     isPasteActive: ko.observable(),
                     frontsList: ko.observableArray(),
