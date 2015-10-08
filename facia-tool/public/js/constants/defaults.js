@@ -32,6 +32,10 @@ export default {
         'breaking-news'
     ],
 
+    prioritiesWithGroups: [
+        'commercial'
+    ],
+
     detectPressFailureMs: 10000,
 
     detectPendingChangesInClipboard: 4000,
@@ -42,6 +46,15 @@ export default {
         'commercial': 350,
         'training': 50
     },
+    frontGroups: [
+        'UK consumer',
+        'UK professional',
+        'US consumer',
+        'US professional',
+        'AU consumer',
+        'AU professional',
+        'Masterclasses'
+    ],
 
     filterTypes: {
         section: { display: 'in section:', param: 'section', path: 'sections', placeholder: 'e.g. news' },

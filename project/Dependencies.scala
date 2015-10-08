@@ -27,8 +27,8 @@ object Dependencies {
   val dispatch = "net.databinder.dispatch" %% "dispatch-core" % "0.11.3"
   val dispatchTest = "net.databinder.dispatch" %% "dispatch-core" % "0.11.3" % Test
   val exactTargetClient = "com.gu" %% "exact-target-client" % "2.24"
-  val faciaFapiScalaClient = "com.gu" %% "fapi-client" % "0.56"
-  val faciaScalaClient = "com.gu" %% "facia-json" % "0.56"
+  val faciaFapiScalaClient = "com.gu" %% "fapi-client" % "0.58"
+  val faciaScalaClient = "com.gu" %% "facia-json" % "0.58"
   val guardianConfiguration = "com.gu" %% "configuration" % "4.1"
   val jodaTime = "joda-time" % "joda-time" % "2.3"
   val jodaConvert = "org.joda" % "joda-convert" % "1.7"

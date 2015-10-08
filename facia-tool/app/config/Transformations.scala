@@ -30,7 +30,8 @@ object Transformations {
       isImageDisplayed =  createCommand.isImageDisplayed,
       isHidden =          createCommand.isHidden,
       priority =          createCommand.priority,
-      canonical =         Some(newCollectionId)
+      canonical =         Some(newCollectionId),
+      group =             createCommand.group
     )
 
     config.copy(
