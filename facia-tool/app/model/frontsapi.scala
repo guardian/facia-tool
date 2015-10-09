@@ -202,7 +202,7 @@ trait UpdateActions extends Logging with ExecutionContexts {
         val newMeta = for (updateMeta <- update.itemMeta) yield updateMeta
         currentTrail.copy(meta = newMeta)
       }
-      .getOrElse(Trail(update.item, DateTime.now.getMillis, update.itemMeta, Some(s"${identity.firstName} ${identity.lastName}")))
+      .getOrElse(Trail(update.item, DateTime.now.getMillis, Some(getUserName(identity)), update.itemMeta))
 
     val listWithoutItem = blocks.filterNot(_.id == update.item)
 
@@ -224,11 +224,13 @@ trait UpdateActions extends Logging with ExecutionContexts {
     splitList._1 ::: (trail +: splitList._2)
   }
 
-  def createCollectionJson(identity: User, update: UpdateList): CollectionJson =
+  def createCollectionJson(identity: User, update: UpdateList): CollectionJson = {
+    val userName = getUserName(identity);
     if (update.live)
-      CollectionJson(List(Trail(update.item, DateTime.now.getMillis, update.itemMeta)), None, None, DateTime.now, s"${identity.firstName} ${identity.lastName}", identity.email, None, None, None)
+      CollectionJson(List(Trail(update.item, DateTime.now.getMillis, Some(userName), update.itemMeta)), None, None, DateTime.now, userName, identity.email, None, None, None)
     else
-      CollectionJson(Nil, Some(List(Trail(update.item, DateTime.now.getMillis, update.itemMeta))), None, DateTime.now, s"${identity.firstName} ${identity.lastName}", identity.email, None, None, None)
+      CollectionJson(Nil, Some(List(Trail(update.item, DateTime.now.getMillis, Some(userName), update.itemMeta))), None, DateTime.now, userName, identity.email, None, None, None)
+  }
 
   def capCollection(collectionJson: CollectionJson): CollectionJson =
     collectionJson.copy(live = collectionJson.live.take(collectionCap), draft = collectionJson.draft.map(_.take(collectionCap)))
@@ -266,13 +268,13 @@ trait UpdateActions extends Logging with ExecutionContexts {
     trail.copy(meta = trail.meta.map(metaData => metaData.copy(json = metaData.json - "group")))
 
   def createCollectionForTreat(collectionId: String, identity: User, update: UpdateList): CollectionJson = {
-    val trail = Trail(update.item, DateTime.now.getMillis, update.itemMeta)
+    val trail = Trail(update.item, DateTime.now.getMillis, Some(getUserName(identity)), update.itemMeta)
     CollectionJson(
       live          = Nil,
       draft         = None,
       treats        = Option(List(trail)),
       lastUpdated   = DateTime.now,
-      updatedBy     = "${identity.firstName} ${identity.lastName}",
+      updatedBy     = getUserName(identity),
       updatedEmail  = identity.email,
       displayName   = None,
       href          = None,
@@ -305,6 +307,8 @@ trait UpdateActions extends Logging with ExecutionContexts {
   private def removeFromTreatsList(update: UpdateList, collectionJson: CollectionJson): CollectionJson = {
     val updatedTreats = collectionJson.treats.map(_.filterNot(_.id == update.item))
     collectionJson.copy(treats = updatedTreats)}
+
+  private def getUserName(identity: User): String = s"${identity.firstName} ${identity.lastName}";
 
 }
 
