@@ -826,6 +826,10 @@ collection-widget:first-child .collection {
             transition: border-color 150ms;
 }
 
+.visitedArticle {
+  opacity: 0.5;
+}
+
 .article:hover,
 .live-mode .article:hover {
     background-color: #eeeeee !important;

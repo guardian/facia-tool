@@ -6,7 +6,8 @@
         underDrag: state.underDrag() && !state.underControlDrag(),
         underControlDrag: state.underDrag() && state.underControlDrag(),
         imageHidden: meta.imageHide,
-        slimEditor: slimEditor
+        slimEditor: slimEditor,
+        visitedArticle: state.visited
     }">
 
     <a class="thumb" data-bind="
@@ -94,7 +95,7 @@
                 <i class="fa fa-signal"></i></a>
 
             <a class="tool tool--small tool--small--href" target="_blank" title="View" data-bind="
-                click: function() { return true; },
+                click: setVisitedToTrue,
                 clickBubble: false,
                 attr: {href: viewUrl}">
                 <i class="fa fa-share"></i></a>

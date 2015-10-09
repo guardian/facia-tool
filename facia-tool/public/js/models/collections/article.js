@@ -20,6 +20,7 @@ define([
     'utils/url-abs-path',
     'utils/url-host',
     'utils/validate-image-src',
+    'utils/visited-article-storage',
     'modules/copied-article',
     'modules/authed-ajax',
     'modules/content-api',
@@ -47,6 +48,7 @@ define([
         urlAbsPath,
         urlHost,
         validateImageSrc,
+        visitedArticleStorage,
         copiedArticle,
         authedAjax,
         contentApi,
@@ -64,6 +66,7 @@ define([
         mediator = mediator.default;
         humanTime = humanTime.default;
         validateImageSrc = validateImageSrc.default;
+        visitedArticleStorage = visitedArticleStorage.default;
         copiedArticle = copiedArticle.default;
         logger = logger.default;
         Group = Group.default;
@@ -381,6 +384,7 @@ define([
                 'isLiveBlog',
                 'isLoaded',
                 'isEmpty',
+                'visited',
                 'inDynamicCollection',
                 'tone',
                 'primaryTag',
@@ -393,6 +397,7 @@ define([
 
             this.state.enableContentOverrides(this.meta.snapType() !== 'latest');
             this.state.inDynamicCollection(deepGet(opts, '.group.parent.isDynamic'));
+            this.state.visited(opts.visited);
 
             this.frontPublicationDate = opts.frontPublicationDate;
             this.frontPublicationTime = ko.observable();
@@ -487,6 +492,12 @@ define([
 
         Article.prototype.copyToClipboard = function () {
             mediator.emit('copy:to:clipboard', this.get());
+        };
+
+        Article.prototype.setVisitedToTrue = function () {
+            visitedArticleStorage.addArticleToStorage(this.id());
+            mediator.emit('set:article:to:visited', this.id());
+            return true;
         };
 
         Article.prototype.paste = function () {
