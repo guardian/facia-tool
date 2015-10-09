@@ -201,6 +201,6 @@ grunt test --no-single-run
 ```
 Starts `karma` in debug mode, you can connect your browser at [http://localhost:9876?debug.html](http://localhost:9876?debug.html)
 
-You can run a single test going to [http://localhost:9876?debug.html?test=collections](http://localhost:9876?debug.html?test=collections), spec files are inside `faia-tool/test/public/spec`.
+You can run a single test going to [http://localhost:9876/debug.html?test=collections](http://localhost:9876/debug.html?test=collections), spec files are inside `faia-tool/test/public/spec`.
 
 Enjoy!
