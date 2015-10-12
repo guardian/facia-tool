@@ -30,7 +30,7 @@
     "Mappings": {
         "FaciaToolCertMap": {
             "PROD": {
-                "CertName": "arn:aws:iam::163592447864:server-certificate/sites.gutools.co.uk-exp20151019"
+                "CertName": "arn:aws:iam::163592447864:server-certificate/star.gutools.co.uk-exp2018-11-17"
             },
             "CODE": {
                 "CertName": "arn:aws:iam::163592447864:server-certificate/sites.code.dev-gutools.co.uk"
