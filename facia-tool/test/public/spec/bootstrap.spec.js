@@ -77,8 +77,9 @@ describe('Bootstrap', function () {
         })
         .then(function () {
             expect(every.calledThrice).toBe(true);
-            done();
-        });
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('fails validation', function (done) {
@@ -96,9 +97,9 @@ describe('Bootstrap', function () {
             expect(fail.called).toBe(true);
             expect(fail.getCall(0).args[0]).toMatch(/config is invalid/);
             expect(success.called).toBe(false);
-
-            done();
-        });
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('fails on network error', function (done) {
@@ -116,9 +117,9 @@ describe('Bootstrap', function () {
             expect(fail.called).toBe(true);
             expect(fail.getCall(0).args[0]).toMatch(/switches is invalid/);
             expect(success.called).toBe(false);
-
-            done();
-        });
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('fails in the every callback', function (done) {
@@ -143,8 +144,9 @@ describe('Bootstrap', function () {
         .then(function () {
             expect(every.calledOnce).toBe(true);
             expect(fail.calledOnce).toBe(true);
-            done();
-        });
+        })
+        .then(done)
+        .catch(done.fail);
     });
 });
 

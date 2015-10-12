@@ -1,6 +1,11 @@
 module.exports = function(config) {
   config.set({
     basePath: '../../..',
+    proxies: {
+        '/assets/facia-tool/': '/base/public/',
+        '/test/': '/base/test/public/',
+        '/app/': '/base/app/'
+    },
     frameworks: ['jasmine'],
     files: [
         {pattern: 'public/jspm_packages/github/es-shims/**/es5-shim.min.js', included: true},
@@ -9,16 +14,12 @@ module.exports = function(config) {
         {pattern: 'public/jspm_packages/**/*', included: false},
         {pattern: 'public/js/jspm-config.js', included: true},
         {pattern: 'public/js/components/**/*', included: false, watched: false},
-        {pattern: 'test/public/config.js', included: true},
         {pattern: 'app/views/**/*.html', included: false},
         {pattern: 'public/js/**/*', included: false},
         {pattern: 'public/css/*.css', included: true, watched: false},
         {pattern: 'public/css/!(*.css)', included: false, watched: false},
-        {pattern: 'test/public/mocks/*.js', included: false},
-        {pattern: 'test/public/spec/**/*', included: false},
-        {pattern: 'test/public/utils/**/*.js', included: false},
-        {pattern: 'test/public/fixtures/*', included: false},
-        {pattern: 'test/public/test-main.js', included: true}
+        {pattern: 'test/public/**/!(index.js)', included: false},
+        {pattern: 'test/public/index.js', included: true}
     ],
 
     exclude: [],

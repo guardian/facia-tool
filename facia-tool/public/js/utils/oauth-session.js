@@ -16,19 +16,7 @@ export default function (overridePanda, overrideRedirect) {
     poll();
 }
 
-var currentAction;
 export function reauth (overridePanda) {
     let session = overridePanda || panda.reEstablishSession;
-
-    if (!currentAction) {
-        currentAction = session(CONST.reauthPath, CONST.reauthTimeout)
-            .then(() => {
-                currentAction = null;
-            })
-            .catch((ex) => {
-                currentAction = null;
-                throw ex;
-            });
-    }
-    return currentAction;
+    return session(CONST.reauthPath, CONST.reauthTimeout);
 }

@@ -2,7 +2,7 @@ import Mock from 'mock/generic-mock';
 
 class StoriesVisible extends Mock {
     constructor() {
-        super(/\/stories-visible\/(.+)/, ['collection']);
+        super(/\/stories-visible\/(.+)/, ['collection'], 'post');
     }
 
     handle(req, data, xhr) {

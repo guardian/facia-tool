@@ -1,4 +1,4 @@
-import testConfig from 'test-config';
+import testConfig from 'test/config';
 import MockConfig from 'mock/config';
 import MockSwitches from 'mock/switches';
 import MockCollections from 'mock/collection';
@@ -6,6 +6,7 @@ import fixCollections from 'test/fixtures/some-collections';
 import MockSearch from 'mock/search';
 import MockLastModified from 'mock/lastmodified';
 import fixArticles from 'test/fixtures/articles';
+import MockVisible from 'mock/stories-visible';
 import verticalLayout from 'views/templates/vertical_layout.scala.html!text';
 import mainLayout from 'views/templates/main.scala.html!text';
 import Router from 'modules/router';
@@ -17,7 +18,7 @@ import fakePushState from 'test/utils/push-state';
 
 export default class Loader {
     constructor() {
-        var mockConfig, mockSwitches, mockCollections, mockSearch, mockLastModified;
+        var mockConfig, mockSwitches, mockCollections, mockSearch, mockLastModified, mockVisibleStories;
 
         mockConfig = new MockConfig();
         mockConfig.set(testConfig.config);
@@ -29,12 +30,14 @@ export default class Loader {
         mockSearch.set(fixArticles.articlesData);
         mockSearch.latest(fixArticles.allArticles);
         mockLastModified = new MockLastModified();
+        mockVisibleStories = new MockVisible();
 
         this.mockConfig = mockConfig;
         this.mockSwitches = mockSwitches;
         this.mockCollections = mockCollections;
         this.mockSearch = mockSearch;
         this.mockLastModified = mockLastModified;
+        this.mockVisibleStories = mockVisibleStories;
 
         this.ko = inject(`
             ${verticalLayout}
@@ -64,5 +67,6 @@ export default class Loader {
         this.mockCollections.dispose();
         this.mockSearch.dispose();
         this.mockLastModified.dispose();
+        this.mockVisibleStories.dispose();
     }
 }
