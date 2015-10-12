@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import MockVisible from 'mock/stories-visible';
 import CollectionsLoader from 'test/utils/collections-loader';
 import * as dom from 'test/utils/dom-nodes';
 import drag from 'test/utils/drag';
@@ -11,11 +10,9 @@ import textInside from 'test/utils/text-inside';
 describe('Collections', function () {
     beforeEach(function () {
         this.testInstance = new CollectionsLoader();
-        this.mockVisible = new MockVisible();
     });
     afterEach(function () {
         this.testInstance.dispose();
-        this.mockVisible.dispose();
     });
 
     it('displays the correct timing', function (done) {
@@ -366,8 +363,9 @@ describe('Collections', function () {
 
     it('stories visible', function (done) {
         var mockCollection = this.testInstance.mockCollections;
+        var mockVisible = this.testInstance.mockVisibleStories;
 
-        this.mockVisible.set({
+        mockVisible.set({
             'slow/slower/slowest': {
                 desktop: 1,
                 mobile: 1

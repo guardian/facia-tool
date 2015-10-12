@@ -181,6 +181,7 @@ describe('Front', function () {
             status: 404
         }, {
             url: '/stories-visible/long',
+            method: 'POST',
             responseText: {}
         }, {
             url: '/api/preview/search?ids=' + encodeURIComponent('internal-code/page/') + '1*',

@@ -20,7 +20,7 @@ var register = _.once(() => {
                 return;
             }
 
-            System.import('./' + templateConfig.jspm).then(function (Component) {
+            System.import('facia-tool/' + templateConfig.jspm).then(function (Component) {
                 callback(function (params, componentInfo) {
                     if (Component.default) {
                         Component = Component.default;

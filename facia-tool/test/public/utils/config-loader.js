@@ -1,4 +1,4 @@
-import testConfig from 'test-config';
+import testConfig from 'test/config';
 import MockConfig from 'mock/config';
 import Router from 'modules/router';
 import handlers from 'modules/route-handlers';
