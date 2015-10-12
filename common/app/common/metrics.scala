@@ -318,31 +318,6 @@ object FaciaToolMetrics {
   )
 }
 
-object CommercialMetrics {
-
-  object TravelOffersLoadTimingMetric extends FrontendTimingMetric(
-    "commercial-travel-offers-load",
-    "Time spent running travel offers data load jobs"
-  )
-
-  object MasterClassesLoadTimingMetric extends FrontendTimingMetric(
-    "commercial-masterclasses-load",
-    "Time spent running MasterClasses load jobs"
-  )
-
-  object JobsLoadTimingMetric extends FrontendTimingMetric(
-    "commercial-jobs-load",
-    "Time spent running job ad data load jobs"
-  )
-
-  object SoulmatesLoadTimingMetric extends FrontendTimingMetric(
-    "commercial-soulmates-load",
-    "Time spent running soulmates ad data load jobs"
-  )
-
-  val all = Seq(TravelOffersLoadTimingMetric, JobsLoadTimingMetric, MasterClassesLoadTimingMetric, SoulmatesLoadTimingMetric)
-}
-
 object OnwardMetrics {
   object OnwardLoadTimingMetric extends FrontendTimingMetric(
     "onward-most-popular-load",

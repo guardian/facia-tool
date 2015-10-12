@@ -5,7 +5,7 @@ import common.Pagination
 import play.api.libs.json.{JsString, JsValue}
 
 case class Section(private val delegate: ApiSection, override val pagination: Option[Pagination] = None)
-  extends MetaData with AdSuffixHandlingForFronts with KeywordSponsorshipHandling {
+  extends MetaData {
 
   def isEditionalised = delegate.editions.length > 1
 

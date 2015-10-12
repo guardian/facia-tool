@@ -1,7 +1,6 @@
 package model
 
 import common.Edition
-import common.dfp.DfpAgent
 import implicits.Dates
 import org.scala_tools.time.Imports._
 
@@ -32,16 +31,7 @@ trait Trail extends Elements with Tags with Dates {
   /** TODO - this should be set in the Facia tool */
   def showByline: Boolean = isComment
 
-  lazy val shouldHidePublicationDate: Boolean = {
-    isAdvertisementFeature && webPublicationDate.isOlderThan(2.weeks)
-  }
-
-  override def isSponsored(maybeEdition: Option[Edition]): Boolean =
-    DfpAgent.isSponsored(tags, Some(section))
-  override lazy val isAdvertisementFeature: Boolean =
-    DfpAgent.isAdvertisementFeature(tags, Some(section))
-  override lazy val isFoundationSupported: Boolean =
-    DfpAgent.isFoundationSupported(tags, Some(section))
+  lazy val shouldHidePublicationDate: Boolean = webPublicationDate.isOlderThan(2.weeks)
 
   def faciaUrl: Option[String] = this match {
     case t: Trail => Option(t.url)

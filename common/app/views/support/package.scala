@@ -65,30 +65,7 @@ case class RowInfo(rowNum: Int, isLast: Boolean = false) {
   }
 }
 
-// whitespace in the <span> below is significant
-// (results in spaces after author names before commas)
-// so don't add any, fool.
-object ContributorLinks {
-  def apply(text: String, tags: Seq[Tag])(implicit request: RequestHeader): Html = Html {
-    tags.foldLeft(text) {
-      case (t, tag) =>
-        t.replaceFirst(tag.name,
-        s"""<span itemscope="" itemtype="http://schema.org/Person" itemprop="author">
-           |  <a rel="author" class="tone-colour" itemprop="url" data-link-name="auto tag link"
-           |    href="${LinkTo("/"+tag.id)}"><span itemprop="name">${tag.name}</span></a></span>""".stripMargin)
-    }
-  }
-  def apply(html: Html, tags: Seq[Tag])(implicit request: RequestHeader): Html = apply(html.body, tags)
-}
-
 object `package` extends Formats {
-
-  def withJsoup(html: Html)(cleaners: HtmlCleaner*): Html = withJsoup(html.body) { cleaners: _* }
-
-  def withJsoup(html: String)(cleaners: HtmlCleaner*): Html = {
-    val cleanedHtml = cleaners.foldLeft(Jsoup.parseBodyFragment(html)) { case (html, cleaner) => cleaner.clean(html) }
-    Html(cleanedHtml.body.html)
-  }
 
   def getTagContainerDefinition(page: MetaData) = {
     if (page.isContributorPage) {
@@ -141,12 +118,6 @@ object Format {
   def apply(a: Int): String = new DecimalFormat("#,###").format(a)
 }
 
-object cleanTrailText {
-  def apply(text: String)(implicit edition: Edition, request: RequestHeader): Html = {
-    withJsoup(RemoveOuterParaHtml(BulletCleaner(text)))(InBodyLinkCleaner("in trail text link"))
-  }
-}
-
 object StripHtmlTags {
   def apply(html: String): String = Jsoup.clean(html, Whitelist.none())
 }
@@ -160,17 +131,6 @@ object StripHtmlTagsAndUnescapeEntities{
   }
 }
 
-object TableEmbedComplimentaryToP extends HtmlCleaner {
-  override def clean(document: Document): Document = {
-    document.getElementsByClass("element-table").foreach { element =>
-      Option(element.nextElementSibling).map { nextSibling =>
-        if (nextSibling.tagName == "p") element.addClass("element-table--complimentary")
-      }
-    }
-    document
-  }
-}
-
 object RenderOtherStatus {
   def gonePage(implicit request: RequestHeader) = {
     val canonicalUrl: Option[String] = Some(s"/${request.path.drop(1).split("/").head}")
@@ -179,8 +139,6 @@ object RenderOtherStatus {
 
   def apply(result: Result)(implicit request: RequestHeader) = result.header.status match {
     case 404 => NoCache(NotFound)
-    case 410 if request.isJson => Cached(60)(JsonComponent(gonePage, "status" -> "GONE"))
-    case 410 => Cached(60)(Ok(views.html.expired(gonePage)))
     case _ => result
   }
 }
