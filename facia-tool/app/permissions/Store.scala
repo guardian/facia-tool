@@ -157,7 +157,7 @@ object PermissionsReader  {
   }
 
   def getOverridesForPerm(p: PermissionCacheEntry, user: User): PermissionAuth = {
-    p.overrides.find(_.userId==user.email).fold(
+    p.overrides.find(_.userId.toLowerCase==user.email.toLowerCase).fold(
       PermissionAuth(p.permission.defaultValue, InfoLevel(s"no override set for permission ${p.permission.name}, using default from service"))
     )(user => PermissionAuth(user.active, InfoLevel(s"user override set to ${user.active} for permission ${p.permission.name}")))
   }
