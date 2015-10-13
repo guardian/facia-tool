@@ -18,9 +18,8 @@
                     text: id
                 "></span>
             </div>
-            <div class="cnf-front__inner" data-bind="foreach: collections">
+            <div class="cnf-front__inner" data-bind="foreach: collections, makeDraggable: true">
                 <div class="cnf-collection open">
-                    <div data-bind="makeDroppable: true">
                         <span class="cnf-collection__index" data-bind="text: $index() + 1"></span>
                         <a class="cnf-collection__name" data-bind="
                             attr: {href: '/' + id, title: id},
