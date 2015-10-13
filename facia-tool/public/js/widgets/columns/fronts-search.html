@@ -1,0 +1,34 @@
+<div class="col__inner scrollable">
+    <div class="title">
+        Search
+    </div>
+    <div class="search-form">
+        <input
+          type="text"
+          placeholder="search for fronts"
+          data-bind='
+            value: searchTerm,
+            valueUpdate: ["afterkeydown", "afterpaste"]
+        '/>
+    </div>
+    <div class="cnf-fronts open" data-bind="foreach: searchedFronts">
+        <div class="cnf-front open">
+            <div class="title" data-bind="visible: id">
+                <span class="title--text" data-bind="
+                    text: id
+                "></span>
+            </div>
+            <div class="cnf-front__inner" data-bind="foreach: collections">
+                <div class="cnf-collection open">
+                    <div data-bind="makeDroppable: true">
+                        <span class="cnf-collection__index" data-bind="text: $index() + 1"></span>
+                        <a class="cnf-collection__name" data-bind="
+                            attr: {href: '/' + id, title: id},
+                            click: function() { return false;},
+                            text: meta.displayName() || '(no title)'"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
