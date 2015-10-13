@@ -1,9 +1,7 @@
 package model
 
-import common.dfp.{AdSize, AdSlot, DfpAgent}
 import common.{Edition, ManifestData, NavItem, Pagination}
 import conf.Configuration
-import model.meta.{Guardian, LinkedData, PotentialAction, WebPage}
 import play.api.libs.json.{JsBoolean, JsString, JsValue}
 
 /**
@@ -46,7 +44,6 @@ trait MetaData extends Tags {
   def adUnitSuffix = section
 
   def hasPageSkin(edition: Edition) = false
-  def sizeOfTakeoverAdsInSlot(slot: AdSlot, edition: Edition): Seq[AdSize] = Nil
   def hasAdInBelowTopNavSlot(edition: Edition) = false
   def omitMPUsFromContainers(edition: Edition) = false
   lazy val isInappropriateForSponsorship: Boolean = false
@@ -57,29 +54,13 @@ trait MetaData extends Tags {
   def isSurging: Seq[Int] = Seq(0)
 
   def metaData: Map[String, JsValue] = Map(
-    ("pageId", JsString(id)),
-    ("section", JsString(section)),
-    ("webTitle", JsString(webTitle)),
-    ("buildNumber", JsString(buildNumber)),
-    ("revisionNumber", JsString(revision)),
-    ("analyticsName", JsString(analyticsName)),
-    ("isFront", JsBoolean(isFront)),
-    ("adUnit", JsString(s"/${Configuration.commercial.dfpAccountId}/${Configuration.commercial.dfpAdUnitRoot}/$adUnitSuffix/ng")),
-    ("isSurging", JsString(isSurging.mkString(","))),
-    ("isAdvertisementFeature", JsBoolean(isAdvertisementFeature)),
-    ("videoJsFlashSwf", JsString(conf.Static("flash/components/video-js-swf/video-js.swf").path)),
-    ("videoJsVpaidSwf", JsString(conf.Static("flash/components/video-js-vpaid/video-js.swf").path))
+    ("pageId", JsString(id))
   )
 
   def openGraph: Map[String, String] = Map(
     "og:site_name" -> "the Guardian",
-    "fb:app_id"    -> Configuration.facebook.appId,
-    "og:type"      -> "website",
-    "og:url"       -> webUrl) ++ (iosId("applinks") map (iosId => List(
-    "al:ios:url" -> s"gnmguardian://$iosId",
-    "al:ios:app_store_id" -> "409128287",
-    "al:ios:app_name" -> "The Guardian"
-  )) getOrElse Nil)
+    "og:type"      -> "website"
+  )
 
   def openGraphImages: Seq[String] = Seq()
 
@@ -95,11 +76,6 @@ trait MetaData extends Tags {
     "twitter:app:id:googleplay" -> "com.guardian"
   )) getOrElse Nil)
 
-  def linkedData: List[LinkedData] = List(
-    Guardian()) ++ (iosType.map(_ => List(
-    WebPage(webUrl, PotentialAction(target = "android-app://com.guardian/" + webUrl.replace("://", "/")))
-  )).getOrElse(Nil))
-
   def iosId(referrer: String): Option[String] = iosType.map(iosType => s"$id?contenttype=$iosType&source=$referrer")
 
   // this could be article/front/list, it's a hint to the ios app to start the right engine
@@ -108,14 +84,6 @@ trait MetaData extends Tags {
   def cacheSeconds = 60
 
   def customSignPosting: Option[NavItem] = None
-
-  override def isSponsored(maybeEdition: Option[Edition]): Boolean =
-    DfpAgent.isSponsored(tags, Some(section), maybeEdition)
-  override lazy val isFoundationSupported: Boolean = DfpAgent.isFoundationSupported(tags, Some(section))
-  override lazy val isAdvertisementFeature: Boolean = DfpAgent.isAdvertisementFeature(tags, Some(section))
-  lazy val isExpiredAdvertisementFeature: Boolean =
-    DfpAgent.isExpiredAdvertisementFeature(id, tags, Some(section))
-  lazy val sponsorshipTag: Option[Tag] = DfpAgent.sponsorshipTag(tags, Some(section))
 
   def isPreferencesPage = metaData.get("isPreferencesPage").collect{ case prefs: JsBoolean => prefs.value } getOrElse false
 }
@@ -238,19 +206,10 @@ trait Elements {
     showcasePicture.getOrElse(false) || showcaseEmbed.getOrElse(false)
   }
 
-  def mainVideo: Option[VideoElement] = videos.find(_.isMain).headOption
-  lazy val hasMainVideo: Boolean = mainVideo.flatMap(_.videoAssets.headOption).isDefined
-
-  def mainAudio: Option[AudioElement] = audios.find(_.isMain).headOption
-  lazy val hasMainAudio: Boolean = mainAudio.flatMap(_.audioAssets.headOption).isDefined
-
   def mainEmbed: Option[EmbedElement] = embeds.find(_.isMain).headOption
   lazy val hasMainEmbed: Boolean = mainEmbed.flatMap(_.embedAssets.headOption).isDefined
 
   lazy val bodyImages: Seq[ImageElement] = images.filter(_.isBody)
-  lazy val bodyVideos: Seq[VideoElement] = videos.filter(_.isBody)
-  lazy val videoAssets: Seq[VideoAsset] = videos.flatMap(_.videoAssets)
-  lazy val audioAssets: Seq[AudioAsset] = audios.flatMap(_.audioAssets)
   lazy val thumbnail: Option[ImageElement] = images.find(_.isThumbnail)
 
   def elements: Seq[Element] = Nil
@@ -264,16 +223,6 @@ trait Elements {
 
   protected lazy val images: Seq[ImageElement] = elements.flatMap {
     case image :ImageElement => Some(image)
-    case _ => None
-  }
-
-  protected lazy val videos: Seq[VideoElement] = elements.flatMap {
-    case video: VideoElement => Some(video)
-    case _ => None
-  }
-
-  protected lazy val audios: Seq[AudioElement] = elements.flatMap {
-    case audio: AudioElement => Some(audio)
     case _ => None
   }
 
@@ -301,26 +250,8 @@ trait Tags {
   lazy val tones: Seq[Tag] = tagsOfType("tone")
   lazy val types: Seq[Tag] = tagsOfType("type")
 
-  def isSponsored(maybeEdition: Option[Edition] = None): Boolean
-  def hasMultipleSponsors: Boolean = DfpAgent.hasMultipleSponsors(tags)
-  def isAdvertisementFeature: Boolean
-  def hasMultipleFeatureAdvertisers: Boolean = DfpAgent.hasMultipleFeatureAdvertisers(tags)
-  def isFoundationSupported: Boolean
-  def hasInlineMerchandise: Boolean = DfpAgent.hasInlineMerchandise(tags)
   lazy val richLink: Option[String] = tags.flatMap(_.richLinkId).headOption
   lazy val openModule: Option[String] = tags.flatMap(_.openModuleId).headOption
-  def sponsor: Option[String] = DfpAgent.getSponsor(tags)
-  def sponsorshipType: Option[String] = {
-    if (isSponsored()) {
-      Option("sponsoredfeatures")
-    } else if (isAdvertisementFeature) {
-      Option("advertisement-features")
-    } else if (isFoundationSupported) {
-      Option("foundation-features")
-    } else {
-      None
-    }
-  }
 
   // Tones are all considered to be 'News' it is the default so we do not list news tones explicitly
   def isNews = !(isLiveBlog || isComment || isFeature)

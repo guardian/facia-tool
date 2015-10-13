@@ -256,53 +256,6 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
     lazy val witnessApiRoot = configuration.getMandatoryStringProperty("witness.apiRoot")
   }
 
-  object commercial {
-    lazy val dfpAdUnitRoot = configuration.getMandatoryStringProperty("guardian.page.dfpAdUnitRoot")
-    lazy val dfpAccountId = configuration.getMandatoryStringProperty("guardian.page.dfpAccountId")
-    lazy val books_url = configuration.getMandatoryStringProperty("commercial.books_url")
-    lazy val masterclasses_url = configuration.getMandatoryStringProperty("commercial.masterclasses_url")
-    lazy val soulmates_url = configuration.getMandatoryStringProperty("commercial.soulmates_url")
-    lazy val travel_url = configuration.getMandatoryStringProperty("commercial.travel_url")
-    lazy val traveloffers_url = configuration.getStringProperty("traveloffers.api.url") map (u => s"$u/consumerfeed")
-    lazy val guMerchandisingAdvertiserId = configuration.getMandatoryStringProperty("dfp.guMerchandising.advertiserId")
-
-    private lazy val commercialRoot = s"${environment.stage.toUpperCase}/commercial"
-
-    private lazy val dfpRoot = s"$commercialRoot/dfp"
-    lazy val dfpPaidForTagsDataKey = s"$dfpRoot/paid-for-tags-v3.json"
-    lazy val dfpInlineMerchandisingTagsDataKey = s"$dfpRoot/inline-merchandising-tags-v3.json"
-    lazy val dfpPageSkinnedAdUnitsKey = s"$dfpRoot/pageskinned-adunits-v6.json"
-    lazy val dfpLineItemsKey = s"$dfpRoot/lineitems-v3.json"
-    lazy val dfpAdFeatureReportKey = s"$dfpRoot/all-ad-features-v3.json"
-    lazy val dfpActiveAdUnitListKey = s"$dfpRoot/active-ad-units.csv"
-    lazy val dfpCreativeTemplatesKey = s"$dfpRoot/creative-templates.json"
-    lazy val topAboveNavSlotTakeoversKey = s"$dfpRoot/top-above-nav-slot-takeovers.json"
-    lazy val topBelowNavSlotTakeoversKey = s"$dfpRoot/top-below-nav-slot-takeovers.json"
-    lazy val topSlotTakeoversKey = s"$dfpRoot/top-slot-takeovers.json"
-
-    lazy val takeoversWithEmptyMPUsKey = s"$commercialRoot/takeovers-with-empty-mpus.json"
-
-    lazy val travelOffersS3Key = s"${environment.stage.toUpperCase}/commercial/cache/traveloffers.xml"
-
-    object magento {
-      lazy val domain = configuration.getStringProperty("magento.domain")
-      lazy val consumerKey = configuration.getStringProperty("magento.consumer.key")
-      lazy val consumerSecret = configuration.getStringProperty("magento.consumer.secret")
-      lazy val accessToken = configuration.getStringProperty("magento.access.token")
-      lazy val accessTokenSecret = configuration.getStringProperty("magento.access.token.secret")
-      lazy val authorizationPath = configuration.getStringProperty("magento.auth.path")
-      lazy val isbnLookupPath = configuration.getStringProperty("magento.isbn.lookup.path")
-    }
-
-    lazy val adOpsTeam = configuration.getStringProperty("email.adOpsTeam")
-    lazy val adOpsAuTeam = configuration.getStringProperty("email.adOpsTeam.au")
-    lazy val adOpsUsTeam = configuration.getStringProperty("email.adOpsTeam.us")
-    lazy val adTechTeam = configuration.getStringProperty("email.adTechTeam")
-    lazy val gLabsTeam = configuration.getStringProperty("email.gLabsTeam")
-
-    lazy val expiredAdFeatureUrl = s"${site.host}/info/2015/feb/06/paid-content-removal-policy"
-  }
-
   object open {
     lazy val ctaApiRoot = configuration.getMandatoryStringProperty("open.cta.apiRoot")
   }

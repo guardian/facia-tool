@@ -39,43 +39,6 @@ case class ImageAsset(delegate: Asset, index: Int) {
   } yield caption.endsWith(credit)).getOrElse(false)
 }
 
-case class VideoAsset(private val delegate: Asset, image: Option[ImageContainer]) {
-
-  private lazy val fields: Map[String,String] = delegate.typeData
-
-  lazy val url: Option[String] = delegate.file
-  lazy val mimeType: Option[String] = delegate.mimeType
-  lazy val width: Int = fields.get("width").map(_.toInt).getOrElse(0)
-  lazy val height: Int = fields.get("height").map(_.toInt).getOrElse(0)
-  lazy val encoding: Option[Encoding] = {
-    (url, mimeType) match {
-      case (Some(url), Some(mimeType)) => Some(Encoding(url, mimeType))
-      case _ => None
-    }
-  }
-
-  // The video duration in seconds
-  lazy val duration: Int = fields.get("durationSeconds").getOrElse("0").toInt +
-                           (fields.get("durationMinutes").getOrElse("0").toInt * 60)
-  lazy val blockVideoAds: Boolean = fields.get("blockAds").exists(_.toBoolean)
-
-  lazy val source: Option[String] = fields.get("source")
-  lazy val embeddable: Boolean = fields.get("embeddable").exists(_.toBoolean)
-  lazy val caption: Option[String] = fields.get("caption")
-}
-
-case class AudioAsset(private val delegate: Asset) {
-
-  private lazy val fields: Map[String,String] = delegate.typeData
-
-  lazy val url: Option[String] = delegate.file
-  lazy val mimeType: Option[String] = delegate.mimeType
-
-  // The audio duration in seconds
-  lazy val duration: Int = fields.get("durationSeconds").getOrElse("0").toInt +
-    (fields.get("durationMinutes").getOrElse("0").toInt * 60)
-}
-
 case class EmbedAsset(private val delegate: Asset) {
 
   private lazy val fields: Map[String,String] = delegate.typeData

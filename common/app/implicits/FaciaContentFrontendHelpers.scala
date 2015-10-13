@@ -2,7 +2,6 @@ package implicits
 
 import com.gu.contentapi.client.model.Element
 import com.gu.facia.api.models.{FaciaContent, ImageSlideshow, Replace}
-import common.dfp.DfpAgent
 import implicits.Dates._
 import implicits.FaciaContentImplicits._
 import model._
@@ -55,16 +54,8 @@ object FaciaContentFrontendHelpers {
 
     def trailPicture: Option[ImageContainer] = thumbnail.find(_.imageCrops.exists(_.width >= trailPicMinDesiredSize)).orElse(mainPicture).orElse(thumbnail)
 
-    protected lazy val videos: Seq[VideoElement] = frontendElements.flatMap { case video: VideoElement => Some(video)
-    case _ => None
-    }
-
-    def mainVideo: Option[VideoElement] = videos.find(_.isMain).headOption
-
-    def isAdvertisementFeature: Boolean = DfpAgent.isAdvertisementFeature(frontendTags, faciaContent.maybeSection)
-
     lazy val shouldHidePublicationDate: Boolean = {
-      isAdvertisementFeature && faciaContent.webPublicationDateOption.exists(_.isOlderThan(2.weeks))
+      faciaContent.webPublicationDateOption.exists(_.isOlderThan(2.weeks))
     }
 
     def url: String = faciaContent.maybeContent.map(SupportedUrl(_)).getOrElse(faciaContent.id)

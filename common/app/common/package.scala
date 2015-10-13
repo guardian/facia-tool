@@ -40,24 +40,15 @@ object `package` extends implicits.Strings with implicits.Requests with play.api
    */
 
   def renderFormat(htmlResponse: () => Html, jsonResponse: () => Html, metaData: model.MetaData)(implicit request: RequestHeader) = Cached(metaData) {
-    if (request.isJson)
-      JsonComponent(jsonResponse())
-    else
-      Ok(htmlResponse())
+    Ok(htmlResponse())
   }
 
   def renderFormat(htmlResponse: () => Html, jsonResponse: () => Html, metaData: model.MetaData, switches: Seq[SwitchTrait])(implicit request: RequestHeader) = Cached(metaData) {
-    if (request.isJson)
-      JsonComponent(metaData, jsonResponse())
-    else
-      Ok(htmlResponse())
+    Ok(htmlResponse())
   }
 
   def renderFormat(htmlResponse: () => Html, jsonResponse: () => Html, cacheTime: Integer)(implicit request: RequestHeader) = Cached(cacheTime) {
-    if (request.isJson)
-      JsonComponent(jsonResponse())
-    else
-      Ok(htmlResponse())
+    Ok(htmlResponse())
   }
 
   def renderFormat(html: () => Html, cacheTime: Integer)(implicit request: RequestHeader): Result = {

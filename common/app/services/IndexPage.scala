@@ -2,13 +2,11 @@ package services
 
 import com.gu.facia.api.models.CollectionConfig
 import com.gu.facia.api.utils.{CartoonKicker, ReviewKicker, TagKicker}
-import common.{Edition, LinkTo}
+import common.Edition
 import conf.Switches
 import contentapi.Paths
-import layout.DateHeadline.cardTimestampDisplay
 import layout._
 import model._
-import model.meta.{ItemList, ListItem}
 import org.joda.time.{DateTimeZone, DateTime}
 import play.api.mvc.RequestHeader
 import slices.{ContainerDefinition, Fixed, FixedContainers}
@@ -91,14 +89,6 @@ object IndexPage {
         (newMpuState, ((containerConfig, collection), Fixed(container)))
     }._2.toSeq
 
-    val front = Front.fromConfigsAndContainers(
-      containerDefinitions,
-      ContainerLayoutContext(
-        Set.empty,
-        hideCutOuts = indexPage.page.isContributorPage
-      )
-    )
-
     val headers = grouped.map(_.dateHeadline).zipWithIndex map { case (headline, index) =>
       if (index == 0) {
         indexPage.page match {
@@ -113,49 +103,6 @@ object IndexPage {
         LoneDateHeadline(headline)
       }
     }
-
-    front.copy(containers = front.containers.zip(headers).map({ case (container, header) =>
-      val timeStampDisplay = header match {
-        case MetaDataHeader(_, _, _, dateHeadline, _) => Some(cardTimestampDisplay(dateHeadline))
-        case LoneDateHeadline(dateHeadline) => Some(cardTimestampDisplay(dateHeadline))
-        case DescriptionMetaHeader(_) => None
-      }
-
-      container.copy(
-        customHeader = Some(header),
-        customClasses = Some(Seq(
-          Some("fc-container--tag"),
-          (container.index == 0 &&
-            indexPage.isFootballTeam &&
-            Switches.FixturesAndResultsContainerSwitch.isSwitchedOn) option "js-insert-team-stats-after"
-        ).flatten),
-        hideToggle = true,
-        showTimestamps = true,
-        useShowMore = false,
-        dateLinkPath = Some(s"/${indexPage.idWithoutEdition}")
-      ).transformCards({ card =>
-        card.copy(
-          timeStampDisplay = timeStampDisplay,
-          byline = if (indexPage.page.isContributorPage) None else card.byline,
-          useShortByline = true
-        ).setKicker(card.header.kicker flatMap {
-          case ReviewKicker if isReviewPage => None
-          case CartoonKicker if isCartoonPage => None
-          case TagKicker(_, _, id) if indexPage.isTagWithId(id) => None
-          case otherKicker => Some(otherKicker)
-        })
-      })
-    }))
-  }
-
-  def makeLinkedData(indexPage: IndexPage)(implicit request: RequestHeader): ItemList = {
-    ItemList(
-      LinkTo(indexPage.page.url),
-      indexPage.trails.zipWithIndex.map {
-        case (trail, index) =>
-          ListItem(position = index, url = Some(LinkTo(trail.url)))
-      }
-    )
   }
 
 }

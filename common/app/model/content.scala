@@ -5,8 +5,7 @@ import java.net.URL
 import com.gu.contentapi.client.model.{Asset, Content => ApiContent, Element => ApiElement, Tag => ApiTag}
 import com.gu.facia.api.utils._
 import com.gu.facia.client.models.TrailMetaData
-import common.dfp.DfpAgent
-import common.{LinkCounts, LinkTo, Reference}
+import common.Reference
 import conf.Configuration.facebook
 import conf.Switches.FacebookShareUseTrailPicFirstSwitch
 import layout.ContentWidths.GalleryMedia
@@ -100,7 +99,6 @@ class Content protected (val delegate: contentapi.Content) extends Trail with Me
     .orElse(trailPicture.flatMap(largestImageUrl))
     .getOrElse(facebook.imageFallback)
 
-  lazy val shouldHideAdverts: Boolean = fields.get("shouldHideAdverts").exists(_.toBoolean)
   override lazy val isInappropriateForSponsorship: Boolean = fields.get("isInappropriateForSponsorship").exists(_.toBoolean)
 
   lazy val references = delegate.references.map(ref => (ref.`type`, Reference(ref.id)._2)).toMap
@@ -274,7 +272,7 @@ class Content protected (val delegate: contentapi.Content) extends Trail with Me
   lazy val showSectionNotTag: Boolean = tags.exists{ tag => tag.id == "childrens-books-site/childrens-books-site" && tag.tagType == "blog" }
 
   lazy val sectionLabelLink : String = {
-    if (showSectionNotTag || DfpAgent.isAdvertisementFeature(tags, Some(section))) {
+    if (showSectionNotTag) {
       section
     } else tags.find(_.isKeyword) match {
       case Some(tag) => tag.id
@@ -310,8 +308,6 @@ object Content {
       case liveBlog if apiContent.isLiveBlog => new LiveBlog(apiContent)
       case article if apiContent.isArticle || apiContent.isSudoku => new Article(apiContent)
       case gallery if apiContent.isGallery => new Gallery(apiContent)
-      case video if apiContent.isVideo => new Video(apiContent)
-      case audio if apiContent.isAudio => new Audio(apiContent)
       case picture if apiContent.isImageContent => new ImageContent(apiContent)
       case _ => new Content(apiContent)
     }
@@ -341,11 +337,7 @@ class Article(delegate: contentapi.Content) extends Content(delegate) with Light
 
   // if you change these rules make sure you update IMAGES.md (in this project)
   override def trailPicture: Option[ImageContainer] = thumbnail.find(_.imageCrops.exists(_.width >= 620))
-    .orElse(mainPicture).orElse(videos.headOption)
-
-  override def hasInlineMerchandise = {
-    isbn.isDefined || super.hasInlineMerchandise
-  }
+    .orElse(mainPicture)
 
   lazy val hasVideoAtTop: Boolean = Jsoup.parseBodyFragment(body).body().children().headOption
     .exists(e => e.hasClass("gu-video") && e.tagName() == "video")
@@ -360,8 +352,6 @@ class Article(delegate: contentapi.Content) extends Content(delegate) with Light
     leftColElements.isDefined
   }
 
-  lazy val linkCounts = LinkTo.countLinks(body) + standfirst.map(LinkTo.countLinks).getOrElse(LinkCounts.None)
-
   override def metaData: Map[String, JsValue] = {
     val bookReviewIsbn = isbn.map { i: String => Map("isbn" -> JsString(i)) }.getOrElse(Map())
 
@@ -369,10 +359,6 @@ class Article(delegate: contentapi.Content) extends Content(delegate) with Light
     super.metaData ++ Map(
       ("contentType", JsString(contentType)),
       ("isLiveBlog", JsBoolean(isLiveBlog)),
-      ("inBodyInternalLinkCount", JsNumber(linkCounts.internal)),
-      ("inBodyExternalLinkCount", JsNumber(linkCounts.external)),
-      ("shouldHideAdverts", JsBoolean(shouldHideAdverts)),
-      ("hasInlineMerchandise", JsBoolean(hasInlineMerchandise)),
       ("lightboxImages", lightbox)
     ) ++ bookReviewIsbn
   }
@@ -391,7 +377,7 @@ class Article(delegate: contentapi.Content) extends Content(delegate) with Light
     "twitter:card" -> "summary_large_image"
   )
 
-  override def showFooterContainers = !isLiveBlog && !shouldHideAdverts
+  override def showFooterContainers = !isLiveBlog
 }
 
 class LiveBlog(delegate: contentapi.Content) extends Article(delegate) {
@@ -421,71 +407,6 @@ abstract class Media(delegate: contentapi.Content) extends Content(delegate) {
     "og:video" -> webUrl,
     "video:tag" -> keywords.map(_.name).mkString(",")
   )
-}
-
-class Audio(delegate: contentapi.Content) extends Media(delegate) {
-
-  override lazy val contentType = GuardianContentTypes.Audio
-
-  override def schemaType = Some("https://schema.org/AudioObject")
-
-  override lazy val metaData: Map[String, JsValue] =
-    super.metaData ++ Map("contentType" -> JsString(contentType))
-
-  lazy val downloadUrl: Option[String] = mainAudio
-    .flatMap(_.encodings.find(_.format == "audio/mpeg").map(_.url.replace("static.guim", "download.guardian")))
-
-  private lazy val podcastTag: Option[Tag] = tags.find(_.podcast.nonEmpty)
-  lazy val iTunesSubscriptionUrl: Option[String] = podcastTag.flatMap(_.podcast.flatMap(_.subscriptionUrl))
-  lazy val seriesFeedUrl: Option[String] = podcastTag.map(tag => s"/${tag.id}/podcast.xml")
-}
-
-object Audio {
-  def apply(delegate: ApiContent): Audio = new Audio(delegate)
-}
-
-class Video(delegate: contentapi.Content) extends Media(delegate) {
-
-  override lazy val contentType = GuardianContentTypes.Video
-
-  lazy val source: Option[String] = videos.find(_.isMain).flatMap(_.source)
-
-  override def schemaType = Some("http://schema.org/VideoObject")
-
-  override lazy val metaData: Map[String, JsValue] =
-    super.metaData ++ Map(
-      "contentType" -> JsString(contentType),
-      "source" -> JsString(source.getOrElse("")),
-      "embeddable" -> JsBoolean(videos.find(_.isMain).map(_.embeddable).getOrElse(false)),
-      "videoDuration" -> videos.find(_.isMain).map{ v => JsNumber(v.duration)}.getOrElse(JsNull)
-    )
-
-  // I know it's not too pretty
-  lazy val bylineWithSource: Option[String] = Some(Seq(
-    byline,
-    source.map{
-      case "guardian.co.uk" => "theguardian.com"
-      case other => s"Source: $other"
-    }
-  ).flatten.mkString(", ")).filter(_.nonEmpty)
-
-  lazy val videoLinkText: String = {
-    val suffixVariations = List(
-        " - video", " – video",
-        " - video interview", " – video interview",
-        " - video interviews"," – video interviews" )
-    suffixVariations.fold(headline.trim) { (str, suffix) => str.stripSuffix(suffix) }
-  }
-
-  def endSlatePath = EndSlateComponents.fromContent(this).toUriPath
-
-  override def cards: List[(String, String)] = super.cards ++ List(
-    "twitter:card" -> "summary_large_image"
-  )
-}
-
-object Video {
-  def apply(delegate: ApiContent): Video = new Video(delegate)
 }
 
 class Gallery(delegate: contentapi.Content) extends Content(delegate) with Lightboxable {
@@ -585,7 +506,6 @@ trait Lightboxable extends Content {
     JsObject(Seq(
       "id" -> JsString(id),
       "headline" -> JsString(headline),
-      "shouldHideAdverts" -> JsBoolean(shouldHideAdverts),
       "standfirst" -> JsString(standfirst.getOrElse("")),
       "images" -> JsArray(imageJson)
     ))
