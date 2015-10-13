@@ -93,6 +93,10 @@ var register = _.once(() => {
         viewModel: { jspm: 'widgets/autocomplete' },
         template: { text: 'widgets/autocomplete.html' }
     });
+    ko.components.register('fronts-search-widget', {
+        viewModel: { jspm: 'widgets/columns/fronts-search' },
+        template: { text: 'widgets/columns/fronts-search.html' }
+    });
     ko.components.register('fronts-config-widget', {
         viewModel: { jspm: 'widgets/columns/fronts-config' },
         template: { text: 'widgets/columns/fronts-config.html' }
