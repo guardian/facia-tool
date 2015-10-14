@@ -53,20 +53,20 @@ export default class SearchConfig extends ColumnWidget {
                 }
             }
         });
-
-        function searchForTermsInsideFrontCollections(searchTerms, fronts) {
-            return _.filter(fronts, function(front) {
-                return _.every(searchTerms, function(term) {
-                    return isTermInCollections(front.collections, term);
-                });
-            });
-        }
-
-        function isTermInCollections(collections, term) {
-            return _.some(collections, function(collection) {
-                return collection.meta.displayName().toLowerCase().indexOf(term) !== -1;
-            });
-        }
     }
+}
+
+function searchForTermsInsideFrontCollections(searchTerms, fronts) {
+    return _.filter(fronts, function(front) {
+        return _.every(searchTerms, function(term) {
+            return isTermInCollections(front.collections, term);
+        });
+    });
+}
+
+function isTermInCollections(collections, term) {
+    return _.some(collections, function(collection) {
+        return collection.meta.displayName().toLowerCase().indexOf(term) !== -1;
+    });
 }
 
