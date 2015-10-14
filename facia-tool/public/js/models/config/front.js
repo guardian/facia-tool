@@ -10,6 +10,7 @@ import asObservableProps from 'utils/as-observable-props';
 import cloneWithKey from 'utils/clone-with-key';
 import frontCount from 'utils/front-count';
 import populateObservables from 'utils/populate-observables';
+import generateCollections from 'utils/generate-collections';
 import validateImageSrc from 'utils/validate-image-src';
 
 export default class ConfigFront extends BaseClass {
@@ -244,19 +245,6 @@ export default class ConfigFront extends BaseClass {
         this.collections.dispose();
         this.dom = null;
     }
-}
-
-function generateCollections (collections) {
-    var collectionDefinition = vars.model.state().config.collections;
-
-    return _.chain(collections)
-        .map(id => {
-            if (collectionDefinition[id]) {
-                return new Collection(cloneWithKey(collectionDefinition[id], id));
-            }
-        })
-        .filter(collection => !!collection)
-        .value();
 }
 
 function updateCollections (collections) {

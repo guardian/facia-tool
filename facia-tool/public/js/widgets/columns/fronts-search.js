@@ -1,32 +1,21 @@
 import ko from 'knockout';
 import _ from 'underscore';
 import ColumnWidget from 'widgets/column-widget';
-import * as vars from 'modules/vars';
 import CONST from 'constants/defaults';
-import Collection from 'models/config/collection';
-import cloneWithKey from 'utils/clone-with-key';
+import generateCollections from 'utils/generate-collections';
 
 export default class SearchConfig extends ColumnWidget {
     constructor(params, element) {
         super(params, element);
         this.searchTerm = ko.observable('');
         this.searchedFronts = ko.observableArray([]);
-        var collectionDefinition = vars.model.state().config.collections;
         var originalFronts = _.reduce(this.baseModel.frontsList(), function (frontList, front) {
 
             if (_.every(CONST.askForConfirmation, function (element) {
                 return front.id !== element;
             }) ) {
 
-                front.groups = ko.observableArray(vars.CONST.frontGroups);
-                front.collections = _.chain(front.collections)
-                .map(id => {
-                    if (collectionDefinition[id]) {
-                        return new Collection(cloneWithKey(collectionDefinition[id], id));
-                    }
-                })
-                .filter(collection => !!collection)
-                .value();
+                front.collections = generateCollections(front.collections);
                 frontList.push(front);
             }
             return frontList;
