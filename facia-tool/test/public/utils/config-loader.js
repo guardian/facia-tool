@@ -12,7 +12,7 @@ import fakePushState from 'test/utils/push-state';
 import inject from 'test/utils/inject';
 
 export default class Loader {
-    constructor() {
+    constructor(searchString) {
         var mockConfig, mockSwitches, mockCollection, mockDefaults;
 
         mockConfig = new MockConfig();
@@ -34,7 +34,7 @@ export default class Loader {
         `);
         this.router = new Router(handlers, {
             pathname: '/test/config',
-            search: ''
+            search: searchString ? searchString : ''
         }, {
             pushState: (...args) => fakePushState.call(this.router.location, ...args)
         });
