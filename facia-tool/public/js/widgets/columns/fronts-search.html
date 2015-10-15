@@ -6,10 +6,9 @@
         <input
           type="text"
           placeholder="search for collections"
-          data-bind='
-            value: searchTerm,
-            valueUpdate: ["afterkeydown", "afterpaste"]
-        '/>
+          data-bind="
+            textInput: searchTerm
+        "/>
     </div>
     <div class="cnf-fronts open" data-bind="foreach: searchedFronts">
         <div class="cnf-front open">
