@@ -9,21 +9,28 @@ export default class SearchConfig extends ColumnWidget {
         super(params, element);
         this.searchTerm = ko.observable('');
         this.searchedFronts = ko.observableArray([]);
-        var originalFronts = _.reduce(this.baseModel.frontsList(), function (frontList, front) {
-
-            if (_.every(CONST.askForConfirmation, function (element) {
-                return front.id !== element;
-            }) ) {
-
-                let frontToSearch = { id: front.id.toLowerCase() };
-
-                frontToSearch.collections = generateCollections(front.collections);
-                frontList.push(frontToSearch);
-            }
-            return frontList;
-        }, []);
 
         var self = this;
+        var originalFronts;
+        populateOriginalFrontList();
+        this.subscribeOn(this.baseModel.state, populateOriginalFrontList);
+
+        function populateOriginalFrontList() {
+            originalFronts =  _.reduce(self.baseModel.frontsList(), function (frontList, front) {
+
+                if (_.every(CONST.askForConfirmation, function (element) {
+                    return front.id !== element;
+                }) ) {
+
+                    let frontToSearch = { id: front.id.toLowerCase() };
+
+                    frontToSearch.collections = generateCollections(front.collections);
+                    frontList.push(frontToSearch);
+                }
+                return frontList;
+            }, []);
+        }
+
         this.searchTerm.subscribe(function (newTerms) {
 
             if (newTerms.length < 2) {
@@ -32,7 +39,7 @@ export default class SearchConfig extends ColumnWidget {
             } else {
 
                 newTerms = newTerms.toLowerCase();
-                var allSearchTerms = newTerms.match(/\S+/g);;
+                var allSearchTerms = newTerms.match(/\S+/g);
 
                 if (allSearchTerms.length === 1) {
                     self.searchedFronts(_.filter(originalFronts, function(front) {
