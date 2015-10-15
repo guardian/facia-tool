@@ -9,7 +9,7 @@ export default class SearchConfig extends ColumnWidget {
         super(params, element);
         this.searchTerm = ko.observable('');
         this.searchedFronts = ko.observableArray([]);
-        var originalFronts = _.reduce(this.baseModel.frontsList(), function (frontList, front) {
+        var originalFronts = _.reduce(JSON.parse(JSON.stringify(this.baseModel.frontsList())), function (frontList, front) {
 
             if (_.every(CONST.askForConfirmation, function (element) {
                 return front.id !== element;
