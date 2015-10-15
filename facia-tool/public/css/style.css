@@ -1635,6 +1635,18 @@ button {
     color: #000000;
 }
 
+ol.search_list {
+    list-style-type: none;
+    counter-reset: ol-counter;
+}
+ol.search_list > li::before {
+    content: counter(ol-counter);
+    counter-increment: ol-counter;
+    color: #666666;
+    font-size: 12px;
+    padding-right: 4px;
+}
+
 .cnf-front__inner {
     padding: 5px 10px 0 10px;
 }
