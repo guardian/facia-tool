@@ -56,7 +56,6 @@ export default class Front extends ColumnWidget {
         });
 
         this.alertFrontIsStale = ko.observable();
-        this.uiOpenElement = ko.observable();
         this.uiOpenArticle = ko.observable();
 
         this.allExpanded = ko.observable(true);
@@ -87,7 +86,6 @@ export default class Front extends ColumnWidget {
                 openArticle.close();
             }
             this.uiOpenArticle(article);
-            this.uiOpenElement(element);
         });
 
         this.listenOn(mediator, 'presser:live', this.pressLiveFront);
@@ -236,10 +234,6 @@ export default class Front extends ColumnWidget {
         if (this.mode() === 'draft') {
             this.pressDraftFront();
         }
-    }
-
-    elementHasFocus(meta) {
-        return meta === this.uiOpenElement();
     }
 
     getCollectionList(list) {

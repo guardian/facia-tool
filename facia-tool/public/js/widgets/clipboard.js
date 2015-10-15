@@ -35,13 +35,11 @@ class Clipboard extends BaseWidget {
         this.storage = storage.bind('gu.front-tools.clipboard.' +
             (classCount ? classCount + '.' : '') + vars.model.identity.email);
         classCount += 1;
-        this.uiOpenElement = ko.observable();
         this.column = params.column;
         this.group = new Group({
             parentType: 'Clipboard',
             keepCopy:  true,
-            front: null,
-            elementHasFocus: this.elementHasFocus.bind(this)
+            front: null
         });
         this.group.items(this.getItemsFromStorage());
 
@@ -63,14 +61,7 @@ class Clipboard extends BaseWidget {
         return inMemory ? inMemory.displayName : null;
     }
 
-    elementHasFocus(meta) {
-        return meta === this.uiOpenElement();
-    }
-
-    onUIOpen(element, article, front) {
-        if (!front) {
-            this.uiOpenElement(element);
-        }
+    onUIOpen(element, article) {
         updateClipboardScrollable(article ? {
             targetGroup: article.group
         } : null);
