@@ -9,14 +9,16 @@ export default class SearchConfig extends ColumnWidget {
         super(params, element);
         this.searchTerm = ko.observable('');
         this.searchedFronts = ko.observableArray([]);
-        var originalFronts = _.reduce(JSON.parse(JSON.stringify(this.baseModel.frontsList())), function (frontList, front) {
+        var originalFronts = _.reduce(this.baseModel.frontsList(), function (frontList, front) {
 
             if (_.every(CONST.askForConfirmation, function (element) {
                 return front.id !== element;
             }) ) {
 
-                front.collections = generateCollections(front.collections);
-                frontList.push(front);
+                let frontToSearch = { id: front.id.toLowerCase() };
+
+                frontToSearch.collections = generateCollections(front.collections);
+                frontList.push(frontToSearch);
             }
             return frontList;
         }, []);
@@ -34,14 +36,14 @@ export default class SearchConfig extends ColumnWidget {
 
                 if (allSearchTerms.length === 1) {
                     self.searchedFronts(_.filter(originalFronts, function(front) {
-                        return front.id.toLowerCase().indexOf(allSearchTerms[0]) !== -1 ||
+                        return front.id.indexOf(allSearchTerms[0]) !== -1 ||
                             isTermInCollections(front.collections, allSearchTerms[0]);
                     }) );
 
                 } else {
                     let firstTerm = allSearchTerms[ 0 ];
                     let matchedFronts = _.filter(originalFronts, function(front) {
-                        return front.id.toLowerCase().indexOf(firstTerm) !== -1;
+                        return front.id.indexOf(firstTerm) !== -1;
                     });
 
                     if (matchedFronts.length > 0 ) {
