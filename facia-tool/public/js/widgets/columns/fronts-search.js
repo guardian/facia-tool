@@ -21,11 +21,10 @@ export default class SearchConfig extends ColumnWidget {
                 if (_.every(CONST.askForConfirmation, function (element) {
                     return front.id !== element;
                 }) ) {
-
-                    let frontToSearch = { id: front.id.toLowerCase() };
-
-                    frontToSearch.collections = generateCollections(front.collections);
-                    frontList.push(frontToSearch);
+                    frontList.push({
+                        id: front.id.toLowerCase(),
+                        collections: generateCollections(front.collections)
+                    });
                 }
                 return frontList;
             }, []);
