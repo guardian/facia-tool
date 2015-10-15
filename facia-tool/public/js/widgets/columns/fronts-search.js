@@ -9,14 +9,15 @@ export default class SearchConfig extends ColumnWidget {
         super(params, element);
         this.searchTerm = ko.observable('');
         this.searchedFronts = ko.observableArray([]);
+        this.originalFronts;
 
         var self = this;
-        var originalFronts;
         populateOriginalFrontList();
         this.subscribeOn(this.baseModel.state, populateOriginalFrontList);
+        this.subscribeOn(this.searchTerm, this.search);
 
         function populateOriginalFrontList() {
-            originalFronts =  _.reduce(self.baseModel.frontsList(), function (frontList, front) {
+            self.originalFronts =  _.reduce(self.baseModel.frontsList(), function (frontList, front) {
 
                 if (_.every(CONST.askForConfirmation, function (element) {
                     return front.id !== element;
@@ -29,38 +30,36 @@ export default class SearchConfig extends ColumnWidget {
                 return frontList;
             }, []);
         }
+    }
 
-        this.searchTerm.subscribe(function (newTerms) {
+    search() {
+        if (this.searchTerm().length < 2) {
+            this.searchedFronts([]);
 
-            if (newTerms.length < 2) {
-                self.searchedFronts([]);
+        } else {
+
+            var allSearchTerms = this.searchTerm().toLowerCase().match(/\S+/g);
+
+            if (allSearchTerms.length === 1) {
+                this.searchedFronts(_.filter(this.originalFronts, function(front) {
+                    return front.id.indexOf(allSearchTerms[0]) !== -1 ||
+                    isTermInCollections(front.collections, allSearchTerms[0]);
+                }) );
 
             } else {
+                let firstTerm = allSearchTerms[ 0 ];
+                let matchedFronts = _.filter(this.originalFronts, function(front) {
+                    return front.id.indexOf(firstTerm) !== -1;
+                });
 
-                newTerms = newTerms.toLowerCase();
-                var allSearchTerms = newTerms.match(/\S+/g);
-
-                if (allSearchTerms.length === 1) {
-                    self.searchedFronts(_.filter(originalFronts, function(front) {
-                        return front.id.indexOf(allSearchTerms[0]) !== -1 ||
-                            isTermInCollections(front.collections, allSearchTerms[0]);
-                    }) );
-
+                if (matchedFronts.length > 0 ) {
+                    allSearchTerms.splice(0, 1);
+                    this.searchedFronts(searchForTermsInsideFrontCollections(allSearchTerms, matchedFronts));
                 } else {
-                    let firstTerm = allSearchTerms[ 0 ];
-                    let matchedFronts = _.filter(originalFronts, function(front) {
-                        return front.id.indexOf(firstTerm) !== -1;
-                    });
-
-                    if (matchedFronts.length > 0 ) {
-                        allSearchTerms.splice(0, 1);
-                        self.searchedFronts(searchForTermsInsideFrontCollections(allSearchTerms, matchedFronts));
-                    } else {
-                        self.searchedFronts(searchForTermsInsideFrontCollections(allSearchTerms, originalFronts));
-                    }
+                    this.searchedFronts(searchForTermsInsideFrontCollections(allSearchTerms, this.originalFronts));
                 }
             }
-        });
+        }
     }
 }
 
