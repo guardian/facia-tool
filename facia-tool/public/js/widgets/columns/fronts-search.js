@@ -11,25 +11,25 @@ export default class SearchConfig extends ColumnWidget {
         this.searchedFronts = ko.observableArray([]);
         this.originalFronts;
 
-        var self = this;
-        populateOriginalFrontList();
-        this.subscribeOn(this.baseModel.state, populateOriginalFrontList);
+        this.populateOriginalFrontList();
+        this.subscribeOn(this.baseModel.state, this.populateOriginalFrontList);
         this.subscribeOn(this.searchTerm, this.search);
 
-        function populateOriginalFrontList() {
-            self.originalFronts =  _.reduce(self.baseModel.frontsList(), function (frontList, front) {
+    }
 
-                if (_.every(CONST.askForConfirmation, function (element) {
-                    return front.id !== element;
-                }) ) {
-                    frontList.push({
-                        id: front.id.toLowerCase(),
-                        collections: generateCollections(front.collections)
-                    });
-                }
-                return frontList;
-            }, []);
-        }
+    populateOriginalFrontList() {
+        this.originalFronts =  _.reduce(this.baseModel.frontsList(), function (frontList, front) {
+
+            if (_.every(CONST.askForConfirmation, function (element) {
+                return front.id !== element;
+            }) ) {
+                frontList.push({
+                    id: front.id.toLowerCase(),
+                    collections: generateCollections(front.collections)
+                });
+            }
+            return frontList;
+        }, []);
     }
 
     search() {
