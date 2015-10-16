@@ -27,5 +27,10 @@ export default {
         title: 'Fronts',
         layoutType: 'config',
         widget: 'fronts-config-widget'
+    },
+    'searchFronts': {
+        title: 'Search',
+        layoutType: 'search',
+        widget: 'fronts-search-widget'
     }
 };

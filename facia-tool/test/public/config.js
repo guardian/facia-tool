@@ -13,6 +13,12 @@ export default {
                 description: 'Broken news',
                 title: 'UK',
                 priority: 'test'
+            },
+            world: {
+              collections: ['environment'],
+              description: 'World news',
+              title: 'World',
+              priority: 'test'
             }
         },
         collections: {
@@ -23,6 +29,10 @@ export default {
             'sport': {
                 displayName: 'Sport',
                 groups: ['short', 'tall', 'grande', 'venti'],
+                type: 'slow/slower/slowest'
+            },
+            'environment': {
+                displayName: 'Environment',
                 type: 'slow/slower/slowest'
             }
         }

@@ -24,7 +24,8 @@ export default {
         extensions.sparklinesTrails
     ]),
     'config': getLoader([
-        columns.frontsConfig
+        columns.frontsConfig,
+        columns.searchFronts
     ], [
         extensions.cardTypes,
         extensions.navSections

@@ -6,14 +6,13 @@ import ConfigLoader from 'test/utils/config-loader';
 import textInside from 'test/utils/text-inside';
 
 describe('Config', function () {
-    beforeEach(function () {
-        this.testInstance = new ConfigLoader();
-    });
     afterEach(function () {
         this.testInstance.dispose();
     });
 
     it('/config/fronts', function (done) {
+
+        this.testInstance = new ConfigLoader();
         var mockConfig = this.testInstance.mockConfig,
             baseModel;
 
@@ -30,7 +29,15 @@ describe('Config', function () {
             expect(data.initialCollection.type).toEqual('dynamic/test');
             expect(data.priority).toEqual('test');
 
-            return dragAnotherCollectionInside();
+            $('.content-pane:nth(1) .title--text:nth(1)').click();
+            return dragAnotherCollectionInsideFirstColumn(mockConfig, baseModel, $('.content-pane:nth(1) .cnf-collection')[1], {
+                fronts: {
+                    'test/front': {
+                        collections: ['sport', 'gossip'],
+                        priority: 'test'
+                    }
+                }
+            });
         })
         .then(function (request) {
             expect(request.front).toEqual('test/front');
@@ -86,30 +93,6 @@ describe('Config', function () {
             });
         }
 
-        function dragAnotherCollectionInside () {
-            return configAction(mockConfig, baseModel, () => {
-                // Open the front in the second panel
-                $('.content-pane:nth(1) .title--text:nth(1)').click();
-                var collectionToDrag = $('.content-pane:nth(1) .cnf-collection')[1];
-                var collectionToDropTo = $('.content-pane:nth(0) .cnf-fronts .cnf-collection')[0];
-                var droppableContainer = $('.content-pane:nth(0) .cnf-fronts .droppable')[0];
-                var droppableTarget = drag.droppable(droppableContainer);
-                var sourceCollection = new drag.Collection(collectionToDrag);
-
-                droppableTarget.dragstart(collectionToDrag, sourceCollection);
-                droppableTarget.drop(collectionToDropTo, sourceCollection);
-
-                return {
-                    fronts: {
-                        'test/front': {
-                            collections: ['sport', 'gossip'],
-                            priority: 'test'
-                        }
-                    }
-                };
-            });
-        }
-
         function dragInsideTheSameCollection () {
             return configAction(mockConfig, baseModel, () => {
                 // Open the front in the second panel
@@ -133,4 +116,59 @@ describe('Config', function () {
             });
         }
     });
+
+    it('allows for searching fronts', function (done) {
+        this.testInstance = new ConfigLoader('?layout=config,search');
+        var mockConfig = this.testInstance.mockConfig,
+            baseModel;
+
+        this.testInstance.load()
+        .then(model => {
+            baseModel = model;
+            return dom.type($('input'), 'uk');
+        })
+        .then(() => {
+
+            expect(textInside($('.content-pane:nth(1) .title--text:nth(0)'))).toEqual('uk');
+            expect(textInside($('.content-pane:nth(1) .cnf-collection__name')[0])).toEqual('Latest News');
+
+            $('.content-pane:nth(0) .title--text:nth(1)').click();
+
+            return dragAnotherCollectionInsideFirstColumn(mockConfig, baseModel, $('.content-pane:nth(1) .cnf-collection')[0], {
+                fronts: {
+                    'world': {
+                        collections: ['latest', 'environment'],
+                        priority: 'test'
+                    }
+                }
+            });
+        })
+        .then(function (request) {
+            expect(request.front).toEqual('world');
+            var data = request.data;
+            expect(data.id).toEqual('world');
+            expect(data.priority).toEqual('test');
+            expect(data.collections).toEqual(['latest', 'environment']);
+            expect(textInside($('.content-pane:nth(0) .cnf-fronts .droppable .cnf-collection__name')[0])).toEqual('Latest News');
+            expect(textInside($('.content-pane:nth(0) .cnf-fronts .droppable .cnf-collection__name')[1])).toEqual('Environment');
+        })
+        .then(done)
+        .catch(done.fail);
+
+    });
+
+    function dragAnotherCollectionInsideFirstColumn(mockConfig, baseModel, collectionToDrag, returnObject) {
+        return configAction(mockConfig, baseModel, () => {
+            var collectionToDropTo = $('.content-pane:nth(0) .cnf-fronts .cnf-collection')[0];
+            var droppableContainer = $('.content-pane:nth(0) .cnf-fronts .droppable')[0];
+            var droppableTarget = drag.droppable(droppableContainer);
+            var sourceCollection = new drag.Collection(collectionToDrag);
+
+            droppableTarget.dragstart(collectionToDrag, sourceCollection);
+            droppableTarget.drop(collectionToDropTo, sourceCollection);
+
+            return returnObject;
+        });
+    }
+
 });
