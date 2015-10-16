@@ -70,11 +70,25 @@
         <!-- ko if: state.showIndicators -->
             <div class="desktop-indicator">
                 <i class="fa fa-laptop" title="Visible on desktop"></i>
-                <div class="indicator" data-bind="indicatorHeight: 'desktop'"></div>
+                <div class="indicator" data-bind="
+                    indicatorHeight: 'desktop',
+                    css: {'hideShowMore': configMeta.hideShowMore},
+                    attr: {title: configMeta.hideShowMore() ?
+                        'Extra trails will not be visible' :
+                        'Extra trails are hidden by \'show more\' button'
+                    }
+                "></div>
             </div>
             <div class="mobile-indicator">
                 <i class="fa fa-mobile" title="Visible on mobile"></i>
-                <div class="indicator" data-bind="indicatorHeight: 'mobile'"></div>
+                <div class="indicator" data-bind="
+                    indicatorHeight: 'mobile',
+                    css: {'hideShowMore': configMeta.hideShowMore},
+                    attr: {title: configMeta.hideShowMore() ?
+                        'Extra trails will not be visible' :
+                        'Extra trails are hidden by \'show more\' button'
+                    }
+                "></div>
             </div>
         <!-- /ko -->
 

@@ -75,6 +75,7 @@ define([
         this.configMeta   = asObservableProps([
             'type',
             'displayName',
+            'hideShowMore',
             'uneditable']);
         populateObservables(this.configMeta, opts);
 
