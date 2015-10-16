@@ -23,6 +23,16 @@
                         attr: {href: '/' + id, title: id},
                         click: function() { return false;},
                         text: meta.displayName() || '(no title)'"></a>
+                    <span class="placements" data-bind="if: parents().length > 1">
+                        also on
+                        <span data-bind="foreach: parents">
+                            <!-- ko if: $parents[1].id !== id -->
+                                <span class="cnf-collection__also-on" data-bind="
+                                    text: id"
+                                ></span>
+                            <!-- /ko -->
+                        </span>
+                    </span>
                 </li>
             </ol>
         </div>

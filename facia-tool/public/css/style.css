@@ -1709,13 +1709,13 @@ ol.search_list > li::before {
     display: none;
 }
 
-.cnf-collection .placements a {
+.cnf-collection__also-on {
     color: #666666;
     border-left: 1px solid #dbd8c9;
     padding-left: 5px;
 }
 
-.cnf-collection .placements a:first-child {
+.cnf-collection__also-on:first-child {
     border-left: inherit;
     padding-left: inherit;
 }
