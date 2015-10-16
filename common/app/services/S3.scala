@@ -1,6 +1,5 @@
 package services
 
-import com.gu.googleauth.UserIdentity
 import com.gu.pandomainauth.model.User
 import conf.{Switches, Configuration}
 import common.Logging
@@ -17,7 +16,6 @@ import javax.crypto.spec.SecretKeySpec
 import sun.misc.BASE64Encoder
 import com.amazonaws.auth.AWSSessionCredentials
 import common.S3Metrics.S3ClientExceptionsMetric
-import com.gu.googleauth.UserIdentity
 import java.util.zip.GZIPOutputStream
 import java.io._
 import conf.aws
