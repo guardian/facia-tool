@@ -30,7 +30,6 @@ object Frontend extends Build with Prototypes {
       jSoup,
       kinesisLogBack,
       logStash,
-      playGoogleAuth,
       panDomainAuth,
       quartzScheduler,
       scalajTime,
