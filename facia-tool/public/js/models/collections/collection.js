@@ -323,21 +323,29 @@ define([
     Collection.prototype.replaceArticle = function(articleId) {
         var self = this;
         var collectionList = this.front.getCollectionList(this.raw);
+        var group;
+        var articleIndex;
+        var article;
 
-        _.find(collectionList, function(item, index) {
+        _.find(collectionList, function(item) {
             if (item.id === articleId) {
-                var group = _.find(self.groups, function(g) {
+                group = _.find(self.groups, function(g) {
                     return (parseInt((item.meta || {}).group, 10) || 0) === g.index;
                 });
-                var article = new Article(_.extend(item, {
+                article = new Article(_.extend(item, {
                     group: group,
                     slimEditor: self.front.slimEditor()
                 }));
 
-                group.items.splice(index, 1, article);
                 return true;
             }
         });
+
+        var articleIndex = _.findIndex(group.items(), function(item) {
+            return (item.id() === articleId);
+        });
+
+        group.items.splice(articleIndex, 1, article);
         this.decorate();
     };
 
