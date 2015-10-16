@@ -8,6 +8,7 @@ import editAction from 'test/utils/edit-actions';
 import * as mockjax from 'test/utils/mockjax';
 import textInside from 'test/utils/text-inside';
 import * as wait from 'test/utils/wait';
+import 'widgets/trail-editor.html!text';
 
 describe('Alternate Drag', function () {
     beforeEach(function (done) {
@@ -47,7 +48,8 @@ describe('Alternate Drag', function () {
 
         function openArticle () {
             $('collection-widget .element__headline:nth(0)').click();
-            return Promise.resolve();
+            // Wait for knockout to load editors
+            return wait.ms(50);
         }
         function selectSomeMetadata () {
             $('.editor--boolean--isBreaking').click();
