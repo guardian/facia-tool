@@ -73,7 +73,7 @@ function searchForTermsInsideFrontCollections(searchTerms, fronts) {
 
 function isTermInCollections(collections, term) {
     return _.some(collections, function(collection) {
-        return collection.meta.displayName().toLowerCase().indexOf(term) !== -1;
+        return collection.meta.displayName() && collection.meta.displayName().toLowerCase().indexOf(term) !== -1;
     });
 }
 
