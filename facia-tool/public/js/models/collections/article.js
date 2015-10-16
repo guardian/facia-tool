@@ -3,13 +3,12 @@ define([
     'knockout',
     'underscore',
     'jquery',
+    'constants/article-meta-fields',
     'utils/alert',
     'utils/as-observable-props',
     'utils/deep-get',
-    'utils/draggable-element',
     'utils/full-trim',
     'utils/human-time',
-    'utils/identity',
     'utils/is-guardian-url',
     'utils/logger',
     'utils/mediator',
@@ -19,11 +18,11 @@ define([
     'utils/snap',
     'utils/url-abs-path',
     'utils/url-host',
-    'utils/validate-image-src',
     'utils/visited-article-storage',
     'modules/copied-article',
     'modules/authed-ajax',
     'modules/content-api',
+    'models/collections/editor',
     'models/group'
 ],
     function (
@@ -31,13 +30,12 @@ define([
         ko,
         _,
         $,
+        metaFields,
         alert,
         asObservableProps,
         deepGet,
-        draggableElement,
         fullTrim,
         humanTime,
-        identity,
         isGuardianUrl,
         logger,
         mediator,
@@ -47,11 +45,11 @@ define([
         snap,
         urlAbsPath,
         urlHost,
-        validateImageSrc,
         visitedArticleStorage,
         copiedArticle,
         authedAjax,
         contentApi,
+        Editor,
         Group
     ) {
         alert = alert.default;
@@ -65,12 +63,14 @@ define([
         populateObservables = populateObservables.default;
         mediator = mediator.default;
         humanTime = humanTime.default;
-        validateImageSrc = validateImageSrc.default;
         visitedArticleStorage = visitedArticleStorage.default;
         copiedArticle = copiedArticle.default;
         logger = logger.default;
         Group = Group.default;
         reportErrors = reportErrors.default;
+        metaFields = metaFields.default;
+
+        var createEditor = Editor.default.create;
 
         var capiProps = [
                 'webUrl',
@@ -85,267 +85,7 @@ define([
                 'firstPublicationDate',
                 'scheduledPublicationDate',
                 'thumbnail',
-                'secureThumbnail'],
-
-            metaFields = [
-                {
-                    key: 'headline',
-                    editable: true,
-                    slimEditable: true,
-                    ifState: 'enableContentOverrides',
-                    label: 'headline',
-                    type: 'text',
-                    maxLength: 120
-                },
-                {
-                    key: 'trailText',
-                    editable: true,
-                    ifState: 'enableContentOverrides',
-                    omitForSupporting: true,
-                    label: 'trail text',
-                    type: 'text'
-                },
-                {
-                    key: 'byline',
-                    editable: true,
-                    ifState: 'enableContentOverrides',
-                    'if': 'showByline',
-                    omitForSupporting: true,
-                    label: 'byline',
-                    type: 'text'
-                },
-                {
-                    key: 'customKicker',
-                    editable: true,
-                    'if': 'showKickerCustom',
-                    label: 'custom kicker',
-                    type: 'text'
-                },
-                {
-                    key: 'href',
-                    label: 'special link URL',
-                    type: 'text'
-                },
-                {
-                    key: 'imageSrc',
-                    editable: true,
-                    dropImage: true,
-                    omitForSupporting: true,
-                    'if': 'imageReplace',
-                    label: 'replacement image URL',
-                    validator: {
-                        fn: 'validateImage',
-                        params: {
-                            src: 'imageSrc',
-                            width: 'imageSrcWidth',
-                            height: 'imageSrcHeight',
-                            options: {
-                                maxWidth: 1000,
-                                minWidth: 400,
-                                widthAspectRatio: 5,
-                                heightAspectRatio: 3
-                            }
-                        }
-                    },
-                    type: 'text'
-                },
-                {
-                    key: 'imageSrcWidth',
-                    'if': 'imageReplace',
-                    label: 'replacement image width',
-                    type: 'text'
-                },
-                {
-                    key: 'imageSrcHeight',
-                    'if': 'imageReplace',
-                    label: 'replacement image height',
-                    type: 'text'
-                },
-                {
-                    key: 'imageCutoutSrc',
-                    editable: true,
-                    dropImage: true,
-                    omitForSupporting: true,
-                    'if': 'imageCutoutReplace',
-                    label: 'replacement cutout image URL',
-                    validator: {
-                        fn: 'validateImage',
-                        params: {
-                            src: 'imageCutoutSrc',
-                            width: 'imageCutoutSrcWidth',
-                            height: 'imageCutoutSrcHeight',
-                            options: {
-                                maxWidth: 1000,
-                                minWidth: 400
-                            }
-                        }
-                    },
-                    type: 'text'
-                },
-                {
-                    key: 'imageCutoutSrcWidth',
-                    'if': 'imageCutoutReplace',
-                    label: 'replacement cutout image width',
-                    type: 'text'
-                },
-                {
-                    key: 'imageCutoutSrcHeight',
-                    'if': 'imageCutoutReplace',
-                    label: 'replacement cutout image height',
-                    type: 'text'
-                },
-                {
-                    key: 'isBreaking',
-                    editable: true,
-                    singleton: 'kicker',
-                    label: 'breaking news',
-                    type: 'boolean'
-                },
-                {
-                    key: 'isBoosted',
-                    editable: true,
-                    omitForSupporting: true,
-                    ifState: 'inDynamicCollection',
-                    label: 'boost',
-                    type: 'boolean'
-                },
-                {
-                    key: 'showLivePlayable',
-                    editable: true,
-                    omitForSupporting: true,
-                    ifState: 'isLiveBlog',
-                    label: 'show updates',
-                    type: 'boolean'
-                },
-                {
-                    key: 'showMainVideo',
-                    editable: true,
-                    omitForSupporting: true,
-                    ifState: 'hasMainVideo',
-                    singleton: 'images',
-                    label: 'show video',
-                    type: 'boolean'
-                },
-                {
-                    key: 'showBoostedHeadline',
-                    editable: true,
-                    omitForSupporting: true,
-                    label: 'large headline',
-                    type: 'boolean'
-                },
-                {
-                    key: 'showQuotedHeadline',
-                    editable: true,
-                    omitForSupporting: true,
-                    label: 'quote headline',
-                    type: 'boolean'
-                },
-                {
-                    key: 'showByline',
-                    editable: true,
-                    omitForSupporting: true,
-                    label: 'byline',
-                    type: 'boolean'
-                },
-                {
-                    key: 'imageCutoutReplace',
-                    editable: true,
-                    omitForSupporting: true,
-                    singleton: 'images',
-                    label: 'cutout image',
-                    type: 'boolean'
-                },
-                {
-                    key: 'imageReplace',
-                    editable: true,
-                    omitForSupporting: true,
-                    singleton: 'images',
-                    label: 'replace image',
-                    omitIfNo: 'imageSrc',
-                    type: 'boolean'
-                },
-                {
-                    key: 'imageHide',
-                    editable: true,
-                    omitForSupporting: true,
-                    singleton: 'images',
-                    label: 'hide image',
-                    type: 'boolean'
-                },
-                {
-                    key: 'showKickerTag',
-                    editable: true,
-                    singleton: 'kicker',
-                    label: 'kicker',
-                    labelState: 'primaryTag',
-                    type: 'boolean'
-                },
-                {
-                    key: 'showKickerSection',
-                    editable: true,
-                    singleton: 'kicker',
-                    label: 'kicker',
-                    labelState: 'sectionName',
-                    type: 'boolean'
-                },
-                {
-                    key: 'showKickerCustom',
-                    editable: true,
-                    singleton: 'kicker',
-                    label: 'custom kicker',
-                    labelMeta: 'customKicker',
-                    type: 'boolean'
-                },
-                {
-                    key: 'snapUri',
-                    label: 'snap target',
-                    type: 'text'
-                },
-                {
-                    key: 'snapType',
-                    label: 'snap type',
-                    type: 'text'
-                },
-                {
-                    key: 'snapCss',
-                    label: 'snap class',
-                    type: 'text'
-                },
-                {
-                    key: 'imageSlideshowReplace',
-                    omitForSupporting: true,
-                    editable: true,
-                    label: 'slideshow',
-                    singleton: 'images',
-                    type: 'boolean'
-                },
-                {
-                    key: 'slideshow',
-                    editable: true,
-                    omitForSupporting: true,
-                    'if': 'imageSlideshowReplace',
-                    type: 'list',
-                    length: vars.CONST.maxSlideshowImages,
-                    item: {
-                        type: 'image',
-                        editable: true,
-                        dropImage: true,
-                        validator: {
-                            fn: 'validateListImage',
-                            params: {
-                                options: {
-                                    maxWidth: 1000,
-                                    minWidth: 400,
-                                    widthAspectRatio: 5,
-                                    heightAspectRatio: 3
-                                }
-                            }
-                        }
-                    }
-                }
-            ],
-
-            rxScriptStriper = new RegExp(/<script.*/gi);
+                'secureThumbnail'];
 
         function Article(opts, withCapiData) {
             var self = this;
@@ -450,8 +190,7 @@ define([
                     parent: self,
                     parentType: 'Article',
                     omitItem: self.save.bind(self),
-                    front: self.front,
-                    elementHasFocus: self.group.elementHasFocus.bind(self.group)
+                    front: self.front
                 });
 
                 this.meta.supporting.items(_.map((opts.meta || {}).supporting, function (item) {
@@ -537,142 +276,6 @@ define([
             }
         };
 
-        Article.prototype.metaEditor = function(opts, index, all, defaults) {
-            var self = this,
-                key,
-                meta,
-                field,
-                items = [];
-
-            if (!opts.editable) { return; }
-            if (this.slimEditor && opts.slimEditable !== true) { return; }
-            if (!defaults) { defaults = {}; }
-
-            key = opts.key;
-            meta = self.meta[key] || ko.observable(defaults.meta);
-            field = self.fields[key] || ko.observable(defaults.field);
-
-            if (opts.validator && _.isFunction(self[opts.validator.fn])) {
-                meta.subscribe(function() {
-                    self[opts.validator.fn](opts.validator.params, meta);
-                });
-            }
-
-            if (opts.type === 'list') {
-                items = _.chain(opts.length)
-                .times(function (i) {
-                    return this.metaEditor(opts.item, null, all, {
-                        meta: (self.meta[key]() || [])[i]
-                    });
-                }, this)
-                .filter(function (editor) { return !!editor; })
-                .map(function (editor) {
-                    editor.meta.subscribe(function () {
-                        meta(_.map(items, function (item) {
-                            return item.meta();
-                        }));
-                    });
-                    return editor;
-                })
-                .value();
-            }
-
-            return {
-                key: key,
-
-                label: opts.label + (opts.labelState ? ': ' + _.result(this.state, opts.labelState) : ''),
-
-                type: opts.type,
-
-                meta: meta,
-
-                field: field,
-
-                items: items,
-
-                revert: function() { meta(undefined); },
-
-                open:   function() { mediator.emit('ui:open', meta, self, self.front); },
-
-                hasFocus: ko.pureComputed(function() {
-                    return this.group.elementHasFocus(meta);
-                }, self),
-
-                displayEditor: ko.pureComputed(function() {
-                    var display = opts.if ? _.some(all, function(editor) { return editor.key === opts.if && self.meta[editor.key](); }) : true;
-
-                    display = display && (self.state.enableContentOverrides() || key === 'customKicker');
-                    display = display && (opts.ifState ? self.state[opts.ifState]() : true);
-                    display = display && (opts.omitForSupporting ? this.group.parentType !== 'Article' : true);
-
-                    return display;
-                }, self),
-
-                toggle: function() {
-                    if(opts.singleton) {
-                       _.chain(all)
-                        .filter(function(editor) { return editor.singleton === opts.singleton; })
-                        .filter(function(editor) { return editor.key !== key; })
-                        .pluck('key')
-                        .each(function(key) { self.meta[key](false); });
-                    }
-
-                    meta(!meta());
-
-                   _.chain(all)
-                    .filter(function(editor) { return editor.if === key; })
-                    .first(1)
-                    .each(function(editor) { mediator.emit('ui:open', self.meta[editor.key], self, self.front); });
-                },
-
-                length: ko.pureComputed(function() {
-                    return opts.maxLength ? opts.maxLength - (meta() || field() || '').length : undefined;
-                }, self),
-
-                lengthAlert: ko.pureComputed(function() {
-                    return opts.maxLength && (meta() || field() || '').length > opts.maxLength;
-                }, self),
-
-                overrideOrVal: ko.computed({
-                    read: function() {
-                        return meta() || field();
-                    },
-                    write: function(value) {
-                        meta(value === field() ? undefined : value.replace(rxScriptStriper, ''));
-                    },
-                    owner: self
-                }),
-
-                dropImage: ko.observable(!!opts.dropImage),
-
-                underDrag: ko.observable(false),
-
-                dropInEditor: function (element) {
-                    var sourceMeta = element.getData('sourceMeta');
-                    if (sourceMeta) {
-                        try {
-                            sourceMeta = JSON.parse(sourceMeta);
-                            meta(sourceMeta);
-                            return;
-                        } catch (ex) {/**/}
-                    }
-
-                    try {
-                        meta({
-                            media: draggableElement.getMediaItem(element),
-                            origin: element.getData('Url')
-                        });
-                    } catch (ex) {
-                        alert(ex.message);
-                    }
-                },
-
-                clear: function () {
-                    undefineObservables(meta);
-                }
-            };
-        };
-
         Article.prototype.addCapiData = function(opts) {
             var missingProps;
 
@@ -713,7 +316,7 @@ define([
 
         Article.prototype.updateEditorsDisplay = function() {
             if (!this.uneditable) {
-                this.editorsDisplay(metaFields.map(this.metaDisplayer, this).filter(identity));
+                this.editorsDisplay(metaFields.map(this.metaDisplayer, this).filter(Boolean));
             }
         };
 
@@ -893,7 +496,9 @@ define([
 
             if (!this.state.isOpen()) {
                 if (this.editors().length === 0) {
-                    this.editors(metaFields.map(this.metaEditor, this).filter(function (editor) { return editor; }));
+                    this.editors(metaFields.map(function (field) {
+                        return createEditor(field, this, metaFields);
+                    }, this).filter(Boolean));
                 }
                 this.state.isOpen(true);
                 mediator.emit(
@@ -943,59 +548,14 @@ define([
             this.group.omitItem(this);
         };
 
-        Article.prototype.validateImage = function (params) {
-            var imageSrc = this.meta[params.src],
-                imageSrcWidth = this.meta[params.width],
-                imageSrcHeight = this.meta[params.height],
-                image = imageSrc(),
-                src,
-                opts = params.options;
-
-
-            if (image) {
-                src = typeof image === 'string' ? image : (image.media ? image.media.file || image.origin : image.origin);
-                validateImageSrc(src, opts)
-                    .then(function(img) {
-                        imageSrc(img.src);
-                        imageSrcWidth(img.width);
-                        imageSrcHeight(img.height);
-                    }, function(err) {
-                        undefineObservables(imageSrc, imageSrcWidth, imageSrcHeight);
-                        alert(err.message);
-                    });
-            } else {
-                undefineObservables(imageSrc, imageSrcWidth, imageSrcHeight);
-            }
-        };
-
-        Article.prototype.validateListImage = function (params, meta) {
-            var image = meta();
-
-            if (image && image.src) {
-                // This image is already validated
-                return;
-            } else if (image) {
-                var originUrl = image.origin,
-                    src = image.media ? image.media.file || originUrl : originUrl,
-                    origin = image.media ? image.media.origin || originUrl : originUrl;
-                validateImageSrc(src, params.options)
-                    .then(function(img) {
-                        meta(_.extend({
-                            origin: origin
-                        }, img));
-                    }, function(err) {
-                        undefineObservables(meta);
-                        alert(err);
-                    });
-            } else {
-                undefineObservables(meta);
-            }
-        };
-
         Article.prototype.dispose = function () {
             if (this.meta.supporting) {
                 this.meta.supporting.dispose();
             }
+            this.editors().forEach(function (editor) {
+                editor.dispose();
+            });
+            this.editors.removeAll();
         };
 
         function getMainMediaType(contentApiArticle) {
@@ -1015,49 +575,6 @@ define([
                 contentApiArticle.fields.membershipAccess === 'paid-members-only' ||
                 !!_.find(contentApiArticle.tags, {id: 'news/series/looking-back'});
         }
-
-        function undefineObservables() {
-            Array.prototype.slice.call(arguments).forEach(function(fn) { fn(undefined); });
-        }
-
-        function mod(n, m) {
-            return ((n % m) + m) % m;
-        }
-
-        function resize(el) {
-            setTimeout(function() {
-                el.style.height = (el.scrollHeight) + 'px';
-            });
-        }
-
-        ko.bindingHandlers.autoResize = {
-            init: function(el) {
-                var resizeCallback = function () { resize(el); };
-                resizeCallback();
-                $(el).keydown(resizeCallback).on('paste', resizeCallback);
-            }
-        };
-
-        ko.bindingHandlers.tabbableFormField = {
-            init: function(el, valueAccessor, allBindings, viewModel, bindingContext) {
-                var self = this;
-
-                $(el).keydown(function(e) {
-                    var keyCode = e.keyCode || e.which,
-                        formField,
-                        formFields,
-                        nextIndex;
-
-                    if (keyCode === 9) {
-                        e.preventDefault();
-                        formField = bindingContext.$rawData;
-                        formFields = _.filter(bindingContext.$parent.editors(), function(ed) { return ed.type === 'text' && ed.displayEditor(); });
-                        nextIndex = mod(formFields.indexOf(formField) + (e.shiftKey ? -1 : 1), formFields.length);
-                        mediator.emit('ui:open', formFields[nextIndex].meta, self, self.front);
-                    }
-                });
-            }
-        };
 
         return Article;
     });

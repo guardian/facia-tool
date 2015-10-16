@@ -19,8 +19,6 @@ export default class Group extends DropTarget {
         this.keepCopy = opts.keepCopy;
         this.front = opts.front;
         this.opts = opts;
-
-        this.elementHasFocus = opts.elementHasFocus || (opts.front ? opts.front.elementHasFocus.bind(opts.front) : null);
     }
 
     pasteItem() {

@@ -57,6 +57,13 @@ var register = _.once(() => {
         synchronous: true,
         template: { text: 'widgets/trail.html' }
     });
+    ko.components.register('trail-editor-widget', {
+        viewModel: {
+            createViewModel: (params) => params.context.$data
+        },
+        synchronous: true,
+        template: { text: 'widgets/trail-editor.html' }
+    });
     ko.components.register('clipboard-widget', {
         viewModel: { jspm: 'widgets/clipboard' },
         template: { text: 'widgets/clipboard.html' }
