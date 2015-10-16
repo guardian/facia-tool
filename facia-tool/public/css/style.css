@@ -2014,12 +2014,18 @@ collection-widget > div {
 .desktop-indicator .indicator {
     background-color: #A5D6A7;
 }
+.desktop-indicator .indicator.hideShowMore {
+    background-color: #9FA8DA;
+}
 .desktop-indicator i {
     position: relative;
     left: -6px;
 }
 .mobile-indicator .indicator {
     background-color: #C8E6C9;
+}
+.mobile-indicator .indicator.hideShowMore {
+    background-color: #C5CAE9;
 }
 
 hr {
