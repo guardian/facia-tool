@@ -14,7 +14,7 @@ GET         /login/status                            controllers.PandaAuthContro
 GET         /status                                  controllers.StatusController.healthStatus
 
 # static files
-GET         /assets/facia-tool/*file                 controllers.faciatool.UncachedAssets.at(file)
+GET         /assets/*file                            controllers.UncachedAssets.at(file)
 
 ##################### NOTE ############################
 #all endpoints below this line should be authenticated#
