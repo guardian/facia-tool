@@ -108,6 +108,12 @@ var register = _.once(() => {
         viewModel: { jspm: 'widgets/columns/fronts-config' },
         template: { text: 'widgets/columns/fronts-config.html' }
     });
+    ko.components.register('message', {
+        viewModel: {
+            createViewModel: (params) => params.message
+        },
+        template: { text: 'widgets/message.html' }
+    });
     ko.components.register('presser-detect-stale', {
         viewModel: { jspm: 'widgets/presser-detect-stale' },
         template: { text: 'widgets/presser-detect-stale.html' }
