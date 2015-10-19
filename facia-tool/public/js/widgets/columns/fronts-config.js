@@ -17,6 +17,14 @@ export default class FrontConfig extends ColumnWidget {
         this.populate();
         this.subscribeOn(this.baseModel.state, this.populate);
         this.loaded = Promise.resolve();
+        this.calculateRemainingFronts();
+        this.subscribeOn(this.baseModel.state, this.calculateRemainingFronts);
+
+    }
+
+    calculateRemainingFronts() {
+        var num = frontCount(this.baseModel.state().config.fronts, this.baseModel.priority);
+        this.baseModel.message.frontsRemainingMessage('You have ' + (num.max - num.count) + ' fronts remaining');
     }
 
     populate() {
