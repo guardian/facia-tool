@@ -52,6 +52,7 @@ export default Object.freeze([
                 src: 'imageSrc',
                 width: 'imageSrcWidth',
                 height: 'imageSrcHeight',
+                origin: 'imageSrcOrigin',
                 options: {
                     maxWidth: 1000,
                     minWidth: 400,
@@ -75,6 +76,12 @@ export default Object.freeze([
         type: 'text'
     },
     {
+        key: 'imageSrcOrigin',
+        visibleWhen: 'imageReplace',
+        label: 'replacement image origin',
+        type: 'text'
+    },
+    {
         key: 'imageCutoutSrc',
         editable: true,
         dropImage: true,
@@ -87,6 +94,7 @@ export default Object.freeze([
                 src: 'imageCutoutSrc',
                 width: 'imageCutoutSrcWidth',
                 height: 'imageCutoutSrcHeight',
+                origin: 'imageCutoutSrcOrigin',
                 options: {
                     maxWidth: 1000,
                     minWidth: 400
@@ -105,6 +113,12 @@ export default Object.freeze([
         key: 'imageCutoutSrcHeight',
         visibleWhen: 'imageCutoutReplace',
         label: 'replacement cutout image height',
+        type: 'text'
+    },
+    {
+        key: 'imageCutoutSrcOrigin',
+        visibleWhen: 'imageCutoutReplace',
+        label: 'replacement cutout image origin',
         type: 'text'
     },
     {

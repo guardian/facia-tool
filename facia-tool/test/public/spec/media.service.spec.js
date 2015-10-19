@@ -1,23 +1,22 @@
 import $ from 'jquery';
 import Promise from 'Promise';
-import {CONST} from 'modules/vars';
 import MockVisible from 'mock/stories-visible';
 import CollectionsLoader from 'test/utils/collections-loader';
 import drag from 'test/utils/drag';
 import editAction from 'test/utils/edit-actions';
+import images from 'test/utils/images';
 import textInside from 'test/utils/text-inside';
 import * as wait from 'test/utils/wait';
 
 describe('Media Service', function () {
     beforeEach(function (done) {
-        this.originalCDNDomain = CONST.imageCdnDomain;
-        CONST.imageCdnDomain = window.location.host;
+        images.setup();
         this.testInstance = new CollectionsLoader();
         this.mockVisible = new MockVisible();
         this.testInstance.load().then(done);
     });
     afterEach(function () {
-        CONST.imageCdnDomain = this.originalCDNDomain;
+        images.dispose();
         this.testInstance.dispose();
         this.mockVisible.dispose();
     });
@@ -52,7 +51,7 @@ describe('Media Service', function () {
             var droppableRegionInsideArticle = $('collection-widget trail-widget .droppable')[0];
             var dropTarget = drag.droppable(droppableRegionInsideArticle);
             var sourceImage = new drag.Media([{
-                file: 'http://' + CONST.imageCdnDomain + '/base/test/public/fixtures/fivethree.png',
+                file: images.path('fivethree.png'),
                 dimensions: { width: 500, height: 200 }
             }], 'testImageOrigin');
             dropTarget.dragover(droppableRegionInsideArticle, sourceImage);
@@ -72,7 +71,7 @@ describe('Media Service', function () {
             var droppableEditor = $('collection-widget trail-widget .element__imageCutoutSrc')[0];
             var dropTarget = drag.droppable(droppableEditor);
             var sourceImage = new drag.Media([{
-                file: 'http://' + CONST.imageCdnDomain + '/base/test/public/fixtures/squarefour.png',
+                file: images.path('squarefour.png'),
                 dimensions: { width: 400, height: 400 }
             }], 'cutoutImageOrigin');
             dropTarget.dropInEditor(droppableEditor, sourceImage);
@@ -131,13 +130,15 @@ describe('Media Service', function () {
                     position: 'internal-code/page/1',
                     itemMeta: {
                         group: '0',
-                        imageCutoutSrc: 'http://localhost:9876/base/test/public/fixtures/squarefour.png',
+                        imageCutoutSrc: images.path('squarefour.png'),
                         imageCutoutSrcHeight: '400',
                         imageCutoutSrcWidth: '400',
+                        imageCutoutSrcOrigin: 'cutoutImageOrigin',
                         imageReplace: true,
-                        imageSrc: 'http://localhost:9876/base/test/public/fixtures/fivethree.png',
+                        imageSrc: images.path('fivethree.png'),
                         imageSrcHeight: '300',
-                        imageSrcWidth: '500'
+                        imageSrcWidth: '500',
+                        imageSrcOrigin: images.path('fivethree.png')
                     }
                 }
             });

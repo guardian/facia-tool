@@ -23,6 +23,7 @@ System.config({
     "css": "github:systemjs/plugin-css@0.1.18",
     "es5-shim": "github:es-shims/es5-shim@4.1.14",
     "font-awesome": "npm:font-awesome@4.4.0",
+    "grid-util-js": "npm:grid-util-js@1.0.5",
     "highcharts": "facia-tool/components/highcharts/highcharts-custom",
     "jquery": "npm:jquery@2.1.4",
     "jquery-mockjax": "npm:jquery-mockjax@2.0.1",

@@ -8,13 +8,12 @@ import * as dom from 'test/utils/dom-nodes';
 import inject from 'test/utils/inject';
 import textInside from 'test/utils/text-inside';
 import * as wait from 'test/utils/wait';
+import images from 'test/utils/images';
 
 describe('Config Front', function () {
     beforeEach(function () {
         this.ko = inject('<fronts-config-widget params="column: $data.testColumn"></fronts-config-widget>');
-        this.loadFront = model => {
-            // TODO Phantom Babel bug
-            if (!model) { model = {}; }
+        this.loadFront = (model = {}) => {
             return this.ko.apply(_.defaults(model, {
                 state: ko.observable({
                     config: {
@@ -32,8 +31,7 @@ describe('Config Front', function () {
                 }
             }), true);
         };
-        this.originalImageCdnDomain = vars.CONST.imageCdnDomain;
-        vars.CONST.imageCdnDomain = window.location.host;
+        images.setup();
         this.originalsearchDebounceMs = vars.CONST.searchDebounceMs;
         vars.CONST.searchDebounceMs = 50;
         spyOn(persistence.front, 'update');
@@ -65,8 +63,8 @@ describe('Config Front', function () {
         });
     });
     afterEach(function () {
-        vars.CONST.imageCdnDomain = this.originalImageCdnDomain;
         vars.CONST.searchDebounceMs = this.originalsearchDebounceMs;
+        images.dispose();
         this.ko.dispose();
     });
 
@@ -205,7 +203,7 @@ describe('Config Front', function () {
 
         function changeImageUrl () {
             $('.linky.tool--metadata').click();
-            var imageUrl = 'http://' + vars.CONST.imageCdnDomain + '/base/test/public/fixtures/square.png';
+            var imageUrl = images.path('square.png');
             dom.type('.metadata--provisionalImage', imageUrl);
 
             return wait.ms(100).then(() => {

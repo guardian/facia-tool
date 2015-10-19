@@ -362,6 +362,12 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
     lazy val host = configuration.getStringProperty("memcached.host")
   }
 
+  object media {
+    lazy val baseUrl = playConfiguration.getStringFromStage("media.base.url");
+    lazy val apiUrl = playConfiguration.getStringFromStage("media.api.url");
+    lazy val key = playConfiguration.getStringFromStage("media.key");
+  }
+
   object aws {
 
     lazy val region = playConfiguration.getMandatoryStringFromStage("aws.region")
