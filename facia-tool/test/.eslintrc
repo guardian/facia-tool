@@ -28,11 +28,15 @@
         "jsx": true,
         "restParams": true
     },
+    "plugins": [
+        "jasmine"
+    ],
     "rules": {
         // Overrides old
         "camelcase": 2,
         "no-shadow": 2,
         "strict": 2,
-        "no-unused-vars": 1
+        "no-unused-vars": 1,
+        "jasmine/no-disabled-tests": 2
     }
 }
