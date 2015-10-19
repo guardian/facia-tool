@@ -32,6 +32,7 @@ export default class Editor extends BaseClass {
         this.label = opts.label + (opts.labelState ? ': ' + _.result(article.state, opts.labelState) : '');
         this.dropImage = ko.observable(!!opts.dropImage);
         this.underDrag = ko.observable(false);
+        this.performValidation = true;
 
         if (type === 'list') {
             this.items = _.chain(opts.length)
@@ -63,7 +64,9 @@ export default class Editor extends BaseClass {
 
         if (validator && _.isFunction(this[validator.fn])) {
             this.subscribeOn(meta, () => {
-                this[validator.fn](validator.params, meta);
+                if (this.performValidation !== false) {
+                    this[validator.fn](validator.params, meta);
+                }
             });
         }
     }
@@ -143,24 +146,25 @@ export default class Editor extends BaseClass {
         var imageSrc = this.article.meta[params.src],
             imageSrcWidth = this.article.meta[params.width],
             imageSrcHeight = this.article.meta[params.height],
+            imageSrcOrigin = this.article.meta[params.origin],
             image = imageSrc(),
-            src,
             opts = params.options;
 
 
         if (image) {
-            src = typeof image === 'string' ? image : (image.media ? image.media.file || image.origin : image.origin);
+            let {src, origin} = extractImageElements(image);
             return validateImageSrc(src, opts)
-                .then(function(img) {
-                    imageSrc(img.src);
-                    imageSrcWidth(img.width);
-                    imageSrcHeight(img.height);
-                }, function(err) {
-                    [imageSrc, imageSrcWidth, imageSrcHeight].forEach(m => m(undefined));
+                .then(img => {
+                    assign(this,
+                        [imageSrc, imageSrcWidth, imageSrcHeight, imageSrcOrigin],
+                        [img.src, img.width, img.height, origin || src]
+                    );
+                }, err => {
+                    assign(this, [imageSrc, imageSrcWidth, imageSrcHeight, imageSrcOrigin], []);
                     alert(err.message);
                 });
         } else {
-            [imageSrc, imageSrcWidth, imageSrcHeight].forEach(m => m(undefined));
+            assign(this, [imageSrc, imageSrcWidth, imageSrcHeight, imageSrcOrigin], []);
         }
     }
 
@@ -171,20 +175,38 @@ export default class Editor extends BaseClass {
             // This image is already validated
             return;
         } else if (image) {
-            var originUrl = image.origin,
-                src = image.media ? image.media.file || originUrl : originUrl,
-                origin = image.media ? image.media.origin || originUrl : originUrl;
+            let {src, origin} = extractImageElements(image);
             return validateImageSrc(src, params.options)
-                .then(function(img) {
-                    meta(_.extend({
+                .then(img => {
+                    assign(this, [meta], [_.extend({}, img, {
                         origin: origin
-                    }, img));
-                }, function(err) {
-                    meta(undefined);
+                    })]);
+                }, err => {
+                    assign(this, [meta], []);
                     alert(err);
                 });
         } else {
-            meta(undefined);
+            assign(this, [meta], []);
         }
     }
+}
+
+function extractImageElements(value) {
+    var origin, src;
+    if (value.media) {
+        // This comes from drag/drop of crops
+        src = value.media.file || value.origin;
+        origin = value.media.origin || value.origin;
+    } else if (value.origin) {
+        src = value.origin;
+    } else {
+        src = value;
+    }
+    return {origin, src};
+}
+
+function assign(scope, metas, values) {
+    scope.performValidation = false;
+    metas.forEach((meta, index) => meta(values[index]));
+    scope.performValidation = true;
 }

@@ -113,7 +113,9 @@ export default {
     reauthTimeout:         60000,
 
     imageCdnDomain:        '.guim.co.uk',
-    imgIXBasePath:         '/img/static/',
+    imageCdnDomainExpr:    /^https?:\/\/(.*)\.guim\.co\.uk\//,
+    imgIXDomainExpr:       /^https?:\/\/i\.guim\.co\.uk\/img\/static\//,
+    staticImageCdnDomain:  'https://static.guim.co.uk/',
     previewBase:           'http://preview.gutools.co.uk',
     viewerHost:            'viewer.gutools.co.uk',
 

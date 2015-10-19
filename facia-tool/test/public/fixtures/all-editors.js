@@ -34,7 +34,8 @@ export default Object.freeze([{
         params: {
             src: 'image',
             width: 'imageWidth',
-            height: 'imageHeight'
+            height: 'imageHeight',
+            origin: 'imageOrigin'
         }
     }
 }, {
@@ -44,6 +45,11 @@ export default Object.freeze([{
     visibleWhen: 'image'
 }, {
     key: 'imageHeight',
+    type: 'text',
+    editable: false,
+    visibleWhen: 'image'
+}, {
+    key: 'imageOrigin',
     type: 'text',
     editable: false,
     visibleWhen: 'image'

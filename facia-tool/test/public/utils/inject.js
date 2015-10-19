@@ -35,6 +35,9 @@ export default function (html) {
                     identity: { email: 'someone@theguardian.com' },
                     isPasteActive: ko.observable(),
                     frontsList: ko.observableArray(),
+                    state: ko.observable({
+                        defaults: { apiBaseUrl: '/api.grid', mediaBaseUrl: 'http://media' }
+                    }),
                     dispose: () => {}
                 });
 

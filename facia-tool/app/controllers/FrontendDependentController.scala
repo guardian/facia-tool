@@ -25,7 +25,9 @@ case class Defaults(
   lowFrequency: Int,
   highFrequency: Int,
   standardFrequency: Int,
-  sentryPublicDSN: Option[String],
+  sentryPublicDSN: String,
+  mediaBaseUrl: String,
+  apiBaseUrl: String,
   fixedContainers: Seq[ContainerJsonConfig],
   dynamicContainers: Seq[ContainerJsonConfig]
 )
@@ -60,7 +62,9 @@ object FrontendDependentController extends Controller with PanDomainAuthActions 
         Configuration.faciatool.adminPressJobLowPushRateInMinutes,
         Configuration.faciatool.adminPressJobHighPushRateInMinutes,
         Configuration.faciatool.adminPressJobStandardPushRateInMinutes,
-        Configuration.faciatool.sentryPublicDSN,
+        Configuration.faciatool.sentryPublicDSN.get,
+        Configuration.media.baseUrl.get,
+        Configuration.media.apiUrl.get,
         FixedContainers.all.keys.toSeq.map(id => ContainerJsonConfig(id, None)),
         DynamicContainers.all.keys.toSeq.map(id =>
           if (id == "dynamic/package") {

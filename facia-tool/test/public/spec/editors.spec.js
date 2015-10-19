@@ -2,17 +2,16 @@ import $ from 'jquery';
 import ko from 'knockout';
 import _ from 'underscore';
 import Editor from 'models/collections/editor';
-import {CONST} from 'modules/vars';
 import all from 'test/fixtures/all-editors';
 import drag from 'test/utils/drag';
+import images from 'test/utils/images';
 import inject from 'test/utils/inject';
 import textInside from 'test/utils/text-inside';
 import 'widgets/trail-editor.html!text';
 
 describe('Editors', function () {
     beforeEach(function (done) {
-        this.originalCDNDomain = CONST.imageCdnDomain;
-        CONST.imageCdnDomain = window.location.host;
+        images.setup();
         this.article = {
             meta: {},
             fields: {},
@@ -29,7 +28,7 @@ describe('Editors', function () {
         this.ko.apply({ editors: this.editors }).then(done);
     });
     afterEach(function () {
-        CONST.imageCdnDomain = this.originalCDNDomain;
+        images.dispose();
         this.ko.dispose();
     });
 
@@ -71,7 +70,7 @@ describe('Editors', function () {
         var imageEditor = _.find(this.editors, editor => editor.key === 'image');
         spyOn(imageEditor, 'validateImage').and.callThrough();
 
-        $('.element__image').val('http://' + window.location.host + '/base/test/public/fixtures/square.png').change();
+        $('.element__image').val(images.path('square.png')).change();
         expect(imageEditor.validateImage).toHaveBeenCalled();
         Promise.resolve(imageEditor.validateImage.calls.first().returnValue).then(() => {
             expect(this.article.meta.image()).toMatch(/square\.png/);
@@ -81,7 +80,7 @@ describe('Editors', function () {
             imageEditor.validateImage.calls.reset();
 
             // invalid input
-            $('.element__image').val('http://' + window.location.host + '/this_image_doesnt_exists__promised.png').change();
+            $('.element__image').val(images.path('this_image_doesnt_exists__promised.png')).change();
             return imageEditor.validateImage.calls.first().returnValue;
         })
         .then(() => {
@@ -99,37 +98,37 @@ describe('Editors', function () {
 
         var target = $('.editor--image')[0];
         var sourceImage = new drag.Media([{
-            file: 'http://' + window.location.host + '/base/test/public/fixtures/squarefour.png',
+            file: images.path('squarefour.png'),
             dimensions: { width: 400, height: 400 }
         }], 'imageOrigin');
         drag.droppable(target).dropInEditor(target, sourceImage);
 
         expect(listEditor.validateListImage).toHaveBeenCalled();
         listEditor.validateListImage.calls.first().returnValue.then(() => {
-            var images = this.article.meta.list();
-            expect(images.length).toBe(3);
-            expect(images[0].origin).toEqual('imageOrigin');
-            expect(images[0].src).toMatch(/squarefour\.png/);
-            expect(images[0].width).toBe(400);
-            expect(images[0].height).toBe(400);
-            expect(images[1]).toBeUndefined();
-            expect(images[2]).toBeUndefined();
+            var listImages = this.article.meta.list();
+            expect(listImages.length).toBe(3);
+            expect(listImages[0].origin).toEqual('imageOrigin');
+            expect(listImages[0].src).toMatch(/squarefour\.png/);
+            expect(listImages[0].width).toBe(400);
+            expect(listImages[0].height).toBe(400);
+            expect(listImages[1]).toBeUndefined();
+            expect(listImages[2]).toBeUndefined();
 
             listEditor.validateListImage.calls.reset();
 
             // invalid input
             sourceImage = new drag.Media([{
-                file: 'http://' + window.location.host + '/this_image_doesnt_exists__promised.png',
+                file: images.path('this_image_doesnt_exists__promised.png'),
                 dimensions: { width: 400, height: 400 }
             }], 'fakeOrigin');
         drag.droppable(target).dropInEditor(target, sourceImage);
             return listEditor.validateListImage.calls.first().returnValue;
         })
         .then(() => {
-            var images = this.article.meta.list();
-            expect(images[0]).toBeUndefined();
-            expect(images[1]).toBeUndefined();
-            expect(images[2]).toBeUndefined();
+            var listImages = this.article.meta.list();
+            expect(listImages[0]).toBeUndefined();
+            expect(listImages[1]).toBeUndefined();
+            expect(listImages[2]).toBeUndefined();
         })
         .then(done)
         .catch(done.fail);
