@@ -36,8 +36,7 @@ object Frontend extends Build with Prototypes {
       scalaTestPlus,
       scalaz,
       ws,
-      faciaFapiScalaClient,
-      dispatchTest
+      faciaFapiScalaClient
     )
   ).settings(
       mappings in TestAssets ~= filterAssets

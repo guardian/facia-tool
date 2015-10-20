@@ -23,8 +23,6 @@ object Dependencies {
   val commonsHttpClient = "commons-httpclient" % "commons-httpclient" % "3.1"
   val commonsIo = "commons-io" % "commons-io" % "2.4"
   val contentApiClient = "com.gu" %% "content-api-client" % "6.6"
-  val dispatch = "net.databinder.dispatch" %% "dispatch-core" % "0.11.3"
-  val dispatchTest = "net.databinder.dispatch" %% "dispatch-core" % "0.11.3" % Test
   val exactTargetClient = "com.gu" %% "exact-target-client" % "2.24"
   val faciaFapiScalaClient = "com.gu" %% "fapi-client" % "0.58"
   val faciaScalaClient = "com.gu" %% "facia-json" % "0.58"
