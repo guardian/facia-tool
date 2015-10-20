@@ -1,5 +1,5 @@
 System.config({
-  baseURL: "/assets/facia-tool",
+  baseURL: "/assets",
   defaultJSExtensions: true,
   transpiler: "babel",
   babelOptions: {

@@ -138,7 +138,7 @@ object RenderOtherStatus {
   }
 
   def apply(result: Result)(implicit request: RequestHeader) = result.header.status match {
-    case 404 => NoCache(NotFound)
+    case 404 => NotFound
     case _ => result
   }
 }

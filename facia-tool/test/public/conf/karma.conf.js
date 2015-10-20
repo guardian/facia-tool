@@ -2,7 +2,7 @@ module.exports = function(config) {
   config.set({
     basePath: '../../..',
     proxies: {
-        '/assets/facia-tool/': '/base/public/',
+        '/assets/': '/base/public/',
         '/test/': '/base/test/public/',
         '/app/': '/base/app/'
     },
