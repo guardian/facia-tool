@@ -57,7 +57,7 @@ function updateCollections(edits, win) {
 
     var isTreats = false;
     _.each(edits, function(edit) {
-        if(_.isObject(edit)) {
+        if (_.isObject(edit)) {
             edit.collection.setPending(true);
             edit.id = edit.collection.id;
             collections.push(edit.collection);

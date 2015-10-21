@@ -1,7 +1,7 @@
 var a = document.createElement('a');
 
 export default function(url) {
-    if(typeof url === 'string') {
+    if (typeof url === 'string') {
         // If necessary, add a leading slash to stop the browser resolving it against the current path
         url = url.match(/^\//) || url.match(/^https?:\/\//) ? url : '/' + url;
 

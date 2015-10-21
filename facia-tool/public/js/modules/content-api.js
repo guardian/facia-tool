@@ -179,7 +179,7 @@ function decorateBatch (articles) {
 
     articles.forEach(function(article){
         var data = cache.get('contentApi', article.id());
-        if(data) {
+        if (data) {
             populate(article, data);
         } else {
             ids.push(article.id());
