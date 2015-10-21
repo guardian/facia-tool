@@ -105,7 +105,7 @@ define([
             showTags: 'showKickerTag',
             showSections: 'showKickerSection'
         }, function(defaults, val, key) {
-            if(_.has(opts, key)) {
+            if (_.has(opts, key)) {
                 defaults = defaults || {};
                 defaults[val] = opts[key];
             }

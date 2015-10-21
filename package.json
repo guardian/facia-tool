@@ -8,7 +8,7 @@
     "eslint-plugin-jasmine": "^1.5.0",
     "grunt": "0.4.5",
     "grunt-contrib-clean": "0.6.0",
-    "grunt-eslint": "17.2.0",
+    "grunt-eslint": "17.3.1",
     "grunt-karma": "0.12.1",
     "grunt-shell": "1.1.2",
     "jasmine-core": "^2.3.4",
@@ -20,7 +20,7 @@
     "karma-spec-reporter": "0.0.20",
     "load-grunt-config": "0.17.2",
     "phantomjs": "1.9.18",
-    "time-grunt": "1.2.1"
+    "time-grunt": "1.2.2"
   },
   "scripts": {
     "postinstall": "grunt hookmeup"

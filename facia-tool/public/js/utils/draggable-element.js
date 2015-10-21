@@ -8,7 +8,7 @@ function getMediaItem(dataTransfer) {
     if (mediaItem) {
         try {
             mediaItem = JSON.parse(mediaItem);
-        } catch(e) {
+        } catch (e) {
             mediaItem = undefined;
         }
 

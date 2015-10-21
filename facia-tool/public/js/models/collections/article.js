@@ -476,7 +476,7 @@ define([
                 self.meta.headline(og.title || title);
                 self.meta.trailText(og.description);
 
-                if(!isOnSite) {
+                if (!isOnSite) {
                     self.meta.byline(og.site_name || urlHost(url).replace(/^www\./, ''));
                     self.meta.showByline(true);
                 }

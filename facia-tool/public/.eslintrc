@@ -36,6 +36,8 @@
         "camelcase": 2,
         "strict": 2,
         "consistent-return": 0,
-        "no-unused-vars": 1
+        "no-unused-vars": 1,
+        "space-before-keywords": [2, "always"],
+        "space-after-keywords": 2
     }
 }
