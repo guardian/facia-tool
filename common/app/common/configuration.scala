@@ -372,6 +372,7 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
 
     lazy val region = playConfiguration.getMandatoryStringFromStage("aws.region")
     lazy val bucket = playConfiguration.getMandatoryStringFromStage("aws.bucket")
+    lazy val switchesBucket = playConfiguration.getMandatoryStringFromStage("aws.switchesBucket")
     lazy val notificationSns: String = configuration.getMandatoryStringProperty("sns.notification.topic.arn")
     lazy val videoEncodingsSns: String = configuration.getMandatoryStringProperty("sns.missing_video_encodings.topic.arn")
     lazy val frontPressSns: Option[String] = configuration.getStringProperty("frontpress.sns.topic")

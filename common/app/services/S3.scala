@@ -30,10 +30,24 @@ trait S3 extends Logging {
     client
   }
 
-  private def withS3Result[T](key: String)(action: S3Object => T): Option[T] = client.flatMap { client =>
+  lazy val switchClient: Option[AmazonS3Client] = aws.switchAccount.map{ credentials =>
+    val client = new AmazonS3Client(credentials)
+    client.setEndpoint(AwsEndpoints.s3)
+    client
+  }
+
+  private def withS3Result[T](key: String, getSwitches: Boolean)(action: S3Object => T): Option[T] = switchClient.flatMap { client =>
+
+    lazy val switchesBucket = Configuration.aws.switchesBucket;
+
     try {
 
-      val request = new GetObjectRequest(bucket, key)
+      val request =
+        if (getSwitches)
+          new GetObjectRequest(switchesBucket, key)
+        else
+          new GetObjectRequest(bucket, key)
+
       val result = client.getObject(request)
 
       // http://stackoverflow.com/questions/17782937/connectionpooltimeoutexception-when-iterating-objects-in-s3
@@ -50,7 +64,7 @@ trait S3 extends Logging {
       }
     } catch {
       case e: AmazonS3Exception if e.getStatusCode == 404 => {
-        log.warn("not found at %s - %s" format(bucket, key))
+        log.warn("not found at %s - %s" format(switchesBucket, key))
         None
       }
       case e: Exception => {
@@ -60,19 +74,19 @@ trait S3 extends Logging {
     }
   }
 
-  def get(key: String)(implicit codec: Codec): Option[String] = withS3Result(key) {
+  def get(key: String, getSwitches: Boolean=false)(implicit codec: Codec): Option[String] = withS3Result(key, getSwitches) {
     result => Source.fromInputStream(result.getObjectContent).mkString
   }
 
 
-  def getWithLastModified(key: String): Option[(String, DateTime)] = withS3Result(key) {
+  def getWithLastModified(key: String): Option[(String, DateTime)] = withS3Result(key, false) {
     result =>
       val content = Source.fromInputStream(result.getObjectContent).mkString
       val lastModified = new DateTime(result.getObjectMetadata.getLastModified)
       (content, lastModified)
   }
 
-  def getLastModified(key: String): Option[DateTime] = withS3Result(key) {
+  def getLastModified(key: String): Option[DateTime] = withS3Result(key, false) {
     result => new DateTime(result.getObjectMetadata.getLastModified)
   }
 
