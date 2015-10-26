@@ -54,4 +54,25 @@ object aws {
     }
   }
 
+  var switchAccount: Option[AWSCredentialsProvider] = {
+    val provider = new AWSCredentialsProviderChain(
+      new ProfileCredentialsProvider("default")
+    )
+
+    // this is a bit of a convoluted way to check whether we actually have credentials.
+    // I guess in an ideal world there would be some sort of isConfigued() method...
+    try {
+      val creds = provider.getCredentials
+      Some(provider)
+    } catch {
+      case ex: AmazonClientException =>
+        Logger.error("amazon client switch account exception")
+
+        // We really, really want to ensure that PROD is configured before saying a box is OK
+        if (Play.isProd) throw ex
+        // this means that on dev machines you only need to configure keys if you are actually going to use them
+        None
+    }
+  }
+
 }
