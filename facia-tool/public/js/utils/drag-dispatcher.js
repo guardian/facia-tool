@@ -55,6 +55,11 @@ function handleMedia ({sourceItem, mediaItem}, targetItem, targetGroup) {
 }
 
 function handleInternalClass ({sourceItem, sourceGroup}, targetItem, targetGroup) {
+
+    if (targetItem instanceof Article && targetItem.id() === sourceItem.id) {
+        return;
+    }
+
     var {position, target, isAfter} = normalizeTarget(sourceItem, targetItem, targetGroup);
 
     removeById(targetGroup.items, urlAbsPath(sourceItem.id));
