@@ -12,6 +12,9 @@ describe('Visited articles', function () {
         this.testInstance.dispose();
         localStorage.clear();
     });
+    function opacity (node) {
+        return Number($(node).css('opacity'));
+    }
 
     it('marks an article visited from visited articles list as visited', function (done) {
         this.testInstance.load()
@@ -22,9 +25,9 @@ describe('Visited articles', function () {
             $('.tool--small--href', dom.latestArticle(1)).click();
         })
         .then(() => {
-            expect($(dom.latestArticle(1)).css('opacity')).toBe('0.5');
-            expect($('.element__headline', dom.collection(0)).css('opacity')).toBe('1');
-            expect($('.clipboard .article').css('opacity')).toBe('1');
+            expect(opacity(dom.latestArticle(1))).toBeCloseTo(0.6, 2);
+            expect(opacity($('.element__headline', dom.collection(0)))).toBeCloseTo(1);
+            expect(opacity('.clipboard .article')).toBeCloseTo(1);
         })
         .then(done)
         .catch(done.fail);
@@ -39,9 +42,9 @@ describe('Visited articles', function () {
             $('.clipboard .tool--small--href').click();
         })
         .then(() => {
-            expect($(dom.latestArticle(1)).css('opacity')).toBe('0.5');
-            expect($('.element__headline', dom.collection(0)).css('opacity')).toBe('1');
-            expect($('.clipboard .article').css('opacity')).toBe('1');
+            expect(opacity((dom.latestArticle(1)))).toBeCloseTo(0.6);
+            expect(opacity($('.element__headline', dom.collection(0)))).toBeCloseTo(1);
+            expect(opacity(('.clipboard .article'))).toBeCloseTo(1);
         })
         .then(done)
         .catch(done.fail);
@@ -66,9 +69,9 @@ describe('Visited articles', function () {
             return this.testInstance.load(true);
         })
         .then(() => {
-            expect($(dom.latestArticle(1)).css('opacity')).toBe('0.5');
-            expect($('.element__headline', dom.collection(0)).css('opacity')).toBe('1');
-            expect($('.clipboard .article').css('opacity')).toBe('1');
+            expect(opacity((dom.latestArticle(1)))).toBeCloseTo(0.6);
+            expect(opacity($('.element__headline', dom.collection(0)))).toBeCloseTo(1);
+            expect(opacity(('.clipboard .article'))).toBeCloseTo(1);
         })
         .then(done)
         .catch(done.fail);

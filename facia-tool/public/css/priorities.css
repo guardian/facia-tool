@@ -1,0 +1,16 @@
+.front-priorities {
+    color: #999999;
+    display: block;
+    padding: 10px 20px;
+}
+
+.front-priorities--priority {
+    display: block;
+    font-size: 18px;
+    padding: 15px 0 0 0;
+}
+
+.front-priorities--extra {
+    font-size: 12px;
+    padding-top: 15px;
+}

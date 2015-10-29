@@ -29,8 +29,8 @@ describe('Config', function () {
             expect(data.initialCollection.type).toEqual('dynamic/test');
             expect(data.priority).toEqual('test');
 
-            $('.content-pane:nth(1) .title--text:nth(1)').click();
-            return dragAnotherCollectionInsideFirstColumn(mockConfig, baseModel, $('.content-pane:nth(1) .cnf-collection')[1], {
+            $('.contentPane:nth(1) .title--text:nth(1)').click();
+            return dragAnotherCollectionInsideFirstColumn(mockConfig, baseModel, $('.contentPane:nth(1) .cnf-collection')[1], {
                 fronts: {
                     'test/front': {
                         collections: ['sport', 'gossip'],
@@ -46,8 +46,8 @@ describe('Config', function () {
             expect(data.priority).toEqual('test');
             expect(data.collections).toEqual(['sport', 'gossip']);
 
-            expect(textInside('.content-pane:nth(0) .cnf-collection:nth(0)')).toBe('1 Sport also on uk');
-            expect(textInside('.content-pane:nth(1) .cnf-collection:nth(1)')).toBe('2 Sport also on test/front');
+            expect(textInside('.contentPane:nth(0) .cnf-collection:nth(0)')).toBe('1 Sport also on uk');
+            expect(textInside('.contentPane:nth(1) .cnf-collection:nth(1)')).toBe('2 Sport also on test/front');
 
             return dragInsideTheSameCollection();
         })
@@ -96,9 +96,9 @@ describe('Config', function () {
         function dragInsideTheSameCollection () {
             return configAction(mockConfig, baseModel, () => {
                 // Open the front in the second panel
-                var collectionToDrag = $('.content-pane:nth(0) .cnf-collection')[1];
-                var collectionToDropTo = $('.content-pane:nth(0) .cnf-collection')[0];
-                var droppableContainer = $('.content-pane:nth(0) .cnf-fronts .droppable')[0];
+                var collectionToDrag = $('.contentPane:nth(0) .cnf-collection')[1];
+                var collectionToDropTo = $('.contentPane:nth(0) .cnf-collection')[0];
+                var droppableContainer = $('.contentPane:nth(0) .cnf-fronts .droppable')[0];
                 var droppableTarget = drag.droppable(droppableContainer);
                 var sourceCollection = new drag.Collection(collectionToDrag);
 
@@ -129,12 +129,12 @@ describe('Config', function () {
         })
         .then(() => {
 
-            expect(textInside($('.content-pane:nth(1) .title--text:nth(0)'))).toEqual('uk');
-            expect(textInside($('.content-pane:nth(1) .cnf-collection__name')[0])).toEqual('Latest News');
+            expect(textInside($('.contentPane:nth(1) .title--text:nth(0)'))).toEqual('uk');
+            expect(textInside($('.contentPane:nth(1) .cnf-collection__name')[0])).toEqual('Latest News');
 
-            $('.content-pane:nth(0) .title--text:nth(1)').click();
+            $('.contentPane:nth(0) .title--text:nth(1)').click();
 
-            return dragAnotherCollectionInsideFirstColumn(mockConfig, baseModel, $('.content-pane:nth(1) .cnf-collection')[0], {
+            return dragAnotherCollectionInsideFirstColumn(mockConfig, baseModel, $('.contentPane:nth(1) .cnf-collection')[0], {
                 fronts: {
                     'world': {
                         collections: ['latest', 'environment'],
@@ -149,8 +149,8 @@ describe('Config', function () {
             expect(data.id).toEqual('world');
             expect(data.priority).toEqual('test');
             expect(data.collections).toEqual(['latest', 'environment']);
-            expect(textInside($('.content-pane:nth(0) .cnf-fronts .droppable .cnf-collection__name')[0])).toEqual('Latest News');
-            expect(textInside($('.content-pane:nth(0) .cnf-fronts .droppable .cnf-collection__name')[1])).toEqual('Environment');
+            expect(textInside($('.contentPane:nth(0) .cnf-fronts .droppable .cnf-collection__name')[0])).toEqual('Latest News');
+            expect(textInside($('.contentPane:nth(0) .cnf-fronts .droppable .cnf-collection__name')[1])).toEqual('Environment');
         })
         .then(done)
         .catch(done.fail);
@@ -159,8 +159,8 @@ describe('Config', function () {
 
     function dragAnotherCollectionInsideFirstColumn(mockConfig, baseModel, collectionToDrag, returnObject) {
         return configAction(mockConfig, baseModel, () => {
-            var collectionToDropTo = $('.content-pane:nth(0) .cnf-fronts .cnf-collection')[0];
-            var droppableContainer = $('.content-pane:nth(0) .cnf-fronts .droppable')[0];
+            var collectionToDropTo = $('.contentPane:nth(0) .cnf-fronts .cnf-collection')[0];
+            var droppableContainer = $('.contentPane:nth(0) .cnf-fronts .droppable')[0];
             var droppableTarget = drag.droppable(droppableContainer);
             var sourceCollection = new drag.Collection(collectionToDrag);
 

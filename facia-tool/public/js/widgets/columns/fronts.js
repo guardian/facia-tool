@@ -8,7 +8,6 @@ import lastModified from 'utils/fetch-lastmodified';
 import humanTime from 'utils/human-time';
 import mediator from 'utils/mediator';
 import * as sparklines from 'utils/sparklines';
-import updateScrollables from 'utils/update-scrollables';
 import ColumnWidget from 'widgets/column-widget';
 
 export default class Front extends ColumnWidget {
@@ -140,7 +139,6 @@ export default class Front extends ColumnWidget {
         );
 
         this.getFrontAge({ alertIfStale: true });
-        updateScrollables();
         this.loaded = Promise.all(
             this.collections().map(collection => collection.loaded)
         ).then(() => mediator.emit('front:loaded', this));
