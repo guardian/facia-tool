@@ -1,5 +1,6 @@
 package switchboard
 
+import conf.Configuration
 import common._
 import switchServices.switch
 import switches.switchManager
@@ -13,11 +14,11 @@ trait NewSwitchboardLifecycle extends GlobalSettings with ExecutionContexts with
     super.onStart(app)
     Jobs.deschedule("SwitchBoardRefreshJob")
     Jobs.schedule("SwitchBoardRefreshJob", "0 * * * * ?") {
-      refresh("switch-status")
+      refresh()
     }
 
     AkkaAsync {
-      refresh("switch-status")
+      refresh()
     }
   }
 
@@ -26,9 +27,10 @@ trait NewSwitchboardLifecycle extends GlobalSettings with ExecutionContexts with
     super.onStop(app)
   }
 
-  def refresh(configuration: String) {
+  def refresh() {
     Logger.info("Refreshing switches")
-    switch.get(configuration) map { response =>
+
+    switch.get(Configuration.switchBoard.key) map { response =>
 
       val switches = Json.parse(response).as[Map[String, Boolean]]
 

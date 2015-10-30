@@ -370,6 +370,7 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
 
   object switchBoard {
     val bucket = playConfiguration.getMandatoryStringFromStage("aws.switchesBucket")
+    val key = playConfiguration.getMandatoryStringFromStage("newSwitches.key")
   }
 
   object aws {
