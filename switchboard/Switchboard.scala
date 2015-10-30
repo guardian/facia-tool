@@ -14,10 +14,10 @@ trait NewSwitchboardLifecycle extends GlobalSettings with ExecutionContexts with
 
   override def onStart(app: Application) {
     super.onStart(app)
-    Akka.system.scheduler.schedule(0.seconds, 1.minute) { refresh() }
+    Akka.system.scheduler.schedule(0.seconds, 1.minute) { refreshSwitches() }
 
     AkkaAsync {
-      refresh()
+      refreshSwitches()
     }
   }
 
@@ -25,7 +25,7 @@ trait NewSwitchboardLifecycle extends GlobalSettings with ExecutionContexts with
     super.onStop(app)
   }
 
-  def refresh() {
+  def refreshSwitches() {
     Logger.info("Refreshing switches")
 
     switch.get(Configuration.switchBoard.key) map { response =>
