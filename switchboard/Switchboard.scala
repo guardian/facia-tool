@@ -32,10 +32,16 @@ trait NewSwitchboardLifecycle extends GlobalSettings with ExecutionContexts with
 
     switch.get(Configuration.switchBoard.key) map { response =>
 
-      val switches = Json.parse(response).as[Map[String, Boolean]]
-
-      switchManager.updateSwitches(switches)
-
+      try {
+        val switches = Json.parse(response).as[Map[String, Boolean]]
+        switchManager.updateSwitches(switches)
+      }
+      catch {
+        case e: Exception => {
+          Logger.warn(s"Badly configured switch in ${response}")
+          throw e
+        }
+      }
     }
   }
 }
