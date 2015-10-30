@@ -38,7 +38,7 @@ trait NewSwitchboardLifecycle extends GlobalSettings with ExecutionContexts with
       }
       catch {
         case e: Exception => {
-          Logger.warn(s"Badly configured switch in ${response}")
+          Logger.error(s"Badly configured switch in ${response}")
           throw e
         }
       }
