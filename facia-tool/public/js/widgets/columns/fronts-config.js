@@ -7,6 +7,8 @@ import frontCount from 'utils/front-count';
 import ColumnWidget from 'widgets/column-widget';
 import alert from 'utils/alert';
 
+var FRONT_ALERT_LIMIT = 10;
+
 export default class FrontConfig extends ColumnWidget {
     constructor(params, element) {
         super(params, element);
@@ -24,7 +26,12 @@ export default class FrontConfig extends ColumnWidget {
 
     calculateRemainingFronts() {
         var num = frontCount(this.baseModel.state().config.fronts, this.baseModel.priority);
-        this.baseModel.message.frontsRemainingMessage('You have ' + (num.max - num.count) + ' fronts remaining');
+        var remainingFronts = num.max - num.count;
+        if (remainingFronts < FRONT_ALERT_LIMIT) {
+            this.baseModel.message.frontsRemainingMessage('You have ' + remainingFronts + ' fronts remaining');
+        } else {
+            this.baseModel.message.frontsRemainingMessage('');
+        }
     }
 
     populate() {
