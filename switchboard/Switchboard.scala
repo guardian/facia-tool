@@ -7,15 +7,14 @@ import switches.switchManager
 import play.api.GlobalSettings
 import play.api.{Logger, Application, GlobalSettings}
 import play.api.libs.json.Json
+import scala.concurrent.duration._
+import play.libs.Akka
 
 trait NewSwitchboardLifecycle extends GlobalSettings with ExecutionContexts with Logging {
 
   override def onStart(app: Application) {
     super.onStart(app)
-    Jobs.deschedule("SwitchBoardRefreshJob")
-    Jobs.schedule("SwitchBoardRefreshJob", "0 * * * * ?") {
-      refresh()
-    }
+    Akka.system.scheduler.schedule(0.seconds, 1.minute) { refresh() }
 
     AkkaAsync {
       refresh()
@@ -23,7 +22,6 @@ trait NewSwitchboardLifecycle extends GlobalSettings with ExecutionContexts with
   }
 
   override def onStop(app: Application) {
-    Jobs.deschedule("SwitchBoardRefreshJob")
     super.onStop(app)
   }
 
