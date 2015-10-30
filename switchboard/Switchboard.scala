@@ -2,8 +2,10 @@ package switchboard
 
 import common._
 import switchServices.switch
+import switches.switchManager
 import play.api.GlobalSettings
 import play.api.{Logger, Application, GlobalSettings}
+import play.api.libs.json.Json
 
 trait NewSwitchboardLifecycle extends GlobalSettings with ExecutionContexts with Logging {
 
@@ -28,23 +30,10 @@ trait NewSwitchboardLifecycle extends GlobalSettings with ExecutionContexts with
     Logger.info("Refreshing switches")
     switch.get(configuration) map { response =>
 
-      val nextState = response.substring(1, response.length - 1)
-        .split(",")
-        .map(_.split(":"))
-        .map {
-          case Array(k, "true") => (k.substring(1, k.length-1), "on")
-          case Array(k, "false") => (k.substring(1, k.length-1), "off")
-        }
-        .toMap
+      val switches = Json.parse(response).as[Map[String, Boolean]]
 
-        //pass this map to the switchboard model class
-      //for (switch <- Switches.all) {
-       // nextState.get(switch.name) foreach {
-       //   case "on" => switch.switchOn()
-       //   case "off" => switch.switchOff()
-        //  case other => Logger.warn(s"Badly configured switch ${switch.name} -> $other")
-       // }
-      //}
+      switchManager.updateSwitches(switches)
+
     }
   }
 }
