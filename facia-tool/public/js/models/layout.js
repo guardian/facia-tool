@@ -10,7 +10,6 @@ import BaseClass from 'models/base-class';
 import Column from 'models/layout/column';
 import copiedArticle from 'modules/copied-article';
 import * as layoutFromURL from 'utils/layout-from-url';
-import updateScrollables from 'utils/update-scrollables';
 
 function columnDataOf (type, columns) {
     return _.find(columns, col => {
@@ -181,7 +180,6 @@ ko.bindingHandlers.slideIn = {
                 if (!value) {
                     $element.hide();
                 }
-                updateScrollables();
                 bindingContext.$data.layout.onConfigVisibilityChange();
             }
         });

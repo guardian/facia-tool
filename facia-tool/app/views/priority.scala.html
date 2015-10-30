@@ -5,13 +5,14 @@
     <head>
         <title>Fronts Editor</title>
         @templates.meta()
+        <link href="/assets/css/priorities.css" rel="stylesheet">
     </head>
-    <body>
+    <body class="mainFlexContainer">
 
     @if(Switches.ToolDisable.isSwitchedOn) {
         <span class="message message--important">Temporarily disabled. Please try again shortly.</span>
     } else {
-        @templates.header(Configuration.facia.stage)
+        @templates.header(Configuration.facia.stage, identity)
         <main class="front-priorities">
             <div class="front-priorities--priority">
                 <a href="/editorial">Editorial Fronts</a>

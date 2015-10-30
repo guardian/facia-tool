@@ -9,9 +9,7 @@ import copiedArticle from 'modules/copied-article';
 import Droppable from 'modules/droppable';
 import modalDialog from 'modules/modal-dialog';
 import cloneWithKey from 'utils/clone-with-key';
-import * as globalListeners from 'utils/global-listeners';
 import priorityFromUrl from 'utils/priority-from-url';
-import updateScrollables from 'utils/update-scrollables';
 
 var droppableSym = Symbol();
 
@@ -30,6 +28,7 @@ export default class BaseModel extends BaseClass {
         this.frontsMap = ko.observable();
         this.switches = ko.observable(res.switches);
         this.pending = ko.observable(true);
+        this.isMainActionVisible = ko.observable(false);
         this.priority = priorityFromUrl(router.location.pathname);
         this.fullPriority = this.priority || CONST.defaultPriority;
         this.liveFrontend = CONST.environmentUrlBase[res.defaults.env] || ('http://' + CONST.mainDomain + '/');
@@ -52,17 +51,15 @@ export default class BaseModel extends BaseClass {
             });
         });
 
-        this.listenOn(globalListeners, 'resize', updateScrollables);
-
         this.loaded = waitFor(this, layout, extensions).then(() => {
             this.pending(false);
-            updateScrollables();
             return this;
         });
     }
 
     chooseLayout() {
         this.layout.toggleConfigVisible();
+        this.isMainActionVisible(false);
     }
 
     saveLayout() {

@@ -80,12 +80,12 @@ describe('Layout', function () {
         .then(() => {
             expect(layout.configVisible()).toBe(false);
             expect(layout.configVisible()).toBe(false);
-            expect($('.config-pane', this.ko.container).is(':visible')).toBe(false);
+            expect($('.configPane', this.ko.container).is(':visible')).toBe(false);
             expect(columnsInDOM()).toEqual(['latest', 'front']);
 
             layout.toggleConfigVisible();
             expect(layout.configVisible()).toBe(true);
-            expect($('.config-pane', this.ko.container).is(':visible')).toBe(true);
+            expect($('.configPane', this.ko.container).is(':visible')).toBe(true);
 
             saved = layout.savedState.columns();
             current = layout.currentState.columns();
@@ -100,7 +100,7 @@ describe('Layout', function () {
             expect(layout.savedState.columns().length).toBe(2);
             expect(layout.savedState.columns()).toBe(saved);
             expect(layout.currentState.columns().length).toBe(3);
-            expect($('.config-pane').length).toBe(3);
+            expect($('.configPane').length).toBe(3);
             expect(columnsInDOM()).toEqual(['latest', 'latest', 'front']);
 
             // Cancel the workspace change
@@ -110,7 +110,7 @@ describe('Layout', function () {
             expect(layout.savedState.columns().length).toBe(2);
             expect(layout.savedState.columns()).toBe(saved);
             expect(layout.currentState.columns().length).toBe(2);
-            expect($('.config-pane').length).toBe(2);
+            expect($('.configPane').length).toBe(2);
             expect(columnsInDOM()).toEqual(['latest', 'front']);
 
             // Add another column
@@ -119,11 +119,11 @@ describe('Layout', function () {
         .then(() => {
             expect(layout.savedState.columns()).toBe(saved);
             expect(layout.currentState.columns().length).toBe(3);
-            expect($('.config-pane').length).toBe(3);
+            expect($('.configPane').length).toBe(3);
             expect(columnsInDOM()).toEqual(['latest', 'front', 'front']);
 
             // Change the type of a column
-            return click('.config-pane:nth(2) .checkbox-latest');
+            return click('.configPane:nth(2) .checkbox-latest');
         })
         .then(() => {
             expect(columnsInDOM()).toEqual(['latest', 'front', 'latest']);
@@ -155,7 +155,7 @@ describe('Layout', function () {
         .then(() => {
             expect(layout.savedState.columns().length).toBe(2);
             expect(layout.currentState.columns().length).toBe(1);
-            expect($('.config-pane').length).toBe(1);
+            expect($('.configPane').length).toBe(1);
             expect(columnsInDOM()).toEqual(['front']);
             expect($('.mock-widget.front').text()).toBe('apple');
         })

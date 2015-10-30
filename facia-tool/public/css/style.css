@@ -6,9 +6,6 @@ html {
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    min-width: 320px;
     color: #000000;
     background-color: #f6f6f6;
     -webkit-touch-callout: none;
@@ -37,38 +34,21 @@ a:hover,
     color: #2ea3eb;
 }
 
-header {
-    height: 50px;
-    position: absolute;
-    width: 100%;
-    background: #ffffff;
-    border-bottom: 1px solid #dddddd;
-    z-index: 1;
-    overflow: hidden;
-}
-
-.column {
-    top: 50px;
-    position: absolute;
-    float: left;
-    overflow: hidden;
-}
-
-.config-pane {
+.configPane {
     position: relative;
     width: 100%;
-    height: 100%;
     background-color: rgba(255, 255, 255, 0.85);
     margin-left: 0;
     padding: 2em;
     border-right: 1px solid #ddd;
+    z-index: 1;
 }
 
-.config-pane h1 {
+.configPane h1 {
     float: none;
 }
 
-.config-pane i {
+.configPane i {
     position: relative;
     float: right;
     font-size: 1.6em;
@@ -76,14 +56,17 @@ header {
     color: #999;
 }
 
-.config-pane ul {
+.configPane ul {
     list-style-type: none;
 }
 
-.content-pane {
-    height: 100%;
+.contentPane {
     border-right: 1px solid #ddd;
     background-color: #fff;
+}
+
+.contentPane.contentPane-configVisible {
+    display: none;
 }
 
 .checkbox {
@@ -379,9 +362,9 @@ header {
 }
 
 .alert {
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
+    display: block;
     position: fixed;
+    top: 0;
     width: 100%;
     background: #999999;
     color: #000000;
@@ -412,17 +395,8 @@ header {
 }
 
 .scrollable {
-    position: relative;
-    top: 0;
-    bottom: 0;
-    overflow-y: scroll;
-}
-
-.logo {
-    float: left;
-    margin: 5px 0 0 5px;
-    width: 48px;
-    opacity: 0.6;
+    flex: 1;
+    overflow: auto;
 }
 
 h1 {
@@ -444,39 +418,6 @@ h1 {
 
 .message--important {
     color: #DD4B39;
-}
-
-.message--loading {
-    display: none;
-}
-
-.is-authed .message--loading {
-    display: block;
-}
-
-.login-form {
-    position: absolute;
-    top: 9px;
-    left: 160px;
-    z-index: 1;
-}
-
-.front-priorities {
-    position: absolute;
-    top: 60px;
-    left: 20px;
-    color: #999999;
-}
-
-.front-priorities--priority {
-    display: block;
-    font-size: 18px;
-    padding: 15px 0 0 0;
-}
-
-.front-priorities--extra {
-    font-size: 12px;
-    padding-top: 15px;
 }
 
 .finder__controls {
@@ -609,25 +550,6 @@ h1 {
     pointer-events: none;
 }
 
-.updating {
-    display: none;
-    background: #46c430;
-    color: #ffffff;
-    position: absolute;
-    top: 10px;
-    right: 95px;
-    height: 30px;
-    padding: 5px 20px 0;
-    font-size: 12px;
-    z-index: 1;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
-
-.pending .updating {
-    display: block;
-}
-
 .list-header {
     color: #999999;
     padding: 5px 8px 0 0;
@@ -716,19 +638,19 @@ h1 {
     color: #DD4B39;
 }
 
-.front-container.treats-mode {
+.styledFront.treats-mode {
     background: #F2E6F7;
 }
 
-.front-container.live-mode {
+.styledFront.live-mode {
     background: #EEFFEE;
 }
 
-.front-container.draft-mode {
+.styledFront.draft-mode {
     background: #FFF8E1;
 }
 
-.front-container.attention {
+.styledFront.attention {
     background: #b51800;
 }
 
@@ -745,13 +667,13 @@ h1 {
     overflow: hidden;
 }
 
-.live-mode .modes {
+.live-mode.modes {
     border-bottom-color: #46c430;
 }
-.draft-mode .modes {
+.draft-mode.modes {
     border-bottom-color: #ffc107;
 }
-.treats-mode .modes {
+.treats-mode.modes {
     border-bottom-color: #830DB3;
 }
 
@@ -791,13 +713,13 @@ h1 {
     background: #830DB3;
 }
 
-.treats-mode .modes a.live-mode,
-.treats-mode .modes a.draft-mode,
+.treats-mode.modes a.live-mode,
+.treats-mode.modes a.draft-mode,
 .treats-mode .tools,
 .treats-mode .performances {
     display: none;
 }
-.treats-mode .modes a.treats-mode {
+.treats-mode.modes a.treats-mode {
     display: inline-block;
 }
 .treats-mode .article-tools {
@@ -827,7 +749,7 @@ collection-widget:first-child .collection {
 }
 
 .visitedArticle {
-  opacity: 0.5;
+  opacity: 0.6;
 }
 
 .article:hover,
@@ -1258,11 +1180,13 @@ button {
 
 .clipboard-container {
     overflow-y: auto;
-    max-height: 75%;
+    max-height: 70%;
+    display: block;
 }
 
 .clipboard-only .clipboard-container {
     max-height: 100%;
+    height: 100%;
 }
 
 .clipboard {
@@ -1971,8 +1895,8 @@ collection-widget > div {
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.32), 0 1px 6px rgba(0, 0, 0, 0.32);
 }
 .attention .performances,
-.attention .modes .live-mode,
-.attention .modes .draft-mode,
+.attention.modes .live-mode,
+.attention.modes .draft-mode,
 .attention .preview,
 .attention .tool--small--ophan,
 .attention .time__publication {

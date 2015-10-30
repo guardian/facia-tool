@@ -9,22 +9,6 @@ import copiedArticle from 'modules/copied-article';
 import * as globalListeners from 'utils/global-listeners';
 import * as storage from 'utils/local-storage';
 import mediator from 'utils/mediator';
-import updateScrollables from 'utils/update-scrollables';
-
-var updateClipboardScrollable = function (what) {
-    var onClipboard = true;
-    if (what && what.targetGroup) {
-        onClipboard = what.targetGroup.parentType === 'Clipboard';
-    }
-    if (onClipboard) {
-        _.defer(updateScrollables);
-    }
-};
-
-mediator.on('collection:updates', updateClipboardScrollable);
-mediator.on('ui:close', updateClipboardScrollable);
-mediator.on('ui:omit', updateClipboardScrollable);
-mediator.on('ui:resize', updateClipboardScrollable);
 
 var classCount = 0;
 
@@ -43,7 +27,6 @@ class Clipboard extends BaseWidget {
         });
         this.group.items(this.getItemsFromStorage());
 
-        this.listenOn(mediator, 'ui:open', this.onUIOpen);
         this.listenOn(mediator, 'copy:to:clipboard', this.copy);
         this.listenOn(copiedArticle, 'change', this.onCopiedChange);
         this.pollArticlesChange(this.saveInStorage.bind(this));
@@ -59,12 +42,6 @@ class Clipboard extends BaseWidget {
         var inMemory = this.hasCopiedArticle() && copiedArticle.peek();
 
         return inMemory ? inMemory.displayName : null;
-    }
-
-    onUIOpen(element, article) {
-        updateClipboardScrollable(article ? {
-            targetGroup: article.group
-        } : null);
     }
 
     onCopiedChange(hasArticle) {

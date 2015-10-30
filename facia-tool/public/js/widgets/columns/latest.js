@@ -2,7 +2,6 @@ import ko from 'knockout';
 import _ from 'underscore';
 import Promise from 'Promise';
 import LatestArticles from 'models/collections/latest-articles';
-import updateScrollables from 'utils/update-scrollables';
 import ColumnWidget from 'widgets/column-widget';
 
 class Latest extends ColumnWidget {
@@ -27,7 +26,6 @@ class Latest extends ColumnWidget {
                 this.showLive();
             }
         });
-        this.subscribeOn(this.latestArticles.articles, updateScrollables);
     }
 
     showDrafts() {

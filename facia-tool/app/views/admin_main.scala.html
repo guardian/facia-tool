@@ -14,12 +14,12 @@
 
         <script>System.import('setup');</script>
     </head>
-    <body class="is-authed" data-bind="css: {pending: pending}">
+    <body class="mainFlexContainer is-authed" data-bind="css: {pending: pending}">
 
     @if(Switches.ToolDisable.isSwitchedOn) {
         <span class="message message--important">Temporarily disabled. Please try again shortly.</span>
     } else {
-        @templates.header(Configuration.facia.stage)
+        @templates.header(Configuration.facia.stage, identity)
         @templates.vertical_layout()
         @templates.main()
     }
