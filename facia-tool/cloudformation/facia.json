@@ -25,6 +25,11 @@
             "Description": "Composer role to assume access to the kinesis log stash stream",
             "Type": "String",
             "Default": "arn:aws:iam::743583969668:role/FrontsRoleForLogStash-FaciaToolRole-GX5KBXQZGL5X"
+        },
+        "AvailabilityZones": {
+            "Description": "The availability zone where instances are allowed to run",
+            "Type": "List<AWS::EC2::AvailabilityZone::Name>",
+            "Default": "eu-west-1a,eu-west-1b,eu-west-1c"
         }
     },
     "Mappings": {
@@ -237,10 +242,8 @@
         "FaciaLoadBalancer": {
             "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
             "Properties": {
-                "AvailabilityZones": [
-                    "eu-west-1a",
-                    "eu-west-1b"
-                ],
+                "AvailabilityZones": { "Ref": "AvailabilityZones" },
+                "CrossZone": true,
                 "SecurityGroups": [
                     {
                         "Fn::GetAtt": [
@@ -275,7 +278,7 @@
                     "Target": "HTTP:9000/status",
                     "HealthyThreshold": "2",
                     "UnhealthyThreshold": "10",
-                    "Interval": "100",
+                    "Interval": "60",
                     "Timeout": "5"
                 }
             }
@@ -378,7 +381,7 @@
             },
             "Properties": {
                 "KeyName": "fronts",
-                "ImageId": "ami-3b082c4c",
+                "ImageId": "ami-b63ee1c5",
                 "InstanceType": {
                     "Fn::FindInMap": [
                         "StageMap",
@@ -405,7 +408,6 @@
                             "",
                             [
                                 "#!/bin/bash -ev\n",
-                                "apt-get -y update\n",
                                 "cfn-init -s ",
                                 {
                                     "Ref": "AWS::StackId"
