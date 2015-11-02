@@ -8,6 +8,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import play.api.Logger
 import play.api.mvc._
+import conf.aws
 
 trait PanDomainAuthActions extends AuthActions with Results {
   import play.api.Play.current
@@ -43,7 +44,5 @@ trait PanDomainAuthActions extends AuthActions with Results {
   override lazy val domain: String = Configuration.faciatool.pandomainDomain
   override lazy val system: String = Configuration.faciatool.pandomainService
 
-  override lazy val awsCredentials =
-    for (key <- Configuration.faciatool.pandomainKey; secret <- Configuration.faciatool.pandomainSecret)
-      yield { new BasicAWSCredentials(key, secret) }
+  override lazy val awsCredentials = Some(aws.mandatoryCredentials.getCredentials)
 }
