@@ -142,9 +142,6 @@ Create the files
    faciatool.pandomain.domain="local.dev-gutools.co.uk"
    faciatool.pandomain.host="https://fronts.local.dev-gutools.co.uk"
 
-   pandomain.aws.key=[redacted]
-   pandomain.aws.secret=[redacted]
-
    facia.stage="CODE"
    ```
 
