@@ -56,16 +56,20 @@ function handleMedia ({sourceItem, mediaItem}, targetItem, targetGroup) {
 
 function handleInternalClass ({sourceItem, sourceGroup}, targetItem, targetGroup) {
 
-    if (targetItem instanceof Article && targetItem.id() === sourceItem.id) {
-        return;
-    }
-
     var {position, target, isAfter} = normalizeTarget(sourceItem, targetItem, targetGroup);
 
-    removeById(targetGroup.items, urlAbsPath(sourceItem.id));
+    if (targetItem instanceof Article && targetItem.id() === sourceItem.id) {
+        var insertAt = _.findIndex(targetGroup.items(), function(item) {
+            return item.id() === targetItem.id();
+        });
+        removeById(targetGroup.items, urlAbsPath(sourceItem.id));
 
-    var insertAt = targetGroup.items().indexOf(target) + (isAfter || 0);
-    insertAt = insertAt === -1 ? targetGroup.items().length : insertAt;
+    } else {
+
+        removeById(targetGroup.items, urlAbsPath(sourceItem.id));
+        var insertAt = targetGroup.items().indexOf(target) + (isAfter || 0);
+        insertAt = insertAt === -1 ? targetGroup.items().length : insertAt;
+    }
 
     var newItems = newItemsConstructor(sourceItem, targetGroup);
 
