@@ -395,7 +395,7 @@ a:hover,
 }
 
 .scrollable {
-    flex: 1;
+    flex: 1 0 150px;
     overflow: auto;
 }
 
@@ -662,7 +662,7 @@ h1 {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     background: #f6f6f6;
-    height: 36px;
+    flex: 0 0 36px;
     border-bottom: 5px solid #dddddd;
     overflow: hidden;
 }
@@ -1180,7 +1180,7 @@ button {
 
 .clipboard-container {
     overflow-y: auto;
-    max-height: 70%;
+    min-height: 100px;
     display: block;
 }
 
