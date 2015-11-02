@@ -27,9 +27,9 @@ export default class FrontConfig extends ColumnWidget {
         var num = frontCount(this.baseModel.state().config.fronts, this.baseModel.priority);
         var remainingFronts = num.max - num.count;
         if (remainingFronts < CONST.frontAlertLimit) {
-            this.baseModel.message.frontsRemainingMessage('You have ' + remainingFronts + ' fronts remaining');
+            this.baseModel.message.textMessage('You have ' + remainingFronts + ' fronts remaining');
         } else {
-            this.baseModel.message.frontsRemainingMessage('');
+            this.baseModel.message.textMessage('');
         }
     }
 

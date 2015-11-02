@@ -2,7 +2,7 @@ import ko from 'knockout';
 
 class Message {
     constructor() {
-        this.frontsRemainingMessage = ko.observable();
+        this.textMessage = ko.observable();
     }
 }
 
