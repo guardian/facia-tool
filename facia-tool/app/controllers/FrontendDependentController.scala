@@ -9,6 +9,7 @@ import auth.PanDomainAuthActions
 import slices.{FixedContainers, DynamicContainers, ContainerJsonConfig}
 import conf.{Configuration, FaciaToolConfiguration}
 import common.Edition
+import switches.switchManager
 
 
 object Defaults {
@@ -29,7 +30,8 @@ case class Defaults(
   mediaBaseUrl: String,
   apiBaseUrl: String,
   fixedContainers: Seq[ContainerJsonConfig],
-  dynamicContainers: Seq[ContainerJsonConfig]
+  dynamicContainers: Seq[ContainerJsonConfig],
+  switches: JsValue
 )
 
 object FrontendDependentController extends Controller with PanDomainAuthActions {
@@ -74,7 +76,8 @@ object FrontendDependentController extends Controller with PanDomainAuthActions 
           } else {
             ContainerJsonConfig(id, Some(DynamicGroups))
           }
-        )
+        ),
+        switchManager.getSwitchesAsJson()
       )))
     }
   }

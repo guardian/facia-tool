@@ -366,6 +366,11 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
     lazy val key = playConfiguration.getStringFromStage("media.key");
   }
 
+  object switchBoard {
+    val bucket = playConfiguration.getMandatoryStringFromStage("switchboard.bucket")
+    val key = playConfiguration.getMandatoryStringFromStage("switchboard.object")
+  }
+
   object aws {
 
     lazy val region = playConfiguration.getMandatoryStringFromStage("aws.region")
