@@ -8,6 +8,7 @@ import dispatch from 'utils/drag-dispatcher';
 import mediator from 'utils/mediator';
 
 var sourceGroup;
+
 const listeners = Object.freeze({
     dragstart: function (element, event) {
         var sourceItem = ko.dataFor(event.target);
@@ -87,6 +88,33 @@ const imageEditorListeners = Object.freeze({
     }
 });
 
+const collectionListeners = Object.freeze({
+    dragover: function (element, event) {
+        var collection = ko.dataFor(event.target);
+        collection.underDrag(true);
+
+        event.preventDefault();
+        event.stopPropagation();
+
+    },
+    dragleave: function (element, event) {
+        var collection = ko.dataFor(event.target);
+        collection.underDrag(false);
+
+        event.preventDefault();
+        event.stopPropagation();
+
+    },
+    drop: function (element, event) {
+        event.preventDefault();
+        event.stopPropagation();
+        var source = draggableElement.getItem(event.dataTransfer, sourceGroup).sourceItem;
+        var collection = ko.dataFor(element);
+        collection.underDrag(false);
+        collection.addData(source);
+    }
+});
+
 export default class Droppable extends BaseClass {
     static get listeners() {
         return listeners;
@@ -98,6 +126,11 @@ export default class Droppable extends BaseClass {
     constructor() {
         super();
 
+        function getCollectionListener (name, element) {
+            return function (event) {
+                collectionListeners[name](element, event);
+            };
+        }
         function getListener (name, element) {
             return function (event) {
                 listeners[name](element, event);
@@ -116,6 +149,13 @@ export default class Droppable extends BaseClass {
             dispatch(...args);
         });
 
+        ko.bindingHandlers.makeCollectionDroppable = {
+            init: function (element) {
+                for (var eventName in collectionListeners) {
+                    element.addEventListener(eventName, getCollectionListener(eventName, element), false);
+                }
+            }
+        };
         ko.bindingHandlers.makeDroppable = {
             init: function (element) {
                 for (var eventName in listeners) {
