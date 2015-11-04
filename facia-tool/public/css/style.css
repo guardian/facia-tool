@@ -1542,6 +1542,10 @@ button {
 /* CONFIG EDITOR */
 /*****************************************/
 
+.underDrag {
+    background: red;
+}
+
 .cnf-fronts {
     margin-top: 10px;
 }
