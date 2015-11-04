@@ -87,7 +87,6 @@ export default {
         'show-elements=video',
         'show-tags=all',
         'show-fields=' + [
-            'internalContentCode',
             'internalPageCode',
             'isLive',
             'firstPublicationDate',
@@ -125,7 +124,6 @@ export default {
     ophanBase:             'http://dashboard.ophan.co.uk/summary',
     ophanFrontBase:        'http://dashboard.ophan.co.uk/info-front?path=',
 
-    internalContentPrefix: 'internal-code/content/',
     internalPagePrefix:    'internal-code/page/',
 
     sparksBatchQueue:      15

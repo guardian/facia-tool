@@ -8,7 +8,6 @@ var allArticles = [{
     fields: {
         headline: 'I won the elections',
         thumbnail: 'http://static.guim.co.uk/sys-images/Guardian/Pix/audio/video/2012/4/30/1335773468470/Barack-Obama-laughs-at-co-011.jpg',
-        internalContentCode: '1',
         internalPageCode: '1'
     }
 }, {
@@ -19,7 +18,6 @@ var allArticles = [{
     fields: {
         headline: 'It\'s raining right now',
         thumbnail: 'http://i.guim.co.uk/static/w-620/h--/q-95/sys-images/Guardian/Pix/pictures/2014/8/15/1408088221012/Biblical-storm-clouds-ove-012.jpg',
-        internalContentCode: '2',
         internalPageCode: '2'
     }
 }, {
@@ -30,7 +28,6 @@ var allArticles = [{
     fields: {
         headline: 'Went for a coffee',
         thumbnail: 'http://media.gizmodo.co.uk/wp-content/uploads/2013/05/Guardian-Coffee.jpg',
-        internalContentCode: '3',
         internalPageCode: '3'
     }
 }, {
@@ -41,7 +38,6 @@ var allArticles = [{
     fields: {
         headline: 'Santa Claus is a real thing',
         thumbnail: 'http://i.guim.co.uk/static/w-700/h--/q-95/sys-images/Guardian/Pix/pictures/2012/12/23/1356296021064/Santa-Claus-029.jpg',
-        internalContentCode: '4',
         internalPageCode: '4'
     }
 }, {
@@ -52,7 +48,6 @@ var allArticles = [{
     fields: {
         headline: 'Nothing happened for once',
         thumbnail: 'http://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2012/6/13/1339581847676/Half-empty-glass-008.jpg',
-        internalContentCode: '5',
         internalPageCode: '5'
     }
 }];
