@@ -27,6 +27,7 @@ export default function (html) {
                 _.defaults(model, {
                     title: ko.observable('test'),
                     modalDialog: modal,
+                    message: { textMessage: ko.observable() },
                     extensions: [],
                     registerExtension: () => {},
                     testColumn: { registerMainWidget: widget => {

@@ -46,6 +46,7 @@ export default {
         'commercial': 350,
         'training': 50
     },
+    frontAlertLimit: 10,
     frontGroups: [
         'UK consumer',
         'UK professional',

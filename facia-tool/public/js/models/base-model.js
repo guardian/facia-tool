@@ -8,6 +8,7 @@ import * as widgets from 'models/widgets';
 import copiedArticle from 'modules/copied-article';
 import Droppable from 'modules/droppable';
 import modalDialog from 'modules/modal-dialog';
+import message from 'widgets/message';
 import cloneWithKey from 'utils/clone-with-key';
 import priorityFromUrl from 'utils/priority-from-url';
 
@@ -23,6 +24,7 @@ export default class BaseModel extends BaseClass {
         this.layout = layout;
         this.extensions = ko.observableArray(extensions || []);
         this.modalDialog = modalDialog;
+        this.message = message;
         this.state = ko.observable();
         this.frontsList = ko.observableArray();
         this.frontsMap = ko.observable();
