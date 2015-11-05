@@ -95,7 +95,7 @@ export default class Editor extends BaseClass {
         var key = this.opts.visibleWhen;
         var display = key ? _.some(this.all, editor => editor.key === key && this.article.meta[editor.key]()) : true;
 
-        display = display && (this.article.state.enableContentOverrides() || key === 'customKicker');
+        display = display && (this.article.state.enableContentOverrides() || this.key === 'customKicker');
         display = display && (this.opts.ifState ? this.article.state[this.opts.ifState]() : true);
         display = display && (this.opts.omitForSupporting ? this.article.group.parentType !== 'Article' : true);
 
