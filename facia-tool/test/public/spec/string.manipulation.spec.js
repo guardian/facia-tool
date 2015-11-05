@@ -3,7 +3,6 @@ import params from 'utils/parse-query-params';
 import urlQuery from 'utils/url-query';
 import serialize from 'utils/serialize-query-params';
 import trim from 'utils/full-trim';
-import icc from 'utils/internal-content-code';
 import isGuardian from 'utils/is-guardian-url';
 import urlAbsPath from 'utils/url-abs-path';
 import urlHost from 'utils/url-host';
@@ -50,7 +49,7 @@ describe('utils/parse-query-params', function () {
     });
 
     describe('URL Parameters as array', function () {
-        it('parses an url with duplicate parameters', function () {
+        it('parses an url as an array', function () {
             value = params('url?array=1&array=2&array=3&string=array', {
                 multipleValues: true
             });
@@ -77,7 +76,7 @@ describe('utils/url-query', function () {
 });
 
 describe('utils/serialize-query-params', function () {
-    it('extract the search query', function () {
+    it('serializes the search query', function () {
         expect(serialize({})).toBe('');
         expect(serialize({ test: 'that' })).toBe('test=that');
         expect(serialize({ test: 'that', fruit: 'apple' })).toBe('test=that&fruit=apple');
@@ -114,21 +113,6 @@ describe('utils/full-trim', function () {
     });
 });
 
-describe('utils/internal-content-code', function () {
-    it('generate internal content codes', function () {
-        expect(icc()).toBeUndefined();
-        expect(icc({})).toBeUndefined();
-        expect(icc({
-            fields: {}
-        })).toBeUndefined();
-        expect(icc({
-            fields: {
-                internalContentCode: 'banana'
-            }
-        })).toBe(CONST.internalContentPrefix + 'banana');
-    });
-});
-
 describe('utils/is-guardian-url', function () {
     it('matches guardian domain', function () {
         expect(isGuardian('http://' + CONST.mainDomain)).toBe(true);
@@ -149,7 +133,7 @@ describe('utils/url-host', function () {
 });
 
 describe('utils/sanitize-api-query', function () {
-    it('extract the domain', function () {
+    it('cleans the query', function () {
         expect(sanitizeQuery('search')).toBe('search');
         expect(sanitizeQuery('search?q=fruit&color=yellow')).toBe('search?q=fruit&color=yellow');
         expect(sanitizeQuery('search?q=fruit&api-key=xxx&shape=&ripe=true')).toBe('search?q=fruit&ripe=true');
