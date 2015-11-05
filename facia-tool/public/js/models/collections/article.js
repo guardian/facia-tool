@@ -140,6 +140,7 @@ define([
             this.state.visited(opts.visited);
 
             this.frontPublicationDate = opts.frontPublicationDate;
+            this.publishedBy = opts.publishedBy;
             this.frontPublicationTime = ko.observable();
             this.scheduledPublicationTime = ko.observable();
 

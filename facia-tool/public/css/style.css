@@ -896,7 +896,19 @@ collection-widget:first-child .collection {
     font-size: 12px;
 }
 
+.article__ammends .publisher {
+    display: none;
+}
+
+.attention .publisher {
+    color: #666666;
+    display: block;
+    text-align: left;
+}
+
+
 .article__times {
+    text-align: right;
     position: absolute;
     top: 1px;
     right: 4px;

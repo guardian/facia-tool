@@ -92,20 +92,20 @@ trait UpdateActions extends Logging with ExecutionContexts {
   val collectionCap: Int = Configuration.facia.collectionCap
   implicit val updateListWrite = Json.writes[UpdateList]
 
-  def insertIntoLive(update: UpdateList, collectionJson: CollectionJson): CollectionJson =
+  def insertIntoLive(update: UpdateList, identity: User, collectionJson: CollectionJson): CollectionJson =
     if (update.live) {
-      val live = updateList(update, collectionJson.live)
+      val live = updateList(update, identity, collectionJson.live)
       collectionJson.copy(live=live, draft=collectionJson.draft.filter(_ != live))
     }
     else
       collectionJson
 
-  def insertIntoDraft(update: UpdateList, collectionJson: CollectionJson): CollectionJson =
+  def insertIntoDraft(update: UpdateList, identity: User, collectionJson: CollectionJson): CollectionJson =
     if (update.draft)
       collectionJson.copy(
           draft=collectionJson.draft.map {
-            l => updateList(update, l)}.orElse {
-              Option(updateList(update, collectionJson.live))
+            l => updateList(update, identity, l)}.orElse {
+              Option(updateList(update, identity, collectionJson.live))
           }.filter(_ != collectionJson.live)
         )
     else
@@ -169,8 +169,8 @@ trait UpdateActions extends Logging with ExecutionContexts {
     lazy val updateJson = Json.toJson(update)
     FrontsApi.amazonClient.collection(id).map { maybeCollectionJson =>
       maybeCollectionJson
-        .map(insertIntoLive(update, _))
-        .map(insertIntoDraft(update, _))
+        .map(insertIntoLive(update, identity, _))
+        .map(insertIntoDraft(update, identity, _))
         .map(removeGroupIfNoLongerGrouped(id, _))
         .map(pruneBlock)
         .map(CollectionJsonFunctions.sortByGroup)
@@ -195,14 +195,14 @@ trait UpdateActions extends Logging with ExecutionContexts {
         .map(FaciaApi.updateIdentity(_, identity))
         .map(putCollectionJson(id, _))}}
 
-  private def updateList(update: UpdateList, blocks: List[Trail]): List[Trail] = {
+  private def updateList(update: UpdateList, identity: User, blocks: List[Trail]): List[Trail] = {
     val trail: Trail = blocks
       .find(_.id == update.item)
       .map { currentTrail =>
         val newMeta = for (updateMeta <- update.itemMeta) yield updateMeta
         currentTrail.copy(meta = newMeta)
       }
-      .getOrElse(Trail(update.item, DateTime.now.getMillis, update.itemMeta))
+      .getOrElse(Trail(update.item, DateTime.now.getMillis, Some(getUserName(identity)), update.itemMeta))
 
     val listWithoutItem = blocks.filterNot(_.id == update.item)
 
@@ -224,11 +224,13 @@ trait UpdateActions extends Logging with ExecutionContexts {
     splitList._1 ::: (trail +: splitList._2)
   }
 
-  def createCollectionJson(identity: User, update: UpdateList): CollectionJson =
+  def createCollectionJson(identity: User, update: UpdateList): CollectionJson = {
+    val userName = getUserName(identity);
     if (update.live)
-      CollectionJson(List(Trail(update.item, DateTime.now.getMillis, update.itemMeta)), None, None, DateTime.now, s"${identity.firstName} ${identity.lastName}", identity.email, None, None, None)
+      CollectionJson(List(Trail(update.item, DateTime.now.getMillis, Some(userName), update.itemMeta)), None, None, DateTime.now, userName, identity.email, None, None, None)
     else
-      CollectionJson(Nil, Some(List(Trail(update.item, DateTime.now.getMillis, update.itemMeta))), None, DateTime.now, s"${identity.firstName} ${identity.lastName}", identity.email, None, None, None)
+      CollectionJson(Nil, Some(List(Trail(update.item, DateTime.now.getMillis, Some(userName), update.itemMeta))), None, DateTime.now, userName, identity.email, None, None, None)
+  }
 
   def capCollection(collectionJson: CollectionJson): CollectionJson =
     collectionJson.copy(live = collectionJson.live.take(collectionCap), draft = collectionJson.draft.map(_.take(collectionCap)))
@@ -266,13 +268,13 @@ trait UpdateActions extends Logging with ExecutionContexts {
     trail.copy(meta = trail.meta.map(metaData => metaData.copy(json = metaData.json - "group")))
 
   def createCollectionForTreat(collectionId: String, identity: User, update: UpdateList): CollectionJson = {
-    val trail = Trail(update.item, DateTime.now.getMillis, update.itemMeta)
+    val trail = Trail(update.item, DateTime.now.getMillis, Some(getUserName(identity)), update.itemMeta)
     CollectionJson(
       live          = Nil,
       draft         = None,
       treats        = Option(List(trail)),
       lastUpdated   = DateTime.now,
-      updatedBy     = "${identity.firstName} ${identity.lastName}",
+      updatedBy     = getUserName(identity),
       updatedEmail  = identity.email,
       displayName   = None,
       href          = None,
@@ -282,7 +284,7 @@ trait UpdateActions extends Logging with ExecutionContexts {
     lazy val updateJson = Json.toJson(update)
     FaciaApiIO.getCollectionJson(collectionId).map{ maybeCollectionJson =>
       maybeCollectionJson
-        .map(updateTreatsList(update, _))
+        .map(updateTreatsList(update, identity, _))
         .map(archiveUpdateBlock(collectionId, _, updateJson, identity))
         .map(FaciaApi.updateIdentity(_, identity))
         .map(putCollectionJson(collectionId, _))
@@ -298,13 +300,15 @@ trait UpdateActions extends Logging with ExecutionContexts {
         .map(FaciaApi.updateIdentity(_, identity))
         .map(putCollectionJson(collectionId, _))}}
 
-  private def updateTreatsList(update: UpdateList, collectionJson: CollectionJson): CollectionJson = {
-    val updatedTreats = updateList(update,collectionJson.treats.getOrElse(Nil))
+  private def updateTreatsList(update: UpdateList, identity: User, collectionJson: CollectionJson): CollectionJson = {
+    val updatedTreats = updateList(update, identity, collectionJson.treats.getOrElse(Nil))
     collectionJson.copy(treats = Option(updatedTreats))}
 
   private def removeFromTreatsList(update: UpdateList, collectionJson: CollectionJson): CollectionJson = {
     val updatedTreats = collectionJson.treats.map(_.filterNot(_.id == update.item))
     collectionJson.copy(treats = updatedTreats)}
+
+  private def getUserName(identity: User): String = s"${identity.firstName} ${identity.lastName}";
 
 }
 

@@ -118,11 +118,12 @@
                     css: {'is-empty': meta.snapType() && !meta.headline()}"></div>
 
                 <div class="article__ammends">
-                    <span class="article__times">
+                    <div class="article__times">
                         <span class="time__scheduled" data-bind="text: scheduledPublicationTime"></span>
                         <span class="time__publication" data-bind="text: webPublicationTime"></span>
                         <span class="time__front" data-bind="text: frontPublicationTime"></span>
-                    </span>
+                        <div class="publisher" data-bind="text: publishedBy"></div>
+                    </div>
 
                     <!-- ko if: state.premium -->
                         <span class="label label--premium">premium</span>

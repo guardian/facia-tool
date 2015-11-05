@@ -24,10 +24,10 @@ import test.ConfiguredTestSuite
       }
     }
     "existing article should have the old date" in {
-      newCollectionJson.live.collect { case Trail("existingId", 0, _) => true } should have('length (1))
+      newCollectionJson.live.collect { case Trail("existingId", 0, Some(""),_) => true } should have('length (1))
     }
     "new article should have an updated timestamp" in {
-      newCollectionJson.live.collect { case Trail("newId", t, _) if t != 0 => true } should have('length (1))
+      newCollectionJson.live.collect { case Trail("newId", t, Some(""), _) if t != 0 => true } should have('length (1))
     }
 
   }
@@ -48,15 +48,15 @@ import test.ConfiguredTestSuite
       }
     }
     "existing article should have the old date" in {
-      newCollectionJson.live.collect { case Trail("existingId", 0, _) => true } should have('length (1))
+      newCollectionJson.live.collect { case Trail("existingId", 0, Some(""), _) => true } should have('length (1))
     }
 
   }
 
   private def scenarioOneLiveAnotherDraft: (User, CollectionJson) = {
     val identity = User("John", "Duffell", "email@email.com", None)
-    val live = List(Trail("existingId", 0, None))
-    val draft = Trail("newId", 0, None) :: live
+    val live = List(Trail("existingId", 0, Some(""), None))
+    val draft = Trail("newId", 0, Some(""), None) :: live
     val collectionJson = CollectionJson(live, Some(draft), None, new DateTime(0), "oldUpdatedBy", "oldUpdatedEmail", None, None, None)
     (identity, collectionJson)
   }
