@@ -32,7 +32,7 @@ object Dependencies {
   val jSoup = "org.jsoup" % "jsoup" % "1.7.3"
   val kinesisLogBack = "com.gu" % "kinesis-logback-appender" % "1.0.5"
   val logStash = "net.logstash.logback" % "logstash-logback-encoder" % "4.2"
-  val panDomainAuth = "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.2.7"
+  val panDomainAuth = "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.2.9"
   val playJsonVariants = "org.julienrf" %% "play-json-variants" % "0.2"
   val quartzScheduler = "org.quartz-scheduler" % "quartz" % "2.2.1"
   val scalajTime = "org.scalaj" % "scalaj-time_2.10.2" % "0.7"

@@ -1,16 +1,15 @@
 package auth
 
-import com.amazonaws.auth.BasicAWSCredentials
-import conf.Configuration
+import com.amazonaws.auth.profile.ProfileCredentialsProvider
+import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
+import com.gu.pandomainauth.PanDomainAuth
 import com.gu.pandomainauth.action.AuthActions
 import com.gu.pandomainauth.model.AuthenticatedUser
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import conf.Configuration
 import play.api.Logger
 import play.api.mvc._
-import conf.aws
 
-trait PanDomainAuthActions extends AuthActions with Results {
+trait PanDomainAuthActions extends AuthActions with PanDomainAuth with Results {
   import play.api.Play.current
   lazy val config = play.api.Play.configuration
 
@@ -43,6 +42,8 @@ trait PanDomainAuthActions extends AuthActions with Results {
 
   override lazy val domain: String = Configuration.faciatool.pandomainDomain
   override lazy val system: String = Configuration.faciatool.pandomainService
-
-  override lazy val awsCredentials = Some(aws.mandatoryCredentials.getCredentials)
+  override def awsCredentialsProvider = new AWSCredentialsProviderChain(
+    new ProfileCredentialsProvider("workflow"),
+    new STSAssumeRoleSessionCredentialsProvider(Configuration.faciatool.pandomainRoleArn, Configuration.faciatool.pandomainService)
+  )
 }
