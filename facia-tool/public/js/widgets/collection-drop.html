@@ -1,6 +1,40 @@
+<label>Backfill <span class="linky" data-bind="
+    click: checkApiQueryStatus,
+    visible: apiQuery">check</span></label>
+
 <textarea class="droppable" data-bind="
     makeCollectionDroppable: true,
-    css: {underDrag: underDrag},
-    textInput: displayName,
+    css: {
+        underDrag: underDrag,
+        hidden_collection_input: backfill() && backfill().type !== 'capiQuery'
+    },
+    textInput: apiQuery,
     valueUpdate: 'afterkeydown'">
 </textarea>
+
+<div class="shared_collection" data-bind="
+    css: {
+        hidden_collection_input: !backfill() || backfill().type !== 'collection'
+    }">
+    <span class="shared_collection_label" >
+        <span data-bind="
+            text: displayName"></span>
+        <a data-bind="click: removeCollection">
+            <i class="fa fa-remove"></i>
+        </a>
+    </span>
+</div>
+<!-- ko if: apiQueryStatus -->
+    <div class="api-query-results">
+        <div data-bind="
+            attr: {class: 'api-query-status--' + apiQueryStatus()},
+            text: apiQueryStatus() === 'check' ? 'Checking...' : apiQueryStatus() === 'invalid' ? 'No matches found' : 'Found matches:'"></div>
+        <div data-bind="foreach: apiResults">
+            <a target="_article" class="api-query-result" data-bind="
+                    attr: {href: 'http://www.theguardian.com/' + id},
+                    text: fields.headline"></a>
+        </div>
+    </div>
+<!-- /ko -->
+
+

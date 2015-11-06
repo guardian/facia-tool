@@ -301,6 +301,7 @@ function fetchLatest (options) {
 
 export {
     fetchContent,
+    fetchContentByIds,
     fetchMetaForPath,
     decorateItems,
     validateItem,
