@@ -16,12 +16,13 @@ export default class CollectionDrop extends BaseWidget {
         this.backfill = params.backfill;
         this.apiResults = ko.observableArray();
         this.apiQueryStatus = ko.observable();
+        this.displayName = ko.observable();
 
         this[apiQuerySym] = debounce(this.requestApiQueryStatus.bind(this), vars.CONST.searchDebounceMs);
 
         var that = this;
         this.apiQuery.subscribe(function(newValue) {
-            if (that.backfill() && !that.backfill().type === 'collection') {
+            if (!that.backfill() || that.backfill().type !== 'collection') {
                 that.backfill({
                     value: newValue,
                     type: 'capiQuery'
@@ -30,12 +31,13 @@ export default class CollectionDrop extends BaseWidget {
             that.performApiQuery(newValue);
         });
 
-        if (!this.backfill() || this.backfill().type === 'capiQuery') {
-            this.apiQuery(this.backfill().value);
-            this.displayName = ko.observable();
-        } else {
-            this.apiQuery('/collection/'+ this.backfill().id);
-            this.displayName = ko.observable(vars.model.state().config.collections[this.backfill().id].displayName);
+        if (this.backfill()) {
+            if (this.backfill().type === 'capiQuery') {
+                this.apiQuery(this.backfill().value);
+            } else {
+                this.apiQuery('/collection/'+ this.backfill().id);
+                this.displayName = ko.observable(vars.model.state().config.collections[this.backfill().id].displayName);
+            }
         }
 
         this.underDrag = ko.observable(false);

@@ -115,16 +115,18 @@ describe('Config Front', function () {
 
         function createCollectionWithCAPI () {
             $('.linky.tool--container').click();
-            dom.type('.title--input', 'collection with capi');
-            $('.type-option-chosen').click();
-            $('.type-option-value:nth(0)').click();
-            // sanitize spaces
-            dom.type('.apiquery--input', 'ne  ws');
+            return wait.ms(100)
+            .then(() => {
+                dom.type('.title--input', 'collection with capi');
+                $('.type-option-chosen').click();
+                $('.type-option-value:nth(0)').click();
+                // sanitize spaces
+                dom.type('.apiquery--input', 'ne  ws');
 
-            return wait.ms(vars.CONST.searchDebounceMs)
+                return wait.ms(vars.CONST.searchDebounceMs);
+            })
             .then(() => {
                 expect(textInside('.api-query-results')).toBe('Checking...');
-
                 return wait.ms(100);
             })
             .then(() => {
@@ -138,20 +140,24 @@ describe('Config Front', function () {
                 expect(persistence.collection.save).toHaveBeenCalledWith(collection);
                 expect(collection.meta.type()).toBe('type-one');
                 expect(collection.meta.displayName()).toBe('collection with capi');
-                expect(collection.meta.apiQuery()).toBe('news');
+                expect(collection.meta.backfill().value).toBe('news');
                 persistence.collection.save.calls.reset();
             });
         }
 
         function modifyCollectionWithInvalidCAPI () {
             $('.cnf-collection:nth(1) .cnf-collection__name').click();
-            $('#showTags').click();
-            dom.type('.apiquery--input', 'zero');
-            return wait.ms(vars.CONST.searchDebounceMs + 100).then(() => {
+            return wait.ms(100)
+            .then(() => {
+                $('#showTags').click();
+                dom.type('.apiquery--input', 'zero');
+                return wait.ms(100);
+            })
+            .then(() => wait.ms(vars.CONST.searchDebounceMs + 100))
+            .then(() => {
                 expect($('.apiquery--input').val()).toBe('zero');
                 expect($('.api-query-results a').length).toBe(0);
                 expect(textInside('.api-query-results')).toBe('No matches found');
-
                 dom.type('.apiquery--input', 'fail');
                 return wait.ms(vars.CONST.searchDebounceMs);
             })
@@ -171,7 +177,7 @@ describe('Config Front', function () {
                 expect(persistence.collection.save).toHaveBeenCalledWith(collection);
                 expect(collection.meta.type()).toBe('type-one');
                 expect(collection.meta.displayName()).toBe('collection with capi');
-                expect(collection.meta.apiQuery()).toBe('fail');
+                expect(collection.meta.backfill().value).toBe('fail');
                 expect(collection.meta.showTags()).toBe(true);
                 persistence.collection.save.calls.reset();
             });

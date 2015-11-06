@@ -62,7 +62,7 @@ export default class ConfigCollection extends DropTarget {
         function convertToNewBackfillFormat(meta, opts) {
             if (opts.backfill) {
                 return;
-            } else {
+            } else if (opts.apiQuery) {
                 meta.backfill({
                     type: 'capiQuery',
                     value: opts.apiQuery
