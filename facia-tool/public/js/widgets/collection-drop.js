@@ -28,7 +28,6 @@ export default class CollectionDrop extends BaseWidget {
                     type: 'capiQuery'
                 });
             }
-            that.performApiQuery(newValue);
         });
 
         if (this.backfill()) {
@@ -57,7 +56,6 @@ export default class CollectionDrop extends BaseWidget {
         });
         this.displayName(vars.model.state().config.collections[data.id].displayName);
         this.apiQuery('/collection/'+data.id);
-        this.performApiQuery(this.apiQuery());
     }
 
 
