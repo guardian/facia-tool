@@ -40,4 +40,5 @@ object Dependencies {
   val scalaz = "org.scalaz" %% "scalaz-core" % "7.0.6"
   val slf4jExt = "org.slf4j" % "slf4j-ext" % slf4jVersion
   val scalaTestPlus = "org.scalatestplus" %% "play" % "1.4.0-M3" % "test"
+  val permissionClient = "com.gu" %% "editorial-permissions-client" % "0.2"
 }

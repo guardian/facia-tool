@@ -4,7 +4,6 @@ import com.amazonaws.regions.Regions
 import com.amazonaws.services.s3.AmazonS3Client
 import com.gu.facia.client.models.{FrontJson, CollectionConfigJson}
 import com.gu.pandomainauth.action.UserRequest
-import permissions.{SimplePermission, PermissionsReader}
 import play.api.Logger
 import play.api.mvc.Controller
 import services.Press
