@@ -286,10 +286,7 @@
         "FaciaAutoscalingGroup": {
             "Type": "AWS::AutoScaling::AutoScalingGroup",
             "Properties": {
-                "AvailabilityZones": [
-                    "eu-west-1a",
-                    "eu-west-1b"
-                ],
+                "AvailabilityZones": { "Ref": "AvailabilityZones" },
                 "LaunchConfigurationName": {
                     "Ref": "FaciaLaunchConfig"
                 },
@@ -304,7 +301,7 @@
                 },
                 "Cooldown": "180",
                 "HealthCheckType": "ELB",
-                "HealthCheckGracePeriod": 300,
+                "HealthCheckGracePeriod": 200,
                 "LoadBalancerNames": [
                     {
                         "Ref": "FaciaLoadBalancer"
