@@ -122,6 +122,9 @@ export default class Droppable extends BaseClass {
     static get imageEditor() {
         return imageEditorListeners;
     }
+    static get collectionListeners() {
+        return collectionListeners;
+    }
 
     constructor() {
         super();
