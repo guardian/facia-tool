@@ -55,7 +55,8 @@ object Frontend extends Build with Prototypes {
   val faciaTool = application("facia-tool").dependsOn(commonWithTests, switchboard).aggregate(common).settings(
     libraryDependencies ++= Seq(
       playJsonVariants,
-      awsKinesis
+      awsKinesis,
+      permissionClient
     )
   )
 
