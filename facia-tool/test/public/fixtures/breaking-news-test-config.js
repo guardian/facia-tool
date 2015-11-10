@@ -28,7 +28,6 @@ export default {
     defaults: {
         env: 'prod',
         editions: ['uk'],
-        navSections: ['news'],
         email: 'alerts@theguardian.com',
         avatarUrl: '',
         lowFrequency: 60,

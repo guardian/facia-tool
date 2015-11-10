@@ -7,7 +7,7 @@ import play.api.Play.current
 import model.Cached
 import auth.PanDomainAuthActions
 import slices.{FixedContainers, DynamicContainers, ContainerJsonConfig}
-import conf.{Configuration, FaciaToolConfiguration}
+import conf.Configuration
 import common.Edition
 import switches.switchManager
 
@@ -20,7 +20,6 @@ case class Defaults(
   dev: Boolean,
   env: String,
   editions: Seq[String],
-  navSections: Seq[String],
   email: String,
   avatarUrl: Option[String],
   lowFrequency: Int,
@@ -58,7 +57,6 @@ object FrontendDependentController extends Controller with PanDomainAuthActions 
         Play.isDev,
         Configuration.environment.stage,
         Edition.all.map(_.id.toLowerCase),
-        FaciaToolConfiguration.sectionsFromNav,
         request.user.email,
         request.user.avatarUrl,
         Configuration.faciatool.adminPressJobLowPushRateInMinutes,

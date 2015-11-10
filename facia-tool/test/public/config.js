@@ -45,7 +45,6 @@ export default {
     defaults: {
         env: 'test',
         editions: ['uk', 'us', 'au'],
-        navSections: ['news', 'uk-news', 'us-news', 'au-news'],
         email: 'someone@theguardian.com',
         avatarUrl: '',
         lowFrequency: 60,
