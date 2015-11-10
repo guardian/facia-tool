@@ -213,4 +213,53 @@ describe('Persistence', function () {
         .then(done)
         .catch(done.fail);
     });
+
+    it('updates a collection with a collection in backfill', function (done) {
+        var one = new Front({
+            id: 'fruit/front',
+            webTitle: 'fruit loops',
+            title: 'cereal',
+            isHidden: false,
+            priority: 'food'
+        });
+        var collection = new Collection({
+            id: 'apple-collection',
+            displayName: 'green apple',
+            groups: [],
+            backfill: {
+                type: 'collection',
+                value: 'orange-collection'
+            },
+            uneditable: true
+        });
+        collection.parents.push(one);
+
+        var request = persistence.collection.save(collection);
+        var call = ajax.request.calls.argsFor(0)[0], data = JSON.parse(call.data);
+        expect(call.type).toBe('POST');
+        expect(call.url).toBe('/config/collections/apple-collection');
+        expect(data).toEqual({
+            frontIds: ['fruit/front'],
+            collection: {
+                id: 'apple-collection',
+                displayName: 'green apple',
+                uneditable: true,
+                backfill: {
+                    type: 'collection',
+                    value: 'orange-collection'
+                },
+                groups: []
+            }
+        });
+        expect(this.events.before).toHaveBeenCalled();
+        expect(this.events.after).not.toHaveBeenCalled();
+        request.then(() => {
+            expect(this.events.after).toHaveBeenCalled();
+
+            one.dispose();
+            collection.dispose();
+        })
+        .then(done)
+        .catch(done.fail);
+    });
 });
