@@ -101,8 +101,9 @@ export default class CollectionDrop extends BaseWidget {
                     });
             }
         })
-        .catch(function(error) {
-            console.log(error);
+        .catch(function() {
+            this.apiResults([]);
+            this.apiQueryStatus('invalid');
         });
     }
 
