@@ -1542,7 +1542,7 @@ button {
 /* CONFIG EDITOR */
 /*****************************************/
 
-.underDrag {
+textarea.underDrag {
     background: #2ea3eb;
 }
 
