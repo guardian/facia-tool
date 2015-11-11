@@ -13,6 +13,8 @@ import Router from 'modules/router';
 import handlers from 'modules/route-handlers';
 import clone from 'utils/clean-clone';
 import 'widgets/collection.html!text';
+import 'widgets/trail.html!text';
+import 'widgets/trail-editor.html!text';
 import inject from 'test/utils/inject';
 import fakePushState from 'test/utils/push-state';
 
