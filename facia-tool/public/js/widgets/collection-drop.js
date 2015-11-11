@@ -21,10 +21,10 @@ export default class CollectionDrop extends BaseWidget {
         this[apiQuerySym] = debounce(this.requestApiQueryStatus.bind(this), vars.CONST.searchDebounceMs);
 
         var that = this;
-        this.apiQuery.subscribe(function(newValue) {
+        this.subscribeOn(this.apiQuery, () => {
             if (!that.backfill() || that.backfill().type !== 'collection') {
                 that.backfill({
-                    value: newValue,
+                    value: this.apiQuery,
                     type: 'capiQuery'
                 });
             }
