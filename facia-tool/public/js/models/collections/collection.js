@@ -89,6 +89,7 @@ define([
 
         this.state  = asObservableProps([
             'lastUpdated',
+            'fromBackfill',
             'hasConcurrentEdits',
             'collapsed',
             'hasDraft',

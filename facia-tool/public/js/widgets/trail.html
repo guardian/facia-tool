@@ -35,6 +35,7 @@
 
         <div data-bind="if: state.enableContentOverrides() && group.parentType !== 'Article'">
             <div class="supporting" data-bind="with: meta.supporting">
+                <!-- ko if: !$parents[1].state.fromBackfill() -->
                 <div class="droppable" data-bind="
                     makeDroppable: true,
                     click: pasteItem,
@@ -49,6 +50,14 @@
                             <span class="helptext">Click to paste</span>
                         </div>
                 </div>
+                <!-- /ko -->
+                <!-- ko if: $parents[1].state.fromBackfill() -->
+                    <div class="droppable" data-bind="makeDraggable: true">
+                            <!-- ko foreach: items -->
+                                <trail-widget params="context: $context"></trail-widget>
+                            <!-- /ko -->
+                    </div>
+                <!-- /ko -->
             </div>
             <span class="article-edit supporting-message">Drop content above, hold Ctrl key to replace item</span>
         </div>

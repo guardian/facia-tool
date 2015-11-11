@@ -1,4 +1,6 @@
-<div class="collection" data-bind="ownerClass: $data">
+<div class="collection" data-bind="
+    ownerClass: $data
+   ">
     <div class="list-header" data-bind="
         css: {collapsed: state.collapsed() || configMeta.uneditable()}
     ">
@@ -138,18 +140,30 @@
     <!-- ko if: name && !front.flattenGroups() -->
         <div class="group-name" data-bind="text: name"></div>
     <!-- /ko -->
-    <div class="droppable" data-bind="
-        makeDroppable: true,
-        click: pasteItem,
-        css: {
-            underDrag: underDrag() && !underControlDrag(),
-            underControlDrag: underDrag() && underControlDrag()
-        }">
-            <!-- ko foreach: items -->
-                <trail-widget params="context: $context"></trail-widget>
-            <!-- /ko -->
-            <div class="group-separator" data-bind="css: {'pasteOver': $root.isPasteActive && $root.isPasteActive()}">
-                <span class="helptext">Click to paste</span>
-            </div>
-    </div>
+
+    <!-- ko if: !$parent.state.fromBackfill() -->
+        <div class="droppable" data-bind="
+            makeDroppable,
+            click: pasteItem,
+            css: {
+                underDrag: underDrag() && !underControlDrag(),
+                underControlDrag: underDrag() && underControlDrag()
+            }">
+                <!-- ko foreach: items -->
+                    <trail-widget params="context: $context"></trail-widget>
+                <!-- /ko -->
+                <div class="group-separator" data-bind="css: {'pasteOver': $root.isPasteActive && $root.isPasteActive()}">
+                    <span class="helptext">Click to paste</span>
+                </div>
+        </div>
+    <!-- /ko -->
+    <!-- ko if: $parent.state.fromBackfill() -->
+        <div data-bind="
+            makeDraggable: true,
+            ">
+                <!-- ko foreach: items -->
+                    <trail-widget params="context: $context"></trail-widget>
+                <!-- /ko -->
+        </div>
+    <!-- /ko -->
 </script>

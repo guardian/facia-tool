@@ -138,6 +138,25 @@ export default class Front extends ColumnWidget {
             ))
         );
 
+        // A backfill collection is now hardcoded here but this logic needs to be changed
+        // when facia-scala client has been udpated
+        var id = '1b4b-6b61-9e5d-ea2d';
+        var backfillCollection = new Collection(
+            _.extend(
+                allCollections[id],
+                {
+                    id: id,
+                    alsoOn: _.reduce(this.baseModel.frontsList(), (alsoOn, front) => {
+                        if (front.id !== frontId && (front.collections || []).indexOf(id) > -1) {
+                            alsoOn.push(front.id);
+                        }
+                        return alsoOn;
+                    }, []),
+                    front: this
+                }
+            ));
+        backfillCollection.state.fromBackfill(true);
+        this.collections().push(backfillCollection);
         this.getFrontAge({ alertIfStale: true });
         this.loaded = Promise.all(
             this.collections().map(collection => collection.loaded)
