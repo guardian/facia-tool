@@ -8,6 +8,7 @@ import images from 'test/utils/images';
 import inject from 'test/utils/inject';
 import textInside from 'test/utils/text-inside';
 import 'widgets/trail-editor.html!text';
+import * as wait from 'test/utils/wait';
 
 describe('Editors', function () {
     beforeEach(function (done) {
@@ -32,38 +33,45 @@ describe('Editors', function () {
         this.ko.dispose();
     });
 
-    it('toggles boolean values', function () {
+    it('toggles boolean values', function (done) {
         $('.editor--boolean--one').click();
         expect($('.editor--boolean--one').hasClass('selected')).toBe(true);
         expect($('.element__field').is(':visible')).toBe(true);
-        expect($('.editor__length').length).toBe(1);
+        wait.ms(150).then(() => {
+            // the field visibility is rate limited
+            expect($('.editor__length').length).toBe(1);
 
-        // Select another singleton
-        $('.editor--boolean--two').click();
-        expect($('.editor--boolean--one').hasClass('selected')).toBe(false);
-        expect($('.element__field').is(':visible')).toBe(false);
-        expect($('.editor--boolean--two').hasClass('selected')).toBe(true);
+            // Select another singleton
+            $('.editor--boolean--two').click();
+            expect($('.editor--boolean--one').hasClass('selected')).toBe(false);
+            expect($('.element__field').is(':visible')).toBe(false);
+            expect($('.editor--boolean--two').hasClass('selected')).toBe(true);
 
-        $('.editor--boolean--three').click();
-        expect($('.editor--boolean--one').hasClass('selected')).toBe(false);
-        expect($('.element__field').is(':visible')).toBe(false);
-        expect($('.editor--boolean--two').hasClass('selected')).toBe(false);
-        expect($('.editor--boolean--three').hasClass('selected')).toBe(true);
+            $('.editor--boolean--three').click();
+            expect($('.editor--boolean--one').hasClass('selected')).toBe(false);
+            expect($('.element__field').is(':visible')).toBe(false);
+            expect($('.editor--boolean--two').hasClass('selected')).toBe(false);
+            expect($('.editor--boolean--three').hasClass('selected')).toBe(true);
 
-        $('.editor--boolean--one').click();
-        expect($('.editor--boolean--one').hasClass('selected')).toBe(true);
-        expect($('.element__field').is(':visible')).toBe(true);
-        expect($('.editor__length').length).toBe(1);
-        $('.element__field').val('more than 5 letters').change();
-        expect(textInside('.editor__length')).toBe('-' + ('more than 5 letters'.length - 5));
+            $('.editor--boolean--one').click();
+            expect($('.editor--boolean--one').hasClass('selected')).toBe(true);
+            expect($('.element__field').is(':visible')).toBe(true);
+            expect($('.editor__length').length).toBe(1);
+            $('.element__field').val('more than 5 letters').change();
+            expect(textInside('.editor__length')).toBe('-' + ('more than 5 letters'.length - 5));
 
-        $('.editor__revert').click();
-        expect($('.element__field').val()).toBe('');
+            $('.editor__revert').click();
+            expect($('.element__field').val()).toBe('');
 
-        // Toggle off
-        $('.editor--boolean--one').click();
-        expect($('.editor--boolean--one').hasClass('selected')).toBe(false);
-        expect($('.element__field').is(':visible')).toBe(false);
+            // Toggle off
+            $('.editor--boolean--one').click();
+            expect($('.editor--boolean--one').hasClass('selected')).toBe(false);
+            expect($('.element__field').is(':visible')).toBe(false);
+
+            return wait.ms(150);
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('validates inputs', function (done) {

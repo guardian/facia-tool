@@ -9,8 +9,12 @@ import MockSwitches from 'mock/switches';
 import MockLastModified from 'mock/lastmodified';
 import Router from 'modules/router';
 import handlers from 'modules/route-handlers';
+import 'widgets/collection.html!text';
+import 'widgets/trail.html!text';
+import 'widgets/trail-editor.html!text';
 import fakePushState from 'test/utils/push-state';
 import inject from 'test/utils/inject';
+import * as wait from 'test/utils/wait';
 
 export default class Loader {
     constructor(scope, done) {
@@ -39,6 +43,7 @@ export default class Loader {
         scope.baseModule = scope.router.load(testConfig);
         scope.ko.apply(scope.baseModule)
             .then(() => scope.baseModule.loaded)
+            .then(() => wait.ms(100))
             .then(done)
             .catch(done.fail);
     }

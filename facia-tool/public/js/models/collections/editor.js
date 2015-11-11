@@ -48,7 +48,7 @@ export default class Editor extends BaseClass {
             this.listenOn(mediator, 'ui:open', this.onUIOpen);
         }
 
-        this.hasFocus = ko.observable(false);
+        this.hasFocus = ko.observable(false).extend({ rateLimit: 150 });
         this.length = ko.pureComputed(() => {
             return opts.maxLength ? opts.maxLength - this.value().length : undefined;
         });
