@@ -12,9 +12,6 @@ var endpoints = [{
         }
     }
 }, {
-    key: 'switches',
-    url: CONST.apiBase + '/switches'
-}, {
     key: 'defaults',
     url: CONST.frontendApiBase + '/config'
 }];

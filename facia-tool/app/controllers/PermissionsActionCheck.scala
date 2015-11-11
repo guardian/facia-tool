@@ -2,10 +2,10 @@ package controllers
 
 import com.gu.editorial.permissions.client.{PermissionsUser, PermissionDenied, PermissionGranted}
 import com.gu.pandomainauth.action.UserRequest
-import conf.Switches
 import play.api.Logger
 import play.api.mvc._
 import permissions._
+import switchboard.SwitchManager
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -15,7 +15,7 @@ object ConfigPermissionCheck extends ActionFilter[UserRequest] {
   override def filter[A](request: UserRequest[A]) = {
     implicit def permissionsUser: PermissionsUser = PermissionsUser(request.user.email)
 
-    if (!Switches.FaciaToolAllowConfigForAll.isSwitchedOn) {
+    if (SwitchManager.getStatus("facia-tool-allow-config-for-all")) {
       Permissions.get(Permissions.ConfigureFronts).map {
         case PermissionGranted => None
         case PermissionDenied => {

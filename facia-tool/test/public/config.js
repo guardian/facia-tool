@@ -37,11 +37,6 @@ export default {
             }
         }
     },
-    switches: {
-        'facia-tool-disable': false,
-        'facia-tool-draft-content': true,
-        'facia-tool-sparklines': false
-    },
     defaults: {
         env: 'test',
         editions: ['uk', 'us', 'au'],
@@ -51,6 +46,11 @@ export default {
         highFrequency: 2,
         standardFrequency: 5,
         fixedContainers: [{ 'name':'fixed/test' }],
-        dynamicContainers: [{ 'name':'dynamic/test' }]
+        dynamicContainers: [{ 'name':'dynamic/test' }],
+        switches: {
+            'facia-tool-disable': false,
+            'facia-tool-draft-content': true,
+            'facia-tool-sparklines': false
+        }
     }
 };

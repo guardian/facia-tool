@@ -1,8 +1,8 @@
 import java.io.File
 
 import common._
-import switchboard._
-import conf.{PermissionsCache, LogStashConfig, SwitchboardLifecycle, Gzipper}
+import switchboard.{Lifecycle => NewSwitchboardLifecycle}
+import conf.{PermissionsCache, LogStashConfig, Gzipper}
 import metrics.FrontendMetric
 import play.api._
 import play.api.mvc.WithFilters
@@ -12,7 +12,6 @@ object Global extends WithFilters(Gzipper)
   with GlobalSettings
   with CloudWatchApplicationMetrics
   with ConfigAgentLifecycle
-  with SwitchboardLifecycle
   with NewSwitchboardLifecycle
   with LogStashConfig
   with PermissionsCache {

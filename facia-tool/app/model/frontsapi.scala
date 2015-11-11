@@ -9,7 +9,7 @@ import julienrf.variants.Variants
 import org.joda.time.DateTime
 import play.api.libs.json.{Format, JsString, JsValue, Json}
 import services.ConfigAgent
-import tools.{ArchiveRequest, FaciaToolArchive, FaciaApi, FaciaApiIO}
+import tools.{FaciaApi, FaciaApiIO}
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
@@ -127,24 +127,19 @@ trait UpdateActions extends Logging with ExecutionContexts {
     FaciaApiIO.putCollectionJson(id, collectionJson)
 
   //Archiving
-  //Archiving
   def archivePublishBlock(collectionId: String, collectionJson: CollectionJson, identity: User): CollectionJson = {
-    FaciaToolArchive.archive(ArchiveRequest(collectionId, identity.email, Json.toJson(collectionJson), Json.obj("action" -> "publish")))
     archiveBlock(collectionId, collectionJson, "publish", identity)
   }
 
   def archiveDiscardBlock(collectionId: String, collectionJson: CollectionJson, identity: User): CollectionJson = {
-    FaciaToolArchive.archive(ArchiveRequest(collectionId, identity.email, Json.toJson(collectionJson), Json.obj("action" -> "discard")))
     archiveBlock(collectionId, collectionJson, "discard", identity)
   }
 
   def archiveUpdateBlock(collectionId: String, collectionJson: CollectionJson, updateJson: JsValue, identity: User): CollectionJson = {
-    FaciaToolArchive.archive(ArchiveRequest(collectionId, identity.email, Json.toJson(collectionJson), Json.obj("action" -> "update", "update" -> updateJson)))
     archiveBlock(collectionId, collectionJson, Json.obj("action" -> "update", "update" -> updateJson), identity)
   }
 
   def archiveDeleteBlock(collectionId: String, collectionJson: CollectionJson, updateJson: JsValue, identity: User): CollectionJson = {
-    FaciaToolArchive.archive(ArchiveRequest(collectionId, identity.email, Json.toJson(collectionJson), Json.obj("action" -> "delete", "update" -> updateJson)))
     archiveBlock(collectionId, collectionJson, Json.obj("action" -> "delete", "update" -> updateJson), identity)
   }
 

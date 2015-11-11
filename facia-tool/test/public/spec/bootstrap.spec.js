@@ -115,7 +115,7 @@ describe('Bootstrap', function () {
 
         tick(100).then(function () {
             expect(fail.called).toBe(true);
-            expect(fail.getCall(0).args[0]).toMatch(/switches is invalid/);
+            expect(fail.getCall(0).args[0]).toMatch(/defaults is invalid/);
             expect(success.called).toBe(false);
         })
         .then(done)
@@ -160,11 +160,6 @@ function generateMockObjects () {
             collections: ['one', 'two']
         }
     }, {
-        url: '/switches',
-        responseText: {
-            'switch-one': false
-        }
-    }, {
         url: CONST.frontendApiBase + '/config',
         responseText: {
             email: 'yours'
@@ -175,9 +170,6 @@ function generateMockObjects () {
         config: {
             fronts: ['uk'],
             collections: ['one', 'two']
-        },
-        switches: {
-            'switch-one': false
         },
         defaults: {
             email: 'yours'
@@ -191,11 +183,6 @@ function generateMockObjects () {
             collections: ['one']
         }
     }, {
-        url: '/switches',
-        responseText: {
-            'switch-one': true
-        }
-    }, {
         url: CONST.frontendApiBase + '/config',
         responseText: {
             email: 'yours'
@@ -207,9 +194,6 @@ function generateMockObjects () {
             fronts: ['uk', 'us'],
                 collections: ['one']
         },
-        switches: {
-            'switch-one': true
-        },
         defaults: {
             email: 'yours'
         }
@@ -219,11 +203,6 @@ function generateMockObjects () {
         url: '/config',
         responseText: {
             banana: 'yellow'
-        }
-    }, {
-        url: '/switches',
-        responseText: {
-            'switch-one': false
         }
     }, {
         url: CONST.frontendApiBase + '/config',
@@ -239,13 +218,8 @@ function generateMockObjects () {
             collections: ['one', 'two']
         }
     }, {
-        url: '/switches',
-        status: 404
-    }, {
         url: CONST.frontendApiBase + '/config',
-        responseText: {
-            email: 'yours'
-        }
+        status: 404
     }];
 
     return objects;

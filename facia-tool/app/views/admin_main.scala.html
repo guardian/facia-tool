@@ -1,6 +1,7 @@
 @(identity: Option[com.gu.pandomainauth.model.User] = None)
 
 @import conf.Configuration
+@import switchboard.SwitchManager
 
 <!DOCTYPE html>
 
@@ -16,7 +17,7 @@
     </head>
     <body class="mainFlexContainer is-authed" data-bind="css: {pending: pending}">
 
-    @if(Switches.ToolDisable.isSwitchedOn) {
+    @if(SwitchManager.getStatus("facia-tool-disable")) {
         <span class="message message--important">Temporarily disabled. Please try again shortly.</span>
     } else {
         @templates.header(Configuration.facia.stage, identity)

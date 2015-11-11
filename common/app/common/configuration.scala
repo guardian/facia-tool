@@ -6,9 +6,8 @@ import com.amazonaws.AmazonClientException
 import com.amazonaws.auth._
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.gu.conf.ConfigurationFactory
-import conf.{Configuration, Switches}
+import conf.Configuration
 import org.apache.commons.io.IOUtils
-import play.api.Play
 import play.api.Play.current
 import play.api.{Configuration => PlayConfiguration, Play}
 
@@ -102,10 +101,7 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
   object contentApi {
     val contentApiLiveHost: String = playConfiguration.getMandatoryStringFromStage("content.api.host")
 
-    def contentApiDraftHost: String =
-        playConfiguration.getStringFromStage("content.api.draft.host")
-          .filter(_ => Switches.FaciaToolDraftContent.isSwitchedOn)
-          .getOrElse(contentApiLiveHost)
+    def contentApiDraftHost: String = playConfiguration.getMandatoryStringFromStage("content.api.draft.host")
 
     lazy val key: Option[String] = playConfiguration.getStringFromStage("content.api.key")
     lazy val timeout: Int = playConfiguration.getInt("content.api.timeout.millis").getOrElse(2000)
@@ -368,7 +364,7 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
 
   object switchBoard {
     val bucket = playConfiguration.getMandatoryStringFromStage("switchboard.bucket")
-    val key = playConfiguration.getMandatoryStringFromStage("switchboard.object")
+    val objectKey = playConfiguration.getMandatoryStringFromStage("switchboard.object")
   }
 
   object aws {

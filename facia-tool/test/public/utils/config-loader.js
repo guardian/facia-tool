@@ -5,7 +5,6 @@ import handlers from 'modules/route-handlers';
 import clone from 'utils/clean-clone';
 import verticalLayout from 'views/templates/vertical_layout.scala.html!text';
 import mainLayout from 'views/templates/main.scala.html!text';
-import MockSwitches from 'mock/switches';
 import MockCollection from 'mock/collection';
 import MockDefaults from 'mock/defaults';
 import fakePushState from 'test/utils/push-state';
@@ -13,18 +12,15 @@ import inject from 'test/utils/inject';
 
 export default class Loader {
     constructor(searchString) {
-        var mockConfig, mockSwitches, mockCollection, mockDefaults;
+        var mockConfig, mockCollection, mockDefaults;
 
         mockConfig = new MockConfig();
         mockConfig.set(testConfig.config);
-        mockSwitches = new MockSwitches();
-        mockSwitches.set(testConfig.switches);
         mockCollection = new MockCollection();
         mockDefaults = new MockDefaults();
         mockDefaults.set(testConfig.defaults);
 
         this.mockConfig = mockConfig;
-        this.mockSwitches = mockSwitches;
         this.mockCollection = mockCollection;
         this.mockDefaults = mockDefaults;
 
@@ -49,7 +45,6 @@ export default class Loader {
     dispose() {
         this.ko.dispose();
         this.mockConfig.dispose();
-        this.mockSwitches.dispose();
         this.mockCollection.dispose();
         this.mockDefaults.dispose();
     }
