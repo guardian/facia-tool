@@ -13,6 +13,33 @@ export default {
         {name: 'breaking-news/not-for-other-fronts', groups: ['minor', 'major']}
     ],
 
+    navSections: [
+        'news',
+        'uk-news',
+        'politics',
+        'world',
+        'sport',
+        'football',
+        'commentisfree',
+        'culture',
+        'business',
+        'lifeandstyle',
+        'environment',
+        'technology',
+        'travel',
+        'money',
+        'science',
+        'guardian-professional',
+        'observer',
+        'todayspaper',
+        'membership',
+        'crosswords',
+        'video',
+        'us-news',
+        'media',
+        'australia-news'
+    ],
+
     headlineLength: 200,
     restrictedHeadlineLength: 90,
 

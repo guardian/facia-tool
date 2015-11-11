@@ -4,6 +4,7 @@ import extensions from 'models/available-extensions';
 import mainLayout from 'views/templates/main.scala.html!text';
 import verticalLayout from 'views/templates/vertical_layout.scala.html!text';
 import inject from 'test/utils/inject';
+import {CONST} from 'modules/vars';
 
 describe('Extensions', function () {
     beforeEach(function () {
@@ -12,6 +13,7 @@ describe('Extensions', function () {
     afterEach(function () {
         this.ko.dispose();
     });
+
     it('nav section', function (done) {
         var baseModel = new BaseModel([
             columns.clipboardTrail
@@ -24,9 +26,7 @@ describe('Extensions', function () {
             off: () => {}
         }, {
             config: { fronts: {} },
-            defaults: {
-                navSections: ['one', 'two']
-            }
+            defaults: {}
         });
 
         spyOn(baseModel, 'extensionCreated').and.callThrough();
@@ -38,15 +38,7 @@ describe('Extensions', function () {
             var extension = baseModel.extensionCreated.calls.argsFor(0)[0];
             spyOn(extension, 'dispose').and.callThrough();
 
-            expect(baseModel.navSections()).toEqual(['one', 'two']);
-
-            // Modify the state of the model
-            baseModel.state({
-                defaults: {
-                    navSections: ['two', 'three']
-                }
-            });
-            expect(baseModel.navSections()).toEqual(['two', 'three']);
+            expect(baseModel.navSections()).toEqual(CONST.navSections);
 
             baseModel.dispose();
             expect(extension.dispose).toHaveBeenCalled();
