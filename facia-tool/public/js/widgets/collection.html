@@ -5,7 +5,7 @@
         css: {collapsed: state.collapsed() || configMeta.uneditable()}
     ">
 
-        <span class="tools" data-bind="visible: state.hasDraft && !state.fromBackfill()">
+        <span class="tools" data-bind="visible: state.hasDraft && !state.readOnly()">
             <a class="draft-warning" data-bind="
                 click: front.setModeDraft,
                 visible: front.mode() === 'live'">
@@ -19,7 +19,7 @@
                     click: discardDraft">Discard</a>
             </span >
         </span>
-        <span data-bind="if: state.fromBackfill()">
+        <span data-bind="if: state.readOnly()">
             <a class="tool readonly">Readonly collection</a>
         </span>
 
@@ -144,7 +144,7 @@
         <div class="group-name" data-bind="text: name"></div>
     <!-- /ko -->
 
-    <!-- ko if: !$parent.state.fromBackfill() -->
+    <!-- ko if: !$parent.state.readOnly() -->
         <div class="droppable" data-bind="
             makeDroppable,
             click: pasteItem,
@@ -160,7 +160,7 @@
                 </div>
         </div>
     <!-- /ko -->
-    <!-- ko if: $parent.state.fromBackfill() -->
+    <!-- ko if: $parent.state.readOnly() -->
         <div data-bind="
             makeDraggable: true,
             ">

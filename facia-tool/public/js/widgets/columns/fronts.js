@@ -155,7 +155,7 @@ export default class Front extends ColumnWidget {
                     front: this
                 }
             ));
-        backfillCollection.state.fromBackfill(true);
+        backfillCollection.state.readOnly(true);
         this.collections().push(backfillCollection);
         this.getFrontAge({ alertIfStale: true });
         this.loaded = Promise.all(

@@ -35,7 +35,7 @@
 
         <div data-bind="if: state.enableContentOverrides() && group.parentType !== 'Article'">
             <div class="supporting" data-bind="with: meta.supporting">
-                <!-- ko if: !$parents[1].state.fromBackfill() -->
+                <!-- ko if: !$parents[1].state.readOnly() -->
                 <div class="droppable" data-bind="
                     makeDroppable: true,
                     click: pasteItem,
@@ -51,7 +51,7 @@
                         </div>
                 </div>
                 <!-- /ko -->
-                <!-- ko if: $parents[1].state.fromBackfill() -->
+                <!-- ko if: $parents[1].state.readOnly() -->
                     <div class="droppable" data-bind="makeDraggable: true">
                             <!-- ko foreach: items -->
                                 <trail-widget params="context: $context"></trail-widget>

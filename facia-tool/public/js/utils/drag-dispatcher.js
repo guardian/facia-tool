@@ -266,7 +266,7 @@ function persist (sourceItem, newItems, sourceContext, sourceGroup, targetContex
         }
 
         if (sourceContext !== targetContext ||
-            (sourceGroup.parentType === 'Collection' && sourceGroup.parent.state.fromBackfill())) {
+            (sourceGroup.parentType === 'Collection' && sourceGroup.parent.state.readOnly())) {
             remove = false;
         }
 
