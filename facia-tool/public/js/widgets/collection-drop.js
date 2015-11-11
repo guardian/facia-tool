@@ -86,22 +86,22 @@ export default class CollectionDrop extends BaseWidget {
         return request({
             url: apiQuery
         })
-        .then(function(response) {
+        .then((response) =>  {
             if (!response || response.live.length === 0) {
                 return;
             } else {
 
-                var articleIds =  _.map(response.live, function(liveArticle) {
+                var articleIds =  _.map(response.live, (liveArticle) => {
                     return liveArticle.id;
                 });
 
                 return contentApi.fetchContentByIds(articleIds)
-                    .then(function (response) {
+                    .then((response) => {
                         return {content: response.content};
                     });
             }
         })
-        .catch(function() {
+        .catch(() => {
             this.apiResults([]);
             this.apiQueryStatus('invalid');
         });
