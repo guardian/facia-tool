@@ -5,7 +5,7 @@
         css: {collapsed: state.collapsed() || configMeta.uneditable()}
     ">
 
-        <span class="tools" data-bind="visible: state.hasDraft">
+        <span class="tools" data-bind="visible: state.hasDraft && !state.fromBackfill()">
             <a class="draft-warning" data-bind="
                 click: front.setModeDraft,
                 visible: front.mode() === 'live'">
@@ -18,6 +18,9 @@
                 ><a class="tool draft-discard" data-bind="
                     click: discardDraft">Discard</a>
             </span >
+        </span>
+        <span data-bind="if: state.fromBackfill()">
+            <a class="tool readonly">Readonly collection</a>
         </span>
 
         <span class="title" data-bind="
