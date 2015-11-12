@@ -159,6 +159,9 @@ object ContainerThumbnails {
       case "dynamic/slow-mpu" =>
         Some(Seq(HalfHalf, Hl3Mpu))
 
+      case "fixed/small/slow-V-half" =>
+        Some(Seq(HalfHl4))
+
       case _ =>
         FixedContainers.unapply(Some(id)).map(_.slices)
     }
