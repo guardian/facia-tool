@@ -31,6 +31,6 @@ trait Lifecycle extends GlobalSettings with ExecutionContexts {
   def refreshSwitches() {
     Logger.info("Refreshing switches from switchboard")
 
-    client.get() foreach { response => SwitchManager.updateSwitches(response) }
+    client.getSwitches() foreach { response => SwitchManager.updateSwitches(response) }
   }
 }
