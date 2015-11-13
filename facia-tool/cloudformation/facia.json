@@ -30,6 +30,11 @@
             "Description": "The availability zone where instances are allowed to run",
             "Type": "List<AWS::EC2::AvailabilityZone::Name>",
             "Default": "eu-west-1a,eu-west-1b,eu-west-1c"
+        },
+        "SwitchboardBucket": {
+            "Description": "Bucket where switchboard writes switches status",
+            "Type": "String",
+            "Default": "arn:aws:s3:::facia-switches/*"
         }
     },
     "Mappings": {
@@ -165,6 +170,21 @@
                         "Effect": "Allow",
                         "Action": "sts:AssumeRole",
                         "Resource": { "Ref" : "LogServerRoleToAssume" }
+                    } ]
+                },
+                "Roles": [{ "Ref": "DistributionRole" }]
+            }
+        },
+        "SwitchesPolicy": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "SwitchesPolicy",
+                "PolicyDocument": {
+                    "Version" : "2012-10-17",
+                    "Statement": [{
+                        "Effect": "Allow",
+                        "Action": "s3:GetObject",
+                        "Resource": { "Ref" : "SwitchboardBucket" }
                     } ]
                 },
                 "Roles": [{ "Ref": "DistributionRole" }]
