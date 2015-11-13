@@ -3,7 +3,6 @@ package common.editions
 import common._
 import common.editions.Uk._
 import org.joda.time.DateTimeZone
-import contentapi.QueryDefaults
 import common.NavItem
 
 object Us extends Edition(
@@ -11,7 +10,7 @@ object Us extends Edition(
   displayName = "US edition",
   timezone = DateTimeZone.forID("America/New_York"),
   lang = "en-us"
-) with QueryDefaults {
+) {
 
   implicit val US = Us
 

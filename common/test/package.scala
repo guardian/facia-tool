@@ -4,9 +4,6 @@ import java.io.File
 
 import com.gargoylesoftware.htmlunit.BrowserVersion
 import common.ExecutionContexts
-import conf.{Configuration, LiveContentApi}
-import contentapi.Http
-import org.apache.commons.codec.digest.DigestUtils
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatestplus.play._
 import play.api.GlobalSettings

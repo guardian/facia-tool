@@ -1,6 +1,5 @@
 package implicits
 
-import conf.{Configuration, Switches}
 import play.api.http.MediaRange
 import play.api.mvc.RequestHeader
 import common.Edition

@@ -1,12 +1,8 @@
 package layout
 
 import cards.{Standard, MediaList, ListItem, CardType}
-import com.gu.facia.api.models.CollectionConfig
-import play.twirl.api.Html
-import slices.{MobileShowMore, RestrictTo}
 import scalaz.syntax.traverse._
 import scalaz.std.option._
-import scalaz.std.list._
 
 object ItemClasses {
   val showMore = ItemClasses(mobile = ListItem, tablet = ListItem)

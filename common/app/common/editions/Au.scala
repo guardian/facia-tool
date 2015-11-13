@@ -3,7 +3,6 @@ package common.editions
 import common.editions.Uk._
 import org.joda.time.DateTimeZone
 import common._
-import contentapi.QueryDefaults
 import common.NavItem
 
 //This object exists to be used with ItemTrailblockDescription and is not a real edition like the others.
@@ -14,8 +13,7 @@ object Au extends Edition(
   displayName = "Australia edition",
   DateTimeZone.forID("Australia/Sydney"),
   lang = "en-au"
-)
-  with QueryDefaults {
+) {
 
   implicit val AU = Au
 

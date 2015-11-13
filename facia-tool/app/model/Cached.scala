@@ -1,6 +1,5 @@
 package model
 
-import conf.Switches.DoubleCacheTimesSwitch
 import org.joda.time.DateTime
 import org.scala_tools.time.Imports._
 import play.api.mvc.{Request, Action, Result}
@@ -18,18 +17,10 @@ object Cached extends implicits.Dates {
     if (cacheableStatusCodes.exists(_ == result.header.status)) cacheHeaders(seconds, result) else result
   }
 
-  def apply(duration: Duration)(result: Result): Result = {
-    apply(duration.toSeconds.toInt)(result)
-  }
-
-  def apply(metaData: MetaData)(result: Result): Result = {
-    if (cacheableStatusCodes.exists(_ == result.header.status)) cacheHeaders(metaData.cacheSeconds, result) else result
-  }
-
   private def cacheHeaders(seconds: Int, result: Result) = {
     val now = DateTime.now
     val expiresTime = now + seconds.seconds
-    val maxAge = if (DoubleCacheTimesSwitch.isSwitchedOn) seconds * 2 else seconds
+    val maxAge = seconds
 
     // NOTE, if you change these headers make sure they are compatible with our Edge Cache
 

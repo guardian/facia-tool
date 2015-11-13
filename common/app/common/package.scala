@@ -4,11 +4,9 @@ import java.util.concurrent.TimeoutException
 
 import akka.pattern.CircuitBreakerOpenException
 import com.gu.contentapi.client.GuardianContentApiError
-import conf.SwitchTrait
 import play.api.Logger
 import play.api.libs.json.{JsObject, JsString}
-import play.api.mvc.{RequestHeader, Result}
-import play.twirl.api.Html
+import play.api.mvc.Result
 
 object `package` extends implicits.Strings with implicits.Requests with play.api.mvc.Results {
 
@@ -31,27 +29,6 @@ object `package` extends implicits.Strings with implicits.Requests with play.api
         log.info(s"Content api exception cause: ", cause)
       }
       Right(InternalServerError)
-  }
-
-  /*
-    NOTE: The htmlResponse & jsonResponse are () => Html functions so that you do not do all the rendering twice.
-          Only the once you actually render is used
-   */
-
-  def renderFormat(htmlResponse: () => Html, jsonResponse: () => Html, metaData: model.MetaData)(implicit request: RequestHeader) = {
-    Ok(htmlResponse())
-  }
-
-  def renderFormat(htmlResponse: () => Html, jsonResponse: () => Html, metaData: model.MetaData, switches: Seq[SwitchTrait])(implicit request: RequestHeader) = {
-    Ok(htmlResponse())
-  }
-
-  def renderFormat(htmlResponse: () => Html, jsonResponse: () => Html, cacheTime: Integer)(implicit request: RequestHeader) = {
-    Ok(htmlResponse())
-  }
-
-  def renderFormat(html: () => Html, cacheTime: Integer)(implicit request: RequestHeader): Result = {
-    renderFormat(html, html, cacheTime)(request)
   }
 }
 

@@ -1,7 +1,7 @@
 package services
 
 import com.gu.pandomainauth.model.User
-import conf.{Switches, Configuration}
+import conf.Configuration
 import common.Logging
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model._
@@ -206,72 +206,4 @@ object S3FrontsApi extends S3 {
 
   def getPressedLastModified(path: String): Option[String] =
     getLastModified(getLiveFapiPressedKeyForPath(path)).map(_.toString)
-}
-
-trait SecureS3Request extends implicits.Dates with Logging {
-  import play.api.Play.current
-  val algorithm: String = "HmacSHA1"
-  val frontendBucket: String = Configuration.aws.bucket
-  val frontendStore: String = Configuration.frontend.store
-
-  def urlGet(id: String): WSRequest = url("GET", id)
-
-  private def url(httpVerb: String, id: String): WSRequest = {
-
-    val headers = aws.crossAccount.map(_.getCredentials).map{ credentials =>
-      val sessionTokenHeaders: Seq[(String, String)] = credentials match {
-        case sessionCredentials: AWSSessionCredentials => Seq("x-amz-security-token" -> sessionCredentials.getSessionToken)
-        case _ => Nil
-      }
-
-      val date = DateTime.now.toHttpDateTimeString
-      val signedString = signAndBase64Encode(generateStringToSign(httpVerb, id, date, sessionTokenHeaders), credentials.getAWSSecretKey)
-
-      Seq(
-        "Date" -> date,
-        "Authorization" -> s"AWS ${credentials.getAWSAccessKeyId}:$signedString"
-      ) ++ sessionTokenHeaders
-
-    }.getOrElse(Seq.empty[(String, String)])
-
-
-
-    WS.url(s"$frontendStore/$id").withHeaders(headers:_*)
-  }
-
-  //Other HTTP verbs may need other information such as Content-MD5 and Content-Type
-  //If we move to AWS Security Token Service, we will need x-amz-security-token
-  private def generateStringToSign(httpVerb: String, id: String, date: String, headers: Seq[(String, String)]): String = {
-    //http://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html#RESTAuthenticationConstructingCanonicalizedAmzHeaders
-    val headerString = headers.map{ case (name, value) => s"${name.trim.toLowerCase}:${value.trim}\n" }.mkString
-    //http://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html
-    s"$httpVerb\n\n\n$date\n$headerString/$frontendBucket/$id"
-  }
-
-
-  private def signAndBase64Encode(stringToSign: String, secretKey: String): String = {
-    try {
-      val mac: Mac = Mac.getInstance(algorithm)
-      mac.init(new SecretKeySpec(secretKey.getBytes("UTF-8"), algorithm))
-      val signature: Array[Byte] = mac.doFinal(stringToSign.getBytes("UTF-8"))
-      val encoded: String = new BASE64Encoder().encode(signature)
-      encoded
-    } catch {
-      case e: Throwable => log.error("Unable to calculate a request signature: " + e.getMessage, e)
-      "Invalid"
-    }
-  }
-}
-
-object SecureS3Request extends SecureS3Request
-
-object S3Archive extends S3 {
- override lazy val bucket = "aws-frontend-archive"
- def getHtml(path: String) = get(path)
-}
-
-object S3Infosec extends S3 {
-  override lazy val bucket = "aws-frontend-infosec"
-  val key = "blocked-email-domains.txt"
-  def getBlockedEmailDomains = get(key)
 }
