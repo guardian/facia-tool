@@ -86,8 +86,8 @@ export default class BaseModel extends BaseClass {
         this.frontsList(_.sortBy(frontsList, 'id'));
         this.frontsMap(frontsMap);
 
-        if (!_.isEqual(this.switches(), res.switches)) {
-            this.switches(res.switches);
+        if (!_.isEqual(this.switches(), res.defaults.switches)) {
+            this.switches(res.defaults.switches);
         }
         // State must be changed last
         this.state(res);

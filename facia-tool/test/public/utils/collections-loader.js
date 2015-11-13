@@ -1,6 +1,5 @@
 import testConfig from 'test/config';
 import MockConfig from 'mock/config';
-import MockSwitches from 'mock/switches';
 import MockCollections from 'mock/collection';
 import fixCollections from 'test/fixtures/some-collections';
 import MockSearch from 'mock/search';
@@ -20,12 +19,10 @@ import fakePushState from 'test/utils/push-state';
 
 export default class Loader {
     constructor() {
-        var mockConfig, mockSwitches, mockCollections, mockSearch, mockLastModified, mockVisibleStories;
+        var mockConfig, mockCollections, mockSearch, mockLastModified, mockVisibleStories;
 
         mockConfig = new MockConfig();
         mockConfig.set(testConfig.config);
-        mockSwitches = new MockSwitches();
-        mockSwitches.set(testConfig.switches);
         mockCollections = new MockCollections();
         mockCollections.set(fixCollections);
         mockSearch = new MockSearch();
@@ -35,7 +32,6 @@ export default class Loader {
         mockVisibleStories = new MockVisible();
 
         this.mockConfig = mockConfig;
-        this.mockSwitches = mockSwitches;
         this.mockCollections = mockCollections;
         this.mockSearch = mockSearch;
         this.mockLastModified = mockLastModified;
@@ -65,7 +61,6 @@ export default class Loader {
     dispose() {
         this.ko.dispose();
         this.mockConfig.dispose();
-        this.mockSwitches.dispose();
         this.mockCollections.dispose();
         this.mockSearch.dispose();
         this.mockLastModified.dispose();

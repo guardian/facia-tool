@@ -19,8 +19,8 @@ function terminate (error) {
 }
 
 function checkEnabled (res) {
-    if (res.switches['facia-tool-disable']) {
-        terminate();
+    if (res.defaults.switches['facia-tool-disable']) {
+        terminate('The application is disabled, sorry.');
     }
 }
 

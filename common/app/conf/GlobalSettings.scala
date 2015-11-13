@@ -35,42 +35,6 @@ trait CorsErrorHandler extends GlobalSettings with Results with common.Execution
   }
 }
 
-trait SwitchboardLifecycle extends GlobalSettings with ExecutionContexts with Logging {
-
-  override def onStart(app: Application) {
-    super.onStart(app)
-    Jobs.deschedule("SwitchBoardRefreshJob")
-    Jobs.schedule("SwitchBoardRefreshJob", "0 * * * * ?") {
-      refresh()
-    }
-
-    AkkaAsync {
-      refresh()
-    }
-  }
-
-  override def onStop(app: Application) {
-    Jobs.deschedule("SwitchBoardRefreshJob")
-    super.onStop(app)
-  }
-
-  def refresh() {
-    Logger.info("Refreshing switches")
-    services.S3.get(Configuration.switches.key) map { response =>
-
-      val nextState = Properties(response)
-
-      for (switch <- Switches.all) {
-        nextState.get(switch.name) foreach {
-          case "on" => switch.switchOn()
-          case "off" => switch.switchOff()
-          case other => Logger.warn(s"Badly configured switch ${switch.name} -> $other")
-        }
-      }
-    }
-  }
-}
-
 trait LogStashConfig extends GlobalSettings with Logging {
 
   override def onStart(app: Application) {

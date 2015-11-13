@@ -10,6 +10,7 @@ import akka.actor.ActorSystem
 import util.ContentUpgrade.rewriteBody
 import play.api.Logger
 import auth.PanDomainAuthActions
+import switchboard.SwitchManager
 
 object FaciaContentApiProxy extends Controller with Logging with ExecutionContexts with Strings with PanDomainAuthActions with implicits.WSRequests {
 
@@ -22,7 +23,10 @@ object FaciaContentApiProxy extends Controller with Logging with ExecutionContex
        "%s=%s".format(p._1, p._2.head.urlEncoded)
     }.mkString("&")
 
-    val contentApiHost = Configuration.contentApi.contentApiDraftHost
+    val contentApiHost: String = if (SwitchManager.getStatus("facia-tool-draft-content"))
+      Configuration.contentApi.contentApiDraftHost
+    else
+      Configuration.contentApi.contentApiLiveHost
 
     val url = s"$contentApiHost/$path?$queryString${Configuration.contentApi.key.map(key => s"&api-key=$key").getOrElse("")}"
 

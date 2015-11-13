@@ -163,10 +163,7 @@ object S3FrontsApi extends S3 {
   def listCollectionIds: List[String] = getCollectionIds(s"$location/collection/")
   def putCollectionJson(id: String, json: String) = {
     val putLocation: String = s"$location/collection/$id/collection.json"
-    if (Switches.FaciaToolPutPrivate.isSwitchedOn) {
-      putPrivate(putLocation, json, "application/json")}
-    else {
-      putPublic(putLocation, json, "application/json")}}
+    putPublic(putLocation, json, "application/json")}
 
   def archive(id: String, json: String, identity: User) = {
     val now = DateTime.now

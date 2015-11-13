@@ -5,7 +5,6 @@ import MockCollections from 'mock/collection';
 import testConfig from 'test/fixtures/breaking-news-test-config';
 import MockConfig from 'mock/config';
 import MockSearch from 'mock/search';
-import MockSwitches from 'mock/switches';
 import MockLastModified from 'mock/lastmodified';
 import Router from 'modules/router';
 import handlers from 'modules/route-handlers';
@@ -33,8 +32,6 @@ export default class Loader {
         scope.mockCollections.set({});
         scope.mockConfig = new MockConfig();
         scope.mockConfig.set(testConfig.config);
-        scope.mockSwitches = new MockSwitches();
-        scope.mockSwitches.set(testConfig.switches);
         scope.mockSearch = new MockSearch();
         scope.mockSearch.set(fixArticles.articlesData);
         scope.mockSearch.latest(fixArticles.allArticles);
@@ -52,7 +49,6 @@ export default class Loader {
         scope.ko.dispose();
         scope.mockCollections.dispose();
         scope.mockConfig.dispose();
-        scope.mockSwitches.dispose();
         scope.mockSearch.dispose();
         scope.mockLastModified.dispose();
     }
