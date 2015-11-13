@@ -7,7 +7,7 @@ import org.scala_tools.time.Imports._
 /**
  * additional information needed to display something on a facia page from CAPI
  */
-trait Trail extends Elements with Tags with Dates {
+trait Trail extends Tags with Dates {
   def webPublicationDate: DateTime
   def webPublicationDate(edition: Edition): DateTime = webPublicationDate(edition.timezone)
   def webPublicationDate(zone: DateTimeZone): DateTime = webPublicationDate.withZone(zone)

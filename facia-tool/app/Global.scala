@@ -2,7 +2,7 @@ import java.io.File
 
 import common._
 import switchboard.{Lifecycle => NewSwitchboardLifecycle}
-import conf.{PermissionsCache, LogStashConfig, Gzipper}
+import conf.{PermissionsCache, LogStashConfig}
 import metrics.FrontendMetric
 import play.api._
 import play.api.mvc.WithFilters

@@ -3,42 +3,6 @@ package slices
 import model.Content
 import conf.Configuration
 
-object TagContainers {
-  import ContainerDefinition.{ofSlices => slices}
-
-  val allTagPage = slices(
-    QuarterQuarterQuarterQuarter,
-    TlTlTl,
-    TlTlTl,
-    TlTlTl,
-    TlTlTl,
-    TlTlTl,
-    TlTlTl,
-    TlTlMpu
-  )
-
-  val tagPage = slices(
-    HalfQQ,
-    QuarterQuarterQuarterQuarter,
-    TlTlTl,
-    TlTlMpu
-  )
-
-  val contributorTagPage =  slices(
-    HalfQl4Ql4,
-    TlTlTl,
-    TlTlTl,
-    TlTlMpu
-  )
-
-  val keywordPage = slices(
-    TTT,
-    TlTlTl,
-    TlTlTl,
-    TlTlMpu
-  )
-}
-
 object FixedContainers {
   import ContainerDefinition.{ofSlices => slices}
 

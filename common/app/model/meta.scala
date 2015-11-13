@@ -114,20 +114,6 @@ object Page {
   }
 }
 
-class TagCombiner(
-  id: String,
-  val leftTag: Tag,
-  val rightTag: Tag,
-  override val pagination: Option[Pagination] = None
-) extends Page(
-  id,
-  leftTag.section,
-  s"${leftTag.name} + ${rightTag.name}",
-  s"GFE:${leftTag.section}:${leftTag.name} + ${rightTag.name}",
-  pagination,
-  Some(GuardianContentTypes.TagIndex)
-)
-
 object IsRatio {
 
   val AspectRatioThreshold = 0.01
@@ -140,104 +126,10 @@ object IsRatio {
 }
 
 /**
- * ways to access/filter the elements that make up an entity on a facia page
- *
- * designed to add some structure to the data that comes from CAPI
- */
-trait Elements {
-
-  private val trailPicMinDesiredSize = 460
-
-  // Find a main picture crop which matches this aspect ratio.
-  def trailPictureAll(aspectWidth: Int, aspectHeight: Int): List[ImageContainer] = {
-
-    (thumbnail.find(_.imageCrops.exists(_.width >= trailPicMinDesiredSize)) ++ mainPicture ++ thumbnail)
-      .map { image =>
-      image.imageCrops.filter { crop =>
-        IsRatio(aspectWidth, aspectHeight, crop.width, crop.height)
-      } match {
-        case Nil => None
-        case crops => Option(ImageContainer(crops, image.delegate, image.index))
-      }
-    }
-      .flatten
-      .toList
-  }
-
-  def trailPicture(aspectWidth: Int, aspectHeight: Int): Option[ImageContainer] = trailPictureAll(aspectWidth, aspectHeight).headOption
-
-  // trail picture is used on index pages (i.e. Fronts and tag pages)
-  def trailPicture: Option[ImageContainer] = thumbnail.find(_.imageCrops.exists(_.width >= trailPicMinDesiredSize))
-    .orElse(mainPicture)
-    .orElse(thumbnail)
-
-  /*
-  Now I know you might THINK that you want to change how we get the main picture.
-  The people around you might have convinced you that there is some magic formula.
-  There might even be a 'Business Stakeholder' involved...
-
-  But know this... I WILL find you, I WILL hunt you down, and you WILL be sorry.
-
-  If you need to express a hack, express it somewhere where you are not pretending it is the Main Picture
-
-  You probably want the TRAIL PICTURE
-*/
-  // main picture is used on the content page (i.e. the article page or the video page)
-
-  // if you change these rules make sure you update IMAGES.md (in this project)
-  def mainPicture: Option[ImageContainer] = images.find(_.isMain)
-
-  lazy val hasMainPicture = mainPicture.flatMap(_.imageCrops.headOption).isDefined
-
-  // Currently, only Picture and Embed elements can be given the showcase role.
-  lazy val hasShowcaseMainElement = {
-    val showcasePicture = for {
-      main  <- mainPicture
-      image <- main.largestImage
-      role  <- image.role
-    } yield role == "showcase"
-
-    val showcaseEmbed = for {
-      embed <- mainEmbed
-      asset <- embed.embedAssets.headOption
-      role <- asset.role
-    } yield role == "showcase"
-
-    showcasePicture.getOrElse(false) || showcaseEmbed.getOrElse(false)
-  }
-
-  def mainEmbed: Option[EmbedElement] = embeds.find(_.isMain).headOption
-  lazy val hasMainEmbed: Boolean = mainEmbed.flatMap(_.embedAssets.headOption).isDefined
-
-  lazy val bodyImages: Seq[ImageElement] = images.filter(_.isBody)
-  lazy val thumbnail: Option[ImageElement] = images.find(_.isThumbnail)
-
-  def elements: Seq[Element] = Nil
-  def elements(relation: String): Seq[Element] = relation match {
-    case "main" => elements.filter(_.isMain)
-    case "body" => elements.filter(_.isBody)
-    case "gallery" => elements.filter(_.isGallery)
-    case "thumbnail" => elements.filter(_.isThumbnail)
-    case _ => Nil
-  }
-
-  protected lazy val images: Seq[ImageElement] = elements.flatMap {
-    case image :ImageElement => Some(image)
-    case _ => None
-  }
-
-  protected lazy val embeds: Seq[EmbedElement] = elements.flatMap {
-    case embed: EmbedElement => Some(embed)
-    case _ => None
-  }
-}
-
-/**
  * Tags lets you extract meaning from tags on a page.
  */
 trait Tags {
   def tags: Seq[Tag] = Nil
-  def contributorAvatar: Option[String] = tags.flatMap(_.contributorImagePath).headOption
 
   private def tagsOfType(tagType: String): Seq[Tag] = tags.filter(_.tagType == tagType)
 

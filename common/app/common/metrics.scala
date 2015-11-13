@@ -5,9 +5,10 @@ import java.lang.management.{GarbageCollectorMXBean, ManagementFactory}
 import java.util.concurrent.atomic.AtomicLong
 
 import com.amazonaws.services.cloudwatch.model.{Dimension, StandardUnit}
-import conf.{Switches, Configuration}
+import conf.Configuration
 import metrics.{CountMetric, FrontendMetric, FrontendTimingMetric, GaugeMetric}
 import model.diagnostics.CloudWatch
+import play.Play
 import play.api.{GlobalSettings, Application => PlayApp}
 
 import scala.collection.JavaConversions._
@@ -370,7 +371,7 @@ trait CloudWatchApplicationMetrics extends GlobalSettings {
 
   private def report() {
     val allMetrics: List[FrontendMetric] = this.systemMetrics ::: this.applicationMetrics
-    if (!Configuration.environment.isNonProd || Switches.MetricsSwitch.isSwitchedOn) {
+    if (!Play.isDev) {
       CloudWatch.putMetricsWithStage(allMetrics, applicationDimension)
     }
   }
