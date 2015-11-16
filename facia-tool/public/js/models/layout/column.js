@@ -20,7 +20,8 @@ export default class Column extends BaseClass {
         this.component = {
             name: opts.widget,
             params: _.extend({
-                column: this
+                'column': this,
+                'baseModel': opts.baseModel
             }, opts.params)
         };
         this.config = ko.observable(opts.config);

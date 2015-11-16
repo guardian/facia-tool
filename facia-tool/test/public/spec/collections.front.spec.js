@@ -29,11 +29,13 @@ describe('Front', function () {
             frontsMap: ko.observable(fronts),
             testColumn: {
                 config: ko.observable(),
-                setConfig: () => {}
+                setConfig: () => {},
+                baseModel: this.model
             },
             switches: ko.observable({
                 'facia-tool-sparklines': false
             }),
+            permissions: ko.observable({}),
             isPasteActive: ko.observable(false),
             state: ko.observable({
                 config: {
@@ -47,7 +49,7 @@ describe('Front', function () {
                 defaults: { env: 'test' }
             })
         };
-        this.ko = inject('<fronts-widget params="column: testColumn"></fronts-widget>');
+        this.ko = inject('<fronts-widget params="column: testColumn, baseModel: $root"></fronts-widget>');
         this.loadFront = (model, columnConfig) => {
             // TODO Phantom Babel bug
             if (!model) { model = {}; }

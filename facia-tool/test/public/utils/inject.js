@@ -29,6 +29,7 @@ export default function (html) {
                     modalDialog: modal,
                     message: { textMessage: ko.observable() },
                     extensions: [],
+                    permissions: ko.observable(),
                     registerExtension: () => {},
                     testColumn: { registerMainWidget: widget => {
                         mediator.emit('main:widget:loaded', widget);

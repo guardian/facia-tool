@@ -18,7 +18,7 @@ export default class BaseModel extends BaseClass {
     constructor(enabledWidgets, extensions, router, res) {
         super();
 
-        var layout = new Layout(router, enabledWidgets);
+        var layout = new Layout(router, enabledWidgets, this);
 
         this.title = ko.observable('fronts');
         this.layout = layout;
@@ -28,7 +28,8 @@ export default class BaseModel extends BaseClass {
         this.state = ko.observable();
         this.frontsList = ko.observableArray();
         this.frontsMap = ko.observable();
-        this.switches = ko.observable(res.switches);
+        this.switches = ko.observable();
+        this.permissions = ko.observable();
         this.pending = ko.observable(true);
         this.isMainActionVisible = ko.observable(false);
         this.priority = priorityFromUrl(router.location.pathname);
@@ -88,6 +89,9 @@ export default class BaseModel extends BaseClass {
 
         if (!_.isEqual(this.switches(), res.defaults.switches)) {
             this.switches(res.defaults.switches);
+        }
+        if (!_.isEqual(this.permissions(), res.defaults.acl)) {
+            this.permissions(res.defaults.acl);
         }
         // State must be changed last
         this.state(res);

@@ -35,6 +35,9 @@ trait ConfigAgentTrait extends ExecutionContexts with Logging {
       Future.successful(configAgent.get())
     }
 
+  def getBreakingNewsCollectionIds: Set[String] =
+    configAgent.get().flatMap(_.fronts.get("breaking-news").map(_.collections.toSet)).getOrElse(Set.empty)
+
   def getConfigCollectionMap: Map[String, Seq[String]] = {
     val config = configAgent.get()
     config.map(_.fronts.mapValues(_.collections)).getOrElse(Map.empty)

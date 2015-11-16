@@ -10,8 +10,9 @@ object Permissions extends PermissionsProvider {
   override implicit lazy val executionContext: ExecutionContext = play.api.libs.concurrent.Execution.Implicits.defaultContext
 
   lazy val ConfigureFronts = Permission("configure_fronts", "fronts", PermissionDenied)
+  lazy val BreakingNewsAlert = Permission("breaking_news_alert", "fronts", PermissionDenied)
 
-  lazy val all = Seq(ConfigureFronts)
+  lazy val all = Seq(ConfigureFronts, BreakingNewsAlert)
 
   implicit def config = PermissionsConfig(
     app = "fronts",
