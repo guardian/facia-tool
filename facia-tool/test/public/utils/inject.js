@@ -7,7 +7,7 @@ import {register} from 'models/widgets';
 import * as wait from 'test/utils/wait';
 import mediator from 'utils/mediator';
 
-export default function (html) {
+export default function inject (html) {
     register();
     const DOM_ID = 'test_dom_' + Math.round(Math.random() * 10000);
 
@@ -60,4 +60,8 @@ export default function (html) {
             baseModel.dispose();
         }
     };
+}
+
+export function injectColumnWidget (widget) {
+    return inject('<' + widget + ' params="position: 0, column: $data.testColumn, baseModel: $root"></' + widget + '>');
 }

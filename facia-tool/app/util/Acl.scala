@@ -30,7 +30,7 @@ case class AclJson (
 object Acl {
   def testUser(permission: Permission, switch: String)
               (email: String): Future[Authorization] = {
-    implicit def permissionsUser: PermissionsUser = PermissionsUser(email)
+    implicit val permissionsUser: PermissionsUser = PermissionsUser(email)
     val f = if (!SwitchManager.getStatus(switch)) {
       Permissions.get(permission).map {
         case PermissionGranted => AccessGranted

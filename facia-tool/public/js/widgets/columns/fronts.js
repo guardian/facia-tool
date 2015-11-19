@@ -23,12 +23,12 @@ export default class Front extends ColumnWidget {
         this.flattenGroups = ko.observable(params.mode === 'treats');
         this.maxArticlesInHistory = this.confirmSendingAlert() ? 20 : 5;
         this.controlsVisible = ko.observable(false);
-        this.authorized = ko.observable(isAuthorized(params.baseModel, frontId));
+        this.authorized = ko.observable(isAuthorized(this.baseModel, frontId));
 
         this.subscribeOn(this.front, this.onFrontChange);
         this.subscribeOn(this.mode, this.onModeChange);
-        this.subscribeOn(params.baseModel.permissions, () => {
-            this.authorized(isAuthorized(params.baseModel, this.front()));
+        this.subscribeOn(this.baseModel.permissions, () => {
+            this.authorized(isAuthorized(this.baseModel, this.front()));
         });
 
         this.setFront = id => this.front(id);

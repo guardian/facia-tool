@@ -6,7 +6,7 @@ import Droppable from 'modules/droppable';
 import {CONST} from 'modules/vars';
 import * as widgets from 'models/widgets';
 import mediator from 'utils/mediator';
-import inject from 'test/utils/inject';
+import {injectColumnWidget} from 'test/utils/inject';
 import * as mockjax from 'test/utils/mockjax';
 import textInside from 'test/utils/text-inside';
 import * as wait from 'test/utils/wait';
@@ -164,9 +164,7 @@ function injectClipboard () {
         injectedClipboard.dispose();
     }
 
-    injectedClipboard = inject(`
-        <clipboard-widget params="position: 0, column: $data"></clipboard-widget>
-    `);
+    injectedClipboard = injectColumnWidget('clipboard-widget');
     return injectedClipboard.apply({
         switches: ko.observable({
             'facia-tool-sparklines': false
