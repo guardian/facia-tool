@@ -18,12 +18,13 @@ function columnDataOf (type, columns) {
 }
 
 export default class Layout extends BaseClass {
-    constructor(router, widgets) {
+    constructor(router, widgets, baseModel) {
         super();
         this.CONST = {
             addColumnTransition: 300
         };
         this.router = router;
+        this.baseModel = baseModel;
 
         this.allColumns = widgets;
         this.availableColumns = _.filter(widgets, config => {
@@ -66,7 +67,8 @@ export default class Layout extends BaseClass {
 
     newConfigInstance(config) {
         return new Column(_.extend({}, config, {
-            'layout': this
+            'layout': this,
+            'baseModel': this.baseModel
         }, columnDataOf(config.type, this.allColumns)));
     }
 

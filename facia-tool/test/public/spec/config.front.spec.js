@@ -5,14 +5,14 @@ import persistence from 'models/config/persistence';
 import * as capi from 'modules/content-api';
 import * as vars from 'modules/vars';
 import * as dom from 'test/utils/dom-nodes';
-import inject from 'test/utils/inject';
+import {injectColumnWidget} from 'test/utils/inject';
 import textInside from 'test/utils/text-inside';
 import * as wait from 'test/utils/wait';
 import images from 'test/utils/images';
 
 describe('Config Front', function () {
     beforeEach(function () {
-        this.ko = inject('<fronts-config-widget params="column: $data.testColumn"></fronts-config-widget>');
+        this.ko = injectColumnWidget('fronts-config-widget');
         this.loadFront = (model = {}) => {
             return this.ko.apply(_.defaults(model, {
                 state: ko.observable({

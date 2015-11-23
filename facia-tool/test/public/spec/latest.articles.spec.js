@@ -1,9 +1,9 @@
-import inject from 'test/utils/inject';
 import ko from 'knockout';
 import $ from 'jquery';
 import * as capi from 'modules/content-api';
 import * as wait from 'test/utils/wait';
 import {CONST} from 'modules/vars';
+import {injectColumnWidget} from 'test/utils/inject';
 import * as mockjax from 'test/utils/mockjax';
 import textInside from 'test/utils/text-inside';
 
@@ -12,9 +12,7 @@ describe('Latest widget', function () {
         this.originalsearchDebounceMs = CONST.searchDebounceMs;
         this.originallatestArticlesDebounce = CONST.latestArticlesDebounce;
         this.originallatestArticlesPollMs = CONST.latestArticlesPollMs;
-        this.ko = inject(`
-            <latest-widget params="position: 0, column: $data.testColumn"></latest-widget>
-        `);
+        this.ko = injectColumnWidget('latest-widget');
         this.scope = mockjax.scope();
         CONST.latestArticlesDebounce = 30;
         CONST.latestArticlesPollMs = 1000 * 60 * 60;

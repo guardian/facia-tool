@@ -13,7 +13,7 @@ var endpoints = [{
     }
 }, {
     key: 'defaults',
-    url: CONST.frontendApiBase + '/config'
+    url: CONST.apiBase + '/defaults'
 }];
 
 function sendRequest (endpoint) {

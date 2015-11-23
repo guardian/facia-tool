@@ -20,7 +20,7 @@ function generateErrorCallback (win, reject, retry) {
         reject(xhr);
     }
     return function (xhr) {
-        if (xhr.status === 403) {
+        if (xhr.status === 403 || xhr.status === 401) {
             redirect(xhr);
         } else if (xhr.status === 419) {
             if (retry) {

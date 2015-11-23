@@ -23,9 +23,13 @@ export default class Front extends ColumnWidget {
         this.flattenGroups = ko.observable(params.mode === 'treats');
         this.maxArticlesInHistory = this.confirmSendingAlert() ? 20 : 5;
         this.controlsVisible = ko.observable(false);
+        this.authorized = ko.observable(isAuthorized(this.baseModel, frontId));
 
-        this.front.subscribe(this.onFrontChange.bind(this));
-        this.mode.subscribe(this.onModeChange.bind(this));
+        this.subscribeOn(this.front, this.onFrontChange);
+        this.subscribeOn(this.mode, this.onModeChange);
+        this.subscribeOn(this.baseModel.permissions, () => {
+            this.authorized(isAuthorized(this.baseModel, this.front()));
+        });
 
         this.setFront = id => this.front(id);
         this.setModeLive = () => this.mode('live');
@@ -107,8 +111,12 @@ export default class Front extends ColumnWidget {
             hours: 1,
             interval: 10
         });
-        this.load(frontId);
-        sparklines.subscribe(this);
+        if (this.authorized()) {
+            this.load(frontId);
+            sparklines.subscribe(this);
+        } else {
+            this.loaded = Promise.resolve(this);
+        }
     }
 
     load(frontId) {
@@ -285,4 +293,9 @@ function isOnlyArticle (item, front) {
         only = only && article.id() === item.id();
     });
     return only;
+}
+
+function isAuthorized (baseModel, frontId) {
+    var permissions = baseModel.permissions() || {};
+    return (permissions.fronts || {})[frontId] !== false;
 }

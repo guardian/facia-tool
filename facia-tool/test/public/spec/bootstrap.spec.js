@@ -160,7 +160,7 @@ function generateMockObjects () {
             collections: ['one', 'two']
         }
     }, {
-        url: CONST.frontendApiBase + '/config',
+        url: '/defaults',
         responseText: {
             email: 'yours'
         }
@@ -183,7 +183,7 @@ function generateMockObjects () {
             collections: ['one']
         }
     }, {
-        url: CONST.frontendApiBase + '/config',
+        url: '/defaults',
         responseText: {
             email: 'yours'
         }
@@ -205,7 +205,7 @@ function generateMockObjects () {
             banana: 'yellow'
         }
     }, {
-        url: CONST.frontendApiBase + '/config',
+        url: '/defaults',
         responseText: {
             email: 'yours'
         }
@@ -218,7 +218,7 @@ function generateMockObjects () {
             collections: ['one', 'two']
         }
     }, {
-        url: CONST.frontendApiBase + '/config',
+        url: '/defaults',
         status: 404
     }];
 
