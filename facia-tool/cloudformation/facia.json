@@ -16,6 +16,15 @@
             ],
             "Default": "PROD"
         },
+        "Project": {
+            "Description": "Project name",
+            "Type": "String",
+            "AllowedValues": [
+                "facia-tool",
+                "packages"
+            ],
+            "Default": "facia-tool"
+        },
         "FrontendRoleToAssume": {
             "Description": "Frontend Role to assume for cross account policies",
             "Type": "String",
@@ -344,7 +353,15 @@
                         "Key": "App",
                         "Value": "facia-tool",
                         "PropagateAtLaunch": "true"
+                    },
+                    {
+                        "Key": "Project",
+                        "Value": {
+                            "Ref": "Project"
+                        },
+                        "PropagateAtLaunch": "true"
                     }
+
                 ]
             }
         },
@@ -389,6 +406,7 @@
                             "/etc/gu/facia-tool.properties": {
                                 "content": { "Fn::Join" : ["", [
                                     "STAGE=", { "Ref" : "Stage" }, "\n",
+                                    "PROJECT=", { "Ref" : "Project" }, "\n",
                                     "STS_ROLE=", { "Ref" : "FrontendRoleToAssume" }, "\n"
                                 ]]}
                             }
