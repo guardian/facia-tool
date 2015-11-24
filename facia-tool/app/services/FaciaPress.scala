@@ -3,10 +3,9 @@ package services
 import com.amazonaws.regions.{Region, Regions}
 import com.amazonaws.services.sqs.AmazonSQSAsyncClient
 import com.amazonaws.services.sqs.model.SendMessageResult
-import common.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}
 import common.{ExecutionContexts, JsonMessageQueue, Logging}
-import conf.Configuration
-import conf.aws
+import conf.{Configuration, aws}
+import metrics.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success}

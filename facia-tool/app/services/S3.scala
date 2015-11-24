@@ -1,24 +1,17 @@
 package services
 
-import com.gu.pandomainauth.model.User
-import conf.Configuration
-import common.Logging
 import com.amazonaws.services.s3.AmazonS3Client
-import com.amazonaws.services.s3.model._
 import com.amazonaws.services.s3.model.CannedAccessControlList.{Private, PublicRead}
+import com.amazonaws.services.s3.model._
 import com.amazonaws.util.StringInputStream
-import scala.io.{Codec, Source}
+import com.gu.pandomainauth.model.User
+import common.Logging
+import conf.{Configuration, aws}
+import metrics.S3Metrics.S3ClientExceptionsMetric
 import org.joda.time.DateTime
 import play.Play
-import play.api.libs.ws.{WSRequest, WS}
-import javax.crypto.Mac
-import javax.crypto.spec.SecretKeySpec
-import sun.misc.BASE64Encoder
-import com.amazonaws.auth.AWSSessionCredentials
-import common.S3Metrics.S3ClientExceptionsMetric
-import java.util.zip.GZIPOutputStream
-import java.io._
-import conf.aws
+
+import scala.io.{Codec, Source}
 
 trait S3 extends Logging {
 
@@ -82,39 +75,6 @@ trait S3 extends Logging {
 
   def putPrivate(key: String, value: String, contentType: String) {
     put(key: String, value: String, contentType: String, Private)
-  }
-
-  def putPrivateGzipped(key: String, value: String, contentType: String) {
-    putGzipped(key: String, value: String, contentType: String, Private)
-  }
-
-  private def putGzipped(key: String, value: String, contentType: String, accessControlList: CannedAccessControlList) {
-    lazy val request = {
-      val metadata = new ObjectMetadata()
-
-      metadata.setCacheControl("no-cache,no-store")
-      metadata.setContentType(contentType)
-      metadata.setContentEncoding("gzip")
-
-      val valueAsBytes = value.getBytes("UTF-8")
-      val os = new ByteArrayOutputStream()
-      val gzippedStream = new GZIPOutputStream(os)
-      gzippedStream.write(valueAsBytes)
-      gzippedStream.flush()
-      gzippedStream.close()
-
-      metadata.setContentLength(os.size())
-
-      new PutObjectRequest(bucket, key, new ByteArrayInputStream(os.toByteArray), metadata).withCannedAcl(accessControlList)
-    }
-
-    try {
-      client.foreach(_.putObject(request))
-    } catch {
-      case e: Exception =>
-        S3ClientExceptionsMetric.increment()
-        throw e
-    }
   }
 
   private def put(key: String, value: String, contentType: String, accessControlList: CannedAccessControlList) {
@@ -191,18 +151,6 @@ object S3FrontsApi extends S3 {
 
   def getConfigIds(prefix: String): List[String] = getListing(prefix, "/config.json")
   def getCollectionIds(prefix: String): List[String] = getListing(prefix, "/collection.json")
-
-  def putLivePressedJson(path: String, json: String) =
-    putPrivateGzipped(getLivePressedKeyForPath(path), json, "application/json")
-
-  def putDraftPressedJson(path: String, json: String) =
-    putPrivateGzipped(getDraftPressedKeyForPath(path), json, "application/json")
-
-  def putLiveFapiPressedJson(path: String, json: String) =
-    putPrivateGzipped(getLiveFapiPressedKeyForPath(path), json, "application/json")
-
-  def putDraftFapiPressedJson(path: String, json: String) =
-    putPrivateGzipped(getDraftFapiPressedKeyForPath(path), json, "application/json")
 
   def getPressedLastModified(path: String): Option[String] =
     getLastModified(getLiveFapiPressedKeyForPath(path)).map(_.toString)
