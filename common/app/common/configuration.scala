@@ -30,15 +30,17 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
 
   private val properties = Properties(installVars)
   private val stageFromProperties = properties.getOrElse("STAGE", "CODE")
+  private val projectFromProperties = properties.getOrElse("PROJECT", "facia-tool")
   private val stsRoleToAssumeFromProperties = properties.getOrElse("STS_ROLE", "unknown")
 
   private implicit class OptionalString2MandatoryWithStage(conf: PlayConfiguration) {
-    def getStringFromStage(property: String) =
-      playConfiguration.getString(stageFromProperties + "." + property)
-        .orElse(playConfiguration.getString(property))
+    def getStringFromStage(property: String) = {
+      playConfiguration.getString(projectFromProperties + "." + stageFromProperties + "." + property)
+        .orElse(playConfiguration.getString(projectFromProperties + "." + property))
+    }
     def getMandatoryStringFromStage(property: String) =
-      playConfiguration.getString(stageFromProperties + "." + property)
-        .orElse(playConfiguration.getString(property))
+      playConfiguration.getString(projectFromProperties + "." + stageFromProperties + "." + property)
+        .orElse(playConfiguration.getString(projectFromProperties + "." + property))
         .getOrElse(throw new BadConfigurationException(s"$property not configured for stage " + stageFromProperties))
   }
 
