@@ -1,18 +1,19 @@
 package controllers
 
-import conf.Configuration
-import common.{FaciaToolMetrics, ExecutionContexts, Logging}
-import implicits.Strings
-import play.api.mvc._
-import play.api.libs.ws.WS
-import model.Cached
 import akka.actor.ActorSystem
-import util.ContentUpgrade.rewriteBody
-import play.api.Logger
 import auth.PanDomainAuthActions
+import common.ExecutionContexts
+import conf.Configuration
+import implicits.Strings
+import metrics.FaciaToolMetrics
+import model.Cached
+import play.api.Logger
+import play.api.libs.ws.WS
+import play.api.mvc._
 import switchboard.SwitchManager
+import util.ContentUpgrade.rewriteBody
 
-object FaciaContentApiProxy extends Controller with Logging with ExecutionContexts with Strings with PanDomainAuthActions with implicits.WSRequests {
+object FaciaContentApiProxy extends Controller with ExecutionContexts with Strings with PanDomainAuthActions with implicits.WSRequests {
 
   override lazy val actorSystem = ActorSystem()
   import play.api.Play.current

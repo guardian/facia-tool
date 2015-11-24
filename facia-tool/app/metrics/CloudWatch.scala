@@ -1,36 +1,33 @@
-package model.diagnostics
+package metrics
 
 import com.amazonaws.handlers.AsyncHandler
 import com.amazonaws.services.cloudwatch.AmazonCloudWatchAsyncClient
 import com.amazonaws.services.cloudwatch.model._
-import common.Logging
-import conf.Configuration
 import conf.Configuration._
 import conf.aws
-import metrics.{FrontendStatisticSet, DataPoint, FrontendMetric}
+import play.api.Logger
 import services.AwsEndpoints
 
 import scala.collection.JavaConversions._
 
-trait CloudWatch extends Logging {
+trait CloudWatch {
 
   lazy val stageDimension = new Dimension().withName("Stage").withValue(environment.stage)
 
-  lazy val cloudwatch: Option[AmazonCloudWatchAsyncClient] = aws.crossAccount.map{ credentials =>
+  lazy val cloudwatch: Option[AmazonCloudWatchAsyncClient] = aws.credentials.map{ credentials =>
     val client = new AmazonCloudWatchAsyncClient(credentials)
     client.setEndpoint(AwsEndpoints.monitoring)
     client
   }
 
-  trait LoggingAsyncHandler extends AsyncHandler[PutMetricDataRequest, Void] with Logging
-  {
+  trait LoggingAsyncHandler extends AsyncHandler[PutMetricDataRequest, Void] {
     def onError(exception: Exception)
     {
-      log.info(s"CloudWatch PutMetricDataRequest error: ${exception.getMessage}}")
+      Logger.info(s"CloudWatch PutMetricDataRequest error: ${exception.getMessage}}")
     }
     def onSuccess(request: PutMetricDataRequest, result: Void )
     {
-      log.info("CloudWatch PutMetricDataRequest - success")
+      Logger.info("CloudWatch PutMetricDataRequest - success")
     }
   }
 
@@ -38,14 +35,14 @@ trait CloudWatch extends Logging {
 
   case class AsyncHandlerForMetric(frontendStatisticSets: List[FrontendStatisticSet]) extends LoggingAsyncHandler {
     override def onError(exception: Exception) = {
-      log.warn(s"Failed to put ${frontendStatisticSets.size} metrics: $exception")
-      log.warn(s"Failed to put ${frontendStatisticSets.map(_.metric.name).mkString(",")}")
+      Logger.warn(s"Failed to put ${frontendStatisticSets.size} metrics: $exception")
+      Logger.warn(s"Failed to put ${frontendStatisticSets.map(_.metric.name).mkString(",")}")
       frontendStatisticSets.foreach { _.reset() }
       super.onError(exception)
     }
     override def onSuccess(request: PutMetricDataRequest, result: Void ) = {
-      log.info(s"Successfully put ${frontendStatisticSets.size} metrics")
-      log.info(s"Successfully put ${frontendStatisticSets.map(_.metric.name).mkString(",")}")
+      Logger.info(s"Successfully put ${frontendStatisticSets.size} metrics")
+      Logger.info(s"Successfully put ${frontendStatisticSets.map(_.metric.name).mkString(",")}")
 
       super.onSuccess(request, result)
     }
@@ -65,18 +62,8 @@ trait CloudWatch extends Logging {
     cloudwatch.foreach(_.putMetricDataAsync(request, LoggingAsyncHandler))
   }
 
-  def put(namespace: String, metrics: Map[String, Double]): Unit =
-    put(namespace, metrics, Seq(stageDimension))
-
-  def putWithDimensions(namespace: String, metrics: Map[String, Double], dimensions: Seq[Dimension]): Unit =
-    put(namespace, metrics, Seq(stageDimension) ++ dimensions)
-
-
   def putMetricsWithStage(metrics: List[FrontendMetric], applicationDimension: Dimension): Unit =
     putMetrics("Application", metrics, List(stageDimension, applicationDimension))
-
-  def putSystemMetricsWithStage(metrics: List[FrontendMetric], applicationDimension: Dimension): Unit =
-    putMetrics("ApplicationSystemMetrics", metrics, List(stageDimension, applicationDimension))
 
   def putMetrics(metricNamespace: String, metrics: List[FrontendMetric], dimensions: List[Dimension]): Unit = {
     for {

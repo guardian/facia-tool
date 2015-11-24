@@ -43,28 +43,6 @@ sealed trait FrontendMetric {
   def isEmpty: Boolean
 }
 
-case class FrontendTimingMetric(name: String, description: String) extends FrontendMetric {
-
-  val metricUnit: StandardUnit = StandardUnit.Milliseconds
-
-  private val timeInMillis = new AtomicLong()
-  private val currentCount = new AtomicLong()
-
-  def recordDuration(durationInMillis: Long): Unit = {
-    timeInMillis.addAndGet(durationInMillis)
-    currentCount.incrementAndGet
-  }
-
-  def getAndResetDataPoints: List[DataPoint] = List(DurationDataPoint(Try(timeInMillis.getAndSet(0) / currentCount.getAndSet(0)).getOrElse(0L)))
-  def getAndReset: Long = getAndResetDataPoints.map(_.value).reduce(_ + _)
-
-  def putDataPoints(points: List[DataPoint]): Unit = points.map(_.value).map(recordDuration)
-
-  def isEmpty: Boolean = currentCount.get() == 0L
-
-  def getCount: Long = currentCount.get()
-}
-
 case class GaugeMetric(name: String, description: String, get: () => Long, metricUnit: StandardUnit = StandardUnit.Megabytes) extends FrontendMetric {
   def getAndResetDataPoints: List[DataPoint] = List(GaugeDataPoint(get()))
   def putDataPoints(points: List[DataPoint]): Unit = ()
@@ -107,9 +85,3 @@ case class DurationMetric(name: String, metricUnit: StandardUnit) extends Fronte
   def recordDuration(timeInMillis: Long): Unit = record(DurationDataPoint(timeInMillis, Option(DateTime.now)))
   def isEmpty: Boolean = dataPoints.get().isEmpty
 }
-
-object UkPressLatencyMetric extends DurationMetric("uk-press-latency", StandardUnit.Milliseconds)
-object UsPressLatencyMetric extends DurationMetric("us-press-latency", StandardUnit.Milliseconds)
-object AuPressLatencyMetric extends DurationMetric("au-press-latency", StandardUnit.Milliseconds)
-
-object AllFrontsPressLatencyMetric extends DurationMetric("front-press-latency", StandardUnit.Milliseconds)

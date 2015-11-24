@@ -199,6 +199,25 @@
                 "Roles": [{ "Ref": "DistributionRole" }]
             }
         },
+        "CloudwatchPolicy": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "CloudwatchPolicy",
+                "PolicyDocument": {
+                    "Version" : "2012-10-17",
+                    "Statement": [{
+                        "Effect": "Allow",
+                        "Action": [
+                          "cloudwatch:GetMetricStatistics",
+                          "cloudwatch:ListMetrics",
+                          "cloudwatch:PutMetricData"
+                        ],
+                        "Resource": "*"
+                    } ]
+                },
+                "Roles": [{ "Ref": "DistributionRole" }]
+            }
+        },
         "SSHSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
             "Properties": {

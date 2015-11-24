@@ -1,10 +1,11 @@
 package metrics
 
 import com.amazonaws.services.cloudwatch.model.StandardUnit
-import org.scalatest.{FlatSpec, Matchers}
-import scala.concurrent.{Await, Future}
-import scala.concurrent.duration._
 import common.ExecutionContexts
+import org.scalatest.{FlatSpec, Matchers}
+
+import scala.concurrent.Await
+import scala.concurrent.duration._
 
 class DurationMetricTest extends FlatSpec with Matchers with ExecutionContexts{
 

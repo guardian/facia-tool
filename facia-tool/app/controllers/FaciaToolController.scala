@@ -1,20 +1,21 @@
 package controllers
 
-import common.{ExecutionContexts, FaciaToolMetrics, Logging}
+import akka.actor.ActorSystem
+import auth.PanDomainAuthActions
+import common.ExecutionContexts
 import fronts.FrontsApi
 import frontsapi.model._
+import metrics.FaciaToolMetrics
 import model.{Cached, NoCache}
+import play.api.Logger
 import play.api.libs.json._
 import play.api.mvc._
 import services._
 import tools.FaciaApiIO
-import akka.actor.ActorSystem
-import scala.concurrent.Future
-import play.api.Logger
-import auth.PanDomainAuthActions
-import scala.util._
 
-object FaciaToolController extends Controller with Logging with ExecutionContexts with PanDomainAuthActions with BreakingNewsEditCollectionsCheck {
+import scala.concurrent.Future
+
+object FaciaToolController extends Controller with ExecutionContexts with PanDomainAuthActions with BreakingNewsEditCollectionsCheck {
 
   override lazy val actorSystem = ActorSystem()
 

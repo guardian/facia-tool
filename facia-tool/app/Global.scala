@@ -1,9 +1,6 @@
-import java.io.File
-
-import common._
 import switchboard.{Lifecycle => NewSwitchboardLifecycle}
 import conf.{PermissionsCache, LogStashConfig}
-import metrics.FrontendMetric
+import metrics.{FrontendMetric, CloudWatchApplicationMetrics, FaciaToolMetrics, S3Metrics}
 import play.api._
 import play.api.mvc.WithFilters
 import services.ConfigAgentLifecycle
@@ -21,13 +18,9 @@ object Global extends WithFilters(Gzipper)
   override def applicationMetrics: List[FrontendMetric] = super.applicationMetrics ::: List(
     FaciaToolMetrics.ApiUsageCount,
     FaciaToolMetrics.ProxyCount,
-    FaciaToolMetrics.ContentApiPutFailure,
-    FaciaToolMetrics.ContentApiPutSuccess,
     FaciaToolMetrics.DraftPublishCount,
-    FaciaToolMetrics.ExpiredRequestCount,
-    ContentApiMetrics.ElasticHttpTimingMetric,
-    ContentApiMetrics.ElasticHttpTimeoutCountMetric,
-    ContentApiMetrics.ContentApiErrorMetric,
+    FaciaToolMetrics.EnqueuePressSuccess,
+    FaciaToolMetrics.EnqueuePressFailure,
     S3Metrics.S3ClientExceptionsMetric
   )
 
