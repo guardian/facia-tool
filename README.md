@@ -119,9 +119,15 @@ Run `sudo nginx -s reload` to restart nginx with the new configuration.
 
 Create the files
 
-* `/etc/gu/facia-tool.properties` containing only
+* `/etc/gu/facia-tool.properties` containing
 
    > STAGE=CODE
+
+   and the name of project you are running, either
+   > PROJECT=facia-tool
+
+   or
+   > PROJECT=packages
 
 * `/etc/gu/facia-tool.application.secrets.conf` this files contains secrets, there's a copy in S3. You need at least
 
