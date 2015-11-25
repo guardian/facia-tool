@@ -11,7 +11,7 @@ object aws {
   def mandatoryCredentials: AWSCredentialsProvider = credentials.getOrElse(throw new BadConfigurationException("AWS credentials are not configured"))
   val credentials: Option[AWSCredentialsProvider] = {
     val provider = new AWSCredentialsProviderChain(
-      new ProfileCredentialsProvider("CMS Fronts"),
+      new ProfileCredentialsProvider("cmsFronts"),
       new InstanceProfileCredentialsProvider
     )
 

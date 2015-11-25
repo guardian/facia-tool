@@ -87,6 +87,11 @@ Mac:
 brew install sbt
 ```
 
+#### aws cli
+```bash
+pip install awscli
+```
+
 
 
 ### Clone repository
@@ -138,18 +143,28 @@ Create the files
    content.api.preview.password=[redacted]
    content.api.preview.user=[redacted]
 
+   media.base.url=[redacted]
+   media.api.url=[redacted]
+
    ophan.api.host=[redacted]
    ophan.api.key=[redacted]
-   ```
 
-* `facia-tool/conf/application.local.conf` contains overrides for your local server
 
-   ```
+   ## Local development
+
    faciatool.pandomain.domain="local.dev-gutools.co.uk"
    faciatool.pandomain.host="https://fronts.local.dev-gutools.co.uk"
 
    facia.stage="CODE"
    ```
+
+
+
+### Credentials
+
+You need valid developer credentials for `cmsFronts` and `workflow`.
+You can get keys temporary keys from `janus`.
+
 
 
 ### Code Dependencies
