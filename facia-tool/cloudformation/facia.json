@@ -44,6 +44,11 @@
             "Description": "Bucket where switchboard writes switches status",
             "Type": "String",
             "Default": "arn:aws:s3:::facia-switches/*"
+        },
+        "PandaRoleToAssume": {
+            "Description": "Role to access panda bucket",
+            "Type": "String",
+            "Default": "arn:aws:iam::753338109777:role/Fronts-panda-IAM-FaciaToolRole-NKNXCYEGL0F6"
         }
     },
     "Mappings": {
@@ -127,13 +132,11 @@
           "Properties": {
             "PolicyName": "PanDomainPolicy",
             "PolicyDocument": {
-              "Statement": [
-                {
-                  "Effect": "Allow",
-                  "Action": ["s3:GetObject"],
-                  "Resource": ["arn:aws:s3:::pan-domain-auth-settings/*"]
-                }
-              ]
+                "Statement": [{
+                    "Effect": "Allow",
+                    "Action": "sts:AssumeRole",
+                    "Resource": { "Ref" : "PandaRoleToAssume" }
+                }]
             },
             "Roles": [{"Ref": "DistributionRole"}]
           }
@@ -164,7 +167,7 @@
                         "Effect": "Allow",
                         "Action": "sts:AssumeRole",
                         "Resource": { "Ref" : "FrontendRoleToAssume" }
-                    } ]
+                    }]
                 },
                 "Roles": [{ "Ref": "DistributionRole" }]
             }
