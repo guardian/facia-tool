@@ -42,6 +42,10 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
       playConfiguration.getString(projectFromProperties + "." + stageFromProperties + "." + property)
         .orElse(playConfiguration.getString(projectFromProperties + "." + property))
         .getOrElse(throw new BadConfigurationException(s"$property not configured for stage " + stageFromProperties))
+    def getMandatoryBooleanFromStage(property: String) =
+      playConfiguration.getBoolean(projectFromProperties + "." + stageFromProperties + "." + property)
+        .orElse(playConfiguration.getBoolean(projectFromProperties + "." + property))
+        .getOrElse(throw new BadConfigurationException(s"$property not configured for stage " + stageFromProperties))
   }
 
   object environment {
@@ -150,6 +154,7 @@ class GuardianConfiguration(val application: String, val webappConfDirectory: St
   object aws {
     lazy val region = playConfiguration.getMandatoryStringFromStage("aws.region")
     lazy val bucket = playConfiguration.getMandatoryStringFromStage("aws.bucket")
+    lazy val crossAccount = playConfiguration.getMandatoryBooleanFromStage("aws.crossAccount")
   }
 }
 

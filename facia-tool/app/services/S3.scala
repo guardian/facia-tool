@@ -17,10 +17,15 @@ trait S3 extends Logging {
 
   lazy val bucket = Configuration.aws.bucket
 
-  lazy val client: Option[AmazonS3Client] = aws.crossAccount.map{ credentials =>
-    val client = new AmazonS3Client(credentials)
-    client.setEndpoint(AwsEndpoints.s3)
-    client
+  lazy val client: Option[AmazonS3Client] = {
+    if (Configuration.aws.crossAccount) aws.crossAccount
+    else aws.credentials
+  }
+    .map{ credentials => {
+      val client = new AmazonS3Client(credentials)
+      client.setEndpoint(AwsEndpoints.s3)
+      client
+    }
   }
 
   private def withS3Result[T](key: String)(action: S3Object => T): Option[T] = client.flatMap { client =>

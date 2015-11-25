@@ -27,7 +27,11 @@ object FaciaToolUpdatesStream extends Logging {
   }
 
   val client: AmazonKinesisAsyncClient = {
-    val c = new AmazonKinesisAsyncClient(aws.mandatoryCrossAccountCredentials)
+    val c = if (Configuration.aws.crossAccount)
+      new AmazonKinesisAsyncClient(aws.mandatoryCrossAccountCredentials)
+    else
+      new AmazonKinesisAsyncClient(aws.mandatoryCredentials)
+
     c.setRegion(Region.getRegion(Regions.EU_WEST_1))
     c
   }
