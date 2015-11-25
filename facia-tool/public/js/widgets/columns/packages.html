@@ -1,0 +1,17 @@
+<div class="title">
+    Add a package
+</div>
+<div class="title">
+    Search
+</div>
+<div class="search-form">
+    <input
+      type="text"
+      placeholder="search for packages"
+      data-bind="
+        textInput: searchTerm
+    "/>
+</div>
+<div data-bind="foreach: searchedPackages">
+    <div data="text: name"></div>
+</div>
