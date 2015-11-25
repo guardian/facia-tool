@@ -1,0 +1,5 @@
+name: packages
+mappings:
+  - prefix: packages
+    port: 9000
+    path: /
