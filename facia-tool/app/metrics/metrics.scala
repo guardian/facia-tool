@@ -5,9 +5,10 @@ import java.lang.management.{GarbageCollectorMXBean, ManagementFactory}
 import java.util.concurrent.atomic.AtomicLong
 
 import com.amazonaws.services.cloudwatch.model.{Dimension, StandardUnit}
-import common.{Jobs, ManifestData}
+import common.Jobs
 import play.Play
 import play.api.{Application => PlayApp, GlobalSettings}
+import conf.ManifestData
 
 import scala.collection.JavaConversions._
 

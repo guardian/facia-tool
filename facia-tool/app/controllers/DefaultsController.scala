@@ -1,20 +1,19 @@
 package controllers
 
+import auth.PanDomainAuthActions
+import common.Edition
+import conf.Configuration
+import model.Cached
 import permissions.Permissions
-import play.api.mvc._
-import play.api.libs.json.{Json, JsValue}
 import play.api.Play
 import play.api.Play.current
-import model.Cached
-import auth.PanDomainAuthActions
-import slices.{FixedContainers, DynamicContainers, ContainerJsonConfig}
-import conf.Configuration
-import common.Edition
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc._
+import slices.{ContainerJsonConfig, DynamicContainers, FixedContainers}
 import switchboard.SwitchManager
 import utils.{Acl, AclJson}
-import scala.concurrent.ExecutionContext.Implicits.global
 
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 
 object Defaults {
@@ -36,7 +35,9 @@ case class Defaults(
   fixedContainers: Seq[ContainerJsonConfig],
   dynamicContainers: Seq[ContainerJsonConfig],
   switches: JsValue,
-  acl: AclJson
+  acl: AclJson,
+  project: String,
+  collectionCap: Int
 )
 
 object DefaultsController extends Controller with PanDomainAuthActions {
@@ -75,10 +76,10 @@ object DefaultsController extends Controller with PanDomainAuthActions {
           Edition.all.map(_.id.toLowerCase),
           request.user.email,
           request.user.avatarUrl,
-          Configuration.faciatool.adminPressJobLowPushRateInMinutes,
-          Configuration.faciatool.adminPressJobHighPushRateInMinutes,
-          Configuration.faciatool.adminPressJobStandardPushRateInMinutes,
-          Configuration.faciatool.sentryPublicDSN.get,
+          60,
+          1,
+          5,
+          Configuration.sentry.publicDSN,
           Configuration.media.baseUrl.get,
           Configuration.media.apiUrl.get,
           FixedContainers.all.keys.toSeq.map(id => ContainerJsonConfig(id, None)),
@@ -92,7 +93,9 @@ object DefaultsController extends Controller with PanDomainAuthActions {
             }
           ),
           SwitchManager.getSwitchesAsJson(),
-          acls
+          acls,
+          Configuration.environment.project,
+          Configuration.facia.collectionCap
         )))
       }
 

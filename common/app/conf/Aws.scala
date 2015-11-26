@@ -3,9 +3,8 @@ package conf
 import com.amazonaws.AmazonClientException
 import com.amazonaws.auth._
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
-import common.BadConfigurationException
-import play.api.{Logger, Play}
 import play.api.Play.current
+import play.api.{Logger, Play}
 
 object aws {
   def mandatoryCredentials: AWSCredentialsProvider = credentials.getOrElse(throw new BadConfigurationException("AWS credentials are not configured"))

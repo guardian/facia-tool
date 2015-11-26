@@ -1,9 +1,10 @@
-import switchboard.{Lifecycle => NewSwitchboardLifecycle}
-import conf.{PermissionsCache, LogStashConfig}
-import metrics.{FrontendMetric, CloudWatchApplicationMetrics, FaciaToolMetrics, S3Metrics}
+import conf.PermissionsCache
+import logging.LogStashConfig
+import metrics.{CloudWatchApplicationMetrics, FaciaToolMetrics, FrontendMetric, S3Metrics}
 import play.api._
 import play.api.mvc.WithFilters
 import services.ConfigAgentLifecycle
+import switchboard.{Lifecycle => NewSwitchboardLifecycle}
 
 object Global extends WithFilters(Gzipper)
   with GlobalSettings
