@@ -152,8 +152,8 @@ Create the files
 
    ## Local development
 
-   faciatool.pandomain.domain="local.dev-gutools.co.uk"
-   faciatool.pandomain.host="https://fronts.local.dev-gutools.co.uk"
+   pandomain.domain="local.dev-gutools.co.uk"
+   pandomain.host="https://fronts.local.dev-gutools.co.uk"
 
    facia.stage="CODE"
    ```
