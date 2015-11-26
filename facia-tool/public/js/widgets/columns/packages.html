@@ -1,6 +1,15 @@
 <div class="title">
     Add a package
+    <span data-bind="click: createPackage" class="linky">+</span>
 </div>
+
+<!-- ko if: creatingPackage -->
+Title:
+<input type="text" class="metadata--title" data-bind="
+    textInput: displayName"/>
+<button class="tool tool-save-container" data-bind="
+click: savePackage">Save package</button>
+<!-- /ko -->
 <div class="title">
     Search
 </div>
@@ -13,5 +22,5 @@
     "/>
 </div>
 <div data-bind="foreach: searchedPackages">
-    <div data="text: name"></div>
+    <div data-bind="text: name"></div>
 </div>

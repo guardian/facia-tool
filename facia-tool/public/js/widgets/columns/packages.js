@@ -1,6 +1,8 @@
 import ko from 'knockout';
 import _ from 'underscore';
 import ColumnWidget from 'widgets/column-widget';
+import Front from 'models/config/front';
+import Collection from 'models/config/collection';
 
 export default class Package extends ColumnWidget {
 
@@ -12,6 +14,9 @@ export default class Package extends ColumnWidget {
         this.populateAllPackages();
         this.subscribeOn(this.baseModel.state, this.populateAllPackages);
         this.subscribeOn(this.searchTerm, this.search);
+        this.creatingPackage = ko.observable();
+        this.storyPackage = ko.observable();
+        this.displayName = ko.observable();
     };
 
     populateAllPackages() {
@@ -26,6 +31,22 @@ export default class Package extends ColumnWidget {
         this.searchedPackages(_.filter(this.allPackages, function (existingPackage) {
             return existingPackage.name.toLowerCase().indexOf(lowerCaseSearchTerm) !== -1;
         }) );
+    }
+
+    createPackage() {
+        var front = new Front({priority: this.baseModel.priority, isHidden: false});
+        front.createCollection();
+        this.creatingPackage(true);
+        this.storyPackage(front.collections.items()[0]);
+        this.storyPackage().meta.type = 'story-package';
+
+    }
+
+    savePackage() {
+        this.storyPackage().meta.displayName = this.displayName();
+        this.storyPackage().save();
+        this.creatingPackage(false);
+        this.displayName(null);
     }
 
 }
