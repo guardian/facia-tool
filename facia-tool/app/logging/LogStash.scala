@@ -1,4 +1,4 @@
-package conf
+package logging
 
 import ch.qos.logback.classic.{Logger => LogbackLogger, LoggerContext}
 import com.gu.logback.appender.kinesis.KinesisAppender
@@ -6,6 +6,7 @@ import net.logstash.logback.encoder.LogstashEncoder
 import net.logstash.logback.layout.LogstashLayout
 import org.slf4j.LoggerFactory
 import play.api.{Logger => PlayLogger, LoggerLike}
+import conf.Configuration
 
 object LogStash {
 
@@ -13,12 +14,12 @@ object LogStash {
 
   case class KinesisAppenderConfig(stream: String, region: String, roleArn: String, bufferSize: Int)
 
-  lazy val enabled = Configuration.faciatool.logEnabled
+  lazy val enabled = Configuration.logging.enabled
 
   lazy val customFields = Map(
       "stack" -> "fronts",
-      "stage" ->Configuration.environment.stage.toUpperCase,
-      "app"   -> Configuration.faciatool.logApp
+      "stage" -> Configuration.environment.stage.toUpperCase,
+      "app"   -> Configuration.logging.app
     )
   def makeCustomFields: String = {
     "{" + (for((k, v) <- customFields) yield(s""""${k}":"${v}"""")).mkString(",") + "}"
@@ -71,9 +72,9 @@ object LogStash {
         // remove the default configuration
         val appender  = makeKinesisAppender(layout, context,
           KinesisAppenderConfig(
-            Configuration.faciatool.logStream,
-            Configuration.faciatool.logStreamRegion,
-            Configuration.faciatool.logStreamRole,
+            Configuration.logging.stream,
+            Configuration.logging.streamRegion,
+            Configuration.logging.streamRole,
             bufferSize
           )
         )

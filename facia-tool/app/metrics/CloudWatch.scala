@@ -3,7 +3,7 @@ package metrics
 import com.amazonaws.handlers.AsyncHandler
 import com.amazonaws.services.cloudwatch.AmazonCloudWatchAsyncClient
 import com.amazonaws.services.cloudwatch.model._
-import conf.Configuration._
+import conf.Configuration
 import conf.aws
 import play.api.Logger
 import services.AwsEndpoints
@@ -12,7 +12,7 @@ import scala.collection.JavaConversions._
 
 trait CloudWatch {
 
-  lazy val stageDimension = new Dimension().withName("Stage").withValue(environment.stage)
+  lazy val stageDimension = new Dimension().withName("Stage").withValue(Configuration.environment.stage)
 
   lazy val cloudwatch: Option[AmazonCloudWatchAsyncClient] = aws.credentials.map{ credentials =>
     val client = new AmazonCloudWatchAsyncClient(credentials)

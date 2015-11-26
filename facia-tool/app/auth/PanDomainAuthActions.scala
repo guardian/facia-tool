@@ -19,7 +19,7 @@ trait PanDomainAuthActions extends AuthActions with PanDomainAuth with Results {
       (authedUser.multiFactor || (config.getString("no2faUser").exists(user => user.length > 0 && user == authedUser.user.email)))
   }
 
-  override def authCallbackUrl: String = Configuration.faciatool.pandomainHost  + "/oauthCallback"
+  override def authCallbackUrl: String = Configuration.pandomain.host  + "/oauthCallback"
 
   override def showUnauthedMessage(message: String)(implicit request: RequestHeader): Result = {
     Logger.info(message)
@@ -40,10 +40,10 @@ trait PanDomainAuthActions extends AuthActions with PanDomainAuth with Results {
     }
   }
 
-  override lazy val domain: String = Configuration.faciatool.pandomainDomain
-  override lazy val system: String = Configuration.faciatool.pandomainService
+  override lazy val domain: String = Configuration.pandomain.domain
+  override lazy val system: String = Configuration.pandomain.service
   override def awsCredentialsProvider = new AWSCredentialsProviderChain(
     new ProfileCredentialsProvider("workflow"),
-    new STSAssumeRoleSessionCredentialsProvider(Configuration.faciatool.pandomainRoleArn, Configuration.faciatool.pandomainService)
+    new STSAssumeRoleSessionCredentialsProvider(Configuration.pandomain.roleArn, Configuration.pandomain.service)
   )
 }

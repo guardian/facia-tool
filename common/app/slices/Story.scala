@@ -2,9 +2,8 @@ package slices
 
 import com.gu.facia.api.models.FaciaContent
 import common.Maps._
-import play.api.libs.json.Json
 import implicits.FaciaContentImplicits._
-import services.FaciaContentConvert
+import play.api.libs.json.Json
 
 import scala.util.Try
 
@@ -22,8 +21,6 @@ object Story {
       }
     }
   }
-
-  def fromContent(content: model.Content): Story = fromFaciaContent(FaciaContentConvert.frontendContentToFaciaContent(content))
 
   def fromFaciaContent(faciaContent: FaciaContent): Story = {
     Story(

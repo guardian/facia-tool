@@ -1,6 +1,5 @@
 package slices
 
-import model.Content
 import conf.Configuration
 
 object FixedContainers {
@@ -70,12 +69,4 @@ object DynamicContainers {
     ("dynamic/package", DynamicPackage),
     ("dynamic/slow-mpu", DynamicSlowMPU)
   )
-
-  def apply(collectionType: Option[String], items: Seq[Content]): Option[ContainerDefinition] = {
-    for {
-      typ <- collectionType
-      dynamicContainer <- all.get(typ)
-      definition <- dynamicContainer.containerDefinitionFor(items.map(Story.fromContent))
-    } yield definition
-  }
 }

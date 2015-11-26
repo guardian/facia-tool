@@ -1,15 +1,6 @@
 package common
 
-import model.MetaData
-import play.api.mvc.RequestHeader
-
-case class SectionLink(zone: String, title: String, breadcrumbTitle: String, href: String) {
-  def currentFor(page: MetaData): Boolean = page.url == href ||
-    s"/${page.section}" == href ||
-    (Edition.all.exists(_.id.toLowerCase == page.id.toLowerCase) && href == "/")
-
-  def currentForIncludingAllTags(page: MetaData): Boolean = page.tags.exists(t => s"/${t.id}" == href)
-}
+case class SectionLink(zone: String, title: String, breadcrumbTitle: String, href: String) {}
 
 case class NavItem(name: SectionLink, links: Seq[SectionLink] = Nil) {
   // arbitrary cutoff, feel free to tweak - https://github.com/guardian/frontend/pull/9487
