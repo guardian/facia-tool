@@ -1,6 +1,6 @@
 package implicits
 
-import language.reflectiveCalls
+import scala.language.reflectiveCalls
 
 trait AutomaticResourceManagement {
   def withCloseable[T <: { def close() }](closeable: T) = new {

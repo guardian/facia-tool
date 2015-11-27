@@ -3,8 +3,7 @@ package metrics
 import com.amazonaws.handlers.AsyncHandler
 import com.amazonaws.services.cloudwatch.AmazonCloudWatchAsyncClient
 import com.amazonaws.services.cloudwatch.model._
-import conf.Configuration
-import conf.aws
+import conf.{Configuration, aws}
 import play.api.Logger
 import services.AwsEndpoints
 

@@ -1,15 +1,15 @@
 package common
 
-import com.amazonaws.handlers.AsyncHandler
-import com.amazonaws.services.sqs.AmazonSQSAsyncClient
-import com.amazonaws.services.sqs.model._
-import com.amazonaws.regions.{Region => AwsRegion}
-import org.joda.time.DateTime
-import play.api.libs.json.{Writes, Json, Reads}
 import java.util.concurrent.{Future => JavaFuture}
 
+import com.amazonaws.handlers.AsyncHandler
+import com.amazonaws.regions.{Region => AwsRegion}
+import com.amazonaws.services.sqs.AmazonSQSAsyncClient
+import com.amazonaws.services.sqs.model._
+import play.api.libs.json.{Json, Reads, Writes}
+
 import scala.concurrent.{ExecutionContext, Future, Promise}
-import scala.util.{Try, Failure, Success}
+import scala.util.{Failure, Success}
 
 object SQSQueues {
   implicit class RichAmazonSQSAsyncClient(client: AmazonSQSAsyncClient) {
@@ -55,6 +55,7 @@ case class Message[A](id: MessageId, get: A, handle: ReceiptHandle)
 case class JsonMessageQueue[A](client: AmazonSQSAsyncClient, queueUrl: String)
                               (implicit executionContext: ExecutionContext) {
   import SQSQueues._
+
   import scala.collection.JavaConverters._
 
   def receive(request: ReceiveMessageRequest)(implicit reads: Reads[A]): Future[Seq[Message[A]]] =

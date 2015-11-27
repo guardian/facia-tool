@@ -2,17 +2,14 @@ package services
 
 import java.nio.ByteBuffer
 
+import com.amazonaws.handlers.AsyncHandler
 import com.amazonaws.regions.{Region, Regions}
+import com.amazonaws.services.kinesis.AmazonKinesisAsyncClient
+import com.amazonaws.services.kinesis.model.{PutRecordRequest, PutRecordResult}
+import common.Logging
+import conf.{Configuration, aws}
 import frontsapi.model.StreamUpdate
 import play.api.libs.json._
-
-import scala.collection.JavaConversions._
-import com.amazonaws.handlers.AsyncHandler
-import com.amazonaws.services.kinesis.AmazonKinesisAsyncClient
-import com.amazonaws.services.kinesis.model.{PutRecordResult, PutRecordRequest}
-import common.Logging
-import conf.Configuration
-import conf.aws
 
 object FaciaToolUpdatesStream extends Logging {
   val partitionKey: String = "facia-tool-updates"

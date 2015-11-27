@@ -1,8 +1,8 @@
 package implicits
 
-import com.gu.contentapi.client.model.{Element, Tag, Content}
+import com.gu.contentapi.client.model.{Content, Element, Tag}
 import com.gu.facia.api.models.FaciaContent
-import com.gu.facia.api.utils.{MediaType, ItemKicker, FaciaContentUtils, CardStyle}
+import com.gu.facia.api.utils.{CardStyle, FaciaContentUtils, ItemKicker, MediaType}
 import org.joda.time.DateTime
 
 object FaciaContentImplicits {

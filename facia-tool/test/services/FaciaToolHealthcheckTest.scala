@@ -11,6 +11,6 @@ import scala.concurrent.Await
 
   "Healthchecks" should "pass" in goTo("/"){ _ =>
 
-    Await.result(WS.url(s"http://localhost:${port}/_healthcheck").get(), 10.seconds).status should be (200)
+    Await.result(WS.url(s"http://localhost:$port/_healthcheck").get(), 10.seconds).status should be (200)
   }
 }

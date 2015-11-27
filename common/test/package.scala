@@ -1,12 +1,8 @@
 package test
 
-import java.io.File
-
-import com.gargoylesoftware.htmlunit.BrowserVersion
 import common.ExecutionContexts
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatestplus.play._
-import play.api.GlobalSettings
 import play.api.test._
 
 trait ConfiguredTestSuite extends ConfiguredServer with ConfiguredBrowser with ExecutionContexts {
@@ -43,8 +39,6 @@ trait ConfiguredTestSuite extends ConfiguredServer with ConfiguredBrowser with E
 
 trait SingleServerSuite extends OneServerPerSuite with OneBrowserPerSuite with HtmlUnitFactory {
   this: SingleServerSuite with org.scalatest.Suite =>
-
-  BrowserVersion.setDefault(BrowserVersion.CHROME)
 
   implicit override lazy val app = FakeApplication(
       withGlobal = None,

@@ -1,11 +1,10 @@
 package controllers
 
+import auth.PanDomainAuthActions
 import play.api.mvc.{Action, Controller}
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import play.api.libs.json.Json
-import play.Play
-import auth.PanDomainAuthActions
 
 object PandaAuthController extends Controller with PanDomainAuthActions {
 

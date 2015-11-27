@@ -1,6 +1,7 @@
 package util
 
 import com.gu.facia.client.models.{ConfigJson, FrontJson}
+
 import scala.util.matching.Regex
 
 object SanitizeInput {

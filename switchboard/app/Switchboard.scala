@@ -1,12 +1,12 @@
 package switchboard
 
-import common.ExecutionContexts
-import play.api.{Logger, Application, GlobalSettings}
-import play.api.libs.json.Json
-import scala.concurrent.duration._
-import play.libs.Akka
 import com.amazonaws.auth.AWSCredentials
+import common.ExecutionContexts
 import conf.{Configuration, aws}
+import play.api.{Application, GlobalSettings, Logger}
+import play.libs.Akka
+
+import scala.concurrent.duration._
 
 case class SwitchboardConfiguration (
   bucket: String,

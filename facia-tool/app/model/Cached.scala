@@ -1,13 +1,18 @@
 package model
 
-import org.joda.time.DateTime
-import org.scala_tools.time.Imports._
-import play.api.mvc.{Request, Action, Result}
-import scala.concurrent.Future
-import scala.concurrent.duration.Duration
-import scala.concurrent.ExecutionContext.Implicits.global
+import org.joda.time.format.{DateTimeFormat, ISODateTimeFormat}
+import org.joda.time.{DateTime, DateTimeZone, Period}
+import play.api.mvc.{Action, Request, Result}
 
-object Cached extends implicits.Dates {
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+
+object Cached {
+  private val HTTPDateFormat = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'").withZone(DateTimeZone.UTC)
+  implicit class DateTime2ToCommonDateFormats(date: DateTime) {
+    lazy val toISODateTimeString: String = date.toString(ISODateTimeFormat.dateTime)
+    lazy val toHttpDateTimeString: String = date.toString(HTTPDateFormat)
+  }
 
   private val cacheableStatusCodes = Seq(200, 404)
 
@@ -19,7 +24,7 @@ object Cached extends implicits.Dates {
 
   private def cacheHeaders(seconds: Int, result: Result) = {
     val now = DateTime.now
-    val expiresTime = now + seconds.seconds
+    val expiresTime = now.plus(Period.seconds(seconds))
     val maxAge = seconds
 
     // NOTE, if you change these headers make sure they are compatible with our Edge Cache

@@ -1,10 +1,12 @@
 package common
 
-import org.apache.commons.io.IOUtils
-import java.io.{FileInputStream, File, InputStream}
-import scala.collection.JavaConversions._
+import java.io.{File, FileInputStream, InputStream}
 import java.net.URL
+
 import implicits.AutomaticResourceManagement
+import org.apache.commons.io.IOUtils
+
+import scala.collection.JavaConversions._
 import scala.language.reflectiveCalls
 
 object Properties extends AutomaticResourceManagement {

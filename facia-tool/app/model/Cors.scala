@@ -1,8 +1,7 @@
 package model
 
-import play.api.mvc.{RequestHeader, Results}
-import play.api.mvc.Result
 import conf.Configuration
+import play.api.mvc.{RequestHeader, Result, Results}
 
 object Cors extends Results {
 

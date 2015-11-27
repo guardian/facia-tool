@@ -1,7 +1,7 @@
 package util
 
-import play.api.mvc.AnyContent
 import play.api.libs.json.{Json, Reads}
+import play.api.mvc.AnyContent
 
 object Requests {
   implicit class RichAnyContent(content: AnyContent) {
