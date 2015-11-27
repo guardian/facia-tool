@@ -2,18 +2,16 @@ import _ from 'underscore';
 import parseQueryParams from 'utils/parse-query-params';
 
 function get (override, path, project) {
-    var columns;
-    if (path === 'config') {
-        columns = [{ 'type': 'config' }, { 'type': 'config' }];
-    } else if (project === 'facia-tool') {
-        columns = [{ 'type': 'latest' }, { 'type': 'front' }];
-    } else {
-        columns = [{ 'type': 'latest' }, { 'type': 'front' }, { 'type': 'packages' }];
+
+    if (project === 'packages') {
+        return [{ 'type': 'latest' }, { 'type': 'front' }, { 'type': 'packages' }];
     }
 
-    var queryParams = _.isObject(override) ? _.clone(override) : parseQueryParams(override),
+    var columns = path === 'config' ?
+        [{ 'type': 'config' }, { 'type': 'config' }] :
+        [{ 'type': 'latest' }, { 'type': 'front' }],
+        queryParams = _.isObject(override) ? _.clone(override) : parseQueryParams(override),
         configFromURL = queryParams.layout;
-
 
     if (queryParams.treats === 'please') {
         columns = [{
@@ -36,9 +34,6 @@ function get (override, path, project) {
                 config: parts[1]
             };
         });
-        if (project === 'packages') {
-            columns.push({ 'type': 'packages' });
-        }
     } else if (queryParams.front) {
         columns = path === 'config' ?
         [{ type: 'config', config: queryParams.front }] :
