@@ -28,6 +28,11 @@
         "/>
     </div>
     <div data-bind="foreach: searchedPackages">
-        <div data-bind="text: displayName"></div>
+        <div>
+            <a data-bind="
+                text: displayName,
+                click: $parent.displayPackage"
+            ></a>
+        </div>
     </div>
 </div>

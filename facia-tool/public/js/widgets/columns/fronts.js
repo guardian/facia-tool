@@ -95,6 +95,10 @@ export default class Front extends ColumnWidget {
         this.listenOn(mediator, 'alert:dismiss', () => this.alertFrontIsStale(false));
         this.listenOn(mediator, 'collection:collapse', this.onCollectionCollapse);
 
+        this.listenOn(mediator, 'find:package', (front) => {
+            this.front(front);
+        });
+
         this.subscribeOn(this.column.config, newConfig => {
             if (newConfig !== this.front()) {
                 this.front(newConfig);

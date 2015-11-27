@@ -2,7 +2,7 @@ import ko from 'knockout';
 import _ from 'underscore';
 import ColumnWidget from 'widgets/column-widget';
 import Front from 'models/config/front';
-import Collection from 'models/config/collection';
+import mediator from 'utils/mediator';
 
 export default class Package extends ColumnWidget {
 
@@ -35,6 +35,10 @@ export default class Package extends ColumnWidget {
 
     createPackage() {
         this.creatingPackage(true);
+    }
+
+    displayPackage(chosenPackage) {
+        mediator.emit('find:package', chosenPackage.displayName);
     }
 
     savePackage() {
