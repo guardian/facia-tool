@@ -1,26 +1,33 @@
-<div class="title">
-    Add a package
-    <span data-bind="click: createPackage" class="linky">+</span>
+<div class="modes">
+    <span>Manage packages</span>
 </div>
+<div class="col__inner">
+    <div class="title">
+        add a package
+        <span data-bind="click: createPackage" class="linky">+</span>
+    </div>
 
-<!-- ko if: creatingPackage -->
-Title:
-<input type="text" class="metadata--title" data-bind="
-    textInput: displayName"/>
-<button class="tool tool-save-container" data-bind="
-click: savePackage">Save package</button>
-<!-- /ko -->
-<div class="title">
-    Search
-</div>
-<div class="search-form">
-    <input
-      type="text"
-      placeholder="search for packages"
-      data-bind="
-        textInput: searchTerm
-    "/>
-</div>
-<div data-bind="foreach: searchedPackages">
-    <div data-bind="text: name"></div>
+    <!-- ko if: newFront -->
+    <div class="create-package">
+        <div class="package-input">
+            <label>Title:</label>
+            <input type="text" data-bind="
+                textInput: displayName"/>
+        </div>
+        <button class="tool" data-bind="
+        click: savePackage">save package</button>
+    </div>
+    <!-- /ko -->
+    <div class="search-packages">
+        <input
+          class="package-search-input"
+          type="text"
+          placeholder="search for packages..."
+          data-bind="
+            textInput: searchTerm
+        "/>
+    </div>
+    <div data-bind="foreach: searchedPackages">
+        <div data-bind="text: displayName"></div>
+    </div>
 </div>
