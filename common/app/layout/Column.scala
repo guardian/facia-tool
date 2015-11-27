@@ -1,8 +1,6 @@
 package layout
 
-import cards.{Standard, MediaList, ListItem, CardType}
-import scalaz.syntax.traverse._
-import scalaz.std.option._
+import cards.{CardType, ListItem, MediaList, Standard}
 
 object ItemClasses {
   val showMore = ItemClasses(mobile = ListItem, tablet = ListItem)

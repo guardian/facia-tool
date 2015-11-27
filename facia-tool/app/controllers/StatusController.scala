@@ -1,9 +1,7 @@
 package controllers
 
-import play.api.mvc.{Action, Controller}
 import common.ExecutionContexts
-import scala.concurrent.Future
-import play.Play
+import play.api.mvc.{Action, Controller}
 
 object StatusController extends Controller with ExecutionContexts {
 

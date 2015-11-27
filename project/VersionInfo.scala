@@ -1,10 +1,11 @@
 package com.gu.versioninfo
 
+import java.lang.System
 import java.net.InetAddress
 import java.util.Date
+
+import sbt.Keys._
 import sbt._
-import Keys._
-import java.lang.System
 
 object VersionInfo extends Plugin {
 

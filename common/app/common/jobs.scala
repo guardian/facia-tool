@@ -2,11 +2,12 @@ package common
 
 import java.util.TimeZone
 
-import org.quartz.impl.StdSchedulerFactory
 import org.quartz._
-import scala.collection.mutable
+import org.quartz.impl.StdSchedulerFactory
 import play.api.Play
-import Play.current
+import play.api.Play.current
+
+import scala.collection.mutable
 
 object Jobs extends Logging {
   private val scheduler = StdSchedulerFactory.getDefaultScheduler()

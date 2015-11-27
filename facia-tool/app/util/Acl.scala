@@ -1,12 +1,13 @@
-package utils
+package util
 
-import com.gu.editorial.permissions.client.{PermissionDenied, PermissionGranted, Permission, PermissionsUser}
+import com.gu.editorial.permissions.client.{Permission, PermissionDenied, PermissionGranted, PermissionsUser}
 import permissions.Permissions
 import play.api.Logger
 import play.api.libs.json.{JsBoolean, JsValue, Json, Writes}
 import switchboard.SwitchManager
-import scala.concurrent.Future
+
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 object Authorization {
   implicit val authorizationWrites = new Writes[Authorization] {

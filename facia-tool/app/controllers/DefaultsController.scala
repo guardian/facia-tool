@@ -11,7 +11,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
 import slices.{ContainerJsonConfig, DynamicContainers, FixedContainers}
 import switchboard.SwitchManager
-import utils.{Acl, AclJson}
+import util.{Acl, AclJson}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

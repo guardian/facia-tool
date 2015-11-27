@@ -1,12 +1,12 @@
 package config
 
 import com.gu.facia.client.models.{CollectionConfigJson, ConfigJson, FrontJson}
+import com.gu.pandomainauth.model.User
 import controllers.CreateFront
 import frontsapi.model.UpdateActions
-import services.{IdGeneration, ConfigAgent, S3FrontsApi}
 import play.api.libs.json.Json
+import services.{ConfigAgent, IdGeneration, S3FrontsApi}
 import util.SanitizeInput
-import com.gu.pandomainauth.model.User
 
 object UpdateManager {
   /**

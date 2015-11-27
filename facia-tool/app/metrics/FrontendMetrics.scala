@@ -6,6 +6,7 @@ import akka.agent.Agent
 import com.amazonaws.services.cloudwatch.model.StandardUnit
 import common.AkkaAgent
 import org.joda.time.DateTime
+
 import scala.concurrent.Future
 import scala.util.Try
 

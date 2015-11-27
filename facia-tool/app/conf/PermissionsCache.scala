@@ -2,8 +2,9 @@ package conf
 
 import common.ExecutionContexts
 import permissions.Permissions
-import play.api.{Logger, Application, GlobalSettings}
+import play.api.{Application, GlobalSettings, Logger}
 import play.libs.Akka
+
 import scala.concurrent.duration._
 
 trait PermissionsCache extends GlobalSettings with ExecutionContexts {

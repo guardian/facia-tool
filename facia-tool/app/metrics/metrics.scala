@@ -6,13 +6,13 @@ import java.util.concurrent.atomic.AtomicLong
 
 import com.amazonaws.services.cloudwatch.model.{Dimension, StandardUnit}
 import common.Jobs
+import conf.ManifestData
 import play.Play
 import play.api.{Application => PlayApp, GlobalSettings}
-import conf.ManifestData
 
 import scala.collection.JavaConversions._
 
-object SystemMetrics extends implicits.Numbers {
+object SystemMetrics {
 
   class GcRateMetric(bean: GarbageCollectorMXBean) {
     private val lastGcCount = new AtomicLong(0)
@@ -95,7 +95,7 @@ object SystemMetrics extends implicits.Numbers {
   )
 
   private lazy val buildNumber = ManifestData.build match {
-    case string if string.isInt => string.toInt
+    case string if string.matches("\\d+") => string.toInt
     case _ => -1 // dev machines do not have a build number
   }
 

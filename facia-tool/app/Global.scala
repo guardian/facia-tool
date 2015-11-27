@@ -1,4 +1,4 @@
-import conf.PermissionsCache
+import conf.{Gzipper, PermissionsCache}
 import logging.LogStashConfig
 import metrics.{CloudWatchApplicationMetrics, FaciaToolMetrics, FrontendMetric, S3Metrics}
 import play.api._

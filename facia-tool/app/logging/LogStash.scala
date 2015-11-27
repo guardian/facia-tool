@@ -1,20 +1,25 @@
 package logging
 
 import ch.qos.logback.classic.{Logger => LogbackLogger, LoggerContext}
+import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider
 import com.gu.logback.appender.kinesis.KinesisAppender
+import conf.Configuration
 import net.logstash.logback.encoder.LogstashEncoder
 import net.logstash.logback.layout.LogstashLayout
 import org.slf4j.LoggerFactory
 import play.api.{Logger => PlayLogger, LoggerLike}
-import conf.Configuration
 
 object LogStash {
 
   lazy val loggingContext = LoggerFactory.getILoggerFactory.asInstanceOf[LoggerContext]
 
-  case class KinesisAppenderConfig(stream: String, region: String, roleArn: String, bufferSize: Int)
-
-  lazy val enabled = Configuration.logging.enabled
+  case class KinesisAppenderConfig(
+     stream: String,
+     region: String,
+     roleArn: String,
+     sessionName: String,
+     bufferSize: Int
+  )
 
   lazy val customFields = Map(
       "stack" -> "fronts",
@@ -48,7 +53,9 @@ object LogStash {
     val a = new KinesisAppender()
     a.setStreamName(appenderConfig.stream)
     a.setRegion(appenderConfig.region)
-    a.setRoleToAssumeArn(appenderConfig.roleArn)
+    a.setCredentialsProvider(new STSAssumeRoleSessionCredentialsProvider(
+      appenderConfig.roleArn, appenderConfig.sessionName
+    ))
     a.setBufferSize(appenderConfig.bufferSize)
 
     a.setContext(context)
@@ -60,7 +67,7 @@ object LogStash {
   }
 
   def init() = {
-    if(enabled) {
+    if(Configuration.logging.enabled) {
       PlayLogger.info("LogConfig initializing")
       (for {
         lb <- asLogBack(PlayLogger)
@@ -75,6 +82,7 @@ object LogStash {
             Configuration.logging.stream,
             Configuration.logging.streamRegion,
             Configuration.logging.streamRole,
+            Configuration.environment.project,
             bufferSize
           )
         )

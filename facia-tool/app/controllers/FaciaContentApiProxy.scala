@@ -1,10 +1,11 @@
 package controllers
 
+import java.net.URLEncoder
+
 import akka.actor.ActorSystem
 import auth.PanDomainAuthActions
 import common.ExecutionContexts
 import conf.Configuration
-import implicits.Strings
 import metrics.FaciaToolMetrics
 import model.Cached
 import play.api.Logger
@@ -13,7 +14,11 @@ import play.api.mvc._
 import switchboard.SwitchManager
 import util.ContentUpgrade.rewriteBody
 
-object FaciaContentApiProxy extends Controller with ExecutionContexts with Strings with PanDomainAuthActions with implicits.WSRequests {
+
+object FaciaContentApiProxy extends Controller with ExecutionContexts with PanDomainAuthActions with implicits.WSRequests {
+  implicit class string2encodings(s: String) {
+    lazy val urlEncoded = URLEncoder.encode(s, "utf-8")
+  }
 
   override lazy val actorSystem = ActorSystem()
   import play.api.Play.current
@@ -31,7 +36,7 @@ object FaciaContentApiProxy extends Controller with ExecutionContexts with Strin
 
     val url = s"$contentApiHost/$path?$queryString${Configuration.contentApi.key.map(key => s"&api-key=$key").getOrElse("")}"
 
-    Logger.info("Proxying tag API query to: %s".format(url, request))
+    Logger.info(s"Proxying preview API query to: $url")
 
     WS.url(url).withPreviewAuth.get().map { response =>
       Cached(60) {
@@ -50,7 +55,7 @@ object FaciaContentApiProxy extends Controller with ExecutionContexts with Strin
 
     val url = s"$contentApiHost/$path?$queryString${Configuration.contentApi.key.map(key => s"&api-key=$key").getOrElse("")}"
 
-    Logger.info("Proxying tag API query to: %s".format(url, request))
+    Logger.info(s"Proxying live API query to: $url")
 
     WS.url(url).get().map { response =>
       Cached(60) {
@@ -71,7 +76,7 @@ object FaciaContentApiProxy extends Controller with ExecutionContexts with Strin
 
   def json(url: String) = APIAuthAction.async { request =>
     FaciaToolMetrics.ProxyCount.increment()
-    Logger.info("Proxying json request to: %s".format(url, request))
+    Logger.info(s"Proxying json request to: $url")
 
     WS.url(url).withPreviewAuth.get().map { response =>
       Cached(60) {
@@ -91,7 +96,7 @@ object FaciaContentApiProxy extends Controller with ExecutionContexts with Strin
 
     val url = s"$ophanApiHost/$path?$queryString&$paths&$ophanKey"
 
-    Logger.info("Proxying ophan request to: %s".format(url, request))
+    Logger.info(s"Proxying ophan request to: $url")
 
     WS.url(url).get().map { response =>
       Cached(60) {

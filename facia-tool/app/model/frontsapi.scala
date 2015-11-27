@@ -7,7 +7,7 @@ import conf.Configuration
 import fronts.FrontsApi
 import julienrf.variants.Variants
 import org.joda.time.DateTime
-import play.api.libs.json.{Format, JsString, JsValue, Json}
+import play.api.libs.json._
 import services.ConfigAgent
 import tools.{FaciaApi, FaciaApiIO}
 
@@ -78,7 +78,7 @@ object UpdateList {
 }
 
 object FaciaToolUpdate {
-  implicit val format: Format[FaciaToolUpdate] = Variants.format[FaciaToolUpdate]("type")
+  implicit val format: Format[FaciaToolUpdate] = Variants.format[FaciaToolUpdate]((__ \ "type").format[String])
 }
 
 case class StreamUpdate(update: FaciaToolUpdate, email: String)
@@ -220,7 +220,7 @@ trait UpdateActions extends Logging with ExecutionContexts {
   }
 
   def createCollectionJson(identity: User, update: UpdateList): CollectionJson = {
-    val userName = getUserName(identity);
+    val userName = getUserName(identity)
     if (update.live)
       CollectionJson(List(Trail(update.item, DateTime.now.getMillis, Some(userName), update.itemMeta)), None, None, DateTime.now, userName, identity.email, None, None, None)
     else
@@ -303,7 +303,7 @@ trait UpdateActions extends Logging with ExecutionContexts {
     val updatedTreats = collectionJson.treats.map(_.filterNot(_.id == update.item))
     collectionJson.copy(treats = updatedTreats)}
 
-  private def getUserName(identity: User): String = s"${identity.firstName} ${identity.lastName}";
+  private def getUserName(identity: User): String = s"${identity.firstName} ${identity.lastName}"
 
 }
 

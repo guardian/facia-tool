@@ -5,7 +5,7 @@ import play.api.Logger
 import play.api.mvc._
 import permissions._
 import services.ConfigAgent
-import utils.{Authorization, Acl, AccessGranted, AccessDenied}
+import util.{Authorization, Acl, AccessGranted, AccessDenied}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global

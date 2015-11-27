@@ -1,12 +1,13 @@
 package common
 
-import akka.agent.Agent
-import play.api.libs.concurrent.{Akka => PlayAkka}
-import scala.concurrent.duration._
-import play.api.Play
-import scala.concurrent.ExecutionContext
 import akka.actor.ActorSystem
+import akka.agent.Agent
+import play.api.Play
 import play.api.Play.current
+import play.api.libs.concurrent.{Akka => PlayAkka}
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.duration._
 
 object ExecutionContexts extends ExecutionContexts
 

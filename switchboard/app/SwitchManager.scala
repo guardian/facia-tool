@@ -1,7 +1,7 @@
 package switchboard
 
 import play.api.Logger
-import play.api.libs.json.{Json, JsValue}
+import play.api.libs.json.{JsValue, Json}
 
 object SwitchManager {
 
