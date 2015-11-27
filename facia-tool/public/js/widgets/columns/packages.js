@@ -22,27 +22,26 @@ export default class Package extends ColumnWidget {
     populateAllPackages() {
         var that = this;
         this.allPackages = _.map(this.baseModel.frontsList(), function (front) {
-            return { name: that.baseModel.state().config.collections[front.collections[0]].displayName };
+            return { displayName: that.baseModel.state().config.collections[front.collections[0]].displayName };
         });
     };
 
     search() {
         var lowerCaseSearchTerm = this.searchTerm().toLowerCase().match(/\S+/g);
         this.searchedPackages(_.filter(this.allPackages, function (existingPackage) {
-            return existingPackage.name.toLowerCase().indexOf(lowerCaseSearchTerm) !== -1;
+            return existingPackage.displayName.toLowerCase().indexOf(lowerCaseSearchTerm) !== -1;
         }) );
     }
 
     createPackage() {
-        var front = new Front({priority: this.baseModel.priority, isHidden: false});
-        front.createCollection();
         this.creatingPackage(true);
-        this.storyPackage(front.collections.items()[0]);
-        this.storyPackage().meta.type = 'story-package';
-
     }
 
     savePackage() {
+        var front = new Front({priority: this.baseModel.priority, isHidden: false, id: this.displayName()});
+        front.createCollection();
+        this.storyPackage(front.collections.items()[0]);
+        this.storyPackage().meta.type = 'story-package';
         this.storyPackage().meta.displayName = this.displayName();
         this.storyPackage().save();
         this.creatingPackage(false);

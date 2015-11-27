@@ -7,16 +7,16 @@
         <span data-bind="click: createPackage" class="linky">+</span>
     </div>
 
-    <!-- ko if: newFront -->
-    <div class="create-package">
-        <div class="package-input">
-            <label>Title:</label>
-            <input type="text" data-bind="
-                textInput: displayName"/>
+    <!-- ko if: creatingPackage -->
+        <div class="create-package">
+            <div class="package-input">
+                <label>Title:</label>
+                <input type="text" data-bind="
+                    textInput: displayName"/>
+            </div>
+            <button class="tool" data-bind="
+            click: savePackage">save package</button>
         </div>
-        <button class="tool" data-bind="
-        click: savePackage">save package</button>
-    </div>
     <!-- /ko -->
     <div class="search-packages">
         <input
