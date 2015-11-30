@@ -1,7 +1,6 @@
 package slices
 
 import cards._
-import layout._
 
 sealed trait Slice {
   val layout: SliceLayout

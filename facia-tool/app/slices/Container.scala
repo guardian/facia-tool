@@ -1,9 +1,9 @@
 package slices
 
 import com.gu.facia.api.models.CollectionConfig
-import common.Logging
+import play.api.Logger
 
-object Container extends Logging {
+object Container {
   /** This is THE top level resolver for containers */
   val all: Map[String, Container] = Map(
     ("dynamic/fast", Dynamic(DynamicFast)),
@@ -19,23 +19,12 @@ object Container extends Logging {
   val default = Fixed(FixedContainers.fixedSmallSlowIV)
 
   def resolve(id: String) = all.getOrElse(id, {
-    log.error(s"Could not resolve container id $id, using default container")
+    Logger.error(s"Could not resolve container id $id, using default container")
     default
   })
 
   def fromConfig(collectionConfig: CollectionConfig) =
     resolve(collectionConfig.collectionType)
-
-  def showToggle(container: Container) = container match {
-    case NavList | NavMediaList => false
-    case _ => true
-  }
-
-  def customClasses(container: Container) = container match {
-    case Dynamic(DynamicPackage) => Set("fc-container--story-package")
-    case Fixed(fixedContainer) => fixedContainer.customCssClasses
-    case _ => Nil
-  }
 }
 
 sealed trait Container

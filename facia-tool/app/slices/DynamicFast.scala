@@ -1,7 +1,6 @@
 package slices
 
 import cards.Standard
-import layout.SingleItem
 
 object DynamicFast extends DynamicContainer {
   protected def standardSlices(stories: Seq[Story], firstSlice: Option[Slice]): Seq[Slice] = {

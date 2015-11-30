@@ -1,26 +1,10 @@
-package layout
+package slices
 
-import cards.{CardType, ListItem, MediaList, Standard}
+import cards._
 
-object ItemClasses {
-  val showMore = ItemClasses(mobile = ListItem, tablet = ListItem)
+object ItemClasses {}
+case class ItemClasses(mobile: CardType, tablet: CardType, desktop: Option[CardType] = None) {}
 
-  val liveBlogMore = ItemClasses(mobile = MediaList, tablet = Standard)
-}
-
-case class ItemClasses(mobile: CardType, tablet: CardType, desktop: Option[CardType] = None) {
-  /** Template helper */
-  def classes: String = s"fc-item--${mobile.cssClassName}-mobile fc-item--${tablet.cssClassName}-tablet" +
-    desktop.map(d => s" fc-item--${d.cssClassName}-desktop").getOrElse("")
-
-  def allTypes = Set(mobile, tablet) ++ desktop.toSet
-
-  def showVideoPlayer = allTypes.exists(_.videoPlayer.show)
-  def showVideoEndSlate = allTypes.exists(_.videoPlayer.showEndSlate)
-
-  def showCutOut = allTypes.exists(_.showCutOut)
-  def canShowSlideshow = allTypes.exists(_.canShowSlideshow)
-}
 case class SliceLayout(cssClassName: String, columns: Seq[Column]) {
   def numItems = columns.map(_.numItems).sum
 }
