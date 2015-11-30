@@ -25,6 +25,7 @@ export default class Layout extends BaseClass {
             addColumnTransition: 300
         };
         this.router = router;
+        this.project = project;
         this.baseModel = baseModel;
 
         this.allColumns = widgets;

@@ -13,21 +13,25 @@
 <!-- ko if: authorized -->
 <div class="modes" data-bind="css: frontMode">
     <a class="draft-mode" data-bind="
+        visible: project === 'facia-tool',
         click: setModeDraft,
         css: {active: mode() === 'draft'}">Draft front</a
    ><a class="live-mode" data-bind="
+        visible: project === 'facia-tool',
         click: setModeLive,
         css: {active: mode() === 'live'}">Live front</a
-   ><a class="treats-mode active" data-bind="visible: mode() === 'treats'">Treats</a
-   ><a class="breaking-mode active" data-bind="visible: confirmSendingAlert()">Breaking News</a
+   ><a class="treats-mode active" data-bind="visible: mode() === 'treats' && project === 'facia-tool'">Treats</a
+   ><a class="breaking-mode active" data-bind="visible: confirmSendingAlert() && project === 'facia-tool'">Breaking News</a
+   ><span class="live-mode" data-bind="visible: project === 'packages'">Edit packages</span
    ><a class="preview" target="preview" data-bind="
         attr: { href: previewUrl },
-        visible: front">
+        visible: front && project === 'facia-tool'">
         <span data-bind="if: mode() === 'live'">View live</span>
         <span data-bind="if: mode() === 'draft'">Preview draft</span>
     </a>
     <!-- ko if: front -->
     <a class='performances' target='_blank' data-bind="
+        visible: project === 'facia-tool',
         attr: { href: ophanPerformances },
         click: function() { return true; },
         clickBubble: false

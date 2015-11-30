@@ -20,6 +20,7 @@ export default class Front extends ColumnWidget {
         this.frontAge = ko.observable();
         this.collections = ko.observableArray();
         this.mode = ko.observable(params.mode || 'draft');
+        this.project = params.baseModel.layout.project || 'facia-tool';
         this.flattenGroups = ko.observable(params.mode === 'treats');
         this.maxArticlesInHistory = this.confirmSendingAlert() ? 20 : 5;
         this.controlsVisible = ko.observable(false);
@@ -30,6 +31,8 @@ export default class Front extends ColumnWidget {
         this.subscribeOn(this.baseModel.permissions, () => {
             this.authorized(isAuthorized(this.baseModel, this.front()));
         });
+
+        this.displayOptions = [{name: 'draftView'}, {name: 'liveView'}];
 
         this.setFront = id => this.front(id);
         this.setModeLive = () => this.mode('live');
