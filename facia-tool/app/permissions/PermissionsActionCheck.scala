@@ -1,4 +1,4 @@
-package controllers
+package permissions
 
 import com.gu.pandomainauth.action.UserRequest
 import play.api.Logger

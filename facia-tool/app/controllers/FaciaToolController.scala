@@ -7,6 +7,7 @@ import fronts.FrontsApi
 import frontsapi.model._
 import metrics.FaciaToolMetrics
 import model.{Cached, NoCache}
+import permissions.{BreakingNewsEditCollectionsCheck, ConfigPermissionCheck}
 import play.api.Logger
 import play.api.libs.json._
 import play.api.mvc._

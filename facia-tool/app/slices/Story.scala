@@ -1,11 +1,7 @@
 package slices
 
-import com.gu.facia.api.models.FaciaContent
-import common.Maps._
-import implicits.FaciaContentImplicits._
+import util.Maps._
 import play.api.libs.json.Json
-
-import scala.util.Try
 
 object Story {
   implicit val jsonFormat = Json.format[Story]
@@ -20,14 +16,6 @@ object Story {
         b ++ a
       }
     }
-  }
-
-  def fromFaciaContent(faciaContent: FaciaContent): Story = {
-    Story(
-      /** Stories that are not assigned to a group are treated as standard (0) items */
-      Try(faciaContent.group.toInt).getOrElse(0),
-      faciaContent.properties.exists(_.isBoosted)
-    )
   }
 }
 

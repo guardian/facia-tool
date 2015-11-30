@@ -1,6 +1,5 @@
 package thumbnails
 
-import layout._
 import slices._
 
 case class Rectangle(x: Double, y: Double, width: Double, height: Double)

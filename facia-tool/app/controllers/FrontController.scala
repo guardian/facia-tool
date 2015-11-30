@@ -3,6 +3,7 @@ package controllers
 import auth.PanDomainAuthActions
 import com.gu.facia.client.models.{CollectionConfigJson, FrontJson}
 import config.UpdateManager
+import permissions.ConfigPermissionCheck
 import play.api.libs.json.Json
 import play.api.mvc.Controller
 import services.Press

@@ -2,6 +2,7 @@ package controllers
 
 import auth.PanDomainAuthActions
 import model.NoCache
+import permissions.BreakingNewsPermissionCheck
 import play.mvc.Controller
 
 object VanityRedirects extends Controller with PanDomainAuthActions {
