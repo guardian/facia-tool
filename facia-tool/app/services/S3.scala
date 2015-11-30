@@ -128,19 +128,32 @@ object S3FrontsApi extends S3 {
   def listCollectionIds: List[String] = getCollectionIds(s"$location/collection/")
   def putCollectionJson(id: String, json: String) = {
     val putLocation: String = s"$location/collection/$id/collection.json"
-    putPublic(putLocation, json, "application/json")}
+    if (Configuration.aws.crossAccount)
+      putPublic(putLocation, json, "application/json")
+    else
+      putPrivate(putLocation, json, "application/json")
+  }
 
   def archive(id: String, json: String, identity: User) = {
     val now = DateTime.now
     putPrivate(s"$location/history/collection/${now.year.get}/${"%02d".format(now.monthOfYear.get)}/${"%02d".format(now.dayOfMonth.get)}/$id/${now}.${identity.email}.json", json, "application/json")
   }
 
-  def putMasterConfig(json: String) =
-    putPublic(s"$location/config/config.json", json, "application/json")
+  def putMasterConfig(json: String) = {
+    val putLocation = s"$location/config/config.json"
+    if (Configuration.aws.crossAccount)
+      putPublic(putLocation, json, "application/json")
+    else
+      putPrivate(putLocation, json, "application/json")
+  }
 
   def archiveMasterConfig(json: String, identity: User) = {
     val now = DateTime.now
-    putPublic(s"$location/history/config/${now.year.get}/${"%02d".format(now.monthOfYear.get)}/${"%02d".format(now.dayOfMonth.get)}/${now}.${identity.email}.json", json, "application/json")
+    val putLocation = s"$location/history/config/${now.year.get}/${"%02d".format(now.monthOfYear.get)}/${"%02d".format(now.dayOfMonth.get)}/${now}.${identity.email}.json"
+    if (Configuration.aws.crossAccount)
+      putPublic(putLocation, json, "application/json")
+    else
+      putPrivate(putLocation, json, "application/json")
   }
 
   private def getListing(prefix: String, dropText: String): List[String] = {
