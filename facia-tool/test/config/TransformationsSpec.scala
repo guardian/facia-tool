@@ -1,11 +1,10 @@
 package config
 
-import com.gu.facia.client.models.{ConfigJson => Config, FrontJson => Front, CollectionConfigJson => CollectionConfig}
-import org.scalatest._
+import com.gu.facia.client.models.{CollectionConfigJson => CollectionConfig, ConfigJson => Config, FrontJson => Front}
 import controllers.CreateFront
-import test.ConfiguredTestSuite
+import org.scalatest._
 
-@DoNotDiscover class TransformationsSpec extends FlatSpec with ShouldMatchers with ConfiguredTestSuite {
+@DoNotDiscover class TransformationsSpec extends FlatSpec with ShouldMatchers {
   val collectionFixture = CollectionConfig.withDefaults(
     displayName = Some("New collection"),
     apiQuery = Some("backfill"),

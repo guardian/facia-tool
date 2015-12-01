@@ -1,11 +1,11 @@
 package switchboard
 
 import com.amazonaws.auth.AWSCredentials
-import common.ExecutionContexts
 import conf.{Configuration, aws}
 import play.api.{Application, GlobalSettings, Logger}
 import play.libs.Akka
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
 case class SwitchboardConfiguration (
@@ -14,7 +14,7 @@ case class SwitchboardConfiguration (
   credentials: AWSCredentials
 )
 
-trait Lifecycle extends GlobalSettings with ExecutionContexts {
+trait Lifecycle extends GlobalSettings {
   lazy val client: S3client = new S3client(SwitchboardConfiguration(
     bucket = Configuration.switchBoard.bucket,
     objectKey = Configuration.switchBoard.objectKey,
@@ -23,9 +23,7 @@ trait Lifecycle extends GlobalSettings with ExecutionContexts {
 
   override def onStart(app: Application) {
     super.onStart(app)
-
-    Akka.system.scheduler.schedule(0.seconds, 1.minute) { refreshSwitches() }
-    Akka.system.scheduler.scheduleOnce(1.seconds) { refreshSwitches() }
+    Akka.system.scheduler.schedule(initialDelay = 1.seconds, interval = 1.minute) { refreshSwitches() }
   }
 
   def refreshSwitches() {

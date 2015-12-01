@@ -1,7 +1,6 @@
 package controllers
 
 import auth.PanDomainAuthActions
-import common.Edition
 import conf.Configuration
 import model.Cached
 import permissions.Permissions
@@ -73,7 +72,7 @@ object DefaultsController extends Controller with PanDomainAuthActions {
         Ok(Json.toJson(Defaults(
           Play.isDev,
           Configuration.environment.stage,
-          Edition.all.map(_.id.toLowerCase),
+          Seq("uk", "us", "au"),
           request.user.email,
           request.user.avatarUrl,
           60,

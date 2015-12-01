@@ -1,24 +1,26 @@
 package services
 
+import akka.agent.Agent
 import com.gu.facia.api.models.CollectionConfig
 import com.gu.facia.client.models.{ConfigJson => Config}
-import common._
-import fronts.FrontsApi
-import play.api.{Application, GlobalSettings}
+import play.api.{Application, GlobalSettings, Logger}
+import play.libs.Akka
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.concurrent.duration._
 import scala.util.{Failure, Success}
 
 case class CollectionConfigWithId(id: String, config: CollectionConfig)
 
-trait ConfigAgentTrait extends ExecutionContexts with Logging {
-  private lazy val configAgent = AkkaAgent[Option[Config]](None)
+trait ConfigAgentTrait {
+  private lazy val configAgent = Agent[Option[Config]](None)
 
   def refresh() = {
     val futureConfig = FrontsApi.amazonClient.config
     futureConfig.onComplete {
-      case Success(config) => log.info(s"Successfully got config")
-      case Failure(t) => log.error(s"Getting config failed with $t", t)
+      case Success(config) => Logger.info(s"Successfully got config")
+      case Failure(t) => Logger.error(s"Getting config failed with $t", t)
     }
     futureConfig.map(Option.apply).map(configAgent.send)
   }
@@ -31,7 +33,7 @@ trait ConfigAgentTrait extends ExecutionContexts with Logging {
     FrontsApi.amazonClient.config
       .flatMap(config => configAgent.alter{_ => Option(config)})
       .fallbackTo{
-      log.warn("Falling back to current ConfigAgent contents on refreshAndReturn")
+      Logger.warn("Falling back to current ConfigAgent contents on refreshAndReturn")
       Future.successful(configAgent.get())
     }
 
@@ -59,19 +61,6 @@ trait ConfigAgentLifecycle extends GlobalSettings {
 
   override def onStart(app: Application) {
     super.onStart(app)
-
-    Jobs.deschedule("ConfigAgentJob")
-    Jobs.schedule("ConfigAgentJob", "0 * * * * ?") {
-      ConfigAgent.refresh()
-    }
-
-    AkkaAsync {
-      ConfigAgent.refresh()
-    }
-  }
-
-  override def onStop(app: Application) {
-    Jobs.deschedule("ConfigAgentJob")
-    super.onStop(app)
+    Akka.system.scheduler.schedule(initialDelay = 1.seconds, interval = 1.minute) { ConfigAgent.refresh() }
   }
 }

@@ -53,7 +53,6 @@ trait Prototypes {
   val frontendClientSideSettings = Seq(
 
     TwirlKeys.templateImports ++= Seq(
-      "common._",
       "model._",
       "views._",
       "conf._",
@@ -85,11 +84,11 @@ trait Prototypes {
     concurrentRestrictions in Universal := List(Tags.limit(Tags.All, 1))
   )
 
-  def root() = Project("root", base = file(".")).enablePlugins(play.PlayScala)
+  def root() = Project("root", base = file(".")).enablePlugins(play.sbt.PlayScala)
     .settings(frontendCompilationSettings)
 
   def application(applicationName: String) = {
-    Project(applicationName, file(applicationName)).enablePlugins(play.PlayScala, JDebPackaging)
+    Project(applicationName, file(applicationName)).enablePlugins(play.sbt.PlayScala, JDebPackaging)
     .settings(frontendDependencyManagementSettings)
     .settings(frontendCompilationSettings)
     .settings(frontendClientSideSettings)

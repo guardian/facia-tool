@@ -2,15 +2,15 @@ package frontsapi.model
 
 import com.gu.facia.client.models.{CollectionJson, ConfigJson, Trail, TrailMetaData}
 import com.gu.pandomainauth.model.User
-import common.{ExecutionContexts, Logging}
 import conf.Configuration
-import fronts.FrontsApi
 import julienrf.variants.Variants
 import org.joda.time.DateTime
+import play.api.Logger
 import play.api.libs.json._
-import services.ConfigAgent
+import services.{ConfigAgent, FrontsApi}
 import tools.{FaciaApi, FaciaApiIO}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
 
@@ -87,7 +87,7 @@ object StreamUpdate {
   implicit val streamUpdateFormat: Format[StreamUpdate] = Json.format[StreamUpdate]
 }
 
-trait UpdateActions extends Logging with ExecutionContexts {
+trait UpdateActions {
 
   val collectionCap: Int = Configuration.facia.collectionCap
   implicit val updateListWrite = Json.writes[UpdateList]
@@ -149,7 +149,7 @@ trait UpdateActions extends Logging with ExecutionContexts {
   private def archiveBlock(id: String, collectionJson: CollectionJson, updateJson: JsValue, identity: User): CollectionJson =
     Try(FaciaApiIO.archive(id, collectionJson, updateJson, identity)) match {
       case Failure(t: Throwable) => {
-        log.warn(t.toString)
+        Logger.warn(t.toString)
         collectionJson
       }
       case Success(_) => collectionJson
