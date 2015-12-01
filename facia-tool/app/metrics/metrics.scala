@@ -5,12 +5,14 @@ import java.lang.management.{GarbageCollectorMXBean, ManagementFactory}
 import java.util.concurrent.atomic.AtomicLong
 
 import com.amazonaws.services.cloudwatch.model.{Dimension, StandardUnit}
-import common.Jobs
 import conf.ManifestData
 import play.Play
 import play.api.{Application => PlayApp, GlobalSettings}
+import play.libs.Akka
 
 import scala.collection.JavaConversions._
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
 
 object SystemMetrics {
 
@@ -168,17 +170,8 @@ trait CloudWatchApplicationMetrics extends GlobalSettings {
   }
 
   override def onStart(app: PlayApp) {
-    Jobs.deschedule("ApplicationSystemMetricsJob")
     super.onStart(app)
-
-    Jobs.schedule("ApplicationSystemMetricsJob", "0 * * * * ?"){
-      report()
-    }
-  }
-
-  override def onStop(app: PlayApp) {
-    Jobs.deschedule("ApplicationSystemMetricsJob")
-    super.onStop(app)
+    Akka.system.scheduler.schedule(initialDelay = 1.seconds, interval = 1.minute) { report() }
   }
 
 }

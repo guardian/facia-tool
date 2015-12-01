@@ -1,13 +1,15 @@
 package conf
 
-import java.io.{File, FileInputStream}
+import java.io.{File, FileInputStream, InputStream}
+import java.net.URL
 
-import common.Properties
 import org.apache.commons.io.IOUtils
 import play.api.Play.current
 import play.api.{Configuration => PlayConfiguration, Logger}
 
+import scala.collection.JavaConversions._
 import scala.io.Source
+import scala.language.reflectiveCalls
 
 class BadConfigurationException(msg: String) extends RuntimeException(msg)
 
@@ -127,6 +129,28 @@ object Configuration {
   object switchBoard {
     val bucket = getMandatoryString("switchboard.bucket")
     val objectKey = getMandatoryString("switchboard.object")
+  }
+}
+
+object Properties extends AutomaticResourceManagement {
+  def apply(is: InputStream): Map[String, String] = {
+    val properties = new java.util.Properties()
+    withCloseable(is) { properties load _ }
+    properties.toMap
+  }
+
+  def apply(text: String): Map[String, String] = apply(IOUtils.toInputStream(text))
+  def apply(file: File): Map[String, String] = apply(new FileInputStream(file))
+  def apply(url: URL): Map[String, String] = apply(url.openStream)
+}
+
+trait AutomaticResourceManagement {
+  def withCloseable[T <: { def close() }](closeable: T) = new {
+    def apply[S](body: T => S) = try {
+      body(closeable)
+    } finally {
+      closeable.close()
+    }
   }
 }
 

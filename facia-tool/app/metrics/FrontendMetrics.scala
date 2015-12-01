@@ -4,9 +4,9 @@ import java.util.concurrent.atomic.AtomicLong
 
 import akka.agent.Agent
 import com.amazonaws.services.cloudwatch.model.StandardUnit
-import common.AkkaAgent
 import org.joda.time.DateTime
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.Try
 
@@ -67,7 +67,7 @@ case class CountMetric(name: String, description: String) extends FrontendMetric
 
 case class DurationMetric(name: String, metricUnit: StandardUnit) extends FrontendMetric {
 
-  private val dataPoints: Agent[List[DataPoint]] = AkkaAgent(List[DurationDataPoint]())
+  private val dataPoints: Agent[List[DataPoint]] = Agent(List[DurationDataPoint]())
 
   def getDataPoints: List[DataPoint] = dataPoints.get()
 

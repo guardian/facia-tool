@@ -1,13 +1,13 @@
 package conf
 
-import common.ExecutionContexts
 import permissions.Permissions
 import play.api.{Application, GlobalSettings, Logger}
 import play.libs.Akka
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
-trait PermissionsCache extends GlobalSettings with ExecutionContexts {
+trait PermissionsCache extends GlobalSettings {
   override def onStart(app: Application) {
     super.onStart(app)
     Logger.info("starting permissions cache")

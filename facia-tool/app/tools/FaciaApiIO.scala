@@ -2,13 +2,13 @@ package tools
 
 import com.gu.facia.client.models.{CollectionJson, ConfigJson}
 import com.gu.pandomainauth.model.User
-import common.{ExecutionContexts, Logging}
-import fronts.FrontsApi
 import frontsapi.model.CollectionJsonFunctions
 import org.joda.time.DateTime
+import play.api.Logger
 import play.api.libs.json.{JsValue, _}
-import services.S3FrontsApi
+import services.{FrontsApi, S3FrontsApi}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.Try
 
@@ -24,7 +24,7 @@ trait FaciaApiWrite {
   def archive(id: String, collectionJson: CollectionJson, update: JsValue, identity: User): Unit
 }
 
-object FaciaApiIO extends FaciaApiRead with FaciaApiWrite with ExecutionContexts with Logging {
+object FaciaApiIO extends FaciaApiRead with FaciaApiWrite {
 
   def getSchema = S3FrontsApi.getSchema
 
@@ -51,7 +51,7 @@ object FaciaApiIO extends FaciaApiRead with FaciaApiWrite with ExecutionContexts
     Json.toJson(collectionJson).transform[JsObject](Reads.JsObjectReads) match {
       case JsSuccess(result, _) =>
         S3FrontsApi.archive(id, Json.prettyPrint(result + ("diff", update)), identity)
-      case JsError(errors)  => log.warn(s"Could not archive $id: $errors")}}
+      case JsError(errors)  => Logger.warn(s"Could not archive $id: $errors")}}
 
   def putMasterConfig(config: ConfigJson): Option[ConfigJson] = {
     Try(S3FrontsApi.putMasterConfig(Json.prettyPrint(Json.toJson(config)))).map(_ => config).toOption

@@ -4,18 +4,28 @@ import java.net.URLEncoder
 
 import akka.actor.ActorSystem
 import auth.PanDomainAuthActions
-import common.ExecutionContexts
 import conf.Configuration
 import metrics.FaciaToolMetrics
 import model.Cached
 import play.api.Logger
-import play.api.libs.ws.WS
+import play.api.libs.ws.{WS, WSAuthScheme, WSRequest}
 import play.api.mvc._
 import switchboard.SwitchManager
 import util.ContentUpgrade.rewriteBody
 
+import scala.concurrent.ExecutionContext.Implicits.global
 
-object FaciaContentApiProxy extends Controller with ExecutionContexts with PanDomainAuthActions with implicits.WSRequests {
+
+trait WSRequests {
+
+  implicit class RichWSRequest(wsRequest: WSRequest) {
+
+    def withPreviewAuth: WSRequest = Configuration.contentApi.previewAuth
+      .foldLeft(wsRequest){ case (r, auth) => r.withAuth(auth.user, auth.password, WSAuthScheme.BASIC)}
+  }
+}
+
+object FaciaContentApiProxy extends Controller with PanDomainAuthActions with WSRequests {
   implicit class string2encodings(s: String) {
     lazy val urlEncoded = URLEncoder.encode(s, "utf-8")
   }

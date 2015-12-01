@@ -6,20 +6,20 @@ import com.amazonaws.handlers.AsyncHandler
 import com.amazonaws.regions.{Region, Regions}
 import com.amazonaws.services.kinesis.AmazonKinesisAsyncClient
 import com.amazonaws.services.kinesis.model.{PutRecordRequest, PutRecordResult}
-import common.Logging
 import conf.{Configuration, aws}
 import frontsapi.model.StreamUpdate
+import play.api.Logger
 import play.api.libs.json._
 
-object FaciaToolUpdatesStream extends Logging {
+object FaciaToolUpdatesStream {
   val partitionKey: String = "facia-tool-updates"
 
-  object KinesisLoggingAsyncHandler extends AsyncHandler[PutRecordRequest, PutRecordResult] with Logging {
+  object KinesisLoggingAsyncHandler extends AsyncHandler[PutRecordRequest, PutRecordResult] {
     def onError(exception: Exception) {
-      log.error(s"Kinesis PutRecord request error: ${exception.getMessage}}")
+      Logger.error(s"Kinesis PutRecord request error: ${exception.getMessage}}")
     }
     def onSuccess(request: PutRecordRequest, result: PutRecordResult) {
-      log.info(s"Put diff to stream:${request.getStreamName} Seq:${result.getSequenceNumber}")
+      Logger.info(s"Put diff to stream:${request.getStreamName} Seq:${result.getSequenceNumber}")
     }
   }
 
@@ -36,7 +36,7 @@ object FaciaToolUpdatesStream extends Logging {
   def putStreamUpdate(streamUpdate: StreamUpdate): Unit =
     Json.toJson(streamUpdate.update).transform[JsObject](Reads.JsObjectReads) match {
       case JsSuccess(jsonObject, _)  => putString(Json.stringify(jsonObject + ("email", JsString(streamUpdate.email))))
-      case JsError(errors)           => log.warn(s"Error converting StreamUpdate: $errors")}
+      case JsError(errors)           => Logger.warn(s"Error converting StreamUpdate: $errors")}
 
   private def putString(s: String): Unit =
     Configuration.faciatool.faciaToolUpdatesStream.map { streamName =>
@@ -47,5 +47,5 @@ object FaciaToolUpdatesStream extends Logging {
           .withPartitionKey(partitionKey),
         KinesisLoggingAsyncHandler
       )
-    }.getOrElse(log.warn("Cannot put to facia-tool-stream: faciatool.updates.stream is not set"))
+    }.getOrElse(Logger.warn("Cannot put to facia-tool-stream: faciatool.updates.stream is not set"))
 }

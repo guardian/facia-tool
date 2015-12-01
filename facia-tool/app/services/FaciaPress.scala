@@ -3,10 +3,11 @@ package services
 import com.amazonaws.regions.{Region, Regions}
 import com.amazonaws.services.sqs.AmazonSQSAsyncClient
 import com.amazonaws.services.sqs.model.SendMessageResult
-import common.{ExecutionContexts, JsonMessageQueue, Logging}
 import conf.{Configuration, aws}
 import metrics.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}
+import play.api.Logger
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
@@ -25,7 +26,7 @@ object PressCommand {
   def forOneId(id: String): PressCommand = PressCommand(Set(id))
 }
 
-object FaciaPressQueue extends ExecutionContexts {
+object FaciaPressQueue {
   val maybeQueue = Configuration.faciatool.frontPressToolQueue map { queueUrl =>
     val credentials = aws.mandatoryCrossAccountCredentials
     JsonMessageQueue[PressJob](
@@ -45,7 +46,7 @@ object FaciaPressQueue extends ExecutionContexts {
   }
 }
 
-object FaciaPress extends Logging with ExecutionContexts {
+object FaciaPress {
   def press(pressCommand: PressCommand): Future[List[SendMessageResult]] = {
     ConfigAgent.refreshAndReturn() flatMap { _ =>
       val paths: Set[String] = for {
@@ -59,7 +60,7 @@ object FaciaPress extends Logging with ExecutionContexts {
           fut.onComplete {
             case Failure(error) =>
               EnqueuePressFailure.increment()
-              log.error("Error manually pressing live collection through update from tool", error)
+              Logger.error("Error manually pressing live collection through update from tool", error)
             case Success(_) =>
               EnqueuePressSuccess.increment()
           }
@@ -74,7 +75,7 @@ object FaciaPress extends Logging with ExecutionContexts {
           fut.onComplete {
             case Failure(error) =>
               EnqueuePressFailure.increment()
-              log.error("Error manually pressing live collection through update from tool", error)
+              Logger.error("Error manually pressing live collection through update from tool", error)
             case Success(_) =>
               EnqueuePressSuccess.increment()
           }

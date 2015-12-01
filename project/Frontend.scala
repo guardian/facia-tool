@@ -7,7 +7,7 @@ import sbt._
 
 object Frontend extends Build with Prototypes {
 
-  val common = application("common").settings(
+  val faciaTool = application("facia-tool").settings(
     libraryDependencies ++= Seq(
       awsCore,
       awsCloudwatch,
@@ -27,15 +27,5 @@ object Frontend extends Build with Prototypes {
     )
   )
 
-  def withTests(project: Project) = project % "test->test;compile->compile"
-
-  val commonWithTests = withTests(common)
-
-  val switchboard = application("switchboard").dependsOn(common)
-  val faciaTool = application("facia-tool").dependsOn(commonWithTests, switchboard).aggregate(common)
-
-  val main = root().aggregate(
-    common,
-    faciaTool
-  )
+  val main = root().aggregate(faciaTool)
 }

@@ -1,12 +1,12 @@
-package fronts
+package services
 
 import com.amazonaws.services.s3.AmazonS3Client
 import com.gu.facia.client.{AmazonSdkS3Client, ApiClient}
-import common.ExecutionContexts
 import conf.{Configuration, aws}
-import services.AwsEndpoints
 
-object FrontsApi extends ExecutionContexts {
+import scala.concurrent.ExecutionContext.Implicits.global
+
+object FrontsApi {
   val amazonClient: ApiClient = {
 
     val client = if (Configuration.aws.crossAccount)

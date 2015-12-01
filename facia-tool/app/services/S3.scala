@@ -5,15 +5,15 @@ import com.amazonaws.services.s3.model.CannedAccessControlList.{Private, PublicR
 import com.amazonaws.services.s3.model._
 import com.amazonaws.util.StringInputStream
 import com.gu.pandomainauth.model.User
-import common.Logging
 import conf.{Configuration, aws}
 import metrics.S3Metrics.S3ClientExceptionsMetric
 import org.joda.time.DateTime
 import play.Play
+import play.api.Logger
 
 import scala.io.{Codec, Source}
 
-trait S3 extends Logging {
+trait S3 {
 
   lazy val bucket = Configuration.aws.bucket
 
@@ -48,7 +48,7 @@ trait S3 extends Logging {
       }
     } catch {
       case e: AmazonS3Exception if e.getStatusCode == 404 => {
-        log.warn("not found at %s - %s" format(bucket, key))
+        Logger.warn("not found at %s - %s" format(bucket, key))
         None
       }
       case e: Exception => {
