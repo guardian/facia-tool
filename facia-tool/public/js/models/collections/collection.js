@@ -118,15 +118,6 @@ define([
         this.setPending(true);
         this.loaded = this.load().then(function () { return onDomLoad; });
 
-        var that = this;
-        this.listeners.on('ui:open', function () {
-            setTimeout(function () {
-                that.refreshVisibleStories(true);
-            }, 50);
-        });
-        this.listeners.on('ui:close', function () {
-            that.refreshVisibleStories(true);
-        });
     }
 
     Collection.prototype.setPending = function(asPending) {
@@ -164,9 +155,6 @@ define([
         var collapsed = !this.state.collapsed();
         this.state.collapsed(collapsed);
         this.closeAllArticles();
-        if (!collapsed) {
-            this.refreshVisibleStories(true);
-        }
         mediator.emit('collection:collapse', this, collapsed);
     };
 
@@ -389,7 +377,6 @@ define([
             }
         }
 
-        this.refreshVisibleStories();
         this.setPending(false);
         Promise.all(loading).then(function () {
             mediator.emit('collection:populate', self);
@@ -461,39 +448,12 @@ define([
         });
     };
 
-    Collection.prototype.refreshVisibleStories = function (stale) {
-        if (!this.front.showIndicatorsEnabled()) {
-            return this.state.showIndicators(false);
-        }
-        if (!stale || !this.visibleStories) {
-            this.visibleStories = fetchVisibleStories(
-                this.configMeta.type(),
-                this.groups
-            );
-        }
-        this.visibleStories.then(
-            this.updateVisibleStories.bind(this),
-            this.updateVisibleStories.bind(this, false)
-        );
-    };
-
     Collection.prototype.getTimeAgo = function(date) {
         return date ? humanTime(date) : '';
     };
 
     Collection.prototype.alsoOnToggle = function () {
         this.state.alsoOnVisible(!this.state.alsoOnVisible());
-    };
-
-    Collection.prototype.updateVisibleStories = function (numbers) {
-        var container = this.dom;
-        if (!container || !numbers || this.state.collapsed()) {
-            this.state.showIndicators(false);
-            return;
-        }
-
-        this.state.showIndicators(true);
-        this.visibleCount(numbers);
     };
 
     Collection.prototype.dispose = function () {

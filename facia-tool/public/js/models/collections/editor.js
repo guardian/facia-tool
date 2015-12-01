@@ -84,7 +84,7 @@ export default class Editor extends BaseClass {
     }
 
     notifiyUIOpen(meta) {
-        mediator.emit('ui:open', meta, this.article, this.article.front);
+        mediator.emit('ui:open', meta, this.article, this.article.front, this.article.group.parent);
     }
 
     onUIOpen(meta) {

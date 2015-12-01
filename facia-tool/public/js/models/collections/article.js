@@ -510,10 +510,11 @@ define([
                      .first()
                      .value(),
                     this,
-                    this.front
+                    this.front,
+                    this.group.parent
                 );
             } else {
-                mediator.emit('ui:open', null, null, this.front);
+                mediator.emit('ui:open', null, null, this.front, this.group.parent);
             }
 
             if ($(evt.target).hasClass('allow-default-click')) {
@@ -528,7 +529,7 @@ define([
             }
             mediator.emit('ui:close', {
                 targetGroup: this.group
-            });
+            }, this.group.parent);
         };
 
         Article.prototype.closeAndSave = function() {

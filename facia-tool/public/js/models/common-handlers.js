@@ -68,7 +68,7 @@ ko.bindingHandlers.tabbableFormField = {
                 formField = bindingContext.$rawData;
                 formFields = _.filter(article.editors(), ed => ed.type === 'text' && ed.displayEditor());
                 nextIndex = mod(formFields.indexOf(formField) + (e.shiftKey ? -1 : 1), formFields.length);
-                mediator.emit('ui:open', formFields[nextIndex].meta, article, article.front);
+                mediator.emit('ui:open', formFields[nextIndex].meta, article, article.front, article.group.parent);
             }
         });
     }
