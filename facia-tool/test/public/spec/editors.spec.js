@@ -18,6 +18,7 @@ describe('Editors', function () {
             fields: {},
             state: { enableContentOverrides: ko.observable(true) },
             group: {
+                parentType: 'Collection',
                 parent: {}
             }
         };
