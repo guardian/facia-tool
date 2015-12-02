@@ -24,19 +24,21 @@ export default class extends Extension {
     }
 
     refreshVisibleStories (stale, collection) {
-        if (!collection.front.showIndicatorsEnabled()) {
-            return collection.state.showIndicators(false);
-        }
-        if (!stale || !collection.visibleStories) {
-            collection.visibleStories = fetchVisibleStories(
-                collection.configMeta.type(),
-                collection.groups
+        if (collection) {
+            if (!collection.front.showIndicatorsEnabled()) {
+                return collection.state.showIndicators(false);
+            }
+            if (!stale || !collection.visibleStories) {
+                collection.visibleStories = fetchVisibleStories(
+                    collection.configMeta.type(),
+                    collection.groups
+                );
+            }
+            collection.visibleStories.then(
+                this.updateVisibleStories.bind(this, collection),
+                this.updateVisibleStories.bind(this, collection, false)
             );
         }
-        collection.visibleStories.then(
-            this.updateVisibleStories.bind(this, collection),
-            this.updateVisibleStories.bind(this, collection, false)
-        );
     };
 
     updateVisibleStories (collection, numbers) {
