@@ -19,6 +19,7 @@ define([
     'utils/url-abs-path',
     'utils/url-host',
     'utils/visited-article-storage',
+    'utils/article-collection',
     'modules/copied-article',
     'modules/authed-ajax',
     'modules/content-api',
@@ -46,6 +47,7 @@ define([
         urlAbsPath,
         urlHost,
         visitedArticleStorage,
+        articleCollection,
         copiedArticle,
         authedAjax,
         contentApi,
@@ -64,6 +66,7 @@ define([
         mediator = mediator.default;
         humanTime = humanTime.default;
         visitedArticleStorage = visitedArticleStorage.default;
+        articleCollection = articleCollection.default;
         copiedArticle = copiedArticle.default;
         logger = logger.default;
         Group = Group.default;
@@ -495,6 +498,7 @@ define([
 
             if (this.meta.supporting) { this.meta.supporting.items().forEach(function(sublink) { sublink.close(); }); }
 
+            var collection = articleCollection(this);
             if (!this.state.isOpen()) {
                 if (this.editors().length === 0) {
                     this.editors(metaFields.map(function (field) {
@@ -510,10 +514,11 @@ define([
                      .first()
                      .value(),
                     this,
-                    this.front
+                    this.front,
+                    collection
                 );
             } else {
-                mediator.emit('ui:open', null, null, this.front);
+                mediator.emit('ui:open', null, null, this.front, collection);
             }
 
             if ($(evt.target).hasClass('allow-default-click')) {
@@ -526,9 +531,10 @@ define([
                 this.state.isOpen(false);
                 this.updateEditorsDisplay();
             }
+            var collection = articleCollection(this);
             mediator.emit('ui:close', {
                 targetGroup: this.group
-            });
+            }, collection);
         };
 
         Article.prototype.closeAndSave = function() {

@@ -16,7 +16,11 @@ describe('Editors', function () {
         this.article = {
             meta: {},
             fields: {},
-            state: { enableContentOverrides: ko.observable(true) }
+            state: { enableContentOverrides: ko.observable(true) },
+            group: {
+                parentType: 'Collection',
+                parent: {}
+            }
         };
         all.forEach(field => this.article.meta[field.key] = ko.observable());
         this.editors = all.map(field => Editor.create(field, this.article, all)).filter(Boolean);

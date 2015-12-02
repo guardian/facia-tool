@@ -5,6 +5,7 @@ import alert from 'utils/alert';
 import * as draggableElement from 'utils/draggable-element';
 import mediator from 'utils/mediator';
 import validateImageSrc from 'utils/validate-image-src';
+import articleCollection from 'utils/article-collection';
 
 const rxScriptStriper = new RegExp(/<script.*/gi);
 
@@ -84,7 +85,8 @@ export default class Editor extends BaseClass {
     }
 
     notifiyUIOpen(meta) {
-        mediator.emit('ui:open', meta, this.article, this.article.front);
+        var collection = articleCollection(this.article);
+        mediator.emit('ui:open', meta, this.article, this.article.front, collection);
     }
 
     onUIOpen(meta) {
