@@ -67,7 +67,6 @@ define([
         };
 
         this.visibleStories = null;
-        this.visibleCount = ko.observable({});
 
         this.listeners = mediator.scope();
 
@@ -99,7 +98,8 @@ define([
             'alsoOnVisible',
             'showIndicators',
             'hasExtraActions',
-            'isHistoryOpen']);
+            'isHistoryOpen',
+            'visibleCount']);
 
         this.itemDefaults = _.reduce({
             showTags: 'showKickerTag',
@@ -117,6 +117,7 @@ define([
 
         this.setPending(true);
         this.loaded = this.load().then(function () { return onDomLoad; });
+        this.state.visibleCount({});
 
     }
 
@@ -469,7 +470,7 @@ define([
     ko.bindingHandlers.indicatorHeight = {
         update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
             var target = ko.unwrap(valueAccessor()),
-                numbers = bindingContext.$data.visibleCount(),
+                numbers = bindingContext.$data.state.visibleCount(),
                 container = bindingContext.$data.dom,
                 top, bottomElementPosition, bottomElement, bottom, height;
 

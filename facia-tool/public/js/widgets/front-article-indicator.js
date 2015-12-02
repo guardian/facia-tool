@@ -47,7 +47,7 @@ export default class extends Extension {
         }
 
         collection.state.showIndicators(true);
-        collection.visibleCount(numbers);
+        collection.state.visibleCount(numbers);
     };
 }
 
