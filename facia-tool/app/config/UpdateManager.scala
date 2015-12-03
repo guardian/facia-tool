@@ -2,10 +2,10 @@ package config
 
 import com.gu.facia.client.models.{CollectionConfigJson, ConfigJson, FrontJson}
 import com.gu.pandomainauth.model.User
-import controllers.CreateFront
 import frontsapi.model.UpdateActions
 import play.api.libs.json.Json
 import services.{ConfigAgent, IdGeneration, S3FrontsApi}
+import updates.CreateFront
 import util.SanitizeInput
 
 object UpdateManager {
@@ -22,7 +22,7 @@ object UpdateManager {
    * @param transform The transformation to apply
    */
   private def transformConfig(transform: ConfigJson => ConfigJson, identity: User): Unit = {
-    S3FrontsApi.getMasterConfig map { configString =>
+    S3FrontsApi.getMasterConfig foreach { configString =>
       val configJson = Json.parse(configString)
       val config = configJson.asOpt[ConfigJson] getOrElse {
         throw new RuntimeException(s"Unable to de-serialize config from S3: $configJson")

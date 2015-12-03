@@ -221,6 +221,43 @@
                 "Roles": [{ "Ref": "DistributionRole" }]
             }
         },
+        "UpdatesStreamPolicy": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "UpdatesStreamPolicy",
+                "PolicyDocument": {
+                    "Version" : "2012-10-17",
+                    "Statement": [{
+                        "Effect": "Allow",
+                        "Action": [
+                            "kinesis:*"
+                        ],
+                        "Resource": { "Fn::Join" : [ "", [ "arn:aws:kinesis:", { "Ref": "AWS::Region" }, ":", { "Ref": "AWS::AccountId" }, ":stream/", { "Ref": "KinesisUpdateStream" } ]]}
+                    } ]
+                },
+                "Roles": [{ "Ref": "DistributionRole" }]
+            }
+        },
+        "StoryPackagesPolicy": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "StoryPackagesPolicy",
+                "PolicyDocument": {
+                    "Version" : "2012-10-17",
+                    "Statement": [{
+                        "Effect": "Allow",
+                        "Action": [
+                            "s3:GetObject",
+                            "s3:PutObject",
+                            "s3:PutObjectAcl",
+                            "s3:ListBucket"
+                        ],
+                        "Resource": "arn:aws:s3:::story-packages-store/*"
+                    } ]
+                },
+                "Roles": [{ "Ref": "DistributionRole" }]
+            }
+        },
         "SSHSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
             "Properties": {
@@ -387,6 +424,12 @@
                 ]
             }
         },
+        "KinesisUpdateStream": {
+            "Type": "AWS::Kinesis::Stream",
+            "Properties": {
+                "ShardCount": 1
+            }
+        },
         "FaciaLaunchConfig": {
             "Type": "AWS::AutoScaling::LaunchConfiguration",
             "Metadata": {
@@ -429,7 +472,8 @@
                                 "content": { "Fn::Join" : ["", [
                                     "STAGE=", { "Ref" : "Stage" }, "\n",
                                     "PROJECT=", { "Ref" : "Project" }, "\n",
-                                    "STS_ROLE=", { "Ref" : "FrontendRoleToAssume" }, "\n"
+                                    "STS_ROLE=", { "Ref" : "FrontendRoleToAssume" }, "\n",
+                                    "STREAM=", { "Ref" : "KinesisUpdateStream" }, "\n"
                                 ]]}
                             }
                         }
@@ -438,23 +482,17 @@
             },
             "Properties": {
                 "KeyName": "fronts",
-                "ImageId": "ami-b63ee1c5",
+                "ImageId": "ami-ddd87dae",
                 "InstanceType": {
                     "Fn::FindInMap": [
                         "StageMap",
-                        {
-                            "Ref": "Stage"
-                        },
+                        { "Ref": "Stage" },
                         "InstanceType"
                     ]
                 },
                 "SecurityGroups": [
-                    {
-                        "Ref": "AppServerSecurityGroup"
-                    },
-                    {
-                        "Ref": "SSHSecurityGroup"
-                    }
+                    { "Ref": "AppServerSecurityGroup" },
+                    { "Ref": "SSHSecurityGroup" }
                 ],
                 "IamInstanceProfile": {
                     "Ref": "DistributionInstanceProfile"
@@ -466,14 +504,10 @@
                             [
                                 "#!/bin/bash -ev\n",
                                 "cfn-init -s ",
-                                {
-                                    "Ref": "AWS::StackId"
-                                },
+                                { "Ref": "AWS::StackId" },
                                 " -r FaciaLaunchConfig ",
                                 "  --region ",
-                                {
-                                    "Ref": "AWS::Region"
-                                },
+                                { "Ref": "AWS::Region" },
                                 " || error_exit 'Failed to run cfn-init'\n",
 
                                 "dpkg -i /home/facia-tool/facia-tool.all.deb"
@@ -492,6 +526,12 @@
                     "FaciaLoadBalancer",
                     "DNSName"
                 ]
+            }
+        },
+        "UpdateStream": {
+            "Description": "Kinesis stream with stream updates",
+            "Value": {
+                "Ref": "KinesisUpdateStream"
             }
         }
     }

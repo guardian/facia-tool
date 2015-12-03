@@ -1,7 +1,7 @@
 package config
 
 import com.gu.facia.client.models.{CollectionConfigJson => CollectionConfig, ConfigJson => Config, FrontJson => Front}
-import controllers.CreateFront
+import updates.CreateFront
 import org.scalatest._
 
 @DoNotDiscover class TransformationsSpec extends FlatSpec with ShouldMatchers {
