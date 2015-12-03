@@ -1,13 +1,14 @@
 package controllers
 
-import com.gu.facia.client.models.CollectionConfigJson
-import services.Press
-import util.Requests._
-import play.api.mvc.Controller
-import config.UpdateManager
-import play.api.libs.json.Json
 import auth.PanDomainAuthActions
+import com.gu.facia.client.models.CollectionConfigJson
+import config.UpdateManager
 import permissions.ConfigPermissionCheck
+import play.api.libs.json.Json
+import play.api.mvc.Controller
+import services.Press
+import updates.{CollectionCreate, CollectionUpdate, StreamUpdate, UpdatesStream}
+import util.Requests._
 
 object CollectionRequest {
   implicit val jsonFormat = Json.format[CollectionRequest]
@@ -31,6 +32,7 @@ object CollectionController extends Controller with PanDomainAuthActions {
         val identity = request.user
         val collectionId = UpdateManager.addCollection(frontIds, collection, identity)
         Press.fromSetOfIdsWithForceConfig(Set(collectionId))
+        UpdatesStream.putStreamUpdate(StreamUpdate(CollectionCreate(frontIds, collection), identity.email))
         Ok(Json.toJson(CreateCollectionResponse(collectionId)))
 
       case None => BadRequest
@@ -43,6 +45,7 @@ object CollectionController extends Controller with PanDomainAuthActions {
         val identity = request.user
         UpdateManager.updateCollection(collectionId, frontIds, collection, identity)
         Press.fromSetOfIdsWithForceConfig(Set(collectionId))
+        UpdatesStream.putStreamUpdate(StreamUpdate(CollectionUpdate(frontIds, collection), identity.email))
         Ok
 
       case None => BadRequest

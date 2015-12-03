@@ -101,7 +101,6 @@ object Configuration {
   object faciatool {
     lazy val frontPressToolQueue = getString("frontpress.sqs.tool_queue_url")
     lazy val showTestContainers = getBoolean("faciatool.show_test_containers").getOrElse(false)
-    lazy val faciaToolUpdatesStream: Option[String] = getString("faciatool.updates.stream")
     lazy val stsRoleToAssume = getString("faciatool.sts.role.to.assume").getOrElse(stsRoleToAssumeFromProperties)
   }
 
@@ -129,6 +128,10 @@ object Configuration {
   object switchBoard {
     val bucket = getMandatoryString("switchboard.bucket")
     val objectKey = getMandatoryString("switchboard.object")
+  }
+
+  object updates {
+    lazy val stream: Option[String] = properties.get("STREAM")
   }
 }
 

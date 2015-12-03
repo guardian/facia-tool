@@ -1,7 +1,7 @@
 package config
 
 import com.gu.facia.client.models.{CollectionConfigJson => CollectionConfig, ConfigJson, FrontJson => Front}
-import controllers.CreateFront
+import updates.CreateFront
 
 object Transformations {
   /** The Config ought never to contain empty fronts or collections that do not belong to any fronts */

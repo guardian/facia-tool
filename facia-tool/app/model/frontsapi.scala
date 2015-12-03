@@ -1,6 +1,6 @@
 package frontsapi.model
 
-import com.gu.facia.client.models.{CollectionJson, ConfigJson, Trail, TrailMetaData}
+import com.gu.facia.client.models._
 import com.gu.pandomainauth.model.User
 import conf.Configuration
 import julienrf.variants.Variants
@@ -9,6 +9,7 @@ import play.api.Logger
 import play.api.libs.json._
 import services.{ConfigAgent, FrontsApi}
 import tools.{FaciaApi, FaciaApiIO}
+import updates.UpdateList
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -51,40 +52,6 @@ object CollectionJsonFunctions {
       .map(_.take(20))
     collectionJson.copy(previously=updatedPreviously)
   }
-}
-
-sealed trait FaciaToolUpdate
-
-case class UpdateList(
-  id: String,
-  item: String,
-  position: Option[String],
-  after: Option[Boolean],
-  itemMeta: Option[TrailMetaData],
-  live: Boolean,
-  draft: Boolean
-) extends FaciaToolUpdate
-
-case class Update(update: UpdateList) extends FaciaToolUpdate
-case class Remove(remove: UpdateList) extends FaciaToolUpdate
-
-case class UpdateAndRemove(update: UpdateList, remove: UpdateList) extends FaciaToolUpdate
-
-case class DiscardUpdate(id: String) extends FaciaToolUpdate
-case class PublishUpdate(id: String) extends FaciaToolUpdate
-
-object UpdateList {
-  implicit val format: Format[UpdateList] = Json.format[UpdateList]
-}
-
-object FaciaToolUpdate {
-  implicit val format: Format[FaciaToolUpdate] = Variants.format[FaciaToolUpdate]((__ \ "type").format[String])
-}
-
-case class StreamUpdate(update: FaciaToolUpdate, email: String)
-
-object StreamUpdate {
-  implicit val streamUpdateFormat: Format[StreamUpdate] = Json.format[StreamUpdate]
 }
 
 trait UpdateActions {

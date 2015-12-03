@@ -1,4 +1,4 @@
-package services
+package updates
 
 import java.nio.ByteBuffer
 
@@ -7,11 +7,10 @@ import com.amazonaws.regions.{Region, Regions}
 import com.amazonaws.services.kinesis.AmazonKinesisAsyncClient
 import com.amazonaws.services.kinesis.model.{PutRecordRequest, PutRecordResult}
 import conf.{Configuration, aws}
-import frontsapi.model.StreamUpdate
 import play.api.Logger
 import play.api.libs.json._
 
-object FaciaToolUpdatesStream {
+object AuditingUpdates {
   val partitionKey: String = "facia-tool-updates"
 
   object KinesisLoggingAsyncHandler extends AsyncHandler[PutRecordRequest, PutRecordResult] {
@@ -24,22 +23,22 @@ object FaciaToolUpdatesStream {
   }
 
   val client: AmazonKinesisAsyncClient = {
-    val c = if (Configuration.aws.crossAccount)
-      new AmazonKinesisAsyncClient(aws.mandatoryCrossAccountCredentials)
-    else
-      new AmazonKinesisAsyncClient(aws.mandatoryCredentials)
-
+    val c = new AmazonKinesisAsyncClient(aws.mandatoryCredentials)
     c.setRegion(Region.getRegion(Regions.EU_WEST_1))
     c
   }
 
   def putStreamUpdate(streamUpdate: StreamUpdate): Unit =
     Json.toJson(streamUpdate.update).transform[JsObject](Reads.JsObjectReads) match {
-      case JsSuccess(jsonObject, _)  => putString(Json.stringify(jsonObject + ("email", JsString(streamUpdate.email))))
+      case JsSuccess(jsonObject, _)  => putString(Json.stringify(jsonObject +
+        ("email", JsString(streamUpdate.email)) +
+        ("fronts", JsArray(streamUpdate.fronts.map(f => JsString(f)).toSeq)) +
+        ("date", JsString(streamUpdate.dateTime.toString))
+      ))
       case JsError(errors)           => Logger.warn(s"Error converting StreamUpdate: $errors")}
 
   private def putString(s: String): Unit =
-    Configuration.faciatool.faciaToolUpdatesStream.map { streamName =>
+    Configuration.updates.stream.map { streamName =>
       client.putRecordAsync(
         new PutRecordRequest()
           .withData(ByteBuffer.wrap(s.getBytes))
@@ -47,5 +46,5 @@ object FaciaToolUpdatesStream {
           .withPartitionKey(partitionKey),
         KinesisLoggingAsyncHandler
       )
-    }.getOrElse(Logger.warn("Cannot put to facia-tool-stream: faciatool.updates.stream is not set"))
+    }.getOrElse(Logger.warn("Cannot put to updates stream: Configuration.updates.stream is not set"))
 }
