@@ -10,6 +10,7 @@ import BaseClass from 'models/base-class';
 import Column from 'models/layout/column';
 import copiedArticle from 'modules/copied-article';
 import * as layoutFromURL from 'utils/layout-from-url';
+import * as vars from 'modules/vars';
 
 function columnDataOf (type, columns) {
     return _.find(columns, col => {
@@ -18,12 +19,13 @@ function columnDataOf (type, columns) {
 }
 
 export default class Layout extends BaseClass {
-    constructor(router, widgets, baseModel) {
+    constructor(router, widgets, baseModel, project) {
         super();
         this.CONST = {
             addColumnTransition: 300
         };
         this.router = router;
+        this.project = project;
         this.baseModel = baseModel;
 
         this.allColumns = widgets;
@@ -41,7 +43,7 @@ export default class Layout extends BaseClass {
         };
         this.savedLayout = null;
 
-        this.loaded = this.initializeFromLocation();
+        this.loaded = this.initializeFromLocation(project);
 
         this.subscribeOn(this.configVisible, this.locationChange);
         this.listenOn(router, 'change', this.locationChange);
@@ -51,8 +53,8 @@ export default class Layout extends BaseClass {
         this.initializeFromLocation().then(this.recomputeAllWidths.bind(this));
     }
 
-    initializeFromLocation() {
-        var layout = layoutFromURL.get(this.router.params, this.router.path);
+    initializeFromLocation(project) {
+        var layout = layoutFromURL.get(this.router.params, this.router.path, project);
         if (_.isEqual(layout, this.savedLayout)) {
             return Promise.resolve();
         } else {

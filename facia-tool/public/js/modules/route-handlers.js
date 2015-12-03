@@ -17,7 +17,8 @@ export default {
         columns.frontsTrail,
         columns.frontsTreats,
         columns.latestTrail,
-        columns.clipboardTrail
+        columns.clipboardTrail,
+        columns.packages
     ], [
         extensions.detectPressStale,
         extensions.copyPasteArticles,

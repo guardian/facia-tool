@@ -32,5 +32,10 @@ export default {
         title: 'Search',
         layoutType: 'search',
         widget: 'fronts-search-widget'
+    },
+    'packages': {
+        title: 'Packages',
+        layoutType: 'packages',
+        widget: 'packages-widget'
     }
 };

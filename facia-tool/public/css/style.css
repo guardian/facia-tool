@@ -696,6 +696,16 @@ h1 {
     transition: background-color 0.2s;
 }
 
+.modes span {
+    box-sizing: border-box;
+    display: inline-block;
+    height: 35px;
+    color: #999999;
+    padding: 8px 16px;
+    text-align: center;
+    font-size: 14px;
+}
+
 .modes a:hover {
    background: #cccccc;
    color: #ffffff;
@@ -2139,3 +2149,25 @@ hr {
 .unauthorizedMessage_link {
     color: #2ea3eb;
 }
+
+input.package-search-input {
+    height: 30px;
+    border-radius: 4px;
+}
+
+.search-packages {
+    margin-top: 15px;
+}
+
+.create-package {
+    padding-top: 7px;
+}
+
+.package-input {
+    padding-bottom: 4px;
+}
+
+.create-package > button.tool {
+    background: #2ea3eb;
+}
+

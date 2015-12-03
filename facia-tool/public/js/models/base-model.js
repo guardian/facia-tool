@@ -18,7 +18,7 @@ export default class BaseModel extends BaseClass {
     constructor(enabledWidgets, extensions, router, res) {
         super();
 
-        var layout = new Layout(router, enabledWidgets, this);
+        var layout = new Layout(router, enabledWidgets, this, res.defaults.project);
 
         this.title = ko.observable('fronts');
         this.layout = layout;

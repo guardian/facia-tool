@@ -1,7 +1,12 @@
 import _ from 'underscore';
 import parseQueryParams from 'utils/parse-query-params';
 
-function get (override, path) {
+function get (override, path, project) {
+
+    if (project === 'packages') {
+        return [{ 'type': 'latest' }, { 'type': 'front' }, { 'type': 'packages' }];
+    }
+
     var columns = path === 'config' ?
         [{ 'type': 'config' }, { 'type': 'config' }] :
         [{ 'type': 'latest' }, { 'type': 'front' }],

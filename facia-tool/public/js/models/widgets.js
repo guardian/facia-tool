@@ -104,6 +104,10 @@ var register = _.once(() => {
         viewModel: { jspm: 'widgets/columns/fronts-search' },
         template: { text: 'widgets/columns/fronts-search.html' }
     });
+    ko.components.register('packages-widget', {
+        viewModel: { jspm: 'widgets/columns/packages' },
+        template: { text: 'widgets/columns/packages.html' }
+    });
     ko.components.register('fronts-config-widget', {
         viewModel: { jspm: 'widgets/columns/fronts-config' },
         template: { text: 'widgets/columns/fronts-config.html' }
