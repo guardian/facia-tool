@@ -1,15 +1,16 @@
 package com.gu
 
-import com.gu.Dependencies._
 import com.gu.versioninfo.VersionInfo
 import com.typesafe.sbt.SbtNativePackager._
 import com.typesafe.sbt.packager.Keys._
+import com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd
 import com.typesafe.sbt.packager.debian.JDebPackaging
+import play.sbt.Play.autoImport._
 import play.twirl.sbt.Import._
 import sbt.Keys._
 import sbt._
 
-trait Prototypes {
+object Application extends Build {
 
   val frontendCompilationSettings = Seq(
     organization := "com.gu",
@@ -24,10 +25,33 @@ trait Prototypes {
       val _ = initialize.value
       assert(sys.props("java.specification.version") == "1.8",
         "Java 8 is required for this project.")
-    }
+    },
+    javaOptions in Universal ++= Seq(
+      "-Dpidfile.path=/dev/null",
+      "-J-XX:MaxRAMFraction=2",
+      "-J-XX:InitialRAMFraction=2",
+      "-J-XX:MaxMetaspaceSize=500m",
+      "-J-XX:+PrintGCDetails",
+      "-J-XX:+PrintGCDateStamps",
+      s"-J-Xloggc:/var/log/${packageName.value}/gc.log"
+    ),
+    version := "1.0",
+    licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0.html"))
   )
 
-  val frontendDependencyManagementSettings = Seq(
+  val faciaToolDescription = Seq(
+    name := "facia-tool",
+    packageSummary := "Facia tool",
+    packageDescription := "Guardian front pages editor"
+  )
+
+  val storyPackagesDescription = Seq(
+    name := "story-packages",
+    packageSummary := "Story packages",
+    packageDescription := "Guardian story packages editor"
+  )
+
+  val dependencyManagementSettings = Seq(
     ivyXML :=
       <dependencies>
         <exclude org="commons-logging"><!-- Conflicts with jcl-over-slf4j in Play. --></exclude>
@@ -50,7 +74,7 @@ trait Prototypes {
       .withWarnScalaVersionEviction(false)
   )
 
-  val frontendClientSideSettings = Seq(
+  val clientSideSettings = Seq(
 
     TwirlKeys.templateImports ++= Seq(
       "model._",
@@ -61,7 +85,7 @@ trait Prototypes {
     )
   )
 
-  val frontendTestSettings = Seq(
+  val testSettings = Seq(
     // Use ScalaTest https://groups.google.com/d/topic/play-framework/rZBfNoGtC0M/discussion
     testOptions in Test := Nil,
 
@@ -79,22 +103,27 @@ trait Prototypes {
   )
 
   def frontendDistSettings(application: String) = List(
+    target := file("target/" + application).getAbsoluteFile,
     name in Universal := application,
     topLevelDirectory in Universal := Some(application),
-    concurrentRestrictions in Universal := List(Tags.limit(Tags.All, 1))
+    concurrentRestrictions in Universal := List(Tags.limit(Tags.All, 1)),
+    serverLoading in Debian := Systemd,
+    debianPackageDependencies := Seq("openjdk-8-jre-headless")
   )
 
-  def root() = Project("root", base = file(".")).enablePlugins(play.sbt.PlayScala)
+  def project(name: String) = Project(name, base = file("facia-tool"))
+    .enablePlugins(play.sbt.PlayScala, JDebPackaging)
+    .settings(dependencyManagementSettings)
     .settings(frontendCompilationSettings)
-
-  def application(applicationName: String) = {
-    Project(applicationName, file(applicationName)).enablePlugins(play.sbt.PlayScala, JDebPackaging)
-    .settings(frontendDependencyManagementSettings)
-    .settings(frontendCompilationSettings)
-    .settings(frontendClientSideSettings)
-    .settings(frontendTestSettings)
+    .settings(clientSideSettings)
+    .settings(libraryDependencies
+      ++= Dependencies.all
+      ++ Seq(ws, filters)
+    )
+    .settings(testSettings)
     .settings(VersionInfo.settings)
-    .settings(libraryDependencies ++= Seq(commonsIo))
-    .settings(frontendDistSettings(applicationName))
-  }
+    .settings(frontendDistSettings(name))
+
+  val faciaTool = project("facia-tool").settings(faciaToolDescription)
+  val storyPackages = project("packages").settings(storyPackagesDescription)
 }
