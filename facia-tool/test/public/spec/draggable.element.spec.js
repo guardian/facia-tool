@@ -1,4 +1,5 @@
 import * as draggable from 'utils/draggable-element';
+import images from 'test/utils/images';
 
 describe('Draggable element', function () {
     function getSource(media, text, sourceItem) {
@@ -14,16 +15,23 @@ describe('Draggable element', function () {
             }
         };
     }
+    beforeEach(function () {
+        images.setup();
+        images.setModel();
+    });
+    afterEach(function () {
+        images.dispose();
+    });
 
     describe('getMediaItem', function () {
         it('ignore empty items', function () {
             var source = getSource();
-            expect(draggable.getMediaItem(source)).toBe('');
+            expect(draggable.getMediaItem(source)).toBeUndefined();
         });
 
-        it('throws on non JSON data', function () {
+        it('ignores non JSON data', function () {
             var source = getSource('banana');
-            expect(draggable.getMediaItem.bind(draggable, source)).toThrowError(/understood/);
+            expect(draggable.getMediaItem(source)).toBeUndefined();
         });
 
         it('throws when there\'s no crop', function () {

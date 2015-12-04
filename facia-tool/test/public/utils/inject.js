@@ -12,7 +12,7 @@ export default function inject (html) {
     const DOM_ID = 'test_dom_' + Math.round(Math.random() * 10000);
 
     document.body.innerHTML += `
-        <div id="${DOM_ID}">
+        <div id="${DOM_ID}" class="mainFlexContainer">
             ${html}
         </div>
     `;

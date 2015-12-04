@@ -1,77 +1,61 @@
-import $ from 'jquery';
-import CollectionsLoader from 'test/utils/collections-loader';
-import * as dom from 'test/utils/dom-nodes';
+import Page from 'test/utils/page';
 import * as wait from 'test/utils/wait';
 import {CONST} from 'modules/vars';
 
 describe('Visited articles', function () {
-    beforeEach(function () {
-        this.testInstance = new CollectionsLoader();
+    beforeEach(function (done) {
+        this.originalDetectPendingChangesInClipboard = CONST.detectPendingChangesInClipboard;
+        CONST.detectPendingChangesInClipboard = 300;
+        this.testPage = new Page('/test?layout=latest,front:uk', {}, done);
     });
-    afterEach(function () {
-        this.testInstance.dispose();
-        localStorage.clear();
+    afterEach(function (done) {
+        CONST.detectPendingChangesInClipboard = this.originalDetectPendingChangesInClipboard;
+        this.testPage.dispose(done);
     });
-    function opacity (node) {
-        return Number($(node).css('opacity'));
-    }
 
     it('marks an article visited from visited articles list as visited', function (done) {
-        this.testInstance.load()
-        .then(() => {
-            $('.tool--small--copy-to-clipboard', dom.latestArticle(1)).click();
-        })
-        .then(() => {
-            $('.tool--small--href', dom.latestArticle(1)).click();
-        })
-        .then(() => {
-            expect(opacity(dom.latestArticle(1))).toBeCloseTo(0.6, 2);
-            expect(opacity($('.element__headline', dom.collection(0)))).toBeCloseTo(1);
-            expect(opacity('.clipboard .article')).toBeCloseTo(1);
+        this.testPage.regions.latest().trail(1).copyToClipboard()
+        .then(trail => trail.openLink())
+        .then(trailInLatest => {
+            const trailInFirstCollection = this.testPage.regions.front().collection(1).group(1).trail(1);
+            const trailInClipboard = this.testPage.regions.clipboard().trail(1);
+
+            expect(trailInLatest.opacity()).toBeCloseTo(0.6, 2);
+            expect(trailInFirstCollection.opacity()).toBeCloseTo(1);
+            expect(trailInClipboard.opacity()).toBeCloseTo(1);
         })
         .then(done)
         .catch(done.fail);
     });
 
     it('marks an article visited from clipboard as visited in visited articles list', function (done) {
-        this.testInstance.load()
-        .then(() => {
-            $('.tool--small--copy-to-clipboard', dom.latestArticle(1)).click();
-        })
-        .then(() => {
-            $('.clipboard .tool--small--href').click();
-        })
-        .then(() => {
-            expect(opacity((dom.latestArticle(1)))).toBeCloseTo(0.6);
-            expect(opacity($('.element__headline', dom.collection(0)))).toBeCloseTo(1);
-            expect(opacity(('.clipboard .article'))).toBeCloseTo(1);
+        this.testPage.regions.latest().trail(1).copyToClipboard()
+        .then(() => this.testPage.regions.clipboard().trail(1).openLink())
+        .then(trailInClipboard => {
+            const trailInFirstCollection = this.testPage.regions.front().collection(1).group(1).trail(1);
+            const trailInLatest = this.testPage.regions.latest().trail(1);
+
+            expect(trailInLatest.opacity()).toBeCloseTo(0.6);
+            expect(trailInFirstCollection.opacity()).toBeCloseTo(1);
+            expect(trailInClipboard.opacity()).toBeCloseTo(1);
         })
         .then(done)
         .catch(done.fail);
     });
 
     it('displays article as visited after redrawing data', function (done) {
-
-        var originalDetectPendingChangesInClipboard= CONST.detectPendingChangesInClipboard;
-        CONST.detectPendingChangesInClipboard = 300;
-        this.testInstance.load()
-        .then(() => {
-            $('.tool--small--copy-to-clipboard', dom.latestArticle(1)).click();
-        })
-        .then(() => {
-            $('.tool--small--href', dom.latestArticle(1)).click();
-        })
+        this.testPage.regions.latest().trail(1).copyToClipboard()
+        .then(trail => trail.openLink())
         .then(() => wait.ms(CONST.detectPendingChangesInClipboard + 50))
-        .then(() => this.testInstance.dispose())
+        .then(() => this.testPage.reload())
         .then(() => {
-            CONST.detectPendingChangesInClipboard = originalDetectPendingChangesInClipboard;
-            this.testInstance = new CollectionsLoader();
-            return this.testInstance.load(true);
-        })
-        .then(() => {
-            expect(opacity((dom.latestArticle(1)))).toBeCloseTo(0.6);
-            expect(opacity($('.element__headline', dom.collection(0)))).toBeCloseTo(1);
-            expect(opacity(('.clipboard .article'))).toBeCloseTo(1);
+            const trailInFirstCollection = this.testPage.regions.front().collection(1).group(1).trail(1);
+            const trailInLatest = this.testPage.regions.latest().trail(1);
+            const trailInClipboard = this.testPage.regions.clipboard().trail(1);
+
+            expect(trailInLatest.opacity()).toBeCloseTo(0.6);
+            expect(trailInFirstCollection.opacity()).toBeCloseTo(1);
+            expect(trailInClipboard.opacity()).toBeCloseTo(1);
         })
         .then(done)
         .catch(done.fail);

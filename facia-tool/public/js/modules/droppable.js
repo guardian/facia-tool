@@ -43,7 +43,6 @@ const listeners = Object.freeze({
             return;
         }
 
-
         try {
             source = draggableElement.getItem(event.dataTransfer, sourceGroup);
         } catch (ex) {
@@ -66,8 +65,9 @@ const imageEditorListeners = Object.freeze({
         var bindingContext = ko.dataFor(event.target);
         event.preventDefault();
         event.stopPropagation();
-        bindingContext.dropInEditor(event.dataTransfer);
+        var action = bindingContext.dropInEditor(event.dataTransfer);
         bindingContext.underDrag(false);
+        return action;
     },
     dragover: function (element, event) {
         var bindingContext = ko.dataFor(event.target);

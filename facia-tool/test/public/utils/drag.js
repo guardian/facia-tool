@@ -1,5 +1,6 @@
 import _ from 'underscore';
 import Droppable from 'modules/droppable';
+import GridUtil from 'grid-util-js';
 
 function Article (element) {
     this.Text = element.querySelector('a').getAttribute('href');
@@ -7,12 +8,36 @@ function Article (element) {
 function Collection (element) {
     this.Text = element.querySelector('a').getAttribute('href');
 }
-function Media (assets, origin) {
-    this['application/vnd.mediaservice.crops+json'] = JSON.stringify({
-        id: 'fake_image_from_media',
-        assets: assets
-    });
-    this['application/vnd.mediaservice.kahuna.uri'] = origin;
+class Media {
+    constructor(assets, origin) {
+        this[GridUtil.CROPS_DATA_IDENTIFIER] = JSON.stringify({
+            id: 'fake_image_from_media',
+            assets: assets
+        });
+        this[GridUtil.GRID_URL_DATA_IDENTIFIER] = origin;
+    }
+
+    dropTo(target) {
+        const dropTarget = target.dropTarget();
+        const droppableTarget = createDroppable(dropTarget);
+
+        droppableTarget.dragover(dropTarget, this);
+        const maybeFuture = droppableTarget.drop(dropTarget, this);
+        return Promise.resolve(maybeFuture);
+    }
+
+    dropInEditor(target) {
+        const droppableTarget = createDroppable(target);
+
+        const maybeFuture = droppableTarget.dropInEditor(target, this);
+        return Promise.resolve(maybeFuture);
+    }
+}
+class MediaMeta extends Media {
+    constructor(meta) {
+        super();
+        this.sourceMeta = JSON.stringify(meta);
+    }
 }
 
 function Event (extend) {
@@ -84,5 +109,6 @@ export default {
     Article,
     Collection,
     Media,
+    MediaMeta,
     droppable: createDroppable
 };

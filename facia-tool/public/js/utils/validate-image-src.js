@@ -1,8 +1,8 @@
 import Promise from 'Promise';
 import _ from 'underscore';
-import GridUtil from 'grid-util-js';
 import * as vars from 'modules/vars';
 import deepGet from 'utils/deep-get';
+import grid from 'utils/grid';
 
 /**
  * Asserts if the given image URL is on The Guardian domain, is proper size and aspect ratio.
@@ -26,19 +26,6 @@ function validateImageSrc(src, criteria = {}) {
                 width, height
             };
         });
-}
-
-function grid() {
-    if (!validateImageSrc.gridInstance) {
-        validateImageSrc.gridInstance = new GridUtil({
-            apiBaseUrl: vars.model.state().defaults.apiBaseUrl,
-            fetchInit: {
-                credentials: 'include',
-                mode: 'cors'
-            }
-        });
-    }
-    return validateImageSrc.gridInstance;
 }
 
 function stripImplementationDetails (src, criteria) {
@@ -117,13 +104,18 @@ function getSuitableAsset (crops, id, desired) {
         let assets = _.chain(crops[0].assets)
             .filter(asset => deepGet(asset, '.dimensions.width') <= maxWidth)
             .sortBy(asset => deepGet(asset, '.dimensions.width') * -1);
-        let path = assets.first().value().file;
 
-        return {
-            path: path,
-            thumb: assets.last().value().file,
-            origin: vars.model.state().defaults.mediaBaseUrl + '/image/' + id
-        };
+        if (assets.value().length) {
+            let path = assets.first().value().file;
+
+            return Promise.resolve({
+                path: path,
+                thumb: assets.last().value().file,
+                origin: vars.model.state().defaults.mediaBaseUrl + '/image/' + id
+            });
+        } else {
+            return Promise.reject(new Error('The crop does not have a valid asset on the Grid'));
+        }
     }
 }
 
@@ -147,4 +139,43 @@ function validateActualImage (image) {
     });
 }
 
-export default validateImageSrc;
+function validateImageEvent (event, criteria = {}) {
+    let mediaItem = grid().getCropFromEvent(event);
+
+    if (mediaItem) {
+        return getSuitableAsset([{
+            assets: mediaItem.assets
+        }], mediaItem.id, criteria).then(asset => {
+            asset.origin = grid().getGridUrlFromEvent(event);
+            asset.criteria = criteria;
+
+            return fetchImage(asset);
+        })
+        .then(validateActualImage)
+        .then(({path, origin, thumb, width, height}) => {
+            return {
+                src: path,
+                origin: origin || path,
+                thumb: thumb || path,
+                width, height
+            };
+        });
+    } else {
+        let url = grid().getGridUrlFromEvent(event) || getData(event, 'Url');
+
+        if (url) {
+            return validateImageSrc(url, criteria);
+        } else {
+            return Promise.reject(new Error('Invalid image source, are you dragging from the grid?'));
+        }
+    }
+}
+
+function getData(event, identifier) {
+    var dataTransfer = event.nativeEvent ? event.nativeEvent.dataTransfer : event.dataTransfer;
+    if (dataTransfer && dataTransfer.getData) {
+        return dataTransfer.getData(identifier);
+    }
+}
+
+export {validateImageSrc, validateImageEvent};
