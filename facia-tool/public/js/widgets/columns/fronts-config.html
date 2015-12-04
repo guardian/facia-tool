@@ -213,25 +213,7 @@
                 <input type="text" data-bind="
                     value: meta.description"/>
 
-            <label>ContentApi <span class="linky" data-bind="
-                click: checkApiQueryStatus,
-                visible: meta.apiQuery">check</span></label>
-            <input type="text" class="apiquery--input" data-bind="
-                value: meta.apiQuery,
-                valueUpdate: ['afterkeydown', 'input']"/>
-
-            <!-- ko if: state.apiQueryStatus -->
-                <div class="api-query-results">
-                    <div data-bind="
-                        attr: {class: 'api-query-status--' + state.apiQueryStatus()},
-                        text: state.apiQueryStatus() === 'check' ? 'Checking...' : state.apiQueryStatus() === 'invalid' ? 'No matches found' : 'Found matches:'"></div>
-                    <div data-bind="foreach: capiResults">
-                        <a target="_article" class="api-query-result" data-bind="
-                                attr: {href: 'http://www.theguardian.com/' + id},
-                                text: fields.headline"></a>
-                    </div>
-                </div>
-            <!-- /ko -->
+            <collection-drop-widget params="backfill: meta.backfill"></collection-drop-widget>
 
             <!-- ko if: meta.groups -->
                 <label>Groups</label>

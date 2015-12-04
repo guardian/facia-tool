@@ -88,6 +88,7 @@ define([
 
         this.state  = asObservableProps([
             'lastUpdated',
+            'readOnly',
             'hasConcurrentEdits',
             'collapsed',
             'hasDraft',

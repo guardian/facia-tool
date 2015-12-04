@@ -638,6 +638,11 @@ h1 {
     margin-top: 3px;
 }
 
+.readonly {
+    background: #cccccc;
+    margin-right: 8px;
+}
+
 .list-header .tools {
     margin: 0 10px 0 0;
 }
@@ -1541,6 +1546,34 @@ button {
 /*****************************************/
 /* CONFIG EDITOR */
 /*****************************************/
+
+textarea.underDrag {
+    background: #2ea3eb;
+}
+
+.hidden_collection_input {
+    display: none;
+}
+
+.shared_collection {
+    float: left;
+    padding: 7px;
+    height: 32px;
+    line-height: 14px;
+    width: 300px;
+    background: white;
+    border: 1px solid #cccccc;
+    margin: 0 0 2px 0;
+    box-sizing: border-box;
+}
+
+.shared_collection_label {
+    background: lightblue;
+    border: 1px solid #cccccc;
+    border-radius: 2px;
+    padding: 3px;
+    font-size: 12px;
+}
 
 .cnf-fronts {
     margin-top: 10px;

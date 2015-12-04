@@ -265,7 +265,8 @@ function persist (sourceItem, newItems, sourceContext, sourceGroup, targetContex
             remove = remove ? remover(sourceContext, sourceGroup, id) : undefined;
         }
 
-        if (sourceContext !== targetContext) {
+        if (sourceContext !== targetContext ||
+            (sourceGroup.parentType === 'Collection' && sourceGroup.parent.state.readOnly())) {
             remove = false;
         }
 

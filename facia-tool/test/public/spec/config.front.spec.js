@@ -9,6 +9,7 @@ import {injectColumnWidget} from 'test/utils/inject';
 import textInside from 'test/utils/text-inside';
 import * as wait from 'test/utils/wait';
 import images from 'test/utils/images';
+import drag from 'test/utils/drag';
 
 describe('Config Front', function () {
     beforeEach(function () {
@@ -115,13 +116,16 @@ describe('Config Front', function () {
 
         function createCollectionWithCAPI () {
             $('.linky.tool--container').click();
-            dom.type('.title--input', 'collection with capi');
-            $('.type-option-chosen').click();
-            $('.type-option-value:nth(0)').click();
-            // sanitize spaces
-            dom.type('.apiquery--input', 'ne  ws');
+            return wait.ms(100)
+            .then(() => {
+                dom.type('.title--input', 'collection with capi');
+                $('.type-option-chosen').click();
+                $('.type-option-value:nth(0)').click();
+                // sanitize spaces
+                dom.type('.apiquery--input', 'ne  ws');
 
-            return wait.ms(vars.CONST.searchDebounceMs)
+                return wait.ms(vars.CONST.searchDebounceMs);
+            })
             .then(() => {
                 expect(textInside('.api-query-results')).toBe('Checking...');
 
@@ -138,16 +142,21 @@ describe('Config Front', function () {
                 expect(persistence.collection.save).toHaveBeenCalledWith(collection);
                 expect(collection.meta.type()).toBe('type-one');
                 expect(collection.meta.displayName()).toBe('collection with capi');
-                expect(collection.meta.apiQuery()).toBe('news');
+                expect(collection.meta.backfill().value).toBe('news');
                 persistence.collection.save.calls.reset();
             });
         }
 
         function modifyCollectionWithInvalidCAPI () {
             $('.cnf-collection:nth(1) .cnf-collection__name').click();
-            $('#showTags').click();
-            dom.type('.apiquery--input', 'zero');
-            return wait.ms(vars.CONST.searchDebounceMs + 100).then(() => {
+            return wait.ms(100)
+            .then(() => {
+                $('#showTags').click();
+                dom.type('.apiquery--input', 'zero');
+                return wait.ms(100);
+            })
+            .then(() => wait.ms(vars.CONST.searchDebounceMs + 100))
+            .then(() => {
                 expect($('.apiquery--input').val()).toBe('zero');
                 expect($('.api-query-results a').length).toBe(0);
                 expect(textInside('.api-query-results')).toBe('No matches found');
@@ -171,7 +180,7 @@ describe('Config Front', function () {
                 expect(persistence.collection.save).toHaveBeenCalledWith(collection);
                 expect(collection.meta.type()).toBe('type-one');
                 expect(collection.meta.displayName()).toBe('collection with capi');
-                expect(collection.meta.apiQuery()).toBe('fail');
+                expect(collection.meta.backfill().value).toBe('fail');
                 expect(collection.meta.showTags()).toBe(true);
                 persistence.collection.save.calls.reset();
             });
@@ -292,4 +301,47 @@ describe('Config Front', function () {
         .then(done)
         .catch(done.fail);
     });
+
+    it('drags collections to backfill', function (done) {
+        var frontWidget;
+        var state = ko.observable({
+            config: {
+                fronts: { one: { collections: ['apple'] } },
+                collections: {
+                    apple: { displayName: 'apple' },
+                }
+            }
+        }), frontsList = ko.observableArray([{ id: 'one', collections: ['apple'] }]);
+
+        this.loadFront({state, frontsList})
+        .then((fronts) => {
+
+            frontWidget = fronts;
+            $('.title--text').click();
+            $('.linky.tool--container').click();
+            return wait.ms(100);
+        })
+        .then(() => {
+            dom.type('.title--input', 'collection with dragged collection');
+            $('.type-option-chosen').click();
+            $('.type-option-value:nth(0)').click();
+            return wait.ms(100);
+        })
+        .then(() => {
+            var inputBox = $('.apiquery--input')[0];
+            var collectionDropTarget = drag.droppable(inputBox);
+            var sourceCollection = new drag.FrontCollection(dom.frontCollection(1));
+            collectionDropTarget.dragstart(dom.frontCollection(1), sourceCollection);
+            collectionDropTarget.dragoverCollection(inputBox);
+            collectionDropTarget.dropInCollection(inputBox, sourceCollection);
+            expect(textInside('.shared_collection_label span')).toBe('apple');
+            $('.tool-save-container').click();
+            var collection = frontWidget.fronts()[0].collections.items()[1];
+            expect(persistence.collection.save).toHaveBeenCalledWith(collection);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
 });
+

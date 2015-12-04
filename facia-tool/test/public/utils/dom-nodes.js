@@ -4,6 +4,10 @@ function collection(index) {
     return document.querySelectorAll('.collection')[index - 1];
 }
 
+function frontCollection(index) {
+    return document.querySelectorAll('.cnf-collection')[index - 1];
+}
+
 function droppableCollection(index) {
     return collection(index).querySelector('.droppable');
 }
@@ -36,6 +40,7 @@ function type(where, what) {
 
 export {
     collection,
+    frontCollection,
     droppableCollection,
     droppableGroup,
     latestArticle,

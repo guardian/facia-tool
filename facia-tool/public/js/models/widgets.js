@@ -114,6 +114,10 @@ var register = _.once(() => {
         },
         template: { text: 'widgets/message.html' }
     });
+    ko.components.register('collection-drop-widget', {
+        viewModel: { jspm: 'widgets/collection-drop' },
+        template: { text: 'widgets/collection-drop.html' }
+    });
     ko.components.register('presser-detect-stale', {
         viewModel: { jspm: 'widgets/presser-detect-stale' },
         template: { text: 'widgets/presser-detect-stale.html' }
