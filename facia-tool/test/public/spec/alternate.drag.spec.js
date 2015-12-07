@@ -1,115 +1,93 @@
-import $ from 'jquery';
 import Promise from 'Promise';
-import MockVisible from 'mock/stories-visible';
-import CollectionsLoader from 'test/utils/collections-loader';
-import * as dom from 'test/utils/dom-nodes';
-import drag from 'test/utils/drag';
-import editAction from 'test/utils/edit-actions';
+import Page from 'test/utils/page';
 import * as mockjax from 'test/utils/mockjax';
-import textInside from 'test/utils/text-inside';
 import * as wait from 'test/utils/wait';
 import 'widgets/trail-editor.html!text';
 
 describe('Alternate Drag', function () {
     beforeEach(function (done) {
-        this.testInstance = new CollectionsLoader();
-        this.mockVisible = new MockVisible();
         this.scope = mockjax.scope();
-        this.testInstance.load().then(done);
+        this.testPage = new Page('/test?layout=latest,front:uk', {}, done);
     });
-    afterEach(function () {
-        this.testInstance.dispose();
-        this.mockVisible.dispose();
-        this.scope.clear();
+    afterEach(function (done) {
+        this.testPage.dispose(done);
     });
 
     it('replace article and drags sublinks', function (done) {
-        var mockCollection = this.testInstance.mockCollections,
-            mockScope = this.scope;
-
-        openArticle()
-        .then(selectSomeMetadata)
-        .then(dragSublink)
+        var mockScope = this.scope, testPage = this.testPage;
+        openFirstArticle()
+        .then(trail => trail.toggleMetadata('isBreaking'))
+        .then(trail => trail.toggleMetadata('showBoostedHeadline'))
+        .then(dropSublink)
         .then(copyPasteSublink)
         .then(saveArticle)
-        .then(expectChangesSaved)
-        .then(openArticle)
+        .then(openFirstArticle)
         .then(alternateDrag)
         .then(expectItemSwapped)
-        .then(openArticle)
+        .then(openFirstArticle)
         .then(deleteOneSublink)
         .then(saveArticleWithOneSublink)
-        .then(expectSublinkDeleted)
         .then(deleteEntireArticle)
-        .then(expectDeleteRequestSent)
         .then(done)
         .catch(done.fail);
 
 
-        function openArticle () {
-            $('collection-widget .element__headline:nth(0)').click();
-            // Wait for knockout to load editors
-            return wait.ms(50);
+        function openFirstArticle () {
+            return testPage.regions.front().collection(1).group(1).trail(1).open();
         }
-        function selectSomeMetadata () {
-            $('.editor--boolean--isBreaking').click();
-            $('.editor--boolean--showBoostedHeadline').click();
+        function dropSublink (trail) {
+            return testPage.regions.latest().trail(2).dropTo(trail.innerDroppable())
+            .then(() => trail);
         }
-        function dragSublink () {
-            var droppableRegionInsideArticle = $('collection-widget trail-widget .droppable')[0];
-            var dropTarget = drag.droppable(droppableRegionInsideArticle);
-            var sourceArticle = new drag.Article(dom.latestArticle(2));
-            return dropTarget.drop(droppableRegionInsideArticle, sourceArticle).then(() => wait.ms(10));
-        }
-        function copyPasteSublink () {
-            $('.tool--small--copy', dom.latestArticle(3)).click();
-            $('collection-widget trail-widget .pasteOver').click();
-            return wait.ms(10);
-        }
-        function saveArticle () {
-            return editAction(mockCollection, () => {
-                $('collection-widget trail-widget:nth(0) .tool--done').click();
-
-                return {
-                    latest: {
-                        draft: [{
-                            id: 'internal-code/page/1',
-                            meta: {
-                                isBreaking: true,
-                                showBoostedHeadline: true,
-                                supporting: [
-                                    { id: 'internal-code/page/2' },
-                                    { id: 'internal-code/page/3' }
-                                ]
-                            }
-                        }]
-                    }
-                };
+        function copyPasteSublink (trail) {
+            return testPage.regions.latest().trail(3).copy().then(() => {
+                return trail.pasteOver();
             });
         }
-        function expectChangesSaved (request) {
-            expect(request.url).toBe('/edits');
-            expect(request.data).toEqual({
-                type: 'Update',
-                update: {
-                    live: false,
-                    draft: true,
-                    id: 'latest',
-                    item: 'internal-code/page/1',
-                    position: 'internal-code/page/1',
-                    itemMeta: {
-                        group: '0',
-                        isBreaking: true,
-                        showBoostedHeadline: true,
-                        supporting: [
-                            { id: 'internal-code/page/2' },
-                            { id: 'internal-code/page/3' }
-                        ]
+        function saveArticle (trail) {
+            return testPage.actions.edit(() => {
+                return trail.save();
+            })
+            .assertRequest(request => {
+                expect(request.url).toBe('/edits');
+                expect(request.data).toEqual({
+                    type: 'Update',
+                    update: {
+                        live: false,
+                        draft: true,
+                        id: 'latest',
+                        item: 'internal-code/page/1',
+                        position: 'internal-code/page/1',
+                        itemMeta: {
+                            group: '0',
+                            isBreaking: true,
+                            showBoostedHeadline: true,
+                            supporting: [
+                                { id: 'internal-code/page/2' },
+                                { id: 'internal-code/page/3' }
+                            ]
+                        }
                     }
+                });
+            })
+            .respondWith({
+                latest: {
+                    draft: [{
+                        id: 'internal-code/page/1',
+                        meta: {
+                            isBreaking: true,
+                            showBoostedHeadline: true,
+                            supporting: [
+                                { id: 'internal-code/page/2' },
+                                { id: 'internal-code/page/3' }
+                            ]
+                        }
+                    }]
                 }
-            });
+            })
+            .done;
         }
-        function alternateDrag () {
+        function alternateDrag (trail) {
             // This action is making to consecutive requests
             var requestIndex = 0, requests = [], responses = [{
                 latest: {
@@ -158,17 +136,16 @@ describe('Alternate Drag', function () {
                 response: function (req) {
                     requests.push(JSON.parse(req.data));
                     this.responseText = responses[requestIndex];
-                    mockCollection.set(this.responseText);
+                    testPage.mocks.mockCollections.set(this.responseText);
                     requestIndex += 1;
                 }
             });
 
             return new Promise(resolve => {
-                var articleToBeReplaced = $('collection-widget trail-widget:nth(0) .droppable')[0];
-                var dropTarget = drag.droppable(articleToBeReplaced);
-                var sourceArticle = new drag.Article(dom.latestArticle(4));
-
-                dropTarget.drop(articleToBeReplaced, sourceArticle, true)
+                testPage.regions.latest().trail(4).dropTo(
+                    trail.innerDroppable(),
+                    true
+                )
                 .then(() => wait.ms(10))
                 .then(() => {
                     expect(requests.length).toBe(2);
@@ -207,37 +184,34 @@ describe('Alternate Drag', function () {
         }
         function expectItemSwapped () {
             mockScope.clear();
-            expect($('collection-widget .element__headline').length).toBe(1);
-            expect(textInside('collection-widget .element__headline')).toBe('Santa Claus is a real thing');
+            const trail = testPage.regions.front().collection(1).group(1).trail(1);
+            expect(trail.fieldText('headline')).toBe('Santa Claus is a real thing');
         }
-        function deleteOneSublink () {
-            // Sublink need populating
+        function deleteOneSublink (trail) {
+            // Sublink need populating from CAPI
             return wait.ms(50).then(() => {
-                return editAction(mockCollection, () => {
-                    $('collection-widget .supporting trail-widget:nth(1) .tool--small--remove').click();
-
-                    return {
-                        latest: {
-                            draft: [{
-                                id: 'internal-code/page/4',
-                                meta: {
-                                    isBreaking: true,
-                                    showBoostedHeadline: true,
-                                    supporting: [
-                                        { id: 'internal-code/page/2' }
-                                    ]
-                                }
-                            }]
+                return testPage.actions.edit(() => trail.sublink(2).remove())
+                .assertRequest(request => {
+                    expect(request.data).toEqual({
+                        type: 'Update',
+                        update: {
+                            live: false,
+                            draft: true,
+                            id: 'latest',
+                            item: 'internal-code/page/4',
+                            position: 'internal-code/page/4',
+                            itemMeta: {
+                                isBreaking: true,
+                                showBoostedHeadline: true,
+                                supporting: [
+                                    { id: 'internal-code/page/2' }
+                                ],
+                                group: '0'
+                            }
                         }
-                    };
-                });
-            });
-        }
-        function saveArticleWithOneSublink () {
-            return editAction(mockCollection, () => {
-                $('collection-widget trail-widget:nth(0) .tool--done').click();
-
-                return {
+                    });
+                })
+                .respondWith({
                     latest: {
                         draft: [{
                             id: 'internal-code/page/4',
@@ -250,53 +224,70 @@ describe('Alternate Drag', function () {
                             }
                         }]
                     }
-                };
+                })
+                .done;
             });
         }
-        function expectSublinkDeleted (request) {
-            expect(request.url).toBe('/edits');
-            expect(request.data).toEqual({
-                type: 'Update',
-                update: {
-                    live: false,
-                    draft: true,
-                    id: 'latest',
-                    item: 'internal-code/page/4',
-                    position: 'internal-code/page/4',
-                    itemMeta: {
-                        group: '0',
-                        isBreaking: true,
-                        showBoostedHeadline: true,
-                        supporting: [
-                            { id: 'internal-code/page/2' }
-                        ]
+        function saveArticleWithOneSublink () {
+            const trail = testPage.regions.front().collection(1).group(1).trail(1);
+            return testPage.actions.edit(() => trail.save())
+            .assertRequest(request => {
+                expect(request.url).toBe('/edits');
+                expect(request.data).toEqual({
+                    type: 'Update',
+                    update: {
+                        live: false,
+                        draft: true,
+                        id: 'latest',
+                        item: 'internal-code/page/4',
+                        position: 'internal-code/page/4',
+                        itemMeta: {
+                            group: '0',
+                            isBreaking: true,
+                            showBoostedHeadline: true,
+                            supporting: [
+                                { id: 'internal-code/page/2' }
+                            ]
+                        }
                     }
+                });
+            })
+            .respondWith({
+                latest: {
+                    draft: [{
+                        id: 'internal-code/page/4',
+                        meta: {
+                            isBreaking: true,
+                            showBoostedHeadline: true,
+                            supporting: [
+                                { id: 'internal-code/page/2' }
+                            ]
+                        }
+                    }]
                 }
-            });
+            })
+            .done;
         }
         function deleteEntireArticle () {
-            return editAction(mockCollection, () => {
-                $('collection-widget trail-widget:nth(0) .tool--small--remove').click();
-
-                return {
-                    latest: {
-                        live: []
+            const trail = testPage.regions.front().collection(1).group(1).trail(1);
+            return testPage.actions.edit(() => trail.remove())
+            .assertRequest(request => {
+                expect(request.url).toBe('/edits');
+                expect(request.data).toEqual({
+                    type: 'Remove',
+                    remove: {
+                        live: false,
+                        draft: true,
+                        id: 'latest',
+                        item: 'internal-code/page/4'
                     }
-                };
-            });
-        }
-        function expectDeleteRequestSent (request) {
-            expect(request.url).toBe('/edits');
-            expect(request.data).toEqual({
-                type: 'Remove',
-                remove: {
-                    live: false,
-                    draft: true,
-                    id: 'latest',
-                    item: 'internal-code/page/4'
-                }
-            });
-            expect($('collection-widget trail-widget').length).toBe(0);
+                });
+                expect(testPage.regions.front().collection(1).group(1).isEmpty()).toBe(true);
+            })
+            .respondWith({
+                latest: { live: [] }
+            })
+            .done;
         }
     });
 });

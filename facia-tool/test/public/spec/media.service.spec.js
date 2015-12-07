@@ -1,147 +1,126 @@
 import $ from 'jquery';
-import Promise from 'Promise';
-import MockVisible from 'mock/stories-visible';
-import CollectionsLoader from 'test/utils/collections-loader';
 import drag from 'test/utils/drag';
-import editAction from 'test/utils/edit-actions';
 import images from 'test/utils/images';
-import textInside from 'test/utils/text-inside';
+import Page from 'test/utils/page';
 import * as wait from 'test/utils/wait';
 
 describe('Media Service', function () {
     beforeEach(function (done) {
         images.setup();
-        this.testInstance = new CollectionsLoader();
-        this.mockVisible = new MockVisible();
-        this.testInstance.load().then(done);
+        this.testPage = new Page('/test?layout=latest,front:uk', {}, done);
     });
-    afterEach(function () {
+    afterEach(function (done) {
         images.dispose();
-        this.testInstance.dispose();
-        this.mockVisible.dispose();
+        this.testPage.dispose(done);
     });
 
     it('drags an image from the grid', function (done) {
-        var mockCollection = this.testInstance.mockCollections;
+        const testPage = this.testPage;
 
-        openArticle()
+        this.testPage.regions.front().collection(1).group(1).trail(1).open()
         .then(expectArticleOpen)
         .then(dragFromTheGrid)
-        .then(expectImageChange)
         .then(openCutoutImageEditor)
         .then(dragCutoutFromGrid)
-        .then(expectCutoutChange)
-        .then(openImageReplaceEditor)
         .then(dragInvalidImage)
-        .then(expectAlertShown)
-        .then(closeAlert)
         .then(saveArticle)
-        .then(expectChangesSaved)
         .then(done)
         .catch(done.fail);
 
-        function openArticle () {
-            $('collection-widget .element__headline').click();
-            return Promise.resolve();
+        function expectArticleOpen (trail) {
+            expect($('.tool--done', trail.dom).is(':visible')).toBe(true);
+            return trail;
         }
-        function expectArticleOpen () {
-            expect($('.tool--done').is(':visible')).toBe(true);
-        }
-        function dragFromTheGrid () {
-            var droppableRegionInsideArticle = $('collection-widget trail-widget .droppable')[0];
-            var dropTarget = drag.droppable(droppableRegionInsideArticle);
-            var sourceImage = new drag.Media([{
+        function dragFromTheGrid (trail) {
+            const sourceImage = new drag.Media([{
                 file: images.path('fivethree.png'),
                 dimensions: { width: 500, height: 200 }
             }], 'testImageOrigin');
-            dropTarget.dragover(droppableRegionInsideArticle, sourceImage);
-            dropTarget.drop(droppableRegionInsideArticle, sourceImage);
-            return wait.ms(300);
+            return sourceImage.dropTo(trail.innerDroppable())
+            .then(() => {
+                expect(trail.thumbUrl()).toMatch(/fivethree\.png/);
+                expect(trail.isMetadataSelected('imageReplace')).toBe(true);
+            })
+            .then(() => trail);
         }
-        function expectImageChange () {
-            expect($('collection-widget trail-widget .thumb').css('background-image')).toMatch(/fivethree\.png/);
-            expect($('collection-widget trail-widget .editor--boolean--imageReplace').hasClass('selected')).toBe(true);
+        function openCutoutImageEditor (trail) {
+            return trail.toggleMetadata('imageCutoutReplace')
+            .then(() => {
+                expect(trail.isMetadataSelected('imageReplace')).toBe(false);
+                expect(trail.isMetadataSelected('imageCutoutReplace')).toBe(true);
+            })
+            .then(() => trail);
         }
-        function openCutoutImageEditor () {
-            $('collection-widget trail-widget .editor--boolean--imageCutoutReplace').click();
-            expect($('collection-widget trail-widget .editor--boolean--imageReplace').hasClass('selected')).toBe(false);
-            expect($('collection-widget trail-widget .editor--boolean--imageCutoutReplace').hasClass('selected')).toBe(true);
-        }
-        function dragCutoutFromGrid () {
-            var droppableEditor = $('collection-widget trail-widget .element__imageCutoutSrc')[0];
-            var dropTarget = drag.droppable(droppableEditor);
+        function dragCutoutFromGrid (trail) {
             var sourceImage = new drag.Media([{
                 file: images.path('squarefour.png'),
                 dimensions: { width: 400, height: 400 }
             }], 'cutoutImageOrigin');
-            dropTarget.dropInEditor(droppableEditor, sourceImage);
-            return wait.ms(300);
+            return sourceImage.dropInEditor(
+                trail.field('imageCutoutSrc')
+            )
+            .then(() => {
+                expect(trail.thumbUrl()).toMatch(/squarefour\.png/);
+                expect(trail.isMetadataSelected('imageCutoutReplace')).toBe(true);
+            })
+            .then(() => trail);
         }
-        function expectCutoutChange () {
-            expect($('collection-widget trail-widget .thumb').css('background-image')).toMatch(/squarefour\.png/);
-            expect($('collection-widget trail-widget .editor--boolean--imageCutoutReplace').hasClass('selected')).toBe(true);
-        }
-        function openImageReplaceEditor () {
-            $('collection-widget trail-widget .editor--boolean--imageReplace').click();
-        }
-        function dragInvalidImage () {
-            var droppableEditor = $('collection-widget trail-widget .element__imageSrc')[0];
-            var dropTarget = drag.droppable(droppableEditor);
-            var sourceImage = new drag.Media([{
-                file: 'This image is too big',
-                dimensions: { width: 2000, height: 1600 }
-            }], 'tooBig');
-            dropTarget.dropInEditor(droppableEditor, sourceImage);
-            return wait.ms(100);
-        }
-        function expectAlertShown () {
-            expect($('.modalDialog-message').is(':visible')).toBe(true);
-            expect(textInside('.modalDialog-message')).toMatch(/suitable crop/i);
-        }
-        function closeAlert () {
-            $('.modalDialog .button-action').click();
-        }
-        function saveArticle () {
-            return editAction(mockCollection, () => {
-                $('collection-widget trail-widget .tool--done').click();
+        function dragInvalidImage (trail) {
+            return trail.toggleMetadata('imageReplace')
+            .then(() => {
+                var sourceImage = new drag.Media([{
+                    file: 'This image is too big',
+                    dimensions: { width: 2000, height: 1600 }
+                }], 'tooBig');
+                return sourceImage.dropInEditor(
+                    trail.field('imageSrc')
+                );
+            })
+            // Wait for the alert to appear
+            .then(() => wait.ms(200))
+            .then(() => {
+                expect(testPage.regions.alert().isVisible()).toBe(true);
+                expect(testPage.regions.alert().message()).toMatch(/valid asset/);
 
-                return {
-                    latest: {
-                        draft: [{
-                            id: 'internal-code/page/1',
-                            meta: {
-                                imageReplace: true,
-                                imageSrc: 'something dragged from media'
-                            }
-                        }]
-                    }
-                };
-            });
+                return testPage.regions.alert().close();
+            })
+            .then(() => trail);
         }
-        function expectChangesSaved (request) {
-            expect(request.url).toBe('/edits');
-            expect(request.data).toEqual({
-                type: 'Update',
-                update: {
-                    live: false,
-                    draft: true,
-                    id: 'latest',
-                    item: 'internal-code/page/1',
-                    position: 'internal-code/page/1',
-                    itemMeta: {
-                        group: '0',
-                        imageCutoutSrc: images.path('squarefour.png'),
-                        imageCutoutSrcHeight: '400',
-                        imageCutoutSrcWidth: '400',
-                        imageCutoutSrcOrigin: 'cutoutImageOrigin',
-                        imageReplace: true,
-                        imageSrc: images.path('fivethree.png'),
-                        imageSrcHeight: '300',
-                        imageSrcWidth: '500',
-                        imageSrcOrigin: images.path('fivethree.png')
+        function saveArticle (trail) {
+            return testPage.actions.edit(() => trail.save())
+            .assertRequest(request => {
+                expect(request.url).toBe('/edits');
+                expect(request.data).toEqual({
+                    type: 'Update',
+                    update: {
+                        live: false,
+                        draft: true,
+                        id: 'latest',
+                        item: 'internal-code/page/1',
+                        position: 'internal-code/page/1',
+                        itemMeta: {
+                            group: '0',
+                            imageCutoutSrc: images.path('squarefour.png'),
+                            imageCutoutSrcHeight: '400',
+                            imageCutoutSrcWidth: '400',
+                            imageCutoutSrcOrigin: 'cutoutImageOrigin',
+                            imageReplace: true
+                        }
                     }
+                });
+            })
+            .respondWith({
+                latest: {
+                    draft: [{
+                        id: 'internal-code/page/1',
+                        meta: {
+                            imageReplace: true,
+                            imageSrc: 'something dragged from media'
+                        }
+                    }]
                 }
-            });
+            })
+            .done;
         }
     });
 });

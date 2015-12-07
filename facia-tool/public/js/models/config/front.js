@@ -11,7 +11,7 @@ import cloneWithKey from 'utils/clone-with-key';
 import frontCount from 'utils/front-count';
 import populateObservables from 'utils/populate-observables';
 import generateCollections from 'utils/generate-collections';
-import validateImageSrc from 'utils/validate-image-src';
+import {validateImageSrc} from 'utils/validate-image-src';
 
 export default class ConfigFront extends BaseClass {
     constructor(opts = {}) {

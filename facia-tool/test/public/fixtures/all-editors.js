@@ -61,9 +61,6 @@ export default Object.freeze([{
     item: {
         type: 'image',
         editable: true,
-        dropImage: true,
-        validator: {
-            fn: 'validateListImage'
-        }
+        dropImage: true
     }
 }]);

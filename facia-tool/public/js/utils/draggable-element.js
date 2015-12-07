@@ -1,29 +1,23 @@
 import _ from 'underscore';
 import deepGet from 'utils/deep-get';
 import parseQueryParams from 'utils/parse-query-params';
+import grid from 'utils/grid';
 
 function getMediaItem(dataTransfer) {
-    var mediaItem = dataTransfer.getData('application/vnd.mediaservice.crops+json');
+    var mediaItem = grid().getCropFromEvent({dataTransfer});
 
     if (mediaItem) {
-        try {
-            mediaItem = JSON.parse(mediaItem);
-        } catch (e) {
-            mediaItem = undefined;
-        }
+        const id = mediaItem.id;
+        mediaItem = _.chain(mediaItem.assets)
+            .filter(function(asset) { return deepGet(asset, '.dimensions.width') <= 1000; })
+            .sortBy(function(asset) { return deepGet(asset, '.dimensions.width') * -1; })
+            .first()
+            .value();
 
-        if (!mediaItem) {
-            throw new Error('Sorry, that image could not be understood.');
-        } else {
-            mediaItem = _.chain(mediaItem.assets)
-                .filter(function(asset) { return deepGet(asset, '.dimensions.width') <= 1000; })
-                .sortBy(function(asset) { return deepGet(asset, '.dimensions.width') * -1; })
-                .first()
-                .value();
-
-            if (mediaItem) {
-                mediaItem.origin = dataTransfer.getData('application/vnd.mediaservice.kahuna.uri');
-            }
+        if (mediaItem) {
+            mediaItem.origin = grid().getGridUrlFromEvent({dataTransfer});
+            mediaItem.crop = id;
+            mediaItem.dataTransfer = dataTransfer;
         }
 
         if (!mediaItem) {

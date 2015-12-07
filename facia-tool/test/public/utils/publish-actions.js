@@ -1,24 +1,23 @@
-import Promise from 'Promise';
-import mockjax from 'test/utils/mockjax';
+import BaseAction from 'test/utils/base-action';
 
-export default function(action) {
-    return new Promise(function (resolve) {
-        var publishedCollection;
-        var publishInterceptor = mockjax({
+export default class extends BaseAction {
+    constructor(...args) {
+        super(...args);
+        this.TIMEOUT_ERROR_MSG = 'publish action timeout';
+
+        super.mockSingleRequest({
             url: /collection\/publish\/(.+)/,
             urlParams: ['collection'],
             type: 'post',
-            responseText: '',
-            response: function (request) {
-                publishedCollection = request.urlParams.collection;
-            },
-            onAfterComplete: function () {
-                mockjax.clear(publishInterceptor);
-                setTimeout(() => {
-                    resolve(publishedCollection);
-                }, 20);
-            }
+            responseText: ''
         });
-        action();
-    });
+    }
+
+    setResponse(response) {
+        for (var name in response) {
+            response[name].lastUpdated = (new Date()).toISOString();
+        }
+        super.setResponse(response);
+        this.testPage.mocks.mockCollections.set(response);
+    }
 }

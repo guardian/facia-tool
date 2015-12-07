@@ -1,29 +1,27 @@
-import Promise from 'Promise';
-import mockjax from 'test/utils/mockjax';
+import BaseAction from 'test/utils/base-action';
 
-export default function(mockCollection, action) {
-    return new Promise(function (resolve) {
-        var lastRequest, desiredAnswer;
-        var interceptor = mockjax({
+export default class extends BaseAction {
+    constructor(...args) {
+        super(...args);
+        this.TIMEOUT_ERROR_MSG = 'edit action timeout, endpoint /edits';
+
+        var instance = this;
+
+        super.mockSingleRequest({
             url: '/edits',
             response: function (request) {
-                lastRequest = request;
-                lastRequest.data = JSON.parse(request.data);
-                this.responseText = desiredAnswer;
-            },
-            onAfterComplete: function () {
-                mockjax.clear(interceptor);
-                setTimeout(() => {
-                    resolve(lastRequest);
-                }, 50);
+                request.data = JSON.parse(request.data);
+                instance.lastRequest = request;
+                this.responseText = instance.response;
             }
         });
-        desiredAnswer = action();
+    }
 
-        // Soon after an edit, there'll be a call to refresh the collection
-        for (var name in desiredAnswer) {
-            desiredAnswer[name].lastUpdated = (new Date()).toISOString();
+    setResponse(response) {
+        for (var name in response) {
+            response[name].lastUpdated = (new Date()).toISOString();
         }
-        mockCollection.set(desiredAnswer);
-    });
+        super.setResponse(response);
+        this.testPage.mocks.mockCollections.set(response);
+    }
 }

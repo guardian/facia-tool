@@ -106,17 +106,16 @@ describe('Editors', function () {
 
     it('list editor with drop in editor', function (done) {
         var listEditor = _.find(this.editors, editor => editor.key === 'list').items[0];
-        spyOn(listEditor, 'validateListImage').and.callThrough();
+        spyOn(listEditor, 'assignToObjectElement').and.callThrough();
 
-        var target = $('.editor--image')[0];
+        var firstBlock = $('.editor--image')[0];
+        var secondBlock = $('.editor--image')[1];
         var sourceImage = new drag.Media([{
             file: images.path('squarefour.png'),
             dimensions: { width: 400, height: 400 }
         }], 'imageOrigin');
-        drag.droppable(target).dropInEditor(target, sourceImage);
-
-        expect(listEditor.validateListImage).toHaveBeenCalled();
-        listEditor.validateListImage.calls.first().returnValue.then(() => {
+        sourceImage.dropInEditor(firstBlock)
+        .then(() => {
             var listImages = this.article.meta.list();
             expect(listImages.length).toBe(3);
             expect(listImages[0].origin).toEqual('imageOrigin');
@@ -126,20 +125,39 @@ describe('Editors', function () {
             expect(listImages[1]).toBeUndefined();
             expect(listImages[2]).toBeUndefined();
 
-            listEditor.validateListImage.calls.reset();
+            // drag the same image to the second position
+            sourceImage = new drag.MediaMeta(listImages[0]);
+            return sourceImage.dropInEditor(secondBlock);
+        })
+        .then(() => {
+            var listImages = this.article.meta.list();
+            expect(listImages.length).toBe(3);
+            expect(listImages[0].origin).toEqual('imageOrigin');
+            expect(listImages[0].src).toMatch(/squarefour\.png/);
+            expect(listImages[0].width).toBe(400);
+            expect(listImages[0].height).toBe(400);
+
+            expect(listImages[1].origin).toEqual('imageOrigin');
+            expect(listImages[1].src).toMatch(/squarefour\.png/);
+            expect(listImages[1].width).toBe(400);
+            expect(listImages[1].height).toBe(400);
+
+            expect(listImages[2]).toBeUndefined();
 
             // invalid input
             sourceImage = new drag.Media([{
                 file: images.path('this_image_doesnt_exists__promised.png'),
                 dimensions: { width: 400, height: 400 }
             }], 'fakeOrigin');
-        drag.droppable(target).dropInEditor(target, sourceImage);
-            return listEditor.validateListImage.calls.first().returnValue;
+            return sourceImage.dropInEditor(firstBlock);
         })
         .then(() => {
             var listImages = this.article.meta.list();
             expect(listImages[0]).toBeUndefined();
-            expect(listImages[1]).toBeUndefined();
+            expect(listImages[1].origin).toEqual('imageOrigin');
+            expect(listImages[1].src).toMatch(/squarefour\.png/);
+            expect(listImages[1].width).toBe(400);
+            expect(listImages[1].height).toBe(400);
             expect(listImages[2]).toBeUndefined();
         })
         .then(done)

@@ -2,9 +2,8 @@ import ko from 'knockout';
 import _ from 'underscore';
 import BaseClass from 'models/base-class';
 import alert from 'utils/alert';
-import * as draggableElement from 'utils/draggable-element';
 import mediator from 'utils/mediator';
-import validateImageSrc from 'utils/validate-image-src';
+import {validateImageSrc, validateImageEvent} from 'utils/validate-image-src';
 import articleCollection from 'utils/article-collection';
 
 const rxScriptStriper = new RegExp(/<script.*/gi);
@@ -122,21 +121,24 @@ export default class Editor extends BaseClass {
 
     dropInEditor(element) {
         var sourceMeta = element.getData('sourceMeta');
+        var params = (this.opts.validator || {}).params || {};
+        var targetMethod = this.type === 'image' ? 'assignToObjectElement' : 'assignImageToSpreadElement';
+
         if (sourceMeta) {
+            // Drag and drop from another editor, assume valid
             try {
                 sourceMeta = JSON.parse(sourceMeta);
-                this.meta(sourceMeta);
-                return;
-            } catch (ex) {/**/}
-        }
-
-        try {
-            this.meta({
-                media: draggableElement.getMediaItem(element),
-                origin: element.getData('Url')
-            });
-        } catch (ex) {
-            alert(ex.message);
+                this[targetMethod](params, sourceMeta, sourceMeta.origin);
+            } catch (ex) {
+                alert('You cannot drag that element here.');
+            }
+        } else {
+            return validateImageEvent({dataTransfer: element}, params.options)
+                .then(img => {
+                    this[targetMethod](params, img, img.origin);
+                }, err => {
+                    this[targetMethod](params, err);
+                });
         }
     }
 
@@ -146,9 +148,6 @@ export default class Editor extends BaseClass {
 
     validateImage(params) {
         var imageSrc = this.article.meta[params.src],
-            imageSrcWidth = this.article.meta[params.width],
-            imageSrcHeight = this.article.meta[params.height],
-            imageSrcOrigin = this.article.meta[params.origin],
             image = imageSrc(),
             opts = params.options;
 
@@ -157,38 +156,44 @@ export default class Editor extends BaseClass {
             let {src, origin} = extractImageElements(image);
             return validateImageSrc(src, opts)
                 .then(img => {
-                    assign(this,
-                        [imageSrc, imageSrcWidth, imageSrcHeight, imageSrcOrigin],
-                        [img.src, img.width, img.height, origin || src]
-                    );
+                    this.assignImageToSpreadElement(params, img, origin || src);
                 }, err => {
-                    assign(this, [imageSrc, imageSrcWidth, imageSrcHeight, imageSrcOrigin], []);
-                    alert(err.message);
+                    this.assignImageToSpreadElement(params, err);
                 });
         } else {
-            assign(this, [imageSrc, imageSrcWidth, imageSrcHeight, imageSrcOrigin], []);
+            this.assignImageToSpreadElement(params, null);
         }
     }
 
-    validateListImage(params = {}, meta) {
-        var image = meta();
+    assignImageToSpreadElement(params, imgOrError, origin) {
+        var imageSrc = this.article.meta[params.src],
+            imageSrcWidth = this.article.meta[params.width],
+            imageSrcHeight = this.article.meta[params.height],
+            imageSrcOrigin = this.article.meta[params.origin];
 
-        if (image && image.src) {
-            // This image is already validated
-            return;
-        } else if (image) {
-            let {src, origin} = extractImageElements(image);
-            return validateImageSrc(src, params.options)
-                .then(img => {
-                    assign(this, [meta], [_.extend({}, img, {
-                        origin: origin
-                    })]);
-                }, err => {
-                    assign(this, [meta], []);
-                    alert(err);
-                });
+        if (!imgOrError || imgOrError instanceof Error) {
+            assign(this, [imageSrc, imageSrcWidth, imageSrcHeight, imageSrcOrigin], []);
+            if (imgOrError) {
+                alert(imgOrError);
+            }
         } else {
-            assign(this, [meta], []);
+            assign(this,
+                [imageSrc, imageSrcWidth, imageSrcHeight, imageSrcOrigin],
+                [imgOrError.src, imgOrError.width, imgOrError.height, origin]
+            );
+        }
+    }
+
+    assignToObjectElement(params, imgOrError, origin) {
+        if (!imgOrError || imgOrError instanceof Error) {
+            assign(this, [this.meta], []);
+            if (imgOrError) {
+                alert(imgOrError);
+            }
+        } else {
+            assign(this, [this.meta],[_.extend({}, imgOrError, {
+                origin: origin
+            })]);
         }
     }
 }
