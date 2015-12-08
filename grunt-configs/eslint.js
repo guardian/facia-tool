@@ -1,14 +1,15 @@
 'use strict';
 module.exports = function(grunt, options) {
     return {
-        'facia-tool': {
+        'static': {
             files: [{
                 expand: true,
-                cwd: 'facia-tool/public/js/',
+                cwd: 'public/',
                 src: [
                     '**/*.js',
-                    '!jspm-config.js',
-                    '!components/**/*.js'
+                    '!src/js/jspm-config.js',
+                    '!src/js/components/**/*.js',
+                    '!src/jspm_packages/**/*.js'
                 ]
             }]
         }

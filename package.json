@@ -5,32 +5,27 @@
   "description": "Guardian front pages editor",
   "dependencies": {
     "babel": "5.8.23",
-    "eslint-plugin-jasmine": "^1.5.0",
+    "eslint-plugin-jasmine": "^1.6.0",
     "grunt": "0.4.5",
-    "grunt-contrib-clean": "0.6.0",
     "grunt-eslint": "17.3.1",
     "grunt-karma": "0.12.1",
-    "grunt-shell": "1.1.2",
-    "jasmine-core": "^2.3.4",
+    "jasmine-core": "^2.4.1",
     "jit-grunt": "0.9.1",
-    "jspm": "0.16.11",
-    "karma": "0.13.10",
+    "jspm": "0.16.15",
+    "karma": "0.13.15",
     "karma-jasmine": "0.3.6",
     "karma-phantomjs-launcher": "0.2.1",
-    "karma-spec-reporter": "0.0.20",
-    "load-grunt-config": "0.17.2",
-    "phantomjs": "1.9.18",
+    "karma-spec-reporter": "0.0.23",
+    "load-grunt-config": "0.19.1",
+    "phantomjs": "1.9.19",
     "time-grunt": "1.2.2"
-  },
-  "scripts": {
-    "postinstall": "grunt hookmeup"
   },
   "jspm": {
     "directories": {
-      "baseURL": "facia-tool/public",
-      "lib": "facia-tool/public/js"
+      "baseURL": "public/src",
+      "lib": "public/src/js"
     },
-    "configFile": "facia-tool/public/js/jspm-config.js",
+    "configFile": "public/src/js/jspm-config.js",
     "dependencies": {
       "EventEmitter": "npm:wolfy87-eventemitter@4.3.0",
       "Promise": "npm:native-promise-only@^0.8.1",
