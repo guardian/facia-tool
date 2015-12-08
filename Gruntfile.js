@@ -17,21 +17,13 @@ module.exports = function (grunt) {
 
     // Default task
     grunt.registerTask('default', function () {
-        grunt.task.run(['install', 'validate', 'test']);
+        grunt.task.run(['validate', 'test']);
     });
 
     /**
      * Validate tasks
      */
     grunt.registerTask('validate', ['eslint']);
-
-    /**
-     * Compile tasks
-     */
-
-    grunt.registerTask('install', ['install:npm', 'install:jspm']);
-    grunt.registerTask('install:npm', ['shell:npmInstall']);
-    grunt.registerTask('install:jspm', ['shell:jspmInstall']);
 
     /**
      * Test tasks
@@ -44,9 +36,4 @@ module.exports = function (grunt) {
 
         grunt.task.run('karma');
     });
-
-    /**
-     * Miscellaneous tasks
-     */
-    grunt.registerTask('hookmeup', ['clean:hooks', 'shell:copyHooks']);
 };
