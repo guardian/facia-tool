@@ -1,0 +1,178 @@
+<div class="article" data-bind="
+    click: open,
+    clickBubble: false,
+    css: {
+        open: state.isOpen,
+        underDrag: state.underDrag() && !state.underControlDrag(),
+        underControlDrag: state.underDrag() && state.underControlDrag(),
+        imageHidden: meta.imageHide,
+        slimEditor: slimEditor,
+        visitedArticle: state.visited
+    }">
+
+    <a class="thumb" data-bind="
+        style: {backgroundImage: thumbImage() ? 'url(' + thumbImage() + ')' : ''},
+        attr: {href: id}"></a>
+
+    <!-- ko if: state.imageCutoutSrcFromCapi() && !meta.imageCutoutReplace() -->
+        <a class="thumb--cutout" data-bind="
+            style: { backgroundImage: 'url(' + state.imageCutoutSrcFromCapi() + ')' }"></a>
+    <!-- /ko -->
+
+    <!-- ko if: state.hasMainVideo -->
+        <div class="has-playable"><i class="fa fa-play"></i></div>
+    <!-- /ko -->
+    <!-- ko if: meta.imageSlideshowReplace -->
+        <div class="has-playable"><i class="fa fa-picture-o"></i></div>
+    <!-- /ko -->
+
+    <div data-bind="if: state.isOpen">
+        <div class="article__overrides">
+            <!-- ko foreach: editors -->
+                <trail-editor-widget params="context: $context"></trail-editor-widget>
+            <!-- /ko -->
+        </div>
+
+        <div data-bind="if: state.enableContentOverrides() && group.parentType !== 'Article'">
+            <div class="supporting" data-bind="with: meta.supporting">
+                <div class="droppable" data-bind="
+                    makeDroppable: true,
+                    click: pasteItem,
+                    css: {
+                        underDrag: underDrag() && !underControlDrag(),
+                        underControlDrag: underDrag() && underControlDrag()
+                    }">
+                        <!-- ko foreach: items -->
+                            <trail-widget params="context: $context"></trail-widget>
+                        <!-- /ko -->
+                        <div class="group-separator" data-bind="css: {'pasteOver': $root.isPasteActive && $root.isPasteActive()}">
+                            <span class="helptext">Click to paste</span>
+                        </div>
+                </div>
+            </div>
+            <span class="article-edit supporting-message">Drop content above, hold Ctrl key to replace item</span>
+        </div>
+
+        <div class="tools article-tools">
+            <a class="tool tool--done" data-bind="
+                clickBubble: false,
+                click: closeAndSave">Save edits</a>
+            <a class="tool tool--cancel" data-bind="
+                visible: front,
+                clickBubble: false,
+                click: closeWithoutSaving">Close</a>
+        </div>
+    </div>
+
+    <div class="closed" data-bind="ifnot: state.isOpen">
+        <div data-bind="sparklines: $root.isSparklinesEnabled" class="sparkline"></div>
+
+        <div class="article__tools">
+            <a class="tool tool--small tool--small--paste" title="Paste" data-bind="
+                visible: $root.isPasteActive && $root.isPasteActive(),
+                clickBubble: false,
+                click: paste">
+                <i class="fa fa-arrow-up"></i></a>
+
+            <a class="tool tool--small tool--small--copy" title="Copy" data-bind="
+                css: {'large': $root.isPasteActive && !$root.isPasteActive()},
+                clickBubble: false,
+                click: copy">
+                <i class="fa fa-clone"></i></a>
+
+            <a class="tool tool--small tool--small--copy-to-clipboard" title="Copy to Clipboard" data-bind="
+                css: {'large': $root.isPasteActive && !$root.isPasteActive()},
+                clickBubble: false,
+                click: copyToClipboard">
+                <i class="fa fa-clipboard"></i></a>
+
+            <a class="tool tool--small tool--small--remove" title="Remove" data-bind="
+                clickBubble: false,
+                click: omitItem">
+                <i class="fa fa-trash"></i></a>
+
+            <a class="tool tool--small tool--small--ophan" target="_blank" title="Ophan" data-bind="
+                click: function() { return true; },
+                clickBubble: false,
+                attr: {href: state.ophanUrl}">
+                <i class="fa fa-signal"></i></a>
+
+            <a class="tool tool--small tool--small--href" target="_blank" title="View" data-bind="
+                click: setVisitedToTrue,
+                clickBubble: false,
+                attr: {href: viewUrl}">
+                <i class="fa fa-share"></i></a>
+        </div>
+
+        <a class="article__content" data-bind="attr: {href: id}">
+            <!-- ko if: state.isEmpty -->
+                <div class="is-empty">
+                    <span class="is-empty__url" data-bind="text: id"></span>
+                    This content is currently unavailable
+                </div>
+            <!-- /ko -->
+
+            <!-- ko ifnot: state.isEmpty -->
+                <div class="element element__headline" data-bind="
+                    html: headline,
+                    css: {'is-empty': meta.snapType() && !meta.headline()}"></div>
+
+                <div class="article__ammends">
+                    <div class="article__times">
+                        <span class="time__scheduled" data-bind="text: scheduledPublicationTime"></span>
+                        <span class="time__publication" data-bind="text: webPublicationTime"></span>
+                        <span class="time__front" data-bind="text: frontPublicationTime"></span>
+                        <div class="publisher" data-bind="text: publishedBy"></div>
+                    </div>
+
+                    <!-- ko if: state.premium -->
+                        <span class="label label--premium">premium</span>
+                    <!-- /ko -->
+
+                    <!-- ko if: fields.isLive() === 'false' -->
+                        <span class="label" data-bind="
+                            css: {
+                                'label--takedown': fields.firstPublicationDate(),
+                                'label--draft':   !fields.firstPublicationDate()
+                            },
+                            text: fields.firstPublicationDate() ? 'Taken down' : 'Draft'"></span>
+                    <!-- /ko -->
+
+                    <!-- ko if: meta.snapType -->
+                        <span class="label label--snap">snap</span>
+                        <span class="label label--snap" data-bind="text: meta.snapCss() || meta.snapType()"></span>
+                        <span class="label label--snap-uri" data-bind="text: meta.snapUri"></span>
+                    <!-- /ko -->
+
+                    <!-- ko if: meta.href -->
+                        <span class="label label--snap">url</span>
+                        <span class="label label--snap-uri" data-bind="text: meta.href"></span>
+                    <!-- /ko -->
+
+                    <!-- ko if: meta.supporting && meta.supporting.items().length -->
+                        <span class="has-sublinks">
+                            <span data-bind="text: meta.supporting.items().length"></span> sublink<span data-bind="visible: meta.supporting.items().length > 1">s</span>
+                        </span>
+                    <!-- /ko -->
+
+                    <span class="editorsDisplay" data-bind="template: {name: 'template_editor_boolean_states', foreach: editorsDisplay}"></span>
+
+                    <!-- ko if: state.tone -->
+                        <span class="label" data-bind="text: state.tone"></span>
+                    <!-- /ko -->
+
+                    <span class="trailText" data-bind="
+                        html: meta.trailText() || fields.trailText()"></span>
+                </div>
+            <!-- /ko -->
+        </a>
+
+    </div>
+</div>
+
+<script type="text/html" id="template_editor_boolean_states">
+    <span class="editor--boolean--display">
+        <span class="editor--boolean__label" data-bind="text: $data"></span>
+        <span class="editor--boolean__state">✔</span>
+    </span>
+</script>

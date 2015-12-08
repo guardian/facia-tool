@@ -10,7 +10,7 @@ set +x
 echo "##teamcity[progressStart 'sbt test and package']"
 set -x
 
-./sbt-tc "project facia-tool" compile test assets debian:packageBin
+./sbt-tc compile test assets debian:packageBin
 
 set +x
 echo "##teamcity[progressFinish 'sbt test and package']"
@@ -26,8 +26,8 @@ echo "package for facia-tool"
 app_folder="dist/facia-tool"
 
 mkdir -p "$app_folder/packages/facia-tool"
-cp "facia-tool/conf/deploy.json"                        "$app_folder"
-cp "facia-tool/target/facia-tool_1.0_all.deb"  "$app_folder/packages/facia-tool"
+cp "conf/deploy.json"                        "$app_folder"
+cp "target/facia-tool_1.0_all.deb"  "$app_folder/packages/facia-tool"
 
 pushd $app_folder
 zip -r "../artifacts.zip" .
