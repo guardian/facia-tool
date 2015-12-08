@@ -1,0 +1,72 @@
+    {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "Facia tool template to create cross account roles.",
+        "Parameters": {
+            "CMSFrontsAccountId": {
+                "Description": "The AWS account ID for CMS Fronts",
+                "Type": "String",
+                "Default": "163592447864"
+            }
+        },
+        "Resources": {
+            "FaciaToolRole": {
+                "Type": "AWS::IAM::Role",
+                "Properties": {
+                    "Path": "/",
+                    "AssumeRolePolicyDocument": {
+                        "Statement": [
+                            {
+                                "Action": "sts:AssumeRole",
+                                "Effect": "Allow",
+                                "Principal": {
+                                    "AWS": {
+                                        "Fn::Join": [
+                                            "",
+                                            [
+                                                "arn:aws:iam::",
+                                                {
+                                                    "Ref": "CMSFrontsAccountId"
+                                                },
+                                                ":root"
+                                            ]
+                                        ]
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "CrossAccountPolicies": {
+                "Type": "AWS::IAM::Policy",
+                "Properties": {
+                    "PolicyName": "cms-front",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": [
+                                    "s3:GetObject"
+                                ],
+                                "Resource": "arn:aws:s3:::pan-domain-auth-settings/*"
+                            }
+                        ]
+                    },
+                    "Roles": [
+                        {
+                            "Ref": "FaciaToolRole"
+                        }
+                    ]
+                }
+            }
+        },
+        "Outputs": {
+            "FaciaToolRole": {
+                "Description": "The name of the FaciaToolRole",
+                "Value": {
+                    "Ref": "FaciaToolRole"
+                }
+            }
+        }
+    }

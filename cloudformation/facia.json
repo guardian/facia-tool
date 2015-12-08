@@ -1,0 +1,538 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Facia Tool Service",
+    "Parameters": {
+        "GuardianIP": {
+            "Description": "Ip range for the office",
+            "Type": "String",
+            "Default": "77.91.248.0/21"
+        },
+        "Stage": {
+            "Description": "Environment name",
+            "Type": "String",
+            "AllowedValues": [
+                "CODE",
+                "PROD"
+            ],
+            "Default": "PROD"
+        },
+        "Project": {
+            "Description": "Project name",
+            "Type": "String",
+            "AllowedValues": [
+                "facia-tool",
+                "packages"
+            ],
+            "Default": "facia-tool"
+        },
+        "FrontendRoleToAssume": {
+            "Description": "Frontend Role to assume for cross account policies",
+            "Type": "String",
+            "Default": "arn:aws:iam::642631414762:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX"
+        },
+        "LogServerRoleToAssume": {
+            "Description": "Composer role to assume access to the kinesis log stash stream",
+            "Type": "String",
+            "Default": "arn:aws:iam::743583969668:role/FrontsRoleForLogStash-FaciaToolRole-GX5KBXQZGL5X"
+        },
+        "AvailabilityZones": {
+            "Description": "The availability zone where instances are allowed to run",
+            "Type": "List<AWS::EC2::AvailabilityZone::Name>",
+            "Default": "eu-west-1a,eu-west-1b,eu-west-1c"
+        },
+        "SwitchboardBucket": {
+            "Description": "Bucket where switchboard writes switches status",
+            "Type": "String",
+            "Default": "arn:aws:s3:::facia-switches/*"
+        },
+        "PandaRoleToAssume": {
+            "Description": "Role to access panda bucket",
+            "Type": "String",
+            "Default": "arn:aws:iam::753338109777:role/Fronts-panda-IAM-FaciaToolRole-NKNXCYEGL0F6"
+        }
+    },
+    "Mappings": {
+        "FaciaToolCertMap": {
+            "PROD": {
+                "CertName": "arn:aws:iam::163592447864:server-certificate/star.gutools.co.uk-exp2018-11-17"
+            },
+            "CODE": {
+                "CertName": "arn:aws:iam::163592447864:server-certificate/sites.code.dev-gutools.co.uk"
+            }
+        },
+        "StageMap": {
+            "PROD": {
+                "MinSize": 3,
+                "MaxSize": 6,
+                "DesiredCapacity": 3,
+                "InstanceType": "c3.large"
+            },
+            "CODE": {
+                "MinSize": 1,
+                "MaxSize": 2,
+                "DesiredCapacity": 1,
+                "InstanceType": "m3.medium"
+            }
+        }
+    },
+    "Resources": {
+        "DistributionInstanceProfile": {
+            "Type": "AWS::IAM::InstanceProfile",
+            "Properties": {
+                "Path": "/",
+                "Roles": [
+                    {
+                        "Ref": "DistributionRole"
+                    }
+                ]
+            }
+        },
+        "DistributionRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "ec2.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "Path": "/",
+                "Policies": [
+                    {
+                        "PolicyName": "root",
+                        "PolicyDocument": {
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "s3:GetObject"
+                                    ],
+                                    "Resource": [
+                                        "arn:aws:s3:::facia-dist/*",
+                                        "arn:aws:s3:::facia-private/*"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "PanDomainPolicy": {
+          "Type": "AWS::IAM::Policy",
+          "Properties": {
+            "PolicyName": "PanDomainPolicy",
+            "PolicyDocument": {
+                "Statement": [{
+                    "Effect": "Allow",
+                    "Action": "sts:AssumeRole",
+                    "Resource": { "Ref" : "PandaRoleToAssume" }
+                }]
+            },
+            "Roles": [{"Ref": "DistributionRole"}]
+          }
+        },
+        "PermissionsPolicy": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "PermissionsPolicy",
+                "PolicyDocument": {
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": ["s3:GetObject"],
+                            "Resource": ["arn:aws:s3:::permissions-cache/*"]
+                        }
+                    ]
+                },
+                "Roles": [{"Ref": "DistributionRole"}]
+            }
+        },
+        "CrossAccountPolicy": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "CrossAccountPolicy",
+                "PolicyDocument": {
+                    "Version" : "2012-10-17",
+                    "Statement": [{
+                        "Effect": "Allow",
+                        "Action": "sts:AssumeRole",
+                        "Resource": { "Ref" : "FrontendRoleToAssume" }
+                    }]
+                },
+                "Roles": [{ "Ref": "DistributionRole" }]
+            }
+        },
+        "LogServerPolicy": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "LogServerPolicy",
+                "PolicyDocument": {
+                    "Version" : "2012-10-17",
+                    "Statement": [{
+                        "Effect": "Allow",
+                        "Action": "sts:AssumeRole",
+                        "Resource": { "Ref" : "LogServerRoleToAssume" }
+                    } ]
+                },
+                "Roles": [{ "Ref": "DistributionRole" }]
+            }
+        },
+        "SwitchesPolicy": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "SwitchesPolicy",
+                "PolicyDocument": {
+                    "Version" : "2012-10-17",
+                    "Statement": [{
+                        "Effect": "Allow",
+                        "Action": "s3:GetObject",
+                        "Resource": { "Ref" : "SwitchboardBucket" }
+                    } ]
+                },
+                "Roles": [{ "Ref": "DistributionRole" }]
+            }
+        },
+        "CloudwatchPolicy": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "CloudwatchPolicy",
+                "PolicyDocument": {
+                    "Version" : "2012-10-17",
+                    "Statement": [{
+                        "Effect": "Allow",
+                        "Action": [
+                          "cloudwatch:GetMetricStatistics",
+                          "cloudwatch:ListMetrics",
+                          "cloudwatch:PutMetricData"
+                        ],
+                        "Resource": "*"
+                    } ]
+                },
+                "Roles": [{ "Ref": "DistributionRole" }]
+            }
+        },
+        "UpdatesStreamPolicy": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "UpdatesStreamPolicy",
+                "PolicyDocument": {
+                    "Version" : "2012-10-17",
+                    "Statement": [{
+                        "Effect": "Allow",
+                        "Action": [
+                            "kinesis:*"
+                        ],
+                        "Resource": { "Fn::Join" : [ "", [ "arn:aws:kinesis:", { "Ref": "AWS::Region" }, ":", { "Ref": "AWS::AccountId" }, ":stream/", { "Ref": "KinesisUpdateStream" } ]]}
+                    } ]
+                },
+                "Roles": [{ "Ref": "DistributionRole" }]
+            }
+        },
+        "StoryPackagesPolicy": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "StoryPackagesPolicy",
+                "PolicyDocument": {
+                    "Version" : "2012-10-17",
+                    "Statement": [{
+                        "Effect": "Allow",
+                        "Action": [
+                            "s3:GetObject",
+                            "s3:PutObject",
+                            "s3:PutObjectAcl",
+                            "s3:ListBucket"
+                        ],
+                        "Resource": "arn:aws:s3:::story-packages-store/*"
+                    } ]
+                },
+                "Roles": [{ "Ref": "DistributionRole" }]
+            }
+        },
+        "SSHSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "Allow SSH access from the office",
+                "SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "22",
+                        "ToPort": "22",
+                        "CidrIp": {
+                            "Ref": "GuardianIP"
+                        }
+                    }
+                ]
+            }
+        },
+        "AppServerSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "Application servers",
+                "SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": 9000,
+                        "ToPort": 9000,
+                        "CidrIp": {
+                            "Ref": "GuardianIP"
+                        }
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": 9000,
+                        "ToPort": 9000,
+                        "SourceSecurityGroupName": {
+                            "Fn::GetAtt": [
+                                "FaciaLoadBalancer",
+                                "SourceSecurityGroup.GroupName"
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "LoadBalancerSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "Facia application load balancer",
+                "SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "80",
+                        "ToPort": "80",
+                        "CidrIp": "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "9080",
+                        "ToPort": "9080",
+                        "CidrIp": "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "443",
+                        "ToPort": "443",
+                        "CidrIp": "0.0.0.0/0"
+                    }
+                ]
+            }
+        },
+        "FaciaLoadBalancer": {
+            "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+            "Properties": {
+                "AvailabilityZones": { "Ref": "AvailabilityZones" },
+                "CrossZone": true,
+                "SecurityGroups": [
+                    {
+                        "Fn::GetAtt": [
+                            "LoadBalancerSecurityGroup",
+                            "GroupId"
+                        ]
+                    }
+                ],
+                "Listeners": [
+                    {
+                        "LoadBalancerPort": "80",
+                        "InstancePort": "9000",
+                        "Protocol": "HTTP"
+                    },
+                    {
+                        "LoadBalancerPort": "443",
+                        "InstancePort": "9000",
+                        "Protocol": "HTTPS",
+                        "InstanceProtocol": "HTTP",
+                        "SSLCertificateId": {
+                            "Fn::FindInMap": [
+                                "FaciaToolCertMap",
+                                {
+                                    "Ref": "Stage"
+                                },
+                                "CertName"
+                            ]
+                        }
+                    }
+                ],
+                "HealthCheck": {
+                    "Target": "HTTP:9000/status",
+                    "HealthyThreshold": "2",
+                    "UnhealthyThreshold": "10",
+                    "Interval": "60",
+                    "Timeout": "5"
+                }
+            }
+        },
+        "FaciaAutoscalingGroup": {
+            "Type": "AWS::AutoScaling::AutoScalingGroup",
+            "Properties": {
+                "AvailabilityZones": { "Ref": "AvailabilityZones" },
+                "LaunchConfigurationName": {
+                    "Ref": "FaciaLaunchConfig"
+                },
+                "MinSize": {
+                    "Fn::FindInMap": ["StageMap", { "Ref": "Stage" }, "MinSize" ]
+                },
+                "MaxSize": {
+                    "Fn::FindInMap": ["StageMap", { "Ref": "Stage" }, "MaxSize" ]
+                },
+                "DesiredCapacity": {
+                    "Fn::FindInMap": ["StageMap", { "Ref": "Stage" }, "DesiredCapacity" ]
+                },
+                "Cooldown": "180",
+                "HealthCheckType": "ELB",
+                "HealthCheckGracePeriod": 200,
+                "LoadBalancerNames": [
+                    {
+                        "Ref": "FaciaLoadBalancer"
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Stage",
+                        "Value": {
+                            "Ref": "Stage"
+                        },
+                        "PropagateAtLaunch": "true"
+                    },
+                    {
+                        "Key": "Stack",
+                        "Value": "cms-fronts",
+                        "PropagateAtLaunch": "true"
+                    },
+                    {
+                        "Key": "App",
+                        "Value": "facia-tool",
+                        "PropagateAtLaunch": "true"
+                    },
+                    {
+                        "Key": "Project",
+                        "Value": {
+                            "Ref": "Project"
+                        },
+                        "PropagateAtLaunch": "true"
+                    }
+
+                ]
+            }
+        },
+        "KinesisUpdateStream": {
+            "Type": "AWS::Kinesis::Stream",
+            "Properties": {
+                "ShardCount": 1
+            }
+        },
+        "FaciaLaunchConfig": {
+            "Type": "AWS::AutoScaling::LaunchConfiguration",
+            "Metadata": {
+                "AWS::CloudFormation::Authentication": {
+                    "distributionAuthentication": {
+                        "type": "S3",
+                        "roleName": {
+                            "Ref": "DistributionRole"
+                        },
+                        "buckets": [
+                            "facia-dist"
+                        ]
+                    }
+                },
+                "AWS::CloudFormation::Init": {
+                    "config": {
+                        "users": {
+                            "facia-tool": {
+                                "homeDir": "/home/facia-tool"
+                            }
+                        },
+                        "files": {
+                            "/home/facia-tool/facia-tool.all.deb": {
+                                "source": { "Fn::Join" : ["", [
+                                    "https://s3-eu-west-1.amazonaws.com/facia-dist/cms-fronts/",
+                                    { "Ref": "Stage" },
+                                    "/facia-tool/facia-tool_1.0_all.deb"
+                                ]]},
+                                "authentication": "distributionAuthentication"
+                            },
+                            "/etc/gu/facia-tool.application.secrets.conf": {
+                                "source": { "Fn::Join" : ["", [
+                                    "https://s3-eu-west-1.amazonaws.com/facia-private/facia-tool.application.secrets.conf"
+                                ]]},
+                                "mode": "000400",
+                                "owner": "facia-tool",
+                                "authentication": "distributionAuthentication"
+                            },
+                            "/etc/gu/facia-tool.properties": {
+                                "content": { "Fn::Join" : ["", [
+                                    "STAGE=", { "Ref" : "Stage" }, "\n",
+                                    "PROJECT=", { "Ref" : "Project" }, "\n",
+                                    "STS_ROLE=", { "Ref" : "FrontendRoleToAssume" }, "\n",
+                                    "STREAM=", { "Ref" : "KinesisUpdateStream" }, "\n"
+                                ]]}
+                            }
+                        }
+                    }
+                }
+            },
+            "Properties": {
+                "KeyName": "fronts",
+                "ImageId": "ami-ddd87dae",
+                "InstanceType": {
+                    "Fn::FindInMap": [
+                        "StageMap",
+                        { "Ref": "Stage" },
+                        "InstanceType"
+                    ]
+                },
+                "SecurityGroups": [
+                    { "Ref": "AppServerSecurityGroup" },
+                    { "Ref": "SSHSecurityGroup" }
+                ],
+                "IamInstanceProfile": {
+                    "Ref": "DistributionInstanceProfile"
+                },
+                "UserData": {
+                    "Fn::Base64": {
+                        "Fn::Join": [
+                            "",
+                            [
+                                "#!/bin/bash -ev\n",
+                                "cfn-init -s ",
+                                { "Ref": "AWS::StackId" },
+                                " -r FaciaLaunchConfig ",
+                                "  --region ",
+                                { "Ref": "AWS::Region" },
+                                " || error_exit 'Failed to run cfn-init'\n",
+
+                                "dpkg -i /home/facia-tool/facia-tool.all.deb"
+                            ]
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "Outputs": {
+        "FaciaLoadBalancerDNS": {
+            "Description": "Load balancer DNS",
+            "Value": {
+                "Fn::GetAtt": [
+                    "FaciaLoadBalancer",
+                    "DNSName"
+                ]
+            }
+        },
+        "UpdateStream": {
+            "Description": "Kinesis stream with stream updates",
+            "Value": {
+                "Ref": "KinesisUpdateStream"
+            }
+        }
+    }
+}

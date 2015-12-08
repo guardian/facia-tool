@@ -1,0 +1,40 @@
+<div class="col__inner scrollable">
+    <div class="title">
+        Search
+    </div>
+    <div class="search-form">
+        <input
+          type="text"
+          placeholder="search for collections"
+          data-bind="
+            textInput: searchTerm
+        "/>
+    </div>
+    <div class="cnf-fronts open" data-bind="foreach: searchedFronts">
+        <div class="cnf-front open">
+            <div class="title" data-bind="visible: id">
+                <span class="title--text" data-bind="
+                    text: id
+                "></span>
+            </div>
+            <ol class="cnf-front__inner search_list" data-bind="foreach: collections, makeDraggable: true">
+                <li class="cnf-collection open">
+                    <a class="cnf-collection__name" data-bind="
+                        attr: {href: '/' + id, title: id},
+                        click: function() { return false;},
+                        text: meta.displayName() || '(no title)'"></a>
+                    <span class="placements" data-bind="if: parents().length > 1">
+                        also on
+                        <span data-bind="foreach: parents">
+                            <!-- ko if: $parents[1].id !== id -->
+                                <span class="cnf-collection__also-on" data-bind="
+                                    text: id"
+                                ></span>
+                            <!-- /ko -->
+                        </span>
+                    </span>
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>

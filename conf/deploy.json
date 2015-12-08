@@ -1,0 +1,24 @@
+{
+    "defaultStacks": ["cms-fronts"],
+    "packages":{
+        "facia-tool": {
+            "type": "autoscaling",
+            "data": {
+                "port": 9000,
+                "bucket": "facia-dist",
+                "publicReadAcl": false
+            }
+        }
+    },
+    "recipes":{
+        "default":{
+            "depends" : ["artifactUpload", "deploy"]
+        },
+        "deploy":{
+            "actionsBeforeApp": ["facia-tool.deploy"]
+        },
+        "artifactUpload":{
+            "actionsBeforeApp": ["facia-tool.uploadArtifacts"]
+        }
+    }
+}

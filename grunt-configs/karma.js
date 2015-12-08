@@ -14,8 +14,8 @@ module.exports = function(grunt, options) {
             browsers: ['PhantomJS'],
             captureTimeout: 60000
         },
-        'facia-tool': {
-            configFile: 'facia-tool/test/public/conf/karma.conf.js'
+        'static': {
+            configFile: 'public/test/conf/karma.conf.js'
         }
     };
 };

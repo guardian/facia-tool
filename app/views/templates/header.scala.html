@@ -1,0 +1,54 @@
+@(stage: String, identity: Option[com.gu.pandomainauth.model.User] = None)
+
+<header>
+    <div class="header__group header__logo">
+        <a href="/" class="header__logo-link" target="_top">
+            <img class="logo" src="/assets/images/edit-pen.png" />
+            <h1 class="header__item header__link">
+                <span data-bind="text: title()">fronts</span>
+                @if(Play.isDev && stage.toLowerCase != "dev") { : @stage }
+            </h1>
+        </a>
+    </div>
+
+    <div class="header__group topAction dropdown closed" data-bind="css: {
+        closed: !isMainActionVisible()
+    }">
+        <div class="topAction__unit">
+            <button class="dropdown__trigger topAction__expand" data-bind="toggleClick: isMainActionVisible">
+                <span>@identity.map(_.firstName).getOrElse("") @identity.map(_.lastName).getOrElse("")</span>
+                <i class="fa fa-chevron-down dropdown__trigger__icon"></i>
+            </button>
+            <ul class="dropdown__item topAction__dropdown">
+                <li class="dropdown__item">
+                    <a href="https://docs.google.com/a/guardian.co.uk/forms/d/1fA_a1V3--DHjb7ltKYQtDtLfHxsKVl1RIHmMNWafC0I/viewform" target="_blank">Send Feedback</a>
+                </li>
+                <!-- ko if: !layout.configVisible() -->
+                <li class="dropdown__item" data-bind="click: chooseLayout">
+                    <a href="#">Workspace</a>
+                </li>
+                <!-- /ko -->
+                <li class="dropdown__item">
+                    <a href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ko if: layout.configVisible() -->
+    <div style="display: none;" class="header__group secondary-action" data-bind="visible: true">
+        <div class="secondary-action__unit">
+            <button class="secondary-action__button action__cancel" data-bind="click: cancelLayout">
+                Cancel
+            </button>
+            <button class="secondary-action__button action__save" data-bind="click: saveLayout">
+                Save
+            </button>
+        </div>
+    </div>
+    <!-- /ko -->
+
+    <div style="display: none;" class="header__group state__pending" data-bind="visible: pending">
+        <div class="updating">Updating</div>
+    </div>
+</header>
