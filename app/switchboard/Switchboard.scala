@@ -1,6 +1,6 @@
 package switchboard
 
-import com.amazonaws.auth.AWSCredentials
+import com.amazonaws.auth.AWSCredentialsProvider
 import conf.{Configuration, aws}
 import play.api.{Application, GlobalSettings, Logger}
 import play.libs.Akka
@@ -11,14 +11,14 @@ import scala.concurrent.duration._
 case class SwitchboardConfiguration (
   bucket: String,
   objectKey: String,
-  credentials: AWSCredentials
+  credentials: AWSCredentialsProvider
 )
 
 trait Lifecycle extends GlobalSettings {
   lazy val client: S3client = new S3client(SwitchboardConfiguration(
     bucket = Configuration.switchBoard.bucket,
     objectKey = Configuration.switchBoard.objectKey,
-    credentials = aws.mandatoryCredentials.getCredentials
+    credentials = aws.mandatoryCredentials
   ))
 
   override def onStart(app: Application) {
