@@ -71,7 +71,8 @@ export default {
     maxFronts: {
         'editorial': 200,
         'commercial': 350,
-        'training': 50
+        'training': 50,
+        'advertisement': 100
     },
     frontAlertLimit: 10,
     frontGroups: [
