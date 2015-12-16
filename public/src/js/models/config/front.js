@@ -220,8 +220,15 @@ export default class ConfigFront extends BaseClass {
 
     applyConstraints() {
         if (this.props.priority() === 'training' || this.props.priority() === 'advertisement') {
-            this.state.isTypeLocked = true;
             this.props.isHidden(true);
+        }
+
+        if (this.props.priority() === 'training') {
+            this.state.isTypeLocked = true;
+        }
+
+        if (this.props.priority() === 'advertisement') {
+            this.state.isMetaLocked = true;
         }
     }
 
