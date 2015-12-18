@@ -10,6 +10,7 @@ define([
     'utils/full-trim',
     'utils/human-time',
     'utils/is-guardian-url',
+    'utils/is-preview-url',
     'utils/logger',
     'utils/mediator',
     'utils/populate-observables',
@@ -38,6 +39,7 @@ define([
         fullTrim,
         humanTime,
         isGuardianUrl,
+        isPreviewUrl,
         logger,
         mediator,
         populateObservables,
@@ -58,6 +60,7 @@ define([
         deepGet = deepGet.default;
         fullTrim = fullTrim.default;
         isGuardianUrl = isGuardianUrl.default;
+        isPreviewUrl = isPreviewUrl.default;
         urlHost = urlHost.default;
         sanitizeHtml = sanitizeHtml.default;
         urlAbsPath = urlAbsPath.default;
@@ -418,8 +421,14 @@ define([
         };
 
         Article.prototype.convertToSnap = function() {
-            var id = this.id(),
-                href = isGuardianUrl(id) ? '/' + urlAbsPath(id) : id;
+            var id = this.id();
+            var href;
+
+            if (isGuardianUrl(id) || isPreviewUrl(id)) {
+                href = '/' + urlAbsPath(id);
+            } else {
+                href = id;
+            }
 
             this.meta.href(href);
             this.id(snap.generateId());
