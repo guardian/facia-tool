@@ -42,11 +42,6 @@ export default {
         editions: ['uk', 'us', 'au'],
         email: 'someone@theguardian.com',
         avatarUrl: '',
-        lowFrequency: 60,
-        highFrequency: 2,
-        standardFrequency: 5,
-        fixedContainers: [{ 'name':'fixed/test' }],
-        dynamicContainers: [{ 'name':'dynamic/test' }],
         switches: {
             'facia-tool-disable': false,
             'facia-tool-draft-content': true,
