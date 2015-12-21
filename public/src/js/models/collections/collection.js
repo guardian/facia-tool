@@ -54,7 +54,7 @@ define([
 
         this.alsoOn = opts.alsoOn || [];
 
-        this.isDynamic = !!_.findWhere(vars.CONST.typesDynamic, {name: opts.type});
+        this.isDynamic = opts.type.indexOf('dynamic/') === 0;
 
         this.dom = undefined;
         var onDomLoadResolve;

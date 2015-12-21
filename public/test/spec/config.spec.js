@@ -26,7 +26,7 @@ describe('Config', function () {
             var data = request.data;
             expect(data.id).toEqual('test/front');
             expect(data.initialCollection.displayName).toEqual('gossip');
-            expect(data.initialCollection.type).toEqual('dynamic/test');
+            expect(data.initialCollection.type).toEqual('fixed/small/slow-VI');
             expect(data.priority).toEqual('test');
 
             $('.contentPane:nth(1) .title--text:nth(1)').click();
@@ -85,7 +85,7 @@ describe('Config', function () {
                     },
                     collections: {
                         'gossip': {
-                            type: 'dynamic/test',
+                            type: 'fixed/small/slow-VI',
                             displayName: 'gossip'
                         }
                     }

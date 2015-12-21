@@ -6,11 +6,64 @@ export default {
         'code': 'http://m.code.dev-theguardian.com/'
     },
 
-    extendDynamicContainers: [
-        {name: 'nav/list'},
-        {name: 'nav/media-list'},
-        {name: 'news/most-popular'},
-        {name: 'breaking-news/not-for-other-fronts', groups: ['minor', 'major']}
+    types: [
+        { 'name': 'fixed/small/slow-VI' },
+        { 'name': 'fixed/medium/slow-VIII' },
+        { 'name': 'fixed/small/slow-IV' },
+        { 'name': 'fixed/medium/fast-XII' },
+        { 'name': 'fixed/small/slow-III' },
+        { 'name': 'fixed/small/slow-V-third' },
+        { 'name': 'fixed/small/slow-I' },
+        { 'name': 'fixed/medium/slow-VI' },
+        { 'name': 'fixed/large/slow-XIV' },
+        { 'name': 'fixed/medium/fast-XI' },
+        { 'name': 'fixed/large/fast-XV' },
+        { 'name': 'fixed/medium/slow-XII-mpu' },
+        { 'name': 'fixed/thrasher' },
+        { 'name': 'fixed/small/fast-X' },
+        { 'name': 'fixed/small/slow-II' },
+        { 'name': 'fixed/medium/slow-VII' },
+        { 'name': 'fixed/small/fast-VIII' },
+        { 'name': 'fixed/small/slow-V-mpu' },
+        { 'name': 'fixed/small/slow-V-half' },
+        {
+          'name': 'dynamic/fast',
+          'groups': [
+            'standard',
+            'big',
+            'very big',
+            'huge'
+          ]
+        },
+        {
+          'name': 'dynamic/slow',
+          'groups': [
+            'standard',
+            'big',
+            'very big',
+            'huge'
+          ]
+        },
+        {
+          'name': 'dynamic/package',
+          'groups': [
+            'standard',
+            'snap'
+          ]
+        },
+        {
+          'name': 'dynamic/slow-mpu',
+          'groups': [
+            'standard',
+            'big'
+          ]
+        },
+        { name: 'nav/list' },
+        { name: 'nav/media-list' },
+        { name: 'news/most-popular' },
+        { name: 'breaking-news/not-for-other-fronts', groups: ['minor', 'major'] },
+        { name: 'commercial/single-campaign' },
+        { name: 'commercial/multi-campaign' }
     ],
 
     navSections: [
@@ -102,6 +155,11 @@ export default {
     sparksRefreshMs:      300000,
     pubTimeRefreshMs:      30000,
     searchDebounceMs:        300,
+    frontAgeAlertMs: {
+        front:      60000 * 2 * 1,
+        editorial:  60000 * 2 * 5,
+        commercial: 60000 * 2 * 60
+    },
 
     highFrequencyPaths:    ['uk', 'us', 'au', 'uk/sport', 'us/sport', 'au/sport'],
 
