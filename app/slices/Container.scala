@@ -12,7 +12,9 @@ object Container {
     ("dynamic/slow-mpu", Dynamic(DynamicSlowMPU)),
     ("nav/list", NavList),
     ("nav/media-list", NavMediaList),
-    ("news/most-popular", MostPopular)
+    ("news/most-popular", MostPopular),
+    ("commercial/single-campaign", Commercial),
+    ("commercial/multi-campaign", Commercial)
   ) ++ FixedContainers.all.mapValues(Fixed.apply)
 
   /** So that we don't blow up at runtime, which would SUCK */
@@ -34,3 +36,4 @@ case class Fixed(get: ContainerDefinition) extends Container
 case object NavList extends Container
 case object NavMediaList extends Container
 case object MostPopular extends Container
+case object Commercial extends Container
