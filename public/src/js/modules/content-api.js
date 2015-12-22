@@ -23,9 +23,11 @@ function getTagOrSectionTitle(response) {
         .value();
 }
 
-function fetchContent(apiUrl) {
+function fetchContent(apiUrl, {
+    forceLive = false
+} = {}) {
     return request({
-        url: CONST.apiSearchBase + '/' + apiUrl
+        url: (forceLive ? CONST.apiLiveBase : CONST.apiSearchBase) + '/' + apiUrl
     }).then(function(resp) {
         if (!resp.response
             || _.intersection(['content', 'editorsPicks', 'results', 'mostViewed'], _.keys(resp.response)).length === 0
