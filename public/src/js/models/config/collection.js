@@ -133,7 +133,7 @@ export default class ConfigCollection extends DropTarget {
                 this.meta.apiQuery(apiQuery);
                 this[apiQuerySym](apiQuery)
                 .then((res = {}) => {
-                    var results = res.content || [];
+                    var results = (res.content || []).filter(item => item.fields && item.fields.headline);
                     this.capiResults(results);
                     this.state.apiQueryStatus(results.length ? 'valid' : 'invalid');
                 })
@@ -161,7 +161,7 @@ export default class ConfigCollection extends DropTarget {
         apiQuery += apiQuery.indexOf('?') < 0 ? '?' : '&';
         apiQuery += 'show-fields=headline';
 
-        return contentApi.fetchContent(apiQuery);
+        return contentApi.fetchContent(apiQuery, { forceLive: true });
     }
 
     get() {
