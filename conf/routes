@@ -25,10 +25,12 @@ GET         /                                        controllers.FaciaToolContro
 GET         /editorial                               controllers.FaciaToolController.collectionEditor()
 GET         /commercial                              controllers.FaciaToolController.collectionEditor()
 GET         /training                                controllers.FaciaToolController.collectionEditor()
+GET         /advertisement                           controllers.FaciaToolController.collectionEditor()
 
 GET         /editorial/config                        controllers.FaciaToolController.configEditor()
 GET         /commercial/config                       controllers.FaciaToolController.configEditor()
 GET         /training/config                         controllers.FaciaToolController.configEditor()
+GET         /advertisement/config                    controllers.FaciaToolController.configEditor()
 
 POST        /collection/publish/*collectionId        controllers.FaciaToolController.publishCollection(collectionId)
 POST        /collection/discard/*collectionId        controllers.FaciaToolController.discardCollection(collectionId)

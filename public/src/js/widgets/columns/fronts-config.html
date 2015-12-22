@@ -126,7 +126,10 @@
              <!-- ko if: id -->
                 <div class="instructions">
                     <!-- ko if: !state.isOpenProps() && collections.items().length -->
-                        <span class="linky tool--metadata" data-bind="click: openProps">edit metadata</span>
+                        <span class="linky tool--metadata" data-bind="
+                          click: openProps,
+                          visible: !state.isMetaLocked
+                        ">edit metadata</span>
                         &middot;
                         <a class='tool--content' data-bind="attr: {href: '/' + $root.fullPriority + '?layout=latest,front:' + id()}">edit content</a>
                         &middot;
