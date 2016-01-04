@@ -160,6 +160,7 @@ export default {
         editorial:  60000 * 2 * 5,
         commercial: 60000 * 2 * 60
     },
+    failsBeforeError:           2,
 
     highFrequencyPaths:    ['uk', 'us', 'au', 'uk/sport', 'us/sport', 'au/sport'],
 
