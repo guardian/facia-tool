@@ -91,6 +91,8 @@ class Latest extends BaseClass {
         this.showTop = ko.pureComputed(function () {
             return this.page() > 2;
         }, this);
+
+        this.errorCount = 0;
     }
 
     [fetchSym](request) {
@@ -102,6 +104,7 @@ class Latest extends BaseClass {
             pages,
             currentPage
         }) => {
+            this.errorCount = 0;
             var scrollable = this.opts.container.querySelector('.scrollable'),
                 initialScroll = scrollable.scrollTop;
 
@@ -122,11 +125,14 @@ class Latest extends BaseClass {
             this.emit('search:update');
         })
         .catch((error = {}) => {
-            var errMsg = error.message || 'Invalid CAPI result. Please try again';
-            mediator.emit('capi:error', errMsg);
-            this.flush(errMsg);
-            loadCallback();
-            this.emit('search:update');
+            this.errorCount += 1;
+            if (this.errorCount > CONST.failsBeforeError) {
+                var errMsg = error.message || 'Invalid CAPI result. Please try again';
+                mediator.emit('capi:error', errMsg);
+                this.flush(errMsg);
+                loadCallback();
+                this.emit('search:update');
+            }
         });
     }
 
