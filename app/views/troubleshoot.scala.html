@@ -1,0 +1,44 @@
+@(identity: com.gu.pandomainauth.model.User)
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Troubleshoot - Fronts tool</title>
+    <meta name="description" content="Troubleshoot fronts">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://fonts.googleapis.com/css?family=Raleway:100,400" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/assets/css/troubleshoot.css">
+
+    <script src="/assets/jspm_packages/system.js"></script>
+    <script src="/assets/js/jspm-config.js"></script>
+
+    <script>System.import('troubleshoot');</script>
+</head>
+    <body class="layoutContainer">
+        <nav class="leftSidebar navigationContainer">
+            <div class="userProfileContainer paddedContent">
+                <div class="imageProfile">
+                    <img width="50px" class="imageProfile_image" src="@{identity.avatarUrl}">
+                </div>
+                <div class="welcomeMessage">
+                    <span class="welcomeMessage_cheers">What can I do you for?</span>
+                    <span class="welcomeMessage_userName">@{identity.firstName}</span>
+                </div>
+            </div>
+
+            <ul class="navigationOptions">
+                <li class="navigationItem">
+                    <a href="#stale" id="stale" class="navigationItem_link">
+                        <span class="navigationItem_text">Stale fronts</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="mainContainer">
+            Yup<br>
+        </main>
+    </body>
+</html>

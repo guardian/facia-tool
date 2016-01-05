@@ -1,0 +1,193 @@
+html {
+    height: 100vh;
+    box-sizing: border-box;
+}
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+body {
+    font-family: "Raleway", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    margin: 0;
+}
+
+/* General */
+
+.paddedContent {
+    padding: 12px;
+}
+.code {
+    font-family: monospace;
+}
+
+
+/* Layout */
+
+.layoutContainer {
+    display: flex;
+    flex-flow: row nowrap;
+}
+.leftSidebar {
+    flex: 0 0 300px;
+    height: 100vh;
+}
+.mainContainer {
+    flex: 1;
+    background-color: #F5F5F5;
+    overflow: auto;
+    padding: 20px;
+    height: 100vh;
+}
+
+
+/* Sidebar */
+
+.navigationContainer {
+    background-color: #2B2E3B;
+    color: white;
+
+    display: flex;
+    flex-flow: column nowrap;
+}
+.userProfileContainer {
+    background-color: #9A7FCE;
+    flex: 0 0 80px;
+
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+}
+.imageProfile_image {
+    width: 50px;
+    border-radius: 50px;
+}
+.welcomeMessage_cheers {
+    font-weight: 100;
+    margin-left: 12px;
+}
+.welcomeMessage_userName {
+    display: block;
+    margin-left: 12px;
+}
+.navigationOptions {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.navigationItem {
+    line-height: 60px;
+    box-shadow: -10px 26px 8px -29px rgba(255,255,255,0.7);
+}
+.navigationItem_link,
+.navigationItem_link:visited {
+    display: block;
+    color: #bbb;
+    text-decoration: none;
+}
+.navigationItem_link:hover {
+    background-color: #1C1D27;
+}
+.navigationItem_link:target {
+    color: #fff;
+    background-color: #1C1D27;
+}
+.navigationItem_text {
+    margin-left: 74px;
+}
+
+
+/* Views */
+.viewTitle {
+    margin-top: 0;
+    line-height: 1.5em;
+}
+.messageIcon {
+    width: 4em;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+
+/* Loading */
+.loadingIcon {
+    width: 2em;
+    display: none;
+}
+.loadingMessage,
+.resultCorrectStatus,
+.resultInvalidStatus {
+    display: none;
+}
+.loadingCompleteMessage {
+    display: block;
+}
+.loading .loadingMessage {
+    display: block;
+}
+.loading .loadingIcon {
+    display: inline-block;
+}
+.loading .loadingCompleteMessage,
+.loading .resultCorrectStatus,
+.loading .resultInvalidStatus {
+    display: none;
+}
+.resultCorrect .resultCorrectStatus {
+    display: inline-block;
+    width: 1em;
+    color: #47B3BF;
+    vertical-align: middle;
+}
+.resultInvalid .resultInvalidStatus {
+    display: inline-block;
+    width: 1em;
+    color: #F14C53;
+    vertical-align: middle;
+}
+
+/* Forms */
+
+.form {
+    margin-bottom: 2em;
+}
+.form::after {
+    content: ' ';
+    display: block;
+    clear: both;
+    height: 0;
+    visibility: hidden;
+}
+.formField {
+    height: 3em;
+}
+.formField_inline {
+    float: left;
+    margin-right: 0.8em;
+}
+.mainButtonAction {
+
+}
+
+
+/* Overrides */
+.searchField {
+    min-width: 300px;
+}
+.successfulResult {
+    color: #47B3BF;
+}
+.lastModifyDate {
+    font-weight: bold;
+}
+.errorResult {
+    color: #F14C53;
+}
+.warningResult {
+    color: #F14C53;
+}
+.capiQueriesList {
+    list-style-type: none;
+}
+.capiQueryCollection {
+    font-weight: bold;
+}
