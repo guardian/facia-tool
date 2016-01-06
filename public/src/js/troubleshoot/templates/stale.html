@@ -1,0 +1,111 @@
+<template id="mainView">
+    <h1 class="viewTitle">Troubleshoot stale fronts</h1>
+
+    <div class="form">
+        <input class="formField formField_inline searchField" placeholder="Front name">
+        <button class="formField formField_inline mainButtonAction checkFront">Check</button>
+    </div>
+
+    <div class="templatePlaceholder"></div>
+</template>
+
+<template id="invalidFront">
+    <div class="messageIcon errorResult">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1026 1000"><path d="M513.7 149.5q-48.7 0-81.2 55l-307.5 512.5q-32.5 55-10.6 95t86.9 40l625 0q65 0 86.3-40t-11.2-95l-307.5-512.5q-32.5-55-80-55zm0-105q106.3 0 168.8 106.3l308.8 513.8q62.5 105 11.3 198.8-51.2 92.5-176.2 92.5l-625 0q-123.7 0-177.5-92.5-52.5-92.5 11.3-198.7l308.8-513.7q62.5-106.2 170-106.2zm-68.7 651.3q0-68.7 68.8-68.7 67.5 0 67.5 68.8 0 67.5-67.5 67.5-68.7 0-68.7-67.5zm146.3-312.5q0 13.8-6.2 28.8l-71.2 178.8q-43.7-107.5-72.5-178.7-6.2-15-6.2-28.7 0-32.5 23.1-55.6t55.6-23.1 55 23.1 22.5 55.6z" fill="currentColor"/></svg>
+    </div>
+    <span class="errorMessage"></span>
+</template>
+
+<template id="frontNotStale">
+    <div class="messageIcon successfulResult">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -256 1792 1792"><g transform="matrix(1,0,0,-1,7.5932203,1217.0847)"><path d="m1671 970q0-40-28-68L919 178 783 42Q755 14 715 14 675 14 647 42L511 178 149 540q-28 28-28 68 0 40 28 68l136 136q28 28 68 28 40 0 68-28l294-295 656 657q28 28 68 28 40 0 68-28l136-136q28-28 28-68z" fill="currentColor"/></g></svg>
+    </div>
+    <span>This front was pressed correctly <span class="lastModifyDate"></span>.</span>
+</template>
+
+<template id="staleFront">
+    <div class="messageIcon warningResult">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M436.5 75.5c-100-100-262.1-100-362 0 -100 100-100 262.1 0 362 99.9 100 262.1 100 362 0C536.5 337.6 536.5 175.4 436.5 75.5zM119.8 120.7c67.1-67.1 171.7-73.6 246.6-20.3L99.4 367.3C46.2 292.4 52.6 187.8 119.8 120.7zM391.3 392.2c-67.1 67.1-171.7 73.6-246.6 20.3l266.9-266.9C464.8 220.6 458.4 325.1 391.3 392.2z" fill="currentColor"/></svg>
+    </div>
+    <span>This front was last pressed <span class="lastModifyDate"></span>.</span>
+
+    <div class="resultBlock capiQueries">
+        <h3>CAPI query</h3>
+    </div>
+
+    <div class="resultBlock snapLatest">
+        <h3>Dream snaps</h3>
+    </div>
+</template>
+
+<template id="capiQueries">
+    <div class="capiQueriesResult loading">
+        <span class="loadingMessage">Checking the following CAPI queries</span>
+        <span class="loadingCompleteMessage">CAPI queries checked</span>
+    </div>
+    <ul class="capiQueriesList"></ul>
+</template>
+
+<template id="capiQuery">
+    <li class="capiQuery loading">
+        <span class="loadingIcon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 30"><circle cx="15" cy="15" r="15" fill="currentColor"><animate attributeName="r" from="15" to="15" begin="0s" dur="0.8s" values="15;9;15" calcMode="linear" repeatCount="indefinite"/><animate attributeName="fill-opacity" from="1" to="1" begin="0s" dur="0.8s" values="1;.5;1" calcMode="linear" repeatCount="indefinite"/></circle><circle cx="60" cy="15" r="9" fill="currentColor" fill-opacity="0.3"><animate attributeName="r" from="9" to="9" begin="0s" dur="0.8s" values="9;15;9" calcMode="linear" repeatCount="indefinite"/><animate attributeName="fill-opacity" from="0.5" to="0.5" begin="0s" dur="0.8s" values=".5;1;.5" calcMode="linear" repeatCount="indefinite"/></circle><circle cx="105" cy="15" r="15" fill="currentColor"><animate attributeName="r" from="15" to="15" begin="0s" dur="0.8s" values="15;9;15" calcMode="linear" repeatCount="indefinite"/><animate attributeName="fill-opacity" from="1" to="1" begin="0s" dur="0.8s" values="1;.5;1" calcMode="linear" repeatCount="indefinite"/></circle></svg>
+        </span>
+        <span class="resultCorrectStatus">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -256 1792 1792"><g transform="matrix(1,0,0,-1,7.5932203,1217.0847)"><path d="m1671 970q0-40-28-68L919 178 783 42Q755 14 715 14 675 14 647 42L511 178 149 540q-28 28-28 68 0 40 28 68l136 136q28 28 68 28 40 0 68-28l294-295 656 657q28 28 68 28 40 0 68-28l136-136q28-28 28-68z" fill="currentColor"/></g></svg>
+        </span>
+        <span class="resultInvalidStatus">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M436.5 75.5c-100-100-262.1-100-362 0 -100 100-100 262.1 0 362 99.9 100 262.1 100 362 0C536.5 337.6 536.5 175.4 436.5 75.5zM119.8 120.7c67.1-67.1 171.7-73.6 246.6-20.3L99.4 367.3C46.2 292.4 52.6 187.8 119.8 120.7zM391.3 392.2c-67.1 67.1-171.7 73.6-246.6 20.3l266.9-266.9C464.8 220.6 458.4 325.1 391.3 392.2z" fill="currentColor"/></svg>
+        </span>
+
+        <span>Collection</span> &ldquo;<span class="capiQueryCollection"></span>&rdquo;
+        <span>with CAPI query</span> <span class="capiQueryPath code"></span>
+    </li>
+</template>
+
+<template id="emptyCapiQueriesList">
+    <span>None of the collections of this front contains a CAPI query.</span>
+</template>
+
+<template id="emptyDreamSnapList">
+    <li class="resultCorrect">
+        <span class="resultCorrectStatus">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -256 1792 1792"><g transform="matrix(1,0,0,-1,7.5932203,1217.0847)"><path d="m1671 970q0-40-28-68L919 178 783 42Q755 14 715 14 675 14 647 42L511 178 149 540q-28 28-28 68 0 40 28 68l136 136q28 28 68 28 40 0 68-28l294-295 656 657q28 28 68 28 40 0 68-28l136-136q28-28 28-68z" fill="currentColor"/></g></svg>
+        </span>
+        <span>Collection &ldquo;<span class="emptyDreamSnapCollection"></span>&rdquo; doesn't contain any dream snap.</span>
+    </li>
+</template>
+
+<template id="snapLatest">
+    <div class="snapLatestFetching loading">
+        <span class="loadingIcon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 30"><circle cx="15" cy="15" r="15" fill="currentColor"><animate attributeName="r" from="15" to="15" begin="0s" dur="0.8s" values="15;9;15" calcMode="linear" repeatCount="indefinite"/><animate attributeName="fill-opacity" from="1" to="1" begin="0s" dur="0.8s" values="1;.5;1" calcMode="linear" repeatCount="indefinite"/></circle><circle cx="60" cy="15" r="9" fill="currentColor" fill-opacity="0.3"><animate attributeName="r" from="9" to="9" begin="0s" dur="0.8s" values="9;15;9" calcMode="linear" repeatCount="indefinite"/><animate attributeName="fill-opacity" from="0.5" to="0.5" begin="0s" dur="0.8s" values=".5;1;.5" calcMode="linear" repeatCount="indefinite"/></circle><circle cx="105" cy="15" r="15" fill="currentColor"><animate attributeName="r" from="15" to="15" begin="0s" dur="0.8s" values="15;9;15" calcMode="linear" repeatCount="indefinite"/><animate attributeName="fill-opacity" from="1" to="1" begin="0s" dur="0.8s" values="1;.5;1" calcMode="linear" repeatCount="indefinite"/></circle></svg>
+        </span>
+        <span class="loadingMessage">Fetching dream snaps inside collections</span>
+        <span class="loadingCompleteMessage">Dream snaps checked</span>
+    </div>
+    <ul class="dreamSnapsList"></ul>
+</template>
+
+<template id="dreamSnap">
+    <li class="dreamSnap loading">
+        <span class="loadingIcon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 30"><circle cx="15" cy="15" r="15" fill="currentColor"><animate attributeName="r" from="15" to="15" begin="0s" dur="0.8s" values="15;9;15" calcMode="linear" repeatCount="indefinite"/><animate attributeName="fill-opacity" from="1" to="1" begin="0s" dur="0.8s" values="1;.5;1" calcMode="linear" repeatCount="indefinite"/></circle><circle cx="60" cy="15" r="9" fill="currentColor" fill-opacity="0.3"><animate attributeName="r" from="9" to="9" begin="0s" dur="0.8s" values="9;15;9" calcMode="linear" repeatCount="indefinite"/><animate attributeName="fill-opacity" from="0.5" to="0.5" begin="0s" dur="0.8s" values=".5;1;.5" calcMode="linear" repeatCount="indefinite"/></circle><circle cx="105" cy="15" r="15" fill="currentColor"><animate attributeName="r" from="15" to="15" begin="0s" dur="0.8s" values="15;9;15" calcMode="linear" repeatCount="indefinite"/><animate attributeName="fill-opacity" from="1" to="1" begin="0s" dur="0.8s" values="1;.5;1" calcMode="linear" repeatCount="indefinite"/></circle></svg>
+        </span>
+        <span class="resultCorrectStatus">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -256 1792 1792"><g transform="matrix(1,0,0,-1,7.5932203,1217.0847)"><path d="m1671 970q0-40-28-68L919 178 783 42Q755 14 715 14 675 14 647 42L511 178 149 540q-28 28-28 68 0 40 28 68l136 136q28 28 68 28 40 0 68-28l294-295 656 657q28 28 68 28 40 0 68-28l136-136q28-28 28-68z" fill="currentColor"/></g></svg>
+        </span>
+        <span class="resultInvalidStatus">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M436.5 75.5c-100-100-262.1-100-362 0 -100 100-100 262.1 0 362 99.9 100 262.1 100 362 0C536.5 337.6 536.5 175.4 436.5 75.5zM119.8 120.7c67.1-67.1 171.7-73.6 246.6-20.3L99.4 367.3C46.2 292.4 52.6 187.8 119.8 120.7zM391.3 392.2c-67.1 67.1-171.7 73.6-246.6 20.3l266.9-266.9C464.8 220.6 458.4 325.1 391.3 392.2z" fill="currentColor"/></svg>
+        </span>
+
+        <span>Collection</span> &ldquo;<span class="dreamSnapCollection"></span>&rdquo;
+        <span>with dream snap</span> &ldquo;<span class="dreamSnapName"></span>&rdquo;
+        <span>in</span> <span class="dreamSnapContext"></span>
+        <span class="dreamSnapIsSublink"></span>
+    </li>
+</template>
+
+<template id="dreamSnapSublink">
+    <span>as sublink of &ldquo;<span class="dreamSnapParent"></span>&rdquo;</span>
+</template>
