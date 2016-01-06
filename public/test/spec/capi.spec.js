@@ -396,6 +396,7 @@ describe('Content API', function () {
                 responseText: {
                     response: {
                         content: {
+                            id: 'capi-id',
                             fields: {
                                 internalPageCode: 'banana',
                                 another: true
@@ -411,10 +412,12 @@ describe('Content API', function () {
             capi.validateItem(item)
             .then((valid) => {
                 var data = {
+                    id: 'capi-id',
                     fields: {
                         internalPageCode: 'banana',
                         another: true
-                    }
+                    },
+                    capiId: 'capi-id'
                 };
                 expect(valid).toBe(item);
                 expect(item.addCapiData).toHaveBeenCalledWith(data);

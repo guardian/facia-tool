@@ -223,6 +223,7 @@ function compareArticles (one, two) {
 function createNewArticle (opts) {
     var icc = internalPageCode(opts);
 
+    opts.capiId = opts.id;
     opts.id = icc;
     cache.put('contentApi', icc, opts);
 

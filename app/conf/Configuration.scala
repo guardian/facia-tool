@@ -98,6 +98,7 @@ object Configuration {
   }
 
   object faciatool {
+    lazy val breakingNewsFront = "breaking-news"
     lazy val frontPressToolQueue = getString("frontpress.sqs.tool_queue_url")
     lazy val showTestContainers = getBoolean("faciatool.show_test_containers").getOrElse(false)
     lazy val stsRoleToAssume = getString("faciatool.sts.role.to.assume").getOrElse(stsRoleToAssumeFromProperties)
@@ -107,6 +108,13 @@ object Configuration {
     lazy val baseUrl = getString("media.base.url")
     lazy val apiUrl = getString("media.api.url")
     lazy val key = getString("media.key")
+  }
+
+  object notification {
+    lazy val host = getMandatoryString("notification.host")
+    lazy val key = getMandatoryString("notification.key")
+    lazy val legacyHost = getMandatoryString("notification.legacy.host")
+    lazy val legacyKey = getMandatoryString("notification.legacy.key")
   }
 
   object pandomain {

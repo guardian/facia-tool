@@ -73,10 +73,10 @@ case class UpdateAndRemove(update: UpdateList, remove: UpdateList) extends Updat
 }
 
 case class DiscardUpdate(id: String) extends UpdateMessage {
-  def affectedFronts = Set(id)
+  def affectedFronts = ConfigAgent.getConfigsUsingCollectionId(id).toSet[String]
 }
 case class PublishUpdate(id: String) extends UpdateMessage {
-  def affectedFronts = Set(id)
+  def affectedFronts = ConfigAgent.getConfigsUsingCollectionId(id).toSet[String]
 }
 
 /* Macro - Watch out, this needs to be after the case classes */

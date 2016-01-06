@@ -3,6 +3,7 @@ define([
     'underscore',
     'jquery',
     'modules/vars',
+    'utils/alert',
     'utils/as-observable-props',
     'utils/fetch-visible-stories',
     'utils/human-time',
@@ -19,6 +20,7 @@ define([
     _,
     $,
     vars,
+    alert,
     asObservableProps,
     fetchVisibleStories,
     humanTime,
@@ -39,6 +41,7 @@ define([
     fetchVisibleStories = fetchVisibleStories.default;
     Group = Group.default;
     reportErrors = reportErrors.default;
+    alert = alert.default;
 
     function Collection(opts) {
 
@@ -75,6 +78,7 @@ define([
             'type',
             'displayName',
             'hideShowMore',
+            'href',
             'uneditable']);
         populateObservables(this.configMeta, opts);
 
@@ -209,10 +213,10 @@ define([
                 }
             })
             .then(function () {
-                that.processDraft(true);
+                that.processDraft(true, { sendAlert: true });
             }, function () {});
         } else {
-            this.processDraft(true);
+            this.processDraft(true, { sendAlert: false });
         }
     };
 
@@ -220,8 +224,9 @@ define([
         this.processDraft(false);
     };
 
-    Collection.prototype.processDraft = function(goLive) {
+    Collection.prototype.processDraft = function(goLive, opts) {
         var self = this;
+        var opts = opts || {};
 
         this.state.hasDraft(false);
         this.setPending(true);
@@ -233,15 +238,26 @@ define([
 
         authedAjax.request({
             type: 'post',
-            url: vars.CONST.apiBase + '/collection/' + (goLive ? 'publish' : 'discard') + '/' + this.id
+            url: vars.CONST.apiBase + '/collection/' + (goLive ? 'publish' : 'discard') + '/' + this.id,
+            data: self.serializedCollectionWithMeta(opts.sendAlert)
         })
+        .catch(function (error) {
+            var errorMessages = [];
+            try {
+                errorMessages = JSON.parse(error.responseText);
+            } catch (ex) {
+                errorMessages.push(error.responseText || error.message);
+            }
+            var message = 'Error when ' + (goLive ? 'publishing' : 'discarding')
+                + ' the collection: ' + errorMessages.join('<br>');
+            alert(message);
+            reportErrors(new Error(message));
+        })
+        .catch(function () {})
         .then(function() {
             return self.load().then(detectPressFailures);
         })
-        .catch(function () {
-            detectPressFailures();
-            reportErrors(new Error('POST request while processing draft failed'));
-        });
+        .catch(function () {});
     };
 
     Collection.prototype.drop = function(item) {
@@ -455,6 +471,31 @@ define([
 
     Collection.prototype.alsoOnToggle = function () {
         this.state.alsoOnVisible(!this.state.alsoOnVisible());
+    };
+
+    Collection.prototype.serializedCollectionWithMeta = function (sendAlert) {
+        if (this.front.confirmSendingAlert()) {
+            var items = [];
+            var topic = this.configMeta.href();
+            this.groups.forEach(function (group) {
+                group.items().forEach(function (trail) {
+                    items.push({
+                        headline: trail.headline(),
+                        group: group.name,
+                        isArticle: !trail.meta.snapType(),
+                        thumb: trail.thumbImage(),
+                        image: trail.mainImage(),
+                        path: trail.meta.snapType() ? trail.meta.href() : trail.state.capiId(),
+                        shortUrl: trail.state.shortUrl(),
+                        topic: topic,
+                        alert: !!sendAlert
+                    });
+                });
+            });
+            return JSON.stringify({
+                trails: items
+            });
+        }
     };
 
     Collection.prototype.dispose = function () {
