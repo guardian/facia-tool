@@ -1,28 +1,33 @@
-const pendingTasks = [];
+export default function () {
+    const pendingTasks = [];
 
-export function job (task, args) {
-    pendingTasks.push({
-        fn: task,
-        args
-    });
-}
+    function job (task, args) {
+        pendingTasks.push({
+            fn: task,
+            args
+        });
+    }
 
-export function run () {
-    return new Promise(resolve => {
+    function run () {
+        return new Promise(iterate);
+    }
+
+    function iterate (resolve) {
         if (pendingTasks.length) {
-            runNext();
+            runNext(resolve);
         } else {
             resolve();
         }
-    });
-}
+    }
 
-function runNext () {
-    console.log('running a task');
-    Promise.resolve(pendingTasks.shift())
-    .then(task => {
-        return task.fn.apply(null, task.args);
-    })
-    .catch(() => {})
-    .then(() => run());
+    function runNext (resolve) {
+        Promise.resolve(pendingTasks.shift())
+        .then(task => {
+            return task.fn.apply(null, task.args);
+        })
+        .catch(() => {})
+        .then(() => iterate(resolve));
+    }
+
+    return {job, run};
 }

@@ -1,12 +1,12 @@
 import template from 'troubleshoot/templates/stale.html!text';
-import * as scheduler from 'troubleshoot/scheduler';
+import createScheduler from 'troubleshoot/scheduler';
 import humanTime from 'utils/human-time';
 import CONST from 'constants/defaults';
 
 const disposeActions = [];
 const STALE_NETWORK_FRONT = 5 * 3600 * 1000;
 const STALE_EDITORIAL_FRONT = 20 * 3600 * 1000;
-const STALE_COMMERCIAL_FRONT = 120 * 3600 * 1000;
+const STALE_COMMERCIAL_FRONT = 200 * 3600 * 1000;
 
 var clone = (function (mainTemplateText) {
     const templatesMap = {};
@@ -126,9 +126,15 @@ function inject (container, element) {
 
 function diagnoseStaleFront (container, front, config, when) {
     const troubleshootResults = clone('staleFront');
-    troubleshootResults.querySelector('.lastModifyDate').innerHTML = when;
+    troubleshootResults.querySelector('.lastModifyDate').innerHTML = when || 'never';
 
-    const capiQueriesPlaceholder = troubleshootResults.querySelector('.capiQueries');
+    diagnoseCapiQueries(troubleshootResults, front, config, createScheduler());
+    diagnoseDreamSnaps(troubleshootResults, front, config, createScheduler());
+    inject(container, troubleshootResults);
+}
+
+function diagnoseCapiQueries(container, front, config, scheduler) {
+    const capiQueriesPlaceholder = container.querySelector('.capiQueries');
     const listOfQueries = config.fronts[front].collections.map(collectionId => {
         return {
             id: collectionId,
@@ -140,18 +146,33 @@ function diagnoseStaleFront (container, front, config, when) {
 
     if (listOfQueries.length) {
         const innerElement = clone('capiQueries');
-        innerElement.querySelector('.capiQueriesList').appendChild(generateCapiList(listOfQueries));
+        innerElement.querySelector('.capiQueriesList').appendChild(generateCapiList(listOfQueries, scheduler));
         capiQueriesPlaceholder.appendChild(innerElement);
     } else {
         capiQueriesPlaceholder.querySelector('.capiQueriesResult').classList.remove('loading');
         capiQueriesPlaceholder.appendChild(clone('emptyCapiQueriesList'));
     }
 
-    inject(container, troubleshootResults);
-
-    scheduler.run().then(result => {
-        console.log('sched end', result);
+    scheduler.run().then(() => {
         capiQueriesPlaceholder.querySelector('.capiQueriesResult').classList.remove('loading');
+    });
+}
+
+function diagnoseDreamSnaps(container, front, config, scheduler) {
+    const dreamSnapsPlaceholder = container.querySelector('.snapLatest');
+    const listOfCollections = config.fronts[front].collections.map(collectionId => {
+        return {
+            id: collectionId,
+            name: config.collections[collectionId].displayName
+        };
+    });
+    const innerElement = clone('snapLatest');
+
+    generateDreamSnapsList(innerElement.querySelector('.dreamSnapsList'), listOfCollections, scheduler);
+    dreamSnapsPlaceholder.appendChild(innerElement);
+
+    scheduler.run().then(() => {
+        dreamSnapsPlaceholder.querySelector('.snapLatestFetching').classList.remove('loading');
     });
 }
 
@@ -170,7 +191,7 @@ function reportError (container, error) {
     console.error(error);
 }
 
-function generateCapiList (listOfQueries) {
+function generateCapiList (listOfQueries, scheduler) {
     const list = document.createDocumentFragment();
 
     listOfQueries.forEach(query => {
@@ -199,6 +220,86 @@ function fetchFromCapi (query) {
         if (!json.response || json.response.status === 'error') {
             throw new Error('Invalid CAPI request: ' + json.response);
         }
+    });
+}
+
+function generateDreamSnapsList (listContainer, listOfCollections, scheduler) {
+    listOfCollections.forEach(collection => {
+        const element = clone('dreamSnap');
+
+        scheduler.job((id, el) => {
+            return fetchCollectionContent(id)
+            .then(filterDreamSnaps)
+            .then(snaps => {
+                if (snaps.length) {
+                    fetchSnaps(collection, snaps, listContainer, scheduler);
+                } else {
+                    const emptyMessage = clone('emptyDreamSnapList');
+                    emptyMessage.querySelector('.emptyDreamSnapCollection').innerHTML = collection.name;
+                    listContainer.appendChild(emptyMessage);
+                    markSuccess(el);
+                }
+            })
+            .catch(markFailure.bind(null, el));
+        }, [collection.id, element.querySelector('.dreamSnap')]);
+    });
+}
+
+function fetchCollectionContent (id) {
+    return fetch('/collection/' + id, {
+        credentials: 'include'
+    })
+    .then(response => response.json());
+}
+
+function filterDreamSnaps (json) {
+    return ['live', 'draft', 'treats'].reduce((list, context) => {
+        if (json && json[context]) {
+            json[context].forEach(trail => {
+                if (trail.meta && trail.meta.snapType === 'latest') {
+                    list.push({
+                        context,
+                        trail
+                    });
+                } else if (trail.meta && trail.meta.supporting) {
+                    trail.meta.supporting.forEach(sublink => {
+                        if (sublink.meta && sublink.meta.snapType === 'latest') {
+                            list.push({
+                                context,
+                                parent: trail,
+                                trail: sublink
+                            });
+                        }
+                    });
+                }
+            });
+        }
+        return list;
+    }, []);
+}
+
+function fetchSnaps (collection, snapList, domList, scheduler) {
+    snapList.forEach(snap => {
+        const element = clone('dreamSnap');
+        element.querySelector('.dreamSnapCollection').innerHTML = collection.name;
+        element.querySelector('.dreamSnapName').innerHTML = snap.trail.meta.customKicker;
+        element.querySelector('.dreamSnapContext').innerHTML = snap.context;
+
+        if (snap.parent) {
+            const parentTrail = clone('dreamSnapSublink');
+            const parentHeadline = snap.parent.meta && snap.parent.meta.headline ? snap.parent.meta.headline : snap.parent.id;
+            parentTrail.querySelector('.dreamSnapParent').innerHTML = parentHeadline;
+
+            element.querySelector('.dreamSnapIsSublink').appendChild(parentTrail);
+        }
+
+        scheduler.job((dreamSnap, el) => {
+            return fetchFromCapi(dreamSnap.trail.meta.snapUri)
+            .then(markSuccess.bind(null, el))
+            .catch(markFailure.bind(null, el));
+        }, [snap, element.querySelector('.dreamSnap')]);
+
+        domList.appendChild(element);
     });
 }
 

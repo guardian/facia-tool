@@ -122,7 +122,7 @@ body {
     display: block;
 }
 .loading .loadingMessage {
-    display: block;
+    display: inline-block;
 }
 .loading .loadingIcon {
     display: inline-block;
@@ -185,7 +185,8 @@ body {
 .warningResult {
     color: #F14C53;
 }
-.capiQueriesList {
+.capiQueriesList,
+.dreamSnapsList {
     list-style-type: none;
 }
 .capiQueryCollection {
