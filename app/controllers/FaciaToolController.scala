@@ -2,6 +2,7 @@ package controllers
 
 import akka.actor.ActorSystem
 import auth.PanDomainAuthActions
+import com.gu.pandomainauth.action.UserRequest
 import frontsapi.model._
 import metrics.FaciaToolMetrics
 import model.{Cached, NoCache}
@@ -58,13 +59,30 @@ object FaciaToolController extends Controller with PanDomainAuthActions with Bre
       val identity = request.user
       FaciaToolMetrics.DraftPublishCount.increment()
       val futureCollectionJson = FaciaApiIO.publishCollectionJson(collectionId, identity)
-      futureCollectionJson.map { maybeCollectionJson =>
-        maybeCollectionJson.foreach { b =>
-          UpdateActions.archivePublishBlock(collectionId, b, identity)
-          FaciaPress.press(PressCommand.forOneId(collectionId).withPressDraft().withPressLive())
-          UpdatesStream.putStreamUpdate(StreamUpdate(PublishUpdate(collectionId), identity.email))
-        }
-        NoCache(Ok)}}}
+      futureCollectionJson.flatMap {
+          case Some(collectionJson) =>
+            UpdateActions.archivePublishBlock(collectionId, collectionJson, identity)
+            FaciaPress.press(PressCommand.forOneId(collectionId).withPressDraft().withPressLive())
+            UpdatesStream.putStreamUpdate(StreamUpdate(PublishUpdate(collectionId), identity.email))
+            maybeSendBreakingAlert(request, collectionId)
+          case None => Future.successful(NoCache(Ok))}}}
+
+  private def maybeSendBreakingAlert(request: UserRequest[AnyContent], collectionId: String): Future[Result] = {
+    if (ConfigAgent.isCollectionInBreakingNewsFront(collectionId)) {
+      val identity = request.user
+      request.body.asJson.flatMap(_.asOpt[ClientHydratedCollection]).map {
+        case clientCollection: ClientHydratedCollection =>
+          BreakingNewsUpdate.putBreakingNewsUpdate(
+            collectionId = collectionId,
+            collection = clientCollection,
+            email = identity.email
+          ).map {
+            result => NoCache(result)
+          }
+        case _ => Future.successful(BadRequest)
+      }.getOrElse(Future.successful(NotAcceptable))
+    } else
+      Future.successful(NoCache(Ok))}
 
   def discardCollection(collectionId: String) = APIAuthAction.async { request =>
     val identity = request.user
@@ -121,8 +139,6 @@ object FaciaToolController extends Controller with PanDomainAuthActions with Bre
           withModifyPermissionForCollections(Set(update.update.id)) {
             val identity = request.user
 
-            UpdatesStream.putStreamUpdate(StreamUpdate(update, identity.email))
-
             val futureCollectionJson = UpdateActions.updateCollectionList(update.update.id, update.update, identity)
             futureCollectionJson.map { maybeCollectionJson =>
               val updatedCollections = maybeCollectionJson.map(update.update.id -> _).toMap
@@ -137,9 +153,10 @@ object FaciaToolController extends Controller with PanDomainAuthActions with Bre
                 draft = (updatedCollections.values.exists(_.draft.isEmpty) && shouldUpdateLive) || update.update.draft)
               )
 
-              if (updatedCollections.nonEmpty)
+              if (updatedCollections.nonEmpty) {
+                UpdatesStream.putStreamUpdate(StreamUpdate(update, identity.email))
                 Ok(Json.toJson(updatedCollections)).as("application/json")
-              else
+              } else
                 NotFound
             }
           }

@@ -91,6 +91,7 @@ function validateItem (item) {
                     capiItem = results[0];
                     pageCode = internalPageCode(capiItem);
                     if (pageCode) {
+                        capiItem.capiId = capiItem.id;
                         populate(item, capiItem);
                         cache.put('contentApi', pageCode, capiItem);
                         item.id(pageCode);
@@ -188,6 +189,7 @@ function decorateBatch (articles) {
             var pageCode = internalPageCode(result);
 
             if (pageCode) {
+                result.capiId = result.id;
                 cache.put('contentApi', pageCode, result);
 
                 _.filter(articles, function(article) {
