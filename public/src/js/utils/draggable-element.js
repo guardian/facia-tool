@@ -24,6 +24,14 @@ function getMediaItem(dataTransfer) {
             throw new Error('Sorry, a suitable crop size does not exist for this image');
         }
 
+    } else if (dataTransfer && dataTransfer.getData) {
+        var url = dataTransfer.getData('Url');
+        if (url && grid().excractMediaId(url)) {
+            mediaItem = {
+                dataTransfer: dataTransfer,
+                origin: url
+            };
+        }
     }
     return mediaItem;
 }
