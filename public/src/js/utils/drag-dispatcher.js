@@ -11,6 +11,7 @@ import deepGet from 'utils/deep-get';
 import findFirstById from 'utils/find-first-by-id';
 import mediator from 'utils/mediator';
 import removeById from 'utils/remove-by-id';
+import serializeArticleMeta from 'utils/serialize-article-meta';
 import urlAbsPath from 'utils/url-abs-path';
 
 export default function (source, targetItem, targetGroup, alternate) {
@@ -117,14 +118,13 @@ function replaceArticleWith (id, sourceItem, oldItem, targetGroup) {
             });
 
         var sourceGroup = oldItem.group;
-        var itemMeta = newItem.getMeta() || {};
         var update = {
             collection: sourceGroup.parent,
             item: newItem.id(),
             position: oldItem.id(),
             after: false,
             mode: targetContext.mode(),
-            itemMeta: _.isEmpty(itemMeta) ? undefined : itemMeta
+            itemMeta: serializeArticleMeta(newItem)
         };
         var remove = remover(targetContext, sourceGroup, oldItem.id());
         var detectPressFailure = targetContext.mode() === 'live' ? function () {
@@ -244,7 +244,7 @@ function persist (sourceItem, newItems, sourceContext, sourceGroup, targetContex
             remove = remover(sourceContext, sourceGroup, id);
 
         } else if (targetGroup.parentType === 'Collection') {
-            itemMeta = newItems[0].getMeta() || {};
+            itemMeta = serializeArticleMeta(newItems[0]) || {};
 
             if (deepGet(targetGroup, '.parent.groups.length') > 1) {
                 itemMeta.group = targetGroup.index + '';
