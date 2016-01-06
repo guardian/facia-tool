@@ -120,6 +120,7 @@ describe('utils/is-guardian-url', function () {
         expect(isGuardian('http://guaridian.it')).toBe(false);
         expect(isGuardian('https://' + CONST.mainDomain + '/')).toBe(true);
         expect(isGuardian('https://' + CONST.mainDomain + '/uk?search=fruit#hash')).toBe(true);
+        expect(isGuardian('http://' + CONST.mainDomainShort + '/short')).toBe(true);
     });
 });
 
