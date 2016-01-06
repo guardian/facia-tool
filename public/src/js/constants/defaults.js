@@ -165,6 +165,7 @@ export default {
     highFrequencyPaths:    ['uk', 'us', 'au', 'uk/sport', 'us/sport', 'au/sport'],
 
     mainDomain:            'www.theguardian.com',
+    mainDomainShort:       'theguardian.com',
 
     apiBase:               '',
     apiSearchBase:         '/api/preview',
