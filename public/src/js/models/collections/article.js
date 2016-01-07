@@ -7,7 +7,6 @@ define([
     'utils/alert',
     'utils/as-observable-props',
     'utils/deep-get',
-    'utils/full-trim',
     'utils/human-time',
     'utils/is-guardian-url',
     'utils/is-preview-url',
@@ -15,7 +14,7 @@ define([
     'utils/mediator',
     'utils/open-graph',
     'utils/populate-observables',
-    'utils/sanitize-html',
+    'utils/serialize-article-meta',
     'utils/snap',
     'utils/url-abs-path',
     'utils/visited-article-storage',
@@ -35,7 +34,6 @@ define([
         alert,
         asObservableProps,
         deepGet,
-        fullTrim,
         humanTime,
         isGuardianUrl,
         isPreviewUrl,
@@ -43,7 +41,7 @@ define([
         mediator,
         openGraph,
         populateObservables,
-        sanitizeHtml,
+        serializeArticleMeta,
         snap,
         urlAbsPath,
         visitedArticleStorage,
@@ -56,12 +54,11 @@ define([
     ) {
         alert = alert.default;
         deepGet = deepGet.default;
-        fullTrim = fullTrim.default;
         isGuardianUrl = isGuardianUrl.default;
         isPreviewUrl = isPreviewUrl.default;
-        sanitizeHtml = sanitizeHtml.default;
         urlAbsPath = urlAbsPath.default;
         asObservableProps = asObservableProps.default;
+        serializeArticleMeta = serializeArticleMeta.default;
         populateObservables = populateObservables.default;
         mediator = mediator.default;
         humanTime = humanTime.default;
@@ -330,10 +327,14 @@ define([
         };
 
         Article.prototype.get = function() {
-            return {
-                id:   this.id(),
-                meta: this.getMeta()
+            var asObject = {
+                id: this.id()
             };
+            var meta = serializeArticleMeta(this);
+            if (meta) {
+                asObject.meta = meta;
+            }
+            return asObject;
         };
 
         Article.prototype.normalizeDropTarget = function() {
@@ -341,55 +342,6 @@ define([
                 isAfter: false,
                 target: this
             };
-        };
-
-        Article.prototype.getMeta = function() {
-            var self = this,
-                cleanMeta;
-
-            cleanMeta = _.chain(self.meta)
-                .pairs()
-                // execute any knockout values:
-                .map(function(p){ return [p[0], _.isFunction(p[1]) ? p[1]() : p[1]]; })
-                // trim and sanitize strings:
-                .map(function(p){ return [p[0], sanitizeHtml(fullTrim(p[1]))]; })
-                // reject vals that are equivalent to their defaults (if set)
-                .filter(function(p){ return _.has(self.metaDefaults, p[0]) ? self.metaDefaults[p[0]] !== p[1] : !!p[1]; })
-                // reject vals that are equivalent to the fields (if any) that they're overwriting:
-                .filter(function(p){ return _.isUndefined(self.fields[p[0]]) || p[1] !== fullTrim(self.fields[p[0]]()); })
-                // convert numbers to strings:
-                .map(function(p){ return [p[0], _.isNumber(p[1]) ? '' + p[1] : p[1]]; })
-                // recurse into supporting links
-                .map(function(p) {
-                    return [p[0], p[0] === 'supporting' ? _.map(p[1].items(), function(item) {
-                        return item.get();
-                    }) : p[1]];
-                })
-                // clean sparse arrays
-                .map(function (p) {
-                    return [p[0], _.isArray(p[1]) ? _.filter(p[1], function (item) { return !!item; }) : p[1]];
-                })
-                // drop empty arrays:
-                .filter(function(p){ return _.isArray(p[1]) ? p[1].length : true; })
-                // recurse convert numbers to strings:
-                .map(function(p){ return [p[0], _.isArray(p[1]) ? _.map(p[1], function (nested) {
-                    return _.isObject(nested) ? _.mapObject(nested, function (val) {
-                        return _.isNumber(val) ? '' + val : val;
-                    }) : nested; }) : p[1]];
-                })
-                // return as obj, or as undefined if empty (this omits it from any subsequent JSON.stringify result)
-                .reduce(function(obj, p) {
-                    obj = obj || {};
-                    obj[p[0]] = p[1];
-                    return obj;
-                }, {})
-                .value();
-
-            if (this.group && this.group.parentType === 'Collection') {
-                cleanMeta.group = this.group.index + '';
-            }
-
-            return _.isEmpty(cleanMeta) ? undefined : cleanMeta;
         };
 
         Article.prototype.save = function() {
@@ -410,7 +362,7 @@ define([
                         collection: this.group.parent,
                         item:       this.id(),
                         position:   this.id(),
-                        itemMeta:   this.getMeta(),
+                        itemMeta:   serializeArticleMeta(this),
                         mode:       this.front.mode()
                     }
                 });
