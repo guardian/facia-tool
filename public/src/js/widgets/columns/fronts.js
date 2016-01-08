@@ -127,7 +127,9 @@ export default class Front extends ColumnWidget {
         var allCollections = this.baseModel.state().config.collections;
         var front = this.baseModel.frontsMap()[frontId];
 
-        this.isHidden(front.isHidden);
+        if (front) {
+            this.isHidden(front.isHidden);
+        }
         this.allExpanded(true);
         this.collections(
             ((front || {}).collections || [])
