@@ -1331,6 +1331,12 @@ button {
     max-width: 100%;
 }
 
+.front-hidden {
+    color: #999999;
+    font-size: 12px;
+    padding-right: 6px;
+}
+
 .front-age {
     font-size: 12px;
     color: #CCCCCC;
