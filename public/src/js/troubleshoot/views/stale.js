@@ -4,9 +4,9 @@ import humanTime from 'utils/human-time';
 import CONST from 'constants/defaults';
 
 const disposeActions = [];
-const STALE_NETWORK_FRONT = 5 * 3600 * 1000;
-const STALE_EDITORIAL_FRONT = 20 * 3600 * 1000;
-const STALE_COMMERCIAL_FRONT = 200 * 3600 * 1000;
+const STALE_NETWORK_FRONT = 5 * 60 * 1000;
+const STALE_EDITORIAL_FRONT = 20 * 60 * 1000;
+const STALE_COMMERCIAL_FRONT = 2.5 * 3600 * 1000;
 
 var clone = (function (mainTemplateText) {
     const templatesMap = {};
