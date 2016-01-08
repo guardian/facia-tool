@@ -514,7 +514,10 @@ define([
         }
 
         function getContributorImage(contentApiArticle) {
-            return _.chain(contentApiArticle.tags).where({type: 'contributor'}).pluck('bylineLargeImageUrl').first().value();
+            var contributors = _.chain(contentApiArticle.tags).where({type: 'contributor'});
+
+            return contributors.value().length === 1 ? contributors.pluck('bylineLargeImageUrl').first().value() : undefined;
+
         }
 
         function isPremium(contentApiArticle) {
