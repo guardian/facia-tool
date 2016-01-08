@@ -36,6 +36,10 @@
     </a>
     <!-- /ko -->
 
+    <!-- ko if: isHidden -->
+    <span class="front-hidden">This front is hidden</span>
+    <!-- /ko -->
+
     <span class="front-age" data-bind="visible: frontAge">
         <span data-bind="text: confirmSendingAlert() ? 'alert sent' : 'refreshed'"></span>
         <span class="front-age--value" data-bind="text: frontAge"></span>
