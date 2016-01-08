@@ -1332,9 +1332,13 @@ button {
 }
 
 .front-hidden {
-    color: #999999;
     font-size: 12px;
-    padding-right: 6px;
+    padding: 3px 0px 3px 20px;
+    color: red;
+}
+
+.front-hidden > span {
+    padding-left: 2px;
 }
 
 .front-age {
