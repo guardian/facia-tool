@@ -49,7 +49,7 @@ TwirlKeys.templateImports ++= Seq(
 )
 
 
-val awsVersion = "1.10.39"
+val awsVersion = "1.10.44"
 
 libraryDependencies ++= Seq(
     ws,
@@ -66,6 +66,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.2.10",
     "org.julienrf" %% "play-json-variants" % "2.0",
     "com.gu" %% "editorial-permissions-client" % "0.2",
+    "com.gu" %% "mobile-notifications-client-play-2-4" % "0.5.17",
     "org.scalatest" %% "scalatest" % "2.2.5" % "test",
     "org.scalatestplus" %% "play" % "1.4.0-M4" % "test"
 )

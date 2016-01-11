@@ -171,7 +171,8 @@ export default {
     apiSearchBase:         '/api/preview',
     apiLiveBase:           '/api/live',
     apiSearchParams:       [
-        'show-elements=video',
+        'show-elements=video,main',
+        'show-blocks=main',
         'show-tags=all',
         'show-fields=' + [
             'internalPageCode',
@@ -184,7 +185,8 @@ export default {
             'thumbnail',
             'secureThumbnail',
             'liveBloggingNow',
-            'membershipAccess'
+            'membershipAccess',
+            'shortUrl'
         ].join(',')
     ].join('&'),
 

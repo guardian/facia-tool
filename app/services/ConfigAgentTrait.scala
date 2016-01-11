@@ -3,6 +3,7 @@ package services
 import akka.agent.Agent
 import com.gu.facia.api.models.CollectionConfig
 import com.gu.facia.client.models.{ConfigJson => Config}
+import conf.Configuration
 import play.api.{Application, GlobalSettings, Logger}
 import play.libs.Akka
 
@@ -38,7 +39,10 @@ trait ConfigAgentTrait {
     }
 
   def getBreakingNewsCollectionIds: Set[String] =
-    configAgent.get().flatMap(_.fronts.get("breaking-news").map(_.collections.toSet)).getOrElse(Set.empty)
+    configAgent.get().flatMap(_.fronts.get(Configuration.faciatool.breakingNewsFront).map(_.collections.toSet)).getOrElse(Set.empty)
+
+  def isCollectionInBreakingNewsFront(collection: String): Boolean =
+    (getBreakingNewsCollectionIds intersect Set(collection)).nonEmpty
 
   def getConfigCollectionMap: Map[String, Seq[String]] = {
     val config = configAgent.get()
