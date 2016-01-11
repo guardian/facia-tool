@@ -19,6 +19,7 @@ define([
     'utils/url-abs-path',
     'utils/visited-article-storage',
     'utils/article-collection',
+    'utils/get-media-main-image',
     'modules/copied-article',
     'modules/authed-ajax',
     'modules/content-api',
@@ -46,6 +47,7 @@ define([
         urlAbsPath,
         visitedArticleStorage,
         articleCollection,
+        getMediaMainImage,
         copiedArticle,
         authedAjax,
         contentApi,
@@ -69,6 +71,7 @@ define([
         Group = Group.default;
         metaFields = metaFields.default;
         openGraph = openGraph.default;
+        getMediaMainImage = getMediaMainImage.default;
 
         var createEditor = Editor.default.create;
 
@@ -130,9 +133,12 @@ define([
                 'primaryTag',
                 'sectionName',
                 'hasMainVideo',
+                'imageSrcFromCapi',
                 'imageCutoutSrcFromCapi',
                 'ophanUrl',
                 'sparkUrl',
+                'capiId',
+                'shortUrl',
                 'premium']);
 
             this.state.enableContentOverrides(this.meta.snapType() !== 'latest');
@@ -224,6 +230,23 @@ define([
                     return fields.secureThumbnail() || fields.thumbnail();
                 }
             }, this);
+            this.mainImage = ko.pureComputed(function () {
+                var meta = this.meta,
+                    fields = this.fields,
+                    state = this.state;
+
+                if (meta.imageReplace() && meta.imageSrc()) {
+                    return meta.imageSrc();
+                } else if (meta.imageCutoutReplace()) {
+                    return meta.imageCutoutSrc() || state.imageCutoutSrcFromCapi() || fields.secureThumbnail() || fields.thumbnail();
+                } else if (meta.imageSlideshowReplace && meta.imageSlideshowReplace() && meta.slideshow() && meta.slideshow()[0]) {
+                    return meta.slideshow()[0].src;
+                } else if  (state.imageSrcFromCapi()) {
+                    return state.imageSrcFromCapi().href;
+                } else {
+                    return fields.secureThumbnail() || fields.thumbnail();
+                }
+            }, this);
         }
 
         Article.prototype.copy = function () {
@@ -299,6 +322,7 @@ define([
                 this.state.sectionName(this.props.sectionName());
                 this.state.primaryTag(getPrimaryTag(opts));
                 this.state.imageCutoutSrcFromCapi(getContributorImage(opts));
+                this.state.imageSrcFromCapi(getMediaMainImage(opts));
                 this.state.hasMainVideo(getMainMediaType(opts) === 'video');
                 this.state.tone(opts.frontsMeta && opts.frontsMeta.tone);
                 this.state.ophanUrl(vars.CONST.ophanBase + '?path=/' + urlAbsPath(opts.webUrl));
@@ -306,6 +330,8 @@ define([
                 if (deepGet(opts, '.fields.liveBloggingNow') === 'true') {
                     this.state.isLiveBlog(true);
                 }
+                this.state.capiId(opts.capiId);
+                this.state.shortUrl(opts.fields.shortUrl);
 
                 this.metaDefaults = _.extend(deepGet(opts, '.frontsMeta.defaults') || {}, this.collectionMetaDefaults);
 

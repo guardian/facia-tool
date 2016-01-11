@@ -40,7 +40,7 @@ object DefaultsController extends Controller with PanDomainAuthActions {
       hasConfigureFronts <- Acl.testUser(Permissions.ConfigureFronts, "facia-tool-allow-config-for-all")(request.user.email)
     } yield {
       val acls = AclJson(
-        fronts = Map("breaking-news" -> hasBreakingNews),
+        fronts = Map(Configuration.faciatool.breakingNewsFront -> hasBreakingNews),
         permissions = Map("configure-config" -> hasConfigureFronts)
       )
 

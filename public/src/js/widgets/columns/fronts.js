@@ -25,6 +25,12 @@ export default class Front extends ColumnWidget {
         this.controlsVisible = ko.observable(false);
         this.authorized = ko.observable(isAuthorized(this.baseModel, frontId));
 
+        this.frontsList = ko.pureComputed(() => {
+            return this.baseModel.frontsList().filter(front => {
+                return CONST.askForConfirmation.indexOf(front.id) === -1;
+            });
+        });
+
         this.subscribeOn(this.front, this.onFrontChange);
         this.subscribeOn(this.mode, this.onModeChange);
         this.subscribeOn(this.baseModel.permissions, () => {
