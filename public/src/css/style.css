@@ -1337,7 +1337,7 @@ button {
     color: red;
 }
 
-.front-hidden > span {
+.front-hidden-label {
     padding-left: 2px;
 }
 
