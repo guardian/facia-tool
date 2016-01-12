@@ -485,6 +485,7 @@ define([
                         isArticle: !trail.meta.snapType(),
                         thumb: trail.thumbImage(),
                         image: trail.mainImage(),
+                        imageHide: trail.meta.imageHide(),
                         path: trail.meta.snapType() ? trail.meta.href() : trail.state.capiId(),
                         shortUrl: trail.state.shortUrl(),
                         topic: topic,

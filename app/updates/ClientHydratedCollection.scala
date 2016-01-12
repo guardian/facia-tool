@@ -9,6 +9,7 @@ case class ClientHydratedTrail (
   isArticle: Boolean,
   thumb: Option[String],
   image: Option[String],
+  imageHide: Option[Boolean],
   path: Option[String],
   shortUrl: Option[String],
   alert: Option[Boolean]
