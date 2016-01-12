@@ -24,6 +24,7 @@ export default class Front extends ColumnWidget {
         this.maxArticlesInHistory = this.confirmSendingAlert() ? 20 : 5;
         this.controlsVisible = ko.observable(false);
         this.authorized = ko.observable(isAuthorized(this.baseModel, frontId));
+        this.isHidden = ko.observable();
 
         this.frontsList = ko.pureComputed(() => {
             return this.baseModel.frontsList().filter(front => {
@@ -130,10 +131,14 @@ export default class Front extends ColumnWidget {
             this.front(frontId);
         }
         var allCollections = this.baseModel.state().config.collections;
+        var front = this.baseModel.frontsMap()[frontId];
 
+        if (front) {
+            this.isHidden(front.isHidden);
+        }
         this.allExpanded(true);
         this.collections(
-            ((this.baseModel.frontsMap()[frontId] || {}).collections || [])
+            ((front || {}).collections || [])
             .filter(id => allCollections[id] && !allCollections[id].uneditable)
             .map(id => new Collection(
                 _.extend(

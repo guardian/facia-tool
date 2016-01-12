@@ -57,6 +57,10 @@
             optionsCaption: 'choose a front...'
         "></select>
     </div>
+    <!-- ko if: isHidden -->
+    <div class="front-hidden"><i class="fa fa-warning"></i><span class="front-hidden-label">This front is hidden</span></div>
+    <!-- /ko -->
+
     <!-- ko if: front -->
         <div class="front-controls">
             <span class="front-actions" data-bind="toggleClick: controlsVisible">
