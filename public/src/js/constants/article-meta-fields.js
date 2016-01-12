@@ -194,6 +194,7 @@ export default Object.freeze([
     {
         key: 'imageHide',
         editable: true,
+        slimEditable: 'true',
         omitForSupporting: true,
         singleton: 'images',
         label: 'hide image',
