@@ -15,11 +15,13 @@ describe('Front', function () {
         var fronts = {
             uk: {
                 id: 'uk',
-                collections: ['one', 'non-existing', 'shared', 'uneditable']
+                collections: ['one', 'non-existing', 'shared', 'uneditable'],
+                isHidden: false
             },
             au: {
                 id: 'au',
-                collections: ['shared', 'two']
+                collections: ['shared', 'two'],
+                isHidden: true
             }
         };
         this.model = {
@@ -258,6 +260,22 @@ describe('Front', function () {
         })
         .then(() => {
             expect(callPresser).toBe(1);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+    it('displays a warnign if front is hidden ', function (done) {
+        return this.loadFront({}, 'au')
+        .then(() => {
+            return expect($('.front-hidden').is(':visible')).toBe(true);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+    it('does not display a warnign if the front is not hidden ', function (done) {
+        return this.loadFront({}, 'uk')
+        .then(() => {
+            return expect($('.front-hidden').is(':visible')).toBe(false);
         })
         .then(done)
         .catch(done.fail);
