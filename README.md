@@ -126,13 +126,10 @@ Create the files
 
 * `/etc/gu/facia-tool.properties` containing
 
-   > STAGE=CODE
-
-   and the name of project you are running, either
-   > PROJECT=facia-tool
-
-   or
-   > PROJECT=packages
+   ```
+   STAGE=CODE
+   STS_ROLE=arn:aws:iam::642631414762:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX
+   ```
 
 * `/etc/gu/facia-tool.application.secrets.conf` this files contains secrets, there's a copy in S3. You need at least
 
@@ -155,7 +152,6 @@ Create the files
    pandomain.domain="local.dev-gutools.co.uk"
    pandomain.host="https://fronts.local.dev-gutools.co.uk"
 
-   facia.stage="CODE"
    ```
 
 
@@ -189,12 +185,7 @@ If it is your first time, compile the project.
 compile
 ```
 
-Switch project by typing
-```
-project facia-tool
-```
-
-Then run the project locally by typing
+Run the project locally by typing
 ```
 run
 ```
@@ -219,6 +210,8 @@ grunt test --no-single-run
 ```
 Starts `karma` in debug mode, you can connect your browser at [http://localhost:9876?debug.html](http://localhost:9876?debug.html)
 
-You can run a single test going to [http://localhost:9876/debug.html?test=collections](http://localhost:9876/debug.html?test=collections), spec files are inside `faia-tool/test/public/spec`.
+You can run a single test going to [http://localhost:9876/debug.html?test=collections](http://localhost:9876/debug.html?test=collections), spec files are inside `facia-tool/test/public/spec`.
+
+You need to have version 4.1 or higher of node installed to be able to run the tests
 
 Enjoy!
