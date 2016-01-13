@@ -136,10 +136,12 @@ function diagnoseStaleFront (container, front, config, when) {
 function diagnoseCapiQueries(container, front, config, scheduler) {
     const capiQueriesPlaceholder = container.querySelector('.capiQueries');
     const listOfQueries = config.fronts[front].collections.map(collectionId => {
+        const collectionConfig = config.collections[collectionId];
+        const backfill = collectionConfig.backfill || {};
         return {
             id: collectionId,
-            name: config.collections[collectionId].displayName,
-            path: config.collections[collectionId].apiQuery
+            name: collectionConfig.displayName,
+            path: backfill.type === 'capi' ? backfill.query : collectionConfig.apiQuery
         };
     })
     .filter(collection => !!collection.path);
