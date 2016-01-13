@@ -86,7 +86,10 @@ object BreakingNewsUpdate {
       thumbnailUrl = trail.thumb.map{new URI(_)},
       sender = email,
       link = createLinkDetails(trail),
-      imageUrl = trail.image,
+      imageUrl = trail.imageHide match {
+        case Some(true) => None
+        case _ => trail.image
+      },
       importance = parseImportance(trail.group),
       topic =  parseTopic(trail.topic),
       debug = false
