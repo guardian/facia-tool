@@ -48,10 +48,8 @@ export default class ConfigFront extends BaseClass {
             'collectionsCreated',
             'isOpen',
             'isOpenProps',
-            'showGroups',
             'isValidMetadata']);
         this.state.isValidMetadata(true);
-        this.state.showGroups(_.contains(vars.CONST.prioritiesWithGroups, this.props.priority()));
 
         this.applyConstraints();
 
@@ -198,7 +196,7 @@ export default class ConfigFront extends BaseClass {
     saveProps() {
         this.applyConstraints();
         this.state.isOpenProps(false);
-        if (!this.props.group()) {
+        if (this.props.priority() === 'commercial' && !this.props.group()) {
             alert('You must choose a group');
             return;
         }
@@ -249,6 +247,10 @@ export default class ConfigFront extends BaseClass {
         super.dispose();
         this.collections.dispose();
         this.dom = null;
+    }
+
+    showGroups() {
+        return _.contains(vars.CONST.prioritiesWithGroups, this.props.priority());
     }
 }
 
