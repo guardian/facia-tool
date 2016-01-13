@@ -50,7 +50,9 @@ export function dispose () {
 }
 
 function extractFrontName (container) {
-    return container.querySelector('.searchField').value.replace(/^\/+/, '');
+    return container.querySelector('.searchField').value
+        .replace(/https?:\/\/(www.)?theguardian.com\//, '')
+        .replace(/^\/+/, '');
 }
 
 function checkFront (container, frontName) {
