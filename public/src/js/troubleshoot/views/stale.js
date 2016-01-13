@@ -4,7 +4,7 @@ import humanTime from 'utils/human-time';
 import CONST from 'constants/defaults';
 
 const disposeActions = [];
-const STALE_NETWORK_FRONT = 5 * 60 * 1000;
+const STALE_NETWORK_FRONT = 6 * 60 * 1000;
 const STALE_EDITORIAL_FRONT = 20 * 60 * 1000;
 const STALE_COMMERCIAL_FRONT = 2.5 * 3600 * 1000;
 
@@ -32,10 +32,15 @@ export function render (container) {
 }
 
 function registerListeners (container) {
-    const checkCallback = checkFront.bind(null, container);
+    const checkCallback = checkFront.bind(null, container, null);
     container.querySelector('.checkFront').addEventListener('click', checkCallback);
     disposeActions.push(function () {
         container.querySelector('.checkFront').removeEventListener('click', checkCallback);
+    });
+    const rePressFront = delegatePressFront.bind(null, container);
+    container.addEventListener('click', rePressFront);
+    disposeActions.push(function () {
+        container.removeEventListener('click', rePressFront);
     });
 }
 
@@ -44,8 +49,12 @@ export function dispose () {
     disposeActions.length = 0;
 }
 
-function checkFront (container) {
-    const search = container.querySelector('.searchField').value.replace(/^\/+/, '');
+function extractFrontName (container) {
+    return container.querySelector('.searchField').value.replace(/^\/+/, '');
+}
+
+function checkFront (container, frontName) {
+    const search = frontName || extractFrontName(container);
 
     if (search) {
         fetchConfig()
@@ -100,7 +109,7 @@ function checkPressedState (front, config, container, lastPress) {
         if (now - date > staleInterval(front, config)) {
             return diagnoseStaleFront(container, front, config, humanTime(date, now));
         } else {
-            return frontNotStale(container, humanTime(date, now));
+            return frontNotStale(container, front, humanTime(date, now));
         }
     } else {
         return diagnoseStaleFront(container, front, config, null);
@@ -126,11 +135,14 @@ function inject (container, element) {
 
 function diagnoseStaleFront (container, front, config, when) {
     const troubleshootResults = clone('staleFront');
-    troubleshootResults.querySelector('.lastModifyDate').innerHTML = when || 'never';
+    troubleshootResults.querySelector('.lastModifyDate').textContent = when || 'never';
+    troubleshootResults.querySelector('.frontName').textContent = front;
 
     diagnoseCapiQueries(troubleshootResults, front, config, createScheduler());
     diagnoseDreamSnaps(troubleshootResults, front, config, createScheduler());
     inject(container, troubleshootResults);
+
+    container.querySelector('.rePress').dataset.frontName = front;
 }
 
 function diagnoseCapiQueries(container, front, config, scheduler) {
@@ -178,9 +190,10 @@ function diagnoseDreamSnaps(container, front, config, scheduler) {
     });
 }
 
-function frontNotStale (container, when) {
+function frontNotStale (container, front, when) {
     const validMessage = clone('frontNotStale');
-    validMessage.querySelector('.lastModifyDate').innerHTML = when;
+    validMessage.querySelector('.lastModifyDate').textContent = when;
+    validMessage.querySelector('.frontName').textContent = front;
 
     inject(container, validMessage);
 }
@@ -198,8 +211,8 @@ function generateCapiList (listOfQueries, scheduler) {
 
     listOfQueries.forEach(query => {
         const element = clone('capiQuery');
-        element.querySelector('.capiQueryCollection').innerHTML = query.name;
-        element.querySelector('.capiQueryPath').innerHTML = query.path;
+        element.querySelector('.capiQueryCollection').textContent = query.name;
+        element.querySelector('.capiQueryPath').textContent = query.path;
 
         scheduler.job((path, el) => {
             return fetchFromCapi(path)
@@ -237,7 +250,7 @@ function generateDreamSnapsList (listContainer, listOfCollections, scheduler) {
                     fetchSnaps(collection, snaps, listContainer, scheduler);
                 } else {
                     const emptyMessage = clone('emptyDreamSnapList');
-                    emptyMessage.querySelector('.emptyDreamSnapCollection').innerHTML = collection.name;
+                    emptyMessage.querySelector('.emptyDreamSnapCollection').textContent = collection.name;
                     listContainer.appendChild(emptyMessage);
                     markSuccess(el);
                 }
@@ -283,14 +296,14 @@ function filterDreamSnaps (json) {
 function fetchSnaps (collection, snapList, domList, scheduler) {
     snapList.forEach(snap => {
         const element = clone('dreamSnap');
-        element.querySelector('.dreamSnapCollection').innerHTML = collection.name;
-        element.querySelector('.dreamSnapName').innerHTML = snap.trail.meta.customKicker;
-        element.querySelector('.dreamSnapContext').innerHTML = snap.context;
+        element.querySelector('.dreamSnapCollection').textContent = collection.name;
+        element.querySelector('.dreamSnapName').textContent = snap.trail.meta.customKicker;
+        element.querySelector('.dreamSnapContext').textContent = snap.context;
 
         if (snap.parent) {
             const parentTrail = clone('dreamSnapSublink');
             const parentHeadline = snap.parent.meta && snap.parent.meta.headline ? snap.parent.meta.headline : snap.parent.id;
-            parentTrail.querySelector('.dreamSnapParent').innerHTML = parentHeadline;
+            parentTrail.querySelector('.dreamSnapParent').textContent = parentHeadline;
 
             element.querySelector('.dreamSnapIsSublink').appendChild(parentTrail);
         }
@@ -313,4 +326,41 @@ function markSuccess (element) {
 function markFailure (element) {
     element.classList.remove('loading');
     element.classList.add('resultInvalid');
+}
+
+function delegatePressFront (container, evt) {
+    if (evt.target.classList.contains('rePress')) {
+        const frontName = evt.target.dataset.frontName;
+
+        if (frontName) {
+            pressFront(container, frontName);
+        }
+    }
+}
+
+function pressFront(container, front) {
+    const button = container.querySelector('.rePress');
+    const pressContainer = container.querySelector('.pressContainer');
+
+    pressContainer.classList.add('loading');
+    pressContainer.classList.remove('resultCorrect', 'resultInvalid');
+    button.disabled = true;
+
+    fetch('/press/live/' + front, {
+        credentials: 'include',
+        method: 'post'
+    })
+    // wait some time for the press action to be processed
+    .then(() => new Promise(resolve => setTimeout(resolve, 2000)))
+    .then(() => {
+        pressContainer.classList.add('resultCorrect');
+        checkFront(container, front);
+    })
+    .catch(() => {
+        pressContainer.classList.add('resultInvalid');
+    })
+    .then(() => {
+        pressContainer.classList.remove('loading');
+        button.disabled = false;
+    });
 }
