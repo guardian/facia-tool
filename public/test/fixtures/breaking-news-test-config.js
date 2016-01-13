@@ -10,12 +10,12 @@ export default {
         collections: {
             'global': {
                 displayName: 'Global alerts',
-                groups: ['minor', 'major'],
+                groups: ['web', 'app & web'],
                 type: 'breaking-news/not-for-other-fronts'
             },
             'uk-alerts': {
                 displayName: 'UK alerts',
-                groups: ['minor', 'major'],
+                groups: ['web', 'app & web'],
                 type: 'breaking-news/not-for-other-fronts'
             }
         }
