@@ -12,6 +12,7 @@ import frontCount from 'utils/front-count';
 import populateObservables from 'utils/populate-observables';
 import generateCollections from 'utils/generate-collections';
 import {validateImageSrc} from 'utils/validate-image-src';
+import alert from 'utils/alert';
 
 export default class ConfigFront extends BaseClass {
     constructor(opts = {}) {
@@ -197,6 +198,10 @@ export default class ConfigFront extends BaseClass {
     saveProps() {
         this.applyConstraints();
         this.state.isOpenProps(false);
+        if (!this.props.group()) {
+            alert('You must choose a group');
+            return;
+        }
         return persistence.front.update(this);
     }
 
