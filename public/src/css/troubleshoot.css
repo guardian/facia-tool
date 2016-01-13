@@ -115,7 +115,9 @@ body {
 }
 .loadingMessage,
 .resultCorrectStatus,
-.resultInvalidStatus {
+.resultInvalidStatus,
+.resultCorrectMessage,
+.resultInvalidMessage {
     display: none;
 }
 .loadingCompleteMessage {
@@ -129,7 +131,9 @@ body {
 }
 .loading .loadingCompleteMessage,
 .loading .resultCorrectStatus,
-.loading .resultInvalidStatus {
+.loading .resultInvalidStatus,
+.loading .resultCorrectMessage,
+.loading .resultInvalidMessage {
     display: none;
 }
 .resultCorrect .resultCorrectStatus {
@@ -138,11 +142,17 @@ body {
     color: #47B3BF;
     vertical-align: middle;
 }
+.resultCorrect .resultCorrectMessage {
+    display: inline-block;
+}
 .resultInvalid .resultInvalidStatus {
     display: inline-block;
     width: 1em;
     color: #F14C53;
     vertical-align: middle;
+}
+.resultInvalid .resultInvalidMessage {
+    display: inline-block;
 }
 
 /* Forms */
@@ -191,4 +201,7 @@ body {
 }
 .capiQueryCollection {
     font-weight: bold;
+}
+.pressContainer {
+    margin-bottom: 1em;
 }
