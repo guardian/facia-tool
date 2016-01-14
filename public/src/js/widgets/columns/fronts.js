@@ -182,6 +182,13 @@ export default class Front extends ColumnWidget {
         });
     }
 
+    getGroupName(name) {
+        if (!this.confirmSendingAlert) {
+            return name;
+        }
+        return name === 'major' ? 'app & web' : 'web';
+    }
+
     getFrontAge({alertIfStale = false} = {}) {
         if (this.front()) {
             lastModified(this.front()).then(last => {
