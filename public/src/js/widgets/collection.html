@@ -136,7 +136,7 @@
 
 <script type="text/html" id="template_groups">
     <!-- ko if: name && !front.flattenGroups() -->
-        <div class="group-name" data-bind="text: name"></div>
+        <div class="group-name" data-bind="text: front.getGroupName(name)"></div>
     <!-- /ko -->
     <div class="droppable" data-bind="
         makeDroppable: true,
