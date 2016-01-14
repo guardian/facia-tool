@@ -1,51 +1,25 @@
-define([
-    'knockout',
-    'underscore',
-    'jquery',
-    'modules/vars',
-    'utils/alert',
-    'utils/as-observable-props',
-    'utils/fetch-visible-stories',
-    'utils/human-time',
-    'utils/mediator',
-    'utils/populate-observables',
-    'utils/report-errors',
-    'modules/authed-ajax',
-    'modules/modal-dialog',
-    'models/group',
-    'models/collections/article',
-    'modules/content-api'
-], function(
-    ko,
-    _,
-    $,
-    vars,
-    alert,
-    asObservableProps,
-    fetchVisibleStories,
-    humanTime,
-    mediator,
-    populateObservables,
-    reportErrors,
-    authedAjax,
-    modalDialog,
-    Group,
-    Article,
-    contentApi
-) {
-    modalDialog = modalDialog.default;
-    asObservableProps = asObservableProps.default;
-    populateObservables = populateObservables.default;
-    mediator = mediator.default;
-    humanTime = humanTime.default;
-    fetchVisibleStories = fetchVisibleStories.default;
-    Group = Group.default;
-    reportErrors = reportErrors.default;
-    alert = alert.default;
+import ko from 'knockout';
+import _ from 'underscore';
+import $ from 'jquery';
+import BaseClass from 'models/base-class';
+import Article from 'models/collections/article';
+import Group from 'models/group';
+import * as authedAjax from 'modules/authed-ajax';
+import * as contentApi from 'modules/content-api';
+import modalDialog from 'modules/modal-dialog';
+import * as vars from 'modules/vars';
+import alert from 'utils/alert';
+import asObservableProps from 'utils/as-observable-props';
+import humanTime from 'utils/human-time';
+import mediator from 'utils/mediator';
+import populateObservables from 'utils/populate-observables';
+import reportErrors from 'utils/report-errors';
 
-    function Collection(opts) {
+export default class Collection extends BaseClass {
+    constructor(opts = {}) {
+        super();
 
-        if (!opts || !opts.id) { return; }
+        if (!opts.id) { return; }
 
         this.id = opts.id;
 
@@ -61,17 +35,15 @@ define([
 
         this.dom = undefined;
         var onDomLoadResolve;
-        var onDomLoad = new Promise(function (resolve) {
+        var onDomLoad = new Promise(resolve => {
             onDomLoadResolve = resolve;
         });
-        this.registerElement = function (element) {
+        this.registerElement = element => {
             this.dom = element;
             onDomLoadResolve();
         };
 
         this.visibleStories = null;
-
-        this.listeners = mediator.scope();
 
         // properties from the config, about this collection
         this.configMeta   = asObservableProps([
@@ -108,9 +80,8 @@ define([
         this.itemDefaults = _.reduce({
             showTags: 'showKickerTag',
             showSections: 'showKickerSection'
-        }, function(defaults, val, key) {
+        }, (defaults = {}, val, key) => {
             if (_.has(opts, key)) {
-                defaults = defaults || {};
                 defaults[val] = opts[key];
             }
             return defaults;
@@ -120,83 +91,69 @@ define([
         this.state.isHistoryOpen(this.front.confirmSendingAlert());
 
         this.setPending(true);
-        this.loaded = this.load().then(function () { return onDomLoad; });
+        this.loaded = this.load().then(() => onDomLoad);
         this.state.visibleCount({});
-
     }
 
-    Collection.prototype.setPending = function(asPending) {
-        var self = this;
-
+    setPending(asPending) {
         if (asPending) {
             this.state.pending(true);
         } else {
-            setTimeout(function() {
-                self.state.pending(false);
-            });
+            setTimeout(() => this.state.pending(false));
         }
-    };
+    }
 
-    Collection.prototype.isPending = function() {
+    isPending() {
         return !!this.state.pending();
-    };
+    }
 
-    Collection.prototype.createGroups = function(groupNames) {
-        var self = this;
-
-        return _.map(_.isArray(groupNames) ? groupNames : [undefined], function(name, index) {
-            return new Group({
+    createGroups(groupNames) {
+        return _.map(_.isArray(groupNames) ? groupNames : [undefined], (name, index) =>
+            new Group({
                 index: index,
                 name: name,
-                parent: self,
+                parent: this,
                 parentType: 'Collection',
-                omitItem: self.drop.bind(self),
-                front: self.front
-            });
-        }).reverse(); // because groupNames is assumed to be in ascending order of importance, yet should render in descending order
-    };
+                omitItem: this.drop.bind(this),
+                front: this.front
+            })
+        ).reverse(); // because groupNames is assumed to be in ascending order of importance, yet should render in descending order
+    }
 
-    Collection.prototype.toggleCollapsed = function() {
-        var collapsed = !this.state.collapsed();
+    toggleCollapsed() {
+        const collapsed = !this.state.collapsed();
         this.state.collapsed(collapsed);
         this.closeAllArticles();
         mediator.emit('collection:collapse', this, collapsed);
-    };
+    }
 
-    Collection.prototype.toggleEditingConfig = function() {
+    toggleEditingConfig() {
         this.state.editingConfig(!this.state.editingConfig());
-    };
+    }
 
-    Collection.prototype.reset = function() {
+    reset() {
         this.closeAllArticles();
         this.state.editingConfig(false);
         this.load();
-    };
+    }
 
-    Collection.prototype.addedInDraft = function () {
-        var live = (this.raw || {}).live || [];
+    addedInDraft() {
+        const live = (this.raw || {}).live || [];
 
         return _.chain(this.groups)
-            .map(function (group) {
-                return group.items();
-            })
+            .map(group => group.items())
             .flatten()
-            .filter(function (draftArticle) {
-                return !_.find(live, function (liveArticle) {
-                    return liveArticle.id === draftArticle.id();
-                });
-            })
+            .filter(draftArticle =>
+                !_.find(live, liveArticle => liveArticle.id === draftArticle.id())
+            )
             .value();
-    };
+    }
 
-    Collection.prototype.publishDraft = function() {
-        var that = this,
-            addedInDraft = this.front.confirmSendingAlert() ? this.addedInDraft() : [];
+    publishDraft() {
+        const addedInDraft = this.front.confirmSendingAlert() ? this.addedInDraft() : [];
 
         if (addedInDraft.length) {
-            var isMajorAlert = !!_.find(addedInDraft, function (article) {
-                    return article.group.index === 1;
-                });
+            const isMajorAlert = !!_.find(addedInDraft, article => article.group.index === 1);
 
             modalDialog.confirm({
                 name: 'confirm_breaking_changes',
@@ -205,69 +162,63 @@ define([
                     target: this.configMeta.displayName(),
                     targetGroup: isMajorAlert ? 'APP & WEB' : 'WEB',
                     targetGroupClass: isMajorAlert ? 'major-alert' : 'minor-alert',
-                    alertAlreadySent: function (article) {
-                        return _.find(that.history(), function (previously) {
-                            return previously.id() === article.id();
-                        });
-                    }
+                    alertAlreadySent: article =>
+                        _.find(this.history(), previously => previously.id() === article.id())
                 }
             })
-            .then(function () {
-                that.processDraft(true, { sendAlert: true });
-            }, function () {});
+            .then(() => {
+                // don't chain the promise
+                this.processDraft(true, { sendAlert: true });
+            })
+            .catch(() => {});
         } else {
             this.processDraft(true, { sendAlert: false });
         }
-    };
+    }
 
-    Collection.prototype.discardDraft = function() {
+    discardDraft() {
         this.processDraft(false);
-    };
+    }
 
-    Collection.prototype.processDraft = function(goLive, opts) {
-        var self = this;
-        var opts = opts || {};
-
+    processDraft(goLive, opts = {}) {
         this.state.hasDraft(false);
         this.setPending(true);
         this.closeAllArticles();
 
-        var detectPressFailures = goLive ? function () {
-            mediator.emit('presser:detectfailures', self.front.front());
-        } : function () {};
+        const detectPressFailures = goLive ? () => {
+            mediator.emit('presser:detectfailures', this.front.front());
+        } : () => {};
 
         authedAjax.request({
             type: 'post',
             url: vars.CONST.apiBase + '/collection/' + (goLive ? 'publish' : 'discard') + '/' + this.id,
-            data: self.serializedCollectionWithMeta(opts.sendAlert)
+            data: this.serializedCollectionWithMeta(opts.sendAlert)
         })
-        .catch(function (error) {
-            var errorMessages = [];
+        .catch(error => {
+            const errorMessages = [];
             try {
-                errorMessages = JSON.parse(error.responseText);
+                errorMessages.push.apply(errorMessages, JSON.parse(error.responseText));
             } catch (ex) {
                 errorMessages.push(error.responseText || error.message);
             }
-            var message = 'Error when ' + (goLive ? 'publishing' : 'discarding')
+            const message = 'Error when ' + (goLive ? 'publishing' : 'discarding')
                 + ' the collection: ' + errorMessages.join('<br>');
             alert(message);
             reportErrors(new Error(message));
         })
-        .catch(function () {})
-        .then(function() {
-            return self.load().then(detectPressFailures);
-        })
-        .catch(function () {});
-    };
+        .catch(() => {})
+        .then(() => this.load().then(detectPressFailures))
+        .catch(() => {});
+    }
 
-    Collection.prototype.drop = function(item) {
-        var front = this.front.front(), mode = this.front.mode();
+    drop(item) {
+        const mode = this.front.mode();
         this.setPending(true);
 
         this.state.showIndicators(false);
-        var detectPressFailures = mode === 'live' ? function () {
-            mediator.emit('presser:detectfailures', front);
-        } : function () {};
+        const detectPressFailures = mode === 'live' ? () => {
+            mediator.emit('presser:detectfailures', this.front.front());
+        } : () => {};
         authedAjax.updateCollections({
             remove: {
                 collection: this,
@@ -277,91 +228,73 @@ define([
         })
         .then(detectPressFailures)
         .catch(detectPressFailures);
-    };
+    }
 
-    Collection.prototype.load = function(opts) {
-        var self = this;
-
-        opts = opts || {};
-
+    load(opts = {}) {
         return authedAjax.request({
             url: vars.CONST.apiBase + '/collection/' + this.id
         })
-        .then(function(raw) {
-            if (opts.isRefresh && self.isPending()) { return; }
+        .then(raw => {
+            if (opts.isRefresh && this.isPending()) { return; }
             if (!raw) { return; }
 
             // We need to wait for the populate
-            return new Promise(function (resolve) {
-                self.state.hasConcurrentEdits(false);
+            this.state.hasConcurrentEdits(false);
 
-                self.populate(raw, resolve);
+            const wait = this.populate(raw);
 
-                populateObservables(self.collectionMeta, raw);
+            populateObservables(this.collectionMeta, raw);
 
-                self.collectionMeta.updatedBy(raw.updatedEmail === vars.model.identity.email ? 'you' : raw.updatedBy);
+            this.collectionMeta.updatedBy(raw.updatedEmail === vars.model.identity.email ? 'you' : raw.updatedBy);
 
-                self.state.timeAgo(self.getTimeAgo(raw.lastUpdated));
-            });
+            this.state.timeAgo(this.getTimeAgo(raw.lastUpdated));
+
+            return wait;
         })
-        .catch(function (ex) {
+        .catch(ex => {
             // Network errors should be ignored
             if (ex instanceof Error) {
                 reportErrors(ex);
             }
         })
-        .then(function() {
-            self.setPending(false);
+        .then(() => {
+            this.setPending(false);
         });
-    };
+    }
 
-    Collection.prototype.hasOpenArticles = function() {
-        return _.some(this.groups, function(group) {
-            return _.some(group.items(), function(article) { return article.state.isOpen(); });
-        });
-    };
+    hasOpenArticles() {
+        return _.some(this.groups, group =>
+            _.some(group.items(), article => article.state.isOpen())
+        );
+    }
 
-    Collection.prototype.isHistoryEnabled = function () {
+    isHistoryEnabled() {
         return this.front.mode() !== 'treats' && this.history().length;
-    };
+    }
 
-    Collection.prototype.replaceArticle = function(articleId) {
-        var self = this;
-        var collectionList = this.front.getCollectionList(this.raw);
-        var group;
-        var articleIndex;
-        var article;
+    replaceArticle(articleId) {
+        const collectionList = this.front.getCollectionList(this.raw);
 
-        _.find(collectionList, function(item) {
-            if (item.id === articleId) {
-                group = _.find(self.groups, function(g) {
-                    return (parseInt((item.meta || {}).group, 10) || 0) === g.index;
-                });
-                article = new Article(_.extend(item, {
-                    group: group,
-                    slimEditor: self.front.slimEditor()
-                }));
+        const previousArticle = _.find(collectionList, item => item.id === articleId);
+        if (previousArticle) {
+            const previousArticleGroupIndex = parseInt((previousArticle.meta || {}).group, 10) || 0;
+            const group = _.find(this.groups, group => group.index === previousArticleGroupIndex);
+            const articleIndex = _.findIndex(group.items(), item => item.id() === articleId);
 
-                return true;
-            }
-        });
+            const newArticle = new Article(_.extend({}, previousArticle, {
+                group: group,
+                slimEditor: this.front.slimEditor()
+            }));
 
-        var articleIndex = _.findIndex(group.items(), function(item) {
-            return (item.id() === articleId);
-        });
+            group.items.splice(articleIndex, 1, newArticle);
+            this.decorate();
+        }
+    }
 
-        group.items.splice(articleIndex, 1, article);
-        this.decorate();
-    };
-
-    Collection.prototype.populate = function(rawCollection, callback) {
-        callback = callback || function () {};
-        var self = this,
-            list,
-            loading = [];
-
+    populate(rawCollection) {
         this.raw = rawCollection || this.raw;
 
+        const loading = [];
         if (this.raw) {
             this.state.hasDraft(_.isArray(this.raw.draft));
 
@@ -369,19 +302,16 @@ define([
                 this.state.hasConcurrentEdits(this.raw.updatedEmail !== vars.model.identity.email && this.state.lastUpdated());
 
             } else if (!rawCollection || this.raw.lastUpdated !== this.state.lastUpdated()) {
-                list = this.front.getCollectionList(this.raw);
+                const list = this.front.getCollectionList(this.raw);
 
-                _.each(this.groups, function(group) {
-                    group.items.removeAll();
-                });
+                _.each(this.groups, group => group.items.removeAll());
 
-                _.each(list, function(item) {
-                    var group = _.find(self.groups, function(g) {
-                        return (parseInt((item.meta || {}).group, 10) || 0) === g.index;
-                    }) || self.groups[0];
-                    var article = new Article(_.extend(item, {
+                _.each(list, item => {
+                    const itemGroupIndex = parseInt((item.meta || {}).group, 10) || 0;
+                    const group = _.find(this.groups, g => itemGroupIndex === g.index) || this.groups[0];
+                    const article = new Article(_.extend({}, item, {
                         group: group,
-                        slimEditor: self.front.slimEditor()
+                        slimEditor: this.front.slimEditor()
                     }));
 
                     group.items.push(article);
@@ -395,90 +325,78 @@ define([
         }
 
         this.setPending(false);
-        Promise.all(loading).then(function () {
-            mediator.emit('collection:populate', self);
-            callback();
-        })
-        .catch(callback);
-    };
+        return Promise.all(loading)
+            .then(() => mediator.emit('collection:populate', this))
+            .catch(() => {});
+    }
 
-    Collection.prototype.populateHistory = function(list) {
+    populateHistory(list) {
         if (!list || list.length === 0) {
             return;
         }
         this.state.hasExtraActions(true);
 
         list = list.slice(0, this.front.maxArticlesInHistory);
-        this.history(_.map(list, function (opts) {
-            return new Article(_.extend(opts, {
+        this.history(_.map(list, opts =>
+            new Article(_.extend({}, opts, {
                 uneditable: true,
                 slimEditor: this.front.slimEditor()
-            }));
-        }, this));
-    };
+            }))
+        ));
+    }
 
-    Collection.prototype.eachArticle = function (fn) {
-        _.each(this.groups, function(group) {
-            _.each(group.items(), function(item) {
+    eachArticle(fn) {
+        _.each(this.groups, group => {
+            _.each(group.items(), item => {
                 fn(item, group);
             });
         });
-    };
+    }
 
-    Collection.prototype.contains = function (article) {
-        return _.some(this.groups, function (group) {
-            return _.some(group.items(), function (item) {
-                return item === article;
-            });
-        });
-    };
+    contains(article) {
+        return _.some(this.groups, group =>
+            _.some(group.items(), item => item === article)
+        );
+    }
 
-    Collection.prototype.closeAllArticles = function() {
-        this.eachArticle(function(item) {
-            item.close();
-        });
-    };
+    closeAllArticles() {
+        this.eachArticle(item => item.close());
+    }
 
-    Collection.prototype.decorate = function() {
-        var allItems = [],
-            done;
-        this.eachArticle(function(item) {
-            allItems.push(item);
-        });
-        done = contentApi.decorateItems(allItems);
+    decorate() {
+        const allItems = [];
+        this.eachArticle(item => allItems.push(item));
+
+        const done = contentApi.decorateItems(allItems);
         contentApi.decorateItems(this.history());
 
         return done;
-    };
+    }
 
-    Collection.prototype.refresh = function() {
-        if (this.isPending()) { return; }
+    refresh() {
+        if (!this.isPending()) {
+            this.load({ isRefresh: true });
+        }
+    }
 
-        this.load({
-            isRefresh: true
-        });
-    };
+    refreshRelativeTimes() {
+        this.eachArticle(item => item.setRelativeTimes());
+    }
 
-    Collection.prototype.refreshRelativeTimes = function() {
-        this.eachArticle(function(item) {
-            item.setRelativeTimes();
-        });
-    };
-
-    Collection.prototype.getTimeAgo = function(date) {
+    getTimeAgo(date) {
         return date ? humanTime(date) : '';
-    };
+    }
 
-    Collection.prototype.alsoOnToggle = function () {
+    alsoOnToggle() {
         this.state.alsoOnVisible(!this.state.alsoOnVisible());
-    };
+    }
 
-    Collection.prototype.serializedCollectionWithMeta = function (sendAlert) {
+    serializedCollectionWithMeta(sendAlert) {
         if (this.front.confirmSendingAlert()) {
-            var items = [];
-            var topic = this.configMeta.href();
-            this.groups.forEach(function (group) {
-                group.items().forEach(function (trail) {
+            const items = [];
+            const topic = this.configMeta.href();
+            this.groups.forEach(group => {
+                group.items().forEach(trail => {
                     items.push({
                         headline: trail.headline(),
                         group: group.name,
@@ -497,38 +415,33 @@ define([
                 trails: items
             });
         }
-    };
+    }
 
-    Collection.prototype.dispose = function () {
-        this.listeners.dispose();
-        this.groups.forEach(function (group) {
-            group.dispose();
-        });
+    dispose() {
+        this.groups.forEach(group => group.dispose());
         if (this.visibleStories) {
             this.visibleStories.dispose();
         }
-    };
+    }
+};
 
-    ko.bindingHandlers.indicatorHeight = {
-        update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
-            var target = ko.unwrap(valueAccessor()),
-                numbers = bindingContext.$data.state.visibleCount(),
-                container = bindingContext.$data.dom,
-                top, bottomElementPosition, bottomElement, bottom, height;
+ko.bindingHandlers.indicatorHeight = {
+    update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+        var target = ko.unwrap(valueAccessor()),
+            numbers = bindingContext.$data.state.visibleCount(),
+            container = bindingContext.$data.dom,
+            top, bottomElementPosition, bottomElement, bottom, height;
 
-            if (!(target in numbers) || !container) {
-                return;
-            }
-
-            top = $(element).parents('.article-group')[0].getBoundingClientRect().top;
-            bottomElementPosition = numbers[target] - 1;
-            bottomElement = bottomElementPosition >= 0 ? container.querySelectorAll('.article')[bottomElementPosition] : null;
-            bottom = bottomElement ? bottomElement.getBoundingClientRect().bottom : NaN;
-            height = bottom - top - 15;
-
-            element.style.height = (height || 0) + 'px';
+        if (!(target in numbers) || !container) {
+            return;
         }
-    };
 
-    return Collection;
-});
+        top = $(element).parents('.article-group')[0].getBoundingClientRect().top;
+        bottomElementPosition = numbers[target] - 1;
+        bottomElement = bottomElementPosition >= 0 ? container.querySelectorAll('.article')[bottomElementPosition] : null;
+        bottom = bottomElement ? bottomElement.getBoundingClientRect().bottom : NaN;
+        height = bottom - top - 15;
+
+        element.style.height = (height || 0) + 'px';
+    }
+};
