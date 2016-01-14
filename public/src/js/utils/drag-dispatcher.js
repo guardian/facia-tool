@@ -272,7 +272,7 @@ function persist (sourceItem, newItems, sourceContext, sourceGroup, targetContex
         if (update || remove) {
             returnValue = authedAjax.updateCollections({
                 update: update,
-                remove: remove
+                remove: remove ? remove : undefined
             })
             .then(function () {
                 if (targetContext.mode() === 'live') {
