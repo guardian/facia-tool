@@ -46,7 +46,10 @@ describe('Breaking News', function () {
                     draft: true,
                     id: 'global',
                     item: 'internal-code/page/1',
-                    itemMeta: { group: '0' },
+                    itemMeta: {
+                        imageHide: true,
+                        group: '0'
+                    },
                     live: false
                 });
 
@@ -56,7 +59,10 @@ describe('Breaking News', function () {
                 global: {
                     draft: [{
                         id: 'internal-code/page/1',
-                        meta: { group: 0 }
+                        meta: {
+                            imageHide: true,
+                            group: '0'
+                        },
                     }]
                 }
             })
@@ -179,7 +185,10 @@ describe('Breaking News', function () {
                     draft: true,
                     id: 'uk-alerts',
                     item: 'internal-code/page/1',
-                    itemMeta: { group: '1' },
+                    itemMeta: {
+                        imageHide: true,
+                        group: '1'
+                    },
                     live: false
                 });
             })
@@ -187,7 +196,10 @@ describe('Breaking News', function () {
                 'uk-alerts': {
                     draft: [{
                         id: 'internal-code/page/1',
-                        meta: { group: 1 }
+                        meta: {
+                            imageHide: true,
+                            group: '1'
+                        },
                     }],
                     live: [],
                     lastUpdated: (new Date()).toISOString()

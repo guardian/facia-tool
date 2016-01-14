@@ -117,7 +117,7 @@ define([
         }, undefined);
 
         this.history = ko.observableArray();
-        this.state.isHistoryOpen(this.front.confirmSendingAlert());
+        this.state.isHistoryOpen(false);
 
         this.setPending(true);
         this.loaded = this.load().then(function () { return onDomLoad; });

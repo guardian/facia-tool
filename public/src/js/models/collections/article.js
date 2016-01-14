@@ -109,6 +109,10 @@ define([
 
             this.meta = asObservableProps(_.pluck(metaFields, 'key'));
 
+            if (this.front && this.front.confirmSendingAlert()) {
+                this.meta.imageHide(true);
+            }
+
             populateObservables(this.meta, opts.meta);
 
             this.metaDefaults = {};
