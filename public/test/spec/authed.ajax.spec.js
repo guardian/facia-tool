@@ -196,9 +196,9 @@ describe('Ajax Collections update', function () {
                     collection: {
                         id: 'banana',
                         setPending: function () {},
-                        populate: function (arg, callback) {
+                        populate: function (arg) {
                             populateArg = arg;
-                            callback();
+                            return Promise.resolve();
                         }
                     },
                     mode: 'live'
@@ -231,9 +231,9 @@ describe('Ajax Collections update', function () {
                     collection: {
                         id: 'banana',
                         setPending: function () {},
-                        populate: function (arg, callback) {
+                        populate: function (arg) {
                             populateArg = arg;
-                            callback();
+                            return Promise.resolve();
                         }
                     },
                     mode: 'treats'
@@ -266,9 +266,9 @@ describe('Ajax Collections update', function () {
                     collection: {
                         id: 'banana',
                         setPending: function () {},
-                        populate: function (arg, callback) {
+                        populate: function (arg) {
                             populateArgUpdate = arg;
-                            callback();
+                            return Promise.resolve();
                         }
                     },
                     mode: 'draft'
@@ -277,9 +277,9 @@ describe('Ajax Collections update', function () {
                     collection: {
                         id: 'apple',
                         setPending: function () {},
-                        populate: function (arg, callback) {
+                        populate: function (arg) {
                             populateArgRemove = arg;
-                            callback();
+                            return Promise.resolve();
                         }
                     },
                     mode: 'draft'
