@@ -10,6 +10,7 @@ import fullTrim from 'utils/full-trim';
 import populateObservables from 'utils/populate-observables';
 import sanitizeApiQuery from 'utils/sanitize-api-query';
 import urlAbsPath from 'utils/url-abs-path';
+import alert from 'utils/alert';
 
 var apiQuerySym = Symbol();
 
@@ -95,16 +96,25 @@ export default class ConfigCollection extends DropTarget {
     }
 
     save() {
-        var errs = _.chain([
-                {key: 'displayName', errMsg: 'enter a title'},
-                {key: 'type', errMsg: 'choose a layout'}
-            ])
+        var potentialErrors = [
+            {key: 'displayName', errMsg: 'enter a title'},
+            {key: 'type', errMsg: 'choose a layout'},
+        ];
+
+        if (vars.model.priority === 'commercial') {
+            potentialErrors.push({key: 'groups', errMsg: 'choose a group'});
+        }
+
+        var errs = _.chain(potentialErrors)
             .filter(test => !fullTrim(_.result(this.meta, test.key)))
             .pluck('errMsg')
             .value();
 
         if (errs.length) {
-            window.alert('Oops! You must ' + errs.join(', and ') + '...');
+            var lastError = errs[errs.length - 1];
+            var lastErrorJoiner = errs.length > 1 ? ', and ' : '';
+            errs.splice(errs.length - 1);
+            alert('Oops! You must ' + errs.join(', ') + lastErrorJoiner + lastError + '...');
             return;
         }
 

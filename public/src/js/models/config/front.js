@@ -12,6 +12,7 @@ import frontCount from 'utils/front-count';
 import populateObservables from 'utils/populate-observables';
 import generateCollections from 'utils/generate-collections';
 import {validateImageSrc} from 'utils/validate-image-src';
+import alert from 'utils/alert';
 
 export default class ConfigFront extends BaseClass {
     constructor(opts = {}) {
@@ -47,10 +48,8 @@ export default class ConfigFront extends BaseClass {
             'collectionsCreated',
             'isOpen',
             'isOpenProps',
-            'showGroups',
             'isValidMetadata']);
         this.state.isValidMetadata(true);
-        this.state.showGroups(_.contains(vars.CONST.prioritiesWithGroups, this.props.priority()));
 
         this.applyConstraints();
 
@@ -197,6 +196,10 @@ export default class ConfigFront extends BaseClass {
     saveProps() {
         this.applyConstraints();
         this.state.isOpenProps(false);
+        if (this.props.priority() === 'commercial' && !this.props.group()) {
+            alert('You must choose a group');
+            return;
+        }
         return persistence.front.update(this);
     }
 
@@ -244,6 +247,10 @@ export default class ConfigFront extends BaseClass {
         super.dispose();
         this.collections.dispose();
         this.dom = null;
+    }
+
+    showGroups() {
+        return _.contains(vars.CONST.prioritiesWithGroups, this.props.priority());
     }
 }
 
