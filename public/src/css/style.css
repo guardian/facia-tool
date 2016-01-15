@@ -738,6 +738,10 @@ h1 {
     float: right;
 }
 
+.alert-link {
+    float: right;
+}
+
 collection-widget:first-child .collection {
     box-shadow: none;
 }
