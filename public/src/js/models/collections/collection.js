@@ -425,7 +425,7 @@ export default class Collection extends BaseClass {
     }
 
     lastAlertSent () {
-        var groupWithPublicationTime = _.find(this.groups, function (group) {
+        var groupWithPublicationTime = _.find(this.groups, group => {
             if (group.items().length != 0) {
                 return group.items()[0].webPublicationTime();
             }
