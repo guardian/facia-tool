@@ -89,10 +89,18 @@
 </div>
 <!-- /ko -->
 
-<div class="col__inner scrollable styledFront collection-container" data-bind="
-    foreach: collections,
-    css: frontMode
-">
-    <collection-widget params="context: $context"></collection-widget>
+<div class="col__inner scrollable styledFront collection-container" data-bind="css: frontMode">
+    <!-- ko if: confirmSendingAlert() -->
+        <div data-bind="foreach: collections" class="collections-published">
+            <div class="published-collection">
+                <div class="collection-title" data-bind="text: configMeta.displayName()"></div>
+                <div class="collection-age" data-bind="text: lastAlertSent()"></div>
+            </div>
+        </div>
+    <!-- /ko -->
+
+    <div data-bind="foreach: collections">
+      <collection-widget params="context: $context"></collection-widget>
+    </div>
 </div>
 <!-- /ko -->
