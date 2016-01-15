@@ -423,6 +423,24 @@ export default class Collection extends BaseClass {
             this.visibleStories.dispose();
         }
     }
+
+    lastAlertSent () {
+        var groupWithPublicationTime = _.find(this.groups, function (group) {
+            if (group.items().length != 0) {
+                return group.items()[0].webPublicationTime();
+            }
+        });
+
+        if (groupWithPublicationTime) {
+            return groupWithPublicationTime.items()[0].webPublicationTime();
+        }
+
+        if (this.history().length > 0) {
+            return this.history()[0].webPublicationTime();
+        }
+
+        return 'No alerts sent';
+    }
 };
 
 ko.bindingHandlers.indicatorHeight = {
