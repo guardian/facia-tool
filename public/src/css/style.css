@@ -35,13 +35,14 @@ a:hover,
 }
 
 .collections-published {
-    background-color: #fff;
+    background-color: #ddd;
     padding: 5px 10px;
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.32), 0 1px 6px rgba(0, 0, 0, 0.32);
     border: 1px solid #ddd;
     margin: 16px 8px 16px 8px;
     display: flex;
     flex-flow: row wrap;
+    color: #666666;
 }
 
 .published-collection {
@@ -52,12 +53,10 @@ a:hover,
 
 .collection-age {
     font-size: 12px;
-    color: #CCCCCC;
 }
 
 .collection-title {
     font-size: 14px;
-    color: #666666;
     font-family: Georgia;
 }
 
