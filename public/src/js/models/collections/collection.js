@@ -93,6 +93,8 @@ export default class Collection extends BaseClass {
         this.setPending(true);
         this.loaded = this.load().then(() => onDomLoad);
         this.state.visibleCount({});
+
+        this.lastAlertSent = ko.pureComputed(this.getLastAlertTime, this);
     }
 
     setPending(asPending) {
@@ -424,7 +426,7 @@ export default class Collection extends BaseClass {
         }
     }
 
-    lastAlertSent () {
+    getLastAlertTime() {
         var groupWithPublicationTime = _.find(this.groups, group => {
             if (group.items().length != 0) {
                 return group.items()[0].webPublicationTime();
@@ -441,6 +443,7 @@ export default class Collection extends BaseClass {
 
         return 'No alerts sent';
     }
+
 };
 
 ko.bindingHandlers.indicatorHeight = {
