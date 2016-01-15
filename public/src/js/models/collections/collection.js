@@ -93,6 +93,8 @@ export default class Collection extends BaseClass {
         this.setPending(true);
         this.loaded = this.load().then(() => onDomLoad);
         this.state.visibleCount({});
+
+        this.lastAlertSent = ko.pureComputed(this.getLastAlertTime, this);
     }
 
     setPending(asPending) {
@@ -423,6 +425,25 @@ export default class Collection extends BaseClass {
             this.visibleStories.dispose();
         }
     }
+
+    getLastAlertTime() {
+        var groupWithPublicationTime = _.find(this.groups, group => {
+            if (group.items().length != 0) {
+                return group.items()[0].webPublicationTime();
+            }
+        });
+
+        if (groupWithPublicationTime) {
+            return groupWithPublicationTime.items()[0].webPublicationTime();
+        }
+
+        if (this.history().length > 0) {
+            return this.history()[0].webPublicationTime();
+        }
+
+        return 'No alerts sent';
+    }
+
 };
 
 ko.bindingHandlers.indicatorHeight = {
