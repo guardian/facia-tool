@@ -559,6 +559,10 @@ h1 {
     overflow: auto;
 }
 
+.config-droppable {
+    padding-bottom: 3px;
+}
+
 .group-separator {
     height: 20px;
 }
@@ -569,6 +573,10 @@ h1 {
 }
 
 .underDrag > .group-separator {
+    background-color: #2ea3eb;
+}
+
+.config-droppable.underDrag {
     background-color: #2ea3eb;
 }
 
