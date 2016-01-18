@@ -65,7 +65,7 @@ describe('Config', function () {
             return configAction(mockConfig, baseModel, () => {
                 dom.click(dom.$('.title .linky'));
                 dom.type($('.cnf-form input[type=text]'), 'test/front');
-                // There's an onchange event, no need to click on save
+                dom.click(dom.$('.create-new-front'));
 
                 var newFront = dom.$('.cnf-front.open');
                 dom.click(newFront.querySelector('.tool--container'));

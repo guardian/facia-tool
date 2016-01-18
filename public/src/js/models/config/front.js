@@ -135,6 +135,29 @@ export default class ConfigFront extends BaseClass {
         });
 
         this.groups = ko.observableArray(vars.CONST.frontGroups);
+
+        this.hideCreationForm = ko.observable(false);
+        this.underCreation = ko.pureComputed(this.isUnderCreation, this);
+    }
+
+    hideCreation() {
+        if (!this.id() || (this.props.priority() === 'commercial' && !this.props.group())) {
+            alert('You must select all properties');
+            return;
+        }
+        this.hideCreationForm(true);
+    }
+
+    isUnderCreation() {
+        if (!this.id()) {
+            return true;
+        }
+        if (!(_.find(vars.model.frontsList(), front => {
+            return front.id === this.id();
+        }) )) {
+            return true;
+        }
+        return false;
     }
 
     updateConfig(config) {

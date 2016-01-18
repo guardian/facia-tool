@@ -89,10 +89,8 @@ describe('Config Front', function () {
             $('.title .linky').click();
             // some form of validation
             dom.type('.input-url-path', '/something////here/');
-            // There's an onchange event, no need to click on save
-
+            $('.create-new-front').click();
             expect(textInside('.title--text')).toBe('something/here');
-
             $('.linky.tool--container').click();
             $('#showDateHeader').click();
             dom.type('.title--input', 'new collection');
