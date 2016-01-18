@@ -183,7 +183,7 @@ export default class Front extends ColumnWidget {
     }
 
     getGroupName(name) {
-        if (!this.confirmSendingAlert) {
+        if (!this.confirmSendingAlert()) {
             return name;
         }
         return name === 'major' ? 'app & web' : 'web';
