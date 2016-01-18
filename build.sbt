@@ -49,7 +49,7 @@ TwirlKeys.templateImports ++= Seq(
 )
 
 
-val awsVersion = "1.10.44"
+val awsVersion = "1.10.47"
 
 libraryDependencies ++= Seq(
     ws,
@@ -60,13 +60,14 @@ libraryDependencies ++= Seq(
     "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-sts" % awsVersion,
-    "com.gu" %% "fapi-client" % "0.60",
-    "com.gu" % "kinesis-logback-appender" % "1.1.0",
+    "com.gu" %% "content-api-client" % "7.17",
+    "com.gu" %% "editorial-permissions-client" % "0.3",
+    "com.gu" %% "fapi-client" % "0.68",
+    "com.gu" % "kinesis-logback-appender" % "1.2.0",
+    "com.gu" %% "mobile-notifications-client-play-2-4" % "0.5.21",
+    "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.2.11",
     "net.logstash.logback" % "logstash-logback-encoder" % "4.5.1",
-    "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.2.10",
     "org.julienrf" %% "play-json-variants" % "2.0",
-    "com.gu" %% "editorial-permissions-client" % "0.2",
-    "com.gu" %% "mobile-notifications-client-play-2-4" % "0.5.17",
     "org.scalatest" %% "scalatest" % "2.2.5" % "test",
     "org.scalatestplus" %% "play" % "1.4.0-M4" % "test"
 )

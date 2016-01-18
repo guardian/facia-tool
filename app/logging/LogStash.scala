@@ -1,5 +1,6 @@
 package logging
 
+import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.classic.{Logger => LogbackLogger, LoggerContext}
 import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider
 import com.gu.logback.appender.kinesis.KinesisAppender
@@ -50,7 +51,7 @@ object LogStash {
   }
 
   def makeKinesisAppender(layout: LogstashLayout, context: LoggerContext, appenderConfig: KinesisAppenderConfig) = {
-    val a = new KinesisAppender()
+    val a = new KinesisAppender[ILoggingEvent]()
     a.setStreamName(appenderConfig.stream)
     a.setRegion(appenderConfig.region)
     a.setCredentialsProvider(new STSAssumeRoleSessionCredentialsProvider(

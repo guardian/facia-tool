@@ -1,13 +1,16 @@
 package util
 
-import com.gu.contentapi.client.model.{Content => ApiContent}
+import com.gu.contentapi.client.model.v1.Content
+import com.gu.contentapi.client.parser.JsonParser
 import com.gu.contentapi.client.parser.JsonParser._
 import com.gu.facia.api.utils.{CardStyle, ResolvedMetaData}
 import com.gu.facia.client.models.TrailMetaData
 import org.json4s.JValue
 import org.json4s.JsonAST._
+import org.json4s.JsonDSL._
 import org.json4s.native.JsonMethods
-import util.Json4s._
+
+import scala.util.{Failure, Success, Try}
 
 /** Helper for Facia tool - passes over the JSON that is proxied, adding in defaults */
 object ContentUpgrade {
@@ -28,7 +31,7 @@ object ContentUpgrade {
   def upgradeResponse(json: JValue) = {
     json \ "response" match {
       case jsObject: JObject =>
-        JObject("response" -> (jsObject update JObject(ContentFields flatMap { field =>
+        JObject("response" -> (jsObject ~ JObject(ContentFields flatMap { field =>
           jsObject \ field match {
             case JArray(items) => Some(field -> JArray(items.map(upgradeItem)))
             case item: JObject => Some(field -> upgradeItem(item))
@@ -41,21 +44,23 @@ object ContentUpgrade {
   }
 
   def upgradeItem(json: JValue): JValue = {
-    //Used to upgrade Content items with the CardStyle and MetaDataDefaults it will receive.
-    (json, json.extractOpt[ApiContent]) match {
-      case (jsObj: JObject, Some(content)) =>
-        val cardStyle: CardStyle = CardStyle(content, TrailMetaData.empty)
-        val metaDataMap: Map[String, Boolean] = ResolvedMetaData.toMap(ResolvedMetaData.fromContent(content, cardStyle))
+    Try({
+      val jsonString = JsonMethods.compact(JsonMethods.render(json))
+      val maybeCapiContent = JsonParser.parseContent(jsonString)
 
+      (json, maybeCapiContent) match {
+        case (jsObject: JObject, content: Content) =>
+          val cardStyle = CardStyle(content, TrailMetaData.empty)
+          val metaDataMap: Map[String, Boolean] = ResolvedMetaData.toMap(ResolvedMetaData.fromContent(content, cardStyle))
 
-        import org.json4s.JsonDSL._
-
-        jsObj update ("frontsMeta" ->
-          ("defaults" -> metaDataMap) ~
-          ("tone" -> cardStyle.toneString))
-
-      case _ =>
-        json
+          jsObject ~ ("frontsMeta" ->
+            ("defaults" -> metaDataMap) ~
+              ("tone" -> cardStyle.toneString))
+        case _ => json
+      }
+    }) match {
+      case Success(capiItem) => capiItem
+      case Failure(_) => json
     }
   }
 }
