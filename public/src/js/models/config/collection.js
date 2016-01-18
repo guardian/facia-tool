@@ -95,20 +95,22 @@ export default class ConfigCollection extends DropTarget {
             .value();
     }
 
-    save() {
+    save(frontEdited) {
         var potentialErrors = [
             {key: 'displayName', errMsg: 'enter a title'},
             {key: 'type', errMsg: 'choose a layout'},
         ];
 
-        if (vars.model.priority === 'commercial') {
-            potentialErrors.push({key: 'groups', errMsg: 'choose a group'});
-        }
-
         var errs = _.chain(potentialErrors)
             .filter(test => !fullTrim(_.result(this.meta, test.key)))
             .pluck('errMsg')
             .value();
+
+        if (vars.model.priority === 'commercial' && !frontEdited.props.group()) {
+            errs.push('choose a group');
+        }
+
+
 
         if (errs.length) {
             var lastError = errs[errs.length - 1];
