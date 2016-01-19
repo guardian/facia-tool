@@ -149,6 +149,10 @@ export default class ConfigFront extends BaseClass {
     }
 
     isUnderCreation() {
+        if (this.hideCreationForm()) {
+            return false;
+        }
+
         var id = this.id();
         if (!id) {
             return true;
