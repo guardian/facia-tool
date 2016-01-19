@@ -19,10 +19,11 @@ describe('Serialize Article Meta', function () {
         });
     });
 
-    it('ignores values equal to their default', function () {
+    it('explicit about values equal to their default', function () {
         const article = new Article({
             meta: {
                 showQuotedHeadline: true,
+                showByline: false,
                 headline: 'meta defaults'
             },
             webUrl: 'something',
@@ -31,14 +32,17 @@ describe('Serialize Article Meta', function () {
             },
             frontsMeta: {
                 defaults: {
-                    showQuotedHeadline: true
+                    showQuotedHeadline: true,
+                    showByline: true
                 }
             },
             group: {}
         }, true);
 
         expect(serialize(article)).toEqual({
-            headline: 'meta defaults'
+            headline: 'meta defaults',
+            showQuotedHeadline: true,
+            showByline: false
         });
     });
 

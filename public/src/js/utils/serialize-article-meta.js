@@ -9,8 +9,20 @@ export default function (article) {
         .map(p => [p[0], _.isFunction(p[1]) ? p[1]() : p[1]])
         // trim and sanitize strings:
         .map(p => [p[0], _.isString(p[1]) ? sanitizeHtml(fullTrim(p[1])).trim() : p[1]])
-        // reject vals that are equivalent to their defaults (if set)
-        .filter(p => _.has(article.metaDefaults, p[0]) ? article.metaDefaults[p[0]] !== p[1] : !!p[1])
+        // reject falsy values
+        .filter(p => {
+            // there's a transition period, we want to be explicit about truthy defaults.
+            // Old stories will have (hide, show) => (showQuotedHeadline: false, nothing)
+            // In the future ideal world that should be converted to (hide, show) => (nothing, showQuotedHeadline: true)
+            // For now convert to (hide, show) => (showQuotedHeadline: false, showQuotedHeadline: true)
+            // while hiding all other fields that have a falsy value
+            if (_.has(article.metaDefaults, p[0]) && article.metaDefaults[p[0]] === true) {
+                return true;
+            } else {
+                // after the transition, this is the only check to be performed by this function
+                return !!p[1];
+            }
+        })
         // reject vals that are equivalent to the fields (if any) that they're overwriting:
         .filter(p => _.isUndefined(article.fields[p[0]]) || p[1] !== fullTrim(article.fields[p[0]]()))
         // convert numbers to strings:
