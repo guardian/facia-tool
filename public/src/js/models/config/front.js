@@ -145,9 +145,7 @@ export default class ConfigFront extends BaseClass {
             return;
         }
 
-        if (_.some(vars.model.frontsList(), front => {
-            return front.id === this.id();
-        }) ) {
+        if (vars.model.state().config.fronts[this.id()]) {
             alert('A front with this name exists already');
             return;
         }
