@@ -71,6 +71,7 @@ export default class FrontConfig extends ColumnWidget {
         } else {
             front = new Front({priority: this.baseModel.priority, isHidden: true});
             front.setOpen(true);
+            front.isNew(true);
             this.pinnedFront(front);
         }
     }

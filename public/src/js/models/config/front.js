@@ -135,6 +135,22 @@ export default class ConfigFront extends BaseClass {
         });
 
         this.groups = ko.observableArray(vars.CONST.frontGroups);
+
+        this.isNew = ko.observable(false);
+    }
+
+    createFront() {
+        if (!this.id() || (this.props.priority() === 'commercial' && !this.props.group())) {
+            alert('You must select all properties');
+            return;
+        }
+
+        if (vars.model.state().config.fronts[this.id()]) {
+            alert('A front with this name exists already');
+            return;
+        }
+
+        this.isNew(false);
     }
 
     updateConfig(config) {
