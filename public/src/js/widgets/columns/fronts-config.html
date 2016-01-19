@@ -17,7 +17,7 @@
         ownerClass: $data,
         css: {open: state.isOpen}">
 
-        <div class="title" data-bind="visible: !underCreation() || hideCreationForm()">
+        <div class="title" data-bind="visible: !underCreation()">
             <span class="title--text" data-bind="
                 text: id,
                 click: toggleOpen
@@ -28,7 +28,7 @@
             <!-- /ko -->
         </div>
 
-        <!-- ko if: underCreation() && !hideCreationForm() -->
+        <!-- ko if: underCreation() -->
             <div class="cnf-front__inner cnf-form">
                 <label>URL path</label>
                 <input class="input-url-path" type="text" placeholder="eg. world/middleeast" data-bind="value: id"/>
@@ -131,7 +131,7 @@
                 </div>
             <!-- /ko -->
 
-             <!-- ko if: !underCreation() || hideCreationForm() -->
+             <!-- ko if: !underCreation() -->
                 <div class="instructions">
                     <!-- ko if: !state.isOpenProps() && collections.items().length -->
                         <span class="linky tool--metadata" data-bind="click: openProps">edit metadata</span>
