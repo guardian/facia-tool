@@ -149,12 +149,13 @@ export default class ConfigFront extends BaseClass {
     }
 
     isUnderCreation() {
-        if (!this.id()) {
+        var id = this.id();
+        if (!id) {
             return true;
         }
-        if (!(_.find(vars.model.frontsList(), front => {
-            return front.id === this.id();
-        }) )) {
+        if (_.every(vars.model.frontsList(), front => {
+            return front.id !== id;
+        }) ) {
             return true;
         }
         return false;
