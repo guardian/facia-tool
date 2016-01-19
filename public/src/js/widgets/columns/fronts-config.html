@@ -17,7 +17,7 @@
         ownerClass: $data,
         css: {open: state.isOpen}">
 
-        <div class="title" data-bind="visible: id">
+        <div class="title" data-bind="visible: !isNew()">
             <span class="title--text" data-bind="
                 text: id,
                 click: toggleOpen
@@ -28,13 +28,21 @@
             <!-- /ko -->
         </div>
 
-        <!-- ko if: !id() -->
+        <!-- ko if: isNew() -->
             <div class="cnf-front__inner cnf-form">
                 <label>URL path</label>
                 <input class="input-url-path" type="text" placeholder="eg. world/middleeast" data-bind="value: id"/>
+                <!-- ko if: showGroups() -->
+                <label>Group</label>
+                <select data-bind="
+                    optionsCaption: 'Select a group',
+                    options: groups,
+                    value: props.group,
+                    valueAllowUnset: true"></select>
+                <!-- /ko -->
 
                 <div class="tools action-buttons">
-                    <span class="tool create-new-front">Create front</span>
+                    <button class="tool create-new-front" data-bind="click: createFront">Create front</button>
                 </div>
             </div>
         <!-- /ko -->
@@ -123,7 +131,7 @@
                 </div>
             <!-- /ko -->
 
-             <!-- ko if: id -->
+             <!-- ko if: !isNew() -->
                 <div class="instructions">
                     <!-- ko if: !state.isOpenProps() && collections.items().length -->
                         <span class="linky tool--metadata" data-bind="click: openProps">edit metadata</span>
