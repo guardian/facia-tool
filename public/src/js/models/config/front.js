@@ -136,33 +136,23 @@ export default class ConfigFront extends BaseClass {
 
         this.groups = ko.observableArray(vars.CONST.frontGroups);
 
-        this.hideCreationForm = ko.observable(false);
-        this.underCreation = ko.pureComputed(this.isUnderCreation, this);
+        this.isNew = ko.observable(false);
     }
 
-    hideCreation() {
+    createFront() {
         if (!this.id() || (this.props.priority() === 'commercial' && !this.props.group())) {
             alert('You must select all properties');
             return;
         }
-        this.hideCreationForm(true);
-    }
 
-    isUnderCreation() {
-        if (this.hideCreationForm()) {
-            return false;
-        }
-
-        var id = this.id();
-        if (!id) {
-            return true;
-        }
-        if (_.every(vars.model.frontsList(), front => {
-            return front.id !== id;
+        if (_.some(vars.model.frontsList(), front => {
+            return front.id === this.id();
         }) ) {
-            return true;
+            alert('A front with this name exists already');
+            return;
         }
-        return false;
+
+        this.isNew(false);
     }
 
     updateConfig(config) {
