@@ -33,8 +33,8 @@ export function run (filterTests, allFiles) {
 
         vars.init(testConfig);
 
-        return Promise.all(_.map(tests, function (test) {
-            return System.import(test);
-        }));
+        return _.reduce(tests, function (wait, test) {
+            return wait.then(() => System.import(test));
+        }, Promise.resolve());
     });
 }
