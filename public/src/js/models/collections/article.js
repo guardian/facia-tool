@@ -23,7 +23,9 @@ define([
     'modules/copied-article',
     'modules/authed-ajax',
     'modules/content-api',
-    'models/collections/editor',
+    'models/article/editor',
+    'models/article/images',
+    'models/collections/persistence',
     'models/group'
 ],
     function (
@@ -52,6 +54,8 @@ define([
         authedAjax,
         contentApi,
         Editor,
+        images,
+        persistence,
         Group
     ) {
         alert = alert.default;
@@ -72,6 +76,7 @@ define([
         metaFields = metaFields.default;
         openGraph = openGraph.default;
         getMediaMainImage = getMediaMainImage.default;
+        persistence = persistence.default;
 
         var createEditor = Editor.default.create;
 
@@ -219,38 +224,8 @@ define([
                 this.updateEditorsDisplay();
             }
 
-            this.thumbImage = ko.pureComputed(function () {
-                var meta = this.meta,
-                    fields = this.fields,
-                    state = this.state;
-
-                if (meta.imageReplace() && meta.imageSrc()) {
-                    return meta.imageSrc();
-                } else if (meta.imageCutoutReplace()) {
-                    return meta.imageCutoutSrc() || state.imageCutoutSrcFromCapi() || fields.secureThumbnail() || fields.thumbnail();
-                } else if (meta.imageSlideshowReplace && meta.imageSlideshowReplace() && meta.slideshow() && meta.slideshow()[0]) {
-                    return meta.slideshow()[0].src;
-                } else {
-                    return fields.secureThumbnail() || fields.thumbnail();
-                }
-            }, this);
-            this.mainImage = ko.pureComputed(function () {
-                var meta = this.meta,
-                    fields = this.fields,
-                    state = this.state;
-
-                if (meta.imageReplace() && meta.imageSrc()) {
-                    return meta.imageSrc();
-                } else if (meta.imageCutoutReplace()) {
-                    return meta.imageCutoutSrc() || state.imageCutoutSrcFromCapi() || fields.secureThumbnail() || fields.thumbnail();
-                } else if (meta.imageSlideshowReplace && meta.imageSlideshowReplace() && meta.slideshow() && meta.slideshow()[0]) {
-                    return meta.slideshow()[0].src;
-                } else if  (state.imageSrcFromCapi()) {
-                    return state.imageSrcFromCapi().href;
-                } else {
-                    return fields.secureThumbnail() || fields.thumbnail();
-                }
-            }, this);
+            this.thumbImage = ko.pureComputed(images.thumbnail, this);
+            this.mainImage = ko.pureComputed(images.main, this);
         }
 
         Article.prototype.copy = function () {
@@ -375,28 +350,7 @@ define([
         };
 
         Article.prototype.save = function() {
-            if (!this.group.parent) {
-                return;
-            }
-
-            if (this.group.parentType === 'Article') {
-                this.group.parent.save();
-                return;
-            }
-
-            if (this.group.parentType === 'Collection') {
-                this.group.parent.setPending(true);
-
-                authedAjax.updateCollections({
-                    update: {
-                        collection: this.group.parent,
-                        item:       this.id(),
-                        position:   this.id(),
-                        itemMeta:   serializeArticleMeta(this),
-                        mode:       this.front.mode()
-                    }
-                });
-            }
+            return persistence.article.save(this);
         };
 
         Article.prototype.convertToSnap = function() {

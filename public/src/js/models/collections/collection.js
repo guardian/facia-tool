@@ -10,6 +10,7 @@ import modalDialog from 'modules/modal-dialog';
 import * as vars from 'modules/vars';
 import alert from 'utils/alert';
 import asObservableProps from 'utils/as-observable-props';
+import deepGet from 'utils/deep-get';
 import humanTime from 'utils/human-time';
 import mediator from 'utils/mediator';
 import populateObservables from 'utils/populate-observables';
@@ -247,7 +248,7 @@ export default class Collection extends BaseClass {
 
             populateObservables(this.collectionMeta, raw);
 
-            this.collectionMeta.updatedBy(raw.updatedEmail === vars.model.identity.email ? 'you' : raw.updatedBy);
+            this.collectionMeta.updatedBy(raw.updatedEmail === deepGet(vars, '.model.identity.email') ? 'you' : raw.updatedBy);
 
             this.state.timeAgo(this.getTimeAgo(raw.lastUpdated));
 
@@ -285,7 +286,7 @@ export default class Collection extends BaseClass {
 
             const newArticle = new Article(_.extend({}, previousArticle, {
                 group: group,
-                slimEditor: this.front.slimEditor()
+                slimEditor: _.result(this.front, 'slimEditor')
             }));
 
             group.items.splice(articleIndex, 1, newArticle);
@@ -313,7 +314,7 @@ export default class Collection extends BaseClass {
                     const group = _.find(this.groups, g => itemGroupIndex === g.index) || this.groups[0];
                     const article = new Article(_.extend({}, item, {
                         group: group,
-                        slimEditor: this.front.slimEditor()
+                        slimEditor: _.result(this.front, 'slimEditor')
                     }));
 
                     group.items.push(article);
@@ -342,7 +343,7 @@ export default class Collection extends BaseClass {
         this.history(_.map(list, opts =>
             new Article(_.extend({}, opts, {
                 uneditable: true,
-                slimEditor: this.front.slimEditor()
+                slimEditor: _.result(this.front, 'slimEditor')
             }))
         ));
     }
