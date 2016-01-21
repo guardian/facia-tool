@@ -23,8 +23,11 @@ define([
     'modules/copied-article',
     'modules/authed-ajax',
     'modules/content-api',
+    'models/article/display-editor',
     'models/article/editor',
+    'models/article/headline',
     'models/article/images',
+    'models/article/transform',
     'models/collections/persistence',
     'models/group'
 ],
@@ -53,8 +56,11 @@ define([
         copiedArticle,
         authedAjax,
         contentApi,
+        metaDisplayer,
         Editor,
+        headline,
         images,
+        transform,
         persistence,
         Group
     ) {
@@ -77,6 +83,7 @@ define([
         openGraph = openGraph.default;
         getMediaMainImage = getMediaMainImage.default;
         persistence = persistence.default;
+        transform = transform.default;
 
         var createEditor = Editor.default.create;
 
@@ -144,6 +151,7 @@ define([
                 'hasMainVideo',
                 'imageSrcFromCapi',
                 'imageCutoutSrcFromCapi',
+                'viewUrl',
                 'ophanUrl',
                 'sparkUrl',
                 'capiId',
@@ -163,41 +171,13 @@ define([
 
             this.editorsDisplay = ko.observableArray();
 
-            this.headline = ko.pureComputed(function () {
-                var meta = this.meta, fields = this.fields;
-                if (this.state.enableContentOverrides()) {
-                    return meta.headline() || fields.headline() || (meta.snapType() ? 'No headline!' : 'Loading...');
-                } else {
-                    return '{ ' + meta.customKicker() + ' }';
-                }
-            }, this);
-
-            this.headlineLength = ko.pureComputed(function() {
-                return (this.meta.headline() || this.fields.headline() || '').length;
-            }, this);
-
-            this.headlineLengthAlert = ko.pureComputed(function() {
-                return (this.meta.headline() || this.fields.headline() || '').length > vars.CONST.restrictedHeadlineLength;
-            }, this);
+            this.headline = ko.pureComputed(headline.headline, this);
+            this.headlineLength = ko.pureComputed(headline.headlineLength, this);
+            this.headlineLengthAlert = ko.pureComputed(headline.headlineLengthAlert, this);
 
 
             this.webPublicationTime = ko.pureComputed(function(){
                 return humanTime(this.props.webPublicationDate());
-            }, this);
-
-            this.viewUrl = ko.pureComputed(function() {
-                var url;
-                if (this.fields.isLive() === 'false') {
-                    url = vars.CONST.previewBase + '/' + urlAbsPath(this.props.webUrl());
-                } else {
-                    url = this.meta.href() || this.props.webUrl();
-
-                    if (url && !/^https?:\/\//.test(url)) {
-                        url = 'http://' + vars.CONST.mainDomain + url;
-                    }
-                }
-
-                return url;
             }, this);
 
             // Populate supporting
@@ -253,32 +233,6 @@ define([
             }, this, this.group);
         };
 
-        Article.prototype.metaDisplayer = function (opts, index, all) {
-            var self = this,
-                display,
-                label;
-
-            if (opts.type === 'boolean') {
-                display = opts.editable;
-                display = display && (this.meta[opts.key] || function() {})();
-                display = display && (opts.omitIfNo ? _.some(all, function(editor) { return editor.key === opts.omitIfNo && self.meta[editor.key](); }) : true);
-                display = display && (opts.omitForSupporting ? this.group.parentType !== 'Article' : true);
-
-                label = _.chain([
-                    opts.label,
-                    _.result(this.state, opts.labelState),
-                    _.result(this.meta,  opts.labelMeta)
-                ])
-                .compact()
-                .value()
-                .join(': ');
-
-                return display ? label : false;
-            } else {
-                return false;
-            }
-        };
-
         Article.prototype.addCapiData = function(opts) {
             var missingProps;
 
@@ -298,22 +252,9 @@ define([
                 logger.error('ContentApi missing: "' + missingProps.join('", "') + '" for ' + this.id());
             } else {
                 this.state.isLoaded(true);
-                this.state.sectionName(this.props.sectionName());
-                this.state.primaryTag(getPrimaryTag(opts));
-                this.state.imageCutoutSrcFromCapi(getContributorImage(opts));
-                this.state.imageSrcFromCapi(getMediaMainImage(opts));
-                this.state.hasMainVideo(getMainMediaType(opts) === 'video');
-                this.state.tone(opts.frontsMeta && opts.frontsMeta.tone);
-                this.state.ophanUrl(vars.CONST.ophanBase + '?path=/' + urlAbsPath(opts.webUrl));
-                this.state.premium(isPremium(opts));
-                if (deepGet(opts, '.fields.liveBloggingNow') === 'true') {
-                    this.state.isLiveBlog(true);
-                }
-                this.state.capiId(opts.capiId);
-                this.state.shortUrl(opts.fields.shortUrl);
+                transform(opts, this);
 
                 this.metaDefaults = _.extend(deepGet(opts, '.frontsMeta.defaults') || {}, this.collectionMetaDefaults);
-
                 populateObservables(this.meta, this.metaDefaults);
 
                 this.updateEditorsDisplay();
@@ -322,7 +263,7 @@ define([
 
         Article.prototype.updateEditorsDisplay = function() {
             if (!this.uneditable) {
-                this.editorsDisplay(metaFields.map(this.metaDisplayer, this).filter(Boolean));
+                this.editorsDisplay(metaFields.map(metaDisplayer.displayLabel, this).filter(Boolean));
             }
         };
 
