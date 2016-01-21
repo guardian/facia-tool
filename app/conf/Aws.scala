@@ -33,7 +33,7 @@ object aws {
   def mandatoryCrossAccountCredentials: AWSCredentialsProvider = crossAccount.getOrElse(throw new BadConfigurationException("AWS credentials are not configured for cross account"))
   var crossAccount: Option[AWSCredentialsProvider] = {
     val provider = new AWSCredentialsProviderChain(
-      new ProfileCredentialsProvider("nextgen"),
+      new ProfileCredentialsProvider("frontend"),
       new STSAssumeRoleSessionCredentialsProvider(Configuration.faciatool.stsRoleToAssume, "frontend")
     )
 
