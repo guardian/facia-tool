@@ -12,3 +12,7 @@ export function init (res) {
         CONST.types.push({ 'name': 'all-items/not-for-production' });
     }
 }
+
+export function getPriority (priority) {
+    return CONST.priorities[priority || CONST.defaultPriority] || {};
+}
