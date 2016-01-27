@@ -57,6 +57,11 @@ function handleMedia ({sourceItem, mediaItem}, targetItem, targetGroup) {
 
 function handleInternalClass ({sourceItem, sourceGroup}, targetItem, targetGroup) {
 
+    if (targetGroup.parent && targetGroup.parent.opts && !targetGroup.parent.opts.id) {
+        alert('You cannot drag a collection to an empty front. You must create a new collection instead');
+        return;
+    }
+
     var {position, target, isAfter} = normalizeTarget(sourceItem, targetItem, targetGroup);
 
     var insertAt = 0;
