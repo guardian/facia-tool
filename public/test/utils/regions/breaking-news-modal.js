@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import textInside from 'test/utils/text-inside';
-import 'widgets/text_alert.html!text';
+import 'widgets/modals/text-alert.html!text';
 
 export class Alert {
     constructor(dom) {

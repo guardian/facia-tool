@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import textInside from 'test/utils/text-inside';
-import 'widgets/text_alert.html!text';
+import 'widgets/modals/text-alert.html!text';
+import * as wait from 'test/utils/wait';
 
 export class Alert {
     constructor(dom) {
@@ -17,7 +18,7 @@ export class Alert {
 
     close() {
         $('.button-action', this.dom).click();
-        return Promise.resolve(this);
+        return wait.ms(100).then(() => this);
     }
 }
 

@@ -5,8 +5,8 @@ import sinon from 'sinon';
 import $ from 'jquery';
 import textInside from 'test/utils/text-inside';
 import {register} from 'models/widgets';
-import 'widgets/modal_dialog.html!text';
-import 'widgets/text_alert.html!text';
+import 'widgets/modals/modal-dialog.html!text';
+import 'widgets/modals/text-alert.html!text';
 
 describe('Modal Dialog', function () {
     beforeAll(function () {

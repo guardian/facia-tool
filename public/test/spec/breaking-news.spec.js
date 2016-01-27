@@ -2,6 +2,9 @@ import * as mockjax from 'test/utils/mockjax';
 import * as wait from 'test/utils/wait';
 import Page from 'test/utils/page';
 import testConfig from 'test/fixtures/breaking-news-test-config';
+import 'widgets/modals/success-alert.html!text';
+import 'widgets/modals/confirm-breaking-changes.html!text';
+import 'widgets/modals/text-alert.html!text';
 
 describe('Breaking News', function () {
     beforeEach(function (done) {
@@ -103,6 +106,12 @@ describe('Breaking News', function () {
                 }
             })
             .done;
+        })
+        .then(() => wait.ms(100))
+        .then(() => {
+            // confirmation alert
+            expect(regions.alert().message()).toMatch(/sent successfully/i);
+            return regions.alert().close();
         })
         .then(() => {
             expect(regions.front().collection(1).group(2).trailCount()).toBe(1);

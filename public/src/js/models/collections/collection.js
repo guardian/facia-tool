@@ -15,6 +15,7 @@ import humanTime from 'utils/human-time';
 import mediator from 'utils/mediator';
 import populateObservables from 'utils/populate-observables';
 import reportErrors from 'utils/report-errors';
+import success from 'utils/success';
 
 export default class Collection extends BaseClass {
     constructor(opts = {}) {
@@ -211,6 +212,11 @@ export default class Collection extends BaseClass {
         })
         .catch(() => {})
         .then(() => this.load().then(detectPressFailures))
+        .then(() => {
+            if (opts.sendAlert) {
+                success();
+            }
+        })
         .catch(() => {});
     }
 
