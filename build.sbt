@@ -16,10 +16,16 @@ serverLoading in Debian := Systemd
 debianPackageDependencies := Seq("openjdk-8-jre-headless")
 
 def env(key: String): Option[String] = Option(System.getenv(key))
+def branch(): Option[String] = {
+    env("TRAVIS_PULL_REQUEST") match {
+        case Some("false") => env("TRAVIS_BRANCH")
+        case _ => env("TRAVIS_PULL_REQUEST")
+    }
+}
 
 riffRaffPackageType := (packageBin in Debian).value
 riffRaffBuildIdentifier := env("TRAVIS_BUILD_NUMBER").getOrElse("DEV")
-riffRaffManifestBranch := env("TRAVIS_BRANCH").getOrElse(git.gitCurrentBranch.value)
+riffRaffManifestBranch := branch().getOrElse(git.gitCurrentBranch.value)
 riffRaffUploadArtifactBucket := Option("riffraff-artifact")
 riffRaffUploadManifestBucket := Option("riffraff-builds")
 
