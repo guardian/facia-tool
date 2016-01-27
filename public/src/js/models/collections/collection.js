@@ -428,22 +428,17 @@ export default class Collection extends BaseClass {
     }
 
     getLastAlertTime() {
-        var groupWithPublicationTime = _.find(this.groups, group => {
-            if (group.items().length != 0) {
-                return group.items()[0].webPublicationTime();
-            }
-        });
-
-        if (groupWithPublicationTime) {
-            return groupWithPublicationTime.items()[0].webPublicationTime();
+        if (this.raw && this.raw.live.length > 0 && this.raw.live[0].frontPublicationDate) {
+            return humanTime(this.raw.live[0].frontPublicationDate);
         }
 
         if (this.history().length > 0) {
-            return this.history()[0].webPublicationTime();
+            return this.history()[0].frontPublicationTime();
         }
 
         return 'No alerts sent';
     }
+
 
 };
 
