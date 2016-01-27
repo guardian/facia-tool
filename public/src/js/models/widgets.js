@@ -76,25 +76,31 @@ var register = _.once(() => {
         viewModel: {
             createViewModel: (params) => params.modal
         },
-        template: { text: 'widgets/modal_dialog.html' }
+        template: { text: 'widgets/modals/modal-dialog.html' }
     });
     ko.components.register('confirm_breaking_changes', {
         viewModel: {
             createViewModel: (params) => params
         },
-        template: { text: 'widgets/confirm_breaking_changes.html' }
+        template: { text: 'widgets/modals/confirm-breaking-changes.html' }
     });
     ko.components.register('text_alert', {
         viewModel: {
             createViewModel: (params) => params
         },
-        template: { text: 'widgets/text_alert.html' }
+        template: { text: 'widgets/modals/text-alert.html' }
+    });
+    ko.components.register('success_alert', {
+        viewModel: {
+            createViewModel: (params) => params
+        },
+        template: { text: 'widgets/modals/success-alert.html' }
     });
     ko.components.register('select_snap_type', {
         viewModel: {
             createViewModel: (params) => params
         },
-        template: { text: 'widgets/select_snap_type.html' }
+        template: { text: 'widgets/modals/select-snap-type.html' }
     });
     ko.components.register('autocomplete', {
         viewModel: { jspm: 'widgets/autocomplete' },
