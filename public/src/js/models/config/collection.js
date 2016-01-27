@@ -4,13 +4,13 @@ import DropTarget from 'models/drop-target';
 import persistence from 'models/config/persistence';
 import * as contentApi from 'modules/content-api';
 import * as vars from 'modules/vars';
+import alert from 'utils/alert';
 import asObservableProps from 'utils/as-observable-props';
 import debounce from 'utils/debounce';
 import fullTrim from 'utils/full-trim';
 import populateObservables from 'utils/populate-observables';
 import sanitizeApiQuery from 'utils/sanitize-api-query';
 import urlAbsPath from 'utils/url-abs-path';
-import alert from 'utils/alert';
 
 var apiQuerySym = Symbol();
 
@@ -96,25 +96,25 @@ export default class ConfigCollection extends DropTarget {
     }
 
     save(frontEdited) {
-        var potentialErrors = [
+        const potentialErrors = [
             {key: 'displayName', errMsg: 'enter a title'},
             {key: 'type', errMsg: 'choose a layout'},
         ];
 
-        var errs = _.chain(potentialErrors)
+        const errs = _.chain(potentialErrors)
             .filter(test => !fullTrim(_.result(this.meta, test.key)))
             .pluck('errMsg')
             .value();
 
-        if (vars.model.priority === 'commercial' && !frontEdited.props.group()) {
+        const priority = vars.getPriority(frontEdited.getPriority());
+        if (priority.hasGroups && !frontEdited.props.group()) {
             errs.push('choose a group');
         }
 
 
-
         if (errs.length) {
-            var lastError = errs[errs.length - 1];
-            var lastErrorJoiner = errs.length > 1 ? ', and ' : '';
+            const lastError = errs[errs.length - 1];
+            const lastErrorJoiner = errs.length > 1 ? ', and ' : '';
             errs.splice(errs.length - 1);
             alert('Oops! You must ' + errs.join(', ') + lastErrorJoiner + lastError + '...');
             return;

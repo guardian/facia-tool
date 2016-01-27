@@ -34,6 +34,8 @@ export default class BaseModel extends BaseClass {
         this.isMainActionVisible = ko.observable(false);
         this.priority = priorityFromUrl(router.location.pathname);
         this.fullPriority = this.priority || CONST.defaultPriority;
+        this.priorities = ko.observableArray(Object.keys(CONST.priorities));
+        this.defaultPriority = CONST.defaultPriority;
         this.liveFrontend = CONST.environmentUrlBase[res.defaults.env] || ('http://' + CONST.mainDomain + '/');
         this.identity = {
             email: res.defaults.email,

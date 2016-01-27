@@ -112,20 +112,32 @@ export default {
         'breaking-news'
     ],
 
-    prioritiesWithGroups: [
-        'commercial'
-    ],
+    priorities: {
+        'editorial': {
+            maxFronts: 200,
+            hasGroups: false,
+            isTypeLocked: false,
+            isHiddenLocked: false
+        },
+        'commercial': {
+            maxFronts: 350,
+            hasGroups: true,
+            isTypeLocked: false,
+            isHiddenLocked: false
+        },
+        'training': {
+            maxFronts: 50,
+            hasGroups: false,
+            isTypeLocked: true,
+            isHiddenLocked: true
+        }
+    },
+    defaultPriority: 'editorial',
 
     detectPressFailureMs: 10000,
 
     detectPendingChangesInClipboard: 4000,
 
-    defaultPriority: 'editorial',
-    maxFronts: {
-        'editorial': 200,
-        'commercial': 350,
-        'training': 50
-    },
     frontAlertLimit: 10,
     frontGroups: [
         'UK consumer',

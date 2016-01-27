@@ -140,7 +140,7 @@ export default class ConfigFront extends BaseClass {
     }
 
     createFront() {
-        if (!this.id() || (this.props.priority() === 'commercial' && !this.props.group())) {
+        if (!this.id() || this.missingGroup()) {
             alert('You must select all properties');
             return;
         }
@@ -151,6 +151,11 @@ export default class ConfigFront extends BaseClass {
         }
 
         this.isNew(false);
+    }
+
+    missingGroup() {
+        const priority = vars.getPriority(this.getPriority());
+        return priority.hasGroups === true && !this.props.group();
     }
 
     updateConfig(config) {
@@ -212,7 +217,7 @@ export default class ConfigFront extends BaseClass {
     saveProps() {
         this.applyConstraints();
         this.state.isOpenProps(false);
-        if (this.props.priority() === 'commercial' && !this.props.group()) {
+        if (this.missingGroup()) {
             alert('You must choose a group');
             return;
         }
@@ -238,8 +243,11 @@ export default class ConfigFront extends BaseClass {
     }
 
     applyConstraints() {
-        if (this.props.priority() === 'training') {
+        const priority = vars.getPriority(this.getPriority());
+        if (priority.isTypeLocked) {
             this.state.isTypeLocked = true;
+        }
+        if (priority.isHiddenLocked) {
             this.props.isHidden(true);
         }
     }
@@ -259,14 +267,18 @@ export default class ConfigFront extends BaseClass {
         this.dom = dom;
     }
 
+    getPriority() {
+        return this.props.priority() || vars.CONST.defaultPriority;
+    }
+
+    showGroups() {
+        return !!vars.getPriority(this.getPriority()).hasGroups;
+    }
+
     dispose() {
         super.dispose();
         this.collections.dispose();
         this.dom = null;
-    }
-
-    showGroups() {
-        return _.contains(vars.CONST.prioritiesWithGroups, this.props.priority());
     }
 }
 

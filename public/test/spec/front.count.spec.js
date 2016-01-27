@@ -15,7 +15,7 @@ describe('utils/front-count', function () {
         var result = count(fronts, 'editorial');
         expect(result).toEqual({
             count: 3,
-            max: CONST.maxFronts.editorial
+            max: CONST.priorities.editorial.maxFronts
         });
     });
 
@@ -23,7 +23,7 @@ describe('utils/front-count', function () {
         var result = count(fronts);
         expect(result).toEqual({
             count: 3,
-            max: CONST.maxFronts.editorial
+            max: CONST.priorities.editorial.maxFronts
         });
     });
 
@@ -31,7 +31,7 @@ describe('utils/front-count', function () {
         var result = count(fronts, 'commercial');
         expect(result).toEqual({
             count: 1,
-            max: CONST.maxFronts.commercial
+            max: CONST.priorities.commercial.maxFronts
         });
     });
 
