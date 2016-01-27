@@ -1,6 +1,5 @@
 import ko from 'knockout';
 import _ from 'underscore';
-import Promise from 'Promise';
 import findFirstById from 'utils/find-first-by-id';
 import Front from 'models/config/front';
 import frontCount from 'utils/front-count';

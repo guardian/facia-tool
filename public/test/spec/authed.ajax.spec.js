@@ -44,7 +44,8 @@ describe('Authed Ajax', function () {
             expect($.ajax).toHaveBeenCalledWith({
                 url: '/success',
                 dataType: 'json',
-                contentType: undefined
+                contentType: undefined,
+                crossDomain: false
             });
             done();
         });
@@ -59,7 +60,8 @@ describe('Authed Ajax', function () {
                 url: '/success',
                 dataType: undefined,
                 type: 'banana',
-                contentType: undefined
+                contentType: undefined,
+                crossDomain: false
             });
             done();
         });
@@ -74,7 +76,8 @@ describe('Authed Ajax', function () {
                 url: '/success',
                 dataType: 'json',
                 contentType: 'application/json',
-                data: {}
+                data: {},
+                crossDomain: false
             });
             done();
         });

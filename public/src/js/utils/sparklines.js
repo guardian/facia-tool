@@ -1,7 +1,6 @@
 import ko from 'knockout';
 import _ from 'underscore';
 import $ from 'jquery';
-import Promise from 'Promise';
 import numeral from 'numeral';
 import {request} from 'modules/authed-ajax';
 import * as vars from 'modules/vars';

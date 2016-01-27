@@ -1,5 +1,4 @@
 import _ from 'underscore';
-import Promise from 'Promise';
 import {CONST} from 'modules/vars';
 import {request} from 'modules/authed-ajax';
 import * as cache from 'modules/cache';

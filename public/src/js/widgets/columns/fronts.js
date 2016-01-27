@@ -1,5 +1,4 @@
 import ko from 'knockout';
-import Promise from 'Promise';
 import _ from 'underscore';
 import Collection from 'models/collections/collection';
 import Presser from 'modules/presser';

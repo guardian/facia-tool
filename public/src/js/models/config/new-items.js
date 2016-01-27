@@ -1,4 +1,3 @@
-import Promise from 'Promise';
 import * as vars from 'modules/vars';
 import urlAbsPath from 'utils/url-abs-path';
 import findFirstById from 'utils/find-first-by-id';

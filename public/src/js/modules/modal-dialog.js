@@ -1,4 +1,3 @@
-import Promise from 'Promise';
 import ko from 'knockout';
 import _ from 'underscore';
 
