@@ -30,7 +30,6 @@ function registerRaven (res) {
         Raven.setUser({
             email: res.defaults.email || 'anonymous'
         });
-        System.amdDefine = Raven.wrap({deep: false}, System.amdDefine);
         // ES6 loader uses console.error to log un-handled rejected promises
         var originalConsole = window.console.error;
         window.console.error = function () {

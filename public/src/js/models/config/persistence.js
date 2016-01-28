@@ -1,6 +1,5 @@
 import _ from 'underscore';
 import * as authedAjax from 'modules/authed-ajax';
-import identity from 'utils/identity';
 import EventEmitter from 'EventEmitter';
 
 let postUpdateSym = Symbol();
@@ -79,7 +78,7 @@ function serializeFront (front) {
 
     model.collections = _.chain(front.collections.items()).map(function (collection) {
         return collection.id;
-    }).filter(identity).value();
+    }).filter(Boolean).value();
     return model;
 }
 

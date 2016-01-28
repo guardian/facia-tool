@@ -1,455 +1,369 @@
-define([
-    'modules/vars',
-    'knockout',
-    'underscore',
-    'jquery',
-    'constants/article-meta-fields',
-    'utils/alert',
-    'utils/as-observable-props',
-    'utils/deep-get',
-    'utils/human-time',
-    'utils/is-guardian-url',
-    'utils/is-preview-url',
-    'utils/logger',
-    'utils/mediator',
-    'utils/open-graph',
-    'utils/populate-observables',
-    'utils/serialize-article-meta',
-    'utils/snap',
-    'utils/url-abs-path',
-    'utils/visited-article-storage',
-    'utils/article-collection',
-    'utils/get-media-main-image',
-    'modules/copied-article',
-    'modules/authed-ajax',
-    'modules/content-api',
-    'models/article/display-editor',
-    'models/article/editor',
-    'models/article/headline',
-    'models/article/images',
-    'models/article/transform',
-    'models/collections/persistence',
-    'models/group'
-],
-    function (
-        vars,
-        ko,
-        _,
-        $,
-        metaFields,
-        alert,
-        asObservableProps,
-        deepGet,
-        humanTime,
-        isGuardianUrl,
-        isPreviewUrl,
-        logger,
-        mediator,
-        openGraph,
-        populateObservables,
-        serializeArticleMeta,
-        snap,
-        urlAbsPath,
-        visitedArticleStorage,
-        articleCollection,
-        getMediaMainImage,
-        copiedArticle,
-        authedAjax,
-        contentApi,
-        metaDisplayer,
-        Editor,
-        headline,
-        images,
-        transform,
-        persistence,
-        Group
-    ) {
-        alert = alert.default;
-        deepGet = deepGet.default;
-        isGuardianUrl = isGuardianUrl.default;
-        isPreviewUrl = isPreviewUrl.default;
-        urlAbsPath = urlAbsPath.default;
-        asObservableProps = asObservableProps.default;
-        serializeArticleMeta = serializeArticleMeta.default;
-        populateObservables = populateObservables.default;
-        mediator = mediator.default;
-        humanTime = humanTime.default;
-        visitedArticleStorage = visitedArticleStorage.default;
-        articleCollection = articleCollection.default;
-        copiedArticle = copiedArticle.default;
-        logger = logger.default;
-        Group = Group.default;
-        metaFields = metaFields.default;
-        openGraph = openGraph.default;
-        getMediaMainImage = getMediaMainImage.default;
-        persistence = persistence.default;
-        transform = transform.default;
+import $ from 'jquery';
+import ko from 'knockout';
+import _ from 'underscore';
 
-        var createEditor = Editor.default.create;
+import metaFields from 'constants/article-meta-fields';
 
-        var capiProps = [
-                'webUrl',
-                'webPublicationDate',
-                'sectionName'],
+import {headline, headlineLength, headlineLengthAlert} from 'models/article/headline';
+import {displayLabel} from 'models/article/display-editor';
+import {thumbnail, main as mainImage} from 'models/article/images';
+import Editor from 'models/article/editor';
+import {default as assignState} from 'models/article/transform';
+import persistence from 'models/collections/persistence';
+import DropTarget from 'models/drop-target';
+import Group from 'models/group';
 
-            capiFields = [
-                'headline',
-                'trailText',
-                'byline',
-                'isLive',
-                'firstPublicationDate',
-                'scheduledPublicationDate',
-                'thumbnail',
-                'secureThumbnail'];
+import * as contentApi from 'modules/content-api';
+import copiedArticle from 'modules/copied-article';
 
-        function Article(opts, withCapiData) {
-            var self = this;
+import articleCollection from 'utils/article-collection';
+import asObservableProps from 'utils/as-observable-props';
+import deepGet from 'utils/deep-get';
+import humanTime from 'utils/human-time';
+import isGuardianUrl from 'utils/is-guardian-url';
+import isPreviewUrl from 'utils/is-preview-url';
+import logger from 'utils/logger';
+import mediator from 'utils/mediator';
+import openGraph from 'utils/open-graph';
+import populateObservables from 'utils/populate-observables';
+import serializeArticleMeta from 'utils/serialize-article-meta';
+import * as snap from 'utils/snap';
+import urlAbsPath from 'utils/url-abs-path';
+import visitedArticleStorage from 'utils/visited-article-storage';
 
-            opts = opts || {};
+const capiProps = [
+    'webUrl',
+    'webPublicationDate',
+    'sectionName'];
 
-            this.dropTarget = true;
-            this.id = ko.observable(opts.id);
+const capiFields = [
+    'headline',
+    'trailText',
+    'byline',
+    'isLive',
+    'firstPublicationDate',
+    'scheduledPublicationDate',
+    'thumbnail',
+    'secureThumbnail'];
 
-            this.group = opts.group;
+export default class Article extends DropTarget {
+    constructor(opts = {}, withCapiData) {
+        super();
 
-            this.front = opts.group ? opts.group.front : null;
+        this.id = ko.observable(opts.id);
 
-            this.props = asObservableProps(capiProps);
-            this.props.webPublicationDate.extend({ notify: 'always' });
+        this.group = opts.group;
+        this.front = deepGet(opts, '.group.front');
 
-            this.fields = asObservableProps(capiFields);
+        this.props = asObservableProps(capiProps);
+        this.props.webPublicationDate.extend({ notify: 'always' });
 
-            this.meta = asObservableProps(_.pluck(metaFields, 'key'));
+        this.fields = asObservableProps(capiFields);
 
-            if (this.front && this.front.confirmSendingAlert()) {
-                this.meta.imageHide(true);
-            }
-
-            populateObservables(this.meta, opts.meta);
-
-            this.metaDefaults = {};
-
-            this.collectionMetaDefaults = deepGet(opts, '.group.parent.itemDefaults');
-
-            this.uneditable = opts.uneditable;
-
-            this.slimEditor = opts.slimEditor;
-
-            this.state = asObservableProps([
-                'enableContentOverrides',
-                'underDrag',
-                'underControlDrag',
-                'isOpen',
-                'isLiveBlog',
-                'isLoaded',
-                'isEmpty',
-                'visited',
-                'inDynamicCollection',
-                'tone',
-                'primaryTag',
-                'sectionName',
-                'hasMainVideo',
-                'imageSrcFromCapi',
-                'imageCutoutSrcFromCapi',
-                'viewUrl',
-                'ophanUrl',
-                'sparkUrl',
-                'capiId',
-                'shortUrl',
-                'premium']);
-
-            this.state.enableContentOverrides(this.meta.snapType() !== 'latest');
-            this.state.inDynamicCollection(deepGet(opts, '.group.parent.isDynamic'));
-            this.state.visited(opts.visited);
-
-            this.frontPublicationDate = opts.frontPublicationDate;
-            this.publishedBy = opts.publishedBy;
-            this.frontPublicationTime = ko.observable();
-            this.scheduledPublicationTime = ko.observable();
-
-            this.editors = ko.observableArray();
-
-            this.editorsDisplay = ko.observableArray();
-
-            this.headline = ko.pureComputed(headline.headline, this);
-            this.headlineLength = ko.pureComputed(headline.headlineLength, this);
-            this.headlineLengthAlert = ko.pureComputed(headline.headlineLengthAlert, this);
-
-
-            this.webPublicationTime = ko.pureComputed(function(){
-                return humanTime(this.props.webPublicationDate());
-            }, this);
-
-            // Populate supporting
-            if (this.group && this.group.parentType !== 'Article') {
-                this.meta.supporting = new Group({
-                    parent: self,
-                    parentType: 'Article',
-                    omitItem: self.save.bind(self),
-                    front: self.front
-                });
-
-                this.meta.supporting.items(_.map((opts.meta || {}).supporting, function (item) {
-                    return new Article(_.extend(item, {
-                        group: self.meta.supporting
-                    }));
-                }));
-
-                contentApi.decorateItems(this.meta.supporting.items());
-            }
-
-            if (withCapiData) {
-                this.addCapiData(opts);
-            } else {
-                this.updateEditorsDisplay();
-            }
-
-            this.thumbImage = ko.pureComputed(images.thumbnail, this);
-            this.mainImage = ko.pureComputed(images.main, this);
+        this.meta = asObservableProps(_.pluck(metaFields, 'key'));
+        populateObservables(this.meta, opts.meta);
+        if (this.front && this.front.confirmSendingAlert()) {
+            populateObservables(this.meta, { imageHide: true });
         }
 
-        Article.prototype.copy = function () {
-            copiedArticle.set(this);
-        };
+        this.metaDefaults = {};
 
-        Article.prototype.copyToClipboard = function () {
-            mediator.emit('copy:to:clipboard', this.get());
-        };
+        this.collectionMetaDefaults = deepGet(opts, '.group.parent.itemDefaults');
 
-        Article.prototype.setVisitedToTrue = function () {
-            visitedArticleStorage.addArticleToStorage(this.id());
-            mediator.emit('set:article:to:visited', this.id());
-            return true;
-        };
+        this.uneditable = opts.uneditable;
 
-        Article.prototype.paste = function () {
-            var sourceItem = copiedArticle.get(true);
+        this.slimEditor = opts.slimEditor;
 
-            if (!sourceItem || sourceItem.id === this.id()) { return; }
+        this.state = asObservableProps([
+            'enableContentOverrides',
+            'underDrag',
+            'underControlDrag',
+            'isOpen',
+            'isLiveBlog',
+            'isLoaded',
+            'isEmpty',
+            'visited',
+            'inDynamicCollection',
+            'tone',
+            'primaryTag',
+            'sectionName',
+            'hasMainVideo',
+            'imageSrcFromCapi',
+            'imageCutoutSrcFromCapi',
+            'viewUrl',
+            'ophanUrl',
+            'sparkUrl',
+            'capiId',
+            'shortUrl',
+            'premium']);
 
+        this.state.enableContentOverrides(this.meta.snapType() !== 'latest');
+        this.state.inDynamicCollection(deepGet(opts, '.group.parent.isDynamic'));
+        this.state.visited(opts.visited);
+
+        this.frontPublicationDate = opts.frontPublicationDate;
+        this.publishedBy = opts.publishedBy;
+        this.frontPublicationTime = ko.observable();
+        this.scheduledPublicationTime = ko.observable();
+
+        this.editors = ko.observableArray();
+        this.editorsDisplay = ko.observableArray();
+
+        this.headline = ko.pureComputed(headline, this);
+        this.headlineLength = ko.pureComputed(headlineLength, this);
+        this.headlineLengthAlert = ko.pureComputed(headlineLengthAlert, this);
+
+        this.webPublicationTime = ko.pureComputed(this.getWebPublicationHumanTime, this);
+
+        this.thumbImage = ko.pureComputed(thumbnail, this);
+        this.mainImage = ko.pureComputed(mainImage, this);
+
+        // Populate supporting
+        if (this.group && this.group.parentType !== 'Article') {
+            this.meta.supporting = new Group({
+                parent: this,
+                parentType: 'Article',
+                omitItem: this.save.bind(this),
+                front: this.front
+            });
+
+            this.meta.supporting.items(_.map((opts.meta || {}).supporting, (item) => {
+                return new Article(_.extend(item, {
+                    group: this.meta.supporting
+                }));
+            }));
+
+            contentApi.decorateItems(this.meta.supporting.items());
+        }
+
+        if (withCapiData) {
+            this.addCapiData(opts);
+        } else {
+            this.updateEditorsDisplay();
+        }
+    }
+
+    getWebPublicationHumanTime() {
+        return humanTime(this.props.webPublicationDate());
+    }
+
+    copy() {
+        copiedArticle.set(this);
+    }
+
+    copyToClipboard() {
+        mediator.emit('copy:to:clipboard', this.get());
+    }
+
+    setVisitedToTrue() {
+        visitedArticleStorage.addArticleToStorage(this.id());
+        mediator.emit('set:article:to:visited', this.id());
+        return true;
+    }
+
+    paste() {
+        const sourceItem = copiedArticle.get(true);
+
+        if (sourceItem && sourceItem.id !== this.id()) {
             mediator.emit('drop', {
                 sourceItem: sourceItem.article.get(),
                 sourceGroup: sourceItem.group
             }, this, this.group);
-        };
+        }
+    }
 
-        Article.prototype.addCapiData = function(opts) {
-            var missingProps;
+    addCapiData(opts) {
+        var missingProps;
 
-            populateObservables(this.props,  opts);
-            populateObservables(this.fields, opts.fields);
+        populateObservables(this.props,  opts);
+        populateObservables(this.fields, opts.fields);
 
-            this.setRelativeTimes();
+        this.setRelativeTimes();
 
-            missingProps = [
-                'webUrl',
-                'fields',
-                'fields.headline'
-            ].filter(function(prop) {return !deepGet(opts, prop); });
+        missingProps = [
+            'webUrl',
+            'fields',
+            'fields.headline'
+        ].filter(function(prop) {return !deepGet(opts, prop); });
 
-            if (missingProps.length) {
-                mediator.emit('capi:error', 'ContentApi is returning invalid data. Fronts may not update.');
-                logger.error('ContentApi missing: "' + missingProps.join('", "') + '" for ' + this.id());
-            } else {
-                this.state.isLoaded(true);
-                transform(opts, this);
+        if (missingProps.length) {
+            mediator.emit('capi:error', 'ContentApi is returning invalid data. Fronts may not update.');
+            logger.error('ContentApi missing: "' + missingProps.join('", "') + '" for ' + this.id());
+        } else {
+            this.state.isLoaded(true);
+            assignState(opts, this);
 
-                this.metaDefaults = _.extend(deepGet(opts, '.frontsMeta.defaults') || {}, this.collectionMetaDefaults);
-                populateObservables(this.meta, this.metaDefaults);
+            this.metaDefaults = _.extend(deepGet(opts, '.frontsMeta.defaults') || {}, this.collectionMetaDefaults);
+            populateObservables(this.meta, this.metaDefaults);
 
-                this.updateEditorsDisplay();
-            }
-        };
-
-        Article.prototype.updateEditorsDisplay = function() {
-            if (!this.uneditable) {
-                this.editorsDisplay(metaFields.map(metaDisplayer.displayLabel, this).filter(Boolean));
-            }
-        };
-
-        Article.prototype.setRelativeTimes = function() {
-            this.frontPublicationTime(humanTime(this.frontPublicationDate));
-            this.scheduledPublicationTime(humanTime(this.fields.scheduledPublicationDate()));
-        };
-
-        Article.prototype.get = function() {
-            var asObject = {
-                id: this.id()
-            };
-            var meta = serializeArticleMeta(this);
-            if (meta) {
-                asObject.meta = meta;
-            }
-            return asObject;
-        };
-
-        Article.prototype.normalizeDropTarget = function() {
-            return {
-                isAfter: false,
-                target: this
-            };
-        };
-
-        Article.prototype.save = function() {
-            return persistence.article.save(this);
-        };
-
-        Article.prototype.convertToSnap = function() {
-            var id = this.id();
-            var href;
-
-            if (isGuardianUrl(id) || isPreviewUrl(id)) {
-                href = '/' + urlAbsPath(id);
-            } else {
-                href = id;
-            }
-
-            this.meta.href(href);
-            this.id(snap.generateId());
             this.updateEditorsDisplay();
+        }
+    }
+
+    updateEditorsDisplay() {
+        if (!this.uneditable) {
+            this.editorsDisplay(metaFields.map(displayLabel, this).filter(Boolean));
+        }
+    }
+
+    setRelativeTimes() {
+        this.frontPublicationTime(humanTime(this.frontPublicationDate));
+        this.scheduledPublicationTime(humanTime(this.fields.scheduledPublicationDate()));
+    }
+
+    get() {
+        const asObject = {
+            id: this.id()
         };
+        const meta = serializeArticleMeta(this);
+        if (meta) {
+            asObject.meta = meta;
+        }
+        return asObject;
+    }
 
-        Article.prototype.convertToLinkSnap = function() {
-            if (!this.meta.headline()) {
-                this.decorateFromOpenGraph();
-            }
-
-            this.meta.snapType('link');
-
-            this.convertToSnap();
+    normalizeDropTarget() {
+        return {
+            isAfter: false,
+            target: this
         };
+    }
 
-        Article.prototype.convertToLatestSnap = function(kicker) {
-            this.meta.snapType('latest');
-            this.meta.snapUri(urlAbsPath(this.id()));
+    save() {
+        return persistence.article.save(this);
+    }
 
-            this.meta.showKickerCustom(true);
-            this.meta.customKicker(kicker);
+    convertToSnap() {
+        const id = this.id();
+        let href;
 
-            this.meta.headline(undefined);
-            this.meta.trailText(undefined);
-            this.meta.byline(undefined);
-
-            this.state.enableContentOverrides(false);
-
-            this.convertToSnap();
-        };
-
-        Article.prototype.decorateFromOpenGraph = function() {
-            var thisArticle = this;
-
-            this.meta.headline('Fetching headline...');
-
-            return openGraph(this.id())
-            .then(function (data) {
-                thisArticle.meta.headline(data.title);
-                thisArticle.meta.trailText(data.description);
-
-                if (data.siteName) {
-                    thisArticle.meta.byline(data.siteName);
-                    thisArticle.meta.showByline(true);
-                }
-            })
-            .catch(function () {
-                thisArticle.meta.headline('Invalid page');
-            })
-            .then(function () {
-                thisArticle.updateEditorsDisplay();
-            });
-        };
-
-        Article.prototype.open = function(article, evt) {
-            if (this.uneditable) { return; }
-
-            if (this.meta.supporting) { this.meta.supporting.items().forEach(function(sublink) { sublink.close(); }); }
-
-            var collection = articleCollection(this);
-            if (!this.state.isOpen()) {
-                if (this.editors().length === 0) {
-                    this.editors(metaFields.map(function (field) {
-                        return createEditor(field, this, metaFields);
-                    }, this).filter(Boolean));
-                }
-                this.state.isOpen(true);
-                mediator.emit(
-                    'ui:open',
-                    _.chain(this.editors())
-                     .filter(function(editor) { return editor.type === 'text' && editor.displayEditor(); })
-                     .map(function(editor) { return editor.meta; })
-                     .first()
-                     .value(),
-                    this,
-                    this.front,
-                    collection
-                );
-            } else {
-                mediator.emit('ui:open', null, null, this.front, collection);
-            }
-
-            if ($(evt.target).hasClass('allow-default-click')) {
-                return true;
-            }
-        };
-
-        Article.prototype.close = function() {
-            if (this.state.isOpen()) {
-                this.state.isOpen(false);
-                this.updateEditorsDisplay();
-            }
-            var collection = articleCollection(this);
-            mediator.emit('ui:close', {
-                targetGroup: this.group
-            }, collection);
-        };
-
-        Article.prototype.closeAndSave = function() {
-            this.close();
-            this.save();
-            return false;
-        };
-
-        Article.prototype.closeWithoutSaving = function() {
-            this.close();
-            if ( this.group && this.group.parentType === 'Collection' ) {
-                this.group.parent.replaceArticle(this.id());
-            }
-            return false;
-        };
-
-        Article.prototype.omitItem = function () {
-            this.group.omitItem(this);
-        };
-
-        Article.prototype.dispose = function () {
-            if (this.meta.supporting) {
-                this.meta.supporting.dispose();
-            }
-            this.editors().forEach(function (editor) {
-                editor.dispose();
-            });
-            this.editors.removeAll();
-        };
-
-        function getMainMediaType(contentApiArticle) {
-            return _.chain(contentApiArticle.elements).where({relation: 'main'}).pluck('type').first().value();
+        if (isGuardianUrl(id) || isPreviewUrl(id)) {
+            href = '/' + urlAbsPath(id);
+        } else {
+            href = id;
         }
 
-        function getPrimaryTag(contentApiArticle) {
-            return _.chain(contentApiArticle.tags).pluck('webTitle').first().value();
+        this.meta.href(href);
+        this.id(snap.generateId());
+        this.updateEditorsDisplay();
+    }
+
+    convertToLinkSnap() {
+        if (!this.meta.headline()) {
+            this.decorateFromOpenGraph();
         }
 
-        function getContributorImage(contentApiArticle) {
-            var contributors = _.chain(contentApiArticle.tags).where({type: 'contributor'});
+        this.meta.snapType('link');
 
-            return contributors.value().length === 1 ? contributors.pluck('bylineLargeImageUrl').first().value() : undefined;
+        this.convertToSnap();
+    }
 
+    convertToLatestSnap(kicker) {
+        this.meta.snapType('latest');
+        this.meta.snapUri(urlAbsPath(this.id()));
+
+        this.meta.showKickerCustom(true);
+        this.meta.customKicker(kicker);
+
+        this.meta.headline(undefined);
+        this.meta.trailText(undefined);
+        this.meta.byline(undefined);
+
+        this.state.enableContentOverrides(false);
+
+        this.convertToSnap();
+    }
+
+    decorateFromOpenGraph() {
+        this.meta.headline('Fetching headline...');
+
+        return openGraph(this.id())
+        .then(data => {
+            this.meta.headline(data.title);
+            this.meta.trailText(data.description);
+
+            if (data.siteName) {
+                this.meta.byline(data.siteName);
+                this.meta.showByline(true);
+            }
+        })
+        .catch(() => {
+            this.meta.headline('Invalid page');
+        })
+        .then(() => {
+            this.updateEditorsDisplay();
+        });
+    }
+
+    open(article, evt) {
+        if (this.uneditable) { return; }
+
+        if (this.meta.supporting) {
+            this.meta.supporting.items().forEach(sublink => sublink.close());
         }
 
-        function isPremium(contentApiArticle) {
-            return contentApiArticle.fields.membershipAccess === 'members-only' ||
-                contentApiArticle.fields.membershipAccess === 'paid-members-only' ||
-                !!_.find(contentApiArticle.tags, {id: 'news/series/looking-back'});
+        const collection = articleCollection(this);
+        if (!this.state.isOpen()) {
+            this.editors(metaFields.map(field => Editor.create(field, this, metaFields)).filter(Boolean));
+            this.state.isOpen(true);
+            mediator.emit(
+                'ui:open',
+                _.chain(this.editors())
+                 .filter(function(editor) { return editor.type === 'text' && editor.displayEditor(); })
+                 .map(function(editor) { return editor.meta; })
+                 .first()
+                 .value(),
+                this,
+                this.front,
+                collection
+            );
+        } else {
+            mediator.emit('ui:open', null, null, this.front, collection);
         }
 
-        return Article;
-    });
+        if ($(evt.target).hasClass('allow-default-click')) {
+            return true;
+        }
+    }
+
+    close() {
+        if (this.state.isOpen()) {
+            this.state.isOpen(false);
+            this.updateEditorsDisplay();
+            cleanEditors(this.editors);
+        }
+        mediator.emit('ui:close', {
+            targetGroup: this.group
+        }, articleCollection(this));
+    }
+
+    closeAndSave() {
+        this.close();
+        this.save();
+        return false;
+    }
+
+    closeWithoutSaving() {
+        this.close();
+        if (this.group && this.group.parentType === 'Collection') {
+            this.group.parent.replaceArticle(this.id());
+        }
+        return false;
+    }
+
+    omitItem() {
+        this.group.omitItem(this);
+    }
+
+    dispose() {
+        if (this.meta.supporting) {
+            this.meta.supporting.dispose();
+        }
+        cleanEditors(this.editors);
+    }
+}
+
+function cleanEditors(editors) {
+    editors().forEach(editor => editor.dispose());
+    editors.removeAll();
+}
