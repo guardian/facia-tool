@@ -1,7 +1,6 @@
 import ko from 'knockout';
 import _ from 'underscore';
 import $ from 'jquery';
-import Promise from 'Promise';
 import 'jquery-ui/ui/effect';
 import 'jquery-ui/ui/effect-size';
 import 'jquery-ui/ui/effect-scale';

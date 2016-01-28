@@ -1,4 +1,3 @@
-import Promise from 'Promise';
 import _ from 'underscore';
 import * as vars from 'modules/vars';
 import deepGet from 'utils/deep-get';

@@ -1,6 +1,5 @@
 import ko from 'knockout';
 import _ from 'underscore';
-import Promise from 'Promise';
 import BaseClass from 'models/base-class';
 import * as globalListeners from 'utils/global-listeners';
 

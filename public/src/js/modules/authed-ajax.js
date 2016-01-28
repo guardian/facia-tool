@@ -1,6 +1,5 @@
 import _ from 'underscore';
 import $ from 'jquery';
-import Promise from 'Promise';
 import {CONST} from 'modules/vars';
 import {reauth} from 'utils/oauth-session';
 import reportErrors from 'utils/report-errors';

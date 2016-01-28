@@ -1,6 +1,5 @@
 import ko from 'knockout';
 import _ from 'underscore';
-import Promise from 'Promise';
 import LatestArticles from 'models/collections/latest-articles';
 import ColumnWidget from 'widgets/column-widget';
 

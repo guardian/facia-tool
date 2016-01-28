@@ -1,5 +1,3 @@
-import Promise from 'Promise';
-
 export default function (fn, time) {
     var bouncedTimeoutID,
         fnID = 0,

@@ -1,4 +1,3 @@
-import Promise from 'Promise';
 import {request} from 'modules/authed-ajax';
 import * as cache from 'modules/cache';
 import {CONST} from 'modules/vars';

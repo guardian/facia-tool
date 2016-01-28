@@ -1,6 +1,5 @@
 import EventEmitter from 'EventEmitter';
 import {CONST} from 'modules/vars';
-import Promise from 'Promise';
 import parseQueryParams from 'utils/parse-query-params';
 import serializeQueryParams from 'utils/serialize-query-params';
 

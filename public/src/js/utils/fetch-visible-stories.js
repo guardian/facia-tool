@@ -1,4 +1,3 @@
-import Promise from 'Promise';
 import _ from 'underscore';
 import {request} from 'modules/authed-ajax';
 import mediator from 'utils/mediator';

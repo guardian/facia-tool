@@ -1,4 +1,3 @@
-import Promise from 'Promise';
 import BaseClass from 'models/base-class';
 
 export default class extends BaseClass {
