@@ -772,8 +772,9 @@ h1 {
     float: right;
 }
 
-.alert-link {
+a.alert-link {
     float: right;
+    font-size: 12px;
 }
 
 collection-widget:first-child .collection {
