@@ -63,13 +63,6 @@ object BreakingNewsUpdate {
 
     if (trail.alert.getOrElse(false)) {
       withExceptionHandling({
-        // TODO remove the code below when server handles minor alerts correctly
-        val importance = parseImportance(trail.group)
-        if (importance.equals(Importance.Minor)) {
-          Logger.info(s"Ignoring minor alert for trail $trail")
-          return Future.successful(None)
-        }
-        // TODO remove until here ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         Logger.info(s"Sending breaking news alert for trail $trail")
         client.send(createPayload(trail, email))
           .map(handleSuccessfulFuture)
