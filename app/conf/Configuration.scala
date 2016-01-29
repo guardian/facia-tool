@@ -141,6 +141,11 @@ object Configuration {
   object updates {
     lazy val stream: Option[String] = properties.get("STREAM")
   }
+
+  object auditing {
+    lazy val stream: String = getMandatoryString("auditing.stream")
+    lazy val maxDataSize: Int = 102400
+  }
 }
 
 object Properties extends AutomaticResourceManagement {
