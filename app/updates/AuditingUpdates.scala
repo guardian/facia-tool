@@ -6,11 +6,13 @@ import com.amazonaws.handlers.AsyncHandler
 import com.amazonaws.regions.{Region, Regions}
 import com.amazonaws.services.kinesis.AmazonKinesisAsyncClient
 import com.amazonaws.services.kinesis.model.{PutRecordRequest, PutRecordResult}
+import com.gu.auditing.model.v1.{App, Notification}
+import com.gu.thrift.serializer.ThriftSerializer
 import conf.{Configuration, aws}
 import play.api.Logger
 import play.api.libs.json._
 
-object AuditingUpdates {
+object AuditingUpdates extends ThriftSerializer {
   val partitionKey: String = "facia-tool-updates"
 
   object KinesisLoggingAsyncHandler extends AsyncHandler[PutRecordRequest, PutRecordResult] {
@@ -28,23 +30,45 @@ object AuditingUpdates {
     c
   }
 
-  def putStreamUpdate(streamUpdate: StreamUpdate): Unit =
-    Json.toJson(streamUpdate.update).transform[JsObject](Reads.JsObjectReads) match {
-      case JsSuccess(jsonObject, _)  => putString(Json.stringify(jsonObject +
-        ("email", JsString(streamUpdate.email)) +
-        ("fronts", JsArray(streamUpdate.fronts.map(f => JsString(f)).toSeq)) +
-        ("date", JsString(streamUpdate.dateTime.toString))
-      ))
-      case JsError(errors)           => Logger.warn(s"Error converting StreamUpdate: $errors")}
+  def putStreamUpdate(streamUpdate: StreamUpdate): Unit = {
+    val updateName = streamUpdate.update.getClass().getSimpleName()
 
-  private def putString(s: String): Unit =
-    Configuration.updates.stream.map { streamName =>
+    val message: String = getStringMessage(streamUpdate).getOrElse("")
+    val notification = Notification("id", updateName, streamUpdate.email, App.FaciaTool, message,
+      streamUpdate.dateTime.toString())
+
+    putAuditingNotification(notification)
+  }
+
+  private def putAuditingNotification(notification: Notification): Unit = {
+
+    val streamName = Configuration.auditing.stream
+    val bytes = serializeToBytes(notification)
+    if (bytes.length > Configuration.auditing.maxDataSize) {
+      Logger.error(s"$streamName - NOT sending because size (${bytes.length} bytes) is larger than max kinesis size(${Configuration.auditing.maxDataSize})")
+    } else {
+      Logger.info(s"$streamName - sending thrift update with size of ${bytes.length} bytes")
       client.putRecordAsync(
         new PutRecordRequest()
-          .withData(ByteBuffer.wrap(s.getBytes))
+          .withData(ByteBuffer.wrap(bytes))
           .withStreamName(streamName)
           .withPartitionKey(partitionKey),
         KinesisLoggingAsyncHandler
       )
-    }.getOrElse(Logger.warn("Cannot put to updates stream: Configuration.updates.stream is not set"))
+    }
+  }
+
+  private def getStringMessage(streamUpdate: StreamUpdate): Option[String] = {
+    Json.toJson(streamUpdate.update).transform[JsObject](Reads.JsObjectReads) match {
+      case JsSuccess(jsonObject, _) => Some(Json.stringify(jsonObject +
+        ("email", JsString(streamUpdate.email)) +
+        ("fronts", JsArray(streamUpdate.fronts.map(f => JsString(f)).toSeq)) +
+        ("date", JsString(streamUpdate.dateTime.toString)))
+      )
+      case JsError(errors) => {
+        Logger.warn(s"Error converting StreamUpdate: $errors")
+        None
+      }
+    }
+  }
 }
