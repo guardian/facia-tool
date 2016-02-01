@@ -69,13 +69,14 @@ export default class Front extends ColumnWidget {
 
         this.allExpanded = ko.observable(true);
 
-        this.listenOn(mediator, 'presser:lastupdate', (front, date) => {
+        this.listenOn(mediator, 'presser:lastupdate', (front, lastPressed) => {
+            // The event :lastupdate is raised only for live events, lastUpdate includes draft changes
             if (front === this.front()) {
-                this.frontAge(humanTime(date));
+                this.frontAge(humanTime(lastPressed));
                 if (this.baseModel.state().defaults.env !== 'dev') {
-                    var stale = _.some(this.collections(), collection => {
-                        let update = new Date(collection.state.lastUpdated());
-                        return _.isDate(update) ? update > date : false;
+                    const stale = _.some(this.collections(), collection => {
+                        const lastUpdated = new Date(collection.state.lastUpdated());
+                        return _.isDate(lastUpdated) ? lastUpdated - lastPressed > CONST.detectPressFailureMs : false;
                     });
                     if (stale) {
                         mediator.emit('presser:stale', 'Sorry, the latest edit to the front \'' + front + '\' hasn\'t gone live.');
