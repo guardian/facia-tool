@@ -141,6 +141,21 @@ export default class Collection extends BaseClass {
         this.load();
     }
 
+    getPublishText() {
+
+        if (!this.front.confirmSendingAlert()) {
+            return 'Launch';
+        }
+        if (this.addedInDraft().length) {
+            return 'Send alert';
+        }
+        if (_.some(this.groups, group => group.items().length)) {
+            return 'Update';
+        }
+        return 'Remove';
+
+    }
+
     addedInDraft() {
         const live = (this.raw || {}).live || [];
 

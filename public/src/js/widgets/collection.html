@@ -12,7 +12,7 @@
             <span data-bind="visible: front.mode() !== 'live'">
                 <a class="tool draft-publish" data-bind="
                     click: publishDraft,
-                    text: front.confirmSendingAlert() && addedInDraft().length ? 'Send alert' : 'Launch'"></a
+                    text: getPublishText()"></a
                 ><a class="tool draft-discard" data-bind="
                     click: discardDraft">Discard</a>
             </span >
