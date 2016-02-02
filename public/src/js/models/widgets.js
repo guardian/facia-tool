@@ -114,6 +114,10 @@ var register = _.once(() => {
         viewModel: { jspm: 'widgets/columns/fronts-config' },
         template: { text: 'widgets/columns/fronts-config.html' }
     });
+    ko.components.register('config-collection-backfill', {
+        viewModel: { jspm: 'widgets/config-collection-backfill' },
+        template: { text: 'widgets/config-collection-backfill.html' }
+    });
     ko.components.register('message', {
         viewModel: {
             createViewModel: (params) => params.message

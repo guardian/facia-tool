@@ -1,14 +1,15 @@
-<div class="col__inner scrollable">
+<div class="col__inner scrollable frontsConfig">
     <div class="title">
         Fronts
         <span data-bind="click: createFront" class="linky">+</span>
     </div>
     <div class="cnf-fronts">
         <!-- ko if: pinnedFront -->
-            <div data-bind="template: {name: 'template_front', data: pinnedFront}"></div>
+            <div class="configPinnedFront"
+                data-bind="template: {name: 'template_front', data: pinnedFront}"></div>
         <!-- /ko -->
-        <div data-bind="
-            template: {name: 'template_front', foreach: fronts}"></div>
+        <div class="configListFronts"
+            data-bind="template: {name: 'template_front', foreach: fronts}"></div>
     </div>
 </div>
 
@@ -217,25 +218,7 @@
                 <input type="text" data-bind="
                     value: meta.description"/>
 
-            <label>ContentApi <span class="linky" data-bind="
-                click: checkApiQueryStatus,
-                visible: meta.apiQuery">check</span></label>
-            <input type="text" class="apiquery--input" data-bind="
-                value: meta.apiQuery,
-                valueUpdate: ['afterkeydown', 'input']"/>
-
-            <!-- ko if: state.apiQueryStatus -->
-                <div class="api-query-results">
-                    <div data-bind="
-                        attr: {class: 'api-query-status--' + state.apiQueryStatus()},
-                        text: state.apiQueryStatus() === 'check' ? 'Checking...' : state.apiQueryStatus() === 'invalid' ? 'No matches found' : 'Found matches:'"></div>
-                    <div data-bind="foreach: capiResults">
-                        <a target="_article" class="api-query-result" data-bind="
-                                attr: {href: 'http://www.theguardian.com/' + id},
-                                text: fields.headline"></a>
-                    </div>
-                </div>
-            <!-- /ko -->
+            <config-collection-backfill params="backfill: meta.apiQuery"></config-collection-backfill>
 
             <!-- ko if: meta.groups -->
                 <label>Groups</label>
