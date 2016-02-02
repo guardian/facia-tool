@@ -31,13 +31,17 @@ object AuditingUpdates extends ThriftSerializer {
   }
 
   def putStreamUpdate(streamUpdate: StreamUpdate): Unit = {
+
     val updateName = streamUpdate.update.getClass().getSimpleName()
 
     val message: String = getStringMessage(streamUpdate).getOrElse("")
-    val notification = Notification("id", updateName, streamUpdate.email, App.FaciaTool, message,
-      streamUpdate.dateTime.toString())
+    streamUpdate.fronts.map(frontId => {
+      val notification = Notification(frontId, updateName, streamUpdate.email, App.FaciaTool, message,
+        streamUpdate.dateTime.toString())
 
-    putAuditingNotification(notification)
+      putAuditingNotification(notification)
+    })
+
   }
 
   private def putAuditingNotification(notification: Notification): Unit = {
