@@ -1,0 +1,26 @@
+<label>Backfill <span class="linky" data-bind="
+    click: checkApiQuery,
+    visible: meta.backfill">check</span></label>
+<input type="text" class="apiquery--input" data-bind="
+    value: meta.apiQuery,
+    valueUpdate: ['afterkeydown', 'input']"/>
+
+<!-- ko if: state.queryStatus -->
+    <div class="api-query-results">
+        <!-- ko if: state.queryStatus() === 'check' -->
+            <div class="api-query-status--check queryStatusText">Checking&hellip;</div>
+        <!-- /ko -->
+        <!-- ko if: state.queryStatus() === 'invalid' -->
+            <div class="api-query-status--invalid queryStatusText">No matches found</div>
+        <!-- /ko -->
+        <!-- ko if: state.queryStatus() === 'valid' -->
+            <div class="api-query-status--valid queryStatusText">Found matches:</div>
+        <!-- /ko -->
+
+        <div data-bind="foreach: results">
+            <a target="_article" class="api-query-result" data-bind="
+                    attr: {href: href},
+                    text: fields.headline"></a>
+        </div>
+    </div>
+<!-- /ko -->

@@ -6,9 +6,9 @@ import * as capi from 'modules/content-api';
 import * as vars from 'modules/vars';
 import * as dom from 'test/utils/dom-nodes';
 import {injectColumnWidget} from 'test/utils/inject';
-import textInside from 'test/utils/text-inside';
-import * as wait from 'test/utils/wait';
 import images from 'test/utils/images';
+import configRegion from 'test/utils/regions/config';
+import * as wait from 'test/utils/wait';
 
 describe('Config Front', function () {
     beforeEach(function () {
@@ -69,11 +69,12 @@ describe('Config Front', function () {
     });
 
     it('create fronts and collections', function (done) {
-        var frontWidget;
+        var frontWidget, region;
 
         this.loadFront()
         .then(widget => {
             frontWidget = widget;
+            region = configRegion();
         })
         .then(createFrontAndCollection)
         .then(createCollectionWithCAPI)
@@ -86,51 +87,55 @@ describe('Config Front', function () {
         .catch(done.fail);
 
         function createFrontAndCollection () {
-            $('.title .linky').click();
+            return region.addFront()
             // some form of validation
-            dom.type('.input-url-path', '/something////here/');
-            $('.create-new-front').click();
-            expect(textInside('.title--text')).toBe('something/here');
-            $('.linky.tool--container').click();
-            $('#showDateHeader').click();
-            dom.type('.title--input', 'new collection');
-            $('.type-option-chosen').click();
-            $('.type-option-value:nth(1)').click();
-            $('.tool-save-container').click();
+            .then(pinned => pinned.type('id', '/something////here/'))
+            .then(pinned => pinned.create())
+            .then(pinned => {
+                expect(pinned.title()).toBe('something/here');
 
-            // Until persisted the front is still pinned
-            expect(frontWidget.fronts().length).toBe(0);
-            expect(!!frontWidget.pinnedFront()).toBe(true);
-            var front = frontWidget.pinnedFront();
-            var collection = front.collections.items()[0];
-            expect(front.props.isHidden()).toBe(true);
-            expect(persistence.collection.save).toHaveBeenCalledWith(collection);
-            expect(collection.meta.showDateHeader()).toBe(true);
-            expect(collection.meta.type()).toBe('type-two');
-            expect(collection.meta.displayName()).toBe('new collection');
-            persistence.collection.save.calls.reset();
+                return pinned.createCollection();
+            })
+            .then(collection => {
+                return Promise.all([
+                    collection.toggle('showDateHeader'),
+                    collection.type('title', 'new collection'),
+                    collection.chooseLayout(1)
+                ])
+                .then(() => collection.save());
+            })
+            .then(() => {
+                // Until persisted the front is still pinned
+                expect(frontWidget.fronts().length).toBe(0);
+                expect(!!frontWidget.pinnedFront()).toBe(true);
+                var front = frontWidget.pinnedFront();
+                var collection = front.collections.items()[0];
+                expect(front.props.isHidden()).toBe(true);
+                expect(persistence.collection.save).toHaveBeenCalledWith(collection);
+                expect(collection.meta.showDateHeader()).toBe(true);
+                expect(collection.meta.type()).toBe('type-two');
+                expect(collection.meta.displayName()).toBe('new collection');
+                persistence.collection.save.calls.reset();
+            });
         }
 
         function createCollectionWithCAPI () {
-            $('.linky.tool--container').click();
-            dom.type('.title--input', 'collection with capi');
-            $('.type-option-chosen').click();
-            $('.type-option-value:nth(0)').click();
-            // sanitize spaces
-            dom.type('.apiquery--input', 'ne  ws');
+            return region.pinned().createCollection()
+            .then(collection => {
+                return Promise.all([
+                    collection.type('title', 'collection with capi'),
+                    collection.chooseLayout(0),
+                    collection.backfill().type('ne  ws').then(waiting => waiting.check)
+                ])
+                .then(() => collection);
+            })
+            .then(collection => {
+                expect(collection.backfill().text()).toBe('news');
+                expect(collection.backfill().results().length).toBe(2);
 
-            return wait.ms(vars.CONST.searchDebounceMs)
-            .then(() => {
-                expect(textInside('.api-query-results')).toBe('Checking...');
-
-                return wait.ms(100);
+                return collection.save();
             })
             .then(() => {
-                expect($('.apiquery--input').val()).toBe('news');
-                expect($('.api-query-results a').length).toBe(2);
-                expect(textInside('.cnf-form__value')).toBe('group-a,group-b');
-
-                $('.tool-save-container').click();
                 var front = frontWidget.pinnedFront();
                 var collection = front.collections.items()[1];
                 expect(persistence.collection.save).toHaveBeenCalledWith(collection);
@@ -142,28 +147,31 @@ describe('Config Front', function () {
         }
 
         function modifyCollectionWithInvalidCAPI () {
-            $('.cnf-collection:nth(1) .cnf-collection__name').click();
-            $('#showTags').click();
-            dom.type('.apiquery--input', 'zero');
-            return wait.ms(vars.CONST.searchDebounceMs + 100).then(() => {
-                expect($('.apiquery--input').val()).toBe('zero');
-                expect($('.api-query-results a').length).toBe(0);
-                expect(textInside('.api-query-results')).toBe('No matches found');
+            return region.pinned().collection(2).open()
+            .then(collection => {
+                return Promise.all([
+                    collection.toggle('showTags'),
+                    collection.backfill().type('zero').then(waiting => waiting.check)
+                ])
+                .then(() => collection);
+            })
+            .then(collection => {
+                expect(collection.backfill().text()).toBe('zero');
+                expect(collection.backfill().results().length).toBe(0);
+                expect(collection.backfill().status()).toBe('No matches found');
 
-                dom.type('.apiquery--input', 'fail');
-                return wait.ms(vars.CONST.searchDebounceMs);
+                return collection.backfill().type('fail')
+                    .then(waiting => waiting.check)
+                    .then(() => collection);
+            })
+            .then(collection => {
+                expect(collection.backfill().text()).toBe('fail');
+                expect(collection.backfill().results().length).toBe(0);
+                expect(collection.backfill().status()).toBe('No matches found');
+
+                return collection.save();
             })
             .then(() => {
-                // Check the interface updates
-                expect(textInside('.api-query-results')).toBe('Checking...');
-                return wait.ms(100);
-            })
-            .then(() => {
-                expect($('.apiquery--input').val()).toBe('fail');
-                expect($('.api-query-results a').length).toBe(0);
-                expect(textInside('.api-query-results')).toBe('No matches found');
-
-                $('.tool-save-container').click();
                 var front = frontWidget.pinnedFront();
                 var collection = front.collections.items()[1];
                 expect(persistence.collection.save).toHaveBeenCalledWith(collection);
@@ -176,14 +184,15 @@ describe('Config Front', function () {
         }
 
         function removeCollection () {
-            $('.cnf-collection:nth(1) .cnf-collection__name').click();
-            $('.tool--rhs').click();
-
-            var front = frontWidget.pinnedFront();
-            expect(persistence.front.update).toHaveBeenCalledWith(front);
-            expect(front.collections.items().length).toBe(1);
-            expect(front.collections.items()[0].meta.displayName()).toBe('new collection');
-            persistence.front.update.calls.reset();
+            return region.pinned().collection(2).open()
+            .then(collection => collection.remove())
+            .then(() => {
+                var front = frontWidget.pinnedFront();
+                expect(persistence.front.update).toHaveBeenCalledWith(front);
+                expect(front.collections.items().length).toBe(1);
+                expect(front.collections.items()[0].meta.displayName()).toBe('new collection');
+                persistence.front.update.calls.reset();
+            });
         }
 
         function editMetadata () {
