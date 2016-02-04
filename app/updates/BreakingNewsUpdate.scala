@@ -24,13 +24,16 @@ import scala.util.{Failure, Success, Try}
 class InvalidNotificationContentType(msg: String) extends Throwable(msg) {}
 
 object BreakingNewsUpdate {
-  val client = ApiClient(
-    host = Configuration.notification.host,
-    apiKey = Configuration.notification.key,
-    httpProvider = NotificationHttpProvider,
-    legacyHost = Configuration.notification.legacyHost,
-    legacyApiKey = Configuration.notification.legacyKey
-  )
+  lazy val client = {
+    Logger.info(s"Configuring breaking news client to send notifications to ${Configuration.notification.host} and ${Configuration.notification.legacyHost}")
+    ApiClient(
+      host = Configuration.notification.host,
+      apiKey = Configuration.notification.key,
+      httpProvider = NotificationHttpProvider,
+      legacyHost = Configuration.notification.legacyHost,
+      legacyApiKey = Configuration.notification.legacyKey
+    )
+  }
 
   def putBreakingNewsUpdate(
     collectionId: String,
