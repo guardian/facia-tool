@@ -17,6 +17,8 @@ trait S3 {
 
   lazy val bucket = Configuration.aws.bucket
 
+  lazy val faciaBucket = Configuration.aws.faciaBucket
+
   lazy val client: Option[AmazonS3Client] =
     aws.crossAccount.map{ credentials => {
       val client = new AmazonS3Client(credentials)
@@ -24,6 +26,13 @@ trait S3 {
       client
     }
   }
+
+  lazy val faciaClient: Option[AmazonS3Client] =
+    aws.credentials.map{ credentials => {
+      val client = new AmazonS3Client(credentials)
+      client.setEndpoint(AwsEndpoints.s3)
+      client
+    } }
 
   private def withS3Result[T](key: String)(action: S3Object => T): Option[T] = client.flatMap { client =>
     try {
@@ -80,20 +89,34 @@ trait S3 {
   }
 
   private def put(key: String, value: String, contentType: String, accessControlList: CannedAccessControlList) {
+
     val metadata = new ObjectMetadata()
     metadata.setCacheControl("no-cache,no-store")
     metadata.setContentType(contentType)
     metadata.setContentLength(value.getBytes("UTF-8").length)
 
     val request = new PutObjectRequest(bucket, key, new StringInputStream(value), metadata).withCannedAcl(accessControlList)
+    val faciaRequest = new PutObjectRequest(faciaBucket, key, new StringInputStream(value), metadata)
+      .withCannedAcl(Private)
+
+    if (accessControlList != Private) {
+      try {
+        client.foreach(_.putObject(request))
+      } catch {
+        case e: Exception =>
+          S3ClientExceptionsMetric.increment()
+          throw e
+      }
+    }
 
     try {
-      client.foreach(_.putObject(request))
+      faciaClient.foreach(_.putObject(faciaRequest))
     } catch {
       case e: Exception =>
         S3ClientExceptionsMetric.increment()
         throw e
     }
+
   }
 }
 
