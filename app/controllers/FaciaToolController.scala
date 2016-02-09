@@ -37,11 +37,6 @@ object FaciaToolController extends Controller with PanDomainAuthActions with Bre
     Cached(60) { Ok(views.html.admin_main(Option(identity))) }
   }
 
-  def listCollections = APIAuthAction { request =>
-    FaciaToolMetrics.ApiUsageCount.increment()
-    NoCache { Ok(Json.toJson(S3FrontsApi.listCollectionIds)) }
-  }
-
   def getConfig = APIAuthAction.async { request =>
     FaciaToolMetrics.ApiUsageCount.increment()
     FrontsApi.amazonClient.config.map { configJson =>

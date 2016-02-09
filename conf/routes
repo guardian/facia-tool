@@ -40,7 +40,6 @@ GET         /front/lastmodified/*path                controllers.FaciaToolContro
 
 GET         /collection/*collectionId                controllers.FaciaToolController.getCollection(collectionId)
 POST        /edits                                   controllers.FaciaToolController.collectionEdits
-GET         /collection                              controllers.FaciaToolController.listCollections
 GET         /config                                  controllers.FaciaToolController.getConfig
 GET         /defaults                                controllers.DefaultsController.configuration()
 

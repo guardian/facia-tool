@@ -13,7 +13,6 @@ import scala.concurrent.Future
 import scala.util.Try
 
 trait FaciaApiRead {
-  def getSchema: Option[String]
   def getCollectionJson(id: String): Future[Option[CollectionJson]]
 }
 
@@ -25,8 +24,6 @@ trait FaciaApiWrite {
 }
 
 object FaciaApiIO extends FaciaApiRead with FaciaApiWrite {
-
-  def getSchema = S3FrontsApi.getSchema
 
   def getCollectionJson(id: String): Future[Option[CollectionJson]] = FrontsApi.amazonClient.collection(id)
 

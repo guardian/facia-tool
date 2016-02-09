@@ -82,7 +82,7 @@ object Configuration {
   object aws {
     lazy val region = getMandatoryString("aws.region")
     lazy val bucket = getMandatoryString("aws.bucket")
-    lazy val faciaBucket = getMandatoryString("aws.faciaBucket")
+    lazy val frontsBucket = getMandatoryString("aws.frontsBucket")
   }
 
   object facia {
