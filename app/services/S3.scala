@@ -13,22 +13,35 @@ import play.api.Logger
 
 import scala.io.{Codec, Source}
 
-trait S3 {
-
+sealed trait S3Accounts {
+  def bucket: String
+  def client: Option[AmazonS3Client]
+}
+case object FrontendS3Account extends S3Accounts {
   lazy val bucket = Configuration.aws.bucket
-
   lazy val client: Option[AmazonS3Client] =
     aws.crossAccount.map{ credentials => {
       val client = new AmazonS3Client(credentials)
       client.setEndpoint(AwsEndpoints.s3)
-      client
-    }
-  }
+      client}}
+}
+case object CmsFrontsS3Account extends S3Accounts {
+  lazy val bucket = Configuration.aws.frontsBucket
+  lazy val client: Option[AmazonS3Client] =
+    aws.credentials.map{ credentials => {
+      val client = new AmazonS3Client(credentials)
+      client.setEndpoint(AwsEndpoints.s3)
+      client}}
+}
 
-  private def withS3Result[T](key: String)(action: S3Object => T): Option[T] = client.flatMap { client =>
+trait S3 {
+  private def withS3Result[T](
+     account: S3Accounts,
+     key: String
+   )(action: S3Object => T): Option[T] = account.client.flatMap { client =>
     try {
 
-      val request = new GetObjectRequest(bucket, key)
+      val request = new GetObjectRequest(account.bucket, key)
       val result = client.getObject(request)
 
       // http://stackoverflow.com/questions/17782937/connectionpooltimeoutexception-when-iterating-objects-in-s3
@@ -45,7 +58,7 @@ trait S3 {
       }
     } catch {
       case e: AmazonS3Exception if e.getStatusCode == 404 => {
-        Logger.warn("not found at %s - %s" format(bucket, key))
+        Logger.warn("not found at %s - %s" format(account.bucket, key))
         None
       }
       case e: Exception => {
@@ -55,40 +68,36 @@ trait S3 {
     }
   }
 
-  def get(key: String)(implicit codec: Codec): Option[String] = withS3Result(key) {
+  def get(key: String)(implicit codec: Codec): Option[String] = withS3Result(FrontendS3Account, key) {
     result => Source.fromInputStream(result.getObjectContent).mkString
   }
 
-
-  def getWithLastModified(key: String): Option[(String, DateTime)] = withS3Result(key) {
-    result =>
-      val content = Source.fromInputStream(result.getObjectContent).mkString
-      val lastModified = new DateTime(result.getObjectMetadata.getLastModified)
-      (content, lastModified)
-  }
-
-  def getLastModified(key: String): Option[DateTime] = withS3Result(key) {
+  def getLastModified(key: String): Option[DateTime] = withS3Result(FrontendS3Account, key) {
     result => new DateTime(result.getObjectMetadata.getLastModified)
   }
 
-  def putPublic(key: String, value: String, contentType: String) {
-    put(key: String, value: String, contentType: String, PublicRead)
+  def putPublic(key: String, value: String, contentType: String, accounts: List[S3Accounts]) {
+    put(key: String, value: String, contentType: String, PublicRead, accounts)
   }
 
-  def putPrivate(key: String, value: String, contentType: String) {
-    put(key: String, value: String, contentType: String, Private)
+  def putPrivate(key: String, value: String, contentType: String, accounts: List[S3Accounts]) {
+    put(key: String, value: String, contentType: String, Private, accounts)
   }
 
-  private def put(key: String, value: String, contentType: String, accessControlList: CannedAccessControlList) {
+  private def put(key: String, value: String, contentType: String, accessControlList: CannedAccessControlList, accounts: List[S3Accounts]) {
     val metadata = new ObjectMetadata()
     metadata.setCacheControl("no-cache,no-store")
     metadata.setContentType(contentType)
     metadata.setContentLength(value.getBytes("UTF-8").length)
 
-    val request = new PutObjectRequest(bucket, key, new StringInputStream(value), metadata).withCannedAcl(accessControlList)
+    accounts.foreach(putRequest(_, key, value, metadata, accessControlList))
+  }
+
+  private def putRequest(account: S3Accounts, key: String, value: String, metadata: ObjectMetadata, accessControlList: CannedAccessControlList) {
+    val request = new PutObjectRequest(account.bucket, key, new StringInputStream(value), metadata).withCannedAcl(accessControlList)
 
     try {
-      client.foreach(_.putObject(request))
+      account.client.foreach(_.putObject(request))
     } catch {
       case e: Exception =>
         S3ClientExceptionsMetric.increment()
@@ -101,62 +110,37 @@ object S3 extends S3
 
 object S3FrontsApi extends S3 {
 
-  override lazy val bucket = Configuration.aws.bucket
   lazy val stage = if (Play.isTest) "TEST" else Configuration.facia.stage.toUpperCase
   val namespace = "frontsapi"
   lazy val location = s"$stage/$namespace"
 
-  def getLivePressedKeyForPath(path: String): String =
-    s"$location/pressed/live/$path/pressed.json"
-
-  def getDraftPressedKeyForPath(path: String): String =
-    s"$location/pressed/draft/$path/pressed.json"
-
   def getLiveFapiPressedKeyForPath(path: String): String =
     s"$location/pressed/live/$path/fapi/pressed.json"
 
-  def getDraftFapiPressedKeyForPath(path: String): String =
-    s"$location/pressed/draft/$path/fapi/pressed.json"
-
-  def getSchema = get(s"$location/schema.json")
   def getMasterConfig: Option[String] = get(s"$location/config/config.json")
-  def getBlock(id: String) = get(s"$location/collection/$id/collection.json")
-  def listConfigsIds: List[String] = getConfigIds(s"$location/config/")
-  def listCollectionIds: List[String] = getCollectionIds(s"$location/collection/")
   def putCollectionJson(id: String, json: String) = {
     val putLocation: String = s"$location/collection/$id/collection.json"
-    putPublic(putLocation, json, "application/json")
+    putPublic(putLocation, json, "application/json", List(FrontendS3Account))
+    putPrivate(putLocation, json, "application/json", List(CmsFrontsS3Account))
   }
 
   def archive(id: String, json: String, identity: User) = {
     val now = DateTime.now
-    putPrivate(s"$location/history/collection/${now.year.get}/${"%02d".format(now.monthOfYear.get)}/${"%02d".format(now.dayOfMonth.get)}/$id/${now}.${identity.email}.json", json, "application/json")
+    val putLocation = s"$location/history/collection/${now.year.get}/${"%02d".format(now.monthOfYear.get)}/${"%02d".format(now.dayOfMonth.get)}/$id/${now}.${identity.email}.json"
+    putPrivate(putLocation, json, "application/json", List(CmsFrontsS3Account))
   }
 
   def putMasterConfig(json: String) = {
     val putLocation = s"$location/config/config.json"
-    putPublic(putLocation, json, "application/json")
+    putPublic(putLocation, json, "application/json", List(FrontendS3Account))
+    putPrivate(putLocation, json, "application/json", List(CmsFrontsS3Account))
   }
 
   def archiveMasterConfig(json: String, identity: User) = {
     val now = DateTime.now
     val putLocation = s"$location/history/config/${now.year.get}/${"%02d".format(now.monthOfYear.get)}/${"%02d".format(now.dayOfMonth.get)}/${now}.${identity.email}.json"
-    putPublic(putLocation, json, "application/json")
+    putPrivate(putLocation, json, "application/json", List(CmsFrontsS3Account))
   }
-
-  private def getListing(prefix: String, dropText: String): List[String] = {
-    import scala.collection.JavaConversions._
-    val summaries = client.map(_.listObjects(bucket, prefix).getObjectSummaries.toList).getOrElse(Nil)
-    summaries
-      .map(_.getKey.split(prefix))
-      .filter(_.nonEmpty)
-      .map(_.last)
-      .filterNot(_.endsWith("/"))
-      .map(_.split(dropText).head)
-  }
-
-  def getConfigIds(prefix: String): List[String] = getListing(prefix, "/config.json")
-  def getCollectionIds(prefix: String): List[String] = getListing(prefix, "/collection.json")
 
   def getPressedLastModified(path: String): Option[String] =
     getLastModified(getLiveFapiPressedKeyForPath(path)).map(_.toString)
