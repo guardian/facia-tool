@@ -126,6 +126,35 @@
                 ]
             }
         },
+        "StorageBucket": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "StorageBucket",
+                "PolicyDocument": {
+                    "Version" : "2012-10-17",
+                    "Statement": [{
+                        "Effect": "Allow",
+                        "Action": [
+                            "s3:GetObject",
+                            "s3:PutObject",
+                            "s3:PutObjectAcl"
+                        ],
+                        "Resource": [
+                            { "Fn::Join": [ "", [ "arn:aws:s3:::facia-tool-store/", { "Ref": "Stage" }, "/*" ]] }
+                        ]
+                    }, {
+                        "Effect": "Allow",
+                        "Action": [
+                            "s3:ListBucket"
+                        ],
+                        "Resource": [
+                            "arn:aws:s3:::facia-tool-store"
+                        ]
+                    }]
+                },
+                "Roles": [{ "Ref": "DistributionRole" }]
+            }
+        },
         "PanDomainPolicy": {
           "Type": "AWS::IAM::Policy",
           "Properties": {
