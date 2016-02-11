@@ -8,7 +8,6 @@ import play.api.Play.current
 import play.api.{Configuration => PlayConfiguration, Logger}
 
 import scala.collection.JavaConversions._
-import scala.io.Source
 import scala.language.reflectiveCalls
 
 class BadConfigurationException(msg: String) extends RuntimeException(msg)
@@ -136,10 +135,6 @@ object Configuration {
   object switchBoard {
     val bucket = getMandatoryString("switchboard.bucket")
     val objectKey = getMandatoryString("switchboard.object")
-  }
-
-  object updates {
-    lazy val stream: Option[String] = properties.get("STREAM")
   }
 
   object auditing {

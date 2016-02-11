@@ -20,7 +20,7 @@ object AuditingUpdates extends ThriftSerializer {
       Logger.error(s"Kinesis PutRecord request error: ${exception.getMessage}}")
     }
     def onSuccess(request: PutRecordRequest, result: PutRecordResult) {
-      Logger.info(s"Put diff to stream:${request.getStreamName} Seq:${result.getSequenceNumber}")
+      Logger.info(s"Put auditing message to stream:${request.getStreamName} Seq:${result.getSequenceNumber}")
     }
   }
 
@@ -31,17 +31,21 @@ object AuditingUpdates extends ThriftSerializer {
   }
 
   def putStreamUpdate(streamUpdate: StreamUpdate): Unit = {
+    val updateName = streamUpdate.update.getClass.getSimpleName
+    lazy val updatePayload = Some(serializeUpdateMessage(streamUpdate.update))
+    streamUpdate.fronts.foreach(frontId => putAuditingNotification(
+      Notification(
+        app = App.FaciaTool,
+        operation = updateName,
+        userEmail = streamUpdate.email,
+        date = streamUpdate.dateTime.toString,
+        resourceId = Some(frontId),
+        message = updatePayload
+      )))
+  }
 
-    val updateName = streamUpdate.update.getClass().getSimpleName()
-
-    val message: String = getStringMessage(streamUpdate).getOrElse("")
-    streamUpdate.fronts.map(frontId => {
-      val notification = Notification(frontId, updateName, streamUpdate.email, App.FaciaTool, message,
-        streamUpdate.dateTime.toString())
-
-      putAuditingNotification(notification)
-    })
-
+  private def serializeUpdateMessage(updateMessage: UpdateMessage): String = {
+    Json.toJson(updateMessage).toString()
   }
 
   private def putAuditingNotification(notification: Notification): Unit = {
@@ -51,7 +55,7 @@ object AuditingUpdates extends ThriftSerializer {
     if (bytes.length > Configuration.auditing.maxDataSize) {
       Logger.error(s"$streamName - NOT sending because size (${bytes.length} bytes) is larger than max kinesis size(${Configuration.auditing.maxDataSize})")
     } else {
-      Logger.info(s"$streamName - sending thrift update with size of ${bytes.length} bytes")
+      Logger.info(s"$streamName - sending auditing thrift update with size of ${bytes.length} bytes")
       client.putRecordAsync(
         new PutRecordRequest()
           .withData(ByteBuffer.wrap(bytes))
@@ -59,20 +63,6 @@ object AuditingUpdates extends ThriftSerializer {
           .withPartitionKey(partitionKey),
         KinesisLoggingAsyncHandler
       )
-    }
-  }
-
-  private def getStringMessage(streamUpdate: StreamUpdate): Option[String] = {
-    Json.toJson(streamUpdate.update).transform[JsObject](Reads.JsObjectReads) match {
-      case JsSuccess(jsonObject, _) => Some(Json.stringify(jsonObject +
-        ("email", JsString(streamUpdate.email)) +
-        ("fronts", JsArray(streamUpdate.fronts.map(f => JsString(f)).toSeq)) +
-        ("date", JsString(streamUpdate.dateTime.toString)))
-      )
-      case JsError(errors) => {
-        Logger.warn(s"Error converting StreamUpdate: $errors")
-        None
-      }
     }
   }
 }
