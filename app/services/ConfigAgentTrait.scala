@@ -33,10 +33,9 @@ trait ConfigAgentTrait {
   def refreshAndReturn(): Future[Option[Config]] =
     FrontsApi.amazonClient.config
       .flatMap(config => configAgent.alter{_ => Option(config)})
-      .fallbackTo{
-      Logger.warn("Falling back to current ConfigAgent contents on refreshAndReturn")
-      Future.successful(configAgent.get())
-    }
+      .recover{case err =>
+        Logger.warn("Falling back to current ConfigAgent contents on refreshAndReturn", err)
+        configAgent.get()}
 
   def getBreakingNewsCollectionIds: Set[String] =
     configAgent.get().flatMap(_.fronts.get(Configuration.faciatool.breakingNewsFront).map(_.collections.toSet)).getOrElse(Set.empty)
