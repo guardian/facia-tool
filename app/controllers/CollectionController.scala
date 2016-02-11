@@ -1,7 +1,7 @@
 package controllers
 
 import auth.PanDomainAuthActions
-import com.gu.facia.client.models.CollectionConfigJson
+import com.gu.facia.client.models.{Backfill, CollectionConfigJson}
 import config.UpdateManager
 import permissions.ConfigPermissionCheck
 import play.api.libs.json.Json
@@ -29,10 +29,16 @@ object CollectionController extends Controller with PanDomainAuthActions {
   def create = (APIAuthAction andThen ConfigPermissionCheck){ request =>
     request.body.read[CollectionRequest] match {
       case Some(CollectionRequest(frontIds, collection)) =>
+        val backfill = collection.apiQuery match {
+          case Some(backfill) => Some(Backfill("capi", backfill))
+          case None => None
+        }
+        val collectionWithBackfill = collection.copy(backfill = backfill)
+
         val identity = request.user
-        val collectionId = UpdateManager.addCollection(frontIds, collection, identity)
+        val collectionId = UpdateManager.addCollection(frontIds, collectionWithBackfill, identity)
         Press.fromSetOfIdsWithForceConfig(Set(collectionId))
-        UpdatesStream.putStreamUpdate(StreamUpdate(CollectionCreate(frontIds, collection), identity.email))
+        UpdatesStream.putStreamUpdate(StreamUpdate(CollectionCreate(frontIds, collectionWithBackfill), identity.email))
         Ok(Json.toJson(CreateCollectionResponse(collectionId)))
 
       case None => BadRequest
@@ -42,10 +48,16 @@ object CollectionController extends Controller with PanDomainAuthActions {
   def update(collectionId: String) =  (APIAuthAction andThen ConfigPermissionCheck){ request =>
     request.body.read[CollectionRequest] match {
       case Some(CollectionRequest(frontIds, collection)) =>
+        val backfill = collection.apiQuery match {
+          case Some(backfill) => Some(Backfill("capi", backfill))
+          case None => None
+        }
+        val collectionWithBackfill = collection.copy(backfill = backfill)
+
         val identity = request.user
-        UpdateManager.updateCollection(collectionId, frontIds, collection, identity)
+        UpdateManager.updateCollection(collectionId, frontIds, collectionWithBackfill, identity)
         Press.fromSetOfIdsWithForceConfig(Set(collectionId))
-        UpdatesStream.putStreamUpdate(StreamUpdate(CollectionUpdate(frontIds, collection), identity.email))
+        UpdatesStream.putStreamUpdate(StreamUpdate(CollectionUpdate(frontIds, collectionWithBackfill), identity.email))
         Ok
 
       case None => BadRequest
