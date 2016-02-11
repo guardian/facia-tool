@@ -16,15 +16,6 @@
             ],
             "Default": "PROD"
         },
-        "Project": {
-            "Description": "Project name",
-            "Type": "String",
-            "AllowedValues": [
-                "facia-tool",
-                "packages"
-            ],
-            "Default": "facia-tool"
-        },
         "FrontendRoleToAssume": {
             "Description": "Frontend Role to assume for cross account policies",
             "Type": "String",
@@ -72,6 +63,14 @@
                 "MaxSize": 2,
                 "DesiredCapacity": 1,
                 "InstanceType": "m3.medium"
+            }
+        },
+        "CrossResources": {
+            "CODE": {
+                "AuditingKinesis": "auditing-CODE"
+            },
+            "PROD": {
+                "AuditingKinesis": "auditing-PROD"
             }
         }
     },
@@ -230,10 +229,21 @@
                     "Statement": [{
                         "Effect": "Allow",
                         "Action": [
-                            "kinesis:*"
+                            "kinesis:PutRecord"
                         ],
-                        "Resource": { "Fn::Join" : [ "", [ "arn:aws:kinesis:", { "Ref": "AWS::Region" }, ":", { "Ref": "AWS::AccountId" }, ":stream/", { "Ref": "KinesisUpdateStream" } ]]}
-                    } ]
+                        "Resource": { "Fn::Join": [ "", [
+                            "arn:aws:kinesis:",
+                            { "Ref": "AWS::Region" },
+                            ":",
+                            { "Ref": "AWS::AccountId" },
+                            ":stream/",
+                            { "Fn::FindInMap" : [
+                                "CrossResources",
+                                { "Ref": "Stage" },
+                                "AuditingKinesis"
+                            ]}
+                        ]]}
+                    }]
                 },
                 "Roles": [{ "Ref": "DistributionRole" }]
             }
@@ -392,22 +402,8 @@
                         "Key": "App",
                         "Value": "facia-tool",
                         "PropagateAtLaunch": "true"
-                    },
-                    {
-                        "Key": "Project",
-                        "Value": {
-                            "Ref": "Project"
-                        },
-                        "PropagateAtLaunch": "true"
                     }
-
                 ]
-            }
-        },
-        "KinesisUpdateStream": {
-            "Type": "AWS::Kinesis::Stream",
-            "Properties": {
-                "ShardCount": 1
             }
         },
         "FaciaLaunchConfig": {
@@ -451,9 +447,7 @@
                             "/etc/gu/facia-tool.properties": {
                                 "content": { "Fn::Join" : ["", [
                                     "STAGE=", { "Ref" : "Stage" }, "\n",
-                                    "PROJECT=", { "Ref" : "Project" }, "\n",
-                                    "STS_ROLE=", { "Ref" : "FrontendRoleToAssume" }, "\n",
-                                    "STREAM=", { "Ref" : "KinesisUpdateStream" }, "\n"
+                                    "STS_ROLE=", { "Ref" : "FrontendRoleToAssume" }, "\n"
                                 ]]}
                             }
                         }
@@ -462,7 +456,7 @@
             },
             "Properties": {
                 "KeyName": "fronts",
-                "ImageId": "ami-73fe5500",
+                "ImageId": "ami-ed7fc89e",
                 "InstanceType": {
                     "Fn::FindInMap": [
                         "StageMap",
@@ -506,12 +500,6 @@
                     "FaciaLoadBalancer",
                     "DNSName"
                 ]
-            }
-        },
-        "UpdateStream": {
-            "Description": "Kinesis stream with stream updates",
-            "Value": {
-                "Ref": "KinesisUpdateStream"
             }
         }
     }

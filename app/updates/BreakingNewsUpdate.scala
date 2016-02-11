@@ -84,7 +84,7 @@ object BreakingNewsUpdate {
       link = createLinkDetails(trail),
       imageUrl = trail.imageHide match {
         case Some(true) => None
-        case _ => trail.image
+        case _ => trail.image.map{new URI(_)}
       },
       importance = parseImportance(trail.group),
       topic =  parseTopic(trail.topic),
