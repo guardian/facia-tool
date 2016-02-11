@@ -54,7 +54,7 @@ TwirlKeys.templateImports ++= Seq(
     "play.api.Play.current"
 )
 
-val awsVersion = "1.10.50"
+val awsVersion = "1.10.51"
 
 libraryDependencies ++= Seq(
     ws,
@@ -65,18 +65,18 @@ libraryDependencies ++= Seq(
     "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-sts" % awsVersion,
-    "com.gu" %% "auditing-thrift-model" % "0.0.1",
-    "com.gu" %% "content-api-client" % "7.17",
+    "com.gu" %% "auditing-thrift-model" % "0.0.2",
+    "com.gu" %% "content-api-client" % "7.25",
     "com.gu" %% "editorial-permissions-client" % "0.3",
-    "com.gu" %% "fapi-client" % "0.68",
+    "com.gu" %% "fapi-client" % "0.70",
     "com.gu" % "kinesis-logback-appender" % "1.2.0",
-    "com.gu" %% "mobile-notifications-client-play-2-4" % "0.5.22",
+    "com.gu" %% "mobile-notifications-client-play-2-4" % "0.5.23",
     "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.2.11",
-    "com.gu" %% "thrift-serializer" % "0.0.1",
+    "com.gu" %% "thrift-serializer" % "1.0.0",
     "net.logstash.logback" % "logstash-logback-encoder" % "4.6",
     "org.julienrf" %% "play-json-variants" % "2.0",
     "org.scalatest" %% "scalatest" % "2.2.6" % "test",
-    "org.scalatestplus" %% "play" % "1.4.0-M4" % "test"
+    "org.scalatestplus" %% "play" % "1.4.0" % "test"
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact, JDebPackaging)
