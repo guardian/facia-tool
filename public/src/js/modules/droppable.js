@@ -2,12 +2,25 @@ import ko from 'knockout';
 import _ from 'underscore';
 import BaseClass from 'models/base-class';
 import copiedArticle from 'modules/copied-article';
+import {CONST} from 'modules/vars';
 import alert from 'utils/alert';
 import * as draggableElement from 'utils/draggable-element';
 import dispatch from 'utils/drag-dispatcher';
 import mediator from 'utils/mediator';
 
 var sourceGroup;
+const defaultDragOver = function (element, event) {
+    var bindingContext = getTargetItemUnderDrag(event.target);
+    event.preventDefault();
+    event.stopPropagation();
+    bindingContext.underDrag(true);
+};
+const defaultDragLeave = function (element, event) {
+    var bindingContext = getTargetItemUnderDrag(event.target);
+    event.preventDefault();
+    event.stopPropagation();
+    bindingContext.underDrag(false);
+};
 const listeners = Object.freeze({
     dragstart: function (element, event) {
         var sourceItem = ko.dataFor(event.target);
@@ -69,22 +82,35 @@ const imageEditorListeners = Object.freeze({
         bindingContext.underDrag(false);
         return action;
     },
-    dragover: function (element, event) {
-        var bindingContext = ko.dataFor(event.target);
-        event.preventDefault();
-        event.stopPropagation();
-        bindingContext.underDrag(true);
-    },
-    dragleave: function (element, event) {
-        var bindingContext = ko.dataFor(event.target);
-        event.preventDefault();
-        event.stopPropagation();
-        bindingContext.underDrag(false);
-    },
+    dragover: defaultDragOver,
+    dragleave: defaultDragLeave,
     dragstart: function (element, event) {
         var bindingContext = ko.dataFor(event.target);
         event.dataTransfer.setData('sourceMeta', JSON.stringify(bindingContext.meta()));
     }
+});
+const backfillListeners = Object.freeze({
+    drop: function (element, event) {
+        const bindingContext = getTargetItemUnderDrag(event.target);
+        event.preventDefault();
+        event.stopPropagation();
+
+        let action;
+        try {
+            const maybeCollection = draggableElement.getItem(event.dataTransfer).sourceItem;
+            if (maybeCollection.type === CONST.draggableTypes.configCollection) {
+                action = bindingContext.drop(maybeCollection);
+            } else {
+                alert('You can\'t drag that in a backfill');
+            }
+        } catch (ex) {
+            alert('You can\'t drag that in a backfill');
+        }
+        bindingContext.underDrag(false);
+        return action || Promise.resolve();
+    },
+    dragover: defaultDragOver,
+    dragleave: defaultDragLeave
 });
 
 export default class Droppable extends BaseClass {
@@ -94,19 +120,16 @@ export default class Droppable extends BaseClass {
     static get imageEditor() {
         return imageEditorListeners;
     }
+    static get backfillListeners() {
+        return backfillListeners;
+    }
 
     constructor() {
         super();
 
-        function getListener (name, element) {
+        function getListener (list, name, element) {
             return function (event) {
-                listeners[name](element, event);
-            };
-        }
-
-        function getEditorListener (name, element) {
-            return function (event) {
-                imageEditorListeners[name](element, event);
+                list[name](element, event);
             };
         }
 
@@ -119,13 +142,13 @@ export default class Droppable extends BaseClass {
         ko.bindingHandlers.makeDroppable = {
             init: function (element) {
                 for (var eventName in listeners) {
-                    element.addEventListener(eventName, getListener(eventName, element), false);
+                    element.addEventListener(eventName, getListener(listeners, eventName, element), false);
                 }
             }
         };
         ko.bindingHandlers.makeDraggable = {
             init: function (element) {
-                element.addEventListener('dragstart', getListener('dragstart', element), false);
+                element.addEventListener('dragstart', getListener(listeners, 'dragstart', element), false);
             }
         };
         ko.bindingHandlers.dropImage = {
@@ -134,8 +157,15 @@ export default class Droppable extends BaseClass {
 
                 if (isDropEnabled) {
                     for (var eventName in imageEditorListeners) {
-                        el.addEventListener(eventName, getEditorListener(eventName, el), false);
+                        el.addEventListener(eventName, getListener(imageEditorListeners, eventName, el), false);
                     }
+                }
+            }
+        };
+        ko.bindingHandlers.makeBackfillDroppable = {
+            init: function (element) {
+                for (var eventName in backfillListeners) {
+                    element.addEventListener(eventName, getListener(backfillListeners, eventName, element), false);
                 }
             }
         };
@@ -153,6 +183,16 @@ function getTargetItem (target, context) {
     var data = context.$data || {};
     if (!data.dropTarget && context.$parentContext) {
         return getTargetItem(null, context.$parentContext);
+    } else {
+        return data;
+    }
+}
+
+function getTargetItemUnderDrag (target, context) {
+    context = context || ko.contextFor(target);
+    const data = context.$data || {};
+    if (!data.underDrag && context.$parentContext) {
+        return getTargetItemUnderDrag(null, context.$parentContext);
     } else {
         return data;
     }

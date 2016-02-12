@@ -1,8 +1,9 @@
 import mediator from 'utils/mediator';
 
 export function event (name, emitter) {
-    return new Promise((resolve, reject) => {
-        var timeoutID = setTimeout(function () {
+    let timeoutID;
+    const promise = new Promise((resolve, reject) => {
+        timeoutID = setTimeout(function () {
             reject(new Error('Timeout waiting for event ' + name));
         }, 2000);
         (emitter || mediator).once(name, function (eventObject) {
@@ -10,6 +11,10 @@ export function event (name, emitter) {
             resolve(eventObject);
         });
     });
+    promise.cancel = () => {
+        clearTimeout(timeoutID);
+    };
+    return promise;
 }
 
 export function ms (time) {

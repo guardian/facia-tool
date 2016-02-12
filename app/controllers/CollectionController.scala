@@ -29,11 +29,11 @@ object CollectionController extends Controller with PanDomainAuthActions {
   def create = (APIAuthAction andThen ConfigPermissionCheck){ request =>
     request.body.read[CollectionRequest] match {
       case Some(CollectionRequest(frontIds, collection)) =>
-        val backfill = collection.apiQuery match {
-          case Some(backfill) => Some(Backfill("capi", backfill))
-          case None => None
+        val apiQuery = collection.backfill match {
+          case Some(Backfill("capi", query)) => Some(query)
+          case _ => None
         }
-        val collectionWithBackfill = collection.copy(backfill = backfill)
+        val collectionWithBackfill = collection.copy(apiQuery = apiQuery)
 
         val identity = request.user
         val collectionId = UpdateManager.addCollection(frontIds, collectionWithBackfill, identity)
@@ -48,11 +48,11 @@ object CollectionController extends Controller with PanDomainAuthActions {
   def update(collectionId: String) =  (APIAuthAction andThen ConfigPermissionCheck){ request =>
     request.body.read[CollectionRequest] match {
       case Some(CollectionRequest(frontIds, collection)) =>
-        val backfill = collection.apiQuery match {
-          case Some(backfill) => Some(Backfill("capi", backfill))
-          case None => None
+        val apiQuery = collection.backfill match {
+          case Some(Backfill("capi", query)) => Some(query)
+          case _ => None
         }
-        val collectionWithBackfill = collection.copy(backfill = backfill)
+        val collectionWithBackfill = collection.copy(apiQuery = apiQuery)
 
         val identity = request.user
         UpdateManager.updateCollection(collectionId, frontIds, collectionWithBackfill, identity)

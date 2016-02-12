@@ -1,5 +1,6 @@
 import _ from 'underscore';
 import Droppable from 'modules/droppable';
+import {CONST} from 'modules/vars';
 import GridUtil from 'grid-util-js';
 
 function Article (element) {
@@ -39,6 +40,14 @@ class MediaMeta extends Media {
         this.sourceMeta = JSON.stringify(meta);
     }
 }
+class ConfigCollection {
+    constructor(source) {
+        this.Text = 'a collection';
+        this.sourceItem = JSON.stringify(Object.assign({
+            type: CONST.draggableTypes.configCollection
+        }, source));
+    }
+}
 
 function Event (extend) {
     this.preventDefault = function () {};
@@ -72,6 +81,17 @@ function dropInEditor (element, target, source, alternate) {
     }));
 }
 
+function dropInBackfill (element, target, source) {
+    return Droppable.backfillListeners.drop(element, new Event({
+        target: target,
+        dataTransfer: {
+            getData: function (what) {
+                return source[what] || '';
+            }
+        }
+    }));
+}
+
 function over (element, target) {
     return Droppable.listeners.dragover(element, new Event({
         target: target
@@ -101,7 +121,8 @@ function createDroppable (element) {
         dragover: over.bind(null, element),
         dragstart: start.bind(null, element),
         dragleave: leave.bind(null, element),
-        dropInEditor: dropInEditor.bind(null, element)
+        dropInEditor: dropInEditor.bind(null, element),
+        dropInBackfill: dropInBackfill.bind(null, element)
     };
 }
 
@@ -110,5 +131,6 @@ export default {
     Collection,
     Media,
     MediaMeta,
+    ConfigCollection,
     droppable: createDroppable
 };

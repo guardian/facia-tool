@@ -141,7 +141,10 @@ describe('Config Front', function () {
                 expect(persistence.collection.save).toHaveBeenCalledWith(collection);
                 expect(collection.meta.type()).toBe('type-one');
                 expect(collection.meta.displayName()).toBe('collection with capi');
-                expect(collection.meta.apiQuery()).toBe('news');
+                expect(collection.meta.backfill()).toEqual({
+                    type: 'capi',
+                    query: 'news'
+                });
                 persistence.collection.save.calls.reset();
             });
         }
@@ -177,7 +180,10 @@ describe('Config Front', function () {
                 expect(persistence.collection.save).toHaveBeenCalledWith(collection);
                 expect(collection.meta.type()).toBe('type-one');
                 expect(collection.meta.displayName()).toBe('collection with capi');
-                expect(collection.meta.apiQuery()).toBe('fail');
+                expect(collection.meta.backfill()).toEqual({
+                    type: 'capi',
+                    query: 'fail'
+                });
                 expect(collection.meta.showTags()).toBe(true);
                 persistence.collection.save.calls.reset();
             });

@@ -116,6 +116,7 @@ var register = _.once(() => {
     });
     ko.components.register('config-collection-backfill', {
         viewModel: { jspm: 'widgets/config-collection-backfill' },
+        synchronous: true,
         template: { text: 'widgets/config-collection-backfill.html' }
     });
     ko.components.register('message', {

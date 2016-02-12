@@ -1808,6 +1808,10 @@ ol.search_list > li::before {
     display: block;
 }
 
+.apiquery--input.underDrag {
+    background-color: #999999;
+}
+
 .cnf-form .type-picker {
     display: flex;
     flex-wrap: wrap;
@@ -1860,6 +1864,28 @@ ol.search_list > li::before {
     position: absolute;
     top: 25px;
     right: 10px;
+}
+
+.backfilledCollection {
+    float: left;
+    padding: 7px;
+    height: 32px;
+    line-height: 14px;
+    width: 300px;
+    background: white;
+    border: 1px solid #cccccc;
+    margin: 0 0 2px 0;
+    box-sizing: border-box;
+}
+.backfilledCollectionLabel {
+    background: lightblue;
+    border: 1px solid #cccccc;
+    border-radius: 2px;
+    padding: 3px;
+    font-size: 12px;
+}
+.backfilledCollection.underDrag {
+    background-color: #999999;
 }
 
 .has-playable {

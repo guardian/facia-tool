@@ -54,7 +54,7 @@ TwirlKeys.templateImports ++= Seq(
     "play.api.Play.current"
 )
 
-val awsVersion = "1.10.51"
+val awsVersion = "1.10.52"
 
 libraryDependencies ++= Seq(
     ws,
@@ -66,7 +66,7 @@ libraryDependencies ++= Seq(
     "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-sts" % awsVersion,
     "com.gu" %% "auditing-thrift-model" % "0.0.2",
-    "com.gu" %% "content-api-client" % "7.25",
+    "com.gu" %% "content-api-client" % "7.26",
     "com.gu" %% "editorial-permissions-client" % "0.3",
     "com.gu" %% "fapi-client" % "0.70",
     "com.gu" % "kinesis-logback-appender" % "1.2.0",
