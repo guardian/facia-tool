@@ -37,7 +37,10 @@ describe('Persistence', function () {
             displayName: 'red loop',
             groups: ['one', 'two'],
             showSections: true,
-            apiQuery: 'food?colour=read'
+            backfill: {
+                type: 'capi',
+                query: 'food?colour=read'
+            }
         });
         collection.parents.push(front);
         front.collections.items.push(collection);
@@ -57,7 +60,10 @@ describe('Persistence', function () {
                 displayName: 'red loop',
                 groups: ['one', 'two'],
                 showSections: true,
-                apiQuery: 'food?colour=read'
+                backfill: {
+                    type: 'capi',
+                    query: 'food?colour=read'
+                }
             }
         });
         expect(this.events.before).toHaveBeenCalled();

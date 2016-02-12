@@ -1,8 +1,11 @@
 import ko from 'knockout';
+import _ from 'underscore';
 import * as contentApi from 'modules/content-api';
-import {CONST} from 'modules/vars';
+import * as vars from 'modules/vars';
 import asObservableProps from 'utils/as-observable-props';
 import debounce from 'utils/debounce';
+import deepGet from 'utils/deep-get';
+import sanitizeApiQuery from 'utils/sanitize-api-query';
 import BaseWidget from 'widgets/base-widget';
 
 const queryApiSym = Symbol();
@@ -13,20 +16,24 @@ export default class CollectionBackfill extends BaseWidget {
 
         this.meta = asObservableProps([
             'backfill',
-            'apiQuery'
+            'apiQuery',
+            'parentCollection'
         ]);
         this.meta.backfill = params.backfill;
         populateMetaFromBackfill(this.meta);
         this.meta.apiQuery.extend({ deferred: true });
+        this.meta.parentCollection.extend({ deferred: true });
 
         this.state = asObservableProps([
-            'queryStatus'
+            'queryStatus',
+            'underDrag'
         ]);
         this.results = ko.observableArray();
 
         this.subscribeOn(this.meta.apiQuery, this.updateApiQuery);
+        this.subscribeOn(this.meta.parentCollection, this.updateParentCollection);
 
-        this[queryApiSym] = debounce(requestApiQueryStatus.bind(this), CONST.searchDebounceMs);
+        this[queryApiSym] = debounce(requestApiQueryStatus.bind(this), vars.CONST.searchDebounceMs);
     }
 
     updateApiQuery() {
@@ -36,8 +43,33 @@ export default class CollectionBackfill extends BaseWidget {
         this.checkApiQuery();
     }
 
+    updateParentCollection() {
+        const query = this.meta.parentCollection();
+        if (query) {
+            populateBackfillFromParentCollection(this.meta, query.id);
+            this.checkCollectionQuery();
+        }
+    }
+
+    checkBackfill() {
+        const backfill = this.meta.backfill();
+        if (!backfill || typeof backfill === 'string') {
+            this.checkApiQuery();
+        } else if (backfill.type === 'capi') {
+            this.checkApiQuery();
+        } else if (backfill.type === 'collection') {
+            this.checkCollectionQuery();
+        }
+    }
+
     checkApiQuery() {
         this.checkQuery(this.meta.apiQuery(), queryApiSym);
+    }
+
+    checkCollectionQuery() {
+        this.state.queryStatus(null);
+        this.results([]);
+        this.emit('check:complete');
     }
 
     checkQuery(query, checkDebouncedFunction) {
@@ -64,14 +96,60 @@ export default class CollectionBackfill extends BaseWidget {
             this.emit('check:complete');
         }
     }
+
+    underDrag(value) {
+        this.state.underDrag(value);
+    }
+
+    drop(collection) {
+        this.meta.parentCollection(extendCollectionObject(collection.id));
+    }
+
+    clearParentCollection() {
+        this.meta.parentCollection(null);
+        populateBackfillFromApiQuery(this.meta, this.meta.apiQuery());
+    }
 }
 
 function populateMetaFromBackfill(meta) {
-    meta.apiQuery(meta.backfill());
+    const backfill = meta.backfill();
+    if (!backfill || typeof backfill === 'string') {
+        meta.apiQuery(backfill);
+    } else if (backfill.type === 'capi') {
+        meta.apiQuery(backfill.query);
+    } else if (backfill.type === 'collection') {
+        meta.parentCollection(extendCollectionObject(backfill.query));
+    }
 }
 
 function populateBackfillFromApiQuery(meta, query) {
-    meta.backfill(query);
+    const cleanedQuery = sanitizeApiQuery(query);
+    if (cleanedQuery) {
+        meta.backfill({
+            type: 'capi',
+            query: cleanedQuery
+        });
+    } else {
+        meta.backfill(undefined);
+    }
+}
+
+function populateBackfillFromParentCollection(meta, id) {
+    meta.backfill({
+        type: 'collection',
+        query: id
+    });
+}
+
+function extendCollectionObject(id) {
+    const config = vars.model.state().config || {};
+    const displayName = deepGet(config, '.collections.' + id + '.displayName') || 'unknown';
+    const fronts = _.chain(config.fronts)
+        .keys()
+        .filter(frontId => _.contains(config.fronts[frontId].collections, id))
+        .value();
+
+    return { id, displayName, fronts };
 }
 
 function requestApiQueryStatus(query) {
@@ -82,6 +160,6 @@ function requestApiQueryStatus(query) {
 
 function generateHref(item) {
     return Object.assign({}, {
-        href: 'http://' + CONST.mainDomain + '/' + item.id
+        href: 'http://' + vars.CONST.mainDomain + '/' + item.id
     }, item);
 }

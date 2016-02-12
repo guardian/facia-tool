@@ -1,9 +1,37 @@
 <label>Backfill <span class="linky" data-bind="
-    click: checkApiQuery,
+    click: checkBackfill,
     visible: meta.backfill">check</span></label>
+
 <input type="text" class="apiquery--input" data-bind="
+    makeBackfillDroppable: true,
+    css: {
+        underDrag: state.underDrag
+    },
+    visible: !meta.parentCollection(),
     value: meta.apiQuery,
     valueUpdate: ['afterkeydown', 'input']"/>
+
+<div class="backfilledCollection" data-bind="
+    makeBackfillDroppable: true,
+    css: {
+        underDrag: state.underDrag
+    },
+    visible: meta.parentCollection
+">
+    <span class="backfilledCollectionLabel" >
+        <!-- ko with: meta.parentCollection -->
+        <span data-bind="
+            text: displayName,
+            attr: {
+                title: fronts.join('\n')
+            }"></span>
+        <!-- /ko -->
+        <a class="backfilledCollectionClear" data-bind="
+            click: clearParentCollection">
+            <i class="fa fa-remove"></i>
+        </a>
+    </span>
+</div>
 
 <!-- ko if: state.queryStatus -->
     <div class="api-query-results">

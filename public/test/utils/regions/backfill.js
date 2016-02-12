@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import ko from 'knockout';
 import {type} from 'test/utils/dom-nodes';
+import drag from 'test/utils/drag';
 import textInside from 'test/utils/text-inside';
 import * as wait from 'test/utils/wait';
 
@@ -31,6 +32,38 @@ export class Backfill {
         return $('.api-query-result', this.dom).map((index, element) => {
             return $(element);
         });
+    }
+
+    drop(source) {
+        const droppableContainer = drag.droppable(this.dom);
+        const apiInput = $('.apiquery--input:visible', this.dom);
+        const parentInput = $('.backfilledCollection:visible', this.dom);
+        const pendingCheck = wait.event('check:complete', this.component);
+
+        return Promise.resolve(
+            droppableContainer.dropInBackfill(apiInput[0] || parentInput[0], source)
+        )
+        .then(() => wait.ms(10))
+        .then(() => {
+            return { check: pendingCheck };
+        });
+    }
+
+    hasApiQuery() {
+        return $('.apiquery--input:visible', this.dom).length > 0;
+    }
+
+    hasParentCollection() {
+        return $('.backfilledCollection:visible', this.dom).length > 0;
+    }
+
+    parentCollectionText() {
+        return textInside($('.backfilledCollectionLabel', this.dom));
+    }
+
+    clearParentCollection() {
+        $('.backfilledCollectionClear', this.dom).click();
+        return wait.ms(10);
     }
 }
 

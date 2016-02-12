@@ -7,7 +7,6 @@ import alert from 'utils/alert';
 import asObservableProps from 'utils/as-observable-props';
 import fullTrim from 'utils/full-trim';
 import populateObservables from 'utils/populate-observables';
-import sanitizeApiQuery from 'utils/sanitize-api-query';
 import urlAbsPath from 'utils/url-abs-path';
 
 export default class ConfigCollection extends DropTarget {
@@ -32,7 +31,7 @@ export default class ConfigCollection extends DropTarget {
             'showTimestamps',
             'excludeFromRss',
             'hideShowMore',
-            'apiQuery',
+            'backfill',
             'description'
         ]);
 
@@ -113,7 +112,6 @@ export default class ConfigCollection extends DropTarget {
         }
 
         this.meta.href(urlAbsPath(this.meta.href()));
-        this.meta.apiQuery(sanitizeApiQuery(this.meta.apiQuery()));
 
         this.state.isOpen(false);
 
