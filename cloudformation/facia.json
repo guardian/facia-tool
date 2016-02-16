@@ -333,12 +333,6 @@
                     },
                     {
                         "IpProtocol": "tcp",
-                        "FromPort": "9080",
-                        "ToPort": "9080",
-                        "CidrIp": "0.0.0.0/0"
-                    },
-                    {
-                        "IpProtocol": "tcp",
                         "FromPort": "443",
                         "ToPort": "443",
                         "CidrIp": "0.0.0.0/0"
