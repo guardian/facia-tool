@@ -10,10 +10,8 @@ resolvers ++= Seq(
   "Spy" at "https://files.couchbase.com/maven2/"
 )
 
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.4")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.6")
 
-addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.0.3")
-
-addSbtPlugin("org.jetbrains.teamcity.plugins" % "sbt-teamcity-logger" % "0.2.0")
+addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.0.6")
 
 addSbtPlugin("com.gu" % "sbt-riffraff-artifact" % "0.8.3")
