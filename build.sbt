@@ -65,7 +65,7 @@ libraryDependencies ++= Seq(
     "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-sts" % awsVersion,
-    "com.gu" %% "auditing-thrift-model" % "0.0.2",
+    "com.gu" %% "auditing-thrift-model" % "0.1.0",
     "com.gu" %% "content-api-client" % "7.26",
     "com.gu" %% "editorial-permissions-client" % "0.3",
     "com.gu" %% "fapi-client" % "0.70",

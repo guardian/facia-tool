@@ -37,10 +37,10 @@ case class UpdateFront(id: String, front: FrontJson) extends UpdateMessage {
   def affectedFronts = Set(id)
 }
 
-case class CollectionCreate(frontIds: List[String], collection: CollectionConfigJson) extends UpdateMessage {
+case class CollectionCreate(frontIds: List[String], collection: CollectionConfigJson, collectionId: String) extends UpdateMessage {
   def affectedFronts = frontIds.toSet[String]
 }
-case class CollectionUpdate(frontIds: List[String], collection: CollectionConfigJson) extends UpdateMessage {
+case class CollectionUpdate(frontIds: List[String], collection: CollectionConfigJson, collectionId: String) extends UpdateMessage {
   def affectedFronts = frontIds.toSet[String]
 }
 

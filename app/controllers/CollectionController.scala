@@ -38,7 +38,7 @@ object CollectionController extends Controller with PanDomainAuthActions {
         val identity = request.user
         val collectionId = UpdateManager.addCollection(frontIds, collectionWithBackfill, identity)
         Press.fromSetOfIdsWithForceConfig(Set(collectionId))
-        UpdatesStream.putStreamUpdate(StreamUpdate(CollectionCreate(frontIds, collectionWithBackfill), identity.email))
+        UpdatesStream.putStreamUpdate(StreamUpdate(CollectionCreate(frontIds, collectionWithBackfill, collectionId), identity.email))
         Ok(Json.toJson(CreateCollectionResponse(collectionId)))
 
       case None => BadRequest
@@ -57,7 +57,7 @@ object CollectionController extends Controller with PanDomainAuthActions {
         val identity = request.user
         UpdateManager.updateCollection(collectionId, frontIds, collectionWithBackfill, identity)
         Press.fromSetOfIdsWithForceConfig(Set(collectionId))
-        UpdatesStream.putStreamUpdate(StreamUpdate(CollectionUpdate(frontIds, collectionWithBackfill), identity.email))
+        UpdatesStream.putStreamUpdate(StreamUpdate(CollectionUpdate(frontIds, collectionWithBackfill, collectionId), identity.email))
         Ok
 
       case None => BadRequest

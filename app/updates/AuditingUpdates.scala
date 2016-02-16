@@ -32,7 +32,10 @@ object AuditingUpdates {
 
   def putStreamUpdate(streamUpdate: StreamUpdate): Unit = {
     val updateName = streamUpdate.update.getClass.getSimpleName
-    lazy val updatePayload = Some(serializeUpdateMessage(streamUpdate.update))
+    lazy val updatePayload = serializeUpdateMessage(streamUpdate)
+    lazy val shortMessagePayload = serializeUpdateMessage(streamUpdate)
+    lazy val expiryDate = computeExpiryDate(streamUpdate)
+
     streamUpdate.fronts.foreach(frontId => putAuditingNotification(
       Notification(
         app = App.FaciaTool,
@@ -40,12 +43,39 @@ object AuditingUpdates {
         userEmail = streamUpdate.email,
         date = streamUpdate.dateTime.toString,
         resourceId = Some(frontId),
-        message = updatePayload
+        message = updatePayload,
+        shortMessage = shortMessagePayload,
+        expiryDate = expiryDate
       )))
   }
 
-  private def serializeUpdateMessage(updateMessage: UpdateMessage): String = {
-    Json.toJson(updateMessage).toString()
+  private def serializeUpdateMessage(streamUpdate: StreamUpdate): Option[String] = {
+    Some(Json.toJson(streamUpdate.update).toString())
+  }
+
+  private def serializeShortMessage(streamUpdate: StreamUpdate): Option[String] = {
+    streamUpdate.update match {
+      case update: CreateFront => Json.obj(
+          "priority" -> update.priority,
+          "email" -> streamUpdate.email
+        ).asOpt[String]
+      case update: CollectionCreate => Json.obj(
+          "collectionId" -> update.collectionId,
+          "displayName" -> update.collection.displayName
+        ).asOpt[String]
+      case update: CollectionUpdate => Json.obj(
+          "collectionId" -> update.collectionId
+        ).asOpt[String]
+      case _ => None
+    }
+  }
+
+  private def computeExpiryDate(streamUpdate: StreamUpdate): Option[String] = {
+    streamUpdate.update match {
+      case _: CreateFront => None
+      case _: CollectionCreate => None
+      case _ => Some(streamUpdate.dateTime.plusMonths(1).toString)
+    }
   }
 
   private def putAuditingNotification(notification: Notification): Unit = {
