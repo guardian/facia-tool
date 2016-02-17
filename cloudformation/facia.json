@@ -40,17 +40,17 @@
             "Description": "Role to access panda bucket",
             "Type": "String",
             "Default": "arn:aws:iam::753338109777:role/Fronts-panda-IAM-FaciaToolRole-NKNXCYEGL0F6"
+        },
+        "CertificateArn": {
+            "Description": "ARN of the SSL certificate for this service",
+            "Type": "String"
+        },
+        "MachineImageID": {
+            "Description": "ID of the machine image for this service (ami)",
+            "Type": "String"
         }
     },
     "Mappings": {
-        "FaciaToolCertMap": {
-            "PROD": {
-                "CertName": "arn:aws:iam::163592447864:server-certificate/star.gutools.co.uk-exp2018-11-17"
-            },
-            "CODE": {
-                "CertName": "arn:aws:iam::163592447864:server-certificate/sites.code.dev-gutools.co.uk"
-            }
-        },
         "StageMap": {
             "PROD": {
                 "MinSize": 3,
@@ -364,15 +364,7 @@
                         "InstancePort": "9000",
                         "Protocol": "HTTPS",
                         "InstanceProtocol": "HTTP",
-                        "SSLCertificateId": {
-                            "Fn::FindInMap": [
-                                "FaciaToolCertMap",
-                                {
-                                    "Ref": "Stage"
-                                },
-                                "CertName"
-                            ]
-                        }
+                        "SSLCertificateId": { "Ref": "CertificateArn" }
                     }
                 ],
                 "HealthCheck": {
@@ -479,7 +471,7 @@
             },
             "Properties": {
                 "KeyName": "fronts",
-                "ImageId": "ami-ed7fc89e",
+                "ImageId": { "Ref": "MachineImageID" },
                 "InstanceType": {
                     "Fn::FindInMap": [
                         "StageMap",
