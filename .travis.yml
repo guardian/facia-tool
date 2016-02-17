@@ -20,7 +20,7 @@ env:
 cache:
     directories:
         - node_modules
-        - facia-tool/public/jspm_packages
+        - public/src/jspm_packages
         - ~/.ivy2/cache
         - ~/.sbt/boot/
         - ~/.nvm/
