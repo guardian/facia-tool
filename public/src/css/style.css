@@ -37,6 +37,126 @@ a:hover,
     color: #2ea3eb;
 }
 
+.fstElement {
+    display: inline-block;
+    position: relative;
+    border: 1px solid #D7D7D7;
+    box-sizing: border-box;
+    color: #232323;
+    font-size: 1.2em;
+    background-color: #;
+}
+
+.fstControls {
+    box-sizing: border-box;
+    padding: 6px;
+    overflow: hidden;
+    width: 300px;
+    cursor: text;
+    background-color: white;
+    height: 32px;
+}
+
+input.fstQueryInput.fstQueryInputExpanded {
+    float: none;
+    width: 100%;
+    padding: 0.28571em 0.35714em;
+    border: none;
+}
+
+.fstQueryInput {
+    font-size: 12px;
+    float: left;
+    padding: 0.28571em 0;
+    margin: 0 0 0.35714em 0;
+    width: 2em;
+    color: #999;
+    border: none;
+}
+
+.fstElement>select, .fstElement>input {
+    position: absolute;
+    left: -999em;
+}
+
+.fstResults {
+    position: absolute;
+    left: -1px;
+    top: 100%;
+    right: -1px;
+    max-height: 30em;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border: 1px solid #D7D7D7;
+    border-top: 0;
+    background-color: #FFF;
+    display: none;
+}
+
+.fstMultipleMode.fstActive>.fstResults {
+    display: block;
+    z-index: 10;
+    border-top: 1px solid #D7D7D7;
+}
+
+.fstResultItem.fstSelected {
+    color: #fff;
+    background-color: #2694f1;
+    border-color: #73baf6;
+}
+
+.fstResultItem.fstFocused {
+    color: #fff;
+    background-color: #43A2F3;
+    border-color: #73baf6;
+}
+
+.fstResultItem {
+    font-size: 12px;
+    display: block;
+    padding: 0.5em 0.71429em;
+    margin: 0;
+    cursor: pointer;
+    border-top: 1px solid #fff;
+}
+
+.fstChoiceItem {
+    display: inline-block;
+    font-size: 12px;
+    margin: 0 0.41667em 0.41667em 0;
+    padding: 2px;
+    float: left;
+    border-radius: 2px;
+    border: 1px solid #cccccc;
+    cursor: auto;
+    color: black;
+    background-color: lightblue;
+    -webkit-animation: fstAnimationEnter 0.2s;
+    -moz-animation: fstAnimationEnter 0.2s;
+    animation: fstAnimationEnter 0.2s;
+}
+
+.fstChoiceRemove {
+    font-weight: bold;
+    margin: 0;
+    padding: 0px 2px 0px 2px;
+    border: 0;
+    cursor: pointer;
+    background: none;
+    font-size: 16px;
+    margin-top: -8px;
+    text-align: center;
+    color: #148ad2;
+}
+label, button {
+    cursor: pointer;
+}
+
+
+.submitBtn {
+    display: none;
+}
+
 .collections-published {
     background-color: #ddd;
     padding: 5px 10px;
