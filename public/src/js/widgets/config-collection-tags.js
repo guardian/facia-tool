@@ -2,8 +2,8 @@ import BaseWidget from 'widgets/base-widget';
 import $ from 'jquery';
 import ko from 'knockout';
 import _ from 'underscore';
-import fastsearch from 'fastsearch';
-import fastselect from 'fastselect';
+import 'fastsearch';
+import 'fastselect';
 
 export default class CollectionTags extends BaseWidget {
     constructor(params) {
