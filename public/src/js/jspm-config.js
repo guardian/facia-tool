@@ -22,6 +22,8 @@ System.config({
     "core-js": "npm:core-js@1.2.6",
     "css": "github:systemjs/plugin-css@0.1.20",
     "es5-shim": "github:es-shims/es5-shim@4.1.14",
+    "fastsearch": "github:dbrekalo/fastsearch@1.9.1",
+    "fastselect": "github:dbrekalo/fastselect@0.2.0",
     "font-awesome": "npm:font-awesome@4.5.0",
     "grid-util-js": "npm:grid-util-js@1.0.5",
     "highcharts": "facia-tool/components/highcharts/highcharts-custom",
@@ -148,10 +150,7 @@ System.config({
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
     "npm:core-js@1.2.6": {
-      "fs": "github:jspm/nodelibs-fs@0.1.2",
-      "path": "github:jspm/nodelibs-path@0.1.0",
-      "process": "github:jspm/nodelibs-process@0.1.2",
-      "systemjs-json": "github:systemjs/plugin-json@0.1.0"
+      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:core-util-is@1.0.2": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0"
