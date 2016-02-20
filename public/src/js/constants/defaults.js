@@ -222,8 +222,9 @@ export default {
 
     latestSnapPrefix:      'Latest from ',
 
-    ophanBase:             'http://dashboard.ophan.co.uk/summary',
-    ophanFrontBase:        'http://dashboard.ophan.co.uk/info-front?path=',
+    ophanBase:             'https://dashboard.ophan.co.uk/summary',
+    ophanFrontBase:        'https://dashboard.ophan.co.uk/info-front?path=',
+    ophanTrailBase:        'https://dashboard.ophan.co.uk/info?path=',
 
     internalPagePrefix:    'internal-code/page/',
 

@@ -207,11 +207,12 @@ export default class Collection extends BaseClass {
         const detectPressFailures = goLive ? () => {
             mediator.emit('presser:detectfailures', this.front.front());
         } : () => {};
+        const requestData = this.serializedCollectionWithMeta(opts.sendAlert);
 
         authedAjax.request({
             type: 'post',
             url: vars.CONST.apiBase + '/collection/' + (goLive ? 'publish' : 'discard') + '/' + this.id,
-            data: this.serializedCollectionWithMeta(opts.sendAlert)
+            data: requestData ? JSON.stringify(requestData) : undefined
         })
         .catch(error => {
             const errorMessages = [];
@@ -229,7 +230,7 @@ export default class Collection extends BaseClass {
         .then(() => this.load().then(detectPressFailures))
         .then(() => {
             if (opts.sendAlert) {
-                success();
+                success(requestData);
             }
         })
         .catch(() => {});
@@ -435,9 +436,9 @@ export default class Collection extends BaseClass {
                     });
                 });
             });
-            return JSON.stringify({
+            return {
                 trails: items
-            });
+            };
         }
     }
 
