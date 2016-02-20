@@ -20,6 +20,9 @@ body {
 p {
     margin: 0;
 }
+.doubleLine {
+    line-height: 200%;
+}
 
 a,
 a:hover,

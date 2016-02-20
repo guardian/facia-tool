@@ -1,6 +1,14 @@
 <div class="modalDialog-message">
     <h3><i class="fa fa-check-circle"></i>Success</h3>
-    <span>Breaking news alert sent successfully</span>
+    <p class="doubleLine">Breaking news alert sent successfully</p>
+    <p class="doubleLine" data-bind="foreach: trails">
+        <a data-bind="
+            attr: {
+                href: href,
+                title: message
+            }
+        " target="ophan">View in Ophan</a>
+    </p>
 </div>
 <hr>
 <div class="buttons modalDialog-alert">
