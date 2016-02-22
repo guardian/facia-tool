@@ -12,15 +12,7 @@ export default class CollectionTags extends BaseWidget {
         this.tags = params.tags;
         const tags = params.tags();
 
-        var initialInput = _.reduce(tags, (initialInput, tag, index) => {
-            initialInput += tag.type;
-
-            if (index !== tags.length - 1) {
-                initialInput += ',';
-            }
-
-            return initialInput;
-        }, '');
+        var initialInput = _.pluck(tags, 'type').join(',');
 
         this.inputTags = ko.observable(initialInput);
 
