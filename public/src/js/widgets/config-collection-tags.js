@@ -10,7 +10,7 @@ export default class CollectionTags extends BaseWidget {
         super();
 
         this.tags = params.tags;
-        var tags = params.tags();
+        const tags = params.tags();
 
         var initialInput = _.reduce(tags, (initialInput, tag, index) => {
             initialInput += tag.type;
