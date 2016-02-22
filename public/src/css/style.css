@@ -147,8 +147,9 @@ input.fstQueryInput.fstQueryInputExpanded {
     margin-top: -8px;
     text-align: center;
     color: #148ad2;
+    cursor: pointer;
 }
-label, button {
+label, button.fstChoiceRemove {
     cursor: pointer;
 }
 
