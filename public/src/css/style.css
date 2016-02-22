@@ -51,7 +51,7 @@ a:hover,
 .fstControls {
     box-sizing: border-box;
     overflow: hidden;
-    width: 300px;
+    width: 299px;
     cursor: text;
     background-color: white;
 }
