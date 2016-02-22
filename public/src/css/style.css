@@ -38,6 +38,7 @@ a:hover,
 }
 
 .fstElement {
+    float: left;
     display: inline-block;
     position: relative;
     border: 1px solid #D7D7D7;
