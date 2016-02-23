@@ -69,6 +69,7 @@ input.fstQueryInput.fstQueryInputExpanded {
     width: 2em;
     color: #999;
     border: none;
+    padding-top: 7px;
 }
 
 .fstElement>select, .fstElement>input {
