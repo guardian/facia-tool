@@ -4,11 +4,34 @@ import configAction from 'test/utils/config-actions';
 import * as dom from 'test/utils/dom-nodes';
 import ConfigLoader from 'test/utils/config-loader';
 import textInside from 'test/utils/text-inside';
+import * as wait from 'test/utils/wait';
+import * as mockjax from 'test/utils/mockjax';
 
 describe('Config', function () {
+
+    beforeEach(function () {
+        this.scope = mockjax.scope();
+        this.scope({
+            url: '/metadata',
+            status: 200,
+            responseText: [
+                {
+                    'text': 'tag',
+                    'value': 'tag'
+                },
+                {
+                    'text': 'secondTag',
+                    'value': 'secondTag'
+                }
+
+            ]
+        });
+    });
     afterEach(function () {
         this.testInstance.dispose();
+        this.scope.clear();
     });
+
 
     it('/config/fronts', function (done) {
 
@@ -58,8 +81,92 @@ describe('Config', function () {
             expect(data.priority).toEqual('test');
             expect(data.collections).toEqual(['gossip', 'sport']);
         })
+        .then(function () {
+            var front = dom.$('.cnf-front.open');
+
+            dom.click(front.querySelector('.tool--container'));
+            dom.type(front.querySelector('.cnf-form input[type=text]'), 'with-tags');
+            dom.click(front.querySelector('.cnf-form .type-option-chosen'));
+            dom.click(front.querySelector('.cnf-form .type-picker .type-option'));
+            return addTag(1)
+            .then(() => {
+                expect(textInside('.fstResultItem:first-child')).toBe('tag');
+                expect(textInside('.fstResultItem:nth-child(2)')).toBe('secondTag');
+                expect(textInside('.fstChoiceItem').slice(0, -1)).toBe('tag');
+                return saveCollection({
+                    fronts: {
+                        'test/front': {
+                            collections: ['gossip', 'Sport', 'with-tags'],
+                            priority: 'test'
+                        }
+                    },
+                    collections: {
+                        'with-tags': {
+                            type: 'fixed/small/slow-VI',
+                            displayName: 'with-tags',
+                            metadata: [{ type: 'tag'}]
+                        }
+                    }
+                });
+            })
+            .then(function(response) {
+                var data = response.data;
+                expect(data.collection.displayName).toEqual('with-tags');
+                expect(data.collection.metadata[0].type).toEqual('tag');
+                front.querySelector('.cnf-collection:nth-child(2) > .cnf-collection__name').click();
+                removeTag();
+                return addTag(2);
+            })
+            .then(() => {
+                expect(textInside('.fstChoiceItem').slice(0, -1)).toBe('secondTag');
+                return saveCollection({
+                    fronts: {
+                        'test/front': {
+                            collections: ['gossip', 'with-tags'],
+                            priority: 'test'
+                        }
+                    },
+                    collections: {
+                        'with-tags': {
+                            type: 'fixed/small/slow-VI',
+                            displayName: 'with-tags',
+                            metadata: [{ type: 'tag'}]
+                        }
+                    }
+                });
+            })
+            .then((response) => {
+                var data = response.data;
+                expect(data.collection.metadata[0].type).toEqual('secondTag');
+                return;
+            });
+        })
         .then(done)
         .catch(done.fail);
+
+        function removeTag() {
+            var deleteButton = dom.$('.fstChoiceItem > .fstChoiceRemove');
+            deleteButton.click();
+        };
+
+        function saveCollection(response) {
+
+            return configAction(mockConfig, baseModel, () => {
+                $('button.tool').click();
+                return response;
+            });
+        }
+
+        function addTag(index) {
+            var fstInput = dom.$('.fstControls');
+            fstInput.click();
+            return wait.ms(500)
+            .then(() => {
+                var result = dom.$('.fstResultItem:nth-child(' + index+ ')');
+                return dom.click(result);
+
+           });
+        }
 
         function createFrontWithCollection () {
             return configAction(mockConfig, baseModel, () => {
