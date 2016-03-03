@@ -3,7 +3,7 @@ import _ from 'underscore';
 export default function(date, now) {
     var periods = [
             { secs: 30758400, unit: 'year'},
-            { secs: 2563200, unit: 'month'},
+            { secs: 2384640, unit: 'month'},
             { secs: 86400, unit: 'day'},
             { secs: 3600, unit: 'hour'},
             { secs: 60, unit: 'min'}
