@@ -62,6 +62,20 @@ function handleInternalClass ({sourceItem, sourceGroup}, targetItem, targetGroup
         return;
     }
 
+    if (targetGroup.parentType === 'Collection') {
+        var collectionCap  = vars.model.state().defaults.collectionCap;
+        var articleNumber = targetGroup.front.collections().reduce((numberOfArticles, collection) => {
+            return numberOfArticles + collection.groups.reduce((numberOfArticles, group) => {
+                return numberOfArticles + group.items().length;
+            }, 0);
+        }, 0);
+
+        if (articleNumber >= collectionCap) {
+            alert('You can have maximum of ' + collectionCap + ' articles in a front. You must delete an article from the front before adding a new one');
+            return;
+        }
+    }
+
     var {position, target, isAfter} = normalizeTarget(sourceItem, targetItem, targetGroup);
 
     var insertAt = 0;
