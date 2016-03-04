@@ -288,6 +288,18 @@ export default class Front extends ColumnWidget {
         if (this.confirmSendingAlert() && !isOnlyArticle(item, this)) {
             return 'You can only have one article in this collection.';
         }
+
+        var collectionCap  = this.baseModel.state().defaults.collectionCap;
+        var articleNumber = this.collections().reduce((numberOfArticles, collection) => {
+            return numberOfArticles + collection.groups.reduce((numberOfArticles, group) => {
+                return numberOfArticles + group.items().length;
+            }, 0);
+        }, 0);
+
+        if (articleNumber > collectionCap) {
+            return 'You can have maximum of ' + collectionCap + ' articles in a front. You must delete an article from the front before adding a new one';
+        }
+
     }
 
     dispose() {
