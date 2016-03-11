@@ -8,6 +8,7 @@ import humanTime from 'utils/human-time';
 import mediator from 'utils/mediator';
 import * as sparklines from 'utils/sparklines';
 import ColumnWidget from 'widgets/column-widget';
+import deepGet from 'utils/deep-get';
 
 export default class Front extends ColumnWidget {
     constructor(params, element) {
@@ -290,14 +291,13 @@ export default class Front extends ColumnWidget {
         }
 
         var collectionCap  = this.baseModel.state().defaults.collectionCap;
-        var articleNumber = this.collections().reduce((numberOfArticles, collection) => {
-            return numberOfArticles + collection.groups.reduce((numberOfArticles, group) => {
-                return numberOfArticles + group.items().length;
-            }, 0);
+        var groups = deepGet(item, '.group.parent.groups') || [];
+        var articleNumber = groups.reduce((numberOfArticles, group) => {
+            return numberOfArticles + group.items().length;
         }, 0);
 
         if (articleNumber > collectionCap) {
-            return 'You can have maximum of ' + collectionCap + ' articles in a front. You must delete an article from the front before adding a new one';
+            return 'You can have maximum of ' + collectionCap + ' articles in a collection. You must delete an article from the front before adding a new one';
         }
 
     }
