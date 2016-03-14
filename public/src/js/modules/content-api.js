@@ -6,6 +6,8 @@ import modalDialog from 'modules/modal-dialog';
 import internalPageCode from 'utils/internal-page-code';
 import articlePath from 'utils/article-path';
 import isGuardianUrl from 'utils/is-guardian-url';
+import lenientJsonParse from 'utils/lenient-json-parse';
+import mediator from 'utils/mediator';
 import * as snap from 'utils/snap';
 import reportErrors from 'utils/report-errors';
 
@@ -263,7 +265,7 @@ function fetchLatest (options) {
     term = options.term;
     filter = options.filter;
 
-    var url = (options.isDraft ? CONST.apiSearchBase : CONST.apiLiveBase) + '/';
+    let url = (options.isDraft ? CONST.apiSearchBase : CONST.apiLiveBase) + '/';
 
     if (options.article) {
         term = options.article;
@@ -285,19 +287,34 @@ function fetchLatest (options) {
     return request({
         url: url
     }).then(function (data) {
-        var rawArticles = data.response && data.response[propName] ? [].concat(data.response[propName]) : [];
-
-        if (!term && !filter && !rawArticles.length) {
-            throw new Error('Sorry, the Content API is not currently returning content');
-        } else {
-            return _.extend({}, data.response, {
-                results: _.filter(rawArticles, function(opts) {
-                    return opts.fields && opts.fields.headline;
-                })
-            });
-        }
+        return handleFetchLatestResponse(data, propName, term || filter);
     }, function (xhr) {
+        if (xhr.status === 200) {
+            const parsed = lenientJsonParse(xhr.responseText);
+            if (parsed.json) {
+                mediator.emit('capi:error', parsed.errors[0]);
+                return handleFetchLatestResponse(parsed.json, propName, term || filter);
+            }
+        }
         throw new Error('Content API error (' + xhr.status + '). Content is currently unavailable');
+    });
+}
+
+function handleFetchLatestResponse (data, propName, isSearch) {
+    const filteredData = cleanFetchResponse(data, propName);
+
+    if (!isSearch && !filteredData[propName].length) {
+        throw new Error('Sorry, the Content API is not currently returning content');
+    } else {
+        return filteredData;
+    }
+}
+
+function cleanFetchResponse (data, propName) {
+    const rawArticles = data.response && data.response[propName] ? [].concat(data.response[propName]) : [];
+
+    return _.extend({}, data.response, {
+        results: _.filter(rawArticles, opts => opts.fields && opts.fields.headline)
     });
 }
 
