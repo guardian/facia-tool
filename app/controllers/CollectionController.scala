@@ -29,16 +29,11 @@ object CollectionController extends Controller with PanDomainAuthActions {
   def create = (APIAuthAction andThen ConfigPermissionCheck){ request =>
     request.body.read[CollectionRequest] match {
       case Some(CollectionRequest(frontIds, collection)) =>
-        val apiQuery = collection.backfill match {
-          case Some(Backfill("capi", query)) => Some(query)
-          case _ => None
-        }
-        val collectionWithBackfill = collection.copy(apiQuery = apiQuery)
 
         val identity = request.user
-        val collectionId = UpdateManager.addCollection(frontIds, collectionWithBackfill, identity)
+        val collectionId = UpdateManager.addCollection(frontIds, collection, identity)
         Press.fromSetOfIdsWithForceConfig(Set(collectionId))
-        UpdatesStream.putStreamUpdate(StreamUpdate(CollectionCreate(frontIds, collectionWithBackfill, collectionId), identity.email))
+        UpdatesStream.putStreamUpdate(StreamUpdate(CollectionCreate(frontIds, collection, collectionId), identity.email))
         Ok(Json.toJson(CreateCollectionResponse(collectionId)))
 
       case None => BadRequest
@@ -48,16 +43,11 @@ object CollectionController extends Controller with PanDomainAuthActions {
   def update(collectionId: String) =  (APIAuthAction andThen ConfigPermissionCheck){ request =>
     request.body.read[CollectionRequest] match {
       case Some(CollectionRequest(frontIds, collection)) =>
-        val apiQuery = collection.backfill match {
-          case Some(Backfill("capi", query)) => Some(query)
-          case _ => None
-        }
-        val collectionWithBackfill = collection.copy(apiQuery = apiQuery)
 
         val identity = request.user
-        UpdateManager.updateCollection(collectionId, frontIds, collectionWithBackfill, identity)
+        UpdateManager.updateCollection(collectionId, frontIds, collection, identity)
         Press.fromSetOfIdsWithForceConfig(Set(collectionId))
-        UpdatesStream.putStreamUpdate(StreamUpdate(CollectionUpdate(frontIds, collectionWithBackfill, collectionId), identity.email))
+        UpdatesStream.putStreamUpdate(StreamUpdate(CollectionUpdate(frontIds, collection, collectionId), identity.email))
         Ok
 
       case None => BadRequest

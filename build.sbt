@@ -68,7 +68,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "auditing-thrift-model" % "0.1.0",
     "com.gu" %% "content-api-client" % "7.26",
     "com.gu" %% "editorial-permissions-client" % "0.3",
-    "com.gu" %% "fapi-client" % "0.70",
+    "com.gu" %% "fapi-client" % "1.0.0",
     "com.gu" % "kinesis-logback-appender" % "1.2.0",
     "com.gu" %% "mobile-notifications-client-play-2-4" % "0.5.23",
     "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.2.11",
