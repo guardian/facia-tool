@@ -96,7 +96,8 @@ class Latest extends BaseClass {
     }
 
     [fetchSym](request) {
-        var loadCallback = this.opts.callback || function () {};
+        const isOnPageLoad = !!this.opts.callback;
+        const loadCallback = this.opts.callback || function () {};
 
         this[debounceSym](request)
         .then(({
@@ -105,7 +106,7 @@ class Latest extends BaseClass {
             currentPage
         }) => {
             this.errorCount = 0;
-            var scrollable = this.opts.container.querySelector('.scrollable'),
+            const scrollable = this.opts.container.querySelector('.scrollable'),
                 initialScroll = scrollable.scrollTop;
 
             this.lastSearch(request);
@@ -126,8 +127,8 @@ class Latest extends BaseClass {
         })
         .catch((error = {}) => {
             this.errorCount += 1;
-            if (this.errorCount > CONST.failsBeforeError) {
-                var errMsg = error.message || 'Invalid CAPI result. Please try again';
+            if (this.errorCount > CONST.failsBeforeError || isOnPageLoad) {
+                const errMsg = error.message || 'Invalid CAPI result. Please try again';
                 mediator.emit('capi:error', errMsg);
                 this.flush(errMsg);
                 loadCallback();
