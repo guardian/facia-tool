@@ -1,6 +1,7 @@
 package controllers
 
 import auth.PanDomainAuthActions
+import com.gu.facia.client.models.Metadata
 import conf.Configuration
 import model.Cached
 import permissions.Permissions
@@ -30,7 +31,8 @@ case class Defaults(
   switches: JsValue,
   acl: AclJson,
   project: String,
-  collectionCap: Int
+  collectionCap: Int,
+  collectionMetadata: Iterable[Metadata]
 )
 
 object DefaultsController extends Controller with PanDomainAuthActions {
@@ -57,7 +59,10 @@ object DefaultsController extends Controller with PanDomainAuthActions {
           SwitchManager.getSwitchesAsJson(),
           acls,
           Configuration.environment.project,
-          Configuration.facia.collectionCap
+          Configuration.facia.collectionCap,
+          Metadata.tags.map{
+            case (_, meta) => meta
+          }
         )))
       }
     }

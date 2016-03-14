@@ -42,6 +42,7 @@ GET         /collection/*collectionId                controllers.FaciaToolContro
 POST        /edits                                   controllers.FaciaToolController.collectionEdits
 GET         /config                                  controllers.FaciaToolController.getConfig
 GET         /defaults                                controllers.DefaultsController.configuration()
+GET         /metadata                                controllers.FaciaToolController.getMetadata()
 
 POST        /treats/*collectionId                    controllers.FaciaToolController.treatEdits(collectionId)
 

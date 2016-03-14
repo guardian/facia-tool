@@ -50,6 +50,7 @@ import org.scalatest._
     None,
     None,
     None,
+    None,
     None
   )
 

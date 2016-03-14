@@ -2,6 +2,7 @@ package controllers
 
 import akka.actor.ActorSystem
 import auth.PanDomainAuthActions
+import com.gu.facia.client.models.Metadata
 import com.gu.pandomainauth.action.UserRequest
 import frontsapi.model._
 import metrics.FaciaToolMetrics
@@ -213,4 +214,13 @@ object FaciaToolController extends Controller with PanDomainAuthActions with Bre
     now.map(Ok(_)).getOrElse(NotFound)
   }
 
+  def getMetadata() = APIAuthAction { request =>
+    val matchingTags = request.queryString.get("query") match {
+      case Some(Seq(search)) if search.nonEmpty => Metadata.tags.filterKeys(_ contains search)
+      case _ => Metadata.tags
+    }
+    Ok(Json.toJson(matchingTags.map{
+      case (_, meta) => meta
+    }))
+  }
 }
