@@ -155,7 +155,7 @@ function diagnoseCapiQueries(container, front, config, scheduler) {
         return {
             id: collectionId,
             name: collectionConfig.displayName,
-            path: backfill.type === 'capi' ? backfill.query : collectionConfig.apiQuery
+            path: backfill.type === 'capi' ? backfill.query : null
         };
     })
     .filter(collection => !!collection.path);

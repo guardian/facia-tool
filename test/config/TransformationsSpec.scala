@@ -7,7 +7,6 @@ import org.scalatest._
 @DoNotDiscover class TransformationsSpec extends FlatSpec with ShouldMatchers {
   val collectionFixture = CollectionConfig.withDefaults(
     displayName = Some("New collection"),
-    apiQuery = Some("backfill"),
     `type` = Some("???"),
     href = Some("newfront"),
     groups = Some(List("1", "2")),
@@ -37,7 +36,6 @@ import org.scalatest._
   )
 
   val emptyCollectionFixture = CollectionConfig(
-    None,
     None,
     None,
     None,
