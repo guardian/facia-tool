@@ -54,7 +54,7 @@ TwirlKeys.templateImports ++= Seq(
     "play.api.Play.current"
 )
 
-val awsVersion = "1.10.52"
+val awsVersion = "1.10.60"
 
 libraryDependencies ++= Seq(
     ws,
@@ -66,9 +66,9 @@ libraryDependencies ++= Seq(
     "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-sts" % awsVersion,
     "com.gu" %% "auditing-thrift-model" % "0.1.0",
-    "com.gu" %% "content-api-client" % "7.26",
+    "com.gu" %% "content-api-client" % "7.30",
     "com.gu" %% "editorial-permissions-client" % "0.3",
-    "com.gu" %% "fapi-client" % "1.0.0",
+    "com.gu" %% "fapi-client" % "1.2.0",
     "com.gu" % "kinesis-logback-appender" % "1.2.0",
     "com.gu" %% "mobile-notifications-client-play-2-4" % "0.5.23",
     "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.2.11",
