@@ -16,12 +16,10 @@ describe('Config', function () {
             status: 200,
             responseText: [
                 {
-                    'text': 'tag',
-                    'value': 'tag'
+                    'type': 'tag',
                 },
                 {
-                    'text': 'secondTag',
-                    'value': 'secondTag'
+                    'type': 'secondTag',
                 }
 
             ]

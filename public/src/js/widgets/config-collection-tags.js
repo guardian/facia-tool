@@ -25,7 +25,18 @@ export default class CollectionTags extends BaseWidget {
         });
 
         $('.multipleInputDynamic').attr('data-initial-value', JSON.stringify(initialValues));
-        $('.multipleInputDynamic').fastselect();
+        $('.multipleInputDynamic').fastselect({
+            parseData: function(data) {
+                var parsedData = data.reduce(function(parsed, data) {
+                    parsed.push( {
+                        'text': data.type,
+                        'value': data.type
+                    });
+                    return parsed;
+                }, []);
+                return parsedData;
+            }
+        });
 
         this.subscribeOn(this.inputTags, this.updateTags);
 
@@ -34,7 +45,7 @@ export default class CollectionTags extends BaseWidget {
     updateTags(tags) {
         var tagObjects = tags.split(',').reduce((tags, tag) => {
             if (tag !== '') {
-                tags.push({ type: tag});
+                tags.push({ type: tag });
             }
             return tags;
         }, []);
