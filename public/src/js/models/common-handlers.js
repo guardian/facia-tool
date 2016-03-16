@@ -36,6 +36,25 @@ ko.bindingHandlers.fadeVisible = {
     }
 };
 
+ko.bindingHandlers.tagSelector = {
+    init: function(element, valueAccessor, allBindings, CollectionTags) {
+        var selector = $(element).find('.multipleInputDynamic');
+        selector.attr('data-initial-value', JSON.stringify(CollectionTags.initialValues));
+        selector.fastselect({
+            parseData: function(data) {
+                var parsedData = data.reduce(function(parsed, data) {
+                    parsed.push( {
+                        'text': data.type,
+                        'value': data.type
+                    });
+                    return parsed;
+                }, []);
+                return parsedData;
+            }
+        });
+    }
+};
+
 function mod(n, m) {
     return ((n % m) + m) % m;
 }

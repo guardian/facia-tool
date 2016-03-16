@@ -1,5 +1,4 @@
 import BaseWidget from 'widgets/base-widget';
-import $ from 'jquery';
 import ko from 'knockout';
 import _ from 'underscore';
 import 'fastsearch';
@@ -16,33 +15,13 @@ export default class CollectionTags extends BaseWidget {
 
         this.inputTags = ko.observable(initialInput);
 
-        var initialValues = _.map(tags, tag => {
+        this.initialValues = _.map(tags, tag => {
             return{
               'text': tag.type,
               'value': tag.type
 
             };
         });
-
-
-        ko.bindingHandlers.tagSelector = {
-            init: function(element) {
-                var selector = $(element).find('.multipleInputDynamic');
-                selector.attr('data-initial-value', JSON.stringify(initialValues));
-                selector.fastselect({
-                    parseData: function(data) {
-                        var parsedData = data.reduce(function(parsed, data) {
-                            parsed.push( {
-                                'text': data.type,
-                                'value': data.type
-                            });
-                            return parsed;
-                        }, []);
-                        return parsedData;
-                    }
-                });
-            }
-        };
 
         this.subscribeOn(this.inputTags, this.updateTags);
 
