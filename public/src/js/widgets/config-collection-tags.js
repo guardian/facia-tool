@@ -24,19 +24,25 @@ export default class CollectionTags extends BaseWidget {
             };
         });
 
-        $('.multipleInputDynamic').attr('data-initial-value', JSON.stringify(initialValues));
-        $('.multipleInputDynamic').fastselect({
-            parseData: function(data) {
-                var parsedData = data.reduce(function(parsed, data) {
-                    parsed.push( {
-                        'text': data.type,
-                        'value': data.type
-                    });
-                    return parsed;
-                }, []);
-                return parsedData;
+
+        ko.bindingHandlers.tagSelector = {
+            init: function(element) {
+                var selector = $(element).find('.multipleInputDynamic');
+                selector.attr('data-initial-value', JSON.stringify(initialValues));
+                selector.fastselect({
+                    parseData: function(data) {
+                        var parsedData = data.reduce(function(parsed, data) {
+                            parsed.push( {
+                                'text': data.type,
+                                'value': data.type
+                            });
+                            return parsed;
+                        }, []);
+                        return parsedData;
+                    }
+                });
             }
-        });
+        };
 
         this.subscribeOn(this.inputTags, this.updateTags);
 
