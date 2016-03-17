@@ -32,7 +32,8 @@ export default class ConfigCollection extends DropTarget {
             'excludeFromRss',
             'hideShowMore',
             'backfill',
-            'description'
+            'description',
+            'metadata'
         ]);
 
         populateObservables(this.meta, opts);

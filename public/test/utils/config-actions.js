@@ -50,10 +50,60 @@ export default function(mockConfig, baseModel, action) {
                 });
             }
         });
+        var interceptCollectionCreate = mockjax({
+            url: '/config/collections',
+            type: 'post',
+            response: function (request) {
+                lastRequest = request;
+                lastRequest.data = JSON.parse(request.data);
+                this.responseText = desiredAnswer;
+            },
+            onAfterComplete: function () {
+                clearRequest();
+                // Every such action is also triggering an update of the config
+                baseModel.once('config:needs:update', callback => {
+                    callback(_.extend({}, baseModel.state(),
+                        { config: {
+                            fronts: _.extend({}, baseModel.state().config.fronts, desiredAnswer.fronts),
+                            collections: _.extend({}, baseModel.state().config.collections, desiredAnswer.collections)
+                        }
+                    }));
+                    resolve(lastRequest);
+                });
+            }
+        });
+
+        var interceptCollectionEdit = mockjax({
+            url: /config\/collections\/(.+)/,
+            urlParams: ['collectionId'],
+            type: 'post',
+            response: function (request) {
+                lastRequest = request;
+                lastRequest.data = JSON.parse(request.data);
+                lastRequest.collectionId = request.urlParams.colletionId;
+                this.responseText = desiredAnswer;
+            },
+            onAfterComplete: function () {
+                clearRequest();
+                // Every such action is also triggering an update of the config
+                baseModel.once('config:needs:update', callback => {
+                    callback(_.extend({}, baseModel.state(),
+                        { config: {
+                            fronts: _.extend({}, baseModel.state().config.fronts, desiredAnswer.fronts),
+                            collections: _.extend({}, baseModel.state().config.collections, desiredAnswer.collections)
+                        }
+                    }));
+                    resolve(lastRequest);
+                });
+            }
+        });
+
 
         function clearRequest () {
             mockjax.clear(interceptFront);
             mockjax.clear(interceptEdit);
+            mockjax.clear(interceptCollectionCreate);
+            mockjax.clear(interceptCollectionEdit);
         }
 
         desiredAnswer = action();

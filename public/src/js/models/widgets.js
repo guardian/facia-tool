@@ -119,6 +119,11 @@ var register = _.once(() => {
         synchronous: true,
         template: { text: 'widgets/config-collection-backfill.html' }
     });
+    ko.components.register('config-collection-tags', {
+        viewModel: { jspm: 'widgets/config-collection-tags' },
+        synchronous: true,
+        template: { text: 'widgets/config-collection-tags.html' }
+    });
     ko.components.register('message', {
         viewModel: {
             createViewModel: (params) => params.message
