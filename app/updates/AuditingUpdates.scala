@@ -55,17 +55,17 @@ object AuditingUpdates {
 
   private def serializeShortMessage(streamUpdate: StreamUpdate): Option[String] = {
     streamUpdate.update match {
-      case update: CreateFront => Json.obj(
-          "priority" -> update.priority,
-          "email" -> streamUpdate.email
-        ).asOpt[String]
-      case update: CollectionCreate => Json.obj(
-          "collectionId" -> update.collectionId,
-          "displayName" -> update.collection.displayName
-        ).asOpt[String]
-      case update: CollectionUpdate => Json.obj(
-          "collectionId" -> update.collectionId
-        ).asOpt[String]
+      case update: CreateFront => Some(Json.toJson(Json.obj(
+        "priority" -> update.priority,
+        "email" -> streamUpdate.email
+      )).toString)
+      case update: CollectionCreate => Some(Json.toJson(Json.obj(
+        "collectionId" -> update.collectionId,
+        "displayName" -> update.collection.displayName
+      )).toString)
+      case update: CollectionUpdate => Some(Json.toJson(Json.obj(
+        "collectionId" -> update.collectionId
+      )).toString)
       case _ => None
     }
   }
