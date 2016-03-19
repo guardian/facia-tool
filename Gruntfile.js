@@ -28,7 +28,7 @@ module.exports = function (grunt) {
     /**
      * Test tasks
      */
-    grunt.registerTask('test', function(app) {
+    grunt.registerTask('test', function () {
         if (options.singleRun === false) {
             grunt.config.set('karma.options.singleRun', false);
             grunt.config.set('karma.options.autoWatch', true);

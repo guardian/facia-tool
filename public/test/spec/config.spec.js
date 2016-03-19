@@ -47,7 +47,7 @@ describe('Config', function () {
             var data = request.data;
             expect(data.id).toEqual('test/front');
             expect(data.initialCollection.displayName).toEqual('gossip');
-            expect(data.initialCollection.type).toEqual('fixed/small/slow-VI');
+            expect(data.initialCollection.type).toEqual('fixed/small/slow-IV');
             expect(data.priority).toEqual('test');
 
             $('.contentPane:nth(1) .title--text:nth(1)').click();
@@ -100,7 +100,7 @@ describe('Config', function () {
                     },
                     collections: {
                         'with-tags': {
-                            type: 'fixed/small/slow-VI',
+                            type: 'fixed/small/slow-IV',
                             displayName: 'with-tags',
                             metadata: [{ type: 'tag'}]
                         }
@@ -126,7 +126,7 @@ describe('Config', function () {
                     },
                     collections: {
                         'with-tags': {
-                            type: 'fixed/small/slow-VI',
+                            type: 'fixed/small/slow-IV',
                             displayName: 'with-tags',
                             metadata: [{ type: 'tag'}]
                         }
@@ -148,7 +148,6 @@ describe('Config', function () {
         };
 
         function saveCollection(response) {
-
             return configAction(mockConfig, baseModel, () => {
                 $('button.tool').click();
                 return response;
@@ -156,14 +155,15 @@ describe('Config', function () {
         }
 
         function addTag(index) {
-            var fstInput = dom.$('.fstControls');
-            fstInput.click();
-            return wait.ms(500)
+            const tagSelect = dom.$('.multipleInputDynamic');
+            const fastselect = $.data(tagSelect, 'fastselect');
+            fastselect.show();
+            dom.click(tagSelect);
+            return wait.ms(300)
             .then(() => {
                 var result = dom.$('.fstResultItem:nth-child(' + index+ ')');
                 return dom.click(result);
-
-           });
+            });
         }
 
         function createFrontWithCollection () {
@@ -190,7 +190,7 @@ describe('Config', function () {
                     },
                     collections: {
                         'gossip': {
-                            type: 'fixed/small/slow-VI',
+                            type: 'fixed/small/slow-IV',
                             displayName: 'gossip'
                         }
                     }

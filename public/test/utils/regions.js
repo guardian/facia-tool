@@ -12,4 +12,4 @@ export default function install () {
         alert,
         breakingNewsModal
     };
-};
+}

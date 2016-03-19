@@ -65,7 +65,7 @@ describe('Breaking News', function () {
                         meta: {
                             imageHide: true,
                             group: '0'
-                        },
+                        }
                     }]
                 }
             })
@@ -208,7 +208,7 @@ describe('Breaking News', function () {
                         meta: {
                             imageHide: true,
                             group: '1'
-                        },
+                        }
                     }],
                     live: [],
                     lastUpdated: (new Date()).toISOString()
