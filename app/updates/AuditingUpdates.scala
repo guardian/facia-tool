@@ -33,7 +33,7 @@ object AuditingUpdates {
   def putStreamUpdate(streamUpdate: StreamUpdate): Unit = {
     val updateName = streamUpdate.update.getClass.getSimpleName
     lazy val updatePayload = serializeUpdateMessage(streamUpdate)
-    lazy val shortMessagePayload = serializeUpdateMessage(streamUpdate)
+    lazy val shortMessagePayload = serializeShortMessage(streamUpdate)
     lazy val expiryDate = computeExpiryDate(streamUpdate)
 
     streamUpdate.fronts.foreach(frontId => putAuditingNotification(
