@@ -1,42 +1,27 @@
 {
     "env": {
+        "node": false,
         "jasmine": true,
-        "browser": true
-    },
-    "ecmaFeatures": {
-        "arrowFunctions": true,
-        "binaryLiterals": true,
-        "blockBindings": true,
-        "classes": true,
-        "defaultParams": true,
-        "destructuring": true,
-        "forOf": true,
-        "generators": true,
-        "modules": true,
-        "objectLiteralComputedProperties": true,
-        "objectLiteralDuplicateProperties": true,
-        "objectLiteralShorthandMethods": true,
-        "objectLiteralShorthandProperties": true,
-        "octalLiterals": true,
-        "regexUFlag": true,
-        "regexYFlag": true,
-        "spread": true,
-        "superInFunctions": true,
-        "templateStrings": true,
-        "unicodeCodePointEscapes": true,
-        "globalReturn": true,
-        "jsx": true,
-        "restParams": true
+        "browser": true,
+        "es6": true
     },
     "plugins": [
         "jasmine"
     ],
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "ecmaFeatures": {
+            "globalReturn": false
+        },
+        "sourceType": "module"
+    },
     "rules": {
         // Overrides old
         "camelcase": 2,
         "no-shadow": 2,
         "strict": 2,
         "no-unused-vars": 1,
-        "jasmine/no-disabled-tests": 2
+        "jasmine/no-disabled-tests": 2,
+        "no-inner-declarations": 1
     }
 }

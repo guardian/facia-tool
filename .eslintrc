@@ -2,15 +2,32 @@
     "env": {
         "node": true
     },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": 5,
+        "ecmaFeatures": {
+            "globalReturn": true
+        },
+        "sourceType": "script"
+    },
     "rules": {
         "semi": 2,
-        "quotes": [2, "single"],
+        "quotes": [1, "single"],
         "no-undef": 2,
         "no-caller": 2,
+        "no-console": 2,
         "no-use-before-define": [2, "nofunc"],
-        "no-multi-spaces": 0,
+        "no-multi-spaces": 1,
         "no-underscore-dangle": 0,
         "key-spacing": 0,
-        "no-alert": 0
+        "keyword-spacing": [2, {"before": true, "after": true}],
+        "no-alert": 1,
+        "array-callback-return": 1,
+        "no-self-assign": 2,
+        "id-blacklist": [2, "self"],
+        "template-curly-spacing": [2, "never"],
+        "no-unused-vars": 2,
+        "comma-dangle": 1,
+        "no-extra-semi": 1
     }
 }

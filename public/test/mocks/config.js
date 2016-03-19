@@ -1,4 +1,4 @@
-import _ from  'underscore';
+import _ from 'underscore';
 import clone from 'utils/clean-clone';
 import Mock from 'mock/generic-mock';
 

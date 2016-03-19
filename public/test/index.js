@@ -1,3 +1,4 @@
+/* eslint no-console: 0 */
 // Make karma asynchronous
 window.__karma__.loaded = function () {};
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;

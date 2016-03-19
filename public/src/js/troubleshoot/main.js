@@ -1,3 +1,4 @@
+/* eslint no-console: 0 */
 const DEFAULT_VIEW = 'stale';
 const VIEWS_INSTANCES = {};
 var currentLoadedView;

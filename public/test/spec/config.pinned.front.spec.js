@@ -276,7 +276,7 @@ describe('Config Pinned Front', function () {
             expect(data.frontIds).toEqual(['one']);
             expect(data.collection).toEqual({
                 displayName: 'Fourth',
-                type: 'fixed/medium/slow-VIII'
+                type: 'fixed/medium/fast-XII'
             });
         }
     });

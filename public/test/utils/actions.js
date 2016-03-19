@@ -26,7 +26,7 @@ class Action {
     }
 }
 
-export default function install(page) {
+export default function install (page) {
     return {
         edit: function (testAction) {
             return new Action(editAction, testAction, page);
@@ -38,7 +38,7 @@ export default function install(page) {
             return new Action(discardAction, testAction, page);
         }
     };
-};
+}
 
 var scheduledMap = new Map();
 
@@ -46,7 +46,7 @@ function schedule (action) {
     if (!scheduledMap.has(action)) {
         const forLater = Promise.resolve(action).then(execute);
         scheduledMap.set(action, forLater);
-        function clear() {
+        function clear () {
             action.dispose();
             scheduledMap.delete(action);
         }

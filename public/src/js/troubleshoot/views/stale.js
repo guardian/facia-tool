@@ -121,7 +121,7 @@ function checkPressedState (front, config, container, lastPress) {
 function staleInterval (front, config) {
     if (CONST.highFrequencyPaths.indexOf(front) !== -1) {
         return STALE_NETWORK_FRONT;
-    } else if (!!config.fronts[front].priority) {
+    } else if (config.fronts[front].priority) {
         return STALE_COMMERCIAL_FRONT;
     } else {
         return STALE_EDITORIAL_FRONT;
@@ -205,6 +205,7 @@ function reportError (container, error) {
     invalidFront.querySelector('.errorMessage').innerHTML = error.message;
 
     inject(container, invalidFront);
+    // eslint-disable-next-line no-console
     console.error(error);
 }
 
