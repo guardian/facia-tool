@@ -7,8 +7,6 @@ export default {
     },
 
     types: [
-        { 'name': 'fixed/small/slow-VI' },
-        { 'name': 'fixed/medium/slow-VIII' },
         { 'name': 'fixed/small/slow-IV' },
         { 'name': 'fixed/medium/fast-XII' },
         { 'name': 'fixed/small/slow-III' },
@@ -17,11 +15,8 @@ export default {
         { 'name': 'fixed/medium/slow-VI' },
         { 'name': 'fixed/large/slow-XIV' },
         { 'name': 'fixed/medium/fast-XI' },
-        { 'name': 'fixed/large/fast-XV' },
         { 'name': 'fixed/medium/slow-XII-mpu' },
         { 'name': 'fixed/thrasher' },
-        { 'name': 'fixed/small/fast-X' },
-        { 'name': 'fixed/small/slow-II' },
         { 'name': 'fixed/medium/slow-VII' },
         { 'name': 'fixed/small/fast-VIII' },
         { 'name': 'fixed/small/slow-V-mpu' },

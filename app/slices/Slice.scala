@@ -637,32 +637,6 @@ case object HalfHalf extends Slice {
   )
 }
 
-/** Same as above, but doesn't give two large standard items on mobile view. Good for when you just need a container
-  * that supports two items, but you don't want it to be given an extreme treatment on mobile, i.e., in the story
-  * package and on tag page containers.
-  */
-case object HalfHalf2 extends Slice {
-  val layout = SliceLayout(
-    cssClassName = "h-h",
-    columns = Seq(
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = Standard,
-          tablet = Half
-        )
-      ),
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = MediaList,
-          tablet = Half
-        )
-      )
-    )
-  )
-}
-
 /* .___________________________________.
  * |                  #################|
  * |                  #################|
@@ -782,26 +756,6 @@ case object TlTlMpu extends Slice {
 
 /* .________.________.________.________.
  * |________|________|________|________|
- */
-case object Ql1Ql1Ql1Ql1 extends Slice {
-  val layout: SliceLayout = SliceLayout(
-    cssClassName = "ql-ql-ql-ql",
-    columns = Seq(
-      Rows(
-        colSpan = 4,
-        columns = 4,
-        rows = 1,
-        ItemClasses(
-          mobile = ListItem,
-          tablet = ListItem
-        )
-      )
-    )
-  )
-}
-
-/* .________.________.________.________.
- * |________|________|________|________|
  * |________|________|________|________|
  */
 case object Ql2Ql2Ql2Ql2 extends Slice {
@@ -811,27 +765,6 @@ case object Ql2Ql2Ql2Ql2 extends Slice {
       Rows(
         colSpan = 4,
         columns = 4,
-        rows = 2,
-        ItemClasses(
-          mobile = ListItem,
-          tablet = ListItem
-        )
-      )
-    )
-  )
-}
-
-/* .___________.___________.___________.
- * |___________|___________|___________|
- * |___________|___________|___________|
- */
-case object TlTlTl extends Slice {
-  val layout = SliceLayout(
-    cssClassName = "tl-tl-tl",
-    columns = Seq(
-      Rows(
-        colSpan = 1,
-        columns = 3,
         rows = 2,
         ItemClasses(
           mobile = ListItem,
@@ -944,31 +877,6 @@ case object TTlMpu extends Slice {
         ItemClasses(
           mobile = ListItem,
           tablet = ListItem
-        )
-      ),
-      MPU(
-        colSpan = 1
-      )
-    )
-  )
-}
-
-case object TTMpu extends Slice {
-  val layout = SliceLayout(
-    cssClassName = "t-t-mpu",
-    columns = Seq(
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = MediaList,
-          tablet = Third
-        )
-      ),
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = MediaList,
-          tablet = Third
         )
       ),
       MPU(
