@@ -102,6 +102,12 @@ var register = _.once(() => {
         },
         template: { text: 'widgets/modals/select-snap-type.html' }
     });
+    ko.components.register('collection_cap_alert', {
+        viewModel: {
+            createViewModel: (params) => params
+        },
+        template: { text: 'widgets/modals/collection-cap-alert.html' }
+    });
     ko.components.register('autocomplete', {
         viewModel: { jspm: 'widgets/autocomplete' },
         template: { text: 'widgets/autocomplete.html' }
