@@ -1,0 +1,14 @@
+<div class="modalDialog-message">
+    <h3>Front metadata</h3>
+    <p>Backfill with the content of the first collection in <span class="button-description" data-bind="text: frontId"></span> front tagged as:</p>
+
+    <select class="frontTagsPicker" data-bind="
+        options: tags,
+        value: value
+    "></select>
+</div>
+<hr>
+<div class="buttons modalDialog-confirm">
+    <button class="cancelBackfill button-cancel" data-bind="click: cancel">Cancel</button>
+    <button class="selectBackfill button-action draw-attention" data-bind="click: ok">Select</button>
+</div>

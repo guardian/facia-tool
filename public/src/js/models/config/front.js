@@ -139,6 +139,13 @@ export default class ConfigFront extends BaseClass {
         this.isNew = ko.observable(false);
     }
 
+    get() {
+        return {
+            id: this.id(),
+            type: vars.CONST.draggableTypes.configFront
+        };
+    }
+
     createFront() {
         if (!this.id() || this.missingGroup()) {
             alert('You must select all properties');
