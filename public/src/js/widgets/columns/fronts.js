@@ -9,6 +9,7 @@ import mediator from 'utils/mediator';
 import * as sparklines from 'utils/sparklines';
 import ColumnWidget from 'widgets/column-widget';
 import deepGet from 'utils/deep-get';
+import modalDialog from 'modules/modal-dialog';
 
 export default class Front extends ColumnWidget {
     constructor(params, element) {
@@ -286,20 +287,31 @@ export default class Front extends ColumnWidget {
     }
 
     newItemValidator(item) {
-        if (this.confirmSendingAlert() && !isOnlyArticle(item, this)) {
-            return 'You can only have one article in this collection.';
-        }
+        return new Promise((resolve, reject) => {
+            if (this.confirmSendingAlert() && !isOnlyArticle(item, this)) {
+                reject('You can only have one article in this collection.');
+            }
 
-        var collectionCap  = this.baseModel.state().defaults.collectionCap;
-        var groups = deepGet(item, '.group.parent.groups') || [];
-        var articleNumber = groups.reduce((numberOfArticles, group) => {
-            return numberOfArticles + group.items().length;
-        }, 0);
+            var collectionCap  = this.baseModel.state().defaults.collectionCap;
+            var groups = deepGet(item, '.group.parent.groups') || [];
+            var articleNumber = groups.reduce((numberOfArticles, group) => {
+                return numberOfArticles + group.items().length;
+            }, 0);
 
-        if (articleNumber > collectionCap) {
-            return 'You can have maximum of ' + collectionCap + ' articles in a collection. You must delete an article from the front before adding a new one';
-        }
-
+            if (articleNumber > collectionCap) {
+                return modalDialog.confirm({
+                    name: 'collection_cap_alert',
+                    data: {
+                        collectionCap: collectionCap
+                    }
+                }).then(function () {
+                    return resolve(item);
+                }, function () {
+                    return reject();
+                });
+            }
+            resolve();
+        });
     }
 
     dispose() {

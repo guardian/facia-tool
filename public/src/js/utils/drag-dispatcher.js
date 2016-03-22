@@ -97,7 +97,9 @@ function handleInternalClass ({sourceItem, sourceGroup}, targetItem, targetGroup
         })
         .catch(err => {
             _.each(newItems, item => targetGroup.items.remove(item));
-            alert(err);
+            if (err) {
+                alert(err);
+            }
         });
     }
 }
@@ -206,15 +208,11 @@ function validate (sourceItem, newItems, context) {
                 if (restrictedLiveMode.indexOf(front) > -1 && context.mode() === 'live') {
                     err = 'Sorry, ' + front + ' items cannot be added in Live Front mode. Switch to Draft Front then try again.';
                 }
-                if (!err) {
-                    err = context.newItemValidator(item);
+                if (err) {
+                    return Promise.reject(err);
                 }
-            }
 
-            if (err) {
-                throw new Error(err);
-            } else {
-                return item;
+                return context.newItemValidator(item);
             }
         });
     }
