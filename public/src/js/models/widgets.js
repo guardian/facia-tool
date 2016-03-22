@@ -102,6 +102,12 @@ var register = _.once(() => {
         },
         template: { text: 'widgets/modals/select-snap-type.html' }
     });
+    ko.components.register('select_tag_for_front_backfill', {
+        viewModel: {
+            createViewModel: (params) => params
+        },
+        template: { text: 'widgets/modals/select-tag-for-front-backfill.html' }
+    });
     ko.components.register('autocomplete', {
         viewModel: { jspm: 'widgets/autocomplete' },
         template: { text: 'widgets/autocomplete.html' }

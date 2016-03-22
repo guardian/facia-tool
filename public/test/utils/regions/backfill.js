@@ -34,6 +34,10 @@ export class Backfill {
         });
     }
 
+    resultText(position) {
+        return textInside($('.api-query-result', this.dom)[position - 1]);
+    }
+
     drop(source) {
         const droppableContainer = drag.droppable(this.dom);
         const apiInput = $('.apiquery--input:visible', this.dom);
@@ -57,12 +61,20 @@ export class Backfill {
         return $('.backfilledCollection:visible', this.dom).length > 0;
     }
 
+    hasParentFrontMetadata() {
+        return $('.backfilledFrontMetadata:visible', this.dom).length > 0;
+    }
+
     parentCollectionText() {
         return textInside($('.backfilledCollectionLabel', this.dom));
     }
 
-    clearParentCollection() {
-        $('.backfilledCollectionClear', this.dom).click();
+    parentFrontMetadataText() {
+        return textInside($('.backfilledFrontMetadataLabel', this.dom));
+    }
+
+    clearParentElement() {
+        $('.backfilledElementClear:visible', this.dom).click();
         return wait.ms(10);
     }
 }

@@ -198,7 +198,8 @@ export default {
     ].join('&'),
 
     draggableTypes: {
-        configCollection: 'config-collection'
+        configCollection: 'config-collection',
+        configFront: 'config-front'
     },
 
 

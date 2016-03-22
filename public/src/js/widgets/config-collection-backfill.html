@@ -7,18 +7,18 @@
     css: {
         underDrag: state.underDrag
     },
-    visible: !meta.parentCollection(),
+    visible: state.visibleContainer() === 'capi',
     value: meta.apiQuery,
     valueUpdate: ['afterkeydown', 'input']"/>
 
-<div class="backfilledCollection" data-bind="
+<div class="backfilledCollection backfilledElement" data-bind="
     makeBackfillDroppable: true,
     css: {
         underDrag: state.underDrag
     },
-    visible: meta.parentCollection
+    visible: state.visibleContainer() === 'collection'
 ">
-    <span class="backfilledCollectionLabel" >
+    <span class="backfilledCollectionLabel backfilledElementLabel" >
         <!-- ko with: meta.parentCollection -->
         <span data-bind="
             text: displayName,
@@ -26,8 +26,26 @@
                 title: fronts.join('\n')
             }"></span>
         <!-- /ko -->
-        <a class="backfilledCollectionClear" data-bind="
-            click: clearParentCollection">
+        <a class="backfilledCollectionClear backfilledElementClear" data-bind="
+            click: clearBackfilledElement">
+            <i class="fa fa-remove"></i>
+        </a>
+    </span>
+</div>
+
+<div class="backfilledFrontMetadata backfilledElement" data-bind="
+    makeBackfillDroppable: true,
+    css: {
+        underDrag: state.underDrag
+    },
+    visible: state.visibleContainer() === 'front-metadata'
+">
+    <span class="backfilledFrontMetadataLabel backfilledElementLabel" >
+        <!-- ko with: meta.parentFrontMetadata -->
+        <span data-bind="text: metadataId"></span> on <span data-bind="text: frontId"></span>
+        <!-- /ko -->
+        <a class="backfilledFrontMetadataClear backfilledElementClear" data-bind="
+            click: clearBackfilledElement">
             <i class="fa fa-remove"></i>
         </a>
     </span>
@@ -46,9 +64,14 @@
         <!-- /ko -->
 
         <div data-bind="foreach: results">
-            <a target="_article" class="api-query-result" data-bind="
+            <!-- ko if: $data.href -->
+                <a target="_article" class="api-query-result" data-bind="
                     attr: {href: href},
                     text: fields.headline"></a>
+            <!-- /ko -->
+            <!-- ko ifnot: $data.href -->
+                <span class="api-query-result" data-bind="text: $data"></span>
+            <!-- /ko -->
         </div>
     </div>
 <!-- /ko -->

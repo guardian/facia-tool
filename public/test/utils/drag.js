@@ -48,6 +48,14 @@ class ConfigCollection {
         }, source));
     }
 }
+class ConfigFront {
+    constructor(source) {
+        this.Text = 'a front';
+        this.sourceItem = JSON.stringify(Object.assign({
+            type: CONST.draggableTypes.configFront
+        }, source));
+    }
+}
 
 function Event (extend) {
     this.preventDefault = function () {};
@@ -132,5 +140,6 @@ export default {
     Media,
     MediaMeta,
     ConfigCollection,
+    ConfigFront,
     droppable: createDroppable
 };

@@ -2,7 +2,6 @@ import ko from 'knockout';
 import _ from 'underscore';
 import BaseClass from 'models/base-class';
 import copiedArticle from 'modules/copied-article';
-import {CONST} from 'modules/vars';
 import alert from 'utils/alert';
 import * as draggableElement from 'utils/draggable-element';
 import dispatch from 'utils/drag-dispatcher';
@@ -97,12 +96,8 @@ const backfillListeners = Object.freeze({
 
         let action;
         try {
-            const maybeCollection = draggableElement.getItem(event.dataTransfer).sourceItem;
-            if (maybeCollection.type === CONST.draggableTypes.configCollection) {
-                action = bindingContext.drop(maybeCollection);
-            } else {
-                alert('You can\'t drag that in a backfill');
-            }
+            const sourceItem = draggableElement.getItem(event.dataTransfer).sourceItem;
+            action = bindingContext.drop(sourceItem);
         } catch (ex) {
             alert('You can\'t drag that in a backfill');
         }

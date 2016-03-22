@@ -19,10 +19,12 @@
         css: {open: state.isOpen}">
 
         <div class="title" data-bind="visible: !isNew()">
-            <span class="title--text" data-bind="
+            <a class="title--text" data-bind="
+                attr: { href: id },
                 text: id,
-                click: toggleOpen
-            "></span>
+                click: toggleOpen,
+                makeDraggable: true
+            "></a>
 
             <!-- ko if: props.isHidden() && collections.items().length > 0 -->
             <span class="cfn-front__hidden-text">hidden</span>
