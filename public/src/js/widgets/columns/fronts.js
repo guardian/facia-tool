@@ -230,7 +230,13 @@ export default class Front extends ColumnWidget {
 
     refreshRelativeTimes(period) {
         this.setIntervals.push(setInterval(() => {
-            this.collections().forEach(list => list.refreshRelativeTimes());
+            this.collections().forEach(list => {
+                list.refreshRelativeTimes();
+
+                if (this.confirmSendingAlert) {
+                    list.lastAlertSentHuman(list.getLastAlertHuman());
+                }
+            });
             this.getFrontAge();
         }, period));
     }

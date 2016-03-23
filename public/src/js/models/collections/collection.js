@@ -96,7 +96,20 @@ export default class Collection extends BaseClass {
         this.loaded = this.load().then(() => onDomLoad);
         this.state.visibleCount({});
 
-        this.lastAlertSent = ko.pureComputed(this.getLastAlertTime, this);
+        this.lastAlertSentHuman = ko.observable(this.getLastAlertHuman());
+
+    }
+
+    getLastAlertHuman() {
+
+        var lastAlertSent = this.getLastAlertTime();
+
+        if (lastAlertSent) {
+            return humanTime(lastAlertSent);
+        } else {
+            return 'No alerts sent';
+        }
+
     }
 
     setPending(asPending) {
@@ -273,6 +286,7 @@ export default class Collection extends BaseClass {
             this.collectionMeta.updatedBy(raw.updatedEmail === deepGet(vars, '.model.identity.email') ? 'you' : raw.updatedBy);
 
             this.state.timeAgo(this.getTimeAgo(raw.lastUpdated));
+            this.lastAlertSentHuman(this.getLastAlertHuman());
 
             return wait;
         })
@@ -451,16 +465,13 @@ export default class Collection extends BaseClass {
 
     getLastAlertTime() {
         if (this.raw && this.raw.live.length > 0 && this.raw.live[0].frontPublicationDate) {
-            return humanTime(this.raw.live[0].frontPublicationDate);
+            return this.raw.live[0].frontPublicationDate;
         }
 
         if (this.history().length > 0) {
             return this.history()[0].frontPublicationTime();
         }
-
-        return 'No alerts sent';
     }
-
 
 };
 
