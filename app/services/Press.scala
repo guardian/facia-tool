@@ -1,8 +1,8 @@
 package services
 
-object Press {
+class Press(val faciaPress: FaciaPress) {
   def fromSetOfIds(ids: Set[String]) = {
-    FaciaPress.press(PressCommand(
+    faciaPress.press(PressCommand(
       ids,
       live = true,
       draft = true
@@ -10,7 +10,7 @@ object Press {
   }
 
   def fromSetOfIdsWithForceConfig(ids: Set[String]) = {
-    FaciaPress.press(PressCommand(
+    faciaPress.press(PressCommand(
       ids,
       live = true,
       draft = true,

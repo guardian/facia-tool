@@ -8,11 +8,12 @@ import com.amazonaws.services.kinesis.AmazonKinesisAsyncClient
 import com.amazonaws.services.kinesis.model.{PutRecordRequest, PutRecordResult}
 import com.gu.auditing.model.v1.{App, Notification}
 import com.gu.thrift.serializer.{GzipType, ThriftSerializer}
-import conf.{Configuration, aws}
+import conf.ApplicationConfiguration
 import play.api.Logger
 import play.api.libs.json._
+import services.ConfigAgent
 
-object AuditingUpdates {
+class AuditingUpdates(val config: ApplicationConfiguration, val configAgent: ConfigAgent) {
   val partitionKey: String = "facia-tool-updates"
 
   object KinesisLoggingAsyncHandler extends AsyncHandler[PutRecordRequest, PutRecordResult] {
@@ -25,7 +26,7 @@ object AuditingUpdates {
   }
 
   val client: AmazonKinesisAsyncClient = {
-    val c = new AmazonKinesisAsyncClient(aws.mandatoryCredentials)
+    val c = new AmazonKinesisAsyncClient(config.aws.mandatoryCredentials)
     c.setRegion(Region.getRegion(Regions.EU_WEST_1))
     c
   }
@@ -36,7 +37,8 @@ object AuditingUpdates {
     lazy val shortMessagePayload = serializeShortMessage(streamUpdate)
     lazy val expiryDate = computeExpiryDate(streamUpdate)
 
-    streamUpdate.fronts.foreach(frontId => putAuditingNotification(
+
+    streamUpdate.fronts(configAgent).foreach(frontId => putAuditingNotification(
       Notification(
         app = App.FaciaTool,
         operation = updateName,
@@ -80,10 +82,10 @@ object AuditingUpdates {
 
   private def putAuditingNotification(notification: Notification): Unit = {
 
-    val streamName = Configuration.auditing.stream
+    val streamName = config.auditing.stream
     val bytes = ThriftSerializer.serializeToBytes(notification, Some(GzipType), None)
-    if (bytes.length > Configuration.auditing.maxDataSize) {
-      Logger.error(s"$streamName - NOT sending because size (${bytes.length} bytes) is larger than max kinesis size(${Configuration.auditing.maxDataSize})")
+    if (bytes.length > config.auditing.maxDataSize) {
+      Logger.error(s"$streamName - NOT sending because size (${bytes.length} bytes) is larger than max kinesis size(${config.auditing.maxDataSize})")
     } else {
       Logger.info(s"$streamName - sending auditing thrift update with size of ${bytes.length} bytes")
       client.putRecordAsync(

@@ -3,7 +3,7 @@ package services
 import com.amazonaws.regions.{Region, Regions}
 import com.amazonaws.services.sqs.AmazonSQSAsyncClient
 import com.amazonaws.services.sqs.model.SendMessageResult
-import conf.{Configuration, aws}
+import conf.ApplicationConfiguration
 import metrics.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}
 import play.api.Logger
 
@@ -26,9 +26,9 @@ object PressCommand {
   def forOneId(id: String): PressCommand = PressCommand(Set(id))
 }
 
-object FaciaPressQueue {
-  val maybeQueue = Configuration.faciatool.frontPressToolQueue map { queueUrl =>
-    val credentials = aws.mandatoryCrossAccountCredentials
+class FaciaPressQueue(val config: ApplicationConfiguration) {
+  val maybeQueue = config.faciatool.frontPressToolQueue map { queueUrl =>
+    val credentials = config.aws.mandatoryCrossAccountCredentials
     JsonMessageQueue[PressJob](
       new AmazonSQSAsyncClient(credentials).withRegion(Region.getRegion(Regions.EU_WEST_1)),
       queueUrl
@@ -46,17 +46,17 @@ object FaciaPressQueue {
   }
 }
 
-object FaciaPress {
+class FaciaPress(val faciaPressQueue: FaciaPressQueue, val configAgent: ConfigAgent) {
   def press(pressCommand: PressCommand): Future[List[SendMessageResult]] = {
-    ConfigAgent.refreshAndReturn() flatMap { _ =>
+    configAgent.refreshAndReturn() flatMap { _ =>
       val paths: Set[String] = for {
         id <- pressCommand.collectionIds
-        path <- ConfigAgent.getConfigsUsingCollectionId(id)
+        path <- configAgent.getConfigsUsingCollectionId(id)
       } yield path
 
       lazy val livePress =
         if (pressCommand.live) {
-          val fut = Future.traverse(paths)(path => FaciaPressQueue.enqueue(PressJob(FrontPath(path), Live, forceConfigUpdate = pressCommand.forceConfigUpdate)))
+          val fut = Future.traverse(paths)(path => faciaPressQueue.enqueue(PressJob(FrontPath(path), Live, forceConfigUpdate = pressCommand.forceConfigUpdate)))
           fut.onComplete {
             case Failure(error) =>
               EnqueuePressFailure.increment()
@@ -71,7 +71,7 @@ object FaciaPress {
 
       lazy val draftPress =
         if (pressCommand.draft) {
-          val fut = Future.traverse(paths)(path => FaciaPressQueue.enqueue(PressJob(FrontPath(path), Draft, forceConfigUpdate = pressCommand.forceConfigUpdate)))
+          val fut = Future.traverse(paths)(path => faciaPressQueue.enqueue(PressJob(FrontPath(path), Draft, forceConfigUpdate = pressCommand.forceConfigUpdate)))
           fut.onComplete {
             case Failure(error) =>
               EnqueuePressFailure.increment()

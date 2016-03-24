@@ -2,8 +2,7 @@ package frontsapi.model
 
 import com.gu.facia.client.models._
 import com.gu.pandomainauth.model.User
-import conf.Configuration
-import julienrf.variants.Variants
+import conf.ApplicationConfiguration
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.libs.json._
@@ -54,9 +53,13 @@ object CollectionJsonFunctions {
   }
 }
 
-trait UpdateActions {
+trait UpdateActionsTrait {
+  def faciaApiIO: FaciaApiIO
+  def frontsApi: FrontsApi
+  def config: ApplicationConfiguration
+  def configAgent: ConfigAgent
 
-  val collectionCap: Int = Configuration.facia.collectionCap
+  lazy val collectionCap: Int = config.facia.collectionCap
   implicit val updateListWrite = Json.writes[UpdateList]
 
   def insertIntoLive(update: UpdateList, identity: User, collectionJson: CollectionJson): CollectionJson =
@@ -91,7 +94,7 @@ trait UpdateActions {
       collectionJson
 
   def putCollectionJson(id: String, collectionJson: CollectionJson): CollectionJson =
-    FaciaApiIO.putCollectionJson(id, collectionJson)
+    faciaApiIO.putCollectionJson(id, collectionJson)
 
   //Archiving
   def archivePublishBlock(collectionId: String, collectionJson: CollectionJson, identity: User): CollectionJson = {
@@ -114,7 +117,7 @@ trait UpdateActions {
     archiveBlock(id, collectionJson, Json.obj("action" -> action), identity)
 
   private def archiveBlock(id: String, collectionJson: CollectionJson, updateJson: JsValue, identity: User): CollectionJson =
-    Try(FaciaApiIO.archive(id, collectionJson, updateJson, identity)) match {
+    Try(faciaApiIO.archive(id, collectionJson, updateJson, identity)) match {
       case Failure(t: Throwable) => {
         Logger.warn(t.toString)
         collectionJson
@@ -123,13 +126,13 @@ trait UpdateActions {
     }
 
   def putMasterConfig(config: ConfigJson, identity: User): Option[ConfigJson] = {
-    FaciaApiIO.archiveMasterConfig(config, identity)
-    FaciaApiIO.putMasterConfig(config)
+    faciaApiIO.archiveMasterConfig(config, identity)
+    faciaApiIO.putMasterConfig(config)
   }
 
   def updateCollectionList(id: String, update: UpdateList, identity: User): Future[Option[CollectionJson]] = {
     lazy val updateJson = Json.toJson(update)
-    FrontsApi.amazonClient.collection(id).map { maybeCollectionJson =>
+    frontsApi.amazonClient.collection(id).map { maybeCollectionJson =>
       maybeCollectionJson
         .map(insertIntoLive(update, identity, _))
         .map(insertIntoDraft(update, identity, _))
@@ -145,7 +148,7 @@ trait UpdateActions {
 
   def updateCollectionFilter(id: String, update: UpdateList, identity: User): Future[Option[CollectionJson]] = {
     lazy val updateJson = Json.toJson(update)
-    FrontsApi.amazonClient.collection(id).map { maybeCollectionJson =>
+    frontsApi.amazonClient.collection(id).map { maybeCollectionJson =>
       maybeCollectionJson
         .map(CollectionJsonFunctions.updatePreviously(_, update))
         .map(deleteFromLive(update, _))
@@ -198,7 +201,7 @@ trait UpdateActions {
     collectionJson.copy(live = collectionJson.live.take(collectionCap), draft = collectionJson.draft.map(_.take(collectionCap)))
 
   def removeGroupIfNoLongerGrouped(collectionId: String, collectionJson: CollectionJson): CollectionJson = {
-    ConfigAgent.getConfig(collectionId).flatMap(_.groups) match {
+    configAgent.getConfig(collectionId).flatMap(_.groups) match {
       case Some(groups) if groups.groups.nonEmpty => collectionJson
       case _ => collectionJson.copy(
         live = collectionJson.live.map(removeGroupsFromTrail),
@@ -244,7 +247,7 @@ trait UpdateActions {
 
   def updateTreats(collectionId: String, update: UpdateList, identity: User): Future[Option[CollectionJson]] = {
     lazy val updateJson = Json.toJson(update)
-    FaciaApiIO.getCollectionJson(collectionId).map{ maybeCollectionJson =>
+    faciaApiIO.getCollectionJson(collectionId).map{ maybeCollectionJson =>
       maybeCollectionJson
         .map(updateTreatsList(update, identity, _))
         .map(archiveUpdateBlock(collectionId, _, updateJson, identity))
@@ -255,7 +258,7 @@ trait UpdateActions {
 
   def removeTreats(collectionId: String, update: UpdateList, identity: User): Future[Option[CollectionJson]] = {
     lazy val updateJson = Json.toJson(update)
-    FaciaApiIO.getCollectionJson(collectionId).map{ maybeCollectionJson =>
+    faciaApiIO.getCollectionJson(collectionId).map{ maybeCollectionJson =>
       maybeCollectionJson
         .map(removeFromTreatsList(update, _))
         .map(archiveDeleteBlock(collectionId, _, updateJson, identity))
@@ -274,4 +277,4 @@ trait UpdateActions {
 
 }
 
-object UpdateActions extends UpdateActions
+class UpdateActions(val faciaApiIO: FaciaApiIO, val frontsApi: FrontsApi, val config: ApplicationConfiguration, val configAgent: ConfigAgent) extends UpdateActionsTrait

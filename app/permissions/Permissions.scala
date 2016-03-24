@@ -1,24 +1,25 @@
 package permissions
 
 import com.gu.editorial.permissions.client._
-import conf.Configuration
-import conf.aws
+import conf.ApplicationConfiguration
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
-object Permissions extends PermissionsProvider {
+class Permissions(val appConfig: ApplicationConfiguration) extends PermissionsProvider {
   override implicit lazy val executionContext: ExecutionContext = play.api.libs.concurrent.Execution.Implicits.defaultContext
-
-  lazy val ConfigureFronts = Permission("configure_fronts", "fronts", PermissionDenied)
-  lazy val BreakingNewsAlert = Permission("breaking_news_alert", "fronts", PermissionDenied)
-
-  lazy val all = Seq(ConfigureFronts, BreakingNewsAlert)
 
   implicit def config = PermissionsConfig(
     app = "fronts",
-    all = all,
-    s3BucketPrefix = Configuration.environment.stage.toUpperCase,
-    awsCredentials = aws.mandatoryCredentials,
+    all = Permissions.all,
+    s3BucketPrefix = appConfig.environment.stage.toUpperCase,
+    awsCredentials = appConfig.aws.mandatoryCredentials,
     s3Region = Some("eu-west-1")
   )
+}
+
+object Permissions {
+  val ConfigureFronts = Permission("configure_fronts", "fronts", PermissionDenied)
+  val BreakingNewsAlert = Permission("breaking_news_alert", "fronts", PermissionDenied)
+
+  val all = Seq(ConfigureFronts, BreakingNewsAlert)
 }

@@ -7,7 +7,7 @@ import play.api.libs.json._
 import services.ConfigAgent
 
 sealed trait UpdateMessage {
-  def affectedFronts: Set[String]
+  def affectedFronts(configAgent: ConfigAgent): Set[String]
 }
 
 /* Config updates */
@@ -30,18 +30,18 @@ case class CreateFront(
   initialCollection: CollectionConfigJson,
   group: Option[String]
 ) extends UpdateMessage {
-  def affectedFronts = Set(id)
+  def affectedFronts(configAgent: ConfigAgent) = Set(id)
 }
 
 case class UpdateFront(id: String, front: FrontJson) extends UpdateMessage {
-  def affectedFronts = Set(id)
+  def affectedFronts(configAgent: ConfigAgent) = Set(id)
 }
 
 case class CollectionCreate(frontIds: List[String], collection: CollectionConfigJson, collectionId: String) extends UpdateMessage {
-  def affectedFronts = frontIds.toSet[String]
+  def affectedFronts(configAgent: ConfigAgent) = frontIds.toSet[String]
 }
 case class CollectionUpdate(frontIds: List[String], collection: CollectionConfigJson, collectionId: String) extends UpdateMessage {
-  def affectedFronts = frontIds.toSet[String]
+  def affectedFronts(configAgent: ConfigAgent) = frontIds.toSet[String]
 }
 
 
@@ -55,28 +55,28 @@ case class UpdateList(
   live: Boolean,
   draft: Boolean
 ) extends UpdateMessage {
-  def affectedFronts: Set[String] = ConfigAgent.getConfigsUsingCollectionId(id).toSet[String]
+  def affectedFronts(configAgent: ConfigAgent): Set[String] = configAgent.getConfigsUsingCollectionId(id).toSet[String]
 }
 object UpdateList {
   implicit val format: Format[UpdateList] = Json.format[UpdateList]
 }
 
 case class Update(update: UpdateList) extends UpdateMessage {
-  def affectedFronts = update.affectedFronts
+  def affectedFronts(configAgent: ConfigAgent) = update.affectedFronts(configAgent)
 }
 case class Remove(remove: UpdateList) extends UpdateMessage {
-  def affectedFronts = remove.affectedFronts
+  def affectedFronts(configAgent: ConfigAgent) = remove.affectedFronts(configAgent)
 }
 
 case class UpdateAndRemove(update: UpdateList, remove: UpdateList) extends UpdateMessage {
-  def affectedFronts = update.affectedFronts ++ remove.affectedFronts
+  def affectedFronts(configAgent: ConfigAgent) = update.affectedFronts(configAgent) ++ remove.affectedFronts(configAgent)
 }
 
 case class DiscardUpdate(id: String) extends UpdateMessage {
-  def affectedFronts = ConfigAgent.getConfigsUsingCollectionId(id).toSet[String]
+  def affectedFronts(configAgent: ConfigAgent) = configAgent.getConfigsUsingCollectionId(id).toSet[String]
 }
 case class PublishUpdate(id: String) extends UpdateMessage {
-  def affectedFronts = ConfigAgent.getConfigsUsingCollectionId(id).toSet[String]
+  def affectedFronts(configAgent: ConfigAgent) = configAgent.getConfigsUsingCollectionId(id).toSet[String]
 }
 
 /* Macro - Watch out, this needs to be after the case classes */
@@ -86,7 +86,7 @@ object UpdateMessage {
 
 /* Kinesis messages */
 case class StreamUpdate(update: UpdateMessage, email: String) {
-  val fronts: Set[String] = update.affectedFronts
+  def fronts(configAgent: ConfigAgent): Set[String] = update.affectedFronts(configAgent)
   val dateTime: DateTime = new DateTime()
 }
 object StreamUpdate {

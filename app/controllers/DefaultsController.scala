@@ -2,7 +2,7 @@ package controllers
 
 import auth.PanDomainAuthActions
 import com.gu.facia.client.models.Metadata
-import conf.Configuration
+import conf.ApplicationConfiguration
 import model.Cached
 import permissions.Permissions
 import play.api.Play
@@ -13,7 +13,6 @@ import switchboard.SwitchManager
 import util.{Acl, AclJson}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-
 
 object Defaults {
   implicit val jsonFormat = Json.writes[Defaults]
@@ -30,36 +29,34 @@ case class Defaults(
   apiBaseUrl: String,
   switches: JsValue,
   acl: AclJson,
-  project: String,
   collectionCap: Int,
   collectionMetadata: Iterable[Metadata]
 )
 
-object DefaultsController extends Controller with PanDomainAuthActions {
+class DefaultsController(val config: ApplicationConfiguration, val acl: Acl, val isDev: Boolean) extends Controller with PanDomainAuthActions {
   def configuration = APIAuthAction.async { request =>
     for {
-      hasBreakingNews <- Acl.testUser(Permissions.BreakingNewsAlert, "facia-tool-allow-breaking-news-for-all")(request.user.email)
-      hasConfigureFronts <- Acl.testUser(Permissions.ConfigureFronts, "facia-tool-allow-config-for-all")(request.user.email)
+      hasBreakingNews <- acl.testUser(Permissions.BreakingNewsAlert, "facia-tool-allow-breaking-news-for-all")(request.user.email)
+      hasConfigureFronts <- acl.testUser(Permissions.ConfigureFronts, "facia-tool-allow-config-for-all")(request.user.email)
     } yield {
       val acls = AclJson(
-        fronts = Map(Configuration.faciatool.breakingNewsFront -> hasBreakingNews),
+        fronts = Map(config.faciatool.breakingNewsFront -> hasBreakingNews),
         permissions = Map("configure-config" -> hasConfigureFronts)
       )
 
       Cached(60) {
         Ok(Json.toJson(Defaults(
-          Play.isDev,
-          Configuration.environment.stage,
+          isDev,
+          config.environment.stage,
           Seq("uk", "us", "au"),
           request.user.email,
           request.user.avatarUrl,
-          Configuration.sentry.publicDSN,
-          Configuration.media.baseUrl.get,
-          Configuration.media.apiUrl.get,
+          config.sentry.publicDSN,
+          config.media.baseUrl.get,
+          config.media.apiUrl.get,
           SwitchManager.getSwitchesAsJson(),
           acls,
-          Configuration.environment.project,
-          Configuration.facia.collectionCap,
+          config.facia.collectionCap,
           Metadata.tags.map{
             case (_, meta) => meta
           }

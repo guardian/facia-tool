@@ -4,7 +4,7 @@ import slices._
 
 case class Rectangle(x: Double, y: Double, width: Double, height: Double)
 
-object ContainerThumbnails {
+class ContainerThumbnails(val fixedContainers: FixedContainers) {
   val SliceHeight = 40
   // if rows are not stretched to accommodate another column
   val BaseRowHeight = 7
@@ -162,7 +162,7 @@ object ContainerThumbnails {
         Some(Seq(HalfHl4))
 
       case _ =>
-        FixedContainers.unapply(Some(id)).map(_.slices)
+        fixedContainers.unapply(Some(id)).map(_.slices)
     }
 
     maybeSlices map { slices =>

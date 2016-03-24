@@ -5,21 +5,20 @@ import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCred
 import com.gu.pandomainauth.PanDomainAuth
 import com.gu.pandomainauth.action.AuthActions
 import com.gu.pandomainauth.model.AuthenticatedUser
-import conf.Configuration
+import conf.ApplicationConfiguration
 import play.api.Logger
 import play.api.mvc._
 
 trait PanDomainAuthActions extends AuthActions with PanDomainAuth with Results {
-  import play.api.Play.current
-  lazy val config = play.api.Play.configuration
+  def config: ApplicationConfiguration
 
   override def validateUser(authedUser: AuthenticatedUser): Boolean = {
     (authedUser.user.emailDomain == "guardian.co.uk" ||
       authedUser.user.emailDomain == "guardian.com") &&
-      (authedUser.multiFactor || (config.getString("no2faUser").exists(user => user.length > 0 && user == authedUser.user.email)))
+      (authedUser.multiFactor || config.playConfiguration.getString("no2faUser").exists(user => user.length > 0 && user == authedUser.user.email))
   }
 
-  override def authCallbackUrl: String = Configuration.pandomain.host  + "/oauthCallback"
+  override def authCallbackUrl: String = config.pandomain.host  + "/oauthCallback"
 
   override def showUnauthedMessage(message: String)(implicit request: RequestHeader): Result = {
     Logger.info(message)
@@ -40,10 +39,10 @@ trait PanDomainAuthActions extends AuthActions with PanDomainAuth with Results {
     }
   }
 
-  override lazy val domain: String = Configuration.pandomain.domain
-  override lazy val system: String = Configuration.pandomain.service
+  override lazy val domain: String = config.pandomain.domain
+  override lazy val system: String = config.pandomain.service
   override def awsCredentialsProvider = new AWSCredentialsProviderChain(
     new ProfileCredentialsProvider("workflow"),
-    new STSAssumeRoleSessionCredentialsProvider(Configuration.pandomain.roleArn, Configuration.pandomain.service)
+    new STSAssumeRoleSessionCredentialsProvider(config.pandomain.roleArn, config.pandomain.service)
   )
 }

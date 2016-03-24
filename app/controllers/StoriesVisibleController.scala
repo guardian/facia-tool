@@ -1,7 +1,9 @@
 package controllers
 
+import auth.PanDomainAuthActions
+import conf.ApplicationConfiguration
 import play.api.libs.json.Json
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.Controller
 import slices._
 
 object StoriesVisibleRequest {
@@ -21,11 +23,11 @@ case class StoriesVisibleResponse(
   mobile: Option[Int]
 )
 
-object StoriesVisibleController extends Controller {
-  def storiesVisible(containerType: String) = Action(parse.json[StoriesVisibleRequest]) { implicit request =>
+class StoriesVisibleController(val config: ApplicationConfiguration, val containers: Containers) extends Controller with PanDomainAuthActions {
+  def storiesVisible(containerType: String) = APIAuthAction(parse.json[StoriesVisibleRequest]) { implicit request =>
     val numberOfStories = request.body.stories.length
 
-    Container.all.get(containerType) map {
+    containers.all.get(containerType) map {
       case Fixed(container) =>
         val maxDesktop = container.numItems
         val desktopVisible = maxDesktop min numberOfStories

@@ -4,10 +4,10 @@ import java.io.File
 import java.lang.management.{GarbageCollectorMXBean, ManagementFactory}
 import java.util.concurrent.atomic.AtomicLong
 
+import akka.actor.Scheduler
 import com.amazonaws.services.cloudwatch.model.{Dimension, StandardUnit}
 import play.Play
-import play.api.{Application => PlayApp, GlobalSettings}
-import play.libs.Akka
+import play.api.{Application => PlayApp, Logger}
 
 import scala.collection.JavaConversions._
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -130,11 +130,17 @@ object FaciaToolMetrics {
   )
 }
 
-trait CloudWatchApplicationMetrics extends GlobalSettings {
+class CloudWatchApplicationMetrics(appName: String, stage: String, cloudWatch: CloudWatch, val scheduler: Scheduler, val isDev: Boolean) {
   val applicationMetricsNamespace: String = "Application"
-  val applicationDimension: Dimension = new Dimension().withName("ApplicationName").withValue(applicationName)
-  def applicationName: String
-  def applicationMetrics: List[FrontendMetric] = Nil
+  val applicationDimension: Dimension = new Dimension().withName("ApplicationName").withValue(appName)
+  def applicationMetrics: List[FrontendMetric] = List(
+    FaciaToolMetrics.ApiUsageCount,
+    FaciaToolMetrics.ProxyCount,
+    FaciaToolMetrics.DraftPublishCount,
+    FaciaToolMetrics.EnqueuePressSuccess,
+    FaciaToolMetrics.EnqueuePressFailure,
+    S3Metrics.S3ClientExceptionsMetric
+  )
 
   def systemMetrics: List[FrontendMetric] = List(SystemMetrics.MaxHeapMemoryMetric,
     SystemMetrics.UsedHeapMemoryMetric, SystemMetrics.TotalPhysicalMemoryMetric, SystemMetrics.FreePhysicalMemoryMetric,
@@ -153,14 +159,13 @@ trait CloudWatchApplicationMetrics extends GlobalSettings {
 
   private def report() {
     val allMetrics: List[FrontendMetric] = this.systemMetrics ::: this.applicationMetrics
-    if (!Play.isDev) {
-      CloudWatch.putMetricsWithStage(allMetrics, applicationDimension)
+    if (!isDev) {
+      val stageDimension = new Dimension().withName("Stage").withValue(stage)
+      cloudWatch.putMetricsWithStage(allMetrics, applicationDimension, stageDimension)
     }
   }
 
-  override def onStart(app: PlayApp) {
-    super.onStart(app)
-    Akka.system.scheduler.schedule(initialDelay = 1.seconds, interval = 1.minute) { report() }
-  }
+  Logger.info("Starting cloudwatch metrics")
+  scheduler.schedule(initialDelay = 1.seconds, interval = 1.minute) { report() }
 
 }

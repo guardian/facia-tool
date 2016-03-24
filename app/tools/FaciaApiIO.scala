@@ -23,12 +23,12 @@ trait FaciaApiWrite {
   def archive(id: String, collectionJson: CollectionJson, update: JsValue, identity: User): Unit
 }
 
-object FaciaApiIO extends FaciaApiRead with FaciaApiWrite {
+class FaciaApiIO(val frontsApi: FrontsApi, val s3FrontsApi: S3FrontsApi) extends FaciaApiRead with FaciaApiWrite {
 
-  def getCollectionJson(id: String): Future[Option[CollectionJson]] = FrontsApi.amazonClient.collection(id)
+  def getCollectionJson(id: String): Future[Option[CollectionJson]] = frontsApi.amazonClient.collection(id)
 
   def putCollectionJson(id: String, collectionJson: CollectionJson): CollectionJson = {
-    Try(S3FrontsApi.putCollectionJson(id, Json.prettyPrint(Json.toJson(collectionJson))))
+    Try(s3FrontsApi.putCollectionJson(id, Json.prettyPrint(Json.toJson(collectionJson))))
     collectionJson
   }
 
@@ -47,13 +47,13 @@ object FaciaApiIO extends FaciaApiRead with FaciaApiWrite {
   def archive(id: String, collectionJson: CollectionJson, update: JsValue, identity: User): Unit = {
     Json.toJson(collectionJson).transform[JsObject](Reads.JsObjectReads) match {
       case JsSuccess(result, _) =>
-        S3FrontsApi.archive(id, Json.prettyPrint(result + ("diff", update)), identity)
+        s3FrontsApi.archive(id, Json.prettyPrint(result + ("diff", update)), identity)
       case JsError(errors)  => Logger.warn(s"Could not archive $id: $errors")}}
 
   def putMasterConfig(config: ConfigJson): Option[ConfigJson] = {
-    Try(S3FrontsApi.putMasterConfig(Json.prettyPrint(Json.toJson(config)))).map(_ => config).toOption
+    Try(s3FrontsApi.putMasterConfig(Json.prettyPrint(Json.toJson(config)))).map(_ => config).toOption
   }
-  def archiveMasterConfig(config: ConfigJson, identity: User): Unit = S3FrontsApi.archiveMasterConfig(Json.prettyPrint(Json.toJson(config)), identity)
+  def archiveMasterConfig(config: ConfigJson, identity: User): Unit = s3FrontsApi.archiveMasterConfig(Json.prettyPrint(Json.toJson(config)), identity)
 
 }
 

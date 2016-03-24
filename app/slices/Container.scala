@@ -1,9 +1,10 @@
 package slices
 
 import com.gu.facia.api.models.CollectionConfig
+import conf.ApplicationConfiguration
 import play.api.Logger
 
-object Container {
+class Containers(val fixedContainers: FixedContainers) {
   /** This is THE top level resolver for containers */
   val all: Map[String, Container] = Map(
     ("dynamic/fast", Dynamic(DynamicFast)),
@@ -15,10 +16,10 @@ object Container {
     ("news/most-popular", MostPopular),
     ("commercial/single-campaign", Commercial),
     ("commercial/multi-campaign", Commercial)
-  ) ++ FixedContainers.all.mapValues(Fixed.apply)
+  ) ++ fixedContainers.all.mapValues(Fixed.apply)
 
   /** So that we don't blow up at runtime, which would SUCK */
-  val default = Fixed(FixedContainers.fixedSmallSlowIV)
+  val default = Fixed(fixedContainers.fixedSmallSlowIV)
 
   def resolve(id: String) = all.getOrElse(id, {
     Logger.error(s"Could not resolve container id $id, using default container")

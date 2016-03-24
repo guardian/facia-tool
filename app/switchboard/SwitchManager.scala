@@ -15,7 +15,7 @@ object SwitchManager {
     switches.get(switchName) match {
         case Some(value) => value
         case None => {
-          Logger.warn(s"No status found matching switch ${switchName}")
+          Logger.info(s"No status found matching switch $switchName")
           false
         }
     }
