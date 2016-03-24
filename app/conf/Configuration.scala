@@ -3,18 +3,18 @@ package conf
 import java.io.{File, FileInputStream, InputStream}
 import java.net.URL
 
+import com.amazonaws.AmazonClientException
+import com.amazonaws.auth.profile.ProfileCredentialsProvider
+import com.amazonaws.auth.{AWSCredentialsProvider, AWSCredentialsProviderChain, InstanceProfileCredentialsProvider, STSAssumeRoleSessionCredentialsProvider}
 import org.apache.commons.io.IOUtils
-import play.api.Play.current
-import play.api.{Configuration => PlayConfiguration, Logger}
+import play.api.{Configuration => PlayConfiguration, Logger, Play}
 
 import scala.collection.JavaConversions._
 import scala.language.reflectiveCalls
 
 class BadConfigurationException(msg: String) extends RuntimeException(msg)
 
-object Configuration {
-  private val playConfiguration: PlayConfiguration = play.api.Play.configuration
-
+class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isProd: Boolean) {
   private val propertiesFile = "/etc/gu/facia-tool.properties"
   private val installVars = new File(propertiesFile) match {
     case f if f.exists => IOUtils.toString(new FileInputStream(f))
@@ -25,32 +25,25 @@ object Configuration {
 
   private val properties = Properties(installVars)
   private val stageFromProperties = properties.getOrElse("STAGE", "CODE")
-  private val projectFromProperties = properties.getOrElse("PROJECT", "facia-tool")
   private val stsRoleToAssumeFromProperties = properties.getOrElse("STS_ROLE", "unknown")
 
   private def getString(property: String): Option[String] =
-    playConfiguration.getString(projectFromProperties + "." + stageFromProperties + "." + property)
-      .orElse(playConfiguration.getString(projectFromProperties + "." + property))
-      .orElse(playConfiguration.getString(stageFromProperties + "." + property))
+    playConfiguration.getString(stageFromProperties + "." + property)
       .orElse(playConfiguration.getString(property))
 
   private def getMandatoryString(property: String): String = getString(property)
-    .getOrElse(throw new BadConfigurationException(s"$property of type string not configured for stage $stageFromProperties and project $projectFromProperties"))
+    .getOrElse(throw new BadConfigurationException(s"$property of type string not configured for stage $stageFromProperties"))
 
   private def getBoolean(property: String): Option[Boolean] =
-    playConfiguration.getBoolean(projectFromProperties + "." + stageFromProperties + "." + property)
-      .orElse(playConfiguration.getBoolean(projectFromProperties + "." + property))
-      .orElse(playConfiguration.getBoolean(stageFromProperties + "." + property))
+    playConfiguration.getBoolean(stageFromProperties + "." + property)
       .orElse(playConfiguration.getBoolean(property))
 
   private def getMandatoryBoolean(property: String): Boolean = getBoolean(property)
-    .getOrElse(throw new BadConfigurationException(s"$property of type boolean not configured for stage $stageFromProperties and project $projectFromProperties"))
-
-
+    .getOrElse(throw new BadConfigurationException(s"$property of type boolean not configured for stage $stageFromProperties"))
 
   object environment {
     val stage = stageFromProperties.toLowerCase
-    lazy val project: String = projectFromProperties
+    val applicationName = "facia-tool"
   }
 
   object contentApi {
@@ -73,15 +66,56 @@ object Configuration {
     lazy val host = getString("ophan.api.host")
   }
 
-  object ajax {
-    lazy val corsOrigins: Seq[String] = getString("ajax.cors.origin").map(_.split(",")
-    .map(_.trim).toSeq).getOrElse(Nil)
-  }
-
   object aws {
     lazy val region = getMandatoryString("aws.region")
     lazy val bucket = getMandatoryString("aws.bucket")
     lazy val frontsBucket = getMandatoryString("aws.frontsBucket")
+
+    def mandatoryCredentials: AWSCredentialsProvider = credentials.getOrElse(throw new BadConfigurationException("AWS credentials are not configured"))
+    val credentials: Option[AWSCredentialsProvider] = {
+      val provider = new AWSCredentialsProviderChain(
+        new ProfileCredentialsProvider("cmsFronts"),
+        new InstanceProfileCredentialsProvider
+      )
+
+      // this is a bit of a convoluted way to check whether we actually have credentials.
+      // I guess in an ideal world there would be some sort of isConfigued() method...
+      try {
+        val creds = provider.getCredentials
+        Some(provider)
+      } catch {
+        case ex: AmazonClientException =>
+          Logger.error("amazon client exception")
+
+          // We really, really want to ensure that PROD is configured before saying a box is OK
+          if (isProd) throw ex
+          // this means that on dev machines you only need to configure keys if you are actually going to use them
+          None
+      }
+    }
+
+    def mandatoryCrossAccountCredentials: AWSCredentialsProvider = crossAccount.getOrElse(throw new BadConfigurationException("AWS credentials are not configured for cross account"))
+    var crossAccount: Option[AWSCredentialsProvider] = {
+      val provider = new AWSCredentialsProviderChain(
+        new ProfileCredentialsProvider("frontend"),
+        new STSAssumeRoleSessionCredentialsProvider(faciatool.stsRoleToAssume, "frontend")
+      )
+
+      // this is a bit of a convoluted way to check whether we actually have credentials.
+      // I guess in an ideal world there would be some sort of isConfigued() method...
+      try {
+        val creds = provider.getCredentials
+        Some(provider)
+      } catch {
+        case ex: AmazonClientException =>
+          Logger.error("amazon client cross account exception")
+
+          // We really, really want to ensure that PROD is configured before saying a box is OK
+          if (isProd) throw ex
+          // this means that on dev machines you only need to configure keys if you are actually going to use them
+          None
+      }
+    }
   }
 
   object facia {

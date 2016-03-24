@@ -1,8 +1,8 @@
 package slices
 
-import conf.Configuration
+import conf.ApplicationConfiguration
 
-object FixedContainers {
+class FixedContainers(val config: ApplicationConfiguration) {
   import ContainerDefinition.{ofSlices => slices}
 
   //TODO: Temporary vals for content until we refactor
@@ -30,7 +30,7 @@ object FixedContainers {
     ("fixed/medium/fast-XII", fixedMediumFastXII),
     ("fixed/large/slow-XIV", slices(ThreeQuarterQuarter, QuarterQuarterQuarterQuarter, Ql2Ql2Ql2Ql2)),
     ("fixed/thrasher", thrasher)
-  ) ++ (if (Configuration.faciatool.showTestContainers) Map(
+  ) ++ (if (config.faciatool.showTestContainers) Map(
     ("all-items/not-for-production", slices(FullMedia100, FullMedia75, FullMedia50, HalfHalf, QuarterThreeQuarter, ThreeQuarterQuarter, Hl4Half, HalfQuarterQl2Ql4, TTTL4, Ql3Ql3Ql3Ql3))
   ) else Map.empty)
 

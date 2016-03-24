@@ -2,10 +2,10 @@ package services
 
 import com.amazonaws.regions.ServiceAbbreviations.{S3 => S3Endpoint, _}
 import com.amazonaws.regions.{Region, Regions}
-import conf.Configuration.aws
+import conf.ApplicationConfiguration
 
-object AwsEndpoints {
-  private lazy val region = Region.getRegion(Regions.fromName(aws.region))
+class AwsEndpoints(val config: ApplicationConfiguration) {
+  private lazy val region = Region.getRegion(Regions.fromName(config.aws.region))
 
   lazy val sns: String = region.getServiceEndpoint(SNS)
   lazy val elb: String = region.getServiceEndpoint(ElasticLoadbalancing)

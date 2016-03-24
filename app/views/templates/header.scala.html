@@ -1,4 +1,4 @@
-@(stage: String, identity: Option[com.gu.pandomainauth.model.User] = None)
+@(stage: String, identity: Option[com.gu.pandomainauth.model.User] = None, isDev: Boolean)
 
 <header>
     <div class="header__group header__logo">
@@ -6,7 +6,7 @@
             <img class="logo" src="/assets/images/edit-pen.png" />
             <h1 class="header__item header__link">
                 <span data-bind="text: title()">fronts</span>
-                @if(Play.isDev && stage.toLowerCase != "dev") { : @stage }
+                @if(isDev) { : @stage }
             </h1>
         </a>
     </div>

@@ -4,8 +4,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.classic.{Logger => LogbackLogger, LoggerContext}
 import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider
 import com.gu.logback.appender.kinesis.KinesisAppender
-import conf.Configuration
-import net.logstash.logback.encoder.LogstashEncoder
+import conf.ApplicationConfiguration
 import net.logstash.logback.layout.LogstashLayout
 import org.slf4j.LoggerFactory
 import play.api.{Logger => PlayLogger, LoggerLike}
@@ -22,26 +21,13 @@ object LogStash {
      bufferSize: Int
   )
 
-  lazy val customFields = Map(
-      "stack" -> "fronts",
-      "stage" -> Configuration.environment.stage.toUpperCase,
-      "app"   -> Configuration.logging.app
-    )
-  def makeCustomFields: String = {
+  def makeCustomFields(customFields: Map[String, String]): String = {
     "{" + (for((k, v) <- customFields) yield(s""""${k}":"${v}"""")).mkString(",") + "}"
   }
 
   def asLogBack(l: LoggerLike): Option[LogbackLogger] = l.logger match {
     case l: LogbackLogger => Some(l)
     case _ => None
-  }
-
-  def makeEncoder(context: LoggerContext) = {
-    val e = new LogstashEncoder()
-    e.setContext(context)
-    e.setCustomFields(makeCustomFields)
-    e.start()
-    e
   }
 
   def makeLayout(customFields: String) = {
@@ -67,23 +53,28 @@ object LogStash {
     a
   }
 
-  def init() = {
-    if(Configuration.logging.enabled) {
+  def init(config: ApplicationConfiguration) = {
+    if(config.logging.enabled) {
       PlayLogger.info("LogConfig initializing")
       (for {
         lb <- asLogBack(PlayLogger)
       } yield {
         lb.info("Configuring Logback")
         val context = lb.getLoggerContext
-        val layout = makeLayout(makeCustomFields)
+        val customFields = Map(
+          "stack" -> "fronts",
+          "stage" -> config.environment.stage.toUpperCase,
+          "app"   -> config.logging.app
+        )
+        val layout = makeLayout(makeCustomFields(customFields))
         val bufferSize = 1000
         // remove the default configuration
         val appender  = makeKinesisAppender(layout, context,
           KinesisAppenderConfig(
-            Configuration.logging.stream,
-            Configuration.logging.streamRegion,
-            Configuration.logging.streamRole,
-            Configuration.environment.project,
+            config.logging.stream,
+            config.logging.streamRegion,
+            config.logging.streamRole,
+            config.environment.applicationName,
             bufferSize
           )
         )

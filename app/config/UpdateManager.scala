@@ -8,7 +8,7 @@ import services.{ConfigAgent, IdGeneration, S3FrontsApi}
 import updates.CreateFront
 import util.SanitizeInput
 
-object UpdateManager {
+class UpdateManager(val updateActions: UpdateActions, val configAgent: ConfigAgent, val s3FrontsApi: S3FrontsApi) {
   /**
    * To attempt to alleviate the problem of concurrent updates stomping one another, we reload the config from S3,
    * apply the change, then write it back.
@@ -22,7 +22,7 @@ object UpdateManager {
    * @param transform The transformation to apply
    */
   private def transformConfig(transform: ConfigJson => ConfigJson, identity: User): Unit = {
-    S3FrontsApi.getMasterConfig foreach { configString =>
+    s3FrontsApi.getMasterConfig foreach { configString =>
       val configJson = Json.parse(configString)
       val config = configJson.asOpt[ConfigJson] getOrElse {
         throw new RuntimeException(s"Unable to de-serialize config from S3: $configJson")
@@ -30,8 +30,8 @@ object UpdateManager {
 
       val transformedConfig: ConfigJson = transform(config)
       val newConfig = SanitizeInput.fromConfigSeo(Transformations.prune(transformedConfig))
-      UpdateActions.putMasterConfig(newConfig, identity)
-      ConfigAgent.refreshWith(transformedConfig)
+      updateActions.putMasterConfig(newConfig, identity)
+      configAgent.refreshWith(transformedConfig)
     }
   }
 

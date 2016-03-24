@@ -9,14 +9,14 @@ import services.AwsEndpoints
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
-class S3client (conf: SwitchboardConfiguration) {
+class S3client (conf: SwitchboardConfiguration, endpoint: String) {
 
   lazy val bucket = conf.bucket
   lazy val objectKey = conf.objectKey
 
   lazy val client: AmazonS3Client = {
     val client = new AmazonS3Client(conf.credentials)
-    client.setEndpoint(AwsEndpoints.s3)
+    client.setEndpoint(endpoint)
     client
   }
 

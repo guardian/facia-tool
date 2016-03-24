@@ -3,19 +3,17 @@ package metrics
 import com.amazonaws.handlers.AsyncHandler
 import com.amazonaws.services.cloudwatch.AmazonCloudWatchAsyncClient
 import com.amazonaws.services.cloudwatch.model._
-import conf.{Configuration, aws}
+import conf.ApplicationConfiguration
 import play.api.Logger
 import services.AwsEndpoints
 
 import scala.collection.JavaConversions._
 
-trait CloudWatch {
+class CloudWatch(val config: ApplicationConfiguration, val awsEndpoints: AwsEndpoints) {
 
-  lazy val stageDimension = new Dimension().withName("Stage").withValue(Configuration.environment.stage)
-
-  lazy val cloudwatch: Option[AmazonCloudWatchAsyncClient] = aws.credentials.map{ credentials =>
+  lazy val cloudwatch: Option[AmazonCloudWatchAsyncClient] = config.aws.credentials.map{ credentials =>
     val client = new AmazonCloudWatchAsyncClient(credentials)
-    client.setEndpoint(AwsEndpoints.monitoring)
+    client.setEndpoint(awsEndpoints.monitoring)
     client
   }
 
@@ -61,7 +59,7 @@ trait CloudWatch {
     cloudwatch.foreach(_.putMetricDataAsync(request, LoggingAsyncHandler))
   }
 
-  def putMetricsWithStage(metrics: List[FrontendMetric], applicationDimension: Dimension): Unit =
+  def putMetricsWithStage(metrics: List[FrontendMetric], applicationDimension: Dimension, stageDimension: Dimension): Unit =
     putMetrics("Application", metrics, List(stageDimension, applicationDimension))
 
   def putMetrics(metricNamespace: String, metrics: List[FrontendMetric], dimensions: List[Dimension]): Unit = {
@@ -81,7 +79,7 @@ trait CloudWatch {
               .withDimensions(dimensions)
           }
         }
-      CloudWatch.cloudwatch.foreach(_.putMetricDataAsync(request, AsyncHandlerForMetric(metricsAsStatistics)))
+      cloudwatch.foreach(_.putMetricDataAsync(request, AsyncHandlerForMetric(metricsAsStatistics)))
     }
   }
 
@@ -93,5 +91,3 @@ trait CloudWatch {
       .withSum(metricStatistics.sum)
 
 }
-
-object CloudWatch extends CloudWatch

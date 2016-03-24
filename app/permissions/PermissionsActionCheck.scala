@@ -3,12 +3,11 @@ package permissions
 import com.gu.pandomainauth.action.UserRequest
 import play.api.Logger
 import play.api.mvc._
-import permissions._
 import services.ConfigAgent
-import util.{Authorization, Acl, AccessGranted, AccessDenied}
+import util.{AccessDenied, AccessGranted, Acl, Authorization}
 
-import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 
 trait PermissionActionFilter extends ActionFilter[UserRequest] {
   val testAccess: String => Future[Authorization]
@@ -22,18 +21,21 @@ trait PermissionActionFilter extends ActionFilter[UserRequest] {
         Some(Results.Unauthorized(views.html.unauthorized()))}
 }
 
-object ConfigPermissionCheck extends PermissionActionFilter {
-  val testAccess: String => Future[Authorization] = Acl.testUser(Permissions.ConfigureFronts, "facia-tool-allow-config-for-all")
+class ConfigPermissionCheck(val acl: Acl) extends PermissionActionFilter {
+  val testAccess: String => Future[Authorization] = acl.testUser(Permissions.ConfigureFronts, "facia-tool-allow-config-for-all")
   val restrictedAction = "configure fronts"
 }
 
-object BreakingNewsPermissionCheck extends PermissionActionFilter {
-  val testAccess: String => Future[Authorization] = Acl.testUser(Permissions.BreakingNewsAlert, "facia-tool-allow-breaking-news-for-all")
+class BreakingNewsPermissionCheck(val acl: Acl) extends PermissionActionFilter {
+  val testAccess: String => Future[Authorization] = acl.testUser(Permissions.BreakingNewsAlert, "facia-tool-allow-breaking-news-for-all")
   val restrictedAction = "send breaking news alerts"
 }
 
 trait BreakingNewsEditCollectionsCheck { self: Controller =>
-  private def testAccess(email: String, collections: Set[String]) = Acl.testUserAndCollections(ConfigAgent.getBreakingNewsCollectionIds, Permissions.BreakingNewsAlert, "facia-tool-allow-breaking-news-for-all")(email, collections)
+  def acl: Acl
+  def configAgent: ConfigAgent
+
+  private def testAccess(email: String, collections: Set[String]) = acl.testUserAndCollections(configAgent.getBreakingNewsCollectionIds, Permissions.BreakingNewsAlert, "facia-tool-allow-breaking-news-for-all")(email, collections)
 
   def withModifyPermissionForCollections[A](collectionIds: Set[String])(block: => Future[Result])
     (implicit request: UserRequest[A],

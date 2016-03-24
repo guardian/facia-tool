@@ -8,11 +8,10 @@ import com.gu.mobile.notifications.client.models.Importance.Importance
 import com.gu.mobile.notifications.client.models.Topic._
 import com.gu.mobile.notifications.client.models.TopicTypes.Breaking
 import com.gu.mobile.notifications.client.models._
-import conf.Configuration
+import conf.ApplicationConfiguration
 import play.api.Logger
-import play.api.Play.current
 import play.api.libs.json.Json
-import play.api.libs.ws.{WS, WSResponse}
+import play.api.libs.ws.{WSAPI, WSResponse}
 import play.api.mvc.Result
 import play.api.mvc.Results.{InternalServerError, Ok}
 
@@ -23,15 +22,15 @@ import scala.util.{Failure, Success, Try}
 
 class InvalidNotificationContentType(msg: String) extends Throwable(msg) {}
 
-object BreakingNewsUpdate {
+class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSAPI) {
   lazy val client = {
-    Logger.info(s"Configuring breaking news client to send notifications to ${Configuration.notification.host} and ${Configuration.notification.legacyHost}")
+    Logger.info(s"Configuring breaking news client to send notifications to ${config.notification.host} and ${config.notification.legacyHost}")
     ApiClient(
-      host = Configuration.notification.host,
-      apiKey = Configuration.notification.key,
-      httpProvider = NotificationHttpProvider,
-      legacyHost = Configuration.notification.legacyHost,
-      legacyApiKey = Configuration.notification.legacyKey
+      host = config.notification.host,
+      apiKey = config.notification.key,
+      httpProvider = new NotificationHttpProvider(ws),
+      legacyHost = config.notification.legacyHost,
+      legacyApiKey = config.notification.legacyKey
     )
   }
 
@@ -131,15 +130,15 @@ object BreakingNewsUpdate {
   }
 }
 
-object NotificationHttpProvider extends HttpProvider {
+class NotificationHttpProvider(val ws: WSAPI) extends HttpProvider {
   override def post(url: String, contentType: ContentType, body: Array[Byte]): Future[HttpResponse] = {
-    WS.url(url)
+    ws.url(url)
       .withHeaders("Content-Type" -> s"${contentType.mediaType}; charset=${contentType.charset}")
       .post(body)
       .map(extract)
   }
 
-  override def get(url: String): Future[HttpResponse] = WS.url(url).get().map(extract)
+  override def get(url: String): Future[HttpResponse] = ws.url(url).get().map(extract)
 
   private def extract(response: WSResponse): HttpResponse = {
     if (response.status >= 200 && response.status < 300) {

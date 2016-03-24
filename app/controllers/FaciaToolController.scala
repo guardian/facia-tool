@@ -1,9 +1,11 @@
 package controllers
 
+import _root_.util.Acl
 import akka.actor.ActorSystem
 import auth.PanDomainAuthActions
 import com.gu.facia.client.models.Metadata
 import com.gu.pandomainauth.action.UserRequest
+import conf.ApplicationConfiguration
 import frontsapi.model._
 import metrics.FaciaToolMetrics
 import model.{Cached, NoCache}
@@ -18,35 +20,37 @@ import updates._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object FaciaToolController extends Controller with PanDomainAuthActions with BreakingNewsEditCollectionsCheck {
+class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, val frontsApi: FrontsApi, val faciaApiIO: FaciaApiIO, val updateActions: UpdateActions,
+                          breakingNewsUpdate: BreakingNewsUpdate, val auditingUpdates: AuditingUpdates, val faciaPress: FaciaPress, val faciaPressQueue: FaciaPressQueue,
+                          val configAgent: ConfigAgent, val s3FrontsApi: S3FrontsApi, val isDev: Boolean) extends Controller with PanDomainAuthActions with BreakingNewsEditCollectionsCheck {
 
   override lazy val actorSystem = ActorSystem()
 
   def priorities() = AuthAction { request =>
     Logger.info("Doing priorities..." + request)
     val identity = request.user
-    Cached(60) { Ok(views.html.priority(Option(identity))) }
+    Cached(60) { Ok(views.html.priority(Option(identity), config.facia.stage, isDev)) }
   }
 
   def collectionEditor() = AuthAction { request =>
     val identity = request.user
-    Cached(60) { Ok(views.html.admin_main(Option(identity))) }
+    Cached(60) { Ok(views.html.admin_main(Option(identity), config.facia.stage, isDev)) }
   }
 
-  def configEditor() = (AuthAction andThen ConfigPermissionCheck) { request =>
+  def configEditor() = (AuthAction andThen new ConfigPermissionCheck(acl)) { request =>
     val identity = request.user
-    Cached(60) { Ok(views.html.admin_main(Option(identity))) }
+    Cached(60) { Ok(views.html.admin_main(Option(identity), config.facia.stage, isDev)) }
   }
 
   def getConfig = APIAuthAction.async { request =>
     FaciaToolMetrics.ApiUsageCount.increment()
-    FrontsApi.amazonClient.config.map { configJson =>
+    frontsApi.amazonClient.config.map { configJson =>
       NoCache {
         Ok(Json.toJson(configJson)).as("application/json")}}}
 
   def getCollection(collectionId: String) = APIAuthAction.async { request =>
     FaciaToolMetrics.ApiUsageCount.increment()
-    FrontsApi.amazonClient.collection(collectionId).map { configJson =>
+    frontsApi.amazonClient.collection(collectionId).map { configJson =>
       NoCache {
         Ok(Json.toJson(configJson)).as("application/json")}}}
 
@@ -54,21 +58,21 @@ object FaciaToolController extends Controller with PanDomainAuthActions with Bre
     withModifyPermissionForCollections(Set(collectionId)) {
       val identity = request.user
       FaciaToolMetrics.DraftPublishCount.increment()
-      val futureCollectionJson = FaciaApiIO.publishCollectionJson(collectionId, identity)
+      val futureCollectionJson = faciaApiIO.publishCollectionJson(collectionId, identity)
       futureCollectionJson.flatMap {
           case Some(collectionJson) =>
-            UpdateActions.archivePublishBlock(collectionId, collectionJson, identity)
-            FaciaPress.press(PressCommand.forOneId(collectionId).withPressDraft().withPressLive())
-            UpdatesStream.putStreamUpdate(StreamUpdate(PublishUpdate(collectionId), identity.email))
+            updateActions.archivePublishBlock(collectionId, collectionJson, identity)
+            faciaPress.press(PressCommand.forOneId(collectionId).withPressDraft().withPressLive())
+            auditingUpdates.putStreamUpdate(StreamUpdate(PublishUpdate(collectionId), identity.email))
             maybeSendBreakingAlert(request, collectionId)
           case None => Future.successful(NoCache(Ok))}}}
 
   private def maybeSendBreakingAlert(request: UserRequest[AnyContent], collectionId: String): Future[Result] = {
-    if (ConfigAgent.isCollectionInBreakingNewsFront(collectionId)) {
+    if (configAgent.isCollectionInBreakingNewsFront(collectionId)) {
       val identity = request.user
       request.body.asJson.flatMap(_.asOpt[ClientHydratedCollection]).map {
         case clientCollection: ClientHydratedCollection =>
-          BreakingNewsUpdate.putBreakingNewsUpdate(
+          breakingNewsUpdate.putBreakingNewsUpdate(
             collectionId = collectionId,
             collection = clientCollection,
             email = identity.email
@@ -82,12 +86,12 @@ object FaciaToolController extends Controller with PanDomainAuthActions with Bre
 
   def discardCollection(collectionId: String) = APIAuthAction.async { request =>
     val identity = request.user
-    val futureCollectionJson = FaciaApiIO.discardCollectionJson(collectionId, identity)
+    val futureCollectionJson = faciaApiIO.discardCollectionJson(collectionId, identity)
     futureCollectionJson.map { maybeCollectionJson =>
       maybeCollectionJson.foreach { b =>
-        UpdateActions.archiveDiscardBlock(collectionId, b, identity)
-        FaciaPress.press(PressCommand.forOneId(collectionId).withPressDraft())
-        UpdatesStream.putStreamUpdate(StreamUpdate(DiscardUpdate(collectionId), identity.email))
+        updateActions.archiveDiscardBlock(collectionId, b, identity)
+        faciaPress.press(PressCommand.forOneId(collectionId).withPressDraft())
+        auditingUpdates.putStreamUpdate(StreamUpdate(DiscardUpdate(collectionId), identity.email))
       }
       NoCache(Ok)}}
 
@@ -95,33 +99,33 @@ object FaciaToolController extends Controller with PanDomainAuthActions with Bre
     request.body.asJson.flatMap(_.asOpt[UpdateMessage]).map {
       case update: Update =>
         val identity = request.user
-        UpdateActions.updateTreats(collectionId, update.update, identity).map(_.map{ updatedCollectionJson =>
-          S3FrontsApi.putCollectionJson(collectionId, Json.prettyPrint(Json.toJson(updatedCollectionJson)))
-          UpdatesStream.putStreamUpdate(StreamUpdate(update, identity.email))
-          FaciaPress.press(PressCommand.forOneId(collectionId).withPressLive())
+        updateActions.updateTreats(collectionId, update.update, identity).map(_.map{ updatedCollectionJson =>
+          s3FrontsApi.putCollectionJson(collectionId, Json.prettyPrint(Json.toJson(updatedCollectionJson)))
+          auditingUpdates.putStreamUpdate(StreamUpdate(update, identity.email))
+          faciaPress.press(PressCommand.forOneId(collectionId).withPressLive())
           Ok(Json.toJson(Map(collectionId -> updatedCollectionJson))).as("application/json")
         }.getOrElse(NotFound))
 
       case remove: Remove =>
         val identity = request.user
-        UpdateActions.removeTreats(collectionId, remove.remove, identity).map(_.map{ updatedCollectionJson =>
-          S3FrontsApi.putCollectionJson(collectionId, Json.prettyPrint(Json.toJson(updatedCollectionJson)))
-          UpdatesStream.putStreamUpdate(StreamUpdate(remove, identity.email))
-          FaciaPress.press(PressCommand.forOneId(collectionId).withPressLive())
+        updateActions.removeTreats(collectionId, remove.remove, identity).map(_.map{ updatedCollectionJson =>
+          s3FrontsApi.putCollectionJson(collectionId, Json.prettyPrint(Json.toJson(updatedCollectionJson)))
+          auditingUpdates.putStreamUpdate(StreamUpdate(remove, identity.email))
+          faciaPress.press(PressCommand.forOneId(collectionId).withPressLive())
           Ok(Json.toJson(Map(collectionId -> updatedCollectionJson))).as("application/json")
       }.getOrElse(NotFound))
       case updateAndRemove: UpdateAndRemove =>
         val identity = request.user
         val futureUpdatedCollections =
           Future.sequence(
-            List(UpdateActions.updateTreats(updateAndRemove.update.id, updateAndRemove.update, identity).map(_.map(updateAndRemove.update.id -> _)),
-              UpdateActions.removeTreats(updateAndRemove.remove.id, updateAndRemove.remove, identity).map(_.map(updateAndRemove.remove.id -> _))
+            List(updateActions.updateTreats(updateAndRemove.update.id, updateAndRemove.update, identity).map(_.map(updateAndRemove.update.id -> _)),
+              updateActions.removeTreats(updateAndRemove.remove.id, updateAndRemove.remove, identity).map(_.map(updateAndRemove.remove.id -> _))
             )).map(_.flatten.toMap)
 
         futureUpdatedCollections.map { updatedCollections =>
           val collectionIds = updatedCollections.keySet
-          UpdatesStream.putStreamUpdate(StreamUpdate(updateAndRemove, identity.email))
-          FaciaPress.press(PressCommand(collectionIds).withPressLive())
+          auditingUpdates.putStreamUpdate(StreamUpdate(updateAndRemove, identity.email))
+          faciaPress.press(PressCommand(collectionIds).withPressLive())
           Ok(Json.toJson(updatedCollections)).as("application/json")
         }
       case _ => Future.successful(NotAcceptable)
@@ -135,7 +139,7 @@ object FaciaToolController extends Controller with PanDomainAuthActions with Bre
           withModifyPermissionForCollections(Set(update.update.id)) {
             val identity = request.user
 
-            val futureCollectionJson = UpdateActions.updateCollectionList(update.update.id, update.update, identity)
+            val futureCollectionJson = updateActions.updateCollectionList(update.update.id, update.update, identity)
             futureCollectionJson.map { maybeCollectionJson =>
               val updatedCollections = maybeCollectionJson.map(update.update.id -> _).toMap
 
@@ -143,14 +147,14 @@ object FaciaToolController extends Controller with PanDomainAuthActions with Bre
 
               val collectionIds = updatedCollections.keySet
 
-              FaciaPress.press(PressCommand(
+              faciaPress.press(PressCommand(
                 collectionIds,
                 live = shouldUpdateLive,
                 draft = (updatedCollections.values.exists(_.draft.isEmpty) && shouldUpdateLive) || update.update.draft)
               )
 
               if (updatedCollections.nonEmpty) {
-                UpdatesStream.putStreamUpdate(StreamUpdate(update, identity.email))
+                auditingUpdates.putStreamUpdate(StreamUpdate(update, identity.email))
                 Ok(Json.toJson(updatedCollections)).as("application/json")
               } else
                 NotFound
@@ -159,16 +163,16 @@ object FaciaToolController extends Controller with PanDomainAuthActions with Bre
         case remove: Remove =>
           withModifyPermissionForCollections(Set(remove.remove.id)) {
             val identity = request.user
-            UpdateActions.updateCollectionFilter(remove.remove.id, remove.remove, identity).map { maybeCollectionJson =>
+            updateActions.updateCollectionFilter(remove.remove.id, remove.remove, identity).map { maybeCollectionJson =>
               val updatedCollections = maybeCollectionJson.map(remove.remove.id -> _).toMap
               val shouldUpdateLive: Boolean = remove.remove.live
               val collectionIds = updatedCollections.keySet
-              FaciaPress.press(PressCommand(
+              faciaPress.press(PressCommand(
                 collectionIds,
                 live = shouldUpdateLive,
                 draft = (updatedCollections.values.exists(_.draft.isEmpty) && shouldUpdateLive) || remove.remove.draft)
               )
-              UpdatesStream.putStreamUpdate(StreamUpdate(remove, identity.email))
+              auditingUpdates.putStreamUpdate(StreamUpdate(remove, identity.email))
               Ok(Json.toJson(updatedCollections)).as("application/json")
             }
           }
@@ -177,8 +181,8 @@ object FaciaToolController extends Controller with PanDomainAuthActions with Bre
             val identity = request.user
             val futureUpdatedCollections =
               Future.sequence(
-                List(UpdateActions.updateCollectionList(updateAndRemove.update.id, updateAndRemove.update, identity).map(_.map(updateAndRemove.update.id -> _)),
-                  UpdateActions.updateCollectionFilter(updateAndRemove.remove.id, updateAndRemove.remove, identity).map(_.map(updateAndRemove.remove.id -> _))
+                List(updateActions.updateCollectionList(updateAndRemove.update.id, updateAndRemove.update, identity).map(_.map(updateAndRemove.update.id -> _)),
+                  updateActions.updateCollectionFilter(updateAndRemove.remove.id, updateAndRemove.remove, identity).map(_.map(updateAndRemove.remove.id -> _))
                 )).map(_.flatten.toMap)
 
             futureUpdatedCollections.map { updatedCollections =>
@@ -186,12 +190,12 @@ object FaciaToolController extends Controller with PanDomainAuthActions with Bre
               val shouldUpdateLive: Boolean = updateAndRemove.remove.live || updateAndRemove.update.live
               val shouldUpdateDraft: Boolean = updateAndRemove.remove.draft || updateAndRemove.update.draft
               val collectionIds = updatedCollections.keySet
-              FaciaPress.press(PressCommand(
+              faciaPress.press(PressCommand(
                 collectionIds,
                 live = shouldUpdateLive,
                 draft = (updatedCollections.values.exists(_.draft.isEmpty) && shouldUpdateLive) || shouldUpdateDraft)
               )
-              UpdatesStream.putStreamUpdate(StreamUpdate(updateAndRemove, identity.email))
+              auditingUpdates.putStreamUpdate(StreamUpdate(updateAndRemove, identity.email))
               Ok(Json.toJson(updatedCollections)).as("application/json")
             }
           }
@@ -200,17 +204,17 @@ object FaciaToolController extends Controller with PanDomainAuthActions with Bre
   }
 
   def pressLivePath(path: String) = APIAuthAction { request =>
-    FaciaPressQueue.enqueue(PressJob(FrontPath(path), Live, forceConfigUpdate = Option(true)))
+    faciaPressQueue.enqueue(PressJob(FrontPath(path), Live, forceConfigUpdate = Option(true)))
     NoCache(Ok)
   }
 
   def pressDraftPath(path: String) = APIAuthAction { request =>
-    FaciaPressQueue.enqueue(PressJob(FrontPath(path), Draft, forceConfigUpdate = Option(true)))
+    faciaPressQueue.enqueue(PressJob(FrontPath(path), Draft, forceConfigUpdate = Option(true)))
     NoCache(Ok)
   }
 
   def getLastModified(path: String) = APIAuthAction { request =>
-    val now: Option[String] = S3FrontsApi.getPressedLastModified(path)
+    val now: Option[String] = s3FrontsApi.getPressedLastModified(path)
     now.map(Ok(_)).getOrElse(NotFound)
   }
 

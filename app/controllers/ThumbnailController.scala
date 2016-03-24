@@ -1,12 +1,14 @@
 package controllers
 
+import auth.PanDomainAuthActions
+import conf.ApplicationConfiguration
 import model.Cached
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.Controller
 import thumbnails.ContainerThumbnails
 
-object ThumbnailController extends Controller {
-  def container(id: String) = Action {
-    ContainerThumbnails.fromId(id) match {
+class ThumbnailController(val config: ApplicationConfiguration, val containerThumbnails: ContainerThumbnails) extends Controller with PanDomainAuthActions {
+  def container(id: String) = APIAuthAction {
+    containerThumbnails.fromId(id) match {
       case Some(thumbnail) =>
         Cached(86400)(Ok(thumbnail).as("image/svg+xml"))
 

@@ -5,10 +5,9 @@ import com.amazonaws.services.s3.model.CannedAccessControlList.{Private, PublicR
 import com.amazonaws.services.s3.model._
 import com.amazonaws.util.StringInputStream
 import com.gu.pandomainauth.model.User
-import conf.{Configuration, aws}
+import conf.ApplicationConfiguration
 import metrics.S3Metrics.S3ClientExceptionsMetric
 import org.joda.time.DateTime
-import play.Play
 import play.api.Logger
 
 import scala.io.{Codec, Source}
@@ -17,24 +16,27 @@ sealed trait S3Accounts {
   def bucket: String
   def client: Option[AmazonS3Client]
 }
-case object FrontendS3Account extends S3Accounts {
-  lazy val bucket = Configuration.aws.bucket
+case class FrontendS3Account(val config: ApplicationConfiguration, val awsEndpoints: AwsEndpoints) extends S3Accounts {
+  lazy val bucket = config.aws.bucket
   lazy val client: Option[AmazonS3Client] =
-    aws.crossAccount.map{ credentials => {
+    config.aws.crossAccount.map{ credentials => {
       val client = new AmazonS3Client(credentials)
-      client.setEndpoint(AwsEndpoints.s3)
+      client.setEndpoint(awsEndpoints.s3)
       client}}
 }
-case object CmsFrontsS3Account extends S3Accounts {
-  lazy val bucket = Configuration.aws.frontsBucket
+case class CmsFrontsS3Account(val config: ApplicationConfiguration, val awsEndpoints: AwsEndpoints) extends S3Accounts {
+  lazy val bucket = config.aws.frontsBucket
   lazy val client: Option[AmazonS3Client] =
-    aws.credentials.map{ credentials => {
+    config.aws.credentials.map{ credentials => {
       val client = new AmazonS3Client(credentials)
-      client.setEndpoint(AwsEndpoints.s3)
+      client.setEndpoint(awsEndpoints.s3)
       client}}
 }
 
 trait S3 {
+  def frontendS3Account: FrontendS3Account
+  def cmsFrontsS3Account: CmsFrontsS3Account
+
   private def withS3Result[T](
      account: S3Accounts,
      key: String
@@ -68,11 +70,11 @@ trait S3 {
     }
   }
 
-  def get(key: String)(implicit codec: Codec): Option[String] = withS3Result(FrontendS3Account, key) {
+  def get(key: String)(implicit codec: Codec): Option[String] = withS3Result(frontendS3Account, key) {
     result => Source.fromInputStream(result.getObjectContent).mkString
   }
 
-  def getLastModified(key: String): Option[DateTime] = withS3Result(FrontendS3Account, key) {
+  def getLastModified(key: String): Option[DateTime] = withS3Result(frontendS3Account, key) {
     result => new DateTime(result.getObjectMetadata.getLastModified)
   }
 
@@ -106,13 +108,13 @@ trait S3 {
   }
 }
 
-object S3 extends S3
+class S3FrontsApi(val config: ApplicationConfiguration, val isTest: Boolean, val awsEndpoints: AwsEndpoints) extends S3 {
 
-object S3FrontsApi extends S3 {
-
-  lazy val stage = if (Play.isTest) "TEST" else Configuration.facia.stage.toUpperCase
+  lazy val stage = if (isTest) "TEST" else config.facia.stage.toUpperCase
   val namespace = "frontsapi"
   lazy val location = s"$stage/$namespace"
+  val frontendS3Account = new FrontendS3Account(config, awsEndpoints)
+  val cmsFrontsS3Account = new CmsFrontsS3Account(config, awsEndpoints)
 
   def getLiveFapiPressedKeyForPath(path: String): String =
     s"$location/pressed/live/$path/fapi/pressed.json"
@@ -120,26 +122,26 @@ object S3FrontsApi extends S3 {
   def getMasterConfig: Option[String] = get(s"$location/config/config.json")
   def putCollectionJson(id: String, json: String) = {
     val putLocation: String = s"$location/collection/$id/collection.json"
-    putPublic(putLocation, json, "application/json", List(FrontendS3Account))
-    putPrivate(putLocation, json, "application/json", List(CmsFrontsS3Account))
+    putPublic(putLocation, json, "application/json", List(frontendS3Account))
+    putPrivate(putLocation, json, "application/json", List(cmsFrontsS3Account))
   }
 
   def archive(id: String, json: String, identity: User) = {
     val now = DateTime.now
     val putLocation = s"$location/history/collection/${now.year.get}/${"%02d".format(now.monthOfYear.get)}/${"%02d".format(now.dayOfMonth.get)}/$id/${now}.${identity.email}.json"
-    putPrivate(putLocation, json, "application/json", List(CmsFrontsS3Account))
+    putPrivate(putLocation, json, "application/json", List(cmsFrontsS3Account))
   }
 
   def putMasterConfig(json: String) = {
     val putLocation = s"$location/config/config.json"
-    putPublic(putLocation, json, "application/json", List(FrontendS3Account))
-    putPrivate(putLocation, json, "application/json", List(CmsFrontsS3Account))
+    putPublic(putLocation, json, "application/json", List(frontendS3Account))
+    putPrivate(putLocation, json, "application/json", List(cmsFrontsS3Account))
   }
 
   def archiveMasterConfig(json: String, identity: User) = {
     val now = DateTime.now
     val putLocation = s"$location/history/config/${now.year.get}/${"%02d".format(now.monthOfYear.get)}/${"%02d".format(now.dayOfMonth.get)}/${now}.${identity.email}.json"
-    putPrivate(putLocation, json, "application/json", List(CmsFrontsS3Account))
+    putPrivate(putLocation, json, "application/json", List(cmsFrontsS3Account))
   }
 
   def getPressedLastModified(path: String): Option[String] =
