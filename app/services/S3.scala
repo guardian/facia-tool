@@ -92,14 +92,14 @@ trait S3 {
     metadata.setContentType(contentType)
     metadata.setContentLength(value.getBytes("UTF-8").length)
 
-    accounts.foreach(putRequest(_, key, value, metadata, accessControlList))
+    accounts.map(putRequest(_, key, value, metadata, accessControlList))
   }
 
-  private def putRequest(account: S3Accounts, key: String, value: String, metadata: ObjectMetadata, accessControlList: CannedAccessControlList) {
+  private def putRequest(account: S3Accounts, key: String, value: String, metadata: ObjectMetadata, accessControlList: CannedAccessControlList): Option[PutObjectResult] = {
     val request = new PutObjectRequest(account.bucket, key, new StringInputStream(value), metadata).withCannedAcl(accessControlList)
 
     try {
-      account.client.foreach(_.putObject(request))
+      account.client.map(_.putObject(request))
     } catch {
       case e: Exception =>
         S3ClientExceptionsMetric.increment()
