@@ -41,7 +41,7 @@ export default Object.freeze([
     },
     {
         key: 'imageSrc',
-        editable: true,
+        editable: false,
         dropImage: true,
         omitForSupporting: true,
         visibleWhen: 'imageReplace',
@@ -62,6 +62,30 @@ export default Object.freeze([
             }
         },
         type: 'text'
+    },
+    {
+        key: 'imageSource',
+        editable: true,
+        dropImage: true,
+        omitForSupporting: true,
+        visibleWhen: 'imageReplace',
+        label: 'replacement image URL',
+        validator: {
+            params: {
+                src: 'imageSrc',
+                width: 'imageSrcWidth',
+                height: 'imageSrcHeight',
+                origin: 'imageSrcOrigin',
+                imageSource: 'imageSource',
+                options: {
+                    maxWidth: 1000,
+                    minWidth: 400,
+                    widthAspectRatio: 5,
+                    heightAspectRatio: 3
+                }
+            }
+        },
+        type: 'text-image'
     },
     {
         key: 'imageSrcWidth',
