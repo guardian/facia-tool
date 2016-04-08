@@ -24,20 +24,39 @@ export default Object.freeze([{
     editable: true,
     maxLength: 5
 }, {
-    key: 'image',
-    label: 'image',
-    type: 'text',
+    key: 'imageSource',
+    label: 'imageSource',
+    type: 'text-image',
     editable: true,
     dropImage: true,
     validator: {
-        fn: 'validateImage',
         params: {
-            src: 'image',
+            src: 'src',
+            width: 'imageWidth',
+            height: 'imageHeight',
+            origin: 'imageOrigin',
+            imageSource: 'imageSource'
+        }
+    }
+}, {
+    key: 'image',
+    label: 'image',
+    type: 'image',
+    editable: true,
+    dropImage: true,
+    validator: {
+        params: {
+            src: 'src',
             width: 'imageWidth',
             height: 'imageHeight',
             origin: 'imageOrigin'
         }
-    }
+    },
+    visibleWhen: 'list'
+}, {
+    key: 'src',
+    type: 'text',
+    editable: false
 }, {
     key: 'imageWidth',
     type: 'text',

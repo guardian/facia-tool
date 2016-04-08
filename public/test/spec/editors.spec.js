@@ -79,25 +79,26 @@ describe('Editors', function () {
     });
 
     it('validates inputs', function (done) {
-        var imageEditor = _.find(this.editors, editor => editor.key === 'image');
+        var imageEditor = _.find(this.editors, editor => editor.key === 'imageSource');
         spyOn(imageEditor, 'validateImage').and.callThrough();
 
-        $('.element__image').val(images.path('square.png')).change();
+        $('.element__imageSource').val(images.path('square.png')).change();
         expect(imageEditor.validateImage).toHaveBeenCalled();
         Promise.resolve(imageEditor.validateImage.calls.first().returnValue).then(() => {
-            expect(this.article.meta.image()).toMatch(/square\.png/);
+            expect(this.article.meta.imageSource().src).toMatch(/square\.png/);
+            expect(this.article.meta.src()).toMatch(/square\.png/);
             expect(this.article.meta.imageWidth()).toBe(140);
             expect(this.article.meta.imageHeight()).toBe(140);
 
             imageEditor.validateImage.calls.reset();
 
             // invalid input
-            $('.element__image').val(images.path('this_image_doesnt_exists__promised.png')).change();
+            $('.element__imageSource').val(images.path('this_image_doesnt_exists__promised.png')).change();
             return imageEditor.validateImage.calls.first().returnValue;
         })
         .then(() => {
-            expect(this.article.meta.image()).toBeUndefined();
             expect(this.article.meta.imageWidth()).toBeUndefined();
+            expect(this.article.meta.src()).toBeUndefined();
             expect(this.article.meta.imageHeight()).toBeUndefined();
         })
         .then(done)
