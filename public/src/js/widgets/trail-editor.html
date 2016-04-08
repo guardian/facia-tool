@@ -27,6 +27,28 @@
             <!-- /ko -->
         </div>
     <!-- /ko -->
+    <!-- ko if: type === 'text-image' -->
+        <div class="editor" data-bind="css: {'length--alert': lengthAlert}">
+            <textarea data-bind="
+                click: open,
+                clickBubble: false,
+                hasFocus: hasFocus,
+                attr: {
+                    class: 'element__' + key + (hasFocus() ? ' active' : ''),
+                    placeholder: field() || (label + '...'),
+                    title: label,
+                    href: meta() ? meta().src : ''
+                },
+                css: {
+                    'underDrag': underDrag
+                },
+                autoResize: true,
+                dropImage: dropImage,
+                tabbableFormField: true,
+                textInput: updateText"></textarea>
+
+        </div>
+    <!-- /ko -->
 
     <!-- ko if: type === 'boolean' -->
         <span data-bind="

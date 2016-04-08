@@ -33,6 +33,7 @@ export default class Editor extends BaseClass {
         this.dropImage = ko.observable(!!opts.dropImage);
         this.underDrag = ko.observable(false);
         this.performValidation = true;
+        this.validator = validator;
 
         if (type === 'list') {
             this.items = _.chain(opts.length)
@@ -46,6 +47,26 @@ export default class Editor extends BaseClass {
                 .value();
         } else if (type === 'text') {
             this.listenOn(mediator, 'ui:open', this.onUIOpen);
+            this.updateText = ko.pureComputed({
+                read: this.value,
+                write: this.writeText,
+                owner: this
+            });
+
+            if (validator && _.isFunction(this[validator.fn])) {
+                this.subscribeOn(meta, () => {
+                    if (this.performValidation !== false) {
+                        this[validator.fn](validator.params, meta);
+                    }
+                });
+            }
+
+        } else if (type === 'text-image') {
+            this.updateText = ko.pureComputed({
+                read: this.imageValue,
+                write: this.writeImage,
+                owner: this
+            });
         }
 
         this.hasFocus = ko.observable(false).extend({ rateLimit: 150 });
@@ -56,23 +77,18 @@ export default class Editor extends BaseClass {
             return opts.maxLength && this.value().length > opts.maxLength;
         });
         this.displayEditor = ko.pureComputed(this.isVisible, this);
-        this.updateText = ko.pureComputed({
-            read: this.value,
-            write: this.writeText,
-            owner: this
-        });
-
-        if (validator && _.isFunction(this[validator.fn])) {
-            this.subscribeOn(meta, () => {
-                if (this.performValidation !== false) {
-                    this[validator.fn](validator.params, meta);
-                }
-            });
-        }
     }
 
     value() {
         return this.meta() || this.field() || '';
+    }
+
+    imageValue() {
+        const meta = this.meta();
+        if (meta && meta.src) {
+            return meta.src;
+        }
+        return this.field() || '';
     }
 
     clear() {
@@ -122,7 +138,14 @@ export default class Editor extends BaseClass {
     dropInEditor(element) {
         var sourceMeta = element.getData('sourceMeta');
         var params = (this.opts.validator || {}).params || {};
-        var targetMethod = this.type === 'image' ? 'assignToObjectElement' : 'assignImageToSpreadElement';
+        var targetMethod;
+        if (this.type === 'image') {
+            targetMethod = 'assignToObjectElement';
+        } else if (this.type === 'text') {
+            targetMethod = 'assignImageToSpreadElement';
+        } else if (this.type === 'text-image') {
+            targetMethod = 'assignImageToObjectElement';
+        }
 
         if (sourceMeta) {
             // Drag and drop from another editor, assume valid
@@ -146,22 +169,64 @@ export default class Editor extends BaseClass {
         this.meta(value === this.field() ? undefined : value.replace(rxScriptStriper, ''));
     }
 
-    validateImage(params) {
-        var imageSrc = this.article.meta[params.src],
-            image = imageSrc(),
-            opts = params.options;
+    writeImage(value) {
+        var checkedValue = this.field() === value ? undefined : value.replace(rxScriptStriper, '');
+        this.meta({
+            src: checkedValue
+        });
+        this.validateImage(this.validator.params);
+    }
 
+    validateImage(params) {
+        var imageSrc = this.article.meta[params.imageSource],
+            image = imageSrc().src,
+            opts = params.options;
 
         if (image) {
             let {src, origin} = extractImageElements(image);
             return validateImageSrc(src, opts)
                 .then(img => {
-                    this.assignImageToSpreadElement(params, img, origin || src);
+                    if (this.type === 'text') {
+                        this.assignImageToSpreadElement(params, img, origin || src);
+                    } else if (this.type === 'text-image') {
+                        this.assignImageToObjectElement(params, img, origin || src);
+                    }
                 }, err => {
-                    this.assignImageToSpreadElement(params, err);
+                    if (this.type === 'text') {
+                        this.assignImageToSpreadElement(params, err);
+                    } else if (this.type === 'text-image') {
+                        this.assignImageToObjectElement(params, err);
+                    }
                 });
         } else {
-            this.assignImageToSpreadElement(params, null);
+
+            if (this.type === 'text') {
+                this.assignImageToSpreadElement(params, null);
+            } else if (this.type === 'text-image') {
+                this.assignImageToObjectElement(params, null);
+            }
+        }
+    }
+
+    assignImageToObjectElement(params, imgOrError, origin) {
+
+        if (!imgOrError || imgOrError instanceof Error) {
+
+            assign(this, [this.article.meta.imageSource], [undefined]);
+
+            //TODO: once we stop calling `assingImageToSpreadElement
+            //we need to alert the user of error here
+
+            this.assignImageToSpreadElement(params, imgOrError, origin);
+
+        } else {
+
+            assign(this, [this.article.meta.imageSource], [{
+                src: imgOrError.src,
+                origin: imgOrError.origin
+            }]);
+
+            return this.assignImageToSpreadElement(params, imgOrError, origin);
         }
     }
 
@@ -214,6 +279,8 @@ function extractImageElements(value) {
 
 function assign(scope, metas, values) {
     scope.performValidation = false;
-    metas.forEach((meta, index) => meta(values[index]));
+    metas.forEach((meta, index) => {
+        meta(values[index]);
+    });
     scope.performValidation = true;
 }

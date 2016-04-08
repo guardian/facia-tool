@@ -309,7 +309,7 @@ export default class Article extends DropTarget {
             mediator.emit(
                 'ui:open',
                 _.chain(this.editors())
-                 .filter(function(editor) { return editor.type === 'text' && editor.displayEditor(); })
+                 .filter(function(editor) { return (editor.type.indexOf('text')=== 0) && editor.displayEditor(); })
                  .map(function(editor) { return editor.meta; })
                  .first()
                  .value(),
