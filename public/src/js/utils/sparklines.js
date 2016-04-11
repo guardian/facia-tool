@@ -279,7 +279,7 @@ function unsubscribe (widget) {
     subscribedFronts = _.without(subscribedFronts, widget);
     if (subscribedFronts.length === 0) {
         stopPolling();
-        mediator.on('collection:populate', differential);
+        mediator.off('collection:populate', differential);
     }
 }
 

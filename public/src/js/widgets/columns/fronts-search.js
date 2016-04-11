@@ -18,7 +18,7 @@ export default class SearchConfig extends ColumnWidget {
     }
 
     populateOriginalFrontList() {
-        this.originalFronts =  _.reduce(this.baseModel.frontsList(), function (frontList, front) {
+        this.originalFronts = _.reduce(this.baseModel.frontsList(), function (frontList, front) {
 
             if (_.every(CONST.askForConfirmation, function (element) {
                 return front.id !== element;

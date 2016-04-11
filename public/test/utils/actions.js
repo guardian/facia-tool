@@ -46,10 +46,7 @@ function schedule (action) {
     if (!scheduledMap.has(action)) {
         const forLater = Promise.resolve(action).then(execute);
         scheduledMap.set(action, forLater);
-        function clear () {
-            action.dispose();
-            scheduledMap.delete(action);
-        }
+        const clear = clearAction(action);
         forLater.then(clear, clear);
         action.done = forLater;
     }
@@ -61,4 +58,11 @@ function execute (action) {
             return action.assertFunction(request);
         }
     });
+}
+
+function clearAction (action) {
+    return function () {
+        action.dispose();
+        scheduledMap.delete(action);
+    };
 }

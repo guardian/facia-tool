@@ -22,7 +22,7 @@ export default class ConfigFront extends BaseClass {
         this.opts = opts;
         this.dom = null;
 
-        this.props  = asObservableProps([
+        this.props = asObservableProps([
             'navSection',
             'webTitle',
             'title',
@@ -94,7 +94,7 @@ export default class ConfigFront extends BaseClass {
                     this.saveProps();
                 }, err => {
                     this.provisionalImageUrl(undefined);
-                    window.alert('Sorry! ' + err.message);
+                    alert(err.message);
                 });
             }
         });
@@ -122,11 +122,11 @@ export default class ConfigFront extends BaseClass {
             return this.props.title() || (this.placeholders.webTitle() + (section ? ' | ' + toTitleCase(section) : ''));
         });
 
-        this.placeholders.description  = ko.pureComputed(() => {
+        this.placeholders.description = ko.pureComputed(() => {
             return this.props.description() || this.capiProps.description() || ('Latest ' + this.placeholders.webTitle() + ' news, comment and analysis from the Guardian, the world\'s leading liberal voice');
         });
 
-        this.placeholders.onPageDescription  = ko.pureComputed(() => {
+        this.placeholders.onPageDescription = ko.pureComputed(() => {
             return this.props.onPageDescription() || this.capiProps.description() || ('Latest ' + this.placeholders.webTitle() + ' news, comment and analysis from the Guardian, the world\'s leading liberal voice');
         });
 
@@ -257,7 +257,7 @@ export default class ConfigFront extends BaseClass {
 
         if (num.count >= num.max) {
             this.state.isValidMetadata(false);
-            window.alert('The maximum number of fronts (' + num.max + ') has been exceeded. Please delete one first, by removing all its collections.');
+            alert('The maximum number of fronts (' + num.max + ') has been exceeded. Please delete one first, by removing all its collections.');
         } else {
             this.state.isValidMetadata(true);
         }

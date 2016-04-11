@@ -1,6 +1,6 @@
-import urlHost from './url-host';
-import urlAbsPath from './url-abs-path';
 import CONST from 'constants/defaults';
+import urlHost from 'utils/url-host';
+import urlAbsPath from 'utils/url-abs-path';
 
 export default function(url) {
 
@@ -11,5 +11,4 @@ export default function(url) {
     }
 
     return urlAbsPath(url);
-};
-
+}

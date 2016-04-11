@@ -90,7 +90,7 @@ export default class ConfigCollection extends DropTarget {
     save(frontEdited) {
         const potentialErrors = [
             {key: 'displayName', errMsg: 'enter a title'},
-            {key: 'type', errMsg: 'choose a layout'},
+            {key: 'type', errMsg: 'choose a layout'}
         ];
 
         const errs = _.chain(potentialErrors)

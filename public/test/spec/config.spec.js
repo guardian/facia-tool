@@ -16,10 +16,10 @@ describe('Config', function () {
             status: 200,
             responseText: [
                 {
-                    'type': 'tag',
+                    'type': 'tag'
                 },
                 {
-                    'type': 'secondTag',
+                    'type': 'secondTag'
                 }
 
             ]
@@ -145,7 +145,7 @@ describe('Config', function () {
         function removeTag() {
             var deleteButton = dom.$('.fstChoiceItem > .fstChoiceRemove');
             deleteButton.click();
-        };
+        }
 
         function saveCollection(response) {
             return configAction(mockConfig, baseModel, () => {

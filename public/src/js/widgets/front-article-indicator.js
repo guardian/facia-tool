@@ -39,10 +39,10 @@ export default class extends Extension {
                 this.updateVisibleStories.bind(this, collection, false)
             );
         }
-    };
+    }
 
     updateVisibleStories (collection, numbers) {
-        var container = collection.dom;
+        const container = collection.dom;
         if (!container || !numbers || collection.state.collapsed()) {
             collection.state.showIndicators(false);
             return;
@@ -50,6 +50,6 @@ export default class extends Extension {
 
         collection.state.showIndicators(true);
         collection.state.visibleCount(numbers);
-    };
+    }
 }
 

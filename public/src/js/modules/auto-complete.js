@@ -2,7 +2,7 @@ import {request} from 'modules/authed-ajax';
 import * as cache from 'modules/cache';
 import {CONST} from 'modules/vars';
 
-var maxItems = 50;
+const maxItems = 50;
 
 export default function ({
         query = '',
@@ -17,12 +17,12 @@ export default function ({
             return reject(new Error('Invalid search term'));
         }
 
-        var url  = '/' + path + '?' + [
+        const url = '/' + path + '?' + [
             'q=' + query,
             'page-size=' + maxItems,
             'page=' + page
-        ].join('&'),
-            cached = cache.get('contentApi', url);
+        ].join('&');
+        const cached = cache.get('contentApi', url);
 
         if (cached) {
             resolve(cached);
