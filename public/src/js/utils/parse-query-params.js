@@ -13,7 +13,7 @@ import urlQuery from 'utils/url-query';
  */
 
 export default function(url = window.location.search, opts = {}) {
-    var nsIndex = opts.excludeNamespace ? -1 : 0,
+    const nsIndex = opts.excludeNamespace ? -1 : 0,
         nsStrip = opts.namespace && opts.stripNamespace && !opts.excludeNamespace,
         nsLength = opts.namespace ? ('' + opts.namespace).length : 0,
         result = {};
@@ -34,8 +34,8 @@ export default function(url = window.location.search, opts = {}) {
         .filter(function(kv) {
             return !opts.namespace || kv[0].indexOf(opts.namespace) === nsIndex; })
 
-        .map(function(kv) {
-            var key = nsStrip ? kv[0].slice(nsLength) : kv[0],
+        .each(function(kv) {
+            const key = nsStrip ? kv[0].slice(nsLength) : kv[0],
                 value = kv[1] === undefined ? undefined : decodeURIComponent(kv[1].replace(/\+/g, ' '));
 
             if (opts.multipleValues) {

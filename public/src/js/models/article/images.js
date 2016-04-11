@@ -25,7 +25,7 @@ export function main() {
         return meta.imageCutoutSrc() || state.imageCutoutSrcFromCapi() || fields.secureThumbnail() || fields.thumbnail();
     } else if (meta.imageSlideshowReplace && meta.imageSlideshowReplace() && meta.slideshow() && meta.slideshow()[0]) {
         return meta.slideshow()[0].src;
-    } else if  (state.imageSrcFromCapi()) {
+    } else if (state.imageSrcFromCapi()) {
         return state.imageSrcFromCapi().href;
     } else {
         return fields.secureThumbnail() || fields.thumbnail();

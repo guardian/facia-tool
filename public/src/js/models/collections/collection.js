@@ -48,7 +48,7 @@ export default class Collection extends BaseClass {
         this.visibleStories = null;
 
         // properties from the config, about this collection
-        this.configMeta   = asObservableProps([
+        this.configMeta = asObservableProps([
             'type',
             'displayName',
             'hideShowMore',
@@ -64,7 +64,7 @@ export default class Collection extends BaseClass {
             'updatedBy',
             'updatedEmail']);
 
-        this.state  = asObservableProps([
+        this.state = asObservableProps([
             'lastUpdated',
             'hasConcurrentEdits',
             'collapsed',
@@ -472,8 +472,7 @@ export default class Collection extends BaseClass {
             return this.history()[0].frontPublicationTime();
         }
     }
-
-};
+}
 
 ko.bindingHandlers.indicatorHeight = {
     update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {

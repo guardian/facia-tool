@@ -1,4 +1,4 @@
-import _ from  'underscore';
+import _ from 'underscore';
 
 function combine (destination, previous, comparator, generator, update) {
     previous = previous.slice();

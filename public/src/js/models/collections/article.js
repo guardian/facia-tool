@@ -175,7 +175,7 @@ export default class Article extends DropTarget {
     addCapiData(opts) {
         var missingProps;
 
-        populateObservables(this.props,  opts);
+        populateObservables(this.props, opts);
         populateObservables(this.fields, opts.fields);
 
         this.setRelativeTimes();

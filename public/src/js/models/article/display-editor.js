@@ -10,7 +10,7 @@ export function displayLabel(opts, index, all) {
         const label = _.chain([
             opts.label,
             _.result(this.state, opts.labelState),
-            _.result(this.meta,  opts.labelMeta)
+            _.result(this.meta, opts.labelMeta)
         ])
         .compact()
         .value()
