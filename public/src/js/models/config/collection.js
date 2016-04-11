@@ -5,6 +5,7 @@ import persistence from 'models/config/persistence';
 import * as vars from 'modules/vars';
 import alert from 'utils/alert';
 import asObservableProps from 'utils/as-observable-props';
+import deepGet from 'utils/deep-get';
 import fullTrim from 'utils/full-trim';
 import populateObservables from 'utils/populate-observables';
 import urlAbsPath from 'utils/url-abs-path';
@@ -132,8 +133,13 @@ export default class ConfigCollection extends DropTarget {
     }
 }
 
-function findParents (id) {
-    return _.chain(vars.model.frontsList())
-        .filter(front => _.contains(front.collections, id))
+function findParents (collectionId) {
+    const frontsMap = vars.model.frontsMap();
+    const state = vars.model.state();
+    return _.chain(deepGet(state, '.config.fronts'))
+        .map((front, frontId) => {
+            return _.contains(front.collections, collectionId) ? frontsMap[frontId] : null;
+        })
+        .filter(Boolean)
         .value();
 }

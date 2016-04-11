@@ -79,12 +79,12 @@ export default class BaseModel extends BaseClass {
         var frontsList = [], frontsMap = {};
 
         for (let front in res.config.fronts) {
-            let frontConfig = res.config.fronts[front];
+            const frontConfig = res.config.fronts[front];
+            const frontConfigWithId = cloneWithKey(frontConfig, front);
             if (frontConfig.priority === this.priority) {
-                let frontsConfig = cloneWithKey(frontConfig, front);
-                frontsList.push(frontsConfig);
-                frontsMap[front] = frontConfig;
+                frontsList.push(frontConfigWithId);
             }
+            frontsMap[front] = frontConfigWithId;
         }
         this.frontsList(_.sortBy(frontsList, 'id'));
         this.frontsMap(frontsMap);

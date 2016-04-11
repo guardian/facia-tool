@@ -271,6 +271,11 @@ export default class ConfigFront extends BaseClass {
         return this.props.priority() || vars.CONST.defaultPriority;
     }
 
+    hasSamePriority(frontId) {
+        const otherFront = vars.model.frontsMap()[frontId];
+        return otherFront && otherFront.priority === this.props.priority();
+    }
+
     showGroups() {
         return !!vars.getPriority(this.getPriority()).hasGroups;
     }

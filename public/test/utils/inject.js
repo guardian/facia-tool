@@ -36,6 +36,7 @@ export default function inject (html) {
                     identity: { email: 'someone@theguardian.com' },
                     isPasteActive: ko.observable(),
                     frontsList: ko.observableArray(),
+                    frontsMap: ko.observable({}),
                     state: ko.observable({
                         defaults: { apiBaseUrl: '/api.grid', mediaBaseUrl: 'http://media' }
                     }),

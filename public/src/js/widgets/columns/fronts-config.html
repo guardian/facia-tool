@@ -180,6 +180,7 @@
                 <!-- ko if: $parents[2] ? id !== $parents[2].id() : true -->
                     <a class="cnf-collection__also-on" data-bind="
                         click: $parents[3].openFront.bind($parents[3]),
+                        css: {'cnf-collection__also-on__crossPriority': !$parents[2].hasSamePriority(id)},
                         text: id"></a>
                 <!-- /ko -->
             </span>

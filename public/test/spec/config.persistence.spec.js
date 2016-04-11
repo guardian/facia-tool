@@ -21,7 +21,9 @@ describe('Persistence', function () {
         persistence.on('update:before', events.before);
         persistence.on('update:after', events.after);
         vars.setModel({
-            frontsList: ko.observableArray()
+            frontsList: ko.observableArray(),
+            frontsMap: ko.observable({}),
+            state: ko.observable({ fronts: {} })
         });
     });
 
