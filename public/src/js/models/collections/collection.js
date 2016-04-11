@@ -97,26 +97,23 @@ export default class Collection extends BaseClass {
         this.state.visibleCount({});
 
         this.lastAlertSentHuman = ko.observable(this.getLastAlertHuman());
-
     }
 
     getLastAlertHuman() {
-
-        var lastAlertSent = this.getLastAlertTime();
+        const lastAlertSent = this.getLastAlertTime();
 
         if (lastAlertSent) {
             return humanTime(lastAlertSent);
         } else {
             return 'No alerts sent';
         }
-
     }
 
     setPending(asPending) {
         if (asPending) {
             this.state.pending(true);
         } else {
-            setTimeout(() => this.state.pending(false));
+            setTimeout(() => this.state.pending(false), 10);
         }
     }
 

@@ -9,7 +9,10 @@
                 visible: front.mode() === 'live'">
                 <span class="tool draft-warning">Show unlaunched changes</a>
 
-            <span data-bind="visible: front.mode() !== 'live'">
+            <span data-bind="
+                visible: front.mode() !== 'live',
+                css: {'pending': isPending()}
+            ">
                 <a class="tool draft-publish" data-bind="
                     click: publishDraft,
                     text: getPublishText()"></a
