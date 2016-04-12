@@ -1829,6 +1829,9 @@ ol.search_list > li::before {
     border-left: 1px solid #dbd8c9;
     padding-left: 5px;
 }
+.cnf-collection__also-on__crossPriority {
+    background-color: blanchedalmond;
+}
 
 .cnf-collection__also-on:first-child {
     border-left: inherit;
