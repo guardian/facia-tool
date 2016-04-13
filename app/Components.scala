@@ -41,12 +41,13 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   val updateManager = new UpdateManager(updateActions, configAgent, s3FrontsApi)
   val cloudwatch = new CloudWatch(appConfiguration, awsEndpoints)
   val press = new Press(faciaPress)
+  var assetsManager = new AssetsManager(appConfiguration, isDev)
 
   val collection = new CollectionController(appConfiguration, acl, auditingUpdates, updateManager, press)
   val defaults = new DefaultsController(appConfiguration, acl, isDev)
   val faciaCapiProxy = new FaciaContentApiProxy(wsApi, appConfiguration)
   val faciaTool = new FaciaToolController(appConfiguration, acl, frontsApi, faciaApiIO, updateActions, breakingNewsUpdate,
-    auditingUpdates, faciaPress, faciaPressQueue, configAgent, s3FrontsApi, isDev)
+    auditingUpdates, faciaPress, faciaPressQueue, configAgent, s3FrontsApi)
   val front = new FrontController(appConfiguration, acl, auditingUpdates, updateManager, press)
   val pandaAuth = new PandaAuthController(appConfiguration)
   val status = new StatusController
@@ -55,9 +56,10 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   val troubleshoot = new TroubleshootController(appConfiguration)
   val uncachedAssets = new UncachedAssets
   val vanityRedirects = new VanityRedirects(appConfiguration, acl)
+  val views = new ViewsController(appConfiguration, acl, assetsManager, isDev)
 
   val assets = new controllers.Assets(httpErrorHandler)
-  val router: Router = new Routes(httpErrorHandler, status, pandaAuth, uncachedAssets, faciaTool, defaults, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects, troubleshoot)
+  val router: Router = new Routes(httpErrorHandler, status, pandaAuth, uncachedAssets, views, faciaTool, defaults, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects, troubleshoot)
 
   override lazy val injector: Injector =
     new SimpleInjector(NewInstanceInjector) + router + crypto + httpConfiguration + tempFileCreator + wsApi + wsClient

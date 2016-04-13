@@ -46,21 +46,6 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     val applicationName = "facia-tool"
   }
 
-  object contentApi {
-    case class Auth(user: String, password: String)
-
-    val contentApiLiveHost: String = getMandatoryString("content.api.host")
-    def contentApiDraftHost: String = getMandatoryString("content.api.draft.host")
-
-    lazy val key: Option[String] = getString("content.api.key")
-    lazy val timeout: Int = 2000
-
-    lazy val previewAuth: Option[Auth] = for {
-      user <- getString("content.api.preview.user")
-      password <- getString("content.api.preview.password")
-    } yield Auth(user, password)
-  }
-
   object ophanApi {
     lazy val key = getString("ophan.api.key")
     lazy val host = getString("ophan.api.host")
@@ -116,6 +101,25 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
           None
       }
     }
+  }
+
+  object cdn {
+    lazy val host = getString("cdn.host").getOrElse("")
+  }
+
+  object contentApi {
+    case class Auth(user: String, password: String)
+
+    val contentApiLiveHost: String = getMandatoryString("content.api.host")
+    def contentApiDraftHost: String = getMandatoryString("content.api.draft.host")
+
+    lazy val key: Option[String] = getString("content.api.key")
+    lazy val timeout: Int = 2000
+
+    lazy val previewAuth: Option[Auth] = for {
+      user <- getString("content.api.preview.user")
+      password <- getString("content.api.preview.password")
+    } yield Auth(user, password)
   }
 
   object facia {

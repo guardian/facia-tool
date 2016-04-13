@@ -2,6 +2,10 @@ language: scala
 scala: 2.11.7
 jdk:
     - oraclejdk8
+before_install:
+    - nvm install 5
+    - nvm use 5
+    - npm install -g grunt
 install:
     - npm install
     - jspm config registries.github.auth $JSPM_GITHUB_AUTH_SECRET

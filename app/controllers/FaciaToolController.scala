@@ -8,9 +8,8 @@ import com.gu.pandomainauth.action.UserRequest
 import conf.ApplicationConfiguration
 import frontsapi.model._
 import metrics.FaciaToolMetrics
-import model.{Cached, NoCache}
-import permissions.{BreakingNewsEditCollectionsCheck, ConfigPermissionCheck}
-import play.api.Logger
+import model.NoCache
+import permissions.BreakingNewsEditCollectionsCheck
 import play.api.libs.json._
 import play.api.mvc._
 import services._
@@ -22,25 +21,9 @@ import scala.concurrent.Future
 
 class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, val frontsApi: FrontsApi, val faciaApiIO: FaciaApiIO, val updateActions: UpdateActions,
                           breakingNewsUpdate: BreakingNewsUpdate, val auditingUpdates: AuditingUpdates, val faciaPress: FaciaPress, val faciaPressQueue: FaciaPressQueue,
-                          val configAgent: ConfigAgent, val s3FrontsApi: S3FrontsApi, val isDev: Boolean) extends Controller with PanDomainAuthActions with BreakingNewsEditCollectionsCheck {
+                          val configAgent: ConfigAgent, val s3FrontsApi: S3FrontsApi) extends Controller with PanDomainAuthActions with BreakingNewsEditCollectionsCheck {
 
   override lazy val actorSystem = ActorSystem()
-
-  def priorities() = AuthAction { request =>
-    Logger.info("Doing priorities..." + request)
-    val identity = request.user
-    Cached(60) { Ok(views.html.priority(Option(identity), config.facia.stage, isDev)) }
-  }
-
-  def collectionEditor() = AuthAction { request =>
-    val identity = request.user
-    Cached(60) { Ok(views.html.admin_main(Option(identity), config.facia.stage, isDev)) }
-  }
-
-  def configEditor() = (AuthAction andThen new ConfigPermissionCheck(acl)) { request =>
-    val identity = request.user
-    Cached(60) { Ok(views.html.admin_main(Option(identity), config.facia.stage, isDev)) }
-  }
 
   def getConfig = APIAuthAction.async { request =>
     FaciaToolMetrics.ApiUsageCount.increment()
