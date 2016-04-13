@@ -1,20 +1,20 @@
 import _ from 'underscore';
 import parseQueryParams from 'utils/parse-query-params';
 
-export default function(url) {
-    var bits = (url + '').split('?');
+export default function (url) {
+    const bits = (url + '').split('?');
 
     if (bits.length <= 1) {
         return url;
     }
 
-    var params = _.map(
+    const params = _.map(
         parseQueryParams(url, {
-            predicateKey: function(key) { return key !== 'api-key'; },
-            predicateVal: function(val) { return val; }
+            predicateKey: key => key !== 'api-key',
+            predicateVal: val => val
         }),
-        function(val, key) { return key + '=' + val; }
+        (val, key) => key + '=' + val
     ).join('&');
 
-    return bits[0] + (params ? '?' + params : '');
+    return bits[0].replace(/^\/+/, '') + (params ? '?' + params : '');
 }
