@@ -1,6 +1,6 @@
 {
     "defaultStacks": ["cms-fronts"],
-    "packages":{
+    "packages": {
         "facia-tool": {
             "type": "autoscaling",
             "data": {
@@ -8,17 +8,45 @@
                 "bucket": "facia-dist",
                 "publicReadAcl": false
             }
+        },
+        "static-facia-tool": {
+            "type": "aws-s3",
+            "data": {
+                "bucket": "cms-fronts-static-assets",
+                "cacheControl": [
+                    {
+                        "pattern": ".*\\.js$",
+                        "value": "public, max-age=315360000"
+                    },
+                    {
+                        "pattern": ".*",
+                        "value": "public, max-age=60"
+                    }
+                ],
+                "mimeTypes": {
+                    "js": "application/javascript",
+                    "map": "text/plain",
+                    "json": "application/json"
+                },
+                "prefixPackage": true,
+                "prefixStack": false,
+                "prefixStage": true,
+                "publicReadAcl": true
+            }
         }
     },
-    "recipes":{
-        "default":{
-            "depends" : ["artifactUpload", "deploy"]
+    "recipes": {
+        "default": {
+            "depends" : ["artifactUpload", "staticUpload", "deploy"]
         },
-        "deploy":{
+        "deploy": {
             "actionsBeforeApp": ["facia-tool.deploy"]
         },
-        "artifactUpload":{
+        "artifactUpload": {
             "actionsBeforeApp": ["facia-tool.uploadArtifacts"]
+        },
+        "staticUpload": {
+            "actionsBeforeApp": ["static-facia-tool.uploadStaticFiles"]
         }
     }
 }

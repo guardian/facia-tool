@@ -464,6 +464,14 @@
                                     "STAGE=", { "Ref" : "Stage" }, "\n",
                                     "STS_ROLE=", { "Ref" : "FrontendRoleToAssume" }, "\n"
                                 ]]}
+                            },
+                            "/etc/gu/facia-tool.assets-map.json": {
+                                "source": { "Fn::Join" : ["", [
+                                    "https://s3-eu-west-1.amazonaws.com/cms-fronts-static-assets/",
+                                    { "Ref": "Stage" },
+                                    "/static-facia-tool/assets-map.json"
+                                ]]},
+                                "authentication": "distributionAuthentication"
                             }
                         }
                     }
