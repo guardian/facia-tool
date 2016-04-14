@@ -27,7 +27,7 @@ System.config({
     "fastselect": "github:dbrekalo/fastselect@0.2.0",
     "font-awesome": "npm:font-awesome@4.5.0",
     "grid-util-js": "npm:grid-util-js@1.0.5",
-    "highcharts": "facia-tool/components/highcharts/highcharts-custom",
+    "highcharts": "npm:highcharts@4.2.3",
     "jquery": "npm:jquery@2.2.3",
     "jquery-mockjax": "npm:jquery-mockjax@2.1.1",
     "jquery-ui": "github:jquery/jquery-ui@1.11.3",
@@ -280,6 +280,9 @@ System.config({
     },
     "npm:hash.js@1.0.3": {
       "inherits": "npm:inherits@2.0.1"
+    },
+    "npm:highcharts@4.2.3": {
+      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:https-browserify@0.0.0": {
       "http": "github:jspm/nodelibs-http@1.7.1"

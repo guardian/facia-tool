@@ -1,8 +1,6 @@
-import highchartsGlobals from 'highcharts';
+import Highcharts from 'highcharts';
 
-var Highcharts = highchartsGlobals.Highcharts;
-
-var sparklinesDefaults = {
+const sparklinesDefaults = {
     chart: {
         renderTo: null,
         backgroundColor: null,
