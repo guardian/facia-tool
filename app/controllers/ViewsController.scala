@@ -1,6 +1,7 @@
 package controllers
 
 import auth.PanDomainAuthActions
+import com.gu.pandomainauth.action.UserRequest
 import conf.ApplicationConfiguration
 import model.Cached
 import permissions.ConfigPermissionCheck
@@ -20,14 +21,18 @@ class ViewsController(val config: ApplicationConfiguration, val acl: Acl, assets
   def collectionEditor() = AuthAction { request =>
     val identity = request.user
     Cached(60) {
-      Ok(views.html.admin_main(Option(identity), config.facia.stage, isDev, assetsManager.pathForCollections))
+      Ok(views.html.admin_main(Option(identity), config.facia.stage, overrideIsDev(request), assetsManager.pathForCollections))
     }
   }
 
   def configEditor() = (AuthAction andThen new ConfigPermissionCheck(acl)) { request =>
     val identity = request.user
     Cached(60) {
-      Ok(views.html.admin_main(Option(identity), config.facia.stage, isDev, assetsManager.pathForConfig))
+      Ok(views.html.admin_main(Option(identity), config.facia.stage, overrideIsDev(request), assetsManager.pathForConfig))
     }
+  }
+
+  private def overrideIsDev(request: UserRequest[AnyContent]): Boolean = {
+    request.queryString.getOrElse("isDev", Seq("false")).contains("true")
   }
 }
