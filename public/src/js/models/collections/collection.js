@@ -110,11 +110,17 @@ export default class Collection extends BaseClass {
     }
 
     setPending(asPending) {
-        if (asPending) {
-            this.state.pending(true);
-        } else {
-            setTimeout(() => this.state.pending(false), 10);
-        }
+        return new Promise(resolve => {
+            if (asPending) {
+                this.state.pending(true);
+                resolve();
+            } else {
+                setTimeout(() => {
+                    this.state.pending(false);
+                    resolve();
+                }, 10);
+            }
+        });
     }
 
     isPending() {
@@ -294,7 +300,7 @@ export default class Collection extends BaseClass {
             }
         })
         .then(() => {
-            this.setPending(false);
+            return this.setPending(false);
         });
     }
 
@@ -360,7 +366,7 @@ export default class Collection extends BaseClass {
             }
         }
 
-        this.setPending(false);
+        loading.push(this.setPending(false));
         return Promise.all(loading)
             .then(() => mediator.emit('collection:populate', this))
             .catch(() => {});

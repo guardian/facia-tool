@@ -5,9 +5,10 @@ jdk:
 before_install:
     - nvm install 5
     - nvm use 5
-    - npm install -g grunt
+    - npm install -g grunt-cli
 install:
     - npm install
+    - grunt --version
     - jspm config registries.github.auth $JSPM_GITHUB_AUTH_SECRET
     - jspm registry export github
     - jspm install
