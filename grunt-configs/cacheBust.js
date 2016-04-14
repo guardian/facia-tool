@@ -3,10 +3,11 @@ module.exports = function() {
     return {
         static: {
             options: {
-                assets: ['tmp/bundles/*.js'],
+                baseDir: 'tmp/bundles/',
+                assets: ['*.js'],
                 deleteOriginals: true,
                 jsonOutput: true,
-                jsonOutputFilename: 'tmp/bundles/assets-map.json'
+                jsonOutputFilename: 'assets-map.json'
             },
             src: ['index.html']
         }

@@ -1,4 +1,4 @@
-@(identity: Option[com.gu.pandomainauth.model.User] = None, stage: String, isDev: Boolean)
+@(identity: Option[com.gu.pandomainauth.model.User] = None, stage: String, isDev: Boolean, bundlePath: String)
 
 @import switchboard.SwitchManager
 
@@ -11,6 +11,9 @@
 
         <script src="/assets/jspm_packages/system.js"></script>
         <script src="/assets/js/jspm-config.js"></script>
+        @if(!isDev) {
+            <script src="@{bundlePath}"></script>
+        }
 
         <script>System.import('setup');</script>
     </head>
