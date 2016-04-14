@@ -139,6 +139,7 @@ describe('utils/sanitize-api-query', function () {
         expect(sanitizeQuery('search?q=fruit&color=yellow')).toBe('search?q=fruit&color=yellow');
         expect(sanitizeQuery('search?q=fruit&api-key=xxx&shape=&ripe=true')).toBe('search?q=fruit&ripe=true');
         expect(sanitizeQuery('search?q=&shape=')).toBe('search');
+        expect(sanitizeQuery('/search?q=slash')).toBe('search?q=slash');
     });
 });
 
