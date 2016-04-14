@@ -28,13 +28,13 @@ System.config({
     "font-awesome": "npm:font-awesome@4.5.0",
     "grid-util-js": "npm:grid-util-js@1.0.5",
     "highcharts": "facia-tool/components/highcharts/highcharts-custom",
-    "jquery": "npm:jquery@2.2.0",
+    "jquery": "npm:jquery@2.2.3",
     "jquery-mockjax": "npm:jquery-mockjax@2.1.1",
     "jquery-ui": "github:jquery/jquery-ui@1.11.3",
     "knockout": "npm:knockout@3.4.0",
     "numeral": "npm:numeral@1.5.3",
     "panda-session": "github:guardian/panda-session@0.1.6",
-    "raven-js": "npm:raven-js@1.1.22",
+    "raven-js": "npm:raven-js@2.3.0",
     "sinon": "npm:sinon@1.17.3",
     "text": "github:systemjs/plugin-text@0.0.7",
     "underscore": "npm:underscore@1.8.3",
@@ -288,7 +288,7 @@ System.config({
       "util": "github:jspm/nodelibs-util@0.1.0"
     },
     "npm:jquery-mockjax@2.1.1": {
-      "jquery": "npm:jquery@2.2.0",
+      "jquery": "npm:jquery@2.2.3",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:knockout@3.4.0": {
@@ -352,7 +352,7 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.2",
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
-    "npm:raven-js@1.1.22": {
+    "npm:raven-js@2.3.0": {
       "path": "github:jspm/nodelibs-path@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
