@@ -1,8 +1,8 @@
 /* eslint no-console: 0 */
 const DEFAULT_VIEW = 'stale';
 const VIEWS_INSTANCES = {};
-var currentLoadedView;
-var currentLoadedViewInstance;
+let currentLoadedView;
+let currentLoadedViewInstance;
 
 window.addEventListener('hashchange', loadFromHash);
 loadFromHash();
