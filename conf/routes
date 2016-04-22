@@ -70,6 +70,7 @@ POST        /stories-visible/*containerType          controllers.StoriesVisibleC
 
 # Vanity URL
 GET         /breaking-news                           controllers.VanityRedirects.breakingnews
+GET         /*path/                                  controllers.VanityRedirects.untrail(path: String)
 
 # Admin
 GET         /troubleshoot                            controllers.TroubleshootController.troubleshoot
