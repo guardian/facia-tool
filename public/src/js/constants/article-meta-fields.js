@@ -72,11 +72,13 @@ export default Object.freeze([
         label: 'replacement image URL',
         validator: {
             params: {
+                // transition only - inherited from imageSrc
                 src: 'imageSrc',
                 width: 'imageSrcWidth',
                 height: 'imageSrcHeight',
                 origin: 'imageSrcOrigin',
-                imageSource: 'imageSource',
+                // when transition is complete this is the only one needed
+                source: 'imageSource',
                 options: {
                     maxWidth: 1000,
                     minWidth: 400,

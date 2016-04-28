@@ -56,11 +56,10 @@ export default class Editor extends BaseClass {
             if (validator && _.isFunction(this[validator.fn])) {
                 this.subscribeOn(meta, () => {
                     if (this.performValidation !== false) {
-                        this[validator.fn](validator.params, meta);
+                        this[validator.fn](validator.params);
                     }
                 });
             }
-
         } else if (type === 'text-image') {
             this.updateText = ko.pureComputed({
                 read: this.imageValue,
@@ -170,17 +169,14 @@ export default class Editor extends BaseClass {
     }
 
     writeImage(value) {
-        var checkedValue = this.field() === value ? undefined : value.replace(rxScriptStriper, '');
-        this.meta({
-            src: checkedValue
-        });
-        this.validateImage(this.validator.params);
+        const imageSrc = this.field() === value ? undefined : value.replace(rxScriptStriper, '');
+        this.validateImage(this.validator.params, imageSrc);
     }
 
-    validateImage(params) {
-        var imageSrc = this.article.meta[params.imageSource],
-            image = imageSrc().src,
-            opts = params.options;
+    validateImage(params, imageSrc) {
+        const imageMeta = this.article.meta[params.src];
+        const image = imageSrc || imageMeta();
+        const opts = params.options;
 
         if (image) {
             let {src, origin} = extractImageElements(image);
@@ -199,7 +195,6 @@ export default class Editor extends BaseClass {
                     }
                 });
         } else {
-
             if (this.type === 'text') {
                 this.assignImageToSpreadElement(params, null);
             } else if (this.type === 'text-image') {
@@ -209,23 +204,15 @@ export default class Editor extends BaseClass {
     }
 
     assignImageToObjectElement(params, imgOrError, origin) {
-
+        const imageSource = this.article.meta[params.source];
         if (!imgOrError || imgOrError instanceof Error) {
-
-            assign(this, [this.article.meta.imageSource], [undefined]);
-
-            //TODO: once we stop calling `assingImageToSpreadElement
-            //we need to alert the user of error here
-
+            assign(this, [imageSource], [undefined]);
             this.assignImageToSpreadElement(params, imgOrError, origin);
-
         } else {
-
-            assign(this, [this.article.meta.imageSource], [{
+            assign(this, [imageSource], [{
                 src: imgOrError.src,
                 origin: imgOrError.origin
             }]);
-
             return this.assignImageToSpreadElement(params, imgOrError, origin);
         }
     }
@@ -279,8 +266,6 @@ function extractImageElements(value) {
 
 function assign(scope, metas, values) {
     scope.performValidation = false;
-    metas.forEach((meta, index) => {
-        meta(values[index]);
-    });
+    metas.forEach((meta, index) => meta(values[index]));
     scope.performValidation = true;
 }

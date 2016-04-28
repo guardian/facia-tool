@@ -3,7 +3,9 @@ export function thumbnail() {
         fields = this.fields,
         state = this.state;
 
-    if (meta.imageReplace() && meta.imageSrc()) {
+    if (meta.imageReplace() && meta.imageSource()) {
+        return meta.imageSource().src;
+    } else if (meta.imageReplace() && meta.imageSrc()) {
         return meta.imageSrc();
     } else if (meta.imageCutoutReplace()) {
         return meta.imageCutoutSrc() || state.imageCutoutSrcFromCapi() || fields.secureThumbnail() || fields.thumbnail();
@@ -19,12 +21,10 @@ export function main() {
         fields = this.fields,
         state = this.state;
 
-    if (meta.imageReplace()) {
-        if (meta.imageSource()) {
-            return meta.imageSource().src;
-        } else if (meta.imageSrc()) {
-            return meta.imageSrc();
-        }
+    if (meta.imageReplace() && meta.imageSource()) {
+        return meta.imageSource().src;
+    } else if (meta.imageReplace() && meta.imageSrc()) {
+        return meta.imageSrc();
     } else if (meta.imageCutoutReplace()) {
         return meta.imageCutoutSrc() || state.imageCutoutSrcFromCapi() || fields.secureThumbnail() || fields.thumbnail();
     } else if (meta.imageSlideshowReplace && meta.imageSlideshowReplace() && meta.slideshow() && meta.slideshow()[0]) {
