@@ -73,4 +73,5 @@ GET         /breaking-news                           controllers.VanityRedirects
 GET         /*path/                                  controllers.VanityRedirects.untrail(path: String)
 
 # Admin
-GET         /troubleshoot                            controllers.TroubleshootController.troubleshoot
+GET         /troubleshoot                            controllers.TroubleshootController.troubleshoot(section="stale")
+GET         /troubleshoot/*section                   controllers.TroubleshootController.troubleshoot(section)
