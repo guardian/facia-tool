@@ -28,19 +28,40 @@ export function render (container) {
     const mainView = clone('mainView');
     container.innerHTML = '';
     container.appendChild(mainView);
+    populateDefaults(container);
     registerListeners(container);
+}
+
+export function update (container) {
+    populateDefaults(container);
+}
+
+function populateDefaults (container) {
+    const match = window.location.pathname.match(/^.*\/stale\/(.*)$/);
+    if (match) {
+        const front = match[1];
+        container.querySelector('.searchField').value = front;
+        checkFront(container, front);
+    }
 }
 
 function registerListeners (container) {
     const checkCallback = checkFront.bind(null, container, null);
-    container.querySelector('.checkFront').addEventListener('click', checkCallback);
+    const checkFrontElement = container.querySelector('.checkFront');
+    checkFrontElement.addEventListener('click', checkCallback);
     disposeActions.push(function () {
-        container.querySelector('.checkFront').removeEventListener('click', checkCallback);
+        checkFrontElement.removeEventListener('click', checkCallback);
     });
     const rePressFront = delegatePressFront.bind(null, container);
     container.addEventListener('click', rePressFront);
     disposeActions.push(function () {
         container.removeEventListener('click', rePressFront);
+    });
+    const submitCallback = checkFrontOnSubmit.bind(null, container);
+    const formElements = Array.from(container.querySelectorAll('.form'));
+    formElements.forEach(form => form.addEventListener('submit', submitCallback));
+    disposeActions.push(function () {
+        formElements.forEach(form => form.removeEventListener('submit', submitCallback));
     });
 }
 
@@ -366,4 +387,10 @@ function pressFront(container, front) {
         pressContainer.classList.remove('loading');
         button.disabled = false;
     });
+}
+
+function checkFrontOnSubmit (container, event) {
+    event.preventDefault();
+    const frontName = extractFrontName(container);
+    window.history.pushState(null, null, '/troubleshoot/stale/' + frontName);
 }

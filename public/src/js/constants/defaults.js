@@ -1,3 +1,4 @@
+/* eslint no-multi-spaces: 0 */
 export default {
     editions: ['uk', 'us', 'au'],
 
