@@ -48,6 +48,14 @@
         "MachineImageID": {
             "Description": "ID of the machine image for this service (ami)",
             "Type": "String"
+        },
+        "FrontendAccountID": {
+            "Description": "AWS account ID of frontend",
+            "Type": "String"
+        },
+        "MobileAPIAccountID": {
+            "Description": "AWS account ID of MAPI",
+            "Type": "String"
         }
     },
     "Mappings": {
@@ -126,6 +134,42 @@
                 ]
             }
         },
+        "StorageConsumerRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "Path": "/",
+                "AssumeRolePolicyDocument": {
+                    "Statement": [
+                        {
+                            "Action": "sts:AssumeRole",
+                            "Effect": "Allow",
+                            "Principal": {
+                                "AWS": {
+                                    "Fn::Join": [ "", [
+                                        "arn:aws:iam::",
+                                        { "Ref": "FrontendAccountID" },
+                                        ":root"
+                                    ]]
+                                }
+                            }
+                        },
+                        {
+                            "Action": "sts:AssumeRole",
+                            "Effect": "Allow",
+                            "Principal": {
+                                "AWS": {
+                                    "Fn::Join": [ "", [
+                                        "arn:aws:iam::",
+                                        { "Ref": "MobileAPIAccountID" },
+                                        ":root"
+                                    ]]
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        },
         "StorageBucket": {
             "Type": "AWS::IAM::Policy",
             "Properties": {
@@ -152,7 +196,10 @@
                         ]
                     }]
                 },
-                "Roles": [{ "Ref": "DistributionRole" }]
+                "Roles": [
+                    { "Ref": "DistributionRole" },
+                    { "Ref": "StorageConsumerRole" }
+                ]
             }
         },
         "PanDomainPolicy": {
@@ -523,6 +570,12 @@
                     "FaciaLoadBalancer",
                     "DNSName"
                 ]
+            }
+        },
+        "StorageConsumerRole": {
+            "Description": "Role to be assumed for cross account access to the bucket",
+            "Value": {
+                "Ref": "StorageConsumerRole"
             }
         }
     }
