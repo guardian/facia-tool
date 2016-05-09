@@ -1,8 +1,8 @@
 package util
 
 import com.gu.contentapi.client.model.v1.Content
-import com.gu.contentapi.client.parser.JsonParser
-import com.gu.contentapi.client.parser.JsonParser._
+import com.gu.contentapi.json.JsonParser
+import com.gu.contentapi.json.JsonParser._
 import com.gu.facia.api.utils.{CardStyle, ResolvedMetaData}
 import com.gu.facia.client.models.TrailMetaData
 import org.json4s.JValue
