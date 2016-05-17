@@ -81,7 +81,7 @@ function validateItem (item) {
             fetchContent(capiId)
             .then(function(res = {}) {
                 var results = res.content,
-                    resultsTitle = res.title,
+                    resultsTitle = res.title || 'Unknown title',
                     capiItem,
                     pageCode,
                     err;
