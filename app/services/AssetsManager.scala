@@ -35,7 +35,6 @@ class AssetsManager(config: ApplicationConfiguration, isDev: Boolean) {
   def pathForCollections: String = pathFor(assetsMap.map(_.collections).getOrElse(""))
 
   private def pathFor(hashedFileName: String): String = {
-    val stage = config.environment.stage.toUpperCase
-    s"${config.cdn.host}/cms-fronts-static-assets/$stage/static-facia-tool/$hashedFileName"
+    s"${config.cdn.basePath}$hashedFileName"
   }
 }
