@@ -104,7 +104,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
   }
 
   object cdn {
-    lazy val host = getString("cdn.host").getOrElse("")
+    lazy val basePath = getString("assets.basePath").getOrElse("/")
   }
 
   object contentApi {
