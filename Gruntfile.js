@@ -52,6 +52,7 @@ module.exports = function (grunt) {
         var riffraff = require('node-riffraff-artefact');
         var path = require('path');
         riffraff.settings.leadDir = path.join(__dirname, 'tmp');
+        riffraff.settings.manifestProjectName = "cms-fronts::facia-tool";
         riffraff.s3Upload()
         .then(function () {
             grunt.log.writeln('Artifacts uploaded!');
