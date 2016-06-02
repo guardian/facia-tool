@@ -155,13 +155,27 @@ Create the files
 
    ```
 
+* In your local aws credentials file `~/.aws/credentials`, add the correct region in the **[cmsFronts]**, **[workflow]** and **[frontend]** profiles. For instance, the profile for **[cmsFronts]** would look like this
 
+	```
+[cmsFronts]
+region=eu-west-1
+aws_access_key_id = [redacted]
+aws_secret_access_key = [redacted]
+aws_session_token = [redacted]
+	```
+ 
+* In your file `/etc/gu/facia-tool.application.secrets.conf`, remove the first two blocks **PROD** and **CODE**
 
 ### Credentials
 
 You need valid developer credentials for `cmsFronts` and `workflow`.
-You can get keys temporary keys from `janus`.
+You can get keys temporary keys from `janus`. Note that the recommended way to get Janus credentials for *facia-tool* is to use feria and run:
 
+```
+$ feria cmsFronts && feria --access s3-read workflow && feria --access sqs-consumer frontend
+```
+(You should first checkout the repository and follow the install instructions for *feria*.)
 
 
 ### Code Dependencies
