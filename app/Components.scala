@@ -15,7 +15,7 @@ import slices.{Containers, FixedContainers}
 import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
 import updates.{AuditingUpdates, BreakingNewsUpdate}
-import util.Acl
+import util.{Acl, Encryption}
 import router.Routes
 
 class AppComponents(context: Context) extends BuiltInComponentsFromContext(context) with NingWSComponents {
@@ -41,7 +41,8 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   val updateManager = new UpdateManager(updateActions, configAgent, s3FrontsApi)
   val cloudwatch = new CloudWatch(appConfiguration, awsEndpoints)
   val press = new Press(faciaPress)
-  var assetsManager = new AssetsManager(appConfiguration, isDev)
+  val assetsManager = new AssetsManager(appConfiguration, isDev)
+  val encryption = new Encryption(appConfiguration)
 
   val collection = new CollectionController(appConfiguration, acl, auditingUpdates, updateManager, press)
   val defaults = new DefaultsController(appConfiguration, acl, isDev)
@@ -56,7 +57,7 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   val troubleshoot = new TroubleshootController(appConfiguration)
   val uncachedAssets = new UncachedAssets
   val vanityRedirects = new VanityRedirects(appConfiguration, acl)
-  val views = new ViewsController(appConfiguration, acl, assetsManager, isDev)
+  val views = new ViewsController(appConfiguration, acl, assetsManager, isDev, encryption)
 
   val assets = new controllers.Assets(httpErrorHandler)
   val router: Router = new Routes(httpErrorHandler, status, pandaAuth, uncachedAssets, views, faciaTool, defaults, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects, troubleshoot)
