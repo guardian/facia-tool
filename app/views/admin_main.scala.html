@@ -1,4 +1,4 @@
-@(identity: Option[com.gu.pandomainauth.model.User] = None, stage: String, isDev: Boolean, bundlePath: String)
+@(identity: Option[com.gu.pandomainauth.model.User] = None, stage: String, isDev: Boolean, bundlePath: String, userId: String)
 
 @import switchboard.SwitchManager
 
@@ -25,7 +25,7 @@
         @templates.header(stage, identity, isDev)
         @templates.vertical_layout()
         @templates.main()
-        @templates.analytics()
+        @templates.analytics(userId)
     }
     </body>
 </html>
