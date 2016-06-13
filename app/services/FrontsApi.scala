@@ -9,7 +9,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class FrontsApi(val config: ApplicationConfiguration, val awsEndpoints: AwsEndpoints) {
   val amazonClient: ApiClient = {
 
-    val client = new AmazonS3Client(config.aws.mandatoryCrossAccountCredentials)
+    val client = new AmazonS3Client(config.aws.mandatoryCredentials)
     client.setEndpoint(awsEndpoints.s3)
     val bucket = config.aws.bucket
     val stage = config.facia.stage.toUpperCase
