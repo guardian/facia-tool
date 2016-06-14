@@ -12,6 +12,14 @@ export function page (path, title) {
     }
 }
 
+export function trackAction (category, action, value) {
+    return new Promise(resolve => {
+        ga('send', 'event', category, action, value, {
+            hitCallback: () => resolve()
+        });
+    });
+}
+
 function canMeasureTime () {
     return window.ga && window.performance;
 }

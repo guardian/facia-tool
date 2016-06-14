@@ -21,6 +21,7 @@
    ><a class="treats-mode active" data-bind="visible: mode() === 'treats'">Treats</a
    ><a class="breaking-mode active" data-bind="visible: confirmSendingAlert()">Breaking News</a
    ><a class="preview" target="preview" data-bind="
+        click: trackPreviewClick,
         attr: { href: previewUrl },
         visible: front">
         <span data-bind="if: mode() === 'live'">View live</span>
