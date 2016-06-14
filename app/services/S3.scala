@@ -70,11 +70,11 @@ trait S3 {
     }
   }
 
-  def get(key: String)(implicit codec: Codec): Option[String] = withS3Result(frontendS3Account, key) {
+  def get(key: String)(implicit codec: Codec): Option[String] = withS3Result(cmsFrontsS3Account, key) {
     result => Source.fromInputStream(result.getObjectContent).mkString
   }
 
-  def getLastModified(key: String): Option[DateTime] = withS3Result(frontendS3Account, key) {
+  def getLastModified(key: String): Option[DateTime] = withS3Result(cmsFrontsS3Account, key) {
     result => new DateTime(result.getObjectMetadata.getLastModified)
   }
 
