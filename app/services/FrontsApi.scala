@@ -11,7 +11,7 @@ class FrontsApi(val config: ApplicationConfiguration, val awsEndpoints: AwsEndpo
 
     val client = new AmazonS3Client(config.aws.mandatoryCredentials)
     client.setEndpoint(awsEndpoints.s3)
-    val bucket = config.aws.bucket
+    val bucket = config.aws.frontsBucket
     val stage = config.facia.stage.toUpperCase
     ApiClient(bucket, stage, AmazonSdkS3Client(client))
   }
