@@ -60,7 +60,7 @@ export default class Front extends ColumnWidget {
         });
 
         this.previewUrl = ko.pureComputed(() => {
-            var path = this.mode() === 'live' ? 'http://' + CONST.mainDomain : CONST.previewBase;
+            var path = this.mode() === 'live' ? 'https://' + CONST.viewerHost + '/proxy/live' : CONST.previewBase;
 
             return CONST.previewBase + '/responsive-viewer/' + path + '/' + this.front();
         });
