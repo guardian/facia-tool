@@ -196,11 +196,6 @@ class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, va
     NoCache(Ok)
   }
 
-  def getLastModified(path: String) = APIAuthAction { request =>
-    val now: Option[String] = s3FrontsApi.getPressedLastModified(path)
-    now.map(Ok(_)).getOrElse(NotFound)
-  }
-
   def getMetadata() = APIAuthAction { request =>
     val matchingTags = request.queryString.get("query") match {
       case Some(Seq(search)) if search.nonEmpty => Metadata.tags.filterKeys(_ contains search)

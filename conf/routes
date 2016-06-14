@@ -36,7 +36,7 @@ POST        /collection/discard/*collectionId        controllers.FaciaToolContro
 POST        /press/live/*path                        controllers.FaciaToolController.pressLivePath(path)
 POST        /press/draft/*path                       controllers.FaciaToolController.pressDraftPath(path)
 
-GET         /front/lastmodified/*path                controllers.FaciaToolController.getLastModified(path)
+GET         /front/lastmodified/*path                controllers.PressController.getLastModified(path)
 
 GET         /collection/*collectionId                controllers.FaciaToolController.getCollection(collectionId)
 POST        /edits                                   controllers.FaciaToolController.collectionEdits
