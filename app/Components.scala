@@ -58,9 +58,10 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   val uncachedAssets = new UncachedAssets
   val vanityRedirects = new VanityRedirects(appConfiguration, acl)
   val views = new ViewsController(appConfiguration, acl, assetsManager, isDev, encryption)
+  val pressController = new PressController(appConfiguration, awsEndpoints)
 
   val assets = new controllers.Assets(httpErrorHandler)
-  val router: Router = new Routes(httpErrorHandler, status, pandaAuth, uncachedAssets, views, faciaTool, defaults, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects, troubleshoot)
+  val router: Router = new Routes(httpErrorHandler, status, pandaAuth, uncachedAssets, views, faciaTool, pressController, defaults, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects, troubleshoot)
 
   override lazy val injector: Injector =
     new SimpleInjector(NewInstanceInjector) + router + crypto + httpConfiguration + tempFileCreator + wsApi + wsClient
