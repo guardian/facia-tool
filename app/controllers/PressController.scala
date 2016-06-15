@@ -16,15 +16,13 @@ class PressController (val config: ApplicationConfiguration, awsEndpoints: AwsEn
     client
   }
 
-  private lazy val pressedTable = config.faciatool.frontPressUpdateTable.map(Table[FrontPressRecord](_))
+  private lazy val pressedTable = Table[FrontPressRecord](config.faciatool.frontPressUpdateTable)
 
   def getLastModified (path: String) = APIAuthAction { request =>
     import com.gu.scanamo.syntax._
 
-    val record: Option[FrontPressRecord] = pressedTable.flatMap { table =>
-      Scanamo.exec(client)(
-        table.get('stageName -> "live" and 'frontId -> path)).flatMap(_.toOption)
-    }
+    val record: Option[FrontPressRecord] = Scanamo.exec(client)(
+        pressedTable.get('stageName -> "live" and 'frontId -> path)).flatMap(_.toOption)
     record.map(r => Ok(r.pressedTime)).getOrElse(NotFound)
   }
 }
