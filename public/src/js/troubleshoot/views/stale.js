@@ -7,6 +7,7 @@ const disposeActions = [];
 const STALE_NETWORK_FRONT = 6 * 60 * 1000;
 const STALE_EDITORIAL_FRONT = 20 * 60 * 1000;
 const STALE_COMMERCIAL_FRONT = 2.5 * 3600 * 1000;
+const STALE_TRAINING_FRONT = 2.5 * 3600 * 1000;
 
 var clone = (function (mainTemplateText) {
     const templatesMap = {};
@@ -103,8 +104,6 @@ function fetchConfig () {
 function checkExistingFront (front, config) {
     if (!config.fronts[front]) {
         throw new Error('Front \'' + front + '\' does not exist. Please check the name and try again.');
-    } else if (config.fronts[front].priority === 'training') {
-        throw new Error('Front \'' + front + '\' is a training front. It never gets pressed.');
     }
     return config;
 }
@@ -142,8 +141,10 @@ function checkPressedState (front, config, container, lastPress) {
 function staleInterval (front, config) {
     if (CONST.highFrequencyPaths.indexOf(front) !== -1) {
         return STALE_NETWORK_FRONT;
-    } else if (config.fronts[front].priority) {
+    } else if (config.fronts[front].priority === 'commercial') {
         return STALE_COMMERCIAL_FRONT;
+    } else if (config.fronts[front].priority === 'training') {
+        return STALE_TRAINING_FRONT;
     } else {
         return STALE_EDITORIAL_FRONT;
     }
