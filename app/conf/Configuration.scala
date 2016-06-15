@@ -26,6 +26,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
   private val properties = Properties(installVars)
   private val stageFromProperties = properties.getOrElse("STAGE", "CODE")
   private val stsRoleToAssumeFromProperties = properties.getOrElse("STS_ROLE", "unknown")
+  private val forntPressedDynamoTable = properties.getOrElse("FRONT_PRESSED_TABLE", "unknown")
 
   private def getString(property: String): Option[String] =
     playConfiguration.getString(stageFromProperties + "." + property)
@@ -144,7 +145,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     lazy val frontPressToolQueue = getString("frontpress.sqs.tool_queue_url")
     lazy val showTestContainers = getBoolean("faciatool.show_test_containers").getOrElse(false)
     lazy val stsRoleToAssume = getString("faciatool.sts.role.to.assume").getOrElse(stsRoleToAssumeFromProperties)
-    lazy val frontPressUpdateTable = getString("frontpress.dynamo.update_table")
+    lazy val frontPressUpdateTable = forntPressedDynamoTable
   }
 
   object media {

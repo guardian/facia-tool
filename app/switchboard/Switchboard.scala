@@ -3,7 +3,6 @@ package switchboard
 import akka.actor.Scheduler
 import com.amazonaws.auth.AWSCredentialsProvider
 import play.api.Logger
-import services.AwsEndpoints
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._

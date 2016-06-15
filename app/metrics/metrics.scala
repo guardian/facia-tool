@@ -6,8 +6,7 @@ import java.util.concurrent.atomic.AtomicLong
 
 import akka.actor.Scheduler
 import com.amazonaws.services.cloudwatch.model.{Dimension, StandardUnit}
-import play.Play
-import play.api.{Application => PlayApp, Logger}
+import play.api.{Logger, Application => PlayApp}
 
 import scala.collection.JavaConversions._
 import scala.concurrent.ExecutionContext.Implicits.global
