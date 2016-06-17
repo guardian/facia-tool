@@ -205,3 +205,6 @@ body {
 .pressContainer {
     margin-bottom: 1em;
 }
+.errorStatus {
+    display: inline-block;
+}

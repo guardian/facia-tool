@@ -109,29 +109,38 @@ function checkExistingFront (front, config) {
 }
 
 function fetchLastPressed (front) {
-    return fetch('/front/lastmodified/' + front, {
+    return fetch('/front/lastmodifiedstatus/live/' + front, {
         credentials: 'include'
     })
-    .then(response => response.text())
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            return Promise.reject({
+                status: 500,
+                statusText: 'Error fetching press status: ' + response.statusText
+            });
+        }
+    })
     .catch(errorResponse => {
         if (errorResponse.status === 404) {
             // Never pressed, probably invalid anyway
             return '';
         } else {
-            throw new Error('Error while checking last press date of \'' + front + '\': ' + errorResponse.responseText || errorResponse.statusText);
+            return Promise.reject(new Error('Error while checking last press date of \'' + front + '\': ' + (errorResponse.responseText || errorResponse.statusText)));
         }
     });
 }
 
 function checkPressedState (front, config, container, lastPress) {
     if (lastPress) {
-        const date = new Date(lastPress);
+        const date = new Date(lastPress.pressedTime);
         const now = new Date();
 
         if (now - date > staleInterval(front, config)) {
-            return diagnoseStaleFront(container, front, config, humanTime(date, now));
+            return diagnoseStaleFront(container, front, config, humanTime(date, now), lastPress);
         } else {
-            return frontNotStale(container, front, humanTime(date, now));
+            return frontNotStale(container, front, humanTime(date, now), lastPress);
         }
     } else {
         return diagnoseStaleFront(container, front, config, null);
@@ -150,20 +159,21 @@ function staleInterval (front, config) {
     }
 }
 
-function inject (container, element) {
+function inject (container, ...elements) {
     const placeholder = container.querySelector('.templatePlaceholder');
     placeholder.innerHTML = '';
 
-    placeholder.appendChild(element);
+    elements.filter(Boolean).forEach(element => placeholder.appendChild(element));
 }
 
-function diagnoseStaleFront (container, front, config, when) {
+function diagnoseStaleFront (container, front, config, when, status) {
     const troubleshootResults = clone('staleFront');
     troubleshootResults.querySelector('.lastModifyDate').textContent = when || 'never';
     troubleshootResults.querySelector('.frontName').textContent = front;
 
     diagnoseCapiQueries(troubleshootResults, front, config, createScheduler());
     diagnoseDreamSnaps(troubleshootResults, front, config, createScheduler());
+    populatePressErrorMessage(troubleshootResults, status);
     inject(container, troubleshootResults);
 
     container.querySelector('.rePress').dataset.frontName = front;
@@ -214,12 +224,24 @@ function diagnoseDreamSnaps(container, front, config, scheduler) {
     });
 }
 
-function frontNotStale (container, front, when) {
+function frontNotStale (container, front, when, status) {
     const validMessage = clone('frontNotStale');
     validMessage.querySelector('.lastModifyDate').textContent = when;
     validMessage.querySelector('.frontName').textContent = front;
+    populatePressErrorMessage(validMessage, status);
 
     inject(container, validMessage);
+}
+
+function populatePressErrorMessage (container, status) {
+    const errorContainer = container.querySelector('.errorStatus');
+    if (status.statusCode !== 'ok') {
+        errorContainer.querySelector('.errorCount').textContent = status.errorCount;
+        errorContainer.querySelector('.errorMessage').textContent = status.messageText;
+        errorContainer.querySelector('.actionTime').textContent = humanTime(new Date(status.actionTime), new Date());
+    } else {
+        errorContainer.parentNode.removeChild(errorContainer);
+    }
 }
 
 function reportError (container, error) {
