@@ -9,6 +9,7 @@ import com.gu.mobile.notifications.client.models.Topic._
 import com.gu.mobile.notifications.client.models.TopicTypes.Breaking
 import com.gu.mobile.notifications.client.models._
 import conf.ApplicationConfiguration
+import org.apache.commons.lang3.StringEscapeUtils
 import play.api.Logger
 import play.api.libs.json.Json
 import play.api.libs.ws.{WSAPI, WSResponse}
@@ -77,7 +78,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSAPI) {
 
   private def createPayload(trail: ClientHydratedTrail, email: String): BreakingNewsPayload = {
     BreakingNewsPayload(
-      message = trail.headline,
+      message = StringEscapeUtils.unescapeHtml4(trail.headline),
       thumbnailUrl = trail.thumb.map{new URI(_)},
       sender = email,
       link = createLinkDetails(trail),
