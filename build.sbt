@@ -56,8 +56,8 @@ TwirlKeys.templateImports ++= Seq(
     "play.api.Play.current"
 )
 
-val awsVersion = "1.10.77"
-val capiModelsVersion = "8.11"
+val awsVersion = "1.11.11"
+val capiModelsVersion = "8.17"
 
 libraryDependencies ++= Seq(
     ws,
@@ -68,17 +68,18 @@ libraryDependencies ++= Seq(
     "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-sts" % awsVersion,
+    "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion,
     "com.gu" %% "auditing-thrift-model" % "0.2",
     "com.gu" % "content-api-models" % capiModelsVersion,
     "com.gu" % "content-api-models-json" % capiModelsVersion,
     "com.gu" %% "editorial-permissions-client" % "0.3",
-    "com.gu" %% "fapi-client" % "1.6.2",
-    "com.gu" % "kinesis-logback-appender" % "1.2.0",
-    "com.gu" %% "mobile-notifications-client-play-2-4" % "0.5.27",
-    "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.2.14",
-    "com.gu" %% "scanamo" % "0.5.0",
-    "com.gu" %% "thrift-serializer" % "1.0.0",
-    "net.logstash.logback" % "logstash-logback-encoder" % "4.6",
+    "com.gu" %% "fapi-client" % "2.0.0",
+    "com.gu" % "kinesis-logback-appender" % "1.3.0",
+    "com.gu" %% "mobile-notifications-client-play-2-4" % "0.5.28",
+    "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.3.0",
+    "com.gu" %% "scanamo" % "0.6.0",
+    "com.gu" %% "thrift-serializer" % "1.1.0",
+    "net.logstash.logback" % "logstash-logback-encoder" % "4.7",
     "org.julienrf" %% "play-json-variants" % "2.0",
     "org.scalatest" %% "scalatest" % "2.2.6" % "test"
 )

@@ -33,11 +33,24 @@
                 "prefixStage": true,
                 "publicReadAcl": true
             }
+        },
+        "machine-images": {
+            "type": "ami-cloudformation-parameter",
+            "data": {
+                "amiTags": {
+                    "Recipe": "ubuntu-wily-java8",
+                    "AmigoStage": "PROD"
+                },
+                "amiParameter": "MachineImageID",
+                "appendStageToCloudFormationStackName": true,
+                "cloudFormationStackName": "facia",
+                "prependStackToCloudFormationStackName": false
+            }
         }
     },
     "recipes": {
         "default": {
-            "depends" : ["artifactUpload", "staticUpload", "deploy"]
+            "depends" : ["artifactUpload", "amiUpdate", "staticUpload", "deploy"]
         },
         "deploy": {
             "actionsBeforeApp": ["facia-tool.deploy"]
@@ -47,6 +60,9 @@
         },
         "staticUpload": {
             "actionsBeforeApp": ["static-facia-tool.uploadStaticFiles"]
+        },
+        "amiUpdate": {
+            "actionsBeforeApp": ["machine-images.update"]
         }
     }
 }

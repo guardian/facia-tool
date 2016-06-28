@@ -2,9 +2,9 @@ package auth
 
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
-import com.gu.pandomainauth.PanDomainAuth
 import com.gu.pandomainauth.action.AuthActions
 import com.gu.pandomainauth.model.AuthenticatedUser
+import com.gu.pandomainauth.{PanDomain, PanDomainAuth}
 import conf.ApplicationConfiguration
 import play.api.Logger
 import play.api.mvc._
@@ -13,9 +13,7 @@ trait PanDomainAuthActions extends AuthActions with PanDomainAuth with Results {
   def config: ApplicationConfiguration
 
   override def validateUser(authedUser: AuthenticatedUser): Boolean = {
-    (authedUser.user.emailDomain == "guardian.co.uk" ||
-      authedUser.user.emailDomain == "guardian.com") &&
-      (authedUser.multiFactor || config.playConfiguration.getString("no2faUser").exists(user => user.length > 0 && user == authedUser.user.email))
+    PanDomain.guardianValidation(authedUser)
   }
 
   override def authCallbackUrl: String = config.pandomain.host  + "/oauthCallback"
@@ -23,11 +21,6 @@ trait PanDomainAuthActions extends AuthActions with PanDomainAuth with Results {
   override def showUnauthedMessage(message: String)(implicit request: RequestHeader): Result = {
     Logger.info(message)
     Ok(views.html.auth.login(Some(message)))
-  }
-
-  import com.gu.pandomainauth.service.CookieUtils
-  override def readAuthenticatedUser(request: RequestHeader): Option[AuthenticatedUser] = readCookie(request) map { cookie =>
-      CookieUtils.parseCookieData(cookie.value, settings.secret)
   }
 
   override def invalidUserMessage(claimedAuth: AuthenticatedUser): String = {

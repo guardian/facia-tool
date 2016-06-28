@@ -17,18 +17,16 @@ class CloudWatch(val config: ApplicationConfiguration, val awsEndpoints: AwsEndp
     client
   }
 
-  trait LoggingAsyncHandler extends AsyncHandler[PutMetricDataRequest, Void] {
+  trait LoggingAsyncHandler extends AsyncHandler[PutMetricDataRequest, PutMetricDataResult] {
     def onError(exception: Exception)
     {
       Logger.info(s"CloudWatch PutMetricDataRequest error: ${exception.getMessage}}")
     }
-    def onSuccess(request: PutMetricDataRequest, result: Void )
+    def onSuccess(request: PutMetricDataRequest, result: PutMetricDataResult )
     {
       Logger.info("CloudWatch PutMetricDataRequest - success")
     }
   }
-
-  object LoggingAsyncHandler extends LoggingAsyncHandler
 
   case class AsyncHandlerForMetric(frontendStatisticSets: List[FrontendStatisticSet]) extends LoggingAsyncHandler {
     override def onError(exception: Exception) = {
@@ -37,26 +35,12 @@ class CloudWatch(val config: ApplicationConfiguration, val awsEndpoints: AwsEndp
       frontendStatisticSets.foreach { _.reset() }
       super.onError(exception)
     }
-    override def onSuccess(request: PutMetricDataRequest, result: Void ) = {
+    override def onSuccess(request: PutMetricDataRequest, result: PutMetricDataResult ) = {
       Logger.info(s"Successfully put ${frontendStatisticSets.size} metrics")
       Logger.info(s"Successfully put ${frontendStatisticSets.map(_.metric.name).mkString(",")}")
 
       super.onSuccess(request, result)
     }
-  }
-
-  def put(namespace: String, metrics: Map[String, Double], dimensions: Seq[Dimension]): Any = {
-    val request = new PutMetricDataRequest().
-      withNamespace(namespace).
-      withMetricData(metrics.map{ case (name, count) =>
-      new MetricDatum()
-        .withValue(count)
-        .withMetricName(name)
-        .withUnit("Count")
-        .withDimensions(dimensions)
-    })
-
-    cloudwatch.foreach(_.putMetricDataAsync(request, LoggingAsyncHandler))
   }
 
   def putMetricsWithStage(metrics: List[FrontendMetric], applicationDimension: Dimension, stageDimension: Dimension): Unit =
