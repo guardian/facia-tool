@@ -25,7 +25,6 @@ export function trackStaticResourceTiming () {
         const staticFile = performance.getEntriesByType('resource').filter(isStatic);
         if (staticFile.length === 1) {
             const res = staticFile[0];
-            ga('send', 'timing', 'JS', 'static-establish', res.responseStart - res.connectStart);
             ga('send', 'timing', 'JS', 'static-download', res.responseEnd - res.responseStart);
             ga('send', 'timing', 'JS', 'static', res.responseEnd - res.connectStart);
         }
