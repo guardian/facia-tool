@@ -56,7 +56,7 @@ TwirlKeys.templateImports ++= Seq(
     "play.api.Play.current"
 )
 
-val awsVersion = "1.11.11"
+val awsVersion = "1.11.12"
 val capiModelsVersion = "8.17"
 
 libraryDependencies ++= Seq(
