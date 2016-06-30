@@ -137,7 +137,7 @@ function checkPressedState (front, config, container, lastPress) {
         const date = new Date(lastPress.pressedTime);
         const now = new Date();
 
-        if (now - date > staleInterval(front, config)) {
+        if (now - date > staleInterval(front, config) || lastPress.statusCode !== 'ok') {
             return diagnoseStaleFront(container, front, config, humanTime(date, now), lastPress);
         } else {
             return frontNotStale(container, front, humanTime(date, now), lastPress);
