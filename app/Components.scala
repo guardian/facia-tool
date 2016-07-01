@@ -44,12 +44,12 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   val assetsManager = new AssetsManager(appConfiguration, isDev)
   val encryption = new Encryption(appConfiguration)
 
-  val collection = new CollectionController(appConfiguration, acl, auditingUpdates, updateManager, press)
+  val collection = new CollectionController(appConfiguration, acl, auditingUpdates, updateManager, press, permissions)
   val defaults = new DefaultsController(appConfiguration, acl, isDev)
   val faciaCapiProxy = new FaciaContentApiProxy(wsApi, appConfiguration)
   val faciaTool = new FaciaToolController(appConfiguration, acl, frontsApi, faciaApiIO, updateActions, breakingNewsUpdate,
-    auditingUpdates, faciaPress, faciaPressQueue, configAgent, s3FrontsApi)
-  val front = new FrontController(appConfiguration, acl, auditingUpdates, updateManager, press)
+    auditingUpdates, faciaPress, faciaPressQueue, configAgent, s3FrontsApi, permissions)
+  val front = new FrontController(appConfiguration, acl, auditingUpdates, updateManager, press, permissions)
   val pandaAuth = new PandaAuthController(appConfiguration)
   val status = new StatusController
   val storiesVisible = new StoriesVisibleController(appConfiguration, containers)
@@ -57,7 +57,7 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   val troubleshoot = new TroubleshootController(appConfiguration)
   val uncachedAssets = new UncachedAssets
   val vanityRedirects = new VanityRedirects(appConfiguration, acl)
-  val views = new ViewsController(appConfiguration, acl, assetsManager, isDev, encryption)
+  val views = new ViewsController(appConfiguration, acl, assetsManager, isDev, encryption, permissions)
   val pressController = new PressController(appConfiguration, awsEndpoints)
 
   val assets = new controllers.Assets(httpErrorHandler)

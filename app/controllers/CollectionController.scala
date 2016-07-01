@@ -4,7 +4,7 @@ import auth.PanDomainAuthActions
 import com.gu.facia.client.models.CollectionConfigJson
 import conf.ApplicationConfiguration
 import config.UpdateManager
-import permissions.ConfigPermissionCheck
+import permissions.{ConfigPermissionCheck, Permissions, ToolsAccessPermissionCheck}
 import play.api.libs.json.Json
 import play.api.mvc.Controller
 import services.Press
@@ -28,8 +28,8 @@ object CreateCollectionResponse {
 case class CreateCollectionResponse(id: String)
 
 class CollectionController(val config: ApplicationConfiguration, val acl: Acl, val auditingUpdates: AuditingUpdates,
-                           val updateManager: UpdateManager, val press: Press) extends Controller with PanDomainAuthActions {
-  def create = (APIAuthAction andThen new ConfigPermissionCheck(acl)){ request =>
+                           val updateManager: UpdateManager, val press: Press, val permissions: Permissions) extends Controller with PanDomainAuthActions {
+  def create = (APIAuthAction andThen new ToolsAccessPermissionCheck(permissions) andThen new ConfigPermissionCheck(acl)){ request =>
     request.body.read[CollectionRequest] match {
       case Some(CollectionRequest(frontIds, collection)) =>
 
@@ -43,7 +43,7 @@ class CollectionController(val config: ApplicationConfiguration, val acl: Acl, v
     }
   }
 
-  def update(collectionId: String) =  (APIAuthAction andThen new ConfigPermissionCheck(acl)){ request =>
+  def update(collectionId: String) =  (APIAuthAction andThen new ToolsAccessPermissionCheck(permissions) andThen new ConfigPermissionCheck(acl)){ request =>
     request.body.read[CollectionRequest] match {
       case Some(CollectionRequest(frontIds, collection)) =>
 
