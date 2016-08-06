@@ -54,7 +54,6 @@ export default Object.freeze([
                 height: 'imageSrcHeight',
                 origin: 'imageSrcOrigin',
                 options: {
-                    maxWidth: 1000,
                     minWidth: 400,
                     widthAspectRatio: 5,
                     heightAspectRatio: 3
@@ -260,7 +259,6 @@ export default Object.freeze([
             validator: {
                 params: {
                     options: {
-                        maxWidth: 1000,
                         minWidth: 400,
                         widthAspectRatio: 5,
                         heightAspectRatio: 3
