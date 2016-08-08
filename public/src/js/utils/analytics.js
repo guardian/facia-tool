@@ -14,9 +14,11 @@ export function page (path, title) {
 
 export function trackAction (category, action, value) {
     return new Promise(resolve => {
-        ga('send', 'event', category, action, value, {
-            hitCallback: () => resolve()
-        });
+        if (window.ga) {
+            ga('send', 'event', category, action, value, {
+                hitCallback: () => resolve()
+            });
+        }
     });
 }
 

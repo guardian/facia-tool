@@ -79,10 +79,11 @@ function filterGripdCrops (json, desired, {minWidth, maxWidth, widthAspectRatio,
             return false;
         }
 
-        let ratio = widthAspectRatio && heightAspectRatio ? widthAspectRatio / heightAspectRatio : NaN;
-        return !!_.find(crop.assets, function (asset) {
-            let {width, height} = asset.dimensions;
-            let actualRatio = width / height;
+        const ratio = widthAspectRatio && heightAspectRatio ? widthAspectRatio / heightAspectRatio : NaN;
+
+        return !!_.find([crop.master].concat(crop.assets).filter(Boolean), function (asset) {
+            const {width, height} = asset.dimensions;
+            const actualRatio = width / height;
             if (maxWidth && maxWidth < width) {
                 return false;
             } else if (minWidth && minWidth > width) {
@@ -99,13 +100,16 @@ function getSuitableAsset (crops, id, desired) {
     if (crops.length === 0) {
         return Promise.reject(new Error('The image does not have a valid crop on the Grid'));
     } else {
-        let maxWidth = desired.maxWidth || 1000;
-        let assets = _.chain(crops[0].assets)
-            .filter(asset => deepGet(asset, '.dimensions.width') <= maxWidth)
+        const maxWidth = desired.maxWidth;
+        const minWidth = desired.minWidth;
+        const assets = _.chain([crops[0].master].concat(crops[0].assets))
+            .filter(Boolean)
+            .filter(asset => maxWidth ? deepGet(asset, '.dimensions.width') <= maxWidth : true)
+            .filter(asset => minWidth ? deepGet(asset, '.dimensions.width') >= minWidth : true)
             .sortBy(asset => deepGet(asset, '.dimensions.width') * -1);
 
         if (assets.value().length) {
-            let path = assets.first().value().file;
+            const path = assets.first().value().file;
 
             return Promise.resolve({
                 path: path,
@@ -120,9 +124,9 @@ function getSuitableAsset (crops, id, desired) {
 
 function validateActualImage (image) {
     return new Promise((resolve, reject) => {
-        let {width, height, ratio, criteria, path, origin, thumb} = image;
-        let {maxWidth, minWidth, widthAspectRatio, heightAspectRatio} = criteria;
-        let criteriaRatio = widthAspectRatio && heightAspectRatio ? widthAspectRatio / heightAspectRatio : NaN;
+        const {width, height, ratio, criteria, path, origin, thumb} = image;
+        const {maxWidth, minWidth, widthAspectRatio, heightAspectRatio} = criteria;
+        const criteriaRatio = widthAspectRatio && heightAspectRatio ? widthAspectRatio / heightAspectRatio : NaN;
 
         if (maxWidth && maxWidth < width) {
             reject(new Error('Images cannot be more than ' + maxWidth + ' pixels wide'));
@@ -143,7 +147,8 @@ function validateImageEvent (event, criteria = {}) {
 
     if (mediaItem) {
         return getSuitableAsset([{
-            assets: mediaItem.assets
+            assets: mediaItem.assets,
+            master: mediaItem.master
         }], mediaItem.id, criteria).then(asset => {
             asset.origin = grid().getGridUrlFromEvent(event);
             asset.criteria = criteria;

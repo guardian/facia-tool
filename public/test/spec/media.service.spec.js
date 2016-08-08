@@ -69,8 +69,8 @@ describe('Media Service', function () {
             return trail.toggleMetadata('imageReplace')
             .then(() => {
                 var sourceImage = new drag.Media([{
-                    file: 'This image is too big',
-                    dimensions: { width: 2000, height: 1600 }
+                    file: 'This image is too small',
+                    dimensions: { width: 100, height: 60 }
                 }], 'tooBig');
                 return sourceImage.dropInEditor(
                     trail.field('imageSrc')
