@@ -2013,6 +2013,15 @@ ol.search_list > li::before {
     background-color: #999999;
 }
 
+.tagLabel {
+    background: lightblue;
+    border: 1px solid #cccccc;
+    border-radius: 1px;
+    padding: 2px;
+    font-size: 10px;
+    margin: 0px 3px 0px 3px;
+}
+
 .has-playable {
     position: absolute;
     top: 0;
