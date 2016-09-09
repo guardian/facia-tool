@@ -53,7 +53,9 @@ export default class Collection extends BaseClass {
             'displayName',
             'hideShowMore',
             'href',
-            'uneditable']);
+            'uneditable',
+            'metadata'
+        ]);
         populateObservables(this.configMeta, opts);
 
         // properties from the collection itself

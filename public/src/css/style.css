@@ -659,6 +659,13 @@ h1 {
     left: 9px;
 }
 
+.tag-list {
+    font-weight: bold;
+    color: #CCCCCC;
+    padding-right: 3px;
+    font-size: 12px;
+}
+
 .count {
     font-weight: normal;
     margin-left: 0.4em;
