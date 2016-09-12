@@ -659,6 +659,13 @@ h1 {
     left: 9px;
 }
 
+.tag-list {
+    font-weight: bold;
+    color: #CCCCCC;
+    padding-right: 3px;
+    font-size: 12px;
+}
+
 .count {
     font-weight: normal;
     margin-left: 0.4em;
@@ -2011,6 +2018,15 @@ ol.search_list > li::before {
 }
 .backfilledCollection.underDrag {
     background-color: #999999;
+}
+
+.tagLabel {
+    background: lightblue;
+    border: 1px solid #cccccc;
+    border-radius: 1px;
+    padding: 2px;
+    font-size: 10px;
+    margin: 0px 3px 0px 3px;
 }
 
 .has-playable {

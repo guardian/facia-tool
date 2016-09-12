@@ -24,6 +24,9 @@
         <span class="title" data-bind="
             text: configMeta.displayName() || collectionMeta.displayName() || '(no title)'"></span>
 
+        <span data-bind="foreach: configMeta.metadata()">
+            <span class="tag-list" data-bind="text: type"></span>
+        </span>
         <span class="count" data-bind="if: !isPending() && !configMeta.uneditable()">
             (<span data-bind="
                 text: state.count() ? state.count() : 'empty',

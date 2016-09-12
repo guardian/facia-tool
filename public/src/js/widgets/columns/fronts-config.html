@@ -186,6 +186,12 @@
             </span>
         </span>
 
+        <!-- ko if: !state.isOpen() -->
+            <span data-bind="foreach: meta.metadata">
+               <span class="tagLabel" data-bind="text: type"></span>
+            </span>
+        <!-- /ko -->
+
         <!-- ko if: state.isOpen -->
         <div class="cnf-form">
             <div class="type-option type-option-chosen" data-bind="click: toggleOpenTypePicker">
