@@ -109,12 +109,18 @@ function getSuitableAsset (crops, id, desired) {
             .sortBy(asset => deepGet(asset, '.dimensions.width') * -1);
 
         if (assets.value().length) {
-            const path = assets.first().value().file;
+            const mainAsset = assets.first().value();
+            const path = mainAsset.file;
+            const height = mainAsset.dimensions.height;
+            const width = mainAsset.dimensions.width;
 
             return Promise.resolve({
                 path: path,
                 thumb: assets.last().value().file,
-                origin: vars.model.state().defaults.mediaBaseUrl + '/image/' + id
+                origin: vars.model.state().defaults.mediaBaseUrl + '/image/' + id,
+                height: height,
+                width: width,
+                ratio: width / height
             });
         } else {
             return Promise.reject(new Error('The crop does not have a valid asset on the Grid'));
@@ -152,8 +158,7 @@ function validateImageEvent (event, criteria = {}) {
         }], mediaItem.id, criteria).then(asset => {
             asset.origin = grid().getGridUrlFromEvent(event);
             asset.criteria = criteria;
-
-            return fetchImage(asset);
+            return asset;
         })
         .then(validateActualImage)
         .then(({path, origin, thumb, width, height}) => {
