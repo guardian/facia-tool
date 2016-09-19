@@ -144,16 +144,10 @@ describe('Editors', function () {
 
             expect(listImages[2]).toBeUndefined();
 
-            // invalid input
-            sourceImage = new drag.Media([{
-                file: images.path('this_image_doesnt_exists__promised.png'),
-                dimensions: { width: 400, height: 400 }
-            }], 'fakeOrigin');
             return sourceImage.dropInEditor(firstBlock);
         })
         .then(() => {
             var listImages = this.article.meta.list();
-            expect(listImages[0]).toBeUndefined();
             expect(listImages[1].origin).toEqual('imageOrigin');
             expect(listImages[1].src).toMatch(/squarefour\.png/);
             expect(listImages[1].width).toBe(400);

@@ -358,22 +358,6 @@ describe('Validate images', function () {
             });
         });
 
-        it('fails when the image 404', function (done) {
-            grid.gridInstance.getCropFromEvent = () => {
-                return {
-                    assets: [{
-                        file: 'this_image_doesnt_exists__promised.png',
-                        dimensions: { width: 800, height: 800 }
-                    }]
-                };
-            };
-
-            validateImageEvent({})
-            .then(done.fail, err => {
-                expect(err.message).toMatch(/could not be found/i);
-                done();
-            });
-        });
 
         it('fails when the actual image doesn\'t validate', function (done) {
             grid.gridInstance.getCropFromEvent = () => {
@@ -400,10 +384,10 @@ describe('Validate images', function () {
                 return {
                     assets: [{
                         file: images.path('square.png'),
-                        dimensions: { width: 800, height: 800 }
+                        dimensions: { width: 140, height: 140 }
                     }, {
                         file: images.path('thumb.png'),
-                        dimensions: { width: 400, height: 400 }
+                        dimensions: { width: 140, height: 140 }
                     }],
                     id: 'mediaID'
                 };
