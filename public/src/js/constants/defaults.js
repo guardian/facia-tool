@@ -58,9 +58,7 @@ export default {
         { name: 'nav/list' },
         { name: 'nav/media-list' },
         { name: 'news/most-popular' },
-        { name: 'breaking-news/not-for-other-fronts', groups: ['minor', 'major'] },
-        { name: 'commercial/single-campaign' },
-        { name: 'commercial/multi-campaign' }
+        { name: 'breaking-news/not-for-other-fronts', groups: ['minor', 'major'] }
     ],
 
     navSections: [
