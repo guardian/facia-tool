@@ -64,12 +64,6 @@ class StoriesVisibleController(val config: ApplicationConfiguration, val contain
           None
         )))
 
-      case Commercial =>
-        Ok(Json.toJson(StoriesVisibleResponse(
-          Some(4 min numberOfStories),
-          Some(4 min numberOfStories)
-        )))
-
     } getOrElse {
       NotFound(s"$containerType is not a valid container id")
     }
