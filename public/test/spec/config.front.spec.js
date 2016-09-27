@@ -207,11 +207,13 @@ describe('Config Front', function () {
             $('.toggle--hidden').click();
             $('.save-metadata').click();
 
-            var front = frontWidget.pinnedFront();
-            expect(persistence.front.update).toHaveBeenCalledWith(front);
-            expect(front.props.webTitle()).toBe('Nicer title');
-            expect(front.props.isHidden()).toBe(false);
-            persistence.front.update.calls.reset();
+            return wait.ms(100).then(() => {
+                var front = frontWidget.pinnedFront();
+                expect(persistence.front.update).toHaveBeenCalledWith(front);
+                expect(front.props.webTitle()).toBe('Nicer title');
+                expect(front.props.isHidden()).toBe(false);
+                persistence.front.update.calls.reset();
+            });
         }
 
         function changeImageUrl () {
