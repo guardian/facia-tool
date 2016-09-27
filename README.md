@@ -155,16 +155,6 @@ Create the files
 
    ```
 
-* In your local aws credentials file `~/.aws/credentials`, add the correct region in the **[cmsFronts]**, **[workflow]** and **[frontend]** profiles. For instance, the profile for **[cmsFronts]** would look like this
-
-	```
-[cmsFronts]
-region=eu-west-1
-aws_access_key_id = [redacted]
-aws_secret_access_key = [redacted]
-aws_session_token = [redacted]
-	```
- 
 * In your file `/etc/gu/facia-tool.application.secrets.conf`, remove the first two blocks **PROD** and **CODE**
 
 ### Credentials
@@ -213,7 +203,13 @@ Now check that you are up and running by hitting the following URL
 
 ### Unit tests
 
-Unit tests run with `grunt`, `karma` and `jasmine`.
+Running server side tests:
+
+```
+sbt test
+```
+
+Unit tests on the client are run with `grunt`, `karma` and `jasmine`.
 
 ```bash
 grunt test
@@ -223,7 +219,7 @@ Runs the tests once in PhantomJS and exits with an error if tests fails
 ```bash
 grunt test --no-single-run
 ```
-Starts `karma` in debug mode, you can connect your browser at [http://localhost:9876?debug.html](http://localhost:9876?debug.html)
+Runs the tests on the browserm, starts `karma` in debug mode. You can connect your browser at [http://localhost:9876?debug.html](http://localhost:9876?debug.html)
 
 You can run a single test going to [http://localhost:9876/debug.html?test=collections](http://localhost:9876/debug.html?test=collections), spec files are inside `facia-tool/test/public/spec`.
 
