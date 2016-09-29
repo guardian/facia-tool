@@ -111,8 +111,12 @@ function validateItem (item) {
                 } else if (item.id().indexOf(window.location.hostname) > -1) {
                     err = 'Sorry, that link cannot be added to a front';
 
-                // A snap, but a link to unavailable guardian content
+                //A snap, section/tag with no content in it
                 } else if (results && results.length === 0 && isGuardianUrl(item.id())) {
+                    item.convertToLinkSnap();
+
+                // A snap, but a link to unavailable guardian content
+                } else if (!results && isGuardianUrl(item.id())) {
                     err = 'Sorry, that Guardian content is unavailable';
 
                 // A snap, that's setting it's own type, ie via dragged-in query params

@@ -496,6 +496,26 @@ describe('Content API', function () {
                 url: CONST.apiSearchBase + '/something?*',
                 status: 200,
                 responseText: {
+                    response: {}
+                }
+            });
+
+            capi.validateItem(item)
+            .then(done.fail, (error) => {
+                expect(error.message).toMatch(/Guardian content is unavailable/i);
+                done();
+            });
+        });
+
+        it('validates empty guardian content', function (done) {
+            var item = this.createItem({
+                id: 'http://' + CONST.mainDomain + '/something'
+            });
+            cache.put('contentApi', 'something', null);
+            this.scope({
+                url: CONST.apiSearchBase + '/something?*',
+                status: 200,
+                responseText: {
                     response: {
                         results: []
                     }
@@ -503,8 +523,9 @@ describe('Content API', function () {
             });
 
             capi.validateItem(item)
-            .then(done.fail, (error) => {
-                expect(error.message).toMatch(/Guardian content is unavailable/i);
+            .then((valid) => {
+                expect(valid).toBe(item);
+                expect(item.convertToLinkSnap).toHaveBeenCalled();
                 done();
             });
         });
