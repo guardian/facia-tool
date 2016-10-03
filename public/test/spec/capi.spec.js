@@ -487,26 +487,6 @@ describe('Content API', function () {
             });
         });
 
-        it('fails on guardian content not available', function (done) {
-            var item = this.createItem({
-                id: 'http://' + CONST.mainDomain + '/something'
-            });
-            cache.put('contentApi', 'something', null);
-            this.scope({
-                url: CONST.apiSearchBase + '/something?*',
-                status: 200,
-                responseText: {
-                    response: {}
-                }
-            });
-
-            capi.validateItem(item)
-            .then(done.fail, (error) => {
-                expect(error.message).toMatch(/Guardian content is unavailable/i);
-                done();
-            });
-        });
-
         it('validates empty guardian content', function (done) {
             var item = this.createItem({
                 id: 'http://' + CONST.mainDomain + '/something'
