@@ -8,7 +8,7 @@ import com.gu.facia.client.models.TrailMetaData
 import org.json4s.JValue
 import org.json4s.JsonAST._
 import org.json4s.JsonDSL._
-import org.json4s.native.JsonMethods
+import org.json4s.jackson.JsonMethods
 
 import scala.util.{Failure, Success, Try}
 
