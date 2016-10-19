@@ -16,14 +16,6 @@ sealed trait S3Accounts {
   def bucket: String
   def client: Option[AmazonS3Client]
 }
-case class FrontendS3Account(val config: ApplicationConfiguration, val awsEndpoints: AwsEndpoints) extends S3Accounts {
-  lazy val bucket = config.aws.bucket
-  lazy val client: Option[AmazonS3Client] =
-    config.aws.crossAccount.map{ credentials => {
-      val client = new AmazonS3Client(credentials)
-      client.setEndpoint(awsEndpoints.s3)
-      client}}
-}
 case class CmsFrontsS3Account(val config: ApplicationConfiguration, val awsEndpoints: AwsEndpoints) extends S3Accounts {
   lazy val bucket = config.aws.frontsBucket
   lazy val client: Option[AmazonS3Client] =
@@ -34,7 +26,6 @@ case class CmsFrontsS3Account(val config: ApplicationConfiguration, val awsEndpo
 }
 
 trait S3 {
-  def frontendS3Account: FrontendS3Account
   def cmsFrontsS3Account: CmsFrontsS3Account
 
   private def withS3Result[T](
@@ -113,7 +104,6 @@ class S3FrontsApi(val config: ApplicationConfiguration, val isTest: Boolean, val
   lazy val stage = if (isTest) "TEST" else config.facia.stage.toUpperCase
   val namespace = "frontsapi"
   lazy val location = s"$stage/$namespace"
-  val frontendS3Account = new FrontendS3Account(config, awsEndpoints)
   val cmsFrontsS3Account = new CmsFrontsS3Account(config, awsEndpoints)
 
   def getLiveFapiPressedKeyForPath(path: String): String =
@@ -122,7 +112,6 @@ class S3FrontsApi(val config: ApplicationConfiguration, val isTest: Boolean, val
   def getMasterConfig: Option[String] = get(s"$location/config/config.json")
   def putCollectionJson(id: String, json: String) = {
     val putLocation: String = s"$location/collection/$id/collection.json"
-    putPublic(putLocation, json, "application/json", List(frontendS3Account))
     putPrivate(putLocation, json, "application/json", List(cmsFrontsS3Account))
   }
 
@@ -134,7 +123,6 @@ class S3FrontsApi(val config: ApplicationConfiguration, val isTest: Boolean, val
 
   def putMasterConfig(json: String) = {
     val putLocation = s"$location/config/config.json"
-    putPublic(putLocation, json, "application/json", List(frontendS3Account))
     putPrivate(putLocation, json, "application/json", List(cmsFrontsS3Account))
   }
 
