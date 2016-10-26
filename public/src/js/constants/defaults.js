@@ -3,8 +3,8 @@ export default {
     editions: ['uk', 'us', 'au'],
 
     environmentUrlBase: {
-        'prod': 'http://theguardian.com/',
-        'code': 'http://m.code.dev-theguardian.com/'
+        'prod': 'https://theguardian.com/',
+        'code': 'https://m.code.dev-theguardian.com/'
     },
 
     types: [
@@ -209,10 +209,10 @@ export default {
     reauthTimeout:         60000,
 
     imageCdnDomain:        '.guim.co.uk',
-    imageCdnDomainExpr:    /^https?:\/\/(.*)\.guim\.co\.uk\//,
-    imgIXDomainExpr:       /^https?:\/\/i\.guim\.co\.uk\/img\/static\//,
+    imageCdnDomainExpr:    /^https:\/\/(.*)\.guim\.co\.uk\//,
+    imgIXDomainExpr:       /^https:\/\/i\.guim\.co\.uk\/img\/static\//,
     staticImageCdnDomain:  'https://static.guim.co.uk/',
-    previewBase:           'http://preview.gutools.co.uk',
+    previewBase:           'https://preview.gutools.co.uk',
     viewerHost:            'viewer.gutools.co.uk',
 
     latestSnapPrefix:      'Latest from ',
