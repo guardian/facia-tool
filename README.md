@@ -167,7 +167,8 @@ $ feria cmsFronts && feria --access s3-read workflow && feria --access sqs-consu
 ```
 (You should first checkout the repository and follow the install instructions for *feria*.)
 
-
+You can run the fronts tool without frontend credentials, but you will not be able to check how your changes to fronts appear on frontend without
+these credentials. You will need to test your changes on `CODE` to see these changes.
 ### Code Dependencies
 
 Inside the project
