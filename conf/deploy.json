@@ -38,7 +38,7 @@
             "type": "ami-cloudformation-parameter",
             "data": {
                 "amiTags": {
-                    "Recipe": "ubuntu-wily-java8",
+                    "Recipe": "ubuntu-wily-java8-sshkeys",
                     "AmigoStage": "PROD"
                 },
                 "amiParameter": "MachineImageID",
