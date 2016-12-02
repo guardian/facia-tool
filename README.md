@@ -172,7 +172,7 @@ these credentials. You will need to test your changes on `CODE` to see these cha
 ### Code Dependencies
 
 Inside the project
-
+ 
 ```bash
 npm install
 jspm install
