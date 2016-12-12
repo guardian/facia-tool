@@ -1,14 +1,15 @@
 package util
 
 import com.gu.contentapi.client.model.v1.Content
-import com.gu.contentapi.json.JsonParser
-import com.gu.contentapi.json.JsonParser._
 import com.gu.facia.api.utils.{CardStyle, ResolvedMetaData}
 import com.gu.facia.client.models.TrailMetaData
 import org.json4s.JValue
 import org.json4s.JsonAST._
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods
+import io.circe._
+import io.circe.parser._
+import com.gu.contentapi.json.CirceDecoders._
 
 import scala.util.{Failure, Success, Try}
 
@@ -46,7 +47,8 @@ object ContentUpgrade {
   def upgradeItem(json: JValue): JValue = {
     Try({
       val jsonString = JsonMethods.compact(JsonMethods.render(json))
-      val maybeCapiContent = JsonParser.parseContent(jsonString)
+      val maybeParsedJson: Option[Json] = parse(jsonString).toOption
+      val maybeCapiContent: Option[Content] = maybeParsedJson.flatMap(json => json.as[Content].toOption)
 
       (json, maybeCapiContent) match {
         case (jsObject: JObject, content: Content) =>

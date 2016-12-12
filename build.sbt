@@ -57,7 +57,8 @@ TwirlKeys.templateImports ++= Seq(
 )
 
 val awsVersion = "1.11.18"
-val capiModelsVersion = "8.17"
+val capiModelsVersion = "10.17"
+val circeVersion = "0.5.2"
 
 libraryDependencies ++= Seq(
     ws,
@@ -77,12 +78,16 @@ libraryDependencies ++= Seq(
     "com.gu" % "kinesis-logback-appender" % "1.3.0",
     "com.gu" %% "mobile-notifications-client-play-2-4" % "0.5.29",
     "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.3.0",
-    "com.gu" %% "scanamo" % "0.6.0",
+    "com.gu" %% "scanamo" % "0.7.0",
     "com.gu" %% "thrift-serializer" % "1.1.0",
     "net.logstash.logback" % "logstash-logback-encoder" % "4.7",
     "org.julienrf" %% "play-json-variants" % "2.0",
     "org.json4s" % "json4s-native_2.11" % "3.5.0",
-    "org.scalatest" %% "scalatest" % "2.2.6" % "test"
+    "org.json4s" % "json4s-jackson_2.11" % "3.5.0",
+    "org.scalatest" %% "scalatest" % "2.2.6" % "test",
+    "io.circe" %% "circe-core" % circeVersion,
+    "io.circe" %% "circe-generic" % circeVersion,
+    "io.circe" %% "circe-parser" % circeVersion
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact, JDebPackaging)
