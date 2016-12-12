@@ -3,7 +3,6 @@
 - The backend uses Play
 
 ##The app
-<<<<<<< c7c9c4b37b0d7297b4e8bed1b92f12ae7c8e51e7
 - The fronts tool is used to edit fronts. Fronts contain collections that users can add articles to.
 - This is a picture of the uk front (we can find it on www.theguardian.com/uk):
 ![front](docs/front.png)
