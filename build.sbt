@@ -78,16 +78,25 @@ libraryDependencies ++= Seq(
     "com.gu" % "kinesis-logback-appender" % "1.3.0",
     "com.gu" %% "mobile-notifications-client-play-2-4" % "0.5.29",
     "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.3.0",
+
+    // Circe 0.5.2 depends on Cats 0.7.2
+    // content-api-models depends on Circe 0.5.2 which depends on Cats 0.7.2
+    // Scanamo 0.7.0 depends on Cats 0.7.0.
+    // change with caution as must be upgraded in sync.
+
+    "io.circe" %% "circe-core" % circeVersion,
+    "io.circe" %% "circe-generic" % circeVersion,
+    "io.circe" %% "circe-parser" % circeVersion,
     "com.gu" %% "scanamo" % "0.7.0",
+
+
     "com.gu" %% "thrift-serializer" % "1.1.0",
     "net.logstash.logback" % "logstash-logback-encoder" % "4.7",
     "org.julienrf" %% "play-json-variants" % "2.0",
     "org.json4s" % "json4s-native_2.11" % "3.5.0",
     "org.json4s" % "json4s-jackson_2.11" % "3.5.0",
-    "org.scalatest" %% "scalatest" % "2.2.6" % "test",
-    "io.circe" %% "circe-core" % circeVersion,
-    "io.circe" %% "circe-generic" % circeVersion,
-    "io.circe" %% "circe-parser" % circeVersion
+    "org.scalatest" %% "scalatest" % "2.2.6" % "test"
+
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact, JDebPackaging)

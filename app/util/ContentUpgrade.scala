@@ -51,7 +51,7 @@ object ContentUpgrade {
       val maybeCapiContent: Option[Content] = maybeParsedJson.flatMap(json => json.as[Content].toOption)
 
       (json, maybeCapiContent) match {
-        case (jsObject: JObject, content: Content) =>
+        case (jsObject: JObject, Some(content)) =>
           val cardStyle = CardStyle(content, TrailMetaData.empty)
           val metaDataMap: Map[String, Boolean] = ResolvedMetaData.toMap(ResolvedMetaData.fromContent(content, cardStyle))
 
