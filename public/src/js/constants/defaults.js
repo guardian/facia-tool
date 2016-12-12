@@ -125,7 +125,14 @@ export default {
             hasGroups: false,
             isTypeLocked: true,
             isHiddenLocked: true
+        },
+        'email': {
+            maxFronts: 50,
+            hasGroups: false,
+            isTypeLocked: true,
+            isHiddenLocked: true
         }
+
     },
     defaultPriority: 'editorial',
 

@@ -25,10 +25,12 @@ GET         /                                        controllers.ViewsController
 GET         /editorial                               controllers.ViewsController.collectionEditor()
 GET         /commercial                              controllers.ViewsController.collectionEditor()
 GET         /training                                controllers.ViewsController.collectionEditor()
+GET         /email                                   controllers.ViewsController.collectionEditor()
 
 GET         /editorial/config                        controllers.ViewsController.configEditor()
 GET         /commercial/config                       controllers.ViewsController.configEditor()
 GET         /training/config                         controllers.ViewsController.configEditor()
+GET         /email/config                            controllers.ViewsController.configEditor()
 
 POST        /collection/publish/*collectionId        controllers.FaciaToolController.publishCollection(collectionId)
 POST        /collection/discard/*collectionId        controllers.FaciaToolController.discardCollection(collectionId)

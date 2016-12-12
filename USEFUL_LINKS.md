@@ -3,6 +3,7 @@
 - The backend uses Play
 
 ##The app
+<<<<<<< c7c9c4b37b0d7297b4e8bed1b92f12ae7c8e51e7
 - The fronts tool is used to edit fronts. Fronts contain collections that users can add articles to.
 - This is a picture of the uk front (we can find it on www.theguardian.com/uk):
 ![front](docs/front.png)
@@ -11,10 +12,10 @@
 
 - To edit fronts, the fronts tool contains three different pages:
 1. A page where you can add articles to a front, and change the way in which articles appear on a front
-   * This is found at `https://fronts.local.dev-gutools.co.uk/{editorial|commercial|training}`, depending on whether you want to edit editorial, commercial or training fronts
+   * This is found at `https://fronts.local.dev-gutools.co.uk/{editorial|commercial|email|training}`, depending on whether you want to edit editorial, commercial, email or training fronts
    * Training fronts are not fronts that appear on the website, but they are used for training purposes
 2. A page for configuring and creating new fronts, and for adding collections to fronts
-   * Found at `https://fronts.local.dev-gutools.co.uk/{editorial|commercial|training}/config`
+   * Found at `https://fronts.local.dev-gutools.co.uk/{editorial|commercial|email|training}/config`
    * Don't confuse this with `https://fronts.local.dev-gutools.co.uk/config` which will display the contents of the fronts configuration bucket.
 3. A page for sending breaking news at `https://fronts.local.dev-gutools.co.uk/breaking-news`
    * Breaking news alerts are sent by dragging an articles to a special breaking news front
