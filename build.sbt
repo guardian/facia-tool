@@ -59,6 +59,7 @@ TwirlKeys.templateImports ++= Seq(
 val awsVersion = "1.11.18"
 val capiModelsVersion = "10.17"
 val circeVersion = "0.5.2"
+val json4sVersion = "3.5.0"
 
 libraryDependencies ++= Seq(
     ws,
@@ -93,8 +94,8 @@ libraryDependencies ++= Seq(
     "com.gu" %% "thrift-serializer" % "1.1.0",
     "net.logstash.logback" % "logstash-logback-encoder" % "4.7",
     "org.julienrf" %% "play-json-variants" % "2.0",
-    "org.json4s" % "json4s-native_2.11" % "3.5.0",
-    "org.json4s" % "json4s-jackson_2.11" % "3.5.0",
+    "org.json4s" %% "json4s-native" % json4sVersion,
+    "org.json4s" %% "json4s-jackson" % json4sVersion,
     "org.scalatest" %% "scalatest" % "2.2.6" % "test"
 
 )
