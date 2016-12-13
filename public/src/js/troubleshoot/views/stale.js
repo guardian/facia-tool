@@ -8,6 +8,7 @@ const STALE_NETWORK_FRONT = 6 * 60 * 1000;
 const STALE_EDITORIAL_FRONT = 20 * 60 * 1000;
 const STALE_COMMERCIAL_FRONT = 2.5 * 3600 * 1000;
 const STALE_TRAINING_FRONT = 2.5 * 3600 * 1000;
+const STALE_EMAIL_FRONT = 2.5 * 3600 * 1000;
 
 var clone = (function (mainTemplateText) {
     const templatesMap = {};
@@ -154,6 +155,8 @@ function staleInterval (front, config) {
         return STALE_COMMERCIAL_FRONT;
     } else if (config.fronts[front].priority === 'training') {
         return STALE_TRAINING_FRONT;
+    } else if (config.fronts[front].priority === 'email') {
+        return STALE_EMAIL_FRONT;
     } else {
         return STALE_EDITORIAL_FRONT;
     }
