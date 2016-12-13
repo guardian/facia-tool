@@ -57,7 +57,9 @@ TwirlKeys.templateImports ++= Seq(
 )
 
 val awsVersion = "1.11.18"
-val capiModelsVersion = "8.17"
+val capiModelsVersion = "10.17"
+val circeVersion = "0.5.2"
+val json4sVersion = "3.5.0"
 
 libraryDependencies ++= Seq(
     ws,
@@ -73,15 +75,29 @@ libraryDependencies ++= Seq(
     "com.gu" % "content-api-models" % capiModelsVersion,
     "com.gu" % "content-api-models-json" % capiModelsVersion,
     "com.gu" %% "editorial-permissions-client" % "0.3",
-    "com.gu" %% "fapi-client" % "2.0.1",
+    "com.gu" %% "fapi-client" % "2.0.6",
     "com.gu" % "kinesis-logback-appender" % "1.3.0",
     "com.gu" %% "mobile-notifications-client-play-2-4" % "0.5.29",
     "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.3.0",
-    "com.gu" %% "scanamo" % "0.6.0",
+
+    // Circe 0.5.2 depends on Cats 0.7.2
+    // content-api-models depends on Circe 0.5.2 which depends on Cats 0.7.2
+    // Scanamo 0.7.0 depends on Cats 0.7.0.
+    // change with caution as must be upgraded in sync.
+
+    "io.circe" %% "circe-core" % circeVersion,
+    "io.circe" %% "circe-generic" % circeVersion,
+    "io.circe" %% "circe-parser" % circeVersion,
+    "com.gu" %% "scanamo" % "0.7.0",
+
+
     "com.gu" %% "thrift-serializer" % "1.1.0",
     "net.logstash.logback" % "logstash-logback-encoder" % "4.7",
     "org.julienrf" %% "play-json-variants" % "2.0",
+    "org.json4s" %% "json4s-native" % json4sVersion,
+    "org.json4s" %% "json4s-jackson" % json4sVersion,
     "org.scalatest" %% "scalatest" % "2.2.6" % "test"
+
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact, JDebPackaging)
