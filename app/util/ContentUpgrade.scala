@@ -7,8 +7,7 @@ import org.json4s.JValue
 import org.json4s.JsonAST._
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods
-import io.circe._
-import io.circe.parser._
+import io.circe.{Json, parser}
 import com.gu.contentapi.json.CirceDecoders._
 
 import scala.util.{Failure, Success, Try}
@@ -47,7 +46,7 @@ object ContentUpgrade {
   def upgradeItem(json: JValue): JValue = {
     Try({
       val jsonString = JsonMethods.compact(JsonMethods.render(json))
-      val maybeParsedJson: Option[Json] = parse(jsonString).toOption
+      val maybeParsedJson: Option[Json] = parser.parse(jsonString).toOption
       val maybeCapiContent: Option[Content] = maybeParsedJson.flatMap(json => json.as[Content].toOption)
 
       (json, maybeCapiContent) match {
