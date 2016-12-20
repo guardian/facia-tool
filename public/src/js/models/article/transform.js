@@ -4,7 +4,7 @@ import deepGet from 'utils/deep-get';
 import getMediaMainImage from 'utils/get-media-main-image';
 
 export function getMainMediaType(contentApiArticle) {
-    return _.chain(contentApiArticle.elements).where({relation: 'main'}).pluck('type').first().value() || contentApiArticle.blocks;
+    return _.chain(contentApiArticle.elements).where({relation: 'main'}).pluck('type').first().value();
 }
 
 export function getPrimaryTag(contentApiArticle) {
@@ -26,7 +26,7 @@ export function isPremium(contentApiArticle) {
 
 export function hasMainMediaAtom(contentApiArticle) {
     var mainBlockElement = _.chain(deepGet(contentApiArticle, '.blocks.main.elements')).first().value() || undefined;
-    return deepGet(mainBlockElement,'.contentAtomTypeData.atomType') === "media"
+    return deepGet(mainBlockElement,'.contentAtomTypeData.atomType') === 'media';
 }
 
 export default function capiToInternalState(opts, article) {
