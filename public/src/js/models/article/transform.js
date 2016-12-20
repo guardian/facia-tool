@@ -4,7 +4,7 @@ import deepGet from 'utils/deep-get';
 import getMediaMainImage from 'utils/get-media-main-image';
 
 export function getMainMediaType(contentApiArticle) {
-    return _.chain(contentApiArticle.elements).where({relation: 'main'}).pluck('type').first().value();
+    return _.chain(contentApiArticle.elements).where({relation: 'main'}).pluck('type').first().value() || contentApiArticle.blocks;
 }
 
 export function getPrimaryTag(contentApiArticle) {
@@ -24,12 +24,17 @@ export function isPremium(contentApiArticle) {
         !!_.find(contentApiArticle.tags, {id: 'news/series/looking-back'});
 }
 
+export function hasMainMediaAtom(contentApiArticle) {
+    var mainBlockElement = _.chain(deepGet(contentApiArticle, '.blocks.main.elements')).first().value() || undefined;
+    return deepGet(mainBlockElement,'.contentAtomTypeData.atomType') === "media"
+}
+
 export default function capiToInternalState(opts, article) {
     article.state.sectionName(article.props.sectionName());
     article.state.primaryTag(getPrimaryTag(opts));
     article.state.imageCutoutSrcFromCapi(getContributorImage(opts));
     article.state.imageSrcFromCapi(getMediaMainImage(opts));
-    article.state.hasMainVideo(getMainMediaType(opts) === 'video');
+    article.state.hasMainVideo(getMainMediaType(opts) === 'video' || hasMainMediaAtom(opts));
     article.state.tone(opts.frontsMeta && opts.frontsMeta.tone);
     article.state.viewUrl(getViewUrl(article));
     article.state.ophanUrl(getOphanUrl(opts.webUrl));
