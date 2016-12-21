@@ -24,8 +24,10 @@ export function isPremium(contentApiArticle) {
         !!_.find(contentApiArticle.tags, {id: 'news/series/looking-back'});
 }
 
-export function hasMainMediaAtom(contentApiArticle) {
+export function hasMainMediaVideoAtom(contentApiArticle) {
     var mainBlockElement = _.chain(deepGet(contentApiArticle, '.blocks.main.elements')).first().value() || undefined;
+    var atomId = deepGet(mainBlockElement,'.contentAtomTypeData.atomId');
+    console.log(atomId);
     return deepGet(mainBlockElement,'.contentAtomTypeData.atomType') === 'media';
 }
 
@@ -34,7 +36,7 @@ export default function capiToInternalState(opts, article) {
     article.state.primaryTag(getPrimaryTag(opts));
     article.state.imageCutoutSrcFromCapi(getContributorImage(opts));
     article.state.imageSrcFromCapi(getMediaMainImage(opts));
-    article.state.hasMainVideo(getMainMediaType(opts) === 'video' || hasMainMediaAtom(opts));
+    article.state.hasMainVideo(getMainMediaType(opts) === 'video' || hasMainMediaVideoAtom(opts));
     article.state.tone(opts.frontsMeta && opts.frontsMeta.tone);
     article.state.viewUrl(getViewUrl(article));
     article.state.ophanUrl(getOphanUrl(opts.webUrl));
