@@ -26,9 +26,18 @@ export function isPremium(contentApiArticle) {
 
 export function hasMainMediaVideoAtom(contentApiArticle) {
     var mainBlockElement = _.chain(deepGet(contentApiArticle, '.blocks.main.elements')).first().value() || undefined;
-    var atomId = deepGet(mainBlockElement,'.contentAtomTypeData.atomId');
-    console.log(atomId);
-    return deepGet(mainBlockElement,'.contentAtomTypeData.atomType') === 'media';
+
+    function hasMediaAtomMainMedia(mainBlockElement){
+        return deepGet(mainBlockElement,'.contentAtomTypeData.atomType') === 'media';
+    }
+
+    function isVideo(mainBlockElement) {
+        var atomId = deepGet(mainBlockElement,'.contentAtomTypeData.atomId');
+        var atom = _.chain(deepGet(contentApiArticle,'.atoms.media')).findWhere({id: atomId}).value() || undefined;
+        var firstAsset = _.chain(deepGet(atom,'.data.media.assets')).first().value() || undefined;
+        return _.isMatch(firstAsset, {assetType: 'video'});
+    }
+    return hasMediaAtomMainMedia(mainBlockElement) && isVideo(mainBlockElement)
 }
 
 export default function capiToInternalState(opts, article) {
