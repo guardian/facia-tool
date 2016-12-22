@@ -5,14 +5,14 @@ import Extension from 'models/extension';
 
 export default class extends Extension {
     constructor(baseModel) {
-    	var types;
+        var types;
 
         super(baseModel);
 
         if (baseModel.priority === 'email') {
-        	types = vars.CONST.emailTypes;
+            types = vars.CONST.emailTypes;
         } else {
-        	types = vars.CONST.types;
+            types = vars.CONST.types;
         }
 
         baseModel.types = ko.observableArray(_.pluck(types, 'name'));
