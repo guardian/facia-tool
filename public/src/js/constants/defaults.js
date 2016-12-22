@@ -58,8 +58,14 @@ export default {
         { name: 'nav/list' },
         { name: 'nav/media-list' },
         { name: 'news/most-popular' },
-        { name: 'breaking-news/not-for-other-fronts', groups: ['minor', 'major'] },
-        { name: 'email'}
+        { name: 'breaking-news/not-for-other-fronts', groups: ['minor', 'major'] }
+    ],
+
+    emailTypes: [
+        { name: 'fast' },
+        { name: 'medium' },
+        { name: 'slow' },
+        { name: 'most-popular' }
     ],
 
     navSections: [
@@ -131,7 +137,7 @@ export default {
             maxFronts: 50,
             hasGroups: false,
             isTypeLocked: true,
-            isHiddenLocked: true
+            isHiddenLocked: false
         }
 
     },
