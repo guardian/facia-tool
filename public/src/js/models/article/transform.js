@@ -37,7 +37,7 @@ export function hasMainMediaVideoAtom(contentApiArticle) {
         var firstAsset = _.chain(deepGet(atom,'.data.media.assets')).first().value() || undefined;
         return _.isMatch(firstAsset, {assetType: 'video'});
     }
-    return hasMediaAtomMainMedia(mainBlockElement) && isVideo(mainBlockElement);
+    return typeof mainBlockElement !== 'undefined' && hasMediaAtomMainMedia(mainBlockElement) && isVideo(mainBlockElement);
 }
 
 export default function capiToInternalState(opts, article) {
