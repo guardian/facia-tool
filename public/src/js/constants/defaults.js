@@ -137,7 +137,7 @@ export default {
             maxFronts: 50,
             hasGroups: false,
             isTypeLocked: true,
-            isHiddenLocked: true
+            isHiddenLocked: false
         }
 
     },
