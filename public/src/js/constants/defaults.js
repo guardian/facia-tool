@@ -136,7 +136,7 @@ export default {
         'email': {
             maxFronts: 50,
             hasGroups: false,
-            isTypeLocked: true,
+            isTypeLocked: false,
             isHiddenLocked: false
         }
 
