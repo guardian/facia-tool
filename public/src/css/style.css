@@ -1949,7 +1949,7 @@ ol.search_list > li::before {
     flex-wrap: wrap;
     position: absolute;
     top: 25px;
-    left: 0;
+    right: 0;
     padding: 10px;
     background: #FFFFFF;
     z-index: 1;
