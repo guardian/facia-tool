@@ -24,12 +24,28 @@ export function isPremium(contentApiArticle) {
         !!_.find(contentApiArticle.tags, {id: 'news/series/looking-back'});
 }
 
+export function hasMainMediaVideoAtom(contentApiArticle) {
+    var mainBlockElement = _.chain(deepGet(contentApiArticle, '.blocks.main.elements')).first().value() || undefined;
+
+    function hasMediaAtomMainMedia(mainBlockElement){
+        return deepGet(mainBlockElement,'.contentAtomTypeData.atomType') === 'media';
+    }
+
+    function isVideo(mainBlockElement) {
+        var atomId = deepGet(mainBlockElement,'.contentAtomTypeData.atomId');
+        var atom = _.chain(deepGet(contentApiArticle,'.atoms.media')).findWhere({id: atomId}).value() || undefined;
+        var firstAsset = _.chain(deepGet(atom,'.data.media.assets')).first().value() || undefined;
+        return _.isMatch(firstAsset, {assetType: 'video'});
+    }
+    return typeof mainBlockElement !== 'undefined' && hasMediaAtomMainMedia(mainBlockElement) && isVideo(mainBlockElement);
+}
+
 export default function capiToInternalState(opts, article) {
     article.state.sectionName(article.props.sectionName());
     article.state.primaryTag(getPrimaryTag(opts));
     article.state.imageCutoutSrcFromCapi(getContributorImage(opts));
     article.state.imageSrcFromCapi(getMediaMainImage(opts));
-    article.state.hasMainVideo(getMainMediaType(opts) === 'video');
+    article.state.hasMainVideo(getMainMediaType(opts) === 'video' || hasMainMediaVideoAtom(opts));
     article.state.tone(opts.frontsMeta && opts.frontsMeta.tone);
     article.state.viewUrl(getViewUrl(article));
     article.state.ophanUrl(getOphanUrl(opts.webUrl));

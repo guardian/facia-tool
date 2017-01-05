@@ -195,6 +195,7 @@ export default {
         'show-elements=video,main',
         'show-blocks=main',
         'show-tags=all',
+        'show-atoms=media',
         'show-fields=' + [
             'internalPageCode',
             'isLive',
