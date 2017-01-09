@@ -80,9 +80,9 @@ libraryDependencies ++= Seq(
     "com.gu" %% "mobile-notifications-client-play-2-4" % "0.5.29",
     "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.3.0",
 
-    // Circe 0.5.2 depends on Cats 0.7.2
-    // content-api-models depends on Circe 0.5.2 which depends on Cats 0.7.2
-    // Scanamo 0.7.0 depends on Cats 0.7.0.
+    // Circe 0.6.1 depends on Cats 0.8.1
+    // content-api-models depends on Circe 0.6.1 which depends on Cats 0.8.1
+    // Scanamo 0.8.3 depends on Cats 0.8.1
     // change with caution as must be upgraded in sync.
 
     "io.circe" %% "circe-core" % circeVersion,
