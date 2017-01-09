@@ -57,8 +57,8 @@ TwirlKeys.templateImports ++= Seq(
 )
 
 val awsVersion = "1.11.18"
-val capiModelsVersion = "10.17"
-val circeVersion = "0.5.2"
+val capiModelsVersion = "10.22"
+val circeVersion = "0.6.1"
 val json4sVersion = "3.5.0"
 
 libraryDependencies ++= Seq(
@@ -88,7 +88,7 @@ libraryDependencies ++= Seq(
     "io.circe" %% "circe-core" % circeVersion,
     "io.circe" %% "circe-generic" % circeVersion,
     "io.circe" %% "circe-parser" % circeVersion,
-    "com.gu" %% "scanamo" % "0.7.0",
+    "com.gu" %% "scanamo" % "0.8.3",
 
 
     "com.gu" %% "thrift-serializer" % "1.1.0",

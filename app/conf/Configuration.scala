@@ -5,7 +5,7 @@ import java.net.URL
 
 import com.amazonaws.AmazonClientException
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
-import com.amazonaws.auth.{AWSCredentialsProvider, AWSCredentialsProviderChain, InstanceProfileCredentialsProvider, STSAssumeRoleSessionCredentialsProvider}
+import com.amazonaws.auth._
 import org.apache.commons.io.IOUtils
 import play.api.{Configuration => PlayConfiguration, Logger, Play}
 
@@ -65,7 +65,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     val credentials: Option[AWSCredentialsProvider] = {
       val provider = new AWSCredentialsProviderChain(
         new ProfileCredentialsProvider("cmsFronts"),
-        new InstanceProfileCredentialsProvider
+        new DefaultAWSCredentialsProviderChain()
       )
 
       // this is a bit of a convoluted way to check whether we actually have credentials.

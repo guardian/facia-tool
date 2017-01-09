@@ -46,8 +46,8 @@ object ContentUpgrade {
   def upgradeItem(json: JValue): JValue = {
     Try({
       val jsonString = JsonMethods.compact(JsonMethods.render(json))
-      val maybeParsedJson: Option[Json] = parser.parse(jsonString).toOption
-      val maybeCapiContent: Option[Content] = maybeParsedJson.flatMap(json => json.as[Content].toOption)
+      val maybeParsedJson: Option[Json] = parser.parse(jsonString).right.toOption
+      val maybeCapiContent: Option[Content] = maybeParsedJson.flatMap(json => json.as[Content].right.toOption)
 
       (json, maybeCapiContent) match {
         case (jsObject: JObject, Some(content)) =>

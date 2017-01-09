@@ -34,7 +34,7 @@ class PressController (val config: ApplicationConfiguration, awsEndpoints: AwsEn
     import com.gu.scanamo.syntax._
 
     val record: Option[FrontPressRecord] = Scanamo.exec(client)(
-        pressedTable.get('stageName -> "live" and 'frontId -> path)).flatMap(_.toOption)
+        pressedTable.get('stageName -> "live" and 'frontId -> path)).flatMap(_.right.toOption)
     record.map(r => Ok(r.pressedTime)).getOrElse(NotFound)
   }
 
@@ -42,7 +42,7 @@ class PressController (val config: ApplicationConfiguration, awsEndpoints: AwsEn
     import com.gu.scanamo.syntax._
 
     val record: Option[FrontPressRecord] = Scanamo.exec(client)(
-      pressedTable.get('stageName -> stage and 'frontId -> path)).flatMap(_.toOption)
+      pressedTable.get('stageName -> stage and 'frontId -> path)).flatMap(_.right.toOption)
     record.map(r => Ok(Json.toJson(r))).getOrElse(NotFound)
   }
 }
