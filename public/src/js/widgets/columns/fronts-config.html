@@ -232,6 +232,11 @@
                 <span class="cnf-form__value" data-bind="text: meta.groups"></span>
             <!-- /ko -->
 
+            <div data-bind="visible: $root.priority == 'email' ">
+            <label for="backfillLimit">Maximum number of items to render</label>
+            <input id="backfillLimit" type="number" data-bind="value: meta.backfillLimit">
+            </div>
+
             <label for="showTags" >Show tag kickers</label>
             <input id="showTags" type="checkbox" data-bind="checked: meta.showTags" />
 
