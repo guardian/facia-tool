@@ -55,7 +55,8 @@ function flattenModel (model) {
         if (_.isFunction(value)) {
             return value();
         } else if (_.isObject(value)) {
-            return flattenModel(value);
+            var flattened = flattenModel(value);
+            return Object.keys(flattened).length === 0 ? null : flattened;
         } else {
             return value;
         }
