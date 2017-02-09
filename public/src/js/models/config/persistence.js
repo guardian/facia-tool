@@ -50,8 +50,19 @@ let publicInterface = new Persistence();
  * Copies properties and the current value of observables from a knockout model.
  */
 function flattenModel (model) {
+
+    function flattenValue(value) {
+        if (_.isFunction(value)) {
+            return value();
+        } else if (_.isObject(value)) {
+            return flattenModel(value);
+        } else {
+            return value;
+        }
+    }
+
     return _.reduce(model, function (accumulator, value, key) {
-        var x = _.isFunction(value) ? value() : value;
+        var x = flattenValue(value);
 
         if (x) {
             accumulator[key] = x;

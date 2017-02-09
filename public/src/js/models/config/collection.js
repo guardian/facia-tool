@@ -38,9 +38,11 @@ export default class ConfigCollection extends DropTarget {
                 'description',
                 'metadata'
             ]),
-            asObservableProps([
-                'backfillLimit'
-            ], observableNumeric)
+            {
+                displayHints: asObservableProps([
+                    'maxItemsToDisplay'
+                ], observableNumeric)
+            }
         );
 
 
