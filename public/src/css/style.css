@@ -1154,6 +1154,7 @@ collection-widget:first-child .collection {
     display: none;
  }
 
+input[type="number"],
 input[type="text"],
 textarea,
 select{
@@ -1162,6 +1163,7 @@ select{
 
 select,
 textarea,
+input[type="number"],
 input[type="text"] {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -1181,6 +1183,7 @@ select:focus {
     border-color: #ffc107;
 }
 
+input[type="number"],
 input[type="text"] {
     padding: 2px 5px;
 }
@@ -1873,6 +1876,7 @@ ol.search_list > li::before {
     color: #000000;
 }
 
+.cnf-form input[type="number"],
 .cnf-form input[type="text"],
 .cnf-form textarea,
 .cnf-form select {

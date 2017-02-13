@@ -166,6 +166,51 @@ describe('Persistence', function () {
         .catch(done.fail);
     });
 
+    it('creates a collection with display hints', function (done) {
+        var front = new Front({
+            id: 'fruit/front',
+            webTitle: 'fruit loops',
+            title: 'cereal',
+            isHidden: false,
+            priority: 'food'
+        });
+        var collection = new Collection({
+            displayName: 'green apple',
+            groups: [],
+            uneditable: true,
+            displayHints: {
+                maxItemsToDisplay: 3
+            }
+        });
+        collection.parents.push(front);
+
+        var request = persistence.collection.save(collection);
+        var call = ajax.request.calls.argsFor(0)[0], data = JSON.parse(call.data);
+        expect(call.type).toBe('POST');
+        expect(call.url).toBe('/config/collections');
+        expect(data).toEqual({
+            frontIds: ['fruit/front'],
+            collection: {
+                displayName: 'green apple',
+                uneditable: true,
+                groups: [],
+                displayHints: {
+                    maxItemsToDisplay: 3
+                }
+            }
+        });
+        expect(this.events.before).toHaveBeenCalled();
+        expect(this.events.after).not.toHaveBeenCalled();
+        request.then(() => {
+                expect(this.events.after).toHaveBeenCalled();
+
+                front.dispose();
+                collection.dispose();
+            })
+            .then(done)
+            .catch(done.fail);
+    });
+
     it('updates a collection', function (done) {
         var one = new Front({
             id: 'fruit/front',

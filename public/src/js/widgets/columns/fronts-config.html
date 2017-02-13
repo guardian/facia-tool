@@ -226,11 +226,18 @@
                     value: meta.description"/>
 
             <config-collection-backfill params="backfill: meta.backfill"></config-collection-backfill>
+
+            <div data-bind="visible: $root.priority == 'email' ">
+                <label for="backfillLimit" title="Maximum number of items to include in email">Max items to render</label>
+                <input id="backfillLimit" type="number" data-bind="value: meta.displayHints.maxItemsToDisplay" placeholder="6">
+            </div>
+
             <config-collection-tags params="tags: meta.metadata" class="tags"></config-collection-tags>
             <!-- ko if: meta.groups -->
                 <label>Groups</label>
                 <span class="cnf-form__value" data-bind="text: meta.groups"></span>
             <!-- /ko -->
+
 
             <label for="showTags" >Show tag kickers</label>
             <input id="showTags" type="checkbox" data-bind="checked: meta.showTags" />

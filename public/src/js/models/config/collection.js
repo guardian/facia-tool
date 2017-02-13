@@ -5,6 +5,7 @@ import persistence from 'models/config/persistence';
 import * as vars from 'modules/vars';
 import alert from 'utils/alert';
 import asObservableProps from 'utils/as-observable-props';
+import observableNumeric from 'utils/observable-numeric';
 import deepGet from 'utils/deep-get';
 import fullTrim from 'utils/full-trim';
 import populateObservables from 'utils/populate-observables';
@@ -18,24 +19,32 @@ export default class ConfigCollection extends DropTarget {
 
         this.parents = ko.observableArray(findParents(opts.id));
 
-        this.meta = asObservableProps([
-            'displayName',
-            'href',
-            'groups',
-            'type',
-            'uneditable',
-            'showTags',
-            'showSections',
-            'hideKickers',
-            'showDateHeader',
-            'showLatestUpdate',
-            'showTimestamps',
-            'excludeFromRss',
-            'hideShowMore',
-            'backfill',
-            'description',
-            'metadata'
-        ]);
+        this.meta = Object.assign(
+            asObservableProps([
+                'displayName',
+                'href',
+                'groups',
+                'type',
+                'uneditable',
+                'showTags',
+                'showSections',
+                'hideKickers',
+                'showDateHeader',
+                'showLatestUpdate',
+                'showTimestamps',
+                'excludeFromRss',
+                'hideShowMore',
+                'backfill',
+                'description',
+                'metadata'
+            ]),
+            {
+                displayHints: asObservableProps([
+                    'maxItemsToDisplay'
+                ], observableNumeric)
+            }
+        );
+
 
         populateObservables(this.meta, opts);
 
