@@ -63,6 +63,7 @@ export default {
 
     emailTypes: [
         { name: 'fast' },
+        { name: 'fast-images' },
         { name: 'medium' },
         { name: 'slow' },
         { name: 'most-popular' }
