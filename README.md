@@ -1,5 +1,5 @@
-Facia Tool
-========
+Facia Tool [![Build Status](https://travis-ci.org/guardian/facia-tool.svg?branch=master)](https://travis-ci.org/guardian/facia-tool)
+==========
 The Guardian front pages editor.
 
 [![Build Status](https://travis-ci.org/guardian/facia-tool.svg?branch=master)](https://travis-ci.org/guardian/facia-tool)
