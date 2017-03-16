@@ -62,9 +62,9 @@ object LogStash {
         lb.info("Configuring Logback")
         val context = lb.getLoggerContext
         val customFields = Map(
-          "stack" -> "fronts",
+          "stack" -> "cms-fronts",
           "stage" -> config.environment.stage.toUpperCase,
-          "app"   -> config.logging.app
+          "app"   -> config.environment.applicationName
         )
         val layout = makeLayout(makeCustomFields(customFields))
         val bufferSize = 1000
