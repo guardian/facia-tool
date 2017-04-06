@@ -66,7 +66,7 @@ export default {
         { name: 'fast-images' },
         { name: 'medium' },
         { name: 'slow' },
-        { name: 'most-popular' }
+        { name: 'free-text' }
     ],
 
     navSections: [
