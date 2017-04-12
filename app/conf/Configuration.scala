@@ -26,7 +26,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
   private val properties = Properties(installVars)
   private val stageFromProperties = properties.getOrElse("STAGE", "CODE")
   private val stsRoleToAssumeFromProperties = properties.getOrElse("STS_ROLE", "unknown")
-  private val forntPressedDynamoTable = properties.getOrElse("FRONT_PRESSED_TABLE", "unknown")
+  private val frontPressedDynamoTable = properties.getOrElse("FRONT_PRESSED_TABLE", "unknown")
 
   private def getString(property: String): Option[String] =
     playConfiguration.getString(stageFromProperties + "." + property)
@@ -34,6 +34,9 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
 
   private def getMandatoryString(property: String): String = getString(property)
     .getOrElse(throw new BadConfigurationException(s"$property of type string not configured for stage $stageFromProperties"))
+
+  private def getMandatoryCommaSeparatedList(property: String): List[String] = getString(property)
+      .map(_.split(',').toList).getOrElse(throw new BadConfigurationException(s"$property of type comma separated list not configured for stage $stageFromProperties"))
 
   private def getBoolean(property: String): Option[Boolean] =
     playConfiguration.getBoolean(stageFromProperties + "." + property)
@@ -145,7 +148,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     lazy val frontPressToolQueue = getString("frontpress.sqs.tool_queue_url")
     lazy val showTestContainers = getBoolean("faciatool.show_test_containers").getOrElse(false)
     lazy val stsRoleToAssume = getString("faciatool.sts.role.to.assume").getOrElse(stsRoleToAssumeFromProperties)
-    lazy val frontPressUpdateTable = forntPressedDynamoTable
+    lazy val frontPressUpdateTable = frontPressedDynamoTable
   }
 
   object media {
@@ -166,6 +169,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     lazy val domain = getMandatoryString("pandomain.domain")
     lazy val service = getMandatoryString("pandomain.service")
     lazy val roleArn = getMandatoryString("pandomain.roleArn")
+    lazy val userGroups = getMandatoryCommaSeparatedList("pandomain.user.groups")
   }
 
   object permission {
