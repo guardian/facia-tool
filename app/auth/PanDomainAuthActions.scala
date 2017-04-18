@@ -13,6 +13,8 @@ import play.api.mvc._
 trait PanDomainAuthActions extends AuthActions with PanDomainAuth with Results {
   def config: ApplicationConfiguration
 
+  override def cacheValidation: Boolean = true
+
   private lazy val groupChecker: Option[GoogleGroupChecker] =
     settings.google2FAGroupSettings.map(new GoogleGroupChecker(_, bucket))
 
