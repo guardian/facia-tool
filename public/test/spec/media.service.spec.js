@@ -73,7 +73,7 @@ describe('Media Service', function () {
                     dimensions: { width: 100, height: 60 }
                 }], 'tooBig');
                 return sourceImage.dropInEditor(
-                    trail.field('imageSrc')
+                    trail.field('imageSource')
                 );
             })
             // Wait for the alert to appear
@@ -115,7 +115,9 @@ describe('Media Service', function () {
                         id: 'internal-code/page/1',
                         meta: {
                             imageReplace: true,
-                            imageSrc: 'something dragged from media'
+                            imageSource: {
+                                source: 'something dragged from media'
+                            }
                         }
                     }]
                 }

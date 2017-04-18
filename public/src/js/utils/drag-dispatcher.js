@@ -48,7 +48,7 @@ function handleMedia ({sourceItem, mediaItem}, targetItem, targetGroup) {
             article.meta.imageCutoutReplace(false);
             article.meta.showMainVideo(false);
             article.meta.imageSlideshowReplace(false);
-            return _.find(article.editors(), editor => editor.key === 'imageSrc').dropInEditor(mediaItem.dataTransfer);
+            return _.find(article.editors(), editor => editor.key === 'imageSource').dropInEditor(mediaItem.dataTransfer);
         } else {
             alert('You can only drop media into an opened article.');
         }

@@ -33,6 +33,7 @@ export default class Editor extends BaseClass {
         this.dropImage = ko.observable(!!opts.dropImage);
         this.underDrag = ko.observable(false);
         this.performValidation = true;
+        this.validator = validator;
 
         if (type === 'list') {
             this.items = _.chain(opts.length)
@@ -46,6 +47,25 @@ export default class Editor extends BaseClass {
                 .value();
         } else if (type === 'text') {
             this.listenOn(mediator, 'ui:open', this.onUIOpen);
+            this.updateText = ko.pureComputed({
+                read: this.value,
+                write: this.writeText,
+                owner: this
+            });
+
+            if (validator && _.isFunction(this[validator.fn])) {
+                this.subscribeOn(meta, () => {
+                    if (this.performValidation !== false) {
+                        this[validator.fn](validator.params);
+                    }
+                });
+            }
+        } else if (type === 'text-image') {
+            this.updateText = ko.pureComputed({
+                read: this.imageValue,
+                write: this.writeImage,
+                owner: this
+            });
         }
 
         this.hasFocus = ko.observable(false).extend({ rateLimit: 150 });
@@ -56,23 +76,18 @@ export default class Editor extends BaseClass {
             return opts.maxLength && this.value().length > opts.maxLength;
         });
         this.displayEditor = ko.pureComputed(this.isVisible, this);
-        this.updateText = ko.pureComputed({
-            read: this.value,
-            write: this.writeText,
-            owner: this
-        });
-
-        if (validator && _.isFunction(this[validator.fn])) {
-            this.subscribeOn(meta, () => {
-                if (this.performValidation !== false) {
-                    this[validator.fn](validator.params, meta);
-                }
-            });
-        }
     }
 
     value() {
         return this.meta() || this.field() || '';
+    }
+
+    imageValue() {
+        const meta = this.meta();
+        if (meta && meta.src) {
+            return meta.src;
+        }
+        return this.field() || '';
     }
 
     clear() {
@@ -122,7 +137,14 @@ export default class Editor extends BaseClass {
     dropInEditor(element) {
         var sourceMeta = element.getData('sourceMeta');
         var params = (this.opts.validator || {}).params || {};
-        var targetMethod = this.type === 'image' ? 'assignToObjectElement' : 'assignImageToSpreadElement';
+        var targetMethod;
+        if (this.type === 'image') {
+            targetMethod = 'assignToObjectElement';
+        } else if (this.type === 'text') {
+            targetMethod = 'assignImageToSpreadElement';
+        } else if (this.type === 'text-image') {
+            targetMethod = 'assignImageToObjectElement';
+        }
 
         if (sourceMeta) {
             // Drag and drop from another editor, assume valid
@@ -146,22 +168,52 @@ export default class Editor extends BaseClass {
         this.meta(value === this.field() ? undefined : value.replace(rxScriptStriper, ''));
     }
 
-    validateImage(params) {
-        var imageSrc = this.article.meta[params.src],
-            image = imageSrc(),
-            opts = params.options;
+    writeImage(value) {
+        const imageSrc = this.field() === value ? undefined : value.replace(rxScriptStriper, '');
+        this.validateImage(this.validator.params, imageSrc);
+    }
 
+    validateImage(params, imageSrc) {
+        const imageMeta = this.article.meta[params.src];
+        const image = imageSrc || imageMeta();
+        const opts = params.options;
 
         if (image) {
             let {src, origin} = extractImageElements(image);
             return validateImageSrc(src, opts)
                 .then(img => {
-                    this.assignImageToSpreadElement(params, img, origin || src);
+                    if (this.type === 'text') {
+                        this.assignImageToSpreadElement(params, img, origin || src);
+                    } else if (this.type === 'text-image') {
+                        this.assignImageToObjectElement(params, img, origin || src);
+                    }
                 }, err => {
-                    this.assignImageToSpreadElement(params, err);
+                    if (this.type === 'text') {
+                        this.assignImageToSpreadElement(params, err);
+                    } else if (this.type === 'text-image') {
+                        this.assignImageToObjectElement(params, err);
+                    }
                 });
         } else {
-            this.assignImageToSpreadElement(params, null);
+            if (this.type === 'text') {
+                this.assignImageToSpreadElement(params, null);
+            } else if (this.type === 'text-image') {
+                this.assignImageToObjectElement(params, null);
+            }
+        }
+    }
+
+    assignImageToObjectElement(params, imgOrError, origin) {
+        const imageSource = this.article.meta[params.source];
+        if (!imgOrError || imgOrError instanceof Error) {
+            assign(this, [imageSource], [undefined]);
+            this.assignImageToSpreadElement(params, imgOrError, origin);
+        } else {
+            assign(this, [imageSource], [{
+                src: imgOrError.src,
+                origin: imgOrError.origin
+            }]);
+            return this.assignImageToSpreadElement(params, imgOrError, origin);
         }
     }
 
