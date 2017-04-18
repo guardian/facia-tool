@@ -40,9 +40,9 @@ object LogStash {
     val a = new KinesisAppender[ILoggingEvent]()
     a.setStreamName(appenderConfig.stream)
     a.setRegion(appenderConfig.region)
-    a.setCredentialsProvider(new STSAssumeRoleSessionCredentialsProvider.Builder(
+    a.setCredentialsProvider(new STSAssumeRoleSessionCredentialsProvider(
       appenderConfig.roleArn, appenderConfig.sessionName
-    ).build())
+    ))
     a.setBufferSize(appenderConfig.bufferSize)
 
     a.setContext(context)

@@ -47,6 +47,6 @@ trait PanDomainAuthActions extends AuthActions with PanDomainAuth with Results {
   override lazy val system: String = config.pandomain.service
   override def awsCredentialsProvider = new AWSCredentialsProviderChain(
     new ProfileCredentialsProvider("workflow"),
-    new STSAssumeRoleSessionCredentialsProvider.Builder(config.pandomain.roleArn, system).build()
+    new STSAssumeRoleSessionCredentialsProvider(config.pandomain.roleArn, system)
   )
 }

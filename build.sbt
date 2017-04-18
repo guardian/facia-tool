@@ -56,7 +56,7 @@ TwirlKeys.templateImports ++= Seq(
     "play.api.Play.current"
 )
 
-val awsVersion = "1.11.8"
+val awsVersion = "1.11.18"
 val capiModelsVersion = "11.12"
 val circeVersion = "0.7.0"
 val json4sVersion = "3.5.0"

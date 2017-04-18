@@ -91,7 +91,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     var crossAccount: Option[AWSCredentialsProvider] = {
       val provider = new AWSCredentialsProviderChain(
         new ProfileCredentialsProvider("frontend"),
-        new STSAssumeRoleSessionCredentialsProvider.Builder(faciatool.stsRoleToAssume, "frontend").build()
+        new STSAssumeRoleSessionCredentialsProvider(faciatool.stsRoleToAssume, "frontend")
       )
 
       // this is a bit of a convoluted way to check whether we actually have credentials.
