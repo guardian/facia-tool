@@ -4,22 +4,22 @@ import auth.PanDomainAuthActions
 import com.gu.pandomainauth.action.UserRequest
 import conf.ApplicationConfiguration
 import model.Cached
-import permissions.ConfigPermissionCheck
+import permissions.{ConfigPermissionCheck, Permissions, ToolsAccessPermissionCheck}
 import play.api.mvc._
 import services.AssetsManager
 import util.{Acl, Encryption}
 
 class ViewsController(val config: ApplicationConfiguration, val acl: Acl, assetsManager: AssetsManager, isDev: Boolean,
-                      crypto: Encryption) extends Controller with PanDomainAuthActions {
+                      crypto: Encryption, permissions: Permissions) extends Controller with PanDomainAuthActions {
 
-  def priorities() = AuthAction { request =>
+  def priorities() = (AuthAction andThen new ToolsAccessPermissionCheck(permissions)) { request =>
     val identity = request.user
     Cached(60) {
       Ok(views.html.priority(Option(identity), config.facia.stage, isDev))
     }
   }
 
-  def collectionEditor() = AuthAction { request =>
+  def collectionEditor() = (AuthAction andThen new ToolsAccessPermissionCheck(permissions)) { request =>
     val identity = request.user
     Cached(60) {
       Ok(views.html.admin_main(Option(identity), config.facia.stage, overrideIsDev(request, isDev),
@@ -27,7 +27,7 @@ class ViewsController(val config: ApplicationConfiguration, val acl: Acl, assets
     }
   }
 
-  def configEditor() = (AuthAction andThen new ConfigPermissionCheck(acl)) { request =>
+  def configEditor() = (AuthAction andThen new ToolsAccessPermissionCheck(permissions) andThen new ConfigPermissionCheck(acl)) { request =>
     val identity = request.user
     Cached(60) {
       Ok(views.html.admin_main(Option(identity), config.facia.stage, overrideIsDev(request, isDev),

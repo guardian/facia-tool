@@ -9,7 +9,7 @@ import conf.ApplicationConfiguration
 import frontsapi.model._
 import metrics.FaciaToolMetrics
 import model.NoCache
-import permissions.BreakingNewsEditCollectionsCheck
+import permissions.{BreakingNewsEditCollectionsCheck, Permissions, ToolsAccessPermissionCheck}
 import play.api.libs.json._
 import play.api.mvc._
 import services._
@@ -21,7 +21,7 @@ import scala.concurrent.Future
 
 class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, val frontsApi: FrontsApi, val faciaApiIO: FaciaApiIO, val updateActions: UpdateActions,
                           breakingNewsUpdate: BreakingNewsUpdate, val auditingUpdates: AuditingUpdates, val faciaPress: FaciaPress, val faciaPressQueue: FaciaPressQueue,
-                          val configAgent: ConfigAgent, val s3FrontsApi: S3FrontsApi) extends Controller with PanDomainAuthActions with BreakingNewsEditCollectionsCheck {
+                          val configAgent: ConfigAgent, val s3FrontsApi: S3FrontsApi, val permissions: Permissions) extends Controller with PanDomainAuthActions with BreakingNewsEditCollectionsCheck {
 
   override lazy val actorSystem = ActorSystem()
 
@@ -37,7 +37,7 @@ class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, va
       NoCache {
         Ok(Json.toJson(configJson)).as("application/json")}}}
 
-  def publishCollection(collectionId: String) = APIAuthAction.async { implicit request =>
+  def publishCollection(collectionId: String) = (APIAuthAction andThen new ToolsAccessPermissionCheck(permissions)).async { implicit request =>
     withModifyPermissionForCollections(Set(collectionId)) {
       val identity = request.user
       FaciaToolMetrics.DraftPublishCount.increment()
@@ -67,7 +67,7 @@ class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, va
     } else
       Future.successful(NoCache(Ok))}
 
-  def discardCollection(collectionId: String) = APIAuthAction.async { request =>
+  def discardCollection(collectionId: String) = (APIAuthAction andThen new ToolsAccessPermissionCheck(permissions)).async { request =>
     val identity = request.user
     val futureCollectionJson = faciaApiIO.discardCollectionJson(collectionId, identity)
     futureCollectionJson.map { maybeCollectionJson =>
@@ -78,7 +78,7 @@ class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, va
       }
       NoCache(Ok)}}
 
-  def treatEdits(collectionId: String) = APIAuthAction.async { request =>
+  def treatEdits(collectionId: String) = (APIAuthAction andThen new ToolsAccessPermissionCheck(permissions)).async { request =>
     request.body.asJson.flatMap(_.asOpt[UpdateMessage]).map {
       case update: Update =>
         val identity = request.user
@@ -115,7 +115,7 @@ class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, va
     }.getOrElse(Future.successful(NotAcceptable))
   }
 
-  def collectionEdits(): Action[AnyContent] = APIAuthAction.async { implicit request =>
+  def collectionEdits(): Action[AnyContent] = (APIAuthAction andThen new ToolsAccessPermissionCheck(permissions)).async { implicit request =>
     FaciaToolMetrics.ApiUsageCount.increment()
       request.body.asJson.flatMap (_.asOpt[UpdateMessage]).map {
         case update: Update =>
@@ -186,12 +186,12 @@ class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, va
       } getOrElse Future.successful(NotFound)
   }
 
-  def pressLivePath(path: String) = APIAuthAction { request =>
+  def pressLivePath(path: String) = (APIAuthAction andThen new ToolsAccessPermissionCheck(permissions)) { request =>
     faciaPressQueue.enqueue(PressJob(FrontPath(path), Live, forceConfigUpdate = Option(true)))
     NoCache(Ok)
   }
 
-  def pressDraftPath(path: String) = APIAuthAction { request =>
+  def pressDraftPath(path: String) = (APIAuthAction andThen new ToolsAccessPermissionCheck(permissions)) { request =>
     faciaPressQueue.enqueue(PressJob(FrontPath(path), Draft, forceConfigUpdate = Option(true)))
     NoCache(Ok)
   }

@@ -20,6 +20,7 @@ class Permissions(val appConfig: ApplicationConfiguration) extends PermissionsPr
 object Permissions {
   val ConfigureFronts = Permission("configure_fronts", "fronts", PermissionDenied)
   val BreakingNewsAlert = Permission("breaking_news_alert", "fronts", PermissionDenied)
+  val ToolsAccess = Permission("tools_access", "global", PermissionGranted)
 
   val all = Seq(ConfigureFronts, BreakingNewsAlert)
 }

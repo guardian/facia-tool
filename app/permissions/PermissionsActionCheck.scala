@@ -1,5 +1,6 @@
 package permissions
 
+import com.gu.editorial.permissions.client.{PermissionDenied, PermissionGranted, PermissionsUser}
 import com.gu.pandomainauth.action.UserRequest
 import play.api.Logger
 import play.api.mvc._
@@ -19,6 +20,17 @@ trait PermissionActionFilter extends ActionFilter[UserRequest] {
       case AccessDenied =>
         Logger.info(s"user not authorized to $restrictedAction")
         Some(Results.Unauthorized(views.html.unauthorized()))}
+}
+
+class ToolsAccessPermissionCheck(val permissions: Permissions) extends  PermissionActionFilter {
+  val testAccess: String => Future[Authorization] = (userEmail) => {
+    implicit val permissionsUser: PermissionsUser = PermissionsUser(userEmail)
+    permissions.get(Permissions.ToolsAccess).map {
+      case PermissionGranted => AccessGranted
+      case PermissionDenied => AccessDenied
+    }
+  }
+  val restrictedAction = "access the tools globally"
 }
 
 class ConfigPermissionCheck(val acl: Acl) extends PermissionActionFilter {
