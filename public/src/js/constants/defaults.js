@@ -8,7 +8,6 @@ export default {
     },
 
     types: [
-        { 'name': 'dynamo/election' },
         { 'name': 'fixed/small/slow-IV' },
         { 'name': 'fixed/medium/fast-XII' },
         { 'name': 'fixed/small/slow-III' },
@@ -59,6 +58,7 @@ export default {
         { name: 'nav/list' },
         { name: 'nav/media-list' },
         { name: 'news/most-popular' },
+        { 'name': 'dynamo/election' },
         { name: 'breaking-news/not-for-other-fronts', groups: ['minor', 'major'] }
     ],
 
