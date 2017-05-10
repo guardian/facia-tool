@@ -8,6 +8,7 @@ export default {
     },
 
     types: [
+        { 'name': 'dynamo/election' },
         { 'name': 'fixed/small/slow-IV' },
         { 'name': 'fixed/medium/fast-XII' },
         { 'name': 'fixed/small/slow-III' },
