@@ -58,6 +58,7 @@ export default {
         { name: 'nav/list' },
         { name: 'nav/media-list' },
         { name: 'news/most-popular' },
+        { 'name': 'dynamo/election' },
         { name: 'breaking-news/not-for-other-fronts', groups: ['minor', 'major'] }
     ],
 
