@@ -1,7 +1,6 @@
 package slices
 
 import com.gu.facia.api.models.CollectionConfig
-import conf.ApplicationConfiguration
 import play.api.Logger
 
 class Containers(val fixedContainers: FixedContainers) {
@@ -10,6 +9,7 @@ class Containers(val fixedContainers: FixedContainers) {
     ("dynamic/fast", Dynamic(DynamicFast)),
     ("dynamic/slow", Dynamic(DynamicSlow)),
     ("dynamic/package", Dynamic(DynamicPackage)),
+    ("dynamo/election", Dynamic(DynamicElection)),
     ("dynamic/slow-mpu", Dynamic(DynamicSlowMPU)),
     ("nav/list", NavList),
     ("nav/media-list", NavMediaList),

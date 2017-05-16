@@ -12,7 +12,6 @@ class FixedContainers(val config: ApplicationConfiguration) {
   val fixedMediumSlowXIIMpu = slices(TTT, TlTlMpu)
   val fixedMediumFastXI = slices(HalfQQ, Ql2Ql2Ql2Ql2)
   val fixedMediumFastXII = slices(QuarterQuarterQuarterQuarter, Ql2Ql2Ql2Ql2)
-  val fixedLargeElections = slices(ThreeQuarterTallQuarter1, QuarterQuarterQuarterQuarter)
 
   val thrasher = slices(Fluid).copy(customCssClasses = Set("fc-container--thrasher"))
   val video = slices(TTT).copy(customCssClasses = Set("fc-container--video"))
@@ -30,7 +29,6 @@ class FixedContainers(val config: ApplicationConfiguration) {
     ("fixed/medium/slow-XII-mpu", fixedMediumSlowXIIMpu),
     ("fixed/medium/fast-XI", fixedMediumFastXI),
     ("fixed/medium/fast-XII", fixedMediumFastXII),
-    ("dynamo/election", fixedLargeElections),
     ("fixed/large/slow-XIV", slices(ThreeQuarterQuarter, QuarterQuarterQuarterQuarter, Ql2Ql2Ql2Ql2)),
     ("fixed/video", video),
     ("fixed/thrasher", thrasher)
