@@ -54,5 +54,3 @@ developer.properties
 local.conf
 application.local.conf
 
-#Node Version Manager
-.nvmrc
