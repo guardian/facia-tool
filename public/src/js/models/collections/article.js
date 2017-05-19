@@ -29,7 +29,7 @@ import openGraph from 'utils/open-graph';
 import populateObservables from 'utils/populate-observables';
 import serializeArticleMeta from 'utils/serialize-article-meta';
 import * as snap from 'utils/snap';
-import urlAbsPath from 'utils/url-abs-path';
+import pathWithCampaignCodes from 'utils/path-with-campaign-codes';
 import visitedArticleStorage from 'utils/visited-article-storage';
 
 const capiProps = [
@@ -243,7 +243,7 @@ export default class Article extends DropTarget {
         let href;
 
         if (isGuardianUrl(id) || isPreviewUrl(id)) {
-            href = '/' + urlAbsPath(id);
+            href = '/' + pathWithCampaignCodes(id);
         } else {
             href = id;
         }
@@ -265,7 +265,7 @@ export default class Article extends DropTarget {
 
     convertToLatestSnap(kicker) {
         this.meta.snapType('latest');
-        this.meta.snapUri(urlAbsPath(this.id()));
+        this.meta.snapUri(pathWithCampaignCodes(this.id()));
 
         this.meta.showKickerCustom(true);
         this.meta.customKicker(kicker);

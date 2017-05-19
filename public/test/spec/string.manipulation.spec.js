@@ -5,6 +5,7 @@ import serialize from 'utils/serialize-query-params';
 import trim from 'utils/full-trim';
 import isGuardian from 'utils/is-guardian-url';
 import urlAbsPath from 'utils/url-abs-path';
+import pathWithCampaignCodes from 'utils/path-with-campaign-codes';
 import urlHost from 'utils/url-host';
 import sanitizeQuery from 'utils/sanitize-api-query';
 import sanitizeHtml from 'utils/sanitize-html';
@@ -219,3 +220,27 @@ describe('utils/human-time', function () {
         expect(humanTime(future, now)).toBe('in 2 mins');
     });
 });
+
+
+describe('utils/path-with-campaign-codes', function () {
+    const path = 'path';
+    const testUrl = 'https://base.co.uk/' + path;
+
+    it('parses an empty string', function() {
+        expect(pathWithCampaignCodes('')).toBe('');
+    });
+
+    it('parses a url with no parameters', function() {
+        expect(pathWithCampaignCodes(testUrl)).toBe(path);
+    });
+
+    it('does not include parameters that are not campaing codes', function() {
+        const urlWithParams = testUrl + '?someParam=param&another=param';
+        expect(pathWithCampaignCodes(urlWithParams)).toBe(path);
+    });
+    it('does not include parameters that are not campaing codes', function() {
+        const urlWithParams = testUrl + '?someParam=param&utm_source=source&utm_medium=medium&another=param';
+        expect(pathWithCampaignCodes(urlWithParams)).toBe(path + '?utm_source=source&utm_medium=medium');
+    });
+});
+
