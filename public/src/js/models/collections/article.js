@@ -12,6 +12,7 @@ import {default as assignState} from 'models/article/transform';
 import persistence from 'models/collections/persistence';
 import DropTarget from 'models/drop-target';
 import Group from 'models/group';
+import {getViewUrl} from 'models/article/links';
 
 import * as contentApi from 'modules/content-api';
 import copiedArticle from 'modules/copied-article';
@@ -135,6 +136,13 @@ export default class Article extends DropTarget {
             }));
 
             contentApi.decorateItems(this.meta.supporting.items());
+
+            // Add viewUrl to snap links
+            const viewUrl = getViewUrl(this);
+            if (viewUrl) {
+                this.state.viewUrl(viewUrl);
+            }
+
         }
 
         if (withCapiData) {
@@ -250,6 +258,7 @@ export default class Article extends DropTarget {
 
         this.meta.href(href);
         this.id(snap.generateId());
+
         this.updateEditorsDisplay();
     }
 
