@@ -137,11 +137,7 @@ export default class Article extends DropTarget {
 
             contentApi.decorateItems(this.meta.supporting.items());
 
-            // Add viewUrl to snap links
-            const viewUrl = getViewUrl(this);
-            if (viewUrl) {
-                this.state.viewUrl(viewUrl);
-            }
+            this.addViewUrl();
 
         }
 
@@ -259,6 +255,8 @@ export default class Article extends DropTarget {
         this.meta.href(href);
         this.id(snap.generateId());
 
+        this.addViewUrl();
+
         this.updateEditorsDisplay();
     }
 
@@ -286,6 +284,13 @@ export default class Article extends DropTarget {
         this.state.enableContentOverrides(false);
 
         this.convertToSnap();
+    }
+
+    addViewUrl() {
+        const viewUrl = getViewUrl(this);
+        if (viewUrl) {
+            this.state.viewUrl(viewUrl);
+        }
     }
 
     decorateFromOpenGraph() {
