@@ -136,6 +136,13 @@ export default class Article extends DropTarget {
             }));
 
             contentApi.decorateItems(this.meta.supporting.items());
+
+            // Add viewUrl to snap links
+            const viewUrl = getViewUrl(this);
+            if (viewUrl) {
+                this.state.viewUrl(viewUrl);
+            }
+
         }
 
         if (withCapiData) {
@@ -252,11 +259,6 @@ export default class Article extends DropTarget {
         this.meta.href(href);
         this.id(snap.generateId());
 
-        // Add viewUrl to snap links
-        const viewUrl = getViewUrl(this);
-        if (viewUrl) {
-            this.state.viewUrl(viewUrl);
-        }
         this.updateEditorsDisplay();
     }
 
