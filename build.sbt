@@ -23,11 +23,15 @@ def branch(): Option[String] = {
     }
 }
 
-riffRaffPackageType := (packageBin in Debian).value
+riffRaffArtifactResources := Seq(
+    (packageBin in Debian).value -> s"${name.value}/${name.value}.deb",
+        baseDirectory.value / "riff-raff.yaml" -> "riff-raff.yaml"
+)
 riffRaffBuildIdentifier := env("TRAVIS_BUILD_NUMBER").getOrElse("DEV")
 riffRaffManifestBranch := branch().getOrElse(git.gitCurrentBranch.value)
 riffRaffUploadArtifactBucket := Option("riffraff-artifact")
 riffRaffUploadManifestBucket := Option("riffraff-builds")
+
 
 javacOptions := Seq("-g","-encoding", "utf8")
 
