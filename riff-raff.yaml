@@ -18,7 +18,6 @@ deployments:
         BuiltBy: amigo
       cloudFormationStackName: facia
       cloudFormationStackByTags: false
-      appendStageToCloudFormationStackName: true
       prependStackToCloudFormationStackName: false
   static-facia-tool:
     type: aws-s3
@@ -33,7 +32,4 @@ deployments:
         js: application/javascript
         map: text/plain
         json: application/json
-      prefixPackage: true
       prefixStack: false
-      prefixStage: true
-      publicReadAcl: true
