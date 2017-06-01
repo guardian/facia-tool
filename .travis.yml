@@ -13,7 +13,7 @@ install:
 - jspm registry export github
 - jspm install
 script:
-- grunt --stack validate test && sbt ++$TRAVIS_SCALA_VERSION compile test assets riffRaffArtifact
+- grunt --stack validate test && sbt ++$TRAVIS_SCALA_VERSION compile test assets riffRaffUpload
   && grunt --stack bundle upload
 env:
   global:
