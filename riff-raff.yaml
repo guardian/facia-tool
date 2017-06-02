@@ -1,0 +1,35 @@
+regions: [eu-west-1]
+stacks: [cms-fronts]
+
+deployments:
+  facia-tool:
+    type: autoscaling
+    parameters:
+      bucket: facia-dist
+    dependencies:
+      - facia-tool-ami-update
+  facia-tool-ami-update:
+    type: ami-cloudformation-parameter
+    app: facia-tool
+    parameters:
+      amiTags:
+        Recipe: editorial-tools-xenial-java8
+        AmigoStage: PROD
+        BuiltBy: amigo
+      cloudFormationStackName: facia
+      cloudFormationStackByTags: false
+      prependStackToCloudFormationStackName: false
+  static-facia-tool:
+    type: aws-s3
+    parameters:
+      bucket: cms-fronts-static-assets
+      cacheControl:
+      - pattern: .*\\.js$
+        value: public, max-age=315360000
+      - pattern: .*
+        value: public, max-age=60
+      mimeTypes:
+        js: application/javascript
+        map: text/plain
+        json: application/json
+      prefixStack: false
