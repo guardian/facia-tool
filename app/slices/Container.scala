@@ -9,7 +9,6 @@ class Containers(val fixedContainers: FixedContainers) {
     ("dynamic/fast", Dynamic(DynamicFast)),
     ("dynamic/slow", Dynamic(DynamicSlow)),
     ("dynamic/package", Dynamic(DynamicPackage)),
-    ("dynamic/election", Dynamic(DynamicElection)),
     ("dynamic/slow-mpu", Dynamic(DynamicSlowMPU)),
     ("nav/list", NavList),
     ("nav/media-list", NavMediaList),
