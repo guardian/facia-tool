@@ -28,7 +28,7 @@ riffRaffManifestBranch := branch().getOrElse(git.gitCurrentBranch.value)
 riffRaffUploadArtifactBucket := Option("riffraff-artifact")
 riffRaffUploadManifestBucket := Option("riffraff-builds")
 riffRaffArtifactResources := Seq(
-    (packageBin in Debian).value -> s"${name.value}/${name.value}.deb",
+    (packageBin in Debian).value -> s"${name.value}.all.deb",
         baseDirectory.value / "riff-raff.yaml" -> "riff-raff.yaml"
 )
 
