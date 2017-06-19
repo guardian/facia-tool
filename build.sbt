@@ -23,7 +23,7 @@ def branch(): Option[String] = {
     }
 }
 
-riffRaffPackageName := s"cms-fronts::${name.value}",
+riffRaffPackageName := s"cms-fronts\:\:${name.value}",
 riffRaffManifestProjectName := riffRaffPackageName.value,
 riffRaffBuildIdentifier := env("TRAVIS_BUILD_NUMBER").getOrElse("DEV")
 riffRaffManifestBranch := branch().getOrElse(git.gitCurrentBranch.value)
