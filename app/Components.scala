@@ -43,12 +43,14 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   val press = new Press(faciaPress)
   val assetsManager = new AssetsManager(appConfiguration, isDev)
   val encryption = new Encryption(appConfiguration)
+  val mediaApi = new MediaApi(appConfiguration, wsApi)
+  val mediaServiceClient = new MediaServiceClient(mediaApi)
 
   val collection = new CollectionController(appConfiguration, acl, auditingUpdates, updateManager, press)
   val defaults = new DefaultsController(appConfiguration, acl, isDev)
   val faciaCapiProxy = new FaciaContentApiProxy(wsApi, appConfiguration)
   val faciaTool = new FaciaToolController(appConfiguration, acl, frontsApi, faciaApiIO, updateActions, breakingNewsUpdate,
-    auditingUpdates, faciaPress, faciaPressQueue, configAgent, s3FrontsApi)
+    auditingUpdates, faciaPress, faciaPressQueue, configAgent, s3FrontsApi, mediaServiceClient)
   val front = new FrontController(appConfiguration, acl, auditingUpdates, updateManager, press)
   val pandaAuth = new PandaAuthController(appConfiguration)
   val status = new StatusController

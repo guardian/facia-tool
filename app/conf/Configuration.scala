@@ -150,8 +150,8 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
 
   object media {
     lazy val baseUrl = getString("media.base.url")
-    lazy val apiUrl = getString("media.api.url")
-    lazy val key = getString("media.key")
+    lazy val apiUrl = getMandatoryString("media.api.url")
+    lazy val key = getMandatoryString("media.key")
   }
 
   object notification {
