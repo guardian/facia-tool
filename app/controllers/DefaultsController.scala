@@ -53,7 +53,7 @@ class DefaultsController(val config: ApplicationConfiguration, val acl: Acl, val
           request.user.avatarUrl,
           config.sentry.publicDSN,
           config.media.baseUrl.get,
-          config.media.apiUrl.get,
+          config.media.apiUrl,
           SwitchManager.getSwitchesAsJson(),
           acls,
           config.facia.collectionCap,
