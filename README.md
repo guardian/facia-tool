@@ -143,6 +143,7 @@ Create the files
 
    media.base.url=[redacted]
    media.api.url=[redacted]
+   media.key=[redacted]
 
    ophan.api.host=[redacted]
    ophan.api.key=[redacted]
