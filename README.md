@@ -123,39 +123,9 @@ Modify the files
 Run `sudo nginx -s reload` to restart nginx with the new configuration.
 
 
-Create the files
+#### Config Files
 
-* `/etc/gu/facia-tool.properties` containing
-
-   ```
-   STAGE=CODE
-   STS_ROLE=arn:aws:iam::642631414762:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX
-   ```
-
-* `/etc/gu/facia-tool.application.secrets.conf` this files contains secrets, there's a copy in S3. You need at least
-
-   ```
-   content.api.draft.host=[redacted]
-   content.api.host=[redacted]
-   content.api.key=[redacted]
-   content.api.preview.password=[redacted]
-   content.api.preview.user=[redacted]
-
-   media.base.url=[redacted]
-   media.api.url=[redacted]
-
-   ophan.api.host=[redacted]
-   ophan.api.key=[redacted]
-
-
-   ## Local development
-
-   pandomain.domain="local.dev-gutools.co.uk"
-   pandomain.host="https://fronts.local.dev-gutools.co.uk"
-
-   ```
-
-* In your file `/etc/gu/facia-tool.application.secrets.conf`, remove the first two blocks **PROD** and **CODE**
+To get the config files run `./fetch-config.sh`. This requires CMS front credentials which you get from [janus](https://janus.gutools.co.uk)
 
 ### Credentials
 
