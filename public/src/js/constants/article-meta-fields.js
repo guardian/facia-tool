@@ -63,6 +63,9 @@ export default Object.freeze([
         type: 'text'
     },
     {
+        key: 'imageSrcThumb'
+    },
+    {
         key: 'imageSrcWidth',
         visibleWhen: 'imageReplace',
         label: 'replacement image width',
