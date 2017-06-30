@@ -3,7 +3,9 @@ export function thumbnail() {
         fields = this.fields,
         state = this.state;
 
-    if (meta.imageReplace() && meta.imageSrc()) {
+    if (meta.imageSrcThumb()){
+      return meta.imageSrcThumb();
+    } else if (meta.imageReplace() && meta.imageSrc()) {
         return meta.imageSrc();
     } else if (meta.imageCutoutReplace()) {
         return meta.imageCutoutSrc() || state.imageCutoutSrcFromCapi() || fields.secureThumbnail() || fields.thumbnail();
