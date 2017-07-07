@@ -33,15 +33,13 @@ class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, va
         Ok(Json.toJson(configJson)).as("application/json")}}}
 
   def getCollection(collectionId: String) = APIAuthAction.async { request =>
-    def f[A](x: Option[Future[A]])(implicit ec: ExecutionContext): Future[Option[A]] =
-      x match {
-        case Some(f) => f.map(Some(_))
-        case None    => Future.successful(None)
-      }
 
     FaciaToolMetrics.ApiUsageCount.increment()
     val collection = frontsApi.amazonClient.collection(collectionId).flatMap{ collectionJson =>
-      f(collectionJson.map(mediaServiceClient.addThumbnailsToCollection))
+      collectionJson.map(mediaServiceClient.addThumbnailsToCollection) match {
+        case Some(f) => f.map(Some(_))
+        case None    => Future.successful(None)
+      }
     }
     collection.map(c => NoCache {
       Ok(Json.toJson(c)).as("application/json")})
