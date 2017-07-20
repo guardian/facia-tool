@@ -170,7 +170,7 @@ export default class Editor extends BaseClass {
             imageSrcWidth = this.article.meta[params.width],
             imageSrcHeight = this.article.meta[params.height],
             imageSrcOrigin = this.article.meta[params.origin],
-            imageSrcThumb = this.article.meta[params.thumb];
+            imageSrcThumb = this.article.meta[params.imageSrcThumb];
 
         if (!imgOrError || imgOrError instanceof Error) {
             assign(this, [imageSrc, imageSrcWidth, imageSrcHeight, imageSrcOrigin, imageSrcThumb], []);
