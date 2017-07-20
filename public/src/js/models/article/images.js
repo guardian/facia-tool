@@ -3,7 +3,7 @@ export function thumbnail() {
         fields = this.fields,
         state = this.state;
 
-    if (meta.imageSrcThumb()){
+    if (meta.imageReplace() && meta.imageSrcThumb() && meta.imageSrcThumb() !== ''){
       return meta.imageSrcThumb();
     } else if (meta.imageReplace() && meta.imageSrc()) {
         return meta.imageSrc();
