@@ -29,7 +29,7 @@ riffRaffBuildIdentifier := env("TRAVIS_BUILD_NUMBER").getOrElse("DEV")
 riffRaffManifestBranch := branch().getOrElse(git.gitCurrentBranch.value)
 riffRaffUploadArtifactBucket := Option("riffraff-artifact")
 riffRaffUploadManifestBucket := Option("riffraff-builds")
-riffRaffArtifactResources := Seq(
+riffRaffArtifactResources ++= Seq(
     (packageBin in Debian).value -> s"${name.value}/${name.value}_1.0_all.deb",
         baseDirectory.value / "riff-raff.yaml" -> "riff-raff.yaml"
 )
