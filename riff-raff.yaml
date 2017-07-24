@@ -33,3 +33,24 @@ deployments:
         map: text/plain
         json: application/json
       prefixStack: false
+recipes:
+    default:
+        depends:
+            - artifactUpload
+            - amiUpdate
+            - staticUpload
+            - deploy
+    deploy:
+        actionsBeforeApp:
+            - facia-tool.deploy
+    artifactUpload:
+        actionsBeforeApp:
+            - facia-tool.uploadArtifacts
+    staticUpload:
+        actionsBeforeApp:
+            - static-facia-tool.uploadStaticFiles
+    amiUpdate:
+        actionsBeforeApp:
+            - machine-images.update
+
+
