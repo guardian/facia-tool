@@ -6,7 +6,7 @@ module.exports = function() {
                 expand: true,
                 src: ['**'],
                 cwd: 'tmp/bundles',
-                dest: 'target/riffraff/packages/static-facia-tool/'
+                dest: 'tmp/riffraff/packages/static-facia-tool/'
             }]
         },
         debian: {
@@ -14,7 +14,7 @@ module.exports = function() {
                 expand: true,
                 src: ['facia-tool*.deb'],
                 cwd: 'target/',
-                dest: 'target/riffraff/packages/facia-tool/'
+                dest: 'tmp/riffraff/packages/facia-tool/'
             }]
         },
         deploy: {
@@ -22,7 +22,7 @@ module.exports = function() {
                 expand: true,
                 src: ['deploy.json'],
                 cwd: 'conf/',
-                dest: 'target/riffraff/'
+                dest: 'tmp/riffraff/'
             }]
         }
     };
