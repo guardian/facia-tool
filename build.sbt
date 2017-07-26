@@ -31,7 +31,10 @@ riffRaffUploadArtifactBucket := Option("riffraff-artifact")
 riffRaffUploadManifestBucket := Option("riffraff-builds")
 riffRaffArtifactResources := {
     val jsBundlesDir = baseDirectory.value / "tmp" / "bundles"
-    (jsBundlesDir * "*") pair rebase(jsBundlesDir, "packages/static-facia-tool")
+    Seq(
+        (packageBin in Debian).value -> s"${name.value}/${name.value}_1.0_all.deb",
+        baseDirectory.value / "riff-raff.yaml" -> "riff-raff.yaml"
+    ) ++ ((jsBundlesDir * "*") pair rebase(jsBundlesDir, "packages/static-facia-tool"))
 }
 
 javacOptions := Seq("-g","-encoding", "utf8")
