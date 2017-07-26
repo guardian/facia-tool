@@ -169,17 +169,18 @@ export default class Editor extends BaseClass {
         var imageSrc = this.article.meta[params.src],
             imageSrcWidth = this.article.meta[params.width],
             imageSrcHeight = this.article.meta[params.height],
-            imageSrcOrigin = this.article.meta[params.origin];
+            imageSrcOrigin = this.article.meta[params.origin],
+            imageSrcThumb = this.article.meta[params.imageSrcThumb] || function(){return '';};
 
         if (!imgOrError || imgOrError instanceof Error) {
-            assign(this, [imageSrc, imageSrcWidth, imageSrcHeight, imageSrcOrigin], []);
+            assign(this, [imageSrc, imageSrcWidth, imageSrcHeight, imageSrcOrigin, imageSrcThumb], []);
             if (imgOrError) {
                 alert(imgOrError);
             }
         } else {
             assign(this,
-                [imageSrc, imageSrcWidth, imageSrcHeight, imageSrcOrigin],
-                [imgOrError.src, imgOrError.width, imgOrError.height, origin]
+                [imageSrc, imageSrcWidth, imageSrcHeight, imageSrcOrigin, imageSrcThumb],
+                [imgOrError.src, imgOrError.width, imgOrError.height, origin, imgOrError.thumb]
             );
         }
     }

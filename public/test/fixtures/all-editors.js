@@ -35,7 +35,8 @@ export default Object.freeze([{
             src: 'image',
             width: 'imageWidth',
             height: 'imageHeight',
-            origin: 'imageOrigin'
+            origin: 'imageOrigin',
+            imageSrcThumb: 'imageSrcThumb'
         }
     }
 }, {
@@ -53,6 +54,10 @@ export default Object.freeze([{
     type: 'text',
     editable: false,
     visibleWhen: 'image'
+}, {
+    key: 'imageSrcThumb',
+    label: 'image thumbnail',
+    type: 'text'
 }, {
     key: 'list',
     type: 'list',

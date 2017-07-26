@@ -15,13 +15,14 @@ import play.api.mvc._
 import services._
 import tools.FaciaApiIO
 import updates._
+import scala.concurrent.ExecutionContext
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, val frontsApi: FrontsApi, val faciaApiIO: FaciaApiIO, val updateActions: UpdateActions,
                           breakingNewsUpdate: BreakingNewsUpdate, val auditingUpdates: AuditingUpdates, val faciaPress: FaciaPress, val faciaPressQueue: FaciaPressQueue,
-                          val configAgent: ConfigAgent, val s3FrontsApi: S3FrontsApi) extends Controller with PanDomainAuthActions with BreakingNewsEditCollectionsCheck {
+                          val configAgent: ConfigAgent, val s3FrontsApi: S3FrontsApi, val mediaServiceClient: MediaServiceClient) extends Controller with PanDomainAuthActions with BreakingNewsEditCollectionsCheck {
 
   override lazy val actorSystem = ActorSystem()
 
@@ -32,10 +33,17 @@ class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, va
         Ok(Json.toJson(configJson)).as("application/json")}}}
 
   def getCollection(collectionId: String) = APIAuthAction.async { request =>
+
     FaciaToolMetrics.ApiUsageCount.increment()
-    frontsApi.amazonClient.collection(collectionId).map { configJson =>
-      NoCache {
-        Ok(Json.toJson(configJson)).as("application/json")}}}
+    val collection = frontsApi.amazonClient.collection(collectionId).flatMap{ collectionJson =>
+      collectionJson.map(mediaServiceClient.addThumbnailsToCollection) match {
+        case Some(f) => f.map(Some(_))
+        case None    => Future.successful(None)
+      }
+    }
+    collection.map(c => NoCache {
+      Ok(Json.toJson(c)).as("application/json")})
+  }
 
   def publishCollection(collectionId: String) = APIAuthAction.async { implicit request =>
     withModifyPermissionForCollections(Set(collectionId)) {

@@ -53,6 +53,7 @@ export default Object.freeze([
                 width: 'imageSrcWidth',
                 height: 'imageSrcHeight',
                 origin: 'imageSrcOrigin',
+                imageSrcThumb: 'imageSrcThumb',
                 options: {
                     minWidth: 400,
                     widthAspectRatio: 5,
@@ -60,6 +61,11 @@ export default Object.freeze([
                 }
             }
         },
+        type: 'text'
+    },
+    {
+        key: 'imageSrcThumb',
+        label: 'image thumbnail',
         type: 'text'
     },
     {
