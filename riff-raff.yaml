@@ -6,6 +6,8 @@ deployments:
     type: autoscaling
     parameters:
       bucket: facia-dist
+    dependencies:
+        - facia-tool-ami-update
   facia-tool-ami-update:
     type: ami-cloudformation-parameter
     app: facia-tool
