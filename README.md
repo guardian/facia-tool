@@ -57,6 +57,9 @@ Mac:
 brew install node
 ```
 
+#### NVM
+Optional: Install nvm to manage your node versions
+
 #### Grunt (build tool)
 
 Ubuntu/Mac:
@@ -129,16 +132,20 @@ To get the config files run `./fetch-config.sh`. This requires CMS front credent
 
 ### Credentials
 
-You need valid developer credentials for `cmsFronts` and `workflow`.
-You can get keys temporary keys from `janus`. Note that the recommended way to get Janus credentials for *facia-tool* is to use feria and run:
+You need valid developer credentials for `cmsFronts` and `workflow.s3Read`.
+You can get keys temporary keys from `janus`. You can copy these credentials manually from `janus`
+
+You can also get credentials for *facia-tool* by using feria:
 
 ```
 $ feria cmsFronts && feria --access s3-read workflow && feria --access sqs-consumer frontend
 ```
 (You should first checkout the repository and follow the install instructions for *feria*.)
 
+
 You can run the fronts tool without frontend credentials, but you will not be able to check how your changes to fronts appear on frontend without
 these credentials. You will need to test your changes on `CODE` to see these changes.
+
 ### Code Dependencies
 
 Inside the project
@@ -160,6 +167,9 @@ If it is your first time, compile the project.
 ```
 compile
 ```
+
+Ensure that you are running to correct version of node (4.1 or higher).
+You can get this by running `nvm use`
 
 Run the project locally by typing
 ```
@@ -196,4 +206,13 @@ You can run a single test going to [http://localhost:9876/debug.html?test=collec
 
 You need to have version 4.1 or higher of node installed to be able to run the tests
 
+### Linting
+
+Fronts tool uses `eslint` to ensure consistent style. Run `eslint` with
+
+```bash
+grunt eslint
+```
+
+More detailed instructions of how to develop fronts tool available [here](./GUIDE_TO_FRONTS.md)
 Enjoy!
