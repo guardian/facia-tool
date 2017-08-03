@@ -64,6 +64,9 @@
         css: {'dropdown-open': state.alsoOnVisible},
         slideVisible: state.alsoOnVisible() && !state.collapsed()
     ">
+        <p>
+            Warning! This container is shared on other fronts, be careful when editing.
+        </p>
         <ul data-bind="foreach: alsoOn">
             <li><a class="list-header__also-on" data-bind="
                 click: $parent.front.setFront,

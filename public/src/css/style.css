@@ -2042,6 +2042,11 @@ ol.search_list > li::before {
     color: #555;
 }
 
+span.also a{
+  color: red;
+  font-size: 20px;
+}
+
 .also {
     margin: 6px;
     line-height: 24px;
