@@ -129,7 +129,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
 
   object facia {
     lazy val stage = getString("facia.stage").getOrElse(stageFromProperties)
-    lazy val collectionCap: Int = 35
+    lazy val collectionCap: Int = 20
   }
 
   object logging {
