@@ -67,6 +67,11 @@ const listeners = Object.freeze({
         event.preventDefault();
         event.stopPropagation();
 
+        if (targetGroup.parentType === 'Collection' && targetGroup.items().length > 19 && !source.mediaItem) {
+            alert('Sorry, you can\'t add more than 20 stories to a container');
+            return;
+        }
+
         copiedArticle.flush();
 
         targetGroup.unsetAsTarget();
