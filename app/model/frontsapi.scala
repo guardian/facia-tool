@@ -59,7 +59,6 @@ trait UpdateActionsTrait {
   def config: ApplicationConfiguration
   def configAgent: ConfigAgent
 
-  lazy val collectionCap: Int = config.facia.collectionCap
   implicit val updateListWrite = Json.writes[UpdateList]
 
   def insertIntoLive(update: UpdateList, identity: User, collectionJson: CollectionJson): CollectionJson =
@@ -132,19 +131,28 @@ trait UpdateActionsTrait {
 
   def updateCollectionList(id: String, update: UpdateList, identity: User): Future[Option[CollectionJson]] = {
     lazy val updateJson = Json.toJson(update)
-    frontsApi.amazonClient.collection(id).map { maybeCollectionJson =>
+    for {
+      configJson <- frontsApi.amazonClient.config
+      collection: CollectionConfigJson = configJson.collections.get(update.id).get
+      collectionType = collection.`type`.getOrElse("")
+      maybeCollectionJson <- frontsApi.amazonClient.collection(id)
+    } yield {
       maybeCollectionJson
         .map(insertIntoLive(update, identity, _))
         .map(insertIntoDraft(update, identity, _))
         .map(removeGroupIfNoLongerGrouped(id, _))
         .map(pruneBlock)
         .map(CollectionJsonFunctions.sortByGroup)
-        .map(capCollection)
+        .map(capCollection(_, collectionType))
         .map(FaciaApi.updateIdentity(_, identity))
         .map(putCollectionJson(id, _))
         .map(archiveUpdateBlock(id, _, updateJson, identity))
         .orElse(Option(createCollectionJson(identity, update)))
-        .map(putCollectionJson(id, _))}}
+        .map(putCollectionJson(id, _))
+    }
+  }
+
+
 
   def updateCollectionFilter(id: String, update: UpdateList, identity: User): Future[Option[CollectionJson]] = {
     lazy val updateJson = Json.toJson(update)
@@ -197,8 +205,13 @@ trait UpdateActionsTrait {
       CollectionJson(Nil, Some(List(Trail(update.item, DateTime.now.getMillis, Some(userName), update.itemMeta))), None, DateTime.now, userName, identity.email, None, None, None)
   }
 
-  def capCollection(collectionJson: CollectionJson): CollectionJson =
+  def capCollection(collectionJson: CollectionJson, collectionType: String): CollectionJson = {
+
+    val collectionCap = if (collectionType == config.facia.navListType) config.facia.navListCap else config.facia.collectionCap
+
     collectionJson.copy(live = collectionJson.live.take(collectionCap), draft = collectionJson.draft.map(_.take(collectionCap)))
+
+  }
 
   def removeGroupIfNoLongerGrouped(collectionId: String, collectionJson: CollectionJson): CollectionJson = {
     configAgent.getConfig(collectionId).flatMap(_.groups) match {
