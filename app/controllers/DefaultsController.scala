@@ -30,6 +30,8 @@ case class Defaults(
   switches: JsValue,
   acl: AclJson,
   collectionCap: Int,
+  navListCap: Int,
+  navListType: String,
   collectionMetadata: Iterable[Metadata]
 )
 
@@ -57,6 +59,8 @@ class DefaultsController(val config: ApplicationConfiguration, val acl: Acl, val
           SwitchManager.getSwitchesAsJson(),
           acls,
           config.facia.collectionCap,
+          config.facia.navListCap,
+          config.facia.navListType,
           Metadata.tags.map{
             case (_, meta) => meta
           }

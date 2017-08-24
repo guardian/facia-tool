@@ -304,8 +304,10 @@ export default class Front extends ColumnWidget {
                 reject('You can only have one article in this collection.');
             }
 
-            var collectionCap = this.baseModel.state().defaults.collectionCap;
+            var defaults = this.baseModel.state().defaults;
             var groups = deepGet(item, '.group.parent.groups') || [];
+            var containerType = groups[0].parent.configMeta.type();
+            var collectionCap = containerType === defaults.navListType ? defaults.navListCap : defaults.collectionCap;
             var articleNumber = groups.reduce((numberOfArticles, group) => {
                 return numberOfArticles + group.items().length;
             }, 0);
