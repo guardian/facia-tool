@@ -8,7 +8,7 @@ import metrics.CloudWatch
 import permissions.Permissions
 import play.api.ApplicationLoader.Context
 import play.api.inject.{Injector, NewInstanceInjector, SimpleInjector}
-import play.api.{BuiltInComponentsFromContext, Mode, OptionalSourceMapper}
+import play.api.{BuiltInComponentsFromContext, Mode}
 import play.api.libs.ws.ning.NingWSComponents
 import play.api.routing.Router
 import play.filters.cors.CORSFilter
