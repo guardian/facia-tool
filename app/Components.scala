@@ -1,3 +1,5 @@
+import javax.inject.Provider
+
 import conf.ApplicationConfiguration
 import config.{CustomGzipFilter, UpdateManager}
 import controllers._
@@ -6,7 +8,7 @@ import metrics.CloudWatch
 import permissions.Permissions
 import play.api.ApplicationLoader.Context
 import play.api.inject.{Injector, NewInstanceInjector, SimpleInjector}
-import play.api.{BuiltInComponentsFromContext, Mode}
+import play.api.{BuiltInComponentsFromContext, Mode, OptionalSourceMapper}
 import play.api.libs.ws.ning.NingWSComponents
 import play.api.routing.Router
 import play.filters.cors.CORSFilter
@@ -61,9 +63,10 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   val vanityRedirects = new VanityRedirects(appConfiguration, acl)
   val views = new ViewsController(appConfiguration, acl, assetsManager, isDev, encryption)
   val pressController = new PressController(appConfiguration, awsEndpoints)
+  val loggingHttpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, sourceMapper)
 
-  val assets = new controllers.Assets(httpErrorHandler)
-  val router: Router = new Routes(httpErrorHandler, status, pandaAuth, uncachedAssets, views, faciaTool, pressController, defaults, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects, troubleshoot)
+  val assets = new controllers.Assets(loggingHttpErrorHandler)
+  val router: Router = new Routes(loggingHttpErrorHandler, status, pandaAuth, uncachedAssets, views, faciaTool, pressController, defaults, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects, troubleshoot)
 
   override lazy val injector: Injector =
     new SimpleInjector(NewInstanceInjector) + router + crypto + httpConfiguration + tempFileCreator + wsApi + wsClient
