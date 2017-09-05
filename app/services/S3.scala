@@ -6,7 +6,7 @@ import com.amazonaws.services.s3.model._
 import com.amazonaws.util.StringInputStream
 import com.gu.pandomainauth.model.User
 import conf.ApplicationConfiguration
-import metrics.S3Metrics.S3ClientExceptionsMetric
+import _root_.metrics.S3Metrics.S3ClientExceptionsMetric
 import org.joda.time.DateTime
 import play.api.Logger
 

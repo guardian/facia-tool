@@ -51,8 +51,11 @@ javaOptions in Universal ++= Seq(
 
 routesGenerator := InjectedRoutesGenerator
 
+//scalacOptions := Seq("-unchecked", "-optimise", "-deprecation", "-target:jvm-1.8",
+//      "-Xcheckinit", "-encoding", "utf8", "-feature", "-Yinline-warnings","-Xfatal-warnings")
+
 scalacOptions := Seq("-unchecked", "-optimise", "-deprecation", "-target:jvm-1.8",
-      "-Xcheckinit", "-encoding", "utf8", "-feature", "-Yinline-warnings","-Xfatal-warnings")
+    "-Xcheckinit", "-encoding", "utf8", "-feature", "-Yinline-warnings")
 
 sources in (Compile, doc) := Seq.empty
 
@@ -64,7 +67,7 @@ TwirlKeys.templateImports ++= Seq(
     "play.api.Play.current"
 )
 
-val awsVersion = "1.11.18"
+val awsVersion = "1.11.188"
 val capiModelsVersion = "11.12"
 val circeVersion = "0.7.0"
 val json4sVersion = "3.5.0"
