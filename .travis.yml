@@ -9,9 +9,9 @@ before_install:
 install:
 - npm install
 - grunt --version
+- jspm install
 - jspm config registries.github.auth $JSPM_GITHUB_AUTH_SECRET
 - jspm registry export github
-- jspm install
 script:
 - grunt --stack validate test && sbt ++$TRAVIS_SCALA_VERSION compile test assets && grunt --stack bundle && sbt ++$TRAVIS_SCALA_VERSION riffRaffUpload
 env:
