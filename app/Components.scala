@@ -1,5 +1,3 @@
-import javax.inject.Provider
-
 import conf.ApplicationConfiguration
 import config.{CustomGzipFilter, UpdateManager}
 import controllers._
@@ -8,17 +6,17 @@ import metrics.CloudWatch
 import permissions.Permissions
 import play.api.ApplicationLoader.Context
 import play.api.inject.{Injector, NewInstanceInjector, SimpleInjector}
-import play.api.{BuiltInComponentsFromContext, Mode}
 import play.api.libs.ws.ning.NingWSComponents
 import play.api.routing.Router
+import play.api.{BuiltInComponentsFromContext, Mode}
 import play.filters.cors.CORSFilter
+import router.Routes
 import services._
 import slices.{Containers, FixedContainers}
 import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
 import updates.{AuditingUpdates, BreakingNewsUpdate}
 import util.{Acl, Encryption}
-import router.Routes
 
 class AppComponents(context: Context) extends BuiltInComponentsFromContext(context) with NingWSComponents {
   val isTest = context.environment.mode == Mode.Test
