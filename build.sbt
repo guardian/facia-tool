@@ -46,13 +46,14 @@ javaOptions in Universal ++= Seq(
     "-J-XX:MaxMetaspaceSize=500m",
     "-J-XX:+PrintGCDetails",
     "-J-XX:+PrintGCDateStamps",
-    s"-J-Xloggc:/var/log/${packageName.value}/gc.log"
+    s"-J-Xloggc:/var/log/${packageName.value}/gc.log",
+    "-Dcom.amazonaws.sdk.disableCbor"
 )
 
 routesGenerator := InjectedRoutesGenerator
 
 scalacOptions := Seq("-unchecked", "-optimise", "-deprecation", "-target:jvm-1.8",
-      "-Xcheckinit", "-encoding", "utf8", "-feature", "-Yinline-warnings","-Xfatal-warnings")
+    "-Xcheckinit", "-encoding", "utf8", "-feature", "-Yinline-warnings")
 
 sources in (Compile, doc) := Seq.empty
 
@@ -64,7 +65,7 @@ TwirlKeys.templateImports ++= Seq(
     "play.api.Play.current"
 )
 
-val awsVersion = "1.11.18"
+val awsVersion = "1.11.188"
 val capiModelsVersion = "11.12"
 val circeVersion = "0.7.0"
 val json4sVersion = "3.5.0"

@@ -6,6 +6,7 @@ before_install:
 - nvm install 5
 - nvm use 5
 - npm install -g grunt-cli
+- npm -g install jspm
 install:
 - npm install
 - grunt --version

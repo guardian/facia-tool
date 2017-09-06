@@ -6,17 +6,17 @@ import metrics.CloudWatch
 import permissions.Permissions
 import play.api.ApplicationLoader.Context
 import play.api.inject.{Injector, NewInstanceInjector, SimpleInjector}
-import play.api.{BuiltInComponentsFromContext, Mode}
 import play.api.libs.ws.ning.NingWSComponents
 import play.api.routing.Router
+import play.api.{BuiltInComponentsFromContext, Mode}
 import play.filters.cors.CORSFilter
+import router.Routes
 import services._
 import slices.{Containers, FixedContainers}
 import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
 import updates.{AuditingUpdates, BreakingNewsUpdate}
 import util.{Acl, Encryption}
-import router.Routes
 
 class AppComponents(context: Context) extends BuiltInComponentsFromContext(context) with NingWSComponents {
   val isTest = context.environment.mode == Mode.Test
@@ -61,9 +61,10 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   val vanityRedirects = new VanityRedirects(appConfiguration, acl)
   val views = new ViewsController(appConfiguration, acl, assetsManager, isDev, encryption)
   val pressController = new PressController(appConfiguration, awsEndpoints)
+  val loggingHttpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, sourceMapper)
 
-  val assets = new controllers.Assets(httpErrorHandler)
-  val router: Router = new Routes(httpErrorHandler, status, pandaAuth, uncachedAssets, views, faciaTool, pressController, defaults, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects, troubleshoot)
+  val assets = new controllers.Assets(loggingHttpErrorHandler)
+  val router: Router = new Routes(loggingHttpErrorHandler, status, pandaAuth, uncachedAssets, views, faciaTool, pressController, defaults, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects, troubleshoot)
 
   override lazy val injector: Injector =
     new SimpleInjector(NewInstanceInjector) + router + crypto + httpConfiguration + tempFileCreator + wsApi + wsClient
