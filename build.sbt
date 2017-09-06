@@ -112,6 +112,3 @@ libraryDependencies ++= Seq(
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact, JDebPackaging)
-
-ivyLoggingLevel := UpdateLogging.Full
-logLevel := Level.Debug
