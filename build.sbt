@@ -72,18 +72,18 @@ val capiModelsVersion = "11.12"
 val circeVersion = "0.7.0"
 val json4sVersion = "3.5.0"
 
-val fasterXmlExclusion = ExclusionRule(organization = "com.fasterxml")
+val jacksonXmlExclusion = ExclusionRule(organization = "com.fasterxml.jackson")
 
 libraryDependencies ++= Seq(
     ws,
     filters,
-    "com.amazonaws" % "aws-java-sdk-core" % awsVersion excludeAll fasterXmlExclusion,
-    "com.amazonaws" % "aws-java-sdk-cloudwatch" % awsVersion excludeAll fasterXmlExclusion,
-    "com.amazonaws" % "aws-java-sdk-kinesis" % awsVersion excludeAll fasterXmlExclusion,
-    "com.amazonaws" % "aws-java-sdk-s3" % awsVersion excludeAll fasterXmlExclusion,
-    "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion excludeAll fasterXmlExclusion,
-    "com.amazonaws" % "aws-java-sdk-sts" % awsVersion excludeAll fasterXmlExclusion,
-    "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion excludeAll fasterXmlExclusion,
+    "com.amazonaws" % "aws-java-sdk-core" % awsVersion excludeAll jacksonXmlExclusion,
+    "com.amazonaws" % "aws-java-sdk-cloudwatch" % awsVersion excludeAll jacksonXmlExclusion,
+    "com.amazonaws" % "aws-java-sdk-kinesis" % awsVersion excludeAll jacksonXmlExclusion,
+    "com.amazonaws" % "aws-java-sdk-s3" % awsVersion excludeAll jacksonXmlExclusion,
+    "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion excludeAll jacksonXmlExclusion,
+    "com.amazonaws" % "aws-java-sdk-sts" % awsVersion excludeAll jacksonXmlExclusion,
+    "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion excludeAll jacksonXmlExclusion,
     "com.gu" %% "auditing-thrift-model" % "0.2",
     "com.gu" % "content-api-models" % capiModelsVersion,
     "com.gu" % "content-api-models-json" % capiModelsVersion,
