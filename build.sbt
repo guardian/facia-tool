@@ -70,8 +70,6 @@ val capiModelsVersion = "11.12"
 val circeVersion = "0.7.0"
 val json4sVersion = "3.5.0"
 
-val jacksonXmlExclusion = ExclusionRule(organization = "com.fasterxml.jackson")
-
 libraryDependencies ++= Seq(
     ws,
     filters,
