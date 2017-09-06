@@ -46,13 +46,11 @@ javaOptions in Universal ++= Seq(
     "-J-XX:MaxMetaspaceSize=500m",
     "-J-XX:+PrintGCDetails",
     "-J-XX:+PrintGCDateStamps",
-    s"-J-Xloggc:/var/log/${packageName.value}/gc.log"
+    s"-J-Xloggc:/var/log/${packageName.value}/gc.log",
+    "-Dcom.amazonaws.sdk.disableCbor"
 )
 
 routesGenerator := InjectedRoutesGenerator
-
-//scalacOptions := Seq("-unchecked", "-optimise", "-deprecation", "-target:jvm-1.8",
-//      "-Xcheckinit", "-encoding", "utf8", "-feature", "-Yinline-warnings","-Xfatal-warnings")
 
 scalacOptions := Seq("-unchecked", "-optimise", "-deprecation", "-target:jvm-1.8",
     "-Xcheckinit", "-encoding", "utf8", "-feature", "-Yinline-warnings")
@@ -77,13 +75,13 @@ val jacksonXmlExclusion = ExclusionRule(organization = "com.fasterxml.jackson")
 libraryDependencies ++= Seq(
     ws,
     filters,
-    "com.amazonaws" % "aws-java-sdk-core" % awsVersion excludeAll jacksonXmlExclusion,
-    "com.amazonaws" % "aws-java-sdk-cloudwatch" % awsVersion excludeAll jacksonXmlExclusion,
-    "com.amazonaws" % "aws-java-sdk-kinesis" % awsVersion excludeAll jacksonXmlExclusion,
-    "com.amazonaws" % "aws-java-sdk-s3" % awsVersion excludeAll jacksonXmlExclusion,
-    "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion excludeAll jacksonXmlExclusion,
-    "com.amazonaws" % "aws-java-sdk-sts" % awsVersion excludeAll jacksonXmlExclusion,
-    "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion excludeAll jacksonXmlExclusion,
+    "com.amazonaws" % "aws-java-sdk-core" % awsVersion,
+    "com.amazonaws" % "aws-java-sdk-cloudwatch" % awsVersion,
+    "com.amazonaws" % "aws-java-sdk-kinesis" % awsVersion,
+    "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,
+    "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion,
+    "com.amazonaws" % "aws-java-sdk-sts" % awsVersion,
+    "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion,
     "com.gu" %% "auditing-thrift-model" % "0.2",
     "com.gu" % "content-api-models" % capiModelsVersion,
     "com.gu" % "content-api-models-json" % capiModelsVersion,
@@ -114,3 +112,6 @@ libraryDependencies ++= Seq(
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact, JDebPackaging)
+
+ivyLoggingLevel := UpdateLogging.Full
+logLevel := Level.Debug
