@@ -159,8 +159,6 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
   object notification {
     lazy val host = getMandatoryString("notification.host")
     lazy val key = getMandatoryString("notification.key")
-    lazy val legacyHost = getMandatoryString("notification.legacy.host")
-    lazy val legacyKey = getMandatoryString("notification.legacy.key")
   }
 
   object pandomain {
