@@ -25,13 +25,11 @@ class InvalidNotificationContentType(msg: String) extends Throwable(msg) {}
 
 class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSAPI) {
   lazy val client = {
-    Logger.info(s"Configuring breaking news client to send notifications to ${config.notification.host} and ${config.notification.legacyHost}")
+    Logger.info(s"Configuring breaking news client to send notifications to ${config.notification.host}")
     ApiClient(
       host = config.notification.host,
       apiKey = config.notification.key,
-      httpProvider = new NotificationHttpProvider(ws),
-      legacyHost = config.notification.legacyHost,
-      legacyApiKey = config.notification.legacyKey
+      httpProvider = new NotificationHttpProvider(ws)
     )
   }
 
