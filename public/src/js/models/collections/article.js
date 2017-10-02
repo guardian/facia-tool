@@ -247,7 +247,7 @@ export default class Article extends DropTarget {
         let href;
 
         if (isGuardianUrl(id) || isPreviewUrl(id)) {
-            href = '/' + urlAbsPath(id);
+            href = '/' + urlAbsPath(id, true);
         } else {
             href = id;
         }

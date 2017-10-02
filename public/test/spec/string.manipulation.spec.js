@@ -174,6 +174,7 @@ describe('utils/url-abs-path', function () {
         expect(urlAbsPath('/banana#handle')).toBe('banana');
         expect(urlAbsPath('https://anotherurl.com/banana#handle')).toBe('banana');
         expect(urlAbsPath('https://anotherurl.com/banana/for/free?q=hello')).toBe('banana/for/free');
+        expect(urlAbsPath('https://anotherurl.com/banana/for/free?q=hello', true)).toBe('banana/for/free?q=hello');
     });
 });
 
