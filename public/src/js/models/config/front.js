@@ -239,7 +239,12 @@ export default class ConfigFront extends BaseClass {
         if (this.props.canonical() === collection.id) {
             this.props.canonical(null);
         }
-        this.saveProps();
+
+        // Save front without checking if it's valid
+        // Groups are validated upon creation and editing anyway
+        this.applyConstraints();
+        this.state.isOpenProps(false);
+        return persistence.front.update(this);
     }
 
     applyConstraints() {
