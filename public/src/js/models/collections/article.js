@@ -82,6 +82,7 @@ export default class Article extends DropTarget {
             'underControlDrag',
             'isOpen',
             'isLiveBlog',
+            'isComment',
             'isLoaded',
             'isEmpty',
             'visited',
@@ -102,7 +103,6 @@ export default class Article extends DropTarget {
         this.state.enableContentOverrides(this.meta.snapType() !== 'latest');
         this.state.inDynamicCollection(deepGet(opts, '.group.parent.isDynamic'));
         this.state.visited(opts.visited);
-
         this.frontPublicationDate = opts.frontPublicationDate;
         this.publishedBy = opts.publishedBy;
         this.frontPublicationTime = ko.observable();

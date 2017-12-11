@@ -53,6 +53,7 @@ export default function capiToInternalState(opts, article) {
     if (deepGet(opts, '.fields.liveBloggingNow') === 'true') {
         article.state.isLiveBlog(true);
     }
+    opts.frontsMeta && article.state.isComment(opts.frontsMeta.tone === 'comment');
     article.state.capiId(opts.capiId);
     article.state.shortUrl(opts.fields.shortUrl);
 }
