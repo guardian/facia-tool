@@ -82,7 +82,6 @@ export default class Article extends DropTarget {
             'underControlDrag',
             'isOpen',
             'isLiveBlog',
-            'isComment',
             'isLoaded',
             'isEmpty',
             'visited',

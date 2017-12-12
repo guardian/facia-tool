@@ -167,7 +167,6 @@ export default Object.freeze([
     },
     {
         key: 'showQuotedHeadline',
-        ifState: 'isComment',
         editable: true,
         omitForSupporting: true,
         label: 'quote headline',
