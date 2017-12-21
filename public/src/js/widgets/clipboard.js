@@ -51,6 +51,10 @@ class Clipboard extends BaseWidget {
         }
     }
 
+    clearAll() {
+        this.group.omitAllItems();
+    }
+
     flushCopiedArticles() {
         copiedArticle.flush();
     }
