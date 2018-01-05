@@ -80,7 +80,6 @@ libraryDependencies ++= Seq(
     "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-sts" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion,
-    "com.gu" %% "auditing-thrift-model" % "0.2",
     "com.gu" % "content-api-models" % capiModelsVersion,
     "com.gu" % "content-api-models-json" % capiModelsVersion,
     "com.gu" %% "editorial-permissions-client" % "0.3",
