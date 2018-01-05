@@ -1,6 +1,5 @@
 package updates
 
-import com.gu.thrift.serializer.{GzipType, ThriftSerializer}
 import conf.ApplicationConfiguration
 import net.logstash.logback.marker.Markers
 import play.api.Logger
@@ -12,14 +11,13 @@ class AuditingUpdates(val config: ApplicationConfiguration, val configAgent: Con
   def putAudit(audit: AuditUpdate): Unit = {
     lazy val updatePayload = serializeUpdateMessage(audit)
     lazy val shortMessagePayload = serializeShortMessage(audit)
-    lazy val expiryDate = computeExpiryDate(audit)
 
     audit.fronts(configAgent).foreach { frontId =>
-      Logger.logger.info(createMarkers(audit, expiryDate, shortMessagePayload, updatePayload, frontId), "Fronts Audit")
+      Logger.logger.info(createMarkers(audit, shortMessagePayload, updatePayload, frontId), "Fronts Audit")
     }
   }
 
-  private def createMarkers(streamUpdate: AuditUpdate, expiryDate: Option[String], shortMessage: Option[String], message: Option[String], frontId: String) =
+  private def createMarkers(streamUpdate: AuditUpdate, shortMessage: Option[String], message: Option[String], frontId: String) =
     Markers.appendEntries((
       Map(
         "operation" -> streamUpdate.update.getClass.getSimpleName,
@@ -27,7 +25,6 @@ class AuditingUpdates(val config: ApplicationConfiguration, val configAgent: Con
         "date" -> streamUpdate.dateTime.toString,
         "resourceId" -> frontId
       )
-      ++ expiryDate.map("expiryDate" -> _)
       ++ shortMessage.map("shortMessage" -> _)
       ++ message.map("message" -> _)
     ).asJava
@@ -51,14 +48,6 @@ class AuditingUpdates(val config: ApplicationConfiguration, val configAgent: Con
         "collectionId" -> update.collectionId
       )).toString)
       case _ => None
-    }
-  }
-
-  private def computeExpiryDate(streamUpdate: AuditUpdate): Option[String] = {
-    streamUpdate.update match {
-      case _: CreateFront => None
-      case _: CollectionCreate => None
-      case _ => Some(streamUpdate.dateTime.plusMonths(1).toString)
     }
   }
 }
