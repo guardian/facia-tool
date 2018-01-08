@@ -17,12 +17,12 @@ class AuditingUpdates(val config: ApplicationConfiguration, val configAgent: Con
     }
   }
 
-  private def createMarkers(streamUpdate: AuditUpdate, shortMessage: Option[String], message: Option[String], frontId: String) =
+  private def createMarkers(audit: AuditUpdate, shortMessage: Option[String], message: Option[String], frontId: String) =
     Markers.appendEntries((
       Map(
-        "operation" -> streamUpdate.update.getClass.getSimpleName,
-        "userEmail" -> streamUpdate.email,
-        "date" -> streamUpdate.dateTime.toString,
+        "operation" -> audit.update.getClass.getSimpleName,
+        "userEmail" -> audit.email,
+        "date" -> audit.dateTime.toString,
         "resourceId" -> frontId
       )
       ++ shortMessage.map("shortMessage" -> _)
@@ -30,15 +30,15 @@ class AuditingUpdates(val config: ApplicationConfiguration, val configAgent: Con
     ).asJava
   )
 
-  private def serializeUpdateMessage(streamUpdate: AuditUpdate): Option[String] = {
-    Some(Json.toJson(streamUpdate.update).toString())
+  private def serializeUpdateMessage(audit: AuditUpdate): Option[String] = {
+    Some(Json.toJson(audit.update).toString())
   }
 
-  private def serializeShortMessage(streamUpdate: AuditUpdate): Option[String] = {
-    streamUpdate.update match {
+  private def serializeShortMessage(audit: AuditUpdate): Option[String] = {
+    audit.update match {
       case update: CreateFront => Some(Json.toJson(Json.obj(
         "priority" -> update.priority,
-        "email" -> streamUpdate.email
+        "email" -> audit.email
       )).toString)
       case update: CollectionCreate => Some(Json.toJson(Json.obj(
         "collectionId" -> update.collectionId,
