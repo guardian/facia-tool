@@ -1,65 +1,44 @@
 package updates
 
-import java.nio.ByteBuffer
-
-import com.amazonaws.handlers.AsyncHandler
-import com.amazonaws.regions.{Region, Regions}
-import com.amazonaws.services.kinesis.AmazonKinesisAsyncClient
-import com.amazonaws.services.kinesis.model.{PutRecordRequest, PutRecordResult}
-import com.gu.auditing.model.v1.{App, Notification}
-import com.gu.thrift.serializer.{GzipType, ThriftSerializer}
 import conf.ApplicationConfiguration
+import net.logstash.logback.marker.Markers
 import play.api.Logger
 import play.api.libs.json._
 import services.ConfigAgent
+import scala.collection.JavaConverters._
 
 class AuditingUpdates(val config: ApplicationConfiguration, val configAgent: ConfigAgent) {
-  val partitionKey: String = "facia-tool-updates"
+  def putAudit(audit: AuditUpdate): Unit = {
+    lazy val updatePayload = serializeUpdateMessage(audit)
+    lazy val shortMessagePayload = serializeShortMessage(audit)
 
-  object KinesisLoggingAsyncHandler extends AsyncHandler[PutRecordRequest, PutRecordResult] {
-    def onError(exception: Exception) {
-      Logger.error(s"Kinesis PutRecord request error: ${exception.getMessage}}")
-    }
-    def onSuccess(request: PutRecordRequest, result: PutRecordResult) {
-      Logger.info(s"Put auditing message to stream:${request.getStreamName} Seq:${result.getSequenceNumber}")
+    audit.fronts(configAgent).foreach { frontId =>
+      Logger.logger.info(createMarkers(audit, shortMessagePayload, updatePayload, frontId), "Fronts Audit")
     }
   }
 
-  val client: AmazonKinesisAsyncClient = {
-    val c = new AmazonKinesisAsyncClient(config.aws.mandatoryCredentials)
-    c.setRegion(Region.getRegion(Regions.EU_WEST_1))
-    c
+  private def createMarkers(audit: AuditUpdate, shortMessage: Option[String], message: Option[String], frontId: String) =
+    Markers.appendEntries((
+      Map(
+        "operation" -> audit.update.getClass.getSimpleName,
+        "userEmail" -> audit.email,
+        "date" -> audit.dateTime.toString,
+        "resourceId" -> frontId
+      )
+      ++ shortMessage.map("shortMessage" -> _)
+      ++ message.map("message" -> _)
+    ).asJava
+  )
+
+  private def serializeUpdateMessage(audit: AuditUpdate): Option[String] = {
+    Some(Json.toJson(audit.update).toString())
   }
 
-  def putStreamUpdate(streamUpdate: StreamUpdate): Unit = {
-    val updateName = streamUpdate.update.getClass.getSimpleName
-    lazy val updatePayload = serializeUpdateMessage(streamUpdate)
-    lazy val shortMessagePayload = serializeShortMessage(streamUpdate)
-    lazy val expiryDate = computeExpiryDate(streamUpdate)
-
-
-    streamUpdate.fronts(configAgent).foreach(frontId => putAuditingNotification(
-      Notification(
-        app = App.FaciaTool,
-        operation = updateName,
-        userEmail = streamUpdate.email,
-        date = streamUpdate.dateTime.toString,
-        resourceId = Some(frontId),
-        message = updatePayload,
-        shortMessage = shortMessagePayload,
-        expiryDate = expiryDate
-      )))
-  }
-
-  private def serializeUpdateMessage(streamUpdate: StreamUpdate): Option[String] = {
-    Some(Json.toJson(streamUpdate.update).toString())
-  }
-
-  private def serializeShortMessage(streamUpdate: StreamUpdate): Option[String] = {
-    streamUpdate.update match {
+  private def serializeShortMessage(audit: AuditUpdate): Option[String] = {
+    audit.update match {
       case update: CreateFront => Some(Json.toJson(Json.obj(
         "priority" -> update.priority,
-        "email" -> streamUpdate.email
+        "email" -> audit.email
       )).toString)
       case update: CollectionCreate => Some(Json.toJson(Json.obj(
         "collectionId" -> update.collectionId,
@@ -69,32 +48,6 @@ class AuditingUpdates(val config: ApplicationConfiguration, val configAgent: Con
         "collectionId" -> update.collectionId
       )).toString)
       case _ => None
-    }
-  }
-
-  private def computeExpiryDate(streamUpdate: StreamUpdate): Option[String] = {
-    streamUpdate.update match {
-      case _: CreateFront => None
-      case _: CollectionCreate => None
-      case _ => Some(streamUpdate.dateTime.plusMonths(1).toString)
-    }
-  }
-
-  private def putAuditingNotification(notification: Notification): Unit = {
-
-    val streamName = config.auditing.stream
-    val bytes = ThriftSerializer.serializeToBytes(notification, Some(GzipType), None)
-    if (bytes.length > config.auditing.maxDataSize) {
-      Logger.error(s"$streamName - NOT sending because size (${bytes.length} bytes) is larger than max kinesis size(${config.auditing.maxDataSize})")
-    } else {
-      Logger.info(s"$streamName - sending auditing thrift update with size of ${bytes.length} bytes")
-      client.putRecordAsync(
-        new PutRecordRequest()
-          .withData(ByteBuffer.wrap(bytes))
-          .withStreamName(streamName)
-          .withPartitionKey(partitionKey),
-        KinesisLoggingAsyncHandler
-      )
     }
   }
 }

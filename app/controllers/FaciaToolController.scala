@@ -54,7 +54,7 @@ class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, va
           case Some(collectionJson) =>
             updateActions.archivePublishBlock(collectionId, collectionJson, identity)
             faciaPress.press(PressCommand.forOneId(collectionId).withPressDraft().withPressLive())
-            auditingUpdates.putStreamUpdate(StreamUpdate(PublishUpdate(collectionId), identity.email))
+            auditingUpdates.putAudit(AuditUpdate(PublishUpdate(collectionId), identity.email))
             maybeSendBreakingAlert(request, collectionId)
           case None => Future.successful(NoCache(Ok))}}}
 
@@ -82,7 +82,7 @@ class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, va
       maybeCollectionJson.foreach { b =>
         updateActions.archiveDiscardBlock(collectionId, b, identity)
         faciaPress.press(PressCommand.forOneId(collectionId).withPressDraft())
-        auditingUpdates.putStreamUpdate(StreamUpdate(DiscardUpdate(collectionId), identity.email))
+        auditingUpdates.putAudit(AuditUpdate(DiscardUpdate(collectionId), identity.email))
       }
       NoCache(Ok)}}
 
@@ -92,7 +92,7 @@ class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, va
         val identity = request.user
         updateActions.updateTreats(collectionId, update.update, identity).map(_.map{ updatedCollectionJson =>
           s3FrontsApi.putCollectionJson(collectionId, Json.prettyPrint(Json.toJson(updatedCollectionJson)))
-          auditingUpdates.putStreamUpdate(StreamUpdate(update, identity.email))
+          auditingUpdates.putAudit(AuditUpdate(update, identity.email))
           faciaPress.press(PressCommand.forOneId(collectionId).withPressLive())
           Ok(Json.toJson(Map(collectionId -> updatedCollectionJson))).as("application/json")
         }.getOrElse(NotFound))
@@ -101,7 +101,7 @@ class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, va
         val identity = request.user
         updateActions.removeTreats(collectionId, remove.remove, identity).map(_.map{ updatedCollectionJson =>
           s3FrontsApi.putCollectionJson(collectionId, Json.prettyPrint(Json.toJson(updatedCollectionJson)))
-          auditingUpdates.putStreamUpdate(StreamUpdate(remove, identity.email))
+          auditingUpdates.putAudit(AuditUpdate(remove, identity.email))
           faciaPress.press(PressCommand.forOneId(collectionId).withPressLive())
           Ok(Json.toJson(Map(collectionId -> updatedCollectionJson))).as("application/json")
       }.getOrElse(NotFound))
@@ -115,7 +115,7 @@ class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, va
 
         futureUpdatedCollections.map { updatedCollections =>
           val collectionIds = updatedCollections.keySet
-          auditingUpdates.putStreamUpdate(StreamUpdate(updateAndRemove, identity.email))
+          auditingUpdates.putAudit(AuditUpdate(updateAndRemove, identity.email))
           faciaPress.press(PressCommand(collectionIds).withPressLive())
           Ok(Json.toJson(updatedCollections)).as("application/json")
         }
@@ -145,7 +145,7 @@ class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, va
               )
 
               if (updatedCollections.nonEmpty) {
-                auditingUpdates.putStreamUpdate(StreamUpdate(update, identity.email))
+                auditingUpdates.putAudit(AuditUpdate(update, identity.email))
                 Ok(Json.toJson(updatedCollections)).as("application/json")
               } else
                 NotFound
@@ -163,7 +163,7 @@ class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, va
                 live = shouldUpdateLive,
                 draft = (updatedCollections.values.exists(_.draft.isEmpty) && shouldUpdateLive) || remove.remove.draft)
               )
-              auditingUpdates.putStreamUpdate(StreamUpdate(remove, identity.email))
+              auditingUpdates.putAudit(AuditUpdate(remove, identity.email))
               Ok(Json.toJson(updatedCollections)).as("application/json")
             }
           }
@@ -186,7 +186,7 @@ class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, va
                 live = shouldUpdateLive,
                 draft = (updatedCollections.values.exists(_.draft.isEmpty) && shouldUpdateLive) || shouldUpdateDraft)
               )
-              auditingUpdates.putStreamUpdate(StreamUpdate(updateAndRemove, identity.email))
+              auditingUpdates.putAudit(AuditUpdate(updateAndRemove, identity.email))
               Ok(Json.toJson(updatedCollections)).as("application/json")
             }
           }
