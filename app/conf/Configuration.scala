@@ -180,6 +180,11 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     val bucket = getMandatoryString("switchboard.bucket")
     val objectKey = getMandatoryString("switchboard.object")
   }
+
+  object auditing {
+    lazy val stream: String = getMandatoryString("auditing.stream")
+    lazy val maxDataSize: Int = 102400
+  }
 }
 
 object Properties extends AutomaticResourceManagement {
