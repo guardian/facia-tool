@@ -10,6 +10,7 @@ import frontsapi.model._
 import metrics.FaciaToolMetrics
 import model.NoCache
 import permissions.BreakingNewsEditCollectionsCheck
+import play.api.Logger
 import play.api.libs.json._
 import play.api.mvc._
 import services._
@@ -59,8 +60,10 @@ class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, va
           case None => Future.successful(NoCache(Ok))}}}
 
   private def maybeSendBreakingAlert(request: UserRequest[AnyContent], collectionId: String): Future[Result] = {
+    Logger.info(s"maybe sending a breaking news alert with collection $collectionId")
     if (configAgent.isCollectionInBreakingNewsFront(collectionId)) {
       val identity = request.user
+      Logger.info(s"$collectionId was a breaking news collection")
       request.body.asJson.flatMap(_.asOpt[ClientHydratedCollection]).map {
         case clientCollection: ClientHydratedCollection =>
           breakingNewsUpdate.putBreakingNewsUpdate(

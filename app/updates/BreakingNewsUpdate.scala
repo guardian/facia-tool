@@ -38,6 +38,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSAPI) {
     collection: ClientHydratedCollection,
     email: String
   ): Future[Result] = {
+    Logger.info("Now putting a new breaking news update")
     val futurePossibleErrors = Future.traverse(collection.trails)(trail => sendAlert(trail, email))
     futurePossibleErrors.map { listOfPossibleErrors => {
       val errors = listOfPossibleErrors.flatten
