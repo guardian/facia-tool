@@ -19,7 +19,7 @@ class FrontController(val config: ApplicationConfiguration, val acl: Acl, val au
         val identity = request.user
         val newCollectionId = updateManager.createFront(createFrontRequest, identity)
         press.fromSetOfIdsWithForceConfig(Set(newCollectionId))
-        auditingUpdates.putAudit(AuditUpdate(createFrontRequest, identity.email))
+        auditingUpdates.putStreamUpdate(StreamUpdate(createFrontRequest, identity.email))
         Ok
 
       case None => BadRequest
@@ -32,7 +32,7 @@ class FrontController(val config: ApplicationConfiguration, val acl: Acl, val au
         val identity = request.user
         updateManager.updateFront(frontId, front, identity)
         press.fromSetOfIdsWithForceConfig(front.collections.toSet)
-        auditingUpdates.putAudit(AuditUpdate(UpdateFront(frontId, front), identity.email))
+        auditingUpdates.putStreamUpdate(StreamUpdate(UpdateFront(frontId, front), identity.email))
         Ok
 
       case None => BadRequest

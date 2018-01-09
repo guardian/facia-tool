@@ -36,7 +36,7 @@ class CollectionController(val config: ApplicationConfiguration, val acl: Acl, v
         val identity = request.user
         val collectionId = updateManager.addCollection(frontIds, collection, identity)
         press.fromSetOfIdsWithForceConfig(Set(collectionId))
-        auditingUpdates.putAudit(AuditUpdate(CollectionCreate(frontIds, collection, collectionId), identity.email))
+        auditingUpdates.putStreamUpdate(StreamUpdate(CollectionCreate(frontIds, collection, collectionId), identity.email))
         Ok(Json.toJson(CreateCollectionResponse(collectionId)))
 
       case None => BadRequest
@@ -50,7 +50,7 @@ class CollectionController(val config: ApplicationConfiguration, val acl: Acl, v
         val identity = request.user
         updateManager.updateCollection(collectionId, frontIds, collection, identity)
         press.fromSetOfIdsWithForceConfig(Set(collectionId))
-        auditingUpdates.putAudit(AuditUpdate(CollectionUpdate(frontIds, collection, collectionId), identity.email))
+        auditingUpdates.putStreamUpdate(StreamUpdate(CollectionUpdate(frontIds, collection, collectionId), identity.email))
         Ok
 
       case None => BadRequest
