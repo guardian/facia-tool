@@ -132,7 +132,10 @@ To get the config files run `./fetch-config.sh`. This requires CMS front credent
 
 ### Credentials
 
-You need valid developer credentials for `cmsFronts` and `workflow.s3Read`.
+You need the following credentials:
+- cmsFronts - developer
+- workflow - S3 Read
+- capi - API Gateway invocation
 You can get keys temporary keys from `janus`. You can copy these credentials manually from `janus`
 
 You can also get credentials for *facia-tool* by using feria:

@@ -4,11 +4,14 @@ import java.net.URLEncoder
 
 import akka.actor.ActorSystem
 import auth.PanDomainAuthActions
+import com.amazonaws.auth.profile.ProfileCredentialsProvider
+import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
+import com.gu.contentapi.client.IAMSigner
 import conf.ApplicationConfiguration
 import metrics.FaciaToolMetrics
 import model.Cached
 import play.api.Logger
-import play.api.libs.ws.{WSAPI, WSAuthScheme, WSRequest}
+import play.api.libs.ws.WSAPI
 import play.api.mvc._
 import switchboard.SwitchManager
 import util.ContentUpgrade.rewriteBody
@@ -20,13 +23,21 @@ class FaciaContentApiProxy(ws: WSAPI, val config: ApplicationConfiguration) exte
     lazy val urlEncoded = URLEncoder.encode(s, "utf-8")
   }
 
-  implicit class RichWSRequest(wsRequest: WSRequest) {
+  override lazy val actorSystem = ActorSystem()
 
-    def withPreviewAuth: WSRequest = config.contentApi.previewAuth
-      .foldLeft(wsRequest){ case (r, auth) => r.withAuth(auth.user, auth.password, WSAuthScheme.BASIC)}
+  private val previewSigner = {
+    val capiPreviewCredentials = new AWSCredentialsProviderChain(
+      new ProfileCredentialsProvider("capi"),
+      new STSAssumeRoleSessionCredentialsProvider.Builder(config.contentApi.previewRole, "capi").build()
+    )
+
+    new IAMSigner(
+      credentialsProvider = capiPreviewCredentials,
+      awsRegion = config.aws.region
+    )
   }
 
-  override lazy val actorSystem = ActorSystem()
+  private def getPreviewHeaders(url: String): Seq[(String,String)] = previewSigner.addIAMHeaders(headers = Map.empty, url).toSeq
 
   def capiPreview(path: String) = APIAuthAction.async { request =>
     FaciaToolMetrics.ProxyCount.increment()
@@ -43,7 +54,7 @@ class FaciaContentApiProxy(ws: WSAPI, val config: ApplicationConfiguration) exte
 
     Logger.info(s"Proxying preview API query to: $url")
 
-    ws.url(url).withPreviewAuth.get().map { response =>
+    ws.url(url).withHeaders(getPreviewHeaders(url): _*).get().map { response =>
       Cached(60) {
         Ok(rewriteBody(response.body)).as("application/javascript")
       }
@@ -83,7 +94,7 @@ class FaciaContentApiProxy(ws: WSAPI, val config: ApplicationConfiguration) exte
     FaciaToolMetrics.ProxyCount.increment()
     Logger.info(s"Proxying json request to: $url")
 
-    ws.url(url).withPreviewAuth.get().map { response =>
+    ws.url(url).withHeaders(getPreviewHeaders(url): _*).get().map { response =>
       Cached(60) {
         Ok(rewriteBody(response.body)).as("application/json")
       }

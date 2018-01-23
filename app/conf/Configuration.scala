@@ -116,15 +116,13 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     case class Auth(user: String, password: String)
 
     val contentApiLiveHost: String = getMandatoryString("content.api.host")
-    def contentApiDraftHost: String = getMandatoryString("content.api.draft.host")
+    def contentApiDraftHost: String = getMandatoryString("content.api.draft.iam-host")
 
     lazy val key: Option[String] = getString("content.api.key")
     lazy val timeout: Int = 2000
 
-    lazy val previewAuth: Option[Auth] = for {
-      user <- getString("content.api.preview.user")
-      password <- getString("content.api.preview.password")
-    } yield Auth(user, password)
+    lazy val previewRole = getMandatoryString("content.api.draft.role")
+
   }
 
   object facia {
