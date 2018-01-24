@@ -86,7 +86,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "fapi-client" % "2.0.14",
     "com.gu" % "kinesis-logback-appender" % "1.3.0",
     "com.gu" %% "mobile-notifications-client" % "1.0",
-    "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.3.0",
+    "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.4.1",
 
     // Circe 0.6.1 depends on Cats 0.8.1
     // content-api-models depends on Circe 0.6.1 which depends on Cats 0.8.1
