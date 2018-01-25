@@ -27,6 +27,8 @@ trait PanDomainAuthActions extends AuthActions with PanDomainAuth with Results {
     PanDomain.guardianValidation(authedUser) && userInGroups(authedUser)
   }
 
+  override def cacheValidation = true
+
   override def authCallbackUrl: String = config.pandomain.host  + "/oauthCallback"
 
   override def showUnauthedMessage(message: String)(implicit request: RequestHeader): Result = {
