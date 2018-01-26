@@ -42,6 +42,10 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
   private def getMandatoryBoolean(property: String): Boolean = getBoolean(property)
     .getOrElse(throw new BadConfigurationException(s"$property of type boolean not configured for stage $stageFromProperties"))
 
+  def getMandatoryStringPropertiesSplitByComma(propertyName: String): List[String] = {
+    getMandatoryString(propertyName).split(",").toList.filter(_.nonEmpty)
+  }
+
   object environment {
     val stage = stageFromProperties.toLowerCase
     val applicationName = "facia-tool"
@@ -164,6 +168,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     lazy val domain = getMandatoryString("pandomain.domain")
     lazy val service = getMandatoryString("pandomain.service")
     lazy val roleArn = getMandatoryString("pandomain.roleArn")
+    lazy val userGroups = getMandatoryStringPropertiesSplitByComma("pandomain.user.groups")
   }
 
   object permission {
