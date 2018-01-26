@@ -43,7 +43,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     .getOrElse(throw new BadConfigurationException(s"$property of type boolean not configured for stage $stageFromProperties"))
 
   def getMandatoryStringPropertiesSplitByComma(propertyName: String): List[String] = {
-    getMandatoryString(propertyName).split(",").toList
+    getMandatoryString(propertyName).split(",").toList.filter(_.nonEmpty)
   }
 
   object environment {
