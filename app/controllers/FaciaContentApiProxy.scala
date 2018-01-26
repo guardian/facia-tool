@@ -1,12 +1,12 @@
 package controllers
 
-import java.net.URLEncoder
+import java.net.{URI, URLEncoder}
 
 import akka.actor.ActorSystem
 import auth.PanDomainAuthActions
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
-import com.gu.contentapi.client.IAMSigner
+import com.gu.contentapi.client.{IAMEncoder, IAMSigner}
 import conf.ApplicationConfiguration
 import metrics.FaciaToolMetrics
 import model.Cached
@@ -37,13 +37,12 @@ class FaciaContentApiProxy(ws: WSAPI, val config: ApplicationConfiguration) exte
     )
   }
 
-  private def getPreviewHeaders(url: String): Seq[(String,String)] = previewSigner.addIAMHeaders(headers = Map.empty, url).toSeq
+  private def getPreviewHeaders(url: String): Seq[(String,String)] =
+    previewSigner.addIAMHeaders(headers = Map.empty, URI.create(url)).toSeq
 
   def capiPreview(path: String) = APIAuthAction.async { request =>
     FaciaToolMetrics.ProxyCount.increment()
-    val queryString = request.queryString.filter(_._2.exists(_.nonEmpty)).map { p =>
-       "%s=%s".format(p._1, p._2.head.urlEncoded)
-    }.mkString("&")
+    val queryString = IAMEncoder.encodeParams(request.queryString)
 
     val contentApiHost: String = if (SwitchManager.getStatus("facia-tool-draft-content"))
       config.contentApi.contentApiDraftHost
