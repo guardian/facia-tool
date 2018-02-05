@@ -82,7 +82,7 @@ libraryDependencies ++= Seq(
     "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion,
     "com.gu" % "content-api-models" % capiModelsVersion,
     "com.gu" % "content-api-models-json" % capiModelsVersion,
-    "com.gu" %% "content-api-client-aws" % "0.3",
+    "com.gu" %% "content-api-client-aws" % "0.5",
     "com.gu" %% "editorial-permissions-client" % "0.3",
     "com.gu" %% "fapi-client" % "2.0.14",
     "com.gu" % "kinesis-logback-appender" % "1.3.0",
