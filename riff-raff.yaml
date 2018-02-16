@@ -16,6 +16,7 @@ deployments:
         Recipe: editorial-tools-xenial-java8
         AmigoStage: PROD
         BuiltBy: amigo
+      amiEncrypted: true
       cloudFormationStackName: facia
       cloudFormationStackByTags: false
       prependStackToCloudFormationStackName: false
