@@ -1,6 +1,11 @@
 <div class="col__inner">
     <div class="title title--clipboard">
         <span>clipboard</span>
+        <a class="tool tool--small tool--small--remove" title="Clear all" data-bind="
+                clickBubble: false,
+                click: clearAll">
+                <i class="fa fa-trash"></i>
+        </a>
         <div class="clipboard-indicator dropdown fadeElement" data-bind="
             css: {
                 'dropdown-open': dropdownOpen,

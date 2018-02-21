@@ -32,6 +32,10 @@ export default class Group extends DropTarget {
         }, this, this);
     }
 
+    omitAllItems() {
+        _.each(this.items.slice(0), item => this.omitItem(item));
+    }
+
     omitItem(item) {
         this.items.remove(item);
         if (_.isFunction(this.opts.omitItem)) {
