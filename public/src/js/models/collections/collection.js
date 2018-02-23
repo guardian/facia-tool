@@ -16,6 +16,7 @@ import mediator from 'utils/mediator';
 import populateObservables from 'utils/populate-observables';
 import reportErrors from 'utils/report-errors';
 import success from 'utils/success';
+import isPlatformSpecificCollection from 'utils/platform';
 
 export default class Collection extends BaseClass {
     constructor(opts = {}) {
@@ -54,7 +55,8 @@ export default class Collection extends BaseClass {
             'hideShowMore',
             'href',
             'uneditable',
-            'metadata'
+            'metadata',
+            'platform'
         ]);
         populateObservables(this.configMeta, opts);
 
@@ -476,6 +478,13 @@ export default class Collection extends BaseClass {
         if (this.history().length > 0) {
             return this.history()[0].frontPublicationTime();
         }
+    }
+
+    getDisplayName() {
+        const platform = isPlatformSpecificCollection(this.configMeta.platform()) ? ` (${this.configMeta.platform()} only)` : '';
+        const name = this.configMeta.displayName() || this.collectionMeta.displayName() || '(no title)';
+
+        return name + platform;
     }
 }
 

@@ -170,7 +170,7 @@
         <a class="cnf-collection__name" data-bind="
             click: toggleOpen,
             attr: {href: '/' + id, title: id},
-            text: meta.displayName() || '(no title)'"></a>
+            text: getDisplayName()"></a>
 
         <span class="placements" data-bind="
             if: parents().length,
@@ -264,11 +264,23 @@
             <input type="checkbox" data-bind="
                 checked: meta.uneditable" />
 
+            <div class="platform-edit">
+                <span>Platform: </span><span data-bind="text: getPlatform()"></span>
+                <!-- ko if: !thisIsPlatformSpecificCollection && parents().length <= 1 -->
+                <span class="tools"><button class="tool" data-bind="click: $parents[1].splitCollection.bind($parents[1], meta, parents)">Split into app/web</button></span>
+                <!-- /ko -->
+                <!-- ko if: thisIsPlatformSpecificCollection -->
+                <span class="tools"><button class="tool" data-bind="
+                  disable: !$parents[1].isUniqueCollection(meta.displayName()),
+                  click: $parents[1].changeToAnyPlatform.bind($parents[1], meta)">Change to any</button></span>
+                <!-- /ko -->
+            </div>
+
             <div class="tools">
                 <button class="tool tool-save-container" data-bind="
                     click: save.bind($data, $parents[1])">Save container</button>
 
-                <button class="tool tool--rhs" data-bind="
+                <button class="tool tool--rhs tool--remove-button" data-bind="
                     click: $parents[1].depopulateCollection">Remove</button>
             </div>
         </div>

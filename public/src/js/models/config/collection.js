@@ -10,6 +10,7 @@ import deepGet from 'utils/deep-get';
 import fullTrim from 'utils/full-trim';
 import populateObservables from 'utils/populate-observables';
 import urlAbsPath from 'utils/url-abs-path';
+import isPlatformSpecificCollection from 'utils/platform';
 
 export default class ConfigCollection extends DropTarget {
     constructor(opts = {}) {
@@ -36,7 +37,8 @@ export default class ConfigCollection extends DropTarget {
                 'hideShowMore',
                 'backfill',
                 'description',
-                'metadata'
+                'metadata',
+                'platform'
             ]),
             {
                 displayHints: asObservableProps([
@@ -44,7 +46,6 @@ export default class ConfigCollection extends DropTarget {
                 ], observableNumeric)
             }
         );
-
 
         populateObservables(this.meta, opts);
 
@@ -70,6 +71,21 @@ export default class ConfigCollection extends DropTarget {
         });
 
         this.typePicker = this._typePicker.bind(this);
+
+        this.thisIsPlatformSpecificCollection = isPlatformSpecificCollection(this.meta.platform());
+    }
+
+    getPlatform() {
+        switch (this.meta.platform()) {
+            case vars.CONST.platforms.app: return 'app only';
+            case vars.CONST.platforms.web: return 'web only';
+            default: return 'any';
+        }
+    }
+
+    getDisplayName() {
+        const platform = isPlatformSpecificCollection(this.meta.platform()) ? ` (${this.meta.platform()} only)` : '';
+        return this.meta.displayName() + platform || '(no title)';
     }
 
     toggleOpen() {

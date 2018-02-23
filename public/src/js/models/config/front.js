@@ -13,6 +13,7 @@ import populateObservables from 'utils/populate-observables';
 import generateCollections from 'utils/generate-collections';
 import {validateImageSrc} from 'utils/validate-image-src';
 import alert from 'utils/alert';
+import isPlatformSpecificCollection from 'utils/platform';
 
 export default class ConfigFront extends BaseClass {
     constructor(opts = {}) {
@@ -221,7 +222,44 @@ export default class ConfigFront extends BaseClass {
             alert('You must choose a group');
             return;
         }
+        if (this.hasDuplicatePlatformSpecificCollection()) {
+            alert('Cannot share platform-specific collections with other fronts');
+            return;
+        }
         return persistence.front.update(this);
+    }
+
+    hasDuplicatePlatformSpecificCollection() {
+        return undefined !== _.find(
+            this.collections.items(),
+            c => isPlatformSpecificCollection(c.meta.platform()) && c.parents().length > 1
+        );
+    }
+
+    isUniqueCollection(name) {
+        //Checks if this is the only collection in this front with this name
+        const others = this.collections.items().filter(c => c.meta.displayName() === name);
+        return others.length < 2;
+    }
+
+    splitCollection(currentData, parents) {
+        //Split an "Any" collection into Web + App collections if it belongs to only 1 front
+        if (!isPlatformSpecificCollection(currentData.platform()) && parents().length <= 1) {
+            var collection = new Collection(ko.toJS(currentData));
+            collection.toggleOpen();
+            collection.parents.push(this);
+            collection.meta.platform(vars.CONST.platforms.app);
+
+            this.collections.items.push(collection);
+
+            currentData.platform(vars.CONST.platforms.web);
+        }
+    }
+
+    changeToAnyPlatform(currentData) {
+        if (this.isUniqueCollection(currentData.displayName())) {
+            currentData.platform(vars.CONST.platforms.any);
+        }
     }
 
     createCollection() {
