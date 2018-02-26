@@ -45,7 +45,10 @@ export default class Front extends ColumnWidget {
             this.mode('live');
             trackAction('front', 'mode', 'live');
         };
-        this.setModeDraft = () => this.mode('draft');
+        this.setModeDraft = () => {
+            this.mode('draft');
+            trackAction('front', 'mode', 'draft');
+        };
         this.trackPreviewClick = () => {
             trackAction('outbound', 'preview', this.mode());
             return true;
