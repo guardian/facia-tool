@@ -99,7 +99,7 @@ pip install awscli
 
 
 ### Clone repository
-1. [Generate and add an SSH key](https://help.github.com/articles/generating-ssh-keys) to your GitHub account.
+1. [Generate and add an SSH key](https://help.github.com/articles/connecting-to-github-with-ssh/) to your GitHub account.
 1. Check out the repository:
 
     ```bash
