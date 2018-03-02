@@ -11,6 +11,7 @@ packageDescription := "Guardian front pages editor"
 scalaVersion := "2.11.8"
 
 import com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd
+import sbt.{Path, Resolver}
 serverLoading in Debian := Systemd
 
 debianPackageDependencies := Seq("openjdk-8-jre-headless")
@@ -69,6 +70,11 @@ val awsVersion = "1.11.188"
 val capiModelsVersion = "11.33"
 val circeVersion = "0.7.0"
 val json4sVersion = "3.5.0"
+
+resolvers ++= Seq(
+    Resolver.file("Local", file( Path.userHome.absolutePath + "/.ivy2/local"))(Resolver.ivyStylePatterns),
+    "Guardian Frontend Bintray" at "https://dl.bintray.com/guardian/frontend"
+)
 
 libraryDependencies ++= Seq(
     ws,
