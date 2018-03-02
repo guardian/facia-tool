@@ -179,7 +179,7 @@ describe('Config', function () {
                 dom.click(newFront.querySelector('.cnf-form .type-option-chosen'));
                 dom.click(newFront.querySelector('.cnf-form .type-picker .type-option'));
 
-                dom.click(newFront.querySelector('button.tool'));
+                dom.click(newFront.querySelector('button.tool-save-container'));
 
                 return {
                     fronts: {

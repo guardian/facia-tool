@@ -239,5 +239,11 @@ export default {
 
     internalPagePrefix:    'internal-code/page/',
 
-    sparksBatchQueue:      15
+    sparksBatchQueue:      15,
+
+    platforms: {
+        app: 'App',
+        web: 'Web',
+        any: 'Any'
+    }
 };

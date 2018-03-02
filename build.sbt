@@ -66,7 +66,7 @@ TwirlKeys.templateImports ++= Seq(
 )
 
 val awsVersion = "1.11.188"
-val capiModelsVersion = "11.12"
+val capiModelsVersion = "11.33"
 val circeVersion = "0.7.0"
 val json4sVersion = "3.5.0"
 
@@ -80,11 +80,11 @@ libraryDependencies ++= Seq(
     "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-sts" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion,
-    "com.gu" % "content-api-models" % capiModelsVersion,
-    "com.gu" % "content-api-models-json" % capiModelsVersion,
+    "com.gu" %% "content-api-models" % capiModelsVersion,
+    "com.gu" %% "content-api-models-json" % capiModelsVersion,
     "com.gu" %% "content-api-client-aws" % "0.5",
     "com.gu" %% "editorial-permissions-client" % "0.3",
-    "com.gu" %% "fapi-client" % "2.0.14",
+    "com.gu" %% "fapi-client" % "2.5.3",
     "com.gu" % "kinesis-logback-appender" % "1.3.0",
     "com.gu" %% "mobile-notifications-client" % "1.0",
     "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.4.1",

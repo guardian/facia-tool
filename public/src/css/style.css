@@ -1535,6 +1535,10 @@ button {
     margin: 0 10px 0 0;
 }
 
+.tool--remove-button {
+    background: #ed5935 !important;
+}
+
 .tool:hover {
     background: #BBBBBB;
     color: #ffffff;
@@ -1906,6 +1910,12 @@ ol.search_list > li::before {
     padding: 10px 0;
     clear: left;
     height: 30px;
+}
+
+.cnf-form .platform-edit {
+    padding: 10px 0;
+    clear: left;
+    height: 50px;
 }
 
 .cnf-form .action-buttons {

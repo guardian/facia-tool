@@ -22,7 +22,7 @@
         </span>
 
         <span class="title" data-bind="
-            text: configMeta.displayName() || collectionMeta.displayName() || '(no title)'"></span>
+            text: getDisplayName()"></span>
 
         <span data-bind="foreach: configMeta.metadata()">
             <span class="tag-list" data-bind="text: type"></span>
