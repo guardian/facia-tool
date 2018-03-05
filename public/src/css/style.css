@@ -218,7 +218,6 @@ label, button.fstChoiceRemove {
 }
 
 .alert-message {
-    height: 45px;
     padding: 12px 17px;
     font-size: 15px;
     background: #3f51b5;

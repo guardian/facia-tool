@@ -17,14 +17,20 @@ export default class FrontConfig extends ColumnWidget {
         this.populate();
         this.subscribeOn(this.baseModel.state, this.populate);
         this.loaded = Promise.resolve();
-        this.calculateRemainingFronts();
-        this.subscribeOn(this.baseModel.state, this.calculateRemainingFronts);
+        this.setConfigMessages();
+        this.subscribeOn(this.baseModel.state, this.setConfigMessages);
 
     }
 
-    calculateRemainingFronts() {
-        var num = frontCount(this.baseModel.state().config.fronts, this.baseModel.priority);
-        var remainingFronts = num.max - num.count;
+    setConfigMessages() {
+        const defaults = this.baseModel.state().defaults;
+        if (defaults.env === 'code' && !defaults.dev) {
+            this.baseModel.message.codeEnvMessage(true);
+
+        }
+
+        const num = frontCount(this.baseModel.state().config.fronts, this.baseModel.priority);
+        const remainingFronts = num.max - num.count;
         if (remainingFronts < CONST.frontAlertLimit) {
             this.baseModel.message.textMessage('You have ' + remainingFronts + ' fronts remaining');
         } else {

@@ -253,7 +253,8 @@ describe('Config Front', function () {
                     pear: { displayName: 'pear' },
                     kiwi: { displayName: 'kiwi' }
                 }
-            }
+            },
+            defaults: {}
         }), frontsList = ko.observableArray([{ id: 'one', collections: ['apple'] }]);
 
         this.loadFront({state, frontsList})
