@@ -6,6 +6,7 @@ import frontCount from 'utils/front-count';
 import ColumnWidget from 'widgets/column-widget';
 import alert from 'utils/alert';
 import CONST from 'constants/defaults';
+import isCodeEnvironment from 'utils/is-code-environment';
 
 export default class FrontConfig extends ColumnWidget {
     constructor(params, element) {
@@ -23,10 +24,8 @@ export default class FrontConfig extends ColumnWidget {
     }
 
     setConfigMessages() {
-        const defaults = this.baseModel.state().defaults;
-        if (defaults.env === 'code' && !defaults.dev) {
+        if (isCodeEnvironment(this.baseModel.state().defaults)) {
             this.baseModel.message.codeEnvMessage(true);
-
         }
 
         const num = frontCount(this.baseModel.state().config.fronts, this.baseModel.priority);
