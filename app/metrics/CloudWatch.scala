@@ -1,7 +1,8 @@
 package metrics
 
+import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.handlers.AsyncHandler
-import com.amazonaws.services.cloudwatch.AmazonCloudWatchAsyncClient
+import com.amazonaws.services.cloudwatch.{AmazonCloudWatchAsync, AmazonCloudWatchAsyncClient, AmazonCloudWatchAsyncClientBuilder}
 import com.amazonaws.services.cloudwatch.model._
 import conf.ApplicationConfiguration
 import play.api.Logger
@@ -11,11 +12,12 @@ import scala.collection.JavaConversions._
 
 class CloudWatch(val config: ApplicationConfiguration, val awsEndpoints: AwsEndpoints) {
 
-  lazy val cloudwatch: Option[AmazonCloudWatchAsyncClient] = config.aws.credentials.map{ credentials =>
-    val client = new AmazonCloudWatchAsyncClient(credentials)
-    client.setEndpoint(awsEndpoints.monitoring)
-    client
-  }
+  lazy val cloudwatch: Option[AmazonCloudWatchAsync] = config.aws.credentials.map(credentials => {
+    val endpoint = new AwsClientBuilder.EndpointConfiguration(awsEndpoints.monitoring, config.aws.region)
+    AmazonCloudWatchAsyncClientBuilder.standard()
+      .withCredentials(credentials)
+      .withEndpointConfiguration(endpoint).build()
+  })
 
   trait LoggingAsyncHandler extends AsyncHandler[PutMetricDataRequest, PutMetricDataResult] {
     def onError(exception: Exception)
