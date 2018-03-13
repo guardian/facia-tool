@@ -1,10 +1,11 @@
 package switchboard
 
-import com.amazonaws.services.s3.AmazonS3Client
+import com.amazonaws.client.builder.AwsClientBuilder
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration
+import com.amazonaws.services.s3.{AmazonS3, AmazonS3ClientBuilder}
 import com.amazonaws.services.s3.model._
 import play.api.Logger
 import play.api.libs.json.{JsError, JsSuccess, Json}
-import services.AwsEndpoints
 
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
@@ -14,10 +15,12 @@ class S3client (conf: SwitchboardConfiguration, endpoint: String) {
   lazy val bucket = conf.bucket
   lazy val objectKey = conf.objectKey
 
-  lazy val client: AmazonS3Client = {
-    val client = new AmazonS3Client(conf.credentials)
-    client.setEndpoint(endpoint)
-    client
+  lazy val client: AmazonS3 = {
+    val endpointConf = new AwsClientBuilder.EndpointConfiguration(endpoint, conf.region)
+    AmazonS3ClientBuilder.standard()
+      .withCredentials(conf.credentials)
+      .withEndpointConfiguration(endpointConf)
+      .build()
   }
 
   def getSwitches(): Option[Map[String, Boolean]] = {

@@ -1,12 +1,13 @@
 package services
 
-import com.amazonaws.services.s3.AmazonS3Client
+import com.amazonaws.services.s3.{AmazonS3, AmazonS3ClientBuilder}
 import com.amazonaws.services.s3.model.CannedAccessControlList.{Private, PublicRead}
 import com.amazonaws.services.s3.model._
 import com.amazonaws.util.StringInputStream
 import com.gu.pandomainauth.model.User
 import conf.ApplicationConfiguration
 import _root_.metrics.S3Metrics.S3ClientExceptionsMetric
+import com.amazonaws.client.builder.AwsClientBuilder
 import org.joda.time.DateTime
 import play.api.Logger
 
@@ -14,15 +15,20 @@ import scala.io.{Codec, Source}
 
 sealed trait S3Accounts {
   def bucket: String
-  def client: Option[AmazonS3Client]
+  def client: Option[AmazonS3]
 }
-case class CmsFrontsS3Account(val config: ApplicationConfiguration, val awsEndpoints: AwsEndpoints) extends S3Accounts {
+case class CmsFrontsS3Account(config: ApplicationConfiguration, awsEndpoints: AwsEndpoints) extends S3Accounts {
   lazy val bucket = config.aws.frontsBucket
-  lazy val client: Option[AmazonS3Client] =
-    config.aws.credentials.map{ credentials => {
-      val client = new AmazonS3Client(credentials)
-      client.setEndpoint(awsEndpoints.s3)
-      client}}
+
+  lazy val client: Option[AmazonS3] = {
+    val endpoint = new AwsClientBuilder.EndpointConfiguration(awsEndpoints.s3, config.aws.region)
+    config.aws.credentials.map (credentials => {
+      AmazonS3ClientBuilder.standard()
+        .withCredentials(credentials)
+        .withEndpointConfiguration(endpoint)
+        .build()
+    })
+  }
 }
 
 trait S3 {
