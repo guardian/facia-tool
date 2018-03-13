@@ -1,14 +1,14 @@
 package util
 
 import com.gu.contentapi.client.model.v1.Content
+import com.gu.contentapi.json.CirceDecoders._
 import com.gu.facia.api.utils.{CardStyle, ResolvedMetaData}
 import com.gu.facia.client.models.TrailMetaData
+import io.circe.{Json, parser}
 import org.json4s.JValue
 import org.json4s.JsonAST._
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods
-import io.circe.{Json, parser}
-import com.gu.contentapi.json.CirceDecoders._
 
 import scala.util.{Failure, Success, Try}
 

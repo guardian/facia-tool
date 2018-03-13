@@ -1,6 +1,6 @@
 package config
 
-import com.gu.facia.client.models.{CollectionConfigJson => CollectionConfig, ConfigJson, FrontJson => Front}
+import com.gu.facia.client.models.{ConfigJson, CollectionConfigJson => CollectionConfig, FrontJson => Front}
 import updates.CreateFront
 
 object Transformations {

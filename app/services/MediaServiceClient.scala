@@ -2,8 +2,9 @@ package services
 
 import com.gu.facia.client.models.{CollectionJson, Trail, TrailMetaData}
 import play.api.libs.json.JsString
-import scala.concurrent.Future
+
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class MediaServiceClient(val mediaApi: MediaApi) {
 

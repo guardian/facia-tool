@@ -1,13 +1,13 @@
 package services
 
-import com.amazonaws.services.s3.{AmazonS3, AmazonS3ClientBuilder}
+import _root_.metrics.S3Metrics.S3ClientExceptionsMetric
+import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.services.s3.model.CannedAccessControlList.{Private, PublicRead}
 import com.amazonaws.services.s3.model._
+import com.amazonaws.services.s3.{AmazonS3, AmazonS3ClientBuilder}
 import com.amazonaws.util.StringInputStream
 import com.gu.pandomainauth.model.User
 import conf.ApplicationConfiguration
-import _root_.metrics.S3Metrics.S3ClientExceptionsMetric
-import com.amazonaws.client.builder.AwsClientBuilder
 import org.joda.time.DateTime
 import play.api.Logger
 

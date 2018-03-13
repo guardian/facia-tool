@@ -1,8 +1,9 @@
 package services
 
 import conf.ApplicationConfiguration
-import play.api.libs.ws.WSAPI
 import play.api.libs.json._
+import play.api.libs.ws.WSAPI
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

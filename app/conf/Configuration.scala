@@ -4,10 +4,10 @@ import java.io.{File, FileInputStream, InputStream}
 import java.net.URL
 
 import com.amazonaws.AmazonClientException
-import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.auth._
+import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import org.apache.commons.io.IOUtils
-import play.api.{Configuration => PlayConfiguration, Logger, Play}
+import play.api.{Logger, Configuration => PlayConfiguration}
 
 import scala.collection.JavaConversions._
 import scala.language.reflectiveCalls

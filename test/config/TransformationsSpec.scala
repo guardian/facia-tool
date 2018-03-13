@@ -1,8 +1,8 @@
 package config
 
 import com.gu.facia.client.models.{CollectionConfigJson => CollectionConfig, ConfigJson => Config, FrontJson => Front}
-import updates.CreateFront
 import org.scalatest._
+import updates.CreateFront
 
 @DoNotDiscover class TransformationsSpec extends FlatSpec with ShouldMatchers {
   val collectionFixture = CollectionConfig.withDefaults(

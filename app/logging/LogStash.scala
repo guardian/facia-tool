@@ -1,13 +1,13 @@
 package logging
 
 import ch.qos.logback.classic.spi.ILoggingEvent
-import ch.qos.logback.classic.{Logger => LogbackLogger, LoggerContext}
+import ch.qos.logback.classic.{LoggerContext, Logger => LogbackLogger}
 import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider
 import com.gu.logback.appender.kinesis.KinesisAppender
 import conf.ApplicationConfiguration
 import net.logstash.logback.layout.LogstashLayout
 import org.slf4j.LoggerFactory
-import play.api.{Logger => PlayLogger, LoggerLike}
+import play.api.{LoggerLike, Logger => PlayLogger}
 
 object LogStash {
 

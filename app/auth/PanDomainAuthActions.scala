@@ -1,11 +1,11 @@
 package auth
 
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
-import com.amazonaws.auth.{AWSCredentialsProviderChain, BasicSessionCredentials, STSAssumeRoleSessionCredentialsProvider}
+import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
 import com.gu.pandomainauth.action.AuthActions
 import com.gu.pandomainauth.model.AuthenticatedUser
-import com.gu.pandomainauth.{PanDomain, PanDomainAuth, PublicSettings}
 import com.gu.pandomainauth.service.GoogleGroupChecker
+import com.gu.pandomainauth.{PanDomain, PanDomainAuth}
 import conf.ApplicationConfiguration
 import play.api.Logger
 import play.api.mvc._

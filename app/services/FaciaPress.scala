@@ -1,7 +1,7 @@
 package services
 
-import com.amazonaws.regions.{Region, Regions}
-import com.amazonaws.services.sqs.{AmazonSQSAsyncClient, AmazonSQSAsyncClientBuilder}
+import com.amazonaws.regions.Regions
+import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder
 import com.amazonaws.services.sqs.model.SendMessageResult
 import conf.ApplicationConfiguration
 import metrics.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}

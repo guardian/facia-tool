@@ -1,9 +1,8 @@
 package switchboard
 
 import com.amazonaws.client.builder.AwsClientBuilder
-import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration
-import com.amazonaws.services.s3.{AmazonS3, AmazonS3ClientBuilder}
 import com.amazonaws.services.s3.model._
+import com.amazonaws.services.s3.{AmazonS3, AmazonS3ClientBuilder}
 import play.api.Logger
 import play.api.libs.json.{JsError, JsSuccess, Json}
 

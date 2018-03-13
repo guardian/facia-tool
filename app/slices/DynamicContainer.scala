@@ -1,7 +1,7 @@
 package slices
 
-import util.Seqs._
 import slices.Story._
+import util.Seqs._
 
 /** Used for calculating the final slice -- any stories that are not standard are considered 'bigs' for the standard
   * slice
