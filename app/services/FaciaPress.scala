@@ -1,7 +1,7 @@
 package services
 
 import com.amazonaws.regions.{Region, Regions}
-import com.amazonaws.services.sqs.AmazonSQSAsyncClient
+import com.amazonaws.services.sqs.{AmazonSQSAsyncClient, AmazonSQSAsyncClientBuilder}
 import com.amazonaws.services.sqs.model.SendMessageResult
 import conf.ApplicationConfiguration
 import metrics.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}
@@ -30,7 +30,9 @@ class FaciaPressQueue(val config: ApplicationConfiguration) {
   val maybeQueue = config.faciatool.frontPressToolQueue map { queueUrl =>
     val credentials = config.aws.mandatoryCrossAccountCredentials
     JsonMessageQueue[PressJob](
-      new AmazonSQSAsyncClient(credentials).withRegion(Region.getRegion(Regions.EU_WEST_1)),
+      AmazonSQSAsyncClientBuilder.standard()
+        .withCredentials(credentials)
+        .withRegion(Regions.EU_WEST_1).build(),
       queueUrl
     )
   }
