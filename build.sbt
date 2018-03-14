@@ -2,7 +2,7 @@ name := "facia-tool"
 
 version := "1.0"
 
-maintainer := "CMS Fronts <aws-cms-fronts@theguardian.com>"
+maintainer := "Editorial Tools Team <editorial.tools.dev@guardian.co.uk>"
 
 packageSummary := "Facia tool"
 
