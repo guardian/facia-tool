@@ -95,16 +95,10 @@ libraryDependencies ++= Seq(
     "com.gu" %% "mobile-notifications-client" % "1.0",
     "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.5.1",
 
-    // Circe 0.6.1 depends on Cats 0.8.1
-    // content-api-models depends on Circe 0.6.1 which depends on Cats 0.8.1
-    // Scanamo 0.8.3 depends on Cats 0.8.1
-    // change with caution as must be upgraded in sync.
-
     "io.circe" %% "circe-core" % circeVersion,
     "io.circe" %% "circe-generic" % circeVersion,
     "io.circe" %% "circe-parser" % circeVersion,
     "com.gu" %% "scanamo" % "1.0.0-M2",
-
 
     "com.gu" %% "thrift-serializer" % "2.1.0",
     "net.logstash.logback" % "logstash-logback-encoder" % "5.0",
