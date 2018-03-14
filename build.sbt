@@ -8,7 +8,7 @@ packageSummary := "Facia tool"
 
 packageDescription := "Guardian front pages editor"
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.11.12"
 
 import com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd
 import sbt.{Path, Resolver}
