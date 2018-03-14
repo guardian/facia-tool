@@ -4,10 +4,10 @@ import java.io.{File, FileInputStream, InputStream}
 import java.net.URL
 
 import com.amazonaws.AmazonClientException
-import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.auth._
+import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import org.apache.commons.io.IOUtils
-import play.api.{Configuration => PlayConfiguration, Logger, Play}
+import play.api.{Logger, Configuration => PlayConfiguration}
 
 import scala.collection.JavaConversions._
 import scala.language.reflectiveCalls
@@ -92,7 +92,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     var crossAccount: Option[AWSCredentialsProvider] = {
       val provider = new AWSCredentialsProviderChain(
         new ProfileCredentialsProvider("frontend"),
-        new STSAssumeRoleSessionCredentialsProvider(faciatool.stsRoleToAssume, "frontend")
+        new STSAssumeRoleSessionCredentialsProvider.Builder(faciatool.stsRoleToAssume, "frontend").build()
       )
 
       // this is a bit of a convoluted way to check whether we actually have credentials.

@@ -1,7 +1,7 @@
 package slices
 
-import util.Maps._
 import play.api.libs.json.Json
+import util.Maps._
 
 object Story {
   implicit val jsonFormat = Json.format[Story]

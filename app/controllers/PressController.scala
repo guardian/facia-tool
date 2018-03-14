@@ -1,7 +1,8 @@
 package controllers
 
 import auth.PanDomainAuthActions
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient
+import com.amazonaws.client.builder.AwsClientBuilder
+import com.amazonaws.services.dynamodbv2.{AmazonDynamoDB, AmazonDynamoDBClientBuilder}
 import com.gu.scanamo.{Scanamo, Table}
 import conf.ApplicationConfiguration
 import play.api.libs.json.Json
@@ -22,10 +23,12 @@ case class FrontPressRecord (
 )
 
 class PressController (val config: ApplicationConfiguration, awsEndpoints: AwsEndpoints) extends Controller with PanDomainAuthActions {
-  private lazy val client = {
-    val client = new AmazonDynamoDBClient(config.aws.mandatoryCredentials)
-    client.setEndpoint(awsEndpoints.dynamoDb)
-    client
+  private lazy val client: AmazonDynamoDB = {
+    val endpoint = new AwsClientBuilder.EndpointConfiguration(awsEndpoints.dynamoDb, config.aws.region)
+    val builder: AmazonDynamoDBClientBuilder = AmazonDynamoDBClientBuilder.standard()
+      .withCredentials(config.aws.mandatoryCredentials)
+      .withEndpointConfiguration(endpoint)
+    builder.build()
   }
 
   private lazy val pressedTable = Table[FrontPressRecord](config.faciatool.frontPressUpdateTable)

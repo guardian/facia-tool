@@ -17,7 +17,8 @@ class Loader extends ApplicationLoader {
       objectKey = components.appConfiguration.switchBoard.objectKey,
       bucket = components.appConfiguration.switchBoard.bucket,
       credentials = components.appConfiguration.aws.mandatoryCredentials,
-      endpoint = components.awsEndpoints.s3
+      endpoint = components.awsEndpoints.s3,
+      region = components.appConfiguration.aws.region
     ), components.actorSystem.scheduler)
 
     components.actorSystem.scheduler.schedule(initialDelay = 1.seconds, interval = 1.minute) { components.configAgent.refresh() }

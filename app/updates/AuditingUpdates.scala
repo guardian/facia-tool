@@ -5,6 +5,7 @@ import net.logstash.logback.marker.Markers
 import play.api.Logger
 import play.api.libs.json._
 import services.ConfigAgent
+
 import scala.collection.JavaConverters._
 
 class AuditingUpdates(val config: ApplicationConfiguration, val configAgent: ConfigAgent) {

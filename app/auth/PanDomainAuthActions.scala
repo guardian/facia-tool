@@ -4,8 +4,8 @@ import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
 import com.gu.pandomainauth.action.AuthActions
 import com.gu.pandomainauth.model.AuthenticatedUser
-import com.gu.pandomainauth.{PanDomain, PanDomainAuth, PublicSettings}
 import com.gu.pandomainauth.service.GoogleGroupChecker
+import com.gu.pandomainauth.{PanDomain, PanDomainAuth}
 import conf.ApplicationConfiguration
 import play.api.Logger
 import play.api.mvc._
@@ -37,7 +37,7 @@ trait PanDomainAuthActions extends AuthActions with PanDomainAuth with Results {
   }
 
   override def invalidUserMessage(claimedAuth: AuthenticatedUser): String = {
-    if( (claimedAuth.user.emailDomain == "guardian.co.uk") && !claimedAuth.multiFactor) 
+    if( (claimedAuth.user.emailDomain == "guardian.co.uk") && !claimedAuth.multiFactor)
       s"${claimedAuth.user.email} is not valid for use with the Fronts Tool as you need to have two factor authentication enabled." +
        s" Please contact the Helpdesk by emailing 34444@theguardian.com or calling 34444 and request access to Composer CMS tools."
     else if (!userInGroups(claimedAuth)) s"${claimedAuth.user.email} is not a member of required google groups. Please contact the Helpdesk by emailing 34444@theguardian.com"
@@ -50,6 +50,6 @@ trait PanDomainAuthActions extends AuthActions with PanDomainAuth with Results {
   override lazy val system: String = config.pandomain.service
   override def awsCredentialsProvider = new AWSCredentialsProviderChain(
     new ProfileCredentialsProvider("workflow"),
-    new STSAssumeRoleSessionCredentialsProvider(config.pandomain.roleArn, config.pandomain.service)
+    new STSAssumeRoleSessionCredentialsProvider.Builder(config.pandomain.roleArn, config.pandomain.service).build()
   )
 }

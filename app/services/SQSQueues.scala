@@ -3,7 +3,7 @@ package services
 import java.util.concurrent.{Future => JavaFuture}
 
 import com.amazonaws.handlers.AsyncHandler
-import com.amazonaws.services.sqs.AmazonSQSAsyncClient
+import com.amazonaws.services.sqs.AmazonSQSAsync
 import com.amazonaws.services.sqs.model._
 import play.api.libs.json.{Json, Writes}
 
@@ -11,7 +11,7 @@ import scala.concurrent.{ExecutionContext, Future, Promise}
 import scala.util.{Failure, Success}
 
 object SQSQueues {
-  implicit class RichAmazonSQSAsyncClient(client: AmazonSQSAsyncClient) {
+  implicit class RichAmazonSQSAsyncClient(client: AmazonSQSAsync) {
     private def createHandler[A <: com.amazonaws.AmazonWebServiceRequest, B]() = {
       val promise = Promise[B]()
 
@@ -36,7 +36,7 @@ object SQSQueues {
 }
 
 /** Utility class for SQS queues that use JSON to serialize their messages */
-case class JsonMessageQueue[A](client: AmazonSQSAsyncClient, queueUrl: String)
+case class JsonMessageQueue[A](client: AmazonSQSAsync, queueUrl: String)
                               (implicit executionContext: ExecutionContext) {
   import SQSQueues._
 

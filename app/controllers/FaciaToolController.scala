@@ -16,7 +16,6 @@ import play.api.mvc._
 import services._
 import tools.FaciaApiIO
 import updates._
-import scala.concurrent.ExecutionContext
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

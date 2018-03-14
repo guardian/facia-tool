@@ -5,8 +5,6 @@ import com.gu.facia.client.models.Metadata
 import conf.ApplicationConfiguration
 import model.Cached
 import permissions.Permissions
-import play.api.Play
-import play.api.Play.current
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
 import switchboard.SwitchManager

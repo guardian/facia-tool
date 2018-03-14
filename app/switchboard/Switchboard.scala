@@ -11,7 +11,8 @@ case class SwitchboardConfiguration (
   bucket: String,
   objectKey: String,
   credentials: AWSCredentialsProvider,
-  endpoint: String
+  endpoint: String,
+  region: String
 )
 
 class Lifecycle(conf: SwitchboardConfiguration, scheduler: Scheduler) {
