@@ -138,12 +138,12 @@ You need the following credentials:
 - capi - API Gateway invocation
 You can get keys temporary keys from `janus`. You can copy these credentials manually from `janus`
 
-You can also get credentials for *facia-tool* by using feria:
+You can also get credentials for *facia-tool* by using [feria](https://github.com/guardian/feria):
 
 ```
 $ feria cmsFronts && feria --access s3-read workflow && feria --access sqs-consumer frontend
 ```
-(You should first checkout the repository and follow the install instructions for *feria*.)
+(You should first checkout the repository and follow the install instructions for [*feria*](https://github.com/guardian/feria).)
 
 
 You can run the fronts tool without frontend credentials, but you will not be able to check how your changes to fronts appear on frontend without

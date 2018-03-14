@@ -5,9 +5,9 @@
 ## The app
 - The fronts tool is used to edit fronts. Fronts contain collections that users can add articles to.
 - This is a picture of the uk front (we can find it on www.theguardian.com/uk):
-![front](docs/front.png)
+![front](docs/ukfront.jpg)
 
-- In this picture, we can see two collections, spotlight and sport, and articles that have been added to these collections.
+- In this picture, we can see two collections, spotlight and opinion, and articles that have been added to these collections.
 
 - To edit fronts, the fronts tool contains three different pages:
 1. A page where you can add articles to a front, and change the way in which articles appear on a front
@@ -52,7 +52,7 @@ to the page in the route-handler (in `modules/route-handlers`)
 - Column widgets appear as the main colums on the fronts tool.
 - They are found in the `columns/widgets` folder
 - For example, this is a picture of the frontsConfig and searchFronts columns:
-![columns](docs/columns)
+![columns](docs/columns.png)
 - Extensions are elements that live outside these columns, e.g. a warning that a front is stale
 (a front becomes stale if it fails to press)
 
