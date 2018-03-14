@@ -69,7 +69,7 @@ TwirlKeys.templateImports ++= Seq(
 val awsVersion = "1.11.293"
 val capiModelsVersion = "11.33"
 val circeVersion = "0.8.0"
-val json4sVersion = "3.5.0"
+val json4sVersion = "3.6.0-M2"
 
 resolvers ++= Seq(
     Resolver.file("Local", file( Path.userHome.absolutePath + "/.ivy2/local"))(Resolver.ivyStylePatterns),
@@ -89,11 +89,11 @@ libraryDependencies ++= Seq(
     "com.gu" %% "content-api-models" % capiModelsVersion,
     "com.gu" %% "content-api-models-json" % capiModelsVersion,
     "com.gu" %% "content-api-client-aws" % "0.5",
-    "com.gu" %% "editorial-permissions-client" % "0.3",
-    "com.gu" %% "fapi-client" % "2.5.3",
-    "com.gu" % "kinesis-logback-appender" % "1.3.0",
+    "com.gu" %% "editorial-permissions-client" % "0.7",
+    "com.gu" %% "fapi-client" % "2.5.4",
+    "com.gu" % "kinesis-logback-appender" % "1.4.2",
     "com.gu" %% "mobile-notifications-client" % "1.0",
-    "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.4.1",
+    "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.5.1",
 
     // Circe 0.6.1 depends on Cats 0.8.1
     // content-api-models depends on Circe 0.6.1 which depends on Cats 0.8.1
@@ -103,15 +103,15 @@ libraryDependencies ++= Seq(
     "io.circe" %% "circe-core" % circeVersion,
     "io.circe" %% "circe-generic" % circeVersion,
     "io.circe" %% "circe-parser" % circeVersion,
-    "com.gu" %% "scanamo" % "0.8.3",
+    "com.gu" %% "scanamo" % "1.0.0-M2",
 
 
-    "com.gu" %% "thrift-serializer" % "1.1.0",
-    "net.logstash.logback" % "logstash-logback-encoder" % "4.7",
+    "com.gu" %% "thrift-serializer" % "2.1.0",
+    "net.logstash.logback" % "logstash-logback-encoder" % "5.0",
     "org.julienrf" %% "play-json-variants" % "2.0",
     "org.json4s" %% "json4s-native" % json4sVersion,
     "org.json4s" %% "json4s-jackson" % json4sVersion,
-    "org.scalatest" %% "scalatest" % "2.2.6" % "test"
+    "org.scalatest" %% "scalatest" % "3.0.5" % "test"
 
 )
 
