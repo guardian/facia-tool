@@ -1,14 +1,4 @@
-<!-- ko if: codeEnvMessage -->
-<div class="alert-message">
-    Code version of the fronts tool is unstable and should
-    be used for software development work only. If you are using it for any other work,
-    you should use <a href='https://fronts.gutools.co.uk'>the main tool</a> instead.
-    Please contact central production for advice.
-</div>
-<!-- /ko  -->
-<div class="alert-message"
-    data-bind="
-        text: textMessage,
-        visible: textMessage
-     ">
-</div>
+<div class="alert-message" data-bind="
+    text: textMessage,
+    visible: textMessage
+"></div>

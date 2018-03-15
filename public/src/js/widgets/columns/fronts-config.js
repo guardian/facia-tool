@@ -6,7 +6,6 @@ import frontCount from 'utils/front-count';
 import ColumnWidget from 'widgets/column-widget';
 import alert from 'utils/alert';
 import CONST from 'constants/defaults';
-import isCodeEnvironment from 'utils/is-code-environment';
 
 export default class FrontConfig extends ColumnWidget {
     constructor(params, element) {
@@ -18,18 +17,14 @@ export default class FrontConfig extends ColumnWidget {
         this.populate();
         this.subscribeOn(this.baseModel.state, this.populate);
         this.loaded = Promise.resolve();
-        this.setConfigMessages();
-        this.subscribeOn(this.baseModel.state, this.setConfigMessages);
+        this.calculateRemainingFronts();
+        this.subscribeOn(this.baseModel.state, this.calculateRemainingFronts);
 
     }
 
-    setConfigMessages() {
-        if (isCodeEnvironment(this.baseModel.state().defaults)) {
-            this.baseModel.message.codeEnvMessage(true);
-        }
-
-        const num = frontCount(this.baseModel.state().config.fronts, this.baseModel.priority);
-        const remainingFronts = num.max - num.count;
+    calculateRemainingFronts() {
+        var num = frontCount(this.baseModel.state().config.fronts, this.baseModel.priority);
+        var remainingFronts = num.max - num.count;
         if (remainingFronts < CONST.frontAlertLimit) {
             this.baseModel.message.textMessage('You have ' + remainingFronts + ' fronts remaining');
         } else {
