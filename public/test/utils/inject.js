@@ -26,7 +26,10 @@ export default function inject (html) {
                 _.defaults(model, {
                     title: ko.observable('test'),
                     modalDialog: modal,
-                    message: { textMessage: ko.observable() },
+                    message: {
+                        textMessage: ko.observable(),
+                        codeEnvMessage: ko.observable()
+                    },
                     extensions: [],
                     permissions: ko.observable(),
                     registerExtension: () => {},

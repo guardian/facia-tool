@@ -11,10 +11,15 @@ import * as sparklines from 'utils/sparklines';
 import ColumnWidget from 'widgets/column-widget';
 import deepGet from 'utils/deep-get';
 import modalDialog from 'modules/modal-dialog';
+import isCodeEnvironment from 'utils/is-code-environment';
 
 export default class Front extends ColumnWidget {
     constructor(params, element) {
         super(params, element);
+
+        if (isCodeEnvironment(this.baseModel.state().defaults)) {
+            this.baseModel.message.codeEnvMessage(true);
+        }
 
         var frontId = params.column.config();
         this.front = ko.observable(frontId);
