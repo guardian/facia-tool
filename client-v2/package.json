@@ -11,7 +11,8 @@
     "watch": "yarn bundle --config config/webpack.config.dev.js --watch",
     "lint": "eslint ./src --ext .js",
     "lint-fix": "eslint --fix ./src --ext .js",
-    "update-types": "flow-typed install --overwrite --ignoreDeps dev peer bundle"
+    "update-types": "flow-typed install --overwrite --ignoreDeps dev peer bundle",
+    "dev-server": "yarn next $(yarn bin)/webpack-dev-server --config config/webpack.config.dev.js"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.42",
@@ -39,7 +40,8 @@
     "jest": "^22.4.2",
     "prettier": "^1.11.1",
     "webpack": "^4.1.1",
-    "webpack-cli": "^2.0.12"
+    "webpack-cli": "^2.0.12",
+    "webpack-dev-server": "^3.1.1"
   },
   "dependencies": {
     "prop-types": "^15.6.1",
