@@ -17,7 +17,8 @@ module.exports = {
 
     // Keeps module exports in one place for easier reading
     'import/exports-last': 'error',
-    'import/extensions': false
+    'import/extensions': false,
+    'flowtype/no-types-missing-file-annotation': 0
   },
   overrides: [
     {
