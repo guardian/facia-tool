@@ -9,7 +9,8 @@
     "build": "yarn bundle --config config/webpack.config.prod.js",
     "watch": "yarn bundle --config config/webpack.config.dev.js --watch",
     "lint": "eslint ./src --ext .js",
-    "lint-fix": "eslint --fix ./src --ext .js"
+    "lint-fix": "eslint --fix ./src --ext .js",
+    "type": "flow-typed"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.42",
@@ -21,10 +22,12 @@
     "eslint": "^4.18.2",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-flowtype": "^2.46.1",
     "eslint-plugin-import": "^2.9.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.7.0",
     "flow-bin": "^0.68.0",
+    "flow-typed": "^2.3.0",
     "prettier": "^1.11.1",
     "webpack": "^4.1.1",
     "webpack-cli": "^2.0.12"

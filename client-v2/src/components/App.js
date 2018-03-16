@@ -1,7 +1,9 @@
+// @flow
+
 import React from 'react';
 import styled from 'styled-components';
 
-const AppContainer = styled.div`
+const AppContainer = styled('div')`
   align-items: center;
   background-color: #221133;
   color: white;

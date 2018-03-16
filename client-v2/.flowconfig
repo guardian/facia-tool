@@ -1,0 +1,16 @@
+[ignore]
+.*/dist/.*
+.*/node_modules/.*
+
+[include]
+./src/*
+
+[libs]
+flow-typed
+
+[lints]
+
+[options]
+all=true
+
+[strict]
