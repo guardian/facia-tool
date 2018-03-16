@@ -10,13 +10,13 @@ module.exports = {
     browser: true
   },
   rules: {
-    'prettier/prettier': 'warn',
+    'prettier/prettier': 'error',
 
     // Allow React in .js files
     'react/jsx-filename-extension': false,
 
     // Keeps module exports in one place for easier reading
-    'import/exports-last': 'warn',
+    'import/exports-last': 'error',
     'import/extensions': false
   },
   overrides: [
