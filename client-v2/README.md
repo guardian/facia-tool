@@ -5,18 +5,16 @@
 To start developing with this first install the dependencies:
 
 ```bash
-yarn install
+yarn dev
 ```
 
-Then run the dev server:
+This will install all of the dependencies, boot up a dev server and, when this
+is complete, will open a browser at `index.html`.
 
-```bash
-yarn dev-server
-```
-
-While we are developing slightly separate to the main app the dev server will be
+While we are developing separately to the main app the dev server will be
 useful but it may not be easy to integrate with the Play app. If this is the
-case then in future we may need to just watch a normal webpack build:
+case then in future we may need to just watch a normal webpack build. This is
+runnable with:
 
 ```bash
 yarn watch
