@@ -11,8 +11,7 @@
     "watch": "yarn bundle --config config/webpack.config.dev.js --watch",
     "lint": "eslint ./src --ext .js",
     "lint-fix": "eslint --fix ./src --ext .js",
-    "type": "flow-typed",
-    "test": "jest"
+    "update-types": "flow-typed install --overwrite --ignoreDeps dev peer bundle"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.42",
