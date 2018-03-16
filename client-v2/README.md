@@ -2,7 +2,7 @@
 
 ## Developing
 
-To start developing with this first install the dependencies:
+To start developing just run:
 
 ```bash
 yarn dev

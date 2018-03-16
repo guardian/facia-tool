@@ -17,7 +17,13 @@ module.exports = {
 
     // Keeps module exports in one place for easier reading
     'import/exports-last': 'error',
-    'import/extensions': false,
+
+    // Don't shout out about missing extension we can import Components/index.js
+    // as 'Component'
+    'import/extensions': 0,
+
+    // Need this to stop eslint moaning when we don't add a flow comment as
+    // we're flowing everything by default
     'flowtype/no-types-missing-file-annotation': 0
   },
   overrides: [
