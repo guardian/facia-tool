@@ -12,6 +12,7 @@ module.exports = {
     'react/jsx-filename-extension': false,
 
     // Keeps module exports in one place for easier reading
-    'import/exports-last': 'warn'
+    'import/exports-last': 'warn',
+    'import/extensions': false
   }
 };
