@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "build": "node -r @babel/register $(yarn bin)/webpack --config webpack.config.js",
-    "lint": "eslint ./src"
+    "lint": "eslint ./src --ext .js",
+    "lint-fix": "eslint --fix ./src --ext .js"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.42",
@@ -28,6 +29,7 @@
   "dependencies": {
     "@babel/register": "^7.0.0-beta.42",
     "babel-loader": "^8.0.0-beta",
+    "eslint-loader": "^2.0.0",
     "eslint-plugin-prettier": "^2.6.0",
     "prop-types": "^15.6.1",
     "react": "^16.2.0",

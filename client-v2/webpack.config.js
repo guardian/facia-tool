@@ -12,6 +12,11 @@ export default {
         test: /\.js$/, // regex to test the file's path against
         use: 'babel-loader',
         exclude: /node_modules/
+      },
+      {
+        test: /\.js$/, // regex to test the file's path against
+        use: 'eslint-loader',
+        exclude: /node_modules/
       }
     ]
   }
