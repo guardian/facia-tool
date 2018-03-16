@@ -18,5 +18,11 @@ module.exports = {
     // Keeps module exports in one place for easier reading
     'import/exports-last': 'warn',
     'import/extensions': false
-  }
+  },
+  overrides: [
+    {
+      files: ['**/*.spec.js'],
+      env: { jest: true }
+    }
+  ]
 };
