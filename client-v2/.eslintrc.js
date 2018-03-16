@@ -1,0 +1,17 @@
+module.exports = {
+  extends: ['airbnb', 'plugin:prettier/recommended'],
+  plugins: ['prettier'],
+  env: {
+    es6: true,
+    browser: true
+  },
+  rules: {
+    'prettier/prettier': 'error',
+
+    // Allow React in .js files
+    'react/jsx-filename-extension': false,
+
+    // Keeps module exports in one place for easier reading
+    'import/exports-last': 'error'
+  }
+};

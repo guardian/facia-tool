@@ -1,0 +1,40 @@
+{
+  "name": "client-v2",
+  "version": "0.1.0",
+  "description": "Facia tool client side",
+  "main": "src/index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "node -r @babel/register $(yarn bin)/webpack --config webpack.config.js",
+    "lint": "eslint ./src"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.42",
+    "@babel/core": "^7.0.0-beta.42",
+    "@babel/preset-env": "^7.0.0-beta.42",
+    "@babel/preset-flow": "^7.0.0-beta.42",
+    "@babel/preset-react": "^7.0.0-beta.42",
+    "eslint": "^4.18.2",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.7.0",
+    "flow-bin": "^0.68.0",
+    "prettier": "^1.11.1",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.12"
+  },
+  "dependencies": {
+    "@babel/register": "^7.0.0-beta.42",
+    "babel-loader": "^8.0.0-beta",
+    "eslint-plugin-prettier": "^2.6.0",
+    "prop-types": "^15.6.1",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-redux": "^5.0.7",
+    "redux": "^3.7.2",
+    "reselect": "^3.0.1",
+    "styled-components": "^3.2.3"
+  }
+}
