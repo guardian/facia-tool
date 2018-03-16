@@ -11,7 +11,7 @@
     "watch": "yarn bundle --config config/webpack.config.dev.js --watch",
     "lint": "eslint ./src --ext .js",
     "lint-fix": "eslint --fix ./src --ext .js",
-    "update-types": "flow-typed install --overwrite --ignoreDeps dev peer bundle",
+    "update-types": "flow-typed install --ignoreDeps dev peer bundle",
     "dev-server": "yarn next $(yarn bin)/webpack-dev-server --config config/webpack.config.dev.js"
   },
   "devDependencies": {
