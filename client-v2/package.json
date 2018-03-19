@@ -7,7 +7,7 @@
   "scripts": {
     "next": "node -r @babel/register",
     "bundle": "yarn next $(yarn bin)/webpack",
-    "build": "yarn bundle --config config/webpack.config.prod.js",
+    "build": "flow && yarn bundle --config config/webpack.config.prod.js",
     "watch": "yarn bundle --config config/webpack.config.dev.js --watch",
     "lint": "eslint ./src --ext .js",
     "lint-fix": "eslint --fix ./src --ext .js",
