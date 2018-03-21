@@ -5,6 +5,7 @@ import frontsapi.model.UpdateActions
 import metrics.CloudWatch
 import permissions.Permissions
 import play.api.ApplicationLoader.Context
+import play.api.libs.ws.ahc.AhcWSComponents
 import play.api.libs.ws.ning.NingWSComponents
 import play.api.routing.Router
 import play.api.{BuiltInComponentsFromContext, Mode}
@@ -17,7 +18,7 @@ import tools.FaciaApiIO
 import updates.{AuditingUpdates, BreakingNewsUpdate}
 import util.{Acl, Encryption}
 
-class AppComponents(context: Context) extends BuiltInComponentsFromContext(context) with NingWSComponents {
+class AppComponents(context: Context) extends BuiltInComponentsFromContext(context) with AhcWSComponents {
   val isTest = context.environment.mode == Mode.Test
   val isProd = context.environment.mode == Mode.Prod
   val isDev = context.environment.mode == Mode.Dev
