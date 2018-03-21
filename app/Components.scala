@@ -6,7 +6,6 @@ import metrics.CloudWatch
 import permissions.Permissions
 import play.api.ApplicationLoader.Context
 import play.api.libs.ws.ahc.AhcWSComponents
-import play.api.libs.ws.ning.NingWSComponents
 import play.api.routing.Router
 import play.api.{BuiltInComponentsFromContext, Mode}
 import play.filters.cors.CORSFilter
@@ -69,9 +68,6 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   val router: Router = new Routes(loggingHttpErrorHandler, status, pandaAuth, v2Assets, uncachedAssets, views, faciaTool,
     pressController, defaults, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects,
     troubleshoot, v2App)
-
-//  override lazy val injector: Injector =
-//    new SimpleInjector(NewInstanceInjector) + router + crypto + httpConfiguration + tempFileCreator + wsApi + wsClient
 
   override lazy val httpFilters = Seq(
     new CustomGzipFilter()(materializer),
