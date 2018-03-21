@@ -1,0 +1,19 @@
+@(title: String, jsLocation: String, clientConfigJson: String)
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>@title</title>
+</head>
+
+<body>
+<div class="wrap" id="react-mount"></div>
+
+<script type="application/json" id="config">
+    @Html(clientConfigJson)
+</script>
+
+<script src="@jsLocation" type="application/javascript"></script>
+</body>
+</html>
