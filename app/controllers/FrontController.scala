@@ -5,6 +5,7 @@ import com.gu.facia.client.models.FrontJson
 import conf.ApplicationConfiguration
 import config.UpdateManager
 import permissions.ConfigPermissionCheck
+import play.api.libs.ws.WSClient
 import play.api.mvc.Controller
 import services.Press
 import updates._
@@ -12,7 +13,7 @@ import util.Acl
 import util.Requests._
 
 class FrontController(val config: ApplicationConfiguration, val acl: Acl, val auditingUpdates: AuditingUpdates,
-                      val updateManager: UpdateManager, val press: Press) extends Controller with PanDomainAuthActions {
+                      val updateManager: UpdateManager, val press: Press, val wsClient: WSClient) extends Controller with PanDomainAuthActions {
   def create = (APIAuthAction andThen new ConfigPermissionCheck(acl)) { request =>
     request.body.read[CreateFront] match {
       case Some(createFrontRequest) =>

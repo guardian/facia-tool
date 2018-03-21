@@ -35,7 +35,7 @@ case class Defaults(
   capiPreviewUrl: String = ""
 )
 
-class DefaultsController(val config: ApplicationConfiguration, val acl: Acl, val isDev: Boolean) extends Controller with PanDomainAuthActions {
+class DefaultsController(val config: ApplicationConfiguration, val acl: Acl, val isDev: Boolean, val wsClient: WSClient) extends Controller with PanDomainAuthActions {
   def configuration = APIAuthAction.async { implicit request =>
     for {
       hasBreakingNews <- acl.testUser(Permissions.BreakingNewsAlert, "facia-tool-allow-breaking-news-for-all")(request.user.email)

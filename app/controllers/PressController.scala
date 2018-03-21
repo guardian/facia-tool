@@ -6,6 +6,7 @@ import com.amazonaws.services.dynamodbv2.{AmazonDynamoDB, AmazonDynamoDBClientBu
 import com.gu.scanamo.{Scanamo, Table}
 import conf.ApplicationConfiguration
 import play.api.libs.json.Json
+import play.api.libs.ws.WSClient
 import play.api.mvc.Controller
 import services.AwsEndpoints
 
@@ -22,7 +23,7 @@ case class FrontPressRecord (
  actionTime: String
 )
 
-class PressController (val config: ApplicationConfiguration, awsEndpoints: AwsEndpoints) extends Controller with PanDomainAuthActions {
+class PressController (val config: ApplicationConfiguration, awsEndpoints: AwsEndpoints, val wsClient: WSClient) extends Controller with PanDomainAuthActions {
   private lazy val client: AmazonDynamoDB = {
     val endpoint = new AwsClientBuilder.EndpointConfiguration(awsEndpoints.dynamoDb, config.aws.region)
     val builder: AmazonDynamoDBClientBuilder = AmazonDynamoDBClientBuilder.standard()

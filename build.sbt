@@ -90,10 +90,10 @@ libraryDependencies ++= Seq(
     "com.gu" %% "content-api-models-json" % capiModelsVersion,
     "com.gu" %% "content-api-client-aws" % "0.5",
     "com.gu" %% "editorial-permissions-client" % "0.7",
-    "com.gu" %% "fapi-client" % "2.5.4",
+    "com.gu" %% "fapi-client-play25" % "2.5.4",
     "com.gu" % "kinesis-logback-appender" % "1.4.2",
     "com.gu" %% "mobile-notifications-client" % "1.0",
-    "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.5.1",
+    "com.gu" %% "pan-domain-auth-play_2-5" % "0.5.1",
 
     "io.circe" %% "circe-core" % circeVersion,
     "io.circe" %% "circe-generic" % circeVersion,

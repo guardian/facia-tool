@@ -3,6 +3,7 @@ package controllers
 import auth.PanDomainAuthActions
 import conf.ApplicationConfiguration
 import play.api.libs.json.Json
+import play.api.libs.ws.WSClient
 import play.api.mvc.Controller
 import slices._
 
@@ -23,7 +24,7 @@ case class StoriesVisibleResponse(
   mobile: Option[Int]
 )
 
-class StoriesVisibleController(val config: ApplicationConfiguration, val containers: Containers) extends Controller with PanDomainAuthActions {
+class StoriesVisibleController(val config: ApplicationConfiguration, val containers: Containers, val wsClient: WSClient) extends Controller with PanDomainAuthActions {
   def storiesVisible(containerType: String) = APIAuthAction(parse.json[StoriesVisibleRequest]) { implicit request =>
     val numberOfStories = request.body.stories.length
 

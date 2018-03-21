@@ -6,6 +6,7 @@ import conf.ApplicationConfiguration
 import config.UpdateManager
 import permissions.ConfigPermissionCheck
 import play.api.libs.json.Json
+import play.api.libs.ws.WSClient
 import play.api.mvc.Controller
 import services.Press
 import updates._
@@ -28,7 +29,7 @@ object CreateCollectionResponse {
 case class CreateCollectionResponse(id: String)
 
 class CollectionController(val config: ApplicationConfiguration, val acl: Acl, val auditingUpdates: AuditingUpdates,
-                           val updateManager: UpdateManager, val press: Press) extends Controller with PanDomainAuthActions {
+                           val updateManager: UpdateManager, val press: Press, val wsClient: WSClient) extends Controller with PanDomainAuthActions {
   def create = (APIAuthAction andThen new ConfigPermissionCheck(acl)){ request =>
     request.body.read[CollectionRequest] match {
       case Some(CollectionRequest(frontIds, collection)) =>

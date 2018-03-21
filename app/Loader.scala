@@ -1,7 +1,7 @@
 import logging.LogStashConfig
 import metrics.CloudWatchApplicationMetrics
 import play.api.ApplicationLoader.Context
-import play.api.{Application, ApplicationLoader, Logger}
+import play.api.{Application, ApplicationLoader, LoggerConfigurator}
 import switchboard.{SwitchboardConfiguration, Lifecycle => SwitchboardLifecycle}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -9,7 +9,9 @@ import scala.concurrent.duration._
 
 class Loader extends ApplicationLoader {
   override def load(context: Context): Application = {
-    Logger.configure(context.environment)
+    LoggerConfigurator(context.environment.classLoader).foreach {
+      _.configure(context.environment)
+    }
 
     val components = new AppComponents(context)
 

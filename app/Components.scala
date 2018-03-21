@@ -5,7 +5,6 @@ import frontsapi.model.UpdateActions
 import metrics.CloudWatch
 import permissions.Permissions
 import play.api.ApplicationLoader.Context
-import play.api.inject.{Injector, NewInstanceInjector, SimpleInjector}
 import play.api.libs.ws.ning.NingWSComponents
 import play.api.routing.Router
 import play.api.{BuiltInComponentsFromContext, Mode}
@@ -46,22 +45,22 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   val mediaApi = new MediaApi(appConfiguration, wsApi)
   val mediaServiceClient = new MediaServiceClient(mediaApi)
 
-  val collection = new CollectionController(appConfiguration, acl, auditingUpdates, updateManager, press)
-  val defaults = new DefaultsController(appConfiguration, acl, isDev)
-  val faciaCapiProxy = new FaciaContentApiProxy(wsApi, appConfiguration)
+  val collection = new CollectionController(appConfiguration, acl, auditingUpdates, updateManager, press, wsClient)
+  val defaults = new DefaultsController(appConfiguration, acl, isDev, wsClient)
+  val faciaCapiProxy = new FaciaContentApiProxy(wsApi, appConfiguration, wsClient)
   val faciaTool = new FaciaToolController(appConfiguration, acl, frontsApi, faciaApiIO, updateActions, breakingNewsUpdate,
-    auditingUpdates, faciaPress, faciaPressQueue, configAgent, s3FrontsApi, mediaServiceClient)
-  val front = new FrontController(appConfiguration, acl, auditingUpdates, updateManager, press)
-  val pandaAuth = new PandaAuthController(appConfiguration)
+    auditingUpdates, faciaPress, faciaPressQueue, configAgent, s3FrontsApi, mediaServiceClient, wsClient)
+  val front = new FrontController(appConfiguration, acl, auditingUpdates, updateManager, press, wsClient)
+  val pandaAuth = new PandaAuthController(appConfiguration, wsClient)
   val status = new StatusController
-  val storiesVisible = new StoriesVisibleController(appConfiguration, containers)
-  val thumbnail = new ThumbnailController(appConfiguration, containerThumbnails)
-  val troubleshoot = new TroubleshootController(appConfiguration)
+  val storiesVisible = new StoriesVisibleController(appConfiguration, containers, wsClient)
+  val thumbnail = new ThumbnailController(appConfiguration, containerThumbnails, wsClient)
+  val troubleshoot = new TroubleshootController(appConfiguration, wsClient)
   val uncachedAssets = new UncachedAssets
   val v2Assets = new V2Assets
-  val vanityRedirects = new VanityRedirects(appConfiguration, acl)
-  val views = new ViewsController(appConfiguration, acl, assetsManager, isDev, encryption)
-  val pressController = new PressController(appConfiguration, awsEndpoints)
+  val vanityRedirects = new VanityRedirects(appConfiguration, acl, wsClient)
+  val views = new ViewsController(appConfiguration, acl, assetsManager, isDev, encryption, wsClient)
+  val pressController = new PressController(appConfiguration, awsEndpoints, wsClient)
   val loggingHttpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, sourceMapper)
   val v2App = new V2App(appConfiguration, isDev, acl)
 
@@ -70,11 +69,11 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
     pressController, defaults, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects,
     troubleshoot, v2App)
 
-  override lazy val injector: Injector =
-    new SimpleInjector(NewInstanceInjector) + router + crypto + httpConfiguration + tempFileCreator + wsApi + wsClient
+//  override lazy val injector: Injector =
+//    new SimpleInjector(NewInstanceInjector) + router + crypto + httpConfiguration + tempFileCreator + wsApi + wsClient
 
   override lazy val httpFilters = Seq(
-    new CustomGzipFilter,
+    new CustomGzipFilter()(materializer),
     new CORSFilter
   )
 }
