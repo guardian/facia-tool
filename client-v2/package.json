@@ -46,11 +46,19 @@
     "webpack-dev-server": "^3.1.1"
   },
   "dependencies": {
+    "fetch": "^1.1.0",
+    "panda-session": "^0.1.6",
     "prop-types": "^15.6.1",
+    "raven": "^2.4.2",
+    "raven-js": "^3.23.3",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.7",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
+    "react-router-redux": "^4.0.8",
     "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",
     "styled-components": "^3.2.3"
   }
