@@ -1,0 +1,7 @@
+{
+  "eslint.enable": true,
+  "eslint.packageManager": "yarn",
+  "javascript.validate.enable": false,
+  "typescript.format.enable": false,
+  "flow.runOnAllFiles": true
+}
