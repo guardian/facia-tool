@@ -4,7 +4,7 @@
 .*/__tests__/.*
 
 [include]
-./src/*
+./src/.*
 
 [libs]
 flow-typed
@@ -12,6 +12,5 @@ flow-typed
 [lints]
 
 [options]
-all=true
 
 [strict]

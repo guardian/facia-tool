@@ -1,3 +1,4 @@
+// @flow
 import { pandaFetch } from './pandaFetch';
 
 export default function getFrontsConfig() {

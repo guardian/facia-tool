@@ -1,3 +1,4 @@
+// @flow
 import { reEstablishSession } from 'panda-session';
 import getStore from '../util/storeAccessor';
 

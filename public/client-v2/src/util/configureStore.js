@@ -1,3 +1,5 @@
+// @flow
+
 import { applyMiddleware, compose, createStore } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import { browserHistory } from 'react-router';
