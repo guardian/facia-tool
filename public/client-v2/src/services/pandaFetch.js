@@ -1,36 +1,32 @@
 // @flow
+
 import { reEstablishSession } from 'panda-session';
 
-function checkStatus(res) {
-  if (res.status >= 200 && res.status < 300) {
-    return res;
-  }
-  throw res;
-}
+const pandaFetch = (
+  url: string,
+  body: Object = {},
+  reauthUrl: string,
+  count: number = 0
+): Promise<Response> =>
+  new Promise(
+    async (resolve: (r: Response) => mixed, reject: (r: Response) => mixed) => {
+      const res = await fetch(url, body);
 
-export default function pandaFetch(url, body) {
-  return new Promise((resolve, reject) =>
-    fetch(url, body)
-      .then(checkStatus)
-      .then(res => resolve(res))
-      .catch(err => {
-        if (err.status === 419) {
-          const store = getStore();
-          const { config: reauthUrl } = store.getState();
-
-          return reEstablishSession(reauthUrl, 5000).then(
-            () => {
-              fetch(url, body)
-                .then(checkStatus)
-                .then(res => resolve(res))
-                .catch(reAuthErr => reject(reAuthErr));
-            },
-            error => {
-              throw error;
-            }
-          );
+      if (res.status === 419 && count < 1) {
+        await reEstablishSession(reauthUrl, 5000);
+        try {
+          const res2 = await pandaFetch(url, body, reauthUrl, count + 1);
+          return resolve(res2);
+        } catch (e) {
+          return reject(e);
         }
-        return reject(err);
-      })
+      } else if (res.status < 200 || res.status >= 300) {
+        return reject(res);
+      }
+
+      return resolve(res);
+    }
   );
-}
+
+export default (url: string, body: Object = {}, reauthUrl: string) =>
+  pandaFetch(url, body, reauthUrl);
