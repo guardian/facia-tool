@@ -18,6 +18,9 @@ module.exports = {
     // Keeps module exports in one place for easier reading
     'import/exports-last': 'error',
 
+    // Allows libs that may grow to export one function
+    'import/prefer-default-export': 0,
+
     // Don't shout out about missing extension we can import Components/index.js
     // as 'Component'
     'import/extensions': 0,
