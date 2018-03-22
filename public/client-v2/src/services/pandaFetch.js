@@ -1,6 +1,5 @@
 // @flow
 import { reEstablishSession } from 'panda-session';
-import getStore from '../util/storeAccessor';
 
 function checkStatus(res) {
   if (res.status >= 200 && res.status < 300) {

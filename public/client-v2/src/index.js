@@ -6,7 +6,6 @@ import { Provider } from 'react-redux';
 import Raven from 'raven-js';
 import { BrowserRouter } from 'react-router-dom';
 import configureStore from './util/configureStore';
-import { setStore } from './util/storeAccessor';
 import App from './components/App';
 
 function extractConfigFromPage() {
@@ -24,8 +23,6 @@ const config = extractConfigFromPage();
 
 // publish uncaught errors to sentry.io
 if (config.stage === 'PROD') Raven.config(config.ravenUrl).install();
-
-setStore(store);
 
 store.dispatch({
   type: 'CONFIG_RECEIVED',
