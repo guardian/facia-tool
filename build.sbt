@@ -109,4 +109,4 @@ libraryDependencies ++= Seq(
 
 )
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact, JDebPackaging)
+lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact)
