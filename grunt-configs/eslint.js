@@ -4,12 +4,20 @@ module.exports = function() {
         'static': {
             files: [{
                 expand: true,
-                cwd: 'public/',
+                cwd: 'public/src',
                 src: [
                     '**/*.js',
-                    '!src/js/jspm-config.js',
-                    '!src/js/components/**/*.js',
-                    '!src/jspm_packages/**/*.js'
+                    '*.js',
+                    '!js/jspm-config.js',
+                    '!js/components/**/*.js',
+                    '!jspm_packages/**/*.js'
+                ]
+            }, {
+                expand: true,
+                cwd: 'public/test',
+                src: [
+                    '**/*.js',
+                    '*.js'
                 ]
             }]
         }
