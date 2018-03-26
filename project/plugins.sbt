@@ -1,6 +1,8 @@
 // Additional information on initialization
 logLevel := Level.Warn
 
+libraryDependencies += "org.vafer" % "jdeb" % "1.3" artifacts Artifact("jdeb", "jar", "jar")
+
 resolvers ++= Seq(
   Classpaths.typesafeReleases,
   Resolver.sonatypeRepo("releases"),
@@ -14,4 +16,4 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.18")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "0.9.3")
 
-addSbtPlugin("com.gu" % "sbt-riffraff-artifact" % "0.9.7")
+addSbtPlugin("com.gu" % "sbt-riffraff-artifact" % "1.1.4")
