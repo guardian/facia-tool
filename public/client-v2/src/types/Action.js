@@ -10,5 +10,10 @@ type ConfigReceivedAction = {
   payload: Object
 };
 
-export type Action = ConfigReceivedAction;
+type FrontsConfigReceivedAction = {
+  type: 'FRONTS_CONFIG_RECEIVED',
+  payload: Object
+};
+
+export type Action = ConfigReceivedAction | FrontsConfigReceivedAction;
 export type ActionType = $ElementType<Action, 'type'>;
