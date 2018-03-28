@@ -81,4 +81,6 @@ GET         /troubleshoot                            controllers.TroubleshootCon
 GET         /troubleshoot/*section                   controllers.TroubleshootController.troubleshoot(section)
 
 # React App
-GET         /v2                                      controllers.V2App.index()
+GET         /v2                                      controllers.V2App.index(path="")
+GET         /v2/*path                                controllers.V2App.index(path)
+
