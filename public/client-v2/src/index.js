@@ -23,7 +23,7 @@ const reactMount = document.getElementById('react-mount');
 if (reactMount) {
   render(
     <Provider store={store}>
-      <BrowserRouter>
+      <BrowserRouter basename="/v2">
         <App />
       </BrowserRouter>
     </Provider>,
