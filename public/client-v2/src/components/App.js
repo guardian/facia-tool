@@ -19,7 +19,6 @@ const AppContainer = styled('div')`
 
 const App = () => (
   <AppContainer>
-    Fronts V2
     <Switch>
       <Route exact path="/" component={Home} />
       <Route path="/:priority" component={FrontsEdit} />
