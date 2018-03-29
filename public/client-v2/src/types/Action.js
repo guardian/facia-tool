@@ -15,5 +15,22 @@ type FrontsConfigReceivedAction = {
   payload: Object
 };
 
-export type Action = ConfigReceivedAction | FrontsConfigReceivedAction;
+type RequestFrontsConfigAction = {
+  type: 'FRONTS_CONFIG_GET_RECEIVE',
+  receivedAt: number
+};
+
+type FrontsConfigError = {
+  type: 'CAUGHT_ERROR',
+  message: 'Could not fetch fronts config',
+  error: string,
+  receivedAt: number
+};
+
+export type Action =
+  | ConfigReceivedAction
+  | FrontsConfigReceivedAction
+  | RequestFrontsConfigAction
+  | FrontsConfigError;
+
 export type ActionType = $ElementType<Action, 'type'>;
