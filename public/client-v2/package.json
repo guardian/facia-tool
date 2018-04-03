@@ -15,7 +15,6 @@
     "dev-server": "yarn next $(yarn bin)/webpack-dev-server --config config/webpack.config.dev.js",
     "dev": "yarn install && yarn dev-server --open",
     "test": "yarn jest"
-
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.42",
@@ -30,6 +29,7 @@
     "babel-eslint": "^8.2.2",
     "babel-jest": "^23.0.0-alpha.0",
     "babel-loader": "^8.0.0-beta",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "eslint": "^4.18.2",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-config-prettier": "^2.9.0",
