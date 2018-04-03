@@ -15,12 +15,17 @@ trait PanDomainAuthActions extends AuthActions with PanDomainAuth with Results {
 
   private lazy val groupChecker = settings.google2FAGroupSettings.map(new GoogleGroupChecker(_, this.bucket))
 
-  def userInGroups(authedUser: AuthenticatedUser): Boolean = groupChecker.exists{ checker =>
-    checker.checkGroups(authedUser, config.pandomain.userGroups).fold(
-      error => {
-        Logger.warn(error)
-        false
-      }, identity)
+  def userInGroups(authedUser: AuthenticatedUser): Boolean = {
+    Logger.warn(s"Multifactor checks have been temporarily disabled. User: ${authedUser.user.email}")
+    true
+
+//    groupChecker.exists{ checker =>
+//      checker.checkGroups(authedUser, config.pandomain.userGroups).fold(
+//        error => {
+//          Logger.warn(error)
+//          false
+//        }, identity)
+//    }
   }
 
   override def validateUser(authedUser: AuthenticatedUser): Boolean = {
