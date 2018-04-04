@@ -14,7 +14,8 @@
     "update-types": "flow-typed install --ignoreDeps dev peer bundle",
     "dev-server": "yarn next $(yarn bin)/webpack-dev-server --config config/webpack.config.dev.js",
     "dev": "yarn install && yarn dev-server --open",
-    "test": "yarn jest"
+    "test": "yarn jest",
+    "flow-coverage": "yarn run flow-coverage-report -i \"src/**/*.js\""
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.42",
@@ -49,6 +50,7 @@
   },
   "dependencies": {
     "fetch": "^1.1.0",
+    "flow-coverage-report": "^0.5.0",
     "history": "^4.7.2",
     "panda-session": "^0.1.6",
     "prop-types": "^15.6.1",
