@@ -1,11 +1,6 @@
 // @flow
 
-declare type Priorities = {
-  editorial: Object,
-  commercial: Object,
-  training: Object,
-  email: Object
-};
+import type { Priorities } from '../types/Fronts.js';
 
 export const priorities: Priorities = {
   editorial: {},

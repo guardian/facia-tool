@@ -3,7 +3,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { priorities } from '../constants/priorities';
-import type { Priorities } from '../constants/priorities';
+import type { Priorities } from '../types/Fronts';
 
 const renderPriority = (priority: string) => (
   <li key={priority}>
