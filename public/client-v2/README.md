@@ -54,3 +54,5 @@ yarn update-types
 If you would like to overwrite types that are previously installed to newer
 versions that have been updated in the project pass the `--overwrite` flag to
 the above command.
+
+If you want to run flow to check for type errors, run `yarn flow`.
