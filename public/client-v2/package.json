@@ -15,7 +15,7 @@
     "dev-server": "yarn next $(yarn bin)/webpack-dev-server --config config/webpack.config.dev.js",
     "dev": "yarn install && yarn dev-server --open",
     "test": "yarn jest",
-    "flow-coverage": "yarn run flow-coverage-report -i \"src/**/*.js\""
+    "flow-coverage": "yarn run flow-coverage-report -i \"src/**/*.js\" --threshold 70"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.42",
