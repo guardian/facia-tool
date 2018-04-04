@@ -3,18 +3,65 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import type { State } from '../../types/State';
+import filterFrontsByPriority from '../../util/filterFrontsByPriority';
 import getFrontsConfig from '../../actions/FrontsConfig';
+import type { FrontDetail } from '../../types/Fronts';
+import type { State } from '../../types/State';
 
-type Props = Object;
+type Props = {
+  match: Object,
+  frontsActions: Object,
+  frontsConfig: Object
+};
 
-class Fronts extends React.Component<Props> {
+type ComponentState = {
+  selectedFront: ?string
+};
+
+class Fronts extends React.Component<Props, ComponentState> {
+  state = {
+    selectedFront: null
+  };
+
   componentDidMount() {
     this.props.frontsActions.getFrontsConfig();
   }
 
+  renderSelectPrompt = () => {
+    if (!this.state.selectedFront) {
+      return <option value="">Choose a front...</option>;
+    }
+    return null;
+  };
+
+  renderFrontOption = (front: FrontDetail) => (
+    <option value={front.id} key={front.id}>
+      {front.id}
+    </option>
+  );
+
   render() {
-    return <div>list fronts</div>;
+    if (!this.props.frontsConfig.fronts) {
+      return <div>Loading</div>;
+    }
+
+    const { match: { params: { priority } } } = this.props;
+    const filteredFronts: Array<FrontDetail> = filterFrontsByPriority(
+      this.props.frontsConfig,
+      priority
+    );
+
+    return (
+      <select
+        value={this.state.selectedFront || ''}
+        onChange={e => {
+          this.setState({ selectedFront: e.target.value });
+        }}
+      >
+        {this.renderSelectPrompt()}
+        {filteredFronts.map(this.renderFrontOption)};
+      </select>
+    );
   }
 }
 
@@ -30,5 +77,7 @@ const mapDispatchToProps = (dispatch: *) => ({
     dispatch
   )
 });
+
+export { Fronts as FrontsComponent };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Fronts);

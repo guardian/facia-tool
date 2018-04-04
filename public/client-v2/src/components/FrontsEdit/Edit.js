@@ -1,6 +1,12 @@
+// @flow
+
 import React from 'react';
 import Fronts from './Fronts';
 
-const FrontsEdit = () => <Fronts />;
+type Props = {
+  match: Object
+};
+
+const FrontsEdit = (props: Props) => <Fronts match={props.match} />;
 
 export default FrontsEdit;
