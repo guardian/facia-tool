@@ -1,10 +1,15 @@
 // @flow
 
-import type { FrontsConfig, FrontConfig, FrontDetail } from '../types/Fronts';
+import type {
+  FrontsConfig,
+  FrontConfig,
+  FrontDetail,
+  PriorityName
+} from '../types/Fronts';
 
 export default function filterFrontsByPriority(
   config: FrontsConfig,
-  priority: string
+  priority: PriorityName
 ): Array<FrontDetail> {
   const { fronts } = config;
   const frontIds: Array<string> = Object.keys(fronts);

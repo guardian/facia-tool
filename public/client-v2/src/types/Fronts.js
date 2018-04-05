@@ -1,8 +1,10 @@
 // @flow
 
+type PriorityName = 'editorial' | 'commercia' | 'training' | 'email';
+
 type FrontConfig = {
   collections: Array<string>,
-  priority?: string,
+  priority?: PriorityName,
   canonical?: string,
   group?: string,
   isHidden?: boolean,
@@ -69,5 +71,6 @@ export type {
   FrontDetail,
   Collection,
   CollectionDetail,
-  Priorities
+  Priorities,
+  PriorityName
 };
