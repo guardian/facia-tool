@@ -3,22 +3,23 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import type { Match } from 'react-router-dom';
 import filterFrontsByPriority from '../../util/filterFrontsByPriority';
 import getFrontsConfig from '../../actions/FrontsConfig';
-import type { FrontDetail } from '../../types/Fronts';
+import type { FrontDetail, FrontsConfig } from '../../types/Fronts';
 import type { State } from '../../types/State';
 
-type Props = {
-  match: Object,
+type FrontsComponentProps = {
+  match: Match,
   frontsActions: Object,
-  frontsConfig: Object
+  frontsConfig: FrontsConfig
 };
 
 type ComponentState = {
   selectedFront: ?string
 };
 
-class Fronts extends React.Component<Props, ComponentState> {
+class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   state = {
     selectedFront: null
   };
@@ -79,5 +80,6 @@ const mapDispatchToProps = (dispatch: *) => ({
 });
 
 export { Fronts as FrontsComponent };
+export type { FrontsComponentProps };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Fronts);

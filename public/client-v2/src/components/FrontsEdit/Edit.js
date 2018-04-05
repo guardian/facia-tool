@@ -1,10 +1,11 @@
 // @flow
 
 import React from 'react';
+import type { Match } from 'react-router-dom';
 import Fronts from './Fronts';
 
 type Props = {
-  match: Object
+  match: Match
 };
 
 const FrontsEdit = (props: Props) => <Fronts match={props.match} />;

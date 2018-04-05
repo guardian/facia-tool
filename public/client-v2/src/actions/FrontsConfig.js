@@ -1,10 +1,11 @@
 // @flow
 
 import type { Action } from '../types/Action';
+import type { FrontsConfig } from '../types/Fronts';
 
 import fetchFrontsConfig from '../services/faciaApi';
 
-function frontsConfigReceived(config: Object): Action {
+function frontsConfigReceived(config: FrontsConfig): Action {
   return {
     type: 'FRONTS_CONFIG_RECEIVED',
     payload: config
@@ -27,7 +28,7 @@ function errorReceivingConfig(error: string): Action {
   };
 }
 
-export default function getFrontsConfig(): Object {
+export default function getFrontsConfig() {
   return (dispatch: Dispatch) => {
     dispatch(requestFrontsConfig());
     return fetchFrontsConfig()
