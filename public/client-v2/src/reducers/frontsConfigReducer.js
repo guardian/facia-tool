@@ -4,7 +4,7 @@ import { type Action } from '../types/Action';
 
 type State = Object;
 
-const config = (state: State = {}, action: Action) => {
+const frontsConfig = (state: State = {}, action: Action) => {
   switch (action.type) {
     case 'FRONTS_CONFIG_RECEIVED': {
       return action.payload;
@@ -15,4 +15,4 @@ const config = (state: State = {}, action: Action) => {
   }
 };
 
-export default config;
+export default frontsConfig;
