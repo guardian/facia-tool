@@ -62,7 +62,7 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   val views = new ViewsController(appConfiguration, acl, assetsManager, isDev, encryption, wsClient)
   val pressController = new PressController(appConfiguration, awsEndpoints, wsClient)
   val loggingHttpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, sourceMapper)
-  val v2App = new V2App(appConfiguration, isDev, acl)
+  val v2App = new V2App(appConfiguration, isDev, acl, wsClient)
 
   val assets = new controllers.Assets(loggingHttpErrorHandler)
   val router: Router = new Routes(loggingHttpErrorHandler, status, pandaAuth, v2Assets, uncachedAssets, views, faciaTool,

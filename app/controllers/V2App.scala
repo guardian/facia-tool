@@ -5,12 +5,15 @@ import com.gu.facia.client.models.Metadata
 import conf.ApplicationConfiguration
 import permissions.Permissions
 import play.api.libs.json.Json
+import play.api.libs.ws.WSClient
+import play.api.mvc.Controller
 import play.api.mvc.{Controller, RequestHeader}
 import switchboard.SwitchManager
-import util.{AclJson, Acl}
+import util.{Acl, AclJson}
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class V2App(val config: ApplicationConfiguration, isDev: Boolean, val acl: Acl) extends Controller with PanDomainAuthActions {
+class V2App(val config: ApplicationConfiguration, isDev: Boolean, val acl: Acl, val wsClient: WSClient) extends Controller with PanDomainAuthActions {
 
   def index(priority: String = "", frontId: String = "") = APIAuthAction.async { implicit req =>
 
