@@ -1,6 +1,6 @@
 // @flow
 
-type PriorityName = 'editorial' | 'commercia' | 'training' | 'email';
+type PriorityName = 'editorial' | 'commercial' | 'training' | 'email';
 
 type FrontConfig = {
   collections: Array<string>,
