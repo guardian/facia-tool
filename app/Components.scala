@@ -61,7 +61,7 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   val vanityRedirects = new VanityRedirects(appConfiguration, acl, wsClient)
   val views = new ViewsController(appConfiguration, acl, assetsManager, isDev, encryption, wsClient)
   val pressController = new PressController(appConfiguration, awsEndpoints, wsClient)
-  val loggingHttpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, sourceMapper)
+  val loggingHttpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, sourceMapper, Some(router))
   val v2App = new V2App(appConfiguration, isDev, acl, wsClient)
 
   override val assets = new controllers.Assets(loggingHttpErrorHandler, assetsMetadata)
