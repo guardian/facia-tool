@@ -80,14 +80,11 @@ export default class Front extends ColumnWidget {
                 type: 'post',
                 url: CONST.apiBase + '/send-email?path=' + this.front()
             })
-            .catch(error => {
-                const errorMessages = [];
-                try {
-                    errorMessages.push.apply(errorMessages, JSON.parse(error.responseText));
-                } catch (ex) {
-                    errorMessages.push(error.responseText || error.message);
-                }
-                const message = 'Error sending email: ' + errorMessages.join('<br>');
+            .then(() => {
+                alert("An email has been sent to your Guardian email address. To preview this page in the app, open your email on the device and follow the instructions.");
+            })
+            .catch(() => {
+                const message = 'Error sending email';
                 alert(message);
                 reportErrors(new Error(message));
             });
