@@ -3,16 +3,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import type { Match } from 'react-router-dom';
-import filterFrontsByPriority from '../../util/filterFrontsByPriority';
 import getFrontsConfig from '../../actions/FrontsConfig';
-import type { FrontDetail, FrontsConfig } from '../../types/Fronts';
+import { GetFrontsConfigStateSelector } from '../../selectors/frontsSelectors';
+import type { FrontDetail, FrontsClientConfig } from '../../types/Fronts';
 import type { State } from '../../types/State';
 
-type FrontsComponentProps = {
-  match: Match,
-  frontsActions: Object,
-  frontsConfig: FrontsConfig
+type ComponentPropsBeforeFetch = {
+  priority: string // eslint-disable-line react/no-unused-prop-types
+};
+
+type FrontsComponentProps = ComponentPropsBeforeFetch & {
+  frontsConfig: FrontsClientConfig,
+  frontsActions: Object
 };
 
 type ComponentState = {
@@ -46,11 +48,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
       return <div>Loading</div>;
     }
 
-    const { match: { params: { priority } } } = this.props;
-    const filteredFronts: Array<FrontDetail> = filterFrontsByPriority(
-      this.props.frontsConfig,
-      priority
-    );
+    const { frontsConfig: { fronts } } = this.props;
 
     return (
       <select
@@ -60,14 +58,14 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
         }}
       >
         {this.renderSelectPrompt()}
-        {filteredFronts.map(this.renderFrontOption)};
+        {fronts.map(this.renderFrontOption)};
       </select>
     );
   }
 }
 
-const mapStateToProps = ({ frontsConfig }: State) => ({
-  frontsConfig
+const mapStateToProps = (state: State, props: ComponentPropsBeforeFetch) => ({
+  frontsConfig: GetFrontsConfigStateSelector(state, props.priority)
 });
 
 const mapDispatchToProps = (dispatch: *) => ({

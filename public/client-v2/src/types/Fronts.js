@@ -57,6 +57,11 @@ type FrontsConfig = {
   collections: Collection
 };
 
+type FrontsClientConfig = {
+  fronts: Array<FrontDetail>,
+  collections: Array<CollectionDetail>
+};
+
 type Priorities = {
   editorial: Object,
   commercial: Object,
@@ -72,5 +77,6 @@ export type {
   Collection,
   CollectionDetail,
   Priorities,
-  PriorityName
+  PriorityName,
+  FrontsClientConfig
 };

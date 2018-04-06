@@ -4,7 +4,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { FrontsComponent } from '../FrontsEdit/Fronts';
 import { frontsActions } from '../../mocks';
-import { frontsConfig } from '../../fixtures';
+import { frontsClientConfig } from '../../fixtures';
 
 import type { PriorityName } from '../../types/Fronts';
 import type { FrontsComponentProps } from '../FrontsEdit/Fronts';
@@ -16,12 +16,8 @@ const selectors = {
 const setup = (priority: PriorityName) => {
   const props: FrontsComponentProps = Object.assign({
     frontsActions,
-    match: {
-      params: {
-        priority
-      }
-    },
-    frontsConfig
+    priority,
+    frontsConfig: frontsClientConfig
   });
 
   const wrapper = shallow(<FrontsComponent {...props} />);

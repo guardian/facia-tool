@@ -8,6 +8,8 @@ type Props = {
   match: Match
 };
 
-const FrontsEdit = (props: Props) => <Fronts match={props.match} />;
+const FrontsEdit = (props: Props) => (
+  <Fronts priority={props.match.params.priority || ''} />
+);
 
 export default FrontsEdit;
