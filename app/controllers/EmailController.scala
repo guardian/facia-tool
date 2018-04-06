@@ -2,6 +2,7 @@ package controllers
 
 import auth.PanDomainAuthActions
 import conf.ApplicationConfiguration
+import EmailController._
 import play.api.Logger
 import play.api.mvc.Controller
 import services.Email
@@ -9,8 +10,6 @@ import services.Email
 import scala.util.{Failure, Success}
 
 class EmailController(val config: ApplicationConfiguration, email: Email) extends Controller with PanDomainAuthActions {
-
-  private val Editions = Set("uk", "us", "au")
 
   def sendEmail(path: String) = APIAuthAction { request =>
     val mapiPath = buildMapiPath(path)
@@ -26,15 +25,12 @@ class EmailController(val config: ApplicationConfiguration, email: Email) extend
         InternalServerError
     }
   }
+}
 
-  private def buildMapiPath(path: String): String = {
-    /**
-      * TODO - move to tests
-      * E.g.
-      *  - 'uk/film' -> '/uk/fronts/film'
-      *  - 'uk'      -> '/uk/fronts/home'
-      *  - 'audio'   -> '/uk/fronts/audio'
-      */
+object EmailController {
+  private val Editions = Set("uk", "us", "au")
+
+  def buildMapiPath(path: String): String = {
     val pathTokens = path.split("/")
     pathTokens.toList match {
       case x :: Nil if Editions.contains(x) => s"$x/fronts/home"
@@ -43,7 +39,7 @@ class EmailController(val config: ApplicationConfiguration, email: Email) extend
     }
   }
 
-  private def buildBody(path: String): String = {
+  def buildBody(path: String): String = {
     s"""iOS: https://entry.mobile-apps.guardianapis.com/deeplink/$path
        |Android: https://mobile-preview.guardianapis.com/$path
        |
