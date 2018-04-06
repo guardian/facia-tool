@@ -51,6 +51,8 @@ GET         /metadata                                controllers.FaciaToolContro
 
 POST        /treats/*collectionId                    controllers.FaciaToolController.treatEdits(collectionId)
 
+POST        /send-email                              controllers.EmailController.sendEmail(path)
+
 # endpoints for proxying https
 GET         /api/preview/*path                       controllers.FaciaContentApiProxy.capiPreview(path)
 GET         /api/live/*path                          controllers.FaciaContentApiProxy.capiLive(path)

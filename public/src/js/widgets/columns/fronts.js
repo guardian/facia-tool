@@ -12,6 +12,8 @@ import ColumnWidget from 'widgets/column-widget';
 import deepGet from 'utils/deep-get';
 import modalDialog from 'modules/modal-dialog';
 import isCodeEnvironment from 'utils/is-code-environment';
+import * as authedAjax from 'modules/authed-ajax';
+import reportErrors from 'utils/report-errors';
 
 export default class Front extends ColumnWidget {
     constructor(params, element) {
@@ -67,11 +69,29 @@ export default class Front extends ColumnWidget {
             return classes.join(' ');
         });
 
-        this.previewUrl = ko.pureComputed(() => {
+        this.previewWebUrl = ko.pureComputed(() => {
             var path = this.mode() === 'live' ? 'https://' + CONST.viewerHost + '/proxy/live' : CONST.previewBase;
 
             return CONST.previewBase + '/responsive-viewer/' + path + '/' + this.front();
         });
+
+        this.emailPreviewAppUrls = () => {
+            authedAjax.request({
+                type: 'post',
+                url: CONST.apiBase + '/send-email?path=' + this.front()
+            })
+            .catch(error => {
+                const errorMessages = [];
+                try {
+                    errorMessages.push.apply(errorMessages, JSON.parse(error.responseText));
+                } catch (ex) {
+                    errorMessages.push(error.responseText || error.message);
+                }
+                const message = 'Error sending email: ' + errorMessages.join('<br>');
+                alert(message);
+                reportErrors(new Error(message));
+            });
+        };
 
         this.isControlsVisible = ko.observable(sparklines.isEnabled());
         this.controlsText = ko.pureComputed(() => {

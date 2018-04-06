@@ -22,10 +22,15 @@
    ><a class="breaking-mode active" data-bind="visible: confirmSendingAlert()">Breaking News</a
    ><a class="preview" target="preview" data-bind="
         click: trackPreviewClick,
-        attr: { href: previewUrl },
+        attr: { href: previewWebUrl },
         visible: front">
-        <span data-bind="if: mode() === 'live'">View live</span>
-        <span data-bind="if: mode() === 'draft'">Preview draft</span>
+        <span data-bind="if: mode() === 'live'">View live on web</span>
+        <span data-bind="if: mode() === 'draft'">Preview draft on web</span>
+    </a>
+    <a class="preview" target="preview" data-bind="
+        click: emailPreviewAppUrls,
+        visible: front">
+        <span data-bind="if: mode() === 'draft'">Get app draft link</span>
     </a>
     <!-- ko if: front -->
     <a class='performances' target='_blank' data-bind="
