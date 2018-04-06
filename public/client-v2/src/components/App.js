@@ -7,15 +7,13 @@ import FrontsEdit from './FrontsEdit/Edit';
 import Home from './Home';
 
 const AppContainer = styled('div')`
-  align-items: center;
   background-color: #221133;
   color: white;
   display: flex;
   font-family: 'Helvetica Neue', Helvetica, Arial;
-  font-size: 40px;
+  font-size: 16px;
   font-weight: 100;
   height: 100%;
-  justify-content: center;
   width: 100%;
 `;
 
