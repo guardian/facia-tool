@@ -2,7 +2,7 @@ package services
 
 import conf.ApplicationConfiguration
 import play.api.libs.json._
-import play.api.libs.ws.WSAPI
+import play.api.libs.ws.WSClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -18,7 +18,7 @@ object Export {
   implicit val format = Json.format[Export]
 }
 
-class MediaApi(val config: ApplicationConfiguration, val ws: WSAPI) {
+class MediaApi(val config: ApplicationConfiguration, val ws: WSClient) {
 
   def getThumbnail(imgId: String, cropId: String): Future[Option[String]] = {
     val gridUrl = s"${config.media.apiUrl}/images/$imgId"

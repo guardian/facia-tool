@@ -17,7 +17,7 @@ import tools.FaciaApiIO
 import updates.{AuditingUpdates, BreakingNewsUpdate}
 import util.{Acl, Encryption}
 
-class AppComponents(context: Context) extends BuiltInComponentsFromContext(context) with AhcWSComponents {
+class AppComponents(context: Context) extends BuiltInComponentsFromContext(context) with AhcWSComponents with AssetsComponents {
   val isTest = context.environment.mode == Mode.Test
   val isProd = context.environment.mode == Mode.Prod
   val isDev = context.environment.mode == Mode.Dev
@@ -30,7 +30,7 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   val faciaApiIO = new FaciaApiIO(frontsApi, s3FrontsApi)
   val configAgent = new ConfigAgent(appConfiguration, frontsApi)
   val auditingUpdates = new AuditingUpdates(appConfiguration, configAgent)
-  val breakingNewsUpdate = new BreakingNewsUpdate(appConfiguration, wsApi, auditingUpdates)
+  val breakingNewsUpdate = new BreakingNewsUpdate(appConfiguration, wsClient, auditingUpdates)
   val fixedContainers = new FixedContainers(appConfiguration)
   val containerThumbnails = new ContainerThumbnails(fixedContainers)
   val containers = new Containers(fixedContainers)
@@ -42,12 +42,12 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   val press = new Press(faciaPress)
   val assetsManager = new AssetsManager(appConfiguration, isDev)
   val encryption = new Encryption(appConfiguration)
-  val mediaApi = new MediaApi(appConfiguration, wsApi)
+  val mediaApi = new MediaApi(appConfiguration, wsClient)
   val mediaServiceClient = new MediaServiceClient(mediaApi)
 
   val collection = new CollectionController(appConfiguration, acl, auditingUpdates, updateManager, press, wsClient)
   val defaults = new DefaultsController(appConfiguration, acl, isDev, wsClient)
-  val faciaCapiProxy = new FaciaContentApiProxy(wsApi, appConfiguration, wsClient)
+  val faciaCapiProxy = new FaciaContentApiProxy(wsClient, appConfiguration, wsClient)
   val faciaTool = new FaciaToolController(appConfiguration, acl, frontsApi, faciaApiIO, updateActions, breakingNewsUpdate,
     auditingUpdates, faciaPress, faciaPressQueue, configAgent, s3FrontsApi, mediaServiceClient, wsClient)
   val front = new FrontController(appConfiguration, acl, auditingUpdates, updateManager, press, wsClient)
@@ -64,7 +64,7 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   val loggingHttpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, sourceMapper)
   val v2App = new V2App(appConfiguration, isDev, acl, wsClient)
 
-  val assets = new controllers.Assets(loggingHttpErrorHandler)
+  override val assets = new controllers.Assets(loggingHttpErrorHandler, assetsMetadata)
   val router: Router = new Routes(loggingHttpErrorHandler, status, pandaAuth, v2Assets, uncachedAssets, views, faciaTool,
     pressController, defaults, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects,
     troubleshoot, v2App)
