@@ -4,16 +4,13 @@ import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
 import com.gu.pandomainauth.action.AuthActions
 import com.gu.pandomainauth.model.AuthenticatedUser
-import com.gu.pandomainauth.service.GoogleGroupChecker
-import com.gu.pandomainauth.{PanDomain, PanDomainAuth}
+import com.gu.pandomainauth.PanDomain
 import conf.ApplicationConfiguration
 import play.api.Logger
 import play.api.mvc._
 
-trait PanDomainAuthActions extends AuthActions with PanDomainAuth with Results {
+trait PanDomainAuthActions extends AuthActions with Results {
   def config: ApplicationConfiguration
-
-  private lazy val groupChecker = settings.google2FAGroupSettings.map(new GoogleGroupChecker(_, this.bucket))
 
   def userInGroups(authedUser: AuthenticatedUser): Boolean = groupChecker.exists{ checker =>
     checker.checkGroups(authedUser, config.pandomain.userGroups).fold(
@@ -46,9 +43,10 @@ trait PanDomainAuthActions extends AuthActions with PanDomainAuth with Results {
 
   }
 
-  override lazy val domain: String = config.pandomain.domain
-  override lazy val system: String = config.pandomain.service
-  override def awsCredentialsProvider = new AWSCredentialsProviderChain(
+  lazy val domain: String = config.pandomain.domain
+  lazy val system: String = config.pandomain.service
+
+  def awsCredentialsProvider = new AWSCredentialsProviderChain(
     new ProfileCredentialsProvider("workflow"),
     new STSAssumeRoleSessionCredentialsProvider.Builder(config.pandomain.roleArn, config.pandomain.service).build()
   )

@@ -93,7 +93,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "fapi-client-play26" % "2.5.4",
     "com.gu" % "kinesis-logback-appender" % "1.4.2",
     "com.gu" %% "mobile-notifications-client" % "1.1",
-    "com.gu" %% "pan-domain-auth-play_2-6" % "0.7.0",
+    "com.gu" %% "pan-domain-auth-play_2-6" % "0.7.1-SNAPSHOT",
 
     "io.circe" %% "circe-core" % circeVersion,
     "io.circe" %% "circe-generic" % circeVersion,
@@ -102,7 +102,7 @@ libraryDependencies ++= Seq(
 
     "com.gu" %% "thrift-serializer" % "2.1.0",
     "net.logstash.logback" % "logstash-logback-encoder" % "5.0",
-    "org.julienrf" %% "play-json-variants" % "2.0",
+    "org.julienrf" %% "play-json-derived-codecs" % "4.0.0",
     "org.json4s" %% "json4s-native" % json4sVersion,
     "org.json4s" %% "json4s-jackson" % json4sVersion,
     "org.scalatest" %% "scalatest" % "3.0.5" % "test"
