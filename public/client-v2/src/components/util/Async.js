@@ -12,17 +12,16 @@ type AsyncState<R> = {
 
 type AsyncChild<R> = (state: AsyncState<R>) => React.Node;
 
-type AsyncProps<A: mixed[], I, R> = {
+type AsyncProps<A: mixed[], R> = {
   args: A,
   children: AsyncChild<R>,
   debounce?: number,
-  fn: <I>(...args: A) => Promise<I> | I,
-  mapper?: ?<I>(value: I) => R,
+  fn: (...args: A) => Promise<R> | R,
   on: boolean
 };
 
-class Async<A: mixed[], I, R = I> extends React.Component<
-  AsyncProps<A, I, R>,
+class Async<A: mixed[], R> extends React.Component<
+  AsyncProps<A, R>,
   AsyncState<R>
 > {
   static defaultProps = {
@@ -31,7 +30,7 @@ class Async<A: mixed[], I, R = I> extends React.Component<
     on: true
   };
 
-  constructor(props: AsyncProps<A, I, R>) {
+  constructor(props: AsyncProps<A, R>) {
     super(props);
     // Currently can't change debounce value
     this.debouncedRun = this.props.debounce
@@ -49,13 +48,13 @@ class Async<A: mixed[], I, R = I> extends React.Component<
     this.update();
   }
 
-  componentDidUpdate(prevProps: AsyncProps<A, I, R>) {
+  componentDidUpdate(prevProps: AsyncProps<A, R>) {
     this.update(prevProps);
   }
 
   debouncedRun: () => void;
 
-  update(prevProps: ?AsyncProps<A, I, R>): void {
+  update(prevProps: ?AsyncProps<A, R>): void {
     if (!this.props.on && (!prevProps || prevProps.on)) {
       this.setState({
         value: null,
@@ -71,7 +70,6 @@ class Async<A: mixed[], I, R = I> extends React.Component<
   }
 
   run = () => {
-    const mapper = this.props.mapper || ((res: R) => res);
     this.setState(
       {
         pending: true,
@@ -81,7 +79,7 @@ class Async<A: mixed[], I, R = I> extends React.Component<
         try {
           const value = await this.props.fn(...this.props.args);
           this.setState({
-            value: mapper(value),
+            value,
             pending: false
           });
         } catch (error) {
