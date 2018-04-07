@@ -7,6 +7,7 @@ import { type Element } from './CAPI/CAPISearchQuery';
 /* eslint-enable import/no-duplicates */
 import ScrollContainer from './ScrollContainer';
 import FeedItem from './FeedItem';
+import Loader from './Loader';
 
 // TODO: get apiKey from context (or speak directly to FrontsAPI)
 
@@ -44,7 +45,7 @@ const Feed = () => (
     >
       {({ pending, value }) =>
         pending ? (
-          <div>Loading!</div>
+          <Loader />
         ) : (
           value &&
           value.response.results.map(({ webTitle, webUrl, elements }) => (
