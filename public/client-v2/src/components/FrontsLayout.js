@@ -8,9 +8,8 @@ const Container = styled(`div`)`
   flex: 1;
 `;
 const Col = styled('div')`
+  display: flex;
   flex: 1;
-  justify-content: center;
-  overflow-x: scroll;
 `;
 
 type FrontLayoutProps = {

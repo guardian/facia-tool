@@ -4,9 +4,29 @@ import * as React from 'react';
 import capiQuery from '../../services/capiQuery';
 import Async, { type AsyncChild } from '../util/Async';
 
+type ImageAsset = {
+  type: 'image',
+  mimeType: string,
+  file: string,
+  typeData: {
+    width: string,
+    number: string
+  }
+};
+
+type ImageElement = {
+  id: string,
+  relation: string,
+  type: 'image',
+  assets: ImageAsset[]
+};
+
+type Element = ImageElement;
+
 type Article = {
   webTitle: string,
-  webUrl: string
+  webUrl: string,
+  elements?: Element[]
 };
 
 type CAPIQueryReponse = {
@@ -55,5 +75,5 @@ class CAPIQuery extends React.Component<CAPIQueryProps> {
   }
 }
 
-export type { CAPIQueryChild };
+export type { CAPIQueryChild, ImageAsset, Element, Article, CAPIQueryReponse };
 export default CAPIQuery;
