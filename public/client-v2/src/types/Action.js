@@ -27,10 +27,16 @@ type FrontsConfigError = {
   receivedAt: number
 };
 
+type ClearError = {
+  type: 'CLEAR_ERROR',
+  receivedAt: number
+};
+
 export type Action =
   | ConfigReceivedAction
   | FrontsConfigReceivedAction
   | RequestFrontsConfigAction
-  | FrontsConfigError;
+  | FrontsConfigError
+  | ClearError;
 
 export type ActionType = $ElementType<Action, 'type'>;
