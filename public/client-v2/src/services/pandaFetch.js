@@ -2,10 +2,10 @@
 
 import { reEstablishSession } from 'panda-session';
 
+const reauthUrl = '/auth';
 const pandaFetch = (
   url: string,
   body: Object = {},
-  reauthUrl: string,
   count: number = 0
 ): Promise<Response> =>
   new Promise(
@@ -15,7 +15,7 @@ const pandaFetch = (
       if (res.status === 419 && count < 1) {
         await reEstablishSession(reauthUrl, 5000);
         try {
-          const res2 = await pandaFetch(url, body, reauthUrl, count + 1);
+          const res2 = await pandaFetch(url, body, count + 1);
           return resolve(res2);
         } catch (e) {
           return reject(e);
@@ -28,5 +28,4 @@ const pandaFetch = (
     }
   );
 
-export default (url: string, body: Object = {}, reauthUrl: string) =>
-  pandaFetch(url, body, reauthUrl);
+export default (url: string, body: Object = {}) => pandaFetch(url, body);

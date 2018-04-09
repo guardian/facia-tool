@@ -2,9 +2,11 @@
 
 import { combineReducers } from 'redux';
 import config from './configReducer';
+import frontsConfig from './frontsConfigReducer';
 
 const reducers = {
-  config
+  config,
+  frontsConfig
 };
 
 export type Reducers = typeof reducers;

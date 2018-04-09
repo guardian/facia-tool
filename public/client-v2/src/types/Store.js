@@ -7,8 +7,11 @@ import {
 import { type Action } from './Action';
 import { type State } from './State';
 
+// eslint-disable-next-line no-use-before-define
+type ThunkDispatch = (action: ThunkAction) => void;
+
 export type Store = ReduxStore<State, Action>;
 export type GetState = () => State;
-// eslint-disable-next-line no-use-before-define
-export type Dispatch = ReduxDispatch<Action> & Thunk<Action>;
+export type Dispatch = ReduxDispatch<Action> & ThunkDispatch;
 export type Thunk<A> = ((Dispatch, GetState) => Promise<void> | void) => A;
+export type ThunkAction = (dispatch: Dispatch, getState: GetState) => any;

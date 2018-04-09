@@ -27,7 +27,14 @@ module.exports = {
 
     // Need this to stop eslint moaning when we don't add a flow comment as
     // we're flowing everything by default
-    'flowtype/no-types-missing-file-annotation': 0
+    'flowtype/no-types-missing-file-annotation': 0,
+
+    // We need to denote "to" as a specialLink to avoid href attribute is required on an
+    // anchor errors
+    "jsx-a11y/anchor-is-valid": [ "error", {
+      "components": [ "Link" ],
+      "specialLink": [ "to"]
+    }]
   },
   overrides: [
     {

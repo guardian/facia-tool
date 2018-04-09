@@ -11,11 +11,11 @@
     "watch": "yarn bundle --config config/webpack.config.dev.js --watch",
     "lint": "eslint ./src --ext .js",
     "lint-fix": "eslint --fix ./src --ext .js",
-    "update-types": "flow-typed install --ignoreDeps dev peer bundle",
+    "update-types": "flow-typed install --ignoreDeps peer bundle",
     "dev-server": "yarn next $(yarn bin)/webpack-dev-server --config config/webpack.config.dev.js",
     "dev": "yarn install && yarn dev-server --open",
-    "test": "yarn jest"
-
+    "test": "yarn jest",
+    "flow-coverage": "yarn run flow-coverage-report -i \"src/**/*.js\" --threshold 90 --strict-coverage"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.42",
@@ -30,6 +30,7 @@
     "babel-eslint": "^8.2.2",
     "babel-jest": "^23.0.0-alpha.0",
     "babel-loader": "^8.0.0-beta",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "eslint": "^4.18.2",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-config-prettier": "^2.9.0",
@@ -40,7 +41,7 @@
     "eslint-plugin-prettier": "^2.6.0",
     "eslint-plugin-react": "^7.7.0",
     "flow-bin": "^0.68.0",
-    "flow-typed": "^2.3.0",
+    "flow-typed": "^2.4.0",
     "jest": "^22.4.2",
     "prettier": "^1.11.1",
     "webpack": "^4.1.1",
@@ -48,8 +49,12 @@
     "webpack-dev-server": "^3.1.1"
   },
   "dependencies": {
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
     "fetch": "^1.1.0",
+    "flow-coverage-report": "^0.5.0",
     "history": "^4.7.2",
+    "jest-enzyme": "^6.0.0",
     "panda-session": "^0.1.6",
     "prop-types": "^15.6.1",
     "raven": "^2.4.2",

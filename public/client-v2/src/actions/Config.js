@@ -1,6 +1,8 @@
 // @flow
 
-const configReceived = (config: Object) => ({
+import type { Config } from '../types/Config';
+
+const configReceived = (config: Config) => ({
   type: 'CONFIG_RECEIVED',
   payload: config
 });

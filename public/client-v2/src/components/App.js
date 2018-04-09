@@ -2,6 +2,9 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import { Switch, Route } from 'react-router-dom';
+import FrontsEdit from './FrontsEdit/Edit';
+import Home from './Home';
 
 const AppContainer = styled('div')`
   align-items: center;
@@ -16,6 +19,13 @@ const AppContainer = styled('div')`
   width: 100%;
 `;
 
-const App = () => <AppContainer>Fronts V2</AppContainer>;
+const App = () => (
+  <AppContainer>
+    <Switch>
+      <Route exact path="/:priority" component={FrontsEdit} />
+      <Route exact path="/" component={Home} />
+    </Switch>
+  </AppContainer>
+);
 
 export default App;

@@ -43,8 +43,7 @@ class V2App(val config: ApplicationConfiguration, isDev: Boolean, val acl: Acl) 
         config.facia.navListType,
         Metadata.tags.map {
           case (_, meta) => meta
-        },
-        reauthUrl=Some("/reauth")
+        }
       )
 
       Ok(views.html.V2App.app(

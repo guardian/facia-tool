@@ -30,8 +30,7 @@ case class Defaults(
   collectionCap: Int,
   navListCap: Int,
   navListType: String,
-  collectionMetadata: Iterable[Metadata],
-  reauthUrl: Option[String]
+  collectionMetadata: Iterable[Metadata]
 )
 
 class DefaultsController(val config: ApplicationConfiguration, val acl: Acl, val isDev: Boolean) extends Controller with PanDomainAuthActions {
@@ -62,8 +61,7 @@ class DefaultsController(val config: ApplicationConfiguration, val acl: Acl, val
           config.facia.navListType,
           Metadata.tags.map{
             case (_, meta) => meta
-          },
-          None
+          }
         )))
       }
     }
