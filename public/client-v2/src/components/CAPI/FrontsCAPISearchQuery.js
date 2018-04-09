@@ -26,7 +26,7 @@ const LoaderDisplay = ({ loading, children }: LoaderDisplayProps) =>
   loading ? <Loader /> : children;
 
 type FrontCAPISearchQueryProps = {
-  params: *,
+  params: Object,
   children: *
 };
 
@@ -37,7 +37,11 @@ const FrontCAPISearchQuery = ({
   <CAPISearchQuery
     baseURL="https://fronts.local.dev-gutools.co.uk/api/live/"
     fetch={pandaFetch}
-    params={params}
+    debounce={500}
+    params={{
+      ...params,
+      'show-elements': 'image'
+    }}
   >
     {({ pending, error, value }) => (
       <ErrorDisplay error={error}>

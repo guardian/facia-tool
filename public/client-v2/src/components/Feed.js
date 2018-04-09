@@ -6,7 +6,7 @@ import { type Element } from './CAPI/CAPISearchQuery';
 /* eslint-enable import/no-duplicates */
 import ScrollContainer from './ScrollContainer';
 import FeedItem from './FeedItem';
-import FrontsCAPISearchQuery from './CAPI/FrontsCAPISearchQuery';
+import FrontsCAPISearchInput from './CAPI/FrontsCAPISearchInput';
 
 // TODO: get apiKey from context (or speak directly to FrontsAPI)
 
@@ -38,7 +38,7 @@ const getThumbnail = (_elements: Element[]) => {
 
 const Feed = () => (
   <ScrollContainer title="Feed">
-    <FrontsCAPISearchQuery params={{ 'show-elements': 'image' }}>
+    <FrontsCAPISearchInput>
       {({ response: { results } }) =>
         results.map(({ webTitle, webUrl, elements }) => (
           <FeedItem
@@ -49,7 +49,7 @@ const Feed = () => (
           />
         ))
       }
-    </FrontsCAPISearchQuery>
+    </FrontsCAPISearchInput>
   </ScrollContainer>
 );
 
