@@ -32,11 +32,17 @@ type ClearError = {
   receivedAt: number
 };
 
+type PathUpdate = {
+  type: 'PATH_UPDATE',
+  path: string
+};
+
 export type Action =
   | ConfigReceivedAction
   | FrontsConfigReceivedAction
   | RequestFrontsConfigAction
   | FrontsConfigError
-  | ClearError;
+  | ClearError
+  | PathUpdate;
 
 export type ActionType = $ElementType<Action, 'type'>;

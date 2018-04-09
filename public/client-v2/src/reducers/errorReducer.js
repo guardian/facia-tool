@@ -2,7 +2,7 @@
 
 import { type Action } from '../types/Action';
 
-type State = Object;
+type State = { error?: string };
 
 const error = (state: State = {}, action: Action) => {
   switch (action.type) {
