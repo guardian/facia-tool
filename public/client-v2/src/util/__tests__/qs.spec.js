@@ -1,3 +1,5 @@
+// @flow
+
 import { qs } from '../qs';
 
 describe('qs', () => {

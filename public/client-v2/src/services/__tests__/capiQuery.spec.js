@@ -1,3 +1,5 @@
+// @flow
+
 import capiQuery from '../capiQuery';
 
 describe('CAPI', () => {
