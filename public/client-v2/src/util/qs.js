@@ -6,9 +6,17 @@ const enc = encodeURIComponent;
  * Would use Object.entries but flow:
  * https://github.com/facebook/flow/issues/2221
  */
-const qs = (o: { [key: string]: string }) =>
+const qs = (o: { [key: string]: ?string }) =>
   `?${Object.keys(o)
-    .map(key => `${enc(key)}=${enc(o[key])}`)
+    .map(key => {
+      const val = o[key];
+
+      if (!val) {
+        return '';
+      }
+
+      return `${enc(key)}=${enc(val)}`;
+    })
     .join('&')}`;
 
 export { qs };

@@ -18,6 +18,15 @@ const capiQuery = (
     );
 
     return response.json();
+  },
+  tags: async (params: Object) => {
+    const response = await fetch(
+      `${baseURL}tags${qs({
+        ...params
+      })}`
+    );
+
+    return response.json();
   }
 });
 

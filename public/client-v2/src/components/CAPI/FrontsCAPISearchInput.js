@@ -1,19 +1,58 @@
 // @flow
 
 import * as React from 'react';
-import CAPIParameterBuilder from './CAPIParameterBuilder';
 import FrontsCapiSearchQuery from './FrontsCAPISearchQuery';
+import CAPITagInput from './CAPITagInput';
 
 type FrontsCAPISearchInputProps = {
   children: (value: *) => React.Node
 };
 
-const FrontsCAPISearchInput = ({ children }: FrontsCAPISearchInputProps) => (
-  <CAPIParameterBuilder params={{ q: 'trump' }}>
-    {params => (
-      <FrontsCapiSearchQuery params={params}>{children}</FrontsCapiSearchQuery>
-    )}
-  </CAPIParameterBuilder>
-);
+type FrontsCAPISearchInputState = {
+  q: ?string,
+  tag: ?string
+};
+
+class FrontsCAPISearchInput extends React.Component<
+  FrontsCAPISearchInputProps,
+  FrontsCAPISearchInputState
+> {
+  state = {
+    q: null,
+    tag: null
+  };
+
+  handleSearchInput = ({ currentTarget }: SyntheticEvent<HTMLInputElement>) => {
+    this.setState({
+      q: currentTarget.value
+    });
+  };
+
+  handleTagInput = (item: any) => {
+    this.setState({
+      tag: item.id
+    });
+  };
+
+  render() {
+    const { children } = this.props;
+    const { tag, q } = this.state;
+
+    return (
+      <React.Fragment>
+        <input placeholder="Search" onChange={this.handleSearchInput} />
+        <CAPITagInput placeholder="Search tags" onChange={this.handleTagInput} />
+        <FrontsCapiSearchQuery
+          params={{
+            tag,
+            q
+          }}
+        >
+          {children}
+        </FrontsCapiSearchQuery>
+      </React.Fragment>
+    );
+  }
+}
 
 export default FrontsCAPISearchInput;
