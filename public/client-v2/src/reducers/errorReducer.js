@@ -1,16 +1,16 @@
 // @flow
 
-import { type Action } from '../types/Action';
+import type { Action, ActionError } from '../types/Action';
 
-type State = { error?: string };
+type State = ActionError;
 
-const error = (state: State = {}, action: Action) => {
+const error = (state: State = '', action: Action) => {
   switch (action.type) {
     case 'CAUGHT_ERROR': {
       return action.message;
     }
     case 'CLEAR_ERROR': {
-      return null;
+      return '';
     }
     default: {
       return state;
