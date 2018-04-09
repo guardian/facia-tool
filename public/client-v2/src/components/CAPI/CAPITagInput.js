@@ -20,10 +20,12 @@ const CAPITagInput = <T>({ onChange, placeholder }: CAPITagInputProps<T>) => (
       isOpen,
       inputValue,
       selectedItem,
-      highlightedIndex
+      highlightedIndex,
+      clearSelection
     }) => (
       <div>
         <input {...getInputProps({ placeholder })} />
+        <button onClick={clearSelection}>Clear tag</button>
         {isOpen ? (
           <div style={{ border: '1px solid #ccc' }}>
             <CAPITagQuery

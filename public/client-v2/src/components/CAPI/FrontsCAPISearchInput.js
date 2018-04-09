@@ -30,7 +30,7 @@ class FrontsCAPISearchInput extends React.Component<
 
   handleTagInput = (item: any) => {
     this.setState({
-      tag: item.id
+      tag: item ? item.id : null
     });
   };
 
@@ -41,7 +41,10 @@ class FrontsCAPISearchInput extends React.Component<
     return (
       <React.Fragment>
         <input placeholder="Search" onChange={this.handleSearchInput} />
-        <CAPITagInput placeholder="Search tags" onChange={this.handleTagInput} />
+        <CAPITagInput
+          placeholder="Search tags"
+          onChange={this.handleTagInput}
+        />
         <FrontsCapiSearchQuery
           params={{
             tag,
