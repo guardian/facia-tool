@@ -1,6 +1,7 @@
 // @flow
 
 import type { Action } from '../types/Action';
+import type { ThunkAction } from '../types/Store';
 import type { FrontsConfig } from '../types/Fronts';
 
 import fetchFrontsConfig from '../services/faciaApi';
@@ -28,7 +29,7 @@ function errorReceivingConfig(error: string): Action {
   };
 }
 
-export default function getFrontsConfig() {
+export default function getFrontsConfig(): ThunkAction {
   return (dispatch: Dispatch) => {
     dispatch(requestFrontsConfig());
     return fetchFrontsConfig()
