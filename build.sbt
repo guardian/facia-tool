@@ -105,7 +105,8 @@ libraryDependencies ++= Seq(
     "org.julienrf" %% "play-json-derived-codecs" % "4.0.0",
     "org.json4s" %% "json4s-native" % json4sVersion,
     "org.json4s" %% "json4s-jackson" % json4sVersion,
-    "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+    "org.scalatest" %% "scalatest" % "3.0.5" % "test",
+    "com.typesafe.play" %% "play-json-joda" % "2.6.9"
 
 )
 
