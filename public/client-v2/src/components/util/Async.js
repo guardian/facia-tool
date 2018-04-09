@@ -7,7 +7,7 @@ import debounce from 'lodash/debounce';
 type AsyncState<R> = {
   value: ?R,
   pending: boolean,
-  error: ?Error
+  error: ?(Error | string)
 };
 
 type AsyncChild<R> = (state: AsyncState<R>) => React.Node;

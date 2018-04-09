@@ -6,12 +6,16 @@ import Loader from '../Loader';
 import pandaFetch from '../../services/pandaFetch';
 
 type ErrorDisplayProps = {
-  error: ?Error,
+  error: ?(Error | string),
   children: React.Node
 };
 
 const ErrorDisplay = ({ error, children }: ErrorDisplayProps) =>
-  error ? <div>{error.message}</div> : children;
+  error ? (
+    <div>{typeof error === 'string' ? error : error.message}</div>
+  ) : (
+    children
+  );
 
 type LoaderDisplayProps = {
   children: React.Node,
@@ -22,8 +26,8 @@ const LoaderDisplay = ({ loading, children }: LoaderDisplayProps) =>
   loading ? <Loader /> : children;
 
 type FrontCAPISearchQueryProps = {
-  params: Object,
-  children: (value: *) => React.Node
+  params: *,
+  children: *
 };
 
 const FrontCAPISearchQuery = ({
