@@ -12,8 +12,10 @@ describe('CAPI', () => {
   describe('query', () => {
     it('makes a network request on a query', () => {
       const apiKey = 'my-api-key';
-      const capi = capiQuery(apiKey);
-      capi.search({});
+      const capi = capiQuery();
+      capi.search({
+        'api-key': apiKey
+      });
       expect(global.fetch).toBeCalled();
       expect(global.fetch.mock.calls[0][0].includes(apiKey)).toBe(true);
     });

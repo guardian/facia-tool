@@ -10,7 +10,10 @@ const pandaFetch = (
 ): Promise<Response> =>
   new Promise(
     async (resolve: (r: Response) => mixed, reject: (r: Response) => mixed) => {
-      const res = await fetch(url, body);
+      const res = await fetch(url, {
+        body,
+        credentials: 'same-origin'
+      });
 
       if (res.status === 419 && count < 1) {
         await reEstablishSession(reauthUrl, 5000);

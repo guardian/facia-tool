@@ -1,7 +1,10 @@
 // @flow
 
 import * as React from 'react';
+/* eslint-disable import/no-duplicates */
 import capiQuery from '../../services/capiQuery';
+import { type Fetch } from '../../services/capiQuery';
+/* eslint-enable import/no-duplicates */
 import Async, { type AsyncChild } from '../util/Async';
 
 type ImageAsset = {
@@ -37,30 +40,34 @@ type CAPIQueryReponse = {
 
 type CAPIQueryChild = AsyncChild<CAPIQueryReponse>;
 
-type CAPIQueryProps = {
-  apiKey: string,
+type CAPISearchQueryProps = {
+  baseURL?: string,
+  fetch?: Fetch,
   children: CAPIQueryChild,
   params: Object
 };
 
-class CAPIQuery extends React.Component<CAPIQueryProps> {
+class CAPIQuery extends React.Component<CAPISearchQueryProps> {
   static defaultProps = {
     params: {}
   };
 
-  constructor(props: CAPIQueryProps) {
+  constructor(props: CAPISearchQueryProps) {
     super(props);
-    this.setupCAPI(this.props.apiKey);
+    this.setupCAPI(this.props.baseURL, this.props.fetch);
   }
 
-  componentWillReceiveProps(nextProps: CAPIQueryProps) {
-    if (nextProps.apiKey && this.props.apiKey !== nextProps.apiKey) {
-      this.setupCAPI(nextProps.apiKey);
+  componentWillReceiveProps(nextProps: CAPISearchQueryProps) {
+    if (
+      (nextProps.baseURL && this.props.baseURL !== nextProps.baseURL) ||
+      (nextProps.fetch && this.props.fetch !== nextProps.fetch)
+    ) {
+      this.setupCAPI(this.props.baseURL, this.props.fetch);
     }
   }
 
-  setupCAPI(apiKey: string): void {
-    this.capi = capiQuery(apiKey).search;
+  setupCAPI(baseURL?: string, fetch?: Fetch): void {
+    this.capi = capiQuery(baseURL, fetch).search;
   }
 
   capi: $ElementType<$Call<typeof capiQuery, string>, 'search'>;

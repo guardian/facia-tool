@@ -4,12 +4,16 @@ import { qs } from '../util/qs';
 
 const API_BASE = 'https://content.guardianapis.com/';
 
-const capiQuery = (apiKey: string) => ({
+type Fetch = (path: string) => Promise<Response>;
+
+const capiQuery = (
+  baseURL: string = API_BASE,
+  fetch: Fetch = window.fetch
+) => ({
   search: async (params: Object) => {
     const response = await fetch(
-      `${API_BASE}search${qs({
-        ...params,
-        'api-key': apiKey
+      `${baseURL}search${qs({
+        ...params
       })}`
     );
 
@@ -17,4 +21,5 @@ const capiQuery = (apiKey: string) => ({
   }
 });
 
+export type { Fetch };
 export default capiQuery;

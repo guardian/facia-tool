@@ -2,12 +2,11 @@
 
 import * as React from 'react';
 /* eslint-disable import/no-duplicates */
-import CAPISearchQuery from './CAPI/CAPISearchQuery';
 import { type Element } from './CAPI/CAPISearchQuery';
 /* eslint-enable import/no-duplicates */
 import ScrollContainer from './ScrollContainer';
 import FeedItem from './FeedItem';
-import Loader from './Loader';
+import FrontsCAPISearchQuery from './CAPI/FrontsCAPISearchQuery';
 
 // TODO: get apiKey from context (or speak directly to FrontsAPI)
 
@@ -39,26 +38,18 @@ const getThumbnail = (_elements: Element[]) => {
 
 const Feed = () => (
   <ScrollContainer title="Feed">
-    <CAPISearchQuery
-      apiKey="teleporter-view"
-      params={{ 'show-elements': 'image' }}
-    >
-      {({ pending, value }) =>
-        pending ? (
-          <Loader />
-        ) : (
-          value &&
-          value.response.results.map(({ webTitle, webUrl, elements }) => (
-            <FeedItem
-              key={webUrl}
-              title={webTitle}
-              href={webUrl}
-              thumbnailUrl={elements && getThumbnail(elements)}
-            />
-          ))
-        )
+    <FrontsCAPISearchQuery params={{ 'show-elements': 'image' }}>
+      {({ response: { results } }) =>
+        results.map(({ webTitle, webUrl, elements }) => (
+          <FeedItem
+            key={webUrl}
+            title={webTitle}
+            href={webUrl}
+            thumbnailUrl={elements && getThumbnail(elements)}
+          />
+        ))
       }
-    </CAPISearchQuery>
+    </FrontsCAPISearchQuery>
   </ScrollContainer>
 );
 
