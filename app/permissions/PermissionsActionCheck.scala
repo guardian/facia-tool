@@ -6,10 +6,12 @@ import play.api.mvc._
 import services.ConfigAgent
 import util.{AccessDenied, AccessGranted, Acl, Authorization}
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 trait PermissionActionFilter extends ActionFilter[UserRequest] {
+
+  implicit lazy val executionContext: ExecutionContext = ExecutionContext.Implicits.global
+
   val testAccess: String => Future[Authorization]
   val restrictedAction: String
 
