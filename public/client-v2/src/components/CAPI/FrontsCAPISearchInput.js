@@ -2,10 +2,10 @@
 
 import * as React from 'react';
 import FrontsCapiSearchQuery from './FrontsCAPISearchQuery';
-import CAPITagInput from './CAPITagInput';
+import FrontsTagInput from './FrontsTagInput';
 
 type FrontsCAPISearchInputProps = {
-  children: (value: *) => React.Node
+  children: *
 };
 
 type FrontsCAPISearchInputState = {
@@ -41,7 +41,7 @@ class FrontsCAPISearchInput extends React.Component<
     return (
       <React.Fragment>
         <input placeholder="Search" onChange={this.handleSearchInput} />
-        <CAPITagInput
+        <FrontsTagInput
           placeholder="Search tags"
           onChange={this.handleTagInput}
         />

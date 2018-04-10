@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 /* eslint-disable import/no-duplicates */
-import { type Element } from './CAPI/CAPISearchQuery';
+import { type Element } from '../services/capiQuery';
 /* eslint-enable import/no-duplicates */
 import ScrollContainer from './ScrollContainer';
 import FeedItem from './FeedItem';

@@ -5,40 +5,26 @@ import * as React from 'react';
 import capiQuery from '../../services/capiQuery';
 import { type Fetch } from '../../services/capiQuery';
 /* eslint-enable import/no-duplicates */
-import Async, { type AsyncChild } from '../util/Async';
+import Async from '../util/Async';
 
-type Tag = {
-  id: string,
-  webTitle: string,
-  webUrl: string
-};
-
-type CAPITagQueryReponse = {
-  response: {
-    results: Tag[]
-  }
-};
-
-type CAPITagQueryChild = AsyncChild<CAPITagQueryReponse>;
-
-type CAPISearchQueryProps = {
+type CAPITagQueryProps = {
   baseURL?: string,
   fetch?: Fetch,
-  children: CAPITagQueryChild,
+  children: *,
   params: Object
 };
 
-class CAPIQuery extends React.Component<CAPISearchQueryProps> {
+class CAPIQuery extends React.Component<CAPITagQueryProps> {
   static defaultProps = {
     params: {}
   };
 
-  constructor(props: CAPISearchQueryProps) {
+  constructor(props: CAPITagQueryProps) {
     super(props);
     this.setupCAPI(this.props.baseURL, this.props.fetch);
   }
 
-  componentWillReceiveProps(nextProps: CAPISearchQueryProps) {
+  componentWillReceiveProps(nextProps: CAPITagQueryProps) {
     if (
       (nextProps.baseURL && this.props.baseURL !== nextProps.baseURL) ||
       (nextProps.fetch && this.props.fetch !== nextProps.fetch)
@@ -63,5 +49,4 @@ class CAPIQuery extends React.Component<CAPISearchQueryProps> {
   }
 }
 
-export type { CAPITagQueryChild, CAPITagQueryReponse };
 export default CAPIQuery;

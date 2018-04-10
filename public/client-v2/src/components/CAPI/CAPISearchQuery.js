@@ -5,45 +5,12 @@ import * as React from 'react';
 import capiQuery from '../../services/capiQuery';
 import { type Fetch } from '../../services/capiQuery';
 /* eslint-enable import/no-duplicates */
-import Async, { type AsyncChild } from '../util/Async';
-
-type ImageAsset = {
-  type: 'image',
-  mimeType: string,
-  file: string,
-  typeData: {
-    width: string,
-    number: string
-  }
-};
-
-type ImageElement = {
-  id: string,
-  relation: string,
-  type: 'image',
-  assets: ImageAsset[]
-};
-
-type Element = ImageElement;
-
-type Article = {
-  webTitle: string,
-  webUrl: string,
-  elements?: Element[]
-};
-
-type CAPISearchQueryReponse = {
-  response: {
-    results: Article[]
-  }
-};
-
-type CAPISearchQueryChild = AsyncChild<CAPISearchQueryReponse>;
+import Async from '../util/Async';
 
 type CAPISearchQueryProps = {
   baseURL?: string,
   fetch?: Fetch,
-  children: CAPISearchQueryChild,
+  children: *,
   params: Object
 };
 
@@ -82,11 +49,4 @@ class CAPIQuery extends React.Component<CAPISearchQueryProps> {
   }
 }
 
-export type {
-  CAPISearchQueryChild,
-  ImageAsset,
-  Element,
-  Article,
-  CAPISearchQueryReponse
-};
 export default CAPIQuery;
