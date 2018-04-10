@@ -15,6 +15,9 @@ module.exports = {
     // Allow React in .js files
     'react/jsx-filename-extension': false,
 
+    // Let flow handle this
+    'react/require-default-props': false,
+
     // Keeps module exports in one place for easier reading
     'import/exports-last': 'error',
 

@@ -1,8 +1,21 @@
 // @flow
 
 import * as React from 'react';
+import styled from 'styled-components';
 import SearchQuery from '../FrontsCAPI/SearchQuery';
 import FrontsTagInput from './TagInput';
+import ScrollContainer from '../ScrollContainer';
+import TextInput from '../TextInput';
+
+const Row = styled('div')`
+  display: flex;
+  margin: ${({ gutter = 16 }) => `0 -${gutter / 2}px`};
+`;
+
+const Col = styled(`div`)`
+  flex: ${({ flex = 1 }) => flex};
+  padding: ${({ gutter = 16 }) => `${gutter / 2}px`};
+`;
 
 type FrontsCAPISearchInputProps = {
   children: *
@@ -22,6 +35,12 @@ class FrontsCAPISearchInput extends React.Component<
     tag: null
   };
 
+  clearInput = () => {
+    this.setState({
+      q: ''
+    });
+  };
+
   handleSearchInput = ({ currentTarget }: SyntheticEvent<HTMLInputElement>) => {
     this.setState({
       q: currentTarget.value
@@ -39,14 +58,28 @@ class FrontsCAPISearchInput extends React.Component<
     const { tag, q } = this.state;
 
     return (
-      <React.Fragment>
-        <input placeholder="Search" onChange={this.handleSearchInput} />
-        <FrontsTagInput
-          placeholder="Search tags"
-          onChange={this.handleTagInput}
-        />
+      <ScrollContainer
+        fixed={
+          <Row>
+            <Col>
+              <TextInput
+                placeholder="Search"
+                onChange={this.handleSearchInput}
+                onClear={this.clearInput}
+                width="100%"
+              />
+            </Col>
+            <Col>
+              <FrontsTagInput
+                placeholder="Search tags"
+                onChange={this.handleTagInput}
+              />
+            </Col>
+          </Row>
+        }
+      >
         <SearchQuery params={{ tag, q }}>{children}</SearchQuery>
-      </React.Fragment>
+      </ScrollContainer>
     );
   }
 }

@@ -6,7 +6,7 @@ import styled from 'styled-components';
 // TODO: get apiKey from context (or speak directly to FrontsAPI)
 
 type ScrollContainerProps = {
-  title: string,
+  fixed: React.Node,
   children: React.Node
 };
 
@@ -27,9 +27,9 @@ const ScrollInner = styled(`div`)`
   overflow-y: scroll;
 `;
 
-const ScrollContainer = ({ title, children }: ScrollContainerProps) => (
+const ScrollContainer = ({ fixed, children }: ScrollContainerProps) => (
   <ScrollOuter>
-    <ScrollTitle>{title}</ScrollTitle>
+    <ScrollTitle>{fixed}</ScrollTitle>
     <ScrollInner>{children}</ScrollInner>
   </ScrollOuter>
 );

@@ -1,10 +1,7 @@
 // @flow
 
 import * as React from 'react';
-/* eslint-disable import/no-duplicates */
 import { type Element } from '../services/capiQuery';
-/* eslint-enable import/no-duplicates */
-import ScrollContainer from './ScrollContainer';
 import FeedItem from './FeedItem';
 import SearchInput from './FrontsCAPIInterface/SearchInput';
 import Loader from './Loader';
@@ -58,25 +55,23 @@ const LoaderDisplay = ({ loading, children }: LoaderDisplayProps) =>
   loading ? <Loader /> : children;
 
 const Feed = () => (
-  <ScrollContainer title="Feed">
-    <SearchInput>
-      {({ pending, error, value }) => (
-        <ErrorDisplay error={error}>
-          <LoaderDisplay loading={pending}>
-            {value &&
-              value.response.results.map(({ webTitle, webUrl, elements }) => (
-                <FeedItem
-                  key={webUrl}
-                  title={webTitle}
-                  href={webUrl}
-                  thumbnailUrl={elements && getThumbnail(elements)}
-                />
-              ))}
-          </LoaderDisplay>
-        </ErrorDisplay>
-      )}
-    </SearchInput>
-  </ScrollContainer>
+  <SearchInput>
+    {({ pending, error, value }) => (
+      <ErrorDisplay error={error}>
+        <LoaderDisplay loading={pending}>
+          {value &&
+            value.response.results.map(({ webTitle, webUrl, elements }) => (
+              <FeedItem
+                key={webUrl}
+                title={webTitle}
+                href={webUrl}
+                thumbnailUrl={elements && getThumbnail(elements)}
+              />
+            ))}
+        </LoaderDisplay>
+      </ErrorDisplay>
+    )}
+  </SearchInput>
 );
 
 export default Feed;
