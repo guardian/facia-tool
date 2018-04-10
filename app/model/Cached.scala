@@ -4,7 +4,7 @@ import org.joda.time.format.{DateTimeFormat, ISODateTimeFormat}
 import org.joda.time.{DateTime, DateTimeZone, Period}
 import play.api.mvc.{Action, Request, Result}
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
 object Cached {
@@ -49,7 +49,7 @@ object NoCache {
 }
 
 case class NoCache[A](action: Action[A]) extends Action[A] {
-
+  implicit lazy val executionContext: ExecutionContext = ExecutionContext.Implicits.global
   override def apply(request: Request[A]): Future[Result] = {
 
     action(request) map { response =>

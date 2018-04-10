@@ -64,7 +64,7 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   val loggingHttpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, sourceMapper, Some(router))
   val v2App = new V2App(appConfiguration, isDev, acl, wsClient)
 
-  override val assets = new controllers.Assets(loggingHttpErrorHandler, assetsMetadata)
+  override lazy val assets = new controllers.Assets(loggingHttpErrorHandler, assetsMetadata)
   val router: Router = new Routes(loggingHttpErrorHandler, status, pandaAuth, v2Assets, uncachedAssets, views, faciaTool,
     pressController, defaults, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects,
     troubleshoot, v2App)
