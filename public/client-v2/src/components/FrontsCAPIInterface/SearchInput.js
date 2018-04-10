@@ -1,8 +1,8 @@
 // @flow
 
 import * as React from 'react';
-import FrontsCapiSearchQuery from './FrontsCAPISearchQuery';
-import FrontsTagInput from './FrontsTagInput';
+import SearchQuery from '../FrontsCAPI/SearchQuery';
+import FrontsTagInput from './TagInput';
 
 type FrontsCAPISearchInputProps = {
   children: *
@@ -45,14 +45,7 @@ class FrontsCAPISearchInput extends React.Component<
           placeholder="Search tags"
           onChange={this.handleTagInput}
         />
-        <FrontsCapiSearchQuery
-          params={{
-            tag,
-            q
-          }}
-        >
-          {children}
-        </FrontsCapiSearchQuery>
+        <SearchQuery params={{ tag, q }}>{children}</SearchQuery>
       </React.Fragment>
     );
   }

@@ -7,24 +7,24 @@ import { type Fetch } from '../../services/capiQuery';
 /* eslint-enable import/no-duplicates */
 import Async from '../util/Async';
 
-type CAPISearchQueryProps = {
+type CAPITagQueryProps = {
   baseURL?: string,
   fetch?: Fetch,
   children: *,
   params: Object
 };
 
-class CAPIQuery extends React.Component<CAPISearchQueryProps> {
+class TagQuery extends React.Component<CAPITagQueryProps> {
   static defaultProps = {
     params: {}
   };
 
-  constructor(props: CAPISearchQueryProps) {
+  constructor(props: CAPITagQueryProps) {
     super(props);
     this.setupCAPI(this.props.baseURL, this.props.fetch);
   }
 
-  componentWillReceiveProps(nextProps: CAPISearchQueryProps) {
+  componentWillReceiveProps(nextProps: CAPITagQueryProps) {
     if (
       (nextProps.baseURL && this.props.baseURL !== nextProps.baseURL) ||
       (nextProps.fetch && this.props.fetch !== nextProps.fetch)
@@ -34,10 +34,10 @@ class CAPIQuery extends React.Component<CAPISearchQueryProps> {
   }
 
   setupCAPI(baseURL?: string, fetch?: Fetch): void {
-    this.capi = capiQuery(baseURL, fetch).search;
+    this.capi = capiQuery(baseURL, fetch).tags;
   }
 
-  capi: $ElementType<$Call<typeof capiQuery, string>, 'search'>;
+  capi: $ElementType<$Call<typeof capiQuery, string>, 'tags'>;
 
   render() {
     const { params, children, ...props } = this.props;
@@ -49,4 +49,4 @@ class CAPIQuery extends React.Component<CAPISearchQueryProps> {
   }
 }
 
-export default CAPIQuery;
+export default TagQuery;

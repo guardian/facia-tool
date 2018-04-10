@@ -2,8 +2,7 @@
 
 import * as React from 'react';
 import Downshift from 'downshift';
-import CAPITagQuery from './CAPITagQuery';
-import pandaFetch from '../../services/pandaFetch';
+import TagQuery from '../FrontsCAPI/TagQuery';
 
 type CAPITagInputProps<T> = {
   onChange: (value: T) => void,
@@ -28,12 +27,7 @@ const CAPITagInput = <T>({ onChange, placeholder }: CAPITagInputProps<T>) => (
         <button onClick={clearSelection}>Clear tag</button>
         {isOpen ? (
           <div style={{ border: '1px solid #ccc' }}>
-            <CAPITagQuery
-              debounce={500}
-              baseURL="https://fronts.local.dev-gutools.co.uk/api/live/"
-              fetch={pandaFetch}
-              params={{ q: inputValue }}
-            >
+            <TagQuery params={{ q: inputValue }}>
               {({ value }) =>
                 value &&
                 value.response.results.map((tag, index) => (
@@ -50,7 +44,7 @@ const CAPITagInput = <T>({ onChange, placeholder }: CAPITagInputProps<T>) => (
                   </div>
                 ))
               }
-            </CAPITagQuery>
+            </TagQuery>
           </div>
         ) : null}
       </div>
