@@ -20,7 +20,7 @@ const AppContainer = styled('div')`
 const App = () => (
   <AppContainer>
     <Switch>
-      <Route exact path="/:priority" component={FrontsEdit} />
+      <Route exact path="/:priority/:frontId?" component={FrontsEdit} />
       <Route exact path="/" component={Home} />
     </Switch>
   </AppContainer>
