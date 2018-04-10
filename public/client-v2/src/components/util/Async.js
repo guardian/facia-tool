@@ -7,7 +7,7 @@ import debounce from 'lodash/debounce';
 type AsyncState<R> = {
   value: ?R,
   pending: boolean,
-  error: ?any
+  error: ?(Error | string)
 };
 
 type AsyncChild<R> = (state: AsyncState<R>) => React.Node;
@@ -84,7 +84,8 @@ class Async<A: mixed[], R> extends React.Component<
           });
         } catch (error) {
           this.setState({
-            error
+            error,
+            pending: false
           });
         }
       }

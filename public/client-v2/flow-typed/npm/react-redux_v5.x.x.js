@@ -1,5 +1,5 @@
-// flow-typed signature: a2c406bd25fca4586c361574e555202d
-// flow-typed version: dcd1531faf/react-redux_v5.x.x/flow_>=v0.62.0
+// flow-typed signature: 8dfdf7b203ca2a32e0996134085148b2
+// flow-typed version: ed6008f075/react-redux_v5.x.x/flow_>=v0.62.0
 
 import type { Dispatch, Store } from "redux";
 
@@ -95,4 +95,10 @@ declare module "react-redux" {
     mergeProps: ?MergeProps<RSP, RDP, MP, RMP>,
     options: ConnectOptions<*, SP & DP & MP, RSP, RMP>
   ): (component: Com) => ComponentType<$Diff<ElementConfig<Com>, RMP> & SP & DP & MP>;
+
+  declare export default {
+    Provider: typeof Provider,
+    createProvider: typeof createProvider,
+    connect: typeof connect,
+  };
 }
