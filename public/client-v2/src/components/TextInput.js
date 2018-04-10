@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 const InputWrapper = styled('span')`
   position: relative;
-  width: ${({ width }) => width || 'auto'}
+  width: ${({ width }) => width || 'auto'};
 `;
 
 const Input = styled(`input`)`
