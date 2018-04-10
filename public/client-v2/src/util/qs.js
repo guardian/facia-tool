@@ -12,11 +12,12 @@ const qs = (o: { [key: string]: ?string }) =>
       const val = o[key];
 
       if (!val) {
-        return '';
+        return false;
       }
 
       return `${enc(key)}=${enc(val)}`;
     })
+    .filter(Boolean)
     .join('&')}`;
 
 export { qs };
