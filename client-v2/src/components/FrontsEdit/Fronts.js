@@ -26,9 +26,17 @@ type ComponentState = {
 };
 
 class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
-
   componentDidMount() {
-    this.props.frontsActions.getFrontsConfig();
+    this.props.frontsActions.getFrontsConfig().then(() => {
+      if (this.props.frontId) {
+        const frontId = decodeURIComponent(this.props.frontId);
+        if (
+          !this.props.frontsConfig.fronts.find(front => front.id === frontId)
+        ) {
+          this.props.history.push(`/${this.props.priority}`);
+        }
+      }
+    });
   }
 
   selectFront = (frontId: string) => {
