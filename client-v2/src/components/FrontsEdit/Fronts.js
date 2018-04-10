@@ -26,27 +26,14 @@ type ComponentState = {
 };
 
 class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
-  state = {
-    selectedFront: null
-  };
-
-  componentWillMount() {
-    const { props: { frontId } } = this;
-    if (frontId) {
-      this.setState({
-        selectedFront: decodeURIComponent(frontId)
-      });
-    }
-  }
 
   componentDidMount() {
     this.props.frontsActions.getFrontsConfig();
   }
 
   selectFront = (frontId: string) => {
-    this.setState({ selectedFront: frontId });
     const encodedUri = encodeURIComponent(frontId);
-    this.props.history.push(`${encodedUri}`);
+    this.props.history.push(`/${this.props.priority}/${encodedUri}`);
   };
 
   renderFrontOption = (front: FrontDetail) => (
@@ -56,14 +43,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   );
 
   renderSelectPrompt = () => {
-    if (!this.state.selectedFront) {
-      return <option value="">Choose a front...</option>;
-    }
-    return null;
-  };
-
-  renderSelectPrompt = () => {
-    if (!this.state.selectedFront) {
+    if (!this.props.frontId) {
       return <option value="">Choose a front...</option>;
     }
     return null;
@@ -78,7 +58,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
 
     return (
       <select
-        value={this.state.selectedFront || ''}
+        value={decodeURIComponent(this.props.frontId)}
         onChange={e => this.selectFront(e.target.value)}
       >
         {this.renderSelectPrompt()}
