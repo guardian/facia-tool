@@ -14,9 +14,10 @@ const store = configureStore();
 const config = extractConfigFromPage();
 
 // publish uncaught errors to sentry.io
-if (config.stage === 'PROD') Raven.config((config.ravenUrl: any)).install();
+if (config.stage === 'PROD' && config.ravenUrl)
+  Raven.config(config.ravenUrl).install();
 
-store.dispatch(configReceived(extractConfigFromPage()));
+store.dispatch(configReceived(config));
 
 const reactMount = document.getElementById('react-mount');
 

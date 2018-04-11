@@ -1,10 +1,14 @@
 // @flow
 
 import * as React from 'react';
+import { connect } from 'react-redux';
+import * as CAPIParamsContext from './CAPI/CAPIParamsContext';
 import { type Element } from '../services/capiQuery';
 import FeedItem from './FeedItem';
 import SearchInput from './FrontsCAPIInterface/SearchInput';
 import Loader from './Loader';
+import pandaFetch from '../services/pandaFetch';
+import { capiLiveURLSelector } from '../selectors/feedsSelectors';
 
 // TODO: get apiKey from context (or speak directly to FrontsAPI)
 
@@ -54,24 +58,39 @@ type LoaderDisplayProps = {
 const LoaderDisplay = ({ loading, children }: LoaderDisplayProps) =>
   loading ? <Loader /> : children;
 
-const Feed = () => (
-  <SearchInput>
-    {({ pending, error, value }) => (
-      <ErrorDisplay error={error}>
-        <LoaderDisplay loading={pending}>
-          {value &&
-            value.response.results.map(({ webTitle, webUrl, elements }) => (
-              <FeedItem
-                key={webUrl}
-                title={webTitle}
-                href={webUrl}
-                thumbnailUrl={elements && getThumbnail(elements)}
-              />
-            ))}
-        </LoaderDisplay>
-      </ErrorDisplay>
-    )}
-  </SearchInput>
-);
+type FeedProps = {
+  capiLiveUrl: string
+};
 
-export default Feed;
+const Feed = ({ capiLiveUrl }: FeedProps) =>
+  !!capiLiveUrl && (
+    <CAPIParamsContext.Provider
+      baseURL={capiLiveUrl}
+      fetch={pandaFetch}
+      debounce={500}
+    >
+      <SearchInput>
+        {({ pending, error, value }) => (
+          <ErrorDisplay error={error}>
+            <LoaderDisplay loading={pending}>
+              {value &&
+                value.response.results.map(({ webTitle, webUrl, elements }) => (
+                  <FeedItem
+                    key={webUrl}
+                    title={webTitle}
+                    href={webUrl}
+                    thumbnailUrl={elements && getThumbnail(elements)}
+                  />
+                ))}
+            </LoaderDisplay>
+          </ErrorDisplay>
+        )}
+      </SearchInput>
+    </CAPIParamsContext.Provider>
+  );
+
+const mapStateToProps = state => ({
+  capiLiveUrl: capiLiveURLSelector(state)
+});
+
+export default connect(mapStateToProps)(Feed);

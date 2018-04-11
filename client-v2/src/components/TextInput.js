@@ -59,7 +59,7 @@ type TextInputProps = {
 };
 
 const TextInput = ({ onClear, ...props }: TextInputProps) => (
-  <InputWrapper {...props}>
+  <InputWrapper width={props.width}>
     <Input {...props} />
     {onClear && <ClearButton onClick={onClear} />}
   </InputWrapper>

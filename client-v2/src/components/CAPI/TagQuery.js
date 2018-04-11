@@ -1,6 +1,7 @@
 // @flow
 
 import * as React from 'react';
+import * as CAPIParamsContext from './CAPIParamsContext';
 /* eslint-disable import/no-duplicates */
 import capiQuery from '../../services/capiQuery';
 import { type Fetch } from '../../services/capiQuery';
@@ -49,4 +50,21 @@ class TagQuery extends React.Component<CAPITagQueryProps> {
   }
 }
 
-export default TagQuery;
+const TagQueryWithContext = (props: CAPITagQueryProps) => (
+  <CAPIParamsContext.Consumer>
+    {contextProps => (
+      <TagQuery
+        {...{
+          ...contextProps,
+          ...props,
+          params: {
+            ...contextProps.params,
+            ...props.params
+          }
+        }}
+      />
+    )}
+  </CAPIParamsContext.Consumer>
+);
+
+export default TagQueryWithContext;

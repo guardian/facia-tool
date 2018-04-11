@@ -1,6 +1,7 @@
 // @flow
 
 import * as React from 'react';
+import * as CAPIParamsContext from './CAPIParamsContext';
 /* eslint-disable import/no-duplicates */
 import capiQuery from '../../services/capiQuery';
 import { type Fetch } from '../../services/capiQuery';
@@ -49,4 +50,21 @@ class SearchQuery extends React.Component<CAPISearchQueryProps> {
   }
 }
 
-export default SearchQuery;
+const SearchQueryWithContext = (props: CAPISearchQueryProps) => (
+  <CAPIParamsContext.Consumer>
+    {contextProps => (
+      <SearchQuery
+        {...{
+          ...contextProps,
+          ...props,
+          params: {
+            ...contextProps.params,
+            ...props.params
+          }
+        }}
+      />
+    )}
+  </CAPIParamsContext.Consumer>
+);
+
+export default SearchQueryWithContext;

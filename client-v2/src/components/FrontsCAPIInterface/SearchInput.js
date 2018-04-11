@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import styled from 'styled-components';
-import SearchQuery from '../FrontsCAPI/SearchQuery';
+import SearchQuery from '../CAPI/SearchQuery';
 import FrontsTagInput from './TagInput';
 import ScrollContainer from '../ScrollContainer';
 import TextInput from '../TextInput';
@@ -78,7 +78,9 @@ class FrontsCAPISearchInput extends React.Component<
           </Row>
         }
       >
-        <SearchQuery params={{ tag, q }}>{children}</SearchQuery>
+        <SearchQuery params={{ tag, q, 'show-elements': 'image' }}>
+          {children}
+        </SearchQuery>
       </ScrollContainer>
     );
   }

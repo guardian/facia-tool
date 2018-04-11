@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react';
+import * as React from 'react';
 import { connect } from 'react-redux';
 import type { Match } from 'react-router-dom';
 import FrontsLayout from '../FrontsLayout';
@@ -16,13 +16,13 @@ type Props = {
 };
 
 const FrontsEdit = (props: Props) => (
-  <div>
+  <React.Fragment>
     <ErrorBannner error={props.error} />
     <FrontsLayout
       left={<Feed />}
       right={<Fronts priority={props.match.params.priority || ''} />}
     />
-  </div>
+  </React.Fragment>
 );
 
 const mapStateToProps = (state: State) => ({

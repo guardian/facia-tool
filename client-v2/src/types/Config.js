@@ -27,7 +27,10 @@ type Config = {
   collectionCap: number,
   navListCap: number,
   navListType: string,
-  collectionMetadata: Array<Metadata>
+  collectionMetadata: Array<Metadata>,
+  capiLiveUrl: string,
+  capiPreviewUrl: string,
+  ravenUrl?: string
 };
 
 export type { Config };
