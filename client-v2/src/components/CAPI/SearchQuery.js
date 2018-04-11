@@ -12,7 +12,8 @@ type CAPISearchQueryProps = {
   baseURL?: string,
   fetch?: Fetch,
   children: *,
-  params: Object
+  params: Object,
+  poll?: number
 };
 
 class SearchQuery extends React.Component<CAPISearchQueryProps> {
@@ -25,6 +26,12 @@ class SearchQuery extends React.Component<CAPISearchQueryProps> {
     this.setupCAPI(this.props.baseURL, this.props.fetch);
   }
 
+  componentDidMount() {
+    if (this.props.poll) {
+      this.startPolling(this.props.poll);
+    }
+  }
+
   componentWillReceiveProps(nextProps: CAPISearchQueryProps) {
     if (
       (nextProps.baseURL && this.props.baseURL !== nextProps.baseURL) ||
@@ -34,16 +41,51 @@ class SearchQuery extends React.Component<CAPISearchQueryProps> {
     }
   }
 
+  componentDidUpdate(prevProps: CAPISearchQueryProps) {
+    if (!prevProps.poll && this.props.poll) {
+      this.startPolling(this.props.poll);
+    } else if (prevProps.poll && !this.props.poll) {
+      this.stopPolling();
+    }
+  }
+
   setupCAPI(baseURL?: string, fetch?: Fetch): void {
     this.capi = capiQuery(baseURL, fetch).search;
   }
 
+  poll = () => {
+    if (this.async) {
+      this.async.startRun();
+    }
+  };
+
+  startPolling = (rate: number) => {
+    if (this.props.poll) {
+      this.interval = setInterval(this.poll, rate);
+    }
+  };
+
+  stopPolling = () => {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+  };
+
+  interval: ?IntervalID;
   capi: $ElementType<$Call<typeof capiQuery, string>, 'search'>;
+  async: ?Async<*, *>;
 
   render() {
     const { params, children, ...props } = this.props;
     return (
-      <Async {...props} fn={this.capi} args={[params]}>
+      <Async
+        ref={node => {
+          this.async = node;
+        }}
+        {...props}
+        fn={this.capi}
+        args={[params]}
+      >
         {children}
       </Async>
     );

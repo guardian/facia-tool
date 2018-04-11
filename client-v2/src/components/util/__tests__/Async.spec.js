@@ -46,9 +46,26 @@ describe('Async', () => {
     wrapper.setProps({
       fn: () => promise2
     });
-    expect([v, p, e]).toEqual(['hi', true, null]);
+    expect([v, p, e]).toEqual(['hi', false, null]);
     await promise2;
     expect([v, p, e]).toEqual(['hi2', false, null]);
+  });
+
+  it('passes arguments correctly', async () => {
+    let arg;
+    const promise = makePromise('hi');
+    const wrapper = shallow(
+      <Async
+        fn={a => {
+          arg = a;
+          return promise;
+        }}
+        args={['arg1']}
+      >
+        {() => false}
+      </Async>
+    );
+    expect(arg).toEqual('arg1');
   });
 
   it('recomputes when changing arguments', async () => {
@@ -56,9 +73,32 @@ describe('Async', () => {
     let p;
     let e;
     const promise = makePromise('hi');
-    const promisefn = () => promise;
+    const promise2 = makePromise('hi2');
     const wrapper = shallow(
-      <Async fn={promisefn} args={['arg1']}>
+      <Async fn={a => (a ? promise : promise2)} args={[true]}>
+        {({ value, pending, error }) => {
+          v = value;
+          p = pending;
+          e = error;
+        }}
+      </Async>
+    );
+    await promise;
+    wrapper.setProps({
+      args: [false]
+    });
+    expect([v, p, e]).toEqual(['hi', false, null]);
+    await promise2;
+    expect([v, p, e]).toEqual(['hi2', false, null]);
+  });
+
+  it('shows loading state between updates if intermediateLoadState is set', async () => {
+    let v;
+    let p;
+    let e;
+    const promise = makePromise('hi');
+    const wrapper = shallow(
+      <Async fn={() => promise} intermediateLoadState args={['arg1']}>
         {({ value, pending, error }) => {
           v = value;
           p = pending;
@@ -69,6 +109,12 @@ describe('Async', () => {
     await promise;
     wrapper.setProps({
       args: ['arg2']
+    });
+    expect([v, p, e]).toEqual(['hi', true, null]);
+    await promise;
+    expect([v, p, e]).toEqual(['hi', false, null]);
+    wrapper.setProps({
+      fn: () => promise
     });
     expect([v, p, e]).toEqual(['hi', true, null]);
     await promise;

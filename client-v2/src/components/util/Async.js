@@ -17,7 +17,8 @@ type AsyncProps<A: mixed[], R> = {
   children: AsyncChild<R>,
   debounce?: number,
   fn: (...args: A) => Promise<R> | R,
-  on: boolean
+  on: boolean,
+  intermediateLoadState: boolean
 };
 
 class Async<A: mixed[], R> extends React.Component<
@@ -27,15 +28,16 @@ class Async<A: mixed[], R> extends React.Component<
   static defaultProps = {
     debounce: 0,
     args: [],
-    on: true
+    on: true,
+    intermediateLoadState: false
   };
 
   constructor(props: AsyncProps<A, R>) {
     super(props);
     // Currently can't change debounce value
-    this.debouncedRun = this.props.debounce
-      ? debounce(this.run, this.props.debounce)
-      : this.run;
+    this.debouncedStartRun = this.props.debounce
+      ? debounce(this.startRun, this.props.debounce)
+      : this.startRun;
   }
 
   state: AsyncState<R> = {
@@ -45,16 +47,16 @@ class Async<A: mixed[], R> extends React.Component<
   };
 
   componentDidMount() {
-    this.update();
+    this.update(true);
   }
 
   componentDidUpdate(prevProps: AsyncProps<A, R>) {
-    this.update(prevProps);
+    this.update(false, prevProps);
   }
 
-  debouncedRun: () => void;
+  debouncedStartRun: (forceLoadState: boolean) => void;
 
-  update(prevProps: ?AsyncProps<A, R>): void {
+  update(firstRun: boolean, prevProps: ?AsyncProps<A, R>): void {
     if (!this.props.on && (!prevProps || prevProps.on)) {
       this.setState({
         value: null,
@@ -65,31 +67,36 @@ class Async<A: mixed[], R> extends React.Component<
       prevProps.fn !== this.props.fn ||
       !isEqual(prevProps.args, this.props.args)
     ) {
-      this.debouncedRun();
+      this.debouncedStartRun(firstRun);
     }
   }
 
-  run = () => {
-    this.setState(
-      {
-        pending: true,
-        error: null
-      },
-      async () => {
-        try {
-          const value = await this.props.fn(...this.props.args);
-          this.setState({
-            value,
-            pending: false
-          });
-        } catch (error) {
-          this.setState({
-            error,
-            pending: false
-          });
-        }
-      }
-    );
+  startRun = (forceLoadState: boolean = false) => {
+    if (this.props.intermediateLoadState || forceLoadState) {
+      this.setState(
+        {
+          pending: true
+        },
+        this.run
+      );
+    } else {
+      this.run();
+    }
+  };
+
+  run = async () => {
+    try {
+      const value = await this.props.fn(...this.props.args);
+      this.setState({
+        value,
+        pending: false
+      });
+    } catch (error) {
+      this.setState({
+        error,
+        pending: false
+      });
+    }
   };
 
   render() {
