@@ -17,8 +17,7 @@ type AsyncProps<A: mixed[], R> = {
   children: AsyncChild<R>,
   debounce?: number,
   fn: (...args: A) => Promise<R> | R,
-  on: boolean,
-  intermediateLoadState: boolean
+  on: boolean
 };
 
 class Async<A: mixed[], R> extends React.Component<
@@ -29,7 +28,7 @@ class Async<A: mixed[], R> extends React.Component<
     debounce: 0,
     args: [],
     on: true,
-    intermediateLoadState: false
+    showLoading: false
   };
 
   constructor(props: AsyncProps<A, R>) {
@@ -47,41 +46,36 @@ class Async<A: mixed[], R> extends React.Component<
   };
 
   componentDidMount() {
-    this.update(true);
+    this.update();
   }
 
   componentDidUpdate(prevProps: AsyncProps<A, R>) {
-    this.update(false, prevProps);
+    this.update(prevProps);
   }
 
-  debouncedStartRun: (forceLoadState: boolean) => void;
+  debouncedStartRun: () => void;
 
-  update(firstRun: boolean, prevProps: ?AsyncProps<A, R>): void {
+  update(prevProps: ?AsyncProps<A, R>): void {
     if (!this.props.on && (!prevProps || prevProps.on)) {
       this.setState({
         value: null,
         pending: false
       });
-    } else if (
-      !prevProps ||
-      prevProps.fn !== this.props.fn ||
-      !isEqual(prevProps.args, this.props.args)
-    ) {
-      this.debouncedStartRun(firstRun);
+    } else if (!prevProps || prevProps.fn !== this.props.fn) {
+      // don't debounce when changing the function
+      this.startRun();
+    } else if (!isEqual(prevProps.args, this.props.args)) {
+      this.debouncedStartRun();
     }
   }
 
-  startRun = (forceLoadState: boolean = false) => {
-    if (this.props.intermediateLoadState || forceLoadState) {
-      this.setState(
-        {
-          pending: true
-        },
-        this.run
-      );
-    } else {
-      this.run();
-    }
+  startRun = () => {
+    this.setState(
+      {
+        pending: true
+      },
+      this.run
+    );
   };
 
   run = async () => {

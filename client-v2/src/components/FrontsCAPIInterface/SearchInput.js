@@ -1,21 +1,12 @@
 // @flow
 
 import * as React from 'react';
-import styled from 'styled-components';
 import SearchQuery from '../CAPI/SearchQuery';
 import FrontsTagInput from './TagInput';
 import ScrollContainer from '../ScrollContainer';
 import TextInput from '../TextInput';
-
-const Row = styled('div')`
-  display: flex;
-  margin: ${({ gutter = 16 }) => `0 -${gutter / 2}px`};
-`;
-
-const Col = styled(`div`)`
-  flex: ${({ flex = 1 }) => flex};
-  padding: ${({ gutter = 16 }) => `${gutter / 2}px`};
-`;
+import Row from '../Row';
+import Col from '../Col';
 
 type FrontsCAPISearchInputProps = {
   children: *

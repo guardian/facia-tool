@@ -7,7 +7,27 @@ const configSelector = (state: State) => state.config;
 
 const capiLiveURLSelector = createSelector(
   configSelector,
-  config => (config.capiLiveUrl: string)
+  config => config.capiLiveUrl
 );
 
-export { capiLiveURLSelector };
+const capiPreviewURLSelector = createSelector(
+  configSelector,
+  config => config.capiPreviewUrl
+);
+
+const capiFeedSpecsSelector = createSelector(
+  capiLiveURLSelector,
+  capiPreviewURLSelector,
+  (liveUrl, previewUrl) => [
+    {
+      name: 'Live',
+      baseUrl: liveUrl
+    },
+    {
+      name: 'Draft',
+      baseUrl: previewUrl
+    }
+  ]
+);
+
+export { capiLiveURLSelector, capiPreviewURLSelector, capiFeedSpecsSelector };

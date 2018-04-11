@@ -14,10 +14,9 @@ const ScrollOuter = styled(`div`)`
   display: flex;
   flex: 1;
   flex-direction: column;
-  padding: 1rem;
 `;
 
-const ScrollTitle = styled(`h2`)`
+const ScrollTitle = styled(`div`)`
   flex-grow: 0;
   font-size: 20px;
   font-weight: 100;

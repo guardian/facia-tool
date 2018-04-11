@@ -16,28 +16,42 @@ type CAPISearchQueryProps = {
   poll?: number
 };
 
-class SearchQuery extends React.Component<CAPISearchQueryProps> {
+type CAPISearchQueryState = {
+  capi?: $ElementType<$Call<typeof capiQuery, string>, 'search'>,
+  baseURL?: string,
+  fetch?: Fetch
+};
+
+class SearchQuery extends React.Component<
+  CAPISearchQueryProps,
+  CAPISearchQueryState
+> {
   static defaultProps = {
     params: {}
   };
 
-  constructor(props: CAPISearchQueryProps) {
-    super(props);
-    this.setupCAPI(this.props.baseURL, this.props.fetch);
+  static getDerivedStateFromProps(
+    { baseURL, fetch }: CAPISearchQueryProps,
+    prevState: CAPISearchQueryState
+  ) {
+    if (
+      (baseURL && prevState.baseURL !== baseURL) ||
+      (fetch && prevState.fetch !== fetch)
+    ) {
+      return {
+        capi: capiQuery(baseURL, fetch).search,
+        baseURL,
+        fetch
+      };
+    }
+    return {};
   }
+
+  state = {};
 
   componentDidMount() {
     if (this.props.poll) {
       this.startPolling(this.props.poll);
-    }
-  }
-
-  componentWillReceiveProps(nextProps: CAPISearchQueryProps) {
-    if (
-      (nextProps.baseURL && this.props.baseURL !== nextProps.baseURL) ||
-      (nextProps.fetch && this.props.fetch !== nextProps.fetch)
-    ) {
-      this.setupCAPI(this.props.baseURL, this.props.fetch);
     }
   }
 
@@ -47,10 +61,6 @@ class SearchQuery extends React.Component<CAPISearchQueryProps> {
     } else if (prevProps.poll && !this.props.poll) {
       this.stopPolling();
     }
-  }
-
-  setupCAPI(baseURL?: string, fetch?: Fetch): void {
-    this.capi = capiQuery(baseURL, fetch).search;
   }
 
   poll = () => {
@@ -72,18 +82,17 @@ class SearchQuery extends React.Component<CAPISearchQueryProps> {
   };
 
   interval: ?IntervalID;
-  capi: $ElementType<$Call<typeof capiQuery, string>, 'search'>;
   async: ?Async<*, *>;
 
   render() {
-    const { params, children, ...props } = this.props;
+    const { params, children, fetch, baseURL, ...props } = this.props;
     return (
       <Async
         ref={node => {
           this.async = node;
         }}
         {...props}
-        fn={this.capi}
+        fn={this.state.capi}
         args={[params]}
       >
         {children}

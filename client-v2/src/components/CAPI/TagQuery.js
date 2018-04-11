@@ -15,35 +15,40 @@ type CAPITagQueryProps = {
   params: Object
 };
 
-class TagQuery extends React.Component<CAPITagQueryProps> {
+type CAPITagQueryState = {
+  capi?: $ElementType<$Call<typeof capiQuery, string>, 'tags'>,
+  baseURL?: string,
+  fetch?: Fetch
+};
+
+class TagQuery extends React.Component<CAPITagQueryProps, CAPITagQueryState> {
   static defaultProps = {
     params: {}
   };
 
-  constructor(props: CAPITagQueryProps) {
-    super(props);
-    this.setupCAPI(this.props.baseURL, this.props.fetch);
-  }
-
-  componentWillReceiveProps(nextProps: CAPITagQueryProps) {
+  static getDerivedStateFromProps(
+    { baseURL, fetch }: CAPITagQueryProps,
+    prevState: CAPITagQueryState
+  ) {
     if (
-      (nextProps.baseURL && this.props.baseURL !== nextProps.baseURL) ||
-      (nextProps.fetch && this.props.fetch !== nextProps.fetch)
+      (baseURL && prevState.baseURL !== baseURL) ||
+      (fetch && prevState.fetch !== fetch)
     ) {
-      this.setupCAPI(this.props.baseURL, this.props.fetch);
+      return {
+        capi: capiQuery(baseURL, fetch).tags,
+        baseURL,
+        fetch
+      };
     }
+    return {};
   }
 
-  setupCAPI(baseURL?: string, fetch?: Fetch): void {
-    this.capi = capiQuery(baseURL, fetch).tags;
-  }
-
-  capi: $ElementType<$Call<typeof capiQuery, string>, 'tags'>;
+  state = {};
 
   render() {
     const { params, children, ...props } = this.props;
     return (
-      <Async {...props} fn={this.capi} args={[params]}>
+      <Async {...props} fn={this.state.capi} args={[params]}>
         {children}
       </Async>
     );

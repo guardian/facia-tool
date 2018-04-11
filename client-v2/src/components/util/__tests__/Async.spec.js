@@ -46,7 +46,7 @@ describe('Async', () => {
     wrapper.setProps({
       fn: () => promise2
     });
-    expect([v, p, e]).toEqual(['hi', false, null]);
+    expect([v, p, e]).toEqual(['hi', true, null]);
     await promise2;
     expect([v, p, e]).toEqual(['hi2', false, null]);
   });
@@ -54,7 +54,7 @@ describe('Async', () => {
   it('passes arguments correctly', async () => {
     let arg;
     const promise = makePromise('hi');
-    const wrapper = shallow(
+    shallow(
       <Async
         fn={a => {
           arg = a;
@@ -87,7 +87,7 @@ describe('Async', () => {
     wrapper.setProps({
       args: [false]
     });
-    expect([v, p, e]).toEqual(['hi', false, null]);
+    expect([v, p, e]).toEqual(['hi', true, null]);
     await promise2;
     expect([v, p, e]).toEqual(['hi2', false, null]);
   });

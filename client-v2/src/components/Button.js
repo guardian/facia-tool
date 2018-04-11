@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 export default styled(`button`)`
   appearance: none;
-  background: transparent;
+  background: ${({ selected }) => (selected ? 'white' : 'transparent')};
   border: 1px solid #fff;
-  color: #fff;
+  color: ${({ selected }) => (selected ? '#213' : '#fff')};
 
   :hover {
     background: #fff;
