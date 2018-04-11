@@ -16,25 +16,35 @@ const commercialFronts: Array<FrontDetail> = [
   }
 ];
 
-const config = {};
-
 describe('Filtering fronts correctly', () => {
   it('return an empty array if config is empty', () => {
-    expect(getFrontsConfig({ frontsConfig: {}, config }, 'editorial')).toEqual({
+    expect(getFrontsConfig({}, [], 'editorial')).toEqual({
       fronts: [],
       collections: []
     });
   });
 
   it('filters editorial fronts correctly', () => {
-    expect(getFrontsConfig({ frontsConfig, config }, 'editorial')).toEqual({
+    expect(
+      getFrontsConfig(
+        frontsConfig.fronts,
+        Object.keys(frontsConfig.fronts),
+        'editorial'
+      )
+    ).toEqual({
       fronts: editorialFronts,
       collections: []
     });
   });
 
   it('filters non-editorial fronts correctly', () => {
-    expect(getFrontsConfig({ frontsConfig, config }, 'commercial')).toEqual({
+    expect(
+      getFrontsConfig(
+        frontsConfig.fronts,
+        Object.keys(frontsConfig.fronts),
+        'commercial'
+      )
+    ).toEqual({
       fronts: commercialFronts,
       collections: []
     });
