@@ -5,6 +5,7 @@ artifacts.zip
 *.box
 *.log
 *.swp
+*.swo
 
 .DS_Store
 .idea
