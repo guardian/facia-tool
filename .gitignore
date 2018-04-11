@@ -55,3 +55,6 @@ developer.properties
 local.conf
 application.local.conf
 
+##
+public/client-v2
+
