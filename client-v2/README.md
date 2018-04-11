@@ -5,20 +5,11 @@
 To start developing just run:
 
 ```bash
-yarn dev
+./scripts/client-dev.sh
 ```
 
-This will install all of the dependencies, boot up a dev server and, when this
-is complete, will open a browser at `index.html`.
-
-While we are developing separately to the main app the dev server will be
-useful but it may not be easy to integrate with the Play app. If this is the
-case then in future we may need to just watch a normal webpack build. This is
-runnable with:
-
-```bash
-yarn watch
-```
+The v2 application will be running here:
+[https://fronts.local.dev-gutools.co.uk/v2](https://fronts.local.dev-gutools.co.uk/v2)
 
 ## Testing
 
