@@ -4,39 +4,21 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
-import type { RouterHistory } from 'react-router-dom';
 import getFrontsConfig from '../../actions/FrontsConfig';
 import { GetFrontsConfigStateSelector } from '../../selectors/frontsSelectors';
+
 import type { FrontDetail, FrontsClientConfig } from '../../types/Fronts';
 import type { State } from '../../types/State';
+import type { PropsBeforeFetch } from './FrontsContainer';
 
-type ComponentPropsBeforeFetch = {
-  priority: string, // eslint-disable-line react/no-unused-prop-types
-  history: RouterHistory,
-  frontId: string
-};
-
-type FrontsComponentProps = ComponentPropsBeforeFetch & {
+type FrontsComponentProps = PropsBeforeFetch & {
   frontsConfig: FrontsClientConfig,
   frontsActions: Object
 };
 
-type ComponentState = {
-  selectedFront: ?string
-};
-
-class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
+class Fronts extends React.Component<FrontsComponentProps> {
   componentDidMount() {
-    this.props.frontsActions.getFrontsConfig().then(() => {
-      if (this.props.frontId) {
-        const frontId = decodeURIComponent(this.props.frontId);
-        if (
-          !this.props.frontsConfig.fronts.find(front => front.id === frontId)
-        ) {
-          this.props.history.push(`/${this.props.priority}`);
-        }
-      }
-    });
+    this.props.frontsActions.getFrontsConfig();
   }
 
   selectFront = (frontId: string) => {
@@ -76,7 +58,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   }
 }
 
-const mapStateToProps = (state: State, props: ComponentPropsBeforeFetch) => ({
+const mapStateToProps = (state: State, props: PropsBeforeFetch) => ({
   frontsConfig: GetFrontsConfigStateSelector(state, props.priority)
 });
 

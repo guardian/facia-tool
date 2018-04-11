@@ -58,4 +58,4 @@ const GetFrontsConfigStateSelector = createSelector(
   getFrontsConfig
 );
 
-export { getFrontsConfig, GetFrontsConfigStateSelector };
+export { getFrontsConfig, GetFrontsConfigStateSelector, frontsIdSelector };
