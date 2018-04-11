@@ -23,14 +23,29 @@ type RequestFrontsConfigAction = {
 type FrontsConfigError = {
   type: 'CAUGHT_ERROR',
   message: 'Could not fetch fronts config',
+  // eslint-disable-next-line no-use-before-define
   error: string,
   receivedAt: number
+};
+
+type ClearError = {
+  type: 'CLEAR_ERROR',
+  receivedAt: number
+};
+
+type PathUpdate = {
+  type: 'PATH_UPDATE',
+  path: string
 };
 
 export type Action =
   | ConfigReceivedAction
   | FrontsConfigReceivedAction
   | RequestFrontsConfigAction
-  | FrontsConfigError;
+  | FrontsConfigError
+  | ClearError
+  | PathUpdate;
 
 export type ActionType = $ElementType<Action, 'type'>;
+
+export type ActionError = 'Could not fetch fronts config' | '';

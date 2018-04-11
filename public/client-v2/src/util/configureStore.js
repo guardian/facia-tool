@@ -6,6 +6,7 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import { routerMiddleware } from 'react-router-redux';
 import rootReducer from '../reducers/rootReducer.js';
 import { type Store } from '../types/Store';
+import { updateStateFromUrlChange } from './storeMiddleware';
 
 export default function configureStore(): Store {
   const history = createBrowserHistory();
@@ -14,6 +15,7 @@ export default function configureStore(): Store {
     rootReducer,
     compose(
       applyMiddleware(thunkMiddleware),
+      applyMiddleware(updateStateFromUrlChange),
       applyMiddleware(router),
       window.devToolsExtension ? window.devToolsExtension() : f => f
     )
