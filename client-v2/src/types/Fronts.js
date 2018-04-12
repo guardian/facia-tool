@@ -27,7 +27,7 @@ type Front = {
 
 type Platform = 'Web' | 'Platform';
 
-type CollectionDetail = {
+type ConfigCollectionDetail = {
   displayName: string,
   type: string,
   backfill?: Object,
@@ -48,18 +48,18 @@ type CollectionDetail = {
   platform?: Platform
 };
 
-type Collection = {
-  [string]: CollectionDetail
+type ConfigCollection = {
+  [string]: ConfigCollectionDetail
 };
 
 type FrontsConfig = {
   fronts: Front,
-  collections: Collection
+  collections: ConfigCollection
 };
 
 type FrontsClientConfig = {
   fronts: Array<FrontDetail>,
-  collections: Collection
+  collections: ConfigCollection
 };
 
 type Priorities = {
@@ -74,8 +74,8 @@ export type {
   FrontConfig,
   Front,
   FrontDetail,
-  Collection,
-  CollectionDetail,
+  ConfigCollection,
+  ConfigCollectionDetail,
   Priorities,
   PriorityName,
   FrontsClientConfig

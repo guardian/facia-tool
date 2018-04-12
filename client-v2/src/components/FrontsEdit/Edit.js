@@ -16,6 +16,8 @@ type Props = {
   history: RouterHistory
 };
 
+const getFrontId = (frontId: ?string): string => (frontId ? decodeURIComponent(frontId) : '');
+
 const FrontsEdit = (props: Props) => (
   <React.Fragment>
     <ErrorBannner error={props.error} />
@@ -25,7 +27,7 @@ const FrontsEdit = (props: Props) => (
         <FrontsContainer
           history={props.history}
           priority={props.match.params.priority || ''}
-          frontId={props.match.params.frontId || ''}
+          frontId={getFrontId(props.match.params.frontId)}
         />
       }
     />
