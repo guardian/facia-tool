@@ -118,4 +118,6 @@ const SearchQueryWithContext = (props: CAPISearchQueryProps) => (
   </CAPIParamsContext.Consumer>
 );
 
+export { SearchQuery as SearchQueryWithoutContext };
+
 export default SearchQueryWithContext;
