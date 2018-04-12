@@ -57,4 +57,5 @@ application.local.conf
 
 ##
 public/client-v2
+.vscode
 
