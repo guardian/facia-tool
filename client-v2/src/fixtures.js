@@ -33,7 +33,12 @@ const frontsClientConfig: FrontsClientConfig = {
       collections: ['collection1']
     }
   ],
-  collections: []
+  collections: {
+    collection1: {
+      displayName: 'name',
+      type: 'collection'
+    }
+  }
 };
 
 export { frontsClientConfig, frontsConfig };

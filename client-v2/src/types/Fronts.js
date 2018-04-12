@@ -59,7 +59,7 @@ type FrontsConfig = {
 
 type FrontsClientConfig = {
   fronts: Array<FrontDetail>,
-  collections: Array<CollectionDetail>
+  collections: Collection
 };
 
 type Priorities = {

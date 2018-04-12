@@ -18,9 +18,9 @@ const commercialFronts: Array<FrontDetail> = [
 
 describe('Filtering fronts correctly', () => {
   it('return an empty array if config is empty', () => {
-    expect(getFrontsConfig({}, [], 'editorial')).toEqual({
+    expect(getFrontsConfig({}, {}, [], 'editorial')).toEqual({
       fronts: [],
-      collections: []
+      collections: {}
     });
   });
 
@@ -28,12 +28,13 @@ describe('Filtering fronts correctly', () => {
     expect(
       getFrontsConfig(
         frontsConfig.fronts,
+        frontsConfig.collections,
         Object.keys(frontsConfig.fronts),
         'editorial'
       )
     ).toEqual({
       fronts: editorialFronts,
-      collections: []
+      collections: frontsConfig.collections
     });
   });
 
@@ -41,12 +42,13 @@ describe('Filtering fronts correctly', () => {
     expect(
       getFrontsConfig(
         frontsConfig.fronts,
+        frontsConfig.collections,
         Object.keys(frontsConfig.fronts),
         'commercial'
       )
     ).toEqual({
       fronts: commercialFronts,
-      collections: []
+      collections: frontsConfig.collections
     });
   });
 });
