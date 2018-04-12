@@ -22,6 +22,7 @@ type Config = {
   sentryPublicDSN: string,
   mediaBaseUrl: string,
   apiBaseUrl: string,
+  stage: string,
   switches: Object,
   acl: Acl,
   collectionCap: number,
