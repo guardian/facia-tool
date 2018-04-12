@@ -1,13 +1,15 @@
 // @flow
 
-export default (): Object => {
+import { type Config } from '../types/Config';
+
+export default () => {
   const configEl = document.getElementById('config');
 
   if (!configEl) {
-    return {};
+    throw new Error('Missing config');
   }
 
-  const json = JSON.parse(configEl.innerHTML);
+  const json: Config = JSON.parse(configEl.innerHTML);
 
-  return json || {};
+  return json;
 };

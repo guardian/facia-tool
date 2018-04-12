@@ -30,11 +30,13 @@ case class Defaults(
   collectionCap: Int,
   navListCap: Int,
   navListType: String,
-  collectionMetadata: Iterable[Metadata]
+  collectionMetadata: Iterable[Metadata],
+  capiLiveUrl: String = "",
+  capiPreviewUrl: String = ""
 )
 
 class DefaultsController(val config: ApplicationConfiguration, val acl: Acl, val isDev: Boolean) extends Controller with PanDomainAuthActions {
-  def configuration = APIAuthAction.async { request =>
+  def configuration = APIAuthAction.async { implicit request =>
     for {
       hasBreakingNews <- acl.testUser(Permissions.BreakingNewsAlert, "facia-tool-allow-breaking-news-for-all")(request.user.email)
       hasConfigureFronts <- acl.testUser(Permissions.ConfigureFronts, "facia-tool-allow-config-for-all")(request.user.email)
