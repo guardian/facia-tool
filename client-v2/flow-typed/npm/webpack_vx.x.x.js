@@ -1,4 +1,4 @@
-// flow-typed signature: d7dd0e1e7f885e7ca8a645b68bc17f7f
+// flow-typed signature: 214a4c03823657acee6f87435a85ec2c
 // flow-typed version: <<STUB>>/webpack_v^4.1.1/flow_v0.68.0
 
 /**
@@ -146,6 +146,10 @@ declare module 'webpack/lib/Compiler' {
   declare module.exports: any;
 }
 
+declare module 'webpack/lib/ConcurrentCompilationError' {
+  declare module.exports: any;
+}
+
 declare module 'webpack/lib/ConstPlugin' {
   declare module.exports: any;
 }
@@ -271,6 +275,10 @@ declare module 'webpack/lib/dependencies/DelegatedExportsDependency' {
 }
 
 declare module 'webpack/lib/dependencies/DelegatedSourceDependency' {
+  declare module.exports: any;
+}
+
+declare module 'webpack/lib/dependencies/DependencyReference' {
   declare module.exports: any;
 }
 
@@ -631,6 +639,10 @@ declare module 'webpack/lib/FunctionModuleTemplatePlugin' {
 }
 
 declare module 'webpack/lib/GraphHelpers' {
+  declare module.exports: any;
+}
+
+declare module 'webpack/lib/HarmonyLinkingError' {
   declare module.exports: any;
 }
 
@@ -1300,6 +1312,9 @@ declare module 'webpack/lib/Compilation.js' {
 declare module 'webpack/lib/Compiler.js' {
   declare module.exports: $Exports<'webpack/lib/Compiler'>;
 }
+declare module 'webpack/lib/ConcurrentCompilationError.js' {
+  declare module.exports: $Exports<'webpack/lib/ConcurrentCompilationError'>;
+}
 declare module 'webpack/lib/ConstPlugin.js' {
   declare module.exports: $Exports<'webpack/lib/ConstPlugin'>;
 }
@@ -1395,6 +1410,9 @@ declare module 'webpack/lib/dependencies/DelegatedExportsDependency.js' {
 }
 declare module 'webpack/lib/dependencies/DelegatedSourceDependency.js' {
   declare module.exports: $Exports<'webpack/lib/dependencies/DelegatedSourceDependency'>;
+}
+declare module 'webpack/lib/dependencies/DependencyReference.js' {
+  declare module.exports: $Exports<'webpack/lib/dependencies/DependencyReference'>;
 }
 declare module 'webpack/lib/dependencies/DllEntryDependency.js' {
   declare module.exports: $Exports<'webpack/lib/dependencies/DllEntryDependency'>;
@@ -1665,6 +1683,9 @@ declare module 'webpack/lib/FunctionModuleTemplatePlugin.js' {
 }
 declare module 'webpack/lib/GraphHelpers.js' {
   declare module.exports: $Exports<'webpack/lib/GraphHelpers'>;
+}
+declare module 'webpack/lib/HarmonyLinkingError.js' {
+  declare module.exports: $Exports<'webpack/lib/HarmonyLinkingError'>;
 }
 declare module 'webpack/lib/HashedModuleIdsPlugin.js' {
   declare module.exports: $Exports<'webpack/lib/HashedModuleIdsPlugin'>;

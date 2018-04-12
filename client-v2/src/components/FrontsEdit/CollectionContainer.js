@@ -28,7 +28,12 @@ type ConnectedComponentProps = Props & {
 
 class CollectionContainer extends React.Component<ConnectedComponentProps> {
   componentDidMount() {
-    const { props: { collectionConfig: { id }, collection } } = this;
+    const {
+      props: {
+        collectionConfig: { id },
+        collection
+      }
+    } = this;
     if (!collection) {
       this.props.frontsActions.getFrontCollection(id).then(() => {
         this.props.frontsActions.getArticlesForCollection(
@@ -43,7 +48,11 @@ class CollectionContainer extends React.Component<ConnectedComponentProps> {
 
   render() {
     const {
-      props: { collectionConfig: { groups }, collection, browsingStage }
+      props: {
+        collectionConfig: { groups },
+        collection,
+        browsingStage
+      }
     } = this;
     const articlesConfig = getArticlesForStage(collection, browsingStage);
 

@@ -25,7 +25,9 @@ class FrontsContainer extends React.Component<Props> {
   componentDidMount() {
     this.props.frontsActions.getFrontsConfig().then(() => {
       if (this.props.frontId) {
-        const { props: { frontId } } = this;
+        const {
+          props: { frontId }
+        } = this;
         if (!this.props.frontsIds.includes(frontId)) {
           this.props.history.push(`/${this.props.priority}`);
         }
