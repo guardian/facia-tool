@@ -31,8 +31,8 @@ case class Defaults(
   navListCap: Int,
   navListType: String,
   collectionMetadata: Iterable[Metadata],
-  capiLiveUrl: String,
-  capiPreviewUrl: String
+  capiLiveUrl: String = "",
+  capiPreviewUrl: String = ""
 )
 
 class DefaultsController(val config: ApplicationConfiguration, val acl: Acl, val isDev: Boolean) extends Controller with PanDomainAuthActions {
@@ -63,9 +63,7 @@ class DefaultsController(val config: ApplicationConfiguration, val acl: Acl, val
           config.facia.navListType,
           Metadata.tags.map{
             case (_, meta) => meta
-          },
-          routes.FaciaContentApiProxy.capiLive("").absoluteURL(true),
-          routes.FaciaContentApiProxy.capiPreview("").absoluteURL(true)
+          }
         )))
       }
     }
