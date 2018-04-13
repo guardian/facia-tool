@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
 import FrontsEdit from './FrontsEdit/Edit';
 import Home from './Home';
+import NotFound from './NotFound';
+import { priorities } from '../constants/priorities';
 
 const AppContainer = styled('div')`
   background-color: #221133;
@@ -20,8 +22,13 @@ const AppContainer = styled('div')`
 const App = () => (
   <AppContainer>
     <Switch>
-      <Route exact path="/:priority" component={FrontsEdit} />
+      <Route
+        exact
+        path={`/:priority(${Object.keys(priorities).join('|')})/:frontId?`}
+        component={FrontsEdit}
+      />
       <Route exact path="/" component={Home} />
+      <Route component={NotFound} />
     </Switch>
   </AppContainer>
 );

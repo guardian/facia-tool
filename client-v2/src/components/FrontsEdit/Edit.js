@@ -2,9 +2,9 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import type { Match } from 'react-router-dom';
+import type { Match, RouterHistory } from 'react-router-dom';
 import FrontsLayout from '../FrontsLayout';
-import Fronts from './Fronts';
+import FrontsContainer from './FrontsContainer';
 import Feed from '../Feed';
 import ErrorBannner from '../ErrorBanner';
 import type { State } from '../../types/State';
@@ -12,7 +12,8 @@ import type { ActionError } from '../../types/Action';
 
 type Props = {
   match: Match,
-  error: ActionError
+  error: ActionError,
+  history: RouterHistory
 };
 
 const FrontsEdit = (props: Props) => (
@@ -20,7 +21,13 @@ const FrontsEdit = (props: Props) => (
     <ErrorBannner error={props.error} />
     <FrontsLayout
       left={<Feed />}
-      right={<Fronts priority={props.match.params.priority || ''} />}
+      right={
+        <FrontsContainer
+          history={props.history}
+          priority={props.match.params.priority || ''}
+          frontId={props.match.params.frontId || ''}
+        />
+      }
     />
   </React.Fragment>
 );

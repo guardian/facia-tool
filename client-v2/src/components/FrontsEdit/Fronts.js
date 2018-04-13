@@ -3,38 +3,27 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { withRouter } from 'react-router';
 import getFrontsConfig from '../../actions/FrontsConfig';
 import { GetFrontsConfigStateSelector } from '../../selectors/frontsSelectors';
+
 import type { FrontDetail, FrontsClientConfig } from '../../types/Fronts';
 import type { State } from '../../types/State';
+import type { PropsBeforeFetch } from './FrontsContainer';
 
-type ComponentPropsBeforeFetch = {
-  priority: string // eslint-disable-line react/no-unused-prop-types
-};
-
-type FrontsComponentProps = ComponentPropsBeforeFetch & {
+type FrontsComponentProps = PropsBeforeFetch & {
   frontsConfig: FrontsClientConfig,
   frontsActions: Object
 };
 
-type ComponentState = {
-  selectedFront: ?string
-};
-
-class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
-  state = {
-    selectedFront: null
-  };
-
+class Fronts extends React.Component<FrontsComponentProps> {
   componentDidMount() {
     this.props.frontsActions.getFrontsConfig();
   }
 
-  renderSelectPrompt = () => {
-    if (!this.state.selectedFront) {
-      return <option value="">Choose a front...</option>;
-    }
-    return null;
+  selectFront = (frontId: string) => {
+    const encodedUri = encodeURIComponent(frontId);
+    this.props.history.push(`/${this.props.priority}/${encodedUri}`);
   };
 
   renderFrontOption = (front: FrontDetail) => (
@@ -42,6 +31,13 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
       {front.id}
     </option>
   );
+
+  renderSelectPrompt = () => {
+    if (!this.props.frontId) {
+      return <option value="">Choose a front...</option>;
+    }
+    return null;
+  };
 
   render() {
     if (!this.props.frontsConfig.fronts) {
@@ -52,10 +48,8 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
 
     return (
       <select
-        value={this.state.selectedFront || ''}
-        onChange={e => {
-          this.setState({ selectedFront: e.target.value });
-        }}
+        value={decodeURIComponent(this.props.frontId)}
+        onChange={e => this.selectFront(e.target.value)}
       >
         {this.renderSelectPrompt()}
         {fronts.map(this.renderFrontOption)};
@@ -64,7 +58,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   }
 }
 
-const mapStateToProps = (state: State, props: ComponentPropsBeforeFetch) => ({
+const mapStateToProps = (state: State, props: PropsBeforeFetch) => ({
   frontsConfig: GetFrontsConfigStateSelector(state, props.priority)
 });
 
@@ -80,4 +74,4 @@ const mapDispatchToProps = (dispatch: *) => ({
 export { Fronts as FrontsComponent };
 export type { FrontsComponentProps };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Fronts);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Fronts));
