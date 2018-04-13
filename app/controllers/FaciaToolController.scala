@@ -21,11 +21,11 @@ import updates._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, val frontsApi: FrontsApi, val faciaApiIO: FaciaApiIO, val updateActions: UpdateActions,
+class FaciaToolController(val acl: Acl, val frontsApi: FrontsApi, val faciaApiIO: FaciaApiIO, val updateActions: UpdateActions,
                           breakingNewsUpdate: BreakingNewsUpdate, val auditingUpdates: AuditingUpdates, val faciaPress: FaciaPress, val faciaPressQueue: FaciaPressQueue,
-                          val configAgent: ConfigAgent, val s3FrontsApi: S3FrontsApi, val mediaServiceClient: MediaServiceClient, val wsClient: WSClient) extends Controller with PanDomainAuthActions with BreakingNewsEditCollectionsCheck {
+                          val configAgent: ConfigAgent, val s3FrontsApi: S3FrontsApi, val mediaServiceClient: MediaServiceClient, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) with BreakingNewsEditCollectionsCheck {
 
-  override lazy val actorSystem = ActorSystem()
+  lazy val actorSystem = ActorSystem()
 
   def getConfig = APIAuthAction.async { request =>
     FaciaToolMetrics.ApiUsageCount.increment()

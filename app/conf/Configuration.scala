@@ -26,7 +26,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
   private val properties = Properties(installVars)
   private val stageFromProperties = properties.getOrElse("STAGE", "CODE")
   private val stsRoleToAssumeFromProperties = properties.getOrElse("STS_ROLE", "unknown")
-  private val forntPressedDynamoTable = properties.getOrElse("FRONT_PRESSED_TABLE", "unknown")
+  private val frontPressedDynamoTable = properties.getOrElse("FRONT_PRESSED_TABLE", "unknown")
 
   private def getString(property: String): Option[String] =
     playConfiguration.getString(stageFromProperties + "." + property)
@@ -65,7 +65,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     lazy val bucket = getMandatoryString("aws.bucket")
     lazy val frontsBucket = getMandatoryString("aws.frontsBucket")
 
-    def mandatoryCredentials: AWSCredentialsProvider = credentials.getOrElse(throw new BadConfigurationException("AWS credentials are not configured"))
+    def cmsFrontsAccountCredentials: AWSCredentialsProvider = credentials.getOrElse(throw new BadConfigurationException("AWS credentials are not configured for CMS Fronts"))
     val credentials: Option[AWSCredentialsProvider] = {
       val provider = new AWSCredentialsProviderChain(
         new ProfileCredentialsProvider("cmsFronts"),
@@ -88,7 +88,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
       }
     }
 
-    def mandatoryCrossAccountCredentials: AWSCredentialsProvider = crossAccount.getOrElse(throw new BadConfigurationException("AWS credentials are not configured for cross account"))
+    def frontendAccountCredentials: AWSCredentialsProvider = crossAccount.getOrElse(throw new BadConfigurationException("AWS credentials are not configured for cross account Frontend"))
     var crossAccount: Option[AWSCredentialsProvider] = {
       val provider = new AWSCredentialsProviderChain(
         new ProfileCredentialsProvider("frontend"),
@@ -149,7 +149,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     lazy val frontPressToolQueue = getString("frontpress.sqs.tool_queue_url")
     lazy val showTestContainers = getBoolean("faciatool.show_test_containers").getOrElse(false)
     lazy val stsRoleToAssume = getString("faciatool.sts.role.to.assume").getOrElse(stsRoleToAssumeFromProperties)
-    lazy val frontPressUpdateTable = forntPressedDynamoTable
+    lazy val frontPressUpdateTable = frontPressedDynamoTable
   }
 
   object media {

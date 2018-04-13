@@ -12,8 +12,8 @@ import updates._
 import util.Acl
 import util.Requests._
 
-class FrontController(val config: ApplicationConfiguration, val acl: Acl, val auditingUpdates: AuditingUpdates,
-                      val updateManager: UpdateManager, val press: Press, val wsClient: WSClient) extends Controller with PanDomainAuthActions {
+class FrontController(val acl: Acl, val auditingUpdates: AuditingUpdates,
+                      val updateManager: UpdateManager, val press: Press, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
   def create = (APIAuthAction andThen new ConfigPermissionCheck(acl)) { request =>
     request.body.read[CreateFront] match {
       case Some(createFrontRequest) =>

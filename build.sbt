@@ -53,7 +53,7 @@ javaOptions in Universal ++= Seq(
 
 routesGenerator := InjectedRoutesGenerator
 
-scalacOptions := Seq("-unchecked", "-optimise", "-deprecation", "-target:jvm-1.8",
+scalacOptions := Seq("-unchecked", "-opt", "-deprecation", "-target:jvm-1.8",
     "-Xcheckinit", "-encoding", "utf8", "-feature")
 
 sources in (Compile, doc) := Seq.empty
@@ -93,7 +93,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "fapi-client-play26" % "2.5.4",
     "com.gu" % "kinesis-logback-appender" % "1.4.2",
     "com.gu" %% "mobile-notifications-client" % "1.1",
-    "com.gu" %% "pan-domain-auth-play_2-6" % "0.7.1-SNAPSHOT",
+    "com.gu" %% "pan-domain-auth-play_2-6" % "0.7.1",
 
     "io.circe" %% "circe-core" % circeVersion,
     "io.circe" %% "circe-generic" % circeVersion,

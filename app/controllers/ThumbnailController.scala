@@ -7,7 +7,7 @@ import play.api.libs.ws.WSClient
 import play.api.mvc.Controller
 import thumbnails.ContainerThumbnails
 
-class ThumbnailController(val config: ApplicationConfiguration, val containerThumbnails: ContainerThumbnails, val wsClient: WSClient) extends Controller with PanDomainAuthActions {
+class ThumbnailController(val containerThumbnails: ContainerThumbnails, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
   def container(id: String) = APIAuthAction {
     containerThumbnails.fromId(id) match {
       case Some(thumbnail) =>

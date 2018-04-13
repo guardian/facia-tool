@@ -28,7 +28,7 @@ object PressCommand {
 
 class FaciaPressQueue(val config: ApplicationConfiguration) {
   val maybeQueue = config.faciatool.frontPressToolQueue map { queueUrl =>
-    val credentials = config.aws.mandatoryCrossAccountCredentials
+    val credentials = config.aws.frontendAccountCredentials
     JsonMessageQueue[PressJob](
       AmazonSQSAsyncClientBuilder.standard()
         .withCredentials(credentials)

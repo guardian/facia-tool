@@ -23,11 +23,11 @@ case class FrontPressRecord (
  actionTime: String
 )
 
-class PressController (val config: ApplicationConfiguration, awsEndpoints: AwsEndpoints, val wsClient: WSClient) extends Controller with PanDomainAuthActions {
+class PressController (awsEndpoints: AwsEndpoints, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
   private lazy val client: AmazonDynamoDB = {
     val endpoint = new AwsClientBuilder.EndpointConfiguration(awsEndpoints.dynamoDb, config.aws.region)
     val builder: AmazonDynamoDBClientBuilder = AmazonDynamoDBClientBuilder.standard()
-      .withCredentials(config.aws.mandatoryCredentials)
+      .withCredentials(config.aws.cmsFrontsAccountCredentials)
       .withEndpointConfiguration(endpoint)
     builder.build()
   }

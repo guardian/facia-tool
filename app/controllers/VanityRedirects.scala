@@ -9,7 +9,7 @@ import play.api.mvc.Action
 import play.mvc.Controller
 import util.Acl
 
-class VanityRedirects(val config: ApplicationConfiguration, val acl: Acl, val wsClient: WSClient) extends Controller with PanDomainAuthActions {
+class VanityRedirects(val acl: Acl, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
 
   def breakingnews = (AuthAction andThen new BreakingNewsPermissionCheck(acl)) { request =>
     NoCache(Redirect("/editorial?layout=latest,front:breaking-news", 301))}

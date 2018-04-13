@@ -10,8 +10,8 @@ import play.api.mvc._
 import services.AssetsManager
 import util.{Acl, Encryption}
 
-class ViewsController(val config: ApplicationConfiguration, val acl: Acl, assetsManager: AssetsManager, isDev: Boolean,
-                      crypto: Encryption, val wsClient: WSClient) extends Controller with PanDomainAuthActions {
+class ViewsController(val acl: Acl, assetsManager: AssetsManager, isDev: Boolean,
+                      crypto: Encryption, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
 
   def priorities() = AuthAction { request =>
     val identity = request.user

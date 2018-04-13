@@ -24,7 +24,7 @@ case class StoriesVisibleResponse(
   mobile: Option[Int]
 )
 
-class StoriesVisibleController(val config: ApplicationConfiguration, val containers: Containers, val wsClient: WSClient) extends Controller with PanDomainAuthActions {
+class StoriesVisibleController(val containers: Containers, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
   def storiesVisible(containerType: String) = APIAuthAction(parse.json[StoriesVisibleRequest]) { implicit request =>
     val numberOfStories = request.body.stories.length
 

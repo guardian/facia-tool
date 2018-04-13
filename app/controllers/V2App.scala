@@ -13,7 +13,7 @@ import util.{Acl, AclJson}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class V2App(val config: ApplicationConfiguration, isDev: Boolean, val acl: Acl, val wsClient: WSClient) extends Controller with PanDomainAuthActions {
+class V2App(isDev: Boolean, val acl: Acl, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
 
   def index(priority: String = "", frontId: String = "") = APIAuthAction.async { implicit req =>
 

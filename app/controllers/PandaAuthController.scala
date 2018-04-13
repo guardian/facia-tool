@@ -8,7 +8,7 @@ import play.api.mvc.{Action, Controller}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class PandaAuthController(val config: ApplicationConfiguration, val wsClient: WSClient) extends Controller with PanDomainAuthActions {
+class PandaAuthController(val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
 
   def oauthCallback = Action.async { implicit request =>
     processGoogleCallback()

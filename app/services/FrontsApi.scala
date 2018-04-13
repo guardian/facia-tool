@@ -13,7 +13,7 @@ class FrontsApi(val config: ApplicationConfiguration, val awsEndpoints: AwsEndpo
     val endpoint = new AwsClientBuilder.EndpointConfiguration(awsEndpoints.s3, config.aws.region)
 
     val client: AmazonS3 = AmazonS3ClientBuilder.standard()
-      .withCredentials(config.aws.mandatoryCredentials)
+      .withCredentials(config.aws.cmsFrontsAccountCredentials)
       .withEndpointConfiguration(endpoint)
       .build()
 

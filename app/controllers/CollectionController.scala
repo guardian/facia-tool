@@ -2,12 +2,13 @@ package controllers
 
 import auth.PanDomainAuthActions
 import com.gu.facia.client.models.CollectionConfigJson
+import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
 import conf.ApplicationConfiguration
 import config.UpdateManager
 import permissions.ConfigPermissionCheck
 import play.api.libs.json.Json
 import play.api.libs.ws.WSClient
-import play.api.mvc.Controller
+import play.api.mvc.{BaseController, Controller, ControllerComponents}
 import services.Press
 import updates._
 import util.Acl
@@ -28,8 +29,8 @@ object CreateCollectionResponse {
 
 case class CreateCollectionResponse(id: String)
 
-class CollectionController(val config: ApplicationConfiguration, val acl: Acl, val auditingUpdates: AuditingUpdates,
-                           val updateManager: UpdateManager, val press: Press, val wsClient: WSClient) extends Controller with PanDomainAuthActions {
+class CollectionController(val acl: Acl, val auditingUpdates: AuditingUpdates,
+                           val updateManager: UpdateManager, val press: Press, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
   def create = (APIAuthAction andThen new ConfigPermissionCheck(acl)){ request =>
     request.body.read[CollectionRequest] match {
       case Some(CollectionRequest(frontIds, collection)) =>

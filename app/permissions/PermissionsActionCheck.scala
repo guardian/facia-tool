@@ -1,6 +1,7 @@
 package permissions
 
 import com.gu.pandomainauth.action.UserRequest
+import controllers.BaseFaciaController
 import play.api.Logger
 import play.api.mvc._
 import services.ConfigAgent
@@ -33,7 +34,7 @@ class BreakingNewsPermissionCheck(val acl: Acl) extends PermissionActionFilter {
   val restrictedAction = "send breaking news alerts"
 }
 
-trait BreakingNewsEditCollectionsCheck { self: Controller =>
+trait BreakingNewsEditCollectionsCheck { self: BaseFaciaController =>
   def acl: Acl
   def configAgent: ConfigAgent
 

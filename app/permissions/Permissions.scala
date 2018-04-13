@@ -12,7 +12,7 @@ class Permissions(val appConfig: ApplicationConfiguration) extends PermissionsPr
     app = "fronts",
     all = Permissions.all,
     s3BucketPrefix = appConfig.environment.stage.toUpperCase,
-    awsCredentials = appConfig.aws.mandatoryCredentials,
+    awsCredentials = appConfig.aws.cmsFrontsAccountCredentials,
     s3Region = Some("eu-west-1")
   )
 }

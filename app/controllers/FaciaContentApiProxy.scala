@@ -18,12 +18,12 @@ import util.ContentUpgrade.rewriteBody
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class FaciaContentApiProxy(ws: WSClient, val config: ApplicationConfiguration, val wsClient: WSClient) extends Controller with PanDomainAuthActions {
+class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
   implicit class string2encodings(s: String) {
     lazy val urlEncoded = URLEncoder.encode(s, "utf-8")
   }
 
-  override lazy val actorSystem = ActorSystem()
+  lazy val actorSystem = ActorSystem()
 
   private val previewSigner = {
     val capiPreviewCredentials = new AWSCredentialsProviderChain(
@@ -53,7 +53,7 @@ class FaciaContentApiProxy(ws: WSClient, val config: ApplicationConfiguration, v
 
     Logger.info(s"Proxying preview API query to: $url")
 
-    ws.url(url).withHeaders(getPreviewHeaders(url): _*).get().map { response =>
+    wsClient.url(url).withHeaders(getPreviewHeaders(url): _*).get().map { response =>
       Cached(60) {
         Ok(rewriteBody(response.body)).as("application/javascript")
       }
@@ -72,7 +72,7 @@ class FaciaContentApiProxy(ws: WSClient, val config: ApplicationConfiguration, v
 
     Logger.info(s"Proxying live API query to: $url")
 
-    ws.url(url).get().map { response =>
+    wsClient.url(url).get().map { response =>
       Cached(60) {
         Ok(rewriteBody(response.body)).as("application/javascript")
       }
@@ -82,7 +82,7 @@ class FaciaContentApiProxy(ws: WSClient, val config: ApplicationConfiguration, v
   def http(url: String) = APIAuthAction.async { request =>
     FaciaToolMetrics.ProxyCount.increment()
 
-    ws.url(url).get().map { response =>
+    wsClient.url(url).get().map { response =>
       Cached(60) {
         Ok(response.body).as("text/html")
       }
@@ -93,7 +93,7 @@ class FaciaContentApiProxy(ws: WSClient, val config: ApplicationConfiguration, v
     FaciaToolMetrics.ProxyCount.increment()
     Logger.info(s"Proxying json request to: $url")
 
-    ws.url(url).withHeaders(getPreviewHeaders(url): _*).get().map { response =>
+    wsClient.url(url).withHeaders(getPreviewHeaders(url): _*).get().map { response =>
       Cached(60) {
         Ok(rewriteBody(response.body)).as("application/json")
       }
@@ -113,7 +113,7 @@ class FaciaContentApiProxy(ws: WSClient, val config: ApplicationConfiguration, v
 
     Logger.info(s"Proxying ophan request to: $url")
 
-    ws.url(url).get().map { response =>
+    wsClient.url(url).get().map { response =>
       Cached(60) {
         Ok(response.body).as("application/json")
       }

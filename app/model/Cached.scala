@@ -49,7 +49,9 @@ object NoCache {
 }
 
 case class NoCache[A](action: Action[A]) extends Action[A] {
+
   implicit lazy val executionContext: ExecutionContext = ExecutionContext.Implicits.global
+
   override def apply(request: Request[A]): Future[Result] = {
 
     action(request) map { response =>
