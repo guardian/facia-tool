@@ -5,14 +5,14 @@ import com.gu.facia.client.models.Metadata
 import conf.ApplicationConfiguration
 import permissions.Permissions
 import play.api.libs.json.Json
-import play.api.mvc.Controller
+import play.api.mvc.{Controller, RequestHeader}
 import switchboard.SwitchManager
 import util.{AclJson, Acl}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class V2App(val config: ApplicationConfiguration, isDev: Boolean, val acl: Acl) extends Controller with PanDomainAuthActions {
 
-  def index(priority: String = "", frontId: String = "") = APIAuthAction.async { req =>
+  def index(priority: String = "", frontId: String = "") = APIAuthAction.async { implicit req =>
 
     val jsFileName = "dist/app.bundle.js"
 
@@ -43,7 +43,9 @@ class V2App(val config: ApplicationConfiguration, isDev: Boolean, val acl: Acl) 
         config.facia.navListType,
         Metadata.tags.map {
           case (_, meta) => meta
-        }
+        },
+        routes.FaciaContentApiProxy.capiLive("").absoluteURL(true),
+        routes.FaciaContentApiProxy.capiPreview("").absoluteURL(true)
       )
 
       Ok(views.html.V2App.app(

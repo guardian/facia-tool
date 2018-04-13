@@ -1,6 +1,7 @@
 // @flow
 
 import * as React from 'react';
+import * as CAPIParamsContext from './CAPIParamsContext';
 /* eslint-disable import/no-duplicates */
 import capiQuery from '../../services/capiQuery';
 import { type Fetch } from '../../services/capiQuery';
@@ -11,42 +12,112 @@ type CAPISearchQueryProps = {
   baseURL?: string,
   fetch?: Fetch,
   children: *,
-  params: Object
+  params: Object,
+  poll?: number
 };
 
-class SearchQuery extends React.Component<CAPISearchQueryProps> {
+type CAPISearchQueryState = {
+  capi?: $ElementType<$Call<typeof capiQuery, string>, 'search'>,
+  baseURL?: string,
+  fetch?: Fetch
+};
+
+class SearchQuery extends React.Component<
+  CAPISearchQueryProps,
+  CAPISearchQueryState
+> {
   static defaultProps = {
     params: {}
   };
 
-  constructor(props: CAPISearchQueryProps) {
-    super(props);
-    this.setupCAPI(this.props.baseURL, this.props.fetch);
+  static getDerivedStateFromProps(
+    { baseURL, fetch }: CAPISearchQueryProps,
+    prevState: CAPISearchQueryState
+  ) {
+    if (
+      (baseURL && prevState.baseURL !== baseURL) ||
+      (fetch && prevState.fetch !== fetch)
+    ) {
+      return {
+        capi: capiQuery(baseURL, fetch).search,
+        baseURL,
+        fetch
+      };
+    }
+    return {};
   }
 
-  componentWillReceiveProps(nextProps: CAPISearchQueryProps) {
-    if (
-      (nextProps.baseURL && this.props.baseURL !== nextProps.baseURL) ||
-      (nextProps.fetch && this.props.fetch !== nextProps.fetch)
-    ) {
-      this.setupCAPI(this.props.baseURL, this.props.fetch);
+  state = {};
+
+  componentDidMount() {
+    if (this.props.poll) {
+      this.startPolling(this.props.poll);
     }
   }
 
-  setupCAPI(baseURL?: string, fetch?: Fetch): void {
-    this.capi = capiQuery(baseURL, fetch).search;
+  componentDidUpdate(prevProps: CAPISearchQueryProps) {
+    if (!prevProps.poll && this.props.poll) {
+      this.startPolling(this.props.poll);
+    } else if (prevProps.poll && !this.props.poll) {
+      this.stopPolling();
+    }
   }
 
-  capi: $ElementType<$Call<typeof capiQuery, string>, 'search'>;
+  poll = () => {
+    if (this.async) {
+      this.async.startRun();
+    }
+  };
+
+  startPolling = (rate: number) => {
+    if (this.props.poll) {
+      this.interval = setInterval(this.poll, rate);
+    }
+  };
+
+  stopPolling = () => {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+  };
+
+  interval: ?IntervalID;
+  async: ?Async<*, *>;
 
   render() {
-    const { params, children, ...props } = this.props;
+    const { params, children, fetch, baseURL, ...props } = this.props;
     return (
-      <Async {...props} fn={this.capi} args={[params]}>
+      <Async
+        ref={node => {
+          this.async = node;
+        }}
+        {...props}
+        fn={this.state.capi}
+        args={[params]}
+      >
         {children}
       </Async>
     );
   }
 }
 
-export default SearchQuery;
+const SearchQueryWithContext = (props: CAPISearchQueryProps) => (
+  <CAPIParamsContext.Consumer>
+    {contextProps => (
+      <SearchQuery
+        {...{
+          ...contextProps,
+          ...props,
+          params: {
+            ...contextProps.params,
+            ...props.params
+          }
+        }}
+      />
+    )}
+  </CAPIParamsContext.Consumer>
+);
+
+export { SearchQuery as SearchQueryWithoutContext };
+
+export default SearchQueryWithContext;

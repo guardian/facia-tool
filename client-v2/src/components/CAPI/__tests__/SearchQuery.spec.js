@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { mount } from 'enzyme';
-import SearchQuery from '../SearchQuery';
+import { SearchQueryWithoutContext as SearchQuery } from '../SearchQuery';
 
 const succesfulReturn = {
   response: {

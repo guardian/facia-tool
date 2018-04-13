@@ -3,7 +3,7 @@
 import * as React from 'react';
 import Downshift from 'downshift';
 import styled from 'styled-components';
-import TagQuery from '../FrontsCAPI/TagQuery';
+import TagQuery from '../CAPI/TagQuery';
 import TextInput from '../TextInput';
 
 type CAPITagInputProps<T> = {
