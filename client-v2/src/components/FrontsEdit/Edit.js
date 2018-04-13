@@ -16,7 +16,8 @@ type Props = {
   history: RouterHistory
 };
 
-const getFrontId = (frontId: ?string): string => (frontId ? decodeURIComponent(frontId) : '');
+const getFrontId = (frontId: ?string): string =>
+  frontId ? decodeURIComponent(frontId) : '';
 
 const FrontsEdit = (props: Props) => (
   <React.Fragment>

@@ -48,6 +48,8 @@ type ConfigCollectionDetail = {
   platform?: Platform
 };
 
+type ConfigCollectionDetailWithId = ConfigCollectionDetail & { id: string };
+
 type ConfigCollection = {
   [string]: ConfigCollectionDetail
 };
@@ -69,6 +71,25 @@ type Priorities = {
   email: Object
 };
 
+// TODO
+type Meta = Object;
+
+type Article = {
+  id: string,
+  frontPublicationDate: number,
+  publishedBy: string,
+  meta: Meta
+};
+
+type FrontCollectionDetail = {
+  draft: Array<Article>,
+  live: Array<Article>,
+  previously: Array<Article>,
+  lastUpdated: number,
+  updatedBy: string,
+  updatedEmail: string
+};
+
 export type {
   FrontsConfig,
   FrontConfig,
@@ -76,7 +97,10 @@ export type {
   FrontDetail,
   ConfigCollection,
   ConfigCollectionDetail,
+  ConfigCollectionDetailWithId,
   Priorities,
   PriorityName,
-  FrontsClientConfig
+  FrontsClientConfig,
+  FrontCollectionDetail,
+  Article
 };

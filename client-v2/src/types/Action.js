@@ -7,6 +7,9 @@ import { type Config } from './Config';
  * for typing to work nicely in reducers
  */
 
+import type { FrontCollectionDetail } from './Fronts';
+
+type ErrorActionType = 'CAUGHT_ERROR';
 type ConfigReceivedAction = {
   type: 'CONFIG_RECEIVED',
   payload: Config
@@ -23,7 +26,7 @@ type RequestFrontsConfigAction = {
 };
 
 type FrontsConfigError = {
-  type: 'CAUGHT_ERROR',
+  type: ErrorActionType,
   message: 'Could not fetch fronts config',
   // eslint-disable-next-line no-use-before-define
   error: string,
@@ -40,14 +43,38 @@ type PathUpdate = {
   path: string
 };
 
+type FrontCollectionReceivedAction = {
+  type: 'FRONTS_COLLECTION_RECEIVED',
+  id: string,
+  payload: FrontCollectionDetail
+};
+
+type RequestFrontCollectionAction = {
+  type: 'FRONTS_COLLECTION_GET_RECEIVE',
+  receivedAt: number
+};
+
+type ErrorReceivingFrontCollectionAction = {
+  type: ErrorActionType,
+  message: 'Could not fetch collection',
+  error: string,
+  receivedAt: number
+};
+
 export type Action =
   | ConfigReceivedAction
   | FrontsConfigReceivedAction
   | RequestFrontsConfigAction
   | FrontsConfigError
   | ClearError
-  | PathUpdate;
+  | PathUpdate
+  | FrontCollectionReceivedAction
+  | RequestFrontCollectionAction
+  | ErrorReceivingFrontCollectionAction;
 
 export type ActionType = $ElementType<Action, 'type'>;
 
-export type ActionError = 'Could not fetch fronts config' | '';
+export type ActionError =
+  | 'Could not fetch fronts config'
+  | 'Could not fetch collection'
+  | '';

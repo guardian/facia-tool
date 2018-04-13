@@ -4,7 +4,7 @@ import type { Action } from '../types/Action';
 import type { ThunkAction } from '../types/Store';
 import type { FrontsConfig } from '../types/Fronts';
 
-import fetchFrontsConfig from '../services/faciaApi';
+import { fetchFrontsConfig } from '../services/faciaApi';
 
 function frontsConfigReceived(config: FrontsConfig): Action {
   return {

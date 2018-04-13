@@ -1,24 +1,46 @@
 // @flow
 
 import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import getFrontCollection from '../../actions/Collection';
 
-import type { ConfigCollectionDetail } from '../../types/Fronts';
+import type { ConfigCollectionDetailWithId } from '../../types/Fronts';
+import type { State } from '../../types/State';
 
 type Props = {
-  collections: Array<ConfigCollectionDetail>
+  collection: ConfigCollectionDetailWithId
 };
 
-const renderCollection = (
-  collection: ConfigCollectionDetail,
-  index: number
-) => <div key={index}>{collection.displayName}</div>;
+// TODO
+type ConnectedComponentProps = Props & {
+  frontsActions: Object,
+  collections: Object
+};
 
-const Collections = (props: Props) => (
-  <div>
-    {props.collections.map((collection, index) =>
-      renderCollection(collection, index)
-    )}{' '}
-  </div>
-);
+class Collections extends React.Component<ConnectedComponentProps> {
+  componentDidMount() {
+    if (!this.props.collections[this.props.collection.id]) {
+      this.props.frontsActions.getFrontCollection(this.props.collection.id);
+    }
+  }
 
-export default Collections;
+  render() {
+    return <div>{this.props.collection.displayName}</div>;
+  }
+}
+
+const mapStateToProps = (state: State) => ({
+  collections: state.collections
+});
+
+const mapDispatchToProps = (dispatch: *) => ({
+  frontsActions: bindActionCreators(
+    {
+      getFrontCollection
+    },
+    dispatch
+  )
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Collections);

@@ -13,7 +13,8 @@ import type {
 import type { State } from '../types/State';
 
 const frontsSelector = (state: State): Front => state.frontsConfig.fronts;
-const collectionsSelector = (state: State): Front => state.frontsConfig.collections;
+const collectionsSelector = (state: State): ConfigCollection =>
+  state.frontsConfig.collections;
 
 const prioritySelector = (_, priority: string) => priority;
 

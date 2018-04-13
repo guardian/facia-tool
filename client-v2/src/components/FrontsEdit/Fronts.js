@@ -7,6 +7,7 @@ import { withRouter } from 'react-router';
 import getFrontsConfig from '../../actions/FrontsConfig';
 import { GetFrontsConfigStateSelector } from '../../selectors/frontsSelectors';
 import Collections from './Collections';
+import { getFrontCollections } from '../../util/frontsUtils';
 import type { FrontDetail, FrontsClientConfig } from '../../types/Fronts';
 import type { State } from '../../types/State';
 import type { PropsBeforeFetch } from './FrontsContainer';
@@ -17,7 +18,6 @@ type FrontsComponentProps = PropsBeforeFetch & {
 };
 
 class Fronts extends React.Component<FrontsComponentProps> {
-
   componentDidMount() {
     this.props.frontsActions.getFrontsConfig();
   }
@@ -50,6 +50,11 @@ class Fronts extends React.Component<FrontsComponentProps> {
     }
 
     const { frontsConfig: { fronts } } = this.props;
+    const collectionsWithId = getFrontCollections(
+      this.props.frontId,
+      fronts,
+      this.props.frontsConfig.collections
+    );
 
     return (
       <div>
@@ -60,13 +65,11 @@ class Fronts extends React.Component<FrontsComponentProps> {
           {this.renderSelectPrompt()}
           {fronts.map(this.renderFrontOption)};
         </select>
-        <Collections
-          collections={getFrontCollections(
-            this.props.frontId,
-            fronts,
-            this.props.frontsConfig.collections
-          )}
-        />
+        {collectionsWithId.map(collection => (
+          <div key={collection.id}>
+            <Collections collection={collection} />
+          </div>
+        ))}
       </div>
     );
   }
