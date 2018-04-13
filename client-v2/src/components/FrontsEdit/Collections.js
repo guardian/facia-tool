@@ -4,6 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import getFrontCollection from '../../actions/Collection';
+import CollectionDetail from './CollectionDetail';
 
 import type { ConfigCollectionDetailWithId } from '../../types/Fronts';
 import type { State } from '../../types/State';
@@ -26,7 +27,12 @@ class Collections extends React.Component<ConnectedComponentProps> {
   }
 
   render() {
-    return <div>{this.props.collection.displayName}</div>;
+    return (
+      <CollectionDetail
+        collectionConfig={this.props.collection}
+        collection={this.props.collections[this.props.collection.id]}
+      />
+    );
   }
 }
 
