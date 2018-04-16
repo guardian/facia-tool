@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import getFrontsConfig from '../../actions/FrontsConfig';
 import { GetFrontsConfigStateSelector } from '../../selectors/frontsSelectors';
-import Collections from './Collections';
+import CollectionContainer from './CollectionContainer';
 import { getFrontCollections } from '../../util/frontsUtils';
 import type { FrontDetail, FrontsClientConfig } from '../../types/FrontsConfig';
 import type { State } from '../../types/State';
@@ -66,7 +66,7 @@ class Fronts extends React.Component<FrontsComponentProps> {
         </select>
         {collectionsWithId.map(collection => (
           <div key={collection.id}>
-            <Collections collection={collection} />
+            <CollectionContainer collection={collection} />
           </div>
         ))}
       </div>

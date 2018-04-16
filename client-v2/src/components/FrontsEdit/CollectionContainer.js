@@ -8,23 +8,27 @@ import CollectionDetail from './CollectionDetail';
 import { getArticlesForCollection } from '../../util/collectionUtils';
 
 import type { ConfigCollectionDetailWithId } from '../../types/FrontsConfig';
+import type { Collection } from '../../types/Collection';
+import type { CapiArticle } from '../../types/Capi';
 import type { State } from '../../types/State';
+
 
 type Props = {
   collection: ConfigCollectionDetailWithId
 };
 
-// TODO
 type ConnectedComponentProps = Props & {
   frontsActions: Object,
-  collections: Object
+  collections: {
+    [string]: Collection
+  }
 };
 
 type ComponentState = {
-  collectionArticles: Array<Object>
+  collectionArticles: Array<CapiArticle>
 };
 
-class Collections extends React.Component<
+class CollectionContainer extends React.Component<
   ConnectedComponentProps,
   ComponentState
 > {
@@ -73,4 +77,4 @@ const mapDispatchToProps = (dispatch: *) => ({
   )
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Collections);
+export default connect(mapStateToProps, mapDispatchToProps)(CollectionContainer);
