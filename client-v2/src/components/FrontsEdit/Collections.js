@@ -36,15 +36,19 @@ class Collections extends React.Component<
     if (!this.props.collections[this.props.collection.id]) {
       this.props.frontsActions
         .getFrontCollection(this.props.collection.id)
-        .then(() =>
-          getArticlesForCollection(
-            this.props.collections[this.props.collection.id]
-          ).then(articles => {
-            this.setState({ collectionArticles: articles });
-          })
-        );
+        .then(this.getComponentArticles);
+    } else {
+      this.getComponentArticles();
     }
   }
+
+  getComponentArticles = () => {
+    getArticlesForCollection(
+      this.props.collections[this.props.collection.id]
+    ).then(articles => {
+      this.setState({ collectionArticles: articles });
+    });
+  };
 
   render() {
     return (
