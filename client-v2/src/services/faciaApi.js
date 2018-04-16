@@ -15,3 +15,10 @@ export function getCollection(collectionId: string) {
     credentials: 'same-origin'
   }).then(response => response.json());
 }
+
+export function searchCapi(stage: string, queryString: string) {
+  return pandaFetch(`/api/${stage}/search?${queryString}`, {
+    method: 'get',
+    credentials: 'same-origin'
+  }).then(response => response.json());
+}

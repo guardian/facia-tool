@@ -1,19 +1,45 @@
 // @flow
 
 import React from 'react';
+import styled from 'styled-components';
 
-import type { ConfigCollectionDetailWithId, FrontCollectionDetail } from '../../types/Fronts';
+import type {
+  ConfigCollectionDetailWithId,
+  CapiArticle
+} from '../../types/Fronts';
 
 type Props = {
   collectionConfig: ConfigCollectionDetailWithId,
-  collection: FrontCollectionDetail
+  articles: Array<CapiArticle>
 };
 
+const CollectionContainer = styled('div')`
+  background-color: white;
+  padding: 5px;
+  margin: 5px;
+  color: black;
+`;
+
+const CollectionHeadline = styled('div')`
+  font-weight: bold;
+  padding: 7px;
+`;
+
+const ArticleContainer = styled('div')`
+  padding: 5px;
+`;
+
 const CollectionDetail = (props: Props) => (
-  <div>
-    {props.collectionConfig.displayName}
-  </div>
+  <CollectionContainer>
+    <CollectionHeadline>
+      {props.collectionConfig.displayName}
+    </CollectionHeadline>
+    {props.articles.map(article => (
+      <ArticleContainer key={article.headline}>
+        {article.headline}
+      </ArticleContainer>
+    ))}
+  </CollectionContainer>
 );
 
 export default CollectionDetail;
-

@@ -41,19 +41,18 @@ class Fronts extends React.Component<FrontsComponentProps> {
   };
 
   render() {
-    // TODO assign consts from props
+    const { frontsConfig: { fronts, collections } } = this.props;
     if (
-      !this.props.frontsConfig.fronts ||
-      this.props.frontsConfig.fronts.length === 0
+      !fronts ||
+      fronts.length === 0
     ) {
       return <div>Loading</div>;
     }
 
-    const { frontsConfig: { fronts } } = this.props;
     const collectionsWithId = getFrontCollections(
       this.props.frontId,
       fronts,
-      this.props.frontsConfig.collections
+      collections
     );
 
     return (

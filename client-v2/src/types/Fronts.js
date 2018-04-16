@@ -90,6 +90,10 @@ type FrontCollectionDetail = {
   updatedEmail: string
 };
 
+type CapiArticle = {
+  headline: string
+};
+
 export type {
   FrontsConfig,
   FrontConfig,
@@ -102,5 +106,6 @@ export type {
   PriorityName,
   FrontsClientConfig,
   FrontCollectionDetail,
-  Article
+  Article,
+  CapiArticle
 };

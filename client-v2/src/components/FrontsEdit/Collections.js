@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import getFrontCollection from '../../actions/Collection';
 import CollectionDetail from './CollectionDetail';
+import { getArticlesForCollection } from '../../util/collectionUtils';
 
 import type { ConfigCollectionDetailWithId } from '../../types/Fronts';
 import type { State } from '../../types/State';
@@ -19,10 +20,29 @@ type ConnectedComponentProps = Props & {
   collections: Object
 };
 
-class Collections extends React.Component<ConnectedComponentProps> {
+type ComponentState = {
+  collectionArticles: Array<Object>
+};
+
+class Collections extends React.Component<
+  ConnectedComponentProps,
+  ComponentState
+> {
+  state = {
+    collectionArticles: []
+  };
+
   componentDidMount() {
     if (!this.props.collections[this.props.collection.id]) {
-      this.props.frontsActions.getFrontCollection(this.props.collection.id);
+      this.props.frontsActions
+        .getFrontCollection(this.props.collection.id)
+        .then(() =>
+          getArticlesForCollection(
+            this.props.collections[this.props.collection.id]
+          ).then(articles => {
+            this.setState({ collectionArticles: articles });
+          })
+        );
     }
   }
 
@@ -30,7 +50,7 @@ class Collections extends React.Component<ConnectedComponentProps> {
     return (
       <CollectionDetail
         collectionConfig={this.props.collection}
-        collection={this.props.collections[this.props.collection.id]}
+        articles={this.state.collectionArticles}
       />
     );
   }
