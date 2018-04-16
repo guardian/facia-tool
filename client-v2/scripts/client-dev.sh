@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+cd "$(dirname "$0")"
 
 printf "\n\rStarting Yarn... \n\r\n\r"
 
