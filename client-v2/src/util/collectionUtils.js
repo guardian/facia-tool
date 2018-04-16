@@ -1,15 +1,11 @@
 // @flow
 
 import { searchCapi } from '../services/faciaApi';
-import type {
-  FrontCollectionDetail,
-  Article,
-  CapiArticle
-} from '../types/Fronts';
+import type { Collection } from '../types/Collection';
+import type { Article } from '../types/Article';
+import type { CapiArticle } from '../types/Capi';
 
-const getDraftArticles = (
-  collection: ?FrontCollectionDetail
-): Array<Article> => {
+const getDraftArticles = (collection: ?Collection): Array<Article> => {
   if (!collection) {
     return [];
   }
@@ -23,7 +19,7 @@ const getDraftArticles = (
 };
 
 const getArticlesForCollection = (
-  collection: FrontCollectionDetail
+  collection: Collection
 ): Promise<Array<CapiArticle>> => {
   if (!collection) {
     return Promise.resolve([]);

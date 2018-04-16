@@ -1,6 +1,6 @@
 // @flow
 
-import type { FrontsConfig, FrontsClientConfig } from './types/Fronts';
+import type { FrontsConfig, FrontsClientConfig } from './types/FrontsConfig';
 
 const frontsConfig: FrontsConfig = {
   fronts: {

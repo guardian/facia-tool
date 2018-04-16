@@ -8,7 +8,7 @@ import type {
   FrontsClientConfig,
   Front,
   ConfigCollection
-} from '../types/Fronts';
+} from '../types/FrontsConfig';
 
 import type { State } from '../types/State';
 

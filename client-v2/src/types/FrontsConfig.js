@@ -1,6 +1,6 @@
 // @flow
 
-type PriorityName = 'editorial' | 'commercial' | 'training' | 'email';
+import type { PriorityName } from '../types/Priority';
 
 type FrontConfig = {
   collections: Array<string>,
@@ -64,36 +64,6 @@ type FrontsClientConfig = {
   collections: ConfigCollection
 };
 
-type Priorities = {
-  editorial: Object,
-  commercial: Object,
-  training: Object,
-  email: Object
-};
-
-// TODO
-type Meta = Object;
-
-type Article = {
-  id: string,
-  frontPublicationDate: number,
-  publishedBy: string,
-  meta: Meta
-};
-
-type FrontCollectionDetail = {
-  draft: Array<Article>,
-  live: Array<Article>,
-  previously: Array<Article>,
-  lastUpdated: number,
-  updatedBy: string,
-  updatedEmail: string
-};
-
-type CapiArticle = {
-  headline: string
-};
-
 export type {
   FrontsConfig,
   FrontConfig,
@@ -102,10 +72,5 @@ export type {
   ConfigCollection,
   ConfigCollectionDetail,
   ConfigCollectionDetailWithId,
-  Priorities,
-  PriorityName,
-  FrontsClientConfig,
-  FrontCollectionDetail,
-  Article,
-  CapiArticle
+  FrontsClientConfig
 };

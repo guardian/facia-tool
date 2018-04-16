@@ -4,11 +4,11 @@ import type { Action } from '../types/Action';
 import type { ThunkAction } from '../types/Store';
 
 import { getCollection } from '../services/faciaApi';
-import type { FrontCollectionDetail } from '../types/Fronts';
+import type { Collection } from '../types/Collection';
 
 function frontCollectionReceived(
   collectionId: string,
-  collectionDetail: FrontCollectionDetail
+  collectionDetail: Collection
 ): Action {
   return {
     type: 'FRONTS_COLLECTION_RECEIVED',

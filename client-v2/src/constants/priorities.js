@@ -1,6 +1,6 @@
 // @flow
 
-import type { Priorities } from '../types/Fronts.js';
+import type { Priorities } from '../types/Priority';
 
 export const priorities: Priorities = {
   editorial: {},

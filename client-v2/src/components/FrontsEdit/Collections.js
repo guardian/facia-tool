@@ -7,7 +7,7 @@ import getFrontCollection from '../../actions/Collection';
 import CollectionDetail from './CollectionDetail';
 import { getArticlesForCollection } from '../../util/collectionUtils';
 
-import type { ConfigCollectionDetailWithId } from '../../types/Fronts';
+import type { ConfigCollectionDetailWithId } from '../../types/FrontsConfig';
 import type { State } from '../../types/State';
 
 type Props = {

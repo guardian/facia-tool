@@ -8,7 +8,7 @@ import getFrontsConfig from '../../actions/FrontsConfig';
 import { GetFrontsConfigStateSelector } from '../../selectors/frontsSelectors';
 import Collections from './Collections';
 import { getFrontCollections } from '../../util/frontsUtils';
-import type { FrontDetail, FrontsClientConfig } from '../../types/Fronts';
+import type { FrontDetail, FrontsClientConfig } from '../../types/FrontsConfig';
 import type { State } from '../../types/State';
 import type { PropsBeforeFetch } from './FrontsContainer';
 

@@ -7,7 +7,7 @@ import { type Config } from './Config';
  * for typing to work nicely in reducers
  */
 
-import type { FrontCollectionDetail } from './Fronts';
+import type { Collection } from './Collection';
 
 type ErrorActionType = 'CAUGHT_ERROR';
 type ConfigReceivedAction = {
@@ -46,7 +46,7 @@ type PathUpdate = {
 type FrontCollectionReceivedAction = {
   type: 'FRONTS_COLLECTION_RECEIVED',
   id: string,
-  payload: FrontCollectionDetail
+  payload: Collection
 };
 
 type RequestFrontCollectionAction = {

@@ -3,10 +3,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import type {
-  ConfigCollectionDetailWithId,
-  CapiArticle
-} from '../../types/Fronts';
+import type { ConfigCollectionDetailWithId } from '../../types/FrontsConfig';
+import type { CapiArticle } from '../../types/Capi';
 
 type Props = {
   collectionConfig: ConfigCollectionDetailWithId,
