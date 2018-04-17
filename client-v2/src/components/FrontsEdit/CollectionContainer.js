@@ -4,14 +4,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import getFrontCollection from '../../actions/Collection';
+import getArticlesForCollection from '../../actions/Articles';
 import CollectionDetail from './CollectionDetail';
-import { getArticlesForCollection } from '../../util/collectionUtils';
 
 import type { ConfigCollectionDetailWithId } from '../../types/FrontsConfig';
 import type { Collection } from '../../types/Collection';
 import type { CapiArticle } from '../../types/Capi';
 import type { State } from '../../types/State';
-
 
 type Props = {
   collection: ConfigCollectionDetailWithId
@@ -21,60 +20,53 @@ type ConnectedComponentProps = Props & {
   frontsActions: Object,
   collections: {
     [string]: Collection
+  },
+  collectionArticles: {
+    [string]: Array<CapiArticle>
   }
 };
 
-type ComponentState = {
-  collectionArticles: Array<CapiArticle>
-};
-
-class CollectionContainer extends React.Component<
-  ConnectedComponentProps,
-  ComponentState
-> {
-  state = {
-    collectionArticles: []
-  };
-
+class CollectionContainer extends React.Component<ConnectedComponentProps> {
   componentDidMount() {
-    if (!this.props.collections[this.props.collection.id]) {
-      this.props.frontsActions
-        .getFrontCollection(this.props.collection.id)
-        .then(this.getComponentArticles);
+    const { props: { collection: { id } } } = this;
+    const currentCollection = this.props.collections[id];
+    if (!currentCollection) {
+      this.props.frontsActions.getFrontCollection(id).then(() => {
+        this.props.frontsActions.getArticlesForCollection(
+          this.props.collections[id],
+          id
+        );
+      });
     } else {
-      this.getComponentArticles();
+      this.props.frontsActions.getArticlesForCollection(currentCollection, id);
     }
   }
-
-  getComponentArticles = () => {
-    getArticlesForCollection(
-      this.props.collections[this.props.collection.id]
-    ).then(articles => {
-      this.setState({ collectionArticles: articles });
-    });
-  };
 
   render() {
     return (
       <CollectionDetail
         collectionConfig={this.props.collection}
-        articles={this.state.collectionArticles}
+        articles={this.props.collectionArticles[this.props.collection.id] || []}
       />
     );
   }
 }
 
 const mapStateToProps = (state: State) => ({
-  collections: state.collections
+  collections: state.collections,
+  collectionArticles: state.collectionArticles
 });
 
 const mapDispatchToProps = (dispatch: *) => ({
   frontsActions: bindActionCreators(
     {
-      getFrontCollection
+      getFrontCollection,
+      getArticlesForCollection
     },
     dispatch
   )
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CollectionContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(
+  CollectionContainer
+);

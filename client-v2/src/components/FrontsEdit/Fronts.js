@@ -42,10 +42,7 @@ class Fronts extends React.Component<FrontsComponentProps> {
 
   render() {
     const { frontsConfig: { fronts, collections } } = this.props;
-    if (
-      !fronts ||
-      fronts.length === 0
-    ) {
+    if (!fronts || fronts.length === 0) {
       return <div>Loading</div>;
     }
 

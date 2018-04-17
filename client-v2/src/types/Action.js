@@ -1,6 +1,7 @@
 // @flow
 
 import { type Config } from './Config';
+import { type CapiArticle } from './Capi';
 
 /**
  * Need to add new types into here and union them with `Action` in order
@@ -8,6 +9,12 @@ import { type Config } from './Config';
  */
 
 import type { Collection } from './Collection';
+
+type ActionError =
+  | 'Could not fetch fronts config'
+  | 'Could not fetch collection'
+  | 'Could not fetch collection articles from capi'
+  | '';
 
 type ErrorActionType = 'CAUGHT_ERROR';
 type ConfigReceivedAction = {
@@ -22,14 +29,6 @@ type FrontsConfigReceivedAction = {
 
 type RequestFrontsConfigAction = {
   type: 'FRONTS_CONFIG_GET_RECEIVE',
-  receivedAt: number
-};
-
-type FrontsConfigError = {
-  type: ErrorActionType,
-  message: 'Could not fetch fronts config',
-  // eslint-disable-next-line no-use-before-define
-  error: string,
   receivedAt: number
 };
 
@@ -54,10 +53,21 @@ type RequestFrontCollectionAction = {
   receivedAt: number
 };
 
-type ErrorReceivingFrontCollectionAction = {
+type ErrorInAction = {
   type: ErrorActionType,
-  message: 'Could not fetch collection',
+  message: ActionError,
   error: string,
+  receivedAt: number
+};
+
+type CollectionArticlesReceived = {
+  type: 'CAPI_ARTICLES_RECEIVED',
+  id: string,
+  payload: Array<CapiArticle>
+};
+
+type RequestCollectionArticles = {
+  type: 'CAPI_ARTICLES_GET_RECEIVE',
   receivedAt: number
 };
 
@@ -65,16 +75,13 @@ export type Action =
   | ConfigReceivedAction
   | FrontsConfigReceivedAction
   | RequestFrontsConfigAction
-  | FrontsConfigError
   | ClearError
   | PathUpdate
   | FrontCollectionReceivedAction
   | RequestFrontCollectionAction
-  | ErrorReceivingFrontCollectionAction;
+  | ErrorInAction
+  | CollectionArticlesReceived
+  | RequestCollectionArticles;
 
 export type ActionType = $ElementType<Action, 'type'>;
-
-export type ActionError =
-  | 'Could not fetch fronts config'
-  | 'Could not fetch collection'
-  | '';
+export type { ActionError };

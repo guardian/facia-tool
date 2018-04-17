@@ -6,13 +6,15 @@ import frontsConfig from './frontsConfigReducer';
 import error from './errorReducer';
 import path from './pathReducer';
 import collections from './collectionsReducer';
+import collectionArticles from './collectionArticlesReducer';
 
 const reducers = {
   config,
   frontsConfig,
   error,
   path,
-  collections
+  collections,
+  collectionArticles
 };
 
 export type Reducers = typeof reducers;

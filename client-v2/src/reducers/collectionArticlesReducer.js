@@ -4,9 +4,9 @@ import { type Action } from '../types/Action';
 
 type State = Object;
 
-const collections = (state: State = {}, action: Action) => {
+const collectionArticles = (state: State = {}, action: Action) => {
   switch (action.type) {
-    case 'FRONTS_COLLECTION_RECEIVED': {
+    case 'CAPI_ARTICLES_RECEIVED': {
       const { id, payload } = action;
       return Object.assign({}, state, { [id]: payload });
     }
@@ -16,4 +16,4 @@ const collections = (state: State = {}, action: Action) => {
   }
 };
 
-export default collections;
+export default collectionArticles;
