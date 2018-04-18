@@ -14,6 +14,11 @@ type Props = {
 
 const DropDownSelector = styled('select')`
   padding: 10px;
+  margin-left: 5px;
+  margin-top: 10px;
+  border: 1px solid;
+  height: 30px;
+  font-size: 16px;
 `;
 
 const selectFront = (
