@@ -57,4 +57,5 @@ const FrontsDropDown = (props: Props) => {
   );
 };
 
+export type { Props };
 export default FrontsDropDown;
