@@ -11,7 +11,6 @@ import { priorities } from '../constants/priorities';
 const AppContainer = styled('div')`
   background-color: #221133;
   color: white;
-  display: flex;
   font-family: 'Helvetica Neue', Helvetica, Arial;
   font-size: 16px;
   font-weight: 100;
