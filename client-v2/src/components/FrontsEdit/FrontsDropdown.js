@@ -1,0 +1,55 @@
+// @flow
+
+import React from 'react';
+import styled from 'styled-components';
+import type { RouterHistory } from 'react-router-dom';
+import type { FrontDetail } from '../../types/FrontsConfig';
+
+type Props = {
+  fronts: Array<FrontDetail>,
+  frontId: ?string,
+  history: RouterHistory,
+  priority: string
+};
+
+const DropDownSelector = styled('select')`
+  padding: 10px;
+`;
+
+const selectFront = (
+  frontId: string,
+  history: RouterHistory,
+  priority: string
+) => {
+  const encodedUri = encodeURIComponent(frontId);
+  history.push(`/${priority}/${encodedUri}`);
+};
+
+const renderSelectPrompt = (frontId: ?string) => {
+  if (!frontId) {
+    return <option value="">Choose a front...</option>;
+  }
+  return null;
+};
+
+const FrontsDropDown = (props: Props) => {
+  if (!props.fronts) {
+    return <div>Loading</div>;
+  }
+
+  return (
+    <DropDownSelector
+      value={props.frontId}
+      onChange={e => selectFront(e.target.value, props.history, props.priority)}
+    >
+      {renderSelectPrompt(props.frontId)}
+      {props.fronts.map(front => (
+        <option value={front.id} key={front.id}>
+          {front.id}
+        </option>
+      ))}
+    </DropDownSelector>
+  );
+};
+
+export default FrontsDropDown;
