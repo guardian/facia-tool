@@ -6,8 +6,9 @@ import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import getFrontsConfig from '../../actions/FrontsConfig';
 import { GetFrontsConfigStateSelector } from '../../selectors/frontsSelectors';
-
-import type { FrontDetail, FrontsClientConfig } from '../../types/Fronts';
+import CollectionContainer from './CollectionContainer';
+import { getFrontCollections } from '../../util/frontsUtils';
+import type { FrontDetail, FrontsClientConfig } from '../../types/FrontsConfig';
 import type { State } from '../../types/State';
 import type { PropsBeforeFetch } from './FrontsContainer';
 
@@ -40,20 +41,32 @@ class Fronts extends React.Component<FrontsComponentProps> {
   };
 
   render() {
-    if (!this.props.frontsConfig.fronts) {
+    const { frontsConfig: { fronts, collections } } = this.props;
+    if (!fronts || fronts.length === 0) {
       return <div>Loading</div>;
     }
 
-    const { frontsConfig: { fronts } } = this.props;
+    const collectionsWithId = getFrontCollections(
+      this.props.frontId,
+      fronts,
+      collections
+    );
 
     return (
-      <select
-        value={decodeURIComponent(this.props.frontId)}
-        onChange={e => this.selectFront(e.target.value)}
-      >
-        {this.renderSelectPrompt()}
-        {fronts.map(this.renderFrontOption)};
-      </select>
+      <div>
+        <select
+          value={this.props.frontId}
+          onChange={e => this.selectFront(e.target.value)}
+        >
+          {this.renderSelectPrompt()}
+          {fronts.map(this.renderFrontOption)};
+        </select>
+        {collectionsWithId.map(collection => (
+          <div key={collection.id}>
+            <CollectionContainer collection={collection} />
+          </div>
+        ))}
+      </div>
     );
   }
 }

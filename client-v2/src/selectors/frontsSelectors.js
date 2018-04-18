@@ -6,12 +6,15 @@ import type {
   FrontConfig,
   FrontDetail,
   FrontsClientConfig,
-  Front
-} from '../types/Fronts';
+  Front,
+  ConfigCollection
+} from '../types/FrontsConfig';
 
 import type { State } from '../types/State';
 
 const frontsSelector = (state: State): Front => state.frontsConfig.fronts;
+const collectionsSelector = (state: State): ConfigCollection =>
+  state.frontsConfig.collections;
 
 const prioritySelector = (_, priority: string) => priority;
 
@@ -24,11 +27,12 @@ const frontsIdSelector = createSelector([frontsSelector], fronts => {
 
 const getFrontsConfig = (
   fronts: Front,
+  collections: ConfigCollection,
   frontIds: Array<string>,
   priority: string
 ): FrontsClientConfig => {
   if (frontIds.length === 0) {
-    return { fronts: [], collections: [] };
+    return { fronts: [], collections: {} };
   }
   const frontsWithPriority = frontIds.reduce(
     (acc: Array<FrontDetail>, key: string) => {
@@ -46,7 +50,6 @@ const getFrontsConfig = (
     },
     []
   );
-  const collections = [];
   return {
     fronts: frontsWithPriority,
     collections
@@ -54,7 +57,7 @@ const getFrontsConfig = (
 };
 
 const GetFrontsConfigStateSelector = createSelector(
-  [frontsSelector, frontsIdSelector, prioritySelector],
+  [frontsSelector, collectionsSelector, frontsIdSelector, prioritySelector],
   getFrontsConfig
 );
 

@@ -1,12 +1,22 @@
 // @flow
 
 import { type Config } from './Config';
+import { type CapiArticle } from './Capi';
 
 /**
  * Need to add new types into here and union them with `Action` in order
  * for typing to work nicely in reducers
  */
 
+import type { Collection } from './Collection';
+
+type ActionError =
+  | 'Could not fetch fronts config'
+  | 'Could not fetch collection'
+  | 'Could not fetch collection articles from capi'
+  | '';
+
+type ErrorActionType = 'CAUGHT_ERROR';
 type ConfigReceivedAction = {
   type: 'CONFIG_RECEIVED',
   payload: Config
@@ -22,14 +32,6 @@ type RequestFrontsConfigAction = {
   receivedAt: number
 };
 
-type FrontsConfigError = {
-  type: 'CAUGHT_ERROR',
-  message: 'Could not fetch fronts config',
-  // eslint-disable-next-line no-use-before-define
-  error: string,
-  receivedAt: number
-};
-
 type ClearError = {
   type: 'CLEAR_ERROR',
   receivedAt: number
@@ -40,14 +42,46 @@ type PathUpdate = {
   path: string
 };
 
+type FrontCollectionReceivedAction = {
+  type: 'FRONTS_COLLECTION_RECEIVED',
+  id: string,
+  payload: Collection
+};
+
+type RequestFrontCollectionAction = {
+  type: 'FRONTS_COLLECTION_GET_RECEIVE',
+  receivedAt: number
+};
+
+type ErrorInAction = {
+  type: ErrorActionType,
+  message: ActionError,
+  error: string,
+  receivedAt: number
+};
+
+type CollectionArticlesReceived = {
+  type: 'CAPI_ARTICLES_RECEIVED',
+  id: string,
+  payload: Array<CapiArticle>
+};
+
+type RequestCollectionArticles = {
+  type: 'CAPI_ARTICLES_GET_RECEIVE',
+  receivedAt: number
+};
+
 export type Action =
   | ConfigReceivedAction
   | FrontsConfigReceivedAction
   | RequestFrontsConfigAction
-  | FrontsConfigError
   | ClearError
-  | PathUpdate;
+  | PathUpdate
+  | FrontCollectionReceivedAction
+  | RequestFrontCollectionAction
+  | ErrorInAction
+  | CollectionArticlesReceived
+  | RequestCollectionArticles;
 
 export type ActionType = $ElementType<Action, 'type'>;
-
-export type ActionError = 'Could not fetch fronts config' | '';
+export type { ActionError };

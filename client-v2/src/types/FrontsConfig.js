@@ -1,6 +1,6 @@
 // @flow
 
-type PriorityName = 'editorial' | 'commercial' | 'training' | 'email';
+import type { PriorityName } from '../types/Priority';
 
 type FrontConfig = {
   collections: Array<string>,
@@ -27,7 +27,7 @@ type Front = {
 
 type Platform = 'Web' | 'Platform';
 
-type CollectionDetail = {
+type ConfigCollectionDetail = {
   displayName: string,
   type: string,
   backfill?: Object,
@@ -48,25 +48,20 @@ type CollectionDetail = {
   platform?: Platform
 };
 
-type Collection = {
-  [string]: CollectionDetail
+type ConfigCollectionDetailWithId = ConfigCollectionDetail & { id: string };
+
+type ConfigCollection = {
+  [string]: ConfigCollectionDetail
 };
 
 type FrontsConfig = {
   fronts: Front,
-  collections: Collection
+  collections: ConfigCollection
 };
 
 type FrontsClientConfig = {
   fronts: Array<FrontDetail>,
-  collections: Array<CollectionDetail>
-};
-
-type Priorities = {
-  editorial: Object,
-  commercial: Object,
-  training: Object,
-  email: Object
+  collections: ConfigCollection
 };
 
 export type {
@@ -74,9 +69,8 @@ export type {
   FrontConfig,
   Front,
   FrontDetail,
-  Collection,
-  CollectionDetail,
-  Priorities,
-  PriorityName,
+  ConfigCollection,
+  ConfigCollectionDetail,
+  ConfigCollectionDetailWithId,
   FrontsClientConfig
 };

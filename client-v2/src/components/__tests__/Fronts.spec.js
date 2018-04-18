@@ -6,7 +6,7 @@ import { FrontsComponent } from '../FrontsEdit/Fronts';
 import { frontsActions } from '../../mocks';
 import { frontsClientConfig } from '../../fixtures';
 
-import type { PriorityName } from '../../types/Fronts';
+import type { PriorityName } from '../../types/Priority';
 import type { FrontsComponentProps } from '../FrontsEdit/Fronts';
 
 const selectors = {
