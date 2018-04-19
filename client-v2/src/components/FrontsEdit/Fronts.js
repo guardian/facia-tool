@@ -7,8 +7,9 @@ import { withRouter } from 'react-router';
 import getFrontsConfig from '../../actions/FrontsConfig';
 import { GetFrontsConfigStateSelector } from '../../selectors/frontsSelectors';
 import CollectionContainer from './CollectionContainer';
+import FrontsDropDown from './FrontsDropdown';
 import { getFrontCollections } from '../../util/frontsUtils';
-import type { FrontDetail, FrontsClientConfig } from '../../types/FrontsConfig';
+import type { FrontsClientConfig } from '../../types/FrontsConfig';
 import type { State } from '../../types/State';
 import type { PropsBeforeFetch } from './FrontsContainer';
 
@@ -22,29 +23,8 @@ class Fronts extends React.Component<FrontsComponentProps> {
     this.props.frontsActions.getFrontsConfig();
   }
 
-  selectFront = (frontId: string) => {
-    const encodedUri = encodeURIComponent(frontId);
-    this.props.history.push(`/${this.props.priority}/${encodedUri}`);
-  };
-
-  renderFrontOption = (front: FrontDetail) => (
-    <option value={front.id} key={front.id}>
-      {front.id}
-    </option>
-  );
-
-  renderSelectPrompt = () => {
-    if (!this.props.frontId) {
-      return <option value="">Choose a front...</option>;
-    }
-    return null;
-  };
-
   render() {
     const { frontsConfig: { fronts, collections } } = this.props;
-    if (!fronts || fronts.length === 0) {
-      return <div>Loading</div>;
-    }
 
     const collectionsWithId = getFrontCollections(
       this.props.frontId,
@@ -54,13 +34,12 @@ class Fronts extends React.Component<FrontsComponentProps> {
 
     return (
       <div>
-        <select
-          value={this.props.frontId}
-          onChange={e => this.selectFront(e.target.value)}
-        >
-          {this.renderSelectPrompt()}
-          {fronts.map(this.renderFrontOption)};
-        </select>
+        <FrontsDropDown
+          fronts={fronts}
+          frontId={this.props.frontId}
+          history={this.props.history}
+          priority={this.props.priority}
+        />
         {collectionsWithId.map(collection => (
           <div key={collection.id}>
             <CollectionContainer collection={collection} />

@@ -1,6 +1,7 @@
 // @flow
 
 import { createSelector } from 'reselect';
+import { breakingNewsFrontId } from '../constants/fronts';
 
 import type {
   FrontConfig,
@@ -22,7 +23,9 @@ const frontsIdSelector = createSelector([frontsSelector], fronts => {
   if (!fronts) {
     return [];
   }
-  return Object.keys(fronts);
+  return Object.keys(fronts)
+    .filter(front => front !== breakingNewsFrontId)
+    .sort();
 });
 
 const getFrontsConfig = (
