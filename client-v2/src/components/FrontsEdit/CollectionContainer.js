@@ -7,6 +7,9 @@ import getFrontCollection from '../../actions/Collection';
 import getArticlesForCollection from '../../actions/Articles';
 import CollectionDetail from './CollectionDetail';
 import Button from '../Button';
+import Col from '../Col';
+import Row from '../Row';
+import { frontStages } from '../../constants/fronts';
 
 import type { ConfigCollectionDetailWithId } from '../../types/FrontsConfig';
 import type { Collection, CollectionArticles } from '../../types/Collection';
@@ -31,7 +34,7 @@ type ConnectedComponentProps = Props & {
 };
 
 type ComponentState = {
-  browsingState: 'draft' | 'live'
+  browsingStage: 'draft' | 'live'
 };
 
 class CollectionContainer extends React.Component<
@@ -39,7 +42,7 @@ class CollectionContainer extends React.Component<
   ComponentState
 > {
   state = {
-    browsingState: 'draft'
+    browsingStage: 'draft'
   };
 
   componentDidMount() {
@@ -57,18 +60,38 @@ class CollectionContainer extends React.Component<
     }
   }
 
+  handleStageSelect(key) {
+    this.setState({
+      browsingStage: frontStages[key]
+    });
+  }
+
   render() {
     const collectionArticles: CollectionArticles = this.props
       .collectionArticles[this.props.collection.id];
     const articlesWithState: Array<CapiArticle> = collectionArticles
-      ? collectionArticles[this.state.browsingState]
+      ? collectionArticles[this.state.browsingStage]
       : [];
 
     return (
-      <CollectionDetail
-        collectionConfig={this.props.collection}
-        articles={articlesWithState}
-      />
+      <div>
+        <Row>
+          {Object.keys(frontStages).map(key => (
+            <Col key={key}>
+              <Button
+                selected={frontStages[key] === this.state.browsingStage}
+                onClick={() => this.handleStageSelect(key)}
+              >
+                {frontStages[key]}
+              </Button>
+            </Col>
+          ))}
+        </Row>
+        <CollectionDetail
+          collectionConfig={this.props.collection}
+          articles={articlesWithState}
+        />
+      </div>
     );
   }
 }
