@@ -2,7 +2,7 @@
 
 import pandaFetch from './pandaFetch';
 import { getCollectionArticleQueryString } from '../util/collectionUtils';
-import type { Collection } from '../types/Collection';
+import type { Collection, CollectionArticles } from '../types/Collection';
 import type { CapiArticle } from '../types/Capi';
 
 export function fetchFrontsConfig() {
@@ -20,22 +20,39 @@ export function getCollection(collectionId: string) {
 }
 
 export function getCollectionArticles(
-  collection: Collection,
-  stage: string = 'preview'
-): Promise<Array<CapiArticle>> {
-  const ids = getCollectionArticleQueryString(collection);
+  collection: Collection
+): Promise<Array<CollectionArticles>> {
+  const parseArticleListFromResponse = (text: ?string): Array<CapiArticle> => {
+    if (text) {
+      return JSON.parse(text).response.results.map(result => ({
+        headline: result.webTitle
+      }));
+    }
+    return [];
+  };
 
-  if (ids) {
-    return pandaFetch(`/api/${stage}/search?ids=${ids}`, {
+  const draftIds = getCollectionArticleQueryString(collection, 'draft');
+  const liveIds = getCollectionArticleQueryString(collection, 'live');
+
+  const draftArticlePromise = pandaFetch(
+    `/api/preview/search?ids=${draftIds}`,
+    {
       method: 'get',
       credentials: 'same-origin'
-    })
-      .then(response => response.json())
-      .then(json =>
-        Promise.resolve(
-          json.response.results.map(result => ({ headline: result.webTitle }))
-        )
-      );
-  }
-  return Promise.resolve([]);
+    }
+  );
+
+  const liveArticlePromise = pandaFetch(`/api/live/search?ids=${liveIds}`, {
+    method: 'get',
+    credentials: 'same-origin'
+  });
+
+  return Promise.all([draftArticlePromise, liveArticlePromise])
+    .then(responses => Promise.all(responses.map(response => response.text())))
+    .then(([draft, live]) =>
+      Promise.resolve({
+        draft: parseArticleListFromResponse(draft),
+        live: parseArticleListFromResponse(live)
+      })
+    );
 }

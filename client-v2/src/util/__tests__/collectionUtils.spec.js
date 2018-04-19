@@ -1,9 +1,6 @@
 // @flow
 
-import {
-  getDraftArticles,
-  getCollectionArticleQueryString
-} from '../collectionUtils';
+import { getCollectionArticleQueryString } from '../collectionUtils';
 
 const liveArticle = {
   id: 'live',
@@ -33,7 +30,7 @@ const collectionWithNoDraftArticles = {
   updatedEmail: 'email'
 };
 
-const collectionWithDraftArticles = {
+const collectionWithArticles = {
   live: [liveArticle],
   draft: [draftArticle],
   lastUpdated: 1,
@@ -49,31 +46,25 @@ const collectionWithSnapArticles = {
   updatedEmail: 'email'
 };
 
-describe('getDraftArticles', () => {
-  it('returns empty list if collection is missing', () => {
-    expect(getDraftArticles(null)).toEqual([]);
-  });
-  it('returns list of live articles if draft list is missing', () => {
-    expect(getDraftArticles(collectionWithNoDraftArticles)).toEqual([
-      liveArticle
-    ]);
-  });
-  it('returns list of draft articles when draft articles exist', () => {
-    expect(getDraftArticles(collectionWithDraftArticles)).toEqual([
-      draftArticle
-    ]);
-  });
-});
-
 describe('getCollectionArticleQueryString', () => {
-  it('returns article ids', () => {
-    expect(getCollectionArticleQueryString(collectionWithDraftArticles)).toBe(
-      'draft'
-    );
+  it('returns draft article ids', () => {
+    expect(
+      getCollectionArticleQueryString(collectionWithArticles, 'draft')
+    ).toBe('draft');
+  });
+  it('returns live article ids if draft is missing', () => {
+    expect(
+      getCollectionArticleQueryString(collectionWithNoDraftArticles, 'draft')
+    ).toBe('live');
+  });
+  it('returns live article ids', () => {
+    expect(
+      getCollectionArticleQueryString(collectionWithArticles, 'live')
+    ).toBe('live');
   });
   it('filters out snap links', () => {
-    expect(getCollectionArticleQueryString(collectionWithSnapArticles)).toBe(
-      'draft'
-    );
+    expect(
+      getCollectionArticleQueryString(collectionWithSnapArticles, 'draft')
+    ).toBe('draft');
   });
 });
