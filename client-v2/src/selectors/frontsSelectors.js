@@ -17,7 +17,7 @@ const frontsSelector = (state: State): Front => state.frontsConfig.fronts;
 const collectionsSelector = (state: State): ConfigCollection =>
   state.frontsConfig.collections;
 
-const prioritySelector = (_, priority: string) => priority;
+const prioritySelector = (state: State, priority: string) => priority;
 
 const frontsIdSelector = createSelector([frontsSelector], fronts => {
   if (!fronts) {
