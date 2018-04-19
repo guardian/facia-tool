@@ -2,6 +2,7 @@
 
 import pandaFetch from './pandaFetch';
 import { getCollectionArticleQueryString } from '../util/collectionUtils';
+import { frontStages } from '../constants/fronts';
 import type { Collection, CollectionArticles } from '../types/Collection';
 import type { CapiArticle } from '../types/Capi';
 
@@ -31,8 +32,11 @@ export function getCollectionArticles(
     return [];
   };
 
-  const draftIds = getCollectionArticleQueryString(collection, 'draft');
-  const liveIds = getCollectionArticleQueryString(collection, 'live');
+  const draftIds = getCollectionArticleQueryString(
+    collection,
+    frontStages.draft
+  );
+  const liveIds = getCollectionArticleQueryString(collection, frontStages.live);
 
   const draftArticlePromise = pandaFetch(
     `/api/preview/search?ids=${draftIds}`,

@@ -1,5 +1,6 @@
 // @flow
 
+import { frontStages } from '../constants/fronts';
 import type { Collection } from '../types/Collection';
 import type { Article } from '../types/Article';
 
@@ -11,7 +12,7 @@ const getArticleIds = (
     return [];
   }
 
-  if (stage === 'draft') {
+  if (stage === frontStages.draft) {
     // Draft and live versions of the collection are in sync
     if (!collection.draft) {
       return collection.live || [];

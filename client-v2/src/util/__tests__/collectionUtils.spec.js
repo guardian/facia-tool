@@ -1,16 +1,17 @@
 // @flow
 
 import { getCollectionArticleQueryString } from '../collectionUtils';
+import { frontStages } from '../../constants/fronts';
 
 const liveArticle = {
-  id: 'live',
+  id: frontStages.live,
   frontPublicationDate: 1,
   publishedBy: 'Computers',
   meta: {}
 };
 
 const draftArticle = {
-  id: 'draft',
+  id: frontStages.draft,
   frontPublicationDate: 1,
   publishedBy: 'Computers',
   meta: {}
@@ -49,22 +50,28 @@ const collectionWithSnapArticles = {
 describe('getCollectionArticleQueryString', () => {
   it('returns draft article ids', () => {
     expect(
-      getCollectionArticleQueryString(collectionWithArticles, 'draft')
-    ).toBe('draft');
+      getCollectionArticleQueryString(collectionWithArticles, frontStages.draft)
+    ).toBe(frontStages.draft);
   });
   it('returns live article ids if draft is missing', () => {
     expect(
-      getCollectionArticleQueryString(collectionWithNoDraftArticles, 'draft')
-    ).toBe('live');
+      getCollectionArticleQueryString(
+        collectionWithNoDraftArticles,
+        frontStages.draft
+      )
+    ).toBe(frontStages.live);
   });
   it('returns live article ids', () => {
     expect(
-      getCollectionArticleQueryString(collectionWithArticles, 'live')
-    ).toBe('live');
+      getCollectionArticleQueryString(collectionWithArticles, frontStages.live)
+    ).toBe(frontStages.live);
   });
   it('filters out snap links', () => {
     expect(
-      getCollectionArticleQueryString(collectionWithSnapArticles, 'draft')
-    ).toBe('draft');
+      getCollectionArticleQueryString(
+        collectionWithSnapArticles,
+        frontStages.draft
+      )
+    ).toBe(frontStages.draft);
   });
 });

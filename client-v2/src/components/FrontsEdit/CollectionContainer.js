@@ -42,7 +42,7 @@ class CollectionContainer extends React.Component<
   ComponentState
 > {
   state = {
-    browsingStage: 'draft'
+    browsingStage: frontStages.draft
   };
 
   componentDidMount() {
