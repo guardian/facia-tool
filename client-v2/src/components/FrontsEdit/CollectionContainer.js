@@ -40,21 +40,22 @@ class CollectionContainer extends React.Component<ConnectedComponentProps> {
   }
 
   render() {
-
     return (
-      <div>
-        <CollectionDetail
-          collectionConfig={this.props.collectionConfig}
-          articles={this.props.collectionArticles}
-        />
-      </div>
+      <CollectionDetail
+        displayName={this.props.collectionConfig.displayName}
+        articles={this.props.collectionArticles}
+      />
     );
   }
 }
 
 const mapStateToProps = (state: State, props: Props) => ({
   collection: collectionSelector(state, props.collectionConfig.id),
-  collectionArticles: collectionArticlesSelector(state, props.collectionConfig.id, props.browsingStage)
+  collectionArticles: collectionArticlesSelector(
+    state,
+    props.collectionConfig.id,
+    props.browsingStage
+  )
 });
 
 const mapDispatchToProps = (dispatch: *) => ({
