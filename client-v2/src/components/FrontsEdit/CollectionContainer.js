@@ -6,11 +6,12 @@ import { bindActionCreators } from 'redux';
 import getFrontCollection from '../../actions/Collection';
 import getArticlesForCollection from '../../actions/Articles';
 import CollectionDetail from './CollectionDetail';
+import Button from '../Button';
 
 import type { ConfigCollectionDetailWithId } from '../../types/FrontsConfig';
-import type { Collection } from '../../types/Collection';
-import type { CapiArticle } from '../../types/Capi';
+import type { Collection, CollectionArticles } from '../../types/Collection';
 import type { State } from '../../types/State';
+import type { CapiArticle } from '../../types/Capi';
 
 type Props = {
   collection: ConfigCollectionDetailWithId
@@ -22,11 +23,25 @@ type ConnectedComponentProps = Props & {
     [string]: Collection
   },
   collectionArticles: {
-    [string]: Array<CapiArticle>
+    [string]: {
+      draft: CollectionArticles,
+      live: CollectionArticles
+    }
   }
 };
 
-class CollectionContainer extends React.Component<ConnectedComponentProps> {
+type ComponentState = {
+  browsingState: 'draft' | 'live'
+};
+
+class CollectionContainer extends React.Component<
+  ConnectedComponentProps,
+  ComponentState
+> {
+  state = {
+    browsingState: 'draft'
+  };
+
   componentDidMount() {
     const { props: { collection: { id } } } = this;
     const currentCollection = this.props.collections[id];
@@ -43,10 +58,16 @@ class CollectionContainer extends React.Component<ConnectedComponentProps> {
   }
 
   render() {
+    const collectionArticles: CollectionArticles = this.props
+      .collectionArticles[this.props.collection.id];
+    const articlesWithState: Array<CapiArticle> = collectionArticles
+      ? collectionArticles[this.state.browsingState]
+      : [];
+
     return (
       <CollectionDetail
         collectionConfig={this.props.collection}
-        articles={this.props.collectionArticles[this.props.collection.id] || []}
+        articles={articlesWithState}
       />
     );
   }
