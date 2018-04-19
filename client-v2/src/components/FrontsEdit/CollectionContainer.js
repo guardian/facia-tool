@@ -10,6 +10,7 @@ import Button from '../Button';
 import Col from '../Col';
 import Row from '../Row';
 import { frontStages } from '../../constants/fronts';
+import { collectionSelector } from '../../selectors/collectionSelectors';
 
 import type { ConfigCollectionDetailWithId } from '../../types/FrontsConfig';
 import type { Collection, CollectionArticles } from '../../types/Collection';
@@ -17,14 +18,12 @@ import type { State } from '../../types/State';
 import type { CapiArticle } from '../../types/Capi';
 
 type Props = {
-  collection: ConfigCollectionDetailWithId
+  collectionConfig: ConfigCollectionDetailWithId
 };
 
 type ConnectedComponentProps = Props & {
   frontsActions: Object,
-  collections: {
-    [string]: Collection
-  },
+  collection: ?Collection,
   collectionArticles: {
     [string]: {
       draft: CollectionArticles,
@@ -46,17 +45,16 @@ class CollectionContainer extends React.Component<
   };
 
   componentDidMount() {
-    const { props: { collection: { id } } } = this;
-    const currentCollection = this.props.collections[id];
-    if (!currentCollection) {
+    const { props: { collectionConfig: { id }, collection } } = this;
+    if (!collection) {
       this.props.frontsActions.getFrontCollection(id).then(() => {
         this.props.frontsActions.getArticlesForCollection(
-          this.props.collections[id],
+          this.props.collection,
           id
         );
       });
     } else {
-      this.props.frontsActions.getArticlesForCollection(currentCollection, id);
+      this.props.frontsActions.getArticlesForCollection(collection, id);
     }
   }
 
@@ -68,7 +66,7 @@ class CollectionContainer extends React.Component<
 
   render() {
     const collectionArticles: CollectionArticles = this.props
-      .collectionArticles[this.props.collection.id];
+      .collectionArticles[this.props.collectionConfig.id];
     const articlesWithState: Array<CapiArticle> = collectionArticles
       ? collectionArticles[this.state.browsingStage]
       : [];
@@ -88,7 +86,7 @@ class CollectionContainer extends React.Component<
           ))}
         </Row>
         <CollectionDetail
-          collectionConfig={this.props.collection}
+          collectionConfig={this.props.collectionConfig}
           articles={articlesWithState}
         />
       </div>
@@ -96,8 +94,8 @@ class CollectionContainer extends React.Component<
   }
 }
 
-const mapStateToProps = (state: State) => ({
-  collections: state.collections,
+const mapStateToProps = (state: State, props: Props) => ({
+  collection: collectionSelector(state, props.collectionConfig.id),
   collectionArticles: state.collectionArticles
 });
 

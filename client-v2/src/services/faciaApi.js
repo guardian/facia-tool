@@ -22,7 +22,7 @@ export function getCollection(collectionId: string) {
 
 export function getCollectionArticles(
   collection: Collection
-): Promise<Array<CollectionArticles>> {
+): Promise<CollectionArticles> {
   const parseArticleListFromResponse = (text: ?string): Array<CapiArticle> => {
     if (text) {
       return JSON.parse(text).response.results.map(result => ({

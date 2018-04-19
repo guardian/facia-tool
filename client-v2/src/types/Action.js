@@ -63,7 +63,7 @@ type ErrorInAction = {
 type CollectionArticlesReceived = {
   type: 'CAPI_ARTICLES_RECEIVED',
   id: string,
-  payload: Array<CollectionArticles>
+  payload: CollectionArticles
 };
 
 type RequestCollectionArticles = {

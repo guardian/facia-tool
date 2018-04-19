@@ -42,7 +42,7 @@ class Fronts extends React.Component<FrontsComponentProps> {
         />
         {collectionsWithId.map(collection => (
           <div key={collection.id}>
-            <CollectionContainer collection={collection} />
+            <CollectionContainer collectionConfig={collection} />
           </div>
         ))}
       </div>
