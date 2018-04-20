@@ -4,7 +4,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { createMemoryHistory } from 'history';
 import FrontsDropdown from '../FrontsEdit/FrontsDropdown';
-import { frontsClientConfig } from '../../fixtures';
+import { frontsClientConfig } from '../../fixtures/frontsConfig';
 
 import type { PriorityName } from '../../types/Priority';
 import type { Props } from '../FrontsEdit/FrontsDropdown';

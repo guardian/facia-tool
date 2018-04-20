@@ -2,7 +2,7 @@
 
 import { getArticlesWithMeta, getArticlesInGroup } from '../articleUtils';
 
-import { draftArticle, draftArticleInGroup } from '../../fixtures';
+import { draftArticle, draftArticleInGroup } from '../../fixtures/articles';
 
 const capi1 = {
   id: '1',
