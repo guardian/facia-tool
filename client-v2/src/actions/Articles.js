@@ -4,12 +4,11 @@ import type { Action } from '../types/Action';
 import type { ThunkAction } from '../types/Store';
 
 import { getCollectionArticles } from '../services/faciaApi';
-import type { CapiArticle } from '../types/Capi';
-import type { Collection } from '../types/Collection';
+import type { Collection, CollectionArticles } from '../types/Collection';
 
 function collectionArticlesReceived(
   collectionId: string,
-  articles: Array<CapiArticle>
+  articles: CollectionArticles
 ): Action {
   return {
     type: 'CAPI_ARTICLES_RECEIVED',
@@ -41,7 +40,7 @@ export default function getArticlesForCollection(
   return (dispatch: Dispatch) => {
     dispatch(requestCollectionArticles());
     return getCollectionArticles(collection)
-      .then((res: Array<CapiArticle>) => {
+      .then((res: CollectionArticles) => {
         dispatch(collectionArticlesReceived(collectionId, res));
       })
       .catch((error: string) =>

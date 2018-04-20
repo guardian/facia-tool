@@ -1,7 +1,7 @@
 // @flow
 
 import { type Config } from './Config';
-import { type CapiArticle } from './Capi';
+import { type CollectionArticles } from './Collection';
 
 /**
  * Need to add new types into here and union them with `Action` in order
@@ -63,7 +63,7 @@ type ErrorInAction = {
 type CollectionArticlesReceived = {
   type: 'CAPI_ARTICLES_RECEIVED',
   id: string,
-  payload: Array<CapiArticle>
+  payload: CollectionArticles
 };
 
 type RequestCollectionArticles = {

@@ -3,11 +3,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import type { ConfigCollectionDetailWithId } from '../../types/FrontsConfig';
 import type { CapiArticle } from '../../types/Capi';
 
 type Props = {
-  collectionConfig: ConfigCollectionDetailWithId,
+  displayName: string,
   articles: Array<CapiArticle>
 };
 
@@ -29,9 +28,7 @@ const ArticleContainer = styled('div')`
 
 const CollectionDetail = (props: Props) => (
   <CollectionContainer>
-    <CollectionHeadline>
-      {props.collectionConfig.displayName}
-    </CollectionHeadline>
+    <CollectionHeadline>{props.displayName}</CollectionHeadline>
     {props.articles.map(article => (
       <ArticleContainer key={article.headline}>
         {article.headline}

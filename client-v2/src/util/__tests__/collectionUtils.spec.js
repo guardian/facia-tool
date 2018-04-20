@@ -1,19 +1,17 @@
 // @flow
 
-import {
-  getDraftArticles,
-  getCollectionArticleQueryString
-} from '../collectionUtils';
+import { getCollectionArticleQueryString } from '../collectionUtils';
+import { frontStages } from '../../constants/fronts';
 
 const liveArticle = {
-  id: 'live',
+  id: frontStages.live,
   frontPublicationDate: 1,
   publishedBy: 'Computers',
   meta: {}
 };
 
 const draftArticle = {
-  id: 'draft',
+  id: frontStages.draft,
   frontPublicationDate: 1,
   publishedBy: 'Computers',
   meta: {}
@@ -33,7 +31,7 @@ const collectionWithNoDraftArticles = {
   updatedEmail: 'email'
 };
 
-const collectionWithDraftArticles = {
+const collectionWithArticles = {
   live: [liveArticle],
   draft: [draftArticle],
   lastUpdated: 1,
@@ -49,31 +47,31 @@ const collectionWithSnapArticles = {
   updatedEmail: 'email'
 };
 
-describe('getDraftArticles', () => {
-  it('returns empty list if collection is missing', () => {
-    expect(getDraftArticles(null)).toEqual([]);
-  });
-  it('returns list of live articles if draft list is missing', () => {
-    expect(getDraftArticles(collectionWithNoDraftArticles)).toEqual([
-      liveArticle
-    ]);
-  });
-  it('returns list of draft articles when draft articles exist', () => {
-    expect(getDraftArticles(collectionWithDraftArticles)).toEqual([
-      draftArticle
-    ]);
-  });
-});
-
 describe('getCollectionArticleQueryString', () => {
-  it('returns article ids', () => {
-    expect(getCollectionArticleQueryString(collectionWithDraftArticles)).toBe(
-      'draft'
-    );
+  it('returns draft article ids', () => {
+    expect(
+      getCollectionArticleQueryString(collectionWithArticles, frontStages.draft)
+    ).toBe(frontStages.draft);
+  });
+  it('returns live article ids if draft is missing', () => {
+    expect(
+      getCollectionArticleQueryString(
+        collectionWithNoDraftArticles,
+        frontStages.draft
+      )
+    ).toBe(frontStages.live);
+  });
+  it('returns live article ids', () => {
+    expect(
+      getCollectionArticleQueryString(collectionWithArticles, frontStages.live)
+    ).toBe(frontStages.live);
   });
   it('filters out snap links', () => {
-    expect(getCollectionArticleQueryString(collectionWithSnapArticles)).toBe(
-      'draft'
-    );
+    expect(
+      getCollectionArticleQueryString(
+        collectionWithSnapArticles,
+        frontStages.draft
+      )
+    ).toBe(frontStages.draft);
   });
 });
