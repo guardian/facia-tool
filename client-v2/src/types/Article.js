@@ -1,7 +1,9 @@
 // @flow
 
 // TODO: fill this in as we start to display overrides
-type Meta = Object;
+type Meta = {
+  group?: number
+};
 
 type Article = {
   id: string,
@@ -10,4 +12,4 @@ type Article = {
   meta: Meta
 };
 
-export type { Article };
+export type { Article, Meta };

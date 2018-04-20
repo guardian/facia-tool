@@ -26,7 +26,8 @@ export function getCollectionArticles(
   const parseArticleListFromResponse = (text: ?string): Array<CapiArticle> => {
     if (text) {
       return JSON.parse(text).response.results.map(result => ({
-        headline: result.webTitle
+        headline: result.webTitle,
+        id: result.fields.internalPageCode
       }));
     }
     return [];
@@ -39,17 +40,20 @@ export function getCollectionArticles(
   const liveIds = getCollectionArticleQueryString(collection, frontStages.live);
 
   const draftArticlePromise = pandaFetch(
-    `/api/preview/search?ids=${draftIds}`,
+    `/api/preview/search?ids=${draftIds}&show-fields=internalPageCode`,
     {
       method: 'get',
       credentials: 'same-origin'
     }
   );
 
-  const liveArticlePromise = pandaFetch(`/api/live/search?ids=${liveIds}`, {
-    method: 'get',
-    credentials: 'same-origin'
-  });
+  const liveArticlePromise = pandaFetch(
+    `/api/live/search?ids=${liveIds}&show-fields=internalPageCode`,
+    {
+      method: 'get',
+      credentials: 'same-origin'
+    }
+  );
 
   return Promise.all([draftArticlePromise, liveArticlePromise])
     .then(responses => Promise.all(responses.map(response => response.text())))
