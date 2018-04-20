@@ -12,7 +12,8 @@ const liveArticle = {
 const draftArticle = {
   id: 'article/draft/1',
   frontPublicationDate: 1,
-  publishedBy: 'Computers'
+  publishedBy: 'Computers',
+  meta: {}
 };
 
 const draftArticleInGroup = {

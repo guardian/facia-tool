@@ -1,6 +1,6 @@
 // @flow
 
-import { getArticlesWithMeta } from '../articleUtils';
+import { getArticlesWithMeta, getArticlesInGroup } from '../articleUtils';
 
 import { draftArticle, draftArticleInGroup } from '../../fixtures';
 
@@ -11,7 +11,14 @@ const capi1 = {
 
 const capi2 = {
   id: '2',
-  headline: 'headline2'
+  headline: 'headline2',
+  group: 1
+};
+
+const capi4 = {
+  id: '4',
+  headline: 'headline4',
+  group: 1
 };
 
 describe('getArticlesWithMeta', () => {
@@ -27,5 +34,27 @@ describe('getArticlesWithMeta', () => {
     expect(
       getArticlesWithMeta([draftArticle, draftArticleInGroup], [capi1, capi2])
     ).toEqual([capi1, Object.assign({}, capi2, { group: 1 })]);
+  });
+});
+
+describe('getArticlesInGroup', () => {
+  it('puts an article without a group in the last group', () => {
+    expect(getArticlesInGroup(1, 2, [capi1])).toEqual([capi1]);
+  });
+
+  it('does not put an article without a group in the first group', () => {
+    expect(getArticlesInGroup(0, 2, [capi1])).toEqual([]);
+  });
+
+  it('puts an article in group one in the first group', () => {
+    expect(getArticlesInGroup(0, 2, [capi2])).toEqual([capi2]);
+  });
+
+  it('does not put an article in group one to the second group', () => {
+    expect(getArticlesInGroup(1, 2, [capi2])).toEqual([]);
+  });
+
+  it('puts multiple articles in the correct group, ', () => {
+    expect(getArticlesInGroup(0, 2, [capi2, capi4])).toEqual([capi2, capi4]);
   });
 });

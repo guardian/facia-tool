@@ -3,19 +3,11 @@
 import React from 'react';
 import CollectionArticles from './CollectionArticles';
 import type { CapiArticleWithMetadata } from '../../types/Capi';
+import { getArticlesInGroup } from '../../util/articleUtils';
 
 type Props = {
   groups: Array<string>,
   articles: Array<CapiArticleWithMetadata>
-};
-
-const getArticlesInGroup = (groupIndex, numberOfGroups, articles) => {
-  // We have reversed the groups in the iterator
-  const groupNumber = numberOfGroups - groupIndex - 1;
-  return articles.filter(article => {
-    const articleGroup = article.group ? parseInt(article.group, 10) : 0;
-    return articleGroup === groupNumber;
-  });
 };
 
 const GroupDisplay = (props: Props) => {
