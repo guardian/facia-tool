@@ -2,6 +2,33 @@
 
 import type { FrontsConfig, FrontsClientConfig } from './types/FrontsConfig';
 
+const liveArticle = {
+  id: 'article/live/0',
+  frontPublicationDate: 1,
+  publishedBy: 'Computers',
+  meta: {}
+};
+
+const draftArticle = {
+  id: 'article/draft/1',
+  frontPublicationDate: 1,
+  publishedBy: 'Computers'
+};
+
+const draftArticleInGroup = {
+  id: 'article/draft/2',
+  frontPublicationDate: 1,
+  publishedBy: 'Computers',
+  meta: { group: 1 }
+};
+
+const snapArticle = {
+  id: 'snap/link/3',
+  frontPublicationDate: 1,
+  publishedBy: 'Computers',
+  meta: {}
+};
+
 const frontsConfig: FrontsConfig = {
   fronts: {
     editorialFront: {
@@ -41,4 +68,11 @@ const frontsClientConfig: FrontsClientConfig = {
   }
 };
 
-export { frontsClientConfig, frontsConfig };
+export {
+  frontsClientConfig,
+  frontsConfig,
+  liveArticle,
+  draftArticle,
+  snapArticle,
+  draftArticleInGroup
+};

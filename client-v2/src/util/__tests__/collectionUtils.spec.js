@@ -2,27 +2,7 @@
 
 import { getCollectionArticleQueryString } from '../collectionUtils';
 import { frontStages } from '../../constants/fronts';
-
-const liveArticle = {
-  id: frontStages.live,
-  frontPublicationDate: 1,
-  publishedBy: 'Computers',
-  meta: {}
-};
-
-const draftArticle = {
-  id: frontStages.draft,
-  frontPublicationDate: 1,
-  publishedBy: 'Computers',
-  meta: {}
-};
-
-const snapArticle = {
-  id: 'snap/link',
-  frontPublicationDate: 1,
-  publishedBy: 'Computers',
-  meta: {}
-};
+import { liveArticle, draftArticle, snapArticle } from '../../fixtures';
 
 const collectionWithNoDraftArticles = {
   live: [liveArticle],
@@ -51,7 +31,7 @@ describe('getCollectionArticleQueryString', () => {
   it('returns draft article ids', () => {
     expect(
       getCollectionArticleQueryString(collectionWithArticles, frontStages.draft)
-    ).toBe(frontStages.draft);
+    ).toBe('article/draft/1');
   });
   it('returns live article ids if draft is missing', () => {
     expect(
@@ -59,12 +39,12 @@ describe('getCollectionArticleQueryString', () => {
         collectionWithNoDraftArticles,
         frontStages.draft
       )
-    ).toBe(frontStages.live);
+    ).toBe('article/live/0');
   });
   it('returns live article ids', () => {
     expect(
       getCollectionArticleQueryString(collectionWithArticles, frontStages.live)
-    ).toBe(frontStages.live);
+    ).toBe('article/live/0');
   });
   it('filters out snap links', () => {
     expect(
@@ -72,6 +52,6 @@ describe('getCollectionArticleQueryString', () => {
         collectionWithSnapArticles,
         frontStages.draft
       )
-    ).toBe(frontStages.draft);
+    ).toBe('article/draft/1');
   });
 });
