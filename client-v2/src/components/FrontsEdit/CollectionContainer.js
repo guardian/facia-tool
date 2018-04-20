@@ -8,6 +8,8 @@ import getArticlesForCollection from '../../actions/Articles';
 import CollectionDetail from './CollectionDetail';
 import { collectionSelector } from '../../selectors/collectionSelectors';
 import { collectionArticlesSelector } from '../../selectors/collectionArticleSelectors';
+import { getArticlesWithMeta } from '../../util/articleUtils';
+import { getArticlesForStage } from '../../util/collectionUtils';
 import type { ConfigCollectionDetailWithId } from '../../types/FrontsConfig';
 import type { Collection } from '../../types/Collection';
 import type { State } from '../../types/State';
@@ -40,10 +42,21 @@ class CollectionContainer extends React.Component<ConnectedComponentProps> {
   }
 
   render() {
+    const {
+      props: { collectionConfig: { groups }, collection, browsingStage }
+    } = this;
+    const articlesConfig = getArticlesForStage(collection, browsingStage);
+
+    const articlesWithMeta = getArticlesWithMeta(
+      articlesConfig,
+      this.props.collectionArticles
+    );
+
     return (
       <CollectionDetail
         displayName={this.props.collectionConfig.displayName}
-        articles={this.props.collectionArticles}
+        articles={articlesWithMeta}
+        groups={groups}
       />
     );
   }

@@ -3,11 +3,14 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import type { CapiArticle } from '../../types/Capi';
+import CollectionArticles from './CollectionArticles';
+import GroupDisplay from './GroupDisplay';
+import type { CapiArticleWithMetadata } from '../../types/Capi';
 
 type Props = {
   displayName: string,
-  articles: Array<CapiArticle>
+  articles: Array<CapiArticleWithMetadata>,
+  groups?: Array<string>
 };
 
 const CollectionContainer = styled('div')`
@@ -22,18 +25,14 @@ const CollectionHeadline = styled('div')`
   padding: 7px;
 `;
 
-const ArticleContainer = styled('div')`
-  padding: 5px;
-`;
-
 const CollectionDetail = (props: Props) => (
   <CollectionContainer>
     <CollectionHeadline>{props.displayName}</CollectionHeadline>
-    {props.articles.map(article => (
-      <ArticleContainer key={article.headline}>
-        {article.headline}
-      </ArticleContainer>
-    ))}
+    {props.groups ? (
+      <GroupDisplay articles={props.articles} groups={props.groups} />
+    ) : (
+      <CollectionArticles articles={props.articles} />
+    )}
   </CollectionContainer>
 );
 
