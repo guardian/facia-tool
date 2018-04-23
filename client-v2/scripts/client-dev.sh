@@ -5,7 +5,8 @@ printf "\n\rStarting Yarn... \n\r\n\r"
 
 yarn watch &
 
+cd ../..
+
 printf "\n\rStarting Play App... \n\r\n\r"
 
-cd ..
 sbt "run"
