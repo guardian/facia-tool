@@ -4,8 +4,8 @@ import { frontStages } from '../constants/fronts';
 import type { Collection } from '../types/Collection';
 import type { Article } from '../types/Article';
 
-const getArticleIds = (
-  collection: Collection,
+const getArticlesForStage = (
+  collection: ?Collection,
   stage: string
 ): Array<Article> => {
   if (!collection) {
@@ -25,14 +25,14 @@ const getArticleIds = (
 };
 
 const getCollectionArticleQueryString = (
-  collection: Collection,
+  collection: ?Collection,
   stage: string
 ): string => {
-  const articles = getArticleIds(collection, stage);
+  const articles = getArticlesForStage(collection, stage);
   return articles
     .map(article => article.id)
     .filter(id => !id.match(/^snap/))
     .join(',');
 };
 
-export { getCollectionArticleQueryString };
+export { getCollectionArticleQueryString, getArticlesForStage };

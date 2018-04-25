@@ -1,6 +1,6 @@
 // @flow
 
-import { frontsConfig } from './fixtures';
+import { frontsConfig } from './fixtures/frontsConfig';
 
 const frontsActions = {
   getFrontsConfig: () => frontsConfig

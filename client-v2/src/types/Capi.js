@@ -1,7 +1,10 @@
 // @flow
 
 type CapiArticle = {
+  id: string,
   headline: string
 };
 
-export type { CapiArticle };
+type CapiArticleWithMetadata = CapiArticle & { group?: number };
+
+export type { CapiArticle, CapiArticleWithMetadata };

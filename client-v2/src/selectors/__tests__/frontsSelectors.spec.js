@@ -1,7 +1,7 @@
 // @flow
 
 import { getFrontsConfig } from '../frontsSelectors';
-import { frontsConfig } from '../../fixtures';
+import { frontsConfig } from '../../fixtures/frontsConfig';
 import type { FrontDetail } from '../../types/FrontsConfig';
 
 const editorialFronts: Array<FrontDetail> = [
