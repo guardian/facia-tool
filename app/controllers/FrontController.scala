@@ -1,12 +1,8 @@
 package controllers
 
-import auth.PanDomainAuthActions
 import com.gu.facia.client.models.FrontJson
-import conf.ApplicationConfiguration
 import config.UpdateManager
 import permissions.ConfigPermissionCheck
-import play.api.libs.ws.WSClient
-import play.api.mvc.Controller
 import services.Press
 import updates._
 import util.Acl

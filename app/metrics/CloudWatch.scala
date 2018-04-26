@@ -8,7 +8,7 @@ import conf.ApplicationConfiguration
 import play.api.Logger
 import services.AwsEndpoints
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 class CloudWatch(val config: ApplicationConfiguration, val awsEndpoints: AwsEndpoints) {
 
@@ -54,17 +54,17 @@ class CloudWatch(val config: ApplicationConfiguration, val awsEndpoints: AwsEndp
     } {
       val metricsAsStatistics: List[FrontendStatisticSet] =
         metricGroup.map( metric => FrontendStatisticSet(metric, metric.getAndResetDataPoints))
+      val metricsAsDatums = metricsAsStatistics.map(metricStatistic =>
+        new MetricDatum()
+          .withStatisticValues(frontendMetricToStatisticSet(metricStatistic))
+          .withUnit(metricStatistic.metric.metricUnit)
+          .withMetricName(metricStatistic.metric.name)
+          .withDimensions(dimensions.asJavaCollection)
+      )
       val request = new PutMetricDataRequest()
         .withNamespace(metricNamespace)
-        .withMetricData {
-          for(metricStatistic <- metricsAsStatistics) yield {
-            new MetricDatum()
-              .withStatisticValues(frontendMetricToStatisticSet(metricStatistic))
-              .withUnit(metricStatistic.metric.metricUnit)
-              .withMetricName(metricStatistic.metric.name)
-              .withDimensions(dimensions)
-          }
-        }
+        .withMetricData(metricsAsDatums.asJavaCollection)
+
       cloudwatch.foreach(_.putMetricDataAsync(request, AsyncHandlerForMetric(metricsAsStatistics)))
     }
   }

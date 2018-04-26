@@ -1,11 +1,8 @@
 package controllers
 
-import auth.PanDomainAuthActions
 import com.gu.pandomainauth.action.UserRequest
-import conf.ApplicationConfiguration
 import model.Cached
 import permissions.ConfigPermissionCheck
-import play.api.libs.ws.WSClient
 import play.api.mvc._
 import services.AssetsManager
 import util.{Acl, Encryption}

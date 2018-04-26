@@ -1,13 +1,9 @@
 package controllers
 
-import auth.PanDomainAuthActions
 import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.services.dynamodbv2.{AmazonDynamoDB, AmazonDynamoDBClientBuilder}
 import com.gu.scanamo.{Scanamo, Table}
-import conf.ApplicationConfiguration
 import play.api.libs.json.Json
-import play.api.libs.ws.WSClient
-import play.api.mvc.Controller
 import services.AwsEndpoints
 
 object FrontPressRecord {

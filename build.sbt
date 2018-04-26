@@ -53,7 +53,7 @@ javaOptions in Universal ++= Seq(
 
 routesGenerator := InjectedRoutesGenerator
 
-scalacOptions := Seq("-unchecked", "-opt", "-deprecation", "-target:jvm-1.8",
+scalacOptions := Seq("-unchecked", "-opt:l:method", "-deprecation", "-target:jvm-1.8",
     "-Xcheckinit", "-encoding", "utf8", "-feature")
 
 sources in (Compile, doc) := Seq.empty

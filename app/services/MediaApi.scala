@@ -23,7 +23,7 @@ class MediaApi(val config: ApplicationConfiguration, val ws: WSClient) {
   def getThumbnail(imgId: String, cropId: String): Future[Option[String]] = {
     val gridUrl = s"${config.media.apiUrl}/images/$imgId"
 
-    ws.url(gridUrl).withHeaders("X-Gu-Media-Key" -> config.media.key).get().map(
+    ws.url(gridUrl).withHttpHeaders("X-Gu-Media-Key" -> config.media.key).get().map(
       response => extractExportsFromJsonResponse(response.json, cropId))
   }
 
@@ -35,7 +35,3 @@ class MediaApi(val config: ApplicationConfiguration, val ws: WSClient) {
     }
   }
 }
-
-
-
-

@@ -1,10 +1,6 @@
 package controllers
 
-import auth.PanDomainAuthActions
-import conf.ApplicationConfiguration
 import play.api.libs.json.Json
-import play.api.libs.ws.WSClient
-import play.api.mvc.Controller
 import slices._
 
 object StoriesVisibleRequest {

@@ -3,16 +3,12 @@ package controllers
 import java.net.{URI, URLEncoder}
 
 import akka.actor.ActorSystem
-import auth.PanDomainAuthActions
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
 import com.gu.contentapi.client.{IAMEncoder, IAMSigner}
-import conf.ApplicationConfiguration
 import metrics.FaciaToolMetrics
 import model.Cached
 import play.api.Logger
-import play.api.libs.ws.WSClient
-import play.api.mvc._
 import switchboard.SwitchManager
 import util.ContentUpgrade.rewriteBody
 
@@ -53,7 +49,7 @@ class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents) extends Base
 
     Logger.info(s"Proxying preview API query to: $url")
 
-    wsClient.url(url).withHeaders(getPreviewHeaders(url): _*).get().map { response =>
+    wsClient.url(url).withHttpHeaders(getPreviewHeaders(url): _*).get().map { response =>
       Cached(60) {
         Ok(rewriteBody(response.body)).as("application/javascript")
       }
@@ -93,7 +89,7 @@ class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents) extends Base
     FaciaToolMetrics.ProxyCount.increment()
     Logger.info(s"Proxying json request to: $url")
 
-    wsClient.url(url).withHeaders(getPreviewHeaders(url): _*).get().map { response =>
+    wsClient.url(url).withHttpHeaders(getPreviewHeaders(url): _*).get().map { response =>
       Cached(60) {
         Ok(rewriteBody(response.body)).as("application/json")
       }

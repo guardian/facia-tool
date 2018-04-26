@@ -1,10 +1,5 @@
 package controllers
 
-import auth.PanDomainAuthActions
-import conf.ApplicationConfiguration
-import play.api.libs.ws.WSClient
-import play.api.mvc.{Action, Controller}
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

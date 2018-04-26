@@ -1,16 +1,16 @@
 package controllers
 
-import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
-import com.gu.pandomainauth.{PanDomain, PanDomainAuthSettingsRefresher}
+import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
 import com.gu.pandomainauth.action.AuthActions
 import com.gu.pandomainauth.model.AuthenticatedUser
+import com.gu.pandomainauth.{PanDomain, PanDomainAuthSettingsRefresher}
 import conf.ApplicationConfiguration
 import play.api.ApplicationLoader.Context
-import play.api.{BuiltInComponentsFromContext, Logger}
 import play.api.libs.ws.WSClient
 import play.api.libs.ws.ahc.AhcWSComponents
 import play.api.mvc.{BaseController, ControllerComponents, RequestHeader, Result}
+import play.api.{BuiltInComponentsFromContext, Logger}
 
 abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInComponentsFromContext(context) with AhcWSComponents with AssetsComponents {
 

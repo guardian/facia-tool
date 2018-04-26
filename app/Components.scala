@@ -1,4 +1,3 @@
-import com.gu.pandomainauth.PanDomainAuthSettingsRefresher
 import conf.ApplicationConfiguration
 import config.{CustomGzipFilter, UpdateManager}
 import controllers._
@@ -6,8 +5,8 @@ import frontsapi.model.UpdateActions
 import metrics.CloudWatch
 import permissions.Permissions
 import play.api.ApplicationLoader.Context
-import play.api.routing.Router
 import play.api.Mode
+import play.api.routing.Router
 import play.filters.cors.CORSFilter
 import router.Routes
 import services._
@@ -54,12 +53,12 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
     auditingUpdates, faciaPress, faciaPressQueue, configAgent, s3FrontsApi, mediaServiceClient, this)
   val front = new FrontController(acl, auditingUpdates, updateManager, press, this)
   val pandaAuth = new PandaAuthController(this)
-  val status = new StatusController
+  val status = new StatusController(this)
   val storiesVisible = new StoriesVisibleController(containers, this)
   val thumbnail = new ThumbnailController(containerThumbnails, this)
   val troubleshoot = new TroubleshootController(this)
-  val uncachedAssets = new UncachedAssets(assets)
-  val v2Assets = new V2Assets
+  val uncachedAssets = new UncachedAssets(assets, this)
+  val v2Assets = new V2Assets(assets)
   val vanityRedirects = new VanityRedirects(acl, this)
   val views = new ViewsController(acl, assetsManager, isDev, encryption, this)
   val pressController = new PressController(awsEndpoints, this)

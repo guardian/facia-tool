@@ -2,17 +2,14 @@ package controllers
 
 import _root_.util.Acl
 import akka.actor.ActorSystem
-import auth.PanDomainAuthActions
 import com.gu.facia.client.models.Metadata
 import com.gu.pandomainauth.action.UserRequest
-import conf.ApplicationConfiguration
 import frontsapi.model._
 import metrics.FaciaToolMetrics
 import model.NoCache
 import permissions.BreakingNewsEditCollectionsCheck
 import play.api.Logger
 import play.api.libs.json._
-import play.api.libs.ws.WSClient
 import play.api.mvc._
 import services._
 import tools.FaciaApiIO

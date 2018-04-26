@@ -6,7 +6,7 @@ import conf.ApplicationConfiguration
 import scala.concurrent.ExecutionContext
 
 class Permissions(val appConfig: ApplicationConfiguration) extends PermissionsProvider {
-  override implicit lazy val executionContext: ExecutionContext = play.api.libs.concurrent.Execution.Implicits.defaultContext
+  override implicit lazy val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
   implicit def config = PermissionsConfig(
     app = "fronts",

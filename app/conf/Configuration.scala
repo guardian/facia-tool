@@ -9,7 +9,7 @@ import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import org.apache.commons.io.IOUtils
 import play.api.{Logger, Configuration => PlayConfiguration}
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 import scala.language.reflectiveCalls
 
 class BadConfigurationException(msg: String) extends RuntimeException(msg)
@@ -29,15 +29,15 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
   private val frontPressedDynamoTable = properties.getOrElse("FRONT_PRESSED_TABLE", "unknown")
 
   private def getString(property: String): Option[String] =
-    playConfiguration.getString(stageFromProperties + "." + property)
-      .orElse(playConfiguration.getString(property))
+    playConfiguration.getOptional[String](stageFromProperties + "." + property)
+      .orElse(playConfiguration.getOptional[String](property))
 
   private def getMandatoryString(property: String): String = getString(property)
     .getOrElse(throw new BadConfigurationException(s"$property of type string not configured for stage $stageFromProperties"))
 
   private def getBoolean(property: String): Option[Boolean] =
-    playConfiguration.getBoolean(stageFromProperties + "." + property)
-      .orElse(playConfiguration.getBoolean(property))
+    playConfiguration.getOptional[Boolean](stageFromProperties + "." + property)
+      .orElse(playConfiguration.getOptional[Boolean](property))
 
   private def getMandatoryBoolean(property: String): Boolean = getBoolean(property)
     .getOrElse(throw new BadConfigurationException(s"$property of type boolean not configured for stage $stageFromProperties"))
@@ -189,7 +189,7 @@ object Properties extends AutomaticResourceManagement {
   def apply(is: InputStream): Map[String, String] = {
     val properties = new java.util.Properties()
     withCloseable(is) { properties load _ }
-    properties.toMap
+    properties.asScala.toMap
   }
 
   def apply(text: String): Map[String, String] = apply(IOUtils.toInputStream(text))

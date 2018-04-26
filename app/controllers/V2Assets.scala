@@ -1,7 +1,7 @@
 package controllers
 
-class V2Assets {
+class V2Assets(val assets: Assets) {
   def at(file: String, relativePath: String = "") = model.NoCache {
-    controllers.Assets.at("/public/client-v2", relativePath + file)
+    assets.at("/public/client-v2", relativePath + file)
   }
 }

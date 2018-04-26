@@ -1,10 +1,6 @@
 package controllers
 
-import auth.PanDomainAuthActions
-import conf.ApplicationConfiguration
 import model.Cached
-import play.api.libs.ws.WSClient
-import play.api.mvc.Controller
 import thumbnails.ContainerThumbnails
 
 class ThumbnailController(val containerThumbnails: ContainerThumbnails, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {

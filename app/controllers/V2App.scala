@@ -1,13 +1,8 @@
 package controllers
 
-import auth.PanDomainAuthActions
 import com.gu.facia.client.models.Metadata
-import conf.ApplicationConfiguration
 import permissions.Permissions
 import play.api.libs.json.Json
-import play.api.libs.ws.WSClient
-import play.api.mvc.Controller
-import play.api.mvc.{Controller, RequestHeader}
 import switchboard.SwitchManager
 import util.{Acl, AclJson}
 

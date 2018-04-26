@@ -1,10 +1,10 @@
 package updates
 
 import com.gu.facia.client.models.{CollectionConfigJson, FrontJson, TrailMetaData}
+import julienrf.json.derived
 import org.joda.time.DateTime
 import play.api.libs.json._
 import services.ConfigAgent
-import julienrf.json.derived
 
 sealed trait UpdateMessage {
   def affectedFronts(configAgent: ConfigAgent): Set[String]
