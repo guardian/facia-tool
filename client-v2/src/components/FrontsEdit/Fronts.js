@@ -42,7 +42,9 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   }
 
   render() {
-    const { frontsConfig: { fronts, collections } } = this.props;
+    const {
+      frontsConfig: { fronts, collections }
+    } = this.props;
 
     const collectionsWithId = getFrontCollections(
       this.props.frontId,

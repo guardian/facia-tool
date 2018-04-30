@@ -1,4 +1,4 @@
-// flow-typed signature: af60897f840302a6a97d44585c86a48b
+// flow-typed signature: 0810dd73ad3bab5036b775f58bb42bb1
 // flow-typed version: <<STUB>>/eslint-plugin-import_v^2.9.0/flow_v0.68.0
 
 /**
@@ -131,6 +131,10 @@ declare module 'eslint-plugin-import/lib/rules/no-anonymous-default-export' {
 }
 
 declare module 'eslint-plugin-import/lib/rules/no-commonjs' {
+  declare module.exports: any;
+}
+
+declare module 'eslint-plugin-import/lib/rules/no-cycle' {
   declare module.exports: any;
 }
 
@@ -306,6 +310,9 @@ declare module 'eslint-plugin-import/lib/rules/no-anonymous-default-export.js' {
 }
 declare module 'eslint-plugin-import/lib/rules/no-commonjs.js' {
   declare module.exports: $Exports<'eslint-plugin-import/lib/rules/no-commonjs'>;
+}
+declare module 'eslint-plugin-import/lib/rules/no-cycle.js' {
+  declare module.exports: $Exports<'eslint-plugin-import/lib/rules/no-cycle'>;
 }
 declare module 'eslint-plugin-import/lib/rules/no-default-export.js' {
   declare module.exports: $Exports<'eslint-plugin-import/lib/rules/no-default-export'>;
