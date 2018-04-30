@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react';
+import * as React from 'react';
 import CollectionArticles from './CollectionArticles';
 import type { CapiArticleWithMetadata } from '../../types/Capi';
 import { getArticlesInGroup } from '../../util/articleUtils';
@@ -10,7 +10,7 @@ type Props = {
   articles: Array<CapiArticleWithMetadata>
 };
 
-const GroupDisplay = (props: Props) => {
+const GroupDisplay = (props: Props): Array<React.Node> => {
   const groupsInOrder = props.groups.slice().reverse();
 
   return groupsInOrder.map((group, index) => (
