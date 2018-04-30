@@ -23,7 +23,17 @@ const getCollectionArticles = (
     return [];
   }
 
-  return collectionArticles[id][stage];
+  switch (stage) {
+    case 'live': {
+      return collectionArticles[id].live;
+    }
+    case 'draft': {
+      return collectionArticles[id].draft;
+    }
+    default: {
+      return [];
+    }
+  }
 };
 
 const collectionArticlesSelector = createSelector(
