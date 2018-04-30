@@ -8,7 +8,7 @@ import type { Collection } from '../types/Collection';
 const allCollectionsSelector = (state: State): { [string]: Collection } =>
   state.collections;
 
-const collectionIdSelector = (_, id: string) => id;
+const collectionIdSelector = (_: State, id: string) => id;
 
 const getCollection = (
   collections: { [string]: Collection },
