@@ -4,7 +4,6 @@ import { createSelector } from 'reselect';
 import { breakingNewsFrontId } from '../constants/fronts';
 
 import type {
-  FrontsClientConfig,
   Front,
   ConfigCollection,
   FrontDetailFull,
@@ -14,10 +13,10 @@ import type {
 
 import type { State } from '../types/State';
 
-const frontsConfigSelector = (state: State) => state.frontsConfig || {};
+const getFrontsConfig = (state: State) => state.frontsConfig || {};
 
 const rawFrontsSelector = (state: State): Front =>
-  frontsConfigSelector(state).fronts || {};
+  getFrontsConfig(state).fronts || {};
 
 const getFronts = createSelector(
   [rawFrontsSelector],
@@ -64,8 +63,8 @@ const getFrontsWithPriority = (
 ): FrontDetailFull[] =>
   keyedObjToArray(getFrontsByPriority(state)[priority] || {});
 
-const collectionsSelector = (state: State): ConfigCollection =>
-  frontsConfigSelector(state).collections || {};
+const getCollections = (state: State): ConfigCollection =>
+  getFrontsConfig(state).collections || {};
 
 const frontsIdSelector = createSelector([rawFrontsSelector], fronts => {
   if (!fronts) {
@@ -76,12 +75,4 @@ const frontsIdSelector = createSelector([rawFrontsSelector], fronts => {
     .sort();
 });
 
-const getFrontsConfig = (
-  state: State,
-  priority: string
-): FrontsClientConfig => ({
-  fronts: getFrontsWithPriority(state, priority),
-  collections: collectionsSelector(state)
-});
-
-export { getFrontsConfig, frontsIdSelector, getFrontsWithPriority };
+export { frontsIdSelector, getFrontsWithPriority, getCollections };

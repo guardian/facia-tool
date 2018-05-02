@@ -5,7 +5,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import getFrontsConfig from '../../actions/FrontsConfig';
-import { getFrontsConfig as getFrontsConfigSelector } from '../../selectors/frontsSelectors';
+import {
+  getCollections,
+  getFrontsWithPriority
+} from '../../selectors/frontsSelectors';
 import CollectionContainer from './CollectionContainer';
 import FrontsDropDown from '../../containers/FrontsDropdown';
 import { getFrontCollections } from '../../util/frontsUtils';
@@ -13,12 +16,16 @@ import { frontStages } from '../../constants/fronts';
 import Button from '../Button';
 import Col from '../Col';
 import Row from '../Row';
-import type { FrontsClientConfig } from '../../types/FrontsConfig';
+import {
+  type FrontDetailFull,
+  type ConfigCollection
+} from '../../types/FrontsConfig';
 import type { State } from '../../types/State';
 import type { PropsBeforeFetch } from './FrontsContainer';
 
 type FrontsComponentProps = PropsBeforeFetch & {
-  frontsConfig: FrontsClientConfig,
+  fronts: Array<FrontDetailFull>,
+  collections: ConfigCollection,
   frontsActions: Object
 };
 
@@ -42,9 +49,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   }
 
   render() {
-    const {
-      frontsConfig: { fronts, collections }
-    } = this.props;
+    const { fronts, collections } = this.props;
 
     const collectionsWithId = getFrontCollections(
       this.props.frontId,
@@ -81,7 +86,8 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
 }
 
 const mapStateToProps = (state: State, props: PropsBeforeFetch) => ({
-  frontsConfig: getFrontsConfigSelector(state, props.priority)
+  collections: getCollections(state),
+  fronts: getFrontsWithPriority(state, props.priority)
 });
 
 const mapDispatchToProps = (dispatch: *) => ({

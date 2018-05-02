@@ -1,6 +1,6 @@
 // @flow
 
-import type { FrontsConfig, FrontsClientConfig } from '../types/FrontsConfig';
+import type { FrontsConfig } from '../types/FrontsConfig';
 
 const frontsConfig: FrontsConfig = {
   fronts: {
@@ -20,25 +20,4 @@ const frontsConfig: FrontsConfig = {
   }
 };
 
-const frontsClientConfig: FrontsClientConfig = {
-  fronts: [
-    {
-      id: 'editorialFront',
-      priority: 'editorial',
-      collections: ['collection1']
-    },
-    {
-      id: 'commercialFront',
-      priority: 'commercial',
-      collections: ['collection1']
-    }
-  ],
-  collections: {
-    collection1: {
-      displayName: 'name',
-      type: 'collection'
-    }
-  }
-};
-
-export { frontsClientConfig, frontsConfig };
+export { frontsConfig };

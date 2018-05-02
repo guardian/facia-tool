@@ -1,6 +1,6 @@
 // @flow
 
-import { getFrontsConfig } from '../frontsSelectors';
+import { getFrontsWithPriority } from '../frontsSelectors';
 import { frontsConfig } from '../../fixtures/frontsConfig';
 import type { FrontDetail } from '../../types/FrontsConfig';
 
@@ -22,37 +22,37 @@ const commercialFronts: Array<FrontDetail> = [
 
 describe('Filtering fronts correctly', () => {
   it('return an empty array if config is empty', () => {
-    expect(getFrontsConfig({}, {}, [], 'editorial')).toEqual({
-      fronts: [],
-      collections: {}
-    });
+    expect(
+      getFrontsWithPriority(
+        {
+          frontsConfig: {
+            fronts: {}
+          }
+        },
+        'editorial'
+      )
+    ).toEqual([]);
   });
 
   it('filters editorial fronts correctly', () => {
     expect(
-      getFrontsConfig(
+      getFrontsWithPriority(
         {
           frontsConfig
         },
         'editorial'
       )
-    ).toEqual({
-      fronts: editorialFronts,
-      collections: frontsConfig.collections
-    });
+    ).toEqual(editorialFronts);
   });
 
   it('filters non-editorial fronts correctly', () => {
     expect(
-      getFrontsConfig(
+      getFrontsWithPriority(
         {
           frontsConfig
         },
         'commercial'
       )
-    ).toEqual({
-      fronts: commercialFronts,
-      collections: frontsConfig.collections
-    });
+    ).toEqual(commercialFronts);
   });
 });

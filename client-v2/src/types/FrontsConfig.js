@@ -72,11 +72,6 @@ type FrontsByPriority = {
   [string]: FrontsWithIds
 };
 
-type FrontsClientConfig = {
-  fronts: Array<FrontDetailFull>,
-  collections: ConfigCollection
-};
-
 export type {
   FrontsConfig,
   FrontConfig,
@@ -85,7 +80,6 @@ export type {
   ConfigCollection,
   ConfigCollectionDetail,
   ConfigCollectionDetailWithId,
-  FrontsClientConfig,
   FrontDetailFull,
   FrontsWithIds,
   FrontsByPriority
