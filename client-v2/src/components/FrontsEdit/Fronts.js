@@ -5,13 +5,16 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import getFrontsConfig from 'actions/FrontsConfig';
-import { GetFrontsConfigStateSelector } from 'selectors/frontsSelectors';
 import { getFrontCollections } from 'util/frontsUtils';
 import { frontStages } from 'constants/fronts';
 import type { FrontConfig, CollectionConfig } from 'services/faciaApi';
 import type { State } from 'types/State';
+import {
+  getFrontsWithPriority,
+  getCollections
+} from 'selectors/frontsSelectors';
+import FrontsDropDown from 'containers/FrontsDropdown';
 import CollectionContainer from './CollectionContainer';
-import FrontsDropDown from './FrontsDropdown';
 import Button from '../Button';
 import Col from '../Col';
 import Row from '../Row';
@@ -59,12 +62,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
 
     return (
       <div>
-        <FrontsDropDown
-          fronts={fronts}
-          frontId={this.props.frontId}
-          history={this.props.history}
-          priority={this.props.priority}
-        />
+        <FrontsDropDown />
         <Row>
           {Object.keys(frontStages).map(key => (
             <Col key={key}>
@@ -91,7 +89,10 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
 }
 
 const mapStateToProps = (state: State, props: PropsBeforeFetch) => ({
-  frontsConfig: GetFrontsConfigStateSelector(state, props.priority)
+  frontsConfig: {
+    collections: getCollections(state),
+    fronts: getFrontsWithPriority(state, props.priority)
+  }
 });
 
 const mapDispatchToProps = (dispatch: *) => ({
