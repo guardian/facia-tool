@@ -14,18 +14,16 @@ import {
   getCollections
 } from 'selectors/frontsSelectors';
 import FrontsDropDown from 'containers/FrontsDropdown';
+import type { PropsBeforeFetch } from './FrontsContainer';
 import CollectionContainer from './CollectionContainer';
 import Button from '../Button';
 import Col from '../Col';
 import Row from '../Row';
-import type { PropsBeforeFetch } from './FrontsContainer';
 
 type FrontsComponentProps = PropsBeforeFetch & {
-  frontsConfig: {
-    fronts: FrontConfig[],
-    collections: {
-      [string]: CollectionConfig
-    }
+  fronts: FrontConfig[],
+  collections: {
+    [string]: CollectionConfig
   },
   frontsActions: Object
 };
@@ -50,9 +48,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   }
 
   render() {
-    const {
-      frontsConfig: { fronts, collections }
-    } = this.props;
+    const { fronts, collections } = this.props;
 
     const collectionsWithId = getFrontCollections(
       this.props.frontId,
@@ -89,10 +85,8 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
 }
 
 const mapStateToProps = (state: State, props: PropsBeforeFetch) => ({
-  frontsConfig: {
-    collections: getCollections(state),
-    fronts: getFrontsWithPriority(state, props.priority)
-  }
+  collections: getCollections(state),
+  fronts: getFrontsWithPriority(state, props.priority)
 });
 
 const mapDispatchToProps = (dispatch: *) => ({
