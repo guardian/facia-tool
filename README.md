@@ -136,6 +136,7 @@ You need the following credentials:
 - cmsFronts - developer
 - workflow - S3 Read
 - capi - API Gateway invocation
+- frontend - AWS console access
 You can get keys temporary keys from `janus`. You can copy these credentials manually from `janus`
 
 You can also get credentials for *facia-tool* by using [feria](https://github.com/guardian/feria):
@@ -148,6 +149,8 @@ $ feria cmsFronts && feria --access s3-read workflow && feria --access sqs-consu
 
 You can run the fronts tool without frontend credentials, but you will not be able to check how your changes to fronts appear on frontend without
 these credentials. You will need to test your changes on `CODE` to see these changes.
+
+You will also need to be a member of the Editorial Tools Google Group in order to authenticate.
 
 ### Code Dependencies
 
