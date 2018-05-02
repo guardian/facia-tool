@@ -44,7 +44,7 @@ const getFrontsWithPriority = (state: State, priority: string): FrontConfig[] =>
   keyedObjToArray(getFrontsByPriority(state)[priority] || {});
 
 const getCollections = (state: State): CollectionConfigMap =>
-  state.frontsConfig.collections;
+  state.frontsConfig.collections || {};
 
 const frontsIdSelector = createSelector([getFronts], fronts => {
   if (!fronts) {
