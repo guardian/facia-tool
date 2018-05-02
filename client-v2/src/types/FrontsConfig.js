@@ -59,8 +59,21 @@ type FrontsConfig = {
   collections: ConfigCollection
 };
 
+type FrontDetailFull = $Diff<FrontDetail, { priority: string | void }> & {
+  id: string,
+  priority: PriorityName
+};
+
+type FrontsWithIds = {
+  [string]: FrontDetailFull
+};
+
+type FrontsByPriority = {
+  [string]: FrontsWithIds
+};
+
 type FrontsClientConfig = {
-  fronts: Array<FrontDetail>,
+  fronts: Array<FrontDetailFull>,
   collections: ConfigCollection
 };
 
@@ -72,5 +85,8 @@ export type {
   ConfigCollection,
   ConfigCollectionDetail,
   ConfigCollectionDetailWithId,
-  FrontsClientConfig
+  FrontsClientConfig,
+  FrontDetailFull,
+  FrontsWithIds,
+  FrontsByPriority
 };

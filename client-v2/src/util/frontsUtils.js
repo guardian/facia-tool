@@ -1,21 +1,21 @@
 // @flow
 
 import type {
-  FrontDetail,
+  FrontDetailFull,
   ConfigCollection,
   ConfigCollectionDetailWithId
 } from '../types/FrontsConfig';
 
 const getFrontCollections = (
   frontId: ?string,
-  fronts: Array<FrontDetail>,
+  fronts: Array<FrontDetailFull>,
   collections: ConfigCollection
 ): Array<ConfigCollectionDetailWithId> => {
   if (!frontId) {
     return [];
   }
-  const selectedFront: ?FrontDetail = fronts.find(
-    (front: FrontDetail) => front.id === frontId
+  const selectedFront: ?FrontDetailFull = fronts.find(
+    (front: FrontDetailFull) => front.id === frontId
   );
 
   if (selectedFront) {
