@@ -14,7 +14,10 @@ import type {
 
 import type { State } from '../types/State';
 
-const rawFrontsSelector = (state: State): Front => state.frontsConfig.fronts;
+const frontsConfigSelector = (state: State) => state.frontsConfig || {};
+
+const rawFrontsSelector = (state: State): Front =>
+  frontsConfigSelector(state).fronts || {};
 
 const getFronts = createSelector(
   [rawFrontsSelector],
@@ -62,7 +65,7 @@ const getFrontsWithPriority = (
   keyedObjToArray(getFrontsByPriority(state)[priority] || {});
 
 const collectionsSelector = (state: State): ConfigCollection =>
-  state.frontsConfig.collections;
+  frontsConfigSelector(state).collections || {};
 
 const frontsIdSelector = createSelector([rawFrontsSelector], fronts => {
   if (!fronts) {

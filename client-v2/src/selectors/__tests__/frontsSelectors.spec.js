@@ -5,7 +5,11 @@ import { frontsConfig } from '../../fixtures/frontsConfig';
 import type { FrontDetail } from '../../types/FrontsConfig';
 
 const editorialFronts: Array<FrontDetail> = [
-  { collections: ['collection1'], id: 'editorialFront' }
+  {
+    collections: ['collection1'],
+    id: 'editorialFront',
+    priority: 'editorial'
+  }
 ];
 
 const commercialFronts: Array<FrontDetail> = [
@@ -27,9 +31,9 @@ describe('Filtering fronts correctly', () => {
   it('filters editorial fronts correctly', () => {
     expect(
       getFrontsConfig(
-        frontsConfig.fronts,
-        frontsConfig.collections,
-        Object.keys(frontsConfig.fronts),
+        {
+          frontsConfig
+        },
         'editorial'
       )
     ).toEqual({
@@ -41,9 +45,9 @@ describe('Filtering fronts correctly', () => {
   it('filters non-editorial fronts correctly', () => {
     expect(
       getFrontsConfig(
-        frontsConfig.fronts,
-        frontsConfig.collections,
-        Object.keys(frontsConfig.fronts),
+        {
+          frontsConfig
+        },
         'commercial'
       )
     ).toEqual({
