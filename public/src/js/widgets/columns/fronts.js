@@ -150,7 +150,6 @@ export default class Front extends ColumnWidget {
         }
         const allCollections = this.baseModel.state().config.collections;
         const front = this.baseModel.frontsMap()[frontId] || {};
-
         this.isHidden(front.isHidden);
         this.allExpanded(true);
         this.collections(
@@ -161,9 +160,13 @@ export default class Front extends ColumnWidget {
                     allCollections[id],
                     {
                         id: id,
-                        alsoOn: _.reduce(this.baseModel.frontsList(), (alsoOn, front) => {
-                            if (front.id !== frontId && (front.collections || []).indexOf(id) > -1) {
-                                alsoOn.push(front.id);
+                        alsoOn: _.reduce(this.baseModel.allFrontsList(), (alsoOn, frontFromList) => {
+                            if (frontFromList.id !== frontId && (frontFromList.collections || []).indexOf(id) > -1) {
+                                alsoOn.push({
+                                    id: frontFromList.id,
+                                    priority: frontFromList.priority,
+                                    isDifferentPriority: frontFromList.priority !== front.priority
+                                });
                             }
                             return alsoOn;
                         }, []),

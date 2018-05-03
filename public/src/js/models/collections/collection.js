@@ -21,7 +21,6 @@ import isPlatformSpecificCollection from 'utils/platform';
 export default class Collection extends BaseClass {
     constructor(opts = {}) {
         super();
-
         if (!opts.id) { return; }
 
         this.id = opts.id;
@@ -33,6 +32,7 @@ export default class Collection extends BaseClass {
         this.groups = this.createGroups(opts.groups);
 
         this.alsoOn = opts.alsoOn || [];
+        this.alsoOnHasDifferentPriority = opts.alsoOn.some(also => also.isDifferentPriority)
 
         this.isDynamic = opts.type.indexOf('dynamic/') === 0;
 
