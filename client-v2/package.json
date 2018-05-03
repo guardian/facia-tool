@@ -5,14 +5,14 @@
   "main": "src/index.js",
   "license": "MIT",
   "scripts": {
-    "next": "node -r @babel/register",
-    "bundle": "yarn next $(yarn bin)/webpack",
+    "compileWithBabel": "node -r @babel/register",
+    "bundle": "yarn compileWithBabel $(yarn bin)/webpack",
     "build": "flow && yarn bundle --config config/webpack.config.prod.js",
     "watch": "yarn bundle --config config/webpack.config.dev.js --watch",
     "lint": "eslint ./src --ext .js",
     "lint-fix": "eslint --fix ./src --ext .js",
     "update-types": "flow-typed install --ignoreDeps peer bundle",
-    "dev-server": "yarn next $(yarn bin)/webpack-dev-server --config config/webpack.config.dev.js",
+    "dev-server": "yarn compileWithBabel $(yarn bin)/webpack-dev-server --config config/webpack.config.dev.js",
     "dev": "yarn install && yarn dev-server --open",
     "test": "yarn jest",
     "flow-coverage": "yarn run flow-coverage-report -i \"src/**/*.js\" --threshold 90 --strict-coverage"
