@@ -27,6 +27,7 @@ export default class BaseModel extends BaseClass {
         this.message = message;
         this.state = ko.observable();
         this.frontsList = ko.observableArray();
+        this.allFrontsList = ko.observableArray();
         this.frontsMap = ko.observable();
         this.switches = ko.observable();
         this.permissions = ko.observable();
@@ -76,7 +77,7 @@ export default class BaseModel extends BaseClass {
     }
 
     update(res) {
-        var frontsList = [], frontsMap = {};
+        var frontsList = [], allFrontsList = [], frontsMap = {};
 
         for (let front in res.config.fronts) {
             const frontConfig = res.config.fronts[front];
@@ -84,9 +85,11 @@ export default class BaseModel extends BaseClass {
             if (frontConfig.priority === this.priority) {
                 frontsList.push(frontConfigWithId);
             }
+            allFrontsList.push(frontConfigWithId);
             frontsMap[front] = frontConfigWithId;
         }
         this.frontsList(_.sortBy(frontsList, 'id'));
+        this.allFrontsList(_.sortBy(allFrontsList, 'id'));
         this.frontsMap(frontsMap);
 
         if (!_.isEqual(this.switches(), res.defaults.switches)) {

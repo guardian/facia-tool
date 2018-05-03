@@ -38,7 +38,13 @@
         </span>
 
         <span class="also" data-bind="if: alsoOn.length">
-            <a class="alsoOnToggle" data-bind="click: alsoOnToggle">also on&hellip;</a>
+            <a class="alsoOnToggle" data-bind="click: alsoOnToggle">also on&hellip;
+                <span data-bind="if: alsoOnHasDifferentPriority">
+                    <span data-bind="foreach: alsoOn">
+                         <span data-bind="text: priority" />
+                    </span>
+                </span>
+            </a>
         </span>
 
         <span class="list-header__timings" data-bind="
