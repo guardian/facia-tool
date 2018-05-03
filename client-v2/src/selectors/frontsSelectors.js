@@ -14,7 +14,7 @@ type CollectionConfigMap = {
 };
 
 type FrontsByPriority = {
-  [string]: FrontConfigMap
+  [string]: FrontConfig[]
 };
 
 const getFronts = (state: State): FrontConfigMap => state.frontsConfig.fronts;
@@ -27,31 +27,25 @@ const getFrontsByPriority = createSelector(
         const front = fronts[id];
         return {
           ...acc,
-          [front.priority]: {
-            ...acc[front.priority],
-            [id]: fronts[id]
-          }
+          [front.priority]: [...(acc[front.priority] || []), fronts[id]]
         };
       },
       {}
     )
 );
 
-const keyedObjToArray = <T>(obj: { [string]: T }): Array<T> =>
-  Object.keys(obj).map((key): T => obj[key]);
-
 const getFrontsWithPriority = (state: State, priority: string): FrontConfig[] =>
-  keyedObjToArray(getFrontsByPriority(state)[priority] || {});
+  getFrontsByPriority(state)[priority] || [];
 
 const getCollections = (state: State): CollectionConfigMap =>
   state.frontsConfig.collections || {};
 
-const frontsIdSelector = createSelector([getFronts], fronts => {
+const frontsIdSelector = createSelector([getFronts], (fronts): string[] => {
   if (!fronts) {
     return [];
   }
   return Object.keys(fronts)
-    .filter(front => front !== breakingNewsFrontId)
+    .filter(frontId => frontId !== breakingNewsFrontId)
     .sort();
 });
 
