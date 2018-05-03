@@ -69,7 +69,15 @@ class FrontsCAPISearchInput extends React.Component<
           </Row>
         }
       >
-        <SearchQuery params={{ tag, q, 'show-elements': 'image' }} poll={30000}>
+        <SearchQuery
+          params={{
+            tag,
+            q,
+            'show-elements': 'image',
+            'show-fields': 'trailText'
+          }}
+          poll={30000}
+        >
           {children}
         </SearchQuery>
       </ScrollContainer>
