@@ -1,5 +1,13 @@
 # Fronts V2
 
+## Setup
+
+To setup the Fronts V2 project:
+
+```bash
+./scripts/setup.sh
+```
+
 ## Developing
 
 To start developing just run:
