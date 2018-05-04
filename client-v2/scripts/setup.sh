@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
-cd "$(dirname "$0")"
+yellow='\033[1;33m'
+nocolour='\033[0m'
 
 printf "\n\rSetting up Fronts Tool V2 dependencies... \n\r\n\r"
 
 installed() {
   hash "$1" 2>/dev/null
  }
+
+fileExists() {
+  test -e "$1"
+}
 
 install_yarn() {
   if ! installed yarn; then
@@ -17,14 +22,14 @@ install_yarn() {
 }
 
 set_node_version() {
-  if ! installed nvm; then
-    cd ..
+  
+  if ! fileExists "$NVM_DIR/nvm.sh"; then
     node_version=`cat .nvmrc`
-    echo -e "\r\n\r\n${yellow}nvm not found: please ensure you're using node $node_version\r\n"
-    echo -e "NVM is not required to run this project, but we recommend using it to easily manage node versions"
+    echo -e "${yellow}nvm not found: please ensure you're using node $node_version\r\n"
+    echo -e "${nocolour}NVM is not required to run this project, but we recommend using it to easily manage node versions"
     echo -e "Install it from https://github.com/creationix/nvm#installation\r\n\r\n"
   else
-    source ~/.nvm/nvm.sh
+    source "$NVM_DIR/nvm.sh"
     nvm use
   fi
 }
