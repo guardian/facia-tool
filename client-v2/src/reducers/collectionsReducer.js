@@ -1,8 +1,11 @@
 // @flow
 
 import { type Action } from '../types/Action';
+import { type Collection } from '../types/Collection';
 
-type State = Object;
+type State = {
+  [string]: Collection
+};
 
 const collections = (state: State = {}, action: Action) => {
   switch (action.type) {
