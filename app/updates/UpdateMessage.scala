@@ -79,6 +79,18 @@ case class PublishUpdate(id: String) extends UpdateMessage {
   def affectedFronts(configAgent: ConfigAgent) = configAgent.getConfigsUsingCollectionId(id).toSet[String]
 }
 
+case class HandlingBreakingNewsUpdate(id: String) extends UpdateMessage {
+  def affectedFronts(configAgent: ConfigAgent) = configAgent.getConfigsUsingCollectionId(id).toSet[String]
+}
+
+case class HandlingBreakingNewsCollection(id: String) extends UpdateMessage {
+  def affectedFronts(configAgent: ConfigAgent) = configAgent.getConfigsUsingCollectionId(id).toSet[String]
+}
+
+case class HandlingBreakingNewsTrail(id: String, breakingNewsTrail: ClientHydratedTrail) extends UpdateMessage {
+  def affectedFronts(configAgent: ConfigAgent) = configAgent.getConfigsUsingCollectionId(id).toSet[String]
+}
+
 /* Macro - Watch out, this needs to be after the case classes */
 object UpdateMessage {
   implicit val format: Format[UpdateMessage] = Variants.format[UpdateMessage]((__ \ "type").format[String])

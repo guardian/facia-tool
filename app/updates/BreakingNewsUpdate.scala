@@ -23,7 +23,7 @@ import scala.util.{Failure, Success, Try}
 
 class InvalidNotificationContentType(msg: String) extends Throwable(msg) {}
 
-class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSAPI) {
+class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSAPI, val auditingUpdates: AuditingUpdates) {
   lazy val client = {
     Logger.info(s"Configuring breaking news client to send notifications to ${config.notification.host}")
     ApiClient(
@@ -38,8 +38,8 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSAPI) {
     collection: ClientHydratedCollection,
     email: String
   ): Future[Result] = {
-    Logger.info("Now putting a new breaking news update")
-    val futurePossibleErrors = Future.traverse(collection.trails)(trail => sendAlert(trail, email))
+    auditingUpdates.putAudit(AuditUpdate(HandlingBreakingNewsCollection(collectionId), email))
+    val futurePossibleErrors = Future.traverse(collection.trails)(trail => sendAlert(trail, email, collectionId))
     futurePossibleErrors.map { listOfPossibleErrors => {
       val errors = listOfPossibleErrors.flatten
       if (errors.isEmpty) Ok
@@ -47,7 +47,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSAPI) {
     }}
   }
 
-  private def sendAlert(trail: ClientHydratedTrail, email: String): Future[Option[String]] = {
+  private def sendAlert(trail: ClientHydratedTrail, email: String, collectionId: String): Future[Option[String]] = {
     def handleSuccessfulFuture(result: Either[ApiClientError, Unit]) = result match {
       case Left(error) =>
         Logger.error(s"Error in breaking news: ${error.description}")
@@ -65,14 +65,17 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSAPI) {
 
     if (trail.alert.getOrElse(false)) {
       withExceptionHandling({
-        Logger.info(s"Sending breaking news alert for trail $trail")
+        auditingUpdates.putAudit(AuditUpdate(HandlingBreakingNewsTrail(collectionId, trail: ClientHydratedTrail), email))
         client.send(createPayload(trail, email))
           .map(handleSuccessfulFuture)
           .recover {
             case NonFatal(e) => Some(e.getMessage)
           }
       })
-    } else Future.successful(None)
+    } else {
+      Logger.error(s"Failed to send a breaking news alert for trail ${trail} because alert was missing")
+      Future.successful(Some("There may have been a problem in sending a breakig news alert. Please contact central production for information"))
+    }
   }
 
   private def createPayload(trail: ClientHydratedTrail, email: String): BreakingNewsPayload = {
