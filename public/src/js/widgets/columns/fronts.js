@@ -164,7 +164,7 @@ export default class Front extends ColumnWidget {
                             if (frontFromList.id !== frontId && (frontFromList.collections || []).indexOf(id) > -1) {
                                 alsoOn.push({
                                     id: frontFromList.id,
-                                    priority: frontFromList.priority,
+                                    priority: frontFromList.priority || 'editorial',
                                     isDifferentPriority: frontFromList.priority !== front.priority
                                 });
                             }
