@@ -32,9 +32,9 @@ export default class Collection extends BaseClass {
         this.groups = this.createGroups(opts.groups);
 
         this.alsoOn = opts.alsoOn || [];
-        this.alsoOnHasDifferentPriority = opts.alsoOn.some(also => also.isDifferentPriority)
+        this.alsoOnHasDifferentPriority = opts.alsoOn.some(also => also.isDifferentPriority);
         this.alsoOnMeritsWarning = this.alsoOnHasDifferentPriority
-            && this.alsoOn.some(also => also.priority === 'commercial')
+            && this.alsoOn.some(also => also.priority === 'commercial');
 
         this.isDynamic = opts.type.indexOf('dynamic/') === 0;
 
