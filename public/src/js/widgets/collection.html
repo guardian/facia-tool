@@ -47,8 +47,8 @@
                     <span data-bind="if: !alsoOnMeritsWarning">
                         Also on
                     </span>
-                    <span data-bind="foreach: alsoOn">
-                        <span data-bind="text: priority" /><span data-bind="if: $index() < $parent.alsoOn.length - 1">, </span>
+                    <span data-bind="foreach: alsoOnDedupedPriorities">
+                        <span data-bind="text: $data" /><span data-bind="if: $index() < $parent.alsoOnDedupedPriorities.length - 1">, </span>
                     </span>
                     fronts.
                 </span>
