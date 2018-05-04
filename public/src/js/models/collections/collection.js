@@ -32,8 +32,8 @@ export default class Collection extends BaseClass {
         this.groups = this.createGroups(opts.groups);
 
         this.alsoOn = opts.alsoOn || [];
-        this.alsoOnDedupedPriorities = _.uniq(opts.alsoOn.map(front => front.priority));
-        this.alsoOnHasDifferentPriority = opts.alsoOn.some(front => front.isDifferentPriority);
+        this.alsoOnDedupedPriorities = _.uniq(this.alsoOn.map(front => front.priority));
+        this.alsoOnHasDifferentPriority = this.alsoOn.some(front => front.isDifferentPriority);
         this.alsoOnMeritsWarning = this.alsoOnHasDifferentPriority
             && this.alsoOn.some(front => front.priority === 'commercial');
 
