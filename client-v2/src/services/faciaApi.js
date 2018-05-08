@@ -1,26 +1,45 @@
 // @flow
 
+import pandaFetch from './pandaFetch';
 import { getCollectionArticleQueryString } from 'util/collectionUtils';
 import { frontStages } from 'constants/fronts';
-import type { Collection, CollectionArticles } from 'types/Collection';
+import type { Article } from 'types/Article';
+import type { CollectionArticles } from 'types/Collection';
 import type { CapiArticle } from 'types/Capi';
-import pandaFetch from './pandaFetch';
 
-export function fetchFrontsConfig() {
+function fetchFrontsConfig() {
   return pandaFetch('/config', {
     method: 'get',
     credentials: 'same-origin'
   }).then(response => response.json());
 }
 
-export function getCollection(collectionId: string) {
+type CollectionResponse = {
+  draft?: Array<Article>,
+  live: Array<Article>,
+  previously?: Array<Article>,
+  lastUpdated?: number,
+  updatedBy?: string,
+  updatedEmail?: string
+};
+
+type Collection = CollectionResponse & {
+  id: string
+};
+
+function getCollection(collectionId: string): Promise<Collection> {
   return pandaFetch(`/collection/${collectionId}`, {
     method: 'get',
     credentials: 'same-origin'
-  }).then(response => response.json());
+  })
+    .then(response => response.json())
+    .then((json: CollectionResponse) => ({
+      ...json,
+      id: collectionId
+    }));
 }
 
-export function getCollectionArticles(
+function getCollectionArticles(
   collection: Collection
 ): Promise<CollectionArticles> {
   const parseArticleListFromResponse = (text: ?string): Array<CapiArticle> => {
@@ -64,3 +83,6 @@ export function getCollectionArticles(
       })
     );
 }
+
+export type { Collection };
+export { fetchFrontsConfig, getCollection, getCollectionArticles };

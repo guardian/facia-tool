@@ -1,7 +1,7 @@
 // @flow
 
 import { type Action } from 'types/Action';
-import { type Collection } from 'types/Collection';
+import { type Collection } from 'services/faciaApi';
 
 type State = {
   [string]: Collection

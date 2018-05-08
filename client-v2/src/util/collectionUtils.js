@@ -1,7 +1,7 @@
 // @flow
 
 import { frontStages } from 'constants/fronts';
-import type { Collection } from 'types/Collection';
+import type { Collection } from 'services/faciaApi';
 import type { Article } from 'types/Article';
 
 const getArticlesForStage = (
