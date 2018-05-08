@@ -1,20 +1,21 @@
 // @flow
 
 import { createSelector } from 'reselect';
-
-import type {
-  FrontConfig,
-  FrontDetail,
-  FrontsClientConfig,
-  Front,
-  ConfigCollection
-} from 'types/FrontsConfig';
-
+import type { FrontConfig, CollectionConfig } from 'services/faciaApi';
 import type { State } from 'types/State';
 import { breakingNewsFrontId } from 'constants/fronts';
 
-const frontsSelector = (state: State): Front => state.frontsConfig.fronts;
-const collectionsSelector = (state: State): ConfigCollection =>
+type FrontConfigMap = {
+  [string]: FrontConfig
+};
+
+type CollectionConfigMap = {
+  [string]: CollectionConfig
+};
+
+const frontsSelector = (state: State): FrontConfigMap =>
+  state.frontsConfig.fronts;
+const collectionsSelector = (state: State): CollectionConfigMap =>
   state.frontsConfig.collections;
 
 const prioritySelector = (state: State, priority: string) => priority;
@@ -29,25 +30,24 @@ const frontsIdSelector = createSelector([frontsSelector], fronts => {
 });
 
 const getFrontsConfig = (
-  fronts: Front,
-  collections: ConfigCollection,
+  fronts: FrontConfigMap,
+  collections: CollectionConfigMap,
   frontIds: Array<string>,
   priority: string
-): FrontsClientConfig => {
+): {
+  fronts: FrontConfig[],
+  collections: CollectionConfigMap
+} => {
   if (frontIds.length === 0) {
     return { fronts: [], collections: {} };
   }
   const frontsWithPriority = frontIds.reduce(
-    (acc: Array<FrontDetail>, key: string) => {
+    (acc: Array<FrontConfig>, key: string) => {
       if (
         fronts[key].priority === priority ||
         (!fronts[key].priority && priority === 'editorial')
       ) {
-        const frontConfig: FrontConfig = fronts[key];
-        const frontDetail: FrontDetail = Object.assign({}, frontConfig, {
-          id: key
-        });
-        acc.push(frontDetail);
+        return [...acc, fronts[key]];
       }
       return acc;
     },

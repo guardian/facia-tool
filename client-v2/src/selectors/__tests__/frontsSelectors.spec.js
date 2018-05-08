@@ -3,12 +3,14 @@
 import type { FrontDetail } from 'types/FrontsConfig';
 import { frontsConfig } from 'fixtures/frontsConfig';
 import { getFrontsConfig } from '../frontsSelectors';
+import { frontsConfig } from 'fixtures/frontsConfig';
+import type { FrontConfig } from 'services/faciaApi';
 
-const editorialFronts: Array<FrontDetail> = [
+const editorialFronts: Array<FrontConfig> = [
   { collections: ['collection1'], id: 'editorialFront' }
 ];
 
-const commercialFronts: Array<FrontDetail> = [
+const commercialFronts: Array<FrontConfig> = [
   {
     collections: ['collection1'],
     id: 'commercialFront',

@@ -1,26 +1,22 @@
 // @flow
 
-import type {
-  FrontDetail,
-  ConfigCollection,
-  ConfigCollectionDetailWithId
-} from 'types/FrontsConfig';
+import type { FrontConfig, CollectionConfig } from 'services/faciaApi';
 
 const getFrontCollections = (
   frontId: ?string,
-  fronts: Array<FrontDetail>,
-  collections: ConfigCollection
-): Array<ConfigCollectionDetailWithId> => {
+  fronts: Array<FrontConfig>,
+  collections: { [string]: CollectionConfig }
+): Array<CollectionConfig> => {
   if (!frontId) {
     return [];
   }
-  const selectedFront: ?FrontDetail = fronts.find(
-    (front: FrontDetail) => front.id === frontId
+  const selectedFront: ?FrontConfig = fronts.find(
+    (front: FrontConfig) => front.id === frontId
   );
 
   if (selectedFront) {
-    return selectedFront.collections.map(collectionId =>
-      Object.assign({}, collections[collectionId], { id: collectionId })
+    return selectedFront.collections.map(
+      collectionId => collections[collectionId]
     );
   }
 

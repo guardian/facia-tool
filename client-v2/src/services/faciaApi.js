@@ -6,12 +6,106 @@ import { frontStages } from 'constants/fronts';
 import type { Article } from 'types/Article';
 import type { CollectionArticles } from 'types/Collection';
 import type { CapiArticle } from 'types/Capi';
+import type { PriorityName } from 'types/Priority';
 
-function fetchFrontsConfig() {
+type ObjectOfObjects<T: Object> = {
+  [string]: T
+};
+
+type ObjectOfObjectsWithIds<T: Object> = {
+  [string]: T & { id: string }
+};
+
+const addIdToEntries = <T: Object>(
+  obj: ObjectOfObjects<T>
+): ObjectOfObjectsWithIds<T> =>
+  Object.keys(obj).reduce(
+    (acc, key) => ({
+      ...acc,
+      [key]: {
+        ...obj[key],
+        id: key
+      }
+    }),
+    {}
+  );
+
+type FrontConfigResponse = {
+  collections: Array<string>,
+  priority?: PriorityName,
+  canonical?: string,
+  group?: string,
+  isHidden?: boolean,
+  isImageDisplayed?: boolean,
+  imageHeight?: number,
+  imageWidth?: number,
+  imageUrl?: string,
+  onPageDescription?: string,
+  description?: string,
+  title?: string,
+  webTitle?: string,
+  navSection?: string
+};
+
+type Platform = 'Web' | 'Platform';
+
+type CollectionConfigResponse = {
+  displayName: string,
+  type: string,
+  backfill?: Object,
+  href?: string,
+  groups?: Array<string>,
+  metadata?: Array<Object>,
+  platform?: string,
+  uneditable?: boolean,
+  showTags?: boolean,
+  hideKickers?: boolean,
+  excludedFromRss?: boolean,
+  description?: string,
+  showSections?: boolean,
+  showDateHeader?: boolean,
+  showLatestUpdate?: boolean,
+  excludeFromRss?: boolean,
+  hideShowMore?: boolean,
+  platform?: Platform
+};
+
+type FrontsConfigResponse = {
+  fronts: {
+    [string]: FrontConfigResponse
+  },
+  collections: {
+    [string]: CollectionConfigResponse
+  }
+};
+
+type FrontConfig = FrontConfigResponse & {
+  id: string
+};
+
+type CollectionConfig = CollectionConfigResponse & {
+  id: string
+};
+
+type FrontsConfig = {
+  fronts: {
+    [string]: FrontConfig
+  },
+  collections: {
+    [string]: CollectionConfig
+  }
+};
+
+function fetchFrontsConfig(): Promise<FrontsConfig> {
   return pandaFetch('/config', {
     method: 'get',
     credentials: 'same-origin'
-  }).then(response => response.json());
+  })
+    .then(response => response.json())
+    .then((json: FrontsConfigResponse) => ({
+      fronts: addIdToEntries(json.fronts),
+      collections: addIdToEntries(json.collections)
+    }));
 }
 
 type CollectionResponse = {
@@ -84,5 +178,5 @@ function getCollectionArticles(
     );
 }
 
-export type { Collection };
+export type { Collection, CollectionConfig, FrontConfig, FrontsConfig };
 export { fetchFrontsConfig, getCollection, getCollectionArticles };
