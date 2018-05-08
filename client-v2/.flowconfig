@@ -14,14 +14,4 @@ flow-typed
 [options]
 module.system.node.resolve_dirname=src
 
-module.name_mapper='^Actions' -> 'actions'
-module.name_mapper='^Components' -> 'components'
-module.name_mapper='^Constants' -> 'constants'
-module.name_mapper='^Fixtures' -> 'fixtures'
-module.name_mapper='^Reducers' -> 'reducers'
-module.name_mapper='^Selectors' -> 'selectors'
-module.name_mapper='^Services' -> 'services'
-module.name_mapper='^Types' -> 'types'
-module.name_mapper='^Util' -> 'util'
-
 [strict]
