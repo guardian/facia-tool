@@ -59,12 +59,11 @@ class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, va
           case None => Future.successful(NoCache(Ok))}}}
 
   private def maybeSendBreakingAlert(request: UserRequest[AnyContent], collectionId: String): Future[Result] = {
-    Logger.info(s"maybe sending a breaking news alert with collection $collectionId")
     if (configAgent.isCollectionInBreakingNewsFront(collectionId)) {
       val identity = request.user
-      Logger.info(s"$collectionId was a breaking news collection")
       request.body.asJson.flatMap(_.asOpt[ClientHydratedCollection]).map {
-        case clientCollection: ClientHydratedCollection =>
+        case clientCollection: ClientHydratedCollection => {
+          auditingUpdates.putAudit(AuditUpdate(HandlingBreakingNewsUpdate(collectionId), identity.email))
           breakingNewsUpdate.putBreakingNewsUpdate(
             collectionId = collectionId,
             collection = clientCollection,
@@ -72,6 +71,7 @@ class FaciaToolController(val config: ApplicationConfiguration, val acl: Acl, va
           ).map {
             result => NoCache(result)
           }
+        }
         case _ => Future.successful(BadRequest)
       }.getOrElse(Future.successful(NotAcceptable))
     } else
