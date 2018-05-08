@@ -27,6 +27,7 @@ describe('Front', function () {
         this.model = {
             identity: { email: 'fabio.crisci@theguardian.com' },
             frontsList: ko.observableArray(_.values(fronts)),
+            allFrontsList: ko.observableArray(_.values(fronts)),
             frontsMap: ko.observable(fronts),
             testColumn: {
                 config: ko.observable(),

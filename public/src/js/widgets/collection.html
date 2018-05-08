@@ -37,8 +37,22 @@
             (<span class="non-zero">updating...</span>)
         </span>
 
-        <span class="also" data-bind="if: alsoOn.length">
-            <a class="alsoOnToggle" data-bind="click: alsoOnToggle">also on&hellip;</a>
+        <span class="also" data-bind="if: alsoOn && alsoOn.length">
+            <a class="alsoOnToggle" data-bind="click: alsoOnToggle">
+                <span data-bind="if: !alsoOnHasDifferentPriority">Also on&hellip;</span>
+                <span data-bind="if: alsoOnHasDifferentPriority">
+                    <span data-bind="if: alsoOnMeritsWarning">
+                        Careful: also on
+                    </span>
+                    <span data-bind="if: !alsoOnMeritsWarning">
+                        Also on
+                    </span>
+                    <span data-bind="foreach: alsoOnDedupedPriorities">
+                        <span data-bind="text: $data" /><span data-bind="if: $index() < $parent.alsoOnDedupedPriorities.length - 1">, </span>
+                    </span>
+                    fronts.
+                </span>
+            </a>
         </span>
 
         <span class="list-header__timings" data-bind="
@@ -70,7 +84,7 @@
         <ul data-bind="foreach: alsoOn">
             <li><a class="list-header__also-on" data-bind="
                 click: $parent.front.setFront,
-                text: $data"></a>
+                text: $data.id"></a>
             </li>
         </ul>
     </div>
