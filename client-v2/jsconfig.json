@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+    "target": "esnext",
+    "allowSyntheticDefaultImports": false,
+    "baseUrl": "./",
+    "paths": {
+      "Actions/*": ["src/actions/*"],
+      "Components/*": ["src/components/*"],
+      "Constants/*": ["src/constants/*"],
+      "Fixtures/*": ["src/fixtures/*"],
+      "Reducers/*": ["src/reducers/*"],
+      "Selectors/*": ["src/selectors/*"],
+      "Services/*": ["src/services/*"],
+      "Types/*": ["src/types/*"],
+      "Util/*": ["src/util/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist"]
+}
