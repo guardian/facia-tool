@@ -44,5 +44,12 @@ module.exports = {
       files: ['**/*.spec.js'],
       env: { jest: true }
     }
-  ]
+  ],
+  settings: {
+    "import/resolver": {
+      webpack: {
+        config: "config/webpack.config.common.js"
+      }
+    }
+  }
 };
