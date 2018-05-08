@@ -6,7 +6,7 @@ import { createMemoryHistory } from 'history';
 import FrontsDropdown from '../FrontsEdit/FrontsDropdown';
 import { frontsClientConfig } from '../../fixtures/frontsConfig';
 
-import type { PriorityName } from '../../types/Priority';
+import type { PriorityName } from 'Types/Priority';
 import type { Props } from '../FrontsEdit/FrontsDropdown';
 
 const setup = (priority: PriorityName, frontId: ?string) => {

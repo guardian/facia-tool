@@ -4,8 +4,9 @@ import { applyMiddleware, compose, createStore } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import createBrowserHistory from 'history/createBrowserHistory';
 import { routerMiddleware } from 'react-router-redux';
+import { type Store } from 'Types/Store';
+
 import rootReducer from '../reducers/rootReducer.js';
-import { type Store } from '../types/Store';
 import { updateStateFromUrlChange } from './storeMiddleware';
 
 export default function configureStore(): Store {

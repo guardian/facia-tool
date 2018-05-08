@@ -3,13 +3,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import pandaFetch from 'Services/pandaFetch';
+import { type Element } from 'Services/capiQuery';
 import * as CAPIParamsContext from './CAPI/CAPIParamsContext';
-import { type Element } from '../services/capiQuery';
 import FeedItem from './FeedItem';
 import SearchInput from './FrontsCAPIInterface/SearchInput';
 import Button from './Button';
 import Loader from './Loader';
-import pandaFetch from '../services/pandaFetch';
 import { capiFeedSpecsSelector } from '../selectors/feedsSelectors';
 import Row from './Row';
 import Col from './Col';

@@ -1,10 +1,10 @@
 // @flow
 
-import type { Action } from '../types/Action';
-import type { ThunkAction } from '../types/Store';
-import type { FrontsConfig } from '../types/FrontsConfig';
+import type { Action } from 'Types/Action';
+import type { ThunkAction } from 'Types/Store';
+import type { FrontsConfig } from 'Types/FrontsConfig';
 
-import { fetchFrontsConfig } from '../services/faciaApi';
+import { fetchFrontsConfig } from 'Services/faciaApi';
 
 function frontsConfigReceived(config: FrontsConfig): Action {
   return {

@@ -1,10 +1,10 @@
 // @flow
 
+import { getCollectionArticleQueryString } from 'Util/collectionUtils';
+import { frontStages } from 'Constants/fronts';
+import type { Collection, CollectionArticles } from 'Types/Collection';
+import type { CapiArticle } from 'Types/Capi';
 import pandaFetch from './pandaFetch';
-import { getCollectionArticleQueryString } from '../util/collectionUtils';
-import { frontStages } from '../constants/fronts';
-import type { Collection, CollectionArticles } from '../types/Collection';
-import type { CapiArticle } from '../types/Capi';
 
 export function fetchFrontsConfig() {
   return pandaFetch('/config', {

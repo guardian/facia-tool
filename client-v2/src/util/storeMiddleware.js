@@ -1,8 +1,8 @@
 // @flow
 
 import { type Middleware } from 'redux';
-import { type State } from '../types/State';
-import { type Action } from '../types/Action';
+import { type State } from 'Types/State';
+import { type Action } from 'Types/Action';
 
 export const updateStateFromUrlChange: Middleware<State, Action> = ({
   dispatch,

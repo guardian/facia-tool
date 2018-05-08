@@ -1,6 +1,6 @@
 // @flow
 
-import type { Action, ActionError } from '../types/Action';
+import type { Action, ActionError } from 'Types/Action';
 
 type State = ActionError;
 

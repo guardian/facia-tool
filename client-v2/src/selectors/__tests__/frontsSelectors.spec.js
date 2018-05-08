@@ -2,7 +2,7 @@
 
 import { getFrontsConfig } from '../frontsSelectors';
 import { frontsConfig } from '../../fixtures/frontsConfig';
-import type { FrontDetail } from '../../types/FrontsConfig';
+import type { FrontDetail } from 'Types/FrontsConfig';
 
 const editorialFronts: Array<FrontDetail> = [
   { collections: ['collection1'], id: 'editorialFront' }

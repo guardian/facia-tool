@@ -3,9 +3,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import type { CapiArticleWithMetadata } from 'Types/Capi';
 import CollectionArticles from './CollectionArticles';
 import GroupDisplay from './GroupDisplay';
-import type { CapiArticleWithMetadata } from '../../types/Capi';
 
 type Props = {
   displayName: string,

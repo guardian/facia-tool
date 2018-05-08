@@ -3,12 +3,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import type { Match, RouterHistory } from 'react-router-dom';
+import type { State } from 'Types/State';
+import type { ActionError } from 'Types/Action';
 import FrontsLayout from '../FrontsLayout';
 import FrontsContainer from './FrontsContainer';
 import Feed from '../Feed';
 import ErrorBannner from '../ErrorBanner';
-import type { State } from '../../types/State';
-import type { ActionError } from '../../types/Action';
 
 type Props = {
   match: Match,

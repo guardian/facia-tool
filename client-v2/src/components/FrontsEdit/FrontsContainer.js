@@ -5,10 +5,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import type { RouterHistory } from 'react-router-dom';
-import getFrontsConfig from '../../actions/FrontsConfig';
-import { frontsIdSelector } from '../../selectors/frontsSelectors';
+import getFrontsConfig from 'Actions/FrontsConfig';
+import { frontsIdSelector } from 'Selectors/frontsSelectors';
+import type { State } from 'Types/State';
 import Fronts from './Fronts';
-import type { State } from '../../types/State';
 
 type PropsBeforeFetch = {
   priority: string, // eslint-disable-line react/no-unused-prop-types

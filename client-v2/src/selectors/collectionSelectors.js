@@ -2,8 +2,8 @@
 
 import { createSelector } from 'reselect';
 
-import type { State } from '../types/State';
-import type { Collection } from '../types/Collection';
+import type { State } from 'Types/State';
+import type { Collection } from 'Types/Collection';
 
 const allCollectionsSelector = (state: State): { [string]: Collection } =>
   state.collections;

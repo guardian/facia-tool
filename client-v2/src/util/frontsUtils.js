@@ -4,7 +4,7 @@ import type {
   FrontDetail,
   ConfigCollection,
   ConfigCollectionDetailWithId
-} from '../types/FrontsConfig';
+} from 'Types/FrontsConfig';
 
 const getFrontCollections = (
   frontId: ?string,

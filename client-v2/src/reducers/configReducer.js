@@ -1,6 +1,6 @@
 // @flow
 
-import { type Action } from '../types/Action';
+import { type Action } from 'Types/Action';
 
 type State = Object;
 

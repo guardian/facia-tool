@@ -1,6 +1,6 @@
 // @flow
 
-import { type Config } from '../types/Config';
+import { type Config } from 'Types/Config';
 
 export default () => {
   const configEl = document.getElementById('config');

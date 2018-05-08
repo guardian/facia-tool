@@ -1,7 +1,7 @@
 // @flow
 
-import type { Article } from '../types/Article';
-import type { CapiArticle } from '../types/Capi';
+import type { Article } from 'Types/Article';
+import type { CapiArticle } from 'Types/Capi';
 
 type Collection = {
   draft?: Array<Article>,

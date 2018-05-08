@@ -1,6 +1,6 @@
 // @flow
 
-import type { Article } from '../types/Article';
+import type { Article } from 'Types/Article';
 
 const liveArticle: Article = {
   id: 'article/live/0',

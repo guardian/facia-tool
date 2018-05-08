@@ -3,7 +3,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import type { CapiArticleWithMetadata } from '../../types/Capi';
+import type { CapiArticleWithMetadata } from 'Types/Capi';
 
 type Props = {
   articles: Array<CapiArticleWithMetadata>

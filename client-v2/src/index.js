@@ -5,10 +5,10 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import Raven from 'raven-js';
 import { BrowserRouter } from 'react-router-dom';
-import configureStore from './util/configureStore';
-import extractConfigFromPage from './util/extractConfigFromPage';
-import App from './components/App';
-import { configReceived } from './actions/Config';
+import configureStore from 'Util/configureStore';
+import extractConfigFromPage from 'Util/extractConfigFromPage';
+import App from 'Components/App';
+import { configReceived } from 'Actions/Config';
 
 const store = configureStore();
 const config = extractConfigFromPage();

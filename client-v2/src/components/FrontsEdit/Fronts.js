@@ -4,17 +4,17 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
-import getFrontsConfig from '../../actions/FrontsConfig';
-import { GetFrontsConfigStateSelector } from '../../selectors/frontsSelectors';
+import getFrontsConfig from 'Actions/FrontsConfig';
+import { GetFrontsConfigStateSelector } from 'Selectors/frontsSelectors';
+import type { FrontsClientConfig } from 'Types/FrontsConfig';
+import type { State } from 'Types/State';
+import { getFrontCollections } from 'Util/frontsUtils';
+import { frontStages } from 'Constants/fronts';
 import CollectionContainer from './CollectionContainer';
 import FrontsDropDown from './FrontsDropdown';
-import { getFrontCollections } from '../../util/frontsUtils';
-import { frontStages } from '../../constants/fronts';
 import Button from '../Button';
 import Col from '../Col';
 import Row from '../Row';
-import type { FrontsClientConfig } from '../../types/FrontsConfig';
-import type { State } from '../../types/State';
 import type { PropsBeforeFetch } from './FrontsContainer';
 
 type FrontsComponentProps = PropsBeforeFetch & {

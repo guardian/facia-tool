@@ -1,12 +1,12 @@
 // @flow
 
 import * as React from 'react';
-import * as CAPIParamsContext from './CAPIParamsContext';
 /* eslint-disable import/no-duplicates */
-import capiQuery from '../../services/capiQuery';
-import { type Fetch } from '../../services/capiQuery';
+import capiQuery from 'Services/capiQuery';
+import { type Fetch } from 'Services/capiQuery';
 /* eslint-enable import/no-duplicates */
-import Async from '../util/Async';
+import Async from 'Components/util/Async';
+import * as CAPIParamsContext from './CAPIParamsContext';
 
 type CAPISearchQueryProps = {
   baseURL?: string,
