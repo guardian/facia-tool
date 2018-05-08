@@ -1,7 +1,7 @@
 // @flow
 
-import { getCollectionArticleQueryString } from '../collectionUtils';
 import { frontStages } from 'Constants/fronts';
+import { getCollectionArticleQueryString } from '../collectionUtils';
 import {
   liveArticle,
   draftArticle,

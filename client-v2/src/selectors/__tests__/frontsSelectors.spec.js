@@ -1,8 +1,8 @@
 // @flow
 
+import type { FrontDetail } from 'Types/FrontsConfig';
 import { getFrontsConfig } from '../frontsSelectors';
 import { frontsConfig } from '../../fixtures/frontsConfig';
-import type { FrontDetail } from 'Types/FrontsConfig';
 
 const editorialFronts: Array<FrontDetail> = [
   { collections: ['collection1'], id: 'editorialFront' }
