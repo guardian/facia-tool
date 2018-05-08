@@ -8,28 +8,6 @@ import type { CollectionArticles } from 'types/Collection';
 import type { CapiArticle } from 'types/Capi';
 import type { PriorityName } from 'types/Priority';
 
-type ObjectOfObjects<T: Object> = {
-  [string]: T
-};
-
-type ObjectOfObjectsWithIds<T: Object> = {
-  [string]: T & { id: string }
-};
-
-const addIdToEntries = <T: Object>(
-  obj: ObjectOfObjects<T>
-): ObjectOfObjectsWithIds<T> =>
-  Object.keys(obj).reduce(
-    (acc, key) => ({
-      ...acc,
-      [key]: {
-        ...obj[key],
-        id: key
-      }
-    }),
-    {}
-  );
-
 type FrontConfigResponse = {
   collections: Array<string>,
   priority?: PriorityName,
@@ -79,21 +57,30 @@ type FrontsConfigResponse = {
   }
 };
 
-type FrontConfig = FrontConfigResponse & {
-  id: string
+type FrontConfigResponseWithoutPriority = $Diff<
+  FrontConfigResponse,
+  { priority: PriorityName | void }
+>;
+type FrontConfig = FrontConfigResponseWithoutPriority & {
+  id: string,
+  priority: PriorityName
 };
 
 type CollectionConfig = CollectionConfigResponse & {
   id: string
 };
 
+type FrontConfigMap = {
+  [string]: FrontConfig
+};
+
+type CollectionConfigMap = {
+  [string]: CollectionConfig
+};
+
 type FrontsConfig = {
-  fronts: {
-    [string]: FrontConfig
-  },
-  collections: {
-    [string]: CollectionConfig
-  }
+  fronts: FrontConfigMap,
+  collections: CollectionConfigMap
 };
 
 function fetchFrontsConfig(): Promise<FrontsConfig> {
@@ -103,8 +90,27 @@ function fetchFrontsConfig(): Promise<FrontsConfig> {
   })
     .then(response => response.json())
     .then((json: FrontsConfigResponse) => ({
-      fronts: addIdToEntries(json.fronts),
-      collections: addIdToEntries(json.collections)
+      fronts: Object.keys(json.fronts).reduce(
+        (acc: FrontConfigMap, id: string): FrontConfigMap => ({
+          ...acc,
+          [id]: {
+            ...json.fronts[id], // $FlowFixMe - this isn't typed properly due to spreading
+            id,
+            priority: json.fronts[id].priority || 'editorial'
+          }
+        }),
+        {}
+      ),
+      collections: Object.keys(json.collections).reduce(
+        (acc, id) => ({
+          ...acc,
+          [id]: {
+            ...json.collections[id],
+            id
+          }
+        }),
+        {}
+      )
     }));
 }
 

@@ -7,7 +7,11 @@ import { frontsConfig } from 'fixtures/frontsConfig';
 import type { FrontConfig } from 'services/faciaApi';
 
 const editorialFronts: Array<FrontConfig> = [
-  { collections: ['collection1'], id: 'editorialFront' }
+  {
+    collections: ['collection1'],
+    id: 'editorialFront',
+    priority: 'editorial'
+  }
 ];
 
 const commercialFronts: Array<FrontConfig> = [

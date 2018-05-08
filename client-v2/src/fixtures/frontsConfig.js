@@ -10,7 +10,8 @@ const frontsConfig: FrontsConfig = {
   fronts: {
     editorialFront: {
       id: 'editorialFront',
-      collections: ['collection1']
+      collections: ['collection1'],
+      priority: 'editorial'
     },
     commercialFront: {
       id: 'commercialFront',
