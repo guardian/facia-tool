@@ -3,16 +3,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import getFrontCollection from 'Actions/Collection';
-import getArticlesForCollection from 'Actions/Articles';
-import { collectionSelector } from 'Selectors/collectionSelectors';
-import { collectionArticlesSelector } from 'Selectors/collectionArticleSelectors';
-import { getArticlesWithMeta } from 'Util/articleUtils';
-import { getArticlesForStage } from 'Util/collectionUtils';
-import type { ConfigCollectionDetailWithId } from 'Types/FrontsConfig';
-import type { Collection } from 'Types/Collection';
-import type { State } from 'Types/State';
-import type { CapiArticle } from 'Types/Capi';
+import getFrontCollection from 'actions/Collection';
+import getArticlesForCollection from 'actions/Articles';
+import { collectionSelector } from 'selectors/collectionSelectors';
+import { collectionArticlesSelector } from 'selectors/collectionArticleSelectors';
+import { getArticlesWithMeta } from 'util/articleUtils';
+import { getArticlesForStage } from 'util/collectionUtils';
+import type { ConfigCollectionDetailWithId } from 'types/FrontsConfig';
+import type { Collection } from 'types/Collection';
+import type { State } from 'types/State';
+import type { CapiArticle } from 'types/Capi';
 import CollectionDetail from './CollectionDetail';
 
 type Props = {

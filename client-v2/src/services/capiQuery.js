@@ -1,6 +1,6 @@
 // @flow
 
-import { qs } from 'Util/qs';
+import { qs } from 'util/qs';
 
 const API_BASE = 'https://content.guardianapis.com/';
 

@@ -1,7 +1,7 @@
 // @flow
 
-import { type Action } from 'Types/Action';
-import { type FrontsConfig } from 'Types/FrontsConfig';
+import { type Action } from 'types/Action';
+import { type FrontsConfig } from 'types/FrontsConfig';
 
 type State = FrontsConfig;
 

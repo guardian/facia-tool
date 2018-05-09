@@ -1,10 +1,10 @@
 // @flow
 
-import type { Action } from 'Types/Action';
-import type { ThunkAction } from 'Types/Store';
+import type { Action } from 'types/Action';
+import type { ThunkAction } from 'types/Store';
 
-import { getCollection } from 'Services/faciaApi';
-import type { Collection } from 'Types/Collection';
+import { getCollection } from 'services/faciaApi';
+import type { Collection } from 'types/Collection';
 
 function frontCollectionReceived(
   collectionId: string,

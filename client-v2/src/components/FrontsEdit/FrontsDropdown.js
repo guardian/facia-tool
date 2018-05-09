@@ -3,7 +3,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import type { RouterHistory } from 'react-router-dom';
-import type { FrontDetail } from 'Types/FrontsConfig';
+import type { FrontDetail } from 'types/FrontsConfig';
 
 type Props = {
   fronts: Array<FrontDetail>,

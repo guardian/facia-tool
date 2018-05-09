@@ -4,9 +4,9 @@ import { applyMiddleware, compose, createStore } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import createBrowserHistory from 'history/createBrowserHistory';
 import { routerMiddleware } from 'react-router-redux';
-import { type Store } from 'Types/Store';
+import { type Store } from 'types/Store';
 
-import rootReducer from '../reducers/rootReducer.js';
+import rootReducer from 'reducers/rootReducer.js';
 import { updateStateFromUrlChange } from './storeMiddleware';
 
 export default function configureStore(): Store {
@@ -24,7 +24,7 @@ export default function configureStore(): Store {
 
   /* globals module:false */
   if (module.hot) {
-    module.hot.accept('../reducers/rootReducer.js', () => {
+    module.hot.accept('reducers/rootReducer.js', () => {
       store.replaceReducer(rootReducer);
     });
   }

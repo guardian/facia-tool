@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import type { Priorities } from 'Types/Priority';
-import { priorities } from 'Constants/priorities';
+import type { Priorities } from 'types/Priority';
+import { priorities } from 'constants/priorities';
 
 const renderPriority = (priority: string) => (
   <li key={priority}>

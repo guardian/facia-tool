@@ -3,9 +3,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { createMemoryHistory } from 'history';
-import type { PriorityName } from 'Types/Priority';
+import type { PriorityName } from 'types/Priority';
+import { frontsClientConfig } from 'fixtures/frontsConfig';
 import FrontsDropdown from '../FrontsEdit/FrontsDropdown';
-import { frontsClientConfig } from '../../fixtures/frontsConfig';
 import type { Props } from '../FrontsEdit/FrontsDropdown';
 
 const setup = (priority: PriorityName, frontId: ?string) => {

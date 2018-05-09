@@ -8,10 +8,10 @@ import type {
   FrontsClientConfig,
   Front,
   ConfigCollection
-} from 'Types/FrontsConfig';
+} from 'types/FrontsConfig';
 
-import type { State } from 'Types/State';
-import { breakingNewsFrontId } from 'Constants/fronts';
+import type { State } from 'types/State';
+import { breakingNewsFrontId } from 'constants/fronts';
 
 const frontsSelector = (state: State): Front => state.frontsConfig.fronts;
 const collectionsSelector = (state: State): ConfigCollection =>

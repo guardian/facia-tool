@@ -2,9 +2,9 @@
 
 import { createSelector } from 'reselect';
 
-import type { State } from 'Types/State';
-import type { CollectionArticles } from 'Types/Collection';
-import type { CapiArticle } from 'Types/Capi';
+import type { State } from 'types/State';
+import type { CollectionArticles } from 'types/Collection';
+import type { CapiArticle } from 'types/Capi';
 
 const allCollectionArticlesSelector = (
   state: State

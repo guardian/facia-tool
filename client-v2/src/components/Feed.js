@@ -3,8 +3,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import pandaFetch from 'Services/pandaFetch';
-import { type Element } from 'Services/capiQuery';
+import pandaFetch from 'services/pandaFetch';
+import { type Element } from 'services/capiQuery';
 import * as CAPIParamsContext from './CAPI/CAPIParamsContext';
 import FeedItem from './FeedItem';
 import SearchInput from './FrontsCAPIInterface/SearchInput';

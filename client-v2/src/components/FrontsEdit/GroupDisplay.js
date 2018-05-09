@@ -1,8 +1,8 @@
 // @flow
 
 import * as React from 'react';
-import type { CapiArticleWithMetadata } from 'Types/Capi';
-import { getArticlesInGroup } from 'Util/articleUtils';
+import type { CapiArticleWithMetadata } from 'types/Capi';
+import { getArticlesInGroup } from 'util/articleUtils';
 import CollectionArticles from './CollectionArticles';
 
 type Props = {

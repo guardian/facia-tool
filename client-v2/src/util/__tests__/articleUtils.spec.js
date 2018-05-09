@@ -1,8 +1,6 @@
 // @flow
-
+import { draftArticle, draftArticleInGroup } from 'fixtures/articles';
 import { getArticlesWithMeta, getArticlesInGroup } from '../articleUtils';
-
-import { draftArticle, draftArticleInGroup } from '../../fixtures/articles';
 
 const capi1 = {
   id: '1',

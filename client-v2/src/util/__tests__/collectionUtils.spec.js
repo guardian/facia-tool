@@ -1,12 +1,8 @@
 // @flow
 
-import { frontStages } from 'Constants/fronts';
+import { liveArticle, draftArticle, snapArticle } from 'fixtures/articles';
+import { frontStages } from 'constants/fronts';
 import { getCollectionArticleQueryString } from '../collectionUtils';
-import {
-  liveArticle,
-  draftArticle,
-  snapArticle
-} from '../../fixtures/articles';
 
 const collectionWithNoDraftArticles = {
   live: [liveArticle],
