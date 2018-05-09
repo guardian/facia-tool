@@ -3,17 +3,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import getFrontCollection from '../../actions/Collection';
-import getArticlesForCollection from '../../actions/Articles';
+import getFrontCollection from 'actions/Collection';
+import getArticlesForCollection from 'actions/Articles';
+import { collectionSelector } from 'selectors/collectionSelectors';
+import { collectionArticlesSelector } from 'selectors/collectionArticleSelectors';
+import { getArticlesWithMeta } from 'util/articleUtils';
+import { getArticlesForStage } from 'util/collectionUtils';
+import type { ConfigCollectionDetailWithId } from 'types/FrontsConfig';
+import type { Collection } from 'types/Collection';
+import type { State } from 'types/State';
+import type { CapiArticle } from 'types/Capi';
 import CollectionDetail from './CollectionDetail';
-import { collectionSelector } from '../../selectors/collectionSelectors';
-import { collectionArticlesSelector } from '../../selectors/collectionArticleSelectors';
-import { getArticlesWithMeta } from '../../util/articleUtils';
-import { getArticlesForStage } from '../../util/collectionUtils';
-import type { ConfigCollectionDetailWithId } from '../../types/FrontsConfig';
-import type { Collection } from '../../types/Collection';
-import type { State } from '../../types/State';
-import type { CapiArticle } from '../../types/Capi';
 
 type Props = {
   collectionConfig: ConfigCollectionDetailWithId,

@@ -1,7 +1,6 @@
 // @flow
 
 import { createSelector } from 'reselect';
-import { breakingNewsFrontId } from '../constants/fronts';
 
 import type {
   FrontConfig,
@@ -9,9 +8,10 @@ import type {
   FrontsClientConfig,
   Front,
   ConfigCollection
-} from '../types/FrontsConfig';
+} from 'types/FrontsConfig';
 
-import type { State } from '../types/State';
+import type { State } from 'types/State';
+import { breakingNewsFrontId } from 'constants/fronts';
 
 const frontsSelector = (state: State): Front => state.frontsConfig.fronts;
 const collectionsSelector = (state: State): ConfigCollection =>

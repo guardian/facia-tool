@@ -1,6 +1,6 @@
 // @flow
 
-import type { PriorityName } from '../types/Priority';
+import type { PriorityName } from 'types/Priority';
 
 type FrontConfig = {
   collections: Array<string>,

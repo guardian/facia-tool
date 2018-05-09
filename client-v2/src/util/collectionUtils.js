@@ -1,8 +1,8 @@
 // @flow
 
-import { frontStages } from '../constants/fronts';
-import type { Collection } from '../types/Collection';
-import type { Article } from '../types/Article';
+import { frontStages } from 'constants/fronts';
+import type { Collection } from 'types/Collection';
+import type { Article } from 'types/Article';
 
 const getArticlesForStage = (
   collection: ?Collection,
