@@ -37,9 +37,7 @@ module.exports = {
     "jsx-a11y/anchor-is-valid": [ "error", {
       "components": [ "Link" ],
       "specialLink": [ "to"]
-    }],
-
-    "import/no-unresolved": [2, { "caseSensitive": false }]
+    }]
   },
   overrides: [
     {
