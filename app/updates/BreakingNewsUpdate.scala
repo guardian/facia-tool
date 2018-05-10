@@ -74,7 +74,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSAPI, va
       })
     } else {
       Logger.error(s"Failed to send a breaking news alert for trail ${trail} because alert was missing")
-      Future.successful(Some("There may have been a problem in sending a breakig news alert. Please contact central production for information"))
+      Future.successful(Some("There may have been a problem in sending a breaking news alert. Please contact central production for information"))
     }
   }
 
