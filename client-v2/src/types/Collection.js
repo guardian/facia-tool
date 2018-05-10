@@ -3,7 +3,7 @@
 import type { Article } from '../types/Article';
 import type { CapiArticle } from '../types/Capi';
 
-type Collection = {
+type CollectionContent = {
   draft?: Array<Article>,
   live: Array<Article>,
   previously?: Array<Article>,
@@ -17,4 +17,4 @@ type CollectionArticles = {
   live: Array<CapiArticle>
 };
 
-export type { Collection, CollectionArticles };
+export type { CollectionContent, CollectionArticles };

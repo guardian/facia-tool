@@ -8,7 +8,8 @@ import { type CollectionArticles } from './Collection';
  * for typing to work nicely in reducers
  */
 
-import type { Collection } from './Collection';
+import type { CollectionContent } from './Collection';
+import type { Collection } from './Shared';
 
 type ActionError =
   | 'Could not fetch fronts config'
@@ -45,7 +46,7 @@ type PathUpdate = {
 type FrontCollectionReceivedAction = {
   type: 'FRONTS_COLLECTION_RECEIVED',
   id: string,
-  payload: Collection
+  payload: CollectionContent
 };
 
 type RequestFrontCollectionAction = {
@@ -71,6 +72,11 @@ type RequestCollectionArticles = {
   receivedAt: number
 };
 
+type CollectionReceived = {
+  type: 'COLLECTION_RECEIVED',
+  payload: Collection
+};
+
 export type Action =
   | ConfigReceivedAction
   | FrontsConfigReceivedAction
@@ -81,7 +87,8 @@ export type Action =
   | RequestFrontCollectionAction
   | ErrorInAction
   | CollectionArticlesReceived
-  | RequestCollectionArticles;
+  | RequestCollectionArticles
+  | CollectionReceived;
 
 export type ActionType = $ElementType<Action, 'type'>;
 export type { ActionError };
