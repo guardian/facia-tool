@@ -1,7 +1,7 @@
 // @flow
 
 import { type Action } from '../types/Action';
-import { type Collection } from '../types/Collection';
+import type { Collection } from '../types/Shared';
 
 type State = {
   [string]: Collection
@@ -9,9 +9,9 @@ type State = {
 
 const collections = (state: State = {}, action: Action) => {
   switch (action.type) {
-    case 'FRONTS_COLLECTION_RECEIVED': {
-      const { id, payload } = action;
-      return Object.assign({}, state, { [id]: payload });
+    case 'SHARED/COLLECTION_RECEIVED': {
+      const { payload } = action;
+      return Object.assign({}, state, { [payload.id]: payload });
     }
     default: {
       return state;

@@ -4,20 +4,8 @@ import type { Action } from '../types/Action';
 import type { ThunkAction } from '../types/Store';
 
 import { getCollection } from '../services/faciaApi';
-import type { CollectionContent } from '../types/Collection';
 import type { Collection } from '../types/Shared';
 import type { CollectionConfig } from '../types/CollectionConfig';
-
-function frontCollectionReceived(
-  collectionId: string,
-  collectionDetail: CollectionContent
-): Action {
-  return {
-    type: 'FRONTS_COLLECTION_RECEIVED',
-    id: collectionId,
-    payload: collectionDetail
-  };
-}
 
 function collectionReceived(collection: Collection): Action {
   return {
@@ -61,12 +49,14 @@ export default function getFrontCollection(
     dispatch(requestFrontCollection());
     return getCollection(collectionId)
       .then((res: Object) => {
-        dispatch(frontCollectionReceived(collectionId, res));
-        dispatch(
-          collectionReceived(
-            combineCollectionWithConfig(collectionId, collectionConfig, res)
-          )
+        const collection = combineCollectionWithConfig(
+          collectionId,
+          collectionConfig,
+          res
         );
+        const { collection, articles } = someTransformFunction(collection);
+        dispatch(collectionReceived(collection));
+        dispatch(collectionArticlesReceived(articles));
       })
       .catch((error: string) => dispatch(errorReceivingFrontCollection(error)));
   };

@@ -11,17 +11,35 @@ type Meta = {
   group?: number
 };
 
-type Article = {
+type NestedArticleFragment = {
   id: string,
   frontPublicationDate: number,
   publishedBy: string,
   meta: Meta
 };
 
-type Collection = {
+type ArticleFragment = NestedArticleFragment & {
+  uuid: string
+};
+
+type CollectionWithNestedArticles = {
+  live: Array<NestedArticleFragment>,
+  draft?: Array<NestedArticleFragment>,
+  previously?: Array<NestedArticleFragment>,
   id: string,
-  draft?: Array<Article>,
-  live: Array<Article>,
+  lastUpdated?: number,
+  updatedBy?: string,
+  updatedEmail?: string,
+  platform?: string,
+  displayName: string,
+  groups?: Array<string>
+};
+
+type Collection = {
+  articles: {
+    [stage: string]: Array<string>
+  },
+  id: string,
   lastUpdated?: number,
   updatedBy?: string,
   updatedEmail?: string,
@@ -31,9 +49,10 @@ type Collection = {
 };
 
 export type {
-  Article,
+  ArticleFragment,
   Meta,
   ExternalArticle,
   ExternalArticleWithMetadata,
+  CollectionWithNestedArticles,
   Collection
 };

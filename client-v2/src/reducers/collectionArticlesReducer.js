@@ -1,14 +1,17 @@
 // @flow
 
 import { type Action } from '../types/Action';
+import { type ArticleFragment } from '../types/Shared';
 
-type State = Object;
+type State = {
+  [string]: ArticleFragment
+};
 
-const collectionArticles = (state: State = {}, action: Action) => {
+const articleFragments = (state: State = {}, action: Action) => {
   switch (action.type) {
-    case 'CAPI_ARTICLES_RECEIVED': {
-      const { id, payload } = action;
-      return Object.assign({}, state, { [id]: payload });
+    case 'ARTICLE_FRAGMENTS_RECEIVED': {
+      const { payload } = action;
+      return Object.assign({}, state, payload);
     }
     default: {
       return state;
@@ -16,4 +19,4 @@ const collectionArticles = (state: State = {}, action: Action) => {
   }
 };
 
-export default collectionArticles;
+export default articleFragments;
