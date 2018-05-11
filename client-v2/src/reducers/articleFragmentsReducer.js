@@ -9,7 +9,7 @@ type State = {
 
 const articleFragments = (state: State = {}, action: Action) => {
   switch (action.type) {
-    case 'ARTICLE_FRAGMENTS_RECEIVED': {
+    case 'SHARED/ARTICLE_FRAGMENTS_RECEIVED': {
       const { payload } = action;
       return Object.assign({}, state, payload);
     }

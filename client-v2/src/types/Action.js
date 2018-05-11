@@ -77,7 +77,7 @@ type CollectionReceived = {
 };
 
 type ArticleFragmentsReceived = {
-  type: 'ARTICLE_FRAGMENTS_RECEIVED',
+  type: 'SHARED/ARTICLE_FRAGMENTS_RECEIVED',
   payload: { [string]: ArticleFragment }
 };
 

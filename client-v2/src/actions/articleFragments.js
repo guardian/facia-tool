@@ -5,7 +5,7 @@ function articleFragmentsReceived(articleFragments: {
   [string]: ArticleFragment
 }): Action {
   return {
-    type: 'ARTICLE_FRAGMENTS_RECEIVED',
+    type: 'SHARED/ARTICLE_FRAGMENTS_RECEIVED',
     payload: articleFragments
   };
 }
