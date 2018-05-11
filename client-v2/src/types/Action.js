@@ -61,13 +61,13 @@ type ErrorInAction = {
 };
 
 type ExternalArticlesReceived = {
-  type: 'EXTERNAL_ARTICLES_RECEIVED',
+  type: 'SHARED/EXTERNAL_ARTICLES_RECEIVED',
   id: string,
   payload: CollectionArticles
 };
 
 type RequestCollectionArticles = {
-  type: 'EXTERNAL_ARTICLES_GET_RECEIVE',
+  type: 'SHARED/EXTERNAL_ARTICLES_GET_RECEIVE',
   receivedAt: number
 };
 

@@ -22,6 +22,14 @@ type ArticleFragment = NestedArticleFragment & {
   uuid: string
 };
 
+type Article = ExternalArticle & {
+  uuid: string,
+  id: string,
+  frontPublicationDate: number,
+  publishedBy: string,
+  group?: number
+};
+
 type CollectionWithNestedArticles = {
   live: Array<NestedArticleFragment>,
   draft?: Array<NestedArticleFragment>,
@@ -50,6 +58,7 @@ type Collection = {
 
 export type {
   ArticleFragment,
+  Article,
   Meta,
   ExternalArticle,
   ExternalArticleWithMetadata,

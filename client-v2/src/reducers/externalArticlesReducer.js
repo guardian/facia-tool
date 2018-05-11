@@ -6,7 +6,7 @@ type State = Object;
 
 const externalArticles = (state: State = {}, action: Action) => {
   switch (action.type) {
-    case 'EXTERNAL_ARTICLES_RECEIVED': {
+    case 'SHARED/EXTERNAL_ARTICLES_RECEIVED': {
       const { id, payload } = action;
       return Object.assign({}, state, { [id]: payload });
     }

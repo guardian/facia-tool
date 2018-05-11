@@ -6,7 +6,8 @@ import frontsConfig from './frontsConfigReducer';
 import error from './errorReducer';
 import path from './pathReducer';
 import collections from './collectionsReducer';
-import collectionArticles from './collectionArticlesReducer';
+import articleFragments from './articleFragmentsReducer';
+import externalArticles from './externalArticlesReducer';
 
 const reducers = {
   config,
@@ -14,7 +15,8 @@ const reducers = {
   error,
   path,
   collections,
-  collectionArticles
+  articleFragments,
+  externalArticles
 };
 
 export type Reducers = typeof reducers;

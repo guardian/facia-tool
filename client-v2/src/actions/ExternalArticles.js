@@ -11,7 +11,7 @@ function collectionArticlesReceived(
   articles: CollectionArticles
 ): Action {
   return {
-    type: 'EXTERNAL_ARTICLES_RECEIVED',
+    type: 'SHARED/EXTERNAL_ARTICLES_RECEIVED',
     id: collectionId,
     payload: articles
   };
@@ -19,7 +19,7 @@ function collectionArticlesReceived(
 
 function requestCollectionArticles(): Action {
   return {
-    type: 'EXTERNAL_ARTICLES_GET_RECEIVE',
+    type: 'SHARED/EXTERNAL_ARTICLES_GET_RECEIVE',
     receivedAt: Date.now()
   };
 }
