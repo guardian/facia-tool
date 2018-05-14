@@ -1,12 +1,12 @@
 // @flow
 
-import pandaFetch from './pandaFetch';
 import { getCollectionArticleQueryString } from 'util/collectionUtils';
 import { frontStages } from 'constants/fronts';
 import type { Article } from 'types/Article';
 import type { CollectionArticles } from 'types/Collection';
 import type { CapiArticle } from 'types/Capi';
 import type { PriorityName } from 'types/Priority';
+import pandaFetch from './pandaFetch';
 
 type FrontConfigResponse = {
   collections: Array<string>,

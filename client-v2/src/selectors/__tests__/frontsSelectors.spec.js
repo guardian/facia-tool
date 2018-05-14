@@ -1,10 +1,8 @@
 // @flow
 
-import type { FrontDetail } from 'types/FrontsConfig';
-import { frontsConfig } from 'fixtures/frontsConfig';
-import { getFrontsConfig } from '../frontsSelectors';
 import { frontsConfig } from 'fixtures/frontsConfig';
 import type { FrontConfig } from 'services/faciaApi';
+import { getFrontsConfig } from '../frontsSelectors';
 
 const editorialFronts: Array<FrontConfig> = [
   {
