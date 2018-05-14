@@ -28,7 +28,13 @@ type Element = ImageElement;
 type Article = {
   webTitle: string,
   webUrl: string,
-  elements?: Element[]
+  elements?: Element[],
+  fields?: {
+    trailText?: string
+  },
+  frontsMeta: {
+    tone: string
+  }
 };
 
 type CAPISearchQueryReponse = {

@@ -130,11 +130,19 @@ class Feed extends React.Component<FeedProps, FeedState> {
                   <LoaderDisplay loading={!value && pending}>
                     {value &&
                       value.response.results.map(
-                        ({ webTitle, webUrl, elements }) => (
+                        ({
+                          webTitle,
+                          webUrl,
+                          elements,
+                          fields,
+                          frontsMeta: { tone }
+                        }) => (
                           <FeedItem
                             key={webUrl}
                             title={webTitle}
                             href={webUrl}
+                            tone={tone}
+                            trailText={fields && fields.trailText}
                             thumbnailUrl={elements && getThumbnail(elements)}
                           />
                         )
