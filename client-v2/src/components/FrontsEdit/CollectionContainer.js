@@ -9,14 +9,13 @@ import { collectionSelector } from 'selectors/collectionSelectors';
 import { collectionArticlesSelector } from 'selectors/collectionArticleSelectors';
 import { getArticlesWithMeta } from 'util/articleUtils';
 import { getArticlesForStage } from 'util/collectionUtils';
-import type { ConfigCollectionDetailWithId } from 'types/FrontsConfig';
-import type { Collection } from 'types/Collection';
+import type { Collection, CollectionConfig } from 'services/faciaApi';
 import type { State } from 'types/State';
 import type { CapiArticle } from 'types/Capi';
 import CollectionDetail from './CollectionDetail';
 
 type Props = {
-  collectionConfig: ConfigCollectionDetailWithId,
+  collectionConfig: CollectionConfig,
   browsingStage: string // eslint-disable-line react/no-unused-prop-types
 };
 

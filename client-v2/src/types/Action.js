@@ -8,7 +8,7 @@ import { type CollectionArticles } from './Collection';
  * for typing to work nicely in reducers
  */
 
-import type { Collection } from './Collection';
+import type { Collection } from '../services/faciaApi';
 
 type ActionError =
   | 'Could not fetch fronts config'

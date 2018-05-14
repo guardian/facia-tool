@@ -1,14 +1,18 @@
 // @flow
 
-import type { FrontDetail } from 'types/FrontsConfig';
 import { frontsConfig } from 'fixtures/frontsConfig';
+import type { FrontConfig } from 'services/faciaApi';
 import { getFrontsConfig } from '../frontsSelectors';
 
-const editorialFronts: Array<FrontDetail> = [
-  { collections: ['collection1'], id: 'editorialFront' }
+const editorialFronts: Array<FrontConfig> = [
+  {
+    collections: ['collection1'],
+    id: 'editorialFront',
+    priority: 'editorial'
+  }
 ];
 
-const commercialFronts: Array<FrontDetail> = [
+const commercialFronts: Array<FrontConfig> = [
   {
     collections: ['collection1'],
     id: 'commercialFront',

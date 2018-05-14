@@ -4,7 +4,8 @@ import type { Action } from 'types/Action';
 import type { ThunkAction } from 'types/Store';
 
 import { getCollectionArticles } from 'services/faciaApi';
-import type { Collection, CollectionArticles } from 'types/Collection';
+import type { CollectionArticles } from 'types/Collection';
+import type { Collection } from 'services/faciaApi';
 
 function collectionArticlesReceived(
   collectionId: string,

@@ -22,6 +22,5 @@ export default {
   },
   resolve: {
     modules: ['src', 'node_modules']
-    
   }
 };

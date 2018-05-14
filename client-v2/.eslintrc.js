@@ -32,6 +32,9 @@ module.exports = {
     // we're flowing everything by default
     'flowtype/no-types-missing-file-annotation': 0,
 
+    // let prettier handle this
+    'flowtype/generic-spacing': 0,
+
     // We need to denote "to" as a specialLink to avoid href attribute is required on an
     // anchor errors
     "jsx-a11y/anchor-is-valid": [ "error", {

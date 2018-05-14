@@ -6,10 +6,10 @@ import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import getFrontsConfig from 'actions/FrontsConfig';
 import { GetFrontsConfigStateSelector } from 'selectors/frontsSelectors';
-import type { FrontsClientConfig } from 'types/FrontsConfig';
-import type { State } from 'types/State';
 import { getFrontCollections } from 'util/frontsUtils';
 import { frontStages } from 'constants/fronts';
+import type { FrontConfig, CollectionConfig } from 'services/faciaApi';
+import type { State } from 'types/State';
 import CollectionContainer from './CollectionContainer';
 import FrontsDropDown from './FrontsDropdown';
 import Button from '../Button';
@@ -18,7 +18,12 @@ import Row from '../Row';
 import type { PropsBeforeFetch } from './FrontsContainer';
 
 type FrontsComponentProps = PropsBeforeFetch & {
-  frontsConfig: FrontsClientConfig,
+  frontsConfig: {
+    fronts: FrontConfig[],
+    collections: {
+      [string]: CollectionConfig
+    }
+  },
   frontsActions: Object
 };
 

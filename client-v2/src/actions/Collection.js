@@ -2,9 +2,8 @@
 
 import type { Action } from 'types/Action';
 import type { ThunkAction } from 'types/Store';
-
 import { getCollection } from 'services/faciaApi';
-import type { Collection } from 'types/Collection';
+import type { Collection } from 'services/faciaApi';
 
 function frontCollectionReceived(
   collectionId: string,
