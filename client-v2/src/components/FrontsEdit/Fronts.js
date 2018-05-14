@@ -5,8 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import getFrontsConfig from '../../actions/FrontsConfig';
-import { GetFrontsConfigStateSelector } from '../../selectors/frontsSelectors';
-import CollectionContainer from './CollectionContainer';
+import { frontsConfigSelector, collectionConfigsSelector } from '../../selectors/frontsSelectors';
 import FrontsDropDown from './FrontsDropdown';
 import { getFrontCollections } from '../../util/frontsUtils';
 import { frontStages } from '../../constants/fronts';
@@ -35,6 +34,15 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
     this.props.frontsActions.getFrontsConfig();
   }
 
+  componentWillReceiveProps() {
+    this.props.frontsCollectionConfigs.forEach(collectionConfig =>
+      this.props.frontsActions.getFrontCollection(id).then(() => {
+        this.props.frontsActions.getArticlesForCollection(
+          this.props.collection,
+        );
+      });
+  }
+
   handleStageSelect(key: string) {
     this.setState({
       browsingStage: frontStages[key]
@@ -45,12 +53,6 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
     const {
       frontsConfig: { fronts, collections }
     } = this.props;
-
-    const collectionsWithId = getFrontCollections(
-      this.props.frontId,
-      fronts,
-      collections
-    );
 
     return (
       <div>
@@ -72,21 +74,14 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
             </Col>
           ))}
         </Row>
-        {collectionsWithId.map(collection => (
-          <div key={collection.id}>
-            <CollectionContainer
-              collectionConfig={collection}
-              browsingStage={this.state.browsingStage}
-            />
-          </div>
-        ))}
       </div>
     );
   }
 }
 
 const mapStateToProps = (state: State, props: PropsBeforeFetch) => ({
-  frontsConfig: GetFrontsConfigStateSelector(state, props.priority)
+  frontsConfig: frontsConfigSelector(state, { priority: props.priority }),
+  frontsCollectionConfigs: collectionConfigsSelector(state, { frontId: props.frontId })
 });
 
 const mapDispatchToProps = (dispatch: *) => ({

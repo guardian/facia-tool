@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import type { RouterHistory } from 'react-router-dom';
 import getFrontsConfig from '../../actions/FrontsConfig';
-import { frontsIdSelector } from '../../selectors/frontsSelectors';
+import { frontsIdsSelector } from '../../selectors/frontsSelectors';
 import Fronts from './Fronts';
 import type { State } from '../../types/State';
 
@@ -47,7 +47,7 @@ class FrontsContainer extends React.Component<Props> {
 }
 
 const mapStateToProps = (state: State, props: PropsBeforeFetch) => ({
-  frontsIds: frontsIdSelector(state, props.priority)
+  frontsIds: frontsIdsSelector(state, props.priority)
 });
 
 const mapDispatchToProps = (dispatch: *) => ({

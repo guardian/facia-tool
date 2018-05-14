@@ -34,26 +34,23 @@ function errorReceivingFrontCollection(error: string): Action {
 }
 
 const combineCollectionWithConfig = (
-  collectionId: string,
   collectionConfig: ConfigCollectionDetail,
   collection: CollectionContent
 ): CollectionWithNestedArticles =>
   Object.assign({}, collection, {
-    id: collectionId,
+    id: collection.id,
     displayName: collectionConfig.displayName,
     groups: collectionConfig.groups
   });
 
 export default function getFrontCollection(
-  collectionId: string,
   collectionConfig: ConfigCollectionDetail
 ): ThunkAction {
   return (dispatch: Dispatch) => {
     dispatch(requestFrontCollection());
-    return getCollection(collectionId)
+    return getCollection(collectionConfig.id)
       .then((res: Object) => {
         const collectionWithNestedArticles = combineCollectionWithConfig(
-          collectionId,
           collectionConfig,
           res
         );
