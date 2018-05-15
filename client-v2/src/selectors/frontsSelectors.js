@@ -17,7 +17,10 @@ type FrontsByPriority = {
   [string]: FrontConfig[]
 };
 
-const getFronts = (state: State): FrontConfigMap => state.frontsConfig.fronts;
+const getFronts = (state: State): FrontConfigMap =>
+  state.frontsConfig.fronts || {};
+
+const getFront = (state: State, id: string) => getFronts(state)[id];
 
 const getFrontsByPriority = createSelector(
   [getFronts],
@@ -55,6 +58,8 @@ const getFrontsWithPriority = (state: State, priority: string): FrontConfig[] =>
 
 const getCollections = (state: State): CollectionConfigMap =>
   state.frontsConfig.collections || {};
+const getCollectionConfig = (state: State, id: string): CollectionConfig =>
+  getCollections(state)[id] || null;
 
 const frontsIdsSelector = createSelector([getFronts], (fronts): string[] => {
   if (!fronts) {
@@ -126,7 +131,9 @@ const frontsConfigSelector = createSelector(
 );
 
 export {
+  getFront,
   getFrontsConfig,
+  getCollectionConfig,
   frontsConfigSelector,
   collectionConfigsSelector,
   frontsIdsSelector,

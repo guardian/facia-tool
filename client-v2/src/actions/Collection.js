@@ -1,12 +1,9 @@
 // @flow
 
 import type { Action } from 'types/Action';
-import type { ThunkAction } from 'types/Store';
-import { getCollection } from 'services/faciaApi';
+
 import type { Collection, CollectionWithNestedArticles } from 'types/Shared';
-import type { ConfigCollectionResponse } from 'services/faciaApi';
-import { normaliseCollectionWithNestedArticles } from 'util/shared';
-import { articleFragmentsReceived } from 'actions/articleFragments';
+import type { CollectionConfigResponse } from 'services/faciaApi';
 
 function collectionReceived(collection: Collection): Action {
   return {
@@ -32,7 +29,7 @@ function errorReceivingFrontCollection(error: string): Action {
 }
 
 const combineCollectionWithConfig = (
-  collectionConfig: ConfigCollectionResponse,
+  collectionConfig: CollectionConfigResponse,
   collection: CollectionWithNestedArticles
 ): CollectionWithNestedArticles =>
   Object.assign({}, collection, {
@@ -41,24 +38,13 @@ const combineCollectionWithConfig = (
     groups: collectionConfig.groups
   });
 
-export default function getFrontCollection(
-  collectionConfig: ConfigCollectionResponse
-): ThunkAction {
-  return (dispatch: Dispatch) => {
-    dispatch(requestFrontCollection());
-    return getCollection(collectionConfig.id)
-      .then((res: Object) => {
-        const collectionWithNestedArticles = combineCollectionWithConfig(
-          collectionConfig,
-          res
-        );
-        const {
-          collection,
-          articleFragments
-        } = normaliseCollectionWithNestedArticles(collectionWithNestedArticles);
-        dispatch(collectionReceived(collection));
-        dispatch(articleFragmentsReceived(articleFragments));
-      })
-      .catch((error: string) => dispatch(errorReceivingFrontCollection(error)));
-  };
-}
+const populateDraftArticles = (collection: CollectionWithNestedArticles) =>
+  !collection.draft ? collection.live : collection.draft;
+
+export {
+  collectionReceived,
+  requestFrontCollection,
+  errorReceivingFrontCollection,
+  combineCollectionWithConfig,
+  populateDraftArticles
+};

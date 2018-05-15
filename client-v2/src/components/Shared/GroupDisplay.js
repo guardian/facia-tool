@@ -1,31 +1,28 @@
 // @flow
 
 import * as React from 'react';
-import CollectionArticles from './CollectionArticles';
-import type { ExternalArticleWithMetadata } from '../../types/Shared';
-import { getArticlesInGroup } from '../../util/articleUtils';
+import { connect } from 'react-redux';
+
+import { createArticlesInCollectionGroupSelector } from '../../selectors/shared';
+import Article from './Article';
 
 type Props = {
-  groups: Array<string>,
-  articles: Array<ExternalArticleWithMetadata>
+  articles: string[],
+  group: string
 };
 
-const GroupDisplay = (props: Props): Array<React.Node> => {
-  const groupsInOrder = props.groups.slice().reverse();
+const GroupDisplay = ({ group, articles }: Props) => (
+  <span>
+    {group}
+    {articles.map(id => <Article id={id} />)}
+  </span>
+);
 
-  return groupsInOrder.map((group, index) => (
-    <div key={group}>
-      {group}
-      <CollectionArticles
-        groupName={group}
-        articles={getArticlesInGroup(
-          index,
-          props.groups.length,
-          props.articles
-        )}
-      />
-    </div>
-  ));
+const createMapStateToProps = () => {
+  const articlesSelector = createArticlesInCollectionGroupSelector();
+  return (state: State, props: ContainerProps) => ({
+    articles: articlesSelector(state, props)
+  });
 };
 
-export default GroupDisplay;
+export default connect(createMapStateToProps)(GroupDisplay);

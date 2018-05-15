@@ -21,7 +21,7 @@ const getArticlesForStage = (
     return collection.draft;
   }
 
-  return collection.live;
+  return collection.live || [];
 };
 
 const getCollectionArticleQueryString = (

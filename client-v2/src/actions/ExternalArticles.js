@@ -1,22 +1,13 @@
 // @flow
 
 import type { Action } from 'types/Action';
-import type { ThunkAction } from 'types/Store';
+import type { ExternalArticle } from 'types/Shared';
 
-import { getCollectionArticles } from 'services/faciaApi';
-import type { CollectionArticles } from 'types/Collection';
-import type {
-  CollectionWithNestedArticles,
-  ExternalArticle
-} from 'types/Shared';
-
-function externalArticlesReceived(
-  collectionId: string,
-  articles: { [string]: ExternalArticle }
-): Action {
+function externalArticlesReceived(articles: {
+  [string]: ExternalArticle
+}): Action {
   return {
     type: 'SHARED/EXTERNAL_ARTICLES_RECEIVED',
-    id: collectionId,
     payload: articles
   };
 }
@@ -37,25 +28,8 @@ function errorReceivingCollectionArticles(error: string): Action {
   };
 }
 
-export default function getArticlesForCollection(
-  collection: CollectionWithNestedArticles,
-  collectionId: string
-): ThunkAction {
-  return (dispatch: Dispatch) => {
-    dispatch(requestCollectionArticles());
-    return getCollectionArticles(collection)
-      .then((res: Array<ExternalArticle>) => {
-        const articlesMap: { [string]: ExternalArticle } = res.reduce(
-          (acc, article) => ({
-            ...acc,
-            [article.id]: article
-          }),
-          {}
-        );
-        dispatch(externalArticlesReceived(collectionId, articlesMap));
-      })
-      .catch((error: string) =>
-        dispatch(errorReceivingCollectionArticles(error))
-      );
-  };
-}
+export {
+  externalArticlesReceived,
+  requestCollectionArticles,
+  errorReceivingCollectionArticles
+};

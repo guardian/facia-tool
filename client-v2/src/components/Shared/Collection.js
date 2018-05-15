@@ -7,18 +7,17 @@ import styled from 'styled-components';
 import { createCollectionSelector } from 'selectors/shared';
 import type { Collection } from 'types/Shared';
 import type { State } from 'types/State';
-import CollectionArticles from './CollectionArticles';
+import Article from './Article';
 import GroupDisplay from './GroupDisplay';
 
 type ContainerProps = {
-  id: string
+  id: string // eslint-disable-line react/no-unused-prop-types
 };
 
 type Props = ContainerProps & {
-  collection: Collection
+  collection: Collection,
+  stage: string
 };
-
-type ComponentState = { stage: string };
 
 const CollectionContainer = styled('div')`
   background-color: white;
@@ -32,31 +31,27 @@ const CollectionHeadline = styled('div')`
   padding: 7px;
 `;
 
-class CollectionDetail extends React.Component<Props, ComponentState> {
-  state = {
-    stage: 'live'
-  };
-
-  render() {
-    return (
-      <CollectionContainer>
-        <CollectionHeadline>
-          {this.props.collection.displayName}
-        </CollectionHeadline>
-        {this.props.collection.groups ? (
-          <GroupDisplay
-            articles={this.props.collection[this.state.stage]}
-            groups={this.props.collection.groups}
-          />
-        ) : (
-          <CollectionArticles
-            articles={this.props.collection.collectionArticles}
-          />
-        )}
-      </CollectionContainer>
-    );
-  }
-}
+const collectionDetail = ({ collection, stage }: Props) => {
+  const mapToGroup = (group, index) => (
+    <GroupDisplay
+      key={group}
+      collectionId={collection.id}
+      groupDisplayIndex={index}
+      stage={stage}
+    />
+  );
+  return collection ? (
+    <CollectionContainer>
+      <CollectionHeadline>{collection.displayName}</CollectionHeadline>
+      {collection.groups
+        ? collection.groups.map(mapToGroup)
+        : collection.articles[stage] &&
+          collection.articles[stage].map(id => <Article key={id} id={id} />)}
+    </CollectionContainer>
+  ) : (
+    <span>Waiting for collection</span>
+  );
+};
 
 const createMapStateToProps = () => {
   const collectionSelector = createCollectionSelector();
@@ -65,4 +60,4 @@ const createMapStateToProps = () => {
   });
 };
 
-export default connect(createMapStateToProps)(CollectionDetail);
+export default connect(createMapStateToProps)(collectionDetail);

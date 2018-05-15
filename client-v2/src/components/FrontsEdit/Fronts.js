@@ -4,11 +4,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
-import getFrontsConfig from 'actions/FrontsConfig';
+import getFrontsConfig, {
+  getCollectionsAndArticles
+} from 'actions/FrontsConfig';
 import { frontStages } from 'constants/fronts';
+import Collection from 'components/Shared/Collection';
 import type { FrontConfig } from 'services/faciaApi';
 import type { State } from 'types/State';
-import { getFrontsWithPriority } from 'selectors/frontsSelectors';
+import { getFront } from 'selectors/frontsSelectors';
 import FrontsDropDown from 'containers/FrontsDropdown';
 import type { PropsBeforeFetch } from './FrontsContainer';
 
@@ -17,8 +20,11 @@ import Col from '../Col';
 import Row from '../Row';
 
 type FrontsComponentProps = PropsBeforeFetch & {
-  fronts: FrontConfig[],
-  frontsActions: Object
+  selectedFront: FrontConfig,
+  frontsActions: {
+    getCollectionsAndArticles: (collectionIds: string[]) => Promise<void>,
+    getFrontsConfig: () => Promise<void>
+  }
 };
 
 type ComponentState = {
@@ -34,8 +40,12 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
     this.props.frontsActions.getFrontsConfig();
   }
 
-  componentWillReceiveProps() {
-    // @todo - call fetchCollectionsAndArticles() or equivalent
+  componentWillReceiveProps(nextProps: FrontsComponentProps) {
+    if (nextProps.selectedFront) {
+      nextProps.frontsActions.getCollectionsAndArticles(
+        nextProps.selectedFront.collections
+      );
+    }
   }
 
   handleStageSelect(key: string) {
@@ -45,8 +55,6 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   }
 
   render() {
-    // const { fronts } = this.props;
-
     return (
       <div>
         <FrontsDropDown />
@@ -62,19 +70,26 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
             </Col>
           ))}
         </Row>
+        {this.props.selectedFront &&
+          this.props.selectedFront.collections.map(id => (
+            <Row key={id}>
+              <Collection id={id} stage={this.state.browsingStage} />
+            </Row>
+          ))}
       </div>
     );
   }
 }
 
 const mapStateToProps = (state: State, props: PropsBeforeFetch) => ({
-  fronts: getFrontsWithPriority(state, props.priority)
+  selectedFront: getFront(state, props.frontId)
 });
 
 const mapDispatchToProps = (dispatch: *) => ({
   frontsActions: bindActionCreators(
     {
-      getFrontsConfig
+      getFrontsConfig,
+      getCollectionsAndArticles
     },
     dispatch
   )

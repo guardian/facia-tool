@@ -144,7 +144,6 @@ function getCollectionArticles(
     }
     return [];
   };
-
   const draftIds = getCollectionArticleQueryString(
     collection,
     frontStages.draft

@@ -29,7 +29,8 @@ const normaliseCollectionWithNestedArticles = (
         collection[currentStage] &&
         collection[currentStage].map((articleFragment, index) =>
           Object.assign({}, articleFragment, {
-            uuid: idMap[currentStage] && idMap[currentStage][index]
+            uuid: idMap[currentStage] && idMap[currentStage][index],
+            id: articleFragment.id.split('/')[2] // @todo -- Reetta, is this in the right place?
           })
         );
       const fragmentsAsObjects: { [string]: ArticleFragment } = (

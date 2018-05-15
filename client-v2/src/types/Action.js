@@ -60,7 +60,6 @@ type ErrorInAction = {
 
 type ExternalArticlesReceived = {
   type: 'SHARED/EXTERNAL_ARTICLES_RECEIVED',
-  id: string,
   payload: { [string]: ExternalArticle }
 };
 
