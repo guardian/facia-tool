@@ -49,6 +49,11 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
   object environment {
     val stage = stageFromProperties.toLowerCase
     val applicationName = "facia-tool"
+    val applicationUrl = stage match {
+      case "PROD" => "https://fronts.gutools.co.uk"
+      case "CODE" => "https://fronts.code.dev-gutools.co.uk"
+      case _ => "https://fronts.local.dev-gutools.co.uk"
+    }
   }
 
   object ophanApi {

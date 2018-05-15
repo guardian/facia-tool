@@ -11,8 +11,9 @@ import play.api.libs.ws.WSClient
 import play.api.libs.ws.ahc.AhcWSComponents
 import play.api.mvc.{BaseController, ControllerComponents, RequestHeader, Result}
 import play.api.{BuiltInComponentsFromContext, Logger}
+import play.filters.cors.CORSComponents
 
-abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInComponentsFromContext(context) with AhcWSComponents with AssetsComponents {
+abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInComponentsFromContext(context) with AhcWSComponents with AssetsComponents with CORSComponents {
 
   def config: ApplicationConfiguration
 

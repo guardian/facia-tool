@@ -7,7 +7,8 @@ import permissions.Permissions
 import play.api.ApplicationLoader.Context
 import play.api.Mode
 import play.api.routing.Router
-import play.filters.cors.CORSFilter
+import play.filters.cors.CORSConfig.Origins
+import play.filters.cors.CORSConfig
 import router.Routes
 import services._
 import slices.{Containers, FixedContainers}
@@ -64,6 +65,10 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val pressController = new PressController(awsEndpoints, this)
   val v2App = new V2App(isDev, acl, this)
 
+  final override lazy val corsConfig: CORSConfig = CORSConfig.fromConfiguration(context.initialConfiguration).copy(
+    allowedOrigins = Origins.Matching(Set(config.environment.applicationUrl))
+  )
+
   override lazy val assets: Assets = new controllers.Assets(loggingHttpErrorHandler, assetsMetadata)
   val router: Router = new Routes(loggingHttpErrorHandler, status, pandaAuth, v2Assets, uncachedAssets, views, faciaTool,
     pressController, defaults, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects,
@@ -71,6 +76,6 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
 
   override lazy val httpFilters = Seq(
     new CustomGzipFilter()(materializer),
-    new CORSFilter
+    corsFilter
   )
 }
