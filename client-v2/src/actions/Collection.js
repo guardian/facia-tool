@@ -4,7 +4,7 @@ import type { Action } from 'types/Action';
 import type { ThunkAction } from 'types/Store';
 import { getCollection } from 'services/faciaApi';
 import type { Collection, CollectionWithNestedArticles } from 'types/Shared';
-import type { ConfigCollectionDetail } from 'types/FrontsConfig';
+import type { ConfigCollectionResponse } from 'services/faciaApi';
 import { normaliseCollectionWithNestedArticles } from 'util/shared';
 import { articleFragmentsReceived } from 'actions/articleFragments';
 
@@ -32,7 +32,7 @@ function errorReceivingFrontCollection(error: string): Action {
 }
 
 const combineCollectionWithConfig = (
-  collectionConfig: ConfigCollectionDetail,
+  collectionConfig: ConfigCollectionResponse,
   collection: CollectionWithNestedArticles
 ): CollectionWithNestedArticles =>
   Object.assign({}, collection, {
@@ -42,7 +42,7 @@ const combineCollectionWithConfig = (
   });
 
 export default function getFrontCollection(
-  collectionConfig: ConfigCollectionDetail
+  collectionConfig: ConfigCollectionResponse
 ): ThunkAction {
   return (dispatch: Dispatch) => {
     dispatch(requestFrontCollection());

@@ -42,7 +42,8 @@ const createArticleFromArticleFragmentSelector = () =>
 
 const collectionsSelector = (state: State) => state.collections;
 
-const collectionIdSelector = (_, { collectionId }) => collectionId;
+const collectionIdSelector = (_, { collectionId }: { collectionId: string }) =>
+  collectionId;
 
 const createCollectionSelector = () =>
   createSelector(

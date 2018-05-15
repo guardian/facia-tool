@@ -4,11 +4,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
+import { createCollectionSelector } from 'selectors/shared';
+import type { Collection } from 'types/Shared';
+import type { State } from 'types/State';
 import CollectionArticles from './CollectionArticles';
 import GroupDisplay from './GroupDisplay';
-import { createCollectionSelector } from 'selectors/shared';
-import type { Collection } from '../../types/Shared';
-import type { State } from '../../types/State';
 
 type ContainerProps = {
   id: string

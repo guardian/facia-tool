@@ -1,14 +1,13 @@
 // @flow
 
 import { type Config } from './Config';
-import { type CollectionArticles } from './Collection';
 
 /**
  * Need to add new types into here and union them with `Action` in order
  * for typing to work nicely in reducers
  */
 
-import type { Collection, ArticleFragment } from './Shared';
+import type { Collection, ArticleFragment, ExternalArticle } from './Shared';
 
 type ActionError =
   | 'Could not fetch fronts config'
@@ -62,7 +61,7 @@ type ErrorInAction = {
 type ExternalArticlesReceived = {
   type: 'SHARED/EXTERNAL_ARTICLES_RECEIVED',
   id: string,
-  payload: CollectionArticles
+  payload: { [string]: ExternalArticle }
 };
 
 type RequestCollectionArticles = {

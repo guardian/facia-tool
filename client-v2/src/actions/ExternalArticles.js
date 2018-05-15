@@ -8,11 +8,11 @@ import type { CollectionArticles } from 'types/Collection';
 import type {
   CollectionWithNestedArticles,
   ExternalArticle
-} from 'types/shared';
+} from 'types/Shared';
 
-function collectionArticlesReceived(
+function externalArticlesReceived(
   collectionId: string,
-  articles: CollectionArticles
+  articles: { [string]: ExternalArticle }
 ): Action {
   return {
     type: 'SHARED/EXTERNAL_ARTICLES_RECEIVED',
@@ -45,7 +45,14 @@ export default function getArticlesForCollection(
     dispatch(requestCollectionArticles());
     return getCollectionArticles(collection)
       .then((res: Array<ExternalArticle>) => {
-        dispatch(collectionArticlesReceived(collectionId, res));
+        const articlesMap: { [string]: ExternalArticle } = res.reduce(
+          (acc, article) => ({
+            ...acc,
+            [article.id]: article
+          }),
+          {}
+        );
+        dispatch(externalArticlesReceived(collectionId, articlesMap));
       })
       .catch((error: string) =>
         dispatch(errorReceivingCollectionArticles(error))

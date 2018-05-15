@@ -9,11 +9,9 @@ import {
   frontsConfigSelector,
   collectionConfigsSelector
 } from 'selectors/frontsSelectors';
-import { getFrontCollections } from 'util/frontsUtils';
 import { frontStages } from 'constants/fronts';
 import type { FrontConfig, CollectionConfig } from 'services/faciaApi';
 import type { State } from 'types/State';
-import CollectionContainer from './CollectionContainer';
 import FrontsDropDown from './FrontsDropdown';
 import Button from '../Button';
 import Col from '../Col';
@@ -44,14 +42,12 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   }
 
   componentWillReceiveProps() {
-    this.props.frontsConfig.collections.forEach(collectionConfig =>
-      this.props.frontsActions
-        .getFrontCollection(collectionConfig.id)
-        .then(() => {
-          this.props.frontsActions.getArticlesForCollection(
-            this.props.collection
-          );
-        })
+    Object.keys(this.props.frontsConfig.collections).forEach(collectionId =>
+      this.props.frontsActions.getFrontCollection(collectionId).then(() => {
+        this.props.frontsActions.getArticlesForCollection(
+          this.props.collection
+        );
+      })
     );
   }
 
