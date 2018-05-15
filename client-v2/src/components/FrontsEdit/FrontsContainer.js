@@ -46,8 +46,8 @@ class FrontsContainer extends React.Component<Props> {
   }
 }
 
-const mapStateToProps = (state: State, props: PropsBeforeFetch) => ({
-  frontsIds: frontsIdSelector(state, props.priority)
+const mapStateToProps = (state: State) => ({
+  frontsIds: frontsIdSelector(state)
 });
 
 const mapDispatchToProps = (dispatch: *) => ({

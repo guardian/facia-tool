@@ -2,31 +2,11 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import { createMemoryHistory } from 'history';
-import type { PriorityName } from 'types/Priority';
-import { frontsClientConfig } from 'fixtures/frontsConfig';
-import FrontsDropdown from '../FrontsEdit/FrontsDropdown';
-import type { Props } from '../FrontsEdit/FrontsDropdown';
+import Dropdown from '../inputs/Dropdown';
 
-const setup = (priority: PriorityName, frontId: ?string) => {
-  const history = createMemoryHistory(`/{priority`);
-  const props: Props = Object.assign({
-    priority,
-    frontId,
-    fronts: frontsClientConfig.fronts,
-    history
-  });
-
-  const wrapper = shallow(<FrontsDropdown {...props} />);
-
-  return {
-    wrapper
-  };
-};
-
-describe('FrontsDropdown', () => {
+describe('Dropdown', () => {
   it('should render correctly', () => {
-    const { wrapper } = setup('editorial');
+    const wrapper = shallow(<Dropdown onChange={() => {}} />);
 
     expect(wrapper.exists()).toBe(true);
   });

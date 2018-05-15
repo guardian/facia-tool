@@ -13,55 +13,39 @@ type CollectionConfigMap = {
   [string]: CollectionConfig
 };
 
-const frontsSelector = (state: State): FrontConfigMap =>
-  state.frontsConfig.fronts;
-const collectionsSelector = (state: State): CollectionConfigMap =>
-  state.frontsConfig.collections;
+type FrontsByPriority = {
+  [string]: FrontConfig[]
+};
 
-const prioritySelector = (state: State, priority: string) => priority;
+const getFronts = (state: State): FrontConfigMap => state.frontsConfig.fronts;
 
-const frontsIdSelector = createSelector([frontsSelector], fronts => {
+const getFrontsByPriority = createSelector(
+  [getFronts],
+  (fronts: FrontConfigMap): FrontsByPriority =>
+    Object.keys(fronts)
+      .filter(id => id !== breakingNewsFrontId)
+      .reduce((acc: FrontsByPriority, id): FrontsByPriority => {
+        const front = fronts[id];
+        return {
+          ...acc,
+          [front.priority]: [...(acc[front.priority] || []), fronts[id]]
+        };
+      }, {})
+);
+
+const getFrontsWithPriority = (state: State, priority: string): FrontConfig[] =>
+  getFrontsByPriority(state)[priority] || [];
+
+const getCollections = (state: State): CollectionConfigMap =>
+  state.frontsConfig.collections || {};
+
+const frontsIdSelector = createSelector([getFronts], (fronts): string[] => {
   if (!fronts) {
     return [];
   }
   return Object.keys(fronts)
-    .filter(front => front !== breakingNewsFrontId)
+    .filter(frontId => frontId !== breakingNewsFrontId)
     .sort();
 });
 
-const getFrontsConfig = (
-  fronts: FrontConfigMap,
-  collections: CollectionConfigMap,
-  frontIds: Array<string>,
-  priority: string
-): {
-  fronts: FrontConfig[],
-  collections: CollectionConfigMap
-} => {
-  if (frontIds.length === 0) {
-    return { fronts: [], collections: {} };
-  }
-  const frontsWithPriority = frontIds.reduce(
-    (acc: Array<FrontConfig>, key: string) => {
-      if (
-        fronts[key].priority === priority ||
-        (!fronts[key].priority && priority === 'editorial')
-      ) {
-        return [...acc, fronts[key]];
-      }
-      return acc;
-    },
-    []
-  );
-  return {
-    fronts: frontsWithPriority,
-    collections
-  };
-};
-
-const GetFrontsConfigStateSelector = createSelector(
-  [frontsSelector, collectionsSelector, frontsIdSelector, prioritySelector],
-  getFrontsConfig
-);
-
-export { getFrontsConfig, GetFrontsConfigStateSelector, frontsIdSelector };
+export { frontsIdSelector, getFrontsWithPriority, getCollections };
