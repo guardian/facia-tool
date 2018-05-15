@@ -1,7 +1,7 @@
 // @flow
 
-import type { CapiArticle, CapiArticleWithMetadata } from '../types/Capi';
-import type { Article } from '../types/Article';
+import type { CapiArticle, CapiArticleWithMetadata } from 'types/Capi';
+import type { Article } from 'types/Article';
 
 const getArticlesWithMeta = (
   articles: Array<Article>,

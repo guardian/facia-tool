@@ -3,10 +3,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import type { RouterHistory } from 'react-router-dom';
-import type { FrontDetail } from '../../types/FrontsConfig';
+import type { FrontConfig } from 'services/faciaApi';
 
 type Props = {
-  fronts: Array<FrontDetail>,
+  fronts: Array<FrontConfig>,
   frontId: ?string,
   history: RouterHistory,
   priority: string

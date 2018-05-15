@@ -1,6 +1,6 @@
 // @flow
 
-import { qs } from '../util/qs';
+import { qs } from 'util/qs';
 
 const API_BASE = 'https://content.guardianapis.com/';
 
@@ -28,7 +28,13 @@ type Element = ImageElement;
 type Article = {
   webTitle: string,
   webUrl: string,
-  elements?: Element[]
+  elements?: Element[],
+  fields?: {
+    trailText?: string
+  },
+  frontsMeta: {
+    tone: string
+  }
 };
 
 type CAPISearchQueryReponse = {

@@ -4,20 +4,29 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
-import getFrontsConfig from '../../actions/FrontsConfig';
-import { frontsConfigSelector, collectionConfigsSelector } from '../../selectors/frontsSelectors';
+import getFrontsConfig from 'actions/FrontsConfig';
+import {
+  frontsConfigSelector,
+  collectionConfigsSelector
+} from 'selectors/frontsSelectors';
+import { getFrontCollections } from 'util/frontsUtils';
+import { frontStages } from 'constants/fronts';
+import type { FrontConfig, CollectionConfig } from 'services/faciaApi';
+import type { State } from 'types/State';
+import CollectionContainer from './CollectionContainer';
 import FrontsDropDown from './FrontsDropdown';
-import { getFrontCollections } from '../../util/frontsUtils';
-import { frontStages } from '../../constants/fronts';
 import Button from '../Button';
 import Col from '../Col';
 import Row from '../Row';
-import type { FrontsClientConfig } from '../../types/FrontsConfig';
-import type { State } from '../../types/State';
 import type { PropsBeforeFetch } from './FrontsContainer';
 
 type FrontsComponentProps = PropsBeforeFetch & {
-  frontsConfig: FrontsClientConfig,
+  frontsConfig: {
+    fronts: FrontConfig[],
+    collections: {
+      [string]: CollectionConfig
+    }
+  },
   frontsActions: Object
 };
 
@@ -35,12 +44,15 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   }
 
   componentWillReceiveProps() {
-    this.props.frontsCollectionConfigs.forEach(collectionConfig =>
-      this.props.frontsActions.getFrontCollection(id).then(() => {
-        this.props.frontsActions.getArticlesForCollection(
-          this.props.collection,
-        );
-      });
+    this.props.frontsConfig.collections.forEach(collectionConfig =>
+      this.props.frontsActions
+        .getFrontCollection(collectionConfig.id)
+        .then(() => {
+          this.props.frontsActions.getArticlesForCollection(
+            this.props.collection
+          );
+        })
+    );
   }
 
   handleStageSelect(key: string) {
@@ -81,7 +93,9 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
 
 const mapStateToProps = (state: State, props: PropsBeforeFetch) => ({
   frontsConfig: frontsConfigSelector(state, { priority: props.priority }),
-  frontsCollectionConfigs: collectionConfigsSelector(state, { frontId: props.frontId })
+  frontsCollectionConfigs: collectionConfigsSelector(state, {
+    frontId: props.frontId
+  })
 });
 
 const mapDispatchToProps = (dispatch: *) => ({

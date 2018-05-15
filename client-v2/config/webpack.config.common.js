@@ -19,5 +19,8 @@ export default {
         exclude: /node_modules/
       }
     ]
+  },
+  resolve: {
+    modules: ['src', 'node_modules']
   }
 };

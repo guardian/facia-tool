@@ -3,13 +3,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import pandaFetch from 'services/pandaFetch';
+import { type Element } from 'services/capiQuery';
 import * as CAPIParamsContext from './CAPI/CAPIParamsContext';
-import { type Element } from '../services/capiQuery';
 import FeedItem from './FeedItem';
 import SearchInput from './FrontsCAPIInterface/SearchInput';
 import Button from './Button';
 import Loader from './Loader';
-import pandaFetch from '../services/pandaFetch';
 import { capiFeedSpecsSelector } from '../selectors/feedsSelectors';
 import Row from './Row';
 import Col from './Col';
@@ -130,11 +130,19 @@ class Feed extends React.Component<FeedProps, FeedState> {
                   <LoaderDisplay loading={!value && pending}>
                     {value &&
                       value.response.results.map(
-                        ({ webTitle, webUrl, elements }) => (
+                        ({
+                          webTitle,
+                          webUrl,
+                          elements,
+                          fields,
+                          frontsMeta: { tone }
+                        }) => (
                           <FeedItem
                             key={webUrl}
                             title={webTitle}
                             href={webUrl}
+                            tone={tone}
+                            trailText={fields && fields.trailText}
                             thumbnailUrl={elements && getThumbnail(elements)}
                           />
                         )

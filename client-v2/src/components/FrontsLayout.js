@@ -5,7 +5,9 @@ import styled from 'styled-components';
 
 const Container = styled(`div`)`
   display: flex;
+  height: 100%;
   flex: 1;
+  width: 100%;
 `;
 const Col = styled('div')`
   display: flex;

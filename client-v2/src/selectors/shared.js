@@ -87,5 +87,6 @@ export {
   externalArticlesSelector,
   externalArticleFromArticleFragmentSelector,
   createArticleFromArticleFragmentSelector,
-  createArticlesInCollectionGroupSelector
+  createArticlesInCollectionGroupSelector,
+  createCollectionSelector
 };

@@ -8,7 +8,6 @@ import { type CollectionArticles } from './Collection';
  * for typing to work nicely in reducers
  */
 
-import type { CollectionContent } from './Collection';
 import type { Collection, ArticleFragment } from './Shared';
 
 type ActionError =

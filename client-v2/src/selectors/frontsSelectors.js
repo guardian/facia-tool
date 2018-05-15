@@ -1,24 +1,25 @@
 // @flow
 
 import { createSelector } from 'reselect';
-import { breakingNewsFrontId } from '../constants/fronts';
+import type { FrontConfig, CollectionConfig } from 'services/faciaApi';
+import type { State } from 'types/State';
+import { breakingNewsFrontId } from 'constants/fronts';
 
-import type {
-  FrontConfig,
-  FrontDetail,
-  FrontsClientConfig,
-  Front,
-  ConfigCollection,
-  ConfigCollectionDetailWithId
-} from '../types/FrontsConfig';
+type FrontConfigMap = {
+  [string]: FrontConfig
+};
 
-import type { State } from '../types/State';
+type CollectionConfigMap = {
+  [string]: CollectionConfig
+};
 
-const frontsSelector = (state: State): Front => state.frontsConfig.fronts;
-const collectionsSelector = (state: State): ConfigCollection =>
+const frontsSelector = (state: State): FrontConfigMap =>
+  state.frontsConfig.fronts;
+const collectionsSelector = (state: State): CollectionConfigMap =>
   state.frontsConfig.collections;
 
-const prioritySelector = (state: State, { priority }) => priority;
+const prioritySelector = (state: State, { priority }: { priority: string }) =>
+  priority;
 
 const frontIdSelector = (state: State, { frontId }) => frontId;
 
@@ -44,25 +45,24 @@ const frontsIdsSelector = createSelector([frontsSelector], fronts => {
 });
 
 const getFrontsConfig = (
-  fronts: Front,
-  collections: ConfigCollection,
+  fronts: FrontConfigMap,
+  collections: CollectionConfigMap,
   frontIds: Array<string>,
   priority: string
-): FrontsClientConfig => {
+): {
+  fronts: FrontConfig[],
+  collections: CollectionConfigMap
+} => {
   if (frontIds.length === 0) {
     return { fronts: [], collections: {} };
   }
   const frontsWithPriority = frontIds.reduce(
-    (acc: Array<FrontDetail>, key: string) => {
+    (acc: Array<FrontConfig>, key: string) => {
       if (
         fronts[key].priority === priority ||
         (!fronts[key].priority && priority === 'editorial')
       ) {
-        const frontConfig: FrontConfig = fronts[key];
-        const frontDetail: FrontDetail = Object.assign({}, frontConfig, {
-          id: key
-        });
-        acc.push(frontDetail);
+        return [...acc, fronts[key]];
       }
       return acc;
     },
@@ -76,16 +76,14 @@ const getFrontsConfig = (
 
 const getCollectionConfigs = (
   frontId: ?string,
-  fronts: Array<any>,
-  collections: ConfigCollection
-): Array<ConfigCollectionDetailWithId> => {
+  fronts: Array<FrontConfig>,
+  collections: CollectionConfigMap
+): Array<CollectionConfig> => {
   if (!frontId) {
     return [];
   }
 
-  const selectedFront: ?FrontDetail = fronts.find(
-    (front: FrontDetail) => front.id === frontId
-  );
+  const selectedFront = fronts.find(front => front.id === frontId);
 
   if (selectedFront) {
     return selectedFront.collections.map(collectionId =>
@@ -94,8 +92,7 @@ const getCollectionConfigs = (
   }
 
   return [];
-}
-
+};
 
 const collectionConfigsSelector = createSelector(
   [frontIdSelector, frontsAsArraySelector, collectionsSelector],
@@ -107,4 +104,9 @@ const frontsConfigSelector = createSelector(
   getFrontsConfig
 );
 
-export { getFrontsConfig, frontsConfigSelector, collectionConfigsSelector, frontsIdsSelector };
+export {
+  getFrontsConfig,
+  frontsConfigSelector,
+  collectionConfigsSelector,
+  frontsIdsSelector
+};

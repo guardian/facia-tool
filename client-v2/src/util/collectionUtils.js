@@ -1,11 +1,11 @@
 // @flow
 
-import { frontStages } from '../constants/fronts';
-import type { Collection } from '../types/Collection';
-import type { Article } from '../types/Article';
+import { frontStages } from 'constants/fronts';
+import type { CollectionWithNestedArticles } from 'types/Shared';
+import type { Article } from 'types/Article';
 
 const getArticlesForStage = (
-  collection: ?Collection,
+  collection: ?CollectionWithNestedArticles,
   stage: string
 ): Array<Article> => {
   if (!collection) {
@@ -25,7 +25,7 @@ const getArticlesForStage = (
 };
 
 const getCollectionArticleQueryString = (
-  collection: ?Collection,
+  collection: ?CollectionWithNestedArticles,
   stage: string
 ): string => {
   const articles = getArticlesForStage(collection, stage);

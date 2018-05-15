@@ -30,17 +30,20 @@ type Article = ExternalArticle & {
   group?: number
 };
 
-type CollectionWithNestedArticles = {
+type CollectionResponse = {
   live: Array<NestedArticleFragment>,
   draft?: Array<NestedArticleFragment>,
   previously?: Array<NestedArticleFragment>,
-  id: string,
   lastUpdated?: number,
   updatedBy?: string,
   updatedEmail?: string,
   platform?: string,
   displayName: string,
   groups?: Array<string>
+};
+
+type CollectionWithNestedArticles = CollectionResponse & {
+  id: string
 };
 
 type Collection = {
@@ -63,5 +66,6 @@ export type {
   ExternalArticle,
   ExternalArticleWithMetadata,
   CollectionWithNestedArticles,
+  CollectionResponse,
   Collection
 };

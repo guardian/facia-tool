@@ -3,10 +3,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
+import { priorities } from 'constants/priorities';
 import FrontsEdit from './FrontsEdit/Edit';
 import Home from './Home';
 import NotFound from './NotFound';
-import { priorities } from '../constants/priorities';
 
 const AppContainer = styled('div')`
   background-color: #221133;

@@ -1,14 +1,12 @@
 // @flow
 
-import type { Action } from '../types/Action';
-import type { ThunkAction } from '../types/Store';
-
-import { getCollection } from '../services/faciaApi';
-import type { Collection, CollectionWithNestedArticles } from '../types/Shared';
-import type { CollectionContent } from '../types/Collection';
-import type { ConfigCollectionDetail } from '../types/FrontsConfig';
-import { normaliseCollectionWithNestedArticles } from '../util/shared';
-import { articleFragmentsReceived } from '../actions/articleFragments';
+import type { Action } from 'types/Action';
+import type { ThunkAction } from 'types/Store';
+import { getCollection } from 'services/faciaApi';
+import type { Collection, CollectionWithNestedArticles } from 'types/Shared';
+import type { ConfigCollectionDetail } from 'types/FrontsConfig';
+import { normaliseCollectionWithNestedArticles } from 'util/shared';
+import { articleFragmentsReceived } from 'actions/articleFragments';
 
 function collectionReceived(collection: Collection): Action {
   return {
@@ -35,7 +33,7 @@ function errorReceivingFrontCollection(error: string): Action {
 
 const combineCollectionWithConfig = (
   collectionConfig: ConfigCollectionDetail,
-  collection: CollectionContent
+  collection: CollectionWithNestedArticles
 ): CollectionWithNestedArticles =>
   Object.assign({}, collection, {
     id: collection.id,

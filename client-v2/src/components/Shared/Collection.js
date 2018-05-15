@@ -6,13 +6,15 @@ import styled from 'styled-components';
 
 import CollectionArticles from './CollectionArticles';
 import GroupDisplay from './GroupDisplay';
-import mergeCollectionWithCapiData from '../../selectors/shared';
-import type { ExternalArticleWithMetadata } from '../../types/Capi';
+import { createCollectionSelector } from 'selectors/shared';
 import type { Collection } from '../../types/Shared';
 import type { State } from '../../types/State';
 
-// TODO: we will add configuration properties here
-type Props = Object & {
+type ContainerProps = {
+  id: string
+};
+
+type Props = ContainerProps & {
   collection: Collection
 };
 
@@ -56,8 +58,11 @@ class CollectionDetail extends React.Component<Props, ComponentState> {
   }
 }
 
-const mapStateToProps = (state: State) => ({
-  collection: mergeCollectionWithCapiData(state)
-});
+const createMapStateToProps = () => {
+  const collectionSelector = createCollectionSelector();
+  return (state: State, props: ContainerProps) => ({
+    collection: collectionSelector(state, { collectionId: props.id })
+  });
+};
 
-export default connect(mapStateToProps)(CollectionDetail)
+export default connect(createMapStateToProps)(CollectionDetail);

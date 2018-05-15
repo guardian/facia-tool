@@ -1,20 +1,10 @@
 // @flow
 
-import type { Article } from '../types/Article';
-import type { CapiArticle } from '../types/Capi';
-
-type CollectionContent = {
-  draft?: Array<Article>,
-  live: Array<Article>,
-  previously?: Array<Article>,
-  lastUpdated?: number,
-  updatedBy?: string,
-  updatedEmail?: string
-};
+import type { CapiArticle } from 'types/Capi';
 
 type CollectionArticles = {
   draft: Array<CapiArticle>,
   live: Array<CapiArticle>
 };
 
-export type { CollectionContent, CollectionArticles };
+export type { CollectionArticles };

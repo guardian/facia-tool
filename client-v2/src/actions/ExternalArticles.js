@@ -1,10 +1,14 @@
 // @flow
 
-import type { Action } from '../types/Action';
-import type { ThunkAction } from '../types/Store';
+import type { Action } from 'types/Action';
+import type { ThunkAction } from 'types/Store';
 
-import { getCollectionArticles } from '../services/faciaApi';
-import type { Collection, CollectionArticles } from '../types/Collection';
+import { getCollectionArticles } from 'services/faciaApi';
+import type { CollectionArticles } from 'types/Collection';
+import type {
+  CollectionWithNestedArticles,
+  ExternalArticle
+} from 'types/shared';
 
 function collectionArticlesReceived(
   collectionId: string,
@@ -34,13 +38,13 @@ function errorReceivingCollectionArticles(error: string): Action {
 }
 
 export default function getArticlesForCollection(
-  collection: Collection,
+  collection: CollectionWithNestedArticles,
   collectionId: string
 ): ThunkAction {
   return (dispatch: Dispatch) => {
     dispatch(requestCollectionArticles());
     return getCollectionArticles(collection)
-      .then((res: CollectionArticles) => {
+      .then((res: Array<ExternalArticle>) => {
         dispatch(collectionArticlesReceived(collectionId, res));
       })
       .catch((error: string) =>
