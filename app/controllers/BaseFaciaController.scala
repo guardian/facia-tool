@@ -17,13 +17,13 @@ abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInCo
 
   def config: ApplicationConfiguration
 
-  def awsCredentialsProvider = new AWSCredentialsProviderChain(
-    new ProfileCredentialsProvider("workflow"),
-    new STSAssumeRoleSessionCredentialsProvider.Builder(config.pandomain.roleArn, config.pandomain.service).build()
-  )
+//  def awsCredentialsProvider = new AWSCredentialsProviderChain(
+//    new ProfileCredentialsProvider("workflow"),
+//    new STSAssumeRoleSessionCredentialsProvider.Builder(config.pandomain.roleArn, config.pandomain.service).build()
+//  )
 
   lazy val panDomainSettings: PanDomainAuthSettingsRefresher =
-    new PanDomainAuthSettingsRefresher(config.pandomain.domain, config.pandomain.service, actorSystem, awsCredentialsProvider)
+    new PanDomainAuthSettingsRefresher(config.pandomain.domain, config.pandomain.service, actorSystem, config.aws.cmsFrontsAccountCredentials)
 
 }
 
