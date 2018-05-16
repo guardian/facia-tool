@@ -143,7 +143,9 @@ function getCollectionArticles(
     return [];
   };
 
-  const articleIdsWithoutSnaps = articleIds.filter(id => !id.match(/^snap/)).join(',');
+  const articleIdsWithoutSnaps = articleIds
+    .filter(id => !id.match(/^snap/))
+    .join(',');
 
   const liveArticlePromise = pandaFetch(
     `/api/live/search?ids=${articleIdsWithoutSnaps}&show-fields=internalPageCode`,
@@ -156,9 +158,7 @@ function getCollectionArticles(
   return liveArticlePromise
     .then(response => response.text())
     .then(articles =>
-      Promise.resolve([
-        ...parseArticleListFromResponse(articles)
-      ])
+      Promise.resolve([...parseArticleListFromResponse(articles)])
     );
 }
 

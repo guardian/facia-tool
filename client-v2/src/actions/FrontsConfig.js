@@ -70,9 +70,23 @@ function getFrontCollection(collectionId: string) {
             articleFragmentsReceived(articleFragments)
           ])
         );
-        return new Set([ ...collectionWithDraftArticles.draft.map(nestedArticleFragment => nestedArticleFragment.id), ...collectionWithDraftArticles.live.map(nestedArticleFragment => nestedArticleFragment.id)]);
+        return collectionWithDraftArticles.live
+          ? [
+              ...new Set([
+                ...collectionWithDraftArticles.draft.map(
+                  nestedArticleFragment => nestedArticleFragment.id
+                ),
+                ...collectionWithDraftArticles.live.map(
+                  nestedArticleFragment => nestedArticleFragment.id
+                )
+              ])
+            ]
+          : [];
       })
-      .catch((error: string) => dispatch(errorReceivingFrontCollection(error)));
+      .catch((error: string) => {
+        dispatch(errorReceivingFrontCollection(error));
+        return [];
+      });
   };
 }
 
