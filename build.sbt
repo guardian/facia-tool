@@ -10,9 +10,7 @@ packageDescription := "Guardian front pages editor"
 
 scalaVersion := "2.12.5"
 
-//import com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd
 import sbt.{Path, Resolver}
-//serverLoading in Debian := Systemd
 
 debianPackageDependencies := Seq("openjdk-8-jre-headless")
 
