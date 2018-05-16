@@ -1,6 +1,7 @@
 // @flow
 
 import { applyMiddleware, compose, createStore } from 'redux';
+import { enableBatching } from 'redux-batched-actions';
 import thunkMiddleware from 'redux-thunk';
 import createBrowserHistory from 'history/createBrowserHistory';
 import { routerMiddleware } from 'react-router-redux';
@@ -13,7 +14,7 @@ export default function configureStore(): Store {
   const history = createBrowserHistory();
   const router = routerMiddleware(history);
   const store = createStore(
-    rootReducer,
+    enableBatching(rootReducer),
     compose(
       applyMiddleware(thunkMiddleware),
       applyMiddleware(updateStateFromUrlChange),

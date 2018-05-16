@@ -3,6 +3,7 @@
 import type { Action } from 'types/Action';
 import type { ThunkAction } from 'types/Store';
 import type { State } from 'types/State';
+import { batchActions } from 'redux-batched-actions';
 import { getCollectionConfig } from 'selectors/frontsSelectors';
 import {
   getCollectionArticles,
@@ -62,8 +63,13 @@ function getFrontCollection(collectionId: string) {
           collection,
           articleFragments
         } = normaliseCollectionWithNestedArticles(collectionWithDraftArticles);
-        dispatch(collectionReceived(collection));
-        dispatch(articleFragmentsReceived(articleFragments));
+
+        dispatch(
+          batchActions([
+            collectionReceived(collection),
+            articleFragmentsReceived(articleFragments)
+          ])
+        );
         // @todo - this is an odd return type, built to return a result
         // that getCollectionArticles() can consume. Probably requires a
         // refactor.
