@@ -35,6 +35,7 @@ const collectionDetail = ({ collection, stage }: Props) => {
   const mapToGroup = (group, index) => (
     <GroupDisplay
       key={group}
+      groupName={group}
       collectionId={collection.id}
       groupDisplayIndex={index}
       stage={stage}
@@ -44,7 +45,10 @@ const collectionDetail = ({ collection, stage }: Props) => {
     <CollectionContainer>
       <CollectionHeadline>{collection.displayName}</CollectionHeadline>
       {collection.groups
-        ? collection.groups.map(mapToGroup)
+        ? collection.groups
+            .slice()
+            .reverse()
+            .map(mapToGroup)
         : collection.articles[stage] &&
           collection.articles[stage].map(id => <Article key={id} id={id} />)}
     </CollectionContainer>

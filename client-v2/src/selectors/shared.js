@@ -51,10 +51,8 @@ const createCollectionSelector = () =>
     (collections, id) => collections[id]
   );
 
-const groupDisplayIndexSelector = (
-  _,
-  { groupDisplayIndex }: { groupDisplayIndex: number }
-) => groupDisplayIndex;
+const groupNameSelector = (_, { groupName }: { groupName: string }) =>
+  groupName;
 
 const stageSelector = (_, { stage }: { stage: string }) => stage;
 
@@ -64,13 +62,17 @@ const createArticlesInCollectionGroupSelector = () => {
   return createSelector(
     articleFragmentsSelector,
     collectionSelector,
-    groupDisplayIndexSelector,
+    groupNameSelector,
     stageSelector,
-    (articleFragments, collection, groupDisplayIndex, stage) => {
+    (articleFragments, collection, groupName, stage) => {
       if (!collection || !collection.groups || !collection.articles[stage]) {
         return defaultArray;
       }
       const numberOfGroups = collection.groups ? collection.groups.length : 0;
+      const groupDisplayIndex = collection.groups.indexOf(groupName);
+      if (groupDisplayIndex === -1) {
+        return defaultArray;
+      }
       const groupNumber = numberOfGroups - groupDisplayIndex - 1;
       return collection.articles[stage].filter(id => {
         const articleFragment = articleFragments[id];

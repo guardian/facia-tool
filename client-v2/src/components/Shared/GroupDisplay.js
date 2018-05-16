@@ -6,16 +6,21 @@ import { connect } from 'react-redux';
 import { createArticlesInCollectionGroupSelector } from '../../selectors/shared';
 import Article from './Article';
 
-type Props = {
-  articles: string[],
-  group: string
+type ContainerProps = {
+  groupName: string,
+  collectionId: string,
+  stage: string
 };
 
-const GroupDisplay = ({ group, articles }: Props) => (
-  <span>
-    {group}
-    {articles.map(id => <Article id={id} />)}
-  </span>
+type Props = ContainerProps & {
+  articles: string[]
+};
+
+const GroupDisplay = ({ groupName, articles }: Props) => (
+  <div>
+    <h3>{groupName}</h3>
+    {articles.map(id => <Article key={id} id={id} />)}
+  </div>
 );
 
 const createMapStateToProps = () => {
