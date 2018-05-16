@@ -59,7 +59,8 @@ const collectionDetail = ({ collection, stage }: Props) => {
 
 const createMapStateToProps = () => {
   const collectionSelector = createCollectionSelector();
-  return (state: State, props: ContainerProps) => ({
+  // $FlowFixMe
+  return (state: State, props: ContainerProps): { collection: Collection } => ({
     collection: collectionSelector(state, { collectionId: props.id })
   });
 };

@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
+import { type State } from 'types/State';
 import { createArticlesInCollectionGroupSelector } from '../../selectors/shared';
 import Article from './Article';
 
@@ -25,7 +26,8 @@ const GroupDisplay = ({ groupName, articles }: Props) => (
 
 const createMapStateToProps = () => {
   const articlesSelector = createArticlesInCollectionGroupSelector();
-  return (state: State, props: ContainerProps) => ({
+  // $FlowFixMe
+  return (state: State, props: ContainerProps): { articles: string[] } => ({
     articles: articlesSelector(state, props)
   });
 };

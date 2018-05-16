@@ -3,7 +3,7 @@
 import type { Action } from 'types/Action';
 
 import type { Collection, CollectionWithNestedArticles } from 'types/Shared';
-import type { CollectionConfigResponse } from 'services/faciaApi';
+import type { CollectionConfig } from 'services/faciaApi';
 
 function collectionReceived(collection: Collection): Action {
   return {
@@ -29,7 +29,7 @@ function errorReceivingFrontCollection(error: string): Action {
 }
 
 const combineCollectionWithConfig = (
-  collectionConfig: CollectionConfigResponse,
+  collectionConfig: CollectionConfig,
   collection: CollectionWithNestedArticles
 ): CollectionWithNestedArticles =>
   Object.assign({}, collection, {

@@ -5,8 +5,6 @@ type ExternalArticle = {
   headline: string
 };
 
-type ExternalArticleWithMetadata = ExternalArticle & { group?: number };
-
 type Meta = {
   group?: number
 };
@@ -64,7 +62,6 @@ export type {
   Article,
   Meta,
   ExternalArticle,
-  ExternalArticleWithMetadata,
   CollectionWithNestedArticles,
   CollectionResponse,
   Collection
