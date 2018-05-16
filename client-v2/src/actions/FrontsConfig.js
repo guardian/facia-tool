@@ -70,10 +70,7 @@ function getFrontCollection(collectionId: string) {
             articleFragmentsReceived(articleFragments)
           ])
         );
-        // @todo - this is an odd return type, built to return a result
-        // that getCollectionArticles() can consume. Probably requires a
-        // refactor.
-        return collectionWithDraftArticles;
+        return new Set([ ...collectionWithDraftArticles.draft.map(nestedArticleFragment => nestedArticleFragment.id), ...collectionWithDraftArticles.live.map(nestedArticleFragment => nestedArticleFragment.id)]);
       })
       .catch((error: string) => dispatch(errorReceivingFrontCollection(error)));
   };
@@ -85,7 +82,7 @@ const getCollectionsAndArticles = (collectionIds: Array<string>) => (
   Promise.all(
     collectionIds.map(collectionId =>
       dispatch(getFrontCollection(collectionId))
-        .then(collection => getCollectionArticles(collection))
+        .then(articleIds => getCollectionArticles(articleIds))
         .then(articles => {
           const articlesMap = articles.reduce(
             (acc, article) => ({

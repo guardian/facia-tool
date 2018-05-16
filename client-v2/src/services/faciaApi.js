@@ -1,7 +1,5 @@
 // @flow
 
-import { getCollectionArticleQueryString } from 'util/collectionUtils';
-import { frontStages } from 'constants/fronts';
 import type { PriorityName } from 'types/Priority';
 import type {
   ExternalArticle,
@@ -131,7 +129,7 @@ function getCollection(
 }
 
 function getCollectionArticles(
-  collection: CollectionWithNestedArticles
+  articleIds: string[]
 ): Promise<Array<ExternalArticle>> {
   const parseArticleListFromResponse = (
     text: ?string
@@ -144,34 +142,22 @@ function getCollectionArticles(
     }
     return [];
   };
-  const draftIds = getCollectionArticleQueryString(
-    collection,
-    frontStages.draft
-  );
-  const liveIds = getCollectionArticleQueryString(collection, frontStages.live);
 
-  const draftArticlePromise = pandaFetch(
-    `/api/preview/search?ids=${draftIds}&show-fields=internalPageCode`,
-    {
-      method: 'get',
-      credentials: 'same-origin'
-    }
-  );
+  const articleIdsWithoutSnaps = articleIds.filter(id => !id.match(/^snap/)).join(',');
 
   const liveArticlePromise = pandaFetch(
-    `/api/live/search?ids=${liveIds}&show-fields=internalPageCode`,
+    `/api/live/search?ids=${articleIdsWithoutSnaps}&show-fields=internalPageCode`,
     {
       method: 'get',
       credentials: 'same-origin'
     }
   );
 
-  return Promise.all([draftArticlePromise, liveArticlePromise])
-    .then(responses => Promise.all(responses.map(response => response.text())))
-    .then(([draft, live]) =>
+  return liveArticlePromise
+    .then(response => response.text())
+    .then(articles =>
       Promise.resolve([
-        ...parseArticleListFromResponse(draft),
-        ...parseArticleListFromResponse(live)
+        ...parseArticleListFromResponse(articles)
       ])
     );
 }
