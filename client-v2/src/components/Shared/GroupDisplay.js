@@ -8,8 +8,8 @@ import Article from './Article';
 
 type ContainerProps = {
   groupName: string,
-  collectionId: string,
-  stage: string
+  collectionId: string, // eslint-disable-line react/no-unused-prop-types
+  stage: string // eslint-disable-line react/no-unused-prop-types
 };
 
 type Props = ContainerProps & {
