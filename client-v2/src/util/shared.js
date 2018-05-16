@@ -9,6 +9,8 @@ import {
   type ArticleFragment
 } from '../types/Shared';
 
+const getLastPartOfArticleFragmentId = (id: string) => id.split('/').pop();
+
 const normaliseCollectionWithNestedArticles = (
   collection: CollectionWithNestedArticles
 ) => {
@@ -30,7 +32,7 @@ const normaliseCollectionWithNestedArticles = (
         collection[currentStage].map((articleFragment, index) =>
           Object.assign({}, articleFragment, {
             uuid: idMap[currentStage] && idMap[currentStage][index],
-            id: articleFragment.id.split('/')[2] // @todo -- Reetta, is this in the right place?
+            id: getLastPartOfArticleFragmentId(articleFragment.id)
           })
         );
       const fragmentsAsObjects: { [string]: ArticleFragment } = (

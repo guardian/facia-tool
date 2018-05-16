@@ -99,21 +99,21 @@ describe('Shared selectors', () => {
         selector(state, {
           collectionId: 'c1',
           stage: 'live',
-          groupDisplayIndex: 0
+          groupName: 'group1'
         })
       ).toEqual(['af2']);
       expect(
         selector(state, {
           collectionId: 'c1',
           stage: 'live',
-          groupDisplayIndex: 1
+          groupName: 'group2'
         })
       ).toEqual(['af1']);
       expect(
         selector(state, {
           collectionId: 'c2',
           stage: 'draft',
-          groupDisplayIndex: 0
+          groupName: 'group1'
         })
       ).toEqual(['af3', 'af4']);
     });
@@ -123,7 +123,7 @@ describe('Shared selectors', () => {
         selector(state, {
           collectionId: 'invalid',
           stage: 'live',
-          groupDisplayIndex: 0
+          groupName: 'group1'
         })
       ).toEqual([]);
     });
@@ -133,7 +133,7 @@ describe('Shared selectors', () => {
         selector(state, {
           collectionId: 'c1',
           stage: 'invalid',
-          groupDisplayIndex: 0
+          groupName: 'groupName'
         })
       ).toEqual([]);
     });
