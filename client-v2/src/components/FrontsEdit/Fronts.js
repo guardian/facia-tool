@@ -9,7 +9,7 @@ import getFrontsConfig, {
 } from 'actions/FrontsConfig';
 import { frontStages } from 'constants/fronts';
 import Collection from 'components/Shared/Collection';
-import type { FrontConfig } from 'services/faciaApi';
+import type { FrontConfig } from 'types/FaciaApi';
 import type { State } from 'types/State';
 import { getFront } from 'selectors/frontsSelectors';
 import FrontsDropDown from 'containers/FrontsDropdown';

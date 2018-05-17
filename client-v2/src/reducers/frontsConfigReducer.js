@@ -1,7 +1,7 @@
 // @flow
 
 import { type Action } from 'types/Action';
-import { type FrontsConfig } from 'services/faciaApi';
+import type { FrontsConfig } from 'types/FaciaApi';
 
 type State = FrontsConfig;
 

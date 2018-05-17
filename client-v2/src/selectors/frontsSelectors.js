@@ -1,7 +1,7 @@
 // @flow
 
 import { createSelector } from 'reselect';
-import type { FrontConfig, CollectionConfig } from 'services/faciaApi';
+import type { FrontConfig, CollectionConfig } from 'types/FaciaApi';
 import type { State } from 'types/State';
 import { breakingNewsFrontId } from 'constants/fronts';
 

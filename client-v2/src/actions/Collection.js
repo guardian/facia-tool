@@ -2,8 +2,7 @@
 
 import type { Action } from 'types/Action';
 
-import type { Collection, CollectionWithNestedArticles } from 'types/Shared';
-import type { CollectionConfig } from 'services/faciaApi';
+import type { Collection } from 'types/Shared';
 
 function collectionReceived(collection: Collection): Action {
   return {
@@ -28,23 +27,8 @@ function errorReceivingFrontCollection(error: string): Action {
   };
 }
 
-const combineCollectionWithConfig = (
-  collectionConfig: CollectionConfig,
-  collection: CollectionWithNestedArticles
-): CollectionWithNestedArticles =>
-  Object.assign({}, collection, {
-    id: collection.id,
-    displayName: collectionConfig.displayName,
-    groups: collectionConfig.groups
-  });
-
-const populateDraftArticles = (collection: CollectionWithNestedArticles) =>
-  !collection.draft ? collection.live : collection.draft;
-
 export {
   collectionReceived,
   requestFrontCollection,
-  errorReceivingFrontCollection,
-  combineCollectionWithConfig,
-  populateDraftArticles
+  errorReceivingFrontCollection
 };
