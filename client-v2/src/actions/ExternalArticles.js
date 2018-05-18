@@ -2,13 +2,13 @@
 
 import type { Action } from 'types/Action';
 
-function errorReceivingCollectionArticles(error: string): Action {
+function errorReceivingArticles(error: string): Action {
   return {
     type: 'CAUGHT_ERROR',
-    message: 'Could not fetch collection articles from capi',
+    message: 'Could not fetch articles from Capi',
     error,
     receivedAt: Date.now()
   };
 }
 
-export { errorReceivingCollectionArticles };
+export { errorReceivingArticles };

@@ -57,9 +57,7 @@ function getCollection(
     }));
 }
 
-function getCollectionArticles(
-  articleIds: string[]
-): Promise<Array<ExternalArticle>> {
+function getArticles(articleIds: string[]): Promise<Array<ExternalArticle>> {
   const parseArticleListFromResponse = (
     text: ?string
   ): Array<ExternalArticle> => {
@@ -91,4 +89,4 @@ function getCollectionArticles(
     );
 }
 
-export { fetchFrontsConfig, getCollection, getCollectionArticles };
+export { fetchFrontsConfig, getCollection, getArticles };

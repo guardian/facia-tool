@@ -11,7 +11,7 @@ import { type Config } from './Config';
 type ActionError =
   | 'Could not fetch fronts config'
   | 'Could not fetch collection'
-  | 'Could not fetch collection articles from capi'
+  | 'Could not fetch articles from Capi'
   | '';
 
 type ErrorActionType = 'CAUGHT_ERROR';

@@ -6,7 +6,7 @@ import type { State } from 'types/State';
 import { batchActions } from 'redux-batched-actions';
 import { getCollectionConfig } from 'selectors/frontsSelectors';
 import {
-  getCollectionArticles,
+  getArticles,
   fetchFrontsConfig,
   getCollection
 } from 'services/faciaApi';
@@ -20,6 +20,7 @@ import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
 import { externalArticlesReceived } from 'shared/actions/ExternalArticles';
 import { collectionReceived } from 'shared/actions/Collection';
 import { errorReceivingFrontCollection } from './Collection';
+import { errorReceivingArticles } from './ExternalArticles';
 
 function frontsConfigReceived(config: FrontsConfig): Action {
   return {
@@ -94,8 +95,15 @@ const getCollectionsAndArticles = (collectionIds: Array<string>) => (
   Promise.all(
     collectionIds.map(collectionId =>
       dispatch(getFrontCollection(collectionId))
-        .then(articleIds => getCollectionArticles(articleIds))
+        .then(articleIds =>
+          getArticles(articleIds).catch(err =>
+            dispatch(errorReceivingArticles(err))
+          )
+        )
         .then(articles => {
+          if (!articles) {
+            return;
+          }
           const articlesMap = articles.reduce(
             (acc, article) => ({
               ...acc,

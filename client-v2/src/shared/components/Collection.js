@@ -35,31 +35,28 @@ const CollectionHeadline = styled('div')`
   padding: 7px;
 `;
 
-const collectionDetail = ({ collection, stage }: Props) => {
-  const mapToGroup = (group, index) => (
-    <GroupDisplay
-      key={group}
-      groupName={group}
-      collectionId={collection.id}
-      groupDisplayIndex={index}
-      stage={stage}
-    />
-  );
-  return collection ? (
+const collectionDetail = ({ collection, stage }: Props) =>
+  collection ? (
     <CollectionContainer>
       <CollectionHeadline>{collection.displayName}</CollectionHeadline>
       {collection.groups
         ? collection.groups
             .slice()
             .reverse()
-            .map(mapToGroup)
+            .map(group => (
+              <GroupDisplay
+                key={group}
+                groupName={group}
+                collectionId={collection.id}
+                stage={stage}
+              />
+            ))
         : collection.articles[stage] &&
           collection.articles[stage].map(id => <Article key={id} id={id} />)}
     </CollectionContainer>
   ) : (
     <span>Waiting for collection</span>
   );
-};
 
 const createMapStateToProps = () => {
   const collectionSelector = createCollectionSelector();
