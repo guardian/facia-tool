@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import Article from './Collection';
+import Article from './Article';
 import {
   createArticlesInCollectionGroupSelector,
   selectSharedState
