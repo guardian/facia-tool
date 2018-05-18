@@ -5,11 +5,11 @@ import type {
   FrontsConfigResponse,
   FrontConfigMap
 } from 'types/FaciaApi';
+import type { ExternalArticle } from 'shared/types/ExternalArticle';
 import type {
-  ExternalArticle,
   CollectionResponse,
   CollectionWithNestedArticles
-} from 'types/Shared';
+} from 'shared/types/Collection';
 import pandaFetch from './pandaFetch';
 
 function fetchFrontsConfig(): Promise<FrontsConfig> {

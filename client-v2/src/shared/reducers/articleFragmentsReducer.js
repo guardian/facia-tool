@@ -1,7 +1,7 @@
 // @flow
 
 import { type Action } from '../types/Action';
-import { type ArticleFragment } from '../types/Shared';
+import { type ArticleFragment } from '../types/Collection';
 
 type State = {
   [string]: ArticleFragment

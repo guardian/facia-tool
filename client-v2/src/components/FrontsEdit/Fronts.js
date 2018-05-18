@@ -4,11 +4,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
+
 import getFrontsConfig, {
   getCollectionsAndArticles
 } from 'actions/FrontsConfig';
 import { frontStages } from 'constants/fronts';
-import Collection from 'components/Shared/Collection';
+import Collection from 'shared/components/Collection';
 import type { FrontConfig } from 'types/FaciaApi';
 import type { State } from 'types/State';
 import { getFront } from 'selectors/frontsSelectors';

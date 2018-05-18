@@ -1,7 +1,7 @@
 // @flow
 
 import { type Action } from '../types/Action';
-import type { Collection } from '../types/Shared';
+import type { Collection } from '../types/Collection';
 
 type State = {
   [string]: Collection

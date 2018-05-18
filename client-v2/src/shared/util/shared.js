@@ -3,11 +3,11 @@
 import v4 from 'uuid/v4';
 import { omit } from 'lodash';
 
-import {
-  type CollectionWithNestedArticles,
-  type Collection,
-  type ArticleFragment
-} from '../types/Shared';
+import type {
+  CollectionWithNestedArticles,
+  Collection,
+  ArticleFragment
+} from 'shared/types/Collection';
 
 const getLastPartOfArticleFragmentId = (id: string) => id.split('/').pop();
 

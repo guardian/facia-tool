@@ -1,10 +1,5 @@
 // @flow
 
-type ExternalArticle = {
-  id: string,
-  headline: string
-};
-
 type Meta = {
   group?: number
 };
@@ -18,14 +13,6 @@ type NestedArticleFragment = {
 
 type ArticleFragment = NestedArticleFragment & {
   uuid: string
-};
-
-type Article = ExternalArticle & {
-  uuid: string,
-  id: string,
-  frontPublicationDate: number,
-  publishedBy: string,
-  group?: number
 };
 
 type CollectionResponse = {
@@ -59,9 +46,7 @@ type Collection = {
 
 export type {
   ArticleFragment,
-  Article,
   Meta,
-  ExternalArticle,
   CollectionWithNestedArticles,
   CollectionResponse,
   Collection

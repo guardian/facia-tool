@@ -1,22 +1,19 @@
 // @flow
 
 import { combineReducers } from 'redux';
+
+import shared from 'shared/reducers/sharedReducer';
 import config from './configReducer';
 import frontsConfig from './frontsConfigReducer';
 import error from './errorReducer';
 import path from './pathReducer';
-import collections from './collectionsReducer';
-import articleFragments from './articleFragmentsReducer';
-import externalArticles from './externalArticlesReducer';
 
 const reducers = {
   config,
   frontsConfig,
   error,
   path,
-  collections,
-  articleFragments,
-  externalArticles
+  shared
 };
 
 export type Reducers = typeof reducers;

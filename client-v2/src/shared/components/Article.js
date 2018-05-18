@@ -4,12 +4,16 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { createArticleFromArticleFragmentSelector } from 'selectors/shared';
-import type { State } from 'types/State';
-import type { Article } from 'types/Shared';
+import {
+  createArticleFromArticleFragmentSelector,
+  selectSharedState
+} from '../selectors/shared';
+import type { State } from '../types/State';
+import type { Article } from '../types/Article';
 
 type ContainerProps = {
-  id: string // eslint-disable-line react/no-unused-prop-types
+  id: string, // eslint-disable-line react/no-unused-prop-types
+  selectSharedState: (state: any) => State // eslint-disable-line react/no-unused-prop-types
 };
 
 type ComponentProps = {
@@ -30,8 +34,13 @@ const ArticleComponent = ({ article }: ComponentProps) =>
 const createMapStateToProps = () => {
   const selectArticle = createArticleFromArticleFragmentSelector();
   // $FlowFixMe
-  return (state: State, { id }: ContainerProps): { article: Article } => ({
-    article: selectArticle(state, id)
+  return (state: State, props: ContainerProps): { article: Article } => ({
+    article: selectArticle(
+      props.selectSharedState
+        ? props.selectSharedState(state)
+        : selectSharedState(state),
+      props.id
+    )
   });
 };
 

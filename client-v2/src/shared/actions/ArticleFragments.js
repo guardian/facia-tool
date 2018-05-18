@@ -1,5 +1,5 @@
+import type { ArticleFragment } from 'shared/types/Collection';
 import type { Action } from '../types/Action';
-import type { ArticleFragment } from '../types/Shared';
 
 function articleFragmentsReceived(articleFragments: {
   [string]: ArticleFragment

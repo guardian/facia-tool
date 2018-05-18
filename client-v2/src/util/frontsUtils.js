@@ -1,7 +1,7 @@
 // @flow
 
-import type { FrontConfig, CollectionConfig } from 'services/faciaApi';
-import type { CollectionWithNestedArticles } from 'types/Shared';
+import type { FrontConfig, CollectionConfig } from 'types/FaciaApi';
+import type { CollectionWithNestedArticles } from 'shared/types/Collection';
 
 const getFrontCollections = (
   frontId: ?string,

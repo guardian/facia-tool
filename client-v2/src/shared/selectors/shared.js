@@ -1,8 +1,9 @@
 // @flow
+
 import { createSelector } from 'reselect';
 
-import type { ArticleFragment } from '../types/Shared';
-import type { State } from '../types/State';
+import type { ArticleFragment } from '../types/Collection';
+import type { RootState as State } from '../types/State';
 
 const externalArticlesSelector = (state: State) => state.externalArticles;
 
@@ -86,10 +87,14 @@ const createArticlesInCollectionGroupSelector = () => {
   );
 };
 
+// Selects the shared part of the application state mounted at its default point, '.shared'.
+const selectSharedState = (rootState: { shared: State }) => rootState.shared;
+
 export {
   externalArticlesSelector,
   externalArticleFromArticleFragmentSelector,
   createArticleFromArticleFragmentSelector,
   createArticlesInCollectionGroupSelector,
-  createCollectionSelector
+  createCollectionSelector,
+  selectSharedState
 };

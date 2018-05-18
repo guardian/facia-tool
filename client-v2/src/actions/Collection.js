@@ -2,22 +2,6 @@
 
 import type { Action } from 'types/Action';
 
-import type { Collection } from 'types/Shared';
-
-function collectionReceived(collection: Collection): Action {
-  return {
-    type: 'SHARED/COLLECTION_RECEIVED',
-    payload: collection
-  };
-}
-
-function requestFrontCollection(): Action {
-  return {
-    type: 'FRONTS_COLLECTION_GET_RECEIVE',
-    receivedAt: Date.now()
-  };
-}
-
 function errorReceivingFrontCollection(error: string): Action {
   return {
     type: 'CAUGHT_ERROR',
@@ -27,8 +11,4 @@ function errorReceivingFrontCollection(error: string): Action {
   };
 }
 
-export {
-  collectionReceived,
-  requestFrontCollection,
-  errorReceivingFrontCollection
-};
+export { errorReceivingFrontCollection };
