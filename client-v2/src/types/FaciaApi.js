@@ -1,3 +1,7 @@
+// @flow
+
+import type { PriorityName } from './Priority';
+
 type FrontConfigResponse = {
   collections: Array<string>,
   priority?: PriorityName,
@@ -73,4 +77,10 @@ type FrontsConfig = {
   collections: CollectionConfigMap
 };
 
-export type { FrontsConfig, FrontsConfigResponse, FrontConfigMap };
+export type {
+  FrontConfig,
+  CollectionConfig,
+  FrontsConfig,
+  FrontsConfigResponse,
+  FrontConfigMap
+};

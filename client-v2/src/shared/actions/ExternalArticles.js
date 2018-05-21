@@ -1,3 +1,6 @@
+// @flow
+
+import type { Action } from 'types/Action';
 import type { ExternalArticle } from '../types/ExternalArticle';
 
 function externalArticlesReceived(articles: {

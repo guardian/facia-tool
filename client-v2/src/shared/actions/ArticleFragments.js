@@ -1,3 +1,5 @@
+// @flow
+
 import type { ArticleFragment } from 'shared/types/Collection';
 import type { Action } from '../types/Action';
 

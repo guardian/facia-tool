@@ -3,7 +3,7 @@
 import { createSelector } from 'reselect';
 
 import type { ArticleFragment } from '../types/Collection';
-import type { RootState as State } from '../types/State';
+import type { State } from '../types/State';
 
 const externalArticlesSelector = (state: State) => state.externalArticles;
 
