@@ -21,7 +21,7 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val isTest: Boolean = context.environment.mode == Mode.Test
   val isProd: Boolean = context.environment.mode == Mode.Prod
   val isDev: Boolean = context.environment.mode == Mode.Dev
-  val config = new ApplicationConfiguration(configuration, isProd)
+  val config = new ApplicationConfiguration(configuration, isProd, isTest)
   val awsEndpoints = new AwsEndpoints(config)
   val permissions = new Permissions(config)
   val acl = new Acl(permissions)

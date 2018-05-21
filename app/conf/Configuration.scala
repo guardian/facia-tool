@@ -14,7 +14,7 @@ import scala.language.reflectiveCalls
 
 class BadConfigurationException(msg: String) extends RuntimeException(msg)
 
-class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isProd: Boolean) {
+class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isProd: Boolean, val isCode: Boolean) {
   private val propertiesFile = "/etc/gu/facia-tool.properties"
   private val installVars = new File(propertiesFile) match {
     case f if f.exists => IOUtils.toString(new FileInputStream(f))
@@ -49,11 +49,9 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
   object environment {
     val stage = stageFromProperties.toLowerCase
     val applicationName = "facia-tool"
-    val applicationUrl = stage match {
-      case "PROD" => "https://fronts.gutools.co.uk"
-      case "CODE" => "https://fronts.code.dev-gutools.co.uk"
-      case _ => "https://fronts.local.dev-gutools.co.uk"
-    }
+    val applicationUrl = if (isProd) "https://fronts.gutools.co.uk"
+      else if (isCode) "https://fronts.code.dev-gutools.co.uk"
+      else "https://fronts.local.dev-gutools.co.uk"
   }
 
   object ophanApi {
