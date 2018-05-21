@@ -1,20 +1,23 @@
 import {
   createArticleFromArticleFragmentSelector,
   externalArticleFromArticleFragmentSelector,
-  createArticlesInCollectionGroupSelector
+  createArticlesInCollectionGroupSelector,
+  createCollectionsAsTreeSelector
 } from '../shared';
 
 const state = {
   collections: {
     c1: {
+      id: 'c1',
       groups: ['group1', 'group2'],
-      articles: {
+      articleFragments: {
         live: ['af1', 'af2']
       }
     },
     c2: {
+      id: 'c2',
       groups: ['group1'],
-      articles: {
+      articleFragments: {
         draft: ['af3', 'af4']
       }
     }
@@ -57,6 +60,55 @@ const state = {
       meta: {
         group: '0'
       }
+    }
+  }
+};
+
+const stateWithGrouplessCollection = {
+  collections: {
+    c1: {
+      id: 'c1',
+      articleFragments: {
+        live: ['af1', 'af2']
+      }
+    }
+  },
+  articleFragments: {
+    af1: {
+      uuid: 'af1',
+      id: 'ea1',
+      frontPublicationDate: 1,
+      publishedBy: 'A. N. Author',
+      meta: {}
+    },
+    af2: {
+      uuid: 'af2',
+      meta: {}
+    }
+  }
+};
+
+const stateWithSupportingArticles = {
+  collections: {
+    c1: {
+      id: 'c1',
+      articleFragments: {
+        live: ['af1']
+      }
+    }
+  },
+  articleFragments: {
+    af1: {
+      uuid: 'af1',
+      id: 'ea1',
+      frontPublicationDate: 1,
+      publishedBy: 'A. N. Author',
+      supporting: ['af2'],
+      meta: {}
+    },
+    af2: {
+      uuid: 'af2',
+      meta: {}
     }
   }
 };
@@ -136,6 +188,114 @@ describe('Shared selectors', () => {
           groupName: 'groupName'
         })
       ).toEqual([]);
+    });
+  });
+
+  describe('createCollectionsAsTreeSelector', () => {
+    it('should return a tree of the given collections, containing groups, articles, and articleFragments', () => {
+      const selector = createCollectionsAsTreeSelector();
+      expect(selector(state, { collectionIds: ['c1'], stage: 'live' })).toEqual(
+        {
+          collections: [
+            {
+              id: 'c1',
+              groups: [
+                {
+                  id: 'group1',
+                  articleFragments: [
+                    {
+                      uuid: 'af2',
+                      meta: {
+                        group: '1'
+                      }
+                    }
+                  ]
+                },
+                {
+                  id: 'group2',
+                  articleFragments: [
+                    {
+                      uuid: 'af1',
+                      id: 'ea1',
+                      frontPublicationDate: 1,
+                      publishedBy: 'A. N. Author',
+                      meta: {
+                        group: '0'
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      );
+    });
+    it('should handle supporting articles', () => {
+      const selector = createCollectionsAsTreeSelector();
+      expect(
+        selector(stateWithSupportingArticles, {
+          collectionIds: ['c1'],
+          stage: 'live'
+        })
+      ).toEqual({
+        collections: [
+          {
+            id: 'c1',
+            groups: [
+              {
+                articleFragments: [
+                  {
+                    uuid: 'af1',
+                    id: 'ea1',
+                    frontPublicationDate: 1,
+                    publishedBy: 'A. N. Author',
+                    meta: {},
+                    supporting: [
+                      {
+                        uuid: 'af2',
+                        meta: {}
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      });
+    });
+    it('should handle collections without groups', () => {
+      const selector = createCollectionsAsTreeSelector();
+      expect(
+        selector(stateWithGrouplessCollection, {
+          collectionIds: ['c1'],
+          stage: 'live'
+        })
+      ).toEqual({
+        collections: [
+          {
+            id: 'c1',
+            groups: [
+              {
+                articleFragments: [
+                  {
+                    uuid: 'af1',
+                    id: 'ea1',
+                    frontPublicationDate: 1,
+                    publishedBy: 'A. N. Author',
+                    meta: {}
+                  },
+                  {
+                    uuid: 'af2',
+                    meta: {}
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      });
     });
   });
 });

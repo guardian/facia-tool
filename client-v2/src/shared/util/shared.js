@@ -56,7 +56,7 @@ const normaliseCollectionWithNestedArticles = (
     {},
     omit(collection, ...stages),
     {
-      articles: idMap
+      articleFragments: idMap
     }
   );
 

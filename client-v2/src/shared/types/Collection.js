@@ -8,7 +8,8 @@ type NestedArticleFragment = {
   id: string,
   frontPublicationDate: number,
   publishedBy: string,
-  meta: Meta
+  meta: Meta,
+  supporting?: $Diff<NestedArticleFragment, { supporting: any }>
 };
 
 type ArticleFragment = NestedArticleFragment & {
@@ -32,7 +33,7 @@ type CollectionWithNestedArticles = CollectionResponse & {
 };
 
 type Collection = {
-  articles: {
+  articleFragments: {
     [stage: string]: Array<string>
   },
   id: string,
