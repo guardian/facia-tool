@@ -140,7 +140,6 @@ To get the config files run `./fetch-config.sh`. This requires CMS front credent
 
 You need the following credentials:
 - cmsFronts - developer
-- workflow - S3 Read
 - capi - API Gateway invocation
 - frontend - AWS console access
 You can get keys temporary keys from `janus`. You can copy these credentials manually from `janus`
@@ -148,7 +147,7 @@ You can get keys temporary keys from `janus`. You can copy these credentials man
 You can also get credentials for *facia-tool* by using [feria](https://github.com/guardian/feria):
 
 ```
-$ feria cmsFronts && feria --access s3-read workflow && feria --access sqs-consumer frontend
+$ feria cmsFronts && feria --access sqs-consumer frontend
 ```
 (You should first checkout the repository and follow the install instructions for [*feria*](https://github.com/guardian/feria).)
 
