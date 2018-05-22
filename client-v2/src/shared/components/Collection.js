@@ -41,6 +41,7 @@ const collectionDetail = ({ collection, stage }: Props) =>
       <CollectionHeadline>{collection.displayName}</CollectionHeadline>
       {collection.groups
         ? collection.groups.map(group => (
+            // eslint-disable-next-line react/jsx-indent
             <GroupDisplay
               key={group}
               groupName={group}
