@@ -16,7 +16,7 @@ import play.filters.cors.CORSComponents
 abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInComponentsFromContext(context) with AhcWSComponents with AssetsComponents with CORSComponents {
 
   def config: ApplicationConfiguration
-  
+
   lazy val panDomainSettings: PanDomainAuthSettingsRefresher =
     new PanDomainAuthSettingsRefresher(config.pandomain.domain, config.pandomain.service, actorSystem, config.aws.cmsFrontsAccountCredentials)
 

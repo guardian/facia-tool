@@ -2,7 +2,6 @@ package controllers
 
 import java.net.{URI, URLEncoder}
 
-import akka.actor.ActorSystem
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
 import com.gu.contentapi.client.{IAMEncoder, IAMSigner}
@@ -18,8 +17,6 @@ class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents) extends Base
   implicit class string2encodings(s: String) {
     lazy val urlEncoded = URLEncoder.encode(s, "utf-8")
   }
-
-  lazy val actorSystem = ActorSystem()
 
   private val previewSigner = {
     val capiPreviewCredentials = new AWSCredentialsProviderChain(

@@ -1,7 +1,6 @@
 package controllers
 
 import _root_.util.Acl
-import akka.actor.ActorSystem
 import com.gu.facia.client.models.Metadata
 import com.gu.pandomainauth.action.UserRequest
 import frontsapi.model._
@@ -21,8 +20,6 @@ import scala.concurrent.Future
 class FaciaToolController(val acl: Acl, val frontsApi: FrontsApi, val faciaApiIO: FaciaApiIO, val updateActions: UpdateActions,
                           breakingNewsUpdate: BreakingNewsUpdate, val auditingUpdates: AuditingUpdates, val faciaPress: FaciaPress, val faciaPressQueue: FaciaPressQueue,
                           val configAgent: ConfigAgent, val s3FrontsApi: S3FrontsApi, val mediaServiceClient: MediaServiceClient, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) with BreakingNewsEditCollectionsCheck {
-
-  lazy val actorSystem = ActorSystem()
 
   def getConfig = APIAuthAction.async { request =>
     FaciaToolMetrics.ApiUsageCount.increment()
