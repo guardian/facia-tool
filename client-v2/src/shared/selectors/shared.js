@@ -49,7 +49,14 @@ const createCollectionSelector = () =>
   createSelector(
     collectionsSelector,
     collectionIdSelector,
-    (collections, id) => collections[id]
+    (collections, id) =>
+      collections[id]
+        ? {
+            ...collections[id],
+            groups:
+              collections[id].groups && collections[id].groups.slice().reverse()
+          }
+        : false
   );
 
 const groupNameSelector = (_, { groupName }: { groupName: string }) =>
@@ -69,19 +76,17 @@ const createArticlesInCollectionGroupSelector = () => {
       if (!collection || !collection.groups || !collection.articles[stage]) {
         return defaultArray;
       }
-      const numberOfGroups = collection.groups ? collection.groups.length : 0;
       const groupDisplayIndex = collection.groups.indexOf(groupName);
       if (groupDisplayIndex === -1) {
         return defaultArray;
       }
-      const groupNumber = numberOfGroups - groupDisplayIndex - 1;
       return collection.articles[stage].filter(id => {
         const articleFragment = articleFragments[id];
         const articleGroup =
           articleFragment.meta && articleFragment.meta.group
             ? parseInt(articleFragment.meta.group, 10)
             : 0;
-        return articleGroup === groupNumber;
+        return articleGroup === groupDisplayIndex;
       });
     }
   );
