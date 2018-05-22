@@ -1,19 +1,17 @@
 // @flow
 
-import { type Config } from './Config';
-import { type CollectionArticles } from './Collection';
-
 /**
  * Need to add new types into here and union them with `Action` in order
  * for typing to work nicely in reducers
  */
 
-import type { Collection } from '../services/faciaApi';
+import type { Action as SharedActions } from 'shared/types/Action';
+import { type Config } from './Config';
 
 type ActionError =
   | 'Could not fetch fronts config'
   | 'Could not fetch collection'
-  | 'Could not fetch collection articles from capi'
+  | 'Could not fetch articles from Capi'
   | '';
 
 type ErrorActionType = 'CAUGHT_ERROR';
@@ -42,12 +40,6 @@ type PathUpdate = {
   path: string
 };
 
-type FrontCollectionReceivedAction = {
-  type: 'FRONTS_COLLECTION_RECEIVED',
-  id: string,
-  payload: Collection
-};
-
 type RequestFrontCollectionAction = {
   type: 'FRONTS_COLLECTION_GET_RECEIVE',
   receivedAt: number
@@ -60,28 +52,15 @@ type ErrorInAction = {
   receivedAt: number
 };
 
-type CollectionArticlesReceived = {
-  type: 'CAPI_ARTICLES_RECEIVED',
-  id: string,
-  payload: CollectionArticles
-};
-
-type RequestCollectionArticles = {
-  type: 'CAPI_ARTICLES_GET_RECEIVE',
-  receivedAt: number
-};
-
 export type Action =
   | ConfigReceivedAction
   | FrontsConfigReceivedAction
   | RequestFrontsConfigAction
   | ClearError
   | PathUpdate
-  | FrontCollectionReceivedAction
   | RequestFrontCollectionAction
   | ErrorInAction
-  | CollectionArticlesReceived
-  | RequestCollectionArticles;
+  | SharedActions;
 
 export type ActionType = $ElementType<Action, 'type'>;
 export type { ActionError };

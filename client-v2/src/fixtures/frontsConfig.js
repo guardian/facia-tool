@@ -1,6 +1,6 @@
 // @flow
 
-import type { FrontsConfig } from 'services/faciaApi';
+import type { FrontsConfig } from 'types/FaciaApi';
 
 const frontsConfig: FrontsConfig = {
   fronts: {

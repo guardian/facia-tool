@@ -1,5 +1,5 @@
-// flow-typed signature: ce09cfddc81b167b0a751ef4cd182f77
-// flow-typed version: 76d655b490/styled-components_v3.x.x/flow_>=v0.57.x
+// flow-typed signature: becd2a1db8817add2eb71178abc441c9
+// flow-typed version: 07ab10961a/styled-components_v3.x.x/flow_>=v0.57.x
 
 // @flow
 
@@ -287,6 +287,7 @@ type $npm$styledComponents$StyledComponentsNativeComponentList = {|
   DrawerLayoutAndroid:          $npm$styledComponents$StyledComponentsNativeComponentListValue,
   FlatList:                     $npm$styledComponents$StyledComponentsNativeComponentListValue,
   Image:                        $npm$styledComponents$StyledComponentsNativeComponentListValue,
+  ImageBackground:              $npm$styledComponents$StyledComponentsNativeComponentListValue,
   ImageEditor:                  $npm$styledComponents$StyledComponentsNativeComponentListValue,
   ImageStore:                   $npm$styledComponents$StyledComponentsNativeComponentListValue,
   KeyboardAvoidingView:         $npm$styledComponents$StyledComponentsNativeComponentListValue,
