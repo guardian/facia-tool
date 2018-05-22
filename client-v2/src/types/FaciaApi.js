@@ -51,11 +51,10 @@ type FrontsConfigResponse = {
   }
 };
 
-type FrontConfigResponseWithoutPriority = $Diff<
+type FrontConfig = $Diff<
   FrontConfigResponse,
   { priority: PriorityName | void }
->;
-type FrontConfig = FrontConfigResponseWithoutPriority & {
+> & {
   id: string,
   priority: PriorityName
 };
