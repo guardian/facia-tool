@@ -221,7 +221,7 @@ describe('Config Front', function () {
             var imageUrl = images.path('square.png');
             dom.type('.metadata--provisionalImage', imageUrl);
 
-            return wait.ms(100).then(() => {
+            return wait.ms(500).then(() => {
                 var front = frontWidget.pinnedFront();
                 expect(persistence.front.update).toHaveBeenCalledWith(front);
                 expect(front.props.webTitle()).toBe('Nicer title');
