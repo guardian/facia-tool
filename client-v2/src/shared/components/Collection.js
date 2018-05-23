@@ -40,17 +40,15 @@ const collectionDetail = ({ collection, stage }: Props) =>
     <CollectionContainer>
       <CollectionHeadline>{collection.displayName}</CollectionHeadline>
       {collection.groups
-        ? collection.groups
-            .slice()
-            .reverse()
-            .map(group => (
-              <GroupDisplay
-                key={group}
-                groupName={group}
-                collectionId={collection.id}
-                stage={stage}
-              />
-            ))
+        ? collection.groups.map(group => (
+            // eslint-disable-next-line react/jsx-indent
+            <GroupDisplay
+              key={group}
+              groupName={group}
+              collectionId={collection.id}
+              stage={stage}
+            />
+          ))
         : collection.articleFragments[stage] &&
           collection.articleFragments[stage].map(id => (
             <Article key={id} id={id} />

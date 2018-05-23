@@ -4,7 +4,7 @@ import { createSelector } from 'reselect';
 import { omit } from 'lodash';
 
 import type { ArticleFragment } from '../types/Collection';
-import type { RootState as State } from '../types/State';
+import type { State } from '../types/State';
 
 const externalArticlesSelector = (state: State) => state.externalArticles;
 
@@ -52,7 +52,14 @@ const createCollectionSelector = () =>
   createSelector(
     collectionsSelector,
     collectionIdSelector,
-    (collections, id) => collections[id]
+    (collections, id) =>
+      collections[id]
+        ? {
+            ...collections[id],
+            groups:
+              collections[id].groups && collections[id].groups.slice().reverse()
+          }
+        : false
   );
 
 const groupNameSelector = (_, { groupName }: { groupName: string }) =>
@@ -76,19 +83,17 @@ const createArticlesInCollectionGroupSelector = () => {
       ) {
         return defaultArray;
       }
-      const numberOfGroups = collection.groups ? collection.groups.length : 0;
       const groupDisplayIndex = collection.groups.indexOf(groupName);
       if (groupDisplayIndex === -1) {
         return defaultArray;
       }
-      const groupNumber = numberOfGroups - groupDisplayIndex - 1;
       return collection.articleFragments[stage].filter(id => {
         const articleFragment = articleFragments[id];
         const articleGroup =
           articleFragment.meta && articleFragment.meta.group
             ? parseInt(articleFragment.meta.group, 10)
             : 0;
-        return articleGroup === groupNumber;
+        return articleGroup === groupDisplayIndex;
       });
     }
   );
@@ -106,7 +111,7 @@ const createCollectionsAsTreeSelector = () =>
     collectionIdsSelector,
     stageSelector,
     (collections, articleFragments, collectionIds, stage) => {
-      const createNestedArticleFragment = articleFragmentId =>
+      const createNestedArticleFragment = (articleFragmentId: string) =>
         articleFragments[articleFragmentId].meta &&
         articleFragments[articleFragmentId].meta.supporting
           ? {
@@ -116,7 +121,8 @@ const createCollectionsAsTreeSelector = () =>
                 supporting: articleFragments[
                   articleFragmentId
                 ].meta.supporting.map(
-                  supportingFragmentId => articleFragments[supportingFragmentId]
+                  (supportingFragmentId: string) =>
+                    articleFragments[supportingFragmentId]
                 )
               }
             }
@@ -148,7 +154,8 @@ const createCollectionsAsTreeSelector = () =>
                                         .group,
                                       10
                                     ) ===
-                                    collections[collectionId].groups.length -
+                                    (collections[collectionId].groups || [])
+                                      .length -
                                       index -
                                       1
                                   : 0

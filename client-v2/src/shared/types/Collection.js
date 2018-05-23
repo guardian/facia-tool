@@ -10,8 +10,12 @@ type NestedArticleFragment = {
   }
 };
 
-type ArticleFragment = NestedArticleFragment & {
-  uuid: string
+type ArticleFragment = $Diff<NestedArticleFragment, { meta: any }> & {
+  uuid: string,
+  meta: {
+    group?: number,
+    supporting?: string[]
+  }
 };
 
 type CollectionResponse = {
@@ -44,6 +48,7 @@ type Collection = {
 };
 
 export type {
+  NestedArticleFragment,
   ArticleFragment,
   CollectionWithNestedArticles,
   CollectionResponse,

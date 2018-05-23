@@ -8,7 +8,7 @@ import {
   createArticlesInCollectionGroupSelector,
   selectSharedState
 } from '../selectors/shared';
-import { State } from '../types/State';
+import { type State } from '../types/State';
 
 type ContainerProps = {
   groupName: string,

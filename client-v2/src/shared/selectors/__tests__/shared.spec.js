@@ -1,8 +1,11 @@
+// @flow
+
 import {
   createArticleFromArticleFragmentSelector,
   externalArticleFromArticleFragmentSelector,
   createArticlesInCollectionGroupSelector,
-  createCollectionsAsTreeSelector
+  createCollectionsAsTreeSelector,
+  createCollectionSelector
 } from '../shared';
 
 const state = {
@@ -19,6 +22,18 @@ const state = {
       groups: ['group1'],
       articleFragments: {
         draft: ['af3', 'af4']
+      }
+    },
+    c3: {
+      groups: ['group1'],
+      articleFragments: {
+        draft: ['af5']
+      }
+    },
+    c4: {
+      groups: ['group1'],
+      articleFragments: {
+        draft: ['af5']
       }
     }
   },
@@ -60,6 +75,9 @@ const state = {
       meta: {
         group: '0'
       }
+    },
+    af5: {
+      uuid: 'af5'
     }
   }
 };
@@ -115,6 +133,19 @@ const stateWithSupportingArticles = {
 };
 
 describe('Shared selectors', () => {
+  describe('createCollectionSelector', () => {
+    it('should select a collection by id, reversing the group ids if they exist', () => {
+      const selector = createCollectionSelector();
+      expect(selector(state, { collectionId: 'c1' })).toEqual({
+        groups: ['group2', 'group1'],
+        articleFragments: {
+          live: ['af1', 'af2']
+        },
+        id: 'c1'
+      });
+    });
+  });
+
   describe('createExternalArticleFromArticleFragmentSelector', () => {
     it('should create a selector that returns an external article referenced by the given article', () => {
       expect(externalArticleFromArticleFragmentSelector(state, 'af1')).toEqual(
@@ -189,6 +220,26 @@ describe('Shared selectors', () => {
           groupName: 'groupName'
         })
       ).toEqual([]);
+    });
+    it("should handle articles that don't contain a meta key", () => {
+      const selector = createArticlesInCollectionGroupSelector();
+      expect(
+        selector(state, {
+          collectionId: 'c4',
+          stage: 'draft',
+          groupName: 'invalidGroup'
+        })
+      ).toEqual([]);
+    });
+    it('should assume that articles without a meta key are in the first available group', () => {
+      const selector = createArticlesInCollectionGroupSelector();
+      expect(
+        selector(state, {
+          collectionId: 'c3',
+          stage: 'draft',
+          groupName: 'group1'
+        })
+      ).toEqual(['af5']);
     });
   });
 
