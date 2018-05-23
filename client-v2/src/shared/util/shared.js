@@ -6,10 +6,41 @@ import { omit } from 'lodash';
 import type {
   CollectionWithNestedArticles,
   Collection,
-  ArticleFragment
+  ArticleFragment,
+  NestedArticleFragment
 } from 'shared/types/Collection';
 
 const getLastPartOfArticleFragmentId = (id: string) => id.split('/').pop();
+
+const getArticleIdsFromNestedArticleFragment = (
+  fragments: string[],
+  nestedArticleFragment: NestedArticleFragment
+) =>
+  nestedArticleFragment.meta && nestedArticleFragment.meta.supporting
+    ? [
+        ...fragments,
+        nestedArticleFragment.id,
+        ...nestedArticleFragment.meta.supporting.map(
+          supportingArticleFragment => supportingArticleFragment.id
+        )
+      ]
+    : [...fragments, nestedArticleFragment.id];
+
+const getArticleIdsFromCollection = (
+  collection: CollectionWithNestedArticles
+) =>
+  collection.live
+    ? [
+        // We use a set to dedupe our article ids
+        ...new Set([
+          ...(collection.draft || []).reduce(
+            getArticleIdsFromNestedArticleFragment,
+            []
+          ),
+          ...collection.live.reduce(getArticleIdsFromNestedArticleFragment, [])
+        ])
+      ]
+    : [];
 
 const normaliseCollectionWithNestedArticles = (
   collection: CollectionWithNestedArticles
@@ -37,13 +68,42 @@ const normaliseCollectionWithNestedArticles = (
         );
       const fragmentsAsObjects: { [string]: ArticleFragment } = (
         articleFragmentsInStage || []
-      ).reduce(
-        (acc, articleFragment) => ({
+      ).reduce((acc, articleFragment) => {
+        const supportingArticleFragments =
+          articleFragment.meta && articleFragment.meta.supporting
+            ? articleFragment.meta.supporting.map(
+                supportingArticleFragment => ({
+                  ...supportingArticleFragment,
+                  uuid: v4(),
+                  id: getLastPartOfArticleFragmentId(
+                    supportingArticleFragment.id
+                  )
+                })
+              )
+            : [];
+        const normalisedArticleFragment = !supportingArticleFragments.length
+          ? articleFragment
+          : {
+              ...articleFragment,
+              meta: {
+                ...articleFragment.meta,
+                supporting: supportingArticleFragments.map(
+                  fragment => fragment.uuid
+                )
+              }
+            };
+        return {
           ...acc,
-          [articleFragment.uuid]: articleFragment
-        }),
-        {}
-      );
+          ...supportingArticleFragments.reduce(
+            (fragmentMap, fragment) => ({
+              ...fragmentMap,
+              [fragment.uuid]: fragment
+            }),
+            {}
+          ),
+          [articleFragment.uuid]: normalisedArticleFragment
+        };
+      }, {});
       return {
         ...allArticleFragments,
         ...fragmentsAsObjects
@@ -56,7 +116,7 @@ const normaliseCollectionWithNestedArticles = (
     {},
     omit(collection, ...stages),
     {
-      articles: idMap
+      articleFragments: idMap
     }
   );
 
@@ -66,4 +126,4 @@ const normaliseCollectionWithNestedArticles = (
   };
 };
 
-export { normaliseCollectionWithNestedArticles };
+export { normaliseCollectionWithNestedArticles, getArticleIdsFromCollection };

@@ -7,7 +7,8 @@ type Article = ExternalArticle & {
   id: string,
   frontPublicationDate: number,
   publishedBy: string,
-  group?: number
+  group?: number,
+  supporting: string[]
 };
 
 export type { Article };

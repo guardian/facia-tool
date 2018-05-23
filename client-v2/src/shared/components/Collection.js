@@ -49,8 +49,10 @@ const collectionDetail = ({ collection, stage }: Props) =>
               stage={stage}
             />
           ))
-        : collection.articles[stage] &&
-          collection.articles[stage].map(id => <Article key={id} id={id} />)}
+        : collection.articleFragments[stage] &&
+          collection.articleFragments[stage].map(id => (
+            <Article key={id} id={id} />
+          ))}
     </CollectionContainer>
   ) : (
     <span>Waiting for collection</span>

@@ -11,11 +11,14 @@ import {
   getCollection
 } from 'services/faciaApi';
 import type { FrontsConfig } from 'types/FaciaApi';
-import { normaliseCollectionWithNestedArticles } from 'shared/util/shared';
 import {
   combineCollectionWithConfig,
   populateDraftArticles
 } from 'util/frontsUtils';
+import {
+  normaliseCollectionWithNestedArticles,
+  getArticleIdsFromCollection
+} from 'shared/util/shared';
 import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
 import { externalArticlesReceived } from 'shared/actions/ExternalArticles';
 import { collectionReceived } from 'shared/actions/Collection';
@@ -69,19 +72,7 @@ function getFrontCollection(collectionId: string) {
             articleFragmentsReceived(articleFragments)
           ])
         );
-        return collectionWithDraftArticles.live
-          ? [
-              // We use a set to dedupe our article ids
-              ...new Set([
-                ...(collectionWithDraftArticles.draft || []).map(
-                  nestedArticleFragment => nestedArticleFragment.id
-                ),
-                ...collectionWithDraftArticles.live.map(
-                  nestedArticleFragment => nestedArticleFragment.id
-                )
-              ])
-            ]
-          : [];
+        return getArticleIdsFromCollection(collectionWithDraftArticles);
       })
       .catch((error: string) => {
         dispatch(errorReceivingFrontCollection(error));

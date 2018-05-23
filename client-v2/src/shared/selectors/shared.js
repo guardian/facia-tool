@@ -1,6 +1,7 @@
 // @flow
 
 import { createSelector } from 'reselect';
+import { omit } from 'lodash';
 
 import type { ArticleFragment } from '../types/Collection';
 import type { State } from '../types/State';
@@ -33,9 +34,11 @@ const createArticleFromArticleFragmentSelector = () =>
         return null;
       }
       const group = articleFragment.meta && articleFragment.meta.group;
+      const supporting =
+        articleFragment.meta && articleFragment.meta.supporting;
       return {
         ...externalArticle,
-        ...{ group }
+        ...{ group, supporting }
       };
     }
   );
@@ -73,14 +76,18 @@ const createArticlesInCollectionGroupSelector = () => {
     groupNameSelector,
     stageSelector,
     (articleFragments, collection, groupName, stage) => {
-      if (!collection || !collection.groups || !collection.articles[stage]) {
+      if (
+        !collection ||
+        !collection.groups ||
+        !collection.articleFragments[stage]
+      ) {
         return defaultArray;
       }
       const groupDisplayIndex = collection.groups.indexOf(groupName);
       if (groupDisplayIndex === -1) {
         return defaultArray;
       }
-      return collection.articles[stage].filter(id => {
+      return collection.articleFragments[stage].filter(id => {
         const articleFragment = articleFragments[id];
         const articleGroup =
           articleFragment.meta && articleFragment.meta.group
@@ -92,6 +99,86 @@ const createArticlesInCollectionGroupSelector = () => {
   );
 };
 
+const collectionIdsSelector = (
+  state,
+  { collectionIds }: { collectionIds: string[] }
+) => collectionIds;
+
+const createCollectionsAsTreeSelector = () =>
+  createSelector(
+    collectionsSelector,
+    articleFragmentsSelector,
+    collectionIdsSelector,
+    stageSelector,
+    (collections, articleFragments, collectionIds, stage) => {
+      const createNestedArticleFragment = (articleFragmentId: string) =>
+        articleFragments[articleFragmentId].meta &&
+        articleFragments[articleFragmentId].meta.supporting
+          ? {
+              ...articleFragments[articleFragmentId],
+              meta: {
+                ...articleFragments[articleFragmentId].meta,
+                supporting: articleFragments[
+                  articleFragmentId
+                ].meta.supporting.map(
+                  (supportingFragmentId: string) =>
+                    articleFragments[supportingFragmentId]
+                )
+              }
+            }
+          : { ...articleFragments[articleFragmentId] };
+
+      return collectionIds.reduce(
+        (acc, collectionId) => ({
+          collections: !collections[collectionId]
+            ? acc.collections
+            : [
+                ...acc.collections,
+                {
+                  ...omit(collections[collectionId], 'articleFragments'),
+                  groups: collections[collectionId].groups
+                    ? collections[collectionId].groups.map(
+                        (groupId, index) => ({
+                          id: groupId,
+                          articleFragments: (
+                            collections[collectionId].articleFragments[stage] ||
+                            []
+                          )
+                            .filter(
+                              // There are obviously better ways to sort articles into groups!
+                              articleFragmentId =>
+                                articleFragments[articleFragmentId].meta &&
+                                articleFragments[articleFragmentId].meta.group
+                                  ? parseInt(
+                                      articleFragments[articleFragmentId].meta
+                                        .group,
+                                      10
+                                    ) ===
+                                    (collections[collectionId].groups || [])
+                                      .length -
+                                      index -
+                                      1
+                                  : 0
+                            )
+                            .map(createNestedArticleFragment)
+                        })
+                      )
+                    : [
+                        {
+                          articleFragments: (
+                            collections[collectionId].articleFragments[stage] ||
+                            []
+                          ).map(createNestedArticleFragment)
+                        }
+                      ]
+                }
+              ]
+        }),
+        { collections: [] }
+      );
+    }
+  );
+
 // Selects the shared part of the application state mounted at its default point, '.shared'.
 const selectSharedState = (rootState: { shared: State }) => rootState.shared;
 
@@ -101,5 +188,6 @@ export {
   createArticleFromArticleFragmentSelector,
   createArticlesInCollectionGroupSelector,
   createCollectionSelector,
-  selectSharedState
+  selectSharedState,
+  createCollectionsAsTreeSelector
 };
