@@ -1,15 +1,13 @@
 // @flow
 
-type Meta = {
-  group?: number
-};
-
 type NestedArticleFragment = {
   id: string,
   frontPublicationDate: number,
   publishedBy: string,
-  meta: Meta,
-  supporting?: $Diff<NestedArticleFragment, { supporting: any }>
+  meta: {
+    group?: number,
+    supporting?: $Diff<NestedArticleFragment, { supporting: any }>[]
+  }
 };
 
 type ArticleFragment = NestedArticleFragment & {
@@ -47,7 +45,6 @@ type Collection = {
 
 export type {
   ArticleFragment,
-  Meta,
   CollectionWithNestedArticles,
   CollectionResponse,
   Collection
