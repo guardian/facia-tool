@@ -11,7 +11,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait PermissionActionFilter extends ActionFilter[UserRequest] {
 
-  implicit lazy val executionContext: ExecutionContext = ExecutionContext.Implicits.global
+  implicit val executionContext: ExecutionContext
 
   val testAccess: String => Future[Authorization]
   val restrictedAction: String
@@ -24,12 +24,15 @@ trait PermissionActionFilter extends ActionFilter[UserRequest] {
         Some(Results.Unauthorized(views.html.unauthorized()))}
 }
 
-class ConfigPermissionCheck(val acl: Acl) extends PermissionActionFilter {
+class ConfigPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext) extends PermissionActionFilter {
+
+  val executionContext = ec
   val testAccess: String => Future[Authorization] = acl.testUser(Permissions.ConfigureFronts, "facia-tool-allow-config-for-all")
   val restrictedAction = "configure fronts"
 }
 
-class BreakingNewsPermissionCheck(val acl: Acl) extends PermissionActionFilter {
+class BreakingNewsPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext) extends PermissionActionFilter {
+  val executionContext = ec
   val testAccess: String => Future[Authorization] = acl.testUser(Permissions.BreakingNewsAlert, "facia-tool-allow-breaking-news-for-all")
   val restrictedAction = "send breaking news alerts"
 }

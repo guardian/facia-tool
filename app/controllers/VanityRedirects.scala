@@ -3,6 +3,7 @@ package controllers
 import model.NoCache
 import permissions.BreakingNewsPermissionCheck
 import util.Acl
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class VanityRedirects(val acl: Acl, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
 

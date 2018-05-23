@@ -7,6 +7,7 @@ import services.Press
 import updates._
 import util.Acl
 import util.Requests._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class FrontController(val acl: Acl, val auditingUpdates: AuditingUpdates,
                       val updateManager: UpdateManager, val press: Press, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {

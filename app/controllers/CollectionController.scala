@@ -8,6 +8,7 @@ import services.Press
 import updates._
 import util.Acl
 import util.Requests._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object CollectionRequest {
   implicit val jsonFormat = Json.format[CollectionRequest]

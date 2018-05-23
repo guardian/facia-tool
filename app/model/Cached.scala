@@ -47,10 +47,9 @@ object NoCache {
   def apply(result: Result): Result = result.withHeaders("Cache-Control" -> "no-cache", "Pragma" -> "no-cache")
 }
 
-case class NoCache[A](action: Action[A]) extends Action[A] {
+case class NoCache[A](action: Action[A])(implicit ec: ExecutionContext) extends Action[A] {
 
-  implicit lazy val executionContext: ExecutionContext = ExecutionContext.Implicits.global
-
+  override def executionContext = ec
   override def apply(request: Request[A]): Future[Result] = {
 
     action(request) map { response =>

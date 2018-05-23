@@ -6,6 +6,7 @@ import permissions.ConfigPermissionCheck
 import play.api.mvc._
 import services.AssetsManager
 import util.{Acl, Encryption}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class ViewsController(val acl: Acl, assetsManager: AssetsManager, isDev: Boolean,
                       crypto: Encryption, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
