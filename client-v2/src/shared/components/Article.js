@@ -28,6 +28,12 @@ const ArticleComponent = ({ article }: ComponentProps) =>
   article && (
     <ArticleContainer key={article.headline}>
       {article.headline}
+      {article.supporting && (
+        <div style={{ paddingLeft: '10px', borderLeft: '3px solid blue' }}>
+          <h4>Supporting</h4>
+          {article.supporting.map(id => <ConnectedArticle id={id} key={id} />)}
+        </div>
+      )}
     </ArticleContainer>
   );
 
@@ -44,4 +50,6 @@ const createMapStateToProps = () => {
   });
 };
 
-export default connect(createMapStateToProps)(ArticleComponent);
+const ConnectedArticle = connect(createMapStateToProps)(ArticleComponent);
+
+export default ConnectedArticle;
