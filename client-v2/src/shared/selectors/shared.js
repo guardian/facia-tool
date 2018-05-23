@@ -34,9 +34,11 @@ const createArticleFromArticleFragmentSelector = () =>
         return null;
       }
       const group = articleFragment.meta && articleFragment.meta.group;
+      const supporting =
+        articleFragment.meta && articleFragment.meta.supporting;
       return {
         ...externalArticle,
-        ...{ group }
+        ...{ group, supporting }
       };
     }
   );
@@ -105,48 +107,65 @@ const createCollectionsAsTreeSelector = () =>
     stageSelector,
     (collections, articleFragments, collectionIds, stage) => {
       const createNestedArticleFragment = articleFragmentId =>
-        articleFragments[articleFragmentId].supporting
+        articleFragments[articleFragmentId].meta &&
+        articleFragments[articleFragmentId].meta.supporting
           ? {
               ...articleFragments[articleFragmentId],
-              supporting: articleFragments[articleFragmentId].supporting.map(
-                supportingFragmentId => articleFragments[supportingFragmentId]
-              )
+              meta: {
+                ...articleFragments[articleFragmentId].meta,
+                supporting: articleFragments[
+                  articleFragmentId
+                ].meta.supporting.map(
+                  supportingFragmentId => articleFragments[supportingFragmentId]
+                )
+              }
             }
           : { ...articleFragments[articleFragmentId] };
 
       return collectionIds.reduce(
         (acc, collectionId) => ({
-          collections: [
-            ...acc.collections,
-            {
-              ...omit(collections[collectionId], 'articleFragments'),
-              groups: collections[collectionId].groups
-                ? collections[collectionId].groups.map((groupId, index) => ({
-                    id: groupId,
-                    articleFragments: collections[
-                      collectionId
-                    ].articleFragments[stage]
-                      .filter(
-                        // There are obviously better ways to sort articles into groups!
-                        articleFragmentId =>
-                          articleFragments[articleFragmentId].meta.group &&
-                          parseInt(
-                            articleFragments[articleFragmentId].meta.group,
-                            10
-                          ) ===
-                            collections[collectionId].groups.length - index - 1
+          collections: !collections[collectionId]
+            ? acc.collections
+            : [
+                ...acc.collections,
+                {
+                  ...omit(collections[collectionId], 'articleFragments'),
+                  groups: collections[collectionId].groups
+                    ? collections[collectionId].groups.map(
+                        (groupId, index) => ({
+                          id: groupId,
+                          articleFragments: (
+                            collections[collectionId].articleFragments[stage] ||
+                            []
+                          )
+                            .filter(
+                              // There are obviously better ways to sort articles into groups!
+                              articleFragmentId =>
+                                articleFragments[articleFragmentId].meta &&
+                                articleFragments[articleFragmentId].meta.group
+                                  ? parseInt(
+                                      articleFragments[articleFragmentId].meta
+                                        .group,
+                                      10
+                                    ) ===
+                                    collections[collectionId].groups.length -
+                                      index -
+                                      1
+                                  : 0
+                            )
+                            .map(createNestedArticleFragment)
+                        })
                       )
-                      .map(createNestedArticleFragment)
-                  }))
-                : [
-                    {
-                      articleFragments: collections[
-                        collectionId
-                      ].articleFragments[stage].map(createNestedArticleFragment)
-                    }
-                  ]
-            }
-          ]
+                    : [
+                        {
+                          articleFragments: (
+                            collections[collectionId].articleFragments[stage] ||
+                            []
+                          ).map(createNestedArticleFragment)
+                        }
+                      ]
+                }
+              ]
         }),
         { collections: [] }
       );

@@ -27,6 +27,40 @@ const exampleCollection = {
   displayName: 'Example Collection'
 };
 
+const exampleCollectionWithSupportingArticles = {
+  live: [
+    {
+      id: 'article/live/0',
+      frontPublicationDate: 1,
+      publishedBy: 'Computers',
+      meta: {}
+    },
+    {
+      id: 'a/long/path/1',
+      frontPublicationDate: 1,
+      publishedBy: 'Computers',
+      meta: {
+        supporting: [
+          {
+            id: 'article/draft/2',
+            frontPublicationDate: 2,
+            publishedBy: 'Computers',
+            meta: {}
+          },
+          {
+            id: 'article/draft/3',
+            frontPublicationDate: 3,
+            publishedBy: 'Computers',
+            meta: {}
+          }
+        ]
+      }
+    }
+  ],
+  id: 'exampleCollection',
+  displayName: 'Example Collection'
+};
+
 describe('Shared utilities', () => {
   describe('normaliseCollectionWithNestedArticles', () => {
     it('should normalise an external collection, and provide the new collection and article fragments indexed by id', () => {
@@ -110,6 +144,22 @@ describe('Shared utilities', () => {
       expect(result.collection.articleFragments.draft).toBeUndefined();
       expect(result.collection.articleFragments.previously).toBeUndefined();
       expect(Object.keys(result.articleFragments).length).toEqual(0);
+    });
+    it('should normalise supporting article fragments', () => {
+      const result = normaliseCollectionWithNestedArticles(
+        exampleCollectionWithSupportingArticles
+      );
+      expect(result.collection.articleFragments.live.length).toEqual(2);
+      expect(Object.keys(result.articleFragments).length).toEqual(4);
+      expect(
+        Object.keys(result.articleFragments).every(
+          articleId =>
+            !result.articleFragments[articleId].supporting ||
+            result.articleFragments[articleId].supporting.map(
+              id => typeof id === 'string'
+            )
+        )
+      ).toBe(true);
     });
   });
 });

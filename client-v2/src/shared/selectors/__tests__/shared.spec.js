@@ -103,8 +103,9 @@ const stateWithSupportingArticles = {
       id: 'ea1',
       frontPublicationDate: 1,
       publishedBy: 'A. N. Author',
-      supporting: ['af2'],
-      meta: {}
+      meta: {
+        supporting: ['af2']
+      }
     },
     af2: {
       uuid: 'af2',
@@ -250,13 +251,14 @@ describe('Shared selectors', () => {
                     id: 'ea1',
                     frontPublicationDate: 1,
                     publishedBy: 'A. N. Author',
-                    meta: {},
-                    supporting: [
-                      {
-                        uuid: 'af2',
-                        meta: {}
-                      }
-                    ]
+                    meta: {
+                      supporting: [
+                        {
+                          uuid: 'af2',
+                          meta: {}
+                        }
+                      ]
+                    }
                   }
                 ]
               }
@@ -295,6 +297,33 @@ describe('Shared selectors', () => {
             ]
           }
         ]
+      });
+    });
+    it('should handle 0-many nonexistent collections', () => {
+      const selector = createCollectionsAsTreeSelector();
+      expect(
+        selector(stateWithGrouplessCollection, {
+          collectionIds: [],
+          stage: 'live'
+        })
+      ).toEqual({
+        collections: []
+      });
+      expect(
+        selector(stateWithGrouplessCollection, {
+          collectionIds: ['invalid'],
+          stage: 'live'
+        })
+      ).toEqual({
+        collections: []
+      });
+      expect(
+        selector(stateWithGrouplessCollection, {
+          collectionIds: ['invalid', 'alsoInvalid'],
+          stage: 'live'
+        })
+      ).toEqual({
+        collections: []
       });
     });
   });
