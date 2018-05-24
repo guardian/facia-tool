@@ -36,7 +36,7 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val containers = new Containers(fixedContainers)
   val faciaPressQueue = new FaciaPressQueue(config)
   val faciaPress = new FaciaPress(faciaPressQueue, configAgent)
-  val updateActions = new UpdateActions(faciaApiIO, frontsApi, config, configAgent)
+  val updateActions = new UpdateActions(faciaApiIO, frontsApi, config, configAgent, auditingUpdates)
   val updateManager = new UpdateManager(updateActions, configAgent, s3FrontsApi)
   val cloudwatch = new CloudWatch(config, awsEndpoints)
   val press = new Press(faciaPress)
@@ -64,6 +64,7 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val views = new ViewsController(acl, assetsManager, isDev, encryption, this)
   val pressController = new PressController(awsEndpoints, this)
   val v2App = new V2App(isDev, acl, this)
+
 
   final override lazy val corsConfig: CORSConfig = CORSConfig.fromConfiguration(context.initialConfiguration).copy(
     allowedOrigins = Origins.Matching(Set(config.environment.applicationUrl))

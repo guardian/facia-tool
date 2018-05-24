@@ -91,6 +91,10 @@ case class HandlingBreakingNewsTrail(id: String, breakingNewsTrail: ClientHydrat
   def affectedFronts(configAgent: ConfigAgent) = configAgent.getConfigsUsingCollectionId(id).toSet[String]
 }
 
+case class ArchiveUpdate(id: String) extends UpdateMessage {
+  def affectedFronts(configAgent: ConfigAgent) = configAgent.getConfigsUsingCollectionId(id).toSet[String]
+}
+
 /* Macro - Watch out, this needs to be after the case classes */
 object UpdateMessage {
   implicit val format = derived.flat.oformat[UpdateMessage]((__ \ "type").format[String])

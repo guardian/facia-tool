@@ -20,7 +20,7 @@ trait PermissionActionFilter extends ActionFilter[UserRequest] {
     testAccess(request.user.email).map {
       case AccessGranted => None
       case AccessDenied =>
-        Logger.info(s"user not authorized to $restrictedAction")
+        Logger.info(s"User with e-mail ${request.user.email} not authorized to $restrictedAction")
         Some(Results.Unauthorized(views.html.unauthorized()))}
 }
 
@@ -50,7 +50,7 @@ trait BreakingNewsEditCollectionsCheck { self: BaseFaciaController =>
     testAccess(request.user.email, collectionIds).flatMap {
       case AccessGranted => block
       case AccessDenied =>
-        Logger.info("user not authorized to send breaking news alerts")
+        Logger.info(s"User with e-mail ${request.user.email} not authorized to send breaking news alerts")
         Future.successful(Results.Unauthorized)}
   }
 }
