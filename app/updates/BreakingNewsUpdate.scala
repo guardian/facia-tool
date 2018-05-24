@@ -21,9 +21,11 @@ import scala.concurrent.Future
 import scala.util.control.NonFatal
 import scala.util.{Failure, Success, Try}
 
+import logging.Logging
+
 class InvalidNotificationContentType(msg: String) extends Throwable(msg) {}
 
-class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient, val auditingUpdates: AuditingUpdates) {
+class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient, val structuredLogger: StructuredLogger) extends Logging {
   lazy val client = {
     Logger.info(s"Configuring breaking news client to send notifications to ${config.notification.host}")
     ApiClient(
@@ -38,7 +40,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
     collection: ClientHydratedCollection,
     email: String
   ): Future[Result] = {
-    auditingUpdates.putAudit(AuditUpdate(HandlingBreakingNewsCollection(collectionId), email))
+    structuredLogger.putLog(LogUpdate(HandlingBreakingNewsCollection(collectionId), email))
     val futurePossibleErrors = Future.traverse(collection.trails)(trail => sendAlert(trail, email, collectionId))
     futurePossibleErrors.map { listOfPossibleErrors => {
       val errors = listOfPossibleErrors.flatten
@@ -65,7 +67,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
 
     if (trail.alert.getOrElse(false)) {
       withExceptionHandling({
-        auditingUpdates.putAudit(AuditUpdate(HandlingBreakingNewsTrail(collectionId, trail: ClientHydratedTrail), email))
+        structuredLogger.putLog(LogUpdate(HandlingBreakingNewsTrail(collectionId, trail: ClientHydratedTrail), email))
         client.send(createPayload(trail, email))
           .map(handleSuccessfulFuture)
           .recover {

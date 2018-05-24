@@ -14,7 +14,7 @@ import services._
 import slices.{Containers, FixedContainers}
 import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
-import updates.{AuditingUpdates, BreakingNewsUpdate}
+import updates.{StructuredLogger, BreakingNewsUpdate}
 import util.{Acl, Encryption}
 
 class AppComponents(context: Context) extends BaseFaciaControllerComponents(context) {
@@ -29,7 +29,7 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val s3FrontsApi = new S3FrontsApi(config, isTest, awsEndpoints)
   val faciaApiIO = new FaciaApiIO(frontsApi, s3FrontsApi)
   val configAgent = new ConfigAgent(config, frontsApi)
-  val auditingUpdates = new AuditingUpdates(config, configAgent)
+  val auditingUpdates = new StructuredLogger(config, configAgent)
   val breakingNewsUpdate = new BreakingNewsUpdate(config, wsClient, auditingUpdates)
   val fixedContainers = new FixedContainers(config)
   val containerThumbnails = new ContainerThumbnails(fixedContainers)

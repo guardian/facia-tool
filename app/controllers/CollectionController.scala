@@ -9,6 +9,7 @@ import services.Press
 import updates._
 import util.Acl
 import util.Requests._
+import logging.Logging
 
 
 
@@ -27,9 +28,16 @@ object CreateCollectionResponse {
 
 case class CreateCollectionResponse(id: String)
 
+<<<<<<< HEAD
 class CollectionController(val acl: Acl, val auditingUpdates: AuditingUpdates,
                            val updateManager: UpdateManager, val press: Press, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext)
   extends BaseFaciaController(deps) {
+=======
+class CollectionController(val config: ApplicationConfiguration, val acl: Acl, val structuredLogger: StructuredLogger,
+                           val updateManager: UpdateManager, val press: Press) extends Controller
+  with PanDomainAuthActions
+  with Logging {
+>>>>>>> a7fae19025... Renamed auditUpdates structuredLogger; added Logging trait with implicit logger for better ID on log; a few changes to logging statements
   def create = (APIAuthAction andThen new ConfigPermissionCheck(acl)){ request =>
     request.body.read[CollectionRequest] match {
       case Some(CollectionRequest(frontIds, collection)) =>
@@ -37,7 +45,7 @@ class CollectionController(val acl: Acl, val auditingUpdates: AuditingUpdates,
         val identity = request.user
         val collectionId = updateManager.addCollection(frontIds, collection, identity)
         press.fromSetOfIdsWithForceConfig(Set(collectionId))
-        auditingUpdates.putAudit(AuditUpdate(CollectionCreate(frontIds, collection, collectionId), identity.email))
+        structuredLogger.putLog(LogUpdate(CollectionCreate(frontIds, collection, collectionId), identity.email))
         Ok(Json.toJson(CreateCollectionResponse(collectionId)))
 
       case None => BadRequest
@@ -51,7 +59,7 @@ class CollectionController(val acl: Acl, val auditingUpdates: AuditingUpdates,
         val identity = request.user
         updateManager.updateCollection(collectionId, frontIds, collection, identity)
         press.fromSetOfIdsWithForceConfig(Set(collectionId))
-        auditingUpdates.putAudit(AuditUpdate(CollectionUpdate(frontIds, collection, collectionId), identity.email))
+        structuredLogger.putLog(LogUpdate(CollectionUpdate(frontIds, collection, collectionId), identity.email))
         Ok
 
       case None => BadRequest

@@ -97,10 +97,12 @@ object UpdateMessage {
 }
 
 /* Kinesis messages */
-case class AuditUpdate(update: UpdateMessage, email: String) {
+case class LogUpdate(update: UpdateMessage, email: String) {
   def fronts(configAgent: ConfigAgent): Set[String] = update.affectedFronts(configAgent)
   val dateTime: DateTime = new DateTime()
 }
-object AuditUpdate {
-  implicit val streamUpdateFormat: Format[AuditUpdate] = Json.format[AuditUpdate]
+
+object LogUpdate {
+  implicit val streamUpdateFormat: Format[LogUpdate] = Json.format[LogUpdate]
 }
+

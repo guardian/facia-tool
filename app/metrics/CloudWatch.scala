@@ -22,11 +22,10 @@ class CloudWatch(val config: ApplicationConfiguration, val awsEndpoints: AwsEndp
   trait LoggingAsyncHandler extends AsyncHandler[PutMetricDataRequest, PutMetricDataResult] {
     def onError(exception: Exception)
     {
-      Logger.info(s"CloudWatch PutMetricDataRequest error: ${exception.getMessage}}")
+      Logger.warn(s"CloudWatch PutMetricDataRequest error: ${exception.getMessage}}")
     }
-    def onSuccess(request: PutMetricDataRequest, result: PutMetricDataResult )
-    {
-      Logger.info("CloudWatch PutMetricDataRequest - success")
+    def onSuccess(request: PutMetricDataRequest, result: PutMetricDataResult ): Unit = {
+
     }
   }
 
@@ -38,9 +37,6 @@ class CloudWatch(val config: ApplicationConfiguration, val awsEndpoints: AwsEndp
       super.onError(exception)
     }
     override def onSuccess(request: PutMetricDataRequest, result: PutMetricDataResult ) = {
-      Logger.info(s"Successfully put ${frontendStatisticSets.size} metrics")
-      Logger.info(s"Successfully put ${frontendStatisticSets.map(_.metric.name).mkString(",")}")
-
       super.onSuccess(request, result)
     }
   }

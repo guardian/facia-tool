@@ -13,6 +13,7 @@ import play.api.mvc._
 import services._
 import tools.FaciaApiIO
 import updates._
+import logging.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -22,7 +23,7 @@ class FaciaToolController(
                            val faciaApiIO: FaciaApiIO,
                            val updateActions: UpdateActions,
                            breakingNewsUpdate: BreakingNewsUpdate,
-                           val auditingUpdates: AuditingUpdates,
+                           val structuredLogger: StructuredLogger,
                            val faciaPress: FaciaPress,
                            val faciaPressQueue: FaciaPressQueue,
                            val configAgent: ConfigAgent,
@@ -30,7 +31,7 @@ class FaciaToolController(
                            val mediaServiceClient: MediaServiceClient,
                            val deps: BaseFaciaControllerComponents
                          )(implicit ec: ExecutionContext)
-  extends BaseFaciaController(deps) with BreakingNewsEditCollectionsCheck {
+  extends BaseFaciaController(deps) with BreakingNewsEditCollectionsCheck with Logging {
 
   def getConfig = APIAuthAction.async { request =>
     FaciaToolMetrics.ApiUsageCount.increment()
@@ -60,7 +61,7 @@ class FaciaToolController(
           case Some(collectionJson) =>
             updateActions.archivePublishBlock(collectionId, collectionJson, identity)
             faciaPress.press(PressCommand.forOneId(collectionId).withPressDraft().withPressLive())
-            auditingUpdates.putAudit(AuditUpdate(PublishUpdate(collectionId), identity.email))
+            structuredLogger.putLog(LogUpdate(PublishUpdate(collectionId), identity.email))
             maybeSendBreakingAlert(request, collectionId)
           case None => Future.successful(NoCache(Ok))}}}
 
@@ -69,7 +70,7 @@ class FaciaToolController(
       val identity = request.user
       request.body.asJson.flatMap(_.asOpt[ClientHydratedCollection]).map {
         case clientCollection: ClientHydratedCollection => {
-          auditingUpdates.putAudit(AuditUpdate(HandlingBreakingNewsUpdate(collectionId), identity.email))
+          structuredLogger.putLog(LogUpdate(HandlingBreakingNewsUpdate(collectionId), identity.email))
           breakingNewsUpdate.putBreakingNewsUpdate(
             collectionId = collectionId,
             collection = clientCollection,
@@ -90,7 +91,7 @@ class FaciaToolController(
       maybeCollectionJson.foreach { b =>
         updateActions.archiveDiscardBlock(collectionId, b, identity)
         faciaPress.press(PressCommand.forOneId(collectionId).withPressDraft())
-        auditingUpdates.putAudit(AuditUpdate(DiscardUpdate(collectionId), identity.email))
+        structuredLogger.putLog(LogUpdate(DiscardUpdate(collectionId), identity.email))
       }
       NoCache(Ok)}}
 
@@ -100,7 +101,7 @@ class FaciaToolController(
         val identity = request.user
         updateActions.updateTreats(collectionId, update.update, identity).map(_.map{ updatedCollectionJson =>
           s3FrontsApi.putCollectionJson(collectionId, Json.prettyPrint(Json.toJson(updatedCollectionJson)))
-          auditingUpdates.putAudit(AuditUpdate(update, identity.email))
+          structuredLogger.putLog(LogUpdate(update, identity.email))
           faciaPress.press(PressCommand.forOneId(collectionId).withPressLive())
           Ok(Json.toJson(Map(collectionId -> updatedCollectionJson))).as("application/json")
         }.getOrElse(NotFound))
@@ -109,7 +110,7 @@ class FaciaToolController(
         val identity = request.user
         updateActions.removeTreats(collectionId, remove.remove, identity).map(_.map{ updatedCollectionJson =>
           s3FrontsApi.putCollectionJson(collectionId, Json.prettyPrint(Json.toJson(updatedCollectionJson)))
-          auditingUpdates.putAudit(AuditUpdate(remove, identity.email))
+          structuredLogger.putLog(LogUpdate(remove, identity.email))
           faciaPress.press(PressCommand.forOneId(collectionId).withPressLive())
           Ok(Json.toJson(Map(collectionId -> updatedCollectionJson))).as("application/json")
       }.getOrElse(NotFound))
@@ -123,7 +124,7 @@ class FaciaToolController(
 
         futureUpdatedCollections.map { updatedCollections =>
           val collectionIds = updatedCollections.keySet
-          auditingUpdates.putAudit(AuditUpdate(updateAndRemove, identity.email))
+          structuredLogger.putLog(LogUpdate(updateAndRemove, identity.email))
           faciaPress.press(PressCommand(collectionIds).withPressLive())
           Ok(Json.toJson(updatedCollections)).as("application/json")
         }
@@ -153,7 +154,7 @@ class FaciaToolController(
               )
 
               if (updatedCollections.nonEmpty) {
-                auditingUpdates.putAudit(AuditUpdate(update, identity.email))
+                structuredLogger.putLog(LogUpdate(update, identity.email))
                 Ok(Json.toJson(updatedCollections)).as("application/json")
               } else
                 NotFound
@@ -171,7 +172,7 @@ class FaciaToolController(
                 live = shouldUpdateLive,
                 draft = (updatedCollections.values.exists(_.draft.isEmpty) && shouldUpdateLive) || remove.remove.draft)
               )
-              auditingUpdates.putAudit(AuditUpdate(remove, identity.email))
+              structuredLogger.putLog(LogUpdate(remove, identity.email))
               Ok(Json.toJson(updatedCollections)).as("application/json")
             }
           }
@@ -194,7 +195,7 @@ class FaciaToolController(
                 live = shouldUpdateLive,
                 draft = (updatedCollections.values.exists(_.draft.isEmpty) && shouldUpdateLive) || shouldUpdateDraft)
               )
-              auditingUpdates.putAudit(AuditUpdate(updateAndRemove, identity.email))
+              structuredLogger.putLog(LogUpdate(updateAndRemove, identity.email))
               Ok(Json.toJson(updatedCollections)).as("application/json")
             }
           }
