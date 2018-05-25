@@ -64,7 +64,9 @@ function getArticles(articleIds: string[]): Promise<Array<ExternalArticle>> {
     if (text) {
       return JSON.parse(text).response.results.map(result => ({
         headline: result.webTitle,
-        id: result.fields.internalPageCode
+        id: result.fields.internalPageCode,
+        isLive: result.fields.isLive === 'true',
+        firstPublicationDate: result.fields.firstPublicationDate
       }));
     }
     return [];
@@ -74,15 +76,15 @@ function getArticles(articleIds: string[]): Promise<Array<ExternalArticle>> {
     .filter(id => !id.match(/^snap/))
     .join(',');
 
-  const liveArticlePromise = pandaFetch(
-    `/api/live/search?ids=${articleIdsWithoutSnaps}&show-fields=internalPageCode`,
+  const articlePromise = pandaFetch(
+    `/api/preview/search?ids=${articleIdsWithoutSnaps}&show-fields=internalPageCode,isLive,firstPublicationDate`,
     {
       method: 'get',
       credentials: 'same-origin'
     }
   );
 
-  return liveArticlePromise
+  return articlePromise
     .then(response => response.text())
     .then(articles =>
       Promise.resolve([...parseArticleListFromResponse(articles)])
