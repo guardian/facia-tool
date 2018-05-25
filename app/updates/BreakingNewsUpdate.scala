@@ -10,7 +10,7 @@ import com.gu.mobile.notifications.client.models.TopicTypes.Breaking
 import com.gu.mobile.notifications.client.models._
 import conf.ApplicationConfiguration
 import org.apache.commons.lang3.StringEscapeUtils
-import play.api.Logger
+import logging.Logging
 import play.api.libs.json.Json
 import play.api.libs.ws.{WSClient, WSResponse}
 import play.api.mvc.Result
@@ -21,13 +21,12 @@ import scala.concurrent.Future
 import scala.util.control.NonFatal
 import scala.util.{Failure, Success, Try}
 
-import logging.Logging
 
 class InvalidNotificationContentType(msg: String) extends Throwable(msg) {}
 
 class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient, val structuredLogger: StructuredLogger) extends Logging {
   lazy val client = {
-    Logger.info(s"Configuring breaking news client to send notifications to ${config.notification.host}")
+    logger.info(s"Configuring breaking news client to send notifications to ${config.notification.host}")
     ApiClient(
       host = config.notification.host,
       apiKey = config.notification.key,
@@ -52,7 +51,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
   private def sendAlert(trail: ClientHydratedTrail, email: String, collectionId: String): Future[Option[String]] = {
     def handleSuccessfulFuture(result: Either[ApiClientError, Unit]) = result match {
       case Left(error) =>
-        Logger.error(s"Error in breaking news: ${error.description}")
+        structuredLogger.putLog(LogUpdate(HandlingBreakingNewsCollection(collectionId), email), "error", Some(new Exception(error.description)))
         Some(error.description)
       case Right(_) => None
     }
@@ -61,7 +60,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
         case Success(futureMaybeError) => futureMaybeError
         case Failure(t: Throwable) =>
           val message = s"Exception in breaking news client send for trail ${trail.headline} because ${t.getMessage}"
-          Logger.error(message, t)
+          logger.error(message, t)
           Future.successful(Some(message))}
     }
 
@@ -75,7 +74,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
           }
       })
     } else {
-      Logger.error(s"Failed to send a breaking news alert for trail ${trail} because alert was missing")
+      logger.error(s"Failed to send a breaking news alert for trail ${trail} because alert was missing")
       Future.successful(Some("There may have been a problem in sending a breaking news alert. Please contact central production for information"))
     }
   }
@@ -106,7 +105,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
         shortUrl = trail.shortUrl
       )
     } else {
-      throw new InvalidNotificationContentType("Impossible to send snap notifications")
+      throw new InvalidNotificationContentType(s"Can't send snap notifications for trail: ${trail.headline}")
     }
   }
 
@@ -135,7 +134,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
   }
 }
 
-class NotificationHttpProvider(val ws: WSClient) extends HttpProvider {
+class NotificationHttpProvider(val ws: WSClient) extends HttpProvider with Logging {
   override def post(url: String, contentType: ContentType, body: Array[Byte]): Future[HttpResponse] = {
     ws.url(url)
       .withHttpHeaders("Content-Type" -> s"${contentType.mediaType}; charset=${contentType.charset}")
@@ -147,10 +146,10 @@ class NotificationHttpProvider(val ws: WSClient) extends HttpProvider {
 
   private def extract(response: WSResponse): HttpResponse = {
     if (response.status >= 200 && response.status < 300) {
-      Logger.info("Breaking news notification sent correctly")
+      logger.info("Breaking news notification sent correctly")
       HttpOk(response.status, response.body)
     } else {
-      Logger.error(s"Unable to send breaking news notification, status ${response.status}: ${response.statusText}")
+      logger.error(s"Unable to send breaking news notification, status ${response.status}: ${response.statusText}")
       HttpError(response.status, response.body)
     }
   }

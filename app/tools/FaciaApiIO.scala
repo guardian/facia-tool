@@ -4,7 +4,7 @@ import com.gu.facia.client.models.{CollectionJson, ConfigJson}
 import com.gu.pandomainauth.model.User
 import frontsapi.model.CollectionJsonFunctions
 import org.joda.time.DateTime
-import play.api.Logger
+import logging.Logging
 import play.api.libs.json.{JsValue, _}
 import services.{FrontsApi, S3FrontsApi}
 
@@ -48,7 +48,9 @@ class FaciaApiIO(val frontsApi: FrontsApi, val s3FrontsApi: S3FrontsApi) extends
     Json.toJson(collectionJson).transform[JsObject](Reads.JsObjectReads) match {
       case JsSuccess(result, _) =>
         s3FrontsApi.archive(id, Json.prettyPrint(result + ("diff", update)), identity)
-      case JsError(errors)  => Logger.warn(s"Could not archive $id: $errors")}}
+      case JsError(errors) => throw new Exception(s"Could not archive $id: $errors")
+    }
+  }
 
   def putMasterConfig(config: ConfigJson): Option[ConfigJson] = {
     Try(s3FrontsApi.putMasterConfig(Json.prettyPrint(Json.toJson(config)))).map(_ => config).toOption

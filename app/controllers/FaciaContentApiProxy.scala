@@ -7,13 +7,15 @@ import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCred
 import com.gu.contentapi.client.{IAMEncoder, IAMSigner}
 import metrics.FaciaToolMetrics
 import model.Cached
-import play.api.Logger
+
+import logging.Logging
 import switchboard.SwitchManager
 import util.ContentUpgrade.rewriteBody
 
 import scala.concurrent.ExecutionContext
 
-class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext)extends BaseFaciaController(deps) {
+
+class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) with Logging {
   implicit class string2encodings(s: String) {
     lazy val urlEncoded = URLEncoder.encode(s, "utf-8")
   }

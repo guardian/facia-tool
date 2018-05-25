@@ -9,7 +9,7 @@ import com.amazonaws.util.StringInputStream
 import com.gu.pandomainauth.model.User
 import conf.ApplicationConfiguration
 import org.joda.time.DateTime
-import play.api.Logger
+import logging.Logging
 
 import scala.io.{Codec, Source}
 
@@ -31,7 +31,7 @@ case class CmsFrontsS3Account(config: ApplicationConfiguration, awsEndpoints: Aw
   }
 }
 
-trait S3 {
+trait S3 extends Logging {
   def cmsFrontsS3Account: CmsFrontsS3Account
 
   private def withS3Result[T](
@@ -57,10 +57,11 @@ trait S3 {
       }
     } catch {
       case e: AmazonS3Exception if e.getStatusCode == 404 => {
-        Logger.warn("not found at %s - %s" format(account.bucket, key))
+        logger.warn("S3: attempted to get, but not found at %s - %s" format(account.bucket, key))
         None
       }
       case e: Exception => {
+        logger.error("S3: attempted to get, but got an error at %s - %s" format(account.bucket, key), e)
         S3ClientExceptionsMetric.increment()
         throw e
       }
@@ -99,6 +100,7 @@ trait S3 {
       account.client.map(_.putObject(request))
     } catch {
       case e: Exception =>
+        logger.error("S3: attempted to put, but got an error at %s - %s" format(account.bucket, key), e)
         S3ClientExceptionsMetric.increment()
         throw e
     }

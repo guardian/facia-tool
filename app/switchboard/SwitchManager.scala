@@ -1,9 +1,9 @@
 package switchboard
 
-import play.api.Logger
+import logging.Logging
 import play.api.libs.json.{JsValue, Json}
 
-object SwitchManager {
+object SwitchManager extends Logging {
 
   var switches: Map[String, Boolean] = Map()
 
@@ -15,7 +15,7 @@ object SwitchManager {
     switches.get(switchName) match {
         case Some(value) => value
         case None => {
-          Logger.info(s"No status found matching switch $switchName")
+          logger.info(s"No status found matching switch $switchName")
           false
         }
     }
