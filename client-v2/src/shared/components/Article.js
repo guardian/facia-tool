@@ -28,6 +28,11 @@ const ArticleComponent = ({ article }: ComponentProps) =>
   article && (
     <ArticleContainer key={article.headline}>
       {article.headline}
+      <div>
+        {!article.isLive &&
+          (article.firstPublicationDate ? 'Taken Down' : 'Draft')}
+      </div>
+
       {article.supporting && (
         <div style={{ paddingLeft: '10px', borderLeft: '3px solid blue' }}>
           <h4>Supporting</h4>

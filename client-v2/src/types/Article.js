@@ -9,6 +9,8 @@ type Article = {
   id: string,
   frontPublicationDate: number,
   publishedBy: string,
+  isLive: boolean,
+  firstPublicationDate?: string,
   meta: Meta
 };
 
