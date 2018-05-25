@@ -77,7 +77,7 @@ class FaciaPress(val faciaPressQueue: FaciaPressQueue, val configAgent: ConfigAg
           fut.onComplete {
             case Failure(error) =>
               EnqueuePressFailure.increment()
-              logger.error("Error manually pressing live collection through update from tool", error)
+              logger.error("Error manually pressing draft collection through update from tool", error)
             case Success(_) =>
               EnqueuePressSuccess.increment()
           }
