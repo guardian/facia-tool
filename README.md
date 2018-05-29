@@ -119,16 +119,6 @@ Modify the files
 
    > include sites-enabled/*.conf;
 
-* `/usr/local/etc/nginx/sites-enabled/fronts.conf` and add this line inside the `server` block
-
-   > merge_slashes off;
-
-* `/usr/local/etc/nginx/sites-enabled/fronts.conf` and add this line inside the `location /` block which is in the `server` block
-
-   > proxy_http_version 1.1;
-
-   This HTTP 1.1 is required by play (as opposed to nginx default of 1.0) in order to send chunked responses.
-
 Run `sudo nginx -s reload` to restart nginx with the new configuration.
 
 
