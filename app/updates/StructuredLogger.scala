@@ -1,25 +1,24 @@
 package updates
 
 import conf.ApplicationConfiguration
+import logging.Logging
 import net.logstash.logback.marker.Markers
-import org.slf4j.Logger
 import play.api.libs.json._
 import services.ConfigAgent
 
 import scala.collection.JavaConverters._
 
-class StructuredLogger(val config: ApplicationConfiguration, val configAgent: ConfigAgent) {
-  def putLog(log: LogUpdate, level: String = "info", error: Option[Exception] = None)(implicit logger: Logger): Unit = {
+class StructuredLogger(val config: ApplicationConfiguration, val configAgent: ConfigAgent) extends Logging {
+  def putLog(log: LogUpdate, level: String = "info", error: Option[Exception] = None): Unit = {
     lazy val updatePayload = serializeUpdateMessage(log)
     lazy val shortMessagePayload = serializeShortMessage(log)
-
     log.fronts(configAgent).foreach { frontId => {
         level match {
-          case "info" => logger.info(createMarkers(log, shortMessagePayload, updatePayload, frontId), "Fronts tool: audit")
-          case "warn" => logger.warn(createMarkers(log, shortMessagePayload, updatePayload, frontId), "Fronts tool: warning")
+          case "info" => logger.underlyingLogger.info(createMarkers(log, shortMessagePayload, updatePayload, frontId), "Fronts tool: audit")
+          case "warn" => logger.underlyingLogger.warn(createMarkers(log, shortMessagePayload, updatePayload, frontId), "Fronts tool: warning")
           case "error" => {
             val e = error.getOrElse(new Error())
-            logger.error(createMarkers(log, shortMessagePayload, updatePayload, frontId), "Fronts tool: error", e)
+            logger.underlyingLogger.error(createMarkers(log, shortMessagePayload, updatePayload, frontId), "Fronts tool: error", e)
           }
         }
       }

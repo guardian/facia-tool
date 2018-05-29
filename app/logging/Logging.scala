@@ -1,7 +1,7 @@
 package logging
 
-import org.slf4j.LoggerFactory
+import play.api.Logger
 
 trait Logging {
-  implicit val logger = LoggerFactory.getLogger(getClass)
+  implicit val logger = Logger(getClass)
 }

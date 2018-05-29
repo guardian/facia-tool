@@ -6,6 +6,7 @@ import frontsapi.model.CollectionJsonFunctions
 import org.joda.time.DateTime
 import play.api.libs.json.{JsValue, _}
 import services.{FrontsApi, S3FrontsApi}
+import logging.Logging
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -22,7 +23,7 @@ trait FaciaApiWrite {
   def archive(id: String, collectionJson: CollectionJson, update: JsValue, identity: User): Unit
 }
 
-class FaciaApiIO(val frontsApi: FrontsApi, val s3FrontsApi: S3FrontsApi) extends FaciaApiRead with FaciaApiWrite {
+class FaciaApiIO(val frontsApi: FrontsApi, val s3FrontsApi: S3FrontsApi) extends FaciaApiRead with FaciaApiWrite with Logging {
 
   def getCollectionJson(id: String): Future[Option[CollectionJson]] = frontsApi.amazonClient.collection(id)
 
