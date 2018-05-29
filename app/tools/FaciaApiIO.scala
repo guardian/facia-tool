@@ -4,7 +4,6 @@ import com.gu.facia.client.models.{CollectionJson, ConfigJson}
 import com.gu.pandomainauth.model.User
 import frontsapi.model.CollectionJsonFunctions
 import org.joda.time.DateTime
-import logging.Logging
 import play.api.libs.json.{JsValue, _}
 import services.{FrontsApi, S3FrontsApi}
 

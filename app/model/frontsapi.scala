@@ -120,7 +120,7 @@ trait UpdateActionsTrait {
   private def archiveBlock(id: String, collectionJson: CollectionJson, updateJson: JsValue, identity: User): CollectionJson =
     Try(faciaApiIO.archive(id, collectionJson, updateJson, identity)) match {
       case Failure(t: Throwable) => {
-        structuredLogger.putLog(LogUpdate(ArchiveUpdate(id), "faciaTool"))
+        structuredLogger.putLog(LogUpdate(ArchiveUpdate(id), "faciaTool"), "error", Some(new Exception(t)))
         collectionJson
       }
       case Success(_) => collectionJson
