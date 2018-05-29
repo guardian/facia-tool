@@ -11,9 +11,9 @@ import play.api.Logger
 import switchboard.SwitchManager
 import util.ContentUpgrade.rewriteBody
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 
-class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
+class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext)extends BaseFaciaController(deps) {
   implicit class string2encodings(s: String) {
     lazy val urlEncoded = URLEncoder.encode(s, "utf-8")
   }

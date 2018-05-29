@@ -14,12 +14,23 @@ import services._
 import tools.FaciaApiIO
 import updates._
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class FaciaToolController(val acl: Acl, val frontsApi: FrontsApi, val faciaApiIO: FaciaApiIO, val updateActions: UpdateActions,
-                          breakingNewsUpdate: BreakingNewsUpdate, val auditingUpdates: AuditingUpdates, val faciaPress: FaciaPress, val faciaPressQueue: FaciaPressQueue,
-                          val configAgent: ConfigAgent, val s3FrontsApi: S3FrontsApi, val mediaServiceClient: MediaServiceClient, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) with BreakingNewsEditCollectionsCheck {
+class FaciaToolController(
+                           val acl: Acl,
+                           val frontsApi: FrontsApi,
+                           val faciaApiIO: FaciaApiIO,
+                           val updateActions: UpdateActions,
+                           breakingNewsUpdate: BreakingNewsUpdate,
+                           val auditingUpdates: AuditingUpdates,
+                           val faciaPress: FaciaPress,
+                           val faciaPressQueue: FaciaPressQueue,
+                           val configAgent: ConfigAgent,
+                           val s3FrontsApi: S3FrontsApi,
+                           val mediaServiceClient: MediaServiceClient,
+                           val deps: BaseFaciaControllerComponents
+                         )(implicit ec: ExecutionContext)
+  extends BaseFaciaController(deps) with BreakingNewsEditCollectionsCheck {
 
   def getConfig = APIAuthAction.async { request =>
     FaciaToolMetrics.ApiUsageCount.increment()

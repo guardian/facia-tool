@@ -1,5 +1,6 @@
 package controllers
 
+import scala.concurrent.ExecutionContext
 import com.gu.facia.client.models.CollectionConfigJson
 import config.UpdateManager
 import permissions.ConfigPermissionCheck
@@ -8,7 +9,8 @@ import services.Press
 import updates._
 import util.Acl
 import util.Requests._
-import scala.concurrent.ExecutionContext.Implicits.global
+
+
 
 object CollectionRequest {
   implicit val jsonFormat = Json.format[CollectionRequest]
@@ -26,7 +28,8 @@ object CreateCollectionResponse {
 case class CreateCollectionResponse(id: String)
 
 class CollectionController(val acl: Acl, val auditingUpdates: AuditingUpdates,
-                           val updateManager: UpdateManager, val press: Press, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
+                           val updateManager: UpdateManager, val press: Press, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext)
+  extends BaseFaciaController(deps) {
   def create = (APIAuthAction andThen new ConfigPermissionCheck(acl)){ request =>
     request.body.read[CollectionRequest] match {
       case Some(CollectionRequest(frontIds, collection)) =>

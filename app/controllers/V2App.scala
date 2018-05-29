@@ -1,14 +1,13 @@
 package controllers
 
+import scala.concurrent.ExecutionContext
 import com.gu.facia.client.models.Metadata
 import permissions.Permissions
 import play.api.libs.json.Json
 import switchboard.SwitchManager
 import util.{Acl, AclJson}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
-class V2App(isDev: Boolean, val acl: Acl, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
+class V2App(isDev: Boolean, val acl: Acl, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
 
   def index(priority: String = "", frontId: String = "") = APIAuthAction.async { implicit req =>
 

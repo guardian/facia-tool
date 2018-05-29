@@ -1,11 +1,11 @@
 package controllers
 
+import scala.concurrent.ExecutionContext
 import model.NoCache
 import permissions.BreakingNewsPermissionCheck
 import util.Acl
-import scala.concurrent.ExecutionContext.Implicits.global
 
-class VanityRedirects(val acl: Acl, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
+class VanityRedirects(val acl: Acl, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
 
   def breakingnews = (AuthAction andThen new BreakingNewsPermissionCheck(acl)) { request =>
     NoCache(Redirect("/editorial?layout=latest,front:breaking-news", 301))}
