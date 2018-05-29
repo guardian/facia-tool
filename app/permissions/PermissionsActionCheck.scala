@@ -24,16 +24,13 @@ trait PermissionActionFilter extends ActionFilter[UserRequest] with Logging {
         Some(Results.Unauthorized(views.html.unauthorized()))}
 }
 
-
-class ConfigPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext) extends PermissionActionFilter with Logging {
-
+class ConfigPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext) extends PermissionActionFilter {
   val executionContext = ec
   val testAccess: String => Future[Authorization] = acl.testUser(Permissions.ConfigureFronts, "facia-tool-allow-config-for-all")
   val restrictedAction = "configure fronts"
 }
 
-
-class BreakingNewsPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext) extends PermissionActionFilter with Logging {
+class BreakingNewsPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext) extends PermissionActionFilter {
   val executionContext = ec
   val testAccess: String => Future[Authorization] = acl.testUser(Permissions.BreakingNewsAlert, "facia-tool-allow-breaking-news-for-all")
   val restrictedAction = "send breaking news alerts"
