@@ -7,4 +7,10 @@ type CollectionArticles = {
   live: Array<CapiArticle>
 };
 
-export type { CollectionArticles };
+type AlsoOnDetail = {
+  priorities: Array<string>,
+  fronts: Array<{ id: string, priority: string }>,
+  meritsWarning: boolean
+};
+
+export type { CollectionArticles, AlsoOnDetail };
