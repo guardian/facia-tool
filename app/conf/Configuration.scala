@@ -14,7 +14,7 @@ import scala.language.reflectiveCalls
 
 class BadConfigurationException(msg: String) extends RuntimeException(msg)
 
-class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isProd: Boolean, val isCode: Boolean) {
+class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isProd: Boolean) {
   private val propertiesFile = "/etc/gu/facia-tool.properties"
   private val installVars = new File(propertiesFile) match {
     case f if f.exists => IOUtils.toString(new FileInputStream(f))
@@ -48,9 +48,16 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
 
   object environment {
     val stage = stageFromProperties.toLowerCase
+    Logger.info("is prod ")
     val applicationName = "facia-tool"
-    val applicationUrl = if (isProd) "https://fronts.gutools.co.uk"
-      else if (isCode) "https://fronts.code.dev-gutools.co.uk"
+
+    // isProd is derived from the enviroment mode which is given
+    // to us by play, it is true for both prod and code. Stage is a variable coming
+    // from the config and tells us which bucket we are reading fronts and collections from.
+    // Stage is prod for production environment and code for code and dev environemnts.
+    // These two variables together allow us to determine the application url.
+    val applicationUrl = if (isProd && stage == "code") "https://fronts.code.dev-gutools.co.uk"
+      else if (isProd) "https://fronts.gutools.co.uk"
       else "https://fronts.local.dev-gutools.co.uk"
   }
 
