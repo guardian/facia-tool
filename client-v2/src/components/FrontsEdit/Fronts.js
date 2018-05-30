@@ -72,6 +72,8 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
           ))}
         </Row>
         {this.props.selectedFront &&
+          this.props.selectedFront.isHidden && <div>This front is hidden</div>}
+        {this.props.selectedFront &&
           this.props.selectedFront.collections.map(id => (
             <Row key={id}>
               <Collection id={id} stage={this.state.browsingStage} />
