@@ -1,0 +1,104 @@
+// @flow
+
+import getMetaDataReducer from '../createMetadataReducer';
+
+const { actions, reducer, selectors, initialState } = getMetaDataReducer({
+  entityName: 'books'
+});
+
+describe('getMetaDataReducer', () => {
+  const { now } = Date;
+
+  beforeAll(() => {
+    (Date: any).now = jest.fn(() => 1337);
+  });
+
+  afterAll(() => {
+    (Date: any).now = now;
+  });
+
+  describe('actions', () => {
+    it('should provide actions for a given data type', () => {
+      expect(actions.fetchStart()).toEqual({ type: 'FETCH_BOOKS_START' });
+      expect(actions.fetchSuccess({ data: 'exampleData' })).toEqual({
+        type: 'FETCH_BOOKS_SUCCESS',
+        payload: { data: { data: 'exampleData' }, time: 1337 }
+      });
+      expect(actions.fetchError('Something went wrong')).toEqual({
+        type: 'FETCH_BOOKS_ERROR',
+        payload: { error: 'Something went wrong', time: 1337 }
+      });
+    });
+  });
+
+  describe('selectors', () => {
+    it('should provide a selector to get the loading state', () => {
+      expect(selectors.selectIsLoading({ books: initialState })).toBe(false);
+      expect(
+        selectors.selectIsLoading({ books: { ...initialState, loading: true } })
+      ).toBe(true);
+    });
+    it('should provide selectors that operate on non-standard mount points', () => {
+      const bundle = getMetaDataReducer({
+        entityName: 'books',
+        mountPoint: 'otherBooks'
+      });
+      expect(
+        bundle.selectors.selectIsLoading({
+          otherBooks: { ...initialState, loading: true }
+        })
+      ).toBe(true);
+    });
+    it('should provide a selector to get the current error', () => {
+      expect(selectors.selectCurrentError({ books: initialState })).toBe(null);
+      expect(
+        selectors.selectCurrentError({
+          books: { ...initialState, error: 'Something went wrong' }
+        })
+      ).toBe('Something went wrong');
+    });
+    it('should provide a selector to get the last error', () => {
+      expect(selectors.selectLastError({ books: initialState })).toBe(null);
+      expect(
+        selectors.selectLastError({
+          books: { ...initialState, lastError: 'Something went wrong' }
+        })
+      ).toBe('Something went wrong');
+    });
+    it('should provide a selector to get the last fetch time', () => {
+      expect(selectors.selectLastFetch({ books: initialState })).toBe(null);
+      expect(
+        selectors.selectLastFetch({
+          books: { ...initialState, lastFetch: 1337 }
+        })
+      ).toBe(1337);
+    });
+  });
+
+  describe('reducer', () => {
+    it('should mark the state as loading when a start action is dispatched', () => {
+      const newState = reducer(initialState, actions.fetchStart());
+      expect(newState.loading).toBe(true);
+    });
+    it('should merge data and mark the state as not loading when a success action is dispatched', () => {
+      const newState = reducer(
+        { ...initialState, loading: true },
+        actions.fetchSuccess({ uuid: { id: 'uuid', author: 'Mark Twain' } })
+      );
+      expect(newState.loading).toBe(false);
+      expect(newState.data).toEqual({
+        uuid: { id: 'uuid', author: 'Mark Twain' }
+      });
+    });
+    it('should add an error and mark the state as not loading when an error action is dispatched', () => {
+      const newState = reducer(
+        { ...initialState, loading: true },
+        actions.fetchSuccess({ uuid: { id: 'uuid', author: 'Mark Twain' } })
+      );
+      expect(newState.loading).toBe(false);
+      expect(newState.data).toEqual({
+        uuid: { id: 'uuid', author: 'Mark Twain' }
+      });
+    });
+  });
+});
