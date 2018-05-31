@@ -42,7 +42,8 @@ object FrontPath {
 case class FrontPath(get: String) extends AnyVal
 
 object PressJob {
-  implicit val dateTimeWriter: Writes[DateTime] = JodaWrites.jodaDateWrites("dd/MM/yyyy HH:mm:ss")
+
+  implicit val dateTimeWriter: Writes[DateTime] = JodaWrites.JodaDateTimeNumberWrites
   implicit val dateTimeJsReader = JodaReads.jodaDateReads("yyyyMMddHHmmss")
   implicit val jsonFormat = Json.format[PressJob]
 }
