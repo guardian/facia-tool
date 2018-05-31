@@ -8,7 +8,8 @@ import { getCollectionConfig } from 'selectors/frontsSelectors';
 import {
   getArticles,
   fetchFrontsConfig,
-  getCollection
+  getCollection,
+  fetchLastPressed as fetchLastPressedApi
 } from 'services/faciaApi';
 import type { FrontsConfig } from 'types/FaciaApi';
 import {
@@ -37,6 +38,28 @@ function requestFrontsConfig(): Action {
     type: 'FRONTS_CONFIG_GET_RECEIVE',
     receivedAt: Date.now()
   };
+}
+
+function fetchLastPressedSuccess(frontId: string, datePressed: string): Action {
+  return {
+    type: 'FETCH_LAST_PRESSED_SUCCESS',
+    payload: {
+      receivedAt: Date.now(),
+      frontId,
+      datePressed
+    }
+  };
+}
+
+function fetchLastPressed(frontId: string): ThunkAction {
+  return (dispatch: Dispatch) =>
+    fetchLastPressedApi(frontId)
+      .then(datePressed =>
+        dispatch(fetchLastPressedSuccess(frontId, datePressed))
+      )
+      .catch(() => {
+        // @todo: implement once error handling is done
+      });
 }
 
 function errorReceivingConfig(error: string): Action {
@@ -107,7 +130,12 @@ const getCollectionsAndArticles = (collectionIds: Array<string>) => (
     )
   );
 
-export { getFrontCollection, getCollectionsAndArticles };
+export {
+  getFrontCollection,
+  getCollectionsAndArticles,
+  fetchLastPressed,
+  fetchLastPressedSuccess
+};
 
 export default function getFrontsConfig(): ThunkAction {
   return (dispatch: Dispatch) => {

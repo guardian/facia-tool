@@ -1,7 +1,6 @@
 // @flow
 
-import { isValid } from 'date-fns';
-
+import isValid from 'date-fns/is_valid';
 import type {
   FrontsConfig,
   FrontsConfigResponse,
@@ -45,33 +44,25 @@ function fetchFrontsConfig(): Promise<FrontsConfig> {
     }));
 }
 
-function fetchLastPressed(frontId: string, stage: string) {
+async function fetchLastPressed(frontId: string): Promise<string> {
   // The server does not respond with JSON
-  return fetch(`/front/lastmodified/${stage}/${frontId}`).then(
-    async (response: Response) => {
-      if (response.status !== 200) {
-        if (response.status === 404) {
-          throw new Error(
-            `Tried to fetch last pressed time, but the server couldn't find a front with id ${frontId}`
-          );
-        }
-        const body = await response.text();
+  return pandaFetch(`/front/lastmodified/${frontId}`)
+    .then(response => response.text())
+    .then(date => {
+      if (!date || !isValid(new Date(date))) {
         throw new Error(
-          `Tried to fetch last pressed time for front with id ${frontId}, but the server responded with ${
-            response.status
-          }: ${body}`
-        );
-      }
-      const text = await response.text();
-      const date = new Date(text);
-      if (!isValid(date)) {
-        throw new Error(
-          `Tried to fetch last pressed time for front with id ${frontId}, but there was an error processing the response`
+          `Tried to fetch last pressed time for front with id ${frontId}, but there was an error processing the response, which was ${date}`
         );
       }
       return date;
-    }
-  );
+    })
+    .catch(response => {
+      throw new Error(
+        `Tried to fetch last pressed time for front with id ${frontId}, but the server responded with ${
+          response.status
+        }: ${response.body}`
+      );
+    });
 }
 
 function getCollection(

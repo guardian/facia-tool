@@ -19,7 +19,7 @@ type FrontsByPriority = {
 };
 
 const getFronts = (state: State): FrontConfigMap =>
-  state.frontsConfig.fronts || {};
+  state.fronts.frontsConfig.fronts || {};
 
 const getFront = (state: State, id: string) => getFronts(state)[id];
 
@@ -58,7 +58,7 @@ const getFrontsWithPriority = (state: State, priority: string): FrontConfig[] =>
   getFrontsByPriority(state)[priority] || [];
 
 const getCollections = (state: State): CollectionConfigMap =>
-  state.frontsConfig.collections || {};
+  state.fronts.frontsConfig.collections || {};
 const getCollectionConfig = (state: State, id: string): CollectionConfig =>
   getCollections(state)[id] || null;
 
@@ -197,6 +197,9 @@ const alsoOnFrontSelector = (
 const createAlsoOnSelector = () =>
   createSelector([getFront, frontsAsArraySelector], alsoOnFrontSelector);
 
+const lastPressedSelector = (state: State, frontId: string): string | null =>
+  state.fronts.lastPressed[frontId] || null;
+
 export {
   getFront,
   getFrontsConfig,
@@ -206,5 +209,6 @@ export {
   frontsIdsSelector,
   getFrontsWithPriority,
   alsoOnFrontSelector,
-  createAlsoOnSelector
+  createAlsoOnSelector,
+  lastPressedSelector
 };

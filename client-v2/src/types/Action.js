@@ -7,6 +7,7 @@
 
 import type { Action as SharedActions } from 'shared/types/Action';
 import { type Config } from './Config';
+import { type FrontsConfig } from './FaciaApi';
 
 type ActionError =
   | 'Could not fetch fronts config'
@@ -22,7 +23,16 @@ type ConfigReceivedAction = {
 
 type FrontsConfigReceivedAction = {
   type: 'FRONTS_CONFIG_RECEIVED',
-  payload: Object
+  payload: FrontsConfig
+};
+
+type FrontsUpdateLastPressedAction = {
+  type: 'FETCH_LAST_PRESSED_SUCCESS',
+  payload: {
+    receivedAt: number,
+    frontId: string,
+    datePressed: string
+  }
 };
 
 type RequestFrontsConfigAction = {
@@ -60,6 +70,7 @@ export type Action =
   | PathUpdate
   | RequestFrontCollectionAction
   | ErrorInAction
+  | FrontsUpdateLastPressedAction
   | SharedActions;
 
 export type ActionType = $ElementType<Action, 'type'>;
