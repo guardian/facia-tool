@@ -1,7 +1,9 @@
 package controllers
 
-class V2Assets {
+import scala.concurrent.ExecutionContext
+
+class V2Assets(val assets: Assets)(implicit ec: ExecutionContext) {
   def at(file: String, relativePath: String = "") = model.NoCache {
-    controllers.Assets.at("/public/client-v2", relativePath + file)
+    assets.at("/public/client-v2", relativePath + file)
   }
 }

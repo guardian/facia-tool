@@ -9,7 +9,7 @@ import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import org.apache.commons.io.IOUtils
 import play.api.{Logger, Configuration => PlayConfiguration}
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 import scala.language.reflectiveCalls
 
 class BadConfigurationException(msg: String) extends RuntimeException(msg)
@@ -26,18 +26,18 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
   private val properties = Properties(installVars)
   private val stageFromProperties = properties.getOrElse("STAGE", "CODE")
   private val stsRoleToAssumeFromProperties = properties.getOrElse("STS_ROLE", "unknown")
-  private val forntPressedDynamoTable = properties.getOrElse("FRONT_PRESSED_TABLE", "unknown")
+  private val frontPressedDynamoTable = properties.getOrElse("FRONT_PRESSED_TABLE", "unknown")
 
   private def getString(property: String): Option[String] =
-    playConfiguration.getString(stageFromProperties + "." + property)
-      .orElse(playConfiguration.getString(property))
+    playConfiguration.getOptional[String](stageFromProperties + "." + property)
+      .orElse(playConfiguration.getOptional[String](property))
 
   private def getMandatoryString(property: String): String = getString(property)
     .getOrElse(throw new BadConfigurationException(s"$property of type string not configured for stage $stageFromProperties"))
 
   private def getBoolean(property: String): Option[Boolean] =
-    playConfiguration.getBoolean(stageFromProperties + "." + property)
-      .orElse(playConfiguration.getBoolean(property))
+    playConfiguration.getOptional[Boolean](stageFromProperties + "." + property)
+      .orElse(playConfiguration.getOptional[Boolean](property))
 
   private def getMandatoryBoolean(property: String): Boolean = getBoolean(property)
     .getOrElse(throw new BadConfigurationException(s"$property of type boolean not configured for stage $stageFromProperties"))
@@ -48,7 +48,17 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
 
   object environment {
     val stage = stageFromProperties.toLowerCase
+    Logger.info("is prod ")
     val applicationName = "facia-tool"
+
+    // isProd is derived from the enviroment mode which is given
+    // to us by play, it is true for both prod and code. Stage is a variable coming
+    // from the config and tells us which bucket we are reading fronts and collections from.
+    // Stage is prod for production environment and code for code and dev environemnts.
+    // These two variables together allow us to determine the application url.
+    val applicationUrl = if (isProd && stage == "code") "https://fronts.code.dev-gutools.co.uk"
+      else if (isProd) "https://fronts.gutools.co.uk"
+      else "https://fronts.local.dev-gutools.co.uk"
   }
 
   object ophanApi {
@@ -65,7 +75,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     lazy val bucket = getMandatoryString("aws.bucket")
     lazy val frontsBucket = getMandatoryString("aws.frontsBucket")
 
-    def mandatoryCredentials: AWSCredentialsProvider = credentials.getOrElse(throw new BadConfigurationException("AWS credentials are not configured"))
+    def cmsFrontsAccountCredentials: AWSCredentialsProvider = credentials.getOrElse(throw new BadConfigurationException("AWS credentials are not configured for CMS Fronts"))
     val credentials: Option[AWSCredentialsProvider] = {
       val provider = new AWSCredentialsProviderChain(
         new ProfileCredentialsProvider("cmsFronts"),
@@ -88,7 +98,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
       }
     }
 
-    def mandatoryCrossAccountCredentials: AWSCredentialsProvider = crossAccount.getOrElse(throw new BadConfigurationException("AWS credentials are not configured for cross account"))
+    def frontendAccountCredentials: AWSCredentialsProvider = crossAccount.getOrElse(throw new BadConfigurationException("AWS credentials are not configured for cross account Frontend"))
     var crossAccount: Option[AWSCredentialsProvider] = {
       val provider = new AWSCredentialsProviderChain(
         new ProfileCredentialsProvider("frontend"),
@@ -149,7 +159,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     lazy val frontPressToolQueue = getString("frontpress.sqs.tool_queue_url")
     lazy val showTestContainers = getBoolean("faciatool.show_test_containers").getOrElse(false)
     lazy val stsRoleToAssume = getString("faciatool.sts.role.to.assume").getOrElse(stsRoleToAssumeFromProperties)
-    lazy val frontPressUpdateTable = forntPressedDynamoTable
+    lazy val frontPressUpdateTable = frontPressedDynamoTable
   }
 
   object media {
@@ -189,7 +199,7 @@ object Properties extends AutomaticResourceManagement {
   def apply(is: InputStream): Map[String, String] = {
     val properties = new java.util.Properties()
     withCloseable(is) { properties load _ }
-    properties.toMap
+    properties.asScala.toMap
   }
 
   def apply(text: String): Map[String, String] = apply(IOUtils.toInputStream(text))

@@ -1,16 +1,13 @@
 package controllers
 
-import auth.PanDomainAuthActions
+import scala.concurrent.ExecutionContext
 import com.gu.facia.client.models.Metadata
-import conf.ApplicationConfiguration
 import permissions.Permissions
 import play.api.libs.json.Json
-import play.api.mvc.{Controller, RequestHeader}
 import switchboard.SwitchManager
-import util.{AclJson, Acl}
-import scala.concurrent.ExecutionContext.Implicits.global
+import util.{Acl, AclJson}
 
-class V2App(val config: ApplicationConfiguration, isDev: Boolean, val acl: Acl) extends Controller with PanDomainAuthActions {
+class V2App(isDev: Boolean, val acl: Acl, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
 
   def index(priority: String = "", frontId: String = "") = APIAuthAction.async { implicit req =>
 

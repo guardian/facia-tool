@@ -12,7 +12,7 @@ import conf.ApplicationConfiguration
 import org.apache.commons.lang3.StringEscapeUtils
 import play.api.Logger
 import play.api.libs.json.Json
-import play.api.libs.ws.{WSAPI, WSResponse}
+import play.api.libs.ws.{WSClient, WSResponse}
 import play.api.mvc.Result
 import play.api.mvc.Results.{InternalServerError, Ok}
 
@@ -23,7 +23,7 @@ import scala.util.{Failure, Success, Try}
 
 class InvalidNotificationContentType(msg: String) extends Throwable(msg) {}
 
-class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSAPI, val auditingUpdates: AuditingUpdates) {
+class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient, val auditingUpdates: AuditingUpdates) {
   lazy val client = {
     Logger.info(s"Configuring breaking news client to send notifications to ${config.notification.host}")
     ApiClient(
@@ -133,10 +133,10 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSAPI, va
   }
 }
 
-class NotificationHttpProvider(val ws: WSAPI) extends HttpProvider {
+class NotificationHttpProvider(val ws: WSClient) extends HttpProvider {
   override def post(url: String, contentType: ContentType, body: Array[Byte]): Future[HttpResponse] = {
     ws.url(url)
-      .withHeaders("Content-Type" -> s"${contentType.mediaType}; charset=${contentType.charset}")
+      .withHttpHeaders("Content-Type" -> s"${contentType.mediaType}; charset=${contentType.charset}")
       .post(body)
       .map(extract)
   }

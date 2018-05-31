@@ -5,14 +5,13 @@ import conf.ApplicationConfiguration
 
 import scala.concurrent.ExecutionContext
 
-class Permissions(val appConfig: ApplicationConfiguration) extends PermissionsProvider {
-  override implicit lazy val executionContext: ExecutionContext = play.api.libs.concurrent.Execution.Implicits.defaultContext
+class Permissions(val appConfig: ApplicationConfiguration)(implicit executionContext: ExecutionContext) extends PermissionsProvider {
 
   implicit def config = PermissionsConfig(
     app = "fronts",
     all = Permissions.all,
     s3BucketPrefix = appConfig.environment.stage.toUpperCase,
-    awsCredentials = appConfig.aws.mandatoryCredentials,
+    awsCredentials = appConfig.aws.cmsFrontsAccountCredentials,
     s3Region = Some("eu-west-1")
   )
 }

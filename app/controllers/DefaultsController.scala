@@ -1,12 +1,9 @@
 package controllers
 
-import auth.PanDomainAuthActions
 import com.gu.facia.client.models.Metadata
-import conf.ApplicationConfiguration
 import model.Cached
 import permissions.Permissions
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc._
 import switchboard.SwitchManager
 import util.{Acl, AclJson}
 
@@ -35,8 +32,9 @@ case class Defaults(
   capiPreviewUrl: String = ""
 )
 
-class DefaultsController(val config: ApplicationConfiguration, val acl: Acl, val isDev: Boolean) extends Controller with PanDomainAuthActions {
+class DefaultsController(val acl: Acl, val isDev: Boolean, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
   def configuration = APIAuthAction.async { implicit request =>
+
     for {
       hasBreakingNews <- acl.testUser(Permissions.BreakingNewsAlert, "facia-tool-allow-breaking-news-for-all")(request.user.email)
       hasConfigureFronts <- acl.testUser(Permissions.ConfigureFronts, "facia-tool-allow-config-for-all")(request.user.email)

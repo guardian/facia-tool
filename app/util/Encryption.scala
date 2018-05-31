@@ -3,10 +3,10 @@ package util
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.util
-import javax.crypto.Cipher
-import javax.crypto.spec.SecretKeySpec
 
 import conf.ApplicationConfiguration
+import javax.crypto.Cipher
+import javax.crypto.spec.SecretKeySpec
 import org.apache.commons.codec.binary.Base64
 
 class Encryption (config: ApplicationConfiguration) {

@@ -1,15 +1,18 @@
 package permissions
 
 import com.gu.pandomainauth.action.UserRequest
+import controllers.BaseFaciaController
 import play.api.Logger
 import play.api.mvc._
 import services.ConfigAgent
 import util.{AccessDenied, AccessGranted, Acl, Authorization}
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 trait PermissionActionFilter extends ActionFilter[UserRequest] {
+
+  implicit val executionContext: ExecutionContext
+
   val testAccess: String => Future[Authorization]
   val restrictedAction: String
 
@@ -21,17 +24,20 @@ trait PermissionActionFilter extends ActionFilter[UserRequest] {
         Some(Results.Unauthorized(views.html.unauthorized()))}
 }
 
-class ConfigPermissionCheck(val acl: Acl) extends PermissionActionFilter {
+class ConfigPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext) extends PermissionActionFilter {
+
+  val executionContext = ec
   val testAccess: String => Future[Authorization] = acl.testUser(Permissions.ConfigureFronts, "facia-tool-allow-config-for-all")
   val restrictedAction = "configure fronts"
 }
 
-class BreakingNewsPermissionCheck(val acl: Acl) extends PermissionActionFilter {
+class BreakingNewsPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext) extends PermissionActionFilter {
+  val executionContext = ec
   val testAccess: String => Future[Authorization] = acl.testUser(Permissions.BreakingNewsAlert, "facia-tool-allow-breaking-news-for-all")
   val restrictedAction = "send breaking news alerts"
 }
 
-trait BreakingNewsEditCollectionsCheck { self: Controller =>
+trait BreakingNewsEditCollectionsCheck { self: BaseFaciaController =>
   def acl: Acl
   def configAgent: ConfigAgent
 

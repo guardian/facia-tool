@@ -1,9 +1,9 @@
 package controllers
 
-import play.api.mvc.Controller
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class UncachedAssets extends Controller {
+class UncachedAssets(val assets: Assets, deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
   def at(file: String, relativePath: String = "") = model.NoCache {
-    controllers.Assets.at("/public/src", relativePath + file)
+    assets.at("/public/src", relativePath + file)
   }
 }

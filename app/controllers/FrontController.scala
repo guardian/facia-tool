@@ -1,18 +1,18 @@
 package controllers
 
-import auth.PanDomainAuthActions
 import com.gu.facia.client.models.FrontJson
-import conf.ApplicationConfiguration
 import config.UpdateManager
 import permissions.ConfigPermissionCheck
-import play.api.mvc.Controller
 import services.Press
 import updates._
 import util.Acl
 import util.Requests._
 
-class FrontController(val config: ApplicationConfiguration, val acl: Acl, val auditingUpdates: AuditingUpdates,
-                      val updateManager: UpdateManager, val press: Press) extends Controller with PanDomainAuthActions {
+import scala.concurrent.ExecutionContext
+
+class FrontController(val acl: Acl, val auditingUpdates: AuditingUpdates,
+                      val updateManager: UpdateManager, val press: Press, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext)
+  extends BaseFaciaController(deps) {
   def create = (APIAuthAction andThen new ConfigPermissionCheck(acl)) { request =>
     request.body.read[CreateFront] match {
       case Some(createFrontRequest) =>

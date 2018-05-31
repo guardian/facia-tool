@@ -39,7 +39,7 @@ class Acl(permissions: Permissions) {
       }}
     else Future.successful(AccessGranted)
 
-    f.onFailure{ case t => Logger.error(s"Unable to get acl status for ${permission.name} $switch", t) }
+    f.failed.foreach{case t => Logger.error(s"Unable to get acl status for ${permission.name} $switch", t)}
     f
   }
 

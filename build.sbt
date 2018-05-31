@@ -8,11 +8,10 @@ packageSummary := "Facia tool"
 
 packageDescription := "Guardian front pages editor"
 
-scalaVersion := "2.11.12"
+scalaVersion := "2.12.5"
 
-import com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd
-import sbt.{Path, Resolver}
-serverLoading in Debian := Systemd
+import sbt.Resolver
+import sbt.io.Path._
 
 debianPackageDependencies := Seq("openjdk-8-jre-headless")
 
@@ -53,8 +52,7 @@ javaOptions in Universal ++= Seq(
 
 routesGenerator := InjectedRoutesGenerator
 
-scalacOptions := Seq("-unchecked", "-optimise", "-deprecation", "-target:jvm-1.8",
-    "-Xcheckinit", "-encoding", "utf8", "-feature", "-Yinline-warnings")
+scalacOptions := Seq("-unchecked", "-deprecation", "-target:jvm-1.8", "-Xcheckinit", "-encoding", "utf8", "-feature")
 
 sources in (Compile, doc) := Seq.empty
 
@@ -89,11 +87,11 @@ libraryDependencies ++= Seq(
     "com.gu" %% "content-api-models" % capiModelsVersion,
     "com.gu" %% "content-api-models-json" % capiModelsVersion,
     "com.gu" %% "content-api-client-aws" % "0.5",
-    "com.gu" %% "editorial-permissions-client" % "0.7",
-    "com.gu" %% "fapi-client" % "2.5.4",
+    "com.gu" %% "editorial-permissions-client" % "0.8",
+    "com.gu" %% "fapi-client-play26" % "2.5.4",
     "com.gu" % "kinesis-logback-appender" % "1.4.2",
-    "com.gu" %% "mobile-notifications-client" % "1.0",
-    "com.gu" %% "pan-domain-auth-play_2-4-0" % "0.5.1",
+    "com.gu" %% "mobile-notifications-client" % "1.1",
+    "com.gu" %% "pan-domain-auth-play_2-6" % "0.7.1",
 
     "io.circe" %% "circe-core" % circeVersion,
     "io.circe" %% "circe-generic" % circeVersion,
@@ -102,11 +100,12 @@ libraryDependencies ++= Seq(
 
     "com.gu" %% "thrift-serializer" % "2.1.0",
     "net.logstash.logback" % "logstash-logback-encoder" % "5.0",
-    "org.julienrf" %% "play-json-variants" % "2.0",
+    "org.julienrf" %% "play-json-derived-codecs" % "4.0.0",
     "org.json4s" %% "json4s-native" % json4sVersion,
     "org.json4s" %% "json4s-jackson" % json4sVersion,
-    "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+    "org.scalatest" %% "scalatest" % "3.0.5" % "test",
+    "com.typesafe.play" %% "play-json-joda" % "2.6.9"
 
 )
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact, JDebPackaging)
+lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact, JDebPackaging, SystemdPlugin)

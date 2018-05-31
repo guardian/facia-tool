@@ -4,8 +4,7 @@ import org.joda.time.format.{DateTimeFormat, ISODateTimeFormat}
 import org.joda.time.{DateTime, DateTimeZone, Period}
 import play.api.mvc.{Action, Request, Result}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 object Cached {
   private val HTTPDateFormat = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'").withZone(DateTimeZone.UTC)
@@ -48,8 +47,9 @@ object NoCache {
   def apply(result: Result): Result = result.withHeaders("Cache-Control" -> "no-cache", "Pragma" -> "no-cache")
 }
 
-case class NoCache[A](action: Action[A]) extends Action[A] {
+case class NoCache[A](action: Action[A])(implicit ec: ExecutionContext) extends Action[A] {
 
+  override def executionContext = ec
   override def apply(request: Request[A]): Future[Result] = {
 
     action(request) map { response =>

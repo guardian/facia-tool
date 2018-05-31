@@ -1,16 +1,15 @@
 package controllers
 
-import auth.PanDomainAuthActions
+import scala.concurrent.ExecutionContext
 import com.gu.pandomainauth.action.UserRequest
-import conf.ApplicationConfiguration
 import model.Cached
 import permissions.ConfigPermissionCheck
 import play.api.mvc._
 import services.AssetsManager
 import util.{Acl, Encryption}
 
-class ViewsController(val config: ApplicationConfiguration, val acl: Acl, assetsManager: AssetsManager, isDev: Boolean,
-                      crypto: Encryption) extends Controller with PanDomainAuthActions {
+class ViewsController(val acl: Acl, assetsManager: AssetsManager, isDev: Boolean,
+                      crypto: Encryption, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
 
   def priorities() = AuthAction { request =>
     val identity = request.user

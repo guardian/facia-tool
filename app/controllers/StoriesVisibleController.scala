@@ -1,9 +1,6 @@
 package controllers
 
-import auth.PanDomainAuthActions
-import conf.ApplicationConfiguration
 import play.api.libs.json.Json
-import play.api.mvc.Controller
 import slices._
 
 object StoriesVisibleRequest {
@@ -23,7 +20,7 @@ case class StoriesVisibleResponse(
   mobile: Option[Int]
 )
 
-class StoriesVisibleController(val config: ApplicationConfiguration, val containers: Containers) extends Controller with PanDomainAuthActions {
+class StoriesVisibleController(val containers: Containers, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
   def storiesVisible(containerType: String) = APIAuthAction(parse.json[StoriesVisibleRequest]) { implicit request =>
     val numberOfStories = request.body.stories.length
 

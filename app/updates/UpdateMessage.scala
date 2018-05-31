@@ -1,7 +1,7 @@
 package updates
 
 import com.gu.facia.client.models.{CollectionConfigJson, FrontJson, TrailMetaData}
-import julienrf.variants.Variants
+import julienrf.json.derived
 import org.joda.time.DateTime
 import play.api.libs.json._
 import services.ConfigAgent
@@ -93,7 +93,7 @@ case class HandlingBreakingNewsTrail(id: String, breakingNewsTrail: ClientHydrat
 
 /* Macro - Watch out, this needs to be after the case classes */
 object UpdateMessage {
-  implicit val format: Format[UpdateMessage] = Variants.format[UpdateMessage]((__ \ "type").format[String])
+  implicit val format = derived.flat.oformat[UpdateMessage]((__ \ "type").format[String])
 }
 
 /* Kinesis messages */
