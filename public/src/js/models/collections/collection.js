@@ -223,6 +223,8 @@ export default class Collection extends BaseClass {
     }
 
     processDraft(goLive, opts = {}) {
+        const action = goLive ? 'publish' : 'discard';
+
         this.state.hasDraft(false);
         this.setPending(true);
         this.closeAllArticles();
@@ -234,8 +236,14 @@ export default class Collection extends BaseClass {
 
         authedAjax.request({
             type: 'post',
-            url: vars.CONST.apiBase + '/collection/' + (goLive ? 'publish' : 'discard') + '/' + this.id,
+            url: `${vars.CONST.apiBase}/collection/${action}/${this.id}`,
             data: requestData ? JSON.stringify(requestData) : undefined
+        })
+        .then(() => this.load().then(detectPressFailures))
+        .then(() => {
+            if (opts.sendAlert) {
+                success(requestData);
+            }
         })
         .catch(error => {
             const errorMessages = [];
@@ -244,19 +252,16 @@ export default class Collection extends BaseClass {
             } catch (ex) {
                 errorMessages.push(error.responseText || error.message);
             }
-            const message = 'Error when ' + (goLive ? 'publishing' : 'discarding')
-                + ' the collection: ' + errorMessages.join('<br>');
+
+            const message = `Error when ${action}ing the collection: ${errorMessages.join('<br>')}`;
+            reportErrors(new Error(message)); //report to sentry
+        })
+        .catch(() => {
+            const isBreakingNewsAlert = this.front.confirmSendingAlert();
+            const message = `Failed ${action}ing the ${isBreakingNewsAlert ? 'breaking news alert' : 'collection'}`;
+            this.setPending(false);
             alert(message);
-            reportErrors(new Error(message));
-        })
-        .catch(() => {})
-        .then(() => this.load().then(detectPressFailures))
-        .then(() => {
-            if (opts.sendAlert) {
-                success(requestData);
-            }
-        })
-        .catch(() => {});
+        });
     }
 
     drop(item) {
