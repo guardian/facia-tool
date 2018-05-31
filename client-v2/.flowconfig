@@ -1,10 +1,14 @@
 [ignore]
 .*/dist/.*
-.*/node_modules/.*
+.*/node_modules/jest-enzyme/*
+.*/node_modules/eslint-plugin-jsx-a11y/*
+.*/node_modules/editions/*
+.*/node_modules/enzyme-matchers/*
 .*/__tests__/.*
 
 [include]
 ./src/.*
+./node_modules/date-fns
 
 [libs]
 flow-typed
