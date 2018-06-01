@@ -1,9 +1,9 @@
 [ignore]
 .*/dist/.*
-.*/node_modules/jest-enzyme/*
-.*/node_modules/eslint-plugin-jsx-a11y/*
-.*/node_modules/editions/*
-.*/node_modules/enzyme-matchers/*
+.*/node_modules/jest-enzyme
+.*/node_modules/eslint-plugin-jsx-a11y
+.*/node_modules/enzyme-matchers
+.*/node_modules/editions
 .*/__tests__/.*
 
 [include]
