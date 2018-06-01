@@ -1,10 +1,10 @@
 // @flow
 
-import getMetaDataReducer from '../createMetadataReducer';
+import createMetadataBundle from '../createMetadataReducer';
 
-const { actions, reducer, selectors, initialState } = getMetaDataReducer({
-  entityName: 'books'
-});
+const { actions, reducer, selectors, initialState } = createMetadataBundle(
+  'books'
+);
 
 describe('getMetaDataReducer', () => {
   const { now } = Date;
@@ -19,13 +19,20 @@ describe('getMetaDataReducer', () => {
 
   describe('actions', () => {
     it('should provide actions for a given data type', () => {
-      expect(actions.fetchStart()).toEqual({ type: 'FETCH_BOOKS_START' });
+      expect(actions.fetchStart()).toEqual({
+        type: 'BOOKS_FETCH_START',
+        payload: { id: undefined }
+      });
+      expect(actions.fetchStart('bookId')).toEqual({
+        type: 'BOOKS_FETCH_START',
+        payload: { id: 'bookId' }
+      });
       expect(actions.fetchSuccess({ data: 'exampleData' })).toEqual({
-        type: 'FETCH_BOOKS_SUCCESS',
+        type: 'BOOKS_FETCH_SUCCESS',
         payload: { data: { data: 'exampleData' }, time: 1337 }
       });
       expect(actions.fetchError('Something went wrong')).toEqual({
-        type: 'FETCH_BOOKS_ERROR',
+        type: 'BOOKS_FETCH_ERROR',
         payload: { error: 'Something went wrong', time: 1337 }
       });
     });
@@ -38,14 +45,24 @@ describe('getMetaDataReducer', () => {
         selectors.selectIsLoading({ books: { ...initialState, loading: true } })
       ).toBe(true);
     });
+    it('should provide a selector to get the loading state for specific IDs', () => {
+      const bundle = createMetadataBundle('books', {
+        indexById: true
+      });
+      const state = {
+        books: { ...bundle.initialState, loadingIds: ['1', '2'] }
+      };
+      expect(bundle.selectors.selectIsLoadingById(state, '1')).toBe(true);
+      expect(bundle.selectors.selectIsLoadingById(state, '2')).toBe(true);
+      expect(bundle.selectors.selectIsLoadingById(state, '3')).toBe(false);
+    });
     it('should provide selectors that operate on non-standard mount points', () => {
-      const bundle = getMetaDataReducer({
-        entityName: 'books',
+      const bundle = createMetadataBundle('books', {
         mountPoint: 'otherBooks'
       });
       expect(
         bundle.selectors.selectIsLoading({
-          otherBooks: { ...initialState, loading: true }
+          otherBooks: { ...bundle.initialState, loading: true }
         })
       ).toBe(true);
     });
@@ -84,6 +101,17 @@ describe('getMetaDataReducer', () => {
       const newState = reducer(
         { ...initialState, loading: true },
         actions.fetchSuccess({ uuid: { id: 'uuid', author: 'Mark Twain' } })
+      );
+      expect(newState.loading).toBe(false);
+      expect(newState.data).toEqual({
+        uuid: { id: 'uuid', author: 'Mark Twain' }
+      });
+    });
+    it('should merge data by id if indexById is true', () => {
+      const bundle = createMetadataBundle('books', { indexById: true });
+      const newState = bundle.reducer(
+        { ...initialState, loading: true },
+        actions.fetchSuccess({ id: 'uuid', author: 'Mark Twain' })
       );
       expect(newState.loading).toBe(false);
       expect(newState.data).toEqual({
