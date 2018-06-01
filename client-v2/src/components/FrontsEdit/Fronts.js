@@ -10,9 +10,11 @@ import getFrontsConfig, {
 } from 'actions/FrontsConfig';
 import { frontStages } from 'constants/fronts';
 import Collection from 'shared/components/Collection';
+import AlsoOnNotification from 'components/AlsoOnNotification';
 import type { FrontConfig } from 'types/FaciaApi';
 import type { State } from 'types/State';
-import { getFront } from 'selectors/frontsSelectors';
+import type { AlsoOnDetail } from 'types/Collection';
+import { getFront, alsoOnSelector } from 'selectors/frontsSelectors';
 import FrontsDropDown from 'containers/FrontsDropdown';
 import type { PropsBeforeFetch } from './FrontsContainer';
 
@@ -22,6 +24,7 @@ import Row from '../Row';
 
 type FrontsComponentProps = PropsBeforeFetch & {
   selectedFront: FrontConfig,
+  alsoOn: { [string]: AlsoOnDetail },
   frontsActions: {
     getCollectionsAndArticles: (collectionIds: string[]) => Promise<void>,
     getFrontsConfig: () => Promise<void>
@@ -75,9 +78,12 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
           this.props.selectedFront.isHidden && <div>This front is hidden</div>}
         {this.props.selectedFront &&
           this.props.selectedFront.collections.map(id => (
-            <Row key={id}>
-              <Collection id={id} stage={this.state.browsingStage} />
-            </Row>
+            <div key={id}>
+              <AlsoOnNotification alsoOn={this.props.alsoOn[id]} />
+              <Row>
+                <Collection id={id} stage={this.state.browsingStage} />
+              </Row>
+            </div>
           ))}
       </div>
     );
@@ -85,7 +91,8 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
 }
 
 const mapStateToProps = (state: State, props: PropsBeforeFetch) => ({
-  selectedFront: getFront(state, props.frontId)
+  selectedFront: getFront(state, props.frontId),
+  alsoOn: alsoOnSelector(state, props.frontId)
 });
 
 const mapDispatchToProps = (dispatch: *) => ({
