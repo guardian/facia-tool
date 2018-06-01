@@ -42,7 +42,9 @@ describe('getMetaDataReducer', () => {
     it('should provide a selector to get the loading state', () => {
       expect(selectors.selectIsLoading({ books: initialState })).toBe(false);
       expect(
-        selectors.selectIsLoading({ books: { ...initialState, loading: true } })
+        selectors.selectIsLoading({
+          books: { ...initialState, loadingIds: ['@@ALL'] }
+        })
       ).toBe(true);
     });
     it('should provide a selector to get the loading state for specific IDs', () => {
@@ -62,7 +64,7 @@ describe('getMetaDataReducer', () => {
       });
       expect(
         bundle.selectors.selectIsLoading({
-          otherBooks: { ...bundle.initialState, loading: true }
+          otherBooks: { ...bundle.initialState, loadingIds: ['@@ALL'] }
         })
       ).toBe(true);
     });
@@ -95,14 +97,14 @@ describe('getMetaDataReducer', () => {
   describe('reducer', () => {
     it('should mark the state as loading when a start action is dispatched', () => {
       const newState = reducer(initialState, actions.fetchStart());
-      expect(newState.loading).toBe(true);
+      expect(newState.loadingIds).toEqual(['@@ALL']);
     });
     it('should merge data and mark the state as not loading when a success action is dispatched', () => {
       const newState = reducer(
         { ...initialState, loading: true },
         actions.fetchSuccess({ uuid: { id: 'uuid', author: 'Mark Twain' } })
       );
-      expect(newState.loading).toBe(false);
+      expect(newState.loadingIds).toEqual([]);
       expect(newState.data).toEqual({
         uuid: { id: 'uuid', author: 'Mark Twain' }
       });
@@ -110,23 +112,21 @@ describe('getMetaDataReducer', () => {
     it('should merge data by id if indexById is true', () => {
       const bundle = createMetadataBundle('books', { indexById: true });
       const newState = bundle.reducer(
-        { ...initialState, loading: true },
+        { ...initialState, loadingIds: ['uuid'] },
         actions.fetchSuccess({ id: 'uuid', author: 'Mark Twain' })
       );
-      expect(newState.loading).toBe(false);
+      expect(newState.loadingIds).toEqual([]);
       expect(newState.data).toEqual({
         uuid: { id: 'uuid', author: 'Mark Twain' }
       });
     });
     it('should add an error and mark the state as not loading when an error action is dispatched', () => {
       const newState = reducer(
-        { ...initialState, loading: true },
-        actions.fetchSuccess({ uuid: { id: 'uuid', author: 'Mark Twain' } })
+        { ...initialState, data: {}, loadingIds: ['uuid'] },
+        actions.fetchError('uuid')
       );
-      expect(newState.loading).toBe(false);
-      expect(newState.data).toEqual({
-        uuid: { id: 'uuid', author: 'Mark Twain' }
-      });
+      expect(newState.loadingIds).toEqual([]);
+      expect(newState.data).toEqual({});
     });
   });
 });

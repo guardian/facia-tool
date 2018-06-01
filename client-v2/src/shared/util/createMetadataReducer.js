@@ -12,7 +12,7 @@ const createSelectLastFetch = selectLocalState => (state: any) =>
   selectLocalState(state).lastFetch;
 
 const createSelectIsLoading = selectLocalState => (state: any) =>
-  !!selectLocalState(state).loading;
+  !!selectLocalState(state).loadingIds.length;
 
 const createSelectIsLoadingById = selectLocalState => (
   state: any,
@@ -55,7 +55,6 @@ export default (entityName: string, options: TOptions = {}) => {
     lastError: string | null,
     error: string | null,
     lastFetch: string | null,
-    loading: boolean,
     loadingIds: string[]
   };
 
@@ -112,9 +111,9 @@ export default (entityName: string, options: TOptions = {}) => {
     }
   |};
 
-  const fetchErrorAction = (error: string): TFetchErrorAction => ({
+  const fetchErrorAction = (error: string, id?: string): TFetchErrorAction => ({
     type: FETCH_ERROR,
-    payload: { error, time: Date.now() }
+    payload: { error, id, time: Date.now() }
   });
 
   // We will eventually use this type once we can pass our generics explicitly,
@@ -128,10 +127,9 @@ export default (entityName: string, options: TOptions = {}) => {
       if (action.type === FETCH_START) {
         return {
           ...state,
-          loading:
-            Array.isArray(state.loading) && action.payload.id
-              ? state.loading.concat(action.payload.id)
-              : true
+          loadingIds: state.loadingIds.concat(
+            action.payload.id ? action.payload.id : '@@ALL'
+          )
         };
       }
       if (
@@ -139,18 +137,15 @@ export default (entityName: string, options: TOptions = {}) => {
         action.payload &&
         action.payload.data
       ) {
-        const loadingIds =
-          state.loadingIds.length && action.payload.data.id
-            ? without(state.loadingIds, action.payload.data.id)
-            : state.loadingIds;
         return {
           ...state,
           data: applyNewData(state, action.payload.data),
           lastFetch: action.payload.time,
           error: null,
           lastError: null,
-          loading: !!loadingIds.length,
-          loadingIds
+          loadingIds: indexById
+            ? without(state.loadingIds, action.payload.data.id)
+            : []
         };
       }
       if (action.type === FETCH_ERROR) {
@@ -164,7 +159,9 @@ export default (entityName: string, options: TOptions = {}) => {
           ...state,
           lastError: action.payload.time,
           error: action.payload.error,
-          loading: []
+          loadingIds: indexById
+            ? without(state.loadingIds, action.payload.data.id)
+            : []
         };
       }
       return state;
