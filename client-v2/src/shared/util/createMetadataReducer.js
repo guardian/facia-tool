@@ -123,13 +123,11 @@ export default (entityName: string, options: TOptions = {}) => {
 
   return {
     initialState,
-    reducer: (state: State = initialState, action: any) => {
+    reducer: (state: State = initialState, action: any): State => {
       if (action.type === FETCH_START) {
         return {
           ...state,
-          loadingIds: state.loadingIds.concat(
-            action.payload.id ? action.payload.id : '@@ALL'
-          )
+          loadingIds: state.loadingIds.concat(action.payload.id || '@@ALL')
         };
       }
       if (
