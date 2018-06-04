@@ -138,6 +138,8 @@ const alsoOnFrontSelector = (
   if (!currentFront) {
     return {};
   }
+  const currentFrontId = currentFront.id;
+  const currentFrontPriority = currentFront.priority;
   const currentFrontCollections = currentFront.collections;
   return currentFrontCollections.reduce(
     (allCollectionAlsoOn, currentFrontCollectionId) => {
@@ -146,11 +148,11 @@ const alsoOnFrontSelector = (
           const duplicatesOnFront = front.collections.reduce(
             (soFar, collectionId) => {
               if (
-                front.id !== currentFront.id &&
+                front.id !== currentFrontId &&
                 collectionId === currentFrontCollectionId
               ) {
                 const meritsWarning =
-                  currentFront.priority !== 'commercial' &&
+                  currentFrontPriority !== 'commercial' &&
                   front.priority === 'commercial';
 
                 return {
