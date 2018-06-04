@@ -194,10 +194,8 @@ const alsoOnFrontSelector = (
   );
 };
 
-const alsoOnSelector = createSelector(
-  [getFront, frontsAsArraySelector],
-  alsoOnFrontSelector
-);
+const createAlsoOnSelector = () =>
+  createSelector([getFront, frontsAsArraySelector], alsoOnFrontSelector);
 
 export {
   getFront,
@@ -207,6 +205,6 @@ export {
   collectionConfigsSelector,
   frontsIdsSelector,
   getFrontsWithPriority,
-  alsoOnSelector,
-  alsoOnFrontSelector
+  alsoOnFrontSelector,
+  createAlsoOnSelector
 };

@@ -14,7 +14,7 @@ import AlsoOnNotification from 'components/AlsoOnNotification';
 import type { FrontConfig } from 'types/FaciaApi';
 import type { State } from 'types/State';
 import type { AlsoOnDetail } from 'types/Collection';
-import { getFront, alsoOnSelector } from 'selectors/frontsSelectors';
+import { getFront, createAlsoOnSelector } from 'selectors/frontsSelectors';
 import FrontsDropDown from 'containers/FrontsDropdown';
 import type { PropsBeforeFetch } from './FrontsContainer';
 
@@ -90,10 +90,14 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   }
 }
 
-const mapStateToProps = (state: State, props: PropsBeforeFetch) => ({
-  selectedFront: getFront(state, props.frontId),
-  alsoOn: alsoOnSelector(state, props.frontId)
-});
+const createMapStateToProps = () => {
+  const alsoOnSelector = createAlsoOnSelector();
+  // $FlowFixMe
+  return (state: State, props: PropsBeforeFetch) => ({
+    selectedFront: getFront(state, props.frontId),
+    alsoOn: alsoOnSelector(state, props.frontId)
+  });
+};
 
 const mapDispatchToProps = (dispatch: *) => ({
   frontsActions: bindActionCreators(
@@ -108,4 +112,6 @@ const mapDispatchToProps = (dispatch: *) => ({
 export { Fronts as FrontsComponent };
 export type { FrontsComponentProps };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Fronts));
+export default withRouter(
+  connect(createMapStateToProps, mapDispatchToProps)(Fronts)
+);
