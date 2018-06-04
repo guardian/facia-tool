@@ -4,11 +4,12 @@ import com.gu.facia.client.models._
 import com.gu.pandomainauth.model.User
 import conf.ApplicationConfiguration
 import org.joda.time.DateTime
-import play.api.Logger
 import play.api.libs.json._
 import services.{ConfigAgent, FrontsApi}
 import tools.{FaciaApi, FaciaApiIO}
-import updates.UpdateList
+import updates.{ArchiveUpdate, LogUpdate, StructuredLogger, UpdateList}
+import logging.Logging
+import play.api.Logger
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -58,7 +59,8 @@ trait UpdateActionsTrait {
   def frontsApi: FrontsApi
   def config: ApplicationConfiguration
   def configAgent: ConfigAgent
-
+  def structuredLogger: StructuredLogger
+  implicit val logger: Logger
   implicit val updateListWrite = Json.writes[UpdateList]
 
   def insertIntoLive(update: UpdateList, identity: User, collectionJson: CollectionJson): CollectionJson =
@@ -118,7 +120,7 @@ trait UpdateActionsTrait {
   private def archiveBlock(id: String, collectionJson: CollectionJson, updateJson: JsValue, identity: User): CollectionJson =
     Try(faciaApiIO.archive(id, collectionJson, updateJson, identity)) match {
       case Failure(t: Throwable) => {
-        Logger.warn(t.toString)
+        structuredLogger.putLog(LogUpdate(ArchiveUpdate(id), "faciaTool"), "error", Some(new Exception(t)))
         collectionJson
       }
       case Success(_) => collectionJson
@@ -287,7 +289,6 @@ trait UpdateActionsTrait {
     collectionJson.copy(treats = updatedTreats)}
 
   private def getUserName(identity: User): String = s"${identity.firstName} ${identity.lastName}"
-
 }
 
-class UpdateActions(val faciaApiIO: FaciaApiIO, val frontsApi: FrontsApi, val config: ApplicationConfiguration, val configAgent: ConfigAgent) extends UpdateActionsTrait
+class UpdateActions(val faciaApiIO: FaciaApiIO, val frontsApi: FrontsApi, val config: ApplicationConfiguration, val configAgent: ConfigAgent, val structuredLogger: StructuredLogger) extends UpdateActionsTrait with Logging

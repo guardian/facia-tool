@@ -1,9 +1,9 @@
 package slices
 
 import com.gu.facia.api.models.CollectionConfig
-import play.api.Logger
+import logging.Logging
 
-class Containers(val fixedContainers: FixedContainers) {
+class Containers(val fixedContainers: FixedContainers) extends Logging {
   /** This is THE top level resolver for containers */
   val all: Map[String, Container] = Map(
     ("dynamic/fast", Dynamic(DynamicFast)),
@@ -19,7 +19,7 @@ class Containers(val fixedContainers: FixedContainers) {
   val default = Fixed(fixedContainers.fixedSmallSlowIV)
 
   def resolve(id: String) = all.getOrElse(id, {
-    Logger.error(s"Could not resolve container id $id, using default container")
+    logger.error(s"Could not resolve container id $id, using default container")
     default
   })
 
