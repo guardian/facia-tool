@@ -3,6 +3,7 @@ package controllers
 import scala.concurrent.{ExecutionContext, Future}
 
 class PandaAuthController(val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
+
   def oauthCallback = Action.async { implicit request =>
     processGoogleCallback()
   }

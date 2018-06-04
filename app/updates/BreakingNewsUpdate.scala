@@ -10,7 +10,7 @@ import com.gu.mobile.notifications.client.models.TopicTypes.Breaking
 import com.gu.mobile.notifications.client.models._
 import conf.ApplicationConfiguration
 import org.apache.commons.lang3.StringEscapeUtils
-import logging.Logging
+import play.api.Logger
 import play.api.libs.json.Json
 import play.api.libs.ws.{WSClient, WSResponse}
 import play.api.mvc.Result
@@ -21,12 +21,11 @@ import scala.concurrent.Future
 import scala.util.control.NonFatal
 import scala.util.{Failure, Success, Try}
 
-
 class InvalidNotificationContentType(msg: String) extends Throwable(msg) {}
 
-class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient, val structuredLogger: StructuredLogger) extends Logging {
+class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient, val auditingUpdates: AuditingUpdates) {
   lazy val client = {
-    logger.info(s"Configuring breaking news client to send notifications to ${config.notification.host}")
+    Logger.info(s"Configuring breaking news client to send notifications to ${config.notification.host}")
     ApiClient(
       host = config.notification.host,
       apiKey = config.notification.key,
@@ -39,7 +38,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
     collection: ClientHydratedCollection,
     email: String
   ): Future[Result] = {
-    structuredLogger.putLog(LogUpdate(HandlingBreakingNewsCollection(collectionId), email))
+    auditingUpdates.putAudit(AuditUpdate(HandlingBreakingNewsCollection(collectionId), email))
     val futurePossibleErrors = Future.traverse(collection.trails)(trail => sendAlert(trail, email, collectionId))
     futurePossibleErrors.map { listOfPossibleErrors => {
       val errors = listOfPossibleErrors.flatten
@@ -51,7 +50,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
   private def sendAlert(trail: ClientHydratedTrail, email: String, collectionId: String): Future[Option[String]] = {
     def handleSuccessfulFuture(result: Either[ApiClientError, Unit]) = result match {
       case Left(error) =>
-        structuredLogger.putLog(LogUpdate(HandlingBreakingNewsCollection(collectionId), email), "error", Some(new Exception(error.description)))
+        Logger.error(s"Error in breaking news: ${error.description}")
         Some(error.description)
       case Right(_) => None
     }
@@ -60,13 +59,13 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
         case Success(futureMaybeError) => futureMaybeError
         case Failure(t: Throwable) =>
           val message = s"Exception in breaking news client send for trail ${trail.headline} because ${t.getMessage}"
-          logger.error(message, t)
+          Logger.error(message, t)
           Future.successful(Some(message))}
     }
 
     if (trail.alert.getOrElse(false)) {
       withExceptionHandling({
-        structuredLogger.putLog(LogUpdate(HandlingBreakingNewsTrail(collectionId, trail: ClientHydratedTrail), email))
+        auditingUpdates.putAudit(AuditUpdate(HandlingBreakingNewsTrail(collectionId, trail: ClientHydratedTrail), email))
         client.send(createPayload(trail, email))
           .map(handleSuccessfulFuture)
           .recover {
@@ -74,7 +73,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
           }
       })
     } else {
-      logger.error(s"Failed to send a breaking news alert for trail ${trail} because alert was missing")
+      Logger.error(s"Failed to send a breaking news alert for trail ${trail} because alert was missing")
       Future.successful(Some("There may have been a problem in sending a breaking news alert. Please contact central production for information"))
     }
   }
@@ -105,7 +104,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
         shortUrl = trail.shortUrl
       )
     } else {
-      throw new InvalidNotificationContentType(s"Can't send snap notifications for trail: ${trail.headline}")
+      throw new InvalidNotificationContentType("Impossible to send snap notifications")
     }
   }
 
@@ -134,7 +133,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
   }
 }
 
-class NotificationHttpProvider(val ws: WSClient) extends HttpProvider with Logging {
+class NotificationHttpProvider(val ws: WSClient) extends HttpProvider {
   override def post(url: String, contentType: ContentType, body: Array[Byte]): Future[HttpResponse] = {
     ws.url(url)
       .withHttpHeaders("Content-Type" -> s"${contentType.mediaType}; charset=${contentType.charset}")
@@ -146,10 +145,10 @@ class NotificationHttpProvider(val ws: WSClient) extends HttpProvider with Loggi
 
   private def extract(response: WSResponse): HttpResponse = {
     if (response.status >= 200 && response.status < 300) {
-      logger.info("Breaking news notification sent correctly")
+      Logger.info("Breaking news notification sent correctly")
       HttpOk(response.status, response.body)
     } else {
-      logger.error(s"Unable to send breaking news notification, status ${response.status}: ${response.statusText}")
+      Logger.error(s"Unable to send breaking news notification, status ${response.status}: ${response.statusText}")
       HttpError(response.status, response.body)
     }
   }

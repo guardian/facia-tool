@@ -5,7 +5,7 @@ import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder
 import com.amazonaws.services.sqs.model.SendMessageResult
 import conf.ApplicationConfiguration
 import metrics.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}
-import logging.Logging
+import play.api.Logger
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -48,7 +48,7 @@ class FaciaPressQueue(val config: ApplicationConfiguration) {
   }
 }
 
-class FaciaPress(val faciaPressQueue: FaciaPressQueue, val configAgent: ConfigAgent) extends Logging {
+class FaciaPress(val faciaPressQueue: FaciaPressQueue, val configAgent: ConfigAgent) {
   def press(pressCommand: PressCommand): Future[List[SendMessageResult]] = {
     configAgent.refreshAndReturn() flatMap { _ =>
       val paths: Set[String] = for {
@@ -62,7 +62,7 @@ class FaciaPress(val faciaPressQueue: FaciaPressQueue, val configAgent: ConfigAg
           fut.onComplete {
             case Failure(error) =>
               EnqueuePressFailure.increment()
-              logger.error("Error manually pressing live collection through update from tool", error)
+              Logger.error("Error manually pressing live collection through update from tool", error)
             case Success(_) =>
               EnqueuePressSuccess.increment()
           }
@@ -77,7 +77,7 @@ class FaciaPress(val faciaPressQueue: FaciaPressQueue, val configAgent: ConfigAg
           fut.onComplete {
             case Failure(error) =>
               EnqueuePressFailure.increment()
-              logger.error("Error manually pressing draft collection through update from tool", error)
+              Logger.error("Error manually pressing live collection through update from tool", error)
             case Success(_) =>
               EnqueuePressSuccess.increment()
           }

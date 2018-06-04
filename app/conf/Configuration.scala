@@ -7,20 +7,19 @@ import com.amazonaws.AmazonClientException
 import com.amazonaws.auth._
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import org.apache.commons.io.IOUtils
-import play.api.{Configuration => PlayConfiguration}
-import logging.Logging
+import play.api.{Logger, Configuration => PlayConfiguration}
 
 import scala.collection.JavaConverters._
 import scala.language.reflectiveCalls
 
 class BadConfigurationException(msg: String) extends RuntimeException(msg)
 
-class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isProd: Boolean) extends Logging  {
+class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isProd: Boolean) {
   private val propertiesFile = "/etc/gu/facia-tool.properties"
   private val installVars = new File(propertiesFile) match {
     case f if f.exists => IOUtils.toString(new FileInputStream(f))
     case _ =>
-      logger.warn("Missing configuration file $propertiesFile")
+      Logger.warn("Missing configuration file $propertiesFile")
       ""
   }
 
@@ -49,7 +48,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
 
   object environment {
     val stage = stageFromProperties.toLowerCase
-    logger.info("is prod ")
+    Logger.info("is prod ")
     val applicationName = "facia-tool"
 
     // isProd is derived from the enviroment mode which is given
@@ -90,7 +89,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
         Some(provider)
       } catch {
         case ex: AmazonClientException =>
-          logger.error("amazon client exception")
+          Logger.error("amazon client exception")
 
           // We really, really want to ensure that PROD is configured before saying a box is OK
           if (isProd) throw ex
@@ -113,7 +112,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
         Some(provider)
       } catch {
         case ex: AmazonClientException =>
-          logger.error("amazon client cross account exception")
+          Logger.error("amazon client cross account exception")
 
           // We really, really want to ensure that PROD is configured before saying a box is OK
           if (isProd) throw ex
