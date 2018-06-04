@@ -14,7 +14,7 @@ import services._
 import slices.{Containers, FixedContainers}
 import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
-import updates.{StructuredLogger, BreakingNewsUpdate}
+import updates.{AuditingUpdates, BreakingNewsUpdate}
 import util.{Acl, Encryption}
 
 class AppComponents(context: Context) extends BaseFaciaControllerComponents(context) {
@@ -29,14 +29,14 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val s3FrontsApi = new S3FrontsApi(config, isTest, awsEndpoints)
   val faciaApiIO = new FaciaApiIO(frontsApi, s3FrontsApi)
   val configAgent = new ConfigAgent(config, frontsApi)
-  val structuredLogger = new StructuredLogger(config, configAgent)
-  val breakingNewsUpdate = new BreakingNewsUpdate(config, wsClient, structuredLogger)
+  val auditingUpdates = new AuditingUpdates(config, configAgent)
+  val breakingNewsUpdate = new BreakingNewsUpdate(config, wsClient, auditingUpdates)
   val fixedContainers = new FixedContainers(config)
   val containerThumbnails = new ContainerThumbnails(fixedContainers)
   val containers = new Containers(fixedContainers)
   val faciaPressQueue = new FaciaPressQueue(config)
   val faciaPress = new FaciaPress(faciaPressQueue, configAgent)
-  val updateActions = new UpdateActions(faciaApiIO, frontsApi, config, configAgent, structuredLogger)
+  val updateActions = new UpdateActions(faciaApiIO, frontsApi, config, configAgent)
   val updateManager = new UpdateManager(updateActions, configAgent, s3FrontsApi)
   val cloudwatch = new CloudWatch(config, awsEndpoints)
   val press = new Press(faciaPress)
@@ -47,12 +47,12 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val loggingHttpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, sourceMapper, Some(router))
 
 //  Controllers
-  val collection = new CollectionController(acl, structuredLogger, updateManager, press, this)
+  val collection = new CollectionController(acl, auditingUpdates, updateManager, press, this)
   val defaults = new DefaultsController(acl, isDev, this)
   val faciaCapiProxy = new FaciaContentApiProxy(this)
   val faciaTool = new FaciaToolController(acl, frontsApi, faciaApiIO, updateActions, breakingNewsUpdate,
-    structuredLogger, faciaPress, faciaPressQueue, configAgent, s3FrontsApi, mediaServiceClient, this)
-  val front = new FrontController(acl, structuredLogger, updateManager, press, this)
+    auditingUpdates, faciaPress, faciaPressQueue, configAgent, s3FrontsApi, mediaServiceClient, this)
+  val front = new FrontController(acl, auditingUpdates, updateManager, press, this)
   val pandaAuth = new PandaAuthController(this)
   val status = new StatusController(this)
   val storiesVisible = new StoriesVisibleController(containers, this)
@@ -64,7 +64,6 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val views = new ViewsController(acl, assetsManager, isDev, encryption, this)
   val pressController = new PressController(awsEndpoints, this)
   val v2App = new V2App(isDev, acl, this)
-
 
   final override lazy val corsConfig: CORSConfig = CORSConfig.fromConfiguration(context.initialConfiguration).copy(
     allowedOrigins = Origins.Matching(Set(config.environment.applicationUrl))

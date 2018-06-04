@@ -91,22 +91,16 @@ case class HandlingBreakingNewsTrail(id: String, breakingNewsTrail: ClientHydrat
   def affectedFronts(configAgent: ConfigAgent) = configAgent.getConfigsUsingCollectionId(id).toSet[String]
 }
 
-case class ArchiveUpdate(id: String) extends UpdateMessage {
-  def affectedFronts(configAgent: ConfigAgent) = configAgent.getConfigsUsingCollectionId(id).toSet[String]
-}
-
 /* Macro - Watch out, this needs to be after the case classes */
 object UpdateMessage {
   implicit val format = derived.flat.oformat[UpdateMessage]((__ \ "type").format[String])
 }
 
 /* Kinesis messages */
-case class LogUpdate(update: UpdateMessage, email: String) {
+case class AuditUpdate(update: UpdateMessage, email: String) {
   def fronts(configAgent: ConfigAgent): Set[String] = update.affectedFronts(configAgent)
   val dateTime: DateTime = new DateTime()
 }
-
-object LogUpdate {
-  implicit val streamUpdateFormat: Format[LogUpdate] = Json.format[LogUpdate]
+object AuditUpdate {
+  implicit val streamUpdateFormat: Format[AuditUpdate] = Json.format[AuditUpdate]
 }
-

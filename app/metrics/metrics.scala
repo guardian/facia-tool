@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicLong
 
 import akka.actor.Scheduler
 import com.amazonaws.services.cloudwatch.model.{Dimension, StandardUnit}
-import logging.Logging
+import play.api.{Logger, Application => PlayApp}
 
 import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -129,7 +129,7 @@ object FaciaToolMetrics {
   )
 }
 
-class CloudWatchApplicationMetrics(appName: String, stage: String, cloudWatch: CloudWatch, val scheduler: Scheduler, val isDev: Boolean) extends Logging {
+class CloudWatchApplicationMetrics(appName: String, stage: String, cloudWatch: CloudWatch, val scheduler: Scheduler, val isDev: Boolean) {
   val applicationMetricsNamespace: String = "Application"
   val applicationDimension: Dimension = new Dimension().withName("ApplicationName").withValue(appName)
   def applicationMetrics: List[FrontendMetric] = List(
@@ -164,6 +164,7 @@ class CloudWatchApplicationMetrics(appName: String, stage: String, cloudWatch: C
     }
   }
 
-  logger.info("Starting cloudwatch metrics")
+  Logger.info("Starting cloudwatch metrics")
   scheduler.schedule(initialDelay = 1.seconds, interval = 1.minute) { report() }
+
 }

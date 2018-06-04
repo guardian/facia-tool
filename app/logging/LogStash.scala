@@ -9,7 +9,8 @@ import net.logstash.logback.layout.LogstashLayout
 import org.slf4j.LoggerFactory
 import play.api.{LoggerLike, Logger => PlayLogger}
 
-object LogStash extends Logging {
+object LogStash {
+
   lazy val loggingContext = LoggerFactory.getILoggerFactory.asInstanceOf[LoggerContext]
 
   case class KinesisAppenderConfig(
