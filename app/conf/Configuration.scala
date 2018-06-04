@@ -49,7 +49,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
 
   object environment {
     val stage = stageFromProperties.toLowerCase
-    Logger.info("is prod ")
+    logger.info("is prod ")
     val applicationName = "facia-tool"
 
     // isProd is derived from the enviroment mode which is given

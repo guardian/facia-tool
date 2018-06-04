@@ -11,8 +11,6 @@ import util.Acl
 import util.Requests._
 import logging.Logging
 
-
-
 object CollectionRequest {
   implicit val jsonFormat = Json.format[CollectionRequest]
 }
@@ -28,16 +26,9 @@ object CreateCollectionResponse {
 
 case class CreateCollectionResponse(id: String)
 
-<<<<<<< HEAD
-class CollectionController(val acl: Acl, val auditingUpdates: AuditingUpdates,
+class CollectionController(val acl: Acl, val structuredLogger: StructuredLogger,
                            val updateManager: UpdateManager, val press: Press, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext)
-  extends BaseFaciaController(deps) {
-=======
-class CollectionController(val config: ApplicationConfiguration, val acl: Acl, val structuredLogger: StructuredLogger,
-                           val updateManager: UpdateManager, val press: Press) extends Controller
-  with PanDomainAuthActions
-  with Logging {
->>>>>>> a7fae19025... Renamed auditUpdates structuredLogger; added Logging trait with implicit logger for better ID on log; a few changes to logging statements
+  extends BaseFaciaController(deps) with Logging {
   def create = (APIAuthAction andThen new ConfigPermissionCheck(acl)){ request =>
     request.body.read[CollectionRequest] match {
       case Some(CollectionRequest(frontIds, collection)) =>
