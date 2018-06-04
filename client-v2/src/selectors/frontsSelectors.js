@@ -132,7 +132,7 @@ const frontsConfigSelector = createSelector(
 );
 
 const alsoOnFrontSelector = (
-  currentFront: FrontConfig,
+  currentFront: ?FrontConfig,
   fronts: Array<FrontConfig>
 ): { [string]: AlsoOnDetail } => {
   if (!currentFront) {
@@ -205,5 +205,6 @@ export {
   collectionConfigsSelector,
   frontsIdsSelector,
   getFrontsWithPriority,
-  alsoOnSelector
+  alsoOnSelector,
+  alsoOnFrontSelector
 };
