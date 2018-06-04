@@ -7,7 +7,7 @@ import com.gu.logback.appender.kinesis.KinesisAppender
 import conf.ApplicationConfiguration
 import net.logstash.logback.layout.LogstashLayout
 import org.slf4j.LoggerFactory
-import play.api.{LoggerLike, Logger => PlayLogger}
+import play.api.{LoggerLike}
 
 object LogStash {
 
@@ -55,9 +55,9 @@ object LogStash {
 
   def init(config: ApplicationConfiguration) = {
     if(config.logging.enabled) {
-      PlayLogger.info("LogConfig initializing")
+      logger.info("LogConfig initializing")
       (for {
-        lb <- asLogBack(PlayLogger)
+        lb <- asLogBack(logger)
       } yield {
         lb.info("Configuring Logback")
         val context = lb.getLoggerContext
@@ -80,9 +80,9 @@ object LogStash {
         )
         lb.addAppender(appender)
         lb.info("Configured Logback")
-      })getOrElse(PlayLogger.info("not running using logback"))
+      })getOrElse(logger.info("not running using logback"))
     } else {
-      PlayLogger.info("Logging disabled")
+      logger.info("Logging disabled")
     }
   }
 }
