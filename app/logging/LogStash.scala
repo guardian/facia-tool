@@ -6,12 +6,10 @@ import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider
 import com.gu.logback.appender.kinesis.KinesisAppender
 import conf.ApplicationConfiguration
 import net.logstash.logback.layout.LogstashLayout
-import org.slf4j.LoggerFactory
-import play.api.{LoggerLike}
+import org.slf4j.{LoggerFactory, Logger => SLFLogger}
 
-object LogStash {
-
-  lazy val loggingContext = LoggerFactory.getILoggerFactory.asInstanceOf[LoggerContext]
+object LogStash extends Logging {
+  private val rootLogger = LoggerFactory.getLogger(SLFLogger.ROOT_LOGGER_NAME).asInstanceOf[LogbackLogger]
 
   case class KinesisAppenderConfig(
      stream: String,
@@ -23,11 +21,6 @@ object LogStash {
 
   def makeCustomFields(customFields: Map[String, String]): String = {
     "{" + (for((k, v) <- customFields) yield(s""""${k}":"${v}"""")).mkString(",") + "}"
-  }
-
-  def asLogBack(l: LoggerLike): Option[LogbackLogger] = l.logger match {
-    case l: LogbackLogger => Some(l)
-    case _ => None
   }
 
   def makeLayout(customFields: String) = {
@@ -56,31 +49,26 @@ object LogStash {
   def init(config: ApplicationConfiguration) = {
     if(config.logging.enabled) {
       logger.info("LogConfig initializing")
-      (for {
-        lb <- asLogBack(logger)
-      } yield {
-        lb.info("Configuring Logback")
-        val context = lb.getLoggerContext
-        val customFields = Map(
-          "stack" -> "cms-fronts",
-          "stage" -> config.environment.stage.toUpperCase,
-          "app"   -> config.environment.applicationName
-        )
-        val layout = makeLayout(makeCustomFields(customFields))
-        val bufferSize = 1000
-        // remove the default configuration
-        val appender  = makeKinesisAppender(layout, context,
-          KinesisAppenderConfig(
-            config.logging.stream,
-            config.logging.streamRegion,
-            config.logging.streamRole,
-            config.environment.applicationName,
-            bufferSize
-          )
-        )
-        lb.addAppender(appender)
-        lb.info("Configured Logback")
-      })getOrElse(logger.info("not running using logback"))
+      val context = rootLogger.getLoggerContext
+      val customFields = Map(
+        "stack" -> "cms-fronts",
+        "stage" -> config.environment.stage.toUpperCase,
+        "app"   -> config.environment.applicationName
+      )
+      val layout = makeLayout(makeCustomFields(customFields))
+      val bufferSize = 1000
+      // remove the default configuration
+      val appender  = makeKinesisAppender(layout, context,
+        KinesisAppenderConfig(
+          config.logging.stream,
+          config.logging.streamRegion,
+          config.logging.streamRole,
+          config.environment.applicationName,
+          bufferSize
+        ))
+
+      rootLogger.addAppender(appender)
+      logger.info("Configured Logback")
     } else {
       logger.info("Logging disabled")
     }
