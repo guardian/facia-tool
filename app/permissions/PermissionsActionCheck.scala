@@ -2,30 +2,29 @@ package permissions
 
 import com.gu.pandomainauth.action.UserRequest
 import controllers.BaseFaciaController
-import play.api.Logger
 import play.api.mvc._
 import services.ConfigAgent
 import util.{AccessDenied, AccessGranted, Acl, Authorization}
+import logging.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait PermissionActionFilter extends ActionFilter[UserRequest] {
+trait PermissionActionFilter extends ActionFilter[UserRequest] with Logging {
 
   implicit val executionContext: ExecutionContext
-
   val testAccess: String => Future[Authorization]
   val restrictedAction: String
+
 
   override def filter[A](request: UserRequest[A]) =
     testAccess(request.user.email).map {
       case AccessGranted => None
       case AccessDenied =>
-        Logger.info(s"user not authorized to $restrictedAction")
+        logger.info(s"User with e-mail ${request.user.email} not authorized to $restrictedAction")
         Some(Results.Unauthorized(views.html.unauthorized()))}
 }
 
 class ConfigPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext) extends PermissionActionFilter {
-
   val executionContext = ec
   val testAccess: String => Future[Authorization] = acl.testUser(Permissions.ConfigureFronts, "facia-tool-allow-config-for-all")
   val restrictedAction = "configure fronts"
@@ -37,7 +36,7 @@ class BreakingNewsPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext) e
   val restrictedAction = "send breaking news alerts"
 }
 
-trait BreakingNewsEditCollectionsCheck { self: BaseFaciaController =>
+trait BreakingNewsEditCollectionsCheck extends Logging { self: BaseFaciaController =>
   def acl: Acl
   def configAgent: ConfigAgent
 
@@ -50,7 +49,7 @@ trait BreakingNewsEditCollectionsCheck { self: BaseFaciaController =>
     testAccess(request.user.email, collectionIds).flatMap {
       case AccessGranted => block
       case AccessDenied =>
-        Logger.info("user not authorized to send breaking news alerts")
+        logger.info(s"User with e-mail ${request.user.email} not authorized to send breaking news alerts")
         Future.successful(Results.Unauthorized)}
   }
 }

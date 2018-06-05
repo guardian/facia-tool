@@ -7,13 +7,15 @@ import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCred
 import com.gu.contentapi.client.{IAMEncoder, IAMSigner}
 import metrics.FaciaToolMetrics
 import model.Cached
-import play.api.Logger
+
+import logging.Logging
 import switchboard.SwitchManager
 import util.ContentUpgrade.rewriteBody
 
 import scala.concurrent.ExecutionContext
 
-class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext)extends BaseFaciaController(deps) {
+
+class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) with Logging {
   implicit class string2encodings(s: String) {
     lazy val urlEncoded = URLEncoder.encode(s, "utf-8")
   }
@@ -44,7 +46,6 @@ class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec:
 
     val url = s"$contentApiHost/$path?$queryString${config.contentApi.key.map(key => s"&api-key=$key").getOrElse("")}"
 
-    Logger.info(s"Proxying preview API query to: $url")
 
     wsClient.url(url).withHttpHeaders(getPreviewHeaders(url): _*).get().map { response =>
       Cached(60) {
@@ -62,8 +63,6 @@ class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec:
     val contentApiHost = config.contentApi.contentApiLiveHost
 
     val url = s"$contentApiHost/$path?$queryString${config.contentApi.key.map(key => s"&api-key=$key").getOrElse("")}"
-
-    Logger.info(s"Proxying live API query to: $url")
 
     wsClient.url(url).get().map { response =>
       Cached(60) {
@@ -84,7 +83,6 @@ class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec:
 
   def json(url: String) = APIAuthAction.async { request =>
     FaciaToolMetrics.ProxyCount.increment()
-    Logger.info(s"Proxying json request to: $url")
 
     wsClient.url(url).withHttpHeaders(getPreviewHeaders(url): _*).get().map { response =>
       Cached(60) {
@@ -103,8 +101,6 @@ class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec:
     val ophanKey = config.ophanApi.key.map(key => s"&api-key=$key").getOrElse("")
 
     val url = s"$ophanApiHost/$path?$queryString&$paths&$ophanKey"
-
-    Logger.info(s"Proxying ophan request to: $url")
 
     wsClient.url(url).get().map { response =>
       Cached(60) {

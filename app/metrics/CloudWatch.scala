@@ -5,12 +5,12 @@ import com.amazonaws.handlers.AsyncHandler
 import com.amazonaws.services.cloudwatch.model._
 import com.amazonaws.services.cloudwatch.{AmazonCloudWatchAsync, AmazonCloudWatchAsyncClientBuilder}
 import conf.ApplicationConfiguration
-import play.api.Logger
+import logging.Logging
 import services.AwsEndpoints
 
 import scala.collection.JavaConverters._
 
-class CloudWatch(val config: ApplicationConfiguration, val awsEndpoints: AwsEndpoints) {
+class CloudWatch(val config: ApplicationConfiguration, val awsEndpoints: AwsEndpoints) extends Logging {
 
   lazy val cloudwatch: Option[AmazonCloudWatchAsync] = config.aws.credentials.map(credentials => {
     val endpoint = new AwsClientBuilder.EndpointConfiguration(awsEndpoints.monitoring, config.aws.region)
@@ -22,25 +22,21 @@ class CloudWatch(val config: ApplicationConfiguration, val awsEndpoints: AwsEndp
   trait LoggingAsyncHandler extends AsyncHandler[PutMetricDataRequest, PutMetricDataResult] {
     def onError(exception: Exception)
     {
-      Logger.info(s"CloudWatch PutMetricDataRequest error: ${exception.getMessage}}")
+      logger.warn(s"CloudWatch PutMetricDataRequest error: ${exception.getMessage}}")
     }
-    def onSuccess(request: PutMetricDataRequest, result: PutMetricDataResult )
-    {
-      Logger.info("CloudWatch PutMetricDataRequest - success")
+    def onSuccess(request: PutMetricDataRequest, result: PutMetricDataResult ): Unit = {
+
     }
   }
 
   case class AsyncHandlerForMetric(frontendStatisticSets: List[FrontendStatisticSet]) extends LoggingAsyncHandler {
     override def onError(exception: Exception) = {
-      Logger.warn(s"Failed to put ${frontendStatisticSets.size} metrics: $exception")
-      Logger.warn(s"Failed to put ${frontendStatisticSets.map(_.metric.name).mkString(",")}")
+      logger.warn(s"Failed to put ${frontendStatisticSets.size} metrics: $exception")
+      logger.warn(s"Failed to put ${frontendStatisticSets.map(_.metric.name).mkString(",")}")
       frontendStatisticSets.foreach { _.reset() }
       super.onError(exception)
     }
     override def onSuccess(request: PutMetricDataRequest, result: PutMetricDataResult ) = {
-      Logger.info(s"Successfully put ${frontendStatisticSets.size} metrics")
-      Logger.info(s"Successfully put ${frontendStatisticSets.map(_.metric.name).mkString(",")}")
-
       super.onSuccess(request, result)
     }
   }
