@@ -4,7 +4,7 @@ import akka.agent.Agent
 import com.gu.facia.api.models.CollectionConfig
 import com.gu.facia.client.models.{ConfigJson => Config}
 import conf.ApplicationConfiguration
-import logging.Logging
+import play.api.Logger
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -12,14 +12,14 @@ import scala.util.{Failure, Success}
 
 case class CollectionConfigWithId(id: String, config: CollectionConfig)
 
-class ConfigAgent(val config: ApplicationConfiguration, val frontsApi: FrontsApi) extends Logging {
+class ConfigAgent(val config: ApplicationConfiguration, val frontsApi: FrontsApi) {
   private lazy val configAgent = Agent[Option[Config]](None)
 
   def refresh() = {
     val futureConfig = frontsApi.amazonClient.config
     futureConfig.onComplete {
-      case Success(config) => logger.info(s"Successfully got config")
-      case Failure(t) => logger.error(s"Getting config failed with $t", t)
+      case Success(config) => Logger.info(s"Successfully got config")
+      case Failure(t) => Logger.error(s"Getting config failed with $t", t)
     }
     futureConfig.map(Option.apply).map(configAgent.send)
   }
@@ -32,7 +32,7 @@ class ConfigAgent(val config: ApplicationConfiguration, val frontsApi: FrontsApi
     frontsApi.amazonClient.config
       .flatMap(config => configAgent.alter{_ => Option(config)})
       .recover{case err =>
-        logger.warn("Falling back to current ConfigAgent contents on refreshAndReturn", err)
+        Logger.warn("Falling back to current ConfigAgent contents on refreshAndReturn", err)
         configAgent.get()}
 
   def getBreakingNewsCollectionIds: Set[String] =
