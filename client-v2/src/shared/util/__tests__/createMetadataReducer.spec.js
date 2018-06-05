@@ -20,18 +20,22 @@ describe('getMetaDataReducer', () => {
   describe('actions', () => {
     it('should provide actions for a given data type', () => {
       expect(actions.fetchStart()).toEqual({
+        localType: 'START',
         type: 'BOOKS_FETCH_START',
         payload: { id: undefined }
       });
       expect(actions.fetchStart('bookId')).toEqual({
+        localType: 'START',
         type: 'BOOKS_FETCH_START',
         payload: { id: 'bookId' }
       });
       expect(actions.fetchSuccess({ data: 'exampleData' })).toEqual({
+        localType: 'SUCCESS',
         type: 'BOOKS_FETCH_SUCCESS',
         payload: { data: { data: 'exampleData' }, time: 1337 }
       });
       expect(actions.fetchError('Something went wrong')).toEqual({
+        localType: 'ERROR',
         type: 'BOOKS_FETCH_ERROR',
         payload: { error: 'Something went wrong', time: 1337 }
       });

@@ -54,7 +54,7 @@ export default (entityName: string, options: TOptions = {}) => {
     data?: any | null,
     lastError: string | null,
     error: string | null,
-    lastFetch: string | null,
+    lastFetch: number | null,
     loadingIds: string[]
   };
 
@@ -84,34 +84,44 @@ export default (entityName: string, options: TOptions = {}) => {
     state[mountPoint || entityName];
 
   type TFetchStartAction = {|
+    // In this, and subsequent action types, we include a local
+    // type to ensure that Flow can disambiguate action types in the
+    // reducer. Alternative solutions welcome!
+    localType: 'START',
     type: typeof FETCH_START,
     payload: { id?: string }
   |};
 
   const fetchStartAction = (id?: string): TFetchStartAction => ({
+    localType: 'START',
     type: FETCH_START,
     payload: { id }
   });
 
   type TFetchSuccessAction = {|
+    localType: 'SUCCESS',
     type: typeof FETCH_SUCCESS,
     payload: { data: any, time: number }
   |};
 
   const fetchSuccessAction = (data: any): TFetchSuccessAction => ({
+    localType: 'SUCCESS',
     type: FETCH_SUCCESS,
     payload: { data, time: Date.now() }
   });
 
   type TFetchErrorAction = {|
+    localType: 'ERROR',
     type: typeof FETCH_ERROR,
     payload: {
       error: string,
-      time: number
+      time: number,
+      id?: string
     }
   |};
 
   const fetchErrorAction = (error: string, id?: string): TFetchErrorAction => ({
+    localType: 'ERROR',
     type: FETCH_ERROR,
     payload: { error, id, time: Date.now() }
   });
@@ -123,18 +133,14 @@ export default (entityName: string, options: TOptions = {}) => {
 
   return {
     initialState,
-    reducer: (state: State = initialState, action: any): State => {
-      if (action.type === FETCH_START) {
+    reducer: (state: State = initialState, action: TAction): State => {
+      if (action.type === FETCH_START && action.localType === 'START') {
         return {
           ...state,
           loadingIds: state.loadingIds.concat(action.payload.id || '@@ALL')
         };
       }
-      if (
-        action.type === FETCH_SUCCESS &&
-        action.payload &&
-        action.payload.data
-      ) {
+      if (action.type === FETCH_SUCCESS && action.localType === 'SUCCESS') {
         return {
           ...state,
           data: applyNewData(state, action.payload.data),
@@ -146,7 +152,7 @@ export default (entityName: string, options: TOptions = {}) => {
             : []
         };
       }
-      if (action.type === FETCH_ERROR) {
+      if (action.type === FETCH_ERROR && action.localType === 'ERROR') {
         if (!action.payload || !action.payload.error || !action.payload.time) {
           return state;
         }
@@ -155,10 +161,10 @@ export default (entityName: string, options: TOptions = {}) => {
         }
         return {
           ...state,
-          lastError: action.payload.time,
+          lastError: action.payload.error,
           error: action.payload.error,
           loadingIds: indexById
-            ? without(state.loadingIds, action.payload.data.id)
+            ? without(state.loadingIds, action.payload.id)
             : []
         };
       }
