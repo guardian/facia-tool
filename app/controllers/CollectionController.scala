@@ -9,8 +9,7 @@ import services.Press
 import updates._
 import util.Acl
 import util.Requests._
-
-
+import logging.Logging
 
 object CollectionRequest {
   implicit val jsonFormat = Json.format[CollectionRequest]
@@ -27,9 +26,9 @@ object CreateCollectionResponse {
 
 case class CreateCollectionResponse(id: String)
 
-class CollectionController(val acl: Acl, val auditingUpdates: AuditingUpdates,
+class CollectionController(val acl: Acl, val structuredLogger: StructuredLogger,
                            val updateManager: UpdateManager, val press: Press, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext)
-  extends BaseFaciaController(deps) {
+  extends BaseFaciaController(deps) with Logging {
   def create = (APIAuthAction andThen new ConfigPermissionCheck(acl)){ request =>
     request.body.read[CollectionRequest] match {
       case Some(CollectionRequest(frontIds, collection)) =>
@@ -37,7 +36,7 @@ class CollectionController(val acl: Acl, val auditingUpdates: AuditingUpdates,
         val identity = request.user
         val collectionId = updateManager.addCollection(frontIds, collection, identity)
         press.fromSetOfIdsWithForceConfig(Set(collectionId))
-        auditingUpdates.putAudit(AuditUpdate(CollectionCreate(frontIds, collection, collectionId), identity.email))
+        structuredLogger.putLog(LogUpdate(CollectionCreate(frontIds, collection, collectionId), identity.email))
         Ok(Json.toJson(CreateCollectionResponse(collectionId)))
 
       case None => BadRequest
@@ -51,7 +50,7 @@ class CollectionController(val acl: Acl, val auditingUpdates: AuditingUpdates,
         val identity = request.user
         updateManager.updateCollection(collectionId, frontIds, collection, identity)
         press.fromSetOfIdsWithForceConfig(Set(collectionId))
-        auditingUpdates.putAudit(AuditUpdate(CollectionUpdate(frontIds, collection, collectionId), identity.email))
+        structuredLogger.putLog(LogUpdate(CollectionUpdate(frontIds, collection, collectionId), identity.email))
         Ok
 
       case None => BadRequest

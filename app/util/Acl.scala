@@ -2,10 +2,9 @@ package util
 
 import com.gu.editorial.permissions.client.{Permission, PermissionDenied, PermissionGranted, PermissionsUser}
 import permissions.Permissions
-import play.api.Logger
 import play.api.libs.json.{JsBoolean, JsValue, Json, Writes}
 import switchboard.SwitchManager
-
+import logging.Logging
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -28,7 +27,7 @@ case class AclJson (
   permissions: Map[String, Authorization]
 )
 
-class Acl(permissions: Permissions) {
+class Acl(permissions: Permissions) extends Logging {
   def testUser(permission: Permission, switch: String)
               (email: String): Future[Authorization] = {
     implicit val permissionsUser: PermissionsUser = PermissionsUser(email)
@@ -39,7 +38,7 @@ class Acl(permissions: Permissions) {
       }}
     else Future.successful(AccessGranted)
 
-    f.failed.foreach{case t => Logger.error(s"Unable to get acl status for ${permission.name} $switch", t)}
+    f.failed.foreach{case t => logger.error(s"Unable to get acl status for ${permission.name} $switch", t)}
     f
   }
 
