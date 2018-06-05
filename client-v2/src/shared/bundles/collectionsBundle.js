@@ -7,4 +7,4 @@ export const {
   actionNames,
   reducer,
   selectors
-} = createAsyncResourceBundle('externalArticles', { indexById: true });
+} = createAsyncResourceBundle('collections', { indexById: true });

@@ -179,7 +179,7 @@ const createCollectionsAsTreeSelector = () =>
   );
 
 // Selects the shared part of the application state mounted at its default point, '.shared'.
-const selectSharedState = (rootState: { shared: State }) => rootState.shared;
+const selectSharedState = (rootState: any): State => rootState.shared;
 
 export {
   externalArticleFromArticleFragmentSelector,

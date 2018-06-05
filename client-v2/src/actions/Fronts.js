@@ -21,8 +21,8 @@ import {
   getArticleIdsFromCollection
 } from 'shared/util/shared';
 import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
-import { actions } from 'shared/bundles/externalArticlesBundle';
-import { collectionReceived } from 'shared/actions/Collection';
+import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
+import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import { errorReceivingFrontCollection } from './Collection';
 import { errorReceivingArticles } from './ExternalArticles';
 
@@ -72,8 +72,9 @@ function errorReceivingConfig(error: string): Action {
 }
 
 function getFrontCollection(collectionId: string) {
-  return (dispatch: Dispatch, getState: () => State) =>
-    getCollection(collectionId)
+  return (dispatch: Dispatch, getState: () => State) => {
+    dispatch(collectionActions.fetchStart(collectionId));
+    return getCollection(collectionId)
       .then((res: Object) => {
         const collectionConfig = getCollectionConfig(getState(), collectionId);
         const collectionWithNestedArticles = combineCollectionWithConfig(
@@ -91,7 +92,7 @@ function getFrontCollection(collectionId: string) {
 
         dispatch(
           batchActions([
-            collectionReceived(collection),
+            collectionActions.fetchSuccess(collection),
             articleFragmentsReceived(articleFragments)
           ])
         );
@@ -101,6 +102,7 @@ function getFrontCollection(collectionId: string) {
         dispatch(errorReceivingFrontCollection(error));
         return [];
       });
+  };
 }
 
 const getCollectionsAndArticles = (collectionIds: Array<string>) => (
@@ -110,7 +112,7 @@ const getCollectionsAndArticles = (collectionIds: Array<string>) => (
     collectionIds.map(collectionId =>
       dispatch(getFrontCollection(collectionId))
         .then(articleIds => {
-          dispatch(actions.fetchStart(articleIds));
+          dispatch(externalArticleActions.fetchStart(articleIds));
           return getArticles(articleIds).catch(err =>
             dispatch(errorReceivingArticles(err))
           );
@@ -119,7 +121,7 @@ const getCollectionsAndArticles = (collectionIds: Array<string>) => (
           if (!articles) {
             return;
           }
-          dispatch(actions.fetchSuccess(articles));
+          dispatch(externalArticleActions.fetchSuccess(articles));
         })
     )
   );

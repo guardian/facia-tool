@@ -25,30 +25,15 @@ const createSelectById = selectLocalState => (state: any, id: string) =>
 const createSelectAll = selectLocalState => (state: any) =>
   selectLocalState(state).data;
 
-const createSelectors = (
-  selectLocalState: (state: any) => any,
-  indexById: boolean
-) => {
-  if (indexById) {
-    return {
-      selectCurrentError: createSelectCurrentError(selectLocalState),
-      selectLastError: createSelectLastError(selectLocalState),
-      selectLastFetch: createSelectLastFetch(selectLocalState),
-      selectIsLoading: createSelectIsLoading(selectLocalState),
-      selectIsLoadingById: createSelectIsLoadingById(selectLocalState),
-      selectById: createSelectById(selectLocalState),
-      selectAll: createSelectAll(selectLocalState)
-    };
-  }
-  return {
-    selectCurrentError: createSelectCurrentError(selectLocalState),
-    selectLastError: createSelectLastError(selectLocalState),
-    selectLastFetch: createSelectLastFetch(selectLocalState),
-    selectIsLoading: createSelectIsLoading(selectLocalState),
-    selectIsLoadingById: createSelectIsLoadingById(selectLocalState),
-    selectAll: createSelectAll(selectLocalState)
-  };
-};
+const createSelectors = (selectLocalState: (state: any) => any) => ({
+  selectCurrentError: createSelectCurrentError(selectLocalState),
+  selectLastError: createSelectLastError(selectLocalState),
+  selectLastFetch: createSelectLastFetch(selectLocalState),
+  selectIsLoading: createSelectIsLoading(selectLocalState),
+  selectIsLoadingById: createSelectIsLoadingById(selectLocalState),
+  selectById: createSelectById(selectLocalState),
+  selectAll: createSelectAll(selectLocalState)
+});
 
 type TOptions = {
   // The key the reducer provided by this bundle is mounted at.
@@ -142,10 +127,10 @@ export default (
     // reducer. Alternative solutions welcome!
     localType: 'START',
     type: typeof FETCH_START,
-    payload: { ids?: string[] }
+    payload: { ids?: string[] | string }
   |};
 
-  const fetchStartAction = (ids?: string[]): TFetchStartAction => ({
+  const fetchStartAction = (ids?: string[] | string): TFetchStartAction => ({
     localType: 'START',
     type: FETCH_START,
     payload: { ids }
@@ -230,6 +215,6 @@ export default (
       fetchSuccess: fetchSuccessAction,
       fetchError: fetchErrorAction
     },
-    selectors: createSelectors(selectLocalState, !!indexById)
+    selectors: createSelectors(selectLocalState)
   };
 };
