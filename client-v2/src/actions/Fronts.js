@@ -21,7 +21,7 @@ import {
   getArticleIdsFromCollection
 } from 'shared/util/shared';
 import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
-import { externalArticlesReceived } from 'shared/actions/ExternalArticles';
+import { actions } from 'shared/bundles/externalArticlesBundle';
 import { collectionReceived } from 'shared/actions/Collection';
 import { errorReceivingFrontCollection } from './Collection';
 import { errorReceivingArticles } from './ExternalArticles';
@@ -109,23 +109,17 @@ const getCollectionsAndArticles = (collectionIds: Array<string>) => (
   Promise.all(
     collectionIds.map(collectionId =>
       dispatch(getFrontCollection(collectionId))
-        .then(articleIds =>
-          getArticles(articleIds).catch(err =>
+        .then(articleIds => {
+          dispatch(actions.fetchStart(articleIds));
+          return getArticles(articleIds).catch(err =>
             dispatch(errorReceivingArticles(err))
-          )
-        )
+          );
+        })
         .then(articles => {
           if (!articles) {
             return;
           }
-          const articlesMap = articles.reduce(
-            (acc, article) => ({
-              ...acc,
-              [article.id]: article
-            }),
-            {}
-          );
-          dispatch(externalArticlesReceived(articlesMap));
+          dispatch(actions.fetchSuccess(articles));
         })
     )
   );

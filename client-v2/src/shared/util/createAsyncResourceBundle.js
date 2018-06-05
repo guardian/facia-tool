@@ -1,6 +1,6 @@
 // @flow
 
-import { without } from 'lodash';
+import { without, snakeCase } from 'lodash';
 
 const createSelectCurrentError = selectLocalState => (state: any) =>
   selectLocalState(state).error;
@@ -19,12 +19,46 @@ const createSelectIsLoadingById = selectLocalState => (
   id: string
 ) => selectLocalState(state).loadingIds.indexOf(id) !== -1;
 
+const createSelectById = selectLocalState => (state: any, id: string) =>
+  selectLocalState(state).data[id];
+
+const createSelectAll = selectLocalState => (state: any) =>
+  selectLocalState(state).data;
+
+const createSelectors = (
+  selectLocalState: (state: any) => any,
+  indexById: boolean
+) => {
+  if (indexById) {
+    return {
+      selectCurrentError: createSelectCurrentError(selectLocalState),
+      selectLastError: createSelectLastError(selectLocalState),
+      selectLastFetch: createSelectLastFetch(selectLocalState),
+      selectIsLoading: createSelectIsLoading(selectLocalState),
+      selectIsLoadingById: createSelectIsLoadingById(selectLocalState),
+      selectById: createSelectById(selectLocalState),
+      selectAll: createSelectAll(selectLocalState)
+    };
+  }
+  return {
+    selectCurrentError: createSelectCurrentError(selectLocalState),
+    selectLastError: createSelectLastError(selectLocalState),
+    selectLastFetch: createSelectLastFetch(selectLocalState),
+    selectIsLoading: createSelectIsLoading(selectLocalState),
+    selectIsLoadingById: createSelectIsLoadingById(selectLocalState),
+    selectAll: createSelectAll(selectLocalState)
+  };
+};
+
 type TOptions = {
   // The key the reducer provided by this bundle is mounted at.
   // Defaults to entityName if none is given.
   mountPoint?: string,
   // Do we index the incoming data by id,
-  indexById?: boolean
+  indexById?: boolean,
+  // Provides a namespace for the created actions, separated by a slash,
+  // e.g.the resource 'books' namespaced with 'shared' becomes SHARED/BOOKS
+  namespace?: string
 };
 
 /**
@@ -43,9 +77,15 @@ type TOptions = {
  * @param {string} entityName  The name of the entity for which this reducer is responsible
  * @param {TOptions} options
  */
-export default (entityName: string, options: TOptions = {}) => {
+export default (
+  entityName: string,
+  options: TOptions = { indexById: false }
+) => {
   const { indexById, mountPoint } = options;
-  const actionKey = entityName.toUpperCase();
+  const baseActionKey = snakeCase(entityName).toUpperCase();
+  const actionKey = options.namespace
+    ? `${options.namespace.toUpperCase()}/${baseActionKey}`
+    : baseActionKey;
   const FETCH_START = `${actionKey}_FETCH_START`;
   const FETCH_SUCCESS = `${actionKey}_FETCH_SUCCESS`;
   const FETCH_ERROR = `${actionKey}_FETCH_ERROR`;
@@ -59,7 +99,7 @@ export default (entityName: string, options: TOptions = {}) => {
   };
 
   const initialState: State = {
-    data: null,
+    data: {},
     lastError: null,
     error: null,
     lastFetch: null,
@@ -72,6 +112,19 @@ export default (entityName: string, options: TOptions = {}) => {
       return {
         ...state.data,
         ...newData
+      };
+    }
+
+    if (Array.isArray(newData)) {
+      return {
+        ...state.data,
+        ...newData.reduce(
+          (acc, model) => ({
+            ...acc,
+            [model.id]: model
+          }),
+          {}
+        )
       };
     }
     return {
@@ -89,13 +142,13 @@ export default (entityName: string, options: TOptions = {}) => {
     // reducer. Alternative solutions welcome!
     localType: 'START',
     type: typeof FETCH_START,
-    payload: { id?: string }
+    payload: { ids?: string[] }
   |};
 
-  const fetchStartAction = (id?: string): TFetchStartAction => ({
+  const fetchStartAction = (ids?: string[]): TFetchStartAction => ({
     localType: 'START',
     type: FETCH_START,
-    payload: { id }
+    payload: { ids }
   });
 
   type TFetchSuccessAction = {|
@@ -126,9 +179,6 @@ export default (entityName: string, options: TOptions = {}) => {
     payload: { error, id, time: Date.now() }
   });
 
-  // We will eventually use this type once we can pass our generics explicitly,
-  // but for now it's not used and we YOLO-type the action parameter of the reducer.
-  // eslint-disable-next-line
   type TAction = TFetchStartAction | TFetchSuccessAction | TFetchErrorAction;
 
   return {
@@ -137,7 +187,7 @@ export default (entityName: string, options: TOptions = {}) => {
       if (action.type === FETCH_START && action.localType === 'START') {
         return {
           ...state,
-          loadingIds: state.loadingIds.concat(action.payload.id || '@@ALL')
+          loadingIds: state.loadingIds.concat(action.payload.ids || '@@ALL')
         };
       }
       if (action.type === FETCH_SUCCESS && action.localType === 'SUCCESS') {
@@ -170,17 +220,16 @@ export default (entityName: string, options: TOptions = {}) => {
       }
       return state;
     },
+    actionNames: {
+      fetchStart: FETCH_START,
+      fetchSuccess: FETCH_SUCCESS,
+      fetchError: FETCH_ERROR
+    },
     actions: {
       fetchStart: fetchStartAction,
       fetchSuccess: fetchSuccessAction,
       fetchError: fetchErrorAction
     },
-    selectors: {
-      selectCurrentError: createSelectCurrentError(selectLocalState),
-      selectLastError: createSelectLastError(selectLocalState),
-      selectLastFetch: createSelectLastFetch(selectLocalState),
-      selectIsLoading: createSelectIsLoading(selectLocalState),
-      selectIsLoadingById: createSelectIsLoadingById(selectLocalState)
-    }
+    selectors: createSelectors(selectLocalState, !!indexById)
   };
 };

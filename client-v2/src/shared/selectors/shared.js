@@ -2,11 +2,10 @@
 
 import { createSelector } from 'reselect';
 import { omit } from 'lodash';
+import { selectors as externalArticleSelectors } from '../bundles/externalArticlesBundle';
 
 import type { ArticleFragment } from '../types/Collection';
 import type { State } from '../types/State';
-
-const externalArticlesSelector = (state: State) => state.externalArticles;
 
 const articleFragmentsSelector = (state: State) => state.articleFragments;
 
@@ -18,7 +17,7 @@ const externalArticleFromArticleFragmentSelector = (
   id: string
 ) => {
   const articleFragment = articleFragmentSelector(state, id);
-  const externalArticles = externalArticlesSelector(state);
+  const externalArticles = externalArticleSelectors.selectAll(state);
   if (!articleFragment) {
     return null;
   }
@@ -183,7 +182,6 @@ const createCollectionsAsTreeSelector = () =>
 const selectSharedState = (rootState: { shared: State }) => rootState.shared;
 
 export {
-  externalArticlesSelector,
   externalArticleFromArticleFragmentSelector,
   createArticleFromArticleFragmentSelector,
   createArticlesInCollectionGroupSelector,

@@ -1,15 +1,13 @@
 // @flow
 
-import type { Action } from 'types/Action';
-import type { ExternalArticle } from '../types/ExternalArticle';
+import { type $ReturnType } from '../types/Utility';
+import createAsyncResourceBundle from '../util/createAsyncResourceBundle';
 
-function externalArticlesReceived(articles: {
-  [string]: ExternalArticle
-}): Action {
-  return {
-    type: 'SHARED/EXTERNAL_ARTICLES_RECEIVED',
-    payload: articles
-  };
-}
+export const { actions, selectors, reducer } = createAsyncResourceBundle(
+  'ExternalArticle'
+);
 
-export { externalArticlesReceived };
+export type Actions =
+  | $ReturnType<typeof actions.fetchStart>
+  | $ReturnType<typeof actions.fetchSuccess>
+  | $ReturnType<typeof actions.fetchError>;

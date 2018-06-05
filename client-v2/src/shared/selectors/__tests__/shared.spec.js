@@ -38,9 +38,11 @@ const state = {
     }
   },
   externalArticles: {
-    ea1: {
-      id: 'ea1',
-      headline: 'Example external article'
+    data: {
+      ea1: {
+        id: 'ea1',
+        headline: 'Example external article'
+      }
     }
   },
   articleFragments: {
@@ -149,7 +151,7 @@ describe('Shared selectors', () => {
   describe('createExternalArticleFromArticleFragmentSelector', () => {
     it('should create a selector that returns an external article referenced by the given article', () => {
       expect(externalArticleFromArticleFragmentSelector(state, 'af1')).toEqual(
-        state.externalArticles.ea1
+        state.externalArticles.data.ea1
       );
       expect(
         externalArticleFromArticleFragmentSelector(state, 'invalid')
