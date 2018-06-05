@@ -11,7 +11,7 @@ import org.slf4j.{LoggerFactory, Logger => SLFLogger}
 object LogStash extends Logging {
   private val rootLogger = LoggerFactory.getLogger(SLFLogger.ROOT_LOGGER_NAME).asInstanceOf[LogbackLogger]
 
-  case class KinesisAppenderConfig(
+ class KinesisAppenderConfig(
      stream: String,
      region: String,
      roleArn: String,
