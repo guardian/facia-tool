@@ -31,20 +31,36 @@ const articleFragments = (state: State = {}, action: Action) => {
     }
     case 'SHARED/ADD_SUPPORTING_ARTICLE_FRAGMENT': {
       const { id, index, supportingArticleFragmentId } = action.payload;
-      const articleFragment = state[id];
-      const prevMeta = articleFragment.meta || {};
-      const prevSupporting = prevMeta.supporting || [];
+      const target = state[id];
+      const targetMeta = target.meta || {};
+      const targetSupporting = targetMeta.supporting || [];
+
+      const source = state[supportingArticleFragmentId];
+      const sourceMeta = source.meta || {};
+      const sourceSupporting = sourceMeta.supporting || [];
+
       return {
         ...state,
         [id]: {
-          ...articleFragment,
+          ...target,
           meta: {
-            ...prevMeta,
+            ...targetMeta,
             supporting: [
-              ...prevSupporting.slice(0, index),
+              ...targetSupporting.slice(0, index),
               supportingArticleFragmentId,
-              ...prevSupporting.slice(index)
+              // Flatten: add the supporting from the source ...
+              ...sourceSupporting,
+              ...targetSupporting.slice(index)
             ]
+          }
+        },
+        //
+        [supportingArticleFragmentId]: {
+          ...source,
+          meta: {
+            ...sourceMeta,
+            // ...and remove it from here
+            supporting: []
           }
         }
       };
