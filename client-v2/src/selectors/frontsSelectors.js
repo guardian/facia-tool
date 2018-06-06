@@ -1,8 +1,9 @@
 // @flow
-
+import uniq from 'lodash/uniq';
 import { createSelector } from 'reselect';
 import type { FrontConfig, CollectionConfig } from 'types/FaciaApi';
 import type { State } from 'types/State';
+import type { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 
 type FrontConfigMap = {
@@ -130,6 +131,72 @@ const frontsConfigSelector = createSelector(
   getFrontsConfig
 );
 
+const alsoOnFrontSelector = (
+  currentFront: ?FrontConfig,
+  fronts: Array<FrontConfig>
+): { [string]: AlsoOnDetail } => {
+  if (!currentFront) {
+    return {};
+  }
+  const currentFrontId = currentFront.id;
+  const currentFrontPriority = currentFront.priority;
+  const currentFrontCollections = currentFront.collections;
+  return currentFrontCollections.reduce(
+    (allCollectionAlsoOn, currentFrontCollectionId) => {
+      const collectionAlsoOn = fronts.reduce(
+        (collectionAlsoOnSoFar, front) => {
+          const duplicatesOnFront = front.collections.reduce(
+            (soFar, collectionId) => {
+              if (
+                front.id !== currentFrontId &&
+                collectionId === currentFrontCollectionId
+              ) {
+                const meritsWarning =
+                  currentFrontPriority !== 'commercial' &&
+                  front.priority === 'commercial';
+
+                return {
+                  priorities: soFar.priorities.concat([front.priority]),
+                  meritsWarning: soFar.meritsWarning || meritsWarning,
+                  fronts: soFar.fronts.concat([
+                    { id: front.id, priority: front.priority }
+                  ])
+                };
+              }
+              return soFar;
+            },
+            { priorities: [], meritsWarning: false, fronts: [] }
+          );
+
+          return {
+            priorities: uniq(
+              collectionAlsoOnSoFar.priorities.concat(
+                duplicatesOnFront.priorities
+              )
+            ),
+            meritsWarning:
+              collectionAlsoOnSoFar.meritsWarning ||
+              duplicatesOnFront.meritsWarning,
+            fronts: collectionAlsoOnSoFar.fronts.concat(
+              duplicatesOnFront.fronts
+            )
+          };
+        },
+        { priorities: [], fronts: [], meritsWarning: false }
+      );
+
+      return {
+        ...allCollectionAlsoOn,
+        [currentFrontCollectionId]: collectionAlsoOn
+      };
+    },
+    {}
+  );
+};
+
+const createAlsoOnSelector = () =>
+  createSelector([getFront, frontsAsArraySelector], alsoOnFrontSelector);
+
 export {
   getFront,
   getFrontsConfig,
@@ -137,5 +204,7 @@ export {
   frontsConfigSelector,
   collectionConfigsSelector,
   frontsIdsSelector,
-  getFrontsWithPriority
+  getFrontsWithPriority,
+  alsoOnFrontSelector,
+  createAlsoOnSelector
 };
