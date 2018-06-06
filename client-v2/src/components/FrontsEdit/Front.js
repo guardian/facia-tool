@@ -4,7 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 /* eslint-disable import/no-duplicates */
 import * as Guration from 'guration';
-import { type Edit, type Move } from 'guration';
+import { type Edit } from 'guration';
 /* eslint-enable import/no-duplicates */
 import { type State } from 'types/State';
 import { type Dispatch } from 'types/Store';
@@ -12,17 +12,9 @@ import {
   selectSharedState,
   createCollectionsAsTreeSelector
 } from 'shared/selectors/shared';
-import {
-  removeCollectionArticleFragment,
-  addCollectionArticleFragment
-} from 'shared/actions/Collection';
-import {
-  removeSupportingArticleFragment,
-  addSupportingArticleFragment
-} from 'shared/actions/ArticleFragments';
 // import { externalArticlesReceived } from 'shared/actions/ExternalArticles';
 import { batchActions } from 'redux-batched-actions';
-import { urlToArticle } from 'util/collectionUtils';
+import { urlToArticle, mapMoveEditToActions } from 'util/collectionUtils';
 import type { AlsoOnDetail } from 'types/Collection';
 import Front from './CollectionComponents/Front';
 import Collection from './CollectionComponents/Collection';
@@ -70,44 +62,13 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   };
 
   handleChange = edits => {
-    const { browsingStage } = this.props;
-
-    // TODO: tidy this
-
-    const fromMap = {
-      articleFragment: {
-        articleFragment: ({ payload: { id, from } }: Move) =>
-          removeSupportingArticleFragment(from.parent.id, id),
-        collection: ({ payload: { id, from } }: Move) =>
-          removeCollectionArticleFragment(from.parent.id, id, browsingStage)
-      }
-    };
-
-    const toMap = {
-      articleFragment: {
-        articleFragment: ({ payload: { id, to } }: Move) =>
-          addSupportingArticleFragment(to.parent.id, id, to.index),
-        collection: ({ payload: { id, to } }: Move) =>
-          addCollectionArticleFragment(
-            to.parent.id,
-            id,
-            to.index,
-            browsingStage
-          )
-      }
-    };
-
-    const editMap = {
-      MOVE: edit => [
-        fromMap[edit.payload.type][edit.payload.from.parent.type](edit),
-        toMap[edit.payload.type][edit.payload.to.parent.type](edit)
-      ]
-    };
-
     const actions = edits.reduce((acc, edit) => {
       switch (edit.type) {
         case 'MOVE': {
-          return [...acc, ...editMap.MOVE(edit)];
+          return [
+            ...acc,
+            ...mapMoveEditToActions(edit, this.props.browsingStage)
+          ];
         }
         default: {
           return acc;
@@ -116,20 +77,6 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     }, []);
 
     this.props.dispatch(batchActions(actions, 'MOVE'));
-  };
-
-  handleArticleInsert = edit => {
-    console.log(edit);
-    // this.props.dispatch(
-    //   batchActions(
-    //     [
-    //       externalArticlesReceived({
-    //         [edit.payload.data.id]: edit.payload.data
-    //       })
-    //     ],
-    //     'ARTICLE_DROP'
-    //   )
-    // );
   };
 
   render() {
