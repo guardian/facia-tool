@@ -106,6 +106,10 @@ trait UpdateActionsTrait {
     archiveBlock(collectionId, collectionJson, "discard", identity)
   }
 
+  def v2ArchiveUpdateBlock(collectionId: String, collectionJson: CollectionJson, identity: User): CollectionJson = {
+    archiveBlock(collectionId, collectionJson, Json.obj("action" -> "update"), identity)
+  }
+
   def archiveUpdateBlock(collectionId: String, collectionJson: CollectionJson, updateJson: JsValue, identity: User): CollectionJson = {
     archiveBlock(collectionId, collectionJson, Json.obj("action" -> "update", "update" -> updateJson), identity)
   }
@@ -126,9 +130,23 @@ trait UpdateActionsTrait {
       case Success(_) => collectionJson
     }
 
+  private def v2ArchiveBlock(id: String, collectionJson: CollectionJson, identity: User): CollectionJson =
+    Try(faciaApiIO.v2Archive(id, collectionJson, identity)) match {
+      case Failure(t: Throwable) => {
+        structuredLogger.putLog(LogUpdate(ArchiveUpdate(id), "faciaTool"), "error", Some(new Exception(t)))
+        collectionJson
+      }
+      case Success(_) => collectionJson
+    }
+
   def putMasterConfig(config: ConfigJson, identity: User): Option[ConfigJson] = {
     faciaApiIO.archiveMasterConfig(config, identity)
     faciaApiIO.putMasterConfig(config)
+  }
+
+  def v2UpdateCollection(id: String, collection: CollectionJson, identity: User): CollectionJson = {
+    putCollectionJson(id, collection)
+    v2ArchiveUpdateBlock(id, collection, identity)
   }
 
   def updateCollectionList(id: String, update: UpdateList, identity: User): Future[Option[CollectionJson]] = {
@@ -153,8 +171,6 @@ trait UpdateActionsTrait {
         .map(putCollectionJson(id, _))
     }
   }
-
-
 
   def updateCollectionFilter(id: String, update: UpdateList, identity: User): Future[Option[CollectionJson]] = {
     lazy val updateJson = Json.toJson(update)

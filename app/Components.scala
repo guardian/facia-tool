@@ -64,15 +64,14 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val views = new ViewsController(acl, assetsManager, isDev, encryption, this)
   val pressController = new PressController(awsEndpoints, this)
   val v2App = new V2App(isDev, acl, this)
-
+  val faciaToolV2 = new FaciaToolV2Controller(acl, structuredLogger, faciaPress, updateActions, this)
 
   final override lazy val corsConfig: CORSConfig = CORSConfig.fromConfiguration(context.initialConfiguration).copy(
     allowedOrigins = Origins.Matching(Set(config.environment.applicationUrl))
   )
 
   override lazy val assets: Assets = new controllers.Assets(loggingHttpErrorHandler, assetsMetadata)
-  val router: Router = new Routes(loggingHttpErrorHandler, status, pandaAuth, v2Assets, uncachedAssets, views, faciaTool,
-    pressController, defaults, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects,
+  val router: Router = new Routes(loggingHttpErrorHandler, status, pandaAuth, v2Assets, uncachedAssets, views, faciaTool, pressController, faciaToolV2, defaults, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects,
     troubleshoot, v2App)
 
   override lazy val httpFilters = Seq(

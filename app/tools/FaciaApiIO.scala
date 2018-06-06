@@ -52,6 +52,14 @@ class FaciaApiIO(val frontsApi: FrontsApi, val s3FrontsApi: S3FrontsApi) extends
     }
   }
 
+  def v2Archive(id: String, collectionJson: CollectionJson, identity: User): Unit = {
+    Json.toJson(collectionJson).transform[JsObject](Reads.JsObjectReads) match {
+      case JsSuccess(result, _) =>
+        s3FrontsApi.archive(id, Json.prettyPrint(result), identity)
+      case JsError(errors) => throw new Exception(s"Could not archive $id: $errors")
+    }
+  }
+
   def putMasterConfig(config: ConfigJson): Option[ConfigJson] = {
     Try(s3FrontsApi.putMasterConfig(Json.prettyPrint(Json.toJson(config)))).map(_ => config).toOption
   }
