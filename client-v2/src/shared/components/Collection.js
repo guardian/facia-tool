@@ -1,13 +1,11 @@
 // @flow
 
-import React from 'react';
+import React, { type Node as ReactNode } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import type { Collection } from '../types/Collection';
 import type { State } from '../types/State';
-import Article from './Article';
-import GroupDisplay from './GroupDisplay';
 import {
   createCollectionSelector,
   selectSharedState
@@ -20,7 +18,7 @@ type ContainerProps = {
 
 type Props = ContainerProps & {
   collection: Collection,
-  stage: string
+  children: ReactNode
 };
 
 const CollectionContainer = styled('div')`
@@ -35,24 +33,11 @@ const CollectionHeadline = styled('div')`
   padding: 7px;
 `;
 
-const collectionDetail = ({ collection, stage }: Props) =>
+const collectionDetail = ({ collection, children }: Props) =>
   collection ? (
     <CollectionContainer>
       <CollectionHeadline>{collection.displayName}</CollectionHeadline>
-      {collection.groups
-        ? collection.groups.map(group => (
-            // eslint-disable-next-line react/jsx-indent
-            <GroupDisplay
-              key={group}
-              groupName={group}
-              collectionId={collection.id}
-              stage={stage}
-            />
-          ))
-        : collection.articleFragments[stage] &&
-          collection.articleFragments[stage].map(id => (
-            <Article key={id} id={id} />
-          ))}
+      {children}
     </CollectionContainer>
   ) : (
     <span>Waiting for collection</span>

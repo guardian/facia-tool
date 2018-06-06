@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react';
+import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
@@ -11,8 +11,7 @@ import getFrontsConfig, {
   fetchLastPressed
 } from 'actions/Fronts';
 import { frontStages } from 'constants/fronts';
-import Collection from 'shared/components/Collection';
-import AlsoOnNotification from 'components/AlsoOnNotification';
+// import Collection from 'shared/components/Collection';
 import type { FrontConfig } from 'types/FaciaApi';
 import type { State } from 'types/State';
 import type { AlsoOnDetail } from 'types/Collection';
@@ -22,7 +21,10 @@ import {
   lastPressedSelector
 } from 'selectors/frontsSelectors';
 import FrontsDropDown from 'containers/FrontsDropdown';
+import ScrollContainer from 'components/ScrollContainer';
 import type { PropsBeforeFetch } from './FrontsContainer';
+
+import Front from './Front';
 
 import Button from '../Button';
 import Col from '../Col';
@@ -71,39 +73,42 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
 
   render() {
     return (
-      <div>
-        <FrontsDropDown />
-        <div>
-          {this.props.lastPressed &&
-            `Last refreshed ${distanceInWords(
-              new Date(this.props.lastPressed),
-              Date.now()
-            )} ago`}
-        </div>
-        <Row>
-          {Object.keys(frontStages).map(key => (
-            <Col key={key}>
-              <Button
-                selected={frontStages[key] === this.state.browsingStage}
-                onClick={() => this.handleStageSelect(key)}
-              >
-                {frontStages[key]}
-              </Button>
-            </Col>
-          ))}
-        </Row>
-        {this.props.selectedFront &&
-          this.props.selectedFront.isHidden && <div>This front is hidden</div>}
-        {this.props.selectedFront &&
-          this.props.selectedFront.collections.map(id => (
-            <div key={id}>
-              <AlsoOnNotification alsoOn={this.props.alsoOn[id]} />
-              <Row>
-                <Collection id={id} stage={this.state.browsingStage} />
-              </Row>
-            </div>
-          ))}
-      </div>
+      <ScrollContainer
+        fixed={
+          <React.Fragment>
+            <Row>
+              <FrontsDropDown />
+            </Row>
+            <Row>
+              <div>
+                {this.props.lastPressed &&
+                  `Last refreshed ${distanceInWords(
+                    new Date(this.props.lastPressed),
+                    Date.now()
+                  )} ago`}
+              </div>
+              {Object.keys(frontStages).map(key => (
+                <Col key={key}>
+                  <Button
+                    selected={frontStages[key] === this.state.browsingStage}
+                    onClick={() => this.handleStageSelect(key)}
+                  >
+                    {frontStages[key]}
+                  </Button>
+                </Col>
+              ))}
+            </Row>
+          </React.Fragment>
+        }
+      >
+        {this.props.selectedFront && (
+          <Front
+            alsoOn={this.props.alsoOn}
+            front={this.props.selectedFront}
+            browsingStage={this.state.browsingStage}
+          />
+        )}
+      </ScrollContainer>
     );
   }
 }

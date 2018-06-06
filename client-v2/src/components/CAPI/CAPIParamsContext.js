@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 
-// $FlowFixMe: currently no typings for createContext
 const { Provider: InnerProvider, Consumer } = React.createContext({
   params: {}
 });
