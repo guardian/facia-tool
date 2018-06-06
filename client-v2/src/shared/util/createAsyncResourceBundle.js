@@ -35,17 +35,6 @@ const createSelectors = (selectLocalState: (state: any) => any) => ({
   selectAll: createSelectAll(selectLocalState)
 });
 
-type TOptions = {
-  // The key the reducer provided by this bundle is mounted at.
-  // Defaults to entityName if none is given.
-  mountPoint?: string,
-  // Do we index the incoming data by id,
-  indexById?: boolean,
-  // Provides a namespace for the created actions, separated by a slash,
-  // e.g.the resource 'books' namespaced with 'shared' becomes SHARED/BOOKS
-  namespace?: string
-};
-
 /**
  * Creates a bundle of actions, selectors, and a reducer to handle
  * common actions and selections for data that needs to be fetched:
@@ -64,7 +53,16 @@ type TOptions = {
  */
 export default (
   entityName: string,
-  options: TOptions = { indexById: false }
+  options: {
+    // The key the reducer provided by this bundle is mounted at.
+    // Defaults to entityName if none is given.
+    mountPoint?: string,
+    // Do we index the incoming data by id, or just add it to the state as-is?
+    indexById?: boolean,
+    // Provides a namespace for the created actions, separated by a slash,
+    // e.g.the resource 'books' namespaced with 'shared' becomes SHARED/BOOKS
+    namespace?: string
+  } = { indexById: false }
 ) => {
   const { indexById, mountPoint } = options;
   const baseActionKey = snakeCase(entityName).toUpperCase();
@@ -154,14 +152,17 @@ export default (
     payload: {
       error: string,
       time: number,
-      id?: string
+      ids?: string | string[]
     }
   |};
 
-  const fetchErrorAction = (error: string, id?: string): TFetchErrorAction => ({
+  const fetchErrorAction = (
+    error: string,
+    ids?: string | string[]
+  ): TFetchErrorAction => ({
     localType: 'ERROR',
     type: FETCH_ERROR,
-    payload: { error, id, time: Date.now() }
+    payload: { error, ids, time: Date.now() }
   });
 
   type TAction = TFetchStartAction | TFetchSuccessAction | TFetchErrorAction;
@@ -194,14 +195,18 @@ export default (
         if (!action.payload.error) {
           return state;
         }
-        return {
+        const newState = {
           ...state,
           lastError: action.payload.error,
-          error: action.payload.error,
-          loadingIds: indexById
-            ? without(state.loadingIds, action.payload.id)
-            : []
+          error: action.payload.error
         };
+        if (indexById) {
+          newState.loadingIds = Array.isArray(action.payload.ids)
+            ? without(state.loadingIds, ...action.payload.ids)
+            : without(state.loadingIds, action.payload.ids);
+        } else {
+          newState.loadingIds = [];
+        }
       }
       return state;
     },

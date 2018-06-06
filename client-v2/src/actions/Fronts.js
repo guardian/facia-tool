@@ -1,8 +1,8 @@
 // @flow
 
-import type { Action } from 'types/Action';
 import type { ThunkAction } from 'types/Store';
 import type { State } from 'types/State';
+import type { Action } from 'types/Action';
 import { batchActions } from 'redux-batched-actions';
 import { getCollectionConfig } from 'selectors/frontsSelectors';
 import {
@@ -11,7 +11,6 @@ import {
   getCollection,
   fetchLastPressed as fetchLastPressedApi
 } from 'services/faciaApi';
-import type { FrontsConfig } from 'types/FaciaApi';
 import {
   combineCollectionWithConfig,
   populateDraftArticles
@@ -23,22 +22,7 @@ import {
 import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
-import { errorReceivingFrontCollection } from './Collection';
-import { errorReceivingArticles } from './ExternalArticles';
-
-function frontsConfigReceived(config: FrontsConfig): Action {
-  return {
-    type: 'FRONTS_CONFIG_RECEIVED',
-    payload: config
-  };
-}
-
-function requestFrontsConfig(): Action {
-  return {
-    type: 'FRONTS_CONFIG_GET_RECEIVE',
-    receivedAt: Date.now()
-  };
-}
+import { actions as frontsConfigActions } from 'bundles/frontsConfigBundle';
 
 function fetchLastPressedSuccess(frontId: string, datePressed: string): Action {
   return {
@@ -60,15 +44,6 @@ function fetchLastPressed(frontId: string): ThunkAction {
       .catch(() => {
         // @todo: implement once error handling is done
       });
-}
-
-function errorReceivingConfig(error: string): Action {
-  return {
-    type: 'CAUGHT_ERROR',
-    message: 'Could not fetch fronts config',
-    error,
-    receivedAt: Date.now()
-  };
 }
 
 function getFrontCollection(collectionId: string) {
@@ -99,7 +74,7 @@ function getFrontCollection(collectionId: string) {
         return getArticleIdsFromCollection(collectionWithDraftArticles);
       })
       .catch((error: string) => {
-        dispatch(errorReceivingFrontCollection(error));
+        dispatch(collectionActions.fetchError(error, collectionId));
         return [];
       });
   };
@@ -113,14 +88,11 @@ const getCollectionsAndArticles = (collectionIds: Array<string>) => (
       dispatch(getFrontCollection(collectionId))
         .then(articleIds => {
           dispatch(externalArticleActions.fetchStart(articleIds));
-          return getArticles(articleIds).catch(err =>
-            dispatch(errorReceivingArticles(err))
+          return getArticles(articleIds).catch(error =>
+            dispatch(externalArticleActions.fetchError(error, articleIds))
           );
         })
         .then(articles => {
-          if (!articles) {
-            return;
-          }
           dispatch(externalArticleActions.fetchSuccess(articles));
         })
     )
@@ -135,9 +107,11 @@ export {
 
 export default function getFrontsConfig(): ThunkAction {
   return (dispatch: Dispatch) => {
-    dispatch(requestFrontsConfig());
+    dispatch(frontsConfigActions.fetchStart());
     return fetchFrontsConfig()
-      .then((res: Object) => dispatch(frontsConfigReceived(res)))
-      .catch((error: string) => dispatch(errorReceivingConfig(error)));
+      .then((res: Object) => dispatch(frontsConfigActions.fetchSuccess(res)))
+      .catch((error: string) =>
+        dispatch(frontsConfigActions.fetchError(error))
+      );
   };
 }
