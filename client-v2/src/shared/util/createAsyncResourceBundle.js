@@ -60,7 +60,15 @@ type FetchErrorAction = {|
   }
 |};
 
-export type Action = FetchStartAction | FetchSuccessAction | FetchErrorAction;
+type Action = FetchStartAction | FetchSuccessAction | FetchErrorAction;
+
+type State<Resource> = {
+  data?: Resource | null,
+  lastError: string | null,
+  error: string | null,
+  lastFetch: number | null,
+  loadingIds: string[]
+};
 
 /**
  * Creates a bundle of actions, selectors, and a reducer to handle
@@ -106,15 +114,7 @@ export default (
   const FETCH_SUCCESS = `${actionKey}_FETCH_SUCCESS`;
   const FETCH_ERROR = `${actionKey}_FETCH_ERROR`;
 
-  type State = {
-    data?: any | null,
-    lastError: string | null,
-    error: string | null,
-    lastFetch: number | null,
-    loadingIds: string[]
-  };
-
-  const initialState: State = {
+  const initialState: State<any> = {
     data: options.initialData || {},
     lastError: null,
     error: null,
@@ -123,7 +123,28 @@ export default (
     loadingIds: []
   };
 
-  const applyNewData = (state: State, newData: any) => {
+  const fetchStartAction = (ids?: string[] | string): FetchStartAction => ({
+    localType: 'START',
+    type: FETCH_START,
+    payload: { ids }
+  });
+
+  const fetchSuccessAction = (data: any): FetchSuccessAction => ({
+    localType: 'SUCCESS',
+    type: FETCH_SUCCESS,
+    payload: { data, time: Date.now() }
+  });
+
+  const fetchErrorAction = (
+    error: string,
+    ids?: string | string[]
+  ): FetchErrorAction => ({
+    localType: 'ERROR',
+    type: FETCH_ERROR,
+    payload: { error, ids, time: Date.now() }
+  });
+
+  const applyNewData = (state: State<any>, newData: any) => {
     if (!indexById) {
       return {
         ...state.data,
@@ -149,30 +170,9 @@ export default (
     };
   };
 
-  const fetchStartAction = (ids?: string[] | string): FetchStartAction => ({
-    localType: 'START',
-    type: FETCH_START,
-    payload: { ids }
-  });
-
-  const fetchSuccessAction = (data: any): FetchSuccessAction => ({
-    localType: 'SUCCESS',
-    type: FETCH_SUCCESS,
-    payload: { data, time: Date.now() }
-  });
-
-  const fetchErrorAction = (
-    error: string,
-    ids?: string | string[]
-  ): FetchErrorAction => ({
-    localType: 'ERROR',
-    type: FETCH_ERROR,
-    payload: { error, ids, time: Date.now() }
-  });
-
   return {
     initialState,
-    reducer: (state: State = initialState, action: any): State => {
+    reducer: (state: State<any> = initialState, action: any): State<any> => {
       if (action.type === FETCH_START && action.localType === 'START') {
         return {
           ...state,
@@ -227,3 +227,5 @@ export default (
     selectors: createSelectors(selectLocalState)
   };
 };
+
+export type { Action, State };

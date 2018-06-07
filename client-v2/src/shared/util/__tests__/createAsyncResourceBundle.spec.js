@@ -142,54 +142,84 @@ describe('createAsyncResourceBundle', () => {
     });
   });
 
-  describe('reducer', () => {
-    it('should mark the state as loading when a start action is dispatched', () => {
-      const newState = reducer(initialState, actions.fetchStart());
-      expect(newState.loadingIds).toEqual(['@@ALL']);
-    });
-    it('should merge data and mark the state as not loading when a success action is dispatched', () => {
-      const newState = reducer(
-        { ...initialState, loading: true },
-        actions.fetchSuccess({ uuid: { id: 'uuid', author: 'Mark Twain' } })
-      );
-      expect(newState.loadingIds).toEqual([]);
-      expect(newState.data).toEqual({
-        uuid: { id: 'uuid', author: 'Mark Twain' }
+  describe('Reducer', () => {
+    describe('Fetch action handler', () => {
+      it('should mark the state as loading when a start action is dispatched', () => {
+        const newState = reducer(initialState, actions.fetchStart());
+        expect(newState.loadingIds).toEqual(['@@ALL']);
+      });
+      it('should add loading keys by uuid as strings', () => {
+        const bundle = createAsyncResourceBundle('books', { indexById: true });
+        const newState = bundle.reducer(
+          initialState,
+          actions.fetchStart('uuid')
+        );
+        expect(newState.loadingIds).toEqual(['uuid']);
+      });
+      it('should add loading keys by uuid as arrays', () => {
+        const bundle = createAsyncResourceBundle('books', { indexById: true });
+        const newState = bundle.reducer(
+          initialState,
+          actions.fetchStart(['uuid', 'uuid2'])
+        );
+        expect(newState.loadingIds).toEqual(['uuid', 'uuid2']);
       });
     });
-    it('should merge data by id if indexById is true', () => {
-      const bundle = createAsyncResourceBundle('books', { indexById: true });
-      const newState = bundle.reducer(
-        { ...initialState, loadingIds: ['uuid'] },
-        bundle.actions.fetchSuccess({ id: 'uuid', author: 'Mark Twain' })
-      );
-      expect(newState.loadingIds).toEqual([]);
-      expect(newState.data).toEqual({
-        uuid: { id: 'uuid', author: 'Mark Twain' }
+    describe('Success action handler', () => {
+      it('should merge data and mark the state as not loading when a success action is dispatched', () => {
+        const newState = reducer(
+          { ...initialState, loading: true },
+          actions.fetchSuccess({ uuid: { id: 'uuid', author: 'Mark Twain' } })
+        );
+        expect(newState.loadingIds).toEqual([]);
+        expect(newState.data).toEqual({
+          uuid: { id: 'uuid', author: 'Mark Twain' }
+        });
+      });
+      it('should merge data by id if indexById is true', () => {
+        const bundle = createAsyncResourceBundle('books', { indexById: true });
+        const newState = bundle.reducer(
+          { ...initialState, loadingIds: ['uuid'] },
+          bundle.actions.fetchSuccess({ id: 'uuid', author: 'Mark Twain' })
+        );
+        expect(newState.loadingIds).toEqual([]);
+        expect(newState.data).toEqual({
+          uuid: { id: 'uuid', author: 'Mark Twain' }
+        });
+      });
+      it('should merge arrays, too', () => {
+        const bundle = createAsyncResourceBundle('books', { indexById: true });
+        const newState = bundle.reducer(
+          { ...initialState, loading: true },
+          bundle.actions.fetchSuccess([
+            { id: 'uuid', author: 'Mark Twain' },
+            { id: 'uuid2', author: 'Elizabeth Gaskell' }
+          ])
+        );
+        expect(newState.loadingIds).toEqual([]);
+        expect(newState.data).toEqual({
+          uuid: { id: 'uuid', author: 'Mark Twain' },
+          uuid2: { id: 'uuid2', author: 'Elizabeth Gaskell' }
+        });
       });
     });
-    it('should merge arrays, too', () => {
-      const bundle = createAsyncResourceBundle('books', { indexById: true });
-      const newState = bundle.reducer(
-        { ...initialState, loading: true },
-        bundle.actions.fetchSuccess([
-          { id: 'uuid', author: 'Mark Twain' },
-          { id: 'uuid2', author: 'Elizabeth Gaskell' }
-        ])
-      );
-      expect(newState.loadingIds).toEqual([]);
-      expect(newState.data).toEqual({
-        uuid: { id: 'uuid', author: 'Mark Twain' },
-        uuid2: { id: 'uuid2', author: 'Elizabeth Gaskell' }
+    describe('Error action handler', () => {
+      it('should add an error and mark the state as not loading when an error action is dispatched', () => {
+        const newState = reducer(
+          { ...initialState, data: {}, loadingIds: ['uuid'] },
+          actions.fetchError('uuid')
+        );
+        expect(newState.loadingIds).toEqual([]);
+        expect(newState.data).toEqual({});
       });
-    });
-    it('should add an error and mark the state as not loading when an error action is dispatched', () => {
-      const newState = reducer(
-        { ...initialState, data: {}, loadingIds: ['uuid'] },
-        actions.fetchError('uuid')
-      );
-      expect(newState.loadingIds).toEqual([]);
-      expect(newState.data).toEqual({});
+      it('should handle strings and arrays of strings for loading uuids', () => {
+        const newState = reducer(
+          { ...initialState, data: {}, loadingIds: ['uuid', 'uuid2'] },
+          actions.fetchError(['uuid', 'uuid2'])
+        );
+        expect(newState.loadingIds).toEqual([]);
+        expect(newState.data).toEqual({});
+      });
     });
   });
 });
