@@ -1,5 +1,5 @@
-// flow-typed signature: a40823cc5da9c510d4c9de2d4e569a40
-// flow-typed version: 10553704de/lodash_v4.x.x/flow_>=v0.63.x
+// flow-typed signature: 56618406f5f6600e7ccb48cb4ea2c8a1
+// flow-typed version: e444d78349/lodash_v4.x.x/flow_>=v0.63.x
 
 declare module "lodash" {
   declare type __CurriedFunction1<A, R, AA: A> = (...r: [AA]) => R;
@@ -215,7 +215,7 @@ declare module "lodash" {
     chunk<T>(array?: ?Array<T>, size?: ?number): Array<Array<T>>;
     compact<T, N: ?T>(array?: ?Array<N>): Array<T>;
     concat<T>(base?: ?Array<T>, ...elements: Array<any>): Array<T | any>;
-    difference<T>(array?: ?$ReadOnlyArray<T>, values?: ?$ReadOnlyArray<T>): Array<T>;
+    difference<T>(array?: ?$ReadOnlyArray<T>, ...values: Array<?$ReadOnlyArray<T>>): Array<T>;
     differenceBy<T>(
       array?: ?$ReadOnlyArray<T>,
       values?: ?$ReadOnlyArray<T>,
@@ -331,7 +331,7 @@ declare module "lodash" {
     remove<T>(array?: ?Array<T>, predicate?: ?Predicate<T>): Array<T>;
     reverse<T>(array: Array<T>): Array<T>;
     reverse<T: void | null>(array: T): T;
-    slice<T>(array?: ?Array<T>, start?: ?number, end?: ?number): Array<T>;
+    slice<T>(array?: ?$ReadOnlyArray<T>, start?: ?number, end?: ?number): Array<T>;
     sortedIndex<T>(array: Array<T>, value: T): number;
     sortedIndex<T>(array: void | null, value: ?T): 0;
     sortedIndexBy<T>(
@@ -512,16 +512,16 @@ declare module "lodash" {
     countBy<T>(array: void | null, iteratee?: ?ValueOnlyIteratee<T>): {};
     countBy<T: Object>(object: T, iteratee?: ?ValueOnlyIteratee<T>): Object;
     // alias of _.forEach
-    each<T>(array: Array<T>, iteratee?: ?Iteratee<T>): Array<T>;
+    each<T>(array: $ReadOnlyArray<T>, iteratee?: ?Iteratee<T>): Array<T>;
     each<T: void | null>(array: T, iteratee?: ?Iteratee<any>): T;
     each<T: Object>(object: T, iteratee?: ?OIteratee<T>): T;
     // alias of _.forEachRight
-    eachRight<T>(array: Array<T>, iteratee?: ?Iteratee<T>): Array<T>;
+    eachRight<T>(array: $ReadOnlyArray<T>, iteratee?: ?Iteratee<T>): Array<T>;
     eachRight<T: void | null>(array: T, iteratee?: ?Iteratee<any>): T;
     eachRight<T: Object>(object: T, iteratee?: OIteratee<T>): T;
     every<T>(array?: ?$ReadOnlyArray<T>, iteratee?: ?Iteratee<T>): boolean;
     every<T: Object>(object: T, iteratee?: OIteratee<T>): boolean;
-    filter<T>(array?: ?Array<T>, predicate?: ?Predicate<T>): Array<T>;
+    filter<T>(array?: ?$ReadOnlyArray<T>, predicate?: ?Predicate<T>): Array<T>;
     filter<A, T: { [id: string]: A }>(
       object: T,
       predicate?: OPredicate<A, T>
@@ -576,10 +576,10 @@ declare module "lodash" {
       iteratee?: OFlatMapIteratee<T, U>,
       depth?: number
     ): Array<U>;
-    forEach<T>(array: Array<T>, iteratee?: ?Iteratee<T>): Array<T>;
+    forEach<T>(array: $ReadOnlyArray<T>, iteratee?: ?Iteratee<T>): Array<T>;
     forEach<T: void | null>(array: T, iteratee?: ?Iteratee<any>): T;
     forEach<T: Object>(object: T, iteratee?: ?OIteratee<T>): T;
-    forEachRight<T>(array: Array<T>, iteratee?: ?Iteratee<T>): Array<T>;
+    forEachRight<T>(array: $ReadOnlyArray<T>, iteratee?: ?Iteratee<T>): Array<T>;
     forEachRight<T: void | null>(array: T, iteratee?: ?Iteratee<any>): T;
     forEachRight<T: Object>(object: T, iteratee?: ?OIteratee<T>): T;
     groupBy<V, T>(
@@ -706,7 +706,7 @@ declare module "lodash" {
       iteratee?: ?(accumulator: U, value: any, key: string, object: T) => U,
       accumulator?: ?U
     ): U;
-    reject<T>(array: ?Array<T>, predicate?: Predicate<T>): Array<T>;
+    reject<T>(array: ?$ReadOnlyArray<T>, predicate?: Predicate<T>): Array<T>;
     reject<V: Object, A, T: { [id: string]: A }>(
       object?: ?T,
       predicate?: ?OPredicate<A, T>
@@ -1998,18 +1998,18 @@ declare module "lodash/fp" {
     // alias of _.forEach
     each<T>(
       iteratee: Iteratee<T> | OIteratee<T>
-    ): (collection: Array<T> | { [id: any]: T }) => Array<T>;
+    ): (collection: $ReadOnlyArray<T> | { [id: any]: T }) => Array<T>;
     each<T>(
       iteratee: Iteratee<T> | OIteratee<T>,
-      collection: Array<T> | { [id: any]: T }
+      collection: $ReadOnlyArray<T> | { [id: any]: T }
     ): Array<T>;
     // alias of _.forEachRight
     eachRight<T>(
       iteratee: Iteratee<T> | OIteratee<T>
-    ): (collection: Array<T> | { [id: any]: T }) => Array<T>;
+    ): (collection: $ReadOnlyArray<T> | { [id: any]: T }) => Array<T>;
     eachRight<T>(
       iteratee: Iteratee<T> | OIteratee<T>,
-      collection: Array<T> | { [id: any]: T }
+      collection: $ReadOnlyArray<T> | { [id: any]: T }
     ): Array<T>;
     every<T>(
       iteratee: Iteratee<T> | OIteratee<T>
@@ -2113,17 +2113,17 @@ declare module "lodash/fp" {
     ): Array<U>;
     forEach<T>(
       iteratee: Iteratee<T> | OIteratee<T>
-    ): (collection: Array<T> | { [id: any]: T }) => Array<T>;
+    ): (collection: $ReadOnlyArray<T> | { [id: any]: T }) => Array<T>;
     forEach<T>(
       iteratee: Iteratee<T> | OIteratee<T>,
-      collection: Array<T> | { [id: any]: T }
+      collection: $ReadOnlyArray<T> | { [id: any]: T }
     ): Array<T>;
     forEachRight<T>(
       iteratee: Iteratee<T> | OIteratee<T>
-    ): (collection: Array<T> | { [id: any]: T }) => Array<T>;
+    ): (collection: $ReadOnlyArray<T> | { [id: any]: T }) => Array<T>;
     forEachRight<T>(
       iteratee: Iteratee<T> | OIteratee<T>,
-      collection: Array<T> | { [id: any]: T }
+      collection: $ReadOnlyArray<T> | { [id: any]: T }
     ): Array<T>;
     groupBy<V, T>(
       iteratee: ValueOnlyIteratee<T>

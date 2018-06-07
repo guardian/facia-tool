@@ -1,10 +1,14 @@
 [ignore]
-.*/dist/.*
-.*/node_modules/.*
+./dist/.*
+.*/node_modules/jest-enzyme
+.*/node_modules/eslint-plugin-jsx-a11y
+.*/node_modules/enzyme-matchers
+.*/node_modules/editions
 .*/__tests__/.*
 
 [include]
 ./src/.*
+node_modules/date-fns
 
 [libs]
 flow-typed
@@ -13,5 +17,6 @@ flow-typed
 
 [options]
 module.system.node.resolve_dirname=src
+module.system.node.resolve_dirname=node_modules
 
 [strict]

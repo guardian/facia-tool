@@ -4,13 +4,13 @@ import { combineReducers } from 'redux';
 
 import shared from 'shared/reducers/sharedReducer';
 import config from './configReducer';
-import frontsConfig from './frontsConfigReducer';
+import fronts from './frontsReducer';
 import error from './errorReducer';
 import path from './pathReducer';
 
 const reducers = {
   config,
-  frontsConfig,
+  fronts,
   error,
   path,
   shared

@@ -1,5 +1,6 @@
 // @flow
 
+import isValid from 'date-fns/is_valid';
 import type {
   FrontsConfig,
   FrontsConfigResponse,
@@ -41,6 +42,27 @@ function fetchFrontsConfig(): Promise<FrontsConfig> {
         {}
       )
     }));
+}
+
+async function fetchLastPressed(frontId: string): Promise<string> {
+  // The server does not respond with JSON
+  return pandaFetch(`/front/lastmodified/${frontId}`)
+    .then(response => response.text())
+    .then(date => {
+      if (!date || !isValid(new Date(date))) {
+        throw new Error(
+          `Tried to fetch last pressed time for front with id ${frontId}, but there was an error processing the response, which was ${date}`
+        );
+      }
+      return date;
+    })
+    .catch(response => {
+      throw new Error(
+        `Tried to fetch last pressed time for front with id ${frontId}, but the server responded with ${
+          response.status
+        }: ${response.body}`
+      );
+    });
 }
 
 function getCollection(
@@ -91,4 +113,4 @@ function getArticles(articleIds: string[]): Promise<Array<ExternalArticle>> {
     );
 }
 
-export { fetchFrontsConfig, getCollection, getArticles };
+export { fetchFrontsConfig, getCollection, getArticles, fetchLastPressed };

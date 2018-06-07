@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import type { RouterHistory } from 'react-router-dom';
-import getFrontsConfig from 'actions/FrontsConfig';
+import getFrontsConfig from 'actions/Fronts';
 import { frontsIdsSelector } from 'selectors/frontsSelectors';
 import type { State } from 'types/State';
 import Fronts from './Fronts';

@@ -4,17 +4,23 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
+import distanceInWords from 'date-fns/distance_in_words';
 
 import getFrontsConfig, {
-  getCollectionsAndArticles
-} from 'actions/FrontsConfig';
+  getCollectionsAndArticles,
+  fetchLastPressed
+} from 'actions/Fronts';
 import { frontStages } from 'constants/fronts';
 import Collection from 'shared/components/Collection';
 import AlsoOnNotification from 'components/AlsoOnNotification';
 import type { FrontConfig } from 'types/FaciaApi';
 import type { State } from 'types/State';
 import type { AlsoOnDetail } from 'types/Collection';
-import { getFront, createAlsoOnSelector } from 'selectors/frontsSelectors';
+import {
+  getFront,
+  createAlsoOnSelector,
+  lastPressedSelector
+} from 'selectors/frontsSelectors';
 import FrontsDropDown from 'containers/FrontsDropdown';
 import type { PropsBeforeFetch } from './FrontsContainer';
 
@@ -25,9 +31,11 @@ import Row from '../Row';
 type FrontsComponentProps = PropsBeforeFetch & {
   selectedFront: FrontConfig,
   alsoOn: { [string]: AlsoOnDetail },
+  lastPressed: string,
   frontsActions: {
     getCollectionsAndArticles: (collectionIds: string[]) => Promise<void>,
-    getFrontsConfig: () => Promise<void>
+    getFrontsConfig: () => Promise<void>,
+    fetchLastPressed: (frontId: string) => Promise<void>
   }
 };
 
@@ -50,6 +58,9 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
         nextProps.selectedFront.collections
       );
     }
+    if (this.props.frontId !== nextProps.frontId || !this.props.lastPressed) {
+      this.props.frontsActions.fetchLastPressed(nextProps.frontId);
+    }
   }
 
   handleStageSelect(key: string) {
@@ -62,6 +73,13 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
     return (
       <div>
         <FrontsDropDown />
+        <div>
+          {this.props.lastPressed &&
+            `Last refreshed ${distanceInWords(
+              new Date(this.props.lastPressed),
+              Date.now()
+            )} ago`}
+        </div>
         <Row>
           {Object.keys(frontStages).map(key => (
             <Col key={key}>
@@ -95,7 +113,8 @@ const createMapStateToProps = () => {
   // $FlowFixMe
   return (state: State, props: PropsBeforeFetch) => ({
     selectedFront: getFront(state, props.frontId),
-    alsoOn: alsoOnSelector(state, props.frontId)
+    alsoOn: alsoOnSelector(state, props.frontId),
+    lastPressed: lastPressedSelector(state, props.frontId)
   });
 };
 
@@ -103,7 +122,8 @@ const mapDispatchToProps = (dispatch: *) => ({
   frontsActions: bindActionCreators(
     {
       getFrontsConfig,
-      getCollectionsAndArticles
+      getCollectionsAndArticles,
+      fetchLastPressed
     },
     dispatch
   )
