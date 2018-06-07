@@ -145,8 +145,10 @@ trait UpdateActionsTrait {
   }
 
   def v2UpdateCollection(id: String, collection: CollectionJson, identity: User): CollectionJson = {
-    putCollectionJson(id, collection)
-    v2ArchiveUpdateBlock(id, collection, identity)
+    val collectionWithGroupsRemoved = removeGroupIfNoLongerGrouped(id, collection)
+    val prunedCollection = pruneBlock(collectionWithGroupsRemoved)
+    putCollectionJson(id, prunedCollection)
+    v2ArchiveUpdateBlock(id, prunedCollection, identity)
   }
 
   def updateCollectionList(id: String, update: UpdateList, identity: User): Future[Option[CollectionJson]] = {
