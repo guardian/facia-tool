@@ -5,6 +5,7 @@ import type { FrontConfig, CollectionConfig } from 'types/FaciaApi';
 import type { State } from 'types/State';
 import type { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
+import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
 
 type FrontConfigMap = {
   [string]: FrontConfig
@@ -19,7 +20,7 @@ type FrontsByPriority = {
 };
 
 const getFronts = (state: State): FrontConfigMap =>
-  state.fronts.frontsConfig.fronts || {};
+  frontsConfigSelectors.selectAll(state).fronts || {};
 
 const getFront = (state: State, id: string) => getFronts(state)[id];
 
@@ -58,7 +59,7 @@ const getFrontsWithPriority = (state: State, priority: string): FrontConfig[] =>
   getFrontsByPriority(state)[priority] || [];
 
 const getCollections = (state: State): CollectionConfigMap =>
-  state.fronts.frontsConfig.collections || {};
+  frontsConfigSelectors.selectAll(state).collections || {};
 const getCollectionConfig = (state: State, id: string): CollectionConfig =>
   getCollections(state)[id] || null;
 

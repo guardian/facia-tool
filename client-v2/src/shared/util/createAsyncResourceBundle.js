@@ -35,6 +35,33 @@ const createSelectors = (selectLocalState: (state: any) => any) => ({
   selectAll: createSelectAll(selectLocalState)
 });
 
+type FetchStartAction = {|
+  // In this, and subsequent action types, we include a local
+  // type to ensure that Flow can disambiguate action types in the
+  // reducer. Alternative solutions welcome!
+  localType: 'START',
+  type: string,
+  payload: { ids?: string[] | string }
+|};
+
+type FetchSuccessAction = {|
+  localType: 'SUCCESS',
+  type: string,
+  payload: { data: any, time: number }
+|};
+
+type FetchErrorAction = {|
+  localType: 'ERROR',
+  type: string,
+  payload: {
+    error: string,
+    time: number,
+    ids?: string | string[]
+  }
+|};
+
+export type Action = FetchStartAction | FetchSuccessAction | FetchErrorAction;
+
 /**
  * Creates a bundle of actions, selectors, and a reducer to handle
  * common actions and selections for data that needs to be fetched:
@@ -47,24 +74,30 @@ const createSelectors = (selectLocalState: (state: any) => any) => ({
  *
  * @todo Add a DataType parameter, passed explicitly to the factory
  * function, to type data passed in on success, which is currently 'any'.
- *
- * @param {string} entityName  The name of the entity for which this reducer is responsible
- * @param {TOptions} options
  */
 export default (
+  // The name of the entity for which this reducer is responsible
   entityName: string,
-  options: {
+  options: {|
     // The key the reducer provided by this bundle is mounted at.
     // Defaults to entityName if none is given.
-    mountPoint?: string,
+    selectLocalState?: (state: any) => any,
     // Do we index the incoming data by id, or just add it to the state as-is?
     indexById?: boolean,
     // Provides a namespace for the created actions, separated by a slash,
     // e.g.the resource 'books' namespaced with 'shared' becomes SHARED/BOOKS
-    namespace?: string
-  } = { indexById: false }
+    namespace?: string,
+    // The initial state of the reducer data. Defaults to null.
+    initialData?: any
+  |} = {
+    indexById: false,
+    initialData: {}
+  }
 ) => {
-  const { indexById, mountPoint } = options;
+  const { indexById } = options;
+  const selectLocalState = options.selectLocalState
+    ? options.selectLocalState
+    : (state: any) => state[entityName];
   const baseActionKey = snakeCase(entityName).toUpperCase();
   const actionKey = options.namespace
     ? `${options.namespace.toUpperCase()}/${baseActionKey}`
@@ -82,7 +115,7 @@ export default (
   };
 
   const initialState: State = {
-    data: {},
+    data: options.initialData || {},
     lastError: null,
     error: null,
     lastFetch: null,
@@ -116,60 +149,30 @@ export default (
     };
   };
 
-  const selectLocalState = (state: any): State =>
-    state[mountPoint || entityName];
-
-  type TFetchStartAction = {|
-    // In this, and subsequent action types, we include a local
-    // type to ensure that Flow can disambiguate action types in the
-    // reducer. Alternative solutions welcome!
-    localType: 'START',
-    type: typeof FETCH_START,
-    payload: { ids?: string[] | string }
-  |};
-
-  const fetchStartAction = (ids?: string[] | string): TFetchStartAction => ({
+  const fetchStartAction = (ids?: string[] | string): FetchStartAction => ({
     localType: 'START',
     type: FETCH_START,
     payload: { ids }
   });
 
-  type TFetchSuccessAction = {|
-    localType: 'SUCCESS',
-    type: typeof FETCH_SUCCESS,
-    payload: { data: any, time: number }
-  |};
-
-  const fetchSuccessAction = (data: any): TFetchSuccessAction => ({
+  const fetchSuccessAction = (data: any): FetchSuccessAction => ({
     localType: 'SUCCESS',
     type: FETCH_SUCCESS,
     payload: { data, time: Date.now() }
   });
 
-  type TFetchErrorAction = {|
-    localType: 'ERROR',
-    type: typeof FETCH_ERROR,
-    payload: {
-      error: string,
-      time: number,
-      ids?: string | string[]
-    }
-  |};
-
   const fetchErrorAction = (
     error: string,
     ids?: string | string[]
-  ): TFetchErrorAction => ({
+  ): FetchErrorAction => ({
     localType: 'ERROR',
     type: FETCH_ERROR,
     payload: { error, ids, time: Date.now() }
   });
 
-  type TAction = TFetchStartAction | TFetchSuccessAction | TFetchErrorAction;
-
   return {
     initialState,
-    reducer: (state: State = initialState, action: TAction): State => {
+    reducer: (state: State = initialState, action: any): State => {
       if (action.type === FETCH_START && action.localType === 'START') {
         return {
           ...state,
@@ -207,6 +210,7 @@ export default (
         } else {
           newState.loadingIds = [];
         }
+        return newState;
       }
       return state;
     },

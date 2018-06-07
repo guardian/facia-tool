@@ -52,7 +52,9 @@ describe('Filtering fronts correctly', () => {
         {
           fronts: {
             frontsConfig: {
-              fronts: {}
+              data: {
+                fronts: {}
+              }
             }
           }
         },

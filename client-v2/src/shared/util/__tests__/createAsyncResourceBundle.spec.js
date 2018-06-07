@@ -1,12 +1,12 @@
 // @flow
 
-import createMetadataBundle from '../createAsyncResourceBundle';
+import createAsyncResourceBundle from '../createAsyncResourceBundle';
 
-const { actions, reducer, selectors, initialState } = createMetadataBundle(
+const { actions, reducer, selectors, initialState } = createAsyncResourceBundle(
   'books'
 );
 
-describe('getMetaDataReducer', () => {
+describe('createAsyncResourceBundle', () => {
   const { now } = Date;
 
   beforeAll(() => {
@@ -18,7 +18,7 @@ describe('getMetaDataReducer', () => {
   });
   describe('actionNames', () => {
     it('should provide action names for a given resource name, in upper snake case', () => {
-      const { actionNames } = createMetadataBundle('ExternalArticles');
+      const { actionNames } = createAsyncResourceBundle('ExternalArticles');
       expect(actionNames).toEqual({
         fetchStart: 'EXTERNAL_ARTICLES_FETCH_START',
         fetchSuccess: 'EXTERNAL_ARTICLES_FETCH_SUCCESS',
@@ -26,7 +26,7 @@ describe('getMetaDataReducer', () => {
       });
     });
     it('should namespace the action names with the provided option', () => {
-      const { actionNames } = createMetadataBundle('ExternalArticles', {
+      const { actionNames } = createAsyncResourceBundle('ExternalArticles', {
         namespace: 'shared'
       });
       expect(actionNames).toEqual({
@@ -72,7 +72,7 @@ describe('getMetaDataReducer', () => {
       ).toBe(true);
     });
     it('should provide a selector to get the loading state for specific IDs', () => {
-      const bundle = createMetadataBundle('books', {
+      const bundle = createAsyncResourceBundle('books', {
         indexById: true
       });
       const state = {
@@ -82,9 +82,9 @@ describe('getMetaDataReducer', () => {
       expect(bundle.selectors.selectIsLoadingById(state, '2')).toBe(true);
       expect(bundle.selectors.selectIsLoadingById(state, '3')).toBe(false);
     });
-    it('should provide selectors that operate on non-standard mount points', () => {
-      const bundle = createMetadataBundle('books', {
-        mountPoint: 'otherBooks'
+    it('should accept a state selector to allow selectors to work on non-standard mount points', () => {
+      const bundle = createAsyncResourceBundle('books', {
+        selectLocalState: state => state.otherBooks
       });
       expect(
         bundle.selectors.selectIsLoading({
@@ -122,22 +122,22 @@ describe('getMetaDataReducer', () => {
       );
     });
     it('should provide a selector to select data by id, if indexById is true', () => {
-      const bundle = createMetadataBundle('books', {
+      const bundle = createAsyncResourceBundle('books', {
         indexById: true
       });
       const state = {
         books: {
           data: {
-            1: { id: 1 },
-            2: { id: 2 }
+            '1': { id: '1' },
+            '2': { id: '2' }
           }
         }
       };
-      expect(bundle.selectors.selectById(state, 1)).toEqual({
-        id: 1
+      expect(bundle.selectors.selectById(state, '1')).toEqual({
+        id: '1'
       });
-      expect(bundle.selectors.selectById(state, 2)).toEqual({
-        id: 2
+      expect(bundle.selectors.selectById(state, '2')).toEqual({
+        id: '2'
       });
     });
   });
@@ -158,7 +158,7 @@ describe('getMetaDataReducer', () => {
       });
     });
     it('should merge data by id if indexById is true', () => {
-      const bundle = createMetadataBundle('books', { indexById: true });
+      const bundle = createAsyncResourceBundle('books', { indexById: true });
       const newState = bundle.reducer(
         { ...initialState, loadingIds: ['uuid'] },
         bundle.actions.fetchSuccess({ id: 'uuid', author: 'Mark Twain' })
@@ -169,7 +169,7 @@ describe('getMetaDataReducer', () => {
       });
     });
     it('should merge arrays, too', () => {
-      const bundle = createMetadataBundle('books', { indexById: true });
+      const bundle = createAsyncResourceBundle('books', { indexById: true });
       const newState = bundle.reducer(
         { ...initialState, loading: true },
         bundle.actions.fetchSuccess([
