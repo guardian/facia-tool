@@ -63,11 +63,15 @@ type FetchErrorAction = {|
 type Action = FetchStartAction | FetchSuccessAction | FetchErrorAction;
 
 type State<Resource> = {
-  data?: Resource | null,
+  data: Resource | { [id: string]: Resource },
   lastError: string | null,
   error: string | null,
   lastFetch: number | null,
   loadingIds: string[]
+};
+
+type BaseResource = {
+  id?: string
 };
 
 /**
@@ -79,11 +83,8 @@ type State<Resource> = {
  *
  * Consumers can add add their own actions and selectors, and extend
  * the given reducer, to provide additional functionality.
- *
- * @todo Add a DataType parameter, passed explicitly to the factory
- * function, to type data passed in on success, which is currently 'any'.
  */
-export default (
+function createAsyncResourceBundle<Resource: BaseResource | any>(
   // The name of the entity for which this reducer is responsible
   entityName: string,
   options: {|
@@ -101,7 +102,7 @@ export default (
     indexById: false,
     initialData: {}
   }
-) => {
+) {
   const { indexById } = options;
   const selectLocalState = options.selectLocalState
     ? options.selectLocalState
@@ -114,7 +115,7 @@ export default (
   const FETCH_SUCCESS = `${actionKey}_FETCH_SUCCESS`;
   const FETCH_ERROR = `${actionKey}_FETCH_ERROR`;
 
-  const initialState: State<any> = {
+  const initialState: State<Resource> = {
     data: options.initialData || {},
     lastError: null,
     error: null,
@@ -129,7 +130,9 @@ export default (
     payload: { ids }
   });
 
-  const fetchSuccessAction = (data: any): FetchSuccessAction => ({
+  const fetchSuccessAction = (
+    data: Resource | Resource[]
+  ): FetchSuccessAction => ({
     localType: 'SUCCESS',
     type: FETCH_SUCCESS,
     payload: { data, time: Date.now() }
@@ -144,35 +147,47 @@ export default (
     payload: { error, ids, time: Date.now() }
   });
 
-  const applyNewData = (state: State<any>, newData: any) => {
-    if (!indexById) {
+  const applyNewData = (
+    data: Resource | { [id: string]: Resource } | {},
+    newData: Resource | Resource[]
+  ): Resource | { [id: string]: Resource } => {
+    if (newData instanceof Array) {
       return {
-        ...state.data,
-        ...newData
+        ...data,
+        ...newData.reduce((acc, model: Resource, index) => {
+          if (!model.id) {
+            throw new Error(
+              `[asyncResourceBundle]: Cannot apply new data - model is missing ID at index ${index}.`
+            );
+          }
+          return {
+            ...acc,
+            [model.id]: model
+          };
+        }, {})
       };
     }
 
-    if (Array.isArray(newData)) {
-      return {
-        ...state.data,
-        ...newData.reduce(
-          (acc, model) => ({
-            ...acc,
-            [model.id]: model
-          }),
-          {}
-        )
-      };
+    if (!newData.id) {
+      throw new Error(
+        `[asyncResourceBundle]: Cannot apply new data - model with keys ${Object.keys(
+          newData
+        ).join(', ')} is missing id.`
+      );
     }
+
     return {
-      ...state.data,
-      [(newData: any).id]: newData
+      ...data,
+      [newData.id]: newData
     };
   };
 
   return {
     initialState,
-    reducer: (state: State<any> = initialState, action: any): State<any> => {
+    reducer: (
+      state: State<Resource> = initialState,
+      action: any
+    ): State<Resource> => {
       if (action.type === FETCH_START && action.localType === 'START') {
         return {
           ...state,
@@ -182,7 +197,9 @@ export default (
       if (action.type === FETCH_SUCCESS && action.localType === 'SUCCESS') {
         return {
           ...state,
-          data: applyNewData(state, action.payload.data),
+          data: !indexById
+            ? action.payload.data
+            : applyNewData(state.data, action.payload.data),
           lastFetch: action.payload.time,
           error: null,
           lastError: null,
@@ -226,6 +243,7 @@ export default (
     },
     selectors: createSelectors(selectLocalState)
   };
-};
+}
 
 export type { Action, State };
+export default createAsyncResourceBundle;
