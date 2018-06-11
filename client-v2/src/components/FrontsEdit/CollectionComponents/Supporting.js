@@ -1,18 +1,15 @@
 // @flow
 
 import React from 'react';
-import * as Guration from 'guration';
 import Article from 'shared/components/Article';
 
 type SupportingProps = {
   uuid: string,
-  index: number
+  getDragProps: *
 };
 
-const Supporting = ({ uuid, index }: SupportingProps) => (
-  <Guration.Node type="articleFragment" id={uuid} index={index}>
-    {getDragProps => <Article id={uuid} {...getDragProps()} />}
-  </Guration.Node>
+const Supporting = ({ uuid, getDragProps }: SupportingProps) => (
+  <Article id={uuid} {...getDragProps()} />
 );
 
 export default Supporting;

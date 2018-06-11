@@ -22,16 +22,19 @@ import Group from './CollectionComponents/Group';
 import ArticleFragment from './CollectionComponents/ArticleFragment';
 import Supporting from './CollectionComponents/Supporting';
 
-type FrontProps = {
-  tree: Object,
-  handleEdits: (edits: Edit[]) => void,
-  alsoOn: { [string]: AlsoOnDetail },
+type FrontPropsBeforeState = {
   browsingStage: string,
+  collections: string[],
+  alsoOn: { [string]: AlsoOnDetail },
+  handleEdits: (edits: Edit[]) => void
+};
+
+type FrontProps = FrontPropsBeforeState & {
+  tree: Object, // TODO add typings
   dispatch: Dispatch
 };
 
 type FrontState = {
-  tree: Object,
   error: ?string
 };
 
@@ -39,7 +42,6 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   constructor(props: FrontProps) {
     super(props);
     this.state = {
-      tree: this.props.tree,
       error: null
     };
   }
@@ -49,11 +51,6 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
       tree
     };
   }
-
-  handleChange = () =>
-    this.setState({
-      error: null
-    });
 
   handleError = (error: string) => {
     this.setState({
@@ -76,6 +73,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
       }
     }, []);
 
+    console.log(actions);
+
     this.props.dispatch(batchActions(actions, 'MOVE'));
   };
 
@@ -94,20 +93,28 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
           {this.state.error}
         </div>
         <Guration.Root
+          id={this.props.tree.id}
+          type="front"
           onChange={this.handleChange}
           dropMappers={{
             text: text => urlToArticle(text)
           }}
         >
-          <Front {...this.state.tree}>
-            {(collection, i) => (
-              <Collection {...collection} alsoOn={this.props.alsoOn} index={i}>
-                {(group, j) => (
-                  <Group {...group} index={j}>
-                    {(articleFragment, k) => (
-                      <ArticleFragment {...articleFragment} index={k}>
-                        {(supporting, l) => (
-                          <Supporting {...supporting} index={l} />
+          <Front {...this.props.tree}>
+            {collection => (
+              <Collection {...collection} alsoOn={this.props.alsoOn}>
+                {group => (
+                  <Group {...group}>
+                    {(articleFragment, afDragProps) => (
+                      <ArticleFragment
+                        {...articleFragment}
+                        getDragProps={afDragProps}
+                      >
+                        {(supporting, sDragProps) => (
+                          <Supporting
+                            {...supporting}
+                            getDragProps={sDragProps}
+                          />
                         )}
                       </ArticleFragment>
                     )}
@@ -125,11 +132,11 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
 const createMapStateToProps = () => {
   const collectionsAsTreeSelector = createCollectionsAsTreeSelector();
   // $FlowFixMe factory redux :/
-  return (state: State, props) => ({
+  return (state: State, props: FrontPropsBeforeState) => ({
     // TODO: fix object literal usage for memoization!
     tree: collectionsAsTreeSelector(selectSharedState(state), {
       stage: props.browsingStage,
-      collectionIds: props.front.collections
+      collectionIds: props.collections
     })
   });
 };

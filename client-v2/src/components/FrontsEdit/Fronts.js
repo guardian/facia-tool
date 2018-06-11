@@ -104,7 +104,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
         {this.props.selectedFront && (
           <Front
             alsoOn={this.props.alsoOn}
-            front={this.props.selectedFront}
+            collectionIds={this.props.selectedFront.collections}
             browsingStage={this.state.browsingStage}
           />
         )}

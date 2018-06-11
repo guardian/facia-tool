@@ -3,25 +3,26 @@
 import React from 'react';
 import * as Guration from 'guration';
 import GroupDisplay from 'shared/components/GroupDisplay';
-import Children from './Children';
+import DropZone from 'components/DropZone';
 
 type GroupProps = {
   id: string,
   index: number,
-  articleFragments: Array<*>,
+  articleFragments: *,
   children: *
 };
 
 const Group = ({ id, index, articleFragments, children }: GroupProps) => (
   <Guration.Field type="group" value={id} index={index}>
     <GroupDisplay groupName={id}>
-      <Children
-        childrenKey="articleFragments"
+      <Guration.Level
+        arr={articleFragments}
         type="articleFragment"
-        childArray={articleFragments}
+        getKey={({ uuid }) => uuid}
+        renderDrop={props => <DropZone {...props} />}
       >
         {children}
-      </Children>
+      </Guration.Level>
     </GroupDisplay>
   </Guration.Field>
 );

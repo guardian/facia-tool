@@ -3,37 +3,33 @@
 import React from 'react';
 import * as Guration from 'guration';
 import Article from 'shared/components/Article';
-import Children from './Children';
+import DropZone from 'components/DropZone';
 
 type ArticleFragmentProps = {
-  id: string,
   uuid: string,
-  index: number,
   meta: {
-    supporting: Array<*>
+    supporting: *
   },
-  children: *
+  children: *,
+  getDragProps: () => Object
 };
 
 const ArticleFragment = ({
   uuid,
-  index,
-  meta,
-  children
+  meta: { supporting = [] } = {},
+  children,
+  getDragProps
 }: ArticleFragmentProps) => (
-  <Guration.Node type="articleFragment" id={uuid} index={index}>
-    {getDragProps => (
-      <Article id={uuid} {...getDragProps()}>
-        <Children
-          childrenKey="meta.supporting"
-          type="articleFragment"
-          childArray={(meta || {}).supporting || []}
-        >
-          {children}
-        </Children>
-      </Article>
-    )}
-  </Guration.Node>
+  <Article id={uuid} {...getDragProps()}>
+    <Guration.Level
+      arr={supporting}
+      type="articleFragment"
+      getKey={({ uuid: key }) => key}
+      renderDrop={props => <DropZone {...props} />}
+    >
+      {children}
+    </Guration.Level>
+  </Article>
 );
 
 export default ArticleFragment;

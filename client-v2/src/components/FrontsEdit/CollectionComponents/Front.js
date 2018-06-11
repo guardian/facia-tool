@@ -1,20 +1,17 @@
 // @flow
 
-import React, { type Node as ReactNode } from 'react';
-import * as Guration from 'guration';
-import { type Collection } from 'shared/types/Collection';
+import React from 'react';
+import { Level } from 'guration';
 
 type FrontProps = {
-  collections: Collection[],
-  children: (child: Collection, i: number) => ReactNode
+  collections: *,
+  children: *
 };
 
 const Front = ({ collections, children }: FrontProps) => (
-  <Guration.Children childrenKey="collections" type="collection">
-    {collections.map((child, i) => (
-      <React.Fragment key={child.id}>{children(child, i)}</React.Fragment>
-    ))}
-  </Guration.Children>
+  <Level arr={collections} type="collection" dedupeType="articleFragment">
+    {children}
+  </Level>
 );
 
 export default Front;
