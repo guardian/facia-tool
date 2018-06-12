@@ -127,7 +127,6 @@ const createCollectionsAsTreeSelector = () =>
               }
             }
           : { ...articleFragments[articleFragmentId] };
-
       return collectionIds.reduce(
         (acc, collectionId) => ({
           collections: !collections[collectionId]
@@ -165,6 +164,7 @@ const createCollectionsAsTreeSelector = () =>
                       )
                     : [
                         {
+                          id: '',
                           articleFragments: (
                             collections[collectionId].articleFragments[stage] ||
                             []

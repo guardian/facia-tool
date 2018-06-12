@@ -296,6 +296,7 @@ describe('Shared selectors', () => {
             id: 'c1',
             groups: [
               {
+                id: '',
                 articleFragments: [
                   {
                     uuid: 'af1',
@@ -331,6 +332,7 @@ describe('Shared selectors', () => {
             id: 'c1',
             groups: [
               {
+                id: '',
                 articleFragments: [
                   {
                     uuid: 'af1',

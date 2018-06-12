@@ -19,11 +19,56 @@ type ArticleFragmentsReceived = {
   type: 'SHARED/ARTICLE_FRAGMENTS_RECEIVED',
   payload: { [string]: ArticleFragment }
 };
+type RemoveSupportingArticleFragment = {
+  type: 'SHARED/REMOVE_SUPPORTING_ARTICLE_FRAGMENT',
+  payload: {
+    id: string,
+    supportingArticleFragmentId: string
+  }
+};
+type AddSupportingArticleFragment = {
+  type: 'SHARED/ADD_SUPPORTING_ARTICLE_FRAGMENT',
+  payload: {
+    id: string,
+    supportingArticleFragmentId: string,
+    index: number
+  }
+};
+type RemoveCollectionArticleFragment = {
+  type: 'SHARED/REMOVE_COLLECTION_ARTICLE_FRAGMENT',
+  payload: {
+    id: string,
+    articleFragmentId: string,
+    browsingStage: string
+  }
+};
+type AddColletionArticleFragment = {
+  type: 'SHARED/ADD_COLLECTION_ARTICLE_FRAGMENT',
+  payload: {
+    id: string,
+    articleFragmentId: string,
+    index: number,
+    browsingStage: string
+  }
+};
+
+type ChangeArticleGroup = {
+  type: 'SHARED/CHANGE_ARTICLE_GROUP',
+  payload: {
+    id: string,
+    group: string
+  }
+};
 
 type Action =
   | CollectionReceivedAction
   | ExternalArticlesReceived
   | RequestCollectionArticles
-  | ArticleFragmentsReceived;
+  | ArticleFragmentsReceived
+  | RemoveSupportingArticleFragment
+  | AddSupportingArticleFragment
+  | RemoveCollectionArticleFragment
+  | AddColletionArticleFragment
+  | ChangeArticleGroup;
 
 export type { Action };

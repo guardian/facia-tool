@@ -1,44 +1,20 @@
 // @flow
 
 import * as React from 'react';
-import { connect } from 'react-redux';
 
-import Article from './Article';
-import {
-  createArticlesInCollectionGroupSelector,
-  selectSharedState
-} from '../selectors/shared';
-import { type State } from '../types/State';
-
-type ContainerProps = {
+type GroupDisplayComponentProps = {
   groupName: string,
-  collectionId: string, // eslint-disable-line react/no-unused-prop-types
-  stage: string, // eslint-disable-line react/no-unused-prop-types
-  selectSharedState: (state: any) => State // eslint-disable-line react/no-unused-prop-types
+  children: React.Node
 };
 
-type Props = ContainerProps & {
-  articles: string[]
-};
-
-const GroupDisplayComponent = ({ groupName, articles }: Props) => (
+const GroupDisplayComponent = ({
+  groupName,
+  children
+}: GroupDisplayComponentProps) => (
   <div>
-    <h3>{groupName}</h3>
-    {articles.map(id => <Article key={id} id={id} />)}
+    <h3 style={{ margin: 0 }}>{groupName}</h3>
+    {children}
   </div>
 );
 
-const createMapStateToProps = () => {
-  const articlesSelector = createArticlesInCollectionGroupSelector();
-  // $FlowFixMe
-  return (state: RootState, props: ContainerProps): { articles: string[] } => ({
-    articles: articlesSelector(
-      props.selectSharedState
-        ? props.selectSharedState(state)
-        : selectSharedState(state),
-      props
-    )
-  });
-};
-
-export default connect(createMapStateToProps)(GroupDisplayComponent);
+export default GroupDisplayComponent;

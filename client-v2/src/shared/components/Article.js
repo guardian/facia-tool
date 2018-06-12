@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react';
+import React, { type Node as ReactNode } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
@@ -13,32 +13,36 @@ import type { Article } from '../types/Article';
 
 type ContainerProps = {
   id: string, // eslint-disable-line react/no-unused-prop-types
+  draggable: boolean,
+  onDragStart: ?(DragEvent) => void,
   selectSharedState: (state: any) => State // eslint-disable-line react/no-unused-prop-types
 };
 
 type ComponentProps = {
-  article: Article
+  article: Article,
+  children: ReactNode
 } & ContainerProps;
 
 const ArticleContainer = styled('div')`
   padding: 5px;
 `;
 
-const ArticleComponent = ({ article }: ComponentProps) =>
+const ArticleComponent = ({
+  article,
+  draggable,
+  onDragStart,
+  children
+}: ComponentProps) =>
   article && (
     <ArticleContainer key={article.headline}>
-      {article.headline}
+      <div draggable={draggable} onDragStart={onDragStart}>
+        {article.headline}
+      </div>
       <div>
         {!article.isLive &&
           (article.firstPublicationDate ? 'Taken Down' : 'Draft')}
       </div>
-
-      {article.supporting && (
-        <div style={{ paddingLeft: '10px', borderLeft: '3px solid blue' }}>
-          <h4>Supporting</h4>
-          {article.supporting.map(id => <ConnectedArticle id={id} key={id} />)}
-        </div>
-      )}
+      {children}
     </ArticleContainer>
   );
 
@@ -55,6 +59,9 @@ const createMapStateToProps = () => {
   });
 };
 
-const ConnectedArticle = connect(createMapStateToProps)(ArticleComponent);
+ArticleComponent.defaultProps = {
+  draggable: false,
+  onDragStart: null
+};
 
-export default ConnectedArticle;
+export default connect(createMapStateToProps)(ArticleComponent);
