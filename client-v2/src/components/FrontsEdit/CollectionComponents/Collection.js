@@ -12,13 +12,29 @@ type CollectionProps = {
   alsoOn: { [string]: AlsoOnDetail }
 };
 
+const getArticleFragmentLengths = <T: { articleFragments: Array<*> }>(
+  acc: Array<[T, number]> | [],
+  group: T,
+  i: number
+): Array<[T, number]> => {
+  const [{ articleFragments }, offset] = acc[i - 1] || [
+    { articleFragments: [] },
+    0
+  ];
+  return [...acc, [group, articleFragments.length + offset]];
+};
+
 const Collection = ({ id, groups, children, alsoOn }: CollectionProps) => (
   <CollectionDisplay id={id}>
     <AlsoOnNotification alsoOn={alsoOn[id]} />
     <div style={{ marginLeft: 10 }}>
-      {groups.map(child => (
-        <React.Fragment key={child.id}>{children(child)}</React.Fragment>
-      ))}
+      {groups
+        .reduce(getArticleFragmentLengths, [])
+        .map(([group, offset]) => (
+          <React.Fragment key={group.id}>
+            {children(group, offset)}
+          </React.Fragment>
+        ))}
     </div>
   </CollectionDisplay>
 );

@@ -73,8 +73,6 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
       }
     }, []);
 
-    console.log(actions);
-
     this.props.dispatch(batchActions(actions, 'MOVE'));
   };
 
@@ -103,8 +101,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
           <Front {...this.props.tree}>
             {collection => (
               <Collection {...collection} alsoOn={this.props.alsoOn}>
-                {group => (
-                  <Group {...group}>
+                {(group, offset) => (
+                  <Group {...group} offset={offset}>
                     {(articleFragment, afDragProps) => (
                       <ArticleFragment
                         {...articleFragment}
@@ -136,7 +134,7 @@ const createMapStateToProps = () => {
     // TODO: fix object literal usage for memoization!
     tree: collectionsAsTreeSelector(selectSharedState(state), {
       stage: props.browsingStage,
-      collectionIds: props.collections
+      collectionIds: props.collectionIds
     })
   });
 };
