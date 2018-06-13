@@ -86,7 +86,7 @@ async function updateCollection(
   collection: CollectionWithNestedArticles
 ): Promise<CollectionWithNestedArticles> {
   try {
-    const response = await pandaFetch(`/collection/${id}`, {
+    const response = await pandaFetch(`/v2Edits`, {
       method: 'post',
       credentials: 'same-origin',
       body: JSON.stringify({ id, collection })
