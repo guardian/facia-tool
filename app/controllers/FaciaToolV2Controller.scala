@@ -33,17 +33,15 @@ class FaciaToolV2Controller(
       case Some(update) => {
           val identity = request.user
 
-          val shouldUpdateLive: Boolean = update.isLive
-
           updateActions.v2UpdateCollection(update.id, update.collection, identity)
 
           faciaPress.press(PressCommand(
             Set(update.id),
-            live = update.isLive,
-            draft = (update.collection.draft.isEmpty && shouldUpdateLive) || !shouldUpdateLive)
-          )
+            live = false,
+            draft = true
+          ))
 
-          structuredLogger.putLog(LogUpdate(V2CollectionUpdate(update.id, update.updateType), identity.email))
+          structuredLogger.putLog(LogUpdate(V2CollectionUpdate(update.id, update.collection), identity.email))
 
           Ok(Json.toJson(update.collection)).as("application/json")
 
