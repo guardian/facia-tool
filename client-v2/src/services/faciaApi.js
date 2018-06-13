@@ -88,6 +88,9 @@ async function updateCollection(
   try {
     const response = await pandaFetch(`/v2Edits`, {
       method: 'post',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       credentials: 'same-origin',
       body: JSON.stringify({ id, collection })
     });
