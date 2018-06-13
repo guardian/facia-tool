@@ -1,22 +1,84 @@
 // @flow
 
-import { without, snakeCase } from 'lodash';
+import { without } from 'lodash';
 
 type BaseResource = {
   id?: string
 };
 
+const FETCH_START = 'FETCH_START';
+const FETCH_SUCCESS = 'FETCH_SUCCESS';
+const FETCH_ERROR = 'FETCH_ERROR';
+const UPDATE_START = 'UPDATE_START';
+const UPDATE_SUCCESS = 'UPDATE_SUCCESS';
+const UPDATE_ERROR = 'UPDATE_ERROR';
+
+type FetchStartAction = {
+  entity: string,
+  type: 'FETCH_START',
+  payload: { ids?: string[] | string }
+};
+
+type FetchSuccessAction<Resource> = {
+  entity: string,
+  type: 'FETCH_SUCCESS',
+  payload: { data: Resource | Resource[] | any, time: number }
+};
+
+type FetchErrorAction = {
+  entity: string,
+  type: 'FETCH_ERROR',
+  payload: {
+    error: string,
+    time: number,
+    ids?: string | string[]
+  }
+};
+
+type UpdateStartAction<Resource> = {
+  entity: string,
+  type: 'UPDATE_START',
+  payload: { id?: string | string, data: Resource | any }
+};
+
+type UpdateSuccessAction<Resource> = {
+  entity: string,
+  type: 'UPDATE_SUCCESS',
+  payload: { data: Resource | any, id: string, time: number }
+};
+
+type UpdateErrorAction = {
+  entity: string,
+  type: 'UPDATE_ERROR',
+  payload: {
+    error: string,
+    id: string
+  }
+};
+
+type Actions<Resource> =
+  | FetchStartAction
+  | FetchSuccessAction<Resource>
+  | FetchErrorAction
+  | UpdateStartAction<Resource>
+  | UpdateSuccessAction<Resource>
+  | UpdateErrorAction;
+
 const getStatusIdsFromData = (
-  data: BaseResource | BaseResource[]
+  data: BaseResource | BaseResource[] | any
 ): string[] | string =>
   data instanceof Array
     ? data.map((resource: BaseResource) => resource.id || '')
     : data.id || '';
-const applyStatusIds = (currentIds: string[], incomingIds: string[] | null) =>
-  currentIds.concat(incomingIds || '@@ALL');
+
+const applyStatusIds = (
+  currentIds: string[],
+  incomingIds?: string | string[]
+) => currentIds.concat(incomingIds || '@@ALL');
+
 const removeStatusIds = (
   currentIds: string[],
-  incomingIds: string[] | string
+  incomingIds?: string[] | string
 ) =>
   incomingIds instanceof Array
     ? without(currentIds, ...incomingIds)
@@ -55,60 +117,43 @@ const createSelectors = (selectLocalState: (state: any) => any) => ({
   selectAll: createSelectAll(selectLocalState)
 });
 
-type FetchStartAction = {|
-  // In this, and subsequent action types, we include a local
-  // type to ensure that Flow can disambiguate action types in the
-  // reducer. Alternative solutions welcome!
-  localType: 'FETCH_START',
-  type: string,
-  payload: { ids?: string[] | string }
-|};
-
-type FetchSuccessAction = {|
-  localType: 'FETCH_SUCCESS',
-  type: string,
-  payload: { data: any, time: number }
-|};
-
-type FetchErrorAction = {|
-  localType: 'FETCH_ERROR',
-  type: string,
-  payload: {
-    error: string,
-    time: number,
-    ids?: string | string[]
+function applyNewData<Resource: BaseResource | any>(
+  data: Resource | { [id: string]: Resource } | {},
+  newData: Resource | Resource[]
+): Resource | { [id: string]: Resource } {
+  if (newData instanceof Array) {
+    return {
+      ...data,
+      ...newData.reduce((acc, model: Resource, index) => {
+        if (!model.id) {
+          throw new Error(
+            `[asyncResourceBundle]: Cannot apply new data - model is missing ID at index ${index}.`
+          );
+        }
+        return {
+          ...acc,
+          [model.id]: model
+        };
+      }, {})
+    };
   }
-|};
 
-type UpdateStartAction = {|
-  // In this, and subsequent action types, we include a local
-  // type to ensure that Flow can disambiguate action types in the
-  // reducer. Alternative solutions welcome!
-  localType: 'UPDATE_START',
-  type: string,
-  payload: { ids?: string[] | string }
-|};
-
-type UpdateSuccessAction = {|
-  localType: 'UPDATE_SUCCESS',
-  type: string,
-  payload: { data: any, time: number }
-|};
-
-type UpdateErrorAction = {|
-  localType: 'UPDATE_ERROR',
-  type: string,
-  payload: {
-    error: string,
-    time: number,
-    ids?: string | string[]
+  if (!newData.id) {
+    throw new Error(
+      `[asyncResourceBundle]: Cannot apply new data - model with keys ${Object.keys(
+        newData
+      ).join(', ')} is missing id.`
+    );
   }
-|};
 
-type Action = FetchStartAction | FetchSuccessAction | FetchErrorAction;
+  return {
+    ...data,
+    [newData.id]: newData
+  };
+}
 
 type State<Resource> = {
-  data: Resource | { [id: string]: Resource },
+  data: Resource | { [id: string]: Resource } | any,
   lastError: string | null,
   error: string | null,
   lastFetch: number | null,
@@ -149,18 +194,8 @@ function createAsyncResourceBundle<Resource: BaseResource | any>(
   const selectLocalState = options.selectLocalState
     ? options.selectLocalState
     : (state: any) => state[entityName];
-  const baseActionKey = snakeCase(entityName).toUpperCase();
-  const actionKey = options.namespace
-    ? `${options.namespace.toUpperCase()}/${baseActionKey}`
-    : baseActionKey;
-  const FETCH_START = `${actionKey}_FETCH_START`;
-  const FETCH_SUCCESS = `${actionKey}_FETCH_SUCCESS`;
-  const FETCH_ERROR = `${actionKey}_FETCH_ERROR`;
-  const UPDATE_START = `${actionKey}_UPDATE_START`;
-  const UPDATE_SUCCESS = `${actionKey}_UPDATE_SUCCESS`;
-  const UPDATE_ERROR = `${actionKey}_UPDATE_ERROR`;
 
-  const initialState: State<Resource> = {
+  const initialState: State<Resource | any> = {
     data: options.initialData || {},
     lastError: null,
     error: null,
@@ -171,15 +206,15 @@ function createAsyncResourceBundle<Resource: BaseResource | any>(
   };
 
   const fetchStartAction = (ids?: string[] | string): FetchStartAction => ({
-    localType: 'FETCH_START',
+    entity: entityName,
     type: FETCH_START,
     payload: { ids }
   });
 
   const fetchSuccessAction = (
-    data: Resource | Resource[]
-  ): FetchSuccessAction => ({
-    localType: 'FETCH_SUCCESS',
+    data: Resource | Resource[] | any
+  ): FetchSuccessAction<Resource> => ({
+    entity: entityName,
     type: FETCH_SUCCESS,
     payload: { data, time: Date.now() }
   });
@@ -188,80 +223,48 @@ function createAsyncResourceBundle<Resource: BaseResource | any>(
     error: string,
     ids?: string | string[]
   ): FetchErrorAction => ({
-    localType: 'FETCH_ERROR',
+    entity: entityName,
     type: FETCH_ERROR,
     payload: { error, ids, time: Date.now() }
   });
 
-  const updateStartAction = (data: Resource): UpdateStartAction => ({
-    localType: 'UPDATE_START',
+  const updateStartAction = (data: Resource): UpdateStartAction<Resource> => ({
+    entity: entityName,
     type: UPDATE_START,
     payload: { data }
   });
 
-  const updateSuccessAction = (data: Resource): UpdateSuccessAction => ({
-    localType: 'UPDATE_SUCCESS',
+  const updateSuccessAction = (
+    id: string,
+    data: Resource
+  ): UpdateSuccessAction<Resource> => ({
+    entity: entityName,
     type: UPDATE_SUCCESS,
-    payload: { data, time: Date.now() }
+    payload: { id, data, time: Date.now() }
   });
 
   const updateErrorAction = (error: string, id: string): UpdateErrorAction => ({
-    localType: 'UPDATE_ERROR',
+    entity: entityName,
     type: UPDATE_ERROR,
     payload: { error, id, time: Date.now() }
   });
-
-  const applyNewData = (
-    data: Resource | { [id: string]: Resource } | {},
-    newData: Resource | Resource[]
-  ): Resource | { [id: string]: Resource } => {
-    if (newData instanceof Array) {
-      return {
-        ...data,
-        ...newData.reduce((acc, model: Resource, index) => {
-          if (!model.id) {
-            throw new Error(
-              `[asyncResourceBundle]: Cannot apply new data - model is missing ID at index ${index}.`
-            );
-          }
-          return {
-            ...acc,
-            [model.id]: model
-          };
-        }, {})
-      };
-    }
-
-    if (!newData.id) {
-      throw new Error(
-        `[asyncResourceBundle]: Cannot apply new data - model with keys ${Object.keys(
-          newData
-        ).join(', ')} is missing id.`
-      );
-    }
-
-    return {
-      ...data,
-      [newData.id]: newData
-    };
-  };
 
   return {
     initialState,
     reducer: (
       state: State<Resource> = initialState,
-      action: any
+      action: Actions<Resource>
     ): State<Resource> => {
-      if (action.type === FETCH_START && action.localType === 'FETCH_START') {
+      if (action.entity !== entityName) {
+        return state;
+      }
+      if (action.type === FETCH_START) {
         return {
           ...state,
           loadingIds: applyStatusIds(state.loadingIds, action.payload.ids)
         };
       }
-      if (
-        action.type === FETCH_SUCCESS &&
-        action.localType === 'FETCH_SUCCESS'
-      ) {
+      if (action.type === FETCH_SUCCESS) {
         return {
           ...state,
           data: !indexById
@@ -277,7 +280,7 @@ function createAsyncResourceBundle<Resource: BaseResource | any>(
             : []
         };
       }
-      if (action.type === FETCH_ERROR && action.localType === 'FETCH_ERROR') {
+      if (action.type === FETCH_ERROR) {
         if (!action.payload || !action.payload.error || !action.payload.time) {
           return state;
         }
@@ -293,7 +296,7 @@ function createAsyncResourceBundle<Resource: BaseResource | any>(
             : []
         };
       }
-      if (action.type === UPDATE_START && action.localType === 'UPDATE_START') {
+      if (action.type === UPDATE_START) {
         return {
           ...state,
           data: !indexById
@@ -301,14 +304,11 @@ function createAsyncResourceBundle<Resource: BaseResource | any>(
             : applyNewData(state.data, action.payload.data),
           updatingIds: applyStatusIds(
             state.updatingIds,
-            indexById ? action.payload.data.id : null
+            indexById ? action.payload.data.id : undefined
           )
         };
       }
-      if (
-        action.type === UPDATE_SUCCESS &&
-        action.localType === 'UPDATE_SUCCESS'
-      ) {
+      if (action.type === UPDATE_SUCCESS) {
         return {
           ...state,
           data: !indexById
@@ -316,6 +316,13 @@ function createAsyncResourceBundle<Resource: BaseResource | any>(
             : applyNewData(state.data, action.payload.data),
           lastFetch: action.payload.time,
           error: null,
+          updateIds: removeStatusIds(state.updatingIds, action.payload.id)
+        };
+      }
+      if (action.type === UPDATE_ERROR) {
+        return {
+          ...state,
+          error: action.payload.error,
           updateIds: removeStatusIds(state.updatingIds, action.payload.id)
         };
       }
@@ -341,5 +348,5 @@ function createAsyncResourceBundle<Resource: BaseResource | any>(
   };
 }
 
-export type { Action, State };
+export type { Actions, State };
 export default createAsyncResourceBundle;

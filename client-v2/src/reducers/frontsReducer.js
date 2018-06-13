@@ -31,7 +31,8 @@ const reducer = (
   },
   action: Action
 ): State => {
-  const frontsConfig = frontsConfigReducer(state.frontsConfig, action);
+  // @todo - note the sneaky :any.
+  const frontsConfig = frontsConfigReducer(state.frontsConfig, (action: any));
   let newState = state;
   if (frontsConfig !== state.frontsConfig) {
     newState = {

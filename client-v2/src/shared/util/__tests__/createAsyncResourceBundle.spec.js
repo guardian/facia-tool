@@ -20,25 +20,12 @@ describe('createAsyncResourceBundle', () => {
     it('should provide action names for a given resource name, in upper snake case', () => {
       const { actionNames } = createAsyncResourceBundle('ExternalArticles');
       expect(actionNames).toEqual({
-        fetchStart: 'EXTERNAL_ARTICLES_FETCH_START',
-        fetchSuccess: 'EXTERNAL_ARTICLES_FETCH_SUCCESS',
-        fetchError: 'EXTERNAL_ARTICLES_FETCH_ERROR',
-        updateStart: 'EXTERNAL_ARTICLES_UPDATE_START',
-        updateSuccess: 'EXTERNAL_ARTICLES_UPDATE_SUCCESS',
-        updateError: 'EXTERNAL_ARTICLES_UPDATE_ERROR'
-      });
-    });
-    it('should namespace the action names with the provided option', () => {
-      const { actionNames } = createAsyncResourceBundle('ExternalArticles', {
-        namespace: 'shared'
-      });
-      expect(actionNames).toEqual({
-        fetchStart: 'SHARED/EXTERNAL_ARTICLES_FETCH_START',
-        fetchSuccess: 'SHARED/EXTERNAL_ARTICLES_FETCH_SUCCESS',
-        fetchError: 'SHARED/EXTERNAL_ARTICLES_FETCH_ERROR',
-        updateStart: 'SHARED/EXTERNAL_ARTICLES_UPDATE_START',
-        updateSuccess: 'SHARED/EXTERNAL_ARTICLES_UPDATE_SUCCESS',
-        updateError: 'SHARED/EXTERNAL_ARTICLES_UPDATE_ERROR'
+        fetchStart: 'FETCH_START',
+        fetchSuccess: 'FETCH_SUCCESS',
+        fetchError: 'FETCH_ERROR',
+        updateStart: 'UPDATE_START',
+        updateSuccess: 'UPDATE_SUCCESS',
+        updateError: 'UPDATE_ERROR'
       });
     });
   });
@@ -46,23 +33,23 @@ describe('createAsyncResourceBundle', () => {
   describe('actions', () => {
     it('should provide actions for a given data type', () => {
       expect(actions.fetchStart()).toEqual({
-        localType: 'FETCH_START',
-        type: 'BOOKS_FETCH_START',
+        entity: 'books',
+        type: 'FETCH_START',
         payload: { ids: undefined }
       });
       expect(actions.fetchStart(['bookId'])).toEqual({
-        localType: 'FETCH_START',
-        type: 'BOOKS_FETCH_START',
+        entity: 'books',
+        type: 'FETCH_START',
         payload: { ids: ['bookId'] }
       });
       expect(actions.fetchSuccess({ data: 'exampleData' })).toEqual({
-        localType: 'FETCH_SUCCESS',
-        type: 'BOOKS_FETCH_SUCCESS',
+        entity: 'books',
+        type: 'FETCH_SUCCESS',
         payload: { data: { data: 'exampleData' }, time: 1337 }
       });
       expect(actions.fetchError('Something went wrong')).toEqual({
-        localType: 'FETCH_ERROR',
-        type: 'BOOKS_FETCH_ERROR',
+        entity: 'books',
+        type: 'FETCH_ERROR',
         payload: { error: 'Something went wrong', time: 1337 }
       });
     });
@@ -266,7 +253,16 @@ describe('createAsyncResourceBundle', () => {
           expect(newState.data.uuid).toEqual({ id: 'uuid' });
         });
       });
-      describe('Update success', () => {});
+      describe('Update success', () => {
+        const bundle = createAsyncResourceBundle('books', {
+          indexById: true
+        });
+        const newState = bundle.reducer(
+          initialState,
+          actions.updateStart({ id: 'uuid' })
+        );
+        expect(newState.data.uuid).toEqual({ id: 'uuid' });
+      });
       describe('Update error', () => {});
     });
   });
