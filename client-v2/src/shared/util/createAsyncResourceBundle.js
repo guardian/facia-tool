@@ -2,6 +2,26 @@
 
 import { without, snakeCase } from 'lodash';
 
+type BaseResource = {
+  id?: string
+};
+
+const getStatusIdsFromData = (
+  data: BaseResource | BaseResource[]
+): string[] | string =>
+  data instanceof Array
+    ? data.map((resource: BaseResource) => resource.id || '')
+    : data.id || '';
+const applyStatusIds = (currentIds: string[], incomingIds: string[] | null) =>
+  currentIds.concat(incomingIds || '@@ALL');
+const removeStatusIds = (
+  currentIds: string[],
+  incomingIds: string[] | string
+) =>
+  incomingIds instanceof Array
+    ? without(currentIds, ...incomingIds)
+    : without(currentIds, incomingIds);
+
 const createSelectCurrentError = selectLocalState => (state: any) =>
   selectLocalState(state).error;
 
@@ -39,19 +59,44 @@ type FetchStartAction = {|
   // In this, and subsequent action types, we include a local
   // type to ensure that Flow can disambiguate action types in the
   // reducer. Alternative solutions welcome!
-  localType: 'START',
+  localType: 'FETCH_START',
   type: string,
   payload: { ids?: string[] | string }
 |};
 
 type FetchSuccessAction = {|
-  localType: 'SUCCESS',
+  localType: 'FETCH_SUCCESS',
   type: string,
   payload: { data: any, time: number }
 |};
 
 type FetchErrorAction = {|
-  localType: 'ERROR',
+  localType: 'FETCH_ERROR',
+  type: string,
+  payload: {
+    error: string,
+    time: number,
+    ids?: string | string[]
+  }
+|};
+
+type UpdateStartAction = {|
+  // In this, and subsequent action types, we include a local
+  // type to ensure that Flow can disambiguate action types in the
+  // reducer. Alternative solutions welcome!
+  localType: 'UPDATE_START',
+  type: string,
+  payload: { ids?: string[] | string }
+|};
+
+type UpdateSuccessAction = {|
+  localType: 'UPDATE_SUCCESS',
+  type: string,
+  payload: { data: any, time: number }
+|};
+
+type UpdateErrorAction = {|
+  localType: 'UPDATE_ERROR',
   type: string,
   payload: {
     error: string,
@@ -67,11 +112,8 @@ type State<Resource> = {
   lastError: string | null,
   error: string | null,
   lastFetch: number | null,
-  loadingIds: string[]
-};
-
-type BaseResource = {
-  id?: string
+  loadingIds: string[],
+  updatingIds: string[]
 };
 
 /**
@@ -114,6 +156,9 @@ function createAsyncResourceBundle<Resource: BaseResource | any>(
   const FETCH_START = `${actionKey}_FETCH_START`;
   const FETCH_SUCCESS = `${actionKey}_FETCH_SUCCESS`;
   const FETCH_ERROR = `${actionKey}_FETCH_ERROR`;
+  const UPDATE_START = `${actionKey}_UPDATE_START`;
+  const UPDATE_SUCCESS = `${actionKey}_UPDATE_SUCCESS`;
+  const UPDATE_ERROR = `${actionKey}_UPDATE_ERROR`;
 
   const initialState: State<Resource> = {
     data: options.initialData || {},
@@ -121,11 +166,12 @@ function createAsyncResourceBundle<Resource: BaseResource | any>(
     error: null,
     lastFetch: null,
     loading: false,
-    loadingIds: []
+    loadingIds: [],
+    updatingIds: []
   };
 
   const fetchStartAction = (ids?: string[] | string): FetchStartAction => ({
-    localType: 'START',
+    localType: 'FETCH_START',
     type: FETCH_START,
     payload: { ids }
   });
@@ -133,7 +179,7 @@ function createAsyncResourceBundle<Resource: BaseResource | any>(
   const fetchSuccessAction = (
     data: Resource | Resource[]
   ): FetchSuccessAction => ({
-    localType: 'SUCCESS',
+    localType: 'FETCH_SUCCESS',
     type: FETCH_SUCCESS,
     payload: { data, time: Date.now() }
   });
@@ -142,9 +188,27 @@ function createAsyncResourceBundle<Resource: BaseResource | any>(
     error: string,
     ids?: string | string[]
   ): FetchErrorAction => ({
-    localType: 'ERROR',
+    localType: 'FETCH_ERROR',
     type: FETCH_ERROR,
     payload: { error, ids, time: Date.now() }
+  });
+
+  const updateStartAction = (data: Resource): UpdateStartAction => ({
+    localType: 'UPDATE_START',
+    type: UPDATE_START,
+    payload: { data }
+  });
+
+  const updateSuccessAction = (data: Resource): UpdateSuccessAction => ({
+    localType: 'UPDATE_SUCCESS',
+    type: UPDATE_SUCCESS,
+    payload: { data, time: Date.now() }
+  });
+
+  const updateErrorAction = (error: string, id: string): UpdateErrorAction => ({
+    localType: 'UPDATE_ERROR',
+    type: UPDATE_ERROR,
+    payload: { error, id, time: Date.now() }
   });
 
   const applyNewData = (
@@ -188,13 +252,16 @@ function createAsyncResourceBundle<Resource: BaseResource | any>(
       state: State<Resource> = initialState,
       action: any
     ): State<Resource> => {
-      if (action.type === FETCH_START && action.localType === 'START') {
+      if (action.type === FETCH_START && action.localType === 'FETCH_START') {
         return {
           ...state,
-          loadingIds: state.loadingIds.concat(action.payload.ids || '@@ALL')
+          loadingIds: applyStatusIds(state.loadingIds, action.payload.ids)
         };
       }
-      if (action.type === FETCH_SUCCESS && action.localType === 'SUCCESS') {
+      if (
+        action.type === FETCH_SUCCESS &&
+        action.localType === 'FETCH_SUCCESS'
+      ) {
         return {
           ...state,
           data: !indexById
@@ -202,44 +269,73 @@ function createAsyncResourceBundle<Resource: BaseResource | any>(
             : applyNewData(state.data, action.payload.data),
           lastFetch: action.payload.time,
           error: null,
-          lastError: null,
           loadingIds: indexById
-            ? without(state.loadingIds, action.payload.data.id)
+            ? removeStatusIds(
+                state.loadingIds,
+                getStatusIdsFromData(action.payload.data)
+              )
             : []
         };
       }
-      if (action.type === FETCH_ERROR && action.localType === 'ERROR') {
+      if (action.type === FETCH_ERROR && action.localType === 'FETCH_ERROR') {
         if (!action.payload || !action.payload.error || !action.payload.time) {
           return state;
         }
         if (!action.payload.error) {
           return state;
         }
-        const newState = {
+        return {
           ...state,
           lastError: action.payload.error,
-          error: action.payload.error
+          error: action.payload.error,
+          loadingIds: indexById
+            ? removeStatusIds(state.loadingIds, action.payload.ids)
+            : []
         };
-        if (indexById) {
-          newState.loadingIds = Array.isArray(action.payload.ids)
-            ? without(state.loadingIds, ...action.payload.ids)
-            : without(state.loadingIds, action.payload.ids);
-        } else {
-          newState.loadingIds = [];
-        }
-        return newState;
+      }
+      if (action.type === UPDATE_START && action.localType === 'UPDATE_START') {
+        return {
+          ...state,
+          data: !indexById
+            ? action.payload.data
+            : applyNewData(state.data, action.payload.data),
+          updatingIds: applyStatusIds(
+            state.updatingIds,
+            indexById ? action.payload.data.id : null
+          )
+        };
+      }
+      if (
+        action.type === UPDATE_SUCCESS &&
+        action.localType === 'UPDATE_SUCCESS'
+      ) {
+        return {
+          ...state,
+          data: !indexById
+            ? action.payload.data
+            : applyNewData(state.data, action.payload.data),
+          lastFetch: action.payload.time,
+          error: null,
+          updateIds: removeStatusIds(state.updatingIds, action.payload.id)
+        };
       }
       return state;
     },
     actionNames: {
       fetchStart: FETCH_START,
       fetchSuccess: FETCH_SUCCESS,
-      fetchError: FETCH_ERROR
+      fetchError: FETCH_ERROR,
+      updateStart: UPDATE_START,
+      updateSuccess: UPDATE_SUCCESS,
+      updateError: UPDATE_ERROR
     },
     actions: {
       fetchStart: fetchStartAction,
       fetchSuccess: fetchSuccessAction,
-      fetchError: fetchErrorAction
+      fetchError: fetchErrorAction,
+      updateStart: updateStartAction,
+      updateSuccess: updateSuccessAction,
+      updateError: updateErrorAction
     },
     selectors: createSelectors(selectLocalState)
   };

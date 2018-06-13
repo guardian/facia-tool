@@ -22,7 +22,10 @@ describe('createAsyncResourceBundle', () => {
       expect(actionNames).toEqual({
         fetchStart: 'EXTERNAL_ARTICLES_FETCH_START',
         fetchSuccess: 'EXTERNAL_ARTICLES_FETCH_SUCCESS',
-        fetchError: 'EXTERNAL_ARTICLES_FETCH_ERROR'
+        fetchError: 'EXTERNAL_ARTICLES_FETCH_ERROR',
+        updateStart: 'EXTERNAL_ARTICLES_UPDATE_START',
+        updateSuccess: 'EXTERNAL_ARTICLES_UPDATE_SUCCESS',
+        updateError: 'EXTERNAL_ARTICLES_UPDATE_ERROR'
       });
     });
     it('should namespace the action names with the provided option', () => {
@@ -32,7 +35,10 @@ describe('createAsyncResourceBundle', () => {
       expect(actionNames).toEqual({
         fetchStart: 'SHARED/EXTERNAL_ARTICLES_FETCH_START',
         fetchSuccess: 'SHARED/EXTERNAL_ARTICLES_FETCH_SUCCESS',
-        fetchError: 'SHARED/EXTERNAL_ARTICLES_FETCH_ERROR'
+        fetchError: 'SHARED/EXTERNAL_ARTICLES_FETCH_ERROR',
+        updateStart: 'SHARED/EXTERNAL_ARTICLES_UPDATE_START',
+        updateSuccess: 'SHARED/EXTERNAL_ARTICLES_UPDATE_SUCCESS',
+        updateError: 'SHARED/EXTERNAL_ARTICLES_UPDATE_ERROR'
       });
     });
   });
@@ -40,22 +46,22 @@ describe('createAsyncResourceBundle', () => {
   describe('actions', () => {
     it('should provide actions for a given data type', () => {
       expect(actions.fetchStart()).toEqual({
-        localType: 'START',
+        localType: 'FETCH_START',
         type: 'BOOKS_FETCH_START',
         payload: { ids: undefined }
       });
       expect(actions.fetchStart(['bookId'])).toEqual({
-        localType: 'START',
+        localType: 'FETCH_START',
         type: 'BOOKS_FETCH_START',
         payload: { ids: ['bookId'] }
       });
       expect(actions.fetchSuccess({ data: 'exampleData' })).toEqual({
-        localType: 'SUCCESS',
+        localType: 'FETCH_SUCCESS',
         type: 'BOOKS_FETCH_SUCCESS',
         payload: { data: { data: 'exampleData' }, time: 1337 }
       });
       expect(actions.fetchError('Something went wrong')).toEqual({
-        localType: 'ERROR',
+        localType: 'FETCH_ERROR',
         type: 'BOOKS_FETCH_ERROR',
         payload: { error: 'Something went wrong', time: 1337 }
       });
@@ -143,83 +149,125 @@ describe('createAsyncResourceBundle', () => {
   });
 
   describe('Reducer', () => {
-    describe('Fetch action handler', () => {
-      it('should mark the state as loading when a start action is dispatched', () => {
-        const newState = reducer(initialState, actions.fetchStart());
-        expect(newState.loadingIds).toEqual(['@@ALL']);
+    describe('Fetch action handlers', () => {
+      describe('Start action handler', () => {
+        it('should mark the state as loading when a start action is dispatched', () => {
+          const newState = reducer(initialState, actions.fetchStart());
+          expect(newState.loadingIds).toEqual(['@@ALL']);
+        });
+        it('should add loading keys by uuid as strings', () => {
+          const bundle = createAsyncResourceBundle('books', {
+            indexById: true
+          });
+          const newState = bundle.reducer(
+            initialState,
+            actions.fetchStart('uuid')
+          );
+          expect(newState.loadingIds).toEqual(['uuid']);
+        });
+        it('should add loading keys by uuid as arrays', () => {
+          const bundle = createAsyncResourceBundle('books', {
+            indexById: true
+          });
+          const newState = bundle.reducer(
+            initialState,
+            actions.fetchStart(['uuid', 'uuid2'])
+          );
+          expect(newState.loadingIds).toEqual(['uuid', 'uuid2']);
+        });
       });
-      it('should add loading keys by uuid as strings', () => {
-        const bundle = createAsyncResourceBundle('books', { indexById: true });
-        const newState = bundle.reducer(
-          initialState,
-          actions.fetchStart('uuid')
-        );
-        expect(newState.loadingIds).toEqual(['uuid']);
+      describe('Success action handler', () => {
+        it('should merge data and mark the state as not loading when a success action is dispatched', () => {
+          const newState = reducer(
+            { ...initialState, loading: true },
+            actions.fetchSuccess({ uuid: { id: 'uuid', author: 'Mark Twain' } })
+          );
+          expect(newState.loadingIds).toEqual([]);
+          expect(newState.data).toEqual({
+            uuid: { id: 'uuid', author: 'Mark Twain' }
+          });
+        });
+        it('should merge data by id if indexById is true', () => {
+          const bundle = createAsyncResourceBundle('books', {
+            indexById: true
+          });
+          const newState = bundle.reducer(
+            { ...initialState, loadingIds: ['uuid'] },
+            bundle.actions.fetchSuccess({ id: 'uuid', author: 'Mark Twain' })
+          );
+          expect(newState.loadingIds).toEqual([]);
+          expect(newState.data).toEqual({
+            uuid: { id: 'uuid', author: 'Mark Twain' }
+          });
+        });
+        it('should merge arrays, too', () => {
+          const bundle = createAsyncResourceBundle('books', {
+            indexById: true
+          });
+          const newState = bundle.reducer(
+            { ...initialState, loading: true },
+            bundle.actions.fetchSuccess([
+              { id: 'uuid', author: 'Mark Twain' },
+              { id: 'uuid2', author: 'Elizabeth Gaskell' }
+            ])
+          );
+          expect(newState.loadingIds).toEqual([]);
+          expect(newState.data).toEqual({
+            uuid: { id: 'uuid', author: 'Mark Twain' },
+            uuid2: { id: 'uuid2', author: 'Elizabeth Gaskell' }
+          });
+        });
       });
-      it('should add loading keys by uuid as arrays', () => {
-        const bundle = createAsyncResourceBundle('books', { indexById: true });
-        const newState = bundle.reducer(
-          initialState,
-          actions.fetchStart(['uuid', 'uuid2'])
-        );
-        expect(newState.loadingIds).toEqual(['uuid', 'uuid2']);
+      describe('Error action handler', () => {
+        it('should add an error and mark the state as not loading when an error action is dispatched', () => {
+          const newState = reducer(
+            { ...initialState, data: {}, loadingIds: ['uuid'] },
+            actions.fetchError('uuid')
+          );
+          expect(newState.loadingIds).toEqual([]);
+          expect(newState.data).toEqual({});
+        });
+        it('should handle strings and arrays of strings for loading uuids', () => {
+          const newState = reducer(
+            { ...initialState, data: {}, loadingIds: ['uuid', 'uuid2'] },
+            actions.fetchError(['uuid', 'uuid2'])
+          );
+          expect(newState.loadingIds).toEqual([]);
+          expect(newState.data).toEqual({});
+        });
       });
     });
-    describe('Success action handler', () => {
-      it('should merge data and mark the state as not loading when a success action is dispatched', () => {
-        const newState = reducer(
-          { ...initialState, loading: true },
-          actions.fetchSuccess({ uuid: { id: 'uuid', author: 'Mark Twain' } })
-        );
-        expect(newState.loadingIds).toEqual([]);
-        expect(newState.data).toEqual({
-          uuid: { id: 'uuid', author: 'Mark Twain' }
+    describe('Update action handlers', () => {
+      describe('Update start', () => {
+        it('should mark the state as updating when a start action is dispatched', () => {
+          const newState = reducer(initialState, actions.updateStart());
+          expect(newState.updatingIds).toEqual(['@@ALL']);
+        });
+        it('should add updating keys by uuid as strings', () => {
+          const bundle = createAsyncResourceBundle('books', {
+            indexById: true
+          });
+          const newState = bundle.reducer(
+            initialState,
+            actions.updateStart({
+              id: 'uuid'
+            })
+          );
+          expect(newState.updatingIds).toEqual(['uuid']);
+        });
+        it('should add the incoming updated model to the state', () => {
+          const bundle = createAsyncResourceBundle('books', {
+            indexById: true
+          });
+          const newState = bundle.reducer(
+            initialState,
+            actions.updateStart({ id: 'uuid' })
+          );
+          expect(newState.data.uuid).toEqual({ id: 'uuid' });
         });
       });
-      it('should merge data by id if indexById is true', () => {
-        const bundle = createAsyncResourceBundle('books', { indexById: true });
-        const newState = bundle.reducer(
-          { ...initialState, loadingIds: ['uuid'] },
-          bundle.actions.fetchSuccess({ id: 'uuid', author: 'Mark Twain' })
-        );
-        expect(newState.loadingIds).toEqual([]);
-        expect(newState.data).toEqual({
-          uuid: { id: 'uuid', author: 'Mark Twain' }
-        });
-      });
-      it('should merge arrays, too', () => {
-        const bundle = createAsyncResourceBundle('books', { indexById: true });
-        const newState = bundle.reducer(
-          { ...initialState, loading: true },
-          bundle.actions.fetchSuccess([
-            { id: 'uuid', author: 'Mark Twain' },
-            { id: 'uuid2', author: 'Elizabeth Gaskell' }
-          ])
-        );
-        expect(newState.loadingIds).toEqual([]);
-        expect(newState.data).toEqual({
-          uuid: { id: 'uuid', author: 'Mark Twain' },
-          uuid2: { id: 'uuid2', author: 'Elizabeth Gaskell' }
-        });
-      });
-    });
-    describe('Error action handler', () => {
-      it('should add an error and mark the state as not loading when an error action is dispatched', () => {
-        const newState = reducer(
-          { ...initialState, data: {}, loadingIds: ['uuid'] },
-          actions.fetchError('uuid')
-        );
-        expect(newState.loadingIds).toEqual([]);
-        expect(newState.data).toEqual({});
-      });
-      it('should handle strings and arrays of strings for loading uuids', () => {
-        const newState = reducer(
-          { ...initialState, data: {}, loadingIds: ['uuid', 'uuid2'] },
-          actions.fetchError(['uuid', 'uuid2'])
-        );
-        expect(newState.loadingIds).toEqual([]);
-        expect(newState.data).toEqual({});
-      });
+      describe('Update success', () => {});
+      describe('Update error', () => {});
     });
   });
 });
