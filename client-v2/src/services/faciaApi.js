@@ -65,6 +65,7 @@ async function fetchLastPressed(frontId: string): Promise<string> {
     });
 }
 
+<<<<<<< HEAD
 async function publishCollection(collectionId: string): Promise<void> {
   // The server does not respond with JSON
   try {
@@ -79,6 +80,22 @@ async function publishCollection(collectionId: string): Promise<void> {
   } catch (response) {
     throw new Error(
       `Tried to publish collection with id ${collectionId}, but the server responded with ${
+=======
+async function updateCollection(
+  id: string,
+  collection: CollectionWithNestedArticles
+): Promise<CollectionWithNestedArticles> {
+  try {
+    const response = await pandaFetch(`/collection/${id}`, {
+      method: 'post',
+      credentials: 'same-origin',
+      body: JSON.stringify({ id, collection })
+    });
+    return await response.json();
+  } catch (response) {
+    throw new Error(
+      `Tried to fetch collection with id ${id}, but the server responded with ${
+>>>>>>> Update actions etc. added to asyncResourceBundle; added Collection API update method; (temporary) save button on collections to hook it all up
         response.status
       }: ${response.body}`
     );
@@ -139,4 +156,5 @@ export {
   getArticles,
   fetchLastPressed,
   publishCollection
+  updateCollection
 };

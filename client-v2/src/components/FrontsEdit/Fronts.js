@@ -6,10 +6,11 @@ import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import distanceInWords from 'date-fns/distance_in_words';
 
-import getFrontsConfig, {
+import getFrontsConfig, { fetchLastPressed } from 'actions/Fronts';
+import {
   getCollectionsAndArticles,
-  fetchLastPressed
-} from 'actions/Fronts';
+  updateCollection
+} from 'actions/Collections';
 import { frontStages } from 'constants/fronts';
 // import Collection from 'shared/components/Collection';
 import type { FrontConfig } from 'types/FaciaApi';
@@ -37,7 +38,8 @@ type FrontsComponentProps = PropsBeforeFetch & {
   frontsActions: {
     getCollectionsAndArticles: (collectionIds: string[]) => Promise<void>,
     getFrontsConfig: () => Promise<void>,
-    fetchLastPressed: (frontId: string) => Promise<void>
+    fetchLastPressed: (frontId: string) => Promise<void>,
+    updateCollection: (collection: CollectionType) => Promise<void>
   }
 };
 
@@ -64,6 +66,10 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
       this.props.frontsActions.fetchLastPressed(nextProps.frontId);
     }
   }
+
+  onCollectionSave = (collection: CollectionType) => {
+    this.props.frontsActions.updateCollection(collection);
+  };
 
   handleStageSelect(key: string) {
     this.setState({
@@ -128,7 +134,8 @@ const mapDispatchToProps = (dispatch: *) => ({
     {
       getFrontsConfig,
       getCollectionsAndArticles,
-      fetchLastPressed
+      fetchLastPressed,
+      updateCollection
     },
     dispatch
   )

@@ -11,7 +11,8 @@ import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 
 type ContainerProps = {
   id: string, // eslint-disable-line react/no-unused-prop-types
-  selectSharedState?: (state: any) => State // eslint-disable-line react/no-unused-prop-types
+  selectSharedState?: (state: any) => State, // eslint-disable-line react/no-unused-prop-types
+  onSave: (collection: Collection) => void // eslint-disable-line react/no-unused-prop-types
 };
 
 type Props = ContainerProps & {

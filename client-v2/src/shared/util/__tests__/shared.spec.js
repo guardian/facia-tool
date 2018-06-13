@@ -1,70 +1,42 @@
 // @flow
 
-import { normaliseCollectionWithNestedArticles } from '../shared';
+import { omit } from 'lodash';
 
-const exampleCollection = {
-  live: [
-    {
-      id: 'article/live/0',
-      frontPublicationDate: 1,
-      publishedBy: 'Computers',
-      meta: {}
-    },
-    {
-      id: 'article/draft/1',
-      frontPublicationDate: 2,
-      publishedBy: 'Computers',
-      meta: {}
-    },
-    {
-      id: 'a/long/path/2',
-      frontPublicationDate: 2,
-      publishedBy: 'Computers',
-      meta: {}
-    }
-  ],
-  id: 'exampleCollection',
-  displayName: 'Example Collection'
-};
-
-const exampleCollectionWithSupportingArticles = {
-  live: [
-    {
-      id: 'article/live/0',
-      frontPublicationDate: 1,
-      publishedBy: 'Computers',
-      meta: {}
-    },
-    {
-      id: 'a/long/path/1',
-      frontPublicationDate: 1,
-      publishedBy: 'Computers',
-      meta: {
-        supporting: [
-          {
-            id: 'article/draft/2',
-            frontPublicationDate: 2,
-            publishedBy: 'Computers',
-            meta: {}
-          },
-          {
-            id: 'article/draft/3',
-            frontPublicationDate: 3,
-            publishedBy: 'Computers',
-            meta: {}
-          }
-        ]
-      }
-    }
-  ],
-  id: 'exampleCollection',
-  displayName: 'Example Collection'
-};
+import {
+  collection,
+  collectionWithSupportingArticles,
+  stateWithCollection,
+  stateWithCollectionAndSupporting
+} from 'shared/fixtures/shared';
+import {
+  normaliseCollectionWithNestedArticles,
+  denormaliseCollection
+} from '../shared';
 
 describe('Shared utilities', () => {
+  describe('denormaliseCollection', () => {
+    it('should denormalise a collection from the application state', () => {
+      expect(
+        denormaliseCollection((stateWithCollection: any), 'exampleCollection')
+      ).toEqual({
+        ...omit(collection, 'id'),
+        // We re-add a blank draft value here. (We could keep it undefined, it just feels a little odd!)
+        draft: []
+      });
+      expect(
+        denormaliseCollection(
+          (stateWithCollectionAndSupporting: any),
+          'exampleCollection'
+        )
+      ).toEqual({
+        ...omit(collectionWithSupportingArticles, 'id'),
+        draft: []
+      });
+    });
+  });
   describe('normaliseCollectionWithNestedArticles', () => {
     it('should normalise an external collection, and provide the new collection and article fragments indexed by id', () => {
-      const result = normaliseCollectionWithNestedArticles(exampleCollection);
+      const result = normaliseCollectionWithNestedArticles(collection);
       expect(result.collection.articleFragments.live.length).toEqual(3);
       expect(
         result.collection.articleFragments.live.every(
@@ -84,7 +56,7 @@ describe('Shared utilities', () => {
     });
     it('should handle draft and previously keys', () => {
       const result = normaliseCollectionWithNestedArticles({
-        ...exampleCollection,
+        ...collection,
         ...{
           draft: [
             {
@@ -137,7 +109,7 @@ describe('Shared utilities', () => {
     });
     it('should handle a collection without any articles', () => {
       const result = normaliseCollectionWithNestedArticles({
-        ...exampleCollection,
+        ...collection,
         ...{ live: [] }
       });
       expect(result.collection.articleFragments.live.length).toEqual(0);
@@ -147,7 +119,7 @@ describe('Shared utilities', () => {
     });
     it('should normalise supporting article fragments', () => {
       const result = normaliseCollectionWithNestedArticles(
-        exampleCollectionWithSupportingArticles
+        collectionWithSupportingArticles
       );
       expect(result.collection.articleFragments.live.length).toEqual(2);
       expect(Object.keys(result.articleFragments).length).toEqual(4);

@@ -1,7 +1,7 @@
 // @flow
 
 import fetchMock from 'fetch-mock';
-import { fetchLastPressed } from '../faciaApi';
+import { fetchLastPressed, updateCollection } from '../faciaApi';
 
 describe('faciaApi', () => {
   afterEach(fetchMock.restore);
@@ -37,6 +37,27 @@ describe('faciaApi', () => {
       expect.assertions(1);
       try {
         await fetchLastPressed('exampleId');
+      } catch (e) {
+        expect(e.message).toContain('exampleId');
+      }
+    });
+  });
+  describe('updateCollection', () => {
+    const collection: any = {
+      displayName: 'exampleCollection'
+    };
+    it('should issue a post request to the update endpoint', () => {
+      fetchMock.once('/collection/exampleId', collection);
+      expect.assertions(1);
+      return expect(updateCollection('exampleId', collection)).resolves.toEqual(
+        collection
+      );
+    });
+    it('should reject if the server gives a !2XX response', async () => {
+      fetchMock.once('/collection/exampleId', { status: 400 });
+      expect.assertions(1);
+      try {
+        await updateCollection('exampleId', collection);
       } catch (e) {
         expect(e.message).toContain('exampleId');
       }

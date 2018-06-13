@@ -1,28 +1,14 @@
 // @flow
 
 import type { ThunkAction } from 'types/Store';
-import type { State } from 'types/State';
 import type { Action } from 'types/Action';
 import { batchActions } from 'redux-batched-actions';
-import { getCollectionConfig } from 'selectors/frontsSelectors';
 import {
-  getArticles,
   fetchFrontsConfig,
   getCollection,
   fetchLastPressed as fetchLastPressedApi,
   publishCollection as publishCollectionApi
 } from 'services/faciaApi';
-import {
-  combineCollectionWithConfig,
-  populateDraftArticles
-} from 'util/frontsUtils';
-import {
-  normaliseCollectionWithNestedArticles,
-  getArticleIdsFromCollection
-} from 'shared/util/shared';
-import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
-import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
-import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import { actions as frontsConfigActions } from 'bundles/frontsConfigBundle';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 
@@ -73,64 +59,7 @@ function publishCollection(collectionId: string): ThunkAction {
       });
 }
 
-function getFrontCollection(collectionId: string) {
-  return (dispatch: Dispatch, getState: () => State) => {
-    dispatch(collectionActions.fetchStart(collectionId));
-    return getCollection(collectionId)
-      .then((res: Object) => {
-        const collectionConfig = getCollectionConfig(getState(), collectionId);
-        const collectionWithNestedArticles = combineCollectionWithConfig(
-          collectionConfig,
-          res
-        );
-        const hasUnpublishedChanges =
-          collectionWithNestedArticles.draft !== undefined;
-        const collectionWithDraftArticles = {
-          ...collectionWithNestedArticles,
-          draft: populateDraftArticles(collectionWithNestedArticles)
-        };
-        const {
-          collection,
-          articleFragments
-        } = normaliseCollectionWithNestedArticles(collectionWithDraftArticles);
-
-        dispatch(
-          batchActions([
-            collectionActions.fetchSuccess(collection),
-            articleFragmentsReceived(articleFragments),
-            recordUnpublishedChanges(collectionId, hasUnpublishedChanges)
-          ])
-        );
-        return getArticleIdsFromCollection(collectionWithDraftArticles);
-      })
-      .catch((error: string) => {
-        dispatch(collectionActions.fetchError(error, collectionId));
-        return [];
-      });
-  };
-}
-
-const getCollectionsAndArticles = (collectionIds: Array<string>) => (
-  dispatch: Dispatch
-) =>
-  Promise.all(
-    collectionIds.map(collectionId =>
-      dispatch(getFrontCollection(collectionId))
-        .then(articleIds => {
-          dispatch(externalArticleActions.fetchStart(articleIds));
-          return getArticles(articleIds).catch(error =>
-            dispatch(externalArticleActions.fetchError(error, articleIds))
-          );
-        })
-        .then(articles => {
-          dispatch(externalArticleActions.fetchSuccess(articles));
-        })
-    )
-  );
-
 export {
-  getFrontCollection,
-  getCollectionsAndArticles,
   fetchLastPressed,
   fetchLastPressedSuccess,
   publishCollection
