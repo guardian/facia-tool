@@ -9,10 +9,6 @@ type State = {
 
 const collections = (state: State = {}, action: Action) => {
   switch (action.type) {
-    case 'SHARED/COLLECTION_RECEIVED': {
-      const { payload } = action;
-      return Object.assign({}, state, { [payload.id]: payload });
-    }
     case 'SHARED/REMOVE_COLLECTION_ARTICLE_FRAGMENT': {
       const { id, articleFragmentId, browsingStage } = action.payload;
       const collection = state[id];

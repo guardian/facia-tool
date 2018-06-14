@@ -6,8 +6,6 @@ import styled from 'styled-components';
 
 import type { Collection } from '../types/Collection';
 import type { State } from '../types/State';
-import Article from './Article';
-import GroupDisplay from './GroupDisplay';
 import { selectSharedState } from '../selectors/shared';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 

@@ -50,20 +50,13 @@ type ChangeArticleGroup = {
 };
 
 type Action =
-<<<<<<< HEAD
-  | CollectionReceivedAction
-  | ExternalArticlesReceived
-  | RequestCollectionArticles
-  | ArticleFragmentsReceived
   | RemoveSupportingArticleFragment
   | AddSupportingArticleFragment
   | RemoveCollectionArticleFragment
   | AddColletionArticleFragment
-  | ChangeArticleGroup;
-=======
+  | ChangeArticleGroup
   | Actions<ExternalArticle>
   | Actions<Collection>
   | ArticleFragmentsReceived;
->>>>>>> Updated action typing
 
 export type { Action };
