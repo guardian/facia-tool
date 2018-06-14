@@ -170,6 +170,10 @@ type State<Resource> = {
  *
  * Consumers can add add their own actions and selectors, and extend
  * the given reducer, to provide additional functionality.
+ *
+ * @todo The any type here is a massive cop-out to cope with the fact
+ * that the shape of the resource might be keyed by ID, or just a blob
+ * of state that we don't index. Solutions welcome!
  */
 function createAsyncResourceBundle<Resource: BaseResource | any>(
   // The name of the entity for which this reducer is responsible
@@ -255,15 +259,19 @@ function createAsyncResourceBundle<Resource: BaseResource | any>(
       state: State<Resource> = initialState,
       action: Actions<Resource>
     ): State<Resource> => {
+      // The entity property lets us scope by module, whilst keeping
+      // the 'type' property typed as string literal unions.
       if (action.entity !== entityName) {
         return state;
       }
+
       if (action.type === FETCH_START) {
         return {
           ...state,
           loadingIds: applyStatusIds(state.loadingIds, action.payload.ids)
         };
       }
+
       if (action.type === FETCH_SUCCESS) {
         return {
           ...state,
@@ -280,6 +288,7 @@ function createAsyncResourceBundle<Resource: BaseResource | any>(
             : []
         };
       }
+
       if (action.type === FETCH_ERROR) {
         if (!action.payload || !action.payload.error || !action.payload.time) {
           return state;
@@ -296,6 +305,7 @@ function createAsyncResourceBundle<Resource: BaseResource | any>(
             : []
         };
       }
+
       if (action.type === UPDATE_START) {
         return {
           ...state,
@@ -308,6 +318,7 @@ function createAsyncResourceBundle<Resource: BaseResource | any>(
           )
         };
       }
+
       if (action.type === UPDATE_SUCCESS) {
         return {
           ...state,
@@ -319,6 +330,7 @@ function createAsyncResourceBundle<Resource: BaseResource | any>(
           updateIds: removeStatusIds(state.updatingIds, action.payload.id)
         };
       }
+
       if (action.type === UPDATE_ERROR) {
         return {
           ...state,
