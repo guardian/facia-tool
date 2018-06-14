@@ -175,7 +175,7 @@ type State<Resource> = {
  * that the shape of the resource might be keyed by ID, or just a blob
  * of state that we don't index. Solutions welcome!
  */
-function createAsyncResourceBundle<Resource: BaseResource | any>(
+function createAsyncResourceBundle<Resource: any>(
   // The name of the entity for which this reducer is responsible
   entityName: string,
   options: {|

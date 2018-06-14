@@ -10,30 +10,32 @@ import {
 
 const state = {
   collections: {
-    c1: {
-      id: 'c1',
-      groups: ['group1', 'group2'],
-      articleFragments: {
-        live: ['af1', 'af2']
-      }
-    },
-    c2: {
-      id: 'c2',
-      groups: ['group1'],
-      articleFragments: {
-        draft: ['af3', 'af4']
-      }
-    },
-    c3: {
-      groups: ['group1'],
-      articleFragments: {
-        draft: ['af5']
-      }
-    },
-    c4: {
-      groups: ['group1'],
-      articleFragments: {
-        draft: ['af5']
+    data: {
+      c1: {
+        id: 'c1',
+        groups: ['group1', 'group2'],
+        articleFragments: {
+          live: ['af1', 'af2']
+        }
+      },
+      c2: {
+        id: 'c2',
+        groups: ['group1'],
+        articleFragments: {
+          draft: ['af3', 'af4']
+        }
+      },
+      c3: {
+        groups: ['group1'],
+        articleFragments: {
+          draft: ['af5']
+        }
+      },
+      c4: {
+        groups: ['group1'],
+        articleFragments: {
+          draft: ['af5']
+        }
       }
     }
   },
@@ -86,10 +88,12 @@ const state = {
 
 const stateWithGrouplessCollection = {
   collections: {
-    c1: {
-      id: 'c1',
-      articleFragments: {
-        live: ['af1', 'af2']
+    data: {
+      c1: {
+        id: 'c1',
+        articleFragments: {
+          live: ['af1', 'af2']
+        }
       }
     }
   },
@@ -110,10 +114,12 @@ const stateWithGrouplessCollection = {
 
 const stateWithSupportingArticles = {
   collections: {
-    c1: {
-      id: 'c1',
-      articleFragments: {
-        live: ['af1']
+    data: {
+      c1: {
+        id: 'c1',
+        articleFragments: {
+          live: ['af1']
+        }
       }
     }
   },
