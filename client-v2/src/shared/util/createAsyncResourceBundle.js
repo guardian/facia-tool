@@ -334,6 +334,7 @@ function createAsyncResourceBundle<Resource: any>(
         }
       }
     },
+    selectLocalState,
     actionNames: {
       fetchStart: FETCH_START,
       fetchSuccess: FETCH_SUCCESS,

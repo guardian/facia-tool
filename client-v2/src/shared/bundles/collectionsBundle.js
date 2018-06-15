@@ -5,6 +5,7 @@ import createAsyncResourceBundle, {
 } from '../util/createAsyncResourceBundle';
 import { type Action } from '../types/Action';
 import { type Collection } from '../types/Collection';
+import { type State as SharedState } from '../types/State';
 
 const {
   actions,
@@ -13,6 +14,50 @@ const {
   selectors,
   initialState
 } = createAsyncResourceBundle('collections', { indexById: true });
+
+const collectionSelectors = {
+  ...selectors,
+  selectParentCollectionOfArticleFragment: (
+    state: SharedState,
+    articleFragmentId: string
+  ) => {
+    let collectionId = null;
+    Object.keys(state.collections.data).some(id =>
+      Object.keys(state.collections.data[id].articleFragments).some(stage => {
+        if (!state.collections.data[id].articleFragments[stage]) {
+          return false;
+        }
+        // If we've got a hit here, stop the search ...
+        if (
+          state.collections.data[id].articleFragments[stage] &&
+          state.collections.data[id].articleFragments[stage].indexOf(
+            articleFragmentId
+          ) !== -1
+        ) {
+          collectionId = id;
+          return true;
+        }
+        // ... else, inspect the supporting articles, if they exist.
+        state.collections.data[id].articleFragments[stage].some(fragmentId => {
+          if (
+            state.articleFragments[fragmentId] &&
+            state.articleFragments[fragmentId].meta &&
+            state.articleFragments[fragmentId].meta.supporting &&
+            state.articleFragments[fragmentId].meta.supporting.indexOf(
+              articleFragmentId
+            ) !== -1
+          ) {
+            collectionId = id;
+            return true;
+          }
+          return false;
+        });
+        return false;
+      })
+    );
+    return collectionId;
+  }
+};
 
 const collectionReducer = (
   incomingState: State<Collection> = initialState,
@@ -70,4 +115,9 @@ const collectionReducer = (
   }
 };
 
-export { actions, actionNames, selectors, collectionReducer as reducer };
+export {
+  actions,
+  actionNames,
+  collectionSelectors as selectors,
+  collectionReducer as reducer
+};
