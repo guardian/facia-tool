@@ -38,8 +38,7 @@ type FrontsComponentProps = PropsBeforeFetch & {
   frontsActions: {
     getCollectionsAndArticles: (collectionIds: string[]) => Promise<void>,
     getFrontsConfig: () => Promise<void>,
-    fetchLastPressed: (frontId: string) => Promise<void>,
-    updateCollection: (collection: CollectionType) => Promise<void>
+    fetchLastPressed: (frontId: string) => Promise<void>
   }
 };
 
@@ -66,10 +65,6 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
       this.props.frontsActions.fetchLastPressed(nextProps.frontId);
     }
   }
-
-  onCollectionSave = (collection: CollectionType) => {
-    this.props.frontsActions.updateCollection(collection);
-  };
 
   handleStageSelect(key: string) {
     this.setState({
