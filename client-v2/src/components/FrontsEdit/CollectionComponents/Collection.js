@@ -3,13 +3,15 @@
 import React from 'react';
 import CollectionDisplay from 'shared/components/Collection';
 import AlsoOnNotification from 'components/AlsoOnNotification';
+import Button from 'components/Button';
 import type { AlsoOnDetail } from 'types/Collection';
 
 type CollectionProps = {
   id: string,
   groups: *,
   children: *,
-  alsoOn: { [string]: AlsoOnDetail }
+  alsoOn: { [string]: AlsoOnDetail },
+  publishCollection: (collectionId: string) => Promise<void>
 };
 
 const getArticleFragmentLengths = <T: { articleFragments: Array<*> }>(
@@ -24,8 +26,15 @@ const getArticleFragmentLengths = <T: { articleFragments: Array<*> }>(
   return [...acc, [group, articleFragments.length + offset]];
 };
 
-const Collection = ({ id, groups, children, alsoOn }: CollectionProps) => (
+const Collection = ({
+  id,
+  groups,
+  children,
+  alsoOn,
+  publishCollection
+}: CollectionProps) => (
   <CollectionDisplay id={id}>
+    <Button dark={true} onClick={() => publishCollection(id)}>Launch</Button>
     <AlsoOnNotification alsoOn={alsoOn[id]} />
     <div style={{ marginLeft: 10 }}>
       {groups

@@ -9,7 +9,8 @@ import {
   getArticles,
   fetchFrontsConfig,
   getCollection,
-  fetchLastPressed as fetchLastPressedApi
+  fetchLastPressed as fetchLastPressedApi,
+  publishCollection as publishCollectionApi
 } from 'services/faciaApi';
 import {
   combineCollectionWithConfig,
@@ -35,6 +36,16 @@ function fetchLastPressedSuccess(frontId: string, datePressed: string): Action {
   };
 }
 
+function publishCollectionSuccess(collectionId: string): Action {
+  return {
+    type: 'PUBLISH_COLLECTION_SUCCESS',
+    payload: {
+      receivedAt: Date.now(),
+      collectionId
+    }
+  };
+}
+
 function fetchLastPressed(frontId: string): ThunkAction {
   return (dispatch: Dispatch) =>
     fetchLastPressedApi(frontId)
@@ -44,6 +55,25 @@ function fetchLastPressed(frontId: string): ThunkAction {
       .catch(() => {
         // @todo: implement once error handling is done
       });
+}
+
+function publishCollection(collectionId: string): ThunkAction {
+  return (dispatch: Dispatch) =>
+    publishCollectionApi(collectionId)
+      .then(response => dispatch(publishCollectionSuccess(collectionId))
+      )
+      .catch(() => {
+        // @todo: implement once error handling is done
+      });
+}
+
+function errorReceivingConfig(error: string): Action {
+  return {
+    type: 'CAUGHT_ERROR',
+    message: 'Could not fetch fronts config',
+    error,
+    receivedAt: Date.now()
+  };
 }
 
 function getFrontCollection(collectionId: string) {
@@ -102,7 +132,8 @@ export {
   getFrontCollection,
   getCollectionsAndArticles,
   fetchLastPressed,
-  fetchLastPressedSuccess
+  fetchLastPressedSuccess,
+  publishCollection
 };
 
 export default function getFrontsConfig(): ThunkAction {

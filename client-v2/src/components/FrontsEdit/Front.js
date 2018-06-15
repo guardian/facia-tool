@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 /* eslint-disable import/no-duplicates */
 import * as Guration from 'guration';
 import { type Edit } from 'guration';
@@ -12,6 +13,7 @@ import {
   selectSharedState,
   createCollectionsAsTreeSelector
 } from 'shared/selectors/shared';
+import { publishCollection } from 'actions/Fronts';
 // import { externalArticlesReceived } from 'shared/actions/ExternalArticles';
 import { batchActions } from 'redux-batched-actions';
 import { urlToArticle, mapMoveEditToActions } from 'util/collectionUtils';
@@ -26,7 +28,8 @@ type FrontPropsBeforeState = {
   browsingStage: string,
   collections: string[],
   alsoOn: { [string]: AlsoOnDetail },
-  handleEdits: (edits: Edit[]) => void
+  handleEdits: (edits: Edit[]) => void,
+  publishCollection: (collecionId: string) => Promise<void>
 };
 
 type FrontProps = FrontPropsBeforeState & {
@@ -100,7 +103,11 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
         >
           <Front {...this.props.tree}>
             {collection => (
-              <Collection {...collection} alsoOn={this.props.alsoOn}>
+              <Collection
+                {...collection}
+                alsoOn={this.props.alsoOn}
+                publishCollection={this.props.publishCollection}
+              >
                 {(group, offset) => (
                   <Group {...group} offset={offset}>
                     {(articleFragment, afDragProps) => (
@@ -139,9 +146,8 @@ const createMapStateToProps = () => {
   });
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  dispatch
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+  bindActionCreators({ publishCollection }, dispatch);
 
 export default connect(createMapStateToProps, mapDispatchToProps)(
   FrontComponent
