@@ -10,37 +10,41 @@ import {
 
 const state = {
   collections: {
-    c1: {
-      id: 'c1',
-      groups: ['group1', 'group2'],
-      articleFragments: {
-        live: ['af1', 'af2']
-      }
-    },
-    c2: {
-      id: 'c2',
-      groups: ['group1'],
-      articleFragments: {
-        draft: ['af3', 'af4']
-      }
-    },
-    c3: {
-      groups: ['group1'],
-      articleFragments: {
-        draft: ['af5']
-      }
-    },
-    c4: {
-      groups: ['group1'],
-      articleFragments: {
-        draft: ['af5']
+    data: {
+      c1: {
+        id: 'c1',
+        groups: ['group1', 'group2'],
+        articleFragments: {
+          live: ['af1', 'af2']
+        }
+      },
+      c2: {
+        id: 'c2',
+        groups: ['group1'],
+        articleFragments: {
+          draft: ['af3', 'af4']
+        }
+      },
+      c3: {
+        groups: ['group1'],
+        articleFragments: {
+          draft: ['af5']
+        }
+      },
+      c4: {
+        groups: ['group1'],
+        articleFragments: {
+          draft: ['af5']
+        }
       }
     }
   },
   externalArticles: {
-    ea1: {
-      id: 'ea1',
-      headline: 'Example external article'
+    data: {
+      ea1: {
+        id: 'ea1',
+        headline: 'Example external article'
+      }
     }
   },
   articleFragments: {
@@ -84,10 +88,12 @@ const state = {
 
 const stateWithGrouplessCollection = {
   collections: {
-    c1: {
-      id: 'c1',
-      articleFragments: {
-        live: ['af1', 'af2']
+    data: {
+      c1: {
+        id: 'c1',
+        articleFragments: {
+          live: ['af1', 'af2']
+        }
       }
     }
   },
@@ -108,10 +114,12 @@ const stateWithGrouplessCollection = {
 
 const stateWithSupportingArticles = {
   collections: {
-    c1: {
-      id: 'c1',
-      articleFragments: {
-        live: ['af1']
+    data: {
+      c1: {
+        id: 'c1',
+        articleFragments: {
+          live: ['af1']
+        }
       }
     }
   },
@@ -149,7 +157,7 @@ describe('Shared selectors', () => {
   describe('createExternalArticleFromArticleFragmentSelector', () => {
     it('should create a selector that returns an external article referenced by the given article', () => {
       expect(externalArticleFromArticleFragmentSelector(state, 'af1')).toEqual(
-        state.externalArticles.ea1
+        state.externalArticles.data.ea1
       );
       expect(
         externalArticleFromArticleFragmentSelector(state, 'invalid')

@@ -2,24 +2,26 @@
 
 import type { FrontsConfig } from 'types/FaciaApi';
 
-const frontsConfig: FrontsConfig = {
-  fronts: {
-    editorialFront: {
-      id: 'editorialFront',
-      collections: ['collection1'],
-      priority: 'editorial'
+const frontsConfig: { data: FrontsConfig } = {
+  data: {
+    fronts: {
+      editorialFront: {
+        id: 'editorialFront',
+        collections: ['collection1'],
+        priority: 'editorial'
+      },
+      commercialFront: {
+        id: 'commercialFront',
+        collections: ['collection1'],
+        priority: 'commercial'
+      }
     },
-    commercialFront: {
-      id: 'commercialFront',
-      collections: ['collection1'],
-      priority: 'commercial'
-    }
-  },
-  collections: {
-    collection1: {
-      id: 'collection1',
-      displayName: 'name',
-      type: 'collection'
+    collections: {
+      collection1: {
+        id: 'collection1',
+        displayName: 'name',
+        type: 'collection'
+      }
     }
   }
 };

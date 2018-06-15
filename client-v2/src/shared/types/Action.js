@@ -2,19 +2,8 @@
 
 import type { ExternalArticle } from './ExternalArticle';
 import type { Collection, ArticleFragment } from './Collection';
+import type { Actions } from '../util/createAsyncResourceBundle';
 
-type CollectionReceivedAction = {
-  type: 'SHARED/COLLECTION_RECEIVED',
-  payload: Collection
-};
-type ExternalArticlesReceived = {
-  type: 'SHARED/EXTERNAL_ARTICLES_RECEIVED',
-  payload: { [string]: ExternalArticle }
-};
-type RequestCollectionArticles = {
-  type: 'SHARED/EXTERNAL_ARTICLES_GET_RECEIVE',
-  receivedAt: number
-};
 type ArticleFragmentsReceived = {
   type: 'SHARED/ARTICLE_FRAGMENTS_RECEIVED',
   payload: { [string]: ArticleFragment }
@@ -61,14 +50,13 @@ type ChangeArticleGroup = {
 };
 
 type Action =
-  | CollectionReceivedAction
-  | ExternalArticlesReceived
-  | RequestCollectionArticles
-  | ArticleFragmentsReceived
   | RemoveSupportingArticleFragment
   | AddSupportingArticleFragment
   | RemoveCollectionArticleFragment
   | AddColletionArticleFragment
-  | ChangeArticleGroup;
+  | ChangeArticleGroup
+  | Actions<ExternalArticle>
+  | Actions<Collection>
+  | ArticleFragmentsReceived;
 
 export type { Action };

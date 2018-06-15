@@ -2,11 +2,11 @@
 
 import { createSelector } from 'reselect';
 import { omit } from 'lodash';
+import { selectors as externalArticleSelectors } from '../bundles/externalArticlesBundle';
+import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 
 import type { ArticleFragment } from '../types/Collection';
 import type { State } from '../types/State';
-
-const externalArticlesSelector = (state: State) => state.externalArticles;
 
 const articleFragmentsSelector = (state: State) => state.articleFragments;
 
@@ -18,7 +18,7 @@ const externalArticleFromArticleFragmentSelector = (
   id: string
 ) => {
   const articleFragment = articleFragmentSelector(state, id);
-  const externalArticles = externalArticlesSelector(state);
+  const externalArticles = externalArticleSelectors.selectAll(state);
   if (!articleFragment) {
     return null;
   }
@@ -43,14 +43,12 @@ const createArticleFromArticleFragmentSelector = () =>
     }
   );
 
-const collectionsSelector = (state: State) => state.collections;
-
 const collectionIdSelector = (_, { collectionId }: { collectionId: string }) =>
   collectionId;
 
 const createCollectionSelector = () =>
   createSelector(
-    collectionsSelector,
+    collectionSelectors.selectAll,
     collectionIdSelector,
     (collections, id) =>
       collections[id]
@@ -106,7 +104,7 @@ const collectionIdsSelector = (
 
 const createCollectionsAsTreeSelector = () =>
   createSelector(
-    collectionsSelector,
+    collectionSelectors.selectAll,
     articleFragmentsSelector,
     collectionIdsSelector,
     stageSelector,
@@ -180,10 +178,9 @@ const createCollectionsAsTreeSelector = () =>
   );
 
 // Selects the shared part of the application state mounted at its default point, '.shared'.
-const selectSharedState = (rootState: { shared: State }) => rootState.shared;
+const selectSharedState = (rootState: any): State => rootState.shared;
 
 export {
-  externalArticlesSelector,
   externalArticleFromArticleFragmentSelector,
   createArticleFromArticleFragmentSelector,
   createArticlesInCollectionGroupSelector,

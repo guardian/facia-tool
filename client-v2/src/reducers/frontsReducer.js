@@ -2,11 +2,15 @@
 
 import set from 'lodash/fp/set';
 
+import { type $ReturnType } from 'shared/types/Utility';
 import { type Action } from 'types/Action';
-import type { FrontsConfig } from 'types/FaciaApi';
+import {
+  reducer as frontsConfigReducer,
+  initialState
+} from 'bundles/frontsConfigBundle';
 
 type State = {
-  frontsConfig: FrontsConfig,
+  frontsConfig: $ReturnType<typeof frontsConfigReducer>,
   lastPressed: {
     draft: {
       [id: string]: string
@@ -17,9 +21,9 @@ type State = {
   }
 };
 
-const frontsConfig = (
+const reducer = (
   state?: State = {
-    frontsConfig: { fronts: {}, collections: {} },
+    frontsConfig: initialState,
     lastPressed: {
       draft: {},
       live: {}
@@ -27,24 +31,29 @@ const frontsConfig = (
   },
   action: Action
 ): State => {
+  // @todo - note the sneaky :any.
+  const frontsConfig = frontsConfigReducer(state.frontsConfig, (action: any));
+  let newState = state;
+  if (frontsConfig !== state.frontsConfig) {
+    newState = {
+      ...state,
+      frontsConfig
+    };
+  }
   switch (action.type) {
-    case 'FRONTS_CONFIG_RECEIVED': {
-      return {
-        ...state,
-        frontsConfig: action.payload
-      };
-    }
     case 'FETCH_LAST_PRESSED_SUCCESS': {
       return set(
         ['lastPressed', action.payload.frontId],
         action.payload.datePressed,
-        state
+        newState
       );
     }
     default: {
-      return state;
+      return newState;
     }
   }
 };
 
-export default frontsConfig;
+export type { State };
+
+export default reducer;
