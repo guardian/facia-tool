@@ -44,6 +44,7 @@ GET         /front/lastmodifiedstatus/:stage/*path   controllers.PressController
 
 GET         /collection/*collectionId                controllers.FaciaToolController.getCollection(collectionId)
 POST        /edits                                   controllers.FaciaToolController.collectionEdits
+POST        /v2Edits                                 controllers.FaciaToolV2Controller.collectionEdits
 GET         /config                                  controllers.FaciaToolController.getConfig
 GET         /defaults                                controllers.DefaultsController.configuration()
 GET         /metadata                                controllers.FaciaToolController.getMetadata()
