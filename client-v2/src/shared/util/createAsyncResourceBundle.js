@@ -3,7 +3,7 @@
 import { without } from 'lodash';
 
 type BaseResource = {
-  id?: string
+  id: string
 };
 
 const FETCH_START = 'FETCH_START';
@@ -107,24 +107,14 @@ const createSelectById = selectLocalState => (state: any, id: string) =>
 const createSelectAll = selectLocalState => (state: any) =>
   selectLocalState(state).data;
 
-const createSelectors = (selectLocalState: (state: any) => any) => ({
-  selectCurrentError: createSelectCurrentError(selectLocalState),
-  selectLastError: createSelectLastError(selectLocalState),
-  selectLastFetch: createSelectLastFetch(selectLocalState),
-  selectIsLoading: createSelectIsLoading(selectLocalState),
-  selectIsLoadingById: createSelectIsLoadingById(selectLocalState),
-  selectById: createSelectById(selectLocalState),
-  selectAll: createSelectAll(selectLocalState)
-});
-
-function applyNewData<Resource: BaseResource | any>(
-  data: Resource | { [id: string]: Resource } | {},
+function applyNewData<Resource: BaseResource>(
+  data: { [id: string]: Resource } | {},
   newData: Resource | Resource[]
 ): Resource | { [id: string]: Resource } {
   if (newData instanceof Array) {
-    return {
+    const result: { [id: string]: Resource } = {
       ...data,
-      ...newData.reduce((acc, model: Resource, index) => {
+      ...newData.reduce((acc, model: BaseResource, index) => {
         if (!model.id) {
           throw new Error(
             `[asyncResourceBundle]: Cannot apply new data - model is missing ID at index ${index}.`
@@ -136,6 +126,7 @@ function applyNewData<Resource: BaseResource | any>(
         };
       }, {})
     };
+    return result;
   }
 
   if (!newData.id) {
@@ -197,9 +188,9 @@ function createAsyncResourceBundle<Resource: any>(
   const { indexById } = options;
   const selectLocalState = options.selectLocalState
     ? options.selectLocalState
-    : (state: any) => state[entityName];
+    : (state: any): State<Resource> => state[entityName];
 
-  const initialState: State<Resource | any> = {
+  const initialState: State<Resource> = {
     data: options.initialData || {},
     lastError: null,
     error: null,
@@ -265,80 +256,83 @@ function createAsyncResourceBundle<Resource: any>(
         return state;
       }
 
-      if (action.type === FETCH_START) {
-        return {
-          ...state,
-          loadingIds: applyStatusIds(state.loadingIds, action.payload.ids)
-        };
-      }
-
-      if (action.type === FETCH_SUCCESS) {
-        return {
-          ...state,
-          data: !indexById
-            ? action.payload.data
-            : applyNewData(state.data, action.payload.data),
-          lastFetch: action.payload.time,
-          error: null,
-          loadingIds: indexById
-            ? removeStatusIds(
-                state.loadingIds,
-                getStatusIdsFromData(action.payload.data)
-              )
-            : []
-        };
-      }
-
-      if (action.type === FETCH_ERROR) {
-        if (!action.payload || !action.payload.error || !action.payload.time) {
+      switch (action.type) {
+        case FETCH_START: {
+          return {
+            ...state,
+            loadingIds: applyStatusIds(state.loadingIds, action.payload.ids)
+          };
+        }
+        case FETCH_SUCCESS: {
+          return {
+            ...state,
+            data: !indexById
+              ? action.payload.data
+              : applyNewData(state.data, action.payload.data),
+            lastFetch: action.payload.time,
+            error: null,
+            loadingIds: indexById
+              ? removeStatusIds(
+                  state.loadingIds,
+                  getStatusIdsFromData(action.payload.data)
+                )
+              : []
+          };
+        }
+        case FETCH_ERROR: {
+          if (
+            !action.payload ||
+            !action.payload.error ||
+            !action.payload.time
+          ) {
+            return state;
+          }
+          if (!action.payload.error) {
+            return state;
+          }
+          return {
+            ...state,
+            lastError: action.payload.error,
+            error: action.payload.error,
+            loadingIds: indexById
+              ? removeStatusIds(state.loadingIds, action.payload.ids)
+              : []
+          };
+        }
+        case UPDATE_START: {
+          return {
+            ...state,
+            data: !indexById
+              ? action.payload.data
+              : applyNewData(state.data, action.payload.data),
+            updatingIds: applyStatusIds(
+              state.updatingIds,
+              indexById ? action.payload.data.id : undefined
+            )
+          };
+        }
+        case UPDATE_SUCCESS: {
+          return {
+            ...state,
+            data: !indexById
+              ? action.payload.data
+              : applyNewData(state.data, action.payload.data),
+            lastFetch: action.payload.time,
+            error: null,
+            updateIds: removeStatusIds(state.updatingIds, action.payload.id)
+          };
+        }
+        case UPDATE_ERROR: {
+          return {
+            ...state,
+            error: action.payload.error,
+            updateIds: removeStatusIds(state.updatingIds, action.payload.id)
+          };
+        }
+        default: {
           return state;
         }
-        if (!action.payload.error) {
-          return state;
-        }
-        return {
-          ...state,
-          lastError: action.payload.error,
-          error: action.payload.error,
-          loadingIds: indexById
-            ? removeStatusIds(state.loadingIds, action.payload.ids)
-            : []
-        };
       }
-
-      if (action.type === UPDATE_START) {
-        return {
-          ...state,
-          data: !indexById
-            ? action.payload.data
-            : applyNewData(state.data, action.payload.data),
-          updatingIds: applyStatusIds(
-            state.updatingIds,
-            indexById ? action.payload.data.id : undefined
-          )
-        };
-      }
-
-      if (action.type === UPDATE_SUCCESS) {
-        return {
-          ...state,
-          data: !indexById
-            ? action.payload.data
-            : applyNewData(state.data, action.payload.data),
-          lastFetch: action.payload.time,
-          error: null,
-          updateIds: removeStatusIds(state.updatingIds, action.payload.id)
-        };
-      }
-
-      if (action.type === UPDATE_ERROR) {
-        return {
-          ...state,
-          error: action.payload.error,
-          updateIds: removeStatusIds(state.updatingIds, action.payload.id)
-        };
-      }
-      return state;
     },
     actionNames: {
       fetchStart: FETCH_START,
@@ -356,7 +350,15 @@ function createAsyncResourceBundle<Resource: any>(
       updateSuccess: updateSuccessAction,
       updateError: updateErrorAction
     },
-    selectors: createSelectors(selectLocalState)
+    selectors: {
+      selectCurrentError: createSelectCurrentError(selectLocalState),
+      selectLastError: createSelectLastError(selectLocalState),
+      selectLastFetch: createSelectLastFetch(selectLocalState),
+      selectIsLoading: createSelectIsLoading(selectLocalState),
+      selectIsLoadingById: createSelectIsLoadingById(selectLocalState),
+      selectById: createSelectById(selectLocalState),
+      selectAll: createSelectAll(selectLocalState)
+    }
   };
 }
 
