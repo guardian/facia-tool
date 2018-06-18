@@ -31,7 +31,7 @@ type RemoveCollectionArticleFragment = {
     browsingStage: string
   }
 };
-type AddColletionArticleFragment = {
+type AddCollectionArticleFragment = {
   type: 'SHARED/ADD_COLLECTION_ARTICLE_FRAGMENT',
   payload: {
     id: string,
@@ -53,10 +53,18 @@ type Action =
   | RemoveSupportingArticleFragment
   | AddSupportingArticleFragment
   | RemoveCollectionArticleFragment
-  | AddColletionArticleFragment
+  | AddCollectionArticleFragment
   | ChangeArticleGroup
   | Actions<ExternalArticle>
   | Actions<Collection>
   | ArticleFragmentsReceived;
 
-export type { Action };
+export type {
+  Action,
+  RemoveSupportingArticleFragment,
+  AddSupportingArticleFragment,
+  RemoveCollectionArticleFragment,
+  AddCollectionArticleFragment,
+  ChangeArticleGroup,
+  ArticleFragmentsReceived
+};

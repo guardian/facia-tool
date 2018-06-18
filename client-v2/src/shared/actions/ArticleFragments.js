@@ -1,11 +1,10 @@
 // @flow
 
 import type { ArticleFragment } from 'shared/types/Collection';
-import type { Action } from '../types/Action';
 
 function articleFragmentsReceived(articleFragments: {
   [string]: ArticleFragment
-}): Action {
+}) {
   return {
     type: 'SHARED/ARTICLE_FRAGMENTS_RECEIVED',
     payload: articleFragments
@@ -15,7 +14,7 @@ function articleFragmentsReceived(articleFragments: {
 function removeSupportingArticleFragment(
   id: string,
   supportingArticleFragmentId: string
-): Action {
+) {
   return {
     type: 'SHARED/REMOVE_SUPPORTING_ARTICLE_FRAGMENT',
     payload: {
@@ -29,7 +28,7 @@ function addSupportingArticleFragment(
   id: string,
   supportingArticleFragmentId: string,
   index: number
-): Action {
+) {
   return {
     type: 'SHARED/ADD_SUPPORTING_ARTICLE_FRAGMENT',
     payload: {
@@ -40,7 +39,7 @@ function addSupportingArticleFragment(
   };
 }
 
-function changeArticleGroup(id: string, newGroup: string): Action {
+function changeArticleGroup(id: string, newGroup: string) {
   return {
     type: 'SHARED/CHANGE_ARTICLE_GROUP',
     payload: {

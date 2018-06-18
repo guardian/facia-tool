@@ -1,5 +1,6 @@
 // @flow
 
+import { batchActions } from 'redux-batched-actions';
 import {
   getArticles,
   getCollection as fetchCollection,
@@ -17,10 +18,38 @@ import {
 } from 'shared/util/shared';
 import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
-import { batchActions } from 'redux-batched-actions';
 import { getCollectionConfig } from 'selectors/frontsSelectors';
+import {
+  addCollectionArticleFragment,
+  removeCollectionArticleFragment
+} from 'shared/actions/Collection';
 import type { State } from 'types/State';
 import type { Collection } from 'shared/types/Collection';
+
+/**
+ * We add the persistence middleware meta to actions we'd like to trigger persist
+ * operations here - see the persistCollectionOnEdit middleware.
+ */
+function addCollectionArticleFragmentWithPersistence(...args: *) {
+  return {
+    ...addCollectionArticleFragment(...args),
+    meta: {
+      persistTo: 'collection',
+      key: 'articleFragmentId',
+      applyBeforeReducer: true
+    }
+  };
+}
+
+function removeCollectionArticleFragmentWithPersistence(...args: *) {
+  return {
+    ...removeCollectionArticleFragment(...args),
+    meta: {
+      persistTo: 'collection',
+      key: 'articleFragmentId'
+    }
+  };
+}
 
 function getCollection(collectionId: string) {
   return (dispatch: Dispatch, getState: () => State) => {
@@ -90,4 +119,10 @@ const getCollectionsAndArticles = (collectionIds: Array<string>) => (
     )
   );
 
-export { getCollection, getCollectionsAndArticles, updateCollection };
+export {
+  getCollection,
+  getCollectionsAndArticles,
+  updateCollection,
+  addCollectionArticleFragmentWithPersistence as addCollectionArticleFragment,
+  removeCollectionArticleFragmentWithPersistence as removeCollectionArticleFragment
+};

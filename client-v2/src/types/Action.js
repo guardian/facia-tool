@@ -4,10 +4,19 @@
  * Need to add new types into here and union them with `Action` in order
  * for typing to work nicely in reducers
  */
-
-import type { Action as SharedActions } from 'shared/types/Action';
+import type {
+  AddCollectionArticleFragment as SharedAddCollectionArticleFragment,
+  RemoveCollectionArticleFragment as SharedRemoveCollectionArticleFragment,
+  Action as SharedActions
+} from 'shared/types/Action';
+import { type PersistCollectionMeta } from 'util/storeMiddleware';
 import { type Config } from './Config';
 import { type FrontsConfig } from './FaciaApi';
+
+type AddCollectionArticleFragment = SharedAddCollectionArticleFragment &
+  PersistCollectionMeta;
+type RemoveCollectionArticleFragment = SharedRemoveCollectionArticleFragment &
+  PersistCollectionMeta;
 
 type ActionError =
   | 'Could not fetch fronts config'
@@ -72,7 +81,7 @@ type PublishCollectionSuccess = {
   payload: { collectionId: string }
 };
 
-export type Action =
+type Action =
   | ConfigReceivedAction
   | FrontsConfigReceivedAction
   | RequestFrontsConfigAction
@@ -83,7 +92,9 @@ export type Action =
   | FrontsUpdateLastPressedAction
   | SharedActions
   | RecordUnpublishedChanges
-  | PublishCollectionSuccess;
+  | PublishCollectionSuccess
+  | AddCollectionArticleFragment
+  | RemoveCollectionArticleFragment;
 
 export type ActionType = $ElementType<Action, 'type'>;
-export type { ActionError };
+export type { ActionError, Action };

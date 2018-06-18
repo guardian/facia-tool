@@ -65,7 +65,6 @@ async function fetchLastPressed(frontId: string): Promise<string> {
     });
 }
 
-<<<<<<< HEAD
 async function publishCollection(collectionId: string): Promise<void> {
   // The server does not respond with JSON
   try {
@@ -80,7 +79,12 @@ async function publishCollection(collectionId: string): Promise<void> {
   } catch (response) {
     throw new Error(
       `Tried to publish collection with id ${collectionId}, but the server responded with ${
-=======
+        response.status
+      }: ${response.body}`
+    );
+  }
+}
+
 async function updateCollection(
   id: string,
   collection: CollectionWithNestedArticles
@@ -97,8 +101,7 @@ async function updateCollection(
     return await response.json();
   } catch (response) {
     throw new Error(
-      `Tried to fetch collection with id ${id}, but the server responded with ${
->>>>>>> Update actions etc. added to asyncResourceBundle; added Collection API update method; (temporary) save button on collections to hook it all up
+      `Tried to update collection with id ${id}, but the server responded with ${
         response.status
       }: ${response.body}`
     );

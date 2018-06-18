@@ -16,9 +16,11 @@ import { routerMiddleware } from 'react-router-redux';
 import { type Store } from 'types/Store';
 import { type State } from 'types/State';
 import { type Action } from 'types/Action';
-
 import rootReducer from 'reducers/rootReducer.js';
-import { updateStateFromUrlChange } from './storeMiddleware';
+import {
+  updateStateFromUrlChange,
+  persistCollectionOnEdit
+} from './storeMiddleware';
 
 type CreateStore = (
   reducer: Reducer<State, Action>,
@@ -31,9 +33,12 @@ export default function configureStore(): Store {
   const store = (createStore: CreateStore)(
     enableBatching(rootReducer),
     compose(
-      applyMiddleware(thunkMiddleware),
-      applyMiddleware(updateStateFromUrlChange),
-      applyMiddleware(router),
+      applyMiddleware(
+        thunkMiddleware,
+        updateStateFromUrlChange,
+        router,
+        persistCollectionOnEdit
+      ),
       window.devToolsExtension ? window.devToolsExtension() : f => f
     )
   );
