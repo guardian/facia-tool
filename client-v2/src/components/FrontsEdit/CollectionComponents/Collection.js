@@ -1,17 +1,25 @@
 // @flow
 
 import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import CollectionDisplay from 'shared/components/Collection';
 import AlsoOnNotification from 'components/AlsoOnNotification';
 import Button from 'components/Button';
 import type { AlsoOnDetail } from 'types/Collection';
+import { publishCollection } from 'actions/Fronts';
+import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
+import { type State } from 'types/State';
 
-type CollectionProps = {
+type CollectionPropsBeforeState = {
   id: string,
   groups: *,
   children: *,
-  alsoOn: { [string]: AlsoOnDetail },
-  publishCollection: (collectionId: string) => Promise<void>
+  alsoOn: { [string]: AlsoOnDetail }
+};
+type CollectionProps = CollectionPropsBeforeState & {
+  publishCollection: (collectionId: string) => Promise<void>,
+  hasUnpublishedChanges: boolean
 };
 
 const getArticleFragmentLengths = <T: { articleFragments: Array<*> }>(
@@ -31,10 +39,15 @@ const Collection = ({
   groups,
   children,
   alsoOn,
-  publishCollection
+  hasUnpublishedChanges,
+  publishCollection: publish
 }: CollectionProps) => (
   <CollectionDisplay id={id}>
-    <Button dark={true} onClick={() => publishCollection(id)}>Launch</Button>
+    {hasUnpublishedChanges && (
+      <Button dark onClick={() => publish(id)}>
+        Launch
+      </Button>
+    )}
     <AlsoOnNotification alsoOn={alsoOn[id]} />
     <div style={{ marginLeft: 10 }}>
       {groups
@@ -48,4 +61,13 @@ const Collection = ({
   </CollectionDisplay>
 );
 
-export default Collection;
+const mapStateToProps = (state: State, props: CollectionPropsBeforeState) => ({
+  hasUnpublishedChanges: hasUnpublishedChangesSelector(state, {
+    collectionId: props.id
+  })
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) =>
+  bindActionCreators({ publishCollection }, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Collection);

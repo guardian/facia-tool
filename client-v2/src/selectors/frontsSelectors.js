@@ -43,6 +43,10 @@ const prioritySelector = (state: State, { priority }: { priority: string }) =>
 
 const frontIdSelector = (state: State, { frontId }) => frontId;
 
+const collectionIdSelector = (state: State, { collectionId }) => collectionId;
+
+const unpublishedChangesSelector = (state: State) => state.unpublishedChanges;
+
 const frontsAsArraySelector = createSelector([getFronts], fronts => {
   if (!fronts) {
     return [];
@@ -122,6 +126,11 @@ const getCollectionConfigs = (
   return [];
 };
 
+const getUnpublishedChangesStatus = (
+  collectionId: string,
+  unpublishedChanges: { [string]: boolean }
+): boolean => (unpublishedChanges ? unpublishedChanges[collectionId] : false);
+
 const collectionConfigsSelector = createSelector(
   [frontIdSelector, frontsAsArraySelector, getCollections],
   getCollectionConfigs
@@ -130,6 +139,11 @@ const collectionConfigsSelector = createSelector(
 const frontsConfigSelector = createSelector(
   [getFronts, getCollections, frontsIdsSelector, prioritySelector],
   getFrontsConfig
+);
+
+const hasUnpublishedChangesSelector = createSelector(
+  [collectionIdSelector, unpublishedChangesSelector],
+  getUnpublishedChangesStatus
 );
 
 const alsoOnFrontSelector = (
@@ -211,5 +225,6 @@ export {
   getFrontsWithPriority,
   alsoOnFrontSelector,
   createAlsoOnSelector,
-  lastPressedSelector
+  lastPressedSelector,
+  hasUnpublishedChangesSelector
 };

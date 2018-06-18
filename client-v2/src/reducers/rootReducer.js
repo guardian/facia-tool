@@ -7,13 +7,15 @@ import config from './configReducer';
 import fronts from './frontsReducer';
 import error from './errorReducer';
 import path from './pathReducer';
+import unpublishedChanges from './unpublishedChangesReducer';
 
 const reducers = {
   config,
   fronts,
   error,
   path,
-  shared
+  shared,
+  unpublishedChanges
 };
 
 export type Reducers = typeof reducers;

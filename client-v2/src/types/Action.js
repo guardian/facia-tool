@@ -62,6 +62,16 @@ type ErrorInAction = {
   receivedAt: number
 };
 
+type RecordUnpublishedChanges = {
+  type: 'RECORD_UNPUBLISHED_CHANGES',
+  payload: { [string]: boolean }
+};
+
+type PublishCollectionSuccess = {
+  type: 'PUBLISH_COLLECTION_SUCCESS',
+  payload: { collectionId: string }
+};
+
 export type Action =
   | ConfigReceivedAction
   | FrontsConfigReceivedAction
@@ -71,7 +81,9 @@ export type Action =
   | RequestFrontCollectionAction
   | ErrorInAction
   | FrontsUpdateLastPressedAction
-  | SharedActions;
+  | SharedActions
+  | RecordUnpublishedChanges
+  | PublishCollectionSuccess;
 
 export type ActionType = $ElementType<Action, 'type'>;
 export type { ActionError };
