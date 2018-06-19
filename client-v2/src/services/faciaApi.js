@@ -65,6 +65,26 @@ async function fetchLastPressed(frontId: string): Promise<string> {
     });
 }
 
+async function publishCollection(collectionId: string): Promise<void> {
+  // The server does not respond with JSON
+  try {
+    await pandaFetch(`/collection/publish/${collectionId}`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify({ collectionId })
+    });
+  } catch (response) {
+    throw new Error(
+      `Tried to publish collection with id ${collectionId}, but the server responded with ${
+        response.status
+      }: ${response.body}`
+    );
+  }
+}
+
 function getCollection(
   collectionId: string
 ): Promise<CollectionWithNestedArticles> {
@@ -113,4 +133,10 @@ function getArticles(articleIds: string[]): Promise<Array<ExternalArticle>> {
     );
 }
 
-export { fetchFrontsConfig, getCollection, getArticles, fetchLastPressed };
+export {
+  fetchFrontsConfig,
+  getCollection,
+  getArticles,
+  fetchLastPressed,
+  publishCollection
+};

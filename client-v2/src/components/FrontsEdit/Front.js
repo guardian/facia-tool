@@ -135,14 +135,9 @@ const createMapStateToProps = () => {
     tree: collectionsAsTreeSelector(selectSharedState(state), {
       stage: props.browsingStage,
       collectionIds: props.collectionIds
-    })
+    }),
+    unpublishedChanges: state.unpublishedChanges
   });
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  dispatch
-});
-
-export default connect(createMapStateToProps, mapDispatchToProps)(
-  FrontComponent
-);
+export default connect(createMapStateToProps)(FrontComponent);

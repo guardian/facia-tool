@@ -9,7 +9,8 @@ import {
   getArticles,
   fetchFrontsConfig,
   getCollection,
-  fetchLastPressed as fetchLastPressedApi
+  fetchLastPressed as fetchLastPressedApi,
+  publishCollection as publishCollectionApi
 } from 'services/faciaApi';
 import {
   combineCollectionWithConfig,
@@ -23,6 +24,7 @@ import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import { actions as frontsConfigActions } from 'bundles/frontsConfigBundle';
+import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 
 function fetchLastPressedSuccess(frontId: string, datePressed: string): Action {
   return {
@@ -35,11 +37,36 @@ function fetchLastPressedSuccess(frontId: string, datePressed: string): Action {
   };
 }
 
+function publishCollectionSuccess(collectionId: string): Action {
+  return {
+    type: 'PUBLISH_COLLECTION_SUCCESS',
+    payload: {
+      collectionId
+    }
+  };
+}
+
 function fetchLastPressed(frontId: string): ThunkAction {
   return (dispatch: Dispatch) =>
     fetchLastPressedApi(frontId)
       .then(datePressed =>
         dispatch(fetchLastPressedSuccess(frontId, datePressed))
+      )
+      .catch(() => {
+        // @todo: implement once error handling is done
+      });
+}
+
+function publishCollection(collectionId: string): ThunkAction {
+  return (dispatch: Dispatch) =>
+    publishCollectionApi(collectionId)
+      .then(() =>
+        dispatch(
+          batchActions([
+            publishCollectionSuccess(collectionId),
+            recordUnpublishedChanges(collectionId, false)
+          ])
+        )
       )
       .catch(() => {
         // @todo: implement once error handling is done
@@ -56,6 +83,8 @@ function getFrontCollection(collectionId: string) {
           collectionConfig,
           res
         );
+        const hasUnpublishedChanges =
+          collectionWithNestedArticles.draft !== undefined;
         const collectionWithDraftArticles = {
           ...collectionWithNestedArticles,
           draft: populateDraftArticles(collectionWithNestedArticles)
@@ -68,7 +97,8 @@ function getFrontCollection(collectionId: string) {
         dispatch(
           batchActions([
             collectionActions.fetchSuccess(collection),
-            articleFragmentsReceived(articleFragments)
+            articleFragmentsReceived(articleFragments),
+            recordUnpublishedChanges(collectionId, hasUnpublishedChanges)
           ])
         );
         return getArticleIdsFromCollection(collectionWithDraftArticles);
@@ -102,7 +132,8 @@ export {
   getFrontCollection,
   getCollectionsAndArticles,
   fetchLastPressed,
-  fetchLastPressedSuccess
+  fetchLastPressedSuccess,
+  publishCollection
 };
 
 export default function getFrontsConfig(): ThunkAction {
