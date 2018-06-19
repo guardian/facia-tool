@@ -55,8 +55,17 @@ const unwrapBatchedActions = (action: ActionWithBatchedActions): Action[] =>
 /**
  * Watches for actions that require a collection update, finds the relevant
  * collection, and dispatches the appropriate action.
+ *
+ * There's quite a lot of code here that's specific to redux-batched-actions,
+ * which would be nice to remove in favour of a more declarative library if
+ * possible.
  */
 const persistCollectionOnEdit: Middleware<State, Action> = store => {
+  /**
+   * Get the relevant collection ids for the given actions.
+   * @todo At the moment this just cares about updates to article fragments,
+   *   but it should also listen for edits to collections.
+   */
   const getCollectionIdsForActions = (actions: Action[]) => {
     const articleFragmentIds: string[] = uniq(
       actions.map(
@@ -106,7 +115,7 @@ const persistCollectionOnEdit: Middleware<State, Action> = store => {
     const sharedState = selectSharedState(store.getState());
     collectionIds.forEach(id => {
       const collection = selectors.selectById(sharedState, id);
-      // We have trouble dispatching thunks here.
+      // Flow has problems with us dispatching thunks here.
       // This relates to a problem with the middleware definition -
       // see https://github.com/flowtype/flow-typed/issues/574
       // $FlowFixMe
