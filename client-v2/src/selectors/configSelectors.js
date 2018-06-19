@@ -5,6 +5,16 @@ import { type State } from 'types/State';
 
 const configSelector = (state: State) => state.config;
 
+const selectUserEmail = createSelector(configSelector, config => config.email);
+const selectFirstName = createSelector(
+  configSelector,
+  config => config.firstName
+);
+const selectLastName = createSelector(
+  configSelector,
+  config => config.lastName
+);
+
 const capiLiveURLSelector = createSelector(
   configSelector,
   config => config.capiLiveUrl
@@ -30,4 +40,11 @@ const capiFeedSpecsSelector = createSelector(
   ]
 );
 
-export { capiLiveURLSelector, capiPreviewURLSelector, capiFeedSpecsSelector };
+export {
+  capiLiveURLSelector,
+  capiPreviewURLSelector,
+  capiFeedSpecsSelector,
+  selectUserEmail,
+  selectFirstName,
+  selectLastName
+};

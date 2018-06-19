@@ -19,6 +19,8 @@ type Config = {
   editions: Array<string>,
   email: string,
   avararUrl?: string,
+  firstName: string,
+  lastName: string,
   sentryPublicDSN: string,
   mediaBaseUrl: string,
   apiBaseUrl: string,

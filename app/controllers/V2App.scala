@@ -30,6 +30,8 @@ class V2App(isDev: Boolean, val acl: Acl, val deps: BaseFaciaControllerComponent
         Seq("uk", "us", "au"),
         req.user.email,
         req.user.avatarUrl,
+        req.user.firstName,
+        req.user.lastName,
         config.sentry.publicDSN,
         config.media.baseUrl.get,
         config.media.apiUrl,

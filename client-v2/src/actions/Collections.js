@@ -6,6 +6,11 @@ import {
   getCollection as fetchCollection,
   updateCollection as updateCollectionFromApi
 } from 'services/faciaApi';
+import {
+  selectUserEmail,
+  selectFirstName,
+  selectLastName
+} from 'selectors/configSelectors';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import {
   combineCollectionWithConfig,
@@ -87,7 +92,15 @@ function getCollection(collectionId: string) {
 
 function updateCollection(collection: Collection) {
   return async (dispatch: Dispatch, getState: () => State) => {
-    dispatch(collectionActions.updateStart(collection));
+    const state = getState();
+    dispatch(
+      collectionActions.updateStart({
+        ...collection,
+        updatedEmail: selectUserEmail(getState()),
+        updatedBy: `${selectFirstName(state)} ${selectLastName(state)}`,
+        lastUpdated: Date.now()
+      })
+    );
     try {
       const denormalisedCollection = denormaliseCollection(
         getState(),
