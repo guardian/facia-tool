@@ -107,6 +107,7 @@ function updateCollection(collection: Collection) {
         collection.id
       );
       await updateCollectionFromApi(collection.id, denormalisedCollection);
+      dispatch(collectionActions.updateSuccess(collection.id));
     } catch (e) {
       dispatch(collectionActions.updateError(e, collection.id));
       throw e;
