@@ -3,7 +3,7 @@
 import { type Middleware } from 'redux';
 import { uniq } from 'lodash';
 import { type State } from 'types/State';
-import { type Action, type ActionWithoutBatch } from 'types/Action';
+import { type Action, type ActionWithBatchedActions } from 'types/Action';
 import { selectors } from 'shared/bundles/collectionsBundle';
 import { updateCollection } from 'actions/Collections';
 import { selectSharedState } from 'shared/selectors/shared';
@@ -49,7 +49,7 @@ type PersistCollectionMeta = {|
  * Return an array of actions - either a single action,
  * or multiple actions if the action contains batched actions.
  */
-const unwrapBatchedActions = (action: Action): ActionWithoutBatch[] =>
+const unwrapBatchedActions = (action: ActionWithBatchedActions): Action[] =>
   action.type === 'BATCHING_REDUCER.BATCH' ? action.payload : [action];
 
 /**
@@ -57,7 +57,7 @@ const unwrapBatchedActions = (action: Action): ActionWithoutBatch[] =>
  * collection, and dispatches the appropriate action.
  */
 const persistCollectionOnEdit: Middleware<State, Action> = store => {
-  const getCollectionIdsForActions = (actions: ActionWithoutBatch[]) => {
+  const getCollectionIdsForActions = (actions: Action[]) => {
     const articleFragmentIds: string[] = uniq(
       actions.map(
         // A sneaky 'any' here, as it's difficult to handle dynamic key

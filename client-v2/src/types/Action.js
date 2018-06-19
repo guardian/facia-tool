@@ -105,7 +105,7 @@ type PublishCollectionSuccess = {
   payload: { collectionId: string }
 };
 
-type ActionWithoutBatch =
+type Action =
   | ConfigReceivedAction
   | FrontsConfigReceivedAction
   | RequestFrontsConfigAction
@@ -125,10 +125,10 @@ type ActionWithoutBatch =
 
 type BatchedAction = {|
   type: 'BATCHING_REDUCER.BATCH',
-  payload: ActionWithoutBatch[]
+  payload: Action[]
 |};
 
-type Action = ActionWithoutBatch | BatchedAction;
+type ActionWithBatchedActions = Action | BatchedAction;
 
-export type ActionType = $ElementType<ActionWithoutBatch, 'type'>;
-export type { ActionError, Action, ActionWithoutBatch };
+export type ActionType = $ElementType<Action, 'type'>;
+export type { ActionError, Action, ActionWithBatchedActions };
