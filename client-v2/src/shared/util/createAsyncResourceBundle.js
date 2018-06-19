@@ -13,19 +13,19 @@ const UPDATE_START = 'UPDATE_START';
 const UPDATE_SUCCESS = 'UPDATE_SUCCESS';
 const UPDATE_ERROR = 'UPDATE_ERROR';
 
-type FetchStartAction = {
+type FetchStartAction = {|
   entity: string,
   type: 'FETCH_START',
   payload: { ids?: string[] | string }
-};
+|};
 
-type FetchSuccessAction<Resource> = {
+type FetchSuccessAction<Resource> = {|
   entity: string,
   type: 'FETCH_SUCCESS',
   payload: { data: Resource | Resource[] | any, time: number }
-};
+|};
 
-type FetchErrorAction = {
+type FetchErrorAction = {|
   entity: string,
   type: 'FETCH_ERROR',
   payload: {
@@ -33,28 +33,28 @@ type FetchErrorAction = {
     time: number,
     ids?: string | string[]
   }
-};
+|};
 
-type UpdateStartAction<Resource> = {
+type UpdateStartAction<Resource> = {|
   entity: string,
   type: 'UPDATE_START',
   payload: { id?: string | string, data: Resource | any }
-};
+|};
 
-type UpdateSuccessAction<Resource> = {
+type UpdateSuccessAction<Resource> = {|
   entity: string,
   type: 'UPDATE_SUCCESS',
   payload: { data: Resource | any, id: string, time: number }
-};
+|};
 
-type UpdateErrorAction = {
+type UpdateErrorAction = {|
   entity: string,
   type: 'UPDATE_ERROR',
   payload: {
     error: string,
     id: string
   }
-};
+|};
 
 type Actions<Resource> =
   | FetchStartAction

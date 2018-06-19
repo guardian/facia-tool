@@ -7,16 +7,39 @@
 import type {
   AddCollectionArticleFragment as SharedAddCollectionArticleFragment,
   RemoveCollectionArticleFragment as SharedRemoveCollectionArticleFragment,
+  AddSupportingArticleFragment as SharedAddSupportingArticleFragment,
+  RemoveSupportingArticleFragment as SharedRemoveSupportingArticleFragment,
+  ChangeArticleGroup as SharedChangeArticleGroup,
   Action as SharedActions
 } from 'shared/types/Action';
 import { type PersistCollectionMeta } from 'util/storeMiddleware';
 import { type Config } from './Config';
 import { type FrontsConfig } from './FaciaApi';
 
-type AddCollectionArticleFragment = SharedAddCollectionArticleFragment &
-  PersistCollectionMeta;
-type RemoveCollectionArticleFragment = SharedRemoveCollectionArticleFragment &
-  PersistCollectionMeta;
+type AddCollectionArticleFragment = {|
+  ...SharedAddCollectionArticleFragment,
+  ...PersistCollectionMeta
+|};
+
+type RemoveCollectionArticleFragment = {|
+  ...SharedRemoveCollectionArticleFragment,
+  ...PersistCollectionMeta
+|};
+
+type AddSupportingArticleFragment = {|
+  ...SharedAddSupportingArticleFragment,
+  ...PersistCollectionMeta
+|};
+
+type RemoveSupportingArticleFragment = {|
+  ...SharedRemoveSupportingArticleFragment,
+  ...PersistCollectionMeta
+|};
+
+type ChangeArticleGroup = {|
+  ...SharedChangeArticleGroup,
+  ...PersistCollectionMeta
+|};
 
 type ActionError =
   | 'Could not fetch fronts config'
@@ -25,51 +48,52 @@ type ActionError =
   | '';
 
 type ErrorActionType = 'CAUGHT_ERROR';
-type ConfigReceivedAction = {
+
+type ConfigReceivedAction = {|
   type: 'CONFIG_RECEIVED',
   payload: Config
-};
+|};
 
-type FrontsConfigReceivedAction = {
+type FrontsConfigReceivedAction = {|
   type: 'FRONTS_CONFIG_RECEIVED',
   payload: FrontsConfig
-};
+|};
 
-type FrontsUpdateLastPressedAction = {
+type FrontsUpdateLastPressedAction = {|
   type: 'FETCH_LAST_PRESSED_SUCCESS',
   payload: {
     receivedAt: number,
     frontId: string,
     datePressed: string
   }
-};
+|};
 
-type RequestFrontsConfigAction = {
+type RequestFrontsConfigAction = {|
   type: 'FRONTS_CONFIG_GET_RECEIVE',
   receivedAt: number
-};
+|};
 
-type ClearError = {
+type ClearError = {|
   type: 'CLEAR_ERROR',
   receivedAt: number
-};
+|};
 
-type PathUpdate = {
+type PathUpdate = {|
   type: 'PATH_UPDATE',
   path: string
-};
+|};
 
-type RequestFrontCollectionAction = {
+type RequestFrontCollectionAction = {|
   type: 'FRONTS_COLLECTION_GET_RECEIVE',
   receivedAt: number
-};
+|};
 
-type ErrorInAction = {
+type ErrorInAction = {|
   type: ErrorActionType,
   message: ActionError,
   error: string,
   receivedAt: number
-};
+|};
 
 type RecordUnpublishedChanges = {
   type: 'RECORD_UNPUBLISHED_CHANGES',
@@ -81,7 +105,7 @@ type PublishCollectionSuccess = {
   payload: { collectionId: string }
 };
 
-type Action =
+type ActionWithoutBatch =
   | ConfigReceivedAction
   | FrontsConfigReceivedAction
   | RequestFrontsConfigAction
@@ -94,7 +118,17 @@ type Action =
   | RecordUnpublishedChanges
   | PublishCollectionSuccess
   | AddCollectionArticleFragment
-  | RemoveCollectionArticleFragment;
+  | RemoveCollectionArticleFragment
+  | AddSupportingArticleFragment
+  | RemoveSupportingArticleFragment
+  | ChangeArticleGroup;
 
-export type ActionType = $ElementType<Action, 'type'>;
-export type { ActionError, Action };
+type BatchedAction = {|
+  type: 'BATCHING_REDUCER.BATCH',
+  payload: ActionWithoutBatch[]
+|};
+
+type Action = ActionWithoutBatch | BatchedAction;
+
+export type ActionType = $ElementType<ActionWithoutBatch, 'type'>;
+export type { ActionError, Action, ActionWithoutBatch };
