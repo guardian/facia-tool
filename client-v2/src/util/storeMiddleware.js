@@ -106,6 +106,7 @@ const persistCollectionOnEdit: Middleware<State, Action> = store => {
     const sharedState = selectSharedState(store.getState());
     collectionIds.forEach(id => {
       const collection = selectors.selectById(sharedState, id);
+      // We have trouble dispatching thunks here.
       // This relates to a problem with the middleware definition -
       // see https://github.com/flowtype/flow-typed/issues/574
       // $FlowFixMe
