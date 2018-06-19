@@ -36,23 +36,15 @@ describe('Shared utilities', () => {
   });
   describe('normaliseCollectionWithNestedArticles', () => {
     it('should normalise an external collection, and provide the new collection and article fragments indexed by id', () => {
-      const result = normaliseCollectionWithNestedArticles(collection);
-      expect(result.collection.articleFragments.live.length).toEqual(3);
+      const result = normaliseCollectionWithNestedArticles(exampleCollection);
+      expect(result.collection.live.length).toEqual(3);
       expect(
-        result.collection.articleFragments.live.every(
-          articleId => typeof articleId === 'string'
-        )
+        result.collection.live.every(articleId => typeof articleId === 'string')
       ).toBe(true);
       expect(Object.keys(result.articleFragments).length).toEqual(3);
-      expect(
-        result.articleFragments[result.collection.articleFragments.live[0]].id
-      ).toBe('0');
-      expect(
-        result.articleFragments[result.collection.articleFragments.live[1]].id
-      ).toBe('1');
-      expect(
-        result.articleFragments[result.collection.articleFragments.live[2]].id
-      ).toBe('2');
+      expect(result.articleFragments[result.collection.live[0]].id).toBe('0');
+      expect(result.articleFragments[result.collection.live[1]].id).toBe('1');
+      expect(result.articleFragments[result.collection.live[2]].id).toBe('2');
     });
     it('should handle draft and previously keys', () => {
       const result = normaliseCollectionWithNestedArticles({
@@ -76,52 +68,44 @@ describe('Shared utilities', () => {
           ]
         }
       });
-      expect(result.collection.articleFragments.live.length).toEqual(3);
-      expect(result.collection.articleFragments.draft.length).toEqual(1);
-      expect(result.collection.articleFragments.previously.length).toEqual(1);
+      expect(result.collection.live.length).toEqual(3);
+      expect(result.collection.draft.length).toEqual(1);
+      expect(result.collection.previously.length).toEqual(1);
       expect(
-        result.collection.articleFragments.live.every(
+        result.collection.live.every(articleId => typeof articleId === 'string')
+      ).toBe(true);
+      expect(
+        result.collection.draft.every(
           articleId => typeof articleId === 'string'
         )
       ).toBe(true);
       expect(
-        result.collection.articleFragments.draft.every(
-          articleId => typeof articleId === 'string'
-        )
-      ).toBe(true);
-      expect(
-        result.collection.articleFragments.previously.every(
+        result.collection.previously.every(
           articleId => typeof articleId === 'string'
         )
       ).toBe(true);
       expect(Object.keys(result.articleFragments).length).toEqual(5);
-      expect(
-        result.articleFragments[result.collection.articleFragments.live[0]].id
-      ).toBe('0');
-      expect(
-        result.articleFragments[result.collection.articleFragments.draft[0]].id
-      ).toBe('2');
-      expect(
-        result.articleFragments[
-          result.collection.articleFragments.previously[0]
-        ].id
-      ).toBe('3');
+      expect(result.articleFragments[result.collection.live[0]].id).toBe('0');
+      expect(result.articleFragments[result.collection.draft[0]].id).toBe('2');
+      expect(result.articleFragments[result.collection.previously[0]].id).toBe(
+        '3'
+      );
     });
     it('should handle a collection without any articles', () => {
       const result = normaliseCollectionWithNestedArticles({
         ...collection,
         ...{ live: [] }
       });
-      expect(result.collection.articleFragments.live.length).toEqual(0);
-      expect(result.collection.articleFragments.draft).toBeUndefined();
-      expect(result.collection.articleFragments.previously).toBeUndefined();
-      expect(Object.keys(result.articleFragments).length).toEqual(0);
+      expect(result.collection.live.length).toEqual(0);
+      expect(result.collection.draft).toHaveLength(0);
+      expect(result.collection.previously).toHaveLength(0);
+      expect(Object.keys(result.articleFragments)).toHaveLength(0);
     });
     it('should normalise supporting article fragments', () => {
       const result = normaliseCollectionWithNestedArticles(
         collectionWithSupportingArticles
       );
-      expect(result.collection.articleFragments.live.length).toEqual(2);
+      expect(result.collection.live.length).toEqual(2);
       expect(Object.keys(result.articleFragments).length).toEqual(4);
       expect(
         Object.keys(result.articleFragments).every(
