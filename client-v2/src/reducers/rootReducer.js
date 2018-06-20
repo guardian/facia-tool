@@ -8,6 +8,7 @@ import fronts from './frontsReducer';
 import error from './errorReducer';
 import path from './pathReducer';
 import unpublishedChanges from './unpublishedChangesReducer';
+import clipboard from './clipboardReducer';
 
 const reducers = {
   config,
@@ -15,7 +16,8 @@ const reducers = {
   error,
   path,
   shared,
-  unpublishedChanges
+  unpublishedChanges,
+  clipboard
 };
 
 export type Reducers = typeof reducers;

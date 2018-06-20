@@ -26,6 +26,7 @@ class ClipboardController(dynamo: Dynamo, val deps: BaseFaciaControllerComponent
 
     val record: Option[ClipboardData] = Scanamo.exec(dynamo.client)(
       clipboardTable.get('email -> userEmail)).flatMap(_.right.toOption)
+    
     record.map(clipboardContent => Ok(Json.toJson(clipboardContent.articles))).getOrElse(NotFound)
   }
 

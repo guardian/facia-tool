@@ -105,6 +105,11 @@ type PublishCollectionSuccess = {|
   payload: { collectionId: string }
 |};
 
+type FetchClipboardContentSuccess = {
+  type: 'FETCH_CLIPBOARD_CONTENT_SUCCESS',
+  payload: { clipboardContent: Array<string> }
+};
+
 type Action =
   | ConfigReceivedAction
   | FrontsConfigReceivedAction
@@ -121,7 +126,8 @@ type Action =
   | RemoveCollectionArticleFragment
   | AddSupportingArticleFragment
   | RemoveSupportingArticleFragment
-  | ChangeArticleGroup;
+  | ChangeArticleGroup
+  | FetchClipboardContentSuccess;
 
 type BatchedAction = {|
   type: 'BATCHING_REDUCER.BATCH',
