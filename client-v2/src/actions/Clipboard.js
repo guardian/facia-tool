@@ -2,7 +2,8 @@
 
 import type { ThunkAction } from 'types/Store';
 import type { Action } from 'types/Action';
-import { getClipboard } from 'services/faciaApi';
+import { getClipboard, getArticles } from 'services/faciaApi';
+import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 
 function fetchClipboardContentSuccess(clipboardContent: Array<string>): Action {
   return {
@@ -16,9 +17,15 @@ function fetchClipboardContentSuccess(clipboardContent: Array<string>): Action {
 function fetchClipboardContent(): ThunkAction {
   return (dispatch: Dispatch) =>
     getClipboard()
-      .then(clipboardContent =>
-        dispatch(fetchClipboardContentSuccess(clipboardContent))
-      )
+      .then(clipboardContent => {
+        dispatch(fetchClipboardContentSuccess(clipboardContent));
+        return getArticles(clipboardContent).catch(error =>
+          dispatch(externalArticleActions.fetchError(error, clipboardContent))
+        );
+      })
+      .then(articles => {
+        dispatch(externalArticleActions.fetchSuccess(articles));
+      })
       .catch(() => {
         // @todo: implement once error handling is done
       });
