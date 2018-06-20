@@ -17,7 +17,7 @@ case class ClipboardData(email: String, articles: List[String])
 
 
 class ClipboardController(dynamo: Dynamo, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
- 
+
   private lazy val clipboardTable = Table[ClipboardData](config.faciatool.clipboardTable)
 
   def getClipboardContent() = APIAuthAction { request =>
@@ -26,7 +26,7 @@ class ClipboardController(dynamo: Dynamo, val deps: BaseFaciaControllerComponent
 
     val record: Option[ClipboardData] = Scanamo.exec(dynamo.client)(
       clipboardTable.get('email -> userEmail)).flatMap(_.right.toOption)
-    record.map(clipboardContent => Ok(Json.toJson(clipboardContent))).getOrElse(NotFound)
+    record.map(clipboardContent => Ok(Json.toJson(clipboardContent.articles))).getOrElse(NotFound)
   }
 
 

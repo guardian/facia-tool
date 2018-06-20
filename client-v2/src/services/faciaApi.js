@@ -108,6 +108,26 @@ async function updateCollection(
   }
 }
 
+async function getClipboard(): Promise<Array<string>> {
+  // The server does not respond with JSON
+  try {
+    const response = await pandaFetch(`/clipboard`, {
+      method: 'get',
+      credentials: 'same-origin'
+    });
+    return await response.json();
+  } catch (response) {
+    if (response.status === '404') {
+      return [];
+    }
+    throw new Error(
+      `Tried to fetch a clipboard but the server responded with ${
+        response.status
+      }: ${response.body}`
+    );
+  }
+}
+
 function getCollection(
   collectionId: string
 ): Promise<CollectionWithNestedArticles> {
@@ -162,5 +182,6 @@ export {
   getArticles,
   fetchLastPressed,
   publishCollection,
-  updateCollection
+  updateCollection,
+  getClipboard
 };
