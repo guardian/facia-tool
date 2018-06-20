@@ -9,6 +9,7 @@ import {
   type Store as ReduxStore,
   type Dispatch
 } from 'redux';
+import { updateCollection } from 'actions/Collections';
 import { enableBatching } from 'redux-batched-actions';
 import thunkMiddleware from 'redux-thunk';
 import createBrowserHistory from 'history/createBrowserHistory';
@@ -37,7 +38,7 @@ export default function configureStore(): Store {
         thunkMiddleware,
         updateStateFromUrlChange,
         router,
-        persistCollectionOnEdit
+        persistCollectionOnEdit(updateCollection)
       ),
       window.devToolsExtension ? window.devToolsExtension() : f => f
     )

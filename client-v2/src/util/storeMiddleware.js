@@ -7,6 +7,8 @@ import { type Action, type ActionWithBatchedActions } from 'types/Action';
 import { selectors } from 'shared/bundles/collectionsBundle';
 import { updateCollection } from 'actions/Collections';
 import { selectSharedState } from 'shared/selectors/shared';
+import { type ThunkAction } from 'types/Store';
+import { type Collection } from 'shared/types/Collection';
 
 const updateStateFromUrlChange: Middleware<State, Action> = ({
   dispatch,
@@ -60,7 +62,13 @@ const unwrapBatchedActions = (action: ActionWithBatchedActions): Action[] =>
  * which would be nice to remove in favour of a more declarative library if
  * possible.
  */
-const persistCollectionOnEdit: Middleware<State, Action> = store => {
+const persistCollectionOnEdit: (
+  (collection: Collection) => Action | ThunkAction
+) => Middleware<Store, Action> = (
+  updateCollectionAction: (
+    collection: Collection
+  ) => Action | ThunkAction = updateCollection
+) => store => {
   /**
    * Get the relevant collection ids for the given actions.
    * @todo At the moment this just cares about updates to article fragments,
@@ -92,9 +100,11 @@ const persistCollectionOnEdit: Middleware<State, Action> = store => {
 
   return next => (action: Action) => {
     const actions = unwrapBatchedActions(action);
+
     if (!actions.some(act => act.meta && act.meta.persistTo === 'collection')) {
       return next(action);
     }
+
     // Gather the collections that are touched before the new state.
     let collectionIds = getCollectionIdsForActions(
       actions.filter(act => act.meta && act.meta.applyBeforeReducer)
@@ -119,7 +129,7 @@ const persistCollectionOnEdit: Middleware<State, Action> = store => {
       // This relates to a problem with the middleware definition -
       // see https://github.com/flowtype/flow-typed/issues/574
       // $FlowFixMe
-      store.dispatch(updateCollection(collection));
+      store.dispatch(updateCollectionAction(collection));
     });
 
     return result;

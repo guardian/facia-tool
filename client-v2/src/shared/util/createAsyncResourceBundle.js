@@ -255,7 +255,6 @@ function createAsyncResourceBundle<Resource: any>(
       if (action.entity !== entityName) {
         return state;
       }
-
       switch (action.type) {
         case FETCH_START: {
           return {
@@ -312,21 +311,28 @@ function createAsyncResourceBundle<Resource: any>(
           };
         }
         case UPDATE_SUCCESS: {
+          let data;
+          if (action.payload.data) {
+            data = !indexById
+              ? action.payload.data
+              : applyNewData(state.data, action.payload.data);
+          } else {
+            data = state.data; // eslint-disable-line prefer-destructuring
+          }
           return {
             ...state,
-            data: !indexById
-              ? action.payload.data
-              : applyNewData(state.data, action.payload.data),
+            data,
             lastFetch: action.payload.time,
             error: null,
-            updateIds: removeStatusIds(state.updatingIds, action.payload.id)
+            updatingIds: removeStatusIds(state.updatingIds, action.payload.id)
           };
         }
         case UPDATE_ERROR: {
           return {
             ...state,
             error: action.payload.error,
-            updateIds: removeStatusIds(state.updatingIds, action.payload.id)
+            lastError: action.payload.error,
+            updatingIds: removeStatusIds(state.updatingIds, action.payload.id)
           };
         }
         default: {
