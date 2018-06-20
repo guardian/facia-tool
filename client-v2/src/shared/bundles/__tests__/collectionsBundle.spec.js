@@ -1,3 +1,5 @@
+// @flow
+
 import { selectors } from '../collectionsBundle';
 import {
   stateWithCollection,

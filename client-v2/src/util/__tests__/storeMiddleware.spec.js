@@ -1,3 +1,5 @@
+// @flow
+
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { stateWithCollection } from 'shared/fixtures/shared';
