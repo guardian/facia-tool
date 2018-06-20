@@ -51,6 +51,8 @@ GET         /metadata                                controllers.FaciaToolContro
 
 POST        /treats/*collectionId                    controllers.FaciaToolController.treatEdits(collectionId)
 
+GET         /clipboard                               controllers.ClipboardController.getClipboardContent()
+
 # endpoints for proxying https
 GET         /api/preview/*path                       controllers.FaciaContentApiProxy.capiPreview(path)
 GET         /api/live/*path                          controllers.FaciaContentApiProxy.capiLive(path)
@@ -84,4 +86,5 @@ GET         /troubleshoot/*section                   controllers.TroubleshootCon
 # React App
 GET         /v2                                      controllers.V2App.index(path="")
 GET         /v2/*path                                controllers.V2App.index(path)
+
 

@@ -4,7 +4,8 @@ import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.services.dynamodbv2.{AmazonDynamoDB, AmazonDynamoDBClientBuilder}
 import com.gu.scanamo.{Scanamo, Table}
 import play.api.libs.json.Json
-import services.AwsEndpoints
+import services.Dynamo
+import com.gu.scanamo.syntax._
 
 object FrontPressRecord {
   implicit val jsonFormat = Json.format[FrontPressRecord]
@@ -19,14 +20,8 @@ case class FrontPressRecord (
  actionTime: String
 )
 
-class PressController (awsEndpoints: AwsEndpoints, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
-  private lazy val client: AmazonDynamoDB = {
-    val endpoint = new AwsClientBuilder.EndpointConfiguration(awsEndpoints.dynamoDb, config.aws.region)
-    val builder: AmazonDynamoDBClientBuilder = AmazonDynamoDBClientBuilder.standard()
-      .withCredentials(config.aws.cmsFrontsAccountCredentials)
-      .withEndpointConfiguration(endpoint)
-    builder.build()
-  }
+class PressController (dynamo: Dynamo, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
+  val client = dynamo.client
 
   private lazy val pressedTable = Table[FrontPressRecord](config.faciatool.frontPressUpdateTable)
 

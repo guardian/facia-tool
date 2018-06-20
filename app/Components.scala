@@ -22,6 +22,8 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val isDev: Boolean = context.environment.mode == Mode.Dev
   val config = new ApplicationConfiguration(configuration, isProd)
   val awsEndpoints = new AwsEndpoints(config)
+  val dynamo = new Dynamo(awsEndpoints, config)
+  val permissions = new Permissions(config)
   val acl = new Acl(permissions)
   val frontsApi = new FrontsApi(config, awsEndpoints)
   val s3FrontsApi = new S3FrontsApi(config, isTest, awsEndpoints)
@@ -60,17 +62,17 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val v2Assets = new V2Assets(assets)
   val vanityRedirects = new VanityRedirects(acl, this)
   val views = new ViewsController(acl, assetsManager, isDev, encryption, this)
-  val pressController = new PressController(awsEndpoints, this)
+  val pressController = new PressController(dynamo, this)
   val v2App = new V2App(isDev, acl, this)
   val faciaToolV2 = new FaciaToolV2Controller(acl, structuredLogger, faciaPress, updateActions, this)
+  val clipboardController = new ClipboardController(dynamo, this)
 
   final override lazy val corsConfig: CORSConfig = CORSConfig.fromConfiguration(context.initialConfiguration).copy(
     allowedOrigins = Origins.Matching(Set(config.environment.applicationUrl))
   )
 
   override lazy val assets: Assets = new controllers.Assets(httpErrorHandler, assetsMetadata)
-  val router: Router = new Routes(httpErrorHandler, status, pandaAuth, v2Assets, uncachedAssets, views, faciaTool, pressController, faciaToolV2, defaults, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects,
-    troubleshoot, v2App)
+  val router: Router = new Routes(httpErrorHandler, status, pandaAuth, v2Assets, uncachedAssets, views, faciaTool, pressController, faciaToolV2, defaults, clipboardController, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects, troubleshoot, v2App)
 
   override lazy val httpFilters = Seq(
     new CustomGzipFilter()(materializer),
