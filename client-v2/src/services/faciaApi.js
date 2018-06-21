@@ -161,6 +161,6 @@ export {
   getCollection,
   getArticles,
   fetchLastPressed,
-  publishCollection
+  publishCollection,
   updateCollection
 };

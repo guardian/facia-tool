@@ -95,15 +95,15 @@ type ErrorInAction = {|
   receivedAt: number
 |};
 
-type RecordUnpublishedChanges = {
+type RecordUnpublishedChanges = {|
   type: 'RECORD_UNPUBLISHED_CHANGES',
   payload: { [string]: boolean }
-};
+|};
 
-type PublishCollectionSuccess = {
+type PublishCollectionSuccess = {|
   type: 'PUBLISH_COLLECTION_SUCCESS',
   payload: { collectionId: string }
-};
+|};
 
 type Action =
   | ConfigReceivedAction

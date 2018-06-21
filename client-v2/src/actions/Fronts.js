@@ -5,7 +5,6 @@ import type { Action } from 'types/Action';
 import { batchActions } from 'redux-batched-actions';
 import {
   fetchFrontsConfig,
-  getCollection,
   fetchLastPressed as fetchLastPressedApi,
   publishCollection as publishCollectionApi
 } from 'services/faciaApi';
@@ -59,11 +58,7 @@ function publishCollection(collectionId: string): ThunkAction {
       });
 }
 
-export {
-  fetchLastPressed,
-  fetchLastPressedSuccess,
-  publishCollection
-};
+export { fetchLastPressed, fetchLastPressedSuccess, publishCollection };
 
 export default function getFrontsConfig(): ThunkAction {
   return (dispatch: Dispatch) => {
