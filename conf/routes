@@ -53,6 +53,8 @@ POST        /treats/*collectionId                    controllers.FaciaToolContro
 
 GET         /clipboard                               controllers.ClipboardController.getClipboardContent()
 
+POST        /clipboard                               controllers.ClipboardController.putClipboardContent()
+
 # endpoints for proxying https
 GET         /api/preview/*path                       controllers.FaciaContentApiProxy.capiPreview(path)
 GET         /api/live/*path                          controllers.FaciaContentApiProxy.capiLive(path)
