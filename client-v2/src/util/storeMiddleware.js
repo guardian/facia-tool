@@ -34,18 +34,26 @@ const updateStateFromUrlChange: Middleware<State, Action> = ({
 };
 
 type PersistCollectionMeta = {|
-  meta: {
-    // The resource to persist the data to
-    persistTo: 'collection',
-    // The key to take from the action payload. Defaults to 'id'.
-    key?: string,
-    // Should we find collection parents before or after the reducer is called?
-    // This is important when the relevant collection is affected by when the operation
-    // occurs - finding the parent collection before a remove operation, for example,
-    // or after an add operation.
-    applyBeforeReducer?: boolean
-  }
+  // The resource to persist the data to
+  persistTo: 'collection',
+  // The key to take from the action payload. Defaults to 'id'.
+  key?: string,
+  // Should we find collection parents before or after the reducer is called?
+  // This is important when the relevant collection is affected by when the operation
+  // occurs - finding the parent collection before a remove operation, for example,
+  // or after an add operation.
+  applyBeforeReducer?: boolean
 |};
+
+function addPersistMetaToAction<TArgs: *, TAction: *>(
+  actionCreator: (...args: TArgs) => TAction,
+  meta: PersistCollectionMeta
+): (...args: TArgs) => TAction & {| meta: PersistCollectionMeta |} {
+  return (...args: TArgs) => ({
+    ...actionCreator(...args),
+    meta
+  });
+}
 
 /**
  * Return an array of actions - either a single action,
@@ -74,15 +82,13 @@ const persistCollectionOnEdit: (
    * @todo At the moment this just cares about updates to article fragments,
    *   but it should also listen for edits to collections.
    */
-  const getCollectionIdsForActions = (actions: Action[]) => {
+  const getCollectionIdsForActions = actions => {
     const articleFragmentIds: string[] = uniq(
       actions.map(
         // A sneaky 'any' here, as it's difficult to handle dynamic key
         // values with static action types.
         (act: any) =>
-          act.payload && act.meta.persistTo && act.meta.key
-            ? act.payload[act.meta.key]
-            : act.payload.id
+          act.meta.key ? act.payload[act.meta.key] : act.payload.id
       )
     );
     const collectionIds: string[] = articleFragmentIds.reduce((acc, id) => {
@@ -137,4 +143,8 @@ const persistCollectionOnEdit: (
 };
 
 export type { PersistCollectionMeta };
-export { persistCollectionOnEdit, updateStateFromUrlChange };
+export {
+  persistCollectionOnEdit,
+  updateStateFromUrlChange,
+  addPersistMetaToAction
+};

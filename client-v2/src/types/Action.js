@@ -18,27 +18,27 @@ import { type FrontsConfig } from './FaciaApi';
 
 type AddCollectionArticleFragment = {|
   ...SharedAddCollectionArticleFragment,
-  ...PersistCollectionMeta
+  meta: PersistCollectionMeta
 |};
 
 type RemoveCollectionArticleFragment = {|
   ...SharedRemoveCollectionArticleFragment,
-  ...PersistCollectionMeta
+  meta: PersistCollectionMeta
 |};
 
 type AddSupportingArticleFragment = {|
   ...SharedAddSupportingArticleFragment,
-  ...PersistCollectionMeta
+  meta: PersistCollectionMeta
 |};
 
 type RemoveSupportingArticleFragment = {|
   ...SharedRemoveSupportingArticleFragment,
-  ...PersistCollectionMeta
+  meta: PersistCollectionMeta
 |};
 
 type ChangeArticleGroup = {|
   ...SharedChangeArticleGroup,
-  ...PersistCollectionMeta
+  meta: PersistCollectionMeta
 |};
 
 type ActionError =

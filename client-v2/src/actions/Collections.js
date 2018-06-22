@@ -30,31 +30,23 @@ import {
 } from 'shared/actions/Collection';
 import type { State } from 'types/State';
 import type { Collection } from 'shared/types/Collection';
+import { addPersistMetaToAction } from 'util/storeMiddleware';
 
-/**
- * We add the persistence middleware meta to actions we'd like to trigger persist
- * operations here - see the persistCollectionOnEdit middleware.
- */
-function addCollectionArticleFragmentWithPersistence(...args: *) {
-  return {
-    ...addCollectionArticleFragment(...args),
-    meta: {
-      persistTo: 'collection',
-      key: 'articleFragmentId',
-      applyBeforeReducer: true
-    }
-  };
-}
+const addCollectionArticleFragmentWithPersistence = addPersistMetaToAction(
+  addCollectionArticleFragment,
+  {
+    persistTo: 'collection',
+    key: 'articleFragmentId'
+  }
+);
 
-function removeCollectionArticleFragmentWithPersistence(...args: *) {
-  return {
-    ...removeCollectionArticleFragment(...args),
-    meta: {
-      persistTo: 'collection',
-      key: 'articleFragmentId'
-    }
-  };
-}
+const removeCollectionArticleFragmentWithPersistence = addPersistMetaToAction(
+  removeCollectionArticleFragment,
+  {
+    persistTo: 'collection',
+    key: 'articleFragmentId'
+  }
+);
 
 function getCollection(collectionId: string) {
   return (dispatch: Dispatch, getState: () => State) => {

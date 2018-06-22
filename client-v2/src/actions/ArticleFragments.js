@@ -5,37 +5,28 @@ import {
   addSupportingArticleFragment,
   changeArticleGroup
 } from 'shared/actions/ArticleFragments';
+import { addPersistMetaToAction } from 'util/storeMiddleware';
 
-/**
- * We add the persistence middleware meta to actions we'd like to trigger persist
- * operations here - see the persistCollectionOnEdit middleware.
- */
-function removeSupportingArticleFragmentWithPersist(...args: *) {
-  return {
-    ...removeSupportingArticleFragment(...args),
-    meta: {
-      persistTo: 'collection'
-    }
-  };
-}
+const removeSupportingArticleFragmentWithPersist = addPersistMetaToAction(
+  removeSupportingArticleFragment,
+  {
+    persistTo: 'collection'
+  }
+);
 
-function addSupportingArticleFragmentWithPersist(...args: *) {
-  return {
-    ...addSupportingArticleFragment(...args),
-    meta: {
-      persistTo: 'collection'
-    }
-  };
-}
+const addSupportingArticleFragmentWithPersist = addPersistMetaToAction(
+  addSupportingArticleFragment,
+  {
+    persistTo: 'collection'
+  }
+);
 
-function changeArticleGroupWithPersist(...args: *) {
-  return {
-    ...changeArticleGroup(...args),
-    meta: {
-      persistTo: 'collection'
-    }
-  };
-}
+const changeArticleGroupWithPersist = addPersistMetaToAction(
+  changeArticleGroup,
+  {
+    persistTo: 'collection'
+  }
+);
 
 export {
   removeSupportingArticleFragmentWithPersist as removeSupportingArticleFragment,
