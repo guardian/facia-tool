@@ -6487,9 +6487,9 @@ nopt@^4.0.1:
     abbrev "1"
     osenv "^0.1.4"
 
-"normal@https://github.com/guardian/normalize-with-fields":
-  version "1.0.0"
-  resolved "https://github.com/guardian/normalize-with-fields#9cc3a8d0243b6be572b6d6612445738cb9cb893b"
+normalise-with-fields@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/normalise-with-fields/-/normalise-with-fields-1.0.1.tgz#6300382039a66d85bbe646dda7400f7a3c9cf26e"
 
 normalize-package-data@^2.3.2, normalize-package-data@^2.3.4:
   version "2.4.0"

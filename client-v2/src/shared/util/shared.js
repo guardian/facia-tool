@@ -3,12 +3,9 @@
 import v4 from 'uuid/v4';
 import { omit } from 'lodash';
 import set from 'lodash/fp/set';
-import { normalize, denormalize } from './schema';
 
 import type {
   CollectionWithNestedArticles,
-  Collection,
-  ArticleFragment,
   NestedArticleFragment
 } from 'shared/types/Collection';
 import { selectors as collectionSelectors } from 'shared/bundles/collectionsBundle';
@@ -18,7 +15,7 @@ import {
 } from 'shared/selectors/shared';
 import type { State } from 'types/State';
 
-const getLastPartOfArticleFragmentId = (id: string) => id.split('/').pop();
+import { normalize } from './schema';
 
 const getArticleIdsFromNestedArticleFragment = (
   fragments: string[],
@@ -55,8 +52,8 @@ const normaliseCollectionWithNestedArticles = (
 ) => {
   const normalisedCollection = normalize(collection);
   return {
-    collection: Object.values(normalisedCollection.collections)[0],
-    articleFragments: normalisedCollection.articleFragments || []
+    collection: normalisedCollection.result,
+    articleFragments: normalisedCollection.entities.articleFragments || []
   };
 };
 

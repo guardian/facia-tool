@@ -96,9 +96,9 @@ describe('Shared utilities', () => {
         ...collection,
         ...{ live: [] }
       });
-      expect(result.collection.live.length).toEqual(0);
-      expect(result.collection.draft).toHaveLength(0);
-      expect(result.collection.previously).toHaveLength(0);
+      expect(result.collection.live).toHaveLength(0);
+      expect(result.collection.draft).toBeUndefined();
+      expect(result.collection.previously).toBeUndefined();
       expect(Object.keys(result.articleFragments)).toHaveLength(0);
     });
     it('should normalise supporting article fragments', () => {
