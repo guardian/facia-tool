@@ -77,7 +77,7 @@ const createArticlesInCollectionGroupSelector = () => {
       if (
         !collection ||
         !collection.groups ||
-        !collection.articleFragments[stage]
+        !collection[stage]
       ) {
         return defaultArray;
       }
@@ -85,7 +85,7 @@ const createArticlesInCollectionGroupSelector = () => {
       if (groupDisplayIndex === -1) {
         return defaultArray;
       }
-      return collection.articleFragments[stage].filter(id => {
+      return collection[stage].filter(id => {
         const articleFragment = articleFragments[id];
         const articleGroup =
           articleFragment.meta && articleFragment.meta.group
@@ -132,14 +132,13 @@ const createCollectionsAsTreeSelector = () =>
             : [
                 ...acc.collections,
                 {
-                  ...omit(collections[collectionId], 'articleFragments'),
+                  ...omit(collections[collectionId], stage),
                   groups: collections[collectionId].groups
                     ? collections[collectionId].groups.map(
                         (groupId, index) => ({
                           id: groupId,
                           articleFragments: (
-                            collections[collectionId].articleFragments[stage] ||
-                            []
+                            collections[collectionId][stage] || []
                           )
                             .filter(
                               // There are obviously better ways to sort articles into groups!
@@ -164,8 +163,7 @@ const createCollectionsAsTreeSelector = () =>
                         {
                           id: '',
                           articleFragments: (
-                            collections[collectionId].articleFragments[stage] ||
-                            []
+                            collections[collectionId][stage] || []
                           ).map(createNestedArticleFragment)
                         }
                       ]

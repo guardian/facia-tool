@@ -14,28 +14,20 @@ const state = {
       c1: {
         id: 'c1',
         groups: ['group1', 'group2'],
-        articleFragments: {
-          live: ['af1', 'af2']
-        }
+        live: ['af1', 'af2']
       },
       c2: {
         id: 'c2',
         groups: ['group1'],
-        articleFragments: {
-          draft: ['af3', 'af4']
-        }
+        draft: ['af3', 'af4']
       },
       c3: {
         groups: ['group1'],
-        articleFragments: {
-          draft: ['af5']
-        }
+        draft: ['af5']
       },
       c4: {
         groups: ['group1'],
-        articleFragments: {
-          draft: ['af5']
-        }
+        draft: ['af5']
       }
     }
   },
@@ -91,9 +83,7 @@ const stateWithGrouplessCollection = {
     data: {
       c1: {
         id: 'c1',
-        articleFragments: {
-          live: ['af1', 'af2']
-        }
+        live: ['af1', 'af2']
       }
     }
   },
@@ -117,9 +107,7 @@ const stateWithSupportingArticles = {
     data: {
       c1: {
         id: 'c1',
-        articleFragments: {
-          live: ['af1']
-        }
+        live: ['af1']
       }
     }
   },
@@ -146,9 +134,7 @@ describe('Shared selectors', () => {
       const selector = createCollectionSelector();
       expect(selector(state, { collectionId: 'c1' })).toEqual({
         groups: ['group2', 'group1'],
-        articleFragments: {
-          live: ['af1', 'af2']
-        },
+        live: ['af1', 'af2'],
         id: 'c1'
       });
     });
