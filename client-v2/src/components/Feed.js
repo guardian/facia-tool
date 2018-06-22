@@ -10,7 +10,7 @@ import FeedItem from './FeedItem';
 import SearchInput from './FrontsCAPIInterface/SearchInput';
 import Button from './Button';
 import Loader from './Loader';
-import { capiFeedSpecsSelector } from '../selectors/feedsSelectors';
+import { capiFeedSpecsSelector } from '../selectors/configSelectors';
 import Row from './Row';
 import Col from './Col';
 

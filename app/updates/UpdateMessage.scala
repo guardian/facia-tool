@@ -1,6 +1,6 @@
 package updates
 
-import com.gu.facia.client.models.{CollectionConfigJson, FrontJson, TrailMetaData}
+import com.gu.facia.client.models.{CollectionJson, CollectionConfigJson, FrontJson, TrailMetaData}
 import julienrf.json.derived
 import org.joda.time.DateTime
 import play.api.libs.json._
@@ -92,6 +92,10 @@ case class HandlingBreakingNewsTrail(id: String, breakingNewsTrail: ClientHydrat
 }
 
 case class ArchiveUpdate(id: String) extends UpdateMessage {
+  def affectedFronts(configAgent: ConfigAgent) = configAgent.getConfigsUsingCollectionId(id).toSet[String]
+}
+
+case class V2CollectionUpdate(id: String, collection: CollectionJson) extends UpdateMessage {
   def affectedFronts(configAgent: ConfigAgent) = configAgent.getConfigsUsingCollectionId(id).toSet[String]
 }
 

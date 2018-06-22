@@ -85,6 +85,29 @@ async function publishCollection(collectionId: string): Promise<void> {
   }
 }
 
+async function updateCollection(
+  id: string,
+  collection: CollectionWithNestedArticles
+): Promise<CollectionWithNestedArticles> {
+  try {
+    const response = await pandaFetch(`/v2Edits`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify({ id, collection })
+    });
+    return await response.json();
+  } catch (response) {
+    throw new Error(
+      `Tried to update collection with id ${id}, but the server responded with ${
+        response.status
+      }: ${response.body}`
+    );
+  }
+}
+
 function getCollection(
   collectionId: string
 ): Promise<CollectionWithNestedArticles> {
@@ -138,5 +161,6 @@ export {
   getCollection,
   getArticles,
   fetchLastPressed,
-  publishCollection
+  publishCollection,
+  updateCollection
 };

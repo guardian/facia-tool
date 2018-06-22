@@ -6,10 +6,11 @@ import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import distanceInWords from 'date-fns/distance_in_words';
 
-import getFrontsConfig, {
+import getFrontsConfig, { fetchLastPressed } from 'actions/Fronts';
+import {
   getCollectionsAndArticles,
-  fetchLastPressed
-} from 'actions/Fronts';
+  updateCollection
+} from 'actions/Collections';
 import { frontStages } from 'constants/fronts';
 // import Collection from 'shared/components/Collection';
 import type { FrontConfig } from 'types/FaciaApi';
@@ -128,7 +129,8 @@ const mapDispatchToProps = (dispatch: *) => ({
     {
       getFrontsConfig,
       getCollectionsAndArticles,
-      fetchLastPressed
+      fetchLastPressed,
+      updateCollection
     },
     dispatch
   )

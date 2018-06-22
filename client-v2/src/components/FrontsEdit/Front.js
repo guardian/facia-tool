@@ -73,7 +73,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
       }
     }, []);
 
-    this.props.dispatch(batchActions(actions, 'MOVE'));
+    this.props.dispatch(batchActions(actions));
   };
 
   render() {

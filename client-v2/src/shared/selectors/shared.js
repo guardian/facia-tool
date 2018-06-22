@@ -186,5 +186,6 @@ export {
   createArticlesInCollectionGroupSelector,
   createCollectionSelector,
   selectSharedState,
-  createCollectionsAsTreeSelector
+  createCollectionsAsTreeSelector,
+  articleFragmentSelector
 };

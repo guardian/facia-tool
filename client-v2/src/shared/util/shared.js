@@ -2,6 +2,7 @@
 
 import v4 from 'uuid/v4';
 import { omit } from 'lodash';
+import set from 'lodash/fp/set';
 
 import type {
   CollectionWithNestedArticles,
@@ -9,6 +10,12 @@ import type {
   ArticleFragment,
   NestedArticleFragment
 } from 'shared/types/Collection';
+import { selectors as collectionSelectors } from 'shared/bundles/collectionsBundle';
+import {
+  articleFragmentSelector,
+  selectSharedState
+} from 'shared/selectors/shared';
+import type { State } from 'types/State';
 
 const getLastPartOfArticleFragmentId = (id: string) => id.split('/').pop();
 
@@ -63,7 +70,8 @@ const normaliseCollectionWithNestedArticles = (
         collection[currentStage].map((articleFragment, index) =>
           Object.assign({}, articleFragment, {
             uuid: idMap[currentStage] && idMap[currentStage][index],
-            id: getLastPartOfArticleFragmentId(articleFragment.id)
+            id: getLastPartOfArticleFragmentId(articleFragment.id),
+            idWithPath: articleFragment.id
           })
         );
       const fragmentsAsObjects: { [string]: ArticleFragment } = (
@@ -77,7 +85,8 @@ const normaliseCollectionWithNestedArticles = (
                   uuid: v4(),
                   id: getLastPartOfArticleFragmentId(
                     supportingArticleFragment.id
-                  )
+                  ),
+                  idWithPath: supportingArticleFragment.id
                 })
               )
             : [];
@@ -126,4 +135,55 @@ const normaliseCollectionWithNestedArticles = (
   };
 };
 
-export { normaliseCollectionWithNestedArticles, getArticleIdsFromCollection };
+function denormaliseArticleFragment(state: State, id: string) {
+  let articleFragment = articleFragmentSelector(selectSharedState(state), id);
+  if (!articleFragment) {
+    throw new Error(
+      `Could not denormalise article fragment - no article fragment found with id '${id}'`
+    );
+  }
+  if (articleFragment.meta && articleFragment.meta.supporting) {
+    articleFragment = set(
+      ['meta', 'supporting'],
+      articleFragment.meta.supporting.map(supportingFragmentId =>
+        denormaliseArticleFragment(state, supportingFragmentId)
+      ),
+      articleFragment
+    );
+  }
+  const { idWithPath } = articleFragment;
+  return {
+    ...omit(articleFragment, 'uuid', 'idWithPath'),
+    id: idWithPath
+  };
+}
+
+function denormaliseCollection(state: State, id: string) {
+  const collection = collectionSelectors.selectById(
+    selectSharedState(state),
+    id
+  );
+  if (!collection) {
+    throw new Error(
+      `Could not denormalise collection - no collection found with id '${id}'`
+    );
+  }
+  const mapArticleFragments = (fragmentId: string) =>
+    denormaliseArticleFragment(state, fragmentId);
+  return {
+    ...omit(collection, 'articleFragments', 'id'),
+    live: collection.articleFragments.live
+      ? collection.articleFragments.live.map(mapArticleFragments, {})
+      : [],
+    draft: collection.articleFragments.draft
+      ? collection.articleFragments.draft.map(mapArticleFragments, {})
+      : []
+  };
+}
+
+export {
+  normaliseCollectionWithNestedArticles,
+  getArticleIdsFromCollection,
+  denormaliseArticleFragment,
+  denormaliseCollection
+};

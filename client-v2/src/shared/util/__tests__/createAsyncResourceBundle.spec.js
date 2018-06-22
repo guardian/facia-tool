@@ -254,16 +254,77 @@ describe('createAsyncResourceBundle', () => {
         });
       });
       describe('Update success', () => {
-        const bundle = createAsyncResourceBundle('books', {
-          indexById: true
+        it('should remove the updating id from the state', () => {
+          const bundle = createAsyncResourceBundle('books', {
+            indexById: true
+          });
+          const state = bundle.reducer(
+            initialState,
+            actions.updateStart({ id: 'uuid' })
+          );
+          const newState = bundle.reducer(state, actions.updateSuccess('uuid'));
+          expect(newState.data.uuid).toEqual({ id: 'uuid' });
+          expect(newState.updatingIds).toEqual([]);
         });
-        const newState = bundle.reducer(
-          initialState,
-          actions.updateStart({ id: 'uuid' })
-        );
-        expect(newState.data.uuid).toEqual({ id: 'uuid' });
+        it('should replace the model data if data is supplied', () => {
+          const bundle = createAsyncResourceBundle('books', {
+            indexById: true
+          });
+          const state = bundle.reducer(
+            initialState,
+            actions.updateStart({ id: 'uuid' })
+          );
+          const newState = bundle.reducer(
+            state,
+            actions.updateSuccess('uuid', {
+              id: 'uuid',
+              lastModified: 123456789
+            })
+          );
+          expect(newState.data.uuid).toEqual({
+            id: 'uuid',
+            lastModified: 123456789
+          });
+          expect(newState.updatingIds).toEqual([]);
+        });
+        it('should remove the error message if it exists', () => {
+          const bundle = createAsyncResourceBundle('books', {
+            indexById: true
+          });
+          const newState = bundle.reducer(
+            {
+              ...initialState,
+              error: 'There was a problem',
+              lastError: 'There was a problem'
+            },
+            actions.updateSuccess('uuid', {
+              id: 'uuid',
+              lastModified: 123456789
+            })
+          );
+          expect(newState.error).toEqual(null);
+          expect(newState.lastError).toEqual('There was a problem');
+        });
       });
-      describe('Update error', () => {});
+      describe('Update error', () => {
+        it('should remove the updating id from the state, and add an error message', () => {
+          const bundle = createAsyncResourceBundle('books', {
+            indexById: true
+          });
+          const state = bundle.reducer(
+            initialState,
+            actions.updateStart({ id: 'uuid' })
+          );
+          const newState = bundle.reducer(
+            state,
+            actions.updateError('There was a problem', 'uuid')
+          );
+          expect(newState.data.uuid).toEqual({ id: 'uuid' });
+          expect(newState.updatingIds).toEqual([]);
+          expect(newState.error).toEqual('There was a problem');
+          expect(newState.lastError).toEqual('There was a problem');
+        });
+      });
     });
   });
 });

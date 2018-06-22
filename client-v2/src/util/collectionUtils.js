@@ -4,11 +4,11 @@ import { getURLCAPIID } from 'util/CAPIUtils';
 import {
   removeCollectionArticleFragment,
   addCollectionArticleFragment
-} from 'shared/actions/Collection';
+} from 'actions/Collections';
 import {
   removeSupportingArticleFragment,
   addSupportingArticleFragment
-} from 'shared/actions/ArticleFragments';
+} from 'actions/ArticleFragments';
 import { type Action } from 'types/Action';
 import { type Move } from 'guration';
 
