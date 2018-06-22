@@ -53,6 +53,7 @@ const normaliseCollectionWithNestedArticles = (
   const normalisedCollection = normalize(collection);
   return {
     collection: normalisedCollection.result,
+    groups: normalisedCollection.entities.groups || [],
     articleFragments: normalisedCollection.entities.articleFragments || []
   };
 };

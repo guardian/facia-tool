@@ -1,4 +1,4 @@
-import { createType, build } from 'normalise-with-fields';
+import { createType, build, createFieldType } from 'normalise-with-fields';
 import v4 from 'uuid/v4';
 
 const getLastPartOfArticleFragmentId = (id: string) => id.split('/').pop();
@@ -9,7 +9,8 @@ const articleFragments = createType('articleFragments', {
     uuid: v4(),
     id: getLastPartOfArticleFragmentId(af.id)
   }),
-  idKey: 'uuid'
+  idKey: 'uuid',
+  field: createFieldType('groups', { key: 'meta.group', valueKey: 'key', uuid: v4 })
 });
 const supportingArticles = createType('articleFragments', {
   preProcess: af => ({

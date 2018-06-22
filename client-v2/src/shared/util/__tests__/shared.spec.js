@@ -37,14 +37,13 @@ describe('Shared utilities', () => {
   describe('normaliseCollectionWithNestedArticles', () => {
     it('should normalise an external collection, and provide the new collection and article fragments indexed by id', () => {
       const result = normaliseCollectionWithNestedArticles(exampleCollection);
-      expect(result.collection.live.length).toEqual(3);
-      expect(
-        result.collection.live.every(articleId => typeof articleId === 'string')
-      ).toBe(true);
-      expect(Object.keys(result.articleFragments).length).toEqual(3);
-      expect(result.articleFragments[result.collection.live[0]].id).toBe('0');
-      expect(result.articleFragments[result.collection.live[1]].id).toBe('1');
-      expect(result.articleFragments[result.collection.live[2]].id).toBe('2');
+      expect(result.collection.live).toHaveLength(1);
+      const groupId = result.collection.live[0];
+      const liveArticles = result.groups[groupId].articleFragments;
+      expect(liveArticles).toHaveLength(3);
+      expect(result.articleFragments[liveArticles[0]].id).toBe('0');
+      expect(result.articleFragments[liveArticles[1]].id).toBe('1');
+      expect(result.articleFragments[liveArticles[2]].id).toBe('2');
     });
     it('should handle draft and previously keys', () => {
       const result = normaliseCollectionWithNestedArticles({
