@@ -80,7 +80,9 @@ function getCollection(collectionId: string) {
             groupsReceived(groups)
           ])
         );
-        return Object.keys(articleFragments);
+        return Object.keys(articleFragments).map(
+          afId => articleFragments[afId].id
+        );
       })
       .catch((error: string) => {
         dispatch(collectionActions.fetchError(error, collectionId));

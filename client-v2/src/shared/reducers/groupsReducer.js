@@ -40,7 +40,7 @@ const groups = (state: State = {}, action: Action) => {
           articleFragments: [
             ...(group.articleFragments || []).slice(0, index),
             articleFragmentId,
-            ...(group.articleFragments || []).slice(0, index)
+            ...(group.articleFragments || []).slice(index)
           ]
         }
       };

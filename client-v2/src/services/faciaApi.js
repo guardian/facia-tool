@@ -129,7 +129,7 @@ function getArticles(articleIds: string[]): Promise<Array<ExternalArticle>> {
     if (text) {
       return JSON.parse(text).response.results.map(result => ({
         headline: result.webTitle,
-        id: result.fields.internalPageCode,
+        id: `internal-code/page/${result.fields.internalPageCode}`,
         isLive: result.fields.isLive === 'true',
         firstPublicationDate: result.fields.firstPublicationDate
       }));

@@ -101,8 +101,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
           <Front {...this.props.tree}>
             {collection => (
               <Collection {...collection} alsoOn={this.props.alsoOn}>
-                {(group, offset) => (
-                  <Group {...group} offset={offset}>
+                {group => (
+                  <Group {...group}>
                     {(articleFragment, afDragProps) => (
                       <ArticleFragment
                         {...articleFragment}

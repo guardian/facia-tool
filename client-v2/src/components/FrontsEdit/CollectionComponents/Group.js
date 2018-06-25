@@ -8,31 +8,21 @@ import DropZone from 'components/DropZone';
 type GroupProps = {
   id: string,
   index: number,
-  offset: number,
   articleFragments: *,
   children: *
 };
 
-const Group = ({
-  id,
-  index,
-  offset,
-  articleFragments,
-  children
-}: GroupProps) => (
-  <Guration.Field type="articleFragment" field="group" value={id} index={index}>
-    <GroupDisplay groupName={id}>
-      <Guration.Level
-        arr={articleFragments}
-        offset={offset}
-        type="articleFragment"
-        getKey={({ uuid }) => uuid}
-        renderDrop={props => <DropZone {...props} />}
-      >
-        {children}
-      </Guration.Level>
-    </GroupDisplay>
-  </Guration.Field>
+const Group = ({ id, articleFragments, children }: GroupProps) => (
+  <GroupDisplay groupName={id}>
+    <Guration.Level
+      arr={articleFragments}
+      type="articleFragment"
+      getKey={({ uuid }) => uuid}
+      renderDrop={props => <DropZone {...props} />}
+    >
+      {children}
+    </Guration.Level>
+  </GroupDisplay>
 );
 
 export default Group;
