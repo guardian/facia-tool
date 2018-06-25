@@ -1,11 +1,15 @@
 // @flow
 
+type Group = {
+  key: string,
+  articleFragments: string[]
+};
+
 type NestedArticleFragment = {
   id: string,
   frontPublicationDate: number,
   publishedBy: string,
   meta: {
-    group?: number,
     supporting?: $Diff<NestedArticleFragment, { supporting: any }>[]
   }
 };
@@ -17,15 +21,14 @@ type ArticleFragment = $Diff<NestedArticleFragment, { meta: any }> & {
   // so we can reassemble the original id for persist operations.
   idWithPath: string,
   meta: {
-    group?: number,
     supporting?: string[]
   }
 };
 
 type CollectionResponse = {
-  live: Array<NestedArticleFragment>,
-  draft?: Array<NestedArticleFragment>,
-  previously?: Array<NestedArticleFragment>,
+  live: NestedArticleFragment[],
+  draft?: NestedArticleFragment[],
+  previously?: NestedArticleFragment[],
   lastUpdated?: number,
   updatedBy?: string,
   updatedEmail?: string,
@@ -39,9 +42,7 @@ type CollectionWithNestedArticles = CollectionResponse & {
 };
 
 type Collection = {
-  articleFragments: {
-    [stage: string]: Array<string>
-  },
+  [stage: 'live' | 'previously' | 'draft']: string[],
   id: string,
   lastUpdated?: number,
   updatedBy?: string,
@@ -56,5 +57,6 @@ export type {
   ArticleFragment,
   CollectionWithNestedArticles,
   CollectionResponse,
-  Collection
+  Collection,
+  Group
 };

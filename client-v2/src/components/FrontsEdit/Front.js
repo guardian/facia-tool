@@ -140,4 +140,11 @@ const createMapStateToProps = () => {
   });
 };
 
-export default connect(createMapStateToProps)(FrontComponent);
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  dispatch
+});
+
+export default connect(
+  createMapStateToProps,
+  mapDispatchToProps
+)(FrontComponent);

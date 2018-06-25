@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import {
-  createArticleFromArticleFragmentSelector,
+  externalArticleFromArticleFragmentSelector,
   selectSharedState
 } from '../selectors/shared';
 import type { State } from '../types/State';
@@ -19,7 +19,7 @@ type ContainerProps = {
 };
 
 type ComponentProps = {
-  article: Article,
+  article: ?Article,
   children: ReactNode
 } & ContainerProps;
 
@@ -46,18 +46,18 @@ const ArticleComponent = ({
     </ArticleContainer>
   );
 
-const createMapStateToProps = () => {
-  const selectArticle = createArticleFromArticleFragmentSelector();
-  // $FlowFixMe
-  return (state: State, props: ContainerProps): { article: Article } => ({
-    article: selectArticle(
-      props.selectSharedState
-        ? props.selectSharedState(state)
-        : selectSharedState(state),
-      props.id
-    )
-  });
-};
+// $FlowFixMe
+const createMapStateToProps = () => (
+  state: State,
+  props: ContainerProps
+): { article: ?Article } => ({
+  article: externalArticleFromArticleFragmentSelector(
+    props.selectSharedState
+      ? props.selectSharedState(state)
+      : selectSharedState(state),
+    props.id
+  )
+});
 
 ArticleComponent.defaultProps = {
   draggable: false,

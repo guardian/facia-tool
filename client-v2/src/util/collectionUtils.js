@@ -2,9 +2,9 @@
 
 import { getURLCAPIID } from 'util/CAPIUtils';
 import {
-  removeCollectionArticleFragment,
-  addCollectionArticleFragment
-} from 'actions/Collections';
+  removeGroupArticleFragment,
+  addGroupArticleFragment
+} from 'shared/actions/Groups';
 import {
   removeSupportingArticleFragment,
   addSupportingArticleFragment
@@ -18,8 +18,8 @@ const fromMap: {
   articleFragment: {
     articleFragment: ({ payload: { id, from } }) =>
       removeSupportingArticleFragment(from.parent.id, id),
-    collection: ({ payload: { id, from } }, browsingStage) =>
-      removeCollectionArticleFragment(from.parent.id, id, browsingStage)
+    group: ({ payload: { id, from } }) =>
+      removeGroupArticleFragment(from.parent.id, id)
   }
 };
 
@@ -29,8 +29,8 @@ const toMap: {
   articleFragment: {
     articleFragment: ({ payload: { id, to } }) =>
       addSupportingArticleFragment(to.parent.id, id, to.index),
-    collection: ({ payload: { id, to } }, browsingStage) =>
-      addCollectionArticleFragment(to.parent.id, id, to.index, browsingStage)
+    group: ({ payload: { id, to } }) =>
+      addGroupArticleFragment(to.parent.id, id, to.index)
   }
 };
 

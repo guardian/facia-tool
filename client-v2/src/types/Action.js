@@ -5,8 +5,8 @@
  * for typing to work nicely in reducers
  */
 import type {
-  AddCollectionArticleFragment as SharedAddCollectionArticleFragment,
-  RemoveCollectionArticleFragment as SharedRemoveCollectionArticleFragment,
+  AddGroupArticleFragment as SharedAddGroupArticleFragment,
+  RemoveGroupArticleFragment as SharedRemoveGroupArticleFragment,
   AddSupportingArticleFragment as SharedAddSupportingArticleFragment,
   RemoveSupportingArticleFragment as SharedRemoveSupportingArticleFragment,
   ChangeArticleGroup as SharedChangeArticleGroup,
@@ -16,13 +16,13 @@ import { type PersistCollectionMeta } from 'util/storeMiddleware';
 import { type Config } from './Config';
 import { type FrontsConfig } from './FaciaApi';
 
-type AddCollectionArticleFragment = {|
-  ...SharedAddCollectionArticleFragment,
+type AddGroupArticleFragment = {|
+  ...SharedAddGroupArticleFragment,
   meta: PersistCollectionMeta
 |};
 
-type RemoveCollectionArticleFragment = {|
-  ...SharedRemoveCollectionArticleFragment,
+type RemoveGroupArticleFragment = {|
+  ...SharedRemoveGroupArticleFragment,
   meta: PersistCollectionMeta
 |};
 
@@ -117,8 +117,8 @@ type Action =
   | SharedActions
   | RecordUnpublishedChanges
   | PublishCollectionSuccess
-  | AddCollectionArticleFragment
-  | RemoveCollectionArticleFragment
+  | AddGroupArticleFragment
+  | RemoveGroupArticleFragment
   | AddSupportingArticleFragment
   | RemoveSupportingArticleFragment
   | ChangeArticleGroup;
