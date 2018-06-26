@@ -3,7 +3,10 @@
 import { createType, build, createFieldType } from 'normalise-with-fields';
 import v4 from 'uuid/v4';
 
-const postProcessArticleFragment = _af => {
+const postProcessArticleFragment = (_af: {
+  uuid?: string,
+  meta?: { supporting?: mixed[], group?: ?string }
+}): Object => {
   const { uuid, ...af } = _af;
 
   let meta = { ...af.meta };

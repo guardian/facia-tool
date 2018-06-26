@@ -6,25 +6,19 @@ const collection = {
       id: 'article/live/0',
       frontPublicationDate: 1,
       publishedBy: 'Computers',
-      meta: {
-        supporting: []
-      }
+      meta: {}
     },
     {
       id: 'article/draft/1',
       frontPublicationDate: 2,
       publishedBy: 'Computers',
-      meta: {
-        supporting: []
-      }
+      meta: {}
     },
     {
       id: 'a/long/path/2',
       frontPublicationDate: 2,
       publishedBy: 'Computers',
-      meta: {
-        supporting: []
-      }
+      meta: {}
     }
   ],
   id: 'exampleCollection',
