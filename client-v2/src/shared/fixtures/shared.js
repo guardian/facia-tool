@@ -31,9 +31,7 @@ const collectionWithSupportingArticles = {
       id: 'article/live/0',
       frontPublicationDate: 1,
       publishedBy: 'Computers',
-      meta: {
-        supporting: []
-      }
+      meta: {}
     },
     {
       id: 'a/long/path/1',

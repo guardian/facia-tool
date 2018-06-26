@@ -6376,7 +6376,7 @@ nopt@^4.0.1:
     abbrev "1"
     osenv "^0.1.4"
 
-normalise-with-fields@^1.0.1:
+normalise-with-fields@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/normalise-with-fields/-/normalise-with-fields-1.1.1.tgz#86cc86cdd9e5f6c7db13bfd8fa3d0c8dae258969"
 
