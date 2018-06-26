@@ -41,8 +41,10 @@ type CollectionWithNestedArticles = CollectionResponse & {
   id: string
 };
 
-type Collection = {
-  [stage: 'live' | 'previously' | 'draft']: string[],
+type Collection = {|
+  live?: string[],
+  previously?: string[],
+  draft?: string[],
   id: string,
   lastUpdated?: number,
   updatedBy?: string,
@@ -50,7 +52,7 @@ type Collection = {
   platform?: string,
   displayName: string,
   groups?: Array<string>
-};
+|};
 
 export type {
   NestedArticleFragment,

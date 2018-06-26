@@ -4,7 +4,7 @@ import { getURLCAPIID } from 'util/CAPIUtils';
 import {
   removeGroupArticleFragment,
   addGroupArticleFragment
-} from 'shared/actions/Groups';
+} from 'actions/Collections';
 import {
   removeSupportingArticleFragment,
   addSupportingArticleFragment
@@ -13,7 +13,7 @@ import { type Action } from 'types/Action';
 import { type Move } from 'guration';
 
 const fromMap: {
-  [string]: { [string]: (move: Move, browsingState: string) => Action }
+  [string]: { [string]: (move: Move) => Action }
 } = {
   articleFragment: {
     articleFragment: ({ payload: { id, from } }) =>
@@ -24,7 +24,7 @@ const fromMap: {
 };
 
 const toMap: {
-  [string]: { [string]: (move: Move, browsingState: string) => Action }
+  [string]: { [string]: (move: Move) => Action }
 } = {
   articleFragment: {
     articleFragment: ({ payload: { id, to } }) =>
@@ -34,11 +34,11 @@ const toMap: {
   }
 };
 
-const mapMoveEditToActions = (edit: Move, browsingState: string) => [
+const mapMoveEditToActions = (edit: Move) => [
   ((fromMap[edit.payload.type] || {})[edit.payload.from.parent.type] ||
-    (() => null))(edit, browsingState),
+    (() => null))(edit),
   ((toMap[edit.payload.type] || {})[edit.payload.to.parent.type] ||
-    (() => null))(edit, browsingState)
+    (() => null))(edit)
 ];
 
 const urlToArticle = (text: string) => {

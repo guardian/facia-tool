@@ -43,21 +43,12 @@ type AddGroupArticleFragment = {|
   }
 |};
 
-type ChangeArticleGroup = {|
-  type: 'SHARED/CHANGE_ARTICLE_GROUP',
-  payload: {
-    id: string,
-    group: string
-  }
-|};
-
 type Action =
   | RemoveSupportingArticleFragment
   | GroupsReceived
   | AddSupportingArticleFragment
   | RemoveGroupArticleFragment
   | AddGroupArticleFragment
-  | ChangeArticleGroup
   | Actions<ExternalArticle>
   | Actions<Collection>
   | ArticleFragmentsReceived;
@@ -68,6 +59,5 @@ export type {
   AddSupportingArticleFragment,
   RemoveGroupArticleFragment,
   AddGroupArticleFragment,
-  ChangeArticleGroup,
   ArticleFragmentsReceived
 };

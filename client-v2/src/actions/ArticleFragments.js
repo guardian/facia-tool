@@ -2,8 +2,7 @@
 
 import {
   removeSupportingArticleFragment,
-  addSupportingArticleFragment,
-  changeArticleGroup
+  addSupportingArticleFragment
 } from 'shared/actions/ArticleFragments';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
 
@@ -21,15 +20,7 @@ const addSupportingArticleFragmentWithPersist = addPersistMetaToAction(
   }
 );
 
-const changeArticleGroupWithPersist = addPersistMetaToAction(
-  changeArticleGroup,
-  {
-    persistTo: 'collection'
-  }
-);
-
 export {
   removeSupportingArticleFragmentWithPersist as removeSupportingArticleFragment,
-  addSupportingArticleFragmentWithPersist as addSupportingArticleFragment,
-  changeArticleGroupWithPersist as changeArticleGroup
+  addSupportingArticleFragmentWithPersist as addSupportingArticleFragment
 };

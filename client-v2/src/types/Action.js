@@ -9,7 +9,6 @@ import type {
   RemoveGroupArticleFragment as SharedRemoveGroupArticleFragment,
   AddSupportingArticleFragment as SharedAddSupportingArticleFragment,
   RemoveSupportingArticleFragment as SharedRemoveSupportingArticleFragment,
-  ChangeArticleGroup as SharedChangeArticleGroup,
   Action as SharedActions
 } from 'shared/types/Action';
 import { type PersistCollectionMeta } from 'util/storeMiddleware';
@@ -33,11 +32,6 @@ type AddSupportingArticleFragment = {|
 
 type RemoveSupportingArticleFragment = {|
   ...SharedRemoveSupportingArticleFragment,
-  meta: PersistCollectionMeta
-|};
-
-type ChangeArticleGroup = {|
-  ...SharedChangeArticleGroup,
   meta: PersistCollectionMeta
 |};
 
@@ -120,8 +114,7 @@ type Action =
   | AddGroupArticleFragment
   | RemoveGroupArticleFragment
   | AddSupportingArticleFragment
-  | RemoveSupportingArticleFragment
-  | ChangeArticleGroup;
+  | RemoveSupportingArticleFragment;
 
 type BatchedAction = {|
   type: 'BATCHING_REDUCER.BATCH',

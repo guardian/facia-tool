@@ -62,10 +62,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     const actions = edits.reduce((acc, edit) => {
       switch (edit.type) {
         case 'MOVE': {
-          return [
-            ...acc,
-            ...mapMoveEditToActions(edit, this.props.browsingStage)
-          ];
+          return [...acc, ...mapMoveEditToActions(edit)];
         }
         default: {
           return acc;

@@ -18,7 +18,10 @@ const normaliseCollectionWithNestedArticles = (
   };
 };
 
-function denormaliseCollection(state: State, id: string) {
+function denormaliseCollection(
+  state: State,
+  id: string
+): CollectionWithNestedArticles {
   const collection = collectionSelectors.selectById(
     selectSharedState(state),
     id

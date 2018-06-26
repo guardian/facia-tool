@@ -39,19 +39,8 @@ function addSupportingArticleFragment(
   };
 }
 
-function changeArticleGroup(id: string, newGroup: string) {
-  return {
-    type: 'SHARED/CHANGE_ARTICLE_GROUP',
-    payload: {
-      id,
-      group: newGroup
-    }
-  };
-}
-
 export {
   articleFragmentsReceived,
   removeSupportingArticleFragment,
-  addSupportingArticleFragment,
-  changeArticleGroup
+  addSupportingArticleFragment
 };
