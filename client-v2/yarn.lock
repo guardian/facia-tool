@@ -689,6 +689,14 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
+"@guardian/guration@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@guardian/guration/-/guration-1.0.0.tgz#6d2396732d3dda10bb94746fd705d33c896f2012"
+  dependencies:
+    lodash "^4.17.10"
+    react "^16.3.0"
+    react-dom "^16.3.0"
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"

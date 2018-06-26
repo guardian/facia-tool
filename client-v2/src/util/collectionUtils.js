@@ -10,7 +10,7 @@ import {
   addSupportingArticleFragment
 } from 'actions/ArticleFragments';
 import { type Action } from 'types/Action';
-import { type Move } from 'guration';
+import { type Move } from '@guardian/guration';
 
 const fromMap: {
   [string]: { [string]: (move: Move) => Action }
