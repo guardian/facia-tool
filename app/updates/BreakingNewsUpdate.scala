@@ -119,16 +119,16 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
     }
   }
 
-  private def parseTopic(topic: Option[String]): Set[Topic] = {
+  private def parseTopic(topic: Option[String]): List[Topic] = {
     topic match {
-      case Some("global") => Set(BreakingNewsUk, BreakingNewsUs, BreakingNewsAu, BreakingNewsInternational)
-      case Some("au") => Set(BreakingNewsAu)
-      case Some("international") => Set(BreakingNewsInternational)
-      case Some("uk") => Set(BreakingNewsUk)
-      case Some("us") => Set(BreakingNewsUs)
-      case Some("sport") => Set(BreakingNewsSport)
+      case Some("global") => List(BreakingNewsUk, BreakingNewsUs, BreakingNewsAu, BreakingNewsInternational)
+      case Some("au") => List(BreakingNewsAu)
+      case Some("international") => List(BreakingNewsInternational)
+      case Some("uk") => List(BreakingNewsUk)
+      case Some("us") => List(BreakingNewsUs)
+      case Some("sport") => List(BreakingNewsSport)
       case Some("") => throw new InvalidParameterException(s"Invalid empty string topic")
-      case Some(notYetImplementedTopic) => Set(Topic(Breaking, notYetImplementedTopic))
+      case Some(notYetImplementedTopic) => List(Topic(Breaking, notYetImplementedTopic))
       case None => throw new InvalidParameterException(s"Invalid empty topic")
     }
   }
