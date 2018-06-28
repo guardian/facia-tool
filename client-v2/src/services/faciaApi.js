@@ -9,7 +9,8 @@ import type {
 import type { ExternalArticle } from 'shared/types/ExternalArticle';
 import type {
   CollectionResponse,
-  CollectionWithNestedArticles
+  CollectionWithNestedArticles,
+  NestedArticleFragment
 } from 'shared/types/Collection';
 import pandaFetch from './pandaFetch';
 
@@ -108,7 +109,7 @@ async function updateCollection(
   }
 }
 
-async function getClipboard(): Promise<Array<string>> {
+async function getClipboard(): Promise<Array<NestedArticleFragment>> {
   // The server does not respond with JSON
   try {
     const response = await pandaFetch(`/clipboard`, {
@@ -149,7 +150,7 @@ function getArticles(articleIds: string[]): Promise<Array<ExternalArticle>> {
     if (text) {
       return JSON.parse(text).response.results.map(result => ({
         headline: result.webTitle,
-        id: result.fields.internalPageCode,
+        id: `internal-code/page/${result.fields.internalPageCode}`,
         isLive: result.fields.isLive === 'true',
         firstPublicationDate: result.fields.firstPublicationDate
       }));

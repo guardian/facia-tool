@@ -17,8 +17,6 @@ import {
 } from 'shared/selectors/shared';
 import type { State } from 'types/State';
 
-const getLastPartOfArticleFragmentId = (id: string) => id.split('/').pop();
-
 const getArticleIdsFromNestedArticleFragment = (
   fragments: string[],
   nestedArticleFragment: NestedArticleFragment
@@ -70,8 +68,7 @@ const normaliseCollectionWithNestedArticles = (
         collection[currentStage].map((articleFragment, index) =>
           Object.assign({}, articleFragment, {
             uuid: idMap[currentStage] && idMap[currentStage][index],
-            id: getLastPartOfArticleFragmentId(articleFragment.id),
-            idWithPath: articleFragment.id
+            id: articleFragment.id
           })
         );
       const fragmentsAsObjects: { [string]: ArticleFragment } = (
@@ -83,10 +80,7 @@ const normaliseCollectionWithNestedArticles = (
                 supportingArticleFragment => ({
                   ...supportingArticleFragment,
                   uuid: v4(),
-                  id: getLastPartOfArticleFragmentId(
-                    supportingArticleFragment.id
-                  ),
-                  idWithPath: supportingArticleFragment.id
+                  id: supportingArticleFragment.id
                 })
               )
             : [];

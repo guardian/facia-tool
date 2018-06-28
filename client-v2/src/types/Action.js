@@ -110,6 +110,16 @@ type FetchClipboardContentSuccess = {
   payload: { clipboardContent: Array<string> }
 };
 
+type AddClipboardArticleFragment = {
+  type: 'ADD_CLIPBOARD_ARTICLE_FRAGMENT',
+  payload: { articleFragmentId: string, index: number }
+};
+
+type RemoveClipboardArticleFragment = {
+  type: 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT',
+  payload: { articleFragmentId: string }
+};
+
 type Action =
   | ConfigReceivedAction
   | FrontsConfigReceivedAction
@@ -127,7 +137,10 @@ type Action =
   | AddSupportingArticleFragment
   | RemoveSupportingArticleFragment
   | ChangeArticleGroup
-  | FetchClipboardContentSuccess;
+  | FetchClipboardContentSuccess
+  | FetchClipboardContentSuccess
+  | AddClipboardArticleFragment
+  | RemoveClipboardArticleFragment;
 
 type BatchedAction = {|
   type: 'BATCHING_REDUCER.BATCH',

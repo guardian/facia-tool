@@ -20,7 +20,7 @@ object ClipboardTrail {
   implicit val jsonFormat = Json.format[ClipboardTrail]
 }
 
-case class ClipboardTrail(path: String, meta: Option[ClipboardMetaData])
+case class ClipboardTrail(id: String, meta: Option[ClipboardMetaData])
 
 object ClipboardData {
   implicit val jsonFormat = Json.format[ClipboardData]

@@ -2,8 +2,8 @@
 
 type NestedArticleFragment = {
   id: string,
-  frontPublicationDate: number,
-  publishedBy: string,
+  frontPublicationDate?: number,
+  publishedBy?: string,
   meta: {
     group?: number,
     supporting?: $Diff<NestedArticleFragment, { supporting: any }>[]
