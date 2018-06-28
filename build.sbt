@@ -90,7 +90,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "editorial-permissions-client" % "0.8",
     "com.gu" %% "fapi-client-play26" % "2.5.4",
     "com.gu" % "kinesis-logback-appender" % "1.4.2",
-    "com.gu" %% "mobile-notifications-client" % "1.1",
+    "com.gu" %% "mobile-notifications-client" % "1.2",
     "com.gu" %% "pan-domain-auth-play_2-6" % "0.7.1",
 
     "io.circe" %% "circe-core" % circeVersion,
