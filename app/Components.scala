@@ -44,7 +44,7 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val encryption = new Encryption(config)
   val mediaApi = new MediaApi(config, wsClient)
   val mediaServiceClient = new MediaServiceClient(mediaApi)
-  val loggingHttpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, sourceMapper, Some(router))
+  override lazy val httpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, sourceMapper, Some(router))
 
 //  Controllers
   val collection = new CollectionController(acl, structuredLogger, updateManager, press, this)
@@ -70,8 +70,8 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
     allowedOrigins = Origins.Matching(Set(config.environment.applicationUrl))
   )
 
-  override lazy val assets: Assets = new controllers.Assets(loggingHttpErrorHandler, assetsMetadata)
-  val router: Router = new Routes(loggingHttpErrorHandler, status, pandaAuth, v2Assets, uncachedAssets, views, faciaTool, pressController, faciaToolV2, defaults, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects,
+  override lazy val assets: Assets = new controllers.Assets(httpErrorHandler, assetsMetadata)
+  val router: Router = new Routes(httpErrorHandler, status, pandaAuth, v2Assets, uncachedAssets, views, faciaTool, pressController, faciaToolV2, defaults, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects,
     troubleshoot, v2App)
 
   override lazy val httpFilters = Seq(
