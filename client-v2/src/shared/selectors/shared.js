@@ -225,9 +225,6 @@ export {
   createCollectionSelector,
   selectSharedState,
   createCollectionsAsTreeSelector,
-<<<<<<< HEAD
-  articleFragmentSelector
-=======
+  articleFragmentSelector,
   clipboardAsTreeSelector
->>>>>>> Drag clipboard articles
 };
