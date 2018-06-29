@@ -51,7 +51,7 @@ class Clipboard extends React.Component<ClipboardProps> {
       }
     }, []);
 
-    this.props.dispatch(batchActions(actions, 'MOVE'));
+    this.props.dispatch(batchActions(actions));
   };
 
   render() {

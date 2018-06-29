@@ -21,6 +21,20 @@ const addSupportingArticleFragmentWithPersist = addPersistMetaToAction(
   }
 );
 
+const removeSupportingArticleFragmentWithPersistToClipboard = addPersistMetaToAction(
+  removeSupportingArticleFragment,
+  {
+    persistTo: 'clipboard'
+  }
+);
+
+const addSupportingArticleFragmentWithPersistToClipboard = addPersistMetaToAction(
+  addSupportingArticleFragment,
+  {
+    persistTo: 'clipboard'
+  }
+);
+
 const changeArticleGroupWithPersist = addPersistMetaToAction(
   changeArticleGroup,
   {
@@ -31,5 +45,7 @@ const changeArticleGroupWithPersist = addPersistMetaToAction(
 export {
   removeSupportingArticleFragmentWithPersist as removeSupportingArticleFragment,
   addSupportingArticleFragmentWithPersist as addSupportingArticleFragment,
-  changeArticleGroupWithPersist as changeArticleGroup
+  changeArticleGroupWithPersist as changeArticleGroup,
+  addSupportingArticleFragmentWithPersistToClipboard as addSupportingArticleFragmentToClipboard,
+  removeSupportingArticleFragmentWithPersistToClipboard as removeSupportingArticleFragmentFromClipboard
 };

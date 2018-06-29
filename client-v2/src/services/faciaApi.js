@@ -129,6 +129,27 @@ async function getClipboard(): Promise<Array<NestedArticleFragment>> {
   }
 }
 
+async function saveClipboard(clipboardContent: Array<NestedArticleFragment>): Promise<Array<NestedArticleFragment>> {
+  // The server does not respond with JSON
+  try {
+    const response = await pandaFetch(`/clipboard`, {
+      method: 'post',
+      credentials: 'same-origin',
+      body: JSON.stringify(clipboardContent),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    return await response.json();
+  } catch (response) {
+    throw new Error(
+      `Tried to update a clipboard but the server responded with ${
+        response.status
+      }: ${response.body}`
+    );
+  }
+}
+
 function getCollection(
   collectionId: string
 ): Promise<CollectionWithNestedArticles> {
@@ -184,5 +205,6 @@ export {
   fetchLastPressed,
   publishCollection,
   updateCollection,
-  getClipboard
+  getClipboard,
+  saveClipboard
 };

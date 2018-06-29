@@ -1,14 +1,15 @@
 // @flow
 
 import { type Middleware } from 'redux';
-import { uniq } from 'lodash';
+import { uniq, omit } from 'lodash';
 import { type State } from 'types/State';
 import { type Action, type ActionWithBatchedActions } from 'types/Action';
 import { selectors } from 'shared/bundles/collectionsBundle';
 import { updateCollection } from 'actions/Collections';
+import { updateClipboard } from 'actions/Clipboard';
 import { selectSharedState } from 'shared/selectors/shared';
 import { type ThunkAction } from 'types/Store';
-import { type Collection } from 'shared/types/Collection';
+import type { Collection, ArticleFragment } from 'shared/types/Collection';
 
 const updateStateFromUrlChange: Middleware<State, Action> = ({
   dispatch,
@@ -45,10 +46,24 @@ type PersistCollectionMeta = {|
   applyBeforeReducer?: boolean
 |};
 
+type PersistClipboardMeta = {|
+  // The resource to persist the data to
+  persistTo: 'clipboard',
+  // The key to take from the action payload. Defaults to 'id'.
+  key?: string,
+  // Should we find collection parents before or after the reducer is called?
+  // This is important when the relevant collection is affected by when the operation
+  // occurs - finding the parent collection before a remove operation, for example,
+  // or after an add operation.
+  applyBeforeReducer?: boolean
+|};
+
+type PersistMeta = PersistCollectionMeta | PersistClipboardMeta;
+
 function addPersistMetaToAction<TArgs: *, TAction: *>(
   actionCreator: (...args: TArgs) => TAction,
-  meta: PersistCollectionMeta
-): (...args: TArgs) => TAction & {| meta: PersistCollectionMeta |} {
+  meta: PersistMeta
+): (...args: TArgs) => TAction & {| meta: PersistMeta |} {
   return (...args: TArgs) => ({
     ...actionCreator(...args),
     meta
@@ -142,9 +157,54 @@ const persistCollectionOnEdit: (
   };
 };
 
+const persistClipboardOnEdit: (
+  (clipboard: Array<ArticleFragment>) => Action | ThunkAction
+) => Middleware<Store, Action> = (
+  updateClipboardAction: (
+    clipboard: Array<ArticleFragment>
+  ) => Action | ThunkAction = updateClipboard
+) => store => {
+
+  return next => (action: Action) => {
+    const actions = unwrapBatchedActions(action);
+
+    if (!actions.some(act => act.meta && act.meta.persistTo === 'clipboard')) {
+      return next(action);
+    }
+    const result = next(action);
+    const state = store.getState();
+    // TODO: use selectors!!
+    const { clipboard } = state;
+    const sharedState = selectSharedState(store.getState());
+    const { articleFragments } = sharedState;
+    const denormalisedClipboard = clipboard.reduce((clipboard, fragmentId) => {
+      const fragment = articleFragments[fragmentId];
+      if (fragment.meta && fragment.meta.supporting) {
+        const supportingArticles = fragment.meta.supporting.map(id => {
+          const fragment = articleFragments[id];
+          if (fragment.meta.supporting) {
+            delete fragment.meta.supporting;
+          }
+          delete fragment.meta;
+          return omit(fragment, 'uuid');
+        });
+
+        fragment.meta.supporting = supportingArticles;
+      }
+
+      clipboard.push(omit(fragment, 'uuid'));
+      return clipboard;
+    }, []);
+    store.dispatch(updateClipboardAction(denormalisedClipboard));
+    return result;
+  };
+};
+
+
 export type { PersistCollectionMeta };
 export {
   persistCollectionOnEdit,
+  persistClipboardOnEdit,
   updateStateFromUrlChange,
   addPersistMetaToAction
 };

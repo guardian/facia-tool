@@ -3,14 +3,30 @@ package controllers
 import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.services.dynamodbv2.{AmazonDynamoDB, AmazonDynamoDBClientBuilder}
 import com.gu.facia.api.NotFound
-import com.gu.facia.client.models.{MetaDataCommonFields, TrailMetaData}
 import com.gu.scanamo.{Scanamo, Table}
 import com.gu.scanamo.syntax._
 import com.twitter.util.Activity.Ok
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Format, JsValue, Json}
 import services.Dynamo
 
-case class ClipboardMetaData(headline: Option[String])
+case class ClipboardSupportingItemMeta(headline: String)
+
+object ClipboardSupportingItemMeta {
+  implicit val jsonFormat = Json.format[ClipboardSupportingItemMeta]
+}
+
+case class ClipboardSupportingItem (
+                           id: String,
+                           frontPublicationDate: Option[Long],
+                           publishedBy: Option[String],
+                           meta: Option[ClipboardSupportingItemMeta]
+                         )
+
+object ClipboardSupportingItem {
+  implicit val jsonFormat = Json.format[ClipboardSupportingItem]
+}
+
+case class ClipboardMetaData(headline: Option[String], supporting: Option[List[ClipboardSupportingItem]])
 
 object ClipboardMetaData {
   implicit val jsonFormat = Json.format[ClipboardMetaData]
