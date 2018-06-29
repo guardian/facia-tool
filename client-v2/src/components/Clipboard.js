@@ -24,10 +24,14 @@ type ClipboardProps = ClipboardPropsBeforeState & {
   dispatch: Dispatch
 };
 
-const Container = styled(`div`)`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
+const ClipboardContent = styled(`div`)`
+  background: white
+  color: black
+  padding: 5px
+`;
+
+const ClipboardContainer = styled(`div`)`
+  padding: 5px
 `;
 
 class Clipboard extends React.Component<ClipboardProps> {
@@ -55,35 +59,37 @@ class Clipboard extends React.Component<ClipboardProps> {
     const treeKeysExist = Object.keys(tree).length > 0;
     if (treeKeysExist) {
       return (
-        <React.Fragment>
-          <Container>Clipboard</Container>;
-          <Guration.Root
-            id="clipboard"
-            type="clipboard"
-            onChange={this.handleChange}
-            dropMappers={{
-              text: text => urlToArticle(text)
-            }}
-          >
-            <Guration.Level
-              arr={tree.articleFragments}
-              type="articleFragment"
-              getKey={({ uuid }) => uuid}
-              renderDrop={props => <DropZone {...props} />}
+        <ClipboardContainer>
+          Clipboard
+          <ClipboardContent>
+            <Guration.Root
+              id="clipboard"
+              type="clipboard"
+              onChange={this.handleChange}
+              dropMappers={{
+                text: text => urlToArticle(text)
+              }}
             >
-              {(articleFragment, afDragProps) => (
-                <ArticleFragment
-                  {...articleFragment}
-                  getDragProps={afDragProps}
-                >
-                  {(supporting, sDragProps) => (
-                    <Supporting {...supporting} getDragProps={sDragProps} />
-                  )}
-                </ArticleFragment>
-              )}
-            </Guration.Level>
-          </Guration.Root>
-        </React.Fragment>
+              <Guration.Level
+                arr={tree.articleFragments}
+                type="articleFragment"
+                getKey={({ uuid }) => uuid}
+                renderDrop={props => <DropZone {...props} />}
+              >
+                {(articleFragment, afDragProps) => (
+                  <ArticleFragment
+                    {...articleFragment}
+                    getDragProps={afDragProps}
+                  >
+                    {(supporting, sDragProps) => (
+                      <Supporting {...supporting} getDragProps={sDragProps} />
+                    )}
+                  </ArticleFragment>
+                )}
+              </Guration.Level>
+            </Guration.Root>
+          </ClipboardContent>
+        </ClipboardContainer>
       );
     }
     return null;
