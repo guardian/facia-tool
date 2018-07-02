@@ -17,8 +17,9 @@ class Permissions(val appConfig: ApplicationConfiguration)(implicit executionCon
 }
 
 object Permissions {
+  val FrontsAccess = Permission("fronts_access", "fronts", PermissionDenied)
   val ConfigureFronts = Permission("configure_fronts", "fronts", PermissionDenied)
   val BreakingNewsAlert = Permission("breaking_news_alert", "fronts", PermissionDenied)
 
-  val all = Seq(ConfigureFronts, BreakingNewsAlert)
+  val all = Seq(FrontsAccess, ConfigureFronts, BreakingNewsAlert)
 }
