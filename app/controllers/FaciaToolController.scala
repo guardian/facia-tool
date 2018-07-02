@@ -1,6 +1,7 @@
 package controllers
 
 import _root_.util.Acl
+import com.gu.facia.api.models.{Draft, FrontPath, Live, PressJob}
 import com.gu.facia.client.models.Metadata
 import com.gu.pandomainauth.action.UserRequest
 import frontsapi.model._
