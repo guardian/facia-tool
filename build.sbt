@@ -71,7 +71,8 @@ val json4sVersion = "3.6.0-M2"
 
 resolvers ++= Seq(
     Resolver.file("Local", file( Path.userHome.absolutePath + "/.ivy2/local"))(Resolver.ivyStylePatterns),
-    "Guardian Frontend Bintray" at "https://dl.bintray.com/guardian/frontend"
+    "Guardian Frontend Bintray" at "https://dl.bintray.com/guardian/frontend",
+    "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 )
 
 libraryDependencies ++= Seq(
