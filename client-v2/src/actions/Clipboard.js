@@ -61,12 +61,21 @@ function fetchClipboardContent(): ThunkAction {
           ...content,
           uuid: v4()
         }));
-        const supportingArticleFragments = clipboardArticleFragments.reduce((fragments, content) => {
-          const supportingFragments = (content.meta && content.meta.supporting) || [];
-          const supportingWithIds = supportingFragments.map(supporting => ( {...supporting, uuid: v4() }));
-          return fragments.concat(supportingWithIds);
-        }, []);
-        const allArticleFragments = clipboardArticleFragments.concat(supportingArticleFragments);
+        const supportingArticleFragments = clipboardArticleFragments.reduce(
+          (fragments, content) => {
+            const supportingFragments =
+              (content.meta && content.meta.supporting) || [];
+            const supportingWithIds = supportingFragments.map(supporting => ({
+              ...supporting,
+              uuid: v4()
+            }));
+            return fragments.concat(supportingWithIds);
+          },
+          []
+        );
+        const allArticleFragments = clipboardArticleFragments.concat(
+          supportingArticleFragments
+        );
         const allArticleFragmentsWithIds = allArticleFragments.reduce(
           (fragmentsWithIds, fragment) => {
             const fragmentWithId = { [fragment.uuid]: fragment };
@@ -83,14 +92,18 @@ function fetchClipboardContent(): ThunkAction {
           ])
         );
 
-        return getArticles(allArticleFragments.reduce((ids, content) => {
-          const contentId = [content.id];
-          const supportingIds = (content.meta && content.meta.supporting.map(supporting => supporting.id)) || [];
+        return getArticles(
+          allArticleFragments.reduce((ids, content) => {
+            const contentId = [content.id];
+            const supportingIds =
+              (content.meta &&
+                content.meta.supporting.map(supporting => supporting.id)) ||
+              [];
 
-          return ids.concat(contentId).concat(supportingIds);
-        }, [])).catch(
-          error =>
-            dispatch(externalArticleActions.fetchError(error, clipboardContent))
+            return ids.concat(contentId).concat(supportingIds);
+          }, [])
+        ).catch(error =>
+          dispatch(externalArticleActions.fetchError(error, clipboardContent))
         );
       })
       .then(articles => {
@@ -102,8 +115,7 @@ function fetchClipboardContent(): ThunkAction {
 }
 function updateClipboard(clipboardContent: Array<NestedArticleFragment>) {
   return () =>
-    saveClipboard(clipboardContent)
-    .catch(() => {
+    saveClipboard(clipboardContent).catch(() => {
       // @todo: implement once error handling is done
     });
 }

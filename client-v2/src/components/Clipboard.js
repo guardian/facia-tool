@@ -31,7 +31,7 @@ const ClipboardContent = styled(`div`)`
 `;
 
 const ClipboardContainer = styled(`div`)`
-  padding: 5px
+  padding: 5px;
 `;
 
 class Clipboard extends React.Component<ClipboardProps> {
@@ -57,10 +57,10 @@ class Clipboard extends React.Component<ClipboardProps> {
   render() {
     const { tree } = this.props;
     const treeKeysExist = Object.keys(tree).length > 0;
-    if (treeKeysExist) {
-      return (
-        <ClipboardContainer>
-          Clipboard
+    return (
+      <ClipboardContainer>
+        Clipboard
+        {treeKeysExist && (
           <ClipboardContent>
             <Guration.Root
               id="clipboard"
@@ -89,10 +89,9 @@ class Clipboard extends React.Component<ClipboardProps> {
               </Guration.Level>
             </Guration.Root>
           </ClipboardContent>
-        </ClipboardContainer>
-      );
-    }
-    return null;
+        )}
+      </ClipboardContainer>
+    );
   }
 }
 

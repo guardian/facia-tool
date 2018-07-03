@@ -118,8 +118,8 @@ const clipboardAsTreeSelector = createSelector(
     if (Object.keys(clipboardContent).length === 0) {
       return {};
     }
-    const createNestedArticleFragment = (articleFragmentId: string) => {
-      return articleFragments[articleFragmentId].meta &&
+    const createNestedArticleFragment = (articleFragmentId: string) =>
+      articleFragments[articleFragmentId].meta &&
       articleFragments[articleFragmentId].meta.supporting
         ? {
             ...articleFragments[articleFragmentId],
@@ -134,7 +134,6 @@ const clipboardAsTreeSelector = createSelector(
             }
           }
         : { ...articleFragments[articleFragmentId] };
-    };
 
     return {
       articleFragments: clipboardContent.map(fragmentId =>

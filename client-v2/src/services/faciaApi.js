@@ -129,7 +129,9 @@ async function getClipboard(): Promise<Array<NestedArticleFragment>> {
   }
 }
 
-async function saveClipboard(clipboardContent: Array<NestedArticleFragment>): Promise<Array<NestedArticleFragment>> {
+async function saveClipboard(
+  clipboardContent: Array<NestedArticleFragment>
+): Promise<Array<NestedArticleFragment>> {
   // The server does not respond with JSON
   try {
     const response = await pandaFetch(`/clipboard`, {

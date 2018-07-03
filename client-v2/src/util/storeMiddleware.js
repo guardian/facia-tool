@@ -164,42 +164,38 @@ const persistClipboardOnEdit: (
   updateClipboardAction: (
     clipboard: Array<ArticleFragment>
   ) => Action | ThunkAction = updateClipboard
-) => store => {
+) => store => next => (action: Action) => {
+  const actions = unwrapBatchedActions(action);
 
-  return next => (action: Action) => {
-    const actions = unwrapBatchedActions(action);
+  if (!actions.some(act => act.meta && act.meta.persistTo === 'clipboard')) {
+    return next(action);
+  }
+  const result = next(action);
+  const state = store.getState();
+  const clipboard = clipboardSelector(state);
+  const sharedState = selectSharedState(store.getState());
+  const { articleFragments } = sharedState;
+  const denormalisedClipboard = clipboard.reduce((clip, fragmentId) => {
+    const fragment = articleFragments[fragmentId];
+    if (fragment.meta && fragment.meta.supporting) {
+      const supportingArticles = fragment.meta.supporting.map(id => {
+        const frag = articleFragments[id];
+        if (frag.meta.supporting) {
+          delete frag.meta.supporting;
+        }
+        delete frag.meta;
+        return omit(fragment, 'uuid');
+      });
 
-    if (!actions.some(act => act.meta && act.meta.persistTo === 'clipboard')) {
-      return next(action);
+      fragment.meta.supporting = supportingArticles;
     }
-    const result = next(action);
-    const state = store.getState();
-    const clipboard = clipboardSelector(state);
-    const sharedState = selectSharedState(store.getState());
-    const { articleFragments } = sharedState;
-    const denormalisedClipboard = clipboard.reduce((clipboard, fragmentId) => {
-      const fragment = articleFragments[fragmentId];
-      if (fragment.meta && fragment.meta.supporting) {
-        const supportingArticles = fragment.meta.supporting.map(id => {
-          const fragment = articleFragments[id];
-          if (fragment.meta.supporting) {
-            delete fragment.meta.supporting;
-          }
-          delete fragment.meta;
-          return omit(fragment, 'uuid');
-        });
 
-        fragment.meta.supporting = supportingArticles;
-      }
-
-      clipboard.push(omit(fragment, 'uuid'));
-      return clipboard;
-    }, []);
-    store.dispatch(updateClipboardAction(denormalisedClipboard));
-    return result;
-  };
+    clip.push(omit(fragment, 'uuid'));
+    return clipboard;
+  }, []);
+  store.dispatch(updateClipboardAction(denormalisedClipboard));
+  return result;
 };
-
 
 export type { PersistCollectionMeta };
 export {
