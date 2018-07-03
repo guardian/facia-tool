@@ -5,6 +5,7 @@ import { uniq, omit } from 'lodash';
 import { type State } from 'types/State';
 import { type Action, type ActionWithBatchedActions } from 'types/Action';
 import { selectors } from 'shared/bundles/collectionsBundle';
+import { clipboardSelector } from 'selectors/frontsSelectors';
 import { updateCollection } from 'actions/Collections';
 import { updateClipboard } from 'actions/Clipboard';
 import { selectSharedState } from 'shared/selectors/shared';
@@ -173,8 +174,7 @@ const persistClipboardOnEdit: (
     }
     const result = next(action);
     const state = store.getState();
-    // TODO: use selectors!!
-    const { clipboard } = state;
+    const clipboard = clipboardSelector(state);
     const sharedState = selectSharedState(store.getState());
     const { articleFragments } = sharedState;
     const denormalisedClipboard = clipboard.reduce((clipboard, fragmentId) => {
