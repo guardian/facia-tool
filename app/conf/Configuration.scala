@@ -136,7 +136,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     lazy val key: Option[String] = getString("content.api.key")
     lazy val timeout: Int = 2000
 
-    lazy val previewRole = getMandatoryString("content.api.draft.role")
+    lazy val previewRole: String = getMandatoryString("content.api.draft.role")
 
   }
 
