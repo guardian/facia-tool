@@ -107,7 +107,7 @@ type PublishCollectionSuccess = {|
 
 type FetchClipboardContentSuccess = {
   type: 'FETCH_CLIPBOARD_CONTENT_SUCCESS',
-  payload: { clipboardContent: Array<string> }
+  payload: Array<string>
 };
 
 type AddClipboardArticleFragment = {

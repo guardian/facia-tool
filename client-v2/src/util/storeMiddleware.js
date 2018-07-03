@@ -10,7 +10,7 @@ import { updateCollection } from 'actions/Collections';
 import { updateClipboard } from 'actions/Clipboard';
 import { selectSharedState } from 'shared/selectors/shared';
 import { type ThunkAction } from 'types/Store';
-import type { Collection, ArticleFragment } from 'shared/types/Collection';
+import type { Collection } from 'shared/types/Collection';
 
 const updateStateFromUrlChange: Middleware<State, Action> = ({
   dispatch,
@@ -159,10 +159,10 @@ const persistCollectionOnEdit: (
 };
 
 const persistClipboardOnEdit: (
-  (clipboard: Array<ArticleFragment>) => Action | ThunkAction
+  (clipboard: Array<string>) => Action | ThunkAction
 ) => Middleware<Store, Action> = (
   updateClipboardAction: (
-    clipboard: Array<ArticleFragment>
+    clipboard: Array<string>
   ) => Action | ThunkAction = updateClipboard
 ) => store => next => (action: Action) => {
   const actions = unwrapBatchedActions(action);
