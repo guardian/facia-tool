@@ -91,12 +91,15 @@ function updateCollection(collection: Collection) {
   return async (dispatch: Dispatch, getState: () => State) => {
     const state = getState();
     dispatch(
-      collectionActions.updateStart({
-        ...collection,
-        updatedEmail: selectUserEmail(getState()),
-        updatedBy: `${selectFirstName(state)} ${selectLastName(state)}`,
-        lastUpdated: Date.now()
-      })
+      batchActions([
+        collectionActions.updateStart({
+          ...collection,
+          updatedEmail: selectUserEmail(getState()),
+          updatedBy: `${selectFirstName(state)} ${selectLastName(state)}`,
+          lastUpdated: Date.now()
+        }),
+        recordUnpublishedChanges(collection.id, true)
+      ])
     );
     try {
       const denormalisedCollection = denormaliseCollection(
