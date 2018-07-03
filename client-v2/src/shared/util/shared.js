@@ -145,10 +145,8 @@ function denormaliseArticleFragment(state: State, id: string) {
       articleFragment
     );
   }
-  const { idWithPath } = articleFragment;
   return {
-    ...omit(articleFragment, 'uuid', 'idWithPath'),
-    id: idWithPath
+    ...omit(articleFragment, 'uuid')
   };
 }
 
