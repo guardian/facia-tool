@@ -1,50 +1,30 @@
 package controllers
 
-import com.amazonaws.client.builder.AwsClientBuilder
-import com.amazonaws.services.dynamodbv2.{AmazonDynamoDB, AmazonDynamoDBClientBuilder}
 import com.gu.facia.api.NotFound
-import com.gu.scanamo.{Scanamo, Table}
+import com.gu.facia.client.models.Trail
+import com.gu.scanamo._
+import com.gu.scanamo.error.TypeCoercionError
 import com.gu.scanamo.syntax._
-import com.twitter.util.Activity.Ok
-import play.api.libs.json.{Format, JsValue, Json}
+import play.api.libs.json._
 import services.Dynamo
 
-case class ClipboardSupportingItemMeta(headline: String)
-
-object ClipboardSupportingItemMeta {
-  implicit val jsonFormat = Json.format[ClipboardSupportingItemMeta]
-}
-
-case class ClipboardSupportingItem (
-                           id: String,
-                           frontPublicationDate: Option[Long],
-                           publishedBy: Option[String],
-                           meta: Option[ClipboardSupportingItemMeta]
-                         )
-
-object ClipboardSupportingItem {
-  implicit val jsonFormat = Json.format[ClipboardSupportingItem]
-}
-
-case class ClipboardMetaData(headline: Option[String], supporting: Option[List[ClipboardSupportingItem]])
-
-object ClipboardMetaData {
-  implicit val jsonFormat = Json.format[ClipboardMetaData]
-}
-
-object ClipboardTrail {
-  implicit val jsonFormat = Json.format[ClipboardTrail]
-}
-
-case class ClipboardTrail(id: String, meta: Option[ClipboardMetaData])
+import scala.util.{Failure, Success, Try}
 
 object ClipboardData {
   implicit val jsonFormat = Json.format[ClipboardData]
+
+  implicit val jsValueFormat: DynamoFormat[JsValue] = DynamoFormat.xmap[JsValue, String](
+    x => Try(Json.parse(x)) match {
+      case Success(y) => Right(y)
+      case Failure(f) => Left(TypeCoercionError(f))
+    }
+  )(Json.stringify(_))
 }
-case class ClipboardData(email: String, articles: List[ClipboardTrail])
+case class ClipboardData(email: String, articles: List[Trail])
 
 
 class ClipboardController(dynamo: Dynamo, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
+  import ClipboardData._
 
   private lazy val clipboardTable = Table[ClipboardData](config.faciatool.clipboardTable)
 
@@ -60,8 +40,8 @@ class ClipboardController(dynamo: Dynamo, val deps: BaseFaciaControllerComponent
 
   def putClipboardContent() = APIAuthAction { request =>
 
-    val clipboardContent: Option[List[ClipboardTrail]] = request.body.asJson.flatMap(jsValue =>
-      jsValue.asOpt[List[ClipboardTrail]])
+    val clipboardContent: Option[List[Trail]] = request.body.asJson.flatMap(jsValue =>
+      jsValue.asOpt[List[Trail]])
 
     clipboardContent match {
       case Some(articles) => {
