@@ -34,7 +34,7 @@ describe('Collection actions', () => {
       });
       await store.dispatch(updateCollection(collection));
       const actions = store.getActions();
-      expect(actions[0]).toEqual(
+      expect(actions[0].payload[0]).toEqual(
         collectionActions.updateStart({
           ...collection,
           updatedEmail: 'jonathon.herbert@guardian.co.uk',
@@ -42,6 +42,10 @@ describe('Collection actions', () => {
           lastUpdated: 1337
         })
       );
+      expect(actions[0].payload[1]).toEqual({
+        type: 'RECORD_UNPUBLISHED_CHANGES',
+        payload: { exampleCollection: true }
+      });
       expect(actions[1]).toEqual(
         collectionActions.updateSuccess('exampleCollection')
       );
