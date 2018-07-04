@@ -87,7 +87,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "content-api-models" % capiModelsVersion,
     "com.gu" %% "content-api-models-json" % capiModelsVersion,
     "com.gu" %% "content-api-client-aws" % "0.5",
-    "com.gu" %% "editorial-permissions-client" % "0.8",
+    "com.gu" %% "editorial-permissions-client" % "2.0-SNAPSHOT",
     "com.gu" %% "fapi-client-play26" % "2.5.4",
     "com.gu" % "kinesis-logback-appender" % "1.4.2",
     "com.gu" %% "mobile-notifications-client" % "1.2",

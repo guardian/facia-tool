@@ -1,11 +1,10 @@
 package controllers
 
-import com.gu.editorial.permissions.client.PermissionGranted
 import com.gu.pandomainauth.action.AuthActions
 import com.gu.pandomainauth.model.AuthenticatedUser
 import com.gu.pandomainauth.{PanDomain, PanDomainAuthSettingsRefresher}
+import com.gu.permissions.{PermissionsConfig, PermissionsProvider}
 import conf.ApplicationConfiguration
-import permissions.Permissions
 import play.api.ApplicationLoader.Context
 import play.api.libs.ws.WSClient
 import play.api.libs.ws.ahc.AhcWSComponents
@@ -14,9 +13,6 @@ import play.api.{BuiltInComponentsFromContext, Logger}
 import play.filters.cors.CORSComponents
 import switchboard.SwitchManager
 
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
-
 abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInComponentsFromContext(context) with AhcWSComponents with AssetsComponents with CORSComponents {
 
   def config: ApplicationConfiguration
@@ -24,7 +20,11 @@ abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInCo
   lazy val panDomainSettings: PanDomainAuthSettingsRefresher =
     new PanDomainAuthSettingsRefresher(config.pandomain.domain, config.pandomain.service, actorSystem, config.aws.cmsFrontsAccountCredentials)
 
-  lazy val permissions = new Permissions(config)
+  lazy val permissions = PermissionsProvider(PermissionsConfig(
+    stage = config.environment.stage,
+    region = config.aws.region,
+    awsCredentials = config.aws.cmsFrontsAccountCredentials
+  ))
 }
 
 abstract class BaseFaciaController(deps: BaseFaciaControllerComponents) extends BaseController with AuthActions {
@@ -39,10 +39,10 @@ abstract class BaseFaciaController(deps: BaseFaciaControllerComponents) extends 
 
   override def authCallbackUrl: String = config.pandomain.host  + "/oauthCallback"
 
+  // TODO MRB: remove this when we have switched over to the permission
   private def userInGroups(authedUser: AuthenticatedUser): Boolean = {
     if(SwitchManager.getStatus("permissions_access")) {
-      // TODO MRB: avoid await with new permissions library
-      Await.result(deps.permissions.get(Permissions.FrontsAccess), Duration.Inf) == PermissionGranted
+      true
     } else {
       groupChecker.exists(checker =>
         checker.checkGroups(authedUser, config.pandomain.userGroups).fold(
