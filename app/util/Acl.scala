@@ -1,12 +1,9 @@
 package util
 
-import com.gu.editorial.permissions.client.{Permission, PermissionDenied, PermissionGranted, PermissionsUser}
-import permissions.Permissions
+import com.gu.permissions.{PermissionDefinition, PermissionsProvider}
+import logging.Logging
 import play.api.libs.json.{JsBoolean, JsValue, Json, Writes}
 import switchboard.SwitchManager
-import logging.Logging
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 object Authorization {
   implicit val authorizationWrites = new Writes[Authorization] {
@@ -27,25 +24,27 @@ case class AclJson (
   permissions: Map[String, Authorization]
 )
 
-class Acl(permissions: Permissions) extends Logging {
-  def testUser(permission: Permission, switch: String)
-              (email: String): Future[Authorization] = {
-    implicit val permissionsUser: PermissionsUser = PermissionsUser(email)
-    val f = if (!SwitchManager.getStatus(switch)) {
-      permissions.get(permission).map {
-        case PermissionGranted => AccessGranted
-        case PermissionDenied => AccessDenied
-      }}
-    else Future.successful(AccessGranted)
+class Acl(permissions: PermissionsProvider) extends Logging {
+  def testUser(permission: PermissionDefinition, switch: String)
+              (email: String): Authorization = {
 
-    f.failed.foreach{case t => logger.error(s"Unable to get acl status for ${permission.name} $switch", t)}
-    f
+    permissions.hasPermission(permission, email) match {
+      case _ if !SwitchManager.getStatus(switch) =>
+        AccessGranted
+
+      case true =>
+        AccessGranted
+
+      case _ =>
+        logger.error(s"Unable to get acl status for ${permission.name} $switch")
+        AccessDenied
+    }
   }
 
-  def testUserAndCollections(restrictedCollections: Set[String], permission: Permission, switch: String)
-                            (email: String, collectionIds: Set[String]): Future[Authorization] = {
+  def testUserAndCollections(restrictedCollections: Set[String], permission: PermissionDefinition, switch: String)
+                            (email: String, collectionIds: Set[String]): Authorization = {
     if ((restrictedCollections intersect collectionIds).nonEmpty)
       testUser(permission, switch)(email)
-    else Future.successful(AccessGranted)
+    else AccessGranted
   }
 }
