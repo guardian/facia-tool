@@ -46,13 +46,13 @@ describe('Shared utilities', () => {
       expect(Object.keys(result.articleFragments).length).toEqual(3);
       expect(
         result.articleFragments[result.collection.articleFragments.live[0]].id
-      ).toBe('0');
+      ).toBe('article/live/0');
       expect(
         result.articleFragments[result.collection.articleFragments.live[1]].id
-      ).toBe('1');
+      ).toBe('article/draft/1');
       expect(
         result.articleFragments[result.collection.articleFragments.live[2]].id
-      ).toBe('2');
+      ).toBe('a/long/path/2');
     });
     it('should handle draft and previously keys', () => {
       const result = normaliseCollectionWithNestedArticles({
@@ -97,15 +97,15 @@ describe('Shared utilities', () => {
       expect(Object.keys(result.articleFragments).length).toEqual(5);
       expect(
         result.articleFragments[result.collection.articleFragments.live[0]].id
-      ).toBe('0');
+      ).toBe('article/live/0');
       expect(
         result.articleFragments[result.collection.articleFragments.draft[0]].id
-      ).toBe('2');
+      ).toBe('article/live/2');
       expect(
         result.articleFragments[
           result.collection.articleFragments.previously[0]
         ].id
-      ).toBe('3');
+      ).toBe('article/live/3');
     });
     it('should handle a collection without any articles', () => {
       const result = normaliseCollectionWithNestedArticles({
