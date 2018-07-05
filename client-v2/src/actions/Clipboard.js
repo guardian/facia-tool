@@ -103,7 +103,12 @@ function fetchClipboardContent(): ThunkAction {
             return ids.concat(contentId).concat(supportingIds);
           }, [])
         ).catch(error =>
-          dispatch(externalArticleActions.fetchError(error, 'Failed to fetch clipboard'))
+          dispatch(
+            externalArticleActions.fetchError(
+              error,
+              'Failed to fetch clipboard'
+            )
+          )
         );
       })
       .then(articles => {
