@@ -71,8 +71,7 @@ val json4sVersion = "3.6.0-M2"
 
 resolvers ++= Seq(
     Resolver.file("Local", file( Path.userHome.absolutePath + "/.ivy2/local"))(Resolver.ivyStylePatterns),
-    "Guardian Frontend Bintray" at "https://dl.bintray.com/guardian/frontend",
-    "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+    "Guardian Frontend Bintray" at "https://dl.bintray.com/guardian/frontend"
 )
 
 libraryDependencies ++= Seq(
@@ -89,7 +88,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "content-api-models-json" % capiModelsVersion,
     "com.gu" %% "content-api-client-aws" % "0.5",
     "com.gu" %% "editorial-permissions-client" % "0.8",
-    "com.gu" %% "fapi-client-play26" % "2.6.1-SNAPSHOT",
+    "com.gu" %% "fapi-client-play26" % "2.6.1",
     "com.gu" % "kinesis-logback-appender" % "1.4.2",
     "com.gu" %% "mobile-notifications-client" % "1.2",
     "com.gu" %% "pan-domain-auth-play_2-6" % "0.7.1",
