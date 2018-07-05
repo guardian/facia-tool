@@ -9,7 +9,8 @@ object Authorization {
   implicit val authorizationWrites = new Writes[Authorization] {
     def writes(access: Authorization): JsValue = access match {
       case AccessGranted => JsBoolean(true)
-      case AccessDenied => JsBoolean(false)}}}
+      case AccessDenied => JsBoolean(false)}}
+}
 
 sealed trait Authorization
 object AccessGranted extends Authorization

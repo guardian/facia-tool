@@ -11,14 +11,14 @@ import util.{Acl, Encryption}
 class ViewsController(val acl: Acl, assetsManager: AssetsManager, isDev: Boolean,
                       crypto: Encryption, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
 
-  def priorities() = AuthAction { request =>
+  def priorities() = AccessAuthAction { request =>
     val identity = request.user
     Cached(60) {
       Ok(views.html.priority(Option(identity), config.facia.stage, isDev))
     }
   }
 
-  def collectionEditor() = AuthAction { request =>
+  def collectionEditor() = AccessAuthAction { request =>
     val identity = request.user
     Cached(60) {
       Ok(views.html.admin_main(Option(identity), config.facia.stage, overrideIsDev(request, isDev),
@@ -26,7 +26,7 @@ class ViewsController(val acl: Acl, assetsManager: AssetsManager, isDev: Boolean
     }
   }
 
-  def configEditor() = (AuthAction andThen new ConfigPermissionCheck(acl)) { request =>
+  def configEditor() = (AccessAuthAction andThen new ConfigPermissionCheck(acl)) { request =>
     val identity = request.user
     Cached(60) {
       Ok(views.html.admin_main(Option(identity), config.facia.stage, overrideIsDev(request, isDev),

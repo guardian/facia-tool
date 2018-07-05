@@ -33,7 +33,7 @@ case class Defaults(
 )
 
 class DefaultsController(val acl: Acl, val isDev: Boolean, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
-  def configuration = APIAuthAction { implicit request =>
+  def configuration = AccessAPIAuthAction { implicit request =>
     val hasBreakingNews = acl.testUser(Permissions.BreakingNewsAlert, "facia-tool-allow-breaking-news-for-all")(request.user.email)
     val hasConfigureFronts = acl.testUser(Permissions.ConfigureFronts, "facia-tool-allow-config-for-all")(request.user.email)
 

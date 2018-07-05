@@ -1,11 +1,13 @@
 package permissions
 
 import com.gu.pandomainauth.action.UserRequest
+import com.gu.permissions.PermissionsProvider
 import controllers.BaseFaciaController
 import play.api.mvc._
 import services.ConfigAgent
 import util.{AccessDenied, AccessGranted, Acl, Authorization}
 import logging.Logging
+import switchboard.SwitchManager
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -22,6 +24,21 @@ trait PermissionActionFilter extends ActionFilter[UserRequest] with Logging {
       case AccessDenied =>
         logger.info(s"User with e-mail ${request.user.email} not authorized to $restrictedAction")
         Some(Results.Unauthorized(views.html.unauthorized()))
+    }
+  }
+}
+
+class AccessPermissionCheck(client: PermissionsProvider)(implicit ec: ExecutionContext) extends PermissionActionFilter {
+  val executionContext = ec
+  val restrictedAction = "access fronts"
+  val testAccess: String => Authorization = (email: String) => {
+    val switchEnabled = SwitchManager.getStatus("facia-tool-permissions-access")
+    val hasPermission = client.hasPermission(Permissions.FrontsAccess, email)
+
+    if(switchEnabled) {
+      if(hasPermission) { AccessGranted } else { AccessDenied }
+    } else {
+      AccessGranted
     }
   }
 }
