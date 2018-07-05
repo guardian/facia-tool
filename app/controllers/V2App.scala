@@ -9,7 +9,7 @@ import util.{Acl, AclJson}
 
 class V2App(isDev: Boolean, val acl: Acl, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
 
-  def index(priority: String = "", frontId: String = "") = APIAuthAction { implicit req =>
+  def index(priority: String = "", frontId: String = "") = AccessAuthAction { implicit req =>
 
     val jsFileName = "dist/app.bundle.js"
 

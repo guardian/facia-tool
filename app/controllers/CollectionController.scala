@@ -29,7 +29,7 @@ case class CreateCollectionResponse(id: String)
 class CollectionController(val acl: Acl, val structuredLogger: StructuredLogger,
                            val updateManager: UpdateManager, val press: Press, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext)
   extends BaseFaciaController(deps) with Logging {
-  def create = (APIAuthAction andThen new ConfigPermissionCheck(acl)){ request =>
+  def create = (AccessAPIAuthAction andThen new ConfigPermissionCheck(acl)){ request =>
     request.body.read[CollectionRequest] match {
       case Some(CollectionRequest(frontIds, collection)) =>
 
@@ -43,7 +43,7 @@ class CollectionController(val acl: Acl, val structuredLogger: StructuredLogger,
     }
   }
 
-  def update(collectionId: String) =  (APIAuthAction andThen new ConfigPermissionCheck(acl)){ request =>
+  def update(collectionId: String) =  (AccessAPIAuthAction andThen new ConfigPermissionCheck(acl)){ request =>
     request.body.read[CollectionRequest] match {
       case Some(CollectionRequest(frontIds, collection)) =>
 

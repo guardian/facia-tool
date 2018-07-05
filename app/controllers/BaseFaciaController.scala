@@ -5,6 +5,7 @@ import com.gu.pandomainauth.model.AuthenticatedUser
 import com.gu.pandomainauth.{PanDomain, PanDomainAuthSettingsRefresher}
 import com.gu.permissions.{PermissionsConfig, PermissionsProvider}
 import conf.ApplicationConfiguration
+import permissions.{AccessPermissionCheck, Permissions}
 import play.api.ApplicationLoader.Context
 import play.api.libs.ws.WSClient
 import play.api.libs.ws.ahc.AhcWSComponents
@@ -39,11 +40,15 @@ abstract class BaseFaciaController(deps: BaseFaciaControllerComponents) extends 
 
   override def authCallbackUrl: String = config.pandomain.host  + "/oauthCallback"
 
-  // TODO MRB: remove this when we have switched over to the permission
+  private val accessPermissionCheck = new AccessPermissionCheck(deps.permissions)(deps.executionContext)
+  final def AccessAuthAction = AuthAction andThen accessPermissionCheck
+  final def AccessAPIAuthAction = APIAuthAction andThen accessPermissionCheck
+
   private def userInGroups(authedUser: AuthenticatedUser): Boolean = {
-    if(SwitchManager.getStatus("permissions_access")) {
-      true
+    if(SwitchManager.getStatus("facia-tool-permissions-access")) {
+      deps.permissions.hasPermission(Permissions.FrontsAccess, authedUser.user.email)
     } else {
+      // TODO MRB: remove this when we have switched over to the permission
       groupChecker.exists(checker =>
         checker.checkGroups(authedUser, config.pandomain.userGroups).fold(
           error => {
