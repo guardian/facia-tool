@@ -1,5 +1,7 @@
 package controllers
 
+import java.util.Locale
+
 import com.gu.pandomainauth.action.AuthActions
 import com.gu.pandomainauth.model.AuthenticatedUser
 import com.gu.pandomainauth.{PanDomain, PanDomainAuthSettingsRefresher}
@@ -22,7 +24,7 @@ abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInCo
     new PanDomainAuthSettingsRefresher(config.pandomain.domain, config.pandomain.service, actorSystem, config.aws.cmsFrontsAccountCredentials)
 
   lazy val permissions = PermissionsProvider(PermissionsConfig(
-    stage = config.environment.stage,
+    stage = config.environment.stage.toUpperCase(Locale.UK),
     region = config.aws.region,
     awsCredentials = config.aws.cmsFrontsAccountCredentials
   ))
@@ -70,7 +72,7 @@ abstract class BaseFaciaController(deps: BaseFaciaControllerComponents) extends 
 
   override def invalidUserMessage(claimedAuth: AuthenticatedUser): String = {
     if( (claimedAuth.user.emailDomain == "guardian.co.uk") && !claimedAuth.multiFactor)
-      s"${claimedAuth.user.email} is not valid for use with the Fronts Tool as you need to have two factor authentication enabled." +
+      s"${claimedAuth.user.email} is not valid for use with the Fronts Tool. You need to have two factor authentication enabled and be granted permission." +
         s" Please contact Central Production by emailing core.central.production@guardian.co.uk and request access to The Fronts Tool."
     else if (!userInGroups(claimedAuth)) s"${claimedAuth.user.email} does not have permission to access the Fronts tool. Please contact Central Production by emailing core.central.production@guardian.co.uk"
 
