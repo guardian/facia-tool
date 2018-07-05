@@ -11,6 +11,25 @@ import {
 } from 'actions/ArticleFragments';
 import { type Action } from 'types/Action';
 import { type Move } from 'guration';
+import { normalize, denormalize } from './clipboardSchema';
+import { clipboardSelector } from 'selectors/frontsSelectors';
+
+const normaliseClipboard = (clipboard: any) => {
+  const normalisedClipboard = normalize(clipboard);
+  return {
+    clipboard: normalisedClipboard.result,
+    articleFragments: normalisedClipboard.entities.articleFragments
+  };
+};
+
+function denormaliseClipboard(state: State): Array<Article> {
+  const clipboard = clipboardSelector(state);
+
+  return denormalize(
+    { articles: clipboard },
+    { articleFragments: state.shared.articleFragments }
+  );
+}
 
 const fromMap: {
   [string]: { [string]: (move: Move) => Action }
@@ -51,4 +70,9 @@ const urlToArticle = (text: string) => {
     : 'Can`t covert text to article';
 };
 
-export { urlToArticle, mapMoveEditToActions };
+export {
+  urlToArticle,
+  mapMoveEditToActions,
+  normaliseClipboard,
+  denormaliseClipboard
+};

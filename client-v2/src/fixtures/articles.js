@@ -30,4 +30,19 @@ const snapArticle: Article = {
   meta: {}
 };
 
-export { liveArticle, draftArticle, snapArticle, draftArticleInGroup };
+const articleWithSupportingLink: Article = {
+  id: 'article/supporting/1',
+  frontPublicationDate: 1,
+  publishedBy: 'Computers',
+  meta: {
+    supporting: [liveArticle]
+  }
+};
+
+export {
+  liveArticle,
+  draftArticle,
+  snapArticle,
+  draftArticleInGroup,
+  articleWithSupportingLink
+};
