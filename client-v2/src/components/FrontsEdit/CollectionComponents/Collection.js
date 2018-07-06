@@ -70,4 +70,7 @@ const mapStateToProps = (state: State, props: CollectionPropsBeforeState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators({ publishCollection }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(Collection);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Collection);

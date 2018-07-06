@@ -140,5 +140,8 @@ export { Fronts as FrontsComponent };
 export type { FrontsComponentProps };
 
 export default withRouter(
-  connect(createMapStateToProps, mapDispatchToProps)(Fronts)
+  connect(
+    createMapStateToProps,
+    mapDispatchToProps
+  )(Fronts)
 );

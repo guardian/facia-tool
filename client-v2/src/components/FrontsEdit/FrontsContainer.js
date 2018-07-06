@@ -62,5 +62,8 @@ const mapDispatchToProps = (dispatch: *) => ({
 export type { PropsBeforeFetch };
 
 export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(FrontsContainer)
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(FrontsContainer)
 );
