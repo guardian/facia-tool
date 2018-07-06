@@ -31,6 +31,7 @@ import {
 import type { State } from 'types/State';
 import type { Collection } from 'shared/types/Collection';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
+import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 
 const addCollectionArticleFragmentWithPersistence = addPersistMetaToAction(
   addCollectionArticleFragment,
@@ -58,6 +59,9 @@ function getCollection(collectionId: string) {
           collectionConfig,
           res
         );
+        const hasUnpublishedChanges =
+          collectionWithNestedArticles.draft !== undefined;
+
         const collectionWithDraftArticles = {
           ...collectionWithNestedArticles,
           draft: populateDraftArticles(collectionWithNestedArticles)
@@ -70,7 +74,8 @@ function getCollection(collectionId: string) {
         dispatch(
           batchActions([
             collectionActions.fetchSuccess(collection),
-            articleFragmentsReceived(articleFragments)
+            articleFragmentsReceived(articleFragments),
+            recordUnpublishedChanges(collectionId, hasUnpublishedChanges)
           ])
         );
         return getArticleIdsFromCollection(collectionWithDraftArticles);
@@ -86,12 +91,15 @@ function updateCollection(collection: Collection) {
   return async (dispatch: Dispatch, getState: () => State) => {
     const state = getState();
     dispatch(
-      collectionActions.updateStart({
-        ...collection,
-        updatedEmail: selectUserEmail(getState()),
-        updatedBy: `${selectFirstName(state)} ${selectLastName(state)}`,
-        lastUpdated: Date.now()
-      })
+      batchActions([
+        collectionActions.updateStart({
+          ...collection,
+          updatedEmail: selectUserEmail(getState()),
+          updatedBy: `${selectFirstName(state)} ${selectLastName(state)}`,
+          lastUpdated: Date.now()
+        }),
+        recordUnpublishedChanges(collection.id, true)
+      ])
     );
     try {
       const denormalisedCollection = denormaliseCollection(
