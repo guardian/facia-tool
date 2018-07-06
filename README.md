@@ -145,7 +145,7 @@ $ feria cmsFronts && feria --access sqs-consumer frontend
 You can run the fronts tool without frontend credentials, but you will not be able to check how your changes to fronts appear on frontend without
 these credentials. You will need to test your changes on `CODE` to see these changes.
 
-You will also need to be a member of the Editorial Tools Google Group in order to authenticate.
+You will also need to have `fronts_access` permission in `CODE` from https://permissions.code.dev-gutools.co.uk.
 
 ### Code Dependencies
 
