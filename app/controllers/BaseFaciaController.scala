@@ -14,7 +14,6 @@ import play.api.libs.ws.ahc.AhcWSComponents
 import play.api.mvc.{BaseController, ControllerComponents, RequestHeader, Result}
 import play.api.{BuiltInComponentsFromContext, Logger}
 import play.filters.cors.CORSComponents
-import switchboard.SwitchManager
 
 abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInComponentsFromContext(context) with AhcWSComponents with AssetsComponents with CORSComponents {
 
@@ -46,22 +45,11 @@ abstract class BaseFaciaController(deps: BaseFaciaControllerComponents) extends 
   final def AccessAuthAction = AuthAction andThen accessPermissionCheck
   final def AccessAPIAuthAction = APIAuthAction andThen accessPermissionCheck
 
-  private def userInGroups(authedUser: AuthenticatedUser): Boolean = {
-    if(SwitchManager.getStatus("facia-tool-permissions-access")) {
-      deps.permissions.hasPermission(Permissions.FrontsAccess, authedUser.user.email)
-    } else {
-      // TODO MRB: remove this when we have switched over to the permission
-      groupChecker.exists(checker =>
-        checker.checkGroups(authedUser, config.pandomain.userGroups).fold(
-          error => {
-            Logger.warn(error)
-            false
-          }, identity)
-      )
-    }
+  private def userHasAccess(authedUser: AuthenticatedUser): Boolean = {
+    deps.permissions.hasPermission(Permissions.FrontsAccess, authedUser.user.email)
   }
 
-  override def validateUser(authedUser: AuthenticatedUser): Boolean = PanDomain.guardianValidation(authedUser) && userInGroups(authedUser)
+  override def validateUser(authedUser: AuthenticatedUser): Boolean = PanDomain.guardianValidation(authedUser) && userHasAccess(authedUser)
 
   override lazy val panDomainSettings: PanDomainAuthSettingsRefresher = deps.panDomainSettings
 
@@ -74,7 +62,7 @@ abstract class BaseFaciaController(deps: BaseFaciaControllerComponents) extends 
     if( (claimedAuth.user.emailDomain == "guardian.co.uk") && !claimedAuth.multiFactor)
       s"${claimedAuth.user.email} is not valid for use with the Fronts Tool. You need to have two factor authentication enabled and be granted permission." +
         s" Please contact Central Production by emailing core.central.production@guardian.co.uk and request access to The Fronts Tool."
-    else if (!userInGroups(claimedAuth)) s"${claimedAuth.user.email} does not have permission to access the Fronts tool. Please contact Central Production by emailing core.central.production@guardian.co.uk"
+    else if (!userHasAccess(claimedAuth)) s"${claimedAuth.user.email} does not have permission to access the Fronts tool. Please contact Central Production by emailing core.central.production@guardian.co.uk"
 
     else s"${claimedAuth.user.email} is not valid for use with the Fronts Tool. You need to use your Guardian Google account to login. Please sign in with your Guardian Google account first, then retry logging in."
 

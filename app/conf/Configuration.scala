@@ -179,7 +179,6 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     lazy val domain = getMandatoryString("pandomain.domain")
     lazy val service = getMandatoryString("pandomain.service")
     lazy val roleArn = getMandatoryString("pandomain.roleArn")
-    lazy val userGroups = getMandatoryStringPropertiesSplitByComma("pandomain.user.groups")
   }
 
   object permission {
