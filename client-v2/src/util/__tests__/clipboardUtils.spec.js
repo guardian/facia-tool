@@ -1,6 +1,6 @@
 // @flow
 
-import { draftArticle, articleWithSupportingLink } from 'fixtures/articles';
+import { liveArticle, articleWithSupporting } from 'shared/fixtures/shared';
 import { stateWithClipboard } from 'fixtures/clipboard';
 import { normaliseClipboard, denormaliseClipboard } from '../clipboardUtils.js';
 
@@ -8,19 +8,17 @@ describe('Clipboard utilities', () => {
   describe('normaliseClipboard', () => {
     it('should normalise a clipboard with articles', () => {
       const result = normaliseClipboard({
-        articles: [draftArticle, articleWithSupportingLink]
+        articles: [liveArticle, articleWithSupporting]
       });
       const { articleFragments } = result;
       const clipboardArticles = result.clipboard.articles;
       const supportingArticle =
         articleFragments[clipboardArticles[1]].meta.supporting[0];
       expect(clipboardArticles.length).toEqual(2);
-      expect(Object.keys(articleFragments).length).toEqual(3);
-      expect(articleFragments[clipboardArticles[0]].id).toBe('article/draft/1');
-      expect(articleFragments[clipboardArticles[1]].id).toBe(
-        'article/supporting/1'
-      );
-      expect(articleFragments[supportingArticle].id).toBe('article/live/0');
+      expect(Object.keys(articleFragments).length).toEqual(4);
+      expect(articleFragments[clipboardArticles[0]].id).toBe('article/live/0');
+      expect(articleFragments[clipboardArticles[1]].id).toBe('a/long/path/1');
+      expect(articleFragments[supportingArticle].id).toBe('article/draft/2');
     });
   });
 

@@ -15,7 +15,6 @@ type ArticleFragment = $Diff<NestedArticleFragment, { meta: any }> & {
   // We strip the path from the id when the articleFragment enters
   // the application state. 'idWithPath' preserves this path + id,
   // so we can reassemble the original id for persist operations.
-  idWithPath: string,
   meta: {
     group?: number,
     supporting?: string[]

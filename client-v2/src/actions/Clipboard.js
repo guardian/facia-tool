@@ -7,7 +7,10 @@ import { actions as externalArticleActions } from 'shared/bundles/externalArticl
 import { batchActions } from 'redux-batched-actions';
 import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
-import type { Article } from 'shared/types/Article';
+import type {
+  ArticleFragment,
+  NestedArticleFragment
+} from 'shared/types/Collection';
 import { normaliseClipboard } from 'util/clipboardUtils';
 
 function removeClipboardArticleFragment(articleFragmentId: string): Action {
@@ -57,11 +60,15 @@ function fetchClipboardContent(): ThunkAction {
   return (dispatch: Dispatch) =>
     getClipboard()
       .then(clipboardContent => {
-        const normalisedClipboard = normaliseClipboard({
+        const normalisedClipboard: {
+          clipboard: { articles: Array<string> },
+          articleFragments: { [string]: ArticleFragment }
+        } = normaliseClipboard({
           articles: clipboardContent
         });
         const clipboardArticles = normalisedClipboard.clipboard.articles;
-        const { articleFragments } = normalisedClipboard;
+        const { articleFragments }: { [string]: ArticleFragment } =
+          normalisedClipboard;
 
         dispatch(
           batchActions([
@@ -88,7 +95,9 @@ function fetchClipboardContent(): ThunkAction {
         // @todo: implement once error handling is done
       });
 }
-function updateClipboard(clipboardContent: { articles: Array<Article> }) {
+function updateClipboard(clipboardContent: {
+  articles: Array<NestedArticleFragment>
+}) {
   return () =>
     saveClipboard(clipboardContent.articles).catch(() => {
       // @todo: implement once error handling is done

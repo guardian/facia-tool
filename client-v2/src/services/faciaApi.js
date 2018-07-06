@@ -9,9 +9,9 @@ import type {
 import type { ExternalArticle } from 'shared/types/ExternalArticle';
 import type {
   CollectionResponse,
-  CollectionWithNestedArticles
+  CollectionWithNestedArticles,
+  NestedArticleFragment
 } from 'shared/types/Collection';
-import type { Article } from 'shared/types/Article';
 import pandaFetch from './pandaFetch';
 
 function fetchFrontsConfig(): Promise<FrontsConfig> {
@@ -109,7 +109,7 @@ async function updateCollection(
   }
 }
 
-async function getClipboard(): Promise<Array<Article>> {
+async function getClipboard(): Promise<Array<NestedArticleFragment>> {
   // The server does not respond with JSON
   try {
     const response = await pandaFetch(`/clipboard`, {
@@ -130,8 +130,8 @@ async function getClipboard(): Promise<Array<Article>> {
 }
 
 async function saveClipboard(
-  clipboardContent: Array<Article>
-): Promise<Array<Article>> {
+  clipboardContent: Array<NestedArticleFragment>
+): Promise<Array<NestedArticleFragment>> {
   // The server does not respond with JSON
   try {
     const response = await pandaFetch(`/clipboard`, {

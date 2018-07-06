@@ -9,7 +9,10 @@ import { updateCollection } from 'actions/Collections';
 import { updateClipboard } from 'actions/Clipboard';
 import { selectSharedState } from 'shared/selectors/shared';
 import { type ThunkAction } from 'types/Store';
-import type { Collection } from 'shared/types/Collection';
+import type {
+  Collection,
+  NestedArticleFragment
+} from 'shared/types/Collection';
 import { denormaliseClipboard } from 'util/clipboardUtils';
 
 const updateStateFromUrlChange: Middleware<State, Action> = ({
@@ -172,7 +175,9 @@ const persistClipboardOnEdit: (
   }
   const result = next(action);
   const state = store.getState();
-  const denormalisedClipboard = denormaliseClipboard(state);
+  const denormalisedClipboard: {
+    articles: Array<NestedArticleFragment>
+  } = denormaliseClipboard(state);
   store.dispatch(updateClipboardAction(denormalisedClipboard));
   return result;
 };

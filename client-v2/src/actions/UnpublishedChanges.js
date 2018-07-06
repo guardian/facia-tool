@@ -1,3 +1,7 @@
+// @flow
+
+import type { Action } from 'types/Action';
+
 function recordUnpublishedChanges(
   collectionId: string,
   lastPressed: boolean

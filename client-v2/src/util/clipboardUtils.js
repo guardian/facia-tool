@@ -11,20 +11,30 @@ import {
 } from 'actions/ArticleFragments';
 import { type Action } from 'types/Action';
 import { type Move } from 'guration';
-import { type Article } from 'shared/types/Article';
+import type {
+  ArticleFragment,
+  NestedArticleFragment
+} from 'shared/types/Collection';
 import { clipboardSelector } from 'selectors/frontsSelectors';
-import { State } from 'types/State';
+import { type State } from 'types/State';
 import { normalize, denormalize } from './clipboardSchema';
 
-const normaliseClipboard = (clipboard: { articles: Array<Article> }) => {
+function normaliseClipboard(clipboard: {
+  articles: Array<NestedArticleFragment>
+}): {
+  clipboard: { articles: Array<string> },
+  articleFragments: { [string]: ArticleFragment }
+} {
   const normalisedClipboard = normalize(clipboard);
   return {
     clipboard: normalisedClipboard.result,
     articleFragments: normalisedClipboard.entities.articleFragments
   };
-};
+}
 
-function denormaliseClipboard(state: State): { articles: Array<Article> } {
+function denormaliseClipboard(
+  state: State
+): { articles: Array<NestedArticleFragment> } {
   const clipboard = clipboardSelector(state);
 
   return denormalize(

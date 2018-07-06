@@ -1,13 +1,37 @@
 // @flow
 
+const liveArticle = {
+  id: 'article/live/0',
+  frontPublicationDate: 1,
+  publishedBy: 'Computers',
+  meta: {}
+};
+
+const articleWithSupporting = {
+  id: 'a/long/path/1',
+  frontPublicationDate: 1,
+  publishedBy: 'Computers',
+  meta: {
+    supporting: [
+      {
+        id: 'article/draft/2',
+        frontPublicationDate: 2,
+        publishedBy: 'Computers',
+        meta: {}
+      },
+      {
+        id: 'article/draft/3',
+        frontPublicationDate: 3,
+        publishedBy: 'Computers',
+        meta: {}
+      }
+    ]
+  }
+};
+
 const collection = {
   live: [
-    {
-      id: 'article/live/0',
-      frontPublicationDate: 1,
-      publishedBy: 'Computers',
-      meta: {}
-    },
+    liveArticle,
     {
       id: 'article/draft/1',
       frontPublicationDate: 2,
@@ -33,27 +57,7 @@ const collectionWithSupportingArticles = {
       publishedBy: 'Computers',
       meta: {}
     },
-    {
-      id: 'a/long/path/1',
-      frontPublicationDate: 1,
-      publishedBy: 'Computers',
-      meta: {
-        supporting: [
-          {
-            id: 'article/draft/2',
-            frontPublicationDate: 2,
-            publishedBy: 'Computers',
-            meta: {}
-          },
-          {
-            id: 'article/draft/3',
-            frontPublicationDate: 3,
-            publishedBy: 'Computers',
-            meta: {}
-          }
-        ]
-      }
-    }
+    articleWithSupporting
   ],
   id: 'exampleCollection',
   displayName: 'Example Collection'
@@ -164,5 +168,7 @@ export {
   collection,
   collectionWithSupportingArticles,
   stateWithCollection,
-  stateWithCollectionAndSupporting
+  stateWithCollectionAndSupporting,
+  liveArticle,
+  articleWithSupporting
 };
