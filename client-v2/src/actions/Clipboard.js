@@ -58,43 +58,43 @@ function fetchClipboardContentSuccess(clipboardContent: Array<string>): Action {
 
 function fetchClipboardContent(): ThunkAction {
   return (dispatch: Dispatch) =>
-    getClipboard()
-      .then(clipboardContent => {
-        const normalisedClipboard: {
-          clipboard: { articles: Array<string> },
-          articleFragments: { [string]: ArticleFragment }
-        } = normaliseClipboard({
-          articles: clipboardContent
-        });
-        const clipboardArticles = normalisedClipboard.clipboard.articles;
-        const { articleFragments }: { [string]: ArticleFragment } =
-          normalisedClipboard;
+    getClipboard().then(clipboardContent => {
+      const normalisedClipboard: {
+        clipboard: { articles: Array<string> },
+        articleFragments: { [string]: ArticleFragment }
+      } = normaliseClipboard({
+        articles: clipboardContent
+      });
+      const clipboardArticles = normalisedClipboard.clipboard.articles;
+      const { articleFragments } = normalisedClipboard;
 
-        dispatch(
-          batchActions([
-            fetchClipboardContentSuccess(clipboardArticles),
-            articleFragmentsReceived(articleFragments)
-          ])
-        );
+      dispatch(
+        batchActions([
+          fetchClipboardContentSuccess(clipboardArticles),
+          articleFragmentsReceived(articleFragments)
+        ])
+      );
 
-        return getArticles(
-          Object.values(articleFragments).map(fragment => fragment.id)
-        ).catch(error =>
+      const fragmentIds = Object.values(articleFragments).map(
+        // $FlowFixMe Object.values() returns mixed[]
+        fragment => fragment.id
+      );
+      return getArticles(fragmentIds)
+        .catch(error => {
           dispatch(
             externalArticleActions.fetchError(
               error,
               'Failed to fetch clipboard'
             )
-          )
-        );
-      })
-      .then(articles => {
-        dispatch(externalArticleActions.fetchSuccess(articles));
-      })
-      .catch(() => {
-        // @todo: implement once error handling is done
-      });
+          );
+          return [];
+        })
+        .then(articles => {
+          dispatch(externalArticleActions.fetchSuccess(articles));
+        });
+    });
 }
+
 function updateClipboard(clipboardContent: {
   articles: Array<NestedArticleFragment>
 }) {

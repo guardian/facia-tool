@@ -115,7 +115,7 @@ const clipboardContentSelector = state => state.clipboard;
 const clipboardAsTreeSelector = createSelector(
   [clipboardContentSelector, articleFragmentsFromRootStateSelector],
   (clipboardContent, articleFragments) => {
-    if (Object.keys(clipboardContent).length === 0) {
+    if (clipboardContent.length === 0) {
       return {};
     }
     const createNestedArticleFragment = (articleFragmentId: string) =>

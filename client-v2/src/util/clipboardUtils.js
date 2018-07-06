@@ -28,7 +28,7 @@ function normaliseClipboard(clipboard: {
   const normalisedClipboard = normalize(clipboard);
   return {
     clipboard: normalisedClipboard.result,
-    articleFragments: normalisedClipboard.entities.articleFragments
+    articleFragments: normalisedClipboard.entities.articleFragments || {}
   };
 }
 
@@ -57,7 +57,7 @@ const toMap: {
   [string]: { [string]: (move: Move) => Action }
 } = {
   articleFragment: {
-    articleFragment: ({ payload: { id, to } }) =>
+    articleFragment: ({ payload: { id, to } }): Action =>
       addSupportingArticleFragmentToClipboard(to.parent.id, id, to.index),
     clipboard: ({ payload: { id, to } }) =>
       addClipboardArticleFragment(id, to.index)

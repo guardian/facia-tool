@@ -67,14 +67,17 @@ const getCollections = (state: State): CollectionConfigMap =>
 const getCollectionConfig = (state: State, id: string): CollectionConfig =>
   getCollections(state)[id] || null;
 
-const frontsIdsSelector = createSelector([getFronts], (fronts): string[] => {
-  if (!fronts) {
-    return [];
+const frontsIdsSelector = createSelector(
+  [getFronts],
+  (fronts): string[] => {
+    if (!fronts) {
+      return [];
+    }
+    return Object.keys(fronts)
+      .filter(frontId => frontId !== breakingNewsFrontId)
+      .sort();
   }
-  return Object.keys(fronts)
-    .filter(frontId => frontId !== breakingNewsFrontId)
-    .sort();
-});
+);
 
 const getFrontsConfig = (
   fronts: FrontConfigMap,

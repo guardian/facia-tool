@@ -64,7 +64,7 @@ type PersistClipboardMeta = {|
 
 type PersistMeta = PersistCollectionMeta | PersistClipboardMeta;
 
-function addPersistMetaToAction<TArgs: *, TAction: *>(
+function addPersistMetaToAction<TArgs: Array<any>, TAction: Object>(
   actionCreator: (...args: TArgs) => TAction,
   meta: PersistMeta
 ): (...args: TArgs) => TAction & {| meta: PersistMeta |} {
@@ -162,11 +162,13 @@ const persistCollectionOnEdit: (
 };
 
 const persistClipboardOnEdit: (
-  (clipboard: Array<string>) => Action | ThunkAction
+  (clipboard: { articles: Array<NestedArticleFragment> }) =>
+    | Action
+    | ThunkAction
 ) => Middleware<Store, Action> = (
-  updateClipboardAction: (
-    clipboard: Array<string>
-  ) => Action | ThunkAction = updateClipboard
+  updateClipboardAction: (clipboard: {
+    articles: Array<NestedArticleFragment>
+  }) => Action | ThunkAction = updateClipboard
 ) => store => next => (action: Action) => {
   const actions = unwrapBatchedActions(action);
 
@@ -178,11 +180,12 @@ const persistClipboardOnEdit: (
   const denormalisedClipboard: {
     articles: Array<NestedArticleFragment>
   } = denormaliseClipboard(state);
+  // $FlowFixMe
   store.dispatch(updateClipboardAction(denormalisedClipboard));
   return result;
 };
 
-export type { PersistCollectionMeta };
+export type { PersistCollectionMeta, PersistClipboardMeta };
 export {
   persistCollectionOnEdit,
   persistClipboardOnEdit,

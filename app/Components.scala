@@ -23,7 +23,6 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val config = new ApplicationConfiguration(configuration, isProd)
   val awsEndpoints = new AwsEndpoints(config)
   val dynamo = new Dynamo(awsEndpoints, config)
-  val permissions = new Permissions(config)
   val acl = new Acl(permissions)
   val frontsApi = new FrontsApi(config, awsEndpoints)
   val s3FrontsApi = new S3FrontsApi(config, isTest, awsEndpoints)

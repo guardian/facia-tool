@@ -99,9 +99,12 @@ const mapStateToProps = (state: State) => ({
   tree: clipboardAsTreeSelector(state)
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
+const mapDispatchToProps = (dispatch: *) => ({
   ...bindActionCreators({ fetchClipboardContent }, dispatch),
   dispatch
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Clipboard);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Clipboard);
