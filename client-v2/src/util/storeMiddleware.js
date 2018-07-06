@@ -1,16 +1,16 @@
 // @flow
 
 import { type Middleware } from 'redux';
-import { uniq, omit } from 'lodash';
+import { uniq } from 'lodash';
 import { type State } from 'types/State';
 import { type Action, type ActionWithBatchedActions } from 'types/Action';
 import { selectors } from 'shared/bundles/collectionsBundle';
-import { clipboardSelector } from 'selectors/frontsSelectors';
 import { updateCollection } from 'actions/Collections';
 import { updateClipboard } from 'actions/Clipboard';
 import { selectSharedState } from 'shared/selectors/shared';
 import { type ThunkAction } from 'types/Store';
 import type { Collection } from 'shared/types/Collection';
+import { denormaliseClipboard } from 'util/clipboardUtils';
 
 const updateStateFromUrlChange: Middleware<State, Action> = ({
   dispatch,
@@ -172,27 +172,7 @@ const persistClipboardOnEdit: (
   }
   const result = next(action);
   const state = store.getState();
-  const clipboard = clipboardSelector(state);
-  const sharedState = selectSharedState(store.getState());
-  const { articleFragments } = sharedState;
-  const denormalisedClipboard = clipboard.reduce((clip, fragmentId) => {
-    const fragment = articleFragments[fragmentId];
-    if (fragment.meta && fragment.meta.supporting) {
-      const supportingArticles = fragment.meta.supporting.map(id => {
-        const frag = articleFragments[id];
-        if (frag.meta.supporting) {
-          delete frag.meta.supporting;
-        }
-        delete frag.meta;
-        return omit(fragment, 'uuid');
-      });
-
-      fragment.meta.supporting = supportingArticles;
-    }
-
-    clip.push(omit(fragment, 'uuid'));
-    return clipboard;
-  }, []);
+  const denormalisedClipboard = denormaliseClipboard(state);
   store.dispatch(updateClipboardAction(denormalisedClipboard));
   return result;
 };

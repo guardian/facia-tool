@@ -1,6 +1,6 @@
 // @flow
 
-import { createType, build, createFieldType } from 'normalise-with-fields';
+import { createType, build } from 'normalise-with-fields';
 import v4 from 'uuid/v4';
 
 // TODO Some of this code can be shared with the collection normalisation code once

@@ -1,14 +1,14 @@
 // @flow
 
 import type { ThunkAction } from 'types/Store';
-import v4 from 'uuid/v4';
 import type { Action } from 'types/Action';
 import { getClipboard, saveClipboard, getArticles } from 'services/faciaApi';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import { batchActions } from 'redux-batched-actions';
 import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
-import type { NestedArticleFragment } from 'shared/types/Collection';
+import type { Article } from 'shared/types/Article';
+import { normaliseClipboard } from 'util/clipboardUtils';
 
 function removeClipboardArticleFragment(articleFragmentId: string): Action {
   return {
@@ -57,51 +57,21 @@ function fetchClipboardContent(): ThunkAction {
   return (dispatch: Dispatch) =>
     getClipboard()
       .then(clipboardContent => {
-        const clipboardArticleFragments = clipboardContent.map(content => ({
-          ...content,
-          uuid: v4()
-        }));
-        const supportingArticleFragments = clipboardArticleFragments.reduce(
-          (fragments, content) => {
-            const supportingFragments =
-              (content.meta && content.meta.supporting) || [];
-            const supportingWithIds = supportingFragments.map(supporting => ({
-              ...supporting,
-              uuid: v4()
-            }));
-            return fragments.concat(supportingWithIds);
-          },
-          []
-        );
-        const allArticleFragments = clipboardArticleFragments.concat(
-          supportingArticleFragments
-        );
-        const allArticleFragmentsWithIds = allArticleFragments.reduce(
-          (fragmentsWithIds, fragment) => {
-            const fragmentWithId = { [fragment.uuid]: fragment };
-            return { ...fragmentsWithIds, ...fragmentWithId };
-          },
-          {}
-        );
+        const normalisedClipboard = normaliseClipboard({
+          articles: clipboardContent
+        });
+        const clipboardArticles = normalisedClipboard.clipboard.articles;
+        const { articleFragments } = normalisedClipboard;
+
         dispatch(
           batchActions([
-            fetchClipboardContentSuccess(
-              clipboardArticleFragments.map(content => content.uuid)
-            ),
-            articleFragmentsReceived(allArticleFragmentsWithIds)
+            fetchClipboardContentSuccess(clipboardArticles),
+            articleFragmentsReceived(articleFragments)
           ])
         );
 
         return getArticles(
-          allArticleFragments.reduce((ids, content) => {
-            const contentId = [content.id];
-            const supportingIds =
-              (content.meta &&
-                content.meta.supporting.map(supporting => supporting.id)) ||
-              [];
-
-            return ids.concat(contentId).concat(supportingIds);
-          }, [])
+          Object.values(articleFragments).map(fragment => fragment.id)
         ).catch(error =>
           dispatch(
             externalArticleActions.fetchError(
@@ -118,9 +88,9 @@ function fetchClipboardContent(): ThunkAction {
         // @todo: implement once error handling is done
       });
 }
-function updateClipboard(clipboardContent: Array<NestedArticleFragment>) {
+function updateClipboard(clipboardContent: { articles: Array<Article> }) {
   return () =>
-    saveClipboard(clipboardContent).catch(() => {
+    saveClipboard(clipboardContent.articles).catch(() => {
       // @todo: implement once error handling is done
     });
 }

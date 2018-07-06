@@ -10,7 +10,7 @@ describe('Clipboard utilities', () => {
       const result = normaliseClipboard({
         articles: [draftArticle, articleWithSupportingLink]
       });
-      const articleFragments = result.articleFragments;
+      const { articleFragments } = result;
       const clipboardArticles = result.clipboard.articles;
       const supportingArticle =
         articleFragments[clipboardArticles[1]].meta.supporting[0];

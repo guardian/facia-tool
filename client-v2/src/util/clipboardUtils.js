@@ -11,10 +11,12 @@ import {
 } from 'actions/ArticleFragments';
 import { type Action } from 'types/Action';
 import { type Move } from 'guration';
-import { normalize, denormalize } from './clipboardSchema';
+import { type Article } from 'shared/types/Article';
 import { clipboardSelector } from 'selectors/frontsSelectors';
+import { State } from 'types/State';
+import { normalize, denormalize } from './clipboardSchema';
 
-const normaliseClipboard = (clipboard: any) => {
+const normaliseClipboard = (clipboard: { articles: Array<Article> }) => {
   const normalisedClipboard = normalize(clipboard);
   return {
     clipboard: normalisedClipboard.result,
@@ -22,7 +24,7 @@ const normaliseClipboard = (clipboard: any) => {
   };
 };
 
-function denormaliseClipboard(state: State): Array<Article> {
+function denormaliseClipboard(state: State): { articles: Array<Article> } {
   const clipboard = clipboardSelector(state);
 
   return denormalize(

@@ -31,6 +31,7 @@ class ClipboardController(dynamo: Dynamo, val deps: BaseFaciaControllerComponent
   def getClipboardContent() = APIAuthAction { request =>
 
     val userEmail = request.user.email
+    val value = Scanamo.exec(dynamo.client)(clipboardTable.get('email -> userEmail))
 
     val record: Option[ClipboardData] = Scanamo.exec(dynamo.client)(
       clipboardTable.get('email -> userEmail)).flatMap(_.right.toOption)
