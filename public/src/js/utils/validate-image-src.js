@@ -110,13 +110,13 @@ function getSuitableAsset (crops, id, desired) {
 
         if (assets.value().length) {
             const mainAsset = assets.first().value();
-            const path = mainAsset.file;
+            const path = mainAsset.secureUrl;
             const height = mainAsset.dimensions.height;
             const width = mainAsset.dimensions.width;
 
             return Promise.resolve({
                 path: path,
-                thumb: assets.last().value().file,
+                thumb: assets.last().value().secureUrl,
                 origin: vars.model.state().defaults.mediaBaseUrl + '/image/' + id,
                 height: height,
                 width: width,

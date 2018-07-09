@@ -191,7 +191,7 @@ describe('Validate images', function () {
                                 assets: [
                                     { dimensions: { width: 1400, height: 1400 } },
                                     {
-                                        file: images.path('square.png'),
+                                        secureUrl: images.path('square.png'),
                                         dimensions: { width: 140, height: 140 }
                                     }
                                 ]
@@ -269,7 +269,7 @@ describe('Validate images', function () {
                                 assets: [
                                     { dimensions: { width: 1400, height: 1400 } },
                                     {
-                                        file: images.path('square.png'),
+                                        secureUrl: images.path('square.png'),
                                         dimensions: { width: 140, height: 140 }
                                     }
                                 ]
@@ -302,10 +302,10 @@ describe('Validate images', function () {
                                 id: 'image_crop',
                                 assets: [
                                     {
-                                        file: images.path('square.png'),
+                                        secureUrl: images.path('square.png'),
                                         dimensions: { width: 800, height: 800 }
                                     }, {
-                                        file: 'thumbnail',
+                                        secureUrl: 'thumbnail',
                                         dimensions: { width: 140, height: 140 }
                                     }
                                 ]
@@ -343,7 +343,7 @@ describe('Validate images', function () {
             grid.gridInstance.getCropFromEvent = () => {
                 return {
                     assets: [{
-                        file: images.path('square.png'),
+                        secureUrl: images.path('square.png'),
                         dimensions: { width: 800, height: 800 }
                     }]
                 };
@@ -363,7 +363,7 @@ describe('Validate images', function () {
             grid.gridInstance.getCropFromEvent = () => {
                 return {
                     assets: [{
-                        file: images.path('square.png'),
+                        secureUrl: images.path('square.png'),
                         dimensions: { width: 800, height: 800 }
                     }]
                 };
@@ -383,10 +383,10 @@ describe('Validate images', function () {
             grid.gridInstance.getCropFromEvent = () => {
                 return {
                     assets: [{
-                        file: images.path('square.png'),
+                        secureUrl: images.path('square.png'),
                         dimensions: { width: 140, height: 140 }
                     }, {
-                        file: images.path('thumb.png'),
+                        secureUrl: images.path('thumb.png'),
                         dimensions: { width: 140, height: 140 }
                     }],
                     id: 'mediaID'
@@ -417,7 +417,7 @@ describe('Validate images', function () {
                     exports: [{
                         id: 'crop_id',
                         assets: [{
-                            file: images.path('square.png'),
+                            secureUrl: images.path('square.png'),
                             dimensions: { width: 800, height: 800 }
                         }]
                     }]
