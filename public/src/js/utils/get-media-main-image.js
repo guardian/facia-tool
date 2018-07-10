@@ -12,7 +12,7 @@ export default function (contentApiArticle) {
         let fileAsset = _.find(mainImage.assets, asset => {
             // This is ugly, CAPI doesn't have a field for the image, it's inside the
             // bodyHtml, try to understand which image to use
-            return mainBodyHtml.indexOf(asset.file) !== -1;
+            return mainBodyHtml.indexOf(asset.secureUrl) !== -1;
         });
         if (!fileAsset) {
             // Couldn't match in bodyHtml, pick the first asset
@@ -26,7 +26,7 @@ export default function (contentApiArticle) {
                 origin = vars.model.state().defaults.mediaBaseUrl + '/images/' + mediaId;
             }
             return {
-                href: fileAsset.file,
+                href: fileAsset.secureUrl,
                 origin: origin
             };
         }

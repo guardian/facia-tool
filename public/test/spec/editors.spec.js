@@ -111,7 +111,7 @@ describe('Editors', function () {
         var firstBlock = $('.editor--image')[0];
         var secondBlock = $('.editor--image')[1];
         var sourceImage = new drag.Media([{
-            file: images.path('squarefour.png'),
+            secureUrl: images.path('squarefour.png'),
             dimensions: { width: 400, height: 400 }
         }], 'imageOrigin');
         sourceImage.dropInEditor(firstBlock)

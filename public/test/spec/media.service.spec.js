@@ -33,7 +33,7 @@ describe('Media Service', function () {
         }
         function dragFromTheGrid (trail) {
             const sourceImage = new drag.Media([{
-                file: images.path('fivethree.png'),
+                secureUrl: images.path('fivethree.png'),
                 dimensions: { width: 500, height: 200 }
             }], 'testImageOrigin');
             return sourceImage.dropTo(trail.innerDroppable())
@@ -53,7 +53,7 @@ describe('Media Service', function () {
         }
         function dragCutoutFromGrid (trail) {
             var sourceImage = new drag.Media([{
-                file: images.path('squarefour.png'),
+                secureUrl: images.path('squarefour.png'),
                 dimensions: { width: 400, height: 400 }
             }], 'cutoutImageOrigin');
             return sourceImage.dropInEditor(
@@ -69,7 +69,7 @@ describe('Media Service', function () {
             return trail.toggleMetadata('imageReplace')
             .then(() => {
                 var sourceImage = new drag.Media([{
-                    file: 'This image is too small',
+                    secureUrl: 'This image is too small',
                     dimensions: { width: 100, height: 60 }
                 }], 'tooBig');
                 return sourceImage.dropInEditor(
