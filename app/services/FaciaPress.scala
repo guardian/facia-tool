@@ -3,6 +3,7 @@ package services
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder
 import com.amazonaws.services.sqs.model.SendMessageResult
+import com.gu.facia.api.models.faciapress.{Draft, FrontPath, Live, PressJob}
 import conf.ApplicationConfiguration
 import metrics.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}
 import logging.Logging
