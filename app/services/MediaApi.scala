@@ -28,10 +28,15 @@ class MediaApi(val config: ApplicationConfiguration, val ws: WSClient) {
   }
 
   def extractExportsFromJsonResponse(response: JsValue, cropId: String) = {
-    val exports = (response \ "data" \ "exports").as[List[Export]]
-    exports.find(_.id == cropId) match {
-      case Some(export) => Some(export.assets.sortBy(asset => asset.size).head.secureUrl)
-      case _ => None
+
+    try {
+      val exports = (response \ "data" \ "exports").as[List[Export]]
+      exports.find(_.id == cropId) match {
+        case Some(export) => Some(export.assets.sortBy(asset => asset.size).head.secureUrl)
+        case _ => None
+      }
+    } catch {
+      case e: Exception => None
     }
   }
 }

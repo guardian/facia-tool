@@ -43,7 +43,7 @@ class FaciaToolController(
 
     FaciaToolMetrics.ApiUsageCount.increment()
     val collection = frontsApi.amazonClient.collection(collectionId).flatMap{ collectionJson =>
-      collectionJson.map(mediaServiceClient.addThumbnailsToCollection) match {
+      collectionJson.map(json => mediaServiceClient.addThumbnailsToCollection(json, collectionId)) match {
         case Some(f) => f.map(Some(_))
         case None    => Future.successful(None)
       }

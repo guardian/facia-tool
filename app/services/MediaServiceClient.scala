@@ -2,11 +2,12 @@ package services
 
 import com.gu.facia.client.models.{CollectionJson, Trail, TrailMetaData}
 import play.api.libs.json.JsString
+import logging.Logging
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MediaServiceClient(val mediaApi: MediaApi) {
+class MediaServiceClient(val mediaApi: MediaApi) extends Logging {
 
   def getThumbnail(imageSrc: String):Future[Option[String]] = {
     val imageIdRegex = "[0-9a-z]{40}".r
@@ -30,29 +31,32 @@ class MediaServiceClient(val mediaApi: MediaApi) {
     )))
   }
 
-  private def addThumbnailToTrail(trail: Trail): Future[Trail] = {
+  private def addThumbnailToTrail(trail: Trail, collectionId: String): Future[Trail] = {
     val trailWithThumbnail = for {
       meta <- trail.meta
       imgSrc <- meta.imageSrc
     } yield {
       getThumbnail(imgSrc).map {
         case Some(t) => replaceThumbnailInTrail(trail, meta, t)
-        case None => trail
+        case None => {
+          logger.error(s"Could not fetch image $imgSrc in collection $collectionId")
+          trail
+        }
       }
     }
     trailWithThumbnail.getOrElse(Future(trail))
   }
 
-  def addThumbnailUrlsToTrailList(list: List[Trail]): Future[List[Trail]] = {
-    val trails = list.map(addThumbnailToTrail)
+  def addThumbnailUrlsToTrailList(list: List[Trail], collectionId: String): Future[List[Trail]] = {
+    val trails = list.map(trail => addThumbnailToTrail(trail, collectionId))
     Future.sequence(trails)
   }
 
-  def addThumbnailsToCollection(collection: CollectionJson): Future[CollectionJson] = {
+  def addThumbnailsToCollection(collection: CollectionJson, collectionId: String): Future[CollectionJson] = {
     val collectionWithThumbnails = collection.draft.map(draft => {
       for {
-        d <- addThumbnailUrlsToTrailList(draft)
-        l <- addThumbnailUrlsToTrailList(collection.live)
+        d <- addThumbnailUrlsToTrailList(draft, collectionId)
+        l <- addThumbnailUrlsToTrailList(collection.live, collectionId)
       } yield collection.copy(live = l, draft = Some(d))
     })
     collectionWithThumbnails.getOrElse(Future(collection))
