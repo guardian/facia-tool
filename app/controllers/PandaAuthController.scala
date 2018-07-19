@@ -15,11 +15,11 @@ class PandaAuthController(val deps: BaseFaciaControllerComponents)(implicit ec: 
     Future(Forbidden(views.html.auth.login(Some(message))))
   }
 
-  def user() = AccessAuthAction { implicit request =>
+  def user() = AuthAction { implicit request =>
     Ok(request.user.toJson).as(JSON)
   }
 
-  def status = AccessAuthAction { request =>
+  def status = AuthAction { request =>
     val user = request.user
     Ok(views.html.auth.status(user.toJson))
   }

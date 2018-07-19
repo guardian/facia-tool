@@ -35,7 +35,7 @@ class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec:
   private def getPreviewHeaders(url: String): Seq[(String,String)] =
     previewSigner.addIAMHeaders(headers = Map.empty, URI.create(url)).toSeq
 
-  def capiPreview(path: String) = AccessAPIAuthAction.async { request =>
+  def capiPreview(path: String) = APIAuthAction.async { request =>
     FaciaToolMetrics.ProxyCount.increment()
     val queryString = IAMEncoder.encodeParams(request.queryString)
 
@@ -54,7 +54,7 @@ class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec:
     }
   }
 
-  def capiLive(path: String) = AccessAPIAuthAction.async { request =>
+  def capiLive(path: String) = APIAuthAction.async { request =>
     FaciaToolMetrics.ProxyCount.increment()
     val queryString = request.queryString.filter(_._2.exists(_.nonEmpty)).map { p =>
        "%s=%s".format(p._1, p._2.head.urlEncoded)
@@ -71,7 +71,7 @@ class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec:
     }
   }
 
-  def http(url: String) = AccessAPIAuthAction.async { request =>
+  def http(url: String) = APIAuthAction.async { request =>
     FaciaToolMetrics.ProxyCount.increment()
 
     wsClient.url(url).get().map { response =>
@@ -81,7 +81,7 @@ class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec:
     }
   }
 
-  def json(url: String) = AccessAPIAuthAction.async { request =>
+  def json(url: String) = APIAuthAction.async { request =>
     FaciaToolMetrics.ProxyCount.increment()
 
     wsClient.url(url).withHttpHeaders(getPreviewHeaders(url): _*).get().map { response =>
@@ -91,7 +91,7 @@ class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec:
     }
   }
 
-  def ophan(path: String) = AccessAPIAuthAction.async { request =>
+  def ophan(path: String) = APIAuthAction.async { request =>
     FaciaToolMetrics.ProxyCount.increment()
     val paths = request.queryString.get("path").map(_.mkString("path=", "&path=", "")).getOrElse("")
     val queryString = request.queryString.filterNot(_._1 == "path").filter(_._2.exists(_.nonEmpty)).map { p =>

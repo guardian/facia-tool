@@ -3,12 +3,15 @@ package controllers
 import frontsapi.model.UpdateActions
 import logging.Logging
 import metrics.FaciaToolMetrics
-import play.api.libs.json.Json
+import model.Cached
+import permissions.BreakingNewsEditCollectionsCheck
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{Action, AnyContent}
 import services._
 import updates._
 import util.Acl
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 
 class FaciaToolV2Controller(
@@ -21,7 +24,7 @@ class FaciaToolV2Controller(
   extends BaseFaciaController(deps) with Logging {
 
 
-  def collectionEdits() = AccessAPIAuthAction { implicit request =>
+  def collectionEdits() = APIAuthAction { implicit request =>
 
     FaciaToolMetrics.ApiUsageCount.increment()
 
