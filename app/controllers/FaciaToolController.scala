@@ -33,13 +33,13 @@ class FaciaToolController(
                          )(implicit ec: ExecutionContext)
   extends BaseFaciaController(deps) with BreakingNewsEditCollectionsCheck with Logging {
 
-  def getConfig = APIAuthAction.async { request =>
+  def getConfig = AccessAPIAuthAction.async { request =>
     FaciaToolMetrics.ApiUsageCount.increment()
     frontsApi.amazonClient.config.map { configJson =>
       NoCache {
         Ok(Json.toJson(configJson)).as("application/json")}}}
 
-  def getCollection(collectionId: String) = APIAuthAction.async { request =>
+  def getCollection(collectionId: String) = AccessAPIAuthAction.async { request =>
 
     FaciaToolMetrics.ApiUsageCount.increment()
     val collection = frontsApi.amazonClient.collection(collectionId).flatMap{ collectionJson =>
@@ -52,7 +52,7 @@ class FaciaToolController(
       Ok(Json.toJson(c)).as("application/json")})
   }
 
-  def publishCollection(collectionId: String) = APIAuthAction.async { implicit request =>
+  def publishCollection(collectionId: String) = AccessAPIAuthAction.async { implicit request =>
     withModifyPermissionForCollections(Set(collectionId)) {
       val identity = request.user
       FaciaToolMetrics.DraftPublishCount.increment()
@@ -84,7 +84,7 @@ class FaciaToolController(
     } else
       Future.successful(NoCache(Ok))}
 
-  def discardCollection(collectionId: String) = APIAuthAction.async { request =>
+  def discardCollection(collectionId: String) = AccessAPIAuthAction.async { request =>
     val identity = request.user
     val futureCollectionJson = faciaApiIO.discardCollectionJson(collectionId, identity)
     futureCollectionJson.map { maybeCollectionJson =>
@@ -95,7 +95,7 @@ class FaciaToolController(
       }
       NoCache(Ok)}}
 
-  def treatEdits(collectionId: String) = APIAuthAction.async { request =>
+  def treatEdits(collectionId: String) = AccessAPIAuthAction.async { request =>
     request.body.asJson.flatMap(_.asOpt[UpdateMessage]).map {
       case update: Update =>
         val identity = request.user
@@ -132,7 +132,7 @@ class FaciaToolController(
     }.getOrElse(Future.successful(NotAcceptable))
   }
 
-  def collectionEdits(): Action[AnyContent] = APIAuthAction.async { implicit request =>
+  def collectionEdits(): Action[AnyContent] = AccessAPIAuthAction.async { implicit request =>
     FaciaToolMetrics.ApiUsageCount.increment()
       request.body.asJson.flatMap (_.asOpt[UpdateMessage]).map {
         case update: Update =>
@@ -203,17 +203,17 @@ class FaciaToolController(
       } getOrElse Future.successful(NotFound)
   }
 
-  def pressLivePath(path: String) = APIAuthAction { request =>
+  def pressLivePath(path: String) = AccessAPIAuthAction { request =>
     faciaPressQueue.enqueue(PressJob(FrontPath(path), Live, forceConfigUpdate = Option(true)))
     NoCache(Ok)
   }
 
-  def pressDraftPath(path: String) = APIAuthAction { request =>
+  def pressDraftPath(path: String) = AccessAPIAuthAction { request =>
     faciaPressQueue.enqueue(PressJob(FrontPath(path), Draft, forceConfigUpdate = Option(true)))
     NoCache(Ok)
   }
 
-  def getMetadata() = APIAuthAction { request =>
+  def getMetadata() = AccessAPIAuthAction { request =>
     val matchingTags = request.queryString.get("query") match {
       case Some(Seq(search)) if search.nonEmpty => Metadata.tags.filterKeys(_ contains search)
       case _ => Metadata.tags
