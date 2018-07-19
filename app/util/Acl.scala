@@ -30,14 +30,14 @@ class Acl(permissions: PermissionsProvider) extends Logging {
               (email: String): Authorization = {
 
     permissions.hasPermission(permission, email) match {
-      case _ if !SwitchManager.getStatus(switch) =>
+      case _ if SwitchManager.getStatus(switch) =>
         AccessGranted
 
       case true =>
         AccessGranted
 
-      case _ =>
-        logger.error(s"Unable to get acl status for ${permission.name} $switch")
+      case false =>
+        logger.warn(s"User $email denied ${permission.name}")
         AccessDenied
     }
   }
