@@ -3,18 +3,17 @@ import config.{CustomGzipFilter, UpdateManager}
 import controllers._
 import frontsapi.model.UpdateActions
 import metrics.CloudWatch
-import permissions.Permissions
 import play.api.ApplicationLoader.Context
 import play.api.Mode
 import play.api.routing.Router
-import play.filters.cors.CORSConfig.Origins
 import play.filters.cors.CORSConfig
+import play.filters.cors.CORSConfig.Origins
 import router.Routes
 import services._
 import slices.{Containers, FixedContainers}
 import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
-import updates.{StructuredLogger, BreakingNewsUpdate}
+import updates.{BreakingNewsUpdate, StructuredLogger}
 import util.{Acl, Encryption}
 
 class AppComponents(context: Context) extends BaseFaciaControllerComponents(context) {
@@ -23,7 +22,6 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val isDev: Boolean = context.environment.mode == Mode.Dev
   val config = new ApplicationConfiguration(configuration, isProd)
   val awsEndpoints = new AwsEndpoints(config)
-  val permissions = new Permissions(config)
   val acl = new Acl(permissions)
   val frontsApi = new FrontsApi(config, awsEndpoints)
   val s3FrontsApi = new S3FrontsApi(config, isTest, awsEndpoints)
