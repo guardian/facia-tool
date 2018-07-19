@@ -7,7 +7,7 @@ import util.Acl
 
 class VanityRedirects(val acl: Acl, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
 
-  def breakingnews = (AccessAuthAction andThen new BreakingNewsPermissionCheck(acl)) { request =>
+  def breakingnews = (AuthAction andThen new BreakingNewsPermissionCheck(acl)) { request =>
     NoCache(Redirect("/editorial?layout=latest,front:breaking-news", 301))}
 
   def untrail(path: String) = Action { request =>

@@ -1,16 +1,18 @@
 package util
 
-import com.gu.permissions.{PermissionDefinition, PermissionsProvider}
-import logging.Logging
+import com.gu.editorial.permissions.client.{Permission, PermissionDenied, PermissionGranted, PermissionsUser}
+import permissions.Permissions
 import play.api.libs.json.{JsBoolean, JsValue, Json, Writes}
 import switchboard.SwitchManager
+import logging.Logging
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 object Authorization {
   implicit val authorizationWrites = new Writes[Authorization] {
     def writes(access: Authorization): JsValue = access match {
       case AccessGranted => JsBoolean(true)
-      case AccessDenied => JsBoolean(false)}}
-}
+      case AccessDenied => JsBoolean(false)}}}
 
 sealed trait Authorization
 object AccessGranted extends Authorization
@@ -25,27 +27,25 @@ case class AclJson (
   permissions: Map[String, Authorization]
 )
 
-class Acl(permissions: PermissionsProvider) extends Logging {
-  def testUser(permission: PermissionDefinition, switch: String)
-              (email: String): Authorization = {
+class Acl(permissions: Permissions) extends Logging {
+  def testUser(permission: Permission, switch: String)
+              (email: String): Future[Authorization] = {
+    implicit val permissionsUser: PermissionsUser = PermissionsUser(email)
+    val f = if (!SwitchManager.getStatus(switch)) {
+      permissions.get(permission).map {
+        case PermissionGranted => AccessGranted
+        case PermissionDenied => AccessDenied
+      }}
+    else Future.successful(AccessGranted)
 
-    permissions.hasPermission(permission, email) match {
-      case _ if !SwitchManager.getStatus(switch) =>
-        AccessGranted
-
-      case true =>
-        AccessGranted
-
-      case _ =>
-        logger.error(s"Unable to get acl status for ${permission.name} $switch")
-        AccessDenied
-    }
+    f.failed.foreach{case t => logger.error(s"Unable to get acl status for ${permission.name} $switch", t)}
+    f
   }
 
-  def testUserAndCollections(restrictedCollections: Set[String], permission: PermissionDefinition, switch: String)
-                            (email: String, collectionIds: Set[String]): Authorization = {
+  def testUserAndCollections(restrictedCollections: Set[String], permission: Permission, switch: String)
+                            (email: String, collectionIds: Set[String]): Future[Authorization] = {
     if ((restrictedCollections intersect collectionIds).nonEmpty)
       testUser(permission, switch)(email)
-    else AccessGranted
+    else Future.successful(AccessGranted)
   }
 }

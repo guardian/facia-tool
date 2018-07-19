@@ -14,7 +14,7 @@ import scala.concurrent.ExecutionContext
 class FrontController(val acl: Acl, val structuredLogger: StructuredLogger,
                       val updateManager: UpdateManager, val press: Press, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext)
   extends BaseFaciaController(deps) with Logging {
-  def create = (AccessAPIAuthAction andThen new ConfigPermissionCheck(acl)) { request =>
+  def create = (APIAuthAction andThen new ConfigPermissionCheck(acl)) { request =>
     request.body.read[CreateFront] match {
       case Some(createFrontRequest) =>
         val identity = request.user
@@ -27,7 +27,7 @@ class FrontController(val acl: Acl, val structuredLogger: StructuredLogger,
     }
   }
 
-  def update(frontId: String) = (AccessAPIAuthAction andThen new ConfigPermissionCheck(acl)){ request =>
+  def update(frontId: String) = (APIAuthAction andThen new ConfigPermissionCheck(acl)){ request =>
     request.body.read[FrontJson] match {
       case Some(front) =>
         val identity = request.user

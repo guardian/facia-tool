@@ -21,7 +21,7 @@ case class StoriesVisibleResponse(
 )
 
 class StoriesVisibleController(val containers: Containers, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
-  def storiesVisible(containerType: String) = AccessAPIAuthAction(parse.json[StoriesVisibleRequest]) { implicit request =>
+  def storiesVisible(containerType: String) = APIAuthAction(parse.json[StoriesVisibleRequest]) { implicit request =>
     val numberOfStories = request.body.stories.length
 
     containers.all.get(containerType) map {
