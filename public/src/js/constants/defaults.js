@@ -192,6 +192,7 @@ export default {
     apiBase:               '',
     apiSearchBase:         '/api/preview',
     apiLiveBase:           '/api/live',
+    apiUsageBase:          '/api/usage',
     apiSearchParams:       [
         'show-elements=video,main',
         'show-blocks=main',

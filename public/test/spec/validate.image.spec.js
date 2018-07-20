@@ -2,6 +2,7 @@ import {validateImageSrc, validateImageEvent} from 'utils/validate-image-src';
 import grid from 'utils/grid';
 import GridUtil from 'grid-util-js';
 import images from 'test/utils/images';
+import * as mockjax from 'test/utils/mockjax';
 
 describe('Validate images', function () {
     beforeEach(function () {
@@ -11,10 +12,18 @@ describe('Validate images', function () {
         grid.gridInstance = new GridUtil({
             apiBaseUrl: '/api.grid'
         });
+
+        this.scope = mockjax.scope();
+        this.scope({
+            url: '/api/usage/add',
+            responseText: {},
+            method: 'post'
+        });
     });
     afterEach(function () {
         images.dispose();
         grid.gridInstance = null;
+        this.scope.clear();
     });
 
     describe('- invalid', function () {
@@ -49,7 +58,7 @@ describe('Validate images', function () {
                 maxWidth: 50
             };
 
-            validateImageSrc(images.path('square.png'), criteria)
+            validateImageSrc(images.path('square.png'), 'front', criteria)
             .then(done.fail, err => {
                 expect(err.message).toMatch(/cannot be more/i);
                 done();
@@ -61,7 +70,7 @@ describe('Validate images', function () {
                 minWidth: 200
             };
 
-            validateImageSrc(images.path('square.png'), criteria)
+            validateImageSrc(images.path('square.png'), 'front', criteria)
             .then(done.fail, err => {
                 expect(err.message).toMatch(/cannot be less/i);
                 done();
@@ -74,7 +83,7 @@ describe('Validate images', function () {
                 heightAspectRatio: 3
             };
 
-            validateImageSrc(images.path('square.png'), criteria)
+            validateImageSrc(images.path('square.png'), 'front', criteria)
             .then(done.fail, err => {
                 expect(err.message).toMatch(/aspect ratio/i);
                 done();
@@ -82,7 +91,8 @@ describe('Validate images', function () {
         });
 
         it('works with no criteria', function (done) {
-            validateImageSrc(images.path('square.png'))
+
+            validateImageSrc(images.path('square.png'), 'front')
             .then(image => {
                 expect(image.width).toBe(140);
                 expect(image.height).toBe(140);
@@ -100,7 +110,7 @@ describe('Validate images', function () {
                 heightAspectRatio: 1
             };
 
-            validateImageSrc(images.path('square.png'), criteria)
+            validateImageSrc(images.path('square.png'), 'front', criteria)
             .then(image => {
                 expect(image.width).toBe(140);
                 expect(image.height).toBe(140);
@@ -147,7 +157,7 @@ describe('Validate images', function () {
                     });
                 };
 
-                validateImageSrc('http://grid.co.uk/1234567890123456789012345678901234567890?crop=image_crop')
+                validateImageSrc('http://grid.co.uk/1234567890123456789012345678901234567890?crop=image_crop', 'front')
                 .then(done.fail, err => {
                     expect(err.message).toMatch(/does not have a valid crop/i);
                     done();
@@ -170,7 +180,7 @@ describe('Validate images', function () {
                     });
                 };
 
-                validateImageSrc('http://grid.co.uk/1234567890123456789012345678901234567890?crop=image_crop', {
+                validateImageSrc('http://grid.co.uk/1234567890123456789012345678901234567890?crop=image_crop', 'front', {
                     minWidth: 100,
                     maxWidth: 1000,
                     widthAspectRatio: 5,
@@ -200,7 +210,7 @@ describe('Validate images', function () {
                     });
                 };
 
-                validateImageSrc('http://grid.co.uk/1234567890123456789012345678901234567890?crop=image_crop', {
+                validateImageSrc('http://grid.co.uk/1234567890123456789012345678901234567890?crop=image_crop', 'front', {
                     minWidth: 100,
                     maxWidth: 1000,
                     widthAspectRatio: 1,
@@ -248,7 +258,7 @@ describe('Validate images', function () {
                     });
                 };
 
-                validateImageSrc('http://grid.co.uk/1234567890123456789012345678901234567890', {
+                validateImageSrc('http://grid.co.uk/1234567890123456789012345678901234567890', 'front', {
                     minWidth: 100,
                     maxWidth: 1000,
                     widthAspectRatio: 5,
@@ -278,7 +288,7 @@ describe('Validate images', function () {
                     });
                 };
 
-                validateImageSrc('http://grid.co.uk/1234567890123456789012345678901234567890', {
+                validateImageSrc('http://grid.co.uk/1234567890123456789012345678901234567890', 'front', {
                     minWidth: 100,
                     maxWidth: 1000,
                     widthAspectRatio: 1,
@@ -332,7 +342,7 @@ describe('Validate images', function () {
         it('fails with invalid item', function (done) {
             grid.gridInstance.getCropFromEvent = () => null;
 
-            validateImageEvent({})
+            validateImageEvent('front', {})
             .then(done.fail, err => {
                 expect(err.message).toMatch(/invalid image/i);
                 done();
@@ -349,7 +359,7 @@ describe('Validate images', function () {
                 };
             };
 
-            validateImageEvent({}, {
+            validateImageEvent({}, 'front', {
                 maxWidth: 500
             })
             .then(done.fail, err => {
@@ -369,7 +379,7 @@ describe('Validate images', function () {
                 };
             };
 
-            validateImageEvent({}, {
+            validateImageEvent({}, 'front', {
                 widthAspectRatio: 4,
                 heightAspectRatio: 1
             })
@@ -394,7 +404,7 @@ describe('Validate images', function () {
             };
             grid.gridInstance.getGridUrlFromEvent = () => 'http://media/image/mediaID';
 
-            validateImageEvent({}, {
+            validateImageEvent({}, 'front', {
                 widthAspectRatio: 1,
                 heightAspectRatio: 1
             })

@@ -9,6 +9,7 @@ import inject from 'test/utils/inject';
 import textInside from 'test/utils/text-inside';
 import 'widgets/trail-editor.html!text';
 import * as wait from 'test/utils/wait';
+import * as mockjax from 'test/utils/mockjax';
 
 describe('Editors', function () {
     beforeEach(function (done) {
@@ -31,10 +32,17 @@ describe('Editors', function () {
             <!-- /ko -->
         `);
         this.ko.apply({ editors: this.editors }).then(done);
+        this.scope = mockjax.scope();
+        this.scope({
+            url: '/api/usage/add',
+            responseText: {},
+            method: 'post'
+        });
     });
     afterEach(function () {
         images.dispose();
         this.ko.dispose();
+        this.scope.clear();
     });
 
     it('toggles boolean values', function (done) {
