@@ -1,15 +1,12 @@
 package controllers
 
-import auth.PanDomainAuthActions
-import conf.ApplicationConfiguration
 import EmailController._
 import play.api.Logger
-import play.api.mvc.Controller
 import services.Email
 
 import scala.util.{Failure, Success}
 
-class EmailController(val config: ApplicationConfiguration, email: Email) extends Controller with PanDomainAuthActions {
+class EmailController(email: Email, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
 
   def sendEmail(path: String) = APIAuthAction { request =>
     val mapiPath = buildMapiPath(path)
