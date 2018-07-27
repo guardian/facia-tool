@@ -19,15 +19,12 @@ function validateImageSrc(src, frontId, criteria = {}) {
         .then(fetchImage)
         .then((image) => validateActualImage(image, frontId))
         .then(({path, origin, thumb, width, height}) => {
-            return recordUsage(frontId)
-            .then(() => {
-                return {
-                    src: path,
-                    origin: origin || path,
-                    thumb: thumb || path,
-                    width, height
-                };
-            });
+            return {
+                src: path,
+                origin: origin || path,
+                thumb: thumb || path,
+                width, height
+            };
         });
 }
 

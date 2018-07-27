@@ -6,7 +6,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import org.joda.time.DateTime
 import org.joda.time.format.{DateTimeFormat, ISODateTimeFormat}
 
-case class FrontUsageMetadata(addedBy: String)
+case class FrontUsageMetadata(addedBy: String, front: String)
 
 object FrontUsageMetadata {
   implicit val jsonFromat: Format[FrontUsageMetadata] = Json.format[FrontUsageMetadata]
@@ -35,7 +35,7 @@ class GridProxy(val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionC
         val gridUrl = s"${config.media.usageUrl}/usages/front"
 
         val usageData = GridUsageData(parsedRequest.mediaId, new DateTime().toString(ISODateTimeFormat.dateTime), parsedRequest.containerId, parsedRequest.usageId,
-          parsedRequest.usageStatus, FrontUsageMetadata(request.user.email))
+          parsedRequest.usageStatus, FrontUsageMetadata(request.user.email, parsedRequest.containerId))
 
         val usageJson = Json.toJson(usageData)
         wsClient.url(gridUrl)
