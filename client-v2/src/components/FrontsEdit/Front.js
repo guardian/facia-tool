@@ -3,8 +3,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 /* eslint-disable import/no-duplicates */
-import * as Guration from 'guration';
-import { type Edit } from 'guration';
+import * as Guration from '@guardian/guration';
+import { type Edit } from '@guardian/guration';
 /* eslint-enable import/no-duplicates */
 import { type State } from 'types/State';
 import { type Dispatch } from 'types/Store';

@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import { Level } from 'guration';
+import { Level } from '@guardian/guration';
 
 type FrontProps = {
   collections: *,
