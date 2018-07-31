@@ -3,10 +3,11 @@ package permissions
 import com.gu.pandomainauth.action.UserRequest
 import com.gu.permissions.PermissionsProvider
 import controllers.BaseFaciaController
-import logging.Logging
 import play.api.mvc._
 import services.ConfigAgent
 import util.{AccessDenied, AccessGranted, Acl, Authorization}
+import logging.Logging
+import switchboard.SwitchManager
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,8 +32,14 @@ class AccessPermissionCheck(client: PermissionsProvider)(implicit ec: ExecutionC
   val executionContext = ec
   val restrictedAction = "access fronts"
   val testAccess: String => Authorization = (email: String) => {
+    val switchEnabled = SwitchManager.getStatus("facia-tool-permissions-access")
+    val hasPermission = client.hasPermission(Permissions.FrontsAccess, email)
 
-    if(client.hasPermission(Permissions.FrontsAccess, email)) { AccessGranted } else { AccessDenied }
+    if(switchEnabled) {
+      if(hasPermission) { AccessGranted } else { AccessDenied }
+    } else {
+      AccessGranted
+    }
   }
 }
 
