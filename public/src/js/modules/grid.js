@@ -10,7 +10,7 @@ export function recordUsage(mediaId, frontId) {
     };
 
     return request({
-        url: `${CONST.apiUsageBase}/add`,
+        url: `${CONST.apiUsageBase}`,
         method: 'POST',
         data: JSON.stringify(usageData)
     });

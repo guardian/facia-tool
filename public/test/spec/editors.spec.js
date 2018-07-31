@@ -34,7 +34,7 @@ describe('Editors', function () {
         this.ko.apply({ editors: this.editors }).then(done);
         this.scope = mockjax.scope();
         this.scope({
-            url: '/api/usage/add',
+            url: '/api/usage',
             responseText: {},
             method: 'post'
         });

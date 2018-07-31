@@ -15,7 +15,7 @@ describe('Validate images', function () {
 
         this.scope = mockjax.scope();
         this.scope({
-            url: '/api/usage/add',
+            url: '/api/usage',
             responseText: {},
             method: 'post'
         });

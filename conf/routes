@@ -90,6 +90,6 @@ GET         /v2                                      controllers.V2App.index(pat
 GET         /v2/*path                                controllers.V2App.index(path)
 
 # Grid Usages
-POST        /api/usage/add                           controllers.GridProxy.addUsage()
+POST        /api/usage                               controllers.GridProxy.addUsage()
 
 

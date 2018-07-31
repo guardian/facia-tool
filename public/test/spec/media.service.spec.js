@@ -11,7 +11,7 @@ describe('Media Service', function () {
         this.testPage = new Page('/test?layout=latest,front:uk', {}, done);
         this.scope = mockjax.scope();
         this.scope({
-            url: '/api/usage/add',
+            url: '/api/usage',
             responseText: {},
             method: 'post'
         });
