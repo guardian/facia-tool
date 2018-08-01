@@ -1,7 +1,6 @@
 // @flow
 
 import {
-  createArticleFromArticleFragmentSelector,
   externalArticleFromArticleFragmentSelector,
   createArticlesInCollectionGroupSelector,
   createCollectionsAsTreeSelector,
@@ -14,29 +13,48 @@ const state = {
       c1: {
         id: 'c1',
         groups: ['group1', 'group2'],
-        articleFragments: {
-          live: ['af1', 'af2']
-        }
+        live: ['g1', 'g2']
       },
       c2: {
         id: 'c2',
         groups: ['group1'],
-        articleFragments: {
-          draft: ['af3', 'af4']
-        }
+        draft: ['g3']
       },
       c3: {
         groups: ['group1'],
-        articleFragments: {
-          draft: ['af5']
-        }
+        draft: ['g4']
       },
       c4: {
         groups: ['group1'],
-        articleFragments: {
-          draft: ['af5']
-        }
+        draft: ['g5']
       }
+    }
+  },
+  groups: {
+    g1: {
+      uuid: 'g1',
+      id: 'group1',
+      articleFragments: ['af2']
+    },
+    g2: {
+      uuid: 'g2',
+      id: 'group2',
+      articleFragments: ['af1']
+    },
+    g3: {
+      uuid: 'g3',
+      id: 'group1',
+      articleFragments: ['af3', 'af4']
+    },
+    g4: {
+      uuid: 'g4',
+      id: 'group1',
+      articleFragments: ['af5']
+    },
+    g5: {
+      uuid: 'g5',
+      id: 'group1',
+      articleFragments: ['af5']
     }
   },
   externalArticles: {
@@ -53,9 +71,7 @@ const state = {
       id: 'ea1',
       frontPublicationDate: 1,
       publishedBy: 'A. N. Author',
-      meta: {
-        group: '0'
-      }
+      meta: {}
     },
     afWithInvalidReference: {
       uuid: 'afWithInvalidReference',
@@ -64,21 +80,15 @@ const state = {
     },
     af2: {
       uuid: 'af2',
-      meta: {
-        group: '1'
-      }
+      meta: {}
     },
     af3: {
       uuid: 'af3',
-      meta: {
-        group: '0'
-      }
+      meta: {}
     },
     af4: {
       uuid: 'af4',
-      meta: {
-        group: '0'
-      }
+      meta: {}
     },
     af5: {
       uuid: 'af5'
@@ -91,10 +101,15 @@ const stateWithGrouplessCollection = {
     data: {
       c1: {
         id: 'c1',
-        articleFragments: {
-          live: ['af1', 'af2']
-        }
+        live: ['g1']
       }
+    }
+  },
+  groups: {
+    g1: {
+      uuid: 'g1',
+      id: null,
+      articleFragments: ['af1', 'af2']
     }
   },
   articleFragments: {
@@ -117,10 +132,15 @@ const stateWithSupportingArticles = {
     data: {
       c1: {
         id: 'c1',
-        articleFragments: {
-          live: ['af1']
-        }
+        live: ['g1']
       }
+    }
+  },
+  groups: {
+    g1: {
+      uuid: 'g1',
+      id: null,
+      articleFragments: ['af1']
     }
   },
   articleFragments: {
@@ -146,9 +166,7 @@ describe('Shared selectors', () => {
       const selector = createCollectionSelector();
       expect(selector(state, { collectionId: 'c1' })).toEqual({
         groups: ['group2', 'group1'],
-        articleFragments: {
-          live: ['af1', 'af2']
-        },
+        live: ['g1', 'g2'],
         id: 'c1'
       });
     });
@@ -162,25 +180,6 @@ describe('Shared selectors', () => {
       expect(
         externalArticleFromArticleFragmentSelector(state, 'invalid')
       ).toEqual(null);
-    });
-  });
-
-  describe('createArticleFromArticleFragmentSelector', () => {
-    it('should derive an Article from an ArticleFragment and an ExternalArticle, using an ArticleFragment id', () => {
-      const selector = createArticleFromArticleFragmentSelector();
-      expect(selector(state, 'af1')).toEqual({
-        id: 'ea1',
-        headline: 'Example external article',
-        group: '0'
-      });
-    });
-    it('should handle a case where the referenced ArticleFragment does not exist', () => {
-      const selector = createArticleFromArticleFragmentSelector();
-      expect(selector(state, 'invalid')).toEqual(null);
-    });
-    it('should handle a case where the ExternalArticle referenced by the ArticleFragment does not exist', () => {
-      const selector = createArticleFromArticleFragmentSelector();
-      expect(selector(state, 'afWithInvalidReference')).toEqual(null);
     });
   });
 
@@ -262,17 +261,19 @@ describe('Shared selectors', () => {
               groups: [
                 {
                   id: 'group1',
+                  uuid: 'g1',
                   articleFragments: [
                     {
                       uuid: 'af2',
                       meta: {
-                        group: '1'
+                        supporting: []
                       }
                     }
                   ]
                 },
                 {
                   id: 'group2',
+                  uuid: 'g2',
                   articleFragments: [
                     {
                       uuid: 'af1',
@@ -280,7 +281,7 @@ describe('Shared selectors', () => {
                       frontPublicationDate: 1,
                       publishedBy: 'A. N. Author',
                       meta: {
-                        group: '0'
+                        supporting: []
                       }
                     }
                   ]
@@ -304,7 +305,8 @@ describe('Shared selectors', () => {
             id: 'c1',
             groups: [
               {
-                id: '',
+                id: null,
+                uuid: 'g1',
                 articleFragments: [
                   {
                     uuid: 'af1',
@@ -340,18 +342,23 @@ describe('Shared selectors', () => {
             id: 'c1',
             groups: [
               {
-                id: '',
+                id: null,
+                uuid: 'g1',
                 articleFragments: [
                   {
                     uuid: 'af1',
                     id: 'ea1',
                     frontPublicationDate: 1,
                     publishedBy: 'A. N. Author',
-                    meta: {}
+                    meta: {
+                      supporting: []
+                    }
                   },
                   {
                     uuid: 'af2',
-                    meta: {}
+                    meta: {
+                      supporting: []
+                    }
                   }
                 ]
               }

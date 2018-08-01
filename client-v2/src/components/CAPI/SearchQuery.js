@@ -30,6 +30,8 @@ class SearchQuery extends React.Component<
     params: {}
   };
 
+  state = {};
+
   static getDerivedStateFromProps(
     { baseURL, fetch }: CAPISearchQueryProps,
     prevState: CAPISearchQueryState
@@ -46,8 +48,6 @@ class SearchQuery extends React.Component<
     }
     return {};
   }
-
-  state = {};
 
   componentDidMount() {
     if (this.props.poll) {

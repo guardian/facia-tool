@@ -48,8 +48,8 @@ type PersistCollectionMeta = {|
 function addPersistMetaToAction<TArgs: *, TAction: *>(
   actionCreator: (...args: TArgs) => TAction,
   meta: PersistCollectionMeta
-): (...args: TArgs) => TAction & {| meta: PersistCollectionMeta |} {
-  return (...args: TArgs) => ({
+) {
+  return (...args: TArgs): TAction & {| meta: PersistCollectionMeta |} => ({
     ...actionCreator(...args),
     meta
   });
@@ -61,6 +61,9 @@ function addPersistMetaToAction<TArgs: *, TAction: *>(
  */
 const unwrapBatchedActions = (action: ActionWithBatchedActions): Action[] =>
   action.type === 'BATCHING_REDUCER.BATCH' ? action.payload : [action];
+
+const isPersistingToCollection = (act: Action): boolean =>
+  !!act.meta && act.meta.persistTo === 'collection';
 
 /**
  * Watches for actions that require a collection update, finds the relevant
@@ -107,13 +110,18 @@ const persistCollectionOnEdit: (
   return next => (action: Action) => {
     const actions = unwrapBatchedActions(action);
 
-    if (!actions.some(act => act.meta && act.meta.persistTo === 'collection')) {
+    if (!actions.some(isPersistingToCollection)) {
       return next(action);
     }
 
     // Gather the collections that are touched before the new state.
     let collectionIds = getCollectionIdsForActions(
-      actions.filter(act => act.meta && act.meta.applyBeforeReducer)
+      actions.filter(
+        act =>
+          isPersistingToCollection(act) &&
+          act.meta &&
+          act.meta.applyBeforeReducer
+      )
     );
 
     const result = next(action);
@@ -122,7 +130,12 @@ const persistCollectionOnEdit: (
     collectionIds = uniq(
       collectionIds.concat(
         getCollectionIdsForActions(
-          actions.filter(act => !act.meta || !act.meta.applyBeforeReducer)
+          actions.filter(
+            act =>
+              isPersistingToCollection(act) &&
+              act.meta &&
+              !act.meta.applyBeforeReducer
+          )
         )
       )
     );

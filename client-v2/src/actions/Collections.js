@@ -18,31 +18,31 @@ import {
 } from 'util/frontsUtils';
 import {
   normaliseCollectionWithNestedArticles,
-  getArticleIdsFromCollection,
   denormaliseCollection
 } from 'shared/util/shared';
 import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
+import {
+  groupsReceived,
+  addGroupArticleFragment,
+  removeGroupArticleFragment
+} from 'shared/actions/Groups';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import { getCollectionConfig } from 'selectors/frontsSelectors';
-import {
-  addCollectionArticleFragment,
-  removeCollectionArticleFragment
-} from 'shared/actions/Collection';
 import type { State } from 'types/State';
 import type { Collection } from 'shared/types/Collection';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 
-const addCollectionArticleFragmentWithPersistence = addPersistMetaToAction(
-  addCollectionArticleFragment,
+const addGroupArticleFragmentWithPersistence = addPersistMetaToAction(
+  addGroupArticleFragment,
   {
     persistTo: 'collection',
     key: 'articleFragmentId'
   }
 );
 
-const removeCollectionArticleFragmentWithPersistence = addPersistMetaToAction(
-  removeCollectionArticleFragment,
+const removeGroupArticleFragmentWithPersistence = addPersistMetaToAction(
+  removeGroupArticleFragment,
   {
     persistTo: 'collection',
     key: 'articleFragmentId'
@@ -68,17 +68,21 @@ function getCollection(collectionId: string) {
         };
         const {
           collection,
-          articleFragments
+          articleFragments,
+          groups
         } = normaliseCollectionWithNestedArticles(collectionWithDraftArticles);
 
         dispatch(
           batchActions([
             collectionActions.fetchSuccess(collection),
             articleFragmentsReceived(articleFragments),
-            recordUnpublishedChanges(collectionId, hasUnpublishedChanges)
+            recordUnpublishedChanges(collectionId, hasUnpublishedChanges),
+            groupsReceived(groups)
           ])
         );
-        return getArticleIdsFromCollection(collectionWithDraftArticles);
+        return Object.keys(articleFragments).map(
+          afId => articleFragments[afId].id
+        );
       })
       .catch((error: string) => {
         dispatch(collectionActions.fetchError(error, collectionId));
@@ -137,6 +141,6 @@ export {
   getCollection,
   getCollectionsAndArticles,
   updateCollection,
-  addCollectionArticleFragmentWithPersistence as addCollectionArticleFragment,
-  removeCollectionArticleFragmentWithPersistence as removeCollectionArticleFragment
+  addGroupArticleFragmentWithPersistence as addGroupArticleFragment,
+  removeGroupArticleFragmentWithPersistence as removeGroupArticleFragment
 };
