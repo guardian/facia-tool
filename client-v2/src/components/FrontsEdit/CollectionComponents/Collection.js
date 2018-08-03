@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import CollectionDisplay from 'shared/components/Collection';
 import AlsoOnNotification from 'components/AlsoOnNotification';
 import Button from 'components/Button';
+import * as Guration from '@guardian/guration';
 import type { AlsoOnDetail } from 'types/Collection';
 import { publishCollection } from 'actions/Fronts';
 import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
@@ -20,18 +21,6 @@ type CollectionPropsBeforeState = {
 type CollectionProps = CollectionPropsBeforeState & {
   publishCollection: (collectionId: string) => Promise<void>,
   hasUnpublishedChanges: boolean
-};
-
-const getArticleFragmentLengths = <T: { articleFragments: Array<*> }>(
-  acc: Array<[T, number]> | [],
-  group: T,
-  i: number
-): Array<[T, number]> => {
-  const [{ articleFragments }, offset] = acc[i - 1] || [
-    { articleFragments: [] },
-    0
-  ];
-  return [...acc, [group, articleFragments.length + offset]];
 };
 
 const Collection = ({
@@ -49,15 +38,9 @@ const Collection = ({
       </Button>
     )}
     <AlsoOnNotification alsoOn={alsoOn[id]} />
-    <div style={{ marginLeft: 10 }}>
-      {groups
-        .reduce(getArticleFragmentLengths, [])
-        .map(([group, offset]) => (
-          <React.Fragment key={group.id}>
-            {children(group, offset)}
-          </React.Fragment>
-        ))}
-    </div>
+    <Guration.Level arr={groups} type="group" getKey={({ uuid: key }) => key}>
+      {children}
+    </Guration.Level>
   </CollectionDisplay>
 );
 

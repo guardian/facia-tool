@@ -70,16 +70,21 @@ const stateWithCollection = {
         exampleCollection: {
           id: 'exampleCollection',
           displayName: 'Example Collection',
-          articleFragments: {
-            live: [
-              '95e2bfc0-8999-4e6e-a359-19960967c1e0',
-              '4bc11359-bb3e-45e7-a0a9-86c0ee52653d',
-              '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d'
-            ],
-            draft: [],
-            previously: undefined
-          }
+          live: ['abc'],
+          draft: [],
+          previously: undefined
         }
+      }
+    },
+    groups: {
+      abc: {
+        id: '0',
+        uuid: 'abc',
+        articleFragments: [
+          '95e2bfc0-8999-4e6e-a359-19960967c1e0',
+          '4bc11359-bb3e-45e7-a0a9-86c0ee52653d',
+          '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d'
+        ]
       }
     },
     articleFragments: {
@@ -115,15 +120,20 @@ const stateWithCollectionAndSupporting = {
         exampleCollection: {
           id: 'exampleCollection',
           displayName: 'Example Collection',
-          articleFragments: {
-            live: [
-              '1269c42e-a341-4464-b206-a5731b92fa46',
-              '322f0527-cf14-43c1-8520-e6732ab01297'
-            ],
-            draft: [],
-            previously: undefined
-          }
+          live: ['abc'],
+          draft: [],
+          previously: undefined
         }
+      }
+    },
+    groups: {
+      abc: {
+        id: '0',
+        uuid: 'abc',
+        articleFragments: [
+          '1269c42e-a341-4464-b206-a5731b92fa46',
+          '322f0527-cf14-43c1-8520-e6732ab01297'
+        ]
       }
     },
     articleFragments: {

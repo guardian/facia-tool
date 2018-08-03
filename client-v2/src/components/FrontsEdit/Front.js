@@ -3,8 +3,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 /* eslint-disable import/no-duplicates */
-import * as Guration from 'guration';
-import { type Edit } from 'guration';
+import * as Guration from '@guardian/guration';
+import { type Edit } from '@guardian/guration';
 /* eslint-enable import/no-duplicates */
 import { type State } from 'types/State';
 import { type Dispatch } from 'types/Store';
@@ -62,10 +62,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     const actions = edits.reduce((acc, edit) => {
       switch (edit.type) {
         case 'MOVE': {
-          return [
-            ...acc,
-            ...mapMoveEditToActions(edit, this.props.browsingStage)
-          ];
+          return [...acc, ...mapMoveEditToActions(edit)];
         }
         default: {
           return acc;
@@ -101,8 +98,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
           <Front {...this.props.tree}>
             {collection => (
               <Collection {...collection} alsoOn={this.props.alsoOn}>
-                {(group, offset) => (
-                  <Group {...group} offset={offset}>
+                {group => (
+                  <Group {...group}>
                     {(articleFragment, afDragProps) => (
                       <ArticleFragment
                         {...articleFragment}
@@ -140,4 +137,11 @@ const createMapStateToProps = () => {
   });
 };
 
-export default connect(createMapStateToProps)(FrontComponent);
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  dispatch
+});
+
+export default connect(
+  createMapStateToProps,
+  mapDispatchToProps
+)(FrontComponent);

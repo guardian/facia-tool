@@ -26,6 +26,8 @@ class TagQuery extends React.Component<CAPITagQueryProps, CAPITagQueryState> {
     params: {}
   };
 
+  state = {};
+
   static getDerivedStateFromProps(
     { baseURL, fetch }: CAPITagQueryProps,
     prevState: CAPITagQueryState
@@ -42,8 +44,6 @@ class TagQuery extends React.Component<CAPITagQueryProps, CAPITagQueryState> {
     }
     return {};
   }
-
-  state = {};
 
   render() {
     const { params, children, ...props } = this.props;

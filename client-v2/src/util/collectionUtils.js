@@ -2,43 +2,43 @@
 
 import { getURLCAPIID } from 'util/CAPIUtils';
 import {
-  removeCollectionArticleFragment,
-  addCollectionArticleFragment
+  removeGroupArticleFragment,
+  addGroupArticleFragment
 } from 'actions/Collections';
 import {
   removeSupportingArticleFragment,
   addSupportingArticleFragment
 } from 'actions/ArticleFragments';
 import { type Action } from 'types/Action';
-import { type Move } from 'guration';
+import { type Move } from '@guardian/guration';
 
 const fromMap: {
-  [string]: { [string]: (move: Move, browsingState: string) => Action }
+  [string]: { [string]: (move: Move) => Action }
 } = {
   articleFragment: {
     articleFragment: ({ payload: { id, from } }) =>
       removeSupportingArticleFragment(from.parent.id, id),
-    collection: ({ payload: { id, from } }, browsingStage) =>
-      removeCollectionArticleFragment(from.parent.id, id, browsingStage)
+    group: ({ payload: { id, from } }) =>
+      removeGroupArticleFragment(from.parent.id, id)
   }
 };
 
 const toMap: {
-  [string]: { [string]: (move: Move, browsingState: string) => Action }
+  [string]: { [string]: (move: Move) => Action }
 } = {
   articleFragment: {
     articleFragment: ({ payload: { id, to } }) =>
       addSupportingArticleFragment(to.parent.id, id, to.index),
-    collection: ({ payload: { id, to } }, browsingStage) =>
-      addCollectionArticleFragment(to.parent.id, id, to.index, browsingStage)
+    group: ({ payload: { id, to } }) =>
+      addGroupArticleFragment(to.parent.id, id, to.index)
   }
 };
 
-const mapMoveEditToActions = (edit: Move, browsingState: string) => [
+const mapMoveEditToActions = (edit: Move) => [
   ((fromMap[edit.payload.type] || {})[edit.payload.from.parent.type] ||
-    (() => null))(edit, browsingState),
+    (() => null))(edit),
   ((toMap[edit.payload.type] || {})[edit.payload.to.parent.type] ||
-    (() => null))(edit, browsingState)
+    (() => null))(edit)
 ];
 
 const urlToArticle = (text: string) => {

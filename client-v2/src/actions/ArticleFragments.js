@@ -2,8 +2,7 @@
 
 import {
   removeSupportingArticleFragment,
-  addSupportingArticleFragment,
-  changeArticleGroup
+  addSupportingArticleFragment
 } from 'shared/actions/ArticleFragments';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
 
@@ -45,7 +44,6 @@ const changeArticleGroupWithPersist = addPersistMetaToAction(
 export {
   removeSupportingArticleFragmentWithPersist as removeSupportingArticleFragment,
   addSupportingArticleFragmentWithPersist as addSupportingArticleFragment,
-  changeArticleGroupWithPersist as changeArticleGroup,
   addSupportingArticleFragmentWithPersistToClipboard as addSupportingArticleFragmentToClipboard,
   removeSupportingArticleFragmentWithPersistToClipboard as removeSupportingArticleFragmentFromClipboard
 };
