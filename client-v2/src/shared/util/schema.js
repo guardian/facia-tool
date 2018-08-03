@@ -60,3 +60,5 @@ export const { normalize, denormalize } = build({
     'meta.supporting': supportingArticles()
   })
 });
+
+export { postProcessArticleFragment, supportingArticles };

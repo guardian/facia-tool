@@ -2,28 +2,7 @@
 
 import { createType, build } from 'normalise-with-fields';
 import v4 from 'uuid/v4';
-
-// TODO Some of this code can be shared with the collection normalisation code once
-// that pr has been merged
-
-const postProcessArticleFragment = (_af: {
-  uuid?: string,
-  meta?: { supporting?: mixed[] }
-}): Object => {
-  const { uuid, ...af } = _af;
-
-  let meta = { ...af.meta };
-
-  if (!(meta.supporting || []).length) {
-    const { supporting, ...rest } = meta;
-    meta = rest;
-  }
-
-  return {
-    ...af,
-    meta
-  };
-};
+import { postProcessArticleFragment } from 'shared/util/schema';
 
 const articleFragments = createType('articleFragments', {
   preProcess: af => ({

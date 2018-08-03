@@ -88,32 +88,34 @@ const collectionIdsSelector = (
 
 const clipboardContentSelector = state => state.clipboard;
 
+const createNestedArticleFragment = (
+  articleFragmentId: string,
+  articleFragments: { [string]: ArticleFragment }
+) =>
+  articleFragments[articleFragmentId].meta &&
+  articleFragments[articleFragmentId].meta.supporting
+    ? {
+        ...articleFragments[articleFragmentId],
+        meta: {
+          ...articleFragments[articleFragmentId].meta,
+          supporting: articleFragments[articleFragmentId].meta.supporting.map(
+            (supportingFragmentId: string) =>
+              articleFragments[supportingFragmentId]
+          )
+        }
+      }
+    : { ...articleFragments[articleFragmentId] };
+
 const clipboardAsTreeSelector = createSelector(
   [clipboardContentSelector, articleFragmentsFromRootStateSelector],
   (clipboardContent, articleFragments) => {
     if (clipboardContent.length === 0) {
       return {};
     }
-    const createNestedArticleFragment = (articleFragmentId: string) =>
-      articleFragments[articleFragmentId].meta &&
-      articleFragments[articleFragmentId].meta.supporting
-        ? {
-            ...articleFragments[articleFragmentId],
-            meta: {
-              ...articleFragments[articleFragmentId].meta,
-              supporting: articleFragments[
-                articleFragmentId
-              ].meta.supporting.map(
-                (supportingFragmentId: string) =>
-                  articleFragments[supportingFragmentId]
-              )
-            }
-          }
-        : { ...articleFragments[articleFragmentId] };
 
     return {
       articleFragments: clipboardContent.map(fragmentId =>
-        createNestedArticleFragment(fragmentId)
+        createNestedArticleFragment(fragmentId, articleFragments)
       )
     };
   }
@@ -135,15 +137,11 @@ const createCollectionsAsTreeSelector = () =>
               groups: (collections[cId][stage] || []).map(gId => ({
                 ...groups[gId],
                 articleFragments: (groups[gId].articleFragments || []).map(
-                  afId => ({
-                    ...articleFragments[afId],
-                    meta: {
-                      ...(articleFragments[afId].meta || {}),
-                      supporting: (
-                        (articleFragments[afId].meta || {}).supporting || []
-                      ).map(sId => articleFragments[sId])
-                    }
-                  })
+                  articleFragmentId =>
+                    createNestedArticleFragment(
+                      articleFragmentId,
+                      articleFragments
+                    )
                 )
               }))
             }

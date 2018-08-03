@@ -34,13 +34,6 @@ const addSupportingArticleFragmentWithPersistToClipboard = addPersistMetaToActio
   }
 );
 
-const changeArticleGroupWithPersist = addPersistMetaToAction(
-  changeArticleGroup,
-  {
-    persistTo: 'collection'
-  }
-);
-
 export {
   removeSupportingArticleFragmentWithPersist as removeSupportingArticleFragment,
   addSupportingArticleFragmentWithPersist as addSupportingArticleFragment,
