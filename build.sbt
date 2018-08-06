@@ -65,8 +65,7 @@ TwirlKeys.templateImports ++= Seq(
 )
 
 val awsVersion = "1.11.293"
-val capiModelsVersion = "12.0"
-val circeVersion = "0.9.0"
+val capiModelsVersion = "12.6"
 val json4sVersion = "3.6.0-M2"
 
 resolvers ++= Seq(
@@ -93,10 +92,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "mobile-notifications-client" % "1.2",
     "com.gu" %% "pan-domain-auth-play_2-6" % "0.7.1",
 
-    "io.circe" %% "circe-core" % circeVersion,
-    "io.circe" %% "circe-generic" % circeVersion,
-    "io.circe" %% "circe-parser" % circeVersion,
-    "com.gu" %% "scanamo" % "1.0.0-M2",
+    "com.gu" %% "scanamo" % "1.0.0-M7",
 
     "com.gu" %% "thrift-serializer" % "2.1.0",
     "net.logstash.logback" % "logstash-logback-encoder" % "5.0",
