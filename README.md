@@ -217,3 +217,6 @@ grunt eslint
 
 More detailed instructions of how to develop fronts tool available [here](./GUIDE_TO_FRONTS.md)
 Enjoy!
+
+### Get Fronts Editors
+There is a script to get a list of the fronts editors in the `get-editors-script`. See the [Script README(./get-editors-script/README.md) for more details.
