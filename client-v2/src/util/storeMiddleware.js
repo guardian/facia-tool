@@ -67,7 +67,7 @@ type PersistMeta = PersistCollectionMeta | PersistClipboardMeta;
 function addPersistMetaToAction<TArgs: Array<any>, TAction: Object>(
   actionCreator: (...args: TArgs) => TAction,
   meta: PersistMeta
-) {
+): (...args: TArgs) => TAction & {| meta: PersistMeta |} {
   return (...args: TArgs): TAction & {| meta: PersistMeta |} => ({
     ...actionCreator(...args),
     meta

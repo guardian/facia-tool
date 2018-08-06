@@ -47,9 +47,10 @@ const fromMap: {
   [string]: { [string]: (move: Move) => Action }
 } = {
   articleFragment: {
-    articleFragment: ({ payload: { id, from } }) =>
+    articleFragment: ({ payload: { id, from } }): Action =>
       removeSupportingArticleFragmentFromClipboard(from.parent.id, id),
-    clipboard: ({ payload: { id } }) => removeClipboardArticleFragment(id)
+    clipboard: ({ payload: { id } }): Action =>
+      removeClipboardArticleFragment(id)
   }
 };
 
@@ -59,7 +60,7 @@ const toMap: {
   articleFragment: {
     articleFragment: ({ payload: { id, to } }): Action =>
       addSupportingArticleFragmentToClipboard(to.parent.id, id, to.index),
-    clipboard: ({ payload: { id, to } }) =>
+    clipboard: ({ payload: { id, to } }): Action =>
       addClipboardArticleFragment(id, to.index)
   }
 };
