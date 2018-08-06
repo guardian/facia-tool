@@ -219,4 +219,4 @@ More detailed instructions of how to develop fronts tool available [here](./GUID
 Enjoy!
 
 ### Get Fronts Editors
-There is a script to get a list of the fronts editors in the `get-editors-script`. See the [Script README](./get-editors-script/README.md) for more details.
+There is a script to get a list of the fronts editors in the `get-editors-script`. See the [script README](./get-editors-script/README.md) for more details.
