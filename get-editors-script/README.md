@@ -8,3 +8,5 @@ The script will take a few minutes to run when getting data for the last 7 days 
 The call:
 `python get-fronts-editors.py`
 will create a json file in the same directory of all the editors.
+
+Previous data is stored in the S3 bucket `fronts-editors-list` in the `cms-fronts` account. If you run the script please add the data to the bucket. By default the json file output has a timestamp in the the filename to make files uniquely identifiable.
