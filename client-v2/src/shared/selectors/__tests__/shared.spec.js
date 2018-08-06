@@ -265,9 +265,7 @@ describe('Shared selectors', () => {
                   articleFragments: [
                     {
                       uuid: 'af2',
-                      meta: {
-                        supporting: []
-                      }
+                      meta: {}
                     }
                   ]
                 },
@@ -280,9 +278,7 @@ describe('Shared selectors', () => {
                       id: 'ea1',
                       frontPublicationDate: 1,
                       publishedBy: 'A. N. Author',
-                      meta: {
-                        supporting: []
-                      }
+                      meta: {}
                     }
                   ]
                 }
@@ -350,15 +346,11 @@ describe('Shared selectors', () => {
                     id: 'ea1',
                     frontPublicationDate: 1,
                     publishedBy: 'A. N. Author',
-                    meta: {
-                      supporting: []
-                    }
+                    meta: {}
                   },
                   {
                     uuid: 'af2',
-                    meta: {
-                      supporting: []
-                    }
+                    meta: {}
                   }
                 ]
               }
