@@ -9,6 +9,7 @@ import FrontsLayout from '../FrontsLayout';
 import FrontsContainer from './FrontsContainer';
 import Feed from '../Feed';
 import ErrorBannner from '../ErrorBanner';
+import Clipboard from '../Clipboard';
 
 type Props = {
   match: Match,
@@ -24,6 +25,7 @@ const FrontsEdit = (props: Props) => (
     <ErrorBannner error={props.error} />
     <FrontsLayout
       left={<Feed />}
+      middle={<Clipboard />}
       right={
         <FrontsContainer
           history={props.history}

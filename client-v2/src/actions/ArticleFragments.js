@@ -20,7 +20,23 @@ const addSupportingArticleFragmentWithPersist = addPersistMetaToAction(
   }
 );
 
+const removeSupportingArticleFragmentWithPersistToClipboard = addPersistMetaToAction(
+  removeSupportingArticleFragment,
+  {
+    persistTo: 'clipboard'
+  }
+);
+
+const addSupportingArticleFragmentWithPersistToClipboard = addPersistMetaToAction(
+  addSupportingArticleFragment,
+  {
+    persistTo: 'clipboard'
+  }
+);
+
 export {
   removeSupportingArticleFragmentWithPersist as removeSupportingArticleFragment,
-  addSupportingArticleFragmentWithPersist as addSupportingArticleFragment
+  addSupportingArticleFragmentWithPersist as addSupportingArticleFragment,
+  addSupportingArticleFragmentWithPersistToClipboard as addSupportingArticleFragmentToClipboard,
+  removeSupportingArticleFragmentWithPersistToClipboard as removeSupportingArticleFragmentFromClipboard
 };

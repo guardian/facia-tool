@@ -9,7 +9,8 @@ import type {
 import type { ExternalArticle } from 'shared/types/ExternalArticle';
 import type {
   CollectionResponse,
-  CollectionWithNestedArticles
+  CollectionWithNestedArticles,
+  NestedArticleFragment
 } from 'shared/types/Collection';
 import pandaFetch from './pandaFetch';
 
@@ -108,6 +109,49 @@ async function updateCollection(
   }
 }
 
+async function getClipboard(): Promise<Array<NestedArticleFragment>> {
+  // The server does not respond with JSON
+  try {
+    const response = await pandaFetch(`/clipboard`, {
+      method: 'get',
+      credentials: 'same-origin'
+    });
+    return await response.json();
+  } catch (response) {
+    if (response.status === '404') {
+      return [];
+    }
+    throw new Error(
+      `Tried to fetch a clipboard but the server responded with ${
+        response.status
+      }: ${response.body}`
+    );
+  }
+}
+
+async function saveClipboard(
+  clipboardContent: Array<NestedArticleFragment>
+): Promise<Array<NestedArticleFragment>> {
+  // The server does not respond with JSON
+  try {
+    const response = await pandaFetch(`/clipboard`, {
+      method: 'post',
+      credentials: 'same-origin',
+      body: JSON.stringify(clipboardContent),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    return await response.json();
+  } catch (response) {
+    throw new Error(
+      `Tried to update a clipboard but the server responded with ${
+        response.status
+      }: ${response.body}`
+    );
+  }
+}
+
 function getCollection(
   collectionId: string
 ): Promise<CollectionWithNestedArticles> {
@@ -162,5 +206,7 @@ export {
   getArticles,
   fetchLastPressed,
   publishCollection,
-  updateCollection
+  updateCollection,
+  getClipboard,
+  saveClipboard
 };
