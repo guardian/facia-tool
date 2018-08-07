@@ -10,6 +10,8 @@ module.exports = {
     browser: true
   },
   rules: {
+    "no-unused-expressions": [2, {"allowTaggedTemplates": true}],
+
     'prettier/prettier': 'error',
 
     // Allow React in .js files
