@@ -2,19 +2,22 @@ import React from 'react';
 import styled from 'styled-components';
 
 const DropContainer = styled('div')`
-  background-color: #f4f4f4;
-  height: 20px;
-  border-top: 4px solid #f4f4f4;
-  border-bottom: 4px solid #f4f4f4;
-`;
-
-const DropContainerWithHover = styled(DropContainer)`
-  background-color: #d4d4d4;
+  position: relative;
+  height: 15px;
+  z-index: 1;
 `;
 
 class DropZone extends React.Component<{
-  onDrop: () => void
+  onDrop: () => void,
+  hoist?: boolean,
+  color?: string
 }> {
+  static defaultProps = {
+    // Hoisting the dropzone applies a negative margin
+    // to pull it up into its parent.
+    hoist: false,
+    color: 'rgba(0,0,0,0.2)'
+  };
   state = {
     isHoveredOver: false
   };
@@ -33,16 +36,17 @@ class DropZone extends React.Component<{
   };
 
   render() {
-    const Container = this.state.isHoveredOver
-      ? DropContainerWithHover
-      : DropContainer;
     return (
-      <Container
+      <DropContainer
+        {...this.props}
         onDragEnter={this.handleDragEnter}
         onDragLeave={this.handleDragLeave}
         onDragExit={this.handleDragLeave}
         onDrop={this.handleDrop}
-        {...this.props}
+        style={{
+          backgroundColor: this.state.isHoveredOver ? this.props.color : null,
+          marginTop: this.props.hoist ? '-15px' : null
+        }}
       />
     );
   }

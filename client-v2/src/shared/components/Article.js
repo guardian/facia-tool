@@ -29,9 +29,13 @@ type ComponentProps = {
 
 const ArticleContainer = styled('div')`
   background-color: #fff;
+`;
+
+const ArticleBodyContainer = styled('div')`
   position: relative;
   border-top: 1px solid #333;
   min-height: 35px;
+  cursor: pointer;
   &:after {
     content: '';
     display: table;
@@ -133,10 +137,15 @@ const ArticleComponent = ({
   const ArticleHeadingContainer =
     size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
   return (
-    <div draggable={draggable} onDragStart={onDragStart}>
-      <ArticleContainer
+    <ArticleContainer>
+      <ArticleBodyContainer
         key={article.headline}
-        style={{ borderTopColor: toneColorMap[article.tone] }}
+        style={{
+          borderTopColor:
+            size === 'default' ? toneColorMap[article.tone] : '#c9c9c9'
+        }}
+        draggable={draggable}
+        onDragStart={onDragStart}
       >
         <ArticleMetaContainer>
           {size === 'default' && <Tone>{article.tone}</Tone>}
@@ -174,9 +183,9 @@ const ArticleComponent = ({
             }}
           />
         )}
-      </ArticleContainer>
+      </ArticleBodyContainer>
       {children}
-    </div>
+    </ArticleContainer>
   );
 };
 

@@ -25,7 +25,9 @@ const ArticleFragment = ({
       arr={supporting}
       type="articleFragment"
       getKey={({ uuid: key }) => key}
-      renderDrop={props => <DropZone {...props} />}
+      renderDrop={props => (
+        <DropZone {...props} hoist color="rgba(0,0,0,0.08)" />
+      )}
     >
       {children}
     </Guration.Level>
