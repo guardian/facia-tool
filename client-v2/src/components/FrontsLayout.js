@@ -16,12 +16,14 @@ const Col = styled('div')`
 
 type FrontLayoutProps = {
   left: React.Node,
+  middle: React.Node,
   right: React.Node
 };
 
-const FrontLayout = ({ left, right }: FrontLayoutProps) => (
+const FrontLayout = ({ left, right, middle }: FrontLayoutProps) => (
   <Container>
     <Col>{left}</Col>
+    <Col>{middle}</Col>
     <Col>{right}</Col>
   </Container>
 );

@@ -6,7 +6,7 @@ type Article = ExternalArticle & {
   uuid: string,
   id: string,
   frontPublicationDate: number,
-  publishedBy: string,
+  publishedBy?: string,
   group?: number,
   supporting: string[]
 };

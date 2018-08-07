@@ -11,7 +11,10 @@ import type {
   RemoveSupportingArticleFragment as SharedRemoveSupportingArticleFragment,
   Action as SharedActions
 } from 'shared/types/Action';
-import { type PersistCollectionMeta } from 'util/storeMiddleware';
+import {
+  type PersistCollectionMeta,
+  type PersistClipboardMeta
+} from 'util/storeMiddleware';
 import { type Config } from './Config';
 import { type FrontsConfig } from './FaciaApi';
 
@@ -99,6 +102,27 @@ type PublishCollectionSuccess = {|
   payload: { collectionId: string }
 |};
 
+type FetchClipboardContentSuccess = {|
+  type: 'FETCH_CLIPBOARD_CONTENT_SUCCESS',
+  payload: Array<string>
+|};
+
+type AddClipboardArticleFragment = {|
+  type: 'ADD_CLIPBOARD_ARTICLE_FRAGMENT',
+  payload: { articleFragmentId: string, index: number }
+|};
+
+type AddClipboardContent = {|
+  type: 'ADD_CLIPBOARD_ARTICLE_FRAGMENT',
+  payload: { articleFragmentId: string, index: number },
+  meta: PersistClipboardMeta
+|};
+
+type RemoveClipboardArticleFragment = {|
+  type: 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT',
+  payload: { articleFragmentId: string }
+|};
+
 type Action =
   | ConfigReceivedAction
   | FrontsConfigReceivedAction
@@ -114,7 +138,12 @@ type Action =
   | AddGroupArticleFragment
   | RemoveGroupArticleFragment
   | AddSupportingArticleFragment
-  | RemoveSupportingArticleFragment;
+  | RemoveSupportingArticleFragment
+  | FetchClipboardContentSuccess
+  | FetchClipboardContentSuccess
+  | AddClipboardArticleFragment
+  | RemoveClipboardArticleFragment
+  | AddClipboardContent;
 
 type BatchedAction = {|
   type: 'BATCHING_REDUCER.BATCH',

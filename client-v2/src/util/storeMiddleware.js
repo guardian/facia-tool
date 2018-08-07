@@ -6,9 +6,14 @@ import { type State } from 'types/State';
 import { type Action, type ActionWithBatchedActions } from 'types/Action';
 import { selectors } from 'shared/bundles/collectionsBundle';
 import { updateCollection } from 'actions/Collections';
+import { updateClipboard } from 'actions/Clipboard';
 import { selectSharedState } from 'shared/selectors/shared';
 import { type ThunkAction } from 'types/Store';
-import { type Collection } from 'shared/types/Collection';
+import type {
+  Collection,
+  NestedArticleFragment
+} from 'shared/types/Collection';
+import { denormaliseClipboard } from 'util/clipboardUtils';
 
 const updateStateFromUrlChange: Middleware<State, Action> = ({
   dispatch,
@@ -45,11 +50,25 @@ type PersistCollectionMeta = {|
   applyBeforeReducer?: boolean
 |};
 
-function addPersistMetaToAction<TArgs: *, TAction: *>(
+type PersistClipboardMeta = {|
+  // The resource to persist the data to
+  persistTo: 'clipboard',
+  // The key to take from the action payload. Defaults to 'id'.
+  key?: string,
+  // Should we find collection parents before or after the reducer is called?
+  // This is important when the relevant collection is affected by when the operation
+  // occurs - finding the parent collection before a remove operation, for example,
+  // or after an add operation.
+  applyBeforeReducer?: boolean
+|};
+
+type PersistMeta = PersistCollectionMeta | PersistClipboardMeta;
+
+function addPersistMetaToAction<TArgs: Array<any>, TAction: Object>(
   actionCreator: (...args: TArgs) => TAction,
-  meta: PersistCollectionMeta
-) {
-  return (...args: TArgs): TAction & {| meta: PersistCollectionMeta |} => ({
+  meta: PersistMeta
+): (...args: TArgs) => TAction & {| meta: PersistMeta |} {
+  return (...args: TArgs): TAction & {| meta: PersistMeta |} => ({
     ...actionCreator(...args),
     meta
   });
@@ -155,9 +174,34 @@ const persistCollectionOnEdit: (
   };
 };
 
-export type { PersistCollectionMeta };
+const persistClipboardOnEdit: (
+  (clipboard: { articles: Array<NestedArticleFragment> }) =>
+    | Action
+    | ThunkAction
+) => Middleware<Store, Action> = (
+  updateClipboardAction: (clipboard: {
+    articles: Array<NestedArticleFragment>
+  }) => Action | ThunkAction = updateClipboard
+) => store => next => (action: Action) => {
+  const actions = unwrapBatchedActions(action);
+
+  if (!actions.some(act => act.meta && act.meta.persistTo === 'clipboard')) {
+    return next(action);
+  }
+  const result = next(action);
+  const state = store.getState();
+  const denormalisedClipboard: {
+    articles: Array<NestedArticleFragment>
+  } = denormaliseClipboard(state);
+  // $FlowFixMe
+  store.dispatch(updateClipboardAction(denormalisedClipboard));
+  return result;
+};
+
+export type { PersistCollectionMeta, PersistClipboardMeta };
 export {
   persistCollectionOnEdit,
+  persistClipboardOnEdit,
   updateStateFromUrlChange,
   addPersistMetaToAction
 };

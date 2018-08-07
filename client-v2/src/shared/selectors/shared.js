@@ -7,8 +7,16 @@ import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 import type { ArticleFragment } from '../types/Collection';
 import type { State } from '../types/State';
 
+// Selects the shared part of the application state mounted at its default point, '.shared'.
+const selectSharedState = (rootState: any): State => rootState.shared;
+
 const groupsSelector = (state: State) => state.groups;
 const articleFragmentsSelector = (state: State) => state.articleFragments;
+
+const articleFragmentsFromRootStateSelector = createSelector(
+  [selectSharedState],
+  (state: State) => articleFragmentsSelector(state)
+);
 
 const articleFragmentSelector = (state: State, id: string): ArticleFragment =>
   state.articleFragments[id];
@@ -78,6 +86,41 @@ const collectionIdsSelector = (
   { collectionIds }: { collectionIds: string[] }
 ) => collectionIds;
 
+const clipboardContentSelector = state => state.clipboard;
+
+const createNestedArticleFragment = (
+  articleFragmentId: string,
+  articleFragments: { [string]: ArticleFragment }
+) =>
+  articleFragments[articleFragmentId].meta &&
+  articleFragments[articleFragmentId].meta.supporting
+    ? {
+        ...articleFragments[articleFragmentId],
+        meta: {
+          ...articleFragments[articleFragmentId].meta,
+          supporting: articleFragments[articleFragmentId].meta.supporting.map(
+            (supportingFragmentId: string) =>
+              articleFragments[supportingFragmentId]
+          )
+        }
+      }
+    : { ...articleFragments[articleFragmentId] };
+
+const clipboardAsTreeSelector = createSelector(
+  [clipboardContentSelector, articleFragmentsFromRootStateSelector],
+  (clipboardContent, articleFragments) => {
+    if (clipboardContent.length === 0) {
+      return {};
+    }
+
+    return {
+      articleFragments: clipboardContent.map(fragmentId =>
+        createNestedArticleFragment(fragmentId, articleFragments)
+      )
+    };
+  }
+);
+
 const createCollectionsAsTreeSelector = () =>
   createSelector(
     collectionSelectors.selectAll,
@@ -94,15 +137,11 @@ const createCollectionsAsTreeSelector = () =>
               groups: (collections[cId][stage] || []).map(gId => ({
                 ...groups[gId],
                 articleFragments: (groups[gId].articleFragments || []).map(
-                  afId => ({
-                    ...articleFragments[afId],
-                    meta: {
-                      ...(articleFragments[afId].meta || {}),
-                      supporting: (
-                        (articleFragments[afId].meta || {}).supporting || []
-                      ).map(sId => articleFragments[sId])
-                    }
-                  })
+                  articleFragmentId =>
+                    createNestedArticleFragment(
+                      articleFragmentId,
+                      articleFragments
+                    )
                 )
               }))
             }
@@ -111,14 +150,12 @@ const createCollectionsAsTreeSelector = () =>
     })
   );
 
-// Selects the shared part of the application state mounted at its default point, '.shared'.
-const selectSharedState = (rootState: any): State => rootState.shared;
-
 export {
   externalArticleFromArticleFragmentSelector,
   createArticlesInCollectionGroupSelector,
   createCollectionSelector,
   selectSharedState,
   createCollectionsAsTreeSelector,
-  articleFragmentSelector
+  articleFragmentSelector,
+  clipboardAsTreeSelector
 };
