@@ -1,14 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const DropContainerWithHover = styled('div')`
-  background-color: #d4d4d4;
+const DropContainer = styled('div')`
+  background-color: #f4f4f4;
   height: 20px;
+  border-top: 4px solid #f4f4f4;
+  border-bottom: 4px solid #f4f4f4;
 `;
 
-const DropContainer = styled('div')`
-  background-color: #e4e4e4;
-  height: 20px;
+const DropContainerWithHover = styled(DropContainer)`
+  background-color: #d4d4d4;
 `;
 
 class DropZone extends React.Component<{
@@ -28,7 +29,7 @@ class DropZone extends React.Component<{
 
   handleDrop = e => {
     this.setState({ isHoveredOver: false });
-    this.props.onDrop(e);
+    return this.props.onDrop(e);
   };
 
   render() {
@@ -37,11 +38,11 @@ class DropZone extends React.Component<{
       : DropContainer;
     return (
       <Container
-        {...this.props}
         onDragEnter={this.handleDragEnter}
         onDragLeave={this.handleDragLeave}
         onDragExit={this.handleDragLeave}
         onDrop={this.handleDrop}
+        {...this.props}
       />
     );
   }

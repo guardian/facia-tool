@@ -9,7 +9,7 @@ type SupportingProps = {
 };
 
 const Supporting = ({ uuid, getDragProps }: SupportingProps) => (
-  <Article id={uuid} {...getDragProps()} />
+  <Article id={uuid} {...getDragProps()} size="small" />
 );
 
 export default Supporting;

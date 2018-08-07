@@ -23,15 +23,14 @@ type Props = ContainerProps & {
 };
 
 const CollectionContainer = styled('div')`
+  background-color: #f6f6f6;
+  width: 600px;
   position: relative;
-  background-color: white;
-  padding: 0 10px 10px 10px;
   margin: 6px 5px 5px 5px;
+  padding: 0 10px 10px 10px;
   box-shadow: 0 -1px 0 #333;
+  border: 1px solid #c9c9c9;
   border-top: none;
-  border-left: 1px solid #c9c9c9;
-  border-right: 1px solid #c9c9c9;
-  border-bottom: 1px solid #c9c9c9;
 `;
 
 const HeadlineContentContainer = styled('span')`
@@ -40,8 +39,8 @@ const HeadlineContentContainer = styled('span')`
   top: 0px;
 `;
 
-const collectionDetail = ({ collection, headlineContent, children }: Props) => {
-  return collection ? (
+const collectionDetail = ({ collection, headlineContent, children }: Props) =>
+  collection ? (
     <CollectionContainer>
       <ContainerHeading>
         {collection.displayName}
@@ -55,7 +54,6 @@ const collectionDetail = ({ collection, headlineContent, children }: Props) => {
   ) : (
     <span>Waiting for collection</span>
   );
-};
 
 const mapStateToProps = (
   state: State,
