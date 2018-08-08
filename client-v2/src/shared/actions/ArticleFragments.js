@@ -1,5 +1,6 @@
 // @flow
 
+import v4 from 'uuid/v4';
 import type { ArticleFragment } from 'shared/types/Collection';
 
 function articleFragmentsReceived(articleFragments: {
@@ -39,8 +40,28 @@ function addSupportingArticleFragment(
   };
 }
 
+function addArticleFragment(id: string) {
+  return (dispatch: Dispatch) => {
+    // TODO check if external article is already stored in the state
+    const fragment = {
+      uuid: v4(),
+      id,
+      frontPublicationDate: Date.now(),
+      meta: {}
+    };
+
+    dispatch(
+      articleFragmentsReceived({
+        [fragment.uuid]: fragment
+      })
+    );
+    return fragment.uuid;
+  };
+}
+
 export {
   articleFragmentsReceived,
   removeSupportingArticleFragment,
-  addSupportingArticleFragment
+  addSupportingArticleFragment,
+  addArticleFragment
 };

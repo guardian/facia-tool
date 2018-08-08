@@ -9,7 +9,7 @@ import {
   addSupportingArticleFragmentToClipboard
 } from 'actions/ArticleFragments';
 import { type Action } from 'types/Action';
-import { type Move } from 'guration';
+import { type Move, type Insert } from 'guration';
 import type {
   ArticleFragment,
   NestedArticleFragment
@@ -64,6 +64,17 @@ const toMap: {
   }
 };
 
+const toExternalMap: {
+  [string]: { [string]: (move: Move) => Action }
+} = {
+  articleFragment: {
+    articleFragment: ({ payload: { id, path } }): Action =>
+      addSupportingArticleFragmentToClipboard(path.parent.id, id, path.index),
+    clipboard: ({ payload: { id, path } }): Action =>
+      addClipboardArticleFragment(id, path.index)
+  }
+};
+
 const mapMoveEditToActions = (edit: Move) => [
   ((fromMap[edit.payload.type] || {})[edit.payload.from.parent.type] ||
     (() => null))(edit),
@@ -71,4 +82,15 @@ const mapMoveEditToActions = (edit: Move) => [
     (() => null))(edit)
 ];
 
-export { mapMoveEditToActions, normaliseClipboard, denormaliseClipboard };
+const mapMoveInsertToActions = (insert: Insert) => [
+  ((toExternalMap[insert.payload.type] || {})[
+    insert.payload.path.parent.type
+  ] || (() => null))(insert)
+];
+
+export {
+  mapMoveEditToActions,
+  mapMoveInsertToActions,
+  normaliseClipboard,
+  denormaliseClipboard
+};

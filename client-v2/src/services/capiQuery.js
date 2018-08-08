@@ -30,7 +30,8 @@ type Article = {
   webUrl: string,
   elements?: Element[],
   fields?: {
-    trailText?: string
+    trailText?: string,
+    internalPageCode: string
   },
   frontsMeta: {
     tone: string

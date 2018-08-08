@@ -14,12 +14,17 @@ import { clipboardAsTreeSelector } from 'shared/selectors/shared';
 import ArticleFragment from 'components/FrontsEdit/CollectionComponents/ArticleFragment';
 import Supporting from 'components/FrontsEdit/CollectionComponents/Supporting';
 import DropZone from 'components/DropZone';
-import { mapMoveEditToActions } from 'util/clipboardUtils';
+import { addArticleFragment } from 'shared/actions/ArticleFragments';
+import {
+  mapMoveEditToActions,
+  mapMoveInsertToActions
+} from 'util/clipboardUtils';
 
 type ClipboardPropsBeforeState = {};
 
 type ClipboardProps = ClipboardPropsBeforeState & {
   fetchClipboardContent: () => Promise<Array<String>>,
+  addArticleFragment: string => string,
   tree: Object, // TODO add typing,
   dispatch: Dispatch
 };
@@ -45,6 +50,12 @@ class Clipboard extends React.Component<ClipboardProps> {
         case 'MOVE': {
           return [...acc, ...mapMoveEditToActions(edit)];
         }
+        case 'INSERT': {
+          const uuid = this.props.addArticleFragment(edit.payload.id);
+          const payloadWithUuid = { ...edit.payload, id: uuid };
+          const insertWithUuid = { ...edit, payload: payloadWithUuid };
+          return [...acc, ...mapMoveInsertToActions(insertWithUuid)];
+        }
         default: {
           return acc;
         }
@@ -67,7 +78,8 @@ class Clipboard extends React.Component<ClipboardProps> {
               type="clipboard"
               onChange={this.handleChange}
               dropMappers={{
-                text: text => urlToArticle(text)
+                text: text => urlToArticle(text),
+                capi: capi => ({ type: 'articleFragment', id: capi })
               }}
             >
               <Guration.Level
@@ -100,7 +112,10 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: *) => ({
-  ...bindActionCreators({ fetchClipboardContent }, dispatch),
+  ...bindActionCreators(
+    { fetchClipboardContent, addArticleFragment },
+    dispatch
+  ),
   dispatch
 });
 
