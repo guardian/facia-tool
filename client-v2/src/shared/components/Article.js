@@ -11,6 +11,7 @@ import {
   externalArticleFromArticleFragmentSelector,
   selectSharedState
 } from '../selectors/shared';
+import Clearfix from './layout/Clearfix';
 import type { State } from '../types/State';
 import type { Article } from '../types/Article';
 
@@ -27,20 +28,15 @@ type ComponentProps = {
   children: ReactNode
 } & ContainerProps;
 
-const ArticleContainer = styled('div')`
+const ArticleContainer = Clearfix.extend`
   background-color: #fff;
 `;
 
-const ArticleBodyContainer = styled('div')`
+const ArticleBodyContainer = Clearfix.extend`
   position: relative;
   border-top: 1px solid #333;
   min-height: 35px;
   cursor: pointer;
-  &:after {
-    content: '';
-    display: table;
-    clear: both;
-  }
 `;
 
 const ArticleMetaContainer = styled('div')`
@@ -65,8 +61,8 @@ const Tone = styled('div')`
 `;
 
 const KickerHeading = styled('span')`
-  font-size: 16px
-  font-family: GHGuardianHeadline-Bold
+  font-size: 16px;
+  font-family: GHGuardianHeadline-Bold;
 `;
 
 const ArticleHeading = styled('span')`
@@ -74,7 +70,7 @@ const ArticleHeading = styled('span')`
   font-family: GhGuardianHeadline-Medium;
 `;
 
-const ArticleHeadingSmall = styled(ArticleHeading)`
+const ArticleHeadingSmall = ArticleHeading.extend`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -160,7 +156,8 @@ const ArticleComponent = ({
           <ArticleHeadingContainer>
             <KickerHeading style={{ color: toneColorMap[article.tone] }}>
               {article.sectionName}
-            </KickerHeading>&nbsp;
+            </KickerHeading>
+            &nbsp;
             {size === 'default' ? (
               <ArticleHeading>{article.headline}</ArticleHeading>
             ) : (

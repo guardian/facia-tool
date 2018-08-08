@@ -14,6 +14,7 @@ module.exports = {
   ],
   plugins: [
     '@babel/plugin-proposal-object-rest-spread',
-    'transform-class-properties'
+    'transform-class-properties',
+    'babel-plugin-styled-components'
   ]
 };

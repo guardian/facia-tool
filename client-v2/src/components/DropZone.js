@@ -4,19 +4,21 @@ import styled from 'styled-components';
 const DropContainer = styled('div')`
   position: relative;
   height: 15px;
-  z-index: 1;
+`;
+
+const DropIndicator = styled('div')`
+  height: 100%;
+  pointer-events: none;
 `;
 
 class DropZone extends React.Component<{
-  onDrop: () => void,
-  hoist?: boolean,
-  color?: string
+  onDrop: (e: Event) => void,
+  onDragOver: (e: Event) => void,
+  style: Object,
+  indicatorStyle: Object
 }> {
   static defaultProps = {
-    // Hoisting the dropzone applies a negative margin
-    // to pull it up into its parent.
-    hoist: false,
-    color: 'rgba(0,0,0,0.2)'
+    style: {}
   };
   state = {
     isHoveredOver: false
@@ -36,18 +38,24 @@ class DropZone extends React.Component<{
   };
 
   render() {
+    const { onDragOver, style } = this.props;
     return (
       <DropContainer
-        {...this.props}
         onDragEnter={this.handleDragEnter}
         onDragLeave={this.handleDragLeave}
         onDragExit={this.handleDragLeave}
         onDrop={this.handleDrop}
-        style={{
-          backgroundColor: this.state.isHoveredOver ? this.props.color : null,
-          marginTop: this.props.hoist ? '-15px' : null
-        }}
-      />
+        onDragOver={onDragOver}
+        style={style}
+      >
+        <DropIndicator
+          style={{
+            ...this.props.indicatorStyle,
+            zIndex: this.state.isHoveredOver ? 1 : null,
+            backgroundColor: this.state.isHoveredOver ? 'rgba(199, 0, 0)' : null
+          }}
+        />
+      </DropContainer>
     );
   }
 }

@@ -22,15 +22,15 @@ const GroupDisplayComponent = ({
   groupName,
   children
 }: GroupDisplayComponentProps) => (
-  <GroupContainer>
+  <>
     {groupName && (
-      <>
+      <GroupContainer>
         <GroupHeading style={{ margin: 0 }}>{groupName}</GroupHeading>
         <HorizontalRule />
-      </>
+      </GroupContainer>
     )}
     {children}
-  </GroupContainer>
+  </>
 );
 
 export default GroupDisplayComponent;
