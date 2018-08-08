@@ -1,3 +1,5 @@
+// @flow
+
 import styled from 'styled-components';
 
 const ContainerHeading = styled('div')`

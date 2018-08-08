@@ -1,3 +1,5 @@
+// @flow
+
 import React from 'react';
 import styled from 'styled-components';
 
@@ -11,14 +13,18 @@ const DropIndicator = styled('div')`
   pointer-events: none;
 `;
 
-class DropZone extends React.Component<{
-  onDrop: (e: Event) => void,
-  onDragOver: (e: Event) => void,
-  style: Object,
-  indicatorStyle: Object
-}> {
+class DropZone extends React.Component<
+  {
+    onDrop: (e: DragEvent) => void,
+    onDragOver: (e: DragEvent) => void,
+    style: Object,
+    indicatorStyle: Object
+  },
+  { isHoveredOver: boolean }
+> {
   static defaultProps = {
-    style: {}
+    style: {},
+    indicatorStyle: {}
   };
   state = {
     isHoveredOver: false
@@ -32,7 +38,7 @@ class DropZone extends React.Component<{
     this.setState({ isHoveredOver: false });
   };
 
-  handleDrop = e => {
+  handleDrop = (e: DragEvent) => {
     this.setState({ isHoveredOver: false });
     return this.props.onDrop(e);
   };

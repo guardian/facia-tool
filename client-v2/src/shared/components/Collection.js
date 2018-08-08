@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import distanceFromNow from 'date-fns/distance_in_words_to_now';
 
-import ContainerHeading from 'components/typography/ContainerHeading';
+import ContainerHeading from './typography/ContainerHeading';
 import type { Collection } from '../types/Collection';
 import ButtonCircularCaret from './input/ButtonCircularCaret';
 import type { State } from '../types/State';

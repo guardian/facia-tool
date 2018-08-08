@@ -10,10 +10,7 @@ function groupsReceived(groups: { [string]: Group }): Action {
   };
 }
 
-function removeGroupArticleFragment(
-  id: string,
-  articleFragmentId: string
-): Action {
+function removeGroupArticleFragment(id: string, articleFragmentId: string) {
   return {
     type: 'SHARED/REMOVE_GROUP_ARTICLE_FRAGMENT',
     payload: {
@@ -27,7 +24,7 @@ function addGroupArticleFragment(
   id: string,
   articleFragmentId: string,
   index: number
-): Action {
+) {
   return {
     type: 'SHARED/ADD_GROUP_ARTICLE_FRAGMENT',
     payload: {

@@ -18,7 +18,7 @@ import type { Article } from '../types/Article';
 type ContainerProps = {
   id: string, // eslint-disable-line react/no-unused-prop-types
   draggable: boolean,
-  onDragStart: ?(DragEvent) => void,
+  onDragStart?: DragEvent => void,
   selectSharedState: (state: any) => State // eslint-disable-line react/no-unused-prop-types
 };
 

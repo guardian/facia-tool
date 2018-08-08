@@ -13,7 +13,7 @@ import type {
 } from 'shared/types/Collection';
 import { normaliseClipboard } from 'util/clipboardUtils';
 
-function removeClipboardArticleFragment(articleFragmentId: string): Action {
+function removeClipboardArticleFragment(articleFragmentId: string) {
   return {
     type: 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT',
     payload: {
@@ -22,10 +22,7 @@ function removeClipboardArticleFragment(articleFragmentId: string): Action {
   };
 }
 
-function addClipboardArticleFragment(
-  articleFragmentId: string,
-  index: number
-): Action {
+function addClipboardArticleFragment(articleFragmentId: string, index: number) {
   return {
     type: 'ADD_CLIPBOARD_ARTICLE_FRAGMENT',
     payload: {
