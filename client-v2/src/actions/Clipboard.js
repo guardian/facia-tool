@@ -1,7 +1,6 @@
 // @flow
 
 import type { ThunkAction } from 'types/Store';
-import type { Action } from 'types/Action';
 import { getClipboard, saveClipboard, getArticles } from 'services/faciaApi';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import { batchActions } from 'redux-batched-actions';
@@ -46,7 +45,7 @@ const removeClipboardArticleFragmentWithPersistence = addPersistMetaToAction(
   }
 );
 
-function fetchClipboardContentSuccess(clipboardContent: Array<string>): Action {
+function fetchClipboardContentSuccess(clipboardContent: Array<string>) {
   return {
     type: 'FETCH_CLIPBOARD_CONTENT_SUCCESS',
     payload: clipboardContent

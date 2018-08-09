@@ -1,9 +1,8 @@
 // @flow
 
 import type { Group } from 'shared/types/Collection';
-import type { Action } from '../types/Action';
 
-function groupsReceived(groups: { [string]: Group }): Action {
+function groupsReceived(groups: { [string]: Group }) {
   return {
     type: 'SHARED/GROUPS_RECEIVED',
     payload: groups
