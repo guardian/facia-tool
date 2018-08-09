@@ -3,9 +3,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+
 import CollectionDisplay from 'shared/components/Collection';
 import AlsoOnNotification from 'components/AlsoOnNotification';
-import Button from 'components/Button';
+import Button from 'shared/components/input/Button';
 import * as Guration from '@guardian/guration';
 import type { AlsoOnDetail } from 'types/Collection';
 import { publishCollection } from 'actions/Fronts';
