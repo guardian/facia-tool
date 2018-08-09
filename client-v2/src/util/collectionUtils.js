@@ -11,22 +11,14 @@ import {
 } from 'actions/ArticleFragments';
 import { type Action } from 'types/Action';
 import { type Move } from '@guardian/guration';
-import {
-  type AddGroupArticleFragment,
-  type AddSupportingArticleFragment,
-  type RemoveGroupArticleFragment,
-  type RemoveSupportingArticleFragment
-} from 'shared/types/Action';
 
 const fromMap: {
   [string]: { [string]: (move: Move) => Action }
 } = {
   articleFragment: {
-    articleFragment: ({
-      payload: { id, from }
-    }): RemoveSupportingArticleFragment =>
+    articleFragment: ({ payload: { id, from } }) =>
       removeSupportingArticleFragment(from.parent.id, id),
-    group: ({ payload: { id, from } }): RemoveGroupArticleFragment =>
+    group: ({ payload: { id, from } }) =>
       removeGroupArticleFragment(from.parent.id, id)
   }
 };
@@ -35,9 +27,9 @@ const toMap: {
   [string]: { [string]: (move: Move) => Action }
 } = {
   articleFragment: {
-    articleFragment: ({ payload: { id, to } }): AddSupportingArticleFragment =>
+    articleFragment: ({ payload: { id, to } }) =>
       addSupportingArticleFragment(to.parent.id, id, to.index),
-    group: ({ payload: { id, to } }): AddGroupArticleFragment =>
+    group: ({ payload: { id, to } }) =>
       addGroupArticleFragment(to.parent.id, id, to.index)
   }
 };
