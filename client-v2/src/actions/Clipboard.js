@@ -1,7 +1,6 @@
 // @flow
 
 import type { ThunkAction } from 'types/Store';
-import type { Action } from 'types/Action';
 import { getClipboard, saveClipboard, getArticles } from 'services/faciaApi';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import { batchActions } from 'redux-batched-actions';
@@ -13,7 +12,7 @@ import type {
 } from 'shared/types/Collection';
 import { normaliseClipboard } from 'util/clipboardUtils';
 
-function removeClipboardArticleFragment(articleFragmentId: string): Action {
+function removeClipboardArticleFragment(articleFragmentId: string) {
   return {
     type: 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT',
     payload: {
@@ -22,10 +21,7 @@ function removeClipboardArticleFragment(articleFragmentId: string): Action {
   };
 }
 
-function addClipboardArticleFragment(
-  articleFragmentId: string,
-  index: number
-): Action {
+function addClipboardArticleFragment(articleFragmentId: string, index: number) {
   return {
     type: 'ADD_CLIPBOARD_ARTICLE_FRAGMENT',
     payload: {
@@ -49,7 +45,7 @@ const removeClipboardArticleFragmentWithPersistence = addPersistMetaToAction(
   }
 );
 
-function fetchClipboardContentSuccess(clipboardContent: Array<string>): Action {
+function fetchClipboardContentSuccess(clipboardContent: Array<string>) {
   return {
     type: 'FETCH_CLIPBOARD_CONTENT_SUCCESS',
     payload: clipboardContent
