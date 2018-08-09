@@ -28,17 +28,20 @@ const CollectionContainer = styled('div')`
   background-color: #f6f6f6;
   width: 600px;
   position: relative;
-  margin: 10px;
   padding: 0 10px 10px 10px;
   box-shadow: 0 -1px 0 #333;
   border: 1px solid #c9c9c9;
   border-top: none;
+  & + & {
+    margin-top: 10px;
+  }
 `;
 
 const HeadlineContentContainer = styled('span')`
   position: relative;
   float: right;
   right: -11px;
+  line-height: 0px;
 `;
 
 const HeadlineMetaContainer = styled('div')`

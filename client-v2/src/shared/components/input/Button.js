@@ -11,7 +11,7 @@ const getColour = ({ selected, dark }) => {
 };
 
 export default styled(`button`)`
-  display: block;
+  display: inline-block;
   appearance: none;
   background: ${({ selected }) => (selected ? '#555555' : '#333333')};
   color: ${getColour};
@@ -25,5 +25,11 @@ export default styled(`button`)`
   :hover {
     background: #555555;
     cursor: pointer;
+  }
+  &:focus {
+    outline: transparent;
+  }
+  & + & {
+    margin-left: 1px;
   }
 `;
