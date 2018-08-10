@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux';
 import { type Dispatch } from 'types/Store';
 import styled from 'styled-components';
 import { batchActions } from 'redux-batched-actions';
+import flatten from 'lodash/flatten';
 import { fetchClipboardContent } from 'actions/Clipboard';
 import { type State } from 'types/State';
 import { urlToArticle } from 'util/collectionUtils';
@@ -24,7 +25,7 @@ type ClipboardPropsBeforeState = {};
 
 type ClipboardProps = ClipboardPropsBeforeState & {
   fetchClipboardContent: () => Promise<Array<String>>,
-  addArticleFragment: string => string,
+  addArticleFragment: string => Promise<string>,
   tree: Object, // TODO add typing,
   dispatch: Dispatch
 };
@@ -45,24 +46,29 @@ class Clipboard extends React.Component<ClipboardProps> {
   }
 
   handleChange = edits => {
-    const actions = edits.reduce((acc, edit) => {
+    const maybeActions = edits.reduce((acc, edit) => {
       switch (edit.type) {
         case 'MOVE': {
-          return [...acc, ...mapMoveEditToActions(edit)];
+          return [...acc, Promise.resolve(mapMoveEditToActions(edit))];
         }
         case 'INSERT': {
-          const uuid = this.props.addArticleFragment(edit.payload.id);
-          const payloadWithUuid = { ...edit.payload, id: uuid };
-          const insertWithUuid = { ...edit, payload: payloadWithUuid };
-          return [...acc, ...mapMoveInsertToActions(insertWithUuid)];
+          const editsPromise = this.props
+            .addArticleFragment(edit.payload.id)
+            .then(uuid => {
+              const payloadWithUuid = { ...edit.payload, id: uuid };
+              const insertWithUuid = { ...edit, payload: payloadWithUuid };
+              return mapMoveInsertToActions(insertWithUuid);
+            });
+          return [...acc, editsPromise];
         }
         default: {
           return acc;
         }
       }
     }, []);
-
-    this.props.dispatch(batchActions(actions));
+    Promise.all(maybeActions).then(actions => {
+      this.props.dispatch(batchActions(flatten(actions)));
+    });
   };
 
   render() {

@@ -65,7 +65,7 @@ const toMap: {
 };
 
 const toExternalMap: {
-  [string]: { [string]: (move: Move) => Action }
+  [string]: { [string]: (move: Insert) => Action }
 } = {
   articleFragment: {
     articleFragment: ({ payload: { id, path } }): Action =>
