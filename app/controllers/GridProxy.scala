@@ -4,40 +4,39 @@ import play.api.libs.json.{Json, Format}
 
 import scala.concurrent.{ExecutionContext, Future}
 import org.joda.time.DateTime
-import org.joda.time.format.{DateTimeFormat, ISODateTimeFormat}
+import org.joda.time.format.ISODateTimeFormat
 
-case class FrontUsageMetadata(addedBy: String, front: String)
-
-object FrontUsageMetadata {
-  implicit val jsonFromat: Format[FrontUsageMetadata] = Json.format[FrontUsageMetadata]
+object FrontUsageData {
+  implicit val jsonFromat: Format[FrontUsageData] = Json.format[FrontUsageData]
 }
 
-object GridUsageRequest {
-  implicit val jsonFromat: Format[GridUsageRequest] = Json.format[GridUsageRequest]
-}
+case class FrontUsageData(mediaId: String, front: String)
 
-case class GridUsageRequest(mediaId: String, containerId: String, usageId: String, usageStatus: String)
-
-case class GridUsageData(mediaId: String, dateAdded: String, containerId: String, usageId: String, usageStatus: String, frontUsageMetadata: FrontUsageMetadata)
+case class GridUsageData(dateAdded: String, addedBy: String, front: String, mediaId: String)
 
 object GridUsageData {
   implicit val jsonFormat: Format[GridUsageData] = Json.format[GridUsageData]
+}
+
+case class GridUsageRequest(data: GridUsageData)
+
+object GridUsageRequest {
+  implicit val jsonFormat: Format[GridUsageRequest] = Json.format[GridUsageRequest]
 }
 
 class GridProxy(val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
 
   def addUsage() = APIAuthAction.async { request =>
 
-    val usageRequest = request.body.asJson.flatMap(jsValue => jsValue.asOpt[GridUsageRequest])
+    val usageRequest = request.body.asJson.flatMap(jsValue => jsValue.asOpt[FrontUsageData])
     usageRequest match {
       case Some(parsedRequest) => {
 
         val gridUrl = s"${config.media.usageUrl}/usages/front"
 
-        val usageData = GridUsageData(parsedRequest.mediaId, new DateTime().toString(ISODateTimeFormat.dateTime), parsedRequest.containerId, parsedRequest.usageId,
-          parsedRequest.usageStatus, FrontUsageMetadata(request.user.email, parsedRequest.containerId))
+        val usageRequest = GridUsageRequest(GridUsageData(new DateTime().toString(ISODateTimeFormat.dateTime), request.user.email, parsedRequest.front, parsedRequest.mediaId))
 
-        val usageJson = Json.toJson(usageData)
+        val usageJson = Json.toJson(usageRequest)
         wsClient.url(gridUrl)
           .withHttpHeaders("X-Gu-Media-Key" -> config.media.key)
           .post(usageJson)
