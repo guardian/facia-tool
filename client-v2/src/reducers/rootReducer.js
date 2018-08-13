@@ -9,6 +9,7 @@ import error from './errorReducer';
 import path from './pathReducer';
 import unpublishedChanges from './unpublishedChangesReducer';
 import clipboard from './clipboardReducer';
+import editor from '../bundles/frontsUIBundle';
 
 const reducers = {
   config,
@@ -17,7 +18,8 @@ const reducers = {
   path,
   shared,
   unpublishedChanges,
-  clipboard
+  clipboard,
+  editor
 };
 
 export type Reducers = typeof reducers;

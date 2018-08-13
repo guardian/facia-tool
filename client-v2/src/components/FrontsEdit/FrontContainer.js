@@ -2,13 +2,13 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
+import { bindActionCreators } from 'redux';
 import distanceInWords from 'date-fns/distance_in_words';
 import startCase from 'lodash/startCase';
 import styled from 'styled-components';
 
-import getFrontsConfig, { fetchLastPressed } from 'actions/Fronts';
+import { fetchLastPressed } from 'actions/Fronts';
 import {
   getCollectionsAndArticles,
   updateCollection
@@ -24,10 +24,9 @@ import {
   lastPressedSelector
 } from 'selectors/frontsSelectors';
 import ScrollContainer from 'components/ScrollContainer';
-import type { PropsBeforeFetch } from './FrontsContainer';
 import Front from './Front';
-import BladeHeader from '../layout/BladeHeader';
-import BladeContent from '../layout/BladeContent';
+import SectionHeader from '../layout/SectionHeader';
+import SectionContent from '../layout/SectionContent';
 
 const FrontsHeaderMeta = styled('span')`
   position: relative;
@@ -40,13 +39,13 @@ const LastPressedContainer = styled('span')`
   margin-right: 6px;
 `;
 
-type FrontsComponentProps = PropsBeforeFetch & {
+type FrontsComponentProps = {
+  frontId: string,
   selectedFront: FrontConfig,
   alsoOn: { [string]: AlsoOnDetail },
   lastPressed: string,
   frontsActions: {
     getCollectionsAndArticles: (collectionIds: string[]) => Promise<void>,
-    getFrontsConfig: () => Promise<void>,
     fetchLastPressed: (frontId: string) => Promise<void>
   }
 };
@@ -60,16 +59,15 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
     browsingStage: frontStages.draft
   };
 
-  componentDidMount() {
-    this.props.frontsActions.getFrontsConfig();
+  componentWillMount() {
+    if (this.props.selectedFront) {
+      this.props.frontsActions.getCollectionsAndArticles(
+        this.props.selectedFront.collections
+      );
+    }
   }
 
   componentWillReceiveProps(nextProps: FrontsComponentProps) {
-    if (nextProps.selectedFront) {
-      nextProps.frontsActions.getCollectionsAndArticles(
-        nextProps.selectedFront.collections
-      );
-    }
     if (this.props.frontId !== nextProps.frontId || !this.props.lastPressed) {
       this.props.frontsActions.fetchLastPressed(nextProps.frontId);
     }
@@ -86,7 +84,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
       <ScrollContainer
         fixed={
           <React.Fragment>
-            <BladeHeader>
+            <SectionHeader>
               {this.props.selectedFront &&
                 startCase(this.props.selectedFront.id)}
               <FrontsHeaderMeta>
@@ -108,11 +106,11 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                   </Button>
                 ))}
               </FrontsHeaderMeta>
-            </BladeHeader>
+            </SectionHeader>
           </React.Fragment>
         }
       >
-        <BladeContent>
+        <SectionContent>
           {this.props.selectedFront && (
             <Front
               alsoOn={this.props.alsoOn}
@@ -120,7 +118,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
               browsingStage={this.state.browsingStage}
             />
           )}
-        </BladeContent>
+        </SectionContent>
       </ScrollContainer>
     );
   }
@@ -139,7 +137,6 @@ const createMapStateToProps = () => {
 const mapDispatchToProps = (dispatch: *) => ({
   frontsActions: bindActionCreators(
     {
-      getFrontsConfig,
       getCollectionsAndArticles,
       fetchLastPressed,
       updateCollection
