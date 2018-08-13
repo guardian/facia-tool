@@ -26,7 +26,7 @@ type Props = ContainerProps & {
 
 const CollectionContainer = styled('div')`
   background-color: #f6f6f6;
-  width: 600px;
+  width: 590px;
   position: relative;
   padding: 0 10px 10px 10px;
   box-shadow: 0 -1px 0 #333;

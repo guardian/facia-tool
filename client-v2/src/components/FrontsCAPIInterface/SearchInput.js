@@ -1,21 +1,25 @@
 // @flow
 
 import * as React from 'react';
+import styled from 'styled-components';
+
 import SearchQuery from '../CAPI/SearchQuery';
-import FrontsTagInput from './TagInput';
 import ScrollContainer from '../ScrollContainer';
 import TextInput from '../TextInput';
-import Row from '../Row';
-import Col from '../Col';
 
 type FrontsCAPISearchInputProps = {
-  children: *
+  children: *,
+  additionalFixedContent?: React.ComponentType<any>
 };
 
 type FrontsCAPISearchInputState = {
   q: ?string,
   tag: ?string
 };
+
+const InputContainer = styled('div')`
+  margin-bottom: 20px;
+`;
 
 class FrontsCAPISearchInput extends React.Component<
   FrontsCAPISearchInputProps,
@@ -45,28 +49,25 @@ class FrontsCAPISearchInput extends React.Component<
   };
 
   render() {
-    const { children } = this.props;
+    const {
+      children,
+      additionalFixedContent: AdditionalFixedContent
+    } = this.props;
     const { tag, q } = this.state;
 
     return (
       <ScrollContainer
         fixed={
-          <Row>
-            <Col>
+          <React.Fragment>
+            <InputContainer>
               <TextInput
                 placeholder="Search"
                 onChange={this.handleSearchInput}
                 onClear={this.clearInput}
-                width="100%"
               />
-            </Col>
-            <Col>
-              <FrontsTagInput
-                placeholder="Search tags"
-                onChange={this.handleTagInput}
-              />
-            </Col>
-          </Row>
+            </InputContainer>
+            {AdditionalFixedContent && <AdditionalFixedContent />}
+          </React.Fragment>
         }
       >
         <SearchQuery

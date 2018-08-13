@@ -2,27 +2,34 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import type { Match, RouterHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
+import getFrontsConfig from 'actions/Fronts';
+import { editorAddFront, selectEditorFronts } from 'bundles/frontsUIBundle';
 import FadeIn from 'shared/components/animation/FadeIn';
 import FrontsMenu from 'containers/FrontsMenu';
 import type { State } from 'types/State';
 import type { ActionError } from 'types/Action';
 import MoreImage from 'shared/images/icons/more.svg';
-import FrontsLayout from '../FrontsLayout';
-import FrontsContainer from './FrontsContainer';
-import Feed from '../Feed';
+import FrontContainer from './FrontContainer';
+import FeedSection from '../FeedSection';
 import ErrorBannner from '../ErrorBanner';
-import Clipboard from '../Clipboard';
 import ButtonOverlay from '../inputs/ButtonOverlay';
 import Overlay from '../layout/Overlay';
 import LargeSectionHeader from '../layout/LargeSectionHeader';
+import ScrollContainer from '../ScrollContainer';
+import SectionContainer from '../layout/SectionContainer';
+import SectionsContainer from '../layout/SectionsContainer';
 
 type Props = {
   match: Match,
   error: ActionError,
-  history: RouterHistory
+  history: RouterHistory,
+  frontIds: string[],
+  editorAddFront: (frontId: string) => void,
+  getFrontsConfig: () => void
 };
 
 const FrontsEditContainer = styled('div')`
@@ -40,12 +47,11 @@ const ButtonOverlayContainer = styled('div')`
 
 const FrontsMenuContainer = styled('div')`
   background-color: #333;
-  position: absolute;
+  position: fixed;
   height: 100%;
   width: 390px;
   top: 0;
   right: 0;
-  padding: 0 20px 20px;
   color: #fff;
   transition: transform 0.15s;
   transform: ${({ isOpen }) =>
@@ -53,7 +59,7 @@ const FrontsMenuContainer = styled('div')`
 `;
 
 const FrontsMenuHeading = LargeSectionHeader.extend`
-  padding: 10px 0;
+  padding: 10px;
   border-bottom: solid 1px #5e5e5e;
   margin-bottom: 10px;
 `;
@@ -64,10 +70,27 @@ const FrontsMenuSubHeading = styled('div')`
   font-weight: bold;
   line-height: 20px;
   border-bottom: solid 1px #5e5e5e;
+  max-height: 100%;
 `;
 
-const getFrontId = (frontId: ?string): string =>
-  frontId ? decodeURIComponent(frontId) : '';
+const FloatedFrontContainer = styled('div')`
+  float: left;
+  height: 100%;
+  width: 1011px;
+`;
+
+const FrontsMenuContent = styled('div')`
+  flex: 1;
+  padding: 0 20px;
+`;
+
+const FrontsMenuItems = styled('div')`
+  padding-left: 10px;
+`;
+
+const FeedContainer = SectionContainer.extend`
+  height: 100%;
+`;
 
 class FrontsEdit extends React.Component<
   Props,
@@ -79,6 +102,10 @@ class FrontsEdit extends React.Component<
     isFrontsMenuOpen: false
   };
 
+  componentWillMount() {
+    this.props.getFrontsConfig();
+  }
+
   toggleFrontsMenu = () => {
     this.setState({
       isFrontsMenuOpen: !this.state.isFrontsMenuOpen
@@ -87,28 +114,35 @@ class FrontsEdit extends React.Component<
 
   addFrontAndCloseMenu = (frontId: string) => {
     this.toggleFrontsMenu();
+    this.props.editorAddFront(frontId);
   };
 
   render() {
     return (
       <FrontsEditContainer>
         <ErrorBannner error={this.props.error} />
-        <FrontsLayout
-          left={<Feed />}
-          middle={<Clipboard />}
-          right={
-            <FrontsContainer
-              history={this.props.history}
-              priority={this.props.match.params.priority || ''}
-              frontId={getFrontId(this.props.match.params.frontId)}
-            />
-          }
-        />
-        {this.state.isFrontsMenuOpen && (
-          <FadeIn>
-            <Overlay />
-          </FadeIn>
-        )}
+        <SectionsContainer>
+          <FeedContainer>
+            <FeedSection />
+          </FeedContainer>
+          <SectionContainer>
+            {this.props.frontIds.map(frontId => (
+              <FloatedFrontContainer key={frontId}>
+                <FrontContainer
+                  key={frontId}
+                  history={this.props.history}
+                  priority={this.props.match.params.priority || ''}
+                  frontId={frontId}
+                />
+              </FloatedFrontContainer>
+            ))}
+          </SectionContainer>
+          {this.state.isFrontsMenuOpen && (
+            <FadeIn>
+              <Overlay />
+            </FadeIn>
+          )}
+        </SectionsContainer>
         <FrontsMenuContainer isOpen={this.state.isFrontsMenuOpen}>
           <ButtonOverlayContainer>
             <ButtonOverlay
@@ -118,9 +152,16 @@ class FrontsEdit extends React.Component<
               <img src={MoreImage} alt="" width="100%" height="100%" />
             </ButtonOverlay>
           </ButtonOverlayContainer>
-          <FrontsMenuHeading>Add Front</FrontsMenuHeading>
-          <FrontsMenuSubHeading>All</FrontsMenuSubHeading>
-          <FrontsMenu onSelect={this.addFrontAndCloseMenu} />
+          <ScrollContainer
+            fixed={<FrontsMenuHeading>Add Front</FrontsMenuHeading>}
+          >
+            <FrontsMenuContent>
+              <FrontsMenuSubHeading>All</FrontsMenuSubHeading>
+              <FrontsMenuItems>
+                <FrontsMenu onSelect={this.addFrontAndCloseMenu} />
+              </FrontsMenuItems>
+            </FrontsMenuContent>
+          </ScrollContainer>
         </FrontsMenuContainer>
       </FrontsEditContainer>
     );
@@ -128,7 +169,20 @@ class FrontsEdit extends React.Component<
 }
 
 const mapStateToProps = (state: State) => ({
-  error: state.error
+  error: state.error,
+  frontIds: selectEditorFronts(state)
 });
 
-export default connect(mapStateToProps)(FrontsEdit);
+const mapDispatchToProps = (dispatch: Dispatch) =>
+  bindActionCreators(
+    {
+      editorAddFront,
+      getFrontsConfig
+    },
+    dispatch
+  );
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FrontsEdit);

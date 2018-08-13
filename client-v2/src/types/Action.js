@@ -11,6 +11,11 @@ import type {
   RemoveSupportingArticleFragment as SharedRemoveSupportingArticleFragment,
   Action as SharedActions
 } from 'shared/types/Action';
+import type {
+  EditorAddFront,
+  EditorClearFronts,
+  EditorRemoveFront
+} from 'bundles/frontsUIBundle';
 import {
   type PersistCollectionMeta,
   type PersistClipboardMeta
@@ -143,7 +148,10 @@ type Action =
   | FetchClipboardContentSuccess
   | AddClipboardArticleFragment
   | RemoveClipboardArticleFragment
-  | AddClipboardContent;
+  | AddClipboardContent
+  | EditorAddFront
+  | EditorClearFronts
+  | EditorRemoveFront;
 
 type BatchedAction = {|
   type: 'BATCHING_REDUCER.BATCH',

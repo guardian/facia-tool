@@ -1,11 +1,12 @@
+// @flow
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import ButtonCircular from 'shared/components/input/ButtonCircular';
 import MoreImage from 'shared/images/icons/more.svg';
 
 type Props = {
-  fronts: { label: string, value: string },
+  fronts: { id: string, isOpen: boolean }[],
   onSelect: (frontId: string) => void
 };
 
@@ -25,6 +26,11 @@ const ListContainer = styled('ul')`
 
 const ListLabel = styled('span')`
   max-width: calc(100% - 30px);
+  ${({ isActive }) =>
+    !isActive &&
+    css`
+      color: #999;
+    `};
 `;
 
 const ButtonAdd = ButtonCircular.extend`
@@ -38,11 +44,13 @@ const FrontList = ({ fronts, onSelect }: Props) =>
   fronts ? (
     <ListContainer>
       {fronts.map(front => (
-        <ListItem key={front.value}>
-          <ListLabel>{front.label}</ListLabel>
-          <ButtonAdd href="#" onClick={() => onSelect(front.value)}>
-            <img src={MoreImage} alt="" width="100%" height="100%" />
-          </ButtonAdd>
+        <ListItem key={front.id}>
+          <ListLabel isActive={front.isOpen}>{front.id}</ListLabel>
+          {front.isOpen && (
+            <ButtonAdd href="#" onClick={() => onSelect(front.id)}>
+              <img src={MoreImage} alt="" width="100%" height="100%" />
+            </ButtonAdd>
+          )}
         </ListItem>
       ))}
     </ListContainer>

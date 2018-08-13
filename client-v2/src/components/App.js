@@ -3,7 +3,9 @@
 import React from 'react';
 import styled, { injectGlobal } from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
+
 import { priorities } from 'constants/priorities';
+import SectionHeader from './layout/SectionHeader';
 import GHGuardianHeadlineBoldTtf from '../fonts/headline/GHGuardianHeadline-Bold.ttf';
 import GHGuardianHeadlineBoldWoff from '../fonts/headline/GHGuardianHeadline-Bold.woff';
 import GHGuardianHeadlineBoldWoff2 from '../fonts/headline/GHGuardianHeadline-Bold.woff2';
@@ -73,8 +75,18 @@ const AppContainer = styled('div')`
   -webkit-font-smoothing: antialiased;
 `;
 
+const BackgroundHeader = styled('div')`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+`;
+
 const App = () => (
   <AppContainer>
+    <BackgroundHeader>
+      <SectionHeader />
+    </BackgroundHeader>
     <Switch>
       <Route
         exact

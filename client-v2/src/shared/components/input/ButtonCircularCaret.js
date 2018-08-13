@@ -8,7 +8,6 @@ import ButtonCircular from './ButtonCircular';
 
 const ButtonCircularWithTransition = ButtonCircular.extend`
   transition: transform 0.15s;
-  vertical-align: middle;
   display: inline-block;
   text-align: center;
   padding: 0;

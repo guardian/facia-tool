@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import * as Guration from 'guration';
 import { bindActionCreators } from 'redux';
 import { type Dispatch } from 'types/Store';
-import styled from 'styled-components';
 import { batchActions } from 'redux-batched-actions';
 import { fetchClipboardContent } from 'actions/Clipboard';
 import { type State } from 'types/State';
@@ -23,16 +22,6 @@ type ClipboardProps = ClipboardPropsBeforeState & {
   tree: Object, // TODO add typing,
   dispatch: Dispatch
 };
-
-const ClipboardContent = styled(`div`)`
-  background: white
-  color: black
-  padding: 5px
-`;
-
-const ClipboardContainer = styled(`div`)`
-  padding: 5px;
-`;
 
 class Clipboard extends React.Component<ClipboardProps> {
   componentDidMount() {
@@ -58,39 +47,36 @@ class Clipboard extends React.Component<ClipboardProps> {
     const { tree } = this.props;
     const treeKeysExist = Object.keys(tree).length > 0;
     return (
-      <ClipboardContainer>
-        Clipboard
+      <div>
         {treeKeysExist && (
-          <ClipboardContent>
-            <Guration.Root
-              id="clipboard"
-              type="clipboard"
-              onChange={this.handleChange}
-              dropMappers={{
-                text: text => urlToArticle(text)
-              }}
+          <Guration.Root
+            id="clipboard"
+            type="clipboard"
+            onChange={this.handleChange}
+            dropMappers={{
+              text: text => urlToArticle(text)
+            }}
+          >
+            <Guration.Level
+              arr={tree.articleFragments}
+              type="articleFragment"
+              getKey={({ uuid }) => uuid}
+              renderDrop={props => <DropZone {...props} />}
             >
-              <Guration.Level
-                arr={tree.articleFragments}
-                type="articleFragment"
-                getKey={({ uuid }) => uuid}
-                renderDrop={props => <DropZone {...props} />}
-              >
-                {(articleFragment, afDragProps) => (
-                  <ArticleFragment
-                    {...articleFragment}
-                    getDragProps={afDragProps}
-                  >
-                    {(supporting, sDragProps) => (
-                      <Supporting {...supporting} getDragProps={sDragProps} />
-                    )}
-                  </ArticleFragment>
-                )}
-              </Guration.Level>
-            </Guration.Root>
-          </ClipboardContent>
+              {(articleFragment, afDragProps) => (
+                <ArticleFragment
+                  {...articleFragment}
+                  getDragProps={afDragProps}
+                >
+                  {(supporting, sDragProps) => (
+                    <Supporting {...supporting} getDragProps={sDragProps} />
+                  )}
+                </ArticleFragment>
+              )}
+            </Guration.Level>
+          </Guration.Root>
         )}
-      </ClipboardContainer>
+      </div>
     );
   }
 }
