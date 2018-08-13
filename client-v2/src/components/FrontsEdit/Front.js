@@ -8,13 +8,24 @@ import { type Edit } from '@guardian/guration';
 /* eslint-enable import/no-duplicates */
 import { type State } from 'types/State';
 import { type Dispatch } from 'types/Store';
+import flatten from 'lodash/flatten';
 import {
   selectSharedState,
   createCollectionsAsTreeSelector
 } from 'shared/selectors/shared';
 // import { externalArticlesReceived } from 'shared/actions/ExternalArticles';
+import { bindActionCreators } from 'redux';
 import { batchActions } from 'redux-batched-actions';
-import { urlToArticle, mapMoveEditToActions } from 'util/collectionUtils';
+import {
+  removeGroupArticleFragment,
+  addGroupArticleFragment
+} from 'actions/Collections';
+import {
+  removeSupportingArticleFragment,
+  addSupportingArticleFragment
+} from 'actions/ArticleFragments';
+import { addArticleFragment } from 'shared/actions/ArticleFragments';
+import { urlToArticle } from 'util/collectionUtils';
 import type { AlsoOnDetail } from 'types/Collection';
 import Front from './CollectionComponents/Front';
 import Collection from './CollectionComponents/Collection';
@@ -31,6 +42,7 @@ type FrontPropsBeforeState = {
 
 type FrontProps = FrontPropsBeforeState & {
   tree: Object, // TODO add typings
+  addArticleFragment: string => Promise<string>,
   dispatch: Dispatch
 };
 
@@ -59,18 +71,66 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   };
 
   handleChange = edits => {
-    const actions = edits.reduce((acc, edit) => {
+    const getMoveActions = ({ payload: { id, from, to } }) => {
+      const getFromAction = () => {
+        if (from.parent.type === 'articleFragment') {
+          return removeSupportingArticleFragment(from.parent.id, id);
+        }
+
+        if (from.parent.type === 'group') {
+          return removeGroupArticleFragment(id);
+        }
+        return () => null;
+      };
+
+      const getToAction = () => {
+        if (to.parent.type === 'articleFragment') {
+          return addSupportingArticleFragment(to.parent.id, id, to.index);
+        }
+        if (to.parent.type === 'group') {
+          return addGroupArticleFragment(to.parent.id, id, to.index);
+        }
+        return () => null;
+      };
+
+      return [getFromAction(), getToAction()];
+    };
+
+    const getInsertActions = ({ payload: { id, path } }) => {
+      if (path.parent.type === 'articleFragment') {
+        return [addSupportingArticleFragment(path.parent.id, id, path.index)];
+      }
+
+      if (path.parent.type === 'group') {
+        return [addGroupArticleFragment(path.parent.id, id, path.index)];
+      }
+      return [() => null];
+    };
+
+    const futureActions = edits.reduce((acc, edit) => {
       switch (edit.type) {
         case 'MOVE': {
-          return [...acc, ...mapMoveEditToActions(edit)];
+          return [...acc, Promise.resolve(getMoveActions(edit))];
+        }
+
+        case 'INSERT': {
+          const editsPromise = this.props
+            .addArticleFragment(edit.payload.id)
+            .then(uuid => {
+              const payloadWithUuid = { ...edit.payload, id: uuid };
+              const insertWithUuid = { ...edit, payload: payloadWithUuid };
+              return getInsertActions(insertWithUuid);
+            });
+          return [...acc, editsPromise];
         }
         default: {
           return acc;
         }
       }
     }, []);
-
-    this.props.dispatch(batchActions(actions));
+    Promise.all(futureActions).then(actions => {
+      this.props.dispatch(batchActions(flatten(actions)));
+    });
   };
 
   render() {
@@ -92,7 +152,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
           type="front"
           onChange={this.handleChange}
           dropMappers={{
-            text: text => urlToArticle(text)
+            text: text => urlToArticle(text),
+            capi: capi => ({ type: 'articleFragment', id: capi })
           }}
         >
           <Front {...this.props.tree}>
@@ -137,7 +198,8 @@ const createMapStateToProps = () => {
   });
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
+const mapDispatchToProps = (dispatch: *) => ({
+  ...bindActionCreators({ addArticleFragment }, dispatch),
   dispatch
 });
 

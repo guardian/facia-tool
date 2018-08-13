@@ -99,7 +99,7 @@ class Clipboard extends React.Component<ClipboardProps> {
       return [() => null];
     };
 
-    const maybeActions = edits.reduce((acc, edit) => {
+    const futureActions = edits.reduce((acc, edit) => {
       switch (edit.type) {
         case 'MOVE': {
           return [...acc, Promise.resolve(getMoveActions(edit))];
@@ -119,7 +119,7 @@ class Clipboard extends React.Component<ClipboardProps> {
         }
       }
     }, []);
-    Promise.all(maybeActions).then(actions => {
+    Promise.all(futureActions).then(actions => {
       this.props.dispatch(batchActions(flatten(actions)));
     });
   };
