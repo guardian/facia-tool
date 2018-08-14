@@ -62,6 +62,7 @@ class FrontsCAPISearchInput extends React.Component<
             <InputContainer>
               <TextInput
                 placeholder="Search"
+                value={this.state.q || ''}
                 onChange={this.handleSearchInput}
                 onClear={this.clearInput}
               />

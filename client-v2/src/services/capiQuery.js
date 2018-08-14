@@ -28,6 +28,7 @@ type Element = ImageElement;
 type Article = {
   webTitle: string,
   webUrl: string,
+  webPublicationDate?: string,
   elements?: Element[],
   fields?: {
     trailText?: string,

@@ -4,7 +4,6 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import moreImage from 'shared/images/icons/more.svg';
-import searchImage from 'shared/images/icons/search.svg';
 
 const InputWrapper = styled('div')`
   position: relative;
@@ -63,14 +62,6 @@ const SmallRoundButtonOrange = SmallRoundButton.extend`
   }
 `;
 
-const SmallRoundButtonGrey = SmallRoundButton.extend`
-  background-color: #c4c4c4;
-  margin-left: 5px;
-  :hover {
-    background-color: #d4d4d4;
-  }
-`;
-
 const ButtonsContainer = styled('div')`
   position: absolute;
   top: 9px;
@@ -79,6 +70,7 @@ const ButtonsContainer = styled('div')`
 
 const ClearButtonIcon = styled('img')`
   transform: rotate(45deg);
+  vertical-align: middle;
 `;
 
 type TextInputProps = {
@@ -92,11 +84,14 @@ const TextInput = ({ onClear, ...props }: TextInputProps) => (
     {onClear && (
       <ButtonsContainer>
         <SmallRoundButtonOrange onClick={onClear} title="Clear search">
-          <ClearButtonIcon src={moreImage} alt="" height="22px" width="22px" />
+          <ClearButtonIcon
+            src={moreImage}
+            onClick={onClear}
+            alt=""
+            height="22px"
+            width="22px"
+          />
         </SmallRoundButtonOrange>
-        <SmallRoundButtonGrey onClick={onClear} title="Clear search">
-          <img src={searchImage} alt="" height="22px" width="22px" />
-        </SmallRoundButtonGrey>
       </ButtonsContainer>
     )}
   </InputWrapper>

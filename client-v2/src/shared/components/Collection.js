@@ -12,6 +12,7 @@ import type { State } from '../types/State';
 import { selectSharedState } from '../selectors/shared';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 import FadeIn from './animation/FadeIn';
+import ContentContainer from './layout/ContentContainer';
 
 type ContainerProps = {
   id: string, // eslint-disable-line react/no-unused-prop-types
@@ -24,17 +25,8 @@ type Props = ContainerProps & {
   children: ReactNode
 };
 
-const CollectionContainer = styled('div')`
-  background-color: #f6f6f6;
+const CollectionContainer = ContentContainer.extend`
   width: 590px;
-  position: relative;
-  padding: 0 10px 10px 10px;
-  box-shadow: 0 -1px 0 #333;
-  border: 1px solid #c9c9c9;
-  border-top: none;
-  & + & {
-    margin-top: 10px;
-  }
 `;
 
 const HeadlineContentContainer = styled('span')`

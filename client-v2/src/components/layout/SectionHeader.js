@@ -1,3 +1,5 @@
+// @flow
+
 import LargeSectionHeader from './LargeSectionHeader';
 
 const SectionHeader = LargeSectionHeader.extend`

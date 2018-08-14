@@ -12,7 +12,6 @@ import FeedItem from './FeedItem';
 import SearchInput from './FrontsCAPIInterface/SearchInput';
 import Loader from './Loader';
 import { capiFeedSpecsSelector } from '../selectors/configSelectors';
-import Row from './Row';
 import { RadioButton, RadioGroup } from './inputs/RadioButtons';
 
 type ErrorDisplayProps = {
@@ -49,9 +48,6 @@ type FeedState = {
 };
 
 const FeedContainer = styled('div')`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
   height: 100%;
 `;
 
@@ -89,6 +85,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
         <RadioGroup>
           {this.props.capiFeedSpecs.map(({ name }, i) => (
             <RadioButton
+              key={name}
               checked={i === this.state.capiFeedIndex}
               onChange={() => this.handleFeedClick(i)}
               label={name}
@@ -124,6 +121,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
                             ({
                               webTitle,
                               webUrl,
+                              webPublicationDate,
                               elements,
                               fields,
                               frontsMeta: { tone }
@@ -132,6 +130,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
                                 key={webUrl}
                                 title={webTitle}
                                 href={webUrl}
+                                publicationDate={webPublicationDate}
                                 tone={tone}
                                 trailText={fields && fields.trailText}
                                 thumbnailUrl={
