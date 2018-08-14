@@ -10,20 +10,13 @@ import { batchActions } from 'redux-batched-actions';
 import flatten from 'lodash/flatten';
 import { type State } from 'types/State';
 import { urlToArticle } from 'util/collectionUtils';
+import { getMoveActions, getInsertActions } from 'util/clipboardUtils';
 import { clipboardAsTreeSelector } from 'shared/selectors/shared';
 import ArticleFragment from 'components/FrontsEdit/CollectionComponents/ArticleFragment';
 import Supporting from 'components/FrontsEdit/CollectionComponents/Supporting';
 import DropZone from 'components/DropZone';
 import { addArticleFragment } from 'shared/actions/ArticleFragments';
-import {
-  removeClipboardArticleFragment,
-  addClipboardArticleFragment,
-  fetchClipboardContent
-} from 'actions/Clipboard';
-import {
-  removeSupportingArticleFragmentFromClipboard,
-  addSupportingArticleFragmentToClipboard
-} from 'actions/ArticleFragments';
+import { fetchClipboardContent } from 'actions/Clipboard';
 
 type ClipboardPropsBeforeState = {};
 
@@ -50,55 +43,6 @@ class Clipboard extends React.Component<ClipboardProps> {
   }
 
   handleChange = edits => {
-    const getMoveActions = ({ payload: { id, from, to } }) => {
-      const getFromAction = () => {
-        if (from.parent.type === 'articleFragment') {
-          return removeSupportingArticleFragmentFromClipboard(
-            from.parent.id,
-            id
-          );
-        }
-
-        if (from.parent.type === 'clipboard') {
-          return removeClipboardArticleFragment(id);
-        }
-        return () => null;
-      };
-
-      const getToAction = () => {
-        if (to.parent.type === 'articleFragment') {
-          return addSupportingArticleFragmentToClipboard(
-            to.parent.id,
-            id,
-            to.index
-          );
-        }
-        if (to.parent.type === 'clipboard') {
-          return addClipboardArticleFragment(id, to.index);
-        }
-        return () => null;
-      };
-
-      return [getFromAction(), getToAction()];
-    };
-
-    const getInsertActions = ({ payload: { id, path } }) => {
-      if (path.parent.type === 'articleFragment') {
-        return [
-          addSupportingArticleFragmentToClipboard(
-            path.parent.id,
-            id,
-            path.index
-          )
-        ];
-      }
-
-      if (path.parent.type === 'clipboard') {
-        return [addClipboardArticleFragment(id, path.index)];
-      }
-      return [() => null];
-    };
-
     const futureActions = edits.reduce((acc, edit) => {
       switch (edit.type) {
         case 'MOVE': {
@@ -120,7 +64,9 @@ class Clipboard extends React.Component<ClipboardProps> {
       }
     }, []);
     Promise.all(futureActions).then(actions => {
-      this.props.dispatch(batchActions(flatten(actions)));
+      this.props.dispatch(
+        batchActions(flatten(actions).filter(action => action !== null))
+      );
     });
   };
 

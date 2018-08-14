@@ -89,7 +89,9 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
       }
     }, []);
     Promise.all(futureActions).then(actions => {
-      this.props.dispatch(batchActions(flatten(actions)));
+      this.props.dispatch(
+        batchActions(flatten(actions).filter(action => action !== null))
+      );
     });
   };
 

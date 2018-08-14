@@ -1,6 +1,8 @@
 // @flow
 
 import { getURLCAPIID } from 'util/CAPIUtils';
+import { type Move, type Insert } from 'guration';
+import { type Action } from 'types/Action';
 import {
   removeGroupArticleFragment,
   addGroupArticleFragment
@@ -10,7 +12,9 @@ import {
   addSupportingArticleFragment
 } from 'actions/ArticleFragments';
 
-const getInsertActions = ({ payload: { id, path } }) => {
+const getInsertActions = ({
+  payload: { id, path }
+}: Insert): Array<null | Action> => {
   if (path.parent.type === 'articleFragment') {
     return [addSupportingArticleFragment(path.parent.id, id, path.index)];
   }
@@ -18,10 +22,12 @@ const getInsertActions = ({ payload: { id, path } }) => {
   if (path.parent.type === 'group') {
     return [addGroupArticleFragment(path.parent.id, id, path.index)];
   }
-  return [() => null];
+  return [null];
 };
 
-const getMoveActions = ({ payload: { id, from, to } }) => {
+const getMoveActions = ({
+  payload: { id, from, to }
+}: Move): Array<null | Action> => {
   const getFromAction = () => {
     if (from.parent.type === 'articleFragment') {
       return removeSupportingArticleFragment(from.parent.id, id);
@@ -30,7 +36,7 @@ const getMoveActions = ({ payload: { id, from, to } }) => {
     if (from.parent.type === 'group') {
       return removeGroupArticleFragment(from.parent.id, id);
     }
-    return () => null;
+    return null;
   };
 
   const getToAction = () => {
@@ -40,7 +46,7 @@ const getMoveActions = ({ payload: { id, from, to } }) => {
     if (to.parent.type === 'group') {
       return addGroupArticleFragment(to.parent.id, id, to.index);
     }
-    return () => null;
+    return null;
   };
 
   return [getFromAction(), getToAction()];
