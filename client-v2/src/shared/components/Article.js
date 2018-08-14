@@ -5,7 +5,9 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import distanceInWords from 'date-fns/distance_in_words_to_now';
 import noop from 'lodash/noop';
+import startCase from 'lodash/startCase';
 
+import toneColorMap from 'shared/util/toneColorMap';
 import { getThumbnail } from 'util/CAPIUtils';
 import {
   externalArticleFromArticleFragmentSelector,
@@ -102,7 +104,7 @@ const Thumbnail = styled('div')`
 
 const FirstPublished = styled('div')`
   font-size: 12px;
-  margin: 3px 0;
+  margin: 2px 0;
 `;
 
 const MetaPinline = styled('div')`
@@ -112,13 +114,6 @@ const MetaPinline = styled('div')`
   height: 20px;
   border-right: solid 1px #c9c9c9;
 `;
-
-const toneColorMap = {
-  news: '#c70000',
-  comment: '#ff7f0f',
-  feature: '#bb3b80',
-  media: '#0084c6'
-};
 
 const ArticleComponent = ({
   article,
@@ -144,7 +139,7 @@ const ArticleComponent = ({
         onDragStart={onDragStart}
       >
         <ArticleMetaContainer>
-          {size === 'default' && <Tone>{article.tone}</Tone>}
+          {size === 'default' && <Tone>{startCase(article.tone)}</Tone>}
           {article.firstPublicationDate && (
             <FirstPublished>
               {distanceInWords(new Date(article.firstPublicationDate))}

@@ -10,10 +10,9 @@ import { fetchClipboardContent } from 'actions/Clipboard';
 import { type State } from 'types/State';
 import { urlToArticle } from 'util/collectionUtils';
 import { clipboardAsTreeSelector } from 'shared/selectors/shared';
-import ArticleFragment from 'components/FrontsEdit/CollectionComponents/ArticleFragment';
-import Supporting from 'components/FrontsEdit/CollectionComponents/Supporting';
 import DropZone from 'components/DropZone';
 import { mapMoveEditToActions } from 'util/clipboardUtils';
+import ArticlePolaroid from 'shared/components/ArticlePolaroid';
 
 type ClipboardPropsBeforeState = {};
 
@@ -64,14 +63,10 @@ class Clipboard extends React.Component<ClipboardProps> {
               renderDrop={props => <DropZone {...props} />}
             >
               {(articleFragment, afDragProps) => (
-                <ArticleFragment
-                  {...articleFragment}
+                <ArticlePolaroid
+                  id={articleFragment.uuid}
                   getDragProps={afDragProps}
-                >
-                  {(supporting, sDragProps) => (
-                    <Supporting {...supporting} getDragProps={sDragProps} />
-                  )}
-                </ArticleFragment>
+                />
               )}
             </Guration.Level>
           </Guration.Root>

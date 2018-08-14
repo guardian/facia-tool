@@ -2,51 +2,40 @@
 
 import * as React from 'react';
 import styled from 'styled-components';
+import distanceInWords from 'date-fns/distance_in_words_to_now';
+import startCase from 'lodash/startCase';
+
+import toneColorMap from 'shared/util/toneColorMap';
 import { getPaths } from '../util/paths';
 
+const LinkContainer = styled('div')`
+  background-color: #f6f6f6;
+  display: none;
+  position: absolute;
+  bottom: 20px;
+  right: 10px;
+  border-radius: 2px;
+  padding: 1px 3px;
+`;
+
 const Container = styled('div')`
-  background-color: #fff;
-  border-bottom: 1px solid #222;
+  position: relative;
+  border-top: solid 1px #c9c9c9;
   color: #221133;
   display: flex;
   font-weight: 400;
-  padding: 0.5rem;
+  padding-bottom: 20px;
+  :hover ${LinkContainer} {
+    display: block;
+  }
 `;
 
 const Title = styled(`h2`)`
-  font-size: 16px;
-  margin: 0;
+  margin: 2px 0 0;
   vertical-align: top;
-`;
-
-const Image = styled(`img`)`
-  align-self: center;
-  flex-grow: 0;
-  height: auto;
-  margin-right: 0.5rem;
-  width: 100px;
-`;
-
-const Tone = styled('span')`
-  font-weight: 700;
-  opacity: 0.75;
-  margin-right: 0.25em;
-`;
-
-const Trail = styled('span')`
-  font-size: 0.875em;
-  margin-right: 0.25em;
-`;
-
-const MetaContainer = styled('div')`
-  flex-grow: 1;
-`;
-
-const LinkContainer = styled('div')`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 0;
-  margin-left: 0.5rem;
+  font-family: GHGuardianHeadline-Medium;
+  font-size: 16px;
+  font-weight: 500;
 `;
 
 const Link = styled(`a`).attrs({
@@ -54,10 +43,43 @@ const Link = styled(`a`).attrs({
   rel: 'noopener noreferrer'
 })`
   text-decoration: none;
-
-  :hover > * {
-    opacity: 0.85;
+  color: #333;
+  font-size: 12px;
+  :hover {
+    color: #555;
   }
+`;
+
+const MetaContainer = styled('div')`
+  position: relative;
+  float: left;
+  width: 80px;
+  padding: 0px 8px;
+`;
+
+const FirstPublished = styled('div')`
+  font-size: 12px;
+  margin: 2px 0;
+`;
+
+const Tone = styled('div')`
+  padding-top: 2px;
+  font-size: 12px;
+  font-family: TS3TextSans-Bold;
+`;
+
+const Body = styled('div')`
+  float: left;
+  width: calc(100% - 80px);
+  padding-left: 10px;
+`;
+
+const MetaPinline = styled('div')`
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 20px;
+  border-right: solid 1px #c9c9c9;
 `;
 
 type FeedItemProps = {
@@ -65,6 +87,7 @@ type FeedItemProps = {
   href: string,
   tone: string,
   thumbnailUrl: ?string,
+  publicationDate?: string,
   trailText?: ?string
 };
 
@@ -72,18 +95,30 @@ const FeedItem = ({
   title,
   href,
   tone,
-  thumbnailUrl,
+  publicationDate,
   trailText
 }: FeedItemProps) => (
   <Container>
-    {thumbnailUrl && <Image src={thumbnailUrl} />}
     <MetaContainer>
-      <Title>{title}</Title>
-      <Tone>{tone}</Tone>
-      <Trail dangerouslySetInnerHTML={{ __html: trailText }} />
+      <Tone
+        style={{
+          color: toneColorMap[tone] || '#c9c9c9'
+        }}
+      >
+        {startCase(tone)}
+      </Tone>
+      {publicationDate && (
+        <FirstPublished>
+          {distanceInWords(new Date(publicationDate))}
+        </FirstPublished>
+      )}
+      <MetaPinline />
     </MetaContainer>
+    <Body>
+      <Title>{title}</Title>
+    </Body>
     <LinkContainer>
-      <Link href={href}>Website</Link>
+      <Link href={href}>Website</Link>&nbsp;
       <Link href={getPaths(href).ophan}>Ophan</Link>
     </LinkContainer>
   </Container>

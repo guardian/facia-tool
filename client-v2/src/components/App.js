@@ -5,7 +5,7 @@ import styled, { injectGlobal } from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
 
 import { priorities } from 'constants/priorities';
-import SectionHeader from './layout/SectionHeader';
+import SectionHeaderWithLogo from './layout/SectionHeaderWithLogo';
 import GHGuardianHeadlineBoldTtf from '../fonts/headline/GHGuardianHeadline-Bold.ttf';
 import GHGuardianHeadlineBoldWoff from '../fonts/headline/GHGuardianHeadline-Bold.woff';
 import GHGuardianHeadlineBoldWoff2 from '../fonts/headline/GHGuardianHeadline-Bold.woff2';
@@ -85,7 +85,7 @@ const BackgroundHeader = styled('div')`
 const App = () => (
   <AppContainer>
     <BackgroundHeader>
-      <SectionHeader />
+      <SectionHeaderWithLogo />
     </BackgroundHeader>
     <Switch>
       <Route
