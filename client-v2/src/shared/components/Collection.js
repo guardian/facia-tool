@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import distanceFromNow from 'date-fns/distance_in_words_to_now';
 
-import ContainerHeading from './typography/ContainerHeading';
+import ContainerHeadingPinline from './typography/ContainerHeadingPinline';
 import type { Collection } from '../types/Collection';
 import ButtonCircularCaret from './input/ButtonCircularCaret';
 import type { State } from '../types/State';
@@ -26,6 +26,7 @@ type Props = ContainerProps & {
 };
 
 const CollectionContainer = ContentContainer.extend`
+  flex: 1;
   width: 590px;
 `;
 
@@ -42,13 +43,6 @@ const HeadlineMetaContainer = styled('div')`
   font-family: TS3TextSans;
   font-size: 12px;
   font-weight: normal;
-`;
-
-const ContainerHeadingWithPinline = ContainerHeading.extend`
-  border-bottom: 1px solid #c4c4c4;
-  height: 40px;
-  line-height: 40px;
-  vertical-align: middle;
 `;
 
 const UpdatedByContainer = styled('span')`
@@ -68,7 +62,7 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
     const { collection, headlineContent, children }: Props = this.props;
     return collection ? (
       <CollectionContainer>
-        <ContainerHeadingWithPinline>
+        <ContainerHeadingPinline>
           {collection.displayName}
           {headlineContent && (
             <HeadlineContentContainer>
@@ -87,7 +81,7 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
               onClick={this.toggleVisibility}
             />
           </HeadlineMetaContainer>
-        </ContainerHeadingWithPinline>
+        </ContainerHeadingPinline>
         {this.state.isOpen && <FadeIn>{children}</FadeIn>}
       </CollectionContainer>
     ) : (

@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 
 import CollectionDisplay from 'shared/components/Collection';
 import AlsoOnNotification from 'components/AlsoOnNotification';
-import Button from 'shared/components/input/Button';
+import Button from 'shared/components/input/ButtonDefault';
 import * as Guration from '@guardian/guration';
 import type { AlsoOnDetail } from 'types/Collection';
 import { publishCollection } from 'actions/Fronts';

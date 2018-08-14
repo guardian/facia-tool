@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 /* eslint-disable import/no-duplicates */
 import * as Guration from '@guardian/guration';
@@ -21,6 +22,11 @@ import Collection from './CollectionComponents/Collection';
 import Group from './CollectionComponents/Group';
 import ArticleFragment from './CollectionComponents/ArticleFragment';
 import Supporting from './CollectionComponents/Supporting';
+import CollectionFormContainer from './CollectionFormContainer';
+
+const FrontContainer = styled('div')`
+  display: flex;
+`;
 
 type FrontPropsBeforeState = {
   browsingStage: string,
@@ -87,38 +93,41 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
         >
           {this.state.error}
         </div>
-        <Guration.Root
-          id={this.props.tree.id}
-          type="front"
-          onChange={this.handleChange}
-          dropMappers={{
-            text: text => urlToArticle(text)
-          }}
-        >
-          <Front {...this.props.tree}>
-            {collection => (
-              <Collection {...collection} alsoOn={this.props.alsoOn}>
-                {group => (
-                  <Group {...group}>
-                    {(articleFragment, afDragProps) => (
-                      <ArticleFragment
-                        {...articleFragment}
-                        getDragProps={afDragProps}
-                      >
-                        {(supporting, sDragProps) => (
-                          <Supporting
-                            {...supporting}
-                            getDragProps={sDragProps}
-                          />
-                        )}
-                      </ArticleFragment>
-                    )}
-                  </Group>
-                )}
-              </Collection>
-            )}
-          </Front>
-        </Guration.Root>
+        <FrontContainer>
+          <Guration.Root
+            id={this.props.tree.id}
+            type="front"
+            onChange={this.handleChange}
+            dropMappers={{
+              text: text => urlToArticle(text)
+            }}
+          >
+            <Front {...this.props.tree}>
+              {collection => (
+                <Collection {...collection} alsoOn={this.props.alsoOn}>
+                  {group => (
+                    <Group {...group}>
+                      {(articleFragment, afDragProps) => (
+                        <ArticleFragment
+                          {...articleFragment}
+                          getDragProps={afDragProps}
+                        >
+                          {(supporting, sDragProps) => (
+                            <Supporting
+                              {...supporting}
+                              getDragProps={sDragProps}
+                            />
+                          )}
+                        </ArticleFragment>
+                      )}
+                    </Group>
+                  )}
+                </Collection>
+              )}
+            </Front>
+          </Guration.Root>
+          <CollectionFormContainer />
+        </FrontContainer>
       </React.Fragment>
     );
   }

@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { css } from 'styled-components';
 
-import Button from 'shared/components/input/Button';
+import Button from 'shared/components/input/ButtonDefault';
 
 const ButtonWithShadow = Button.extend`
   box-shadow: 0 1px 10px 2px rgba(0, 0, 0, 0.15);
