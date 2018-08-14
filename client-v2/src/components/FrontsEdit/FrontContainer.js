@@ -13,7 +13,7 @@ import {
   getCollectionsAndArticles,
   updateCollection
 } from 'actions/Collections';
-import Button from 'shared/components/input/Button';
+import Button from 'shared/components/input/ButtonDefault';
 import { frontStages } from 'constants/fronts';
 import type { FrontConfig } from 'types/FaciaApi';
 import type { State } from 'types/State';
