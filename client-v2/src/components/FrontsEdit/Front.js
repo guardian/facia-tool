@@ -16,10 +16,12 @@ import {
 // import { externalArticlesReceived } from 'shared/actions/ExternalArticles';
 import { bindActionCreators } from 'redux';
 import { batchActions } from 'redux-batched-actions';
-import { addGroupArticleFragment } from 'actions/Collections';
-import { addSupportingArticleFragment } from 'actions/ArticleFragments';
 import { addArticleFragment } from 'shared/actions/ArticleFragments';
-import { urlToArticle, getMoveActions } from 'util/collectionUtils';
+import {
+  urlToArticle,
+  getMoveActions,
+  getInsertActions
+} from 'util/collectionUtils';
 import type { AlsoOnDetail } from 'types/Collection';
 import Front from './CollectionComponents/Front';
 import Collection from './CollectionComponents/Collection';
@@ -65,17 +67,6 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   };
 
   handleChange = edits => {
-    const getInsertActions = ({ payload: { id, path } }) => {
-      if (path.parent.type === 'articleFragment') {
-        return [addSupportingArticleFragment(path.parent.id, id, path.index)];
-      }
-
-      if (path.parent.type === 'group') {
-        return [addGroupArticleFragment(path.parent.id, id, path.index)];
-      }
-      return [() => null];
-    };
-
     const futureActions = edits.reduce((acc, edit) => {
       switch (edit.type) {
         case 'MOVE': {

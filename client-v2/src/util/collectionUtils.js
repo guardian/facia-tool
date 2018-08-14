@@ -10,6 +10,17 @@ import {
   addSupportingArticleFragment
 } from 'actions/ArticleFragments';
 
+const getInsertActions = ({ payload: { id, path } }) => {
+  if (path.parent.type === 'articleFragment') {
+    return [addSupportingArticleFragment(path.parent.id, id, path.index)];
+  }
+
+  if (path.parent.type === 'group') {
+    return [addGroupArticleFragment(path.parent.id, id, path.index)];
+  }
+  return [() => null];
+};
+
 const getMoveActions = ({ payload: { id, from, to } }) => {
   const getFromAction = () => {
     if (from.parent.type === 'articleFragment') {
@@ -46,4 +57,4 @@ const urlToArticle = (text: string) => {
     : 'Can`t covert text to article';
 };
 
-export { urlToArticle, getMoveActions };
+export { urlToArticle, getMoveActions, getInsertActions };
