@@ -16,16 +16,10 @@ import {
 // import { externalArticlesReceived } from 'shared/actions/ExternalArticles';
 import { bindActionCreators } from 'redux';
 import { batchActions } from 'redux-batched-actions';
-import {
-  removeGroupArticleFragment,
-  addGroupArticleFragment
-} from 'actions/Collections';
-import {
-  removeSupportingArticleFragment,
-  addSupportingArticleFragment
-} from 'actions/ArticleFragments';
+import { addGroupArticleFragment } from 'actions/Collections';
+import { addSupportingArticleFragment } from 'actions/ArticleFragments';
 import { addArticleFragment } from 'shared/actions/ArticleFragments';
-import { urlToArticle } from 'util/collectionUtils';
+import { urlToArticle, getMoveActions } from 'util/collectionUtils';
 import type { AlsoOnDetail } from 'types/Collection';
 import Front from './CollectionComponents/Front';
 import Collection from './CollectionComponents/Collection';
@@ -71,31 +65,6 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   };
 
   handleChange = edits => {
-    const getMoveActions = ({ payload: { id, from, to } }) => {
-      const getFromAction = () => {
-        if (from.parent.type === 'articleFragment') {
-          return removeSupportingArticleFragment(from.parent.id, id);
-        }
-
-        if (from.parent.type === 'group') {
-          return removeGroupArticleFragment(id);
-        }
-        return () => null;
-      };
-
-      const getToAction = () => {
-        if (to.parent.type === 'articleFragment') {
-          return addSupportingArticleFragment(to.parent.id, id, to.index);
-        }
-        if (to.parent.type === 'group') {
-          return addGroupArticleFragment(to.parent.id, id, to.index);
-        }
-        return () => null;
-      };
-
-      return [getFromAction(), getToAction()];
-    };
-
     const getInsertActions = ({ payload: { id, path } }) => {
       if (path.parent.type === 'articleFragment') {
         return [addSupportingArticleFragment(path.parent.id, id, path.index)];
