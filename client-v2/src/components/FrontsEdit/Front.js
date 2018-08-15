@@ -24,18 +24,28 @@ import {
   getInsertActions
 } from 'util/collectionUtils';
 import type { AlsoOnDetail } from 'types/Collection';
+import {
+  editorSelectArticleFragment,
+  selectEditorArticleFragment,
+  editorClearArticleFragmentSelection
+} from 'bundles/frontsUIBundle';
 import Front from './CollectionComponents/Front';
 import Collection from './CollectionComponents/Collection';
 import Group from './CollectionComponents/Group';
 import ArticleFragment from './CollectionComponents/ArticleFragment';
 import Supporting from './CollectionComponents/Supporting';
-import CollectionFormContainer from './CollectionFormContainer';
+import ArticleFragmentFormContainer from './ArticleFragmentFormContainer';
 
 const FrontContainer = styled('div')`
   display: flex;
 `;
 
+const FrontContentContainer = styled('div')`
+  max-width: 600px;
+`;
+
 type FrontPropsBeforeState = {
+  id: string,
   browsingStage: string,
   collections: string[],
   alsoOn: { [string]: AlsoOnDetail },
@@ -43,9 +53,17 @@ type FrontPropsBeforeState = {
 };
 
 type FrontProps = FrontPropsBeforeState & {
+<<<<<<< HEAD
   tree: Object, // TODO add typings
   addArticleFragment: string => Promise<string>,
   dispatch: Dispatch
+=======
+  tree: Object, // TODO add typings,
+  selectedArticleFragmentId: ?string,
+  dispatch: Dispatch,
+  selectArticleFragment: (id: string) => void,
+  clearArticleFragmentSelection: () => void
+>>>>>>> Began a War on Floats; reducer logic for article selection; some more presentation logic for form display
 };
 
 type FrontState = {
@@ -116,40 +134,54 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
           {this.state.error}
         </div>
         <FrontContainer>
-          <Guration.Root
-            id={this.props.tree.id}
-            type="front"
-            onChange={this.handleChange}
-            dropMappers={{
-              text: text => urlToArticle(text)
-              capi: capi => ({ type: 'articleFragment', id: capi })
-            }}
-          >
-            <Front {...this.props.tree}>
-              {collection => (
-                <Collection {...collection} alsoOn={this.props.alsoOn}>
-                  {group => (
-                    <Group {...group}>
-                      {(articleFragment, afDragProps) => (
-                        <ArticleFragment
-                          {...articleFragment}
-                          getDragProps={afDragProps}
-                        >
-                          {(supporting, sDragProps) => (
-                            <Supporting
-                              {...supporting}
-                              getDragProps={sDragProps}
-                            />
-                          )}
-                        </ArticleFragment>
-                      )}
-                    </Group>
-                  )}
-                </Collection>
-              )}
-            </Front>
-          </Guration.Root>
-          <CollectionFormContainer />
+          <FrontContentContainer>
+            <Guration.Root
+              id={this.props.tree.id}
+              type="front"
+              onChange={this.handleChange}
+              dropMappers={{
+                text: text => urlToArticle(text)
+                capi: capi => ({ type: 'articleFragment', id: capi })
+              }}
+            >
+              <Front {...this.props.tree}>
+                {collection => (
+                  <Collection {...collection} alsoOn={this.props.alsoOn}>
+                    {group => (
+                      <Group {...group}>
+                        {(articleFragment, afDragProps) => (
+                          <ArticleFragment
+                            {...articleFragment}
+                            getDragProps={afDragProps}
+                            onSelect={this.props.selectArticleFragment}
+                            isSelected={
+                              !this.props.selectedArticleFragmentId ||
+                              this.props.selectedArticleFragmentId ===
+                                articleFragment.uuid
+                            }
+                          >
+                            {(supporting, sDragProps) => (
+                              <Supporting
+                                {...supporting}
+                                getDragProps={sDragProps}
+                              />
+                            )}
+                          </ArticleFragment>
+                        )}
+                      </Group>
+                    )}
+                  </Collection>
+                )}
+              </Front>
+            </Guration.Root>
+          </FrontContentContainer>
+          {this.props.selectedArticleFragmentId && (
+            <ArticleFragmentFormContainer
+              articleFragmentId={this.props.selectedArticleFragmentId}
+              onSave={() => {}}
+              onCancel={this.props.clearArticleFragmentSelection}
+            />
+          )}
         </FrontContainer>
       </React.Fragment>
     );
@@ -165,16 +197,37 @@ const createMapStateToProps = () => {
       stage: props.browsingStage,
       collectionIds: props.collectionIds
     }),
-    unpublishedChanges: state.unpublishedChanges
+    unpublishedChanges: state.unpublishedChanges,
+    selectedArticleFragmentId: selectEditorArticleFragment(state, props.id)
   });
 };
 
+<<<<<<< HEAD
 const mapDispatchToProps = (dispatch: *) => ({
   ...bindActionCreators({ addArticleFragment }, dispatch),
   dispatch
+=======
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  dispatch,
+  selectArticleFragment: (frontId: string, articleFragmentId: string) =>
+    dispatch(editorSelectArticleFragment(frontId, articleFragmentId)),
+  clearArticleFragmentSelection: (frontId: string) =>
+    dispatch(editorClearArticleFragmentSelection(frontId))
+});
+
+const mergeProps = (stateProps, dispatchProps, props) => ({
+  ...props,
+  ...stateProps,
+  ...dispatchProps,
+  selectArticleFragment: (articleId: string) =>
+    dispatchProps.selectArticleFragment(props.id, articleId),
+  clearArticleFragmentSelection: () =>
+    dispatchProps.clearArticleFragmentSelection(props.id)
+>>>>>>> Began a War on Floats; reducer logic for article selection; some more presentation logic for form display
 });
 
 export default connect(
   createMapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  mergeProps
 )(FrontComponent);

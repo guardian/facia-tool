@@ -35,6 +35,7 @@ const ArticleContainer = Clearfix.extend`
 `;
 
 const ArticleBodyContainer = Clearfix.extend`
+  display: flex;
   position: relative;
   border-top: 1px solid #333;
   min-height: 35px;
@@ -43,14 +44,12 @@ const ArticleBodyContainer = Clearfix.extend`
 
 const ArticleMetaContainer = styled('div')`
   position: relative;
-  float: left;
   width: 80px;
   padding: 0px 8px;
 `;
 
 const ArticleContentContainer = styled('div')`
   position: relative;
-  float: left;
   width: calc(100% - 210px);
   margin-top: 2px;
   padding: 0 8px;
@@ -98,7 +97,6 @@ const ArticleHeadingContainerSmall = styled('div')`
 const Thumbnail = styled('div')`
   width: 130px;
   height: 83px;
-  float: right;
   background-size: cover;
 `;
 

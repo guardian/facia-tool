@@ -27,19 +27,19 @@ type Props = ContainerProps & {
 
 const CollectionContainer = ContentContainer.extend`
   flex: 1;
-  width: 590px;
+  width: 600px;
 `;
 
 const HeadlineContentContainer = styled('span')`
   position: relative;
-  float: right;
+  margin-left: auto;
   right: -11px;
   line-height: 0px;
 `;
 
 const HeadlineMetaContainer = styled('div')`
   position: relative;
-  float: right;
+  margin-left: auto;
   font-family: TS3TextSans;
   font-size: 12px;
   font-weight: normal;
@@ -47,6 +47,13 @@ const HeadlineMetaContainer = styled('div')`
 
 const UpdatedByContainer = styled('span')`
   margin-right: 6px;
+`;
+
+const CollectionHeadingText = styled('span')`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
 `;
 
 class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
@@ -63,12 +70,9 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
     return collection ? (
       <CollectionContainer>
         <ContainerHeadingPinline>
-          {collection.displayName}
-          {headlineContent && (
-            <HeadlineContentContainer>
-              {headlineContent}
-            </HeadlineContentContainer>
-          )}
+          <CollectionHeadingText>
+            {collection.displayName}
+          </CollectionHeadingText>
           <HeadlineMetaContainer>
             <UpdatedByContainer>
               <b>{collection.updatedBy}</b>
@@ -81,6 +85,11 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
               onClick={this.toggleVisibility}
             />
           </HeadlineMetaContainer>
+          {headlineContent && (
+            <HeadlineContentContainer>
+              {headlineContent}
+            </HeadlineContentContainer>
+          )}
         </ContainerHeadingPinline>
         {this.state.isOpen && <FadeIn>{children}</FadeIn>}
       </CollectionContainer>

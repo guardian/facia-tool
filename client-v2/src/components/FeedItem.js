@@ -19,6 +19,7 @@ const LinkContainer = styled('div')`
 `;
 
 const Container = styled('div')`
+  display: flex;
   position: relative;
   border-top: solid 1px #c9c9c9;
   color: #221133;
@@ -52,7 +53,6 @@ const Link = styled(`a`).attrs({
 
 const MetaContainer = styled('div')`
   position: relative;
-  float: left;
   width: 80px;
   padding: 0px 8px;
 `;
@@ -69,7 +69,6 @@ const Tone = styled('div')`
 `;
 
 const Body = styled('div')`
-  float: left;
   width: calc(100% - 80px);
   padding-left: 10px;
 `;
@@ -87,23 +86,14 @@ type FeedItemProps = {
   href: string,
   tone: string,
   internalPageCode: ?string,
-  thumbnailUrl: ?string,
-  publicationDate?: string,
-  trailText?: ?string
+  publicationDate?: string
 };
 
 const dragStart = (href, event) => {
   event.dataTransfer.setData('capi', href);
 };
 
-const FeedItem = ({
-  title,
-  href,
-  tone,
-  publicationDate,
-  trailText,
-  internalPageCode
-}: FeedItemProps) => (
+const FeedItem = ({ title, href, tone, publicationDate, internalPageCode }: FeedItemProps) => (
   <div
     draggable="true"
     onDragStart={event => dragStart(internalPageCode, event)}
