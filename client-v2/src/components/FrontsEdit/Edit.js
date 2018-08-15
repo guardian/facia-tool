@@ -33,8 +33,7 @@ const FrontsEditContainer = styled('div')`
   overflow: hidden;
 `;
 
-const FloatedFrontContainer = styled('div')`
-  float: left;
+const SingleFrontContainer = styled('div')`
   height: 100%;
   width: 1011px;
 `;
@@ -58,14 +57,14 @@ class FrontsEdit extends React.Component<Props> {
           </FeedContainer>
           <SectionContainer>
             {this.props.frontIds.map(frontId => (
-              <FloatedFrontContainer key={frontId}>
+              <SingleFrontContainer key={frontId}>
                 <FrontContainer
                   key={frontId}
                   history={this.props.history}
                   priority={this.props.match.params.priority || ''}
                   frontId={frontId}
                 />
-              </FloatedFrontContainer>
+              </SingleFrontContainer>
             ))}
           </SectionContainer>
         </SectionsContainer>

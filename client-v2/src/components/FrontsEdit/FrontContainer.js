@@ -28,11 +28,22 @@ import Front from './Front';
 import SectionHeader from '../layout/SectionHeader';
 import SectionContent from '../layout/SectionContent';
 
-const FrontsHeaderMeta = styled('span')`
+const FrontHeader = SectionHeader.extend`
+  display: flex;
+`;
+
+const FrontHeaderMeta = styled('span')`
   position: relative;
-  float: right;
+  margin-left: auto;
   font-family: TS3TextSans;
   font-size: 14px;
+  white-space: nowrap;
+`;
+
+const FrontsHeaderText = styled('span')`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const LastPressedContainer = styled('span')`
@@ -84,10 +95,12 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
       <ScrollContainer
         fixed={
           <React.Fragment>
-            <SectionHeader>
-              {this.props.selectedFront &&
-                startCase(this.props.selectedFront.id)}
-              <FrontsHeaderMeta>
+            <FrontHeader>
+              <FrontsHeaderText>
+                {this.props.selectedFront &&
+                  startCase(this.props.selectedFront.id)}
+              </FrontsHeaderText>
+              <FrontHeaderMeta>
                 <LastPressedContainer>
                   {this.props.lastPressed &&
                     `Last refreshed ${distanceInWords(
@@ -105,14 +118,15 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                     {frontStages[key]}
                   </Button>
                 ))}
-              </FrontsHeaderMeta>
-            </SectionHeader>
+              </FrontHeaderMeta>
+            </FrontHeader>
           </React.Fragment>
         }
       >
         <SectionContent>
           {this.props.selectedFront && (
             <Front
+              id={this.props.frontId}
               alsoOn={this.props.alsoOn}
               collectionIds={this.props.selectedFront.collections}
               browsingStage={this.state.browsingStage}

@@ -14,7 +14,9 @@ import type {
 import type {
   EditorAddFront,
   EditorClearFronts,
-  EditorRemoveFront
+  EditorRemoveFront,
+  EditorSelectArticleFragment,
+  EditorClearArticleFragmentSelection
 } from 'bundles/frontsUIBundle';
 import {
   type PersistCollectionMeta,
@@ -151,7 +153,9 @@ type Action =
   | AddClipboardContent
   | EditorAddFront
   | EditorClearFronts
-  | EditorRemoveFront;
+  | EditorRemoveFront
+  | EditorSelectArticleFragment
+  | EditorClearArticleFragmentSelection;
 
 type BatchedAction = {|
   type: 'BATCHING_REDUCER.BATCH',

@@ -3,6 +3,7 @@
 import styled from 'styled-components';
 
 const ContainerHeading = styled('div')`
+  display: flex;
   font-family: GHGuardianHeadline-Bold;
   font-size: 22px;
   line-height: 22px;
