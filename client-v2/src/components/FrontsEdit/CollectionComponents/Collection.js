@@ -31,12 +31,16 @@ const Collection = ({
   hasUnpublishedChanges,
   publishCollection: publish
 }: CollectionProps) => (
-  <CollectionDisplay id={id}>
-    {hasUnpublishedChanges && (
-      <Button dark onClick={() => publish(id)}>
-        Launch
-      </Button>
-    )}
+  <CollectionDisplay
+    id={id}
+    headlineContent={
+      hasUnpublishedChanges && (
+        <Button dark onClick={() => publish(id)}>
+          Launch
+        </Button>
+      )
+    }
+  >
     <AlsoOnNotification alsoOn={alsoOn[id]} />
     <Guration.Level arr={groups} type="group" getKey={({ uuid: key }) => key}>
       {children}

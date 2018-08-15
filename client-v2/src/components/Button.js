@@ -11,18 +11,19 @@ const getColour = ({ selected, dark }) => {
 };
 
 export default styled(`button`)`
+  display: block;
   appearance: none;
-  background: ${({ selected }) => (selected ? 'white' : 'transparent')};
-  border: 1px solid #fff;
+  background: ${({ selected }) => (selected ? '#555555' : '#333333')};
   color: ${getColour};
-
+  height: 40px;
+  font-family: TS3TextSans;
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+  padding: 0 25px;
+  border: none;
   :hover {
-    background: #fff;
-    color: #221133;
+    background: #555555;
     cursor: pointer;
-  }
-
-  :focus {
-    border: 2px solid #fff;
   }
 `;

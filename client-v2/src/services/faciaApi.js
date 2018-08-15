@@ -175,7 +175,11 @@ function getArticles(articleIds: string[]): Promise<Array<ExternalArticle>> {
         headline: result.webTitle,
         id: `internal-code/page/${result.fields.internalPageCode}`,
         isLive: result.fields.isLive === 'true',
-        firstPublicationDate: result.fields.firstPublicationDate
+        firstPublicationDate: result.fields.firstPublicationDate,
+        tone: result.frontsMeta.tone,
+        sectionName: result.sectionName,
+        trailText: result.fields.trailText,
+        elements: result.elements
       }));
     }
     return [];
@@ -186,7 +190,7 @@ function getArticles(articleIds: string[]): Promise<Array<ExternalArticle>> {
     .join(',');
 
   const articlePromise = pandaFetch(
-    `/api/preview/search?ids=${articleIdsWithoutSnaps}&show-fields=internalPageCode,isLive,firstPublicationDate`,
+    `/api/preview/search?ids=${articleIdsWithoutSnaps}&show-fields=internalPageCode,isLive,firstPublicationDate&show-elements=image&show-fields=trailText`,
     {
       method: 'get',
       credentials: 'same-origin'

@@ -78,7 +78,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
       <React.Fragment>
         <div
           style={{
-            background: '#221133',
+            background: '#fff',
             display: this.state.error ? 'block' : 'none',
             padding: '1em',
             position: 'absolute',

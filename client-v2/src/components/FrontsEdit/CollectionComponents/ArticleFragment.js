@@ -14,6 +14,18 @@ type ArticleFragmentProps = {
   getDragProps: () => Object
 };
 
+// We hoist the drop zone into the rendered element here,
+// to prevent it from introducing gaps between supporting
+// articles.
+const dropIndicatorStyle = {
+  marginLeft: '83px'
+};
+
+const dropZoneStyle = {
+  marginTop: '-15px',
+  padding: '3px'
+};
+
 const ArticleFragment = ({
   uuid,
   meta: { supporting = [] } = {},
@@ -25,7 +37,13 @@ const ArticleFragment = ({
       arr={supporting}
       type="articleFragment"
       getKey={({ uuid: key }) => key}
-      renderDrop={props => <DropZone {...props} />}
+      renderDrop={props => (
+        <DropZone
+          {...props}
+          style={dropZoneStyle}
+          indicatorStyle={dropIndicatorStyle}
+        />
+      )}
     >
       {children}
     </Guration.Level>

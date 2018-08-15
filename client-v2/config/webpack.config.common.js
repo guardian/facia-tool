@@ -17,6 +17,13 @@ module.exports = {
         test: /\.js$/, // regex to test the file's path against
         use: 'eslint-loader',
         exclude: /node_modules/
+      },
+      {
+        test: /\.(eot|svg|ttf|woff|woff2|otf)$/,
+        loader: 'file-loader',
+        options: {
+          publicPath: '/assets/client-v2/dist/'
+        }
       }
     ]
   },
