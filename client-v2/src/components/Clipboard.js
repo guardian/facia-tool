@@ -7,19 +7,22 @@ import { bindActionCreators } from 'redux';
 import { type Dispatch } from 'types/Store';
 import styled from 'styled-components';
 import { batchActions } from 'redux-batched-actions';
-import { fetchClipboardContent } from 'actions/Clipboard';
+import flatten from 'lodash/flatten';
 import { type State } from 'types/State';
 import { urlToArticle } from 'util/collectionUtils';
+import { getMoveActions, getInsertActions } from 'util/clipboardUtils';
 import { clipboardAsTreeSelector } from 'shared/selectors/shared';
 import ArticleFragment from 'components/FrontsEdit/CollectionComponents/ArticleFragment';
 import Supporting from 'components/FrontsEdit/CollectionComponents/Supporting';
 import DropZone from 'components/DropZone';
-import { mapMoveEditToActions } from 'util/clipboardUtils';
+import { addArticleFragment } from 'shared/actions/ArticleFragments';
+import { fetchClipboardContent } from 'actions/Clipboard';
 
 type ClipboardPropsBeforeState = {};
 
 type ClipboardProps = ClipboardPropsBeforeState & {
   fetchClipboardContent: () => Promise<Array<String>>,
+  addArticleFragment: string => Promise<string>,
   tree: Object, // TODO add typing,
   dispatch: Dispatch
 };
@@ -40,18 +43,31 @@ class Clipboard extends React.Component<ClipboardProps> {
   }
 
   handleChange = edits => {
-    const actions = edits.reduce((acc, edit) => {
+    const futureActions = edits.reduce((acc, edit) => {
       switch (edit.type) {
         case 'MOVE': {
-          return [...acc, ...mapMoveEditToActions(edit)];
+          return [...acc, Promise.resolve(getMoveActions(edit))];
+        }
+        case 'INSERT': {
+          const editsPromise = this.props
+            .addArticleFragment(edit.payload.id)
+            .then(uuid => {
+              const payloadWithUuid = { ...edit.payload, id: uuid };
+              const insertWithUuid = { ...edit, payload: payloadWithUuid };
+              return getInsertActions(insertWithUuid);
+            });
+          return [...acc, editsPromise];
         }
         default: {
           return acc;
         }
       }
     }, []);
-
-    this.props.dispatch(batchActions(actions));
+    Promise.all(futureActions).then(actions => {
+      this.props.dispatch(
+        batchActions(flatten(actions).filter(action => action !== null))
+      );
+    });
   };
 
   render() {
@@ -67,7 +83,8 @@ class Clipboard extends React.Component<ClipboardProps> {
               type="clipboard"
               onChange={this.handleChange}
               dropMappers={{
-                text: text => urlToArticle(text)
+                text: text => urlToArticle(text),
+                capi: capi => ({ type: 'articleFragment', id: capi })
               }}
             >
               <Guration.Level
@@ -100,7 +117,10 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: *) => ({
-  ...bindActionCreators({ fetchClipboardContent }, dispatch),
+  ...bindActionCreators(
+    { fetchClipboardContent, addArticleFragment },
+    dispatch
+  ),
   dispatch
 });
 

@@ -74,6 +74,8 @@ class Feed extends React.Component<FeedProps, FeedState> {
 
   render() {
     const { capiFeedSpec } = this;
+    const getId = (internalPageCode: string) =>
+      `internal-code/page/${internalPageCode}`;
 
     return (
       <FeedContainer>
@@ -116,6 +118,9 @@ class Feed extends React.Component<FeedProps, FeedState> {
                             tone={tone}
                             trailText={fields && fields.trailText}
                             thumbnailUrl={elements && getThumbnail(elements)}
+                            internalPageCode={
+                              fields && getId(fields.internalPageCode)
+                            }
                           />
                         )
                       )}

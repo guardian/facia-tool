@@ -64,8 +64,13 @@ type FeedItemProps = {
   title: string,
   href: string,
   tone: string,
+  internalPageCode: ?string,
   thumbnailUrl: ?string,
   trailText?: ?string
+};
+
+const dragStart = (href, event) => {
+  event.dataTransfer.setData('capi', href);
 };
 
 const FeedItem = ({
@@ -73,20 +78,26 @@ const FeedItem = ({
   href,
   tone,
   thumbnailUrl,
-  trailText
+  trailText,
+  internalPageCode
 }: FeedItemProps) => (
-  <Container>
-    {thumbnailUrl && <Image src={thumbnailUrl} />}
-    <MetaContainer>
-      <Title>{title}</Title>
-      <Tone>{tone}</Tone>
-      <Trail dangerouslySetInnerHTML={{ __html: trailText }} />
-    </MetaContainer>
-    <LinkContainer>
-      <Link href={href}>Website</Link>
-      <Link href={getPaths(href).ophan}>Ophan</Link>
-    </LinkContainer>
-  </Container>
+  <div
+    draggable="true"
+    onDragStart={event => dragStart(internalPageCode, event)}
+  >
+    <Container>
+      {thumbnailUrl && <Image src={thumbnailUrl} />}
+      <MetaContainer>
+        <Title>{title}</Title>
+        <Tone>{tone}</Tone>
+        <Trail dangerouslySetInnerHTML={{ __html: trailText }} />
+      </MetaContainer>
+      <LinkContainer>
+        <Link href={href}>Website</Link>
+        <Link href={getPaths(href).ophan}>Ophan</Link>
+      </LinkContainer>
+    </Container>
+  </div>
 );
 
 export default FeedItem;

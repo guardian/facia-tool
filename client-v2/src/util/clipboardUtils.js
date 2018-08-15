@@ -1,5 +1,13 @@
 // @flow
 
+import type {
+  ArticleFragment,
+  NestedArticleFragment
+} from 'shared/types/Collection';
+import { clipboardSelector } from 'selectors/frontsSelectors';
+import { type State } from 'types/State';
+import { type Action } from 'types/Action';
+import { type Move, type Insert } from 'guration';
 import {
   removeClipboardArticleFragment,
   addClipboardArticleFragment
@@ -8,14 +16,6 @@ import {
   removeSupportingArticleFragmentFromClipboard,
   addSupportingArticleFragmentToClipboard
 } from 'actions/ArticleFragments';
-import { type Action } from 'types/Action';
-import { type Move } from 'guration';
-import type {
-  ArticleFragment,
-  NestedArticleFragment
-} from 'shared/types/Collection';
-import { clipboardSelector } from 'selectors/frontsSelectors';
-import { type State } from 'types/State';
 import { normalize, denormalize } from './clipboardSchema';
 
 function normaliseClipboard(clipboard: {
@@ -42,33 +42,55 @@ function denormaliseClipboard(
   );
 }
 
-const fromMap: {
-  [string]: { [string]: (move: Move) => Action }
-} = {
-  articleFragment: {
-    articleFragment: ({ payload: { id, from } }): Action =>
-      removeSupportingArticleFragmentFromClipboard(from.parent.id, id),
-    clipboard: ({ payload: { id } }): Action =>
-      removeClipboardArticleFragment(id)
-  }
+const getMoveActions = ({
+  payload: { id, from, to }
+}: Move): Array<null | Action> => {
+  const getFromAction = () => {
+    if (from.parent.type === 'articleFragment') {
+      return removeSupportingArticleFragmentFromClipboard(from.parent.id, id);
+    }
+
+    if (from.parent.type === 'clipboard') {
+      return removeClipboardArticleFragment(id);
+    }
+    return null;
+  };
+
+  const getToAction = () => {
+    if (to.parent.type === 'articleFragment') {
+      return addSupportingArticleFragmentToClipboard(
+        to.parent.id,
+        id,
+        to.index
+      );
+    }
+    if (to.parent.type === 'clipboard') {
+      return addClipboardArticleFragment(id, to.index);
+    }
+    return null;
+  };
+
+  return [getFromAction(), getToAction()];
 };
 
-const toMap: {
-  [string]: { [string]: (move: Move) => Action }
-} = {
-  articleFragment: {
-    articleFragment: ({ payload: { id, to } }): Action =>
-      addSupportingArticleFragmentToClipboard(to.parent.id, id, to.index),
-    clipboard: ({ payload: { id, to } }): Action =>
-      addClipboardArticleFragment(id, to.index)
+const getInsertActions = ({
+  payload: { id, path }
+}: Insert): Array<null | Action> => {
+  if (path.parent.type === 'articleFragment') {
+    return [
+      addSupportingArticleFragmentToClipboard(path.parent.id, id, path.index)
+    ];
   }
+
+  if (path.parent.type === 'clipboard') {
+    return [addClipboardArticleFragment(id, path.index)];
+  }
+  return [null];
 };
 
-const mapMoveEditToActions = (edit: Move) => [
-  ((fromMap[edit.payload.type] || {})[edit.payload.from.parent.type] ||
-    (() => null))(edit),
-  ((toMap[edit.payload.type] || {})[edit.payload.to.parent.type] ||
-    (() => null))(edit)
-];
-
-export { mapMoveEditToActions, normaliseClipboard, denormaliseClipboard };
+export {
+  normaliseClipboard,
+  denormaliseClipboard,
+  getMoveActions,
+  getInsertActions
+};
