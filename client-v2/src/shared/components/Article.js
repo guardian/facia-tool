@@ -13,7 +13,6 @@ import {
   externalArticleFromArticleFragmentSelector,
   selectSharedState
 } from '../selectors/shared';
-import Clearfix from './layout/Clearfix';
 import type { State } from '../types/State';
 import type { Article } from '../types/Article';
 
@@ -30,11 +29,11 @@ type ComponentProps = {
   children: ReactNode
 } & ContainerProps;
 
-const ArticleContainer = Clearfix.extend`
+const ArticleContainer = styled('div')`
   background-color: #fff;
 `;
 
-const ArticleBodyContainer = Clearfix.extend`
+const ArticleBodyContainer = styled('div')`
   display: flex;
   position: relative;
   border-top: 1px solid #333;

@@ -1,3 +1,5 @@
+// @flow
+
 import ContainerHeading from './ContainerHeading';
 
 export default ContainerHeading.extend`

@@ -11,19 +11,41 @@ import type {
   RemoveSupportingArticleFragment as SharedRemoveSupportingArticleFragment,
   Action as SharedActions
 } from 'shared/types/Action';
-import type {
-  EditorAddFront,
-  EditorClearFronts,
-  EditorRemoveFront,
-  EditorSelectArticleFragment,
-  EditorClearArticleFragmentSelection
-} from 'bundles/frontsUIBundle';
 import {
   type PersistCollectionMeta,
   type PersistClipboardMeta
 } from 'util/storeMiddleware';
 import { type Config } from './Config';
 import { type FrontsConfig } from './FaciaApi';
+
+type EditorAddFront = {|
+  type: 'EDITOR_ADD_FRONT',
+  payload: { frontId: string }
+|};
+
+type EditorRemoveFront = {|
+  type: 'EDITOR_REMOVE_FRONT',
+  payload: { frontId: string }
+|};
+
+type EditorClearFronts = {|
+  type: 'EDITOR_CLEAR_FRONTS'
+|};
+
+type EditorSelectArticleFragment = {|
+  type: 'EDITOR_SELECT_ARTICLE_FRAGMENT',
+  payload: {
+    articleFragmentId: string,
+    frontId: string
+  }
+|};
+
+type EditorClearArticleFragmentSelection = {|
+  type: 'EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION',
+  payload: {
+    frontId: string
+  }
+|};
 
 type AddGroupArticleFragment = {|
   ...SharedAddGroupArticleFragment,
