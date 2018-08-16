@@ -1,6 +1,8 @@
 // @flow
 
 import { getURLCAPIID } from 'util/CAPIUtils';
+import { type Move, type Insert } from 'guration';
+import { type Action } from 'types/Action';
 import {
   removeGroupArticleFragment,
   addGroupArticleFragment
@@ -9,37 +11,46 @@ import {
   removeSupportingArticleFragment,
   addSupportingArticleFragment
 } from 'actions/ArticleFragments';
-import { type Action } from 'types/Action';
-import { type Move } from '@guardian/guration';
 
-const fromMap: {
-  [string]: { [string]: (move: Move) => Action }
-} = {
-  articleFragment: {
-    articleFragment: ({ payload: { id, from } }) =>
-      removeSupportingArticleFragment(from.parent.id, id),
-    group: ({ payload: { id, from } }) =>
-      removeGroupArticleFragment(from.parent.id, id)
+const getInsertActions = ({
+  payload: { id, path }
+}: Insert): Array<null | Action> => {
+  if (path.parent.type === 'articleFragment') {
+    return [addSupportingArticleFragment(path.parent.id, id, path.index)];
   }
+
+  if (path.parent.type === 'group') {
+    return [addGroupArticleFragment(path.parent.id, id, path.index)];
+  }
+  return [null];
 };
 
-const toMap: {
-  [string]: { [string]: (move: Move) => Action }
-} = {
-  articleFragment: {
-    articleFragment: ({ payload: { id, to } }) =>
-      addSupportingArticleFragment(to.parent.id, id, to.index),
-    group: ({ payload: { id, to } }) =>
-      addGroupArticleFragment(to.parent.id, id, to.index)
-  }
-};
+const getMoveActions = ({
+  payload: { id, from, to }
+}: Move): Array<null | Action> => {
+  const getFromAction = () => {
+    if (from.parent.type === 'articleFragment') {
+      return removeSupportingArticleFragment(from.parent.id, id);
+    }
 
-const mapMoveEditToActions = (edit: Move) => [
-  ((fromMap[edit.payload.type] || {})[edit.payload.from.parent.type] ||
-    (() => null))(edit),
-  ((toMap[edit.payload.type] || {})[edit.payload.to.parent.type] ||
-    (() => null))(edit)
-];
+    if (from.parent.type === 'group') {
+      return removeGroupArticleFragment(from.parent.id, id);
+    }
+    return null;
+  };
+
+  const getToAction = () => {
+    if (to.parent.type === 'articleFragment') {
+      return addSupportingArticleFragment(to.parent.id, id, to.index);
+    }
+    if (to.parent.type === 'group') {
+      return addGroupArticleFragment(to.parent.id, id, to.index);
+    }
+    return null;
+  };
+
+  return [getFromAction(), getToAction()];
+};
 
 const urlToArticle = (text: string) => {
   const id = getURLCAPIID(text);
@@ -52,4 +63,4 @@ const urlToArticle = (text: string) => {
     : 'Can`t covert text to article';
 };
 
-export { urlToArticle, mapMoveEditToActions };
+export { urlToArticle, getMoveActions, getInsertActions };

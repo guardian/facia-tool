@@ -31,7 +31,8 @@ type Article = {
   webPublicationDate?: string,
   elements?: Element[],
   fields?: {
-    trailText?: string
+    trailText?: string,
+    internalPageCode: string
   },
   frontsMeta: {
     tone: string

@@ -85,11 +85,25 @@ type FeedItemProps = {
   title: string,
   href: string,
   tone: string,
-  publicationDate?: string
+  publicationDate: ?string,
+  internalPageCode: ?string
 };
 
-const FeedItem = ({ title, href, tone, publicationDate }: FeedItemProps) => (
-  <Container>
+const dragStart = (href, event) => {
+  event.dataTransfer.setData('capi', href);
+};
+
+const FeedItem = ({
+  title,
+  href,
+  tone,
+  publicationDate,
+  internalPageCode
+}: FeedItemProps) => (
+  <Container
+    draggable="true"
+    onDragStart={event => dragStart(internalPageCode, event)}
+  >
     <MetaContainer>
       <Tone
         style={{

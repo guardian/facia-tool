@@ -76,7 +76,7 @@ class FrontsCAPISearchInput extends React.Component<
             tag,
             q,
             'show-elements': 'image',
-            'show-fields': 'trailText'
+            'show-fields': 'internalPageCode,trailText'
           }}
           poll={30000}
         >

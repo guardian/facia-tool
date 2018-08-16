@@ -9,13 +9,20 @@ import { type Edit } from '@guardian/guration';
 /* eslint-enable import/no-duplicates */
 import { type State } from 'types/State';
 import { type Dispatch } from 'types/Store';
+import flatten from 'lodash/flatten';
 import {
   selectSharedState,
   createCollectionsAsTreeSelector
 } from 'shared/selectors/shared';
 // import { externalArticlesReceived } from 'shared/actions/ExternalArticles';
+import { bindActionCreators } from 'redux';
 import { batchActions } from 'redux-batched-actions';
-import { urlToArticle, mapMoveEditToActions } from 'util/collectionUtils';
+import { addArticleFragment } from 'shared/actions/ArticleFragments';
+import {
+  urlToArticle,
+  getMoveActions,
+  getInsertActions
+} from 'util/collectionUtils';
 import type { AlsoOnDetail } from 'types/Collection';
 import {
   editorSelectArticleFragment,
@@ -47,6 +54,7 @@ type FrontPropsBeforeState = {
 
 type FrontProps = FrontPropsBeforeState & {
   tree: Object, // TODO add typings,
+  addArticleFragment: string => Promise<string>,
   selectedArticleFragmentId: ?string,
   dispatch: Dispatch,
   selectArticleFragment: (id: string) => void,
@@ -78,18 +86,32 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   };
 
   handleChange = edits => {
-    const actions = edits.reduce((acc, edit) => {
+    const futureActions = edits.reduce((acc, edit) => {
       switch (edit.type) {
         case 'MOVE': {
-          return [...acc, ...mapMoveEditToActions(edit)];
+          return [...acc, Promise.resolve(getMoveActions(edit))];
+        }
+
+        case 'INSERT': {
+          const editsPromise = this.props
+            .addArticleFragment(edit.payload.id)
+            .then(uuid => {
+              const payloadWithUuid = { ...edit.payload, id: uuid };
+              const insertWithUuid = { ...edit, payload: payloadWithUuid };
+              return getInsertActions(insertWithUuid);
+            });
+          return [...acc, editsPromise];
         }
         default: {
           return acc;
         }
       }
     }, []);
-
-    this.props.dispatch(batchActions(actions));
+    Promise.all(futureActions).then(actions => {
+      this.props.dispatch(
+        batchActions(flatten(actions).filter(action => action !== null))
+      );
+    });
   };
 
   render() {
@@ -113,7 +135,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
               type="front"
               onChange={this.handleChange}
               dropMappers={{
-                text: text => urlToArticle(text)
+                text: text => urlToArticle(text),
+                capi: capi => ({ type: 'articleFragment', id: capi })
               }}
             >
               <Front {...this.props.tree}>
@@ -179,7 +202,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   selectArticleFragment: (frontId: string, articleFragmentId: string) =>
     dispatch(editorSelectArticleFragment(frontId, articleFragmentId)),
   clearArticleFragmentSelection: (frontId: string) =>
-    dispatch(editorClearArticleFragmentSelection(frontId))
+    dispatch(editorClearArticleFragmentSelection(frontId)),
+  ...bindActionCreators({ addArticleFragment }, dispatch)
 });
 
 const mergeProps = (stateProps, dispatchProps, props) => ({
