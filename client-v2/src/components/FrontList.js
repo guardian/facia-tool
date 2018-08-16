@@ -11,6 +11,7 @@ type Props = {
 };
 
 const ListItem = styled('li')`
+  position: relative;
   padding: 10px 0;
   font-family: TS3TextSans;
   font-size: 16px;
@@ -35,8 +36,9 @@ const ListLabel = styled('span')`
 
 const ButtonAdd = ButtonCircular.extend`
   background-color: #4d4d4d;
-  position: relative;
-  float: right;
+  position: absolute;
+  top: 8px;
+  right: 0;
   padding: 3px;
 `;
 

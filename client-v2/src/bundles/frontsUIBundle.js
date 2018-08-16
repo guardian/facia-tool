@@ -14,29 +14,14 @@ const editorAddFront = (frontId: string) => ({
   type: EDITOR_ADD_FRONT,
   payload: { frontId }
 });
-
-type EditorAddFront = {|
-  type: 'EDITOR_ADD_FRONT',
-  payload: { frontId: string }
-|};
-
 const editorRemoveFront = (frontId: string) => ({
   type: EDITOR_REMOVE_FRONT,
   payload: { frontId }
 });
 
-type EditorRemoveFront = {|
-  type: 'EDITOR_REMOVE_FRONT',
-  payload: { frontId: string }
-|};
-
 const editorClearFronts = () => ({
   type: EDITOR_CLEAR_FRONTS
 });
-
-type EditorClearFronts = {|
-  type: 'EDITOR_CLEAR_FRONTS'
-|};
 
 const editorSelectArticleFragment = (
   frontId: string,
@@ -46,25 +31,10 @@ const editorSelectArticleFragment = (
   payload: { articleFragmentId, frontId }
 });
 
-type EditorSelectArticleFragment = {|
-  type: 'EDITOR_SELECT_ARTICLE_FRAGMENT',
-  payload: {
-    articleFragmentId: string,
-    frontId: string
-  }
-|};
-
 const editorClearArticleFragmentSelection = (frontId: string) => ({
   type: EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION,
   payload: { frontId }
 });
-
-type EditorClearArticleFragmentSelection = {|
-  type: 'EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION',
-  payload: {
-    frontId: string
-  }
-|};
 
 type State = {
   frontIds: string[],
@@ -124,14 +94,6 @@ const reducer = (
       return state;
     }
   }
-};
-
-export type {
-  EditorAddFront,
-  EditorRemoveFront,
-  EditorClearFronts,
-  EditorSelectArticleFragment,
-  EditorClearArticleFragmentSelection
 };
 
 export {

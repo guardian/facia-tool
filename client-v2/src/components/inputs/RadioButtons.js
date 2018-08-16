@@ -4,7 +4,6 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 const RadioGroup = styled('div')`
-dis
   text-align: left;
   vertical-align: top;
 `;

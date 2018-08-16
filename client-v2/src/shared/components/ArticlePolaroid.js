@@ -11,7 +11,6 @@ import {
   externalArticleFromArticleFragmentSelector,
   selectSharedState
 } from '../selectors/shared';
-import Clearfix from './layout/Clearfix';
 import type { State } from '../types/State';
 import type { Article } from '../types/Article';
 
@@ -26,7 +25,7 @@ type ComponentProps = {
   article: ?Article
 } & ContainerProps;
 
-const BodyContainer = Clearfix.extend`
+const BodyContainer = styled('div')`
   position: relative;
   cursor: pointer;
 `;
