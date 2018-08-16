@@ -4,7 +4,8 @@ import play.api.libs.json.{Json, Format}
 
 import scala.concurrent.{ExecutionContext, Future}
 import org.joda.time.DateTime
-import org.joda.time.format.ISODateTimeFormat
+import play.api.libs.json.JodaWrites._
+import play.api.libs.json.JodaReads._
 
 object FrontUsageData {
   implicit val jsonFromat: Format[FrontUsageData] = Json.format[FrontUsageData]
@@ -12,7 +13,7 @@ object FrontUsageData {
 
 case class FrontUsageData(mediaId: String, front: String)
 
-case class GridUsageData(dateAdded: String, addedBy: String, front: String, mediaId: String)
+case class GridUsageData(dateAdded: DateTime, addedBy: String, front: String, mediaId: String)
 
 object GridUsageData {
   implicit val jsonFormat: Format[GridUsageData] = Json.format[GridUsageData]
@@ -34,7 +35,7 @@ class GridProxy(val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionC
 
         val gridUrl = s"${config.media.usageUrl}/usages/front"
 
-        val usageRequest = GridUsageRequest(GridUsageData(new DateTime().toString(ISODateTimeFormat.dateTime), request.user.email, parsedRequest.front, parsedRequest.mediaId))
+        val usageRequest = GridUsageRequest(GridUsageData(DateTime.now, request.user.email, parsedRequest.front, parsedRequest.mediaId))
 
         val usageJson = Json.toJson(usageRequest)
         wsClient.url(gridUrl)
