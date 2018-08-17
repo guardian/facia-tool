@@ -8,7 +8,7 @@ case object TrainingPermission extends PermissionsPriority
 
 
 object PermissionsPriority {
-  def stringToPermissionPriority(s: String) = {
+  def stringToPermissionPriority(s: String): Option[PermissionsPriority] = {
     s.toLowerCase match {
       case "editorial" => Some(EditorialPermission)
       case "commercial" => Some(CommercialPermission)
