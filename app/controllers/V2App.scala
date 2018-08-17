@@ -16,7 +16,7 @@ class V2App(isDev: Boolean, val acl: Acl, dynamo: Dynamo, val deps: BaseFaciaCon
 
   import model.UserData._
 
-  def index(priority: String = "", frontId: String = "") = AccessAuthAction { implicit req =>
+  def index(priority: String = "", frontId: String = "") = getCollectionPermissionFilterByPriority(priority, acl)(ec) { implicit req =>
 
     val userDataTable = Table[UserData](config.faciatool.userDataTable)
 

@@ -23,10 +23,10 @@ GET         /assets/*file                            controllers.UncachedAssets.
 
 # Fronts
 GET         /                                        controllers.ViewsController.priorities()
-GET         /editorial                               controllers.ViewsController.collectionEditor()
-GET         /commercial                              controllers.ViewsController.collectionEditor()
-GET         /training                                controllers.ViewsController.collectionEditor()
-GET         /email                                   controllers.ViewsController.collectionEditor()
+GET         /editorial                               controllers.ViewsController.collectionEditor(priority="editorial")
+GET         /commercial                              controllers.ViewsController.collectionEditor(priority="commercial")
+GET         /training                                controllers.ViewsController.collectionEditor(priority="training")
+GET         /email                                   controllers.ViewsController.collectionEditor(priority="email")
 
 GET         /editorial/config                        controllers.ViewsController.configEditor()
 GET         /commercial/config                       controllers.ViewsController.configEditor()

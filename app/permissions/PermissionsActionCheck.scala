@@ -28,6 +28,24 @@ trait PermissionActionFilter extends ActionFilter[UserRequest] with Logging {
   }
 }
 
+class LaunchCommercialFrontsPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext) extends PermissionActionFilter {
+  override implicit val executionContext: ExecutionContext = ec
+  override val testAccess: String => Authorization = acl.testUser(Permissions.LaunchCommercialFrontsAlert, "facia-tool-allow-access-for-all")
+  override val restrictedAction: String = "Launch commercial fronts."
+}
+
+class LaunchEditorialFrontsPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext) extends PermissionActionFilter {
+  override implicit val executionContext: ExecutionContext = ec
+  override val testAccess: String => Authorization = acl.testUser(Permissions.LaunchEditorialFrontsAlert, "facia-tool-allow-access-for-all")
+  override val restrictedAction: String = "Launch editorial fronts."
+}
+
+class EditEditorialFrontsPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext) extends PermissionActionFilter {
+  override implicit val executionContext: ExecutionContext = ec
+  override val testAccess: String => Authorization = acl.testUser(Permissions.EditEditorialFrontsAlert, "facia-tool-allow-access-for-all")
+  override val restrictedAction: String = "Edit editorial fronts."
+}
+
 class AccessPermissionCheck(client: PermissionsProvider)(implicit ec: ExecutionContext) extends PermissionActionFilter {
   val executionContext = ec
   val restrictedAction = "access fronts"
