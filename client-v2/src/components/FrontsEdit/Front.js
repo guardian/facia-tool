@@ -53,17 +53,12 @@ type FrontPropsBeforeState = {
 };
 
 type FrontProps = FrontPropsBeforeState & {
-<<<<<<< HEAD
-  tree: Object, // TODO add typings
   addArticleFragment: string => Promise<string>,
-  dispatch: Dispatch
-=======
   tree: Object, // TODO add typings,
   selectedArticleFragmentId: ?string,
   dispatch: Dispatch,
   selectArticleFragment: (id: string) => void,
   clearArticleFragmentSelection: () => void
->>>>>>> Began a War on Floats; reducer logic for article selection; some more presentation logic for form display
 };
 
 type FrontState = {
@@ -140,7 +135,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
               type="front"
               onChange={this.handleChange}
               dropMappers={{
-                text: text => urlToArticle(text)
+                text: text => urlToArticle(text),
                 capi: capi => ({ type: 'articleFragment', id: capi })
               }}
             >
@@ -202,13 +197,9 @@ const createMapStateToProps = () => {
   });
 };
 
-<<<<<<< HEAD
-const mapDispatchToProps = (dispatch: *) => ({
-  ...bindActionCreators({ addArticleFragment }, dispatch),
-  dispatch
-=======
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   dispatch,
+  ...bindActionCreators({ addArticleFragment }, dispatch),
   selectArticleFragment: (frontId: string, articleFragmentId: string) =>
     dispatch(editorSelectArticleFragment(frontId, articleFragmentId)),
   clearArticleFragmentSelection: (frontId: string) =>
@@ -223,7 +214,6 @@ const mergeProps = (stateProps, dispatchProps, props) => ({
     dispatchProps.selectArticleFragment(props.id, articleId),
   clearArticleFragmentSelection: () =>
     dispatchProps.clearArticleFragmentSelection(props.id)
->>>>>>> Began a War on Floats; reducer logic for article selection; some more presentation logic for form display
 });
 
 export default connect(

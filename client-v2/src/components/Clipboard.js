@@ -14,7 +14,6 @@ import { clipboardAsTreeSelector } from 'shared/selectors/shared';
 import DropZone from 'components/DropZone';
 import { addArticleFragment } from 'shared/actions/ArticleFragments';
 import { fetchClipboardContent } from 'actions/Clipboard';
-import { mapMoveEditToActions } from 'util/clipboardUtils';
 import ArticlePolaroid from 'shared/components/ArticlePolaroid';
 
 type ClipboardPropsBeforeState = {};

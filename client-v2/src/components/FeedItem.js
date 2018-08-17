@@ -93,7 +93,13 @@ const dragStart = (href, event) => {
   event.dataTransfer.setData('capi', href);
 };
 
-const FeedItem = ({ title, href, tone, publicationDate, internalPageCode }: FeedItemProps) => (
+const FeedItem = ({
+  title,
+  href,
+  tone,
+  publicationDate,
+  internalPageCode
+}: FeedItemProps) => (
   <div
     draggable="true"
     onDragStart={event => dragStart(internalPageCode, event)}
