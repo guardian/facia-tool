@@ -28,6 +28,36 @@ trait PermissionActionFilter extends ActionFilter[UserRequest] with Logging {
   }
 }
 
+//I think that this might be a better place to put the logic than in the FaciaToolController class. In both places the logic will be quite ugly I think
+//My vision is that there would be a modify and a view to take into account editorial priority having the concept of both view and launch. Whether should deny permission
+//is based on the endpoint i.e. is it GET or POST so which filter you want would need to be decided in the controller.
+class ModifyCollectionsPermissionsCheck(val acl: Acl, val priorityPermissions: Set[PermissionsPriority])(implicit ec: ExecutionContext) extends PermissionActionFilter {
+  override implicit val executionContext: ExecutionContext = ec
+  override val testAccess: String => Authorization = { email =>
+    if(priorityPermissions.size > 1) {
+
+    }
+
+
+
+
+
+
+
+
+
+    val commercialTest = acl.testUser(Permissions.LaunchCommercialFrontsAlert, "facia-tool-allow-access-for-all")(email)
+    val editorialTest = acl.testUser(Permissions.LaunchEditorialFrontsAlert, "facia-tool-allow-access-for-all")(email)
+    if(commercialTest == AccessGranted) commercialTest else {
+      if(editorialTest == AccessGranted) editorialTest else {
+        //The user does not have permission to edit a collection on a editorial or a commercial front which 'testUser' function get's returned doesn't matter
+        commercialTest
+      }
+    }
+  }
+  override val restrictedAction: String = "Modify a collection"
+}
+
 class LaunchCommercialFrontsPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext) extends PermissionActionFilter {
   override implicit val executionContext: ExecutionContext = ec
   override val testAccess: String => Authorization = acl.testUser(Permissions.LaunchCommercialFrontsAlert, "facia-tool-allow-access-for-all")

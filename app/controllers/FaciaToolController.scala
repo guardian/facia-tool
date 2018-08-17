@@ -1,13 +1,14 @@
 package controllers
 
 import _root_.util.Acl
+import com.gu.facia.api.models.TrainingPriority
 import com.gu.facia.api.models.faciapress.{Draft, FrontPath, Live, PressJob}
 import com.gu.facia.client.models.Metadata
 import com.gu.pandomainauth.action.UserRequest
 import frontsapi.model._
 import metrics.FaciaToolMetrics
 import model.NoCache
-import permissions.BreakingNewsEditCollectionsCheck
+import permissions._
 import play.api.libs.json._
 import play.api.mvc._
 import services._
@@ -52,7 +53,20 @@ class FaciaToolController(
       Ok(Json.toJson(c)).as("application/json")})
   }
 
-  def publishCollection(collectionId: String) = AccessAPIAuthAction.async { implicit request =>
+  //Attempted to put the logic here to work out which is the correct filter to use
+  def getPriorityFilterFromCollectionId(collectionId: String) = {
+    println(collectionId)
+    val prioritySet = configAgent.getFrontsPermissionsPriorityByCollectionId(collectionId)
+    println(prioritySet)
+
+
+
+
+
+    if(prioritySet.contains(TrainingPermission)) AccessAPIAuthAction else AccessAPIAuthAction andThen new ModifyCollectionsPermissionsCheck(acl)
+  }
+
+  def publishCollection(collectionId: String) = getPriorityFilterFromCollectionId(collectionId).async { implicit request =>
     withModifyPermissionForCollections(Set(collectionId)) {
       val identity = request.user
       FaciaToolMetrics.DraftPublishCount.increment()
