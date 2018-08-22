@@ -37,7 +37,6 @@ class Acl(permissions: PermissionsProvider) extends Logging {
         AccessGranted
 
       case false =>
-        logger.warn(s"User $email denied ${permission.name}")
         AccessDenied
     }
   }
