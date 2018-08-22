@@ -32,7 +32,7 @@ class FaciaToolController(
                            val mediaServiceClient: MediaServiceClient,
                            val deps: BaseFaciaControllerComponents
                          )(implicit ec: ExecutionContext)
-  extends BaseFaciaController(deps) with BreakingNewsEditCollectionsCheck with Logging {
+  extends BaseFaciaController(deps) with BreakingNewsEditCollectionsCheck with ModifyCollectionsPermissionsCheck with Logging {
 
   def getConfig = AccessAPIAuthAction.async { request =>
     FaciaToolMetrics.ApiUsageCount.increment()
@@ -53,31 +53,31 @@ class FaciaToolController(
       Ok(Json.toJson(c)).as("application/json")})
   }
 
-  //Attempted to put the logic here to work out which is the correct filter to use
   def getPriorityFilterFromCollectionId(collectionId: String) = {
     println(collectionId)
-    val prioritySet = configAgent.getFrontsPermissionsPriorityByCollectionId(collectionId)
-    println(prioritySet)
-
-
-
-
-
-    if(prioritySet.contains(TrainingPermission)) AccessAPIAuthAction else AccessAPIAuthAction andThen new ModifyCollectionsPermissionsCheck(acl)
+    val result: Set[PermissionsPriority] = configAgent.getFrontsPermissionsPriorityByCollectionId(collectionId)
+    result
   }
 
-  def publishCollection(collectionId: String) = getPriorityFilterFromCollectionId(collectionId).async { implicit request =>
+  def publishCollection(collectionId: String) = AccessAPIAuthAction.async { implicit request =>
+
+    val collectionPriorities = getPriorityFilterFromCollectionId(collectionId)
     withModifyPermissionForCollections(Set(collectionId)) {
-      val identity = request.user
-      FaciaToolMetrics.DraftPublishCount.increment()
-      val futureCollectionJson = faciaApiIO.publishCollectionJson(collectionId, identity)
-      futureCollectionJson.flatMap {
+      withLaunchGroupPermissionForCollections(collectionPriorities) {
+        val identity = request.user
+        FaciaToolMetrics.DraftPublishCount.increment()
+        val futureCollectionJson = faciaApiIO.publishCollectionJson(collectionId, identity)
+        futureCollectionJson.flatMap {
           case Some(collectionJson) =>
             updateActions.archivePublishBlock(collectionId, collectionJson, identity)
             faciaPress.press(PressCommand.forOneId(collectionId).withPressDraft().withPressLive())
             structuredLogger.putLog(LogUpdate(PublishUpdate(collectionId), identity.email))
             maybeSendBreakingAlert(request, collectionId)
-          case None => Future.successful(NoCache(Ok))}}}
+          case None => Future.successful(NoCache(Ok))
+        }
+      }
+    }
+  }
 
   private def maybeSendBreakingAlert(request: UserRequest[AnyContent], collectionId: String): Future[Result] = {
     if (configAgent.isCollectionInBreakingNewsFront(collectionId)) {

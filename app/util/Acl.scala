@@ -1,7 +1,9 @@
 package util
 
 import com.gu.permissions.{PermissionDefinition, PermissionsProvider}
+import com.sun.xml.internal.fastinfoset.CommonResourceBundle
 import logging.Logging
+import permissions._
 import play.api.libs.json.{JsBoolean, JsValue, Json, Writes}
 import switchboard.SwitchManager
 
@@ -46,5 +48,32 @@ class Acl(permissions: PermissionsProvider) extends Logging {
     if ((restrictedCollections intersect collectionIds).nonEmpty)
       testUser(permission, switch)(email)
     else AccessGranted
+  }
+
+  def testUserGroupsAndCollections(editorialPermission: PermissionDefinition, commercialPermission: PermissionDefinition,
+                                   emailPermission: PermissionDefinition, trainingPermission: PermissionDefinition, switch: String)
+                                  (email: String, priorities: Set[PermissionsPriority]): Authorization = {
+
+    val hasCommercialPermissions =  testUser(commercialPermission, switch)(email)
+    val hasEditorialPermissions = testUser(editorialPermission, switch)(email)
+    val hasTrainingPermissions = testUser(trainingPermission, switch)(email)
+
+    val editorialPermissionIsValid = priorities.contains(EditorialPermission) || priorities.contains(EmailPermission)
+    val commercialPermissionIsValid = priorities.contains(CommercialPermission)
+
+    if (priorities.contains(TrainingPermission))
+      hasTrainingPermissions
+    else {
+      if (editorialPermissionIsValid && commercialPermissionIsValid)
+        if (List(hasCommercialPermissions, hasEditorialPermissions).contains(AccessGranted))
+          AccessGranted
+        else
+          AccessDenied
+      else if (commercialPermissionIsValid)
+        hasCommercialPermissions
+      else if (editorialPermissionIsValid)
+        hasEditorialPermissions
+      else AccessDenied
+    }
   }
 }
