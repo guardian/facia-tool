@@ -63,7 +63,7 @@ class FaciaToolController(
 
     val collectionPriorities = getPriorityFilterFromCollectionId(collectionId)
     withModifyPermissionForCollections(Set(collectionId)) {
-      withLaunchGroupPermissionForCollections(collectionPriorities) {
+      withModifyGroupPermissionForCollections(collectionPriorities, true) {
         val identity = request.user
         FaciaToolMetrics.DraftPublishCount.increment()
         val futureCollectionJson = faciaApiIO.publishCollectionJson(collectionId, identity)

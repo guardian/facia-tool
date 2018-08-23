@@ -27,37 +27,28 @@ trait PermissionActionFilter extends ActionFilter[UserRequest] with Logging {
     }
   }
 }
-  trait ModifyCollectionsPermissionsCheck extends Logging { self: BaseFaciaController =>
+trait ModifyCollectionsPermissionsCheck extends Logging { self: BaseFaciaController =>
 
   def acl: Acl
-    def configAgent: ConfigAgent
+  def configAgent: ConfigAgent
 
-  private def testLaunchAccess(email: String, priorities: Set[PermissionsPriority]) = acl.testUserGroupsAndCollections(
-    Permissions.LaunchEditorialFrontsAlert, Permissions.LaunchCommercialFrontsAlert, Permissions.EditEditorialFrontsAlert,
-    Permissions.FrontsAccess, "facia-tool-allow-access-for-all")(email, priorities)
+  private def testAccess(email: String, priorities: Set[PermissionsPriority], isLaunch: Boolean) = {
 
-  private def testAccess(email: String, priorities: Set[PermissionsPriority]) = acl.testUserGroupsAndCollections(
-    Permissions.EditEditorialFrontsAlert, Permissions.LaunchCommercialFrontsAlert, Permissions.EditEditorialFrontsAlert,
-    Permissions.FrontsAccess, "facia-tool-allow-access-for-all")(email, priorities)
-
-  def withModifyGroupPermissionForCollections[A](priorities: Set[PermissionsPriority])(block: => Future[Result])
-                                                (implicit request: UserRequest[A],
-                                                 executionContext: ExecutionContext): Future[Result] = {
-
-    testAccess(request.user.email, priorities) match {
-      case AccessGranted => block
-      case AccessDenied => {
-        logger.info(s"User with e-mail ${request.user.email} not authorized to modify collection")
-        Future.successful(Results.Unauthorized)
-      }
-    }
+    if (isLaunch)
+      acl.testUserGroupsAndCollections(
+        Permissions.LaunchEditorialFrontsAlert, Permissions.LaunchCommercialFrontsAlert, Permissions.EditEditorialFrontsAlert,
+        Permissions.FrontsAccess, "facia-tool-allow-access-for-all")(email, priorities)
+    else
+      acl.testUserGroupsAndCollections(
+        Permissions.EditEditorialFrontsAlert, Permissions.LaunchCommercialFrontsAlert, Permissions.EditEditorialFrontsAlert,
+        Permissions.FrontsAccess, "facia-tool-allow-access-for-all")(email, priorities)
   }
 
-  def withLaunchGroupPermissionForCollections[A](priorities: Set[PermissionsPriority])(block: => Future[Result])
+  def withModifyGroupPermissionForCollections[A](priorities: Set[PermissionsPriority], isLaunch: Boolean = false)(block: => Future[Result])
                                                 (implicit request: UserRequest[A],
                                                  executionContext: ExecutionContext): Future[Result] = {
 
-    testLaunchAccess(request.user.email, priorities) match {
+    testAccess(request.user.email, priorities, isLaunch) match {
       case AccessGranted => block
       case AccessDenied => {
         logger.info(s"User with e-mail ${request.user.email} not authorized to modify collection")
