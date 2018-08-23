@@ -40,30 +40,39 @@ class FaciaToolController(
       NoCache {
         Ok(Json.toJson(configJson)).as("application/json")}}}
 
-  def getCollection(collectionId: String) = AccessAPIAuthAction.async { request =>
+  def getCollection(collectionId: String) = AccessAPIAuthAction.async { implicit request =>
 
-    FaciaToolMetrics.ApiUsageCount.increment()
-    val collection = frontsApi.amazonClient.collection(collectionId).flatMap{ collectionJson =>
-      collectionJson.map(json => mediaServiceClient.addThumbnailsToCollection(json, collectionId)) match {
-        case Some(f) => f.map(Some(_))
-        case None    => Future.successful(None)
+    val collectionPriorities = getPriorityFilterFromCollectionId(collectionId)
+
+    withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
+
+      FaciaToolMetrics.ApiUsageCount.increment()
+      val collection = frontsApi.amazonClient.collection(collectionId).flatMap { collectionJson =>
+        collectionJson.map(json => mediaServiceClient.addThumbnailsToCollection(json, collectionId)) match {
+          case Some(f) => f.map(Some(_))
+          case None => Future.successful(None)
+
+        }
       }
+      collection.map(c => NoCache {
+        Ok(Json.toJson(c)).as("application/json")
+      })
+
     }
-    collection.map(c => NoCache {
-      Ok(Json.toJson(c)).as("application/json")})
   }
 
   def getPriorityFilterFromCollectionId(collectionId: String) = {
-    println(collectionId)
     val result: Set[PermissionsPriority] = configAgent.getFrontsPermissionsPriorityByCollectionId(collectionId)
     result
   }
 
   def publishCollection(collectionId: String) = AccessAPIAuthAction.async { implicit request =>
 
-    val collectionPriorities = getPriorityFilterFromCollectionId(collectionId)
     withModifyPermissionForCollections(Set(collectionId)) {
-      withModifyGroupPermissionForCollections(collectionPriorities, true) {
+
+      val collectionPriorities = getPriorityFilterFromCollectionId(collectionId)
+
+      withModifyGroupPermissionForCollections(collectionPriorities, Set(), true) {
         val identity = request.user
         FaciaToolMetrics.DraftPublishCount.increment()
         val futureCollectionJson = faciaApiIO.publishCollectionJson(collectionId, identity)
@@ -109,41 +118,47 @@ class FaciaToolController(
       }
       NoCache(Ok)}}
 
-  def treatEdits(collectionId: String) = AccessAPIAuthAction.async { request =>
-    request.body.asJson.flatMap(_.asOpt[UpdateMessage]).map {
-      case update: Update =>
-        val identity = request.user
-        updateActions.updateTreats(collectionId, update.update, identity).map(_.map{ updatedCollectionJson =>
-          s3FrontsApi.putCollectionJson(collectionId, Json.prettyPrint(Json.toJson(updatedCollectionJson)))
-          structuredLogger.putLog(LogUpdate(update, identity.email))
-          faciaPress.press(PressCommand.forOneId(collectionId).withPressLive())
-          Ok(Json.toJson(Map(collectionId -> updatedCollectionJson))).as("application/json")
-        }.getOrElse(NotFound))
+  def treatEdits(collectionId: String) = AccessAPIAuthAction.async { implicit request =>
 
-      case remove: Remove =>
-        val identity = request.user
-        updateActions.removeTreats(collectionId, remove.remove, identity).map(_.map{ updatedCollectionJson =>
-          s3FrontsApi.putCollectionJson(collectionId, Json.prettyPrint(Json.toJson(updatedCollectionJson)))
-          structuredLogger.putLog(LogUpdate(remove, identity.email))
-          faciaPress.press(PressCommand.forOneId(collectionId).withPressLive())
-          Ok(Json.toJson(Map(collectionId -> updatedCollectionJson))).as("application/json")
-      }.getOrElse(NotFound))
-      case updateAndRemove: UpdateAndRemove =>
-        val identity = request.user
-        val futureUpdatedCollections =
-          Future.sequence(
-            List(updateActions.updateTreats(updateAndRemove.update.id, updateAndRemove.update, identity).map(_.map(updateAndRemove.update.id -> _)),
-              updateActions.removeTreats(updateAndRemove.remove.id, updateAndRemove.remove, identity).map(_.map(updateAndRemove.remove.id -> _))
-            )).map(_.flatten.toMap)
+    val collectionPriorities = getPriorityFilterFromCollectionId(collectionId)
 
-        futureUpdatedCollections.map { updatedCollections =>
-          val collectionIds = updatedCollections.keySet
-          structuredLogger.putLog(LogUpdate(updateAndRemove, identity.email))
-          faciaPress.press(PressCommand(collectionIds).withPressLive())
-          Ok(Json.toJson(updatedCollections)).as("application/json")
-        }
-      case _ => Future.successful(NotAcceptable)
-    }.getOrElse(Future.successful(NotAcceptable))
+    withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
+
+      request.body.asJson.flatMap(_.asOpt[UpdateMessage]).map {
+        case update: Update =>
+          val identity = request.user
+          updateActions.updateTreats(collectionId, update.update, identity).map(_.map { updatedCollectionJson =>
+            s3FrontsApi.putCollectionJson(collectionId, Json.prettyPrint(Json.toJson(updatedCollectionJson)))
+            structuredLogger.putLog(LogUpdate(update, identity.email))
+            faciaPress.press(PressCommand.forOneId(collectionId).withPressLive())
+            Ok(Json.toJson(Map(collectionId -> updatedCollectionJson))).as("application/json")
+          }.getOrElse(NotFound))
+
+        case remove: Remove =>
+          val identity = request.user
+          updateActions.removeTreats(collectionId, remove.remove, identity).map(_.map { updatedCollectionJson =>
+            s3FrontsApi.putCollectionJson(collectionId, Json.prettyPrint(Json.toJson(updatedCollectionJson)))
+            structuredLogger.putLog(LogUpdate(remove, identity.email))
+            faciaPress.press(PressCommand.forOneId(collectionId).withPressLive())
+            Ok(Json.toJson(Map(collectionId -> updatedCollectionJson))).as("application/json")
+          }.getOrElse(NotFound))
+        case updateAndRemove: UpdateAndRemove =>
+          val identity = request.user
+          val futureUpdatedCollections =
+            Future.sequence(
+              List(updateActions.updateTreats(updateAndRemove.update.id, updateAndRemove.update, identity).map(_.map(updateAndRemove.update.id -> _)),
+                updateActions.removeTreats(updateAndRemove.remove.id, updateAndRemove.remove, identity).map(_.map(updateAndRemove.remove.id -> _))
+              )).map(_.flatten.toMap)
+
+          futureUpdatedCollections.map { updatedCollections =>
+            val collectionIds = updatedCollections.keySet
+            structuredLogger.putLog(LogUpdate(updateAndRemove, identity.email))
+            faciaPress.press(PressCommand(collectionIds).withPressLive())
+            Ok(Json.toJson(updatedCollections)).as("application/json")
+          }
+        case _ => Future.successful(NotAcceptable)
+      }.getOrElse(Future.successful(NotAcceptable))
+    }
   }
 
   def collectionEdits(): Action[AnyContent] = AccessAPIAuthAction.async { implicit request =>
@@ -151,66 +166,84 @@ class FaciaToolController(
       request.body.asJson.flatMap (_.asOpt[UpdateMessage]).map {
         case update: Update =>
           withModifyPermissionForCollections(Set(update.update.id)) {
-            val identity = request.user
 
-            val futureCollectionJson = updateActions.updateCollectionList(update.update.id, update.update, identity)
-            futureCollectionJson.map { maybeCollectionJson =>
-              val updatedCollections = maybeCollectionJson.map(update.update.id -> _).toMap
+            val collectionPriorities = getPriorityFilterFromCollectionId(update.update.id)
 
-              val shouldUpdateLive: Boolean = update.update.live
+            withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
 
-              val collectionIds = updatedCollections.keySet
+              val identity = request.user
 
-              faciaPress.press(PressCommand(
-                collectionIds,
-                live = shouldUpdateLive,
-                draft = (updatedCollections.values.exists(_.draft.isEmpty) && shouldUpdateLive) || update.update.draft)
-              )
+              val futureCollectionJson = updateActions.updateCollectionList(update.update.id, update.update, identity)
+              futureCollectionJson.map { maybeCollectionJson =>
+                val updatedCollections = maybeCollectionJson.map(update.update.id -> _).toMap
 
-              if (updatedCollections.nonEmpty) {
-                structuredLogger.putLog(LogUpdate(update, identity.email))
-                Ok(Json.toJson(updatedCollections)).as("application/json")
-              } else
-                NotFound
+                val shouldUpdateLive: Boolean = update.update.live
+
+                val collectionIds = updatedCollections.keySet
+
+                faciaPress.press(PressCommand(
+                  collectionIds,
+                  live = shouldUpdateLive,
+                  draft = (updatedCollections.values.exists(_.draft.isEmpty) && shouldUpdateLive) || update.update.draft)
+                )
+
+                if (updatedCollections.nonEmpty) {
+                  structuredLogger.putLog(LogUpdate(update, identity.email))
+                  Ok(Json.toJson(updatedCollections)).as("application/json")
+                } else
+                  NotFound
+              }
             }
           }
         case remove: Remove =>
           withModifyPermissionForCollections(Set(remove.remove.id)) {
-            val identity = request.user
-            updateActions.updateCollectionFilter(remove.remove.id, remove.remove, identity).map { maybeCollectionJson =>
-              val updatedCollections = maybeCollectionJson.map(remove.remove.id -> _).toMap
-              val shouldUpdateLive: Boolean = remove.remove.live
-              val collectionIds = updatedCollections.keySet
-              faciaPress.press(PressCommand(
-                collectionIds,
-                live = shouldUpdateLive,
-                draft = (updatedCollections.values.exists(_.draft.isEmpty) && shouldUpdateLive) || remove.remove.draft)
-              )
-              structuredLogger.putLog(LogUpdate(remove, identity.email))
-              Ok(Json.toJson(updatedCollections)).as("application/json")
+
+            val collectionPriorities = getPriorityFilterFromCollectionId(remove.remove.id)
+
+            withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
+
+              val identity = request.user
+              updateActions.updateCollectionFilter(remove.remove.id, remove.remove, identity).map { maybeCollectionJson =>
+                val updatedCollections = maybeCollectionJson.map(remove.remove.id -> _).toMap
+                val shouldUpdateLive: Boolean = remove.remove.live
+                val collectionIds = updatedCollections.keySet
+                faciaPress.press(PressCommand(
+                  collectionIds,
+                  live = shouldUpdateLive,
+                  draft = (updatedCollections.values.exists(_.draft.isEmpty) && shouldUpdateLive) || remove.remove.draft)
+                )
+                structuredLogger.putLog(LogUpdate(remove, identity.email))
+                Ok(Json.toJson(updatedCollections)).as("application/json")
+              }
             }
           }
         case updateAndRemove: UpdateAndRemove =>
           withModifyPermissionForCollections(Set(updateAndRemove.update.id, updateAndRemove.remove.id)) {
-            val identity = request.user
-            val futureUpdatedCollections =
-              Future.sequence(
-                List(updateActions.updateCollectionList(updateAndRemove.update.id, updateAndRemove.update, identity).map(_.map(updateAndRemove.update.id -> _)),
-                  updateActions.updateCollectionFilter(updateAndRemove.remove.id, updateAndRemove.remove, identity).map(_.map(updateAndRemove.remove.id -> _))
-                )).map(_.flatten.toMap)
 
-            futureUpdatedCollections.map { updatedCollections =>
+            val fromCollectionPriorities = getPriorityFilterFromCollectionId(updateAndRemove.update.id)
+            val toCollectionPriorities = getPriorityFilterFromCollectionId(updateAndRemove.remove.id)
 
-              val shouldUpdateLive: Boolean = updateAndRemove.remove.live || updateAndRemove.update.live
-              val shouldUpdateDraft: Boolean = updateAndRemove.remove.draft || updateAndRemove.update.draft
-              val collectionIds = updatedCollections.keySet
-              faciaPress.press(PressCommand(
-                collectionIds,
-                live = shouldUpdateLive,
-                draft = (updatedCollections.values.exists(_.draft.isEmpty) && shouldUpdateLive) || shouldUpdateDraft)
-              )
-              structuredLogger.putLog(LogUpdate(updateAndRemove, identity.email))
-              Ok(Json.toJson(updatedCollections)).as("application/json")
+            withModifyGroupPermissionForCollections(fromCollectionPriorities, toCollectionPriorities) {
+              val identity = request.user
+              val futureUpdatedCollections =
+                Future.sequence(
+                  List(updateActions.updateCollectionList(updateAndRemove.update.id, updateAndRemove.update, identity).map(_.map(updateAndRemove.update.id -> _)),
+                    updateActions.updateCollectionFilter(updateAndRemove.remove.id, updateAndRemove.remove, identity).map(_.map(updateAndRemove.remove.id -> _))
+                  )).map(_.flatten.toMap)
+
+              futureUpdatedCollections.map { updatedCollections =>
+
+                val shouldUpdateLive: Boolean = updateAndRemove.remove.live || updateAndRemove.update.live
+                val shouldUpdateDraft: Boolean = updateAndRemove.remove.draft || updateAndRemove.update.draft
+                val collectionIds = updatedCollections.keySet
+                faciaPress.press(PressCommand(
+                  collectionIds,
+                  live = shouldUpdateLive,
+                  draft = (updatedCollections.values.exists(_.draft.isEmpty) && shouldUpdateLive) || shouldUpdateDraft)
+                )
+                structuredLogger.putLog(LogUpdate(updateAndRemove, identity.email))
+                Ok(Json.toJson(updatedCollections)).as("application/json")
+              }
             }
           }
         case _ => Future.successful(NotAcceptable)

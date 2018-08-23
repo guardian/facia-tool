@@ -64,13 +64,17 @@ class Acl(permissions: PermissionsProvider) extends Logging {
     if (priorities.contains(TrainingPermission))
       hasTrainingPermissions
     else {
-      if (editorialPermissionIsValid && commercialPermissionIsValid)
-        if (List(hasCommercialPermissions, hasEditorialPermissions).contains(AccessGranted))
+      if (editorialPermissionIsValid && commercialPermissionIsValid) {
+        if (List(hasCommercialPermissions, hasEditorialPermissions).contains(AccessGranted)) {
           AccessGranted
+        }
         else
           AccessDenied
-      else if (commercialPermissionIsValid)
+      }
+
+      else if (commercialPermissionIsValid) {
         hasCommercialPermissions
+      }
       else if (editorialPermissionIsValid)
         hasEditorialPermissions
       else AccessDenied

@@ -34,7 +34,8 @@ trait ModifyCollectionsPermissionsCheck extends Logging { self: BaseFaciaControl
 
   private def testAccess(email: String, priorities: Set[PermissionsPriority], isLaunch: Boolean) = {
 
-    if (isLaunch)
+    if (priorities.isEmpty) AccessGranted
+    else if (isLaunch)
       acl.testUserGroupsAndCollections(
         Permissions.LaunchEditorialFrontsAlert, Permissions.LaunchCommercialFrontsAlert, Permissions.EditEditorialFrontsAlert,
         Permissions.FrontsAccess, "facia-tool-allow-access-for-all")(email, priorities)
@@ -44,13 +45,14 @@ trait ModifyCollectionsPermissionsCheck extends Logging { self: BaseFaciaControl
         Permissions.FrontsAccess, "facia-tool-allow-access-for-all")(email, priorities)
   }
 
-  def withModifyGroupPermissionForCollections[A](priorities: Set[PermissionsPriority], isLaunch: Boolean = false)(block: => Future[Result])
+  def withModifyGroupPermissionForCollections[A](priorities: Set[PermissionsPriority], secondaryPriorities: Set[PermissionsPriority],
+                                                 isLaunch: Boolean = false)(block: => Future[Result])
                                                 (implicit request: UserRequest[A],
                                                  executionContext: ExecutionContext): Future[Result] = {
 
-    testAccess(request.user.email, priorities, isLaunch) match {
-      case AccessGranted => block
-      case AccessDenied => {
+    (testAccess(request.user.email, priorities, isLaunch), testAccess(request.user.email, secondaryPriorities, isLaunch)) match {
+      case (AccessGranted, AccessGranted) => block
+      case _ => {
         logger.info(s"User with e-mail ${request.user.email} not authorized to modify collection")
         Future.successful(Results.Unauthorized)
       }
