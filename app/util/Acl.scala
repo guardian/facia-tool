@@ -51,17 +51,31 @@ class Acl(permissions: PermissionsProvider) extends Logging {
   }
 
   def testUserGroupsAndCollections(editorialPermission: PermissionDefinition, commercialPermission: PermissionDefinition,
-                                   emailPermission: PermissionDefinition, trainingPermission: PermissionDefinition, switch: String)
+                                   trainingPermission: PermissionDefinition, switch: String)
                                   (email: String, priorities: Set[PermissionsPriority]): Authorization = {
 
-    val hasCommercialPermissions =  testUser(commercialPermission, switch)(email)
+    val hasCommercialPermissions = testUser(commercialPermission, switch)(email)
     val hasEditorialPermissions = testUser(editorialPermission, switch)(email)
     val hasTrainingPermissions = testUser(trainingPermission, switch)(email)
 
+    PermissionsChecker.check(hasCommercialPermissions, hasEditorialPermissions, hasTrainingPermissions, priorities)
+  }
+}
+
+object PermissionsChecker {
+
+  def check(
+             hasCommercialPermissions: Authorization,
+             hasEditorialPermissions: Authorization,
+             hasTrainingPermissions: Authorization,
+             priorities: Set[PermissionsPriority]
+           ): Authorization =  {
+
+    val trainingPermissionIsValid = priorities.contains(TrainingPermission)
     val editorialPermissionIsValid = priorities.contains(EditorialPermission) || priorities.contains(EmailPermission)
     val commercialPermissionIsValid = priorities.contains(CommercialPermission)
 
-    if (priorities.contains(TrainingPermission))
+    if (trainingPermissionIsValid)
       hasTrainingPermissions
     else {
       if (editorialPermissionIsValid && commercialPermissionIsValid) {
