@@ -2,6 +2,7 @@
 
 import type { FrontConfig, CollectionConfig } from 'types/FaciaApi';
 import type { CollectionWithNestedArticles } from 'shared/types/Collection';
+import { detectPressFailureMs } from 'constants/fronts';
 
 const getFrontCollections = (
   frontId: ?string,
@@ -37,8 +38,12 @@ const combineCollectionWithConfig = (
 const populateDraftArticles = (collection: CollectionWithNestedArticles) =>
   !collection.draft ? collection.live : collection.draft;
 
+const isFrontStale = (lastUpdated: number, lastPressed: number) =>
+  lastUpdated - lastPressed > detectPressFailureMs;
+
 export {
   getFrontCollections,
   combineCollectionWithConfig,
-  populateDraftArticles
+  populateDraftArticles,
+  isFrontStale
 };

@@ -6,3 +6,5 @@ export const frontStages = {
   draft: 'draft',
   live: 'live'
 };
+
+export const detectPressFailureMs = 10000;

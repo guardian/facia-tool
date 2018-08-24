@@ -6,10 +6,12 @@ import { batchActions } from 'redux-batched-actions';
 import {
   fetchFrontsConfig,
   fetchLastPressed as fetchLastPressedApi,
-  publishCollection as publishCollectionApi
+  publishCollection as publishCollectionApi,
+  getCollection
 } from 'services/faciaApi';
 import { actions as frontsConfigActions } from 'bundles/frontsConfigBundle';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
+import { isFrontStale } from 'util/frontsUtils';
 
 function fetchLastPressedSuccess(frontId: string, datePressed: string): Action {
   return {
@@ -31,11 +33,11 @@ function publishCollectionSuccess(collectionId: string): Action {
   };
 }
 
-function recordStaleFronts(frontId: string, isFrontStale: boolean): Action {
+function recordStaleFronts(frontId: string, frontIsStale: boolean): Action {
   return {
     type: 'RECORD_STALE_FRONTS',
     payload: {
-      frontId: isFrontStale
+      [frontId]: frontIsStale
     }
   };
 }
@@ -45,24 +47,35 @@ function fetchLastPressed(frontId: string): ThunkAction {
     fetchLastPressedApi(frontId)
       .then(datePressed =>
         dispatch(fetchLastPressedSuccess(frontId, datePressed))
-        dispatch(recordStaleFronts(frontId, isFrontStale(datePressed)))
       )
       .catch(() => {
         // @todo: implement once error handling is done
       });
 }
 
-function publishCollection(collectionId: string): ThunkAction {
+function publishCollection(collectionId: string, frontId: string): ThunkAction {
   return (dispatch: Dispatch) =>
     publishCollectionApi(collectionId)
-      .then(() =>
+      .then(() => {
         dispatch(
           batchActions([
             publishCollectionSuccess(collectionId),
             recordUnpublishedChanges(collectionId, false)
           ])
-        )
-      )
+        );
+        return Promise.all([
+          getCollection(collectionId),
+          fetchLastPressedApi(frontId)
+        ]).then(([collection, lastPressed]) => {
+          const lastPressedInMilliseconds = new Date(lastPressed).getTime();
+          dispatch(
+            recordStaleFronts(
+              frontId,
+              isFrontStale(collection.lastUpdated, lastPressedInMilliseconds)
+            )
+          );
+        });
+      })
       .catch(() => {
         // @todo: implement once error handling is done
       });

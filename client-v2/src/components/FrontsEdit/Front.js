@@ -33,7 +33,8 @@ type FrontPropsBeforeState = {
   browsingStage: string,
   collections: string[],
   alsoOn: { [string]: AlsoOnDetail },
-  handleEdits: (edits: Edit[]) => void
+  handleEdits: (edits: Edit[]) => void,
+  frontId: string
 };
 
 type FrontProps = FrontPropsBeforeState & {
@@ -120,7 +121,11 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
         >
           <Front {...this.props.tree}>
             {collection => (
-              <Collection {...collection} alsoOn={this.props.alsoOn}>
+              <Collection
+                {...collection}
+                alsoOn={this.props.alsoOn}
+                frontId={this.props.frontId}
+              >
                 {group => (
                   <Group {...group}>
                     {(articleFragment, afDragProps) => (
