@@ -9,6 +9,7 @@ import error from './errorReducer';
 import path from './pathReducer';
 import unpublishedChanges from './unpublishedChangesReducer';
 import clipboard from './clipboardReducer';
+import staleFrons from './staleFrontsReducer';
 
 const reducers = {
   config,
@@ -17,7 +18,8 @@ const reducers = {
   path,
   shared,
   unpublishedChanges,
-  clipboard
+  clipboard,
+  staleFronts
 };
 
 export type Reducers = typeof reducers;

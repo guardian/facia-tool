@@ -31,11 +31,21 @@ function publishCollectionSuccess(collectionId: string): Action {
   };
 }
 
+function recordStaleFronts(frontId: string, isFrontStale: boolean): Action {
+  return {
+    type: 'RECORD_STALE_FRONTS',
+    payload: {
+      frontId: isFrontStale
+    }
+  };
+}
+
 function fetchLastPressed(frontId: string): ThunkAction {
   return (dispatch: Dispatch) =>
     fetchLastPressedApi(frontId)
       .then(datePressed =>
         dispatch(fetchLastPressedSuccess(frontId, datePressed))
+        dispatch(recordStaleFronts(frontId, isFrontStale(datePressed)))
       )
       .catch(() => {
         // @todo: implement once error handling is done
