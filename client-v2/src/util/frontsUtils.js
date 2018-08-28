@@ -38,8 +38,12 @@ const combineCollectionWithConfig = (
 const populateDraftArticles = (collection: CollectionWithNestedArticles) =>
   !collection.draft ? collection.live : collection.draft;
 
-const isFrontStale = (lastUpdated: number, lastPressed: number) =>
-  lastUpdated - lastPressed > detectPressFailureMs;
+const isFrontStale = (lastUpdated?: number, lastPressed?: number) => {
+  if (lastUpdated && lastPressed) {
+    return lastUpdated - lastPressed > detectPressFailureMs;
+  }
+  return false;
+}
 
 export {
   getFrontCollections,
