@@ -26,7 +26,7 @@ const PressFailAlert = (props: Props) => {
 
   const getErrorString = () => {
     const usePlural = failedFronts.length > 1;
-    return `Sorry, the latest edit to the front${
+    return `Sorry, the latest edit${usePlural ? 's' : ''} to the front${
       usePlural ? 's' : ''
     } ${failedFronts.join(',')} ${usePlural ? 'have' : 'has'} not gone live.`;
   };

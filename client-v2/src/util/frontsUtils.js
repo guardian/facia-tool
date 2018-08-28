@@ -43,7 +43,7 @@ const isFrontStale = (lastUpdated?: number, lastPressed?: number) => {
     return lastUpdated - lastPressed > detectPressFailureMs;
   }
   return false;
-}
+};
 
 export {
   getFrontCollections,

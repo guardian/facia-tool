@@ -63,18 +63,23 @@ function publishCollection(collectionId: string, frontId: string): ThunkAction {
             recordUnpublishedChanges(collectionId, false)
           ])
         );
-        return Promise.all([
-          getCollection(collectionId),
-          fetchLastPressedApi(frontId)
-        ]).then(([collection, lastPressed]) => {
-          const lastPressedInMilliseconds = new Date(lastPressed).getTime();
-          dispatch(
-            recordStaleFronts(
-              frontId,
-              isFrontStale(collection.lastUpdated, lastPressedInMilliseconds)
-            )
-          );
-        });
+
+        return new Promise(resolve => setTimeout(resolve, 10000))
+          .then(() =>
+            Promise.all([
+              getCollection(collectionId),
+              fetchLastPressedApi(frontId)
+            ])
+          )
+          .then(([collection, lastPressed]) => {
+            const lastPressedInMilliseconds = new Date(lastPressed).getTime();
+            dispatch(
+              recordStaleFronts(
+                frontId,
+                isFrontStale(collection.lastUpdated, lastPressedInMilliseconds)
+              )
+            );
+          });
       })
       .catch(() => {
         // @todo: implement once error handling is done
