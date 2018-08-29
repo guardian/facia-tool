@@ -1,7 +1,7 @@
 // @flow
 
 import { getURLCAPIID } from 'util/CAPIUtils';
-import { type Move, type Insert } from 'guration';
+import { type Move, type Insert } from '@guardian/guration';
 import { type Action } from 'types/Action';
 import {
   removeGroupArticleFragment,

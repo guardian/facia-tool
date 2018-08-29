@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import * as Guration from 'guration';
+import * as Guration from '@guardian/guration';
 import { bindActionCreators } from 'redux';
 import { type Dispatch } from 'types/Store';
 import { batchActions } from 'redux-batched-actions';
