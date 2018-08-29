@@ -81,6 +81,19 @@ const createArticlesInCollectionGroupSelector = () => {
   );
 };
 
+const createArticlesInCollectionSelector = () => {
+  const collectionStageGroupsSelector = createCollectionStageGroupsSelector();
+  return createSelector(
+    articleFragmentsSelector,
+    collectionStageGroupsSelector,
+    (articleFragments, collectionGroups) =>
+      collectionGroups.reduce(
+        (acc, group) => acc.concat(group.articleFragments),
+        []
+      )
+  );
+};
+
 const collectionIdsSelector = (
   state,
   { collectionIds }: { collectionIds: string[] }
@@ -153,6 +166,7 @@ const createCollectionsAsTreeSelector = () =>
 export {
   externalArticleFromArticleFragmentSelector,
   createArticlesInCollectionGroupSelector,
+  createArticlesInCollectionSelector,
   createCollectionSelector,
   selectSharedState,
   createCollectionsAsTreeSelector,

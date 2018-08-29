@@ -2,6 +2,7 @@ import _ from 'underscore';
 import * as vars from 'modules/vars';
 import deepGet from 'utils/deep-get';
 import grid from 'utils/grid';
+import { recordUsage } from 'modules/grid';
 
 /**
  * Asserts if the given image URL is on The Guardian domain, is proper size and aspect ratio.
@@ -9,14 +10,14 @@ import grid from 'utils/grid';
  * @param criteria. validation criteria object. defines: maxWidth, minWidth, widthAspectRatio, heightAspectRatio
  * @returns Promise object: rejects with (error) OR resolves with (width, height, src)
  */
-function validateImageSrc(src, criteria = {}) {
+function validateImageSrc(src, frontId, criteria = {}) {
     if (!src) {
         return Promise.reject(new Error('Missing image'));
     }
 
     return stripImplementationDetails(src, criteria)
         .then(fetchImage)
-        .then(validateActualImage)
+        .then((image) => validateActualImage(image, frontId))
         .then(({path, origin, thumb, width, height}) => {
             return {
                 src: path,
@@ -128,7 +129,7 @@ function getSuitableAsset (crops, id, desired) {
     }
 }
 
-function validateActualImage (image) {
+function validateActualImage (image, frontId) {
     return new Promise((resolve, reject) => {
         const {width, height, ratio, criteria, path, origin, thumb} = image;
         const {maxWidth, minWidth, widthAspectRatio, heightAspectRatio} = criteria;
@@ -141,14 +142,16 @@ function validateActualImage (image) {
         } else if (criteriaRatio && criteriaRatio - ratio > 0.01) {
             reject(new Error('Images must have a ' + widthAspectRatio + ':' + heightAspectRatio + ' aspect ratio'));
         } else {
-            resolve({
-                path, origin, thumb, width, height
-            });
+            if (image.origin) {
+                return recordUsage(image.origin.split('/').slice(-1)[0], frontId)
+                .then(() => { resolve({ path, origin, thumb, width, height }); });
+            }
+            resolve( { path, origin, thumb, width, height } );
         }
     });
 }
 
-function validateImageEvent (event, criteria = {}) {
+function validateImageEvent (event, frontId, criteria = {}) {
     let mediaItem = grid().getCropFromEvent(event);
 
     if (mediaItem) {
@@ -160,7 +163,7 @@ function validateImageEvent (event, criteria = {}) {
             asset.criteria = criteria;
             return asset;
         })
-        .then(validateActualImage)
+        .then(image => validateActualImage(image, frontId))
         .then(({path, origin, thumb, width, height}) => {
             return {
                 src: path,
@@ -173,7 +176,7 @@ function validateImageEvent (event, criteria = {}) {
         let url = grid().getGridUrlFromEvent(event) || getData(event, 'Url');
 
         if (url) {
-            return validateImageSrc(url, criteria);
+            return validateImageSrc(url, frontId, criteria);
         } else {
             return Promise.reject(new Error('Invalid image source, are you dragging from the grid?'));
         }

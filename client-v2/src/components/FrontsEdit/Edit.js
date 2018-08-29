@@ -7,7 +7,7 @@ import type { Match, RouterHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import getFrontsConfig from 'actions/Fronts';
-import { editorAddFront, selectEditorFronts } from 'bundles/frontsUIBundle';
+import { editorOpenFront, selectEditorFronts } from 'bundles/frontsUIBundle';
 import type { State } from 'types/State';
 import type { ActionError } from 'types/Action';
 import FrontContainer from './FrontContainer';
@@ -22,7 +22,7 @@ type Props = {
   error: ActionError,
   history: RouterHistory,
   frontIds: string[],
-  editorAddFront: (frontId: string) => void,
+  editorOpenFront: (frontId: string) => void,
   getFrontsConfig: () => void
 };
 
@@ -68,7 +68,7 @@ class FrontsEdit extends React.Component<Props> {
             ))}
           </SectionContainer>
         </SectionsContainer>
-        <FrontsMenu onSelectFront={this.props.editorAddFront} />
+        <FrontsMenu onSelectFront={this.props.editorOpenFront} />
       </FrontsEditContainer>
     );
   }
@@ -82,7 +82,7 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
-      editorAddFront,
+      editorOpenFront,
       getFrontsConfig
     },
     dispatch

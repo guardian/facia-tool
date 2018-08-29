@@ -4,24 +4,32 @@ import React, { type Node as ReactNode } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import distanceFromNow from 'date-fns/distance_in_words_to_now';
+import { upperFirst } from 'lodash';
 
+import ShortVerticalPinline from './layout/ShortVerticalPinline';
 import ContainerHeadingPinline from './typography/ContainerHeadingPinline';
 import type { Collection } from '../types/Collection';
 import ButtonCircularCaret from './input/ButtonCircularCaret';
 import type { State } from '../types/State';
-import { selectSharedState } from '../selectors/shared';
+import {
+  selectSharedState,
+  createArticlesInCollectionSelector
+} from '../selectors/shared';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 import FadeIn from './animation/FadeIn';
 import ContentContainer from './layout/ContentContainer';
 
 type ContainerProps = {
   id: string, // eslint-disable-line react/no-unused-prop-types
-  selectSharedState?: (state: any) => State // eslint-disable-line react/no-unused-prop-types
+  selectSharedState?: (state: any) => State, // eslint-disable-line react/no-unused-prop-types
+  browsingStage?: string // eslint-disable-line react/no-unused-prop-types
 };
 
 type Props = ContainerProps & {
   collection: Collection,
+  articleIds?: Array<string>,
   headlineContent: ReactNode,
+  metaContent: ReactNode,
   children: ReactNode
 };
 
@@ -37,16 +45,26 @@ const HeadlineContentContainer = styled('span')`
   line-height: 0px;
 `;
 
-const HeadlineMetaContainer = styled('div')`
+const CollectionMetaContainer = styled('div')`
+  display: flex;
   position: relative;
-  margin-left: auto;
   font-family: TS3TextSans;
   font-size: 12px;
   font-weight: normal;
 `;
 
-const UpdatedByContainer = styled('span')`
-  margin-right: 6px;
+const CollectionMetaBase = styled('span')`
+  position: relative;
+  padding-top: 3px;
+  padding-right: 40px;
+`;
+
+const CollectionMeta = CollectionMetaBase.extend`
+  padding-left: 10px;
+`;
+
+const ItemCountMeta = CollectionMetaBase.extend`
+  flex: 0;
 `;
 
 const CollectionHeadingText = styled('span')`
@@ -54,6 +72,16 @@ const CollectionHeadingText = styled('span')`
   overflow: hidden;
   text-overflow: ellipsis;
   flex: 1;
+`;
+
+const CollectionToggleContainer = styled('div')`
+  padding-top: 5px;
+  margin-left: auto;
+`;
+
+const CollectionShortVerticalPinline = ShortVerticalPinline.extend`
+  right: initial;
+  left: 0;
 `;
 
 class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
@@ -66,31 +94,55 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
   };
 
   render() {
-    const { collection, headlineContent, children }: Props = this.props;
+    const {
+      collection,
+      articleIds,
+      headlineContent,
+      metaContent,
+      children
+    }: Props = this.props;
+    const itemCount = articleIds ? articleIds.length : 0;
     return collection ? (
       <CollectionContainer>
         <ContainerHeadingPinline>
           <CollectionHeadingText>
             {collection.displayName}
           </CollectionHeadingText>
-          <HeadlineMetaContainer>
-            <UpdatedByContainer>
-              <b>{collection.updatedBy}</b>
-              &nbsp;
-              {collection.lastUpdated &&
-                `${distanceFromNow(collection.lastUpdated)} ago`}
-            </UpdatedByContainer>
-            <ButtonCircularCaret
-              active={this.state.isOpen}
-              onClick={this.toggleVisibility}
-            />
-          </HeadlineMetaContainer>
           {headlineContent && (
             <HeadlineContentContainer>
               {headlineContent}
             </HeadlineContentContainer>
           )}
         </ContainerHeadingPinline>
+        <CollectionMetaContainer>
+          <ItemCountMeta>
+            <strong>{itemCount}</strong>
+            <br />
+            {itemCount === 1 ? 'item' : 'items'}
+          </ItemCountMeta>
+          <CollectionMeta>
+            <div>
+              <strong>
+                {collection.lastUpdated &&
+                  `${upperFirst(distanceFromNow(collection.lastUpdated))} ago`}
+              </strong>
+            </div>
+            <div>{collection.updatedBy}</div>
+            <CollectionShortVerticalPinline />
+          </CollectionMeta>
+          {metaContent && (
+            <CollectionMeta>
+              {metaContent}
+              <CollectionShortVerticalPinline />
+            </CollectionMeta>
+          )}
+          <CollectionToggleContainer>
+            <ButtonCircularCaret
+              active={this.state.isOpen}
+              onClick={this.toggleVisibility}
+            />
+          </CollectionToggleContainer>
+        </CollectionMetaContainer>
         {this.state.isOpen && <FadeIn>{children}</FadeIn>}
       </CollectionContainer>
     ) : (
@@ -99,16 +151,21 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
   }
 }
 
-const mapStateToProps = (
-  state: State,
-  props: ContainerProps
-): { collection: Collection } => ({
-  collection: collectionSelectors.selectById(
-    props.selectSharedState
+const createMapStateToProps = () => {
+  const selectArticlesInCollection = createArticlesInCollectionSelector();
+  // $FlowFixMe
+  return (state: State, props: ContainerProps): { collection: Collection } => {
+    const sharedState = props.selectSharedState
       ? props.selectSharedState(state)
-      : selectSharedState(state),
-    props.id
-  )
-});
+      : selectSharedState(state);
+    return {
+      collection: collectionSelectors.selectById(sharedState, props.id),
+      articleIds: selectArticlesInCollection(sharedState, {
+        collectionId: props.id,
+        stage: props.browsingStage
+      })
+    };
+  };
+};
 
-export default connect(mapStateToProps)(CollectionDetail);
+export default connect(createMapStateToProps)(CollectionDetail);

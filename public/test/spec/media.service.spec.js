@@ -3,15 +3,23 @@ import drag from 'test/utils/drag';
 import images from 'test/utils/images';
 import Page from 'test/utils/page';
 import * as wait from 'test/utils/wait';
+import * as mockjax from 'test/utils/mockjax';
 
 describe('Media Service', function () {
     beforeEach(function (done) {
         images.setup();
         this.testPage = new Page('/test?layout=latest,front:uk', {}, done);
+        this.scope = mockjax.scope();
+        this.scope({
+            url: '/api/usage',
+            responseText: {},
+            method: 'post'
+        });
     });
     afterEach(function (done) {
         images.dispose();
         this.testPage.dispose(done);
+        this.scope.clear();
     });
 
     it('drags an image from the grid', function (done) {

@@ -7,6 +7,7 @@ import distanceInWords from 'date-fns/distance_in_words_to_now';
 import noop from 'lodash/noop';
 import startCase from 'lodash/startCase';
 
+import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 import toneColorMap from 'shared/util/toneColorMap';
 import { getThumbnail } from 'util/CAPIUtils';
 import {
@@ -104,14 +105,6 @@ const FirstPublished = styled('div')`
   margin: 2px 0;
 `;
 
-const MetaPinline = styled('div')`
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 20px;
-  border-right: solid 1px #c9c9c9;
-`;
-
 const ArticleComponent = ({
   article,
   size = 'default',
@@ -142,7 +135,7 @@ const ArticleComponent = ({
               {distanceInWords(new Date(article.firstPublicationDate))}
             </FirstPublished>
           )}
-          <MetaPinline />
+          <ShortVerticalPinline />
         </ArticleMetaContainer>
         <ArticleContentContainer>
           <ArticleHeadingContainer>

@@ -126,6 +126,7 @@ export default class Editor extends BaseClass {
         var sourceMeta = element.getData('sourceMeta');
         var params = (this.opts.validator || {}).params || {};
         var targetMethod = this.type === 'image' ? 'assignToObjectElement' : 'assignImageToSpreadElement';
+        const frontId = this.article.front ? this.article.front.front() : 'clipboard';
 
         if (sourceMeta) {
             // Drag and drop from another editor, assume valid
@@ -136,7 +137,7 @@ export default class Editor extends BaseClass {
                 alert('You cannot drag that element here.');
             }
         } else {
-            return validateImageEvent({dataTransfer: element}, params.options)
+            return validateImageEvent({dataTransfer: element}, frontId, params.options)
                 .then(img => {
                     this[targetMethod](params, img, img.origin);
                 }, err => {
@@ -157,7 +158,8 @@ export default class Editor extends BaseClass {
 
         if (image) {
             let {src, origin} = extractImageElements(image);
-            return validateImageSrc(src, opts)
+            const frontId = this.article.front ? this.article.front.front() : 'clipboard';
+            return validateImageSrc(src, frontId, opts)
                 .then(img => {
                     this.assignImageToSpreadElement(params, img, origin || src);
                 }, err => {

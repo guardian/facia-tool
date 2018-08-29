@@ -3,6 +3,7 @@
 import {
   externalArticleFromArticleFragmentSelector,
   createArticlesInCollectionGroupSelector,
+  createArticlesInCollectionSelector,
   createCollectionsAsTreeSelector,
   createCollectionSelector
 } from '../shared';
@@ -180,6 +181,18 @@ describe('Shared selectors', () => {
       expect(
         externalArticleFromArticleFragmentSelector(state, 'invalid')
       ).toEqual(null);
+    });
+  });
+
+  describe('createArticlesInCollectionGroupSelector', () => {
+    it('should return a list of all the articles in a given collection', () => {
+      const selector = createArticlesInCollectionSelector();
+      expect(
+        selector(state, {
+          collectionId: 'c1',
+          stage: 'live'
+        })
+      ).toEqual(['af2', 'af1']);
     });
   });
 

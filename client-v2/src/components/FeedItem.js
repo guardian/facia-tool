@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import distanceInWords from 'date-fns/distance_in_words_to_now';
 import startCase from 'lodash/startCase';
 
+import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 import toneColorMap from 'shared/util/toneColorMap';
 import { getPaths } from '../util/paths';
 
@@ -73,20 +74,12 @@ const Body = styled('div')`
   padding-left: 10px;
 `;
 
-const MetaPinline = styled('div')`
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 20px;
-  border-right: solid 1px #c9c9c9;
-`;
-
 type FeedItemProps = {
   title: string,
   href: string,
   tone: string,
-  publicationDate: ?string,
-  internalPageCode: ?string
+  internalPageCode: ?string,
+  publicationDate?: string
 };
 
 const dragStart = (href, event) => {
@@ -117,7 +110,7 @@ const FeedItem = ({
           {distanceInWords(new Date(publicationDate))}
         </FirstPublished>
       )}
-      <MetaPinline />
+      <ShortVerticalPinline />
     </MetaContainer>
     <Body>
       <Title>{title}</Title>

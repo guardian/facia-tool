@@ -19,17 +19,22 @@ import { type Config } from './Config';
 import { type FrontsConfig } from './FaciaApi';
 
 type EditorAddFront = {|
-  type: 'EDITOR_ADD_FRONT',
+  type: 'EDITOR_OPEN_FRONT',
   payload: { frontId: string }
 |};
 
 type EditorRemoveFront = {|
-  type: 'EDITOR_REMOVE_FRONT',
+  type: 'EDITOR_CLOSE_FRONT',
   payload: { frontId: string }
 |};
 
 type EditorClearFronts = {|
-  type: 'EDITOR_CLEAR_FRONTS'
+  type: 'EDITOR_CLEAR_OPEN_FRONTS'
+|};
+
+type EditorSetFronts = {|
+  type: 'EDITOR_SET_OPEN_FRONTS',
+  payload: { frontIds: string[] }
 |};
 
 type EditorSelectArticleFragment = {|
@@ -175,6 +180,7 @@ type Action =
   | AddClipboardContent
   | EditorAddFront
   | EditorClearFronts
+  | EditorSetFronts
   | EditorRemoveFront
   | EditorSelectArticleFragment
   | EditorClearArticleFragmentSelection;

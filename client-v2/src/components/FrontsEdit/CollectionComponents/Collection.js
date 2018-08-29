@@ -21,7 +21,9 @@ type CollectionPropsBeforeState = {
 };
 type CollectionProps = CollectionPropsBeforeState & {
   publishCollection: (collectionId: string) => Promise<void>,
-  hasUnpublishedChanges: boolean
+  hasUnpublishedChanges: boolean,
+  canPublish: boolean,
+  browsingStage?: string
 };
 
 const Collection = ({
@@ -29,20 +31,28 @@ const Collection = ({
   groups,
   children,
   alsoOn,
+  browsingStage,
   hasUnpublishedChanges,
+  canPublish = true,
   publishCollection: publish
 }: CollectionProps) => (
   <CollectionDisplay
     id={id}
+    browsingStage={browsingStage}
     headlineContent={
-      hasUnpublishedChanges && (
+      hasUnpublishedChanges &&
+      canPublish && (
         <Button dark onClick={() => publish(id)}>
           Launch
         </Button>
       )
     }
+    metaContent={
+      alsoOn[id].fronts.length ? (
+        <AlsoOnNotification alsoOn={alsoOn[id]} />
+      ) : null
+    }
   >
-    <AlsoOnNotification alsoOn={alsoOn[id]} />
     <Guration.Level arr={groups} type="group" getKey={({ uuid: key }) => key}>
       {children}
     </Guration.Level>

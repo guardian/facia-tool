@@ -9,6 +9,7 @@ import {injectColumnWidget} from 'test/utils/inject';
 import images from 'test/utils/images';
 import configRegion from 'test/utils/regions/config';
 import * as wait from 'test/utils/wait';
+import * as mockjax from 'test/utils/mockjax';
 
 describe('Config Front', function () {
     beforeEach(function () {
@@ -61,11 +62,18 @@ describe('Config Front', function () {
                 });
             });
         });
+        this.scope = mockjax.scope();
+        this.scope({
+            url: '/api/usage/add',
+            responseText: {},
+            method: 'post'
+        });
     });
     afterEach(function () {
         vars.CONST.searchDebounceMs = this.originalsearchDebounceMs;
         images.dispose();
         this.ko.dispose();
+        this.scope.clear();
     });
 
     it('create fronts and collections', function (done) {

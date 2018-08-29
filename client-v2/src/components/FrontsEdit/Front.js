@@ -141,7 +141,12 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
             >
               <Front {...this.props.tree}>
                 {collection => (
-                  <Collection {...collection} alsoOn={this.props.alsoOn}>
+                  <Collection
+                    {...collection}
+                    alsoOn={this.props.alsoOn}
+                    canPublish={this.props.browsingStage !== 'live'}
+                    browsingStage={this.props.browsingStage}
+                  >
                     {group => (
                       <Group {...group}>
                         {(articleFragment, afDragProps) => (
@@ -199,11 +204,11 @@ const createMapStateToProps = () => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   dispatch,
+  ...bindActionCreators({ addArticleFragment }, dispatch),
   selectArticleFragment: (frontId: string, articleFragmentId: string) =>
     dispatch(editorSelectArticleFragment(frontId, articleFragmentId)),
   clearArticleFragmentSelection: (frontId: string) =>
-    dispatch(editorClearArticleFragmentSelection(frontId)),
-  ...bindActionCreators({ addArticleFragment }, dispatch)
+    dispatch(editorClearArticleFragmentSelection(frontId))
 });
 
 const mergeProps = (stateProps, dispatchProps, props) => ({

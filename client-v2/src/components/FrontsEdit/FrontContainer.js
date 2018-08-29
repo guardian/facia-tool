@@ -13,6 +13,7 @@ import {
   getCollectionsAndArticles,
   updateCollection
 } from 'actions/Collections';
+import { editorCloseFront } from 'bundles/frontsUIBundle';
 import Button from 'shared/components/input/ButtonDefault';
 import { frontStages } from 'constants/fronts';
 import type { FrontConfig } from 'types/FaciaApi';
@@ -57,7 +58,8 @@ type FrontsComponentProps = {
   lastPressed: string,
   frontsActions: {
     getCollectionsAndArticles: (collectionIds: string[]) => Promise<void>,
-    fetchLastPressed: (frontId: string) => Promise<void>
+    fetchLastPressed: (frontId: string) => Promise<void>,
+    editorCloseFront: (frontId: string) => void
   }
 };
 
@@ -90,6 +92,10 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
     });
   }
 
+  handleRemoveFront = () => {
+    this.props.frontsActions.editorCloseFront(this.props.frontId);
+  };
+
   render() {
     return (
       <ScrollContainer
@@ -109,6 +115,16 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                     )} ago`}
                 </LastPressedContainer>
                 &nbsp;
+                <Button onClick={this.handleRemoveFront}>Remove</Button>
+                <a
+                  href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${
+                    this.props.frontId
+                  }`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button>Preview</Button>
+                </a>
                 {Object.keys(frontStages).map(key => (
                   <Button
                     key={key}
@@ -153,7 +169,8 @@ const mapDispatchToProps = (dispatch: *) => ({
     {
       getCollectionsAndArticles,
       fetchLastPressed,
-      updateCollection
+      updateCollection,
+      editorCloseFront
     },
     dispatch
   )

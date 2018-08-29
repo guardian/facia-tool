@@ -5,10 +5,12 @@ import { uniq } from 'lodash';
 import { type State } from 'types/State';
 import { type Action, type ActionWithBatchedActions } from 'types/Action';
 import { selectors } from 'shared/bundles/collectionsBundle';
+import { selectEditorFronts } from 'bundles/frontsUIBundle';
 import { updateCollection } from 'actions/Collections';
 import { updateClipboard } from 'actions/Clipboard';
 import { selectSharedState } from 'shared/selectors/shared';
 import { type ThunkAction } from 'types/Store';
+import { saveOpenFrontIds } from 'services/faciaApi';
 import type {
   Collection,
   NestedArticleFragment
@@ -198,10 +200,28 @@ const persistClipboardOnEdit: (
   return result;
 };
 
+const persistOpenFrontsOnEdit: (
+  persistFrontIds: (string[]) => Promise<void>
+) => Middleware<Store, Action> = (
+  persistFrontIds = saveOpenFrontIds
+) => store => next => (action: Action) => {
+  const actions = unwrapBatchedActions(action);
+
+  if (!actions.some(act => act.meta && act.meta.persistTo === 'openFrontIds')) {
+    return next(action);
+  }
+  const result = next(action);
+  const frontIds = selectEditorFronts(store.getState());
+  // Now they're in the state, persist the relevant front ids.
+  persistFrontIds(frontIds);
+  return result;
+};
+
 export type { PersistCollectionMeta, PersistClipboardMeta };
 export {
   persistCollectionOnEdit,
   persistClipboardOnEdit,
+  persistOpenFrontsOnEdit,
   updateStateFromUrlChange,
   addPersistMetaToAction
 };

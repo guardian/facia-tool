@@ -79,10 +79,10 @@ class Clipboard extends React.Component<ClipboardProps> {
               getKey={({ uuid }) => uuid}
               renderDrop={props => <DropZone {...props} />}
             >
-              {(articleFragment, afDragProps) => (
+              {(articleFragment, getDragProps) => (
                 <ArticlePolaroid
                   id={articleFragment.uuid}
-                  getDragProps={afDragProps}
+                  {...getDragProps()}
                 />
               )}
             </Guration.Level>

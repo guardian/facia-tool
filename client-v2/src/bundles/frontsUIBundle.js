@@ -3,24 +3,41 @@
 import { type Action } from 'types/Action';
 import { type State as GlobalState } from 'types/State';
 
-const EDITOR_ADD_FRONT = 'EDITOR_ADD_FRONT';
-const EDITOR_REMOVE_FRONT = 'EDITOR_REMOVE_FRONT';
-const EDITOR_CLEAR_FRONTS = 'EDITOR_CLEAR_FRONTS';
+const EDITOR_OPEN_FRONT = 'EDITOR_OPEN_FRONT';
+const EDITOR_CLOSE_FRONT = 'EDITOR_CLOSE_FRONT';
+const EDITOR_CLEAR_OPEN_FRONTS = 'EDITOR_CLEAR_OPEN_FRONTS';
+const EDITOR_SET_OPEN_FRONTS = 'EDITOR_SET_OPEN_FRONTS';
 const EDITOR_SELECT_ARTICLE_FRAGMENT = 'EDITOR_SELECT_ARTICLE_FRAGMENT';
 const EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION =
   'EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION';
 
-const editorAddFront = (frontId: string) => ({
-  type: EDITOR_ADD_FRONT,
-  payload: { frontId }
+const editorOpenFront = (frontId: string) => ({
+  type: EDITOR_OPEN_FRONT,
+  payload: { frontId },
+  meta: {
+    persistTo: 'openFrontIds'
+  }
 });
-const editorRemoveFront = (frontId: string) => ({
-  type: EDITOR_REMOVE_FRONT,
-  payload: { frontId }
+const editorCloseFront = (frontId: string) => ({
+  type: EDITOR_CLOSE_FRONT,
+  payload: { frontId },
+  meta: {
+    persistTo: 'openFrontIds'
+  }
 });
 
-const editorClearFronts = () => ({
-  type: EDITOR_CLEAR_FRONTS
+const editorClearOpenFronts = () => ({
+  type: EDITOR_CLEAR_OPEN_FRONTS,
+  meta: {
+    persistTo: 'openFrontIds'
+  }
+});
+
+const editorSetOpenFronts = (frontIds: string[]) => ({
+  type: EDITOR_SET_OPEN_FRONTS,
+  payload: {
+    frontIds
+  }
 });
 
 const editorSelectArticleFragment = (
@@ -45,18 +62,17 @@ const selectEditorFronts = (state: GlobalState) => state.editor.frontIds;
 const selectEditorArticleFragment = (state: GlobalState, frontId: string) =>
   state.editor.selectedArticleFragments[frontId];
 
-const reducer = (
-  state: State = { frontIds: [], selectedArticleFragments: {} },
-  action: Action
-): State => {
+const defaultState = { frontIds: [], selectedArticleFragments: {} };
+
+const reducer = (state: State = defaultState, action: Action): State => {
   switch (action.type) {
-    case EDITOR_ADD_FRONT: {
+    case EDITOR_OPEN_FRONT: {
       return {
         ...state,
         frontIds: state.frontIds.concat(action.payload.frontId)
       };
     }
-    case EDITOR_REMOVE_FRONT: {
+    case EDITOR_CLOSE_FRONT: {
       const frontIndex = state.frontIds.indexOf(action.payload.frontId);
       return {
         ...state,
@@ -66,10 +82,16 @@ const reducer = (
         ]
       };
     }
-    case EDITOR_CLEAR_FRONTS: {
+    case EDITOR_CLEAR_OPEN_FRONTS: {
       return {
         ...state,
         frontIds: []
+      };
+    }
+    case EDITOR_SET_OPEN_FRONTS: {
+      return {
+        ...state,
+        frontIds: action.payload.frontIds
       };
     }
     case EDITOR_SELECT_ARTICLE_FRAGMENT: {
@@ -97,9 +119,10 @@ const reducer = (
 };
 
 export {
-  editorAddFront,
-  editorRemoveFront,
-  editorClearFronts,
+  editorOpenFront,
+  editorCloseFront,
+  editorClearOpenFronts,
+  editorSetOpenFronts,
   editorSelectArticleFragment,
   editorClearArticleFragmentSelection,
   selectEditorFronts,
