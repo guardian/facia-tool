@@ -1,0 +1,20 @@
+package model
+
+import com.gu.facia.client.models.Trail
+import com.gu.scanamo.DynamoFormat
+import com.gu.scanamo.error.TypeCoercionError
+import play.api.libs.json.{JsValue, Json}
+
+import scala.util.{Failure, Success, Try}
+
+object UserData {
+  implicit val jsonFormat = Json.format[UserData]
+
+  implicit val jsValueFormat: DynamoFormat[JsValue] = DynamoFormat.xmap[JsValue, String](
+    x => Try(Json.parse(x)) match {
+      case Success(y) => Right(y)
+      case Failure(f) => Left(TypeCoercionError(f))
+    }
+  )(Json.stringify(_))
+}
+case class UserData(email: String, clipboardArticles: List[Trail], frontIds: List[String])

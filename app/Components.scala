@@ -62,7 +62,7 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val vanityRedirects = new VanityRedirects(acl, this)
   val views = new ViewsController(acl, assetsManager, isDev, encryption, this)
   val pressController = new PressController(dynamo, this)
-  val v2App = new V2App(isDev, acl, this)
+  val v2App = new V2App(isDev, acl, dynamo, this)
   val faciaToolV2 = new FaciaToolV2Controller(acl, structuredLogger, faciaPress, updateActions, this)
   val clipboardController = new ClipboardController(dynamo, this)
   val gridProxy = new GridProxy(this)

@@ -28,7 +28,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
   private val stageFromProperties = properties.getOrElse("STAGE", "CODE")
   private val stsRoleToAssumeFromProperties = properties.getOrElse("STS_ROLE", "unknown")
   private val frontPressedDynamoTable = properties.getOrElse("FRONT_PRESSED_TABLE", "unknown")
-  private val frontsClipboardTable = properties.getOrElse("CLIPBOARD_TABLE", "unknown")
+  private val userTable = properties.getOrElse("USER_DATA_TABLE", "unknown")
 
   private def getString(property: String): Option[String] =
     playConfiguration.getOptional[String](stageFromProperties + "." + property)
@@ -162,7 +162,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     lazy val showTestContainers = getBoolean("faciatool.show_test_containers").getOrElse(false)
     lazy val stsRoleToAssume = getString("faciatool.sts.role.to.assume").getOrElse(stsRoleToAssumeFromProperties)
     lazy val frontPressUpdateTable = frontPressedDynamoTable
-    lazy val clipboardTable = frontsClipboardTable
+    lazy val userDataTable = userTable
   }
 
   object media {

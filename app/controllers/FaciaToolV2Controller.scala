@@ -1,8 +1,10 @@
 package controllers
 
+import com.gu.scanamo.Table
 import frontsapi.model.UpdateActions
 import logging.Logging
 import metrics.FaciaToolMetrics
+import model.UserData
 import play.api.libs.json.Json
 import services._
 import updates._
@@ -20,8 +22,8 @@ class FaciaToolV2Controller(
                          )(implicit ec: ExecutionContext)
   extends BaseFaciaController(deps) with Logging {
 
-
   def collectionEdits() = AccessAPIAuthAction { implicit request =>
+
 
     FaciaToolMetrics.ApiUsageCount.increment()
 
