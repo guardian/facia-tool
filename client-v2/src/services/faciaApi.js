@@ -114,8 +114,8 @@ async function saveClipboard(
 ): Promise<Array<NestedArticleFragment>> {
   // The server does not respond with JSON
   try {
-    const response = await pandaFetch(`/clipboard`, {
-      method: 'post',
+    const response = await pandaFetch(`/userdata/clipboard`, {
+      method: 'put',
       credentials: 'same-origin',
       body: JSON.stringify(clipboardContent),
       headers: {

@@ -64,7 +64,7 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val pressController = new PressController(dynamo, this)
   val v2App = new V2App(isDev, acl, dynamo, this)
   val faciaToolV2 = new FaciaToolV2Controller(acl, structuredLogger, faciaPress, updateActions, this)
-  val clipboardController = new ClipboardController(dynamo, this)
+  val userDataController = new UserDataController(dynamo, this)
   val gridProxy = new GridProxy(this)
 
   final override lazy val corsConfig: CORSConfig = CORSConfig.fromConfiguration(context.initialConfiguration).copy(
@@ -74,7 +74,7 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   override lazy val assets: Assets = new controllers.Assets(httpErrorHandler, assetsMetadata)
 
   val router: Router = new Routes(httpErrorHandler, status, pandaAuth, v2Assets, uncachedAssets, views, faciaTool,
-    pressController, faciaToolV2, defaults, clipboardController, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects, troubleshoot, v2App, gridProxy)
+    pressController, faciaToolV2, defaults, userDataController, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects, troubleshoot, v2App, gridProxy)
 
 
   override lazy val httpFilters = Seq(
