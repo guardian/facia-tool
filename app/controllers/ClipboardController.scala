@@ -16,26 +16,18 @@ class ClipboardController(dynamo: Dynamo, val deps: BaseFaciaControllerComponent
 
   private lazy val userDataTable = Table[UserData](config.faciatool.userDataTable)
 
-  def getClipboardContent() = APIAuthAction { request =>
-
-    val userEmail: String = request.user.email
-
-    val record: Option[UserData] = Scanamo.exec(dynamo.client)(
-      userDataTable.get('email -> userEmail)).flatMap(_.right.toOption)
-
-    record.map(clipboardContent => Ok(Json.toJson(clipboardContent.clipboardArticles))).getOrElse(NotFound)
-  }
 
   def putClipboardContent() = APIAuthAction { request =>
 
-    val clipboardContent: Option[List[Trail]] = request.body.asJson.flatMap(jsValue =>
+    val clipboardArticles: Option[List[Trail]] = request.body.asJson.flatMap(jsValue =>
       jsValue.asOpt[List[Trail]])
 
-    clipboardContent match {
+    clipboardArticles match {
       case Some(articles) => {
         val userEmail = request.user.email
-        val item = UserData(request.user.email, articles, List())
-        val result = Scanamo.put(dynamo.client)(config.faciatool.userDataTable)(item)
+        Scanamo.exec(dynamo.client)(userDataTable.update('email -> request.user.email, set('clipboardArticles -> articles)))
+        //val item = UserData(request.user.email, articles, List())
+        //val result = Scanamo.put(dynamo.client)(config.faciatool.userDataTable)(item)
         Ok
       }
       case None => BadRequest
