@@ -201,7 +201,7 @@ const persistClipboardOnEdit: (
 };
 
 const persistOpenFrontsOnEdit: (
-  persistFrontIds: (string[]) => Promise<void>
+  persistFrontIds?: (string[]) => Promise<void>
 ) => Middleware<Store, Action> = (
   persistFrontIds = saveOpenFrontIds
 ) => store => next => (action: Action) => {

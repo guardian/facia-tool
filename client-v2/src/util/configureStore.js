@@ -14,7 +14,6 @@ import thunkMiddleware from 'redux-thunk';
 import createBrowserHistory from 'history/createBrowserHistory';
 import { routerMiddleware } from 'react-router-redux';
 
-import { saveOpenFrontIds } from 'services/faciaApi';
 import { updateCollection } from 'actions/Collections';
 import { updateClipboard } from 'actions/Clipboard';
 import { type Store } from 'types/Store';
