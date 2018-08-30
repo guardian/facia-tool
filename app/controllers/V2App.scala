@@ -1,15 +1,24 @@
 package controllers
 
+import com.gu.scanamo._
+import com.gu.scanamo.syntax._
+import model.UserData
+
 import scala.concurrent.ExecutionContext
 import com.gu.facia.client.models.Metadata
 import permissions.Permissions
 import play.api.libs.json.Json
 import switchboard.SwitchManager
 import util.{Acl, AclJson}
+import services.Dynamo
 
-class V2App(isDev: Boolean, val acl: Acl, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
+class V2App(isDev: Boolean, val acl: Acl, dynamo: Dynamo, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
+
+  import model.UserData._
 
   def index(priority: String = "", frontId: String = "") = AccessAuthAction { implicit req =>
+
+    val userDataTable = Table[UserData](config.faciatool.userDataTable)
 
     val jsFileName = "dist/app.bundle.js"
 
@@ -23,11 +32,16 @@ class V2App(isDev: Boolean, val acl: Acl, val deps: BaseFaciaControllerComponent
       permissions = Map("configure-config" -> hasConfigureFronts)
     )
 
+    val userEmail: String = req.user.email
+
+    val record: Option[UserData] = Scanamo.exec(dynamo.client)(
+      userDataTable.get('email -> userEmail)).flatMap(_.right.toOption)
+
     val conf = Defaults(
       isDev,
       config.environment.stage,
       Seq("uk", "us", "au"),
-      req.user.email,
+      userEmail,
       req.user.avatarUrl,
       req.user.firstName,
       req.user.lastName,
@@ -42,6 +56,8 @@ class V2App(isDev: Boolean, val acl: Acl, val deps: BaseFaciaControllerComponent
       Metadata.tags.map {
         case (_, meta) => meta
       },
+      record.map(record => record.clipboardArticles),
+      record.map(record => record.frontIds),
       routes.FaciaContentApiProxy.capiLive("").absoluteURL(true),
       routes.FaciaContentApiProxy.capiPreview("").absoluteURL(true)
     )

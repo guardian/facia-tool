@@ -1,4 +1,6 @@
 // @flow
+//
+import type { NestedArticleFragment } from 'shared/types/Collection';
 
 type Permission = {
   [string]: boolean
@@ -33,7 +35,9 @@ type Config = {
   collectionMetadata: Array<Metadata>,
   capiLiveUrl: string,
   capiPreviewUrl: string,
-  ravenUrl?: string
+  ravenUrl?: string,
+  frontIds: Array<string>,
+  clipboardArticles: Array<NestedArticleFragment>
 };
 
 export type { Config };
