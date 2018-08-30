@@ -107,6 +107,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
             alsoOn={this.props.alsoOn}
             collectionIds={this.props.selectedFront.collections}
             browsingStage={this.state.browsingStage}
+            frontId={this.props.frontId}
           />
         )}
       </ScrollContainer>

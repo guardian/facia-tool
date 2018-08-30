@@ -9,12 +9,14 @@ import FrontsLayout from '../FrontsLayout';
 import FrontsContainer from './FrontsContainer';
 import Feed from '../Feed';
 import ErrorBannner from '../ErrorBanner';
+import PressFailAlert from '../PressFailAlert';
 import Clipboard from '../Clipboard';
 
 type Props = {
   match: Match,
   error: ActionError,
-  history: RouterHistory
+  history: RouterHistory,
+  staleFronts: { string: boolean }
 };
 
 const getFrontId = (frontId: ?string): string =>
@@ -23,6 +25,7 @@ const getFrontId = (frontId: ?string): string =>
 const FrontsEdit = (props: Props) => (
   <React.Fragment>
     <ErrorBannner error={props.error} />
+    <PressFailAlert staleFronts={props.staleFronts} />
     <FrontsLayout
       left={<Feed />}
       middle={<Clipboard />}
@@ -38,7 +41,8 @@ const FrontsEdit = (props: Props) => (
 );
 
 const mapStateToProps = (state: State) => ({
-  error: state.error
+  error: state.error,
+  staleFronts: state.staleFronts
 });
 
 export default connect(mapStateToProps)(FrontsEdit);
