@@ -209,11 +209,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch(editorClearArticleFragmentSelection(frontId))
 });
 
-const mergeProps = (
-  stateProps,
-  dispatchProps,
-  props: FrontPropsBeforeState
-) => ({
+const mergeProps = (stateProps, dispatchProps, props) => ({
   ...props,
   ...stateProps,
   ...dispatchProps,
