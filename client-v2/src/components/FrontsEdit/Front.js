@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 /* eslint-disable import/no-duplicates */
 import * as Guration from '@guardian/guration';
-import { type Edit } from '@guardian/guration';
 /* eslint-enable import/no-duplicates */
 import { type State } from 'types/State';
 import { type Dispatch } from 'types/Store';
@@ -47,9 +46,8 @@ const FrontContentContainer = styled('div')`
 type FrontPropsBeforeState = {
   id: string,
   browsingStage: string,
-  collections: string[],
-  alsoOn: { [string]: AlsoOnDetail },
-  handleEdits: (edits: Edit[]) => void
+  collectionIds: string[],
+  alsoOn: { [string]: AlsoOnDetail }
 };
 
 type FrontProps = FrontPropsBeforeState & {
@@ -211,7 +209,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch(editorClearArticleFragmentSelection(frontId))
 });
 
-const mergeProps = (stateProps, dispatchProps, props) => ({
+const mergeProps = (
+  stateProps,
+  dispatchProps,
+  props: FrontPropsBeforeState
+) => ({
   ...props,
   ...stateProps,
   ...dispatchProps,

@@ -16,12 +16,14 @@ import ErrorBannner from '../ErrorBanner';
 import SectionContainer from '../layout/SectionContainer';
 import SectionsContainer from '../layout/SectionsContainer';
 import FrontsMenu from './FrontsMenu';
+import PressFailAlert from '../PressFailAlert';
 
 type Props = {
   match: Match,
   error: ActionError,
   history: RouterHistory,
   frontIds: string[],
+  staleFronts: { string: boolean },
   editorOpenFront: (frontId: string) => void,
   getFrontsConfig: () => void
 };
@@ -51,6 +53,7 @@ class FrontsEdit extends React.Component<Props> {
     return (
       <FrontsEditContainer>
         <ErrorBannner error={this.props.error} />
+        <PressFailAlert staleFronts={this.props.staleFronts} />
         <SectionsContainer>
           <FeedContainer>
             <FeedSection />
@@ -76,6 +79,7 @@ class FrontsEdit extends React.Component<Props> {
 
 const mapStateToProps = (state: State) => ({
   error: state.error,
+  staleFronts: state.staleFronts,
   frontIds: selectEditorFronts(state)
 });
 

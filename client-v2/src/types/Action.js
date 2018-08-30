@@ -157,6 +157,11 @@ type RemoveClipboardArticleFragment = {|
   payload: { articleFragmentId: string }
 |};
 
+type RecordStaleFronts = {|
+  type: 'RECORD_STALE_FRONTS',
+  payload: { [string]: boolean }
+|};
+
 type Action =
   | ConfigReceivedAction
   | FrontsConfigReceivedAction
@@ -183,7 +188,8 @@ type Action =
   | EditorSetFronts
   | EditorRemoveFront
   | EditorSelectArticleFragment
-  | EditorClearArticleFragmentSelection;
+  | EditorClearArticleFragmentSelection
+  | RecordStaleFronts;
 
 type BatchedAction = {|
   type: 'BATCHING_REDUCER.BATCH',

@@ -1,6 +1,6 @@
 package controllers
 
-import com.gu.facia.client.models.Metadata
+import com.gu.facia.client.models.{Trail, Metadata}
 import model.Cached
 import permissions.Permissions
 import play.api.libs.json.{JsValue, Json}
@@ -28,6 +28,8 @@ case class Defaults(
   navListCap: Int,
   navListType: String,
   collectionMetadata: Iterable[Metadata],
+  clipboardArticles: Option[List[Trail]],
+  frontIds: Option[List[String]],
   capiLiveUrl: String = "",
   capiPreviewUrl: String = ""
 )
@@ -61,7 +63,9 @@ class DefaultsController(val acl: Acl, val isDev: Boolean, val deps: BaseFaciaCo
         config.facia.navListType,
         Metadata.tags.map{
           case (_, meta) => meta
-        }
+        },
+        None,
+        None
       )))
     }
   }

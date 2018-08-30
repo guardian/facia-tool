@@ -17,10 +17,12 @@ type CollectionPropsBeforeState = {
   id: string,
   groups: *,
   children: *,
-  alsoOn: { [string]: AlsoOnDetail }
+  alsoOn: { [string]: AlsoOnDetail },
+  frontId: string
 };
+
 type CollectionProps = CollectionPropsBeforeState & {
-  publishCollection: (collectionId: string) => Promise<void>,
+  publishCollection: (collectionId: string, frontId: string) => Promise<void>,
   hasUnpublishedChanges: boolean,
   canPublish: boolean,
   browsingStage?: string
@@ -34,7 +36,8 @@ const Collection = ({
   browsingStage,
   hasUnpublishedChanges,
   canPublish = true,
-  publishCollection: publish
+  publishCollection: publish,
+  frontId
 }: CollectionProps) => (
   <CollectionDisplay
     id={id}
@@ -42,7 +45,7 @@ const Collection = ({
     headlineContent={
       hasUnpublishedChanges &&
       canPublish && (
-        <Button dark onClick={() => publish(id)}>
+        <Button dark onClick={() => publish(id, frontId)}>
           Launch
         </Button>
       )

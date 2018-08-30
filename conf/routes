@@ -51,9 +51,9 @@ GET         /metadata                                controllers.FaciaToolContro
 
 POST        /treats/*collectionId                    controllers.FaciaToolController.treatEdits(collectionId)
 
-GET         /clipboard                               controllers.ClipboardController.getClipboardContent()
+PUT        /userdata/clipboard                       controllers.UserDataController.putClipboardContent()
 
-POST        /clipboard                               controllers.ClipboardController.putClipboardContent()
+PUT        /userdata/frontIds                        controllers.UserDataController.putFrontIds()
 
 # endpoints for proxying https
 GET         /api/preview/*path                       controllers.FaciaContentApiProxy.capiPreview(path)

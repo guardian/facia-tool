@@ -10,6 +10,7 @@ import configureStore from 'util/configureStore';
 import extractConfigFromPage from 'util/extractConfigFromPage';
 import App from 'components/App';
 import { configReceived } from 'actions/Config';
+import { storeClipboardContent } from 'actions/Clipboard';
 
 const store = configureStore();
 const config = extractConfigFromPage();
@@ -19,6 +20,7 @@ if (config.stage === 'PROD' && config.ravenUrl)
   Raven.config(config.ravenUrl).install();
 
 store.dispatch(configReceived(config));
+storeClipboardContent(config.clipboardArticles)(store.dispatch);
 
 const reactMount = document.getElementById('react-mount');
 

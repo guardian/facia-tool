@@ -10,6 +10,7 @@ import path from './pathReducer';
 import unpublishedChanges from './unpublishedChangesReducer';
 import clipboard from './clipboardReducer';
 import editor from '../bundles/frontsUIBundle';
+import staleFronts from './staleFrontsReducer';
 
 const reducers = {
   config,
@@ -19,7 +20,8 @@ const reducers = {
   shared,
   unpublishedChanges,
   clipboard,
-  editor
+  editor,
+  staleFronts
 };
 
 export type Reducers = typeof reducers;

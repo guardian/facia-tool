@@ -1,9 +1,9 @@
 // @flow
 
+import { bindActionCreators } from 'redux';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import * as Guration from '@guardian/guration';
-import { bindActionCreators } from 'redux';
 import { type Dispatch } from 'types/Store';
 import { batchActions } from 'redux-batched-actions';
 import flatten from 'lodash/flatten';
@@ -14,22 +14,16 @@ import { clipboardAsTreeSelector } from 'shared/selectors/shared';
 import DropZone from 'components/DropZone';
 import ArticlePolaroid from 'shared/components/ArticlePolaroid';
 import { addArticleFragment } from 'shared/actions/ArticleFragments';
-import { fetchClipboardContent } from 'actions/Clipboard';
 
 type ClipboardPropsBeforeState = {};
 
 type ClipboardProps = ClipboardPropsBeforeState & {
-  fetchClipboardContent: () => Promise<Array<String>>,
   addArticleFragment: string => Promise<string>,
   tree: Object, // TODO add typing,
   dispatch: Dispatch
 };
 
 class Clipboard extends React.Component<ClipboardProps> {
-  componentDidMount() {
-    this.props.fetchClipboardContent();
-  }
-
   handleChange = edits => {
     const futureActions = edits.reduce((acc, edit) => {
       switch (edit.type) {
@@ -98,10 +92,7 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: *) => ({
-  ...bindActionCreators(
-    { fetchClipboardContent, addArticleFragment },
-    dispatch
-  ),
+  ...bindActionCreators({ addArticleFragment }, dispatch),
   dispatch
 });
 
