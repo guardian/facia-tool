@@ -45,7 +45,7 @@ const FeedContainer = SectionContainer.extend`
 `;
 
 class FrontsEdit extends React.Component<Props> {
-  componentWillMount() {
+  componentDidMount() {
     this.props.getFrontsConfig();
   }
 

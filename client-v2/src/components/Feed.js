@@ -52,11 +52,11 @@ const FeedContainer = styled('div')`
 `;
 
 const StageSelectionContainer = styled('div')`
-  float: right;
+  margin-left: auto;
 `;
 
-const ResultsHeading = ContainerHeading.extend`
-  float: left;
+const ResultsHeadingContainer = styled('div')`
+  display: flex;
 `;
 
 class Feed extends React.Component<FeedProps, FeedState> {
@@ -79,8 +79,8 @@ class Feed extends React.Component<FeedProps, FeedState> {
   }
 
   renderFixedContent = () => (
-    <div>
-      <ResultsHeading>Results</ResultsHeading>
+    <ResultsHeadingContainer>
+      <ContainerHeading>Results</ContainerHeading>
       <StageSelectionContainer>
         <RadioGroup>
           {this.props.capiFeedSpecs.map(({ name }, i) => (
@@ -94,7 +94,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
           ))}
         </RadioGroup>
       </StageSelectionContainer>
-    </div>
+    </ResultsHeadingContainer>
   );
 
   render() {

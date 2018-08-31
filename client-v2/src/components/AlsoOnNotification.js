@@ -47,7 +47,7 @@ class AlsoOnNotification extends React.Component<
               fronts.
             </span>
           )}
-          {!alsoOn.meritsWarning && <div>Also on other fronts.</div>}
+          {!alsoOn.meritsWarning && <span>Also on other fronts.</span>}
           &nbsp;
           <ButtonSmall
             size="xs"

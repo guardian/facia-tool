@@ -72,7 +72,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
     browsingStage: frontStages.draft
   };
 
-  componentWillMount() {
+  componentDidMount() {
     // If we've already got the front configuration, fetch
     // collections and articles immediately.
     if (this.props.selectedFront) {
@@ -82,7 +82,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
     }
   }
 
-  componentWillReceiveProps(nextProps: FrontsComponentProps) {
+  componentDidReceiveProps(nextProps: FrontsComponentProps) {
     if (this.props.frontId !== nextProps.frontId || !this.props.lastPressed) {
       this.props.frontsActions.fetchLastPressed(nextProps.frontId);
     }
