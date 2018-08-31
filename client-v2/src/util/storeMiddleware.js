@@ -1,7 +1,7 @@
 // @flow
 
 import { type Middleware } from 'redux';
-import { uniq } from 'lodash';
+import uniq from 'lodash/uniq';
 import { type State } from 'types/State';
 import { type Action, type ActionWithBatchedActions } from 'types/Action';
 import { selectors } from 'shared/bundles/collectionsBundle';

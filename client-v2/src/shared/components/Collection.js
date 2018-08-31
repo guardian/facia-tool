@@ -4,7 +4,7 @@ import React, { type Node as ReactNode } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import distanceFromNow from 'date-fns/distance_in_words_to_now';
-import { upperFirst } from 'lodash';
+import upperFirst from 'lodash/upperFirst';
 
 import ShortVerticalPinline from './layout/ShortVerticalPinline';
 import ContainerHeadingPinline from './typography/ContainerHeadingPinline';
