@@ -73,6 +73,8 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   };
 
   componentWillMount() {
+    // If we've already got the front configuration, fetch
+    // collections and articles immediately.
     if (this.props.selectedFront) {
       this.props.frontsActions.getCollectionsAndArticles(
         this.props.selectedFront.collections
@@ -83,6 +85,13 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   componentWillReceiveProps(nextProps: FrontsComponentProps) {
     if (this.props.frontId !== nextProps.frontId || !this.props.lastPressed) {
       this.props.frontsActions.fetchLastPressed(nextProps.frontId);
+    }
+    // If we mounted without a front configuration,
+    // fetch it when it's eventually available.
+    if (!this.props.selectedFront && nextProps.selectedFront) {
+      nextProps.frontsActions.getCollectionsAndArticles(
+        nextProps.selectedFront.collections
+      );
     }
   }
 
