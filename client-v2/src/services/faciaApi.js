@@ -132,6 +132,25 @@ async function saveClipboard(
   }
 }
 
+async function saveOpenFrontIds(frontIds: string[]): Promise<void> {
+  try {
+    await pandaFetch(`/userdata/frontIds`, {
+      method: 'put',
+      credentials: 'same-origin',
+      body: JSON.stringify(frontIds),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  } catch (response) {
+    throw new Error(
+      `Tried to store the open fronts configuration but the server responded with ${
+        response.status
+      }: ${response.body}`
+    );
+  }
+}
+
 function getCollection(
   collectionId: string
 ): Promise<CollectionWithNestedArticles> {
@@ -191,5 +210,6 @@ export {
   fetchLastPressed,
   publishCollection,
   updateCollection,
-  saveClipboard
+  saveClipboard,
+  saveOpenFrontIds
 };

@@ -3,9 +3,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+
 import CollectionDisplay from 'shared/components/Collection';
 import AlsoOnNotification from 'components/AlsoOnNotification';
-import Button from 'components/Button';
+import Button from 'shared/components/input/ButtonDefault';
 import * as Guration from '@guardian/guration';
 import type { AlsoOnDetail } from 'types/Collection';
 import { publishCollection } from 'actions/Fronts';
@@ -22,7 +23,9 @@ type CollectionPropsBeforeState = {
 
 type CollectionProps = CollectionPropsBeforeState & {
   publishCollection: (collectionId: string, frontId: string) => Promise<void>,
-  hasUnpublishedChanges: boolean
+  hasUnpublishedChanges: boolean,
+  canPublish: boolean,
+  browsingStage?: string
 };
 
 const Collection = ({
@@ -30,21 +33,29 @@ const Collection = ({
   groups,
   children,
   alsoOn,
+  browsingStage,
   hasUnpublishedChanges,
+  canPublish = true,
   publishCollection: publish,
   frontId
 }: CollectionProps) => (
   <CollectionDisplay
     id={id}
+    browsingStage={browsingStage}
     headlineContent={
-      hasUnpublishedChanges && (
+      hasUnpublishedChanges &&
+      canPublish && (
         <Button dark onClick={() => publish(id, frontId)}>
           Launch
         </Button>
       )
     }
+    metaContent={
+      alsoOn[id].fronts.length ? (
+        <AlsoOnNotification alsoOn={alsoOn[id]} />
+      ) : null
+    }
   >
-    <AlsoOnNotification alsoOn={alsoOn[id]} />
     <Guration.Level arr={groups} type="group" getKey={({ uuid: key }) => key}>
       {children}
     </Guration.Level>

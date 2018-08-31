@@ -5,16 +5,14 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import * as Guration from '@guardian/guration';
 import { type Dispatch } from 'types/Store';
-import styled from 'styled-components';
 import { batchActions } from 'redux-batched-actions';
 import flatten from 'lodash/flatten';
 import { type State } from 'types/State';
 import { urlToArticle } from 'util/collectionUtils';
 import { getMoveActions, getInsertActions } from 'util/clipboardUtils';
 import { clipboardAsTreeSelector } from 'shared/selectors/shared';
-import ArticleFragment from 'components/FrontsEdit/CollectionComponents/ArticleFragment';
-import Supporting from 'components/FrontsEdit/CollectionComponents/Supporting';
 import DropZone from 'components/DropZone';
+import ArticlePolaroid from 'shared/components/ArticlePolaroid';
 import { addArticleFragment } from 'shared/actions/ArticleFragments';
 
 type ClipboardPropsBeforeState = {};
@@ -24,16 +22,6 @@ type ClipboardProps = ClipboardPropsBeforeState & {
   tree: Object, // TODO add typing,
   dispatch: Dispatch
 };
-
-const ClipboardContent = styled(`div`)`
-  background: white
-  color: black
-  padding: 5px
-`;
-
-const ClipboardContainer = styled(`div`)`
-  padding: 5px;
-`;
 
 class Clipboard extends React.Component<ClipboardProps> {
   handleChange = edits => {
@@ -68,40 +56,33 @@ class Clipboard extends React.Component<ClipboardProps> {
     const { tree } = this.props;
     const treeKeysExist = Object.keys(tree).length > 0;
     return (
-      <ClipboardContainer>
-        Clipboard
+      <div>
         {treeKeysExist && (
-          <ClipboardContent>
-            <Guration.Root
-              id="clipboard"
-              type="clipboard"
-              onChange={this.handleChange}
-              dropMappers={{
-                text: text => urlToArticle(text),
-                capi: capi => ({ type: 'articleFragment', id: capi })
-              }}
+          <Guration.Root
+            id="clipboard"
+            type="clipboard"
+            onChange={this.handleChange}
+            dropMappers={{
+              text: text => urlToArticle(text),
+              capi: capi => ({ type: 'articleFragment', id: capi })
+            }}
+          >
+            <Guration.Level
+              arr={tree.articleFragments}
+              type="articleFragment"
+              getKey={({ uuid }) => uuid}
+              renderDrop={props => <DropZone {...props} />}
             >
-              <Guration.Level
-                arr={tree.articleFragments}
-                type="articleFragment"
-                getKey={({ uuid }) => uuid}
-                renderDrop={props => <DropZone {...props} />}
-              >
-                {(articleFragment, afDragProps) => (
-                  <ArticleFragment
-                    {...articleFragment}
-                    getDragProps={afDragProps}
-                  >
-                    {(supporting, sDragProps) => (
-                      <Supporting {...supporting} getDragProps={sDragProps} />
-                    )}
-                  </ArticleFragment>
-                )}
-              </Guration.Level>
-            </Guration.Root>
-          </ClipboardContent>
+              {(articleFragment, getDragProps) => (
+                <ArticlePolaroid
+                  id={articleFragment.uuid}
+                  {...getDragProps()}
+                />
+              )}
+            </Guration.Level>
+          </Guration.Root>
         )}
-      </ClipboardContainer>
+      </div>
     );
   }
 }

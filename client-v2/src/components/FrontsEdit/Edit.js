@@ -2,47 +2,97 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import type { Match, RouterHistory } from 'react-router-dom';
+import styled from 'styled-components';
+
+import getFrontsConfig from 'actions/Fronts';
+import { editorOpenFront, selectEditorFronts } from 'bundles/frontsUIBundle';
 import type { State } from 'types/State';
 import type { ActionError } from 'types/Action';
-import FrontsLayout from '../FrontsLayout';
-import FrontsContainer from './FrontsContainer';
-import Feed from '../Feed';
+import FrontContainer from './FrontContainer';
+import FeedSection from '../FeedSection';
 import ErrorBannner from '../ErrorBanner';
+import SectionContainer from '../layout/SectionContainer';
+import SectionsContainer from '../layout/SectionsContainer';
+import FrontsMenu from './FrontsMenu';
 import PressFailAlert from '../PressFailAlert';
-import Clipboard from '../Clipboard';
 
 type Props = {
   match: Match,
   error: ActionError,
   history: RouterHistory,
-  staleFronts: { string: boolean }
+  frontIds: string[],
+  staleFronts: { string: boolean },
+  editorOpenFront: (frontId: string) => void,
+  getFrontsConfig: () => void
 };
 
-const getFrontId = (frontId: ?string): string =>
-  frontId ? decodeURIComponent(frontId) : '';
+const FrontsEditContainer = styled('div')`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+`;
 
-const FrontsEdit = (props: Props) => (
-  <React.Fragment>
-    <ErrorBannner error={props.error} />
-    <PressFailAlert staleFronts={props.staleFronts} />
-    <FrontsLayout
-      left={<Feed />}
-      middle={<Clipboard />}
-      right={
-        <FrontsContainer
-          history={props.history}
-          priority={props.match.params.priority || ''}
-          frontId={getFrontId(props.match.params.frontId)}
-        />
-      }
-    />
-  </React.Fragment>
-);
+const SingleFrontContainer = styled('div')`
+  height: 100%;
+  width: 1011px;
+`;
+
+const FeedContainer = SectionContainer.extend`
+  height: 100%;
+`;
+
+class FrontsEdit extends React.Component<Props> {
+  componentDidMount() {
+    this.props.getFrontsConfig();
+  }
+
+  render() {
+    return (
+      <FrontsEditContainer>
+        <ErrorBannner error={this.props.error} />
+        <PressFailAlert staleFronts={this.props.staleFronts} />
+        <SectionsContainer>
+          <FeedContainer>
+            <FeedSection />
+          </FeedContainer>
+          <SectionContainer>
+            {this.props.frontIds.map(frontId => (
+              <SingleFrontContainer key={frontId}>
+                <FrontContainer
+                  key={frontId}
+                  history={this.props.history}
+                  priority={this.props.match.params.priority || ''}
+                  frontId={frontId}
+                />
+              </SingleFrontContainer>
+            ))}
+          </SectionContainer>
+        </SectionsContainer>
+        <FrontsMenu onSelectFront={this.props.editorOpenFront} />
+      </FrontsEditContainer>
+    );
+  }
+}
 
 const mapStateToProps = (state: State) => ({
   error: state.error,
-  staleFronts: state.staleFronts
+  staleFronts: state.staleFronts,
+  frontIds: selectEditorFronts(state)
 });
 
-export default connect(mapStateToProps)(FrontsEdit);
+const mapDispatchToProps = (dispatch: Dispatch) =>
+  bindActionCreators(
+    {
+      editorOpenFront,
+      getFrontsConfig
+    },
+    dispatch
+  );
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FrontsEdit);

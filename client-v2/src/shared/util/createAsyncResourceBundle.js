@@ -1,6 +1,6 @@
 // @flow
 
-import { without } from 'lodash';
+import without from 'lodash/without';
 
 type BaseResource = {
   id: string

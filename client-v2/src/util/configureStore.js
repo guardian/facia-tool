@@ -9,12 +9,13 @@ import {
   type Store as ReduxStore,
   type Dispatch
 } from 'redux';
-import { updateCollection } from 'actions/Collections';
-import { updateClipboard } from 'actions/Clipboard';
 import { enableBatching } from 'redux-batched-actions';
 import thunkMiddleware from 'redux-thunk';
 import createBrowserHistory from 'history/createBrowserHistory';
 import { routerMiddleware } from 'react-router-redux';
+
+import { updateCollection } from 'actions/Collections';
+import { updateClipboard } from 'actions/Clipboard';
 import { type Store } from 'types/Store';
 import { type State } from 'types/State';
 import { type Action } from 'types/Action';
@@ -22,7 +23,8 @@ import rootReducer from 'reducers/rootReducer.js';
 import {
   updateStateFromUrlChange,
   persistCollectionOnEdit,
-  persistClipboardOnEdit
+  persistClipboardOnEdit,
+  persistOpenFrontsOnEdit
 } from './storeMiddleware';
 
 type CreateStore = (
@@ -41,7 +43,8 @@ export default function configureStore(): Store {
         updateStateFromUrlChange,
         router,
         persistCollectionOnEdit(updateCollection),
-        persistClipboardOnEdit(updateClipboard)
+        persistClipboardOnEdit(updateClipboard),
+        persistOpenFrontsOnEdit()
       ),
       window.devToolsExtension ? window.devToolsExtension() : f => f
     )

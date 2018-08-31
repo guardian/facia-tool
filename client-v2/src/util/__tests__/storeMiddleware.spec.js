@@ -4,17 +4,17 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { stateWithCollection } from 'shared/fixtures/shared';
 import config from 'fixtures/config';
-import { persistCollectionOnEdit } from '../storeMiddleware';
+import {
+  persistCollectionOnEdit,
+  persistOpenFrontsOnEdit
+} from '../storeMiddleware';
 
 const mockCollectionUpdateAction = collection => ({
   type: 'UPDATE_COLLECTION',
   collection
 });
-const middlewares = [
-  thunk,
-  persistCollectionOnEdit(mockCollectionUpdateAction)
-];
-const mockStore = configureStore(middlewares);
+
+let mockStore;
 
 const state = {
   ...stateWithCollection,
@@ -23,7 +23,13 @@ const state = {
 
 describe('Store middleware', () => {
   describe('persistCollectionOnEdit', () => {
-    it('should do nothing for actions without persistTo in the action meta', () => {
+    beforeEach(() => {
+      mockStore = configureStore([
+        thunk,
+        persistCollectionOnEdit(mockCollectionUpdateAction)
+      ]);
+    });
+    it('should do nothing for actions without the correct persistTo property in the action meta', () => {
       const store = mockStore(state);
       store.dispatch({
         type: 'ARBITRARY_ACTION'
@@ -53,6 +59,36 @@ describe('Store middleware', () => {
           previously: undefined
         })
       );
+    });
+  });
+  describe('persistOpenFrontsOnEdit', () => {
+    let persistFrontIdsSpy;
+    beforeEach(() => {
+      persistFrontIdsSpy = jest.fn();
+      mockStore = configureStore([
+        thunk,
+        persistOpenFrontsOnEdit(persistFrontIdsSpy)
+      ]);
+    });
+    it('should do nothing for actions without the correct persistTo property in the action meta', () => {
+      const store = mockStore();
+      store.dispatch({
+        type: 'ARBITRARY_ACTION'
+      });
+      expect(persistFrontIdsSpy.mock.calls.length).toBe(0);
+    });
+    it("should call the persist function with the state's open front ids if it receives an action the correct persistTo property", () => {
+      const store = mockStore({
+        editor: { frontIds: ['front1', 'front2'] }
+      });
+      store.dispatch({
+        type: 'ARBITRARY_ACTION',
+        meta: {
+          persistTo: 'openFrontIds'
+        }
+      });
+      expect(persistFrontIdsSpy.mock.calls.length).toBe(1);
+      expect(persistFrontIdsSpy.mock.calls[0][0]).toEqual(['front1', 'front2']);
     });
   });
 });

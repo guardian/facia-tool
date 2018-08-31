@@ -3,16 +3,16 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+
+import ContainerHeading from 'shared/components/typography/ContainerHeading';
 import pandaFetch from 'services/pandaFetch';
 import { getThumbnail } from 'util/CAPIUtils';
 import * as CAPIParamsContext from './CAPI/CAPIParamsContext';
 import FeedItem from './FeedItem';
 import SearchInput from './FrontsCAPIInterface/SearchInput';
-import Button from './Button';
 import Loader from './Loader';
 import { capiFeedSpecsSelector } from '../selectors/configSelectors';
-import Row from './Row';
-import Col from './Col';
+import { RadioButton, RadioGroup } from './inputs/RadioButtons';
 
 type ErrorDisplayProps = {
   error: ?(Error | string),
@@ -48,9 +48,15 @@ type FeedState = {
 };
 
 const FeedContainer = styled('div')`
+  height: 100%;
+`;
+
+const StageSelectionContainer = styled('div')`
+  margin-left: auto;
+`;
+
+const ResultsHeadingContainer = styled('div')`
   display: flex;
-  flex: 1;
-  flex-direction: column;
 `;
 
 class Feed extends React.Component<FeedProps, FeedState> {
@@ -72,6 +78,25 @@ class Feed extends React.Component<FeedProps, FeedState> {
     });
   }
 
+  renderFixedContent = () => (
+    <ResultsHeadingContainer>
+      <ContainerHeading>Results</ContainerHeading>
+      <StageSelectionContainer>
+        <RadioGroup>
+          {this.props.capiFeedSpecs.map(({ name }, i) => (
+            <RadioButton
+              key={name}
+              checked={i === this.state.capiFeedIndex}
+              onChange={() => this.handleFeedClick(i)}
+              label={name}
+              inline
+            />
+          ))}
+        </RadioGroup>
+      </StageSelectionContainer>
+    </ResultsHeadingContainer>
+  );
+
   render() {
     const { capiFeedSpec } = this;
     const getId = (internalPageCode: string) =>
@@ -79,53 +104,48 @@ class Feed extends React.Component<FeedProps, FeedState> {
 
     return (
       <FeedContainer>
-        <Row>
-          {this.props.capiFeedSpecs.map(({ name }, i) => (
-            <Col key={name}>
-              <Button
-                selected={i === this.state.capiFeedIndex}
-                onClick={() => this.handleFeedClick(i)}
-              >
-                {name}
-              </Button>
-            </Col>
-          ))}
-        </Row>
-
         {!!capiFeedSpec && (
           <CAPIParamsContext.Provider
             baseURL={capiFeedSpec.baseUrl}
             fetch={pandaFetch}
             debounce={500}
           >
-            <SearchInput>
+            <SearchInput additionalFixedContent={this.renderFixedContent}>
               {({ pending, error, value }) => (
-                <ErrorDisplay error={error}>
-                  <LoaderDisplay loading={!value && pending}>
-                    {value &&
-                      value.response.results.map(
-                        ({
-                          webTitle,
-                          webUrl,
-                          elements,
-                          fields,
-                          frontsMeta: { tone }
-                        }) => (
-                          <FeedItem
-                            key={webUrl}
-                            title={webTitle}
-                            href={webUrl}
-                            tone={tone}
-                            trailText={fields && fields.trailText}
-                            thumbnailUrl={elements && getThumbnail(elements)}
-                            internalPageCode={
-                              fields && getId(fields.internalPageCode)
-                            }
-                          />
-                        )
-                      )}
-                  </LoaderDisplay>
-                </ErrorDisplay>
+                <React.Fragment>
+                  <ErrorDisplay error={error}>
+                    <LoaderDisplay loading={!value && pending}>
+                      <div>
+                        {value &&
+                          value.response.results.map(
+                            ({
+                              webTitle,
+                              webUrl,
+                              webPublicationDate,
+                              elements,
+                              fields,
+                              frontsMeta: { tone }
+                            }) => (
+                              <FeedItem
+                                key={webUrl}
+                                title={webTitle}
+                                href={webUrl}
+                                publicationDate={webPublicationDate}
+                                tone={tone}
+                                trailText={fields && fields.trailText}
+                                thumbnailUrl={
+                                  elements && getThumbnail(elements)
+                                }
+                                internalPageCode={
+                                  fields && getId(fields.internalPageCode)
+                                }
+                              />
+                            )
+                          )}
+                      </div>
+                    </LoaderDisplay>
+                  </ErrorDisplay>
+                </React.Fragment>
               )}
             </SearchInput>
           </CAPIParamsContext.Provider>

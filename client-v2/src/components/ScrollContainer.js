@@ -11,19 +11,21 @@ type ScrollContainerProps = {
 };
 
 const ScrollOuter = styled(`div`)`
+  position: relative;
   display: flex;
+  height: 100%;
   flex: 1;
   flex-direction: column;
 `;
 
 const ScrollTitle = styled(`div`)`
   flex-grow: 0;
-  font-size: 20px;
-  font-weight: 100;
 `;
 
 const ScrollInner = styled(`div`)`
   overflow-y: scroll;
+  display: flex;
+  height: 100%;
 `;
 
 const ScrollContainer = ({ fixed, children }: ScrollContainerProps) => (

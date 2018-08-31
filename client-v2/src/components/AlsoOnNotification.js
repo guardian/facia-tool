@@ -1,9 +1,10 @@
 // @flow
 
 import React from 'react';
+import styled from 'styled-components';
 
 import type { AlsoOnDetail } from 'types/Collection';
-import Button from 'components/Button';
+import ButtonSmall from 'shared/components/input/ButtonSmall';
 
 type AlsoOnNotificationProps = {
   alsoOn: AlsoOnDetail
@@ -12,6 +13,11 @@ type AlsoOnNotificationProps = {
 type ComponentState = {
   showFrontDetails: boolean
 };
+
+const WarningText = styled('span')`
+  font-weight: bold;
+  color: #e05e00;
+`;
 
 class AlsoOnNotification extends React.Component<
   AlsoOnNotificationProps,
@@ -27,26 +33,30 @@ class AlsoOnNotification extends React.Component<
       return (
         <div>
           {alsoOn.meritsWarning && (
-            <div>
-              Warning: also on
+            <span>
+              <WarningText>Warning</WarningText>
+              <br />
+              Also on{' '}
               {alsoOn.priorities.map((priority, index) => (
-                <span key={priority}>
+                <strong key={priority}>
                   {' '}
                   {priority}
                   {index !== alsoOn.priorities.length - 1 && ','}
-                </span>
+                </strong>
               ))}{' '}
               fronts.
-            </div>
+            </span>
           )}
-          {!alsoOn.meritsWarning && <div>Also on</div>}
-          <Button
+          {!alsoOn.meritsWarning && <span>Also on other fronts.</span>}
+          &nbsp;
+          <ButtonSmall
+            size="xs"
             onClick={() =>
               this.setState({ showFrontDetails: !this.state.showFrontDetails })
             }
           >
             {this.state.showFrontDetails ? 'Hide Details' : 'Show More'}
-          </Button>
+          </ButtonSmall>
           {this.state.showFrontDetails && (
             <div>
               {alsoOn.fronts.map(front => (

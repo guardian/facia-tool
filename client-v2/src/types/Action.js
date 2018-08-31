@@ -18,6 +18,40 @@ import {
 import { type Config } from './Config';
 import { type FrontsConfig } from './FaciaApi';
 
+type EditorAddFront = {|
+  type: 'EDITOR_OPEN_FRONT',
+  payload: { frontId: string }
+|};
+
+type EditorRemoveFront = {|
+  type: 'EDITOR_CLOSE_FRONT',
+  payload: { frontId: string }
+|};
+
+type EditorClearFronts = {|
+  type: 'EDITOR_CLEAR_OPEN_FRONTS'
+|};
+
+type EditorSetFronts = {|
+  type: 'EDITOR_SET_OPEN_FRONTS',
+  payload: { frontIds: string[] }
+|};
+
+type EditorSelectArticleFragment = {|
+  type: 'EDITOR_SELECT_ARTICLE_FRAGMENT',
+  payload: {
+    articleFragmentId: string,
+    frontId: string
+  }
+|};
+
+type EditorClearArticleFragmentSelection = {|
+  type: 'EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION',
+  payload: {
+    frontId: string
+  }
+|};
+
 type AddGroupArticleFragment = {|
   ...SharedAddGroupArticleFragment,
   meta: PersistCollectionMeta
@@ -149,6 +183,12 @@ type Action =
   | AddClipboardArticleFragment
   | RemoveClipboardArticleFragment
   | AddClipboardContent
+  | EditorAddFront
+  | EditorClearFronts
+  | EditorSetFronts
+  | EditorRemoveFront
+  | EditorSelectArticleFragment
+  | EditorClearArticleFragmentSelection
   | RecordStaleFronts;
 
 type BatchedAction = {|

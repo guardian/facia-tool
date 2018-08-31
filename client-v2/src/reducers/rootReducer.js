@@ -9,6 +9,7 @@ import error from './errorReducer';
 import path from './pathReducer';
 import unpublishedChanges from './unpublishedChangesReducer';
 import clipboard from './clipboardReducer';
+import editor from '../bundles/frontsUIBundle';
 import staleFronts from './staleFrontsReducer';
 
 const reducers = {
@@ -19,6 +20,7 @@ const reducers = {
   shared,
   unpublishedChanges,
   clipboard,
+  editor,
   staleFronts
 };
 
