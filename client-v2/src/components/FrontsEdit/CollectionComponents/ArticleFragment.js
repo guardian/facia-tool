@@ -14,7 +14,7 @@ type ArticleFragmentProps = {
     supporting: *
   },
   children: *,
-  getDragProps: () => Object,
+  getNodeProps: () => Object,
   onSelect: (uuid: string) => void
 };
 
@@ -43,21 +43,22 @@ const ArticleFragment = ({
   isSelected,
   meta: { supporting = [] } = {},
   children,
-  getDragProps,
+  getNodeProps,
   onSelect
 }: ArticleFragmentProps) => (
   <ArticleFragmentContainer
     isSelected={isSelected}
     {...optionize(() => onSelect(uuid))}
   >
-    <Article id={uuid} {...getDragProps()}>
+    <Article id={uuid} {...getNodeProps()}>
       <Guration.Level
         arr={supporting}
         type="articleFragment"
         getKey={({ uuid: key }) => key}
-        renderDrop={props => (
+        renderDrop={(getDropProps, { canDrop, isTarget }) => (
           <DropZone
-            {...props}
+            {...getDropProps()}
+            override={!!canDrop && !!isTarget}
             style={dropZoneStyle}
             indicatorStyle={dropIndicatorStyle}
           />

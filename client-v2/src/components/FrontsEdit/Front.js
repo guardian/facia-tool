@@ -8,7 +8,6 @@ import * as Guration from '@guardian/guration';
 /* eslint-enable import/no-duplicates */
 import { type State } from 'types/State';
 import { type Dispatch } from 'types/Store';
-import flatten from 'lodash/flatten';
 import {
   selectSharedState,
   createCollectionsAsTreeSelector
@@ -71,43 +70,42 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     };
   }
 
-  static getDerivedStateFromProps({ tree }: FrontProps) {
-    return {
-      tree
-    };
-  }
-
   handleError = (error: string) => {
     this.setState({
       error
     });
   };
 
-  handleChange = edits => {
-    const futureActions = edits.reduce((acc, edit) => {
-      switch (edit.type) {
-        case 'MOVE': {
-          return [...acc, Promise.resolve(getMoveActions(edit))];
-        }
-
-        case 'INSERT': {
-          const editsPromise = this.props
-            .addArticleFragment(edit.payload.id)
-            .then(uuid => {
-              const payloadWithUuid = { ...edit.payload, id: uuid };
-              const insertWithUuid = { ...edit, payload: payloadWithUuid };
-              return getInsertActions(insertWithUuid);
-            });
-          return [...acc, editsPromise];
-        }
-        default: {
-          return acc;
-        }
+  runEdit = edit => {
+    switch (edit.type) {
+      case 'MOVE': {
+        return Promise.resolve(getMoveActions(edit));
       }
-    }, []);
-    Promise.all(futureActions).then(actions => {
+
+      case 'INSERT': {
+        const editsPromise = this.props
+          .addArticleFragment(edit.payload.id)
+          .then(uuid => {
+            const payloadWithUuid = { ...edit.payload, id: uuid };
+            const insertWithUuid = { ...edit, payload: payloadWithUuid };
+            return getInsertActions(insertWithUuid);
+          });
+        return editsPromise;
+      }
+      default: {
+        return null;
+      }
+    }
+  };
+
+  handleChange = edit => {
+    const futureActions = this.runEdit(edit);
+    if (!futureActions) {
+      return;
+    }
+    futureActions.then(actions => {
       this.props.dispatch(
-        batchActions(flatten(actions).filter(action => action !== null))
+        batchActions(actions.filter(action => action !== null))
       );
     });
   };
@@ -129,12 +127,20 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
         <FrontContainer>
           <FrontContentContainer>
             <Guration.Root
-              id={this.props.tree.id}
+              id={'frontId' /* Do we need this? */}
               type="front"
               onChange={this.handleChange}
-              dropMappers={{
+              mapIn={{
                 text: text => urlToArticle(text),
-                capi: capi => ({ type: 'articleFragment', id: capi })
+                capi: capi => ({ type: 'articleFragment', id: capi }),
+                clipboard: str => JSON.parse(str)
+              }}
+              mapOut={{
+                collection: (el, type) =>
+                  JSON.stringify({
+                    type,
+                    id: el.id
+                  })
               }}
             >
               <Front {...this.props.tree}>
@@ -147,10 +153,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                   >
                     {group => (
                       <Group {...group}>
-                        {(articleFragment, afDragProps) => (
+                        {(articleFragment, afNodeProps) => (
                           <ArticleFragment
                             {...articleFragment}
-                            getDragProps={afDragProps}
+                            getNodeProps={afNodeProps}
                             onSelect={this.props.selectArticleFragment}
                             isSelected={
                               !this.props.selectedArticleFragmentId ||
@@ -158,10 +164,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                 articleFragment.uuid
                             }
                           >
-                            {(supporting, sDragProps) => (
+                            {(supporting, sNodeProps) => (
                               <Supporting
                                 {...supporting}
-                                getDragProps={sDragProps}
+                                getNodeProps={sNodeProps}
                               />
                             )}
                           </ArticleFragment>

@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import * as Guration from '@guardian/guration';
 import { type Dispatch } from 'types/Store';
 import { batchActions } from 'redux-batched-actions';
-import flatten from 'lodash/flatten';
 import { type State } from 'types/State';
 import { urlToArticle } from 'util/collectionUtils';
 import { getMoveActions, getInsertActions } from 'util/clipboardUtils';
@@ -24,30 +23,42 @@ type ClipboardProps = ClipboardPropsBeforeState & {
 };
 
 class Clipboard extends React.Component<ClipboardProps> {
-  handleChange = edits => {
-    const futureActions = edits.reduce((acc, edit) => {
-      switch (edit.type) {
-        case 'MOVE': {
-          return [...acc, Promise.resolve(getMoveActions(edit))];
-        }
-        case 'INSERT': {
-          const editsPromise = this.props
-            .addArticleFragment(edit.payload.id)
-            .then(uuid => {
-              const payloadWithUuid = { ...edit.payload, id: uuid };
-              const insertWithUuid = { ...edit, payload: payloadWithUuid };
-              return getInsertActions(insertWithUuid);
-            });
-          return [...acc, editsPromise];
-        }
-        default: {
-          return acc;
-        }
+  componentDidMount() {
+    this.props.fetchClipboardContent();
+  }
+
+  // TODO: this code is repeated in src/components/FrontsEdit/Front.js
+  // refactor
+  runEdit = edit => {
+    switch (edit.type) {
+      case 'MOVE': {
+        return Promise.resolve(getMoveActions(edit));
       }
-    }, []);
-    Promise.all(futureActions).then(actions => {
+
+      case 'INSERT': {
+        const editsPromise = this.props
+          .addArticleFragment(edit.payload.id)
+          .then(uuid => {
+            const payloadWithUuid = { ...edit.payload, id: uuid };
+            const insertWithUuid = { ...edit, payload: payloadWithUuid };
+            return getInsertActions(insertWithUuid);
+          });
+        return editsPromise;
+      }
+      default: {
+        return null;
+      }
+    }
+  };
+
+  handleChange = edit => {
+    const futureActions = this.runEdit(edit);
+    if (!futureActions) {
+      return;
+    }
+    futureActions.then(actions => {
       this.props.dispatch(
-        batchActions(flatten(actions).filter(action => action !== null))
+        batchActions(actions.filter(action => action !== null))
       );
     });
   };
@@ -62,21 +73,34 @@ class Clipboard extends React.Component<ClipboardProps> {
             id="clipboard"
             type="clipboard"
             onChange={this.handleChange}
-            dropMappers={{
+            mapIn={{
               text: text => urlToArticle(text),
-              capi: capi => ({ type: 'articleFragment', id: capi })
+              capi: capi => ({ type: 'articleFragment', id: capi }),
+              collection: str => JSON.parse(str)
+            }}
+            mapOut={{
+              clipboard: (el, type) =>
+                JSON.stringify({
+                  type,
+                  id: el.id
+                })
             }}
           >
             <Guration.Level
               arr={tree.articleFragments}
               type="articleFragment"
               getKey={({ uuid }) => uuid}
-              renderDrop={props => <DropZone {...props} />}
+              renderDrop={(getDropProps, { canDrop, isTarget }) => (
+                <DropZone
+                  {...getDropProps()}
+                  override={!!canDrop && !!isTarget}
+                />
+              )}
             >
-              {(articleFragment, getDragProps) => (
+              {(articleFragment, getNodeProps) => (
                 <ArticlePolaroid
                   id={articleFragment.uuid}
-                  {...getDragProps()}
+                  {...getNodeProps()}
                 />
               )}
             </Guration.Level>

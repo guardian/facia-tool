@@ -5,11 +5,11 @@ import Article from 'shared/components/Article';
 
 type SupportingProps = {
   uuid: string,
-  getDragProps: *
+  getNodeProps: *
 };
 
-const Supporting = ({ uuid, getDragProps }: SupportingProps) => (
-  <Article id={uuid} {...getDragProps()} size="small" />
+const Supporting = ({ uuid, getNodeProps }: SupportingProps) => (
+  <Article id={uuid} {...getNodeProps()} size="small" />
 );
 
 export default Supporting;

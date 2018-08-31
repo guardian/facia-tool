@@ -18,7 +18,8 @@ class DropZone extends React.Component<
     onDrop: (e: DragEvent) => void,
     onDragOver: (e: DragEvent) => void,
     style: Object,
-    indicatorStyle: Object
+    indicatorStyle: Object,
+    override?: boolean
   },
   { isHoveredOver: boolean }
 > {
@@ -43,6 +44,12 @@ class DropZone extends React.Component<
     return this.props.onDrop(e);
   };
 
+  get isActive() {
+    return typeof this.props.override === 'boolean'
+      ? this.props.override
+      : this.state.isHoveredOver;
+  }
+
   render() {
     const { onDragOver, style } = this.props;
     return (
@@ -57,8 +64,8 @@ class DropZone extends React.Component<
         <DropIndicator
           style={{
             ...this.props.indicatorStyle,
-            zIndex: this.state.isHoveredOver ? 1 : null,
-            backgroundColor: this.state.isHoveredOver ? 'rgba(199, 0, 0)' : null
+            zIndex: this.isActive ? 1 : null,
+            backgroundColor: this.isActive ? 'rgba(199, 0, 0)' : null
           }}
         />
       </DropContainer>
