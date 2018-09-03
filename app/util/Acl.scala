@@ -1,7 +1,6 @@
 package util
 
 import com.gu.permissions.{PermissionDefinition, PermissionsProvider}
-import com.sun.xml.internal.fastinfoset.CommonResourceBundle
 import logging.Logging
 import permissions._
 import play.api.libs.json.{JsBoolean, JsValue, Json, Writes}
