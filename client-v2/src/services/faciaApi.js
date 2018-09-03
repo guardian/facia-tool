@@ -189,7 +189,7 @@ function getArticles(articleIds: string[]): Promise<Array<ExternalArticle>> {
     .join(',');
 
   const articlePromise = pandaFetch(
-    `/api/preview/search?ids=${articleIdsWithoutSnaps}&show-fields=internalPageCode,isLive,firstPublicationDate&show-elements=image&show-fields=trailText`,
+    `/api/live/search?ids=${articleIdsWithoutSnaps}&show-fields=internalPageCode,isLive,firstPublicationDate&show-elements=image&show-fields=trailText`,
     {
       method: 'get',
       credentials: 'same-origin'
