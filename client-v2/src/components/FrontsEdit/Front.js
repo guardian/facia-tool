@@ -127,7 +127,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
         <FrontContainer>
           <FrontContentContainer>
             <Guration.Root
-              id={'frontId' /* Do we need this? */}
+              // do we need frontId?
+              id="frontId"
               type="front"
               onChange={this.handleChange}
               mapIn={{

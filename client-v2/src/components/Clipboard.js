@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import * as Guration from '@guardian/guration';
+import type { Edit } from '@guardian/guration';
 import { type Dispatch } from 'types/Store';
 import { batchActions } from 'redux-batched-actions';
 import { type State } from 'types/State';
@@ -23,10 +24,6 @@ type ClipboardProps = ClipboardPropsBeforeState & {
 };
 
 class Clipboard extends React.Component<ClipboardProps> {
-  componentDidMount() {
-    this.props.fetchClipboardContent();
-  }
-
   // TODO: this code is repeated in src/components/FrontsEdit/Front.js
   // refactor
   runEdit = edit => {
@@ -51,7 +48,7 @@ class Clipboard extends React.Component<ClipboardProps> {
     }
   };
 
-  handleChange = edit => {
+  handleChange = (edit: Edit) => {
     const futureActions = this.runEdit(edit);
     if (!futureActions) {
       return;
