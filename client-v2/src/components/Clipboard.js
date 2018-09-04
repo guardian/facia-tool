@@ -18,7 +18,7 @@ import { addArticleFragment } from 'shared/actions/ArticleFragments';
 type ClipboardPropsBeforeState = {};
 
 type ClipboardProps = ClipboardPropsBeforeState & {
-  addArticleFragment: string => Promise<string>,
+  addArticleFragment: (id: string, supporting: string[]) => Promise<string>,
   tree: Object, // TODO add typing,
   dispatch: Dispatch
 };
@@ -33,14 +33,17 @@ class Clipboard extends React.Component<ClipboardProps> {
       }
 
       case 'INSERT': {
-        const editsPromise = this.props
-          .addArticleFragment(edit.payload.id)
-          .then(uuid => {
-            const payloadWithUuid = { ...edit.payload, id: uuid };
-            const insertWithUuid = { ...edit, payload: payloadWithUuid };
-            return getInsertActions(insertWithUuid);
-          });
-        return editsPromise;
+        return this.props
+          .addArticleFragment(edit.payload.id, edit.meta.supporting)
+          .then(uuid =>
+            getInsertActions({
+              ...edit,
+              payload: {
+                ...edit.payload,
+                id: uuid
+              }
+            })
+          );
       }
       default: {
         return null;

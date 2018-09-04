@@ -133,6 +133,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
               onChange={this.handleChange}
               mapIn={{
                 text: text => urlToArticle(text),
+                // TODO: the below will not dedupe properly
                 capi: capi => ({ type: 'articleFragment', id: capi }),
                 clipboard: str => JSON.parse(str)
               }}
@@ -140,7 +141,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                 collection: (el, type) =>
                   JSON.stringify({
                     type,
-                    id: el.id
+                    id: el.id,
+                    meta: {
+                      supporting: (el.meta.supporting || []).map(({ id }) => id)
+                    }
                   })
               }}
             >
