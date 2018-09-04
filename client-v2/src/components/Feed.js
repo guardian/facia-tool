@@ -12,7 +12,6 @@ import FeedItem from './FeedItem';
 import SearchInput from './FrontsCAPIInterface/SearchInput';
 import Loader from './Loader';
 import { capiFeedSpecsSelector } from '../selectors/configSelectors';
-import { RadioButton, RadioGroup } from './inputs/RadioButtons';
 
 type ErrorDisplayProps = {
   error: ?(Error | string),
@@ -51,10 +50,6 @@ const FeedContainer = styled('div')`
   height: 100%;
 `;
 
-const StageSelectionContainer = styled('div')`
-  margin-left: auto;
-`;
-
 const ResultsHeadingContainer = styled('div')`
   display: flex;
 `;
@@ -81,19 +76,6 @@ class Feed extends React.Component<FeedProps, FeedState> {
   renderFixedContent = () => (
     <ResultsHeadingContainer>
       <ContainerHeading>Results</ContainerHeading>
-      <StageSelectionContainer>
-        <RadioGroup>
-          {this.props.capiFeedSpecs.map(({ name }, i) => (
-            <RadioButton
-              key={name}
-              checked={i === this.state.capiFeedIndex}
-              onChange={() => this.handleFeedClick(i)}
-              label={name}
-              inline
-            />
-          ))}
-        </RadioGroup>
-      </StageSelectionContainer>
     </ResultsHeadingContainer>
   );
 
