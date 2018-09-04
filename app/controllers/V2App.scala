@@ -56,8 +56,8 @@ class V2App(isDev: Boolean, val acl: Acl, dynamo: Dynamo, val deps: BaseFaciaCon
       Metadata.tags.map {
         case (_, meta) => meta
       },
-      record.map(record => record.clipboardArticles),
-      record.map(record => record.frontIds),
+      record.map(record => record.clipboardArticles.getOrElse(List())),
+      record.map(record => record.frontIds.getOrElse(List())),
       routes.FaciaContentApiProxy.capiLive("").absoluteURL(true),
       routes.FaciaContentApiProxy.capiPreview("").absoluteURL(true)
     )

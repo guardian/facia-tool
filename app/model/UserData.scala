@@ -17,4 +17,4 @@ object UserData {
     }
   )(Json.stringify(_))
 }
-case class UserData(email: String, clipboardArticles: List[Trail], frontIds: List[String])
+case class UserData(email: String, clipboardArticles: Option[List[Trail]], frontIds: Option[List[String]])
