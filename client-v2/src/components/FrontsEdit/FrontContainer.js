@@ -82,7 +82,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
     }
   }
 
-  componentDidReceiveProps(nextProps: FrontsComponentProps) {
+  componentWillReceiveProps(nextProps: FrontsComponentProps) {
     if (this.props.frontId !== nextProps.frontId || !this.props.lastPressed) {
       this.props.frontsActions.fetchLastPressed(nextProps.frontId);
     }
