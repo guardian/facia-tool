@@ -62,47 +62,43 @@ class Clipboard extends React.Component<ClipboardProps> {
 
   render() {
     const { tree } = this.props;
-    const treeKeysExist = Object.keys(tree).length > 0;
     return (
       <div>
-        {treeKeysExist && (
-          <Guration.Root
-            id="clipboard"
-            type="clipboard"
-            onChange={this.handleChange}
-            mapIn={{
-              text: text => urlToArticle(text),
-              capi: capi => ({ type: 'articleFragment', id: capi }),
-              collection: str => JSON.parse(str)
-            }}
-            mapOut={{
-              clipboard: (el, type) =>
-                JSON.stringify({
-                  type,
-                  id: el.id
-                })
-            }}
+        <Guration.Root
+          id="clipboard"
+          type="clipboard"
+          dedupeType="articleFragment"
+          onChange={this.handleChange}
+          mapIn={{
+            text: text => urlToArticle(text),
+            capi: capi => ({ type: 'articleFragment', id: capi }),
+            collection: str => JSON.parse(str)
+          }}
+          mapOut={{
+            clipboard: (el, type) =>
+              JSON.stringify({
+                type,
+                id: el.id
+              })
+          }}
+        >
+          <Guration.Level
+            arr={tree.articleFragments || []}
+            type="articleFragment"
+            getKey={({ uuid }) => uuid}
+            getDedupeKey={({ id }) => id}
+            renderDrop={(getDropProps, { canDrop, isTarget }) => (
+              <DropZone
+                {...getDropProps()}
+                override={!!canDrop && !!isTarget}
+              />
+            )}
           >
-            <Guration.Level
-              arr={tree.articleFragments}
-              type="articleFragment"
-              getKey={({ uuid }) => uuid}
-              renderDrop={(getDropProps, { canDrop, isTarget }) => (
-                <DropZone
-                  {...getDropProps()}
-                  override={!!canDrop && !!isTarget}
-                />
-              )}
-            >
-              {(articleFragment, getNodeProps) => (
-                <ArticlePolaroid
-                  id={articleFragment.uuid}
-                  {...getNodeProps()}
-                />
-              )}
-            </Guration.Level>
-          </Guration.Root>
-        )}
+            {(articleFragment, getNodeProps) => (
+              <ArticlePolaroid id={articleFragment.uuid} {...getNodeProps()} />
+            )}
+          </Guration.Level>
+        </Guration.Root>
       </div>
     );
   }

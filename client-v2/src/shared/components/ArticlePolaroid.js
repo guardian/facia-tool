@@ -18,6 +18,8 @@ type ContainerProps = {
   id: string, // eslint-disable-line react/no-unused-prop-types
   draggable: boolean,
   onDragStart?: DragEvent => void,
+  onDragOver?: DragEvent => void,
+  onDrop?: DragEvent => void,
   selectSharedState: (state: any) => State // eslint-disable-line react/no-unused-prop-types
 };
 
@@ -37,14 +39,21 @@ const Thumbnail = styled('img')`
 const ArticleComponent = ({
   article,
   draggable = false,
-  onDragStart = noop
+  onDragStart = noop,
+  onDragOver = noop,
+  onDrop = noop
 }: ComponentProps) => {
   if (!article) {
     return null;
   }
 
   return (
-    <BodyContainer draggable={draggable} onDragStart={onDragStart}>
+    <BodyContainer
+      draggable={draggable}
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+    >
       {article.elements && (
         <Thumbnail src={getThumbnail(article.elements)} alt="" />
       )}

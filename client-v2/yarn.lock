@@ -728,8 +728,8 @@
     to-fast-properties "^2.0.0"
 
 "@guardian/guration@^3.0.1":
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/@guardian/guration/-/guration-3.1.2.tgz#32b21bf46e7accf6b4d6fd0cb7dccc8998064787"
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@guardian/guration/-/guration-3.2.0.tgz#676493f755af5e876c99decb7082ca8e63a47ef6"
   dependencies:
     "@babel/preset-flow" "^7.0.0"
     lodash.throttle "^4.1.1"
