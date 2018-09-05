@@ -42,25 +42,41 @@ function addSupportingArticleFragment(
   };
 }
 
-function addArticleFragment(id: string) {
+const createFragment = (id: string, supporting = []) => ({
+  uuid: v4(),
+  id,
+  frontPublicationDate: Date.now(),
+  meta: {
+    supporting
+  }
+});
+
+function addArticleFragment(id: string, supporting: string[] = []) {
   return (dispatch: Dispatch) =>
-    getArticles([id])
+    getArticles([id, ...supporting])
       .catch(error => dispatch(externalArticleActions.fetchError(error, [id])))
       .then(articles => {
         dispatch(externalArticleActions.fetchSuccess(articles));
-        const fragment = {
-          uuid: v4(),
+        const supportingArray = supporting.map(createFragment);
+        const supportingFragments = supportingArray.reduce(
+          (acc, frag) => ({
+            ...acc,
+            [frag.uuid]: frag
+          }),
+          {}
+        );
+        const parentFragment = createFragment(
           id,
-          frontPublicationDate: Date.now(),
-          meta: {}
-        };
+          supportingArray.map(({ uuid }) => uuid)
+        );
 
         dispatch(
           articleFragmentsReceived({
-            [fragment.uuid]: fragment
+            [parentFragment.uuid]: parentFragment,
+            ...supportingFragments
           })
         );
-        return fragment.uuid;
+        return parentFragment.uuid;
       });
 }
 

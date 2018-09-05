@@ -21,6 +21,8 @@ type ContainerProps = {
   id: string, // eslint-disable-line react/no-unused-prop-types
   draggable: boolean,
   onDragStart?: DragEvent => void,
+  onDragOver?: DragEvent => void,
+  onDrop?: DragEvent => void,
   selectSharedState: (state: any) => State // eslint-disable-line react/no-unused-prop-types
 };
 
@@ -110,6 +112,8 @@ const ArticleComponent = ({
   size = 'default',
   draggable = false,
   onDragStart = noop,
+  onDragOver = noop,
+  onDrop = noop,
   children
 }: ComponentProps) => {
   if (!article) {
@@ -118,15 +122,18 @@ const ArticleComponent = ({
   const ArticleHeadingContainer =
     size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
   return (
-    <ArticleContainer>
+    <ArticleContainer
+      draggable={draggable}
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+    >
       <ArticleBodyContainer
         key={article.headline}
         style={{
           borderTopColor:
             size === 'default' ? toneColorMap[article.tone] : '#c9c9c9'
         }}
-        draggable={draggable}
-        onDragStart={onDragStart}
       >
         <ArticleMetaContainer>
           {size === 'default' && <Tone>{startCase(article.tone)}</Tone>}

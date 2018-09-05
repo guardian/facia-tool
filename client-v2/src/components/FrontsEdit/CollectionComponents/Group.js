@@ -22,7 +22,14 @@ const Group = ({ id, articleFragments, children }: GroupProps) => (
       arr={articleFragments}
       type="articleFragment"
       getKey={({ uuid }) => uuid}
-      renderDrop={props => <DropZone {...props} style={dropZoneStyle} />}
+      getDedupeKey={({ id: key }) => key}
+      renderDrop={(getDropProps, { canDrop, isTarget }) => (
+        <DropZone
+          {...getDropProps()}
+          override={!!canDrop && !!isTarget}
+          style={dropZoneStyle}
+        />
+      )}
     >
       {children}
     </Guration.Level>

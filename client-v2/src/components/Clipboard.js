@@ -4,9 +4,9 @@ import { bindActionCreators } from 'redux';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import * as Guration from '@guardian/guration';
+import type { Edit } from '@guardian/guration';
 import { type Dispatch } from 'types/Store';
 import { batchActions } from 'redux-batched-actions';
-import flatten from 'lodash/flatten';
 import { type State } from 'types/State';
 import { urlToArticle } from 'util/collectionUtils';
 import { getMoveActions, getInsertActions } from 'util/clipboardUtils';
@@ -18,70 +18,90 @@ import { addArticleFragment } from 'shared/actions/ArticleFragments';
 type ClipboardPropsBeforeState = {};
 
 type ClipboardProps = ClipboardPropsBeforeState & {
-  addArticleFragment: string => Promise<string>,
+  addArticleFragment: (id: string, supporting: string[]) => Promise<string>,
   tree: Object, // TODO add typing,
   dispatch: Dispatch
 };
 
 class Clipboard extends React.Component<ClipboardProps> {
-  handleChange = edits => {
-    const futureActions = edits.reduce((acc, edit) => {
-      switch (edit.type) {
-        case 'MOVE': {
-          return [...acc, Promise.resolve(getMoveActions(edit))];
-        }
-        case 'INSERT': {
-          const editsPromise = this.props
-            .addArticleFragment(edit.payload.id)
-            .then(uuid => {
-              const payloadWithUuid = { ...edit.payload, id: uuid };
-              const insertWithUuid = { ...edit, payload: payloadWithUuid };
-              return getInsertActions(insertWithUuid);
-            });
-          return [...acc, editsPromise];
-        }
-        default: {
-          return acc;
-        }
+  // TODO: this code is repeated in src/components/FrontsEdit/Front.js
+  // refactor
+  runEdit = edit => {
+    switch (edit.type) {
+      case 'MOVE': {
+        return Promise.resolve(getMoveActions(edit));
       }
-    }, []);
-    Promise.all(futureActions).then(actions => {
+
+      case 'INSERT': {
+        return this.props
+          .addArticleFragment(edit.payload.id, edit.meta.supporting)
+          .then(uuid =>
+            getInsertActions({
+              ...edit,
+              payload: {
+                ...edit.payload,
+                id: uuid
+              }
+            })
+          );
+      }
+      default: {
+        return null;
+      }
+    }
+  };
+
+  handleChange = (edit: Edit) => {
+    const futureActions = this.runEdit(edit);
+    if (!futureActions) {
+      return;
+    }
+    futureActions.then(actions => {
       this.props.dispatch(
-        batchActions(flatten(actions).filter(action => action !== null))
+        batchActions(actions.filter(action => action !== null))
       );
     });
   };
 
   render() {
     const { tree } = this.props;
-    const treeKeysExist = Object.keys(tree).length > 0;
     return (
       <div>
-        {treeKeysExist && (
-          <Guration.Root
-            id="clipboard"
-            type="clipboard"
-            onChange={this.handleChange}
-            dropMappers={{
-              text: text => urlToArticle(text),
-              capi: capi => ({ type: 'articleFragment', id: capi })
-            }}
+        <Guration.Root
+          id="clipboard"
+          type="clipboard"
+          dedupeType="articleFragment"
+          onChange={this.handleChange}
+          mapIn={{
+            text: text => urlToArticle(text),
+            capi: capi => ({ type: 'articleFragment', id: capi }),
+            collection: str => JSON.parse(str)
+          }}
+          mapOut={{
+            clipboard: (el, type) =>
+              JSON.stringify({
+                type,
+                id: el.id
+              })
+          }}
+        >
+          <Guration.Level
+            arr={tree.articleFragments || []}
+            type="articleFragment"
+            getKey={({ uuid }) => uuid}
+            getDedupeKey={({ id }) => id}
+            renderDrop={(getDropProps, { canDrop, isTarget }) => (
+              <DropZone
+                {...getDropProps()}
+                override={!!canDrop && !!isTarget}
+              />
+            )}
           >
-            <Guration.Level
-              arr={tree.articleFragments}
-              type="articleFragment"
-              getKey={({ uuid }) => uuid}
-              renderDrop={props => <DropZone {...props} />}
-            >
-              {(articleFragment, getDragProps) => (
-                <ArticlePolaroid
-                  id={articleFragment.uuid}
-                  {...getDragProps()}
-                />
-              )}
-            </Guration.Level>
-          </Guration.Root>
-        )}
+            {(articleFragment, getNodeProps) => (
+              <ArticlePolaroid id={articleFragment.uuid} {...getNodeProps()} />
+            )}
+          </Guration.Level>
+        </Guration.Root>
       </div>
     );
   }
