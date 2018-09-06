@@ -50,12 +50,12 @@ class Acl(permissions: PermissionsProvider) extends Logging {
   }
 
   def testUserGroupsAndCollections(editorialPermission: PermissionDefinition, commercialPermission: PermissionDefinition,
-                                   trainingPermission: PermissionDefinition, switch: String)
+                                   trainingPermission: PermissionDefinition, editorialSwitch: String)
                                   (email: String, priorities: Set[PermissionsPriority]): Authorization = {
 
-    val hasCommercialPermissions = testUser(commercialPermission, switch)(email)
-    val hasEditorialPermissions = testUser(editorialPermission, switch)(email)
-    val hasTrainingPermissions = testUser(trainingPermission, switch)(email)
+    val hasCommercialPermissions = testUser(commercialPermission, "facia-tool-allow-launch-commercial-fronts-for-all")(email)
+    val hasEditorialPermissions = testUser(editorialPermission, editorialSwitch)(email)
+    val hasTrainingPermissions = testUser(trainingPermission, "facia-tool-permissions-access")(email)
 
     PermissionsChecker.check(hasCommercialPermissions, hasEditorialPermissions, hasTrainingPermissions, priorities)
   }
