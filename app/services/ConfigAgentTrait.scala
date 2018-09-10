@@ -57,15 +57,15 @@ class ConfigAgent(val config: ApplicationConfiguration, val frontsApi: FrontsApi
 
   def getFrontsPermissionsPriorityByCollectionId(id: String): Set[PermissionsPriority] = configAgent.get().map(config => {
     val fronts = config.fronts
-    fronts.foldLeft(Set[PermissionsPriority]())((acc, front) => {
-      if (front._2.collections.contains(id)) {
-        val priority = PermissionsPriority.stringToPermissionPriority(front._2.priority.getOrElse("editorial"))
+    fronts.foldLeft(Set.empty[PermissionsPriority]) { case (acc, (_, front)) => {
+      if (front.collections.contains(id)) {
+        val priority = PermissionsPriority.stringToPermissionPriority(front.priority.getOrElse("editorial"))
         priority match {
           case Some(p) => acc + p
           case _ => acc
         }
       } else acc
-    })
+    }}
   }).getOrElse(Set.empty)
 
 }
