@@ -47,18 +47,7 @@ abstract class BaseFaciaController(deps: BaseFaciaControllerComponents) extends 
   final def AccessAPIAuthAction = APIAuthAction andThen accessPermissionCheck
 
   private def userInGroups(authedUser: AuthenticatedUser): Boolean = {
-    if(SwitchManager.getStatus("facia-tool-permissions-access")) {
-      deps.permissions.hasPermission(Permissions.FrontsAccess, authedUser.user.email)
-    } else {
-      // TODO MRB: remove this when we have switched over to the permission
-      groupChecker.exists(checker =>
-        checker.checkGroups(authedUser, config.pandomain.userGroups).fold(
-          error => {
-            Logger.warn(error)
-            false
-          }, identity)
-      )
-    }
+    deps.permissions.hasPermission(Permissions.FrontsAccess, authedUser.user.email)
   }
 
   override def validateUser(authedUser: AuthenticatedUser): Boolean = PanDomain.guardianValidation(authedUser) && userInGroups(authedUser)
