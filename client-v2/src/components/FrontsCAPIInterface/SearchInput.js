@@ -14,7 +14,8 @@ type FrontsCAPISearchInputProps = {
 
 type FrontsCAPISearchInputState = {
   q: ?string,
-  tag: ?string
+  tag: ?string,
+  section: ?string
 };
 
 const InputContainer = styled('div')`
@@ -27,7 +28,8 @@ class FrontsCAPISearchInput extends React.Component<
 > {
   state = {
     q: null,
-    tag: null
+    tag: null,
+    section: null
   };
 
   clearInput = () => {
@@ -48,12 +50,18 @@ class FrontsCAPISearchInput extends React.Component<
     });
   };
 
+  handleSectionInput = (item: any) => {
+    this.setState({
+      section: item ? item.id : null
+    });
+  };
+
   render() {
     const {
       children,
       additionalFixedContent: AdditionalFixedContent
     } = this.props;
-    const { tag, q } = this.state;
+    const { tag, section, q } = this.state;
 
     return (
       <ScrollContainer
@@ -74,6 +82,7 @@ class FrontsCAPISearchInput extends React.Component<
         <SearchQuery
           params={{
             tag,
+            section,
             q,
             'show-elements': 'image',
             'show-fields': 'internalPageCode,trailText'
