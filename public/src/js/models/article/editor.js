@@ -127,7 +127,7 @@ export default class Editor extends BaseClass {
         var params = (this.opts.validator || {}).params || {};
         var targetMethod = this.type === 'image' ? 'assignToObjectElement' : 'assignImageToSpreadElement';
         const frontId = this.article.front ? this.article.front.front() : 'clipboard';
-
+        console.log('dropInEditor', params.options);
         if (sourceMeta) {
             // Drag and drop from another editor, assume valid
             try {
@@ -155,7 +155,7 @@ export default class Editor extends BaseClass {
             image = imageSrc(),
             opts = params.options;
 
-
+        console.log('validate Image');
         if (image) {
             let {src, origin} = extractImageElements(image);
             const frontId = this.article.front ? this.article.front.front() : 'clipboard';

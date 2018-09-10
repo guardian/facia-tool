@@ -1,4 +1,4 @@
-// flow-typed signature: 82654ad85ad5ff34c7ba4d66d4d6da91
+// flow-typed signature: d293cbb17bfa6a48cedf2ab7845624d4
 // flow-typed version: <<STUB>>/@babel/cli_v^7.0.0-beta.44/flow_v0.71.0
 
 /**
@@ -46,6 +46,10 @@ declare module '@babel/cli/lib/babel/index' {
   declare module.exports: any;
 }
 
+declare module '@babel/cli/lib/babel/options' {
+  declare module.exports: any;
+}
+
 declare module '@babel/cli/lib/babel/util' {
   declare module.exports: any;
 }
@@ -74,6 +78,9 @@ declare module '@babel/cli/lib/babel/file.js' {
 }
 declare module '@babel/cli/lib/babel/index.js' {
   declare module.exports: $Exports<'@babel/cli/lib/babel/index'>;
+}
+declare module '@babel/cli/lib/babel/options.js' {
+  declare module.exports: $Exports<'@babel/cli/lib/babel/options'>;
 }
 declare module '@babel/cli/lib/babel/util.js' {
   declare module.exports: $Exports<'@babel/cli/lib/babel/util'>;

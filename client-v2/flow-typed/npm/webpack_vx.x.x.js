@@ -1,4 +1,4 @@
-// flow-typed signature: a27789fd3a4a6c67aab9187ea11d66ca
+// flow-typed signature: cc5259e5aae57948fc4a834fecf01d12
 // flow-typed version: <<STUB>>/webpack_v^4.5.0/flow_v0.71.0
 
 /**
@@ -127,6 +127,10 @@ declare module 'webpack/lib/ChunkRenderError' {
 }
 
 declare module 'webpack/lib/ChunkTemplate' {
+  declare module.exports: any;
+}
+
+declare module 'webpack/lib/CommentCompilationWarning' {
   declare module.exports: any;
 }
 
@@ -511,6 +515,10 @@ declare module 'webpack/lib/dependencies/SystemPlugin' {
 }
 
 declare module 'webpack/lib/dependencies/UnsupportedDependency' {
+  declare module.exports: any;
+}
+
+declare module 'webpack/lib/dependencies/WebAssemblyExportImportedDependency' {
   declare module.exports: any;
 }
 
@@ -910,6 +918,18 @@ declare module 'webpack/lib/optimize/ModuleConcatenationPlugin' {
   declare module.exports: any;
 }
 
+declare module 'webpack/lib/optimize/NaturalChunkOrderPlugin' {
+  declare module.exports: any;
+}
+
+declare module 'webpack/lib/optimize/OccurrenceChunkOrderPlugin' {
+  declare module.exports: any;
+}
+
+declare module 'webpack/lib/optimize/OccurrenceModuleOrderPlugin' {
+  declare module.exports: any;
+}
+
 declare module 'webpack/lib/optimize/OccurrenceOrderPlugin' {
   declare module.exports: any;
 }
@@ -1062,6 +1082,10 @@ declare module 'webpack/lib/util/createHash' {
   declare module.exports: any;
 }
 
+declare module 'webpack/lib/util/deterministicGrouping' {
+  declare module.exports: any;
+}
+
 declare module 'webpack/lib/util/identifier' {
   declare module.exports: any;
 }
@@ -1110,11 +1134,19 @@ declare module 'webpack/lib/wasm/UnsupportedWebAssemblyFeatureError' {
   declare module.exports: any;
 }
 
+declare module 'webpack/lib/wasm/WasmFinalizeExportsPlugin' {
+  declare module.exports: any;
+}
+
 declare module 'webpack/lib/wasm/WasmMainTemplatePlugin' {
   declare module.exports: any;
 }
 
 declare module 'webpack/lib/wasm/WebAssemblyGenerator' {
+  declare module.exports: any;
+}
+
+declare module 'webpack/lib/wasm/WebAssemblyInInitialChunkError' {
   declare module.exports: any;
 }
 
@@ -1127,6 +1159,10 @@ declare module 'webpack/lib/wasm/WebAssemblyModulesPlugin' {
 }
 
 declare module 'webpack/lib/wasm/WebAssemblyParser' {
+  declare module.exports: any;
+}
+
+declare module 'webpack/lib/wasm/WebAssemblyUtils' {
   declare module.exports: any;
 }
 
@@ -1303,6 +1339,9 @@ declare module 'webpack/lib/ChunkRenderError.js' {
 }
 declare module 'webpack/lib/ChunkTemplate.js' {
   declare module.exports: $Exports<'webpack/lib/ChunkTemplate'>;
+}
+declare module 'webpack/lib/CommentCompilationWarning.js' {
+  declare module.exports: $Exports<'webpack/lib/CommentCompilationWarning'>;
 }
 declare module 'webpack/lib/compareLocations.js' {
   declare module.exports: $Exports<'webpack/lib/compareLocations'>;
@@ -1591,6 +1630,9 @@ declare module 'webpack/lib/dependencies/SystemPlugin.js' {
 }
 declare module 'webpack/lib/dependencies/UnsupportedDependency.js' {
   declare module.exports: $Exports<'webpack/lib/dependencies/UnsupportedDependency'>;
+}
+declare module 'webpack/lib/dependencies/WebAssemblyExportImportedDependency.js' {
+  declare module.exports: $Exports<'webpack/lib/dependencies/WebAssemblyExportImportedDependency'>;
 }
 declare module 'webpack/lib/dependencies/WebAssemblyImportDependency.js' {
   declare module.exports: $Exports<'webpack/lib/dependencies/WebAssemblyImportDependency'>;
@@ -1889,6 +1931,15 @@ declare module 'webpack/lib/optimize/MinChunkSizePlugin.js' {
 declare module 'webpack/lib/optimize/ModuleConcatenationPlugin.js' {
   declare module.exports: $Exports<'webpack/lib/optimize/ModuleConcatenationPlugin'>;
 }
+declare module 'webpack/lib/optimize/NaturalChunkOrderPlugin.js' {
+  declare module.exports: $Exports<'webpack/lib/optimize/NaturalChunkOrderPlugin'>;
+}
+declare module 'webpack/lib/optimize/OccurrenceChunkOrderPlugin.js' {
+  declare module.exports: $Exports<'webpack/lib/optimize/OccurrenceChunkOrderPlugin'>;
+}
+declare module 'webpack/lib/optimize/OccurrenceModuleOrderPlugin.js' {
+  declare module.exports: $Exports<'webpack/lib/optimize/OccurrenceModuleOrderPlugin'>;
+}
 declare module 'webpack/lib/optimize/OccurrenceOrderPlugin.js' {
   declare module.exports: $Exports<'webpack/lib/optimize/OccurrenceOrderPlugin'>;
 }
@@ -2003,6 +2054,9 @@ declare module 'webpack/lib/util/cachedMerge.js' {
 declare module 'webpack/lib/util/createHash.js' {
   declare module.exports: $Exports<'webpack/lib/util/createHash'>;
 }
+declare module 'webpack/lib/util/deterministicGrouping.js' {
+  declare module.exports: $Exports<'webpack/lib/util/deterministicGrouping'>;
+}
 declare module 'webpack/lib/util/identifier.js' {
   declare module.exports: $Exports<'webpack/lib/util/identifier'>;
 }
@@ -2039,11 +2093,17 @@ declare module 'webpack/lib/WarnNoModeSetPlugin.js' {
 declare module 'webpack/lib/wasm/UnsupportedWebAssemblyFeatureError.js' {
   declare module.exports: $Exports<'webpack/lib/wasm/UnsupportedWebAssemblyFeatureError'>;
 }
+declare module 'webpack/lib/wasm/WasmFinalizeExportsPlugin.js' {
+  declare module.exports: $Exports<'webpack/lib/wasm/WasmFinalizeExportsPlugin'>;
+}
 declare module 'webpack/lib/wasm/WasmMainTemplatePlugin.js' {
   declare module.exports: $Exports<'webpack/lib/wasm/WasmMainTemplatePlugin'>;
 }
 declare module 'webpack/lib/wasm/WebAssemblyGenerator.js' {
   declare module.exports: $Exports<'webpack/lib/wasm/WebAssemblyGenerator'>;
+}
+declare module 'webpack/lib/wasm/WebAssemblyInInitialChunkError.js' {
+  declare module.exports: $Exports<'webpack/lib/wasm/WebAssemblyInInitialChunkError'>;
 }
 declare module 'webpack/lib/wasm/WebAssemblyJavascriptGenerator.js' {
   declare module.exports: $Exports<'webpack/lib/wasm/WebAssemblyJavascriptGenerator'>;
@@ -2053,6 +2113,9 @@ declare module 'webpack/lib/wasm/WebAssemblyModulesPlugin.js' {
 }
 declare module 'webpack/lib/wasm/WebAssemblyParser.js' {
   declare module.exports: $Exports<'webpack/lib/wasm/WebAssemblyParser'>;
+}
+declare module 'webpack/lib/wasm/WebAssemblyUtils.js' {
+  declare module.exports: $Exports<'webpack/lib/wasm/WebAssemblyUtils'>;
 }
 declare module 'webpack/lib/WatchIgnorePlugin.js' {
   declare module.exports: $Exports<'webpack/lib/WatchIgnorePlugin'>;

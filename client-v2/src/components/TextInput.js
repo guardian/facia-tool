@@ -15,7 +15,6 @@ const InputWrapper = styled('div')`
 `;
 
 const Input = styled(`input`)`
-  appearance: none;
   background: #fff;
   border: none;
   width: 100%;

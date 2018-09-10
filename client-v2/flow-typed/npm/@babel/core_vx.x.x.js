@@ -1,4 +1,4 @@
-// flow-typed signature: 42709f9fb64e056334f3c1b15b0880a9
+// flow-typed signature: c8e40c753cb41795ec0341bd3e2eda59
 // flow-typed version: <<STUB>>/@babel/core_v^7.0.0-beta.44/flow_v0.71.0
 
 /**
@@ -86,6 +86,10 @@ declare module '@babel/core/lib/config/partial' {
   declare module.exports: any;
 }
 
+declare module '@babel/core/lib/config/pattern-to-regex' {
+  declare module.exports: any;
+}
+
 declare module '@babel/core/lib/config/plugin' {
   declare module.exports: any;
 }
@@ -122,10 +126,6 @@ declare module '@babel/core/lib/tools/build-external-helpers' {
   declare module.exports: any;
 }
 
-declare module '@babel/core/lib/transform-ast-sync' {
-  declare module.exports: any;
-}
-
 declare module '@babel/core/lib/transform-ast' {
   declare module.exports: any;
 }
@@ -138,15 +138,7 @@ declare module '@babel/core/lib/transform-file-sync-browser' {
   declare module.exports: any;
 }
 
-declare module '@babel/core/lib/transform-file-sync' {
-  declare module.exports: any;
-}
-
 declare module '@babel/core/lib/transform-file' {
-  declare module.exports: any;
-}
-
-declare module '@babel/core/lib/transform-sync' {
   declare module.exports: any;
 }
 
@@ -239,6 +231,9 @@ declare module '@babel/core/lib/config/item.js' {
 declare module '@babel/core/lib/config/partial.js' {
   declare module.exports: $Exports<'@babel/core/lib/config/partial'>;
 }
+declare module '@babel/core/lib/config/pattern-to-regex.js' {
+  declare module.exports: $Exports<'@babel/core/lib/config/pattern-to-regex'>;
+}
 declare module '@babel/core/lib/config/plugin.js' {
   declare module.exports: $Exports<'@babel/core/lib/config/plugin'>;
 }
@@ -266,9 +261,6 @@ declare module '@babel/core/lib/parse.js' {
 declare module '@babel/core/lib/tools/build-external-helpers.js' {
   declare module.exports: $Exports<'@babel/core/lib/tools/build-external-helpers'>;
 }
-declare module '@babel/core/lib/transform-ast-sync.js' {
-  declare module.exports: $Exports<'@babel/core/lib/transform-ast-sync'>;
-}
 declare module '@babel/core/lib/transform-ast.js' {
   declare module.exports: $Exports<'@babel/core/lib/transform-ast'>;
 }
@@ -278,14 +270,8 @@ declare module '@babel/core/lib/transform-file-browser.js' {
 declare module '@babel/core/lib/transform-file-sync-browser.js' {
   declare module.exports: $Exports<'@babel/core/lib/transform-file-sync-browser'>;
 }
-declare module '@babel/core/lib/transform-file-sync.js' {
-  declare module.exports: $Exports<'@babel/core/lib/transform-file-sync'>;
-}
 declare module '@babel/core/lib/transform-file.js' {
   declare module.exports: $Exports<'@babel/core/lib/transform-file'>;
-}
-declare module '@babel/core/lib/transform-sync.js' {
-  declare module.exports: $Exports<'@babel/core/lib/transform-sync'>;
 }
 declare module '@babel/core/lib/transform.js' {
   declare module.exports: $Exports<'@babel/core/lib/transform'>;
