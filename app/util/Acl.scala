@@ -57,7 +57,16 @@ class Acl(permissions: PermissionsProvider) extends Logging {
     val hasEditorialPermissions = testUser(editorialPermission, editorialSwitch)(email)
     val hasTrainingPermissions = testUser(trainingPermission, "facia-tool-permissions-access")(email)
 
-    PermissionsChecker.check(hasCommercialPermissions, hasEditorialPermissions, hasTrainingPermissions, priorities)
+    PermissionsChecker.check(hasCommercialPermissions, hasEditorialPermissions, hasTrainingPermissions, priorities) match {
+      case AccessGranted => AccessGranted
+      case AccessDenied => {
+        logger.warn(s"User with e-mail ${email} and with the following permissions commercial: $hasCommercialPermissions, " +
+          s"editorial: $hasEditorialPermissions and training: $hasTrainingPermissions is not authorized to modify " +
+          s"collection with priorities " +
+          s"$priorities")
+        AccessDenied
+      }
+    }
   }
 }
 

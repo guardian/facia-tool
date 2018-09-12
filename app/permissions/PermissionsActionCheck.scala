@@ -52,10 +52,7 @@ trait ModifyCollectionsPermissionsCheck extends Logging { self: BaseFaciaControl
 
     (testAccess(request.user.email, priorities, isLaunch), testAccess(request.user.email, secondaryPriorities, isLaunch)) match {
       case (AccessGranted, AccessGranted) => block
-      case _ => {
-        logger.warn(s"User with e-mail ${request.user.email} not authorized to modify collection with priorities $priorities")
-        Future.successful(Results.Unauthorized)
-      }
+      case _ => Future.successful(Results.Unauthorized)
     }
   }
 }
