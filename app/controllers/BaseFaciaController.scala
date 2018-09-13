@@ -2,19 +2,21 @@ package controllers
 
 import java.util.Locale
 
-import com.gu.pandomainauth.action.AuthActions
+import com.gu.pandomainauth.action.{AuthActions, UserRequest}
 import com.gu.pandomainauth.model.AuthenticatedUser
 import com.gu.pandomainauth.{PanDomain, PanDomainAuthSettingsRefresher}
 import com.gu.permissions.{PermissionsConfig, PermissionsProvider}
 import conf.ApplicationConfiguration
-import permissions.{AccessPermissionCheck, Permissions}
+import permissions._
 import play.api.ApplicationLoader.Context
 import play.api.libs.ws.WSClient
 import play.api.libs.ws.ahc.AhcWSComponents
-import play.api.mvc.{BaseController, ControllerComponents, RequestHeader, Result}
+import play.api.mvc._
 import play.api.{BuiltInComponentsFromContext, Logger}
 import play.filters.cors.CORSComponents
 import switchboard.SwitchManager
+import util.Acl
+import scala.concurrent.ExecutionContext
 
 abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInComponentsFromContext(context) with AhcWSComponents with AssetsComponents with CORSComponents {
 
@@ -45,6 +47,16 @@ abstract class BaseFaciaController(deps: BaseFaciaControllerComponents) extends 
   private val accessPermissionCheck = new AccessPermissionCheck(deps.permissions)(deps.executionContext)
   final def AccessAuthAction = AuthAction andThen accessPermissionCheck
   final def AccessAPIAuthAction = APIAuthAction andThen accessPermissionCheck
+
+  def getCollectionPermissionFilterByPriority(priority: String, acl: Acl)(implicit ec: ExecutionContext): ActionBuilder[UserRequest, AnyContent] = {
+    val permissionsPriority = PermissionsPriority.stringToPermissionPriority(priority)
+    permissionsPriority match {
+      case Some(EditorialPermission) => AccessAuthAction andThen new EditEditorialFrontsPermissionCheck(acl)
+      case Some(CommercialPermission) => AccessAuthAction andThen new LaunchCommercialFrontsPermissionCheck(acl)
+      case Some(EmailPermission) => AccessAuthAction andThen new EditEditorialFrontsPermissionCheck(acl)
+      case _ => AccessAuthAction
+    }
+  }
 
   private def userInGroups(authedUser: AuthenticatedUser): Boolean = {
     deps.permissions.hasPermission(Permissions.FrontsAccess, authedUser.user.email)

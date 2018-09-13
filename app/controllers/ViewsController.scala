@@ -18,7 +18,7 @@ class ViewsController(val acl: Acl, assetsManager: AssetsManager, isDev: Boolean
     }
   }
 
-  def collectionEditor() = AccessAuthAction { request =>
+  def collectionEditor(priority: String) = getCollectionPermissionFilterByPriority(priority, acl)(ec) { request =>
     val identity = request.user
     Cached(60) {
       Ok(views.html.admin_main(Option(identity), config.facia.stage, overrideIsDev(request, isDev),

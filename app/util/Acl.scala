@@ -2,6 +2,7 @@ package util
 
 import com.gu.permissions.{PermissionDefinition, PermissionsProvider}
 import logging.Logging
+import permissions._
 import play.api.libs.json.{JsBoolean, JsValue, Json, Writes}
 import switchboard.SwitchManager
 
@@ -46,5 +47,59 @@ class Acl(permissions: PermissionsProvider) extends Logging {
     if ((restrictedCollections intersect collectionIds).nonEmpty)
       testUser(permission, switch)(email)
     else AccessGranted
+  }
+
+  def testUserGroupsAndCollections(editorialPermission: PermissionDefinition, commercialPermission: PermissionDefinition,
+                                   trainingPermission: PermissionDefinition, editorialSwitch: String)
+                                  (email: String, priorities: Set[PermissionsPriority]): Authorization = {
+
+    val hasCommercialPermissions = testUser(commercialPermission, "facia-tool-allow-launch-commercial-fronts-for-all")(email)
+    val hasEditorialPermissions = testUser(editorialPermission, editorialSwitch)(email)
+    val hasTrainingPermissions = testUser(trainingPermission, "facia-tool-permissions-access")(email)
+
+    PermissionsChecker.check(hasCommercialPermissions, hasEditorialPermissions, hasTrainingPermissions, priorities) match {
+      case AccessGranted => AccessGranted
+      case AccessDenied => {
+        logger.warn(s"User with e-mail ${email} and with the following permissions commercial: $hasCommercialPermissions, " +
+          s"editorial: $hasEditorialPermissions and training: $hasTrainingPermissions is not authorized to modify " +
+          s"collection with priorities " +
+          s"$priorities")
+        AccessDenied
+      }
+    }
+  }
+}
+
+object PermissionsChecker {
+
+  def check(
+             hasCommercialPermissions: Authorization,
+             hasEditorialPermissions: Authorization,
+             hasTrainingPermissions: Authorization,
+             priorities: Set[PermissionsPriority]
+           ): Authorization =  {
+
+    val trainingPermissionIsValid = priorities.contains(TrainingPermission)
+    val editorialPermissionIsValid = priorities.contains(EditorialPermission) || priorities.contains(EmailPermission)
+    val commercialPermissionIsValid = priorities.contains(CommercialPermission)
+
+    if (trainingPermissionIsValid)
+      hasTrainingPermissions
+    else {
+      if (editorialPermissionIsValid && commercialPermissionIsValid) {
+        if (List(hasCommercialPermissions, hasEditorialPermissions).contains(AccessGranted)) {
+          AccessGranted
+        }
+        else
+          AccessDenied
+      }
+
+      else if (commercialPermissionIsValid) {
+        hasCommercialPermissions
+      }
+      else if (editorialPermissionIsValid)
+        hasEditorialPermissions
+      else AccessDenied
+    }
   }
 }

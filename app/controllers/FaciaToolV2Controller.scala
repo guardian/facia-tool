@@ -7,8 +7,8 @@ import play.api.libs.json.Json
 import services._
 import updates._
 import util.Acl
-
-import scala.concurrent.ExecutionContext
+import permissions.ModifyCollectionsPermissionsCheck
+import scala.concurrent.{ExecutionContext, Future}
 
 
 class FaciaToolV2Controller(
@@ -16,18 +16,24 @@ class FaciaToolV2Controller(
                            val structuredLogger: StructuredLogger,
                            val faciaPress: FaciaPress,
                            val updateActions: UpdateActions,
+                           val configAgent: ConfigAgent,
                            val deps: BaseFaciaControllerComponents
                          )(implicit ec: ExecutionContext)
-  extends BaseFaciaController(deps) with Logging {
+  extends BaseFaciaController(deps) with ModifyCollectionsPermissionsCheck with Logging {
 
 
-  def collectionEdits() = AccessAPIAuthAction { implicit request =>
+  def collectionEdits() = AccessAPIAuthAction.async { implicit request =>
 
     FaciaToolMetrics.ApiUsageCount.increment()
 
     val v2Update: Option[V2Update] = request.body.asJson.flatMap(jsValue => jsValue.asOpt[V2Update])
     v2Update match {
       case Some(update) => {
+
+        val collectionPriorities = configAgent.getFrontsPermissionsPriorityByCollectionId(update.id)
+
+        withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
+
           val identity = request.user
 
           updateActions.v2UpdateCollection(update.id, update.collection, identity)
@@ -40,10 +46,11 @@ class FaciaToolV2Controller(
 
           structuredLogger.putLog(LogUpdate(V2CollectionUpdate(update.id, update.collection), identity.email))
 
-          Ok(Json.toJson(update.collection)).as("application/json")
+          Future.successful(Ok(Json.toJson(update.collection)).as("application/json"))
+        }
 
       }
-      case None => BadRequest
+      case None => Future.successful(BadRequest)
     }
 
   }
