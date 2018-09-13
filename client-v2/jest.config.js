@@ -1,5 +1,7 @@
 module.exports = {
-  transformIgnorePatterns: ['/node_modules/(?!panda-session).+\\.js$'],
+  transformIgnorePatterns: [
+    '/node_modules/(?!panda-session|grid-util-js).+\\.js$'
+  ],
   setupTestFrameworkScriptFile: './node_modules/jest-enzyme/lib/index.js',
   setupFiles: ['./src/setupTest.js'],
   moduleDirectories: ['<rootDir>/src', 'node_modules'],
