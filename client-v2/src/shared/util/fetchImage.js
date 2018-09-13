@@ -1,8 +1,8 @@
 // @flow
 
-import type { Description, Asset } from './validateImageSrc';
+import type { ImageDescription } from './validateImageSrc';
 
-function fetchImage(description: Description): Promise<Asset> {
+function fetchImage(description: ImageDescription): Promise<ImageDescription> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onerror = () => {
@@ -14,7 +14,7 @@ function fetchImage(description: Description): Promise<Asset> {
         height: img.height,
         ratio: img.width / img.height
       };
-      const asset: Asset = {
+      const asset: ImageDescription = {
         ...description,
         ...size
       };

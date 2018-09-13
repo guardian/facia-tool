@@ -13,12 +13,7 @@ type Criteria = {|
   heightAspectRatio?: number
 |};
 
-type Description = {|
-  path: string,
-  criteria?: Criteria
-|};
-
-type Asset = {|
+type ImageDescription = {|
   height?: number,
   width?: number,
   thumb?: string,
@@ -66,7 +61,7 @@ function filterGridCrops(
   });
 }
 
-function getSuitableAsset(crops, id, desired): Promise<Asset> {
+function getSuitableAsset(crops, id, desired): Promise<ImageDescription> {
   if (crops.length === 0) {
     return Promise.reject(
       new Error('The image does not have a valid crop on the Grid')
@@ -109,7 +104,7 @@ function getSuitableAsset(crops, id, desired): Promise<Asset> {
   );
 }
 
-function validateActualImage(image: Asset, frontId?: string) {
+function validateActualImage(image: ImageDescription, frontId?: string) {
   return new Promise((resolve, reject) => {
     const {
       width = 0,
@@ -154,7 +149,7 @@ function validateActualImage(image: Asset, frontId?: string) {
   });
 }
 
-function stripImplementationDetails(src, criteria): Promise<Asset> {
+function stripImplementationDetails(src, criteria): Promise<ImageDescription> {
   return new Promise((resolve, reject) => {
     const maybeFromGrid = grid.gridInstance.excractMediaId(src);
     if (src && imageConstants.imgIXDomainExpr.test(src)) {
@@ -285,5 +280,5 @@ function validateImageEvent(
   );
 }
 
-export type { Description, Asset };
+export type { ImageDescription };
 export { validateImageSrc, validateImageEvent };
