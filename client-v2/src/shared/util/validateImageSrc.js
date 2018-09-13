@@ -1,6 +1,7 @@
 // @flow
 
-import { find, chain } from 'lodash';
+import find from 'lodash/find';
+import sortBy from 'lodash/sortBy';
 import imageConstants from '../constants/images';
 import deepGet from './deepGet';
 import grid, { recordUsage } from './grid';
@@ -68,31 +69,32 @@ function getSuitableAsset(crops, id, desired): Promise<ImageDescription> {
     );
   }
   const { maxWidth, minWidth } = desired;
-  const assets = chain([crops[0].master].concat(crops[0].assets))
-    .filter(Boolean)
-    .filter(
-      asset =>
-        maxWidth
-          ? parseInt(deepGet(asset, ['dimensions', 'width']), 10) <= maxWidth
-          : true
-    )
-    .filter(
-      asset =>
-        minWidth
-          ? parseInt(deepGet(asset, ['dimensions', 'width']), 10) >= minWidth
-          : true
-    )
-    .sortBy(
-      asset => parseInt(deepGet(asset, ['dimensions', 'width']), 10) * -1
-    );
+  const assets = sortBy(
+    [crops[0].master]
+      .concat(crops[0].assets)
+      .filter(Boolean)
+      .filter(
+        asset =>
+          maxWidth
+            ? parseInt(deepGet(asset, ['dimensions', 'width']), 10) <= maxWidth
+            : true
+      )
+      .filter(
+        asset =>
+          minWidth
+            ? parseInt(deepGet(asset, ['dimensions', 'width']), 10) >= minWidth
+            : true
+      ),
+    asset => parseInt(deepGet(asset, ['dimensions', 'width']), 10) * -1
+  );
 
-  if (assets.value().length) {
-    const mainAsset = assets.first().value();
+  if (assets.length) {
+    const mainAsset = assets[0];
     const path = mainAsset.secureUrl;
     const { height, width } = mainAsset.dimensions;
     return Promise.resolve({
       path,
-      thumb: assets.last().value().secureUrl,
+      thumb: assets[assets.length - 1].secureUrl,
       origin: `${imageConstants.mediaBaseUrl}/image/${id}`,
       height,
       width,
