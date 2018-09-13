@@ -6,16 +6,19 @@ import styled from 'styled-components';
 import SearchQuery from '../CAPI/SearchQuery';
 import ScrollContainer from '../ScrollContainer';
 import TextInput from '../TextInput';
+import CAPITagInput from '../FrontsCAPIInterface/TagInput';
 
 type FrontsCAPISearchInputProps = {
   children: *,
-  additionalFixedContent?: React.ComponentType<any>
+  additionalFixedContent?: React.ComponentType<any>,
+  displaySearchFilters: boolean
 };
 
 type FrontsCAPISearchInputState = {
   q: ?string,
   tag: ?string,
-  section: ?string
+  section: ?string,
+  dislaySearchFilters: boolean
 };
 
 const InputContainer = styled('div')`
@@ -29,12 +32,16 @@ class FrontsCAPISearchInput extends React.Component<
   state = {
     q: null,
     tag: null,
-    section: null
+    section: null,
+    displaySearchFilters: false
   };
 
   clearInput = () => {
     this.setState({
-      q: ''
+      q: '',
+      tag: null,
+      section: null,
+      displaySearchFilters: false
     });
   };
 
@@ -56,12 +63,20 @@ class FrontsCAPISearchInput extends React.Component<
     });
   };
 
+  handleDisplaySearchFilters = () => {
+    this.setState({
+      displaySearchFilters: !this.state.displaySearchFilters
+    });
+  };
+
   render() {
     const {
       children,
       additionalFixedContent: AdditionalFixedContent
     } = this.props;
-    const { tag, section, q } = this.state;
+    const { tag, section, q, displaySearchFilters } = this.state;
+
+    const displayClear = !!tag || !!section || !!q;
 
     return (
       <ScrollContainer
@@ -73,24 +88,31 @@ class FrontsCAPISearchInput extends React.Component<
                 value={this.state.q || ''}
                 onChange={this.handleSearchInput}
                 onClear={this.clearInput}
+                displayClear={displayClear}
+                onDisplaySearchFilters={this.handleDisplaySearchFilters}
               />
             </InputContainer>
             {AdditionalFixedContent && <AdditionalFixedContent />}
           </React.Fragment>
         }
       >
-        <SearchQuery
-          params={{
-            tag,
-            section,
-            q,
-            'show-elements': 'image',
-            'show-fields': 'internalPageCode,trailText'
-          }}
-          poll={30000}
-        >
-          {children}
-        </SearchQuery>
+        {!displaySearchFilters && (
+          <SearchQuery
+            params={{
+              tag,
+              section,
+              q,
+              'show-elements': 'image',
+              'show-fields': 'internalPageCode,trailText'
+            }}
+            poll={30000}
+          >
+            {children}
+          </SearchQuery>
+        )}
+        {displaySearchFilters && (
+          <CAPITagInput onChange={this.handleTagInput} />
+        )}
       </ScrollContainer>
     );
   }
