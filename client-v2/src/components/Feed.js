@@ -4,7 +4,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import ContainerHeading from 'shared/components/typography/ContainerHeading';
 import pandaFetch from 'services/pandaFetch';
 import { getThumbnail } from 'util/CAPIUtils';
 import * as CAPIParamsContext from './CAPI/CAPIParamsContext';
@@ -80,7 +79,6 @@ class Feed extends React.Component<FeedProps, FeedState> {
 
   renderFixedContent = () => (
     <ResultsHeadingContainer>
-      <ContainerHeading>Results</ContainerHeading>
       <StageSelectionContainer>
         <RadioGroup>
           {this.props.capiFeedSpecs.map(({ name }, i) => (

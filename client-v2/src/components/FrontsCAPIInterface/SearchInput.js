@@ -16,8 +16,8 @@ type FrontsCAPISearchInputProps = {
 
 type FrontsCAPISearchInputState = {
   q: ?string,
-  tag: ?string,
-  section: ?string,
+  tags: ?Array<string>,
+  sections: ?Array<string>,
   dislaySearchFilters: boolean
 };
 
@@ -31,16 +31,16 @@ class FrontsCAPISearchInput extends React.Component<
 > {
   state = {
     q: null,
-    tag: null,
-    section: null,
-    displaySearchFilters: false
+    tags: [],
+    sections: [],
+    displaySearchFilters: true
   };
 
   clearInput = () => {
     this.setState({
       q: '',
-      tag: null,
-      section: null,
+      tags: [],
+      sections: [],
       displaySearchFilters: false
     });
   };
@@ -52,14 +52,18 @@ class FrontsCAPISearchInput extends React.Component<
   };
 
   handleTagInput = (item: any) => {
+    const newTags = this.state.tags;
+    if (item) {
+      newTags.push(item.id)
+    }
     this.setState({
-      tag: item ? item.id : null
+      tags: newTags
     });
   };
 
   handleSectionInput = (item: any) => {
     this.setState({
-      section: item ? item.id : null
+      sections: item ? item.id : []
     });
   };
 
@@ -74,9 +78,10 @@ class FrontsCAPISearchInput extends React.Component<
       children,
       additionalFixedContent: AdditionalFixedContent
     } = this.props;
-    const { tag, section, q, displaySearchFilters } = this.state;
+    const { tags, sections, q, displaySearchFilters } = this.state;
+    console.log({tags});
 
-    const displayClear = !!tag || !!section || !!q;
+    const displayClear = !!tags || !!sections || !!q;
 
     return (
       <ScrollContainer
@@ -96,11 +101,12 @@ class FrontsCAPISearchInput extends React.Component<
           </React.Fragment>
         }
       >
+        {tags.map(tag => <div>{tag}</div>)}
         {!displaySearchFilters && (
           <SearchQuery
             params={{
-              tag,
-              section,
+              tags,
+              sections,
               q,
               'show-elements': 'image',
               'show-fields': 'internalPageCode,trailText'
