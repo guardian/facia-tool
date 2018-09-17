@@ -45,6 +45,7 @@ const removeGroupArticleFragmentWithPersistence = addPersistMetaToAction(
   removeGroupArticleFragment,
   {
     persistTo: 'collection',
+    applyBeforeReducer: true,
     key: 'articleFragmentId'
   }
 );

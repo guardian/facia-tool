@@ -23,6 +23,7 @@ type ContainerProps = {
   onDragStart?: DragEvent => void,
   onDragOver?: DragEvent => void,
   onDrop?: DragEvent => void,
+  onDelete?: () => void,
   selectSharedState: (state: any) => State // eslint-disable-line react/no-unused-prop-types
 };
 
@@ -31,6 +32,45 @@ type ComponentProps = {
   size: 'default' | 'small',
   children: ReactNode
 } & ContainerProps;
+
+const HoverActions = styled('div')`
+  display: flex;
+  padding: 10px;
+`;
+
+const ActionButton = styled('button')`
+  appearance: none;
+  background: ${({ danger }) => (danger ? '#ff7f0f' : '#767676')};
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  height: 24px;
+  line-height: 1;
+  margin: 0;
+  width: 24px;
+
+  &:hover {
+    background: ${({ danger }) => (danger ? '#e05e00' : '#333333')};
+  }
+`;
+
+ActionButton.defaultProps = {
+  danger: false
+};
+
+const Thumbnail = styled('div')`
+  width: 130px;
+  height: 83px;
+  background-size: cover;
+`;
+
+const Tone = styled('div')`
+  padding-top: 2px;
+  font-size: 12px;
+  font-family: TS3TextSans-Bold;
+`;
 
 const ArticleContainer = styled('div')`
   background-color: #fff;
@@ -42,7 +82,54 @@ const ArticleBodyContainer = styled('div')`
   border-top: 1px solid #333;
   min-height: 35px;
   cursor: pointer;
+  position: relative;
+
+  ${HoverActions} {
+    bottom: 0;
+    left: 0;
+    opacity: 1;
+    position: absolute;
+    right: 0;
+    visibility: hidden;
+  }
+
+  ${Tone} {
+    transition: color ${({ transitionTime }) => transitionTime}s;
+  }
+
+  ${Thumbnail} {
+    transition: opacity ${({ transitionTime }) => transitionTime}s;
+  }
+
+  ${HoverActions} {
+    transition: opacity ${({ transitionTime }) => transitionTime}s,
+      visibility 0s linear ${({ transitionTime }) => transitionTime}s;
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  :hover {
+    background-color: #ededed;
+
+    ${Tone} {
+      color: #999;
+    }
+
+    ${Thumbnail} {
+      opacity: 0.2;
+    }
+
+    ${HoverActions} {
+      transition-delay: 0s;
+      visibility: visible;
+      opacity: 1;
+    }
+  }
 `;
+
+ArticleBodyContainer.defaultProps = {
+  transitionTime: 0.3
+};
 
 const ArticleMetaContainer = styled('div')`
   position: relative;
@@ -55,12 +142,6 @@ const ArticleContentContainer = styled('div')`
   width: calc(100% - 210px);
   margin-top: 2px;
   padding: 0 8px;
-`;
-
-const Tone = styled('div')`
-  padding-top: 2px;
-  font-size: 12px;
-  font-family: TS3TextSans-Bold;
 `;
 
 const KickerHeading = styled('span')`
@@ -96,12 +177,6 @@ const ArticleHeadingContainerSmall = styled('div')`
   text-overflow: ellipsis;
 `;
 
-const Thumbnail = styled('div')`
-  width: 130px;
-  height: 83px;
-  background-size: cover;
-`;
-
 const FirstPublished = styled('div')`
   font-size: 12px;
   margin: 2px 0;
@@ -114,6 +189,7 @@ const ArticleComponent = ({
   onDragStart = noop,
   onDragOver = noop,
   onDrop = noop,
+  onDelete = noop,
   children
 }: ComponentProps) => {
   if (!article) {
@@ -172,6 +248,18 @@ const ArticleComponent = ({
             }}
           />
         )}
+        <HoverActions>
+          <ActionButton
+            danger
+            onClick={e => {
+              // stop the parent from opening the edit panel
+              e.stopPropagation();
+              onDelete();
+            }}
+          >
+            ✕
+          </ActionButton>
+        </HoverActions>
       </ArticleBodyContainer>
       {children}
     </ArticleContainer>

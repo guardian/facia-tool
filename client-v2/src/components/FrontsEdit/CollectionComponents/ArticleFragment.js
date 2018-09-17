@@ -1,11 +1,14 @@
 // @flow
 
 import React from 'react';
+import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import * as Guration from '@guardian/guration';
 import Article from 'shared/components/Article';
 import DropZone from 'components/DropZone';
 import { optionize } from 'util/component';
+import type { Dispatch } from 'types/Store';
+import { removeGroupArticleFragment } from 'actions/Collections';
 
 type ArticleFragmentProps = {
   isSelected: boolean,
@@ -15,7 +18,12 @@ type ArticleFragmentProps = {
   },
   children: *,
   getNodeProps: () => Object,
+  onDelete: () => void,
   onSelect: (uuid: string) => void
+};
+
+type ContainerProps = ArticleFragmentProps & {
+  parentId: string
 };
 
 // We hoist the drop zone into the rendered element here,
@@ -44,13 +52,14 @@ const ArticleFragment = ({
   meta: { supporting = [] } = {},
   children,
   getNodeProps,
-  onSelect
+  onSelect,
+  onDelete
 }: ArticleFragmentProps) => (
   <ArticleFragmentContainer
     isSelected={isSelected}
     {...optionize(() => onSelect(uuid))}
   >
-    <Article id={uuid} {...getNodeProps()}>
+    <Article id={uuid} {...getNodeProps()} onDelete={onDelete}>
       <Guration.Level
         arr={supporting}
         type="articleFragment"
@@ -71,4 +80,14 @@ const ArticleFragment = ({
   </ArticleFragmentContainer>
 );
 
-export default ArticleFragment;
+const mapDispatchToProps = (
+  dispatch: Dispatch,
+  { parentId, uuid }: ContainerProps
+) => ({
+  onDelete: () => dispatch(removeGroupArticleFragment(parentId, uuid))
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(ArticleFragment);
