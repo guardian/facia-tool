@@ -1,6 +1,6 @@
 // @flow
 
-import { getURLCAPIID } from 'util/CAPIUtils';
+import { getURLInternalPageCode } from 'util/CAPIUtils';
 import { type Move, type Insert } from 'lib/guration';
 import { type Action } from 'types/Action';
 import {
@@ -52,8 +52,8 @@ const getMoveActions = ({
   return [getFromAction(), getToAction()];
 };
 
-const urlToArticle = (text: string) => {
-  const id = getURLCAPIID(text);
+const urlToArticle = async (text: string) => {
+  const id = await getURLInternalPageCode(text);
 
   return id
     ? {

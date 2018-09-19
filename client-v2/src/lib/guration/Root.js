@@ -19,7 +19,7 @@ import type {
 } from './types';
 
 type InMap = {
-  [string]: (value: string) => { id: string, type: string } | string
+  [string]: (value: string) => Promise<{ id: string, type: string } | string>
 };
 
 type SanitizedInMap = {
@@ -43,9 +43,9 @@ const sanitizeExternalDrops = (mappers: InMap) =>
   Object.keys(mappers).reduce(
     (acc, key) => ({
       ...acc,
-      [key]: (text: string) => {
+      [key]: async (text: string) => {
         const mapper = mappers[key];
-        const data = mapper(text);
+        const data = await mapper(text);
 
         if (typeof data === 'string') {
           return data;
@@ -159,7 +159,7 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
   /**
    * Runs through the inMappers to get the data
    */
-  getDropData(e: EventType) {
+  async getDropData(e: EventType) {
     const { mapIn } = this;
     const type = Object.keys(mapIn).find(key => e.dataTransfer.getData(key));
 
@@ -246,13 +246,13 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
     });
 
   runDropZoneDragOver = throttle(
-    (
+    async (
       candidatePath: Path[],
       getDuplicate: DuplicateGetter,
       getIndexOffset: IndexOffsetGetter,
       e: EventType
     ) => {
-      const { path, canDrop } = this.run(
+      const { path, canDrop } = await this.run(
         e,
         candidatePath,
         getDuplicate,
@@ -292,7 +292,7 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
    * drag and because we can't inspect `dataTransfer` on dragover we'll just
    * have to permit any drop
    */
-  run = (
+  run = async (
     e: EventType,
     candidatePath: Path[],
     getDuplicate: DuplicateGetter,
@@ -305,16 +305,16 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
     );
 
     if (dragData === true) {
-      return { path, canDrop: true };
+      return Promise.resolve({ path, canDrop: true });
     }
 
-    const data = dragData || this.getDropData(e);
+    const data = await (dragData || this.getDropData(e));
 
     if (typeof data === 'string') {
       if (!dragData) {
         this.props.onError(data);
       }
-      return { path, canDrop: false };
+      return Promise.resolve({ path, canDrop: false });
     }
 
     let edit;
@@ -333,9 +333,9 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
         /* eslint-disable no-unsafe-finally */
         // this lint rule can be ignored given we are not returning in try /
         // catch
-        return { path, canDrop: true };
+        return Promise.resolve({ path, canDrop: true });
       }
-      return { path, canDrop: false };
+      return Promise.resolve({ path, canDrop: false });
       /* eslint-enable no-unsafe-finally */
     }
   };

@@ -1,21 +1,17 @@
 // @flow
 
-import capiQuery from 'services/capiQuery';
+import { getArticles } from 'services/faciaApi';
 import type { Element } from 'services/capiQuery';
 
-const capi = capiQuery();
+const getInternalPageCode = async (id: string) =>
+  ((await getArticles([id]))[0] || {}).id || null;
 
-const getURLCAPIID = (url: string): string | null => {
+const getURLInternalPageCode = async (url: string): Promise<string | null> => {
   const [, id] = url.match(/^https:\/\/www.theguardian\.com\/(.*)\??/) || [];
-
-  return typeof id === 'string' ? id : null;
+  return typeof id !== 'string'
+    ? Promise.resolve(null)
+    : getInternalPageCode(id);
 };
-
-const searchById = (apiKey: string) => async (id: string) =>
-  (await capi.search({
-    ids: id,
-    'api-key': apiKey
-  })).response.results[0];
 
 // TODO: get apiKey from context (or speak directly to FrontsAPI)
 const getThumbnail = (_elements: Element[]) => {
@@ -44,4 +40,4 @@ const getThumbnail = (_elements: Element[]) => {
   return smallestAsset && smallestAsset.file;
 };
 
-export { getURLCAPIID, searchById, getThumbnail };
+export { getURLInternalPageCode, getThumbnail };

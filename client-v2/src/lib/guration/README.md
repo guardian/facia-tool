@@ -92,9 +92,9 @@ This expects a callback function that will receive an of (`edit`)[#Edits] each t
 
 A callback that will recieve strings describing errors regarding invalid drops. For example, dropping an node of one type into a level of another type or dropping an node into a child of itself.
 
-##### `mapIn?: { [string]: string => { id: string, type: string, meta?: Object } }`
+##### `mapIn?: { [string]: string => Promise<{ id: string, type: string, meta?: Object }> }`
 
-An object whose keys represent a `type` on `e.dataTransfer.types` that can be handle by the callback that is in the value position of the object. The callback will receive any data that is found when `e.dataTranfer.getData(type)` is called and is expected to return an object of `{ id: string, type: string }` that can be used to validate and then generate an edit in a drop zone. This object can also have an optional `meta` key to pass through to the any subsequent if required.
+An object whose keys represent a `type` on `e.dataTransfer.types` that can be handle by the callback that is in the value position of the object. The callback will receive any data that is found when `e.dataTranfer.getData(type)` is called and is expected to return a Promise (or not, but Flow will complain!) object of `{ id: string, type: string }` that can be used to validate and then generate an edit in a drop zone. This object can also have an optional `meta` key to pass through to the any subsequent if required. It allows a Promise so that the consumer can fetch extra data from external drops.
 
 ##### `mapOut?: { [string]: (el: Object, type: string, id: string, path: Path[]) => string }`
 
