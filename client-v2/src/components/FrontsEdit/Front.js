@@ -134,9 +134,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
               dedupeType="articleFragment"
               mapIn={{
                 text: text => urlToArticle(text),
-                // TODO: the below will not dedupe properly
-                capi: capi => ({ type: 'articleFragment', id: capi }),
-                clipboard: str => JSON.parse(str)
+                capi: capi =>
+                  Promise.resolve({ type: 'articleFragment', id: capi }),
+                clipboard: str => JSON.parse(str),
+                collection: str => JSON.parse(str) // other fronts
               }}
               mapOut={{
                 collection: (el, type) =>

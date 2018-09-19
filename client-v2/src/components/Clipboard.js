@@ -72,9 +72,10 @@ class Clipboard extends React.Component<ClipboardProps> {
           dedupeType="articleFragment"
           onChange={this.handleChange}
           mapIn={{
-            text: text => urlToArticle(text),
-            capi: capi => ({ type: 'articleFragment', id: capi }),
-            collection: str => JSON.parse(str)
+            text: async text => urlToArticle(text),
+            capi: capi =>
+              Promise.resolve({ type: 'articleFragment', id: capi }),
+            collection: str => Promise.resolve(JSON.parse(str))
           }}
           mapOut={{
             clipboard: (el, type) =>
