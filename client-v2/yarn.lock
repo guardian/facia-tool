@@ -4364,6 +4364,10 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6:
   version "4.1.11"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.11.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
 
+grid-util-js@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/grid-util-js/-/grid-util-js-1.1.0.tgz#e7e9224eb2753b82a6c6319e7726d8272e56d08d"
+
 grouped-queue@^0.3.3:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/grouped-queue/-/grouped-queue-0.3.3.tgz#c167d2a5319c5a0e0964ef6a25b7c2df8996c85c"
