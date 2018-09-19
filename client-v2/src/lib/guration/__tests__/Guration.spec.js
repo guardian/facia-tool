@@ -20,7 +20,7 @@ const createDragEvent = () => {
   };
 };
 
-const runDrag = (type, data, json = true) => (dropProps, inst) => {
+const runDrag = (type, data, json = true) => async (dropProps, inst) => {
   const e = createDragEvent();
 
   if (typeof type === 'string') {
@@ -37,15 +37,21 @@ const runDrag = (type, data, json = true) => (dropProps, inst) => {
   }
 
   dropProps.onDrop(e);
+
+  // because inMaps are async then we just need to go to the end of the
+  // task queue
+  await new Promise(setTimeout);
 };
 
+const setup = jsx => TestRenderer.create(jsx).getInstance();
+
 describe('Guration', () => {
-  it('creates MOVE events from dragged nodes', () => {
+  it('creates MOVE events from dragged nodes', async () => {
     let nodeProps;
     let dropProps;
     let edit;
 
-    const inst = TestRenderer.create(
+    const inst = setup(
       <Root
         type="@@ROOT"
         id="@@ROOT"
@@ -71,18 +77,18 @@ describe('Guration', () => {
           }}
         </Level>
       </Root>
-    ).getInstance();
+    );
 
-    runDrag(nodeProps)(dropProps, inst);
+    await runDrag(nodeProps)(dropProps, inst);
 
     expect(edit.type).toEqual('MOVE');
   });
 
-  it('creates INSERT events from mapped drops', () => {
+  it('creates INSERT events from mapped drops', async () => {
     let dropProps;
     let edit;
 
-    const inst = TestRenderer.create(
+    const inst = setup(
       <Root
         type="@@ROOT"
         id="@@ROOT"
@@ -108,9 +114,9 @@ describe('Guration', () => {
           )}
         </Level>
       </Root>
-    ).getInstance();
+    );
 
-    runDrag('text', {
+    await runDrag('text', {
       type: 'a',
       id: 2
     })(dropProps, inst);
@@ -134,11 +140,11 @@ describe('Guration', () => {
     });
   });
 
-  it('creates preservers meta from mapped drops', () => {
+  it('creates preservers meta from mapped drops', async () => {
     let dropProps;
     let edit;
 
-    const inst = TestRenderer.create(
+    const inst = setup(
       <Root
         type="@@ROOT"
         id="@@ROOT"
@@ -164,9 +170,9 @@ describe('Guration', () => {
           )}
         </Level>
       </Root>
-    ).getInstance();
+    );
 
-    runDrag('text', {
+    await runDrag('text', {
       type: 'a',
       id: 2,
       meta: {
@@ -179,11 +185,11 @@ describe('Guration', () => {
     });
   });
 
-  it('creates MOVE events from duplicate drops', () => {
+  it('creates MOVE events from duplicate drops', async () => {
     let dropProps;
     let edit;
 
-    const inst = TestRenderer.create(
+    const inst = setup(
       <Root
         type="@@ROOT"
         id="@@ROOT"
@@ -211,9 +217,9 @@ describe('Guration', () => {
           )}
         </Level>
       </Root>
-    ).getInstance();
+    );
 
-    runDrag('text', {
+    await runDrag('text', {
       type: 'a',
       id: 4
     })(dropProps, inst);
@@ -240,12 +246,12 @@ describe('Guration', () => {
     });
   });
 
-  it('does not allow moves of a node to a subPath of that node', () => {
+  it('does not allow moves of a node to a subPath of that node', async () => {
     let dragProps;
     let dropProps;
     let error;
 
-    const inst = TestRenderer.create(
+    const inst = setup(
       <Root
         type="@@ROOT"
         id="@@ROOT"
@@ -272,19 +278,19 @@ describe('Guration', () => {
           }}
         </Level>
       </Root>
-    ).getInstance();
+    );
 
-    runDrag(dragProps)(dropProps, inst);
+    await runDrag(dragProps)(dropProps, inst);
 
     expect(error).toBeTruthy();
   });
 
-  it('does not allow move of a node to an invalid type position', () => {
+  it('does not allow move of a node to an invalid type position', async () => {
     let dragProps;
     let dropProps;
     let error;
 
-    const inst = TestRenderer.create(
+    const inst = setup(
       <Root
         type="@@ROOT"
         id="@@ROOT"
@@ -309,19 +315,19 @@ describe('Guration', () => {
           {() => null}
         </Level>
       </Root>
-    ).getInstance();
+    );
 
-    runDrag(dragProps)(dropProps, inst);
+    await runDrag(dragProps)(dropProps, inst);
 
     expect(error).toBeTruthy();
   });
 
-  it('adjusts move indices when moving things that affect the drop index', () => {
+  it('adjusts move indices when moving things that affect the drop index', async () => {
     let dragProps;
     let dropProps;
     let edit;
 
-    const inst = TestRenderer.create(
+    const inst = setup(
       <Root
         type="@@ROOT"
         id="@@ROOT"
@@ -345,19 +351,19 @@ describe('Guration', () => {
           }}
         </Level>
       </Root>
-    ).getInstance();
+    );
 
-    runDrag(dragProps)(dropProps, inst);
+    await runDrag(dragProps)(dropProps, inst);
 
     expect(edit.payload.to.index).toBe(2);
   });
 
-  it('does not create MOVE events when moves will have no impact', () => {
+  it('does not create MOVE events when moves will have no impact', async () => {
     let dragProps;
     let dropProps;
     let edit;
 
-    const inst = TestRenderer.create(
+    const inst = setup(
       <Root
         type="@@ROOT"
         id="@@ROOT"
@@ -379,19 +385,19 @@ describe('Guration', () => {
           }}
         </Level>
       </Root>
-    ).getInstance();
+    );
 
-    runDrag(dragProps)(dropProps, inst);
+    await runDrag(dragProps)(dropProps, inst);
 
     expect(edit).toBe(undefined);
   });
 
   // TODO: implement
-  //   it('disallows adding more than maxChildren', () => {
+  //   it('disallows adding more than maxChildren', async () => {
   //     let dropProps;
   //     let error;
 
-  //     const inst = TestRenderer.create(
+  //     const inst = setup(
   //       <Root
   //         type="@@ROOT"
   //         id="@@ROOT"
@@ -415,7 +421,7 @@ describe('Guration', () => {
   //       </Root>
   //     );
 
-  //     runDrag('text', {
+  //     await runDrag('text', {
   //       type: 'a',
   //       id: 2
   //     })(dropProps, inst);
@@ -423,12 +429,12 @@ describe('Guration', () => {
   //     expect(error).toBeTruthy();
   //   });
 
-  it('creates inserts between roots', () => {
+  it('creates inserts between roots', async () => {
     let nodeProps;
     let dropProps;
     let edit;
 
-    TestRenderer.create(
+    setup(
       <div>
         <Root
           type="@@ROOT"
@@ -465,7 +471,7 @@ describe('Guration', () => {
       </div>
     );
 
-    runDrag(nodeProps)(dropProps);
+    await runDrag(nodeProps)(dropProps);
 
     expect(edit.type).toBe('INSERT');
   });
