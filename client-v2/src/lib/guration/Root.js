@@ -5,7 +5,6 @@ import type { Node as ReactNode } from 'react';
 import v4 from 'uuid/v4';
 import throttle from 'lodash.throttle';
 import Level from './Level';
-import DedupeLevel from './DedupeLevel';
 import { RootContext } from './Context';
 import { addOffset, eq } from './utils/path';
 import { getEdit } from './utils/edit';
@@ -28,7 +27,13 @@ type SanitizedInMap = {
 };
 
 type OutMap<T: Object> = {
-  [string]: (el: T, type: string, id: string, path: Path[]) => string
+  [string]: (
+    el: T,
+    type: string,
+    id: string,
+    externalKey: string,
+    path: Path[]
+  ) => string
 };
 
 const extractIndexOffset = (e: EventType, getIndexOffset: IndexOffsetGetter) =>
@@ -60,9 +65,16 @@ const internalMapIn = (data: string) => ({
   dropType: 'INTERNAL'
 });
 
-const internalMapOut = <T>(item: T, type: string, id: string, path: Path[]) =>
+const internalMapOut = <T>(
+  item: T,
+  type: string,
+  id: string,
+  externalKey: string,
+  path: Path[]
+) =>
   JSON.stringify({
     id,
+    externalKey,
     type,
     path
   });
@@ -71,7 +83,7 @@ type RootProps<T: Object> = {
   id: string,
   type: string,
   field?: string,
-  dedupeType?: string,
+  dedupe?: boolean,
   onChange: (edit: Edit, getDuplicate: DuplicateGetter) => void,
   onError: (error: string) => void,
   mapIn: InMap,
@@ -108,8 +120,8 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
    */
   get mapIn(): SanitizedInMap {
     return {
-      ...sanitizeExternalDrops(this.props.mapIn),
-      [this.rootKey]: internalMapIn
+      [this.rootKey]: internalMapIn, // look for moves first
+      ...sanitizeExternalDrops(this.props.mapIn)
     };
   }
 
@@ -184,13 +196,17 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
    * being dragged from and what type they are to allows us to show invalid
    * drops in the UI while dragging
    */
-  handleNodeDragStart = (item: T, path: Path[], id: string, type: string) => (
-    e: EventType
-  ) =>
+  handleNodeDragStart = (
+    item: T,
+    path: Path[],
+    id: string,
+    externalKey: string,
+    type: string
+  ) => (e: EventType) =>
     this.runLowest(() => {
       Object.keys(this.mapOut).forEach(key => {
         const mapper = this.mapOut[key];
-        const val = mapper(item, type, id, path);
+        const val = mapper(item, type, id, externalKey, path);
         if (typeof val === 'string') {
           e.dataTransfer.setData(key, val);
         }
@@ -200,6 +216,8 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
         dragData: {
           dropType: 'INTERNAL',
           rootKey: this.rootKey,
+          externalKey,
+          id,
           path,
           type
         }
@@ -341,7 +359,7 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
   rootKey: string = v4();
 
   render() {
-    const { type, field, dedupeType, id } = this.props;
+    const { type, field, dedupe, id } = this.props;
     return (
       <div
         onDragOver={this.handleRootDragOver}
@@ -356,15 +374,13 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
             dropInfo: this.state.dropInfo
           }}
         >
-          <DedupeLevel type={dedupeType}>
-            <Level type={type} field={field} arr={[{ id }]}>
-              {/**
-               * Level requires a function child by here we're doing nothing
-               * with the params
-               */}
-              {() => this.props.children}
-            </Level>
-          </DedupeLevel>
+          <Level type={type} dedupe={dedupe} field={field} arr={[{ id }]}>
+            {/**
+             * Level requires a function child by here we're doing nothing
+             * with the params
+             */}
+            {() => this.props.children}
+          </Level>
         </RootContext.Provider>
       </div>
     );

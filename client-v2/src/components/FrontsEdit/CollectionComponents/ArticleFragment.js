@@ -64,7 +64,7 @@ const ArticleFragment = ({
         arr={supporting}
         type="articleFragment"
         getKey={({ uuid: key }) => key}
-        getDedupeKey={({ id }) => id}
+        getExternalKey={({ id }) => id}
         renderDrop={(getDropProps, { canDrop, isTarget }) => (
           <DropZone
             {...getDropProps()}

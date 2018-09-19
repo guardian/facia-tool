@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import * as Guration from 'lib/guration';
+import type { Edit } from 'lib/guration';
 import { type Dispatch } from 'types/Store';
 import { batchActions } from 'redux-batched-actions';
 import { type State } from 'types/State';
@@ -25,18 +26,15 @@ type ClipboardProps = ClipboardPropsBeforeState & {
 class Clipboard extends React.Component<ClipboardProps> {
   // TODO: this code is repeated in src/components/FrontsEdit/Front.js
   // refactor
-  runEdit = (edit, getDuplicate) => {
+  runEdit = edit => {
     switch (edit.type) {
       case 'MOVE': {
         return Promise.resolve(getMoveActions(edit));
       }
 
       case 'INSERT': {
-        const supporting = (edit.meta.supporting || []).filter(
-          s => !getDuplicate('articleFragment', s)
-        );
         return this.props
-          .addArticleFragment(edit.payload.id, supporting)
+          .addArticleFragment(edit.payload.id, edit.meta.supporting)
           .then(uuid =>
             getInsertActions({
               ...edit,
@@ -53,8 +51,8 @@ class Clipboard extends React.Component<ClipboardProps> {
     }
   };
 
-  handleChange = (edit: Edit, getDuplicate: DuplicateGetter) => {
-    const futureActions = this.runEdit(edit, getDuplicate);
+  handleChange = (edit: Edit) => {
+    const futureActions = this.runEdit(edit);
     if (!futureActions) {
       return;
     }
@@ -72,7 +70,6 @@ class Clipboard extends React.Component<ClipboardProps> {
         <Guration.Root
           id="clipboard"
           type="clipboard"
-          dedupeType="articleFragment"
           onChange={this.handleChange}
           mapIn={{
             text: text => urlToArticle(text),
@@ -91,7 +88,7 @@ class Clipboard extends React.Component<ClipboardProps> {
             arr={tree.articleFragments || []}
             type="articleFragment"
             getKey={({ uuid }) => uuid}
-            getDedupeKey={({ id }) => id}
+            getExternalKey={({ id }) => id}
             renderDrop={(getDropProps, { canDrop, isTarget }) => (
               <DropZone
                 {...getDropProps()}

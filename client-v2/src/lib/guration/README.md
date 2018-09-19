@@ -100,9 +100,11 @@ An object whose keys represent a `type` on `e.dataTransfer.types` that can be ha
 
 An object that does the opposite of `mapIn` and describes how to transform a node into drag data. The keys on the object are the keys that will be called using `e.dataTransfer.setData(key)`, allowing drags from here to other drop zones (possibly other Guration contexts).
 
-##### `dedupeType: ?string`
+##### `dedupe: ?boolean`
 
-Specifying this on the `Root` will ensure that anything below this level that is of the same `type` and has the same `dedupeKey` will act as a move rather than an insert.
+Specifying this on the will ensure that any insert on the top level that has the same `externalKey` will act as a move rather than an insert.
+
+**default is `true`**
 
 ### `<Level />`
 
@@ -134,9 +136,15 @@ This is a function that will be used to render the drops between the draggable n
 
 A function that returns the key from each object in the array, defaults to `({ id }) => id`
 
-##### `getDedupeKey: ?(el: T) => string`
+##### `getExternalKey: ?(el: T) => string`
 
 The function that returns the key for comapring items for deduping, defaults to `getKey`.
+
+##### `dedupe: ?boolean`
+
+Specifying this on the will ensure that any insert on this level that has the same `externalKey` will act as a move rather than an insert.
+
+**default is `true`**
 
 ##### `dropOnNode: ?boolean`
 

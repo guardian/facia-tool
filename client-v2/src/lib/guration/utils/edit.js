@@ -14,10 +14,6 @@ const handleMove = (prevPath, nextPath, meta = {}): ?Edit => {
     throw new Error(`can't drop ${dragType} where ${type} should go`);
   }
 
-  if (isSubPath(prevPath, nextPath)) {
-    throw new Error(`can't drop into itself`);
-  }
-
   const movePath = pathForMove(prevPath, nextPath);
   const { index } = movePath[movePath.length - 1];
 
@@ -27,7 +23,7 @@ const handleMove = (prevPath, nextPath, meta = {}): ?Edit => {
 };
 
 const handleInsert = (
-  { type: dragType, id, meta },
+  { type: dragType, path: dragPath, id, externalKey, meta, dropType },
   path,
   getDuplicate
 ): ?Edit => {
@@ -37,20 +33,24 @@ const handleInsert = (
     throw new Error(`can't drop ${dragType} where ${type} should go`);
   }
 
-  const duplicate = getDuplicate(dragType, id);
+  const key = externalKey || id;
+
+  const duplicate = getDuplicate(key);
+
+  // dragPath is always set on internal drags but flow isn't working this out
+  if (dropType === 'INTERNAL' && dragPath && isSubPath(dragPath, path)) {
+    throw new Error(`can't drop into itself`);
+  }
 
   return duplicate
     ? handleMove(duplicate.path, path, meta)
-    : insert(type, id, path, index, meta);
+    : insert(type, key, path, index, meta);
 };
 
 const getEdit = (
   inputData: Drag,
   inputPath: Path[],
   getDuplicate: DuplicateGetter
-): ?Edit =>
-  inputData.dropType === 'INTERNAL'
-    ? handleMove(inputData.path, inputPath)
-    : handleInsert(inputData, inputPath, getDuplicate);
+): ?Edit => handleInsert(inputData, inputPath, getDuplicate);
 
 export { getEdit };

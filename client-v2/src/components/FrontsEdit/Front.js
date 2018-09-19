@@ -76,18 +76,15 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     });
   };
 
-  runEdit = (edit, getDuplicate) => {
+  runEdit = edit => {
     switch (edit.type) {
       case 'MOVE': {
         return Promise.resolve(getMoveActions(edit));
       }
 
       case 'INSERT': {
-        const supporting = (edit.meta.supporting || []).filter(
-          s => !getDuplicate('articleFragment', s)
-        );
         const editsPromise = this.props
-          .addArticleFragment(edit.payload.id, supporting)
+          .addArticleFragment(edit.payload.id, edit.meta.supporting)
           .then(uuid => {
             const payloadWithUuid = { ...edit.payload, id: uuid };
             const insertWithUuid = { ...edit, payload: payloadWithUuid };
@@ -101,8 +98,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     }
   };
 
-  handleChange = (edit, getDuplicate) => {
-    const futureActions = this.runEdit(edit, getDuplicate);
+  handleChange = edit => {
+    const futureActions = this.runEdit(edit);
     if (!futureActions) {
       return;
     }
@@ -134,7 +131,6 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
               id="frontId"
               type="front"
               onChange={this.handleChange}
-              dedupeType="articleFragment"
               mapIn={{
                 text: text => urlToArticle(text),
                 // TODO: the below will not dedupe properly

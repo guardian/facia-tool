@@ -5,13 +5,18 @@ import type { Path } from '../utils/path';
 type ExternalDrag = {|
   dropType: 'EXTERNAL',
   id: string,
+  externalKey?: ?string,
   type: string,
-  meta?: Object
+  meta?: Object,
+  path: void
 |};
 
 type InternalDrag = {|
   dropType: 'INTERNAL',
   rootKey: string,
+  id: string,
+  externalKey: string,
+  meta?: Object,
   path: Path[],
   type: string
 |};
@@ -21,7 +26,6 @@ type Drag = ExternalDrag | InternalDrag;
 type EventType = SyntheticDragEvent<HTMLElement>;
 
 type DuplicateGetter = <T>(
-  type: string,
   id: string
 ) => ?{
   index: number,
