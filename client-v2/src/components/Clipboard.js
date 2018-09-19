@@ -25,15 +25,18 @@ type ClipboardProps = ClipboardPropsBeforeState & {
 class Clipboard extends React.Component<ClipboardProps> {
   // TODO: this code is repeated in src/components/FrontsEdit/Front.js
   // refactor
-  runEdit = edit => {
+  runEdit = (edit, getDuplicate) => {
     switch (edit.type) {
       case 'MOVE': {
         return Promise.resolve(getMoveActions(edit));
       }
 
       case 'INSERT': {
+        const supporting = (edit.meta.supporting || []).filter(
+          s => !getDuplicate('articleFragment', s)
+        );
         return this.props
-          .addArticleFragment(edit.payload.id, edit.meta.supporting)
+          .addArticleFragment(edit.payload.id, supporting)
           .then(uuid =>
             getInsertActions({
               ...edit,
@@ -50,8 +53,8 @@ class Clipboard extends React.Component<ClipboardProps> {
     }
   };
 
-  handleChange = (edit: Edit) => {
-    const futureActions = this.runEdit(edit);
+  handleChange = (edit: Edit, getDuplicate: DuplicateGetter) => {
+    const futureActions = this.runEdit(edit, getDuplicate);
     if (!futureActions) {
       return;
     }

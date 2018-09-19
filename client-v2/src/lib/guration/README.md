@@ -84,9 +84,9 @@ Similarly to the [`id`](#id) this will describe the type of the root node (again
 
 This will set the `childrenField` in an edit, which can allow for easier reflection on the type of edit to be made.
 
-##### `onChange?: (edit: Edit) => void`
+##### `onChange?: (edit: Edit, getDuplicate: (type: string, key: string) => { index: number, path: Path[] }) => void`
 
-This expects a callback function that will receive an of (`edit`)[#Edits] each time an action has happened.
+This expects a callback function that will receive an of (`edit`)[#Edits] each time an action has happened. It also receives a function that will return any duplicates in the current Guration context. This is useful for working out whether nested items (perhaps passed `meta`) are duplicates.
 
 ##### `onError?: (error: string) => void`
 
