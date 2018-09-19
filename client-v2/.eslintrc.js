@@ -34,6 +34,9 @@ module.exports = {
     // we're flowing everything by default
     'flowtype/no-types-missing-file-annotation': 0,
 
+    // this clashes with prettier's line breaking rules
+    'flowtype/space-after-type-colon': 0,
+
     // let prettier handle this
     'flowtype/generic-spacing': 0,
 

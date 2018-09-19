@@ -3,7 +3,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
-import * as Guration from '@guardian/guration';
+import * as Guration from 'lib/guration';
 import Article from 'shared/components/Article';
 import DropZone from 'components/DropZone';
 import { optionize } from 'util/component';
