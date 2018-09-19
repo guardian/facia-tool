@@ -11,11 +11,10 @@ type CAPITagInputProps<T> = {
 };
 
 const DragContainer = styled('div')`
-  width: 100%
+  width: 100%;
 `;
 
-const TagDropdown = styled('div')`
-`;
+const TagDropdown = styled('div')``;
 
 const DropdownItem = styled('div')`
   background-color: ${({ selected }) => (selected ? '#dcdcdc' : 'white')};
@@ -68,7 +67,7 @@ const SearchContainer = styled('div')`
 const CAPITagInput = <T>({ onChange, placeholder }: CAPITagInputProps<T>) => (
   <Downshift
     itemToString={item => (item ? item.id : '')}
-    onChange={(value) => {
+    onChange={value => {
       onChange(value);
       value = null;
     }}

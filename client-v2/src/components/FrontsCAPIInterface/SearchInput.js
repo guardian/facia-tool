@@ -16,8 +16,8 @@ type FrontsCAPISearchInputProps = {
 
 type FrontsCAPISearchInputState = {
   q: ?string,
-  tags: ?Array<string>,
-  sections: ?Array<string>,
+  tags: Array<string>,
+  sections: Array<string>,
   dislaySearchFilters: boolean
 };
 
@@ -45,6 +45,15 @@ class FrontsCAPISearchInput extends React.Component<
     });
   };
 
+  clearIndividualSearchTerm = (
+    type: 'tags' | 'sections',
+    searchTerm: string
+  ) => {
+    const oldTerms = this.state[type];
+    const newTerms = oldTerms.filter(term => term !== searchTerm);
+    this.setState({ [type]: newTerms });
+  };
+
   handleSearchInput = ({ currentTarget }: SyntheticEvent<HTMLInputElement>) => {
     this.setState({
       q: currentTarget.value
@@ -54,7 +63,7 @@ class FrontsCAPISearchInput extends React.Component<
   handleTagInput = (item: any) => {
     const newTags = this.state.tags;
     if (item) {
-      newTags.push(item.id)
+      newTags.push(item.id);
     }
     this.setState({
       tags: newTags
@@ -79,9 +88,10 @@ class FrontsCAPISearchInput extends React.Component<
       additionalFixedContent: AdditionalFixedContent
     } = this.props;
     const { tags, sections, q, displaySearchFilters } = this.state;
-    console.log({tags});
 
     const displayClear = !!tags || !!sections || !!q;
+    const tagQuery = tags ? tags.join(',') : '';
+    const sectionQuery = sections ? sections.join(',') : '';
 
     return (
       <ScrollContainer
@@ -89,10 +99,12 @@ class FrontsCAPISearchInput extends React.Component<
           <React.Fragment>
             <InputContainer>
               <TextInput
+                searchTerms={tags.concat(sections)}
                 placeholder="Search"
                 value={this.state.q || ''}
                 onChange={this.handleSearchInput}
                 onClear={this.clearInput}
+                onClearTag={this.clearIndividualSearchTerm}
                 displayClear={displayClear}
                 onDisplaySearchFilters={this.handleDisplaySearchFilters}
               />
@@ -101,12 +113,11 @@ class FrontsCAPISearchInput extends React.Component<
           </React.Fragment>
         }
       >
-        {tags.map(tag => <div>{tag}</div>)}
         {!displaySearchFilters && (
           <SearchQuery
             params={{
-              tags,
-              sections,
+              tagQuery,
+              sectionQuery,
               q,
               'show-elements': 'image',
               'show-fields': 'internalPageCode,trailText'

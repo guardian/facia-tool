@@ -9,6 +9,19 @@ import searchImage from 'shared/images/icons/search.svg';
 const InputWrapper = styled('div')`
   position: relative;
   width: ${({ width }) => width || 'auto'};
+  display: flex;
+`;
+
+const TagItem = styled('div')`
+  color: #121212;
+  font-weight: bold;
+  border: solid 1px #c4c4c4;
+  font-size: 14px;
+  background-color: #ffffff;
+  padding: 7px 15px 7px 15px;
+  :hover {
+    color: #c4c4c4;
+  }
 `;
 
 const Input = styled(`input`)`
@@ -56,6 +69,8 @@ const SmallRoundButton = styled('button')`
   }
 `;
 
+const RemoveButton = SmallRoundButton.extend``;
+
 const SmallRoundButtonOrange = SmallRoundButton.extend`
   background-color: #ff7f0f;
   margin-right: 4px;
@@ -90,16 +105,37 @@ type TextInputProps = {
   onClear?: () => void,
   onDisplaySearchFilters?: () => void,
   width?: string,
-  displayClear: boolean
+  displayClear: boolean,
+  searchTerms: Array<string>,
+  onClearTag: (string, string) => void
 };
 
 const TextInput = ({
   onClear,
   displayClear,
   onDisplaySearchFilters,
+  searchTerms,
+  onClearTag,
   ...props
 }: TextInputProps) => (
   <InputWrapper>
+    {searchTerms.map(searchTerm => (
+      <TagItem key={searchTerm}>
+        {searchTerm}
+        <RemoveButton
+          onClick={() => onClearTag('tags', searchTerm)}
+          title="Clear search"
+        >
+          <ClearButtonIcon
+            src={moreImage}
+            onClick={() => onClearTag('tags', searchTerm)}
+            alt=""
+            height="22px"
+            width="22px"
+          />
+        </RemoveButton>
+      </TagItem>
+    ))})
     <Input {...props} />
     <ButtonsContainer>
       {onClear &&
