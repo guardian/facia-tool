@@ -161,6 +161,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                         {(articleFragment, afNodeProps) => (
                           <ArticleFragment
                             {...articleFragment}
+                            parentId={group.uuid}
                             getNodeProps={afNodeProps}
                             onSelect={this.props.selectArticleFragment}
                             isSelected={
@@ -172,6 +173,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                             {(supporting, sNodeProps) => (
                               <Supporting
                                 {...supporting}
+                                parentId={articleFragment.uuid}
                                 getNodeProps={sNodeProps}
                               />
                             )}
