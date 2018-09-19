@@ -7,7 +7,7 @@ import type {
 import { clipboardSelector } from 'selectors/frontsSelectors';
 import { type State } from 'types/State';
 import { type Action } from 'types/Action';
-import { type Move, type Insert } from '@guardian/guration';
+import { type Move, type Insert } from 'lib/guration';
 import {
   removeClipboardArticleFragment,
   addClipboardArticleFragment

@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import { Level } from '@guardian/guration';
+import { Level } from 'lib/guration';
 
 type FrontProps = {
   collections: *,
@@ -9,7 +9,7 @@ type FrontProps = {
 };
 
 const Front = ({ collections, children }: FrontProps) => (
-  <Level arr={collections} type="collection" dedupeType="articleFragment">
+  <Level arr={collections} type="collection">
     {children}
   </Level>
 );

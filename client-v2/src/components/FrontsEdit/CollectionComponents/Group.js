@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import * as Guration from '@guardian/guration';
+import * as Guration from 'lib/guration';
 import GroupDisplay from 'shared/components/GroupDisplay';
 import DropZone from 'components/DropZone';
 
