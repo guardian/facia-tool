@@ -7,14 +7,16 @@ import TagQuery from '../CAPI/TagQuery';
 
 type CAPITagInputProps<T> = {
   onChange: (value: T) => void,
-  placeholder?: string
+  placeholder?: string,
+  tagSearchTerm: string
 };
 
 const DragContainer = styled('div')`
-  width: 100%;
+  width: 100%
 `;
 
-const TagDropdown = styled('div')``;
+const TagDropdown = styled('div')`
+`;
 
 const DropdownItem = styled('div')`
   background-color: ${({ selected }) => (selected ? '#dcdcdc' : 'white')};
@@ -64,12 +66,11 @@ const SearchContainer = styled('div')`
   padding: 2px;
 `;
 
-const CAPITagInput = <T>({ onChange, placeholder }: CAPITagInputProps<T>) => (
+const CAPITagInput = <T>({ onChange, onSearchChange, placeholder, tagSearchTerm }: CAPITagInputProps<T>) => (
   <Downshift
     itemToString={item => (item ? item.id : '')}
-    onChange={value => {
+    onChange={(value) => {
       onChange(value);
-      value = null;
     }}
     render={({
       getInputProps,
@@ -87,7 +88,9 @@ const CAPITagInput = <T>({ onChange, placeholder }: CAPITagInputProps<T>) => (
             {...getInputProps({
               placeholder,
               onClear: clearSelection,
-              width: '100%'
+              width: '100%',
+              value: tagSearchTerm,
+              onChange: onSearchChange
             })}
           />
         </SearchContainer>

@@ -33,7 +33,8 @@ class FrontsCAPISearchInput extends React.Component<
     q: null,
     tags: [],
     sections: [],
-    displaySearchFilters: true
+    displaySearchFilters: true,
+    tagSearchTerm: ''
   };
 
   clearInput = () => {
@@ -60,13 +61,20 @@ class FrontsCAPISearchInput extends React.Component<
     });
   };
 
+  handleTagSearchInput = ({ currentTarget }: SyntheticEvent<HTMLInputElement>) => {
+    this.setState({
+      tagSearchTerm: currentTarget.value
+    });
+  };
+
   handleTagInput = (item: any) => {
     const newTags = this.state.tags;
     if (item) {
       newTags.push(item.id);
     }
     this.setState({
-      tags: newTags
+      tags: newTags,
+      tagSearchTerm: ''
     });
   };
 
@@ -87,7 +95,7 @@ class FrontsCAPISearchInput extends React.Component<
       children,
       additionalFixedContent: AdditionalFixedContent
     } = this.props;
-    const { tags, sections, q, displaySearchFilters } = this.state;
+    const { tags, sections, q, displaySearchFilters, tagSearchTerm } = this.state;
 
     const displayClear = !!tags || !!sections || !!q;
     const tagQuery = tags ? tags.join(',') : '';
@@ -128,7 +136,7 @@ class FrontsCAPISearchInput extends React.Component<
           </SearchQuery>
         )}
         {displaySearchFilters && (
-          <CAPITagInput onChange={this.handleTagInput} />
+          <CAPITagInput onSearchChange={this.handleTagSearchInput} tagSearchTerm={tagSearchTerm} onChange={this.handleTagInput} />
         )}
       </ScrollContainer>
     );

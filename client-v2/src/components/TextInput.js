@@ -135,7 +135,7 @@ const TextInput = ({
           />
         </RemoveButton>
       </TagItem>
-    ))})
+    ))}
     <Input {...props} />
     <ButtonsContainer>
       {onClear &&
