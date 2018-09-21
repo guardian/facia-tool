@@ -44,6 +44,10 @@ const FeedContainer = SectionContainer.extend`
   height: 100%;
 `;
 
+const FrontsContainer = SectionContainer.extend`
+  overflow-x: scroll;
+`;
+
 class FrontsEdit extends React.Component<Props> {
   componentDidMount() {
     this.props.getFrontsConfig();
@@ -58,7 +62,7 @@ class FrontsEdit extends React.Component<Props> {
           <FeedContainer>
             <FeedSection />
           </FeedContainer>
-          <SectionContainer>
+          <FrontsContainer>
             {this.props.frontIds.map(frontId => (
               <SingleFrontContainer key={frontId}>
                 <FrontContainer
@@ -69,7 +73,7 @@ class FrontsEdit extends React.Component<Props> {
                 />
               </SingleFrontContainer>
             ))}
-          </SectionContainer>
+          </FrontsContainer>
         </SectionsContainer>
         <FrontsMenu onSelectFront={this.props.editorOpenFront} />
       </FrontsEditContainer>
