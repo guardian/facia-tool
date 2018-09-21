@@ -76,7 +76,7 @@ class InputImage extends React.Component<Props, State> {
       .catch(err => console.log('@todo:handle error', err));
   };
   handleAdd = (e: Event) => {
-
+    // @todo: grid integration
   };
   clearField = () => this.props.input.onChange(null);
 

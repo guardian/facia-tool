@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { reduxForm, Field, type FormProps } from 'redux-form';
+import { reduxForm, Field, type FormProps, formValues } from 'redux-form';
 import styled from 'styled-components';
 
 import {
@@ -20,7 +20,10 @@ import Row from '../Row';
 import Col from '../Col';
 
 type Props = {
-  articleFragment: ArticleFragment
+  articleFragment: ArticleFragment,
+  showSlideshowImages: Boolean,
+  useCutout: Boolean,
+  hideMedia: Boolean
 } & FormProps;
 
 const slideShowImageCount = [1, 2, 3, 4];
@@ -35,13 +38,24 @@ const SlideshowLabel = styled('div')`
   color: #767676;
 `;
 
+const ImageWrapper = styled('div')`
+  transition: opacity 0.15s;
+  opacity: ${props => (props.faded ? 0.6 : 1)};
+`;
+
 const imageCriteria = {
   minWidth: 400,
   widthAspectRatio: 5,
   heightAspectRatio: 3
 };
 
-const formComponent = ({ handleSubmit, articleFragmentId }: Props) => (
+const formComponent = ({
+  handleSubmit,
+  articleFragmentId,
+  showSlideshowImages,
+  hideMedia,
+  useCutout
+}: Props) => (
   <form onSubmit={handleSubmit} name={articleFragmentId}>
     <InputGroup>
       <Field
@@ -93,46 +107,73 @@ const formComponent = ({ handleSubmit, articleFragmentId }: Props) => (
     </InputGroup>
     <Row>
       <Col>
-        <Field name="primaryImage" component={InputImage} />
+        <ImageWrapper faded={hideMedia}>
+          <Field
+            name="primaryImage"
+            component={InputImage}
+            disabled={hideMedia}
+          />
+        </ImageWrapper>
       </Col>
       <Col>
         <InputGroup>
           <Field
-            name="showMedia"
+            name="hideMedia"
             component={InputCheckboxToggle}
-            label="Show media"
+            label="Hide media"
             type="checkbox"
-          />
-          <HorizontalRule noMargin />
-          <Field
-            name="useCutout"
-            component={InputCheckboxToggle}
-            label="Use Cutout"
-            type="checkbox"
-          />
-          <HorizontalRule noMargin />
-          <Field
-            name="slideshow"
-            component={InputCheckboxToggle}
-            label="Slideshow"
-            type="checkbox"
+            default={false}
           />
         </InputGroup>
       </Col>
     </Row>
-    <SlideshowRow>
-      {slideShowImageCount.map(imageNumber => (
-        <Col key={imageNumber}>
+    <HorizontalRule />
+    <Row>
+      <Col>
+        <ImageWrapper faded={!useCutout}>
           <Field
-            name={`slideShowImage${imageNumber + 1}`}
+            name="cutoutImage"
             component={InputImage}
-            size="small"
-            criteria={imageCriteria}
+            disabled={hideMedia}
           />
-        </Col>
-      ))}
-    </SlideshowRow>
-    <SlideshowLabel>Drag and drop up to four images</SlideshowLabel>
+        </ImageWrapper>
+      </Col>
+      <Col>
+        <InputGroup>
+          <Field
+            name="useCutout"
+            component={InputCheckboxToggle}
+            label="Use cutout"
+            type="checkbox"
+            default={false}
+          />
+        </InputGroup>
+      </Col>
+    </Row>
+    <HorizontalRule />
+    <Field
+      name="slideshow"
+      component={InputCheckboxToggle}
+      label="Slideshow"
+      type="checkbox"
+    />
+    {showSlideshowImages && (
+      <>
+        <SlideshowRow>
+          {slideShowImageCount.map(imageNumber => (
+            <Col key={imageNumber}>
+              <Field
+                name={`slideShowImage${imageNumber + 1}`}
+                component={InputImage}
+                size="small"
+                criteria={imageCriteria}
+              />
+            </Col>
+          ))}
+        </SlideshowRow>
+        <SlideshowLabel>Drag and drop up to four images</SlideshowLabel>
+      </>
+    )}
   </form>
 );
 
@@ -140,7 +181,13 @@ const articleFragmentForm = reduxForm({
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
   destroyOnUnmount: false
-})(formComponent);
+})(
+  formValues({
+    showSlideshowImages: 'slideshow',
+    hideMedia: 'hideMedia',
+    useCutout: 'useCutout'
+  })(formComponent)
+);
 
 const mapStateToProps = (state, props) => ({
   initialValues: externalArticleFromArticleFragmentSelector(
