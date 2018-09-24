@@ -117,7 +117,7 @@ export default {
 
     priorities: {
         'editorial': {
-            maxFronts: 200,
+            maxFronts: 210,
             hasGroups: false,
             isTypeLocked: false,
             isHiddenLocked: false
