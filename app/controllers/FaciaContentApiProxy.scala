@@ -7,7 +7,9 @@ import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCred
 import com.gu.contentapi.client.{IAMEncoder, IAMSigner}
 import metrics.FaciaToolMetrics
 import model.Cached
-
+import play.api.libs.concurrent.Futures
+import play.api.libs.concurrent.Futures._
+import scala.concurrent.duration._
 import logging.Logging
 import switchboard.SwitchManager
 import util.ContentUpgrade.rewriteBody
@@ -16,6 +18,7 @@ import scala.concurrent.ExecutionContext
 
 
 class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) with Logging {
+  implicit val futures = new play.api.libs.concurrent.DefaultFutures(akka.actor.ActorSystem())
   implicit class string2encodings(s: String) {
     lazy val urlEncoded = URLEncoder.encode(s, "utf-8")
   }
@@ -102,9 +105,15 @@ class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec:
 
     val url = s"$ophanApiHost/$path?$queryString&$paths&$ophanKey"
 
-    wsClient.url(url).get().map { response =>
+    logger.info(s"Request to ophan: $url")
+    wsClient.url(url).get().withTimeout(5.seconds).map { response =>
       Cached(60) {
         Ok(response.body).as("application/json")
+      }
+    }.recover {
+      case e: scala.concurrent.TimeoutException => {
+        logger.error(s"Request to ophan with url $url timed out")
+        GatewayTimeout
       }
     }
   }
