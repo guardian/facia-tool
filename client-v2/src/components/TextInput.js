@@ -103,6 +103,7 @@ const SearchButtonIcon = styled('img')`
 
 type TextInputProps = {
   onClear?: () => void,
+  onSearch?: () => void,
   onDisplaySearchFilters?: () => void,
   width?: string,
   displayClear: boolean,
@@ -112,6 +113,7 @@ type TextInputProps = {
 
 const TextInput = ({
   onClear,
+  onSearch,
   displayClear,
   onDisplaySearchFilters,
   searchTerms,
@@ -140,10 +142,10 @@ const TextInput = ({
     <ButtonsContainer>
       {onClear &&
         displayClear && (
-          <SmallRoundButtonOrange onClick={onClear} title="Clear search">
+          <SmallRoundButtonOrange onClick={onClear} title="Search">
             <ClearButtonIcon
               src={moreImage}
-              onClick={onClear}
+              onClick={onSearch}
               alt=""
               height="22px"
               width="22px"
@@ -151,10 +153,13 @@ const TextInput = ({
           </SmallRoundButtonOrange>
         )}
       {onDisplaySearchFilters && (
-        <SmallRoundButtonBlack onClick={onDisplaySearchFilters} title="Search">
+        <SmallRoundButtonBlack
+          onClick={onDisplaySearchFilters}
+          title="Clear Search"
+        >
           <SearchButtonIcon
             src={searchImage}
-            onClick={onClear}
+            onClick={onSearch}
             alt=""
             height="22px"
             width="22px"

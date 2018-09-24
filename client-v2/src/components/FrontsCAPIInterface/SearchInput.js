@@ -46,7 +46,15 @@ class FrontsCAPISearchInput extends React.Component<
       q: null,
       tags: [],
       sections: [],
-      displaySearchFilters: true,
+      displaySearchFilters: false,
+      tagsSearchTerm: '',
+      sectionsSearchTerm: ''
+    });
+  };
+
+  searchInput = () => {
+    this.setState({
+      displaySearchFilters: false,
       tagsSearchTerm: '',
       sectionsSearchTerm: ''
     });
@@ -86,6 +94,7 @@ class FrontsCAPISearchInput extends React.Component<
       [type]: newTags,
       [searchTerm]: ''
     });
+
   };
 
   handleDisplaySearchFilters = () => {
@@ -123,6 +132,7 @@ class FrontsCAPISearchInput extends React.Component<
                 value={this.state.q || ''}
                 onChange={this.handleSearchInput}
                 onClear={this.clearInput}
+                onSearch={this.searchInput}
                 onClearTag={this.clearIndividualSearchTerm}
                 displayClear={displayClear}
                 onDisplaySearchFilters={this.handleDisplaySearchFilters}
@@ -135,8 +145,8 @@ class FrontsCAPISearchInput extends React.Component<
         {!displaySearchFilters && (
           <SearchQuery
             params={{
-              tagQuery,
-              sectionQuery,
+              tag: tagQuery,
+              section: sectionQuery,
               q,
               'show-elements': 'image',
               'show-fields': 'internalPageCode,trailText'
