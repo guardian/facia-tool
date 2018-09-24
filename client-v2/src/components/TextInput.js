@@ -123,12 +123,12 @@ const TextInput = ({
       <TagItem key={searchTerm}>
         {searchTerm}
         <RemoveButton
-          onClick={() => onClearTag('tags', searchTerm)}
+          onClick={() => onClearTag(searchTerm)}
           title="Clear search"
         >
           <ClearButtonIcon
             src={moreImage}
-            onClick={() => onClearTag('tags', searchTerm)}
+            onClick={() => onClearTag(searchTerm)}
             alt=""
             height="22px"
             width="22px"

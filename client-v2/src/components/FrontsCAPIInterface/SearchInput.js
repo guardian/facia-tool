@@ -10,49 +10,54 @@ import CAPITagInput from '../FrontsCAPIInterface/TagInput';
 
 type FrontsCAPISearchInputProps = {
   children: *,
-  additionalFixedContent?: React.ComponentType<any>,
-  displaySearchFilters: boolean
+  additionalFixedContent?: React.ComponentType<any>
 };
 
 type FrontsCAPISearchInputState = {
   q: ?string,
   tags: Array<string>,
   sections: Array<string>,
-  dislaySearchFilters: boolean
+  dislaySearchFilters: boolean,
+  tagsSearchTerm: '',
+  sectionsSearchTerm: ''
 };
 
 const InputContainer = styled('div')`
   margin-bottom: 20px;
 `;
 
+const emptyState = {
+  q: null,
+  tags: [],
+  sections: [],
+  displaySearchFilters: true,
+  tagsSearchTerm: '',
+  sectionsSearchTerm: ''
+};
+
 class FrontsCAPISearchInput extends React.Component<
   FrontsCAPISearchInputProps,
   FrontsCAPISearchInputState
 > {
-  state = {
-    q: null,
-    tags: [],
-    sections: [],
-    displaySearchFilters: true,
-    tagSearchTerm: ''
-  };
+  state = emptyState;
 
   clearInput = () => {
     this.setState({
-      q: '',
+      q: null,
       tags: [],
       sections: [],
-      displaySearchFilters: false
+      displaySearchFilters: true,
+      tagsSearchTerm: '',
+      sectionsSearchTerm: ''
     });
   };
 
-  clearIndividualSearchTerm = (
-    type: 'tags' | 'sections',
-    searchTerm: string
-  ) => {
-    const oldTerms = this.state[type];
-    const newTerms = oldTerms.filter(term => term !== searchTerm);
-    this.setState({ [type]: newTerms });
+  clearIndividualSearchTerm = (searchTerm: string) => {
+    const oldTags = this.state.tags;
+    const newTags = oldTags.filter(term => term !== searchTerm);
+    const oldSections = this.state.sections;
+    const newSections = oldSections.filter(term => term !== searchTerm);
+    this.setState({ tags: newTags, sections: newSections });
   };
 
   handleSearchInput = ({ currentTarget }: SyntheticEvent<HTMLInputElement>) => {
@@ -61,26 +66,25 @@ class FrontsCAPISearchInput extends React.Component<
     });
   };
 
-  handleTagSearchInput = ({ currentTarget }: SyntheticEvent<HTMLInputElement>) => {
+  handleTagSearchInput = (
+    { currentTarget }: SyntheticEvent<HTMLInputElement>,
+    type: string
+  ) => {
+    const termInState = `${type}SearchTerm`;
     this.setState({
-      tagSearchTerm: currentTarget.value
+      [termInState]: currentTarget.value
     });
   };
 
-  handleTagInput = (item: any) => {
-    const newTags = this.state.tags;
+  handleTagInput = (item: any, type: string) => {
+    const searchTerm = `${type}SearchTerm`;
+    const newTags = this.state[type];
     if (item && newTags.indexOf(item.id) === -1) {
       newTags.push(item.id);
     }
     this.setState({
-      tags: newTags,
-      tagSearchTerm: ''
-    });
-  };
-
-  handleSectionInput = (item: any) => {
-    this.setState({
-      sections: item ? item.id : []
+      [type]: newTags,
+      [searchTerm]: ''
     });
   };
 
@@ -95,7 +99,14 @@ class FrontsCAPISearchInput extends React.Component<
       children,
       additionalFixedContent: AdditionalFixedContent
     } = this.props;
-    const { tags, sections, q, displaySearchFilters, tagSearchTerm } = this.state;
+    const {
+      tags,
+      sections,
+      q,
+      displaySearchFilters,
+      tagsSearchTerm,
+      sectionsSearchTerm
+    } = this.state;
 
     const displayClear = !!tags || !!sections || !!q;
     const tagQuery = tags ? tags.join(',') : '';
@@ -136,7 +147,22 @@ class FrontsCAPISearchInput extends React.Component<
           </SearchQuery>
         )}
         {displaySearchFilters && (
-          <CAPITagInput onSearchChange={this.handleTagSearchInput} tagSearchTerm={tagSearchTerm} onChange={this.handleTagInput} />
+          <React.Fragment>
+            <CAPITagInput
+              placeholder="Type tag name"
+              onSearchChange={this.handleTagSearchInput}
+              tagsSearchTerm={tagsSearchTerm}
+              onChange={this.handleTagInput}
+              searchType="tags"
+            />
+            <CAPITagInput
+              placeholder="Type section name"
+              onSearchChange={this.handleTagSearchInput}
+              tagsSearchTerm={sectionsSearchTerm}
+              onChange={this.handleTagInput}
+              searchType="sections"
+            />
+          </React.Fragment>
         )}
       </ScrollContainer>
     );
