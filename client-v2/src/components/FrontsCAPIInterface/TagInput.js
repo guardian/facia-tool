@@ -7,14 +7,16 @@ import styled from 'styled-components';
 import TagQuery from '../CAPI/TagQuery';
 
 type CAPITagInputProps<T> = {
-  onChange: (value: T) => void,
+  onChange: (value: T, type: string) => void,
   onSearchChange: (value: T, type: string) => void,
   placeholder?: string,
   tagsSearchTerm: string,
-  searchType: string
+  searchType: 'tags' | 'sections'
 };
 
-const TagDropdown = styled('div')``;
+const TagDropdown = styled('div')`
+  margin-right: 19px;
+`;
 
 const DropdownItem = styled('div')`
   background-color: ${({ selected }) => (selected ? '#dcdcdc' : 'white')};
@@ -29,39 +31,33 @@ const DropdownItem = styled('div')`
 `;
 
 const SearchTitle = styled('span')`
-  width: 39px;
-  height: 20px;
-  font-family: TS3TextSans;
   font-size: 16px;
   font-weight: bold;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
   color: #121212;
   margin-right: 3px;
 `;
 
 const SearchInput = styled('input')`
-  type: 'text';
   background-color: transparent;
   border: none;
   width: 109px;
-  height: 20px;
-  &::-webkit-input-placeholder {
-    font-family: TS3TextSans;
+  padding-left: 5px;
+  font-size: 16px;
+  flex: 1;
+  :focus {
+    outline: none;
+  }
+  &::placeholder {
     font-size: 16px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
   }
 `;
 
 const SearchContainer = styled('div')`
   border-bottom: solid 2px #c4c4c4;
   padding: 2px;
+  padding-top: 24px;
+  margin-right: 19px;
+  display: flex;
 `;
 
 const CAPITagInput = <T>({

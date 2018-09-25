@@ -43,7 +43,8 @@ type FeedProps = {
 };
 
 type FeedState = {
-  capiFeedIndex: number
+  capiFeedIndex: number,
+  displaySearchFilters: boolean
 };
 
 const FeedContainer = styled('div')`
@@ -64,36 +65,46 @@ class Feed extends React.Component<FeedProps, FeedState> {
   };
 
   state = {
-    capiFeedIndex: 0
+    capiFeedIndex: 0,
+    displaySearchFilters: false
   };
 
   get capiFeedSpec() {
     return this.props.capiFeedSpecs[this.state.capiFeedIndex];
   }
 
-  handleFeedClick(index: number) {
+  updateDisplaySearchFilters = (newValue: boolean) =>
+    this.setState({
+      displaySearchFilters: newValue
+    });
+
+  handleFeedClick = (index: number) =>
     this.setState({
       capiFeedIndex: index
     });
-  }
 
-  renderFixedContent = () => (
-    <ResultsHeadingContainer>
-      <StageSelectionContainer>
-        <RadioGroup>
-          {this.props.capiFeedSpecs.map(({ name }, i) => (
-            <RadioButton
-              key={name}
-              checked={i === this.state.capiFeedIndex}
-              onChange={() => this.handleFeedClick(i)}
-              label={name}
-              inline
-            />
-          ))}
-        </RadioGroup>
-      </StageSelectionContainer>
-    </ResultsHeadingContainer>
-  );
+  renderFixedContent = () => {
+    if (!this.state.displaySearchFilters) {
+      return (
+        <ResultsHeadingContainer>
+          <StageSelectionContainer>
+            <RadioGroup>
+              {this.props.capiFeedSpecs.map(({ name }, i) => (
+                <RadioButton
+                  key={name}
+                  checked={i === this.state.capiFeedIndex}
+                  onChange={() => this.handleFeedClick(i)}
+                  label={name}
+                  inline
+                />
+              ))}
+            </RadioGroup>
+          </StageSelectionContainer>
+        </ResultsHeadingContainer>
+      );
+    }
+    return null;
+  };
 
   render() {
     const { capiFeedSpec } = this;
@@ -108,7 +119,11 @@ class Feed extends React.Component<FeedProps, FeedState> {
             fetch={pandaFetch}
             debounce={500}
           >
-            <SearchInput additionalFixedContent={this.renderFixedContent}>
+            <SearchInput
+              updateDisplaySearchFilters={this.updateDisplaySearchFilters}
+              displaySearchFilters={this.state.displaySearchFilters}
+              additionalFixedContent={this.renderFixedContent}
+            >
               {({ pending, error, value }) => (
                 <React.Fragment>
                   <ErrorDisplay error={error}>

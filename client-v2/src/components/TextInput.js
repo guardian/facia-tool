@@ -10,15 +10,19 @@ const InputWrapper = styled('div')`
   position: relative;
   width: ${({ width }) => width || 'auto'};
   display: flex;
+  border: solid 1px #c9c9c9;
+  backgroud: #fffff;
 `;
 
 const TagItem = styled('div')`
   color: #121212;
   font-weight: bold;
   border: solid 1px #c4c4c4;
-  font-size: 14px;
+  font-size: 12px;
   background-color: #ffffff;
   padding: 7px 15px 7px 15px;
+  border-top: solid 1px #121212;
+  margin: 5px;
   :hover {
     color: #c4c4c4;
   }
@@ -27,20 +31,18 @@ const TagItem = styled('div')`
 const Input = styled(`input`)`
   appearance: none;
   background: #fff;
-  border: solid 1px #c9c9c9;
+  border: none;
   width: 100%;
   height: 50px;
   padding: 9px 85px 9px 9px;
   font-size: 16px;
 
   :focus {
-    border: solid 1px #a9a9a9;
     outline: none;
   }
 
-  ::placeholder {
+  &::placeholder
     color: rgba(255, 255, 255, 0.75);
-    font-style: italic;
   }
 `;
 
@@ -69,11 +71,10 @@ const SmallRoundButton = styled('button')`
   }
 `;
 
-const RemoveButton = SmallRoundButton.extend``;
-
 const SmallRoundButtonOrange = SmallRoundButton.extend`
   background-color: #ff7f0f;
   margin-right: 4px;
+  padding: 4px;
   :hover {
     background-color: #ff983f;
   }
@@ -106,15 +107,15 @@ type TextInputProps = {
   onSearch?: () => void,
   onDisplaySearchFilters?: () => void,
   width?: string,
-  displayClear: boolean,
+  searchTermsExist: boolean,
   searchTerms: Array<string>,
-  onClearTag: (string, string) => void
+  onClearTag: string => void
 };
 
 const TextInput = ({
   onClear,
   onSearch,
-  displayClear,
+  searchTermsExist,
   onDisplaySearchFilters,
   searchTerms,
   onClearTag,
@@ -123,8 +124,8 @@ const TextInput = ({
   <InputWrapper>
     {searchTerms.map(searchTerm => (
       <TagItem key={searchTerm}>
-        {searchTerm}
-        <RemoveButton
+        <span>{searchTerm}</span>
+        <SmallRoundButton
           onClick={() => onClearTag(searchTerm)}
           title="Clear search"
         >
@@ -135,17 +136,17 @@ const TextInput = ({
             height="22px"
             width="22px"
           />
-        </RemoveButton>
+        </SmallRoundButton>
       </TagItem>
     ))}
     <Input {...props} />
     <ButtonsContainer>
       {onClear &&
-        displayClear && (
-          <SmallRoundButtonOrange onClick={onClear} title="Search">
+        searchTermsExist && (
+          <SmallRoundButtonOrange onClick={onSearch} title="Clear search">
             <ClearButtonIcon
               src={moreImage}
-              onClick={onSearch}
+              onClick={onClear}
               alt=""
               height="22px"
               width="22px"
@@ -153,10 +154,7 @@ const TextInput = ({
           </SmallRoundButtonOrange>
         )}
       {onDisplaySearchFilters && (
-        <SmallRoundButtonBlack
-          onClick={onDisplaySearchFilters}
-          title="Clear Search"
-        >
+        <SmallRoundButtonBlack onClick={onDisplaySearchFilters} title="Search">
           <SearchButtonIcon
             src={searchImage}
             onClick={onSearch}

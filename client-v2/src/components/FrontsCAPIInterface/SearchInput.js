@@ -10,27 +10,28 @@ import CAPITagInput from '../FrontsCAPIInterface/TagInput';
 
 type FrontsCAPISearchInputProps = {
   children: *,
-  additionalFixedContent?: React.ComponentType<any>
+  additionalFixedContent?: React.ComponentType<any>,
+  displaySearchFilters: boolean,
+  updateDisplaySearchFilters: (value: boolean) => void
 };
 
 type FrontsCAPISearchInputState = {
   q: ?string,
   tags: Array<string>,
   sections: Array<string>,
-  dislaySearchFilters: boolean,
   tagsSearchTerm: '',
   sectionsSearchTerm: ''
 };
 
 const InputContainer = styled('div')`
   margin-bottom: 20px;
+  background: #ffffff;
 `;
 
 const emptyState = {
   q: null,
   tags: [],
   sections: [],
-  displaySearchFilters: true,
   tagsSearchTerm: '',
   sectionsSearchTerm: ''
 };
@@ -46,18 +47,18 @@ class FrontsCAPISearchInput extends React.Component<
       q: null,
       tags: [],
       sections: [],
-      displaySearchFilters: false,
       tagsSearchTerm: '',
       sectionsSearchTerm: ''
     });
+    this.props.updateDisplaySearchFilters(false);
   };
 
   searchInput = () => {
     this.setState({
-      displaySearchFilters: false,
       tagsSearchTerm: '',
       sectionsSearchTerm: ''
     });
+    this.props.updateDisplaySearchFilters(false);
   };
 
   clearIndividualSearchTerm = (searchTerm: string) => {
@@ -94,87 +95,100 @@ class FrontsCAPISearchInput extends React.Component<
       [type]: newTags,
       [searchTerm]: ''
     });
-
   };
 
   handleDisplaySearchFilters = () => {
-    this.setState({
-      displaySearchFilters: !this.state.displaySearchFilters
-    });
+    this.props.updateDisplaySearchFilters(!this.props.displaySearchFilters);
   };
 
   render() {
     const {
       children,
+      displaySearchFilters,
       additionalFixedContent: AdditionalFixedContent
     } = this.props;
+
     const {
       tags,
       sections,
       q,
-      displaySearchFilters,
       tagsSearchTerm,
       sectionsSearchTerm
     } = this.state;
 
-    const displayClear = !!tags || !!sections || !!q;
+    const searchTermsExist = tags.length !== 0 || sections.length !== 0 || !!q;
     const tagQuery = tags ? tags.join(',') : '';
     const sectionQuery = sections ? sections.join(',') : '';
 
+    if (!displaySearchFilters) {
+      return (
+        <ScrollContainer
+          fixed={
+            <React.Fragment>
+              <InputContainer>
+                <TextInput
+                  searchTerms={tags.concat(sections)}
+                  placeholder="Search content"
+                  value={this.state.q || ''}
+                  onChange={this.handleSearchInput}
+                  onClear={this.clearInput}
+                  onSearch={this.searchInput}
+                  onClearTag={this.clearIndividualSearchTerm}
+                  searchTermsExist={searchTermsExist}
+                  onDisplaySearchFilters={this.handleDisplaySearchFilters}
+                />
+              </InputContainer>
+              {AdditionalFixedContent && <AdditionalFixedContent />}
+            </React.Fragment>
+          }
+        >
+          {!displaySearchFilters && (
+            <SearchQuery
+              params={{
+                tag: tagQuery,
+                section: sectionQuery,
+                q,
+                'show-elements': 'image',
+                'show-fields': 'internalPageCode,trailText'
+              }}
+              poll={30000}
+            >
+              {children}
+            </SearchQuery>
+          )}
+        </ScrollContainer>
+      );
+    }
     return (
-      <ScrollContainer
-        fixed={
-          <React.Fragment>
-            <InputContainer>
-              <TextInput
-                searchTerms={tags.concat(sections)}
-                placeholder="Search"
-                value={this.state.q || ''}
-                onChange={this.handleSearchInput}
-                onClear={this.clearInput}
-                onSearch={this.searchInput}
-                onClearTag={this.clearIndividualSearchTerm}
-                displayClear={displayClear}
-                onDisplaySearchFilters={this.handleDisplaySearchFilters}
-              />
-            </InputContainer>
-            {AdditionalFixedContent && <AdditionalFixedContent />}
-          </React.Fragment>
-        }
-      >
-        {!displaySearchFilters && (
-          <SearchQuery
-            params={{
-              tag: tagQuery,
-              section: sectionQuery,
-              q,
-              'show-elements': 'image',
-              'show-fields': 'internalPageCode,trailText'
-            }}
-            poll={30000}
-          >
-            {children}
-          </SearchQuery>
-        )}
-        {displaySearchFilters && (
-          <React.Fragment>
-            <CAPITagInput
-              placeholder="Type tag name"
-              onSearchChange={this.handleTagSearchInput}
-              tagsSearchTerm={tagsSearchTerm}
-              onChange={this.handleTagInput}
-              searchType="tags"
-            />
-            <CAPITagInput
-              placeholder="Type section name"
-              onSearchChange={this.handleTagSearchInput}
-              tagsSearchTerm={sectionsSearchTerm}
-              onChange={this.handleTagInput}
-              searchType="sections"
-            />
-          </React.Fragment>
-        )}
-      </ScrollContainer>
+      <React.Fragment>
+        <InputContainer>
+          <TextInput
+            searchTerms={tags.concat(sections)}
+            placeholder={searchTermsExist ? '' : 'Search content'}
+            value={this.state.q || ''}
+            onChange={this.handleSearchInput}
+            onClear={this.clearInput}
+            onSearch={this.searchInput}
+            onClearTag={this.clearIndividualSearchTerm}
+            searchTermsExist={searchTermsExist}
+            onDisplaySearchFilters={this.handleDisplaySearchFilters}
+          />
+        </InputContainer>
+        <CAPITagInput
+          placeholder="Type tag name"
+          onSearchChange={this.handleTagSearchInput}
+          tagsSearchTerm={tagsSearchTerm}
+          onChange={this.handleTagInput}
+          searchType="tags"
+        />
+        <CAPITagInput
+          placeholder="Type section name"
+          onSearchChange={this.handleTagSearchInput}
+          tagsSearchTerm={sectionsSearchTerm}
+          onChange={this.handleTagInput}
+          searchType="sections"
+        />
+      </React.Fragment>
     );
   }
 }
