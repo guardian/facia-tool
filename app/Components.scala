@@ -8,6 +8,7 @@ import play.api.Mode
 import play.api.routing.Router
 import play.filters.cors.CORSConfig
 import play.filters.cors.CORSConfig.Origins
+import filters._
 import router.Routes
 import services._
 import slices.{Containers, FixedContainers}
@@ -66,6 +67,7 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val faciaToolV2 = new FaciaToolV2Controller(acl, structuredLogger, faciaPress, updateActions, configAgent, this)
   val userDataController = new UserDataController(dynamo, this)
   val gridProxy = new GridProxy(this)
+  val loggingFilter = new LoggingFilter
 
   final override lazy val corsConfig: CORSConfig = CORSConfig.fromConfiguration(context.initialConfiguration).copy(
     allowedOrigins = Origins.Matching(Set(config.environment.applicationUrl))
@@ -79,6 +81,7 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
 
   override lazy val httpFilters = Seq(
     new CustomGzipFilter()(materializer),
-    corsFilter
+    corsFilter,
+    loggingFilter
   )
 }
