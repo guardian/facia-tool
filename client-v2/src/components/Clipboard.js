@@ -4,15 +4,18 @@ import { bindActionCreators } from 'redux';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import * as Guration from 'lib/guration';
+import type { Edit } from 'lib/guration';
 import { type Dispatch } from 'types/Store';
-import { batchActions } from 'redux-batched-actions';
 import { type State } from 'types/State';
 import { urlToArticle } from 'util/collectionUtils';
-import { getMoveActions, getInsertActions } from 'util/clipboardUtils';
 import { clipboardAsTreeSelector } from 'shared/selectors/shared';
 import DropZone from 'components/DropZone';
 import ArticlePolaroid from 'shared/components/ArticlePolaroid';
 import { addArticleFragment } from 'shared/actions/ArticleFragments';
+import {
+  insertClipboardArticleFragment,
+  moveClipboardArticleFragment
+} from 'actions/ArticleFragments';
 
 type ClipboardPropsBeforeState = {};
 
@@ -28,20 +31,30 @@ class Clipboard extends React.Component<ClipboardProps> {
   runEdit = edit => {
     switch (edit.type) {
       case 'MOVE': {
-        return Promise.resolve(getMoveActions(edit));
+        const {
+          payload: { id, from, to }
+        } = edit;
+        return Promise.resolve(
+          moveClipboardArticleFragment(
+            from.parent.type,
+            from.parent.id,
+            id,
+            to.parent.type,
+            to.parent.id,
+            to.index
+          )
+        );
       }
-
       case 'INSERT': {
+        const {
+          payload: {
+            path: { parent, index }
+          }
+        } = edit;
         return this.props
           .addArticleFragment(edit.payload.id, edit.meta.supporting)
           .then(uuid =>
-            getInsertActions({
-              ...edit,
-              payload: {
-                ...edit.payload,
-                id: uuid
-              }
-            })
+            insertClipboardArticleFragment('clipboard', parent.id, uuid, index)
           );
       }
       default: {
@@ -51,14 +64,12 @@ class Clipboard extends React.Component<ClipboardProps> {
   };
 
   handleChange = (edit: Edit) => {
-    const futureActions = this.runEdit(edit);
-    if (!futureActions) {
+    const futureAction = this.runEdit(edit);
+    if (!futureAction) {
       return;
     }
-    futureActions.then(actions => {
-      this.props.dispatch(
-        batchActions(actions.filter(action => action !== null))
-      );
+    futureAction.then(action => {
+      this.props.dispatch(action);
     });
   };
 
@@ -89,7 +100,6 @@ class Clipboard extends React.Component<ClipboardProps> {
             arr={tree.articleFragments || []}
             type="articleFragment"
             getKey={({ uuid }) => uuid}
-            getDedupeKey={({ id }) => id}
             renderDrop={(getDropProps, { canDrop, isTarget }) => (
               <DropZone
                 {...getDropProps()}

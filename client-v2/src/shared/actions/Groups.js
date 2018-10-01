@@ -9,29 +9,4 @@ function groupsReceived(groups: { [string]: Group }) {
   };
 }
 
-function removeGroupArticleFragment(id: string, articleFragmentId: string) {
-  return {
-    type: 'SHARED/REMOVE_GROUP_ARTICLE_FRAGMENT',
-    payload: {
-      id,
-      articleFragmentId
-    }
-  };
-}
-
-function addGroupArticleFragment(
-  id: string,
-  articleFragmentId: string,
-  index: number
-) {
-  return {
-    type: 'SHARED/ADD_GROUP_ARTICLE_FRAGMENT',
-    payload: {
-      id,
-      articleFragmentId,
-      index
-    }
-  };
-}
-
-export { groupsReceived, removeGroupArticleFragment, addGroupArticleFragment };
+export { groupsReceived };

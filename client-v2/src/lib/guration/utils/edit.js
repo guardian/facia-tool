@@ -4,7 +4,7 @@ import { isSubPath, pathForMove, hasMoved } from './path';
 import type { Path } from './path';
 import { move, insert } from '../edits';
 import type { Edit } from '../edits';
-import type { Drag, DuplicateGetter } from '../types';
+import type { Drag } from '../types';
 
 const handleMove = (prevPath, nextPath, meta = {}): ?Edit => {
   const { type: dragType, id } = prevPath[prevPath.length - 1];
@@ -26,31 +26,19 @@ const handleMove = (prevPath, nextPath, meta = {}): ?Edit => {
     : null;
 };
 
-const handleInsert = (
-  { type: dragType, id, meta },
-  path,
-  getDuplicate
-): ?Edit => {
+const handleInsert = ({ type: dragType, id, meta }, path): ?Edit => {
   const { type, index } = path[path.length - 1];
 
   if (dragType !== type) {
     throw new Error(`can't drop ${dragType} where ${type} should go`);
   }
 
-  const duplicate = getDuplicate(dragType, id);
-
-  return duplicate
-    ? handleMove(duplicate.path, path, meta)
-    : insert(type, id, path, index, meta);
+  return insert(type, id, path, index, meta);
 };
 
-const getEdit = (
-  inputData: Drag,
-  inputPath: Path[],
-  getDuplicate: DuplicateGetter
-): ?Edit =>
+const getEdit = (inputData: Drag, inputPath: Path[]): ?Edit =>
   inputData.dropType === 'INTERNAL'
     ? handleMove(inputData.path, inputPath)
-    : handleInsert(inputData, inputPath, getDuplicate);
+    : handleInsert(inputData, inputPath);
 
 export { getEdit };

@@ -2,8 +2,7 @@
 
 import React from 'react';
 import type { Node as ReactNode } from 'react';
-import DedupeNode from './DedupeNode';
-import type { EventType, DuplicateGetter, IndexOffsetGetter } from './types';
+import type { EventType, IndexOffsetGetter } from './types';
 import AddPathLevel from './utils/AddPathLevel';
 import type { Path } from './utils/path';
 
@@ -23,7 +22,6 @@ type DOMNodeProps = {
 type NodeProps<T> = {
   item: T,
   id: string,
-  dedupeKey: string,
   type: string,
   childrenField: string,
   index: number,
@@ -36,14 +34,12 @@ type NodeProps<T> = {
   handleDragOver:
     | ((
         candidatePath: Path[],
-        getDuplicate: DuplicateGetter,
         getIndexOffset: IndexOffsetGetter
       ) => (e: EventType) => void)
     | false,
   handleDrop:
     | ((
         candidatePath: Path[],
-        getDuplicate: DuplicateGetter,
         getIndexOffset: IndexOffsetGetter
       ) => (e: EventType) => void)
     | false,
@@ -57,7 +53,6 @@ type NodeProps<T> = {
 const Node = <T>({
   item,
   id,
-  dedupeKey,
   type,
   childrenField,
   index,
@@ -67,30 +62,22 @@ const Node = <T>({
   children
 }: NodeProps<T>) => (
   <AddPathLevel id={id} type={type} childrenField={childrenField} index={index}>
-    {path => (
-      <DedupeNode dedupeKey={dedupeKey} type={type} index={index} path={path}>
-        {getDuplicate =>
-          children(
-            item,
-            () => ({
-              draggable: true,
-              onDragStart: handleDragStart(item, path, id, type),
-              ...(handleDrop && handleDragOver
-                ? {
-                    onDrop: handleDrop(path, getDuplicate, getDropIndexOffset),
-                    onDragOver: handleDragOver(
-                      path,
-                      getDuplicate,
-                      getDropIndexOffset
-                    )
-                  }
-                : {})
-            }),
-            index
-          )
-        }
-      </DedupeNode>
-    )}
+    {path =>
+      children(
+        item,
+        () => ({
+          draggable: true,
+          onDragStart: handleDragStart(item, path, id, type),
+          ...(handleDrop && handleDragOver
+            ? {
+                onDrop: handleDrop(path, getDropIndexOffset),
+                onDragOver: handleDragOver(path, getDropIndexOffset)
+              }
+            : {})
+        }),
+        index
+      )
+    }
   </AddPathLevel>
 );
 

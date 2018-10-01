@@ -40,9 +40,9 @@ const updateStateFromUrlChange: Middleware<State, Action> = ({
   return result;
 };
 
-type PersistCollectionMeta = {|
+type PersistMeta = {|
   // The resource to persist the data to
-  persistTo: 'collection',
+  persistTo: 'collection' | 'clipboard',
   // The key to take from the action payload. Defaults to 'id'.
   key?: string,
   // Should we find collection parents before or after the reducer is called?
@@ -51,20 +51,6 @@ type PersistCollectionMeta = {|
   // or after an add operation.
   applyBeforeReducer?: boolean
 |};
-
-type PersistClipboardMeta = {|
-  // The resource to persist the data to
-  persistTo: 'clipboard',
-  // The key to take from the action payload. Defaults to 'id'.
-  key?: string,
-  // Should we find collection parents before or after the reducer is called?
-  // This is important when the relevant collection is affected by when the operation
-  // occurs - finding the parent collection before a remove operation, for example,
-  // or after an add operation.
-  applyBeforeReducer?: boolean
-|};
-
-type PersistMeta = PersistCollectionMeta | PersistClipboardMeta;
 
 function addPersistMetaToAction<TArgs: Array<any>, TAction: Object>(
   actionCreator: (...args: TArgs) => TAction,
@@ -217,7 +203,7 @@ const persistOpenFrontsOnEdit: (
   return result;
 };
 
-export type { PersistCollectionMeta, PersistClipboardMeta };
+export type { PersistMeta };
 export {
   persistCollectionOnEdit,
   persistClipboardOnEdit,

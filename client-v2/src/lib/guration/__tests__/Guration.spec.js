@@ -145,7 +145,7 @@ describe('Guration', () => {
     });
   });
 
-  it('creates preservers meta from mapped drops', async () => {
+  it('creates preserves meta from mapped drops', async () => {
     let dropProps;
     let edit;
 
@@ -187,68 +187,6 @@ describe('Guration', () => {
 
     expect(edit.meta).toEqual({
       key: 'value'
-    });
-  });
-
-  it('creates MOVE events from duplicate drops', async () => {
-    let dropProps;
-    let edit;
-
-    const inst = setup(
-      <Root
-        type="@@ROOT"
-        id="@@ROOT"
-        onChange={e => {
-          edit = e;
-        }}
-        dedupeType="a"
-        mapIn={{
-          text: str => JSON.parse(str)
-        }}
-      >
-        <Level arr={[{ id: 3 }]} field="children1" type="a">
-          {() => (
-            <Level
-              arr={[{ id: 2 }, { id: 3 }, { id: 4 }]}
-              field="children2"
-              type="a"
-              renderDrop={(getDropProps, isTarget, i) => {
-                if (i === 1) {
-                  dropProps = getDropProps();
-                }
-              }}
-            >
-              {() => null}
-            </Level>
-          )}
-        </Level>
-      </Root>
-    );
-
-    await runDrag('text', {
-      type: 'a',
-      id: 4
-    })(dropProps, inst);
-
-    expect(edit).toEqual({
-      payload: {
-        from: {
-          parent: {
-            childrenField: 'children2',
-            id: 3,
-            index: 0,
-            type: 'a'
-          }
-        },
-        id: 4,
-        to: {
-          parent: { id: 3, index: 0, type: 'a', childrenField: 'children2' },
-          index: 1
-        },
-        type: 'a'
-      },
-      type: 'MOVE',
-      meta: {}
     });
   });
 

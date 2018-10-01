@@ -18,6 +18,11 @@ const articleFragmentsFromRootStateSelector = createSelector(
   (state: State) => articleFragmentsSelector(state)
 );
 
+const groupsFromRootStateSelector = createSelector(
+  [selectSharedState],
+  (state: State) => groupsSelector(state)
+);
+
 const articleFragmentSelector = (state: State, id: string): ArticleFragment =>
   state.articleFragments[id];
 
@@ -94,12 +99,42 @@ const createArticlesInCollectionSelector = () => {
   );
 };
 
+const clipboardContentSelector = state => state.clipboard || [];
+
+const articleFragmentIdSelector = (
+  _,
+  { articleFragmentId }: { articleFragmentId: string }
+) => articleFragmentId;
+
+const supportingArticlesSelector = createSelector(
+  articleFragmentsFromRootStateSelector,
+  articleFragmentIdSelector,
+  (articleFragments, id) =>
+    (articleFragments[id].meta.supporting || []).map(
+      sId => articleFragments[sId]
+    )
+);
+
+const groupArticlesSelector = createSelector(
+  groupsFromRootStateSelector,
+  articleFragmentsFromRootStateSelector,
+  groupNameSelector,
+  (groups, articleFragments, groupName) =>
+    (groups[groupName].articleFragments || []).map(
+      afId => articleFragments[afId]
+    )
+);
+
+const clipboardArticlesSelector = createSelector(
+  clipboardContentSelector,
+  articleFragmentsFromRootStateSelector,
+  (clipboard, articleFragments) => clipboard.map(afId => articleFragments[afId])
+);
+
 const collectionIdsSelector = (
   state,
   { collectionIds }: { collectionIds: string[] }
 ) => collectionIds;
-
-const clipboardContentSelector = state => state.clipboard;
 
 const createNestedArticleFragment = (
   articleFragmentId: string,
@@ -167,6 +202,9 @@ export {
   externalArticleFromArticleFragmentSelector,
   createArticlesInCollectionGroupSelector,
   createArticlesInCollectionSelector,
+  groupArticlesSelector,
+  clipboardArticlesSelector,
+  supportingArticlesSelector,
   createCollectionSelector,
   selectSharedState,
   createCollectionsAsTreeSelector,

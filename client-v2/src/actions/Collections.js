@@ -21,34 +21,13 @@ import {
   denormaliseCollection
 } from 'shared/util/shared';
 import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
-import {
-  groupsReceived,
-  addGroupArticleFragment,
-  removeGroupArticleFragment
-} from 'shared/actions/Groups';
+import { groupsReceived } from 'shared/actions/Groups';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import { getCollectionConfig } from 'selectors/frontsSelectors';
 import type { State } from 'types/State';
+import type { Dispatch } from 'types/Store';
 import type { Collection } from 'shared/types/Collection';
-import { addPersistMetaToAction } from 'util/storeMiddleware';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
-
-const addGroupArticleFragmentWithPersistence = addPersistMetaToAction(
-  addGroupArticleFragment,
-  {
-    persistTo: 'collection',
-    key: 'articleFragmentId'
-  }
-);
-
-const removeGroupArticleFragmentWithPersistence = addPersistMetaToAction(
-  removeGroupArticleFragment,
-  {
-    persistTo: 'collection',
-    applyBeforeReducer: true,
-    key: 'articleFragmentId'
-  }
-);
 
 function getCollection(collectionId: string) {
   return (dispatch: Dispatch, getState: () => State) => {
@@ -138,10 +117,4 @@ const getCollectionsAndArticles = (collectionIds: Array<string>) => (
     )
   );
 
-export {
-  getCollection,
-  getCollectionsAndArticles,
-  updateCollection,
-  addGroupArticleFragmentWithPersistence as addGroupArticleFragment,
-  removeGroupArticleFragmentWithPersistence as removeGroupArticleFragment
-};
+export { getCollection, getCollectionsAndArticles, updateCollection };
