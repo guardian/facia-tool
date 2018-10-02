@@ -125,14 +125,16 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
    * This wraps set state to make sure we don't call it too much and keep
    * rerendering, only changing the drop state if things have actually changed
    */
-  setDropInfo(path: ?(Path[]), canDrop: ?boolean) {
+  setDropInfo(path: ?(Path[]), canDrop: ?boolean, state?: $Shape<RootState>) {
     const { path: prevPath } = this.state.dropInfo;
     if (
+      state ||
       (!path && prevPath) ||
       (path && !prevPath) ||
       (path && prevPath && !eq(path, prevPath))
     ) {
       this.setState({
+        ...state,
         dropInfo: {
           path,
           canDrop
@@ -172,7 +174,9 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
    * When a drop happens anywhere set event handle to false
    */
   handleRootDrop = () => {
-    this.setDropInfo(null, false);
+    this.setDropInfo(null, false, {
+      dragData: null
+    });
     this.eventHandled = false;
   };
 
