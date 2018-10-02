@@ -97,29 +97,26 @@ const createInsertArticleFragment = (persistTo: 'collection' | 'clipboard') => (
   id: string,
   index: number
 ) => {
-  if (
-    parentType !== 'articleFragment' &&
-    parentType !== 'group' &&
-    parentType !== 'clipboard'
-  ) {
+  const insertAction = insertActionMap[parentType];
+  const replaceAction = replaceActionMap[parentType];
+  const selector = selectorMap[parentType];
+  if (!insertAction || !replaceAction || !selector) {
     return () => {}; // noop
   }
 
-  const insertAction = addPersistMetaToAction(insertActionMap[parentType], {
+  const insert = addPersistMetaToAction(insertAction, {
     persistTo
   });
 
-  const replaceAction = addPersistMetaToAction(replaceActionMap[parentType], {
+  const replace = addPersistMetaToAction(replaceAction, {
     persistTo
   });
-
-  const selector = selectorMap[parentType];
 
   return insertAndDedupeSiblings(
     id,
     state => selector(state, parentId),
-    [insertAction(parentId, id, index)],
-    children => replaceAction(parentId, children)
+    [insert(parentId, id, index)],
+    children => replace(parentId, children)
   );
 };
 
@@ -136,33 +133,28 @@ const createMoveArticleFragment = (persistTo: 'collection' | 'clipboard') => (
   toParentId: string,
   index: number
 ) => {
-  if (
-    (fromParentType !== 'articleFragment' &&
-      fromParentType !== 'group' &&
-      fromParentType !== 'clipboard') ||
-    (toParentType !== 'articleFragment' &&
-      toParentType !== 'group' &&
-      fromParentType !== 'clipboard')
-  ) {
+  const selector = selectorMap[toParentType];
+  const removeAction = removeActionMap[fromParentType];
+  const insertAction = insertActionMap[toParentType];
+  const replaceAction = replaceActionMap[toParentType];
+  if (!selector || !removeAction || !insertAction || !replaceAction) {
     return () => {};
   }
-
-  const selector = selectorMap[toParentType];
-  const removeAction = addPersistMetaToAction(removeActionMap[fromParentType], {
+  const remove = addPersistMetaToAction(removeAction, {
     persistTo
   });
-  const insertAction = addPersistMetaToAction(insertActionMap[toParentType], {
+  const insert = addPersistMetaToAction(insertAction, {
     persistTo
   });
-  const replaceAction = addPersistMetaToAction(replaceActionMap[toParentType], {
+  const replace = addPersistMetaToAction(replaceAction, {
     persistTo
   });
 
   return insertAndDedupeSiblings(
     id,
     state => selector(state, toParentId),
-    [removeAction(fromParentId, id), insertAction(toParentId, id, index)],
-    children => replaceAction(toParentId, children)
+    [remove(fromParentId, id), insert(toParentId, id, index)],
+    children => replace(toParentId, children)
   );
 };
 
