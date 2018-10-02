@@ -51,6 +51,10 @@ const FeedContainer = styled('div')`
   height: 100%;
 `;
 
+const NoResults = styled('div')`
+  margin: 4px;
+`;
+
 const StageSelectionContainer = styled('div')`
   margin-left: auto;
 `;
@@ -157,6 +161,10 @@ class Feed extends React.Component<FeedProps, FeedState> {
                                 />
                               )
                             )}
+                        {value &&
+                          value.response.results.length === 0 && (
+                            <NoResults>No results found</NoResults>
+                          )}
                       </div>
                     </LoaderDisplay>
                   </ErrorDisplay>
