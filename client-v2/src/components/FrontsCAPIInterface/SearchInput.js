@@ -2,7 +2,8 @@
 
 import * as React from 'react';
 import styled from 'styled-components';
-
+import moreImage from 'shared/images/icons/more.svg';
+import { SmallRoundButton, ClearButtonIcon } from 'util/sharedStyles/buttons';
 import SearchQuery from '../CAPI/SearchQuery';
 import ScrollContainer from '../ScrollContainer';
 import TextInput from '../TextInput';
@@ -26,6 +27,19 @@ type FrontsCAPISearchInputState = {
 const InputContainer = styled('div')`
   margin-bottom: 20px;
   background: #ffffff;
+`;
+
+const TagItem = styled('div')`
+  color: #121212;
+  font-weight: bold;
+  border: solid 1px #c4c4c4;
+  font-size: 14px;
+  background-color: #ffffff;
+  padding: 7px 15px 7px 15px;
+  margin-bottom: 10px;
+  :hover {
+    color: #c4c4c4;
+  }
 `;
 
 const emptyState = {
@@ -101,6 +115,25 @@ class FrontsCAPISearchInput extends React.Component<
     this.props.updateDisplaySearchFilters(!this.props.displaySearchFilters);
   };
 
+  renderSelectedTags = (selectedTags: Array<string>) =>
+    selectedTags.map(searchTerm => (
+      <TagItem key={searchTerm}>
+        <span>{searchTerm}</span>
+        <SmallRoundButton
+          onClick={() => this.clearIndividualSearchTerm(searchTerm)}
+          title="Clear search"
+        >
+          <ClearButtonIcon
+            src={moreImage}
+            onClick={() => this.clearIndividualSearchTerm(searchTerm)}
+            alt=""
+            height="22px"
+            width="22px"
+          />
+        </SmallRoundButton>
+      </TagItem>
+    ));
+
   render() {
     const {
       children,
@@ -127,7 +160,6 @@ class FrontsCAPISearchInput extends React.Component<
             <React.Fragment>
               <InputContainer>
                 <TextInput
-                  searchTerms={tags.concat(sections)}
                   placeholder="Search content"
                   value={this.state.q || ''}
                   onChange={this.handleSearchInput}
@@ -138,6 +170,7 @@ class FrontsCAPISearchInput extends React.Component<
                   onDisplaySearchFilters={this.handleDisplaySearchFilters}
                 />
               </InputContainer>
+              {this.renderSelectedTags(tags.concat(sections))}
               {AdditionalFixedContent && <AdditionalFixedContent />}
             </React.Fragment>
           }
@@ -174,6 +207,7 @@ class FrontsCAPISearchInput extends React.Component<
             onDisplaySearchFilters={this.handleDisplaySearchFilters}
           />
         </InputContainer>
+        {this.renderSelectedTags(tags.concat(sections))}
         <CAPITagInput
           placeholder="Type tag name"
           onSearchChange={this.handleTagSearchInput}
