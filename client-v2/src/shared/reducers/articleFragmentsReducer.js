@@ -9,6 +9,15 @@ type State = {
 
 const articleFragments = (state: State = {}, action: Action) => {
   switch (action.type) {
+    case 'SHARED/UPDATE_ARTICLE_FRAGMENT_META': {
+      return {
+        ...state,
+        [action.payload.id]: {
+          ...state[action.payload.id],
+          meta: action.payload.meta
+        }
+      };
+    }
     case 'SHARED/ARTICLE_FRAGMENTS_RECEIVED': {
       const { payload } = action;
       return Object.assign({}, state, payload);

@@ -7,7 +7,8 @@ import {
   addGroupArticleFragment,
   removeGroupArticleFragment,
   replaceGroupArticleFragments,
-  insertAndDedupeSiblings
+  insertAndDedupeSiblings,
+  updateArticleFragmentMeta
 } from 'shared/actions/ArticleFragments';
 import {
   supportingArticlesSelector,
@@ -35,6 +36,13 @@ function removeClipboardArticleFragment(articleFragmentId: string) {
     }
   };
 }
+
+const updateArticleFragmentMetaWithPersist = addPersistMetaToAction(
+  updateArticleFragmentMeta,
+  {
+    persistTo: 'collection'
+  }
+);
 
 const removeSupportingArticleFragmentWithPersist = addPersistMetaToAction(
   removeSupportingArticleFragment,
@@ -166,6 +174,7 @@ export {
   insertClipboardArticleFragment,
   moveArticleFragment,
   moveClipboardArticleFragment,
+  updateArticleFragmentMetaWithPersist as updateArticleFragmentMeta,
   removeSupportingArticleFragmentWithPersist as removeSupportingArticleFragment,
   removeGroupArticleFragmentWithPersist as removeGroupArticleFragment,
   removeClipboardArticleFragmentWithPersist as removeSupportingArticleFragmentFromClipboard
