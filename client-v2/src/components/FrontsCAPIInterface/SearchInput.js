@@ -20,8 +20,10 @@ type FrontsCAPISearchInputState = {
   q: ?string,
   tags: Array<string>,
   sections: Array<string>,
-  tagsSearchTerm: '',
-  sectionsSearchTerm: ''
+  searchTerms: {
+    tags: string,
+    sections: string
+  }
 };
 
 const InputContainer = styled('div')`
@@ -42,12 +44,16 @@ const TagItem = styled('div')`
   }
 `;
 
+const emptySearchTerms = {
+  tags: '',
+  sections: ''
+};
+
 const emptyState = {
   q: null,
   tags: [],
   sections: [],
-  tagsSearchTerm: '',
-  sectionsSearchTerm: ''
+  searchTerms: emptySearchTerms
 };
 
 class FrontsCAPISearchInput extends React.Component<
@@ -61,16 +67,14 @@ class FrontsCAPISearchInput extends React.Component<
       q: null,
       tags: [],
       sections: [],
-      tagsSearchTerm: '',
-      sectionsSearchTerm: ''
+      searchTerms: emptySearchTerms
     });
     this.props.updateDisplaySearchFilters(false);
   };
 
   searchInput = () => {
     this.setState({
-      tagsSearchTerm: '',
-      sectionsSearchTerm: ''
+      searchTerms: emptySearchTerms
     });
     this.props.updateDisplaySearchFilters(false);
   };
@@ -93,22 +97,25 @@ class FrontsCAPISearchInput extends React.Component<
     { currentTarget }: SyntheticEvent<HTMLInputElement>,
     type: string
   ) => {
-    const termInState = `${type}SearchTerm`;
+    const newSearchTerms = {
+      ...this.state.searchTerms,
+      ...{ [type]: currentTarget.value }
+    };
     this.setState({
-      [termInState]: currentTarget.value
+      searchTerms: newSearchTerms
     });
   };
 
   handleTagInput = (item: any, type: string) => {
-    const searchTerm = `${type}SearchTerm`;
     let newTags;
     const oldTags = this.state[type];
     if (item && oldTags.indexOf(item.id) === -1) {
       newTags = oldTags.concat([item.id]);
     }
+    const newSearchTerms = { ...this.state.searchTerms, ...{ [type]: '' } };
     this.setState({
       [type]: newTags,
-      [searchTerm]: ''
+      searchTerms: newSearchTerms
     });
   };
 
@@ -142,13 +149,7 @@ class FrontsCAPISearchInput extends React.Component<
       additionalFixedContent: AdditionalFixedContent
     } = this.props;
 
-    const {
-      tags,
-      sections,
-      q,
-      tagsSearchTerm,
-      sectionsSearchTerm
-    } = this.state;
+    const { tags, sections, q, searchTerms } = this.state;
 
     const searchTermsExist = tags.length !== 0 || sections.length !== 0 || !!q;
     const tagQuery = tags ? tags.join(',') : '';
@@ -191,6 +192,9 @@ class FrontsCAPISearchInput extends React.Component<
         </ScrollContainer>
       );
     }
+
+    const tagType = 'tags';
+    const sectionType = 'sections';
     return (
       <React.Fragment>
         <InputContainer>
@@ -210,16 +214,16 @@ class FrontsCAPISearchInput extends React.Component<
         <CAPITagInput
           placeholder="Type tag name"
           onSearchChange={this.handleTagSearchInput}
-          tagsSearchTerm={tagsSearchTerm}
+          tagsSearchTerm={searchTerms[tagType]}
           onChange={this.handleTagInput}
-          searchType="tags"
+          searchType={tagType}
         />
         <CAPITagInput
           placeholder="Type section name"
           onSearchChange={this.handleTagSearchInput}
-          tagsSearchTerm={sectionsSearchTerm}
+          tagsSearchTerm={searchTerms[sectionType]}
           onChange={this.handleTagInput}
-          searchType="sections"
+          searchType={sectionType}
         />
       </React.Fragment>
     );
