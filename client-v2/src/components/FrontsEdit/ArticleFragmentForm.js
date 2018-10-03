@@ -2,12 +2,28 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { reduxForm, Field, type FormProps, formValues } from 'redux-form';
+import {
+  reduxForm,
+  Field,
+  FieldArray,
+  type FormProps,
+  formValues
+} from 'redux-form';
 import styled from 'styled-components';
 
 import {
+  getInitialValuesForArticleFragmentForm,
+  getArticleFragmentMetaFromFormValues
+} from 'util/collectionUtils';
+import { updateArticleFragmentMeta } from 'actions/ArticleFragments';
+import ButtonPrimary from 'shared/components/input/ButtonPrimary';
+import ButtonDefault from 'shared/components/input/ButtonDefault';
+import ContentContainer from 'shared/components/layout/ContentContainer';
+import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
+import {
   externalArticleFromArticleFragmentSelector,
-  selectSharedState
+  selectSharedState,
+  articleFragmentSelector
 } from 'shared/selectors/shared';
 import { type ArticleFragment } from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
@@ -19,14 +35,41 @@ import InputGroup from 'shared/components/input/InputGroup';
 import Row from '../Row';
 import Col from '../Col';
 
-type Props = {
+type Props = {|
   articleFragment: ArticleFragment,
   showSlideshowImages: Boolean,
   useCutout: Boolean,
   hideMedia: Boolean
-} & FormProps;
+|} & FormProps;
 
-const slideShowImageCount = [1, 2, 3, 4];
+const FormContainer = ContentContainer.withComponent('form').extend`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 380px;
+  margin-left: 10px;
+  height: 100%;
+`;
+
+const FormContent = styled('div')`
+  flex: 1;
+  overflow-y: scroll;
+`;
+
+const CollectionHeadingPinline = ContainerHeadingPinline.extend`
+  display: flex;
+  margin-right: -11px;
+  margin-bottom: 10px;
+`;
+
+const RowContainer = styled('div')`
+  overflow: hidden;
+`;
+
+const ButtonContainer = styled('div')`
+  margin-left: auto;
+  line-height: 0;
+`;
 
 const SlideshowRow = Row.extend`
   margin-top: 10px;
@@ -49,138 +92,181 @@ const imageCriteria = {
   heightAspectRatio: 3
 };
 
+const renderSlideshow = ({ fields }) =>
+  fields.map((name, index) => (
+    // eslint-disable-next-line react/no-array-index-key
+    <Col key={`${name}-${index}`}>
+      <Field
+        name={name}
+        component={InputImage}
+        size="small"
+        criteria={imageCriteria}
+      />
+    </Col>
+  ));
+
 const formComponent = ({
   handleSubmit,
   articleFragmentId,
   showSlideshowImages,
   hideMedia,
-  useCutout
+  useCutout,
+  onCancel,
+  initialValues,
+  pristine
 }: Props) => (
-  <form onSubmit={handleSubmit} name={articleFragmentId}>
-    <InputGroup>
-      <Field
-        name="headline"
-        label="Headline"
-        component={InputTextArea}
-        useHeadlineFont
-        rows="2"
-      />
-      <Field
-        name="isLarge"
-        component={InputCheckboxToggle}
-        label="Large"
-        type="checkbox"
-      />
-      <HorizontalRule noMargin />
-      <Field
-        name="isQuoted"
-        component={InputCheckboxToggle}
-        label="Quoted"
-        type="checkbox"
-      />
-      <HorizontalRule noMargin />
-      <Field
-        name="isBoosted"
-        component={InputCheckboxToggle}
-        label="Boost"
-        type="checkbox"
-      />
-      <HorizontalRule noMargin />
-      <Field name="kicker" label="Kicker" component={InputText} />
-      <Field
-        name="breakingNews"
-        component={InputCheckboxToggle}
-        label="Breaking News"
-        type="checkbox"
-      />
-      <HorizontalRule noMargin />
-      <Field name="byline" label="Byline" component={InputText} />
-      <Field
-        name="showByline"
-        component={InputCheckboxToggle}
-        label="Show Byline"
-        type="checkbox"
-      />
-      <HorizontalRule noMargin />
-      <Field name="standfirst" label="Standfirst" component={InputTextArea} />
-      <Field name="media" label="Media" component={InputText} />
-    </InputGroup>
-    <Row>
-      <Col>
-        <ImageWrapper faded={hideMedia}>
-          <Field
-            name="primaryImage"
-            component={InputImage}
-            disabled={hideMedia}
-          />
-        </ImageWrapper>
-      </Col>
-      <Col>
-        <InputGroup>
-          <Field
-            name="hideMedia"
-            component={InputCheckboxToggle}
-            label="Hide media"
-            type="checkbox"
-            default={false}
-          />
-        </InputGroup>
-      </Col>
-    </Row>
-    <HorizontalRule />
-    <Row>
-      <Col>
-        <ImageWrapper faded={!useCutout}>
-          <Field
-            name="cutoutImage"
-            component={InputImage}
-            disabled={hideMedia}
-          />
-        </ImageWrapper>
-      </Col>
-      <Col>
-        <InputGroup>
-          <Field
-            name="useCutout"
-            component={InputCheckboxToggle}
-            label="Use cutout"
-            type="checkbox"
-            default={false}
-          />
-        </InputGroup>
-      </Col>
-    </Row>
-    <HorizontalRule />
-    <Field
-      name="slideshow"
-      component={InputCheckboxToggle}
-      label="Slideshow"
-      type="checkbox"
-    />
-    {showSlideshowImages && (
-      <>
-        <SlideshowRow>
-          {slideShowImageCount.map(imageNumber => (
-            <Col key={imageNumber}>
+  <FormContainer onSubmit={handleSubmit} name={articleFragmentId}>
+    <CollectionHeadingPinline>
+      Edit
+      <ButtonContainer>
+        <ButtonPrimary onClick={onCancel} type="button">
+          Cancel
+        </ButtonPrimary>
+        <ButtonDefault onClick={handleSubmit} disabled={pristine}>
+          Save
+        </ButtonDefault>
+      </ButtonContainer>
+    </CollectionHeadingPinline>
+    <FormContent>
+      <InputGroup>
+        <Field
+          name="headline"
+          label="Headline"
+          placeholder={initialValues.headline}
+          component={InputTextArea}
+          useHeadlineFont
+          rows="2"
+        />
+        <Field
+          name="isBoosted"
+          component={InputCheckboxToggle}
+          label="Boost"
+          type="checkbox"
+        />
+        <HorizontalRule noMargin />
+        <Field
+          name="showQuotedHeadline"
+          component={InputCheckboxToggle}
+          label="Quote headline"
+          type="checkbox"
+        />
+        <HorizontalRule noMargin />
+        <Field
+          name="showBoostedHeadline"
+          component={InputCheckboxToggle}
+          label="Large headline"
+          type="checkbox"
+        />
+        <HorizontalRule noMargin />
+        <Field
+          name="customKicker"
+          label="Kicker"
+          component={InputText}
+          placeholder="Add custom kicker"
+          useHeadlineFont
+        />
+        <Field
+          name="isBreaking"
+          component={InputCheckboxToggle}
+          label="Breaking News"
+          type="checkbox"
+        />
+        <HorizontalRule noMargin />
+        <Field
+          name="byline"
+          label="Byline"
+          component={InputText}
+          placeholder="Replace byline"
+          useHeadlineFont
+        />
+        <Field
+          name="showByline"
+          component={InputCheckboxToggle}
+          label="Show Byline"
+          type="checkbox"
+        />
+        <HorizontalRule noMargin />
+        <Field
+          name="trailText"
+          label="Standfirst"
+          component={InputTextArea}
+          placeholder="Replace standfirst"
+        />
+      </InputGroup>
+      <RowContainer>
+        <Row>
+          <Col>
+            <ImageWrapper faded={hideMedia}>
               <Field
-                name={`slideShowImage${imageNumber + 1}`}
+                name="primaryImage"
                 component={InputImage}
-                size="small"
-                criteria={imageCriteria}
+                disabled={hideMedia}
               />
-            </Col>
-          ))}
-        </SlideshowRow>
-        <SlideshowLabel>Drag and drop up to four images</SlideshowLabel>
-      </>
-    )}
-  </form>
+            </ImageWrapper>
+          </Col>
+          <Col>
+            <InputGroup>
+              <Field
+                name="hideMedia"
+                component={InputCheckboxToggle}
+                label="Hide media"
+                type="checkbox"
+                default={false}
+              />
+            </InputGroup>
+          </Col>
+        </Row>
+        <HorizontalRule />
+        <Row>
+          <Col>
+            <ImageWrapper faded={!useCutout}>
+              <Field
+                name="cutoutImage"
+                component={InputImage}
+                disabled={hideMedia}
+              />
+            </ImageWrapper>
+          </Col>
+          <Col>
+            <InputGroup>
+              <Field
+                name="useCutout"
+                component={InputCheckboxToggle}
+                label="Use cutout"
+                type="checkbox"
+                default={false}
+              />
+            </InputGroup>
+          </Col>
+        </Row>
+      </RowContainer>
+      <HorizontalRule />
+      <Field
+        name="slideshow"
+        component={InputCheckboxToggle}
+        label="Slideshow"
+        type="checkbox"
+      />
+      {showSlideshowImages && (
+        <RowContainer>
+          <SlideshowRow>
+            <FieldArray name="slideshow" component={renderSlideshow} />
+          </SlideshowRow>
+          <SlideshowLabel>Drag and drop up to four images</SlideshowLabel>
+        </RowContainer>
+      )}
+    </FormContent>
+  </FormContainer>
 );
 
 const articleFragmentForm = reduxForm({
-  enableReinitialize: true,
-  keepDirtyOnReinitialize: true,
-  destroyOnUnmount: false
+  destroyOnUnmount: false,
+  onSubmit: (values: FormValues, dispatch, props: Props) => {
+    const meta: ArticleFragment.meta = getArticleFragmentMetaFromFormValues(
+      values
+    );
+    dispatch(updateArticleFragmentMeta(props.articleFragmentId, meta));
+  }
 })(
   formValues({
     showSlideshowImages: 'slideshow',
@@ -189,11 +275,22 @@ const articleFragmentForm = reduxForm({
   })(formComponent)
 );
 
-const mapStateToProps = (state, props) => ({
-  initialValues: externalArticleFromArticleFragmentSelector(
+const mapStateToProps = (state, props) => {
+  const externalArticle = externalArticleFromArticleFragmentSelector(
     selectSharedState(state),
     props.articleFragmentId
-  )
-});
+  );
+  const articleFragment = articleFragmentSelector(
+    selectSharedState(state),
+    props.articleFragmentId
+  );
+
+  return {
+    initialValues: getInitialValuesForArticleFragmentForm(
+      externalArticle,
+      articleFragment
+    )
+  };
+};
 
 export default connect(mapStateToProps)(articleFragmentForm);

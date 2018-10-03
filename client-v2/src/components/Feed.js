@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import pandaFetch from 'services/pandaFetch';
-import { getThumbnail } from 'util/CAPIUtils';
+import { getThumbnailFromElements } from 'util/CAPIUtils';
 import * as CAPIParamsContext from './CAPI/CAPIParamsContext';
 import FeedItem from './FeedItem';
 import SearchInput from './FrontsCAPIInterface/SearchInput';
@@ -153,7 +153,8 @@ class Feed extends React.Component<FeedProps, FeedState> {
                                   tone={tone}
                                   trailText={fields && fields.trailText}
                                   thumbnailUrl={
-                                    elements && getThumbnail(elements)
+                                    elements &&
+                                    getThumbnailFromElements(elements)
                                   }
                                   internalPageCode={
                                     fields && getId(fields.internalPageCode)

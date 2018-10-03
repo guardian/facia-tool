@@ -14,7 +14,7 @@ const getURLInternalPageCode = async (url: string): Promise<string | null> => {
 };
 
 // TODO: get apiKey from context (or speak directly to FrontsAPI)
-const getThumbnail = (_elements: Element[]) => {
+const getThumbnailFromElements = (_elements: Element[]) => {
   const elements = _elements.filter(
     element => element.type === 'image' && element.relation === 'thumbnail'
   );
@@ -40,4 +40,4 @@ const getThumbnail = (_elements: Element[]) => {
   return smallestAsset && smallestAsset.file;
 };
 
-export { getURLInternalPageCode, getThumbnail };
+export { getURLInternalPageCode, getThumbnailFromElements };

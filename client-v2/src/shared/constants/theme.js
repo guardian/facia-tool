@@ -8,9 +8,10 @@ const base = {
 
 const input = {
   height: '34px',
-  paddingY: '6px',
-  paddingX: '3px',
-  fontSize: '16px',
+  paddingY: '3px',
+  paddingX: '5px',
+  fontSize: '14px',
+  fontSizeHeadline: '16px',
   color: base.colors.text,
   backgroundColor: 'white',
   borderColor: '#c9c9c9',

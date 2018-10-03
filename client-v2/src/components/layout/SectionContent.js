@@ -9,4 +9,6 @@ export default styled('div')`
   flex: 1;
   align-self: start;
   min-height: 100%;
+  height: calc(100% - 60px);
+  min-height: calc(100% - 60px);
 `;

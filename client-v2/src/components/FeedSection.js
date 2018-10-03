@@ -8,11 +8,6 @@ import SectionContent from './layout/SectionContent';
 import Feed from './Feed';
 import Clipboard from './Clipboard';
 
-const FeedSectionContent = SectionContent.extend`
-  height: calc(100% - 60px);
-  min-height: calc(100% - 60px);
-`;
-
 const FeedSectionContainer = styled('div')`
   background-color: #f6f6f6;
 `;
@@ -32,13 +27,13 @@ const ClipboardContainer = styled('div')`
 export default () => (
   <FeedSectionContainer>
     <SectionHeaderWithLogo />
-    <FeedSectionContent>
+    <SectionContent>
       <FeedContainer>
         <Feed />
       </FeedContainer>
       <ClipboardContainer>
         <Clipboard />
       </ClipboardContainer>
-    </FeedSectionContent>
+    </SectionContent>
   </FeedSectionContainer>
 );

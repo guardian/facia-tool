@@ -8,7 +8,10 @@ export default styled('input')`
   height: ${props => props.theme.input.height};
   padding: ${props => props.theme.input.paddingY}
     ${props => props.theme.input.paddingX};
-  font-size: ${props => props.theme.input.fontSize};
+  font-size: ${props =>
+    props.useHeadlineFont
+      ? props.theme.input.fontSizeHeadline
+      : props.theme.input.fontSize};
   color: ${props => props.theme.input.color};
   background-color: ${props => props.theme.input.backgroundColor};
   border: 1px solid ${props => props.theme.input.borderColor};
@@ -16,8 +19,7 @@ export default styled('input')`
   background-clip: padding-box;
   ${props => props.useHeadlineFont && `font-family: GHGuardianHeadline-Medium`};
   ::placeholder {
-    color: rgba(255, 255, 255, 0.75);
-    font-style: italic;
+    color: #aaa;
   }
   :focus {
     outline: none;

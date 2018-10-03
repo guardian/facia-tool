@@ -31,7 +31,7 @@ const ButtonDelete = ButtonPrimary.extend`
   border-radius: 24px;
 `;
 
-const DeleteIcon = styled('img')`
+const IconDelete = styled('img')`
   display: block;
   position: absolute;
   height: 10px;
@@ -40,11 +40,12 @@ const DeleteIcon = styled('img')`
   left: 7px;
 `;
 
-const AddIcon = DeleteIcon.extend`
+const IconAdd = IconDelete.extend`
   transform: rotate(45deg);
 `;
 
 type Props = {|
+  frontId: string,
   criteria?: {
     minHeight?: string,
     minWidth?: string,
@@ -75,7 +76,7 @@ class InputImage extends React.Component<Props, State> {
       .then(this.props.input.onChange)
       .catch(err => console.log('@todo:handle error', err));
   };
-  handleAdd = (e: Event) => {
+  handleAdd = () => {
     // @todo: grid integration
   };
   clearField = () => this.props.input.onChange(null);
@@ -97,9 +98,9 @@ class InputImage extends React.Component<Props, State> {
         >
           <ButtonDelete type="button">
             {this.props.input.value ? (
-              <DeleteIcon src={deleteIcon} onClick={this.clearField} />
+              <IconDelete src={deleteIcon} onClick={this.clearField} />
             ) : (
-              <AddIcon src={deleteIcon} onClick={this.handleAdd} />
+              <IconAdd src={deleteIcon} onClick={this.handleAdd} />
             )}
           </ButtonDelete>
         </ImageContainer>
