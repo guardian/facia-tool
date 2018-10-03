@@ -106,7 +106,7 @@ const CAPITagInput = <T>({
               /**
                * Filter tags based on ids
                * think this is only for the test/test tag but sometime tags
-               * come
+               * come through more than once
                */
               const seenIds = [];
 
