@@ -14,13 +14,12 @@ import {
 } from 'shared/selectors/shared';
 // import { externalArticlesReceived } from 'shared/actions/ExternalArticles';
 import { bindActionCreators } from 'redux';
-import { batchActions } from 'redux-batched-actions';
 import { addArticleFragment } from 'shared/actions/ArticleFragments';
 import {
-  urlToArticle,
-  getMoveActions,
-  getInsertActions
-} from 'util/collectionUtils';
+  insertArticleFragment,
+  moveArticleFragment
+} from 'actions/ArticleFragments';
+import { urlToArticle } from 'util/collectionUtils';
 import type { AlsoOnDetail } from 'types/Collection';
 import {
   editorSelectArticleFragment,
@@ -51,7 +50,7 @@ type FrontPropsBeforeState = {
 
 type FrontProps = FrontPropsBeforeState & {
   tree: Object, // TODO add typings,
-  addArticleFragment: string => Promise<string>,
+  addArticleFragment: (id: string, supporting: string[]) => Promise<string>,
   selectedArticleFragmentId: ?string,
   dispatch: Dispatch,
   selectArticleFragment: (id: string) => void,
@@ -79,17 +78,37 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   runEdit = edit => {
     switch (edit.type) {
       case 'MOVE': {
-        return Promise.resolve(getMoveActions(edit));
+        const {
+          payload: { id, from, to }
+        } = edit;
+        return Promise.resolve(
+          moveArticleFragment(
+            from.parent.type,
+            from.parent.id,
+            id,
+            to.parent.type,
+            to.parent.id,
+            to.index
+          )
+        );
       }
 
       case 'INSERT': {
+        const {
+          payload: {
+            path: { parent, index }
+          }
+        } = edit;
         const editsPromise = this.props
-          .addArticleFragment(edit.payload.id)
-          .then(uuid => {
-            const payloadWithUuid = { ...edit.payload, id: uuid };
-            const insertWithUuid = { ...edit, payload: payloadWithUuid };
-            return getInsertActions(insertWithUuid);
-          });
+          .addArticleFragment(edit.payload.id, edit.meta.supporting)
+          .then(uuid =>
+            insertArticleFragment(
+              parent.type, // the name of the level above
+              parent.id,
+              uuid,
+              index
+            )
+          );
         return editsPromise;
       }
       default: {
@@ -99,14 +118,14 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   };
 
   handleChange = edit => {
-    const futureActions = this.runEdit(edit);
-    if (!futureActions) {
+    const futureAction = this.runEdit(edit);
+    if (!futureAction) {
       return;
     }
-    futureActions.then(actions => {
-      this.props.dispatch(
-        batchActions(actions.filter(action => action !== null))
-      );
+    futureAction.then(action => {
+      if (action) {
+        this.props.dispatch(action);
+      }
     });
   };
 

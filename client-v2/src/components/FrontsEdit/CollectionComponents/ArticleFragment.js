@@ -8,7 +8,7 @@ import Article from 'shared/components/Article';
 import DropZone from 'components/DropZone';
 import { optionize } from 'util/component';
 import type { Dispatch } from 'types/Store';
-import { removeGroupArticleFragment } from 'actions/Collections';
+import { removeGroupArticleFragment } from 'actions/ArticleFragments';
 
 type ArticleFragmentProps = {
   isSelected: boolean,
@@ -64,7 +64,6 @@ const ArticleFragment = ({
         arr={supporting}
         type="articleFragment"
         getKey={({ uuid: key }) => key}
-        getDedupeKey={({ id }) => id}
         renderDrop={(getDropProps, { canDrop, isTarget }) => (
           <DropZone
             {...getDropProps()}

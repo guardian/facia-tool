@@ -5,7 +5,6 @@ import type { Node as ReactNode } from 'react';
 import v4 from 'uuid/v4';
 import throttle from 'lodash.throttle';
 import Level from './Level';
-import DedupeLevel from './DedupeLevel';
 import { RootContext } from './Context';
 import { addOffset, eq } from './utils/path';
 import { getEdit } from './utils/edit';
@@ -15,7 +14,6 @@ import type {
   InternalDrag,
   ExternalDrag,
   EventType,
-  DuplicateGetter,
   IndexOffsetGetter
 } from './types';
 
@@ -71,8 +69,7 @@ type RootProps<T: Object> = {
   id: string,
   type: string,
   field?: string,
-  dedupeType?: string,
-  onChange: (edit: Edit, getDuplicate: DuplicateGetter) => void,
+  onChange: (edit: Edit) => void,
   onError: (error: string) => void,
   mapIn: InMap,
   mapOut: OutMap<T>,
@@ -128,14 +125,16 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
    * This wraps set state to make sure we don't call it too much and keep
    * rerendering, only changing the drop state if things have actually changed
    */
-  setDropInfo(path: ?(Path[]), canDrop: ?boolean) {
+  setDropInfo(path: ?(Path[]), canDrop: ?boolean, state?: $Shape<RootState>) {
     const { path: prevPath } = this.state.dropInfo;
     if (
+      state ||
       (!path && prevPath) ||
       (path && !prevPath) ||
       (path && prevPath && !eq(path, prevPath))
     ) {
       this.setState({
+        ...state,
         dropInfo: {
           path,
           canDrop
@@ -175,7 +174,9 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
    * When a drop happens anywhere set event handle to false
    */
   handleRootDrop = () => {
-    this.setDropInfo(null, false);
+    this.setDropInfo(null, false, {
+      dragData: null
+    });
     this.eventHandled = false;
   };
 
@@ -200,6 +201,7 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
         dragData: {
           dropType: 'INTERNAL',
           rootKey: this.rootKey,
+          id,
           path,
           type
         }
@@ -219,25 +221,22 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
    */
   handleDropZoneDragOver = (
     candidatePath: Path[],
-    getDuplicate: DuplicateGetter,
     getIndexOffset: IndexOffsetGetter
   ) => (e: EventType) =>
     this.runLowest(() => {
       e.preventDefault();
-      this.runDropZoneDragOver(candidatePath, getDuplicate, getIndexOffset, e);
+      this.runDropZoneDragOver(candidatePath, getIndexOffset, e);
     });
 
   runDropZoneDragOver = throttle(
     async (
       candidatePath: Path[],
-      getDuplicate: DuplicateGetter,
       getIndexOffset: IndexOffsetGetter,
       e: EventType
     ) => {
       const { path, canDrop } = await this.run(
         e,
         candidatePath,
-        getDuplicate,
         getIndexOffset,
         this.state.dragData || true
       );
@@ -256,12 +255,11 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
    */
   handleDropZoneDrop = (
     candidatePath: Path[],
-    getDuplicate: DuplicateGetter,
     getIndexOffset: IndexOffsetGetter
   ) => (e: EventType) =>
     this.runLowest(() => {
       e.preventDefault();
-      this.run(e, candidatePath, getDuplicate, getIndexOffset);
+      this.run(e, candidatePath, getIndexOffset);
     });
 
   /**
@@ -277,7 +275,6 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
   run = async (
     e: EventType,
     candidatePath: Path[],
-    getDuplicate: DuplicateGetter,
     getIndexOffset: IndexOffsetGetter,
     dragData: ?($ElementType<RootState, 'dragData'> | true)
   ) => {
@@ -302,7 +299,7 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
     let edit;
 
     try {
-      edit = getEdit(data, path, getDuplicate);
+      edit = getEdit(data, path);
     } catch (error) {
       if (!dragData) {
         this.props.onError(error.message);
@@ -310,7 +307,7 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
     } finally {
       if (edit) {
         if (!dragData) {
-          this.props.onChange(edit, getDuplicate);
+          this.props.onChange(edit);
         }
         /* eslint-disable no-unsafe-finally */
         // this lint rule can be ignored given we are not returning in try /
@@ -341,7 +338,7 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
   rootKey: string = v4();
 
   render() {
-    const { type, field, dedupeType, id } = this.props;
+    const { type, field, id } = this.props;
     return (
       <div
         onDragOver={this.handleRootDragOver}
@@ -356,15 +353,13 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
             dropInfo: this.state.dropInfo
           }}
         >
-          <DedupeLevel type={dedupeType}>
-            <Level type={type} field={field} arr={[{ id }]}>
-              {/**
-               * Level requires a function child by here we're doing nothing
-               * with the params
-               */}
-              {() => this.props.children}
-            </Level>
-          </DedupeLevel>
+          <Level type={type} field={field} arr={[{ id }]}>
+            {/**
+             * Level requires a function child by here we're doing nothing
+             * with the params
+             */}
+            {() => this.props.children}
+          </Level>
         </RootContext.Provider>
       </div>
     );

@@ -11,10 +11,7 @@ import type {
   RemoveSupportingArticleFragment as SharedRemoveSupportingArticleFragment,
   Action as SharedActions
 } from 'shared/types/Action';
-import {
-  type PersistCollectionMeta,
-  type PersistClipboardMeta
-} from 'util/storeMiddleware';
+import { type PersistMeta } from 'util/storeMiddleware';
 import { type Config } from './Config';
 import { type FrontsConfig } from './FaciaApi';
 
@@ -54,22 +51,22 @@ type EditorClearArticleFragmentSelection = {|
 
 type AddGroupArticleFragment = {|
   ...SharedAddGroupArticleFragment,
-  meta: PersistCollectionMeta
+  meta: PersistMeta
 |};
 
 type RemoveGroupArticleFragment = {|
   ...SharedRemoveGroupArticleFragment,
-  meta: PersistCollectionMeta
+  meta: PersistMeta
 |};
 
 type AddSupportingArticleFragment = {|
   ...SharedAddSupportingArticleFragment,
-  meta: PersistCollectionMeta
+  meta: PersistMeta
 |};
 
 type RemoveSupportingArticleFragment = {|
   ...SharedRemoveSupportingArticleFragment,
-  meta: PersistCollectionMeta
+  meta: PersistMeta
 |};
 
 type ActionError =
@@ -136,8 +133,8 @@ type PublishCollectionSuccess = {|
   payload: { collectionId: string }
 |};
 
-type FetchClipboardContentSuccess = {|
-  type: 'FETCH_CLIPBOARD_CONTENT_SUCCESS',
+type UpdateClipboardContent = {|
+  type: 'UPDATE_CLIPBOARD_CONTENT',
   payload: Array<string>
 |};
 
@@ -149,7 +146,7 @@ type AddClipboardArticleFragment = {|
 type AddClipboardContent = {|
   type: 'ADD_CLIPBOARD_ARTICLE_FRAGMENT',
   payload: { articleFragmentId: string, index: number },
-  meta: PersistClipboardMeta
+  meta: PersistMeta
 |};
 
 type RemoveClipboardArticleFragment = {|
@@ -178,8 +175,7 @@ type Action =
   | RemoveGroupArticleFragment
   | AddSupportingArticleFragment
   | RemoveSupportingArticleFragment
-  | FetchClipboardContentSuccess
-  | FetchClipboardContentSuccess
+  | UpdateClipboardContent
   | AddClipboardArticleFragment
   | RemoveClipboardArticleFragment
   | AddClipboardContent

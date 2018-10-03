@@ -45,6 +45,18 @@ const groups = (state: State = {}, action: Action) => {
         }
       };
     }
+    case 'SHARED/REPLACE_GROUP_ARTICLE_FRAGMENTS': {
+      const { id, articleFragments } = action.payload;
+      const group = state[id];
+
+      return {
+        ...state,
+        [id]: {
+          ...group,
+          articleFragments
+        }
+      };
+    }
     default: {
       return state;
     }

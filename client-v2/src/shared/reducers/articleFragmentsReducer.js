@@ -65,6 +65,21 @@ const articleFragments = (state: State = {}, action: Action) => {
         }
       };
     }
+    case 'SHARED/REPLACE_ARTICLE_FRAGMENT_SUPPORTING': {
+      const { id, supporting } = action.payload;
+      const group = state[id];
+
+      return {
+        ...state,
+        [id]: {
+          ...group,
+          meta: {
+            ...state[id].meta,
+            supporting
+          }
+        }
+      };
+    }
     default: {
       return state;
     }

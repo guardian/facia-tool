@@ -6,7 +6,7 @@ type State = Array<string>;
 
 const clipboard = (state: State = [], action: Action): State => {
   switch (action.type) {
-    case 'FETCH_CLIPBOARD_CONTENT_SUCCESS': {
+    case 'UPDATE_CLIPBOARD_CONTENT': {
       const { payload } = action;
       return payload;
     }

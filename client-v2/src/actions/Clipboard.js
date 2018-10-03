@@ -4,49 +4,15 @@ import { saveClipboard, getArticles } from 'services/faciaApi';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import { batchActions } from 'redux-batched-actions';
 import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
-import { addPersistMetaToAction } from 'util/storeMiddleware';
 import type {
   ArticleFragment,
   NestedArticleFragment
 } from 'shared/types/Collection';
 import { normaliseClipboard } from 'util/clipboardUtils';
 
-function removeClipboardArticleFragment(articleFragmentId: string) {
+function updateClipboardContent(clipboardContent: Array<string>) {
   return {
-    type: 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT',
-    payload: {
-      articleFragmentId
-    }
-  };
-}
-
-function addClipboardArticleFragment(articleFragmentId: string, index: number) {
-  return {
-    type: 'ADD_CLIPBOARD_ARTICLE_FRAGMENT',
-    payload: {
-      articleFragmentId,
-      index
-    }
-  };
-}
-
-const addClipboardArticleFragmentWithPersistence = addPersistMetaToAction(
-  addClipboardArticleFragment,
-  {
-    persistTo: 'clipboard'
-  }
-);
-
-const removeClipboardArticleFragmentWithPersistence = addPersistMetaToAction(
-  removeClipboardArticleFragment,
-  {
-    persistTo: 'clipboard'
-  }
-);
-
-function fetchClipboardContentSuccess(clipboardContent: Array<string>) {
-  return {
-    type: 'FETCH_CLIPBOARD_CONTENT_SUCCESS',
+    type: 'UPDATE_CLIPBOARD_CONTENT',
     payload: clipboardContent
   };
 }
@@ -64,7 +30,7 @@ function storeClipboardContent(clipboardContent: Array<NestedArticleFragment>) {
 
     dispatch(
       batchActions([
-        fetchClipboardContentSuccess(clipboardArticles),
+        updateClipboardContent(clipboardArticles),
         articleFragmentsReceived(articleFragments)
       ])
     );
@@ -95,9 +61,4 @@ function updateClipboard(clipboardContent: {
     });
 }
 
-export {
-  storeClipboardContent,
-  updateClipboard,
-  addClipboardArticleFragmentWithPersistence as addClipboardArticleFragment,
-  removeClipboardArticleFragmentWithPersistence as removeClipboardArticleFragment
-};
+export { storeClipboardContent, updateClipboard, updateClipboardContent };

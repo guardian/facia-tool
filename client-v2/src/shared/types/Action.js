@@ -27,6 +27,13 @@ type AddSupportingArticleFragment = {|
     index: number
   }
 |};
+type ReplaceArticleFragmentSupporting = {|
+  type: 'SHARED/REPLACE_ARTICLE_FRAGMENT_SUPPORTING',
+  payload: {
+    id: string,
+    supporting: string[]
+  }
+|};
 type RemoveGroupArticleFragment = {|
   type: 'SHARED/REMOVE_GROUP_ARTICLE_FRAGMENT',
   payload: {
@@ -42,13 +49,22 @@ type AddGroupArticleFragment = {|
     index: number
   }
 |};
+type ReplaceGroupArticleFragments = {|
+  type: 'SHARED/REPLACE_GROUP_ARTICLE_FRAGMENTS',
+  payload: {
+    id: string,
+    articleFragments: string[]
+  }
+|};
 
 type Action =
   | RemoveSupportingArticleFragment
   | GroupsReceived
   | AddSupportingArticleFragment
+  | ReplaceArticleFragmentSupporting
   | RemoveGroupArticleFragment
   | AddGroupArticleFragment
+  | ReplaceGroupArticleFragments
   | Actions<ExternalArticle>
   | Actions<Collection>
   | ArticleFragmentsReceived;

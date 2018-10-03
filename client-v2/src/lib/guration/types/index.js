@@ -12,6 +12,8 @@ type ExternalDrag = {|
 type InternalDrag = {|
   dropType: 'INTERNAL',
   rootKey: string,
+  id: string,
+  meta?: Object,
   path: Path[],
   type: string
 |};
@@ -20,21 +22,6 @@ type Drag = ExternalDrag | InternalDrag;
 
 type EventType = SyntheticDragEvent<HTMLElement>;
 
-type DuplicateGetter = <T>(
-  type: string,
-  id: string
-) => ?{
-  index: number,
-  path: Path[]
-};
-
 type IndexOffsetGetter = ((e: EventType) => number) | number;
 
-export type {
-  Drag,
-  InternalDrag,
-  ExternalDrag,
-  EventType,
-  DuplicateGetter,
-  IndexOffsetGetter
-};
+export type { Drag, InternalDrag, ExternalDrag, EventType, IndexOffsetGetter };

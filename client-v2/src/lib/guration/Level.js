@@ -4,7 +4,6 @@ import React from 'react';
 import type { Node as ReactNode } from 'react';
 import Node from './Node';
 import type { NodeChildren } from './Node';
-import GetDuplicate from './GetDuplicate';
 import { RootContext } from './Context';
 import { eq } from './utils/path';
 import type { Path } from './utils/path';
@@ -63,7 +62,6 @@ type LevelProps<T> = {|
   children: NodeChildren<T>,
   renderDrop?: DropRenderer,
   getKey: (node: T) => string,
-  getDedupeKey?: (node: T) => string,
   dropOnNode: boolean,
   field?: string
 |};
@@ -79,110 +77,87 @@ class Level<T> extends React.Component<LevelProps<T>> {
   }
 
   render() {
-    const {
-      arr,
-      type,
-      children,
-      renderDrop,
-      getKey,
-      getDedupeKey = getKey,
-      dropOnNode
-    } = this.props;
+    const { arr, type, children, renderDrop, getKey, dropOnNode } = this.props;
 
     let didWarnKey = false;
-    let didWarnDedupeKey = false;
 
     return (
-      <GetDuplicate>
-        {getDuplicate => (
-          <RootContext.Consumer>
-            {({
-              handleDragStart,
-              handleDragOver,
-              handleDrop,
-              dropInfo: { canDrop, path: dropPath }
-            }) => (
-              <React.Fragment>
-                {arr.map((item, i) => {
-                  const key = getKey(item);
-                  const dedupeKey = getDedupeKey(item);
+      <RootContext.Consumer>
+        {({
+          handleDragStart,
+          handleDragOver,
+          handleDrop,
+          dropInfo: { canDrop, path: dropPath }
+        }) => (
+          <React.Fragment>
+            {arr.map((item, i) => {
+              const key = getKey(item);
 
-                  if (isUndefined(key) && !didWarnKey) {
-                    /* eslint-disable-next-line */
-                    console.warn(
-                      `\`getKey\` is returning undefined for type ${type}. This may cause unnecessary re-renders for these nodes and will cause React errors in development.`
-                    );
-                    didWarnKey = true;
-                  }
+              if (isUndefined(key) && !didWarnKey) {
+                /* eslint-disable-next-line */
+                console.warn(
+                  `\`getKey\` is returning undefined for type ${type}. This may cause unnecessary re-renders for these nodes and will cause React errors in development.`
+                );
+                didWarnKey = true;
+              }
 
-                  if (isUndefined(dedupeKey) && !didWarnDedupeKey) {
-                    /* eslint-disable-next-line */
-                    console.warn(
-                      `\`getDedupeKey\` is returning undefined for type ${type}. This will cause issues when trying to dedupe new nodes in this context.`
-                    );
-                    didWarnDedupeKey = true;
-                  }
-
-                  return (
-                    <React.Fragment key={getKey(item)}>
-                      <AddPathLevel
-                        childrenField={this.childrenField}
-                        id="@@DROP"
-                        type={type}
-                        index={i}
-                      >
-                        {path =>
-                          doRenderDrop(
-                            renderDrop,
-                            handleDrop(path, getDuplicate, 0),
-                            handleDragOver(path, getDuplicate, 0),
-                            canDrop,
-                            dropPath,
-                            path,
-                            i
-                          )
-                        }
-                      </AddPathLevel>
-                      <Node
-                        item={item}
-                        id={getKey(item)}
-                        dedupeKey={getDedupeKey(item)}
-                        type={type}
-                        index={i}
-                        childrenField={this.childrenField}
-                        // TODO: maybe move this into Node?
-                        handleDragStart={handleDragStart}
-                        handleDragOver={dropOnNode && handleDragOver}
-                        handleDrop={dropOnNode && handleDrop}
-                      >
-                        {children}
-                      </Node>
-                    </React.Fragment>
-                  );
-                })}
-                <AddPathLevel
-                  childrenField={this.childrenField}
-                  id="@@DROP"
-                  type={type}
-                  index={arr.length}
-                >
-                  {path =>
-                    doRenderDrop(
-                      renderDrop,
-                      handleDrop(path, getDuplicate, 0),
-                      handleDragOver(path, getDuplicate, 0),
-                      canDrop,
-                      dropPath,
-                      path,
-                      arr.length
-                    )
-                  }
-                </AddPathLevel>
-              </React.Fragment>
-            )}
-          </RootContext.Consumer>
+              return (
+                <React.Fragment key={getKey(item)}>
+                  <AddPathLevel
+                    childrenField={this.childrenField}
+                    id="@@DROP"
+                    type={type}
+                    index={i}
+                  >
+                    {path =>
+                      doRenderDrop(
+                        renderDrop,
+                        handleDrop(path, 0),
+                        handleDragOver(path, 0),
+                        canDrop,
+                        dropPath,
+                        path,
+                        i
+                      )
+                    }
+                  </AddPathLevel>
+                  <Node
+                    item={item}
+                    id={getKey(item)}
+                    type={type}
+                    index={i}
+                    childrenField={this.childrenField}
+                    // TODO: maybe move this into Node?
+                    handleDragStart={handleDragStart}
+                    handleDragOver={dropOnNode && handleDragOver}
+                    handleDrop={dropOnNode && handleDrop}
+                  >
+                    {children}
+                  </Node>
+                </React.Fragment>
+              );
+            })}
+            <AddPathLevel
+              childrenField={this.childrenField}
+              id="@@DROP"
+              type={type}
+              index={arr.length}
+            >
+              {path =>
+                doRenderDrop(
+                  renderDrop,
+                  handleDrop(path, 0),
+                  handleDragOver(path, 0),
+                  canDrop,
+                  dropPath,
+                  path,
+                  arr.length
+                )
+              }
+            </AddPathLevel>
+          </React.Fragment>
         )}
-      </GetDuplicate>
+      </RootContext.Consumer>
     );
   }
 }
