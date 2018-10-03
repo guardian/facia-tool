@@ -4,7 +4,7 @@ import React from 'react';
 import type { Node as ReactNode } from 'react';
 import Node from './Node';
 import type { NodeChildren } from './Node';
-import GetDuplicate from './GetDuplicate';
+import DedupeLevel from './DedupeLevel';
 import { RootContext } from './Context';
 import { eq } from './utils/path';
 import type { Path } from './utils/path';
@@ -63,13 +63,15 @@ type LevelProps<T> = {|
   children: NodeChildren<T>,
   renderDrop?: DropRenderer,
   getKey: (node: T) => string,
-  getDedupeKey?: (node: T) => string,
+  getExternalKey?: (node: T) => string,
   dropOnNode: boolean,
+  dedupe?: boolean,
   field?: string
 |};
 
 class Level<T> extends React.Component<LevelProps<T>> {
   static defaultProps = {
+    dedupe: true,
     dropOnNode: true, // sets node drag props to allow drops
     getKey: <U: { id: string }>({ id }: U) => id
   };
@@ -85,16 +87,17 @@ class Level<T> extends React.Component<LevelProps<T>> {
       children,
       renderDrop,
       getKey,
-      getDedupeKey = getKey,
-      dropOnNode
+      getExternalKey = getKey,
+      dropOnNode,
+      dedupe
     } = this.props;
 
     let didWarnKey = false;
     let didWarnDedupeKey = false;
 
     return (
-      <GetDuplicate>
-        {getDuplicate => (
+      <DedupeLevel active={dedupe}>
+        {(register, deregister, getDuplicate) => (
           <RootContext.Consumer>
             {({
               handleDragStart,
@@ -105,7 +108,7 @@ class Level<T> extends React.Component<LevelProps<T>> {
               <React.Fragment>
                 {arr.map((item, i) => {
                   const key = getKey(item);
-                  const dedupeKey = getDedupeKey(item);
+                  const externalKey = getExternalKey(item);
 
                   if (isUndefined(key) && !didWarnKey) {
                     /* eslint-disable-next-line */
@@ -115,10 +118,10 @@ class Level<T> extends React.Component<LevelProps<T>> {
                     didWarnKey = true;
                   }
 
-                  if (isUndefined(dedupeKey) && !didWarnDedupeKey) {
+                  if (isUndefined(externalKey) && !didWarnDedupeKey) {
                     /* eslint-disable-next-line */
                     console.warn(
-                      `\`getDedupeKey\` is returning undefined for type ${type}. This will cause issues when trying to dedupe new nodes in this context.`
+                      `\`getExternalKey\` is returning undefined for type ${type}. This will cause issues when trying to dedupe new nodes in this context.`
                     );
                     didWarnDedupeKey = true;
                   }
@@ -146,10 +149,13 @@ class Level<T> extends React.Component<LevelProps<T>> {
                       <Node
                         item={item}
                         id={getKey(item)}
-                        dedupeKey={getDedupeKey(item)}
+                        externalKey={getExternalKey(item)}
                         type={type}
                         index={i}
                         childrenField={this.childrenField}
+                        register={register}
+                        deregister={deregister}
+                        getDuplicate={getDuplicate}
                         // TODO: maybe move this into Node?
                         handleDragStart={handleDragStart}
                         handleDragOver={dropOnNode && handleDragOver}
@@ -182,7 +188,7 @@ class Level<T> extends React.Component<LevelProps<T>> {
             )}
           </RootContext.Consumer>
         )}
-      </GetDuplicate>
+      </DedupeLevel>
     );
   }
 }

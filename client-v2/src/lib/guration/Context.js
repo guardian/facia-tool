@@ -8,9 +8,13 @@ import type { Path } from './utils/path';
 
 const PathContext = createContext([]);
 const RootContext = createContext({
-  handleDragStart: (item: *, path: Path[], id: string, type: string) => (
-    e: EventType
-  ) => {
+  handleDragStart: (
+    item: *,
+    path: Path[],
+    id: string,
+    externalKey: string,
+    type: string
+  ) => (e: EventType) => {
     throw new Error('Cannot handle dragstart outside of Guration.Root');
   },
   handleDragOver: (
@@ -32,8 +36,8 @@ const RootContext = createContext({
 
 type DedupeContextType = {
   [string]: {|
-    register: (dedupeKey: string, index: number, path: Path[]) => void,
-    deregister: (dedupeKey: string) => void,
+    register: (externalKey: string, index: number, path: Path[]) => void,
+    deregister: (externalKey: string) => void,
     getDuplicate: (key: string) => Object
   |}
 };

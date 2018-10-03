@@ -22,7 +22,7 @@ const Group = ({ id, articleFragments, children }: GroupProps) => (
       arr={articleFragments}
       type="articleFragment"
       getKey={({ uuid }) => uuid}
-      getDedupeKey={({ id: key }) => key}
+      getExternalKey={({ id: key }) => key}
       renderDrop={(getDropProps, { canDrop, isTarget }) => (
         <DropZone
           {...getDropProps()}

@@ -56,7 +56,12 @@ const Collection = ({
       ) : null
     }
   >
-    <Guration.Level arr={groups} type="group" getKey={({ uuid: key }) => key}>
+    <Guration.Level
+      arr={groups}
+      type="group"
+      getKey={({ uuid: key }) => key}
+      getExternalKey={({ id: externalKey }) => externalKey}
+    >
       {children}
     </Guration.Level>
   </CollectionDisplay>
