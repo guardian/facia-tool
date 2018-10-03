@@ -53,26 +53,21 @@ describe('Guration', () => {
           edit = e;
         }}
       >
-        <Level arr={[{ id: 1 }, { id: 2 }]} type="a">
+        <Level
+          arr={[{ id: 1 }, { id: 2 }]}
+          renderDrop={(getDropProps, isTarget, j) => {
+            if (j === 2) {
+              dropProps = getDropProps();
+            }
+          }}
+          type="a"
+        >
           {(child, getNodeProps, i) => {
             if (i === 0) {
               nodeProps = getNodeProps();
             }
 
-            return (
-              <Level
-                arr={[{ id: 1 }, { id: 2 }]}
-                field="children"
-                type="a"
-                renderDrop={(getDropProps, isTarget, j) => {
-                  if (j === 1) {
-                    dropProps = getDropProps();
-                  }
-                }}
-              >
-                {() => null}
-              </Level>
-            );
+            return null;
           }}
         </Level>
       </Root>
@@ -195,7 +190,6 @@ describe('Guration', () => {
         onChange={e => {
           edit = e;
         }}
-        dedupeType="a"
         mapIn={{
           text: str => JSON.parse(str)
         }}
@@ -255,6 +249,7 @@ describe('Guration', () => {
       <Root
         type="@@ROOT"
         id="@@ROOT"
+        onChange={console.log}
         onError={e => {
           error = e;
         }}

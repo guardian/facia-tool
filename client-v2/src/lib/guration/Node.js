@@ -23,14 +23,18 @@ type DOMNodeProps = {
 type NodeProps<T> = {
   item: T,
   id: string,
-  dedupeKey: string,
+  externalKey: string,
   type: string,
   childrenField: string,
   index: number,
+  register: *,
+  deregister: *,
+  getDuplicate: *,
   handleDragStart: (
     item: T,
     path: Path[],
     id: string,
+    externalKey: string,
     type: string
   ) => (e: EventType) => void,
   handleDragOver:
@@ -57,10 +61,13 @@ type NodeProps<T> = {
 const Node = <T>({
   item,
   id,
-  dedupeKey,
+  externalKey,
   type,
   childrenField,
   index,
+  register,
+  deregister,
+  getDuplicate,
   handleDragStart,
   handleDragOver,
   handleDrop,
@@ -68,27 +75,31 @@ const Node = <T>({
 }: NodeProps<T>) => (
   <AddPathLevel id={id} type={type} childrenField={childrenField} index={index}>
     {path => (
-      <DedupeNode dedupeKey={dedupeKey} type={type} index={index} path={path}>
-        {getDuplicate =>
-          children(
-            item,
-            () => ({
-              draggable: true,
-              onDragStart: handleDragStart(item, path, id, type),
-              ...(handleDrop && handleDragOver
-                ? {
-                    onDrop: handleDrop(path, getDuplicate, getDropIndexOffset),
-                    onDragOver: handleDragOver(
-                      path,
-                      getDuplicate,
-                      getDropIndexOffset
-                    )
-                  }
-                : {})
-            }),
-            index
-          )
-        }
+      <DedupeNode
+        externalKey={externalKey}
+        index={index}
+        path={path}
+        register={register}
+        deregister={deregister}
+      >
+        {children(
+          item,
+          () => ({
+            draggable: true,
+            onDragStart: handleDragStart(item, path, id, externalKey, type),
+            ...(handleDrop && handleDragOver
+              ? {
+                  onDrop: handleDrop(path, getDuplicate, getDropIndexOffset),
+                  onDragOver: handleDragOver(
+                    path,
+                    getDuplicate,
+                    getDropIndexOffset
+                  )
+                }
+              : {})
+          }),
+          index
+        )}
       </DedupeNode>
     )}
   </AddPathLevel>

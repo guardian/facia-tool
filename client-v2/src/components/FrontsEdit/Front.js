@@ -51,7 +51,7 @@ type FrontPropsBeforeState = {
 
 type FrontProps = FrontPropsBeforeState & {
   tree: Object, // TODO add typings,
-  addArticleFragment: string => Promise<string>,
+  addArticleFragment: (id: string, supporting: string[]) => Promise<string>,
   selectedArticleFragmentId: ?string,
   dispatch: Dispatch,
   selectArticleFragment: (id: string) => void,
@@ -84,7 +84,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
 
       case 'INSERT': {
         const editsPromise = this.props
-          .addArticleFragment(edit.payload.id)
+          .addArticleFragment(edit.payload.id, edit.meta.supporting)
           .then(uuid => {
             const payloadWithUuid = { ...edit.payload, id: uuid };
             const insertWithUuid = { ...edit, payload: payloadWithUuid };
@@ -131,12 +131,12 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
               id="frontId"
               type="front"
               onChange={this.handleChange}
-              dedupeType="articleFragment"
               mapIn={{
                 text: text => urlToArticle(text),
                 // TODO: the below will not dedupe properly
                 capi: capi => ({ type: 'articleFragment', id: capi }),
-                clipboard: str => JSON.parse(str)
+                clipboard: str => JSON.parse(str),
+                collection: str => JSON.parse(str) // other fronts
               }}
               mapOut={{
                 collection: (el, type) =>

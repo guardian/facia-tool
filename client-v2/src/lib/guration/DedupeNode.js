@@ -1,22 +1,16 @@
 // @flow
 
 import React from 'react';
-import { DedupeContext } from './Context';
-import GetDuplicate from './GetDuplicate';
-import type { DedupeContextType } from './Context';
+import type { Register, Deregister } from './DedupeLevel';
 import type { Path } from './utils/path';
 
-type ExternalDedupeNodeProps = {|
+type DedupeNodeProps = {|
   index: number,
   path: Path[],
-  dedupeKey?: string,
-  type: string,
+  externalKey?: string,
+  register: Register,
+  deregister: Deregister,
   children: *
-|};
-
-type DedupeNodeProps = {|
-  ...ExternalDedupeNodeProps,
-  context: DedupeContextType
 |};
 
 class DedupeNode extends React.Component<DedupeNodeProps> {
@@ -24,41 +18,24 @@ class DedupeNode extends React.Component<DedupeNodeProps> {
   componentDidUpdate = () => this.reregister();
   componentWillUnmount = () => this.deregister();
 
-  get dedupeContext() {
-    return this.props.context[this.props.type];
-  }
-
   deregister = () => {};
 
   reregister = () => {
-    const { dedupeContext } = this;
-    const { index, path, dedupeKey } = this.props;
+    const { index, path, register, deregister, externalKey } = this.props;
 
-    if (!dedupeKey) {
+    if (!externalKey) {
       return;
     }
 
     this.deregister();
 
-    if (!dedupeContext) {
-      return;
-    }
-
-    const { register, deregister } = dedupeContext;
-    register(dedupeKey, index, path);
-    this.deregister = () => deregister(dedupeKey);
+    register(externalKey, index, path);
+    this.deregister = () => deregister(externalKey);
   };
 
   render() {
-    const { children } = this.props;
-    return <GetDuplicate>{children}</GetDuplicate>;
+    return this.props.children;
   }
 }
 
-export default (props: ExternalDedupeNodeProps) => (
-  <DedupeContext.Consumer>
-    {(context: DedupeContextType) => (
-      <DedupeNode {...props} context={context} />
-    )}
-  </DedupeContext.Consumer>
-);
+export default DedupeNode;

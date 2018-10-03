@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import * as Guration from 'lib/guration';
+import type { Edit } from 'lib/guration';
 import { type Dispatch } from 'types/Store';
 import { batchActions } from 'redux-batched-actions';
 import { type State } from 'types/State';
@@ -69,7 +70,6 @@ class Clipboard extends React.Component<ClipboardProps> {
         <Guration.Root
           id="clipboard"
           type="clipboard"
-          dedupeType="articleFragment"
           onChange={this.handleChange}
           mapIn={{
             text: text => urlToArticle(text),
@@ -88,7 +88,7 @@ class Clipboard extends React.Component<ClipboardProps> {
             arr={tree.articleFragments || []}
             type="articleFragment"
             getKey={({ uuid }) => uuid}
-            getDedupeKey={({ id }) => id}
+            getExternalKey={({ id }) => id}
             renderDrop={(getDropProps, { canDrop, isTarget }) => (
               <DropZone
                 {...getDropProps()}
