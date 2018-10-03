@@ -60,6 +60,7 @@ type LevelProps<T> = {|
   arr: T[],
   type: string,
   children: NodeChildren<T>,
+  renderDrag?: (el: T) => ReactNode,
   renderDrop?: DropRenderer,
   getKey: (node: T) => string,
   dropOnNode: boolean,
@@ -77,7 +78,15 @@ class Level<T> extends React.Component<LevelProps<T>> {
   }
 
   render() {
-    const { arr, type, children, renderDrop, getKey, dropOnNode } = this.props;
+    const {
+      arr,
+      type,
+      children,
+      renderDrag,
+      renderDrop,
+      getKey,
+      dropOnNode
+    } = this.props;
 
     let didWarnKey = false;
 
@@ -126,6 +135,7 @@ class Level<T> extends React.Component<LevelProps<T>> {
                     id={getKey(item)}
                     type={type}
                     index={i}
+                    renderDrag={renderDrag}
                     childrenField={this.childrenField}
                     // TODO: maybe move this into Node?
                     handleDragStart={handleDragStart}
