@@ -176,20 +176,18 @@ class FrontsCAPISearchInput extends React.Component<
             </React.Fragment>
           }
         >
-          {!displaySearchFilters && (
-            <SearchQuery
-              params={{
-                tag: tagQuery,
-                section: sectionQuery,
-                q,
-                'show-elements': 'image',
-                'show-fields': 'internalPageCode,trailText'
-              }}
-              poll={30000}
-            >
-              {children}
-            </SearchQuery>
-          )}
+          <SearchQuery
+            params={{
+              tag: tagQuery,
+              section: sectionQuery,
+              q,
+              'show-elements': 'image',
+              'show-fields': 'internalPageCode,trailText'
+            }}
+            poll={30000}
+          >
+            {children}
+          </SearchQuery>
         </ScrollContainer>
       );
     }
