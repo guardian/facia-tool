@@ -25,6 +25,7 @@ type NodeProps<T> = {
   type: string,
   childrenField: string,
   index: number,
+  renderDrag: ?(el: T) => ReactNode,
   handleDragStart: (
     item: T,
     path: Path[],
@@ -50,36 +51,75 @@ type NodeProps<T> = {
   ) => ReactNode
 };
 
-const Node = <T>({
-  item,
-  id,
-  type,
-  childrenField,
-  index,
-  handleDragStart,
-  handleDragOver,
-  handleDrop,
-  children
-}: NodeProps<T>) => (
-  <AddPathLevel id={id} type={type} childrenField={childrenField} index={index}>
-    {path =>
-      children(
-        item,
-        () => ({
-          draggable: true,
-          onDragStart: handleDragStart(item, path, id, type),
-          ...(handleDrop && handleDragOver
-            ? {
-                onDrop: handleDrop(path, getDropIndexOffset),
-                onDragOver: handleDragOver(path, getDropIndexOffset)
-              }
-            : {})
-        }),
-        index
-      )
+class Node<T> extends React.Component<NodeProps<T>> {
+  dragImage: ?HTMLDivElement;
+
+  handleDragStart = (
+    handleDragStart: (e: SyntheticDragEvent<HTMLElement>) => void
+  ) => (e: SyntheticDragEvent<HTMLElement>) => {
+    if (this.dragImage) {
+      e.dataTransfer.setDragImage(this.dragImage, 10, 10);
     }
-  </AddPathLevel>
-);
+    handleDragStart(e);
+  };
+
+  render() {
+    const {
+      item,
+      id,
+      type,
+      childrenField,
+      index,
+      renderDrag,
+      handleDragStart,
+      handleDragOver,
+      handleDrop,
+      children
+    } = this.props;
+    return (
+      <React.Fragment>
+        {renderDrag && (
+          <div
+            style={{
+              position: 'absolute',
+              transform: 'translateX(-9999px)'
+            }}
+            ref={node => {
+              this.dragImage = node;
+            }}
+          >
+            {renderDrag(item)}
+          </div>
+        )}
+        <AddPathLevel
+          id={id}
+          type={type}
+          childrenField={childrenField}
+          index={index}
+        >
+          {path =>
+            children(
+              item,
+              () => ({
+                draggable: true,
+                onDragStart: this.handleDragStart(
+                  handleDragStart(item, path, id, type)
+                ),
+                ...(handleDrop && handleDragOver
+                  ? {
+                      onDrop: handleDrop(path, getDropIndexOffset),
+                      onDragOver: handleDragOver(path, getDropIndexOffset)
+                    }
+                  : {})
+              }),
+              index
+            )
+          }
+        </AddPathLevel>
+      </React.Fragment>
+    );
+  }
+}
 
 type NodeChildren<T> = $ElementType<NodeProps<T>, 'children'>;
 
