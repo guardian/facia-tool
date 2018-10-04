@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react';
 import styled from 'styled-components';
+import ButtonCircular from './ButtonCircular';
 import hoverActionIcons from '../../images/icons-hover/index';
 
 const Icon = styled('img')`
@@ -9,19 +10,11 @@ const Icon = styled('img')`
   vertical-align: middle;
 `;
 
-const ActionButton = styled('button')`
-  appearance: none;
+const ActionButton = ButtonCircular.extend`
   background: ${({ danger }) => (danger ? '#ff7f0f' : '#333333')};
-  border: none;
-  border-radius: 50%;
   color: #fff;
-  cursor: pointer;
-  font-weight: bold;
-  height: 24px;
+  margin: 1.5px;
   line-height: 1;
-  margin: 0;
-  width: 24px;
-
   &:hover {
     background: ${({ danger }) => (danger ? '#e05e00' : '#767676')};
   }
