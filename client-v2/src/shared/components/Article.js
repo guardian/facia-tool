@@ -9,7 +9,8 @@ import startCase from 'lodash/startCase';
 
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 import toneColorMap from 'shared/util/toneColorMap';
-import { getThumbnailFromElements } from 'util/CAPIUtils';
+import ButtonHoverAction from 'shared/components/input/ButtonHoverAction';
+import { getThumbnail } from 'util/CAPIUtils';
 import {
   externalArticleFromArticleFragmentSelector,
   selectSharedState
@@ -35,30 +36,22 @@ type ComponentProps = {
 
 const HoverActions = styled('div')`
   display: flex;
+  justify-content: space-between;
   padding: 10px;
 `;
 
-const ActionButton = styled('button')`
-  appearance: none;
-  background: ${({ danger }) => (danger ? '#ff7f0f' : '#767676')};
-  border: none;
-  border-radius: 50%;
-  color: #fff;
-  cursor: pointer;
-  font-weight: bold;
-  height: 24px;
-  line-height: 1;
-  margin: 0;
-  width: 24px;
-
-  &:hover {
-    background: ${({ danger }) => (danger ? '#e05e00' : '#333333')};
-  }
+// TODO caniuse space-evenly?
+const HoverActionsLeft = styled('div')`
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
 `;
 
-ActionButton.defaultProps = {
-  danger: false
-};
+const HoverActionsRight = styled('div')`
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+`;
 
 const Thumbnail = styled('div')`
   width: 130px;
@@ -249,16 +242,26 @@ const ArticleComponent = ({
           />
         )}
         <HoverActions>
-          <ActionButton
-            danger
-            onClick={e => {
-              // stop the parent from opening the edit panel
-              e.stopPropagation();
-              onDelete();
-            }}
-          >
-            ✕
-          </ActionButton>
+          <HoverActionsLeft>
+            <ButtonHoverAction action="view" />
+            <ButtonHoverAction action="ophan" />
+          </HoverActionsLeft>
+          <HoverActionsRight>
+            <ButtonHoverAction action="copy" />
+            <ButtonHoverAction action="paste" />
+            <ButtonHoverAction action="clipboard" />
+            <ButtonHoverAction
+              action="delete"
+              danger
+              onClick={e => {
+                // stop the parent from opening the edit panel
+                e.stopPropagation();
+                onDelete();
+              }}
+            >
+              ✕
+            </ButtonHoverAction>
+          </HoverActionsRight>
         </HoverActions>
       </ArticleBodyContainer>
       {children}
