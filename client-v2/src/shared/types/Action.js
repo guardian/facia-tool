@@ -12,6 +12,10 @@ type GroupsReceived = {|
   type: 'SHARED/GROUPS_RECEIVED',
   payload: { [string]: Group }
 |};
+type UpdateArticleFragmentMeta = {|
+  type: 'SHARED/UPDATE_ARTICLE_FRAGMENT_META',
+  payload: { id: string, meta: ArticleFragment.meta }
+|};
 type RemoveSupportingArticleFragment = {|
   type: 'SHARED/REMOVE_SUPPORTING_ARTICLE_FRAGMENT',
   payload: {
@@ -67,7 +71,8 @@ type Action =
   | ReplaceGroupArticleFragments
   | Actions<ExternalArticle>
   | Actions<Collection>
-  | ArticleFragmentsReceived;
+  | ArticleFragmentsReceived
+  | UpdateArticleFragmentMeta;
 
 export type {
   Action,

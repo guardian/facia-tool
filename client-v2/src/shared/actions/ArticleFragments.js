@@ -12,6 +12,16 @@ import type { Dispatch } from 'types/Store';
 import type { Action } from 'shared/types/Action';
 import { batchActions } from 'redux-batched-actions';
 
+function updateArticleFragmentMeta(id: string, meta: ArticleFragment.meta) {
+  return {
+    type: 'SHARED/UPDATE_ARTICLE_FRAGMENT_META',
+    payload: {
+      id,
+      meta
+    }
+  };
+}
+
 function articleFragmentsReceived(articleFragments: {
   [string]: ArticleFragment
 }) {
@@ -141,6 +151,7 @@ const insertAndDedupeSiblings = <T: { id: string, uuid: string }>(
 };
 
 export {
+  updateArticleFragmentMeta,
   articleFragmentsReceived,
   addSupportingArticleFragment,
   removeSupportingArticleFragment,

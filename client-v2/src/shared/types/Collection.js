@@ -14,6 +14,47 @@ type NestedArticleFragment = {
   }
 };
 
+type ArticleFragmentMetaFields = {|
+  headline?: string,
+  trailText?: string,
+  byline?: string,
+  customKicker?: string,
+  href?: string,
+  imageSrc?: string,
+  imageSrcThumb?: string,
+  imageSrcWidth?: string,
+  imageSrcHeight?: string,
+  imageSrcOrigin?: string,
+  imageCutoutSrc?: string,
+  imageCutoutSrcWidth?: string,
+  imageCutoutSrcHeight?: string,
+  imageCutoutSrcOrigin?: string,
+  isBreaking?: boolean,
+  isBoosted?: boolean,
+  showLivePlayable?: boolean,
+  showMainVideo?: boolean,
+  showBoostedHeadline?: boolean,
+  showQuotedHeadline?: boolean,
+  showByline?: boolean,
+  imageCutoutReplace?: boolean,
+  imageReplace?: boolean,
+  imageHide?: boolean,
+  showKickerTag?: boolean,
+  showKickerSection?: boolean,
+  showKickerCustom?: boolean,
+  snapUri?: string,
+  snapType?: string,
+  snapCss?: string,
+  imageSlideshowReplace?: boolean,
+  slideshow: {
+    src?: string,
+    thumb?: string,
+    width?: string,
+    height?: string,
+    origin?: string
+  }[]
+|};
+
 type ArticleFragment = $Diff<NestedArticleFragment, { meta: any }> & {
   uuid: string,
   // We strip the path from the id when the articleFragment enters
@@ -21,7 +62,7 @@ type ArticleFragment = $Diff<NestedArticleFragment, { meta: any }> & {
   // so we can reassemble the original id for persist operations.
   meta: {
     supporting?: string[]
-  }
+  } & ArticleFragmentMetaFields
 };
 
 type CollectionResponse = {
