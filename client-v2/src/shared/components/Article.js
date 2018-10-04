@@ -37,20 +37,18 @@ type ComponentProps = {
 const HoverActions = styled('div')`
   display: flex;
   justify-content: space-between;
-  padding: 10px;
+  align-content: flex-end;
+  padding: 0 10px 8px;
 `;
 
-// TODO caniuse space-evenly?
 const HoverActionsLeft = styled('div')`
   display: flex;
   justify-content: space-around;
-  padding: 10px;
 `;
 
 const HoverActionsRight = styled('div')`
   display: flex;
   justify-content: space-around;
-  padding: 10px;
 `;
 
 const Thumbnail = styled('div')`
@@ -243,8 +241,22 @@ const ArticleComponent = ({
         )}
         <HoverActions>
           <HoverActionsLeft>
-            <ButtonHoverAction action="view" />
-            <ButtonHoverAction action="ophan" />
+            <ButtonHoverAction
+              action="view"
+              onClick={e => {
+                // stop the parent from opening the edit panel
+                e.stopPropagation();
+                // TODO click action
+              }}
+            />
+            <ButtonHoverAction
+              action="ophan"
+              onClick={e => {
+                // stop the parent from opening the edit panel
+                e.stopPropagation();
+                // TODO click action
+              }}
+            />
           </HoverActionsLeft>
           <HoverActionsRight>
             <ButtonHoverAction action="copy" />
