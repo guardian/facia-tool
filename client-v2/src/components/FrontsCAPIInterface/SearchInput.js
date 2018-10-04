@@ -183,6 +183,7 @@ class FrontsCAPISearchInput extends React.Component<
               section: sectionQuery,
               q,
               'page-size': '20',
+              'use-date': 'first-publication',
               'show-elements': 'image',
               'show-fields': 'internalPageCode,trailText'
             }}
