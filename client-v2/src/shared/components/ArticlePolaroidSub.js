@@ -5,14 +5,13 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import noop from 'lodash/noop';
 import truncate from 'lodash/truncate';
-
-import { getThumbnail } from 'util/CAPIUtils';
 import {
   externalArticleFromArticleFragmentSelector,
   selectSharedState
 } from '../selectors/shared';
 import type { State } from '../types/State';
 import type { Article } from '../types/Article';
+import toneColorMap from '../util/toneColorMap';
 
 type ContainerProps = {
   id: string, // eslint-disable-line react/no-unused-prop-types
@@ -29,13 +28,15 @@ type ComponentProps = {
 } & ContainerProps;
 
 const BodyContainer = styled('div')`
+  cursor: pointer;
   font-size: 14px;
   position: relative;
-  cursor: pointer;
 `;
 
-const Thumbnail = styled('img')`
-  width: 100%;
+const TonedKicker = styled('span')`
+  color: ${({ tone }) => toneColorMap[tone] || 'inherit'};
+  font-size: 13px;
+  font-weight: 700;
 `;
 
 const ArticleComponent = ({
@@ -57,10 +58,10 @@ const ArticleComponent = ({
       onDragOver={onDragOver}
       onDrop={onDrop}
     >
-      {article.elements && (
-        <Thumbnail src={getThumbnail(article.elements)} alt="" />
-      )}
-      {truncate(article.headline, { length: 45 })}
+      <TonedKicker tone={article.tone}>{article.sectionName}</TonedKicker>
+      {` ${truncate(article.headline, {
+        length: 40 - article.sectionName.length
+      })}`}
       {children}
     </BodyContainer>
   );

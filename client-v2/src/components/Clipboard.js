@@ -11,6 +11,7 @@ import { urlToArticle } from 'util/collectionUtils';
 import { clipboardAsTreeSelector } from 'shared/selectors/shared';
 import DropZone from 'components/DropZone';
 import ArticlePolaroid from 'shared/components/ArticlePolaroid';
+import ArticlePolaroidSub from 'shared/components/ArticlePolaroidSub';
 import { addArticleFragment } from 'shared/actions/ArticleFragments';
 import {
   insertClipboardArticleFragment,
@@ -107,8 +108,30 @@ class Clipboard extends React.Component<ClipboardProps> {
               />
             )}
           >
-            {(articleFragment, getNodeProps) => (
-              <ArticlePolaroid id={articleFragment.uuid} {...getNodeProps()} />
+            {(articleFragment, getArticleNodeProps) => (
+              <ArticlePolaroid
+                id={articleFragment.uuid}
+                {...getArticleNodeProps()}
+              >
+                <Guration.Level
+                  arr={articleFragment.meta.supporting || []}
+                  type="articleFragment"
+                  getKey={({ uuid }) => uuid}
+                  renderDrop={(getDropProps, { canDrop, isTarget }) => (
+                    <DropZone
+                      {...getDropProps()}
+                      override={!!canDrop && !!isTarget}
+                    />
+                  )}
+                >
+                  {(supporting, getSupportingNodeProps) => (
+                    <ArticlePolaroidSub
+                      id={supporting.uuid}
+                      {...getSupportingNodeProps()}
+                    />
+                  )}
+                </Guration.Level>
+              </ArticlePolaroid>
             )}
           </Guration.Level>
         </Guration.Root>
