@@ -10,11 +10,9 @@ import {
   formValues
 } from 'redux-form';
 import styled from 'styled-components';
+import omit from 'lodash/omit';
+import compact from 'lodash/compact';
 
-import {
-  getInitialValuesForArticleFragmentForm,
-  getArticleFragmentMetaFromFormValues
-} from 'util/collectionUtils';
 import { updateArticleFragmentMeta } from 'actions/ArticleFragments';
 import ButtonPrimary from 'shared/components/input/ButtonPrimary';
 import ButtonDefault from 'shared/components/input/ButtonDefault';
@@ -25,7 +23,11 @@ import {
   selectSharedState,
   articleFragmentSelector
 } from 'shared/selectors/shared';
-import { type ArticleFragment } from 'shared/types/Collection';
+import type { ExternalArticle } from 'shared/types/ExternalArticle';
+import type {
+  ArticleFragment,
+  ArticleFragmentMeta
+} from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
 import HorizontalRule from 'shared/components/layout/HorizontalRule';
@@ -259,10 +261,66 @@ const formComponent = ({
   </FormContainer>
 );
 
+const defaultMeta = {};
+
+const getInitialValuesForArticleFragmentForm = (
+  externalArticle: ?ExternalArticle,
+  articleFragment: ?ArticleFragment
+) => {
+  const slideshowBackfill = [];
+  const slideshow =
+    (articleFragment &&
+      articleFragment.meta &&
+      articleFragment.meta.slideshow) ||
+    [];
+  slideshowBackfill.length = 4 - slideshow.length;
+  slideshowBackfill.fill(undefined);
+  return articleFragment && externalArticle
+    ? {
+        ...externalArticle,
+        ...articleFragment.meta,
+        primaryImage: {
+          src: articleFragment.meta.imageSrc,
+          width: articleFragment.meta.imageSrcWidth,
+          height: articleFragment.meta.imageSrcHeight,
+          origin: articleFragment.meta.imageSrcOrigin,
+          thumb: articleFragment.meta.imageSrcThumb
+        },
+        cutoutImage: {
+          src: articleFragment.meta.imageCutoutSrc,
+          width: articleFragment.meta.imageCutoutSrcWidth,
+          height: articleFragment.meta.imageCutoutSrcHeight,
+          origin: articleFragment.meta.imageCutoutSrcOrigin
+        },
+        slideshow: slideshow.concat(slideshowBackfill)
+      }
+    : defaultMeta;
+};
+
+const getArticleFragmentMetaFromFormValues = (values): ArticleFragmentMeta =>
+  omit(
+    {
+      ...values,
+      showKickerCustom: !!values.customKicker,
+      imageSrc: values.primaryImage.src,
+      imageSrcThumb: values.primaryImage.thumb,
+      imageSrcWidth: values.primaryImage.width,
+      imageSrcHeight: values.primaryImage.height,
+      imageSrcOrigin: values.primaryImage.origin,
+      imageCutoutSrc: values.cutoutImage.src,
+      imageCutoutSrcWidth: values.cutoutImage.width,
+      imageCutoutSrcHeight: values.cutoutImage.height,
+      imageCutoutSrcOrigin: values.cutoutImage.origin,
+      slideshow: compact(values.slideshow)
+    },
+    'primaryImage',
+    'cutoutImage'
+  );
+
 const articleFragmentForm = reduxForm({
   destroyOnUnmount: false,
-  onSubmit: (values: FormValues, dispatch, props: Props) => {
-    const meta: ArticleFragment.meta = getArticleFragmentMetaFromFormValues(
+  onSubmit: (values, dispatch, props: Props) => {
+    const meta: ArticleFragmentMeta = getArticleFragmentMetaFromFormValues(
       values
     );
     dispatch(updateArticleFragmentMeta(props.articleFragmentId, meta));

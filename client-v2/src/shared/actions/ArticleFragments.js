@@ -4,7 +4,10 @@ import v4 from 'uuid/v4';
 import uniq from 'lodash/uniq';
 import uniqBy from 'lodash/uniqBy';
 import keyBy from 'lodash/keyBy';
-import type { ArticleFragment } from 'shared/types/Collection';
+import type {
+  ArticleFragment,
+  ArticleFragmentMeta
+} from 'shared/types/Collection';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import { getArticles } from 'services/faciaApi';
 import type { State } from 'types/State';
@@ -12,7 +15,7 @@ import type { Dispatch } from 'types/Store';
 import type { Action } from 'shared/types/Action';
 import { batchActions } from 'redux-batched-actions';
 
-function updateArticleFragmentMeta(id: string, meta: ArticleFragment.meta) {
+function updateArticleFragmentMeta(id: string, meta: ArticleFragmentMeta) {
   return {
     type: 'SHARED/UPDATE_ARTICLE_FRAGMENT_META',
     payload: {

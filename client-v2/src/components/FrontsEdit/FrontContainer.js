@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux';
 import distanceInWords from 'date-fns/distance_in_words';
 import startCase from 'lodash/startCase';
 import styled from 'styled-components';
+import type { Dispatch } from 'types/Store';
 
 import { fetchLastPressed } from 'actions/Fronts';
 import {
@@ -169,7 +170,7 @@ const createMapStateToProps = () => {
   });
 };
 
-const mapDispatchToProps = (dispatch: *) => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
   frontsActions: bindActionCreators(
     {
       getCollectionsAndArticles,

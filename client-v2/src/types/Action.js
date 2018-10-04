@@ -17,19 +17,22 @@ import { type FrontsConfig } from './FaciaApi';
 
 type EditorAddFront = {|
   type: 'EDITOR_OPEN_FRONT',
-  payload: { frontId: string }
+  payload: { frontId: string },
+  meta: PersistMeta
 |};
 
-type EditorRemoveFront = {|
+type EditorCloseFront = {|
   type: 'EDITOR_CLOSE_FRONT',
-  payload: { frontId: string }
+  payload: { frontId: string },
+  meta: PersistMeta
 |};
 
-type EditorClearFronts = {|
-  type: 'EDITOR_CLEAR_OPEN_FRONTS'
+type EditorClearOpenFronts = {|
+  type: 'EDITOR_CLEAR_OPEN_FRONTS',
+  meta: PersistMeta
 |};
 
-type EditorSetFronts = {|
+type EditorSetOpenFronts = {|
   type: 'EDITOR_SET_OPEN_FRONTS',
   payload: { frontIds: string[] }
 |};
@@ -180,9 +183,9 @@ type Action =
   | RemoveClipboardArticleFragment
   | AddClipboardContent
   | EditorAddFront
-  | EditorClearFronts
-  | EditorSetFronts
-  | EditorRemoveFront
+  | EditorClearOpenFronts
+  | EditorSetOpenFronts
+  | EditorCloseFront
   | EditorSelectArticleFragment
   | EditorClearArticleFragmentSelection
   | RecordStaleFronts;
