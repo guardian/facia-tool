@@ -4,7 +4,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import ContainerHeading from 'shared/components/typography/ContainerHeading';
 import pandaFetch from 'services/pandaFetch';
 import { getThumbnail } from 'util/CAPIUtils';
 import * as CAPIParamsContext from './CAPI/CAPIParamsContext';
@@ -44,11 +43,16 @@ type FeedProps = {
 };
 
 type FeedState = {
-  capiFeedIndex: number
+  capiFeedIndex: number,
+  displaySearchFilters: boolean
 };
 
 const FeedContainer = styled('div')`
   height: 100%;
+`;
+
+const NoResults = styled('div')`
+  margin: 4px;
 `;
 
 const StageSelectionContainer = styled('div')`
@@ -65,37 +69,46 @@ class Feed extends React.Component<FeedProps, FeedState> {
   };
 
   state = {
-    capiFeedIndex: 0
+    capiFeedIndex: 0,
+    displaySearchFilters: false
   };
 
   get capiFeedSpec() {
     return this.props.capiFeedSpecs[this.state.capiFeedIndex];
   }
 
-  handleFeedClick(index: number) {
+  updateDisplaySearchFilters = (newValue: boolean) =>
+    this.setState({
+      displaySearchFilters: newValue
+    });
+
+  handleFeedClick = (index: number) =>
     this.setState({
       capiFeedIndex: index
     });
-  }
 
-  renderFixedContent = () => (
-    <ResultsHeadingContainer>
-      <ContainerHeading>Results</ContainerHeading>
-      <StageSelectionContainer>
-        <RadioGroup>
-          {this.props.capiFeedSpecs.map(({ name }, i) => (
-            <RadioButton
-              key={name}
-              checked={i === this.state.capiFeedIndex}
-              onChange={() => this.handleFeedClick(i)}
-              label={name}
-              inline
-            />
-          ))}
-        </RadioGroup>
-      </StageSelectionContainer>
-    </ResultsHeadingContainer>
-  );
+  renderFixedContent = () => {
+    if (!this.state.displaySearchFilters) {
+      return (
+        <ResultsHeadingContainer>
+          <StageSelectionContainer>
+            <RadioGroup>
+              {this.props.capiFeedSpecs.map(({ name }, i) => (
+                <RadioButton
+                  key={name}
+                  checked={i === this.state.capiFeedIndex}
+                  onChange={() => this.handleFeedClick(i)}
+                  label={name}
+                  inline
+                />
+              ))}
+            </RadioGroup>
+          </StageSelectionContainer>
+        </ResultsHeadingContainer>
+      );
+    }
+    return null;
+  };
 
   render() {
     const { capiFeedSpec } = this;
@@ -110,7 +123,11 @@ class Feed extends React.Component<FeedProps, FeedState> {
             fetch={pandaFetch}
             debounce={500}
           >
-            <SearchInput additionalFixedContent={this.renderFixedContent}>
+            <SearchInput
+              updateDisplaySearchFilters={this.updateDisplaySearchFilters}
+              displaySearchFilters={this.state.displaySearchFilters}
+              additionalFixedContent={this.renderFixedContent}
+            >
               {({ pending, error, value }) => (
                 <React.Fragment>
                   <ErrorDisplay error={error}>
@@ -144,6 +161,10 @@ class Feed extends React.Component<FeedProps, FeedState> {
                                 />
                               )
                             )}
+                        {value &&
+                          value.response.results.length === 0 && (
+                            <NoResults>No results found</NoResults>
+                          )}
                       </div>
                     </LoaderDisplay>
                   </ErrorDisplay>

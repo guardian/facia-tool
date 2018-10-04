@@ -12,11 +12,12 @@ type CAPITagQueryProps = {
   baseURL?: string,
   fetch?: Fetch,
   children: *,
-  params: Object
+  params: Object,
+  tagType: 'sections' | 'tags'
 };
 
 type CAPITagQueryState = {
-  capi?: $ElementType<$Call<typeof capiQuery, string>, 'tags'>,
+  capi?: $ElementType<$Call<typeof capiQuery, 'sections' | 'tags'>, string>,
   baseURL?: string,
   fetch?: Fetch
 };
@@ -29,7 +30,7 @@ class TagQuery extends React.Component<CAPITagQueryProps, CAPITagQueryState> {
   state = {};
 
   static getDerivedStateFromProps(
-    { baseURL, fetch }: CAPITagQueryProps,
+    { baseURL, fetch, tagType }: CAPITagQueryProps,
     prevState: CAPITagQueryState
   ) {
     if (
@@ -37,7 +38,7 @@ class TagQuery extends React.Component<CAPITagQueryProps, CAPITagQueryState> {
       (fetch && prevState.fetch !== fetch)
     ) {
       return {
-        capi: capiQuery(baseURL, fetch).tags,
+        capi: capiQuery(baseURL, fetch)[tagType],
         baseURL,
         fetch
       };

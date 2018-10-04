@@ -78,6 +78,15 @@ const capiQuery = (
     );
 
     return response.json();
+  },
+  sections: async (params: Object): Promise<CAPITagQueryReponse> => {
+    const response = await fetch(
+      `${baseURL}sections${qs({
+        ...params
+      })}`
+    );
+
+    return response.json();
   }
 });
 

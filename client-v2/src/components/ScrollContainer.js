@@ -24,7 +24,7 @@ const ScrollTitle = styled(`div`)`
 
 const ScrollInner = styled(`div`)`
   overflow-y: scroll;
-  display: flex;
+  display: block;
   height: 100%;
 `;
 
