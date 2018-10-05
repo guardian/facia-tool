@@ -344,6 +344,7 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
         onDragOver={this.handleRootDragOver}
         onDrop={this.handleRootDrop}
         onDragEnd={this.handleRootDrop}
+        onDragLeave={this.handleRootDrop}
       >
         <RootContext.Provider
           value={{
