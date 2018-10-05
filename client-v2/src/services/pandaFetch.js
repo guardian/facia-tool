@@ -2,7 +2,7 @@
 
 import { reEstablishSession } from 'panda-session';
 
-const reauthUrl = '/auth';
+const reauthUrl = '/login/status';
 const pandaFetch = (
   url: string,
   options: Object = {},
