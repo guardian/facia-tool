@@ -1,4 +1,4 @@
-// flow-typed signature: e88be76b5626ad90e6df34ed4b9b26a2
+// flow-typed signature: a67b30d487a48f1e6ed721039cab21ea
 // flow-typed version: <<STUB>>/babel-loader_v^8.0.0-beta/flow_v0.71.0
 
 /**
@@ -26,10 +26,6 @@ declare module 'babel-loader/lib/cache' {
   declare module.exports: any;
 }
 
-declare module 'babel-loader/lib/config' {
-  declare module.exports: any;
-}
-
 declare module 'babel-loader/lib/Error' {
   declare module.exports: any;
 }
@@ -42,14 +38,6 @@ declare module 'babel-loader/lib/transform' {
   declare module.exports: any;
 }
 
-declare module 'babel-loader/lib/utils/exists' {
-  declare module.exports: any;
-}
-
-declare module 'babel-loader/lib/utils/read' {
-  declare module.exports: any;
-}
-
 declare module 'babel-loader/lib/utils/relative' {
   declare module.exports: any;
 }
@@ -57,9 +45,6 @@ declare module 'babel-loader/lib/utils/relative' {
 // Filename aliases
 declare module 'babel-loader/lib/cache.js' {
   declare module.exports: $Exports<'babel-loader/lib/cache'>;
-}
-declare module 'babel-loader/lib/config.js' {
-  declare module.exports: $Exports<'babel-loader/lib/config'>;
 }
 declare module 'babel-loader/lib/Error.js' {
   declare module.exports: $Exports<'babel-loader/lib/Error'>;
@@ -69,12 +54,6 @@ declare module 'babel-loader/lib/index.js' {
 }
 declare module 'babel-loader/lib/transform.js' {
   declare module.exports: $Exports<'babel-loader/lib/transform'>;
-}
-declare module 'babel-loader/lib/utils/exists.js' {
-  declare module.exports: $Exports<'babel-loader/lib/utils/exists'>;
-}
-declare module 'babel-loader/lib/utils/read.js' {
-  declare module.exports: $Exports<'babel-loader/lib/utils/read'>;
 }
 declare module 'babel-loader/lib/utils/relative.js' {
   declare module.exports: $Exports<'babel-loader/lib/utils/relative'>;

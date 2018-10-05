@@ -1,6 +1,7 @@
 // @flow
 
 import { combineReducers } from 'redux';
+import { reducer as form } from 'redux-form';
 
 import shared from 'shared/reducers/sharedReducer';
 import config from './configReducer';
@@ -21,7 +22,8 @@ const reducers = {
   unpublishedChanges,
   clipboard,
   editor,
-  staleFronts
+  staleFronts,
+  form
 };
 
 export type Reducers = typeof reducers;

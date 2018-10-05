@@ -9,7 +9,7 @@ import { selectEditorFronts } from 'bundles/frontsUIBundle';
 import { updateCollection } from 'actions/Collections';
 import { updateClipboard } from 'actions/Clipboard';
 import { selectSharedState } from 'shared/selectors/shared';
-import { type ThunkAction } from 'types/Store';
+import type { ThunkAction } from 'types/Store';
 import { saveOpenFrontIds } from 'services/faciaApi';
 import type {
   Collection,
@@ -42,7 +42,7 @@ const updateStateFromUrlChange: Middleware<State, Action> = ({
 
 type PersistMeta = {|
   // The resource to persist the data to
-  persistTo: 'collection' | 'clipboard',
+  persistTo: 'collection' | 'clipboard' | 'openFrontIds',
   // The key to take from the action payload. Defaults to 'id'.
   key?: string,
   // Should we find collection parents before or after the reducer is called?
@@ -82,7 +82,7 @@ const isPersistingToCollection = (act: Action): boolean =>
  */
 const persistCollectionOnEdit: (
   (collection: Collection) => Action | ThunkAction
-) => Middleware<Store, Action> = (
+) => Middleware<State, Action> = (
   updateCollectionAction: (
     collection: Collection
   ) => Action | ThunkAction = updateCollection
@@ -166,7 +166,7 @@ const persistClipboardOnEdit: (
   (clipboard: { articles: Array<NestedArticleFragment> }) =>
     | Action
     | ThunkAction
-) => Middleware<Store, Action> = (
+) => Middleware<State, Action> = (
   updateClipboardAction: (clipboard: {
     articles: Array<NestedArticleFragment>
   }) => Action | ThunkAction = updateClipboard
@@ -188,7 +188,7 @@ const persistClipboardOnEdit: (
 
 const persistOpenFrontsOnEdit: (
   persistFrontIds?: (string[]) => Promise<void>
-) => Middleware<Store, Action> = (
+) => Middleware<State, Action> = (
   persistFrontIds = saveOpenFrontIds
 ) => store => next => (action: Action) => {
   const actions = unwrapBatchedActions(action);

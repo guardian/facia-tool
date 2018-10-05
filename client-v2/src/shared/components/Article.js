@@ -9,7 +9,7 @@ import startCase from 'lodash/startCase';
 
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 import toneColorMap from 'shared/util/toneColorMap';
-import { getThumbnail } from 'util/CAPIUtils';
+import { getThumbnailFromElements } from 'util/CAPIUtils';
 import {
   externalArticleFromArticleFragmentSelector,
   selectSharedState
@@ -244,7 +244,7 @@ const ArticleComponent = ({
             style={{
               backgroundImage:
                 article.elements &&
-                `url('${getThumbnail(article.elements) || ''}')`
+                `url('${getThumbnailFromElements(article.elements) || ''}')`
             }}
           />
         )}

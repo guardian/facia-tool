@@ -1,9 +1,10 @@
 // @flow
 
 import React from 'react';
-import styled, { injectGlobal } from 'styled-components';
+import styled, { injectGlobal, ThemeProvider } from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
 
+import theme from 'shared/constants/theme';
 import { priorities } from 'constants/priorities';
 import SectionHeaderWithLogo from './layout/SectionHeaderWithLogo';
 import GHGuardianHeadlineBoldTtf from '../fonts/headline/GHGuardianHeadline-Bold.ttf';
@@ -83,20 +84,22 @@ const BackgroundHeader = styled('div')`
 `;
 
 const App = () => (
-  <AppContainer>
-    <BackgroundHeader>
-      <SectionHeaderWithLogo />
-    </BackgroundHeader>
-    <Switch>
-      <Route
-        exact
-        path={`/:priority(${Object.keys(priorities).join('|')})/:frontId?`}
-        component={FrontsEdit}
-      />
-      <Route exact path="/" component={Home} />
-      <Route component={NotFound} />
-    </Switch>
-  </AppContainer>
+  <ThemeProvider theme={theme}>
+    <AppContainer>
+      <BackgroundHeader>
+        <SectionHeaderWithLogo />
+      </BackgroundHeader>
+      <Switch>
+        <Route
+          exact
+          path={`/:priority(${Object.keys(priorities).join('|')})/:frontId?`}
+          component={FrontsEdit}
+        />
+        <Route exact path="/" component={Home} />
+        <Route component={NotFound} />
+      </Switch>
+    </AppContainer>
+  </ThemeProvider>
 );
 
 export default App;

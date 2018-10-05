@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux';
 import distanceInWords from 'date-fns/distance_in_words';
 import startCase from 'lodash/startCase';
 import styled from 'styled-components';
+import type { Dispatch } from 'types/Store';
 
 import { fetchLastPressed } from 'actions/Fronts';
 import {
@@ -24,7 +25,6 @@ import {
   createAlsoOnSelector,
   lastPressedSelector
 } from 'selectors/frontsSelectors';
-import ScrollContainer from 'components/ScrollContainer';
 import Front from './Front';
 import SectionHeader from '../layout/SectionHeader';
 import SectionContent from '../layout/SectionContent';
@@ -107,47 +107,44 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
 
   render() {
     return (
-      <ScrollContainer
-        fixed={
-          <React.Fragment>
-            <FrontHeader>
-              <FrontsHeaderText>
-                {this.props.selectedFront &&
-                  startCase(this.props.selectedFront.id)}
-              </FrontsHeaderText>
-              <FrontHeaderMeta>
-                <LastPressedContainer>
-                  {this.props.lastPressed &&
-                    `Last refreshed ${distanceInWords(
-                      new Date(this.props.lastPressed),
-                      Date.now()
-                    )} ago`}
-                </LastPressedContainer>
-                &nbsp;
-                <Button onClick={this.handleRemoveFront}>Remove</Button>
-                <a
-                  href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${
-                    this.props.frontId
-                  }`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+      <>
+        <React.Fragment>
+          <FrontHeader>
+            <FrontsHeaderText>
+              {this.props.selectedFront &&
+                startCase(this.props.selectedFront.id)}
+            </FrontsHeaderText>
+            <FrontHeaderMeta>
+              <LastPressedContainer>
+                {this.props.lastPressed &&
+                  `Last refreshed ${distanceInWords(
+                    new Date(this.props.lastPressed),
+                    Date.now()
+                  )} ago`}
+              </LastPressedContainer>
+              &nbsp;
+              <Button onClick={this.handleRemoveFront}>Remove</Button>
+              <a
+                href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${
+                  this.props.frontId
+                }`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button>Preview</Button>
+              </a>
+              {Object.keys(frontStages).map(key => (
+                <Button
+                  key={key}
+                  selected={frontStages[key] === this.state.browsingStage}
+                  onClick={() => this.handleStageSelect(key)}
                 >
-                  <Button>Preview</Button>
-                </a>
-                {Object.keys(frontStages).map(key => (
-                  <Button
-                    key={key}
-                    selected={frontStages[key] === this.state.browsingStage}
-                    onClick={() => this.handleStageSelect(key)}
-                  >
-                    {frontStages[key]}
-                  </Button>
-                ))}
-              </FrontHeaderMeta>
-            </FrontHeader>
-          </React.Fragment>
-        }
-      >
+                  {frontStages[key]}
+                </Button>
+              ))}
+            </FrontHeaderMeta>
+          </FrontHeader>
+        </React.Fragment>
         <SectionContent>
           {this.props.selectedFront && (
             <Front
@@ -158,7 +155,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
             />
           )}
         </SectionContent>
-      </ScrollContainer>
+      </>
     );
   }
 }
@@ -173,7 +170,7 @@ const createMapStateToProps = () => {
   });
 };
 
-const mapDispatchToProps = (dispatch: *) => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
   frontsActions: bindActionCreators(
     {
       getCollectionsAndArticles,

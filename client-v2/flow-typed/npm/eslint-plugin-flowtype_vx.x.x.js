@@ -1,4 +1,4 @@
-// flow-typed signature: fbf643149845737fc32cf4b0b8776006
+// flow-typed signature: fc4e03d38bbb3efefbc57de3ace7689d
 // flow-typed version: <<STUB>>/eslint-plugin-flowtype_v^2.46.1/flow_v0.71.0
 
 /**
@@ -27,6 +27,26 @@ declare module 'eslint-plugin-flowtype/bin/readmeAssertions' {
 }
 
 declare module 'eslint-plugin-flowtype/dist/index' {
+  declare module.exports: any;
+}
+
+declare module 'eslint-plugin-flowtype/dist/rules/arrayStyle/index' {
+  declare module.exports: any;
+}
+
+declare module 'eslint-plugin-flowtype/dist/rules/arrayStyle/isSimpleType' {
+  declare module.exports: any;
+}
+
+declare module 'eslint-plugin-flowtype/dist/rules/arrayStyle/needWrap' {
+  declare module.exports: any;
+}
+
+declare module 'eslint-plugin-flowtype/dist/rules/arrayStyleComplexType' {
+  declare module.exports: any;
+}
+
+declare module 'eslint-plugin-flowtype/dist/rules/arrayStyleSimpleType' {
   declare module.exports: any;
 }
 
@@ -154,6 +174,10 @@ declare module 'eslint-plugin-flowtype/dist/rules/typeColonSpacing/evaluateTypic
   declare module.exports: any;
 }
 
+declare module 'eslint-plugin-flowtype/dist/rules/typeColonSpacing/evaluateVariables' {
+  declare module.exports: any;
+}
+
 declare module 'eslint-plugin-flowtype/dist/rules/typeColonSpacing/index' {
   declare module.exports: any;
 }
@@ -232,6 +256,21 @@ declare module 'eslint-plugin-flowtype/bin/readmeAssertions.js' {
 }
 declare module 'eslint-plugin-flowtype/dist/index.js' {
   declare module.exports: $Exports<'eslint-plugin-flowtype/dist/index'>;
+}
+declare module 'eslint-plugin-flowtype/dist/rules/arrayStyle/index.js' {
+  declare module.exports: $Exports<'eslint-plugin-flowtype/dist/rules/arrayStyle/index'>;
+}
+declare module 'eslint-plugin-flowtype/dist/rules/arrayStyle/isSimpleType.js' {
+  declare module.exports: $Exports<'eslint-plugin-flowtype/dist/rules/arrayStyle/isSimpleType'>;
+}
+declare module 'eslint-plugin-flowtype/dist/rules/arrayStyle/needWrap.js' {
+  declare module.exports: $Exports<'eslint-plugin-flowtype/dist/rules/arrayStyle/needWrap'>;
+}
+declare module 'eslint-plugin-flowtype/dist/rules/arrayStyleComplexType.js' {
+  declare module.exports: $Exports<'eslint-plugin-flowtype/dist/rules/arrayStyleComplexType'>;
+}
+declare module 'eslint-plugin-flowtype/dist/rules/arrayStyleSimpleType.js' {
+  declare module.exports: $Exports<'eslint-plugin-flowtype/dist/rules/arrayStyleSimpleType'>;
 }
 declare module 'eslint-plugin-flowtype/dist/rules/booleanStyle.js' {
   declare module.exports: $Exports<'eslint-plugin-flowtype/dist/rules/booleanStyle'>;
@@ -325,6 +364,9 @@ declare module 'eslint-plugin-flowtype/dist/rules/typeColonSpacing/evaluateTypeC
 }
 declare module 'eslint-plugin-flowtype/dist/rules/typeColonSpacing/evaluateTypical.js' {
   declare module.exports: $Exports<'eslint-plugin-flowtype/dist/rules/typeColonSpacing/evaluateTypical'>;
+}
+declare module 'eslint-plugin-flowtype/dist/rules/typeColonSpacing/evaluateVariables.js' {
+  declare module.exports: $Exports<'eslint-plugin-flowtype/dist/rules/typeColonSpacing/evaluateVariables'>;
 }
 declare module 'eslint-plugin-flowtype/dist/rules/typeColonSpacing/index.js' {
   declare module.exports: $Exports<'eslint-plugin-flowtype/dist/rules/typeColonSpacing/index'>;
