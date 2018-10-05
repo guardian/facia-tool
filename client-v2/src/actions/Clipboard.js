@@ -1,6 +1,6 @@
 // @flow
 
-import type { Dispatch } from 'redux';
+import type { Dispatch } from 'types/Store';
 import { saveClipboard, getArticles } from 'services/faciaApi';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import { batchActions } from 'redux-batched-actions';
@@ -19,7 +19,7 @@ function updateClipboardContent(clipboardContent: Array<string>) {
 }
 
 function storeClipboardContent(clipboardContent: Array<NestedArticleFragment>) {
-  return (dispatch: Dispatch<any>) => {
+  return (dispatch: Dispatch) => {
     const normalisedClipboard: {
       clipboard: { articles: Array<string> },
       articleFragments: { [string]: ArticleFragment }
