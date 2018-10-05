@@ -82,7 +82,7 @@ const isPersistingToCollection = (act: Action): boolean =>
  */
 const persistCollectionOnEdit: (
   (collection: Collection) => Action | ThunkAction
-) => Middleware<Store, Action> = (
+) => Middleware<State, Action> = (
   updateCollectionAction: (
     collection: Collection
   ) => Action | ThunkAction = updateCollection
@@ -166,7 +166,7 @@ const persistClipboardOnEdit: (
   (clipboard: { articles: Array<NestedArticleFragment> }) =>
     | Action
     | ThunkAction
-) => Middleware<Store, Action> = (
+) => Middleware<State, Action> = (
   updateClipboardAction: (clipboard: {
     articles: Array<NestedArticleFragment>
   }) => Action | ThunkAction = updateClipboard
@@ -188,7 +188,7 @@ const persistClipboardOnEdit: (
 
 const persistOpenFrontsOnEdit: (
   persistFrontIds?: (string[]) => Promise<void>
-) => Middleware<Store, Action> = (
+) => Middleware<State, Action> = (
   persistFrontIds = saveOpenFrontIds
 ) => store => next => (action: Action) => {
   const actions = unwrapBatchedActions(action);

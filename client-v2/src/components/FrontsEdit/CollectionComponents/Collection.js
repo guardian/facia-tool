@@ -1,5 +1,6 @@
 // @flow
 
+import { type Dispatch } from 'types/Store';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
