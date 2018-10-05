@@ -14,6 +14,7 @@
     "update-types": "flow-typed install --ignoreDeps peer bundle",
     "dev-server": "yarn compileWithBabel $(yarn bin)/webpack-dev-server --config config/webpack.config.dev.js",
     "dev": "yarn install && yarn dev-server --open",
+    "flow": "flow stop && flow",
     "test": "yarn jest",
     "flow-coverage": "yarn run flow-coverage-report -i \"src/**/*.js\" --threshold 90 --strict-coverage",
     "run-checks": "yarn test && yarn flow && yarn lint && yarn flow-coverage"
