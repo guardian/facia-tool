@@ -1,4 +1,5 @@
 // @flow
+
 import { type Dispatch } from 'types/Store';
 import * as React from 'react';
 import { connect } from 'react-redux';

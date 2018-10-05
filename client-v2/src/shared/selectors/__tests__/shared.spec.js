@@ -2,6 +2,7 @@
 
 import {
   externalArticleFromArticleFragmentSelector,
+  articleFromArticleFragmentSelector,
   createArticlesInCollectionGroupSelector,
   createArticlesInCollectionSelector,
   createCollectionsAsTreeSelector,
@@ -174,13 +175,32 @@ describe('Shared selectors', () => {
   });
 
   describe('createExternalArticleFromArticleFragmentSelector', () => {
-    it('should create a selector that returns an external article referenced by the given article', () => {
-      expect(externalArticleFromArticleFragmentSelector(state, 'af1')).toEqual(
-        state.externalArticles.data.ea1
+    it('should create a selector that returns an external article referenced by the given article fragment', () => {
+      expect(externalArticleFromArticleFragmentSelector(state, 'af1')).toEqual({
+        ...state.externalArticles.data.ea1,
+        meta: {},
+        frontPublicationDate: 1,
+        publishedBy: 'A. N. Author',
+        uuid: 'af1'
+      });
+      expect(externalArticleFromArticleFragmentSelector(state, 'invalid')).toEqual(
+        null
       );
-      expect(
-        externalArticleFromArticleFragmentSelector(state, 'invalid')
-      ).toEqual(null);
+    });
+  });
+
+  describe('createArticleFromArticleFragmentSelector', () => {
+    it('should create a selector that returns an article (externalArticle + articleFragment) referenced by the given article fragment', () => {
+      expect(articleFromArticleFragmentSelector(state, 'af1')).toEqual({
+        ...state.externalArticles.data.ea1,
+        meta: {},
+        frontPublicationDate: 1,
+        publishedBy: 'A. N. Author',
+        uuid: 'af1'
+      });
+      expect(articleFromArticleFragmentSelector(state, 'invalid')).toEqual(
+        null
+      );
     });
   });
 

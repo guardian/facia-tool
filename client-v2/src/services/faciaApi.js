@@ -171,7 +171,7 @@ function getArticles(articleIds: string[]): Promise<Array<ExternalArticle>> {
   ): Array<ExternalArticle> => {
     if (text) {
       return JSON.parse(text).response.results.map(result => ({
-        headline: result.webTitle,
+        headline: result.fields.headline,
         id: `internal-code/page/${result.fields.internalPageCode}`,
         isLive: result.fields.isLive === 'true',
         urlPath: result.id,
@@ -179,6 +179,8 @@ function getArticles(articleIds: string[]): Promise<Array<ExternalArticle>> {
         tone: result.frontsMeta && result.frontsMeta.tone,
         sectionName: result.sectionName,
         trailText: result.fields.trailText,
+        byline: result.fields.byline,
+        thumbnail: result.fields.thumbnail,
         elements: result.elements
       }));
     }
@@ -190,7 +192,7 @@ function getArticles(articleIds: string[]): Promise<Array<ExternalArticle>> {
     .join(',');
 
   const articlePromise = pandaFetch(
-    `/api/preview/search?ids=${articleIdsWithoutSnaps}&show-fields=internalPageCode,isLive,firstPublicationDate&show-elements=image&show-fields=trailText`,
+    `/api/preview/search?ids=${articleIdsWithoutSnaps}?show-elements=video,main&show-blocks=main&show-tags=all&show-atoms=media&show-fields=internalPageCode,isLive,firstPublicationDate,scheduledPublicationDate,headline,trailText,byline,thumbnail,secureThumbnail,liveBloggingNow,membershipAccess,shortUrl`,
     {
       method: 'get',
       credentials: 'same-origin'

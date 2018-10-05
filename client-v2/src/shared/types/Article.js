@@ -1,15 +1,13 @@
 // @flow
 
 import type { ExternalArticle } from './ExternalArticle';
+import type {
+  ArticleFragmentRootFields,
+  ArticleFragmentMeta
+} from './Collection';
 
-type Article = ExternalArticle & {
-  uuid: string,
-  id: string,
-  frontPublicationDate: number,
-  publishedBy?: string,
-  group?: number,
-  supporting: string[],
-  trailText: string
-};
+type Article = ExternalArticle &
+  ArticleFragmentRootFields &
+  ArticleFragmentMeta;
 
 export type { Article };
