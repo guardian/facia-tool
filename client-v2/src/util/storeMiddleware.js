@@ -43,7 +43,10 @@ const updateStateFromUrlChange: Middleware<State, Action> = ({
 type PersistMeta = {|
   // The resource to persist the data to
   persistTo: 'collection' | 'clipboard',
-  // The key to take from the action payload. Defaults to 'id'.
+  // The id to to search for in this resource
+  id?: string,
+  // The key to take from the action payload if id is not specified. Defaults to
+  // 'id'.
   key?: string,
   // Should we find collection parents before or after the reducer is called?
   // This is important when the relevant collection is affected by when the operation
@@ -98,7 +101,8 @@ const persistCollectionOnEdit: (
         // A sneaky 'any' here, as it's difficult to handle dynamic key
         // values with static action types.
         (act: any) =>
-          act.meta.key ? act.payload[act.meta.key] : act.payload.id
+          act.meta.id ||
+          (act.meta.key ? act.payload[act.meta.key] : act.payload.id)
       )
     );
     const collectionIds: string[] = articleFragmentIds.reduce((acc, id) => {

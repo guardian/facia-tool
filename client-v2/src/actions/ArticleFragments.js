@@ -105,19 +105,16 @@ const createInsertArticleFragment = (persistTo: 'collection' | 'clipboard') => (
   id: string,
   index: number
 ) => {
-  const insertAction = insertActionMap[parentType];
+  const insert = insertActionMap[parentType];
   const replaceAction = replaceActionMap[parentType];
   const selector = selectorMap[parentType];
-  if (!insertAction || !replaceAction || !selector) {
+  if (!insert || !replaceAction || !selector) {
     return () => {}; // noop
   }
 
-  const insert = addPersistMetaToAction(insertAction, {
-    persistTo
-  });
-
   const replace = addPersistMetaToAction(replaceAction, {
-    persistTo
+    persistTo,
+    id
   });
 
   return insertAndDedupeSiblings(
@@ -142,18 +139,12 @@ const createMoveArticleFragment = (persistTo: 'collection' | 'clipboard') => (
   index: number
 ) => {
   const selector = selectorMap[toParentType];
-  const removeAction = removeActionMap[fromParentType];
-  const insertAction = insertActionMap[toParentType];
+  const remove = removeActionMap[fromParentType];
+  const insert = insertActionMap[toParentType];
   const replaceAction = replaceActionMap[toParentType];
-  if (!selector || !removeAction || !insertAction || !replaceAction) {
+  if (!selector || !insert || !remove || !replaceAction) {
     return () => {};
   }
-  const remove = addPersistMetaToAction(removeAction, {
-    persistTo
-  });
-  const insert = addPersistMetaToAction(insertAction, {
-    persistTo
-  });
   const replace = addPersistMetaToAction(replaceAction, {
     persistTo
   });

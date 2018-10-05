@@ -132,6 +132,7 @@ function addArticleFragment(id: string, supporting: string[] = []) {
       });
 }
 
+// TODO: handle double dispatching in the same tick
 const insertAndDedupeSiblings = <T: { id: string, uuid: string }>(
   id: string,
   siblingsSelector: (state: State) => T[],
@@ -146,8 +147,8 @@ const insertAndDedupeSiblings = <T: { id: string, uuid: string }>(
     siblings.filter(child => child.id !== af.id || child.uuid === id),
     ({ id: dedupeKey }) => dedupeKey
   ).map(({ uuid }) => uuid);
-  if (deduped.length !== siblings.length)
-    dispatch(replaceActionCreator(deduped));
+  // always run this as this may have persist info
+  dispatch(replaceActionCreator(deduped));
 };
 
 export {
