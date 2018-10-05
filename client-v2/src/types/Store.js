@@ -8,5 +8,4 @@ export type Store = ReduxStore<State, Action>;
 export type GetState = () => State;
 // eslint-disable-next-line no-use-before-define
 export type Dispatch = <T>(action: Action | ThunkAction) => T;
-export type Thunk<A> = ((Dispatch, GetState) => Promise<void> | void) => A;
 export type ThunkAction = (dispatch: Dispatch, getState: GetState) => any;

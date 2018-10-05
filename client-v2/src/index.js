@@ -24,6 +24,10 @@ store.dispatch(configReceived(config));
 if (config.frontIds) {
   store.dispatch(editorSetOpenFronts(config.frontIds));
 }
+
+// This is broken because this a thunk and dispatch doesn't know about thunks
+// even though we're using the thunk middleware!
+// $FlowFixMe
 store.dispatch(storeClipboardContent(config.clipboardArticles));
 
 const reactMount = document.getElementById('react-mount');

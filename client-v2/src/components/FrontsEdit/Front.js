@@ -17,7 +17,8 @@ import { bindActionCreators } from 'redux';
 import { addArticleFragment } from 'shared/actions/ArticleFragments';
 import {
   insertArticleFragment,
-  moveArticleFragment
+  moveArticleFragment,
+  updateArticleFragmentMeta
 } from 'actions/ArticleFragments';
 import { urlToArticle } from 'util/collectionUtils';
 import type { AlsoOnDetail } from 'types/Collection';
@@ -26,6 +27,7 @@ import {
   selectEditorArticleFragment,
   editorClearArticleFragmentSelection
 } from 'bundles/frontsUIBundle';
+import type { ArticleFragmentMeta } from 'shared/types/Collection';
 import Front from './CollectionComponents/Front';
 import Collection from './CollectionComponents/Collection';
 import Group from './CollectionComponents/Group';
@@ -55,6 +57,7 @@ type FrontPropsBeforeState = {
 type FrontProps = FrontPropsBeforeState & {
   tree: Object, // TODO add typings,
   addArticleFragment: (id: string, supporting: string[]) => Promise<string>,
+  updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) => void,
   selectedArticleFragmentId: ?string,
   dispatch: Dispatch,
   selectArticleFragment: (id: string) => void,
@@ -134,6 +137,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   };
 
   render() {
+    const { selectedArticleFragmentId } = this.props;
     return (
       <React.Fragment>
         <div
@@ -190,9 +194,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                             getNodeProps={afNodeProps}
                             onSelect={this.props.selectArticleFragment}
                             isSelected={
-                              !this.props.selectedArticleFragmentId ||
-                              this.props.selectedArticleFragmentId ===
-                                articleFragment.uuid
+                              !selectedArticleFragmentId ||
+                              selectedArticleFragmentId === articleFragment.uuid
                             }
                           >
                             {(supporting, sNodeProps) => (
@@ -212,11 +215,17 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
             </Guration.Root>
           </FrontContentContainer>
           <FrontFormContainer>
-            {this.props.selectedArticleFragmentId && (
+            {selectedArticleFragmentId && (
               <ArticleFragmentForm
-                articleFragmentId={this.props.selectedArticleFragmentId}
-                key={this.props.selectedArticleFragmentId}
-                form={this.props.selectedArticleFragmentId}
+                articleFragmentId={selectedArticleFragmentId}
+                key={selectedArticleFragmentId}
+                form={selectedArticleFragmentId}
+                onSave={meta =>
+                  this.props.updateArticleFragmentMeta(
+                    selectedArticleFragmentId,
+                    meta
+                  )
+                }
                 onCancel={this.props.clearArticleFragmentSelection}
               />
             )}
@@ -243,7 +252,10 @@ const createMapStateToProps = () => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   dispatch,
-  ...bindActionCreators({ addArticleFragment }, dispatch),
+  ...bindActionCreators(
+    { addArticleFragment, updateArticleFragmentMeta },
+    dispatch
+  ),
   selectArticleFragment: (frontId: string, articleFragmentId: string) =>
     dispatch(editorSelectArticleFragment(frontId, articleFragmentId)),
   clearArticleFragmentSelection: (frontId: string) =>

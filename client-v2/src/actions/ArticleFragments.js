@@ -44,6 +44,13 @@ const updateArticleFragmentMetaWithPersist = addPersistMetaToAction(
   }
 );
 
+const updateClipboardArticleFragmentMetaWithPersist = addPersistMetaToAction(
+  updateArticleFragmentMeta,
+  {
+    persistTo: 'clipboard'
+  }
+);
+
 const removeSupportingArticleFragmentWithPersist = addPersistMetaToAction(
   removeSupportingArticleFragment,
   {
@@ -175,6 +182,7 @@ export {
   moveArticleFragment,
   moveClipboardArticleFragment,
   updateArticleFragmentMetaWithPersist as updateArticleFragmentMeta,
+  updateClipboardArticleFragmentMetaWithPersist as updateClipboardArticleFragmentMeta,
   removeSupportingArticleFragmentWithPersist as removeSupportingArticleFragment,
   removeGroupArticleFragmentWithPersist as removeGroupArticleFragment,
   removeClipboardArticleFragmentWithPersist as removeSupportingArticleFragmentFromClipboard
