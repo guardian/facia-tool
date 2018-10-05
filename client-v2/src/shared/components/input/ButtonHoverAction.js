@@ -4,13 +4,6 @@ import styled from 'styled-components';
 import ButtonCircular from './ButtonCircular';
 import hoverActionIcons from '../../images/icons-hover/index';
 
-const Link = styled(`a`).attrs({
-  target: '_blank',
-  rel: 'noopener noreferrer'
-})`
-  text-decoration: none;
-`;
-
 const Icon = styled('img')`
   width: 10px;
   display: inline-block;
@@ -33,11 +26,7 @@ ActionButton.defaultProps = {
 
 const ButtonHoverAction = ({ action, ...props }: { action: string }) => (
   <ActionButton {...props}>
-    <Icon src={hoverActionIcons[action]} alt="" />
-    {/* TODO: add links */}
-    {action === 'view' || action === 'ophan' ? (
-      <Link href="www.example.com" />
-    ) : null}
+    <Icon src={hoverActionIcons[action]} alt={`${action}`} />
   </ActionButton>
 );
 

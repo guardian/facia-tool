@@ -11,6 +11,8 @@ import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline'
 import toneColorMap from 'shared/util/toneColorMap';
 import ButtonHoverAction from 'shared/components/input/ButtonHoverAction';
 import { getThumbnail } from 'util/CAPIUtils';
+import { getPaths } from '../../util/paths';
+
 import {
   externalArticleFromArticleFragmentSelector,
   selectSharedState
@@ -49,6 +51,13 @@ const HoverActionsLeft = styled('div')`
 const HoverActionsRight = styled('div')`
   display: flex;
   justify-content: space-around;
+`;
+
+const Link = styled(`a`).attrs({
+  target: '_blank',
+  rel: 'noopener noreferrer'
+})`
+  text-decoration: none;
 `;
 
 const Thumbnail = styled('div')`
@@ -241,27 +250,30 @@ const ArticleComponent = ({
         )}
         <HoverActions>
           <HoverActionsLeft>
-            <ButtonHoverAction
-              action="view"
-              onClick={e => {
-                // stop the parent from opening the edit panel
-                e.stopPropagation();
-                // TODO click action
-              }}
-            />
-            <ButtonHoverAction
-              action="ophan"
-              onClick={e => {
-                // stop the parent from opening the edit panel
-                e.stopPropagation();
-                // TODO click action
-              }}
-            />
+            <Link
+              href={
+                article.isLive
+                  ? `https://www.theguardian.com/${article.urlPath}`
+                  : `https://preview.gutools.co.uk/${article.urlPath}`
+              }
+            >
+              <ButtonHoverAction action="view" />
+            </Link>
+            {article.isLive ? (
+              <Link
+                href={
+                  getPaths(`https://www.theguardian.com/${article.urlPath}`)
+                    .ophan
+                }
+              >
+                <ButtonHoverAction action="ophan" />
+              </Link>
+            ) : null}
           </HoverActionsLeft>
           <HoverActionsRight>
-            <ButtonHoverAction action="copy" />
+            {/* <ButtonHoverAction action="copy" />
             <ButtonHoverAction action="paste" />
-            <ButtonHoverAction action="clipboard" />
+            <ButtonHoverAction action="clipboard" /> */}
             <ButtonHoverAction
               action="delete"
               danger
