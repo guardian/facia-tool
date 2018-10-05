@@ -51,6 +51,10 @@ class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec:
 
 
     wsClient.url(url).withHttpHeaders(getPreviewHeaders(url): _*).get().map { response =>
+
+      if (response.status != OK) {
+        logger.error(s"Request to capi preview with url $url failed with response $response")
+      }
       Cached(60) {
         Ok(rewriteBody(response.body)).as("application/javascript")
       }
