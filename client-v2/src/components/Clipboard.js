@@ -1,6 +1,6 @@
 // @flow
 
-import { bindActionCreators } from 'redux';
+import { type Dispatch } from 'types/Store';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import * as Guration from 'lib/guration';
@@ -143,8 +143,9 @@ const mapStateToProps = (state: State) => ({
   tree: clipboardAsTreeSelector(state)
 });
 
-const mapDispatchToProps = (dispatch: *) => ({
-  ...bindActionCreators({ addArticleFragment }, dispatch),
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  addArticleFragment: (id: string, supporting: string[]) =>
+    dispatch(addArticleFragment(id, supporting)),
   dispatch
 });
 
