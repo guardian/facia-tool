@@ -16,11 +16,18 @@ import {
   insertClipboardArticleFragment,
   moveClipboardArticleFragment
 } from 'actions/ArticleFragments';
+import {
+  editorSelectArticleFragment,
+  selectEditorArticleFragment
+} from 'bundles/frontsUIBundle';
+import { clipboardId } from 'constants/fronts';
 
 type ClipboardPropsBeforeState = {};
 
 type ClipboardProps = ClipboardPropsBeforeState & {
   addArticleFragment: (id: string, supporting: string[]) => Promise<string>,
+  selectedArticleFragmentId: ?string,
+  selectArticleFragment: (id: string) => void,
   tree: Object, // TODO add typing,
   dispatch: Dispatch
 };
@@ -76,80 +83,87 @@ class Clipboard extends React.Component<ClipboardProps> {
   render() {
     const { tree } = this.props;
     return (
-      <div>
-        <Guration.Root
-          id="clipboard"
-          type="clipboard"
-          dedupeType="articleFragment"
-          onChange={this.handleChange}
-          mapIn={{
-            text: async text => urlToArticle(text),
-            capi: capi =>
-              Promise.resolve({ type: 'articleFragment', id: capi }),
-            collection: str => Promise.resolve(JSON.parse(str))
-          }}
-          mapOut={{
-            clipboard: (el, type) =>
-              JSON.stringify({
-                type,
-                id: el.id
-              })
-          }}
+      <Guration.Root
+        id="clipboard"
+        type="clipboard"
+        dedupeType="articleFragment"
+        onChange={this.handleChange}
+        mapIn={{
+          text: async text => urlToArticle(text),
+          capi: capi => Promise.resolve({ type: 'articleFragment', id: capi }),
+          collection: str => Promise.resolve(JSON.parse(str))
+        }}
+        mapOut={{
+          clipboard: (el, type) =>
+            JSON.stringify({
+              type,
+              id: el.id
+            })
+        }}
+      >
+        <Guration.Level
+          arr={tree.articleFragments || []}
+          type="articleFragment"
+          getKey={({ uuid }) => uuid}
+          renderDrop={(getDropProps, { canDrop, isTarget }) => (
+            <DropZone {...getDropProps()} override={!!canDrop && !!isTarget} />
+          )}
         >
-          <Guration.Level
-            arr={tree.articleFragments || []}
-            type="articleFragment"
-            getKey={({ uuid }) => uuid}
-            renderDrop={(getDropProps, { canDrop, isTarget }) => (
-              <DropZone
-                {...getDropProps()}
-                override={!!canDrop && !!isTarget}
-              />
-            )}
-          >
-            {(articleFragment, getArticleNodeProps) => (
-              <ArticlePolaroid
-                id={articleFragment.uuid}
-                {...getArticleNodeProps()}
+          {(articleFragment, getArticleNodeProps) => (
+            <ArticlePolaroid
+              id={articleFragment.uuid}
+              onSelect={this.props.selectArticleFragment}
+              {...getArticleNodeProps()}
+            >
+              <Guration.Level
+                arr={articleFragment.meta.supporting || []}
+                type="articleFragment"
+                getKey={({ uuid }) => uuid}
+                renderDrop={(getDropProps, { canDrop, isTarget }) => (
+                  <DropZone
+                    {...getDropProps()}
+                    override={!!canDrop && !!isTarget}
+                  />
+                )}
               >
-                <Guration.Level
-                  arr={articleFragment.meta.supporting || []}
-                  type="articleFragment"
-                  getKey={({ uuid }) => uuid}
-                  renderDrop={(getDropProps, { canDrop, isTarget }) => (
-                    <DropZone
-                      {...getDropProps()}
-                      override={!!canDrop && !!isTarget}
-                    />
-                  )}
-                >
-                  {(supporting, getSupportingNodeProps) => (
-                    <ArticlePolaroidSub
-                      id={supporting.uuid}
-                      {...getSupportingNodeProps()}
-                    />
-                  )}
-                </Guration.Level>
-              </ArticlePolaroid>
-            )}
-          </Guration.Level>
-        </Guration.Root>
-      </div>
+                {(supporting, getSupportingNodeProps) => (
+                  <ArticlePolaroidSub
+                    id={supporting.uuid}
+                    {...getSupportingNodeProps()}
+                  />
+                )}
+              </Guration.Level>
+            </ArticlePolaroid>
+          )}
+        </Guration.Level>
+      </Guration.Root>
     );
   }
 }
 
 const mapStateToProps = (state: State) => ({
-  tree: clipboardAsTreeSelector(state)
+  tree: clipboardAsTreeSelector(state),
+  selectedArticleFragmentId: selectEditorArticleFragment(state, clipboardId)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   addArticleFragment: (id: string, supporting: string[]) =>
     dispatch(addArticleFragment(id, supporting)),
+  selectArticleFragment: (frontId: string, articleFragmentId: string) =>
+    dispatch(editorSelectArticleFragment(frontId, articleFragmentId)),
   dispatch
+});
+
+const mergeProps = (stateProps, dispatchProps, props) => ({
+  ...props,
+  ...stateProps,
+  ...dispatchProps,
+  selectArticleFragment: (articleId: string) =>
+    dispatchProps.selectArticleFragment(clipboardId, articleId)
 });
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  mergeProps
 )(Clipboard);

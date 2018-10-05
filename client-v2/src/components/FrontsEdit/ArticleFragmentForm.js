@@ -13,7 +13,6 @@ import styled from 'styled-components';
 import omit from 'lodash/omit';
 import compact from 'lodash/compact';
 import pick from 'lodash/pick';
-
 import { updateArticleFragmentMeta } from 'actions/ArticleFragments';
 import ButtonPrimary from 'shared/components/input/ButtonPrimary';
 import ButtonDefault from 'shared/components/input/ButtonDefault';
@@ -39,7 +38,13 @@ import Col from '../Col';
 
 type Props = {|
   articleFragment: ArticleFragment,
+<<<<<<< HEAD
   imageSlideshowReplace: Boolean,
+=======
+  onCancel: () => void,
+  onSave: (meta: ArticleFragmentMeta) => void,
+  showSlideshowImages: Boolean,
+>>>>>>> Add a way of editing clipboard meta
   useCutout: Boolean,
   hideMedia: Boolean
 |} & FormProps;
@@ -334,7 +339,7 @@ const articleFragmentForm = reduxForm({
     const meta: ArticleFragmentMeta = getArticleFragmentMetaFromFormValues(
       values
     );
-    dispatch(updateArticleFragmentMeta(props.articleFragmentId, meta));
+    props.onSave(meta);
   }
 })(
   formValues({
