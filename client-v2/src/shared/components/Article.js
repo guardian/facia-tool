@@ -257,7 +257,7 @@ const ArticleComponent = ({
                   : `https://preview.gutools.co.uk/${article.urlPath}`
               }
             >
-              <ButtonHoverAction action="view" />
+              <ButtonHoverAction action="view" title="View" />
             </Link>
             {article.isLive ? (
               <Link
@@ -266,7 +266,7 @@ const ArticleComponent = ({
                     .ophan
                 }
               >
-                <ButtonHoverAction action="ophan" />
+                <ButtonHoverAction action="ophan" title="Ophan" />
               </Link>
             ) : null}
           </HoverActionsLeft>
@@ -282,6 +282,7 @@ const ArticleComponent = ({
                 e.stopPropagation();
                 onDelete();
               }}
+              title="Delete"
             >
               ✕
             </ButtonHoverAction>
