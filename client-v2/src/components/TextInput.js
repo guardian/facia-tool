@@ -44,6 +44,7 @@ const SmallRoundButtonBlack = SmallRoundButton.extend`
   background-color: #333333;
   :hover {
     background-color: #505050;
+  }
 `;
 
 const ButtonsContainer = styled('div')`
