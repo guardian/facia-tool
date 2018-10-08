@@ -2,7 +2,23 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import ButtonCircular from './ButtonCircular';
-import hoverActionIcons from '../../images/icons-hover/index';
+import {
+  View,
+  Ophan,
+  Copy,
+  Paste,
+  Clipboard,
+  Delete
+} from '../../images/icons-hover/index';
+
+const hoverActionIcons = {
+  view: View,
+  ophan: Ophan,
+  copy: Copy,
+  paste: Paste,
+  clipboard: Clipboard,
+  delete: Delete
+};
 
 const Icon = styled('img')`
   width: 10px;
