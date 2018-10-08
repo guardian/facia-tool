@@ -1,6 +1,5 @@
 // @flow
 
-import uniq from 'lodash/uniq';
 import isValid from 'date-fns/is_valid';
 import type {
   FrontsConfig,
@@ -185,9 +184,9 @@ function getArticles(articleIds: string[]): Promise<Array<ExternalArticle>> {
     return [];
   };
 
-  const articleIdsWithoutSnaps = uniq(
-    articleIds.filter(id => !id.match(/^snap/))
-  ).join(',');
+  const articleIdsWithoutSnaps = articleIds
+    .filter(id => !id.match(/^snap/))
+    .join(',');
 
   const articlePromise = pandaFetch(
     `/api/preview/search?ids=${articleIdsWithoutSnaps}&show-fields=internalPageCode,isLive,firstPublicationDate&show-elements=image&show-fields=trailText`,
