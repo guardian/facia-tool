@@ -10,7 +10,7 @@ import startCase from 'lodash/startCase';
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 import toneColorMap from 'shared/util/toneColorMap';
 import ButtonHoverAction from 'shared/components/input/ButtonHoverAction';
-import { getThumbnail } from 'util/CAPIUtils';
+import { getThumbnailFromElements } from 'util/CAPIUtils';
 import { getPaths } from '../../util/paths';
 
 import {
