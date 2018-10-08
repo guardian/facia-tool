@@ -1,16 +1,7 @@
 // @flow
 
-import type { Element } from 'services/capiQuery';
+import type { CapiArticle } from 'types/Capi';
 
-type ExternalArticle = {
-  id: string,
-  headline: string,
-  isLive: boolean,
-  urlPath: string,
-  firstPublicationDate?: string,
-  tone: string,
-  sectionName: string,
-  elements?: Element[]
-};
+type ExternalArticle = CapiArticle;
 
 export type { ExternalArticle };

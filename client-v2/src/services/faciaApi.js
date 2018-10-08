@@ -1,11 +1,13 @@
 // @flow
 
 import isValid from 'date-fns/is_valid';
+import uniq from 'lodash/uniq';
 import type {
   FrontsConfig,
   FrontsConfigResponse,
   FrontConfigMap
 } from 'types/FaciaApi';
+import type { CapiArticle } from 'types/Capi';
 import type { ExternalArticle } from 'shared/types/ExternalArticle';
 import type {
   CollectionResponse,

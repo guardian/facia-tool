@@ -73,7 +73,9 @@ const state = {
       id: 'ea1',
       frontPublicationDate: 1,
       publishedBy: 'A. N. Author',
-      meta: {}
+      meta: {
+        headline: 'Replaced headline'
+      }
     },
     afWithInvalidReference: {
       uuid: 'afWithInvalidReference',
@@ -176,16 +178,12 @@ describe('Shared selectors', () => {
 
   describe('createExternalArticleFromArticleFragmentSelector', () => {
     it('should create a selector that returns an external article referenced by the given article fragment', () => {
-      expect(externalArticleFromArticleFragmentSelector(state, 'af1')).toEqual({
-        ...state.externalArticles.data.ea1,
-        meta: {},
-        frontPublicationDate: 1,
-        publishedBy: 'A. N. Author',
-        uuid: 'af1'
-      });
-      expect(externalArticleFromArticleFragmentSelector(state, 'invalid')).toEqual(
-        null
+      expect(externalArticleFromArticleFragmentSelector(state, 'af1')).toEqual(
+        state.externalArticles.data.ea1
       );
+      expect(
+        externalArticleFromArticleFragmentSelector(state, 'invalid')
+      ).toEqual(null);
     });
   });
 
@@ -193,10 +191,10 @@ describe('Shared selectors', () => {
     it('should create a selector that returns an article (externalArticle + articleFragment) referenced by the given article fragment', () => {
       expect(articleFromArticleFragmentSelector(state, 'af1')).toEqual({
         ...state.externalArticles.data.ea1,
-        meta: {},
         frontPublicationDate: 1,
         publishedBy: 'A. N. Author',
-        uuid: 'af1'
+        uuid: 'af1',
+        headline: 'Replaced headline'
       });
       expect(articleFromArticleFragmentSelector(state, 'invalid')).toEqual(
         null
@@ -305,15 +303,7 @@ describe('Shared selectors', () => {
                 {
                   id: 'group2',
                   uuid: 'g2',
-                  articleFragments: [
-                    {
-                      uuid: 'af1',
-                      id: 'ea1',
-                      frontPublicationDate: 1,
-                      publishedBy: 'A. N. Author',
-                      meta: {}
-                    }
-                  ]
+                  articleFragments: [state.articleFragments.af1]
                 }
               ]
             }

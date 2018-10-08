@@ -41,7 +41,10 @@ const externalArticleFromArticleFragmentSelector = (
   return externalArticles[articleFragment.id];
 };
 
-const articleFromArticleFragmentSelector = (state: State, id: string): ?Article => {
+const articleFromArticleFragmentSelector = (
+  state: State,
+  id: string
+): ?Article => {
   const externalArticle = externalArticleFromArticleFragmentSelector(state, id);
   const articleFragment = articleFragmentSelector(state, id);
   if (!externalArticle || !articleFragment) {
@@ -49,13 +52,16 @@ const articleFromArticleFragmentSelector = (state: State, id: string): ?Article 
   }
 
   return {
-    ...externalArticle,
+    ...omit(externalArticle, 'fields'),
     ...omit(articleFragment, 'meta'),
-    headline: articleFragment.meta.headline || externalArticle.headline,
-    thumbnail: getArticleThumbnail(externalArticle),
-
-  }
-}
+    ...externalArticle.fields,
+    headline: articleFragment.meta.headline || externalArticle.fields.headline,
+    trailText: articleFragment.meta.trailText || externalArticle.fields.trailText,
+    byline: articleFragment.meta.byline || externalArticle.fields.byline,
+    kicker: articleFragment.meta.customKicker || externalArticle.pillarName,
+    tone: externalArticle.frontsMeta.tone
+  };
+};
 
 const collectionIdSelector = (_, { collectionId }: { collectionId: string }) =>
   collectionId;
@@ -219,6 +225,7 @@ const createCollectionsAsTreeSelector = () =>
 
 export {
   externalArticleFromArticleFragmentSelector,
+  articleFromArticleFragmentSelector,
   createArticlesInCollectionGroupSelector,
   createArticlesInCollectionSelector,
   groupArticlesSelector,

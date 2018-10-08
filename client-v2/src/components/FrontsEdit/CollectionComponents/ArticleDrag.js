@@ -3,7 +3,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {
-  externalArticleFromArticleFragmentSelector,
+  articleFromArticleFragmentSelector,
   selectSharedState
 } from 'shared/selectors/shared';
 import type { State } from 'types/State';
@@ -40,7 +40,7 @@ const createMapStateToProps = () => (
   state: State,
   props: ContainerProps
 ): { article: ?Article } => ({
-  article: externalArticleFromArticleFragmentSelector(
+  article: articleFromArticleFragmentSelector(
     selectSharedState(state),
     props.id
   )

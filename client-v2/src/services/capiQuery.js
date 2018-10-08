@@ -1,54 +1,16 @@
 // @flow
 
 import { qs } from 'util/qs';
+import type { CapiArticle, Tag } from 'types/Capi';
 
 const API_BASE = 'https://content.guardianapis.com/';
 
 type Fetch = (path: string) => Promise<Response>;
 
-type ImageAsset = {
-  type: 'image',
-  mimeType: string,
-  file: string,
-  typeData: {
-    width: string,
-    number: string
-  }
-};
-
-type ImageElement = {
-  id: string,
-  relation: string,
-  type: 'image',
-  assets: ImageAsset[]
-};
-
-type Element = ImageElement;
-
-type Article = {
-  webTitle: string,
-  webUrl: string,
-  webPublicationDate?: string,
-  elements?: Element[],
-  fields?: {
-    trailText?: string,
-    internalPageCode: string
-  },
-  frontsMeta: {
-    tone: string
-  }
-};
-
 type CAPISearchQueryReponse = {
   response: {
-    results: Article[]
+    results: CapiArticle[]
   }
-};
-
-type Tag = {
-  id: string,
-  webTitle: string,
-  webUrl: string
 };
 
 type CAPITagQueryReponse = {
@@ -90,5 +52,5 @@ const capiQuery = (
   }
 });
 
-export type { Fetch, Element };
+export type { Fetch, Element, CapiArticle };
 export default capiQuery;

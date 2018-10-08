@@ -14,7 +14,7 @@ import { getThumbnailFromElements } from 'util/CAPIUtils';
 import { getPaths } from '../../util/paths';
 
 import {
-  externalArticleFromArticleFragmentSelector,
+  articleFromArticleFragmentSelector,
   selectSharedState
 } from '../selectors/shared';
 import type { State } from '../types/State';
@@ -294,7 +294,7 @@ const createMapStateToProps = () => (
   state: State,
   props: ContainerProps
 ): { article: ?Article } => ({
-  article: externalArticleFromArticleFragmentSelector(
+  article: articleFromArticleFragmentSelector(
     props.selectSharedState
       ? props.selectSharedState(state)
       : selectSharedState(state),
