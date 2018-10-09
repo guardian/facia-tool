@@ -107,18 +107,16 @@ const getCollectionsAndArticles = (collectionIds: Array<string>) => (
   dispatch: Dispatch
 ) =>
   Promise.all(
-    collectionIds.map(collectionId =>
-      dispatch(getCollection(collectionId))
-        .then(articleIds => {
-          dispatch(externalArticleActions.fetchStart(articleIds));
-          return getArticles(articleIds).catch(error =>
-            dispatch(externalArticleActions.fetchError(error, articleIds))
-          );
-        })
-        .then(articles => {
-          dispatch(externalArticleActions.fetchSuccess(articles));
-        })
-    )
+    collectionIds.map(async collectionId => {
+      const articleIds = await dispatch(getCollection(collectionId));
+      dispatch(externalArticleActions.fetchStart(articleIds));
+      try {
+        const articles = getArticles(articleIds);
+        dispatch(externalArticleActions.fetchSuccess(articles));
+      } catch (e) {
+        dispatch(externalArticleActions.fetchError(e, articleIds));
+      }
+    })
   );
 
 export { getCollection, getCollectionsAndArticles, updateCollection };
