@@ -10,7 +10,6 @@ import startCase from 'lodash/startCase';
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 import toneColorMap from 'shared/util/toneColorMap';
 import ButtonHoverAction from 'shared/components/input/ButtonHoverAction';
-import { getThumbnailFromElements } from 'util/CAPIUtils';
 import { getPaths } from '../../util/paths';
 
 import {
@@ -242,9 +241,7 @@ const ArticleComponent = ({
         {size === 'default' && (
           <Thumbnail
             style={{
-              backgroundImage:
-                article.elements &&
-                `url('${getThumbnailFromElements(article.elements) || ''}')`
+              backgroundImage: `url('${article.thumbnail}')`
             }}
           />
         )}

@@ -2,9 +2,10 @@
 
 import omit from 'lodash/omit';
 import { createSelector } from 'reselect';
+
+import { getThumbnail } from 'util/CAPIUtils';
 import { selectors as externalArticleSelectors } from '../bundles/externalArticlesBundle';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
-
 import type { ExternalArticle } from '../types/ExternalArticle';
 import type { Article } from '../types/Article';
 import type { ArticleFragment } from '../types/Collection';
@@ -53,16 +54,18 @@ const articleFromArticleFragmentSelector = (
 
   return {
     ...omit(externalArticle, 'fields'),
-    ...omit(articleFragment, 'meta'),
     ...externalArticle.fields,
+    ...omit(articleFragment, 'meta'),
+    ...articleFragment.meta,
     headline: articleFragment.meta.headline || externalArticle.fields.headline,
-    trailText: articleFragment.meta.trailText || externalArticle.fields.trailText,
+    trailText:
+      articleFragment.meta.trailText || externalArticle.fields.trailText,
     byline: articleFragment.meta.byline || externalArticle.fields.byline,
     kicker: articleFragment.meta.customKicker || externalArticle.pillarName,
-    tone: externalArticle.frontsMeta.tone
+    tone: externalArticle.frontsMeta.tone,
+    thumbnail: getThumbnail(articleFragment, externalArticle)
   };
 };
-
 const collectionIdSelector = (_, { collectionId }: { collectionId: string }) =>
   collectionId;
 

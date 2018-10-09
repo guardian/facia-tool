@@ -19,12 +19,7 @@ type ImageElement = {|
 
 type Element = ImageElement;
 
-type CapiDate = {|
-  // Unix epoch
-  dateTime: number,
-  // yyyy-MM-dd`T`HH:mm:ss.SSSZZ
-  iso8601: string
-|};
+type CapiDate = string;
 
 type User = {|
   email: string,
@@ -39,10 +34,10 @@ type Block = {|
   title?: string,
   attributes: any[],
   published: boolean,
-  createdDate?: CAPIDate,
-  firstPublishedDate?: CAPIDate,
-  publishedDate: ?CAPIDate,
-  lastModifiedDate?: CAPIDate,
+  createdDate?: CapiDate,
+  firstPublishedDate?: CapiDate,
+  publishedDate?: CapiDate,
+  lastModifiedDate?: CapiDate,
   contributors: string[],
   createdBy?: User,
   lastModifiedBy?: User,
@@ -56,8 +51,11 @@ type Blocks = {|
 
 type Tag = {
   id: string,
+  type: string,
   webTitle: string,
-  webUrl: string
+  webUrl: string,
+  bylineImageUrl?: string,
+  bylineLargeImageUrl?: string
 };
 
 type CapiArticleFields = {
@@ -83,7 +81,7 @@ type CapiArticle = {|
   webUrl: string,
   urlPath: string,
   webPublicationDate?: string,
-  elements?: Element[],
+  elements: Element[],
   pillarId: string,
   pillarName: string,
   sectionId: string,

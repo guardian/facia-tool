@@ -58,15 +58,15 @@ type ArticleFragmentMeta = {|
   }[]
 |};
 
-type ArticleFragmentRootFields = NestedArticleFragmentRootFields & {
+type ArticleFragmentRootFields = NestedArticleFragmentRootFields & {|
   uuid: string
-};
+|};
 
-type ArticleFragment = ArticleFragmentRootFields & {
+type ArticleFragment = ArticleFragmentRootFields & {|
   meta: {
     supporting?: string[]
   } & ArticleFragmentMeta
-};
+|};
 
 type CollectionResponse = {
   live: NestedArticleFragment[],
