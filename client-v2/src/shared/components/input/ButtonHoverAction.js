@@ -27,12 +27,14 @@ const Icon = styled('img')`
 `;
 
 const ActionButton = ButtonCircular.extend`
-  background: ${({ danger }) => (danger ? '#ff7f0f' : '#333333')};
+  background: ${({ danger }: { danger: boolean }) =>
+    danger ? '#ff7f0f' : '#333333'};
   color: #fff;
   margin: 1.5px;
   line-height: 1;
   &:hover {
-    background: ${({ danger }) => (danger ? '#e05e00' : '#767676')};
+    background: ${({ danger }: { danger: boolean }) =>
+      danger ? '#e05e00' : '#767676'};
   }
 `;
 
@@ -40,9 +42,14 @@ ActionButton.defaultProps = {
   danger: false
 };
 
-const ButtonHoverAction = ({ action, ...props }: { action: string }) => (
+type Props = {
+  action: string,
+  title: string
+};
+
+const ButtonHoverAction = (props: Props) => (
   <ActionButton {...props}>
-    <Icon src={hoverActionIcons[action]} alt={`${action}`} />
+    <Icon src={hoverActionIcons[props.action]} alt={`${props.action}`} />
   </ActionButton>
 );
 

@@ -1,3 +1,4 @@
+// @flow
 export { default as View } from './icon-hover-view.svg';
 export { default as Ophan } from './icon-hover-ophan.svg';
 export { default as Copy } from './icon-hover-copy.svg';

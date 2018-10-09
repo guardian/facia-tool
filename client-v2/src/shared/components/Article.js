@@ -271,21 +271,16 @@ const ArticleComponent = ({
             ) : null}
           </HoverActionsLeft>
           <HoverActionsRight>
-            {/* <ButtonHoverAction action="copy" />
-            <ButtonHoverAction action="paste" />
-            <ButtonHoverAction action="clipboard" /> */}
             <ButtonHoverAction
               action="delete"
               danger
-              onClick={e => {
+              onClick={(e: SyntheticEvent<>) => {
                 // stop the parent from opening the edit panel
                 e.stopPropagation();
                 onDelete();
               }}
               title="Delete"
-            >
-              ✕
-            </ButtonHoverAction>
+            />
           </HoverActionsRight>
         </HoverActions>
       </ArticleBodyContainer>
