@@ -9,7 +9,10 @@ import startCase from 'lodash/startCase';
 
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 import toneColorMap from 'shared/util/toneColorMap';
+import ButtonHoverAction from 'shared/components/input/ButtonHoverAction';
 import { getThumbnailFromElements } from 'util/CAPIUtils';
+import { getPaths } from '../../util/paths';
+
 import {
   externalArticleFromArticleFragmentSelector,
   selectSharedState
@@ -35,30 +38,27 @@ type ComponentProps = {
 
 const HoverActions = styled('div')`
   display: flex;
-  padding: 10px;
+  justify-content: space-between;
+  align-content: flex-end;
+  padding: 0 10px 8px;
 `;
 
-const ActionButton = styled('button')`
-  appearance: none;
-  background: ${({ danger }) => (danger ? '#ff7f0f' : '#767676')};
-  border: none;
-  border-radius: 50%;
-  color: #fff;
-  cursor: pointer;
-  font-weight: bold;
-  height: 24px;
-  line-height: 1;
-  margin: 0;
-  width: 24px;
-
-  &:hover {
-    background: ${({ danger }) => (danger ? '#e05e00' : '#333333')};
-  }
+const HoverActionsLeft = styled('div')`
+  display: flex;
+  justify-content: space-around;
 `;
 
-ActionButton.defaultProps = {
-  danger: false
-};
+const HoverActionsRight = styled('div')`
+  display: flex;
+  justify-content: space-around;
+`;
+
+const Link = styled(`a`).attrs({
+  target: '_blank',
+  rel: 'noopener noreferrer'
+})`
+  text-decoration: none;
+`;
 
 const Thumbnail = styled('div')`
   width: 130px;
@@ -249,16 +249,39 @@ const ArticleComponent = ({
           />
         )}
         <HoverActions>
-          <ActionButton
-            danger
-            onClick={e => {
-              // stop the parent from opening the edit panel
-              e.stopPropagation();
-              onDelete();
-            }}
-          >
-            ✕
-          </ActionButton>
+          <HoverActionsLeft>
+            <Link
+              href={
+                article.isLive
+                  ? `https://www.theguardian.com/${article.urlPath}`
+                  : `https://preview.gutools.co.uk/${article.urlPath}`
+              }
+            >
+              <ButtonHoverAction action="view" title="View" />
+            </Link>
+            {article.isLive ? (
+              <Link
+                href={
+                  getPaths(`https://www.theguardian.com/${article.urlPath}`)
+                    .ophan
+                }
+              >
+                <ButtonHoverAction action="ophan" title="Ophan" />
+              </Link>
+            ) : null}
+          </HoverActionsLeft>
+          <HoverActionsRight>
+            <ButtonHoverAction
+              action="delete"
+              danger
+              onClick={(e: SyntheticEvent<>) => {
+                // stop the parent from opening the edit panel
+                e.stopPropagation();
+                onDelete();
+              }}
+              title="Delete"
+            />
+          </HoverActionsRight>
         </HoverActions>
       </ArticleBodyContainer>
       {children}

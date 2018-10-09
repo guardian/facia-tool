@@ -174,6 +174,7 @@ function getArticles(articleIds: string[]): Promise<Array<ExternalArticle>> {
         headline: result.webTitle,
         id: `internal-code/page/${result.fields.internalPageCode}`,
         isLive: result.fields.isLive === 'true',
+        urlPath: result.id,
         firstPublicationDate: result.fields.firstPublicationDate,
         tone: result.frontsMeta.tone,
         sectionName: result.sectionName,
