@@ -1,5 +1,6 @@
 // @flow
 
+import get from 'lodash/get';
 import { getArticles } from 'services/faciaApi';
 import type { Element } from 'types/Capi';
 import type { ExternalArticle } from '../shared/types/ExternalArticle';

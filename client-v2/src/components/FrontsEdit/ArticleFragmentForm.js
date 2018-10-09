@@ -38,13 +38,10 @@ import Col from '../Col';
 
 type Props = {|
   articleFragment: ArticleFragment,
-<<<<<<< HEAD
-  imageSlideshowReplace: Boolean,
-=======
+  showSlideshowImages: Boolean,
   onCancel: () => void,
   onSave: (meta: ArticleFragmentMeta) => void,
-  showSlideshowImages: Boolean,
->>>>>>> Add a way of editing clipboard meta
+  imageSlideshowReplace: Boolean,
   useCutout: Boolean,
   hideMedia: Boolean
 |} & FormProps;
