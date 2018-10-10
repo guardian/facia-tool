@@ -43,4 +43,44 @@ const getThumbnailFromElements = (_elements: Element[]) => {
   return smallestAsset && smallestAsset.file;
 };
 
-export { getURLInternalPageCode, getThumbnailFromElements };
+function getContributorImage(externalArticle: ExternalArticle) {
+  const contributor =
+    externalArticle.tags &&
+    externalArticle.tags.find(tag => tag.type === 'contributor');
+
+  return contributor && contributor.bylineLargeImageUrl;
+}
+
+function getThumbnail(
+  articleFragment: ArticleFragment,
+  externalArticle: ExternalArticle
+) {
+  const { meta } = articleFragment;
+  const { fields } = externalArticle;
+  const isReplacingImage = meta.imageReplace;
+  const metaImageSrcThumb = isReplacingImage && meta.imageSrcThumb;
+  const imageSrc = isReplacingImage && meta.imageSrc;
+
+  if (metaImageSrcThumb && metaImageSrcThumb !== '') {
+    return metaImageSrcThumb;
+  } else if (imageSrc) {
+    return imageSrc;
+  } else if (meta.imageCutoutReplace) {
+    return (
+      meta.imageCutoutSrc ||
+      getContributorImage(externalArticle) ||
+      fields.secureThumbnail ||
+      fields.thumbnail
+    );
+  } else if (
+    meta.imageSlideshowReplace &&
+    meta.imageSlideshowReplace &&
+    meta.slideshow &&
+    meta.slideshow[0]
+  ) {
+    return meta.slideshow[0].src;
+  }
+  return fields.secureThumbnail || fields.thumbnail;
+}
+
+export { getURLInternalPageCode, getThumbnailFromElements, getThumbnail };

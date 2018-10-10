@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import noop from 'lodash/noop';
 import truncate from 'lodash/truncate';
 import {
-  externalArticleFromArticleFragmentSelector,
+  articleFromArticleFragmentSelector,
   selectSharedState
 } from '../selectors/shared';
 import type { State } from '../types/State';
@@ -72,7 +72,7 @@ const createMapStateToProps = () => (
   state: State,
   props: ContainerProps
 ): { article: ?Article } => ({
-  article: externalArticleFromArticleFragmentSelector(
+  article: articleFromArticleFragmentSelector(
     props.selectSharedState
       ? props.selectSharedState(state)
       : selectSharedState(state),

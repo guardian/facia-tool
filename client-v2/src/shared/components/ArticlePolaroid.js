@@ -6,9 +6,8 @@ import { connect } from 'react-redux';
 import noop from 'lodash/noop';
 import truncate from 'lodash/truncate';
 
-import { getThumbnailFromElements } from 'util/CAPIUtils';
 import {
-  externalArticleFromArticleFragmentSelector,
+  articleFromArticleFragmentSelector,
   selectSharedState
 } from '../selectors/shared';
 import type { State } from '../types/State';
@@ -57,9 +56,7 @@ const ArticleComponent = ({
       onDragOver={onDragOver}
       onDrop={onDrop}
     >
-      {article.elements && (
-        <Thumbnail src={getThumbnailFromElements(article.elements)} alt="" />
-      )}
+      <Thumbnail src={article.thumbnail} alt="" />
       {truncate(article.headline, { length: 45 })}
       {children}
     </BodyContainer>
@@ -71,7 +68,7 @@ const createMapStateToProps = () => (
   state: State,
   props: ContainerProps
 ): { article: ?Article } => ({
-  article: externalArticleFromArticleFragmentSelector(
+  article: articleFromArticleFragmentSelector(
     props.selectSharedState
       ? props.selectSharedState(state)
       : selectSharedState(state),
