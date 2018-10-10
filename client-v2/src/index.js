@@ -24,6 +24,8 @@ store.dispatch(configReceived(config));
 if (config.frontIds) {
   store.dispatch(editorSetOpenFronts(config.frontIds));
 }
+
+// $FlowFixMe
 store.dispatch(storeClipboardContent(config.clipboardArticles));
 
 const reactMount = document.getElementById('react-mount');
