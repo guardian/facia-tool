@@ -53,7 +53,7 @@ const articleFromArticleFragmentSelector = (
   }
 
   return {
-    ...omit(externalArticle, 'fields'),
+    ...omit(externalArticle, 'fields', 'frontsMeta'),
     ...externalArticle.fields,
     ...omit(articleFragment, 'meta'),
     ...articleFragment.meta,
