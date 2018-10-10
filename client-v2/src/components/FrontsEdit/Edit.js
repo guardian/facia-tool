@@ -37,7 +37,7 @@ const FrontsEditContainer = styled('div')`
 
 const SingleFrontContainer = styled('div')`
   height: 100%;
-  width: 1011px;
+  min-width: 1011px;
 `;
 
 const FeedContainer = SectionContainer.extend`
