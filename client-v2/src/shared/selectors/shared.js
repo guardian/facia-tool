@@ -7,7 +7,7 @@ import { getThumbnail } from 'util/CAPIUtils';
 import { selectors as externalArticleSelectors } from '../bundles/externalArticlesBundle';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 import type { ExternalArticle } from '../types/ExternalArticle';
-import type { Article } from '../types/Article';
+import type { DerivedArticle } from '../types/Article';
 import type { ArticleFragment } from '../types/Collection';
 import type { State } from '../types/State';
 
@@ -45,7 +45,7 @@ const externalArticleFromArticleFragmentSelector = (
 const articleFromArticleFragmentSelector = (
   state: State,
   id: string
-): ?Article => {
+): ?DerivedArticle => {
   const externalArticle = externalArticleFromArticleFragmentSelector(state, id);
   const articleFragment = articleFragmentSelector(state, id);
   if (!externalArticle || !articleFragment) {

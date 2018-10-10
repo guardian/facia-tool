@@ -7,14 +7,14 @@ import {
   selectSharedState
 } from 'shared/selectors/shared';
 import type { State } from 'types/State';
-import type { Article } from 'shared/types/Article';
+import type { DerivedArticle } from 'shared/types/Article';
 
 type ContainerProps = {
   id: string // eslint-disable-line react/no-unused-prop-types
 };
 
 type ComponentProps = {
-  article: ?Article
+  article: ?DerivedArticle
 } & ContainerProps;
 
 const ArticleDrag = ({ article }: ComponentProps) =>
@@ -39,7 +39,7 @@ const ArticleDrag = ({ article }: ComponentProps) =>
 const createMapStateToProps = () => (
   state: State,
   props: ContainerProps
-): { article: ?Article } => ({
+): { article: ?DerivedArticle } => ({
   article: articleFromArticleFragmentSelector(
     selectSharedState(state),
     props.id

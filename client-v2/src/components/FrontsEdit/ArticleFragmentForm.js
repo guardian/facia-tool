@@ -23,7 +23,7 @@ import {
   articleFromArticleFragmentSelector,
   selectSharedState
 } from 'shared/selectors/shared';
-import type { Article } from 'shared/types/Article';
+import type { DerivedArticle } from 'shared/types/Article';
 import type {
   ArticleFragment,
   ArticleFragmentMeta
@@ -263,7 +263,7 @@ const formComponent = ({
 
 const defaultMeta = {};
 
-const getInitialValuesForArticleFragmentForm = (article: ?Article) => {
+const getInitialValuesForArticleFragmentForm = (article: ?DerivedArticle) => {
   if (!article) {
     return {};
   }
@@ -304,26 +304,29 @@ const getInitialValuesForArticleFragmentForm = (article: ?Article) => {
     : defaultMeta;
 };
 
-const getArticleFragmentMetaFromFormValues = (values): Article =>
-  omit(
+const getArticleFragmentMetaFromFormValues = (values): DerivedArticle => {
+  const primaryImage = values.primaryImage || {};
+  const cutoutImage = values.cutoutImage || {};
+  return omit(
     {
       ...values,
       imageReplace: !values.hideMedia,
       showKickerCustom: !!values.customKicker,
-      imageSrc: values.primaryImage.src,
-      imageSrcThumb: values.primaryImage.thumb,
-      imageSrcWidth: values.primaryImage.width,
-      imageSrcHeight: values.primaryImage.height,
-      imageSrcOrigin: values.primaryImage.origin,
-      imageCutoutSrc: values.cutoutImage.src,
-      imageCutoutSrcWidth: values.cutoutImage.width,
-      imageCutoutSrcHeight: values.cutoutImage.height,
-      imageCutoutSrcOrigin: values.cutoutImage.origin,
+      imageSrc: primaryImage.src,
+      imageSrcThumb: primaryImage.thumb,
+      imageSrcWidth: primaryImage.width,
+      imageSrcHeight: primaryImage.height,
+      imageSrcOrigin: primaryImage.origin,
+      imageCutoutSrc: cutoutImage.src,
+      imageCutoutSrcWidth: cutoutImage.width,
+      imageCutoutSrcHeight: cutoutImage.height,
+      imageCutoutSrcOrigin: cutoutImage.origin,
       slideshow: compact(values.slideshow)
     },
     'primaryImage',
     'cutoutImage'
   );
+};
 
 const articleFragmentForm = reduxForm({
   destroyOnUnmount: false,

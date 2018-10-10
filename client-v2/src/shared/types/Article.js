@@ -7,7 +7,7 @@ import type {
   ArticleFragmentMeta
 } from './Collection';
 
-type Article = $Diff<
+type DerivedArticle = $Diff<
   ExternalArticle,
   { fields: any, blocks: any, tags: any, elements: any, frontsMeta: any }
 > &
@@ -19,4 +19,4 @@ type Article = $Diff<
     kicker: string
   };
 
-export type { Article };
+export type { DerivedArticle };
