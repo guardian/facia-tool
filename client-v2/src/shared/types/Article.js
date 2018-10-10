@@ -15,7 +15,8 @@ type Article = $Diff<
   ArticleFragmentRootFields &
   ArticleFragmentMeta & {
     tone: string,
-    thumbnail: string
+    thumbnail: string,
+    kicker: string
   };
 
 export type { Article };

@@ -222,7 +222,7 @@ const ArticleComponent = ({
         <ArticleContentContainer>
           <ArticleHeadingContainer>
             <KickerHeading style={{ color: toneColorMap[article.tone] }}>
-              {article.sectionName}
+              {article.kicker}
             </KickerHeading>
             &nbsp;
             {size === 'default' ? (
