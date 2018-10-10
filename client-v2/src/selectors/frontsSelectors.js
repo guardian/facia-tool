@@ -28,6 +28,7 @@ const getFrontsByPriority = createSelector(
   [getFronts],
   (fronts: FrontConfigMap): FrontsByPriority =>
     Object.keys(fronts)
+      .sort()
       .filter(id => id !== breakingNewsFrontId)
       .reduce((acc: FrontsByPriority, id): FrontsByPriority => {
         const front = fronts[id];
