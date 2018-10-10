@@ -1,5 +1,6 @@
 // @flow
 
+import uniq from 'lodash/uniq';
 import { batchActions } from 'redux-batched-actions';
 import {
   getArticles,
@@ -60,8 +61,11 @@ function getCollection(collectionId: string) {
             groupsReceived(groups)
           ])
         );
-        return Object.keys(articleFragments).map(
-          afId => articleFragments[afId].id
+
+        // We dedupe ids here to ensure that articles aren't requested twice,
+        // e.g. multiple articles containing the same supporting article.
+        return uniq(
+          Object.keys(articleFragments).map(afId => articleFragments[afId].id)
         );
       })
       .catch((error: string) => {
