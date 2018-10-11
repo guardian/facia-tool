@@ -52,6 +52,7 @@ function getCollection(collectionId: string) {
           articleFragments,
           groups
         } = normaliseCollectionWithNestedArticles(collectionWithDraftArticles);
+
         dispatch(
           batchActions([
             collectionActions.fetchSuccess(collection),
@@ -75,35 +76,32 @@ function getCollection(collectionId: string) {
 }
 
 function updateCollection(collection: Collection) {
-  return async (
-  dispatch: Dispatch,
-  getState: () => State
-) => {
-  const state = getState();
-  dispatch(
-    batchActions([
-      collectionActions.updateStart({
-        ...collection,
-        updatedEmail: selectUserEmail(getState()),
-        updatedBy: `${selectFirstName(state)} ${selectLastName(state)}`,
-        lastUpdated: Date.now()
-      }),
-      recordUnpublishedChanges(collection.id, true)
-    ])
-  );
-  try {
-    const denormalisedCollection = denormaliseCollection(
-      getState(),
-      collection.id
+  return async (dispatch: Dispatch, getState: () => State) => {
+    const state = getState();
+    dispatch(
+      batchActions([
+        collectionActions.updateStart({
+          ...collection,
+          updatedEmail: selectUserEmail(getState()),
+          updatedBy: `${selectFirstName(state)} ${selectLastName(state)}`,
+          lastUpdated: Date.now()
+        }),
+        recordUnpublishedChanges(collection.id, true)
+      ])
     );
-    await updateCollectionFromApi(collection.id, denormalisedCollection);
-    dispatch(collectionActions.updateSuccess(collection.id));
-  } catch (e) {
-    dispatch(collectionActions.updateError(e, collection.id));
-    throw e;
-  }
-};
-};
+    try {
+      const denormalisedCollection = denormaliseCollection(
+        getState(),
+        collection.id
+      );
+      await updateCollectionFromApi(collection.id, denormalisedCollection);
+      dispatch(collectionActions.updateSuccess(collection.id));
+    } catch (e) {
+      dispatch(collectionActions.updateError(e, collection.id));
+      throw e;
+    }
+  };
+}
 
 const getCollectionsAndArticles = (
   collectionIds: Array<string>,
@@ -124,7 +122,4 @@ const getCollectionsAndArticles = (
     })
   );
 
-export const lib = {
-  getCollection
-};
 export { getCollection, getCollectionsAndArticles, updateCollection };
