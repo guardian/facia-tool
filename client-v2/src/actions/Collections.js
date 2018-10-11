@@ -30,93 +30,100 @@ import type { Dispatch } from 'types/Store';
 import type { Collection } from 'shared/types/Collection';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 
-function getCollection(collectionId: string) {
-  return (dispatch: Dispatch, getState: () => State) => {
-    dispatch(collectionActions.fetchStart(collectionId));
-    return fetchCollection(collectionId)
-      .then((res: Object) => {
-        const collectionConfig = getCollectionConfig(getState(), collectionId);
-        const collectionWithNestedArticles = combineCollectionWithConfig(
-          collectionConfig,
-          res
-        );
-        const hasUnpublishedChanges =
-          collectionWithNestedArticles.draft !== undefined;
-
-        const collectionWithDraftArticles = {
-          ...collectionWithNestedArticles,
-          draft: populateDraftArticles(collectionWithNestedArticles)
-        };
-        const {
-          collection,
-          articleFragments,
-          groups
-        } = normaliseCollectionWithNestedArticles(collectionWithDraftArticles);
-
-        dispatch(
-          batchActions([
-            collectionActions.fetchSuccess(collection),
-            articleFragmentsReceived(articleFragments),
-            recordUnpublishedChanges(collectionId, hasUnpublishedChanges),
-            groupsReceived(groups)
-          ])
-        );
-
-        // We dedupe ids here to ensure that articles aren't requested twice,
-        // e.g. multiple articles containing the same supporting article.
-        return uniq(
-          Object.keys(articleFragments).map(afId => articleFragments[afId].id)
-        );
-      })
-      .catch((error: string) => {
-        dispatch(collectionActions.fetchError(error, collectionId));
-        return [];
-      });
-  };
-}
-
-function updateCollection(collection: Collection) {
-  return async (dispatch: Dispatch, getState: () => State) => {
-    const state = getState();
-    dispatch(
-      batchActions([
-        collectionActions.updateStart({
-          ...collection,
-          updatedEmail: selectUserEmail(getState()),
-          updatedBy: `${selectFirstName(state)} ${selectLastName(state)}`,
-          lastUpdated: Date.now()
-        }),
-        recordUnpublishedChanges(collection.id, true)
-      ])
-    );
-    try {
-      const denormalisedCollection = denormaliseCollection(
-        getState(),
-        collection.id
+const getCollection = (collectionId: string) => (
+  dispatch: Dispatch,
+  getState: () => State
+) => {
+  dispatch(collectionActions.fetchStart(collectionId));
+  return fetchCollection(collectionId)
+    .then((res: Object) => {
+      const collectionConfig = getCollectionConfig(getState(), collectionId);
+      const collectionWithNestedArticles = combineCollectionWithConfig(
+        collectionConfig,
+        res
       );
-      await updateCollectionFromApi(collection.id, denormalisedCollection);
-      dispatch(collectionActions.updateSuccess(collection.id));
-    } catch (e) {
-      dispatch(collectionActions.updateError(e, collection.id));
-      throw e;
-    }
-  };
-}
+      const hasUnpublishedChanges =
+        collectionWithNestedArticles.draft !== undefined;
 
-const getCollectionsAndArticles = (collectionIds: Array<string>) => (
-  dispatch: Dispatch
-) =>
+      const collectionWithDraftArticles = {
+        ...collectionWithNestedArticles,
+        draft: populateDraftArticles(collectionWithNestedArticles)
+      };
+      const {
+        collection,
+        articleFragments,
+        groups
+      } = normaliseCollectionWithNestedArticles(collectionWithDraftArticles);
+      dispatch(
+        batchActions([
+          collectionActions.fetchSuccess(collection),
+          articleFragmentsReceived(articleFragments),
+          recordUnpublishedChanges(collectionId, hasUnpublishedChanges),
+          groupsReceived(groups)
+        ])
+      );
+
+      // We dedupe ids here to ensure that articles aren't requested twice,
+      // e.g. multiple articles containing the same supporting article.
+      return uniq(
+        Object.keys(articleFragments).map(afId => articleFragments[afId].id)
+      );
+    })
+    .catch((error: string) => {
+      dispatch(collectionActions.fetchError(error, collectionId));
+      return [];
+    });
+};
+
+const updateCollection = (collection: Collection) => async (
+  dispatch: Dispatch,
+  getState: () => State
+) => {
+  const state = getState();
+  dispatch(
+    batchActions([
+      collectionActions.updateStart({
+        ...collection,
+        updatedEmail: selectUserEmail(getState()),
+        updatedBy: `${selectFirstName(state)} ${selectLastName(state)}`,
+        lastUpdated: Date.now()
+      }),
+      recordUnpublishedChanges(collection.id, true)
+    ])
+  );
+  try {
+    const denormalisedCollection = denormaliseCollection(
+      getState(),
+      collection.id
+    );
+    await updateCollectionFromApi(collection.id, denormalisedCollection);
+    dispatch(collectionActions.updateSuccess(collection.id));
+  } catch (e) {
+    dispatch(collectionActions.updateError(e, collection.id));
+    throw e;
+  }
+};
+
+const getCollectionsAndArticles = (
+  collectionIds: Array<string>,
+  getCollectionAction: (
+    id: string
+  ) => (d: Dispatch, s: () => State) => Promise<string[]> = getCollection
+) => (dispatch: Dispatch) =>
   Promise.all(
     collectionIds.map(async collectionId => {
-      const articleIds = await dispatch(getCollection(collectionId));
+      const articleIds = await dispatch(getCollectionAction(collectionId));
       dispatch(externalArticleActions.fetchStart(articleIds));
       try {
-        const articles = getArticles(articleIds);
+        const articles = await getArticles(articleIds);
         dispatch(externalArticleActions.fetchSuccess(articles));
       } catch (e) {
-        dispatch(externalArticleActions.fetchError(e, articleIds));
+        dispatch(externalArticleActions.fetchError(e.message, articleIds));
       }
     })
   );
 
+export const lib = {
+  getCollection
+};
 export { getCollection, getCollectionsAndArticles, updateCollection };
