@@ -30,52 +30,52 @@ import type { Dispatch } from 'types/Store';
 import type { Collection } from 'shared/types/Collection';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 
-const getCollection = (collectionId: string) => (
-  dispatch: Dispatch,
-  getState: () => State
-) => {
-  dispatch(collectionActions.fetchStart(collectionId));
-  return fetchCollection(collectionId)
-    .then((res: Object) => {
-      const collectionConfig = getCollectionConfig(getState(), collectionId);
-      const collectionWithNestedArticles = combineCollectionWithConfig(
-        collectionConfig,
-        res
-      );
-      const hasUnpublishedChanges =
-        collectionWithNestedArticles.draft !== undefined;
+function getCollection(collectionId: string) {
+  return (dispatch: Dispatch, getState: () => State) => {
+    dispatch(collectionActions.fetchStart(collectionId));
+    return fetchCollection(collectionId)
+      .then((res: Object) => {
+        const collectionConfig = getCollectionConfig(getState(), collectionId);
+        const collectionWithNestedArticles = combineCollectionWithConfig(
+          collectionConfig,
+          res
+        );
+        const hasUnpublishedChanges =
+          collectionWithNestedArticles.draft !== undefined;
 
-      const collectionWithDraftArticles = {
-        ...collectionWithNestedArticles,
-        draft: populateDraftArticles(collectionWithNestedArticles)
-      };
-      const {
-        collection,
-        articleFragments,
-        groups
-      } = normaliseCollectionWithNestedArticles(collectionWithDraftArticles);
-      dispatch(
-        batchActions([
-          collectionActions.fetchSuccess(collection),
-          articleFragmentsReceived(articleFragments),
-          recordUnpublishedChanges(collectionId, hasUnpublishedChanges),
-          groupsReceived(groups)
-        ])
-      );
+        const collectionWithDraftArticles = {
+          ...collectionWithNestedArticles,
+          draft: populateDraftArticles(collectionWithNestedArticles)
+        };
+        const {
+          collection,
+          articleFragments,
+          groups
+        } = normaliseCollectionWithNestedArticles(collectionWithDraftArticles);
+        dispatch(
+          batchActions([
+            collectionActions.fetchSuccess(collection),
+            articleFragmentsReceived(articleFragments),
+            recordUnpublishedChanges(collectionId, hasUnpublishedChanges),
+            groupsReceived(groups)
+          ])
+        );
 
-      // We dedupe ids here to ensure that articles aren't requested twice,
-      // e.g. multiple articles containing the same supporting article.
-      return uniq(
-        Object.keys(articleFragments).map(afId => articleFragments[afId].id)
-      );
-    })
-    .catch((error: string) => {
-      dispatch(collectionActions.fetchError(error, collectionId));
-      return [];
-    });
-};
+        // We dedupe ids here to ensure that articles aren't requested twice,
+        // e.g. multiple articles containing the same supporting article.
+        return uniq(
+          Object.keys(articleFragments).map(afId => articleFragments[afId].id)
+        );
+      })
+      .catch((error: string) => {
+        dispatch(collectionActions.fetchError(error, collectionId));
+        return [];
+      });
+  };
+}
 
-const updateCollection = (collection: Collection) => async (
+function updateCollection(collection: Collection) {
+  return async (
   dispatch: Dispatch,
   getState: () => State
 ) => {
@@ -102,6 +102,7 @@ const updateCollection = (collection: Collection) => async (
     dispatch(collectionActions.updateError(e, collection.id));
     throw e;
   }
+};
 };
 
 const getCollectionsAndArticles = (
