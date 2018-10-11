@@ -109,7 +109,8 @@ const createSelectAll = selectLocalState => (state: any) =>
 
 function applyNewData<Resource: BaseResource>(
   data: { [id: string]: Resource } | {},
-  newData: Resource | Resource[]
+  newData: Resource | Resource[],
+  resourceName: string
 ): Resource | { [id: string]: Resource } {
   if (newData instanceof Array) {
     const result: { [id: string]: Resource } = {
@@ -117,7 +118,7 @@ function applyNewData<Resource: BaseResource>(
       ...newData.reduce((acc, model: BaseResource, index) => {
         if (!model.id) {
           throw new Error(
-            `[asyncResourceBundle]: Cannot apply new data - model is missing ID at index ${index}.`
+            `[asyncResourceBundle]: Cannot apply new data - incoming resource ${resourceName} is missing ID at index ${index}.`
           );
         }
         return {
@@ -131,7 +132,7 @@ function applyNewData<Resource: BaseResource>(
 
   if (!newData.id) {
     throw new Error(
-      `[asyncResourceBundle]: Cannot apply new data - model with keys ${Object.keys(
+      `[asyncResourceBundle]: Cannot apply new data - incoming resource ${resourceName} with keys ${Object.keys(
         newData
       ).join(', ')} is missing id.`
     );
@@ -267,7 +268,7 @@ function createAsyncResourceBundle<Resource: any>(
             ...state,
             data: !indexById
               ? action.payload.data
-              : applyNewData(state.data, action.payload.data),
+              : applyNewData(state.data, action.payload.data, entityName),
             lastFetch: action.payload.time,
             error: null,
             loadingIds: indexById
@@ -303,7 +304,7 @@ function createAsyncResourceBundle<Resource: any>(
             ...state,
             data: !indexById
               ? action.payload.data
-              : applyNewData(state.data, action.payload.data),
+              : applyNewData(state.data, action.payload.data, entityName),
             updatingIds: applyStatusIds(
               state.updatingIds,
               indexById ? action.payload.data.id : undefined
@@ -315,7 +316,7 @@ function createAsyncResourceBundle<Resource: any>(
           if (action.payload.data) {
             data = !indexById
               ? action.payload.data
-              : applyNewData(state.data, action.payload.data);
+              : applyNewData(state.data, action.payload.data, entityName);
           } else {
             data = state.data; // eslint-disable-line prefer-destructuring
           }
