@@ -1,7 +1,7 @@
 
 
-import type { FrontConfig, CollectionConfig } from 'types/FaciaApi';
-import type { CollectionWithNestedArticles } from 'shared/types/Collection';
+import { FrontConfig, CollectionConfig } from 'types/FaciaApi';
+import { CollectionWithNestedArticles } from 'shared/types/Collection';
 import { detectPressFailureMs } from 'constants/fronts';
 
 const getFrontCollections = (

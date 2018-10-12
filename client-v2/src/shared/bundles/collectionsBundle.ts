@@ -1,6 +1,6 @@
 
 
-import { type State as SharedState } from '../types/State';
+import { State as SharedState } from '../types/State';
 import createAsyncResourceBundle from '../util/createAsyncResourceBundle';
 
 const { actions, actionNames, reducer, selectors } = createAsyncResourceBundle(

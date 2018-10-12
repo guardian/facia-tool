@@ -25,9 +25,9 @@ import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
 import { groupsReceived } from 'shared/actions/Groups';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import { getCollectionConfig } from 'selectors/frontsSelectors';
-import type { State } from 'types/State';
-import type { Dispatch } from 'types/Store';
-import type { Collection } from 'shared/types/Collection';
+import { State } from 'types/State';
+import { Dispatch } from 'types/Store';
+import { Collection } from 'shared/types/Collection';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 
 function getCollection(collectionId: string) {

@@ -7,7 +7,7 @@ import * as Guration from 'lib/guration';
 import Article from 'shared/components/Article';
 import DropZone from 'components/DropZone';
 import { optionize } from 'util/component';
-import type { Dispatch } from 'types/Store';
+import { Dispatch } from 'types/Store';
 import { removeGroupArticleFragment } from 'actions/ArticleFragments';
 
 type ArticleFragmentProps = {

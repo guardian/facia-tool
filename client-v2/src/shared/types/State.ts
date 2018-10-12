@@ -1,6 +1,6 @@
 
 
-import { type Reducers } from '../reducers/sharedReducer';
-import { type ExtractReturnType } from './Utility';
+import { Reducers } from '../reducers/sharedReducer';
+import { ExtractReturnType } from './Utility';
 
-export type State = $ObjMap<Reducers, ExtractReturnType>;
+export State = $ObjMap<Reducers, ExtractReturnType>;

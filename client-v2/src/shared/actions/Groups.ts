@@ -1,6 +1,6 @@
 
 
-import type { Group } from 'shared/types/Collection';
+import { Group } from 'shared/types/Collection';
 
 function groupsReceived(groups: { [string]: Group }) {
   return {

@@ -1,6 +1,6 @@
 
 
-import type { Config } from 'types/Config';
+import { Config } from 'types/Config';
 
 const configReceived = (config: Config) => ({
   type: 'CONFIG_RECEIVED',

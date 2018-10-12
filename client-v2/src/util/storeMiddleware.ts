@@ -1,17 +1,17 @@
 
 
-import { type Middleware } from 'redux';
+import { Middleware } from 'redux';
 import uniq from 'lodash/uniq';
-import { type State } from 'types/State';
-import { type Action, type ActionWithBatchedActions } from 'types/Action';
+import { State } from 'types/State';
+import { Action, type ActionWithBatchedActions } from 'types/Action';
 import { selectors } from 'shared/bundles/collectionsBundle';
 import { selectEditorFronts } from 'bundles/frontsUIBundle';
 import { updateCollection } from 'actions/Collections';
 import { updateClipboard } from 'actions/Clipboard';
 import { selectSharedState } from 'shared/selectors/shared';
-import type { ThunkAction } from 'types/Store';
+import { ThunkAction } from 'types/Store';
 import { saveOpenFrontIds } from 'services/faciaApi';
-import type {
+import {
   Collection,
   NestedArticleFragment
 } from 'shared/types/Collection';
@@ -40,7 +40,7 @@ const updateStateFromUrlChange: Middleware<State, Action> = ({
   return result;
 };
 
-type PersistMeta = {|
+type PersistMeta = {
   // The resource to persist the data to
   persistTo: 'collection' | 'clipboard' | 'openFrontIds',
   // The id to to search for in this resource
@@ -53,13 +53,13 @@ type PersistMeta = {|
   // occurs - finding the parent collection before a remove operation, for example,
   // or after an add operation.
   applyBeforeReducer?: boolean
-|};
+};
 
 function addPersistMetaToAction<TArgs: Array<any>, TAction: Object>(
   actionCreator: (...args: TArgs) => TAction,
   meta: PersistMeta
-): (...args: TArgs) => TAction & {| meta: PersistMeta |} {
-  return (...args: TArgs): TAction & {| meta: PersistMeta |} => ({
+): (...args: TArgs) => TAction & { meta: PersistMeta } {
+  return (...args: TArgs): TAction & { meta: PersistMeta } => ({
     ...actionCreator(...args),
     meta
   });
@@ -207,7 +207,7 @@ const persistOpenFrontsOnEdit: (
   return result;
 };
 
-export type { PersistMeta };
+export { PersistMeta };
 export {
   persistCollectionOnEdit,
   persistClipboardOnEdit,

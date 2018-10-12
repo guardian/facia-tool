@@ -1,6 +1,6 @@
 
 
-import type { CapiArticle } from 'types/Capi';
+import { CapiArticle } from 'types/Capi';
 
 type CollectionArticles = {
   draft: Array<CapiArticle>,
@@ -13,4 +13,4 @@ type AlsoOnDetail = {
   meritsWarning: boolean
 };
 
-export type { CollectionArticles, AlsoOnDetail };
+export { CollectionArticles, AlsoOnDetail };

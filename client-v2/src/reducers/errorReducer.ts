@@ -1,6 +1,6 @@
 
 
-import type { Action, ActionError } from 'types/Action';
+import { Action, ActionError } from 'types/Action';
 
 type State = ActionError;
 

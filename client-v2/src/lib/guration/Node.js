@@ -1,10 +1,10 @@
 
 
 import React from 'react';
-import type { Node as ReactNode } from 'react';
-import type { EventType, IndexOffsetGetter } from './types';
+import { Node as ReactNode } from 'react';
+import { EventType, IndexOffsetGetter } from './types';
 import AddPathLevel from './utils/AddPathLevel';
-import type { Path } from './utils/path';
+import { Path } from './utils/path';
 
 const getDropIndexOffset = ({ currentTarget: el, clientY }: EventType) => {
   const { top, height } = el.getBoundingClientRect();
@@ -123,6 +123,6 @@ class Node<T> extends React.Component<NodeProps<T>> {
 
 type NodeChildren<T> = $ElementType<NodeProps<T>, 'children'>;
 
-export type { NodeChildren };
+export { NodeChildren };
 
 export default Node;

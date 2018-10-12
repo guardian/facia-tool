@@ -1,9 +1,9 @@
 
 import uniq from 'lodash/uniq';
 import { createSelector } from 'reselect';
-import type { FrontConfig, CollectionConfig } from 'types/FaciaApi';
-import type { State } from 'types/State';
-import type { AlsoOnDetail } from 'types/Collection';
+import { FrontConfig, CollectionConfig } from 'types/FaciaApi';
+import { State } from 'types/State';
+import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
 

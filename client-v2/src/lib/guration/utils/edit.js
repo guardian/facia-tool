@@ -1,10 +1,10 @@
 
 
 import { isSubPath, pathForMove, hasMoved } from './path';
-import type { Path } from './path';
+import { Path } from './path';
 import { move, insert } from '../edits';
-import type { Edit } from '../edits';
-import type { Drag } from '../types';
+import { Edit } from '../edits';
+import { Drag } from '../types';
 
 const handleMove = (prevPath, nextPath, meta = {}): ?Edit => {
   const { type: dragType, id } = prevPath[prevPath.length - 1];

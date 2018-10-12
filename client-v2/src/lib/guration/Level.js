@@ -1,13 +1,13 @@
 
 
 import React from 'react';
-import type { Node as ReactNode } from 'react';
+import { Node as ReactNode } from 'react';
 import Node from './Node';
-import type { NodeChildren } from './Node';
+import { NodeChildren } from './Node';
 import { RootContext } from './Context';
 import { eq } from './utils/path';
-import type { Path } from './utils/path';
-import type { EventType } from './types';
+import { Path } from './utils/path';
+import { EventType } from './types';
 import AddPathLevel from './utils/AddPathLevel';
 
 const isUndefined = x => typeof x === 'undefined';
@@ -56,7 +56,7 @@ const doRenderDrop = (
   );
 };
 
-type LevelProps<T> = {|
+type LevelProps<T> = {
   arr: T[],
   type: string,
   children: NodeChildren<T>,
@@ -65,7 +65,7 @@ type LevelProps<T> = {|
   getKey: (node: T) => string,
   dropOnNode: boolean,
   field?: string
-|};
+};
 
 class Level<T> extends React.Component<LevelProps<T>> {
   static defaultProps = {

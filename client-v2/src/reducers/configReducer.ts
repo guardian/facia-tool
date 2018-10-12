@@ -1,6 +1,6 @@
 
 
-import { type Action } from 'types/Action';
+import { Action } from 'types/Action';
 
 type State = Object;
 

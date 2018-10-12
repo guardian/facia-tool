@@ -1,16 +1,16 @@
 
 
 import React from 'react';
-import type { Node as ReactNode } from 'react';
+import { Node as ReactNode } from 'react';
 import v4 from 'uuid/v4';
 import throttle from 'lodash.throttle';
 import Level from './Level';
 import { RootContext } from './Context';
 import { addOffset, eq } from './utils/path';
 import { getEdit } from './utils/edit';
-import type { Edit } from './edits';
-import type { Path } from './utils/path';
-import type {
+import { Edit } from './edits';
+import { Path } from './utils/path';
+import {
   InternalDrag,
   ExternalDrag,
   EventType,

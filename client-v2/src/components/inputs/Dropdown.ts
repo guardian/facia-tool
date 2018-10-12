@@ -47,5 +47,5 @@ const Dropdown = ({
   </Select>
 );
 
-export type { DropdownProps };
+export { DropdownProps };
 export default Dropdown;

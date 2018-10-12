@@ -16,9 +16,9 @@ import { routerMiddleware } from 'react-router-redux';
 
 import { updateCollection } from 'actions/Collections';
 import { updateClipboard } from 'actions/Clipboard';
-import { type Store } from 'types/Store';
-import { type State } from 'types/State';
-import { type Action } from 'types/Action';
+import { Store } from 'types/Store';
+import { State } from 'types/State';
+import { Action } from 'types/Action';
 import rootReducer from 'reducers/rootReducer.js';
 import {
   updateStateFromUrlChange,

@@ -4,8 +4,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import * as Guration from 'lib/guration';
-import { type State } from 'types/State';
-import { type Dispatch } from 'types/Store';
+import { State } from 'types/State';
+import { Dispatch } from 'types/Store';
 import {
   selectSharedState,
   createCollectionsAsTreeSelector
@@ -18,13 +18,13 @@ import {
   updateArticleFragmentMeta
 } from 'actions/ArticleFragments';
 import { urlToArticle } from 'util/collectionUtils';
-import type { AlsoOnDetail } from 'types/Collection';
+import { AlsoOnDetail } from 'types/Collection';
 import {
   editorSelectArticleFragment,
   selectEditorArticleFragment,
   editorClearArticleFragmentSelection
 } from 'bundles/frontsUIBundle';
-import type { ArticleFragmentMeta } from 'shared/types/Collection';
+import { ArticleFragmentMeta } from 'shared/types/Collection';
 import Front from './CollectionComponents/Front';
 import Collection from './CollectionComponents/Collection';
 import Group from './CollectionComponents/Group';

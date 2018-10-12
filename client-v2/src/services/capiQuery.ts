@@ -1,7 +1,7 @@
 
 
 import { qs } from 'util/qs';
-import type { CapiArticle, Tag } from 'types/Capi';
+import { CapiArticle, Tag } from 'types/Capi';
 
 const API_BASE = 'https://content.guardianapis.com/';
 
@@ -52,5 +52,5 @@ const capiQuery = (
   }
 });
 
-export type { Fetch, Element, CapiArticle };
+export { Fetch, Element, CapiArticle };
 export default capiQuery;

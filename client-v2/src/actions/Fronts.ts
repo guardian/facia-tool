@@ -1,7 +1,7 @@
 
 
-import type { ThunkAction, Dispatch } from 'types/Store';
-import type { Action } from 'types/Action';
+import { ThunkAction, Dispatch } from 'types/Store';
+import { Action } from 'types/Action';
 import { batchActions } from 'redux-batched-actions';
 import {
   fetchFrontsConfig,

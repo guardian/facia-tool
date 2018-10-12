@@ -104,6 +104,6 @@ const addOffset = (candidatePath: Path[], offset: number) => {
   ];
 };
 
-export type { Path };
+export { Path };
 
 export { isSubPath, isSibling, pathForMove, hasMoved, eq, addOffset };

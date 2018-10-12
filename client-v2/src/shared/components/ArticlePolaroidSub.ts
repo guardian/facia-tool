@@ -9,8 +9,8 @@ import {
   articleFromArticleFragmentSelector,
   selectSharedState
 } from '../selectors/shared';
-import type { State } from '../types/State';
-import type { DerivedArticle } from '../types/Article';
+import { State } from '../types/State';
+import { DerivedArticle } from '../types/Article';
 import toneColorMap from '../util/toneColorMap';
 
 type ContainerProps = {

@@ -1,6 +1,6 @@
 
 
-type ImageAsset = {|
+type ImageAsset = {
   type: 'image',
   mimeType: string,
   file: string,
@@ -8,26 +8,26 @@ type ImageAsset = {|
     width: string,
     number: string
   }
-|};
+};
 
-type ImageElement = {|
+type ImageElement = {
   id: string,
   relation: string,
   type: 'image',
   assets: ImageAsset[]
-|};
+};
 
 type Element = ImageElement;
 
 type CapiDate = string;
 
-type User = {|
+type User = {
   email: string,
   firstName?: string,
   lastName?: string
-|};
+};
 
-type Block = {|
+type Block = {
   id: string,
   bodyHtml: string,
   bodyTextSummary: string,
@@ -42,12 +42,12 @@ type Block = {|
   createdBy?: User,
   lastModifiedBy?: User,
   elements: Element[]
-|};
+};
 
-type Blocks = {|
+type Blocks = {
   main: Block,
   body: Block[]
-|};
+};
 
 type Tag = {
   id: string,
@@ -76,7 +76,7 @@ type CapiArticleFields = {
 
 // See https://github.com/guardian/content-api-models/blob/master/models/src/main/thrift/content/v1.thrift#L1431
 // for the canonical thrift definition.
-type CapiArticle = {|
+type CapiArticle = {
   webTitle: string,
   webUrl: string,
   urlPath: string,
@@ -92,11 +92,11 @@ type CapiArticle = {|
   },
   tags?: Tag[],
   blocks: Blocks
-|};
+};
 
 type CapiArticleWithMetadata = CapiArticle & { group?: number };
 
-export type {
+export {
   CapiArticle,
   CapiArticleFields,
   CapiArticleWithMetadata,

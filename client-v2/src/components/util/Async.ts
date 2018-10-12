@@ -98,5 +98,5 @@ class Async<A: mixed[], R> extends React.Component<
   }
 }
 
-export type { AsyncChild };
+export { AsyncChild };
 export default Async;

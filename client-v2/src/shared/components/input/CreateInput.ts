@@ -1,7 +1,7 @@
 
 
 import * as React from 'react';
-import { type FieldProps } from 'redux-form';
+import { FieldProps } from 'redux-form';
 
 import InputLabel from './InputLabel';
 import InputContainer from './InputContainer';

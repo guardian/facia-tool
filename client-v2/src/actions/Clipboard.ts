@@ -1,11 +1,11 @@
 
 
-import type { Dispatch } from 'types/Store';
+import { Dispatch } from 'types/Store';
 import { saveClipboard, getArticles } from 'services/faciaApi';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import { batchActions } from 'redux-batched-actions';
 import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
-import type {
+import {
   ArticleFragment,
   NestedArticleFragment
 } from 'shared/types/Collection';

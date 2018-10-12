@@ -17,7 +17,7 @@ type NestedArticleFragment = NestedArticleFragmentRootFields & {
   }
 };
 
-type ArticleFragmentMeta = {|
+type ArticleFragmentMeta = {
   headline?: string,
   trailText?: string,
   byline?: string,
@@ -56,17 +56,17 @@ type ArticleFragmentMeta = {|
     height?: string,
     origin?: string
   }[]
-|};
+};
 
-type ArticleFragmentRootFields = NestedArticleFragmentRootFields & {|
+type ArticleFragmentRootFields = NestedArticleFragmentRootFields & {
   uuid: string
-|};
+};
 
-type ArticleFragment = ArticleFragmentRootFields & {|
+type ArticleFragment = ArticleFragmentRootFields & {
   meta: {
     supporting?: string[]
   } & ArticleFragmentMeta
-|};
+};
 
 type CollectionResponse = {
   live: NestedArticleFragment[],
@@ -84,7 +84,7 @@ type CollectionWithNestedArticles = CollectionResponse & {
   id: string
 };
 
-type Collection = {|
+type Collection = {
   live?: string[],
   previously?: string[],
   draft?: string[],
@@ -95,9 +95,9 @@ type Collection = {|
   platform?: string,
   displayName: string,
   groups?: Array<string>
-|};
+};
 
-export type {
+export {
   NestedArticleFragment,
   ArticleFragment,
   ArticleFragmentRootFields,

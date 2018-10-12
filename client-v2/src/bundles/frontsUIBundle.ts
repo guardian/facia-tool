@@ -1,7 +1,7 @@
 
 
-import { type Action } from 'types/Action';
-import { type State as GlobalState } from 'types/State';
+import { Action } from 'types/Action';
+import { State as GlobalState } from 'types/State';
 
 const EDITOR_OPEN_FRONT = 'EDITOR_OPEN_FRONT';
 const EDITOR_CLOSE_FRONT = 'EDITOR_CLOSE_FRONT';

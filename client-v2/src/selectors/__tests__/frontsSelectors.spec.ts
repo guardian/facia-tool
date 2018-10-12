@@ -6,7 +6,7 @@ import {
   lastPressedSelector
 } from 'selectors/frontsSelectors';
 import { frontsConfig } from 'fixtures/frontsConfig';
-import type { FrontsConfig } from 'services/faciaApi';
+import { FrontsConfig } from 'services/faciaApi';
 
 const editorialFrontsInConfig: Array<FrontsConfig> = [
   {

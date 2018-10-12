@@ -1,6 +1,6 @@
 
 
-import { type Dispatch } from 'types/Store';
+import { Dispatch } from 'types/Store';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -9,10 +9,10 @@ import CollectionDisplay from 'shared/components/Collection';
 import AlsoOnNotification from 'components/AlsoOnNotification';
 import Button from 'shared/components/input/ButtonDefault';
 import * as Guration from 'lib/guration';
-import type { AlsoOnDetail } from 'types/Collection';
+import { AlsoOnDetail } from 'types/Collection';
 import { publishCollection } from 'actions/Fronts';
 import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
-import { type State } from 'types/State';
+import { State } from 'types/State';
 
 type CollectionPropsBeforeState = {
   id: string,

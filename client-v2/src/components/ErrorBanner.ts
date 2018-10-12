@@ -2,7 +2,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import type { ActionError } from 'types/Action';
+import { ActionError } from 'types/Action';
 import { error } from '../styleConstants';
 
 type Props = {

@@ -1,9 +1,9 @@
 
 
 import { getArticles } from 'services/faciaApi';
-import type { Element } from 'types/Capi';
-import type { ExternalArticle } from '../shared/types/ExternalArticle';
-import type { ArticleFragment } from '../shared/types/Collection';
+import { Element } from 'types/Capi';
+import { ExternalArticle } from '../shared/types/ExternalArticle';
+import { ArticleFragment } from '../shared/types/Collection';
 
 const getInternalPageCode = async (id: string) =>
   ((await getArticles([id]))[0] || {}).id || null;

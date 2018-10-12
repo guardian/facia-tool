@@ -1,9 +1,9 @@
 
 
-import type { CollectionWithNestedArticles } from 'shared/types/Collection';
+import { CollectionWithNestedArticles } from 'shared/types/Collection';
 import { selectors as collectionSelectors } from 'shared/bundles/collectionsBundle';
 import { selectSharedState } from 'shared/selectors/shared';
-import type { State } from 'types/State';
+import { State } from 'types/State';
 
 import { normalize, denormalize } from './schema';
 

@@ -8,9 +8,9 @@ import upperFirst from 'lodash/upperFirst';
 
 import ShortVerticalPinline from './layout/ShortVerticalPinline';
 import ContainerHeadingPinline from './typography/ContainerHeadingPinline';
-import type { Collection } from '../types/Collection';
+import { Collection } from '../types/Collection';
 import ButtonCircularCaret from './input/ButtonCircularCaret';
-import type { State } from '../types/State';
+import { State } from '../types/State';
 import {
   selectSharedState,
   createArticlesInCollectionSelector

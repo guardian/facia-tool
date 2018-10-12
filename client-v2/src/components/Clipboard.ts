@@ -1,11 +1,11 @@
 
 
-import { type Dispatch } from 'types/Store';
+import { Dispatch } from 'types/Store';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import * as Guration from 'lib/guration';
-import type { Edit } from 'lib/guration';
-import { type State } from 'types/State';
+import { Edit } from 'lib/guration';
+import { State } from 'types/State';
 import { urlToArticle } from 'util/collectionUtils';
 import { clipboardAsTreeSelector } from 'shared/selectors/shared';
 import DropZone from 'components/DropZone';

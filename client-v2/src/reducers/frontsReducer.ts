@@ -2,8 +2,8 @@
 
 import set from 'lodash/fp/set';
 
-import { type $ReturnType } from 'shared/types/Utility';
-import { type Action } from 'types/Action';
+import { $ReturnType } from 'shared/types/Utility';
+import { Action } from 'types/Action';
 import {
   reducer as frontsConfigReducer,
   initialState
@@ -54,6 +54,6 @@ const reducer = (
   }
 };
 
-export type { State };
+export { State };
 
 export default reducer;

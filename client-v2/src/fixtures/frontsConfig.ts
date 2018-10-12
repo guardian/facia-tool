@@ -1,6 +1,6 @@
 
 
-import type { FrontsConfig } from 'types/FaciaApi';
+import { FrontsConfig } from 'types/FaciaApi';
 
 const frontsConfig: { data: FrontsConfig } = {
   data: {

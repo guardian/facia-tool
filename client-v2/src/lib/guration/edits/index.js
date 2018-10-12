@@ -1,6 +1,6 @@
 
 
-import type { Path } from '../utils/path';
+import { Path } from '../utils/path';
 
 const move = (
   type: string,
@@ -50,6 +50,6 @@ type Insert = $Call<typeof insert, string, string, Path[], number>;
 
 type Edit = Move | Insert;
 
-export type { Edit, Move, Insert };
+export { Edit, Move, Insert };
 
 export { move, insert };

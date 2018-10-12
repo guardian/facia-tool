@@ -13,6 +13,6 @@ const reducers = {
   externalArticles
 };
 
-export type Reducers = typeof reducers;
+export Reducers = typeof reducers;
 
 export default combineReducers(reducers);

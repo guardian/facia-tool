@@ -7,14 +7,14 @@ import deepGet from './deepGet';
 import grid, { recordUsage } from './grid';
 import fetchImage from './fetchImage';
 
-type Criteria = {|
+type Criteria = {
   maxWidth?: number,
   minWidth?: number,
   widthAspectRatio?: number,
   heightAspectRatio?: number
-|};
+};
 
-type ImageDescription = {|
+type ImageDescription = {
   height?: number,
   width?: number,
   thumb?: string,
@@ -22,15 +22,15 @@ type ImageDescription = {|
   ratio?: number,
   path: string,
   criteria?: Criteria
-|};
+};
 
-type ValidationResponse = {|
+type ValidationResponse = {
   src: string,
   thumb: string,
   origin: string,
   height: number,
   width: number
-|};
+};
 
 function filterGridCrops(
   json,
@@ -282,5 +282,5 @@ function validateImageEvent(
   );
 }
 
-export type { ImageDescription };
+export { ImageDescription };
 export { validateImageSrc, validateImageEvent };

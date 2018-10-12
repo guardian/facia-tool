@@ -3,7 +3,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import type { AlsoOnDetail } from 'types/Collection';
+import { AlsoOnDetail } from 'types/Collection';
 import ButtonSmall from 'shared/components/input/ButtonSmall';
 
 type AlsoOnNotificationProps = {

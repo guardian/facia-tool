@@ -9,4 +9,4 @@ type Priorities = {
   email: Object
 };
 
-export type { PriorityName, Priorities };
+export { PriorityName, Priorities };

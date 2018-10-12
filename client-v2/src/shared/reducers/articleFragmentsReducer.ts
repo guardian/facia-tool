@@ -1,7 +1,7 @@
 
 
-import { type Action } from '../types/Action';
-import { type ArticleFragment } from '../types/Collection';
+import { Action } from '../types/Action';
+import { ArticleFragment } from '../types/Collection';
 
 type State = {
   [string]: ArticleFragment

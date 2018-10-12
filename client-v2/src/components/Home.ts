@@ -4,7 +4,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import type { Priorities } from 'types/Priority';
+import { Priorities } from 'types/Priority';
 import { priorities } from 'constants/priorities';
 
 const HomeContainer = styled('div')`

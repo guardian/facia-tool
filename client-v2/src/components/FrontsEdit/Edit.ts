@@ -1,19 +1,25 @@
 
 
-import { type Dispatch } from 'types/Store';
+import { Dispatch } from 'types/Store';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import type { Match, RouterHistory } from 'react-router-dom';
+import { Match, RouterHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import getFrontsConfig from 'actions/Fronts';
+<<<<<<< HEAD
 import {
   editorOpenFront,
   selectEditorFrontsByPriority
 } from 'bundles/frontsUIBundle';
 import type { State } from 'types/State';
 import type { ActionError } from 'types/Action';
+=======
+import { editorOpenFront, selectEditorFronts } from 'bundles/frontsUIBundle';
+import { State } from 'types/State';
+import { ActionError } from 'types/Action';
+>>>>>>> Remove 'import type' and exact types programmatically
 import FrontContainer from './FrontContainer';
 import FeedSection from '../FeedSection';
 import ErrorBannner from '../ErrorBanner';

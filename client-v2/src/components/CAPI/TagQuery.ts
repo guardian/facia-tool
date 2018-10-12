@@ -3,7 +3,7 @@
 import * as React from 'react';
 /* eslint-disable import/no-duplicates */
 import capiQuery from 'services/capiQuery';
-import { type Fetch } from 'services/capiQuery';
+import { Fetch } from 'services/capiQuery';
 /* eslint-enable import/no-duplicates */
 import Async from 'components/util/Async';
 import * as CAPIParamsContext from './CAPIParamsContext';

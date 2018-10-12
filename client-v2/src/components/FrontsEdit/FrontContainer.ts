@@ -7,7 +7,7 @@ import { bindActionCreators } from 'redux';
 import distanceInWords from 'date-fns/distance_in_words';
 import startCase from 'lodash/startCase';
 import styled from 'styled-components';
-import type { Dispatch } from 'types/Store';
+import { Dispatch } from 'types/Store';
 
 import { fetchLastPressed } from 'actions/Fronts';
 import {
@@ -17,9 +17,9 @@ import {
 import { editorCloseFront } from 'bundles/frontsUIBundle';
 import Button from 'shared/components/input/ButtonDefault';
 import { frontStages } from 'constants/fronts';
-import type { FrontConfig } from 'types/FaciaApi';
-import type { State } from 'types/State';
-import type { AlsoOnDetail } from 'types/Collection';
+import { FrontConfig } from 'types/FaciaApi';
+import { State } from 'types/State';
+import { AlsoOnDetail } from 'types/Collection';
 import {
   getFront,
   createAlsoOnSelector,
@@ -183,7 +183,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 });
 
 export { Fronts as FrontsComponent };
-export type { FrontsComponentProps };
+export { FrontsComponentProps };
 
 export default withRouter(
   connect(

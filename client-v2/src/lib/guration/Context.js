@@ -1,8 +1,8 @@
 
 
 import { createContext } from 'react';
-import type { EventType, IndexOffsetGetter } from './types';
-import type { Path } from './utils/path';
+import { EventType, IndexOffsetGetter } from './types';
+import { Path } from './utils/path';
 
 /* eslint-disable no-unused-vars */
 

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import styled from 'styled-components';
-import { type FieldProps } from 'redux-form';
+import { FieldProps } from 'redux-form';
 
 import deleteIcon from '../../images/icons/delete-copy.svg';
 import ButtonPrimary from './ButtonPrimary';
@@ -44,7 +44,7 @@ const IconAdd = IconDelete.extend`
   transform: rotate(45deg);
 `;
 
-type Props = {|
+type Props = {
   frontId: string,
   criteria?: {
     minHeight?: string,
@@ -52,8 +52,8 @@ type Props = {|
     widthAspectRatio?: number,
     heightAspectRatio?: number
   }
-|} & FieldProps;
-type State = {| isHovering: boolean |};
+} & FieldProps;
+type State = { isHovering: boolean };
 
 class InputImage extends React.Component<Props, State> {
   state = {

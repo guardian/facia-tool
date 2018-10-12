@@ -6,10 +6,10 @@ import { createSelector } from 'reselect';
 import { getThumbnail } from 'util/CAPIUtils';
 import { selectors as externalArticleSelectors } from '../bundles/externalArticlesBundle';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
-import type { ExternalArticle } from '../types/ExternalArticle';
-import type { DerivedArticle } from '../types/Article';
-import type { ArticleFragment } from '../types/Collection';
-import type { State } from '../types/State';
+import { ExternalArticle } from '../types/ExternalArticle';
+import { DerivedArticle } from '../types/Article';
+import { ArticleFragment } from '../types/Collection';
+import { State } from '../types/State';
 
 // Selects the shared part of the application state mounted at its default point, '.shared'.
 const selectSharedState = (rootState: any): State => rootState.shared;

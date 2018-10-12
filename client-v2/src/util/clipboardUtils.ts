@@ -1,11 +1,11 @@
 
 
-import type {
+import {
   ArticleFragment,
   NestedArticleFragment
 } from 'shared/types/Collection';
 import { clipboardSelector } from 'selectors/frontsSelectors';
-import { type State } from 'types/State';
+import { State } from 'types/State';
 import { normalize, denormalize } from './clipboardSchema';
 
 function normaliseClipboard(clipboard: {

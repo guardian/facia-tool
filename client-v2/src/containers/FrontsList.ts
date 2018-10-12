@@ -2,10 +2,10 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { type Match, type RouterHistory, withRouter } from 'react-router';
+import { Match, type RouterHistory, withRouter } from 'react-router';
 
 import { selectEditorFronts } from 'bundles/frontsUIBundle';
-import { type State } from '../types/State';
+import { State } from '../types/State';
 import FrontList from '../components/FrontList';
 import { getFrontsWithPriority } from '../selectors/frontsSelectors';
 

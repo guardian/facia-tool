@@ -16,8 +16,8 @@ import {
   articleFromArticleFragmentSelector,
   selectSharedState
 } from '../selectors/shared';
-import type { State } from '../types/State';
-import type { DerivedArticle } from '../types/Article';
+import { State } from '../types/State';
+import { DerivedArticle } from '../types/Article';
 
 type ContainerProps = {
   id: string, // eslint-disable-line react/no-unused-prop-types

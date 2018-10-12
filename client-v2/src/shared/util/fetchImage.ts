@@ -1,6 +1,6 @@
 
 
-import type { ImageDescription } from './validateImageSrc';
+import { ImageDescription } from './validateImageSrc';
 
 function fetchImage(description: ImageDescription): Promise<ImageDescription> {
   return new Promise((resolve, reject) => {

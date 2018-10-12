@@ -4,7 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Article from 'shared/components/Article';
 import { removeSupportingArticleFragment } from 'actions/ArticleFragments';
-import type { Dispatch } from 'types/Store';
+import { Dispatch } from 'types/Store';
 
 type SupportingProps = {
   uuid: string,

@@ -1,13 +1,13 @@
 
 
 import isValid from 'date-fns/is_valid';
-import type {
+import {
   FrontsConfig,
   FrontsConfigResponse,
   FrontConfigMap
 } from 'types/FaciaApi';
-import type { ExternalArticle } from 'shared/types/ExternalArticle';
-import type {
+import { ExternalArticle } from 'shared/types/ExternalArticle';
+import {
   CollectionResponse,
   CollectionWithNestedArticles,
   NestedArticleFragment

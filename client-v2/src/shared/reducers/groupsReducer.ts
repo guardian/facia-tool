@@ -1,7 +1,7 @@
 
 
-import { type Action } from '../types/Action';
-import { type Group } from '../types/Collection';
+import { Action } from '../types/Action';
+import { Group } from '../types/Collection';
 
 type State = {
   [string]: Group

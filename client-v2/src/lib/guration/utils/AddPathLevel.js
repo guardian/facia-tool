@@ -1,9 +1,9 @@
 
 
 import React from 'react';
-import type { Node as ReactNode } from 'react';
+import { Node as ReactNode } from 'react';
 import { PathContext } from '../Context';
-import type { Path } from './path';
+import { Path } from './path';
 
 const addChildrenFieldToParent = (
   path: Path[],

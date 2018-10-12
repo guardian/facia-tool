@@ -1,6 +1,6 @@
 
 
-import type { PriorityName } from './Priority';
+import { PriorityName } from './Priority';
 
 type FrontConfigResponse = {
   collections: Array<string>,
@@ -76,7 +76,7 @@ type FrontsConfig = {
   collections: CollectionConfigMap
 };
 
-export type {
+export {
   FrontConfig,
   CollectionConfig,
   FrontsConfig,

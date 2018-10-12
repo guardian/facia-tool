@@ -1,7 +1,7 @@
 
 
-import type { CapiArticle } from 'types/Capi';
+import { CapiArticle } from 'types/Capi';
 
 type ExternalArticle = CapiArticle;
 
-export type { ExternalArticle };
+export { ExternalArticle };

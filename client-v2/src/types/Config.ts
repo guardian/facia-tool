@@ -1,6 +1,6 @@
 
 //
-import type { NestedArticleFragment } from 'shared/types/Collection';
+import { NestedArticleFragment } from 'shared/types/Collection';
 
 type Permission = {
   [string]: boolean
@@ -40,4 +40,4 @@ type Config = {
   clipboardArticles: Array<NestedArticleFragment>
 };
 
-export type { Config };
+export { Config };

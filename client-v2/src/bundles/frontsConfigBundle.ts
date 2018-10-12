@@ -1,7 +1,7 @@
 
 
 import createAsyncResourceBundle from 'shared/util/createAsyncResourceBundle';
-import type { State } from 'types/State';
+import { State } from 'types/State';
 
 export const {
   actions,

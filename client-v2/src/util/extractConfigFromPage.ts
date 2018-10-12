@@ -1,6 +1,6 @@
 
 
-import { type Config } from 'types/Config';
+import { Config } from 'types/Config';
 
 export default () => {
   const configEl = document.getElementById('config');

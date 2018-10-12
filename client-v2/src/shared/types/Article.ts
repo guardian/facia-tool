@@ -1,8 +1,8 @@
 
 
-import type { CapiArticleFields } from 'types/Capi';
-import type { ExternalArticle } from './ExternalArticle';
-import type {
+import { CapiArticleFields } from 'types/Capi';
+import { ExternalArticle } from './ExternalArticle';
+import {
   ArticleFragmentRootFields,
   ArticleFragmentMeta
 } from './Collection';
@@ -19,4 +19,4 @@ type DerivedArticle = $Diff<
     kicker: string
   };
 
-export type { DerivedArticle };
+export { DerivedArticle };
