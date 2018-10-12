@@ -3,7 +3,7 @@
   "eslint.packageManager": "yarn",
   "javascript.validate.enable": false,
   "typescript.format.enable": false,
-  "flow.useNPMPackagedFlow": true,
   "editor.tabSize": 2,
-  "editor.insertSpaces": true
+  "editor.insertSpaces": true,
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
