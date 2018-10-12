@@ -16,8 +16,9 @@ import {
 import { addPersistMetaToAction } from 'util/storeMiddleware';
 import { updateClipboardContent } from 'actions/Clipboard';
 import { State } from 'types/State';
+import { AddClipboardArticleFragment, RemoveClipboardArticleFragment } from 'types/Action';
 
-function addClipboardArticleFragment(articleFragmentId: string, index: number) {
+function addClipboardArticleFragment(articleFragmentId: string, index: number): AddClipboardArticleFragment {
   return {
     type: 'ADD_CLIPBOARD_ARTICLE_FRAGMENT',
     payload: {
@@ -27,7 +28,7 @@ function addClipboardArticleFragment(articleFragmentId: string, index: number) {
   };
 }
 
-function removeClipboardArticleFragment(articleFragmentId: string) {
+function removeClipboardArticleFragment(articleFragmentId: string): RemoveClipboardArticleFragment {
   return {
     type: 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT',
     payload: {
@@ -75,6 +76,10 @@ const removeClipboardArticleFragmentWithPersist = addPersistMetaToAction(
   }
 );
 
+type ParentTypes = 'articleFragment' |
+ 'clipboard' |
+ 'group';
+
 const selectorMap = {
   articleFragment: (state: State, id: string) =>
     supportingArticlesSelector(state, {
@@ -102,11 +107,11 @@ const removeActionMap = {
 const replaceActionMap = {
   articleFragment: replaceArticleFragmentSupporting,
   group: replaceGroupArticleFragments,
-  clipboard: (_: unknown, children: string[]) => updateClipboardContent(children)
+  clipboard: (_: unknown, children?: string[]) => updateClipboardContent(children)
 };
 
 const createInsertArticleFragment = (persistTo: 'collection' | 'clipboard') => (
-  parentType: string,
+  parentType: ParentTypes,
   parentId: string,
   id: string,
   index: number
@@ -137,10 +142,10 @@ const insertClipboardArticleFragment = createInsertArticleFragment('clipboard');
 /* separate clipboard */
 
 const createMoveArticleFragment = (persistTo: 'collection' | 'clipboard') => (
-  fromParentType: string,
+  fromParentType: ParentTypes,
   fromParentId: string,
   id: string,
-  toParentType: string,
+  toParentType: ParentTypes,
   toParentId: string,
   index: number
 ) => {

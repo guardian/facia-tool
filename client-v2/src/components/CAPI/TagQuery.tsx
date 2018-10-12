@@ -4,6 +4,7 @@ import * as React from 'react';
 /* eslint-disable import/no-duplicates */
 import capiQuery from 'services/capiQuery';
 import { Fetch } from 'services/capiQuery';
+import { ElementType, Call } from 'utility-types';
 /* eslint-enable import/no-duplicates */
 import Async from 'components/util/Async';
 import * as CAPIParamsContext from './CAPIParamsContext';
@@ -11,15 +12,15 @@ import * as CAPIParamsContext from './CAPIParamsContext';
 type CAPITagQueryProps = {
   baseURL?: string,
   fetch?: Fetch,
-  children: *,
+  children: any,
   params: Object,
   tagType: 'sections' | 'tags'
 };
 
 type CAPITagQueryState = {
-  capi?: $ElementType<$Call<typeof capiQuery, 'sections' | 'tags'>, string>,
-  baseURL?: string,
-  fetch?: Fetch
+  capi: ElementType<Call<typeof capiQuery, 'sections' | 'tags'>, string>|void,
+  baseURL: string|void,
+  fetch: Fetch|void
 };
 
 class TagQuery extends React.Component<CAPITagQueryProps, CAPITagQueryState> {
@@ -27,7 +28,11 @@ class TagQuery extends React.Component<CAPITagQueryProps, CAPITagQueryState> {
     params: {}
   };
 
-  state = {};
+  state = {
+    capi: undefined,
+    baseURL: undefined,
+    fetch: undefined
+  };
 
   static getDerivedStateFromProps(
     { baseURL, fetch, tagType }: CAPITagQueryProps,

@@ -4,6 +4,7 @@ import * as React from 'react';
 /* eslint-disable import/no-duplicates */
 import capiQuery from 'services/capiQuery';
 import { Fetch } from 'services/capiQuery';
+import { ElementType, Call } from 'utility-types';
 /* eslint-enable import/no-duplicates */
 import Async from 'components/util/Async';
 import * as CAPIParamsContext from './CAPIParamsContext';
@@ -11,13 +12,13 @@ import * as CAPIParamsContext from './CAPIParamsContext';
 type CAPISearchQueryProps = {
   baseURL?: string,
   fetch?: Fetch,
-  children: *,
+  children: any,
   params: Object,
   poll?: number
 };
 
 type CAPISearchQueryState = {
-  capi?: $ElementType<$Call<typeof capiQuery, string>, 'search'>,
+  capi?: ElementType<Call<typeof capiQuery, string>, 'search'>,
   baseURL?: string,
   fetch?: Fetch
 };
@@ -29,8 +30,9 @@ class SearchQuery extends React.Component<
   static defaultProps = {
     params: {}
   };
-
-  state = {};
+  state: CAPISearchQueryState = {};
+  interval: NodeJS.Timer | void = undefined;
+  async: Async<any, any>|void = undefined;
 
   static getDerivedStateFromProps(
     { baseURL, fetch }: CAPISearchQueryProps,
@@ -81,14 +83,11 @@ class SearchQuery extends React.Component<
     }
   };
 
-  interval: ?IntervalID;
-  async: ?Async<*, *>;
-
   render() {
     const { params, children, fetch, baseURL, ...props } = this.props;
     return (
       <Async
-        ref={node => {
+        ref={(node: Async<any, any>) => {
           this.async = node;
         }}
         {...props}

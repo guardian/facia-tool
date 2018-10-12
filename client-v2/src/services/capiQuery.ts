@@ -1,5 +1,3 @@
-
-
 import { qs } from 'util/qs';
 import { CapiArticle, Tag } from 'types/Capi';
 
@@ -23,7 +21,7 @@ const capiQuery = (
   baseURL: string = API_BASE,
   fetch: Fetch = window.fetch
 ) => ({
-  search: async (params: Object): Promise<CAPISearchQueryReponse> => {
+  search: async (params: any): Promise<CAPISearchQueryReponse> => {
     const response = await fetch(
       `${baseURL}search${qs({
         ...params
@@ -32,7 +30,7 @@ const capiQuery = (
 
     return response.json();
   },
-  tags: async (params: Object): Promise<CAPITagQueryReponse> => {
+  tags: async (params: any): Promise<CAPITagQueryReponse> => {
     const response = await fetch(
       `${baseURL}tags${qs({
         ...params
@@ -41,7 +39,7 @@ const capiQuery = (
 
     return response.json();
   },
-  sections: async (params: Object): Promise<CAPITagQueryReponse> => {
+  sections: async (params: any): Promise<CAPITagQueryReponse> => {
     const response = await fetch(
       `${baseURL}sections${qs({
         ...params
@@ -52,5 +50,5 @@ const capiQuery = (
   }
 });
 
-export { Fetch, Element, CapiArticle };
+export { Fetch, CapiArticle };
 export default capiQuery;

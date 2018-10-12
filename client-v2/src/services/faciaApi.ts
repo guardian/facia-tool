@@ -13,6 +13,7 @@ import {
   NestedArticleFragment
 } from 'shared/types/Collection';
 import pandaFetch from './pandaFetch';
+import { CapiArticle } from 'types/Capi';
 
 function fetchFrontsConfig(): Promise<FrontsConfig> {
   return pandaFetch('/config', {
@@ -132,7 +133,7 @@ async function saveClipboard(
   }
 }
 
-async function saveOpenFrontIds(frontIds: string[]): Promise<void> {
+async function saveOpenFrontIds(frontIds?: string[]): Promise<void> {
   try {
     await pandaFetch(`/userdata/frontIds`, {
       method: 'put',
@@ -167,10 +168,10 @@ function getCollection(
 
 function getArticles(articleIds: string[]): Promise<Array<ExternalArticle>> {
   const parseArticleListFromResponse = (
-    text: ?string
+    text: string | void
   ): Array<ExternalArticle> => {
     if (text) {
-      return JSON.parse(text).response.results.map(externalArticle => ({
+      return JSON.parse(text).response.results.map((externalArticle: CapiArticle) => ({
         ...externalArticle,
         urlPath: externalArticle.id,
         id: `internal-code/page/${externalArticle.fields.internalPageCode}`

@@ -1,26 +1,24 @@
-
-
 import * as React from 'react';
 import isEqual from 'lodash/isEqual';
 import debounce from 'lodash/debounce';
 
 type AsyncState<R> = {
-  value: ?R,
-  pending: boolean,
-  error: ?(Error | string)
+  value: R | void;
+  pending: boolean;
+  error: Error | string | void;
 };
 
-type AsyncChild<R> = (state: AsyncState<R>) => React.Node;
+type AsyncChild<R> = (state: AsyncState<R>) => React.ReactNode;
 
-type AsyncProps<A: mixed[], R> = {
-  args: A,
-  children: AsyncChild<R>,
-  debounce?: number,
-  fn: (...args: A) => Promise<R> | R,
-  on: boolean
+type AsyncProps<A extends any[], R> = {
+  args: A;
+  children: AsyncChild<R>;
+  debounce?: number;
+  fn?: (...args: A) => Promise<R> | R;
+  on: boolean;
 };
 
-class Async<A: mixed[], R> extends React.Component<
+class Async<A extends any[], R> extends React.Component<
   AsyncProps<A, R>,
   AsyncState<R>
 > {
@@ -40,9 +38,9 @@ class Async<A: mixed[], R> extends React.Component<
   }
 
   state: AsyncState<R> = {
-    value: null,
+    value: undefined,
     pending: false,
-    error: null
+    error: undefined
   };
 
   componentDidMount() {
@@ -55,11 +53,12 @@ class Async<A: mixed[], R> extends React.Component<
 
   debouncedStartRun: () => void;
 
-  update(prevProps: ?AsyncProps<A, R>): void {
+  update(prevProps?: AsyncProps<A, R> | void): void {
     if (!this.props.on && (!prevProps || prevProps.on)) {
       this.setState({
-        value: null,
-        pending: false
+        value: undefined,
+        pending: false,
+        error: undefined
       });
     } else if (!prevProps || prevProps.fn !== this.props.fn) {
       // don't debounce when changing the function
@@ -80,7 +79,7 @@ class Async<A: mixed[], R> extends React.Component<
 
   run = async () => {
     try {
-      const value = await this.props.fn(...this.props.args);
+      const value = await (this.props.fn && this.props.fn(...this.props.args));
       this.setState({
         value,
         pending: false

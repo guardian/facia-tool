@@ -14,9 +14,9 @@ type ArticleFragmentProps = {
   isSelected: boolean,
   uuid: string,
   meta: {
-    supporting: *
+    supporting: any
   },
-  children: *,
+  children: any,
   getNodeProps: () => Object,
   onDelete: () => void,
   onSelect: (uuid: string) => void,

@@ -86,5 +86,7 @@ export {
   RemoveGroupArticleFragment,
   AddGroupArticleFragment,
   ArticleFragmentsReceived,
-  UpdateArticleFragmentMeta
+  UpdateArticleFragmentMeta,
+  ReplaceGroupArticleFragments,
+  ReplaceArticleFragmentSupporting
 };

@@ -3,8 +3,8 @@
 import { Middleware } from 'redux';
 import uniq from 'lodash/uniq';
 import { State } from 'types/State';
-import { Store } from 'types/Store';
-import { Action, type ActionWithBatchedActions } from 'types/Action';
+import { Store, Dispatch } from 'types/Store';
+import { Action, ActionWithBatchedActions, ActionPersistMeta } from 'types/Action';
 import { selectors } from 'shared/bundles/collectionsBundle';
 import { selectEditorFronts } from 'bundles/frontsUIBundle';
 import { updateCollection } from 'actions/Collections';
@@ -21,7 +21,10 @@ import { denormaliseClipboard } from 'util/clipboardUtils';
 const updateStateFromUrlChange: Middleware<State, Action> = ({
   dispatch,
   getState
-}) => next => action => {
+}: {
+  dispatch: Dispatch,
+  getState: () => State
+}) => (next: (action: Action) => void) => (action: Action) => {
   const prevState = getState();
   const result = next(action);
   getState();
@@ -56,11 +59,11 @@ type PersistMeta = {
   applyBeforeReducer?: boolean
 };
 
-function addPersistMetaToAction<TArgs extends Array<any>, TAction extends Action>(
-  actionCreator: (...args: TArgs) => TAction,
+function addPersistMetaToAction<TArgs extends Array<any>>(
+  actionCreator: (...args: TArgs) => Action,
   meta: PersistMeta
-): (...args: TArgs) => TAction & { meta: PersistMeta } {
-  return (...args: TArgs): TAction & { meta: PersistMeta } => Object.assign({},
+): (...args: TArgs) => Action & ActionPersistMeta {
+  return (...args: TArgs): Action & ActionPersistMeta => Object.assign({},
     actionCreator(...args),
     { meta }
   )
@@ -74,7 +77,7 @@ const unwrapBatchedActions = (action: ActionWithBatchedActions): Action[] =>
   action.type === 'BATCHING_REDUCER.BATCH' ? action.payload : [action];
 
 const isPersistingToCollection = (act: Action): boolean =>
-  !!act.meta && act.meta.persistTo === 'collection';
+  !!(act as Action & ActionPersistMeta).meta && (act as Action & ActionPersistMeta).meta.persistTo === 'collection';
 
 /**
  * Watches for actions that require a collection update, finds the relevant
@@ -100,8 +103,12 @@ const persistCollectionOnEdit: (updateAction: (collection: Collection) => Action
         // A sneaky 'any' here, as it's difficult to handle dynamic key
         // values with static action types.
         (act: any) =>
+<<<<<<< HEAD
           act.meta.id ||
           (act.meta.key ? act.payload[act.meta.key] : act.payload.id)
+=======
+          act.meta.key ? act.payload[act.meta.key] : act.payload.id
+>>>>>>> Slow but steady progress altering types
       )
     );
     const collectionIds: string[] = articleFragmentIds.reduce((acc, id) => {
@@ -117,7 +124,7 @@ const persistCollectionOnEdit: (updateAction: (collection: Collection) => Action
     return collectionIds;
   };
 
-  return next => (action: Action) => {
+  return (next: (action: Action) => State) => (action: Action) => {
     const actions = unwrapBatchedActions(action);
 
     if (!actions.some(isPersistingToCollection)) {
@@ -129,8 +136,8 @@ const persistCollectionOnEdit: (updateAction: (collection: Collection) => Action
       actions.filter(
         act =>
           isPersistingToCollection(act) &&
-          act.meta &&
-          act.meta.applyBeforeReducer
+          (act as Action & ActionPersistMeta).meta &&
+          (act as Action & ActionPersistMeta).meta.applyBeforeReducer
       )
     );
 
@@ -143,8 +150,8 @@ const persistCollectionOnEdit: (updateAction: (collection: Collection) => Action
           actions.filter(
             act =>
               isPersistingToCollection(act) &&
-              act.meta &&
-              !act.meta.applyBeforeReducer
+              (act as Action & ActionPersistMeta).meta &&
+              !(act as Action & ActionPersistMeta).meta.applyBeforeReducer
           )
         )
       )
@@ -165,18 +172,15 @@ const persistCollectionOnEdit: (updateAction: (collection: Collection) => Action
   };
 };
 
-const persistClipboardOnEdit: (
-  (clipboard: { articles: Array<NestedArticleFragment> }) =>
-    | Action
-    | ThunkAction
-) => Middleware<State, Action> = (
+const persistClipboardOnEdit:
+  (clipboardAction: (clipboard: { articles: Array<NestedArticleFragment> }) => Action) => Middleware<State, Action> = (
   updateClipboardAction: (clipboard: {
     articles: Array<NestedArticleFragment>
   }) => Action | ThunkAction = updateClipboard
-) => store => next => (action: Action) => {
+) => (store: Store) => (next: (action: Action) => State) => (action: Action) => {
   const actions = unwrapBatchedActions(action);
 
-  if (!actions.some(act => act.meta && act.meta.persistTo === 'clipboard')) {
+  if (!actions.some(act => (act as Action & ActionPersistMeta).meta && (act as Action & ActionPersistMeta).meta.persistTo === 'clipboard')) {
     return next(action);
   }
   const result = next(action);
@@ -189,14 +193,14 @@ const persistClipboardOnEdit: (
   return result;
 };
 
-const persistOpenFrontsOnEdit: (
-  persistFrontIds?: (string[]) => Promise<void>
+const persistOpenFrontsOnEdit: (persistFn: (
+  persistFrontIds?: string[]) => Promise<void>
 ) => Middleware<State, Action> = (
   persistFrontIds = saveOpenFrontIds
-) => store => next => (action: Action) => {
+) => (store: Store) => (next: (action: Action) => State) => (action: Action) => {
   const actions = unwrapBatchedActions(action);
 
-  if (!actions.some(act => act.meta && act.meta.persistTo === 'openFrontIds')) {
+  if (!actions.some(act => (act as Action & ActionPersistMeta).meta && (act as Action & ActionPersistMeta).meta.persistTo === 'openFrontIds')) {
     return next(action);
   }
   const result = next(action);

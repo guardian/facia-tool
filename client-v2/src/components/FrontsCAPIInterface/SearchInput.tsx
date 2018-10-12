@@ -10,14 +10,14 @@ import TextInput from '../TextInput';
 import CAPITagInput from '../FrontsCAPIInterface/TagInput';
 
 type FrontsCAPISearchInputProps = {
-  children: *,
+  children: any,
   additionalFixedContent?: React.ComponentType<any>,
   displaySearchFilters: boolean,
   updateDisplaySearchFilters: (value: boolean) => void
 };
 
 type FrontsCAPISearchInputState = {
-  q: ?string,
+  q: string | void,
   tags: Array<string>,
   sections: Array<string>,
   searchTerms: {
@@ -87,14 +87,14 @@ class FrontsCAPISearchInput extends React.Component<
     this.setState({ tags: newTags, sections: newSections });
   };
 
-  handleSearchInput = ({ currentTarget }: SyntheticEvent<HTMLInputElement>) => {
+  handleSearchInput = ({ currentTarget }: React.SyntheticEvent<HTMLInputElement>) => {
     this.setState({
       q: currentTarget.value
     });
   };
 
   handleTagSearchInput = (
-    { currentTarget }: SyntheticEvent<HTMLInputElement>,
+    { currentTarget }: React.SyntheticEvent<HTMLInputElement>,
     type: string
   ) => {
     const newSearchTerms = {

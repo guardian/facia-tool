@@ -26,7 +26,7 @@ type ClipboardPropsBeforeState = {};
 
 type ClipboardProps = ClipboardPropsBeforeState & {
   addArticleFragment: (id: string, supporting: string[]) => Promise<string>,
-  selectedArticleFragmentId: ?string,
+  selectedArticleFragmentId: string|void,
   selectArticleFragment: (id: string) => void,
   tree: Object, // TODO add typing,
   dispatch: Dispatch
@@ -89,9 +89,9 @@ class Clipboard extends React.Component<ClipboardProps> {
         dedupeType="articleFragment"
         onChange={this.handleChange}
         mapIn={{
-          text: async text => urlToArticle(text),
-          capi: capi => Promise.resolve({ type: 'articleFragment', id: capi }),
-          collection: str => Promise.resolve(JSON.parse(str))
+          text: async (text: string) => urlToArticle(text),
+          capi: (capi: string) => Promise.resolve({ type: 'articleFragment', id: capi }),
+          collection: (str: string) => Promise.resolve(JSON.parse(str))
         }}
         mapOut={{
           clipboard: (el, type) =>

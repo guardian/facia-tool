@@ -1,5 +1,3 @@
-
-
 import { reEstablishSession } from 'panda-session';
 
 const reauthUrl = '/login/status';
@@ -9,7 +7,7 @@ const pandaFetch = (
   count: number = 0
 ): Promise<Response> =>
   new Promise(
-    async (resolve: (r: Response) => mixed, reject: (r: Response) => mixed) => {
+    async (resolve: (r: Response) => any, reject: (r: Response) => any) => {
       const res = await fetch(url, {
         ...options,
         credentials: 'same-origin'

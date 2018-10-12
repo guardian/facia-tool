@@ -8,7 +8,7 @@ import { SmallRoundButton, ClearButtonIcon } from 'util/sharedStyles/buttons';
 
 const InputWrapper = styled('div')`
   position: relative;
-  width: ${({ width }) => width || 'auto'};
+  width: ${({ width }: { width?: number }) => width || 'auto'};
   display: flex;
   border: solid 1px #c9c9c9;
   backgroud: #fffff;

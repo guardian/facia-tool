@@ -77,6 +77,7 @@ type CapiArticleFields = {
 // See https://github.com/guardian/content-api-models/blob/master/models/src/main/thrift/content/v1.thrift#L1431
 // for the canonical thrift definition.
 type CapiArticle = {
+  id: string,
   webTitle: string,
   webUrl: string,
   urlPath: string,

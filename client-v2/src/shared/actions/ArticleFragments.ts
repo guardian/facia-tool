@@ -14,7 +14,9 @@ import {
   AddSupportingArticleFragment,
   AddGroupArticleFragment,
   RemoveGroupArticleFragment,
-  UpdateArticleFragmentMeta
+  UpdateArticleFragmentMeta,
+  ReplaceGroupArticleFragments,
+  ReplaceArticleFragmentSupporting
 } from 'shared/types/Action';
 import { batchActions } from 'redux-batched-actions';
 
@@ -93,7 +95,7 @@ const removeGroupArticleFragment = (
 const replaceArticleFragmentSupporting = (
   id: string,
   supporting: string[] = []
-) => ({
+): ReplaceArticleFragmentSupporting => ({
   type: 'SHARED/REPLACE_ARTICLE_FRAGMENT_SUPPORTING',
   payload: {
     id,
@@ -104,7 +106,7 @@ const replaceArticleFragmentSupporting = (
 const replaceGroupArticleFragments = (
   id: string,
   articleFragments: string[] = []
-) => ({
+): ReplaceGroupArticleFragments => ({
   type: 'SHARED/REPLACE_GROUP_ARTICLE_FRAGMENTS',
   payload: {
     id,
@@ -150,8 +152,10 @@ const f = <T1 extends {}>(arg1: T1) => <T2 extends {}>(arg2: T2) => {
 const insertAndDedupeSiblings = <T extends { id: string; uuid: string }>(
   id: string,
   siblingsSelector: (state: State) => T[],
-  insertActions: Action[],
-  replaceActionCreator: (strArray: string[]) => Action
+  // @todo - replace any type
+  insertActions: any[],
+  // @todo - replace any type
+  replaceActionCreator: (strArray: string[]) => any
 ) => (dispatch: Dispatch, getState: () => State) => {
   dispatch(batchActions(insertActions)); // add it to the state so that we can select it
   const siblings = siblingsSelector(getState());

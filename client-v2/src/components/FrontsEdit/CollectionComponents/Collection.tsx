@@ -16,8 +16,8 @@ import { State } from 'types/State';
 
 type CollectionPropsBeforeState = {
   id: string,
-  groups: *,
-  children: *,
+  groups: any,
+  children: any,
   alsoOn: { [id: string]: AlsoOnDetail },
   frontId: string
 };

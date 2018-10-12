@@ -9,8 +9,8 @@ import ArticleDrag from './ArticleDrag';
 type GroupProps = {
   id: string,
   index: number,
-  articleFragments: *,
-  children: *
+  articleFragments: any,
+  children: any
 };
 
 const dropZoneStyle = {

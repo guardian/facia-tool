@@ -10,8 +10,9 @@ import {
   NestedArticleFragment
 } from 'shared/types/Collection';
 import { normaliseClipboard } from 'util/clipboardUtils';
+import { UpdateClipboardContent } from 'types/Action';
 
-function updateClipboardContent(clipboardContent: Array<string>) {
+function updateClipboardContent(clipboardContent: string[] = []): UpdateClipboardContent {
   return {
     type: 'UPDATE_CLIPBOARD_CONTENT',
     payload: clipboardContent

@@ -4,8 +4,8 @@ import React from 'react';
 import { Level } from 'lib/guration';
 
 type FrontProps = {
-  collections: *,
-  children: *
+  collectionsany,
+  childrenany
 };
 
 const Front = ({ collections, children }: FrontProps) => (

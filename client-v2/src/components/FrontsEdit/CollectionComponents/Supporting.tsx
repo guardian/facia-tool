@@ -9,7 +9,7 @@ import { Dispatch } from 'types/Store';
 type SupportingProps = {
   uuid: string,
   parentId: string,
-  getNodeProps: *,
+  getNodeProps: any,
   onDelete: () => void
 };
 

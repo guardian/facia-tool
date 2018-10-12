@@ -6,7 +6,7 @@ const { Provider: InnerProvider, Consumer } = React.createContext({
   params: {}
 });
 
-const Provider = ({ children, ...props }: *) => (
+const Provider = ({ children, ...props }: any) => (
   <InnerProvider value={props}>{children}</InnerProvider>
 );
 

@@ -117,7 +117,7 @@ const reducer = (state: State = defaultState, action: Action): State => {
         ...state,
         selectedArticleFragments: {
           ...state.selectedArticleFragments,
-          [action.payload.frontId]: null
+          [action.payload.frontId]: undefined
         }
       };
     }

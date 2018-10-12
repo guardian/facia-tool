@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "es6",
+    "module": "es6",
     "lib": ["dom", "es2017"],
     "jsx": "react",
     "allowJs": true,
@@ -10,11 +11,5 @@
     "baseUrl": "src",
     "strict": true,
     "outDir": "../../public/client-v2/dist"
-  },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  }
 }
