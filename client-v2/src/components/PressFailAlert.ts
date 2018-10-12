@@ -1,0 +1,40 @@
+
+
+import React from 'react';
+import styled from 'styled-components';
+import { error } from '../styleConstants';
+
+type Props = {
+  staleFronts: { string: boolean }
+};
+
+const AlertContainer = styled('div')`
+  background-color: ${error.primary};
+  font-weight: 50;
+  padding: 5px;
+`;
+
+const PressFailAlert = (props: Props) => {
+  const failedFronts: Array<string> =
+    props.staleFronts &&
+    Object.keys(props.staleFronts).reduce((fronts, frontId) => {
+      if (props.staleFronts[frontId]) {
+        fronts.push(frontId);
+      }
+      return fronts;
+    }, []);
+
+  const getErrorString = () => {
+    const usePlural = failedFronts.length > 1;
+    return `Sorry, the latest edit${usePlural ? 's' : ''} to the front${
+      usePlural ? 's' : ''
+    } ${failedFronts.join(',')} ${usePlural ? 'have' : 'has'} not gone live.`;
+  };
+
+  if (failedFronts && failedFronts.length > 0) {
+    return <AlertContainer>{getErrorString()}</AlertContainer>;
+  }
+  return null;
+};
+
+export default PressFailAlert;

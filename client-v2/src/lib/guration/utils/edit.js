@@ -1,4 +1,4 @@
-// @flow
+
 
 import { isSubPath, pathForMove, hasMoved } from './path';
 import type { Path } from './path';

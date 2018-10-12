@@ -1,4 +1,4 @@
-// @flow
+
 
 import type { Path } from '../utils/path';
 

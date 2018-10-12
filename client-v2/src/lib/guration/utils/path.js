@@ -1,4 +1,4 @@
-// @flow
+
 
 type Path = {
   id: string,

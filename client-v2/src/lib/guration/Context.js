@@ -1,4 +1,4 @@
-// @flow
+
 
 import { createContext } from 'react';
 import type { EventType, IndexOffsetGetter } from './types';
