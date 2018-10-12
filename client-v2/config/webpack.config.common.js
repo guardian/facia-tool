@@ -1,7 +1,8 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './src/index.ts',
+  devtool: 'inline-source-map',
   output: {
     path: path.resolve(__dirname, '../../public/client-v2/dist'),
     filename: 'app.bundle.js'
@@ -9,13 +10,8 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/, // regex to test the file's path against
-        use: 'babel-loader',
-        exclude: /node_modules/
-      },
-      {
-        test: /\.js$/, // regex to test the file's path against
-        use: 'eslint-loader',
+        test: /\.(t|j)sx?$/,
+        use: 'ts-loader',
         exclude: /node_modules/
       },
       {
