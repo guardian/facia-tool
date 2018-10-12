@@ -54,7 +54,7 @@ const LastPressedContainer = styled('span')`
 type FrontsComponentProps = {
   frontId: string,
   selectedFront: FrontConfig,
-  alsoOn: { [string]: AlsoOnDetail },
+  alsoOn: { [id: string]: AlsoOnDetail },
   lastPressed: string,
   frontsActions: {
     getCollectionsAndArticles: (collectionIds: string[]) => Promise<void>,

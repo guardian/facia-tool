@@ -48,7 +48,7 @@ type FrontPropsBeforeState = {
   id: string,
   browsingStage: string,
   collectionIds: string[],
-  alsoOn: { [string]: AlsoOnDetail }
+  alsoOn: { [id: string]: AlsoOnDetail }
 };
 
 type FrontProps = FrontPropsBeforeState & {

@@ -10,11 +10,11 @@ describe('createAsyncResourceBundle', () => {
   const { now } = Date;
 
   beforeAll(() => {
-    (Date: any).now = jest.fn(() => 1337);
+    (Date as any).now = jest.fn(() => 1337);
   });
 
   afterAll(() => {
-    (Date: any).now = now;
+    (Date as any).now = now;
   });
   describe('actionNames', () => {
     it('should provide action names for a given resource name, in upper snake case', () => {

@@ -3,6 +3,7 @@
 import { Middleware } from 'redux';
 import uniq from 'lodash/uniq';
 import { State } from 'types/State';
+import { Store } from 'types/Store';
 import { Action, type ActionWithBatchedActions } from 'types/Action';
 import { selectors } from 'shared/bundles/collectionsBundle';
 import { selectEditorFronts } from 'bundles/frontsUIBundle';
@@ -55,14 +56,14 @@ type PersistMeta = {
   applyBeforeReducer?: boolean
 };
 
-function addPersistMetaToAction<TArgs: Array<any>, TAction: Object>(
+function addPersistMetaToAction<TArgs extends Array<any>, TAction extends Action>(
   actionCreator: (...args: TArgs) => TAction,
   meta: PersistMeta
 ): (...args: TArgs) => TAction & { meta: PersistMeta } {
-  return (...args: TArgs): TAction & { meta: PersistMeta } => ({
-    ...actionCreator(...args),
-    meta
-  });
+  return (...args: TArgs): TAction & { meta: PersistMeta } => Object.assign({},
+    actionCreator(...args),
+    { meta }
+  )
 }
 
 /**
@@ -83,19 +84,17 @@ const isPersistingToCollection = (act: Action): boolean =>
  * which would be nice to remove in favour of a more declarative library if
  * possible.
  */
-const persistCollectionOnEdit: (
-  (collection: Collection) => Action | ThunkAction
-) => Middleware<State, Action> = (
+const persistCollectionOnEdit: (updateAction: (collection: Collection) => Action) => Middleware<State, Action> = (
   updateCollectionAction: (
     collection: Collection
   ) => Action | ThunkAction = updateCollection
-) => store => {
+) => (store: Store) => {
   /**
    * Get the relevant collection ids for the given actions.
    * @todo At the moment this just cares about updates to article fragments,
    *   but it should also listen for edits to collections.
    */
-  const getCollectionIdsForActions = actions => {
+  const getCollectionIdsForActions = (actions: Action[]) => {
     const articleFragmentIds: string[] = uniq(
       actions.map(
         // A sneaky 'any' here, as it's difficult to handle dynamic key

@@ -1,21 +1,27 @@
-
-
 import v4 from 'uuid/v4';
 import uniq from 'lodash/uniq';
 import uniqBy from 'lodash/uniqBy';
 import keyBy from 'lodash/keyBy';
-import {
-  ArticleFragment,
-  ArticleFragmentMeta
-} from 'shared/types/Collection';
+import { ArticleFragment, ArticleFragmentMeta } from 'shared/types/Collection';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import { getArticles } from 'services/faciaApi';
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
-import { Action } from 'shared/types/Action';
+import {
+  Action,
+  ArticleFragmentsReceived,
+  RemoveSupportingArticleFragment,
+  AddSupportingArticleFragment,
+  AddGroupArticleFragment,
+  RemoveGroupArticleFragment,
+  UpdateArticleFragmentMeta
+} from 'shared/types/Action';
 import { batchActions } from 'redux-batched-actions';
 
-function updateArticleFragmentMeta(id: string, meta: ArticleFragmentMeta) {
+function updateArticleFragmentMeta(
+  id: string,
+  meta: ArticleFragmentMeta
+): UpdateArticleFragmentMeta {
   return {
     type: 'SHARED/UPDATE_ARTICLE_FRAGMENT_META',
     payload: {
@@ -26,8 +32,8 @@ function updateArticleFragmentMeta(id: string, meta: ArticleFragmentMeta) {
 }
 
 function articleFragmentsReceived(articleFragments: {
-  [string]: ArticleFragment
-}) {
+  [id: string]: ArticleFragment;
+}): ArticleFragmentsReceived {
   return {
     type: 'SHARED/ARTICLE_FRAGMENTS_RECEIVED',
     payload: articleFragments
@@ -37,7 +43,7 @@ function articleFragmentsReceived(articleFragments: {
 function removeSupportingArticleFragment(
   id: string,
   supportingArticleFragmentId: string
-) {
+): RemoveSupportingArticleFragment {
   return {
     type: 'SHARED/REMOVE_SUPPORTING_ARTICLE_FRAGMENT',
     payload: {
@@ -51,7 +57,7 @@ const addSupportingArticleFragment = (
   id: string,
   supportingArticleFragmentId: string,
   index: number
-) => ({
+): AddSupportingArticleFragment => ({
   type: 'SHARED/ADD_SUPPORTING_ARTICLE_FRAGMENT',
   payload: {
     id,
@@ -64,7 +70,7 @@ const addGroupArticleFragment = (
   id: string,
   articleFragmentId: string,
   index: number
-) => ({
+): AddGroupArticleFragment => ({
   type: 'SHARED/ADD_GROUP_ARTICLE_FRAGMENT',
   payload: {
     id,
@@ -73,7 +79,10 @@ const addGroupArticleFragment = (
   }
 });
 
-const removeGroupArticleFragment = (id: string, articleFragmentId: string) => ({
+const removeGroupArticleFragment = (
+  id: string,
+  articleFragmentId: string
+): RemoveGroupArticleFragment => ({
   type: 'SHARED/REMOVE_GROUP_ARTICLE_FRAGMENT',
   payload: {
     id,
@@ -103,7 +112,7 @@ const replaceGroupArticleFragments = (
   }
 });
 
-const createFragment = (id: string, supporting = []) => ({
+const createFragment = (id: string, supporting: string[] = []) => ({
   uuid: v4(),
   id,
   frontPublicationDate: Date.now(),
@@ -118,7 +127,7 @@ function addArticleFragment(id: string, supporting: string[] = []) {
       .catch(error => dispatch(externalArticleActions.fetchError(error, [id])))
       .then(articles => {
         dispatch(externalArticleActions.fetchSuccess(articles));
-        const supportingArray = uniq(supporting).map(createFragment);
+        const supportingArray = uniq(supporting).map(_ => createFragment(_));
         const supportingFragments = keyBy(supportingArray, ({ uuid }) => uuid);
         const parentFragment = createFragment(
           id,
@@ -134,13 +143,15 @@ function addArticleFragment(id: string, supporting: string[] = []) {
         return parentFragment.uuid;
       });
 }
+const f = <T1 extends {}>(arg1: T1) => <T2 extends {}>(arg2: T2) => {
+  return { arg1, arg2 };
+};
 
-// TODO: handle double dispatching in the same tick
-const insertAndDedupeSiblings = <T: { id: string, uuid: string }>(
+const insertAndDedupeSiblings = <T extends { id: string; uuid: string }>(
   id: string,
   siblingsSelector: (state: State) => T[],
   insertActions: Action[],
-  replaceActionCreator: (string[]) => Action
+  replaceActionCreator: (strArray: string[]) => Action
 ) => (dispatch: Dispatch, getState: () => State) => {
   dispatch(batchActions(insertActions)); // add it to the state so that we can select it
   const siblings = siblingsSelector(getState());

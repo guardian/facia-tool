@@ -231,7 +231,7 @@ function getData(
   identifier
 ) {
   const dataTransfer = event.nativeEvent
-    ? (event.nativeEvent: any).dataTransfer
+    ? (event.nativeEvent as any).dataTransfer
     : event.dataTransfer;
   return dataTransfer && dataTransfer.getData
     ? dataTransfer.getData(identifier)

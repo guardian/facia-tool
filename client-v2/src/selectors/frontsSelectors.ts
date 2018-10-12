@@ -8,15 +8,15 @@ import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
 
 type FrontConfigMap = {
-  [string]: FrontConfig
+  [id: string]: FrontConfig
 };
 
 type CollectionConfigMap = {
-  [string]: CollectionConfig
+  [id: string]: CollectionConfig
 };
 
 type FrontsByPriority = {
-  [string]: FrontConfig[]
+  [id: string]: FrontConfig[]
 };
 
 const getFronts = (state: State): FrontConfigMap =>
@@ -132,7 +132,7 @@ const getCollectionConfigs = (
 
 const getUnpublishedChangesStatus = (
   collectionId: string,
-  unpublishedChanges: { [string]: boolean }
+  unpublishedChanges: { [id: string]: boolean }
 ): boolean => (unpublishedChanges ? unpublishedChanges[collectionId] : false);
 
 const collectionConfigsSelector = createSelector(
@@ -153,7 +153,7 @@ const hasUnpublishedChangesSelector = createSelector(
 const alsoOnFrontSelector = (
   currentFront: ?FrontConfig,
   fronts: Array<FrontConfig>
-): { [string]: AlsoOnDetail } => {
+): { [id: string]: AlsoOnDetail } => {
   if (!currentFront) {
     return {};
   }

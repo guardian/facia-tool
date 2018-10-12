@@ -1,9 +1,7 @@
-
-
 import without from 'lodash/without';
 
 type BaseResource = {
-  id: string
+  id: string;
 };
 
 const FETCH_START = 'FETCH_START';
@@ -14,46 +12,47 @@ const UPDATE_SUCCESS = 'UPDATE_SUCCESS';
 const UPDATE_ERROR = 'UPDATE_ERROR';
 
 type FetchStartAction = {
-  entity: string,
-  type: 'FETCH_START',
-  payload: { ids?: string[] | string }
+  entity: string;
+  type: 'FETCH_START';
+  payload: { ids?: string[] | string };
 };
 
 type FetchSuccessAction<Resource> = {
-  entity: string,
-  type: 'FETCH_SUCCESS',
-  payload: { data: Resource | Resource[] | any, time: number }
+  entity: string;
+  type: 'FETCH_SUCCESS';
+  payload: { data: Resource | Resource[] | any; time: number };
 };
 
 type FetchErrorAction = {
-  entity: string,
-  type: 'FETCH_ERROR',
+  entity: string;
+  type: 'FETCH_ERROR';
   payload: {
-    error: string,
-    time: number,
-    ids?: string | string[]
-  }
+    error: string;
+    time: number;
+    ids?: string | string[];
+  };
 };
 
 type UpdateStartAction<Resource> = {
-  entity: string,
-  type: 'UPDATE_START',
-  payload: { id?: string | string, data: Resource | any }
+  entity: string;
+  type: 'UPDATE_START';
+  payload: { id?: string | string; data: Resource | any };
 };
 
 type UpdateSuccessAction<Resource> = {
-  entity: string,
-  type: 'UPDATE_SUCCESS',
-  payload: { data: Resource | any, id: string, time: number }
+  entity: string;
+  type: 'UPDATE_SUCCESS';
+  payload: { data: Resource | any; id: string; time: number };
 };
 
 type UpdateErrorAction = {
-  entity: string,
-  type: 'UPDATE_ERROR',
+  entity: string;
+  type: 'UPDATE_ERROR';
   payload: {
-    error: string,
-    id: string
-  }
+    error: string;
+    id: string;
+    time: number;
+  };
 };
 
 type Actions<Resource> =
@@ -78,36 +77,13 @@ const applyStatusIds = (
 
 const removeStatusIds = (
   currentIds: string[],
-  incomingIds?: string[] | string
-) =>
+  incomingIds: string[] | string = ''
+): string[] =>
   incomingIds instanceof Array
     ? without(currentIds, ...incomingIds)
-    : without(currentIds, incomingIds);
+    : without<string>(currentIds, incomingIds);
 
-const createSelectCurrentError = selectLocalState => (state: any) =>
-  selectLocalState(state).error;
-
-const createSelectLastError = selectLocalState => (state: any) =>
-  selectLocalState(state).lastError;
-
-const createSelectLastFetch = selectLocalState => (state: any) =>
-  selectLocalState(state).lastFetch;
-
-const createSelectIsLoading = selectLocalState => (state: any) =>
-  !!selectLocalState(state).loadingIds.length;
-
-const createSelectIsLoadingById = selectLocalState => (
-  state: any,
-  id: string
-) => selectLocalState(state).loadingIds.indexOf(id) !== -1;
-
-const createSelectById = selectLocalState => (state: any, id: string) =>
-  selectLocalState(state).data[id];
-
-const createSelectAll = selectLocalState => (state: any) =>
-  selectLocalState(state).data;
-
-function applyNewData<Resource: BaseResource>(
+function applyNewData<Resource extends BaseResource>(
   data: { [id: string]: Resource } | {},
   newData: Resource | Resource[],
   resourceName: string
@@ -145,12 +121,13 @@ function applyNewData<Resource: BaseResource>(
 }
 
 type State<Resource> = {
-  data: Resource | { [id: string]: Resource } | any,
-  lastError: string | null,
-  error: string | null,
-  lastFetch: number | null,
-  loadingIds: string[],
-  updatingIds: string[]
+  data: Resource | { [id: string]: Resource } | any;
+  lastError: string | null;
+  error: string | null;
+  lastFetch: number | null;
+  loadingIds: string[];
+  updatingIds: string[];
+  loading: boolean;
 };
 
 /**
@@ -167,20 +144,20 @@ type State<Resource> = {
  * that the shape of the resource might be keyed by ID, or just a blob
  * of state that we don't index. Solutions welcome!
  */
-function createAsyncResourceBundle<Resource: any>(
+function createAsyncResourceBundle<Resource, RootState>(
   // The name of the entity for which this reducer is responsible
   entityName: string,
   options: {
     // The key the reducer provided by this bundle is mounted at.
     // Defaults to entityName if none is given.
-    selectLocalState?: (state: any) => any,
+    selectLocalState?: (state: RootState) => State<Resource>;
     // Do we index the incoming data by id, or just add it to the state as-is?
-    indexById?: boolean,
+    indexById?: boolean;
     // Provides a namespace for the created actions, separated by a slash,
     // e.g.the resource 'books' namespaced with 'shared' becomes SHARED/BOOKS
-    namespace?: string,
+    namespace?: string;
     // The initial state of the reducer data. Defaults to null.
-    initialData?: any
+    initialData?: any;
   } = {
     indexById: false,
     initialData: {}
@@ -190,6 +167,26 @@ function createAsyncResourceBundle<Resource: any>(
   const selectLocalState = options.selectLocalState
     ? options.selectLocalState
     : (state: any): State<Resource> => state[entityName];
+
+  const selectCurrentError = (state: RootState) =>
+    selectLocalState(state).error;
+
+  const selectLastError = (state: RootState) =>
+    selectLocalState(state).lastError;
+
+  const selectLastFetch = (state: RootState) =>
+    selectLocalState(state).lastFetch;
+
+  const selectIsLoading = (state: RootState) =>
+    !!selectLocalState(state).loadingIds.length;
+
+  const selectIsLoadingById = (state: RootState, id: string) =>
+    selectLocalState(state).loadingIds.indexOf(id) !== -1;
+
+  const selectById = (state: RootState, id: string) =>
+    selectLocalState(state).data[id];
+
+  const selectAll = (state: RootState) => selectLocalState(state).data;
 
   const initialState: State<Resource> = {
     data: options.initialData || {},
@@ -359,13 +356,13 @@ function createAsyncResourceBundle<Resource: any>(
       updateError: updateErrorAction
     },
     selectors: {
-      selectCurrentError: createSelectCurrentError(selectLocalState),
-      selectLastError: createSelectLastError(selectLocalState),
-      selectLastFetch: createSelectLastFetch(selectLocalState),
-      selectIsLoading: createSelectIsLoading(selectLocalState),
-      selectIsLoadingById: createSelectIsLoadingById(selectLocalState),
-      selectById: createSelectById(selectLocalState),
-      selectAll: createSelectAll(selectLocalState)
+      selectCurrentError,
+      selectLastError,
+      selectLastFetch,
+      selectIsLoading,
+      selectIsLoadingById,
+      selectById,
+      selectAll
     }
   };
 }

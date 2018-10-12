@@ -1,5 +1,3 @@
-
-
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { enableBatching } from 'redux-batched-actions';
@@ -32,10 +30,10 @@ const run = (existing, added) =>
     applyMiddleware(thunk)
   );
 
-const testAdd = (existing: Array<[string, string]>) => (
-  [uuid: string, id: string],
+const testAdd = (existing: [string, string][]) => (
+  [uuid, id]: [string, string],
   index: number,
-  afId: ?string = null
+  afId: string|void = null
 ) => {
   const { dispatch, getState } = run(existing, [uuid, id]);
   expect(
@@ -51,7 +49,7 @@ const testAdd = (existing: Array<[string, string]>) => (
   return getState();
 };
 
-const existing = [['a', '1'], ['b', '2'], ['c', '3']];
+const existing: [string, string][] = [['a', '1'], ['b', '2'], ['c', '3']];
 const add = testAdd(existing);
 
 describe('ArticleFragments actions', () => {

@@ -21,7 +21,7 @@ type ContainerProps = {
   onDragOver?: DragEvent => void,
   onDrop?: DragEvent => void,
   onSelect: (id: string) => void,
-  selectSharedState: (state: any) => State // eslint-disable-line react/no-unused-prop-types
+  selectSharedState: (state as any) => State // eslint-disable-line react/no-unused-prop-types
 };
 
 type ComponentProps = {

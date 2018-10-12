@@ -26,6 +26,6 @@ const reducers = {
   form
 };
 
-export Reducers = typeof reducers;
+const rootReducer = combineReducers(reducers);
 
 export default combineReducers(reducers);

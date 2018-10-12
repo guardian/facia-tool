@@ -52,25 +52,18 @@ type EditorClearArticleFragmentSelection = {
   }
 };
 
-type AddGroupArticleFragment = {
-  ...SharedAddGroupArticleFragment,
+type ActionPersistMeta = {
   meta: PersistMeta
 };
 
-type RemoveGroupArticleFragment = {
-  ...SharedRemoveGroupArticleFragment,
-  meta: PersistMeta
-};
+type AddGroupArticleFragment = SharedAddGroupArticleFragment & ActionPersistMeta
 
-type AddSupportingArticleFragment = {
-  ...SharedAddSupportingArticleFragment,
-  meta: PersistMeta
-};
+type RemoveGroupArticleFragment = SharedRemoveGroupArticleFragment & ActionPersistMeta;
 
-type RemoveSupportingArticleFragment = {
-  ...SharedRemoveSupportingArticleFragment,
-  meta: PersistMeta
-};
+type AddSupportingArticleFragment = SharedAddSupportingArticleFragment & ActionPersistMeta;
+
+type RemoveSupportingArticleFragment = SharedRemoveSupportingArticleFragment
+  & ActionPersistMeta;
 
 type ActionError =
   | 'Could not fetch fronts config'
@@ -128,7 +121,7 @@ type ErrorInAction = {
 
 type RecordUnpublishedChanges = {
   type: 'RECORD_UNPUBLISHED_CHANGES',
-  payload: { [string]: boolean }
+  payload: { [id: string]: boolean }
 };
 
 type PublishCollectionSuccess = {
@@ -159,7 +152,7 @@ type RemoveClipboardArticleFragment = {
 
 type RecordStaleFronts = {
   type: 'RECORD_STALE_FRONTS',
-  payload: { [string]: boolean }
+  payload: { [id: string]: boolean }
 };
 
 type Action =
@@ -197,5 +190,4 @@ type BatchedAction = {
 
 type ActionWithBatchedActions = Action | BatchedAction;
 
-export ActionType = $ElementType<Action, 'type'>;
 export { ActionError, Action, ActionWithBatchedActions };

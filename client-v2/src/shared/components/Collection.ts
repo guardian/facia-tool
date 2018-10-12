@@ -21,7 +21,7 @@ import ContentContainer from './layout/ContentContainer';
 
 type ContainerProps = {
   id: string, // eslint-disable-line react/no-unused-prop-types
-  selectSharedState?: (state: any) => State, // eslint-disable-line react/no-unused-prop-types
+  selectSharedState?: (state as any) => State, // eslint-disable-line react/no-unused-prop-types
   browsingStage?: string // eslint-disable-line react/no-unused-prop-types
 };
 

@@ -44,10 +44,10 @@ type CollectionConfigResponse = {
 
 type FrontsConfigResponse = {
   fronts: {
-    [string]: FrontConfigResponse
+    [id: string]: FrontConfigResponse
   },
   collections: {
-    [string]: CollectionConfigResponse
+    [id: string]: CollectionConfigResponse
   }
 };
 
@@ -64,11 +64,11 @@ type CollectionConfig = CollectionConfigResponse & {
 };
 
 type FrontConfigMap = {
-  [string]: FrontConfig
+  [id: string]: FrontConfig
 };
 
 type CollectionConfigMap = {
-  [string]: CollectionConfig
+  [id: string]: CollectionConfig
 };
 
 type FrontsConfig = {

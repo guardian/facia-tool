@@ -12,7 +12,7 @@ import { ArticleFragment } from '../types/Collection';
 import { State } from '../types/State';
 
 // Selects the shared part of the application state mounted at its default point, '.shared'.
-const selectSharedState = (rootState: any): State => rootState.shared;
+const selectSharedState = (rootState as any): State => rootState.shared;
 
 const groupsSelector = (state: State) => state.groups;
 const articleFragmentsSelector = (state: State) => state.articleFragments;
@@ -166,7 +166,7 @@ const collectionIdsSelector = (
 
 const createNestedArticleFragment = (
   articleFragmentId: string,
-  articleFragments: { [string]: ArticleFragment }
+  articleFragments: { [id: string]: ArticleFragment }
 ) =>
   articleFragments[articleFragmentId].meta &&
   articleFragments[articleFragmentId].meta.supporting

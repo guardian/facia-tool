@@ -3,7 +3,7 @@
 import { Action } from 'types/Action';
 
 type State = {
-  [string]: boolean
+  [id: string]: boolean
 };
 
 const staleFronts = (state: State = {}, action: Action): State => {

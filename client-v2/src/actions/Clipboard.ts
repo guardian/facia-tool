@@ -22,7 +22,7 @@ function storeClipboardContent(clipboardContent: Array<NestedArticleFragment>) {
   return (dispatch: Dispatch) => {
     const normalisedClipboard: {
       clipboard: { articles: Array<string> },
-      articleFragments: { [string]: ArticleFragment }
+      articleFragments: { [id: string]: ArticleFragment }
     } = normaliseClipboard({
       articles: clipboardContent
     });
@@ -37,7 +37,6 @@ function storeClipboardContent(clipboardContent: Array<NestedArticleFragment>) {
     );
 
     const fragmentIds = Object.values(articleFragments).map(
-      // $FlowFixMe Object.values() returns mixed[]
       fragment => fragment.id
     );
     return getArticles(fragmentIds)

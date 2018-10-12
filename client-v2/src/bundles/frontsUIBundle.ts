@@ -55,7 +55,7 @@ const editorClearArticleFragmentSelection = (frontId: string) => ({
 
 type State = {
   frontIds: string[],
-  selectedArticleFragments: { [frontId: string]: ?string }
+  selectedArticleFragments: { [frontId: string]: string|void }
 };
 
 const selectEditorFronts = (state: GlobalState) => state.editor.frontIds;

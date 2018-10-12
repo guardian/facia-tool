@@ -11,11 +11,11 @@ import { Actions } from '../util/createAsyncResourceBundle';
 
 type ArticleFragmentsReceived = {
   type: 'SHARED/ARTICLE_FRAGMENTS_RECEIVED',
-  payload: { [string]: ArticleFragment }
+  payload: { [id: string]: ArticleFragment }
 };
 type GroupsReceived = {
   type: 'SHARED/GROUPS_RECEIVED',
-  payload: { [string]: Group }
+  payload: { [id: string]: Group }
 };
 type UpdateArticleFragmentMeta = {
   type: 'SHARED/UPDATE_ARTICLE_FRAGMENT_META',
@@ -85,5 +85,6 @@ export {
   AddSupportingArticleFragment,
   RemoveGroupArticleFragment,
   AddGroupArticleFragment,
-  ArticleFragmentsReceived
+  ArticleFragmentsReceived,
+  UpdateArticleFragmentMeta
 };

@@ -3,7 +3,7 @@
 import { NestedArticleFragment } from 'shared/types/Collection';
 
 type Permission = {
-  [string]: boolean
+  [id: string]: boolean
 };
 
 type Acl = {

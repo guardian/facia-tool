@@ -15,7 +15,7 @@ describe('Shared utilities', () => {
   describe('denormaliseCollection', () => {
     it('should denormalise a collection from the application state', () => {
       expect(
-        denormaliseCollection((stateWithCollection: any), 'exampleCollection')
+        denormaliseCollection((stateWithCollection as any), 'exampleCollection')
       ).toEqual({
         ...collection,
         // We re-add a blank draft value here. (We could keep it undefined, it just feels a little odd!)
@@ -24,7 +24,7 @@ describe('Shared utilities', () => {
       });
       expect(
         denormaliseCollection(
-          (stateWithCollectionAndSupporting: any),
+          (stateWithCollectionAndSupporting as any),
           'exampleCollection'
         )
       ).toEqual({

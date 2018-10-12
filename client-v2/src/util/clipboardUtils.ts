@@ -12,7 +12,7 @@ function normaliseClipboard(clipboard: {
   articles: Array<NestedArticleFragment>
 }): {
   clipboard: { articles: Array<string> },
-  articleFragments: { [string]: ArticleFragment }
+  articleFragments: { [id: string]: ArticleFragment }
 } {
   const normalisedClipboard = normalize(clipboard);
   return {

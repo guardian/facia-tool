@@ -1,10 +1,8 @@
-
-
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import fetchMock from 'fetch-mock';
 import config from 'fixtures/config';
-import { stateWithCollection, capiArticle } from 'shared/fixtures/shared';
+import { stateWithCollection, capiArticle } from 'src/shared/fixtures/shared';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import {
   actions as externalArticleActions,
@@ -19,10 +17,10 @@ describe('Collection actions', () => {
   const { now } = Date;
   afterEach(fetchMock.restore);
   beforeAll(() => {
-    (Date: any).now = () => 1337;
+    (Date as any).now = () => 1337;
   });
   afterAll(() => {
-    (Date: any).now = now;
+    (Date as any).now = now;
   });
   describe('Update collection thunk', () => {
     it('should issue a collection update', async () => {

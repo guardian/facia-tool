@@ -1,4 +1,4 @@
-
+import { Diff } from 'utility-types';
 
 type Group = {
   key: string,
@@ -13,7 +13,7 @@ type NestedArticleFragmentRootFields = {
 
 type NestedArticleFragment = NestedArticleFragmentRootFields & {
   meta: {
-    supporting?: $Diff<NestedArticleFragment, { supporting: any }>[]
+    supporting?: Diff<NestedArticleFragment, { supporting: any }>[]
   }
 };
 
@@ -49,7 +49,7 @@ type ArticleFragmentMeta = {
   snapType?: string,
   snapCss?: string,
   imageSlideshowReplace?: boolean,
-  slideshow: {
+  slideshow?: {
     src?: string,
     thumb?: string,
     width?: string,

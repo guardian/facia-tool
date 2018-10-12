@@ -181,7 +181,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
 
 const mapStateToProps = state => ({
   // $FlowFixMe: no idea why this doesn't work
-  capiFeedSpecs: (capiFeedSpecsSelector(state): any)
+  capiFeedSpecs: (capiFeedSpecsSelector(state) as any)
 });
 
 export default connect(mapStateToProps)(Feed);

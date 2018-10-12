@@ -34,7 +34,7 @@ function getCollection(collectionId: string) {
   return (dispatch: Dispatch, getState: () => State) => {
     dispatch(collectionActions.fetchStart(collectionId));
     return fetchCollection(collectionId)
-      .then((res: Object) => {
+      .then(res => {
         const collectionConfig = getCollectionConfig(getState(), collectionId);
         const collectionWithNestedArticles = combineCollectionWithConfig(
           collectionConfig,
@@ -95,7 +95,7 @@ function updateCollection(collection: Collection) {
         collection.id
       );
       await updateCollectionFromApi(collection.id, denormalisedCollection);
-      dispatch(collectionActions.updateSuccess(collection.id));
+      dispatch(collectionActions.updateSuccess(collection.id, collection));
     } catch (e) {
       dispatch(collectionActions.updateError(e, collection.id));
       throw e;
@@ -111,7 +111,8 @@ const getCollectionsAndArticles = (
 ) => (dispatch: Dispatch) =>
   Promise.all(
     collectionIds.map(async collectionId => {
-      const articleIds = await dispatch(getCollectionAction(collectionId));
+      // @todo - requires correct handling of Dispatch thunks
+      const articleIds: any = await dispatch(getCollectionAction(collectionId));
       dispatch(externalArticleActions.fetchStart(articleIds));
       try {
         const articles = await getArticles(articleIds);

@@ -2,7 +2,7 @@
 
 import { Group } from 'shared/types/Collection';
 
-function groupsReceived(groups: { [string]: Group }) {
+function groupsReceived(groups: { [id: string]: Group }) {
   return {
     type: 'SHARED/GROUPS_RECEIVED',
     payload: groups

@@ -4,7 +4,7 @@ import { Action } from '../types/Action';
 import { Group } from '../types/Collection';
 
 type State = {
-  [string]: Group
+  [id: string]: Group
 };
 
 const groups = (state: State = {}, action: Action) => {

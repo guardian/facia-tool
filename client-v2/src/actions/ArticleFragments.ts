@@ -1,5 +1,3 @@
-
-
 import {
   addSupportingArticleFragment,
   removeSupportingArticleFragment,
@@ -17,6 +15,7 @@ import {
 } from 'shared/selectors/shared';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
 import { updateClipboardContent } from 'actions/Clipboard';
+import { State } from 'types/State';
 
 function addClipboardArticleFragment(articleFragmentId: string, index: number) {
   return {
@@ -77,11 +76,11 @@ const removeClipboardArticleFragmentWithPersist = addPersistMetaToAction(
 );
 
 const selectorMap = {
-  articleFragment: (state, id) =>
+  articleFragment: (state: State, id: string) =>
     supportingArticlesSelector(state, {
       articleFragmentId: id
     }),
-  group: (state, id) =>
+  group: (state: State, id: string) =>
     groupArticlesSelector(state, {
       groupName: id
     }),
@@ -91,19 +90,19 @@ const selectorMap = {
 const insertActionMap = {
   articleFragment: addSupportingArticleFragment,
   group: addGroupArticleFragment,
-  clipboard: (_, id, index) => addClipboardArticleFragment(id, index)
+  clipboard: (_: unknown, id: string, index: number) => addClipboardArticleFragment(id, index)
 };
 
 const removeActionMap = {
   articleFragment: removeSupportingArticleFragment,
   group: removeGroupArticleFragment,
-  clipboard: (_, id) => removeClipboardArticleFragment(id)
+  clipboard: (_: unknown, id: string) => removeClipboardArticleFragment(id)
 };
 
 const replaceActionMap = {
   articleFragment: replaceArticleFragmentSupporting,
   group: replaceGroupArticleFragments,
-  clipboard: (_, children) => updateClipboardContent(children)
+  clipboard: (_: unknown, children: string[]) => updateClipboardContent(children)
 };
 
 const createInsertArticleFragment = (persistTo: 'collection' | 'clipboard') => (

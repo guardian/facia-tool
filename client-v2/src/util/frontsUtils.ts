@@ -7,7 +7,7 @@ import { detectPressFailureMs } from 'constants/fronts';
 const getFrontCollections = (
   frontId: ?string,
   fronts: Array<FrontConfig>,
-  collections: { [string]: CollectionConfig }
+  collections: { [id: string]: CollectionConfig }
 ): Array<CollectionConfig> => {
   if (!frontId) {
     return [];

@@ -18,7 +18,7 @@ type CollectionPropsBeforeState = {
   id: string,
   groups: *,
   children: *,
-  alsoOn: { [string]: AlsoOnDetail },
+  alsoOn: { [id: string]: AlsoOnDetail },
   frontId: string
 };
 
