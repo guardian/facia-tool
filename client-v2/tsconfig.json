@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es6",
     "module": "es6",
+    "moduleResolution": "node",
     "lib": ["dom", "es2017"],
     "jsx": "react",
     "allowJs": true,
@@ -11,5 +12,10 @@
     "baseUrl": "src",
     "strict": true,
     "outDir": "../../public/client-v2/dist"
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "config",
+    "scripts"
+  ]
 }
