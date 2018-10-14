@@ -1,8 +1,10 @@
-
-
 import styled from 'styled-components';
 
-export default styled('label')`
+export default styled('label')<{
+  size?: 'sm';
+  active?: boolean;
+  for?: string;
+}>`
   display: block;
   font-size: ${props =>
     props.size === 'sm'

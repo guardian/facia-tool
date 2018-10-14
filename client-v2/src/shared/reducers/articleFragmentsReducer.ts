@@ -1,10 +1,8 @@
-
-
 import { Action } from '../types/Action';
 import { ArticleFragment } from '../types/Collection';
 
 type State = {
-  [id: string]: ArticleFragment
+  [id: string]: ArticleFragment;
 };
 
 const articleFragments = (state: State = {}, action: Action) => {

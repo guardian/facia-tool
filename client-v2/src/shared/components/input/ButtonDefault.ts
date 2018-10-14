@@ -1,8 +1,12 @@
-
-
 import styled from 'styled-components';
 
-const getColour = ({ selected, dark }) => {
+const getColour = ({
+  selected,
+  dark
+}: {
+  selected?: boolean;
+  dark?: boolean;
+}) => {
   if (selected) return '#123';
   if (dark) {
     return '#000';

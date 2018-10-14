@@ -1,5 +1,3 @@
-
-
 import omit from 'lodash/omit';
 import { createSelector } from 'reselect';
 
@@ -8,13 +6,18 @@ import { selectors as externalArticleSelectors } from '../bundles/externalArticl
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 import { ExternalArticle } from '../types/ExternalArticle';
 import { DerivedArticle } from '../types/Article';
-import { ArticleFragment } from '../types/Collection';
+import {
+  ArticleFragment,
+  Collection,
+  Group,
+  Stages
+} from '../types/Collection';
 import { State } from '../types/State';
 
 // Selects the shared part of the application state mounted at its default point, '.shared'.
-const selectSharedState = (rootState as any): State => rootState.shared;
+const selectSharedState = (rootState: any): State => rootState.shared;
 
-const groupsSelector = (state: State) => state.groups;
+const groupsSelector = (state: State): { [id: string]: Group } => state.groups;
 const articleFragmentsSelector = (state: State) => state.articleFragments;
 
 const articleFragmentsFromRootStateSelector = createSelector(
@@ -33,11 +36,11 @@ const articleFragmentSelector = (state: State, id: string): ArticleFragment =>
 const externalArticleFromArticleFragmentSelector = (
   state: State,
   id: string
-): ?ExternalArticle => {
+): ExternalArticle | void => {
   const articleFragment = articleFragmentSelector(state, id);
   const externalArticles = externalArticleSelectors.selectAll(state);
   if (!articleFragment) {
-    return null;
+    return undefined;
   }
   return externalArticles[articleFragment.id];
 };
@@ -45,11 +48,11 @@ const externalArticleFromArticleFragmentSelector = (
 const articleFromArticleFragmentSelector = (
   state: State,
   id: string
-): ?DerivedArticle => {
+): DerivedArticle | void => {
   const externalArticle = externalArticleFromArticleFragmentSelector(state, id);
   const articleFragment = articleFragmentSelector(state, id);
   if (!externalArticle || !articleFragment) {
-    return null;
+    return undefined;
   }
 
   return {
@@ -66,8 +69,11 @@ const articleFromArticleFragmentSelector = (
     thumbnail: getThumbnail(articleFragment, externalArticle)
   };
 };
-const collectionIdSelector = (_, { collectionId }: { collectionId: string }) =>
-  collectionId;
+
+const collectionIdSelector = (
+  _: any,
+  { collectionId }: { collectionId: string }
+) => collectionId;
 
 const createCollectionSelector = () =>
   createSelector(
@@ -83,7 +89,10 @@ const createCollectionSelector = () =>
         : false
   );
 
-const stageSelector = (_, { stage }: { stage: string }) => stage;
+const stageSelector = (
+  _: any,
+  { stage }: { stage: Stages; collectionId: string }
+): Stages => stage;
 
 const createCollectionStageGroupsSelector = () => {
   const collectionSelector = createCollectionSelector();
@@ -91,13 +100,18 @@ const createCollectionStageGroupsSelector = () => {
     collectionSelector,
     groupsSelector,
     stageSelector,
-    (collection, groups, stage) =>
-      (collection[stage] || []).map(id => groups[id])
+    (
+      collection: Collection,
+      groups: { [id: string]: Group },
+      stage: Stages
+    ): Group[] => (collection[stage] || []).map(id => groups[id])
   );
 };
 
-const groupNameSelector = (_, { groupName }: { groupName: string }) =>
-  groupName;
+const groupNameSelector = (
+  _: any,
+  { groupName }: { groupName: string; stage: Stages; collectionId: string }
+) => groupName;
 
 const createArticlesInCollectionGroupSelector = () => {
   const collectionStageGroupsSelector = createCollectionStageGroupsSelector();
@@ -105,7 +119,7 @@ const createArticlesInCollectionGroupSelector = () => {
     articleFragmentsSelector,
     collectionStageGroupsSelector,
     groupNameSelector,
-    (articleFragments, collectionGroups, groupName) => {
+    (articleFragments: any, collectionGroups, groupName: string) => {
       const group = collectionGroups.find(({ id }) => id === groupName) || {
         articleFragments: []
       };
@@ -122,15 +136,15 @@ const createArticlesInCollectionSelector = () => {
     (articleFragments, collectionGroups) =>
       collectionGroups.reduce(
         (acc, group) => acc.concat(group.articleFragments),
-        []
+        [] as string[]
       )
   );
 };
 
-const clipboardContentSelector = state => state.clipboard || [];
+const clipboardContentSelector = (state: State) => state.clipboard || [];
 
 const articleFragmentIdSelector = (
-  _,
+  _: any,
   { articleFragmentId }: { articleFragmentId: string }
 ) => articleFragmentId;
 
@@ -139,7 +153,7 @@ const supportingArticlesSelector = createSelector(
   articleFragmentIdSelector,
   (articleFragments, id) =>
     (articleFragments[id].meta.supporting || []).map(
-      sId => articleFragments[sId]
+      (sId: string) => articleFragments[sId]
     )
 );
 
@@ -156,11 +170,12 @@ const groupArticlesSelector = createSelector(
 const clipboardArticlesSelector = createSelector(
   clipboardContentSelector,
   articleFragmentsFromRootStateSelector,
-  (clipboard, articleFragments) => clipboard.map(afId => articleFragments[afId])
+  (clipboard, articleFragments) =>
+    clipboard.map((afId: string) => articleFragments[afId])
 );
 
 const collectionIdsSelector = (
-  state,
+  _: State,
   { collectionIds }: { collectionIds: string[] }
 ) => collectionIds;
 
@@ -174,10 +189,13 @@ const createNestedArticleFragment = (
         ...articleFragments[articleFragmentId],
         meta: {
           ...articleFragments[articleFragmentId].meta,
-          supporting: articleFragments[articleFragmentId].meta.supporting.map(
-            (supportingFragmentId: string) =>
-              articleFragments[supportingFragmentId]
-          )
+          supporting:
+            articleFragments[articleFragmentId].meta.supporting &&
+            // @todo -- odd result here, revisit
+            (articleFragments[articleFragmentId].meta.supporting as any).map(
+              (supportingFragmentId: string) =>
+                articleFragments[supportingFragmentId]
+            )
         }
       }
     : { ...articleFragments[articleFragmentId] };
@@ -190,12 +208,17 @@ const clipboardAsTreeSelector = createSelector(
     }
 
     return {
-      articleFragments: clipboardContent.map(fragmentId =>
+      articleFragments: clipboardContent.map((fragmentId: string) =>
         createNestedArticleFragment(fragmentId, articleFragments)
       )
     };
   }
 );
+
+const stageForTreeSelector = (
+  _: any,
+  { stage }: { stage: Stages; collectionIds: string[] }
+): Stages => stage;
 
 const createCollectionsAsTreeSelector = () =>
   createSelector(
@@ -203,14 +226,14 @@ const createCollectionsAsTreeSelector = () =>
     groupsSelector,
     articleFragmentsSelector,
     collectionIdsSelector,
-    stageSelector,
+    stageForTreeSelector,
     (collections, groups, articleFragments, collectionIds, stage) => ({
       collections: collectionIds
         .map(
           cId =>
             collections[cId] && {
               id: cId,
-              groups: (collections[cId][stage] || []).map(gId => ({
+              groups: (collections[cId][stage] || []).map((gId: string) => ({
                 ...groups[gId],
                 articleFragments: (groups[gId].articleFragments || []).map(
                   articleFragmentId =>

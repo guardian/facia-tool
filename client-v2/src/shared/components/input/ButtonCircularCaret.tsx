@@ -1,5 +1,3 @@
-
-
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -20,10 +18,13 @@ const CaretImg = styled('img')`
   vertical-align: middle;
 `;
 
-export default ({ active, ...props }: { active: boolean }) => (
+export default ({
+  active,
+  ...props
+}: { active: boolean } & React.HTMLAttributes<HTMLButtonElement>) => (
   <ButtonCircularWithTransition
     {...props}
-    style={{ transform: active ? 'rotate(0deg)' : null }}
+    style={{ transform: active ? 'rotate(0deg)' : undefined }}
   >
     <CaretImg src={caretIcon} alt="" />
   </ButtonCircularWithTransition>

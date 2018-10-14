@@ -1,5 +1,3 @@
-
-
 import {
   collection,
   collectionWithSupportingArticles,
@@ -15,7 +13,7 @@ describe('Shared utilities', () => {
   describe('denormaliseCollection', () => {
     it('should denormalise a collection from the application state', () => {
       expect(
-        denormaliseCollection((stateWithCollection as any), 'exampleCollection')
+        denormaliseCollection(stateWithCollection as any, 'exampleCollection')
       ).toEqual({
         ...collection,
         // We re-add a blank draft value here. (We could keep it undefined, it just feels a little odd!)
@@ -24,7 +22,7 @@ describe('Shared utilities', () => {
       });
       expect(
         denormaliseCollection(
-          (stateWithCollectionAndSupporting as any),
+          stateWithCollectionAndSupporting as any,
           'exampleCollection'
         )
       ).toEqual({
@@ -75,16 +73,18 @@ describe('Shared utilities', () => {
       expect(result.collection.draft.length).toEqual(1);
       expect(result.collection.previously.length).toEqual(1);
       expect(
-        result.collection.live.every(articleId => typeof articleId === 'string')
+        result.collection.live.every(
+          (articleId: string) => typeof articleId === 'string'
+        )
       ).toBe(true);
       expect(
         result.collection.draft.every(
-          articleId => typeof articleId === 'string'
+          (articleId: string) => typeof articleId === 'string'
         )
       ).toBe(true);
       expect(
         result.collection.previously.every(
-          articleId => typeof articleId === 'string'
+          (articleId: string) => typeof articleId === 'string'
         )
       ).toBe(true);
       expect(Object.keys(result.articleFragments).length).toEqual(5);
@@ -122,7 +122,7 @@ describe('Shared utilities', () => {
           articleId =>
             !result.articleFragments[articleId].supporting ||
             result.articleFragments[articleId].supporting.map(
-              id => typeof id === 'string'
+              (id: string) => typeof id === 'string'
             )
         )
       ).toBe(true);

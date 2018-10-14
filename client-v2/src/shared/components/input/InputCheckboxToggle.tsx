@@ -1,8 +1,6 @@
-
-
 import styled from 'styled-components';
 import * as React from 'react';
-import { FieldProps } from 'redux-form';
+import { WrappedFieldProps } from 'redux-form';
 
 import InputLabel from './InputLabel';
 import InputContainer from './InputContainer';
@@ -24,7 +22,7 @@ const Switch = styled('div')`
   -ms-user-select: none;
 `;
 
-const CheckboxLabel = styled('label')`
+const CheckboxLabel = styled('label')<{ for?: string }>`
   display: block;
   overflow: hidden;
   cursor: pointer;
@@ -63,8 +61,8 @@ const Checkbox = styled('input')`
 `;
 
 type Props = {
-  label?: string
-} & FieldProps;
+  label?: string;
+} & WrappedFieldProps;
 
 export default ({ label, input, ...rest }: Props) => (
   <InputContainer>

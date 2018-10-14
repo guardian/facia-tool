@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import * as Guration from 'lib/guration';
 import GroupDisplay from 'shared/components/GroupDisplay';
@@ -7,10 +5,10 @@ import DropZone from 'components/DropZone';
 import ArticleDrag from './ArticleDrag';
 
 type GroupProps = {
-  id: string,
-  index: number,
-  articleFragments: any,
-  children: any
+  id: string;
+  index: number;
+  articleFragments: any;
+  children: any;
 };
 
 const dropZoneStyle = {
@@ -30,7 +28,7 @@ const Group = ({ id, articleFragments, children }: GroupProps) => (
           style={dropZoneStyle}
         />
       )}
-      renderDrag={e => <ArticleDrag id={e.uuid} />}
+      renderDrag={(e: any) => <ArticleDrag id={e.uuid} />}
     >
       {children}
     </Guration.Level>

@@ -1,5 +1,3 @@
-
-
 import { getArticles } from 'services/faciaApi';
 import { Element } from 'types/Capi';
 import { ExternalArticle } from '../shared/types/ExternalArticle';
@@ -56,7 +54,7 @@ function getContributorImage(externalArticle: ExternalArticle) {
 function getThumbnail(
   articleFragment: ArticleFragment,
   externalArticle: ExternalArticle
-) {
+): string | void {
   const { meta } = articleFragment;
   const { fields } = externalArticle;
   const isReplacingImage = meta.imageReplace;

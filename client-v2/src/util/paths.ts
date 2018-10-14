@@ -1,5 +1,3 @@
-
-
 const getPathFromUri = (uri: string): string | void => {
   const [, path] = /https:\/\/www\.theguardian.com(.+)/.exec(uri);
   return path;
@@ -16,7 +14,7 @@ const getPaths = (uri: string) => {
         ophan: ophanURIFromPath(path)
       }
     : {
-        ophan: null
+        ophan: undefined
       };
 };
 

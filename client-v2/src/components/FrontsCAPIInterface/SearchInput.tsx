@@ -1,5 +1,3 @@
-
-
 import * as React from 'react';
 import styled from 'styled-components';
 import moreImage from 'shared/images/icons/more.svg';
@@ -10,20 +8,20 @@ import TextInput from '../TextInput';
 import CAPITagInput from '../FrontsCAPIInterface/TagInput';
 
 type FrontsCAPISearchInputProps = {
-  children: any,
-  additionalFixedContent?: React.ComponentType<any>,
-  displaySearchFilters: boolean,
-  updateDisplaySearchFilters: (value: boolean) => void
+  children: any;
+  additionalFixedContent?: React.ComponentType<any>;
+  displaySearchFilters: boolean;
+  updateDisplaySearchFilters: (value: boolean) => void;
 };
 
 type FrontsCAPISearchInputState = {
-  q: string | void,
-  tags: Array<string>,
-  sections: Array<string>,
+  q: string | void;
+  tags: Array<string>;
+  sections: Array<string>;
   searchTerms: {
-    tags: string,
-    sections: string
-  }
+    tags: string;
+    sections: string;
+  };
 };
 
 const InputContainer = styled('div')`
@@ -50,7 +48,7 @@ const emptySearchTerms = {
 };
 
 const emptyState = {
-  q: null,
+  q: undefined,
   tags: [],
   sections: [],
   searchTerms: emptySearchTerms
@@ -64,7 +62,7 @@ class FrontsCAPISearchInput extends React.Component<
 
   clearInput = () => {
     this.setState({
-      q: null,
+      q: undefined,
       tags: [],
       sections: [],
       searchTerms: emptySearchTerms
@@ -87,7 +85,9 @@ class FrontsCAPISearchInput extends React.Component<
     this.setState({ tags: newTags, sections: newSections });
   };
 
-  handleSearchInput = ({ currentTarget }: React.SyntheticEvent<HTMLInputElement>) => {
+  handleSearchInput = ({
+    currentTarget
+  }: React.SyntheticEvent<HTMLInputElement>) => {
     this.setState({
       q: currentTarget.value
     });
@@ -106,7 +106,7 @@ class FrontsCAPISearchInput extends React.Component<
     });
   };
 
-  handleTagInput = (item: any, type: string) => {
+  handleTagInput = (item: any, type: 'tags' | 'sections') => {
     let newTags;
     const oldTags = this.state[type];
     if (item && oldTags.indexOf(item.id) === -1) {
@@ -201,7 +201,7 @@ class FrontsCAPISearchInput extends React.Component<
       <React.Fragment>
         <InputContainer>
           <TextInput
-            searchTerms={tags.concat(sections)}
+            // searchTerms={tags.concat(sections)} @todo -- is this used?
             placeholder={searchTermsExist ? '' : 'Search content'}
             value={this.state.q || ''}
             onChange={this.handleSearchInput}

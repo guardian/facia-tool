@@ -1,5 +1,3 @@
-
-
 import createAsyncResourceBundle from '../createAsyncResourceBundle';
 
 const { actions, reducer, selectors, initialState } = createAsyncResourceBundle(
@@ -77,7 +75,7 @@ describe('createAsyncResourceBundle', () => {
     });
     it('should accept a state selector to allow selectors to work on non-standard mount points', () => {
       const bundle = createAsyncResourceBundle('books', {
-        selectLocalState: state => state.otherBooks
+        selectLocalState: (state: any) => state.otherBooks
       });
       expect(
         bundle.selectors.selectIsLoading({
@@ -217,7 +215,7 @@ describe('createAsyncResourceBundle', () => {
         it('should handle strings and arrays of strings for loading uuids', () => {
           const newState = reducer(
             { ...initialState, data: {}, loadingIds: ['uuid', 'uuid2'] },
-            actions.fetchError(['uuid', 'uuid2'])
+            actions.fetchError('Error', ['uuid', 'uuid2'])
           );
           expect(newState.loadingIds).toEqual([]);
           expect(newState.data).toEqual({});
@@ -227,7 +225,7 @@ describe('createAsyncResourceBundle', () => {
     describe('Update action handlers', () => {
       describe('Update start', () => {
         it('should mark the state as updating when a start action is dispatched', () => {
-          const newState = reducer(initialState, actions.updateStart());
+          const newState = reducer(initialState, actions.updateStart({}));
           expect(newState.updatingIds).toEqual(['@@ALL']);
         });
         it('should add updating keys by uuid as strings', () => {
@@ -262,7 +260,10 @@ describe('createAsyncResourceBundle', () => {
             initialState,
             actions.updateStart({ id: 'uuid' })
           );
-          const newState = bundle.reducer(state, actions.updateSuccess('uuid'));
+          const newState = bundle.reducer(
+            state,
+            actions.updateSuccess('uuid', {})
+          );
           expect(newState.data.uuid).toEqual({ id: 'uuid' });
           expect(newState.updatingIds).toEqual([]);
         });

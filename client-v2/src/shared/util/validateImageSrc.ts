@@ -1,43 +1,45 @@
-
-
 import find from 'lodash/find';
 import sortBy from 'lodash/sortBy';
 import imageConstants from '../constants/images';
-import deepGet from './deepGet';
+import deepGet from 'lodash/get';
 import grid, { recordUsage } from './grid';
 import fetchImage from './fetchImage';
 
 type Criteria = {
-  maxWidth?: number,
-  minWidth?: number,
-  widthAspectRatio?: number,
-  heightAspectRatio?: number
+  maxWidth?: number;
+  minWidth?: number;
+  widthAspectRatio?: number;
+  heightAspectRatio?: number;
 };
 
 type ImageDescription = {
-  height?: number,
-  width?: number,
-  thumb?: string,
-  origin?: string,
-  ratio?: number,
-  path: string,
-  criteria?: Criteria
+  height?: number;
+  width?: number;
+  thumb?: string;
+  origin?: string;
+  ratio?: number;
+  path: string;
+  criteria?: Criteria;
 };
 
 type ValidationResponse = {
-  src: string,
-  thumb: string,
-  origin: string,
-  height: number,
-  width: number
+  src: string;
+  thumb: string;
+  origin: string;
+  height: number;
+  width: number;
 };
 
+// @todo -- find type signature
+type Crop = any;
+type Asset = any;
+
 function filterGridCrops(
-  json,
-  desired,
+  json: string,
+  desired: { crop: string },
   { minWidth, maxWidth, widthAspectRatio, heightAspectRatio }: Criteria = {}
 ) {
-  return grid.gridInstance.filterCrops(json, crop => {
+  return grid.gridInstance.filterCrops(json, (crop: Crop) => {
     if (desired.crop && crop.id !== desired.crop) {
       return false;
     }
@@ -62,7 +64,11 @@ function filterGridCrops(
   });
 }
 
-function getSuitableAsset(crops, id, desired): Promise<ImageDescription> {
+function getSuitableAsset(
+  crops: Crop[],
+  id: string,
+  desired: Criteria
+): Promise<ImageDescription> {
   if (crops.length === 0) {
     return Promise.reject(
       new Error('The image does not have a valid crop on the Grid')
@@ -107,7 +113,7 @@ function getSuitableAsset(crops, id, desired): Promise<ImageDescription> {
 }
 
 function validateActualImage(image: ImageDescription, frontId?: string) {
-  return new Promise((resolve, reject) => {
+  return new Promise<any>((resolve, reject) => {
     const {
       width = 0,
       height = 0,
@@ -117,7 +123,12 @@ function validateActualImage(image: ImageDescription, frontId?: string) {
       origin,
       thumb
     } = image;
-    const { maxWidth, minWidth, widthAspectRatio, heightAspectRatio } =
+    const {
+      maxWidth,
+      minWidth,
+      widthAspectRatio,
+      heightAspectRatio
+    }: Criteria =
       criteria || {};
     const criteriaRatio =
       widthAspectRatio && heightAspectRatio
@@ -151,7 +162,10 @@ function validateActualImage(image: ImageDescription, frontId?: string) {
   });
 }
 
-function stripImplementationDetails(src, criteria): Promise<ImageDescription> {
+function stripImplementationDetails(
+  src: string,
+  criteria?: Criteria
+): Promise<ImageDescription> {
   return new Promise((resolve, reject) => {
     const maybeFromGrid = grid.gridInstance.excractMediaId(src);
     if (src && imageConstants.imgIXDomainExpr.test(src)) {
@@ -171,13 +185,13 @@ function stripImplementationDetails(src, criteria): Promise<ImageDescription> {
         .catch(() =>
           reject(new Error('Unable to locate the image on the Grid'))
         )
-        .then(gridImageJson =>
+        .then((gridImageJson: string) =>
           filterGridCrops(gridImageJson, maybeFromGrid, criteria)
         )
-        .then(crops =>
+        .then((crops: Crop[]) =>
           getSuitableAsset(crops, maybeFromGrid.id, criteria || {})
         )
-        .then(asset =>
+        .then((asset: Asset) =>
           resolve({
             ...asset,
             criteria
@@ -209,7 +223,7 @@ function validateImageSrc(
   src: string,
   frontId?: string,
   criteria?: Criteria
-): Promise<ValidationResponse> {
+): Promise<ValidationResponse | Error> {
   if (!src) {
     return Promise.reject(new Error('Missing image'));
   }
@@ -227,11 +241,11 @@ function validateImageSrc(
 }
 
 function getData(
-  event: DragEvent | SyntheticDragEvent<HTMLElement>,
-  identifier
+  event: DragEvent | React.DragEvent<HTMLElement>,
+  identifier: string
 ) {
-  const dataTransfer = event.nativeEvent
-    ? (event.nativeEvent as any).dataTransfer
+  const dataTransfer = (event as React.DragEvent<HTMLElement>).nativeEvent
+    ? ((event as React.DragEvent<HTMLElement>).nativeEvent as any).dataTransfer
     : event.dataTransfer;
   return dataTransfer && dataTransfer.getData
     ? dataTransfer.getData(identifier)
@@ -239,10 +253,10 @@ function getData(
 }
 
 function validateImageEvent(
-  event: DragEvent | SyntheticDragEvent<HTMLElement>,
+  event: DragEvent | React.DragEvent<HTMLElement>,
   frontId: string,
   criteria?: Criteria
-): Promise<ValidationResponse> {
+): Promise<ValidationResponse | Error> {
   const mediaItem = grid.gridInstance.getCropFromEvent(event);
 
   if (mediaItem) {
@@ -282,5 +296,9 @@ function validateImageEvent(
   );
 }
 
-export { ImageDescription };
-export { validateImageSrc, validateImageEvent };
+export {
+  ImageDescription,
+  ValidationResponse,
+  validateImageSrc,
+  validateImageEvent
+};

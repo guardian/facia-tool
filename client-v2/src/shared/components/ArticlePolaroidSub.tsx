@@ -1,6 +1,4 @@
-
-
-import React, { type Node as ReactNode } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import noop from 'lodash/noop';
@@ -14,17 +12,17 @@ import { DerivedArticle } from '../types/Article';
 import toneColorMap from '../util/toneColorMap';
 
 type ContainerProps = {
-  id: string, // eslint-disable-line react/no-unused-prop-types
-  draggable: boolean,
-  onDragStart?: DragEvent => void,
-  onDragOver?: DragEvent => void,
-  onDrop?: DragEvent => void,
-  selectSharedState: (state as any) => State // eslint-disable-line react/no-unused-prop-types
+  id: string; // eslint-disable-line react/no-unused-prop-types
+  draggable: boolean;
+  onDragStart?: (d: React.DragEvent<HTMLDivElement>) => void;
+  onDragOver?: (d: React.DragEvent<HTMLDivElement>) => void;
+  onDrop?: (d: React.DragEvent<HTMLDivElement>) => void;
+  selectSharedState: (state: any) => State; // eslint-disable-line react/no-unused-prop-types
 };
 
 type ComponentProps = {
-  article: ?DerivedArticle,
-  children?: ReactNode
+  article: DerivedArticle | void;
+  children?: React.ReactNode;
 } & ContainerProps;
 
 const BodyContainer = styled('div')`
@@ -33,7 +31,7 @@ const BodyContainer = styled('div')`
   position: relative;
 `;
 
-const TonedKicker = styled('span')`
+const TonedKicker = styled('span')<{ tone: string }>`
   color: ${({ tone }) => toneColorMap[tone] || 'inherit'};
   font-size: 13px;
   font-weight: 700;
@@ -71,7 +69,7 @@ const ArticleComponent = ({
 const createMapStateToProps = () => (
   state: State,
   props: ContainerProps
-): { article: ?DerivedArticle } => ({
+): { article: DerivedArticle | void } => ({
   article: articleFromArticleFragmentSelector(
     props.selectSharedState
       ? props.selectSharedState(state)

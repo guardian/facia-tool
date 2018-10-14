@@ -1,5 +1,3 @@
-
-
 import { combineReducers } from 'redux';
 import articleFragments from './articleFragmentsReducer';
 import groups from './groupsReducer';
@@ -12,7 +10,5 @@ const reducers = {
   collections,
   externalArticles
 };
-
-export Reducers = typeof reducers;
 
 export default combineReducers(reducers);

@@ -6,7 +6,7 @@ import {
   reduxForm,
   Field,
   FieldArray,
-  type FormProps,
+  InjectedFormProps,
   formValues
 } from 'redux-form';
 import styled from 'styled-components';
@@ -38,13 +38,13 @@ import Col from '../Col';
 
 type Props = {
   articleFragment: ArticleFragment,
-  showSlideshowImages: Boolean,
   onCancel: () => void,
   onSave: (meta: ArticleFragmentMeta) => void,
   imageSlideshowReplace: Boolean,
   useCutout: Boolean,
-  hideMedia: Boolean
-} & FormProps;
+  hideMedia: Boolean,
+  articleFragmentId: string
+} & InjectedFormProps;
 
 const FormContainer = ContentContainer.withComponent('form').extend`
   display: flex;
@@ -87,7 +87,7 @@ const SlideshowLabel = styled('div')`
 
 const ImageWrapper = styled('div')`
   transition: opacity 0.15s;
-  opacity: ${props => (props.faded ? 0.6 : 1)};
+  opacity: ${(props: { faded: boolean }) => (props.faded ? 0.6 : 1)};
 `;
 
 const imageCriteria = {
@@ -96,7 +96,7 @@ const imageCriteria = {
   heightAspectRatio: 3
 };
 
-const renderSlideshow = ({ fields }) =>
+const renderSlideshow = ({ fields }: { fields: FieldArray }) =>
   fields.map((name, index) => (
     // eslint-disable-next-line react/no-array-index-key
     <Col key={`${name}-${index}`}>

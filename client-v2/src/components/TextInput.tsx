@@ -1,5 +1,3 @@
-
-
 import * as React from 'react';
 import styled from 'styled-components';
 import moreImage from 'shared/images/icons/more.svg';
@@ -58,11 +56,15 @@ const SearchButtonIcon = styled('img')`
 `;
 
 type TextInputProps = {
-  onClear?: () => void,
-  onSearch?: () => void,
-  onDisplaySearchFilters?: () => void,
-  width?: string,
-  searchTermsExist: boolean
+  value?: string;
+  placeholder?: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onClear?: () => void;
+  onClearTag?: (searchTerm: string) => void;
+  onSearch?: () => void;
+  onDisplaySearchFilters?: () => void;
+  width?: string;
+  searchTermsExist: boolean;
 };
 
 const TextInput = ({

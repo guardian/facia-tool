@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import { connect } from 'react-redux';
 import {
@@ -10,11 +8,11 @@ import { State } from 'types/State';
 import { DerivedArticle } from 'shared/types/Article';
 
 type ContainerProps = {
-  id: string // eslint-disable-line react/no-unused-prop-types
+  id: string; // eslint-disable-line react/no-unused-prop-types
 };
 
 type ComponentProps = {
-  article: ?DerivedArticle
+  article: DerivedArticle | void;
 } & ContainerProps;
 
 const ArticleDrag = ({ article }: ComponentProps) =>
@@ -23,7 +21,7 @@ const ArticleDrag = ({ article }: ComponentProps) =>
       style={{
         background: '#eee',
         borderRadius: '4px',
-        dropShadow: '-2px -2px 5px 0 rgba(0, 0, 0, 0.5)',
+        boxShadow: '-2px -2px 5px 0 rgba(0, 0, 0, 0.5)',
         overflow: 'hidden',
         padding: '8px',
         textOverflow: 'ellipsis',
@@ -39,7 +37,7 @@ const ArticleDrag = ({ article }: ComponentProps) =>
 const createMapStateToProps = () => (
   state: State,
   props: ContainerProps
-): { article: ?DerivedArticle } => ({
+): { article: DerivedArticle | void } => ({
   article: articleFromArticleFragmentSelector(
     selectSharedState(state),
     props.id

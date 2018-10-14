@@ -1,26 +1,24 @@
-
-
 import * as React from 'react';
 /* eslint-disable import/no-duplicates */
 import capiQuery from 'services/capiQuery';
 import { Fetch } from 'services/capiQuery';
-import { ElementType, Call } from 'utility-types';
+import { $ElementType, $Call } from 'utility-types';
 /* eslint-enable import/no-duplicates */
 import Async from 'components/util/Async';
 import * as CAPIParamsContext from './CAPIParamsContext';
 
 type CAPISearchQueryProps = {
-  baseURL?: string,
-  fetch?: Fetch,
-  children: any,
-  params: Object,
-  poll?: number
+  baseURL?: string;
+  fetch?: Fetch;
+  children: any;
+  params: Object;
+  poll?: number;
 };
 
 type CAPISearchQueryState = {
-  capi?: ElementType<Call<typeof capiQuery, string>, 'search'>,
-  baseURL?: string,
-  fetch?: Fetch
+  capi?: $ElementType<$Call<typeof capiQuery>, 'search'>;
+  baseURL?: string;
+  fetch?: Fetch;
 };
 
 class SearchQuery extends React.Component<
@@ -32,7 +30,7 @@ class SearchQuery extends React.Component<
   };
   state: CAPISearchQueryState = {};
   interval: NodeJS.Timer | void = undefined;
-  async: Async<any, any>|void = undefined;
+  async: Async<any, any> | void = undefined;
 
   static getDerivedStateFromProps(
     { baseURL, fetch }: CAPISearchQueryProps,

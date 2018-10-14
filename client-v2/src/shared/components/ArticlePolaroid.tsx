@@ -1,6 +1,4 @@
-
-
-import React, { type Node as ReactNode } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import noop from 'lodash/noop';
@@ -15,18 +13,18 @@ import { State } from '../types/State';
 import { DerivedArticle } from '../types/Article';
 
 type ContainerProps = {
-  id: string, // eslint-disable-line react/no-unused-prop-types
-  draggable: boolean,
-  onDragStart?: DragEvent => void,
-  onDragOver?: DragEvent => void,
-  onDrop?: DragEvent => void,
-  onSelect: (id: string) => void,
-  selectSharedState: (state as any) => State // eslint-disable-line react/no-unused-prop-types
+  id: string; // eslint-disable-line react/no-unused-prop-types
+  draggable: boolean;
+  onDragStart?: (d: React.DragEvent<HTMLDivElement>) => void;
+  onDragOver?: (d: React.DragEvent<HTMLDivElement>) => void;
+  onDrop?: (d: React.DragEvent<HTMLDivElement>) => void;
+  onSelect: (id: string) => void;
+  selectSharedState: (state: any) => State; // eslint-disable-line react/no-unused-prop-types
 };
 
 type ComponentProps = {
-  article: ?DerivedArticle,
-  children?: ReactNode
+  article: DerivedArticle | void;
+  children?: React.ReactNode;
 } & ContainerProps;
 
 const BodyContainer = styled('div')`
@@ -59,9 +57,9 @@ const ArticleComponent = ({
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDrop={onDrop}
-      {...optionize(() => onSelect(id))}
+      onClick={() => onSelect(id)}
     >
-      <Thumbnail src={article.thumbnail} alt="" />
+      {article.thumbnail && <Thumbnail src={article.thumbnail} alt="" />}
       {truncate(article.headline, { length: 45 })}
       {children}
     </BodyContainer>
@@ -72,7 +70,7 @@ const ArticleComponent = ({
 const createMapStateToProps = () => (
   state: State,
   props: ContainerProps
-): { article: ?DerivedArticle } => ({
+): { article: DerivedArticle | void } => ({
   article: articleFromArticleFragmentSelector(
     props.selectSharedState
       ? props.selectSharedState(state)

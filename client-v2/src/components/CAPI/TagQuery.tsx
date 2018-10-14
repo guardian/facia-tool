@@ -1,26 +1,24 @@
-
-
 import * as React from 'react';
-/* eslint-disable import/no-duplicates */
-import capiQuery from 'services/capiQuery';
-import { Fetch } from 'services/capiQuery';
-import { ElementType, Call } from 'utility-types';
-/* eslint-enable import/no-duplicates */
+import capiQuery, { Fetch } from 'services/capiQuery';
+import { $ElementType, $Call } from 'utility-types';
 import Async from 'components/util/Async';
 import * as CAPIParamsContext from './CAPIParamsContext';
 
 type CAPITagQueryProps = {
-  baseURL?: string,
-  fetch?: Fetch,
-  children: any,
-  params: Object,
-  tagType: 'sections' | 'tags'
+  baseURL?: string;
+  fetch?: Fetch;
+  children: any;
+  params: Object;
+  tagType: 'sections' | 'tags';
 };
 
 type CAPITagQueryState = {
-  capi: ElementType<Call<typeof capiQuery, 'sections' | 'tags'>, string>|void,
-  baseURL: string|void,
-  fetch: Fetch|void
+  capi: $ElementType<
+    $Call<typeof capiQuery>,
+    number | 'sections' | 'tags' | 'search'
+  > | void;
+  baseURL: string | void;
+  fetch: Fetch | void;
 };
 
 class TagQuery extends React.Component<CAPITagQueryProps, CAPITagQueryState> {

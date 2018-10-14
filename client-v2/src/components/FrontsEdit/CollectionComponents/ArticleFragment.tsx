@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
@@ -11,20 +9,20 @@ import { Dispatch } from 'types/Store';
 import { removeGroupArticleFragment } from 'actions/ArticleFragments';
 
 type ArticleFragmentProps = {
-  isSelected: boolean,
-  uuid: string,
+  isSelected: boolean;
+  uuid: string;
   meta: {
-    supporting: any
-  },
-  children: any,
-  getNodeProps: () => Object,
-  onDelete: () => void,
-  onSelect: (uuid: string) => void,
+    supporting?: string[];
+  };
+  children: any;
+  getNodeProps: () => Object;
+  onDelete: () => void;
+  onSelect: (uuid: string) => void;
   onCancel: (uuid: string) => void
 };
 
 type ContainerProps = ArticleFragmentProps & {
-  parentId: string
+  parentId: string;
 };
 
 // We hoist the drop zone into the rendered element here,
@@ -40,7 +38,7 @@ const dropZoneStyle = {
 };
 
 const ArticleFragmentContainer = styled('div')`
-  ${({ isSelected }) =>
+  ${({ isSelected }: { isSelected: boolean }) =>
     !isSelected &&
     css`
       opacity: 0.5;
@@ -58,7 +56,7 @@ const ArticleFragment = ({
 }: ArticleFragmentProps) => (
   <ArticleFragmentContainer
     isSelected={isSelected}
-    {...optionize(() => onSelect(uuid))}
+    onClick={() => onSelect(uuid)}
   >
     <Article id={uuid} {...getNodeProps()} onDelete={onDelete}>
       <Guration.Level

@@ -1,5 +1,3 @@
-
-
 import styled, { keyframes } from 'styled-components';
 
 const fadeIn = keyframes`

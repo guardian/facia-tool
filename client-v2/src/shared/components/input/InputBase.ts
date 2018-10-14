@@ -1,8 +1,8 @@
-
-
 import styled from 'styled-components';
 
-export default styled('input')`
+export default styled('input')<{
+  useHeadlineFont?: boolean;
+}>`
   display: block;
   appearance: none;
   height: ${props => props.theme.input.height};

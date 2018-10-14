@@ -1,5 +1,3 @@
-
-
 import { State as SharedState } from '../types/State';
 import createAsyncResourceBundle from '../util/createAsyncResourceBundle';
 
@@ -19,14 +17,14 @@ const collectionSelectors = {
       ['live', 'draft', 'previously'].some(stage => {
         const groups = state.collections.data[id][stage] || [];
 
-        return groups.some(gId => {
+        return groups.some((gId: string) => {
           const articleFragments = state.groups[gId].articleFragments || [];
           if (articleFragments.indexOf(articleFragmentId) !== -1) {
             collectionId = id;
             return true;
           }
 
-          return articleFragments.some(afId => {
+          return articleFragments.some((afId: string) => {
             if (
               state.articleFragments[afId] &&
               state.articleFragments[afId].meta &&

@@ -1,15 +1,16 @@
-
-
 import * as React from 'react';
 import styled from 'styled-components';
-import { FieldProps } from 'redux-form';
+import { WrappedFieldProps } from 'redux-form';
 
 import deleteIcon from '../../images/icons/delete-copy.svg';
 import ButtonPrimary from './ButtonPrimary';
 import InputContainer from './InputContainer';
 import { validateImageEvent } from '../../util/validateImageSrc';
 
-const ImageContainer = styled('div')`
+const ImageContainer = styled('div')<{
+  size?: 'small';
+  isHovering: boolean;
+}>`
   position: relative;
   width: 100%;
   max-width: ${props => (props.size === 'small' ? '100px' : '180px')};
@@ -45,14 +46,14 @@ const IconAdd = IconDelete.extend`
 `;
 
 type Props = {
-  frontId: string,
+  frontId: string;
   criteria?: {
-    minHeight?: string,
-    minWidth?: string,
-    widthAspectRatio?: number,
-    heightAspectRatio?: number
-  }
-} & FieldProps;
+    minHeight?: string;
+    minWidth?: string;
+    widthAspectRatio?: number;
+    heightAspectRatio?: number;
+  };
+} & WrappedFieldProps;
 type State = { isHovering: boolean };
 
 class InputImage extends React.Component<Props, State> {
@@ -60,16 +61,16 @@ class InputImage extends React.Component<Props, State> {
     isHovering: false
   };
 
-  handleDragEnter = (e: DragEvent) => {
+  handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     this.setState({ isHovering: true });
   };
-  handleDragLeave = (e: DragEvent) => {
+  handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     this.setState({ isHovering: false });
   };
-  handleDragOver = (e: SyntheticEvent<HTMLElement>) => e.preventDefault();
-  handleDrop = (e: SyntheticDragEvent<HTMLElement>) => {
+  handleDragOver = (e: React.DragEvent<HTMLDivElement>) => e.preventDefault();
+  handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.persist();
     validateImageEvent(e, '@todo:frontId')

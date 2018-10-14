@@ -1,5 +1,3 @@
-
-
 import {
   externalArticleFromArticleFragmentSelector,
   articleFromArticleFragmentSelector,
@@ -296,7 +294,7 @@ describe('Shared selectors', () => {
           collectionId: 'c1',
           stage: 'invalid',
           groupName: 'groupName'
-        })
+        } as any)
       ).toEqual([]);
     });
     it("should handle articles that don't contain a meta key", () => {

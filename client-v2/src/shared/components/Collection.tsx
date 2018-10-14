@@ -1,6 +1,4 @@
-
-
-import React, { type Node as ReactNode } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import distanceFromNow from 'date-fns/distance_in_words_to_now';
@@ -8,7 +6,7 @@ import upperFirst from 'lodash/upperFirst';
 
 import ShortVerticalPinline from './layout/ShortVerticalPinline';
 import ContainerHeadingPinline from './typography/ContainerHeadingPinline';
-import { Collection } from '../types/Collection';
+import { Collection, Stages } from '../types/Collection';
 import ButtonCircularCaret from './input/ButtonCircularCaret';
 import { State } from '../types/State';
 import {
@@ -20,17 +18,17 @@ import FadeIn from './animation/FadeIn';
 import ContentContainer from './layout/ContentContainer';
 
 type ContainerProps = {
-  id: string, // eslint-disable-line react/no-unused-prop-types
-  selectSharedState?: (state as any) => State, // eslint-disable-line react/no-unused-prop-types
-  browsingStage?: string // eslint-disable-line react/no-unused-prop-types
+  id: string;
+  selectSharedState?: (state: any) => State;
+  browsingStage: Stages;
 };
 
 type Props = ContainerProps & {
-  collection: Collection,
-  articleIds?: Array<string>,
-  headlineContent: ReactNode,
-  metaContent: ReactNode,
-  children: ReactNode
+  collection: Collection;
+  articleIds?: Array<string>;
+  headlineContent: React.ReactNode;
+  metaContent: React.ReactNode;
+  children: React.ReactNode;
 };
 
 const CollectionContainer = ContentContainer.extend`
@@ -153,8 +151,7 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
 
 const createMapStateToProps = () => {
   const selectArticlesInCollection = createArticlesInCollectionSelector();
-  // $FlowFixMe
-  return (state: State, props: ContainerProps): { collection: Collection } => {
+  return (state: State, props: ContainerProps) => {
     const sharedState = props.selectSharedState
       ? props.selectSharedState(state)
       : selectSharedState(state);

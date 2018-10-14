@@ -1,6 +1,4 @@
-
-
-import React, { type Node as ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import distanceInWords from 'date-fns/distance_in_words_to_now';
@@ -20,19 +18,19 @@ import { State } from '../types/State';
 import { DerivedArticle } from '../types/Article';
 
 type ContainerProps = {
-  id: string, // eslint-disable-line react/no-unused-prop-types
-  draggable: boolean,
-  onDragStart?: DragEvent => void,
-  onDragOver?: DragEvent => void,
-  onDrop?: DragEvent => void,
-  onDelete?: () => void,
-  selectSharedState: (state as any) => State // eslint-disable-line react/no-unused-prop-types
+  id: string; // eslint-disable-line react/no-unused-prop-types
+  draggable: boolean;
+  onDragStart?: (d: React.DragEvent<HTMLDivElement>) => void;
+  onDragOver?: (d: React.DragEvent<HTMLDivElement>) => void;
+  onDrop?: (d: React.DragEvent<HTMLDivElement>) => void;
+  onDelete?: () => void;
+  selectSharedState: (state: any) => State; // eslint-disable-line react/no-unused-prop-types
 };
 
 type ComponentProps = {
-  article: ?DerivedArticle,
-  size: 'default' | 'small',
-  children: ReactNode
+  article: DerivedArticle | void;
+  size: 'default' | 'small';
+  children: ReactNode;
 } & ContainerProps;
 
 const HoverActions = styled('div')`
@@ -75,7 +73,9 @@ const ArticleContainer = styled('div')`
   background-color: #fff;
 `;
 
-const ArticleBodyContainer = styled('div')`
+const ArticleBodyContainer = styled('div')<{
+  transitionTime?: number;
+}>`
   display: flex;
   position: relative;
   border-top: 1px solid #333;
@@ -271,7 +271,7 @@ const ArticleComponent = ({
             <ButtonHoverAction
               action="delete"
               danger
-              onClick={(e: SyntheticEvent<>) => {
+              onClick={(e: React.SyntheticEvent) => {
                 // stop the parent from opening the edit panel
                 e.stopPropagation();
                 onDelete();
@@ -290,7 +290,7 @@ const ArticleComponent = ({
 const createMapStateToProps = () => (
   state: State,
   props: ContainerProps
-): { article: ?DerivedArticle } => ({
+): { article: DerivedArticle | void } => ({
   article: articleFromArticleFragmentSelector(
     props.selectSharedState
       ? props.selectSharedState(state)

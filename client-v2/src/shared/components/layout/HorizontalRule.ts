@@ -1,8 +1,6 @@
-
-
 import styled from 'styled-components';
 
-export default styled('div')`
+export default styled('div')<{ noMargin?: boolean }>`
   width: 100%;
   height: 1px;
   border-top: solid 1px #c4c4c4;
