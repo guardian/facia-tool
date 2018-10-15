@@ -1,6 +1,4 @@
-
-
-import { Dispatch } from 'types/Store';
+import { Dispatch, ThunkResult } from 'types/Store';
 import { saveClipboard, getArticles } from 'services/faciaApi';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import { batchActions } from 'redux-batched-actions';
@@ -12,7 +10,9 @@ import {
 import { normaliseClipboard } from 'util/clipboardUtils';
 import { UpdateClipboardContent } from 'types/Action';
 
-function updateClipboardContent(clipboardContent: string[] = []): UpdateClipboardContent {
+function updateClipboardContent(
+  clipboardContent: string[] = []
+): UpdateClipboardContent {
   return {
     type: 'UPDATE_CLIPBOARD_CONTENT',
     payload: clipboardContent
@@ -22,8 +22,8 @@ function updateClipboardContent(clipboardContent: string[] = []): UpdateClipboar
 function storeClipboardContent(clipboardContent: Array<NestedArticleFragment>) {
   return (dispatch: Dispatch) => {
     const normalisedClipboard: {
-      clipboard: { articles: Array<string> },
-      articleFragments: { [id: string]: ArticleFragment }
+      clipboard: { articles: Array<string> };
+      articleFragments: { [id: string]: ArticleFragment };
     } = normaliseClipboard({
       articles: clipboardContent
     });
@@ -54,8 +54,8 @@ function storeClipboardContent(clipboardContent: Array<NestedArticleFragment>) {
 }
 
 function updateClipboard(clipboardContent: {
-  articles: Array<NestedArticleFragment>
-}) {
+  articles: Array<NestedArticleFragment>;
+}): ThunkResult<Promise<NestedArticleFragment[] | void>> {
   return () =>
     saveClipboard(clipboardContent.articles).catch(() => {
       // @todo: implement once error handling is done

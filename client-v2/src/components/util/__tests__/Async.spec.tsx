@@ -2,11 +2,11 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import Async from '../Async';
 
-const makePromise = (val, err) =>
+const makePromise = (val: string, err?: string) =>
   new Promise((res, rej) => (err ? rej(val) : res(val)));
 
 describe('Async', () => {
-  it('renders null before the promise has resolved', async () => {
+  it('renders null before the promise has resolved',  async () => {
     let v;
     let p;
     let e;
@@ -17,6 +17,7 @@ describe('Async', () => {
           v = value;
           p = pending;
           e = error;
+          return <></>
         }}
       </Async>
     );
@@ -37,6 +38,7 @@ describe('Async', () => {
           v = value;
           p = pending;
           e = error;
+          return <></>
         }}
       </Async>
     );
@@ -78,6 +80,7 @@ describe('Async', () => {
           v = value;
           p = pending;
           e = error;
+          return <></>
         }}
       </Async>
     );
@@ -101,6 +104,7 @@ describe('Async', () => {
           v = value;
           p = pending;
           e = error;
+          return <></>
         }}
       </Async>
     );
@@ -131,6 +135,7 @@ describe('Async', () => {
           v = value;
           p = pending;
           e = error;
+          return <></>
         }}
       </Async>
     );
@@ -153,6 +158,7 @@ describe('Async', () => {
           v = value;
           p = pending;
           e = error;
+          return <></>
         }}
       </Async>
     );
@@ -175,6 +181,7 @@ describe('Async', () => {
           v = value;
           p = pending;
           e = error;
+          return <></>
         }}
       </Async>
     );

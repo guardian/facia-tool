@@ -33,7 +33,6 @@ export default () => (
         <Feed />
       </FeedContainer>
       <ClipboardContainer>
-        {/* $FlowFixMe */}
         <Clipboard />
       </ClipboardContainer>
       <div>

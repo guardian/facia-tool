@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Match, type RouterHistory, withRouter } from 'react-router';
+import { match, withRouter, RouteComponentProps } from 'react-router';
 
 import { selectEditorFronts } from 'bundles/frontsUIBundle';
 import { State } from '../types/State';
@@ -10,9 +10,8 @@ import FrontList from '../components/FrontList';
 import { getFrontsWithPriority } from '../selectors/frontsSelectors';
 
 type Props = {
-  match: Match,
-  history: RouterHistory
-};
+  match: match<{ priority: string }>
+} & RouteComponentProps<any>;
 
 const mapStateToProps = (state: State, props: Props) => {
   const openFrontIds = selectEditorFronts(state);
@@ -27,6 +26,5 @@ const mapStateToProps = (state: State, props: Props) => {
 };
 
 export default withRouter(
-  // $FlowFixMe: flow doesn't play nice with double HOCs
-  (connect(mapStateToProps)(FrontList): React.ComponentType<Props>)
+  connect(mapStateToProps)(FrontList)
 );

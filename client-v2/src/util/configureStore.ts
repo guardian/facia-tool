@@ -3,22 +3,14 @@
 import {
   applyMiddleware,
   compose,
-  createStore,
-  type Reducer,
-  type StoreEnhancer,
-  type Store as ReduxStore,
-  type Dispatch
+  createStore
 } from 'redux';
 import { enableBatching } from 'redux-batched-actions';
 import thunkMiddleware from 'redux-thunk';
 import createBrowserHistory from 'history/createBrowserHistory';
 import { routerMiddleware } from 'react-router-redux';
 
-import { updateCollection } from 'actions/Collections';
-import { updateClipboard } from 'actions/Clipboard';
 import { Store } from 'types/Store';
-import { State } from 'types/State';
-import { Action } from 'types/Action';
 import rootReducer from 'reducers/rootReducer.js';
 import {
   updateStateFromUrlChange,
@@ -26,34 +18,30 @@ import {
   persistClipboardOnEdit,
   persistOpenFrontsOnEdit
 } from './storeMiddleware';
-
-type CreateStore = (
-  reducer: Reducer<State, Action>,
-  enhancer?: StoreEnhancer<State, Action, Dispatch<Action>>
-) => ReduxStore<State, Action, Dispatch<Action>>;
+import { Action } from 'types/Action';
 
 export default function configureStore(): Store {
   const history = createBrowserHistory();
   const router = routerMiddleware(history);
-  const store = (createStore: CreateStore)(
-    enableBatching(rootReducer),
+  const store = createStore(
+    // @todo -- AnyAction in batch reducer definition not compatible with our action types
+    enableBatching(rootReducer as any),
     compose(
       applyMiddleware(
         thunkMiddleware,
         updateStateFromUrlChange,
         router,
-        persistCollectionOnEdit(updateCollection),
-        persistClipboardOnEdit(updateClipboard),
+        persistCollectionOnEdit(),
+        persistClipboardOnEdit(),
         persistOpenFrontsOnEdit()
       ),
-      window.devToolsExtension ? window.devToolsExtension() : f => f
+      (window as any).devToolsExtension ? (window as any).devToolsExtension() : (f: any) => f
     )
   );
 
-  /* globals module:false */
-  if (module.hot) {
-    module.hot.accept('reducers/rootReducer.js', () => {
-      store.replaceReducer(rootReducer);
+  if ((module as any).hot) {
+    (module as any).hot.accept('reducers/rootReducer.js', () => {
+      store.replaceReducer(rootReducer as any);
     });
   }
 

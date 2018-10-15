@@ -24,11 +24,11 @@ import { groupsReceived } from 'shared/actions/Groups';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import { getCollectionConfig } from 'selectors/frontsSelectors';
 import { State } from 'types/State';
-import { Dispatch } from 'types/Store';
+import { Dispatch, ThunkResult } from 'types/Store';
 import { Collection } from 'shared/types/Collection';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 
-function getCollection(collectionId: string) {
+function getCollection(collectionId: string): ThunkResult<Promise<string[]>> {
   return (dispatch: Dispatch, getState: () => State) => {
     dispatch(collectionActions.fetchStart(collectionId));
     return fetchCollection(collectionId)
@@ -73,7 +73,7 @@ function getCollection(collectionId: string) {
   };
 }
 
-function updateCollection(collection: Collection) {
+function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
   return async (dispatch: Dispatch, getState: () => State) => {
     const state = getState();
     dispatch(
@@ -103,14 +103,12 @@ function updateCollection(collection: Collection) {
 
 const getCollectionsAndArticles = (
   collectionIds: Array<string>,
-  getCollectionAction: (
-    id: string
-  ) => (d: Dispatch, s: () => State) => Promise<string[]> = getCollection
-) => (dispatch: Dispatch) =>
+  getCollectionAction = getCollection
+): ThunkResult<Promise<void[]>> => (dispatch: Dispatch) =>
   Promise.all(
     collectionIds.map(async collectionId => {
       // @todo - requires correct handling of Dispatch thunks
-      const articleIds: any = await dispatch(getCollectionAction(collectionId));
+      const articleIds = await dispatch(getCollectionAction(collectionId));
       dispatch(externalArticleActions.fetchStart(articleIds));
       try {
         const articles = await getArticles(articleIds);

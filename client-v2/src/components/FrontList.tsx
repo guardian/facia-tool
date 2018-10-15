@@ -25,7 +25,7 @@ const ListContainer = styled('ul')`
   padding-left: 0;
 `;
 
-const ListLabel = styled('span')`
+const ListLabel = styled('span')<{ isActive?: boolean }>`
   max-width: calc(100% - 30px);
   ${({ isActive }) =>
     !isActive &&
@@ -49,7 +49,7 @@ const FrontList = ({ fronts, onSelect }: Props) =>
         <ListItem key={front.id}>
           <ListLabel isActive={front.isOpen}>{front.id}</ListLabel>
           {front.isOpen && (
-            <ButtonAdd href="#" onClick={() => onSelect(front.id)}>
+            <ButtonAdd onClick={() => onSelect(front.id)}>
               <img src={MoreImage} alt="" width="100%" height="100%" />
             </ButtonAdd>
           )}

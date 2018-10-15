@@ -12,10 +12,11 @@ import SearchInput from './FrontsCAPIInterface/SearchInput';
 import Loader from './Loader';
 import { capiFeedSpecsSelector } from '../selectors/configSelectors';
 import { RadioButton, RadioGroup } from './inputs/RadioButtons';
+import { State } from 'types/State';
 
 type ErrorDisplayProps = {
-  error: ?(Error | string),
-  children: React.Node
+  error: (Error | string | void),
+  children: React.ReactNode
 };
 
 const ErrorDisplay = ({ error, children }: ErrorDisplayProps) =>
@@ -26,7 +27,7 @@ const ErrorDisplay = ({ error, children }: ErrorDisplayProps) =>
   );
 
 type LoaderDisplayProps = {
-  children: React.Node,
+  children: React.ReactNode,
   loading: boolean
 };
 
@@ -179,8 +180,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
   }
 }
 
-const mapStateToProps = state => ({
-  // $FlowFixMe: no idea why this doesn't work
+const mapStateToProps = (state: State) => ({
   capiFeedSpecs: (capiFeedSpecsSelector(state) as any)
 });
 

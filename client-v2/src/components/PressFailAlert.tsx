@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { error } from '../styleConstants';
 
 type Props = {
-  staleFronts: { string: boolean }
+  staleFronts: { [id: string]: boolean }
 };
 
 const AlertContainer = styled('div')`
@@ -22,7 +22,7 @@ const PressFailAlert = (props: Props) => {
         fronts.push(frontId);
       }
       return fronts;
-    }, []);
+    }, [] as string[]);
 
   const getErrorString = () => {
     const usePlural = failedFronts.length > 1;

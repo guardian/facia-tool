@@ -154,7 +154,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   dispatch
 });
 
-const mergeProps = (stateProps, dispatchProps, props) => ({
+type StateProps = ReturnType<typeof mapStateToProps>;
+type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+
+const mergeProps = (stateProps: StateProps, dispatchProps: DispatchProps, props: ClipboardProps) => ({
   ...props,
   ...stateProps,
   ...dispatchProps,

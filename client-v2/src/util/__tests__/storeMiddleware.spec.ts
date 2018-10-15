@@ -8,13 +8,14 @@ import {
   persistCollectionOnEdit,
   persistOpenFrontsOnEdit
 } from '../storeMiddleware';
+import { Collection } from 'shared/types/Collection';
 
-const mockCollectionUpdateAction = collection => ({
+const mockCollectionUpdateAction: any = (collection: Collection) => ({
   type: 'UPDATE_COLLECTION',
   collection
 });
 
-let mockStore;
+let mockStore: any;
 
 const state = {
   ...stateWithCollection,
@@ -62,7 +63,7 @@ describe('Store middleware', () => {
     });
   });
   describe('persistOpenFrontsOnEdit', () => {
-    let persistFrontIdsSpy;
+    let persistFrontIdsSpy: any;
     beforeEach(() => {
       persistFrontIdsSpy = jest.fn();
       mockStore = configureStore([

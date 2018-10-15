@@ -12,12 +12,12 @@ import { DerivedArticle } from '../types/Article';
 import toneColorMap from '../util/toneColorMap';
 
 type ContainerProps = {
-  id: string; // eslint-disable-line react/no-unused-prop-types
+  id: string;
   draggable: boolean;
   onDragStart?: (d: React.DragEvent<HTMLDivElement>) => void;
   onDragOver?: (d: React.DragEvent<HTMLDivElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLDivElement>) => void;
-  selectSharedState: (state: any) => State; // eslint-disable-line react/no-unused-prop-types
+  selectSharedState: (state: any) => State;
 };
 
 type ComponentProps = {
@@ -65,7 +65,6 @@ const ArticleComponent = ({
   );
 };
 
-// $FlowFixMe
 const createMapStateToProps = () => (
   state: State,
   props: ContainerProps

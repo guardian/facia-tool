@@ -6,8 +6,8 @@ import styled from 'styled-components';
 // TODO: get apiKey from context (or speak directly to FrontsAPI)
 
 type ScrollContainerProps = {
-  fixed: React.Node,
-  children: React.Node
+  fixed:React.ReactNode,
+  children:React.ReactNode
 };
 
 const ScrollOuter = styled(`div`)`

@@ -5,14 +5,14 @@ import { CollectionWithNestedArticles } from 'shared/types/Collection';
 import { detectPressFailureMs } from 'constants/fronts';
 
 const getFrontCollections = (
-  frontId: ?string,
+  frontId: string|void,
   fronts: Array<FrontConfig>,
   collections: { [id: string]: CollectionConfig }
 ): Array<CollectionConfig> => {
   if (!frontId) {
     return [];
   }
-  const selectedFront: ?FrontConfig = fronts.find(
+  const selectedFront: FrontConfig|void = fronts.find(
     (front: FrontConfig) => front.id === frontId
   );
 

@@ -10,6 +10,7 @@ import App from 'components/App';
 import { configReceived } from 'actions/Config';
 import { editorSetOpenFronts } from 'bundles/frontsUIBundle';
 import { storeClipboardContent } from 'actions/Clipboard';
+import { Dispatch } from 'types/Store';
 
 const store = configureStore();
 const config = extractConfigFromPage();
@@ -23,7 +24,7 @@ if (config.frontIds) {
   store.dispatch(editorSetOpenFronts(config.frontIds));
 }
 
-store.dispatch(storeClipboardContent(config.clipboardArticles));
+(store.dispatch as Dispatch)(storeClipboardContent(config.clipboardArticles));
 
 const reactMount = document.getElementById('react-mount');
 

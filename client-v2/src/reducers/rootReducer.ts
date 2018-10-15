@@ -12,6 +12,7 @@ import unpublishedChanges from './unpublishedChangesReducer';
 import clipboard from './clipboardReducer';
 import editor from '../bundles/frontsUIBundle';
 import staleFronts from './staleFrontsReducer';
+import { Action } from 'types/Action';
 
 const reducers = {
   config,

@@ -1,5 +1,3 @@
-
-
 import { Dispatch } from 'types/Store';
 import * as React from 'react';
 import { connect } from 'react-redux';
@@ -29,12 +27,12 @@ import FrontsMenu from './FrontsMenu';
 import PressFailAlert from '../PressFailAlert';
 
 type Props = {
-  match: match<{ priority: string }>,
-  error: ActionError,
-  frontIds: string[],
-  staleFronts: { string: boolean },
-  editorOpenFront: (frontId: string) => void,
-  getFrontsConfig: () => void
+  match: match<{ priority: string }>;
+  error: ActionError;
+  frontIds: string[];
+  staleFronts: { string: boolean };
+  editorOpenFront: (frontId: string) => void;
+  getFrontsConfig: () => void;
 };
 
 const FrontsEditContainer = styled('div')`
@@ -74,10 +72,7 @@ class FrontsEdit extends React.Component<Props> {
           <FrontsContainer>
             {this.props.frontIds.map(frontId => (
               <SingleFrontContainer key={frontId}>
-                <FrontContainer
-                  key={frontId}
-                  frontId={frontId}
-                />
+                <FrontContainer frontId={frontId} />
               </SingleFrontContainer>
             ))}
           </FrontsContainer>

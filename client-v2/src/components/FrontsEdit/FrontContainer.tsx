@@ -1,9 +1,5 @@
-
-
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-import { bindActionCreators } from 'redux';
 import distanceInWords from 'date-fns/distance_in_words';
 import startCase from 'lodash/startCase';
 import styled from 'styled-components';
@@ -28,7 +24,7 @@ import {
 import Front from './Front';
 import SectionHeader from '../layout/SectionHeader';
 import SectionContent from '../layout/SectionContent';
-import { Stages } from 'shared/types/Collection';
+import { Stages, Collection } from 'shared/types/Collection';
 
 const FrontHeader = SectionHeader.extend`
   display: flex;
@@ -52,20 +48,23 @@ const LastPressedContainer = styled('span')`
   margin-right: 6px;
 `;
 
-type FrontsComponentProps = {
-  frontId: string,
-  selectedFront: FrontConfig,
-  alsoOn: { [id: string]: AlsoOnDetail },
-  lastPressed: string,
+type FrontsContainerProps = {
+  frontId: string;
+}
+
+type FrontsComponentProps = FrontsContainerProps & {
+  selectedFront: FrontConfig;
+  alsoOn: { [id: string]: AlsoOnDetail };
+  lastPressed: string | null;
   frontsActions: {
-    getCollectionsAndArticles: (collectionIds: string[]) => Promise<void>,
-    fetchLastPressed: (frontId: string) => Promise<void>,
-    editorCloseFront: (frontId: string) => void
-  }
+    getCollectionsAndArticles: (collectionIds: string[]) => Promise<void[]>;
+    fetchLastPressed: (frontId: string) => void;
+    editorCloseFront: (frontId: string) => void;
+  };
 };
 
 type ComponentState = {
-  browsingStage: Stages
+  browsingStage: Stages;
 };
 
 class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
@@ -163,7 +162,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
 
 const createMapStateToProps = () => {
   const alsoOnSelector = createAlsoOnSelector();
-  return (state: State, props: FrontsComponentProps) => ({
+  return (state: State, props: FrontsContainerProps) => ({
     selectedFront: getFront(state, props.frontId),
     alsoOn: alsoOnSelector(state, props.frontId),
     lastPressed: lastPressedSelector(state, props.frontId)
@@ -171,23 +170,20 @@ const createMapStateToProps = () => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  frontsActions: bindActionCreators(
-    {
-      getCollectionsAndArticles,
-      fetchLastPressed,
-      updateCollection,
-      editorCloseFront
-    },
-    dispatch
-  )
+  frontsActions: {
+    getCollectionsAndArticles: (ids: string[]) =>
+      dispatch(getCollectionsAndArticles(ids)),
+    fetchLastPressed: (id: string) => dispatch(fetchLastPressed(id)),
+    updateCollection: (collection: Collection) =>
+      dispatch(updateCollection(collection)),
+    editorCloseFront: (id: string) => dispatch(editorCloseFront(id))
+  }
 });
 
 export { Fronts as FrontsComponent };
 export { FrontsComponentProps };
 
-export default withRouter(
-  connect(
-    createMapStateToProps,
-    mapDispatchToProps
-  )(Fronts)
-);
+export default connect(
+  createMapStateToProps,
+  mapDispatchToProps
+)(Fronts);

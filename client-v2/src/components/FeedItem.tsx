@@ -78,12 +78,12 @@ type FeedItemProps = {
   title: string,
   href: string,
   tone: string,
-  internalPageCode: ?string,
+  internalPageCode: string|void,
   publicationDate?: string
 };
 
-const dragStart = (href, event) => {
-  event.dataTransfer.setData('capi', href);
+const dragStart = (href: string|void, event: React.DragEvent<HTMLDivElement>) => {
+  event.dataTransfer.setData('capi', href || '');
 };
 
 const FeedItem = ({
@@ -94,7 +94,7 @@ const FeedItem = ({
   internalPageCode
 }: FeedItemProps) => (
   <Container
-    draggable="true"
+    draggable={true}
     onDragStart={event => dragStart(internalPageCode, event)}
   >
     <MetaContainer>

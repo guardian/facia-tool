@@ -15,8 +15,8 @@ const DropIndicator = styled('div')`
 
 class DropZone extends React.Component<
   {
-    onDrop: (e: SyntheticDragEvent<HTMLElement>) => void,
-    onDragOver: (e: SyntheticDragEvent<HTMLElement>) => void,
+    onDrop: (e: React.DragEvent<HTMLElement>) => void,
+    onDragOver: (e: React.DragEvent<HTMLElement>) => void,
     style: Object,
     indicatorStyle: Object,
     override?: boolean
@@ -45,7 +45,7 @@ class DropZone extends React.Component<
     this.setState({ isHoveredOver: false });
   };
 
-  handleDrop = (e: SyntheticDragEvent<HTMLElement>) => {
+  handleDrop = (e: React.DragEvent<HTMLElement>) => {
     this.setState({ isHoveredOver: false });
     return this.props.onDrop(e);
   };
@@ -64,8 +64,8 @@ class DropZone extends React.Component<
         <DropIndicator
           style={{
             ...this.props.indicatorStyle,
-            zIndex: this.isActive ? 1 : null,
-            backgroundColor: this.isActive ? 'rgba(199, 0, 0)' : null
+            zIndex: this.isActive ? 1 : undefined,
+            backgroundColor: this.isActive ? 'rgba(199, 0, 0)' : undefined
           }}
         />
       </DropContainer>

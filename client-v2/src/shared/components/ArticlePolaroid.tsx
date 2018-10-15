@@ -66,7 +66,6 @@ const ArticleComponent = ({
   );
 };
 
-// $FlowFixMe
 const createMapStateToProps = () => (
   state: State,
   props: ContainerProps

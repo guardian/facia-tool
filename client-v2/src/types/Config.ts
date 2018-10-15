@@ -1,5 +1,3 @@
-
-//
 import { NestedArticleFragment } from 'shared/types/Collection';
 
 type Permission = {

@@ -87,8 +87,6 @@ function publishCollection(
       });
 }
 
-const a = publishCollection('hai', 'you')
-
 export { fetchLastPressed, fetchLastPressedSuccess, publishCollection };
 
 export default function getFrontsConfig(): ThunkResult<

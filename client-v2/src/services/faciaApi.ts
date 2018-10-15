@@ -26,7 +26,7 @@ function fetchFrontsConfig(): Promise<FrontsConfig> {
         (acc: FrontConfigMap, id: string): FrontConfigMap => ({
           ...acc,
           [id]: {
-            ...json.fronts[id], // $FlowFixMe - this isn't typed properly due to spreading
+            ...json.fronts[id],
             id,
             priority: json.fronts[id].priority || 'editorial'
           }

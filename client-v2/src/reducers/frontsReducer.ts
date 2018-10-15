@@ -2,15 +2,16 @@
 
 import set from 'lodash/fp/set';
 
-import { $ReturnType } from 'shared/types/Utility';
 import { Action } from 'types/Action';
 import {
   reducer as frontsConfigReducer,
-  initialState
+  initialState,
+  FrontsConfigState,
+
 } from 'bundles/frontsConfigBundle';
 
 type State = {
-  frontsConfig: $ReturnType<typeof frontsConfigReducer>,
+  frontsConfig: FrontsConfigState,
   lastPressed: {
     draft: {
       [id: string]: string
@@ -21,8 +22,8 @@ type State = {
   }
 };
 
-const reducer = (
-  state?: State = {
+const reducer: (s: State, a: Action) => State = (
+  state: State = {
     frontsConfig: initialState,
     lastPressed: {
       draft: {},

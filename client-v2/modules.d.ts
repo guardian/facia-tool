@@ -22,3 +22,9 @@ declare module 'grid-util-js' {
   const content: any;
   export default content;
 }
+
+declare module 'panda-session' {
+  const content: any;
+  export const reEstablishSession: any;
+  export default content;
+}

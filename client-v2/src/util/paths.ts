@@ -1,5 +1,5 @@
 const getPathFromUri = (uri: string): string | void => {
-  const [, path] = /https:\/\/www\.theguardian.com(.+)/.exec(uri);
+  const [, path = ''] = /https:\/\/www\.theguardian.com(.+)/.exec(uri) || [];
   return path;
 };
 

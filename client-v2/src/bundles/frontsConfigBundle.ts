@@ -1,7 +1,8 @@
 
 
-import createAsyncResourceBundle from 'shared/util/createAsyncResourceBundle';
-import { State } from 'types/State';
+import createAsyncResourceBundle, { State } from 'shared/util/createAsyncResourceBundle';
+import { State as RootState } from 'types/State';
+import { FrontsConfig } from 'types/FaciaApi';
 
 export const {
   actions,
@@ -9,11 +10,13 @@ export const {
   reducer,
   selectors,
   initialState
-} = createAsyncResourceBundle('frontsConfig', {
+} = createAsyncResourceBundle<FrontsConfig, RootState>('frontsConfig', {
   indexById: false,
-  selectLocalState: (state: State) => state.fronts.frontsConfig,
+  selectLocalState: (state: RootState) => state.fronts.frontsConfig,
   initialData: {
     fronts: {},
     collections: {}
   }
 });
+
+export type FrontsConfigState = State<FrontsConfig>;

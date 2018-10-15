@@ -1,29 +1,24 @@
-
-
 import { Middleware } from 'redux';
 import uniq from 'lodash/uniq';
 import { State } from 'types/State';
-import { Store, Dispatch } from 'types/Store';
-import { Action, ActionWithBatchedActions, ActionPersistMeta } from 'types/Action';
+import { Dispatch } from 'types/Store';
+import { BATCH } from 'redux-batched-actions';
+import { Action, ActionPersistMeta } from 'types/Action';
 import { selectors } from 'shared/bundles/collectionsBundle';
 import { selectEditorFronts } from 'bundles/frontsUIBundle';
 import { updateCollection } from 'actions/Collections';
 import { updateClipboard } from 'actions/Clipboard';
 import { selectSharedState } from 'shared/selectors/shared';
-import { ThunkAction } from 'types/Store';
 import { saveOpenFrontIds } from 'services/faciaApi';
-import {
-  Collection,
-  NestedArticleFragment
-} from 'shared/types/Collection';
+import { NestedArticleFragment } from 'shared/types/Collection';
 import { denormaliseClipboard } from 'util/clipboardUtils';
 
 const updateStateFromUrlChange: Middleware<State, Action> = ({
   dispatch,
   getState
 }: {
-  dispatch: Dispatch,
-  getState: () => State
+  dispatch: Dispatch;
+  getState: () => State;
 }) => (next: (action: Action) => void) => (action: Action) => {
   const prevState = getState();
   const result = next(action);
@@ -46,38 +41,37 @@ const updateStateFromUrlChange: Middleware<State, Action> = ({
 
 type PersistMeta = {
   // The resource to persist the data to
-  persistTo: 'collection' | 'clipboard' | 'openFrontIds',
+  persistTo: 'collection' | 'clipboard' | 'openFrontIds';
   // The id to to search for in this resource
-  id?: string,
+  id?: string;
   // The key to take from the action payload if it is not specified. Defaults to
   // 'id'.
-  key?: string,
+  key?: string;
   // Should we find collection parents before or after the reducer is called?
   // This is important when the relevant collection is affected by when the operation
   // occurs - finding the parent collection before a remove operation, for example,
   // or after an add operation.
-  applyBeforeReducer?: boolean
+  applyBeforeReducer?: boolean;
 };
 
 function addPersistMetaToAction<TArgs extends Array<any>>(
   actionCreator: (...args: TArgs) => Action,
   meta: PersistMeta
 ): (...args: TArgs) => Action & ActionPersistMeta {
-  return (...args: TArgs): Action & ActionPersistMeta => Object.assign({},
-    actionCreator(...args),
-    { meta }
-  )
+  return (...args: TArgs): Action & ActionPersistMeta =>
+    Object.assign({}, actionCreator(...args), { meta });
 }
 
 /**
  * Return an array of actions - either a single action,
  * or multiple actions if the action contains batched actions.
  */
-const unwrapBatchedActions = (action: ActionWithBatchedActions): Action[] =>
-  action.type === 'BATCHING_REDUCER.BATCH' ? action.payload : [action];
+const unwrapBatchedActions = (action: Action): Action[] =>
+  action.type === BATCH ? (action.payload as Action[]) : [action];
 
 const isPersistingToCollection = (act: Action): boolean =>
-  !!(act as Action & ActionPersistMeta).meta && (act as Action & ActionPersistMeta).meta.persistTo === 'collection';
+  !!(act as Action & ActionPersistMeta).meta &&
+  (act as Action & ActionPersistMeta).meta.persistTo === 'collection';
 
 /**
  * Watches for actions that require a collection update, finds the relevant
@@ -87,11 +81,9 @@ const isPersistingToCollection = (act: Action): boolean =>
  * which would be nice to remove in favour of a more declarative library if
  * possible.
  */
-const persistCollectionOnEdit: (updateAction: (collection: Collection) => Action) => Middleware<State, Action> = (
-  updateCollectionAction: (
-    collection: Collection
-  ) => Action | ThunkAction = updateCollection
-) => (store: Store) => {
+const persistCollectionOnEdit = (
+  updateCollectionAction = updateCollection
+): Middleware<State, Action, Dispatch> => store => {
   /**
    * Get the relevant collection ids for the given actions.
    * @todo At the moment this just cares about updates to article fragments,
@@ -103,12 +95,8 @@ const persistCollectionOnEdit: (updateAction: (collection: Collection) => Action
         // A sneaky 'any' here, as it's difficult to handle dynamic key
         // values with static action types.
         (act: any) =>
-<<<<<<< HEAD
           act.meta.id ||
           (act.meta.key ? act.payload[act.meta.key] : act.payload.id)
-=======
-          act.meta.key ? act.payload[act.meta.key] : act.payload.id
->>>>>>> Slow but steady progress altering types
       )
     );
     const collectionIds: string[] = articleFragmentIds.reduce((acc, id) => {
@@ -161,10 +149,6 @@ const persistCollectionOnEdit: (updateAction: (collection: Collection) => Action
     const sharedState = selectSharedState(store.getState());
     collectionIds.forEach(id => {
       const collection = selectors.selectById(sharedState, id);
-      // Flow has problems with us dispatching thunks here.
-      // This relates to a problem with the middleware definition -
-      // see https://github.com/flowtype/flow-typed/issues/574
-      // $FlowFixMe
       store.dispatch(updateCollectionAction(collection));
     });
 
@@ -172,35 +156,45 @@ const persistCollectionOnEdit: (updateAction: (collection: Collection) => Action
   };
 };
 
-const persistClipboardOnEdit:
-  (clipboardAction: (clipboard: { articles: Array<NestedArticleFragment> }) => Action) => Middleware<State, Action> = (
-  updateClipboardAction: (clipboard: {
-    articles: Array<NestedArticleFragment>
-  }) => Action | ThunkAction = updateClipboard
-) => (store: Store) => (next: (action: Action) => State) => (action: Action) => {
+const persistClipboardOnEdit = (
+  updateClipboardAction = updateClipboard
+): Middleware<State, Action, Dispatch> => store => (
+  next: (action: Action) => State
+) => (action: Action) => {
   const actions = unwrapBatchedActions(action);
 
-  if (!actions.some(act => (act as Action & ActionPersistMeta).meta && (act as Action & ActionPersistMeta).meta.persistTo === 'clipboard')) {
+  if (
+    !actions.some(
+      act =>
+        (act as Action & ActionPersistMeta).meta &&
+        (act as Action & ActionPersistMeta).meta.persistTo === 'clipboard'
+    )
+  ) {
     return next(action);
   }
   const result = next(action);
   const state = store.getState();
   const denormalisedClipboard: {
-    articles: Array<NestedArticleFragment>
+    articles: Array<NestedArticleFragment>;
   } = denormaliseClipboard(state);
-  // $FlowFixMe
   store.dispatch(updateClipboardAction(denormalisedClipboard));
   return result;
 };
 
-const persistOpenFrontsOnEdit: (persistFn: (
-  persistFrontIds?: string[]) => Promise<void>
+const persistOpenFrontsOnEdit: (
+  persistFn?: (persistFrontIds?: string[]) => Promise<void>
 ) => Middleware<State, Action> = (
   persistFrontIds = saveOpenFrontIds
-) => (store: Store) => (next: (action: Action) => State) => (action: Action) => {
+) => store => (next: (action: Action) => State) => (action: Action) => {
   const actions = unwrapBatchedActions(action);
 
-  if (!actions.some(act => (act as Action & ActionPersistMeta).meta && (act as Action & ActionPersistMeta).meta.persistTo === 'openFrontIds')) {
+  if (
+    !actions.some(
+      act =>
+        (act as Action & ActionPersistMeta).meta &&
+        (act as Action & ActionPersistMeta).meta.persistTo === 'openFrontIds'
+    )
+  ) {
     return next(action);
   }
   const result = next(action);

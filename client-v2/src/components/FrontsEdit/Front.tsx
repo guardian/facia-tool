@@ -255,10 +255,9 @@ const createMapStateToProps = () => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   dispatch,
-  ...bindActionCreators(
-    { addArticleFragment, updateArticleFragmentMeta },
-    dispatch
-  ),
+  addArticleFragment: (id: string) => dispatch(addArticleFragment(id)),
+  updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
+    dispatch(updateArticleFragmentMeta(id, meta)),
   selectArticleFragment: (frontId: string, articleFragmentId: string) =>
     dispatch(editorSelectArticleFragment(frontId, articleFragmentId)),
   clearArticleFragmentSelection: (frontId: string) =>
@@ -268,7 +267,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 type StateProps = ReturnType<ReturnType<typeof createMapStateToProps>>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 
-const mergeProps = (stateProps: StateProps, dispatchProps: DispatchProps, props: FrontPropsBeforeState) => ({
+const mergeProps = (
+  stateProps: StateProps,
+  dispatchProps: DispatchProps,
+  props: FrontPropsBeforeState
+) => ({
   ...props,
   ...stateProps,
   ...dispatchProps,

@@ -16,6 +16,7 @@ type AsyncProps<A extends any[], R> = {
   debounce?: number;
   fn?: (...args: A) => Promise<R> | R;
   on: boolean;
+  intermediateLoadState?: boolean;
 };
 
 class Async<A extends any[], R> extends React.Component<

@@ -8,7 +8,7 @@ describe('qs', () => {
       qs({
         happy: 'yes',
         rich: 'no',
-        gone: null,
+        gone: undefined,
         missing: undefined,
         'this&is()inte£&sting': '456'
       })

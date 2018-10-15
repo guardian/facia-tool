@@ -1,7 +1,9 @@
 
 
 import { Action } from 'types/Action';
-import { State } from 'types/State';
+import { Config } from 'types/Config';
+
+type State = Config | void;
 
 const config = (state: State, action: Action): State => {
   switch (action.type) {

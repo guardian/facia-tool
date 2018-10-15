@@ -1,22 +1,21 @@
-
 import uniq from 'lodash/uniq';
 import { createSelector } from 'reselect';
-import { FrontConfig, CollectionConfig } from 'types/FaciaApi';
+import { FrontConfig, CollectionConfig, FrontsConfig } from 'types/FaciaApi';
 import { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
 
 type FrontConfigMap = {
-  [id: string]: FrontConfig
+  [id: string]: FrontConfig;
 };
 
 type CollectionConfigMap = {
-  [id: string]: CollectionConfig
+  [id: string]: CollectionConfig;
 };
 
 type FrontsByPriority = {
-  [id: string]: FrontConfig[]
+  [id: string]: FrontConfig[];
 };
 
 const getFronts = (state: State): FrontConfigMap =>
@@ -42,9 +41,13 @@ const getFrontsByPriority = createSelector(
 const prioritySelector = (state: State, { priority }: { priority: string }) =>
   priority;
 
-const frontIdSelector = (state: State, { frontId }) => frontId;
+const frontIdSelector = (state: State, { frontId }: { frontId: string }) =>
+  frontId;
 
-const collectionIdSelector = (state: State, { collectionId }) => collectionId;
+const collectionIdSelector = (
+  state: State,
+  { collectionId }: { collectionId: string }
+) => collectionId;
 
 const unpublishedChangesSelector = (state: State) => state.unpublishedChanges;
 
@@ -52,12 +55,15 @@ const frontsAsArraySelector = createSelector([getFronts], fronts => {
   if (!fronts) {
     return [];
   }
-  return Object.keys(fronts).reduce((frontsAsArray, frontId) => {
-    const front = fronts[frontId];
-    const withId = Object.assign({}, front, { id: frontId });
-    frontsAsArray.push(withId);
-    return frontsAsArray;
-  }, []);
+  return Object.keys(fronts).reduce(
+    (frontsAsArray, frontId) => {
+      const front = fronts[frontId];
+      const withId = Object.assign({}, front, { id: frontId });
+      frontsAsArray.push(withId);
+      return frontsAsArray;
+    },
+    [] as FrontConfig[]
+  );
 });
 
 const getFrontsWithPriority = (state: State, priority: string): FrontConfig[] =>
@@ -86,8 +92,8 @@ const getFrontsConfig = (
   frontIds: Array<string>,
   priority: string
 ): {
-  fronts: FrontConfig[],
-  collections: CollectionConfigMap
+  fronts: FrontConfig[];
+  collections: CollectionConfigMap;
 } => {
   if (frontIds.length === 0) {
     return { fronts: [], collections: {} };
@@ -111,7 +117,7 @@ const getFrontsConfig = (
 };
 
 const getCollectionConfigs = (
-  frontId: ?string,
+  frontId: string | void,
   fronts: Array<FrontConfig>,
   collections: CollectionConfigMap
 ): Array<CollectionConfig> => {
@@ -151,7 +157,7 @@ const hasUnpublishedChangesSelector = createSelector(
 );
 
 const alsoOnFrontSelector = (
-  currentFront: ?FrontConfig,
+  currentFront: FrontConfig | void,
   fronts: Array<FrontConfig>
 ): { [id: string]: AlsoOnDetail } => {
   if (!currentFront) {
@@ -184,7 +190,11 @@ const alsoOnFrontSelector = (
               }
               return soFar;
             },
-            { priorities: [], meritsWarning: false, fronts: [] }
+            {
+              priorities: [] as string[],
+              meritsWarning: false,
+              fronts: [] as { id: string; priority: string }[]
+            }
           );
 
           return {
@@ -201,7 +211,7 @@ const alsoOnFrontSelector = (
             )
           };
         },
-        { priorities: [], fronts: [], meritsWarning: false }
+        { priorities: [] as string[], fronts: [] as { id: string; priority: string }[], meritsWarning: false }
       );
 
       return {

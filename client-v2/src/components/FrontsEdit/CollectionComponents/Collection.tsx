@@ -68,8 +68,11 @@ const mapStateToProps = (state: State, props: CollectionPropsBeforeState) => ({
   })
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators({ publishCollection }, dispatch);
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    publishCollection: (id: string, frontId: string) => dispatch(publishCollection(id, frontId))
+  }
+}
 
 export default connect(
   mapStateToProps,
