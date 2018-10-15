@@ -46,7 +46,7 @@ const IconAdd = IconDelete.extend`
 `;
 
 type Props = {
-  frontId: string;
+  frontId?: string;
   criteria?: {
     minHeight?: string;
     minWidth?: string;

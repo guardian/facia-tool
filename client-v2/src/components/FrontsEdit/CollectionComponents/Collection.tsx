@@ -1,5 +1,3 @@
-
-
 import { Dispatch } from 'types/Store';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -13,20 +11,21 @@ import { AlsoOnDetail } from 'types/Collection';
 import { publishCollection } from 'actions/Fronts';
 import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
 import { State } from 'types/State';
+import { Stages } from 'shared/types/Collection';
 
 type CollectionPropsBeforeState = {
-  id: string,
-  groups: any,
-  children: any,
-  alsoOn: { [id: string]: AlsoOnDetail },
-  frontId: string
+  id: string;
+  groups: any;
+  children: any;
+  alsoOn: { [id: string]: AlsoOnDetail };
+  frontId: string;
 };
 
 type CollectionProps = CollectionPropsBeforeState & {
-  publishCollection: (collectionId: string, frontId: string) => Promise<void>,
-  hasUnpublishedChanges: boolean,
-  canPublish: boolean,
-  browsingStage?: string
+  publishCollection: (collectionId: string, frontId: string) => Promise<void>;
+  hasUnpublishedChanges: boolean;
+  canPublish: boolean;
+  browsingStage: Stages;
 };
 
 const Collection = ({

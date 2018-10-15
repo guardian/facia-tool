@@ -1,14 +1,6 @@
-
-
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-  reduxForm,
-  Field,
-  FieldArray,
-  InjectedFormProps,
-  formValues
-} from 'redux-form';
+import { reduxForm, Field, InjectedFormProps, formValues } from 'redux-form';
 import styled from 'styled-components';
 import omit from 'lodash/omit';
 import compact from 'lodash/compact';
@@ -23,10 +15,7 @@ import {
   selectSharedState
 } from 'shared/selectors/shared';
 import { DerivedArticle } from 'shared/types/Article';
-import {
-  ArticleFragment,
-  ArticleFragmentMeta
-} from 'shared/types/Collection';
+import { ArticleFragment, ArticleFragmentMeta } from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
 import HorizontalRule from 'shared/components/layout/HorizontalRule';
@@ -35,15 +24,16 @@ import InputImage from 'shared/components/input/InputImage';
 import InputGroup from 'shared/components/input/InputGroup';
 import Row from '../Row';
 import Col from '../Col';
+import { State } from 'types/State';
 
 type Props = {
-  articleFragment: ArticleFragment,
-  onCancel: () => void,
-  onSave: (meta: ArticleFragmentMeta) => void,
-  imageSlideshowReplace: Boolean,
-  useCutout: Boolean,
-  hideMedia: Boolean,
-  articleFragmentId: string
+  articleFragment: ArticleFragment;
+  onCancel: () => void;
+  onSave: (meta: ArticleFragmentMeta) => void;
+  imageSlideshowReplace: boolean;
+  useCutout: boolean;
+  hideMedia: boolean;
+  articleFragmentId: string;
 } & InjectedFormProps;
 
 const FormContainer = ContentContainer.withComponent('form').extend`
@@ -96,7 +86,7 @@ const imageCriteria = {
   heightAspectRatio: 3
 };
 
-const renderSlideshow = ({ fields }: { fields: FieldArray }) =>
+const renderSlideshow = ({ fields }: { fields: string[] }) =>
   fields.map((name, index) => (
     // eslint-disable-next-line react/no-array-index-key
     <Col key={`${name}-${index}`}>
@@ -119,7 +109,7 @@ const formComponent = ({
   initialValues,
   pristine
 }: Props) => (
-  <FormContainer onSubmit={handleSubmit} name={articleFragmentId}>
+  <FormContainer onSubmit={handleSubmit}>
     <CollectionHeadingPinline>
       Edit
       <ButtonContainer>
@@ -265,7 +255,9 @@ const formComponent = ({
 
 const defaultMeta = {};
 
-const getInitialValuesForArticleFragmentForm = (article: ?DerivedArticle) => {
+const getInitialValuesForArticleFragmentForm = (
+  article: DerivedArticle | void
+) => {
   if (!article) {
     return {};
   }
@@ -346,7 +338,7 @@ const articleFragmentForm = reduxForm({
   })(formComponent)
 );
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state: State, props: Props) => {
   const article = articleFromArticleFragmentSelector(
     selectSharedState(state),
     props.articleFragmentId
