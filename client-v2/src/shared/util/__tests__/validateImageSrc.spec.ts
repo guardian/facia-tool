@@ -517,7 +517,7 @@ describe('Validate images', () => {
           expect((image as ValidationResponse).height).toBe(140);
           expect((image as ValidationResponse).src).toMatch(/square\.png$/);
           expect((image as ValidationResponse).origin).toBe(
-            'http://media/(image as ValidationResponse)/mediaID'
+            'http://media/image/mediaID'
           );
           expect((image as ValidationResponse).thumb).toMatch(/thumb\.png$/);
         })

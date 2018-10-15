@@ -80,7 +80,7 @@ function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
       batchActions([
         collectionActions.updateStart({
           ...collection,
-          updatedEmail: selectUserEmail(getState()),
+          updatedEmail: selectUserEmail(getState()) || '',
           updatedBy: `${selectFirstName(state)} ${selectLastName(state)}`,
           lastUpdated: Date.now()
         }),

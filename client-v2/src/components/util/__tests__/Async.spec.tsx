@@ -6,7 +6,7 @@ const makePromise = (val: string, err?: string) =>
   new Promise((res, rej) => (err ? rej(val) : res(val)));
 
 describe('Async', () => {
-  it('renders null before the promise has resolved',  async () => {
+  it('renders undefined before the promise has resolved',  async () => {
     let v;
     let p;
     let e;
@@ -21,9 +21,9 @@ describe('Async', () => {
         }}
       </Async>
     );
-    expect([v, p, e]).toEqual([null, true, null]);
+    expect([v, p, e]).toEqual([undefined, true, undefined]);
     await promise;
-    expect([v, p, e]).toEqual(['hi', false, null]);
+    expect([v, p, e]).toEqual(['hi', false, undefined]);
   });
 
   it('recomputes when changing functions', async () => {
@@ -46,9 +46,9 @@ describe('Async', () => {
     wrapper.setProps({
       fn: () => promise2
     });
-    expect([v, p, e]).toEqual(['hi', true, null]);
+    expect([v, p, e]).toEqual(['hi', true, undefined]);
     await promise2;
-    expect([v, p, e]).toEqual(['hi2', false, null]);
+    expect([v, p, e]).toEqual(['hi2', false, undefined]);
   });
 
   it('passes arguments correctly', async () => {
@@ -88,9 +88,9 @@ describe('Async', () => {
     wrapper.setProps({
       args: [false]
     });
-    expect([v, p, e]).toEqual(['hi', true, null]);
+    expect([v, p, e]).toEqual(['hi', true, undefined]);
     await promise2;
-    expect([v, p, e]).toEqual(['hi2', false, null]);
+    expect([v, p, e]).toEqual(['hi2', false, undefined]);
   });
 
   it('shows loading state between updates if intermediateLoadState is set', async () => {
@@ -112,15 +112,15 @@ describe('Async', () => {
     wrapper.setProps({
       args: ['arg2']
     });
-    expect([v, p, e]).toEqual(['hi', true, null]);
+    expect([v, p, e]).toEqual(['hi', true, undefined]);
     await promise;
-    expect([v, p, e]).toEqual(['hi', false, null]);
+    expect([v, p, e]).toEqual(['hi', false, undefined]);
     wrapper.setProps({
       fn: () => promise
     });
-    expect([v, p, e]).toEqual(['hi', true, null]);
+    expect([v, p, e]).toEqual(['hi', true, undefined]);
     await promise;
-    expect([v, p, e]).toEqual(['hi', false, null]);
+    expect([v, p, e]).toEqual(['hi', false, undefined]);
   });
 
   it("doesn't recompute when keeping the same function", async () => {
@@ -143,7 +143,7 @@ describe('Async', () => {
     wrapper.setProps({
       fn: promisefn
     });
-    expect([v, p, e]).toEqual(['hi', false, null]);
+    expect([v, p, e]).toEqual(['hi', false, undefined]);
   });
 
   it("doesn't recompute when keeping the same args", async () => {
@@ -166,7 +166,7 @@ describe('Async', () => {
     wrapper.setProps({
       args: ['arg1']
     });
-    expect([v, p, e]).toEqual(['hi', false, null]);
+    expect([v, p, e]).toEqual(['hi', false, undefined]);
   });
 
   it("doesn't call run the fn if on is specified", async () => {
@@ -185,8 +185,8 @@ describe('Async', () => {
         }}
       </Async>
     );
-    expect([v, p, e]).toEqual([null, false, null]);
+    expect([v, p, e]).toEqual([undefined, false, undefined]);
     await promise;
-    expect([v, p, e]).toEqual([null, false, null]);
+    expect([v, p, e]).toEqual([undefined, false, undefined]);
   });
 });

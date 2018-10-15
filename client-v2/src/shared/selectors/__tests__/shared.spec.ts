@@ -199,7 +199,7 @@ describe('Shared selectors', () => {
       );
       expect(
         externalArticleFromArticleFragmentSelector(state, 'invalid')
-      ).toEqual(null);
+      ).toEqual(undefined);
     });
   });
 
@@ -235,7 +235,7 @@ describe('Shared selectors', () => {
         byline: 'fragment-byline'
       });
       expect(articleFromArticleFragmentSelector(state, 'invalid')).toEqual(
-        null
+        undefined
       );
     });
   });

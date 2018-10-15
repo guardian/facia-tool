@@ -2,7 +2,7 @@
 
 import { liveArticle, articleWithSupporting } from 'shared/fixtures/shared';
 import { stateWithClipboard } from 'fixtures/clipboard';
-import { normaliseClipboard, denormaliseClipboard } from '../clipboardUtils.js';
+import { normaliseClipboard, denormaliseClipboard } from '../clipboardUtils';
 
 describe('Clipboard utilities', () => {
   describe('normaliseClipboard', () => {

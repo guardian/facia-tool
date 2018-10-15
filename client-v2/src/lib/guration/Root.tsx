@@ -1,6 +1,6 @@
 import React from 'react';
 import v4 from 'uuid/v4';
-import throttle from 'lodash.throttle';
+import throttle from 'lodash/throttle';
 import { $ElementType } from 'utility-types';
 import Level from './Level';
 import { NodeChildren } from './Node';

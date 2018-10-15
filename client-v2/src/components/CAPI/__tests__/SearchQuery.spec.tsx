@@ -14,7 +14,7 @@ const flushPromises = () => new Promise(resolve => process.nextTick(resolve));
 
 describe('SearchQuery', () => {
   beforeEach(() => {
-    global.fetch = jest.fn().mockImplementation(() =>
+    (global as any).fetch = jest.fn().mockImplementation(() =>
       Promise.resolve({
         json: () => succesfulReturn
       })

@@ -262,7 +262,7 @@ describe('createAsyncResourceBundle', () => {
           );
           const newState = bundle.reducer(
             state,
-            actions.updateSuccess('uuid', {})
+            actions.updateSuccess('uuid', { id: 'uuid' })
           );
           expect(newState.data.uuid).toEqual({ id: 'uuid' });
           expect(newState.updatingIds).toEqual([]);
