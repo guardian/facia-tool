@@ -35,7 +35,7 @@ type ClipboardProps = ClipboardPropsBeforeState & {
 class Clipboard extends React.Component<ClipboardProps> {
   // TODO: this code is repeated in src/components/FrontsEdit/Front.js
   // refactor
-  runEdit = edit => {
+  runEdit = (edit: any) => {
     switch (edit.type) {
       case 'MOVE': {
         const {

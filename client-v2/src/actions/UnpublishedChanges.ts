@@ -1,5 +1,3 @@
-
-
 import { Action } from 'types/Action';
 
 function recordUnpublishedChanges(

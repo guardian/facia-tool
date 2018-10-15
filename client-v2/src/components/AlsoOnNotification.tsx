@@ -50,7 +50,6 @@ class AlsoOnNotification extends React.Component<
           {!alsoOn.meritsWarning && <span>Also on other fronts.</span>}
           &nbsp;
           <ButtonSmall
-            size="xs"
             onClick={() =>
               this.setState({ showFrontDetails: !this.state.showFrontDetails })
             }

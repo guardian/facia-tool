@@ -29,7 +29,7 @@ const ControlIndicator = styled('div')`
   }
 `;
 
-const ControlRadio = styled('label')`
+const ControlRadio = styled('label')<{ inline?: boolean }>`
   position: relative;
   display: ${({ inline }) => (inline ? 'inline-block' : 'block')};
   margin-bottom: 15px;
@@ -51,7 +51,7 @@ const ControlRadio = styled('label')`
   /* Checked state */
   & {
     ${Input}:checked ~ ${ControlIndicator} {
-      
+
     }
   }
 

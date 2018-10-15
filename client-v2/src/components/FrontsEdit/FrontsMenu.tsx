@@ -41,7 +41,7 @@ const ButtonOverlayContainer = styled('div')`
   bottom: 30px;
 `;
 
-const FrontsMenuContainer = styled('div')`
+const FrontsMenuContainer = styled('div')<{ isOpen?: boolean}>`
   background-color: #333;
   position: fixed;
   height: 100%;

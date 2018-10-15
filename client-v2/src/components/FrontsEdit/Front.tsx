@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
@@ -24,7 +22,7 @@ import {
   selectEditorArticleFragment,
   editorClearArticleFragmentSelection
 } from 'bundles/frontsUIBundle';
-import { ArticleFragmentMeta } from 'shared/types/Collection';
+import { ArticleFragmentMeta, Stages } from 'shared/types/Collection';
 import Front from './CollectionComponents/Front';
 import Collection from './CollectionComponents/Collection';
 import Group from './CollectionComponents/Group';
@@ -45,31 +43,31 @@ const FrontContentContainer = styled('div')`
 const FrontFormContainer = FrontContentContainer;
 
 type FrontPropsBeforeState = {
-  id: string,
-  browsingStage: string,
-  collectionIds: string[],
-  alsoOn: { [id: string]: AlsoOnDetail }
+  id: string;
+  browsingStage: Stages;
+  collectionIds: string[];
+  alsoOn: { [id: string]: AlsoOnDetail };
 };
 
 type FrontProps = FrontPropsBeforeState & {
-  tree: Object, // TODO add typings,
-  addArticleFragment: (id: string, supporting: string[]) => Promise<string>,
-  updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) => void,
-  selectedArticleFragmentId: ?string,
-  dispatch: Dispatch,
-  selectArticleFragment: (id: string) => void,
-  clearArticleFragmentSelection: () => void
+  tree: Object;
+  addArticleFragment: (id: string, supporting: string[]) => Promise<string>;
+  updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) => void;
+  selectedArticleFragmentId: string | void;
+  dispatch: Dispatch;
+  selectArticleFragment: (id: string) => void;
+  clearArticleFragmentSelection: () => void;
 };
 
 type FrontState = {
-  error: ?string
+  error: string | void;
 };
 
 class FrontComponent extends React.Component<FrontProps, FrontState> {
   constructor(props: FrontProps) {
     super(props);
     this.state = {
-      error: null
+      error: undefined
     };
   }
 
@@ -85,7 +83,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     }
   };
 
-  runEdit = edit => {
+  runEdit = (edit: any) => {
     switch (edit.type) {
       case 'MOVE': {
         const {
@@ -127,7 +125,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     }
   };
 
-  handleChange = edit => {
+  handleChange = (edit: any) => {
     const futureAction = this.runEdit(edit);
     if (!futureAction) {
       return;
@@ -152,7 +150,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
             width: '100%'
           }}
         >
-          {this.state.error}
+          {this.state.error || ''}
         </div>
         <FrontContainer>
           <FrontContentContainer>
@@ -220,13 +218,13 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
               </Front>
             </Guration.Root>
           </FrontContentContainer>
-          <FrontFormContainer>
-            {selectedArticleFragmentId && (
+          {selectedArticleFragmentId && (
+            <FrontFormContainer>
               <ArticleFragmentForm
                 articleFragmentId={selectedArticleFragmentId}
                 key={selectedArticleFragmentId}
                 form={selectedArticleFragmentId}
-                onSave={meta =>
+                onSave={(meta: ArticleFragmentMeta) =>
                   this.props.updateArticleFragmentMeta(
                     selectedArticleFragmentId,
                     meta
@@ -234,8 +232,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                 }
                 onCancel={this.props.clearArticleFragmentSelection}
               />
-            )}
-          </FrontFormContainer>
+            </FrontFormContainer>
+          )}
         </FrontContainer>
       </React.Fragment>
     );
@@ -244,7 +242,6 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
 
 const createMapStateToProps = () => {
   const collectionsAsTreeSelector = createCollectionsAsTreeSelector();
-  // $FlowFixMe factory redux :/
   return (state: State, props: FrontPropsBeforeState) => ({
     // TODO: fix object literal usage for memoization!
     tree: collectionsAsTreeSelector(selectSharedState(state), {
@@ -268,7 +265,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch(editorClearArticleFragmentSelection(frontId))
 });
 
-const mergeProps = (stateProps, dispatchProps, props) => ({
+type StateProps = ReturnType<ReturnType<typeof createMapStateToProps>>;
+type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+
+const mergeProps = (stateProps: StateProps, dispatchProps: DispatchProps, props: FrontPropsBeforeState) => ({
   ...props,
   ...stateProps,
   ...dispatchProps,

@@ -1,11 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { reduxForm, Field, InjectedFormProps, formValues } from 'redux-form';
+import {
+  reduxForm,
+  Field,
+  FieldArray,
+  InjectedFormProps,
+  formValueSelector,
+  WrappedFieldArrayProps
+} from 'redux-form';
 import styled from 'styled-components';
 import omit from 'lodash/omit';
 import compact from 'lodash/compact';
-import pick from 'lodash/pick';
-import { updateArticleFragmentMeta } from 'actions/ArticleFragments';
 import ButtonPrimary from 'shared/components/input/ButtonPrimary';
 import ButtonDefault from 'shared/components/input/ButtonDefault';
 import ContentContainer from 'shared/components/layout/ContentContainer';
@@ -15,7 +20,7 @@ import {
   selectSharedState
 } from 'shared/selectors/shared';
 import { DerivedArticle } from 'shared/types/Article';
-import { ArticleFragment, ArticleFragmentMeta } from 'shared/types/Collection';
+import { ArticleFragmentMeta } from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
 import HorizontalRule from 'shared/components/layout/HorizontalRule';
@@ -26,15 +31,42 @@ import Row from '../Row';
 import Col from '../Col';
 import { State } from 'types/State';
 
-type Props = {
-  articleFragment: ArticleFragment;
+type ComponentProps = {
   onCancel: () => void;
   onSave: (meta: ArticleFragmentMeta) => void;
   imageSlideshowReplace: boolean;
   useCutout: boolean;
   hideMedia: boolean;
   articleFragmentId: string;
-} & InjectedFormProps;
+};
+
+type Props = ComponentProps &
+  InjectedFormProps<ArticleFragmentFormData, ComponentProps, {}>;
+
+interface ImageData {
+  src?: string;
+  width?: string;
+  height?: string;
+  origin?: string;
+  thumb?: string;
+}
+interface ArticleFragmentFormData {
+  headline: string;
+  isBoosted: boolean;
+  showQuotedHeadline: boolean;
+  showBoostedHeadline: boolean;
+  customKicker: string;
+  isBreaking: boolean;
+  byline: string;
+  showByline: boolean;
+  trailText: string;
+  hideMedia: boolean;
+  primaryImage: ImageData;
+  cutoutImage: ImageData;
+  useCutout: boolean;
+  imageSlideshowReplace: boolean;
+  slideshow: (ImageData|void)[];
+}
 
 const FormContainer = ContentContainer.withComponent('form').extend`
   display: flex;
@@ -86,29 +118,32 @@ const imageCriteria = {
   heightAspectRatio: 3
 };
 
-const renderSlideshow = ({ fields }: { fields: string[] }) =>
-  fields.map((name, index) => (
-    // eslint-disable-next-line react/no-array-index-key
-    <Col key={`${name}-${index}`}>
-      <Field
-        name={name}
-        component={InputImage}
-        size="small"
-        criteria={imageCriteria}
-      />
-    </Col>
-  ));
+const renderSlideshow: React.StatelessComponent<
+  WrappedFieldArrayProps<ImageData>
+> = ({ fields }) => (
+  <>
+    {fields.map((name, index) => (
+      <Col key={`${name}-${index}`}>
+        <Field
+          name={name}
+          component={InputImage}
+          size="small"
+          criteria={imageCriteria}
+        />
+      </Col>
+    ))}
+  </>
+);
 
-const formComponent = ({
+const formComponent: React.StatelessComponent<Props> = ({
   handleSubmit,
-  articleFragmentId,
   imageSlideshowReplace,
   hideMedia,
   useCutout,
   onCancel,
   initialValues,
   pristine
-}: Props) => (
+}) => (
   <FormContainer onSubmit={handleSubmit}>
     <CollectionHeadingPinline>
       Edit
@@ -253,33 +288,30 @@ const formComponent = ({
   </FormContainer>
 );
 
-const defaultMeta = {};
-
 const getInitialValuesForArticleFragmentForm = (
   article: DerivedArticle | void
-) => {
+): ArticleFragmentFormData | void => {
   if (!article) {
-    return {};
+    return undefined;
   }
-  const slideshowBackfill = [];
-  const slideshow = article.slideshow || [];
+  const slideshowBackfill: (ImageData | void)[] = [];
+  const slideshow: (ImageData | void)[] = article.slideshow || [];
   slideshowBackfill.length = 4 - slideshow.length;
   slideshowBackfill.fill(undefined);
   return article
     ? {
-        ...pick(article, [
-          'headline',
-          'isBoosted',
-          'showQuotedHeadline',
-          'showBoostedHeadline',
-          'customKicker',
-          'isBreaking',
-          'byline',
-          'showByline',
-          'trailText',
-          'useCutout'
-        ]),
-        hideMedia: !article.imageReplace,
+        headline: article.headline || '',
+        isBoosted: article.isBoosted || false,
+        showQuotedHeadline: article.showQuotedHeadline || false,
+        showBoostedHeadline: article.showBoostedHeadline || false,
+        customKicker: article.customKicker || '',
+        isBreaking: article.isBreaking || false,
+        byline: article.byline || '',
+        showByline: article.showByline || false,
+        trailText: article.trailText || '',
+        useCutout: article.imageCutoutReplace || false,
+        hideMedia: !article.imageReplace || false,
+        imageSlideshowReplace: article.imageSlideshowReplace || false,
         primaryImage: {
           src: article.imageSrc,
           width: article.imageSrcWidth,
@@ -295,12 +327,16 @@ const getInitialValuesForArticleFragmentForm = (
         },
         slideshow: slideshow.concat(slideshowBackfill)
       }
-    : defaultMeta;
+    : undefined;
 };
 
-const getArticleFragmentMetaFromFormValues = (values): DerivedArticle => {
+const getArticleFragmentMetaFromFormValues = (
+  values: ArticleFragmentFormData
+): ArticleFragmentMeta => {
   const primaryImage = values.primaryImage || {};
   const cutoutImage = values.cutoutImage || {};
+  // Lodash doesn't remove undefined in the type settings here, hence the undefined.
+  const slideshow: ImageData[] = compact(values.slideshow as any)
   return omit(
     {
       ...values,
@@ -315,37 +351,57 @@ const getArticleFragmentMetaFromFormValues = (values): DerivedArticle => {
       imageCutoutSrcWidth: cutoutImage.width,
       imageCutoutSrcHeight: cutoutImage.height,
       imageCutoutSrcOrigin: cutoutImage.origin,
-      slideshow: compact(values.slideshow)
+      slideshow: slideshow.length ? slideshow : []
     },
     'primaryImage',
     'cutoutImage'
   );
 };
 
-const articleFragmentForm = reduxForm({
+const ArticleFragmentForm = reduxForm<
+  ArticleFragmentFormData,
+  ComponentProps,
+  {}
+>({
   destroyOnUnmount: false,
-  onSubmit: (values, dispatch, props: Props) => {
+  onSubmit: (values: ArticleFragmentFormData, _, props: ComponentProps) => {
     const meta: ArticleFragmentMeta = getArticleFragmentMetaFromFormValues(
       values
     );
     props.onSave(meta);
   }
-})(
-  formValues({
-    imageSlideshowReplace: 'imageSlideshowReplace',
-    hideMedia: 'hideMedia',
-    useCutout: 'useCutout'
-  })(formComponent)
+})(formComponent);
+
+interface ContainerProps extends InterfaceProps {
+  imageSlideshowReplace: boolean;
+  useCutout: boolean;
+  hideMedia: boolean;
+}
+
+interface InterfaceProps {
+  form: string;
+  articleFragmentId: string;
+  onCancel: () => void;
+  onSave: (meta: ArticleFragmentMeta) => void;
+}
+
+const formContainer: React.SFC<ContainerProps> = props => (
+  <ArticleFragmentForm {...props} />
 );
 
-const mapStateToProps = (state: State, props: Props) => {
+const mapStateToProps = (state: State, props: InterfaceProps) => {
+  const valueSelector = formValueSelector(props.articleFragmentId);
   const article = articleFromArticleFragmentSelector(
     selectSharedState(state),
     props.articleFragmentId
   );
+
   return {
-    initialValues: getInitialValuesForArticleFragmentForm(article)
+    initialValues: getInitialValuesForArticleFragmentForm(article),
+    imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
+    hideMedia: valueSelector(state, 'imageSlideshowReplace'),
+    useCutout: valueSelector(state, 'imageSlideshowReplace')
   };
 };
 
-export default connect(mapStateToProps)(articleFragmentForm);
+export default connect(mapStateToProps)(formContainer);

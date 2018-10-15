@@ -1,6 +1,5 @@
-
-
 import { PriorityName } from './Priority';
+import { $Diff } from 'utility-types';
 
 type FrontConfigResponse = {
   collections: Array<string>,
@@ -28,7 +27,6 @@ type CollectionConfigResponse = {
   href?: string,
   groups?: Array<string>,
   metadata?: Array<Object>,
-  platform?: string,
   uneditable?: boolean,
   showTags?: boolean,
   hideKickers?: boolean,
@@ -53,7 +51,7 @@ type FrontsConfigResponse = {
 
 type FrontConfig = $Diff<
   FrontConfigResponse,
-  { priority: PriorityName | void }
+  { priority?: PriorityName | void }
 > & {
   id: string,
   priority: PriorityName

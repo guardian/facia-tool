@@ -4,11 +4,11 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 type DropdownProps = {
-  current?: ?string,
-  items: ?Array<{
+  current?: string | void,
+  items: Array<{
     value: string,
     label: string
-  }>,
+  }> | void,
   onChange: (value: string) => void,
   deselectValue?: string,
   deselectText?: string

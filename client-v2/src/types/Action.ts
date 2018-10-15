@@ -12,7 +12,7 @@ import {
 import { PersistMeta } from 'util/storeMiddleware';
 import { Config } from './Config';
 import { FrontsConfig } from './FaciaApi';
-import articleFragments from 'shared/reducers/articleFragmentsReducer';
+import { BatchAction } from 'redux-batched-actions';
 
 type EditorAddFront = {
   type: 'EDITOR_OPEN_FRONT';
@@ -183,20 +183,13 @@ type Action =
   | EditorCloseFront
   | EditorSelectArticleFragment
   | EditorClearArticleFragmentSelection
-  | RecordStaleFronts;
-
-type BatchedAction = {
-  type: 'BATCHING_REDUCER.BATCH';
-  payload: Action[];
-};
-
-type ActionWithBatchedActions = Action | BatchedAction;
+  | RecordStaleFronts
+  | BatchAction
 
 export {
   ActionError,
   Action,
   ActionPersistMeta,
-  ActionWithBatchedActions,
   ConfigReceivedAction,
   FrontsConfigReceivedAction,
   RequestFrontsConfigAction,

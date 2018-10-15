@@ -28,6 +28,7 @@ import {
 import Front from './Front';
 import SectionHeader from '../layout/SectionHeader';
 import SectionContent from '../layout/SectionContent';
+import { Stages } from 'shared/types/Collection';
 
 const FrontHeader = SectionHeader.extend`
   display: flex;
@@ -64,7 +65,7 @@ type FrontsComponentProps = {
 };
 
 type ComponentState = {
-  browsingStage: 'draft' | 'live'
+  browsingStage: Stages
 };
 
 class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
@@ -162,8 +163,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
 
 const createMapStateToProps = () => {
   const alsoOnSelector = createAlsoOnSelector();
-  // $FlowFixMe
-  return (state: State, props: PropsBeforeFetch) => ({
+  return (state: State, props: FrontsComponentProps) => ({
     selectedFront: getFront(state, props.frontId),
     alsoOn: alsoOnSelector(state, props.frontId),
     lastPressed: lastPressedSelector(state, props.frontId)

@@ -1,8 +1,9 @@
-import { Store as ReduxStore } from 'redux';
+import { Store as ReduxStore, Action as ReduxAction } from 'redux';
 import { Action } from './Action';
 import { State } from './State';
+import { ThunkDispatch, ThunkAction } from 'redux-thunk'
 
-export type Store = ReduxStore<State, Action>;
+export type Store = ReduxStore<State>;
 export type  GetState = () => State;
-export type Dispatch = <T>(action: Action | ThunkAction) => T;
-export type ThunkAction = (dispatch: Dispatch, getState: GetState) => any;
+export type Dispatch = ThunkDispatch<State, void, ReduxAction>;
+export type ThunkResult<R> = ThunkAction<R, State, null, Action>

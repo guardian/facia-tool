@@ -1,6 +1,4 @@
-
-
-import { ThunkAction, Dispatch } from 'types/Store';
+import { Dispatch, ThunkResult } from 'types/Store';
 import { Action } from 'types/Action';
 import { batchActions } from 'redux-batched-actions';
 import {
@@ -42,7 +40,7 @@ function recordStaleFronts(frontId: string, frontIsStale: boolean): Action {
   };
 }
 
-function fetchLastPressed(frontId: string): ThunkAction {
+function fetchLastPressed(frontId: string): ThunkResult<void> {
   return (dispatch: Dispatch) =>
     fetchLastPressedApi(frontId)
       .then(datePressed =>
@@ -53,7 +51,10 @@ function fetchLastPressed(frontId: string): ThunkAction {
       });
 }
 
-function publishCollection(collectionId: string, frontId: string): ThunkAction {
+function publishCollection(
+  collectionId: string,
+  frontId: string
+): ThunkResult<Promise<void>> {
   return (dispatch: Dispatch) =>
     publishCollectionApi(collectionId)
       .then(() => {
@@ -86,9 +87,16 @@ function publishCollection(collectionId: string, frontId: string): ThunkAction {
       });
 }
 
+const a = publishCollection('hai', 'you')
+
 export { fetchLastPressed, fetchLastPressedSuccess, publishCollection };
 
-export default function getFrontsConfig(): ThunkAction {
+export default function getFrontsConfig(): ThunkResult<
+  Promise<
+    | ReturnType<typeof frontsConfigActions.fetchSuccess>
+    | ReturnType<typeof frontsConfigActions.fetchError>
+  >
+> {
   return (dispatch: Dispatch) => {
     dispatch(frontsConfigActions.fetchStart());
     return fetchFrontsConfig()

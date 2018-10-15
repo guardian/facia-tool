@@ -29,7 +29,7 @@ injectGlobal`
     src: url(${GHGuardianHeadlineBoldWoff2}) format('woff2'),
       url(${GHGuardianHeadlineBoldWoff}) format('woff'),
       url(${GHGuardianHeadlineBoldTtf}) format('truetype');
-      
+
     font-style: 'bold',
     font-weight: 800
   }
@@ -39,7 +39,7 @@ injectGlobal`
     src: url(${GHGuardianHeadlineMediumWoff2}) format('woff2'),
       url(${GHGuardianHeadlineMediumWoff}) format('woff'),
       url(${GHGuardianHeadlineMediumTtf}) format('truetype');
-      
+
     font-style: 'bold',
     font-weight: 800
   }
@@ -49,7 +49,7 @@ injectGlobal`
     src: url(${GuardianTextSansWoff2}) format('woff2'),
       url(${GuardianTextSansWoff}) format('woff'),
       url(${GuardianTextSansTtf}) format('truetype');
-      
+
     font-style: 'normal',
     font-weight: 'normal'
   }

@@ -1,11 +1,9 @@
-
-
 import * as React from 'react';
 import { css } from 'styled-components';
 
 import Button from 'shared/components/input/ButtonDefault';
 
-const ButtonWithShadow = Button.extend`
+const ButtonWithShadow = Button.extend<{ active?: boolean }>`
   box-shadow: 0 1px 10px 2px rgba(0, 0, 0, 0.15);
   width: 50px;
   height: 50px;
@@ -24,8 +22,11 @@ const ButtonWithShadow = Button.extend`
     `};
 `;
 
-const ButtonOverlay = ({ children, ...rest }: { children: React.Node }) => (
-  <ButtonWithShadow {...rest}>{children}</ButtonWithShadow>
-);
+const ButtonOverlay = ({
+  children,
+  ...rest
+}: { children: React.ReactNode; active?: boolean } & React.HTMLAttributes<
+  HTMLButtonElement
+>) => <ButtonWithShadow {...rest}>{children}</ButtonWithShadow>;
 
 export default ButtonOverlay;

@@ -1,5 +1,3 @@
-
-
 import { Config } from 'types/Config';
 
 const configReceived = (config: Config) => ({

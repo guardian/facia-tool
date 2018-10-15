@@ -8,7 +8,6 @@ import { getArticles } from 'services/faciaApi';
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import {
-  Action,
   ArticleFragmentsReceived,
   RemoveSupportingArticleFragment,
   AddSupportingArticleFragment,

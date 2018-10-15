@@ -4,7 +4,7 @@ import { Dispatch } from 'types/Store';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Match, RouterHistory } from 'react-router-dom';
+import { match } from 'react-router-dom';
 import styled from 'styled-components';
 
 import getFrontsConfig from 'actions/Fronts';
@@ -29,9 +29,8 @@ import FrontsMenu from './FrontsMenu';
 import PressFailAlert from '../PressFailAlert';
 
 type Props = {
-  match: Match,
+  match: match<{ priority: string }>,
   error: ActionError,
-  history: RouterHistory,
   frontIds: string[],
   staleFronts: { string: boolean },
   editorOpenFront: (frontId: string) => void,
@@ -77,8 +76,6 @@ class FrontsEdit extends React.Component<Props> {
               <SingleFrontContainer key={frontId}>
                 <FrontContainer
                   key={frontId}
-                  history={this.props.history}
-                  priority={this.props.match.params.priority || ''}
                   frontId={frontId}
                 />
               </SingleFrontContainer>
