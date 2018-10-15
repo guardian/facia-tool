@@ -1,12 +1,14 @@
-
-
 import { isSubPath, pathForMove, hasMoved } from './path';
 import { Path } from './path';
 import { move, insert } from '../edits';
 import { Edit } from '../edits';
 import { Drag } from '../types';
 
-const handleMove = (prevPath, nextPath, meta = {}): ?Edit => {
+const handleMove = (
+  prevPath: Path[],
+  nextPath: Path[],
+  meta = {}
+): Edit | null => {
   const { type: dragType, id } = prevPath[prevPath.length - 1];
   const { type } = nextPath[nextPath.length - 1];
 
@@ -26,7 +28,10 @@ const handleMove = (prevPath, nextPath, meta = {}): ?Edit => {
     : null;
 };
 
-const handleInsert = ({ type: dragType, id, meta }, path): ?Edit => {
+const handleInsert = (
+  { type: dragType, id, meta }: { type: string; id: string; meta?: any },
+  path: Path[]
+): Edit | null => {
   const { type, index } = path[path.length - 1];
 
   if (dragType !== type) {
@@ -36,7 +41,7 @@ const handleInsert = ({ type: dragType, id, meta }, path): ?Edit => {
   return insert(type, id, path, index, meta);
 };
 
-const getEdit = (inputData: Drag, inputPath: Path[]): ?Edit =>
+const getEdit = (inputData: Drag, inputPath: Path[]): Edit | null =>
   inputData.dropType === 'INTERNAL'
     ? handleMove(inputData.path, inputPath)
     : handleInsert(inputData, inputPath);

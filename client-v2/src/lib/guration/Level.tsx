@@ -1,7 +1,4 @@
-
-
 import React from 'react';
-import { Node as ReactNode } from 'react';
 import Node from './Node';
 import { NodeChildren } from './Node';
 import { RootContext } from './Context';
@@ -10,32 +7,32 @@ import { Path } from './utils/path';
 import { EventType } from './types';
 import AddPathLevel from './utils/AddPathLevel';
 
-const isUndefined = x => typeof x === 'undefined';
+const isUndefined = (x: unknown) => typeof x === 'undefined';
 
 type DropProps = {
-  onDrop: (e: EventType) => void,
-  onDragOver: (e: EventType) => void
+  onDrop: (e: EventType) => void;
+  onDragOver: (e: EventType) => void;
 };
 
 type DropContext = {
-  isTarget: boolean,
-  canDrop: ?boolean
+  isTarget: boolean;
+  canDrop: boolean | null;
 };
 
 type DropRenderer = (
   getDropProps: () => DropProps,
   dropContext: DropContext,
   index: number
-) => ReactNode;
+) => React.ReactNode;
 
 const doRenderDrop = (
-  renderDrop: ?DropRenderer,
-  onDrop,
-  onDragOver,
-  canDrop: ?boolean,
-  dropPath: ?(Path[]),
-  path,
-  i
+  renderDrop: DropRenderer | void,
+  onDrop: (e: EventType) => void,
+  onDragOver: (e: EventType) => void,
+  canDrop: boolean | null,
+  dropPath: Path[] | null,
+  path: Path[],
+  i: number
 ) => {
   if (!renderDrop) {
     return null;
@@ -56,21 +53,36 @@ const doRenderDrop = (
   );
 };
 
+const doGetKey = <T extends any>(
+  getKey: ((node: T) => string) | void,
+  item: T
+) => {
+  if (getKey) {
+    return getKey(item);
+  } else if (item.id) {
+    const id = item.id;
+    if (typeof id === 'string') {
+      return id;
+    }
+  }
+  return undefined;
+};
+
 type LevelProps<T> = {
-  arr: T[],
-  type: string,
-  children: NodeChildren<T>,
-  renderDrag?: (el: T) => ReactNode,
-  renderDrop?: DropRenderer,
-  getKey: (node: T) => string,
-  dropOnNode: boolean,
-  field?: string
+  arr: T[];
+  type: string;
+  children: NodeChildren<T>;
+  renderDrag?: (el: T) => React.ReactNode;
+  renderDrop?: DropRenderer;
+  getKey?: (node: T) => string;
+  dropOnNode?: boolean;
+  field?: string;
 };
 
 class Level<T> extends React.Component<LevelProps<T>> {
   static defaultProps = {
     dropOnNode: true, // sets node drag props to allow drops
-    getKey: <U: { id: string }>({ id }: U) => id
+    getKey: <U extends { id: string }>({ id }: U) => id
   };
 
   get childrenField() {
@@ -84,7 +96,7 @@ class Level<T> extends React.Component<LevelProps<T>> {
       children,
       renderDrag,
       renderDrop,
-      getKey,
+      getKey = (i: any): any => i && i.id,
       dropOnNode
     } = this.props;
 
@@ -100,7 +112,7 @@ class Level<T> extends React.Component<LevelProps<T>> {
         }) => (
           <React.Fragment>
             {arr.map((item, i) => {
-              const key = getKey(item);
+              const key = doGetKey(getKey, item);
 
               if (isUndefined(key) && !didWarnKey) {
                 /* eslint-disable-next-line */
@@ -111,7 +123,7 @@ class Level<T> extends React.Component<LevelProps<T>> {
               }
 
               return (
-                <React.Fragment key={getKey(item)}>
+                <React.Fragment key={key}>
                   <AddPathLevel
                     childrenField={this.childrenField}
                     id="@@DROP"
@@ -132,15 +144,15 @@ class Level<T> extends React.Component<LevelProps<T>> {
                   </AddPathLevel>
                   <Node
                     item={item}
-                    id={getKey(item)}
+                    id={key || ''}
                     type={type}
                     index={i}
                     renderDrag={renderDrag}
                     childrenField={this.childrenField}
                     // TODO: maybe move this into Node?
                     handleDragStart={handleDragStart}
-                    handleDragOver={dropOnNode && handleDragOver}
-                    handleDrop={dropOnNode && handleDrop}
+                    handleDragOver={!!dropOnNode && handleDragOver}
+                    handleDrop={!!dropOnNode && handleDrop}
                   >
                     {children}
                   </Node>

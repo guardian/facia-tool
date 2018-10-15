@@ -1,26 +1,31 @@
-
-
 import React from 'react';
 import TestRenderer from 'react-test-renderer';
 import Root from '../Root';
 import Level from '../Level';
 
 const createDragEvent = () => {
-  const data = {};
+  const data: { [k: string]: any } = {};
 
   return {
     _data: data,
     preventDefault: () => {},
     dataTransfer: {
-      setData: (key, val) => {
+      setData: (key: string, val: any) => {
         data[key] = val;
       },
-      getData: key => data[key]
+      getData: (key: string) => data[key]
     }
   };
 };
 
-const runDrag = (type, data, json = true) => async (dropProps, inst) => {
+const runDrag = (
+  type: any,
+  data?: any,
+  json: boolean = true
+) => async (
+  dropProps: any,
+  inst?: any
+) => {
   const e = createDragEvent();
 
   if (typeof type === 'string') {
@@ -40,16 +45,17 @@ const runDrag = (type, data, json = true) => async (dropProps, inst) => {
 
   // because inMaps are async then we just need to go to the end of the
   // task queue
-  await new Promise(setTimeout);
+  await new Promise(res => setTimeout(res));
 };
 
-const setup = jsx => TestRenderer.create(jsx).getInstance();
+const setup = (jsx: React.ReactElement<any>) =>
+  TestRenderer.create(jsx).getInstance();
 
 describe('Guration', () => {
   it('creates MOVE events from dragged nodes', async () => {
     let nodeProps;
     let dropProps;
-    let edit;
+    let edit: any;
 
     const inst = setup(
       <Root
@@ -74,6 +80,7 @@ describe('Guration', () => {
                   if (j === 1) {
                     dropProps = getDropProps();
                   }
+                  return null;
                 }}
               >
                 {() => null}
@@ -91,7 +98,7 @@ describe('Guration', () => {
 
   it('creates INSERT events from mapped drops', async () => {
     let dropProps;
-    let edit;
+    let edit: any;
 
     const inst = setup(
       <Root
@@ -112,6 +119,7 @@ describe('Guration', () => {
               field="children"
               renderDrop={getDropProps => {
                 dropProps = getDropProps();
+                return null;
               }}
             >
               {() => null}
@@ -147,7 +155,7 @@ describe('Guration', () => {
 
   it('creates preserves meta from mapped drops', async () => {
     let dropProps;
-    let edit;
+    let edit: any;
 
     const inst = setup(
       <Root
@@ -168,6 +176,7 @@ describe('Guration', () => {
               field="children"
               renderDrop={getDropProps => {
                 dropProps = getDropProps();
+                return null;
               }}
             >
               {() => null}
@@ -213,6 +222,7 @@ describe('Guration', () => {
                 type="a"
                 renderDrop={getDropProps => {
                   dropProps = getDropProps();
+                  return null;
                 }}
               >
                 {() => null}
@@ -253,6 +263,7 @@ describe('Guration', () => {
           type="b"
           renderDrop={getDropProps => {
             dropProps = getDropProps();
+            return null;
           }}
         >
           {() => null}
@@ -268,7 +279,7 @@ describe('Guration', () => {
   it('adjusts move indices when moving things that affect the drop index', async () => {
     let dragProps;
     let dropProps;
-    let edit;
+    let edit: any;
 
     const inst = setup(
       <Root
@@ -283,6 +294,7 @@ describe('Guration', () => {
           arr={[{ id: 1 }, { id: 2 }, { id: 3 }]}
           renderDrop={getDropProps => {
             dropProps = getDropProps();
+            return null;
           }}
         >
           {(child, getNodeProps, i) => {
@@ -304,7 +316,7 @@ describe('Guration', () => {
   it('does not create MOVE events when moves will have no impact', async () => {
     let dragProps;
     let dropProps;
-    let edit;
+    let edit: any;
 
     const inst = setup(
       <Root
@@ -320,6 +332,7 @@ describe('Guration', () => {
           type="a"
           renderDrop={getDropProps => {
             dropProps = getDropProps();
+            return null;
           }}
         >
           {(child, getNodeProps) => {
@@ -375,7 +388,7 @@ describe('Guration', () => {
   it('creates inserts between roots', async () => {
     let nodeProps;
     let dropProps;
-    let edit;
+    let edit: any;
 
     setup(
       <div>
@@ -406,6 +419,7 @@ describe('Guration', () => {
             arr={[{ id: 1 }, { id: 2 }]}
             renderDrop={getDropProps => {
               dropProps = getDropProps();
+              return null;
             }}
           >
             {() => null}

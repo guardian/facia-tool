@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import capiQuery, { Fetch } from 'services/capiQuery';
 import { $ElementType, $Call } from 'utility-types';
 import Async from 'components/util/Async';

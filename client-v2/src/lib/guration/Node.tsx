@@ -1,7 +1,5 @@
-
-
 import React from 'react';
-import { Node as ReactNode } from 'react';
+import { $ElementType } from 'utility-types';
 import { EventType, IndexOffsetGetter } from './types';
 import AddPathLevel from './utils/AddPathLevel';
 import { Path } from './utils/path';
@@ -13,50 +11,50 @@ const getDropIndexOffset = ({ currentTarget: el, clientY }: EventType) => {
 };
 
 type DOMNodeProps = {
-  draggable: boolean,
-  onDragStart: (e: EventType) => void,
-  onDragOver: ?(e: EventType) => void,
-  onDrop: ?(e: EventType) => void
+  draggable: boolean;
+  onDragStart: (e: EventType) => void;
+  onDragOver?: void | ((e: EventType) => void);
+  onDrop?: void | ((e: EventType) => void);
 };
 
 type NodeProps<T> = {
-  item: T,
-  id: string,
-  type: string,
-  childrenField: string,
-  index: number,
-  renderDrag: ?(el: T) => ReactNode,
+  item: T;
+  id: string;
+  type: string;
+  childrenField: string;
+  index: number;
+  renderDrag: void | ((el: T) => React.ReactNode);
   handleDragStart: (
     item: T,
     path: Path[],
     id: string,
     type: string
-  ) => (e: EventType) => void,
+  ) => (e: EventType) => void;
   handleDragOver:
     | ((
         candidatePath: Path[],
         getIndexOffset: IndexOffsetGetter
       ) => (e: EventType) => void)
-    | false,
+    | false;
   handleDrop:
     | ((
         candidatePath: Path[],
         getIndexOffset: IndexOffsetGetter
       ) => (e: EventType) => void)
-    | false,
+    | false;
   children: (
     node: T,
     getNodeProps: () => DOMNodeProps,
     index: number
-  ) => ReactNode
+  ) => React.ReactNode;
 };
 
 class Node<T> extends React.Component<NodeProps<T>> {
-  dragImage: ?HTMLDivElement;
+  dragImage: HTMLDivElement | null = null;
 
-  handleDragStart = (
-    handleDragStart: (e: SyntheticDragEvent<HTMLElement>) => void
-  ) => (e: SyntheticDragEvent<HTMLElement>) => {
+  handleDragStart = (handleDragStart: (e: EventType) => void) => (
+    e: EventType
+  ) => {
     if (this.dragImage) {
       e.dataTransfer.setDragImage(this.dragImage, 10, 10);
     }

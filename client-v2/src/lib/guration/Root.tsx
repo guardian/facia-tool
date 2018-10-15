@@ -1,10 +1,9 @@
-
-
 import React from 'react';
-import { Node as ReactNode } from 'react';
 import v4 from 'uuid/v4';
 import throttle from 'lodash.throttle';
+import { $ElementType } from 'utility-types';
 import Level from './Level';
+import { NodeChildren } from './Node';
 import { RootContext } from './Context';
 import { addOffset, eq } from './utils/path';
 import { getEdit } from './utils/edit';
@@ -17,16 +16,18 @@ import {
   IndexOffsetGetter
 } from './types';
 
+type InMapResult = { id: string; type: string } | string;
+
 type InMap = {
-  [string]: (value: string) => Promise<{ id: string, type: string } | string>
+  [key: string]: (value: string) => InMapResult | Promise<InMapResult>;
 };
 
 type SanitizedInMap = {
-  [string]: (value: string) => ExternalDrag | string
+  [key: string]: (value: string) => ExternalDrag | string;
 };
 
-type OutMap<T: Object> = {
-  [string]: (el: T, type: string, id: string, path: Path[]) => string
+type OutMap<T extends Object> = {
+  [key: string]: (el: T, type: string, id: string, path: Path[]) => string;
 };
 
 const extractIndexOffset = (e: EventType, getIndexOffset: IndexOffsetGetter) =>
@@ -58,32 +59,37 @@ const internalMapIn = (data: string) => ({
   dropType: 'INTERNAL'
 });
 
-const internalMapOut = <T>(item: T, type: string, id: string, path: Path[]) =>
+const internalMapOut = <T extends any>(
+  item: T,
+  type: string,
+  id: string,
+  path: Path[]
+) =>
   JSON.stringify({
     id,
     type,
     path
   });
 
-type RootProps<T: Object> = {
-  id: string,
-  type: string,
-  field?: string,
-  onChange: (edit: Edit) => void,
-  onError: (error: string) => void,
-  mapIn: InMap,
-  mapOut: OutMap<T>,
-  children: ReactNode
+type RootProps<T extends Object> = {
+  id: string;
+  type: string;
+  field?: string;
+  onChange: (edit: Edit) => void;
+  onError: (error: string) => void;
+  mapIn: InMap;
+  mapOut: OutMap<T>;
+  children: React.ReactNode;
 };
 type RootState = {
-  dragData: ?InternalDrag,
+  dragData: InternalDrag | null;
   dropInfo: {
-    path: ?(Path[]),
-    canDrop: ?boolean
-  }
+    path: Path[] | null;
+    canDrop: boolean | null;
+  };
 };
 
-class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
+class Root<T extends Object> extends React.Component<RootProps<T>, RootState> {
   static defaultProps = {
     mapIn: {},
     mapOut: {},
@@ -125,7 +131,11 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
    * This wraps set state to make sure we don't call it too much and keep
    * rerendering, only changing the drop state if things have actually changed
    */
-  setDropInfo(path: ?(Path[]), canDrop: ?boolean, state?: $Shape<RootState>) {
+  setDropInfo(
+    path: Path[] | null,
+    canDrop: boolean | null,
+    state?: Partial<RootState>
+  ) {
     const { path: prevPath } = this.state.dropInfo;
     if (
       state ||
@@ -148,7 +158,7 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
    */
   async getDropData(e: EventType) {
     const { mapIn } = this;
-    const type = Object.keys(mapIn).find(key => e.dataTransfer.getData(key));
+    const type = Object.keys(mapIn).find(key => !!e.dataTransfer.getData(key));
 
     if (!type) {
       return `Unable to drop this: unknown drop type`;
@@ -276,7 +286,7 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
     e: EventType,
     candidatePath: Path[],
     getIndexOffset: IndexOffsetGetter,
-    dragData: ?($ElementType<RootState, 'dragData'> | true)
+    dragData?: $ElementType<RootState, 'dragData'> | true
   ) => {
     const path = addOffset(
       candidatePath,
@@ -355,10 +365,6 @@ class Root<T: Object> extends React.Component<RootProps<T>, RootState> {
           }}
         >
           <Level type={type} field={field} arr={[{ id }]}>
-            {/**
-             * Level requires a function child by here we're doing nothing
-             * with the params
-             */}
             {() => this.props.children}
           </Level>
         </RootContext.Provider>

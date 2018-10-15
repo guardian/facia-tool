@@ -20,7 +20,7 @@ type InternalDrag = {
 
 type Drag = ExternalDrag | InternalDrag;
 
-type EventType = SyntheticDragEvent<HTMLElement>;
+type EventType = React.DragEvent<HTMLElement>;
 
 type IndexOffsetGetter = ((e: EventType) => number) | number;
 

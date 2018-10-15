@@ -1,16 +1,21 @@
-import * as React from 'react';
+import React from 'react';
 import Downshift from 'downshift';
 import capitalize from 'lodash/capitalize';
 import styled from 'styled-components';
 import TagQuery from '../CAPI/TagQuery';
 import { Tag } from 'types/Capi';
 
+type SearchTypes = 'tags' | 'sections';
+
 type CAPITagInputProps<T> = {
-  onChange: (value: T, type: string) => void;
-  onSearchChange: (value: T, type: string) => void;
+  onChange: (value: T, type: SearchTypes) => void;
+  onSearchChange: (
+    value: React.FormEvent<HTMLInputElement>,
+    type: SearchTypes
+  ) => void;
   placeholder?: string;
   tagsSearchTerm: string;
-  searchType: 'tags' | 'sections';
+  searchType: SearchTypes;
 };
 
 const TagDropdown = styled('div')`
@@ -80,8 +85,7 @@ const CAPITagInput = <T extends any>({
       isOpen,
       inputValue,
       selectedItem,
-      highlightedIndex,
-      clearSelection
+      highlightedIndex
     }) => (
       <div>
         <SearchContainer>
@@ -89,7 +93,6 @@ const CAPITagInput = <T extends any>({
           <SearchInput
             {...getInputProps({
               placeholder,
-              onClear: clearSelection,
               width: '100%',
               value: tagsSearchTerm,
               onChange: input => {
@@ -141,5 +144,7 @@ const CAPITagInput = <T extends any>({
 CAPITagInput.defaultProps = {
   placeholder: 'Type tag name'
 };
+
+export { SearchTypes };
 
 export default CAPITagInput;

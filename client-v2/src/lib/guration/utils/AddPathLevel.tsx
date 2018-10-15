@@ -1,7 +1,4 @@
-
-
 import React from 'react';
-import { Node as ReactNode } from 'react';
 import { PathContext } from '../Context';
 import { Path } from './path';
 
@@ -28,11 +25,11 @@ const addChildrenFieldToParent = (
 };
 
 type AddPathLevelProps = {
-  type: string,
-  id: string,
-  index: number,
-  childrenField: string,
-  children: (newPath: Path[]) => ReactNode
+  type: string;
+  id: string;
+  index: number;
+  childrenField: string;
+  children: (newPath: Path[]) => React.ReactNode;
 };
 
 const AddPathLevel = ({

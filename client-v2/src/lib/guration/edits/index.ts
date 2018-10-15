@@ -1,5 +1,3 @@
-
-
 import { Path } from '../utils/path';
 
 const move = (
@@ -25,7 +23,7 @@ const move = (
   meta
 });
 
-type Move = $Call<typeof move, string, string, Path[], Path[], number>;
+type Move = ReturnType<typeof move>;
 
 const insert = (
   type: string,
@@ -46,7 +44,7 @@ const insert = (
   meta
 });
 
-type Insert = $Call<typeof insert, string, string, Path[], number>;
+type Insert = ReturnType<typeof insert>;
 
 type Edit = Move | Insert;
 

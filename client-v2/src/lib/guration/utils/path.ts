@@ -1,10 +1,8 @@
-
-
 type Path = {
-  id: string,
-  index: number,
-  type: string,
-  childrenField?: string
+  id: string;
+  index: number;
+  type: string;
+  childrenField?: string;
 };
 
 const elEq = (a: Path, b: Path, checkChildren: boolean = false) => {
@@ -16,7 +14,7 @@ const elEq = (a: Path, b: Path, checkChildren: boolean = false) => {
   return (
     !Number.isNaN(i1) &&
     i1 === i2 &&
-    (t1 && t1 === t2) &&
+    (!!t1 && t1 === t2) &&
     (c1 === c2 || !checkChildren)
   );
 };
@@ -50,9 +48,21 @@ const pathForMove = (source: Path[], target: Path[]) => {
 
   for (let i = 0; i < target.length; i += 1) {
     const targetPathSpec = target[i];
-    const { id: kt, index: it, type: tt, childrenField: ct } =
-      targetPathSpec || {};
-    const { index: is, childrenField: cs } = source[i] || {};
+    const {
+      id: kt,
+      index: it,
+      type: tt,
+      childrenField: ct
+    } = targetPathSpec || {
+      id: null,
+      index: null,
+      type: null,
+      childrenField: null
+    };
+    const { index: is, childrenField: cs } = source[i] || {
+      index: null,
+      childrenField: null
+    };
 
     if (i < source.length - 1 && (is !== it || ct !== cs)) {
       return target;
