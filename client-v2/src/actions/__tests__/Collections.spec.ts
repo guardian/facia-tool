@@ -2,7 +2,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import fetchMock from 'fetch-mock';
 import config from 'fixtures/config';
-import { stateWithCollection, capiArticle } from 'src/shared/fixtures/shared';
+import { stateWithCollection, capiArticle } from 'shared/fixtures/shared';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import {
   actions as externalArticleActions,
@@ -34,7 +34,7 @@ describe('Collection actions', () => {
         config,
         ...stateWithCollection
       });
-      await store.dispatch(updateCollection(collection));
+      await store.dispatch(updateCollection(collection) as any);
       const actions = store.getActions();
       expect(actions[0].payload[0]).toEqual(
         collectionActions.updateStart({
@@ -49,7 +49,7 @@ describe('Collection actions', () => {
         payload: { exampleCollection: true }
       });
       expect(actions[1]).toEqual(
-        collectionActions.updateSuccess('exampleCollection')
+        collectionActions.updateSuccess('exampleCollection', collection)
       );
     });
   });
@@ -73,9 +73,9 @@ describe('Collection actions', () => {
         ...stateWithCollection
       });
       await store.dispatch(
-        getCollectionsAndArticles(['exampleCollection'], () => () =>
-          Promise.resolve([capiArticle.id])
-        )
+        getCollectionsAndArticles(['exampleCollection'], (() => () =>
+          Promise.resolve([capiArticle.id]) as any)
+        ) as any
       );
       const actions = store.getActions();
       expect(actions[0]).toEqual(
@@ -99,7 +99,7 @@ describe('Collection actions', () => {
       await store.dispatch(
         getCollectionsAndArticles(['exampleCollection'], () => () =>
           Promise.resolve([capiArticle.id])
-        )
+        ) as any
       );
       const actions = store.getActions();
       expect(actions[0]).toEqual(

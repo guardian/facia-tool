@@ -1,12 +1,8 @@
-
-
 import { createType, build, createFieldType } from 'normalise-with-fields';
 import v4 from 'uuid/v4';
+import { ArticleFragment } from 'shared/types/Collection';
 
-const postProcessArticleFragment = (_af: {
-  uuid?: string,
-  meta?: { supporting?: mixed[], group?: ?string }
-}): Object => {
+const postProcessArticleFragment = (_af: ArticleFragment): Object => {
   const { uuid, ...af } = _af;
 
   let meta = { ...af.meta };
@@ -28,7 +24,7 @@ const postProcessArticleFragment = (_af: {
 };
 
 const articleFragments = createType('articleFragments', {
-  preProcess: af => ({
+  preProcess: (af: ArticleFragment) => ({
     ...af,
     uuid: v4()
   }),
@@ -41,7 +37,7 @@ const articleFragments = createType('articleFragments', {
   })
 });
 const supportingArticles = createType('articleFragments', {
-  preProcess: af => ({
+  preProcess: (af: ArticleFragment) => ({
     ...af,
     uuid: v4()
   }),

@@ -5,7 +5,7 @@ import { insertClipboardArticleFragment } from '../ArticleFragments';
 import clipboardReducer from '../../reducers/clipboardReducer';
 import articleFragmentsReducer from '../../shared/reducers/articleFragmentsReducer';
 
-const root = (state, action) => ({
+const root = (state: any, action: any) => ({
   clipboard: clipboardReducer(state.clipboard, action),
   shared: {
     articleFragments: articleFragmentsReducer(
@@ -15,11 +15,11 @@ const root = (state, action) => ({
   }
 });
 
-const run = (existing, added) =>
+const run = (existing: any, added: any) =>
   createStore(
     enableBatching(root),
     {
-      clipboard: existing.map(([uuid]) => uuid),
+      clipboard: existing.map(([uuid]: [string]) => uuid),
       shared: {
         articleFragments: [...existing, added].reduce(
           (acc, [uuid, id]) => ({ ...acc, [uuid]: { uuid, id } }),
@@ -33,7 +33,7 @@ const run = (existing, added) =>
 const testAdd = (existing: [string, string][]) => (
   [uuid, id]: [string, string],
   index: number,
-  afId: string|void = null
+  afId: string|void = undefined
 ) => {
   const { dispatch, getState } = run(existing, [uuid, id]);
   expect(
@@ -43,7 +43,7 @@ const testAdd = (existing: [string, string][]) => (
         afId || '',
         uuid,
         index
-      )
+      ) as any
     )
   );
   return getState();

@@ -16,7 +16,7 @@ class Grid {
     return this.instance;
   }
 
-  setGridInstance(instance: GridUtil) {
+  setGridInstance(instance: typeof GridUtil) {
     this.instance = instance;
   }
 }
@@ -31,7 +31,7 @@ export function recordUsage(mediaId: string, frontId?: string) {
 
   return fetch(imageConstants.usageBaseUrl, {
     method: 'POST',
-    data: JSON.stringify(usageData)
+    body: JSON.stringify(usageData)
   });
 }
 

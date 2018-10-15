@@ -6,6 +6,6 @@ export const {
   actionNames,
   reducer,
   selectors
-} = createAsyncResourceBundle<ExternalArticle, {}>('externalArticles', {
+} = createAsyncResourceBundle<ExternalArticle>('externalArticles', {
   indexById: true
 });

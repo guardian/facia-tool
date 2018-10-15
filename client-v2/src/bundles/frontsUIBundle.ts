@@ -1,6 +1,6 @@
 
 
-import { Action } from 'types/Action';
+import { Action, EditorCloseFront, EditorClearOpenFronts, EditorSetOpenFronts, EditorAddFront } from 'types/Action';
 import { State as GlobalState } from 'types/State';
 
 const EDITOR_OPEN_FRONT = 'EDITOR_OPEN_FRONT';
@@ -11,14 +11,15 @@ const EDITOR_SELECT_ARTICLE_FRAGMENT = 'EDITOR_SELECT_ARTICLE_FRAGMENT';
 const EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION =
   'EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION';
 
-const editorOpenFront = (frontId: string) => ({
+const editorOpenFront = (frontId: string): EditorAddFront => ({
   type: EDITOR_OPEN_FRONT,
   payload: { frontId },
   meta: {
     persistTo: 'openFrontIds'
   }
 });
-const editorCloseFront = (frontId: string) => ({
+
+const editorCloseFront = (frontId: string): EditorCloseFront => ({
   type: EDITOR_CLOSE_FRONT,
   payload: { frontId },
   meta: {
@@ -26,14 +27,14 @@ const editorCloseFront = (frontId: string) => ({
   }
 });
 
-const editorClearOpenFronts = () => ({
+const editorClearOpenFronts = (): EditorClearOpenFronts => ({
   type: EDITOR_CLEAR_OPEN_FRONTS,
   meta: {
     persistTo: 'openFrontIds'
   }
 });
 
-const editorSetOpenFronts = (frontIds: string[]) => ({
+const editorSetOpenFronts = (frontIds: string[]): EditorSetOpenFronts => ({
   type: EDITOR_SET_OPEN_FRONTS,
   payload: {
     frontIds

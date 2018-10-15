@@ -6,7 +6,7 @@ import { ArticleFragment, ArticleFragmentMeta } from 'shared/types/Collection';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import { getArticles } from 'services/faciaApi';
 import { State } from 'types/State';
-import { Dispatch } from 'types/Store';
+import { Dispatch, ThunkResult } from 'types/Store';
 import {
   ArticleFragmentsReceived,
   RemoveSupportingArticleFragment,
@@ -155,17 +155,17 @@ const insertAndDedupeSiblings = <T extends { id: string; uuid: string }>(
   insertActions: any[],
   // @todo - replace any type
   replaceActionCreator: (strArray: string[]) => any
-) => (dispatch: Dispatch, getState: () => State) => {
+): ThunkResult<void> => (dispatch: Dispatch, getState: () => State) => {
   dispatch(batchActions(insertActions)); // add it to the state so that we can select it
   const siblings = siblingsSelector(getState());
   const af = keyBy(siblings, ({ uuid }) => uuid)[id];
-  if (!af) return; // this should never happen but Flow
   const deduped = uniqBy(
     siblings.filter(child => child.id !== af.id || child.uuid === id),
     ({ id: dedupeKey }) => dedupeKey
   ).map(({ uuid }) => uuid);
   // always run this as this may have persist info
   dispatch(replaceActionCreator(deduped));
+  return;
 };
 
 export {

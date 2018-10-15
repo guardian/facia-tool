@@ -1,28 +1,26 @@
-
-
 import { createSelector } from 'reselect';
 import { State } from 'types/State';
 
 const configSelector = (state: State) => state.config;
 
-const selectUserEmail = createSelector(configSelector, config => config.email);
+const selectUserEmail = createSelector(configSelector, config => config && config.email);
 const selectFirstName = createSelector(
   configSelector,
-  config => config.firstName
+  config => config && config.firstName
 );
 const selectLastName = createSelector(
   configSelector,
-  config => config.lastName
+  config => config && config.lastName
 );
 
 const capiLiveURLSelector = createSelector(
   configSelector,
-  config => config.capiLiveUrl
+  config => config && config.capiLiveUrl
 );
 
 const capiPreviewURLSelector = createSelector(
   configSelector,
-  config => config.capiPreviewUrl
+  config => config && config.capiPreviewUrl
 );
 
 const capiFeedSpecsSelector = createSelector(

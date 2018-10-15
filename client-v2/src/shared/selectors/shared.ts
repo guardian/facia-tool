@@ -79,14 +79,14 @@ const createCollectionSelector = () =>
   createSelector(
     collectionSelectors.selectAll,
     collectionIdSelector,
-    (collections, id) =>
+    (collections: { [id: string]: Collection }, id: string) =>
       collections[id]
         ? {
             ...collections[id],
             groups:
-              collections[id].groups && collections[id].groups.slice().reverse()
+              collections[id].groups && collections[id].groups!.slice().reverse()
           }
-        : false
+        : undefined
   );
 
 const stageSelector = (
@@ -101,10 +101,10 @@ const createCollectionStageGroupsSelector = () => {
     groupsSelector,
     stageSelector,
     (
-      collection: Collection,
+      collection: Collection | void,
       groups: { [id: string]: Group },
       stage: Stages
-    ): Group[] => (collection[stage] || []).map(id => groups[id])
+    ): Group[] => (collection && collection[stage] || []).map(id => groups[id])
   );
 };
 

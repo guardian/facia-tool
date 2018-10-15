@@ -1,7 +1,8 @@
 const path = require('path');
+const TSConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.ts',
+  entry: './src/index.tsx',
   devtool: 'inline-source-map',
   output: {
     path: path.resolve(__dirname, '../../public/client-v2/dist'),
@@ -10,7 +11,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(t|j)sx?$/,
+        test: /^(?!.*\.spec\.tsx?$).*\.tsx?$/,
         use: 'ts-loader',
         exclude: /node_modules/
       },
@@ -24,6 +25,7 @@ module.exports = {
     ]
   },
   resolve: {
-    modules: ['src', 'node_modules']
+    modules: [path.resolve(__dirname, 'src'), 'node_modules'],
+    plugins: [new TSConfigPathsPlugin()]
   }
 };

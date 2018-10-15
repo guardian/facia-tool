@@ -6,9 +6,10 @@ import {
   postProcessArticleFragment,
   supportingArticles
 } from 'shared/util/schema';
+import { ArticleFragment } from 'shared/types/Collection';
 
 const articleFragments = createType('articleFragments', {
-  preProcess: af => ({
+  preProcess: (af: ArticleFragment) => ({
     ...af,
     uuid: v4()
   }),

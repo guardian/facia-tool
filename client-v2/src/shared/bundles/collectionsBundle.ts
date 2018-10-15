@@ -3,8 +3,7 @@ import createAsyncResourceBundle from '../util/createAsyncResourceBundle';
 import { Collection } from 'shared/types/Collection';
 
 const { actions, actionNames, reducer, selectors } = createAsyncResourceBundle<
-  Collection,
-  {}
+  Collection
 >('collections', { indexById: true });
 
 const collectionSelectors = {

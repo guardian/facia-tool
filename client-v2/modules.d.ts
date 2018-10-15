@@ -28,3 +28,10 @@ declare module 'panda-session' {
   export const reEstablishSession: any;
   export default content;
 }
+
+declare module 'normalise-with-fields' {
+  export const createType: any
+  export const build: any;
+  export const createFieldType: any;
+
+}

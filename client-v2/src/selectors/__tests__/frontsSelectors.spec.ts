@@ -6,9 +6,9 @@ import {
   lastPressedSelector
 } from 'selectors/frontsSelectors';
 import { frontsConfig } from 'fixtures/frontsConfig';
-import { FrontsConfig } from 'services/faciaApi';
+import { FrontsConfig, FrontConfig } from 'types/FaciaApi';
 
-const editorialFrontsInConfig: Array<FrontsConfig> = [
+const editorialFrontsInConfig: Array<FrontConfig> = [
   {
     collections: ['collection1'],
     id: 'editorialFront',
@@ -16,7 +16,7 @@ const editorialFrontsInConfig: Array<FrontsConfig> = [
   }
 ];
 
-const additionalEditorialFronts: Array<FrontsConfig> = [
+const additionalEditorialFronts: Array<FrontConfig> = [
   {
     collections: ['collection2'],
     id: 'editorialNotShared',
@@ -29,7 +29,7 @@ const additionalEditorialFronts: Array<FrontsConfig> = [
   }
 ];
 
-const trainingFronts: Array<FrontsConfig> = [
+const trainingFronts: Array<FrontConfig> = [
   {
     collections: ['collection3'],
     id: 'trainingFront',
@@ -37,7 +37,7 @@ const trainingFronts: Array<FrontsConfig> = [
   }
 ];
 
-const commercialFronts: Array<FrontsConfig> = [
+const commercialFronts: Array<FrontConfig> = [
   {
     collections: ['collection1'],
     id: 'commercialFront',
@@ -57,7 +57,7 @@ describe('Filtering fronts correctly', () => {
               }
             }
           }
-        },
+        } as any,
         'editorial'
       )
     ).toEqual([]);
@@ -70,7 +70,7 @@ describe('Filtering fronts correctly', () => {
           fronts: {
             frontsConfig
           }
-        },
+        } as any,
         'editorial'
       )
     ).toEqual(editorialFrontsInConfig);
@@ -83,7 +83,7 @@ describe('Filtering fronts correctly', () => {
           fronts: {
             frontsConfig
           }
-        },
+        } as any,
         'commercial'
       )
     ).toEqual(commercialFronts);
@@ -97,7 +97,7 @@ describe('Filtering fronts correctly', () => {
               exampleId: '2018-05-24T09:42:20.580Z'
             }
           }
-        },
+        } as any,
         'exampleId'
       )
     ).toEqual('2018-05-24T09:42:20.580Z');

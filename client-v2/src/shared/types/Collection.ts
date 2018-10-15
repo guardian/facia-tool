@@ -21,6 +21,7 @@ type NestedArticleFragment = NestedArticleFragmentRootFields & {
 };
 
 type ArticleFragmentMeta = {
+  group?: string;
   headline?: string;
   trailText?: string;
   byline?: string;

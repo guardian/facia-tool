@@ -1,39 +1,28 @@
-
-
 import set from 'lodash/fp/set';
 
 import { Action } from 'types/Action';
 import {
   reducer as frontsConfigReducer,
   initialState,
-  FrontsConfigState,
-
+  FrontsConfigState
 } from 'bundles/frontsConfigBundle';
 
 type State = {
-  frontsConfig: FrontsConfigState,
+  frontsConfig: FrontsConfigState;
   lastPressed: {
-    draft: {
-      [id: string]: string
-    },
-    live: {
-      [id: string]: string
-    }
-  }
+    [id: string]: string;
+  };
 };
 
 const reducer = (
   state: State = {
     frontsConfig: initialState,
-    lastPressed: {
-      draft: {},
-      live: {}
-    }
+    lastPressed: {}
   },
   action: Action
 ): State => {
   // @todo - note the sneaky :any.
-  const frontsConfig = frontsConfigReducer(state.frontsConfig, (action as any));
+  const frontsConfig = frontsConfigReducer(state.frontsConfig, action as any);
   let newState = state;
   if (frontsConfig !== state.frontsConfig) {
     newState = {

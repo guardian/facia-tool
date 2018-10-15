@@ -21,7 +21,7 @@ describe('frontsUIBundle', () => {
     it('should clear fronts to the open editor fronts', () => {
       const state = reducer(
         { frontIds: ['front1', 'front2'] } as any,
-        editorClearOpenFronts('front1')
+        editorClearOpenFronts()
       );
       expect(state.frontIds).toEqual([]);
     });
