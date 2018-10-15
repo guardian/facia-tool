@@ -18,7 +18,7 @@ const renderPriority = (priority: string) => (
 );
 const Home = () => (
   <HomeContainer>
-    <ul>{Object.keys((priorities: Priorities)).map(renderPriority)}</ul>
+    <ul>{Object.keys(priorities).map(renderPriority)}</ul>
   </HomeContainer>
 );
 

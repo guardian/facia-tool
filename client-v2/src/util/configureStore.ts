@@ -10,14 +10,13 @@ import thunkMiddleware from 'redux-thunk';
 import createBrowserHistory from 'history/createBrowserHistory';
 import { routerMiddleware } from 'react-router-redux';
 
-import rootReducer from 'reducers/rootReducer.js';
+import rootReducer from 'reducers/rootReducer';
 import {
   updateStateFromUrlChange,
   persistCollectionOnEdit,
   persistClipboardOnEdit,
   persistOpenFrontsOnEdit
 } from './storeMiddleware';
-import { Action } from 'types/Action';
 
 export default function configureStore() {
   const history = createBrowserHistory();

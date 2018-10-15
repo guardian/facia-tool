@@ -26,6 +26,7 @@ module.exports = {
   },
   resolve: {
     modules: [path.resolve(__dirname, 'src'), 'node_modules'],
-    plugins: [new TSConfigPathsPlugin()]
+    plugins: [new TSConfigPathsPlugin()],
+    extensions: ['.ts', '.tsx', '.js']
   }
 };
