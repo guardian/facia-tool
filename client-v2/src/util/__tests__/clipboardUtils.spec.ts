@@ -24,7 +24,7 @@ describe('Clipboard utilities', () => {
 
   describe('denormaliseClipboard', () => {
     it('should denormalise a clipboard from the application state', () => {
-      const result = denormaliseClipboard(stateWithClipboard);
+      const result = denormaliseClipboard(stateWithClipboard as any);
       expect(result.articles[0].id).toEqual('article/live/0');
       expect(result.articles[1].id).toEqual('article/live/1');
       expect(result.articles[1].meta.supporting![0].id).toEqual(

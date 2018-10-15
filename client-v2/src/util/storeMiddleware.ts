@@ -13,7 +13,7 @@ import { saveOpenFrontIds } from 'services/faciaApi';
 import { NestedArticleFragment } from 'shared/types/Collection';
 import { denormaliseClipboard } from 'util/clipboardUtils';
 
-const updateStateFromUrlChange: Middleware<State, Action> = ({
+const updateStateFromUrlChange: Middleware<{}, State, Dispatch> = ({
   dispatch,
   getState
 }: {
@@ -83,7 +83,7 @@ const isPersistingToCollection = (act: Action): boolean =>
  */
 const persistCollectionOnEdit = (
   updateCollectionAction = updateCollection
-): Middleware<State, Action, Dispatch> => store => {
+): Middleware<{}, State, Dispatch> => store => {
   /**
    * Get the relevant collection ids for the given actions.
    * @todo At the moment this just cares about updates to article fragments,
@@ -112,7 +112,7 @@ const persistCollectionOnEdit = (
     return collectionIds;
   };
 
-  return (next: (action: Action) => State) => (action: Action) => {
+  return next => (action: Action) => {
     const actions = unwrapBatchedActions(action);
 
     if (!actions.some(isPersistingToCollection)) {
@@ -158,9 +158,7 @@ const persistCollectionOnEdit = (
 
 const persistClipboardOnEdit = (
   updateClipboardAction = updateClipboard
-): Middleware<State, Action, Dispatch> => store => (
-  next: (action: Action) => State
-) => (action: Action) => {
+): Middleware<{}, State, Dispatch> => store => next => (action: Action) => {
   const actions = unwrapBatchedActions(action);
 
   if (
@@ -183,9 +181,9 @@ const persistClipboardOnEdit = (
 
 const persistOpenFrontsOnEdit: (
   persistFn?: (persistFrontIds?: string[]) => Promise<void>
-) => Middleware<State, Action> = (
+) => Middleware<{}, State, Dispatch> = (
   persistFrontIds = saveOpenFrontIds
-) => store => (next: (action: Action) => State) => (action: Action) => {
+) => store => next => (action: Action) => {
   const actions = unwrapBatchedActions(action);
 
   if (

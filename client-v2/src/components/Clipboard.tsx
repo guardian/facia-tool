@@ -2,7 +2,7 @@
 
 import { Dispatch } from 'types/Store';
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { connect, MergeProps } from 'react-redux';
 import * as Guration from 'lib/guration';
 import { Edit } from 'lib/guration';
 import { State } from 'types/State';
@@ -154,18 +154,19 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   dispatch
 });
 
-type StateProps = ReturnType<typeof mapStateToProps>;
-type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+type TStateProps = ReturnType<typeof mapStateToProps>;
+type TDispatchProps = ReturnType<typeof mapDispatchToProps>;
 
-const mergeProps = (stateProps: StateProps, dispatchProps: DispatchProps, props: ClipboardProps) => ({
-  ...props,
+const mergeProps = (stateProps: TStateProps, dispatchProps: TDispatchProps) => ({
   ...stateProps,
   ...dispatchProps,
   selectArticleFragment: (articleId: string) =>
     dispatchProps.selectArticleFragment(clipboardId, articleId)
 });
 
-export default connect(
+type TMergeProps = ReturnType<typeof mergeProps>;
+
+export default connect<TStateProps, TDispatchProps, {}, TMergeProps>(
   mapStateToProps,
   mapDispatchToProps,
   mergeProps

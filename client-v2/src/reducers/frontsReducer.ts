@@ -22,7 +22,7 @@ type State = {
   }
 };
 
-const reducer: (s: State, a: Action) => State = (
+const reducer = (
   state: State = {
     frontsConfig: initialState,
     lastPressed: {

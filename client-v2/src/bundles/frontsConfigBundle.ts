@@ -10,9 +10,9 @@ export const {
   reducer,
   selectors,
   initialState
-} = createAsyncResourceBundle<FrontsConfig, RootState>('frontsConfig', {
+} = createAsyncResourceBundle<FrontsConfig>('frontsConfig', {
   indexById: false,
-  selectLocalState: (state: RootState) => state.fronts.frontsConfig,
+  selectLocalState: state => state.fronts.frontsConfig,
   initialData: {
     fronts: {},
     collections: {}

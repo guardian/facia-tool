@@ -130,6 +130,10 @@ type State<Resource> = {
   loading: boolean;
 };
 
+// @todo -- figure out a way to provide root state definition
+// without circular dependencies
+type RootState = any;
+
 /**
  * Creates a bundle of actions, selectors, and a reducer to handle
  * common actions and selections for data that needs to be fetched:
@@ -144,7 +148,7 @@ type State<Resource> = {
  * that the shape of the resource might be keyed by ID, or just a blob
  * of state that we don't index. Solutions welcome!
  */
-function createAsyncResourceBundle<Resource, RootState>(
+function createAsyncResourceBundle<Resource>(
   // The name of the entity for which this reducer is responsible
   entityName: string,
   options: {
@@ -183,7 +187,7 @@ function createAsyncResourceBundle<Resource, RootState>(
   const selectIsLoadingById = (state: RootState, id: string) =>
     selectLocalState(state).loadingIds.indexOf(id) !== -1;
 
-  const selectById = (state: RootState, id: string) =>
+  const selectById = (state: RootState, id: string): Resource =>
     selectLocalState(state).data[id];
 
   const selectAll = (state: RootState) => selectLocalState(state).data;

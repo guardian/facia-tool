@@ -10,7 +10,6 @@ import thunkMiddleware from 'redux-thunk';
 import createBrowserHistory from 'history/createBrowserHistory';
 import { routerMiddleware } from 'react-router-redux';
 
-import { Store } from 'types/Store';
 import rootReducer from 'reducers/rootReducer.js';
 import {
   updateStateFromUrlChange,
@@ -20,12 +19,12 @@ import {
 } from './storeMiddleware';
 import { Action } from 'types/Action';
 
-export default function configureStore(): Store {
+export default function configureStore() {
   const history = createBrowserHistory();
   const router = routerMiddleware(history);
   const store = createStore(
     // @todo -- AnyAction in batch reducer definition not compatible with our action types
-    enableBatching(rootReducer as any),
+    enableBatching(rootReducer),
     compose(
       applyMiddleware(
         thunkMiddleware,
@@ -41,7 +40,7 @@ export default function configureStore(): Store {
 
   if ((module as any).hot) {
     (module as any).hot.accept('reducers/rootReducer.js', () => {
-      store.replaceReducer(rootReducer as any);
+      store.replaceReducer(rootReducer);
     });
   }
 

@@ -30,7 +30,7 @@ type Props = {
   match: match<{ priority: string }>;
   error: ActionError;
   frontIds: string[];
-  staleFronts: { string: boolean };
+  staleFronts: { [id: string]: boolean };
   editorOpenFront: (frontId: string) => void;
   getFrontsConfig: () => void;
 };
