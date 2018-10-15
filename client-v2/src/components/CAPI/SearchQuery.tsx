@@ -1,10 +1,7 @@
-import * as React from 'react';
-/* eslint-disable import/no-duplicates */
-import capiQuery from 'services/capiQuery';
-import { Fetch } from 'services/capiQuery';
+import React from 'react';
+import capiQuery, { CAPISearchQueryReponse, Fetch } from 'services/capiQuery';
 import { $ElementType, $Call } from 'utility-types';
-/* eslint-enable import/no-duplicates */
-import Async from 'components/util/Async';
+import Async, { AsyncState } from 'components/util/Async';
 import * as CAPIParamsContext from './CAPIParamsContext';
 
 type CAPISearchQueryProps = {
@@ -115,6 +112,10 @@ const SearchQueryWithContext = (props: CAPISearchQueryProps) => (
   </CAPIParamsContext.Consumer>
 );
 
-export { SearchQuery as SearchQueryWithoutContext };
+export {
+  SearchQuery as SearchQueryWithoutContext,
+  AsyncState,
+  CAPISearchQueryReponse
+};
 
 export default SearchQueryWithContext;

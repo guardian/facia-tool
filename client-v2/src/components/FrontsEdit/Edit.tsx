@@ -1,5 +1,5 @@
 import { Dispatch } from 'types/Store';
-import * as React from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { match } from 'react-router-dom';

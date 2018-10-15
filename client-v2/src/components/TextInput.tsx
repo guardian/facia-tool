@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import moreImage from 'shared/images/icons/more.svg';
 import searchImage from 'shared/images/icons/search.svg';

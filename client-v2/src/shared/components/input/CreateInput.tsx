@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { WrappedFieldProps } from 'redux-form';
 import { StyledProps } from 'styled-components';
 

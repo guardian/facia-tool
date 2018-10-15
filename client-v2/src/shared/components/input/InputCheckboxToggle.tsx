@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import * as React from 'react';
+import React from 'react';
 import { WrappedFieldProps } from 'redux-form';
 
 import InputLabel from './InputLabel';

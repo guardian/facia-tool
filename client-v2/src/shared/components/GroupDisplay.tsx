@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import HorizontalRule from 'shared/components/layout/HorizontalRule';
 import styled from 'styled-components';
 

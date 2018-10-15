@@ -2,7 +2,7 @@ import React from 'react';
 import Downshift from 'downshift';
 import capitalize from 'lodash/capitalize';
 import styled from 'styled-components';
-import TagQuery from '../CAPI/TagQuery';
+import TagQuery, { AsyncState, CAPITagQueryReponse } from '../CAPI/TagQuery';
 import { Tag } from 'types/Capi';
 
 type SearchTypes = 'tags' | 'sections';
@@ -145,6 +145,6 @@ CAPITagInput.defaultProps = {
   placeholder: 'Type tag name'
 };
 
-export { SearchTypes };
+export { SearchTypes, AsyncState, CAPITagQueryReponse };
 
 export default CAPITagInput;

@@ -1,8 +1,9 @@
-
-
 import React from 'react';
 import { mount } from 'enzyme';
-import { SearchQueryWithoutContext as SearchQuery } from '../SearchQuery';
+import {
+  SearchQueryWithoutContext as SearchQuery,
+  AsyncState
+} from '../SearchQuery';
 
 const succesfulReturn = {
   response: {
@@ -28,7 +29,7 @@ describe('SearchQuery', () => {
     const baseURL = 'https://www.example.com';
     mount(
       <SearchQuery baseURL={baseURL}>
-        {({ value, pending, error }) => {
+        {({ value, pending, error }: AsyncState<any>) => {
           v = value;
           p = pending;
           e = error;
@@ -46,7 +47,7 @@ describe('SearchQuery', () => {
     const baseURL = 'https://www.example.com';
     mount(
       <SearchQuery baseURL={baseURL}>
-        {({ value, pending, error }) => {
+        {({ value, pending, error }: AsyncState<string>) => {
           v = value;
           p = pending;
           e = error;
@@ -55,7 +56,7 @@ describe('SearchQuery', () => {
       </SearchQuery>
     );
     await flushPromises();
-    expect(global.fetch.mock.calls[0][0].includes(baseURL)).toBe(true);
+    expect((global as any).fetch.mock.calls[0][0].includes(baseURL)).toBe(true);
     expect([v, p, e]).toEqual([succesfulReturn, false, null]);
   });
 });

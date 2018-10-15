@@ -2,10 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import moreImage from 'shared/images/icons/more.svg';
 import { SmallRoundButton, ClearButtonIcon } from 'util/sharedStyles/buttons';
-import SearchQuery from '../CAPI/SearchQuery';
+import SearchQuery, { CAPISearchQueryReponse } from '../CAPI/SearchQuery';
 import ScrollContainer from '../ScrollContainer';
 import TextInput from '../TextInput';
-import CAPITagInput, { SearchTypes } from '../FrontsCAPIInterface/TagInput';
+import CAPITagInput, {
+  SearchTypes,
+  AsyncState
+} from '../FrontsCAPIInterface/TagInput';
 
 type FrontsCAPISearchInputProps = {
   children: any;
@@ -195,7 +198,7 @@ class FrontsCAPISearchInput extends React.Component<
       this.state.selected,
       (acc, key, val) => ({
         ...acc,
-        [key]: val.join(','),
+        [key]: val.join(',')
       }),
       {} as SearchTypeMap<string>
     );
@@ -268,5 +271,7 @@ class FrontsCAPISearchInput extends React.Component<
     );
   }
 }
+
+export { AsyncState, CAPISearchQueryReponse };
 
 export default FrontsCAPISearchInput;

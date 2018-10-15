@@ -1,7 +1,6 @@
 import React from 'react';
 import v4 from 'uuid/v4';
 import throttle from 'lodash/throttle';
-import { $ElementType } from 'utility-types';
 import Level from './Level';
 import { NodeChildren } from './Node';
 import { RootContext } from './Context';
@@ -134,7 +133,8 @@ class Root<T extends Object> extends React.Component<RootProps<T>, RootState> {
   setDropInfo(
     path: Path[] | null,
     canDrop: boolean | null,
-    state?: Partial<RootState>
+    // TODO: this is essentially `any` at the moment
+    state = {}
   ) {
     const { path: prevPath } = this.state.dropInfo;
     if (
@@ -286,7 +286,7 @@ class Root<T extends Object> extends React.Component<RootProps<T>, RootState> {
     e: EventType,
     candidatePath: Path[],
     getIndexOffset: IndexOffsetGetter,
-    dragData?: $ElementType<RootState, 'dragData'> | true
+    dragData?: RootState['dragData'] | true
   ) => {
     const path = addOffset(
       candidatePath,

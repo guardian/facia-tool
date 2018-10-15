@@ -6,11 +6,12 @@ import Article from 'shared/components/Article';
 import DropZone from 'components/DropZone';
 import { Dispatch } from 'types/Store';
 import { removeGroupArticleFragment } from 'actions/ArticleFragments';
+import { SupportingTree } from 'shared/selectors/shared';
 
 type ContainerProps = {
   isSelected: boolean;
   uuid: string;
-  supporting?: string[];
+  supporting?: SupportingTree[];
   children: any;
   getNodeProps: () => Object;
   onSelect: (uuid: string) => void;

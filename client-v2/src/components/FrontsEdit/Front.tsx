@@ -6,7 +6,10 @@ import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import {
   selectSharedState,
-  createCollectionsAsTreeSelector
+  createCollectionsAsTreeSelector,
+  ArticleFragmentTree,
+  SupportingTree,
+  CollectionTree
 } from 'shared/selectors/shared';
 import { bindActionCreators } from 'redux';
 import { addArticleFragment } from 'shared/actions/ArticleFragments';
@@ -25,8 +28,6 @@ import {
 import {
   ArticleFragmentMeta,
   Stages,
-  Collection as TCollection,
-  ArticleFragment as TArticleFragment,
   Group as TGroup
 } from 'shared/types/Collection';
 import Front from './CollectionComponents/Front';
@@ -186,7 +187,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
               }}
             >
               <Front {...this.props.tree}>
-                {(collection: TCollection) => (
+                {(collection: CollectionTree) => (
                   <Collection
                     id={collection.id}
                     groups={collection.groups}
@@ -201,7 +202,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                         articleFragments={group.articleFragments}
                       >
                         {(
-                          articleFragment: TArticleFragment,
+                          articleFragment: ArticleFragmentTree,
                           afNodeProps: Guration.GetNodeProps
                         ) => (
                           <ArticleFragment
@@ -219,7 +220,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                             }
                           >
                             {(
-                              supporting: TArticleFragment,
+                              supporting: SupportingTree,
                               sNodeProps: Guration.GetNodeProps
                             ) => (
                               <Supporting

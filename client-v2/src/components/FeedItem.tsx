@@ -1,6 +1,4 @@
-
-
-import * as React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import distanceInWords from 'date-fns/distance_in_words_to_now';
 import startCase from 'lodash/startCase';
@@ -75,14 +73,17 @@ const Body = styled('div')`
 `;
 
 type FeedItemProps = {
-  title: string,
-  href: string,
-  tone: string,
-  internalPageCode: string|void,
-  publicationDate?: string
+  title: string;
+  href: string;
+  tone: string;
+  internalPageCode: string | void;
+  publicationDate?: string;
 };
 
-const dragStart = (href: string|void, event: React.DragEvent<HTMLDivElement>) => {
+const dragStart = (
+  href: string | void,
+  event: React.DragEvent<HTMLDivElement>
+) => {
   event.dataTransfer.setData('capi', href || '');
 };
 

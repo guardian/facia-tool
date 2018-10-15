@@ -2,6 +2,7 @@ import omit from 'lodash/omit';
 import { createSelector } from 'reselect';
 
 import { getThumbnail } from 'util/CAPIUtils';
+import { Overwrite } from 'utility-types';
 import { selectors as externalArticleSelectors } from '../bundles/externalArticlesBundle';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 import { ExternalArticle } from '../types/ExternalArticle';
@@ -84,7 +85,8 @@ const createCollectionSelector = () =>
         ? {
             ...collections[id],
             groups:
-              collections[id].groups && collections[id].groups!.slice().reverse()
+              collections[id].groups &&
+              collections[id].groups!.slice().reverse()
           }
         : undefined
   );
@@ -104,7 +106,8 @@ const createCollectionStageGroupsSelector = () => {
       collection: Collection | void,
       groups: { [id: string]: Group },
       stage: Stages
-    ): Group[] => (collection && collection[stage] || []).map(id => groups[id])
+    ): Group[] =>
+      ((collection && collection[stage]) || []).map(id => groups[id])
   );
 };
 
@@ -202,23 +205,51 @@ const createNestedArticleFragment = (
 
 const clipboardAsTreeSelector = createSelector(
   [clipboardContentSelector, articleFragmentsFromRootStateSelector],
-  (clipboardContent, articleFragments) => {
-    if (clipboardContent.length === 0) {
-      return {};
-    }
-
-    return {
-      articleFragments: clipboardContent.map((fragmentId: string) =>
-        createNestedArticleFragment(fragmentId, articleFragments)
-      )
-    };
-  }
+  (clipboardContent, articleFragments): ClipboardTree => ({
+    articleFragments: clipboardContent.map((fragmentId: string) =>
+      createNestedArticleFragment(fragmentId, articleFragments)
+    )
+  })
 );
 
 const stageForTreeSelector = (
   _: any,
   { stage }: { stage: Stages; collectionIds: string[] }
 ): Stages => stage;
+
+type FrontTree = {
+  collections: CollectionTree[];
+};
+
+type CollectionTree = {
+  id: string;
+  groups: GroupTree[];
+};
+
+type GroupTree = Overwrite<
+  Group,
+  {
+    articleFragments: ArticleFragmentTree[];
+  }
+>;
+
+type ClipboardTree = {
+  articleFragments: ArticleFragmentTree[];
+};
+
+type ArticleFragmentTree = Overwrite<
+  ArticleFragment,
+  {
+    meta: Overwrite<
+      ArticleFragment['meta'],
+      {
+        supporting?: SupportingTree[] | undefined;
+      }
+    >;
+  }
+>;
+
+type SupportingTree = ArticleFragment;
 
 const createCollectionsAsTreeSelector = () =>
   createSelector(
@@ -227,7 +258,13 @@ const createCollectionsAsTreeSelector = () =>
     articleFragmentsSelector,
     collectionIdsSelector,
     stageForTreeSelector,
-    (collections, groups, articleFragments, collectionIds, stage) => ({
+    (
+      collections,
+      groups,
+      articleFragments,
+      collectionIds,
+      stage
+    ): FrontTree => ({
       collections: collectionIds
         .map(
           cId =>
@@ -261,5 +298,11 @@ export {
   selectSharedState,
   createCollectionsAsTreeSelector,
   articleFragmentSelector,
-  clipboardAsTreeSelector
+  clipboardAsTreeSelector,
+  FrontTree,
+  ClipboardTree,
+  CollectionTree,
+  GroupTree,
+  ArticleFragmentTree,
+  SupportingTree
 };

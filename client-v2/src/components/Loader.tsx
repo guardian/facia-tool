@@ -1,6 +1,6 @@
 
 
-import * as React from 'react';
+import React from 'react';
 
 const Loader = () => <div>Loading!</div>;
 

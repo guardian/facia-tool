@@ -7,14 +7,14 @@ type Fetch = (path: string) => Promise<Response>;
 
 type CAPISearchQueryReponse = {
   response: {
-    results: CapiArticle[]
-  }
+    results: CapiArticle[];
+  };
 };
 
 type CAPITagQueryReponse = {
   response: {
-    results: Tag[]
-  }
+    results: Tag[];
+  };
 };
 
 const capiQuery = (
@@ -50,5 +50,5 @@ const capiQuery = (
   }
 });
 
-export { Fetch, CapiArticle };
+export { Fetch, CapiArticle, CAPISearchQueryReponse, CAPITagQueryReponse };
 export default capiQuery;

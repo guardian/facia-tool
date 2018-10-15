@@ -1,6 +1,6 @@
 
 
-import * as React from 'react';
+import React from 'react';
 
 const { Provider: InnerProvider, Consumer } = React.createContext({
   params: {}

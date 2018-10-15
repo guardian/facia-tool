@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 import caretIcon from 'shared/images/icons/single-down.svg';

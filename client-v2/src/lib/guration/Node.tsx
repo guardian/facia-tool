@@ -13,8 +13,8 @@ const getDropIndexOffset = ({ currentTarget: el, clientY }: EventType) => {
 type DOMNodeProps = {
   draggable: boolean;
   onDragStart: (e: EventType) => void;
-  onDragOver?: void | ((e: EventType) => void);
-  onDrop?: void | ((e: EventType) => void);
+  onDragOver?: ((e: EventType) => void);
+  onDrop?: ((e: EventType) => void);
 };
 
 type GetNodeProps = () => DOMNodeProps;

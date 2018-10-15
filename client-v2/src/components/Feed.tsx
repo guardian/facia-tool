@@ -1,51 +1,51 @@
-
-
-import * as React from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-
 import pandaFetch from 'services/pandaFetch';
 import { getThumbnailFromElements } from 'util/CAPIUtils';
 import * as CAPIParamsContext from './CAPI/CAPIParamsContext';
 import FeedItem from './FeedItem';
-import SearchInput from './FrontsCAPIInterface/SearchInput';
+import SearchInput, {
+  AsyncState,
+  CAPISearchQueryReponse
+} from './FrontsCAPIInterface/SearchInput';
 import Loader from './Loader';
 import { capiFeedSpecsSelector } from '../selectors/configSelectors';
 import { RadioButton, RadioGroup } from './inputs/RadioButtons';
 import { State } from 'types/State';
 
 type ErrorDisplayProps = {
-  error: (Error | string | void),
-  children: React.ReactNode
+  error: Error | string | void;
+  children: React.ReactNode;
 };
 
 const ErrorDisplay = ({ error, children }: ErrorDisplayProps) =>
   error ? (
     <div>{typeof error === 'string' ? error : error.message}</div>
   ) : (
-    children
+    <React.Fragment>{children}</React.Fragment>
   );
 
 type LoaderDisplayProps = {
-  children: React.ReactNode,
-  loading: boolean
+  children: React.ReactNode;
+  loading: boolean;
 };
 
 const LoaderDisplay = ({ loading, children }: LoaderDisplayProps) =>
-  loading ? <Loader /> : children;
+  loading ? <Loader /> : <React.Fragment>{children}</React.Fragment>;
 
 type FeedSpec = {
-  name: string,
-  baseUrl: string
+  name: string;
+  baseUrl: string;
 };
 
 type FeedProps = {
-  capiFeedSpecs: FeedSpec[]
+  capiFeedSpecs: FeedSpec[];
 };
 
 type FeedState = {
-  capiFeedIndex: number,
-  displaySearchFilters: boolean
+  capiFeedIndex: number;
+  displaySearchFilters: boolean;
 };
 
 const FeedContainer = styled('div')`
@@ -129,7 +129,11 @@ class Feed extends React.Component<FeedProps, FeedState> {
               displaySearchFilters={this.state.displaySearchFilters}
               additionalFixedContent={this.renderFixedContent}
             >
-              {({ pending, error, value }) => (
+              {({
+                pending,
+                error,
+                value
+              }: AsyncState<CAPISearchQueryReponse>) => (
                 <React.Fragment>
                   <ErrorDisplay error={error}>
                     <LoaderDisplay loading={!value && pending}>
@@ -152,11 +156,6 @@ class Feed extends React.Component<FeedProps, FeedState> {
                                   href={webUrl}
                                   publicationDate={webPublicationDate}
                                   tone={tone}
-                                  trailText={fields && fields.trailText}
-                                  thumbnailUrl={
-                                    elements &&
-                                    getThumbnailFromElements(elements)
-                                  }
                                   internalPageCode={
                                     fields && getId(fields.internalPageCode)
                                   }
@@ -181,7 +180,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
 }
 
 const mapStateToProps = (state: State) => ({
-  capiFeedSpecs: (capiFeedSpecsSelector(state) as any)
+  capiFeedSpecs: capiFeedSpecsSelector(state) as any
 });
 
 export default connect(mapStateToProps)(Feed);

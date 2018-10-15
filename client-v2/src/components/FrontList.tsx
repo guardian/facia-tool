@@ -1,5 +1,5 @@
 
-import * as React from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 
 import ButtonCircular from 'shared/components/input/ButtonCircular';

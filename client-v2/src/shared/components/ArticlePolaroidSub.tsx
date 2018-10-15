@@ -17,7 +17,7 @@ type ContainerProps = {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
   onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
-  selectSharedState: (state: any) => State;
+  selectSharedState?: (state: any) => State;
 };
 
 type ComponentProps = {

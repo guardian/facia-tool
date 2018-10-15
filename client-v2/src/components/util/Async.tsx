@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import isEqual from 'lodash/isEqual';
 import debounce from 'lodash/debounce';
 
@@ -98,5 +98,5 @@ class Async<A extends any[], R> extends React.Component<
   }
 }
 
-export { AsyncChild };
+export { AsyncChild, AsyncState };
 export default Async;

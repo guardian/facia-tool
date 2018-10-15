@@ -1,7 +1,7 @@
 import React from 'react';
-import capiQuery, { Fetch } from 'services/capiQuery';
+import capiQuery, { Fetch, CAPITagQueryReponse } from 'services/capiQuery';
 import { $ElementType, $Call } from 'utility-types';
-import Async from 'components/util/Async';
+import Async, { AsyncState } from 'components/util/Async';
 import * as CAPIParamsContext from './CAPIParamsContext';
 
 type CAPITagQueryProps = {
@@ -75,5 +75,7 @@ const TagQueryWithContext = (props: CAPITagQueryProps) => (
     )}
   </CAPIParamsContext.Consumer>
 );
+
+export { AsyncState, CAPITagQueryReponse };
 
 export default TagQueryWithContext;

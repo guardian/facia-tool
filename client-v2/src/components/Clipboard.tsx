@@ -1,16 +1,20 @@
 import { Dispatch } from 'types/Store';
-import * as React from 'react';
+import React from 'react';
 import { connect, MergeProps } from 'react-redux';
 import * as Guration from 'lib/guration';
 import { Edit } from 'lib/guration';
 import { State } from 'types/State';
 import { urlToArticle } from 'util/collectionUtils';
-import { clipboardAsTreeSelector } from 'shared/selectors/shared';
+import {
+  clipboardAsTreeSelector,
+  ArticleFragmentTree,
+  SupportingTree,
+  ClipboardTree
+} from 'shared/selectors/shared';
 import DropZone from 'components/DropZone';
 import ArticlePolaroid from 'shared/components/ArticlePolaroid';
 import ArticlePolaroidSub from 'shared/components/ArticlePolaroidSub';
 import { addArticleFragment } from 'shared/actions/ArticleFragments';
-import { ArticleFragment as TArticleFragment } from 'shared/types/Collection';
 import {
   insertClipboardArticleFragment,
   moveClipboardArticleFragment
@@ -27,7 +31,7 @@ type ClipboardProps = ClipboardPropsBeforeState & {
   addArticleFragment: (id: string, supporting: string[]) => Promise<string>;
   selectedArticleFragmentId: string | void;
   selectArticleFragment: (id: string) => void;
-  tree: any; // TODO add typing,
+  tree: ClipboardTree; // TODO add typing,
   dispatch: Dispatch;
 };
 
@@ -93,7 +97,9 @@ class Clipboard extends React.Component<ClipboardProps> {
           collection: (str: string) => Promise.resolve(JSON.parse(str))
         }}
         mapOut={{
-          clipboard: (el, type) =>
+          // TODO: fix me, this is the same mapper for everything!
+          // need to return a key and a payload instead of just a payload
+          clipboard: (el: { id: string }, type) =>
             JSON.stringify({
               type,
               id: el.id
@@ -101,7 +107,7 @@ class Clipboard extends React.Component<ClipboardProps> {
         }}
       >
         <Guration.Level
-          arr={tree.articleFragments || []}
+          arr={tree.articleFragments}
           type="articleFragment"
           getKey={({ uuid }) => uuid}
           renderDrop={(getDropProps, { canDrop, isTarget }) => (
@@ -109,7 +115,7 @@ class Clipboard extends React.Component<ClipboardProps> {
           )}
         >
           {(
-            articleFragment: TArticleFragment,
+            articleFragment: ArticleFragmentTree,
             getArticleNodeProps: Guration.GetNodeProps
           ) => (
             <ArticlePolaroid
@@ -129,7 +135,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                 )}
               >
                 {(
-                  supporting: TArticleFragment,
+                  supporting: SupportingTree,
                   getSupportingNodeProps: Guration.GetNodeProps
                 ) => (
                   <ArticlePolaroidSub
