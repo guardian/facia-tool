@@ -22,7 +22,13 @@ import {
   selectEditorArticleFragment,
   editorClearArticleFragmentSelection
 } from 'bundles/frontsUIBundle';
-import { ArticleFragmentMeta, Stages } from 'shared/types/Collection';
+import {
+  ArticleFragmentMeta,
+  Stages,
+  Collection as TCollection,
+  ArticleFragment as TArticleFragment,
+  Group as TGroup
+} from 'shared/types/Collection';
 import Front from './CollectionComponents/Front';
 import Collection from './CollectionComponents/Collection';
 import Group from './CollectionComponents/Group';
@@ -50,7 +56,7 @@ type FrontPropsBeforeState = {
 };
 
 type FrontProps = FrontPropsBeforeState & {
-  tree: Object;
+  tree: any;
   addArticleFragment: (id: string, supporting: string[]) => Promise<string>;
   updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) => void;
   selectedArticleFragmentId: string | void;
@@ -125,7 +131,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     }
   };
 
-  handleChange = (edit: any) => {
+  handleChange = (edit: Guration.Edit) => {
     const futureAction = this.runEdit(edit);
     if (!futureAction) {
       return;
@@ -156,10 +162,9 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
           <FrontContentContainer>
             <Guration.Root
               // do we need frontId?
-              id="frontId"
+              id={this.props.id}
               type="front"
               onChange={this.handleChange}
-              dedupeType="articleFragment"
               mapIn={{
                 text: text => urlToArticle(text),
                 capi: capi =>
@@ -168,29 +173,40 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                 collection: str => JSON.parse(str) // other fronts
               }}
               mapOut={{
-                collection: (el, type) =>
+                collection: (el: { id: string; meta: any }, type) =>
                   JSON.stringify({
                     type,
                     id: el.id,
                     meta: {
-                      supporting: (el.meta.supporting || []).map(({ id }) => id)
+                      supporting: ((el.meta.supporting || []) as Array<{
+                        id: string;
+                      }>).map(({ id }) => id)
                     }
                   })
               }}
             >
               <Front {...this.props.tree}>
-                {collection => (
+                {(collection: TCollection) => (
                   <Collection
-                    {...collection}
+                    id={collection.id}
+                    groups={collection.groups}
+                    frontId={this.props.id}
                     alsoOn={this.props.alsoOn}
                     canPublish={this.props.browsingStage !== 'live'}
                     browsingStage={this.props.browsingStage}
                   >
-                    {group => (
-                      <Group {...group}>
-                        {(articleFragment, afNodeProps) => (
+                    {(group: TGroup) => (
+                      <Group
+                        id={group.id}
+                        articleFragments={group.articleFragments}
+                      >
+                        {(
+                          articleFragment: TArticleFragment,
+                          afNodeProps: Guration.GetNodeProps
+                        ) => (
                           <ArticleFragment
-                            {...articleFragment}
+                            uuid={articleFragment.uuid}
+                            supporting={articleFragment.meta.supporting}
                             parentId={group.uuid}
                             getNodeProps={afNodeProps}
                             onSelect={this.props.selectArticleFragment}
@@ -202,9 +218,12 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                               selectedArticleFragmentId === articleFragment.uuid
                             }
                           >
-                            {(supporting, sNodeProps) => (
+                            {(
+                              supporting: TArticleFragment,
+                              sNodeProps: Guration.GetNodeProps
+                            ) => (
                               <Supporting
-                                {...supporting}
+                                uuid={supporting.uuid}
                                 parentId={articleFragment.uuid}
                                 getNodeProps={sNodeProps}
                               />

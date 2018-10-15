@@ -6,7 +6,6 @@ import ArticleDrag from './ArticleDrag';
 
 type GroupProps = {
   id: string;
-  index: number;
   articleFragments: any;
   children: any;
 };

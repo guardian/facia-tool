@@ -7,21 +7,19 @@ import DropZone from 'components/DropZone';
 import { Dispatch } from 'types/Store';
 import { removeGroupArticleFragment } from 'actions/ArticleFragments';
 
-type ArticleFragmentProps = {
+type ContainerProps = {
   isSelected: boolean;
   uuid: string;
-  meta: {
-    supporting?: string[];
-  };
+  supporting?: string[];
   children: any;
   getNodeProps: () => Object;
-  onDelete: () => void;
   onSelect: (uuid: string) => void;
   onCancel: (uuid: string) => void
+  parentId: string;
 };
 
-type ContainerProps = ArticleFragmentProps & {
-  parentId: string;
+type ArticleFragmentProps = ContainerProps & {
+  onDelete: () => void;
 };
 
 // We hoist the drop zone into the rendered element here,
@@ -47,7 +45,7 @@ const ArticleFragmentContainer = styled('div')`
 const ArticleFragment = ({
   uuid,
   isSelected,
-  meta: { supporting = [] } = {},
+  supporting,
   children,
   getNodeProps,
   onSelect,
@@ -58,21 +56,23 @@ const ArticleFragment = ({
     onClick={() => onSelect(uuid)}
   >
     <Article id={uuid} {...getNodeProps()} onDelete={onDelete}>
-      <Guration.Level
-        arr={supporting}
-        type="articleFragment"
-        getKey={({ uuid: key }) => key}
-        renderDrop={(getDropProps, { canDrop, isTarget }) => (
-          <DropZone
-            {...getDropProps()}
-            override={!!canDrop && !!isTarget}
-            style={dropZoneStyle}
-            indicatorStyle={dropIndicatorStyle}
-          />
-        )}
-      >
-        {children}
-      </Guration.Level>
+      {supporting && (
+        <Guration.Level
+          arr={supporting}
+          type="articleFragment"
+          getKey={({ uuid: key }) => key}
+          renderDrop={(getDropProps, { canDrop, isTarget }) => (
+            <DropZone
+              {...getDropProps()}
+              override={!!canDrop && !!isTarget}
+              style={dropZoneStyle}
+              indicatorStyle={dropIndicatorStyle}
+            />
+          )}
+        >
+          {children}
+        </Guration.Level>
+      )}
     </Article>
   </ArticleFragmentContainer>
 );

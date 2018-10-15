@@ -17,6 +17,8 @@ type DOMNodeProps = {
   onDrop?: void | ((e: EventType) => void);
 };
 
+type GetNodeProps = () => DOMNodeProps;
+
 type NodeProps<T> = {
   item: T;
   id: string;
@@ -44,7 +46,7 @@ type NodeProps<T> = {
     | false;
   children: (
     node: T,
-    getNodeProps: () => DOMNodeProps,
+    getNodeProps: GetNodeProps,
     index: number
   ) => React.ReactNode;
 };
@@ -121,6 +123,6 @@ class Node<T> extends React.Component<NodeProps<T>> {
 
 type NodeChildren<T> = $ElementType<NodeProps<T>, 'children'>;
 
-export { NodeChildren };
+export { GetNodeProps, NodeChildren };
 
 export default Node;

@@ -20,9 +20,9 @@ import { DerivedArticle } from '../types/Article';
 type ContainerProps = {
   id: string; // eslint-disable-line react/no-unused-prop-types
   draggable?: boolean;
-  onDragStart?: (d: React.DragEvent<HTMLDivElement>) => void;
-  onDragOver?: (d: React.DragEvent<HTMLDivElement>) => void;
-  onDrop?: (d: React.DragEvent<HTMLDivElement>) => void;
+  onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
+  onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
+  onDrop?: (d: React.DragEvent<HTMLElement>) => void;
   onDelete?: () => void;
   selectSharedState?: (state: any) => State; // eslint-disable-line react/no-unused-prop-types
 };

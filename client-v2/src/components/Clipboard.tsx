@@ -1,5 +1,3 @@
-
-
 import { Dispatch } from 'types/Store';
 import * as React from 'react';
 import { connect, MergeProps } from 'react-redux';
@@ -12,6 +10,7 @@ import DropZone from 'components/DropZone';
 import ArticlePolaroid from 'shared/components/ArticlePolaroid';
 import ArticlePolaroidSub from 'shared/components/ArticlePolaroidSub';
 import { addArticleFragment } from 'shared/actions/ArticleFragments';
+import { ArticleFragment as TArticleFragment } from 'shared/types/Collection';
 import {
   insertClipboardArticleFragment,
   moveClipboardArticleFragment
@@ -25,11 +24,11 @@ import { clipboardId } from 'constants/fronts';
 type ClipboardPropsBeforeState = {};
 
 type ClipboardProps = ClipboardPropsBeforeState & {
-  addArticleFragment: (id: string, supporting: string[]) => Promise<string>,
-  selectedArticleFragmentId: string|void,
-  selectArticleFragment: (id: string) => void,
-  tree: Object, // TODO add typing,
-  dispatch: Dispatch
+  addArticleFragment: (id: string, supporting: string[]) => Promise<string>;
+  selectedArticleFragmentId: string | void;
+  selectArticleFragment: (id: string) => void;
+  tree: any; // TODO add typing,
+  dispatch: Dispatch;
 };
 
 class Clipboard extends React.Component<ClipboardProps> {
@@ -86,11 +85,11 @@ class Clipboard extends React.Component<ClipboardProps> {
       <Guration.Root
         id="clipboard"
         type="clipboard"
-        dedupeType="articleFragment"
         onChange={this.handleChange}
         mapIn={{
           text: async (text: string) => urlToArticle(text),
-          capi: (capi: string) => Promise.resolve({ type: 'articleFragment', id: capi }),
+          capi: (capi: string) =>
+            Promise.resolve({ type: 'articleFragment', id: capi }),
           collection: (str: string) => Promise.resolve(JSON.parse(str))
         }}
         mapOut={{
@@ -109,7 +108,10 @@ class Clipboard extends React.Component<ClipboardProps> {
             <DropZone {...getDropProps()} override={!!canDrop && !!isTarget} />
           )}
         >
-          {(articleFragment, getArticleNodeProps) => (
+          {(
+            articleFragment: TArticleFragment,
+            getArticleNodeProps: Guration.GetNodeProps
+          ) => (
             <ArticlePolaroid
               id={articleFragment.uuid}
               onSelect={this.props.selectArticleFragment}
@@ -126,7 +128,10 @@ class Clipboard extends React.Component<ClipboardProps> {
                   />
                 )}
               >
-                {(supporting, getSupportingNodeProps) => (
+                {(
+                  supporting: TArticleFragment,
+                  getSupportingNodeProps: Guration.GetNodeProps
+                ) => (
                   <ArticlePolaroidSub
                     id={supporting.uuid}
                     {...getSupportingNodeProps()}
@@ -157,7 +162,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 type TStateProps = ReturnType<typeof mapStateToProps>;
 type TDispatchProps = ReturnType<typeof mapDispatchToProps>;
 
-const mergeProps = (stateProps: TStateProps, dispatchProps: TDispatchProps) => ({
+const mergeProps = (
+  stateProps: TStateProps,
+  dispatchProps: TDispatchProps
+) => ({
   ...stateProps,
   ...dispatchProps,
   selectArticleFragment: (articleId: string) =>

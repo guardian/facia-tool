@@ -4,10 +4,13 @@ import Article from 'shared/components/Article';
 import { removeSupportingArticleFragment } from 'actions/ArticleFragments';
 import { Dispatch } from 'types/Store';
 
-type SupportingProps = {
+type ContainerProps = {
   uuid: string;
   parentId: string;
   getNodeProps: any;
+};
+
+type SupportingProps = ContainerProps & {
   onDelete: () => void;
 };
 
@@ -17,7 +20,7 @@ const Supporting = ({ uuid, getNodeProps, onDelete }: SupportingProps) => (
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
-  { parentId, uuid }: SupportingProps
+  { parentId, uuid }: ContainerProps
 ) => ({
   onDelete: () => dispatch(removeSupportingArticleFragment(parentId, uuid))
 });
