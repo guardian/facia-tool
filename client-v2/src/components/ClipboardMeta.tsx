@@ -11,14 +11,14 @@ import { updateClipboardArticleFragmentMeta } from 'actions/ArticleFragments';
 import { ArticleFragmentMeta } from 'shared/types/Collection';
 import ArticleFragmentForm from './FrontsEdit/ArticleFragmentForm';
 
-type Props = {
+interface Props {
   selectedArticleFragmentId: string | void;
   updateClipboardArticleFragmentMeta: (
     id: string,
     meta: ArticleFragmentMeta
   ) => void;
   clearArticleFragmentSelection: () => void;
-};
+}
 
 const ClipboardMeta = (props: Props) => {
   const { selectedArticleFragmentId } = props;

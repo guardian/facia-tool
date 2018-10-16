@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { error } from '../styleConstants';
 
-type Props = {
+interface Props {
   staleFronts: { [id: string]: boolean }
-};
+}
 
 const AlertContainer = styled('div')`
   background-color: ${error.primary};
@@ -13,7 +13,7 @@ const AlertContainer = styled('div')`
 `;
 
 const PressFailAlert = (props: Props) => {
-  const failedFronts: Array<string> =
+  const failedFronts: string[] =
     props.staleFronts &&
     Object.keys(props.staleFronts).reduce((fronts, frontId) => {
       if (props.staleFronts[frontId]) {

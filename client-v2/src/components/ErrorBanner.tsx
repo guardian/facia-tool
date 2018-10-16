@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { ActionError } from 'types/Action';
 import { error } from '../styleConstants';
 
-type Props = {
+interface Props {
   error: ActionError
-};
+}
 
 const ErrorContainer = styled('div')`
   background-color: ${error.primary};

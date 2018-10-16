@@ -24,9 +24,7 @@ import {
 import { clipboardId } from 'constants/fronts';
 import { ArticleFragmentDenormalised } from 'shared/types/Collection';
 
-type ClipboardPropsBeforeState = {};
-
-type ClipboardProps = ClipboardPropsBeforeState & {
+interface ClipboardProps {
   addArticleFragment: (id: string, supporting: string[]) => Promise<string>;
   selectedArticleFragmentId: string | void;
   selectArticleFragment: (id: string) => void;
@@ -37,7 +35,7 @@ type ClipboardProps = ClipboardPropsBeforeState & {
 class Clipboard extends React.Component<ClipboardProps> {
   // TODO: this code is repeated in src/components/FrontsEdit/Front.js
   // refactor
-  runEdit = (edit: any) => {
+  public runEdit = (edit: any) => {
     switch (edit.type) {
       case 'MOVE': {
         const {
@@ -72,7 +70,7 @@ class Clipboard extends React.Component<ClipboardProps> {
     }
   };
 
-  handleChange = (edit: Edit) => {
+  public handleChange = (edit: Edit) => {
     const futureAction = this.runEdit(edit);
     if (!futureAction) {
       return;
@@ -82,7 +80,7 @@ class Clipboard extends React.Component<ClipboardProps> {
     });
   };
 
-  render() {
+  public render() {
     const { tree } = this.props;
     return (
       <Guration.Root

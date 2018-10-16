@@ -6,17 +6,17 @@ import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
 
-type FrontConfigMap = {
+interface FrontConfigMap {
   [id: string]: FrontConfig;
-};
+}
 
-type CollectionConfigMap = {
+interface CollectionConfigMap {
   [id: string]: CollectionConfig;
-};
+}
 
-type FrontsByPriority = {
+interface FrontsByPriority {
   [id: string]: FrontConfig[];
-};
+}
 
 const getFronts = (state: State): FrontConfigMap =>
   frontsConfigSelectors.selectAll(state).fronts || {};
@@ -89,7 +89,7 @@ const frontsIdsSelector = createSelector(
 const getFrontsConfig = (
   fronts: FrontConfigMap,
   collections: CollectionConfigMap,
-  frontIds: Array<string>,
+  frontIds: string[],
   priority: string
 ): {
   fronts: FrontConfig[];
@@ -99,7 +99,7 @@ const getFrontsConfig = (
     return { fronts: [], collections: {} };
   }
   const frontsWithPriority = frontIds.reduce(
-    (acc: Array<FrontConfig>, key: string) => {
+    (acc: FrontConfig[], key: string) => {
       if (
         fronts[key].priority === priority ||
         (!fronts[key].priority && priority === 'editorial')
@@ -118,9 +118,9 @@ const getFrontsConfig = (
 
 const getCollectionConfigs = (
   frontId: string | void,
-  fronts: Array<FrontConfig>,
+  fronts: FrontConfig[],
   collections: CollectionConfigMap
-): Array<CollectionConfig> => {
+): CollectionConfig[] => {
   if (!frontId) {
     return [];
   }
@@ -158,7 +158,7 @@ const hasUnpublishedChangesSelector = createSelector(
 
 const alsoOnFrontSelector = (
   currentFront: FrontConfig | void,
-  fronts: Array<FrontConfig>
+  fronts: FrontConfig[]
 ): { [id: string]: AlsoOnDetail } => {
   if (!currentFront) {
     return {};
@@ -193,7 +193,7 @@ const alsoOnFrontSelector = (
             {
               priorities: [] as string[],
               meritsWarning: false,
-              fronts: [] as { id: string; priority: string }[]
+              fronts: [] as Array<{ id: string; priority: string }>
             }
           );
 
@@ -211,7 +211,7 @@ const alsoOnFrontSelector = (
             )
           };
         },
-        { priorities: [] as string[], fronts: [] as { id: string; priority: string }[], meritsWarning: false }
+        { priorities: [] as string[], fronts: [] as Array<{ id: string; priority: string }>, meritsWarning: false }
       );
 
       return {

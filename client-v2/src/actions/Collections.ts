@@ -102,7 +102,7 @@ function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
 }
 
 const getCollectionsAndArticles = (
-  collectionIds: Array<string>,
+  collectionIds: string[],
   getCollectionAction = getCollection
 ): ThunkResult<Promise<void[]>> => (dispatch: Dispatch) =>
   Promise.all(

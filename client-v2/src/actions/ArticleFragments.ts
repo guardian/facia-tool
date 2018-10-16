@@ -163,8 +163,9 @@ const createMoveArticleFragment = (persistTo: 'collection' | 'clipboard') => (
   const insert = insertActionMap[toParentType];
   const replaceAction = replaceActionMap[toParentType];
   if (!selector || !insert || !remove || !replaceAction) {
-    return () => {};
+    return () => undefined;
   }
+
   const replace = addPersistMetaToAction(replaceAction, {
     persistTo
   });

@@ -1,14 +1,14 @@
 import { CapiArticle } from 'types/Capi';
 
-type CollectionArticles = {
-  draft: Array<CapiArticle>,
-  live: Array<CapiArticle>
-};
+interface CollectionArticles {
+  draft: CapiArticle[],
+  live: CapiArticle[]
+}
 
-type AlsoOnDetail = {
-  priorities: Array<string>,
+interface AlsoOnDetail {
+  priorities: string[],
   fronts: Array<{ id: string, priority: string }>,
   meritsWarning: boolean
-};
+}
 
 export { CollectionArticles, AlsoOnDetail };

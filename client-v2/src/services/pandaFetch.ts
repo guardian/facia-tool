@@ -3,7 +3,7 @@ import { reEstablishSession } from 'panda-session';
 const reauthUrl = '/login/status';
 const pandaFetch = (
   url: string,
-  options: Object = {},
+  options: RequestInit = {},
   count: number = 0
 ): Promise<Response> =>
   new Promise(
@@ -29,4 +29,4 @@ const pandaFetch = (
     }
   );
 
-export default (url: string, body: Object = {}) => pandaFetch(url, body);
+export default (url: string, body: RequestInit = {}) => pandaFetch(url, body);

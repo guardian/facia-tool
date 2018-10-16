@@ -1,6 +1,6 @@
 import { Action } from 'types/Action';
 
-type State = Array<string>;
+type State = string[];
 
 const clipboard = (state: State = [], action: Action): State => {
   switch (action.type) {

@@ -14,10 +14,10 @@ import { capiFeedSpecsSelector } from '../selectors/configSelectors';
 import { RadioButton, RadioGroup } from './inputs/RadioButtons';
 import { State } from 'types/State';
 
-type ErrorDisplayProps = {
+interface ErrorDisplayProps {
   error: Error | string | void;
   children: React.ReactNode;
-};
+}
 
 const ErrorDisplay = ({ error, children }: ErrorDisplayProps) =>
   error ? (
@@ -26,27 +26,27 @@ const ErrorDisplay = ({ error, children }: ErrorDisplayProps) =>
     <React.Fragment>{children}</React.Fragment>
   );
 
-type LoaderDisplayProps = {
+interface LoaderDisplayProps {
   children: React.ReactNode;
   loading: boolean;
-};
+}
 
 const LoaderDisplay = ({ loading, children }: LoaderDisplayProps) =>
   loading ? <Loader /> : <React.Fragment>{children}</React.Fragment>;
 
-type FeedSpec = {
+interface FeedSpec {
   name: string;
   baseUrl: string;
-};
+}
 
-type FeedProps = {
+interface FeedProps {
   capiFeedSpecs: FeedSpec[];
-};
+}
 
-type FeedState = {
+interface FeedState {
   capiFeedIndex: number;
   displaySearchFilters: boolean;
-};
+}
 
 const FeedContainer = styled('div')`
   height: 100%;
@@ -65,11 +65,11 @@ const ResultsHeadingContainer = styled('div')`
 `;
 
 class Feed extends React.Component<FeedProps, FeedState> {
-  static defaultProps = {
+  public static defaultProps = {
     capiFeedSpecs: []
   };
 
-  state = {
+  public state = {
     capiFeedIndex: 0,
     displaySearchFilters: false
   };
@@ -78,17 +78,17 @@ class Feed extends React.Component<FeedProps, FeedState> {
     return this.props.capiFeedSpecs[this.state.capiFeedIndex];
   }
 
-  updateDisplaySearchFilters = (newValue: boolean) =>
+  public updateDisplaySearchFilters = (newValue: boolean) =>
     this.setState({
       displaySearchFilters: newValue
     });
 
-  handleFeedClick = (index: number) =>
+  public handleFeedClick = (index: number) =>
     this.setState({
       capiFeedIndex: index
     });
 
-  renderFixedContent = () => {
+  public renderFixedContent = () => {
     if (!this.state.displaySearchFilters) {
       return (
         <ResultsHeadingContainer>
@@ -111,7 +111,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
     return null;
   };
 
-  render() {
+  public render() {
     const { capiFeedSpec } = this;
     const getId = (internalPageCode: string | number) =>
       `internal-code/page/${internalPageCode}`;

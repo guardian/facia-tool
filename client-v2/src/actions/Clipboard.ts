@@ -19,10 +19,10 @@ function updateClipboardContent(
   };
 }
 
-function storeClipboardContent(clipboardContent: Array<NestedArticleFragment>) {
+function storeClipboardContent(clipboardContent: NestedArticleFragment[]) {
   return (dispatch: Dispatch) => {
     const normalisedClipboard: {
-      clipboard: { articles: Array<string> };
+      clipboard: { articles: string[] };
       articleFragments: { [id: string]: ArticleFragment };
     } = normaliseClipboard({
       articles: clipboardContent
@@ -54,7 +54,7 @@ function storeClipboardContent(clipboardContent: Array<NestedArticleFragment>) {
 }
 
 function updateClipboard(clipboardContent: {
-  articles: Array<NestedArticleFragment>;
+  articles: NestedArticleFragment[];
 }): ThunkResult<Promise<NestedArticleFragment[] | void>> {
   return () =>
     saveClipboard(clipboardContent.articles).catch(() => {

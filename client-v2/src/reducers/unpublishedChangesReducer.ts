@@ -1,8 +1,8 @@
 import { Action } from 'types/Action';
 
-type State = {
+interface State {
   [id: string]: boolean
-};
+}
 
 const unpublishedChanges = (state: State = {}, action: Action): State => {
   switch (action.type) {

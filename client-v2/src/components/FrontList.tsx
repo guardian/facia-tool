@@ -4,10 +4,10 @@ import styled, { css } from 'styled-components';
 import ButtonCircular from 'shared/components/input/ButtonCircular';
 import MoreImage from 'shared/images/icons/more.svg';
 
-type Props = {
-  fronts: { id: string, isOpen: boolean }[],
+interface Props {
+  fronts: Array<{ id: string, isOpen: boolean }>,
   onSelect: (frontId: string) => void
-};
+}
 
 const ListItem = styled('li')`
   position: relative;

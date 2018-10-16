@@ -21,6 +21,7 @@ import FrontsEdit from './FrontsEdit/Edit';
 import Home from './Home';
 import NotFound from './NotFound';
 
+// tslint:disable:no-unused-expression
 injectGlobal`
   @font-face {
     font-family: GHGuardianHeadline-Bold

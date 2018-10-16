@@ -7,9 +7,9 @@ import { State } from 'types/State';
 import { normalize, denormalize } from './clipboardSchema';
 
 function normaliseClipboard(clipboard: {
-  articles: Array<NestedArticleFragment>
+  articles: NestedArticleFragment[]
 }): {
-  clipboard: { articles: Array<string> },
+  clipboard: { articles: string[] },
   articleFragments: { [id: string]: ArticleFragment }
 } {
   const normalisedClipboard = normalize(clipboard);
@@ -21,7 +21,7 @@ function normaliseClipboard(clipboard: {
 
 function denormaliseClipboard(
   state: State
-): { articles: Array<NestedArticleFragment> } {
+): { articles: NestedArticleFragment[] } {
   const clipboard = clipboardSelector(state);
 
   return denormalize(

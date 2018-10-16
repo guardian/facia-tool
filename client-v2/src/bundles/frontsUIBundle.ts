@@ -52,10 +52,10 @@ const editorClearArticleFragmentSelection = (frontId: string) => ({
   payload: { frontId }
 });
 
-type State = {
+interface State {
   frontIds: string[],
   selectedArticleFragments: { [frontId: string]: string|void }
-};
+}
 
 const selectEditorFronts = (state: GlobalState) => state.editor.frontIds;
 

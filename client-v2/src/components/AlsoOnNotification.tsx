@@ -4,13 +4,13 @@ import styled from 'styled-components';
 import { AlsoOnDetail } from 'types/Collection';
 import ButtonSmall from 'shared/components/input/ButtonSmall';
 
-type AlsoOnNotificationProps = {
+interface AlsoOnNotificationProps {
   alsoOn: AlsoOnDetail
-};
+}
 
-type ComponentState = {
+interface ComponentState {
   showFrontDetails: boolean
-};
+}
 
 const WarningText = styled('span')`
   font-weight: bold;
@@ -21,11 +21,11 @@ class AlsoOnNotification extends React.Component<
   AlsoOnNotificationProps,
   ComponentState
 > {
-  state = {
+  public state = {
     showFrontDetails: false
   };
 
-  render() {
+  public render() {
     const { alsoOn } = this.props;
     if (alsoOn.fronts.length > 0) {
       return (

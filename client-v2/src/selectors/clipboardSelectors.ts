@@ -6,9 +6,9 @@ import {
   ArticleFragmentTree
 } from 'shared/selectors/shared';
 
-type ClipboardTree = {
+interface ClipboardTree {
   articleFragments: ArticleFragmentTree[];
-};
+}
 
 const clipboardContentSelector = (state: State) => state.clipboard || [];
 

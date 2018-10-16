@@ -1,4 +1,4 @@
-type ImageAsset = {
+interface ImageAsset {
   type: 'image';
   mimeType: string;
   file: string;
@@ -6,26 +6,26 @@ type ImageAsset = {
     width: string;
     number: string;
   };
-};
+}
 
-type ImageElement = {
+interface ImageElement {
   id: string;
   relation: string;
   type: 'image';
   assets: ImageAsset[];
-};
+}
 
 type Element = ImageElement;
 
 type CapiDate = string;
 
-type User = {
+interface User {
   email: string;
   firstName?: string;
   lastName?: string;
-};
+}
 
-type Block = {
+interface Block {
   id: string;
   bodyHtml: string;
   bodyTextSummary: string;
@@ -40,23 +40,23 @@ type Block = {
   createdBy?: User;
   lastModifiedBy?: User;
   elements: Element[];
-};
+}
 
-type Blocks = {
+interface Blocks {
   main: Block;
   body: Block[];
-};
+}
 
-type Tag = {
+interface Tag {
   id: string;
   type: string;
   webTitle: string;
   webUrl: string;
   bylineImageUrl?: string;
   bylineLargeImageUrl?: string;
-};
+}
 
-type CapiArticleFields = {
+interface CapiArticleFields {
   headline: string;
   standfirst: string;
   trailText: string;
@@ -70,11 +70,11 @@ type CapiArticleFields = {
   liveBloggingNow: boolean;
   shortUrl: string;
   membershipUrl: string;
-};
+}
 
 // See https://github.com/guardian/content-api-models/blob/master/models/src/main/thrift/content/v1.thrift#L1431
 // for the canonical thrift definition.
-type CapiArticle = {
+interface CapiArticle {
   id: string;
   webTitle: string;
   webUrl: string;
@@ -91,7 +91,7 @@ type CapiArticle = {
   };
   tags?: Tag[];
   blocks: Blocks;
-};
+}
 
 type CapiArticleWithMetadata = CapiArticle & { group?: number };
 

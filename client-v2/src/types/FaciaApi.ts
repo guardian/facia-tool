@@ -1,8 +1,8 @@
 import { PriorityName } from './Priority';
 import { $Diff } from 'utility-types';
 
-type FrontConfigResponse = {
-  collections: Array<string>,
+interface FrontConfigResponse {
+  collections: string[],
   priority?: PriorityName,
   canonical?: string,
   group?: string,
@@ -16,17 +16,17 @@ type FrontConfigResponse = {
   title?: string,
   webTitle?: string,
   navSection?: string
-};
+}
 
 type Platform = 'Web' | 'Platform';
 
-type CollectionConfigResponse = {
+interface CollectionConfigResponse {
   displayName: string,
   type: string,
-  backfill?: Object,
+  backfill?: unknown,
   href?: string,
-  groups?: Array<string>,
-  metadata?: Array<Object>,
+  groups?: string[],
+  metadata?: Array<unknown>,
   uneditable?: boolean,
   showTags?: boolean,
   hideKickers?: boolean,
@@ -38,16 +38,16 @@ type CollectionConfigResponse = {
   excludeFromRss?: boolean,
   hideShowMore?: boolean,
   platform?: Platform
-};
+}
 
-type FrontsConfigResponse = {
+interface FrontsConfigResponse {
   fronts: {
     [id: string]: FrontConfigResponse
   },
   collections: {
     [id: string]: CollectionConfigResponse
   }
-};
+}
 
 type FrontConfig = $Diff<
   FrontConfigResponse,
@@ -61,18 +61,18 @@ type CollectionConfig = CollectionConfigResponse & {
   id: string
 };
 
-type FrontConfigMap = {
+interface FrontConfigMap {
   [id: string]: FrontConfig
-};
+}
 
-type CollectionConfigMap = {
+interface CollectionConfigMap {
   [id: string]: CollectionConfig
-};
+}
 
-type FrontsConfig = {
+interface FrontsConfig {
   fronts: FrontConfigMap,
   collections: CollectionConfigMap
-};
+}
 
 export {
   FrontConfig,

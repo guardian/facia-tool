@@ -5,17 +5,17 @@ const API_BASE = 'https://content.guardianapis.com/';
 
 type Fetch = (path: string) => Promise<Response>;
 
-type CAPISearchQueryReponse = {
+interface CAPISearchQueryReponse {
   response: {
     results: CapiArticle[];
   };
-};
+}
 
-type CAPITagQueryReponse = {
+interface CAPITagQueryReponse {
   response: {
     results: Tag[];
   };
-};
+}
 
 const capiQuery = (
   baseURL: string = API_BASE,

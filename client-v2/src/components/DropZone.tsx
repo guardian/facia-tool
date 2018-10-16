@@ -21,11 +21,11 @@ class DropZone extends React.Component<
   },
   { isHoveredOver: boolean }
 > {
-  static defaultProps = {
+  public static defaultProps = {
     style: {},
     indicatorStyle: {}
   };
-  state = {
+  public state = {
     isHoveredOver: false
   };
 
@@ -35,20 +35,20 @@ class DropZone extends React.Component<
       : this.state.isHoveredOver;
   }
 
-  handleDragEnter = () => {
+  public handleDragEnter = () => {
     this.setState({ isHoveredOver: true });
   };
 
-  handleDragLeave = () => {
+  public handleDragLeave = () => {
     this.setState({ isHoveredOver: false });
   };
 
-  handleDrop = (e: React.DragEvent<HTMLElement>) => {
+  public handleDrop = (e: React.DragEvent<HTMLElement>) => {
     this.setState({ isHoveredOver: false });
     return this.props.onDrop(e);
   };
 
-  render() {
+  public render() {
     const { onDragOver, style } = this.props;
     return (
       <DropContainer

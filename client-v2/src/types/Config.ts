@@ -1,22 +1,22 @@
 import { NestedArticleFragment } from 'shared/types/Collection';
 
-type Permission = {
+interface Permission {
   [id: string]: boolean
-};
+}
 
-type Acl = {
+interface Acl {
   fronts: Permission,
   permissions: Permission
-};
+}
 
-type Metadata = {
-  type: String
-};
+interface Metadata {
+  type: string
+}
 
-type Config = {
+interface Config {
   dev: boolean,
   env: string,
-  editions: Array<string>,
+  editions: string[],
   email: string,
   avararUrl?: string,
   firstName: string,
@@ -25,17 +25,17 @@ type Config = {
   mediaBaseUrl: string,
   apiBaseUrl: string,
   stage: string,
-  switches: Object,
+  switches: unknown,
   acl: Acl,
   collectionCap: number,
   navListCap: number,
   navListType: string,
-  collectionMetadata: Array<Metadata>,
+  collectionMetadata: Metadata[],
   capiLiveUrl: string,
   capiPreviewUrl: string,
   ravenUrl?: string,
-  frontIds: Array<string>,
-  clipboardArticles: Array<NestedArticleFragment>
-};
+  frontIds: string[],
+  clipboardArticles: NestedArticleFragment[]
+}
 
 export { Config };

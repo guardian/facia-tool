@@ -72,13 +72,13 @@ const Body = styled('div')`
   padding-left: 10px;
 `;
 
-type FeedItemProps = {
+interface FeedItemProps {
   title: string;
   href: string;
   tone: string;
   internalPageCode: string | void;
   publicationDate?: string;
-};
+}
 
 const dragStart = (
   href: string | void,

@@ -39,7 +39,7 @@ const updateStateFromUrlChange: Middleware<{}, State, Dispatch> = ({
   return result;
 };
 
-type PersistMeta = {
+interface PersistMeta {
   // The resource to persist the data to
   persistTo: 'collection' | 'clipboard' | 'openFrontIds';
   // The id to to search for in this resource
@@ -52,9 +52,9 @@ type PersistMeta = {
   // occurs - finding the parent collection before a remove operation, for example,
   // or after an add operation.
   applyBeforeReducer?: boolean;
-};
+}
 
-function addPersistMetaToAction<TArgs extends Array<any>>(
+function addPersistMetaToAction<TArgs extends any[]>(
   actionCreator: (...args: TArgs) => Action,
   meta: PersistMeta
 ): (...args: TArgs) => Action & ActionPersistMeta {
@@ -173,7 +173,7 @@ const persistClipboardOnEdit = (
   const result = next(action);
   const state = store.getState();
   const denormalisedClipboard: {
-    articles: Array<NestedArticleFragment>;
+    articles: NestedArticleFragment[];
   } = denormaliseClipboard(state);
   store.dispatch(updateClipboardAction(denormalisedClipboard));
   return result;

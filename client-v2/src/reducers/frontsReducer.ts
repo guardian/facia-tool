@@ -7,12 +7,12 @@ import {
   FrontsConfigState
 } from 'bundles/frontsConfigBundle';
 
-type State = {
+interface State {
   frontsConfig: FrontsConfigState;
   lastPressed: {
     [id: string]: string;
   };
-};
+}
 
 const reducer = (
   state: State = {

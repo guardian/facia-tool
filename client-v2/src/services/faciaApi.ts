@@ -109,8 +109,8 @@ async function updateCollection(
 }
 
 async function saveClipboard(
-  clipboardContent: Array<NestedArticleFragment>
-): Promise<Array<NestedArticleFragment>> {
+  clipboardContent: NestedArticleFragment[]
+): Promise<NestedArticleFragment[]> {
   // The server does not respond with JSON
   try {
     const response = await pandaFetch(`/userdata/clipboard`, {
@@ -164,10 +164,10 @@ function getCollection(
     }));
 }
 
-function getArticles(articleIds: string[]): Promise<Array<ExternalArticle>> {
+function getArticles(articleIds: string[]): Promise<ExternalArticle[]> {
   const parseArticleListFromResponse = (
     text: string | void
-  ): Array<ExternalArticle> => {
+  ): ExternalArticle[] => {
     if (text) {
       return JSON.parse(text).response.results.map((externalArticle: CapiArticle) => ({
         ...externalArticle,

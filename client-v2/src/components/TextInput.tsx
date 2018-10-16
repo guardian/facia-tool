@@ -55,7 +55,7 @@ const SearchButtonIcon = styled('img')`
   vertical-align: middle;
 `;
 
-type TextInputProps = {
+interface TextInputProps {
   value?: string;
   placeholder?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -65,7 +65,7 @@ type TextInputProps = {
   onDisplaySearchFilters?: () => void;
   width?: string;
   searchTermsExist: boolean;
-};
+}
 
 const TextInput = ({
   onClear,

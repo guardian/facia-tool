@@ -7,7 +7,7 @@ const getInternalPageCode = async (id: string) =>
   ((await getArticles([id]))[0] || {}).id || null;
 
 const getURLInternalPageCode = async (url: string): Promise<string | null> => {
-  const [, id = undefined] = url.match(/^https:\/\/www.theguardian\.com\/(.*)\??/) || [];
+  const [, id] = url.match(/^https:\/\/www.theguardian\.com\/(.*)\??/) || [];
   return typeof id !== 'string'
     ? Promise.resolve(null)
     : getInternalPageCode(id);
@@ -30,8 +30,7 @@ const getThumbnailFromElements = (_elements: Element[]) => {
 
   let smallestAsset = null;
 
-  for (let i = 0; i < assets.length; i += 1) {
-    const asset = assets[i];
+  for (const asset of assets) {
     if (
       !smallestAsset ||
       +asset.typeData.width < +smallestAsset.typeData.width
