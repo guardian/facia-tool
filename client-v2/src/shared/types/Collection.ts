@@ -1,26 +1,26 @@
 import { Diff } from 'utility-types';
 
-type Group = {
+interface Group {
   id: string;
   uuid: string;
   articleFragments: string[];
-};
+}
 
 type Stages = 'draft' | 'live' | 'previously';
 
-type NestedArticleFragmentRootFields = {
+interface NestedArticleFragmentRootFields {
   id: string;
   frontPublicationDate: number;
   publishedBy?: string;
-};
+}
 
 type NestedArticleFragment = NestedArticleFragmentRootFields & {
   meta: {
-    supporting?: Diff<NestedArticleFragment, { supporting: unknown }>[];
+    supporting?: Array<Diff<NestedArticleFragment, { supporting: unknown }>>;
   };
 };
 
-type ArticleFragmentRootMeta = {
+interface ArticleFragmentRootMeta {
   group?: string;
   headline?: string;
   trailText?: string;
@@ -53,14 +53,14 @@ type ArticleFragmentRootMeta = {
   snapType?: string;
   snapCss?: string;
   imageSlideshowReplace?: boolean;
-  slideshow?: {
+  slideshow?: Array<{
     src?: string;
     thumb?: string;
     width?: string;
     height?: string;
     origin?: string;
-  }[];
-};
+  }>;
+}
 
 type ArticleFragmentRootFields = NestedArticleFragmentRootFields & {
   uuid: string;
@@ -82,7 +82,7 @@ interface ArticleFragmentDenormalised extends ArticleFragmentRootFields {
   meta: ArticleFragmentMetaDenormalised;
 }
 
-type CollectionResponse = {
+interface CollectionResponse {
   live: NestedArticleFragment[];
   draft?: NestedArticleFragment[];
   previously?: NestedArticleFragment[];
@@ -91,14 +91,14 @@ type CollectionResponse = {
   updatedEmail?: string;
   platform?: string;
   displayName: string;
-  groups?: Array<string>;
-};
+  groups?: string[];
+}
 
 type CollectionWithNestedArticles = CollectionResponse & {
   id: string;
 };
 
-type Collection = {
+interface Collection {
   live?: string[];
   previously?: string[];
   draft?: string[];
@@ -108,8 +108,8 @@ type Collection = {
   updatedEmail?: string;
   platform?: string;
   displayName: string;
-  groups?: Array<string>;
-};
+  groups?: string[];
+}
 
 export {
   NestedArticleFragment,

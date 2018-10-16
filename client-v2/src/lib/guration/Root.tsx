@@ -17,17 +17,17 @@ import {
 
 type InMapResult = { id: string; type: string } | string;
 
-type InMap = {
+interface InMap {
   [key: string]: (value: string) => InMapResult | Promise<InMapResult>;
-};
+}
 
-type SanitizedInMap = {
+interface SanitizedInMap {
   [key: string]: (value: string) => ExternalDrag | string;
-};
+}
 
-type OutMap<T extends Object> = {
+interface OutMap<T extends object> {
   [key: string]: (el: T, type: string, id: string, path: Path[]) => string;
-};
+}
 
 const extractIndexOffset = (e: EventType, getIndexOffset: IndexOffsetGetter) =>
   typeof getIndexOffset === 'function' ? getIndexOffset(e) : getIndexOffset;
@@ -70,7 +70,7 @@ const internalMapOut = <T extends any>(
     path
   });
 
-type RootProps<T extends Object> = {
+interface RootProps<T extends object> {
   id: string;
   type: string;
   field?: string;
@@ -79,30 +79,16 @@ type RootProps<T extends Object> = {
   mapIn: InMap;
   mapOut: OutMap<T>;
   children: React.ReactNode;
-};
-type RootState = {
+}
+interface RootState {
   dragData: InternalDrag | null;
   dropInfo: {
     path: Path[] | null;
     canDrop: boolean | null;
   };
-};
+}
 
-class Root<T extends Object> extends React.Component<RootProps<T>, RootState> {
-  static defaultProps = {
-    mapIn: {},
-    mapOut: {},
-    onChange: () => {},
-    onError: () => {}
-  };
-
-  state = {
-    dragData: null,
-    dropInfo: {
-      path: null,
-      canDrop: false
-    }
-  };
+class Root<T extends object> extends React.Component<RootProps<T>, RootState> {
 
   /**
    * All of the functions that map a drop to a node, the key being the
@@ -125,12 +111,50 @@ class Root<T extends Object> extends React.Component<RootProps<T>, RootState> {
       [this.rootKey]: internalMapOut
     };
   }
+  public static defaultProps = {
+    mapIn: {},
+    mapOut: {},
+    onChange: () => {},
+    onError: () => {}
+  };
+
+  public state = {
+    dragData: null,
+    dropInfo: {
+      path: null,
+      canDrop: false
+    }
+  };
+
+  public runDropZoneDragOver = throttle(
+    async (
+      candidatePath: Path[],
+      getIndexOffset: IndexOffsetGetter,
+      e: EventType
+    ) => {
+      const { path, canDrop } = await this.run(
+        e,
+        candidatePath,
+        getIndexOffset,
+        this.state.dragData || true
+      );
+
+      this.setDropInfo(path, canDrop);
+    },
+    100,
+    {
+      trailing: false
+    }
+  );
+
+  public eventHandled = false;
+  public rootKey: string = v4();
 
   /**
    * This wraps set state to make sure we don't call it too much and keep
    * rerendering, only changing the drop state if things have actually changed
    */
-  setDropInfo(
+  public setDropInfo(
     path: Path[] | null,
     canDrop: boolean | null,
     // TODO: this is essentially `any` at the moment
@@ -156,7 +180,7 @@ class Root<T extends Object> extends React.Component<RootProps<T>, RootState> {
   /**
    * Runs through the inMappers to get the data
    */
-  async getDropData(e: EventType) {
+  public async getDropData(e: EventType) {
     const { mapIn } = this;
     const type = Object.keys(mapIn).find(key => !!e.dataTransfer.getData(key));
 
@@ -173,7 +197,7 @@ class Root<T extends Object> extends React.Component<RootProps<T>, RootState> {
    * When a dragover event happens that has not been handled by a nodeDragOver
    * we are not in a position to dop anything
    */
-  handleRootDragOver = () => {
+  public handleRootDragOver = () => {
     if (!this.eventHandled) {
       this.setDropInfo(null, false);
     }
@@ -183,7 +207,7 @@ class Root<T extends Object> extends React.Component<RootProps<T>, RootState> {
   /**
    * When a drop happens anywhere set event handle to false
    */
-  handleRootDrop = () => {
+  public handleRootDrop = () => {
     this.setDropInfo(null, false, {
       dragData: null
     });
@@ -195,7 +219,7 @@ class Root<T extends Object> extends React.Component<RootProps<T>, RootState> {
    * being dragged from and what type they are to allows us to show invalid
    * drops in the UI while dragging
    */
-  handleNodeDragStart = (item: T, path: Path[], id: string, type: string) => (
+  public handleNodeDragStart = (item: T, path: Path[], id: string, type: string) => (
     e: EventType
   ) =>
     this.runLowest(() => {
@@ -229,7 +253,7 @@ class Root<T extends Object> extends React.Component<RootProps<T>, RootState> {
    * Ultimately this is responsible for updating the state to show whether we
    * can drop here
    */
-  handleDropZoneDragOver = (
+  public handleDropZoneDragOver = (
     candidatePath: Path[],
     getIndexOffset: IndexOffsetGetter
   ) => (e: EventType) =>
@@ -238,32 +262,11 @@ class Root<T extends Object> extends React.Component<RootProps<T>, RootState> {
       this.runDropZoneDragOver(candidatePath, getIndexOffset, e);
     });
 
-  runDropZoneDragOver = throttle(
-    async (
-      candidatePath: Path[],
-      getIndexOffset: IndexOffsetGetter,
-      e: EventType
-    ) => {
-      const { path, canDrop } = await this.run(
-        e,
-        candidatePath,
-        getIndexOffset,
-        this.state.dragData || true
-      );
-
-      this.setDropInfo(path, canDrop);
-    },
-    100,
-    {
-      trailing: false
-    }
-  );
-
   /**
    * This is similar to handleDropZoneDragOver but it's guaranteed to run the
    * handlers
    */
-  handleDropZoneDrop = (
+  public handleDropZoneDrop = (
     candidatePath: Path[],
     getIndexOffset: IndexOffsetGetter
   ) => (e: EventType) =>
@@ -282,7 +285,7 @@ class Root<T extends Object> extends React.Component<RootProps<T>, RootState> {
    * drag and because we can't inspect `dataTransfer` on dragover we'll just
    * have to permit any drop
    */
-  run = async (
+  public run = async (
     e: EventType,
     candidatePath: Path[],
     getIndexOffset: IndexOffsetGetter,
@@ -319,13 +322,13 @@ class Root<T extends Object> extends React.Component<RootProps<T>, RootState> {
         if (!dragData) {
           this.props.onChange(edit);
         }
-        /* eslint-disable no-unsafe-finally */
+        /* tslint:disable no-unsafe-finally */
         // this lint rule can be ignored given we are not returning in try /
         // catch
         return Promise.resolve({ path, canDrop: true });
       }
       return Promise.resolve({ path, canDrop: false });
-      /* eslint-enable no-unsafe-finally */
+      /* tslint:enable no-unsafe-finally */
     }
   };
 
@@ -337,17 +340,14 @@ class Root<T extends Object> extends React.Component<RootProps<T>, RootState> {
    *
    * When the event bubbles outside of the root we reset the `eventHandled` flag
    */
-  runLowest(fn: () => void) {
+  public runLowest(fn: () => void) {
     if (!this.eventHandled) {
       this.eventHandled = true;
       fn();
     }
   }
 
-  eventHandled = false;
-  rootKey: string = v4();
-
-  render() {
+  public render() {
     const { type, field, id } = this.props;
     return (
       <div

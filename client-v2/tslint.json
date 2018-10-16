@@ -5,7 +5,8 @@
   "rules": {
     "ordered-imports": false,
     "object-literal-sort-keys": false,
-    "interface-name": false
+    "interface-name": false,
+    "no-empty": false
   },
   "rulesDirectory": []
 }

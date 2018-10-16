@@ -7,7 +7,7 @@ const getColour = ({
   selected?: boolean;
   dark?: boolean;
 }) => {
-  if (selected) return '#123';
+  if (selected) { return '#123'; }
   if (dark) {
     return '#000';
   }

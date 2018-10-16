@@ -52,31 +52,31 @@ const FrontsMenuContainer = styled('div')<{ isOpen?: boolean}>`
     isOpen ? 'translate3d(0px, 0, 0)' : 'translate3d(390px, 0, 0)'};
 `;
 
-type Props = {
+interface Props {
   onSelectFront: (frontId: string) => void
-};
+}
 
-type State = {
+interface State {
   isOpen: boolean
-};
+}
 
 class FrontsMenu extends React.Component<Props, State> {
-  state = {
+  public state = {
     isOpen: false
   };
 
-  onSelectFront = (frontId: string) => {
+  public onSelectFront = (frontId: string) => {
     this.toggleFrontsMenu();
     this.props.onSelectFront(frontId);
   };
 
-  toggleFrontsMenu = () => {
+  public toggleFrontsMenu = () => {
     this.setState({
       isOpen: !this.state.isOpen
     });
   };
 
-  render() {
+  public render() {
     return (
       <React.Fragment>
         {this.state.isOpen && (

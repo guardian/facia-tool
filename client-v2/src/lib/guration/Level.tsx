@@ -9,15 +9,15 @@ import AddPathLevel from './utils/AddPathLevel';
 
 const isUndefined = (x: unknown) => typeof x === 'undefined';
 
-type DropProps = {
+interface DropProps {
   onDrop: (e: EventType) => void;
   onDragOver: (e: EventType) => void;
-};
+}
 
-type DropContext = {
+interface DropContext {
   isTarget: boolean;
   canDrop: boolean | null;
-};
+}
 
 type DropRenderer = (
   getDropProps: () => DropProps,
@@ -68,7 +68,7 @@ const doGetKey = <T extends any>(
   return undefined;
 };
 
-type LevelProps<T> = {
+interface LevelProps<T> {
   arr: T[];
   type: string;
   children: NodeChildren<T>;
@@ -77,10 +77,10 @@ type LevelProps<T> = {
   getKey?: (node: T) => string;
   dropOnNode?: boolean;
   field?: string;
-};
+}
 
 class Level<T> extends React.Component<LevelProps<T>> {
-  static defaultProps = {
+  public static defaultProps = {
     dropOnNode: true, // sets node drag props to allow drops
     getKey: <U extends { id: string }>({ id }: U) => id
   };
@@ -89,7 +89,7 @@ class Level<T> extends React.Component<LevelProps<T>> {
     return this.props.field || `${this.props.type}s`;
   }
 
-  render() {
+  public render() {
     const {
       arr,
       type,
@@ -115,7 +115,7 @@ class Level<T> extends React.Component<LevelProps<T>> {
               const key = doGetKey(getKey, item);
 
               if (isUndefined(key) && !didWarnKey) {
-                /* eslint-disable-next-line */
+                /* tslint:disable-next-line */
                 console.warn(
                   `\`getKey\` is returning undefined for type ${type}. This may cause unnecessary re-renders for these nodes and will cause React errors in development.`
                 );

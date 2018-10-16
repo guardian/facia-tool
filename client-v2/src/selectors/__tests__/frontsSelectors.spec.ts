@@ -6,7 +6,7 @@ import {
 import { frontsConfig } from 'fixtures/frontsConfig';
 import { FrontConfig } from 'types/FaciaApi';
 
-const editorialFrontsInConfig: Array<FrontConfig> = [
+const editorialFrontsInConfig: FrontConfig[] = [
   {
     collections: ['collection1'],
     id: 'editorialFront',
@@ -14,7 +14,7 @@ const editorialFrontsInConfig: Array<FrontConfig> = [
   }
 ];
 
-const additionalEditorialFronts: Array<FrontConfig> = [
+const additionalEditorialFronts: FrontConfig[] = [
   {
     collections: ['collection2'],
     id: 'editorialNotShared',
@@ -27,7 +27,7 @@ const additionalEditorialFronts: Array<FrontConfig> = [
   }
 ];
 
-const trainingFronts: Array<FrontConfig> = [
+const trainingFronts: FrontConfig[] = [
   {
     collections: ['collection3'],
     id: 'trainingFront',
@@ -35,7 +35,7 @@ const trainingFronts: Array<FrontConfig> = [
   }
 ];
 
-const commercialFronts: Array<FrontConfig> = [
+const commercialFronts: FrontConfig[] = [
   {
     collections: ['collection1'],
     id: 'commercialFront',

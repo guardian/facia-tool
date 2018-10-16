@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-type DropdownProps = {
+interface DropdownProps {
   current?: string | void,
   items: Array<{
     value: string,
@@ -10,7 +10,7 @@ type DropdownProps = {
   onChange: (value: string) => void,
   deselectValue?: string,
   deselectText?: string
-};
+}
 
 const Select = styled('select')`
   padding: 10px;

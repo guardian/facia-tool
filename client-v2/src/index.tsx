@@ -16,8 +16,9 @@ const store = configureStore();
 const config = extractConfigFromPage();
 
 // publish uncaught errors to sentry.io
-if (config.stage === 'PROD' && config.ravenUrl)
+if (config.stage === 'PROD' && config.ravenUrl) {
   Raven.config(config.ravenUrl).install();
+}
 
 store.dispatch(configReceived(config));
 if (config.frontIds) {

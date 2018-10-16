@@ -1,11 +1,17 @@
 export default class ImageMock {
-  static defaultLoadDelay = 100;
-  static defaultWidth: number = 100;
-  static defaultHeight: number = 100;
-  static shouldError: boolean = false;
-  width: void | number = undefined;
-  height: void | number = undefined;
-  src: void | string = undefined;
+  public static defaultLoadDelay = 100;
+  public static defaultWidth: number = 100;
+  public static defaultHeight: number = 100;
+  public static shouldError: boolean = false;
+  public static restoreDefaults() {
+    ImageMock.defaultWidth = 100;
+    ImageMock.defaultHeight = 100;
+    ImageMock.defaultLoadDelay = 100;
+    ImageMock.shouldError = false;
+  }
+  public width: void | number = undefined;
+  public height: void | number = undefined;
+  public src: void | string = undefined;
   constructor() {
     this.width = ImageMock.defaultWidth;
     this.height = ImageMock.defaultHeight;
@@ -14,12 +20,6 @@ export default class ImageMock {
       ImageMock.defaultLoadDelay
     );
   }
-  static restoreDefaults() {
-    ImageMock.defaultWidth = 100;
-    ImageMock.defaultHeight = 100;
-    ImageMock.defaultLoadDelay = 100;
-    ImageMock.shouldError = false;
-  }
-  onload = () => {};
-  onerror = () => {};
+  public onload = () => {};
+  public onerror = () => {};
 }

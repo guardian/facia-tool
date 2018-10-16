@@ -7,32 +7,29 @@ type CAPISearch = ReturnType<typeof capiQuery>['search'];
 type SearchReturn = ReturnType<CAPISearch>;
 type ChildrenParams = AsyncState<SearchReturn>;
 
-type CAPISearchQueryProps = {
+interface CAPISearchQueryProps {
   baseURL?: string;
   fetch?: Fetch;
   children: AsyncChild<SearchReturn>;
-  params: Object;
+  params: object;
   poll?: number;
-};
+}
 
-type CAPISearchQueryState = {
+interface CAPISearchQueryState {
   capi?: CAPISearch;
   baseURL?: string;
   fetch?: Fetch;
-};
+}
 
 class SearchQuery extends React.Component<
   CAPISearchQueryProps,
   CAPISearchQueryState
 > {
-  static defaultProps = {
+  public static defaultProps = {
     params: {}
   };
-  state: CAPISearchQueryState = {};
-  interval: NodeJS.Timer | void = undefined;
-  async: Async<any[], SearchReturn> | null = null;
 
-  static getDerivedStateFromProps(
+  public static getDerivedStateFromProps(
     { baseURL, fetch }: CAPISearchQueryProps,
     prevState: CAPISearchQueryState
   ) {
@@ -48,14 +45,17 @@ class SearchQuery extends React.Component<
     }
     return {};
   }
+  public state: CAPISearchQueryState = {};
+  public interval: NodeJS.Timer | void = undefined;
+  public async: Async<any[], SearchReturn> | null = null;
 
-  componentDidMount() {
+  public componentDidMount() {
     if (this.props.poll) {
       this.startPolling(this.props.poll);
     }
   }
 
-  componentDidUpdate(prevProps: CAPISearchQueryProps) {
+  public componentDidUpdate(prevProps: CAPISearchQueryProps) {
     if (!prevProps.poll && this.props.poll) {
       this.startPolling(this.props.poll);
     } else if (prevProps.poll && !this.props.poll) {
@@ -63,25 +63,25 @@ class SearchQuery extends React.Component<
     }
   }
 
-  poll = () => {
+  public poll = () => {
     if (this.async) {
       this.async.startRun();
     }
   };
 
-  startPolling = (rate: number) => {
+  public startPolling = (rate: number) => {
     if (this.props.poll) {
       this.interval = setInterval(this.poll, rate);
     }
   };
 
-  stopPolling = () => {
+  public stopPolling = () => {
     if (this.interval) {
       clearInterval(this.interval);
     }
   };
 
-  render() {
+  public render() {
     const { params, children, fetch, baseURL, ...props } = this.props;
     return (
       <Async<any[], SearchReturn>

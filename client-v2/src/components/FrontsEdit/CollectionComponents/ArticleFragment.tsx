@@ -8,16 +8,16 @@ import { Dispatch } from 'types/Store';
 import { removeGroupArticleFragment } from 'actions/ArticleFragments';
 import { ArticleFragmentDenormalised } from 'shared/types/Collection';
 
-type ContainerProps = {
+interface ContainerProps {
   isSelected: boolean;
   uuid: string;
   supporting?: ArticleFragmentDenormalised[];
   children: any;
-  getNodeProps: () => Object;
+  getNodeProps: () => object;
   onSelect: (uuid: string) => void;
   onCancel: (uuid: string) => void
   parentId: string;
-};
+}
 
 type ArticleFragmentProps = ContainerProps & {
   onDelete: () => void;

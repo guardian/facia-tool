@@ -1,9 +1,9 @@
 import { Action } from '../types/Action';
 import { Group } from '../types/Collection';
 
-type State = {
+interface State {
   [id: string]: Group
-};
+}
 
 const groups = (state: State = {}, action: Action) => {
   switch (action.type) {

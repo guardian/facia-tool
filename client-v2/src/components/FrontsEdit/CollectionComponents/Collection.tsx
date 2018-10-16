@@ -11,13 +11,13 @@ import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
 import { State } from 'types/State';
 import { Stages } from 'shared/types/Collection';
 
-type CollectionPropsBeforeState = {
+interface CollectionPropsBeforeState {
   id: string;
   groups: any;
   children: any;
   alsoOn: { [id: string]: AlsoOnDetail };
   frontId: string;
-};
+}
 
 type CollectionProps = CollectionPropsBeforeState & {
   publishCollection: (collectionId: string, frontId: string) => Promise<void>;

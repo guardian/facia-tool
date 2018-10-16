@@ -5,7 +5,7 @@ module.exports = {
   },
   testMatch: ['<rootDir>/src/**/*.spec.+(ts|tsx|js)'],
   transformIgnorePatterns: [
-    '<rootDir>/node_modules/?!(panda-session|grid-util-js)/'
+    '<rootDir>/node_modules/(?!(panda-session|grid-util-js)/)'
   ],
   setupTestFrameworkScriptFile: './node_modules/jest-enzyme/lib/index.js',
   setupFiles: ['./config/setupTest.js'],

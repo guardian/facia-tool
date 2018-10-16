@@ -24,13 +24,13 @@ const addChildrenFieldToParent = (
   ];
 };
 
-type AddPathLevelProps = {
+interface AddPathLevelProps {
   type: string;
   id: string;
   index: number;
   childrenField: string;
   children: (newPath: Path[]) => React.ReactNode;
-};
+}
 
 const AddPathLevel = ({
   type,

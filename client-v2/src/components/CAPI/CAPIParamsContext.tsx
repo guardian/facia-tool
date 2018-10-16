@@ -4,13 +4,13 @@ const { Provider: InnerProvider, Consumer } = React.createContext({
   params: {}
 });
 
-type ProviderProps = {
+interface ProviderProps {
   children: React.ReactNode;
   params?: {
     [key: string]: unknown;
   };
   [key: string]: unknown;
-};
+}
 
 const Provider = ({ children, params = {}, ...props }: ProviderProps) => (
   <InnerProvider

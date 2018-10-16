@@ -6,7 +6,7 @@ const move = (
   dragPath: Path[],
   path: Path[],
   newIndex: number,
-  meta: Object = {}
+  meta: object = {}
 ) => ({
   type: 'MOVE',
   payload: {
@@ -30,7 +30,7 @@ const insert = (
   id: string,
   dragPath: Path[],
   newIndex: number,
-  meta: Object = {}
+  meta: object = {}
 ) => ({
   type: 'INSERT',
   payload: {

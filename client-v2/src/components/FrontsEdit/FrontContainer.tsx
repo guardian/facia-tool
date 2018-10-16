@@ -48,7 +48,7 @@ const LastPressedContainer = styled('span')`
   margin-right: 6px;
 `;
 
-type FrontsContainerProps = {
+interface FrontsContainerProps {
   frontId: string;
 }
 
@@ -63,16 +63,16 @@ type FrontsComponentProps = FrontsContainerProps & {
   };
 };
 
-type ComponentState = {
+interface ComponentState {
   browsingStage: Stages;
-};
+}
 
 class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
-  state = {
+  public state = {
     browsingStage: frontStages.draft
   };
 
-  componentDidMount() {
+  public componentDidMount() {
     // If we've already got the front configuration, fetch
     // collections and articles immediately.
     if (this.props.selectedFront) {
@@ -82,7 +82,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
     }
   }
 
-  componentWillReceiveProps(nextProps: FrontsComponentProps) {
+  public componentWillReceiveProps(nextProps: FrontsComponentProps) {
     if (this.props.frontId !== nextProps.frontId || !this.props.lastPressed) {
       this.props.frontsActions.fetchLastPressed(nextProps.frontId);
     }
@@ -95,17 +95,17 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
     }
   }
 
-  handleStageSelect(key: string) {
+  public handleStageSelect(key: string) {
     this.setState({
       browsingStage: frontStages[key]
     });
   }
 
-  handleRemoveFront = () => {
+  public handleRemoveFront = () => {
     this.props.frontsActions.editorCloseFront(this.props.frontId);
   };
 
-  render() {
+  public render() {
     return (
       <>
         <React.Fragment>

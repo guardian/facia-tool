@@ -4,11 +4,11 @@ import GroupDisplay from 'shared/components/GroupDisplay';
 import DropZone from 'components/DropZone';
 import ArticleDrag from './ArticleDrag';
 
-type GroupProps = {
+interface GroupProps {
   id: string;
   articleFragments: any;
   children: any;
-};
+}
 
 const dropZoneStyle = {
   padding: '3px 0'

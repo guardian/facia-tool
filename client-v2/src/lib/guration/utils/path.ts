@@ -1,9 +1,9 @@
-type Path = {
+interface Path {
   id: string;
   index: number;
   type: string;
   childrenField?: string;
-};
+}
 
 const elEq = (a: Path, b: Path, checkChildren: boolean = false) => {
   const { index: i1, type: t1, childrenField: c1 } = a;

@@ -2,7 +2,7 @@ import GridUtil from 'grid-util-js';
 import imageConstants from '../constants/images';
 
 class Grid {
-  instance = new GridUtil({
+  public instance = new GridUtil({
     apiBaseUrl: imageConstants.apiBaseUrl,
     fetchInit: {
       credentials: 'include',
@@ -14,7 +14,7 @@ class Grid {
     return this.instance;
   }
 
-  setGridInstance(instance: typeof GridUtil) {
+  public setGridInstance(instance: typeof GridUtil) {
     this.instance = instance;
   }
 }

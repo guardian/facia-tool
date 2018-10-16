@@ -7,9 +7,9 @@ import {
 import { State } from 'types/State';
 import { DerivedArticle } from 'shared/types/Article';
 
-type ContainerProps = {
+interface ContainerProps {
   id: string;
-};
+}
 
 type ComponentProps = {
   article: DerivedArticle | void;

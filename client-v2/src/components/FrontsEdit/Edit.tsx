@@ -26,14 +26,14 @@ import SectionsContainer from '../layout/SectionsContainer';
 import FrontsMenu from './FrontsMenu';
 import PressFailAlert from '../PressFailAlert';
 
-type Props = {
+interface Props {
   match: match<{ priority: string }>;
   error: ActionError;
   frontIds: string[];
   staleFronts: { [id: string]: boolean };
   editorOpenFront: (frontId: string) => void;
   getFrontsConfig: () => void;
-};
+}
 
 const FrontsEditContainer = styled('div')`
   position: relative;
@@ -56,11 +56,11 @@ const FrontsContainer = SectionContainer.extend`
 `;
 
 class FrontsEdit extends React.Component<Props> {
-  componentDidMount() {
+  public componentDidMount() {
     this.props.getFrontsConfig();
   }
 
-  render() {
+  public render() {
     return (
       <FrontsEditContainer>
         <ErrorBannner error={this.props.error} />

@@ -1,8 +1,8 @@
 import without from 'lodash/without';
 
-type BaseResource = {
+interface BaseResource {
   id: string;
-};
+}
 
 const FETCH_START = 'FETCH_START';
 const FETCH_SUCCESS = 'FETCH_SUCCESS';
@@ -11,19 +11,19 @@ const UPDATE_START = 'UPDATE_START';
 const UPDATE_SUCCESS = 'UPDATE_SUCCESS';
 const UPDATE_ERROR = 'UPDATE_ERROR';
 
-type FetchStartAction = {
+interface FetchStartAction {
   entity: string;
   type: 'FETCH_START';
   payload: { ids?: string[] | string };
-};
+}
 
-type FetchSuccessAction<Resource> = {
+interface FetchSuccessAction<Resource> {
   entity: string;
   type: 'FETCH_SUCCESS';
   payload: { data: Resource | Resource[] | any; time: number };
-};
+}
 
-type FetchErrorAction = {
+interface FetchErrorAction {
   entity: string;
   type: 'FETCH_ERROR';
   payload: {
@@ -31,21 +31,21 @@ type FetchErrorAction = {
     time: number;
     ids?: string | string[];
   };
-};
+}
 
-type UpdateStartAction<Resource> = {
+interface UpdateStartAction<Resource> {
   entity: string;
   type: 'UPDATE_START';
   payload: { id?: string | string; data: Resource | any };
-};
+}
 
-type UpdateSuccessAction<Resource> = {
+interface UpdateSuccessAction<Resource> {
   entity: string;
   type: 'UPDATE_SUCCESS';
   payload: { data: Resource | any; id: string; time: number };
-};
+}
 
-type UpdateErrorAction = {
+interface UpdateErrorAction {
   entity: string;
   type: 'UPDATE_ERROR';
   payload: {
@@ -53,7 +53,7 @@ type UpdateErrorAction = {
     id: string;
     time: number;
   };
-};
+}
 
 type Actions<Resource> =
   | FetchStartAction
@@ -120,7 +120,7 @@ function applyNewData<Resource extends BaseResource>(
   };
 }
 
-type State<Resource> = {
+interface State<Resource> {
   data: Resource | { [id: string]: Resource } | any;
   lastError: string | null;
   error: string | null;
@@ -128,7 +128,7 @@ type State<Resource> = {
   loadingIds: string[];
   updatingIds: string[];
   loading: boolean;
-};
+}
 
 // @todo -- figure out a way to provide root state definition
 // without circular dependencies

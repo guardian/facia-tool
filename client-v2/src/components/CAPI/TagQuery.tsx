@@ -4,35 +4,29 @@ import { $ElementType, $Call } from 'utility-types';
 import Async, { AsyncState } from 'components/util/Async';
 import * as CAPIParamsContext from './CAPIParamsContext';
 
-type CAPITagQueryProps = {
+interface CAPITagQueryProps {
   baseURL?: string;
   fetch?: Fetch;
   children: any;
-  params: Object;
+  params: object;
   tagType: 'sections' | 'tags';
-};
+}
 
-type CAPITagQueryState = {
+interface CAPITagQueryState {
   capi: $ElementType<
     $Call<typeof capiQuery>,
     number | 'sections' | 'tags' | 'search'
   > | void;
   baseURL: string | void;
   fetch: Fetch | void;
-};
+}
 
 class TagQuery extends React.Component<CAPITagQueryProps, CAPITagQueryState> {
-  static defaultProps = {
+  public static defaultProps = {
     params: {}
   };
 
-  state = {
-    capi: undefined,
-    baseURL: undefined,
-    fetch: undefined
-  };
-
-  static getDerivedStateFromProps(
+  public static getDerivedStateFromProps(
     { baseURL, fetch, tagType }: CAPITagQueryProps,
     prevState: CAPITagQueryState
   ) {
@@ -49,7 +43,13 @@ class TagQuery extends React.Component<CAPITagQueryProps, CAPITagQueryState> {
     return {};
   }
 
-  render() {
+  public state = {
+    capi: undefined,
+    baseURL: undefined,
+    fetch: undefined
+  };
+
+  public render() {
     const { params, children, ...props } = this.props;
     return (
       <Async {...props} fn={this.state.capi} args={[params]}>

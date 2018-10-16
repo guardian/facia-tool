@@ -5,14 +5,14 @@ import deepGet from 'lodash/get';
 import grid, { recordUsage } from './grid';
 import fetchImage from './fetchImage';
 
-type Criteria = {
+interface Criteria {
   maxWidth?: number;
   minWidth?: number;
   widthAspectRatio?: number;
   heightAspectRatio?: number;
-};
+}
 
-type ImageDescription = {
+interface ImageDescription {
   height?: number;
   width?: number;
   thumb?: string;
@@ -20,15 +20,15 @@ type ImageDescription = {
   ratio?: number;
   path: string;
   criteria?: Criteria;
-};
+}
 
-type ValidationResponse = {
+interface ValidationResponse {
   src: string;
   thumb: string;
   origin: string;
   height: number;
   width: number;
-};
+}
 
 // @todo -- find type signature
 type Crop = any;

@@ -17,15 +17,15 @@ import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 import FadeIn from './animation/FadeIn';
 import ContentContainer from './layout/ContentContainer';
 
-type ContainerProps = {
+interface ContainerProps {
   id: string;
   selectSharedState?: (state: any) => State;
   browsingStage: Stages;
-};
+}
 
 type Props = ContainerProps & {
   collection: Collection;
-  articleIds?: Array<string>;
+  articleIds?: string[];
   headlineContent: React.ReactNode;
   metaContent: React.ReactNode;
   children: React.ReactNode;
@@ -83,15 +83,15 @@ const CollectionShortVerticalPinline = ShortVerticalPinline.extend`
 `;
 
 class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
-  state = {
+  public state = {
     isOpen: true
   };
 
-  toggleVisibility = () => {
+  public toggleVisibility = () => {
     this.setState({ isOpen: !this.state.isOpen });
   };
 
-  render() {
+  public render() {
     const {
       collection,
       articleIds,

@@ -2,33 +2,41 @@ import React from 'react';
 import isEqual from 'lodash/isEqual';
 import debounce from 'lodash/debounce';
 
-type AsyncState<R> = {
+interface AsyncState<R> {
   value: R | void;
   pending: boolean;
   error: Error | string | void;
-};
+}
 
 type AsyncChild<R> = (state: AsyncState<R>) => React.ReactNode;
 
-type AsyncProps<A extends any[], R> = {
+interface AsyncProps<A extends any[], R> {
   args: A;
   children: AsyncChild<R>;
   debounce?: number;
   fn?: (...args: A) => Promise<R> | R;
   on: boolean;
   intermediateLoadState?: boolean;
-};
+}
 
 class Async<A extends any[], R> extends React.Component<
   AsyncProps<A, R>,
   AsyncState<R>
 > {
-  static defaultProps = {
+  public static defaultProps = {
     debounce: 0,
     args: [],
     on: true,
     showLoading: false
   };
+
+  public state: AsyncState<R> = {
+    value: undefined,
+    pending: false,
+    error: undefined
+  };
+
+  public debouncedStartRun: () => void;
 
   constructor(props: AsyncProps<A, R>) {
     super(props);
@@ -38,23 +46,15 @@ class Async<A extends any[], R> extends React.Component<
       : this.startRun;
   }
 
-  state: AsyncState<R> = {
-    value: undefined,
-    pending: false,
-    error: undefined
-  };
-
-  componentDidMount() {
+  public componentDidMount() {
     this.update();
   }
 
-  componentDidUpdate(prevProps: AsyncProps<A, R>) {
+  public componentDidUpdate(prevProps: AsyncProps<A, R>) {
     this.update(prevProps);
   }
 
-  debouncedStartRun: () => void;
-
-  update(prevProps?: AsyncProps<A, R> | void): void {
+  public update(prevProps?: AsyncProps<A, R> | void): void {
     if (!this.props.on && (!prevProps || prevProps.on)) {
       this.setState({
         value: undefined,
@@ -69,7 +69,7 @@ class Async<A extends any[], R> extends React.Component<
     }
   }
 
-  startRun = () => {
+  public startRun = () => {
     this.setState(
       {
         pending: true
@@ -78,7 +78,7 @@ class Async<A extends any[], R> extends React.Component<
     );
   };
 
-  run = async () => {
+  public run = async () => {
     try {
       const value = await (this.props.fn && this.props.fn(...this.props.args));
       this.setState({
@@ -93,7 +93,7 @@ class Async<A extends any[], R> extends React.Component<
     }
   };
 
-  render() {
+  public render() {
     return this.props.children(this.state);
   }
 }

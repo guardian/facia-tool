@@ -7,7 +7,7 @@ import { Tag } from 'types/Capi';
 
 type SearchTypes = 'tags' | 'sections';
 
-type CAPITagInputProps<T> = {
+interface CAPITagInputProps<T> {
   onChange: (value: T, type: SearchTypes) => void;
   onSearchChange: (
     value: React.FormEvent<HTMLInputElement>,
@@ -16,7 +16,7 @@ type CAPITagInputProps<T> = {
   placeholder?: string;
   tagsSearchTerm: string;
   searchType: SearchTypes;
-};
+}
 
 const TagDropdown = styled('div')`
   margin-right: 19px;

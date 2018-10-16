@@ -2,10 +2,10 @@ import React from 'react';
 import HorizontalRule from 'shared/components/layout/HorizontalRule';
 import styled from 'styled-components';
 
-type GroupDisplayComponentProps = {
+interface GroupDisplayComponentProps {
   groupName: string;
   children: React.ReactNode;
-};
+}
 
 const GroupHeading = styled('div')`
   font-size: 14px;

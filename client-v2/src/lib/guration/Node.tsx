@@ -10,16 +10,16 @@ const getDropIndexOffset = ({ currentTarget: el, clientY }: EventType) => {
   return y > height / 2 ? 1 : 0;
 };
 
-type DOMNodeProps = {
+interface DOMNodeProps {
   draggable: boolean;
   onDragStart: (e: EventType) => void;
   onDragOver?: ((e: EventType) => void);
   onDrop?: ((e: EventType) => void);
-};
+}
 
 type GetNodeProps = () => DOMNodeProps;
 
-type NodeProps<T> = {
+interface NodeProps<T> {
   item: T;
   id: string;
   type: string;
@@ -49,12 +49,12 @@ type NodeProps<T> = {
     getNodeProps: GetNodeProps,
     index: number
   ) => React.ReactNode;
-};
+}
 
 class Node<T> extends React.Component<NodeProps<T>> {
-  dragImage: HTMLDivElement | null = null;
+  public dragImage: HTMLDivElement | null = null;
 
-  handleDragStart = (handleDragStart: (e: EventType) => void) => (
+  public handleDragStart = (handleDragStart: (e: EventType) => void) => (
     e: EventType
   ) => {
     if (this.dragImage) {
@@ -63,7 +63,7 @@ class Node<T> extends React.Component<NodeProps<T>> {
     handleDragStart(e);
   };
 
-  render() {
+  public render() {
     const {
       item,
       id,

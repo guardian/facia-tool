@@ -2,21 +2,21 @@
 
 import { Path } from '../utils/path';
 
-type ExternalDrag = {
+interface ExternalDrag {
   dropType: 'EXTERNAL',
   id: string,
   type: string,
-  meta?: Object
-};
+  meta?: object
+}
 
-type InternalDrag = {
+interface InternalDrag {
   dropType: 'INTERNAL',
   rootKey: string,
   id: string,
-  meta?: Object,
+  meta?: object,
   path: Path[],
   type: string
-};
+}
 
 type Drag = ExternalDrag | InternalDrag;
 

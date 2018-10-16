@@ -10,23 +10,23 @@ import CAPITagInput, {
   AsyncState
 } from '../FrontsCAPIInterface/TagInput';
 
-type FrontsCAPISearchInputProps = {
+interface FrontsCAPISearchInputProps {
   children: any;
   additionalFixedContent?: React.ComponentType<any>;
   displaySearchFilters: boolean;
   updateDisplaySearchFilters: (value: boolean) => void;
-};
+}
 
 type SearchTypeMap<T> = { [K in SearchTypes]: T };
 
 type SearchTerms = SearchTypeMap<string>;
 type SelectedTags = SearchTypeMap<string[]>;
 
-type FrontsCAPISearchInputState = {
+interface FrontsCAPISearchInputState {
   q: string | void;
   searchTerms: SearchTerms;
   selected: SelectedTags;
-};
+}
 
 const InputContainer = styled('div')`
   margin-bottom: 20px;
@@ -55,8 +55,8 @@ const emptyState = {
   q: undefined,
   searchTerms: emptySearchTerms,
   selected: {
-    tags: [] as Array<string>,
-    sections: [] as Array<string>
+    tags: [] as string[],
+    sections: [] as string[]
   }
 };
 
@@ -70,8 +70,10 @@ const reduceTypes = <V, O extends SearchTypeMap<V>, R>(
   init: R
 ) => {
   let val = init;
-  for (let key in obj) {
-    val = fn(init, key, obj[key]);
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      val = fn(init, key, obj[key]);
+    }
   }
   return val;
 };
@@ -85,21 +87,21 @@ class FrontsCAPISearchInput extends React.Component<
   FrontsCAPISearchInputProps,
   FrontsCAPISearchInputState
 > {
-  state = emptyState;
+  public state = emptyState;
 
-  clearInput = () => {
+  public clearInput = () => {
     this.setState(emptyState);
     this.props.updateDisplaySearchFilters(false);
   };
 
-  searchInput = () => {
+  public searchInput = () => {
     this.setState({
       searchTerms: emptySearchTerms
     });
     this.props.updateDisplaySearchFilters(false);
   };
 
-  clearIndividualSearchTerm = (searchTerm: string) => {
+  public clearIndividualSearchTerm = (searchTerm: string) => {
     const selected = Object.entries(this.state.selected).reduce(
       (acc, [key, results]) => ({
         ...acc,
@@ -110,7 +112,7 @@ class FrontsCAPISearchInput extends React.Component<
     this.setState({ selected });
   };
 
-  handleSearchInput = ({
+  public handleSearchInput = ({
     currentTarget
   }: React.SyntheticEvent<HTMLInputElement>) => {
     this.setState({
@@ -118,7 +120,7 @@ class FrontsCAPISearchInput extends React.Component<
     });
   };
 
-  handleTagSearchInput = (
+  public handleTagSearchInput = (
     { currentTarget }: React.SyntheticEvent<HTMLInputElement>,
     type: string
   ) => {
@@ -131,8 +133,8 @@ class FrontsCAPISearchInput extends React.Component<
     });
   };
 
-  handleTypeInput = (item: any, type: SearchTypes) => {
-    let newTags = [] as Array<string>;
+  public handleTypeInput = (item: any, type: SearchTypes) => {
+    let newTags = [] as string[];
     const oldTags = this.state.selected[type];
     if (item && oldTags.indexOf(item.id) === -1) {
       newTags = oldTags.concat([item.id]);
@@ -153,11 +155,11 @@ class FrontsCAPISearchInput extends React.Component<
     });
   };
 
-  handleDisplaySearchFilters = () => {
+  public handleDisplaySearchFilters = () => {
     this.props.updateDisplaySearchFilters(!this.props.displaySearchFilters);
   };
 
-  renderSelectedTags = (selectedTags: Array<string>) =>
+  public renderSelectedTags = (selectedTags: string[]) =>
     selectedTags.map(searchTerm => (
       <TagItem key={searchTerm}>
         <span>{searchTerm}</span>
@@ -176,7 +178,7 @@ class FrontsCAPISearchInput extends React.Component<
       </TagItem>
     ));
 
-  render() {
+  public render() {
     const {
       children,
       displaySearchFilters,

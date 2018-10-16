@@ -54,35 +54,36 @@ type Props = {
     heightAspectRatio?: number;
   };
 } & WrappedFieldProps;
-type State = { isHovering: boolean };
+interface State { isHovering: boolean }
 
 class InputImage extends React.Component<Props, State> {
-  state = {
+  public state = {
     isHovering: false
   };
 
-  handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+  public handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     this.setState({ isHovering: true });
   };
-  handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+  public handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     this.setState({ isHovering: false });
   };
-  handleDragOver = (e: React.DragEvent<HTMLDivElement>) => e.preventDefault();
-  handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  public handleDragOver = (e: React.DragEvent<HTMLDivElement>) => e.preventDefault();
+  public handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.persist();
     validateImageEvent(e, '@todo:frontId')
       .then(this.props.input.onChange)
+      // tslint:disable-next-line no-console
       .catch(err => console.log('@todo:handle error', err));
   };
-  handleAdd = () => {
+  public handleAdd = () => {
     // @todo: grid integration
   };
-  clearField = () => this.props.input.onChange(null);
+  public clearField = () => this.props.input.onChange(null);
 
-  render() {
+  public render() {
     return (
       <InputContainer>
         <ImageContainer

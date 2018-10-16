@@ -1,10 +1,10 @@
 import React from 'react';
 import { Level } from 'lib/guration';
 
-type FrontProps = {
+interface FrontProps {
   collections: any,
   children: any
-};
+}
 
 const Front = ({ collections, children }: FrontProps) => (
   <Level arr={collections} type="collection">

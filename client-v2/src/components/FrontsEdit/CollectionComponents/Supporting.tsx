@@ -4,11 +4,11 @@ import Article from 'shared/components/Article';
 import { removeSupportingArticleFragment } from 'actions/ArticleFragments';
 import { Dispatch } from 'types/Store';
 
-type ContainerProps = {
+interface ContainerProps {
   uuid: string;
   parentId: string;
   getNodeProps: any;
-};
+}
 
 type SupportingProps = ContainerProps & {
   onDelete: () => void;

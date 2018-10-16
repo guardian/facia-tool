@@ -17,7 +17,7 @@ import {
 import { State } from '../types/State';
 import { DerivedArticle } from '../types/Article';
 
-type ContainerProps = {
+interface ContainerProps {
   id: string; // eslint-disable-line react/no-unused-prop-types
   draggable?: boolean;
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -25,7 +25,7 @@ type ContainerProps = {
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
   onDelete?: () => void;
   selectSharedState?: (state: any) => State; // eslint-disable-line react/no-unused-prop-types
-};
+}
 
 type ComponentProps = {
   article: DerivedArticle | void;

@@ -15,13 +15,13 @@ const root = (state: any, action: any) => ({
   }
 });
 
-const run = (existing: any, added: any) =>
+const run = (exists: any, added: any) =>
   createStore(
     enableBatching(root),
     {
-      clipboard: existing.map(([uuid]: [string]) => uuid),
+      clipboard: exists.map(([uuid]: [string]) => uuid),
       shared: {
-        articleFragments: [...existing, added].reduce(
+        articleFragments: [...exists, added].reduce(
           (acc, [uuid, id]) => ({ ...acc, [uuid]: { uuid, id } }),
           {}
         )
@@ -30,12 +30,12 @@ const run = (existing: any, added: any) =>
     applyMiddleware(thunk)
   );
 
-const testAdd = (existing: [string, string][]) => (
+const testAdd = (exists: Array<[string, string]>) => (
   [uuid, id]: [string, string],
   index: number,
   afId: string|void = undefined
 ) => {
-  const { dispatch, getState } = run(existing, [uuid, id]);
+  const { dispatch, getState } = run(exists, [uuid, id]);
   expect(
     dispatch(
       insertClipboardArticleFragment(
@@ -49,7 +49,7 @@ const testAdd = (existing: [string, string][]) => (
   return getState();
 };
 
-const existing: [string, string][] = [['a', '1'], ['b', '2'], ['c', '3']];
+const existing: Array<[string, string]> = [['a', '1'], ['b', '2'], ['c', '3']];
 const add = testAdd(existing);
 
 describe('ArticleFragments actions', () => {

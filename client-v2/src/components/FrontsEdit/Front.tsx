@@ -48,12 +48,12 @@ const FrontContentContainer = styled('div')`
 
 const FrontFormContainer = FrontContentContainer;
 
-type FrontPropsBeforeState = {
+interface FrontPropsBeforeState {
   id: string;
   browsingStage: Stages;
   collectionIds: string[];
   alsoOn: { [id: string]: AlsoOnDetail };
-};
+}
 
 type FrontProps = FrontPropsBeforeState & {
   tree: any;
@@ -65,9 +65,9 @@ type FrontProps = FrontPropsBeforeState & {
   clearArticleFragmentSelection: () => void;
 };
 
-type FrontState = {
+interface FrontState {
   error: string | void;
-};
+}
 
 class FrontComponent extends React.Component<FrontProps, FrontState> {
   constructor(props: FrontProps) {
@@ -77,19 +77,20 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     };
   }
 
-  handleError = (error: string) => {
+  public handleError = (error: string) => {
     this.setState({
       error
     });
   };
 
-  clearArticleFragmentSelectionIfNeeded = (articleId: string) => {
+  public clearArticleFragmentSelectionIfNeeded = (articleId: string) => {
     if (articleId === this.props.selectedArticleFragmentId) {
       this.props.clearArticleFragmentSelection();
     }
   };
 
-  runEdit = (edit: any) => {
+  public runEdit = (edit: any) => {
+
     switch (edit.type) {
       case 'MOVE': {
         const {
@@ -131,7 +132,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     }
   };
 
-  handleChange = (edit: Guration.Edit) => {
+  public handleChange = (edit: Guration.Edit) => {
     const futureAction = this.runEdit(edit);
     if (!futureAction) {
       return;
@@ -143,7 +144,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     });
   };
 
-  render() {
+  public render() {
     const { selectedArticleFragmentId } = this.props;
     return (
       <React.Fragment>

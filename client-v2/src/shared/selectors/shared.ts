@@ -200,14 +200,14 @@ const stageForTreeSelector = (
   { stage }: { stage: Stages; collectionIds: string[] }
 ): Stages => stage;
 
-type FrontTree = {
+interface FrontTree {
   collections: CollectionTree[];
-};
+}
 
-type CollectionTree = {
+interface CollectionTree {
   id: string;
   groups: GroupTree[];
-};
+}
 
 type GroupTree = Overwrite<
   Group,

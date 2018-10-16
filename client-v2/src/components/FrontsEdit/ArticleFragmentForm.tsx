@@ -31,14 +31,14 @@ import Row from '../Row';
 import Col from '../Col';
 import { State } from 'types/State';
 
-type ComponentProps = {
+interface ComponentProps {
   onCancel: () => void;
   onSave: (meta: ArticleFragmentMeta) => void;
   imageSlideshowReplace: boolean;
   useCutout: boolean;
   hideMedia: boolean;
   articleFragmentId: string;
-};
+}
 
 type Props = ComponentProps &
   InjectedFormProps<ArticleFragmentFormData, ComponentProps, {}>;
@@ -65,7 +65,7 @@ interface ArticleFragmentFormData {
   cutoutImage: ImageData;
   useCutout: boolean;
   imageSlideshowReplace: boolean;
-  slideshow: (ImageData|void)[];
+  slideshow: Array<ImageData|void>;
 }
 
 const FormContainer = ContentContainer.withComponent('form').extend`
@@ -294,8 +294,8 @@ const getInitialValuesForArticleFragmentForm = (
   if (!article) {
     return undefined;
   }
-  const slideshowBackfill: (ImageData | void)[] = [];
-  const slideshow: (ImageData | void)[] = article.slideshow || [];
+  const slideshowBackfill: Array<ImageData | void> = [];
+  const slideshow: Array<ImageData | void> = article.slideshow || [];
   slideshowBackfill.length = 4 - slideshow.length;
   slideshowBackfill.fill(undefined);
   return article

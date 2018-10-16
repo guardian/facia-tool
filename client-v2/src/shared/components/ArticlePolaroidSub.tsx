@@ -11,14 +11,14 @@ import { State } from '../types/State';
 import { DerivedArticle } from '../types/Article';
 import toneColorMap from '../util/toneColorMap';
 
-type ContainerProps = {
+interface ContainerProps {
   id: string;
   draggable: boolean;
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
   onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
   selectSharedState?: (state: any) => State;
-};
+}
 
 type ComponentProps = {
   article: DerivedArticle | void;

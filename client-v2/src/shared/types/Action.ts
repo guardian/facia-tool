@@ -7,62 +7,62 @@ import {
 } from './Collection';
 import { Actions } from '../util/createAsyncResourceBundle';
 
-type ArticleFragmentsReceived = {
+interface ArticleFragmentsReceived {
   type: 'SHARED/ARTICLE_FRAGMENTS_RECEIVED',
   payload: { [id: string]: ArticleFragment }
-};
-type GroupsReceived = {
+}
+interface GroupsReceived {
   type: 'SHARED/GROUPS_RECEIVED',
   payload: { [id: string]: Group }
-};
-type UpdateArticleFragmentMeta = {
+}
+interface UpdateArticleFragmentMeta {
   type: 'SHARED/UPDATE_ARTICLE_FRAGMENT_META',
   payload: { id: string, meta: ArticleFragmentMeta }
-};
-type RemoveSupportingArticleFragment = {
+}
+interface RemoveSupportingArticleFragment {
   type: 'SHARED/REMOVE_SUPPORTING_ARTICLE_FRAGMENT',
   payload: {
     id: string,
     supportingArticleFragmentId: string
   }
-};
-type AddSupportingArticleFragment = {
+}
+interface AddSupportingArticleFragment {
   type: 'SHARED/ADD_SUPPORTING_ARTICLE_FRAGMENT',
   payload: {
     id: string,
     supportingArticleFragmentId: string,
     index: number
   }
-};
-type ReplaceArticleFragmentSupporting = {
+}
+interface ReplaceArticleFragmentSupporting {
   type: 'SHARED/REPLACE_ARTICLE_FRAGMENT_SUPPORTING',
   payload: {
     id: string,
     supporting: string[]
   }
-};
-type RemoveGroupArticleFragment = {
+}
+interface RemoveGroupArticleFragment {
   type: 'SHARED/REMOVE_GROUP_ARTICLE_FRAGMENT',
   payload: {
     id: string,
     articleFragmentId: string
   }
-};
-type AddGroupArticleFragment = {
+}
+interface AddGroupArticleFragment {
   type: 'SHARED/ADD_GROUP_ARTICLE_FRAGMENT',
   payload: {
     id: string,
     articleFragmentId: string,
     index: number
   }
-};
-type ReplaceGroupArticleFragments = {
+}
+interface ReplaceGroupArticleFragments {
   type: 'SHARED/REPLACE_GROUP_ARTICLE_FRAGMENTS',
   payload: {
     id: string,
     articleFragments: string[]
   }
-};
+}
 
 type Action =
   | RemoveSupportingArticleFragment

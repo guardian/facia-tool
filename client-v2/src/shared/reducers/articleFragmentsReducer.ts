@@ -1,9 +1,9 @@
 import { Action } from '../types/Action';
 import { ArticleFragment } from '../types/Collection';
 
-type State = {
+interface State {
   [id: string]: ArticleFragment;
-};
+}
 
 const articleFragments = (state: State = {}, action: Action) => {
   switch (action.type) {
