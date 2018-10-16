@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import styled, { injectGlobal, ThemeProvider } from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
