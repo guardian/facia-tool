@@ -18,7 +18,8 @@ import { updateClipboardContent } from 'actions/Clipboard';
 import { State } from 'types/State';
 import {
   AddClipboardArticleFragment,
-  RemoveClipboardArticleFragment
+  RemoveClipboardArticleFragment,
+  Action
 } from 'types/Action';
 import { ArticleFragment } from 'shared/types/Collection';
 
@@ -85,8 +86,6 @@ const removeClipboardArticleFragmentWithPersist = addPersistMetaToAction(
   }
 );
 
-type ParentTypes = 'articleFragment' | 'clipboard' | 'group';
-
 const selectorMap: {
   [key: string]: (state: State, id: string) => ArticleFragment[];
 } = {
@@ -101,20 +100,27 @@ const selectorMap: {
   clipboard: clipboardArticlesSelector
 };
 
-const insertActionMap = {
+interface ActionMap<T> {
+  [key: string]: T;
+}
+
+type InsertAction = (parentId: string, id: string, index: number) => Action;
+const insertActionMap: ActionMap<InsertAction> = {
   articleFragment: addSupportingArticleFragment,
   group: addGroupArticleFragment,
   clipboard: (_: string, id: string, index: number) =>
     addClipboardArticleFragment(id, index)
 };
 
-const removeActionMap = {
+type RemoveAction = (parentId: string, id: string) => Action;
+const removeActionMap: ActionMap<RemoveAction> = {
   articleFragment: removeSupportingArticleFragment,
   group: removeGroupArticleFragment,
   clipboard: (_: string, id: string) => removeClipboardArticleFragment(id)
 };
 
-const replaceActionMap = {
+type ReplaceAction = (parentId: string, children: string[]) => Action;
+const replaceActionMap: ActionMap<ReplaceAction> = {
   articleFragment: replaceArticleFragmentSupporting,
   group: replaceGroupArticleFragments,
   clipboard: (_: string, children?: string[]) =>
@@ -122,7 +128,7 @@ const replaceActionMap = {
 };
 
 const createInsertArticleFragment = (persistTo: 'collection' | 'clipboard') => (
-  parentType: ParentTypes,
+  parentType: string,
   parentId: string,
   id: string,
   index: number
@@ -154,10 +160,10 @@ const insertClipboardArticleFragment = createInsertArticleFragment('clipboard');
 /* separate clipboard */
 
 const createMoveArticleFragment = (persistTo: 'collection' | 'clipboard') => (
-  fromParentType: ParentTypes,
+  fromParentType: string,
   fromParentId: string,
   id: string,
-  toParentType: ParentTypes,
+  toParentType: string,
   toParentId: string,
   index: number
 ) => {

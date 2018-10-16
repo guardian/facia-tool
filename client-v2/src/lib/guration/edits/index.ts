@@ -1,4 +1,27 @@
 import { Path } from '../utils/path';
+import { Overwrite } from 'utility-types';
+import { format } from 'util';
+
+interface EditBase<T extends string, P> {
+  type: T;
+  payload: P;
+  meta: any;
+}
+
+type Move = EditBase<
+  'MOVE',
+  {
+    type: string;
+    id: string;
+    from: {
+      parent: Path;
+    };
+    to: {
+      parent: Path;
+      index: number;
+    };
+  }
+>;
 
 const move = (
   type: string,
@@ -6,8 +29,8 @@ const move = (
   dragPath: Path[],
   path: Path[],
   newIndex: number,
-  meta: object = {}
-) => ({
+  meta: any = {}
+): Move => ({
   type: 'MOVE',
   payload: {
     type,
@@ -23,15 +46,25 @@ const move = (
   meta
 });
 
-type Move = ReturnType<typeof move>;
+type Insert = EditBase<
+  'INSERT',
+  {
+    type: string;
+    id: string;
+    path: {
+      parent: Path;
+      index: number;
+    };
+  }
+>;
 
 const insert = (
   type: string,
   id: string,
   dragPath: Path[],
   newIndex: number,
-  meta: object = {}
-) => ({
+  meta: any = {}
+): Insert => ({
   type: 'INSERT',
   payload: {
     type,
@@ -43,8 +76,6 @@ const insert = (
   },
   meta
 });
-
-type Insert = ReturnType<typeof insert>;
 
 type Edit = Move | Insert;
 

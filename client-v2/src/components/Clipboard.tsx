@@ -35,7 +35,7 @@ interface ClipboardProps {
 class Clipboard extends React.Component<ClipboardProps> {
   // TODO: this code is repeated in src/components/FrontsEdit/Front.js
   // refactor
-  public runEdit = (edit: any) => {
+  public runEdit = (edit: Guration.Edit) => {
     switch (edit.type) {
       case 'MOVE': {
         const {
@@ -61,7 +61,7 @@ class Clipboard extends React.Component<ClipboardProps> {
         return this.props
           .addArticleFragment(edit.payload.id, edit.meta.supporting)
           .then(uuid =>
-            insertClipboardArticleFragment('clipboard', parent.id, uuid, index)
+            insertClipboardArticleFragment(parent.type, parent.id, uuid, index)
           );
       }
       default: {
