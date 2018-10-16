@@ -1,19 +1,22 @@
 import React from 'react';
 import capiQuery, { CAPISearchQueryReponse, Fetch } from 'services/capiQuery';
-import { $ElementType, $Call } from 'utility-types';
-import Async, { AsyncState } from 'components/util/Async';
+import Async, { AsyncState, AsyncChild } from 'components/util/Async';
 import * as CAPIParamsContext from './CAPIParamsContext';
+
+type CAPISearch = ReturnType<typeof capiQuery>['search'];
+type SearchReturn = ReturnType<CAPISearch>;
+type ChildrenParams = AsyncState<SearchReturn>;
 
 type CAPISearchQueryProps = {
   baseURL?: string;
   fetch?: Fetch;
-  children: any;
+  children: AsyncChild<SearchReturn>;
   params: Object;
   poll?: number;
 };
 
 type CAPISearchQueryState = {
-  capi?: $ElementType<$Call<typeof capiQuery>, 'search'>;
+  capi?: CAPISearch;
   baseURL?: string;
   fetch?: Fetch;
 };
@@ -27,7 +30,7 @@ class SearchQuery extends React.Component<
   };
   state: CAPISearchQueryState = {};
   interval: NodeJS.Timer | void = undefined;
-  async: Async<any, any> | void = undefined;
+  async: Async<any[], SearchReturn> | null = null;
 
   static getDerivedStateFromProps(
     { baseURL, fetch }: CAPISearchQueryProps,
@@ -81,8 +84,8 @@ class SearchQuery extends React.Component<
   render() {
     const { params, children, fetch, baseURL, ...props } = this.props;
     return (
-      <Async
-        ref={(node: Async<any, any>) => {
+      <Async<any[], SearchReturn>
+        ref={(node: Async<any[], SearchReturn> | null) => {
           this.async = node;
         }}
         {...props}
@@ -114,7 +117,7 @@ const SearchQueryWithContext = (props: CAPISearchQueryProps) => (
 
 export {
   SearchQuery as SearchQueryWithoutContext,
-  AsyncState,
+  ChildrenParams,
   CAPISearchQueryReponse
 };
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import {
   SearchQueryWithoutContext as SearchQuery,
-  AsyncState
+  ChildrenParams
 } from '../SearchQuery';
 
 const succesfulReturn = {
@@ -29,7 +29,7 @@ describe('SearchQuery', () => {
     const baseURL = 'https://www.example.com';
     mount(
       <SearchQuery baseURL={baseURL}>
-        {({ value, pending, error }: AsyncState<any>) => {
+        {({ value, pending, error }: ChildrenParams) => {
           v = value;
           p = pending;
           e = error;
@@ -47,11 +47,11 @@ describe('SearchQuery', () => {
     const baseURL = 'https://www.example.com';
     mount(
       <SearchQuery baseURL={baseURL}>
-        {({ value, pending, error }: AsyncState<string>) => {
+        {({ value, pending, error }: ChildrenParams) => {
           v = value;
           p = pending;
           e = error;
-          return false;
+          return null;
         }}
       </SearchQuery>
     );
