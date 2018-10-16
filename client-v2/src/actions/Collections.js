@@ -1,5 +1,6 @@
 // @flow
 
+import uniq from 'lodash/uniq';
 import { batchActions } from 'redux-batched-actions';
 import {
   getArticles,
@@ -60,8 +61,11 @@ function getCollection(collectionId: string) {
             groupsReceived(groups)
           ])
         );
-        return Object.keys(articleFragments).map(
-          afId => articleFragments[afId].id
+
+        // We dedupe ids here to ensure that articles aren't requested twice,
+        // e.g. multiple articles containing the same supporting article.
+        return uniq(
+          Object.keys(articleFragments).map(afId => articleFragments[afId].id)
         );
       })
       .catch((error: string) => {
@@ -99,22 +103,23 @@ function updateCollection(collection: Collection) {
   };
 }
 
-const getCollectionsAndArticles = (collectionIds: Array<string>) => (
-  dispatch: Dispatch
-) =>
+const getCollectionsAndArticles = (
+  collectionIds: Array<string>,
+  getCollectionAction: (
+    id: string
+  ) => (d: Dispatch, s: () => State) => Promise<string[]> = getCollection
+) => (dispatch: Dispatch) =>
   Promise.all(
-    collectionIds.map(collectionId =>
-      dispatch(getCollection(collectionId))
-        .then(articleIds => {
-          dispatch(externalArticleActions.fetchStart(articleIds));
-          return getArticles(articleIds).catch(error =>
-            dispatch(externalArticleActions.fetchError(error, articleIds))
-          );
-        })
-        .then(articles => {
-          dispatch(externalArticleActions.fetchSuccess(articles));
-        })
-    )
+    collectionIds.map(async collectionId => {
+      const articleIds = await dispatch(getCollectionAction(collectionId));
+      dispatch(externalArticleActions.fetchStart(articleIds));
+      try {
+        const articles = await getArticles(articleIds);
+        dispatch(externalArticleActions.fetchSuccess(articles));
+      } catch (e) {
+        dispatch(externalArticleActions.fetchError(e.message, articleIds));
+      }
+    })
   );
 
 export { getCollection, getCollectionsAndArticles, updateCollection };

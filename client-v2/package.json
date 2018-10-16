@@ -14,8 +14,9 @@
     "update-types": "flow-typed install --ignoreDeps peer bundle",
     "dev-server": "yarn compileWithBabel $(yarn bin)/webpack-dev-server --config config/webpack.config.dev.js",
     "dev": "yarn install && yarn dev-server --open",
+    "flow": "flow stop && flow",
     "test": "yarn jest",
-    "flow-coverage": "yarn run flow-coverage-report -i \"src/**/*.js\" --threshold 90 --strict-coverage",
+    "flow-coverage": "yarn run flow-coverage-report -i \"src/**/*.js\" -t text -t html --threshold 90 --strict-coverage",
     "run-checks": "yarn test && yarn flow && yarn lint && yarn flow-coverage"
   },
   "devDependencies": {
@@ -82,6 +83,7 @@
     "react-router-redux": "^4.0.8",
     "redux": "^3.7.2",
     "redux-batched-actions": "^0.3.0",
+    "redux-form": "^7.4.2",
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",
     "styled-components": "^3.2.5",

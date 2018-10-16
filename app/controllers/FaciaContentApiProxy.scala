@@ -48,9 +48,12 @@ class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec:
       config.contentApi.contentApiLiveHost
 
     val url = s"$contentApiHost/$path?$queryString${config.contentApi.key.map(key => s"&api-key=$key").getOrElse("")}"
-
-
+    
     wsClient.url(url).withHttpHeaders(getPreviewHeaders(url): _*).get().map { response =>
+
+      if (response.status != OK) {
+        logger.error(s"Request to capi preview with url $url failed with response $response, ${response.body}")
+      }
       Cached(60) {
         Ok(rewriteBody(response.body)).as("application/javascript")
       }

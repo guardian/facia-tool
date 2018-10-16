@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import noop from 'lodash/noop';
 import truncate from 'lodash/truncate';
 
-import { getThumbnail } from 'util/CAPIUtils';
+import { getThumbnailFromElements } from 'util/CAPIUtils';
 import {
   externalArticleFromArticleFragmentSelector,
   selectSharedState
@@ -58,7 +58,7 @@ const ArticleComponent = ({
       onDrop={onDrop}
     >
       {article.elements && (
-        <Thumbnail src={getThumbnail(article.elements)} alt="" />
+        <Thumbnail src={getThumbnailFromElements(article.elements)} alt="" />
       )}
       {truncate(article.headline, { length: 45 })}
       {children}

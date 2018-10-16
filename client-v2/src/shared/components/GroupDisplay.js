@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import HorizontalRule from 'components/layout/HorizontalRule';
+import HorizontalRule from 'shared/components/layout/HorizontalRule';
 import styled from 'styled-components';
 
 type GroupDisplayComponentProps = {

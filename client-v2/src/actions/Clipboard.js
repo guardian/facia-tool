@@ -1,5 +1,6 @@
 // @flow
 
+import type { Dispatch } from 'types/Store';
 import { saveClipboard, getArticles } from 'services/faciaApi';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import { batchActions } from 'redux-batched-actions';

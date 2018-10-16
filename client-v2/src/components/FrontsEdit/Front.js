@@ -31,15 +31,19 @@ import Collection from './CollectionComponents/Collection';
 import Group from './CollectionComponents/Group';
 import ArticleFragment from './CollectionComponents/ArticleFragment';
 import Supporting from './CollectionComponents/Supporting';
-import ArticleFragmentFormContainer from './ArticleFragmentFormContainer';
+import ArticleFragmentForm from './ArticleFragmentForm';
 
 const FrontContainer = styled('div')`
   display: flex;
 `;
 
 const FrontContentContainer = styled('div')`
-  max-width: 600px;
+  max-height: 100%;
+  overflow-y: scroll;
+  padding-top: 1px;
 `;
+
+const FrontFormContainer = FrontContentContainer;
 
 type FrontPropsBeforeState = {
   id: string,
@@ -207,13 +211,16 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
               </Front>
             </Guration.Root>
           </FrontContentContainer>
-          {this.props.selectedArticleFragmentId && (
-            <ArticleFragmentFormContainer
-              articleFragmentId={this.props.selectedArticleFragmentId}
-              onSave={() => {}}
-              onCancel={this.props.clearArticleFragmentSelection}
-            />
-          )}
+          <FrontFormContainer>
+            {this.props.selectedArticleFragmentId && (
+              <ArticleFragmentForm
+                articleFragmentId={this.props.selectedArticleFragmentId}
+                key={this.props.selectedArticleFragmentId}
+                form={this.props.selectedArticleFragmentId}
+                onCancel={this.props.clearArticleFragmentSelection}
+              />
+            )}
+          </FrontFormContainer>
         </FrontContainer>
       </React.Fragment>
     );

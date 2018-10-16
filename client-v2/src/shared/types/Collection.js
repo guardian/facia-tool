@@ -14,7 +14,7 @@ type NestedArticleFragment = {
   }
 };
 
-type ArticleFragmentMetaFields = {|
+type ArticleFragmentMeta = {|
   headline?: string,
   trailText?: string,
   byline?: string,
@@ -62,7 +62,7 @@ type ArticleFragment = $Diff<NestedArticleFragment, { meta: any }> & {
   // so we can reassemble the original id for persist operations.
   meta: {
     supporting?: string[]
-  } & ArticleFragmentMetaFields
+  } & ArticleFragmentMeta
 };
 
 type CollectionResponse = {
@@ -97,6 +97,7 @@ type Collection = {|
 export type {
   NestedArticleFragment,
   ArticleFragment,
+  ArticleFragmentMeta,
   CollectionWithNestedArticles,
   CollectionResponse,
   Collection,

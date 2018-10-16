@@ -18,6 +18,7 @@ const LogoContainer = styled('div')`
   background-color: #515151;
   position: relative;
   display: inline-block;
+  vertical-align: top;
 `;
 
 const LogoBackground = styled('div')`

@@ -1,5 +1,5 @@
-// flow-typed signature: 8e8f10c16b7f1b7249a269ae3938551e
-// flow-typed version: b0f6644f4d/styled-components_v3.x.x/flow_>=v0.57.x
+// flow-typed signature: ce50ee69c8fecaa09b065c4a68ca16cc
+// flow-typed version: 10cba0f2ce/styled-components_v3.x.x/flow_>=v0.57.x <=v0.74.x
 
 // @flow
 
@@ -302,6 +302,7 @@ type $npm$styledComponents$StyledComponentsNativeComponentList = {|
   ProgressViewIOS:              $npm$styledComponents$StyledComponentsNativeComponentListValue,
   RecyclerViewBackedScrollView: $npm$styledComponents$StyledComponentsNativeComponentListValue,
   RefreshControl:               $npm$styledComponents$StyledComponentsNativeComponentListValue,
+  SafeAreaView:                 $npm$styledComponents$StyledComponentsNativeComponentListValue,
   ScrollView:                   $npm$styledComponents$StyledComponentsNativeComponentListValue,
   SectionList:                  $npm$styledComponents$StyledComponentsNativeComponentListValue,
   SegmentedControlIOS:          $npm$styledComponents$StyledComponentsNativeComponentListValue,

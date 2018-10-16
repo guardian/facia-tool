@@ -24,7 +24,7 @@ store.dispatch(configReceived(config));
 if (config.frontIds) {
   store.dispatch(editorSetOpenFronts(config.frontIds));
 }
-storeClipboardContent(config.clipboardArticles)(store.dispatch);
+store.dispatch(storeClipboardContent(config.clipboardArticles));
 
 const reactMount = document.getElementById('react-mount');
 

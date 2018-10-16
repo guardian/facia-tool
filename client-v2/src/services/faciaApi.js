@@ -174,8 +174,9 @@ function getArticles(articleIds: string[]): Promise<Array<ExternalArticle>> {
         headline: result.webTitle,
         id: `internal-code/page/${result.fields.internalPageCode}`,
         isLive: result.fields.isLive === 'true',
+        urlPath: result.id,
         firstPublicationDate: result.fields.firstPublicationDate,
-        tone: result.frontsMeta.tone,
+        tone: result.frontsMeta && result.frontsMeta.tone,
         sectionName: result.sectionName,
         trailText: result.fields.trailText,
         elements: result.elements
@@ -200,7 +201,14 @@ function getArticles(articleIds: string[]): Promise<Array<ExternalArticle>> {
     .then(response => response.text())
     .then(articles =>
       Promise.resolve([...parseArticleListFromResponse(articles)])
-    );
+    )
+    .catch(response => {
+      throw new Error(
+        `Error fetching articles - the server returned ${response.status}: ${
+          response.statusText
+        }`
+      );
+    });
 }
 
 export {

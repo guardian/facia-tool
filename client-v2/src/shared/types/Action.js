@@ -1,7 +1,12 @@
 // @flow
 
 import type { ExternalArticle } from './ExternalArticle';
-import type { Collection, ArticleFragment, Group } from './Collection';
+import type {
+  Collection,
+  ArticleFragment,
+  Group,
+  ArticleFragmentMeta
+} from './Collection';
 import type { Actions } from '../util/createAsyncResourceBundle';
 
 type ArticleFragmentsReceived = {|
@@ -14,7 +19,7 @@ type GroupsReceived = {|
 |};
 type UpdateArticleFragmentMeta = {|
   type: 'SHARED/UPDATE_ARTICLE_FRAGMENT_META',
-  payload: { id: string, meta: ArticleFragment.meta }
+  payload: { id: string, meta: ArticleFragmentMeta }
 |};
 type RemoveSupportingArticleFragment = {|
   type: 'SHARED/REMOVE_SUPPORTING_ARTICLE_FRAGMENT',

@@ -15,7 +15,6 @@ const InputWrapper = styled('div')`
 `;
 
 const Input = styled(`input`)`
-  appearance: none;
   background: #fff;
   border: none;
   width: 100%;
@@ -45,6 +44,7 @@ const SmallRoundButtonBlack = SmallRoundButton.extend`
   background-color: #333333;
   :hover {
     background-color: #505050;
+  }
 `;
 
 const ButtonsContainer = styled('div')`
