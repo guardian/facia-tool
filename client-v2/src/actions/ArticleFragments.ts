@@ -127,8 +127,9 @@ const createInsertArticleFragment = (persistTo: 'collection' | 'clipboard') => (
   const insert = insertActionMap[parentType];
   const replaceAction = replaceActionMap[parentType];
   const selector = selectorMap[parentType];
+
   if (!insert || !replaceAction || !selector) {
-    return () => {}; // noop
+    return () => undefined; // noop
   }
 
   const replace = addPersistMetaToAction(replaceAction, {

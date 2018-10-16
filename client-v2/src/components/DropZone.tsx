@@ -15,8 +15,8 @@ class DropZone extends React.Component<
   {
     onDrop: (e: React.DragEvent<HTMLElement>) => void,
     onDragOver: (e: React.DragEvent<HTMLElement>) => void,
-    style: Object,
-    indicatorStyle: Object,
+    style: React.CSSProperties,
+    indicatorStyle: React.CSSProperties,
     override?: boolean
   },
   { isHoveredOver: boolean }
