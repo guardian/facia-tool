@@ -245,7 +245,7 @@ function getData(
   identifier: string
 ) {
   const dataTransfer = (event as React.DragEvent<HTMLElement>).nativeEvent
-    ? ((event as React.DragEvent<HTMLElement>).nativeEvent as any).dataTransfer
+    ? (event as React.DragEvent<HTMLElement>).nativeEvent.dataTransfer
     : event.dataTransfer;
   return dataTransfer && dataTransfer.getData
     ? dataTransfer.getData(identifier)

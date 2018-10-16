@@ -73,7 +73,7 @@ const articleFromArticleFragmentSelector = (
 };
 
 const collectionIdSelector = (
-  _: any,
+  _: unknown,
   { collectionId }: { collectionId: string }
 ) => collectionId;
 
@@ -93,7 +93,7 @@ const createCollectionSelector = () =>
   );
 
 const stageSelector = (
-  _: any,
+  _: unknown,
   { stage }: { stage: Stages; collectionId: string }
 ): Stages => stage;
 
@@ -171,7 +171,7 @@ const groupArticlesSelector = createSelector(
 );
 
 const collectionIdsSelector = (
-  _: State,
+  _: unknown,
   { collectionIds }: { collectionIds: string[] }
 ) => collectionIds;
 
@@ -196,7 +196,7 @@ const createDemornalisedArticleFragment = (
     : { ...articleFragments[articleFragmentId] };
 
 const stageForTreeSelector = (
-  _: any,
+  _: unknown,
   { stage }: { stage: Stages; collectionIds: string[] }
 ): Stages => stage;
 

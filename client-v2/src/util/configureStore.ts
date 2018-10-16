@@ -31,7 +31,7 @@ export default function configureStore() {
         persistClipboardOnEdit(),
         persistOpenFrontsOnEdit()
       ),
-      (window as any).devToolsExtension ? (window as any).devToolsExtension() : (f: any) => f
+      (window as any).devToolsExtension ? (window as any).devToolsExtension() : (f: unknown) => f
     )
   );
 

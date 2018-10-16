@@ -16,7 +16,7 @@ type NestedArticleFragmentRootFields = {
 
 type NestedArticleFragment = NestedArticleFragmentRootFields & {
   meta: {
-    supporting?: Diff<NestedArticleFragment, { supporting: any }>[];
+    supporting?: Diff<NestedArticleFragment, { supporting: unknown }>[];
   };
 };
 
