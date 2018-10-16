@@ -33,5 +33,4 @@ declare module 'normalise-with-fields' {
   export const createType: any
   export const build: any;
   export const createFieldType: any;
-
 }

@@ -31,12 +31,12 @@ export default function configureStore() {
         persistClipboardOnEdit(),
         persistOpenFrontsOnEdit()
       ),
-      (window as any).devToolsExtension ? (window as any).devToolsExtension() : (f: unknown) => f
+      window.devToolsExtension ? window.devToolsExtension() : (f: unknown) => f
     )
   );
 
-  if ((module as any).hot) {
-    (module as any).hot.accept('reducers/rootReducer.js', () => {
+  if (module.hot) {
+    module.hot.accept('reducers/rootReducer.js', () => {
       store.replaceReducer(rootReducer);
     });
   }
