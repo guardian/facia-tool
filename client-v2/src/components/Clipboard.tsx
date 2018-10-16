@@ -96,10 +96,15 @@ class Clipboard extends React.Component<ClipboardProps> {
         mapOut={{
           // TODO: fix me, this is the same mapper for everything!
           // need to return a key and a payload instead of just a payload
-          clipboard: (el: { id: string }, type) =>
+          clipboard: (el: { id: string; meta: any }, type) =>
             JSON.stringify({
               type,
-              id: el.id
+              id: el.id,
+              meta: {
+                supporting: ((el.meta.supporting || []) as Array<{
+                  id: string;
+                }>).map(({ id }) => id)
+              }
             })
         }}
       >
