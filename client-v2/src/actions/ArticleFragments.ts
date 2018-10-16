@@ -104,20 +104,20 @@ const selectorMap: {
 const insertActionMap = {
   articleFragment: addSupportingArticleFragment,
   group: addGroupArticleFragment,
-  clipboard: (_: unknown, id: string, index: number) =>
+  clipboard: (_: string, id: string, index: number) =>
     addClipboardArticleFragment(id, index)
 };
 
 const removeActionMap = {
   articleFragment: removeSupportingArticleFragment,
   group: removeGroupArticleFragment,
-  clipboard: (_: unknown, id: string) => removeClipboardArticleFragment(id)
+  clipboard: (_: string, id: string) => removeClipboardArticleFragment(id)
 };
 
 const replaceActionMap = {
   articleFragment: replaceArticleFragmentSupporting,
   group: replaceGroupArticleFragments,
-  clipboard: (_: unknown, children?: string[]) =>
+  clipboard: (_: string, children?: string[]) =>
     updateClipboardContent(children)
 };
 
