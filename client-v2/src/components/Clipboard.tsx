@@ -6,11 +6,9 @@ import { Edit } from 'lib/guration';
 import { State } from 'types/State';
 import { urlToArticle } from 'util/collectionUtils';
 import {
-  clipboardAsTreeSelector,
-  ArticleFragmentTree,
-  SupportingTree,
-  ClipboardTree
+  ArticleFragmentTree
 } from 'shared/selectors/shared';
+import {   clipboardAsTreeSelector, ClipboardTree } from 'selectors/clipboardSelectors';
 import DropZone from 'components/DropZone';
 import ArticlePolaroid from 'shared/components/ArticlePolaroid';
 import ArticlePolaroidSub from 'shared/components/ArticlePolaroidSub';
@@ -24,6 +22,7 @@ import {
   selectEditorArticleFragment
 } from 'bundles/frontsUIBundle';
 import { clipboardId } from 'constants/fronts';
+import { ArticleFragmentDenormalised } from 'shared/types/Collection';
 
 type ClipboardPropsBeforeState = {};
 
@@ -135,7 +134,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                 )}
               >
                 {(
-                  supporting: SupportingTree,
+                  supporting: ArticleFragmentDenormalised,
                   getSupportingNodeProps: Guration.GetNodeProps
                 ) => (
                   <ArticlePolaroidSub
@@ -178,9 +177,7 @@ const mergeProps = (
     dispatchProps.selectArticleFragment(clipboardId, articleId)
 });
 
-type TMergeProps = ReturnType<typeof mergeProps>;
-
-export default connect<TStateProps, TDispatchProps, {}, TMergeProps>(
+export default connect(
   mapStateToProps,
   mapDispatchToProps,
   mergeProps

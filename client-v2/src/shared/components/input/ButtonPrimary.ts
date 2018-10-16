@@ -1,5 +1,3 @@
-
-
 import Button from './ButtonDefault';
 
 export default Button.extend`

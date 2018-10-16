@@ -1,6 +1,3 @@
-
-
-import React from 'react';
 import { connect } from 'react-redux';
 import { match, withRouter, RouteComponentProps } from 'react-router';
 

@@ -37,7 +37,7 @@ describe('SearchQuery', () => {
         }}
       </SearchQuery>
     );
-    expect([v, p, e]).toEqual([null, true, null]);
+    expect([v, p, e]).toEqual([undefined, true, undefined]);
   });
 
   it('makes a call and passes that too the child when the API returns', async () => {
@@ -57,6 +57,6 @@ describe('SearchQuery', () => {
     );
     await flushPromises();
     expect((global as any).fetch.mock.calls[0][0].includes(baseURL)).toBe(true);
-    expect([v, p, e]).toEqual([succesfulReturn, false, null]);
+    expect([v, p, e]).toEqual([succesfulReturn, false, undefined]);
   });
 });

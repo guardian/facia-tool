@@ -1,5 +1,3 @@
-
-
 import { FrontsConfig } from 'types/FaciaApi';
 
 const frontsConfig: { data: FrontsConfig } = {

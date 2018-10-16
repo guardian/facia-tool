@@ -1,5 +1,3 @@
-
-
 const capiArticle = {
   id:
     'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina',
@@ -425,7 +423,7 @@ const collectionWithSupportingArticles = {
   displayName: 'Example Collection'
 };
 
-const stateWithCollection = {
+const stateWithCollection: any = {
   fronts: {
     frontsConfig: {
       data: {
@@ -487,7 +485,7 @@ const stateWithCollection = {
   }
 };
 
-const stateWithCollectionAndSupporting = {
+const stateWithCollectionAndSupporting: any = {
   shared: {
     collections: {
       data: {

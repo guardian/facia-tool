@@ -1,5 +1,3 @@
-
-
 const stateWithClipboard = {
   clipboard: ['article', 'article2'],
   shared: {

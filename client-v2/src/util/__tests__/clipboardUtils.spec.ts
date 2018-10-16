@@ -1,5 +1,3 @@
-
-
 import { liveArticle, articleWithSupporting } from 'shared/fixtures/shared';
 import { stateWithClipboard } from 'fixtures/clipboard';
 import { normaliseClipboard, denormaliseClipboard } from '../clipboardUtils';

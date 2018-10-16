@@ -1,8 +1,6 @@
 import { Dispatch } from 'types/Store';
 import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-
 import CollectionDisplay from 'shared/components/Collection';
 import AlsoOnNotification from 'components/AlsoOnNotification';
 import Button from 'shared/components/input/ButtonDefault';

@@ -1,12 +1,10 @@
-
-
 import {
   getFrontsWithPriority,
   alsoOnFrontSelector,
   lastPressedSelector
 } from 'selectors/frontsSelectors';
 import { frontsConfig } from 'fixtures/frontsConfig';
-import { FrontsConfig, FrontConfig } from 'types/FaciaApi';
+import { FrontConfig } from 'types/FaciaApi';
 
 const editorialFrontsInConfig: Array<FrontConfig> = [
   {

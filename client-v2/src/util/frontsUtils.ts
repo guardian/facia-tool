@@ -1,5 +1,3 @@
-
-
 import { FrontConfig, CollectionConfig } from 'types/FaciaApi';
 import { CollectionWithNestedArticles } from 'shared/types/Collection';
 import { detectPressFailureMs } from 'constants/fronts';

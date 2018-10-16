@@ -7,7 +7,7 @@ import {
   createCollectionSelector
 } from '../shared';
 
-const state = {
+const state: any = {
   collections: {
     data: {
       c1: {
@@ -116,7 +116,7 @@ const state = {
   }
 };
 
-const stateWithGrouplessCollection = {
+const stateWithGrouplessCollection: any = {
   collections: {
     data: {
       c1: {
@@ -147,7 +147,7 @@ const stateWithGrouplessCollection = {
   }
 };
 
-const stateWithSupportingArticles = {
+const stateWithSupportingArticles: any = {
   collections: {
     data: {
       c1: {

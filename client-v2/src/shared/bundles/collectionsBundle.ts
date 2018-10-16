@@ -29,7 +29,7 @@ const collectionSelectors = {
               state.articleFragments[afId] &&
               state.articleFragments[afId].meta &&
               state.articleFragments[afId].meta.supporting &&
-              state.articleFragments[afId].meta.supporting.indexOf(
+              state.articleFragments[afId].meta.supporting!.indexOf(
                 articleFragmentId
               ) !== -1
             ) {

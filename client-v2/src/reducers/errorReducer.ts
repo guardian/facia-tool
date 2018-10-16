@@ -1,5 +1,3 @@
-
-
 import { Action, ActionError } from 'types/Action';
 
 type State = ActionError;

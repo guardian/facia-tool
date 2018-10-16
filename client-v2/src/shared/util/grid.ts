@@ -1,5 +1,3 @@
-
-
 import GridUtil from 'grid-util-js';
 import imageConstants from '../constants/images';
 

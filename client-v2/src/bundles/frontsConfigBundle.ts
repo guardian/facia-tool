@@ -1,7 +1,4 @@
-
-
 import createAsyncResourceBundle, { State } from 'shared/util/createAsyncResourceBundle';
-import { State as RootState } from 'types/State';
 import { FrontsConfig } from 'types/FaciaApi';
 
 export const {

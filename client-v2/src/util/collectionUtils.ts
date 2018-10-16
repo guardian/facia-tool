@@ -1,5 +1,3 @@
-
-
 import { getURLInternalPageCode } from 'util/CAPIUtils';
 
 const urlToArticle = async (text: string) => {

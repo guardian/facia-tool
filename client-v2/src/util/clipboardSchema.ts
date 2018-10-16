@@ -1,5 +1,3 @@
-
-
 import { createType, build } from 'normalise-with-fields';
 import v4 from 'uuid/v4';
 import {

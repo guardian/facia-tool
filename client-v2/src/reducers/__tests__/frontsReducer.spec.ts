@@ -1,5 +1,3 @@
-
-
 import reducer from '../frontsReducer';
 import { fetchLastPressedSuccess } from '../../actions/Fronts';
 

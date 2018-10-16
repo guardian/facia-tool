@@ -1,5 +1,3 @@
-
-
 import fetchMock from 'fetch-mock';
 import { fetchLastPressed, updateCollection } from '../faciaApi';
 

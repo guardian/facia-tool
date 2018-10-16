@@ -1,5 +1,3 @@
-
-
 import { ExternalArticle } from './ExternalArticle';
 import {
   Collection,

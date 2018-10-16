@@ -8,10 +8,8 @@ import {
   selectSharedState,
   createCollectionsAsTreeSelector,
   ArticleFragmentTree,
-  SupportingTree,
   CollectionTree
 } from 'shared/selectors/shared';
-import { bindActionCreators } from 'redux';
 import { addArticleFragment } from 'shared/actions/ArticleFragments';
 import {
   insertArticleFragment,
@@ -28,7 +26,8 @@ import {
 import {
   ArticleFragmentMeta,
   Stages,
-  Group as TGroup
+  Group as TGroup,
+  ArticleFragmentDenormalised
 } from 'shared/types/Collection';
 import Front from './CollectionComponents/Front';
 import Collection from './CollectionComponents/Collection';
@@ -220,7 +219,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                             }
                           >
                             {(
-                              supporting: SupportingTree,
+                              supporting: ArticleFragmentDenormalised,
                               sNodeProps: Guration.GetNodeProps
                             ) => (
                               <Supporting

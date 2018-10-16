@@ -1,5 +1,3 @@
-
-
 import { frontsConfig } from './fixtures/frontsConfig';
 
 const frontsActions = {

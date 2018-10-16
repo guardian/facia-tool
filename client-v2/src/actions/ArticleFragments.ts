@@ -10,15 +10,21 @@ import {
 } from 'shared/actions/ArticleFragments';
 import {
   supportingArticlesSelector,
-  groupArticlesSelector,
-  clipboardArticlesSelector
+  groupArticlesSelector
 } from 'shared/selectors/shared';
+import { clipboardArticlesSelector } from 'selectors/clipboardSelectors';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
 import { updateClipboardContent } from 'actions/Clipboard';
 import { State } from 'types/State';
-import { AddClipboardArticleFragment, RemoveClipboardArticleFragment } from 'types/Action';
+import {
+  AddClipboardArticleFragment,
+  RemoveClipboardArticleFragment
+} from 'types/Action';
 
-function addClipboardArticleFragment(articleFragmentId: string, index: number): AddClipboardArticleFragment {
+function addClipboardArticleFragment(
+  articleFragmentId: string,
+  index: number
+): AddClipboardArticleFragment {
   return {
     type: 'ADD_CLIPBOARD_ARTICLE_FRAGMENT',
     payload: {
@@ -28,7 +34,9 @@ function addClipboardArticleFragment(articleFragmentId: string, index: number): 
   };
 }
 
-function removeClipboardArticleFragment(articleFragmentId: string): RemoveClipboardArticleFragment {
+function removeClipboardArticleFragment(
+  articleFragmentId: string
+): RemoveClipboardArticleFragment {
   return {
     type: 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT',
     payload: {
@@ -76,9 +84,7 @@ const removeClipboardArticleFragmentWithPersist = addPersistMetaToAction(
   }
 );
 
-type ParentTypes = 'articleFragment' |
- 'clipboard' |
- 'group';
+type ParentTypes = 'articleFragment' | 'clipboard' | 'group';
 
 const selectorMap = {
   articleFragment: (state: State, id: string) =>
@@ -95,7 +101,8 @@ const selectorMap = {
 const insertActionMap = {
   articleFragment: addSupportingArticleFragment,
   group: addGroupArticleFragment,
-  clipboard: (_: unknown, id: string, index: number) => addClipboardArticleFragment(id, index)
+  clipboard: (_: unknown, id: string, index: number) =>
+    addClipboardArticleFragment(id, index)
 };
 
 const removeActionMap = {
@@ -107,7 +114,8 @@ const removeActionMap = {
 const replaceActionMap = {
   articleFragment: replaceArticleFragmentSupporting,
   group: replaceGroupArticleFragments,
-  clipboard: (_: unknown, children?: string[]) => updateClipboardContent(children)
+  clipboard: (_: unknown, children?: string[]) =>
+    updateClipboardContent(children)
 };
 
 const createInsertArticleFragment = (persistTo: 'collection' | 'clipboard') => (

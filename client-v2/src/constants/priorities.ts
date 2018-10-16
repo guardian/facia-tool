@@ -1,5 +1,3 @@
-
-
 import { Priorities } from 'types/Priority';
 
 export const priorities: Priorities = {

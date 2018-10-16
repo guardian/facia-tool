@@ -11,7 +11,8 @@ import {
   ArticleFragment,
   Collection,
   Group,
-  Stages
+  Stages,
+  ArticleFragmentDenormalised
 } from '../types/Collection';
 import { State } from '../types/State';
 
@@ -112,7 +113,7 @@ const createCollectionStageGroupsSelector = () => {
 };
 
 const groupNameSelector = (
-  _: any,
+  _: unknown,
   { groupName }: { groupName: string; stage: Stages; collectionId: string }
 ) => groupName;
 
@@ -122,7 +123,7 @@ const createArticlesInCollectionGroupSelector = () => {
     articleFragmentsSelector,
     collectionStageGroupsSelector,
     groupNameSelector,
-    (articleFragments: any, collectionGroups, groupName: string) => {
+    (_, collectionGroups, groupName) => {
       const group = collectionGroups.find(({ id }) => id === groupName) || {
         articleFragments: []
       };
@@ -136,7 +137,7 @@ const createArticlesInCollectionSelector = () => {
   return createSelector(
     articleFragmentsSelector,
     collectionStageGroupsSelector,
-    (articleFragments, collectionGroups) =>
+    (_, collectionGroups) =>
       collectionGroups.reduce(
         (acc, group) => acc.concat(group.articleFragments),
         [] as string[]
@@ -144,10 +145,8 @@ const createArticlesInCollectionSelector = () => {
   );
 };
 
-const clipboardContentSelector = (state: State) => state.clipboard || [];
-
 const articleFragmentIdSelector = (
-  _: any,
+  _: unknown,
   { articleFragmentId }: { articleFragmentId: string }
 ) => articleFragmentId;
 
@@ -155,26 +154,20 @@ const supportingArticlesSelector = createSelector(
   articleFragmentsFromRootStateSelector,
   articleFragmentIdSelector,
   (articleFragments, id) =>
-    (articleFragments[id].meta.supporting || []).map(
-      (sId: string) => articleFragments[sId]
-    )
+    (articleFragments[id].meta.supporting
+      ? articleFragments[id].meta.supporting!
+      : []
+    ).map((sId: string) => articleFragments[sId])
 );
 
 const groupArticlesSelector = createSelector(
   groupsFromRootStateSelector,
   articleFragmentsFromRootStateSelector,
-  groupNameSelector,
+  (_: unknown, { groupName }: { groupName: string }) => groupName,
   (groups, articleFragments, groupName) =>
     (groups[groupName].articleFragments || []).map(
       afId => articleFragments[afId]
     )
-);
-
-const clipboardArticlesSelector = createSelector(
-  clipboardContentSelector,
-  articleFragmentsFromRootStateSelector,
-  (clipboard, articleFragments) =>
-    clipboard.map((afId: string) => articleFragments[afId])
 );
 
 const collectionIdsSelector = (
@@ -182,10 +175,10 @@ const collectionIdsSelector = (
   { collectionIds }: { collectionIds: string[] }
 ) => collectionIds;
 
-const createNestedArticleFragment = (
+const createDemornalisedArticleFragment = (
   articleFragmentId: string,
   articleFragments: { [id: string]: ArticleFragment }
-) =>
+): ArticleFragmentDenormalised =>
   articleFragments[articleFragmentId].meta &&
   articleFragments[articleFragmentId].meta.supporting
     ? {
@@ -194,23 +187,13 @@ const createNestedArticleFragment = (
           ...articleFragments[articleFragmentId].meta,
           supporting:
             articleFragments[articleFragmentId].meta.supporting &&
-            // @todo -- odd result here, revisit
-            (articleFragments[articleFragmentId].meta.supporting as any).map(
+            articleFragments[articleFragmentId].meta.supporting!.map(
               (supportingFragmentId: string) =>
                 articleFragments[supportingFragmentId]
             )
         }
       }
     : { ...articleFragments[articleFragmentId] };
-
-const clipboardAsTreeSelector = createSelector(
-  [clipboardContentSelector, articleFragmentsFromRootStateSelector],
-  (clipboardContent, articleFragments): ClipboardTree => ({
-    articleFragments: clipboardContent.map((fragmentId: string) =>
-      createNestedArticleFragment(fragmentId, articleFragments)
-    )
-  })
-);
 
 const stageForTreeSelector = (
   _: any,
@@ -233,23 +216,7 @@ type GroupTree = Overwrite<
   }
 >;
 
-type ClipboardTree = {
-  articleFragments: ArticleFragmentTree[];
-};
-
-type ArticleFragmentTree = Overwrite<
-  ArticleFragment,
-  {
-    meta: Overwrite<
-      ArticleFragment['meta'],
-      {
-        supporting?: SupportingTree[] | undefined;
-      }
-    >;
-  }
->;
-
-type SupportingTree = ArticleFragment;
+type ArticleFragmentTree = ArticleFragmentDenormalised;
 
 const createCollectionsAsTreeSelector = () =>
   createSelector(
@@ -274,7 +241,7 @@ const createCollectionsAsTreeSelector = () =>
                 ...groups[gId],
                 articleFragments: (groups[gId].articleFragments || []).map(
                   articleFragmentId =>
-                    createNestedArticleFragment(
+                    createDemornalisedArticleFragment(
                       articleFragmentId,
                       articleFragments
                     )
@@ -289,20 +256,18 @@ const createCollectionsAsTreeSelector = () =>
 export {
   externalArticleFromArticleFragmentSelector,
   articleFromArticleFragmentSelector,
+  articleFragmentsFromRootStateSelector,
   createArticlesInCollectionGroupSelector,
   createArticlesInCollectionSelector,
   groupArticlesSelector,
-  clipboardArticlesSelector,
   supportingArticlesSelector,
   createCollectionSelector,
+  createDemornalisedArticleFragment,
   selectSharedState,
   createCollectionsAsTreeSelector,
   articleFragmentSelector,
-  clipboardAsTreeSelector,
   FrontTree,
-  ClipboardTree,
   CollectionTree,
   GroupTree,
-  ArticleFragmentTree,
-  SupportingTree
+  ArticleFragmentTree
 };

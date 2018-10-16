@@ -1,5 +1,3 @@
-
-
 import { CollectionWithNestedArticles } from 'shared/types/Collection';
 import { selectors as collectionSelectors } from 'shared/bundles/collectionsBundle';
 import { selectSharedState } from 'shared/selectors/shared';

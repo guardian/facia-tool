@@ -1,5 +1,3 @@
-
-
 type PriorityName = 'editorial' | 'commercial' | 'training' | 'email';
 
 type Priorities = {

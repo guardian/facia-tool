@@ -1,5 +1,3 @@
-
-
 import { ImageDescription } from './validateImageSrc';
 
 function fetchImage(description: ImageDescription): Promise<ImageDescription> {

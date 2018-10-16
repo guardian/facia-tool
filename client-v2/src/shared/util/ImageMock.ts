@@ -1,5 +1,3 @@
-
-
 export default class ImageMock {
   static defaultLoadDelay = 100;
   static defaultWidth: number = 100;

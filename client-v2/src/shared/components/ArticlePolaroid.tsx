@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import noop from 'lodash/noop';
 import truncate from 'lodash/truncate';
-import { getThumbnailFromElements } from 'util/CAPIUtils';
-import { optionize } from 'util/component';
 import {
   articleFromArticleFragmentSelector,
   selectSharedState

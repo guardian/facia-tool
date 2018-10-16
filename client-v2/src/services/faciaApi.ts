@@ -1,5 +1,3 @@
-
-
 import isValid from 'date-fns/is_valid';
 import {
   FrontsConfig,

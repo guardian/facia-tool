@@ -1,5 +1,3 @@
-
-
 export default {
   apiBaseUrl: '/api.grid',
   mediaBaseUrl: 'http://media',

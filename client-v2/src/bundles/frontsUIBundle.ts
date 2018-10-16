@@ -1,5 +1,3 @@
-
-
 import { Action, EditorCloseFront, EditorClearOpenFronts, EditorSetOpenFronts, EditorAddFront } from 'types/Action';
 import { State as GlobalState } from 'types/State';
 

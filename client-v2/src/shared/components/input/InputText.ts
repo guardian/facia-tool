@@ -1,5 +1,3 @@
-
-
 import InputBase from './InputBase';
 import createInput from './CreateInput';
 

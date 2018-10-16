@@ -1,5 +1,3 @@
-
-
 import { Group } from 'shared/types/Collection';
 
 function groupsReceived(groups: { [id: string]: Group }) {
