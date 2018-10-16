@@ -20,6 +20,7 @@ import {
   AddClipboardArticleFragment,
   RemoveClipboardArticleFragment
 } from 'types/Action';
+import { ArticleFragment } from 'shared/types/Collection';
 
 function addClipboardArticleFragment(
   articleFragmentId: string,
@@ -86,7 +87,9 @@ const removeClipboardArticleFragmentWithPersist = addPersistMetaToAction(
 
 type ParentTypes = 'articleFragment' | 'clipboard' | 'group';
 
-const selectorMap = {
+const selectorMap: {
+  [key: string]: (state: State, id: string) => ArticleFragment[];
+} = {
   articleFragment: (state: State, id: string) =>
     supportingArticlesSelector(state, {
       articleFragmentId: id
