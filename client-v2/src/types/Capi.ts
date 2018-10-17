@@ -54,6 +54,8 @@ interface Tag {
   webUrl: string;
   bylineImageUrl?: string;
   bylineLargeImageUrl?: string;
+  sectionId?: string;
+  sectionName?: string;
 }
 
 interface CapiArticleFields {

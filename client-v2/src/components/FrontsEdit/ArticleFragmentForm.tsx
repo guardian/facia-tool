@@ -11,13 +11,13 @@ import {
 import styled from 'styled-components';
 import omit from 'lodash/omit';
 import compact from 'lodash/compact';
-import ButtonPrimary from 'shared/components/input/ButtonPrimary';
-import ButtonDefault from 'shared/components/input/ButtonDefault';
+import Button from 'shared/components/input/ButtonDefault';
 import ContentContainer from 'shared/components/layout/ContentContainer';
 import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
 import {
   articleFromArticleFragmentSelector,
-  selectSharedState
+  selectSharedState,
+  articleKickerOptionsSelector
 } from 'shared/selectors/shared';
 import { DerivedArticle } from 'shared/types/Article';
 import { ArticleFragmentMeta } from 'shared/types/Collection';
@@ -37,6 +37,7 @@ interface ComponentProps {
   imageSlideshowReplace: boolean;
   useCutout: boolean;
   hideMedia: boolean;
+  kickerOptions: string[];
   articleFragmentId: string;
 }
 
@@ -65,7 +66,7 @@ interface ArticleFragmentFormData {
   cutoutImage: ImageData;
   useCutout: boolean;
   imageSlideshowReplace: boolean;
-  slideshow: Array<ImageData|void>;
+  slideshow: Array<ImageData | void>;
 }
 
 const FormContainer = ContentContainer.withComponent('form').extend`
@@ -136,6 +137,8 @@ const renderSlideshow: React.StatelessComponent<
 );
 
 const formComponent: React.StatelessComponent<Props> = ({
+  change,
+  kickerOptions,
   handleSubmit,
   imageSlideshowReplace,
   hideMedia,
@@ -148,12 +151,17 @@ const formComponent: React.StatelessComponent<Props> = ({
     <CollectionHeadingPinline>
       Edit
       <ButtonContainer>
-        <ButtonPrimary onClick={onCancel} type="button">
+        <Button
+          priority="primary"
+          onClick={onCancel}
+          type="button"
+          size="l"
+        >
           Cancel
-        </ButtonPrimary>
-        <ButtonDefault onClick={handleSubmit} disabled={pristine}>
+        </Button>
+        <Button onClick={handleSubmit} disabled={pristine} size="l">
           Save
-        </ButtonDefault>
+        </Button>
       </ButtonContainer>
     </CollectionHeadingPinline>
     <FormContent>
@@ -194,6 +202,18 @@ const formComponent: React.StatelessComponent<Props> = ({
           placeholder="Add custom kicker"
           useHeadlineFont
         />
+        {kickerOptions.map(kickerOption => (
+          <Button
+            key={kickerOption}
+            pill
+            onClick={(e: React.FormEvent<HTMLButtonElement>) =>
+              change('customKicker', e.currentTarget.value)
+            }
+            value={kickerOption}
+          >
+            {kickerOption}
+          </Button>
+        ))}
         <Field
           name="isBreaking"
           component={InputCheckboxToggle}
@@ -336,7 +356,7 @@ const getArticleFragmentMetaFromFormValues = (
   const primaryImage = values.primaryImage || {};
   const cutoutImage = values.cutoutImage || {};
   // Lodash doesn't remove undefined in the type settings here, hence the undefined.
-  const slideshow: ImageData[] = compact(values.slideshow as any)
+  const slideshow: ImageData[] = compact(values.slideshow as any);
   return omit(
     {
       ...values,
@@ -376,6 +396,7 @@ interface ContainerProps extends InterfaceProps {
   imageSlideshowReplace: boolean;
   useCutout: boolean;
   hideMedia: boolean;
+  kickerOptions: string[];
 }
 
 interface InterfaceProps {
@@ -398,6 +419,12 @@ const mapStateToProps = (state: State, props: InterfaceProps) => {
 
   return {
     initialValues: getInitialValuesForArticleFragmentForm(article),
+    kickerOptions: article
+      ? articleKickerOptionsSelector(
+          selectSharedState(state),
+          props.articleFragmentId
+        )
+      : [],
     imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
     hideMedia: valueSelector(state, 'imageSlideshowReplace'),
     useCutout: valueSelector(state, 'imageSlideshowReplace')

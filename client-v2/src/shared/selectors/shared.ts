@@ -1,7 +1,8 @@
 import omit from 'lodash/omit';
+import uniq from 'lodash/uniq';
 import { createSelector } from 'reselect';
 
-import { getThumbnail } from 'util/CAPIUtils';
+import { getThumbnail, getPrimaryTag } from 'util/CAPIUtils';
 import { Overwrite } from 'utility-types';
 import { selectors as externalArticleSelectors } from '../bundles/externalArticlesBundle';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
@@ -70,6 +71,22 @@ const articleFromArticleFragmentSelector = (
     tone: externalArticle.frontsMeta.tone,
     thumbnail: getThumbnail(articleFragment, externalArticle)
   };
+};
+
+const articleKickerOptionsSelector = (state: State, id: string): string[] => {
+  const externalArticle = externalArticleFromArticleFragmentSelector(state, id);
+  if (!externalArticle) {
+    return [];
+  }
+
+  const filterNulls = <T>(s: T | null | undefined): s is T => !!s;
+
+  const tag = getPrimaryTag(externalArticle) || {
+    webTitle: null,
+    sectionName: null
+  };
+
+  return uniq([tag.webTitle, tag.sectionName].filter(filterNulls));
 };
 
 const collectionIdSelector = (
@@ -266,6 +283,7 @@ export {
   selectSharedState,
   createCollectionsAsTreeSelector,
   articleFragmentSelector,
+  articleKickerOptionsSelector,
   FrontTree,
   CollectionTree,
   GroupTree,
