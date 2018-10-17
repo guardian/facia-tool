@@ -7,6 +7,7 @@ import SectionHeaderWithLogo from './layout/SectionHeaderWithLogo';
 import SectionContent from './layout/SectionContent';
 import Feed from './Feed';
 import Clipboard from './Clipboard';
+import ClipboardMeta from './ClipboardMeta';
 
 const FeedSectionContainer = styled('div')`
   background-color: #f6f6f6;
@@ -35,6 +36,9 @@ export default () => (
         {/* $FlowFixMe */}
         <Clipboard />
       </ClipboardContainer>
+      <div>
+        <ClipboardMeta />
+      </div>
     </SectionContent>
   </FeedSectionContainer>
 );

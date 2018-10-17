@@ -7,6 +7,7 @@ import noop from 'lodash/noop';
 import truncate from 'lodash/truncate';
 
 import { getThumbnailFromElements } from 'util/CAPIUtils';
+import { optionize } from 'util/component';
 import {
   externalArticleFromArticleFragmentSelector,
   selectSharedState
@@ -20,6 +21,7 @@ type ContainerProps = {
   onDragStart?: DragEvent => void,
   onDragOver?: DragEvent => void,
   onDrop?: DragEvent => void,
+  onSelect: (id: string) => void,
   selectSharedState: (state: any) => State // eslint-disable-line react/no-unused-prop-types
 };
 
@@ -40,11 +42,13 @@ const Thumbnail = styled('img')`
 
 const ArticleComponent = ({
   article,
+  id,
   children,
   draggable = false,
   onDragStart = noop,
   onDragOver = noop,
-  onDrop = noop
+  onDrop = noop,
+  onSelect = noop
 }: ComponentProps) => {
   if (!article) {
     return null;
@@ -56,6 +60,7 @@ const ArticleComponent = ({
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDrop={onDrop}
+      {...optionize(() => onSelect(id))}
     >
       {article.elements && (
         <Thumbnail src={getThumbnailFromElements(article.elements)} alt="" />
