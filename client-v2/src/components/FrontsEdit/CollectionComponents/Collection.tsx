@@ -43,7 +43,7 @@ const Collection = ({
     headlineContent={
       hasUnpublishedChanges &&
       canPublish && (
-        <Button dark onClick={() => publish(id, frontId)}>
+        <Button size="l" onClick={() => publish(id, frontId)}>
           Launch
         </Button>
       )

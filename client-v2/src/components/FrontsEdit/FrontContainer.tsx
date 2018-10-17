@@ -123,7 +123,9 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                   )} ago`}
               </LastPressedContainer>
               &nbsp;
-              <Button onClick={this.handleRemoveFront}>Remove</Button>
+              <Button onClick={this.handleRemoveFront} size="l">
+                Remove
+              </Button>
               <a
                 href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${
                   this.props.frontId
@@ -131,11 +133,12 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Button>Preview</Button>
+                <Button size="l">Preview</Button>
               </a>
               {Object.keys(frontStages).map(key => (
                 <Button
                   key={key}
+                  size="l"
                   selected={frontStages[key] === this.state.browsingStage}
                   onClick={() => this.handleStageSelect(key)}
                 >

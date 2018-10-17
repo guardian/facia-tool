@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { WrappedFieldProps } from 'redux-form';
 
 import deleteIcon from '../../images/icons/delete-copy.svg';
-import ButtonPrimary from './ButtonPrimary';
+import ButtonDefault from './ButtonDefault';
 import InputContainer from './InputContainer';
 import { validateImageEvent } from '../../util/validateImageSrc';
 
@@ -20,7 +20,7 @@ const ImageContainer = styled('div')<{
   transition: background-color 0.15s;
 `;
 
-const ButtonDelete = ButtonPrimary.extend`
+const ButtonDelete = styled(ButtonDefault)`
   position: absolute;
   display: block;
   top: calc(50% - 12px);
@@ -98,7 +98,7 @@ class InputImage extends React.Component<Props, State> {
               this.props.input.value && `url(${this.props.input.value.src}`
           }}
         >
-          <ButtonDelete type="button">
+          <ButtonDelete type="button" priority="primary">
             {this.props.input.value ? (
               <IconDelete src={deleteIcon} onClick={this.clearField} />
             ) : (

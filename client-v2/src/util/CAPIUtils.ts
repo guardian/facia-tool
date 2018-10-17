@@ -1,5 +1,5 @@
 import { getArticles } from 'services/faciaApi';
-import { Element } from 'types/Capi';
+import { Element, Tag } from 'types/Capi';
 import { ExternalArticle } from '../shared/types/ExternalArticle';
 import { ArticleFragment } from '../shared/types/Collection';
 
@@ -7,7 +7,8 @@ const getInternalPageCode = async (id: string) =>
   ((await getArticles([id]))[0] || {}).id || null;
 
 const getURLInternalPageCode = async (url: string): Promise<string | null> => {
-  const [, id = null] = url.match(/^https:\/\/www.theguardian\.com\/(.*)\??/) || [];
+  const [, id = null] =
+    url.match(/^https:\/\/www.theguardian\.com\/(.*)\??/) || [];
   return typeof id !== 'string'
     ? Promise.resolve(null)
     : getInternalPageCode(id);
@@ -87,9 +88,16 @@ function getThumbnail(
   );
 }
 
+const getTags = (externalArticle: ExternalArticle): Tag[] =>
+  externalArticle.tags || [];
+
+const getPrimaryTag = (externalArticle: ExternalArticle): Tag | null =>
+  getTags(externalArticle)[0] || null;
+
 export {
   getURLInternalPageCode,
   getThumbnailFromElements,
   getThumbnail,
-  getContributorImage
+  getContributorImage,
+  getPrimaryTag
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { AlsoOnDetail } from 'types/Collection';
-import ButtonSmall from 'shared/components/input/ButtonSmall';
+import Button from 'shared/components/input/ButtonDefault';
 
 interface AlsoOnNotificationProps {
   alsoOn: AlsoOnDetail
@@ -47,13 +47,14 @@ class AlsoOnNotification extends React.Component<
           )}
           {!alsoOn.meritsWarning && <span>Also on other fronts.</span>}
           &nbsp;
-          <ButtonSmall
+          <Button
+            size="s"
             onClick={() =>
               this.setState({ showFrontDetails: !this.state.showFrontDetails })
             }
           >
             {this.state.showFrontDetails ? 'Hide Details' : 'Show More'}
-          </ButtonSmall>
+          </Button>
           {this.state.showFrontDetails && (
             <div>
               {alsoOn.fronts.map(front => (
