@@ -5,10 +5,13 @@ type Group = {
   articleFragments: string[]
 };
 
-type NestedArticleFragment = {
+type NestedArticleFragmentRootFields = {
   id: string,
   frontPublicationDate: number,
-  publishedBy?: string,
+  publishedBy?: string
+};
+
+type NestedArticleFragment = NestedArticleFragmentRootFields & {
   meta: {
     supporting?: $Diff<NestedArticleFragment, { supporting: any }>[]
   }
@@ -55,15 +58,15 @@ type ArticleFragmentMeta = {|
   }[]
 |};
 
-type ArticleFragment = $Diff<NestedArticleFragment, { meta: any }> & {
-  uuid: string,
-  // We strip the path from the id when the articleFragment enters
-  // the application state. 'idWithPath' preserves this path + id,
-  // so we can reassemble the original id for persist operations.
+type ArticleFragmentRootFields = NestedArticleFragmentRootFields & {|
+  uuid: string
+|};
+
+type ArticleFragment = ArticleFragmentRootFields & {|
   meta: {
     supporting?: string[]
   } & ArticleFragmentMeta
-};
+|};
 
 type CollectionResponse = {
   live: NestedArticleFragment[],
@@ -97,6 +100,7 @@ type Collection = {|
 export type {
   NestedArticleFragment,
   ArticleFragment,
+  ArticleFragmentRootFields,
   ArticleFragmentMeta,
   CollectionWithNestedArticles,
   CollectionResponse,

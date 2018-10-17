@@ -6,11 +6,11 @@ import { connect } from 'react-redux';
 import noop from 'lodash/noop';
 import truncate from 'lodash/truncate';
 import {
-  externalArticleFromArticleFragmentSelector,
+  articleFromArticleFragmentSelector,
   selectSharedState
 } from '../selectors/shared';
 import type { State } from '../types/State';
-import type { Article } from '../types/Article';
+import type { DerivedArticle } from '../types/Article';
 import toneColorMap from '../util/toneColorMap';
 
 type ContainerProps = {
@@ -23,7 +23,7 @@ type ContainerProps = {
 };
 
 type ComponentProps = {
-  article: ?Article,
+  article: ?DerivedArticle,
   children?: ReactNode
 } & ContainerProps;
 
@@ -71,8 +71,8 @@ const ArticleComponent = ({
 const createMapStateToProps = () => (
   state: State,
   props: ContainerProps
-): { article: ?Article } => ({
-  article: externalArticleFromArticleFragmentSelector(
+): { article: ?DerivedArticle } => ({
+  article: articleFromArticleFragmentSelector(
     props.selectSharedState
       ? props.selectSharedState(state)
       : selectSharedState(state),

@@ -112,7 +112,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
 
   render() {
     const { capiFeedSpec } = this;
-    const getId = (internalPageCode: string) =>
+    const getId = (internalPageCode: string | number) =>
       `internal-code/page/${internalPageCode}`;
 
     return (

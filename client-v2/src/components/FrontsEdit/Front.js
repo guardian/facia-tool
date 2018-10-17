@@ -3,16 +3,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-/* eslint-disable import/no-duplicates */
 import * as Guration from 'lib/guration';
-/* eslint-enable import/no-duplicates */
 import { type State } from 'types/State';
 import { type Dispatch } from 'types/Store';
 import {
   selectSharedState,
   createCollectionsAsTreeSelector
 } from 'shared/selectors/shared';
-// import { externalArticlesReceived } from 'shared/actions/ExternalArticles';
 import { bindActionCreators } from 'redux';
 import { addArticleFragment } from 'shared/actions/ArticleFragments';
 import {

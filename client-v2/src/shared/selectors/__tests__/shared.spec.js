@@ -2,6 +2,7 @@
 
 import {
   externalArticleFromArticleFragmentSelector,
+  articleFromArticleFragmentSelector,
   createArticlesInCollectionGroupSelector,
   createArticlesInCollectionSelector,
   createCollectionsAsTreeSelector,
@@ -62,7 +63,15 @@ const state = {
     data: {
       ea1: {
         id: 'ea1',
-        headline: 'Example external article'
+        pillarName: 'external-pillar',
+        fields: {
+          headline: 'external-headline',
+          trailText: 'external-trailText',
+          byline: 'external-byline'
+        },
+        frontsMeta: {
+          tone: 'external-tone'
+        }
       }
     }
   },
@@ -73,6 +82,18 @@ const state = {
       frontPublicationDate: 1,
       publishedBy: 'A. N. Author',
       meta: {}
+    },
+    af1WithOverrides: {
+      uuid: 'af1',
+      id: 'ea1',
+      frontPublicationDate: 1,
+      publishedBy: 'A. N. Author',
+      meta: {
+        headline: 'fragment-headline',
+        trailText: 'fragment-trailText',
+        byline: 'fragment-byline',
+        customKicker: 'fragment-kicker'
+      }
     },
     afWithInvalidReference: {
       uuid: 'afWithInvalidReference',
@@ -173,14 +194,51 @@ describe('Shared selectors', () => {
     });
   });
 
-  describe('createExternalArticleFromArticleFragmentSelector', () => {
-    it('should create a selector that returns an external article referenced by the given article', () => {
+  describe('externalArticleFromArticleFragmentSelector', () => {
+    it('should create a selector that returns an external article referenced by the given article fragment', () => {
       expect(externalArticleFromArticleFragmentSelector(state, 'af1')).toEqual(
         state.externalArticles.data.ea1
       );
       expect(
         externalArticleFromArticleFragmentSelector(state, 'invalid')
       ).toEqual(null);
+    });
+  });
+
+  describe('articleFromArticleFragmentSelector', () => {
+    it('should create a selector that returns an article (externalArticle + articleFragment) referenced by the given article fragment', () => {
+      expect(articleFromArticleFragmentSelector(state, 'af1')).toEqual({
+        id: 'ea1',
+        pillarName: 'external-pillar',
+        frontPublicationDate: 1,
+        publishedBy: 'A. N. Author',
+        uuid: 'af1',
+        headline: 'external-headline',
+        thumbnail: undefined,
+        tone: 'external-tone',
+        trailText: 'external-trailText',
+        kicker: 'external-pillar',
+        byline: 'external-byline'
+      });
+      expect(
+        articleFromArticleFragmentSelector(state, 'af1WithOverrides')
+      ).toEqual({
+        id: 'ea1',
+        customKicker: 'fragment-kicker',
+        pillarName: 'external-pillar',
+        frontPublicationDate: 1,
+        publishedBy: 'A. N. Author',
+        uuid: 'af1',
+        headline: 'fragment-headline',
+        thumbnail: undefined,
+        tone: 'external-tone',
+        trailText: 'fragment-trailText',
+        kicker: 'fragment-kicker',
+        byline: 'fragment-byline'
+      });
+      expect(articleFromArticleFragmentSelector(state, 'invalid')).toEqual(
+        null
+      );
     });
   });
 
@@ -285,15 +343,7 @@ describe('Shared selectors', () => {
                 {
                   id: 'group2',
                   uuid: 'g2',
-                  articleFragments: [
-                    {
-                      uuid: 'af1',
-                      id: 'ea1',
-                      frontPublicationDate: 1,
-                      publishedBy: 'A. N. Author',
-                      meta: {}
-                    }
-                  ]
+                  articleFragments: [state.articleFragments.af1]
                 }
               ]
             }

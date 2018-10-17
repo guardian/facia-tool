@@ -1,3 +1,5 @@
+// @flow
+
 import styled from 'styled-components';
 
 export const SmallRoundButton = styled('button')`

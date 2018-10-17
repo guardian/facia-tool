@@ -1,9 +1,13 @@
 // @flow
 
+import omit from 'lodash/omit';
 import { createSelector } from 'reselect';
+
+import { getThumbnail } from 'util/CAPIUtils';
 import { selectors as externalArticleSelectors } from '../bundles/externalArticlesBundle';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
-
+import type { ExternalArticle } from '../types/ExternalArticle';
+import type { DerivedArticle } from '../types/Article';
 import type { ArticleFragment } from '../types/Collection';
 import type { State } from '../types/State';
 
@@ -29,15 +33,39 @@ const articleFragmentSelector = (state: State, id: string): ArticleFragment =>
 const externalArticleFromArticleFragmentSelector = (
   state: State,
   id: string
-) => {
+): ?ExternalArticle => {
   const articleFragment = articleFragmentSelector(state, id);
   const externalArticles = externalArticleSelectors.selectAll(state);
   if (!articleFragment) {
     return null;
   }
-  return externalArticles[articleFragment.id] || null;
+  return externalArticles[articleFragment.id];
 };
 
+const articleFromArticleFragmentSelector = (
+  state: State,
+  id: string
+): ?DerivedArticle => {
+  const externalArticle = externalArticleFromArticleFragmentSelector(state, id);
+  const articleFragment = articleFragmentSelector(state, id);
+  if (!externalArticle || !articleFragment) {
+    return null;
+  }
+
+  return {
+    ...omit(externalArticle, 'fields', 'frontsMeta'),
+    ...externalArticle.fields,
+    ...omit(articleFragment, 'meta'),
+    ...articleFragment.meta,
+    headline: articleFragment.meta.headline || externalArticle.fields.headline,
+    trailText:
+      articleFragment.meta.trailText || externalArticle.fields.trailText,
+    byline: articleFragment.meta.byline || externalArticle.fields.byline,
+    kicker: articleFragment.meta.customKicker || externalArticle.pillarName,
+    tone: externalArticle.frontsMeta.tone,
+    thumbnail: getThumbnail(articleFragment, externalArticle)
+  };
+};
 const collectionIdSelector = (_, { collectionId }: { collectionId: string }) =>
   collectionId;
 
@@ -200,6 +228,7 @@ const createCollectionsAsTreeSelector = () =>
 
 export {
   externalArticleFromArticleFragmentSelector,
+  articleFromArticleFragmentSelector,
   createArticlesInCollectionGroupSelector,
   createArticlesInCollectionSelector,
   groupArticlesSelector,

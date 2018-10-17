@@ -10,15 +10,14 @@ import startCase from 'lodash/startCase';
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 import toneColorMap from 'shared/util/toneColorMap';
 import ButtonHoverAction from 'shared/components/input/ButtonHoverAction';
-import { getThumbnailFromElements } from 'util/CAPIUtils';
 import { getPaths } from '../../util/paths';
 
 import {
-  externalArticleFromArticleFragmentSelector,
+  articleFromArticleFragmentSelector,
   selectSharedState
 } from '../selectors/shared';
 import type { State } from '../types/State';
-import type { Article } from '../types/Article';
+import type { DerivedArticle } from '../types/Article';
 
 type ContainerProps = {
   id: string, // eslint-disable-line react/no-unused-prop-types
@@ -31,7 +30,7 @@ type ContainerProps = {
 };
 
 type ComponentProps = {
-  article: ?Article,
+  article: ?DerivedArticle,
   size: 'default' | 'small',
   children: ReactNode
 } & ContainerProps;
@@ -223,7 +222,7 @@ const ArticleComponent = ({
         <ArticleContentContainer>
           <ArticleHeadingContainer>
             <KickerHeading style={{ color: toneColorMap[article.tone] }}>
-              {article.sectionName}
+              {article.kicker}
             </KickerHeading>
             &nbsp;
             {size === 'default' ? (
@@ -242,9 +241,7 @@ const ArticleComponent = ({
         {size === 'default' && (
           <Thumbnail
             style={{
-              backgroundImage:
-                article.elements &&
-                `url('${getThumbnailFromElements(article.elements) || ''}')`
+              backgroundImage: `url('${article.thumbnail}')`
             }}
           />
         )}
@@ -293,8 +290,8 @@ const ArticleComponent = ({
 const createMapStateToProps = () => (
   state: State,
   props: ContainerProps
-): { article: ?Article } => ({
-  article: externalArticleFromArticleFragmentSelector(
+): { article: ?DerivedArticle } => ({
+  article: articleFromArticleFragmentSelector(
     props.selectSharedState
       ? props.selectSharedState(state)
       : selectSharedState(state),

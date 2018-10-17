@@ -12,6 +12,7 @@ import {
 import styled from 'styled-components';
 import omit from 'lodash/omit';
 import compact from 'lodash/compact';
+import pick from 'lodash/pick';
 
 import { updateArticleFragmentMeta } from 'actions/ArticleFragments';
 import ButtonPrimary from 'shared/components/input/ButtonPrimary';
@@ -19,11 +20,10 @@ import ButtonDefault from 'shared/components/input/ButtonDefault';
 import ContentContainer from 'shared/components/layout/ContentContainer';
 import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
 import {
-  externalArticleFromArticleFragmentSelector,
-  selectSharedState,
-  articleFragmentSelector
+  articleFromArticleFragmentSelector,
+  selectSharedState
 } from 'shared/selectors/shared';
-import type { ExternalArticle } from 'shared/types/ExternalArticle';
+import type { DerivedArticle } from 'shared/types/Article';
 import type {
   ArticleFragment,
   ArticleFragmentMeta
@@ -39,7 +39,7 @@ import Col from '../Col';
 
 type Props = {|
   articleFragment: ArticleFragment,
-  showSlideshowImages: Boolean,
+  imageSlideshowReplace: Boolean,
   useCutout: Boolean,
   hideMedia: Boolean
 |} & FormProps;
@@ -110,7 +110,7 @@ const renderSlideshow = ({ fields }) =>
 const formComponent = ({
   handleSubmit,
   articleFragmentId,
-  showSlideshowImages,
+  imageSlideshowReplace,
   hideMedia,
   useCutout,
   onCancel,
@@ -244,12 +244,12 @@ const formComponent = ({
       </RowContainer>
       <HorizontalRule />
       <Field
-        name="slideshow"
+        name="imageSlideshowReplace"
         component={InputCheckboxToggle}
         label="Slideshow"
         type="checkbox"
       />
-      {showSlideshowImages && (
+      {imageSlideshowReplace && (
         <RowContainer>
           <SlideshowRow>
             <FieldArray name="slideshow" component={renderSlideshow} />
@@ -263,59 +263,70 @@ const formComponent = ({
 
 const defaultMeta = {};
 
-const getInitialValuesForArticleFragmentForm = (
-  externalArticle: ?ExternalArticle,
-  articleFragment: ?ArticleFragment
-) => {
+const getInitialValuesForArticleFragmentForm = (article: ?DerivedArticle) => {
+  if (!article) {
+    return {};
+  }
   const slideshowBackfill = [];
-  const slideshow =
-    (articleFragment &&
-      articleFragment.meta &&
-      articleFragment.meta.slideshow) ||
-    [];
+  const slideshow = article.slideshow || [];
   slideshowBackfill.length = 4 - slideshow.length;
   slideshowBackfill.fill(undefined);
-  return articleFragment && externalArticle
+  return article
     ? {
-        ...externalArticle,
-        ...articleFragment.meta,
+        ...pick(article, [
+          'headline',
+          'isBoosted',
+          'showQuotedHeadline',
+          'showBoostedHeadline',
+          'customKicker',
+          'isBreaking',
+          'byline',
+          'showByline',
+          'trailText',
+          'useCutout'
+        ]),
+        hideMedia: !article.imageReplace,
         primaryImage: {
-          src: articleFragment.meta.imageSrc,
-          width: articleFragment.meta.imageSrcWidth,
-          height: articleFragment.meta.imageSrcHeight,
-          origin: articleFragment.meta.imageSrcOrigin,
-          thumb: articleFragment.meta.imageSrcThumb
+          src: article.imageSrc,
+          width: article.imageSrcWidth,
+          height: article.imageSrcHeight,
+          origin: article.imageSrcOrigin,
+          thumb: article.imageSrcThumb
         },
         cutoutImage: {
-          src: articleFragment.meta.imageCutoutSrc,
-          width: articleFragment.meta.imageCutoutSrcWidth,
-          height: articleFragment.meta.imageCutoutSrcHeight,
-          origin: articleFragment.meta.imageCutoutSrcOrigin
+          src: article.imageCutoutSrc,
+          width: article.imageCutoutSrcWidth,
+          height: article.imageCutoutSrcHeight,
+          origin: article.imageCutoutSrcOrigin
         },
         slideshow: slideshow.concat(slideshowBackfill)
       }
     : defaultMeta;
 };
 
-const getArticleFragmentMetaFromFormValues = (values): ArticleFragmentMeta =>
-  omit(
+const getArticleFragmentMetaFromFormValues = (values): DerivedArticle => {
+  const primaryImage = values.primaryImage || {};
+  const cutoutImage = values.cutoutImage || {};
+  return omit(
     {
       ...values,
+      imageReplace: !values.hideMedia,
       showKickerCustom: !!values.customKicker,
-      imageSrc: values.primaryImage.src,
-      imageSrcThumb: values.primaryImage.thumb,
-      imageSrcWidth: values.primaryImage.width,
-      imageSrcHeight: values.primaryImage.height,
-      imageSrcOrigin: values.primaryImage.origin,
-      imageCutoutSrc: values.cutoutImage.src,
-      imageCutoutSrcWidth: values.cutoutImage.width,
-      imageCutoutSrcHeight: values.cutoutImage.height,
-      imageCutoutSrcOrigin: values.cutoutImage.origin,
+      imageSrc: primaryImage.src,
+      imageSrcThumb: primaryImage.thumb,
+      imageSrcWidth: primaryImage.width,
+      imageSrcHeight: primaryImage.height,
+      imageSrcOrigin: primaryImage.origin,
+      imageCutoutSrc: cutoutImage.src,
+      imageCutoutSrcWidth: cutoutImage.width,
+      imageCutoutSrcHeight: cutoutImage.height,
+      imageCutoutSrcOrigin: cutoutImage.origin,
       slideshow: compact(values.slideshow)
     },
     'primaryImage',
     'cutoutImage'
   );
+};
 
 const articleFragmentForm = reduxForm({
   destroyOnUnmount: false,
@@ -327,27 +338,19 @@ const articleFragmentForm = reduxForm({
   }
 })(
   formValues({
-    showSlideshowImages: 'slideshow',
+    imageSlideshowReplace: 'imageSlideshowReplace',
     hideMedia: 'hideMedia',
     useCutout: 'useCutout'
   })(formComponent)
 );
 
 const mapStateToProps = (state, props) => {
-  const externalArticle = externalArticleFromArticleFragmentSelector(
+  const article = articleFromArticleFragmentSelector(
     selectSharedState(state),
     props.articleFragmentId
   );
-  const articleFragment = articleFragmentSelector(
-    selectSharedState(state),
-    props.articleFragmentId
-  );
-
   return {
-    initialValues: getInitialValuesForArticleFragmentForm(
-      externalArticle,
-      articleFragment
-    )
+    initialValues: getInitialValuesForArticleFragmentForm(article)
   };
 };
 

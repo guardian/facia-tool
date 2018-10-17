@@ -6,13 +6,12 @@ import { connect } from 'react-redux';
 import noop from 'lodash/noop';
 import truncate from 'lodash/truncate';
 
-import { getThumbnailFromElements } from 'util/CAPIUtils';
 import {
-  externalArticleFromArticleFragmentSelector,
+  articleFromArticleFragmentSelector,
   selectSharedState
 } from '../selectors/shared';
 import type { State } from '../types/State';
-import type { Article } from '../types/Article';
+import type { DerivedArticle } from '../types/Article';
 
 type ContainerProps = {
   id: string, // eslint-disable-line react/no-unused-prop-types
@@ -24,7 +23,7 @@ type ContainerProps = {
 };
 
 type ComponentProps = {
-  article: ?Article,
+  article: ?DerivedArticle,
   children?: ReactNode
 } & ContainerProps;
 
@@ -57,9 +56,7 @@ const ArticleComponent = ({
       onDragOver={onDragOver}
       onDrop={onDrop}
     >
-      {article.elements && (
-        <Thumbnail src={getThumbnailFromElements(article.elements)} alt="" />
-      )}
+      <Thumbnail src={article.thumbnail} alt="" />
       {truncate(article.headline, { length: 45 })}
       {children}
     </BodyContainer>
@@ -70,8 +67,8 @@ const ArticleComponent = ({
 const createMapStateToProps = () => (
   state: State,
   props: ContainerProps
-): { article: ?Article } => ({
-  article: externalArticleFromArticleFragmentSelector(
+): { article: ?DerivedArticle } => ({
+  article: articleFromArticleFragmentSelector(
     props.selectSharedState
       ? props.selectSharedState(state)
       : selectSharedState(state),

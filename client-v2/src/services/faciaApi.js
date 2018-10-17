@@ -170,27 +170,25 @@ function getArticles(articleIds: string[]): Promise<Array<ExternalArticle>> {
     text: ?string
   ): Array<ExternalArticle> => {
     if (text) {
-      return JSON.parse(text).response.results.map(result => ({
-        headline: result.webTitle,
-        id: `internal-code/page/${result.fields.internalPageCode}`,
-        isLive: result.fields.isLive === 'true',
-        urlPath: result.id,
-        firstPublicationDate: result.fields.firstPublicationDate,
-        tone: result.frontsMeta && result.frontsMeta.tone,
-        sectionName: result.sectionName,
-        trailText: result.fields.trailText,
-        elements: result.elements
+      return JSON.parse(text).response.results.map(externalArticle => ({
+        ...externalArticle,
+        urlPath: externalArticle.id,
+        id: `internal-code/page/${externalArticle.fields.internalPageCode}`
       }));
     }
-    return [];
+    throw new Error('Error getting articles from CAPI - invalid response');
   };
 
   const articleIdsWithoutSnaps = articleIds
     .filter(id => !id.match(/^snap/))
     .join(',');
 
+  if (!articleIdsWithoutSnaps.length) {
+    return Promise.resolve([]);
+  }
+
   const articlePromise = pandaFetch(
-    `/api/preview/search?ids=${articleIdsWithoutSnaps}&show-fields=internalPageCode,isLive,firstPublicationDate&show-elements=image&show-fields=trailText`,
+    `/api/preview/search?ids=${articleIdsWithoutSnaps}&show-elements=video,main&show-blocks=main&show-tags=all&show-atoms=media&show-fields=internalPageCode,isLive,firstPublicationDate,scheduledPublicationDate,headline,trailText,byline,thumbnail,secureThumbnail,liveBloggingNow,membershipAccess,shortUrl`,
     {
       method: 'get',
       credentials: 'same-origin'
