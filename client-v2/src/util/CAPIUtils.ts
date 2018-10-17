@@ -14,21 +14,21 @@ const getURLInternalPageCode = async (url: string): Promise<string | null> => {
 };
 
 // TODO: get apiKey from context (or speak directly to FrontsAPI)
-const getThumbnailFromElements = (_elements: Element[]) => {
-  if (!_elements || !_elements.length) {
+const getThumbnailFromElements = (elements: Element[]) => {
+  if (!elements || !elements.length) {
     return undefined;
   }
-  const elements = _elements.filter(
+  const imageElements = elements.filter(
     element => element.type === 'image' && element.relation === 'thumbnail'
   );
 
-  if (!elements.length) {
-    return null;
+  if (!imageElements.length) {
+    return undefined;
   }
 
-  const { assets } = elements[0];
+  const { assets } = imageElements[0];
 
-  let smallestAsset = null;
+  let smallestAsset;
 
   for (const asset of assets) {
     if (

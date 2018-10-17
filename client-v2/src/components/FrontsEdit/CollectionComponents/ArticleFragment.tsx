@@ -15,7 +15,7 @@ interface ContainerProps {
   children: any;
   getNodeProps: () => object;
   onSelect: (uuid: string) => void;
-  onCancel: (uuid: string) => void
+  onCancel: (uuid: string) => void;
   parentId: string;
 }
 
