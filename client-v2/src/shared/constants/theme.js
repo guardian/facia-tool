@@ -1,3 +1,5 @@
+// @flow
+
 const base = {
   colors: {
     text: '#333',

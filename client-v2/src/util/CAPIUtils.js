@@ -17,6 +17,9 @@ const getURLInternalPageCode = async (url: string): Promise<string | null> => {
 
 // TODO: get apiKey from context (or speak directly to FrontsAPI)
 const getThumbnailFromElements = (_elements: Element[]) => {
+  if (!_elements || !_elements.length) {
+    return undefined;
+  }
   const elements = _elements.filter(
     element => element.type === 'image' && element.relation === 'thumbnail'
   );
@@ -79,7 +82,17 @@ function getThumbnail(
   ) {
     return meta.slideshow[0].src;
   }
-  return fields.secureThumbnail || fields.thumbnail;
+
+  return (
+    fields.secureThumbnail ||
+    fields.thumbnail ||
+    getThumbnailFromElements(externalArticle.elements)
+  );
 }
 
-export { getURLInternalPageCode, getThumbnailFromElements, getThumbnail };
+export {
+  getURLInternalPageCode,
+  getThumbnailFromElements,
+  getThumbnail,
+  getContributorImage
+};
