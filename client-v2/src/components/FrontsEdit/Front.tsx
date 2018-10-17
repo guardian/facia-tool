@@ -275,7 +275,8 @@ const createMapStateToProps = () => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   dispatch,
-  addArticleFragment: (id: string) => dispatch(addArticleFragment(id)),
+  addArticleFragment: (id: string, supporting: string[]) =>
+    dispatch(addArticleFragment(id, supporting)),
   updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
     dispatch(updateArticleFragmentMeta(id, meta)),
   selectArticleFragment: (frontId: string, articleFragmentId: string) =>
