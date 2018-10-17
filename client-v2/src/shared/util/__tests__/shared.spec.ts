@@ -101,14 +101,14 @@ describe('Shared utilities', () => {
         'article/live/3'
       );
     });
-    it('should handle a collection without any articles', () => {
+    it('should insert a default group for empty collections', () => {
       const result = normaliseCollectionWithNestedArticles({
         ...collection,
         ...{ live: [] }
       });
-      expect(result.collection.live).toHaveLength(0);
-      expect(result.collection.draft).toHaveLength(0);
-      expect(result.collection.previously).toHaveLength(0);
+      expect(result.collection.live).toHaveLength(1);
+      expect(result.collection.draft).toHaveLength(1);
+      expect(result.collection.previously).toHaveLength(1);
       expect(Object.keys(result.articleFragments)).toHaveLength(0);
     });
     it('should normalise supporting article fragments', () => {
