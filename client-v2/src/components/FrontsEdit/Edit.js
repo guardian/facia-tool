@@ -7,7 +7,10 @@ import type { Match, RouterHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import getFrontsConfig from 'actions/Fronts';
-import { editorOpenFront, selectEditorFronts } from 'bundles/frontsUIBundle';
+import {
+  editorOpenFront,
+  selectEditorFrontsByPriority
+} from 'bundles/frontsUIBundle';
 import type { State } from 'types/State';
 import type { ActionError } from 'types/Action';
 import FrontContainer from './FrontContainer';
@@ -81,10 +84,13 @@ class FrontsEdit extends React.Component<Props> {
   }
 }
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: State, props: Props) => ({
   error: state.error,
   staleFronts: state.staleFronts,
-  frontIds: selectEditorFronts(state)
+  frontIds: selectEditorFrontsByPriority(
+    state,
+    props.match.params.priority || ''
+  )
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>

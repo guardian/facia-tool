@@ -59,6 +59,15 @@ type State = {
 };
 
 const selectEditorFronts = (state: GlobalState) => state.editor.frontIds;
+
+const selectEditorFrontsByPriority = (state: GlobalState, priority: string) => {
+  const frontsInConfig = state.fronts.frontsConfig.data.fronts;
+  return state.editor.frontIds.filter(frontId => {
+    const frontConfig = frontsInConfig[frontId];
+    return frontConfig && frontConfig.priority === priority;
+  });
+};
+
 const selectEditorArticleFragment = (state: GlobalState, frontId: string) =>
   state.editor.selectedArticleFragments[frontId];
 
@@ -126,6 +135,7 @@ export {
   editorSelectArticleFragment,
   editorClearArticleFragmentSelection,
   selectEditorFronts,
+  selectEditorFrontsByPriority,
   selectEditorArticleFragment
 };
 
