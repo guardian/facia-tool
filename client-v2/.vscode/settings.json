@@ -1,9 +1,6 @@
 {
   "eslint.enable": true,
   "eslint.packageManager": "yarn",
-  "javascript.validate.enable": false,
-  "typescript.format.enable": false,
-  "flow.useNPMPackagedFlow": true,
   "editor.tabSize": 2,
-  "editor.insertSpaces": true
+  "editor.insertSpaces": true,
 }

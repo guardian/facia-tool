@@ -9,8 +9,7 @@ module.exports = {
         }
       }
     ],
-    '@babel/react',
-    '@babel/flow'
+    '@babel/react'
   ],
   plugins: [
     '@babel/plugin-proposal-object-rest-spread',

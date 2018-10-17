@@ -1,7 +1,4 @@
 {
   "eslint.enable": true,
-  "eslint.packageManager": "yarn",
-  "javascript.validate.enable": false,
-  "typescript.format.enable": false,
-  "flow.useNPMPackagedFlow": true
+  "eslint.packageManager": "yarn"
 }

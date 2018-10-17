@@ -1,7 +1,8 @@
 const path = require('path');
+const TSConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './src/index.tsx',
   output: {
     path: path.resolve(__dirname, '../../public/client-v2/dist'),
     filename: 'app.bundle.js'
@@ -9,13 +10,8 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/, // regex to test the file's path against
-        use: 'babel-loader',
-        exclude: /node_modules/
-      },
-      {
-        test: /\.js$/, // regex to test the file's path against
-        use: 'eslint-loader',
+        test: /^(?!.*\.spec\.tsx?$).*\.tsx?$/,
+        use: 'ts-loader',
         exclude: /node_modules/
       },
       {
@@ -28,6 +24,8 @@ module.exports = {
     ]
   },
   resolve: {
-    modules: ['src', 'node_modules']
+    modules: [path.resolve(__dirname, 'src'), 'node_modules'],
+    plugins: [new TSConfigPathsPlugin()],
+    extensions: ['.ts', '.tsx', '.js']
   }
 };
