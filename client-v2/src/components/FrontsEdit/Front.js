@@ -79,6 +79,12 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     });
   };
 
+  clearArticleFragmentSelectionIfNeeded = (articleId: string) => {
+    if (articleId === this.props.selectedArticleFragmentId) {
+      this.props.clearArticleFragmentSelection();
+    }
+  };
+
   runEdit = edit => {
     switch (edit.type) {
       case 'MOVE': {
@@ -189,6 +195,9 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                             parentId={group.uuid}
                             getNodeProps={afNodeProps}
                             onSelect={this.props.selectArticleFragment}
+                            onCancel={
+                              this.clearArticleFragmentSelectionIfNeeded
+                            }
                             isSelected={
                               !this.props.selectedArticleFragmentId ||
                               this.props.selectedArticleFragmentId ===

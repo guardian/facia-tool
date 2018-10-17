@@ -19,7 +19,8 @@ type ArticleFragmentProps = {
   children: *,
   getNodeProps: () => Object,
   onDelete: () => void,
-  onSelect: (uuid: string) => void
+  onSelect: (uuid: string) => void,
+  onCancel: (uuid: string) => void
 };
 
 type ContainerProps = ArticleFragmentProps & {
@@ -81,9 +82,12 @@ const ArticleFragment = ({
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
-  { parentId, uuid }: ContainerProps
+  { parentId, uuid, onCancel }: ContainerProps
 ) => ({
-  onDelete: () => dispatch(removeGroupArticleFragment(parentId, uuid))
+  onDelete: () => {
+    onCancel(uuid);
+    dispatch(removeGroupArticleFragment(parentId, uuid));
+  }
 });
 
 export default connect(
