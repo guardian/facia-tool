@@ -2,6 +2,15 @@ import { createType, build, createFieldType } from 'normalise-with-fields';
 import v4 from 'uuid/v4';
 import { ArticleFragment } from 'shared/types/Collection';
 
+const preProcessArticleFragment = (
+  articleFragment: ArticleFragment
+): object => ({
+  ...articleFragment,
+  // guard against missing meta from the server
+  meta: articleFragment.meta || {},
+  uuid: v4()
+});
+
 const postProcessArticleFragment = (
   articleFragment: ArticleFragment
 ): object => {
@@ -9,11 +18,13 @@ const postProcessArticleFragment = (
 
   let meta = { ...af.meta };
 
+  // if we have no supporting when denormalizing then remove that from the meta
   if (!(meta.supporting || []).length) {
     const { supporting, ...rest } = meta;
     meta = rest;
   }
 
+  // if our group is 0 or falsey when denormalizing then remove that form the meta
   if (!meta.group || meta.group === '0') {
     const { group, ...rest } = meta;
     meta = rest;
@@ -26,10 +37,7 @@ const postProcessArticleFragment = (
 };
 
 const articleFragments = createType('articleFragments', {
-  preProcess: (af: ArticleFragment) => ({
-    ...af,
-    uuid: v4()
-  }),
+  preProcess: preProcessArticleFragment,
   postProcess: postProcessArticleFragment,
   idKey: 'uuid',
   field: createFieldType('groups', {
@@ -39,10 +47,7 @@ const articleFragments = createType('articleFragments', {
   })
 });
 const supportingArticles = createType('articleFragments', {
-  preProcess: (af: ArticleFragment) => ({
-    ...af,
-    uuid: v4()
-  }),
+  preProcess: preProcessArticleFragment,
   postProcess: postProcessArticleFragment,
   idKey: 'uuid'
 });
