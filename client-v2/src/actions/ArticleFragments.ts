@@ -78,7 +78,16 @@ const removeGroupArticleFragmentWithPersist = addPersistMetaToAction(
 );
 
 const removeClipboardArticleFragmentWithPersist = addPersistMetaToAction(
-  removeGroupArticleFragment,
+  removeClipboardArticleFragment,
+  {
+    persistTo: 'clipboard',
+    applyBeforeReducer: true,
+    key: 'articleFragmentId'
+  }
+);
+
+const removeClipboardSupportingArticleFragmentWithPersist = addPersistMetaToAction(
+  removeSupportingArticleFragment,
   {
     persistTo: 'clipboard',
     applyBeforeReducer: true,
@@ -199,5 +208,6 @@ export {
   updateClipboardArticleFragmentMetaWithPersist as updateClipboardArticleFragmentMeta,
   removeSupportingArticleFragmentWithPersist as removeSupportingArticleFragment,
   removeGroupArticleFragmentWithPersist as removeGroupArticleFragment,
-  removeClipboardArticleFragmentWithPersist as removeSupportingArticleFragmentFromClipboard
+  removeClipboardArticleFragmentWithPersist as removeArticleFragmentFromClipboard,
+  removeClipboardSupportingArticleFragmentWithPersist as removeSupportingArticleFragmentFromClipboard
 };

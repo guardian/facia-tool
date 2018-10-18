@@ -10,9 +10,14 @@ import {
 import { State } from '../types/State';
 import { DerivedArticle } from '../types/Article';
 import toneColorMap from '../util/toneColorMap';
+import ButtonDefault from './input/ButtonDefault';
+import { removeSupportingArticleFragmentFromClipboard } from 'actions/ArticleFragments';
+import { Dispatch } from 'types/Store';
 
 interface ContainerProps {
   id: string;
+  parentId: string;
+  children?: React.ReactNode;
   draggable: boolean;
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
   onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
@@ -22,7 +27,7 @@ interface ContainerProps {
 
 type ComponentProps = {
   article: DerivedArticle | void;
-  children?: React.ReactNode;
+  onDelete: () => void;
 } & ContainerProps;
 
 const BodyContainer = styled('div')`
@@ -43,7 +48,8 @@ const ArticleComponent = ({
   draggable = false,
   onDragStart = noop,
   onDragOver = noop,
-  onDrop = noop
+  onDrop = noop,
+  onDelete
 }: ComponentProps) => {
   if (!article) {
     return null;
@@ -61,6 +67,18 @@ const ArticleComponent = ({
         length: 40 - article.sectionName.length
       })}`}
       {children}
+      <ButtonDefault
+        onClick={e => {
+          e.stopPropagation();
+          onDelete();
+        }}
+        inline
+        pill
+        size="s"
+        priority="muted"
+      >
+        Delete
+      </ButtonDefault>
     </BodyContainer>
   );
 };
@@ -77,4 +95,15 @@ const createMapStateToProps = () => (
   )
 });
 
-export default connect(createMapStateToProps)(ArticleComponent);
+const mapDispatchToProps = (
+  dispatch: Dispatch,
+  { id, parentId }: ContainerProps
+) => ({
+  onDelete: () =>
+    dispatch(removeSupportingArticleFragmentFromClipboard(parentId, id))
+});
+
+export default connect(
+  createMapStateToProps,
+  mapDispatchToProps
+)(ArticleComponent);

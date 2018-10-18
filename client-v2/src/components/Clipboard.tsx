@@ -142,6 +142,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                 ) => (
                   <ArticlePolaroidSub
                     id={supporting.uuid}
+                    parentId={articleFragment.uuid}
                     {...getSupportingNodeProps()}
                   />
                 )}

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 type ButtonSizes = 's' | 'm' | 'l';
-type ButtonPriorities = 'primary' | 'default';
+type ButtonPriorities = 'primary' | 'default' | 'muted';
 
 type SizeMap = { [k in ButtonSizes]: string };
 type PriorityMap = { [k in ButtonPriorities]: string };
@@ -17,6 +17,7 @@ interface ButtonProps {
   size?: ButtonSizes;
   pill?: boolean;
   dark?: boolean;
+  inline?: boolean;
 }
 
 const heightMap = {
@@ -40,33 +41,39 @@ const fontSizeMap = {
 const colorMap = {
   selected: {
     default: '#fff',
-    primary: '#fff'
+    primary: '#fff',
+    muted: '#999'
   },
   deselected: {
     default: '#fff',
-    primary: '#fff'
+    primary: '#fff',
+    muted: '#999'
   }
 };
 
 const backgroundMap = {
   selected: {
     default: '#555',
-    primary: '#ff983f'
+    primary: '#ff983f',
+    muted: '#aaa'
   },
   deselected: {
     default: '#333',
-    primary: '#ff7f0f'
+    primary: '#ff7f0f',
+    muted: '#ccc'
   }
 };
 
 const backgroundHoverMap = {
   selected: {
     default: '#555',
-    primary: '#ff983f'
+    primary: '#ff983f',
+    muted: '#aaa'
   },
   deselected: {
     default: '#555',
-    primary: '#ff983f'
+    primary: '#ff983f',
+    muted: '#aaa'
   }
 };
 
@@ -87,6 +94,7 @@ export default styled(`button`)`
   font-weight: bold;
   height: ${mapSize(heightMap)};
   line-height: 1;
+  margin: 0 ${({ inline }) => (inline ? '5px' : '0')}
   padding: 0 ${mapSize(paddingMap)};
   border: none;
   :hover {
@@ -97,6 +105,10 @@ export default styled(`button`)`
     outline: transparent;
   }
   & + & {
-    margin-left: 1px;
+    margin-left: 5px;
+  }
+
+  :not(:first-child) {
+    margin-left: ${({ inline }) => (inline ? '5px' : '0')};
   }
 `;
