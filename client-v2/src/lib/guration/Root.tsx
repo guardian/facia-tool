@@ -79,6 +79,7 @@ interface RootProps<T extends object> {
   mapIn: InMap;
   mapOut: OutMap<T>;
   children: React.ReactNode;
+  document?: HTMLDocument;
 }
 interface RootState {
   dragData: InternalDrag | null;
@@ -89,7 +90,6 @@ interface RootState {
 }
 
 class Root<T extends object> extends React.Component<RootProps<T>, RootState> {
-
   /**
    * All of the functions that map a drop to a node, the key being the
    * key on the `dataTransfer` object that this mapper can handle
@@ -149,6 +149,7 @@ class Root<T extends object> extends React.Component<RootProps<T>, RootState> {
 
   public eventHandled = false;
   public rootKey: string = v4();
+  public root: HTMLElement | null = null;
 
   /**
    * This wraps set state to make sure we don't call it too much and keep
@@ -158,7 +159,7 @@ class Root<T extends object> extends React.Component<RootProps<T>, RootState> {
     path: Path[] | null,
     canDrop: boolean | null,
     // TODO: this is essentially `any` at the moment
-    state = {}
+    state: object | null = null
   ) {
     const { path: prevPath } = this.state.dropInfo;
     if (
@@ -207,11 +208,18 @@ class Root<T extends object> extends React.Component<RootProps<T>, RootState> {
   /**
    * When a drop happens anywhere set event handle to false
    */
-  public handleRootDrop = () => {
+  public resetDragging = () => {
     this.setDropInfo(null, false, {
       dragData: null
     });
     this.eventHandled = false;
+  };
+
+  public handleRootDragLeave = (e: React.DragEvent) => {
+    // only reset if we're actually the root as dragleaves fire for all children
+    if (e.target instanceof HTMLElement && e.target.parentNode === this.root) {
+      this.resetDragging();
+    }
   };
 
   /**
@@ -347,14 +355,30 @@ class Root<T extends object> extends React.Component<RootProps<T>, RootState> {
     }
   }
 
+  public componentDidMount() {
+    (this.props.document || window.document).addEventListener(
+      'dragend',
+      this.handleDocumentDragEnd
+    );
+  }
+
+  public componentWillUnmount() {
+    (this.props.document || window.document).addEventListener(
+      'dragend',
+      this.handleDocumentDragEnd
+    );
+  }
+
   public render() {
     const { type, field, id } = this.props;
     return (
       <div
+        ref={node => {
+          this.root = node;
+        }}
         onDragOver={this.handleRootDragOver}
-        onDrop={this.handleRootDrop}
-        onDragEnd={this.handleRootDrop}
-        onDragLeave={this.handleRootDrop}
+        onDrop={this.resetDragging}
+        onDragLeave={this.handleRootDragLeave}
       >
         <RootContext.Provider
           value={{
@@ -371,6 +395,10 @@ class Root<T extends object> extends React.Component<RootProps<T>, RootState> {
       </div>
     );
   }
+
+  private handleDocumentDragEnd = () => {
+    this.resetDragging();
+  };
 }
 
 export default Root;
