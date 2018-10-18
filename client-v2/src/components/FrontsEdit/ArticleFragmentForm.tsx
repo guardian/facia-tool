@@ -35,6 +35,7 @@ interface ComponentProps {
   onCancel: () => void;
   onSave: (meta: ArticleFragmentMeta) => void;
   imageSlideshowReplace: boolean;
+  showByline: boolean;
   useCutout: boolean;
   hideMedia: boolean;
   kickerOptions: string[];
@@ -145,7 +146,8 @@ const formComponent: React.StatelessComponent<Props> = ({
   useCutout,
   onCancel,
   initialValues,
-  pristine
+  pristine,
+  showByline
 }) => (
   <FormContainer onSubmit={handleSubmit}>
     <CollectionHeadingPinline>
@@ -222,18 +224,20 @@ const formComponent: React.StatelessComponent<Props> = ({
         />
         <HorizontalRule noMargin />
         <Field
-          name="byline"
-          label="Byline"
-          component={InputText}
-          placeholder="Replace byline"
-          useHeadlineFont
-        />
-        <Field
           name="showByline"
           component={InputCheckboxToggle}
           label="Show Byline"
           type="checkbox"
         />
+        {showByline && (
+          <Field
+            name="byline"
+            label="Byline"
+            component={InputText}
+            placeholder="Replace byline"
+            useHeadlineFont
+          />
+        )}
         <HorizontalRule noMargin />
         <Field
           name="trailText"
@@ -397,6 +401,7 @@ interface ContainerProps extends InterfaceProps {
   useCutout: boolean;
   hideMedia: boolean;
   kickerOptions: string[];
+  showByline: boolean;
 }
 
 interface InterfaceProps {
@@ -427,7 +432,8 @@ const mapStateToProps = (state: State, props: InterfaceProps) => {
       : [],
     imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
     hideMedia: valueSelector(state, 'imageSlideshowReplace'),
-    useCutout: valueSelector(state, 'imageSlideshowReplace')
+    useCutout: valueSelector(state, 'imageSlideshowReplace'),
+    showByline: valueSelector(state, 'showByline')
   };
 };
 
