@@ -36,7 +36,7 @@ interface ComponentProps {
   onSave: (meta: ArticleFragmentMeta) => void;
   imageSlideshowReplace: boolean;
   showByline: boolean;
-  useCutout: boolean;
+  imageCutoutReplace: boolean;
   hideMedia: boolean;
   kickerOptions: string[];
   articleFragmentId: string;
@@ -65,7 +65,7 @@ interface ArticleFragmentFormData {
   hideMedia: boolean;
   primaryImage: ImageData;
   cutoutImage: ImageData;
-  useCutout: boolean;
+  imageCutoutReplace: boolean;
   imageSlideshowReplace: boolean;
   slideshow: Array<ImageData | void>;
 }
@@ -143,7 +143,7 @@ const formComponent: React.StatelessComponent<Props> = ({
   handleSubmit,
   imageSlideshowReplace,
   hideMedia,
-  useCutout,
+  imageCutoutReplace,
   onCancel,
   initialValues,
   pristine,
@@ -272,7 +272,7 @@ const formComponent: React.StatelessComponent<Props> = ({
         <HorizontalRule />
         <Row>
           <Col>
-            <ImageWrapper faded={!useCutout}>
+            <ImageWrapper faded={!imageCutoutReplace}>
               <Field
                 name="cutoutImage"
                 component={InputImage}
@@ -283,7 +283,7 @@ const formComponent: React.StatelessComponent<Props> = ({
           <Col>
             <InputGroup>
               <Field
-                name="useCutout"
+                name="imageCutoutReplace"
                 component={InputCheckboxToggle}
                 label="Use cutout"
                 type="checkbox"
@@ -333,7 +333,7 @@ const getInitialValuesForArticleFragmentForm = (
         byline: article.byline || '',
         showByline: article.showByline || false,
         trailText: article.trailText || '',
-        useCutout: article.imageCutoutReplace || false,
+        imageCutoutReplace: article.imageCutoutReplace || false,
         hideMedia: !article.imageReplace || false,
         imageSlideshowReplace: article.imageSlideshowReplace || false,
         primaryImage: {
@@ -398,7 +398,7 @@ const ArticleFragmentForm = reduxForm<
 
 interface ContainerProps extends InterfaceProps {
   imageSlideshowReplace: boolean;
-  useCutout: boolean;
+  imageCutoutReplace: boolean;
   hideMedia: boolean;
   kickerOptions: string[];
   showByline: boolean;
@@ -432,7 +432,7 @@ const mapStateToProps = (state: State, props: InterfaceProps) => {
       : [],
     imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
     hideMedia: valueSelector(state, 'imageSlideshowReplace'),
-    useCutout: valueSelector(state, 'imageSlideshowReplace'),
+    imageCutoutReplace: valueSelector(state, 'imageSlideshowReplace'),
     showByline: valueSelector(state, 'showByline')
   };
 };
