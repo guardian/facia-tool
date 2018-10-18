@@ -207,6 +207,7 @@ const formComponent: React.StatelessComponent<Props> = ({
         {kickerOptions.map(kickerOption => (
           <Button
             key={kickerOption}
+            type="button"
             pill
             onClick={(e: React.FormEvent<HTMLButtonElement>) =>
               change('customKicker', e.currentTarget.value)
