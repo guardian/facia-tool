@@ -360,7 +360,7 @@ const getArticleFragmentMetaFromFormValues = (
 ): ArticleFragmentMeta => {
   const primaryImage = values.primaryImage || {};
   const cutoutImage = values.cutoutImage || {};
-  // Lodash doesn't remove undefined in the type settings here, hence the undefined.
+  // Lodash doesn't remove undefined in the type settings here, hence the any.
   const slideshow: ImageData[] = compact(values.slideshow as any);
   return omit(
     {
@@ -432,8 +432,8 @@ const mapStateToProps = (state: State, props: InterfaceProps) => {
         )
       : [],
     imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
-    imageHide: valueSelector(state, 'imageSlideshowReplace'),
-    imageCutoutReplace: valueSelector(state, 'imageSlideshowReplace'),
+    imageHide: valueSelector(state, 'imageHide'),
+    imageCutoutReplace: valueSelector(state, 'imageCutoutReplace'),
     showByline: valueSelector(state, 'showByline')
   };
 };
