@@ -35,8 +35,9 @@ interface ComponentProps {
   onCancel: () => void;
   onSave: (meta: ArticleFragmentMeta) => void;
   imageSlideshowReplace: boolean;
-  useCutout: boolean;
-  hideMedia: boolean;
+  showByline: boolean;
+  imageCutoutReplace: boolean;
+  imageHide: boolean;
   kickerOptions: string[];
   articleFragmentId: string;
 }
@@ -61,10 +62,10 @@ interface ArticleFragmentFormData {
   byline: string;
   showByline: boolean;
   trailText: string;
-  hideMedia: boolean;
+  imageHide: boolean;
   primaryImage: ImageData;
   cutoutImage: ImageData;
-  useCutout: boolean;
+  imageCutoutReplace: boolean;
   imageSlideshowReplace: boolean;
   slideshow: Array<ImageData | void>;
 }
@@ -141,11 +142,12 @@ const formComponent: React.StatelessComponent<Props> = ({
   kickerOptions,
   handleSubmit,
   imageSlideshowReplace,
-  hideMedia,
-  useCutout,
+  imageHide,
+  imageCutoutReplace,
   onCancel,
   initialValues,
-  pristine
+  pristine,
+  showByline
 }) => (
   <FormContainer onSubmit={handleSubmit}>
     <CollectionHeadingPinline>
@@ -205,6 +207,7 @@ const formComponent: React.StatelessComponent<Props> = ({
         {kickerOptions.map(kickerOption => (
           <Button
             key={kickerOption}
+            type="button"
             pill
             onClick={(e: React.FormEvent<HTMLButtonElement>) =>
               change('customKicker', e.currentTarget.value)
@@ -222,18 +225,20 @@ const formComponent: React.StatelessComponent<Props> = ({
         />
         <HorizontalRule noMargin />
         <Field
-          name="byline"
-          label="Byline"
-          component={InputText}
-          placeholder="Replace byline"
-          useHeadlineFont
-        />
-        <Field
           name="showByline"
           component={InputCheckboxToggle}
           label="Show Byline"
           type="checkbox"
         />
+        {showByline && (
+          <Field
+            name="byline"
+            label="Byline"
+            component={InputText}
+            placeholder="Replace byline"
+            useHeadlineFont
+          />
+        )}
         <HorizontalRule noMargin />
         <Field
           name="trailText"
@@ -245,18 +250,18 @@ const formComponent: React.StatelessComponent<Props> = ({
       <RowContainer>
         <Row>
           <Col>
-            <ImageWrapper faded={hideMedia}>
+            <ImageWrapper faded={imageHide}>
               <Field
                 name="primaryImage"
                 component={InputImage}
-                disabled={hideMedia}
+                disabled={imageHide}
               />
             </ImageWrapper>
           </Col>
           <Col>
             <InputGroup>
               <Field
-                name="hideMedia"
+                name="imageHide"
                 component={InputCheckboxToggle}
                 label="Hide media"
                 type="checkbox"
@@ -268,18 +273,18 @@ const formComponent: React.StatelessComponent<Props> = ({
         <HorizontalRule />
         <Row>
           <Col>
-            <ImageWrapper faded={!useCutout}>
+            <ImageWrapper faded={!imageCutoutReplace}>
               <Field
                 name="cutoutImage"
                 component={InputImage}
-                disabled={hideMedia}
+                disabled={imageHide}
               />
             </ImageWrapper>
           </Col>
           <Col>
             <InputGroup>
               <Field
-                name="useCutout"
+                name="imageCutoutReplace"
                 component={InputCheckboxToggle}
                 label="Use cutout"
                 type="checkbox"
@@ -329,8 +334,8 @@ const getInitialValuesForArticleFragmentForm = (
         byline: article.byline || '',
         showByline: article.showByline || false,
         trailText: article.trailText || '',
-        useCutout: article.imageCutoutReplace || false,
-        hideMedia: !article.imageReplace || false,
+        imageCutoutReplace: article.imageCutoutReplace || false,
+        imageHide: !article.imageReplace || false,
         imageSlideshowReplace: article.imageSlideshowReplace || false,
         primaryImage: {
           src: article.imageSrc,
@@ -355,12 +360,12 @@ const getArticleFragmentMetaFromFormValues = (
 ): ArticleFragmentMeta => {
   const primaryImage = values.primaryImage || {};
   const cutoutImage = values.cutoutImage || {};
-  // Lodash doesn't remove undefined in the type settings here, hence the undefined.
+  // Lodash doesn't remove undefined in the type settings here, hence the any.
   const slideshow: ImageData[] = compact(values.slideshow as any);
   return omit(
     {
       ...values,
-      imageReplace: !values.hideMedia,
+      imageReplace: !values.imageHide,
       showKickerCustom: !!values.customKicker,
       imageSrc: primaryImage.src,
       imageSrcThumb: primaryImage.thumb,
@@ -394,9 +399,10 @@ const ArticleFragmentForm = reduxForm<
 
 interface ContainerProps extends InterfaceProps {
   imageSlideshowReplace: boolean;
-  useCutout: boolean;
-  hideMedia: boolean;
+  imageCutoutReplace: boolean;
+  imageHide: boolean;
   kickerOptions: string[];
+  showByline: boolean;
 }
 
 interface InterfaceProps {
@@ -426,8 +432,9 @@ const mapStateToProps = (state: State, props: InterfaceProps) => {
         )
       : [],
     imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
-    hideMedia: valueSelector(state, 'imageSlideshowReplace'),
-    useCutout: valueSelector(state, 'imageSlideshowReplace')
+    imageHide: valueSelector(state, 'imageHide'),
+    imageCutoutReplace: valueSelector(state, 'imageCutoutReplace'),
+    showByline: valueSelector(state, 'showByline')
   };
 };
 
