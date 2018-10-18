@@ -7,8 +7,12 @@ import startCase from 'lodash/startCase';
 
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 import toneColorMap from 'shared/util/toneColorMap';
-import ButtonHoverAction from 'shared/components/input/ButtonHoverAction';
-import { getPaths } from '../../util/paths';
+import { HoverActionsButtonWrapper } from 'shared/components/input/HoverActionButtonWrapper';
+import {
+  HoverDeleteButton,
+  HoverViewButton,
+  HoverOphanButton
+} from 'shared/components/input/HoverActionButtons';
 
 import {
   createArticleFromArticleFragmentSelector,
@@ -16,7 +20,6 @@ import {
 } from '../selectors/shared';
 import { State } from '../types/State';
 import { DerivedArticle } from '../types/Article';
-
 
 interface ArticleComponentProps {
   id: string;
@@ -39,28 +42,10 @@ type ComponentProps = {
   children: ReactNode;
 } & ContainerProps;
 
-const HoverActions = styled('div')`
+const HoverActionsAreaOverlay = styled('div')`
   display: flex;
   justify-content: space-between;
-  align-content: flex-end;
-  padding: 0 10px 8px;
-`;
-
-const HoverActionsLeft = styled('div')`
-  display: flex;
-  justify-content: space-around;
-`;
-
-const HoverActionsRight = styled('div')`
-  display: flex;
-  justify-content: space-around;
-`;
-
-const Link = styled(`a`).attrs({
-  target: '_blank',
-  rel: 'noopener noreferrer'
-})`
-  text-decoration: none;
+  padding: 4px 8px;
 `;
 
 const Thumbnail = styled('div')`
@@ -91,13 +76,16 @@ const ArticleBodyContainer = styled('div')<{
   position: relative;
   opacity: ${({ fade }) => (fade ? 0.5 : 1)};
 
-  ${HoverActions} {
+  ${HoverActionsAreaOverlay} {
     bottom: 0;
     left: 0;
     opacity: 1;
     position: absolute;
     right: 0;
     visibility: hidden;
+    transition: opacity ${({ transitionTime }) => transitionTime}s,
+      visibility 0s linear ${({ transitionTime }) => transitionTime}s;
+    opacity: 0;
   }
 
   ${Tone} {
@@ -106,13 +94,6 @@ const ArticleBodyContainer = styled('div')<{
 
   ${Thumbnail} {
     transition: opacity ${({ transitionTime }) => transitionTime}s;
-  }
-
-  ${HoverActions} {
-    transition: opacity ${({ transitionTime }) => transitionTime}s,
-      visibility 0s linear ${({ transitionTime }) => transitionTime}s;
-    visibility: hidden;
-    opacity: 0;
   }
 
   :hover {
@@ -126,7 +107,7 @@ const ArticleBodyContainer = styled('div')<{
       opacity: 0.2;
     }
 
-    ${HoverActions} {
+    ${HoverActionsAreaOverlay} {
       transition-delay: 0s;
       visibility: visible;
       opacity: 1;
@@ -257,41 +238,27 @@ const ArticleComponent = ({
             }}
           />
         )}
-        <HoverActions>
-          <HoverActionsLeft>
-            <Link
-              href={
-                article.isLive
-                  ? `https://www.theguardian.com/${article.urlPath}`
-                  : `https://preview.gutools.co.uk/${article.urlPath}`
-              }
-            >
-              <ButtonHoverAction action="view" title="View" />
-            </Link>
-            {article.isLive ? (
-              <Link
-                href={
-                  getPaths(`https://www.theguardian.com/${article.urlPath}`)
-                    .ophan
-                }
-              >
-                <ButtonHoverAction action="ophan" title="Ophan" />
-              </Link>
-            ) : null}
-          </HoverActionsLeft>
-          <HoverActionsRight>
-            <ButtonHoverAction
-              action="delete"
-              danger
-              onClick={(e: React.SyntheticEvent) => {
-                // stop the parent from opening the edit panel
-                e.stopPropagation();
-                onDelete(article.uuid);
-              }}
-              title="Delete"
-            />
-          </HoverActionsRight>
-        </HoverActions>
+        <HoverActionsAreaOverlay>
+          <HoverActionsButtonWrapper
+            buttons={[
+              { text: 'View', component: HoverViewButton },
+              { text: 'Ophan', component: HoverOphanButton }
+            ]}
+            buttonprops={{
+              isLive: article.isLive,
+              urlPath: article.urlPath,
+              onDelete
+            }}
+          />
+          <HoverActionsButtonWrapper
+            buttons={[{ text: 'Delete', component: HoverDeleteButton }]}
+            buttonprops={{
+              isLive: article.isLive,
+              urlPath: article.urlPath,
+              onDelete
+            }}
+          />
+        </HoverActionsAreaOverlay>
       </ArticleBodyContainer>
       {children}
     </ArticleContainer>
@@ -313,6 +280,6 @@ const createMapStateToProps = () => {
   });
 };
 
-export { ArticleComponentProps }
+export { ArticleComponentProps };
 
 export default connect(createMapStateToProps)(ArticleComponent);
