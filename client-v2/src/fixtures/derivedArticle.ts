@@ -25,7 +25,7 @@ export default {
   shortUrl: 'https://gu.com/p/9vxyd',
   thumbnail:
     'https://media.guim.co.uk/d49141dab560d0a37c99911f373d1d5f7f4706d0/0_356_1245_746/500.jpg',
-  isLive: 'true',
+  isLive: true,
   frontPublicationDate: 1535551228444,
   publishedBy: 'Philip McMahon',
   uuid: 'fc87955e-fa51-4994-b6cb-bf1c55e0a212',
