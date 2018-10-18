@@ -227,6 +227,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                 uuid={supporting.uuid}
                                 parentId={articleFragment.uuid}
                                 getNodeProps={sNodeProps}
+                                onSelect={this.props.selectArticleFragment}
                               />
                             )}
                           </ArticleFragment>

@@ -8,15 +8,35 @@ interface ContainerProps {
   uuid: string;
   parentId: string;
   getNodeProps: any;
+  onSelect: (uuid: string) => void;
 }
 
 type SupportingProps = ContainerProps & {
   onDelete: () => void;
 };
 
-const Supporting = ({ uuid, getNodeProps, onDelete }: SupportingProps) => (
-  <Article id={uuid} {...getNodeProps()} size="small" onDelete={onDelete} />
-);
+class Supporting extends React.PureComponent<SupportingProps> {
+  public render() {
+    const { uuid, getNodeProps, onDelete } = this.props;
+    return (
+      <div onClick={this.handleSelect}>
+        <Article
+          id={uuid}
+          {...getNodeProps()}
+          size="small"
+          onDelete={onDelete}
+        />
+      </div>
+    );
+  }
+  private handleSelect = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Supporting articles are usually contained within articles,
+    // so we don't want this event to bubble up and select the
+    // wrong thing.
+    e.stopPropagation();
+    this.props.onSelect(this.props.uuid);
+  }
+}
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
