@@ -37,7 +37,7 @@ interface ComponentProps {
   imageSlideshowReplace: boolean;
   showByline: boolean;
   imageCutoutReplace: boolean;
-  hideMedia: boolean;
+  imageHide: boolean;
   kickerOptions: string[];
   articleFragmentId: string;
 }
@@ -62,7 +62,7 @@ interface ArticleFragmentFormData {
   byline: string;
   showByline: boolean;
   trailText: string;
-  hideMedia: boolean;
+  imageHide: boolean;
   primaryImage: ImageData;
   cutoutImage: ImageData;
   imageCutoutReplace: boolean;
@@ -142,7 +142,7 @@ const formComponent: React.StatelessComponent<Props> = ({
   kickerOptions,
   handleSubmit,
   imageSlideshowReplace,
-  hideMedia,
+  imageHide,
   imageCutoutReplace,
   onCancel,
   initialValues,
@@ -250,18 +250,18 @@ const formComponent: React.StatelessComponent<Props> = ({
       <RowContainer>
         <Row>
           <Col>
-            <ImageWrapper faded={hideMedia}>
+            <ImageWrapper faded={imageHide}>
               <Field
                 name="primaryImage"
                 component={InputImage}
-                disabled={hideMedia}
+                disabled={imageHide}
               />
             </ImageWrapper>
           </Col>
           <Col>
             <InputGroup>
               <Field
-                name="hideMedia"
+                name="imageHide"
                 component={InputCheckboxToggle}
                 label="Hide media"
                 type="checkbox"
@@ -277,7 +277,7 @@ const formComponent: React.StatelessComponent<Props> = ({
               <Field
                 name="cutoutImage"
                 component={InputImage}
-                disabled={hideMedia}
+                disabled={imageHide}
               />
             </ImageWrapper>
           </Col>
@@ -335,7 +335,7 @@ const getInitialValuesForArticleFragmentForm = (
         showByline: article.showByline || false,
         trailText: article.trailText || '',
         imageCutoutReplace: article.imageCutoutReplace || false,
-        hideMedia: !article.imageReplace || false,
+        imageHide: !article.imageReplace || false,
         imageSlideshowReplace: article.imageSlideshowReplace || false,
         primaryImage: {
           src: article.imageSrc,
@@ -365,7 +365,7 @@ const getArticleFragmentMetaFromFormValues = (
   return omit(
     {
       ...values,
-      imageReplace: !values.hideMedia,
+      imageReplace: !values.imageHide,
       showKickerCustom: !!values.customKicker,
       imageSrc: primaryImage.src,
       imageSrcThumb: primaryImage.thumb,
@@ -400,7 +400,7 @@ const ArticleFragmentForm = reduxForm<
 interface ContainerProps extends InterfaceProps {
   imageSlideshowReplace: boolean;
   imageCutoutReplace: boolean;
-  hideMedia: boolean;
+  imageHide: boolean;
   kickerOptions: string[];
   showByline: boolean;
 }
@@ -432,7 +432,7 @@ const mapStateToProps = (state: State, props: InterfaceProps) => {
         )
       : [],
     imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
-    hideMedia: valueSelector(state, 'imageSlideshowReplace'),
+    imageHide: valueSelector(state, 'imageSlideshowReplace'),
     imageCutoutReplace: valueSelector(state, 'imageSlideshowReplace'),
     showByline: valueSelector(state, 'showByline')
   };
