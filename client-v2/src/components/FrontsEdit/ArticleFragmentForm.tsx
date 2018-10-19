@@ -47,8 +47,8 @@ type Props = ComponentProps &
 
 interface ImageData {
   src?: string;
-  width?: string;
-  height?: string;
+  width?: number;
+  height?: number;
   origin?: string;
   thumb?: string;
 }
@@ -308,6 +308,9 @@ const formComponent: React.StatelessComponent<Props> = ({
   </FormContainer>
 );
 
+const strToInt = (str: string | void) => (str ? parseInt(str, 10) : undefined);
+const intToStr = (int: number | void) => (int ? int.toString() : undefined);
+
 const getInitialValuesForArticleFragmentForm = (
   article: DerivedArticle | void
 ): ArticleFragmentFormData | void => {
@@ -315,7 +318,13 @@ const getInitialValuesForArticleFragmentForm = (
     return undefined;
   }
   const slideshowBackfill: Array<ImageData | void> = [];
-  const slideshow: Array<ImageData | void> = article.slideshow || [];
+  const slideshow: Array<ImageData | void> = (article.slideshow || []).map(
+    image => ({
+      ...image,
+      width: strToInt(image.width),
+      height: strToInt(image.height)
+    })
+  );
   slideshowBackfill.length = 4 - slideshow.length;
   slideshowBackfill.fill(undefined);
   return article
@@ -334,15 +343,15 @@ const getInitialValuesForArticleFragmentForm = (
         imageSlideshowReplace: article.imageSlideshowReplace || false,
         primaryImage: {
           src: article.imageSrc,
-          width: article.imageSrcWidth,
-          height: article.imageSrcHeight,
+          width: strToInt(article.imageSrcWidth),
+          height: strToInt(article.imageSrcHeight),
           origin: article.imageSrcOrigin,
           thumb: article.imageSrcThumb
         },
         cutoutImage: {
           src: article.imageCutoutSrc,
-          width: article.imageCutoutSrcWidth,
-          height: article.imageCutoutSrcHeight,
+          width: strToInt(article.imageCutoutSrcWidth),
+          height: strToInt(article.imageCutoutSrcHeight),
           origin: article.imageCutoutSrcOrigin
         },
         slideshow: slideshow.concat(slideshowBackfill)
@@ -356,7 +365,13 @@ const getArticleFragmentMetaFromFormValues = (
   const primaryImage = values.primaryImage || {};
   const cutoutImage = values.cutoutImage || {};
   // Lodash doesn't remove undefined in the type settings here, hence the any.
-  const slideshow: ImageData[] = compact(values.slideshow as any);
+  const slideshow = compact(values.slideshow as any).map(
+    (image: ImageData) => ({
+      ...image,
+      width: intToStr(image.width),
+      height: intToStr(image.height)
+    })
+  );
   return omit(
     {
       ...values,
@@ -364,12 +379,12 @@ const getArticleFragmentMetaFromFormValues = (
       showKickerCustom: !!values.customKicker,
       imageSrc: primaryImage.src,
       imageSrcThumb: primaryImage.thumb,
-      imageSrcWidth: primaryImage.width,
-      imageSrcHeight: primaryImage.height,
+      imageSrcWidth: intToStr(primaryImage.width),
+      imageSrcHeight: intToStr(primaryImage.height),
       imageSrcOrigin: primaryImage.origin,
       imageCutoutSrc: cutoutImage.src,
-      imageCutoutSrcWidth: cutoutImage.width,
-      imageCutoutSrcHeight: cutoutImage.height,
+      imageCutoutSrcWidth: intToStr(cutoutImage.width),
+      imageCutoutSrcHeight: intToStr(cutoutImage.height),
       imageCutoutSrcOrigin: cutoutImage.origin,
       slideshow: slideshow.length ? slideshow : undefined
     },
