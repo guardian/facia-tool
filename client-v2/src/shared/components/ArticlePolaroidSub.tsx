@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import noop from 'lodash/noop';
 import truncate from 'lodash/truncate';
 import {
-  articleFromArticleFragmentSelector,
+  createArticleFromArticleFragmentSelector,
   selectSharedState
 } from '../selectors/shared';
 import { State } from '../types/State';
@@ -87,17 +87,20 @@ const ArticleComponent = ({
   );
 };
 
-const createMapStateToProps = () => (
-  state: State,
-  props: ContainerProps
-): { article: DerivedArticle | void } => ({
-  article: articleFromArticleFragmentSelector(
-    props.selectSharedState
-      ? props.selectSharedState(state)
-      : selectSharedState(state),
-    props.id
-  )
-});
+const createMapStateToProps = () => {
+  const articleSelector = createArticleFromArticleFragmentSelector();
+  return (
+    state: State,
+    props: ContainerProps
+  ): { article: DerivedArticle | void } => ({
+    article: articleSelector(
+      props.selectSharedState
+        ? props.selectSharedState(state)
+        : selectSharedState(state),
+      props.id
+    )
+  });
+};
 
 const mapDispatchToProps = (
   dispatch: Dispatch,

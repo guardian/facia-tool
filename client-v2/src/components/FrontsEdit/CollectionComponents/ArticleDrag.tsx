@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {
-  articleFromArticleFragmentSelector,
+  createArticleFromArticleFragmentSelector,
   selectSharedState
 } from 'shared/selectors/shared';
 import { State } from 'types/State';
@@ -36,14 +36,14 @@ const ArticleDrag = ({ article }: ComponentProps) => (
   </>
 );
 
-const createMapStateToProps = () => (
-  state: State,
-  props: ContainerProps
-): { article: DerivedArticle | void } => ({
-  article: articleFromArticleFragmentSelector(
-    selectSharedState(state),
-    props.id
-  )
-});
+const createMapStateToProps = () => {
+  const articleSelector = createArticleFromArticleFragmentSelector();
+  return (
+    state: State,
+    props: ContainerProps
+  ): { article: DerivedArticle | void } => ({
+    article: articleSelector(selectSharedState(state), props.id)
+  });
+};
 
 export default connect(createMapStateToProps)(ArticleDrag);

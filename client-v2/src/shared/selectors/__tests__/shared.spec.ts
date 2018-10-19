@@ -1,6 +1,6 @@
 import {
   externalArticleFromArticleFragmentSelector,
-  articleFromArticleFragmentSelector,
+  createArticleFromArticleFragmentSelector,
   createArticlesInCollectionGroupSelector,
   createArticlesInCollectionSelector,
   createCollectionsAsTreeSelector,
@@ -203,9 +203,10 @@ describe('Shared selectors', () => {
     });
   });
 
-  describe('articleFromArticleFragmentSelector', () => {
+  describe('createArticleFromArticleFragmentSelector', () => {
     it('should create a selector that returns an article (externalArticle + articleFragment) referenced by the given article fragment', () => {
-      expect(articleFromArticleFragmentSelector(state, 'af1')).toEqual({
+      const selector = createArticleFromArticleFragmentSelector();
+      expect(selector(state, 'af1')).toEqual({
         id: 'ea1',
         pillarName: 'external-pillar',
         frontPublicationDate: 1,
@@ -219,7 +220,7 @@ describe('Shared selectors', () => {
         byline: 'external-byline'
       });
       expect(
-        articleFromArticleFragmentSelector(state, 'af1WithOverrides')
+        selector(state, 'af1WithOverrides')
       ).toEqual({
         id: 'ea1',
         customKicker: 'fragment-kicker',
@@ -234,7 +235,7 @@ describe('Shared selectors', () => {
         kicker: 'fragment-kicker',
         byline: 'fragment-byline'
       });
-      expect(articleFromArticleFragmentSelector(state, 'invalid')).toEqual(
+      expect(selector(state, 'invalid')).toEqual(
         undefined
       );
     });
