@@ -43,8 +43,8 @@ interface Block {
 }
 
 interface Blocks {
-  main: Block;
-  body: Block[];
+  main?: Block;
+  body?: Block[];
 }
 
 interface Tag {
@@ -59,25 +59,26 @@ interface Tag {
 }
 
 interface CapiArticleFields {
-  headline: string;
-  standfirst: string;
-  trailText: string;
-  byline: string;
-  internalPageCode: number;
-  isLive: boolean;
-  firstPublicationDate: CapiDate;
-  scheduledPublicationDate: CapiDate;
-  secureThumbnail: string;
-  thumbnail: string | void;
-  liveBloggingNow: boolean;
-  shortUrl: string;
-  membershipUrl: string;
+  headline?: string;
+  standfirst?: string;
+  trailText?: string;
+  byline?: string;
+  internalPageCode?: string;
+  isLive?: boolean;
+  firstPublicationDate?: CapiDate;
+  scheduledPublicationDate?: CapiDate;
+  secureThumbnail?: string;
+  thumbnail?: string | void;
+  liveBloggingNow?: boolean;
+  shortUrl?: string;
+  membershipUrl?: string;
 }
 
 // See https://github.com/guardian/content-api-models/blob/master/models/src/main/thrift/content/v1.thrift#L1431
 // for the canonical thrift definition.
 interface CapiArticle {
   id: string;
+  type: string;
   webTitle: string;
   webUrl: string;
   urlPath: string;

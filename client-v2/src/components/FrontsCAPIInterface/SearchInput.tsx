@@ -15,6 +15,7 @@ interface FrontsCAPISearchInputProps {
   additionalFixedContent?: React.ComponentType<any>;
   displaySearchFilters: boolean;
   updateDisplaySearchFilters: (value: boolean) => void;
+  isPreview: boolean;
 }
 
 type SearchTypeMap<T> = { [K in SearchTypes]: T };
@@ -59,29 +60,6 @@ const emptyState = {
     sections: [] as string[]
   }
 };
-
-const reduceTypes = <V, O extends SearchTypeMap<V>, R>(
-  obj: O,
-  fn: (
-    acc: R,
-    key: Extract<keyof O, string>,
-    val: O[Extract<keyof O, string>]
-  ) => R,
-  init: R
-) => {
-  let val = init;
-  for (const key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      val = fn(init, key, obj[key]);
-    }
-  }
-  return val;
-};
-
-const mapTypes = <V, O extends SearchTypeMap<V>, R>(
-  obj: O,
-  fn: (key: Extract<keyof O, string>, val: O[Extract<keyof O, string>]) => R
-) => reduceTypes(obj, (acc, key, val) => [...acc, fn(key, val)], [] as R[]);
 
 class FrontsCAPISearchInput extends React.Component<
   FrontsCAPISearchInputProps,
@@ -141,11 +119,6 @@ class FrontsCAPISearchInput extends React.Component<
     }
     const newSearchTerms = { ...this.state.searchTerms, ...{ [type]: '' } };
 
-    const newState = {
-      [type]: newTags,
-      searchTerms: newSearchTerms
-    };
-
     this.setState({
       selected: {
         ...this.state.selected,
@@ -182,28 +155,20 @@ class FrontsCAPISearchInput extends React.Component<
     const {
       children,
       displaySearchFilters,
-      additionalFixedContent: AdditionalFixedContent
+      additionalFixedContent: AdditionalFixedContent,
+      isPreview
     } = this.props;
 
-    const searchTermsExist =
-      mapTypes(this.state.selected, (_, results) => results.length).some(
-        a => !!a
-      ) || !!this.state.q;
+    const {
+      q,
+      selected: { tags, sections }
+    } = this.state;
 
-    const allTags = reduceTypes(
-      this.state.selected,
-      (acc, _, tags) => [...acc, ...tags],
-      [] as string[]
-    );
+    const searchTermsExist = !!tags.length || !!sections.length || !!q;
 
-    const filterParams = reduceTypes(
-      this.state.selected,
-      (acc, key, val) => ({
-        ...acc,
-        [key]: val.join(',')
-      }),
-      {} as SearchTypeMap<string>
-    );
+    const allTags = tags.concat(sections);
+
+    const dateParams = isPreview ? { 'order-by': 'oldest'} : { 'use-date': 'first-publication' };
 
     if (!displaySearchFilters) {
       return (
@@ -213,7 +178,7 @@ class FrontsCAPISearchInput extends React.Component<
               <InputContainer>
                 <TextInput
                   placeholder="Search content"
-                  value={this.state.q || ''}
+                  value={q || ''}
                   onChange={this.handleSearchInput}
                   onClear={this.clearInput}
                   onSearch={this.searchInput}
@@ -229,14 +194,16 @@ class FrontsCAPISearchInput extends React.Component<
         >
           <SearchQuery
             params={{
-              ...filterParams,
-              q: this.state.q,
+              tag: tags.join(','),
+              section: sections.join(','),
+              q,
               'page-size': '20',
-              'use-date': 'first-publication',
               'show-elements': 'image',
-              'show-fields': 'internalPageCode,trailText'
+              'show-fields': 'internalPageCode,trailText',
+              ...dateParams
             }}
             poll={30000}
+            isPreview={isPreview}
           >
             {children}
           </SearchQuery>
@@ -260,15 +227,20 @@ class FrontsCAPISearchInput extends React.Component<
           />
         </InputContainer>
         {this.renderSelectedTags(allTags)}
-        {mapTypes(this.state.searchTerms, (type, terms) => (
-          <CAPITagInput
-            placeholder="Type tag name"
-            onSearchChange={this.handleTagSearchInput}
-            tagsSearchTerm={terms}
-            onChange={this.handleTypeInput}
-            searchType={type}
-          />
-        ))}
+        <CAPITagInput
+          placeholder={`Type tag name`}
+          onSearchChange={this.handleTagSearchInput}
+          tagsSearchTerm={this.state.searchTerms.tags}
+          onChange={this.handleTypeInput}
+          searchType="tags"
+        />
+        <CAPITagInput
+          placeholder={`Type section name`}
+          onSearchChange={this.handleTagSearchInput}
+          tagsSearchTerm={this.state.searchTerms.sections}
+          onChange={this.handleTypeInput}
+          searchType="sections"
+        />
       </React.Fragment>
     );
   }

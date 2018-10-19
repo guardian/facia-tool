@@ -112,7 +112,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
 
   public render() {
     const { capiFeedSpec } = this;
-    const getId = (internalPageCode: string | number) =>
+    const getId = (internalPageCode: string | number | undefined) =>
       `internal-code/page/${internalPageCode}`;
 
     return (
@@ -127,6 +127,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
               updateDisplaySearchFilters={this.updateDisplaySearchFilters}
               displaySearchFilters={this.state.displaySearchFilters}
               additionalFixedContent={this.renderFixedContent}
+              isPreview={this.state.capiFeedIndex !== 0}
             >
               {({
                 pending,

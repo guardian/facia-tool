@@ -8,11 +8,15 @@ interface State {
 const articleFragments = (state: State = {}, action: Action) => {
   switch (action.type) {
     case 'SHARED/UPDATE_ARTICLE_FRAGMENT_META': {
+      const { id } = action.payload;
       return {
         ...state,
-        [action.payload.id]: {
-          ...state[action.payload.id],
-          meta: action.payload.meta
+        [id]: {
+          ...state[id],
+          meta: {
+            ...(state[id].meta || {}),
+            ...action.payload.meta
+          }
         }
       };
     }
