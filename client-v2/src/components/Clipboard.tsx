@@ -1,10 +1,9 @@
 import { Dispatch } from 'types/Store';
 import React from 'react';
 import { connect, MergeProps } from 'react-redux';
-import * as Guration from 'lib/guration';
-import { Edit } from 'lib/guration';
+import { Root, Level, Move, PosSpec } from 'lib/dnd';
 import { State } from 'types/State';
-import { urlToArticle } from 'util/collectionUtils';
+import { handleMove, handleInsert } from 'util/collectionUtils';
 import { ArticleFragmentTree } from 'shared/selectors/shared';
 import {
   clipboardAsTreeSelector,
@@ -13,7 +12,6 @@ import {
 import DropZone from 'components/DropZone';
 import ArticlePolaroid from 'shared/components/ArticlePolaroid';
 import ArticlePolaroidSub from 'shared/components/ArticlePolaroidSub';
-import { addArticleFragment } from 'shared/actions/ArticleFragments';
 import {
   insertClipboardArticleFragment,
   moveClipboardArticleFragment
@@ -25,9 +23,9 @@ import {
 } from 'bundles/frontsUIBundle';
 import { clipboardId } from 'constants/fronts';
 import { ArticleFragmentDenormalised } from 'shared/types/Collection';
+import ArticleDrag from './FrontsEdit/CollectionComponents/ArticleDrag';
 
 interface ClipboardProps {
-  addArticleFragment: (id: string, supporting: string[]) => Promise<string>;
   selectedArticleFragmentId: string | void;
   selectArticleFragment: (id: string) => void;
   clearArticleFragmentSelection: (id: string) => void;
@@ -38,49 +36,18 @@ interface ClipboardProps {
 class Clipboard extends React.Component<ClipboardProps> {
   // TODO: this code is repeated in src/components/FrontsEdit/Front.js
   // refactor
-  public runEdit = (edit: Guration.Edit) => {
-    switch (edit.type) {
-      case 'MOVE': {
-        const {
-          payload: { id, from, to }
-        } = edit;
-        return Promise.resolve(
-          moveClipboardArticleFragment(
-            from.parent.type,
-            from.parent.id,
-            id,
-            to.parent.type,
-            to.parent.id,
-            to.index
-          )
-        );
-      }
-      case 'INSERT': {
-        const {
-          payload: {
-            path: { parent, index }
-          }
-        } = edit;
-        return this.props
-          .addArticleFragment(edit.payload.id, edit.meta.supporting)
-          .then(uuid =>
-            insertClipboardArticleFragment(parent.type, parent.id, uuid, index)
-          );
-      }
-      default: {
-        return null;
-      }
-    }
+
+  public handleMove = (move: Move<ArticleFragmentDenormalised>) => {
+    handleMove(
+      moveClipboardArticleFragment,
+      insertClipboardArticleFragment,
+      this.props.dispatch,
+      move
+    );
   };
 
-  public handleChange = (edit: Edit) => {
-    const futureAction = this.runEdit(edit);
-    if (!futureAction) {
-      return;
-    }
-    futureAction.then(action => {
-      this.props.dispatch(action);
-    });
+  public handleInsert = (e: React.DragEvent, to: PosSpec) => {
+    handleInsert(e, insertClipboardArticleFragment, this.props.dispatch, to);
   };
 
   public clearArticleFragmentSelectionIfNeeded = (articleId: string) => {
@@ -92,43 +59,21 @@ class Clipboard extends React.Component<ClipboardProps> {
   public render() {
     const { tree } = this.props;
     return (
-      <Guration.Root
-        id="clipboard"
-        type="clipboard"
-        onChange={this.handleChange}
-        mapIn={{
-          text: async (text: string) => urlToArticle(text),
-          capi: (capi: string) =>
-            Promise.resolve({ type: 'articleFragment', id: capi }),
-          collection: (str: string) => Promise.resolve(JSON.parse(str))
-        }}
-        mapOut={{
-          // TODO: fix me, this is the same mapper for everything!
-          // need to return a key and a payload instead of just a payload
-          clipboard: (el: { id: string; meta: any }, type) =>
-            JSON.stringify({
-              type,
-              id: el.id,
-              meta: {
-                supporting: ((el.meta.supporting || []) as Array<{
-                  id: string;
-                }>).map(({ id }) => id)
-              }
-            })
-        }}
-      >
-        <Guration.Level
+      <Root id="clipboard">
+        <Level
           arr={tree.articleFragments}
+          parentType="clipboard"
+          parentId="clipboard"
           type="articleFragment"
-          getKey={({ uuid }) => uuid}
-          renderDrop={(getDropProps, { canDrop, isTarget }) => (
-            <DropZone {...getDropProps()} override={!!canDrop && !!isTarget} />
+          getId={({ uuid }) => uuid}
+          onMove={this.handleMove}
+          onDrop={this.handleInsert}
+          renderDrag={af => <ArticleDrag id={af.uuid} />}
+          renderDrop={(props, isTarget) => (
+            <DropZone {...props} override={isTarget} />
           )}
         >
-          {(
-            articleFragment: ArticleFragmentTree,
-            getArticleNodeProps: Guration.GetNodeProps
-          ) => (
+          {(articleFragment, afProps) => (
             <ArticlePolaroid
               id={articleFragment.uuid}
               onSelect={this.props.selectArticleFragment}
@@ -136,26 +81,29 @@ class Clipboard extends React.Component<ClipboardProps> {
                 !this.props.selectedArticleFragmentId ||
                 this.props.selectedArticleFragmentId === articleFragment.uuid
               }
-              onDelete={
-                this.clearArticleFragmentSelectionIfNeeded
-              }
-              {...getArticleNodeProps()}
+              onDelete={this.clearArticleFragmentSelectionIfNeeded}
+              {...afProps}
             >
-              <Guration.Level
+              <Level
                 arr={articleFragment.meta.supporting || []}
+                parentType="articleFragment"
+                parentId={articleFragment.uuid}
                 type="articleFragment"
-                getKey={({ uuid }) => uuid}
-                renderDrop={(getDropProps, { canDrop, isTarget }) => (
+                getId={({ uuid }) => uuid}
+                onMove={this.handleMove}
+                onDrop={this.handleInsert}
+                renderDrag={af => <ArticleDrag id={af.uuid} />}
+                renderDrop={(props, isTarget) => (
                   <DropZone
-                    {...getDropProps()}
-                    override={!!canDrop && !!isTarget}
+                    {...props}
+                    override={isTarget}
+                    indicatorStyle={{
+                      marginLeft: '20px'
+                    }}
                   />
                 )}
               >
-                {(
-                  supporting: ArticleFragmentDenormalised,
-                  getSupportingNodeProps: Guration.GetNodeProps
-                ) => (
+                {(supporting, sProps) => (
                   <ArticlePolaroidSub
                     id={supporting.uuid}
                     parentId={articleFragment.uuid}
@@ -164,17 +112,15 @@ class Clipboard extends React.Component<ClipboardProps> {
                       !this.props.selectedArticleFragmentId ||
                       this.props.selectedArticleFragmentId === supporting.uuid
                     }
-                    {...getSupportingNodeProps()}
-                    onDelete={
-                      this.clearArticleFragmentSelectionIfNeeded
-                    }
+                    {...sProps}
+                    onDelete={this.clearArticleFragmentSelectionIfNeeded}
                   />
                 )}
-              </Guration.Level>
+              </Level>
             </ArticlePolaroid>
           )}
-        </Guration.Level>
-      </Guration.Root>
+        </Level>
+      </Root>
     );
   }
 }
@@ -185,8 +131,6 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  addArticleFragment: (id: string, supporting: string[]) =>
-    dispatch(addArticleFragment(id, supporting)),
   selectArticleFragment: (frontId: string, articleFragmentId: string) =>
     dispatch(editorSelectArticleFragment(frontId, articleFragmentId)),
   clearArticleFragmentSelection: (frontId: string) =>

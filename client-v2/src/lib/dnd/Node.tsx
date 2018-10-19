@@ -1,0 +1,74 @@
+import React from 'react';
+import { PathConsumer, Parent } from './AddParentInfo';
+import { TRANSFER_TYPE } from './constants';
+
+interface ChildrenProps {
+  draggable: true;
+  onDragStart: (e: React.DragEvent) => void;
+}
+
+interface OuterProps<T> {
+  children: (props: ChildrenProps) => React.ReactNode;
+  renderDrag?: (data: T) => React.ReactNode;
+  type: string;
+  id: string;
+  index: number;
+  data: T;
+}
+
+interface ConextProps {
+  parents: Parent[];
+}
+
+type Props<T> = OuterProps<T> & ConextProps;
+
+class Node<T> extends React.Component<Props<T>> {
+  public dragImage: HTMLDivElement | null = null;
+
+  public render() {
+    const { renderDrag, data } = this.props;
+    return (
+      <>
+        {renderDrag && (
+          <div
+            style={{
+              position: 'absolute',
+              transform: 'translateX(-9999px)'
+            }}
+            ref={node => {
+              this.dragImage = node;
+            }}
+          >
+            {renderDrag(data)}
+          </div>
+        )}
+        {this.props.children({
+          draggable: true,
+          onDragStart: this.onDragStart
+        })}
+      </>
+    );
+  }
+
+  private onDragStart = (e: React.DragEvent) => {
+    if (e.dataTransfer.getData(TRANSFER_TYPE)) {
+      return;
+    }
+    if (this.dragImage) {
+      e.dataTransfer.setDragImage(this.dragImage, 10, 10);
+    }
+    const { parents, type, id, index, data } = this.props;
+    e.dataTransfer.setData(
+      TRANSFER_TYPE,
+      JSON.stringify({ parents, type, id, index, data })
+    );
+  };
+}
+
+export { ChildrenProps };
+
+export default <T extends any>(props: OuterProps<T>) => (
+  <PathConsumer>
+    {(parents: Parent[]) => <Node {...props} parents={parents} />}
+  </PathConsumer>
+);

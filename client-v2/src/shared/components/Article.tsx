@@ -24,6 +24,7 @@ interface ArticleComponentProps {
   fade?: boolean;
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
   onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
+  onDragEnter?: (d: React.DragEvent<HTMLElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
   onDelete?: (uuid: string) => void;
   onClick?: () => void;
@@ -195,6 +196,7 @@ const ArticleComponent = ({
   fade = false,
   draggable = false,
   onDragStart = noop,
+  onDragEnter = noop,
   onDragOver = noop,
   onDrop = noop,
   onDelete = noop,
@@ -210,6 +212,7 @@ const ArticleComponent = ({
     <ArticleContainer
       draggable={draggable}
       onDragStart={onDragStart}
+      onDragEnter={onDragEnter}
       onDragOver={onDragOver}
       onDrop={onDrop}
       onClick={onClick}

@@ -15,17 +15,25 @@ import Button from './input/ButtonDefault';
 import { ArticleComponentProps } from './Article';
 import Fadeable from './Fadeable';
 
-interface ContainerProps extends ArticleComponentProps {
+interface ContainerProps {
+  id: string; // eslint-disable-line react/no-unused-prop-types
+  draggable: boolean;
   isSelected?: boolean;
-  onSelect?: (uuid: string) => void;
-  selectSharedState?: (state: any) => State;
+  onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
+  onDragEnter?: (d: React.DragEvent<HTMLElement>) => void;
+  onDragEnd?: (d: React.DragEvent<HTMLElement>) => void;
+  onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
+  onDrop?: (d: React.DragEvent<HTMLElement>) => void;
+  onSelect: (uuid: string) => void;
+  selectSharedState?: (state: any) => State; // eslint-disable-line react/no-unused-prop-types
   children?: React.ReactNode;
+  onDelete: (uuid: string) => void;
 }
 
-type ComponentProps = {
+type ComponentProps = ContainerProps & {
   article: DerivedArticle | void;
   onDelete: () => void;
-} & ContainerProps;
+};
 
 const CornerButton = Button.extend`
   left: 4px;
@@ -49,6 +57,8 @@ const ArticleComponent = ({
   children,
   draggable = false,
   onDragStart = noop,
+  onDragEnter = noop,
+  onDragEnd = noop,
   onDragOver = noop,
   onDrop = noop,
   onDelete = noop,
@@ -63,6 +73,8 @@ const ArticleComponent = ({
     <BodyContainer
       draggable={draggable}
       onDragStart={onDragStart}
+      onDragEnter={onDragEnter}
+      onDragEnd={onDragEnd}
       onDragOver={onDragOver}
       onDrop={onDrop}
     >
@@ -89,22 +101,25 @@ const ArticleComponent = ({
 const createMapStateToProps = () => {
   const articleSelector = createArticleFromArticleFragmentSelector();
   return (
-  state: State,
-  props: ContainerProps
-): { article: DerivedArticle | void } => ({
-  article: articleSelector(
-    props.selectSharedState
-      ? props.selectSharedState(state)
-      : selectSharedState(state),
-    props.id
-  )
-});
-}
+    state: State,
+    props: ContainerProps
+  ): { article: DerivedArticle | void } => ({
+    article: articleSelector(
+      props.selectSharedState
+        ? props.selectSharedState(state)
+        : selectSharedState(state),
+      props.id
+    )
+  });
+};
 
-const mapDispatchToProps = (dispatch: Dispatch, { id, onDelete = noop }: ContainerProps) => ({
+const mapDispatchToProps = (
+  dispatch: Dispatch,
+  { id, onDelete = noop }: ContainerProps
+) => ({
   onDelete: () => {
     onDelete(id);
-    dispatch(removeArticleFragmentFromClipboard(id))
+    dispatch(removeArticleFragmentFromClipboard(id));
   }
 });
 

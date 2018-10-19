@@ -122,26 +122,22 @@ const createFragment = (id: string, supporting: string[] = []) => ({
   }
 });
 
-function addArticleFragment(id: string, supporting: string[] = []) {
+function addArticleFragment(id: string) {
   return (dispatch: Dispatch) =>
-    getArticles([id, ...supporting])
-      .catch(error => dispatch(externalArticleActions.fetchError(error, [id])))
-      .then(articles => {
-        dispatch(externalArticleActions.fetchSuccess(articles));
-        const supportingArray = uniq(supporting).map(_ => createFragment(_));
-        const supportingFragments = keyBy(supportingArray, ({ uuid }) => uuid);
-        const parentFragment = createFragment(
-          id,
-          supportingArray.map(({ uuid }) => uuid)
-        );
-
+    getArticles([id])
+      .then(([article]) => {
+        dispatch(externalArticleActions.fetchSuccess([article]));
+        const fragment = createFragment(article.id);
         dispatch(
           articleFragmentsReceived({
-            [parentFragment.uuid]: parentFragment,
-            ...supportingFragments
+            [fragment.uuid]: fragment
           })
         );
-        return parentFragment.uuid;
+        return fragment.uuid;
+      })
+      .catch(error => {
+        dispatch(externalArticleActions.fetchError(error, [id]));
+        return null;
       });
 }
 const f = <T1 extends {}>(arg1: T1) => <T2 extends {}>(arg2: T2) => {

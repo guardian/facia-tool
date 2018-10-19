@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import * as Guration from 'lib/guration';
+import { Root, Level, Move, PosSpec } from 'lib/dnd';
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import {
@@ -10,13 +10,12 @@ import {
   ArticleFragmentTree,
   CollectionTree
 } from 'shared/selectors/shared';
-import { addArticleFragment } from 'shared/actions/ArticleFragments';
 import {
   insertArticleFragment,
   moveArticleFragment,
   updateArticleFragmentMeta
 } from 'actions/ArticleFragments';
-import { urlToArticle } from 'util/collectionUtils';
+import { handleMove, handleInsert } from 'util/collectionUtils';
 import { AlsoOnDetail } from 'types/Collection';
 import {
   editorSelectArticleFragment,
@@ -26,15 +25,24 @@ import {
 import {
   ArticleFragmentMeta,
   Stages,
-  Group as TGroup,
   ArticleFragmentDenormalised
 } from 'shared/types/Collection';
-import Front from './CollectionComponents/Front';
+import DropZone from 'components/DropZone';
 import Collection from './CollectionComponents/Collection';
-import Group from './CollectionComponents/Group';
 import ArticleFragment from './CollectionComponents/ArticleFragment';
 import Supporting from './CollectionComponents/Supporting';
 import ArticleFragmentForm from './ArticleFragmentForm';
+import GroupDisplayComponent from 'shared/components/GroupDisplay';
+import ArticleDrag from './CollectionComponents/ArticleDrag';
+
+const dropIndicatorStyle = {
+  marginLeft: '83px'
+};
+
+const dropZoneStyle = {
+  marginTop: '-15px',
+  padding: '3px'
+};
 
 const FrontContainer = styled('div')`
   display: flex;
@@ -57,7 +65,6 @@ interface FrontPropsBeforeState {
 
 type FrontProps = FrontPropsBeforeState & {
   tree: any;
-  addArticleFragment: (id: string, supporting: string[]) => Promise<string>;
   updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) => void;
   selectedArticleFragmentId: string | void;
   dispatch: Dispatch;
@@ -89,59 +96,17 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     }
   };
 
-  public runEdit = (edit: any) => {
-
-    switch (edit.type) {
-      case 'MOVE': {
-        const {
-          payload: { id, from, to }
-        } = edit;
-        return Promise.resolve(
-          moveArticleFragment(
-            from.parent.type,
-            from.parent.id,
-            id,
-            to.parent.type,
-            to.parent.id,
-            to.index
-          )
-        );
-      }
-
-      case 'INSERT': {
-        const {
-          payload: {
-            path: { parent, index }
-          }
-        } = edit;
-        const editsPromise = this.props
-          .addArticleFragment(edit.payload.id, edit.meta.supporting)
-          .then(uuid =>
-            insertArticleFragment(
-              parent.type, // the name of the level above
-              parent.id,
-              uuid,
-              index
-            )
-          );
-        return editsPromise;
-      }
-      default: {
-        return null;
-      }
-    }
+  public handleMove = (move: Move<ArticleFragmentDenormalised>) => {
+    handleMove(
+      moveArticleFragment,
+      insertArticleFragment,
+      this.props.dispatch,
+      move
+    );
   };
 
-  public handleChange = (edit: Guration.Edit) => {
-    const futureAction = this.runEdit(edit);
-    if (!futureAction) {
-      return;
-    }
-    futureAction.then(action => {
-      if (action) {
-        this.props.dispatch(action);
-      }
-    });
+  public handleInsert = (e: React.DragEvent, to: PosSpec) => {
+    handleInsert(e, insertArticleFragment, this.props.dispatch, to);
   };
 
   public render() {
@@ -161,55 +126,40 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
         </div>
         <FrontContainer>
           <FrontContentContainer>
-            <Guration.Root
-              // do we need frontId?
-              id={this.props.id}
-              type="front"
-              onChange={this.handleChange}
-              mapIn={{
-                text: text => urlToArticle(text),
-                capi: capi =>
-                  Promise.resolve({ type: 'articleFragment', id: capi }),
-                clipboard: str => JSON.parse(str),
-                collection: str => JSON.parse(str) // other fronts
-              }}
-              mapOut={{
-                collection: (el: { id: string; meta: any }, type) =>
-                  JSON.stringify({
-                    type,
-                    id: el.id,
-                    meta: {
-                      supporting: ((el.meta.supporting || []) as Array<{
-                        id: string;
-                      }>).map(({ id }) => id)
-                    }
-                  })
-              }}
-            >
-              <Front {...this.props.tree}>
-                {(collection: CollectionTree) => (
-                  <Collection
-                    id={collection.id}
-                    groups={collection.groups}
-                    frontId={this.props.id}
-                    alsoOn={this.props.alsoOn}
-                    canPublish={this.props.browsingStage !== 'live'}
-                    browsingStage={this.props.browsingStage}
-                  >
-                    {(group: TGroup) => (
-                      <Group
-                        id={group.id}
-                        articleFragments={group.articleFragments}
+            <Root id={this.props.id}>
+              {this.props.tree.collections.map((collection: CollectionTree) => (
+                <Collection
+                  key={collection.id}
+                  id={collection.id}
+                  frontId={this.props.id}
+                  alsoOn={this.props.alsoOn}
+                  canPublish={this.props.browsingStage !== 'live'}
+                  browsingStage={this.props.browsingStage}
+                >
+                  {collection.groups.map(group => (
+                    <GroupDisplayComponent
+                      key={group.uuid}
+                      groupName={group.id}
+                    >
+                      <Level
+                        arr={group.articleFragments}
+                        parentType="group"
+                        parentId={group.uuid}
+                        type="articleFragment"
+                        getId={({ uuid }) => uuid}
+                        onMove={this.handleMove}
+                        onDrop={this.handleInsert}
+                        renderDrag={af => <ArticleDrag id={af.uuid} />}
+                        renderDrop={(props, isTarget) => (
+                          <DropZone {...props} override={isTarget} />
+                        )}
                       >
-                        {(
-                          articleFragment: ArticleFragmentTree,
-                          afNodeProps: Guration.GetNodeProps
-                        ) => (
+                        {(articleFragment, afProps) => (
                           <ArticleFragment
                             uuid={articleFragment.uuid}
                             supporting={articleFragment.meta.supporting}
                             parentId={group.uuid}
-                            getNodeProps={afNodeProps}
+                            getNodeProps={() => afProps}
                             onSelect={this.props.selectArticleFragment}
                             onDelete={
                               this.clearArticleFragmentSelectionIfNeeded
@@ -219,32 +169,49 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                               selectedArticleFragmentId === articleFragment.uuid
                             }
                           >
-                            {(
-                              supporting: ArticleFragmentDenormalised,
-                              sNodeProps: Guration.GetNodeProps
-                            ) => (
-                              <Supporting
-                                uuid={supporting.uuid}
-                                parentId={articleFragment.uuid}
-                                getNodeProps={sNodeProps}
-                                onSelect={this.props.selectArticleFragment}
-                                isSelected={
-                                  !selectedArticleFragmentId ||
-                                  selectedArticleFragmentId === supporting.uuid
-                                }
-                                onDelete={
-                                  this.clearArticleFragmentSelectionIfNeeded
-                                }
-                              />
-                            )}
+                            <Level
+                              arr={articleFragment.meta.supporting || []}
+                              parentType="articleFragment"
+                              parentId={articleFragment.uuid}
+                              type="articleFragment"
+                              getId={({ uuid }) => uuid}
+                              onMove={this.handleMove}
+                              onDrop={this.handleInsert}
+                              renderDrag={af => <ArticleDrag id={af.uuid} />}
+                              renderDrop={(props, isTarget) => (
+                                <DropZone
+                                  {...props}
+                                  override={isTarget}
+                                  style={dropZoneStyle}
+                                  indicatorStyle={dropIndicatorStyle}
+                                />
+                              )}
+                            >
+                              {(supporting, sProps) => (
+                                <Supporting
+                                  uuid={supporting.uuid}
+                                  parentId={articleFragment.uuid}
+                                  getNodeProps={() => sProps}
+                                  onSelect={this.props.selectArticleFragment}
+                                  isSelected={
+                                    !selectedArticleFragmentId ||
+                                    selectedArticleFragmentId ===
+                                      supporting.uuid
+                                  }
+                                  onDelete={
+                                    this.clearArticleFragmentSelectionIfNeeded
+                                  }
+                                />
+                              )}
+                            </Level>
                           </ArticleFragment>
                         )}
-                      </Group>
-                    )}
-                  </Collection>
-                )}
-              </Front>
-            </Guration.Root>
+                      </Level>
+                    </GroupDisplayComponent>
+                  ))}
+                </Collection>
+              ))}
+            </Root>
           </FrontContentContainer>
           {selectedArticleFragmentId && (
             <FrontFormContainer>
@@ -283,8 +250,6 @@ const createMapStateToProps = () => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   dispatch,
-  addArticleFragment: (id: string, supporting: string[]) =>
-    dispatch(addArticleFragment(id, supporting)),
   updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
     dispatch(updateArticleFragmentMeta(id, meta)),
   selectArticleFragment: (frontId: string, articleFragmentId: string) =>

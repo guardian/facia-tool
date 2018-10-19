@@ -46,6 +46,7 @@ const ArticleComponent = ({
   children,
   draggable = false,
   onDragStart = noop,
+  onDragEnter = noop,
   onDragOver = noop,
   onDrop = noop,
   isSelected,
@@ -60,6 +61,7 @@ const ArticleComponent = ({
     <BodyContainer
       draggable={draggable}
       onDragStart={onDragStart}
+      onDragEnter={onDragEnter}
       onDragOver={onDragOver}
       onDrop={onDrop}
       onClick={() => onSelect(article.uuid)}
