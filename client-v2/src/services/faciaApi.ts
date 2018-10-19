@@ -12,6 +12,8 @@ import {
 } from 'shared/types/Collection';
 import pandaFetch from './pandaFetch';
 import { CapiArticle } from 'types/Capi';
+import chunk from 'lodash/chunk';
+import flatMap from 'lodash/flatMap';
 
 function fetchFrontsConfig(): Promise<FrontsConfig> {
   return pandaFetch('/config', {
@@ -164,40 +166,51 @@ function getCollection(
     }));
 }
 
+const getCapiUriForArticleIds = (articleIds: string[]) => {
+  const joinedArticleIds = articleIds.join(',');
+  return `/api/preview/search?ids=${joinedArticleIds}&show-elements=video,main&show-blocks=main&show-tags=all&show-atoms=media&show-fields=internalPageCode,isLive,firstPublicationDate,scheduledPublicationDate,headline,trailText,byline,thumbnail,secureThumbnail,liveBloggingNow,membershipAccess,shortUrl`;
+};
+
 function getArticles(articleIds: string[]): Promise<ExternalArticle[]> {
   const parseArticleListFromResponse = (
     text: string | void
   ): ExternalArticle[] => {
     if (text) {
-      return JSON.parse(text).response.results.map((externalArticle: CapiArticle) => ({
-        ...externalArticle,
-        urlPath: externalArticle.id,
-        id: `internal-code/page/${externalArticle.fields.internalPageCode}`
-      }));
+      return JSON.parse(text).response.results.map(
+        (externalArticle: CapiArticle) => ({
+          ...externalArticle,
+          urlPath: externalArticle.id,
+          id: `internal-code/page/${externalArticle.fields.internalPageCode}`
+        })
+      );
     }
     throw new Error('Error getting articles from CAPI - invalid response');
   };
 
-  const articleIdsWithoutSnaps = articleIds
-    .filter(id => !id.match(/^snap/))
-    .join(',');
+  const articleIdsWithoutSnaps = articleIds.filter(id => !id.match(/^snap/));
 
   if (!articleIdsWithoutSnaps.length) {
     return Promise.resolve([]);
   }
 
-  const articlePromise = pandaFetch(
-    `/api/preview/search?ids=${articleIdsWithoutSnaps}&show-elements=video,main&show-blocks=main&show-tags=all&show-atoms=media&show-fields=internalPageCode,isLive,firstPublicationDate,scheduledPublicationDate,headline,trailText,byline,thumbnail,secureThumbnail,liveBloggingNow,membershipAccess,shortUrl`,
-    {
-      method: 'get',
-      credentials: 'same-origin'
-    }
+  const articlePromises = chunk(articleIdsWithoutSnaps, 50).map(
+    localArticleIds =>
+      pandaFetch(getCapiUriForArticleIds(localArticleIds), {
+        method: 'get',
+        credentials: 'same-origin'
+      })
   );
 
-  return articlePromise
-    .then(response => response.text())
-    .then(articles =>
-      Promise.resolve([...parseArticleListFromResponse(articles)])
+  return Promise.all(articlePromises)
+    .then(responses => Promise.all(responses.map(response => response.text())))
+    .then(articleJSONArray =>
+      Promise.resolve([
+        ...flatMap(
+          articleJSONArray.map(articleJSON =>
+            parseArticleListFromResponse(articleJSON)
+          )
+        )
+      ])
     )
     .catch(response => {
       throw new Error(
@@ -216,5 +229,6 @@ export {
   publishCollection,
   updateCollection,
   saveClipboard,
-  saveOpenFrontIds
+  saveOpenFrontIds,
+  getCapiUriForArticleIds
 };
