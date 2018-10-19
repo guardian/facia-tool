@@ -157,7 +157,7 @@ const formComponent: React.StatelessComponent<Props> = ({
         <Button priority="primary" onClick={onCancel} type="button" size="l">
           Close
         </Button>
-        <Button onClick={reset} type="button" size="l">
+        <Button onClick={reset} disabled={pristine} type="button" size="l">
           Discard
         </Button>
         <Button onClick={handleSubmit} disabled={pristine} size="l">
