@@ -232,6 +232,9 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                   !selectedArticleFragmentId ||
                                   selectedArticleFragmentId === supporting.uuid
                                 }
+                                onDelete={
+                                  this.clearArticleFragmentSelectionIfNeeded
+                                }
                               />
                             )}
                           </ArticleFragment>

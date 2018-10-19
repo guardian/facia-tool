@@ -81,7 +81,6 @@ const ArticleComponent = ({
         {article.thumbnail && <Thumbnail src={article.thumbnail} alt="" />}
         {truncate(article.headline, { length: 45 })}
       </Fadeable>
-      >>>>>>> Add handlers and state to clipboard
       {children}
     </BodyContainer>
   );
@@ -99,8 +98,11 @@ const createMapStateToProps = () => (
   )
 });
 
-const mapDispatchToProps = (dispatch: Dispatch, { id }: ContainerProps) => ({
-  onDelete: () => dispatch(removeArticleFragmentFromClipboard(id))
+const mapDispatchToProps = (dispatch: Dispatch, { id, onDelete = noop }: ContainerProps) => ({
+  onDelete: () => {
+    onDelete(id);
+    dispatch(removeArticleFragmentFromClipboard(id))
+  }
 });
 
 export default connect(

@@ -136,6 +136,9 @@ class Clipboard extends React.Component<ClipboardProps> {
                 !this.props.selectedArticleFragmentId ||
                 this.props.selectedArticleFragmentId === articleFragment.uuid
               }
+              onDelete={
+                this.clearArticleFragmentSelectionIfNeeded
+              }
               {...getArticleNodeProps()}
             >
               <Guration.Level
@@ -162,6 +165,9 @@ class Clipboard extends React.Component<ClipboardProps> {
                       this.props.selectedArticleFragmentId === supporting.uuid
                     }
                     {...getSupportingNodeProps()}
+                    onDelete={
+                      this.clearArticleFragmentSelectionIfNeeded
+                    }
                   />
                 )}
               </Guration.Level>

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import Article from 'shared/components/Article';
 import { removeSupportingArticleFragment } from 'actions/ArticleFragments';
 import { Dispatch } from 'types/Store';
+import noop from 'lodash/noop';
 
 interface ContainerProps {
   uuid: string;
@@ -10,13 +11,10 @@ interface ContainerProps {
   getNodeProps: any;
   isSelected?: boolean;
   onSelect: (uuid: string) => void;
+  onDelete: (uuid: string) => void;
 }
 
-type SupportingProps = ContainerProps & {
-  onDelete: () => void;
-};
-
-class Supporting extends React.PureComponent<SupportingProps> {
+class Supporting extends React.PureComponent<ContainerProps> {
   public render() {
     const { uuid, getNodeProps, onDelete, isSelected } = this.props;
     return (
@@ -42,9 +40,12 @@ class Supporting extends React.PureComponent<SupportingProps> {
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
-  { parentId, uuid }: ContainerProps
+  { parentId, uuid, onDelete = noop }: ContainerProps
 ) => ({
-  onDelete: () => dispatch(removeSupportingArticleFragment(parentId, uuid))
+  onDelete: (id: string) => {
+    onDelete(id);
+    dispatch(removeSupportingArticleFragment(parentId, uuid))
+  }
 });
 
 export default connect(

@@ -101,10 +101,12 @@ const createMapStateToProps = () => (
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
-  { id, parentId }: ContainerProps
+  { id, parentId, onDelete = noop }: ContainerProps
 ) => ({
-  onDelete: () =>
-    dispatch(removeSupportingArticleFragmentFromClipboard(parentId, id))
+  onDelete: () => {
+    onDelete(id);
+    dispatch(removeSupportingArticleFragmentFromClipboard(parentId, id));
+  }
 });
 
 export default connect(
