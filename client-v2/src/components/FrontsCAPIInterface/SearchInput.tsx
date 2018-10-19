@@ -15,6 +15,7 @@ interface FrontsCAPISearchInputProps {
   additionalFixedContent?: React.ComponentType<any>;
   displaySearchFilters: boolean;
   updateDisplaySearchFilters: (value: boolean) => void;
+  isPreview: boolean;
 }
 
 type SearchTypeMap<T> = { [K in SearchTypes]: T };
@@ -154,7 +155,8 @@ class FrontsCAPISearchInput extends React.Component<
     const {
       children,
       displaySearchFilters,
-      additionalFixedContent: AdditionalFixedContent
+      additionalFixedContent: AdditionalFixedContent,
+      isPreview
     } = this.props;
 
     const {
@@ -165,6 +167,8 @@ class FrontsCAPISearchInput extends React.Component<
     const searchTermsExist = !!tags.length || !!sections.length || !!q;
 
     const allTags = tags.concat(sections);
+
+    const dateParams = isPreview ? { 'order-by': 'oldest'} : { 'use-date': 'first-publication' };
 
     if (!displaySearchFilters) {
       return (
@@ -194,11 +198,12 @@ class FrontsCAPISearchInput extends React.Component<
               section: sections.join(','),
               q,
               'page-size': '20',
-              'use-date': 'first-publication',
               'show-elements': 'image',
-              'show-fields': 'internalPageCode,trailText'
+              'show-fields': 'internalPageCode,trailText',
+              ...dateParams
             }}
             poll={30000}
+            isPreview={isPreview}
           >
             {children}
           </SearchQuery>

@@ -127,6 +127,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
               updateDisplaySearchFilters={this.updateDisplaySearchFilters}
               displaySearchFilters={this.state.displaySearchFilters}
               additionalFixedContent={this.renderFixedContent}
+              isPreview={this.state.capiFeedIndex !== 0}
             >
               {({
                 pending,

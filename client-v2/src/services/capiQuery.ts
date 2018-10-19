@@ -30,6 +30,15 @@ const capiQuery = (
 
     return response.json();
   },
+  scheduled: async (params: any): Promise<CAPISearchQueryReponse> => {
+    const response = await fetch(
+      `${baseURL}content/scheduled${qs({
+        ...params
+      })}`
+    );
+
+    return response.json();
+  },
   tags: async (params: any): Promise<CAPITagQueryReponse> => {
     const response = await fetch(
       `${baseURL}tags${qs({
