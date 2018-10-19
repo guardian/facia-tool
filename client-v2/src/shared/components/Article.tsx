@@ -17,14 +17,20 @@ import {
 import { State } from '../types/State';
 import { DerivedArticle } from '../types/Article';
 
-interface ContainerProps {
-  id: string; // eslint-disable-line react/no-unused-prop-types
+
+interface ArticleComponentProps {
+  id: string;
   draggable?: boolean;
+  fade?: boolean;
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
   onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
-  onDelete?: () => void;
-  selectSharedState?: (state: any) => State; // eslint-disable-line react/no-unused-prop-types
+  onDelete?: (uuid: string) => void;
+  onClick?: () => void;
+}
+
+interface ContainerProps extends ArticleComponentProps {
+  selectSharedState?: (state: any) => State;
 }
 
 type ComponentProps = {
@@ -75,6 +81,7 @@ const ArticleContainer = styled('div')`
 
 const ArticleBodyContainer = styled('div')<{
   transitionTime?: number;
+  fade?: boolean;
 }>`
   display: flex;
   position: relative;
@@ -82,6 +89,7 @@ const ArticleBodyContainer = styled('div')<{
   min-height: 35px;
   cursor: pointer;
   position: relative;
+  opacity: ${({ fade }) => (fade ? 0.5 : 1)};
 
   ${HoverActions} {
     bottom: 0;
@@ -184,11 +192,13 @@ const FirstPublished = styled('div')`
 const ArticleComponent = ({
   article,
   size = 'default',
+  fade = false,
   draggable = false,
   onDragStart = noop,
   onDragOver = noop,
   onDrop = noop,
   onDelete = noop,
+  onClick = noop,
   children
 }: ComponentProps) => {
   if (!article) {
@@ -202,8 +212,10 @@ const ArticleComponent = ({
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDrop={onDrop}
+      onClick={onClick}
     >
       <ArticleBodyContainer
+        fade={fade}
         key={article.headline}
         style={{
           borderTopColor:
@@ -274,7 +286,7 @@ const ArticleComponent = ({
               onClick={(e: React.SyntheticEvent) => {
                 // stop the parent from opening the edit panel
                 e.stopPropagation();
-                onDelete();
+                onDelete(article.uuid);
               }}
               title="Delete"
             />
@@ -297,5 +309,7 @@ const createMapStateToProps = () => (
     props.id
   )
 });
+
+export { ArticleComponentProps }
 
 export default connect(createMapStateToProps)(ArticleComponent);

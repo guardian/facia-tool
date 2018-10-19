@@ -13,15 +13,14 @@ import toneColorMap from '../util/toneColorMap';
 import ButtonDefault from './input/ButtonDefault';
 import { removeSupportingArticleFragmentFromClipboard } from 'actions/ArticleFragments';
 import { Dispatch } from 'types/Store';
+import { ArticleComponentProps } from './Article';
+import Fadeable from './Fadeable';
 
-interface ContainerProps {
-  id: string;
-  parentId: string;
+interface ContainerProps extends ArticleComponentProps {
   children?: React.ReactNode;
-  draggable: boolean;
-  onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
-  onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
-  onDrop?: (d: React.DragEvent<HTMLElement>) => void;
+  parentId: string;
+  isSelected?: boolean;
+  onSelect?: (uuid: string) => void;
   selectSharedState?: (state: any) => State;
 }
 
@@ -49,7 +48,9 @@ const ArticleComponent = ({
   onDragStart = noop,
   onDragOver = noop,
   onDrop = noop,
-  onDelete
+  isSelected,
+  onSelect = noop,
+  onDelete = noop
 }: ComponentProps) => {
   if (!article) {
     return null;
@@ -61,24 +62,27 @@ const ArticleComponent = ({
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDrop={onDrop}
+      onClick={() => onSelect(article.uuid)}
     >
-      <TonedKicker tone={article.tone}>{article.sectionName}</TonedKicker>
-      {` ${truncate(article.headline, {
-        length: 40 - article.sectionName.length
-      })}`}
+      <Fadeable fade={!isSelected}>
+        <ButtonDefault
+          onClick={e => {
+            e.stopPropagation();
+            onDelete();
+          }}
+          inline
+          pill
+          size="s"
+          priority="muted"
+        >
+          Delete
+        </ButtonDefault>
+        <TonedKicker tone={article.tone}>{article.sectionName}</TonedKicker>
+        {` ${truncate(article.headline, {
+          length: 40 - article.sectionName.length
+        })}`}
+      </Fadeable>
       {children}
-      <ButtonDefault
-        onClick={e => {
-          e.stopPropagation();
-          onDelete();
-        }}
-        inline
-        pill
-        size="s"
-        priority="muted"
-      >
-        Delete
-      </ButtonDefault>
     </BodyContainer>
   );
 };
@@ -97,10 +101,12 @@ const createMapStateToProps = () => (
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
-  { id, parentId }: ContainerProps
+  { id, parentId, onDelete = noop }: ContainerProps
 ) => ({
-  onDelete: () =>
-    dispatch(removeSupportingArticleFragmentFromClipboard(parentId, id))
+  onDelete: () => {
+    onDelete(id);
+    dispatch(removeSupportingArticleFragmentFromClipboard(parentId, id));
+  }
 });
 
 export default connect(

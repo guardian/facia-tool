@@ -9,13 +9,13 @@ import { removeGroupArticleFragment } from 'actions/ArticleFragments';
 import { ArticleFragmentDenormalised } from 'shared/types/Collection';
 
 interface ContainerProps {
-  isSelected: boolean;
+  isSelected?: boolean;
   uuid: string;
   supporting?: ArticleFragmentDenormalised[];
   children: any;
   getNodeProps: () => object;
   onSelect: (uuid: string) => void;
-  onCancel: (uuid: string) => void;
+  onDelete: (uuid: string) => void;
   parentId: string;
 }
 
@@ -35,14 +35,6 @@ const dropZoneStyle = {
   padding: '3px'
 };
 
-const ArticleFragmentContainer = styled('div')`
-  ${({ isSelected }: { isSelected: boolean }) =>
-    !isSelected &&
-    css`
-      opacity: 0.5;
-    `};
-`;
-
 const ArticleFragment = ({
   uuid,
   isSelected,
@@ -52,38 +44,39 @@ const ArticleFragment = ({
   onSelect,
   onDelete
 }: ArticleFragmentProps) => (
-  <ArticleFragmentContainer
-    isSelected={isSelected}
+  <Article
+    id={uuid}
+    {...getNodeProps()}
+    onDelete={onDelete}
     onClick={() => onSelect(uuid)}
+    fade={!isSelected}
   >
-    <Article id={uuid} {...getNodeProps()} onDelete={onDelete}>
-      {supporting && (
-        <Guration.Level
-          arr={supporting}
-          type="articleFragment"
-          getKey={({ uuid: key }) => key}
-          renderDrop={(getDropProps, { canDrop, isTarget }) => (
-            <DropZone
-              {...getDropProps()}
-              override={!!canDrop && !!isTarget}
-              style={dropZoneStyle}
-              indicatorStyle={dropIndicatorStyle}
-            />
-          )}
-        >
-          {children}
-        </Guration.Level>
-      )}
-    </Article>
-  </ArticleFragmentContainer>
+    {supporting && (
+      <Guration.Level
+        arr={supporting}
+        type="articleFragment"
+        getKey={({ uuid: key }) => key}
+        renderDrop={(getDropProps, { canDrop, isTarget }) => (
+          <DropZone
+            {...getDropProps()}
+            override={!!canDrop && !!isTarget}
+            style={dropZoneStyle}
+            indicatorStyle={dropIndicatorStyle}
+          />
+        )}
+      >
+        {children}
+      </Guration.Level>
+    )}
+  </Article>
 );
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
-  { parentId, uuid, onCancel }: ContainerProps
+  { parentId, uuid, onDelete }: ContainerProps
 ) => ({
   onDelete: () => {
-    onCancel(uuid);
+    onDelete(uuid);
     dispatch(removeGroupArticleFragment(parentId, uuid));
   }
 });
