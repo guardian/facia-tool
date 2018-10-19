@@ -67,7 +67,7 @@ interface ArticleFragmentFormData {
   cutoutImage: ImageData;
   imageCutoutReplace: boolean;
   imageSlideshowReplace: boolean;
-  slideshow: Array<ImageData | void>;
+  slideshow: Array<ImageData | void> | void;
 }
 
 const FormContainer = ContentContainer.withComponent('form').extend`
@@ -153,12 +153,7 @@ const formComponent: React.StatelessComponent<Props> = ({
     <CollectionHeadingPinline>
       Edit
       <ButtonContainer>
-        <Button
-          priority="primary"
-          onClick={onCancel}
-          type="button"
-          size="l"
-        >
+        <Button priority="primary" onClick={onCancel} type="button" size="l">
           Cancel
         </Button>
         <Button onClick={handleSubmit} disabled={pristine} size="l">
@@ -335,7 +330,7 @@ const getInitialValuesForArticleFragmentForm = (
         showByline: article.showByline || false,
         trailText: article.trailText || '',
         imageCutoutReplace: article.imageCutoutReplace || false,
-        imageHide: !article.imageReplace || false,
+        imageHide: article.imageHide || false,
         imageSlideshowReplace: article.imageSlideshowReplace || false,
         primaryImage: {
           src: article.imageSrc,
@@ -365,7 +360,7 @@ const getArticleFragmentMetaFromFormValues = (
   return omit(
     {
       ...values,
-      imageReplace: !values.imageHide,
+      imageReplace: !!primaryImage.src && !values.imageHide,
       showKickerCustom: !!values.customKicker,
       imageSrc: primaryImage.src,
       imageSrcThumb: primaryImage.thumb,
@@ -376,7 +371,7 @@ const getArticleFragmentMetaFromFormValues = (
       imageCutoutSrcWidth: cutoutImage.width,
       imageCutoutSrcHeight: cutoutImage.height,
       imageCutoutSrcOrigin: cutoutImage.origin,
-      slideshow: slideshow.length ? slideshow : []
+      slideshow: slideshow.length ? slideshow : undefined
     },
     'primaryImage',
     'cutoutImage'
@@ -438,4 +433,8 @@ const mapStateToProps = (state: State, props: InterfaceProps) => {
   };
 };
 
+export {
+  getArticleFragmentMetaFromFormValues,
+  getInitialValuesForArticleFragmentForm
+};
 export default connect(mapStateToProps)(formContainer);
