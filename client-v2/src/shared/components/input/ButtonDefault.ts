@@ -9,6 +9,7 @@ type PriorityMap = { [k in ButtonPriorities]: string };
 interface ColorMap {
   selected: PriorityMap;
   deselected: PriorityMap;
+  disabled: PriorityMap;
 }
 
 interface ButtonProps {
@@ -17,6 +18,7 @@ interface ButtonProps {
   size?: ButtonSizes;
   pill?: boolean;
   dark?: boolean;
+  disabled?: boolean;
 }
 
 const heightMap = {
@@ -38,6 +40,10 @@ const fontSizeMap = {
 };
 
 const colorMap = {
+  disabled: {
+    default: '#fff',
+    primary: '#fff'
+  },
   selected: {
     default: '#fff',
     primary: '#fff'
@@ -49,6 +55,10 @@ const colorMap = {
 };
 
 const backgroundMap = {
+  disabled: {
+    default: '#999',
+    primary: '#fda354'
+  },
   selected: {
     default: '#555',
     primary: '#ff983f'
@@ -60,6 +70,10 @@ const backgroundMap = {
 };
 
 const backgroundHoverMap = {
+  disabled: {
+    default: '#999',
+    primary: '#fda354'
+  },
   selected: {
     default: '#555',
     primary: '#ff983f'
@@ -70,11 +84,25 @@ const backgroundHoverMap = {
   }
 };
 
+const getMapKey = ({
+  disabled,
+  selected
+}: {
+  disabled?: boolean|undefined;
+  selected?: boolean|undefined;
+}) => {
+  if (disabled) {
+    return 'disabled';
+  }
+  return selected ? 'selected' : 'deselected';
+};
+
 const mapSize = (map: SizeMap) => ({ size = 'm' }: ButtonProps) => map[size];
 const mapAction = (map: ColorMap) => ({
   selected,
+  disabled,
   priority = 'default'
-}: ButtonProps) => map[selected ? 'selected' : 'deselected'][priority];
+}: ButtonProps) => map[getMapKey({ selected, disabled })][priority];
 
 export default styled(`button`)`
   display: inline-block;
@@ -89,6 +117,9 @@ export default styled(`button`)`
   line-height: 1;
   padding: 0 ${mapSize(paddingMap)};
   border: none;
+  :disabled, :disabled:hover {
+    cursor: not-allowed;
+  }
   :hover {
     background: ${mapAction(backgroundHoverMap)};
     cursor: pointer;

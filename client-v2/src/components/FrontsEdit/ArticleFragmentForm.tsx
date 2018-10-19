@@ -147,14 +147,27 @@ const formComponent: React.StatelessComponent<Props> = ({
   onCancel,
   initialValues,
   pristine,
-  showByline
+  showByline,
+  reset
 }) => (
   <FormContainer onSubmit={handleSubmit}>
     <CollectionHeadingPinline>
       Edit
       <ButtonContainer>
-        <Button priority="primary" onClick={onCancel} type="button" size="l">
-          Cancel
+        <Button
+          priority="primary"
+          onClick={onCancel}
+          type="button"
+          size="l"
+        >
+          Close
+        </Button>
+        <Button
+          onClick={reset}
+          type="button"
+          size="l"
+        >
+          Discard
         </Button>
         <Button onClick={handleSubmit} disabled={pristine} size="l">
           Save
