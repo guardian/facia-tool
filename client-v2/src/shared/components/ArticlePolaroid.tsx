@@ -9,6 +9,9 @@ import {
 } from '../selectors/shared';
 import { State } from '../types/State';
 import { DerivedArticle } from '../types/Article';
+import { Dispatch } from 'types/Store';
+import { removeArticleFragmentFromClipboard } from 'actions/ArticleFragments';
+import Button from './input/ButtonDefault';
 
 interface ContainerProps {
   id: string; // eslint-disable-line react/no-unused-prop-types
@@ -18,12 +21,19 @@ interface ContainerProps {
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
   onSelect: (id: string) => void;
   selectSharedState?: (state: any) => State; // eslint-disable-line react/no-unused-prop-types
+  children?: React.ReactNode;
 }
 
 type ComponentProps = {
   article: DerivedArticle | void;
-  children?: React.ReactNode;
+  onDelete: () => void;
 } & ContainerProps;
+
+const CornerButton = Button.extend`
+  left: 4px;
+  position: absolute;
+  top: 4px;
+`;
 
 const BodyContainer = styled('div')`
   font-size: 14px;
@@ -43,6 +53,7 @@ const ArticleComponent = ({
   onDragStart = noop,
   onDragOver = noop,
   onDrop = noop,
+  onDelete = noop,
   onSelect = noop
 }: ComponentProps) => {
   if (!article) {
@@ -57,6 +68,17 @@ const ArticleComponent = ({
       onDrop={onDrop}
       onClick={() => onSelect(id)}
     >
+      <CornerButton
+        onClick={e => {
+          e.stopPropagation();
+          onDelete();
+        }}
+        pill
+        priority="muted"
+        size="s"
+      >
+        Delete
+      </CornerButton>
       {article.thumbnail && <Thumbnail src={article.thumbnail} alt="" />}
       {truncate(article.headline, { length: 45 })}
       {children}
@@ -76,4 +98,11 @@ const createMapStateToProps = () => (
   )
 });
 
-export default connect(createMapStateToProps)(ArticleComponent);
+const mapDispatchToProps = (dispatch: Dispatch, { id }: ContainerProps) => ({
+  onDelete: () => dispatch(removeArticleFragmentFromClipboard(id))
+});
+
+export default connect(
+  createMapStateToProps,
+  mapDispatchToProps
+)(ArticleComponent);
