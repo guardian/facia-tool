@@ -5,10 +5,11 @@ import * as Guration from 'lib/guration';
 import { Edit } from 'lib/guration';
 import { State } from 'types/State';
 import { urlToArticle } from 'util/collectionUtils';
+import { ArticleFragmentTree } from 'shared/selectors/shared';
 import {
-  ArticleFragmentTree
-} from 'shared/selectors/shared';
-import {   clipboardAsTreeSelector, ClipboardTree } from 'selectors/clipboardSelectors';
+  clipboardAsTreeSelector,
+  ClipboardTree
+} from 'selectors/clipboardSelectors';
 import DropZone from 'components/DropZone';
 import ArticlePolaroid from 'shared/components/ArticlePolaroid';
 import ArticlePolaroidSub from 'shared/components/ArticlePolaroidSub';
@@ -19,7 +20,8 @@ import {
 } from 'actions/ArticleFragments';
 import {
   editorSelectArticleFragment,
-  selectEditorArticleFragment
+  selectEditorArticleFragment,
+  editorClearArticleFragmentSelection
 } from 'bundles/frontsUIBundle';
 import { clipboardId } from 'constants/fronts';
 import { ArticleFragmentDenormalised } from 'shared/types/Collection';
@@ -28,9 +30,10 @@ interface ClipboardProps {
   addArticleFragment: (id: string, supporting: string[]) => Promise<string>;
   selectedArticleFragmentId: string | void;
   selectArticleFragment: (id: string) => void;
+  clearArticleFragmentSelection: (id: string) => void;
   tree: ClipboardTree; // TODO add typing,
   dispatch: Dispatch;
-};
+}
 
 class Clipboard extends React.Component<ClipboardProps> {
   // TODO: this code is repeated in src/components/FrontsEdit/Front.js
@@ -80,6 +83,12 @@ class Clipboard extends React.Component<ClipboardProps> {
     });
   };
 
+  public clearArticleFragmentSelectionIfNeeded = (articleId: string) => {
+    if (articleId === this.props.selectedArticleFragmentId) {
+      this.props.clearArticleFragmentSelection(clipboardId);
+    }
+  };
+
   public render() {
     const { tree } = this.props;
     return (
@@ -123,6 +132,10 @@ class Clipboard extends React.Component<ClipboardProps> {
             <ArticlePolaroid
               id={articleFragment.uuid}
               onSelect={this.props.selectArticleFragment}
+              isSelected={
+                !this.props.selectedArticleFragmentId ||
+                this.props.selectedArticleFragmentId === articleFragment.uuid
+              }
               {...getArticleNodeProps()}
             >
               <Guration.Level
@@ -143,6 +156,11 @@ class Clipboard extends React.Component<ClipboardProps> {
                   <ArticlePolaroidSub
                     id={supporting.uuid}
                     parentId={articleFragment.uuid}
+                    onSelect={this.props.selectArticleFragment}
+                    isSelected={
+                      !this.props.selectedArticleFragmentId ||
+                      this.props.selectedArticleFragmentId === supporting.uuid
+                    }
                     {...getSupportingNodeProps()}
                   />
                 )}
@@ -165,6 +183,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch(addArticleFragment(id, supporting)),
   selectArticleFragment: (frontId: string, articleFragmentId: string) =>
     dispatch(editorSelectArticleFragment(frontId, articleFragmentId)),
+  clearArticleFragmentSelection: (frontId: string) =>
+    dispatch(editorClearArticleFragmentSelection(frontId)),
   dispatch
 });
 

@@ -17,16 +17,20 @@ import {
 import { State } from '../types/State';
 import { DerivedArticle } from '../types/Article';
 
-interface ContainerProps {
-  id: string; // eslint-disable-line react/no-unused-prop-types
+
+interface ArticleComponentProps {
+  id: string;
   draggable?: boolean;
   fade?: boolean;
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
   onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
-  onDelete?: () => void;
+  onDelete?: (uuid: string) => void;
   onClick?: () => void;
-  selectSharedState?: (state: any) => State; // eslint-disable-line react/no-unused-prop-types
+}
+
+interface ContainerProps extends ArticleComponentProps {
+  selectSharedState?: (state: any) => State;
 }
 
 type ComponentProps = {
@@ -282,7 +286,7 @@ const ArticleComponent = ({
               onClick={(e: React.SyntheticEvent) => {
                 // stop the parent from opening the edit panel
                 e.stopPropagation();
-                onDelete();
+                onDelete(article.uuid);
               }}
               title="Delete"
             />
@@ -305,5 +309,7 @@ const createMapStateToProps = () => (
     props.id
   )
 });
+
+export { ArticleComponentProps }
 
 export default connect(createMapStateToProps)(ArticleComponent);

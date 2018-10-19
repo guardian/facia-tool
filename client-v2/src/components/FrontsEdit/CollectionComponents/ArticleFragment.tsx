@@ -9,13 +9,13 @@ import { removeGroupArticleFragment } from 'actions/ArticleFragments';
 import { ArticleFragmentDenormalised } from 'shared/types/Collection';
 
 interface ContainerProps {
-  isSelected: boolean;
+  isSelected?: boolean;
   uuid: string;
   supporting?: ArticleFragmentDenormalised[];
   children: any;
   getNodeProps: () => object;
   onSelect: (uuid: string) => void;
-  onCancel: (uuid: string) => void;
+  onDelete: (uuid: string) => void;
   parentId: string;
 }
 
@@ -73,10 +73,10 @@ const ArticleFragment = ({
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
-  { parentId, uuid, onCancel }: ContainerProps
+  { parentId, uuid, onDelete }: ContainerProps
 ) => ({
   onDelete: () => {
-    onCancel(uuid);
+    onDelete(uuid);
     dispatch(removeGroupArticleFragment(parentId, uuid));
   }
 });

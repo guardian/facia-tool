@@ -12,14 +12,12 @@ import { DerivedArticle } from '../types/Article';
 import { Dispatch } from 'types/Store';
 import { removeArticleFragmentFromClipboard } from 'actions/ArticleFragments';
 import Button from './input/ButtonDefault';
+import { ArticleComponentProps } from './Article';
+import Fadeable from './Fadeable';
 
-interface ContainerProps {
-  id: string; // eslint-disable-line react/no-unused-prop-types
-  draggable: boolean;
-  onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
-  onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
-  onDrop?: (d: React.DragEvent<HTMLElement>) => void;
-  onSelect: (id: string) => void;
+interface ContainerProps extends ArticleComponentProps {
+  isSelected?: boolean;
+  onSelect?: (uuid: string) => void;
   selectSharedState?: (state: any) => State; // eslint-disable-line react/no-unused-prop-types
   children?: React.ReactNode;
 }
@@ -54,7 +52,7 @@ const ArticleComponent = ({
   onDragOver = noop,
   onDrop = noop,
   onDelete = noop,
-  onSelect = noop
+  isSelected
 }: ComponentProps) => {
   if (!article) {
     return null;
@@ -66,21 +64,23 @@ const ArticleComponent = ({
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDrop={onDrop}
-      onClick={() => onSelect(id)}
     >
-      <CornerButton
-        onClick={e => {
-          e.stopPropagation();
-          onDelete();
-        }}
-        pill
-        priority="muted"
-        size="s"
-      >
-        Delete
-      </CornerButton>
-      {article.thumbnail && <Thumbnail src={article.thumbnail} alt="" />}
-      {truncate(article.headline, { length: 45 })}
+      <Fadeable onClick={() => onSelect(id)} fade={!isSelected}>
+        <CornerButton
+          onClick={e => {
+            e.stopPropagation();
+            onDelete();
+          }}
+          pill
+          priority="muted"
+          size="s"
+        >
+          Delete
+        </CornerButton>
+        {article.thumbnail && <Thumbnail src={article.thumbnail} alt="" />}
+        {truncate(article.headline, { length: 45 })}
+      </Fadeable>
+      >>>>>>> Add handlers and state to clipboard
       {children}
     </BodyContainer>
   );

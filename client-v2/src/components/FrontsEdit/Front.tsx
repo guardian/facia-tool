@@ -211,7 +211,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                             parentId={group.uuid}
                             getNodeProps={afNodeProps}
                             onSelect={this.props.selectArticleFragment}
-                            onCancel={
+                            onDelete={
                               this.clearArticleFragmentSelectionIfNeeded
                             }
                             isSelected={
