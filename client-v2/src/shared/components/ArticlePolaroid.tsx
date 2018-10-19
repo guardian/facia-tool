@@ -18,7 +18,7 @@ import Fadeable from './Fadeable';
 interface ContainerProps extends ArticleComponentProps {
   isSelected?: boolean;
   onSelect?: (uuid: string) => void;
-  selectSharedState?: (state: any) => State; // eslint-disable-line react/no-unused-prop-types
+  selectSharedState?: (state: any) => State;
   children?: React.ReactNode;
 }
 
@@ -52,6 +52,7 @@ const ArticleComponent = ({
   onDragOver = noop,
   onDrop = noop,
   onDelete = noop,
+  onSelect = noop,
   isSelected
 }: ComponentProps) => {
   if (!article) {

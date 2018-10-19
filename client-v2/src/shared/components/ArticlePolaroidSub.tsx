@@ -17,6 +17,7 @@ import { ArticleComponentProps } from './Article';
 import Fadeable from './Fadeable';
 
 interface ContainerProps extends ArticleComponentProps {
+  children?: React.ReactNode;
   parentId: string;
   isSelected?: boolean;
   onSelect?: (uuid: string) => void;
