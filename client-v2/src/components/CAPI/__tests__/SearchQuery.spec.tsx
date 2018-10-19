@@ -28,7 +28,7 @@ describe('SearchQuery', () => {
     let e;
     const baseURL = 'https://www.example.com';
     mount(
-      <SearchQuery baseURL={baseURL}>
+      <SearchQuery baseURL={baseURL} isPreview={false}>
         {({ value, pending, error }: ChildrenParams) => {
           v = value;
           p = pending;
@@ -46,7 +46,7 @@ describe('SearchQuery', () => {
     let e;
     const baseURL = 'https://www.example.com';
     mount(
-      <SearchQuery baseURL={baseURL}>
+      <SearchQuery baseURL={baseURL} isPreview={false}>
         {({ value, pending, error }: ChildrenParams) => {
           v = value;
           p = pending;
@@ -57,6 +57,28 @@ describe('SearchQuery', () => {
     );
     await flushPromises();
     expect((global as any).fetch.mock.calls[0][0].includes(baseURL)).toBe(true);
+    expect((global as any).fetch.mock.calls[0][0].includes('search')).toBe(true);
+    expect([v, p, e]).toEqual([succesfulReturn, false, undefined]);
+  });
+
+  it('seaches for scheduled content when preview is set to true', async () => {
+    let v;
+    let p;
+    let e;
+    const baseURL = 'https://www.example.com';
+    mount(
+      <SearchQuery baseURL={baseURL} isPreview={true}>
+        {({ value, pending, error }: ChildrenParams) => {
+          v = value;
+          p = pending;
+          e = error;
+          return null;
+        }}
+      </SearchQuery>
+    );
+    await flushPromises();
+    expect((global as any).fetch.mock.calls[0][0].includes(baseURL)).toBe(true);
+    expect((global as any).fetch.mock.calls[0][0].includes('scheduled')).toBe(true);
     expect([v, p, e]).toEqual([succesfulReturn, false, undefined]);
   });
 });

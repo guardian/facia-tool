@@ -13,6 +13,7 @@ interface CAPISearchQueryProps {
   children: AsyncChild<SearchReturn>;
   params: object;
   poll?: number;
+  isPreview: boolean;
 }
 
 interface CAPISearchQueryState {
@@ -30,7 +31,7 @@ class SearchQuery extends React.Component<
   };
 
   public static getDerivedStateFromProps(
-    { baseURL, fetch }: CAPISearchQueryProps,
+    { baseURL, fetch, isPreview }: CAPISearchQueryProps,
     prevState: CAPISearchQueryState
   ) {
     if (
@@ -38,7 +39,7 @@ class SearchQuery extends React.Component<
       (fetch && prevState.fetch !== fetch)
     ) {
       return {
-        capi: capiQuery(baseURL, fetch).search,
+        capi: isPreview ? capiQuery(baseURL, fetch).scheduled : capiQuery(baseURL, fetch).search,
         baseURL,
         fetch
       };
