@@ -8,6 +8,7 @@ interface ContainerProps {
   uuid: string;
   parentId: string;
   getNodeProps: any;
+  isSelected?: boolean;
   onSelect: (uuid: string) => void;
 }
 
@@ -17,7 +18,7 @@ type SupportingProps = ContainerProps & {
 
 class Supporting extends React.PureComponent<SupportingProps> {
   public render() {
-    const { uuid, getNodeProps, onDelete } = this.props;
+    const { uuid, getNodeProps, onDelete, isSelected } = this.props;
     return (
       <div onClick={this.handleSelect}>
         <Article
@@ -25,6 +26,7 @@ class Supporting extends React.PureComponent<SupportingProps> {
           {...getNodeProps()}
           size="small"
           onDelete={onDelete}
+          fade={!isSelected}
         />
       </div>
     );
