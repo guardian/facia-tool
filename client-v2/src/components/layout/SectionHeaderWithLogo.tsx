@@ -4,6 +4,10 @@ import styled from 'styled-components';
 import FrontsLogo from 'images/icons/fronts-logo.svg';
 import { SectionHeaderUnpadded } from './SectionHeader';
 
+const SectionHeader = styled(SectionHeaderUnpadded)`
+  display: flex;
+`;
+
 const LogoTypeContainer = styled('div')`
   background-color: #121212;
   display: inline-block;
@@ -32,13 +36,14 @@ const Logo = styled('img')`
   height: 24px;
 `;
 
-export default () => (
-  <SectionHeaderUnpadded>
+export default ({ children }: { children?: React.ReactNode }) => (
+  <SectionHeader>
     <LogoTypeContainer>F</LogoTypeContainer>
     <LogoContainer>
       <LogoBackground>
         <Logo src={FrontsLogo} alt="The Fronts tool" />
       </LogoBackground>
     </LogoContainer>
-  </SectionHeaderUnpadded>
+    {children}
+  </SectionHeader>
 );
