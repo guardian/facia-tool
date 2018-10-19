@@ -43,7 +43,8 @@ const fontSizeMap = {
 const colorMap = {
   disabled: {
     default: '#fff',
-    primary: '#fff'
+    primary: '#fff',
+    muted: '#999'
   },
   selected: {
     default: '#fff',
@@ -60,7 +61,8 @@ const colorMap = {
 const backgroundMap = {
   disabled: {
     default: '#999',
-    primary: '#fda354'
+    primary: '#fda354',
+    muted: '#aaa'
   },
   selected: {
     default: '#555',
@@ -77,7 +79,8 @@ const backgroundMap = {
 const backgroundHoverMap = {
   disabled: {
     default: '#999',
-    primary: '#fda354'
+    primary: '#fda354',
+    muted: '#bbb'
   },
   selected: {
     default: '#555',
