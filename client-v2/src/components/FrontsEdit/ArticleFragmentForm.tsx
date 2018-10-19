@@ -15,7 +15,7 @@ import Button from 'shared/components/input/ButtonDefault';
 import ContentContainer from 'shared/components/layout/ContentContainer';
 import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
 import {
-  articleFromArticleFragmentSelector,
+  createArticleFromArticleFragmentSelector,
   selectSharedState,
   articleKickerOptionsSelector
 } from 'shared/selectors/shared';
@@ -154,19 +154,10 @@ const formComponent: React.StatelessComponent<Props> = ({
     <CollectionHeadingPinline>
       Edit
       <ButtonContainer>
-        <Button
-          priority="primary"
-          onClick={onCancel}
-          type="button"
-          size="l"
-        >
+        <Button priority="primary" onClick={onCancel} type="button" size="l">
           Close
         </Button>
-        <Button
-          onClick={reset}
-          type="button"
-          size="l"
-        >
+        <Button onClick={reset} type="button" size="l">
           Discard
         </Button>
         <Button onClick={handleSubmit} disabled={pristine} size="l">
@@ -412,6 +403,7 @@ const ArticleFragmentForm = reduxForm<
   {}
 >({
   destroyOnUnmount: false,
+  enableReinitialize: true,
   onSubmit: (values: ArticleFragmentFormData, _, props: ComponentProps) => {
     const meta: ArticleFragmentMeta = getArticleFragmentMetaFromFormValues(
       values
@@ -439,25 +431,28 @@ const formContainer: React.SFC<ContainerProps> = props => (
   <ArticleFragmentForm {...props} />
 );
 
-const mapStateToProps = (state: State, props: InterfaceProps) => {
-  const valueSelector = formValueSelector(props.articleFragmentId);
-  const article = articleFromArticleFragmentSelector(
-    selectSharedState(state),
-    props.articleFragmentId
-  );
+const createMapStateToProps = () => {
+  const articleSelector = createArticleFromArticleFragmentSelector();
+  return (state: State, props: InterfaceProps) => {
+    const valueSelector = formValueSelector(props.articleFragmentId);
+    const article = articleSelector(
+      selectSharedState(state),
+      props.articleFragmentId
+    );
 
-  return {
-    initialValues: getInitialValuesForArticleFragmentForm(article),
-    kickerOptions: article
-      ? articleKickerOptionsSelector(
-          selectSharedState(state),
-          props.articleFragmentId
-        )
-      : [],
-    imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
-    imageHide: valueSelector(state, 'imageHide'),
-    imageCutoutReplace: valueSelector(state, 'imageCutoutReplace'),
-    showByline: valueSelector(state, 'showByline')
+    return {
+      initialValues: getInitialValuesForArticleFragmentForm(article),
+      kickerOptions: article
+        ? articleKickerOptionsSelector(
+            selectSharedState(state),
+            props.articleFragmentId
+          )
+        : [],
+      imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
+      imageHide: valueSelector(state, 'imageHide'),
+      imageCutoutReplace: valueSelector(state, 'imageCutoutReplace'),
+      showByline: valueSelector(state, 'showByline')
+    };
   };
 };
 
@@ -465,4 +460,4 @@ export {
   getArticleFragmentMetaFromFormValues,
   getInitialValuesForArticleFragmentForm
 };
-export default connect(mapStateToProps)(formContainer);
+export default connect(createMapStateToProps)(formContainer);

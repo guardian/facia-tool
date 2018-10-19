@@ -48,12 +48,10 @@ const externalArticleFromArticleFragmentSelector = (
   return externalArticles[articleFragment.id];
 };
 
-const articleFromArticleFragmentSelector = (
-  state: State,
-  id: string
-): DerivedArticle | void => {
-  const externalArticle = externalArticleFromArticleFragmentSelector(state, id);
-  const articleFragment = articleFragmentSelector(state, id);
+const createArticleFromArticleFragmentSelector = () => createSelector(
+  externalArticleFromArticleFragmentSelector,
+  articleFragmentSelector,
+  (externalArticle, articleFragment) => {
   if (!externalArticle || !articleFragment) {
     return undefined;
   }
@@ -71,7 +69,7 @@ const articleFromArticleFragmentSelector = (
     tone: externalArticle.frontsMeta.tone,
     thumbnail: getThumbnail(articleFragment, externalArticle)
   };
-};
+});
 
 const articleKickerOptionsSelector = (state: State, id: string): string[] => {
   const externalArticle = externalArticleFromArticleFragmentSelector(state, id);
@@ -272,7 +270,7 @@ const createCollectionsAsTreeSelector = () =>
 
 export {
   externalArticleFromArticleFragmentSelector,
-  articleFromArticleFragmentSelector,
+  createArticleFromArticleFragmentSelector,
   articleFragmentsFromRootStateSelector,
   createArticlesInCollectionGroupSelector,
   createArticlesInCollectionSelector,
