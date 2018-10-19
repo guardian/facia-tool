@@ -1,5 +1,11 @@
 import fetchMock from 'fetch-mock';
-import { fetchLastPressed, updateCollection } from '../faciaApi';
+import {
+  fetchLastPressed,
+  updateCollection,
+  getCapiUriForArticleIds,
+  getArticles
+} from '../faciaApi';
+import chunk from 'lodash/chunk';
 
 describe('faciaApi', () => {
   afterEach(fetchMock.restore);
@@ -67,6 +73,24 @@ describe('faciaApi', () => {
       } catch (e) {
         expect(e.message).toContain('exampleId');
       }
+    });
+  });
+  describe('getArticles', () => {
+    it('should issue a CAPI request for an array of article ids', () => {
+      fetchMock.once(
+        getCapiUriForArticleIds(['article1', 'article2']),
+        '{"response":{ "results": [] }}'
+      );
+      getArticles(['article1', 'article2']);
+    });
+    it('should chunk requests for large numbers of articles into separate requests', () => {
+      const articleIds = [...Array.from(Array(175).keys()).map(_ => _.toString())];
+      const chunkedArticleIds = chunk(articleIds, 50);
+      chunkedArticleIds.map(_ => fetchMock.once(
+        getCapiUriForArticleIds(_),
+        '{"response":{ "results": [] }}'
+      ));
+      getArticles(articleIds);
     });
   });
 });
