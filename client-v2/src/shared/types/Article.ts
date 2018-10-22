@@ -7,12 +7,15 @@ type DerivedArticle = $Diff<
   ExternalArticle,
   { fields: unknown; frontsMeta: unknown }
 > &
-  CapiArticleFields &
+  $Diff<CapiArticleFields,
+  { isLive?: unknown }
+  >&
   ArticleFragmentRootFields &
   ArticleFragmentMeta & {
     tone: string;
     thumbnail: string | void;
     kicker: string;
+    isLive: boolean;
   };
 
 export { DerivedArticle };
