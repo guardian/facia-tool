@@ -6,11 +6,13 @@ import {
   removeGroupArticleFragment,
   replaceGroupArticleFragments,
   insertAndDedupeSiblings,
-  updateArticleFragmentMeta
+  updateArticleFragmentMeta,
+  articleFragmentsReceived
 } from 'shared/actions/ArticleFragments';
 import {
   supportingArticlesSelector,
-  groupArticlesSelector
+  groupArticlesSelector,
+  articleFragmentsFromRootStateSelector
 } from 'shared/selectors/shared';
 import { clipboardArticlesSelector } from 'selectors/clipboardSelectors';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
@@ -22,6 +24,9 @@ import {
   Action
 } from 'types/Action';
 import { ArticleFragment } from 'shared/types/Collection';
+import { Dispatch, GetState } from 'types/Store';
+import { cloneFragment } from 'shared/util/articleFragment';
+import keyBy from 'lodash/keyBy';
 
 function addClipboardArticleFragment(
   articleFragmentId: string,
@@ -104,7 +109,7 @@ const selectorMap: {
     }),
   group: (state: State, id: string) =>
     groupArticlesSelector(state, {
-      groupName: id
+      groupId: id
     }),
   clipboard: clipboardArticlesSelector
 };
@@ -139,9 +144,14 @@ const replaceActionMap: ActionMap<ReplaceAction> = {
 const createInsertArticleFragment = (persistTo: 'collection' | 'clipboard') => (
   parentType: string,
   parentId: string,
-  id: string,
+  fragment: ArticleFragment,
   index: number
-) => {
+) => (dispatch: Dispatch, getState: GetState) => {
+  const { parent, supporting } = cloneFragment(
+    fragment,
+    articleFragmentsFromRootStateSelector(getState())
+  );
+
   const insert = insertActionMap[parentType];
   const replaceAction = replaceActionMap[parentType];
   const selector = selectorMap[parentType];
@@ -152,15 +162,22 @@ const createInsertArticleFragment = (persistTo: 'collection' | 'clipboard') => (
 
   const replace = addPersistMetaToAction(replaceAction, {
     persistTo,
-    id
+    id: parent.uuid
   });
 
   return insertAndDedupeSiblings(
-    id,
+    parent.uuid,
     state => selector(state, parentId),
-    [insert(parentId, id, index)],
+    [
+      articleFragmentsReceived(
+        keyBy([parent, ...supporting], ({ uuid }) => uuid)
+      ),
+      insert(parentId, parent.uuid, index)
+    ],
     children => replace(parentId, children)
-  );
+  )(dispatch, getState, undefined);
+  // TS Issue ----------^
+  // https://github.com/Microsoft/TypeScript/issues/12400
 };
 
 const insertArticleFragment = createInsertArticleFragment('collection');

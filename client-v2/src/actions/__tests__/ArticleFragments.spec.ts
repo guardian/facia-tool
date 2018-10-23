@@ -33,18 +33,16 @@ const run = (exists: any, added: any) =>
 const testAdd = (exists: Array<[string, string]>) => (
   [uuid, id]: [string, string],
   index: number,
-  afId: string|void = undefined
+  afId: string | void = undefined
 ) => {
   const { dispatch, getState } = run(exists, [uuid, id]);
   expect(
-    dispatch(
-      insertClipboardArticleFragment(
-        afId ? 'articleFragment' : 'clipboard',
-        afId || '',
-        uuid,
-        index
-      ) as any
-    )
+    dispatch(insertClipboardArticleFragment(
+      afId ? 'articleFragment' : 'clipboard',
+      afId || '',
+      { uuid, id: uuid, meta: {}, frontPublicationDate: Date.now() },
+      index
+    ) as any)
   );
   return getState();
 };

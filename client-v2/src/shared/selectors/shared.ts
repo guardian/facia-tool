@@ -48,28 +48,31 @@ const externalArticleFromArticleFragmentSelector = (
   return externalArticles[articleFragment.id];
 };
 
-const createArticleFromArticleFragmentSelector = () => createSelector(
-  externalArticleFromArticleFragmentSelector,
-  articleFragmentSelector,
-  (externalArticle, articleFragment) => {
-  if (!externalArticle || !articleFragment) {
-    return undefined;
-  }
+const createArticleFromArticleFragmentSelector = () =>
+  createSelector(
+    externalArticleFromArticleFragmentSelector,
+    articleFragmentSelector,
+    (externalArticle, articleFragment) => {
+      if (!externalArticle || !articleFragment) {
+        return undefined;
+      }
 
-  return {
-    ...omit(externalArticle, 'fields', 'frontsMeta'),
-    ...externalArticle.fields,
-    ...omit(articleFragment, 'meta'),
-    ...articleFragment.meta,
-    headline: articleFragment.meta.headline || externalArticle.fields.headline,
-    trailText:
-      articleFragment.meta.trailText || externalArticle.fields.trailText,
-    byline: articleFragment.meta.byline || externalArticle.fields.byline,
-    kicker: articleFragment.meta.customKicker || externalArticle.pillarName,
-    tone: externalArticle.frontsMeta.tone,
-    thumbnail: getThumbnail(articleFragment, externalArticle)
-  };
-});
+      return {
+        ...omit(externalArticle, 'fields', 'frontsMeta'),
+        ...externalArticle.fields,
+        ...omit(articleFragment, 'meta'),
+        ...articleFragment.meta,
+        headline:
+          articleFragment.meta.headline || externalArticle.fields.headline,
+        trailText:
+          articleFragment.meta.trailText || externalArticle.fields.trailText,
+        byline: articleFragment.meta.byline || externalArticle.fields.byline,
+        kicker: articleFragment.meta.customKicker || externalArticle.pillarName,
+        tone: externalArticle.frontsMeta.tone,
+        thumbnail: getThumbnail(articleFragment, externalArticle)
+      };
+    }
+  );
 
 const articleKickerOptionsSelector = (state: State, id: string): string[] => {
   const externalArticle = externalArticleFromArticleFragmentSelector(state, id);
@@ -165,25 +168,31 @@ const articleFragmentIdSelector = (
   { articleFragmentId }: { articleFragmentId: string }
 ) => articleFragmentId;
 
-const supportingArticlesSelector = createSelector(
-  articleFragmentsFromRootStateSelector,
-  articleFragmentIdSelector,
-  (articleFragments, id) =>
-    (articleFragments[id].meta.supporting
-      ? articleFragments[id].meta.supporting!
-      : []
-    ).map((sId: string) => articleFragments[sId])
-);
+const createSupportingArticlesSelector = () =>
+  createSelector(
+    articleFragmentsFromRootStateSelector,
+    articleFragmentIdSelector,
+    (articleFragments, id) =>
+      (articleFragments[id].meta.supporting
+        ? articleFragments[id].meta.supporting!
+        : []
+      ).map((sId: string) => articleFragments[sId])
+  );
 
-const groupArticlesSelector = createSelector(
-  groupsFromRootStateSelector,
-  articleFragmentsFromRootStateSelector,
-  (_: unknown, { groupName }: { groupName: string }) => groupName,
-  (groups, articleFragments, groupName) =>
-    (groups[groupName].articleFragments || []).map(
-      afId => articleFragments[afId]
-    )
-);
+const supportingArticlesSelector = createSupportingArticlesSelector();
+
+const createGroupArticlesSelector = () =>
+  createSelector(
+    groupsFromRootStateSelector,
+    articleFragmentsFromRootStateSelector,
+    (_: any, { groupId }: { groupId: string }) => groupId,
+    (groups, articleFragments, groupId) =>
+      (groups[groupId].articleFragments || []).map(
+        afId => articleFragments[afId]
+      )
+  );
+
+const groupArticlesSelector = createGroupArticlesSelector();
 
 const collectionIdsSelector = (
   _: unknown,
@@ -215,59 +224,6 @@ const stageForTreeSelector = (
   { stage }: { stage: Stages; collectionIds: string[] }
 ): Stages => stage;
 
-interface FrontTree {
-  collections: CollectionTree[];
-}
-
-interface CollectionTree {
-  id: string;
-  groups: GroupTree[];
-}
-
-type GroupTree = Overwrite<
-  Group,
-  {
-    articleFragments: ArticleFragmentTree[];
-  }
->;
-
-type ArticleFragmentTree = ArticleFragmentDenormalised;
-
-const createCollectionsAsTreeSelector = () =>
-  createSelector(
-    collectionSelectors.selectAll,
-    groupsSelector,
-    articleFragmentsSelector,
-    collectionIdsSelector,
-    stageForTreeSelector,
-    (
-      collections,
-      groups,
-      articleFragments,
-      collectionIds,
-      stage
-    ): FrontTree => ({
-      collections: collectionIds
-        .map(
-          cId =>
-            collections[cId] && {
-              id: cId,
-              groups: (collections[cId][stage] || []).map((gId: string) => ({
-                ...groups[gId],
-                articleFragments: (groups[gId].articleFragments || []).map(
-                  articleFragmentId =>
-                    createDemornalisedArticleFragment(
-                      articleFragmentId,
-                      articleFragments
-                    )
-                )
-              }))
-            }
-        )
-        .filter(Boolean)
-    })
-  );
-
 export {
   externalArticleFromArticleFragmentSelector,
   createArticleFromArticleFragmentSelector,
@@ -275,15 +231,13 @@ export {
   createArticlesInCollectionGroupSelector,
   createArticlesInCollectionSelector,
   groupArticlesSelector,
+  createGroupArticlesSelector,
   supportingArticlesSelector,
+  createSupportingArticlesSelector,
   createCollectionSelector,
+  createCollectionStageGroupsSelector,
   createDemornalisedArticleFragment,
   selectSharedState,
-  createCollectionsAsTreeSelector,
   articleFragmentSelector,
-  articleKickerOptionsSelector,
-  FrontTree,
-  CollectionTree,
-  GroupTree,
-  ArticleFragmentTree
+  articleKickerOptionsSelector
 };

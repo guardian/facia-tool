@@ -1,7 +1,5 @@
 import v4 from 'uuid/v4';
-import omit from 'lodash/omit';
 import { ArticleFragment } from 'shared/types/Collection';
-import { ArticleFragmentTree } from 'shared/selectors/shared';
 
 const createFragment = (id: string, supporting: string[] = []) => ({
   uuid: v4(),
@@ -14,15 +12,20 @@ const createFragment = (id: string, supporting: string[] = []) => ({
 
 // only go one deep
 const cloneFragment = (
-  fragment: ArticleFragmentTree
+  fragment: ArticleFragment,
+  fragments: { [id: string]: ArticleFragment } // all the article fragments to enable nested rebuilds
 ): { parent: ArticleFragment; supporting: ArticleFragment[] } => {
   const sup = (fragment.meta.supporting || [])
-    .map(af => {
-      const { supporting, ...meta } = af.meta;
-      return cloneFragment({
-        ...af,
-        meta
-      }).parent;
+    .map(id => {
+      const supportingFragment = fragments[id];
+      const { supporting, ...meta } = supportingFragment.meta;
+      return cloneFragment(
+        {
+          ...supportingFragment,
+          meta
+        },
+        fragments
+      ).parent;
     })
     .filter((s: ArticleFragment): s is ArticleFragment => !!s);
 

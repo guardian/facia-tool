@@ -43,13 +43,18 @@ interface DropProps {
   onDrop: (e: React.DragEvent) => void;
 }
 
+type LevelChild<T> = (
+  node: T,
+  props: DropProps & NodeChildrenProps,
+  index: number
+) => React.ReactNode;
+
+type MoveHandler<T> = (move: Move<T>) => void;
+type DropHandler = (e: React.DragEvent, to: PosSpec) => void;
+
 interface OuterProps<T> {
   arr: T[];
-  children: (
-    node: T,
-    props: DropProps & NodeChildrenProps,
-    index: number
-  ) => React.ReactNode;
+  children: LevelChild<T>;
   parentId: string;
   parentType: string;
   type: string;
@@ -205,4 +210,4 @@ export default <T extends any>(props: OuterProps<T>) => (
   </StoreConsumer>
 );
 
-export { Move, PosSpec };
+export { Move, PosSpec, LevelChild, MoveHandler, DropHandler };
