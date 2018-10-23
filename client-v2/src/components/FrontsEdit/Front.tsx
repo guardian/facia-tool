@@ -8,7 +8,9 @@ import {
   insertArticleFragment,
   moveArticleFragment,
   updateArticleFragmentMeta,
-  copyArticleFragment
+  copyArticleFragment,
+  removeSupportingArticleFragment,
+  removeGroupArticleFragment
 } from 'actions/ArticleFragments';
 import { handleMove, handleInsert } from 'util/collectionUtils';
 import { AlsoOnDetail } from 'types/Collection';
@@ -23,8 +25,7 @@ import {
   ArticleFragment as TArticleFragment
 } from 'shared/types/Collection';
 import Collection from './CollectionComponents/Collection';
-import ArticleFragment from './CollectionComponents/ArticleFragment';
-import Supporting from './CollectionComponents/Supporting';
+import CollectionItem from './CollectionComponents/CollectionItem';
 import ArticleFragmentForm from './ArticleFragmentForm';
 import GroupDisplay from 'shared/components/GroupDisplay';
 import ArticleFragmentLevel from 'components/clipboard/ArticleFragmentLevel';
@@ -57,6 +58,8 @@ type FrontProps = FrontPropsBeforeState & {
   dispatch: Dispatch;
   selectArticleFragment: (id: string) => void;
   clearArticleFragmentSelection: () => void;
+  removeCollectionItem: (parentId: string, id: string) => void;
+  removeSupportingCollectionItem: (parentId: string, id: string) => void;
   front: FrontConfig;
 };
 
@@ -78,12 +81,6 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     });
   };
 
-  public clearArticleFragmentSelectionIfNeeded = (articleId: string) => {
-    if (articleId === this.props.selectedArticleFragmentId) {
-      this.props.clearArticleFragmentSelection();
-    }
-  };
-
   public handleMove = (move: Move<TArticleFragment>) => {
     handleMove(
       moveArticleFragment,
@@ -96,6 +93,22 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   public handleInsert = (e: React.DragEvent, to: PosSpec) => {
     handleInsert(e, insertArticleFragment, this.props.dispatch, to);
   };
+
+  public removeCollectionItem(parentId: string, id: string) {
+    this.props.removeCollectionItem(parentId, id);
+    this.clearArticleFragmentSelectionIfNeeded(id);
+  }
+
+  public removeSupportingCollectionItem(parentId: string, id: string) {
+    this.props.removeSupportingCollectionItem(parentId, id);
+    this.clearArticleFragmentSelectionIfNeeded(id);
+  }
+
+  public clearArticleFragmentSelectionIfNeeded(id: string) {
+    if (id === this.props.selectedArticleFragmentId) {
+      this.props.clearArticleFragmentSelection();
+    }
+  }
 
   public render() {
     const { selectedArticleFragmentId, front } = this.props;
@@ -132,13 +145,16 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                         onDrop={this.handleInsert}
                       >
                         {(articleFragment, afProps) => (
-                          <ArticleFragment
+                          <CollectionItem
                             uuid={articleFragment.uuid}
                             parentId={group.uuid}
                             getNodeProps={() => afProps}
                             onSelect={this.props.selectArticleFragment}
-                            onDelete={
-                              this.clearArticleFragmentSelectionIfNeeded
+                            onDelete={() =>
+                              this.removeCollectionItem(
+                                group.uuid,
+                                articleFragment.uuid
+                              )
                             }
                             isSelected={
                               !selectedArticleFragmentId ||
@@ -151,7 +167,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                               onDrop={this.handleInsert}
                             >
                               {(supporting, sProps) => (
-                                <Supporting
+                                <CollectionItem
                                   uuid={supporting.uuid}
                                   parentId={articleFragment.uuid}
                                   getNodeProps={() => sProps}
@@ -161,13 +177,17 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                     selectedArticleFragmentId ===
                                       supporting.uuid
                                   }
-                                  onDelete={
-                                    this.clearArticleFragmentSelectionIfNeeded
+                                  onDelete={() =>
+                                    this.removeSupportingCollectionItem(
+                                      articleFragment.uuid,
+                                      supporting.uuid
+                                    )
                                   }
+                                  size="small"
                                 />
                               )}
                             </ArticleFragmentLevel>
-                          </ArticleFragment>
+                          </CollectionItem>
                         )}
                       </GroupLevel>
                     </GroupDisplay>
@@ -204,15 +224,23 @@ const mapStateToProps = (state: State, props: FrontPropsBeforeState) => ({
   front: getFront(state, props.id)
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  dispatch,
-  updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
-    dispatch(updateArticleFragmentMeta(id, meta)),
-  selectArticleFragment: (frontId: string, articleFragmentId: string) =>
-    dispatch(editorSelectArticleFragment(frontId, articleFragmentId)),
-  clearArticleFragmentSelection: (frontId: string) =>
-    dispatch(editorClearArticleFragmentSelection(frontId))
-});
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    dispatch,
+    updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
+      dispatch(updateArticleFragmentMeta(id, meta)),
+    selectArticleFragment: (frontId: string, articleFragmentId: string) =>
+      dispatch(editorSelectArticleFragment(frontId, articleFragmentId)),
+    clearArticleFragmentSelection: (frontId: string) =>
+      dispatch(editorClearArticleFragmentSelection(frontId)),
+    removeCollectionItem: (parentId: string, uuid: string) => {
+      dispatch(removeGroupArticleFragment(parentId, uuid));
+    },
+    removeSupportingCollectionItem: (parentId: string, uuid: string) => {
+      dispatch(removeSupportingArticleFragment(parentId, uuid));
+    }
+  };
+};
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;

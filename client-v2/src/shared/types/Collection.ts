@@ -9,6 +9,8 @@ interface Group {
 
 type Stages = 'draft' | 'live' | 'previously';
 
+type CollectionItemTypes = 'SNAP_LINK' | 'ARTICLE';
+
 interface NestedArticleFragmentRootFields {
   id: string;
   frontPublicationDate: number;
@@ -122,6 +124,7 @@ export {
   CollectionWithNestedArticles,
   CollectionResponse,
   Collection,
+  CollectionItemTypes,
   Group,
   Stages
 };

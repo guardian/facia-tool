@@ -1,0 +1,7 @@
+import styled from 'styled-components';
+
+export default styled('div')`
+  padding-top: 2px;
+  font-size: 12px;
+  font-family: TS3TextSans-Bold;
+`;

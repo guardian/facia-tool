@@ -561,12 +561,53 @@ const stateWithCollectionAndSupporting: any = {
   }
 };
 
+const stateWithSnaplinksAndArticles: any = {
+  shared: {
+    articleFragments: {
+      '1269c42e-a341-4464-b206-a5731b92fa46': {
+        id: 'article/live/0',
+        frontPublicationDate: 1,
+        publishedBy: 'Computers',
+        meta: {},
+        uuid: '1269c42e-a341-4464-b206-a5731b92fa46'
+      },
+      '134c9d4f-b05c-43f4-be41-a605b6dccab9': {
+        id: 'article/draft/2',
+        frontPublicationDate: 2,
+        publishedBy: 'Computers',
+        meta: {},
+        uuid: '134c9d4f-b05c-43f4-be41-a605b6dccab9'
+      },
+      '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5': {
+        id: 'snap/32145544543',
+        frontPublicationDate: 3,
+        publishedBy: 'Computers',
+        meta: {},
+        uuid: '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
+      },
+      '322f0527-cf14-43c1-8520-e6732ab01297': {
+        id: 'a/long/path/1',
+        frontPublicationDate: 1,
+        publishedBy: 'Computers',
+        meta: {
+          supporting: [
+            '134c9d4f-b05c-43f4-be41-a605b6dccab9',
+            '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
+          ]
+        },
+        uuid: '322f0527-cf14-43c1-8520-e6732ab01297'
+      }
+    }
+  }
+};
+
 export {
   capiArticle,
   collection,
   collectionWithSupportingArticles,
   stateWithCollection,
   stateWithCollectionAndSupporting,
+  stateWithSnaplinksAndArticles,
   liveArticle,
   articleWithSupporting,
   collectionConfig
