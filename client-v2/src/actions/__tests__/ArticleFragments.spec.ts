@@ -40,7 +40,7 @@ const testAdd = (exists: Array<[string, string]>) => (
     dispatch(insertClipboardArticleFragment(
       afId ? 'articleFragment' : 'clipboard',
       afId || '',
-      { uuid, id: uuid, meta: {}, frontPublicationDate: Date.now() },
+      { uuid, id, meta: {}, frontPublicationDate: Date.now() },
       index
     ) as any)
   );

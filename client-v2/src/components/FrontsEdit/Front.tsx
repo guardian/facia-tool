@@ -7,7 +7,8 @@ import { Dispatch } from 'types/Store';
 import {
   insertArticleFragment,
   moveArticleFragment,
-  updateArticleFragmentMeta
+  updateArticleFragmentMeta,
+  copyArticleFragment
 } from 'actions/ArticleFragments';
 import { handleMove, handleInsert } from 'util/collectionUtils';
 import { AlsoOnDetail } from 'types/Collection';
@@ -95,7 +96,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   public handleMove = (move: Move<TArticleFragment>) => {
     handleMove(
       moveArticleFragment,
-      insertArticleFragment,
+      copyArticleFragment,
       this.props.dispatch,
       move
     );

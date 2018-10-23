@@ -8,7 +8,8 @@ import ArticlePolaroid from 'shared/components/ArticlePolaroid';
 import ArticlePolaroidSub from 'shared/components/ArticlePolaroidSub';
 import {
   insertClipboardArticleFragment,
-  moveClipboardArticleFragment
+  moveClipboardArticleFragment,
+  copyClipboardArticleFragment
 } from 'actions/ArticleFragments';
 import {
   editorSelectArticleFragment,
@@ -34,7 +35,7 @@ class Clipboard extends React.Component<ClipboardProps> {
   public handleMove = (move: Move<TArticleFragment>) => {
     handleMove(
       moveClipboardArticleFragment,
-      insertClipboardArticleFragment,
+      copyClipboardArticleFragment,
       this.props.dispatch,
       move
     );

@@ -141,16 +141,18 @@ const replaceActionMap: ActionMap<ReplaceAction> = {
     updateClipboardContent(children)
 };
 
-const createInsertArticleFragment = (persistTo: 'collection' | 'clipboard') => (
+const createInsertArticleFragment = (
+  persistTo: 'collection' | 'clipboard',
+  copy: boolean = false
+) => (
   parentType: string,
   parentId: string,
   fragment: ArticleFragment,
   index: number
 ) => (dispatch: Dispatch, getState: GetState) => {
-  const { parent, supporting } = cloneFragment(
-    fragment,
-    articleFragmentsFromRootStateSelector(getState())
-  );
+  const { parent, supporting } = copy
+    ? cloneFragment(fragment, articleFragmentsFromRootStateSelector(getState()))
+    : { parent: fragment, supporting: [] };
 
   const insert = insertActionMap[parentType];
   const replaceAction = replaceActionMap[parentType];
@@ -181,7 +183,13 @@ const createInsertArticleFragment = (persistTo: 'collection' | 'clipboard') => (
 };
 
 const insertArticleFragment = createInsertArticleFragment('collection');
+const copyArticleFragment = createInsertArticleFragment('collection', true);
+
 const insertClipboardArticleFragment = createInsertArticleFragment('clipboard');
+const copyClipboardArticleFragment = createInsertArticleFragment(
+  'clipboard',
+  true
+);
 
 /* separate clipboard */
 
@@ -221,6 +229,8 @@ export {
   insertClipboardArticleFragment,
   moveArticleFragment,
   moveClipboardArticleFragment,
+  copyArticleFragment,
+  copyClipboardArticleFragment,
   updateArticleFragmentMetaWithPersist as updateArticleFragmentMeta,
   updateClipboardArticleFragmentMetaWithPersist as updateClipboardArticleFragmentMeta,
   removeSupportingArticleFragmentWithPersist as removeSupportingArticleFragment,
