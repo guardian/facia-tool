@@ -5,7 +5,7 @@ import { ArticleFragmentRootFields, ArticleFragmentMeta } from './Collection';
 
 type DerivedArticle = $Diff<
   ExternalArticle,
-  { fields: unknown; frontsMeta: unknown }
+  { fields: unknown; frontsMeta: unknown, type: unknown }
 > &
   $Diff<CapiArticleFields,
   { isLive?: unknown }

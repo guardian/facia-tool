@@ -219,6 +219,7 @@ const ArticleComponent = ({
     >
       <ArticleBodyContainer
         fade={fade}
+        data-testid="article-body"
         key={article.headline}
         style={{
           borderTopColor:
@@ -316,6 +317,6 @@ const createMapStateToProps = () => {
   });
 };
 
-export { ArticleComponentProps }
+export { ArticleComponentProps, ArticleComponent }
 
 export default connect(createMapStateToProps)(ArticleComponent);
