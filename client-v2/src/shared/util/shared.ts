@@ -25,20 +25,16 @@ const addMissingGroupsForStage = (
   entities: { [id: string]: Group },
   collectionConfig: CollectionConfig
 ) => {
-  if (collectionConfig.groups) {
-    const groups = groupIds.map(id => entities[id]);
-    const newGroups = collectionConfig.groups.map(
-      (_, i) => groupByIndex(groups, i) || createGroup(`${i}`)
-    );
+  const groups = groupIds.map(id => entities[id]);
+  const newGroups = collectionConfig.groups
+    ? collectionConfig.groups.map(
+        (_, i) => groupByIndex(groups, i) || createGroup(`${i}`)
+      )
+    : [createGroup('0')];
 
-    return {
-      newGroups: keyBy(newGroups, getUUID),
-      groupIds: newGroups.map(getUUID)
-    };
-  }
   return {
-    newGroups: {},
-    groupIds
+    newGroups: keyBy(newGroups, getUUID),
+    groupIds: newGroups.map(getUUID)
   };
 };
 
