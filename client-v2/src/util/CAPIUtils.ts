@@ -1,17 +1,11 @@
-import { getArticles } from 'services/faciaApi';
 import { Element, Tag } from 'types/Capi';
 import { ExternalArticle } from '../shared/types/ExternalArticle';
 import { ArticleFragment } from '../shared/types/Collection';
 
-const getInternalPageCode = async (id: string) =>
-  ((await getArticles([id]))[0] || {}).id || null;
-
-const getURLInternalPageCode = async (url: string): Promise<string | null> => {
+const getIdFromURL = (url: string): string | null => {
   const [, id = null] =
     url.match(/^https:\/\/www.theguardian\.com\/(.*)\??/) || [];
-  return typeof id !== 'string'
-    ? Promise.resolve(null)
-    : getInternalPageCode(id);
+  return typeof id !== 'string' ? null : id;
 };
 
 // TODO: get apiKey from context (or speak directly to FrontsAPI)
@@ -95,7 +89,7 @@ const getPrimaryTag = (externalArticle: ExternalArticle): Tag | null =>
   getTags(externalArticle)[0] || null;
 
 export {
-  getURLInternalPageCode,
+  getIdFromURL,
   getThumbnailFromElements,
   getThumbnail,
   getContributorImage,
