@@ -34,7 +34,7 @@ const addMissingGroupsForStage = (
 
   return {
     newGroups: keyBy(newGroups, getUUID),
-    groupIds: newGroups.map(getUUID)
+    groupIds: newGroups.map(getUUID).slice().reverse()
   };
 };
 

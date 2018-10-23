@@ -35,7 +35,7 @@ function fetchFrontsConfig(): Promise<FrontsConfig> {
       ),
       collections: Object.keys(json.collections).reduce((acc, id) => {
         const collection = json.collections[id];
-        const groups = collection.groups && collection.groups.slice().reverse();
+        const { groups } = collection;
         return {
           ...acc,
           [id]: {

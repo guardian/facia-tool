@@ -100,9 +100,7 @@ const createCollectionSelector = () =>
       collections[id]
         ? {
             ...collections[id],
-            groups:
-              collections[id].groups &&
-              collections[id].groups!.slice().reverse()
+            groups: collections[id].groups
           }
         : undefined
   );
