@@ -79,17 +79,11 @@ const HoverDeleteButton = ({
 
 const HoverViewButton = ({
   isLive,
-  urlPath,
+  urlPath = '',
   showToolTip,
   hideToolTip
 }: ButtonProps) => (
-  <Link
-    href={
-      isLive
-        ? `https://www.theguardian.com/${urlPath}`
-        : `https://preview.gutools.co.uk/${urlPath}`
-    }
-  >
+  <Link href={isLive ? getPaths(urlPath).live : getPaths(urlPath).preview}>
     <ActionButton onMouseEnter={showToolTip} onMouseLeave={hideToolTip}>
       <Icon src={hoverActionIcons.view} alt="View" />
     </ActionButton>
