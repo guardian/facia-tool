@@ -1,17 +1,97 @@
-import { CollectionWithNestedArticles } from 'shared/types/Collection';
+import { CollectionWithNestedArticles, Group } from 'shared/types/Collection';
 import { selectors as collectionSelectors } from 'shared/bundles/collectionsBundle';
 import { selectSharedState } from 'shared/selectors/shared';
 import { State } from 'types/State';
 
 import { normalize, denormalize } from './schema';
+import { CollectionConfig } from 'types/FaciaApi';
+import v4 from 'uuid/v4';
+import keyBy from 'lodash/keyBy';
+
+const createGroup = (id: string): Group => ({
+  id,
+  uuid: v4(),
+  articleFragments: []
+});
+
+const getUUID = <T extends { uuid: string }>({ uuid }: T) => uuid;
+
+// this is horrible but is the only way to do it!
+const groupByIndex = (groups: Group[], index: number): Group | undefined =>
+  groups.find(g => parseInt(g.id || '0', 10) === index);
+
+const addMissingGroupsForStage = (
+  groupIds: string[],
+  entities: { [id: string]: Group },
+  collectionConfig: CollectionConfig
+) => {
+  if (collectionConfig.groups) {
+    const groups = groupIds.map(id => entities[id]);
+    const newGroups = collectionConfig.groups.map(
+      (_, i) => groupByIndex(groups, i) || createGroup(`${i}`)
+    );
+
+    return {
+      newGroups: keyBy(newGroups, getUUID),
+      groupIds: newGroups.map(getUUID)
+    };
+  }
+  return {
+    newGroups: {},
+    groupIds
+  };
+};
+
+interface ReduceResult {
+  live: string[];
+  draft: string[];
+  previously: string[];
+  newGroups: { [key: string]: Group };
+}
+
+const addMissingGroups = (
+  normalisedCollection: any,
+  collectionConfig: CollectionConfig
+) =>
+  (['live', 'previously', 'draft'] as ['live', 'previously', 'draft']).reduce(
+    (acc, key) => {
+      const { newGroups, groupIds } = addMissingGroupsForStage(
+        normalisedCollection.result[key],
+        normalisedCollection.entities.groups,
+        collectionConfig
+      );
+      return {
+        ...acc,
+        newGroups: {
+          ...acc.newGroups,
+          ...newGroups
+        },
+        [key]: groupIds
+      };
+    },
+    { live: [], draft: [], previously: [], newGroups: {} } as ReduceResult
+  );
 
 const normaliseCollectionWithNestedArticles = (
-  collection: CollectionWithNestedArticles
+  collection: CollectionWithNestedArticles,
+  collectionConfig: CollectionConfig
 ) => {
   const normalisedCollection = normalize(collection);
+  const { newGroups, live, draft, previously } = addMissingGroups(
+    normalisedCollection,
+    collectionConfig
+  );
   return {
-    collection: normalisedCollection.result,
-    groups: normalisedCollection.entities.groups || {},
+    collection: {
+      ...normalisedCollection.result,
+      live,
+      draft,
+      previously
+    },
+    groups: {
+      ...(normalisedCollection.entities.groups || {}),
+      ...newGroups
+    },
     articleFragments: normalisedCollection.entities.articleFragments || {}
   };
 };

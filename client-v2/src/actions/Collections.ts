@@ -49,7 +49,10 @@ function getCollection(collectionId: string): ThunkResult<Promise<string[]>> {
           collection,
           articleFragments,
           groups
-        } = normaliseCollectionWithNestedArticles(collectionWithDraftArticles);
+        } = normaliseCollectionWithNestedArticles(
+          collectionWithDraftArticles,
+          collectionConfig
+        );
 
         dispatch(
           batchActions([

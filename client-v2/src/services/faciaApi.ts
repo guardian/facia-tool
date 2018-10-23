@@ -33,16 +33,18 @@ function fetchFrontsConfig(): Promise<FrontsConfig> {
         }),
         {}
       ),
-      collections: Object.keys(json.collections).reduce(
-        (acc, id) => ({
+      collections: Object.keys(json.collections).reduce((acc, id) => {
+        const collection = json.collections[id];
+        const groups = collection.groups && collection.groups.slice().reverse();
+        return {
           ...acc,
           [id]: {
-            ...json.collections[id],
+            ...collection,
+            groups,
             id
           }
-        }),
-        {}
-      )
+        };
+      }, {})
     }));
 }
 
