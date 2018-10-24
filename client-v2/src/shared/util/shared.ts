@@ -45,7 +45,7 @@ const addMissingGroupsForStage = (
           ? { ...existingGroup, name }
           : createGroup(`${i}`, name);
       })
-    : [createGroup('0', '', getAllArticleFragments(groups))];
+    : [createGroup('0', null, getAllArticleFragments(groups))];
 
   return {
     newGroups: keyBy(newGroups, getUUID),
