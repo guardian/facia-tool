@@ -53,7 +53,7 @@ describe('Store middleware', () => {
         mockCollectionUpdateAction({
           id: 'exampleCollection',
           displayName: 'Example Collection',
-          live: ['abc'],
+          live: ['abc', 'def'],
           draft: [],
           previously: undefined
         })

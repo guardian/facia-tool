@@ -1,5 +1,6 @@
 import {
   collection,
+  collectionConfig,
   collectionWithSupportingArticles,
   stateWithCollection,
   stateWithCollectionAndSupporting
@@ -33,12 +34,20 @@ describe('Shared utilities', () => {
     });
   });
   describe('normaliseCollectionWithNestedArticles', () => {
-    it('should normalise an external collection, and provide the new collection and article fragments indexed by id', () => {
-      const result = normaliseCollectionWithNestedArticles(collection);
-      expect(result.collection.live).toHaveLength(1);
-      const groupId = result.collection.live[0];
-      const liveArticles = result.groups[groupId].articleFragments;
-      expect(liveArticles).toHaveLength(3);
+    it('should normalise an external collection, and provide the new collection and article fragments indexed by id with any empty groups added from the collection config', () => {
+      const result = normaliseCollectionWithNestedArticles(
+        collection,
+        collectionConfig
+      );
+      expect(result.collection.live).toHaveLength(3);
+      const [gId1, gId2, gId3] = result.collection.live;
+      const g1Articles = result.groups[gId1].articleFragments;
+      const g2Articles = result.groups[gId2].articleFragments;
+      const g3Articles = result.groups[gId3].articleFragments;
+      expect(g1Articles).toHaveLength(0);
+      expect(g2Articles).toHaveLength(1);
+      expect(g3Articles).toHaveLength(2);
+      const liveArticles = [...g1Articles, ...g2Articles, ...g3Articles];
       expect(result.articleFragments[liveArticles[0]].id).toBe(
         'article/live/0'
       );
@@ -48,30 +57,33 @@ describe('Shared utilities', () => {
       expect(result.articleFragments[liveArticles[2]].id).toBe('a/long/path/2');
     });
     it('should handle draft and previously keys', () => {
-      const result = normaliseCollectionWithNestedArticles({
-        ...collection,
-        ...{
-          draft: [
-            {
-              id: 'article/live/2',
-              frontPublicationDate: 3,
-              publishedBy: 'Computers',
-              meta: {}
-            }
-          ],
-          previously: [
-            {
-              id: 'article/live/3',
-              frontPublicationDate: 4,
-              publishedBy: 'Computers',
-              meta: {}
-            }
-          ]
-        }
-      });
-      expect(result.collection.live.length).toEqual(1);
-      expect(result.collection.draft.length).toEqual(1);
-      expect(result.collection.previously.length).toEqual(1);
+      const result = normaliseCollectionWithNestedArticles(
+        {
+          ...collection,
+          ...{
+            draft: [
+              {
+                id: 'article/live/2',
+                frontPublicationDate: 3,
+                publishedBy: 'Computers',
+                meta: {}
+              }
+            ],
+            previously: [
+              {
+                id: 'article/live/3',
+                frontPublicationDate: 4,
+                publishedBy: 'Computers',
+                meta: {}
+              }
+            ]
+          }
+        },
+        collectionConfig
+      );
+      expect(result.collection.live.length).toEqual(3);
+      expect(result.collection.draft.length).toEqual(3);
+      expect(result.collection.previously.length).toEqual(3);
       expect(
         result.collection.live.every(
           (articleId: string) => typeof articleId === 'string'
@@ -88,24 +100,28 @@ describe('Shared utilities', () => {
         )
       ).toBe(true);
       expect(Object.keys(result.articleFragments).length).toEqual(5);
-      const liveGroup = result.groups[result.collection.live[0]];
-      const draftGroup = result.groups[result.collection.draft[0]];
-      const prevGroup = result.groups[result.collection.previously[0]];
-      expect(result.articleFragments[liveGroup.articleFragments[0]].id).toBe(
+      const liveGroup2 = result.groups[result.collection.live[1]];
+      const draftGroup3 = result.groups[result.collection.draft[2]];
+      const prevGroup3= result.groups[result.collection.previously[2]];
+      expect(result.articleFragments[liveGroup2.articleFragments[0]].id).toBe(
         'article/live/0'
       );
-      expect(result.articleFragments[draftGroup.articleFragments[0]].id).toBe(
+      expect(result.articleFragments[draftGroup3.articleFragments[0]].id).toBe(
         'article/live/2'
       );
-      expect(result.articleFragments[prevGroup.articleFragments[0]].id).toBe(
+      expect(result.articleFragments[prevGroup3.articleFragments[0]].id).toBe(
         'article/live/3'
       );
     });
     it('should insert a default group for empty collections', () => {
-      const result = normaliseCollectionWithNestedArticles({
-        ...collection,
-        ...{ live: [] }
-      });
+      const { groups, ...collectionConfigWithoutGroups } = collectionConfig;
+      const result = normaliseCollectionWithNestedArticles(
+        {
+          ...collection,
+          ...{ live: [] }
+        },
+        collectionConfigWithoutGroups
+      );
       expect(result.collection.live).toHaveLength(1);
       expect(result.collection.draft).toHaveLength(1);
       expect(result.collection.previously).toHaveLength(1);
@@ -113,9 +129,10 @@ describe('Shared utilities', () => {
     });
     it('should normalise supporting article fragments', () => {
       const result = normaliseCollectionWithNestedArticles(
-        collectionWithSupportingArticles
+        collectionWithSupportingArticles,
+        collectionConfig
       );
-      expect(result.collection.live.length).toEqual(1);
+      expect(result.collection.live.length).toEqual(3);
       expect(Object.keys(result.articleFragments).length).toEqual(4);
       expect(
         Object.keys(result.articleFragments).every(

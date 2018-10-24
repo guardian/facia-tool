@@ -17,6 +17,7 @@ interface NestedArticleFragmentRootFields {
 type NestedArticleFragment = NestedArticleFragmentRootFields & {
   meta: {
     supporting?: Array<Diff<NestedArticleFragment, { supporting: unknown }>>;
+    group?: string | null;
   };
 };
 
