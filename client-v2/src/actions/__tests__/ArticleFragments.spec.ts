@@ -109,11 +109,11 @@ const groupAdder = createAdder((state, existing) => ({
 const groupInserter = groupAdder(insertArticleFragment);
 const groupCopier = groupAdder(copyArticleFragment);
 
-const testAddingClipboardAndGroupInsert = (
+const testInsertingForClipboardAndGroup = (
   articleFragmentSpec: ArticleFragmentSpec,
   index: number,
   parentId?: string
-) => (equalInsert: string[], equalCopy: string[]) => {
+) => (equal: string[]) => {
   expect(
     clipboardInserter(
       articleFragmentSpec,
@@ -121,7 +121,7 @@ const testAddingClipboardAndGroupInsert = (
       parentId ? 'articleFragment' : 'clipboard',
       parentId || 'clipboard'
     ).clipboard
-  ).toEqual(equalInsert);
+  ).toEqual(equal);
   expect(
     groupInserter(
       articleFragmentSpec,
@@ -129,7 +129,14 @@ const testAddingClipboardAndGroupInsert = (
       parentId ? 'articleFragment' : 'group',
       parentId || 'a'
     ).shared.groups.a.articleFragments
-  ).toEqual(equalInsert);
+  ).toEqual(equal);
+};
+
+const testCopyingForClipboardAndGroup = (
+  articleFragmentSpec: ArticleFragmentSpec,
+  index: number,
+  parentId?: string
+) => (equal: string[]) => {
   expect(
     clipboardCopier(
       articleFragmentSpec,
@@ -137,7 +144,7 @@ const testAddingClipboardAndGroupInsert = (
       parentId ? 'articleFragment' : 'clipboard',
       parentId || 'clipboard'
     ).clipboard
-  ).toEqual(equalCopy);
+  ).toEqual(equal);
   expect(
     groupCopier(
       articleFragmentSpec,
@@ -145,36 +152,34 @@ const testAddingClipboardAndGroupInsert = (
       parentId ? 'articleFragment' : 'group',
       parentId || 'a'
     ).shared.groups.a.articleFragments
-  ).toEqual(equalCopy);
+  ).toEqual(equal);
 };
 
 describe('ArticleFragments actions', () => {
   it('adds article fragments that exist in the state', () => {
-    testAddingClipboardAndGroupInsert(['d', '4'], 2)(
-      ['a', 'b', 'd', 'c'],
-      // mocking uuid/v4 to always return `uuid`
-      ['a', 'b', 'uuid', 'c']
-    );
+    testInsertingForClipboardAndGroup(['d', '4'], 2)(['a', 'b', 'd', 'c']);
   });
 
-  it('moves / copies existing articles when duplicates are added', () => {
-    testAddingClipboardAndGroupInsert(['d', '2'], 0)(
-      ['d', 'a', 'c'],
-      ['uuid', 'a', 'c']
-    );
+  it('creates article fragments that exist in the state', () => {
+    // mocking uuid/v4 to always return `uuid`
+    testCopyingForClipboardAndGroup(['d', '4'], 2)(['a', 'b', 'uuid', 'c']);
+  });
+
+  it('moves existing articles when duplicates are added', () => {
+    testInsertingForClipboardAndGroup(['d', '2'], 0)(['d', 'a', 'c']);
+  });
+
+  it('copies existing articles when duplicates are added', () => {
+    testCopyingForClipboardAndGroup(['d', '2'], 0)(['uuid', 'a', 'c']);
   });
 
   it('does not dedupe when adding to supporting', () => {
-    testAddingClipboardAndGroupInsert(['d', '2'], 0, 'a')(
-      ['a', 'b', 'c'],
-      ['a', 'b', 'c']
-    );
+    testInsertingForClipboardAndGroup(['d', '2'], 0, 'a')(['a', 'b', 'c']);
+    testCopyingForClipboardAndGroup(['d', '2'], 0, 'a')(['a', 'b', 'c']);
   });
 
   it('adding at an index that is too high adds to the end', () => {
-    testAddingClipboardAndGroupInsert(['d', '4'], 9)(
-      ['a', 'b', 'c', 'd'],
-      ['a', 'b', 'c', 'uuid']
-    );
+    testInsertingForClipboardAndGroup(['d', '4'], 9)(['a', 'b', 'c', 'd']);
+    testCopyingForClipboardAndGroup(['d', '4'], 9)(['a', 'b', 'c', 'uuid']);
   });
 });
