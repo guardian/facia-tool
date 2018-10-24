@@ -1,13 +1,10 @@
 import omit from 'lodash/omit';
 import uniq from 'lodash/uniq';
 import { createSelector } from 'reselect';
-
 import { getThumbnail, getPrimaryTag } from 'util/CAPIUtils';
-import { Overwrite } from 'utility-types';
 import { selectors as externalArticleSelectors } from '../bundles/externalArticlesBundle';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 import { ExternalArticle } from '../types/ExternalArticle';
-import { DerivedArticle } from '../types/Article';
 import {
   ArticleFragment,
   Collection,
@@ -179,8 +176,6 @@ const createSupportingArticlesSelector = () =>
       ).map((sId: string) => articleFragments[sId])
   );
 
-const supportingArticlesSelector = createSupportingArticlesSelector();
-
 const createGroupArticlesSelector = () =>
   createSelector(
     groupsFromRootStateSelector,
@@ -191,13 +186,6 @@ const createGroupArticlesSelector = () =>
         afId => articleFragments[afId]
       )
   );
-
-const groupArticlesSelector = createGroupArticlesSelector();
-
-const collectionIdsSelector = (
-  _: unknown,
-  { collectionIds }: { collectionIds: string[] }
-) => collectionIds;
 
 const createDemornalisedArticleFragment = (
   articleFragmentId: string,
@@ -219,20 +207,13 @@ const createDemornalisedArticleFragment = (
       }
     : { ...articleFragments[articleFragmentId] };
 
-const stageForTreeSelector = (
-  _: unknown,
-  { stage }: { stage: Stages; collectionIds: string[] }
-): Stages => stage;
-
 export {
   externalArticleFromArticleFragmentSelector,
   createArticleFromArticleFragmentSelector,
   articleFragmentsFromRootStateSelector,
   createArticlesInCollectionGroupSelector,
   createArticlesInCollectionSelector,
-  groupArticlesSelector,
   createGroupArticlesSelector,
-  supportingArticlesSelector,
   createSupportingArticlesSelector,
   createCollectionSelector,
   createCollectionStageGroupsSelector,

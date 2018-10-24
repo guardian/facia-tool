@@ -10,8 +10,8 @@ import {
   articleFragmentsReceived
 } from 'shared/actions/ArticleFragments';
 import {
-  supportingArticlesSelector,
-  groupArticlesSelector,
+  createSupportingArticlesSelector,
+  createGroupArticlesSelector,
   articleFragmentsFromRootStateSelector
 } from 'shared/selectors/shared';
 import { clipboardArticlesSelector } from 'selectors/clipboardSelectors';
@@ -99,6 +99,9 @@ const removeClipboardSupportingArticleFragmentWithPersist = addPersistMetaToActi
     key: 'articleFragmentId'
   }
 );
+
+const supportingArticlesSelector = createSupportingArticlesSelector();
+const groupArticlesSelector = createGroupArticlesSelector();
 
 const selectorMap: {
   [key: string]: (state: State, id: string) => ArticleFragment[];
