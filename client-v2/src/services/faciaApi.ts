@@ -168,7 +168,7 @@ function getCollection(
 
 const getCapiUriForArticleIds = (articleIds: string[]) => {
   const joinedArticleIds = articleIds.join(',');
-  return `/api/preview/search?ids=${joinedArticleIds}&show-elements=video,main&show-blocks=main&show-tags=all&show-atoms=media&show-fields=internalPageCode,isLive,firstPublicationDate,scheduledPublicationDate,headline,trailText,byline,thumbnail,secureThumbnail,liveBloggingNow,membershipAccess,shortUrl`;
+  return `/api/preview/search?ids=${joinedArticleIds}&page-size=50&show-elements=video,main&show-blocks=main&show-tags=all&show-atoms=media&show-fields=internalPageCode,isLive,firstPublicationDate,scheduledPublicationDate,headline,trailText,byline,thumbnail,secureThumbnail,liveBloggingNow,membershipAccess,shortUrl`;
 };
 
 function getArticles(articleIds: string[]): Promise<ExternalArticle[]> {
@@ -187,13 +187,7 @@ function getArticles(articleIds: string[]): Promise<ExternalArticle[]> {
     throw new Error('Error getting articles from CAPI - invalid response');
   };
 
-  const articleIdsWithoutSnaps = articleIds.filter(id => !id.match(/^snap/));
-
-  if (!articleIdsWithoutSnaps.length) {
-    return Promise.resolve([]);
-  }
-
-  const articlePromises = chunk(articleIdsWithoutSnaps, 50).map(
+  const articlePromises = chunk(articleIds, 50).map(
     localArticleIds =>
       pandaFetch(getCapiUriForArticleIds(localArticleIds), {
         method: 'get',

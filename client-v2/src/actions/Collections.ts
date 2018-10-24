@@ -24,9 +24,10 @@ import { groupsReceived } from 'shared/actions/Groups';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import { getCollectionConfig } from 'selectors/frontsSelectors';
 import { State } from 'types/State';
-import { Dispatch, ThunkResult } from 'types/Store';
+import { Dispatch, ThunkResult, GetState } from 'types/Store';
 import { Collection } from 'shared/types/Collection';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
+import difference from 'lodash/difference';
 
 function getCollection(collectionId: string): ThunkResult<Promise<string[]>> {
   return (dispatch: Dispatch, getState: () => State) => {
@@ -101,6 +102,37 @@ function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
   };
 }
 
+/**
+ * Fetch articles from CAPI and add them to the store.
+ */
+const fetchArticles = (articleIds: string[]) => async (dispatch: Dispatch) => {
+  const articleIdsWithoutSnaps = articleIds.filter(id => !id.match(/^snap/));
+  if (!articleIdsWithoutSnaps.length) {
+    return;
+  }
+  dispatch(externalArticleActions.fetchStart(articleIdsWithoutSnaps));
+  try {
+    const articles = await getArticles(articleIdsWithoutSnaps);
+    dispatch(externalArticleActions.fetchSuccess(articles));
+    const remainingArticles = difference(
+      articleIdsWithoutSnaps,
+      articles.map(_ => _.id)
+    );
+    if (remainingArticles.length) {
+      dispatch(
+        externalArticleActions.fetchError(
+          `The following article ids were in a CAPI query but were not returned by CAPI: ${remainingArticles.join(
+            ', '
+          )}`,
+          remainingArticles
+        )
+      );
+    }
+  } catch (e) {
+    dispatch(externalArticleActions.fetchError(e.message, articleIds));
+  }
+};
+
 const getCollectionsAndArticles = (
   collectionIds: string[],
   getCollectionAction = getCollection
@@ -109,14 +141,8 @@ const getCollectionsAndArticles = (
     collectionIds.map(async collectionId => {
       // @todo - requires correct handling of Dispatch thunks
       const articleIds = await dispatch(getCollectionAction(collectionId));
-      dispatch(externalArticleActions.fetchStart(articleIds));
-      try {
-        const articles = await getArticles(articleIds);
-        dispatch(externalArticleActions.fetchSuccess(articles));
-      } catch (e) {
-        dispatch(externalArticleActions.fetchError(e.message, articleIds));
-      }
+      await dispatch(fetchArticles(articleIds));
     })
   );
 
-export { getCollection, getCollectionsAndArticles, updateCollection };
+export { getCollection, getCollectionsAndArticles, fetchArticles, updateCollection };

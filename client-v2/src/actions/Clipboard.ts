@@ -1,5 +1,6 @@
 import { Dispatch, ThunkResult } from 'types/Store';
-import { saveClipboard, getArticles } from 'services/faciaApi';
+import { saveClipboard } from 'services/faciaApi';
+import { fetchArticles } from 'actions/Collections';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import { batchActions } from 'redux-batched-actions';
 import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
@@ -40,16 +41,7 @@ function storeClipboardContent(clipboardContent: NestedArticleFragment[]) {
     const fragmentIds = Object.values(articleFragments).map(
       fragment => fragment.id
     );
-    return getArticles(fragmentIds)
-      .catch(error => {
-        dispatch(
-          externalArticleActions.fetchError(error, 'Failed to fetch clipboard')
-        );
-        return [];
-      })
-      .then(articles => {
-        dispatch(externalArticleActions.fetchSuccess(articles));
-      });
+    return dispatch(fetchArticles(fragmentIds));
   };
 }
 

@@ -1,4 +1,3 @@
-import v4 from 'uuid/v4';
 import uniqBy from 'lodash/uniqBy';
 import keyBy from 'lodash/keyBy';
 import { ArticleFragment, ArticleFragmentMeta } from 'shared/types/Collection';
