@@ -70,7 +70,7 @@ const HoverDeleteButton = ({
     onMouseLeave={hideToolTip}
     onClick={e => {
       e.stopPropagation();
-      onDelete && onDelete();
+      return onDelete && onDelete();
     }}
   >
     <Icon src={hoverActionIcons.delete} alt="Delete" />
