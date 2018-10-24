@@ -31,13 +31,13 @@ const getAllArticleFragments = (groups: Group[]) =>
     [] as string[]
   );
 
-const addMissingGroupsForStage = (
+const addEmptyGroupsFromCollectionConfigForStage = (
   groupIds: string[],
   entities: { [id: string]: Group },
   collectionConfig: CollectionConfig
 ) => {
   const groups = groupIds.map(id => entities[id]);
-  const newGroups = collectionConfig.groups
+  const addedGroups = collectionConfig.groups
     ? collectionConfig.groups.map((name, i) => {
         const existingGroup = groupByIndex(groups, i);
 
@@ -48,8 +48,8 @@ const addMissingGroupsForStage = (
     : [createGroup('0', null, getAllArticleFragments(groups))];
 
   return {
-    newGroups: keyBy(newGroups, getUUID),
-    groupIds: newGroups
+    addedGroups: keyBy(addedGroups, getUUID),
+    groupIds: addedGroups
       .map(getUUID)
       .slice()
       .reverse()
@@ -60,30 +60,33 @@ interface ReduceResult {
   live: string[];
   draft: string[];
   previously: string[];
-  newGroups: { [key: string]: Group };
+  addedGroups: { [key: string]: Group };
 }
 
-const addMissingGroups = (
+const addEmptyGroupsFromCollectionConfig = (
   normalisedCollection: any,
   collectionConfig: CollectionConfig
 ) =>
   (['live', 'previously', 'draft'] as ['live', 'previously', 'draft']).reduce(
     (acc, key) => {
-      const { newGroups, groupIds } = addMissingGroupsForStage(
+      const {
+        addedGroups,
+        groupIds
+      } = addEmptyGroupsFromCollectionConfigForStage(
         normalisedCollection.result[key],
         normalisedCollection.entities.groups,
         collectionConfig
       );
       return {
         ...acc,
-        newGroups: {
-          ...acc.newGroups,
-          ...newGroups
+        addedGroups: {
+          ...acc.addedGroups,
+          ...addedGroups
         },
         [key]: groupIds
       };
     },
-    { live: [], draft: [], previously: [], newGroups: {} } as ReduceResult
+    { live: [], draft: [], previously: [], addedGroups: {} } as ReduceResult
   );
 
 const normaliseCollectionWithNestedArticles = (
@@ -91,7 +94,12 @@ const normaliseCollectionWithNestedArticles = (
   collectionConfig: CollectionConfig
 ) => {
   const normalisedCollection = normalize(collection);
-  const { newGroups, live, draft, previously } = addMissingGroups(
+  const {
+    addedGroups,
+    live,
+    draft,
+    previously
+  } = addEmptyGroupsFromCollectionConfig(
     normalisedCollection,
     collectionConfig
   );
@@ -104,7 +112,7 @@ const normaliseCollectionWithNestedArticles = (
     },
     groups: {
       ...(normalisedCollection.entities.groups || {}),
-      ...newGroups
+      ...addedGroups
     },
     articleFragments: normalisedCollection.entities.articleFragments || {}
   };
