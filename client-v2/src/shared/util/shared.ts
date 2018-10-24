@@ -8,10 +8,15 @@ import { CollectionConfig } from 'types/FaciaApi';
 import v4 from 'uuid/v4';
 import keyBy from 'lodash/keyBy';
 
-const createGroup = (id: string): Group => ({
+const createGroup = (
+  id: string,
+  name: string | null,
+  articleFragments: string[] = []
+): Group => ({
   id,
+  name,
   uuid: v4(),
-  articleFragments: []
+  articleFragments
 });
 
 const getUUID = <T extends { uuid: string }>({ uuid }: T) => uuid;
@@ -20,6 +25,12 @@ const getUUID = <T extends { uuid: string }>({ uuid }: T) => uuid;
 const groupByIndex = (groups: Group[], index: number): Group | undefined =>
   groups.find(g => parseInt(g.id || '0', 10) === index);
 
+const getAllArticleFragments = (groups: Group[]) =>
+  groups.reduce(
+    (acc, { articleFragments: afs }) => [...acc, ...afs],
+    [] as string[]
+  );
+
 const addMissingGroupsForStage = (
   groupIds: string[],
   entities: { [id: string]: Group },
@@ -27,14 +38,21 @@ const addMissingGroupsForStage = (
 ) => {
   const groups = groupIds.map(id => entities[id]);
   const newGroups = collectionConfig.groups
-    ? collectionConfig.groups.map(
-        (_, i) => groupByIndex(groups, i) || createGroup(`${i}`)
-      )
-    : [createGroup('0')];
+    ? collectionConfig.groups.map((name, i) => {
+        const existingGroup = groupByIndex(groups, i);
+
+        return existingGroup
+          ? { ...existingGroup, name }
+          : createGroup(`${i}`, name);
+      })
+    : [createGroup('0', '', getAllArticleFragments(groups))];
 
   return {
     newGroups: keyBy(newGroups, getUUID),
-    groupIds: newGroups.map(getUUID).slice().reverse()
+    groupIds: newGroups
+      .map(getUUID)
+      .slice()
+      .reverse()
   };
 };
 

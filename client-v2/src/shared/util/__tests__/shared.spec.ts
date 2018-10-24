@@ -144,5 +144,17 @@ describe('Shared utilities', () => {
         )
       ).toBe(true);
     });
+
+    it('should create a single group with with all article fragments when the collection config has no groups', () => {
+      const result = normaliseCollectionWithNestedArticles(
+        collection,
+        {
+          ...collectionConfig,
+          groups: undefined
+        }
+      );
+      const groupId = result.collection.live[0];
+      expect(result.groups[groupId].articleFragments).toHaveLength(3);
+    })
   });
 });
