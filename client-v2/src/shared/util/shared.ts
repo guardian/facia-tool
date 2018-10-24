@@ -27,7 +27,7 @@ const groupByIndex = (groups: Group[], index: number): Group | undefined =>
 
 const getAllArticleFragments = (groups: Group[]) =>
   groups.reduce(
-    (acc, { articleFragments: afs }) => [...acc, ...afs],
+    (acc, { articleFragments }) => [...acc, ...articleFragments],
     [] as string[]
   );
 
