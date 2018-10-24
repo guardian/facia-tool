@@ -2,6 +2,7 @@ import { Diff } from 'utility-types';
 
 interface Group {
   id: string;
+  name: string | null;
   uuid: string;
   articleFragments: string[];
 }
@@ -17,6 +18,7 @@ interface NestedArticleFragmentRootFields {
 type NestedArticleFragment = NestedArticleFragmentRootFields & {
   meta: {
     supporting?: Array<Diff<NestedArticleFragment, { supporting: unknown }>>;
+    group?: string | null;
   };
 };
 

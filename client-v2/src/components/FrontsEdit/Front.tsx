@@ -26,7 +26,7 @@ import Collection from './CollectionComponents/Collection';
 import ArticleFragment from './CollectionComponents/ArticleFragment';
 import Supporting from './CollectionComponents/Supporting';
 import ArticleFragmentForm from './ArticleFragmentForm';
-import GroupDisplayComponent from 'shared/components/GroupDisplay';
+import GroupDisplay from 'shared/components/GroupDisplay';
 import SupportingLevel from 'components/clipboard/ArticleFragmentLevel';
 import GroupLevel from 'components/clipboard/GroupLevel';
 import { getFront } from 'selectors/frontsSelectors';
@@ -134,10 +134,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                   browsingStage={this.props.browsingStage}
                 >
                   {group => (
-                    <GroupDisplayComponent
-                      key={group.uuid}
-                      groupName={group.id}
-                    >
+                    <GroupDisplay key={group.uuid} groupName={group.name}>
                       <GroupLevel
                         groupId={group.uuid}
                         onMove={this.handleMove}
@@ -182,7 +179,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                           </ArticleFragment>
                         )}
                       </GroupLevel>
-                    </GroupDisplayComponent>
+                    </GroupDisplay>
                   )}
                 </Collection>
               ))}

@@ -181,10 +181,10 @@ const stateWithSupportingArticles: any = {
 
 describe('Shared selectors', () => {
   describe('createCollectionSelector', () => {
-    it('should select a collection by id, reversing the group ids if they exist', () => {
+    it('should select a collection by id', () => {
       const selector = createCollectionSelector();
       expect(selector(state, { collectionId: 'c1' })).toEqual({
-        groups: ['group2', 'group1'],
+        groups: ['group1', 'group2'],
         live: ['g1', 'g2'],
         id: 'c1'
       });

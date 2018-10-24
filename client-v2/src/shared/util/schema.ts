@@ -43,8 +43,7 @@ const articleFragments = createType('articleFragments', {
   field: createFieldType('groups', {
     key: 'meta.group',
     valueKey: 'id',
-    uuid: v4,
-    defaultValue: '0'
+    uuid: v4
   })
 });
 const supportingArticles = createType('articleFragments', {

@@ -364,7 +364,9 @@ const liveArticle = {
   id: 'article/live/0',
   frontPublicationDate: 1,
   publishedBy: 'Computers',
-  meta: {}
+  meta: {
+    group: '1'
+  }
 };
 
 const articleWithSupporting = {
@@ -409,6 +411,13 @@ const collection = {
   displayName: 'Example Collection'
 };
 
+const collectionConfig = {
+  id: 'exampleCollection',
+  displayName: 'Example Collection',
+  type: 'any',
+  groups: ['large', 'medium', 'small']
+};
+
 const collectionWithSupportingArticles = {
   live: [
     {
@@ -442,7 +451,7 @@ const stateWithCollection: any = {
         exampleCollection: {
           id: 'exampleCollection',
           displayName: 'Example Collection',
-          live: ['abc'],
+          live: ['abc', 'def'],
           draft: [],
           previously: undefined
         }
@@ -450,10 +459,16 @@ const stateWithCollection: any = {
     },
     groups: {
       abc: {
-        id: '0',
+        id: '1',
         uuid: 'abc',
         articleFragments: [
-          '95e2bfc0-8999-4e6e-a359-19960967c1e0',
+          '95e2bfc0-8999-4e6e-a359-19960967c1e0'
+        ]
+      },
+      def: {
+        id: null,
+        uuid: 'def',
+        articleFragments: [
           '4bc11359-bb3e-45e7-a0a9-86c0ee52653d',
           '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d'
         ]
@@ -553,5 +568,6 @@ export {
   stateWithCollection,
   stateWithCollectionAndSupporting,
   liveArticle,
-  articleWithSupporting
+  articleWithSupporting,
+  collectionConfig
 };
