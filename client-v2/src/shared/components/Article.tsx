@@ -157,6 +157,10 @@ const KickerHeading = styled('span')`
   font-family: GHGuardianHeadline-Bold;
 `;
 
+const NotLiveContainer = KickerHeading && styled('span')`
+  color: #ff7f0f;
+`;
+
 const ArticleHeading = styled('span')`
   font-size: 16px;
   font-family: GhGuardianHeadline-Medium;
@@ -237,9 +241,13 @@ const ArticleComponent = ({
         </ArticleMetaContainer>
         <ArticleContentContainer>
           <ArticleHeadingContainer>
-            <KickerHeading style={{ color: toneColorMap[article.tone] }}>
+            { article.isLive && <KickerHeading style={{ color: toneColorMap[article.tone] }}>
               {article.kicker}
-            </KickerHeading>
+            </KickerHeading> }
+            { !article.isLive && <NotLiveContainer>}}>
+              {!article.isLive &&
+                (article.firstPublicationDate ? 'Taken Down' : 'Draft')}
+            </NotLiveContainer> }
             &nbsp;
             {size === 'default' ? (
               <ArticleHeading>{article.headline}</ArticleHeading>
@@ -249,10 +257,6 @@ const ArticleComponent = ({
           </ArticleHeadingContainer>
           {size === 'default' &&
             article.trailText && <Trail>{article.trailText}</Trail>}
-          <div>
-            {!article.isLive &&
-              (article.firstPublicationDate ? 'Taken Down' : 'Draft')}
-          </div>
         </ArticleContentContainer>
         {size === 'default' && (
           <Thumbnail
