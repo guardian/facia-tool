@@ -27,19 +27,10 @@ import ArticleFragment from './CollectionComponents/ArticleFragment';
 import Supporting from './CollectionComponents/Supporting';
 import ArticleFragmentForm from './ArticleFragmentForm';
 import GroupDisplay from 'shared/components/GroupDisplay';
-import SupportingLevel from 'components/clipboard/ArticleFragmentLevel';
+import ArticleFragmentLevel from 'components/clipboard/ArticleFragmentLevel';
 import GroupLevel from 'components/clipboard/GroupLevel';
 import { getFront } from 'selectors/frontsSelectors';
 import { FrontConfig } from 'types/FaciaApi';
-
-const dropIndicatorStyle = {
-  marginLeft: '83px'
-};
-
-const dropZoneStyle = {
-  marginTop: '-15px',
-  padding: '3px'
-};
 
 const FrontContainer = styled('div')`
   display: flex;
@@ -154,7 +145,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                               selectedArticleFragmentId === articleFragment.uuid
                             }
                           >
-                            <SupportingLevel
+                            <ArticleFragmentLevel
                               articleFragmentId={articleFragment.uuid}
                               onMove={this.handleMove}
                               onDrop={this.handleInsert}
@@ -175,7 +166,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                   }
                                 />
                               )}
-                            </SupportingLevel>
+                            </ArticleFragmentLevel>
                           </ArticleFragment>
                         )}
                       </GroupLevel>

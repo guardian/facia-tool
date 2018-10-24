@@ -40,6 +40,10 @@ const ArticleFragmentLevel = ({
       <DropZone
         {...props}
         override={isTarget}
+        style={{
+          marginTop: '-15px',
+          padding: '3px'
+        }}
         indicatorStyle={{
           marginLeft: '20px'
         }}
