@@ -8,7 +8,6 @@ import { ArticleFragmentDenormalised } from 'shared/types/Collection';
 interface ContainerProps {
   isSelected?: boolean;
   uuid: string;
-  supporting?: ArticleFragmentDenormalised[];
   children: React.ReactNode;
   getNodeProps: () => object;
   onSelect: (uuid: string) => void;
@@ -19,10 +18,6 @@ interface ContainerProps {
 type ArticleFragmentProps = ContainerProps & {
   onDelete: () => void;
 };
-
-// We hoist the drop zone into the rendered element here,
-// to prevent it from introducing gaps between supporting
-// articles.
 
 const ArticleFragment = ({
   uuid,

@@ -3,13 +3,12 @@ import { getIdFromURL } from 'util/CAPIUtils';
 import { ThunkResult } from 'types/Store';
 import { Dispatch } from 'types/Store';
 import { Move, PosSpec } from 'lib/dnd';
-import { ArticleFragmentDenormalised } from 'shared/types/Collection';
+import { ArticleFragment } from 'shared/types/Collection';
 import keyBy from 'lodash/keyBy';
 import {
   articleFragmentsReceived,
   addArticleFragment
 } from 'shared/actions/ArticleFragments';
-import { cloneFragment } from 'shared/util/articleFragment';
 
 const dropToArticle = (e: React.DragEvent): string | null => {
   const map = {
@@ -39,7 +38,7 @@ type MoveActionCreator = (
 type InsertActionCreator = (
   toType: string,
   toId: string,
-  id: string,
+  fragment: ArticleFragment,
   toIndex: number
 ) => ThunkResult<void>;
 
@@ -47,7 +46,7 @@ const handleMove = (
   moveActionCreator: MoveActionCreator,
   insertActionCreator: InsertActionCreator,
   dispatch: Dispatch,
-  move: Move<ArticleFragmentDenormalised>
+  move: Move<ArticleFragment>
 ) => {
   if (move.from) {
     dispatch(
@@ -61,18 +60,11 @@ const handleMove = (
       )
     );
   } else {
-    const { parent, supporting } = cloneFragment(move.data);
-    // TODO fix double dispatch
-    dispatch(
-      articleFragmentsReceived(
-        keyBy([parent, ...supporting], ({ uuid }) => uuid)
-      )
-    );
     dispatch(
       insertActionCreator(
         move.to.type, // the name of the level above
         move.to.id,
-        parent.uuid,
+        move.data,
         move.to.index
       )
     );
@@ -90,13 +82,13 @@ const handleInsert = (
     return;
   }
   dispatch(addArticleFragment(id)).then(
-    uuid =>
-      uuid &&
+    fragment =>
+      fragment &&
       dispatch(
         insertActionCreator(
           to.type, // the name of the level above
           to.id,
-          uuid,
+          fragment,
           to.index
         )
       )

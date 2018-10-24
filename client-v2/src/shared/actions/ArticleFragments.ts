@@ -1,12 +1,11 @@
 import v4 from 'uuid/v4';
-import uniq from 'lodash/uniq';
 import uniqBy from 'lodash/uniqBy';
 import keyBy from 'lodash/keyBy';
 import { ArticleFragment, ArticleFragmentMeta } from 'shared/types/Collection';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import { getArticles } from 'services/faciaApi';
 import { State } from 'types/State';
-import { Dispatch, ThunkResult } from 'types/Store';
+import { Dispatch, ThunkResult, GetState } from 'types/Store';
 import {
   ArticleFragmentsReceived,
   RemoveSupportingArticleFragment,
@@ -17,6 +16,7 @@ import {
   ReplaceGroupArticleFragments,
   ReplaceArticleFragmentSupporting
 } from 'shared/types/Action';
+import { createFragment } from 'shared/util/articleFragment'
 import { batchActions } from 'redux-batched-actions';
 
 function updateArticleFragmentMeta(
@@ -113,15 +113,6 @@ const replaceGroupArticleFragments = (
   }
 });
 
-const createFragment = (id: string, supporting: string[] = []) => ({
-  uuid: v4(),
-  id,
-  frontPublicationDate: Date.now(),
-  meta: {
-    supporting
-  }
-});
-
 function addArticleFragment(id: string) {
   return (dispatch: Dispatch) =>
     getArticles([id])
@@ -133,16 +124,13 @@ function addArticleFragment(id: string) {
             [fragment.uuid]: fragment
           })
         );
-        return fragment.uuid;
+        return fragment;
       })
       .catch(error => {
         dispatch(externalArticleActions.fetchError(error, [id]));
         return null;
       });
 }
-const f = <T1 extends {}>(arg1: T1) => <T2 extends {}>(arg2: T2) => {
-  return { arg1, arg2 };
-};
 
 const insertAndDedupeSiblings = <T extends { id: string; uuid: string }>(
   id: string,
@@ -151,7 +139,7 @@ const insertAndDedupeSiblings = <T extends { id: string; uuid: string }>(
   insertActions: any[],
   // @todo - replace any type
   replaceActionCreator: (strArray: string[]) => any
-): ThunkResult<void> => (dispatch: Dispatch, getState: () => State) => {
+): ThunkResult<void> => (dispatch: Dispatch, getState: GetState) => {
   dispatch(batchActions(insertActions)); // add it to the state so that we can select it
   const siblings = siblingsSelector(getState());
   const af = keyBy(siblings, ({ uuid }) => uuid)[id];

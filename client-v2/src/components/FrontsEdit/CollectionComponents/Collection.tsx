@@ -8,26 +8,32 @@ import { AlsoOnDetail } from 'types/Collection';
 import { publishCollection } from 'actions/Fronts';
 import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
 import { State } from 'types/State';
-import { Stages } from 'shared/types/Collection';
+import { Stages, Group } from 'shared/types/Collection';
+import {
+  createCollectionStageGroupsSelector,
+  selectSharedState
+} from 'shared/selectors/shared';
 
 interface CollectionPropsBeforeState {
   id: string;
-  children: React.ReactNode;
+  children: (group: Group) => React.ReactNode;
   alsoOn: { [id: string]: AlsoOnDetail };
   frontId: string;
+  browsingStage: Stages;
 }
 
 type CollectionProps = CollectionPropsBeforeState & {
   publishCollection: (collectionId: string, frontId: string) => Promise<void>;
   hasUnpublishedChanges: boolean;
   canPublish: boolean;
-  browsingStage: Stages;
+  groups: Group[];
 };
 
 const Collection = ({
   id,
   children,
   alsoOn,
+  groups,
   browsingStage,
   hasUnpublishedChanges,
   canPublish = true,
@@ -51,15 +57,22 @@ const Collection = ({
       ) : null
     }
   >
-    {children}
+    {groups.map(group => children(group))}
   </CollectionDisplay>
 );
 
-const mapStateToProps = (state: State, props: CollectionPropsBeforeState) => ({
-  hasUnpublishedChanges: hasUnpublishedChangesSelector(state, {
-    collectionId: props.id
-  })
-});
+const createMapStateToProps = () => {
+  const collectionStageGroupsSelector = createCollectionStageGroupsSelector();
+  return (state: State, { browsingStage, id }: CollectionPropsBeforeState) => ({
+    hasUnpublishedChanges: hasUnpublishedChangesSelector(state, {
+      collectionId: id
+    }),
+    groups: collectionStageGroupsSelector(selectSharedState(state), {
+      stage: browsingStage,
+      collectionId: id
+    })
+  });
+};
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
@@ -69,6 +82,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 };
 
 export default connect(
-  mapStateToProps,
+  createMapStateToProps,
   mapDispatchToProps
 )(Collection);

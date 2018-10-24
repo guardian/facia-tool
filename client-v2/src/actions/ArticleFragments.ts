@@ -6,11 +6,13 @@ import {
   removeGroupArticleFragment,
   replaceGroupArticleFragments,
   insertAndDedupeSiblings,
-  updateArticleFragmentMeta
+  updateArticleFragmentMeta,
+  articleFragmentsReceived
 } from 'shared/actions/ArticleFragments';
 import {
-  supportingArticlesSelector,
-  groupArticlesSelector
+  createSupportingArticlesSelector,
+  createGroupArticlesSelector,
+  articleFragmentsFromRootStateSelector
 } from 'shared/selectors/shared';
 import { clipboardArticlesSelector } from 'selectors/clipboardSelectors';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
@@ -22,6 +24,9 @@ import {
   Action
 } from 'types/Action';
 import { ArticleFragment } from 'shared/types/Collection';
+import { Dispatch, GetState } from 'types/Store';
+import { cloneFragment } from 'shared/util/articleFragment';
+import keyBy from 'lodash/keyBy';
 
 function addClipboardArticleFragment(
   articleFragmentId: string,
@@ -95,6 +100,9 @@ const removeClipboardSupportingArticleFragmentWithPersist = addPersistMetaToActi
   }
 );
 
+const supportingArticlesSelector = createSupportingArticlesSelector();
+const groupArticlesSelector = createGroupArticlesSelector();
+
 const selectorMap: {
   [key: string]: (state: State, id: string) => ArticleFragment[];
 } = {
@@ -104,7 +112,7 @@ const selectorMap: {
     }),
   group: (state: State, id: string) =>
     groupArticlesSelector(state, {
-      groupName: id
+      groupId: id
     }),
   clipboard: clipboardArticlesSelector
 };
@@ -136,12 +144,19 @@ const replaceActionMap: ActionMap<ReplaceAction> = {
     updateClipboardContent(children)
 };
 
-const createInsertArticleFragment = (persistTo: 'collection' | 'clipboard') => (
+const createInsertArticleFragment = (
+  persistTo: 'collection' | 'clipboard',
+  copy: boolean = false
+) => (
   parentType: string,
   parentId: string,
-  id: string,
+  fragment: ArticleFragment,
   index: number
-) => {
+) => (dispatch: Dispatch, getState: GetState) => {
+  const { parent, supporting } = copy
+    ? cloneFragment(fragment, articleFragmentsFromRootStateSelector(getState()))
+    : { parent: fragment, supporting: [] };
+
   const insert = insertActionMap[parentType];
   const replaceAction = replaceActionMap[parentType];
   const selector = selectorMap[parentType];
@@ -152,19 +167,32 @@ const createInsertArticleFragment = (persistTo: 'collection' | 'clipboard') => (
 
   const replace = addPersistMetaToAction(replaceAction, {
     persistTo,
-    id
+    id: parent.uuid
   });
 
   return insertAndDedupeSiblings(
-    id,
+    parent.uuid,
     state => selector(state, parentId),
-    [insert(parentId, id, index)],
+    [
+      articleFragmentsReceived(
+        keyBy([parent, ...supporting], ({ uuid }) => uuid)
+      ),
+      insert(parentId, parent.uuid, index)
+    ],
     children => replace(parentId, children)
-  );
+  )(dispatch, getState, undefined);
+  // TS Issue ----------^
+  // https://github.com/Microsoft/TypeScript/issues/12400
 };
 
 const insertArticleFragment = createInsertArticleFragment('collection');
+const copyArticleFragment = createInsertArticleFragment('collection', true);
+
 const insertClipboardArticleFragment = createInsertArticleFragment('clipboard');
+const copyClipboardArticleFragment = createInsertArticleFragment(
+  'clipboard',
+  true
+);
 
 /* separate clipboard */
 
@@ -204,6 +232,8 @@ export {
   insertClipboardArticleFragment,
   moveArticleFragment,
   moveClipboardArticleFragment,
+  copyArticleFragment,
+  copyClipboardArticleFragment,
   updateArticleFragmentMetaWithPersist as updateArticleFragmentMeta,
   updateClipboardArticleFragmentMetaWithPersist as updateClipboardArticleFragmentMeta,
   removeSupportingArticleFragmentWithPersist as removeSupportingArticleFragment,

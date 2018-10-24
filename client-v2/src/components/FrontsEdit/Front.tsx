@@ -1,19 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { Root, Level, Move, PosSpec } from 'lib/dnd';
+import { Root, Move, PosSpec } from 'lib/dnd';
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import {
-  selectSharedState,
-  createCollectionsAsTreeSelector,
-  ArticleFragmentTree,
-  CollectionTree
-} from 'shared/selectors/shared';
-import {
   insertArticleFragment,
   moveArticleFragment,
-  updateArticleFragmentMeta
+  updateArticleFragmentMeta,
+  copyArticleFragment
 } from 'actions/ArticleFragments';
 import { handleMove, handleInsert } from 'util/collectionUtils';
 import { AlsoOnDetail } from 'types/Collection';
@@ -25,15 +20,17 @@ import {
 import {
   ArticleFragmentMeta,
   Stages,
-  ArticleFragmentDenormalised
+  ArticleFragment as TArticleFragment
 } from 'shared/types/Collection';
-import DropZone from 'components/DropZone';
 import Collection from './CollectionComponents/Collection';
 import ArticleFragment from './CollectionComponents/ArticleFragment';
 import Supporting from './CollectionComponents/Supporting';
 import ArticleFragmentForm from './ArticleFragmentForm';
 import GroupDisplayComponent from 'shared/components/GroupDisplay';
-import ArticleDrag from './CollectionComponents/ArticleDrag';
+import SupportingLevel from 'components/clipboard/ArticleFragmentLevel';
+import GroupLevel from 'components/clipboard/GroupLevel';
+import { getFront } from 'selectors/frontsSelectors';
+import { FrontConfig } from 'types/FaciaApi';
 
 const dropIndicatorStyle = {
   marginLeft: '83px'
@@ -64,12 +61,12 @@ interface FrontPropsBeforeState {
 }
 
 type FrontProps = FrontPropsBeforeState & {
-  tree: any;
   updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) => void;
   selectedArticleFragmentId: string | void;
   dispatch: Dispatch;
   selectArticleFragment: (id: string) => void;
   clearArticleFragmentSelection: () => void;
+  front: FrontConfig;
 };
 
 interface FrontState {
@@ -96,10 +93,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     }
   };
 
-  public handleMove = (move: Move<ArticleFragmentDenormalised>) => {
+  public handleMove = (move: Move<TArticleFragment>) => {
     handleMove(
       moveArticleFragment,
-      insertArticleFragment,
+      copyArticleFragment,
       this.props.dispatch,
       move
     );
@@ -110,7 +107,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   };
 
   public render() {
-    const { selectedArticleFragmentId } = this.props;
+    const { selectedArticleFragmentId, front } = this.props;
     return (
       <React.Fragment>
         <div
@@ -127,37 +124,28 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
         <FrontContainer>
           <FrontContentContainer>
             <Root id={this.props.id}>
-              {this.props.tree.collections.map((collection: CollectionTree) => (
+              {front.collections.map(collectionId => (
                 <Collection
-                  key={collection.id}
-                  id={collection.id}
+                  key={collectionId}
+                  id={collectionId}
                   frontId={this.props.id}
                   alsoOn={this.props.alsoOn}
                   canPublish={this.props.browsingStage !== 'live'}
                   browsingStage={this.props.browsingStage}
                 >
-                  {collection.groups.map(group => (
+                  {group => (
                     <GroupDisplayComponent
                       key={group.uuid}
                       groupName={group.id}
                     >
-                      <Level
-                        arr={group.articleFragments}
-                        parentType="group"
-                        parentId={group.uuid}
-                        type="articleFragment"
-                        getId={({ uuid }) => uuid}
+                      <GroupLevel
+                        groupId={group.uuid}
                         onMove={this.handleMove}
                         onDrop={this.handleInsert}
-                        renderDrag={af => <ArticleDrag id={af.uuid} />}
-                        renderDrop={(props, isTarget) => (
-                          <DropZone {...props} override={isTarget} />
-                        )}
                       >
                         {(articleFragment, afProps) => (
                           <ArticleFragment
                             uuid={articleFragment.uuid}
-                            supporting={articleFragment.meta.supporting}
                             parentId={group.uuid}
                             getNodeProps={() => afProps}
                             onSelect={this.props.selectArticleFragment}
@@ -169,23 +157,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                               selectedArticleFragmentId === articleFragment.uuid
                             }
                           >
-                            <Level
-                              arr={articleFragment.meta.supporting || []}
-                              parentType="articleFragment"
-                              parentId={articleFragment.uuid}
-                              type="articleFragment"
-                              getId={({ uuid }) => uuid}
+                            <SupportingLevel
+                              articleFragmentId={articleFragment.uuid}
                               onMove={this.handleMove}
                               onDrop={this.handleInsert}
-                              renderDrag={af => <ArticleDrag id={af.uuid} />}
-                              renderDrop={(props, isTarget) => (
-                                <DropZone
-                                  {...props}
-                                  override={isTarget}
-                                  style={dropZoneStyle}
-                                  indicatorStyle={dropIndicatorStyle}
-                                />
-                              )}
                             >
                               {(supporting, sProps) => (
                                 <Supporting
@@ -203,12 +178,12 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                   }
                                 />
                               )}
-                            </Level>
+                            </SupportingLevel>
                           </ArticleFragment>
                         )}
-                      </Level>
+                      </GroupLevel>
                     </GroupDisplayComponent>
-                  ))}
+                  )}
                 </Collection>
               ))}
             </Root>
@@ -235,18 +210,11 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   }
 }
 
-const createMapStateToProps = () => {
-  const collectionsAsTreeSelector = createCollectionsAsTreeSelector();
-  return (state: State, props: FrontPropsBeforeState) => ({
-    // TODO: fix object literal usage for memoization!
-    tree: collectionsAsTreeSelector(selectSharedState(state), {
-      stage: props.browsingStage,
-      collectionIds: props.collectionIds
-    }),
-    unpublishedChanges: state.unpublishedChanges,
-    selectedArticleFragmentId: selectEditorArticleFragment(state, props.id)
-  });
-};
+const mapStateToProps = (state: State, props: FrontPropsBeforeState) => ({
+  unpublishedChanges: state.unpublishedChanges,
+  selectedArticleFragmentId: selectEditorArticleFragment(state, props.id),
+  front: getFront(state, props.id)
+});
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   dispatch,
@@ -258,7 +226,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch(editorClearArticleFragmentSelection(frontId))
 });
 
-type StateProps = ReturnType<ReturnType<typeof createMapStateToProps>>;
+type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 
 const mergeProps = (
@@ -276,7 +244,7 @@ const mergeProps = (
 });
 
 export default connect(
-  createMapStateToProps,
+  mapStateToProps,
   mapDispatchToProps,
   mergeProps
 )(FrontComponent);
