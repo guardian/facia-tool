@@ -3,7 +3,7 @@ import HorizontalRule from 'shared/components/layout/HorizontalRule';
 import styled from 'styled-components';
 
 interface GroupDisplayComponentProps {
-  groupName: string;
+  groupName: string | null;
   children: React.ReactNode;
 }
 

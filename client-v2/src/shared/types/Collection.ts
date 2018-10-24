@@ -2,6 +2,7 @@ import { Diff } from 'utility-types';
 
 interface Group {
   id: string;
+  name: string | null;
   uuid: string;
   articleFragments: string[];
 }
