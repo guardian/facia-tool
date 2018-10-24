@@ -1,9 +1,18 @@
+jest.mock('uuid/v4', () => jest.fn(() => 'uuid'));
+
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { enableBatching } from 'redux-batched-actions';
-import { insertClipboardArticleFragment } from '../ArticleFragments';
+import {
+  insertClipboardArticleFragment,
+  copyClipboardArticleFragment,
+  insertArticleFragment,
+  copyArticleFragment
+} from '../ArticleFragments';
 import clipboardReducer from '../../reducers/clipboardReducer';
+import groupsReducer from '../../shared/reducers/groupsReducer';
 import articleFragmentsReducer from '../../shared/reducers/articleFragmentsReducer';
+import { InsertActionCreator } from 'util/collectionUtils';
 
 const root = (state: any, action: any) => ({
   clipboard: clipboardReducer(state.clipboard, action),
@@ -11,59 +20,161 @@ const root = (state: any, action: any) => ({
     articleFragments: articleFragmentsReducer(
       state.shared.articleFragments,
       action
-    )
+    ),
+    groups: groupsReducer(state.shared.groups, action)
   }
 });
 
-const run = (exists: any, added: any) =>
+type ArticleFragmentSpec = [string, string];
+
+interface ArticleFragmentMap {
+  [key: string]: {
+    uuid: string;
+    id: string;
+  };
+}
+
+interface InitialState {
+  shared: {
+    articleFragments: ArticleFragmentMap;
+  };
+}
+
+type StateBuilder = (
+  state: InitialState,
+  existing: ArticleFragmentSpec[]
+) => object;
+
+const buildStore = (
+  appendToInitialState: StateBuilder,
+  existing: ArticleFragmentSpec[],
+  added: ArticleFragmentSpec
+) =>
   createStore(
     enableBatching(root),
-    {
-      clipboard: exists.map(([uuid]: [string]) => uuid),
-      shared: {
-        articleFragments: [...exists, added].reduce(
-          (acc, [uuid, id]) => ({ ...acc, [uuid]: { uuid, id } }),
-          {}
-        )
-      }
-    },
+    appendToInitialState(
+      {
+        shared: {
+          articleFragments: [...existing, added].reduce(
+            (acc, [uuid, id]) => ({ ...acc, [uuid]: { uuid, id } }),
+            {} as ArticleFragmentMap
+          )
+        }
+      },
+      existing
+    ),
     applyMiddleware(thunk)
   );
 
-const testAdd = (exists: Array<[string, string]>) => (
-  [uuid, id]: [string, string],
+const testAddActions = (existing: ArticleFragmentSpec[]) => (
+  appendToInitialState: StateBuilder
+) => (actionCreator: InsertActionCreator) => (
+  [uuid, id]: ArticleFragmentSpec,
   index: number,
-  afId: string | void = undefined
+  parentType: string,
+  parentId: string
 ) => {
-  const { dispatch, getState } = run(exists, [uuid, id]);
-  expect(
-    dispatch(insertClipboardArticleFragment(
-      afId ? 'articleFragment' : 'clipboard',
-      afId || '',
-      { uuid, id, meta: {}, frontPublicationDate: Date.now() },
-      index
-    ) as any)
-  );
+  const { dispatch, getState } = buildStore(appendToInitialState, existing, [
+    uuid,
+    id
+  ]);
+  dispatch(actionCreator(
+    parentType,
+    parentId,
+    { uuid, id, meta: {}, frontPublicationDate: Date.now() },
+    index
+  ) as any);
   return getState();
 };
 
-const existing: Array<[string, string]> = [['a', '1'], ['b', '2'], ['c', '3']];
-const add = testAdd(existing);
+const createAdder = testAddActions([['a', '1'], ['b', '2'], ['c', '3']]);
+const clipboardAdder = createAdder((state, existing) => ({
+  ...state,
+  clipboard: existing.map(([uuid]) => uuid)
+}));
+const clipboardInserter = clipboardAdder(insertClipboardArticleFragment);
+const clipboardCopier = clipboardAdder(copyClipboardArticleFragment);
+
+const groupAdder = createAdder((state, existing) => ({
+  ...state,
+  shared: {
+    ...state.shared,
+    groups: {
+      a: {
+        articleFragments: existing.map(([uuid]) => uuid)
+      }
+    }
+  }
+}));
+const groupInserter = groupAdder(insertArticleFragment);
+const groupCopier = groupAdder(copyArticleFragment);
+
+const testAddingClipboardAndGroupInsert = (
+  articleFragmentSpec: ArticleFragmentSpec,
+  index: number,
+  parentId?: string
+) => (equalInsert: string[], equalCopy: string[]) => {
+  expect(
+    clipboardInserter(
+      articleFragmentSpec,
+      index,
+      parentId ? 'articleFragment' : 'clipboard',
+      parentId || 'clipboard'
+    ).clipboard
+  ).toEqual(equalInsert);
+  expect(
+    groupInserter(
+      articleFragmentSpec,
+      index,
+      parentId ? 'articleFragment' : 'group',
+      parentId || 'a'
+    ).shared.groups.a.articleFragments
+  ).toEqual(equalInsert);
+  expect(
+    clipboardCopier(
+      articleFragmentSpec,
+      index,
+      parentId ? 'articleFragment' : 'clipboard',
+      parentId || 'clipboard'
+    ).clipboard
+  ).toEqual(equalCopy);
+  expect(
+    groupCopier(
+      articleFragmentSpec,
+      index,
+      parentId ? 'articleFragment' : 'group',
+      parentId || 'a'
+    ).shared.groups.a.articleFragments
+  ).toEqual(equalCopy);
+};
 
 describe('ArticleFragments actions', () => {
   it('adds article fragments that exist in the state', () => {
-    expect(add(['d', '4'], 2).clipboard).toEqual(['a', 'b', 'd', 'c']);
+    testAddingClipboardAndGroupInsert(['d', '4'], 2)(
+      ['a', 'b', 'd', 'c'],
+      // mocking uuid/v4 to always return `uuid`
+      ['a', 'b', 'uuid', 'c']
+    );
   });
 
-  it('moves existing articles when duplicates are added', () => {
-    expect(add(['d', '2'], 0).clipboard).toEqual(['d', 'a', 'c']);
+  it('moves / copies existing articles when duplicates are added', () => {
+    testAddingClipboardAndGroupInsert(['d', '2'], 0)(
+      ['d', 'a', 'c'],
+      ['uuid', 'a', 'c']
+    );
   });
 
   it('does not dedupe when adding to supporting', () => {
-    expect(add(['d', '2'], 0, 'a').clipboard).toEqual(['a', 'b', 'c']);
+    testAddingClipboardAndGroupInsert(['d', '2'], 0, 'a')(
+      ['a', 'b', 'c'],
+      ['a', 'b', 'c']
+    );
   });
 
   it('adding at an index that is too high adds to the end', () => {
-    expect(add(['d', '4'], 9).clipboard).toEqual(['a', 'b', 'c', 'd']);
+    testAddingClipboardAndGroupInsert(['d', '4'], 9)(
+      ['a', 'b', 'c', 'd'],
+      ['a', 'b', 'c', 'uuid']
+    );
   });
 });
