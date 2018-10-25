@@ -16,6 +16,7 @@ import { ArticleComponentProps } from './Article';
 import Fadeable from './Fadeable';
 import { getToneColor } from 'shared/util/toneColorMap';
 import { getArticleLabel } from 'util/clipboardUtils';
+import { notLiveLabels } from 'constants/fronts';
 
 interface ContainerProps {
   id: string; // eslint-disable-line react/no-unused-prop-types

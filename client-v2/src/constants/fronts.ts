@@ -10,4 +10,9 @@ export const frontStages: { [key: string]: Stages } = {
   previously: 'previously'
 };
 
+export const notLiveLabels: { [key: string]: string } = {
+  draft: 'Draft',
+  takenDown: 'Taken Down'
+};
+
 export const detectPressFailureMs = 10000;

@@ -6,6 +6,7 @@ import { clipboardSelector } from 'selectors/frontsSelectors';
 import { State } from 'types/State';
 import { normalize, denormalize } from './clipboardSchema';
 import { DerivedArticle } from 'shared/types/Article';
+import { notLiveLabels } from 'constants/fronts';
 
 function normaliseClipboard(clipboard: {
   articles: NestedArticleFragment[]
@@ -32,15 +33,15 @@ function denormaliseClipboard(
 }
 
 const getArticleLabel = (article: DerivedArticle) => {
-if (article.isLive) {
-  return article.kicker ? article.kicker : '';
-}
+  if (article.isLive) {
+    return article.kicker ? article.kicker : '';
+  }
 
-if (article.firstPublicationDate) {
-  return 'Taken Down';
-}
+  if (article.firstPublicationDate) {
+    return notLiveLabels.takenDown;
+  }
 
-return 'Draft';
+  return notLiveLabels.draft;
 }
 
 

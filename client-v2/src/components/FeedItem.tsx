@@ -6,6 +6,7 @@ import startCase from 'lodash/startCase';
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 import { getToneColor, toneColorMap } from 'shared/util/toneColorMap';
 import { getPaths } from '../util/paths';
+import { notLiveLabels } from 'constants/fronts';
 
 const LinkContainer = styled('div')`
   background-color: #f6f6f6;
@@ -109,7 +110,7 @@ const FeedItem = ({
         }}
       >
         {isLive && startCase(tone)}
-        {!isLive && (firstPublicationDate ? 'Taken Down': 'Draft')}
+        {!isLive && (firstPublicationDate ? notLiveLabels.takendDown: notLiveLabels.draft)}
       </Tone>
       {publicationDate && (
         <FirstPublished>

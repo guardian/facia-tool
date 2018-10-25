@@ -16,6 +16,7 @@ import {
 } from '../selectors/shared';
 import { State } from '../types/State';
 import { DerivedArticle } from '../types/Article';
+import { notLiveLabels } from 'constants/fronts';
 
 
 interface ArticleComponentProps {
@@ -238,7 +239,7 @@ const ArticleComponent = ({
             </FirstPublished>
           )}
           {!article.isLive && <NotLiveContainer>
-              {(article.firstPublicationDate ? 'Taken Down' : 'Draft')}
+              {(article.firstPublicationDate ? notLiveLabels.takenDown: notLiveLabels.draft)}
           </NotLiveContainer>}
           <ShortVerticalPinline />
         </ArticleMetaContainer>
