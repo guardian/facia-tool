@@ -76,6 +76,10 @@ const Tone = styled('div')`
   font-family: TS3TextSans-Bold;
 `;
 
+const NotLiveContainer = styled(Tone)`
+  color: #ff7f0f;
+`;
+
 const ArticleContainer = styled('div')`
   background-color: #fff;
 `;
@@ -157,10 +161,6 @@ const KickerHeading = styled('span')`
   font-family: GHGuardianHeadline-Bold;
 `;
 
-const NotLiveContainer = KickerHeading && styled('span')`
-  color: #ff7f0f;
-`;
-
 const ArticleHeading = styled('span')`
   font-size: 16px;
   font-family: GhGuardianHeadline-Medium;
@@ -231,23 +231,22 @@ const ArticleComponent = ({
         }}
       >
         <ArticleMetaContainer>
-          {size === 'default' && <Tone>{startCase(article.tone)}</Tone>}
-          {article.firstPublicationDate && (
+          {size === 'default' && article.isLive && <Tone>{startCase(article.tone)}</Tone>}
+          {(article.isLive || size === 'default') && article.firstPublicationDate && (
             <FirstPublished>
               {distanceInWords(new Date(article.firstPublicationDate))}
             </FirstPublished>
           )}
+          {!article.isLive && <NotLiveContainer>
+              {(article.firstPublicationDate ? 'Taken Down' : 'Draft')}
+          </NotLiveContainer>}
           <ShortVerticalPinline />
         </ArticleMetaContainer>
         <ArticleContentContainer>
           <ArticleHeadingContainer>
-            { article.isLive && <KickerHeading style={{ color: toneColorMap[article.tone] }}>
+            <KickerHeading style={{ color: toneColorMap[article.tone] }}>
               {article.kicker}
-            </KickerHeading> }
-            { !article.isLive && <NotLiveContainer>}}>
-              {!article.isLive &&
-                (article.firstPublicationDate ? 'Taken Down' : 'Draft')}
-            </NotLiveContainer> }
+            </KickerHeading>
             &nbsp;
             {size === 'default' ? (
               <ArticleHeading>{article.headline}</ArticleHeading>
