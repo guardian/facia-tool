@@ -159,6 +159,8 @@ class Feed extends React.Component<FeedProps, FeedState> {
                                   internalPageCode={
                                     fields && getId(fields.internalPageCode)
                                   }
+                                  firstPublicationDate={fields.firstPublicationDate}
+                                  isLive={!fields.isLive || fields.isLive === 'true'}
                                 />
                               )
                             )}

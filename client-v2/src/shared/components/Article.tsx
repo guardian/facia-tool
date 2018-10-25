@@ -6,7 +6,7 @@ import noop from 'lodash/noop';
 import startCase from 'lodash/startCase';
 
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
-import toneColorMap from 'shared/util/toneColorMap';
+import { toneColorMap, getToneColor } from 'shared/util/toneColorMap';
 import ButtonHoverAction from 'shared/components/input/ButtonHoverAction';
 import { getPaths } from '../../util/paths';
 
@@ -227,7 +227,7 @@ const ArticleComponent = ({
         key={article.headline}
         style={{
           borderTopColor:
-            size === 'default' ? toneColorMap[article.tone] : '#c9c9c9'
+            size === 'default' ? getToneColor(article.tone, article.isLive) : '#c9c9c9'
         }}
       >
         <ArticleMetaContainer>
