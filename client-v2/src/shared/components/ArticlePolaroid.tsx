@@ -14,6 +14,8 @@ import { removeArticleFragmentFromClipboard } from 'actions/ArticleFragments';
 import Button from './input/ButtonDefault';
 import { ArticleComponentProps } from './Article';
 import Fadeable from './Fadeable';
+import { getToneColor } from 'shared/util/toneColorMap';
+import { getArticleLabel } from 'util/clipboardUtils';
 
 interface ContainerProps {
   id: string; // eslint-disable-line react/no-unused-prop-types
@@ -50,6 +52,13 @@ const BodyContainer = styled('div')`
 const Thumbnail = styled('img')`
   width: 100%;
 `;
+
+const TonedKicker = styled('span')<{ tone: string, isLive: boolean }>`
+  color: ${({ tone, isLive }) => getToneColor(tone, isLive) || 'inherit'};
+  font-size: 13px;
+  font-weight: bold;
+`;
+
 
 const ArticleComponent = ({
   article,
@@ -91,7 +100,10 @@ const ArticleComponent = ({
           Delete
         </CornerButton>
         {article.thumbnail && <Thumbnail src={article.thumbnail} alt="" />}
-        {truncate(article.headline, { length: 45 })}
+        <TonedKicker tone={article.tone} isLive={article.isLive}>{ getArticleLabel(article) }</TonedKicker>
+        {` ${truncate(article.headline, {
+          length: 45 - getArticleLabel(article).length
+        })}`}
       </Fadeable>
       {children}
     </BodyContainer>

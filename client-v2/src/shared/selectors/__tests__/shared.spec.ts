@@ -85,6 +85,18 @@ const state: any = {
         frontsMeta: {
           tone: 'external-tone'
         }
+      },
+      ea3: {
+        id: 'ea3',
+        pillarName: 'external-pillar',
+        fields: {
+          headline: 'external-headline',
+          trailText: 'external-trailText',
+          byline: 'external-byline',
+        },
+        frontsMeta: {
+          tone: 'external-tone'
+        }
       }
     }
   },
@@ -120,7 +132,8 @@ const state: any = {
     },
     af3: {
       uuid: 'af3',
-      meta: {}
+      meta: {},
+      id: 'ea3'
     },
     af4: {
       uuid: 'af4',
@@ -273,6 +286,21 @@ describe('Shared selectors', () => {
         kicker: 'external-pillar',
         byline: 'external-byline',
         isLive: false,
+      });
+    });
+    it('should set isLive to true if property is missing', () => {
+      const selector = createArticleFromArticleFragmentSelector();
+      expect(selector(state, 'af3')).toEqual({
+        id: 'ea3',
+        pillarName: 'external-pillar',
+        uuid: 'af3',
+        headline: 'external-headline',
+        thumbnail: undefined,
+        tone: 'external-tone',
+        trailText: 'external-trailText',
+        kicker: 'external-pillar',
+        byline: 'external-byline',
+        isLive: true,
       });
     });
   });

@@ -9,12 +9,13 @@ import {
 } from '../selectors/shared';
 import { State } from '../types/State';
 import { DerivedArticle } from '../types/Article';
-import { getToneColor, toneColorMap } from 'shared/util/toneColorMap';
+import { getToneColor } from 'shared/util/toneColorMap';
 import ButtonDefault from './input/ButtonDefault';
 import { removeSupportingArticleFragmentFromClipboard } from 'actions/ArticleFragments';
 import { Dispatch } from 'types/Store';
 import { ArticleComponentProps } from './Article';
 import Fadeable from './Fadeable';
+import { getArticleLabel } from 'util/clipboardUtils';
 
 interface ContainerProps extends ArticleComponentProps {
   children?: React.ReactNode;
@@ -35,10 +36,10 @@ const BodyContainer = styled('div')`
   position: relative;
 `;
 
-const TonedKicker = styled('span')<{ tone: string }>`
-  color: ${({ tone }) => toneColorMap[tone] || 'inherit'};
+const TonedKicker = styled('span')<{ tone: string, isLive: boolean }>`
+  color: ${({ tone, isLive }) => getToneColor(tone, isLive) || 'inherit'};
   font-size: 13px;
-  font-weight: 700;
+  font-weight: bold;
 `;
 
 const ArticleComponent = ({
@@ -79,9 +80,9 @@ const ArticleComponent = ({
         >
           Delete
         </ButtonDefault>
-        <TonedKicker tone={article.tone}>{article.sectionName}</TonedKicker>
+        <TonedKicker tone={article.tone} isLive={article.isLive}>{ getArticleLabel(article) }</TonedKicker>
         {` ${truncate(article.headline, {
-          length: 40 - article.sectionName.length
+          length: 45 - getArticleLabel(article).length
         })}`}
       </Fadeable>
       {children}
