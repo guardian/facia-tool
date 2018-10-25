@@ -190,7 +190,7 @@ const ArticleHeadingContainerSmall = styled('div')`
   text-overflow: ellipsis;
 `;
 
-const FirstPublished = styled('div')`
+const PublicationDate = styled('div')`
   font-size: 12px;
   margin: 2px 0;
 `;
@@ -234,13 +234,17 @@ const ArticleComponent = ({
         <ArticleMetaContainer>
           {size === 'default' && article.isLive && <Tone>{startCase(article.tone)}</Tone>}
           {(article.isLive || size === 'default') && article.firstPublicationDate && (
-            <FirstPublished>
+            <PublicationDate>
               {distanceInWords(new Date(article.firstPublicationDate))}
-            </FirstPublished>
+            </PublicationDate>
           )}
           {!article.isLive && <NotLiveContainer>
               {(article.firstPublicationDate ? notLiveLabels.takenDown: notLiveLabels.draft)}
           </NotLiveContainer>}
+          { article.scheduledPublicationDate && <PublicationDate>
+              {distanceInWords(new Date(article.scheduledPublicationDate))}
+            </PublicationDate>
+          }
           <ShortVerticalPinline />
         </ArticleMetaContainer>
         <ArticleContentContainer>
