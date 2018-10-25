@@ -34,7 +34,7 @@ function denormaliseClipboard(
 
 const getArticleLabel = (article: DerivedArticle) => {
   if (article.isLive) {
-    return article.kicker ? article.kicker : '';
+    return article.sectionName;
   }
 
   if (article.firstPublicationDate) {
