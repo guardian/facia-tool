@@ -13,7 +13,7 @@ type DerivedArticle = $Diff<
   ArticleFragmentRootFields &
   ArticleFragmentMeta & {
     tone: string;
-    thumbnail: string | void;
+    thumbnail?: string | void;
     kicker: string;
     isLive: boolean;
   };

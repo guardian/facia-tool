@@ -4,170 +4,56 @@ import { connect } from 'react-redux';
 import distanceInWords from 'date-fns/distance_in_words_to_now';
 import noop from 'lodash/noop';
 import startCase from 'lodash/startCase';
-
-import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 import { toneColorMap, getToneColor } from 'shared/util/toneColorMap';
+
 import ButtonHoverAction from 'shared/components/input/ButtonHoverAction';
 import { getPaths } from '../../util/paths';
-
 import {
   createArticleFromArticleFragmentSelector,
-  selectSharedState
+  selectSharedState,
+  articleFragmentSelector
 } from '../selectors/shared';
+import { selectors } from 'shared/bundles/externalArticlesBundle';
 import { State } from '../types/State';
 import { DerivedArticle } from '../types/Article';
 import { notLiveLabels } from 'constants/fronts';
+import TextPlaceholder from 'shared/components/TextPlaceholder';
+import BasePlaceholder from './BasePlaceholder';
+import CollectionItemBody from './CollectionItemBody';
+import CollectionItemContainer from './CollectionItemContainer';
+import Thumbnail from './Thumbnail';
+import HoverActions, {
+  HoverActionsLeft,
+  HoverActionsRight
+} from './CollectionHoverItems';
+import Link from './Link';
+import CollectionItemHeading from './CollectionItemHeading';
+import CollectionItemMetaContainer from './CollectionItemMetaContainer';
+import CollectionItemContent from './CollectionItemContent';
+import CollectionItemMetaHeading from './CollectionItemMetaHeading';
 
-
-interface ArticleComponentProps {
-  id: string;
-  draggable?: boolean;
-  fade?: boolean;
-  onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
-  onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
-  onDragEnter?: (d: React.DragEvent<HTMLElement>) => void;
-  onDrop?: (d: React.DragEvent<HTMLElement>) => void;
-  onDelete?: (uuid: string) => void;
-  onClick?: () => void;
-}
-
-interface ContainerProps extends ArticleComponentProps {
-  selectSharedState?: (state: any) => State;
-}
-
-type ComponentProps = {
-  article: DerivedArticle | void;
-  size?: 'default' | 'small';
-  children: ReactNode;
-} & ContainerProps;
-
-const HoverActions = styled('div')`
-  display: flex;
-  justify-content: space-between;
-  align-content: flex-end;
-  padding: 0 10px 8px;
-`;
-
-const HoverActionsLeft = styled('div')`
-  display: flex;
-  justify-content: space-around;
-`;
-
-const HoverActionsRight = styled('div')`
-  display: flex;
-  justify-content: space-around;
-`;
-
-const Link = styled(`a`).attrs({
-  target: '_blank',
-  rel: 'noopener noreferrer'
-})`
-  text-decoration: none;
-`;
-
-const Thumbnail = styled('div')`
+const ThumbnailPlaceholder = styled(BasePlaceholder)`
   width: 130px;
   height: 83px;
-  background-size: cover;
 `;
 
-const Tone = styled('div')`
-  padding-top: 2px;
-  font-size: 12px;
-  font-family: TS3TextSans-Bold;
-`;
-
-const NotLiveContainer = styled(Tone)`
+const NotLiveContainer = styled(CollectionItemMetaHeading)`
   color: #ff7f0f;
 `;
 
-const ArticleContainer = styled('div')`
-  background-color: #fff;
-`;
-
-const ArticleBodyContainer = styled('div')<{
-  transitionTime?: number;
-  fade?: boolean;
-}>`
-  display: flex;
-  position: relative;
-  border-top: 1px solid #333;
-  min-height: 35px;
-  cursor: pointer;
-  position: relative;
-  opacity: ${({ fade }) => (fade ? 0.5 : 1)};
-
-  ${HoverActions} {
-    bottom: 0;
-    left: 0;
-    opacity: 1;
-    position: absolute;
-    right: 0;
-    visibility: hidden;
-  }
-
-  ${Tone} {
-    transition: color ${({ transitionTime }) => transitionTime}s;
-  }
-
-  ${Thumbnail} {
-    transition: opacity ${({ transitionTime }) => transitionTime}s;
-  }
-
-  ${HoverActions} {
-    transition: opacity ${({ transitionTime }) => transitionTime}s,
-      visibility 0s linear ${({ transitionTime }) => transitionTime}s;
-    visibility: hidden;
-    opacity: 0;
-  }
-
+const ArticleBodyContainer = styled(CollectionItemBody)`
   :hover {
-    background-color: #ededed;
-
-    ${Tone} {
+    ${CollectionItemMetaHeading} {
       color: #999;
     }
-
-    ${Thumbnail} {
-      opacity: 0.2;
-    }
-
-    ${HoverActions} {
-      transition-delay: 0s;
-      visibility: visible;
-      opacity: 1;
-    }
   }
 `;
 
-ArticleBodyContainer.defaultProps = {
-  transitionTime: 0.3
-};
-
-const ArticleMetaContainer = styled('div')`
-  position: relative;
-  width: 80px;
-  padding: 0px 8px;
-`;
-
-const ArticleContentContainer = styled('div')`
-  position: relative;
-  width: calc(100% - 210px);
-  margin-top: 2px;
-  padding: 0 8px;
-`;
-
-const KickerHeading = styled('span')`
-  font-size: 16px;
+const KickerHeading = styled(CollectionItemHeading)`
   font-family: GHGuardianHeadline-Bold;
 `;
 
-const ArticleHeading = styled('span')`
-  font-size: 16px;
-  font-family: GhGuardianHeadline-Medium;
-`;
-
-const ArticleHeadingSmall = ArticleHeading.extend`
+const ArticleHeadingSmall = CollectionItemHeading.extend`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -195,7 +81,161 @@ const PublicationDate = styled('div')`
   margin: 2px 0;
 `;
 
+interface ArticleComponentProps {
+  id: string;
+  draggable?: boolean;
+  fade?: boolean;
+  onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
+  onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
+  onDragEnter?: (d: React.DragEvent<HTMLElement>) => void;
+  onDrop?: (d: React.DragEvent<HTMLElement>) => void;
+  onDelete?: (uuid: string) => void;
+  onClick?: () => void;
+}
+
+interface ContainerProps extends ArticleComponentProps {
+  selectSharedState?: (state: any) => State;
+}
+
+type ComponentProps = {
+  article: DerivedArticle | void;
+  isLoading: boolean;
+  size?: 'default' | 'small';
+  children: ReactNode;
+} & ContainerProps;
+
+interface ArticleBodyProps {
+  firstPublicationDate?: string;
+  scheduledPublicationDate?: string;
+  tone?: string;
+  kicker?: string;
+  size?: 'default' | 'small';
+  headline?: string;
+  trailText?: string;
+  thumbnail?: string | void;
+  isLive?: boolean;
+  urlPath?: string;
+  displayPlaceholders?: boolean;
+  uuid: string;
+  onDelete: (id: string) => void;
+}
+
+const ArticleBody = ({
+  firstPublicationDate,
+  scheduledPublicationDate,
+  tone,
+  kicker,
+  size = 'default',
+  headline,
+  trailText,
+  thumbnail,
+  isLive,
+  urlPath,
+  uuid,
+  displayPlaceholders,
+  onDelete
+}: ArticleBodyProps) => {
+  const ArticleHeadingContainer =
+    size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
+  return (
+    <>
+      <CollectionItemMetaContainer>
+        {displayPlaceholders && (
+          <>
+            <TextPlaceholder />
+            {size === 'default' && <TextPlaceholder width={25} />}
+          </>
+        )}
+        {size === 'default' &&
+          isLive && <CollectionItemMetaHeading>{startCase(tone)}</CollectionItemMetaHeading>}
+        {(isLive || size === 'default') &&
+          firstPublicationDate && (
+            <PublicationDate>
+              {distanceInWords(new Date(firstPublicationDate))}
+            </PublicationDate>
+          )}
+        {!isLive && (
+          <NotLiveContainer>
+            {firstPublicationDate
+              ? notLiveLabels.takenDown
+              : notLiveLabels.draft}
+          </NotLiveContainer>
+        )}
+        {scheduledPublicationDate && (
+          <PublicationDate>
+            {distanceInWords(new Date(scheduledPublicationDate))}
+          </PublicationDate>
+        )}
+      </CollectionItemMetaContainer>
+      <CollectionItemContent>
+        <ArticleHeadingContainer>
+          {displayPlaceholders && (
+            <>
+              <TextPlaceholder />
+              {size === 'default' && <TextPlaceholder width={25} />}
+            </>
+          )}
+          <KickerHeading style={{ color: tone && toneColorMap[tone] }}>
+            {kicker}
+          </KickerHeading>
+          &nbsp;
+          {size === 'default' ? (
+            <CollectionItemHeading>{headline}</CollectionItemHeading>
+          ) : (
+            <ArticleHeadingSmall>{headline}</ArticleHeadingSmall>
+          )}
+        </ArticleHeadingContainer>
+        {size === 'default' && trailText && <Trail>{trailText}</Trail>}
+      </CollectionItemContent>
+      {size === 'default' &&
+        (displayPlaceholders ? (
+          <ThumbnailPlaceholder />
+        ) : (
+          <Thumbnail
+            style={{
+              backgroundImage: `url('${thumbnail}')`
+            }}
+          />
+        ))}
+      <HoverActions>
+        <HoverActionsLeft>
+          <Link
+            href={
+              isLive
+                ? `https://www.theguardian.com/${urlPath}`
+                : `https://preview.gutools.co.uk/${urlPath}`
+            }
+          >
+            <ButtonHoverAction action="view" title="View" />
+          </Link>
+          {isLive ? (
+            <Link
+              href={getPaths(`https://www.theguardian.com/${urlPath}`).ophan}
+            >
+              <ButtonHoverAction action="ophan" title="Ophan" />
+            </Link>
+          ) : null}
+        </HoverActionsLeft>
+        <HoverActionsRight>
+          <ButtonHoverAction
+            action="delete"
+            danger
+            onClick={(e: React.SyntheticEvent) => {
+              // stop the parent from opening the edit panel
+              e.stopPropagation();
+              onDelete(uuid);
+            }}
+            title="Delete"
+          />
+        </HoverActionsRight>
+      </HoverActions>
+    </>
+  );
+};
+
 const ArticleComponent = ({
+  id,
+  isLoading,
   article,
   size = 'default',
   fade = false,
@@ -207,124 +247,76 @@ const ArticleComponent = ({
   onDelete = noop,
   onClick = noop,
   children
-}: ComponentProps) => {
-  if (!article) {
-    return null;
-  }
-  const ArticleHeadingContainer =
-    size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
-  return (
-    <ArticleContainer
-      draggable={draggable}
-      onDragStart={onDragStart}
-      onDragEnter={onDragEnter}
-      onDragOver={onDragOver}
-      onDrop={onDrop}
-      onClick={onClick}
+}: ComponentProps) => (
+  <CollectionItemContainer
+    draggable={draggable}
+    onDragStart={onDragStart}
+    onDragOver={onDragOver}
+    onDragEnter={onDragEnter}
+    onDrop={onDrop}
+    onClick={(e) => {
+      if (isLoading || !article) {
+        return;
+      }
+      e.stopPropagation();
+      onClick();
+    }}
+  >
+    <ArticleBodyContainer
+      data-testid="article-body"
+      size={size}
+      fade={fade}
+      style={{
+        borderTopColor:
+          size === 'default' && article
+            ? getToneColor(article.tone, article.isLive)
+            : '#c9c9c9'
+      }}
     >
-      <ArticleBodyContainer
-        fade={fade}
-        data-testid="article-body"
-        key={article.headline}
-        style={{
-          borderTopColor:
-            size === 'default' ? getToneColor(article.tone, article.isLive) : '#c9c9c9'
-        }}
-      >
-        <ArticleMetaContainer>
-          {size === 'default' && article.isLive && <Tone>{startCase(article.tone)}</Tone>}
-          {(article.isLive || size === 'default') && article.firstPublicationDate && (
-            <PublicationDate>
-              {distanceInWords(new Date(article.firstPublicationDate))}
-            </PublicationDate>
-          )}
-          {!article.isLive && <NotLiveContainer>
-              {(article.firstPublicationDate ? notLiveLabels.takenDown: notLiveLabels.draft)}
-          </NotLiveContainer>}
-          { article.scheduledPublicationDate && <PublicationDate>
-              {distanceInWords(new Date(article.scheduledPublicationDate))}
-            </PublicationDate>
-          }
-          <ShortVerticalPinline />
-        </ArticleMetaContainer>
-        <ArticleContentContainer>
-          <ArticleHeadingContainer>
-            <KickerHeading style={{ color: toneColorMap[article.tone] }}>
-              {article.kicker}
-            </KickerHeading>
-            &nbsp;
-            {size === 'default' ? (
-              <ArticleHeading>{article.headline}</ArticleHeading>
-            ) : (
-              <ArticleHeadingSmall>{article.headline}</ArticleHeadingSmall>
-            )}
-          </ArticleHeadingContainer>
-          {size === 'default' &&
-            article.trailText && <Trail>{article.trailText}</Trail>}
-        </ArticleContentContainer>
-        {size === 'default' && (
-          <Thumbnail
-            style={{
-              backgroundImage: `url('${article.thumbnail}')`
-            }}
+      {article && <ArticleBody {...article} size={size} onDelete={onDelete} />}
+      {!article &&
+        isLoading && (
+          <ArticleBody
+            uuid={id}
+            displayPlaceholders={true}
+            onDelete={onDelete}
+            size={size}
           />
         )}
-        <HoverActions>
-          <HoverActionsLeft>
-            <Link
-              href={
-                article.isLive
-                  ? `https://www.theguardian.com/${article.urlPath}`
-                  : `https://preview.gutools.co.uk/${article.urlPath}`
-              }
-            >
-              <ButtonHoverAction action="view" title="View" />
-            </Link>
-            {article.isLive ? (
-              <Link
-                href={
-                  getPaths(`https://www.theguardian.com/${article.urlPath}`)
-                    .ophan
-                }
-              >
-                <ButtonHoverAction action="ophan" title="Ophan" />
-              </Link>
-            ) : null}
-          </HoverActionsLeft>
-          <HoverActionsRight>
-            <ButtonHoverAction
-              action="delete"
-              danger
-              onClick={(e: React.SyntheticEvent) => {
-                // stop the parent from opening the edit panel
-                e.stopPropagation();
-                onDelete(article.uuid);
-              }}
-              title="Delete"
-            />
-          </HoverActionsRight>
-        </HoverActions>
-      </ArticleBodyContainer>
-      {children}
-    </ArticleContainer>
-  );
-};
+      {!article &&
+        !isLoading && (
+          <ArticleBody
+            headline="Content not found"
+            uuid={id}
+            onDelete={onDelete}
+            size={size}
+          />
+        )}
+    </ArticleBodyContainer>
+    {children}
+  </CollectionItemContainer>
+);
 
 const createMapStateToProps = () => {
   const articleSelector = createArticleFromArticleFragmentSelector();
   return (
     state: State,
     props: ContainerProps
-  ): { article: DerivedArticle | void } => ({
-    article: articleSelector(
-      props.selectSharedState
-        ? props.selectSharedState(state)
-        : selectSharedState(state),
-      props.id
-    )
-  });
+  ): { article: DerivedArticle | void; isLoading: boolean } => {
+    const sharedState = props.selectSharedState
+      ? props.selectSharedState(state)
+      : selectSharedState(state);
+    const article = articleSelector(sharedState, props.id);
+    const articleFragment = articleFragmentSelector(sharedState, props.id);
+    return {
+      article,
+      isLoading:
+        !!articleFragment &&
+        selectors.selectIsLoadingById(sharedState, articleFragment.id)
+    };
+  };
 };
 
-export { ArticleComponentProps, ArticleComponent }
+export { ArticleComponentProps, ArticleComponent };
 
 export default connect(createMapStateToProps)(ArticleComponent);
