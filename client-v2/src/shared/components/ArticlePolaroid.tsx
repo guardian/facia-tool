@@ -14,7 +14,7 @@ import { removeArticleFragmentFromClipboard } from 'actions/ArticleFragments';
 import Button from './input/ButtonDefault';
 import { ArticleComponentProps } from './Article';
 import Fadeable from './Fadeable';
-import { getPillarColor } from 'shared/util/pillarColorMap';
+import { getPillarColor } from 'shared/util/getPillarColor';
 import { getArticleLabel } from 'util/clipboardUtils';
 import { notLiveLabels } from 'constants/fronts';
 

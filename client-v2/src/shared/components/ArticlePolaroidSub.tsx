@@ -9,7 +9,7 @@ import {
 } from '../selectors/shared';
 import { State } from '../types/State';
 import { DerivedArticle } from '../types/Article';
-import { getPillarColor } from 'shared/util/pillarColorMap';
+import { getPillarColor } from 'shared/util/getPillarColor';
 import ButtonDefault from './input/ButtonDefault';
 import { removeSupportingArticleFragmentFromClipboard } from 'actions/ArticleFragments';
 import { Dispatch } from 'types/Store';

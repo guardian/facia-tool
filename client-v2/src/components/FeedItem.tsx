@@ -4,7 +4,7 @@ import distanceInWords from 'date-fns/distance_in_words_to_now';
 import startCase from 'lodash/startCase';
 
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
-import { getPillarColor } from 'shared/util/pillarColorMap';
+import { getPillarColor } from 'shared/util/getPillarColor';
 import { getPaths } from '../util/paths';
 import { notLiveLabels } from 'constants/fronts';
 

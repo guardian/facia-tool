@@ -6,7 +6,7 @@ import noop from 'lodash/noop';
 import startCase from 'lodash/startCase';
 
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
-import { getPillarColor } from 'shared/util/pillarColorMap';
+import { getPillarColor } from 'shared/util/getPillarColor';
 import ButtonHoverAction from 'shared/components/input/ButtonHoverAction';
 import { getPaths } from '../../util/paths';
 
