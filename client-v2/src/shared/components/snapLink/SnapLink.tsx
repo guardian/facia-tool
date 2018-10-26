@@ -26,6 +26,7 @@ interface SnapLinkProps {
   size?: 'default' | 'small';
   displayType?: 'default' | 'polaroid';
   fade?: boolean;
+  children: React.ReactNode;
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
   onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
@@ -44,6 +45,7 @@ const SnapLink = ({
   size = 'default',
   displayType,
   onDelete,
+  children,
   ...rest
 }: SnapLinkProps) => (
   <CollectionItemContainer {...rest}>
@@ -80,6 +82,7 @@ const SnapLink = ({
         </HoverActionsRight>
       </HoverActions>
     </CollectionItemBody>
+    {children}
   </CollectionItemContainer>
 );
 

@@ -44,10 +44,10 @@ interface ContainerProps extends ArticleComponentProps {
 
 type ComponentProps = {
   article: DerivedArticle | void;
-  isLoading: boolean;
+  isLoading?: boolean;
   displayType?: 'default' | 'polaroid';
   size?: 'default' | 'small';
-  children: ReactNode;
+  children: React.ReactNode;
 } & ContainerProps;
 
 const articleBodyComponentMap: { [id: string]: React.ComponentType<ArticleBodyProps> } = {
