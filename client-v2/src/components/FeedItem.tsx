@@ -4,7 +4,7 @@ import distanceInWords from 'date-fns/distance_in_words_to_now';
 import startCase from 'lodash/startCase';
 
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
-import { getToneColor, toneColorMap } from 'shared/util/toneColorMap';
+import { getPillarColor } from 'shared/util/pillarColorMap';
 import { getPaths } from '../util/paths';
 import { notLiveLabels } from 'constants/fronts';
 
@@ -76,7 +76,8 @@ const Body = styled('div')`
 interface FeedItemProps {
   title: string;
   href: string;
-  tone: string;
+  sectionName: string;
+  pillarId?: string;
   internalPageCode: string | void;
   publicationDate?: string;
   firstPublicationDate?: string;
@@ -93,7 +94,8 @@ const dragStart = (
 const FeedItem = ({
   title,
   href,
-  tone,
+  sectionName,
+  pillarId,
   publicationDate,
   internalPageCode,
   firstPublicationDate,
@@ -106,10 +108,10 @@ const FeedItem = ({
     <MetaContainer>
       <Tone
         style={{
-          color: getToneColor(tone, isLive) || '#c9c9c9'
+          color: getPillarColor(pillarId, isLive) || '#c9c9c9'
         }}
       >
-        {isLive && startCase(tone)}
+        {isLive && startCase(sectionName)}
         {!isLive && (firstPublicationDate ? notLiveLabels.takendDown: notLiveLabels.draft)}
       </Tone>
       {publicationDate && (

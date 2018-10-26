@@ -13,7 +13,6 @@ export default {
   elements: [],
   blocks: {},
   pillarId: 'pillar/news',
-  pillarName: 'News',
   urlPath:
     'uk-news/2018/jul/03/sister-of-academics-killer-warned-police-he-was-mentally-ill',
   headline: "Sister of academic's killer warned police he was mentally ill",
@@ -30,6 +29,5 @@ export default {
   publishedBy: 'Philip McMahon',
   uuid: 'fc87955e-fa51-4994-b6cb-bf1c55e0a212',
   supporting: [],
-  kicker: 'News',
-  tone: 'news'
+  kicker: 'News'
 } as DerivedArticle;

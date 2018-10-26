@@ -6,7 +6,7 @@ import noop from 'lodash/noop';
 import startCase from 'lodash/startCase';
 
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
-import { toneColorMap, getToneColor } from 'shared/util/toneColorMap';
+import { getPillarColor } from 'shared/util/pillarColorMap';
 import ButtonHoverAction from 'shared/components/input/ButtonHoverAction';
 import { getPaths } from '../../util/paths';
 
@@ -71,13 +71,13 @@ const Thumbnail = styled('div')`
   background-size: cover;
 `;
 
-const Tone = styled('div')`
+const Pillar = styled('div')`
   padding-top: 2px;
   font-size: 12px;
   font-family: TS3TextSans-Bold;
 `;
 
-const NotLiveContainer = styled(Tone)`
+const NotLiveContainer = styled(Pillar)`
   color: #ff7f0f;
 `;
 
@@ -106,7 +106,7 @@ const ArticleBodyContainer = styled('div')<{
     visibility: hidden;
   }
 
-  ${Tone} {
+  ${Pillar} {
     transition: color ${({ transitionTime }) => transitionTime}s;
   }
 
@@ -124,7 +124,7 @@ const ArticleBodyContainer = styled('div')<{
   :hover {
     background-color: #ededed;
 
-    ${Tone} {
+    ${Pillar} {
       color: #999;
     }
 
@@ -228,11 +228,11 @@ const ArticleComponent = ({
         key={article.headline}
         style={{
           borderTopColor:
-            size === 'default' ? getToneColor(article.tone, article.isLive) : '#c9c9c9'
+            size === 'default' ? getPillarColor(article.pillarId, article.isLive) : '#c9c9c9'
         }}
       >
         <ArticleMetaContainer>
-          {size === 'default' && article.isLive && <Tone>{startCase(article.tone)}</Tone>}
+          {size === 'default' && article.isLive && <Pillar>{startCase(article.kicker)}</Pillar>}
           {(article.isLive || size === 'default') && article.firstPublicationDate && (
             <PublicationDate>
               {distanceInWords(new Date(article.firstPublicationDate))}
@@ -249,7 +249,7 @@ const ArticleComponent = ({
         </ArticleMetaContainer>
         <ArticleContentContainer>
           <ArticleHeadingContainer>
-            <KickerHeading style={{ color: toneColorMap[article.tone] }}>
+            <KickerHeading style={{ color: getPillarColor(article.pillarId, article.isLive) }}>
               {article.kicker}
             </KickerHeading>
             &nbsp;

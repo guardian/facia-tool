@@ -9,7 +9,7 @@ import {
 } from '../selectors/shared';
 import { State } from '../types/State';
 import { DerivedArticle } from '../types/Article';
-import { getToneColor } from 'shared/util/toneColorMap';
+import { getPillarColor } from 'shared/util/pillarColorMap';
 import ButtonDefault from './input/ButtonDefault';
 import { removeSupportingArticleFragmentFromClipboard } from 'actions/ArticleFragments';
 import { Dispatch } from 'types/Store';
@@ -36,8 +36,8 @@ const BodyContainer = styled('div')`
   position: relative;
 `;
 
-const TonedKicker = styled('span')<{ tone: string, isLive: boolean }>`
-  color: ${({ tone, isLive }) => getToneColor(tone, isLive) || 'inherit'};
+const PillaredSection = styled('span')<{ pillar?: string, isLive: boolean }>`
+  color: ${({ pillar, isLive }) => getPillarColor(pillar, isLive) || 'inherit'};
   font-size: 13px;
   font-weight: bold;
 `;
@@ -80,7 +80,7 @@ const ArticleComponent = ({
         >
           Delete
         </ButtonDefault>
-        <TonedKicker tone={article.tone} isLive={article.isLive}>{ getArticleLabel(article) }</TonedKicker>
+        <PillaredSection pillar={article.pillarId} isLive={article.isLive}>{ getArticleLabel(article) }</PillaredSection>
         {` ${truncate(article.headline, {
           length: 45 - getArticleLabel(article).length
         })}`}

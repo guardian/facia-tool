@@ -274,7 +274,7 @@ const capiArticleWithElementsThumbnail = {
       showKickerSection: false,
       showBoostedHeadline: false
     },
-    tone: 'news'
+    sectionName: 'news'
   }
 };
 
