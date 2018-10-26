@@ -71,13 +71,13 @@ const Thumbnail = styled('div')`
   background-size: cover;
 `;
 
-const Pillar = styled('div')`
+const SectionName = styled('div')`
   padding-top: 2px;
   font-size: 12px;
   font-family: TS3TextSans-Bold;
 `;
 
-const NotLiveContainer = styled(Pillar)`
+const NotLiveContainer = styled(SectionName)`
   color: #ff7f0f;
 `;
 
@@ -106,7 +106,7 @@ const ArticleBodyContainer = styled('div')<{
     visibility: hidden;
   }
 
-  ${Pillar} {
+  ${SectionName} {
     transition: color ${({ transitionTime }) => transitionTime}s;
   }
 
@@ -124,7 +124,7 @@ const ArticleBodyContainer = styled('div')<{
   :hover {
     background-color: #ededed;
 
-    ${Pillar} {
+    ${SectionName} {
       color: #999;
     }
 
@@ -232,7 +232,7 @@ const ArticleComponent = ({
         }}
       >
         <ArticleMetaContainer>
-          {size === 'default' && article.isLive && <Pillar>{startCase(article.kicker)}</Pillar>}
+          {size === 'default' && article.isLive && <SectionName>{startCase(article.sectionName)}</SectionName>}
           {(article.isLive || size === 'default') && article.firstPublicationDate && (
             <PublicationDate>
               {distanceInWords(new Date(article.firstPublicationDate))}
@@ -249,7 +249,7 @@ const ArticleComponent = ({
         </ArticleMetaContainer>
         <ArticleContentContainer>
           <ArticleHeadingContainer>
-            <KickerHeading style={{ color: getPillarColor(article.pillarId, article.isLive) }}>
+            <KickerHeading style={{ color: getPillarColor(article.pillarId, true) }}>
               {article.kicker}
             </KickerHeading>
             &nbsp;
