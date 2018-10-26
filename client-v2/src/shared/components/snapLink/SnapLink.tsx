@@ -1,6 +1,6 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
-import CollectionItemBody from '../collectionItem/CollectionItemBody';
 import CollectionItemContainer from '../collectionItem/CollectionItemContainer';
 import CollectionItemMetaContainer from '../collectionItem/CollectionItemMetaContainer';
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
@@ -15,15 +15,16 @@ import {
   articleFragmentSelector
 } from '../../selectors/shared';
 import { State } from '../../types/State';
-import { connect } from 'react-redux';
 import CollectionItemHeading from '../collectionItem/CollectionItemHeading';
 import CollectionItemContent from '../collectionItem/CollectionItemContent';
 import ButtonHoverAction from '../input/ButtonHoverAction';
+import CollectionItemBody from '../collectionItem/CollectionItemBody';
 
 interface SnapLinkProps {
   id: string;
   draggable?: boolean;
   size?: 'default' | 'small';
+  displayType?: 'default' | 'polaroid';
   fade?: boolean;
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
   onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
@@ -36,15 +37,31 @@ interface ContainerProps extends SnapLinkProps {
   selectSharedState?: (state: any) => State;
 }
 
-const SnapLink = ({ id, fade, onClick, size = 'default', onDelete, ...rest }: SnapLinkProps) => (
+const SnapLink = ({
+  id,
+  fade,
+  onClick,
+  size = 'default',
+  displayType,
+  onDelete,
+  ...rest
+}: SnapLinkProps) => (
   <CollectionItemContainer {...rest}>
-    <CollectionItemBody size={size} fade={fade}>
-      <CollectionItemMetaContainer>
-        <CollectionItemMetaHeading>Snap link</CollectionItemMetaHeading>
-      </CollectionItemMetaContainer>
-      <CollectionItemContent>
-        <CollectionItemHeading>To be implemented. (Drag and drop as usual.)</CollectionItemHeading>
-      </CollectionItemContent>
+    <CollectionItemBody size={size} fade={fade} displayType={displayType}>
+      {displayType === 'default' && (
+        <CollectionItemMetaContainer>
+          <CollectionItemMetaHeading>Snap link</CollectionItemMetaHeading>
+        </CollectionItemMetaContainer>
+      )}
+      {displayType === 'default' ? (
+        <CollectionItemContent>
+          <CollectionItemHeading>
+            Snaplink placeholder (Drag and drop as usual.)
+          </CollectionItemHeading>
+        </CollectionItemContent>
+      ) : (
+        'Snaplink placeholder (Drag and drop as usual.)'
+      )}
       {size === 'default' && <Thumbnail />}
       <HoverActions>
         <HoverActionsLeft />
@@ -63,7 +80,6 @@ const SnapLink = ({ id, fade, onClick, size = 'default', onDelete, ...rest }: Sn
         </HoverActionsRight>
       </HoverActions>
     </CollectionItemBody>
-
   </CollectionItemContainer>
 );
 

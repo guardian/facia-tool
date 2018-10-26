@@ -1,20 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import truncate from 'lodash/truncate';
-import {
-  createArticleFromArticleFragmentSelector,
-  selectSharedState
-} from '../../selectors/shared';
-import Button from '../input/ButtonDefault';
 import { ArticleBodyProps } from './ArticleBodyDefault';
 import { getToneColor } from 'shared/util/toneColorMap';
 import { getArticleLabel } from 'util/clipboardUtils';
-import HoverActions, { HoverActionsLeft, HoverActionsRight } from '../CollectionHoverItems';
+import HoverActions, {
+  HoverActionsLeft,
+  HoverActionsRight
+} from '../CollectionHoverItems';
 import ButtonHoverAction from '../input/ButtonHoverAction';
-
-const PolaroidBodyContainer = styled('div')`
-  font-size: 14px;
-`;
 
 const Thumbnail = styled('img')`
   width: 100%;
@@ -35,11 +29,12 @@ const ArticlePolaroidComponent = ({
   headline,
   thumbnail,
   sectionName,
-  isLive,
+  isLive
 }: ArticleBodyProps) => {
-  const articleLabel = getArticleLabel(firstPublicationDate, sectionName, isLive) || '';
+  const articleLabel =
+    getArticleLabel(firstPublicationDate, sectionName, isLive) || '';
   return (
-    <PolaroidBodyContainer>
+    <>
       {size === 'default' && thumbnail && <Thumbnail src={thumbnail} alt="" />}
       <TonedKicker tone={tone} isLive={isLive}>
         {articleLabel}
@@ -63,7 +58,7 @@ const ArticlePolaroidComponent = ({
           />
         </HoverActionsRight>
       </HoverActions>
-    </PolaroidBodyContainer>
+    </>
   );
 };
 

@@ -18,10 +18,7 @@ import { getToneColor } from 'shared/util/toneColorMap';
 import ArticleBodyPolaroid from './ArticleBodyPolaroid';
 import ArticleBodyDefault, { ArticleBodyProps } from './ArticleBodyDefault';
 
-const ArticleBodyContainer = styled(CollectionItemBody)<{
-  displayType: 'default' | 'polaroid'
-}>`
-  background-color: ${({ displayType }) => displayType === 'default' ? 'white' : 'transparent'}
+const ArticleBodyContainer = styled(CollectionItemBody)`
   :hover {
     ${CollectionItemMetaHeading} {
       color: #999;
