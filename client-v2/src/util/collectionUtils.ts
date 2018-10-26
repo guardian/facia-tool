@@ -4,11 +4,7 @@ import { ThunkResult } from 'types/Store';
 import { Dispatch } from 'types/Store';
 import { Move, PosSpec } from 'lib/dnd';
 import { ArticleFragment } from 'shared/types/Collection';
-import keyBy from 'lodash/keyBy';
-import {
-  articleFragmentsReceived,
-  addArticleFragment
-} from 'shared/actions/ArticleFragments';
+import { addArticleFragment } from 'shared/actions/ArticleFragments';
 
 const dropToArticle = (e: React.DragEvent): string | null => {
   const map = {
@@ -95,4 +91,4 @@ const handleInsert = (
   );
 };
 
-export { handleMove, handleInsert };
+export { handleMove, handleInsert, InsertActionCreator };
