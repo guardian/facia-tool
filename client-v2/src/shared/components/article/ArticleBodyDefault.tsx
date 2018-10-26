@@ -1,35 +1,24 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
-import distanceInWords from 'date-fns/distance_in_words_to_now';
-import noop from 'lodash/noop';
 import startCase from 'lodash/startCase';
-import { getPillarColor } from 'shared/util/getPillarColor';
-import ButtonHoverAction from 'shared/components/input/ButtonHoverAction';
-import { getPaths } from '../../util/paths';
-import {
-  createArticleFromArticleFragmentSelector,
-  selectSharedState,
-  articleFragmentSelector
-} from '../selectors/shared';
-import { selectors } from 'shared/bundles/externalArticlesBundle';
-import { State } from '../types/State';
-import { DerivedArticle } from '../types/Article';
-import { notLiveLabels } from 'constants/fronts';
-import TextPlaceholder from 'shared/components/TextPlaceholder';
-import BasePlaceholder from './BasePlaceholder';
-import CollectionItemBody from './CollectionItemBody';
-import CollectionItemContainer from './CollectionItemContainer';
-import Thumbnail from './Thumbnail';
+import distanceInWords from 'date-fns/distance_in_words_to_now';
+
 import HoverActions, {
   HoverActionsLeft,
   HoverActionsRight
-} from './CollectionHoverItems';
-import Link from './Link';
-import CollectionItemHeading from './CollectionItemHeading';
-import CollectionItemMetaContainer from './CollectionItemMetaContainer';
-import CollectionItemContent from './CollectionItemContent';
-import CollectionItemMetaHeading from './CollectionItemMetaHeading';
+} from '../CollectionHoverItems';
+import CollectionItemHeading from '../collectionItem/CollectionItemHeading';
+import BasePlaceholder from '../BasePlaceholder';
+import { getPillarColor } from 'shared/util/getPillarColor';
+import CollectionItemMetaContainer from '../collectionItem/CollectionItemMetaContainer';
+import CollectionItemContent from '../collectionItem/CollectionItemContent';
+import ButtonHoverAction from 'shared/components/input/ButtonHoverAction';
+import { getPaths } from '../../../util/paths';
+import { notLiveLabels } from 'constants/fronts';
+import TextPlaceholder from 'shared/components/TextPlaceholder';
+import Thumbnail from '../Thumbnail';
+import Link from '../Link';
+import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   width: 130px;
@@ -38,14 +27,6 @@ const ThumbnailPlaceholder = styled(BasePlaceholder)`
 
 const NotLiveContainer = styled(CollectionItemMetaHeading)`
   color: #ff7f0f;
-`;
-
-const ArticleBodyContainer = styled(CollectionItemBody)`
-  :hover {
-    ${CollectionItemMetaHeading} {
-      color: #999;
-    }
-  }
 `;
 
 const KickerHeading = styled(CollectionItemHeading)`
@@ -80,33 +61,9 @@ const PublicationDate = styled('div')`
   margin: 2px 0;
 `;
 
-interface ArticleComponentProps {
-  id: string;
-  draggable?: boolean;
-  fade?: boolean;
-  onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
-  onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
-  onDragEnter?: (d: React.DragEvent<HTMLElement>) => void;
-  onDrop?: (d: React.DragEvent<HTMLElement>) => void;
-  onDelete?: (uuid: string) => void;
-  onClick?: () => void;
-}
-
-interface ContainerProps extends ArticleComponentProps {
-  selectSharedState?: (state: any) => State;
-}
-
-type ComponentProps = {
-  article: DerivedArticle | void;
-  isLoading?: boolean;
-  size?: 'default' | 'small';
-  children: ReactNode;
-} & ContainerProps;
-
 interface ArticleBodyProps {
   firstPublicationDate?: string;
   scheduledPublicationDate?: string;
-  sectionName: string;
   pillarId?: string;
   kicker?: string;
   size?: 'default' | 'small';
@@ -115,12 +72,13 @@ interface ArticleBodyProps {
   thumbnail?: string | void;
   isLive?: boolean;
   urlPath?: string;
+  sectionName?: string,
   displayPlaceholders?: boolean;
   uuid: string;
   onDelete: (id: string) => void;
 }
 
-const ArticleBody = ({
+const articleBodyDefault = ({
   firstPublicationDate,
   scheduledPublicationDate,
   sectionName,
@@ -234,92 +192,6 @@ const ArticleBody = ({
   );
 };
 
-const ArticleComponent = ({
-  id,
-  isLoading,
-  article,
-  size = 'default',
-  fade = false,
-  draggable = false,
-  onDragStart = noop,
-  onDragEnter = noop,
-  onDragOver = noop,
-  onDrop = noop,
-  onDelete = noop,
-  onClick = noop,
-  children
-}: ComponentProps) => (
-  <CollectionItemContainer
-    draggable={draggable}
-    onDragStart={onDragStart}
-    onDragOver={onDragOver}
-    onDragEnter={onDragEnter}
-    onDrop={onDrop}
-    onClick={(e) => {
-      if (isLoading || !article) {
-        return;
-      }
-      e.stopPropagation();
-      onClick();
-    }}
-  >
-    <ArticleBodyContainer
-      data-testid="article-body"
-      size={size}
-      fade={fade}
-      style={{
-        borderTopColor:
-          size === 'default' && article
-            ? getPillarColor(article.pillarId, article.isLive)
-            : '#c9c9c9'
-      }}
-    >
-      {article && <ArticleBody {...article} size={size} onDelete={onDelete} />}
-      {!article &&
-        isLoading && (
-          <ArticleBody
-            uuid={id}
-            displayPlaceholders={true}
-            onDelete={onDelete}
-            size={size}
-            sectionName=''
-          />
-        )}
-      {!article &&
-        !isLoading && (
-          <ArticleBody
-            headline="Content not found"
-            uuid={id}
-            onDelete={onDelete}
-            size={size}
-            sectionName=''
-          />
-        )}
-    </ArticleBodyContainer>
-    {children}
-  </CollectionItemContainer>
-);
+export { ArticleBodyProps };
 
-const createMapStateToProps = () => {
-  const articleSelector = createArticleFromArticleFragmentSelector();
-  return (
-    state: State,
-    props: ContainerProps
-  ): { article: DerivedArticle | void; isLoading: boolean } => {
-    const sharedState = props.selectSharedState
-      ? props.selectSharedState(state)
-      : selectSharedState(state);
-    const article = articleSelector(sharedState, props.id);
-    const articleFragment = articleFragmentSelector(sharedState, props.id);
-    return {
-      article,
-      isLoading:
-        !!articleFragment &&
-        selectors.selectIsLoadingById(sharedState, articleFragment.id)
-    };
-  };
-};
-
-export { ArticleComponentProps, ArticleComponent };
-
-export default connect(createMapStateToProps)(ArticleComponent);
+export default articleBodyDefault;

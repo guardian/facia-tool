@@ -1,24 +1,24 @@
 import React from 'react';
 
-import CollectionItemBody from './CollectionItemBody';
-import CollectionItemContainer from './CollectionItemContainer';
-import CollectionItemMetaContainer from './CollectionItemMetaContainer';
-import CollectionItemMetaHeading from './CollectionItemMetaHeading';
-import Thumbnail from './Thumbnail';
+import CollectionItemBody from '../collectionItem/CollectionItemBody';
+import CollectionItemContainer from '../collectionItem/CollectionItemContainer';
+import CollectionItemMetaContainer from '../collectionItem/CollectionItemMetaContainer';
+import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
+import Thumbnail from '../Thumbnail';
 import HoverActions, {
   HoverActionsLeft,
   HoverActionsRight
-} from './CollectionHoverItems';
+} from '../CollectionHoverItems';
 import { ArticleFragment } from 'shared/types/Collection';
 import {
   selectSharedState,
   articleFragmentSelector
-} from '../selectors/shared';
-import { State } from '../types/State';
+} from '../../selectors/shared';
+import { State } from '../../types/State';
 import { connect } from 'react-redux';
-import CollectionItemHeading from './CollectionItemHeading';
-import CollectionItemContent from './CollectionItemContent';
-import ButtonHoverAction from './input/ButtonHoverAction';
+import CollectionItemHeading from '../collectionItem/CollectionItemHeading';
+import CollectionItemContent from '../collectionItem/CollectionItemContent';
+import ButtonHoverAction from '../input/ButtonHoverAction';
 
 interface SnapLinkProps {
   id: string;

@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import { Root, Move, PosSpec } from 'lib/dnd';
 import { State } from 'types/State';
 import { handleMove, handleInsert } from 'util/collectionUtils';
-import ArticlePolaroid from 'shared/components/ArticlePolaroid';
-import ArticlePolaroidSub from 'shared/components/ArticlePolaroidSub';
 import {
   insertClipboardArticleFragment,
   moveClipboardArticleFragment,
@@ -20,6 +18,7 @@ import { clipboardId } from 'constants/fronts';
 import { ArticleFragment as TArticleFragment } from 'shared/types/Collection';
 import ClipboardLevel from './clipboard/ClipboardLevel';
 import ArticleFragmentLevel from './clipboard/ArticleFragmentLevel';
+import CollectionItem from './FrontsEdit/CollectionComponents/CollectionItem';
 
 interface ClipboardProps {
   selectedArticleFragmentId: string | void;
@@ -56,8 +55,11 @@ class Clipboard extends React.Component<ClipboardProps> {
       <Root id="clipboard">
         <ClipboardLevel onMove={this.handleMove} onDrop={this.handleInsert}>
           {(articleFragment, afProps) => (
-            <ArticlePolaroid
-              id={articleFragment.uuid}
+            <CollectionItem
+              uuid={articleFragment.uuid}
+              parentId={clipboardId}
+              getNodeProps={() => afProps}
+              displayType="polaroid"
               onSelect={this.props.selectArticleFragment}
               isSelected={
                 !this.props.selectedArticleFragmentId ||
@@ -72,9 +74,12 @@ class Clipboard extends React.Component<ClipboardProps> {
                 onDrop={this.handleInsert}
               >
                 {(supporting, sProps) => (
-                  <ArticlePolaroidSub
-                    id={supporting.uuid}
+                  <CollectionItem
+                    uuid={supporting.uuid}
                     parentId={articleFragment.uuid}
+                    getNodeProps={() => sProps}
+                    size="small"
+                    displayType="polaroid"
                     onSelect={this.props.selectArticleFragment}
                     isSelected={
                       !this.props.selectedArticleFragmentId ||
@@ -85,7 +90,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                   />
                 )}
               </ArticleFragmentLevel>
-            </ArticlePolaroid>
+            </CollectionItem>
           )}
         </ClipboardLevel>
       </Root>

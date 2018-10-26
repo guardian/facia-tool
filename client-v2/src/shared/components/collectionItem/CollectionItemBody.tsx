@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import HoverActions from './CollectionHoverItems';
-import Thumbnail from './Thumbnail';
+import HoverActions from '../CollectionHoverItems';
+import Thumbnail from '../Thumbnail';
 
 export default styled('div')<{
   fade?: boolean;
@@ -15,7 +15,6 @@ export default styled('div')<{
   position: relative;
   min-height: ${({ size }) => (size === 'small' ? '35px' : '83px')}
   opacity: ${({ fade }) => (fade ? 0.5 : 1)};
-  background-color: white;
   :hover {
     background-color: #ededed;
 
