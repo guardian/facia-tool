@@ -186,11 +186,6 @@ const ArticleBody = ({
           )}
         </ArticleHeadingContainer>
         {size === 'default' && trailText && <Trail>{trailText}</Trail>}
-        <div>
-          {!isLive &&
-            !displayPlaceholders &&
-            (firstPublicationDate ? 'Taken Down' : 'Draft')}
-        </div>
       </CollectionItemContent>
       {size === 'default' &&
         (displayPlaceholders ? (
