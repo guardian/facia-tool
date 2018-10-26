@@ -99,7 +99,7 @@ interface ContainerProps extends ArticleComponentProps {
 
 type ComponentProps = {
   article: DerivedArticle | void;
-  isLoading: boolean;
+  isLoading?: boolean;
   size?: 'default' | 'small';
   children: ReactNode;
 } & ContainerProps;
