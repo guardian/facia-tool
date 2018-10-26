@@ -67,9 +67,6 @@ const state: any = {
           byline: 'external-byline',
           isLive: 'true',
           firstPublicationDate: '2018-10-19T10:30:39Z'
-        },
-        frontsMeta: {
-          tone: 'external-tone'
         }
       },
       ea2: {
@@ -81,9 +78,6 @@ const state: any = {
           byline: 'external-byline',
           isLive: 'false',
           firstPublicationDate: '2018-10-19T10:30:39Z'
-        },
-        frontsMeta: {
-          tone: 'external-tone'
         }
       },
       ea3: {
@@ -93,9 +87,6 @@ const state: any = {
           headline: 'external-headline',
           trailText: 'external-trailText',
           byline: 'external-byline',
-        },
-        frontsMeta: {
-          tone: 'external-tone'
         }
       }
     }
@@ -243,7 +234,6 @@ describe('Shared selectors', () => {
         uuid: 'af1',
         headline: 'external-headline',
         thumbnail: undefined,
-        tone: 'external-tone',
         trailText: 'external-trailText',
         kicker: 'external-pillar',
         byline: 'external-byline',
@@ -261,7 +251,6 @@ describe('Shared selectors', () => {
         uuid: 'af1',
         headline: 'fragment-headline',
         thumbnail: undefined,
-        tone: 'external-tone',
         trailText: 'fragment-trailText',
         kicker: 'fragment-kicker',
         byline: 'fragment-byline',
@@ -281,7 +270,6 @@ describe('Shared selectors', () => {
         uuid: 'af2',
         headline: 'external-headline',
         thumbnail: undefined,
-        tone: 'external-tone',
         trailText: 'external-trailText',
         kicker: 'external-pillar',
         byline: 'external-byline',
@@ -296,7 +284,6 @@ describe('Shared selectors', () => {
         uuid: 'af3',
         headline: 'external-headline',
         thumbnail: undefined,
-        tone: 'external-tone',
         trailText: 'external-trailText',
         kicker: 'external-pillar',
         byline: 'external-byline',

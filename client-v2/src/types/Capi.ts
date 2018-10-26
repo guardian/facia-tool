@@ -84,16 +84,16 @@ interface CapiArticle {
   urlPath: string;
   webPublicationDate?: string;
   elements: Element[];
-  pillarId: string;
-  pillarName: string;
+  pillarId?: string;
+  pillarName?: string;
   sectionId: string;
   sectionName: string;
   fields: CapiArticleFields;
-  frontsMeta: {
-    tone: string;
-  };
   tags?: Tag[];
   blocks: Blocks;
+  frontsMeta?: {
+    tone: string;
+  };
 }
 
 type CapiArticleWithMetadata = CapiArticle & { group?: number };

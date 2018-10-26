@@ -14,7 +14,7 @@ import { removeArticleFragmentFromClipboard } from 'actions/ArticleFragments';
 import Button from './input/ButtonDefault';
 import { ArticleComponentProps } from './Article';
 import Fadeable from './Fadeable';
-import { getToneColor } from 'shared/util/toneColorMap';
+import { getPillarColor } from 'shared/util/getPillarColor';
 import { getArticleLabel } from 'util/clipboardUtils';
 import { notLiveLabels } from 'constants/fronts';
 
@@ -54,8 +54,8 @@ const Thumbnail = styled('img')`
   width: 100%;
 `;
 
-const TonedKicker = styled('span')<{ tone: string, isLive: boolean }>`
-  color: ${({ tone, isLive }) => getToneColor(tone, isLive) || 'inherit'};
+const PillaredSection = styled('span')<{ pillar?: string, isLive: boolean }>`
+  color: ${({ pillar, isLive }) => getPillarColor(pillar, isLive) || 'inherit'};
   font-size: 13px;
   font-weight: bold;
 `;
@@ -101,7 +101,7 @@ const ArticleComponent = ({
           Delete
         </CornerButton>
         {article.thumbnail && <Thumbnail src={article.thumbnail} alt="" />}
-        <TonedKicker tone={article.tone} isLive={article.isLive}>{ getArticleLabel(article) }</TonedKicker>
+        <PillaredSection pillar={article.pillarId} isLive={article.isLive}>{ getArticleLabel(article) }</PillaredSection>
         {` ${truncate(article.headline, {
           length: 45 - getArticleLabel(article).length
         })}`}

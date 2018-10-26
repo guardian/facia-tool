@@ -146,16 +146,18 @@ class Feed extends React.Component<FeedProps, FeedState> {
                                 webTitle,
                                 webUrl,
                                 webPublicationDate,
+                                sectionName,
                                 elements,
                                 fields,
-                                frontsMeta: { tone }
+                                pillarId
                               }) => (
                                 <FeedItem
                                   key={webUrl}
                                   title={webTitle}
                                   href={webUrl}
                                   publicationDate={webPublicationDate}
-                                  tone={tone}
+                                  sectionName={sectionName}
+                                  pillarId={pillarId}
                                   internalPageCode={
                                     fields && getId(fields.internalPageCode)
                                   }

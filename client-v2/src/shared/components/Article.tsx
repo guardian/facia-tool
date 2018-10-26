@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import distanceInWords from 'date-fns/distance_in_words_to_now';
 import noop from 'lodash/noop';
 import startCase from 'lodash/startCase';
-import { toneColorMap, getToneColor } from 'shared/util/toneColorMap';
-
+import { getPillarColor } from 'shared/util/getPillarColor';
 import ButtonHoverAction from 'shared/components/input/ButtonHoverAction';
 import { getPaths } from '../../util/paths';
 import {
@@ -107,7 +106,8 @@ type ComponentProps = {
 interface ArticleBodyProps {
   firstPublicationDate?: string;
   scheduledPublicationDate?: string;
-  tone?: string;
+  sectionName: string;
+  pillarId?: string;
   kicker?: string;
   size?: 'default' | 'small';
   headline?: string;
@@ -123,7 +123,8 @@ interface ArticleBodyProps {
 const ArticleBody = ({
   firstPublicationDate,
   scheduledPublicationDate,
-  tone,
+  sectionName,
+  pillarId,
   kicker,
   size = 'default',
   headline,
@@ -147,7 +148,7 @@ const ArticleBody = ({
           </>
         )}
         {size === 'default' &&
-          isLive && <CollectionItemMetaHeading>{startCase(tone)}</CollectionItemMetaHeading>}
+          isLive && <CollectionItemMetaHeading>{startCase(sectionName)}</CollectionItemMetaHeading>}
         {(isLive || size === 'default') &&
           firstPublicationDate && (
             <PublicationDate>
@@ -175,7 +176,7 @@ const ArticleBody = ({
               {size === 'default' && <TextPlaceholder width={25} />}
             </>
           )}
-          <KickerHeading style={{ color: tone && toneColorMap[tone] }}>
+          <KickerHeading style={{ color: getPillarColor(pillarId, true) }}>
             {kicker}
           </KickerHeading>
           &nbsp;
@@ -269,7 +270,7 @@ const ArticleComponent = ({
       style={{
         borderTopColor:
           size === 'default' && article
-            ? getToneColor(article.tone, article.isLive)
+            ? getPillarColor(article.pillarId, article.isLive)
             : '#c9c9c9'
       }}
     >
@@ -281,6 +282,7 @@ const ArticleComponent = ({
             displayPlaceholders={true}
             onDelete={onDelete}
             size={size}
+            sectionName=''
           />
         )}
       {!article &&
@@ -290,6 +292,7 @@ const ArticleComponent = ({
             uuid={id}
             onDelete={onDelete}
             size={size}
+            sectionName=''
           />
         )}
     </ArticleBodyContainer>
