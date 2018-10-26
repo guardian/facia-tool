@@ -74,10 +74,16 @@ interface FrontsConfig {
   collections: CollectionConfigMap
 }
 
+interface StoryDetails {
+  group: number,
+  isBoosted: boolean
+}
+
 export {
   FrontConfig,
   CollectionConfig,
   FrontsConfig,
   FrontsConfigResponse,
-  FrontConfigMap
+  FrontConfigMap,
+  StoryDetails
 };
