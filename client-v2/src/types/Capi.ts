@@ -64,8 +64,8 @@ interface CapiArticleFields {
   trailText?: string;
   byline?: string;
   internalPageCode?: string;
-  isLive?: boolean;
-  firstPublicationDate?: CapiDate;
+  isLive?: string;
+  firstPublicationDate?: string;
   scheduledPublicationDate?: CapiDate;
   secureThumbnail?: string;
   thumbnail?: string | void;

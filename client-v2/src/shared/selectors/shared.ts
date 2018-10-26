@@ -66,7 +66,9 @@ const createArticleFromArticleFragmentSelector = () =>
         byline: articleFragment.meta.byline || externalArticle.fields.byline,
         kicker: articleFragment.meta.customKicker || externalArticle.pillarName,
         tone: externalArticle.frontsMeta.tone,
-        thumbnail: getThumbnail(articleFragment, externalArticle)
+        thumbnail: getThumbnail(articleFragment, externalArticle),
+        isLive: externalArticle.fields.isLive ? externalArticle.fields.isLive === 'true' : true,
+        firstPublicationDate: externalArticle.fields.firstPublicationDate
       };
     }
   );

@@ -24,7 +24,7 @@ const capiQuery = (
   search: async (params: any): Promise<CAPISearchQueryReponse> => {
     const response = await fetch(
       `${baseURL}search${qs({
-        ...params
+        ...params,
       })}`
     );
 

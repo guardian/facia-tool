@@ -64,7 +64,35 @@ const state: any = {
         fields: {
           headline: 'external-headline',
           trailText: 'external-trailText',
-          byline: 'external-byline'
+          byline: 'external-byline',
+          isLive: 'true',
+          firstPublicationDate: '2018-10-19T10:30:39Z'
+        },
+        frontsMeta: {
+          tone: 'external-tone'
+        }
+      },
+      ea2: {
+        id: 'ea2',
+        pillarName: 'external-pillar',
+        fields: {
+          headline: 'external-headline',
+          trailText: 'external-trailText',
+          byline: 'external-byline',
+          isLive: 'false',
+          firstPublicationDate: '2018-10-19T10:30:39Z'
+        },
+        frontsMeta: {
+          tone: 'external-tone'
+        }
+      },
+      ea3: {
+        id: 'ea3',
+        pillarName: 'external-pillar',
+        fields: {
+          headline: 'external-headline',
+          trailText: 'external-trailText',
+          byline: 'external-byline',
         },
         frontsMeta: {
           tone: 'external-tone'
@@ -99,11 +127,13 @@ const state: any = {
     },
     af2: {
       uuid: 'af2',
-      meta: {}
+      meta: {},
+      id: 'ea2'
     },
     af3: {
       uuid: 'af3',
-      meta: {}
+      meta: {},
+      id: 'ea3'
     },
     af4: {
       uuid: 'af4',
@@ -216,7 +246,9 @@ describe('Shared selectors', () => {
         tone: 'external-tone',
         trailText: 'external-trailText',
         kicker: 'external-pillar',
-        byline: 'external-byline'
+        byline: 'external-byline',
+        isLive: true,
+        firstPublicationDate: '2018-10-19T10:30:39Z'
       });
       expect(
         selector(state, 'af1WithOverrides')
@@ -232,11 +264,44 @@ describe('Shared selectors', () => {
         tone: 'external-tone',
         trailText: 'fragment-trailText',
         kicker: 'fragment-kicker',
-        byline: 'fragment-byline'
+        byline: 'fragment-byline',
+        isLive: true,
+        firstPublicationDate: '2018-10-19T10:30:39Z'
       });
       expect(selector(state, 'invalid')).toEqual(
         undefined
       );
+    });
+    it('should set isLive property to false if article is not live', () => {
+      const selector = createArticleFromArticleFragmentSelector();
+      expect(selector(state, 'af2')).toEqual({
+        id: 'ea2',
+        pillarName: 'external-pillar',
+        firstPublicationDate: "2018-10-19T10:30:39Z",
+        uuid: 'af2',
+        headline: 'external-headline',
+        thumbnail: undefined,
+        tone: 'external-tone',
+        trailText: 'external-trailText',
+        kicker: 'external-pillar',
+        byline: 'external-byline',
+        isLive: false,
+      });
+    });
+    it('should set isLive to true if property is missing', () => {
+      const selector = createArticleFromArticleFragmentSelector();
+      expect(selector(state, 'af3')).toEqual({
+        id: 'ea3',
+        pillarName: 'external-pillar',
+        uuid: 'af3',
+        headline: 'external-headline',
+        thumbnail: undefined,
+        tone: 'external-tone',
+        trailText: 'external-trailText',
+        kicker: 'external-pillar',
+        byline: 'external-byline',
+        isLive: true,
+      });
     });
   });
 

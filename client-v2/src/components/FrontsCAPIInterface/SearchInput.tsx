@@ -199,7 +199,7 @@ class FrontsCAPISearchInput extends React.Component<
               q,
               'page-size': '20',
               'show-elements': 'image',
-              'show-fields': 'internalPageCode,trailText',
+              'show-fields': 'internalPageCode,trailText,firstPublicationDate,isLive',
               ...dateParams
             }}
             poll={30000}

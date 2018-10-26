@@ -4,8 +4,9 @@ import distanceInWords from 'date-fns/distance_in_words_to_now';
 import startCase from 'lodash/startCase';
 
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
-import toneColorMap from 'shared/util/toneColorMap';
+import { getToneColor, toneColorMap } from 'shared/util/toneColorMap';
 import { getPaths } from '../util/paths';
+import { notLiveLabels } from 'constants/fronts';
 
 const LinkContainer = styled('div')`
   background-color: #f6f6f6;
@@ -78,6 +79,8 @@ interface FeedItemProps {
   tone: string;
   internalPageCode: string | void;
   publicationDate?: string;
+  firstPublicationDate?: string;
+  isLive: boolean;
 }
 
 const dragStart = (
@@ -92,7 +95,9 @@ const FeedItem = ({
   href,
   tone,
   publicationDate,
-  internalPageCode
+  internalPageCode,
+  firstPublicationDate,
+  isLive
 }: FeedItemProps) => (
   <Container
     draggable={true}
@@ -101,10 +106,11 @@ const FeedItem = ({
     <MetaContainer>
       <Tone
         style={{
-          color: toneColorMap[tone] || '#c9c9c9'
+          color: getToneColor(tone, isLive) || '#c9c9c9'
         }}
       >
-        {startCase(tone)}
+        {isLive && startCase(tone)}
+        {!isLive && (firstPublicationDate ? notLiveLabels.takendDown: notLiveLabels.draft)}
       </Tone>
       {publicationDate && (
         <FirstPublished>

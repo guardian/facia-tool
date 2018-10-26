@@ -6,7 +6,7 @@ import noop from 'lodash/noop';
 import startCase from 'lodash/startCase';
 
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
-import toneColorMap from 'shared/util/toneColorMap';
+import { toneColorMap, getToneColor } from 'shared/util/toneColorMap';
 import ButtonHoverAction from 'shared/components/input/ButtonHoverAction';
 import { getPaths } from '../../util/paths';
 
@@ -16,6 +16,7 @@ import {
 } from '../selectors/shared';
 import { State } from '../types/State';
 import { DerivedArticle } from '../types/Article';
+import { notLiveLabels } from 'constants/fronts';
 
 
 interface ArticleComponentProps {
@@ -74,6 +75,10 @@ const Tone = styled('div')`
   padding-top: 2px;
   font-size: 12px;
   font-family: TS3TextSans-Bold;
+`;
+
+const NotLiveContainer = styled(Tone)`
+  color: #ff7f0f;
 `;
 
 const ArticleContainer = styled('div')`
@@ -185,7 +190,7 @@ const ArticleHeadingContainerSmall = styled('div')`
   text-overflow: ellipsis;
 `;
 
-const FirstPublished = styled('div')`
+const PublicationDate = styled('div')`
   font-size: 12px;
   margin: 2px 0;
 `;
@@ -219,19 +224,27 @@ const ArticleComponent = ({
     >
       <ArticleBodyContainer
         fade={fade}
+        data-testid="article-body"
         key={article.headline}
         style={{
           borderTopColor:
-            size === 'default' ? toneColorMap[article.tone] : '#c9c9c9'
+            size === 'default' ? getToneColor(article.tone, article.isLive) : '#c9c9c9'
         }}
       >
         <ArticleMetaContainer>
-          {size === 'default' && <Tone>{startCase(article.tone)}</Tone>}
-          {article.firstPublicationDate && (
-            <FirstPublished>
+          {size === 'default' && article.isLive && <Tone>{startCase(article.tone)}</Tone>}
+          {(article.isLive || size === 'default') && article.firstPublicationDate && (
+            <PublicationDate>
               {distanceInWords(new Date(article.firstPublicationDate))}
-            </FirstPublished>
+            </PublicationDate>
           )}
+          {!article.isLive && <NotLiveContainer>
+              {(article.firstPublicationDate ? notLiveLabels.takenDown: notLiveLabels.draft)}
+          </NotLiveContainer>}
+          { article.scheduledPublicationDate && <PublicationDate>
+              {distanceInWords(new Date(article.scheduledPublicationDate))}
+            </PublicationDate>
+          }
           <ShortVerticalPinline />
         </ArticleMetaContainer>
         <ArticleContentContainer>
@@ -248,10 +261,6 @@ const ArticleComponent = ({
           </ArticleHeadingContainer>
           {size === 'default' &&
             article.trailText && <Trail>{article.trailText}</Trail>}
-          <div>
-            {!article.isLive &&
-              (article.firstPublicationDate ? 'Taken Down' : 'Draft')}
-          </div>
         </ArticleContentContainer>
         {size === 'default' && (
           <Thumbnail
@@ -316,6 +325,6 @@ const createMapStateToProps = () => {
   });
 };
 
-export { ArticleComponentProps }
+export { ArticleComponentProps, ArticleComponent }
 
 export default connect(createMapStateToProps)(ArticleComponent);
