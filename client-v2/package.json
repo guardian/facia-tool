@@ -14,6 +14,7 @@
     "dev-server": "yarn compileWithBabel $(yarn bin)/webpack-dev-server --config config/webpack.config.dev.js",
     "dev": "yarn install && yarn dev-server --open",
     "test": "yarn jest",
+    "test:coverage": "yarn jest --coverage",
     "run-checks": "yarn test && yarn lint"
   },
   "devDependencies": {
