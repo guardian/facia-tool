@@ -48,6 +48,20 @@ const HoverActionsAreaOverlay = styled('div')`
   padding: 4px 8px;
 `;
 
+const HideMetaDataOnToolTipDisplay = styled('div')<{
+  size?: string; // Article Component size
+}>`
+  background-color: #ededed;
+  position: absolute;
+
+  width: 70px;
+  height: ${({ size }) => (size === 'small' ? '90%' : '180%')};
+  margin: 2px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+`;
+
 const Thumbnail = styled('div')`
   width: 130px;
   height: 83px;
@@ -79,13 +93,15 @@ const ArticleBodyContainer = styled('div')<{
   ${HoverActionsAreaOverlay} {
     bottom: 0;
     left: 0;
-    opacity: 1;
-    position: absolute;
     right: 0;
+    position: absolute;
     visibility: hidden;
     transition: opacity ${({ transitionTime }) => transitionTime}s,
       visibility 0s linear ${({ transitionTime }) => transitionTime}s;
     opacity: 0;
+    ${HideMetaDataOnToolTipDisplay} {
+      visibility: hidden;
+    }
   }
 
   ${Tone} {
@@ -111,6 +127,9 @@ const ArticleBodyContainer = styled('div')<{
       transition-delay: 0s;
       visibility: visible;
       opacity: 1;
+      ${HideMetaDataOnToolTipDisplay} {
+        visibility: visible;
+      }
     }
   }
 `;
@@ -244,20 +263,27 @@ const ArticleComponent = ({
               { text: 'View', component: HoverViewButton },
               { text: 'Ophan', component: HoverOphanButton }
             ]}
-            buttonprops={{
+            buttonProps={{
               isLive: article.isLive,
               urlPath: article.urlPath,
               onDelete
             }}
+            size={size}
+            toolTipPosition={'top'}
+            toolTipAlign={'left'}
           />
           <HoverActionsButtonWrapper
             buttons={[{ text: 'Delete', component: HoverDeleteButton }]}
-            buttonprops={{
+            buttonProps={{
               isLive: article.isLive,
               urlPath: article.urlPath,
               onDelete
             }}
+            size={size}
+            toolTipPosition={'top'}
+            toolTipAlign={'right'}
           />
+          <HideMetaDataOnToolTipDisplay size={size} className="tada" />
         </HoverActionsAreaOverlay>
       </ArticleBodyContainer>
       {children}

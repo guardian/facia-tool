@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import ButtonCircular from './ButtonCircular';
 import { getPaths } from '../../../util/paths';
-import { ButtonPropsForWrapper } from './HoverActionButtonWrapper';
+import { ButtonPropsFromWrapper } from './HoverActionButtonWrapper';
 
 import {
   View,
@@ -40,6 +40,7 @@ const ActionButton = ButtonCircular.extend`
     danger ? '#ff7f0f' : '#333333'};
   color: #fff;
   margin: 1.5px;
+  margin-bottom: 2px;
   line-height: 1;
   &:hover {
     background: ${({ danger }: { danger?: boolean }) =>
@@ -51,13 +52,13 @@ ActionButton.defaultProps = {
   danger: false
 };
 
-export interface ButtonPropsForArticle {
+interface ButtonPropsFromArticle {
   isLive?: boolean;
   urlPath?: string;
   onDelete?: () => void;
 }
 
-type ButtonProps = ButtonPropsForArticle & ButtonPropsForWrapper;
+type ButtonProps = ButtonPropsFromArticle & ButtonPropsFromWrapper;
 
 const HoverDeleteButton = ({
   showToolTip,
@@ -97,7 +98,10 @@ const HoverOphanButton = ({
   hideToolTip
 }: ButtonProps) =>
   isLive ? (
-    <Link href={getPaths(`https://www.theguardian.com/${urlPath}`).ophan}>
+    <Link
+      href={getPaths(`https://www.theguardian.com/${urlPath}`).ophan}
+      data-testid={'ophan-hover-button'}
+    >
       <ActionButton onMouseEnter={showToolTip} onMouseLeave={hideToolTip}>
         <Icon src={hoverActionIcons.ophan} alt="Ophan" />
       </ActionButton>

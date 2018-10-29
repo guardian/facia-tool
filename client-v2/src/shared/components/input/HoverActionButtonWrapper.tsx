@@ -2,23 +2,49 @@ import React from 'react';
 import styled from 'styled-components';
 import ToolTip from './HoverActionToolTip';
 
-const HoverActionsDiv = styled('div')`
-  display: flex;
+const HoverActionsWrapper = styled('div')<{
+  size?: string; // Article Component size
+}>`
   bottom: 0;
-  justify-content: space-around;
+  position: relative;
+  z-index: 10;
+`;
+
+const ToolTipWrapper = styled('div')<{
+  size?: string; // Article Component size
+  toolTipPosition: string;
+  toolTipAlign: string;
+}>`
+  position: absolute;
+  top: ${props => (props.toolTipPosition === 'bottom' ? '30px' : null)};
+  left: ${props =>
+    props.toolTipPosition === 'left' || props.toolTipAlign === 'left'
+      ? '0px'
+      : null};
+  bottom: ${props => (props.toolTipPosition === 'top' ? '30px' : null)};
+
+  right: ${props =>
+    props.toolTipAlign === 'center'
+      ? '-10px'
+      : props.toolTipPosition === 'right' || props.toolTipAlign === 'right'
+        ? '0px'
+        : null};
 `;
 
 interface HoverButtonInterface {
   text: string;
-  component: React.ComponentType<ButtonPropsForWrapper>;
+  component: React.ComponentType<ButtonPropsFromWrapper>;
 }
-export interface ButtonPropsForWrapper {
+export interface ButtonPropsFromWrapper {
   showToolTip: () => void;
   hideToolTip: () => void;
 }
 interface WrapperProps<ButtonProps> {
   buttons: HoverButtonInterface[];
-  buttonprops: ButtonProps;
+  buttonProps: ButtonProps;
+  size?: 'default' | 'small'; // Article Component size
+  toolTipPosition: 'top' | 'left' | 'bottom' | 'right';
+  toolTipAlign: 'left' | 'center' | 'right';
 }
 
 interface WrapperState {
@@ -39,16 +65,23 @@ class HoverActionsButtonWrapper<ButtonProps> extends React.Component<
   }
 
   public render() {
-    const { buttons, buttonprops } = this.props;
+    const { buttons, buttonProps, toolTipPosition, toolTipAlign } = this.props;
     const { isToolTipVisible, toolTipText } = this.state;
 
     return (
-      <HoverActionsDiv>
-        {isToolTipVisible ? <ToolTip text={toolTipText} /> : null}
+      <HoverActionsWrapper size={this.props.size}>
+        {isToolTipVisible ? (
+          <ToolTipWrapper
+            toolTipPosition={toolTipPosition}
+            toolTipAlign={toolTipAlign}
+          >
+            <ToolTip text={toolTipText} />
+          </ToolTipWrapper>
+        ) : null}
         {buttons.map(ButtonObj => (
           <ButtonObj.component
             key={ButtonObj.text}
-            {...buttonprops}
+            {...buttonProps}
             showToolTip={() => {
               this.setToolTipText(ButtonObj.text);
               this.showToolTip();
@@ -58,7 +91,7 @@ class HoverActionsButtonWrapper<ButtonProps> extends React.Component<
             }}
           />
         ))}
-      </HoverActionsDiv>
+      </HoverActionsWrapper>
     );
   }
 
