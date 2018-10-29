@@ -4,8 +4,7 @@ import {
   cleanup,
   fireEvent,
   waitForElement,
-  wait,
-  prettyDOM
+  wait
 } from 'react-testing-library';
 import { HoverActionsButtonWrapper } from '../HoverActionButtonWrapper';
 import {
@@ -14,60 +13,77 @@ import {
   HoverOphanButton
 } from '../HoverActionButtons';
 
-afterAll(cleanup);
+afterEach(cleanup);
 
 // Mocks //
 const onDelete = () => {};
-const article = {
-  isLive: false,
-  urlPath:
-    'environment/2017/dec/14/a-different-dimension-of-loss-great-insect-die-off-sixth-extinction'
-};
-
-const { container, getByAltText, getByText, queryByText } = render(
+const Buttons = [
+  { text: 'View', component: HoverViewButton },
+  { text: 'Ophan', component: HoverOphanButton },
+  { text: 'Delete', component: HoverDeleteButton }
+];
+const HoverWrapper = (
   <HoverActionsButtonWrapper
-    buttons={[
-      { text: 'View', component: HoverViewButton },
-      { text: 'Ophan', component: HoverOphanButton },
-      { text: 'Delete', component: HoverDeleteButton }
-    ]}
-    buttonprops={{
-      isLive: article.isLive,
-      urlPath: article.urlPath,
+    buttons={Buttons}
+    buttonProps={{
+      isLive: true,
+      urlPath: 'test-string',
       onDelete
     }}
+    toolTipPosition={'top'}
+    toolTipAlign={'center'}
   />
 );
-const wrapper = container.firstChild;
-const viewButtonIcon = getByAltText('View');
-const deleteButtonIcon = getByAltText('Delete');
 
+// Tests //
 describe('Hover Action Button Wrapper', () => {
-  it('should render Wrapper with correct Buttons', () => {
+  it('should render Wrapper with Buttons', () => {
+    const { container, getByAltText } = render(HoverWrapper);
+    const wrapper = container.firstChild as ChildNode;
     expect(wrapper).toBeTruthy();
-    if (wrapper) {
-      expect(wrapper.childNodes.length).toEqual(2);
-    }
-    expect(viewButtonIcon).toBeTruthy();
-    expect(deleteButtonIcon).toBeTruthy();
+    expect(wrapper.childNodes.length).toEqual(3);
+    expect(getByAltText('View')).toBeTruthy();
+    expect(getByAltText('Ophan')).toBeTruthy();
+    expect(getByAltText('Delete')).toBeTruthy();
+  });
+
+  it('should render Wrapper with without Ophan Button when Draft', () => {
+    const { container } = render(
+      <HoverActionsButtonWrapper
+        buttons={Buttons}
+        buttonProps={{
+          isLive: false, // testing isLive
+          urlPath: 'test-string',
+          onDelete
+        }}
+        toolTipPosition={'top'}
+        toolTipAlign={'center'}
+      />
+    );
+
+    const wrapper = container.firstChild as HTMLElement;
+    expect(wrapper.childNodes.length).toEqual(2);
+    // TODO explicitly check ophanButton is NOT rendered using queryByAltText - Type error in testing library
+    const ophanButton = wrapper.querySelector(
+      '[data-testid="ophan-hover-button"]'
+    );
+    expect(ophanButton).toBeFalsy();
   });
 });
 
 describe('Hover Action Button ToolTip', () => {
-  it('should display correct tool tip on mouse enter', () => {
-    const button = viewButtonIcon.parentNode;
-    if (button) {
-      fireEvent.mouseEnter(button as HTMLButtonElement);
-    }
-    return waitForElement(() => getByText('View')).then(tooltip => {
-      expect(tooltip).toBeTruthy();
-    });
+  it('should display correct tool tip on mouseEnter', async () => {
+    const { getByAltText, getByText } = render(HoverWrapper);
+    const button = getByAltText('Ophan').parentNode as HTMLButtonElement;
+    fireEvent.mouseEnter(button);
+    const ToolTip = await waitForElement(() => getByText('Ophan'));
+    expect(ToolTip).toBeTruthy();
   });
-  it('should hide tool tip on mouse leave', () => {
-    const button = viewButtonIcon.parentNode;
-    if (button) {
-      fireEvent.mouseLeave(button as HTMLButtonElement);
-    }
-    return wait(() => expect(queryByText('View')).toBeNull());
+
+  it('should hide tool tip on mouseLeave', () => {
+    const { getByAltText, queryByText } = render(HoverWrapper);
+    const button = getByAltText('View').parentNode as HTMLButtonElement;
+    fireEvent.mouseLeave(button);
+    wait(() => expect(queryByText('View')).toBeFalsy());
   });
 });
