@@ -5,7 +5,6 @@ import distanceInWords from 'date-fns/distance_in_words_to_now';
 import noop from 'lodash/noop';
 import startCase from 'lodash/startCase';
 import { getPillarColor } from 'shared/util/getPillarColor';
-import ButtonHoverAction from 'shared/components/input/ButtonHoverAction';
 import { getPaths } from '../../util/paths';
 import {
   createArticleFromArticleFragmentSelector,
@@ -21,11 +20,16 @@ import BasePlaceholder from './BasePlaceholder';
 import CollectionItemBody from './CollectionItemBody';
 import CollectionItemContainer from './CollectionItemContainer';
 import Thumbnail from './Thumbnail';
-import HoverActions, {
-  HoverActionsLeft,
-  HoverActionsRight
+import { HoverActionsButtonWrapper } from './input/HoverActionButtonWrapper';
+import {
+  HoverDeleteButton,
+  HoverViewButton,
+  HoverOphanButton
+} from './input/HoverActionButtons';
+import {
+  HoverActionsAreaOverlay,
+  HideMetaDataOnToolTipDisplay
 } from './CollectionHoverItems';
-import Link from './Link';
 import CollectionItemHeading from './CollectionItemHeading';
 import CollectionItemMetaContainer from './CollectionItemMetaContainer';
 import CollectionItemContent from './CollectionItemContent';
@@ -148,7 +152,11 @@ const ArticleBody = ({
           </>
         )}
         {size === 'default' &&
-          isLive && <CollectionItemMetaHeading>{startCase(sectionName)}</CollectionItemMetaHeading>}
+          isLive && (
+            <CollectionItemMetaHeading>
+              {startCase(sectionName)}
+            </CollectionItemMetaHeading>
+          )}
         {(isLive || size === 'default') &&
           firstPublicationDate && (
             <PublicationDate>
@@ -198,38 +206,34 @@ const ArticleBody = ({
             }}
           />
         ))}
-      <HoverActions>
-        <HoverActionsLeft>
-          <Link
-            href={
-              isLive
-                ? `https://www.theguardian.com/${urlPath}`
-                : `https://preview.gutools.co.uk/${urlPath}`
-            }
-          >
-            <ButtonHoverAction action="view" title="View" />
-          </Link>
-          {isLive ? (
-            <Link
-              href={getPaths(`https://www.theguardian.com/${urlPath}`).ophan}
-            >
-              <ButtonHoverAction action="ophan" title="Ophan" />
-            </Link>
-          ) : null}
-        </HoverActionsLeft>
-        <HoverActionsRight>
-          <ButtonHoverAction
-            action="delete"
-            danger
-            onClick={(e: React.SyntheticEvent) => {
-              // stop the parent from opening the edit panel
-              e.stopPropagation();
-              onDelete(uuid);
-            }}
-            title="Delete"
-          />
-        </HoverActionsRight>
-      </HoverActions>
+      <HoverActionsAreaOverlay>
+        <HoverActionsButtonWrapper
+          buttons={[
+            { text: 'View', component: HoverViewButton },
+            { text: 'Ophan', component: HoverOphanButton }
+          ]}
+          buttonProps={{
+            isLive,
+            urlPath,
+            onDelete
+          }}
+          size={size}
+          toolTipPosition={'top'}
+          toolTipAlign={'left'}
+        />
+        <HoverActionsButtonWrapper
+          buttons={[{ text: 'Delete', component: HoverDeleteButton }]}
+          buttonProps={{
+            isLive,
+            urlPath,
+            onDelete
+          }}
+          size={size}
+          toolTipPosition={'top'}
+          toolTipAlign={'right'}
+        />
+        <HideMetaDataOnToolTipDisplay size={size} />
+      </HoverActionsAreaOverlay>
     </>
   );
 };
@@ -255,7 +259,7 @@ const ArticleComponent = ({
     onDragOver={onDragOver}
     onDragEnter={onDragEnter}
     onDrop={onDrop}
-    onClick={(e) => {
+    onClick={e => {
       if (isLoading || !article) {
         return;
       }
@@ -282,7 +286,7 @@ const ArticleComponent = ({
             displayPlaceholders={true}
             onDelete={onDelete}
             size={size}
-            sectionName=''
+            sectionName=""
           />
         )}
       {!article &&
@@ -292,7 +296,7 @@ const ArticleComponent = ({
             uuid={id}
             onDelete={onDelete}
             size={size}
-            sectionName=''
+            sectionName=""
           />
         )}
     </ArticleBodyContainer>
