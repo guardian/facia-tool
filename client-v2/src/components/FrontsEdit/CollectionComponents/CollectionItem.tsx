@@ -60,7 +60,10 @@ const ArticleContainer = ({
           onClick={() => onSelect(uuid)}
           fade={!isSelected}
           size={size}
-        />
+          displayType={displayType}
+        >
+          {children}
+        </SnapLink>
       );
     default:
       return <p>Item with id {uuid} has unknown collection item type {type}</p>

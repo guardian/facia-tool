@@ -1,7 +1,9 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
-export default styled('div')`
+export default styled('div')<{
+  displayType?: 'default' | 'polaroid'
+}>`
   position: relative;
-  width: calc(100% - 210px);
+  ${({ displayType }) => displayType === 'default' && css`width: calc(100% - 210px);`}
   padding: 0 8px;
 `;

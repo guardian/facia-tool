@@ -26,7 +26,7 @@ interface SnapLinkProps {
   size?: 'default' | 'small';
   displayType?: 'default' | 'polaroid';
   fade?: boolean;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
   onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
@@ -55,15 +55,15 @@ const SnapLink = ({
           <CollectionItemMetaHeading>Snap link</CollectionItemMetaHeading>
         </CollectionItemMetaContainer>
       )}
-      {displayType === 'default' ? (
-        <CollectionItemContent>
+      <CollectionItemContent displayType={displayType}>
+        {displayType === 'default' ? (
           <CollectionItemHeading>
             Snaplink placeholder (Drag and drop as usual.)
           </CollectionItemHeading>
-        </CollectionItemContent>
-      ) : (
-        'Snaplink placeholder (Drag and drop as usual.)'
-      )}
+        ) : (
+          'Snaplink placeholder (Drag and drop as usual.)'
+        )}
+      </CollectionItemContent>
       {size === 'default' && <Thumbnail />}
       <HoverActions>
         <HoverActionsLeft />

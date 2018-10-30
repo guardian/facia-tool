@@ -9,6 +9,7 @@ import HoverActions, {
   HoverActionsRight
 } from '../CollectionHoverItems';
 import ButtonHoverAction from '../input/ButtonHoverAction';
+import CollectionItemContent from '../collectionItem/CollectionItemContent';
 
 const Thumbnail = styled('img')`
   width: 100%;
@@ -36,12 +37,14 @@ const ArticlePolaroidComponent = ({
   return (
     <>
       {size === 'default' && thumbnail && <Thumbnail src={thumbnail} alt="" />}
-      <TonedKicker tone={tone} isLive={isLive}>
-        {articleLabel}
-      </TonedKicker>
-      {` ${truncate(headline, {
-        length: 45 - articleLabel.length
-      })}`}
+      <CollectionItemContent displayType="polaroid">
+        <TonedKicker tone={tone} isLive={isLive}>
+          {articleLabel}
+        </TonedKicker>
+        {` ${truncate(headline, {
+          length: 45 - articleLabel.length
+        })}`}
+      </CollectionItemContent>
       <HoverActions>
         <HoverActionsLeft />
         <HoverActionsRight>
