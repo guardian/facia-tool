@@ -213,8 +213,8 @@ const ArticleBody = ({
             { text: 'Ophan', component: HoverOphanButton }
           ]}
           buttonProps={{
-            isLive: isLive,
-            urlPath: urlPath,
+            isLive,
+            urlPath,
             onDelete
           }}
           size={size}
@@ -224,8 +224,8 @@ const ArticleBody = ({
         <HoverActionsButtonWrapper
           buttons={[{ text: 'Delete', component: HoverDeleteButton }]}
           buttonProps={{
-            isLive: isLive,
-            urlPath: urlPath,
+            isLive,
+            urlPath,
             onDelete
           }}
           size={size}
