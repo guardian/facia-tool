@@ -4,11 +4,11 @@ import {
   HideMetaDataOnToolTipDisplay
 } from '../CollectionHoverItems';
 import Thumbnail from '../Thumbnail';
-import { CollectionItemDisplayTypes } from 'shared/types/Collection';
+import { CollectionItemDisplayTypes, CollectionItemSizes } from 'shared/types/Collection';
 
 export default styled('div')<{
   fade?: boolean;
-  size?: 'default' | 'small';
+  size?: CollectionItemSizes;
   tone?: string | void;
   displayType?: CollectionItemDisplayTypes;
 }>`

@@ -11,7 +11,7 @@ import {
   HoverActionsAreaOverlay,
   HideMetaDataOnToolTipDisplay
 } from '../CollectionHoverItems';
-import { ArticleFragment } from 'shared/types/Collection';
+import { ArticleFragment, CollectionItemSizes } from 'shared/types/Collection';
 import {
   selectSharedState,
   articleFragmentSelector
@@ -26,7 +26,7 @@ import { CollectionItemDisplayTypes } from 'shared/types/Collection';
 interface SnapLinkProps {
   id: string;
   draggable?: boolean;
-  size?: 'default' | 'small';
+  size?: CollectionItemSizes;
   displayType?: CollectionItemDisplayTypes;
   fade?: boolean;
   children?: React.ReactNode;
@@ -73,9 +73,7 @@ const SnapLink = ({
         )}
       </CollectionItemContent>
       {size === 'default' && displayType === 'default' && <Thumbnail />}
-      <HoverActionsAreaOverlay>
-        {/* Extra <div /> required for Overlay component's flex justify-content: space-between */}
-        <div />
+      <HoverActionsAreaOverlay displayType={displayType}>
         <HoverActionsButtonWrapper
           buttons={[{ text: 'Delete', component: HoverDeleteButton }]}
           buttonProps={{

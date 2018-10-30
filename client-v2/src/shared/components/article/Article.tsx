@@ -16,7 +16,7 @@ import CollectionItemContainer from '../collectionItem/CollectionItemContainer';
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
 import ArticleBodyPolaroid from './ArticleBodyPolaroid';
 import ArticleBodyDefault, { ArticleBodyProps } from './ArticleBodyDefault';
-import { CollectionItemDisplayTypes } from 'shared/types/Collection';
+import { CollectionItemDisplayTypes, CollectionItemSizes } from 'shared/types/Collection';
 import { getPillarColor } from 'shared/util/getPillarColor';
 
 const ArticleBodyContainer = styled(CollectionItemBody)`
@@ -47,7 +47,7 @@ type ComponentProps = {
   article: DerivedArticle | void;
   isLoading?: boolean;
   displayType?: CollectionItemDisplayTypes;
-  size?: 'default' | 'small';
+  size?: CollectionItemSizes;
   children: React.ReactNode;
 } & ContainerProps;
 

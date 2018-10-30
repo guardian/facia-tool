@@ -18,6 +18,7 @@ import {
   HoverActionsAreaOverlay,
   HideMetaDataOnToolTipDisplay
 } from '../CollectionHoverItems';
+import { CollectionItemSizes } from 'shared/types/Collection';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   width: 130px;
@@ -65,7 +66,7 @@ interface ArticleBodyProps {
   scheduledPublicationDate?: string;
   pillarId?: string;
   kicker?: string;
-  size?: 'default' | 'small';
+  size?: CollectionItemSizes;
   headline?: string;
   trailText?: string;
   thumbnail?: string | void;
@@ -89,7 +90,6 @@ const articleBodyDefault = ({
   thumbnail,
   isLive,
   urlPath,
-  uuid,
   displayPlaceholders,
   onDelete
 }: ArticleBodyProps) => {
@@ -116,7 +116,7 @@ const articleBodyDefault = ({
               {distanceInWords(new Date(firstPublicationDate))}
             </PublicationDate>
           )}
-        {!isLive && (
+        {!isLive && !displayPlaceholders && (
           <NotLiveContainer>
             {firstPublicationDate
               ? notLiveLabels.takenDown

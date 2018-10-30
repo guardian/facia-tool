@@ -17,6 +17,8 @@ import {
   HoverActionsAreaOverlay,
   HideMetaDataOnToolTipDisplay
 } from '../CollectionHoverItems';
+import ImagePlaceholder from '../ImagePlaceholder';
+import TextPlaceholder from '../TextPlaceholder';
 
 const PillaredSection = styled('span')<{ pillar?: string; isLive?: boolean }>`
   color: ${({ pillar, isLive }) => getPillarColor(pillar, isLive) || 'inherit'};
@@ -30,6 +32,7 @@ const ArticlePolaroidComponent = ({
   size = 'default',
   onDelete,
   headline,
+  displayPlaceholders,
   pillarId,
   thumbnail,
   sectionName,
@@ -39,24 +42,33 @@ const ArticlePolaroidComponent = ({
     getArticleLabel(firstPublicationDate, sectionName, isLive) || '';
   return (
     <>
-      {size === 'default' &&
-        thumbnail && (
-          <PolaroidThumbnail
-            style={{
-              backgroundImage: `url('${thumbnail}')`
-            }}
-          />
-        )}
+      {size === 'default' && displayPlaceholders ? (
+        <ImagePlaceholder height={108} />
+      ) : (
+        <PolaroidThumbnail
+          style={{
+            backgroundImage: `url('${thumbnail}')`
+          }}
+        />
+      )}
       <CollectionItemContent displayType="polaroid">
-        <PillaredSection pillar={pillarId} isLive={isLive}>
-          {articleLabel}
-        </PillaredSection>
-        {` ${truncate(headline, {
-          length: 45 - articleLabel.length
-        })}`}
+        {displayPlaceholders ? (
+          <>
+            <TextPlaceholder />
+            <TextPlaceholder width={25} />
+          </>
+        ) : (
+          <>
+            <PillaredSection pillar={pillarId} isLive={isLive}>
+              {articleLabel}
+            </PillaredSection>
+            {` ${truncate(headline, {
+              length: 45 - articleLabel.length
+            })}`}
+          </>
+        )}
       </CollectionItemContent>
-      <HoverActionsAreaOverlay>
-        <div />
+      <HoverActionsAreaOverlay displayType="polaroid">
         <HoverActionsButtonWrapper
           buttons={[
             { text: 'View', component: HoverViewButton },

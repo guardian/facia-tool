@@ -1,8 +1,11 @@
 import styled from 'styled-components';
+import { CollectionItemDisplayTypes } from 'shared/types/Collection';
 
-const HoverActionsAreaOverlay = styled('div')`
+const HoverActionsAreaOverlay = styled('div')<{
+  displayType?: CollectionItemDisplayTypes
+}>`
   display: flex;
-  justify-content: space-between;
+  justify-content: ${({ displayType }) => displayType === 'default' ? 'space-between' : 'flex-end'};
   padding: 4px 8px;
 `;
 
