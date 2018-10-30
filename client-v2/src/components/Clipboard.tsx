@@ -7,7 +7,9 @@ import { handleMove, handleInsert } from 'util/collectionUtils';
 import {
   insertClipboardArticleFragment,
   moveClipboardArticleFragment,
-  copyClipboardArticleFragment
+  copyClipboardArticleFragment,
+  removeArticleFragmentFromClipboard,
+  removeSupportingArticleFragmentFromClipboard
 } from 'actions/ArticleFragments';
 import {
   editorSelectArticleFragment,
@@ -23,7 +25,9 @@ import CollectionItem from './FrontsEdit/CollectionComponents/CollectionItem';
 interface ClipboardProps {
   selectedArticleFragmentId: string | void;
   selectArticleFragment: (id: string) => void;
-  clearArticleFragmentSelection: (id: string) => void;
+  clearArticleFragmentSelection: () => void;
+  removeCollectionItem: (id: string) => void;
+  removeSupportingCollectionItem: (parentId: string, id: string) => void;
   dispatch: Dispatch;
 }
 
@@ -44,9 +48,19 @@ class Clipboard extends React.Component<ClipboardProps> {
     handleInsert(e, insertClipboardArticleFragment, this.props.dispatch, to);
   };
 
-  public clearArticleFragmentSelectionIfNeeded = (articleId: string) => {
-    if (articleId === this.props.selectedArticleFragmentId) {
-      this.props.clearArticleFragmentSelection(clipboardId);
+  public removeCollectionItem = (id: string) => {
+    this.props.removeCollectionItem(id);
+    this.clearArticleFragmentSelectionIfNeeded(id);
+  }
+
+  public removeSupportingCollectionItem = (parentId: string, id: string) => {
+    this.props.removeSupportingCollectionItem(parentId, id);
+    this.clearArticleFragmentSelectionIfNeeded(id);
+  }
+
+  public clearArticleFragmentSelectionIfNeeded = (id: string) => {
+    if (id === this.props.selectedArticleFragmentId) {
+      this.props.clearArticleFragmentSelection();
     }
   };
 
@@ -65,7 +79,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                 !this.props.selectedArticleFragmentId ||
                 this.props.selectedArticleFragmentId === articleFragment.uuid
               }
-              onDelete={this.clearArticleFragmentSelectionIfNeeded}
+              onDelete={this.removeCollectionItem}
               {...afProps}
             >
               <ArticleFragmentLevel
@@ -86,7 +100,12 @@ class Clipboard extends React.Component<ClipboardProps> {
                       this.props.selectedArticleFragmentId === supporting.uuid
                     }
                     {...sProps}
-                    onDelete={this.clearArticleFragmentSelectionIfNeeded}
+                    onDelete={() =>
+                      this.removeSupportingCollectionItem(
+                        articleFragment.uuid,
+                        supporting.uuid
+                      )
+                    }
                   />
                 )}
               </ArticleFragmentLevel>
@@ -105,8 +124,14 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   selectArticleFragment: (frontId: string, articleFragmentId: string) =>
     dispatch(editorSelectArticleFragment(frontId, articleFragmentId)),
-  clearArticleFragmentSelection: (frontId: string) =>
-    dispatch(editorClearArticleFragmentSelection(frontId)),
+  clearArticleFragmentSelection: () =>
+    dispatch(editorClearArticleFragmentSelection(clipboardId)),
+  removeCollectionItem: (uuid: string) => {
+    dispatch(removeArticleFragmentFromClipboard(uuid));
+  },
+  removeSupportingCollectionItem: (parentId: string, uuid: string) => {
+    dispatch(removeSupportingArticleFragmentFromClipboard(parentId, uuid));
+  },
   dispatch
 });
 

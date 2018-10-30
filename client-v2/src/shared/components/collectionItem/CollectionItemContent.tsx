@@ -1,7 +1,8 @@
 import styled, { css } from 'styled-components';
+import { CollectionItemDisplayTypes } from 'shared/types/Collection';
 
 const CollectionItemContent = styled('div')<{
-  displayType?: 'default' | 'polaroid';
+  displayType?: CollectionItemDisplayTypes;
 }>`
   position: relative;
   ${({ displayType }) =>

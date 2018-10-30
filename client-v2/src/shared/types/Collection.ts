@@ -10,6 +10,7 @@ interface Group {
 type Stages = 'draft' | 'live' | 'previously';
 
 type CollectionItemTypes = 'SNAP_LINK' | 'ARTICLE';
+type CollectionItemDisplayTypes = 'default' | 'polaroid';
 
 interface NestedArticleFragmentRootFields {
   id: string;
@@ -125,6 +126,7 @@ export {
   CollectionResponse,
   Collection,
   CollectionItemTypes,
+  CollectionItemDisplayTypes,
   Group,
   Stages
 };

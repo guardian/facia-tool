@@ -10,10 +10,7 @@ import HoverActions, {
 } from '../CollectionHoverItems';
 import ButtonHoverAction from '../input/ButtonHoverAction';
 import CollectionItemContent from '../collectionItem/CollectionItemContent';
-
-const Thumbnail = styled('img')`
-  width: 100%;
-`;
+import PolaroidThumbnail from '../PolaroidThumbnail';
 
 const TonedKicker = styled('span')<{ tone?: string; isLive?: boolean }>`
   color: ${({ tone, isLive }) => getToneColor(tone, isLive) || 'inherit'};
@@ -36,7 +33,14 @@ const ArticlePolaroidComponent = ({
     getArticleLabel(firstPublicationDate, sectionName, isLive) || '';
   return (
     <>
-      {size === 'default' && thumbnail && <Thumbnail src={thumbnail} alt="" />}
+      {size === 'default' &&
+        thumbnail && (
+          <PolaroidThumbnail
+            style={{
+              backgroundImage: `url('${thumbnail}')`
+            }}
+          />
+        )}
       <CollectionItemContent displayType="polaroid">
         <TonedKicker tone={tone} isLive={isLive}>
           {articleLabel}

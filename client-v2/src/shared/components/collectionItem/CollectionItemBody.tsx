@@ -1,12 +1,13 @@
 import styled, { css } from 'styled-components';
 import HoverActions from '../CollectionHoverItems';
 import Thumbnail from '../Thumbnail';
+import { CollectionItemDisplayTypes } from 'shared/types/Collection';
 
 export default styled('div')<{
   fade?: boolean;
   size?: 'default' | 'small';
   tone?: string | void;
-  displayType?: 'default' | 'polaroid';
+  displayType?: CollectionItemDisplayTypes;
 }>`
   position: relative;
   ${({ displayType }) =>
@@ -36,7 +37,7 @@ export default styled('div')<{
     }
 
     ${Thumbnail} {
-      opacity: 0.2;
+      opacity: 0.4;
     }
   }
 `;

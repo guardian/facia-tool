@@ -19,12 +19,14 @@ import CollectionItemHeading from '../collectionItem/CollectionItemHeading';
 import CollectionItemContent from '../collectionItem/CollectionItemContent';
 import ButtonHoverAction from '../input/ButtonHoverAction';
 import CollectionItemBody from '../collectionItem/CollectionItemBody';
+import PolaroidThumbnail from '../PolaroidThumbnail';
+import { CollectionItemDisplayTypes } from 'shared/types/Collection';
 
 interface SnapLinkProps {
   id: string;
   draggable?: boolean;
   size?: 'default' | 'small';
-  displayType?: 'default' | 'polaroid';
+  displayType?: CollectionItemDisplayTypes;
   fade?: boolean;
   children?: React.ReactNode;
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -37,6 +39,8 @@ interface SnapLinkProps {
 interface ContainerProps extends SnapLinkProps {
   selectSharedState?: (state: any) => State;
 }
+
+const snapLinkPlaceholder = 'Snaplink placeholder (Drag and drop as usual.)';
 
 const SnapLink = ({
   id,
@@ -55,16 +59,15 @@ const SnapLink = ({
           <CollectionItemMetaHeading>Snap link</CollectionItemMetaHeading>
         </CollectionItemMetaContainer>
       )}
+      {size === 'default' && displayType === 'polaroid' && <PolaroidThumbnail />}
       <CollectionItemContent displayType={displayType}>
         {displayType === 'default' ? (
           <CollectionItemHeading>
-            Snaplink placeholder (Drag and drop as usual.)
+            {snapLinkPlaceholder}
           </CollectionItemHeading>
-        ) : (
-          'Snaplink placeholder (Drag and drop as usual.)'
-        )}
+        ) : snapLinkPlaceholder}
       </CollectionItemContent>
-      {size === 'default' && <Thumbnail />}
+      {size === 'default' && displayType === 'default' && <Thumbnail />}
       <HoverActions>
         <HoverActionsLeft />
         <HoverActionsRight>

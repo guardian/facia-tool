@@ -10,7 +10,7 @@ import {
 } from '../../selectors/shared';
 import { selectors } from 'shared/bundles/externalArticlesBundle';
 import { State } from '../../types/State';
-import { DerivedArticle } from '../../types/Article';
+import { DerivedArticle, CollectionItemTypes } from '../../types/Article';
 import CollectionItemBody from '../collectionItem/CollectionItemBody';
 import CollectionItemContainer from '../collectionItem/CollectionItemContainer';
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
@@ -45,7 +45,7 @@ interface ContainerProps extends ArticleComponentProps {
 type ComponentProps = {
   article: DerivedArticle | void;
   isLoading?: boolean;
-  displayType?: 'default' | 'polaroid';
+  displayType?: CollectionItemTypes;
   size?: 'default' | 'small';
   children: React.ReactNode;
 } & ContainerProps;
