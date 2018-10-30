@@ -43,7 +43,7 @@ const SnapLink = ({
   fade,
   onClick,
   size = 'default',
-  displayType,
+  displayType = 'default',
   onDelete,
   children,
   ...rest

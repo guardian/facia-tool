@@ -25,7 +25,7 @@ type ArticleContainerProps = ContainerProps & {
   type: CollectionItemTypes;
 };
 
-const ArticleContainer = ({
+const CollectionItemContainer = ({
   uuid,
   isSelected,
   children,
@@ -79,4 +79,4 @@ const createMapStateToProps = () => {
 
 export default connect(
   createMapStateToProps
-)(ArticleContainer);
+)(CollectionItemContainer);

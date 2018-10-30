@@ -1,9 +1,19 @@
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components';
 
-export default styled('div')<{
-  displayType?: 'default' | 'polaroid'
+const CollectionItemContent = styled('div')<{
+  displayType?: 'default' | 'polaroid';
 }>`
   position: relative;
-  ${({ displayType }) => displayType === 'default' && css`width: calc(100% - 210px);`}
-  padding: 0 8px;
+  ${({ displayType }) =>
+    displayType === 'default' &&
+    css`
+      width: calc(100% - 210px);
+      padding: 0 8px;
+    `};
 `;
+
+CollectionItemContent.defaultProps = {
+  displayType: 'default'
+};
+
+export default CollectionItemContent;
