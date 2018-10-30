@@ -54,11 +54,13 @@ const createArticleFromArticleFragmentSelector = () =>
         return undefined;
       }
 
+      const articleMeta = {...externalArticle.frontsMeta.defaults, ...articleFragment.meta};
+
       return {
         ...omit(externalArticle, 'fields', 'frontsMeta'),
         ...externalArticle.fields,
         ...omit(articleFragment, 'meta'),
-        ...articleFragment.meta,
+        ...articleMeta,
         headline:
           articleFragment.meta.headline || externalArticle.fields.headline,
         trailText:
@@ -66,7 +68,7 @@ const createArticleFromArticleFragmentSelector = () =>
         byline: articleFragment.meta.byline || externalArticle.fields.byline,
         kicker: articleFragment.meta.customKicker || externalArticle.pillarName,
         pillarId: externalArticle.pillarId,
-        thumbnail: getThumbnail(articleFragment, externalArticle),
+        thumbnail: getThumbnail(externalArticle, articleMeta),
         isLive: externalArticle.fields.isLive ? externalArticle.fields.isLive === 'true' : true,
         firstPublicationDate: externalArticle.fields.firstPublicationDate
       };
