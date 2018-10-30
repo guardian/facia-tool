@@ -82,8 +82,7 @@ class HoverActionsButtonWrapper<ButtonProps> extends React.Component<
             key={ButtonObj.text}
             {...buttonProps}
             showToolTip={() => {
-              this.setToolTipText(ButtonObj.text);
-              this.showToolTip();
+              this.showToolTip(ButtonObj.text);
             }}
             hideToolTip={() => {
               this.hideToolTip();
@@ -94,23 +93,17 @@ class HoverActionsButtonWrapper<ButtonProps> extends React.Component<
     );
   }
 
-  private showToolTip = () => {
+  private showToolTip = (text: string) =>
     this.setState({
-      isToolTipVisible: true
+      isToolTipVisible: true,
+      toolTipText: text
     });
-  };
 
   private hideToolTip = () => {
     this.setState({
       isToolTipVisible: false
     });
   };
-
-  private setToolTipText = (text: string) =>
-    this.setState((prevState: WrapperState) => ({
-      ...prevState,
-      toolTipText: text
-    }));
 }
 
 export { HoverActionsButtonWrapper, HoverButtonInterface };
