@@ -57,7 +57,6 @@ const ArticleContainer = ({
           onClick={() => onSelect(uuid)}
           fade={!isSelected}
           size={size}
-          isSnapLink={true}
         />
       );
     default:

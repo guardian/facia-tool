@@ -26,7 +26,6 @@ interface SnapLinkProps {
   draggable?: boolean;
   size?: 'default' | 'small';
   fade?: boolean;
-  isSnapLink: boolean;
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
   onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
@@ -42,7 +41,6 @@ const SnapLink = ({
   id,
   fade,
   onClick,
-  isSnapLink,
   size = 'default',
   onDelete,
   ...rest
@@ -58,7 +56,9 @@ const SnapLink = ({
         </CollectionItemHeading>
       </CollectionItemContent>
       {size === 'default' && <Thumbnail />}
-      <HoverActionsAreaOverlay isSnapLink>
+      <HoverActionsAreaOverlay>
+        {/* Extra <div /> required for Overlay component's flex justify-content: space-between */}
+        <div />
         <HoverActionsButtonWrapper
           buttons={[{ text: 'Delete', component: HoverDeleteButton }]}
           buttonProps={{

@@ -1,11 +1,8 @@
 import styled from 'styled-components';
 
-const HoverActionsAreaOverlay = styled('div')<{
-  isSnapLink?: boolean;
-}>`
+const HoverActionsAreaOverlay = styled('div')`
   display: flex;
-  justify-content: ${({ isSnapLink }) =>
-    isSnapLink ? 'flex-end' : 'space-between'};
+  justify-content: space-between;
   padding: 4px 8px;
 `;
 
