@@ -5,7 +5,7 @@ import { State } from 'types/State';
 import { createCollectionItemTypeSelector } from 'shared/selectors/collectionItem';
 import { selectSharedState } from 'shared/selectors/shared';
 import collectionItemTypes from 'shared/constants/collectionItemTypes';
-import { CollectionItemTypes } from 'shared/types/Collection';
+import { CollectionItemTypes, CollectionItemDisplayTypes } from 'shared/types/Collection';
 import SnapLink from 'shared/components/snapLink/SnapLink';
 
 interface ContainerProps {
@@ -16,8 +16,8 @@ interface ContainerProps {
   onSelect: (uuid: string) => void;
   onDelete: (uuid: string) => void;
   parentId: string;
-  size?: 'small' | 'default'
-  displayType?: 'polaroid' | 'default'
+  displayType?: CollectionItemDisplayTypes;
+  size?: 'small' | 'default';
 }
 
 type ArticleContainerProps = ContainerProps & {
@@ -66,7 +66,11 @@ const CollectionItemContainer = ({
         </SnapLink>
       );
     default:
-      return <p>Item with id {uuid} has unknown collection item type {type}</p>
+      return (
+        <p>
+          Item with id {uuid} has unknown collection item type {type}
+        </p>
+      );
   }
 };
 

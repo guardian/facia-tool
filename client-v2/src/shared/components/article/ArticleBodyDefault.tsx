@@ -3,22 +3,21 @@ import styled from 'styled-components';
 import startCase from 'lodash/startCase';
 import distanceInWords from 'date-fns/distance_in_words_to_now';
 
-import HoverActions, {
-  HoverActionsLeft,
-  HoverActionsRight
-} from '../CollectionHoverItems';
 import CollectionItemHeading from '../collectionItem/CollectionItemHeading';
 import BasePlaceholder from '../BasePlaceholder';
 import { getPillarColor } from 'shared/util/getPillarColor';
 import CollectionItemMetaContainer from '../collectionItem/CollectionItemMetaContainer';
 import CollectionItemContent from '../collectionItem/CollectionItemContent';
-import ButtonHoverAction from 'shared/components/input/ButtonHoverAction';
-import { getPaths } from '../../../util/paths';
 import { notLiveLabels } from 'constants/fronts';
 import TextPlaceholder from 'shared/components/TextPlaceholder';
 import Thumbnail from '../Thumbnail';
-import Link from '../Link';
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
+import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
+import { HoverViewButton, HoverOphanButton, HoverDeleteButton } from '../input/HoverActionButtons';
+import {
+  HoverActionsAreaOverlay,
+  HideMetaDataOnToolTipDisplay
+} from '../CollectionHoverItems';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   width: 130px;
@@ -106,7 +105,11 @@ const articleBodyDefault = ({
           </>
         )}
         {size === 'default' &&
-          isLive && <CollectionItemMetaHeading>{startCase(sectionName)}</CollectionItemMetaHeading>}
+          isLive && (
+            <CollectionItemMetaHeading>
+              {startCase(sectionName)}
+            </CollectionItemMetaHeading>
+          )}
         {(isLive || size === 'default') &&
           firstPublicationDate && (
             <PublicationDate>
@@ -156,38 +159,34 @@ const articleBodyDefault = ({
             }}
           />
         ))}
-      <HoverActions>
-        <HoverActionsLeft>
-          <Link
-            href={
-              isLive
-                ? `https://www.theguardian.com/${urlPath}`
-                : `https://preview.gutools.co.uk/${urlPath}`
-            }
-          >
-            <ButtonHoverAction action="view" title="View" />
-          </Link>
-          {isLive ? (
-            <Link
-              href={getPaths(`https://www.theguardian.com/${urlPath}`).ophan}
-            >
-              <ButtonHoverAction action="ophan" title="Ophan" />
-            </Link>
-          ) : null}
-        </HoverActionsLeft>
-        <HoverActionsRight>
-          <ButtonHoverAction
-            action="delete"
-            danger
-            onClick={(e: React.SyntheticEvent) => {
-              // stop the parent from opening the edit panel
-              e.stopPropagation();
-              onDelete(uuid);
-            }}
-            title="Delete"
-          />
-        </HoverActionsRight>
-      </HoverActions>
+      <HoverActionsAreaOverlay>
+        <HoverActionsButtonWrapper
+          buttons={[
+            { text: 'View', component: HoverViewButton },
+            { text: 'Ophan', component: HoverOphanButton }
+          ]}
+          buttonProps={{
+            isLive,
+            urlPath,
+            onDelete
+          }}
+          size={size}
+          toolTipPosition={'top'}
+          toolTipAlign={'left'}
+        />
+        <HoverActionsButtonWrapper
+          buttons={[{ text: 'Delete', component: HoverDeleteButton }]}
+          buttonProps={{
+            isLive,
+            urlPath,
+            onDelete
+          }}
+          size={size}
+          toolTipPosition={'top'}
+          toolTipAlign={'right'}
+        />
+        <HideMetaDataOnToolTipDisplay size={size} />
+      </HoverActionsAreaOverlay>
     </>
   );
 };

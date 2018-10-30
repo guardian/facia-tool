@@ -1,18 +1,24 @@
 import React from 'react';
 import styled from 'styled-components';
 import truncate from 'lodash/truncate';
+
 import { ArticleBodyProps } from './ArticleBodyDefault';
 import { getArticleLabel } from 'util/clipboardUtils';
-import HoverActions, {
-  HoverActionsLeft,
-  HoverActionsRight
-} from '../CollectionHoverItems';
-import ButtonHoverAction from '../input/ButtonHoverAction';
 import CollectionItemContent from '../collectionItem/CollectionItemContent';
 import PolaroidThumbnail from '../PolaroidThumbnail';
 import { getPillarColor } from 'shared/util/getPillarColor';
+import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
+import {
+  HoverViewButton,
+  HoverOphanButton,
+  HoverDeleteButton
+} from '../input/HoverActionButtons';
+import {
+  HoverActionsAreaOverlay,
+  HideMetaDataOnToolTipDisplay
+} from '../CollectionHoverItems';
 
-const PillaredSection = styled('span')<{ pillar?: string, isLive?: boolean }>`
+const PillaredSection = styled('span')<{ pillar?: string; isLive?: boolean }>`
   color: ${({ pillar, isLive }) => getPillarColor(pillar, isLive) || 'inherit'};
   font-size: 13px;
   font-weight: bold;
@@ -20,7 +26,7 @@ const PillaredSection = styled('span')<{ pillar?: string, isLive?: boolean }>`
 
 const ArticlePolaroidComponent = ({
   firstPublicationDate,
-  uuid,
+  urlPath,
   size = 'default',
   onDelete,
   headline,
@@ -42,27 +48,31 @@ const ArticlePolaroidComponent = ({
           />
         )}
       <CollectionItemContent displayType="polaroid">
-      <PillaredSection pillar={pillarId} isLive={isLive}>{ articleLabel }</PillaredSection>
+        <PillaredSection pillar={pillarId} isLive={isLive}>
+          {articleLabel}
+        </PillaredSection>
         {` ${truncate(headline, {
           length: 45 - articleLabel.length
         })}`}
       </CollectionItemContent>
-      <HoverActions>
-        <HoverActionsLeft />
-        <HoverActionsRight>
-          <ButtonHoverAction
-            action="delete"
-            danger
-            onClick={(e: React.SyntheticEvent) => {
-              e.stopPropagation();
-              if (onDelete) {
-                onDelete(uuid);
-              }
-            }}
-            title="Delete"
-          />
-        </HoverActionsRight>
-      </HoverActions>
+      <HoverActionsAreaOverlay>
+        <div />
+        <HoverActionsButtonWrapper
+          buttons={[
+            { text: 'View', component: HoverViewButton },
+            { text: 'Ophan', component: HoverOphanButton },
+            { text: 'Delete', component: HoverDeleteButton }
+          ]}
+          buttonProps={{
+            isLive,
+            urlPath,
+            onDelete
+          }}
+          size={size}
+          toolTipPosition={'top'}
+          toolTipAlign={'center'}
+        />
+      </HoverActionsAreaOverlay>
     </>
   );
 };

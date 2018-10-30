@@ -1,5 +1,8 @@
 import styled, { css } from 'styled-components';
-import HoverActions from '../CollectionHoverItems';
+import {
+  HoverActionsAreaOverlay,
+  HideMetaDataOnToolTipDisplay
+} from '../CollectionHoverItems';
 import Thumbnail from '../Thumbnail';
 import { CollectionItemDisplayTypes } from 'shared/types/Collection';
 
@@ -26,15 +29,31 @@ export default styled('div')<{
   background-color: ${({ displayType }) =>
     displayType === 'default' ? 'white' : 'transparent'}
   opacity: ${({ fade }) => (fade ? 0.5 : 1)};
+
+  ${HoverActionsAreaOverlay} {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    ${HideMetaDataOnToolTipDisplay} {
+      visibility: hidden;
+    }
+  }
+
   :hover {
     background-color: ${({ displayType }) =>
       displayType === 'default' ? '#ededed' : 'transparent'}
 
-    ${HoverActions} {
-      transition-delay: 0s;
-      visibility: visible;
-      opacity: 1;
-    }
+      ${HoverActionsAreaOverlay} {
+        transition-delay: 0s;
+        visibility: visible;
+        opacity: 1;
+        ${HideMetaDataOnToolTipDisplay} {
+          visibility: visible;
+        }
+      }
 
     ${Thumbnail} {
       opacity: 0.4;

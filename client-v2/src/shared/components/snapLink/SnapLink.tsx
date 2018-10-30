@@ -5,9 +5,11 @@ import CollectionItemContainer from '../collectionItem/CollectionItemContainer';
 import CollectionItemMetaContainer from '../collectionItem/CollectionItemMetaContainer';
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
 import Thumbnail from '../Thumbnail';
-import HoverActions, {
-  HoverActionsLeft,
-  HoverActionsRight
+import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
+import { HoverDeleteButton } from '../input/HoverActionButtons';
+import {
+  HoverActionsAreaOverlay,
+  HideMetaDataOnToolTipDisplay
 } from '../CollectionHoverItems';
 import { ArticleFragment } from 'shared/types/Collection';
 import {
@@ -17,7 +19,6 @@ import {
 import { State } from '../../types/State';
 import CollectionItemHeading from '../collectionItem/CollectionItemHeading';
 import CollectionItemContent from '../collectionItem/CollectionItemContent';
-import ButtonHoverAction from '../input/ButtonHoverAction';
 import CollectionItemBody from '../collectionItem/CollectionItemBody';
 import PolaroidThumbnail from '../PolaroidThumbnail';
 import { CollectionItemDisplayTypes } from 'shared/types/Collection';
@@ -72,22 +73,19 @@ const SnapLink = ({
         )}
       </CollectionItemContent>
       {size === 'default' && displayType === 'default' && <Thumbnail />}
-      <HoverActions>
-        <HoverActionsLeft />
-        <HoverActionsRight>
-          <ButtonHoverAction
-            action="delete"
-            danger
-            onClick={(e: React.SyntheticEvent) => {
-              e.stopPropagation();
-              if (onDelete) {
-                onDelete(id);
-              }
-            }}
-            title="Delete"
-          />
-        </HoverActionsRight>
-      </HoverActions>
+      <HoverActionsAreaOverlay>
+        {/* Extra <div /> required for Overlay component's flex justify-content: space-between */}
+        <div />
+        <HoverActionsButtonWrapper
+          buttons={[{ text: 'Delete', component: HoverDeleteButton }]}
+          buttonProps={{
+            onDelete
+          }}
+          size={size}
+          toolTipPosition={'top'}
+          toolTipAlign={'right'}
+        />
+      </HoverActionsAreaOverlay>
     </CollectionItemBody>
     {children}
   </CollectionItemContainer>
