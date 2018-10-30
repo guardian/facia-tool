@@ -16,7 +16,7 @@ interface ContainerProps {
   onSelect: (uuid: string) => void;
   onDelete: (uuid: string) => void;
   parentId: string;
-  size?: 'small' | 'default'
+  size?: 'small' | 'default';
 }
 
 type ArticleContainerProps = ContainerProps & {
@@ -57,10 +57,15 @@ const ArticleContainer = ({
           onClick={() => onSelect(uuid)}
           fade={!isSelected}
           size={size}
+          isSnapLink={true}
         />
       );
     default:
-      return <p>Item with id {uuid} has unknown collection item type {type}</p>
+      return (
+        <p>
+          Item with id {uuid} has unknown collection item type {type}
+        </p>
+      );
   }
 };
 
@@ -71,6 +76,4 @@ const createMapStateToProps = () => {
   });
 };
 
-export default connect(
-  createMapStateToProps
-)(ArticleContainer);
+export default connect(createMapStateToProps)(ArticleContainer);

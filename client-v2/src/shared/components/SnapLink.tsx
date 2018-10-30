@@ -5,10 +5,6 @@ import CollectionItemContainer from './CollectionItemContainer';
 import CollectionItemMetaContainer from './CollectionItemMetaContainer';
 import CollectionItemMetaHeading from './CollectionItemMetaHeading';
 import Thumbnail from './Thumbnail';
-import HoverActions, {
-  HoverActionsLeft,
-  HoverActionsRight
-} from './CollectionHoverItems';
 import { ArticleFragment } from 'shared/types/Collection';
 import {
   selectSharedState,
@@ -16,15 +12,21 @@ import {
 } from '../selectors/shared';
 import { State } from '../types/State';
 import { connect } from 'react-redux';
+import { HoverActionsButtonWrapper } from './input/HoverActionButtonWrapper';
+import { HoverDeleteButton } from './input/HoverActionButtons';
+import {
+  HoverActionsAreaOverlay,
+  HideMetaDataOnToolTipDisplay
+} from './CollectionHoverItems';
 import CollectionItemHeading from './CollectionItemHeading';
 import CollectionItemContent from './CollectionItemContent';
-import ButtonHoverAction from './input/ButtonHoverAction';
 
 interface SnapLinkProps {
   id: string;
   draggable?: boolean;
   size?: 'default' | 'small';
   fade?: boolean;
+  isSnapLink: boolean;
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
   onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
@@ -36,34 +38,39 @@ interface ContainerProps extends SnapLinkProps {
   selectSharedState?: (state: any) => State;
 }
 
-const SnapLink = ({ id, fade, onClick, size = 'default', onDelete, ...rest }: SnapLinkProps) => (
+const SnapLink = ({
+  id,
+  fade,
+  onClick,
+  isSnapLink,
+  size = 'default',
+  onDelete,
+  ...rest
+}: SnapLinkProps) => (
   <CollectionItemContainer {...rest}>
     <CollectionItemBody size={size} fade={fade}>
       <CollectionItemMetaContainer>
         <CollectionItemMetaHeading>Snap link</CollectionItemMetaHeading>
       </CollectionItemMetaContainer>
       <CollectionItemContent>
-        <CollectionItemHeading>To be implemented. (Drag and drop as usual.)</CollectionItemHeading>
+        <CollectionItemHeading>
+          To be implemented. (Drag and drop as usual.)
+        </CollectionItemHeading>
       </CollectionItemContent>
       {size === 'default' && <Thumbnail />}
-      <HoverActions>
-        <HoverActionsLeft />
-        <HoverActionsRight>
-          <ButtonHoverAction
-            action="delete"
-            danger
-            onClick={(e: React.SyntheticEvent) => {
-              e.stopPropagation();
-              if (onDelete) {
-                onDelete(id);
-              }
-            }}
-            title="Delete"
-          />
-        </HoverActionsRight>
-      </HoverActions>
+      <HoverActionsAreaOverlay isSnapLink>
+        <HoverActionsButtonWrapper
+          buttons={[{ text: 'Delete', component: HoverDeleteButton }]}
+          buttonProps={{
+            onDelete
+          }}
+          size={size}
+          toolTipPosition={'top'}
+          toolTipAlign={'right'}
+        />
+        <HideMetaDataOnToolTipDisplay size={size} />
+      </HoverActionsAreaOverlay>
     </CollectionItemBody>
-
   </CollectionItemContainer>
 );
 
