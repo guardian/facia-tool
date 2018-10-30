@@ -40,7 +40,7 @@ interface ContainerProps extends SnapLinkProps {
   selectSharedState?: (state: any) => State;
 }
 
-const snapLinkPlaceholder = 'Snaplink placeholder (Drag and drop as usual.)';
+const snapLinkPlaceholder = ' Placeholder (Drag and drop as usual.)';
 
 const SnapLink = ({
   id,
@@ -59,13 +59,17 @@ const SnapLink = ({
           <CollectionItemMetaHeading>Snap link</CollectionItemMetaHeading>
         </CollectionItemMetaContainer>
       )}
-      {size === 'default' && displayType === 'polaroid' && <PolaroidThumbnail />}
+      {size === 'default' &&
+        displayType === 'polaroid' && <PolaroidThumbnail />}
       <CollectionItemContent displayType={displayType}>
         {displayType === 'default' ? (
-          <CollectionItemHeading>
+          <CollectionItemHeading>{snapLinkPlaceholder}</CollectionItemHeading>
+        ) : (
+          <>
+            <strong>Snap link</strong>
             {snapLinkPlaceholder}
-          </CollectionItemHeading>
-        ) : snapLinkPlaceholder}
+          </>
+        )}
       </CollectionItemContent>
       {size === 'default' && displayType === 'default' && <Thumbnail />}
       <HoverActions>

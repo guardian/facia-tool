@@ -14,10 +14,10 @@ import { DerivedArticle } from '../../types/Article';
 import CollectionItemBody from '../collectionItem/CollectionItemBody';
 import CollectionItemContainer from '../collectionItem/CollectionItemContainer';
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
-import { getToneColor } from 'shared/util/toneColorMap';
 import ArticleBodyPolaroid from './ArticleBodyPolaroid';
 import ArticleBodyDefault, { ArticleBodyProps } from './ArticleBodyDefault';
 import { CollectionItemDisplayTypes } from 'shared/types/Collection';
+import { getPillarColor } from 'shared/util/getPillarColor';
 
 const ArticleBodyContainer = styled(CollectionItemBody)`
   :hover {
@@ -96,7 +96,7 @@ const ArticleComponent = ({
         style={{
           borderTopColor:
             size === 'default' && article
-              ? getToneColor(article.tone, article.isLive)
+              ? getPillarColor(article.pillarId, article.isLive)
               : '#c9c9c9'
         }}
       >

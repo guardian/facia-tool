@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import truncate from 'lodash/truncate';
 import { ArticleBodyProps } from './ArticleBodyDefault';
-import { getToneColor } from 'shared/util/toneColorMap';
 import { getArticleLabel } from 'util/clipboardUtils';
 import HoverActions, {
   HoverActionsLeft,
@@ -11,9 +10,10 @@ import HoverActions, {
 import ButtonHoverAction from '../input/ButtonHoverAction';
 import CollectionItemContent from '../collectionItem/CollectionItemContent';
 import PolaroidThumbnail from '../PolaroidThumbnail';
+import { getPillarColor } from 'shared/util/getPillarColor';
 
-const TonedKicker = styled('span')<{ tone?: string; isLive?: boolean }>`
-  color: ${({ tone, isLive }) => getToneColor(tone, isLive) || 'inherit'};
+const PillaredSection = styled('span')<{ pillar?: string, isLive?: boolean }>`
+  color: ${({ pillar, isLive }) => getPillarColor(pillar, isLive) || 'inherit'};
   font-size: 13px;
   font-weight: bold;
 `;
@@ -21,10 +21,10 @@ const TonedKicker = styled('span')<{ tone?: string; isLive?: boolean }>`
 const ArticlePolaroidComponent = ({
   firstPublicationDate,
   uuid,
-  tone,
   size = 'default',
   onDelete,
   headline,
+  pillarId,
   thumbnail,
   sectionName,
   isLive
@@ -42,9 +42,7 @@ const ArticlePolaroidComponent = ({
           />
         )}
       <CollectionItemContent displayType="polaroid">
-        <TonedKicker tone={tone} isLive={isLive}>
-          {articleLabel}
-        </TonedKicker>
+      <PillaredSection pillar={pillarId} isLive={isLive}>{ articleLabel }</PillaredSection>
         {` ${truncate(headline, {
           length: 45 - articleLabel.length
         })}`}
