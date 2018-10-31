@@ -42,6 +42,7 @@
     "babel-loader": "^8.0.0-beta",
     "babel-plugin-styled-components": "^1.5.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
+    "chromium": "^1.0.2",
     "express": "^4.16.4",
     "fetch-mock": "^6.4.2",
     "file-loader": "^1.1.11",
