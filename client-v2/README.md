@@ -22,6 +22,8 @@ To setup the Fronts V2 project:
 ./scripts/setup.sh
 ```
 
+View [setup.sh](scripts/setup.sh).
+
 ## Developing
 
 To start developing just run:
@@ -32,6 +34,8 @@ To start developing just run:
 
 The v2 application will be running here:
 [https://fronts.local.dev-gutools.co.uk/v2](https://fronts.local.dev-gutools.co.uk/v2)
+
+View [client-dev.sh](scripts/client-dev.sh).
 
 ### Technologies
 
