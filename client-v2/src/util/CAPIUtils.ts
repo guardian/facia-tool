@@ -5,7 +5,9 @@ import { ArticleFragmentMeta } from '../shared/types/Collection';
 
 const getIdFromURL = (url: string): string | null => {
   const [, id = null] =
-    url.match(/^https:\/\/www.theguardian\.com\/(.*)\??/) || [];
+    url.match(
+      /^https:\/\/(?:www.theguardian.com\/|viewer.gutools.co.uk(?:\/(?:preview|live))?\/)([^?]*)/
+    ) || [];
   return typeof id !== 'string' ? null : id;
 };
 

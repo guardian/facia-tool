@@ -3,9 +3,41 @@ import {
   articleFragmentWithElementsThumbnailMeta,
   articleFragmentWithSlideshowThumbnailMeta
 } from 'fixtures/articleFragment';
-import { getContributorImage, getThumbnail } from 'util/CAPIUtils';
+import {
+  getIdFromURL,
+  getContributorImage,
+  getThumbnail
+} from 'util/CAPIUtils';
 
 describe('CAPIUtils', () => {
+  describe('getIdFromURL', () => {
+    it('should return correct path if url is from guardian website', () => {
+      const url = 'https://www.theguardian.com/business/2015/example';
+      expect(getIdFromURL(url)).toEqual('business/2015/example');
+    });
+    it('should return correct path if url is from guardian website /live section', () => {
+      const url = 'https://www.theguardian.com/live/business/2015/example';
+      expect(getIdFromURL(url)).toEqual('live/business/2015/example');
+    });
+    it('should return correct path if url is from viewer', () => {
+      const url = 'https://viewer.gutools.co.uk/business/2015/example';
+      expect(getIdFromURL(url)).toEqual('business/2015/example');
+    });
+    it('should return correct path if url is from viewer preview', () => {
+      const url = 'https://viewer.gutools.co.uk/preview/business/2015/example';
+      expect(getIdFromURL(url)).toEqual('business/2015/example');
+    });
+    it('should return correct path if url is from viewer live', () => {
+      const url = 'https://viewer.gutools.co.uk/live/business/2015/example';
+      expect(getIdFromURL(url)).toEqual('business/2015/example');
+    });
+    it('should return correct path if url is from viewer live', () => {
+      const url =
+        'https://viewer.gutools.co.uk/live/live/business/2015/example';
+      expect(getIdFromURL(url)).toEqual('live/business/2015/example');
+    });
+  });
+
   describe('getContributorImage', () => {
     it('should get a contributor image from an external article', () => {
       expect(getContributorImage(capiArticleWithElementsThumbnail)).toEqual(
@@ -13,6 +45,7 @@ describe('CAPIUtils', () => {
       );
     });
   });
+
   describe('getThumbnail', () => {
     it('should get a thumbnail from article elements', () => {
       expect(
