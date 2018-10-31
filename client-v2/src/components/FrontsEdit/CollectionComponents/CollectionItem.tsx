@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Article from 'shared/components/Article';
+import Article from 'shared/components/article/Article';
 import { State } from 'types/State';
 import { createCollectionItemTypeSelector } from 'shared/selectors/collectionItem';
 import { selectSharedState } from 'shared/selectors/shared';
 import collectionItemTypes from 'shared/constants/collectionItemTypes';
-import { CollectionItemTypes } from 'shared/types/Collection';
-import SnapLink from 'shared/components/SnapLink';
+import { CollectionItemTypes, CollectionItemDisplayTypes } from 'shared/types/Collection';
+import SnapLink from 'shared/components/snapLink/SnapLink';
 
 interface ContainerProps {
   isSelected?: boolean;
@@ -16,6 +16,7 @@ interface ContainerProps {
   onSelect: (uuid: string) => void;
   onDelete: (uuid: string) => void;
   parentId: string;
+  displayType?: CollectionItemDisplayTypes;
   size?: 'small' | 'default';
 }
 
@@ -24,13 +25,14 @@ type ArticleContainerProps = ContainerProps & {
   type: CollectionItemTypes;
 };
 
-const ArticleContainer = ({
+const CollectionItemContainer = ({
   uuid,
   isSelected,
   children,
   getNodeProps,
   onSelect,
   onDelete,
+  displayType,
   type,
   size
 }: ArticleContainerProps) => {
@@ -44,6 +46,7 @@ const ArticleContainer = ({
           onClick={() => onSelect(uuid)}
           fade={!isSelected}
           size={size}
+          displayType={displayType}
         >
           {children}
         </Article>
@@ -57,7 +60,10 @@ const ArticleContainer = ({
           onClick={() => onSelect(uuid)}
           fade={!isSelected}
           size={size}
-        />
+          displayType={displayType}
+        >
+          {children}
+        </SnapLink>
       );
     default:
       return (
@@ -75,4 +81,6 @@ const createMapStateToProps = () => {
   });
 };
 
-export default connect(createMapStateToProps)(ArticleContainer);
+export default connect(
+  createMapStateToProps
+)(CollectionItemContainer);

@@ -1,13 +1,19 @@
 import styled from 'styled-components';
 
-const HoverActionsAreaOverlay = styled('div')`
+const HoverActionsAreaOverlay = styled('div')<{
+  justify?: 'space-between' | 'flex-end';
+}>`
   display: flex;
-  justify-content: space-between;
+  justify-content: ${({ justify }) => justify};
   padding: 4px 8px;
 `;
 
+HoverActionsAreaOverlay.defaultProps = {
+  justify: 'space-between'
+};
+
 const HideMetaDataOnToolTipDisplay = styled('div')<{
-  size?: string; // Article Component size
+  size?: 'small' | 'default'; // Article Component size
 }>`
   background-color: #ededed;
   position: absolute;
