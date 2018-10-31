@@ -10,7 +10,11 @@ createTestCafe('localhost', 1337, 1338)
     runner = testcafe.createRunner();
     return runner
       .src('integration/tests/*.spec.js')
-      .browsers(`chrome:${chromium.path}`)
+      .browsers(
+        `chrome:${chromium.path}${
+          process.argv.includes('--dev') ? '' : ':headless'
+        }`
+      )
       .run();
   })
   .then(failedCount => {
