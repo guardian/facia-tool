@@ -73,7 +73,7 @@ const SnapLink = ({
         )}
       </CollectionItemContent>
       {size === 'default' && displayType === 'default' && <Thumbnail />}
-      <HoverActionsAreaOverlay displayType={displayType}>
+      <HoverActionsAreaOverlay justify={displayType === 'polaroid' ? 'flex-end' : 'space-between'}>
         <HoverActionsButtonWrapper
           buttons={[{ text: 'Delete', component: HoverDeleteButton }]}
           buttonProps={{

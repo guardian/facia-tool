@@ -14,8 +14,7 @@ import {
   HoverDeleteButton
 } from '../input/HoverActionButtons';
 import {
-  HoverActionsAreaOverlay,
-  HideMetaDataOnToolTipDisplay
+  HoverActionsAreaOverlay
 } from '../CollectionHoverItems';
 import ImagePlaceholder from '../ImagePlaceholder';
 import TextPlaceholder from '../TextPlaceholder';
@@ -69,7 +68,7 @@ const ArticlePolaroidComponent = ({
           </>
         )}
       </CollectionItemContent>
-      <HoverActionsAreaOverlay displayType="polaroid">
+      <HoverActionsAreaOverlay justify={'flex-end'}>
         <HoverActionsButtonWrapper
           buttons={[
             { text: 'View', component: HoverViewButton },
