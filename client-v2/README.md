@@ -55,14 +55,13 @@ V2 is a ReactRedux Javascript application hooking into the existing Fronts API a
 | [Raven](https://github.com/getsentry/sentry-javascript)      | Sentry error reporting ||
 | [Panda Session](https://github.com/guardian/panda-session)      | Pan Domain (cross-gutools) session management ||
 
-## Building
-
-
+## Building and Compiling
 
 | Uses        | For         |Config |
 | ------------|------------- |---|
-| [Yarn]()      | Yarning | [package.json](package.json) |
-| [Babel]()      | Compile Typescript etc | [babel.config.json](babel.config.json) |
+| [Yarn](https://yarnpkg.com/en/)      | Yarning | [package.json](package.json) |
+| [Babel](https://babeljs.io/)      | Compile Typescript etc | [babel.config.json](babel.config.json) |
+| [Webpack](https://webpack.js.org/)      | Bundle your assests | [webpack.config.common.js](config/webpack.config.common.js), [webpack.config.prod.js](config/webpack.config.prod.js), [webpack.config.dev.js](config/webpack.config.dev.js) |
 
 ## Testing
 
