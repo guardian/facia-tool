@@ -23,9 +23,7 @@ export default class Collection extends BaseClass {
         super();
         if (!opts.id) { return; }
 
-        const podcastCollectionId = '75ef80cd-2f3d-40d6-abf6-2021f88ece8e';
         this.id = opts.id;
-        this.isPodcastCollection = this.id === podcastCollectionId;
 
         this.front = opts.front;
 
@@ -61,7 +59,8 @@ export default class Collection extends BaseClass {
             'href',
             'uneditable',
             'metadata',
-            'platform'
+            'platform',
+            'frontsToolSettings'
         ]);
         populateObservables(this.configMeta, opts);
 
