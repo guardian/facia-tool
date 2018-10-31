@@ -19,6 +19,33 @@ To start developing just run:
 The v2 application will be running here:
 [https://fronts.local.dev-gutools.co.uk/v2](https://fronts.local.dev-gutools.co.uk/v2)
 
+### Technologies
+
+V2 is a ReactRedux Javascript application hooking into the existing Fronts API and CAPI.
+
+| Uses        | For         | Config |
+| ------------|------------- |--- |
+| [React](https://jestjs.io/docs/en/getting-started.html)      | Components ||
+| [Redux](https://github.com/airbnb/enzyme)      | State management ||
+| [Redux Thunk](https://github.com/reduxjs/redux-thunk)      | Redux Thunk middleware allows you to write action creators that return a function instead of an action.  ||
+| [Redux Forms](https://redux-form.com/7.4.2/)      | Form state management for Redux apps ||
+| [React Router](https://reacttraining.com/react-router/)      | Routing for React apps ||
+| [Styled Components](https://www.styled-components.com/)      | Styling for components ||
+| [Typescript](https://www.typescriptlang.org/)      | JS Types | [tsconfig](tsconfig.json), [tslint](tslint.json), [modules.d.ts](modules.d.ts), [global.d.ts](global.d.ts)|
+| [Lodash](https://lodash.com/)      | JS helper utilities ||
+| [Date Fns](https://date-fns.org/)      | JS Date functions ||
+| [Raven](https://github.com/getsentry/sentry-javascript)      | Sentry error reporting ||
+| [Panda Session](https://github.com/guardian/panda-session)      | Pan Domain (cross-gutools) session management ||
+
+## Building
+
+
+
+| Uses        | For         |Config |
+| ------------|------------- |---|
+| [Yarn]()      | Yarning | [package.json](package.json) |
+| [Babel]()      | Compile Typescript etc | [babel.config.json](babel.config.json) |
+
 ## Testing
 
 Tests are being run with Jest and can be run using:
@@ -26,6 +53,12 @@ Tests are being run with Jest and can be run using:
 ```bash
 yarn test
 ```
+
+| Uses        | For         | Config |
+| ------------|------------- |--- |
+| [Jest](https://jestjs.io/docs/en/getting-started.html)      | Testing library | [jest.config.js](jest.config.js)|
+| [Enzyme](https://github.com/airbnb/enzyme)      | JavaScript Testing utilities for React  ||
+| [React Test Renderer](https://reactjs.org/docs/test-renderer.html)      | Render Components to JSON (e.g for Jest Snapshotting) ||
 
 ## Linting
 For the time being we're being pretty aggressive regarding linting / style
@@ -42,20 +75,11 @@ And to fix any issues that are automatically resolvable by eslint run:
 yarn lint-fix
 ```
 
-## Flow
-We are using flow for typing in Fronts V2. In order to install types for new
-libraries added run:
+| Uses        | For         | Config |
+| ------------|------------- |--- |
+| [Prettier]()      | Anti-bikeshed Auto syntax formatting | [.prettierrc](.prettierrc)|
+| [.editorconfig]()      | Standard Editor formatting  |[.editorconfig](.editorconfig)|
+| [TSLint]()      | Typescript Linting | [tslint](tslint.json)|
 
-```bash
-yarn update-types
-```
-
-If you would like to overwrite types that are previously installed to newer
-versions that have been updated in the project pass the `--overwrite` flag to
-the above command.
-
-If you want to run flow to check for type errors, run `yarn flow`.
-
-To check for flow coverage, run `yarn flow-coverage`.
-
-If the flow coverage command hangs and does not finish, try killing any running flow processes.
+## Typescript
+We are using Typescript for typing in Fronts V2. 
