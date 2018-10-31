@@ -42,15 +42,16 @@ const ArticlePolaroidComponent = ({
     getArticleLabel(firstPublicationDate, sectionName, isLive) || '';
   return (
     <>
-      {size === 'default' && displayPlaceholders ? (
-        <ImagePlaceholder height={108} />
-      ) : (
-        <PolaroidThumbnail
-          style={{
-            backgroundImage: `url('${thumbnail}')`
-          }}
-        />
-      )}
+      {size === 'default' &&
+        (displayPlaceholders ? (
+          <ImagePlaceholder height={108} />
+        ) : (
+          <PolaroidThumbnail
+            style={{
+              backgroundImage: `url('${thumbnail}')`
+            }}
+          />
+        ))}
       <CollectionItemContent displayType="polaroid">
         {displayPlaceholders ? (
           <>

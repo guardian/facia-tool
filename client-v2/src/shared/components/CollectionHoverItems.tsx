@@ -2,12 +2,17 @@ import styled from 'styled-components';
 import { CollectionItemDisplayTypes } from 'shared/types/Collection';
 
 const HoverActionsAreaOverlay = styled('div')<{
-  displayType?: CollectionItemDisplayTypes
+  displayType?: CollectionItemDisplayTypes;
 }>`
   display: flex;
-  justify-content: ${({ displayType }) => displayType === 'default' ? 'space-between' : 'flex-end'};
+  justify-content: ${({ displayType }) =>
+    displayType === 'default' ? 'space-between' : 'flex-end'};
   padding: 4px 8px;
 `;
+
+HoverActionsAreaOverlay.defaultProps = {
+  displayType: 'default'
+};
 
 const HideMetaDataOnToolTipDisplay = styled('div')<{
   size?: 'small' | 'default'; // Article Component size
