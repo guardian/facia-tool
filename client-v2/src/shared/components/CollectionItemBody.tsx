@@ -40,7 +40,6 @@ export default styled('div')<{
     }
 
     ${HoverActionsAreaOverlay} {
-      transition-delay: 0s;
       visibility: visible;
       opacity: 1;
       ${HideMetaDataOnToolTipDisplay} {
