@@ -55,8 +55,11 @@ module.exports = async () =>
     });
     app.get('/config', (_, res) => res.json(config));
     app.get('/collection/:id', (_, res) => res.json(collection));
-    app.get('*', (req, res) =>
-      res.sendFile(path.join(__dirname, '../../../public/client-v2', req.path))
+    // send the assets from dist
+    app.get('*/:file', (req, res) =>
+      res.sendFile(
+        path.join(__dirname, '../../../public/client-v2/dist', req.params.file)
+      )
     );
     const server = app.listen(port, err => {
       if (err) {
