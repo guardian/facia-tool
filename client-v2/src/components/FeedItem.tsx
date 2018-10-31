@@ -5,8 +5,13 @@ import startCase from 'lodash/startCase';
 
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 import { getPillarColor } from 'shared/util/getPillarColor';
-import { getPaths } from '../util/paths';
 import { notLiveLabels } from 'constants/fronts';
+import { HoverActionsAreaOverlay } from 'shared/components/CollectionHoverItems';
+import { HoverActionsButtonWrapper } from 'shared/components/input/HoverActionButtonWrapper';
+import {
+  HoverViewButton,
+  HoverOphanButton
+} from 'shared/components/input/HoverActionButtons';
 
 const LinkContainer = styled('div')`
   background-color: #f6f6f6;
@@ -26,8 +31,23 @@ const Container = styled('div')`
   display: flex;
   font-weight: 400;
   padding-bottom: 20px;
+
+  ${HoverActionsAreaOverlay} {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+  }
+
   :hover ${LinkContainer} {
     display: block;
+  }
+
+  :hover ${HoverActionsAreaOverlay} {
+    visibility: visible;
+    opacity: 1;
   }
 `;
 
@@ -37,18 +57,6 @@ const Title = styled(`h2`)`
   font-family: GHGuardianHeadline-Medium;
   font-size: 16px;
   font-weight: 500;
-`;
-
-const Link = styled(`a`).attrs({
-  target: '_blank',
-  rel: 'noopener noreferrer'
-})`
-  text-decoration: none;
-  color: #333;
-  font-size: 12px;
-  :hover {
-    color: #555;
-  }
 `;
 
 const MetaContainer = styled('div')`
@@ -74,6 +82,7 @@ const Body = styled('div')`
 `;
 
 interface FeedItemProps {
+  id: string,
   title: string;
   href: string;
   sectionName: string;
@@ -92,6 +101,7 @@ const dragStart = (
 };
 
 const FeedItem = ({
+  id,
   title,
   href,
   sectionName,
@@ -112,7 +122,10 @@ const FeedItem = ({
         }}
       >
         {isLive && startCase(sectionName)}
-        {!isLive && (firstPublicationDate ? notLiveLabels.takendDown: notLiveLabels.draft)}
+        {!isLive &&
+          (firstPublicationDate
+            ? notLiveLabels.takendDown
+            : notLiveLabels.draft)}
       </Tone>
       {publicationDate && (
         <FirstPublished>
@@ -124,10 +137,20 @@ const FeedItem = ({
     <Body>
       <Title>{title}</Title>
     </Body>
-    <LinkContainer>
-      <Link href={href}>Website</Link>&nbsp;
-      <Link href={getPaths(href).ophan}>Ophan</Link>
-    </LinkContainer>
+    <HoverActionsAreaOverlay justify="flex-end">
+      <HoverActionsButtonWrapper
+        buttons={[
+          { text: 'View', component: HoverViewButton },
+          { text: 'Ophan', component: HoverOphanButton }
+        ]}
+        buttonProps={{
+          isLive,
+          urlPath: id
+        }}
+        toolTipPosition={'top'}
+        toolTipAlign={'right'}
+      />
+    </HoverActionsAreaOverlay>
   </Container>
 );
 
