@@ -1,5 +1,15 @@
 # Fronts V2
 
+- [Fronts V2](#fronts-v2)
+  * [Setup](#setup)
+  * [Developing](#developing)
+    + [Technologies](#technologies)
+  * [Building](#building)
+  * [Testing](#testing)
+  * [Linting](#linting)
+
+> _Tip:_ Run `yarn markdown-toc README.md` to regenerate the TOC.
+
 ## Setup
 
 To setup the Fronts V2 project:
@@ -77,9 +87,9 @@ yarn lint-fix
 
 | Uses        | For         | Config |
 | ------------|------------- |--- |
-| [Prettier]()      | Anti-bikeshed Auto syntax formatting | [.prettierrc](.prettierrc)|
-| [.editorconfig]()      | Standard Editor formatting  |[.editorconfig](.editorconfig)|
-| [TSLint]()      | Typescript Linting | [tslint](tslint.json)|
+| [Prettier](https://github.com/prettier/prettier)      | Anti-bikeshed Auto syntax formatting | [.prettierrc](.prettierrc)|
+| [.editorconfig](https://editorconfig.org/)      | Standard Editor formatting  |[.editorconfig](.editorconfig)|
+| [TSLint](https://palantir.github.io/tslint/)      | Typescript Linting | [tslint](tslint.json)|
 
 ## Typescript
 We are using Typescript for typing in Fronts V2. 
