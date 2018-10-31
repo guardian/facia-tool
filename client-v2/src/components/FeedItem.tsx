@@ -112,7 +112,7 @@ const FeedItem = ({
   isLive
 }: FeedItemProps) => (
   <Container
-    data-test="feed-item"
+    data-testid="feed-item"
     draggable={true}
     onDragStart={event => dragStart(internalPageCode, event)}
   >
