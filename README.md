@@ -4,6 +4,10 @@ The Guardian front pages editor.
 
 [![Build Status](https://travis-ci.org/guardian/facia-tool.svg?branch=master)](https://travis-ci.org/guardian/facia-tool)
 
+## Client V2
+
+Fronts Client V2 is in Active Development. You'll find it over at [client-v2](/client-v2).
+
 # New developers quick-start
 
 1. [Application dependencies](#application-dependencies)
