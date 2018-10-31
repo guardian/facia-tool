@@ -1,7 +1,9 @@
-// @flow
+import { CapiArticle } from 'types/Capi';
 
 const capiArticleWithElementsThumbnail = {
   id:
+    'world/2018/oct/10/alleged-saudi-hit-squad-linked-to-jamal-khashoggi-disappearance',
+  urlPath:
     'world/2018/oct/10/alleged-saudi-hit-squad-linked-to-jamal-khashoggi-disappearance',
   type: 'article',
   sectionId: 'world',
@@ -19,6 +21,7 @@ const capiArticleWithElementsThumbnail = {
     internalPageCode: '5158739',
     isLive: 'true'
   },
+  blocks: [],
   elements: [
     {
       id: 'b901bb680b236bc377d02d2ec24434558186fa65',
@@ -191,6 +194,7 @@ const capiArticleWithElementsThumbnail = {
       assets: [
         {
           type: 'image',
+          mimeType: 'image/jpeg',
           file:
             'https://media.guim.co.uk/6780f7f6f3dca00e549487d9ca6b7bd1cdbe1556/337_105_1313_788/master/1313.jpg',
           typeData: {
@@ -212,6 +216,7 @@ const capiArticleWithElementsThumbnail = {
         },
         {
           type: 'image',
+          mimeType: 'image/jpeg',
           file:
             'https://media.guim.co.uk/6780f7f6f3dca00e549487d9ca6b7bd1cdbe1556/337_105_1313_788/1313.jpg',
           typeData: {
@@ -232,6 +237,7 @@ const capiArticleWithElementsThumbnail = {
         },
         {
           type: 'image',
+          mimeType: 'image/jpeg',
           file:
             'https://media.guim.co.uk/6780f7f6f3dca00e549487d9ca6b7bd1cdbe1556/337_105_1313_788/500.jpg',
           typeData: {
@@ -274,8 +280,9 @@ const capiArticleWithElementsThumbnail = {
       showKickerSection: false,
       showBoostedHeadline: false
     },
+    tone: 'string',
     sectionName: 'news'
   }
-};
+} as CapiArticle;
 
 export { capiArticleWithElementsThumbnail };

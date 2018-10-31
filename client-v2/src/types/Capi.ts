@@ -1,10 +1,10 @@
 interface ImageAsset {
   type: 'image';
-  mimeType: string;
+  mimeType?: string;
   file: string;
   typeData: {
-    width: string;
-    number: string;
+    width?: string;
+    [id: string]: unknown;
   };
 }
 
@@ -93,21 +93,24 @@ interface CapiArticle {
   blocks: Blocks;
   frontsMeta: {
     defaults: {
-      imageCutoutReplace: boolean
-      imageHide: boolean
-      imageReplace: boolean
-      imageSlideshowReplace: boolean
-      isBoosted: boolean
-      isBreaking: boolean
-      showBoostedHeadline: boolean
-      showByline: boolean
-      showKickerCustom: boolean
-      showKickerSection: boolean
-      showKickerTag: boolean
-      showLivePlayable: boolean
-      showMainVideo: boolean
-      showQuotedHeadline: boolean
-    }
+      imageCutoutReplace: boolean;
+      imageHide: boolean;
+      imageReplace: boolean;
+      imageSlideshowReplace: boolean;
+      isBoosted: boolean;
+      isBreaking: boolean;
+      showBoostedHeadline: boolean;
+      showByline: boolean;
+      showKickerCustom: boolean;
+      showKickerSection: boolean;
+      showKickerTag: boolean;
+      showLivePlayable: boolean;
+      showMainVideo: boolean;
+      showQuotedHeadline: boolean;
+    };
+    frontsMeta?: {
+      tone?: string;
+    };
   };
 }
 

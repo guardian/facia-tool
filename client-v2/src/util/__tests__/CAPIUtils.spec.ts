@@ -1,5 +1,3 @@
-// @flow
-
 import { capiArticleWithElementsThumbnail } from 'fixtures/capiArticle';
 import {
   articleFragmentWithElementsThumbnailMeta,
@@ -34,13 +32,10 @@ describe('CAPIUtils', () => {
         )
       ).toEqual('exampleSrc1');
       expect(
-        getThumbnail(
-          capiArticleWithElementsThumbnail,
-          {
-            ...articleFragmentWithSlideshowThumbnailMeta,
-            imageSlideshowReplace: false
-          },
-        )
+        getThumbnail(capiArticleWithElementsThumbnail, {
+          ...articleFragmentWithSlideshowThumbnailMeta,
+          imageSlideshowReplace: false
+        })
       ).toEqual(
         'https://media.guim.co.uk/6780f7f6f3dca00e549487d9ca6b7bd1cdbe1556/337_105_1313_788/500.jpg'
       );
@@ -89,11 +84,11 @@ describe('CAPIUtils', () => {
                 bylineLargeImageUrl: 'contributorSrc'
               }
             ]
-          },
+          } as any,
           {
             ...articleFragmentWithSlideshowThumbnailMeta,
             imageCutoutReplace: true
-          },
+          }
         )
       ).toEqual('contributorSrc');
     });
@@ -113,12 +108,12 @@ describe('CAPIUtils', () => {
               thumbnail: 'fieldSrc',
               secureThumbnail: 'fieldSrcSecure'
             }
-          },
+          } as any,
           {
             ...articleFragmentWithSlideshowThumbnailMeta,
             imageCutoutReplace: true,
             imageCutoutSrc: 'imageCutoutSrc'
-          },
+          }
         )
       ).toEqual('imageCutoutSrc');
     });
@@ -138,14 +133,14 @@ describe('CAPIUtils', () => {
               thumbnail: 'fieldSrc',
               secureThumbnail: 'fieldSrcSecure'
             }
-          },
+          } as any,
           {
             ...articleFragmentWithSlideshowThumbnailMeta,
             imageReplace: true,
             imageCutoutReplace: true,
             imageCutoutSrc: 'imageCutoutSrc',
             imageSrc: 'imageSrc'
-          },
+          }
         )
       ).toEqual('imageSrc');
     });
@@ -165,7 +160,7 @@ describe('CAPIUtils', () => {
               thumbnail: 'fieldSrc',
               secureThumbnail: 'fieldSrcSecure'
             }
-          },
+          } as any,
           {
             ...articleFragmentWithSlideshowThumbnailMeta,
             imageReplace: true,
@@ -173,7 +168,7 @@ describe('CAPIUtils', () => {
             imageCutoutSrc: 'imageCutoutSrc',
             imageSrc: 'imageSrc',
             imageSrcThumb: 'imageSrcThumb'
-          },
+          }
         )
       ).toEqual('imageSrcThumb');
     });

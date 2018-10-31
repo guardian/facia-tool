@@ -27,11 +27,15 @@ const getThumbnailFromElements = (elements: Element[]) => {
   let smallestAsset;
 
   for (const asset of assets) {
-    if (
-      !smallestAsset ||
-      +asset.typeData.width < +smallestAsset.typeData.width
-    ) {
-      smallestAsset = asset;
+    {
+      if (
+        !smallestAsset ||
+        (asset.typeData.width &&
+          smallestAsset.typeData.width &&
+          +asset.typeData.width < +smallestAsset.typeData.width)
+      ) {
+        smallestAsset = asset;
+      }
     }
   }
 

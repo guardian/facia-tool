@@ -77,8 +77,8 @@ type ArticleFragmentMeta = ArticleFragmentRootMeta & {
 };
 
 interface ArticleFragment extends ArticleFragmentRootFields {
-  meta: ArticleFragmentMeta
-};
+  meta: ArticleFragmentMeta;
+}
 
 interface ArticleFragmentMetaDenormalised extends ArticleFragmentRootMeta {
   supporting?: ArticleFragmentDenormalised[];
