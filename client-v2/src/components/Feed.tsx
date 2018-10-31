@@ -143,15 +143,16 @@ class Feed extends React.Component<FeedProps, FeedState> {
                             .filter(result => result.webTitle)
                             .map(
                               ({
+                                id,
                                 webTitle,
                                 webUrl,
                                 webPublicationDate,
                                 sectionName,
-                                elements,
                                 fields,
                                 pillarId
                               }) => (
                                 <FeedItem
+                                  id={id}
                                   key={webUrl}
                                   title={webTitle}
                                   href={webUrl}

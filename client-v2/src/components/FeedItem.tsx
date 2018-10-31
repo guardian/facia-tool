@@ -82,6 +82,7 @@ const Body = styled('div')`
 `;
 
 interface FeedItemProps {
+  id: string,
   title: string;
   href: string;
   sectionName: string;
@@ -100,6 +101,7 @@ const dragStart = (
 };
 
 const FeedItem = ({
+  id,
   title,
   href,
   sectionName,
@@ -135,8 +137,7 @@ const FeedItem = ({
     <Body>
       <Title>{title}</Title>
     </Body>
-    <HoverActionsAreaOverlay>
-      <div />
+    <HoverActionsAreaOverlay justify="flex-end">
       <HoverActionsButtonWrapper
         buttons={[
           { text: 'View', component: HoverViewButton },
@@ -144,7 +145,7 @@ const FeedItem = ({
         ]}
         buttonProps={{
           isLive,
-          urlPath: href
+          urlPath: id
         }}
         toolTipPosition={'top'}
         toolTipAlign={'right'}
