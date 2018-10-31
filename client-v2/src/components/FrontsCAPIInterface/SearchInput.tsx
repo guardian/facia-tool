@@ -9,6 +9,7 @@ import CAPITagInput, {
   SearchTypes,
   AsyncState
 } from '../FrontsCAPIInterface/TagInput';
+import { getIdFromURL } from 'util/CAPIUtils';
 
 interface FrontsCAPISearchInputProps {
   children: any;
@@ -93,8 +94,15 @@ class FrontsCAPISearchInput extends React.Component<
   public handleSearchInput = ({
     currentTarget
   }: React.SyntheticEvent<HTMLInputElement>) => {
+
+    const targetValue = currentTarget.value;
+
+    const maybeArticleId = getIdFromURL(targetValue);
+
+    const searchTerm = maybeArticleId ? maybeArticleId : targetValue;
+
     this.setState({
-      q: currentTarget.value
+      q: searchTerm
     });
   };
 
