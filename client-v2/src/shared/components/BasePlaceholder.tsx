@@ -27,7 +27,7 @@ export default styled('div')`
     z-index: 1;
     width: 500%;
     margin-left: -250%;
-    animation: phAnimation .8s linear infinite;
+    animation: phAnimation 1.2s linear infinite;
     background: linear-gradient(to right, rgba(255, 255, 255, 0) 46%, rgba(255, 255, 255, .35) 50%, rgba(255, 255, 255, 0) 54%) 50% 50%;
   }
 `;

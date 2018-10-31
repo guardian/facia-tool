@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import ToolTip from './HoverActionToolTip';
+import { CollectionItemSizes } from 'shared/types/Collection';
 
 const HoverActionsWrapper = styled('div')<{
   size?: string; // Article Component size
@@ -41,7 +42,7 @@ export interface ButtonPropsFromWrapper {
 interface WrapperProps<ButtonProps> {
   buttons: HoverButtonInterface[];
   buttonProps: ButtonProps;
-  size?: 'default' | 'small'; // Article Component size
+  size?: CollectionItemSizes; // Article Component size
   toolTipPosition: 'top' | 'left' | 'bottom' | 'right';
   toolTipAlign: 'left' | 'center' | 'right';
 }

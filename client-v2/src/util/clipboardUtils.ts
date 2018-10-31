@@ -32,12 +32,12 @@ function denormaliseClipboard(
   );
 }
 
-const getArticleLabel = (article: DerivedArticle) => {
-  if (article.isLive) {
-    return article.sectionName;
+const getArticleLabel = (firstPublicationDate?: string, sectionName?: string, isLive?: boolean) => {
+  if (isLive) {
+    return sectionName;
   }
 
-  if (article.firstPublicationDate) {
+  if (firstPublicationDate) {
     return notLiveLabels.takenDown;
   }
 
