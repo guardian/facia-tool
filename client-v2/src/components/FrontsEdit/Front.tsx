@@ -127,7 +127,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
         </div>
         <FrontContainer>
           <FrontContentContainer>
-            <Root id={this.props.id}>
+            <Root id={this.props.id} data-testid={this.props.id}>
               {front.collections.map(collectionId => (
                 <Collection
                   key={collectionId}

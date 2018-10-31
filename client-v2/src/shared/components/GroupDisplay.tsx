@@ -22,7 +22,7 @@ const GroupDisplayComponent = ({
 }: GroupDisplayComponentProps) => (
   <>
     {groupName && (
-      <GroupContainer>
+      <GroupContainer data-testid={groupName}>
         <GroupHeading style={{ margin: 0 }}>{groupName}</GroupHeading>
         <HorizontalRule />
       </GroupContainer>

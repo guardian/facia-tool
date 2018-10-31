@@ -136,7 +136,7 @@ const FeedItem = ({
       <ShortVerticalPinline />
     </MetaContainer>
     <Body>
-      <Title>{title}</Title>
+      <Title data-testid="headline">{title}</Title>
     </Body>
     <HoverActionsAreaOverlay justify="flex-end">
       <HoverActionsButtonWrapper

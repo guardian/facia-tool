@@ -13,6 +13,7 @@ const DropIndicator = styled('div')`
 
 class DropZone extends React.Component<
   {
+    index: number;
     onDrop: (e: React.DragEvent) => void;
     onDragEnter: (e: React.DragEvent) => void;
     onDragOver: (e: React.DragEvent) => void;
@@ -51,10 +52,10 @@ class DropZone extends React.Component<
   };
 
   public render() {
-    const { onDragOver, style } = this.props;
+    const { onDragOver, style, index } = this.props;
     return (
       <DropContainer
-        data-testid="drop-zone"
+        data-testid={`drop-zone:${index}`}
         onDragEnter={this.handleDragEnter}
         onDragLeave={this.handleDragLeave}
         onDragExit={this.handleDragLeave}

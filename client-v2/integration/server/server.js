@@ -61,6 +61,8 @@ module.exports = async () =>
         path.join(__dirname, '../../../public/client-v2/dist', req.params.file)
       )
     );
+    // this catches update requests and pretends they went through ok
+    app.post('*', (_, res) => res.json({ ok: true }));
     const server = app.listen(port, err => {
       if (err) {
         console.log("Intergration server couldn't start");
