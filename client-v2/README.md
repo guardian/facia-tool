@@ -10,6 +10,10 @@
 
 > _Tip:_ Run `yarn markdown-toc README.md` to regenerate the TOC.
 
+## Motivations
+
+Fronts Client V2 looks to rebuild the Fronts tool with modern technologies, develop reusable patterns for content curation and build shareable components for across the tools.
+
 ## Setup
 
 To setup the Fronts V2 project:
