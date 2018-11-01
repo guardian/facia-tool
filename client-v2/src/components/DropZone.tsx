@@ -54,6 +54,7 @@ class DropZone extends React.Component<
     const { onDragOver, style } = this.props;
     return (
       <DropContainer
+        data-testid="drop-zone"
         onDragEnter={this.handleDragEnter}
         onDragLeave={this.handleDragLeave}
         onDragExit={this.handleDragLeave}

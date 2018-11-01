@@ -112,6 +112,7 @@ const FeedItem = ({
   isLive
 }: FeedItemProps) => (
   <Container
+    data-testid="feed-item"
     draggable={true}
     onDragStart={event => dragStart(internalPageCode, event)}
   >
@@ -135,7 +136,7 @@ const FeedItem = ({
       <ShortVerticalPinline />
     </MetaContainer>
     <Body>
-      <Title>{title}</Title>
+      <Title data-testid="headline">{title}</Title>
     </Body>
     <HoverActionsAreaOverlay justify="flex-end">
       <HoverActionsButtonWrapper

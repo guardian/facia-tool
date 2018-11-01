@@ -66,7 +66,7 @@ class Clipboard extends React.Component<ClipboardProps> {
 
   public render() {
     return (
-      <Root id="clipboard">
+      <Root id="clipboard" data-testid="clipboard">
         <ClipboardLevel onMove={this.handleMove} onDrop={this.handleInsert}>
           {(articleFragment, afProps) => (
             <CollectionItem

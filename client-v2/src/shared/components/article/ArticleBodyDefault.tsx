@@ -13,7 +13,11 @@ import TextPlaceholder from 'shared/components/TextPlaceholder';
 import Thumbnail from '../Thumbnail';
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
 import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
-import { HoverViewButton, HoverOphanButton, HoverDeleteButton } from '../input/HoverActionButtons';
+import {
+  HoverViewButton,
+  HoverOphanButton,
+  HoverDeleteButton
+} from '../input/HoverActionButtons';
 import {
   HoverActionsAreaOverlay,
   HideMetaDataOnToolTipDisplay
@@ -72,7 +76,7 @@ interface ArticleBodyProps {
   thumbnail?: string | void;
   isLive?: boolean;
   urlPath?: string;
-  sectionName?: string,
+  sectionName?: string;
   displayPlaceholders?: boolean;
   uuid: string;
   onDelete: (id: string) => void;
@@ -116,13 +120,14 @@ const articleBodyDefault = ({
               {distanceInWords(new Date(firstPublicationDate))}
             </PublicationDate>
           )}
-        {!isLive && !displayPlaceholders && (
-          <NotLiveContainer>
-            {firstPublicationDate
-              ? notLiveLabels.takenDown
-              : notLiveLabels.draft}
-          </NotLiveContainer>
-        )}
+        {!isLive &&
+          !displayPlaceholders && (
+            <NotLiveContainer>
+              {firstPublicationDate
+                ? notLiveLabels.takenDown
+                : notLiveLabels.draft}
+            </NotLiveContainer>
+          )}
         {scheduledPublicationDate && (
           <PublicationDate>
             {distanceInWords(new Date(scheduledPublicationDate))}
@@ -142,9 +147,13 @@ const articleBodyDefault = ({
           </KickerHeading>
           &nbsp;
           {size === 'default' ? (
-            <CollectionItemHeading>{headline}</CollectionItemHeading>
+            <CollectionItemHeading data-testid="headline">
+              {headline}
+            </CollectionItemHeading>
           ) : (
-            <ArticleHeadingSmall>{headline}</ArticleHeadingSmall>
+            <ArticleHeadingSmall data-testid="headline">
+              {headline}
+            </ArticleHeadingSmall>
           )}
         </ArticleHeadingContainer>
         {size === 'default' && trailText && <Trail>{trailText}</Trail>}
