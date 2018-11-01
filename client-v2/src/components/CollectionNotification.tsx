@@ -4,8 +4,9 @@ import styled from 'styled-components';
 import { AlsoOnDetail } from 'types/Collection';
 import Button from 'shared/components/input/ButtonDefault';
 
-interface AlsoOnNotificationProps {
-  alsoOn: AlsoOnDetail
+interface CollectionNotificationProps {
+  alsoOn: AlsoOnDetail,
+  displayEditWarning: boolean
 }
 
 interface ComponentState {
@@ -17,8 +18,8 @@ const WarningText = styled('span')`
   color: #e05e00;
 `;
 
-class AlsoOnNotification extends React.Component<
-  AlsoOnNotificationProps,
+class CollectionNotification extends React.Component<
+  CollectionNotificationProps,
   ComponentState
 > {
   public state = {
@@ -26,7 +27,13 @@ class AlsoOnNotification extends React.Component<
   };
 
   public render() {
-    const { alsoOn } = this.props;
+    const { alsoOn, displayEditWarning } = this.props;
+    if (displayEditWarning) {
+      return (
+        <div><WarningText>Warning: do not change or delete this container. Please speak to Central Production.</WarningText></div>
+      );
+    }
+
     if (alsoOn.fronts.length > 0) {
       return (
         <div>
@@ -71,4 +78,4 @@ class AlsoOnNotification extends React.Component<
   }
 }
 
-export default AlsoOnNotification;
+export default CollectionNotification;

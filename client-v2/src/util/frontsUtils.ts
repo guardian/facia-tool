@@ -34,7 +34,8 @@ const combineCollectionWithConfig = (
     id: collection.id,
     displayName: collectionConfig.displayName,
     groups: collectionConfig.groups,
-    type: collectionConfig.type
+    type: collectionConfig.type,
+    frontsToolSettings: collectionConfig.frontsToolSettings
   });
 
 const populateDraftArticles = (collection: CollectionWithNestedArticles) =>

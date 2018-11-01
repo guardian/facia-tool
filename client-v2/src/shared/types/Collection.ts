@@ -1,4 +1,5 @@
 import { Diff } from 'utility-types';
+import { FrontsToolSettings } from 'types/FaciaApi';
 
 interface Group {
   id: string;
@@ -117,6 +118,7 @@ interface Collection {
   displayName: string;
   groups?: string[];
   type: string
+  frontsToolSettings?: FrontsToolSettings;
 }
 
 export {

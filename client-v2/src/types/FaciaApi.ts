@@ -20,6 +20,10 @@ interface FrontConfigResponse {
 
 type Platform = 'Web' | 'Platform';
 
+interface FrontsToolSettings {
+  displayEditWarning?: boolean;
+}
+
 interface CollectionConfigResponse {
   displayName: string,
   type: string,
@@ -37,7 +41,8 @@ interface CollectionConfigResponse {
   showLatestUpdate?: boolean,
   excludeFromRss?: boolean,
   hideShowMore?: boolean,
-  platform?: Platform
+  platform?: Platform,
+  frontsToolSettings?: FrontsToolSettings;
 }
 
 interface FrontsConfigResponse {
@@ -91,5 +96,6 @@ export {
   FrontsConfigResponse,
   FrontConfigMap,
   ArticleDetails,
-  VisibleArticlesResponse
+  VisibleArticlesResponse,
+  FrontsToolSettings
 };

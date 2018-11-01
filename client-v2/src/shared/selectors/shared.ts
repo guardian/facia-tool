@@ -129,6 +129,16 @@ const createCollectionStageGroupsSelector = () => {
   );
 };
 
+const createCollectionEditWarningSelector = () => {
+  const collectionSelector = createCollectionSelector();
+  return createSelector(
+    collectionSelector,
+    (
+      collection: Collection | void
+    ): boolean => !!(collection && collection.frontsToolSettings && collection.frontsToolSettings.displayEditWarning)
+  );
+};
+
 const groupNameSelector = (
   _: unknown,
   { groupName }: { groupName: string; collectionSet: CollectionItemSets; collectionId: string }
@@ -222,5 +232,6 @@ export {
   createDemornalisedArticleFragment,
   selectSharedState,
   articleFragmentSelector,
-  articleKickerOptionsSelector
+  articleKickerOptionsSelector,
+  createCollectionEditWarningSelector
 };
