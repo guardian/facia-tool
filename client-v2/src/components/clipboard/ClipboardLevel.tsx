@@ -35,7 +35,14 @@ const ClipboardLevel = ({
     onDrop={onDrop}
     renderDrag={af => <ArticleDrag id={af.uuid} />}
     renderDrop={(props, isTarget, index) => (
-      <DropZone {...props} override={isTarget} />
+      <DropZone
+        {...props}
+        override={isTarget}
+        style={{
+          flexBasis: '15px',
+          flexGrow: articleFragments.length === index ? 1 : 0
+        }}
+      />
     )}
   >
     {children}

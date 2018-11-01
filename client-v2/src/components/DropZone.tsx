@@ -14,7 +14,6 @@ const DropIndicator = styled('div')`
 class DropZone extends React.Component<
   {
     onDrop: (e: React.DragEvent) => void;
-    onDragEnter: (e: React.DragEvent) => void;
     onDragOver: (e: React.DragEvent) => void;
     style: React.CSSProperties;
     indicatorStyle: React.CSSProperties;
@@ -37,7 +36,6 @@ class DropZone extends React.Component<
   }
 
   public handleDragEnter = (e: React.DragEvent) => {
-    this.props.onDragEnter(e);
     this.setState({ isHoveredOver: true });
   };
 
