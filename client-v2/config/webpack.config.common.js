@@ -1,5 +1,9 @@
 const path = require('path');
 const TSConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+// https://github.com/Igorbek/typescript-plugin-styled-components
+const createStyledComponentsTransformer = require('typescript-plugin-styled-components').default;
+const styledComponentsTransformer = createStyledComponentsTransformer();
+
 
 module.exports = {
   entry: './src/index.tsx',
@@ -10,9 +14,15 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /^(?!.*\.spec\.tsx?$).*\.tsx?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/
+        test: /\.(ts|tsx|spec.ts|spec.tsx)$/,
+        include: '/',
+        loader: 'ts-loader',
+        exclude: /node_modules/,
+        options: {
+          getCustomTransformers: () => ({ 
+            before: [styledComponentsTransformer] 
+          })
+        }
       },
       {
         test: /\.(eot|svg|ttf|woff|woff2|otf)$/,
