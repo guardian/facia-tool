@@ -79,7 +79,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                 !this.props.selectedArticleFragmentId ||
                 this.props.selectedArticleFragmentId === articleFragment.uuid
               }
-              onDelete={this.removeCollectionItem}
+              onDelete={() => this.removeCollectionItem(articleFragment.uuid)}
               {...afProps}
             >
               <ArticleFragmentLevel
