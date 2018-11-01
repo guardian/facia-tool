@@ -46,6 +46,7 @@ V2 is a ReactRedux Javascript application hooking into the existing Fronts API a
 | [React](https://jestjs.io/docs/en/getting-started.html)      | Components ||
 | [Redux](https://github.com/airbnb/enzyme)      | State management ||
 | [Redux Thunk](https://github.com/reduxjs/redux-thunk)      | Redux Thunk middleware allows you to write action creators that return a function instead of an action.  ||
+| [Reselect](https://github.com/reduxjs/reselect)      | Selectors can compute derived data, allowing Redux to store the minimal possible state.  ||
 | [Redux Forms](https://redux-form.com/7.4.2/)      | Form state management for Redux apps ||
 | [React Router](https://reacttraining.com/react-router/)      | Routing for React apps ||
 | [Styled Components](https://www.styled-components.com/)      | Styling for components ||
