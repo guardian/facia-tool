@@ -1,12 +1,14 @@
 # Fronts V2
 
 - [Fronts V2](#fronts-v2)
+  * [Motivations](#motivations)
   * [Setup](#setup)
   * [Developing](#developing)
     + [Technologies](#technologies)
-  * [Building](#building)
+  * [Building and Compiling](#building-and-compiling)
   * [Testing](#testing)
   * [Linting](#linting)
+  * [Typescript](#typescript)
 
 > _Tip:_ Run `yarn markdown-toc README.md` to regenerate the TOC.
 
