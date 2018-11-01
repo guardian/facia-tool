@@ -61,6 +61,9 @@ const state: any = {
       ea1: {
         id: 'ea1',
         pillarName: 'external-pillar',
+        frontsMeta: {
+          defaults: {}
+        },
         fields: {
           headline: 'external-headline',
           trailText: 'external-trailText',
@@ -72,6 +75,9 @@ const state: any = {
       ea2: {
         id: 'ea2',
         pillarName: 'external-pillar',
+        frontsMeta: {
+          defaults: {}
+        },
         fields: {
           headline: 'external-headline',
           trailText: 'external-trailText',
@@ -83,6 +89,36 @@ const state: any = {
       ea3: {
         id: 'ea3',
         pillarName: 'external-pillar',
+        frontsMeta: {
+          defaults: {}
+        },
+        fields: {
+          headline: 'external-headline',
+          trailText: 'external-trailText',
+          byline: 'external-byline',
+        }
+      },
+      ea4: {
+        id: 'ea4',
+        pillarName: 'external-pillar',
+        frontsMeta: {
+          defaults: {
+            imageCutoutReplace: false,
+            imageHide: false,
+            imageReplace: false,
+            imageSlideshowReplace: false,
+            isBoosted: false,
+            isBreaking: false,
+            showBoostedHeadline: false,
+            showByline: false,
+            showKickerCustom: false,
+            showKickerSection: false,
+            showKickerTag: false,
+            showLivePlayable: false,
+            showMainVideo: false,
+            showQuotedHeadline: false
+          },
+        },
         fields: {
           headline: 'external-headline',
           trailText: 'external-trailText',
@@ -128,7 +164,8 @@ const state: any = {
     },
     af4: {
       uuid: 'af4',
-      meta: {}
+      meta: {},
+      id: 'ea4'
     },
     af5: {
       uuid: 'af5'
@@ -288,6 +325,35 @@ describe('Shared selectors', () => {
         kicker: 'external-pillar',
         byline: 'external-byline',
         isLive: true,
+      });
+    });
+    it('should populate default metadata correctly', () => {
+      const selector = createArticleFromArticleFragmentSelector();
+      expect(selector(state, 'af4')).toEqual({
+        id: 'ea4',
+        pillarName: 'external-pillar',
+        uuid: 'af4',
+        headline: 'external-headline',
+        thumbnail: undefined,
+        trailText: 'external-trailText',
+        kicker: 'external-pillar',
+        byline: 'external-byline',
+        isLive: true,
+        imageCutoutReplace: false,
+        imageHide: false,
+        imageReplace: false,
+        imageSlideshowReplace: false,
+        isBoosted: false,
+        isBreaking: false,
+        showBoostedHeadline: false,
+        showByline: false,
+        showKickerCustom: false,
+        showKickerSection: false,
+        showKickerTag: false,
+        showLivePlayable: false,
+        showMainVideo: false,
+        showQuotedHeadline: false,
+
       });
     });
   });

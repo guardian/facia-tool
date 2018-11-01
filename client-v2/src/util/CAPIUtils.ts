@@ -1,6 +1,7 @@
 import { Element, Tag } from 'types/Capi';
 import { ExternalArticle } from '../shared/types/ExternalArticle';
 import { ArticleFragment } from '../shared/types/Collection';
+import { ArticleFragmentMeta } from '../shared/types/Collection';
 
 const getIdFromURL = (url: string): string | null => {
   const [, id = null] =
@@ -46,10 +47,9 @@ function getContributorImage(externalArticle: ExternalArticle) {
 }
 
 function getThumbnail(
-  articleFragment: ArticleFragment,
-  externalArticle: ExternalArticle
+  externalArticle: ExternalArticle,
+  meta: ArticleFragmentMeta
 ): string | void {
-  const { meta } = articleFragment;
   const { fields } = externalArticle;
   const isReplacingImage = meta.imageReplace;
   const metaImageSrcThumb = isReplacingImage && meta.imageSrcThumb;
