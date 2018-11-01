@@ -156,7 +156,7 @@ src
 - `constants` store high-level application constants such as theme styles and image paths
 - `services` contains the modules for requests to APIs such as CAPI and FaciaAPI
 - `lib` contains modules designed to be reusable such as the Drag N' Drop (dnd) module
-- `shared` **contains ??**
+- `shared` is a library written using React and Redux and Typescript for typing designed to make it easier to develop tools which need to provide the ability to curate collections of content. [Read more.](src/shared/.README)
 - `types` at the top level store types for ??
 - `types` and `__tests__` are co-located with their modules at the folder level 
 
