@@ -1,10 +1,13 @@
 import { Element, Tag } from 'types/Capi';
 import { ExternalArticle } from '../shared/types/ExternalArticle';
 import { ArticleFragment } from '../shared/types/Collection';
+import { ArticleFragmentMeta } from '../shared/types/Collection';
 
 const getIdFromURL = (url: string): string | null => {
   const [, id = null] =
-    url.match(/^https:\/\/www.theguardian\.com\/(.*)\??/) || [];
+    url.match(
+      /^https:\/\/(?:www.theguardian.com\/|viewer.gutools.co.uk(?:\/(?:preview|live))?\/)([^?]*)/
+    ) || [];
   return typeof id !== 'string' ? null : id;
 };
 
@@ -26,11 +29,15 @@ const getThumbnailFromElements = (elements: Element[]) => {
   let smallestAsset;
 
   for (const asset of assets) {
-    if (
-      !smallestAsset ||
-      +asset.typeData.width < +smallestAsset.typeData.width
-    ) {
-      smallestAsset = asset;
+    {
+      if (
+        !smallestAsset ||
+        (asset.typeData.width &&
+          smallestAsset.typeData.width &&
+          +asset.typeData.width < +smallestAsset.typeData.width)
+      ) {
+        smallestAsset = asset;
+      }
     }
   }
 
@@ -46,10 +53,9 @@ function getContributorImage(externalArticle: ExternalArticle) {
 }
 
 function getThumbnail(
-  articleFragment: ArticleFragment,
-  externalArticle: ExternalArticle
+  externalArticle: ExternalArticle,
+  meta: ArticleFragmentMeta
 ): string | void {
-  const { meta } = articleFragment;
   const { fields } = externalArticle;
   const isReplacingImage = meta.imageReplace;
   const metaImageSrcThumb = isReplacingImage && meta.imageSrcThumb;

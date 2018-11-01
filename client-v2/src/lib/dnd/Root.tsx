@@ -6,9 +6,12 @@ const { Provider: StoreProvider, Consumer: StoreConsumer } = createContext(
   null as Store | null
 );
 
-interface Props {
+interface OuterProps {
   id: string;
 }
+
+type Props = OuterProps &
+  React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 interface State {
   store: Store;
@@ -18,9 +21,11 @@ export default class Root extends React.Component<Props, State> {
   public state = { store: createStore() };
 
   public render() {
+    const { id, ...divProps } = this.props;
     return (
       <div
-        onDragEnter={this.onDragEnter}
+        {...divProps}
+        onDragOver={this.onDragOver}
         onDragLeave={this.onDragLeave}
         onDragEnd={this.reset}
         onDrop={this.reset}
@@ -34,7 +39,7 @@ export default class Root extends React.Component<Props, State> {
     );
   }
 
-  private onDragEnter = (e: React.DragEvent) => {
+  private onDragOver = (e: React.DragEvent) => {
     if (!e.defaultPrevented) {
       this.reset();
     }

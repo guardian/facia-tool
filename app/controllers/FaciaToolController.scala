@@ -2,7 +2,6 @@ package controllers
 
 import _root_.util.Acl
 import com.gu.facia.api.models.TrainingPriority
-import scala.collection.JavaConverters._
 import com.gu.facia.api.models.faciapress.{Draft, FrontPath, Live, PressJob}
 import com.gu.facia.client.models.Metadata
 import com.gu.pandomainauth.action.UserRequest
@@ -16,8 +15,6 @@ import services._
 import tools.FaciaApiIO
 import updates._
 import logging.Logging
-import net.logstash.logback.marker.Markers.appendEntries
-import play.api.MarkerContext
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -48,32 +45,13 @@ class FaciaToolController(
     val collectionPriorities = configAgent.getFrontsPermissionsPriorityByCollectionId(collectionId)
 
     withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
+
       FaciaToolMetrics.ApiUsageCount.increment()
-      val s3startTime = System.currentTimeMillis
-      val collection = frontsApi.amazonClient.collection(collectionId).flatMap { collectionJson => {
-        val s3endTime = System.currentTimeMillis
-        val s3requestTime = s3endTime - s3startTime
-        logger.info(s"Call to S3 bucket took $s3requestTime ms")(
-          MarkerContext(appendEntries(Map(
-            "s3Request" -> s3requestTime
-          ).asJava))
-        )
-        val mediaStartTime = System.currentTimeMillis
+      val collection = frontsApi.amazonClient.collection(collectionId).flatMap { collectionJson =>
         collectionJson.map(json => mediaServiceClient.addThumbnailsToCollection(json, collectionId)) match {
-            case Some(f) => {
-              f.map(m => {
-                val mediaEndTime = System.currentTimeMillis
-                val mediaRequestTime = mediaEndTime - mediaStartTime
-                logger.info(s"Call to media API took $mediaRequestTime ms")(
-                  MarkerContext(appendEntries(Map(
-                    "mediaApiRequest" -> mediaRequestTime
-                  ).asJava))
-                )
-                Some(m)
-              })
-            }
-            case None => Future.successful(None)
-          }
+          case Some(f) => f.map(Some(_))
+          case None => Future.successful(None)
+
         }
       }
       collection.map(c => NoCache {

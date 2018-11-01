@@ -11,7 +11,7 @@ const notLiveColour = '#ff7f0f';
 const labsColour = '#65A897';
 const noPillarColour = '#221133';
 
-export const getPillarColor = (pillar: string | undefined, isLive: boolean) => {
+export const getPillarColor = (pillar: string | undefined, isLive?: boolean) => {
     if (!isLive) {
       return notLiveColour;
     }

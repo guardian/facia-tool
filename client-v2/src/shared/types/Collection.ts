@@ -10,6 +10,8 @@ interface Group {
 type Stages = 'draft' | 'live' | 'previously';
 
 type CollectionItemTypes = 'SNAP_LINK' | 'ARTICLE';
+type CollectionItemDisplayTypes = 'default' | 'polaroid';
+type CollectionItemSizes = 'default' | 'small';
 
 interface NestedArticleFragmentRootFields {
   id: string;
@@ -75,8 +77,8 @@ type ArticleFragmentMeta = ArticleFragmentRootMeta & {
 };
 
 interface ArticleFragment extends ArticleFragmentRootFields {
-  meta: ArticleFragmentMeta
-};
+  meta: ArticleFragmentMeta;
+}
 
 interface ArticleFragmentMetaDenormalised extends ArticleFragmentRootMeta {
   supporting?: ArticleFragmentDenormalised[];
@@ -125,6 +127,8 @@ export {
   CollectionResponse,
   Collection,
   CollectionItemTypes,
+  CollectionItemDisplayTypes,
+  CollectionItemSizes,
   Group,
   Stages
 };

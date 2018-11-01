@@ -38,7 +38,6 @@ interface Move<T> {
 }
 
 interface DropProps {
-  onDragEnter: (e: React.DragEvent) => void;
   onDragOver: (e: React.DragEvent) => void;
   onDrop: (e: React.DragEvent) => void;
 }
@@ -121,7 +120,7 @@ class Level<T> extends React.Component<Props<T>> {
     return i + (isNode ? getDropIndexOffset(e) : 0);
   }
 
-  private onDragEnter = (i: number, isNode: boolean) => (
+  private onDragOver = (i: number, isNode: boolean) => (
     e: React.DragEvent
   ) => {
     if (!this.props.store) {
@@ -133,8 +132,6 @@ class Level<T> extends React.Component<Props<T>> {
     e.preventDefault();
     this.props.store.update(this.key, this.getDropIndex(e, i, isNode));
   };
-
-  private onDragOver = (e: React.DragEvent) => e.preventDefault();
 
   private onDrop = (i: number, isNode: boolean) => (e: React.DragEvent) => {
     if (e.defaultPrevented) {
@@ -175,8 +172,7 @@ class Level<T> extends React.Component<Props<T>> {
 
   private getDropProps(i: number) {
     return {
-      onDragEnter: this.onDragEnter(i, false),
-      onDragOver: this.onDragOver,
+      onDragOver: this.onDragOver(i, false),
       onDrop: this.onDrop(i, false)
     };
   }
@@ -184,8 +180,7 @@ class Level<T> extends React.Component<Props<T>> {
   private getNodeProps(i: number, props: NodeChildrenProps) {
     return {
       ...props,
-      onDragEnter: this.onDragEnter(i, true),
-      onDragOver: this.onDragOver,
+      onDragOver: this.onDragOver(i, true),
       onDrop: this.onDrop(i, true)
     };
   }
