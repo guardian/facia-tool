@@ -41,6 +41,8 @@ View [client-dev.sh](scripts/client-dev.sh).
 
 V2 is a ReactRedux Javascript application hooking into the existing Fronts API and CAPI.
 
+You'll need to understand the concepts of Thunks and Selectors.
+
 | Uses        | For         | Config |
 | ------------|------------- |--- |
 | [React](https://jestjs.io/docs/en/getting-started.html)      | Components ||
