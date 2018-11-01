@@ -36,10 +36,9 @@ const ArticleFragmentLevel = ({
     onMove={onMove}
     onDrop={onDrop}
     renderDrag={af => <ArticleDrag id={af.uuid} />}
-    renderDrop={(props, isTarget, index) => (
+    renderDrop={(props, isTarget) => (
       <DropZone
         {...props}
-        index={index}
         override={isTarget}
         style={{
           marginTop: '-15px',

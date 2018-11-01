@@ -1,6 +1,6 @@
 module.exports = {
   fronts: {
-    'rich/debug': {
+    'test/front': {
       collections: ['13b2fc5d-ab47-4926-9a26-ee76184be485'],
       isHidden: true,
       canonical: '13b2fc5d-ab47-4926-9a26-ee76184be485'
