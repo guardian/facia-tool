@@ -37,7 +37,7 @@
             (<span class="non-zero">updating...</span>)
         </span>
 
-        <span class="also" data-bind="if: alsoOn && alsoOn.length">
+        <span class="also" data-bind="if: alsoOn && alsoOn.length && !isPodcastCollection">
             <a class="alsoOnToggle" data-bind="click: alsoOnToggle">
                 <span data-bind="if: !alsoOnHasDifferentPriority">Also on&hellip;</span>
                 <span data-bind="if: alsoOnHasDifferentPriority">
@@ -54,6 +54,9 @@
                 </span>
             </a>
         </span>
+        <div class="collectionEditWarning" data-bind="if: isPodcastCollection">
+            Warning: do not change or delete the Podcast container. Please speak to Central Production.
+        </div>
 
         <span class="list-header__timings" data-bind="
             css: {'has-concurrent-user': state.hasConcurrentEdits}">
