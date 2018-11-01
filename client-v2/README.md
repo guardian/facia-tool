@@ -103,3 +103,58 @@ yarn lint-fix
 
 ## Typescript
 We are using Typescript for typing in Fronts V2. 
+
+## File Structure
+
+```
+src
+├── actions
+├── bundles
+├── components
+│   ├── CAPI
+│   ├── FrontsCAPIInterface
+│   ├── FrontsEdit
+│   ├── clipboard
+│   ├── inputs
+│   ├── layout
+│   └── util
+├── constants
+├── containers
+├── fixtures
+├── fonts
+│   ├── headline
+│   └── text
+├── images
+│   └── icons
+├── lib
+│   └── dnd
+├── reducers
+├── selectors
+├── services
+├── shared
+│   ├── actions
+│   ├── bundles
+│   ├── components
+│   ├── constants
+│   ├── fixtures
+│   ├── images
+│   ├── reducers
+│   ├── selectors
+│   ├── types
+│   └── util
+├── types
+└── util
+    └── sharedStyles
+```
+
+- Components, Actions, Reducers and Selectors are top level.
+    - The [App component](src/components/App.tsx) is the application entry point
+    - All reducers are combined in the [Root Reducer](src/reducers/rootReducer.ts) as per standard convention
+- `bundles` **what is the concept of a bundle?**
+- `constants` store high-level application constants such as theme styles and image paths
+- `services` contains the modules for requests to APIs such as CAPI and FaciaAPI
+- `lib` contains modules designed to be reusable such as the Drag N' Drop (dnd) module
+- `shared` **contains ??**
+- `types` at the top level store types for ??
+- `types` and `__tests__` are co-located with their modules at the folder level 
+
