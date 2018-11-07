@@ -1,4 +1,6 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { Dispatch } from 'types/Store';
 import styled from 'styled-components';
 import distanceInWords from 'date-fns/distance_in_words_to_now';
 import startCase from 'lodash/startCase';
@@ -10,8 +12,12 @@ import { HoverActionsAreaOverlay } from 'shared/components/CollectionHoverItems'
 import { HoverActionsButtonWrapper } from 'shared/components/input/HoverActionButtonWrapper';
 import {
   HoverViewButton,
-  HoverOphanButton
+  HoverOphanButton,
+  HoverAddToClipboardButton
 } from 'shared/components/input/HoverActionButtons';
+
+import { handleClipboardInsert } from 'util/collectionUtils';
+import noop from 'lodash/noop';
 
 const LinkContainer = styled('div')`
   background-color: #f6f6f6;
@@ -82,7 +88,7 @@ const Body = styled('div')`
 `;
 
 interface FeedItemProps {
-  id: string,
+  id: string;
   title: string;
   href: string;
   sectionName: string;
@@ -91,6 +97,7 @@ interface FeedItemProps {
   publicationDate?: string;
   firstPublicationDate?: string;
   isLive: boolean;
+  onAddToClipboard: (id: string) => void;
 }
 
 const dragStart = (
@@ -109,7 +116,8 @@ const FeedItem = ({
   publicationDate,
   internalPageCode,
   firstPublicationDate,
-  isLive
+  isLive,
+  onAddToClipboard = noop
 }: FeedItemProps) => (
   <Container
     data-testid="feed-item"
@@ -141,12 +149,14 @@ const FeedItem = ({
     <HoverActionsAreaOverlay justify="flex-end">
       <HoverActionsButtonWrapper
         buttons={[
+          { text: 'Clipboard', component: HoverAddToClipboardButton },
           { text: 'View', component: HoverViewButton },
           { text: 'Ophan', component: HoverOphanButton }
         ]}
         buttonProps={{
           isLive,
-          urlPath: id
+          urlPath: id,
+          onAddToClipboard: () => onAddToClipboard(id)
         }}
         toolTipPosition={'top'}
         toolTipAlign={'right'}
@@ -155,4 +165,13 @@ const FeedItem = ({
   </Container>
 );
 
-export default FeedItem;
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    onAddToClipboard: (id: string) => dispatch(handleClipboardInsert(id))
+  };
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(FeedItem);

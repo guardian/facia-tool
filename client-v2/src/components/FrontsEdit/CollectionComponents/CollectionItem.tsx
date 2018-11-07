@@ -12,7 +12,7 @@ import {
 } from 'shared/types/Collection';
 import SnapLink from 'shared/components/snapLink/SnapLink';
 
-import { handleClipboardInsert } from 'util/collectionUtils'; //
+import { handleClipboardInsert } from 'util/collectionUtils';
 import noop from 'lodash/noop';
 
 interface ContainerProps {
