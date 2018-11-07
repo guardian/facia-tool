@@ -5,6 +5,11 @@ import { Dispatch } from 'types/Store';
 import { Move, PosSpec } from 'lib/dnd';
 import { ArticleFragment } from 'shared/types/Collection';
 import { addArticleFragment } from 'shared/actions/ArticleFragments';
+import { insertClipboardArticleFragment } from 'actions/ArticleFragments';
+import {
+  articleFragmentSelector,
+  selectSharedState
+} from 'shared/selectors/shared';
 
 const dropToArticle = (e: React.DragEvent): string | null => {
   const map = {
@@ -74,6 +79,7 @@ const handleInsert = (
   to: PosSpec
 ) => {
   const id = dropToArticle(e);
+  console.log('drag', id);
   if (!id) {
     return;
   }
@@ -91,4 +97,24 @@ const handleInsert = (
   );
 };
 
-export { handleMove, handleInsert, InsertActionCreator };
+function handleClipboardInsert(id: string): ThunkResult<void> {
+  return (dispatch: Dispatch, getState) =>
+    // @todo is capi fetch needed here
+    dispatch(addArticleFragment(id))
+      // will need to check for frag in feed version
+      .then(fragment =>
+        dispatch(
+          insertClipboardArticleFragment(
+            'clipboard', // the name of the level above
+            'clipboard',
+            articleFragmentSelector(selectSharedState(getState()), id),
+            0
+          )
+        )
+      )
+      .catch(() => {
+        // @todo: implement once error handling is done
+      });
+}
+
+export { handleMove, handleInsert, handleClipboardInsert, InsertActionCreator };
