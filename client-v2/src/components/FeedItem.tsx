@@ -18,6 +18,7 @@ import {
 
 import { insertClipboardArticleFragment } from 'actions/ArticleFragments';
 import { handleInsert } from 'util/collectionUtils';
+import { handleClipboardInsert } from 'util/collectionUtils';
 import noop from 'lodash/noop';
 
 const LinkContainer = styled('div')`
@@ -168,8 +169,7 @@ const FeedItem = ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    onAddToClipboard: (id: string) =>
-      dispatch(handleInsert(id, insertClipboardArticleFragment, true))
+    onAddToClipboard: (id: string) => dispatch(handleClipboardInsert(id))
   };
 };
 
