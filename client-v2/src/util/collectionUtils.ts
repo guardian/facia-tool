@@ -5,7 +5,7 @@ import { Dispatch } from 'types/Store';
 import { Move, PosSpec } from 'lib/dnd';
 import { ArticleFragment } from 'shared/types/Collection';
 import { addArticleFragment } from 'shared/actions/ArticleFragments';
-
+import { insertClipboardArticleFragment } from 'actions/ArticleFragments';
 import {
   articleFragmentSelector,
   selectSharedState
@@ -125,6 +125,7 @@ const handleInsertFromEvent = (
   to: PosSpec
 ) => {
   const id = dropToArticle(e);
+  console.log('drag', id);
   if (!id) {
     return;
   }
