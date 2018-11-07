@@ -16,7 +16,10 @@ import CollectionItemContainer from '../collectionItem/CollectionItemContainer';
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
 import ArticleBodyPolaroid from './ArticleBodyPolaroid';
 import ArticleBodyDefault, { ArticleBodyProps } from './ArticleBodyDefault';
-import { CollectionItemDisplayTypes, CollectionItemSizes } from 'shared/types/Collection';
+import {
+  CollectionItemDisplayTypes,
+  CollectionItemSizes
+} from 'shared/types/Collection';
 import { getPillarColor } from 'shared/util/getPillarColor';
 
 const ArticleBodyContainer = styled(CollectionItemBody)`
@@ -37,6 +40,7 @@ interface ArticleComponentProps {
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
   onDelete?: (uuid: string) => void;
   onClick?: () => void;
+  onAddToClipboard?: (id: string) => void;
 }
 
 interface ContainerProps extends ArticleComponentProps {
@@ -51,7 +55,9 @@ type ComponentProps = {
   children: React.ReactNode;
 } & ContainerProps;
 
-const articleBodyComponentMap: { [id: string]: React.ComponentType<ArticleBodyProps> } = {
+const articleBodyComponentMap: {
+  [id: string]: React.ComponentType<ArticleBodyProps>;
+} = {
   default: ArticleBodyDefault,
   polaroid: ArticleBodyPolaroid
 };
@@ -70,6 +76,7 @@ const ArticleComponent = ({
   onDrop = noop,
   onDelete = noop,
   onClick = noop,
+  onAddToClipboard = noop,
   children
 }: ComponentProps) => {
   const ArticleBody = articleBodyComponentMap[displayType];
@@ -101,7 +108,12 @@ const ArticleComponent = ({
         }}
       >
         {article && (
-          <ArticleBody {...article} size={size} onDelete={onDelete} />
+          <ArticleBody
+            {...article}
+            size={size}
+            onDelete={onDelete}
+            onAddToClipboard={onAddToClipboard}
+          />
         )}
         {!article &&
           isLoading && (
@@ -109,6 +121,7 @@ const ArticleComponent = ({
               uuid={id}
               displayPlaceholders={true}
               onDelete={onDelete}
+              onAddToClipboard={onAddToClipboard}
               size={size}
             />
           )}
@@ -118,6 +131,7 @@ const ArticleComponent = ({
               headline="Content not found"
               uuid={id}
               onDelete={onDelete}
+              onAddToClipboard={onAddToClipboard}
               size={size}
             />
           )}

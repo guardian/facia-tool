@@ -1,3 +1,4 @@
+import { Dispatch } from 'types/Store';
 import React from 'react';
 import { connect } from 'react-redux';
 import Article from 'shared/components/article/Article';
@@ -5,8 +6,14 @@ import { State } from 'types/State';
 import { createCollectionItemTypeSelector } from 'shared/selectors/collectionItem';
 import { selectSharedState } from 'shared/selectors/shared';
 import collectionItemTypes from 'shared/constants/collectionItemTypes';
-import { CollectionItemTypes, CollectionItemDisplayTypes } from 'shared/types/Collection';
+import {
+  CollectionItemTypes,
+  CollectionItemDisplayTypes
+} from 'shared/types/Collection';
 import SnapLink from 'shared/components/snapLink/SnapLink';
+
+import { handleClipboardInsert } from 'util/collectionUtils'; //
+import noop from 'lodash/noop';
 
 interface ContainerProps {
   isSelected?: boolean;
@@ -21,17 +28,18 @@ interface ContainerProps {
 }
 
 type ArticleContainerProps = ContainerProps & {
-  onDelete: (uuid: string) => void;
+  onAddToClipboard: (uuid: string) => void;
   type: CollectionItemTypes;
 };
 
-const CollectionItemContainer = ({
+const CollectionItem = ({
   uuid,
   isSelected,
   children,
   getNodeProps,
   onSelect,
   onDelete,
+  onAddToClipboard = noop,
   displayType,
   type,
   size
@@ -43,6 +51,7 @@ const CollectionItemContainer = ({
           id={uuid}
           {...getNodeProps()}
           onDelete={onDelete}
+          onAddToClipboard={() => onAddToClipboard(uuid)}
           onClick={() => onSelect(uuid)}
           fade={!isSelected}
           size={size}
@@ -81,6 +90,13 @@ const createMapStateToProps = () => {
   });
 };
 
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    onAddToClipboard: (id: string) => dispatch(handleClipboardInsert(id))
+  };
+};
+
 export default connect(
-  createMapStateToProps
-)(CollectionItemContainer);
+  createMapStateToProps,
+  mapDispatchToProps
+)(CollectionItem);
