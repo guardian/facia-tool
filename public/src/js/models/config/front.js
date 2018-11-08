@@ -224,8 +224,8 @@ export default class ConfigFront extends BaseClass {
         }
         const duplicates = this.getDuplicatePlatformSpecificCollections();
         if (duplicates.length) {
-            alert('Cannot share platform-specific collections with other fronts - removing collection(s) from front \''  + this.props.webTitle() + '\' before saving');
-            duplicateCollections.forEach(c => this._depopulateCollection(c))
+            alert('Cannot share platform-specific collections with other fronts - removing collection(s) from front \'' + this.props.webTitle() + '\' before saving');
+            duplicates.forEach(c => this._depopulateCollection(c));
             // depopulateCollection takes care of persistence, so we return early here.
             return;
         }

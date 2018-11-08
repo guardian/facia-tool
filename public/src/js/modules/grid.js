@@ -4,7 +4,7 @@ import {CONST} from 'modules/vars';
 export function recordUsage(mediaId, frontId) {
     const usageData = {
         mediaId: mediaId,
-        front: frontId,
+        front: frontId
     };
 
     return request({
