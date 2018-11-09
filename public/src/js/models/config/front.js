@@ -222,15 +222,18 @@ export default class ConfigFront extends BaseClass {
             alert('You must choose a group');
             return;
         }
-        if (this.hasDuplicatePlatformSpecificCollection()) {
-            alert('Cannot share platform-specific collections with other fronts');
+        const duplicates = this.getDuplicatePlatformSpecificCollections();
+        if (duplicates.length) {
+            alert('Cannot share platform-specific collections with other fronts - removing collection(s) from front \'' + this.props.webTitle() + '\' before saving');
+            duplicates.forEach(c => this._depopulateCollection(c));
+            // depopulateCollection takes care of persistence, so we return early here.
             return;
         }
         return persistence.front.update(this);
     }
 
-    hasDuplicatePlatformSpecificCollection() {
-        return undefined !== _.find(
+     getDuplicatePlatformSpecificCollections() {
+        return _.filter(
             this.collections.items(),
             c => isPlatformSpecificCollection(c.meta.platform()) && c.parents().length > 1
         );
