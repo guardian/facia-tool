@@ -1,6 +1,7 @@
 import { FrontConfig, CollectionConfig } from 'types/FaciaApi';
-import { CollectionWithNestedArticles } from 'shared/types/Collection';
+import { CollectionWithNestedArticles, ArticleFragment } from 'shared/types/Collection';
 import { detectPressFailureMs } from 'constants/fronts';
+import { StoryDetails } from 'types/FaciaApi';
 
 const getFrontCollections = (
   frontId: string|void,
@@ -30,7 +31,8 @@ const combineCollectionWithConfig = (
   Object.assign({}, collection, {
     id: collection.id,
     displayName: collectionConfig.displayName,
-    groups: collectionConfig.groups
+    groups: collectionConfig.groups,
+    type: collectionConfig.type
   });
 
 const populateDraftArticles = (collection: CollectionWithNestedArticles) =>
@@ -43,9 +45,16 @@ const isFrontStale = (lastUpdated?: number, lastPressed?: number) => {
   return false;
 };
 
+const getVisibilityStoryDetails = (groupsWithStories: ArticleFragment[][]) => groupsWithStories.reduce((stories, storiesInGroup, index) => {
+   const groupStories = storiesInGroup.map(story => ({ group: index, isBoosted: !!story.meta.isBoosted }));
+    return stories.concat(groupStories);
+
+  }, [] as StoryDetails[]);
+
 export {
   getFrontCollections,
   combineCollectionWithConfig,
   populateDraftArticles,
-  isFrontStale
+  isFrontStale,
+  getVisibilityStoryDetails
 };
