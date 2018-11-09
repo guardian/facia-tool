@@ -79,11 +79,17 @@ interface StoryDetails {
   isBoosted: boolean
 }
 
+interface VisibleStoriesResponse {
+  desktop: number,
+  mobile: number
+}
+
 export {
   FrontConfig,
   CollectionConfig,
   FrontsConfig,
   FrontsConfigResponse,
   FrontConfigMap,
-  StoryDetails
+  StoryDetails,
+  VisibleStoriesResponse
 };

@@ -27,6 +27,7 @@ import {
 } from 'shared/util/shared';
 import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
 import { groupsReceived } from 'shared/actions/Groups';
+import { recordVisibleStories } from 'actions/Fronts';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import { getCollectionConfig } from 'selectors/frontsSelectors';
 import { State } from 'types/State';
@@ -104,7 +105,7 @@ function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
       );
       await updateCollectionFromApi(collection.id, denormalisedCollection);
       dispatch(collectionActions.updateSuccess(collection.id, collection));
-      getVisibleStories(collection, getState());
+      dispatch(getVisibleStories(collection, getState()));
     } catch (e) {
       dispatch(collectionActions.updateError(e, collection.id));
       throw e;
@@ -155,7 +156,7 @@ const getCollectionsAndArticles = (
     })
   );
 
-const getVisibleStories = async (collection: Collection, state: State) => {
+const getVisibleStories = (collection: Collection, state: State): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
   const collectionType = collection.type;
   const groups = (collection.draft ? collection.draft : collection.live) || [];
   const groupArticleSelector = createGroupArticlesSelector();
@@ -165,7 +166,7 @@ const getVisibleStories = async (collection: Collection, state: State) => {
 
   try {
     const visible = await fetchVisibleStories(collectionType, storyDetails);
-    console.log({visible});
+    await dispatch(recordVisibleStories(collection.id, visible, 'draft'));
   } catch (error) {
     // TODO
   }

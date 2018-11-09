@@ -11,6 +11,8 @@ import { actions as frontsConfigActions } from 'bundles/frontsConfigBundle';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import { isFrontStale } from 'util/frontsUtils';
 import { getCollection } from 'actions/Collections';
+import { VisibleStoriesResponse } from 'types/FaciaApi';
+import { Stages } from 'shared/types/Collection';
 
 function fetchLastPressedSuccess(frontId: string, datePressed: string): Action {
   return {
@@ -40,6 +42,18 @@ function recordStaleFronts(frontId: string, frontIsStale: boolean): Action {
     }
   };
 }
+
+function recordVisibleStories(collectionId: string, visibleStories: VisibleStoriesResponse, stage: Stages): Action {
+  return {
+    type: 'FETCH_VISIBLE_STORIES_SUCCESS',
+    payload: {
+      collectionId,
+      visibleStories,
+      stage
+    }
+  }
+}
+
 
 function fetchLastPressed(frontId: string): ThunkResult<void> {
   return (dispatch: Dispatch) =>
@@ -93,7 +107,7 @@ function publishCollection(
       });
 }
 
-export { fetchLastPressed, fetchLastPressedSuccess, publishCollection };
+export { fetchLastPressed, fetchLastPressedSuccess, publishCollection, recordVisibleStories };
 
 export default function getFrontsConfig(): ThunkResult<
   Promise<

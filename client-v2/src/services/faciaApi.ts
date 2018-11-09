@@ -3,7 +3,8 @@ import {
   FrontsConfig,
   FrontsConfigResponse,
   FrontConfigMap,
-  StoryDetails
+  StoryDetails,
+  VisibleStoriesResponse
 } from 'types/FaciaApi';
 import { ExternalArticle } from 'shared/types/ExternalArticle';
 import {
@@ -69,7 +70,7 @@ async function fetchLastPressed(frontId: string): Promise<string> {
     });
 }
 
-async function fetchVisibleStories(collectionType: string, stories: StoryDetails[]): Promise<string> {
+async function fetchVisibleStories(collectionType: string, stories: StoryDetails[]): Promise<VisibleStoriesResponse> {
   // The server does not respond with JSON
   try {
     const response = await pandaFetch(`/stories-visible/${collectionType}`, {

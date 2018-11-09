@@ -11,8 +11,9 @@ import {
 } from 'shared/types/Action';
 import { PersistMeta } from 'util/storeMiddleware';
 import { Config } from './Config';
-import { FrontsConfig } from './FaciaApi';
+import { FrontsConfig, VisibleStoriesResponse } from './FaciaApi';
 import { BatchAction } from 'redux-batched-actions';
+import { Stages } from 'shared/types/Collection';
 
 interface EditorAddFront {
   type: 'EDITOR_OPEN_FRONT';
@@ -157,6 +158,11 @@ interface RecordStaleFronts {
   payload: { [id: string]: boolean };
 }
 
+interface FetchVisibleStoriesSuccess {
+  type: 'FETCH_VISIBLE_STORIES_SUCCESS';
+  payload: { collectionId: string, visibleStories: VisibleStoriesResponse, stage: Stages }
+}
+
 type Action =
   | ConfigReceivedAction
   | FrontsConfigReceivedAction
@@ -185,6 +191,7 @@ type Action =
   | EditorClearArticleFragmentSelection
   | RecordStaleFronts
   | BatchAction
+  | FetchVisibleStoriesSuccess
 
 export {
   ActionError,
