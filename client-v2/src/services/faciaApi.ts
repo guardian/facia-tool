@@ -69,7 +69,7 @@ async function fetchLastPressed(frontId: string): Promise<string> {
     });
 }
 
-async function fetchVisibleStories(collectionType: string, stories: StoryDetails): Promise<string> {
+async function fetchVisibleStories(collectionType: string, stories: StoryDetails[]): Promise<string> {
   // The server does not respond with JSON
   try {
     const response = await pandaFetch(`/stories-visible/${collectionType}`, {
@@ -78,7 +78,7 @@ async function fetchVisibleStories(collectionType: string, stories: StoryDetails
         'Content-Type': 'application/json'
       },
       credentials: 'same-origin',
-      body: JSON.stringify(stories)
+      body: JSON.stringify({stories})
     });
     return await response.json();
   } catch (response) {

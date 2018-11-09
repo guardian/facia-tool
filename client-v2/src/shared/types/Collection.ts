@@ -115,6 +115,7 @@ interface Collection {
   platform?: string;
   displayName: string;
   groups?: string[];
+  type: string
 }
 
 export {

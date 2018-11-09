@@ -3,17 +3,23 @@ import { batchActions } from 'redux-batched-actions';
 import {
   getArticlesBatched,
   getCollection as fetchCollection,
-  updateCollection as updateCollectionFromApi
+  updateCollection as updateCollectionFromApi,
+  fetchVisibleStories
 } from 'services/faciaApi';
 import {
   selectUserEmail,
   selectFirstName,
   selectLastName
 } from 'selectors/configSelectors';
+import {
+  createGroupArticlesSelector,
+  selectSharedState
+} from 'shared/selectors/shared';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import {
   combineCollectionWithConfig,
-  populateDraftArticles
+  populateDraftArticles,
+  getVisibilityStoryDetails
 } from 'util/frontsUtils';
 import {
   normaliseCollectionWithNestedArticles,
@@ -98,6 +104,7 @@ function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
       );
       await updateCollectionFromApi(collection.id, denormalisedCollection);
       dispatch(collectionActions.updateSuccess(collection.id, collection));
+      getVisibleStories(collection, getState());
     } catch (e) {
       dispatch(collectionActions.updateError(e, collection.id));
       throw e;
@@ -148,4 +155,21 @@ const getCollectionsAndArticles = (
     })
   );
 
-export { getCollection, getCollectionsAndArticles, fetchArticles, updateCollection };
+const getVisibleStories = async (collection: Collection, state: State) => {
+  const collectionType = collection.type;
+  const groups = (collection.draft ? collection.draft : collection.live) || [];
+  const groupArticleSelector = createGroupArticlesSelector();
+  const groupsWithStories = groups.map(id => groupArticleSelector(state, { groupId: id }));
+
+  const storyDetails = getVisibilityStoryDetails(groupsWithStories);
+
+  try {
+    const visible = await fetchVisibleStories(collectionType, storyDetails);
+    console.log({visible});
+  } catch (error) {
+    // TODO
+  }
+}
+
+
+export { getCollection, getCollectionsAndArticles, fetchArticles, updateCollection,  getVisibleStories };
