@@ -5,7 +5,7 @@ import { Dispatch } from 'types/Store';
 import { Move, PosSpec } from 'lib/dnd';
 import { ArticleFragment } from 'shared/types/Collection';
 import { addArticleFragment } from 'shared/actions/ArticleFragments';
-import { insertClipboardArticleFragment } from 'actions/ArticleFragments';
+
 import {
   articleFragmentSelector,
   selectSharedState
@@ -131,32 +131,4 @@ const handleInsertFromEvent = (
   dispatch(handleInsert(id, insertActionCreator, true, to));
 };
 
-// @todo can this be refactored into handleInsert?
-const handleClipboardInsert = (id: string): ThunkResult<void> => {
-  return (dispatch: Dispatch, getState) =>
-    // @todo could feed articles live in state/shared?
-    // addArticleFragment pulls externalArticle frag data for feedItem
-    // and adds to state/shared prior to inserting into clipboard collection
-    dispatch(addArticleFragment(id))
-      .then(fragment => {
-        let uuid;
-        if (fragment) {
-          uuid = fragment.uuid;
-        } else {
-          uuid = id;
-        }
-        dispatch(
-          insertClipboardArticleFragment(
-            'clipboard', // type: collection or clipboard
-            'clipboard', // collection id
-            articleFragmentSelector(selectSharedState(getState()), uuid),
-            0 // index
-          )
-        );
-      })
-      .catch(() => {
-        // @todo: implement once error handling is done
-      });
-};
-
-export { handleMove, handleInsert, handleClipboardInsert, InsertActionCreator };
+export { handleMove, handleInsert, handleInsertFromEvent, InsertActionCreator };

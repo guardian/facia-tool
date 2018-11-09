@@ -76,14 +76,14 @@ const HoverDeleteButton = ({
 const HoverAddToClipboardButton = ({
   showToolTip,
   hideToolTip,
-  onAddToClipboard // TODO change to CopyToClipboard
+  onAddToClipboard
 }: ButtonProps) => (
   <ActionButton
     onMouseEnter={showToolTip}
     onMouseLeave={hideToolTip}
     onClick={e => {
       e.stopPropagation();
-      return onAddToClipboard && onAddToClipboard(); // TODO change to CopyToClipboard
+      return onAddToClipboard && onAddToClipboard();
     }}
   >
     <Icon src={hoverActionIcons.clipboard} alt="Add to clipboard" />
