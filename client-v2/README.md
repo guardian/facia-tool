@@ -75,6 +75,7 @@ You'll need to understand the concepts of Thunks and Selectors.
 | [Jest](https://jestjs.io/docs/en/getting-started.html)      | Testing library | [jest.config.js](jest.config.js)|
 | [Enzyme](https://github.com/airbnb/enzyme)      | JavaScript Testing utilities for React  ||
 | [react-testing-library](https://github.com/kentcdodds/react-testing-library)     | JavaScript Testing utilities for React Components |
+| [react-testing-library](https://github.com/kentcdodds/react-testing-library)     | JavaScript Testing utilities for React Components |
 | [React Test Renderer](https://reactjs.org/docs/test-renderer.html)      | Render Components to JSON (e.g for Jest Snapshotting) ||
 | [Test Cafe](https://testcafe.devexpress.com/)      | Integration testing - see below ||
 
