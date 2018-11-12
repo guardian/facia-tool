@@ -171,7 +171,8 @@ src
 - Components, Actions, Reducers and Selectors are top level.
     - The [App component](src/components/App.tsx) is the application entry point
     - All reducers are combined in the [Root Reducer](src/reducers/rootReducer.ts) as per standard convention
-- `bundles` **what is the concept of a bundle?**
+- `bundles`
+    - A bundle exports a reducer and all of the related things a reducer needs to function in an app - selectors, actions and action names. It's a bit like an index.ts for a single redux module. This is especially useful when you're generating the actions, reducer and selectors rather than writing them manually, for example with the `createAsyncResourceBundle` utility in shared/util.
 - `constants` store high-level application constants such as theme styles and image paths
 - `services` contains the modules for requests to APIs such as CAPI and FaciaAPI
 - `lib` contains modules designed to be reusable such as the Drag N' Drop (dnd) module
