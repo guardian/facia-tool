@@ -37,50 +37,50 @@ import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import difference from 'lodash/difference';
 
 function getCollection(collectionId: string): ThunkResult<Promise<string[]>> {
-  return (dispatch: Dispatch, getState: () => State) => {
+  return async (dispatch: Dispatch, getState: () => State) => {
     dispatch(collectionActions.fetchStart(collectionId));
-    return fetchCollection(collectionId)
-      .then(res => {
-        const collectionConfig = getCollectionConfig(getState(), collectionId);
-        const collectionWithNestedArticles = combineCollectionWithConfig(
-          collectionConfig,
-          res
-        );
-        const hasUnpublishedChanges =
-          collectionWithNestedArticles.draft !== undefined;
+    try {
+      const res = await fetchCollection(collectionId)
+      const collectionConfig = getCollectionConfig(getState(), collectionId);
+      const collectionWithNestedArticles = combineCollectionWithConfig(
+        collectionConfig,
+        res
+      );
+      const hasUnpublishedChanges =
+        collectionWithNestedArticles.draft !== undefined;
 
-        const collectionWithDraftArticles = {
-          ...collectionWithNestedArticles,
-          draft: populateDraftArticles(collectionWithNestedArticles)
-        };
-        const {
-          collection,
-          articleFragments,
-          groups
-        } = normaliseCollectionWithNestedArticles(
-          collectionWithDraftArticles,
-          collectionConfig
-        );
+      const collectionWithDraftArticles = {
+        ...collectionWithNestedArticles,
+        draft: populateDraftArticles(collectionWithNestedArticles)
+      };
+      const {
+        collection,
+        articleFragments,
+        groups
+      } = normaliseCollectionWithNestedArticles(
+        collectionWithDraftArticles,
+        collectionConfig
+      );
 
-        dispatch(
-          batchActions([
-            collectionActions.fetchSuccess(collection),
-            articleFragmentsReceived(articleFragments),
-            recordUnpublishedChanges(collectionId, hasUnpublishedChanges),
-            groupsReceived(groups)
-          ])
-        );
+      dispatch(
+        batchActions([
+          collectionActions.fetchSuccess(collection),
+          articleFragmentsReceived(articleFragments),
+          recordUnpublishedChanges(collectionId, hasUnpublishedChanges),
+          groupsReceived(groups),
+          getVisibleStories(collection, getState())
+        ])
+      );
 
-        // We dedupe ids here to ensure that articles aren't requested twice,
-        // e.g. multiple articles containing the same supporting article.
-        return uniq(
-          Object.keys(articleFragments).map(afId => articleFragments[afId].id)
-        );
-      })
-      .catch((error: string) => {
-        dispatch(collectionActions.fetchError(error, collectionId));
-        return [];
-      });
+      // We dedupe ids here to ensure that articles aren't requested twice,
+      // e.g. multiple articles containing the same supporting article.
+      return uniq(
+        Object.keys(articleFragments).map(afId => articleFragments[afId].id)
+      );
+    } catch (error) {
+      dispatch(collectionActions.fetchError(error, collectionId));
+      return [];
+    };
   };
 }
 
