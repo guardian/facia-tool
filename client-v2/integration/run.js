@@ -1,5 +1,5 @@
 const createTestCafe = require('testcafe');
-const chromium = require('chromium');
+const puppeteer = require('puppeteer');
 
 let testcafe = null;
 let runner = null;
@@ -11,7 +11,7 @@ createTestCafe('localhost', 1337, 1338)
     return runner
       .src('integration/tests/*.spec.js')
       .browsers(
-        `chrome:${chromium.path}${
+        `chrome:${puppeteer.executablePath()}${
           process.argv.includes('--dev') ? '' : ':headless'
         }`
       )
