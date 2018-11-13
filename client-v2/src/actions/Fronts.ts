@@ -12,7 +12,10 @@ import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import { isFrontStale } from 'util/frontsUtils';
 import { getCollection } from 'actions/Collections';
 import { VisibleStoriesResponse } from 'types/FaciaApi';
+import { visibleStoriesSelector } from 'selectors/frontsSelectors';
 import { Stages } from 'shared/types/Collection';
+import { frontStages } from 'constants/fronts';
+import { State } from 'types/State';
 
 function fetchLastPressedSuccess(frontId: string, datePressed: string): Action {
   return {
@@ -54,7 +57,6 @@ function recordVisibleStories(collectionId: string, visibleStories: VisibleStori
   }
 }
 
-
 function fetchLastPressed(frontId: string): ThunkResult<void> {
   return (dispatch: Dispatch) =>
     fetchLastPressedApi(frontId)
@@ -70,13 +72,18 @@ function publishCollection(
   collectionId: string,
   frontId: string
 ): ThunkResult<Promise<void>> {
-  return (dispatch: Dispatch) =>
-    publishCollectionApi(collectionId)
+
+  return (dispatch: Dispatch, getState: () => State) => {
+
+  const draftVisibleStories = visibleStoriesSelector(getState(), { collectionId, stage: frontStages.draft });
+
+    return publishCollectionApi(collectionId)
       .then(() => {
         dispatch(
           batchActions([
             publishCollectionSuccess(collectionId),
-            recordUnpublishedChanges(collectionId, false)
+            recordUnpublishedChanges(collectionId, false),
+            recordVisibleStories(collectionId, draftVisibleStories, frontStages.live)
           ])
         );
 
@@ -105,6 +112,7 @@ function publishCollection(
       .catch(() => {
         // @todo: implement once error handling is done
       });
+  }
 }
 
 export { fetchLastPressed, fetchLastPressedSuccess, publishCollection, recordVisibleStories };

@@ -19,7 +19,8 @@ import { actions as externalArticleActions } from 'shared/bundles/externalArticl
 import {
   combineCollectionWithConfig,
   populateDraftArticles,
-  getVisibilityStoryDetails
+  getVisibilityStoryDetails,
+  getGroupsByStage
 } from 'util/frontsUtils';
 import {
   normaliseCollectionWithNestedArticles,
@@ -32,7 +33,8 @@ import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import { getCollectionConfig } from 'selectors/frontsSelectors';
 import { State } from 'types/State';
 import { Dispatch, ThunkResult, GetState } from 'types/Store';
-import { Collection } from 'shared/types/Collection';
+import { frontStages } from 'constants/fronts';
+import { Stages, Collection } from 'shared/types/Collection';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import difference from 'lodash/difference';
 
@@ -68,9 +70,12 @@ function getCollection(collectionId: string): ThunkResult<Promise<string[]>> {
           articleFragmentsReceived(articleFragments),
           recordUnpublishedChanges(collectionId, hasUnpublishedChanges),
           groupsReceived(groups),
-          getVisibleStories(collection, getState())
         ])
       );
+
+      //abstract logic out from get visible stories
+      dispatch(getVisibleStories(collection, getState(), frontStages.live));
+      dispatch(getVisibleStories(collection, getState(), frontStages.draft));
 
       // We dedupe ids here to ensure that articles aren't requested twice,
       // e.g. multiple articles containing the same supporting article.
@@ -105,7 +110,7 @@ function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
       );
       await updateCollectionFromApi(collection.id, denormalisedCollection);
       dispatch(collectionActions.updateSuccess(collection.id, collection));
-      dispatch(getVisibleStories(collection, getState()));
+      dispatch(getVisibleStories(collection, getState(), frontStages.draft));
     } catch (e) {
       dispatch(collectionActions.updateError(e, collection.id));
       throw e;
@@ -156,9 +161,9 @@ const getCollectionsAndArticles = (
     })
   );
 
-const getVisibleStories = (collection: Collection, state: State): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
+const getVisibleStories = (collection: Collection, state: State, stage: Stages): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
   const collectionType = collection.type;
-  const groups = (collection.draft ? collection.draft : collection.live) || [];
+  const groups = getGroupsByStage(collection, stage);
   const groupArticleSelector = createGroupArticlesSelector();
   const groupsWithStories = groups.map(id => groupArticleSelector(state, { groupId: id }));
 
@@ -166,11 +171,11 @@ const getVisibleStories = (collection: Collection, state: State): ThunkResult<Pr
 
   try {
     const visible = await fetchVisibleStories(collectionType, storyDetails);
-    await dispatch(recordVisibleStories(collection.id, visible, 'draft'));
+    await dispatch(recordVisibleStories(collection.id, visible, stage));
   } catch (error) {
     // TODO
   }
 }
 
 
-export { getCollection, getCollectionsAndArticles, fetchArticles, updateCollection,  getVisibleStories };
+export { getCollection, getCollectionsAndArticles, fetchArticles, updateCollection };
