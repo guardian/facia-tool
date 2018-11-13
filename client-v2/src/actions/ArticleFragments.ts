@@ -213,6 +213,10 @@ const createMoveArticleFragment = (persistTo: 'collection' | 'clipboard') => (
   }
 
   const replace = addPersistMetaToAction(replaceAction, {
+    // this serves as a reference article fragment id which the persistence can
+    // derive the collection from, otherwise it will use`id` on the action,
+    // which is a group id *not* an article fragment id
+    id,
     persistTo
   });
 
