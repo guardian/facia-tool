@@ -47,6 +47,7 @@
     "file-loader": "^1.1.11",
     "jest": "^23.6.0",
     "jest-dom": "^2.1.0",
+    "markdown-toc": "^1.2.0",
     "prettier": "1.13.7",
     "puppeteer": "^1.10.0",
     "react-test-renderer": "^16.5.2",

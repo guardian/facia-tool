@@ -1,5 +1,21 @@
 # Fronts V2
 
+- [Fronts V2](#fronts-v2)
+  * [Motivations](#motivations)
+  * [Setup](#setup)
+  * [Developing](#developing)
+    + [Technologies](#technologies)
+  * [Building and Compiling](#building-and-compiling)
+  * [Testing](#testing)
+  * [Linting](#linting)
+  * [Typescript](#typescript)
+
+> _Tip:_ Run `yarn markdown-toc README.md` to regenerate the TOC.
+
+## Motivations
+
+Fronts Client V2 looks to rebuild the Fronts tool with modern technologies, develop reusable patterns for content curation and build shareable components for across the tools.
+
 ## Setup
 
 To setup the Fronts V2 project:
@@ -7,6 +23,8 @@ To setup the Fronts V2 project:
 ```bash
 ./scripts/setup.sh
 ```
+
+View [setup.sh](scripts/setup.sh).
 
 ## Developing
 
@@ -19,7 +37,46 @@ To start developing just run:
 The v2 application will be running here:
 [https://fronts.local.dev-gutools.co.uk/v2](https://fronts.local.dev-gutools.co.uk/v2)
 
+View [client-dev.sh](scripts/client-dev.sh).
+
+### Technologies
+
+V2 is a ReactRedux Javascript application hooking into the existing Fronts API and CAPI.
+
+You'll need to understand the concepts of Thunks and Selectors.
+
+| Uses        | For         | Config |
+| ------------|------------- |--- |
+| [React](https://jestjs.io/docs/en/getting-started.html)      | Components ||
+| [Redux](https://github.com/airbnb/enzyme)      | State management ||
+| [Redux Thunk](https://github.com/reduxjs/redux-thunk)      | Redux Thunk middleware allows you to write action creators that return a function instead of an action.  ||
+| [Reselect](https://github.com/reduxjs/reselect)      | Selectors can compute derived data, allowing Redux to store the minimal possible state.  ||
+| [Redux Forms](https://redux-form.com/7.4.2/)      | Form state management for Redux apps ||
+| [React Router](https://reacttraining.com/react-router/)      | Routing for React apps ||
+| [Styled Components](https://www.styled-components.com/)      | Styling for components ||
+| [Typescript](https://www.typescriptlang.org/)      | JS Types | [tsconfig](tsconfig.json), [tslint](tslint.json), [modules.d.ts](modules.d.ts), [global.d.ts](global.d.ts)|
+| [Lodash](https://lodash.com/)      | JS helper utilities ||
+| [Date Fns](https://date-fns.org/)      | JS Date functions ||
+| [Raven](https://github.com/getsentry/sentry-javascript)      | Sentry error reporting ||
+| [Panda Session](https://github.com/guardian/panda-session)      | Pan Domain (cross-gutools) session management ||
+
+## Building and Compiling
+
+| Uses        | For         |Config |
+| ------------|------------- |---|
+| [Yarn](https://yarnpkg.com/en/)      | Yarning | [package.json](package.json) |
+| [Babel](https://babeljs.io/)      | Compile Typescript etc | [babel.config.json](babel.config.json) |
+| [Webpack](https://webpack.js.org/)      | Bundle your assests | [webpack.config.common.js](config/webpack.config.common.js), [webpack.config.prod.js](config/webpack.config.prod.js), [webpack.config.dev.js](config/webpack.config.dev.js) |
+
 ## Testing
+
+| Uses        | For         | Config |
+| ------------|------------- |--- |
+| [Jest](https://jestjs.io/docs/en/getting-started.html)      | Testing library | [jest.config.js](jest.config.js)|
+| [Enzyme](https://github.com/airbnb/enzyme)      | JavaScript Testing utilities for React  ||
+| [react-testing-library](https://github.com/kentcdodds/react-testing-library)     | JavaScript Testing utilities for React Components |
+| [React Test Renderer](https://reactjs.org/docs/test-renderer.html)      | Render Components to JSON (e.g for Jest Snapshotting) ||
+| [Test Cafe](https://testcafe.devexpress.com/)      | Integration testing - see below ||
 
 Tests are being run with Jest and can be run using:
 
@@ -60,20 +117,26 @@ And to fix any issues that are automatically resolvable by eslint run:
 yarn lint-fix
 ```
 
-## Flow
-We are using flow for typing in Fronts V2. In order to install types for new
-libraries added run:
+| Uses        | For         | Config |
+| ------------|------------- |--- |
+| [Prettier](https://github.com/prettier/prettier)      | Anti-bikeshed Auto syntax formatting | [.prettierrc](.prettierrc)|
+| [.editorconfig](https://editorconfig.org/)      | Standard Editor formatting  |[.editorconfig](.editorconfig)|
+| [TSLint](https://palantir.github.io/tslint/)      | Typescript Linting | [tslint](tslint.json)|
 
-```bash
-yarn update-types
-```
+## Typescript
+We are using Typescript for typing in Fronts V2. 
 
-If you would like to overwrite types that are previously installed to newer
-versions that have been updated in the project pass the `--overwrite` flag to
-the above command.
+## File Structure
 
-If you want to run flow to check for type errors, run `yarn flow`.
+- Components, Actions, Reducers and Selectors are top level.
+    - The [App component](src/components/App.tsx) is the application entry point
+    - All reducers are combined in the [Root Reducer](src/reducers/rootReducer.ts) as per standard convention
+- `bundles`
+    - A bundle exports a reducer and all of the related things a reducer needs to function in an app - selectors, actions and action names. It's a bit like an index.ts for a single redux module. This is especially useful when you're generating the actions, reducer and selectors rather than writing them manually, for example with the `createAsyncResourceBundle` utility in shared/util.
+- `constants` store high-level application constants such as theme styles and image paths
+- `services` contains the modules for requests to APIs such as CAPI and FaciaAPI
+- `lib` contains modules designed to be reusable such as the Drag N' Drop (dnd) module
+- `shared` is a library written using React and Redux and Typescript for typing designed to make it easier to develop tools which need to provide the ability to curate collections of content. [Read more.](src/shared/.README)
+- `types` at the top level contains types that have no obvious home: e.g. Action which is a union of things that are split across a few files. 
+- `types` and `__tests__` are co-located with their modules at the folder level 
 
-To check for flow coverage, run `yarn flow-coverage`.
-
-If the flow coverage command hangs and does not finish, try killing any running flow processes.
