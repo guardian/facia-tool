@@ -168,8 +168,8 @@ function getCollection(
 }
 
 /**
- * Get a CAPI query string for the given content ids. Content ids may be article ids,
- * a single tag page, or single list of tag pages separated by '+'.
+ * Get a CAPI query string for the given content ids. This could be a single article
+ * or tag/section, or a list of articles.
  */
 const getCapiUriForContentIds = (contentIds: string[]) => {
   const contentIdsStr = contentIds.join(',');
