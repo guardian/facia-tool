@@ -16,7 +16,8 @@ import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
 import {
   HoverViewButton,
   HoverOphanButton,
-  HoverDeleteButton
+  HoverDeleteButton,
+  HoverAddToClipboardButton
 } from '../input/HoverActionButtons';
 import {
   HoverActionsAreaOverlay,
@@ -80,6 +81,7 @@ interface ArticleBodyProps {
   displayPlaceholders?: boolean;
   uuid: string;
   onDelete: (id: string) => void;
+  onAddToClipboard: (id: string) => void;
 }
 
 const articleBodyDefault = ({
@@ -95,7 +97,8 @@ const articleBodyDefault = ({
   isLive,
   urlPath,
   displayPlaceholders,
-  onDelete
+  onDelete,
+  onAddToClipboard
 }: ArticleBodyProps) => {
   const ArticleHeadingContainer =
     size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
@@ -184,11 +187,15 @@ const articleBodyDefault = ({
           toolTipAlign={'left'}
         />
         <HoverActionsButtonWrapper
-          buttons={[{ text: 'Delete', component: HoverDeleteButton }]}
+          buttons={[
+            { text: 'Clipboard', component: HoverAddToClipboardButton },
+            { text: 'Delete', component: HoverDeleteButton }
+          ]}
           buttonProps={{
             isLive,
             urlPath,
-            onDelete
+            onDelete,
+            onAddToClipboard
           }}
           size={size}
           toolTipPosition={'top'}

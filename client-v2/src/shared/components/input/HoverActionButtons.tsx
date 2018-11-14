@@ -50,6 +50,7 @@ interface ButtonPropsFromArticle {
   isLive?: boolean;
   urlPath?: string;
   onDelete?: () => void;
+  onAddToClipboard?: () => void;
 }
 
 type ButtonProps = ButtonPropsFromArticle & ButtonPropsFromWrapper;
@@ -69,6 +70,23 @@ const HoverDeleteButton = ({
     }}
   >
     <Icon src={hoverActionIcons.delete} alt="Delete" />
+  </ActionButton>
+);
+
+const HoverAddToClipboardButton = ({
+  showToolTip,
+  hideToolTip,
+  onAddToClipboard
+}: ButtonProps) => (
+  <ActionButton
+    onMouseEnter={showToolTip}
+    onMouseLeave={hideToolTip}
+    onClick={e => {
+      e.stopPropagation();
+      return onAddToClipboard && onAddToClipboard();
+    }}
+  >
+    <Icon src={hoverActionIcons.clipboard} alt="Add to clipboard" />
   </ActionButton>
 );
 
@@ -102,4 +120,9 @@ const HoverOphanButton = ({
     </Link>
   ) : null;
 
-export { HoverDeleteButton, HoverViewButton, HoverOphanButton };
+export {
+  HoverDeleteButton,
+  HoverViewButton,
+  HoverOphanButton,
+  HoverAddToClipboardButton
+};

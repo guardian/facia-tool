@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Root, Move, PosSpec } from 'lib/dnd';
 import { State } from 'types/State';
-import { handleMove, handleInsert } from 'util/collectionUtils';
+import { handleMove, handleInsertFromEvent } from 'util/collectionUtils';
 import {
   insertClipboardArticleFragment,
   moveClipboardArticleFragment,
@@ -45,7 +45,7 @@ class Clipboard extends React.Component<ClipboardProps> {
   };
 
   public handleInsert = (e: React.DragEvent, to: PosSpec) => {
-    handleInsert(e, insertClipboardArticleFragment, this.props.dispatch, to);
+    handleInsertFromEvent(e, insertClipboardArticleFragment, this.props.dispatch, to);
   };
 
   public removeCollectionItem = (id: string) => {

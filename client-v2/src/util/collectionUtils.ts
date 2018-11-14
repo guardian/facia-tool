@@ -6,6 +6,11 @@ import { Move, PosSpec } from 'lib/dnd';
 import { ArticleFragment } from 'shared/types/Collection';
 import { addArticleFragment } from 'shared/actions/ArticleFragments';
 
+import {
+  articleFragmentSelector,
+  selectSharedState
+} from 'shared/selectors/shared';
+
 const dropToArticle = (e: React.DragEvent): string | null => {
   const map = {
     text: getIdFromURL,
@@ -67,7 +72,53 @@ const handleMove = (
   }
 };
 
+// Inserts from FeedItem and dragEvents have internal ID (eg. 'internal-code/page/4784278' ) not UUID
 const handleInsert = (
+  id: string,
+  insertActionCreator: InsertActionCreator,
+  internalID?: boolean, // must be true for inserts from Events or Feed
+  to?: PosSpec // only needed for DND events - handleInsertFromEvent,
+): ThunkResult<void> => {
+  return (dispatch: Dispatch, getState) => {
+    const dispatchInsert = (uuid: string, fragment?: ArticleFragment) => {
+      if (to && fragment) {
+        return dispatch(
+          insertActionCreator(
+            to.type, // the name of the level above
+            to.id,
+            fragment,
+            to.index
+          )
+        );
+      } else {
+        return dispatch(
+          insertActionCreator(
+            'clipboard', // type: collection or clipboard
+            'clipboard', // collection id
+            articleFragmentSelector(selectSharedState(getState()), uuid),
+            0 // index
+          )
+        );
+      }
+    };
+
+    if (internalID) {
+      dispatch(addArticleFragment(id))
+        .then(fragment => {
+          if (fragment) {
+            dispatchInsert(fragment.uuid, fragment);
+          }
+        })
+        .catch(() => {
+          // @todo: implement once error handling is done
+        });
+    } else {
+      dispatchInsert(id);
+    }
+  };
+};
+
+const handleInsertFromEvent = (
   e: React.DragEvent,
   insertActionCreator: InsertActionCreator,
   dispatch: Dispatch,
@@ -77,18 +128,7 @@ const handleInsert = (
   if (!id) {
     return;
   }
-  dispatch(addArticleFragment(id)).then(
-    fragment =>
-      fragment &&
-      dispatch(
-        insertActionCreator(
-          to.type, // the name of the level above
-          to.id,
-          fragment,
-          to.index
-        )
-      )
-  );
+  dispatch(handleInsert(id, insertActionCreator, true, to));
 };
 
-export { handleMove, handleInsert, InsertActionCreator };
+export { handleMove, handleInsert, handleInsertFromEvent, InsertActionCreator };

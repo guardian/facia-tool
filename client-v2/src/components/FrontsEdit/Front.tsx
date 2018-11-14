@@ -12,7 +12,7 @@ import {
   removeSupportingArticleFragment,
   removeGroupArticleFragment
 } from 'actions/ArticleFragments';
-import { handleMove, handleInsert } from 'util/collectionUtils';
+import { handleMove, handleInsertFromEvent } from 'util/collectionUtils';
 import { AlsoOnDetail } from 'types/Collection';
 import {
   editorSelectArticleFragment,
@@ -91,7 +91,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   };
 
   public handleInsert = (e: React.DragEvent, to: PosSpec) => {
-    handleInsert(e, insertArticleFragment, this.props.dispatch, to);
+    handleInsertFromEvent(e, insertArticleFragment, this.props.dispatch, to);
   };
 
   public removeCollectionItem(parentId: string, id: string) {
