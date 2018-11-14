@@ -4,16 +4,11 @@ import { Dispatch } from 'types/Store';
 import { Move, PosSpec } from 'lib/dnd';
 import { ArticleFragment } from 'shared/types/Collection';
 import { createArticleFragment } from 'shared/actions/ArticleFragments';
-
 import {
   articleFragmentSelector,
   selectSharedState
 } from 'shared/selectors/shared';
 
-import {
-  articleFragmentSelector,
-  selectSharedState
-} from 'shared/selectors/shared';
 
 const dropToArticle = (e: React.DragEvent): string | null => {
   const map = {
