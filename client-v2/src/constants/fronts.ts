@@ -1,12 +1,16 @@
-import { Stages } from 'shared/types/Collection';
+import { ProperStages, Stages } from 'shared/types/Collection';
 
 export const breakingNewsFrontId: string = 'breaking-news';
 
 export const clipboardId: string = 'clipboard';
 
-export const frontStages: { [key: string]: Stages } = {
+export const properFrontStages: { [key: string]: ProperStages } = {
   draft: 'draft',
   live: 'live',
+};
+
+export const frontStages: { [key: string]: Stages } = {
+  ...properFrontStages,
   previously: 'previously'
 };
 

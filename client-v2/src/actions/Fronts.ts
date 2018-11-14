@@ -13,8 +13,8 @@ import { isFrontStale } from 'util/frontsUtils';
 import { getCollection } from 'actions/Collections';
 import { VisibleStoriesResponse } from 'types/FaciaApi';
 import { visibleStoriesSelector } from 'selectors/frontsSelectors';
-import { Stages } from 'shared/types/Collection';
-import { frontStages } from 'constants/fronts';
+import { ProperStages } from 'shared/types/Collection';
+import { properFrontStages } from 'constants/fronts';
 import { State } from 'types/State';
 
 function fetchLastPressedSuccess(frontId: string, datePressed: string): Action {
@@ -46,7 +46,7 @@ function recordStaleFronts(frontId: string, frontIsStale: boolean): Action {
   };
 }
 
-function recordVisibleStories(collectionId: string, visibleStories: VisibleStoriesResponse, stage: Stages): Action {
+function recordVisibleStories(collectionId: string, visibleStories: VisibleStoriesResponse, stage: ProperStages): Action {
   return {
     type: 'FETCH_VISIBLE_STORIES_SUCCESS',
     payload: {
@@ -75,7 +75,7 @@ function publishCollection(
 
   return (dispatch: Dispatch, getState: () => State) => {
 
-  const draftVisibleStories = visibleStoriesSelector(getState(), { collectionId, stage: frontStages.draft });
+  const draftVisibleStories = visibleStoriesSelector(getState(), { collectionId, stage: properFrontStages.draft });
 
     return publishCollectionApi(collectionId)
       .then(() => {
@@ -83,7 +83,7 @@ function publishCollection(
           batchActions([
             publishCollectionSuccess(collectionId),
             recordUnpublishedChanges(collectionId, false),
-            recordVisibleStories(collectionId, draftVisibleStories, frontStages.live)
+            recordVisibleStories(collectionId, draftVisibleStories, properFrontStages.live)
           ])
         );
 

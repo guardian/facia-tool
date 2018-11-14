@@ -5,7 +5,7 @@ import { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
-import { Stages } from 'shared/types/collection';
+import { Stages, ProperStages } from 'shared/types/collection';
 import { StoryDetails } from 'types/faciaApi';
 
 interface FrontConfigMap {
@@ -48,6 +48,11 @@ const frontIdSelector = (state: State, { frontId }: { frontId: string }) =>
 
 const stageSelector = (state: State, { stage }: { stage: Stages }) =>
   stage;
+
+const collectionIdAndStageSelector = (state: State, { stage, collectionId }: { stage: ProperStages, collectionId: string }) => ({
+  stage,
+  collectionId
+})
 
 const collectionVisibilitiesSelector = (state: State) => state.fronts.collectionVisibility;
 
@@ -238,17 +243,22 @@ const lastPressedSelector = (state: State, frontId: string): string | null =>
 
 const clipboardSelector = (state: State) => state.clipboard;
 
-const visibilitiesByStage = (collectionVisibilities, stage: Stages) => collectionVisibilities[stage]);
-
 const visibleStoriesSelector = createSelector(
-  [visibleFrontStoriesSelector, collectionIdSelector, stageSelector],
-  (collectionVisibilities, collectionId: string, stage: Stages) => {
+  [collectionVisibilitiesSelector, collectionIdAndStageSelector],
+  (collectionVisibilities, { collectionId, stage }) => {
   return collectionVisibilities[stage][collectionId];
 });
 
 const visibleFrontStoriesSelector = createSelector(
   [collectionVisibilitiesSelector, stageSelector],
-  visibilitiesByStage)
+  (collectionVisibilities, stage) => {
+    if (stage === 'previously') {
+      return {};
+    }
+    return collectionVisibilities[stage];
+  }
+)
+
 
 export {
   getFront,

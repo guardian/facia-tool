@@ -2,8 +2,8 @@ import { FrontConfig, CollectionConfig } from 'types/FaciaApi';
 import { CollectionWithNestedArticles, ArticleFragment } from 'shared/types/Collection';
 import { detectPressFailureMs } from 'constants/fronts';
 import { StoryDetails } from 'types/FaciaApi';
-import { Stages, Collection } from 'shared/types/Collection';
-import { frontStages } from 'constants/fronts';
+import { ProperStages, Collection } from 'shared/types/Collection';
+import { properFrontStages } from 'constants/fronts';
 
 const getFrontCollections = (
   frontId: string|void,
@@ -53,8 +53,8 @@ const getVisibilityStoryDetails = (groupsWithStories: ArticleFragment[][]) => gr
 
   }, [] as StoryDetails[]);
 
-const getGroupsByStage = (collection: Collection, stage: Stages) => {
-  if (stage === frontStages.draft) {
+const getGroupsByStage = (collection: Collection, stage: ProperStages) => {
+  if (stage === properFrontStages.draft) {
     return (collection.draft ? collection.draft : collection.live) || [];
   }
   return collection.live ? collection.live : [];

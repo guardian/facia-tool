@@ -1,5 +1,5 @@
 import set from 'lodash/fp/set';
-import { Stages } from 'shared/types/Collection';
+import { ProperStages } from 'shared/types/Collection';
 import { VisibleStoriesResponse } from 'types/faciaApi';
 
 import { Action } from 'types/Action';
@@ -13,13 +13,12 @@ interface State {
   frontsConfig: FrontsConfigState;
   lastPressed: {
     [id: string]: string;
-  },
+  }
   collectionVisibility: {
-    [stage: string]: {
-      [collectionId: string]: {
-        visibleStories: VisibleStoriesResponse
-      }
+    [stage in ProperStages]: {
+      [collectionId: string]: VisibleStoriesResponse
     }
+  }
 }
 
 const reducer = (
@@ -28,11 +27,12 @@ const reducer = (
     lastPressed: {},
     collectionVisibility: {
       draft: {},
-      live: {},
+      live: {}
     }
   },
   action: Action
 ): State => {
+
   // @todo - note the sneaky :any.
   const frontsConfig = frontsConfigReducer(state.frontsConfig, action as any);
   let newState = state;

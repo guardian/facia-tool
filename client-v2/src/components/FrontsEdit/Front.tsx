@@ -33,7 +33,7 @@ import GroupLevel from 'components/clipboard/GroupLevel';
 import { getFront } from 'selectors/frontsSelectors';
 import { FrontConfig } from 'types/FaciaApi';
 import { visibleFrontStoriesSelector } from 'selectors/frontsSelectors';
-import { StoryDetails } from 'types/FaciaApi';
+import { VisibleStoriesResponse } from 'types/FaciaApi';
 
 const FrontContainer = styled('div')`
   display: flex;
@@ -63,7 +63,7 @@ type FrontProps = FrontPropsBeforeState & {
   removeCollectionItem: (parentId: string, id: string) => void;
   removeSupportingCollectionItem: (parentId: string, id: string) => void;
   front: FrontConfig;
-  storiesVisible: StoryDetails;
+  storiesVisible: { [id: string]: VisibleStoriesResponse };
 };
 
 interface FrontState {
@@ -241,7 +241,7 @@ const mapStateToProps = (state: State, props: FrontPropsBeforeState) => ({
   unpublishedChanges: state.unpublishedChanges,
   selectedArticleFragmentId: selectEditorArticleFragment(state, props.id),
   front: getFront(state, props.id),
-    storiesVisible: visibleFrontStoriesSelector(state, { stage: props.browsingStage })
+  storiesVisible: visibleFrontStoriesSelector(state, { stage: props.browsingStage })
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => {

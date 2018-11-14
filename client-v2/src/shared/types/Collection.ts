@@ -7,6 +7,7 @@ interface Group {
   articleFragments: string[];
 }
 
+type ProperStages = 'draft' | 'live';
 type Stages = 'draft' | 'live' | 'previously';
 
 type CollectionItemTypes = 'SNAP_LINK' | 'ARTICLE';
@@ -131,5 +132,6 @@ export {
   CollectionItemDisplayTypes,
   CollectionItemSizes,
   Group,
-  Stages
+  Stages,
+  ProperStages
 };
