@@ -53,7 +53,11 @@ const SnapLink = ({
   articleFragment,
   ...rest
 }: SnapLinkProps) => {
-  const headline = articleFragment.meta.headline || 'No headline';
+  const headline =
+    articleFragment.meta.headline ||
+    (articleFragment.meta.customKicker
+      ? `{ ${articleFragment.meta.customKicker} }`
+      : 'No headline');
   return (
     <CollectionItemContainer {...rest}>
       <CollectionItemBody
