@@ -64,7 +64,7 @@ describe('Collection actions', () => {
     })
     it('should issue fetch requests for the given articles and dispatch start and success actions', async () => {
       fetchMock.once(
-        'begin:/api/preview/search',
+        'begin:/api/preview/internal-code/page/5029528',
         { response: { results: [capiArticle] } }
       );
       await store.dispatch(fetchArticles(['internal-code/page/5029528']) as any);
@@ -82,7 +82,7 @@ describe('Collection actions', () => {
     });
     it('should dispatch start and error actions when something goes wrong', async () => {
       fetchMock.once(
-        'begin:/api/preview/search',
+        'begin:/api/preview/internal-code/page/1',
         400
       );
       await store.dispatch(fetchArticles(['internal-code/page/1']) as any);
@@ -94,7 +94,7 @@ describe('Collection actions', () => {
     });
     it('should remove snaplinks', async () => {
       fetchMock.once(
-        'begin:/api/preview/search',
+        'begin:/api/preview/internal-code/page/5029528',
         { response: { results: [capiArticle] } }
       );
       await store.dispatch(fetchArticles(['internal-code/page/5029528', 'snap/12345']) as any);
@@ -132,7 +132,7 @@ describe('Collection actions', () => {
         stateWithCollection.shared.collections.data.exampleCollection;
       fetchMock.once('/collection/exampleCollection', collection);
       fetchMock.once(
-        'begin:/api/preview/search',
+        'begin:/api/preview/world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina',
         { response: { results: [capiArticle] } }
       );
       const store = mockStore({
@@ -156,7 +156,7 @@ describe('Collection actions', () => {
       const collection: any =
         stateWithCollection.shared.collections.data.exampleCollection;
       fetchMock.once('/collection/exampleCollection', collection);
-      fetchMock.once('begin:/api/preview/search', 400);
+      fetchMock.once('begin:/api/preview/world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina', 400);
       const store = mockStore({
         config,
         ...stateWithCollection

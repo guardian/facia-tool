@@ -10,14 +10,16 @@ import grid from '../grid';
 
 (global as any).Image = ImageMock;
 
-jest.mock('../../constants/images', () => ({
-  imageCdnDomainExpr: new RegExp(`http://localhost`),
-  imgIXDomainExpr: /http:\/\/imgix\//,
-  staticImageCdnDomain: `http://localhost/base/public/test/fixtures/`,
-  imageCdnDomain: 'localhost',
-  mediaBaseUrl: 'http://media',
-  apiBaseUrl: '/api.grid',
-  usageBaseUrl: '/api/usage'
+jest.mock('../../constants/url', () => ({
+  media: {
+    imageCdnDomainExpr: new RegExp(`http://localhost`),
+    imgIXDomainExpr: /http:\/\/imgix\//,
+    staticImageCdnDomain: `http://localhost/base/public/test/fixtures/`,
+    imageCdnDomain: 'localhost',
+    mediaBaseUrl: 'http://media',
+    apiBaseUrl: '/api.grid',
+    usageBaseUrl: '/api/usage'
+  }
 }));
 
 function getPath(image: string) {

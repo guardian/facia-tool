@@ -139,6 +139,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
                     <LoaderDisplay loading={!value && pending}>
                       <div>
                         {value &&
+                          value.response.results &&
                           value.response.results
                             .filter(result => result.webTitle)
                             .map(
@@ -162,12 +163,17 @@ class Feed extends React.Component<FeedProps, FeedState> {
                                   internalPageCode={
                                     fields && getId(fields.internalPageCode)
                                   }
-                                  firstPublicationDate={fields.firstPublicationDate}
-                                  isLive={!fields.isLive || fields.isLive === 'true'}
+                                  firstPublicationDate={
+                                    fields.firstPublicationDate
+                                  }
+                                  isLive={
+                                    !fields.isLive || fields.isLive === 'true'
+                                  }
                                 />
                               )
                             )}
                         {value &&
+                          value.response.results &&
                           value.response.results.length === 0 && (
                             <NoResults>No results found</NoResults>
                           )}

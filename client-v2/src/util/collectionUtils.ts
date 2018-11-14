@@ -1,10 +1,14 @@
 import React from 'react';
-import { getIdFromURL } from 'util/CAPIUtils';
 import { ThunkResult } from 'types/Store';
 import { Dispatch } from 'types/Store';
 import { Move, PosSpec } from 'lib/dnd';
 import { ArticleFragment } from 'shared/types/Collection';
-import { addArticleFragment } from 'shared/actions/ArticleFragments';
+import { createArticleFragment } from 'shared/actions/ArticleFragments';
+
+import {
+  articleFragmentSelector,
+  selectSharedState
+} from 'shared/selectors/shared';
 
 import {
   articleFragmentSelector,
@@ -13,7 +17,7 @@ import {
 
 const dropToArticle = (e: React.DragEvent): string | null => {
   const map = {
-    text: getIdFromURL,
+    text: (url: string) => url,
     capi: (data: string) => data
   };
 
@@ -103,7 +107,7 @@ const handleInsert = (
     };
 
     if (internalID) {
-      dispatch(addArticleFragment(id))
+      dispatch(createArticleFragment(id))
         .then(fragment => {
           if (fragment) {
             dispatchInsert(fragment.uuid, fragment);

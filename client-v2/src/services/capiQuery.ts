@@ -5,9 +5,18 @@ const API_BASE = 'https://content.guardianapis.com/';
 
 type Fetch = (path: string) => Promise<Response>;
 
+type CAPIStatus = 'ok' | 'error';
+
 interface CAPISearchQueryReponse {
   response: {
-    results: CapiArticle[];
+    results?: CapiArticle[];
+    content?: CapiArticle;
+    tag?: Tag;
+    section?: {
+      webTitle: string
+    };
+    status: CAPIStatus;
+    message?: string;
   };
 }
 
@@ -24,7 +33,7 @@ const capiQuery = (
   search: async (params: any): Promise<CAPISearchQueryReponse> => {
     const response = await fetch(
       `${baseURL}search${qs({
-        ...params,
+        ...params
       })}`
     );
 
@@ -59,5 +68,10 @@ const capiQuery = (
   }
 });
 
-export { Fetch, CapiArticle, CAPISearchQueryReponse, CAPITagQueryReponse };
+export {
+  Fetch,
+  CapiArticle,
+  CAPISearchQueryReponse,
+  CAPITagQueryReponse
+};
 export default capiQuery;

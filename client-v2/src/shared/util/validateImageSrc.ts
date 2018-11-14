@@ -1,6 +1,6 @@
 import find from 'lodash/find';
 import sortBy from 'lodash/sortBy';
-import imageConstants from '../constants/images';
+import urlConstants from '../constants/url';
 import deepGet from 'lodash/get';
 import grid, { recordUsage } from './grid';
 import fetchImage from './fetchImage';
@@ -101,7 +101,7 @@ function getSuitableAsset(
     return Promise.resolve({
       path,
       thumb: assets[assets.length - 1].secureUrl,
-      origin: `${imageConstants.mediaBaseUrl}/image/${id}`,
+      origin: `${urlConstants.media.mediaBaseUrl}/image/${id}`,
       height,
       width,
       ratio: width / height
@@ -168,12 +168,12 @@ function stripImplementationDetails(
 ): Promise<ImageDescription> {
   return new Promise((resolve, reject) => {
     const maybeFromGrid = grid.gridInstance.excractMediaId(src);
-    if (src && imageConstants.imgIXDomainExpr.test(src)) {
+    if (src && urlConstants.media.imgIXDomainExpr.test(src)) {
       const localSource = src
         .substring(0, src.indexOf('?'))
         .replace(
-          imageConstants.imgIXDomainExpr,
-          imageConstants.staticImageCdnDomain
+          urlConstants.media.imgIXDomainExpr,
+          urlConstants.media.staticImageCdnDomain
         );
       resolve({
         path: localSource,
@@ -198,10 +198,10 @@ function stripImplementationDetails(
           })
         )
         .catch(reject);
-    } else if (!imageConstants.imageCdnDomainExpr.test(src)) {
+    } else if (!urlConstants.media.imageCdnDomainExpr.test(src)) {
       reject(
         new Error(
-          `Images must come from ${imageConstants.imageCdnDomain} or the Grid`
+          `Images must come from ${urlConstants.media.imageCdnDomain} or the Grid`
         )
       );
     } else {

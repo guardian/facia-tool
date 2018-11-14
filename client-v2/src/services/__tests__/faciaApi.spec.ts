@@ -2,13 +2,14 @@ import fetchMock from 'fetch-mock';
 import {
   fetchLastPressed,
   updateCollection,
-  getCapiUriForArticleIds,
+  getCapiUriForContentIds,
+  getArticlesBatched,
   getArticles
 } from '../faciaApi';
 import chunk from 'lodash/chunk';
 
 describe('faciaApi', () => {
-  afterEach(fetchMock.restore);
+  afterEach(() => fetchMock.restore());
   describe('fetchLastPressed', () => {
     it('should fetch the last modified date from the appropriate endpoint', () => {
       fetchMock.once(
@@ -75,22 +76,43 @@ describe('faciaApi', () => {
       }
     });
   });
-  describe('getArticles', () => {
-    it('should issue a CAPI request for an array of article ids', () => {
+  describe('getArticlesBatched', () => {
+    it('should issue a CAPI request for an array of article ids', async () => {
       fetchMock.once(
-        getCapiUriForArticleIds(['article1', 'article2']),
+        getCapiUriForContentIds(['article1', 'article2']),
         '{"response":{ "results": [] }}'
       );
-      getArticles(['article1', 'article2']);
+      await getArticlesBatched(['article1', 'article2']);
     });
-    it('should chunk requests for large numbers of articles into separate requests', () => {
-      const articleIds = [...Array.from(Array(175).keys()).map(_ => _.toString())];
+    it('should chunk requests for large numbers of articles into separate requests', async () => {
+      const articleIds = [
+        ...Array.from(Array(175).keys()).map(_ => _.toString())
+      ];
       const chunkedArticleIds = chunk(articleIds, 50);
-      chunkedArticleIds.map(_ => fetchMock.once(
-        getCapiUriForArticleIds(_),
-        '{"response":{ "results": [] }}'
-      ));
-      getArticles(articleIds);
+      chunkedArticleIds.map(_ =>
+        fetchMock.once(
+          getCapiUriForContentIds(_),
+          '{"response":{ "results": [] }}'
+        )
+      );
+      await getArticlesBatched(articleIds);
+    });
+  });
+  describe('getArticles', () => {
+    it('should return the articles and a title if provided', async () => {
+      fetchMock.once(
+        // Note the lack of a 'search' param!
+        // CAPI will return the search results for the tag instead.
+        'begin:/api/preview/exampleTag',
+        JSON.stringify({
+          response: { results: [], tag: { webTitle: 'Example title' } }
+        })
+      );
+      const result = await getArticles('exampleTag');
+      expect(result).toEqual({
+        articles: [],
+        title: 'Example title'
+      });
     });
   });
 });
