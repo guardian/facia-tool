@@ -34,7 +34,7 @@ export default async function(url: string): Promise<OpenGraphData> {
     return {
       title: graph.title || title,
       description: graph.description || undefined,
-      siteName: isOnSite
+      siteName: !isOnSite
         ? graph.site_name || getHostname(url).replace(/^www\./, '')
         : undefined
     };

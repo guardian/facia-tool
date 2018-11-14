@@ -6,6 +6,7 @@ import {
 } from '../snap';
 import tagPageHtml from '../../fixtures/guardianTagPage';
 import fetchMock from 'fetch-mock';
+import bbcSectionPage from 'shared/fixtures/bbcSectionPage';
 
 jest.mock('uuid/v4', () => () => 'uuid');
 
@@ -36,26 +37,23 @@ describe('utils/snap', () => {
     });
   });
   describe('convertToLatestSnap', () => {
-    it("should convert an article fragment to a snap of type 'latest'", () => {
+    it("should create a snap of type 'latest'", () => {
       expect(createLatestSnap('example', 'custom kicker')).toEqual({
         frontPublicationDate: 1487076708000,
         id: 'snap/1487076708000',
         meta: {
-          byline: undefined,
           customKicker: 'custom kicker',
-          headline: undefined,
           href: 'example',
           showKickerCustom: true,
           snapType: 'latest',
-          snapUri: 'example',
-          trailText: undefined
+          snapUri: 'example'
         },
         uuid: 'uuid'
       });
     });
   });
   describe('convertToLinkSnap', () => {
-    it("should convert an article fragment to a snap of type 'link'", async () => {
+    it("should create a snap of type 'link' given an internal link", async () => {
       fetchMock.once(
         '/http/proxy/https://www.theguardian.com/world/eu?view=mobile',
         tagPageHtml
@@ -68,11 +66,29 @@ describe('utils/snap', () => {
         id: 'snap/1487076708000',
         meta: {
           href: '/world/eu',
-          byline: 'the Guardian',
           headline: 'European Union | World news | The Guardian',
+          trailText: undefined,
+          snapType: 'link',
+          byline: undefined,
+          showByline: false
+        },
+        uuid: 'uuid'
+      });
+    });
+    it("should create a snap of type 'link' given an external link", async () => {
+      fetchMock.once('/http/proxy/https:/www.bbc.co.uk/news', bbcSectionPage);
+      const linkSnap = await createLinkSnap('https:/www.bbc.co.uk/news');
+      expect(linkSnap).toEqual({
+        frontPublicationDate: 1487076708000,
+        id: 'snap/1487076708000',
+        meta: {
+          byline: 'BBC News',
+          headline: 'Business - BBC News',
+          href: 'https:/www.bbc.co.uk/news',
           showByline: true,
           snapType: 'link',
-          trailText: undefined
+          trailText:
+            'The latest BBC Business News: breaking personal finance, company, financial and economic news, plus insight and analysis into UK and global markets.'
         },
         uuid: 'uuid'
       });

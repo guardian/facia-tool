@@ -49,7 +49,7 @@ async function createLinkSnap(url: string): Promise<ArticleFragment> {
         headline: title,
         trailText: description,
         byline: siteName,
-        showByline: siteName ? true : undefined,
+        showByline: siteName ? true : false,
         snapType: 'link'
       }
     });
@@ -75,10 +75,7 @@ function createLatestSnap(url: string, kicker: string) {
       snapType: 'latest',
       snapUri: getAbsolutePath(url),
       showKickerCustom: true,
-      customKicker: kicker,
-      headline: undefined,
-      trailText: undefined,
-      byline: undefined
+      customKicker: kicker
     }
   });
 }
