@@ -48,7 +48,8 @@ const isFrontStale = (lastUpdated?: number, lastPressed?: number) => {
 };
 
 const getVisibilityStoryDetails = (groupsWithStories: ArticleFragment[][]) => groupsWithStories.reduce((stories, storiesInGroup, index) => {
-   const groupStories = storiesInGroup.map(story => ({ group: index, isBoosted: !!story.meta.isBoosted }));
+  const numberOfGroups = groupsWithStories.length;
+   const groupStories = storiesInGroup.map(story => ({ group: numberOfGroups - index - 1, isBoosted: !!story.meta.isBoosted }));
     return stories.concat(groupStories);
 
   }, [] as StoryDetails[]);
