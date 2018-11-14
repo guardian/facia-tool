@@ -32,6 +32,8 @@ import ArticleFragmentLevel from 'components/clipboard/ArticleFragmentLevel';
 import GroupLevel from 'components/clipboard/GroupLevel';
 import { getFront } from 'selectors/frontsSelectors';
 import { FrontConfig } from 'types/FaciaApi';
+import { visibleFrontStoriesSelector } from 'selectors/frontsSelectors';
+import { StoryDetails } from 'types/FaciaApi';
 
 const FrontContainer = styled('div')`
   display: flex;
@@ -61,6 +63,7 @@ type FrontProps = FrontPropsBeforeState & {
   removeCollectionItem: (parentId: string, id: string) => void;
   removeSupportingCollectionItem: (parentId: string, id: string) => void;
   front: FrontConfig;
+  storiesVisible: StoryDetails;
 };
 
 interface FrontState {
@@ -111,7 +114,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   }
 
   public render() {
-    const { selectedArticleFragmentId, front } = this.props;
+    const { selectedArticleFragmentId, front, storiesVisible } = this.props;
     return (
       <React.Fragment>
         <div
@@ -128,72 +131,87 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
         <FrontContainer>
           <FrontContentContainer>
             <Root id={this.props.id} data-testid={this.props.id}>
-              {front.collections.map(collectionId => (
-                <Collection
-                  key={collectionId}
-                  id={collectionId}
-                  frontId={this.props.id}
-                  alsoOn={this.props.alsoOn}
-                  canPublish={this.props.browsingStage !== 'live'}
-                  browsingStage={this.props.browsingStage}
-                >
-                  {group => (
-                    <GroupDisplay key={group.uuid} groupName={group.name}>
-                      <GroupLevel
-                        groupId={group.uuid}
-                        onMove={this.handleMove}
-                        onDrop={this.handleInsert}
-                      >
-                        {(articleFragment, afProps) => (
-                          <CollectionItem
-                            uuid={articleFragment.uuid}
-                            parentId={group.uuid}
-                            getNodeProps={() => afProps}
-                            onSelect={this.props.selectArticleFragment}
-                            onDelete={() =>
-                              this.removeCollectionItem(
-                                group.uuid,
-                                articleFragment.uuid
-                              )
+              {front.collections.map(collectionId => {
+                const collectionStoriesVisible = storiesVisible && storiesVisible[collectionId];
+                let collectionItemCount: number = 0;
+                return (
+                  <Collection
+                    key={collectionId}
+                    id={collectionId}
+                    frontId={this.props.id}
+                    alsoOn={this.props.alsoOn}
+                    canPublish={this.props.browsingStage !== 'live'}
+                    browsingStage={this.props.browsingStage}
+                  >
+                    {group => (
+                      <GroupDisplay key={group.uuid} groupName={group.name}>
+                        <GroupLevel
+                          groupId={group.uuid}
+                          onMove={this.handleMove}
+                          onDrop={this.handleInsert}
+                        >
+                          {(articleFragment, afProps) => {
+                            collectionItemCount += 1;
+                            const articleNotifications: string[] = [];
+                            if (collectionStoriesVisible && collectionItemCount === collectionStoriesVisible.mobile) {
+                              articleNotifications.push('mobile');
                             }
-                            isSelected={
-                              !selectedArticleFragmentId ||
-                              selectedArticleFragmentId === articleFragment.uuid
+                            if (collectionStoriesVisible && collectionItemCount === collectionStoriesVisible.desktop) {
+                              articleNotifications.push('desktop');
                             }
-                          >
-                            <ArticleFragmentLevel
-                              articleFragmentId={articleFragment.uuid}
-                              onMove={this.handleMove}
-                              onDrop={this.handleInsert}
-                            >
-                              {(supporting, sProps) => (
-                                <CollectionItem
-                                  uuid={supporting.uuid}
-                                  parentId={articleFragment.uuid}
-                                  getNodeProps={() => sProps}
-                                  onSelect={this.props.selectArticleFragment}
-                                  isSelected={
-                                    !selectedArticleFragmentId ||
-                                    selectedArticleFragmentId ===
-                                      supporting.uuid
-                                  }
-                                  onDelete={() =>
-                                    this.removeSupportingCollectionItem(
-                                      articleFragment.uuid,
-                                      supporting.uuid
-                                    )
-                                  }
-                                  size="small"
-                                />
-                              )}
-                            </ArticleFragmentLevel>
-                          </CollectionItem>
-                        )}
-                      </GroupLevel>
-                    </GroupDisplay>
-                  )}
+                            return (
+                              <CollectionItem
+                                uuid={articleFragment.uuid}
+                                parentId={group.uuid}
+                                getNodeProps={() => afProps}
+                                onSelect={this.props.selectArticleFragment}
+                                onDelete={() =>
+                                  this.removeCollectionItem(
+                                    group.uuid,
+                                    articleFragment.uuid
+                                  )
+                                }
+                                isSelected={
+                                  !selectedArticleFragmentId ||
+                                  selectedArticleFragmentId === articleFragment.uuid
+                                }
+                                articleNotifications={articleNotifications}
+                              >
+                                <ArticleFragmentLevel
+                                  articleFragmentId={articleFragment.uuid}
+                                  onMove={this.handleMove}
+                                  onDrop={this.handleInsert}
+                                >
+                                  {(supporting, sProps) => (
+                                    <CollectionItem
+                                      uuid={supporting.uuid}
+                                      parentId={articleFragment.uuid}
+                                      getNodeProps={() => sProps}
+                                      onSelect={this.props.selectArticleFragment}
+                                      isSelected={
+                                        !selectedArticleFragmentId ||
+                                        selectedArticleFragmentId ===
+                                          supporting.uuid
+                                      }
+                                      onDelete={() =>
+                                        this.removeSupportingCollectionItem(
+                                          articleFragment.uuid,
+                                          supporting.uuid
+                                        )
+                                      }
+                                      size="small"
+                                    />
+                                  )}
+                                </ArticleFragmentLevel>
+                            </CollectionItem>
+                          );
+                        }}
+                        </GroupLevel>
+                      </GroupDisplay>
+                  );
+                }}
                 </Collection>
-              ))}
+              )})}
             </Root>
           </FrontContentContainer>
           {selectedArticleFragmentId && (
@@ -222,7 +240,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
 const mapStateToProps = (state: State, props: FrontPropsBeforeState) => ({
   unpublishedChanges: state.unpublishedChanges,
   selectedArticleFragmentId: selectEditorArticleFragment(state, props.id),
-  front: getFront(state, props.id)
+  front: getFront(state, props.id),
+    storiesVisible: visibleFrontStoriesSelector(state, { stage: props.browsingStage })
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => {

@@ -15,9 +15,9 @@ interface State {
     [id: string]: string;
   },
   collectionVisibility: {
-    [collectionId: string]: {
-      [stage: Stages]: {
-        visibleStories:VisibleStoriesResponse
+    [stage: string]: {
+      [collectionId: string]: {
+        visibleStories: VisibleStoriesResponse
       }
     }
 }
@@ -26,7 +26,10 @@ const reducer = (
   state: State = {
     frontsConfig: initialState,
     lastPressed: {},
-    collectionVisibility: {}
+    collectionVisibility: {
+      draft: {},
+      live: {},
+    }
   },
   action: Action
 ): State => {
@@ -49,16 +52,19 @@ const reducer = (
     }
     case 'FETCH_VISIBLE_STORIES_SUCCESS': {
       const { collectionId, visibleStories, stage } = action.payload;
-      const newCollectionVisibility = {
-        [collectionId]: {
-          [stage]: visibleStories
-        }
-      }
-      const visibility = { ...state.collectionVisibility, ...newCollectionVisibility };
-      return {
-        ...newState,
-        collectionVisibility: visibility,
+
+      const collectionVisibilities = state.collectionVisibility[stage];
+      const newCollectionVisibility = { [collectionId]: visibleStories };
+      const newVisibilities = {
+        ...newCollectionVisibility,
+        ...collectionVisibilities
       };
+
+      return set(
+        ['collectionVisibility', stage],
+        newVisibilities,
+        newState
+      );
     }
     default: {
       return newState;

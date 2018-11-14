@@ -54,6 +54,18 @@ const ArticleHeadingContainerSmall = styled('div')`
   text-overflow: ellipsis;
 `;
 
+const NotificationsContainer = styled('div')`
+  padding-left: 8px;
+  bottom: 0;
+  opacity: 1;
+  position: absolute;
+  right: 0;
+  color: #121212;
+  font-size: 12px;
+  font-weight: bold;
+  background-color: #f6f6f6;
+`;
+
 interface ArticleBodyProps {
   firstPublicationDate?: string;
   scheduledPublicationDate?: string;
@@ -70,6 +82,7 @@ interface ArticleBodyProps {
   uuid: string;
   onDelete: (id: string) => void;
   onAddToClipboard: (id: string) => void;
+  notifications?: string[];
 }
 
 const articleBodyDefault = ({
@@ -86,7 +99,8 @@ const articleBodyDefault = ({
   urlPath,
   displayPlaceholders,
   onDelete,
-  onAddToClipboard
+  onAddToClipboard,
+  notifications
 }: ArticleBodyProps) => {
   const ArticleHeadingContainer =
     size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
@@ -161,6 +175,7 @@ const articleBodyDefault = ({
             }}
           />
         ))}
+      { notifications && ( <NotificationsContainer>{notifications.map(notification => <span key={notification}>{notification} </span>)}</NotificationsContainer> )}
       <HoverActionsAreaOverlay>
         <HoverActionsButtonWrapper
           buttons={[

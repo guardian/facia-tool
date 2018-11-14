@@ -238,11 +238,17 @@ const lastPressedSelector = (state: State, frontId: string): string | null =>
 
 const clipboardSelector = (state: State) => state.clipboard;
 
+const visibilitiesByStage = (collectionVisibilities, stage: Stages) => collectionVisibilities[stage]);
+
 const visibleStoriesSelector = createSelector(
-  [collectionVisibilitiesSelector, collectionIdSelector, stageSelector],
+  [visibleFrontStoriesSelector, collectionIdSelector, stageSelector],
   (collectionVisibilities, collectionId: string, stage: Stages) => {
-  return collectionVisibilities[collectionId] && collectionVisibilities[collectionId][stage];
+  return collectionVisibilities[stage][collectionId];
 });
+
+const visibleFrontStoriesSelector = createSelector(
+  [collectionVisibilitiesSelector, stageSelector],
+  visibilitiesByStage)
 
 export {
   getFront,
@@ -257,5 +263,6 @@ export {
   lastPressedSelector,
   hasUnpublishedChangesSelector,
   clipboardSelector,
-  visibleStoriesSelector
+  visibleStoriesSelector,
+  visibleFrontStoriesSelector
 };
