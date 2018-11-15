@@ -20,7 +20,7 @@ module.exports = async () =>
       res.sendFile(path.join(__dirname, './index.html'))
     );
 
-    // send all api requests to here
+    // Endpoint for api search requests here
     app.get(/\/api\/(preview|live)\/search/, (req, res) => {
       const ids = (req.query.ids || '').split(',').filter(Boolean);
       switch (ids.length) {
@@ -54,6 +54,7 @@ module.exports = async () =>
       }
     });
 
+    // Endpoint for api requests for single pieces of content
     const handler = (req, res) => {
       const match = req.params[0];
       if (!match) {
