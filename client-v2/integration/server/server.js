@@ -20,8 +20,8 @@ module.exports = async () =>
       res.sendFile(path.join(__dirname, './index.html'))
     );
 
-    // send all api requests to here
-    app.get('/api*', (req, res) => {
+    // Endpoint for api search requests here
+    app.get(/\/api\/(preview|live)\/search/, (req, res) => {
       const ids = (req.query.ids || '').split(',').filter(Boolean);
       switch (ids.length) {
         case 0: {
@@ -53,13 +53,48 @@ module.exports = async () =>
         }
       }
     });
+
+    // Endpoint for api requests for single pieces of content
+    const handler = (req, res) => {
+      const match = req.params[0];
+      if (!match) {
+        throw new Error('No match for content - no id');
+      }
+      const internalPageCode = match.replace(/[^\d.]/g, '');
+      const article = capiSearch.response.results.find(
+        article => article.fields.internalPageCode === internalPageCode
+      );
+      if (!article) {
+        throw new Error(`No match for content with id ${internalPageCode}`);
+      }
+      const result = {
+        response: {
+          content: article,
+          status: 'ok',
+          total: 1
+        }
+      };
+      return res.json(result);
+    };
+    // Attempts at a capture group:
+    // /api/(preview|live)/*
+    // /api/(?:preview|live)/*
+    app.get('/api/live/*', handler);
+    app.get('/api/preview/*', handler);
+
     app.get('/config', (_, res) => res.json(config));
     app.get('/collection/:id', (_, res) => res.json(collection));
     // send the assets from dist
-    app.get('*/:file', (req, res) =>
-      res.sendFile(
-        path.join(__dirname, '../../../public/client-v2/dist', req.params.file)
-      )
+    app.get(
+      '*/:file',
+      (req, res) =>
+        res.sendFile(
+          path.join(
+            __dirname,
+            '../../../public/client-v2/dist',
+            req.params.file
+          )
+        )
     );
     // this catches update requests and pretends they went through ok
     app.post('*', (_, res) => res.json({ ok: true }));
