@@ -1,7 +1,7 @@
 import uniq from 'lodash/uniq';
 import { batchActions } from 'redux-batched-actions';
 import {
-  getArticles,
+  getArticlesBatched,
   getCollection as fetchCollection,
   updateCollection as updateCollectionFromApi
 } from 'services/faciaApi';
@@ -115,7 +115,7 @@ const fetchArticles = (articleIds: string[]) => async (dispatch: Dispatch) => {
   }
   dispatch(externalArticleActions.fetchStart(articleIdsWithoutSnaps));
   try {
-    const articles = await getArticles(articleIdsWithoutSnaps);
+    const articles = await getArticlesBatched(articleIdsWithoutSnaps);
     dispatch(externalArticleActions.fetchSuccess(articles));
     const remainingArticles = difference(
       articleIdsWithoutSnaps,

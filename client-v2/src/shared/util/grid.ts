@@ -1,9 +1,9 @@
 import GridUtil from 'grid-util-js';
-import imageConstants from '../constants/images';
+import urlConstants from '../constants/url';
 
 class Grid {
   public instance = new GridUtil({
-    apiBaseUrl: imageConstants.apiBaseUrl,
+    apiBaseUrl: urlConstants.media.apiBaseUrl,
     fetchInit: {
       credentials: 'include',
       mode: 'cors'
@@ -27,7 +27,7 @@ export function recordUsage(mediaId: string, frontId?: string) {
     front: frontId
   };
 
-  return fetch(imageConstants.usageBaseUrl, {
+  return fetch(urlConstants.media.usageBaseUrl, {
     method: 'POST',
     body: JSON.stringify(usageData)
   });

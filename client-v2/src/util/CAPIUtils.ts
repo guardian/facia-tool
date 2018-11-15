@@ -1,6 +1,5 @@
 import { Element, Tag } from 'types/Capi';
 import { ExternalArticle } from '../shared/types/ExternalArticle';
-import { ArticleFragment } from '../shared/types/Collection';
 import { ArticleFragmentMeta } from '../shared/types/Collection';
 
 const getIdFromURL = (url: string): string | null => {

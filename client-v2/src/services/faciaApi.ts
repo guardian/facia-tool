@@ -13,6 +13,7 @@ import {
 import pandaFetch from './pandaFetch';
 import { CapiArticle } from 'types/Capi';
 import chunk from 'lodash/chunk';
+import { CAPISearchQueryReponse } from './capiQuery';
 import flatMap from 'lodash/flatMap';
 
 function fetchFrontsConfig(): Promise<FrontsConfig> {
@@ -166,63 +167,95 @@ function getCollection(
     }));
 }
 
-const getCapiUriForArticleIds = (articleIds: string[]) => {
-  const joinedArticleIds = articleIds.join(',');
-  return `/api/preview/search?ids=${joinedArticleIds}&page-size=50&show-elements=video,main&show-blocks=main&show-tags=all&show-atoms=media&show-fields=internalPageCode,isLive,firstPublicationDate,scheduledPublicationDate,headline,trailText,byline,thumbnail,secureThumbnail,liveBloggingNow,membershipAccess,shortUrl`;
+/**
+ * Get a CAPI query string for the given content ids. This could be a single article
+ * or tag/section, or a list of articles.
+ */
+const getCapiUriForContentIds = (contentIds: string[]) => {
+  const contentIdsStr = contentIds.join(',');
+  const searchStr =
+    contentIds.length > 1
+      ? `search?ids=${contentIdsStr}&`
+      : `${contentIdsStr}?`;
+  return `/api/preview/${searchStr}page-size=50&show-elements=video,main&show-blocks=main&show-tags=all&show-atoms=media&show-fields=internalPageCode,isLive,firstPublicationDate,scheduledPublicationDate,headline,trailText,byline,thumbnail,secureThumbnail,liveBloggingNow,membershipAccess,shortUrl`;
 };
 
-function getArticles(articleIds: string[]): Promise<ExternalArticle[]> {
-  const parseArticleListFromResponse = (
-    text: string | void
-  ): ExternalArticle[] => {
-    if (text) {
-      return JSON.parse(text).response.results.map(
-        (externalArticle: CapiArticle) => ({
-          ...externalArticle,
-          urlPath: externalArticle.id,
-          id: `internal-code/page/${externalArticle.fields.internalPageCode}`
-        })
-      );
+const getTagTitle = (queryResponse: CAPISearchQueryReponse) =>
+  queryResponse.response.tag && queryResponse.response.tag.webTitle;
+
+const parseArticleListFromResponses = (
+  queryResponse: CAPISearchQueryReponse
+): ExternalArticle[] => {
+  try {
+    if (queryResponse.response.status === 'error') {
+      throw new Error(queryResponse.response.message || 'Unknown error from CAPI')
     }
-    throw new Error('Error getting articles from CAPI - invalid response');
-  };
+    // We may be dealing with a single result, or an array of results -
+    // CAPI formats each query differently.
+    const results: CapiArticle[] = queryResponse.response.results ||
+      (queryResponse.response.content ? [queryResponse.response.content] : []);
 
-  const articlePromises = chunk(articleIds, 50).map(
-    localArticleIds =>
-      pandaFetch(getCapiUriForArticleIds(localArticleIds), {
-        method: 'get',
-        credentials: 'same-origin'
-      })
-  );
+    return results.map((externalArticle: CapiArticle) => ({
+      ...externalArticle,
+      urlPath: externalArticle.id,
+      id: `internal-code/page/${externalArticle.fields.internalPageCode}`
+    }));
+  } catch(e) {
+    throw new Error(`Error getting articles from CAPI: cannot parse response - ${e.message}`);
+  }
+};
 
-  return Promise.all(articlePromises)
-    .then(responses => Promise.all(responses.map(response => response.text())))
-    .then(articleJSONArray =>
-      Promise.resolve([
-        ...flatMap(
-          articleJSONArray.map(articleJSON =>
-            parseArticleListFromResponse(articleJSON)
-          )
-        )
-      ])
-    )
-    .catch(response => {
-      throw new Error(
-        `Error fetching articles - the server returned ${response.status}: ${
-          response.statusText
-        }`
-      );
+/**
+ * Get the articles and title for a CAPI content id, which could be a tag or an article.
+ */
+async function getContent(contentId: string): Promise<{
+  articles: ExternalArticle[],
+  title: string | undefined
+}> {
+  const response = await pandaFetch(getCapiUriForContentIds([contentId]), {
+    method: 'get',
+    credentials: 'same-origin'
+  });
+  const parsedResponse: CAPISearchQueryReponse = await response.json();
+  return {
+    articles: parseArticleListFromResponses(parsedResponse),
+    title: getTagTitle(parsedResponse)
+  }
+}
+
+/**
+ * Get articles for an array of article ids. If the number of articles exceed the limit
+ * CAPI can process in one request, issue multiple requests, returning a concatenated
+ * list of articles when all of them complete.
+ */
+async function getArticlesBatched(articleIds: string[]): Promise<ExternalArticle[]> {
+  const capiPromises = chunk(articleIds, 50).map(localArticleIDs => {
+    return pandaFetch(getCapiUriForContentIds(localArticleIDs), {
+      method: 'get',
+      credentials: 'same-origin'
     });
+  });
+
+  try {
+    const responses = await Promise.all(capiPromises);
+    const parsedResponses: CAPISearchQueryReponse[] = await Promise.all(responses.map(_ => _.json()));
+    return flatMap(parsedResponses.map(parseArticleListFromResponses));
+  } catch (e) {
+    throw new Error(
+      `Error fetching articles: ${e.message || e.status}`
+    );
+  }
 }
 
 export {
   fetchFrontsConfig,
   getCollection,
-  getArticles,
+  getContent,
+  getArticlesBatched,
   fetchLastPressed,
   publishCollection,
   updateCollection,
   saveClipboard,
   saveOpenFrontIds,
-  getCapiUriForArticleIds
+  getCapiUriForContentIds
 };

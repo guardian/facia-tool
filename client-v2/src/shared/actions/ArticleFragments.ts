@@ -2,7 +2,7 @@ import uniqBy from 'lodash/uniqBy';
 import keyBy from 'lodash/keyBy';
 import { ArticleFragment, ArticleFragmentMeta } from 'shared/types/Collection';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
-import { getArticles } from 'services/faciaApi';
+import { getContent } from 'services/faciaApi';
 import { State } from 'types/State';
 import { Dispatch, ThunkResult, GetState } from 'types/Store';
 import {
@@ -15,8 +15,11 @@ import {
   ReplaceGroupArticleFragments,
   ReplaceArticleFragmentSupporting
 } from 'shared/types/Action';
-import { createFragment } from 'shared/util/articleFragment'
+import { createFragment } from 'shared/util/articleFragment';
 import { batchActions } from 'redux-batched-actions';
+import { createLinkSnap, createLatestSnap } from 'shared/util/snap';
+import { getIdFromURL } from 'util/CAPIUtils';
+import { isValidURL } from 'shared/util/url';
 
 function updateArticleFragmentMeta(
   id: string,
@@ -112,23 +115,68 @@ const replaceGroupArticleFragments = (
   }
 });
 
-function addArticleFragment(id: string) {
-  return (dispatch: Dispatch) =>
-    getArticles([id])
-      .then(([article]) => {
-        dispatch(externalArticleActions.fetchSuccess([article]));
-        const fragment = createFragment(article.id);
-        dispatch(
-          articleFragmentsReceived({
-            [fragment.uuid]: fragment
-          })
+/**
+ * A helper for createArticleFragment.
+ */
+const persistAndReturnFragment = (
+  dispatch: Dispatch,
+  fragment: ArticleFragment
+) => {
+  dispatch(
+    articleFragmentsReceived({
+      [fragment.uuid]: fragment
+    })
+  );
+  return fragment;
+};
+
+/**
+ * Given a resource id, create an article fragment and add it to the store.
+ * The resource id can be a few different things:
+ *  - a article, tag or section (either the full URL or the ID)
+ *  - an external link.
+ */
+function createArticleFragment(
+  resourceId: string
+): ThunkResult<Promise<ArticleFragment | undefined>> {
+  return async (dispatch: Dispatch) => {
+    const isURL = isValidURL(resourceId);
+    const id = isURL ? getIdFromURL(resourceId) : resourceId;
+    if (isURL && !id) {
+      // If we have a URL from an external site,
+      // create a snap of type 'link'.
+      const fragment = await createLinkSnap(resourceId);
+      return persistAndReturnFragment(dispatch, fragment);
+    }
+    if (!id) {
+      return;
+    }
+    try {
+      const {
+        articles: [article, ...rest],
+        title
+      } = await getContent(id);
+      if (rest.length) {
+        // If we have multiple articles returned from a single resource, we're
+        // dealing with a tag or section page, and we should create a snap of
+        // type 'latest' or 'link'.
+        const createLatest = window.confirm(
+          "Should this snap be a 'Latest' snap? \n \n Click OK to confirm or cancel to create a 'Link' snap by default."
         );
-        return fragment;
-      })
-      .catch(error => {
-        dispatch(externalArticleActions.fetchError(error, [id]));
-        return null;
-      });
+        const fragment = await (createLatest
+          ? createLatestSnap(resourceId, title || 'Unknown title')
+          : createLinkSnap(resourceId));
+        return persistAndReturnFragment(dispatch, fragment);
+      }
+      if (article) {
+        // We have a single article from CAPI - create an item as usual.
+        dispatch(externalArticleActions.fetchSuccess([article]));
+        return persistAndReturnFragment(dispatch, createFragment(article.id));
+      }
+    } catch (e) {
+      dispatch(externalArticleActions.fetchError(e.message, [id]));
+    }
+  };
 }
 
 const insertAndDedupeSiblings = <T extends { id: string; uuid: string }>(
@@ -161,5 +209,5 @@ export {
   removeGroupArticleFragment,
   replaceGroupArticleFragments,
   insertAndDedupeSiblings,
-  addArticleFragment
+  createArticleFragment
 };
