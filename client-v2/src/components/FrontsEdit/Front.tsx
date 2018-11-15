@@ -209,10 +209,9 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                         </GroupLevel>
                       </GroupDisplay>
                     )}
+                    </Collection>
                   );
-                }
-                </Collection>
-              )})}
+                })}
             </Root>
           </FrontContentContainer>
           {selectedArticleFragmentId && (
