@@ -4,7 +4,7 @@ import {
   updateCollection,
   getCapiUriForContentIds,
   getArticlesBatched,
-  getArticles
+  getContent
 } from '../faciaApi';
 import chunk from 'lodash/chunk';
 
@@ -98,7 +98,7 @@ describe('faciaApi', () => {
       await getArticlesBatched(articleIds);
     });
   });
-  describe('getArticles', () => {
+  describe('getContent', () => {
     it('should return the articles and a title if provided', async () => {
       fetchMock.once(
         // Note the lack of a 'search' param!
@@ -108,7 +108,7 @@ describe('faciaApi', () => {
           response: { results: [], tag: { webTitle: 'Example title' } }
         })
       );
-      const result = await getArticles('exampleTag');
+      const result = await getContent('exampleTag');
       expect(result).toEqual({
         articles: [],
         title: 'Example title'

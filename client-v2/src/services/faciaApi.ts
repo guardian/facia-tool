@@ -208,7 +208,7 @@ const parseArticleListFromResponses = (
 /**
  * Get the articles and title for a CAPI content id, which could be a tag or an article.
  */
-async function getArticles(contentId: string): Promise<{
+async function getContent(contentId: string): Promise<{
   articles: ExternalArticle[],
   title: string | undefined
 }> {
@@ -250,7 +250,7 @@ async function getArticlesBatched(articleIds: string[]): Promise<ExternalArticle
 export {
   fetchFrontsConfig,
   getCollection,
-  getArticles,
+  getContent,
   getArticlesBatched,
   fetchLastPressed,
   publishCollection,

@@ -2,7 +2,7 @@ import uniqBy from 'lodash/uniqBy';
 import keyBy from 'lodash/keyBy';
 import { ArticleFragment, ArticleFragmentMeta } from 'shared/types/Collection';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
-import { getArticles } from 'services/faciaApi';
+import { getContent } from 'services/faciaApi';
 import { State } from 'types/State';
 import { Dispatch, ThunkResult, GetState } from 'types/Store';
 import {
@@ -139,7 +139,7 @@ function createArticleFragment(
         const {
           articles: [article, ...rest],
           title
-        } = await getArticles(id);
+        } = await getContent(id);
         if (rest.length) {
           // If we have multiple articles returned from a single resource, we're
           // dealing with a tag or section page, and we should create a snap of
