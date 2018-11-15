@@ -55,7 +55,8 @@ describe('Store middleware', () => {
           displayName: 'Example Collection',
           live: ['abc', 'def'],
           draft: [],
-          previously: undefined
+          previously: undefined,
+          type: 'type'
         })
       );
     });
