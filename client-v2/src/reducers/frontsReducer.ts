@@ -56,8 +56,8 @@ const reducer = (
       const collectionVisibilities = state.collectionVisibility[stage];
       const newCollectionVisibility = { [collectionId]: visibleStories };
       const newVisibilities = {
-        ...newCollectionVisibility,
-        ...collectionVisibilities
+        ...collectionVisibilities,
+        ...newCollectionVisibility
       };
 
       return set(
