@@ -6,6 +6,7 @@ import {
   updateCollection as updateCollectionFromApi,
   fetchVisibleStories
 } from 'services/faciaApi';
+import { VisibleStoriesResponse } from 'types/FaciaApi';
 import {
   selectUserEmail,
   selectFirstName,
@@ -73,8 +74,16 @@ function getCollection(collectionId: string): ThunkResult<Promise<string[]>> {
         ])
       );
 
-      dispatch(getVisibleStories(collection, getState(), properFrontStages.live));
-      dispatch(getVisibleStories(collection, getState(), properFrontStages.draft));
+      const state = getState();
+      const liveVisibleStories = await getVisibleStories(collection, state, properFrontStages.live);
+      const draftVisibleStories = await getVisibleStories(collection, state, properFrontStages.draft);
+
+      dispatch(
+        batchActions([
+          recordVisibleStories(collection.id, liveVisibleStories, properFrontStages.live),
+          recordVisibleStories(collection.id, draftVisibleStories, properFrontStages.draft)
+        ])
+      );
 
       // We dedupe ids here to ensure that articles aren't requested twice,
       // e.g. multiple articles containing the same supporting article.
@@ -108,8 +117,9 @@ function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
         collection.id
       );
       await updateCollectionFromApi(collection.id, denormalisedCollection);
-      dispatch(collectionActions.updateSuccess(collection.id, collection));
-      dispatch(getVisibleStories(collection, getState(), properFrontStages.draft));
+      dispatch(collectionActions.updateSuccess(collection.id, collection))
+      const visibleStories = await getVisibleStories(collection, getState(), properFrontStages.draft)
+      dispatch(recordVisibleStories(collection.id, visibleStories, properFrontStages.draft))
     } catch (e) {
       dispatch(collectionActions.updateError(e, collection.id));
       throw e;
@@ -160,20 +170,14 @@ const getCollectionsAndArticles = (
     })
   );
 
-const getVisibleStories = (collection: Collection, state: State, stage: ProperStages): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
+async function  getVisibleStories(collection: Collection, state: State, stage: ProperStages): Promise<VisibleStoriesResponse> {
   const collectionType = collection.type;
   const groups = getGroupsByStage(collection, stage);
   const groupArticleSelector = createGroupArticlesSelector();
   const groupsWithStories = groups.map(id => groupArticleSelector(state, { groupId: id }));
+  const storyDetails = await getVisibilityStoryDetails(groupsWithStories);
 
-  const storyDetails = getVisibilityStoryDetails(groupsWithStories);
-
-  try {
-    const visible = await fetchVisibleStories(collectionType, storyDetails);
-    await dispatch(recordVisibleStories(collection.id, visible, stage));
-  } catch (error) {
-    // TODO
-  }
+  return fetchVisibleStories(collectionType, storyDetails);
 }
 
 
