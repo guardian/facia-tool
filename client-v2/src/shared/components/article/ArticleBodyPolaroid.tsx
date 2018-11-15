@@ -34,11 +34,11 @@ const ArticlePolaroidComponent = ({
   displayPlaceholders,
   pillarId,
   thumbnail,
-  sectionName,
+  kicker,
   isLive
 }: ArticleBodyProps) => {
   const articleLabel =
-    getArticleLabel(firstPublicationDate, sectionName, isLive) || '';
+    getArticleLabel(firstPublicationDate, kicker, isLive) || '';
   return (
     <>
       {size === 'default' &&
