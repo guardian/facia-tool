@@ -24,7 +24,7 @@ function getHostname(url: string) {
 }
 
 function isValidURL(url: string) {
-  return getHostname(url) !== window.location.host;
+  return getHostname(url) !== window.location.hostname;
 }
 
 function isGuardianUrl(url: string) {
