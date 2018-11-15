@@ -1,7 +1,4 @@
 import urlConstants from '../constants/url';
-import { ArticleFragment } from '../types/Collection';
-import { DerivedArticle } from '../types/Article';
-import { ExternalArticle } from '../types/ExternalArticle';
 
 const a = document.createElement('a');
 
@@ -16,28 +13,6 @@ function getAbsolutePath(url: string, keepQueryString?: boolean) {
 
   // Return the abspath without a leading slash, because ContentApi ids are formed like that
   return keepQueryString ? path + a.search : path;
-}
-
-/**
- * Get the complete viewable URL for an article.
- */
-export function getViewUrl(article: DerivedArticle) {
-  let url;
-  if (article.isLive === false) {
-    url =
-      'https://' +
-      urlConstants.base.previewDomain +
-      '/' +
-      getAbsolutePath(article.webUrl);
-  } else {
-    url = article.href || article.webUrl;
-
-    if (url && !/^https?:\/\//.test(url)) {
-      url = 'https://' + urlConstants.base.mainDomain + url;
-    }
-  }
-
-  return url;
 }
 
 /**
