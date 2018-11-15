@@ -78,7 +78,7 @@ module.exports = async () =>
     };
     // Attempts at a capture group:
     // /api/(preview|live)/*
-    // /api/(?!preview|live)/*
+    // /api/(?:preview|live)/*
     app.get('/api/live/*', handler);
     app.get('/api/preview/*', handler);
 
