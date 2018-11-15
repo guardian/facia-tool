@@ -208,8 +208,9 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                         }}
                         </GroupLevel>
                       </GroupDisplay>
+                    )}
                   );
-                }}
+                }
                 </Collection>
               )})}
             </Root>
