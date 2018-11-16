@@ -27,12 +27,13 @@ const ClipboardMeta = (props: Props) => {
       articleFragmentId={selectedArticleFragmentId}
       key={selectedArticleFragmentId}
       form={selectedArticleFragmentId}
-      onSave={meta =>
+      onSave={meta => {
         props.updateClipboardArticleFragmentMeta(
           selectedArticleFragmentId,
           meta
-        )
-      }
+        );
+        props.clearArticleFragmentSelection();
+      }}
       onCancel={props.clearArticleFragmentSelection}
     />
   ) : null;
