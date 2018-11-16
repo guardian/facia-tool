@@ -38,6 +38,7 @@ const NotLiveContainer = styled(CollectionItemMetaHeading)`
 
 const KickerHeading = styled(CollectionItemHeading)`
   font-family: GHGuardianHeadline-Bold;
+  padding-right: 3px;
 `;
 
 const ArticleHeadingSmall = CollectionItemHeading.extend`
@@ -132,10 +133,11 @@ const articleBodyDefault = ({
               {size === 'default' && <TextPlaceholder width={25} />}
             </>
           )}
-          <KickerHeading style={{ color: getPillarColor(pillarId, true) }}>
-            {kicker}
-          </KickerHeading>
-          &nbsp;
+          { kicker && (
+            <KickerHeading style={{ color: getPillarColor(pillarId, true) }}>
+              {kicker}
+            </KickerHeading>
+          )}
           {size === 'default' ? (
             <CollectionItemHeading data-testid="headline">
               {headline}

@@ -66,7 +66,7 @@ const createArticleFromArticleFragmentSelector = () =>
         trailText:
           articleFragment.meta.trailText || externalArticle.fields.trailText,
         byline: articleFragment.meta.byline || externalArticle.fields.byline,
-        kicker: articleFragment.meta.customKicker || externalArticle.pillarName,
+        kicker: articleFragment.meta.customKicker,
         pillarId: externalArticle.pillarId,
         thumbnail: getThumbnail(externalArticle, articleMeta),
         isLive: externalArticle.fields.isLive ? externalArticle.fields.isLive === 'true' : true,

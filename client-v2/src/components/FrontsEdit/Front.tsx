@@ -202,12 +202,13 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                 articleFragmentId={selectedArticleFragmentId}
                 key={selectedArticleFragmentId}
                 form={selectedArticleFragmentId}
-                onSave={(meta: ArticleFragmentMeta) =>
+                onSave={(meta: ArticleFragmentMeta) => {
                   this.props.updateArticleFragmentMeta(
                     selectedArticleFragmentId,
                     meta
-                  )
-                }
+                  );
+                  this.props.clearArticleFragmentSelection();
+                }}
                 onCancel={this.props.clearArticleFragmentSelection}
               />
             </FrontFormContainer>

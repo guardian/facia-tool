@@ -272,7 +272,6 @@ describe('Shared selectors', () => {
         headline: 'external-headline',
         thumbnail: undefined,
         trailText: 'external-trailText',
-        kicker: 'external-pillar',
         byline: 'external-byline',
         isLive: true,
         firstPublicationDate: '2018-10-19T10:30:39Z'
@@ -308,7 +307,6 @@ describe('Shared selectors', () => {
         headline: 'external-headline',
         thumbnail: undefined,
         trailText: 'external-trailText',
-        kicker: 'external-pillar',
         byline: 'external-byline',
         isLive: false,
       });
@@ -322,7 +320,6 @@ describe('Shared selectors', () => {
         headline: 'external-headline',
         thumbnail: undefined,
         trailText: 'external-trailText',
-        kicker: 'external-pillar',
         byline: 'external-byline',
         isLive: true,
       });
@@ -336,7 +333,6 @@ describe('Shared selectors', () => {
         headline: 'external-headline',
         thumbnail: undefined,
         trailText: 'external-trailText',
-        kicker: 'external-pillar',
         byline: 'external-byline',
         isLive: true,
         imageCutoutReplace: false,
