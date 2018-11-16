@@ -5,11 +5,12 @@ import {
   fetchFrontsConfig,
   fetchLastPressed as fetchLastPressedApi,
   publishCollection as publishCollectionApi,
-  getCollection
+  getCollection as getCollectionApi
 } from 'services/faciaApi';
 import { actions as frontsConfigActions } from 'bundles/frontsConfigBundle';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import { isFrontStale } from 'util/frontsUtils';
+import { getCollection } from 'actions/Collections';
 
 function fetchLastPressedSuccess(frontId: string, datePressed: string): Action {
   return {
@@ -65,10 +66,12 @@ function publishCollection(
           ])
         );
 
+        dispatch(getCollection(collectionId));
+
         return new Promise(resolve => setTimeout(resolve, 10000))
           .then(() =>
             Promise.all([
-              getCollection(collectionId),
+              getCollectionApi(collectionId),
               fetchLastPressedApi(frontId)
             ])
           )
