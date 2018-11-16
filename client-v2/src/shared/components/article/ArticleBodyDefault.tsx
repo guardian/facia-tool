@@ -24,6 +24,8 @@ import {
   HideMetaDataOnToolTipDisplay
 } from '../CollectionHoverItems';
 import { CollectionItemSizes } from 'shared/types/Collection';
+import CollectionItemTrail from '../collectionItem/CollectionItemTrail';
+import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   width: 130px;
@@ -45,26 +47,11 @@ const ArticleHeadingSmall = CollectionItemHeading.extend`
   text-overflow: ellipsis;
 `;
 
-const Trail = styled('div')`
-  width: 100%;
-  margin-top: 3px;
-  font-size: 14px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-family: TS3TextSans;
-`;
-
 const ArticleHeadingContainerSmall = styled('div')`
   width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
-
-const PublicationDate = styled('div')`
-  font-size: 12px;
-  margin: 2px 0;
 `;
 
 interface ArticleBodyProps {
@@ -120,9 +107,9 @@ const articleBodyDefault = ({
           )}
         {(isLive || size === 'default') &&
           firstPublicationDate && (
-            <PublicationDate>
+            <CollectionItemMetaContent>
               {distanceInWords(new Date(firstPublicationDate))}
-            </PublicationDate>
+            </CollectionItemMetaContent>
           )}
         {!isLive &&
           !displayPlaceholders && (
@@ -133,9 +120,9 @@ const articleBodyDefault = ({
             </NotLiveContainer>
           )}
         {scheduledPublicationDate && (
-          <PublicationDate>
+          <CollectionItemMetaContent>
             {distanceInWords(new Date(scheduledPublicationDate))}
-          </PublicationDate>
+          </CollectionItemMetaContent>
         )}
       </CollectionItemMetaContainer>
       <CollectionItemContent>
@@ -161,7 +148,8 @@ const articleBodyDefault = ({
             </ArticleHeadingSmall>
           )}
         </ArticleHeadingContainer>
-        {size === 'default' && trailText && <Trail>{trailText}</Trail>}
+        {size === 'default' &&
+          trailText && <CollectionItemTrail>{trailText}</CollectionItemTrail>}
       </CollectionItemContent>
       {size === 'default' &&
         (displayPlaceholders ? (
