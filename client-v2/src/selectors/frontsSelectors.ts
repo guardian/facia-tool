@@ -5,8 +5,8 @@ import { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
-import { Stages, ProperStages } from 'shared/types/collection';
-import { StoryDetails } from 'types/faciaApi';
+import { Stages, ProperStages } from 'shared/types/Collection';
+import { StoryDetails } from 'types/FaciaApi';
 
 interface FrontConfigMap {
   [id: string]: FrontConfig;

@@ -1,6 +1,6 @@
 import set from 'lodash/fp/set';
 import { ProperStages } from 'shared/types/Collection';
-import { VisibleStoriesResponse } from 'types/faciaApi';
+import { VisibleStoriesResponse } from 'types/FaciaApi';
 
 import { Action } from 'types/Action';
 import {
