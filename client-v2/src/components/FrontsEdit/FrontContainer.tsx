@@ -46,6 +46,7 @@ const FrontsHeaderText = styled('span')`
 
 const LastPressedContainer = styled('span')`
   margin-right: 6px;
+  font-size: 10px;
 `;
 
 interface FrontsContainerProps {
@@ -80,12 +81,12 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
         this.props.selectedFront.collections
       );
     }
+    if (!this.props.lastPressed) {
+      this.props.frontsActions.fetchLastPressed(this.props.frontId);
+    }
   }
 
   public componentWillReceiveProps(nextProps: FrontsComponentProps) {
-    if (this.props.frontId !== nextProps.frontId || !this.props.lastPressed) {
-      this.props.frontsActions.fetchLastPressed(nextProps.frontId);
-    }
     // If we mounted without a front configuration,
     // fetch it when it's eventually available.
     if (!this.props.selectedFront && nextProps.selectedFront) {
