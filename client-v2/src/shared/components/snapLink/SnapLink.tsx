@@ -22,6 +22,7 @@ import PolaroidThumbnail from '../PolaroidThumbnail';
 import { CollectionItemDisplayTypes } from 'shared/types/Collection';
 import CollectionItemTrail from '../collectionItem/CollectionItemTrail';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
+import CollectionItemNotification from '../collectionItem/CollectionItemNotification';
 
 interface ContainerProps {
   selectSharedState?: (state: any) => State;
@@ -36,6 +37,7 @@ interface ContainerProps {
   displayType?: CollectionItemDisplayTypes;
   fade?: boolean;
   children?: React.ReactNode;
+  notifications?: string[];
 }
 
 interface SnapLinkProps extends ContainerProps {
@@ -51,6 +53,7 @@ const SnapLink = ({
   onDelete,
   children,
   articleFragment,
+  notifications,
   ...rest
 }: SnapLinkProps) => {
   const headline =
@@ -95,6 +98,7 @@ const SnapLink = ({
             )}
         </CollectionItemContent>
         {size === 'default' && displayType === 'default' && <Thumbnail />}
+        { notifications && ( <CollectionItemNotification>{notifications.map(notification => <span key={notification}>{notification} </span>)}</CollectionItemNotification> )}
         <HoverActionsAreaOverlay
           justify={displayType === 'polaroid' ? 'flex-end' : 'space-between'}
         >

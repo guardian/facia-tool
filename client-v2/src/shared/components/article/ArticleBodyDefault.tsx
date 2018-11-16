@@ -26,6 +26,7 @@ import {
 import { CollectionItemSizes } from 'shared/types/Collection';
 import CollectionItemTrail from '../collectionItem/CollectionItemTrail';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
+import CollectionItemNotification from '../collectionItem/CollectionItemNotification';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   width: 130px;
@@ -52,18 +53,6 @@ const ArticleHeadingContainerSmall = styled('div')`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
-
-const NotificationsContainer = styled('div')`
-  padding-left: 8px;
-  bottom: 0;
-  opacity: 1;
-  position: absolute;
-  right: 0;
-  color: #121212;
-  font-size: 12px;
-  font-weight: bold;
-  background-color: #f6f6f6;
 `;
 
 interface ArticleBodyProps {
@@ -175,7 +164,7 @@ const articleBodyDefault = ({
             }}
           />
         ))}
-      { notifications && ( <NotificationsContainer>{notifications.map(notification => <span key={notification}>{notification} </span>)}</NotificationsContainer> )}
+      { notifications && ( <CollectionItemNotification>{notifications.map(notification => <span key={notification}>{notification} </span>)}</CollectionItemNotification> )}
       <HoverActionsAreaOverlay>
         <HoverActionsButtonWrapper
           buttons={[

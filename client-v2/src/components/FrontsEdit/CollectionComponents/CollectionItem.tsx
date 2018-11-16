@@ -47,6 +47,9 @@ const CollectionItem = ({
   size,
   articleNotifications
 }: ArticleContainerProps) => {
+
+  const notifications = (articleNotifications && articleNotifications.length) ? articleNotifications : undefined;
+
   switch (type) {
     case collectionItemTypes.ARTICLE:
       return (
@@ -59,7 +62,7 @@ const CollectionItem = ({
           fade={!isSelected}
           size={size}
           displayType={displayType}
-          notifications={(articleNotifications && articleNotifications.length ? articleNotifications : undefined )}
+          notifications={notifications}
         >
           {children}
         </Article>
@@ -74,6 +77,7 @@ const CollectionItem = ({
           fade={!isSelected}
           size={size}
           displayType={displayType}
+          notifications={notifications}
         >
           {children}
         </SnapLink>
