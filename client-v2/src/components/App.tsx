@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { injectGlobal, ThemeProvider } from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
+import DropDisabler from './util/DropDisabler';
 
 import theme from 'shared/constants/theme';
 import { priorities } from 'constants/priorities';
@@ -84,20 +85,22 @@ const BackgroundHeader = styled('div')`
 
 const App = () => (
   <ThemeProvider theme={theme}>
-    <AppContainer>
-      <BackgroundHeader>
-        <SectionHeaderWithLogo />
-      </BackgroundHeader>
-      <Switch>
-        <Route
-          exact
-          path={`/:priority(${Object.keys(priorities).join('|')})/:frontId?`}
-          component={FrontsEdit}
-        />
-        <Route exact path="/" component={Home} />
-        <Route component={NotFound} />
-      </Switch>
-    </AppContainer>
+    <DropDisabler>
+      <AppContainer>
+        <BackgroundHeader>
+          <SectionHeaderWithLogo />
+        </BackgroundHeader>
+        <Switch>
+          <Route
+            exact
+            path={`/:priority(${Object.keys(priorities).join('|')})/:frontId?`}
+            component={FrontsEdit}
+          />
+          <Route exact path="/" component={Home} />
+          <Route component={NotFound} />
+        </Switch>
+      </AppContainer>
+    </DropDisabler>
   </ThemeProvider>
 );
 
