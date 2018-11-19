@@ -1,5 +1,5 @@
 import set from 'lodash/fp/set';
-import { ProperStages } from 'shared/types/Collection';
+import { Stages } from 'shared/types/Collection';
 import { VisibleStoriesResponse } from 'types/FaciaApi';
 
 import { Action } from 'types/Action';
@@ -15,7 +15,7 @@ interface State {
     [id: string]: string;
   }
   collectionVisibility: {
-    [stage in ProperStages]: {
+    [stage in Stages]: {
       [collectionId: string]: VisibleStoriesResponse
     }
   }

@@ -13,7 +13,7 @@ import { PersistMeta } from 'util/storeMiddleware';
 import { Config } from './Config';
 import { FrontsConfig, VisibleStoriesResponse } from './FaciaApi';
 import { BatchAction } from 'redux-batched-actions';
-import { ProperStages } from 'shared/types/Collection';
+import { Stages } from 'shared/types/Collection';
 
 interface EditorAddFront {
   type: 'EDITOR_OPEN_FRONT';
@@ -160,7 +160,7 @@ interface RecordStaleFronts {
 
 interface FetchVisibleStoriesSuccess {
   type: 'FETCH_VISIBLE_STORIES_SUCCESS';
-  payload: { collectionId: string, visibleStories: VisibleStoriesResponse, stage: ProperStages }
+  payload: { collectionId: string, visibleStories: VisibleStoriesResponse, stage: Stages }
 }
 
 type Action =

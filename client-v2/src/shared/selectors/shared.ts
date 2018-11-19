@@ -9,7 +9,7 @@ import {
   ArticleFragment,
   Collection,
   Group,
-  Stages,
+  CollectionItemSets,
   ArticleFragmentDenormalised
 } from '../types/Collection';
 import { State } from '../types/State';
@@ -111,8 +111,8 @@ const createCollectionSelector = () =>
 
 const stageSelector = (
   _: unknown,
-  { stage }: { stage: Stages; collectionId: string }
-): Stages => stage;
+  { collectionSet }: { collectionSet: CollectionItemSets; collectionId: string }
+): CollectionItemSets => collectionSet;
 
 const createCollectionStageGroupsSelector = () => {
   const collectionSelector = createCollectionSelector();
@@ -123,7 +123,7 @@ const createCollectionStageGroupsSelector = () => {
     (
       collection: Collection | void,
       groups: { [id: string]: Group },
-      stage: Stages
+      stage: CollectionItemSets
     ): Group[] =>
       ((collection && collection[stage]) || []).map(id => groups[id])
   );
@@ -131,7 +131,7 @@ const createCollectionStageGroupsSelector = () => {
 
 const groupNameSelector = (
   _: unknown,
-  { groupName }: { groupName: string; stage: Stages; collectionId: string }
+  { groupName }: { groupName: string; collectionSet: CollectionItemSets; collectionId: string }
 ) => groupName;
 
 const createArticlesInCollectionGroupSelector = () => {

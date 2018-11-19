@@ -8,7 +8,7 @@ import { AlsoOnDetail } from 'types/Collection';
 import { publishCollection } from 'actions/Fronts';
 import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
 import { State } from 'types/State';
-import { Stages, Group } from 'shared/types/Collection';
+import { CollectionItemSets, Group } from 'shared/types/Collection';
 import {
   createCollectionStageGroupsSelector,
   selectSharedState
@@ -19,7 +19,7 @@ interface CollectionPropsBeforeState {
   children: (group: Group) => React.ReactNode;
   alsoOn: { [id: string]: AlsoOnDetail };
   frontId: string;
-  browsingStage: Stages;
+  browsingStage: CollectionItemSets;
 }
 
 type CollectionProps = CollectionPropsBeforeState & {
@@ -68,7 +68,7 @@ const createMapStateToProps = () => {
       collectionId: id
     }),
     groups: collectionStageGroupsSelector(selectSharedState(state), {
-      stage: browsingStage,
+      collectionSet: browsingStage,
       collectionId: id
     })
   });

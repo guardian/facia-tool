@@ -34,8 +34,8 @@ import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import { getCollectionConfig } from 'selectors/frontsSelectors';
 import { State } from 'types/State';
 import { Dispatch, ThunkResult, GetState } from 'types/Store';
-import { properFrontStages } from 'constants/fronts';
-import { ProperStages, Collection } from 'shared/types/Collection';
+import { frontStages } from 'constants/fronts';
+import { Stages, Collection } from 'shared/types/Collection';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import difference from 'lodash/difference';
 
@@ -75,13 +75,13 @@ function getCollection(collectionId: string): ThunkResult<Promise<string[]>> {
       );
 
       const state = getState();
-      const liveVisibleStories = await getVisibleStories(collection, state, properFrontStages.live);
-      const draftVisibleStories = await getVisibleStories(collection, state, properFrontStages.draft);
+      const liveVisibleStories = await getVisibleStories(collection, state, frontStages.live);
+      const draftVisibleStories = await getVisibleStories(collection, state, frontStages.draft);
 
       dispatch(
         batchActions([
-          recordVisibleStories(collection.id, liveVisibleStories, properFrontStages.live),
-          recordVisibleStories(collection.id, draftVisibleStories, properFrontStages.draft)
+          recordVisibleStories(collection.id, liveVisibleStories, frontStages.live),
+          recordVisibleStories(collection.id, draftVisibleStories, frontStages.draft)
         ])
       );
 
@@ -118,8 +118,8 @@ function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
       );
       await updateCollectionFromApi(collection.id, denormalisedCollection);
       dispatch(collectionActions.updateSuccess(collection.id, collection))
-      const visibleStories = await getVisibleStories(collection, getState(), properFrontStages.draft)
-      dispatch(recordVisibleStories(collection.id, visibleStories, properFrontStages.draft))
+      const visibleStories = await getVisibleStories(collection, getState(), frontStages.draft)
+      dispatch(recordVisibleStories(collection.id, visibleStories, frontStages.draft))
     } catch (e) {
       dispatch(collectionActions.updateError(e, collection.id));
       throw e;
@@ -170,7 +170,7 @@ const getCollectionsAndArticles = (
     })
   );
 
-async function  getVisibleStories(collection: Collection, state: State, stage: ProperStages): Promise<VisibleStoriesResponse> {
+async function  getVisibleStories(collection: Collection, state: State, stage: Stages): Promise<VisibleStoriesResponse> {
   const collectionType = collection.type;
   const groups = getGroupsByStage(collection, stage);
   const groupArticleSelector = createGroupArticlesSelector();

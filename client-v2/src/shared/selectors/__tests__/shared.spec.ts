@@ -360,7 +360,7 @@ describe('Shared selectors', () => {
       expect(
         selector(state, {
           collectionId: 'c1',
-          stage: 'live'
+          collectionSet: 'live'
         })
       ).toEqual(['af2', 'af1']);
     });
@@ -372,21 +372,21 @@ describe('Shared selectors', () => {
       expect(
         selector(state, {
           collectionId: 'c1',
-          stage: 'live',
+          collectionSet: 'live',
           groupName: 'group1'
         })
       ).toEqual(['af2']);
       expect(
         selector(state, {
           collectionId: 'c1',
-          stage: 'live',
+          collectionSet: 'live',
           groupName: 'group2'
         })
       ).toEqual(['af1']);
       expect(
         selector(state, {
           collectionId: 'c2',
-          stage: 'draft',
+          collectionSet: 'draft',
           groupName: 'group1'
         })
       ).toEqual(['af3', 'af4']);
@@ -396,17 +396,17 @@ describe('Shared selectors', () => {
       expect(
         selector(state, {
           collectionId: 'invalid',
-          stage: 'live',
+          collectionSet: 'live',
           groupName: 'group1'
         })
       ).toEqual([]);
     });
-    it('should return an empty array if the stage is not found', () => {
+    it('should return an empty array if the collectionSet is not found', () => {
       const selector = createArticlesInCollectionGroupSelector();
       expect(
         selector(state, {
           collectionId: 'c1',
-          stage: 'invalid',
+          collectionSet: 'invalid',
           groupName: 'groupName'
         } as any)
       ).toEqual([]);
@@ -416,7 +416,7 @@ describe('Shared selectors', () => {
       expect(
         selector(state, {
           collectionId: 'c4',
-          stage: 'draft',
+          collectionSet: 'draft',
           groupName: 'invalidGroup'
         })
       ).toEqual([]);
@@ -426,7 +426,7 @@ describe('Shared selectors', () => {
       expect(
         selector(state, {
           collectionId: 'c3',
-          stage: 'draft',
+          collectionSet: 'draft',
           groupName: 'group1'
         })
       ).toEqual(['af5']);

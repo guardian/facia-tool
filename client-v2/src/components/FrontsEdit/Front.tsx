@@ -21,7 +21,7 @@ import {
 } from 'bundles/frontsUIBundle';
 import {
   ArticleFragmentMeta,
-  Stages,
+  CollectionItemSets,
   ArticleFragment as TArticleFragment
 } from 'shared/types/Collection';
 import Collection from './CollectionComponents/Collection';
@@ -49,7 +49,7 @@ const FrontFormContainer = FrontContentContainer;
 
 interface FrontPropsBeforeState {
   id: string;
-  browsingStage: Stages;
+  browsingStage: CollectionItemSets;
   collectionIds: string[];
   alsoOn: { [id: string]: AlsoOnDetail };
 }
@@ -241,7 +241,7 @@ const mapStateToProps = (state: State, props: FrontPropsBeforeState) => ({
   unpublishedChanges: state.unpublishedChanges,
   selectedArticleFragmentId: selectEditorArticleFragment(state, props.id),
   front: getFront(state, props.id),
-  storiesVisible: visibleFrontStoriesSelector(state, { stage: props.browsingStage })
+  storiesVisible: visibleFrontStoriesSelector(state, { collectionSet: props.browsingStage })
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => {

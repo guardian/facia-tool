@@ -5,7 +5,7 @@ import { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
-import { Stages, ProperStages } from 'shared/types/Collection';
+import { CollectionItemSets, Stages } from 'shared/types/Collection';
 import { StoryDetails } from 'types/FaciaApi';
 
 interface FrontConfigMap {
@@ -46,10 +46,10 @@ const prioritySelector = (state: State, { priority }: { priority: string }) =>
 const frontIdSelector = (state: State, { frontId }: { frontId: string }) =>
   frontId;
 
-const stageSelector = (state: State, { stage }: { stage: Stages }) =>
-  stage;
+const collectionSetSelector = (state: State, { collectionSet }: { collectionSet: CollectionItemSets }) =>
+  collectionSet;
 
-const collectionIdAndStageSelector = (state: State, { stage, collectionId }: { stage: ProperStages, collectionId: string }) => ({
+const collectionIdAndStageSelector = (state: State, { stage, collectionId }: { stage: Stages, collectionId: string }) => ({
   stage,
   collectionId
 })
@@ -250,12 +250,12 @@ const visibleStoriesSelector = createSelector(
 });
 
 const visibleFrontStoriesSelector = createSelector(
-  [collectionVisibilitiesSelector, stageSelector],
-  (collectionVisibilities, stage) => {
-    if (stage === 'previously') {
+  [collectionVisibilitiesSelector, collectionSetSelector],
+  (collectionVisibilities, collectionSet) => {
+    if (collectionSet === 'previously') {
       return {};
     }
-    return collectionVisibilities[stage];
+    return collectionVisibilities[collectionSet];
   }
 )
 

@@ -6,7 +6,7 @@ import upperFirst from 'lodash/upperFirst';
 
 import ShortVerticalPinline from './layout/ShortVerticalPinline';
 import ContainerHeadingPinline from './typography/ContainerHeadingPinline';
-import { Collection, Stages } from '../types/Collection';
+import { Collection, CollectionItemSets } from '../types/Collection';
 import ButtonCircularCaret from './input/ButtonCircularCaret';
 import { State } from '../types/State';
 import {
@@ -20,7 +20,7 @@ import ContentContainer from './layout/ContentContainer';
 interface ContainerProps {
   id: string;
   selectSharedState?: (state: any) => State;
-  browsingStage: Stages;
+  browsingStage: CollectionItemSets;
 }
 
 type Props = ContainerProps & {
@@ -159,7 +159,7 @@ const createMapStateToProps = () => {
       collection: collectionSelectors.selectById(sharedState, props.id),
       articleIds: selectArticlesInCollection(sharedState, {
         collectionId: props.id,
-        stage: props.browsingStage
+        collectionSet: props.browsingStage
       })
     };
   };
