@@ -50,7 +50,7 @@ const ArticlePolaroidComponent = ({
             }}
           />
         ))}
-      <CollectionItemContent displayType="polaroid">
+      <CollectionItemContent displayType="polaroid" data-testid="headline">
         {displayPlaceholders ? (
           <>
             <TextPlaceholder />

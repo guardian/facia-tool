@@ -146,7 +146,7 @@ const FeedItem = ({
     <Body>
       <Title data-testid="headline">{title}</Title>
     </Body>
-    <HoverActionsAreaOverlay justify="flex-end">
+    <HoverActionsAreaOverlay justify="flex-end" data-testid="hover-overlay">
       <HoverActionsButtonWrapper
         buttons={[
           { text: 'Clipboard', component: HoverAddToClipboardButton },

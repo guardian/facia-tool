@@ -8,6 +8,7 @@ const capiCollection = require('../fixtures/capi-collection');
 const capiSearch = require('../fixtures/capi-search');
 
 const findArticleWithIDFromResponse = id =>
+  console.log('query', id) ||
   capiSearch.response.results.filter(
     ({ fields: { internalPageCode } }) =>
       `internal-code/page/${internalPageCode}` === id
@@ -22,6 +23,7 @@ module.exports = async () =>
 
     // Endpoint for api search requests here
     app.get(/\/api\/(preview|live)\/search/, (req, res) => {
+      console.log('search');
       const ids = (req.query.ids || '').split(',').filter(Boolean);
       switch (ids.length) {
         case 0: {
@@ -55,17 +57,37 @@ module.exports = async () =>
     });
 
     // Endpoint for api requests for single pieces of content
+    // Endpoint for api requests for single pieces of content
     const handler = (req, res) => {
+      console.log('handle', req.params);
+
       const match = req.params[0];
       if (!match) {
         throw new Error('No match for content - no id');
       }
-      const internalPageCode = match.replace(/[^\d.]/g, '');
+      if (/internal-code\/page\//.test(match)) {
+        const internalPageCode = match.replace(/[^\d.]/g, '');
+        const article = capiSearch.response.results.find(
+          article => article.fields.internalPageCode === internalPageCode
+        );
+        if (!article) {
+          throw new Error(`No match for content with id ${internalPageCode}`);
+        }
+        const result = {
+          response: {
+            content: article,
+            status: 'ok',
+            total: 1
+          }
+        };
+        return res.json(result);
+      }
+
       const article = capiSearch.response.results.find(
-        article => article.fields.internalPageCode === internalPageCode
+        article => article.id === match
       );
       if (!article) {
-        throw new Error(`No match for content with id ${internalPageCode}`);
+        throw new Error(`No match for content with id ${match}`);
       }
       const result = {
         response: {
@@ -82,12 +104,16 @@ module.exports = async () =>
     app.get('/api/live/*', handler);
     app.get('/api/preview/*', handler);
 
-    app.get('/config', (_, res) => res.json(config));
-    app.get('/collection/:id', (_, res) => res.json(collection));
+    app.get('/config', (_, res) => console.log('config') || res.json(config));
+    app.get(
+      '/collection/:id',
+      (_, res) => console.log('col id') || res.json(collection)
+    );
     // send the assets from dist
     app.get(
       '*/:file',
       (req, res) =>
+        console.log('file') ||
         res.sendFile(
           path.join(
             __dirname,

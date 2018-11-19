@@ -62,6 +62,7 @@ const HoverDeleteButton = ({
 }: ButtonProps) => (
   <ActionButton
     danger
+    data-testid={'delete-hover-button'}
     onMouseEnter={showToolTip}
     onMouseLeave={hideToolTip}
     onClick={e => {
@@ -79,6 +80,7 @@ const HoverAddToClipboardButton = ({
   onAddToClipboard
 }: ButtonProps) => (
   <ActionButton
+    data-testid={'add-to-clipboard-hover-button'}
     onMouseEnter={showToolTip}
     onMouseLeave={hideToolTip}
     onClick={e => {
