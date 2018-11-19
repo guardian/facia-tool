@@ -4,7 +4,8 @@ import {
   updateCollection,
   getCapiUriForContentIds,
   getArticlesBatched,
-  getContent
+  getContent,
+  getTagOrSectionTitle
 } from '../faciaApi';
 import chunk from 'lodash/chunk';
 
@@ -96,6 +97,38 @@ describe('faciaApi', () => {
         )
       );
       await getArticlesBatched(articleIds);
+    });
+  });
+  describe('getTagOrSectionTitle', () => {
+    it('should return the title of the tag or section from a given CAPI response, if it exists', () => {
+      expect(
+        getTagOrSectionTitle({
+          response: {
+            status: 'ok',
+            results: [],
+            tag: {
+              id: 'tagId',
+              type: 'tag',
+              webUrl: 'exampleUrl',
+              webTitle: 'Example tag title'
+            }
+          }
+        })
+      ).toEqual('Example tag title');
+      expect(
+        getTagOrSectionTitle({
+          response: {
+            status: 'ok',
+            results: [],
+            tag: {
+              id: 'sectionId',
+              type: 'section',
+              webUrl: 'exampleUrl',
+              webTitle: 'Example section title'
+            }
+          }
+        })
+      ).toEqual('Example section title');
     });
   });
   describe('getContent', () => {
