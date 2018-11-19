@@ -1,7 +1,7 @@
 import { FrontConfig, CollectionConfig } from 'types/FaciaApi';
 import { CollectionWithNestedArticles, ArticleFragment } from 'shared/types/Collection';
 import { detectPressFailureMs } from 'constants/fronts';
-import { StoryDetails } from 'types/FaciaApi';
+import { ArticleDetails } from 'types/FaciaApi';
 import { Stages, Collection } from 'shared/types/Collection';
 import { frontStages } from 'constants/fronts';
 
@@ -47,12 +47,12 @@ const isFrontStale = (lastUpdated?: number, lastPressed?: number) => {
   return false;
 };
 
-const getVisibilityStoryDetails = (groupsWithStories: ArticleFragment[][]) => groupsWithStories.reduce((stories, storiesInGroup, index) => {
-  const numberOfGroups = groupsWithStories.length;
-   const groupStories = storiesInGroup.map(story => ({ group: numberOfGroups - index - 1, isBoosted: !!story.meta.isBoosted }));
-    return stories.concat(groupStories);
+const getVisibilityArticleDetails = (groupsWithArticles: ArticleFragment[][]) => groupsWithArticles.reduce((articles, articlesInGroup, index) => {
+  const numberOfGroups = groupsWithArticles.length;
+   const groupArticles = articlesInGroup.map(story => ({ group: numberOfGroups - index - 1, isBoosted: !!story.meta.isBoosted }));
+    return articles.concat(groupArticles);
 
-  }, [] as StoryDetails[]);
+  }, [] as ArticleDetails[]);
 
 const getGroupsByStage = (collection: Collection, stage: Stages) => {
   if (stage === frontStages.draft) {
@@ -67,6 +67,6 @@ export {
   combineCollectionWithConfig,
   populateDraftArticles,
   isFrontStale,
-  getVisibilityStoryDetails,
+  getVisibilityArticleDetails,
   getGroupsByStage
 };

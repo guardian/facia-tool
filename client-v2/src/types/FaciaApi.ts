@@ -74,12 +74,12 @@ interface FrontsConfig {
   collections: CollectionConfigMap
 }
 
-interface StoryDetails {
+interface ArticleDetails {
   group: number,
   isBoosted: boolean
 }
 
-interface VisibleStoriesResponse {
+interface VisibleArticlesResponse {
   desktop: number,
   mobile: number
 }
@@ -90,6 +90,6 @@ export {
   FrontsConfig,
   FrontsConfigResponse,
   FrontConfigMap,
-  StoryDetails,
-  VisibleStoriesResponse
+  ArticleDetails,
+  VisibleArticlesResponse
 };

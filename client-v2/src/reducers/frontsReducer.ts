@@ -1,6 +1,6 @@
 import set from 'lodash/fp/set';
 import { Stages } from 'shared/types/Collection';
-import { VisibleStoriesResponse } from 'types/FaciaApi';
+import { VisibleArticlesResponse } from 'types/FaciaApi';
 
 import { Action } from 'types/Action';
 import {
@@ -16,7 +16,7 @@ interface State {
   }
   collectionVisibility: {
     [stage in Stages]: {
-      [collectionId: string]: VisibleStoriesResponse
+      [collectionId: string]: VisibleArticlesResponse
     }
   }
 }
@@ -50,11 +50,11 @@ const reducer = (
         newState
       );
     }
-    case 'FETCH_VISIBLE_STORIES_SUCCESS': {
-      const { collectionId, visibleStories, stage } = action.payload;
+    case 'FETCH_VISIBLE_ARTICLES_SUCCESS': {
+      const { collectionId, visibleArticles, stage } = action.payload;
 
       const collectionVisibilities = state.collectionVisibility[stage];
-      const newCollectionVisibility = { [collectionId]: visibleStories };
+      const newCollectionVisibility = { [collectionId]: visibleArticles };
       const newVisibilities = {
         ...collectionVisibilities,
         ...newCollectionVisibility

@@ -4,9 +4,9 @@ import {
   getArticlesBatched,
   getCollection as fetchCollection,
   updateCollection as updateCollectionFromApi,
-  fetchVisibleStories
+  fetchVisibleArticles
 } from 'services/faciaApi';
-import { VisibleStoriesResponse } from 'types/FaciaApi';
+import { VisibleArticlesResponse } from 'types/FaciaApi';
 import {
   selectUserEmail,
   selectFirstName,
@@ -20,7 +20,7 @@ import { actions as externalArticleActions } from 'shared/bundles/externalArticl
 import {
   combineCollectionWithConfig,
   populateDraftArticles,
-  getVisibilityStoryDetails,
+  getVisibilityArticleDetails,
   getGroupsByStage
 } from 'util/frontsUtils';
 import {
@@ -29,7 +29,7 @@ import {
 } from 'shared/util/shared';
 import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
 import { groupsReceived } from 'shared/actions/Groups';
-import { recordVisibleStories } from 'actions/Fronts';
+import { recordVisibleArticles } from 'actions/Fronts';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import { getCollectionConfig } from 'selectors/frontsSelectors';
 import { State } from 'types/State';
@@ -75,13 +75,13 @@ function getCollection(collectionId: string): ThunkResult<Promise<string[]>> {
       );
 
       const state = getState();
-      const liveVisibleStories = await getVisibleStories(collection, state, frontStages.live);
-      const draftVisibleStories = await getVisibleStories(collection, state, frontStages.draft);
+      const liveVisibleArticles = await getVisibleArticles(collection, state, frontStages.live);
+      const draftVisibleArticles = await getVisibleArticles(collection, state, frontStages.draft);
 
       dispatch(
         batchActions([
-          recordVisibleStories(collection.id, liveVisibleStories, frontStages.live),
-          recordVisibleStories(collection.id, draftVisibleStories, frontStages.draft)
+          recordVisibleArticles(collection.id, liveVisibleArticles, frontStages.live),
+          recordVisibleArticles(collection.id, draftVisibleArticles, frontStages.draft)
         ])
       );
 
@@ -118,8 +118,8 @@ function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
       );
       await updateCollectionFromApi(collection.id, denormalisedCollection);
       dispatch(collectionActions.updateSuccess(collection.id, collection))
-      const visibleStories = await getVisibleStories(collection, getState(), frontStages.draft)
-      dispatch(recordVisibleStories(collection.id, visibleStories, frontStages.draft))
+      const visibleArticles = await getVisibleArticles(collection, getState(), frontStages.draft)
+      dispatch(recordVisibleArticles(collection.id, visibleArticles, frontStages.draft))
     } catch (e) {
       dispatch(collectionActions.updateError(e, collection.id));
       throw e;
@@ -170,14 +170,14 @@ const getCollectionsAndArticles = (
     })
   );
 
-async function  getVisibleStories(collection: Collection, state: State, stage: Stages): Promise<VisibleStoriesResponse> {
+async function getVisibleArticles(collection: Collection, state: State, stage: Stages): Promise<VisibleArticlesResponse> {
   const collectionType = collection.type;
   const groups = getGroupsByStage(collection, stage);
   const groupArticleSelector = createGroupArticlesSelector();
-  const groupsWithStories = groups.map(id => groupArticleSelector(state, { groupId: id }));
-  const storyDetails = await getVisibilityStoryDetails(groupsWithStories);
+  const groupsWithArticles = groups.map(id => groupArticleSelector(state, { groupId: id }));
+  const articleDetails = await getVisibilityArticleDetails(groupsWithArticles);
 
-  return fetchVisibleStories(collectionType, storyDetails);
+  return fetchVisibleArticles(collectionType, articleDetails);
 }
 
 

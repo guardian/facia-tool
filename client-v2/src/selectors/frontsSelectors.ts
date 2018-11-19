@@ -6,7 +6,7 @@ import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
 import { CollectionItemSets, Stages } from 'shared/types/Collection';
-import { StoryDetails } from 'types/FaciaApi';
+import { ArticleDetails } from 'types/FaciaApi';
 
 interface FrontConfigMap {
   [id: string]: FrontConfig;
@@ -243,13 +243,13 @@ const lastPressedSelector = (state: State, frontId: string): string | null =>
 
 const clipboardSelector = (state: State) => state.clipboard;
 
-const visibleStoriesSelector = createSelector(
+const visibleArticlesSelector = createSelector(
   [collectionVisibilitiesSelector, collectionIdAndStageSelector],
   (collectionVisibilities, { collectionId, stage }) => {
   return collectionVisibilities[stage][collectionId];
 });
 
-const visibleFrontStoriesSelector = createSelector(
+const visibleFrontArticlesSelector = createSelector(
   [collectionVisibilitiesSelector, collectionSetSelector],
   (collectionVisibilities, collectionSet) => {
     if (collectionSet === 'previously') {
@@ -273,6 +273,6 @@ export {
   lastPressedSelector,
   hasUnpublishedChangesSelector,
   clipboardSelector,
-  visibleStoriesSelector,
-  visibleFrontStoriesSelector
+  visibleArticlesSelector,
+  visibleFrontArticlesSelector
 };

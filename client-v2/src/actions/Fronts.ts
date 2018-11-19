@@ -11,8 +11,8 @@ import { actions as frontsConfigActions } from 'bundles/frontsConfigBundle';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import { isFrontStale } from 'util/frontsUtils';
 import { getCollection } from 'actions/Collections';
-import { VisibleStoriesResponse } from 'types/FaciaApi';
-import { visibleStoriesSelector } from 'selectors/frontsSelectors';
+import { VisibleArticlesResponse } from 'types/FaciaApi';
+import { visibleArticlesSelector } from 'selectors/frontsSelectors';
 import { Stages } from 'shared/types/Collection';
 import { frontStages } from 'constants/fronts';
 import { State } from 'types/State';
@@ -46,12 +46,12 @@ function recordStaleFronts(frontId: string, frontIsStale: boolean): Action {
   };
 }
 
-function recordVisibleStories(collectionId: string, visibleStories: VisibleStoriesResponse, stage: Stages): Action {
+function recordVisibleArticles(collectionId: string, visibleArticles: VisibleArticlesResponse, stage: Stages): Action {
   return {
-    type: 'FETCH_VISIBLE_STORIES_SUCCESS',
+    type: 'FETCH_VISIBLE_ARTICLES_SUCCESS',
     payload: {
       collectionId,
-      visibleStories,
+      visibleArticles,
       stage
     }
   }
@@ -75,7 +75,7 @@ function publishCollection(
 
   return (dispatch: Dispatch, getState: () => State) => {
 
-  const draftVisibleStories = visibleStoriesSelector(getState(), { collectionId, stage: frontStages.draft });
+  const draftVisibleArticles = visibleArticlesSelector(getState(), { collectionId, stage: frontStages.draft });
 
     return publishCollectionApi(collectionId)
       .then(() => {
@@ -83,7 +83,7 @@ function publishCollection(
           batchActions([
             publishCollectionSuccess(collectionId),
             recordUnpublishedChanges(collectionId, false),
-            recordVisibleStories(collectionId, draftVisibleStories, frontStages.live)
+            recordVisibleArticles(collectionId, draftVisibleArticles, frontStages.live)
           ])
         );
 
@@ -115,7 +115,7 @@ function publishCollection(
   }
 }
 
-export { fetchLastPressed, fetchLastPressedSuccess, publishCollection, recordVisibleStories };
+export { fetchLastPressed, fetchLastPressedSuccess, publishCollection, recordVisibleArticles };
 
 export default function getFrontsConfig(): ThunkResult<
   Promise<

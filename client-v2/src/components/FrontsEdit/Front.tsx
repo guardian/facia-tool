@@ -32,8 +32,8 @@ import ArticleFragmentLevel from 'components/clipboard/ArticleFragmentLevel';
 import GroupLevel from 'components/clipboard/GroupLevel';
 import { getFront } from 'selectors/frontsSelectors';
 import { FrontConfig } from 'types/FaciaApi';
-import { visibleFrontStoriesSelector } from 'selectors/frontsSelectors';
-import { VisibleStoriesResponse } from 'types/FaciaApi';
+import { visibleFrontArticlesSelector } from 'selectors/frontsSelectors';
+import { VisibleArticlesResponse } from 'types/FaciaApi';
 
 const FrontContainer = styled('div')`
   display: flex;
@@ -63,7 +63,7 @@ type FrontProps = FrontPropsBeforeState & {
   removeCollectionItem: (parentId: string, id: string) => void;
   removeSupportingCollectionItem: (parentId: string, id: string) => void;
   front: FrontConfig;
-  storiesVisible: { [id: string]: VisibleStoriesResponse };
+  articlesVisible: { [id: string]: VisibleArticlesResponse };
 };
 
 interface FrontState {
@@ -114,7 +114,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   }
 
   public render() {
-    const { selectedArticleFragmentId, front, storiesVisible } = this.props;
+    const { selectedArticleFragmentId, front, articlesVisible } = this.props;
     return (
       <React.Fragment>
         <div
@@ -132,7 +132,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
           <FrontContentContainer>
             <Root id={this.props.id} data-testid={this.props.id}>
               {front.collections.map(collectionId => {
-                const collectionStoriesVisible = storiesVisible && storiesVisible[collectionId];
+                const collectionArticlesVisible = articlesVisible && articlesVisible[collectionId];
                 let collectionItemCount: number = 0;
                 return (
                   <Collection
@@ -153,10 +153,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                           {(articleFragment, afProps) => {
                             collectionItemCount += 1;
                             const articleNotifications: string[] = [];
-                            if (collectionStoriesVisible && collectionItemCount === collectionStoriesVisible.mobile) {
+                            if (collectionArticlesVisible && collectionItemCount === collectionArticlesVisible.mobile) {
                               articleNotifications.push('mobile');
                             }
-                            if (collectionStoriesVisible && collectionItemCount === collectionStoriesVisible.desktop) {
+                            if (collectionArticlesVisible && collectionItemCount === collectionArticlesVisible.desktop) {
                               articleNotifications.push('desktop');
                             }
                             return (
@@ -241,7 +241,7 @@ const mapStateToProps = (state: State, props: FrontPropsBeforeState) => ({
   unpublishedChanges: state.unpublishedChanges,
   selectedArticleFragmentId: selectEditorArticleFragment(state, props.id),
   front: getFront(state, props.id),
-  storiesVisible: visibleFrontStoriesSelector(state, { collectionSet: props.browsingStage })
+  articlesVisible: visibleFrontArticlesSelector(state, { collectionSet: props.browsingStage })
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => {

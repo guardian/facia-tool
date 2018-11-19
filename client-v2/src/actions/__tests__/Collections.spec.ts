@@ -50,10 +50,10 @@ describe('Collection actions', () => {
         payload: { exampleCollection: true }
       });
       expect(actions[2]).toEqual({
-        type: 'FETCH_VISIBLE_STORIES_SUCCESS',
+        type: 'FETCH_VISIBLE_ARTICLES_SUCCESS',
         payload: {
           collectionId: 'exampleCollection',
-          visibleStories: {},
+          visibleArticles: {},
           stage: 'draft'
         }
       });

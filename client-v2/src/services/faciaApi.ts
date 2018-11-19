@@ -3,8 +3,8 @@ import {
   FrontsConfig,
   FrontsConfigResponse,
   FrontConfigMap,
-  StoryDetails,
-  VisibleStoriesResponse
+  ArticleDetails,
+  VisibleArticlesResponse
 } from 'types/FaciaApi';
 import { ExternalArticle } from 'shared/types/ExternalArticle';
 import {
@@ -70,7 +70,7 @@ async function fetchLastPressed(frontId: string): Promise<string> {
     });
 }
 
-async function fetchVisibleStories(collectionType: string, stories: StoryDetails[]): Promise<VisibleStoriesResponse> {
+async function fetchVisibleArticles(collectionType: string, articles: ArticleDetails[]): Promise<VisibleArticlesResponse> {
   // The server does not respond with JSON
   try {
     const response = await pandaFetch(`/stories-visible/${collectionType}`, {
@@ -79,7 +79,7 @@ async function fetchVisibleStories(collectionType: string, stories: StoryDetails
         'Content-Type': 'application/json'
       },
       credentials: 'same-origin',
-      body: JSON.stringify({stories})
+      body: JSON.stringify({stories: articles})
     });
     return await response.json();
   } catch (response) {
@@ -281,5 +281,5 @@ export {
   saveClipboard,
   saveOpenFrontIds,
   getCapiUriForContentIds,
-  fetchVisibleStories
+  fetchVisibleArticles
 };
