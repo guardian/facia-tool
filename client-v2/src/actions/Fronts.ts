@@ -78,10 +78,13 @@ function publishCollection(
           .then(([collection, lastPressed]) => {
             const lastPressedInMilliseconds = new Date(lastPressed).getTime();
             dispatch(
-              recordStaleFronts(
-                frontId,
-                isFrontStale(collection.lastUpdated, lastPressedInMilliseconds)
-              )
+              batchActions([
+                recordStaleFronts(
+                  frontId,
+                  isFrontStale(collection.lastUpdated, lastPressedInMilliseconds)
+                ),
+                fetchLastPressedSuccess(frontId, lastPressed)
+              ])
             );
           });
       })
