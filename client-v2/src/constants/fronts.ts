@@ -1,4 +1,4 @@
-import { Stages } from 'shared/types/Collection';
+import { Stages, CollectionItemSets } from 'shared/types/Collection';
 
 export const breakingNewsFrontId: string = 'breaking-news';
 
@@ -7,6 +7,10 @@ export const clipboardId: string = 'clipboard';
 export const frontStages: { [key: string]: Stages } = {
   draft: 'draft',
   live: 'live',
+};
+
+export const collectionItemSets: { [key: string]: CollectionItemSets                                  } = {
+  ...frontStages,
   previously: 'previously'
 };
 

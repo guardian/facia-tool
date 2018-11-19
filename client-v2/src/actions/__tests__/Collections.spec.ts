@@ -30,6 +30,7 @@ describe('Collection actions', () => {
         headers: { 'Content-Type': 'application/json' },
         method: 'POST'
       });
+      fetchMock.once('/stories-visible/type', {});
       const store = mockStore({
         config,
         ...stateWithCollection
@@ -47,6 +48,14 @@ describe('Collection actions', () => {
       expect(actions[0].payload[1]).toEqual({
         type: 'RECORD_UNPUBLISHED_CHANGES',
         payload: { exampleCollection: true }
+      });
+      expect(actions[2]).toEqual({
+        type: 'FETCH_VISIBLE_ARTICLES_SUCCESS',
+        payload: {
+          collectionId: 'exampleCollection',
+          visibleArticles: {},
+          stage: 'draft'
+        }
       });
       expect(actions[1]).toEqual(
         collectionActions.updateSuccess('exampleCollection', collection)

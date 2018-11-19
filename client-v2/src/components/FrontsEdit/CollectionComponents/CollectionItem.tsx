@@ -26,6 +26,7 @@ interface ContainerProps {
   parentId: string;
   displayType?: CollectionItemDisplayTypes;
   size?: 'small' | 'default';
+  articleNotifications?: string[];
 }
 
 type ArticleContainerProps = ContainerProps & {
@@ -43,8 +44,12 @@ const CollectionItem = ({
   onAddToClipboard = noop,
   displayType,
   type,
-  size
+  size,
+  articleNotifications
 }: ArticleContainerProps) => {
+
+  const notifications = (articleNotifications && articleNotifications.length) ? articleNotifications : undefined;
+
   switch (type) {
     case collectionItemTypes.ARTICLE:
       return (
@@ -57,6 +62,7 @@ const CollectionItem = ({
           fade={!isSelected}
           size={size}
           displayType={displayType}
+          notifications={notifications}
         >
           {children}
         </Article>
@@ -71,6 +77,7 @@ const CollectionItem = ({
           fade={!isSelected}
           size={size}
           displayType={displayType}
+          notifications={notifications}
         >
           {children}
         </SnapLink>

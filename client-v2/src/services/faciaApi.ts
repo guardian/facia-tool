@@ -2,7 +2,9 @@ import isValid from 'date-fns/is_valid';
 import {
   FrontsConfig,
   FrontsConfigResponse,
-  FrontConfigMap
+  FrontConfigMap,
+  ArticleDetails,
+  VisibleArticlesResponse
 } from 'types/FaciaApi';
 import { ExternalArticle } from 'shared/types/ExternalArticle';
 import {
@@ -66,6 +68,27 @@ async function fetchLastPressed(frontId: string): Promise<string> {
         }: ${response.body}`
       );
     });
+}
+
+async function fetchVisibleArticles(collectionType: string, articles: ArticleDetails[]): Promise<VisibleArticlesResponse> {
+  // The server does not respond with JSON
+  try {
+    const response = await pandaFetch(`/stories-visible/${collectionType}`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify({stories: articles})
+    });
+    return await response.json();
+  } catch (response) {
+    throw new Error(
+      `Tried to fetch visible stories for collection type ${collectionType}, but the server responded with ${
+        response.status
+      }: ${response.body}`
+    );
+  }
 }
 
 async function publishCollection(collectionId: string): Promise<void> {
@@ -257,5 +280,6 @@ export {
   updateCollection,
   saveClipboard,
   saveOpenFrontIds,
-  getCapiUriForContentIds
+  getCapiUriForContentIds,
+  fetchVisibleArticles
 };

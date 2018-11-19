@@ -12,7 +12,7 @@ import {
 } from 'actions/Collections';
 import { editorCloseFront } from 'bundles/frontsUIBundle';
 import Button from 'shared/components/input/ButtonDefault';
-import { frontStages } from 'constants/fronts';
+import { collectionItemSets } from 'constants/fronts';
 import { FrontConfig } from 'types/FaciaApi';
 import { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
@@ -24,7 +24,7 @@ import {
 import Front from './Front';
 import SectionHeader from '../layout/SectionHeader';
 import SectionContent from '../layout/SectionContent';
-import { Stages, Collection } from 'shared/types/Collection';
+import { CollectionItemSets, Collection } from 'shared/types/Collection';
 
 const FrontHeader = SectionHeader.extend`
   display: flex;
@@ -65,12 +65,12 @@ type FrontsComponentProps = FrontsContainerProps & {
 };
 
 interface ComponentState {
-  browsingStage: Stages;
+  collectionSet: CollectionItemSets;
 }
 
 class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   public state = {
-    browsingStage: frontStages.draft
+    collectionSet: collectionItemSets.draft
   };
 
   public componentDidMount() {
@@ -96,9 +96,9 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
     }
   }
 
-  public handleStageSelect(key: string) {
+  public handleCollectionSetSelect(key: string) {
     this.setState({
-      browsingStage: frontStages[key]
+      collectionSet: collectionItemSets[key]
     });
   }
 
@@ -136,14 +136,14 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
               >
                 <Button size="l">Preview</Button>
               </a>
-              {Object.keys(frontStages).map(key => (
+              {Object.keys(collectionItemSets).map(key => (
                 <Button
                   key={key}
                   size="l"
-                  selected={frontStages[key] === this.state.browsingStage}
-                  onClick={() => this.handleStageSelect(key)}
+                  selected={collectionItemSets[key] === this.state.collectionSet}
+                  onClick={() => this.handleCollectionSetSelect(key)}
                 >
-                  {frontStages[key]}
+                  {collectionItemSets[key]}
                 </Button>
               ))}
             </FrontHeaderMeta>
@@ -155,7 +155,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
               id={this.props.frontId}
               alsoOn={this.props.alsoOn}
               collectionIds={this.props.selectedFront.collections}
-              browsingStage={this.state.browsingStage}
+              browsingStage={this.state.collectionSet}
             />
           )}
         </SectionContent>

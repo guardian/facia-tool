@@ -1,6 +1,9 @@
 import { FrontConfig, CollectionConfig } from 'types/FaciaApi';
-import { CollectionWithNestedArticles } from 'shared/types/Collection';
+import { CollectionWithNestedArticles, ArticleFragment } from 'shared/types/Collection';
 import { detectPressFailureMs } from 'constants/fronts';
+import { ArticleDetails } from 'types/FaciaApi';
+import { Stages, Collection } from 'shared/types/Collection';
+import { frontStages } from 'constants/fronts';
 
 const getFrontCollections = (
   frontId: string|void,
@@ -30,7 +33,8 @@ const combineCollectionWithConfig = (
   Object.assign({}, collection, {
     id: collection.id,
     displayName: collectionConfig.displayName,
-    groups: collectionConfig.groups
+    groups: collectionConfig.groups,
+    type: collectionConfig.type
   });
 
 const populateDraftArticles = (collection: CollectionWithNestedArticles) =>
@@ -43,9 +47,26 @@ const isFrontStale = (lastUpdated?: number, lastPressed?: number) => {
   return false;
 };
 
+const getVisibilityArticleDetails = (groupsWithArticles: ArticleFragment[][]) => groupsWithArticles.reduce((articles, articlesInGroup, index) => {
+  const numberOfGroups = groupsWithArticles.length;
+   const groupArticles = articlesInGroup.map(story => ({ group: numberOfGroups - index - 1, isBoosted: !!story.meta.isBoosted }));
+    return articles.concat(groupArticles);
+
+  }, [] as ArticleDetails[]);
+
+const getGroupsByStage = (collection: Collection, stage: Stages) => {
+  if (stage === frontStages.draft) {
+    return (collection.draft ? collection.draft : collection.live) || [];
+  }
+  return collection.live ? collection.live : [];
+}
+
+
 export {
   getFrontCollections,
   combineCollectionWithConfig,
   populateDraftArticles,
-  isFrontStale
+  isFrontStale,
+  getVisibilityArticleDetails,
+  getGroupsByStage
 };

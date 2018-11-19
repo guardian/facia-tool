@@ -408,7 +408,8 @@ const collection = {
     }
   ],
   id: 'exampleCollection',
-  displayName: 'Example Collection'
+  displayName: 'Example Collection',
+  type: 'type'
 };
 
 const collectionConfig = {
@@ -453,7 +454,8 @@ const stateWithCollection: any = {
           displayName: 'Example Collection',
           live: ['abc', 'def'],
           draft: [],
-          previously: undefined
+          previously: undefined,
+          type: 'type'
         }
       }
     },

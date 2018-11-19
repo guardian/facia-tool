@@ -74,10 +74,22 @@ interface FrontsConfig {
   collections: CollectionConfigMap
 }
 
+interface ArticleDetails {
+  group: number,
+  isBoosted: boolean
+}
+
+interface VisibleArticlesResponse {
+  desktop: number,
+  mobile: number
+}
+
 export {
   FrontConfig,
   CollectionConfig,
   FrontsConfig,
   FrontsConfigResponse,
-  FrontConfigMap
+  FrontConfigMap,
+  ArticleDetails,
+  VisibleArticlesResponse
 };

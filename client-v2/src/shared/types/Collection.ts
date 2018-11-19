@@ -7,7 +7,8 @@ interface Group {
   articleFragments: string[];
 }
 
-type Stages = 'draft' | 'live' | 'previously';
+type Stages = 'draft' | 'live';
+type CollectionItemSets = 'draft' | 'live' | 'previously';
 
 type CollectionItemTypes = 'SNAP_LINK' | 'ARTICLE';
 type CollectionItemDisplayTypes = 'default' | 'polaroid';
@@ -115,6 +116,7 @@ interface Collection {
   platform?: string;
   displayName: string;
   groups?: string[];
+  type: string
 }
 
 export {
@@ -130,5 +132,6 @@ export {
   CollectionItemDisplayTypes,
   CollectionItemSizes,
   Group,
-  Stages
+  Stages,
+  CollectionItemSets
 };

@@ -5,6 +5,8 @@ import { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
+import { CollectionItemSets, Stages } from 'shared/types/Collection';
+import { ArticleDetails } from 'types/FaciaApi';
 
 interface FrontConfigMap {
   [id: string]: FrontConfig;
@@ -43,6 +45,16 @@ const prioritySelector = (state: State, { priority }: { priority: string }) =>
 
 const frontIdSelector = (state: State, { frontId }: { frontId: string }) =>
   frontId;
+
+const collectionSetSelector = (state: State, { collectionSet }: { collectionSet: CollectionItemSets }) =>
+  collectionSet;
+
+const collectionIdAndStageSelector = (state: State, { stage, collectionId }: { stage: Stages, collectionId: string }) => ({
+  stage,
+  collectionId
+})
+
+const collectionVisibilitiesSelector = (state: State) => state.fronts.collectionVisibility;
 
 const collectionIdSelector = (
   state: State,
@@ -231,6 +243,23 @@ const lastPressedSelector = (state: State, frontId: string): string | null =>
 
 const clipboardSelector = (state: State) => state.clipboard;
 
+const visibleArticlesSelector = createSelector(
+  [collectionVisibilitiesSelector, collectionIdAndStageSelector],
+  (collectionVisibilities, { collectionId, stage }) => {
+  return collectionVisibilities[stage][collectionId];
+});
+
+const visibleFrontArticlesSelector = createSelector(
+  [collectionVisibilitiesSelector, collectionSetSelector],
+  (collectionVisibilities, collectionSet) => {
+    if (collectionSet === 'previously') {
+      return {};
+    }
+    return collectionVisibilities[collectionSet];
+  }
+)
+
+
 export {
   getFront,
   getFrontsConfig,
@@ -243,5 +272,7 @@ export {
   createAlsoOnSelector,
   lastPressedSelector,
   hasUnpublishedChangesSelector,
-  clipboardSelector
+  clipboardSelector,
+  visibleArticlesSelector,
+  visibleFrontArticlesSelector
 };

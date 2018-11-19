@@ -26,6 +26,7 @@ import {
 import { CollectionItemSizes } from 'shared/types/Collection';
 import CollectionItemTrail from '../collectionItem/CollectionItemTrail';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
+import CollectionItemNotification from '../collectionItem/CollectionItemNotification';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   width: 130px;
@@ -70,6 +71,7 @@ interface ArticleBodyProps {
   uuid: string;
   onDelete: (id: string) => void;
   onAddToClipboard: (id: string) => void;
+  notifications?: string[];
 }
 
 const articleBodyDefault = ({
@@ -86,7 +88,8 @@ const articleBodyDefault = ({
   urlPath,
   displayPlaceholders,
   onDelete,
-  onAddToClipboard
+  onAddToClipboard,
+  notifications
 }: ArticleBodyProps) => {
   const ArticleHeadingContainer =
     size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
@@ -161,6 +164,7 @@ const articleBodyDefault = ({
             }}
           />
         ))}
+      { notifications && ( <CollectionItemNotification>{notifications.map(notification => <span key={notification}>{notification} </span>)}</CollectionItemNotification> )}
       <HoverActionsAreaOverlay>
         <HoverActionsButtonWrapper
           buttons={[

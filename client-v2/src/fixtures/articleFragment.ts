@@ -1,4 +1,20 @@
-const articleFragmentWithElementsThumbnailMeta = {};
+const articleFragmentMeta = {};
+
+const articleFragment = {
+  id: 'internal-code/page/5158391',
+  frontPublicationDate: 1539180309305,
+  meta: articleFragmentMeta,
+  uuid: '36a2fa8e-0e77-4f53-98d2-271282b5db70'
+};
+
+const boostedArticleFragment = {
+  id: 'internal-code/page/5158392',
+  frontPublicationDate: 1539180309305,
+  meta: {
+    isBoosted: true
+  },
+  uuid: '36a2fa8e-0e77-4f53-98d2-271282b5db71'
+};
 
 const articleFragmentWithSlideshowThumbnailMeta = {
   imageSlideshowReplace: true,
@@ -21,6 +37,8 @@ const articleFragmentWithSlideshowThumbnailMeta = {
 };
 
 export {
-  articleFragmentWithElementsThumbnailMeta,
-  articleFragmentWithSlideshowThumbnailMeta
+  articleFragment,
+  articleFragmentMeta,
+  articleFragmentWithSlideshowThumbnailMeta,
+  boostedArticleFragment
 };

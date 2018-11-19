@@ -11,6 +11,11 @@ import { actions as frontsConfigActions } from 'bundles/frontsConfigBundle';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import { isFrontStale } from 'util/frontsUtils';
 import { getCollection } from 'actions/Collections';
+import { VisibleArticlesResponse } from 'types/FaciaApi';
+import { visibleArticlesSelector } from 'selectors/frontsSelectors';
+import { Stages } from 'shared/types/Collection';
+import { frontStages } from 'constants/fronts';
+import { State } from 'types/State';
 
 function fetchLastPressedSuccess(frontId: string, datePressed: string): Action {
   return {
@@ -41,6 +46,17 @@ function recordStaleFronts(frontId: string, frontIsStale: boolean): Action {
   };
 }
 
+function recordVisibleArticles(collectionId: string, visibleArticles: VisibleArticlesResponse, stage: Stages): Action {
+  return {
+    type: 'FETCH_VISIBLE_ARTICLES_SUCCESS',
+    payload: {
+      collectionId,
+      visibleArticles,
+      stage
+    }
+  }
+}
+
 function fetchLastPressed(frontId: string): ThunkResult<void> {
   return (dispatch: Dispatch) =>
     fetchLastPressedApi(frontId)
@@ -56,13 +72,18 @@ function publishCollection(
   collectionId: string,
   frontId: string
 ): ThunkResult<Promise<void>> {
-  return (dispatch: Dispatch) =>
-    publishCollectionApi(collectionId)
+
+  return (dispatch: Dispatch, getState: () => State) => {
+
+  const draftVisibleArticles = visibleArticlesSelector(getState(), { collectionId, stage: frontStages.draft });
+
+    return publishCollectionApi(collectionId)
       .then(() => {
         dispatch(
           batchActions([
             publishCollectionSuccess(collectionId),
-            recordUnpublishedChanges(collectionId, false)
+            recordUnpublishedChanges(collectionId, false),
+            recordVisibleArticles(collectionId, draftVisibleArticles, frontStages.live)
           ])
         );
 
@@ -91,9 +112,10 @@ function publishCollection(
       .catch(() => {
         // @todo: implement once error handling is done
       });
+  }
 }
 
-export { fetchLastPressed, fetchLastPressedSuccess, publishCollection };
+export { fetchLastPressed, fetchLastPressedSuccess, publishCollection, recordVisibleArticles };
 
 export default function getFrontsConfig(): ThunkResult<
   Promise<

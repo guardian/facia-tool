@@ -52,6 +52,7 @@ type ComponentProps = {
   isLoading?: boolean;
   displayType?: CollectionItemDisplayTypes;
   size?: CollectionItemSizes;
+  notifications?: string[];
   children: React.ReactNode;
 } & ContainerProps;
 
@@ -67,6 +68,7 @@ const ArticleComponent = ({
   displayType = 'default',
   isLoading,
   article,
+  notifications,
   size = 'default',
   fade = false,
   draggable = false,
@@ -113,6 +115,7 @@ const ArticleComponent = ({
             size={size}
             onDelete={onDelete}
             onAddToClipboard={onAddToClipboard}
+            notifications={notifications}
           />
         )}
         {!article &&
