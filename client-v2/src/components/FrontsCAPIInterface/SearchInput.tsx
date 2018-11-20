@@ -94,7 +94,6 @@ class FrontsCAPISearchInput extends React.Component<
   public handleSearchInput = ({
     currentTarget
   }: React.SyntheticEvent<HTMLInputElement>) => {
-
     const targetValue = currentTarget.value;
 
     const maybeArticleId = getIdFromURL(targetValue);
@@ -176,7 +175,9 @@ class FrontsCAPISearchInput extends React.Component<
 
     const allTags = tags.concat(sections);
 
-    const dateParams = isPreview ? { 'order-by': 'oldest'} : { 'use-date': 'first-publication' };
+    const dateParams = isPreview
+      ? { 'order-by': 'oldest' }
+      : { 'order-by': 'newest', 'order-date': 'first-publication' };
 
     if (!displaySearchFilters) {
       return (
@@ -207,7 +208,8 @@ class FrontsCAPISearchInput extends React.Component<
               q,
               'page-size': '20',
               'show-elements': 'image',
-              'show-fields': 'internalPageCode,trailText,firstPublicationDate,isLive',
+              'show-fields':
+                'internalPageCode,trailText,firstPublicationDate,isLive',
               ...dateParams
             }}
             poll={30000}
