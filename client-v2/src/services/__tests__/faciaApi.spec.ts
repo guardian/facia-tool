@@ -120,10 +120,7 @@ describe('faciaApi', () => {
           response: {
             status: 'ok',
             results: [],
-            tag: {
-              id: 'sectionId',
-              type: 'section',
-              webUrl: 'exampleUrl',
+            section: {
               webTitle: 'Example section title'
             }
           }
