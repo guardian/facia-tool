@@ -1,8 +1,9 @@
 import { Action } from '../types/Action';
 import { ArticleFragment } from '../types/Collection';
+import { insertAndDedupeSiblings } from './utils';
 
 interface State {
-  [id: string]: ArticleFragment;
+  [uuid: string]: ArticleFragment;
 }
 
 const articleFragments = (state: State = {}, action: Action) => {
@@ -40,53 +41,44 @@ const articleFragments = (state: State = {}, action: Action) => {
         }
       };
     }
-    case 'SHARED/ADD_SUPPORTING_ARTICLE_FRAGMENT': {
-      const { id, index, supportingArticleFragmentId } = action.payload;
-      const target = state[id];
-      const targetMeta = target.meta || {};
-      const targetSupporting = targetMeta.supporting || [];
-
-      const source = state[supportingArticleFragmentId];
-      const sourceMeta = source.meta || {};
-      const sourceSupporting = sourceMeta.supporting || [];
+    case 'SHARED/INSERT_ARTICLE_FRAGMENT': {
+      const {
+        to: { id: toId, type: toType, index },
+        id,
+        articleFragmentMap
+      } = action.payload;
+      if (toType !== 'articleFragment') {
+        return state;
+      }
+      const targetArticleFragment = state[toId];
+      const insertedArticleFragment = state[id];
+      const supporting = insertAndDedupeSiblings(
+        targetArticleFragment.meta.supporting || [],
+        [
+          insertedArticleFragment.uuid,
+          ...(insertedArticleFragment.meta.supporting || [])
+        ],
+        index,
+        articleFragmentMap
+      );
 
       return {
         ...state,
-        [id]: {
-          ...target,
+        [toId]: {
+          ...targetArticleFragment,
           meta: {
-            ...targetMeta,
-            supporting: [
-              ...targetSupporting.slice(0, index),
-              supportingArticleFragmentId,
-              // Flatten: add the supporting from the source ...
-              ...sourceSupporting,
-              ...targetSupporting.slice(index)
-            ]
+            ...targetArticleFragment.meta,
+            supporting
           }
         },
         //
-        [supportingArticleFragmentId]: {
-          ...source,
-          meta: {
-            ...sourceMeta,
-            // ...and remove it from here
-            supporting: []
-          }
-        }
-      };
-    }
-    case 'SHARED/REPLACE_ARTICLE_FRAGMENT_SUPPORTING': {
-      const { id, supporting } = action.payload;
-      const group = state[id];
-
-      return {
-        ...state,
         [id]: {
-          ...group,
+          ...insertedArticleFragment,
           meta: {
-            ...state[id].meta,
-            supporting
+            ...insertedArticleFragment.meta,
+            // ...ensuer that after flattening we remove the supporting from
+            // the inserted article fragment
+            supporting: []
           }
         }
       };

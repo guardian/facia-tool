@@ -8,12 +8,9 @@ import { Dispatch, ThunkResult, GetState } from 'types/Store';
 import {
   ArticleFragmentsReceived,
   RemoveSupportingArticleFragment,
-  AddSupportingArticleFragment,
-  AddGroupArticleFragment,
+  InsertArticleFragment,
   RemoveGroupArticleFragment,
-  UpdateArticleFragmentMeta,
-  ReplaceGroupArticleFragments,
-  ReplaceArticleFragmentSupporting
+  UpdateArticleFragmentMeta
 } from 'shared/types/Action';
 import { createFragment } from 'shared/util/articleFragment';
 import { batchActions } from 'redux-batched-actions';
@@ -34,12 +31,19 @@ function updateArticleFragmentMeta(
   };
 }
 
-function articleFragmentsReceived(articleFragments: {
-  [id: string]: ArticleFragment;
-}): ArticleFragmentsReceived {
+function articleFragmentsReceived(
+  articleFragments:
+    | {
+        [uuid: string]: ArticleFragment;
+      }
+    | ArticleFragment[]
+): ArticleFragmentsReceived {
+  const payload = Array.isArray(articleFragments)
+    ? keyBy(articleFragments, ({ uuid }) => uuid)
+    : articleFragments;
   return {
     type: 'SHARED/ARTICLE_FRAGMENTS_RECEIVED',
-    payload: articleFragments
+    payload
   };
 }
 
@@ -56,29 +60,18 @@ function removeSupportingArticleFragment(
   };
 }
 
-const addSupportingArticleFragment = (
-  id: string,
-  supportingArticleFragmentId: string,
-  index: number
-): AddSupportingArticleFragment => ({
-  type: 'SHARED/ADD_SUPPORTING_ARTICLE_FRAGMENT',
+const insertArticleFragment = (
+  to: InsertArticleFragment['payload']['to'],
+  id: InsertArticleFragment['payload']['id'],
+  from: InsertArticleFragment['payload']['from'],
+  articleFragmentMap: { [uuid: string]: ArticleFragment }
+): InsertArticleFragment => ({
+  type: 'SHARED/INSERT_ARTICLE_FRAGMENT',
   payload: {
+    to,
     id,
-    supportingArticleFragmentId,
-    index
-  }
-});
-
-const addGroupArticleFragment = (
-  id: string,
-  articleFragmentId: string,
-  index: number
-): AddGroupArticleFragment => ({
-  type: 'SHARED/ADD_GROUP_ARTICLE_FRAGMENT',
-  payload: {
-    id,
-    articleFragmentId,
-    index
+    from,
+    articleFragmentMap
   }
 });
 
@@ -90,28 +83,6 @@ const removeGroupArticleFragment = (
   payload: {
     id,
     articleFragmentId
-  }
-});
-
-const replaceArticleFragmentSupporting = (
-  id: string,
-  supporting: string[] = []
-): ReplaceArticleFragmentSupporting => ({
-  type: 'SHARED/REPLACE_ARTICLE_FRAGMENT_SUPPORTING',
-  payload: {
-    id,
-    supporting
-  }
-});
-
-const replaceGroupArticleFragments = (
-  id: string,
-  articleFragments: string[] = []
-): ReplaceGroupArticleFragments => ({
-  type: 'SHARED/REPLACE_GROUP_ARTICLE_FRAGMENTS',
-  payload: {
-    id,
-    articleFragments
   }
 });
 
@@ -179,35 +150,11 @@ function createArticleFragment(
   };
 }
 
-const insertAndDedupeSiblings = <T extends { id: string; uuid: string }>(
-  id: string,
-  siblingsSelector: (state: State) => T[],
-  // @todo - replace any type
-  insertActions: any[],
-  // @todo - replace any type
-  replaceActionCreator: (strArray: string[]) => any
-): ThunkResult<void> => (dispatch: Dispatch, getState: GetState) => {
-  dispatch(batchActions(insertActions)); // add it to the state so that we can select it
-  const siblings = siblingsSelector(getState());
-  const af = keyBy(siblings, ({ uuid }) => uuid)[id];
-  const deduped = uniqBy(
-    siblings.filter(child => child.id !== af.id || child.uuid === id),
-    ({ id: dedupeKey }) => dedupeKey
-  ).map(({ uuid }) => uuid);
-  // always run this as this may have persist info
-  dispatch(replaceActionCreator(deduped));
-  return;
-};
-
 export {
   updateArticleFragmentMeta,
   articleFragmentsReceived,
-  addSupportingArticleFragment,
+  insertArticleFragment,
   removeSupportingArticleFragment,
-  replaceArticleFragmentSupporting,
-  addGroupArticleFragment,
   removeGroupArticleFragment,
-  replaceGroupArticleFragments,
-  insertAndDedupeSiblings,
   createArticleFragment
 };
