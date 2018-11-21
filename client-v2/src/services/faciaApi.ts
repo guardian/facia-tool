@@ -203,19 +203,23 @@ const getCapiUriForContentIds = (contentIds: string[]) => {
   return `/api/preview/${searchStr}page-size=50&show-elements=video,main&show-blocks=main&show-tags=all&show-atoms=media&show-fields=internalPageCode,isLive,firstPublicationDate,scheduledPublicationDate,headline,trailText,byline,thumbnail,secureThumbnail,liveBloggingNow,membershipAccess,shortUrl`;
 };
 
-const getTagTitle = (queryResponse: CAPISearchQueryReponse) =>
-  queryResponse.response.tag && queryResponse.response.tag.webTitle;
+const getTagOrSectionTitle = (queryResponse: CAPISearchQueryReponse) =>
+  (queryResponse.response.tag && queryResponse.response.tag.webTitle) ||
+  (queryResponse.response.section && queryResponse.response.section.webTitle);
 
 const parseArticleListFromResponses = (
   queryResponse: CAPISearchQueryReponse
 ): ExternalArticle[] => {
   try {
     if (queryResponse.response.status === 'error') {
-      throw new Error(queryResponse.response.message || 'Unknown error from CAPI')
+      throw new Error(
+        queryResponse.response.message || 'Unknown error from CAPI'
+      );
     }
     // We may be dealing with a single result, or an array of results -
     // CAPI formats each query differently.
-    const results: CapiArticle[] = queryResponse.response.results ||
+    const results: CapiArticle[] =
+      queryResponse.response.results ||
       (queryResponse.response.content ? [queryResponse.response.content] : []);
 
     return results.map((externalArticle: CapiArticle) => ({
@@ -223,17 +227,21 @@ const parseArticleListFromResponses = (
       urlPath: externalArticle.id,
       id: `internal-code/page/${externalArticle.fields.internalPageCode}`
     }));
-  } catch(e) {
-    throw new Error(`Error getting articles from CAPI: cannot parse response - ${e.message}`);
+  } catch (e) {
+    throw new Error(
+      `Error getting articles from CAPI: cannot parse response - ${e.message}`
+    );
   }
 };
 
 /**
  * Get the articles and title for a CAPI content id, which could be a tag or an article.
  */
-async function getContent(contentId: string): Promise<{
-  articles: ExternalArticle[],
-  title: string | undefined
+async function getContent(
+  contentId: string
+): Promise<{
+  articles: ExternalArticle[];
+  title: string | undefined;
 }> {
   const response = await pandaFetch(getCapiUriForContentIds([contentId]), {
     method: 'get',
@@ -242,8 +250,8 @@ async function getContent(contentId: string): Promise<{
   const parsedResponse: CAPISearchQueryReponse = await response.json();
   return {
     articles: parseArticleListFromResponses(parsedResponse),
-    title: getTagTitle(parsedResponse)
-  }
+    title: getTagOrSectionTitle(parsedResponse)
+  };
 }
 
 /**
@@ -251,7 +259,9 @@ async function getContent(contentId: string): Promise<{
  * CAPI can process in one request, issue multiple requests, returning a concatenated
  * list of articles when all of them complete.
  */
-async function getArticlesBatched(articleIds: string[]): Promise<ExternalArticle[]> {
+async function getArticlesBatched(
+  articleIds: string[]
+): Promise<ExternalArticle[]> {
   const capiPromises = chunk(articleIds, 50).map(localArticleIDs => {
     return pandaFetch(getCapiUriForContentIds(localArticleIDs), {
       method: 'get',
@@ -261,12 +271,12 @@ async function getArticlesBatched(articleIds: string[]): Promise<ExternalArticle
 
   try {
     const responses = await Promise.all(capiPromises);
-    const parsedResponses: CAPISearchQueryReponse[] = await Promise.all(responses.map(_ => _.json()));
+    const parsedResponses: CAPISearchQueryReponse[] = await Promise.all(
+      responses.map(_ => _.json())
+    );
     return flatMap(parsedResponses.map(parseArticleListFromResponses));
   } catch (e) {
-    throw new Error(
-      `Error fetching articles: ${e.message || e.status}`
-    );
+    throw new Error(`Error fetching articles: ${e.message || e.status}`);
   }
 }
 
@@ -274,6 +284,7 @@ export {
   fetchFrontsConfig,
   getCollection,
   getContent,
+  getTagOrSectionTitle,
   getArticlesBatched,
   fetchLastPressed,
   publishCollection,
