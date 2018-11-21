@@ -3,9 +3,8 @@
  * for typing to work nicely in reducers
  */
 import {
-  AddGroupArticleFragment as SharedAddGroupArticleFragment,
+  InsertArticleFragment as SharedInsertArticleFragment,
   RemoveGroupArticleFragment as SharedRemoveGroupArticleFragment,
-  AddSupportingArticleFragment as SharedAddSupportingArticleFragment,
   RemoveSupportingArticleFragment as SharedRemoveSupportingArticleFragment,
   Action as SharedActions
 } from 'shared/types/Action';
@@ -56,13 +55,10 @@ interface ActionPersistMeta {
   meta: PersistMeta;
 }
 
-type AddGroupArticleFragment = SharedAddGroupArticleFragment &
+type InsertArticleFragment = SharedInsertArticleFragment &
   ActionPersistMeta;
 
 type RemoveGroupArticleFragment = SharedRemoveGroupArticleFragment &
-  ActionPersistMeta;
-
-type AddSupportingArticleFragment = SharedAddSupportingArticleFragment &
   ActionPersistMeta;
 
 type RemoveSupportingArticleFragment = SharedRemoveSupportingArticleFragment &
@@ -137,17 +133,6 @@ interface UpdateClipboardContent {
   payload: string[];
 }
 
-interface AddClipboardArticleFragment {
-  type: 'ADD_CLIPBOARD_ARTICLE_FRAGMENT';
-  payload: { articleFragmentId: string; index: number };
-}
-
-interface AddClipboardContent {
-  type: 'ADD_CLIPBOARD_ARTICLE_FRAGMENT';
-  payload: { articleFragmentId: string; index: number };
-  meta: PersistMeta;
-}
-
 interface RemoveClipboardArticleFragment {
   type: 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT';
   payload: { articleFragmentId: string };
@@ -175,14 +160,11 @@ type Action =
   | SharedActions
   | RecordUnpublishedChanges
   | PublishCollectionSuccess
-  | AddGroupArticleFragment
+  | InsertArticleFragment
   | RemoveGroupArticleFragment
-  | AddSupportingArticleFragment
   | RemoveSupportingArticleFragment
   | UpdateClipboardContent
-  | AddClipboardArticleFragment
   | RemoveClipboardArticleFragment
-  | AddClipboardContent
   | EditorAddFront
   | EditorClearOpenFronts
   | EditorSetOpenFronts
@@ -208,14 +190,11 @@ export {
   SharedActions,
   RecordUnpublishedChanges,
   PublishCollectionSuccess,
-  AddGroupArticleFragment,
+  InsertArticleFragment,
   RemoveGroupArticleFragment,
-  AddSupportingArticleFragment,
   RemoveSupportingArticleFragment,
   UpdateClipboardContent,
-  AddClipboardArticleFragment,
   RemoveClipboardArticleFragment,
-  AddClipboardContent,
   EditorAddFront,
   EditorClearOpenFronts,
   EditorSetOpenFronts,

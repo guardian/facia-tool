@@ -47,8 +47,10 @@ const CollectionItem = ({
   size,
   articleNotifications
 }: ArticleContainerProps) => {
-
-  const notifications = (articleNotifications && articleNotifications.length) ? articleNotifications : undefined;
+  const notifications =
+    articleNotifications && articleNotifications.length
+      ? articleNotifications
+      : undefined;
 
   switch (type) {
     case collectionItemTypes.ARTICLE:
@@ -101,7 +103,13 @@ const createMapStateToProps = () => {
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     onAddToClipboard: (id: string) =>
-      dispatch(handleInsert(id, insertArticleFragment))
+      dispatch(
+        handleInsert(
+          { id: 'clipboard', type: 'clipboard', index: 0 },
+          id,
+          'clipboard'
+        )
+      )
   };
 };
 

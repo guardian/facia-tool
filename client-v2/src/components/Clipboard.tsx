@@ -3,11 +3,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Root, Move, PosSpec } from 'lib/dnd';
 import { State } from 'types/State';
-import { handleMove, handleInsertFromEvent } from 'util/collectionUtils';
 import {
-  insertClipboardArticleFragment,
-  moveClipboardArticleFragment,
-  copyClipboardArticleFragment,
+  handleMove,
+  insertArticleFragmentFromDropEvent
+} from 'util/collectionUtils';
+import {
   removeArticleFragmentFromClipboard,
   removeSupportingArticleFragmentFromClipboard
 } from 'actions/ArticleFragments';
@@ -36,27 +36,24 @@ class Clipboard extends React.Component<ClipboardProps> {
   // refactor
 
   public handleMove = (move: Move<TArticleFragment>) => {
-    handleMove(
-      moveClipboardArticleFragment,
-      copyClipboardArticleFragment,
-      this.props.dispatch,
-      move
+    this.props.dispatch(
+      handleMove(move.to, move.data, move.from || null, 'clipboard')
     );
   };
 
   public handleInsert = (e: React.DragEvent, to: PosSpec) => {
-    handleInsertFromEvent(e, insertClipboardArticleFragment, this.props.dispatch, to);
+    this.props.dispatch(insertArticleFragmentFromDropEvent(e, to, 'clipboard'));
   };
 
   public removeCollectionItem = (id: string) => {
     this.props.removeCollectionItem(id);
     this.clearArticleFragmentSelectionIfNeeded(id);
-  }
+  };
 
   public removeSupportingCollectionItem = (parentId: string, id: string) => {
     this.props.removeSupportingCollectionItem(parentId, id);
     this.clearArticleFragmentSelectionIfNeeded(id);
-  }
+  };
 
   public clearArticleFragmentSelectionIfNeeded = (id: string) => {
     if (id === this.props.selectedArticleFragmentId) {

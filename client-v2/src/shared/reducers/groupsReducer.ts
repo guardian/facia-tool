@@ -1,8 +1,9 @@
 import { Action } from '../types/Action';
 import { Group } from '../types/Collection';
+import { insertAndDedupeSiblings } from './utils';
 
 interface State {
-  [id: string]: Group
+  [id: string]: Group;
 }
 
 const groups = (state: State = {}, action: Action) => {
@@ -27,29 +28,26 @@ const groups = (state: State = {}, action: Action) => {
         }
       };
     }
-    case 'SHARED/ADD_GROUP_ARTICLE_FRAGMENT': {
-      const { id, index, articleFragmentId } = action.payload;
-      const group = state[id];
+    case 'SHARED/INSERT_ARTICLE_FRAGMENT': {
+      const {
+        to: { id: toId, type: toType, index },
+        id,
+        articleFragmentMap
+      } = action.payload;
+      if (toType !== 'group') {
+        return state;
+      }
+      const group = state[toId];
+      const articleFragments = insertAndDedupeSiblings(
+        group.articleFragments || [],
+        [id],
+        index,
+        articleFragmentMap
+      );
 
       return {
         ...state,
-        [id]: {
-          ...group,
-          articleFragments: [
-            ...(group.articleFragments || []).slice(0, index),
-            articleFragmentId,
-            ...(group.articleFragments || []).slice(index)
-          ]
-        }
-      };
-    }
-    case 'SHARED/REPLACE_GROUP_ARTICLE_FRAGMENTS': {
-      const { id, articleFragments } = action.payload;
-      const group = state[id];
-
-      return {
-        ...state,
-        [id]: {
+        [toId]: {
           ...group,
           articleFragments
         }

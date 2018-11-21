@@ -234,4 +234,5 @@ export {
   articleFragmentSelector,
   articleKickerOptionsSelector,
   createCollectionEditWarningSelector
+  articleFragmentsSelector
 };

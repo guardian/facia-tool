@@ -169,7 +169,13 @@ const FeedItem = ({
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     onAddToClipboard: (id: string) =>
-      dispatch(handleInsert(id, insertClipboardArticleFragment, true))
+      dispatch(
+        handleInsert(
+          { type: 'clipboard', id: 'clipboard', index: 0 },
+          id,
+          'clipboard'
+        )
+      )
   };
 };
 
