@@ -10,7 +10,6 @@ import {
   UpdateArticleFragmentMeta
 } from 'shared/types/Action';
 import { createFragment } from 'shared/util/articleFragment';
-import { batchActions } from 'redux-batched-actions';
 import { createLinkSnap, createLatestSnap } from 'shared/util/snap';
 import { getIdFromURL } from 'util/CAPIUtils';
 import { isValidURL } from 'shared/util/url';

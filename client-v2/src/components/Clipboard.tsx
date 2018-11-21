@@ -3,13 +3,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Root, Move, PosSpec } from 'lib/dnd';
 import { State } from 'types/State';
+import { insertArticleFragmentFromDropEvent } from 'util/collectionUtils';
 import {
-  handleMove,
-  insertArticleFragmentFromDropEvent
-} from 'util/collectionUtils';
-import {
-  removeArticleFragmentFromClipboard,
-  removeSupportingArticleFragmentFromClipboard
+  moveArticleFragment,
+  removeArticleFragment
 } from 'actions/ArticleFragments';
 import {
   editorSelectArticleFragment,
@@ -37,7 +34,7 @@ class Clipboard extends React.Component<ClipboardProps> {
 
   public handleMove = (move: Move<TArticleFragment>) => {
     this.props.dispatch(
-      handleMove(move.to, move.data, move.from || null, 'clipboard')
+      moveArticleFragment(move.to, move.data, move.from || null, 'clipboard')
     );
   };
 
@@ -129,10 +126,14 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   clearArticleFragmentSelection: () =>
     dispatch(editorClearArticleFragmentSelection(clipboardId)),
   removeCollectionItem: (uuid: string) => {
-    dispatch(removeArticleFragmentFromClipboard(uuid));
+    dispatch(
+      removeArticleFragment('clipboard')('clipboard', 'clipboard', uuid)
+    );
   },
   removeSupportingCollectionItem: (parentId: string, uuid: string) => {
-    dispatch(removeSupportingArticleFragmentFromClipboard(parentId, uuid));
+    dispatch(
+      removeArticleFragment('clipboard')('articleFragment', parentId, uuid)
+    );
   },
   dispatch
 });

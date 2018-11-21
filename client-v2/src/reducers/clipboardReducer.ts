@@ -1,5 +1,5 @@
 import { Action } from 'types/Action';
-import { insertAndDedupeSiblings } from 'shared/reducers/utils';
+import { insertAndDedupeSiblings } from 'shared/util/insertAndDedupeSiblings';
 
 type State = string[];
 

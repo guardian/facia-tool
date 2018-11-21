@@ -6,13 +6,10 @@ import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import {
   updateArticleFragmentMeta,
-  removeSupportingArticleFragment,
-  removeGroupArticleFragment
+  removeArticleFragment,
+  moveArticleFragment
 } from 'actions/ArticleFragments';
-import {
-  handleMove,
-  insertArticleFragmentFromDropEvent
-} from 'util/collectionUtils';
+import { insertArticleFragmentFromDropEvent } from 'util/collectionUtils';
 import { AlsoOnDetail } from 'types/Collection';
 import {
   editorSelectArticleFragment,
@@ -86,7 +83,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
 
   public handleMove = (move: Move<TArticleFragment>) => {
     this.props.dispatch(
-      handleMove(move.to, move.data, move.from || null, 'collection')
+      moveArticleFragment(move.to, move.data, move.from || null, 'collection')
     );
   };
 
@@ -267,10 +264,12 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     clearArticleFragmentSelection: (frontId: string) =>
       dispatch(editorClearArticleFragmentSelection(frontId)),
     removeCollectionItem: (parentId: string, uuid: string) => {
-      dispatch(removeGroupArticleFragment(parentId, uuid));
+      dispatch(removeArticleFragment('collection')('group', parentId, uuid));
     },
     removeSupportingCollectionItem: (parentId: string, uuid: string) => {
-      dispatch(removeSupportingArticleFragment(parentId, uuid));
+      dispatch(
+        removeArticleFragment('collection')('articleFragment', parentId, uuid)
+      );
     }
   };
 };
