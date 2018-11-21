@@ -4,13 +4,9 @@ import {
   frontDropZone,
   frontHeadline,
   frontSnapLink,
-  frontItemAddToClipboardHoverButton,
   feedItem,
   feedItemHeadline,
-  feedItemAddToClipboardHoverButton,
-  clipboardItemTruncatedHeadline,
-  guardianSectionSnapLink,
-  guardianTagSnapLink,
+  guardianSnapLink,
   externalSnapLink
 } from '../selectors';
 
@@ -42,53 +38,45 @@ test('Drag and drop', async t => {
     .eql(topFrontHeadline);
 });
 
-test('Snap Links - Guardian Tag', async t => {
+test('Snap Links - Guardian', async t => {
   const frontDropsCount = await frontDropZone().count;
-  const tagSnap = await guardianTagSnapLink();
+  const tagSnap = await guardianSnapLink();
   await t
+    .maximizeWindow() // needed to find DOM elements in headless mode
     .setNativeDialogHandler(() => false)
     .dragToElement(tagSnap, frontDropZone(1))
     .expect(frontDropZone().count)
     .eql(frontDropsCount + 1)
     .expect(frontSnapLink(0).textContent)
-    .contains('Recipes')
+    .contains('Recipes | The Guardian')
     .expect(frontSnapLink(0).textContent)
     .notContains('Latest');
 });
 
-test('Snap Links - Guardian Tag Latest', async t => {
+test('Snap Links - Guardian Latest', async t => {
   const frontDropsCount = await frontDropZone().count;
-  const tagSnap = await guardianTagSnapLink();
-
+  const tagSnap = await guardianSnapLink();
   await t
+    .maximizeWindow() // needed to find DOM elements in headless mode
     .setNativeDialogHandler(() => true)
     .dragToElement(tagSnap, frontDropZone(1))
     .expect(frontDropZone().count)
     .eql(frontDropsCount + 1)
     .expect(frontSnapLink(0).textContent)
-    .contains(' {Recipes }')
+    .contains('{ Recipes }')
     .expect(frontSnapLink(0).textContent)
     .contains('Latest');
 });
 
-// TODO TestCafe .hover method does not work. Buttons remain hidden, click fails on visibility check.
-test.skip('Add to Clipboard from Feed hover button works', async t => {
-  const feedHeadline = await feedItemHeadline(5).textContent;
-  const feedHeadlineTruncated = feedHeadline.slice(0, 35);
+test('Snap Links - External', async t => {
+  const frontDropsCount = await frontDropZone().count;
+  const externalSnap = await externalSnapLink();
   await t
-    // check feed to clipboard //
-    // TODO .hover()
-    .click(feedItemAddToClipboardHoverButton(5), { visibilityCheck: false })
-    .expect(clipboardItemTruncatedHeadline(0).textContent)
-    .contains(feedHeadlineTruncated);
-});
-test.skip('Add to Clipboard from Front hover button works', async t => {
-  const topFrontHeadline = await frontHeadline(0).textContent;
-  const topFrontHeadlineTruncated = topFrontHeadline.slice(0, 35);
-  await t
-    // check front to clipboard //
-    // TODO .hover()
-    .click(frontItemAddToClipboardHoverButton(0), { visibilityCheck: false })
-    .expect(clipboardItemTruncatedHeadline(0).textContent)
-    .contains(topFrontHeadlineTruncated);
+    .maximizeWindow() // needed to find DOM elements in headless mode
+    .setNativeDialogHandler(() => false)
+    .dragToElement(externalSnap, frontDropZone(1))
+    .expect(frontDropZone().count)
+    .eql(frontDropsCount + 1)
+    .expect(frontSnapLink(0).textContent)
+    .contains('Business - BBC News');
 });

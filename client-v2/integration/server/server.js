@@ -7,9 +7,10 @@ const collection = require('../fixtures/collection');
 const capiCollection = require('../fixtures/capi-collection');
 const capiSearch = require('../fixtures/capi-search');
 const snapTag = require('../fixtures/snap-tag');
+const snapTagPage = require('../fixtures/snap-tag-page');
+const snapExternalPage = require('../../src/shared/fixtures/bbcSectionPage.ts');
 
 const findArticleWithIDFromResponse = id =>
-  console.log('query', id) ||
   capiSearch.response.results.filter(
     ({ fields: { internalPageCode } }) =>
       `internal-code/page/${internalPageCode}` === id
@@ -25,7 +26,6 @@ module.exports = async () =>
 
     // Endpoint for api search requests here
     app.get(/\/api\/(preview|live)\/search/, (req, res) => {
-      console.log('search', req.params);
       const ids = (req.query.ids || '').split(',').filter(Boolean);
       switch (ids.length) {
         case 0: {
@@ -58,10 +58,17 @@ module.exports = async () =>
       }
     });
 
+    // Endpoints to snap links - /tone/ & bbc specific to fixtures.
+    app.get('/api/preview/tone/*', (req, res) => res.json(snapTag));
+    app.get('/http/proxy/*', (req, res) => {
+      const path = req.params[0];
+      return path.includes(`bbc`)
+        ? res.json(snapExternalPage)
+        : res.json(snapTagPage);
+    });
+
     // Endpoint for api requests for single pieces of content
     const handler = (req, res) => {
-      console.log('handle', req.params, req.url);
-
       const match = req.params[0];
       if (!match) {
         throw new Error('No match for content - no id');
@@ -87,6 +94,7 @@ module.exports = async () =>
       const article = capiSearch.response.results.find(
         article => article.id === match
       );
+
       if (!article) {
         throw new Error(`No match for content with id ${match}`);
       }
@@ -99,26 +107,29 @@ module.exports = async () =>
       };
       return res.json(result);
     };
+
     // Attempts at a capture group:
     // /api/(preview|live)/*
-    // /api/(?:preview|live)/*
-    app.get('/api/preview/tone/*', (req, res) => {
-      console.log('api', req.params) || res.json(snapTag);
-    });
+    // /api/(?:preview|live)/
     app.get('/api/live/*', handler);
     app.get('/api/preview/*', handler);
-    
 
-    app.get('/config', (_, res) => console.log('config') || res.json(config));
-    app.get(
-      '/collection/:id',
-      (_, res) => console.log('col id') || res.json(collection)
-    );
+    app.get('/config', (_, res) => res.json(config));
+    app.get('/collection/:id', (_, res) => res.json(collection));
+
     // send the assets from dist
-    app.get('*/:file', (req, res) =>
-      res.sendFile(
-        path.join(__dirname, '../../../public/client-v2/dist', req.params.file)
-      )
+    app.get(
+      '*/:file',
+      (req, res) =>
+        req.params[0].includes('bbc') // prevents error messages from External Snap Link fixture
+          ? res.json('')
+          : res.sendFile(
+              path.join(
+                __dirname,
+                '../../../public/client-v2/dist',
+                req.params.file
+              )
+            )
     );
 
     // this catches update requests and pretends they went through ok
