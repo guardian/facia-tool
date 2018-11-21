@@ -9,9 +9,11 @@ const clipboard = (state: State = [], action: Action): State => {
       const { payload } = action;
       return payload;
     }
-    case 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT': {
-      const { articleFragmentId } = action.payload;
-      return state.filter(id => id !== articleFragmentId);
+    case 'SHARED/REMOVE_ARTICLE_FRAGMENT': {
+      const { articleFragmentId, parentType } = action.payload;
+      return parentType !== 'clipboard'
+        ? state
+        : state.filter(id => id !== articleFragmentId);
     }
     case 'SHARED/INSERT_ARTICLE_FRAGMENT': {
       const {

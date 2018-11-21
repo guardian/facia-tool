@@ -19,13 +19,6 @@ interface UpdateArticleFragmentMeta {
   type: 'SHARED/UPDATE_ARTICLE_FRAGMENT_META';
   payload: { id: string; meta: ArticleFragmentMeta };
 }
-interface RemoveSupportingArticleFragment {
-  type: 'SHARED/REMOVE_SUPPORTING_ARTICLE_FRAGMENT';
-  payload: {
-    id: string;
-    supportingArticleFragmentId: string;
-  };
-}
 
 interface InsertArticleFragment {
   type: 'SHARED/INSERT_ARTICLE_FRAGMENT';
@@ -43,19 +36,19 @@ interface InsertArticleFragment {
     articleFragmentMap: { [uuid: string]: ArticleFragment };
   };
 }
-interface RemoveGroupArticleFragment {
-  type: 'SHARED/REMOVE_GROUP_ARTICLE_FRAGMENT';
+interface RemoveArticleFragment {
+  type: 'SHARED/REMOVE_ARTICLE_FRAGMENT';
   payload: {
+    parentType: string;
     id: string;
     articleFragmentId: string;
   };
 }
 
 type Action =
-  | RemoveSupportingArticleFragment
   | GroupsReceived
   | InsertArticleFragment
-  | RemoveGroupArticleFragment
+  | RemoveArticleFragment
   | Actions<ExternalArticle>
   | Actions<Collection>
   | ArticleFragmentsReceived
@@ -63,9 +56,8 @@ type Action =
 
 export {
   Action,
-  RemoveSupportingArticleFragment,
   InsertArticleFragment,
-  RemoveGroupArticleFragment,
+  RemoveArticleFragment,
   ArticleFragmentsReceived,
   UpdateArticleFragmentMeta
 };

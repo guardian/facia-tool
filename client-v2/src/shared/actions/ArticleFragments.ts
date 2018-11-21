@@ -1,15 +1,12 @@
-import uniqBy from 'lodash/uniqBy';
 import keyBy from 'lodash/keyBy';
 import { ArticleFragment, ArticleFragmentMeta } from 'shared/types/Collection';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import { getContent } from 'services/faciaApi';
-import { State } from 'types/State';
-import { Dispatch, ThunkResult, GetState } from 'types/Store';
+import { Dispatch, ThunkResult } from 'types/Store';
 import {
   ArticleFragmentsReceived,
-  RemoveSupportingArticleFragment,
+  RemoveArticleFragment,
   InsertArticleFragment,
-  RemoveGroupArticleFragment,
   UpdateArticleFragmentMeta
 } from 'shared/types/Action';
 import { createFragment } from 'shared/util/articleFragment';
@@ -47,15 +44,17 @@ function articleFragmentsReceived(
   };
 }
 
-function removeSupportingArticleFragment(
+function removeArticleFragment(
+  parentType: string,
   id: string,
-  supportingArticleFragmentId: string
-): RemoveSupportingArticleFragment {
+  articleFragmentId: string
+): RemoveArticleFragment {
   return {
-    type: 'SHARED/REMOVE_SUPPORTING_ARTICLE_FRAGMENT',
+    type: 'SHARED/REMOVE_ARTICLE_FRAGMENT',
     payload: {
+      parentType,
       id,
-      supportingArticleFragmentId
+      articleFragmentId
     }
   };
 }
@@ -72,17 +71,6 @@ const insertArticleFragment = (
     id,
     from,
     articleFragmentMap
-  }
-});
-
-const removeGroupArticleFragment = (
-  id: string,
-  articleFragmentId: string
-): RemoveGroupArticleFragment => ({
-  type: 'SHARED/REMOVE_GROUP_ARTICLE_FRAGMENT',
-  payload: {
-    id,
-    articleFragmentId
   }
 });
 
@@ -154,7 +142,6 @@ export {
   updateArticleFragmentMeta,
   articleFragmentsReceived,
   insertArticleFragment,
-  removeSupportingArticleFragment,
-  removeGroupArticleFragment,
+  removeArticleFragment,
   createArticleFragment
 };
