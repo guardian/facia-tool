@@ -1,6 +1,6 @@
 import { Action } from '../types/Action';
 import { Group } from '../types/Collection';
-import { insertAndDedupeSiblings } from './utils';
+import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
 
 interface State {
   [id: string]: Group;
@@ -18,7 +18,7 @@ const groups = (state: State = {}, action: Action) => {
     case 'SHARED/REMOVE_ARTICLE_FRAGMENT': {
       const { id, parentType, articleFragmentId } = action.payload;
       if (parentType !== 'group') {
-        return;
+        return state;
       }
       const group = state[id];
       return {

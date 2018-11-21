@@ -11,9 +11,7 @@ import {
   CollectionItemDisplayTypes
 } from 'shared/types/Collection';
 import SnapLink from 'shared/components/snapLink/SnapLink';
-
 import { insertArticleFragment } from 'actions/ArticleFragments';
-import { handleInsert } from 'util/collectionUtils';
 import noop from 'lodash/noop';
 
 interface ContainerProps {
@@ -104,7 +102,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     onAddToClipboard: (id: string) =>
       dispatch(
-        handleInsert(
+        insertArticleFragment(
           { id: 'clipboard', type: 'clipboard', index: 0 },
           id,
           'clipboard'

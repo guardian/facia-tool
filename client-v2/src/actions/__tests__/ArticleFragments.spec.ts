@@ -3,16 +3,10 @@ jest.mock('uuid/v4', () => jest.fn(() => 'uuid'));
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { enableBatching } from 'redux-batched-actions';
-import {
-  insertClipboardArticleFragment,
-  copyClipboardArticleFragment,
-  insertArticleFragment,
-  copyArticleFragment
-} from '../ArticleFragments';
+import { insertArticleFragment } from '../ArticleFragments';
 import clipboardReducer from '../../reducers/clipboardReducer';
 import groupsReducer from '../../shared/reducers/groupsReducer';
 import articleFragmentsReducer from '../../shared/reducers/articleFragmentsReducer';
-import { InsertActionCreator } from 'util/collectionUtils';
 
 const root = (state: any, action: any) => ({
   clipboard: clipboardReducer(state.clipboard, action),
@@ -68,7 +62,7 @@ const buildStore = (
 
 const testAddActions = (existing: ArticleFragmentSpec[]) => (
   appendToInitialState: StateBuilder
-) => (actionCreator: InsertActionCreator) => (
+) => (
   [uuid, id]: ArticleFragmentSpec,
   index: number,
   parentType: string,
@@ -78,24 +72,25 @@ const testAddActions = (existing: ArticleFragmentSpec[]) => (
     uuid,
     id
   ]);
-  dispatch(actionCreator(
-    parentType,
-    parentId,
-    { uuid, id, meta: {}, frontPublicationDate: Date.now() },
-    index
+  // the persistTo argument here is irrelevant
+  dispatch(insertArticleFragment('clipboard')(
+    {
+      type: parentType,
+      id: parentId,
+      index
+    },
+    { uuid, id, meta: {}, frontPublicationDate: Date.now() }
   ) as any);
   return getState();
 };
 
 const createAdder = testAddActions([['a', '1'], ['b', '2'], ['c', '3']]);
-const clipboardAdder = createAdder((state, existing) => ({
+const clipboardInserter = createAdder((state, existing) => ({
   ...state,
   clipboard: existing.map(([uuid]) => uuid)
 }));
-const clipboardInserter = clipboardAdder(insertClipboardArticleFragment);
-const clipboardCopier = clipboardAdder(copyClipboardArticleFragment);
 
-const groupAdder = createAdder((state, existing) => ({
+const groupInserter = createAdder((state, existing) => ({
   ...state,
   shared: {
     ...state.shared,
@@ -106,8 +101,6 @@ const groupAdder = createAdder((state, existing) => ({
     }
   }
 }));
-const groupInserter = groupAdder(insertArticleFragment);
-const groupCopier = groupAdder(copyArticleFragment);
 
 const testInsertingForClipboardAndGroup = (
   articleFragmentSpec: ArticleFragmentSpec,

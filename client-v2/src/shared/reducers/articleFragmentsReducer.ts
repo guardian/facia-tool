@@ -1,6 +1,6 @@
 import { Action } from '../types/Action';
 import { ArticleFragment } from '../types/Collection';
-import { insertAndDedupeSiblings } from './utils';
+import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
 
 interface State {
   [uuid: string]: ArticleFragment;
