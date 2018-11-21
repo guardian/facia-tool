@@ -25,8 +25,11 @@ const articleFragments = (state: State = {}, action: Action) => {
       const { payload } = action;
       return Object.assign({}, state, payload);
     }
-    case 'SHARED/REMOVE_SUPPORTING_ARTICLE_FRAGMENT': {
-      const { id, supportingArticleFragmentId } = action.payload;
+    case 'SHARED/REMOVE_ARTICLE_FRAGMENT': {
+      const { id, articleFragmentId, parentType } = action.payload;
+      if (parentType !== 'articleFragment') {
+        return state;
+      }
       const articleFragment = state[id];
       return {
         ...state,
@@ -35,7 +38,7 @@ const articleFragments = (state: State = {}, action: Action) => {
           meta: {
             ...articleFragment.meta,
             supporting: (articleFragment.meta.supporting || []).filter(
-              sid => sid !== supportingArticleFragmentId
+              sid => sid !== articleFragmentId
             )
           }
         }

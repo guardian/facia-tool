@@ -1,22 +1,9 @@
 import {
   insertArticleFragment,
-  removeSupportingArticleFragment,
-  removeGroupArticleFragment,
+  removeArticleFragment,
   updateArticleFragmentMeta
 } from 'shared/actions/ArticleFragments';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
-import { RemoveClipboardArticleFragment } from 'types/Action';
-
-function removeClipboardArticleFragment(
-  articleFragmentId: string
-): RemoveClipboardArticleFragment {
-  return {
-    type: 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT',
-    payload: {
-      articleFragmentId
-    }
-  };
-}
 
 const updateArticleFragmentMetaWithPersist = addPersistMetaToAction(
   updateArticleFragmentMeta,
@@ -32,43 +19,14 @@ const updateClipboardArticleFragmentMetaWithPersist = addPersistMetaToAction(
   }
 );
 
-const removeSupportingArticleFragmentWithPersist = addPersistMetaToAction(
-  removeSupportingArticleFragment,
-  {
-    persistTo: 'collection'
-  }
-);
-
-const removeGroupArticleFragmentWithPersist = addPersistMetaToAction(
-  removeGroupArticleFragment,
-  {
-    persistTo: 'collection',
+const removeArticleFragmentWithPersist = (
+  persistTo: 'collection' | 'clipboard'
+) =>
+  addPersistMetaToAction(removeArticleFragment, {
+    persistTo,
     applyBeforeReducer: true,
     key: 'articleFragmentId'
-  }
-);
-
-const removeClipboardArticleFragmentWithPersist = addPersistMetaToAction(
-  removeClipboardArticleFragment,
-  {
-    persistTo: 'clipboard',
-    applyBeforeReducer: true,
-    key: 'articleFragmentId'
-  }
-);
-
-const removeClipboardSupportingArticleFragmentWithPersist = addPersistMetaToAction(
-  removeSupportingArticleFragment,
-  {
-    persistTo: 'clipboard',
-    applyBeforeReducer: true,
-    key: 'articleFragmentId'
-  }
-);
-
-// const { parent, supporting } = copy
-//   ? cloneFragment(fragment, articleFragmentsFromRootStateSelector(getState()))
-//   : { parent: fragment, supporting: [] };
+  });
 
 const insertArticleFragmentWithPersist = (
   persistTo: 'collection' | 'clipboard'
@@ -91,8 +49,5 @@ export {
   insertClipboardArticleFragmentWithPersist as insertClipboardArticleFragment,
   updateArticleFragmentMetaWithPersist as updateArticleFragmentMeta,
   updateClipboardArticleFragmentMetaWithPersist as updateClipboardArticleFragmentMeta,
-  removeSupportingArticleFragmentWithPersist as removeSupportingArticleFragment,
-  removeGroupArticleFragmentWithPersist as removeGroupArticleFragment,
-  removeClipboardArticleFragmentWithPersist as removeArticleFragmentFromClipboard,
-  removeClipboardSupportingArticleFragmentWithPersist as removeSupportingArticleFragmentFromClipboard
+  removeArticleFragmentWithPersist as removeArticleFragment
 };

@@ -4,8 +4,7 @@
  */
 import {
   InsertArticleFragment as SharedInsertArticleFragment,
-  RemoveGroupArticleFragment as SharedRemoveGroupArticleFragment,
-  RemoveSupportingArticleFragment as SharedRemoveSupportingArticleFragment,
+  RemoveArticleFragment as SharedRemoveArticleFragment,
   Action as SharedActions
 } from 'shared/types/Action';
 import { PersistMeta } from 'util/storeMiddleware';
@@ -58,10 +57,7 @@ interface ActionPersistMeta {
 type InsertArticleFragment = SharedInsertArticleFragment &
   ActionPersistMeta;
 
-type RemoveGroupArticleFragment = SharedRemoveGroupArticleFragment &
-  ActionPersistMeta;
-
-type RemoveSupportingArticleFragment = SharedRemoveSupportingArticleFragment &
+type RemoveArticleFragment = SharedRemoveArticleFragment &
   ActionPersistMeta;
 
 type ActionError =
@@ -133,11 +129,6 @@ interface UpdateClipboardContent {
   payload: string[];
 }
 
-interface RemoveClipboardArticleFragment {
-  type: 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT';
-  payload: { articleFragmentId: string };
-}
-
 interface RecordStaleFronts {
   type: 'RECORD_STALE_FRONTS';
   payload: { [id: string]: boolean };
@@ -161,10 +152,8 @@ type Action =
   | RecordUnpublishedChanges
   | PublishCollectionSuccess
   | InsertArticleFragment
-  | RemoveGroupArticleFragment
-  | RemoveSupportingArticleFragment
+  | RemoveArticleFragment
   | UpdateClipboardContent
-  | RemoveClipboardArticleFragment
   | EditorAddFront
   | EditorClearOpenFronts
   | EditorSetOpenFronts
@@ -191,10 +180,8 @@ export {
   RecordUnpublishedChanges,
   PublishCollectionSuccess,
   InsertArticleFragment,
-  RemoveGroupArticleFragment,
-  RemoveSupportingArticleFragment,
+  RemoveArticleFragment,
   UpdateClipboardContent,
-  RemoveClipboardArticleFragment,
   EditorAddFront,
   EditorClearOpenFronts,
   EditorSetOpenFronts,

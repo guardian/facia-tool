@@ -15,8 +15,11 @@ const groups = (state: State = {}, action: Action) => {
         ...payload
       };
     }
-    case 'SHARED/REMOVE_GROUP_ARTICLE_FRAGMENT': {
-      const { id, articleFragmentId } = action.payload;
+    case 'SHARED/REMOVE_ARTICLE_FRAGMENT': {
+      const { id, parentType, articleFragmentId } = action.payload;
+      if (parentType !== 'group') {
+        return;
+      }
       const group = state[id];
       return {
         ...state,
