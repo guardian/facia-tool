@@ -3,11 +3,15 @@ import teardown from '../server/teardown';
 import {
   frontDropZone,
   frontHeadline,
+  frontSnapLink,
   frontItemAddToClipboardHoverButton,
   feedItem,
   feedItemHeadline,
   feedItemAddToClipboardHoverButton,
-  clipboardItemTruncatedHeadline
+  clipboardItemTruncatedHeadline,
+  guardianSectionSnapLink,
+  guardianTagSnapLink,
+  externalSnapLink
 } from '../selectors';
 
 fixture`Fronts edit`.page`http://localhost:3456/v2/editorial`
@@ -38,18 +42,50 @@ test('Drag and drop', async t => {
     .eql(topFrontHeadline);
 });
 
+test('Snap Links - Guardian Tag', async t => {
+  const frontDropsCount = await frontDropZone().count;
+  const tagSnap = await guardianTagSnapLink();
+  await t
+    .setNativeDialogHandler(() => false)
+    .dragToElement(tagSnap, frontDropZone(1))
+    .expect(frontDropZone().count)
+    .eql(frontDropsCount + 1)
+    .expect(frontSnapLink(0).textContent)
+    .contains('Recipes')
+    .expect(frontSnapLink(0).textContent)
+    .notContains('Latest');
+});
+
+test('Snap Links - Guardian Tag Latest', async t => {
+  const frontDropsCount = await frontDropZone().count;
+  const tagSnap = await guardianTagSnapLink();
+
+  await t
+    .setNativeDialogHandler(() => true)
+    .dragToElement(tagSnap, frontDropZone(1))
+    .expect(frontDropZone().count)
+    .eql(frontDropsCount + 1)
+    .expect(frontSnapLink(0).textContent)
+    .contains(' {Recipes }')
+    .expect(frontSnapLink(0).textContent)
+    .contains('Latest');
+});
+
 // TODO TestCafe .hover method does not work. Buttons remain hidden, click fails on visibility check.
-test.skip('Add to Clipboard hover button', async t => {
+test.skip('Add to Clipboard from Feed hover button works', async t => {
   const feedHeadline = await feedItemHeadline(5).textContent;
   const feedHeadlineTruncated = feedHeadline.slice(0, 35);
-  const topFrontHeadline = await frontHeadline(0).textContent;
-  const topFrontHeadlineTruncated = topFrontHeadline.slice(0, 35);
   await t
     // check feed to clipboard //
     // TODO .hover()
     .click(feedItemAddToClipboardHoverButton(5), { visibilityCheck: false })
     .expect(clipboardItemTruncatedHeadline(0).textContent)
-    .contains(feedHeadlineTruncated)
+    .contains(feedHeadlineTruncated);
+});
+test.skip('Add to Clipboard from Front hover button works', async t => {
+  const topFrontHeadline = await frontHeadline(0).textContent;
+  const topFrontHeadlineTruncated = topFrontHeadline.slice(0, 35);
+  await t
     // check front to clipboard //
     // TODO .hover()
     .click(frontItemAddToClipboardHoverButton(0), { visibilityCheck: false })

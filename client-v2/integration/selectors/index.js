@@ -8,6 +8,7 @@ const HEADLINE_SELECTOR = 'headline';
 const DROP_ZONE_SELECTOR = 'drop-zone';
 const HOVER_OVERLAY_SELECTOR = 'hover-overlay';
 const ADD_TO_CLIPBOARD_BUTTON = 'add-to-clipboard-hover-button';
+const SNAP_SELECTOR = 'snap';
 
 const maybeGetNth = selector => (n = null) =>
   n === null ? selector : selector.nth(n);
@@ -47,4 +48,18 @@ export const frontItemAddToClipboardHoverButton = maybeGetNth(
 );
 export const collectionItemHoverZone = maybeGetNth(
   select(COLLECTION_ITEM_SELECTOR, HOVER_OVERLAY_SELECTOR)
+);
+
+// Mocks //
+const GUARDIAN_TAG_ANCHOR = 'external-tag';
+const GUARDIAN_SECTION_ANCHOR = 'external-section';
+const EXTERNAL_LINK_ANCHOR = 'external-link';
+
+export const guardianTagSnapLink = maybeGetNth(select(GUARDIAN_TAG_ANCHOR));
+export const guardianSectionSnapLink = maybeGetNth(
+  select(GUARDIAN_SECTION_ANCHOR)
+);
+export const externalSnapLink = maybeGetNth(select(EXTERNAL_LINK_ANCHOR));
+export const frontSnapLink = maybeGetNth(
+  select(FRONT_SELECTOR, SNAP_SELECTOR)
 );

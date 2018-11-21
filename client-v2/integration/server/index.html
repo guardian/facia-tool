@@ -1,88 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-  <style>
-    *,
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      *,
       *:before,
       *:after {
-          box-sizing: border-box;
+        box-sizing: border-box;
       }
 
       html,
       body,
       .wrap {
-          height: 100%;
-          margin: 0;
-          padding: 0;
-          width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        width: 100%;
       }
-  </style>
-</head>
+    </style>
+  </head>
 
-<body>
-  <div class="wrap" id="react-mount"></div>
-  <script type="application/json" id="config">
-    {
-      "dev": true,
-      "env": "code",
-      "editions": ["uk", "us", "au"],
-      "email": "richard.beddington@guardian.co.uk",
-      "avatarUrl": "https://lh3.googleusercontent.com/-ZbWEH5tBZWU/AAAAAAAAAAI/AAAAAAAAAAA/ABtNlbDL_UpljZgqBjPvw4n0SmYiLD0amw/mo/photo.jpg",
-      "firstName": "Richard",
-      "lastName": "Beddington",
-      "sentryPublicDSN": "https://4527e03d554a4962ae99a7481e9278ff@app.getsentry.com/35467",
-      "mediaBaseUrl": "https://media.gutools.co.uk",
-      "apiBaseUrl": "https://api.media.test.dev-gutools.co.uk",
-      "switches": {
-        "facia-tool-allow-breaking-news-for-all": false,
-        "facia-tool-permissions-access": true,
-        "facia-tool-allow-edit-editorial-fronts-for-all": false,
-        "facia-tool-allow-config-for-all": false,
-        "facia-tool-allow-launch-editorial-fronts-for-all": false,
-        "facia-tool-allow-launch-commercial-fronts-for-all": false,
-        "facia-tool-sparklines": true,
-        "facia-tool-draft-content": true,
-        "facia-tool-disable": false
-      },
-      "acl": {
-        "fronts": { "breaking-news": false },
-        "permissions": { "configure-config": true }
-      },
-      "collectionCap": 20,
-      "navListCap": 40,
-      "navListType": "nav/list",
-      "collectionMetadata": [
-        { "type": "Canonical" },
-        { "type": "Special" },
-        { "type": "Breaking" },
-        { "type": "Branded" }
-      ],
-      "clipboardArticles": [
-        {
-          "id": "internal-code/page/5224281",
-          "frontPublicationDate": 1540381197498,
-          "meta": {
-            "supporting": [
-              {
-                "id": "internal-code/page/2309422",
-                "frontPublicationDate": 1540379258808,
-                "meta": {}
-              }
-            ]
+  <body>
+    <div class="wrap" id="react-mount"></div>
+    <div id="mocks">
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /><a
+        data-testid="external-tag"
+        class="subnav-link"
+        href="https://www.theguardian.com/tone/recipes"
+        data-link-name="nav2 : subnav : Recipes"
+      >
+        Recipes
+      </a>
+
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /><a
+        data-testid="external-section"
+        class="subnav-link"
+        href="https://www.theguardian.com/food"
+        data-link-name="nav2 : subnav : Food"
+      >
+        Food
+      </a>
+
+      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /><a
+        data-testid="external-link"
+        href="https://www.nytimes.com/2018/11/14/technology/facebook-data-russia-election-racism.html?action=click&amp;module=Top%20Stories&amp;pgtype=Homepage"
+        data-link-name="in body link"
+        class="u-underline"
+        >New York Times</a
+      >
+    </div>
+    <script type="application/json" id="config">
+      {
+        "dev": true,
+        "env": "code",
+        "editions": ["uk", "us", "au"],
+        "email": "richard.beddington@guardian.co.uk",
+        "avatarUrl": "https://lh3.googleusercontent.com/-ZbWEH5tBZWU/AAAAAAAAAAI/AAAAAAAAAAA/ABtNlbDL_UpljZgqBjPvw4n0SmYiLD0amw/mo/photo.jpg",
+        "firstName": "Richard",
+        "lastName": "Beddington",
+        "sentryPublicDSN": "https://4527e03d554a4962ae99a7481e9278ff@app.getsentry.com/35467",
+        "mediaBaseUrl": "https://media.gutools.co.uk",
+        "apiBaseUrl": "https://api.media.test.dev-gutools.co.uk",
+        "switches": {
+          "facia-tool-allow-breaking-news-for-all": false,
+          "facia-tool-permissions-access": true,
+          "facia-tool-allow-edit-editorial-fronts-for-all": false,
+          "facia-tool-allow-config-for-all": false,
+          "facia-tool-allow-launch-editorial-fronts-for-all": false,
+          "facia-tool-allow-launch-commercial-fronts-for-all": false,
+          "facia-tool-sparklines": true,
+          "facia-tool-draft-content": true,
+          "facia-tool-disable": false
+        },
+        "acl": {
+          "fronts": { "breaking-news": false },
+          "permissions": { "configure-config": true }
+        },
+        "collectionCap": 20,
+        "navListCap": 40,
+        "navListType": "nav/list",
+        "collectionMetadata": [
+          { "type": "Canonical" },
+          { "type": "Special" },
+          { "type": "Breaking" },
+          { "type": "Branded" }
+        ],
+        "clipboardArticles": [
+          {
+            "id": "internal-code/page/5224281",
+            "frontPublicationDate": 1540381197498,
+            "meta": {
+              "supporting": [
+                {
+                  "id": "internal-code/page/2309422",
+                  "frontPublicationDate": 1540379258808,
+                  "meta": {}
+                }
+              ]
+            }
           }
-        }
-      ],
-      "frontIds": ["test/front"],
-      "capiLiveUrl": "/api/live/",
-      "capiPreviewUrl": "/api/preview/"
-    }
-  </script>
-  <script src="/dist/app.bundle.js"></script>
-</body>
-
+        ],
+        "frontIds": ["test/front"],
+        "capiLiveUrl": "/api/live/",
+        "capiPreviewUrl": "/api/preview/"
+      }
+    </script>
+    <script src="/dist/app.bundle.js"></script>
+  </body>
 </html>
