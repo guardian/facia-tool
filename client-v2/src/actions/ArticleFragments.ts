@@ -12,8 +12,8 @@ import {
 } from 'shared/selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
-import { InsertArticleFragment } from 'shared/types/Action';
 import { cloneFragment } from 'shared/util/articleFragment';
+import { PosSpec } from 'lib/dnd';
 
 const updateArticleFragmentMetaWithPersist = addPersistMetaToAction(
   updateArticleFragmentMeta,
@@ -47,8 +47,8 @@ const insertArticleFragmentWithPersist = (
   });
 
 const insertArticleFragmentWithCreate = (
-  to: InsertArticleFragment['payload']['to'],
-  id: InsertArticleFragment['payload']['id'],
+  to: PosSpec,
+  id: string,
   persistTo: 'collection' | 'clipboard'
 ): ThunkResult<void> => {
   return (dispatch: Dispatch, getState) => {
@@ -59,7 +59,6 @@ const insertArticleFragmentWithCreate = (
             insertArticleFragmentWithPersist(persistTo)(
               to,
               id,
-              null,
               articleFragmentsSelector(selectSharedState(getState()))
             )
           );
@@ -72,9 +71,9 @@ const insertArticleFragmentWithCreate = (
 };
 
 const moveArticleFragment = (
-  to: InsertArticleFragment['payload']['to'],
+  to: PosSpec,
   fragment: ArticleFragment,
-  from: InsertArticleFragment['payload']['from'],
+  from: PosSpec | null,
   persistTo: 'collection' | 'clipboard'
 ): ThunkResult<void> => {
   return (dispatch: Dispatch, getState) => {
@@ -89,13 +88,14 @@ const moveArticleFragment = (
 
     if (!from) {
       dispatch(articleFragmentsReceived([parent, ...supporting]));
+    } else {
+      dispatch(removeArticleFragment(from.type, from.id, fragment.uuid));
     }
 
     dispatch(
       insertArticleFragmentWithPersist(persistTo)(
         to,
         parent.uuid,
-        from,
         articleFragmentsSelector(selectSharedState(getState()))
       )
     );
