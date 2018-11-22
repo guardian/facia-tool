@@ -47,6 +47,15 @@ const HeadlineContentContainer = styled('span')`
   line-height: 0px;
 `;
 
+const ConfigContentContainer = styled('span')`
+  position: relative;
+  font-family: TS3TextSans;
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0 0;
+  padding: 0 25px;
+`;
+
 const CollectionMetaContainer = styled('div')`
   display: flex;
   position: relative;
@@ -111,7 +120,9 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
           <CollectionHeadingText>
             {collection.displayName}
           </CollectionHeadingText>
-          <span>{config.platform ? config.platform : null}</span>
+          <ConfigContentContainer>
+            {config.platform ? `${config.platform} only` : null}
+          </ConfigContentContainer>
           {headlineContent && (
             <HeadlineContentContainer>
               {headlineContent}
