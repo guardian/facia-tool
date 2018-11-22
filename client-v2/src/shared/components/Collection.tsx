@@ -8,23 +8,27 @@ import ShortVerticalPinline from './layout/ShortVerticalPinline';
 import ContainerHeadingPinline from './typography/ContainerHeadingPinline';
 import { Collection, CollectionItemSets } from '../types/Collection';
 import ButtonCircularCaret from './input/ButtonCircularCaret';
-import { State } from '../types/State';
+import { State as SharedState } from '../types/State';
+import { State as RootState } from '../../types/State';
+import { CollectionConfig } from '../../types/FaciaApi';
 import {
   selectSharedState,
   createArticlesInCollectionSelector
 } from '../selectors/shared';
+import { getCollectionConfig } from '../../selectors/frontsSelectors';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 import FadeIn from './animation/FadeIn';
 import ContentContainer from './layout/ContentContainer';
 
 interface ContainerProps {
   id: string;
-  selectSharedState?: (state: any) => State;
+  selectSharedState?: (state: any) => SharedState;
   browsingStage: CollectionItemSets;
 }
 
 type Props = ContainerProps & {
   collection: Collection;
+  config: CollectionConfig;
   articleIds?: string[];
   headlineContent: React.ReactNode;
   metaContent: React.ReactNode;
@@ -97,6 +101,7 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
       articleIds,
       headlineContent,
       metaContent,
+      config,
       children
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
@@ -106,6 +111,7 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
           <CollectionHeadingText>
             {collection.displayName}
           </CollectionHeadingText>
+          <span>{config.platform ? config.platform : null}</span>
           {headlineContent && (
             <HeadlineContentContainer>
               {headlineContent}
@@ -151,12 +157,13 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
 
 const createMapStateToProps = () => {
   const selectArticlesInCollection = createArticlesInCollectionSelector();
-  return (state: State, props: ContainerProps) => {
+  return (state: RootState, props: ContainerProps) => {
     const sharedState = props.selectSharedState
       ? props.selectSharedState(state)
       : selectSharedState(state);
     return {
       collection: collectionSelectors.selectById(sharedState, props.id),
+      config: getCollectionConfig(state, props.id),
       articleIds: selectArticlesInCollection(sharedState, {
         collectionId: props.id,
         collectionSet: props.browsingStage
