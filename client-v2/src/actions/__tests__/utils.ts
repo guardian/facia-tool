@@ -6,7 +6,20 @@ export interface ArticleFragmentMap {
   };
 }
 
-export type ArticleFragmentSpec = [string, string, Array<[string, string]> | null];
+export type ArticleFragmentSpec = [
+  string,
+  string,
+  Array<[string, string]> | undefined
+];
+
+export const specToFragment = ([uuid, id, supporting]: ArticleFragmentSpec) => ({
+  uuid,
+  id,
+  frontPublicationDate: 0,
+  meta: {
+    supporting: supporting && supporting.map(([suuid]) => suuid)
+  }
+});
 
 export const createArticleFragmentStateFromSpec = (
   specs: ArticleFragmentSpec[]
@@ -14,13 +27,7 @@ export const createArticleFragmentStateFromSpec = (
   specs.reduce(
     (acc, [uuid, id, supporting]) => ({
       ...acc,
-      [uuid]: {
-        uuid,
-        id,
-        meta: {
-          supporting: supporting && supporting.map(([suuid]) => suuid)
-        }
-      },
+      [uuid]: specToFragment([uuid, id, supporting]),
       ...(supporting
         ? supporting.reduce(
             (sacc, [suuid, sid]) => ({
