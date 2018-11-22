@@ -6,13 +6,16 @@ import groupsReducer from '../../shared/reducers/groupsReducer';
 import articleFragmentsReducer from '../../shared/reducers/articleFragmentsReducer';
 import {
   createGroupArticlesSelector,
-  createSupportingArticlesSelector
+  createSupportingArticlesSelector,
+  articleFragmentsFromRootStateSelector
 } from '../../shared/selectors/shared';
 import { clipboardSelector as innerClipboardSelector } from '../../selectors/frontsSelectors';
 import {
   createArticleFragmentStateFromSpec,
-  ArticleFragmentSpec
+  ArticleFragmentSpec,
+  specToFragment
 } from './utils';
+import { moveArticleFragment } from 'actions/ArticleFragments';
 
 const root = (state: any, action: any) => ({
   clipboard: clipboardReducer(state.clipboard, action),
@@ -28,13 +31,13 @@ const root = (state: any, action: any) => ({
 const buildStore = (added: ArticleFragmentSpec) => {
   const group: ArticleFragmentSpec[] = [
     ['a', '1', [['g', '7']]],
-    ['b', '2', null],
-    ['c', '3', null]
+    ['b', '2', undefined],
+    ['c', '3', undefined]
   ];
   const clipboard: ArticleFragmentSpec[] = [
-    ['d', '4', null],
-    ['e', '5', null],
-    ['f', '6', null]
+    ['d', '4', undefined],
+    ['e', '5', undefined],
+    ['f', '6', undefined]
   ];
   const all = [...group, ...clipboard, added];
   return createStore(
@@ -60,8 +63,8 @@ const insert = (
   parentType: string,
   parentId: string
 ) => {
-  const { dispatch, getState } = buildStore([uuid, id, null]);
-  const { articleFragments } = getState().shared;
+  const { dispatch, getState } = buildStore([uuid, id, undefined]);
+  const articleFragments = articleFragmentsFromRootStateSelector(getState());
   dispatch(insertArticleFragment(
     {
       type: parentType,
@@ -70,6 +73,32 @@ const insert = (
     },
     uuid,
     articleFragments
+  ) as any);
+  return getState();
+};
+
+const move = (
+  [uuid, id]: [string, string],
+  index: number,
+  toType: string,
+  toId: string,
+  fromType: string,
+  fromId: string
+) => {
+  const { dispatch, getState } = buildStore([uuid, id, undefined]);
+  dispatch(moveArticleFragment(
+    {
+      type: toType,
+      id: toId,
+      index
+    },
+    specToFragment([uuid, id, undefined]),
+    {
+      id: fromId,
+      type: fromType,
+      index: -1 // this doesn't matter
+    },
+    'clipboard' // doesn't matter where we persist
   ) as any);
   return getState();
 };
@@ -141,6 +170,14 @@ describe('ArticleFragments actions', () => {
   });
 
   describe('move', () => {
+    it('removes articles from their previous position', () => {
+      const s1 = move(['d', '4'], 0, 'group', 'a', 'clipboard', 'clipboard');
+      expect(groupArticlesSelector(s1, 'a')).toEqual(['d', 'a', 'b', 'c']);
+      expect(clipboardSelector(s1)).toEqual(['e', 'f']);
 
+      const s2 = move(['a', '1'], 0, 'clipboard', 'clipboard', 'group', 'a');
+      expect(groupArticlesSelector(s2, 'a')).toEqual(['b', 'c']);
+      expect(clipboardSelector(s2)).toEqual(['a', 'd', 'e', 'f']);
+    });
   });
 });
