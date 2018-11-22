@@ -1,6 +1,10 @@
 import { Action } from '../types/Action';
 import { Group } from '../types/Collection';
 import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
+import {
+  handleRemoveArticleFragment,
+  handleInsertArticleFragment
+} from 'shared/util/articleFragmentHandlers';
 
 interface State {
   [id: string]: Group;
@@ -16,45 +20,47 @@ const groups = (state: State = {}, action: Action) => {
       };
     }
     case 'SHARED/REMOVE_ARTICLE_FRAGMENT': {
-      const { id, parentType, articleFragmentId } = action.payload;
-      if (parentType !== 'group') {
-        return state;
-      }
-      const group = state[id];
-      return {
-        ...state,
-        [id]: {
-          ...group,
-          articleFragments: (group.articleFragments || []).filter(
-            afId => afId !== articleFragmentId
-          )
+      return handleRemoveArticleFragment(
+        state,
+        action,
+        'group',
+        (id, articleFragmentId) => {
+          const group = state[id];
+          return {
+            ...state,
+            [id]: {
+              ...group,
+              articleFragments: (group.articleFragments || []).filter(
+                afId => afId !== articleFragmentId
+              )
+            }
+          };
         }
-      };
+      );
     }
     case 'SHARED/INSERT_ARTICLE_FRAGMENT': {
-      const {
-        to: { id: toId, type: toType, index },
-        id,
-        articleFragmentMap
-      } = action.payload;
-      if (toType !== 'group') {
-        return state;
-      }
-      const group = state[toId];
-      const articleFragments = insertAndDedupeSiblings(
-        group.articleFragments || [],
-        [id],
-        index,
-        articleFragmentMap
-      );
+      return handleInsertArticleFragment(
+        state,
+        action,
+        'group',
+        (toId, id, index, articleFragmentMap) => {
+          const group = state[toId];
+          const articleFragments = insertAndDedupeSiblings(
+            group.articleFragments || [],
+            [id],
+            index,
+            articleFragmentMap
+          );
 
-      return {
-        ...state,
-        [toId]: {
-          ...group,
-          articleFragments
+          return {
+            ...state,
+            [toId]: {
+              ...group,
+              articleFragments
+            }
+          };
         }
-      };
+      );
     }
     default: {
       return state;
