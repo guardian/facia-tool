@@ -37,7 +37,7 @@
             (<span class="non-zero">updating...</span>)
         </span>
 
-        <span class="also" data-bind="if: alsoOn && alsoOn.length && (!configMeta.frontsToolSettings() || !configMeta.frontsToolSettings().displayEditWarning)">
+        <span class="also" data-bind="if: alsoOn && alsoOn.length && !isPodcastCollection">
             <a class="alsoOnToggle" data-bind="click: alsoOnToggle">
                 <span data-bind="if: !alsoOnHasDifferentPriority">Also on&hellip;</span>
                 <span data-bind="if: alsoOnHasDifferentPriority">
@@ -54,7 +54,7 @@
                 </span>
             </a>
         </span>
-        <span class="collectionEditWarning" data-bind="if: configMeta.frontsToolSettings() && configMeta.frontsToolSettings().displayEditWarning">
+        <span class="collectionEditWarning" data-bind="if: isPodcastCollection">
             Warning: do not change or delete the <span data-bind="text: collectionMeta.displayName()"></span> container. Please speak to Central Production.
         </span>
 

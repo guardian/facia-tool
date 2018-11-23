@@ -26,7 +26,7 @@ export default class Collection extends BaseClass {
         this.id = opts.id;
 
         this.front = opts.front;
-
+        const podcastCollectionId = '75ef80cd-2f3d-40d6-abf6-2021f88ece8e';
         this.raw = undefined;
 
         this.groups = this.createGroups(opts.groups);
@@ -105,6 +105,10 @@ export default class Collection extends BaseClass {
         this.state.visibleCount({});
 
         this.lastAlertSentHuman = ko.observable(this.getLastAlertHuman());
+
+        this.isPodcastCollection = this.id === podcastCollectionId ||
+            (this.configMeta.frontsToolSettings()  && this.configMeta.frontsToolSettings().displayEditWarning);
+
     }
 
     getLastAlertHuman() {
