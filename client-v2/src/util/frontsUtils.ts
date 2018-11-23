@@ -1,19 +1,22 @@
 import { FrontConfig, CollectionConfig } from 'types/FaciaApi';
-import { CollectionWithNestedArticles, ArticleFragment } from 'shared/types/Collection';
+import {
+  CollectionWithNestedArticles,
+  ArticleFragment
+} from 'shared/types/Collection';
 import { detectPressFailureMs } from 'constants/fronts';
 import { ArticleDetails } from 'types/FaciaApi';
 import { Stages, Collection } from 'shared/types/Collection';
 import { frontStages } from 'constants/fronts';
 
 const getFrontCollections = (
-  frontId: string|void,
+  frontId: string | void,
   fronts: FrontConfig[],
   collections: { [id: string]: CollectionConfig }
 ): CollectionConfig[] => {
   if (!frontId) {
     return [];
   }
-  const selectedFront: FrontConfig|void = fronts.find(
+  const selectedFront: FrontConfig | void = fronts.find(
     (front: FrontConfig) => front.id === frontId
   );
 
@@ -35,7 +38,8 @@ const combineCollectionWithConfig = (
     displayName: collectionConfig.displayName,
     groups: collectionConfig.groups,
     type: collectionConfig.type,
-    frontsToolSettings: collectionConfig.frontsToolSettings
+    frontsToolSettings: collectionConfig.frontsToolSettings,
+    platform: collectionConfig.platform
   });
 
 const populateDraftArticles = (collection: CollectionWithNestedArticles) =>
@@ -48,20 +52,25 @@ const isFrontStale = (lastUpdated?: number, lastPressed?: number) => {
   return false;
 };
 
-const getVisibilityArticleDetails = (groupsWithArticles: ArticleFragment[][]) => groupsWithArticles.reduce((articles, articlesInGroup, index) => {
-  const numberOfGroups = groupsWithArticles.length;
-   const groupArticles = articlesInGroup.map(story => ({ group: numberOfGroups - index - 1, isBoosted: !!story.meta.isBoosted }));
-    return articles.concat(groupArticles);
-
-  }, [] as ArticleDetails[]);
+const getVisibilityArticleDetails = (groupsWithArticles: ArticleFragment[][]) =>
+  groupsWithArticles.reduce(
+    (articles, articlesInGroup, index) => {
+      const numberOfGroups = groupsWithArticles.length;
+      const groupArticles = articlesInGroup.map(story => ({
+        group: numberOfGroups - index - 1,
+        isBoosted: !!story.meta.isBoosted
+      }));
+      return articles.concat(groupArticles);
+    },
+    [] as ArticleDetails[]
+  );
 
 const getGroupsByStage = (collection: Collection, stage: Stages) => {
   if (stage === frontStages.draft) {
     return (collection.draft ? collection.draft : collection.live) || [];
   }
   return collection.live ? collection.live : [];
-}
-
+};
 
 export {
   getFrontCollections,
