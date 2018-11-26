@@ -8,7 +8,9 @@ import ShortVerticalPinline from './layout/ShortVerticalPinline';
 import ContainerHeadingPinline from './typography/ContainerHeadingPinline';
 import { Collection, CollectionItemSets } from '../types/Collection';
 import ButtonCircularCaret from './input/ButtonCircularCaret';
-import { State } from '../types/State';
+import { State as SharedState } from '../types/State';
+import { State } from '../../types/State';
+import { CollectionConfig } from '../../types/FaciaApi';
 import {
   selectSharedState,
   createArticlesInCollectionSelector
@@ -19,7 +21,7 @@ import ContentContainer from './layout/ContentContainer';
 
 interface ContainerProps {
   id: string;
-  selectSharedState?: (state: any) => State;
+  selectSharedState?: (state: any) => SharedState;
   browsingStage: CollectionItemSets;
 }
 
@@ -41,6 +43,15 @@ const HeadlineContentContainer = styled('span')`
   margin-left: auto;
   right: -11px;
   line-height: 0px;
+`;
+
+const ConfigContentContainer = styled('span')`
+  position: relative;
+  font-family: TS3TextSans;
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0 0;
+  padding: 0 25px;
 `;
 
 const CollectionMetaContainer = styled('div')`
@@ -106,6 +117,12 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
           <CollectionHeadingText>
             {collection.displayName}
           </CollectionHeadingText>
+          {/* extra info containter */}
+          <ConfigContentContainer>
+            {collection.platform && collection.platform !== 'Any'
+              ? `${collection.platform} only`
+              : null}
+          </ConfigContentContainer>
           {headlineContent && (
             <HeadlineContentContainer>
               {headlineContent}

@@ -46,15 +46,21 @@ const prioritySelector = (state: State, { priority }: { priority: string }) =>
 const frontIdSelector = (state: State, { frontId }: { frontId: string }) =>
   frontId;
 
-const collectionSetSelector = (state: State, { collectionSet }: { collectionSet: CollectionItemSets }) =>
-  collectionSet;
+const collectionSetSelector = (
+  state: State,
+  { collectionSet }: { collectionSet: CollectionItemSets }
+) => collectionSet;
 
-const collectionIdAndStageSelector = (state: State, { stage, collectionId }: { stage: Stages, collectionId: string }) => ({
+const collectionIdAndStageSelector = (
+  state: State,
+  { stage, collectionId }: { stage: Stages; collectionId: string }
+) => ({
   stage,
   collectionId
-})
+});
 
-const collectionVisibilitiesSelector = (state: State) => state.fronts.collectionVisibility;
+const collectionVisibilitiesSelector = (state: State) =>
+  state.fronts.collectionVisibility;
 
 const collectionIdSelector = (
   state: State,
@@ -83,6 +89,7 @@ const getFrontsWithPriority = (state: State, priority: string): FrontConfig[] =>
 
 const getCollections = (state: State): CollectionConfigMap =>
   frontsConfigSelectors.selectAll(state).collections || {};
+
 const getCollectionConfig = (state: State, id: string): CollectionConfig =>
   getCollections(state)[id] || null;
 
@@ -223,7 +230,11 @@ const alsoOnFrontSelector = (
             )
           };
         },
-        { priorities: [] as string[], fronts: [] as Array<{ id: string; priority: string }>, meritsWarning: false }
+        {
+          priorities: [] as string[],
+          fronts: [] as Array<{ id: string; priority: string }>,
+          meritsWarning: false
+        }
       );
 
       return {
@@ -246,8 +257,9 @@ const clipboardSelector = (state: State) => state.clipboard;
 const visibleArticlesSelector = createSelector(
   [collectionVisibilitiesSelector, collectionIdAndStageSelector],
   (collectionVisibilities, { collectionId, stage }) => {
-  return collectionVisibilities[stage][collectionId];
-});
+    return collectionVisibilities[stage][collectionId];
+  }
+);
 
 const visibleFrontArticlesSelector = createSelector(
   [collectionVisibilitiesSelector, collectionSetSelector],
@@ -257,8 +269,7 @@ const visibleFrontArticlesSelector = createSelector(
     }
     return collectionVisibilities[collectionSet];
   }
-)
-
+);
 
 export {
   getFront,
