@@ -1,21 +1,24 @@
 import React from 'react';
+import styled from 'styled-components';
 
 interface DropDisablerChildren {
   children: React.ReactNode;
-  style: React.HTMLAttributes<HTMLDivElement>['style'];
 }
+
+const DisablerWrapper = styled('div')`
+  height: 100%;
+`
 
 // This component prevents the default behaviour for drop events on this node,
 // or its child nodes. When dropping links (perhaps when missing a drop
 // zone), the default behaviour is navigating to the linked document
-const DropDisabler = ({ children, style }: DropDisablerChildren) => (
-  <div
-    style={style}
+const DropDisabler = ({ children }: DropDisablerChildren) => (
+  <DisablerWrapper
     onDragOver={e => e.preventDefault()}
     onDrop={e => e.preventDefault()}
   >
     {children}
-  </div>
+  </DisablerWrapper>
 );
 
 export default DropDisabler;
