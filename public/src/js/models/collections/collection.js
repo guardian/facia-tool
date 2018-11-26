@@ -23,12 +23,10 @@ export default class Collection extends BaseClass {
         super();
         if (!opts.id) { return; }
 
-        const podcastCollectionId = '75ef80cd-2f3d-40d6-abf6-2021f88ece8e';
         this.id = opts.id;
-        this.isPodcastCollection = this.id === podcastCollectionId;
 
         this.front = opts.front;
-
+        const podcastCollectionId = '75ef80cd-2f3d-40d6-abf6-2021f88ece8e';
         this.raw = undefined;
 
         this.groups = this.createGroups(opts.groups);
@@ -61,7 +59,8 @@ export default class Collection extends BaseClass {
             'href',
             'uneditable',
             'metadata',
-            'platform'
+            'platform',
+            'frontsToolSettings'
         ]);
         populateObservables(this.configMeta, opts);
 
@@ -106,6 +105,10 @@ export default class Collection extends BaseClass {
         this.state.visibleCount({});
 
         this.lastAlertSentHuman = ko.observable(this.getLastAlertHuman());
+
+        this.isPodcastCollection = this.id === podcastCollectionId ||
+            (this.configMeta.frontsToolSettings()  && this.configMeta.frontsToolSettings().displayEditWarning);
+
     }
 
     getLastAlertHuman() {

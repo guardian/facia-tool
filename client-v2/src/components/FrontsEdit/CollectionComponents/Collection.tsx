@@ -2,7 +2,7 @@ import { Dispatch } from 'types/Store';
 import React from 'react';
 import { connect } from 'react-redux';
 import CollectionDisplay from 'shared/components/Collection';
-import AlsoOnNotification from 'components/AlsoOnNotification';
+import CollectionNotification from 'components/CollectionNotification';
 import Button from 'shared/components/input/ButtonDefault';
 import { AlsoOnDetail } from 'types/Collection';
 import { publishCollection } from 'actions/Fronts';
@@ -11,6 +11,7 @@ import { State } from 'types/State';
 import { CollectionItemSets, Group } from 'shared/types/Collection';
 import {
   createCollectionStageGroupsSelector,
+  createCollectionEditWarningSelector,
   selectSharedState
 } from 'shared/selectors/shared';
 
@@ -27,6 +28,7 @@ type CollectionProps = CollectionPropsBeforeState & {
   hasUnpublishedChanges: boolean;
   canPublish: boolean;
   groups: Group[];
+  displayEditWarning: boolean;
 };
 
 const Collection = ({
@@ -38,7 +40,8 @@ const Collection = ({
   hasUnpublishedChanges,
   canPublish = true,
   publishCollection: publish,
-  frontId
+  frontId,
+  displayEditWarning
 }: CollectionProps) => (
   <CollectionDisplay
     id={id}
@@ -52,8 +55,8 @@ const Collection = ({
       )
     }
     metaContent={
-      alsoOn[id].fronts.length ? (
-        <AlsoOnNotification alsoOn={alsoOn[id]} />
+      (alsoOn[id].fronts.length || displayEditWarning) ? (
+        <CollectionNotification displayEditWarning={displayEditWarning} alsoOn={alsoOn[id]} />
       ) : null
     }
   >
@@ -63,12 +66,16 @@ const Collection = ({
 
 const createMapStateToProps = () => {
   const collectionStageGroupsSelector = createCollectionStageGroupsSelector();
+  const editWarningSelector = createCollectionEditWarningSelector();
   return (state: State, { browsingStage, id }: CollectionPropsBeforeState) => ({
     hasUnpublishedChanges: hasUnpublishedChangesSelector(state, {
       collectionId: id
     }),
     groups: collectionStageGroupsSelector(selectSharedState(state), {
       collectionSet: browsingStage,
+      collectionId: id
+    }),
+    displayEditWarning: editWarningSelector(selectSharedState(state), {
       collectionId: id
     })
   });

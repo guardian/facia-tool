@@ -54,9 +54,9 @@
                 </span>
             </a>
         </span>
-        <div class="collectionEditWarning" data-bind="if: isPodcastCollection">
-            Warning: do not change or delete the Podcast container. Please speak to Central Production.
-        </div>
+        <span class="collectionEditWarning" data-bind="if: isPodcastCollection">
+            Warning: do not change or delete the <span data-bind="text: collectionMeta.displayName()"></span> container. Please speak to Central Production.
+        </span>
 
         <span class="list-header__timings" data-bind="
             css: {'has-concurrent-user': state.hasConcurrentEdits}">

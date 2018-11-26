@@ -53,6 +53,7 @@ import updates.CreateFront
     None,
     None,
     None,
+    None,
     None
   )
 

@@ -264,6 +264,9 @@
             <input type="checkbox" data-bind="
                 checked: meta.uneditable" />
 
+            <label for="frontsToolSettings.displayEditWarning">Display edit warning</label>
+            <input id="hideShowMore" type="checkbox" data-bind="checked: meta.frontsToolSettings.displayEditWarning" />
+
             <div class="platform-edit">
                 <span>Platform: </span><span data-bind="text: getPlatform()"></span>
                 <!-- ko if: !thisIsPlatformSpecificCollection && parents().length <= 1 -->

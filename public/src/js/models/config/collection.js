@@ -38,12 +38,18 @@ export default class ConfigCollection extends DropTarget {
                 'backfill',
                 'description',
                 'metadata',
-                'platform'
+                'platform',
+                'frontsToolSettings'
             ]),
             {
                 displayHints: asObservableProps([
                     'maxItemsToDisplay'
                 ], observableNumeric)
+            },
+            {
+                frontsToolSettings: asObservableProps([
+                    'displayEditWarning'
+                ])
             }
         );
 
