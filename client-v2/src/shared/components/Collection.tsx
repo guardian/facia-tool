@@ -119,7 +119,9 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
           </CollectionHeadingText>
           {/* extra info containter */}
           <ConfigContentContainer>
-            {collection.platform ? `${collection.platform} only` : null}
+            {collection.platform && collection.platform !== 'Any'
+              ? `${collection.platform} only`
+              : null}
           </ConfigContentContainer>
           {headlineContent && (
             <HeadlineContentContainer>
