@@ -184,16 +184,12 @@ export default class Collection extends BaseClass {
 
     }
 
-    getDraftArticles() {
-        return _.chain(this.groups)
-            .map(group => group.items())
-            .flatten();
-    }
-
     addedInDraft() {
         const live = (this.raw || {}).live || [];
 
-        return this.getDraftArticles()
+        return _.chain(this.groups)
+            .map(group => group.items())
+            .flatten()
             .filter(draftArticle =>
                 !_.find(live, liveArticle => liveArticle.id === draftArticle.id())
             )
@@ -229,10 +225,6 @@ export default class Collection extends BaseClass {
 
     discardDraft() {
         this.processDraft(false);
-    }
-
-    containsEmptyAlerts() {
-        return this.front.confirmSendingAlert() && !this.addedInDraft().length;
     }
 
     processDraft(goLive, opts = {}) {
