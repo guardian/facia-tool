@@ -1,7 +1,7 @@
 <div class="collection" data-bind="ownerClass: $data">
     <div class="collectionEditWarning" data-bind="visible: containsEmptyAlerts() && getDraftArticles().value().length > 0">
-        This story must be removed from the container before another
-        alert can be sent containing it.
+        Remove this story from the container and press the remove button before sending
+        another alert containing the story.
     </div>
     <div class="list-header" data-bind="
         css: {collapsed: state.collapsed() || configMeta.uneditable()}
