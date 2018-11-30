@@ -10,6 +10,7 @@ import { Collection, CollectionItemSets } from '../types/Collection';
 import ButtonCircularCaret from './input/ButtonCircularCaret';
 import { State as SharedState } from '../types/State';
 import { State } from '../../types/State';
+
 import {
   selectSharedState,
   createArticlesInCollectionSelector
@@ -41,7 +42,6 @@ const CollectionContainer = ContentContainer.extend`
 
 const HeadlineContentContainer = styled('span')`
   position: relative;
-  margin-left: auto;
   right: -11px;
   line-height: 0px;
 `;
@@ -52,7 +52,20 @@ const ConfigContentContainer = styled('span')`
   font-size: 14px;
   font-weight: bold;
   margin: 0 0;
-  padding: 0 25px;
+  flex-grow: 1;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const ConfigPlatformTag = styled('span')`
+  /* Styling tbc */
+  padding: 0 15px;
+`;
+
+const ConfigMetadataTypeTag = styled('span')`
+  /* Styling tbc */
+  padding: 3px 25px 0px 24px;
+  font-style: italic;
 `;
 
 const CollectionMetaContainer = styled('div')`
@@ -61,6 +74,7 @@ const CollectionMetaContainer = styled('div')`
   font-family: TS3TextSans;
   font-size: 12px;
   font-weight: normal;
+  justify-content: space-between;
 `;
 
 const CollectionMetaBase = styled('span')`
@@ -81,7 +95,6 @@ const CollectionHeadingText = styled('span')`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  flex: 1;
 `;
 
 const CollectionToggleContainer = styled('div')`
@@ -118,11 +131,18 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
           <CollectionHeadingText>
             {collection.displayName}
           </CollectionHeadingText>
-          {/* extra info containter */}
           <ConfigContentContainer>
-            {collection.platform && collection.platform !== 'Any'
-              ? `${collection.platform} only`
-              : null}
+            <ConfigMetadataTypeTag>
+              {collection.metadata && collection.metadata[0].type
+                ? `${collection.metadata[0].type}`
+                : null}
+            </ConfigMetadataTypeTag>
+            <ConfigPlatformTag>
+              {' '}
+              {collection.platform && collection.platform !== 'Any'
+                ? `${collection.platform} only`
+                : null}
+            </ConfigPlatformTag>
           </ConfigContentContainer>
           {headlineContent && (
             <HeadlineContentContainer>

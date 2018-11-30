@@ -92,14 +92,16 @@ interface ArticleFragmentDenormalised extends ArticleFragmentRootFields {
 
 interface CollectionResponse {
   live: NestedArticleFragment[];
-  draft?: NestedArticleFragment[];
   previously?: NestedArticleFragment[];
+  draft?: NestedArticleFragment[];
   lastUpdated?: number;
   updatedBy?: string;
   updatedEmail?: string;
   platform?: string;
   displayName: string;
   groups?: string[];
+  metadata?: { type: string }[];
+  uneditable?: boolean;
 }
 
 type CollectionWithNestedArticles = CollectionResponse & {
@@ -117,7 +119,9 @@ interface Collection {
   platform?: string;
   displayName: string;
   groups?: string[];
-  type: string
+  metadata?: { type: string }[];
+  uneditable?: boolean;
+  type: string;
   frontsToolSettings?: FrontsToolSettings;
 }
 
