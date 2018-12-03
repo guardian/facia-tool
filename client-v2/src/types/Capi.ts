@@ -8,14 +8,16 @@ interface ImageAsset {
   };
 }
 
-interface ImageElement {
+interface Element {
   id: string;
   relation: string;
-  type: 'image';
+  type: 'image' | 'video' | unknown;
   assets: ImageAsset[];
+  contentAtomTypeData?: {
+    atomId: string,
+    atomType: string
+  }
 }
-
-type Element = ImageElement;
 
 type CapiDate = string;
 
@@ -40,6 +42,28 @@ interface Block {
   createdBy?: User;
   lastModifiedBy?: User;
   elements: Element[];
+}
+
+interface Atoms {
+  media: Atom[];
+}
+
+interface Atom {
+  id: string;
+  atomType: string;
+  data: AtomData;
+}
+
+interface AtomData {
+  media: MediaAtom
+}
+
+interface MediaAtom {
+  assets: AtomAsset[]
+}
+
+interface AtomAsset {
+  assetType: 'audio' | 'video'
 }
 
 interface Blocks {
@@ -91,6 +115,7 @@ interface CapiArticle {
   fields: CapiArticleFields;
   tags?: Tag[];
   blocks: Blocks;
+  atoms?: Atoms;
   frontsMeta: {
     defaults: {
       imageCutoutReplace: boolean;

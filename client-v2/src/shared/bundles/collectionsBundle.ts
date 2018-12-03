@@ -12,7 +12,7 @@ const collectionSelectors = {
     state: SharedState,
     articleFragmentId: string
   ) => {
-    let collectionId = null;
+    let collectionId: null | string = null;
     Object.keys(state.collections.data).some(id =>
       ['live', 'draft', 'previously'].some(stage => {
         const groups = state.collections.data[id][stage] || [];
