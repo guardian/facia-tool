@@ -1,0 +1,58 @@
+import { insertAndDedupeSiblings } from '../insertAndDedupeSiblings';
+
+const articleFragmentMap = {
+  a: {
+    uuid: 'a',
+    id: '1',
+    meta: {},
+    frontPublicationDate: 0
+  },
+  b: {
+    uuid: 'b',
+    id: '2',
+    meta: {},
+    frontPublicationDate: 0
+  },
+  c: {
+    uuid: 'c',
+    id: '3',
+    meta: {},
+    frontPublicationDate: 0
+  },
+  d: {
+    uuid: 'd',
+    id: '3', // same as c
+    meta: {},
+    frontPublicationDate: 0
+  }
+};
+
+describe('insertAndDedupeSiblings', () => {
+  it('inserts a fragments', () => {
+    expect(
+      insertAndDedupeSiblings(['a', 'b'], ['c'], 0, articleFragmentMap)
+    ).toEqual(['c', 'a', 'b']);
+
+    expect(
+      insertAndDedupeSiblings(['a', 'b'], ['c'], 2, articleFragmentMap)
+    ).toEqual(['a', 'b', 'c']);
+  });
+
+  it('keeps the first occurence of existing duplicates and removes the rest', () => {
+    expect(
+      insertAndDedupeSiblings(['c', 'd'], ['a'], 0, articleFragmentMap)
+    ).toEqual(['a', 'c']);
+  });
+
+  it('removes duplicates for new insertions', () => {
+    expect(
+      insertAndDedupeSiblings(['a', 'd'], ['c'], 2, articleFragmentMap)
+    ).toEqual(['a', 'c']);
+  });
+
+  it('always keeps the recently added duplicate', () => {
+    expect(
+      insertAndDedupeSiblings(['a', 'c'], ['d'], 2, articleFragmentMap)
+    ).toEqual(['a', 'd']);
+  });
+});
