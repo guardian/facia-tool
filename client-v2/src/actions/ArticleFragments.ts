@@ -43,7 +43,7 @@ const insertArticleFragmentWithPersist = (
 ) =>
   addPersistMetaToAction(insertArticleFragment, {
     persistTo,
-    key: 'articleFragmentId'
+    key: 'id'
   });
 
 const insertArticleFragmentWithCreate = (
@@ -55,13 +55,7 @@ const insertArticleFragmentWithCreate = (
     dispatch(createArticleFragment(id))
       .then(fragment => {
         if (fragment) {
-          dispatch(
-            insertArticleFragmentWithPersist(persistTo)(
-              to,
-              id,
-              articleFragmentsSelector(selectSharedState(getState()))
-            )
-          );
+          dispatch(insertArticleFragmentWithPersist(persistTo)(to, id));
         }
       })
       .catch(() => {
@@ -92,13 +86,7 @@ const moveArticleFragment = (
       dispatch(removeArticleFragment(from.type, from.id, fragment.uuid));
     }
 
-    dispatch(
-      insertArticleFragmentWithPersist(persistTo)(
-        to,
-        parent.uuid,
-        articleFragmentsSelector(selectSharedState(getState()))
-      )
-    );
+    dispatch(insertArticleFragmentWithPersist(persistTo)(to, parent.uuid));
   };
 };
 

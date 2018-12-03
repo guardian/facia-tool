@@ -62,14 +62,12 @@ function removeArticleFragment(
 
 const insertArticleFragment = (
   to: InsertArticleFragment['payload']['to'],
-  id: InsertArticleFragment['payload']['id'],
-  articleFragmentMap: { [uuid: string]: ArticleFragment }
+  id: InsertArticleFragment['payload']['id']
 ): InsertArticleFragment => ({
   type: 'SHARED/INSERT_ARTICLE_FRAGMENT',
   payload: {
     to,
-    id,
-    articleFragmentMap
+    id
   }
 });
 

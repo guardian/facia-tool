@@ -3,7 +3,8 @@ import {
   createArticleFromArticleFragmentSelector,
   createArticlesInCollectionGroupSelector,
   createArticlesInCollectionSelector,
-  createCollectionSelector
+  createCollectionSelector,
+  groupSiblingsSelector
 } from '../shared';
 
 const state: any = {
@@ -430,6 +431,14 @@ describe('Shared selectors', () => {
           groupName: 'group1'
         })
       ).toEqual(['af5']);
+    });
+  });
+
+  describe('groupSiblingsSelector', () => {
+    it('selects the sibling groups of a given group id', () => {
+      expect(groupSiblingsSelector(state, 'g1').map(({ uuid }) => uuid)).toEqual(
+        ['g2']
+      );
     });
   });
 });

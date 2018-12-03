@@ -1,6 +1,12 @@
+import { initialState as externalArticlesState } from 'shared/bundles/externalArticlesBundle';
+import { initialState as collectionsState } from 'shared/bundles/collectionsBundle';
+
 const stateWithClipboard = {
   clipboard: ['article', 'article2'],
   shared: {
+    groups: {},
+    externalArticles: externalArticlesState,
+    collections: collectionsState,
     articleFragments: {
       article: {
         id: 'article/live/0',
