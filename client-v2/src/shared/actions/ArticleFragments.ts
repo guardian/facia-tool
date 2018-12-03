@@ -27,6 +27,8 @@ function updateArticleFragmentMeta(
   };
 }
 
+// This can accept either a map of article fragments or an array (from which a
+// map will be generated)
 function articleFragmentsReceived(
   articleFragments:
     | {

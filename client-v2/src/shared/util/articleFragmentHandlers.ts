@@ -4,6 +4,14 @@ import {
 } from 'shared/types/Action';
 import { ArticleFragment } from 'shared/types/Collection';
 
+/**
+ * This is just a bunch o utility functions to be used in a reducer to ensuer
+ * that the `SHARED_(INSERT/REMOVE)_ARTICLE_FRAGMENT` actions only get handled
+ * when they have the correct parent `type` in their `payload`. Those actions
+ * are now event streams that various parents of article fragments can listen
+ * for but only some of the actions will be relevant to any given reducer.
+ */
+
 interface ArticleFragmentMap {
   [uuid: string]: ArticleFragment;
 }
