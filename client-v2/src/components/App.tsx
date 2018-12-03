@@ -85,7 +85,7 @@ const BackgroundHeader = styled('div')`
 
 const App = () => (
   <ThemeProvider theme={theme}>
-    <DropDisabler>
+    <DropDisabler style={{ height: '100%' }}>
       <AppContainer>
         <BackgroundHeader>
           <SectionHeaderWithLogo />

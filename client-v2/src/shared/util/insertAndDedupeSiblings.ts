@@ -5,13 +5,16 @@ export const insertAndDedupeSiblings = (
   existingSiblingUUIDs: string[],
   insertionUUIDs: string[],
   index: number,
-  articleFragmentMap: { [uuid: string]: ArticleFragment }
+  articleFragmentMap: { [uuid: string]: ArticleFragment },
+  skipInsertion = false
 ) => {
-  const newSiblingUUIDs = [
-    ...existingSiblingUUIDs.slice(0, index),
-    ...insertionUUIDs,
-    ...existingSiblingUUIDs.slice(index)
-  ];
+  const newSiblingUUIDs = skipInsertion
+    ? existingSiblingUUIDs
+    : [
+        ...existingSiblingUUIDs.slice(0, index),
+        ...insertionUUIDs,
+        ...existingSiblingUUIDs.slice(index)
+      ];
   const insertionIDs = insertionUUIDs.map(id => articleFragmentMap[id].id);
   const newSiblingArticleFragments = newSiblingUUIDs.map(
     id => articleFragmentMap[id]

@@ -6,8 +6,7 @@ import groupsReducer from '../../shared/reducers/groupsReducer';
 import articleFragmentsReducer from '../../shared/reducers/articleFragmentsReducer';
 import {
   createGroupArticlesSelector,
-  createSupportingArticlesSelector,
-  articleFragmentsFromRootStateSelector
+  createSupportingArticlesSelector
 } from '../../shared/selectors/shared';
 import { clipboardSelector as innerClipboardSelector } from '../../selectors/frontsSelectors';
 import {
@@ -16,45 +15,61 @@ import {
   specToFragment
 } from './utils';
 import { moveArticleFragment } from 'actions/ArticleFragments';
+import {
+  reducer as collectionsReducer,
+  initialState as collectionsState
+} from 'shared/bundles/collectionsBundle';
 
-const root = (state: any, action: any) => ({
-  clipboard: clipboardReducer(state.clipboard, action),
+const root = (state: any = {}, action: any) => ({
+  clipboard: clipboardReducer(state.clipboard, action, state.shared),
   shared: {
     articleFragments: articleFragmentsReducer(
       state.shared.articleFragments,
-      action
+      action,
+      state.shared
     ),
-    groups: groupsReducer(state.shared.groups, action)
+    collections: collectionsReducer(state.shared.collections, action),
+    groups: groupsReducer(state.shared.groups, action, state.shared)
   }
 });
 
 const buildStore = (added: ArticleFragmentSpec) => {
-  const group: ArticleFragmentSpec[] = [
+  const groupA: ArticleFragmentSpec[] = [
     ['a', '1', [['g', '7']]],
     ['b', '2', undefined],
     ['c', '3', undefined]
+  ];
+  const groupB: ArticleFragmentSpec[] = [
+    ['i', '9', [['g', '7']]],
+    ['j', '10', undefined],
+    ['k', '11', undefined]
   ];
   const clipboard: ArticleFragmentSpec[] = [
     ['d', '4', undefined],
     ['e', '5', undefined],
     ['f', '6', undefined]
   ];
-  const all = [...group, ...clipboard, added];
-  return createStore(
-    root,
-    {
-      shared: {
-        articleFragments: createArticleFragmentStateFromSpec(all),
-        groups: {
+  const all = [...groupA, ...groupB, ...clipboard, added];
+  const state = {
+    shared: {
+      collections: {
+        ...collectionsState,
+        data: {
           a: {
-            articleFragments: group.map(([uuid]) => uuid)
+            id: 'a',
+            live: ['a', 'b']
           }
         }
       },
-      clipboard: clipboard.map(([uuid]) => uuid)
+      articleFragments: createArticleFragmentStateFromSpec(all),
+      groups: {
+        a: { articleFragments: groupA.map(([uuid]) => uuid), uuid: 'a' },
+        b: { articleFragments: groupB.map(([uuid]) => uuid), uuid: 'b' }
+      }
     },
-    applyMiddleware(thunk)
-  );
+    clipboard: clipboard.map(([uuid]) => uuid)
+  };
+  return createStore(root, state as any, applyMiddleware(thunk));
 };
 
 const insert = (
@@ -64,15 +79,13 @@ const insert = (
   parentId: string
 ) => {
   const { dispatch, getState } = buildStore([uuid, id, undefined]);
-  const articleFragments = articleFragmentsFromRootStateSelector(getState());
   dispatch(insertArticleFragment(
     {
       type: parentType,
       id: parentId,
       index
     },
-    uuid,
-    articleFragments
+    uuid
   ) as any);
   return getState();
 };
@@ -151,7 +164,13 @@ describe('ArticleFragments actions', () => {
       ).toEqual(['h']);
     });
 
-    it('adding at an index that is too high adds to the end', () => {
+    it('dedupe across groups in the same collection', () => {
+      const state = insert(['h', '3'], 0, 'group', 'b');
+      expect(groupArticlesSelector(state, 'a')).toEqual(['a', 'b']);
+      expect(groupArticlesSelector(state, 'b')).toEqual(['h', 'i', 'j', 'k']);
+    });
+
+    it('adds to the end when the index is too high', () => {
       expect(
         clipboardSelector(insert(['h', '8'], 100, 'clipboard', 'clipboard'))
       ).toEqual(['d', 'e', 'f', 'h']);

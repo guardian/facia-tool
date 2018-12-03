@@ -1,16 +1,17 @@
 import { Action } from '../types/Action';
-import { ArticleFragment } from '../types/Collection';
 import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
 import {
   handleInsertArticleFragment,
   handleRemoveArticleFragment
 } from '../util/articleFragmentHandlers';
+import { State } from './sharedReducer';
+import { articleFragmentsSelector } from 'shared/selectors/shared';
 
-interface State {
-  [uuid: string]: ArticleFragment;
-}
-
-const articleFragments = (state: State = {}, action: Action) => {
+const articleFragments = (
+  state: State['articleFragments'] = {},
+  action: Action,
+  prevSharedState: State
+) => {
   switch (action.type) {
     case 'SHARED/UPDATE_ARTICLE_FRAGMENT_META': {
       const { id } = action.payload;
@@ -56,7 +57,7 @@ const articleFragments = (state: State = {}, action: Action) => {
         state,
         action,
         'articleFragment',
-        (toId, id, index, articleFragmentMap) => {
+        ({ to: { id: toId, index }, id }) => {
           const targetArticleFragment = state[toId];
           const insertedArticleFragment = state[id];
           const supporting = insertAndDedupeSiblings(
@@ -66,7 +67,7 @@ const articleFragments = (state: State = {}, action: Action) => {
               ...(insertedArticleFragment.meta.supporting || [])
             ],
             index,
-            articleFragmentMap
+            articleFragmentsSelector(prevSharedState)
           );
 
           return {

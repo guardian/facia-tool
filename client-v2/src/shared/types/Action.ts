@@ -29,7 +29,6 @@ interface InsertArticleFragment {
       index: number;
     };
     id: string;
-    articleFragmentMap: { [uuid: string]: ArticleFragment };
   };
 }
 interface RemoveArticleFragment {

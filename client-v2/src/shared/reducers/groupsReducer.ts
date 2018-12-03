@@ -1,16 +1,20 @@
 import { Action } from '../types/Action';
-import { Group } from '../types/Collection';
 import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
 import {
   handleRemoveArticleFragment,
   handleInsertArticleFragment
 } from 'shared/util/articleFragmentHandlers';
+import { State } from './sharedReducer';
+import {
+  articleFragmentsSelector,
+  groupSiblingsSelector
+} from 'shared/selectors/shared';
 
-interface State {
-  [id: string]: Group;
-}
-
-const groups = (state: State = {}, action: Action) => {
+const groups = (
+  state: State['groups'] = {},
+  action: Action,
+  prevSharedState: State
+) => {
   switch (action.type) {
     case 'SHARED/GROUPS_RECEIVED': {
       const { payload } = action;
@@ -43,20 +47,38 @@ const groups = (state: State = {}, action: Action) => {
         state,
         action,
         'group',
-        (toId, id, index, articleFragmentMap) => {
+        ({ to: { id: toId, index }, id }) => {
           const group = state[toId];
-          const articleFragments = insertAndDedupeSiblings(
-            group.articleFragments || [],
-            [id],
-            index,
-            articleFragmentMap
+          const articleFragmentsMap = articleFragmentsSelector(prevSharedState);
+          const groupSiblings = groupSiblingsSelector(prevSharedState, toId);
+          const dedupedSiblings = groupSiblings.reduce(
+            (acc, sibling) => ({
+              ...acc,
+              [sibling.uuid]: {
+                ...sibling,
+                articleFragments: insertAndDedupeSiblings(
+                  sibling.articleFragments || [],
+                  [id],
+                  index,
+                  articleFragmentsMap,
+                  true // this means no insertions happen here
+                )
+              }
+            }),
+            {} as State['groups']
           );
 
           return {
             ...state,
+            ...dedupedSiblings,
             [toId]: {
               ...group,
-              articleFragments
+              articleFragments: insertAndDedupeSiblings(
+                group.articleFragments || [],
+                [id],
+                index,
+                articleFragmentsMap
+              )
             }
           };
         }
