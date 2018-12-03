@@ -1,4 +1,8 @@
 <div class="collection" data-bind="ownerClass: $data">
+    <div class="collectionEditWarning" data-bind="visible: containsEmptyAlerts() && getDraftArticles().value().length > 0">
+        Remove this story from the container and press the remove button before sending
+        another alert containing the story.
+    </div>
     <div class="list-header" data-bind="
         css: {collapsed: state.collapsed() || configMeta.uneditable()}
     ">
@@ -10,9 +14,10 @@
                 <span class="tool draft-warning">Show unlaunched changes</a>
 
             <span data-bind="
-                visible: front.mode() !== 'live',
+                visible: front.mode() !== 'live' && !containsEmptyAlerts(),
                 css: {'pending': isPending()}
             ">
+
                 <a class="tool draft-publish" data-bind="
                     click: publishDraft,
                     text: getPublishText()"></a
