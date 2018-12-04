@@ -1,0 +1,21 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.13.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:debug:20170905':
+    - karma > socket.io > socket.io-adapter > socket.io-parser > debug:
+        patched: '2018-12-04T10:08:16.880Z'
+  'npm:lodash:20180130':
+    - load-grunt-config > lodash:
+        patched: '2018-12-04T10:08:16.880Z'
+    - grunt-replace > applause > lodash:
+        patched: '2018-12-04T10:08:16.880Z'
+    - babel > babel-core > babel-plugin-proto-to-assign > lodash:
+        patched: '2018-12-04T10:08:16.880Z'
+  'npm:ms:20170412':
+    - karma > socket.io > socket.io-adapter > socket.io-parser > debug > ms:
+        patched: '2018-12-04T10:08:16.880Z'
+  'npm:tar:20151103':
+    - jspm > jspm-npm > tar:
+        patched: '2018-12-04T10:08:16.880Z'
