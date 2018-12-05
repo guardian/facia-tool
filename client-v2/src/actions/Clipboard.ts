@@ -1,7 +1,6 @@
 import { Dispatch, ThunkResult } from 'types/Store';
 import { saveClipboard } from 'services/faciaApi';
 import { fetchArticles } from 'actions/Collections';
-import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import { batchActions } from 'redux-batched-actions';
 import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
 import {
@@ -9,7 +8,11 @@ import {
   NestedArticleFragment
 } from 'shared/types/Collection';
 import { normaliseClipboard } from 'util/clipboardUtils';
-import { UpdateClipboardContent } from 'types/Action';
+import {
+  UpdateClipboardContent,
+  InsertClipboardArticleFragment,
+  RemoveClipboardArticleFragment
+} from 'types/Action';
 
 function updateClipboardContent(
   clipboardContent: string[] = []
@@ -54,4 +57,34 @@ function updateClipboard(clipboardContent: {
     });
 }
 
-export { storeClipboardContent, updateClipboard, updateClipboardContent };
+const insertClipboardArticleFragment = (
+  id: string,
+  index: number,
+  articleFragmentId: string
+): InsertClipboardArticleFragment => ({
+  type: 'INSERT_CLIPBOARD_ARTICLE_FRAGMENT',
+  payload: {
+    id,
+    index,
+    articleFragmentId
+  }
+});
+
+const removeClipboardArticleFragment = (
+  id: string,
+  articleFragmentId: string
+): RemoveClipboardArticleFragment => ({
+  type: 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT',
+  payload: {
+    id,
+    articleFragmentId
+  }
+});
+
+export {
+  storeClipboardContent,
+  updateClipboard,
+  updateClipboardContent,
+  insertClipboardArticleFragment,
+  removeClipboardArticleFragment
+};

@@ -1,9 +1,5 @@
 import { Action } from '../types/Action';
 import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
-import {
-  handleInsertArticleFragment,
-  handleRemoveArticleFragment
-} from '../util/articleFragmentHandlers';
 import { State } from './sharedReducer';
 import { articleFragmentsSelector } from 'shared/selectors/shared';
 
@@ -30,68 +26,55 @@ const articleFragments = (
       const { payload } = action;
       return Object.assign({}, state, payload);
     }
-    case 'SHARED/REMOVE_ARTICLE_FRAGMENT': {
-      return handleRemoveArticleFragment(
-        state,
-        action,
-        'articleFragment',
-        (id, articleFragmentId) => {
-          const articleFragment = state[id];
-          return {
-            ...state,
-            [id]: {
-              ...articleFragment,
-              meta: {
-                ...articleFragment.meta,
-                supporting: (articleFragment.meta.supporting || []).filter(
-                  sid => sid !== articleFragmentId
-                )
-              }
-            }
-          };
+    case 'SHARED/REMOVE_SUPPORTING_ARTICLE_FRAGMENT': {
+      const articleFragment = state[action.payload.id];
+      return {
+        ...state,
+        [action.payload.id]: {
+          ...articleFragment,
+          meta: {
+            ...articleFragment.meta,
+            supporting: (articleFragment.meta.supporting || []).filter(
+              sid => sid !== action.payload.articleFragmentId
+            )
+          }
         }
-      );
+      };
     }
-    case 'SHARED/INSERT_ARTICLE_FRAGMENT': {
-      return handleInsertArticleFragment(
-        state,
-        action,
-        'articleFragment',
-        ({ to: { id: toId, index }, id }) => {
-          const targetArticleFragment = state[toId];
-          const insertedArticleFragment = state[id];
-          const supporting = insertAndDedupeSiblings(
-            targetArticleFragment.meta.supporting || [],
-            [
-              insertedArticleFragment.uuid,
-              ...(insertedArticleFragment.meta.supporting || [])
-            ],
-            index,
-            articleFragmentsSelector(prevSharedState)
-          );
-
-          return {
-            ...state,
-            [toId]: {
-              ...targetArticleFragment,
-              meta: {
-                ...targetArticleFragment.meta,
-                supporting
-              }
-            },
-            //
-            [id]: {
-              ...insertedArticleFragment,
-              meta: {
-                ...insertedArticleFragment.meta,
-                // ...ensuer that after flattening we remove the supporting from
-                // the inserted article fragment
-                supporting: []
-              }
-            }
-          };
-        }
+    case 'SHARED/INSERT_SUPPORTING_ARTICLE_FRAGMENT': {
+      const { id, articleFragmentId, index } = action.payload;
+      const targetArticleFragment = state[id];
+      const insertedArticleFragment = state[articleFragmentId];
+      const supporting = insertAndDedupeSiblings(
+        targetArticleFragment.meta.supporting || [],
+        [
+          insertedArticleFragment.uuid,
+          ...(insertedArticleFragment.meta.supporting || [])
+        ],
+        index,
+        articleFragmentsSelector(prevSharedState)
       );
+
+      return {
+        ...state,
+        [id]: {
+          ...targetArticleFragment,
+          meta: {
+            ...targetArticleFragment.meta,
+            supporting
+          }
+        },
+        //
+        [articleFragmentId]: {
+          ...insertedArticleFragment,
+          meta: {
+            ...insertedArticleFragment.meta,
+            // ...ensuer that after flattening we remove the supporting from
+            // the inserted article fragment
+            supporting: []
+          }
+        }
+      };
     }
     default: {
       return state;

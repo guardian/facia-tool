@@ -20,30 +20,43 @@ interface UpdateArticleFragmentMeta {
   payload: { id: string; meta: ArticleFragmentMeta };
 }
 
-interface InsertArticleFragment {
-  type: 'SHARED/INSERT_ARTICLE_FRAGMENT';
+interface InsertArticleFragmentPayload {
   payload: {
-    to: {
-      id: string;
-      type: string;
-      index: number;
-    };
     id: string;
-  };
-}
-interface RemoveArticleFragment {
-  type: 'SHARED/REMOVE_ARTICLE_FRAGMENT';
-  payload: {
-    parentType: string;
-    id: string;
+    index: number;
     articleFragmentId: string;
   };
 }
 
+type InsertGroupArticleFragment = {
+  type: 'SHARED/INSERT_GROUP_ARTICLE_FRAGMENT';
+} & InsertArticleFragmentPayload;
+
+type InsertSupportingArticleFragment = {
+  type: 'SHARED/INSERT_SUPPORTING_ARTICLE_FRAGMENT';
+} & InsertArticleFragmentPayload;
+
+interface RemoveArticleFragmentPayload {
+  payload: {
+    id: string;
+    articleFragmentId: string;
+  }
+}
+
+type RemoveGroupArticleFragment = {
+  type: 'SHARED/REMOVE_GROUP_ARTICLE_FRAGMENT';
+} & RemoveArticleFragmentPayload;
+
+type RemoveSupportingArticleFragment = {
+  type: 'SHARED/REMOVE_SUPPORTING_ARTICLE_FRAGMENT';
+} & RemoveArticleFragmentPayload;
+
 type Action =
   | GroupsReceived
-  | InsertArticleFragment
-  | RemoveArticleFragment
+  | InsertGroupArticleFragment
+  | InsertSupportingArticleFragment
+  | RemoveGroupArticleFragment
+  | RemoveSupportingArticleFragment
   | Actions<ExternalArticle>
   | Actions<Collection>
   | ArticleFragmentsReceived
@@ -51,8 +64,12 @@ type Action =
 
 export {
   Action,
-  InsertArticleFragment,
-  RemoveArticleFragment,
+  InsertGroupArticleFragment,
+  InsertSupportingArticleFragment,
+  RemoveGroupArticleFragment,
+  RemoveSupportingArticleFragment,
   ArticleFragmentsReceived,
-  UpdateArticleFragmentMeta
+  UpdateArticleFragmentMeta,
+  InsertArticleFragmentPayload,
+  RemoveArticleFragmentPayload
 };

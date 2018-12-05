@@ -1,6 +1,9 @@
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import { insertArticleFragment } from '../../shared/actions/ArticleFragments';
+import {
+  insertGroupArticleFragment,
+  insertSupportingArticleFragment
+} from '../../shared/actions/ArticleFragments';
 import clipboardReducer from '../../reducers/clipboardReducer';
 import groupsReducer from '../../shared/reducers/groupsReducer';
 import articleFragmentsReducer from '../../shared/reducers/articleFragmentsReducer';
@@ -19,6 +22,8 @@ import {
   reducer as collectionsReducer,
   initialState as collectionsState
 } from 'shared/bundles/collectionsBundle';
+import { insertClipboardArticleFragment } from 'actions/Clipboard';
+import { Action } from 'types/Action';
 
 const root = (state: any = {}, action: any) => ({
   clipboard: clipboardReducer(state.clipboard, action, state.shared),
@@ -78,15 +83,19 @@ const insert = (
   parentType: string,
   parentId: string
 ) => {
+  const insertActionMap: {
+    [key: string]: (
+      id: string,
+      index: number,
+      articleFragmentId: string
+    ) => Action;
+  } = {
+    clipboard: insertClipboardArticleFragment,
+    articleFragment: insertSupportingArticleFragment,
+    group: insertGroupArticleFragment
+  };
   const { dispatch, getState } = buildStore([uuid, id, undefined]);
-  dispatch(insertArticleFragment(
-    {
-      type: parentType,
-      id: parentId,
-      index
-    },
-    uuid
-  ) as any);
+  dispatch(insertActionMap[parentType](parentId, index, uuid) as any);
   return getState();
 };
 

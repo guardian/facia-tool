@@ -3,9 +3,13 @@
  * for typing to work nicely in reducers
  */
 import {
-  InsertArticleFragment as SharedInsertArticleFragment,
-  RemoveArticleFragment as SharedRemoveArticleFragment,
-  Action as SharedActions
+  InsertGroupArticleFragment as SharedInsertGroupArticleFragment,
+  InsertSupportingArticleFragment as SharedInsertSupportingArticleFragment,
+  RemoveGroupArticleFragment as SharedRemoveGroupArticleFragment,
+  RemoveSupportingArticleFragment as SharedRemoveSupportingArticleFragment,
+  Action as SharedActions,
+  InsertArticleFragmentPayload,
+  RemoveArticleFragmentPayload
 } from 'shared/types/Action';
 import { PersistMeta } from 'util/storeMiddleware';
 import { Config } from './Config';
@@ -54,11 +58,21 @@ interface ActionPersistMeta {
   meta: PersistMeta;
 }
 
-type InsertArticleFragment = SharedInsertArticleFragment &
+type InsertGroupArticleFragment = SharedInsertGroupArticleFragment &
   ActionPersistMeta;
+type InsertSupportingArticleFragment = SharedInsertSupportingArticleFragment &
+  ActionPersistMeta;
+type InsertClipboardArticleFragment = {
+  type: 'INSERT_CLIPBOARD_ARTICLE_FRAGMENT';
+} & InsertArticleFragmentPayload;
 
-type RemoveArticleFragment = SharedRemoveArticleFragment &
+type RemoveGroupArticleFragment = SharedRemoveGroupArticleFragment &
   ActionPersistMeta;
+type RemoveSupportingArticleFragment = SharedRemoveSupportingArticleFragment &
+  ActionPersistMeta;
+type RemoveClipboardArticleFragment = {
+  type: 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT';
+} & RemoveArticleFragmentPayload;
 
 type ActionError =
   | 'Could not fetch fronts config'
@@ -136,7 +150,11 @@ interface RecordStaleFronts {
 
 interface FetchVisibleArticlesSuccess {
   type: 'FETCH_VISIBLE_ARTICLES_SUCCESS';
-  payload: { collectionId: string, visibleArticles: VisibleArticlesResponse, stage: Stages }
+  payload: {
+    collectionId: string;
+    visibleArticles: VisibleArticlesResponse;
+    stage: Stages;
+  };
 }
 
 type Action =
@@ -151,8 +169,12 @@ type Action =
   | SharedActions
   | RecordUnpublishedChanges
   | PublishCollectionSuccess
-  | InsertArticleFragment
-  | RemoveArticleFragment
+  | InsertGroupArticleFragment
+  | InsertSupportingArticleFragment
+  | InsertClipboardArticleFragment
+  | RemoveGroupArticleFragment
+  | RemoveSupportingArticleFragment
+  | RemoveClipboardArticleFragment
   | UpdateClipboardContent
   | EditorAddFront
   | EditorClearOpenFronts
@@ -162,7 +184,7 @@ type Action =
   | EditorClearArticleFragmentSelection
   | RecordStaleFronts
   | BatchAction
-  | FetchVisibleArticlesSuccess
+  | FetchVisibleArticlesSuccess;
 
 export {
   ActionError,
@@ -179,8 +201,12 @@ export {
   SharedActions,
   RecordUnpublishedChanges,
   PublishCollectionSuccess,
-  InsertArticleFragment,
-  RemoveArticleFragment,
+  InsertGroupArticleFragment,
+  InsertSupportingArticleFragment,
+  InsertClipboardArticleFragment,
+  RemoveGroupArticleFragment,
+  RemoveSupportingArticleFragment,
+  RemoveClipboardArticleFragment,
   UpdateClipboardContent,
   EditorAddFront,
   EditorClearOpenFronts,
