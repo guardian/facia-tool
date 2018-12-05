@@ -30,6 +30,8 @@ const formValues = {
   showByline: false,
   showQuotedHeadline: false,
   slideshow: [undefined, undefined, undefined, undefined],
+  showKickerTag: false,
+  showKickerSection: false,
   trailText:
     'Police noted concerns over Femi Nandap, who went on to stab lecturer, but released him'
 };
@@ -131,7 +133,8 @@ describe('ArticleFragmentForm transform functions', () => {
         isBreaking: false,
         showBoostedHeadline: false,
         showByline: false,
-        showKickerCustom: false,
+        showKickerTag: false,
+        showKickerSection: false,
         showQuotedHeadline: false,
         slideshow: undefined,
         trailText:
@@ -172,7 +175,8 @@ describe('ArticleFragmentForm transform functions', () => {
         isBreaking: false,
         showBoostedHeadline: false,
         showByline: false,
-        showKickerCustom: false,
+        showKickerSection: false,
+        showKickerTag: false,
         showQuotedHeadline: false,
         slideshow: undefined,
         trailText:
@@ -229,7 +233,8 @@ describe('ArticleFragmentForm transform functions', () => {
         isBreaking: false,
         showBoostedHeadline: false,
         showByline: false,
-        showKickerCustom: false,
+        showKickerSection: false,
+        showKickerTag: false,
         showQuotedHeadline: false,
         slideshow: [
           {

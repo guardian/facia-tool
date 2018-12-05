@@ -17,16 +17,17 @@ import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadi
 import {
   createArticleFromArticleFragmentSelector,
   selectSharedState,
-  articleKickerOptionsSelector
+  articleTagSelector
 } from 'shared/selectors/shared';
 import { DerivedArticle } from 'shared/types/Article';
-import { ArticleFragmentMeta } from 'shared/types/Collection';
+import { ArticleFragmentMeta, ArticleTag } from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
 import HorizontalRule from 'shared/components/layout/HorizontalRule';
 import InputCheckboxToggle from 'shared/components/input/InputCheckboxToggle';
 import InputImage from 'shared/components/input/InputImage';
 import InputGroup from 'shared/components/input/InputGroup';
+import InputButton from 'shared/components/input/InputButton';
 import Row from '../Row';
 import Col from '../Col';
 import { State } from 'types/State';
@@ -38,8 +39,10 @@ interface ComponentProps {
   showByline: boolean;
   imageCutoutReplace: boolean;
   imageHide: boolean;
-  kickerOptions: string[];
+  kickerOptions: ArticleTag;
   articleFragmentId: string;
+  showKickerTag: boolean;
+  showKickerSection: boolean;
 }
 
 type Props = ComponentProps &
@@ -68,6 +71,8 @@ interface ArticleFragmentFormData {
   imageCutoutReplace: boolean;
   imageSlideshowReplace: boolean;
   slideshow: Array<ImageData | void> | void;
+  showKickerTag: boolean;
+  showKickerSection: boolean
 }
 
 const FormContainer = ContentContainer.withComponent('form').extend`
@@ -148,7 +153,9 @@ const formComponent: React.StatelessComponent<Props> = ({
   initialValues,
   pristine,
   showByline,
-  reset
+  reset,
+  showKickerTag,
+  showKickerSection
 }) => (
   <FormContainer onSubmit={handleSubmit}>
     <CollectionHeadingPinline>
@@ -199,20 +206,48 @@ const formComponent: React.StatelessComponent<Props> = ({
           component={InputText}
           placeholder="Add custom kicker"
           useHeadlineFont
-        />
-        {kickerOptions.map(kickerOption => (
-          <Button
-            key={kickerOption}
-            type="button"
-            pill
-            onClick={(e: React.FormEvent<HTMLButtonElement>) =>
-              change('customKicker', e.currentTarget.value)
+          format={value => {
+            if (showKickerTag) {
+              return kickerOptions.webTitle
             }
-            value={kickerOption}
-          >
-            {kickerOption}
-          </Button>
-        ))}
+            if (showKickerSection) {
+              return kickerOptions.sectionName
+            }
+            return value;
+          }}
+          onChange={(e) => {
+            change('showKickerCustom', true)
+            change('showKickerTag', false)
+            change('showKickerSection', false)
+            if (e) {
+              change('customKicker', e.target.value)
+            }
+          }}
+        />
+        { kickerOptions.webTitle && (
+          <Field
+            name="showKickerTag"
+            component={InputButton}
+            buttonText={kickerOptions.webTitle}
+            onClick={() => {
+              change('showKickerTag', true)
+              change('showKickerSection', false)
+              change('showKickerCustom', false)
+            }}
+          />
+        )}
+        { kickerOptions.sectionName && (
+          <Field
+            name="showKickerSection"
+            component={InputButton}
+            buttonText={kickerOptions.sectionName}
+            onClick={() => {
+              change('showKickerSection', true)
+              change('showKickerTag', false)
+              change('showKickerCustom', false)
+            }}
+          />
+        )}
         <Field
           name="isBreaking"
           component={InputCheckboxToggle}
@@ -335,6 +370,8 @@ const getInitialValuesForArticleFragmentForm = (
         showQuotedHeadline: article.showQuotedHeadline || false,
         showBoostedHeadline: article.showBoostedHeadline || false,
         customKicker: article.customKicker || '',
+        showKickerTag: article.showKickerTag || false,
+        showKickerSection: article.showKickerSection || false,
         isBreaking: article.isBreaking || false,
         byline: article.byline || '',
         showByline: article.showByline || false,
@@ -377,7 +414,6 @@ const getArticleFragmentMetaFromFormValues = (
     {
       ...values,
       imageReplace: !!primaryImage.src && !values.imageHide,
-      showKickerCustom: !!values.customKicker,
       imageSrc: primaryImage.src,
       imageSrcThumb: primaryImage.thumb,
       imageSrcWidth: intToStr(primaryImage.width),
@@ -413,8 +449,10 @@ interface ContainerProps extends InterfaceProps {
   imageSlideshowReplace: boolean;
   imageCutoutReplace: boolean;
   imageHide: boolean;
-  kickerOptions: string[];
+  kickerOptions: ArticleTag;
   showByline: boolean;
+  showKickerTag: boolean;
+  showKickerSection: boolean;
 }
 
 interface InterfaceProps {
@@ -440,15 +478,17 @@ const createMapStateToProps = () => {
     return {
       initialValues: getInitialValuesForArticleFragmentForm(article),
       kickerOptions: article
-        ? articleKickerOptionsSelector(
+        ? articleTagSelector(
             selectSharedState(state),
             props.articleFragmentId
           )
-        : [],
+        : {},
       imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
       imageHide: valueSelector(state, 'imageHide'),
       imageCutoutReplace: valueSelector(state, 'imageCutoutReplace'),
-      showByline: valueSelector(state, 'showByline')
+      showByline: valueSelector(state, 'showByline'),
+      showKickerTag: valueSelector(state, 'showKickerTag'),
+      showKickerSection: valueSelector(state, 'showKickerSection')
     };
   };
 };
