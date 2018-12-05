@@ -3,7 +3,7 @@ import uniq from 'lodash/uniq';
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import { BATCH } from 'redux-batched-actions';
-import { Action, ActionPersistMeta, Persist } from 'types/Action';
+import { Action, ActionPersistMeta } from 'types/Action';
 import { selectors } from 'shared/bundles/collectionsBundle';
 import { selectEditorFronts } from 'bundles/frontsUIBundle';
 import { updateCollection } from 'actions/Collections';
@@ -60,19 +60,6 @@ function addPersistMetaToAction<TArgs extends any[]>(
 ): (...args: TArgs) => Action & ActionPersistMeta {
   return (...args: TArgs): Action & ActionPersistMeta =>
     Object.assign({}, actionCreator(...args), { meta });
-}
-
-function persist(
-  persistTo: 'collection' | 'clipboard' | 'openFrontIds',
-  id: string
-): Persist {
-  return {
-    type: '@@PERSIST',
-    meta: {
-      persistTo,
-      id
-    }
-  };
 }
 
 /**
@@ -221,6 +208,5 @@ export {
   persistClipboardOnEdit,
   persistOpenFrontsOnEdit,
   updateStateFromUrlChange,
-  addPersistMetaToAction,
-  persist
+  addPersistMetaToAction
 };

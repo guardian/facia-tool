@@ -171,10 +171,6 @@ interface EndConfirm {
   type: 'MODAL/END_CONFIRM';
 }
 
-type Persist = {
-  type: '@@PERSIST';
-} & ActionPersistMeta;
-
 type Action =
   | ConfigReceivedAction
   | FrontsConfigReceivedAction
@@ -204,8 +200,7 @@ type Action =
   | BatchAction
   | FetchVisibleArticlesSuccess
   | StartConfirm
-  | EndConfirm
-  | Persist;
+  | EndConfirm;
 
 export {
   ActionError,
@@ -237,6 +232,5 @@ export {
   EditorClearArticleFragmentSelection,
   RecordStaleFronts,
   StartConfirm,
-  EndConfirm,
-  Persist
+  EndConfirm
 };
