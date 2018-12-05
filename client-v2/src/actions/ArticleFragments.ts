@@ -14,7 +14,7 @@ import {
   groupSiblingsArticleCountSelector
 } from 'shared/selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
-import { addPersistMetaToAction, persist } from 'util/storeMiddleware';
+import { addPersistMetaToAction } from 'util/storeMiddleware';
 import { cloneFragment } from 'shared/util/articleFragment';
 import { PosSpec } from 'lib/dnd';
 import { Action } from 'types/Action';
@@ -81,7 +81,6 @@ const maybeInsertGroupArticleFragment = (
   removeAction: Action | null
 ) => {
   return (dispatch: Dispatch, getState: () => State) => {
-    const action = insertGroupArticleFragment(id, index, articleFragmentId);
     // run the action and put the article fragment into the group
     // if this was triggered with a move, this will be the same article fragment
     // with the same uuid as the moved article fragment and until the modal
@@ -92,7 +91,7 @@ const maybeInsertGroupArticleFragment = (
     // result in some deduping or other logic, meaning an insertion into a full
     // group may not result in that group getting any bigger, and hence won't
     // require a modal!
-    dispatch(action);
+    dispatch(insertGroupArticleFragment(id, index, articleFragmentId));
 
     const state = getState();
 
@@ -116,8 +115,11 @@ const maybeInsertGroupArticleFragment = (
           // remove article fragments past the cap count and finally persist
           [
             ...(removeAction ? [removeAction] : []),
-            capGroupSiblings(id, collectionCap),
-            persist(persistTo, articleFragmentId)
+            addPersistMetaToAction(capGroupSiblings, {
+              id: articleFragmentId,
+              persistTo,
+              applyBeforeReducer: true
+            })(id, collectionCap)
           ],
           // otherwise just undo the insertion and don't persist as nothing
           // has actually changed
@@ -130,7 +132,12 @@ const maybeInsertGroupArticleFragment = (
       if (removeAction) {
         dispatch(removeAction);
       }
-      dispatch(action);
+      dispatch(
+        addPersistMetaToAction(insertGroupArticleFragment, {
+          key: 'articleFragmentId',
+          persistTo
+        })(id, index, articleFragmentId)
+      );
     }
   };
 };
@@ -176,7 +183,8 @@ const getRemoveActionCreatorFromType = (
   return actionCreator && persistTo
     ? addPersistMetaToAction(actionCreator, {
         persistTo,
-        key: 'articleFragmentId'
+        key: 'articleFragmentId',
+        applyBeforeReducer: true
       })
     : actionCreator;
 };
