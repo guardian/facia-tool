@@ -3,6 +3,7 @@ import { Level, LevelChild, MoveHandler, DropHandler } from 'lib/dnd';
 import { State } from 'types/State';
 import { connect } from 'react-redux';
 import { ArticleFragment } from 'shared/types/Collection';
+import { CollectionItemDisplayTypes } from 'shared/types/Collection';
 import ArticleDrag from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone from 'components/DropZone';
 import { createSupportingArticlesSelector } from 'shared/selectors/shared';
@@ -12,6 +13,7 @@ interface OuterProps {
   children: LevelChild<ArticleFragment>;
   onMove: MoveHandler<ArticleFragment>;
   onDrop: DropHandler;
+  displayType?: CollectionItemDisplayTypes;
 }
 
 interface InnerProps {
@@ -25,7 +27,8 @@ const ArticleFragmentLevel = ({
   articleFragmentId,
   supporting,
   onMove,
-  onDrop
+  onDrop,
+  displayType = 'default'
 }: Props) => (
   <Level
     arr={supporting || []}
@@ -40,12 +43,14 @@ const ArticleFragmentLevel = ({
       <DropZone
         {...props}
         override={isTarget}
+        dropColor="hsl(0, 0%, 64%)"
         style={{
           marginTop: '-15px',
           padding: '3px'
         }}
         indicatorStyle={{
-          marginLeft: '20px'
+          marginLeft: '20px',
+          marginRight: `${displayType === 'default' ? '130px' : 0}`
         }}
       />
     )}
@@ -62,3 +67,4 @@ const createMapStateToProps = () => {
 };
 
 export default connect(createMapStateToProps)(ArticleFragmentLevel);
+//
