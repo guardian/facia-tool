@@ -32,7 +32,7 @@ export const insertAndDedupeSiblings = (
         // elsewhere), otherwise if this is the one we inserted then keep it
         ((!isInsertionGroup &&
           insertionUUIDs.includes(siblingArticleFragment.uuid)) ||
-          i === index)
+          (isInsertionGroup && i === index))
     ),
     ({ id: dedupeKey }) => dedupeKey
   ).map(({ uuid }) => uuid);
