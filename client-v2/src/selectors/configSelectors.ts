@@ -3,7 +3,10 @@ import { State } from 'types/State';
 
 const configSelector = (state: State) => state.config;
 
-const selectUserEmail = createSelector(configSelector, config => config && config.email);
+const selectUserEmail = createSelector(
+  configSelector,
+  config => config && config.email
+);
 const selectFirstName = createSelector(
   configSelector,
   config => config && config.firstName
@@ -38,11 +41,17 @@ const capiFeedSpecsSelector = createSelector(
   ]
 );
 
+const collectionCapSelector = createSelector(
+  configSelector,
+  config => (config && config.collectionCap) || Infinity
+);
+
 export {
   capiLiveURLSelector,
   capiPreviewURLSelector,
   capiFeedSpecsSelector,
   selectUserEmail,
   selectFirstName,
-  selectLastName
+  selectLastName,
+  collectionCapSelector
 };

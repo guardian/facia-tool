@@ -21,6 +21,7 @@ import GuardianTextSansBoldWoff2 from '../fonts/text/GuardianTextSans-Bold.woff2
 import FrontsEdit from './FrontsEdit/Edit';
 import Home from './Home';
 import NotFound from './NotFound';
+import ConfirmModal from './ConfirmModal';
 
 // tslint:disable:no-unused-expression
 injectGlobal`
@@ -62,18 +63,21 @@ injectGlobal`
     font-style: 'normal',
     font-weight: 'normal'
   }
+
+  html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial;
+    font-size: 16px;
+    font-weight: 100;
+    font-family: TS3TextSans;
+    -webkit-font-smoothing: antialiased;
+  }
 `;
 
 const AppContainer = styled('div')`
   background-color: #fff;
   color: #333;
-  font-family: 'Helvetica Neue', Helvetica, Arial;
-  font-size: 16px;
-  font-weight: 100;
   height: 100%;
   width: 100%;
-  font-family: TS3TextSans;
-  -webkit-font-smoothing: antialiased;
 `;
 
 const BackgroundHeader = styled('div')`
@@ -100,6 +104,7 @@ const App = () => (
           <Route component={NotFound} />
         </Switch>
       </AppContainer>
+      <ConfirmModal />
     </DropDisabler>
   </ThemeProvider>
 );

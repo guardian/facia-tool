@@ -1,4 +1,5 @@
 import { Group } from 'shared/types/Collection';
+import { CapGroupSiblings } from 'shared/types/Action';
 
 function groupsReceived(groups: { [id: string]: Group }) {
   return {
@@ -7,4 +8,15 @@ function groupsReceived(groups: { [id: string]: Group }) {
   };
 }
 
-export { groupsReceived };
+const capGroupSiblings = (
+  id: string,
+  collectionCap: number
+): CapGroupSiblings => ({
+  type: 'SHARED/CAP_GROUP_SIBLINGS',
+  payload: {
+    id,
+    collectionCap
+  }
+});
+
+export { groupsReceived, capGroupSiblings };

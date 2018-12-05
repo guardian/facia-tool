@@ -34,7 +34,6 @@ const groups = (
     }
     case 'SHARED/INSERT_GROUP_ARTICLE_FRAGMENT': {
       const { id, index, articleFragmentId } = action.payload;
-      const group = state[id];
       const articleFragmentsMap = articleFragmentsSelector(prevSharedState);
       const groupSiblings = groupSiblingsSelector(prevSharedState, id);
       const dedupedSiblings = groupSiblings.reduce(
@@ -47,7 +46,7 @@ const groups = (
               [articleFragmentId],
               index,
               articleFragmentsMap,
-              true // this means no insertions happen here
+              sibling.uuid === id // this means no insertions happen here if it's not this group
             )
           }
         }),
@@ -56,16 +55,35 @@ const groups = (
 
       return {
         ...state,
-        ...dedupedSiblings,
-        [id]: {
-          ...group,
-          articleFragments: insertAndDedupeSiblings(
-            group.articleFragments || [],
-            [articleFragmentId],
-            index,
-            articleFragmentsMap
-          )
+        ...dedupedSiblings
+      };
+    }
+    case 'SHARED/CAP_GROUP_SIBLINGS': {
+      const { id, collectionCap } = action.payload;
+      const groupSiblings = groupSiblingsSelector(prevSharedState, id);
+      const cappedSiblings = groupSiblings.reduce(
+        ({ map, remaining }, sibling) => ({
+          map: {
+            ...map,
+            [sibling.uuid]: {
+              ...sibling,
+              articleFragments: sibling.articleFragments.slice(0, remaining)
+            }
+          },
+          remaining: Math.max(remaining - sibling.articleFragments.length, 0)
+        }),
+        {
+          map: {},
+          remaining: collectionCap
+        } as {
+          map: State['groups'];
+          remaining: number;
         }
+      ).map;
+
+      return {
+        ...state,
+        ...cappedSiblings
       };
     }
     default: {

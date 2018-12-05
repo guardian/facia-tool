@@ -437,7 +437,7 @@ describe('Shared selectors', () => {
   describe('groupSiblingsSelector', () => {
     it('selects the sibling groups of a given group id', () => {
       expect(groupSiblingsSelector(state, 'g1').map(({ uuid }) => uuid)).toEqual(
-        ['g2']
+        ['g1', 'g2']
       );
     });
   });
