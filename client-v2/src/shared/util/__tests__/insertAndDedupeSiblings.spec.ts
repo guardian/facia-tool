@@ -66,17 +66,13 @@ describe('insertAndDedupeSiblings', () => {
     expect(
       insertAndDedupeSiblings(['a', 'c'], ['b'], 2, articleFragmentMap, false)
     ).toEqual(['a', 'c']);
-  });
-
-  it('keeps the inserted item if the insert was not for this group if the UUID is the same', () => {
-    expect(
-      insertAndDedupeSiblings(['a', 'c'], ['c'], 2, articleFragmentMap, false)
-    ).toEqual(['a', 'c']);
 
     expect(
       insertAndDedupeSiblings(['a', 'c'], ['d'], 2, articleFragmentMap, false)
     ).toEqual(['a']);
+  });
 
+  it('dedupes duplicates at the inserted index in a different group', () => {
     // added for regression around testing which is the newest insertion
     expect(
       insertAndDedupeSiblings(['a', 'c'], ['d'], 1, articleFragmentMap, false)

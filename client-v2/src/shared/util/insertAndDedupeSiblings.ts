@@ -26,13 +26,10 @@ export const insertAndDedupeSiblings = (
   return uniqBy(
     newSiblingArticleFragments.filter(
       (siblingArticleFragment, i) =>
+        // keep anything that doesn't match on id or is the item we just
+        // inserted
         !insertionIDs.includes(siblingArticleFragment.id) ||
-        // if we're not in the insertion group then keep it if it has the same
-        // UUID (the assumption being we will clear it up with another action
-        // elsewhere), otherwise if this is the one we inserted then keep it
-        ((!isInsertionGroup &&
-          insertionUUIDs.includes(siblingArticleFragment.uuid)) ||
-          (isInsertionGroup && i === index))
+        (isInsertionGroup && i === index)
     ),
     ({ id: dedupeKey }) => dedupeKey
   ).map(({ uuid }) => uuid);
