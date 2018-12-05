@@ -76,5 +76,10 @@ describe('insertAndDedupeSiblings', () => {
     expect(
       insertAndDedupeSiblings(['a', 'c'], ['d'], 2, articleFragmentMap, false)
     ).toEqual(['a']);
+
+    // added for regression around testing which is the newest insertion
+    expect(
+      insertAndDedupeSiblings(['a', 'c'], ['d'], 1, articleFragmentMap, false)
+    ).toEqual(['a']);
   });
 });
