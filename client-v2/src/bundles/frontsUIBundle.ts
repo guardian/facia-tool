@@ -1,4 +1,12 @@
-import { Action, EditorCloseFront, EditorClearOpenFronts, EditorSetOpenFronts, EditorAddFront } from 'types/Action';
+import {
+  Action,
+  EditorCloseFront,
+  EditorClearOpenFronts,
+  EditorSetOpenFronts,
+  EditorAddFront,
+  EditorSelectArticleFragment,
+  EditorClearArticleFragmentSelection
+} from 'types/Action';
 import { State as GlobalState } from 'types/State';
 
 const EDITOR_OPEN_FRONT = 'EDITOR_OPEN_FRONT';
@@ -42,19 +50,21 @@ const editorSetOpenFronts = (frontIds: string[]): EditorSetOpenFronts => ({
 const editorSelectArticleFragment = (
   frontId: string,
   articleFragmentId: string
-) => ({
+): EditorSelectArticleFragment => ({
   type: EDITOR_SELECT_ARTICLE_FRAGMENT,
   payload: { articleFragmentId, frontId }
 });
 
-const editorClearArticleFragmentSelection = (frontId: string) => ({
+const editorClearArticleFragmentSelection = (
+  frontId: string
+): EditorClearArticleFragmentSelection => ({
   type: EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION,
   payload: { frontId }
 });
 
 interface State {
-  frontIds: string[],
-  selectedArticleFragments: { [frontId: string]: string|void }
+  frontIds: string[];
+  selectedArticleFragments: { [frontId: string]: string | void };
 }
 
 const selectEditorFronts = (state: GlobalState) => state.editor.frontIds;

@@ -38,6 +38,12 @@ describe('insertAndDedupeSiblings', () => {
     ).toEqual(['a', 'b', 'c']);
   });
 
+  it('keeps the latest insertion if the items are the same', () => {
+    expect(
+      insertAndDedupeSiblings(['a', 'c'], ['a'], 2, articleFragmentMap)
+    ).toEqual(['c', 'a']);
+  });
+
   it('keeps the first occurence of existing duplicates and removes the rest', () => {
     expect(
       insertAndDedupeSiblings(['c', 'd'], ['a'], 0, articleFragmentMap)
@@ -54,5 +60,21 @@ describe('insertAndDedupeSiblings', () => {
     expect(
       insertAndDedupeSiblings(['a', 'c'], ['d'], 2, articleFragmentMap)
     ).toEqual(['a', 'd']);
+  });
+
+  it('skips inserts when this dedupe is running as part of an insert elsewhere', () => {
+    expect(
+      insertAndDedupeSiblings(['a', 'c'], ['b'], 2, articleFragmentMap, false)
+    ).toEqual(['a', 'c']);
+  });
+
+  it('keeps the inserted item if the insert was not for this group if the UUID is the same', () => {
+    expect(
+      insertAndDedupeSiblings(['a', 'c'], ['c'], 2, articleFragmentMap, false)
+    ).toEqual(['a', 'c']);
+
+    expect(
+      insertAndDedupeSiblings(['a', 'c'], ['d'], 2, articleFragmentMap, false)
+    ).toEqual(['a']);
   });
 });

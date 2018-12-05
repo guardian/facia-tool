@@ -7,6 +7,7 @@ import error from './errorReducer';
 import path from './pathReducer';
 import unpublishedChanges from './unpublishedChangesReducer';
 import clipboard from './clipboardReducer';
+import confirmModal from './confirmModalReducer';
 import editor from '../bundles/frontsUIBundle';
 import staleFronts from './staleFrontsReducer';
 
@@ -20,7 +21,8 @@ const rootReducer = (state: any = {}, action: any) => ({
   clipboard: clipboard(state.clipboard, action, state.shared),
   editor: editor(state.editor, action),
   staleFronts: staleFronts(state.staleFronts, action),
-  form: form(state.form, action)
+  form: form(state.form, action),
+  confirmModal: confirmModal(state.confirmModal, action)
 });
 
 export default rootReducer;

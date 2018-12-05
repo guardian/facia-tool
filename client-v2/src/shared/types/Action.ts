@@ -21,26 +21,28 @@ interface UpdateArticleFragmentMeta {
 }
 
 interface InsertArticleFragmentPayload {
-  payload: {
-    id: string;
-    index: number;
-    articleFragmentId: string;
-  };
+  id: string;
+  index: number;
+  articleFragmentId: string;
 }
 
 type InsertGroupArticleFragment = {
   type: 'SHARED/INSERT_GROUP_ARTICLE_FRAGMENT';
-} & InsertArticleFragmentPayload;
+} & {
+  payload: InsertArticleFragmentPayload;
+};
 
 type InsertSupportingArticleFragment = {
   type: 'SHARED/INSERT_SUPPORTING_ARTICLE_FRAGMENT';
-} & InsertArticleFragmentPayload;
+} & {
+  payload: InsertArticleFragmentPayload;
+};
 
 interface RemoveArticleFragmentPayload {
   payload: {
     id: string;
     articleFragmentId: string;
-  }
+  };
 }
 
 type RemoveGroupArticleFragment = {
@@ -51,6 +53,14 @@ type RemoveSupportingArticleFragment = {
   type: 'SHARED/REMOVE_SUPPORTING_ARTICLE_FRAGMENT';
 } & RemoveArticleFragmentPayload;
 
+interface CapGroupSiblings {
+  type: 'SHARED/CAP_GROUP_SIBLINGS';
+  payload: {
+    id: string;
+    collectionCap: number;
+  };
+}
+
 type Action =
   | GroupsReceived
   | InsertGroupArticleFragment
@@ -60,7 +70,8 @@ type Action =
   | Actions<ExternalArticle>
   | Actions<Collection>
   | ArticleFragmentsReceived
-  | UpdateArticleFragmentMeta;
+  | UpdateArticleFragmentMeta
+  | CapGroupSiblings;
 
 export {
   Action,
@@ -71,5 +82,6 @@ export {
   ArticleFragmentsReceived,
   UpdateArticleFragmentMeta,
   InsertArticleFragmentPayload,
-  RemoveArticleFragmentPayload
+  RemoveArticleFragmentPayload,
+  CapGroupSiblings
 };
