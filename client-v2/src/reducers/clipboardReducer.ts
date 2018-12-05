@@ -1,9 +1,5 @@
 import { Action } from 'types/Action';
 import { insertAndDedupeSiblings } from 'shared/util/insertAndDedupeSiblings';
-import {
-  handleInsertArticleFragment,
-  handleRemoveArticleFragment
-} from 'shared/util/articleFragmentHandlers';
 import { State as SharedState } from '../shared/types/State';
 import { articleFragmentsSelector } from 'shared/selectors/shared';
 
@@ -19,26 +15,15 @@ const clipboard = (
       const { payload } = action;
       return payload;
     }
-    case 'SHARED/REMOVE_ARTICLE_FRAGMENT': {
-      return handleRemoveArticleFragment(
-        state,
-        action,
-        'clipboard',
-        (_, articleFragmentId) => state.filter(id => id !== articleFragmentId)
-      );
+    case 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT': {
+      return state.filter(id => id !== action.payload.articleFragmentId);
     }
-    case 'SHARED/INSERT_ARTICLE_FRAGMENT': {
-      return handleInsertArticleFragment(
+    case 'INSERT_CLIPBOARD_ARTICLE_FRAGMENT': {
+      return insertAndDedupeSiblings(
         state,
-        action,
-        'clipboard',
-        ({ id: articleFragmentId, to: { index } }) =>
-          insertAndDedupeSiblings(
-            state,
-            [articleFragmentId],
-            index,
-            articleFragmentsSelector(prevSharedState)
-          )
+        [action.payload.articleFragmentId],
+        action.payload.index,
+        articleFragmentsSelector(prevSharedState)
       );
     }
 

@@ -5,8 +5,10 @@ import { getContent } from 'services/faciaApi';
 import { Dispatch, ThunkResult } from 'types/Store';
 import {
   ArticleFragmentsReceived,
-  RemoveArticleFragment,
-  InsertArticleFragment,
+  InsertGroupArticleFragment,
+  InsertSupportingArticleFragment,
+  RemoveGroupArticleFragment,
+  RemoveSupportingArticleFragment,
   UpdateArticleFragmentMeta
 } from 'shared/types/Action';
 import { createFragment } from 'shared/util/articleFragment';
@@ -45,29 +47,55 @@ function articleFragmentsReceived(
   };
 }
 
-function removeArticleFragment(
-  parentType: string,
+function removeGroupArticleFragment(
   id: string,
   articleFragmentId: string
-): RemoveArticleFragment {
+): RemoveGroupArticleFragment {
   return {
-    type: 'SHARED/REMOVE_ARTICLE_FRAGMENT',
+    type: 'SHARED/REMOVE_GROUP_ARTICLE_FRAGMENT',
     payload: {
-      parentType,
       id,
       articleFragmentId
     }
   };
 }
 
-const insertArticleFragment = (
-  to: InsertArticleFragment['payload']['to'],
-  id: InsertArticleFragment['payload']['id']
-): InsertArticleFragment => ({
-  type: 'SHARED/INSERT_ARTICLE_FRAGMENT',
+function removeSupportingArticleFragment(
+  id: string,
+  articleFragmentId: string
+): RemoveSupportingArticleFragment {
+  return {
+    type: 'SHARED/REMOVE_SUPPORTING_ARTICLE_FRAGMENT',
+    payload: {
+      id,
+      articleFragmentId
+    }
+  };
+}
+
+const insertGroupArticleFragment = (
+  id: string,
+  index: number,
+  articleFragmentId: string
+): InsertGroupArticleFragment => ({
+  type: 'SHARED/INSERT_GROUP_ARTICLE_FRAGMENT',
   payload: {
-    to,
-    id
+    id,
+    index,
+    articleFragmentId
+  }
+});
+
+const insertSupportingArticleFragment = (
+  id: string,
+  index: number,
+  articleFragmentId: string
+): InsertSupportingArticleFragment => ({
+  type: 'SHARED/INSERT_SUPPORTING_ARTICLE_FRAGMENT',
+  payload: {
+    id,
+    index,
+    articleFragmentId
   }
 });
 
@@ -138,7 +166,9 @@ function createArticleFragment(
 export {
   updateArticleFragmentMeta,
   articleFragmentsReceived,
-  insertArticleFragment,
-  removeArticleFragment,
+  insertGroupArticleFragment,
+  insertSupportingArticleFragment,
+  removeGroupArticleFragment,
+  removeSupportingArticleFragment,
   createArticleFragment
 };

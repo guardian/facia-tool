@@ -1,9 +1,5 @@
 import { Action } from '../types/Action';
 import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
-import {
-  handleRemoveArticleFragment,
-  handleInsertArticleFragment
-} from 'shared/util/articleFragmentHandlers';
 import { State } from './sharedReducer';
 import {
   articleFragmentsSelector,
@@ -23,66 +19,54 @@ const groups = (
         ...payload
       };
     }
-    case 'SHARED/REMOVE_ARTICLE_FRAGMENT': {
-      return handleRemoveArticleFragment(
-        state,
-        action,
-        'group',
-        (id, articleFragmentId) => {
-          const group = state[id];
-          return {
-            ...state,
-            [id]: {
-              ...group,
-              articleFragments: (group.articleFragments || []).filter(
-                afId => afId !== articleFragmentId
-              )
-            }
-          };
+    case 'SHARED/REMOVE_GROUP_ARTICLE_FRAGMENT': {
+      const { id, articleFragmentId } = action.payload;
+      const group = state[id];
+      return {
+        ...state,
+        [id]: {
+          ...group,
+          articleFragments: (group.articleFragments || []).filter(
+            afId => afId !== articleFragmentId
+          )
         }
-      );
+      };
     }
-    case 'SHARED/INSERT_ARTICLE_FRAGMENT': {
-      return handleInsertArticleFragment(
-        state,
-        action,
-        'group',
-        ({ to: { id: toId, index }, id }) => {
-          const group = state[toId];
-          const articleFragmentsMap = articleFragmentsSelector(prevSharedState);
-          const groupSiblings = groupSiblingsSelector(prevSharedState, toId);
-          const dedupedSiblings = groupSiblings.reduce(
-            (acc, sibling) => ({
-              ...acc,
-              [sibling.uuid]: {
-                ...sibling,
-                articleFragments: insertAndDedupeSiblings(
-                  sibling.articleFragments || [],
-                  [id],
-                  index,
-                  articleFragmentsMap,
-                  true // this means no insertions happen here
-                )
-              }
-            }),
-            {} as State['groups']
-          );
-
-          return {
-            ...state,
-            ...dedupedSiblings,
-            [toId]: {
-              ...group,
-              articleFragments: insertAndDedupeSiblings(
-                group.articleFragments || [],
-                [id],
-                index,
-                articleFragmentsMap
-              )
-            }
-          };
-        }
+    case 'SHARED/INSERT_GROUP_ARTICLE_FRAGMENT': {
+      const { id, index, articleFragmentId } = action.payload;
+      const group = state[id];
+      const articleFragmentsMap = articleFragmentsSelector(prevSharedState);
+      const groupSiblings = groupSiblingsSelector(prevSharedState, id);
+      const dedupedSiblings = groupSiblings.reduce(
+        (acc, sibling) => ({
+          ...acc,
+          [sibling.uuid]: {
+            ...sibling,
+            articleFragments: insertAndDedupeSiblings(
+              sibling.articleFragments || [],
+              [articleFragmentId],
+              index,
+              articleFragmentsMap,
+              true // this means no insertions happen here
+            )
+          }
+        }),
+        {} as State['groups']
       );
+
+      return {
+        ...state,
+        ...dedupedSiblings,
+        [id]: {
+          ...group,
+          articleFragments: insertAndDedupeSiblings(
+            group.articleFragments || [],
+            [articleFragmentId],
+            index,
+            articleFragmentsMap
+          )
+        }
+      };
     }
     default: {
       return state;

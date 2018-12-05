@@ -264,11 +264,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     clearArticleFragmentSelection: (frontId: string) =>
       dispatch(editorClearArticleFragmentSelection(frontId)),
     removeCollectionItem: (parentId: string, uuid: string) => {
-      dispatch(removeArticleFragment('collection')('group', parentId, uuid));
+      dispatch(removeArticleFragment('group', parentId, uuid, 'collection'));
     },
     removeSupportingCollectionItem: (parentId: string, uuid: string) => {
       dispatch(
-        removeArticleFragment('collection')('articleFragment', parentId, uuid)
+        removeArticleFragment('articleFragment', parentId, uuid, 'collection')
       );
     }
   };
