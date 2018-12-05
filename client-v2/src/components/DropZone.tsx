@@ -18,13 +18,16 @@ class DropZone extends React.Component<
     style: React.CSSProperties;
     indicatorStyle: React.CSSProperties;
     override?: boolean;
+    dropColor?: string;
   },
   { isHoveredOver: boolean }
 > {
   public static defaultProps = {
     style: {},
-    indicatorStyle: {}
+    indicatorStyle: {},
+    dropColor: 'hsl(0, 0%, 84%)'
   };
+
   public state = {
     isHoveredOver: false
   };
@@ -64,7 +67,7 @@ class DropZone extends React.Component<
           style={{
             ...this.props.indicatorStyle,
             zIndex: this.isActive ? 1 : undefined,
-            backgroundColor: this.isActive ? 'rgba(199, 0, 0)' : undefined
+            backgroundColor: this.isActive ? this.props.dropColor : undefined
           }}
         />
       </DropContainer>

@@ -45,18 +45,23 @@ class Clipboard extends React.Component<ClipboardProps> {
   };
 
   public handleInsert = (e: React.DragEvent, to: PosSpec) => {
-    handleInsertFromEvent(e, insertClipboardArticleFragment, this.props.dispatch, to);
+    handleInsertFromEvent(
+      e,
+      insertClipboardArticleFragment,
+      this.props.dispatch,
+      to
+    );
   };
 
   public removeCollectionItem = (id: string) => {
     this.props.removeCollectionItem(id);
     this.clearArticleFragmentSelectionIfNeeded(id);
-  }
+  };
 
   public removeSupportingCollectionItem = (parentId: string, id: string) => {
     this.props.removeSupportingCollectionItem(parentId, id);
     this.clearArticleFragmentSelectionIfNeeded(id);
-  }
+  };
 
   public clearArticleFragmentSelectionIfNeeded = (id: string) => {
     if (id === this.props.selectedArticleFragmentId) {
@@ -90,6 +95,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                 articleFragmentId={articleFragment.uuid}
                 onMove={this.handleMove}
                 onDrop={this.handleInsert}
+                displayType="polaroid"
               >
                 {(supporting, sProps) => (
                   <CollectionItem
