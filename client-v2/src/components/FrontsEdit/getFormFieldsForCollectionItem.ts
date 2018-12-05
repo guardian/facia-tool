@@ -5,7 +5,6 @@ import { selectors } from 'shared/bundles/collectionsBundle';
 import { selectSharedState } from 'shared/selectors/shared';
 import { State } from 'types/State';
 import {
-  collectionConfigsSelector,
   getCollectionConfig
 } from 'selectors/frontsSelectors';
 import { CollectionConfig } from 'types/FaciaApi';
@@ -31,11 +30,7 @@ const defaultFields = [
 const supportingFields = [
   'headline',
   'customKicker',
-  'href',
-  'primaryImage',
-  'cutoutImage',
   'isBreaking',
-  'showKickerTag',
   'showKickerSection',
   'showKickerCustom'
 ];
@@ -44,8 +39,11 @@ export const getFormFieldsForCollectionItem = (
   state: State,
   article: DerivedArticle,
   isSupporting = false
-) => {
-  const fields = isSupporting ? supportingFields : defaultFields;
+): string[] => {
+  if (isSupporting) {
+    return supportingFields;
+  }
+  const fields = defaultFields.slice();
   const sharedState = selectSharedState(state);
   const parentCollectionConfigId = selectors.selectParentCollectionOfArticleFragment(
     sharedState,

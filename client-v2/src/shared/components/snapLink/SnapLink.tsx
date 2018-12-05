@@ -47,7 +47,6 @@ interface SnapLinkProps extends ContainerProps {
 const SnapLink = ({
   id,
   fade,
-  onClick,
   size = 'default',
   displayType = 'default',
   onDelete,

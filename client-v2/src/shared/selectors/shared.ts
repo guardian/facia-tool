@@ -13,6 +13,7 @@ import {
   ArticleFragmentDenormalised
 } from '../types/Collection';
 import { State } from '../types/State';
+import { DerivedArticle } from 'shared/types/Article';
 
 // Selects the shared part of the application state mounted at its default point, '.shared'.
 const selectSharedState = (rootState: any): State => rootState.shared;
@@ -49,28 +50,39 @@ const createArticleFromArticleFragmentSelector = () =>
   createSelector(
     externalArticleFromArticleFragmentSelector,
     articleFragmentSelector,
-    (externalArticle, articleFragment) => {
-      if (!externalArticle || !articleFragment) {
+    (externalArticle, articleFragment): DerivedArticle | undefined => {
+      if (!articleFragment) {
         return undefined;
       }
 
-      const articleMeta = {...externalArticle.frontsMeta.defaults, ...articleFragment.meta};
+      const articleMeta = externalArticle
+        ? { ...externalArticle.frontsMeta.defaults, ...articleFragment.meta }
+        : articleFragment.meta;
 
       return {
-        ...omit(externalArticle, 'fields', 'frontsMeta'),
-        ...externalArticle.fields,
+        ...omit(externalArticle || {}, 'fields', 'frontsMeta'),
+        ...(externalArticle ? externalArticle.fields : {}),
         ...omit(articleFragment, 'meta'),
         ...articleMeta,
         headline:
-          articleFragment.meta.headline || externalArticle.fields.headline,
+          articleFragment.meta.headline ||
+          (externalArticle ? externalArticle.fields.headline : undefined),
         trailText:
-          articleFragment.meta.trailText || externalArticle.fields.trailText,
-        byline: articleFragment.meta.byline || externalArticle.fields.byline,
+          articleFragment.meta.trailText ||
+          (externalArticle ? externalArticle.fields.trailText : undefined),
+        byline:
+          articleFragment.meta.byline ||
+          (externalArticle ? externalArticle.fields.byline : undefined),
         kicker: articleFragment.meta.customKicker,
-        pillarId: externalArticle.pillarId,
-        thumbnail: getThumbnail(externalArticle, articleMeta),
-        isLive: externalArticle.fields.isLive ? externalArticle.fields.isLive === 'true' : true,
-        firstPublicationDate: externalArticle.fields.firstPublicationDate
+        pillarId: externalArticle ? externalArticle.pillarId : undefined,
+        thumbnail:
+          externalArticle ? getThumbnail(externalArticle, articleMeta) : undefined,
+        isLive:
+          externalArticle && externalArticle.fields.isLive
+            ? externalArticle.fields.isLive === 'true'
+            : true,
+        firstPublicationDate:
+          externalArticle ? externalArticle.fields.firstPublicationDate : undefined
       };
     }
   );
@@ -133,15 +145,24 @@ const createCollectionEditWarningSelector = () => {
   const collectionSelector = createCollectionSelector();
   return createSelector(
     collectionSelector,
-    (
-      collection: Collection | void
-    ): boolean => !!(collection && collection.frontsToolSettings && collection.frontsToolSettings.displayEditWarning)
+    (collection: Collection | void): boolean =>
+      !!(
+        collection &&
+        collection.frontsToolSettings &&
+        collection.frontsToolSettings.displayEditWarning
+      )
   );
 };
 
 const groupNameSelector = (
   _: unknown,
-  { groupName }: { groupName: string; collectionSet: CollectionItemSets; collectionId: string }
+  {
+    groupName
+  }: {
+    groupName: string;
+    collectionSet: CollectionItemSets;
+    collectionId: string;
+  }
 ) => groupName;
 
 const createArticlesInCollectionGroupSelector = () => {

@@ -12,7 +12,7 @@ import { ArticleFragmentMeta } from 'shared/types/Collection';
 import ArticleFragmentForm from './FrontsEdit/ArticleFragmentForm';
 
 interface Props {
-  selectedArticleFragmentId: string | void;
+  selectedArticleFragment: { id: string, isSupporting: boolean } | void;
   updateClipboardArticleFragmentMeta: (
     id: string,
     meta: ArticleFragmentMeta
@@ -21,15 +21,15 @@ interface Props {
 }
 
 const ClipboardMeta = (props: Props) => {
-  const { selectedArticleFragmentId } = props;
-  return selectedArticleFragmentId ? (
+  const { selectedArticleFragment } = props;
+  return selectedArticleFragment ? (
     <ArticleFragmentForm
-      articleFragmentId={selectedArticleFragmentId}
-      key={selectedArticleFragmentId}
-      form={selectedArticleFragmentId}
+      articleFragmentId={selectedArticleFragment.id}
+      key={selectedArticleFragment.id}
+      form={selectedArticleFragment.id}
       onSave={meta => {
         props.updateClipboardArticleFragmentMeta(
-          selectedArticleFragmentId,
+          selectedArticleFragment.id,
           meta
         );
         props.clearArticleFragmentSelection();
@@ -40,7 +40,7 @@ const ClipboardMeta = (props: Props) => {
 };
 
 const mapStateToProps = (state: State) => ({
-  selectedArticleFragmentId: selectEditorArticleFragment(state, clipboardId)
+  selectedArticleFragment: selectEditorArticleFragment(state, clipboardId)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

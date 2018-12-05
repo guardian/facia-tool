@@ -3,16 +3,16 @@ import { ExternalArticle } from './ExternalArticle';
 import { $Diff } from 'utility-types';
 import { ArticleFragmentRootFields, ArticleFragmentMeta } from './Collection';
 
-type DerivedArticle = $Diff<
-  ExternalArticle,
-  { fields: unknown; frontsMeta?: unknown, type: unknown }
+type DerivedArticle = Partial<
+  $Diff<
+    ExternalArticle,
+    { fields: unknown; frontsMeta?: unknown; type: unknown }
+  >
 > &
-  $Diff<CapiArticleFields,
-  { isLive?: unknown }
-  >&
+  Partial<$Diff<CapiArticleFields, { isLive?: unknown }>> &
   ArticleFragmentRootFields &
   ArticleFragmentMeta & {
-    thumbnail?: string | void;
+    thumbnail?: string | undefined;
     kicker?: string;
     isLive: boolean;
   };

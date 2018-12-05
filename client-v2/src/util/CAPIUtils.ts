@@ -54,7 +54,7 @@ function getContributorImage(externalArticle: ExternalArticle) {
 function getThumbnail(
   externalArticle: ExternalArticle,
   meta: ArticleFragmentMeta
-): string | void {
+): string | undefined {
   const { fields } = externalArticle;
   const isReplacingImage = meta.imageReplace;
   const metaImageSrcThumb = isReplacingImage && meta.imageSrcThumb;
@@ -69,7 +69,8 @@ function getThumbnail(
       meta.imageCutoutSrc ||
       getContributorImage(externalArticle) ||
       fields.secureThumbnail ||
-      fields.thumbnail
+      fields.thumbnail ||
+      undefined
     );
   } else if (
     meta.imageSlideshowReplace &&

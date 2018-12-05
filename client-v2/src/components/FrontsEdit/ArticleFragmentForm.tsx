@@ -20,7 +20,7 @@ import {
   articleKickerOptionsSelector
 } from 'shared/selectors/shared';
 import { DerivedArticle } from 'shared/types/Article';
-import { ArticleFragmentMeta } from 'shared/types/Collection';
+import { ArticleFragmentMeta, ArticleFragment } from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
 import HorizontalRule from 'shared/components/layout/HorizontalRule';
@@ -30,15 +30,11 @@ import InputGroup from 'shared/components/input/InputGroup';
 import Row from '../Row';
 import Col from '../Col';
 import { State } from 'types/State';
+import { getFormFieldsForCollectionItem } from './getFormFieldsForCollectionItem';
+import ConditionalField from 'components/inputs/ConditionalField';
+import ConditionalComponent from 'components/layout/ConditionalComponent';
 
-interface ComponentProps {
-  onCancel: () => void;
-  onSave: (meta: ArticleFragmentMeta) => void;
-  imageSlideshowReplace: boolean;
-  showByline: boolean;
-  imageCutoutReplace: boolean;
-  imageHide: boolean;
-  kickerOptions: string[];
+interface ComponentProps extends ContainerProps {
   articleFragmentId: string;
 }
 
@@ -122,11 +118,12 @@ const imageCriteria = {
 
 const renderSlideshow: React.StatelessComponent<
   WrappedFieldArrayProps<ImageData>
-> = ({ fields }) => (
+> = ({ fields }, editableFields: string[]) => (
   <>
     {fields.map((name, index) => (
       <Col key={`${name}-${index}`}>
-        <Field
+        <ConditionalField
+          permittedFields={editableFields}
           name={name}
           component={InputImage}
           size="small"
@@ -148,7 +145,7 @@ const formComponent: React.StatelessComponent<Props> = ({
   initialValues,
   pristine,
   showByline,
-  reset
+  editableFields
 }) => (
   <FormContainer onSubmit={handleSubmit}>
     <CollectionHeadingPinline>
@@ -164,7 +161,8 @@ const formComponent: React.StatelessComponent<Props> = ({
     </CollectionHeadingPinline>
     <FormContent>
       <InputGroup>
-        <Field
+        <ConditionalField
+          permittedFields={editableFields}
           name="headline"
           label="Headline"
           placeholder={initialValues.headline}
@@ -172,28 +170,29 @@ const formComponent: React.StatelessComponent<Props> = ({
           useHeadlineFont
           rows="2"
         />
-        <Field
+        <ConditionalField
+          permittedFields={editableFields}
           name="isBoosted"
           component={InputCheckboxToggle}
           label="Boost"
           type="checkbox"
         />
-        <HorizontalRule noMargin />
-        <Field
+        <ConditionalField
+          permittedFields={editableFields}
           name="showQuotedHeadline"
           component={InputCheckboxToggle}
           label="Quote headline"
           type="checkbox"
         />
-        <HorizontalRule noMargin />
-        <Field
+        <ConditionalField
+          permittedFields={editableFields}
           name="showBoostedHeadline"
           component={InputCheckboxToggle}
           label="Large headline"
           type="checkbox"
         />
-        <HorizontalRule noMargin />
-        <Field
+        <ConditionalField
+          permittedFields={editableFields}
           name="customKicker"
           label="Kicker"
           component={InputText}
@@ -213,21 +212,23 @@ const formComponent: React.StatelessComponent<Props> = ({
             {kickerOption}
           </Button>
         ))}
-        <Field
+        <ConditionalField
+          permittedFields={editableFields}
           name="isBreaking"
           component={InputCheckboxToggle}
           label="Breaking News"
           type="checkbox"
         />
-        <HorizontalRule noMargin />
-        <Field
+        <ConditionalField
+          permittedFields={editableFields}
           name="showByline"
           component={InputCheckboxToggle}
           label="Show Byline"
           type="checkbox"
         />
         {showByline && (
-          <Field
+          <ConditionalField
+            permittedFields={editableFields}
             name="byline"
             label="Byline"
             component={InputText}
@@ -235,8 +236,8 @@ const formComponent: React.StatelessComponent<Props> = ({
             useHeadlineFont
           />
         )}
-        <HorizontalRule noMargin />
-        <Field
+        <ConditionalField
+          permittedFields={editableFields}
           name="trailText"
           label="Standfirst"
           component={InputTextArea}
@@ -247,7 +248,8 @@ const formComponent: React.StatelessComponent<Props> = ({
         <Row>
           <Col>
             <ImageWrapper faded={imageHide}>
-              <Field
+              <ConditionalField
+                permittedFields={editableFields}
                 name="primaryImage"
                 component={InputImage}
                 disabled={imageHide}
@@ -256,7 +258,8 @@ const formComponent: React.StatelessComponent<Props> = ({
           </Col>
           <Col>
             <InputGroup>
-              <Field
+              <ConditionalField
+                permittedFields={editableFields}
                 name="imageHide"
                 component={InputCheckboxToggle}
                 label="Hide media"
@@ -266,11 +269,17 @@ const formComponent: React.StatelessComponent<Props> = ({
             </InputGroup>
           </Col>
         </Row>
-        <HorizontalRule />
+        <ConditionalComponent
+          permittedNames={editableFields}
+          name={['primaryImage', 'imageHide']}
+        >
+          <HorizontalRule />
+        </ConditionalComponent>
         <Row>
           <Col>
             <ImageWrapper faded={!imageCutoutReplace}>
-              <Field
+              <ConditionalField
+                permittedFields={editableFields}
                 name="cutoutImage"
                 component={InputImage}
                 disabled={imageHide}
@@ -279,7 +288,8 @@ const formComponent: React.StatelessComponent<Props> = ({
           </Col>
           <Col>
             <InputGroup>
-              <Field
+              <ConditionalField
+                permittedFields={editableFields}
                 name="imageCutoutReplace"
                 component={InputCheckboxToggle}
                 label="Use cutout"
@@ -290,17 +300,30 @@ const formComponent: React.StatelessComponent<Props> = ({
           </Col>
         </Row>
       </RowContainer>
-      <HorizontalRule />
-      <Field
-        name="imageSlideshowReplace"
-        component={InputCheckboxToggle}
-        label="Slideshow"
-        type="checkbox"
-      />
+      <ConditionalComponent
+        permittedNames={editableFields}
+        name={['cutoutImage', 'imageCutoutReplace']}
+      >
+        <HorizontalRule />
+      </ConditionalComponent>
+      <InputGroup>
+        <ConditionalField
+          permittedFields={editableFields}
+          name="imageSlideshowReplace"
+          component={InputCheckboxToggle}
+          label="Slideshow"
+          type="checkbox"
+        />
+      </InputGroup>
       {imageSlideshowReplace && (
         <RowContainer>
           <SlideshowRow>
-            <FieldArray name="slideshow" component={renderSlideshow} />
+            <FieldArray
+              name="slideshow"
+              component={(props: WrappedFieldArrayProps<ImageData>) =>
+                renderSlideshow(props, editableFields)
+              }
+            />
           </SlideshowRow>
           <SlideshowLabel>Drag and drop up to four images</SlideshowLabel>
         </RowContainer>
@@ -415,11 +438,13 @@ interface ContainerProps extends InterfaceProps {
   imageHide: boolean;
   kickerOptions: string[];
   showByline: boolean;
+  editableFields: string[];
 }
 
 interface InterfaceProps {
   form: string;
   articleFragmentId: string;
+  isSupporting?: boolean;
   onCancel: () => void;
   onSave: (meta: ArticleFragmentMeta) => void;
 }
@@ -430,19 +455,25 @@ const formContainer: React.SFC<ContainerProps> = props => (
 
 const createMapStateToProps = () => {
   const articleSelector = createArticleFromArticleFragmentSelector();
-  return (state: State, props: InterfaceProps) => {
-    const valueSelector = formValueSelector(props.articleFragmentId);
+  return (
+    state: State,
+    { articleFragmentId, isSupporting = false }: InterfaceProps
+  ) => {
+    const valueSelector = formValueSelector(articleFragmentId);
     const article = articleSelector(
       selectSharedState(state),
-      props.articleFragmentId
+      articleFragmentId
     );
 
     return {
       initialValues: getInitialValuesForArticleFragmentForm(article),
+      editableFields: article
+        ? getFormFieldsForCollectionItem(state, article, isSupporting)
+        : [],
       kickerOptions: article
         ? articleKickerOptionsSelector(
             selectSharedState(state),
-            props.articleFragmentId
+            articleFragmentId
           )
         : [],
       imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),

@@ -41,10 +41,11 @@ const editorSetOpenFronts = (frontIds: string[]): EditorSetOpenFronts => ({
 
 const editorSelectArticleFragment = (
   frontId: string,
-  articleFragmentId: string
+  articleFragmentId: string,
+  isSupporting = false
 ) => ({
   type: EDITOR_SELECT_ARTICLE_FRAGMENT,
-  payload: { articleFragmentId, frontId }
+  payload: { articleFragmentId, frontId, isSupporting }
 });
 
 const editorClearArticleFragmentSelection = (frontId: string) => ({
@@ -53,8 +54,13 @@ const editorClearArticleFragmentSelection = (frontId: string) => ({
 });
 
 interface State {
-  frontIds: string[],
-  selectedArticleFragments: { [frontId: string]: string|void }
+  frontIds: string[];
+  selectedArticleFragments: {
+    [frontId: string]: {
+      id: string;
+      isSupporting: boolean;
+    } | void;
+  };
 }
 
 const selectEditorFronts = (state: GlobalState) => state.editor.frontIds;
@@ -107,7 +113,10 @@ const reducer = (state: State = defaultState, action: Action): State => {
         ...state,
         selectedArticleFragments: {
           ...state.selectedArticleFragments,
-          [action.payload.frontId]: action.payload.articleFragmentId
+          [action.payload.frontId]: {
+            id: action.payload.articleFragmentId,
+            isSupporting: action.payload.isSupporting
+          }
         }
       };
     }
