@@ -23,8 +23,12 @@ import {
   reducer as collectionsReducer,
   initialState as collectionsState
 } from 'shared/bundles/collectionsBundle';
+import confirmModal from 'reducers/confirmModalReducer';
+import { endConfirmModal } from 'actions/ConfirmModal';
+import config from 'reducers/configReducer';
 
 const root = (state: any = {}, action: any) => ({
+  confirmModal: confirmModal(state.confirmModal, action),
   clipboard: clipboardReducer(state.clipboard, action, state.shared),
   shared: {
     articleFragments: articleFragmentsReducer(
@@ -34,10 +38,11 @@ const root = (state: any = {}, action: any) => ({
     ),
     collections: collectionsReducer(state.shared.collections, action),
     groups: groupsReducer(state.shared.groups, action, state.shared)
-  }
+  },
+  config: config(state.config, action)
 });
 
-const buildStore = (added: ArticleFragmentSpec) => {
+const buildStore = (added: ArticleFragmentSpec, collectionCap = Infinity) => {
   const groupA: ArticleFragmentSpec[] = [
     ['a', '1', [['g', '7']]],
     ['b', '2', undefined],
@@ -55,6 +60,10 @@ const buildStore = (added: ArticleFragmentSpec) => {
   ];
   const all = [...groupA, ...groupB, ...clipboard, added];
   const state = {
+    confirmModal: null,
+    config: {
+      collectionCap
+    },
     shared: {
       collections: {
         ...collectionsState,
@@ -80,9 +89,16 @@ const insert = async (
   [uuid, id]: [string, string],
   index: number,
   parentType: string,
-  parentId: string
+  parentId: string,
+  collectionCapInfo?: {
+    cap: number;
+    accept: boolean;
+  }
 ) => {
-  const { dispatch, getState } = buildStore([uuid, id, undefined]);
+  const { dispatch, getState } = buildStore(
+    [uuid, id, undefined],
+    collectionCapInfo ? collectionCapInfo.cap : Infinity
+  );
   await dispatch(insertArticleFragment(
     { type: parentType, id: parentId, index },
     parentId,
@@ -92,6 +108,11 @@ const insert = async (
         articleFragmentSelector(selectSharedState(getState()), uuid)
       )
   ) as any);
+
+  if (collectionCapInfo) {
+    dispatch(endConfirmModal(collectionCapInfo.accept));
+  }
+
   return getState();
 };
 
@@ -101,9 +122,16 @@ const move = (
   toType: string,
   toId: string,
   fromType: string,
-  fromId: string
+  fromId: string,
+  collectionCapInfo?: {
+    cap: number;
+    accept: boolean | null;
+  }
 ) => {
-  const { dispatch, getState } = buildStore([uuid, id, undefined]);
+  const { dispatch, getState } = buildStore(
+    [uuid, id, undefined],
+    collectionCapInfo ? collectionCapInfo.cap : Infinity
+  );
   dispatch(moveArticleFragment(
     {
       type: toType,
@@ -118,6 +146,13 @@ const move = (
     },
     'clipboard' // doesn't matter where we persist
   ) as any);
+
+  // setting accept to null will enuse the modal is still "open" during the test
+  // assertions
+  if (collectionCapInfo && collectionCapInfo.accept !== null) {
+    dispatch(endConfirmModal(collectionCapInfo.accept));
+  }
+
   return getState();
 };
 
@@ -177,7 +212,9 @@ describe('ArticleFragments actions', () => {
 
     it('adds to the end when the index is too high', async () => {
       expect(
-        clipboardSelector(await insert(['h', '8'], 100, 'clipboard', 'clipboard'))
+        clipboardSelector(
+          await insert(['h', '8'], 100, 'clipboard', 'clipboard')
+        )
       ).toEqual(['d', 'e', 'f', 'h']);
 
       expect(
@@ -193,6 +230,28 @@ describe('ArticleFragments actions', () => {
     });
   });
 
+  it('enforces collection caps on insert through a modal', async () => {
+    expect(
+      groupArticlesSelector(
+        await insert(['h', '8'], 2, 'group', 'a', {
+          cap: 3,
+          accept: true
+        }),
+        'a'
+      )
+    ).toEqual(['a', 'b', 'h']);
+
+    expect(
+      groupArticlesSelector(
+        await insert(['h', '8'], 2, 'group', 'a', {
+          cap: 3,
+          accept: false
+        }),
+        'a'
+      )
+    ).toEqual(['a', 'b', 'c']);
+  });
+
   describe('move', () => {
     it('removes articles from their previous position', () => {
       const s1 = move(['d', '4'], 0, 'group', 'a', 'clipboard', 'clipboard');
@@ -202,6 +261,30 @@ describe('ArticleFragments actions', () => {
       const s2 = move(['a', '1'], 0, 'clipboard', 'clipboard', 'group', 'a');
       expect(groupArticlesSelector(s2, 'a')).toEqual(['b', 'c']);
       expect(clipboardSelector(s2)).toEqual(['a', 'd', 'e', 'f']);
+    });
+
+    it('enforces collection caps on move through a modal', () => {
+      const s1 = move(['d', '4'], 0, 'group', 'a', 'clipboard', 'clipboard', {
+        cap: 3,
+        accept: true
+      });
+      expect(groupArticlesSelector(s1, 'a')).toEqual(['d', 'a', 'b']);
+      expect(clipboardSelector(s1)).toEqual(['e', 'f']);
+
+      const s2 = move(['d', '4'], 0, 'group', 'a', 'clipboard', 'clipboard', {
+        cap: 3,
+        accept: false
+      });
+      expect(groupArticlesSelector(s2, 'a')).toEqual(['a', 'b', 'c']);
+      expect(clipboardSelector(s2)).toEqual(['d', 'e', 'f']);
+    });
+
+    it('collection caps allow moves within collections without a modal', () => {
+      const s1 = move(['a', '1'], 2, 'group', 'a', 'group', 'a', {
+        cap: 3,
+        accept: null
+      });
+      expect(groupArticlesSelector(s1, 'a')).toEqual(['b', 'a', 'c']);
     });
   });
 });
