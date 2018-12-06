@@ -3,7 +3,7 @@ import {
   createSelectFormFieldsForCollectionItem,
   defaultFields,
   supportingFields,
-} from '../form';
+} from '../formSelectors';
 import { state, stateWithVideoArticle } from 'fixtures/form';
 
 describe('Form utils', () => {

@@ -16,6 +16,7 @@ import {
   selectSharedState,
   articleKickerOptionsSelector
 } from 'shared/selectors/shared';
+import { createSelectFormFieldsForCollectionItem } from 'selectors/formSelectors';
 import { ArticleFragmentMeta } from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
@@ -31,8 +32,7 @@ import ConditionalComponent from 'components/layout/ConditionalComponent';
 import {
   ArticleFragmentFormData,
   getArticleFragmentMetaFromFormValues,
-  getInitialValuesForArticleFragmentForm,
-  createSelectFormFieldsForCollectionItem
+  getInitialValuesForArticleFragmentForm
 } from 'util/form';
 
 interface ComponentProps extends ContainerProps {
@@ -353,10 +353,7 @@ const createMapStateToProps = () => {
   ) => {
     const valueSelector = formValueSelector(articleFragmentId);
     const sharedState = selectSharedState(state);
-    const article = selectArticle(
-      selectSharedState(state),
-      articleFragmentId
-    );
+    const article = selectArticle(selectSharedState(state), articleFragmentId);
 
     return {
       initialValues: getInitialValuesForArticleFragmentForm(article),
