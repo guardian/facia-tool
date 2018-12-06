@@ -54,7 +54,10 @@ const createArticleFromArticleFragmentSelector = () =>
         return undefined;
       }
 
-      const articleMeta = {...externalArticle.frontsMeta.defaults, ...articleFragment.meta};
+      const articleMeta = {
+        ...externalArticle.frontsMeta.defaults,
+        ...articleFragment.meta
+      };
 
       return {
         ...omit(externalArticle, 'fields', 'frontsMeta'),
@@ -69,7 +72,9 @@ const createArticleFromArticleFragmentSelector = () =>
         kicker: articleFragment.meta.customKicker,
         pillarId: externalArticle.pillarId,
         thumbnail: getThumbnail(externalArticle, articleMeta),
-        isLive: externalArticle.fields.isLive ? externalArticle.fields.isLive === 'true' : true,
+        isLive: externalArticle.fields.isLive
+          ? externalArticle.fields.isLive === 'true'
+          : true,
         firstPublicationDate: externalArticle.fields.firstPublicationDate
       };
     }
@@ -133,15 +138,24 @@ const createCollectionEditWarningSelector = () => {
   const collectionSelector = createCollectionSelector();
   return createSelector(
     collectionSelector,
-    (
-      collection: Collection | void
-    ): boolean => !!(collection && collection.frontsToolSettings && collection.frontsToolSettings.displayEditWarning)
+    (collection: Collection | void): boolean =>
+      !!(
+        collection &&
+        collection.frontsToolSettings &&
+        collection.frontsToolSettings.displayEditWarning
+      )
   );
 };
 
 const groupNameSelector = (
   _: unknown,
-  { groupName }: { groupName: string; collectionSet: CollectionItemSets; collectionId: string }
+  {
+    groupName
+  }: {
+    groupName: string;
+    collectionSet: CollectionItemSets;
+    collectionId: string;
+  }
 ) => groupName;
 
 const createArticlesInCollectionGroupSelector = () => {
@@ -219,7 +233,6 @@ const createDemornalisedArticleFragment = (
       }
     : { ...articleFragments[articleFragmentId] };
 
-
 // this creates a map between a group id and it's parent collection id
 // { [groupId: string]: string /* collectionId */ }
 const groupCollectionMapSelector = createSelector(
@@ -269,10 +282,16 @@ const groupSiblingsSelector = (state: State, groupId: string) => {
     state,
     groupId
   );
-  return (collection[collectionItemSet] || [])
-    .filter(id => groupId !== id)
-    .map(id => groupsSelector(state)[id]);
+  return (collection[collectionItemSet] || []).map(
+    id => groupsSelector(state)[id]
+  );
 };
+
+const groupSiblingsArticleCountSelector = (state: State, groupId: string) =>
+  groupSiblingsSelector(state, groupId).reduce(
+    (acc, group) => acc + group.articleFragments.length,
+    0
+  );
 
 export {
   externalArticleFromArticleFragmentSelector,
@@ -290,5 +309,7 @@ export {
   articleKickerOptionsSelector,
   createCollectionEditWarningSelector,
   articleFragmentsSelector,
-  groupSiblingsSelector
+  groupCollectionSelector,
+  groupSiblingsSelector,
+  groupSiblingsArticleCountSelector
 };

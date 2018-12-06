@@ -38,6 +38,12 @@ describe('insertAndDedupeSiblings', () => {
     ).toEqual(['a', 'b', 'c']);
   });
 
+  it('keeps the latest insertion if the items are the same', () => {
+    expect(
+      insertAndDedupeSiblings(['a', 'c'], ['a'], 2, articleFragmentMap)
+    ).toEqual(['c', 'a']);
+  });
+
   it('keeps the first occurence of existing duplicates and removes the rest', () => {
     expect(
       insertAndDedupeSiblings(['c', 'd'], ['a'], 0, articleFragmentMap)
@@ -54,5 +60,22 @@ describe('insertAndDedupeSiblings', () => {
     expect(
       insertAndDedupeSiblings(['a', 'c'], ['d'], 2, articleFragmentMap)
     ).toEqual(['a', 'd']);
+  });
+
+  it('skips inserts when this dedupe is running as part of an insert elsewhere', () => {
+    expect(
+      insertAndDedupeSiblings(['a', 'c'], ['b'], 2, articleFragmentMap, false)
+    ).toEqual(['a', 'c']);
+
+    expect(
+      insertAndDedupeSiblings(['a', 'c'], ['d'], 2, articleFragmentMap, false)
+    ).toEqual(['a']);
+  });
+
+  it('dedupes duplicates at the inserted index in a different group', () => {
+    // added for regression around testing which is the newest insertion
+    expect(
+      insertAndDedupeSiblings(['a', 'c'], ['d'], 1, articleFragmentMap, false)
+    ).toEqual(['a']);
   });
 });

@@ -10,7 +10,8 @@ import {
 import { ArticleFragment } from 'shared/types/Collection';
 import {
   selectSharedState,
-  articleFragmentsSelector
+  articleFragmentsSelector,
+  groupSiblingsArticleCountSelector
 } from 'shared/selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
@@ -21,6 +22,10 @@ import {
   insertClipboardArticleFragment,
   removeClipboardArticleFragment
 } from './Clipboard';
+import { State } from 'types/State';
+import { startConfirmModal } from './ConfirmModal';
+import { capGroupSiblings } from 'shared/actions/Groups';
+import { collectionCapSelector } from 'selectors/configSelectors';
 
 type InsertActionCreator = (
   id: string,
@@ -28,28 +33,141 @@ type InsertActionCreator = (
   articleFragmentId: string
 ) => Action;
 
+type InsertThunkActionCreator = (
+  persistTo: 'collection' | 'clipboard'
+) => (
+  id: string,
+  index: number,
+  articleFragmentId: string,
+  removeAction: Action | null
+) => ThunkResult<void>;
+
+// Creates a thunk action creator from a plain action creator that also allows
+// passing a persistence location
+// we need to create thunks for these to help TS as we may be dispatching either
+// an Action or a ThunkAction in some cases. The redux-thunk types don't support
+// this so we can make a thunk instead
+// the persistence stuff needs to be dynamic as we sometimes need to insert an
+// article fragment and save to clipboard and sometimes save to collection
+// depending on the location of that articlefragment
+const createInsertArticleFragmentThunk = (action: InsertActionCreator) => (
+  persistTo: 'collection' | 'clipboard'
+) => (
+  id: string,
+  index: number,
+  articleFragmentId: string,
+  removeAction: Action | null
+) => (dispatch: Dispatch) => {
+  if (removeAction) {
+    dispatch(removeAction);
+  }
+  dispatch(
+    addPersistMetaToAction(action, {
+      persistTo,
+      key: 'articleFragmentId'
+    })(id, index, articleFragmentId)
+  );
+};
+
+// Creates a thunk with persistence that will launch a confirm modal if required
+// when adding to a group, otherwise will just run the action
+// the confirm modal links to the collection caps
+const maybeInsertGroupArticleFragment = (
+  persistTo: 'collection' | 'clipboard'
+) => (
+  id: string,
+  index: number,
+  articleFragmentId: string,
+  removeAction: Action | null
+) => {
+  return (dispatch: Dispatch, getState: () => State) => {
+    // run the action and put the article fragment into the group
+    // if this was triggered with a move, this will be the same article fragment
+    // with the same uuid as the moved article fragment and until the modal
+    // confirmation / remove happens, there will be two with the same UUID in
+    // the state somewhere
+    // We can't just look at the amount of article fragments currently in the
+    // collection and show a modal if it's full because the reducer logic could
+    // result in some deduping or other logic, meaning an insertion into a full
+    // group may not result in that group getting any bigger, and hence won't
+    // require a modal!
+    dispatch(insertGroupArticleFragment(id, index, articleFragmentId));
+
+    const state = getState();
+
+    const collectionCap = collectionCapSelector(getState());
+    const collectionArticleCount = groupSiblingsArticleCountSelector(
+      selectSharedState(state),
+      id
+    );
+
+    if (collectionCap && collectionArticleCount > collectionCap) {
+      // if there are too many fragments now then launch a modal to ask the user
+      // what action to take
+      dispatch(
+        startConfirmModal(
+          'Collection limit',
+          `You can have a maximum of ${collectionCap} articles in a collection.
+          You can proceed, and the last article in the collection will be
+          removed automatically, or you can cancel and remove articles from the
+          collection yourself.`,
+          // if the user accepts then remove the moved item (if there was one),
+          // remove article fragments past the cap count and finally persist
+          [
+            ...(removeAction ? [removeAction] : []),
+            addPersistMetaToAction(capGroupSiblings, {
+              id: articleFragmentId,
+              persistTo,
+              applyBeforeReducer: true
+            })(id, collectionCap)
+          ],
+          // otherwise just undo the insertion and don't persist as nothing
+          // has actually changed
+          [removeGroupArticleFragment(id, articleFragmentId)]
+        )
+      );
+    } else {
+      // if we're not going over the cap then just remove a moved article if
+      // needed and insert the new article
+      if (removeAction) {
+        dispatch(removeAction);
+      }
+      dispatch(
+        addPersistMetaToAction(insertGroupArticleFragment, {
+          key: 'articleFragmentId',
+          persistTo
+        })(id, index, articleFragmentId)
+      );
+    }
+  };
+};
+
+// This maps a type string such as `clipboard` to an insert action creator and
+// if persistTo is passed then the action creator will add persist meta
+// these are expected to be thunks that can be passed actions to run if an
+// insert was possible
 const getInsertionActionCreatorFromType = (
   type: string,
-  persistTo?: 'collection' | 'clipboard'
+  persistTo: 'collection' | 'clipboard'
 ) => {
-  const actionMap: { [type: string]: InsertActionCreator | undefined } = {
-    articleFragment: insertSupportingArticleFragment,
-    group: insertGroupArticleFragment,
-    clipboard: insertClipboardArticleFragment
+  const actionMap: { [type: string]: InsertThunkActionCreator | undefined } = {
+    articleFragment: createInsertArticleFragmentThunk(
+      insertSupportingArticleFragment
+    ),
+    group: maybeInsertGroupArticleFragment,
+    clipboard: createInsertArticleFragmentThunk(insertClipboardArticleFragment)
   };
 
   const actionCreator = actionMap[type] || null;
 
-  return actionCreator && persistTo
-    ? addPersistMetaToAction(actionCreator, {
-        persistTo,
-        key: 'articleFragmentId'
-      })
-    : actionCreator;
+  // partially apply the action creator with it's persist logic
+  return actionCreator && actionCreator(persistTo);
 };
 
 type RemoveActionCreator = (id: string, articleFragmentId: string) => Action;
 
+// this maps a type string such as `group` to a remove action creator and if
+// persistTo is passed then add persist meta
 const getRemoveActionCreatorFromType = (
   type: string,
   persistTo?: 'collection' | 'clipboard'
@@ -65,7 +183,8 @@ const getRemoveActionCreatorFromType = (
   return actionCreator && persistTo
     ? addPersistMetaToAction(actionCreator, {
         persistTo,
-        key: 'articleFragmentId'
+        key: 'articleFragmentId',
+        applyBeforeReducer: true
       })
     : actionCreator;
 };
@@ -100,7 +219,7 @@ const insertArticleFragmentWithCreate = (
     dispatch(createArticleFragment(id))
       .then(fragment => {
         if (fragment) {
-          dispatch(insertActionCreator(to.id, to.index, fragment.uuid));
+          dispatch(insertActionCreator(to.id, to.index, fragment.uuid, null));
         }
       })
       .catch(() => {
@@ -138,7 +257,7 @@ const moveArticleFragment = (
       persistTo
     );
 
-    if (!insertActionCreator || (!removeActionCreator && from)) {
+    if (!insertActionCreator) {
       return;
     }
 
@@ -153,11 +272,18 @@ const moveArticleFragment = (
 
     if (!from) {
       dispatch(articleFragmentsReceived([parent, ...supporting]));
-    } else {
-      dispatch((removeActionCreator as RemoveActionCreator)(from.id, fragment.uuid));
     }
 
-    dispatch(insertActionCreator(to.id, to.index, parent.uuid));
+    dispatch(
+      insertActionCreator(
+        to.id,
+        to.index,
+        parent.uuid,
+        from && removeActionCreator
+          ? removeActionCreator(from.id, fragment.uuid)
+          : null
+      )
+    );
   };
 };
 

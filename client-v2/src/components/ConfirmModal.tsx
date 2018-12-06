@@ -1,0 +1,91 @@
+import React from 'react';
+import Modal from 'react-modal';
+import { State } from 'types/State';
+import {
+  confirmModalIsOpenSelector,
+  confirmModalTitleSelector,
+  confirmModalDescriptionSelector
+} from 'selectors/confirmModalSelectors';
+import { Dispatch } from 'types/Store';
+import { endConfirmModal } from 'actions/ConfirmModal';
+import { connect } from 'react-redux';
+import styled from 'styled-components';
+import ButtonDefault from 'shared/components/input/ButtonDefault';
+
+type StyledModalProps = Modal.Props & {
+  width?: number;
+};
+
+const StyledModal = styled(Modal)`
+  position: absolute;
+  top: 40px;
+  font-size: 14px;
+  left: 50%;
+  background: rgb(255, 255, 255);
+  overflow: auto;
+  outline: none;
+  padding: 20px;
+  margin-left: -${({ width = 400 }: StyledModalProps) => width / 2}px;
+  min-height: 200px;
+  width: ${({ width = 400 }: StyledModalProps) => width}px;
+`;
+
+const Actions = styled.div`
+  border-top: 1px solid #ccc;
+  margin-top: 1.5em;
+  padding-top: 1.5em;
+  text-align: right;
+`;
+
+interface ConfirmModalProps {
+  title: string;
+  description: string;
+  isOpen: boolean;
+  onAccept: () => void;
+  onReject: () => void;
+}
+
+const ConfirmModal = ({
+  title,
+  description,
+  isOpen,
+  onAccept,
+  onReject
+}: ConfirmModalProps) => (
+  <StyledModal
+    style={{
+      overlay: {
+        backgroundColor: 'rgba(0, 0, 0, 0.75)'
+      }
+    }}
+    isOpen={isOpen}
+    onRequestClose={onReject}
+  >
+    <h1>{title}</h1>
+    {description && <p>{description}</p>}
+    <Actions>
+      <ButtonDefault size="l" inline pill onClick={onReject}>
+        Cancel
+      </ButtonDefault>
+      <ButtonDefault size="l" inline pill priority="primary" onClick={onAccept}>
+        Proceed
+      </ButtonDefault>
+    </Actions>
+  </StyledModal>
+);
+
+const mapStateToProps = (state: State) => ({
+  isOpen: confirmModalIsOpenSelector(state),
+  title: confirmModalTitleSelector(state),
+  description: confirmModalDescriptionSelector(state)
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  onAccept: () => dispatch(endConfirmModal(true)),
+  onReject: () => dispatch(endConfirmModal(false))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ConfirmModal);

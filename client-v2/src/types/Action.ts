@@ -64,7 +64,7 @@ type InsertSupportingArticleFragment = SharedInsertSupportingArticleFragment &
   ActionPersistMeta;
 type InsertClipboardArticleFragment = {
   type: 'INSERT_CLIPBOARD_ARTICLE_FRAGMENT';
-} & InsertArticleFragmentPayload;
+} & { payload: InsertArticleFragmentPayload };
 
 type RemoveGroupArticleFragment = SharedRemoveGroupArticleFragment &
   ActionPersistMeta;
@@ -157,6 +157,20 @@ interface FetchVisibleArticlesSuccess {
   };
 }
 
+interface StartConfirm {
+  type: 'MODAL/START_CONFIRM';
+  payload: {
+    title: string;
+    description: string;
+    onAccept: Action[];
+    onReject: Action[];
+  };
+}
+
+interface EndConfirm {
+  type: 'MODAL/END_CONFIRM';
+}
+
 type Action =
   | ConfigReceivedAction
   | FrontsConfigReceivedAction
@@ -184,7 +198,9 @@ type Action =
   | EditorClearArticleFragmentSelection
   | RecordStaleFronts
   | BatchAction
-  | FetchVisibleArticlesSuccess;
+  | FetchVisibleArticlesSuccess
+  | StartConfirm
+  | EndConfirm;
 
 export {
   ActionError,
@@ -214,5 +230,7 @@ export {
   EditorCloseFront,
   EditorSelectArticleFragment,
   EditorClearArticleFragmentSelection,
-  RecordStaleFronts
+  RecordStaleFronts,
+  StartConfirm,
+  EndConfirm
 };

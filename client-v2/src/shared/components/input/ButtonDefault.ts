@@ -138,9 +138,6 @@ export default styled(`button`)`
   &:focus {
     outline: transparent;
   }
-  & + & {
-    margin-left: 5px;
-  }
 
   :not(:first-child) {
     margin-left: ${({ inline }) => (inline ? '5px' : '0')};

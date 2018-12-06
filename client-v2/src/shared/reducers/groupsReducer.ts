@@ -5,6 +5,8 @@ import {
   articleFragmentsSelector,
   groupSiblingsSelector
 } from 'shared/selectors/shared';
+import { capGroupArticleFragments } from 'shared/util/capGroupArticleFragments';
+import keyBy from 'lodash/keyBy';
 
 const groups = (
   state: State['groups'] = {},
@@ -34,7 +36,6 @@ const groups = (
     }
     case 'SHARED/INSERT_GROUP_ARTICLE_FRAGMENT': {
       const { id, index, articleFragmentId } = action.payload;
-      const group = state[id];
       const articleFragmentsMap = articleFragmentsSelector(prevSharedState);
       const groupSiblings = groupSiblingsSelector(prevSharedState, id);
       const dedupedSiblings = groupSiblings.reduce(
@@ -47,7 +48,7 @@ const groups = (
               [articleFragmentId],
               index,
               articleFragmentsMap,
-              true // this means no insertions happen here
+              sibling.uuid === id // this means no insertions happen here if it's not this group
             )
           }
         }),
@@ -56,16 +57,20 @@ const groups = (
 
       return {
         ...state,
-        ...dedupedSiblings,
-        [id]: {
-          ...group,
-          articleFragments: insertAndDedupeSiblings(
-            group.articleFragments || [],
-            [articleFragmentId],
-            index,
-            articleFragmentsMap
-          )
-        }
+        ...dedupedSiblings
+      };
+    }
+    case 'SHARED/CAP_GROUP_SIBLINGS': {
+      const { id, collectionCap } = action.payload;
+      const groupSiblings = groupSiblingsSelector(prevSharedState, id);
+      const cappedSiblings = keyBy(
+        capGroupArticleFragments(groupSiblings, collectionCap),
+        ({ uuid }) => uuid
+      );
+
+      return {
+        ...state,
+        ...cappedSiblings
       };
     }
     default: {
