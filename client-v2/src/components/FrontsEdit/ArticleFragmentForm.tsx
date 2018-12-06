@@ -229,6 +229,7 @@ const formComponent: React.StatelessComponent<Props> = ({
             name="showKickerTag"
             component={InputButton}
             buttonText={kickerOptions.webTitle}
+            selected={showKickerTag}
             onClick={() => {
               change('showKickerTag', true)
               change('showKickerSection', false)
@@ -240,6 +241,7 @@ const formComponent: React.StatelessComponent<Props> = ({
           <Field
             name="showKickerSection"
             component={InputButton}
+            selected={showKickerSection}
             buttonText={kickerOptions.sectionName}
             onClick={() => {
               change('showKickerSection', true)
