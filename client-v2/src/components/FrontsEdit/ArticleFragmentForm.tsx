@@ -169,6 +169,20 @@ const formComponent: React.StatelessComponent<Props> = ({
         />
         <ConditionalField
           permittedFields={editableFields}
+          name="showLivePlayable"
+          component={InputCheckboxToggle}
+          label="Show updates"
+          type="checkbox"
+        />
+        <ConditionalField
+          permittedFields={editableFields}
+          name="showMainVideo"
+          component={InputCheckboxToggle}
+          label="Show video"
+          type="checkbox"
+        />
+        <ConditionalField
+          permittedFields={editableFields}
           name="customKicker"
           label="Kicker"
           component={InputText}

@@ -25,6 +25,7 @@ const ClipboardMeta = (props: Props) => {
   return selectedArticleFragment ? (
     <ArticleFragmentForm
       articleFragmentId={selectedArticleFragment.id}
+      isSupporting={selectedArticleFragment.isSupporting}
       key={selectedArticleFragment.id}
       form={selectedArticleFragment.id}
       onSave={meta => {

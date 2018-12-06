@@ -12,7 +12,6 @@ import { State } from 'types/State';
 
 export const defaultFields = [
   'headline',
-  'isBoosted',
   'showQuotedHeadline',
   'showBoostedHeadline',
   'customKicker',
