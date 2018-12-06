@@ -5,6 +5,8 @@ import {
   articleFragmentsSelector,
   groupSiblingsSelector
 } from 'shared/selectors/shared';
+import { capGroupArticleFragments } from 'shared/util/capGroupArticleFragments';
+import keyBy from 'lodash/keyBy';
 
 const groups = (
   state: State['groups'] = {},
@@ -61,25 +63,10 @@ const groups = (
     case 'SHARED/CAP_GROUP_SIBLINGS': {
       const { id, collectionCap } = action.payload;
       const groupSiblings = groupSiblingsSelector(prevSharedState, id);
-      const cappedSiblings = groupSiblings.reduce(
-        ({ map, remaining }, sibling) => ({
-          map: {
-            ...map,
-            [sibling.uuid]: {
-              ...sibling,
-              articleFragments: sibling.articleFragments.slice(0, remaining)
-            }
-          },
-          remaining: Math.max(remaining - sibling.articleFragments.length, 0)
-        }),
-        {
-          map: {},
-          remaining: collectionCap
-        } as {
-          map: State['groups'];
-          remaining: number;
-        }
-      ).map;
+      const cappedSiblings = keyBy(
+        capGroupArticleFragments(groupSiblings, collectionCap),
+        ({ uuid }) => uuid
+      );
 
       return {
         ...state,
