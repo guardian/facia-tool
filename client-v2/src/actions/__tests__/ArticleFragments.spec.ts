@@ -1,185 +1,211 @@
-jest.mock('uuid/v4', () => jest.fn(() => 'uuid'));
-
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import { enableBatching } from 'redux-batched-actions';
 import {
-  insertClipboardArticleFragment,
-  copyClipboardArticleFragment,
-  insertArticleFragment,
-  copyArticleFragment
-} from '../ArticleFragments';
+  insertGroupArticleFragment,
+  insertSupportingArticleFragment
+} from '../../shared/actions/ArticleFragments';
 import clipboardReducer from '../../reducers/clipboardReducer';
 import groupsReducer from '../../shared/reducers/groupsReducer';
 import articleFragmentsReducer from '../../shared/reducers/articleFragmentsReducer';
-import { InsertActionCreator } from 'util/collectionUtils';
+import {
+  createGroupArticlesSelector,
+  createSupportingArticlesSelector
+} from '../../shared/selectors/shared';
+import { clipboardSelector as innerClipboardSelector } from '../../selectors/frontsSelectors';
+import {
+  createArticleFragmentStateFromSpec,
+  ArticleFragmentSpec,
+  specToFragment
+} from './utils';
+import { moveArticleFragment } from 'actions/ArticleFragments';
+import {
+  reducer as collectionsReducer,
+  initialState as collectionsState
+} from 'shared/bundles/collectionsBundle';
+import { insertClipboardArticleFragment } from 'actions/Clipboard';
+import { Action } from 'types/Action';
 
-const root = (state: any, action: any) => ({
-  clipboard: clipboardReducer(state.clipboard, action),
+const root = (state: any = {}, action: any) => ({
+  clipboard: clipboardReducer(state.clipboard, action, state.shared),
   shared: {
     articleFragments: articleFragmentsReducer(
       state.shared.articleFragments,
-      action
+      action,
+      state.shared
     ),
-    groups: groupsReducer(state.shared.groups, action)
+    collections: collectionsReducer(state.shared.collections, action),
+    groups: groupsReducer(state.shared.groups, action, state.shared)
   }
 });
 
-type ArticleFragmentSpec = [string, string];
-
-interface ArticleFragmentMap {
-  [key: string]: {
-    uuid: string;
-    id: string;
-  };
-}
-
-interface InitialState {
-  shared: {
-    articleFragments: ArticleFragmentMap;
-  };
-}
-
-type StateBuilder = (
-  state: InitialState,
-  existing: ArticleFragmentSpec[]
-) => object;
-
-const buildStore = (
-  appendToInitialState: StateBuilder,
-  existing: ArticleFragmentSpec[],
-  added: ArticleFragmentSpec
-) =>
-  createStore(
-    enableBatching(root),
-    appendToInitialState(
-      {
-        shared: {
-          articleFragments: [...existing, added].reduce(
-            (acc, [uuid, id]) => ({ ...acc, [uuid]: { uuid, id } }),
-            {} as ArticleFragmentMap
-          )
+const buildStore = (added: ArticleFragmentSpec) => {
+  const groupA: ArticleFragmentSpec[] = [
+    ['a', '1', [['g', '7']]],
+    ['b', '2', undefined],
+    ['c', '3', undefined]
+  ];
+  const groupB: ArticleFragmentSpec[] = [
+    ['i', '9', [['g', '7']]],
+    ['j', '10', undefined],
+    ['k', '11', undefined]
+  ];
+  const clipboard: ArticleFragmentSpec[] = [
+    ['d', '4', undefined],
+    ['e', '5', undefined],
+    ['f', '6', undefined]
+  ];
+  const all = [...groupA, ...groupB, ...clipboard, added];
+  const state = {
+    shared: {
+      collections: {
+        ...collectionsState,
+        data: {
+          a: {
+            id: 'a',
+            live: ['a', 'b']
+          }
         }
       },
-      existing
-    ),
-    applyMiddleware(thunk)
-  );
+      articleFragments: createArticleFragmentStateFromSpec(all),
+      groups: {
+        a: { articleFragments: groupA.map(([uuid]) => uuid), uuid: 'a' },
+        b: { articleFragments: groupB.map(([uuid]) => uuid), uuid: 'b' }
+      }
+    },
+    clipboard: clipboard.map(([uuid]) => uuid)
+  };
+  return createStore(root, state as any, applyMiddleware(thunk));
+};
 
-const testAddActions = (existing: ArticleFragmentSpec[]) => (
-  appendToInitialState: StateBuilder
-) => (actionCreator: InsertActionCreator) => (
-  [uuid, id]: ArticleFragmentSpec,
+const insert = (
+  [uuid, id]: [string, string],
   index: number,
   parentType: string,
   parentId: string
 ) => {
-  const { dispatch, getState } = buildStore(appendToInitialState, existing, [
-    uuid,
-    id
-  ]);
-  dispatch(actionCreator(
-    parentType,
-    parentId,
-    { uuid, id, meta: {}, frontPublicationDate: Date.now() },
-    index
+  const insertActionMap: {
+    [key: string]: (
+      id: string,
+      index: number,
+      articleFragmentId: string
+    ) => Action;
+  } = {
+    clipboard: insertClipboardArticleFragment,
+    articleFragment: insertSupportingArticleFragment,
+    group: insertGroupArticleFragment
+  };
+  const { dispatch, getState } = buildStore([uuid, id, undefined]);
+  dispatch(insertActionMap[parentType](parentId, index, uuid) as any);
+  return getState();
+};
+
+const move = (
+  [uuid, id]: [string, string],
+  index: number,
+  toType: string,
+  toId: string,
+  fromType: string,
+  fromId: string
+) => {
+  const { dispatch, getState } = buildStore([uuid, id, undefined]);
+  dispatch(moveArticleFragment(
+    {
+      type: toType,
+      id: toId,
+      index
+    },
+    specToFragment([uuid, id, undefined]),
+    {
+      id: fromId,
+      type: fromType,
+      index: -1 // this doesn't matter
+    },
+    'clipboard' // doesn't matter where we persist
   ) as any);
   return getState();
 };
 
-const createAdder = testAddActions([['a', '1'], ['b', '2'], ['c', '3']]);
-const clipboardAdder = createAdder((state, existing) => ({
-  ...state,
-  clipboard: existing.map(([uuid]) => uuid)
-}));
-const clipboardInserter = clipboardAdder(insertClipboardArticleFragment);
-const clipboardCopier = clipboardAdder(copyClipboardArticleFragment);
+const clipboardSelector = (state: any) => innerClipboardSelector(state);
 
-const groupAdder = createAdder((state, existing) => ({
-  ...state,
-  shared: {
-    ...state.shared,
-    groups: {
-      a: {
-        articleFragments: existing.map(([uuid]) => uuid)
-      }
-    }
-  }
-}));
-const groupInserter = groupAdder(insertArticleFragment);
-const groupCopier = groupAdder(copyArticleFragment);
+const groupArticlesSelectorInner = createGroupArticlesSelector();
+const groupArticlesSelector = (state: any, groupId: string) =>
+  groupArticlesSelectorInner(state, { groupId }).map(({ uuid }) => uuid);
 
-const testInsertingForClipboardAndGroup = (
-  articleFragmentSpec: ArticleFragmentSpec,
-  index: number,
-  parentId?: string
-) => (equal: string[]) => {
-  expect(
-    clipboardInserter(
-      articleFragmentSpec,
-      index,
-      parentId ? 'articleFragment' : 'clipboard',
-      parentId || 'clipboard'
-    ).clipboard
-  ).toEqual(equal);
-  expect(
-    groupInserter(
-      articleFragmentSpec,
-      index,
-      parentId ? 'articleFragment' : 'group',
-      parentId || 'a'
-    ).shared.groups.a.articleFragments
-  ).toEqual(equal);
-};
-
-const testCopyingForClipboardAndGroup = (
-  articleFragmentSpec: ArticleFragmentSpec,
-  index: number,
-  parentId?: string
-) => (equal: string[]) => {
-  expect(
-    clipboardCopier(
-      articleFragmentSpec,
-      index,
-      parentId ? 'articleFragment' : 'clipboard',
-      parentId || 'clipboard'
-    ).clipboard
-  ).toEqual(equal);
-  expect(
-    groupCopier(
-      articleFragmentSpec,
-      index,
-      parentId ? 'articleFragment' : 'group',
-      parentId || 'a'
-    ).shared.groups.a.articleFragments
-  ).toEqual(equal);
-};
+const supportingArticlesSelectorInner = createSupportingArticlesSelector();
+const supportingArticlesSelector = (state: any, articleFragmentId: string) =>
+  supportingArticlesSelectorInner(state, { articleFragmentId }).map(
+    ({ uuid }) => uuid
+  );
 
 describe('ArticleFragments actions', () => {
-  it('adds article fragments that exist in the state', () => {
-    testInsertingForClipboardAndGroup(['d', '4'], 2)(['a', 'b', 'd', 'c']);
+  describe('insert', () => {
+    it('adds article fragments that exist in the state', () => {
+      expect(
+        clipboardSelector(insert(['h', '8'], 2, 'clipboard', 'clipboard'))
+      ).toEqual(['d', 'e', 'h', 'f']);
+
+      expect(
+        groupArticlesSelector(insert(['h', '8'], 2, 'group', 'a'), 'a')
+      ).toEqual(['a', 'b', 'h', 'c']);
+
+      expect(
+        supportingArticlesSelector(
+          insert(['h', '8'], 2, 'articleFragment', 'a'),
+          'a'
+        )
+      ).toEqual(['g', 'h']);
+    });
+
+    it('moves existing articles when duplicates are added', () => {
+      expect(
+        clipboardSelector(insert(['h', '6'], 0, 'clipboard', 'clipboard'))
+      ).toEqual(['h', 'd', 'e']);
+
+      expect(
+        groupArticlesSelector(insert(['h', '3'], 0, 'group', 'a'), 'a')
+      ).toEqual(['h', 'a', 'b']);
+
+      expect(
+        supportingArticlesSelector(
+          insert(['h', '7'], 0, 'articleFragment', 'a'),
+          'a'
+        )
+      ).toEqual(['h']);
+    });
+
+    it('dedupe across groups in the same collection', () => {
+      const state = insert(['h', '3'], 0, 'group', 'b');
+      expect(groupArticlesSelector(state, 'a')).toEqual(['a', 'b']);
+      expect(groupArticlesSelector(state, 'b')).toEqual(['h', 'i', 'j', 'k']);
+    });
+
+    it('adds to the end when the index is too high', () => {
+      expect(
+        clipboardSelector(insert(['h', '8'], 100, 'clipboard', 'clipboard'))
+      ).toEqual(['d', 'e', 'f', 'h']);
+
+      expect(
+        groupArticlesSelector(insert(['h', '8'], 100, 'group', 'a'), 'a')
+      ).toEqual(['a', 'b', 'c', 'h']);
+
+      expect(
+        supportingArticlesSelector(
+          insert(['h', '8'], 100, 'articleFragment', 'a'),
+          'a'
+        )
+      ).toEqual(['g', 'h']);
+    });
   });
 
-  it('creates article fragments that exist in the state', () => {
-    // mocking uuid/v4 to always return `uuid`
-    testCopyingForClipboardAndGroup(['d', '4'], 2)(['a', 'b', 'uuid', 'c']);
-  });
+  describe('move', () => {
+    it('removes articles from their previous position', () => {
+      const s1 = move(['d', '4'], 0, 'group', 'a', 'clipboard', 'clipboard');
+      expect(groupArticlesSelector(s1, 'a')).toEqual(['d', 'a', 'b', 'c']);
+      expect(clipboardSelector(s1)).toEqual(['e', 'f']);
 
-  it('moves existing articles when duplicates are added', () => {
-    testInsertingForClipboardAndGroup(['d', '2'], 0)(['d', 'a', 'c']);
-  });
-
-  it('copies existing articles when duplicates are added', () => {
-    testCopyingForClipboardAndGroup(['d', '2'], 0)(['uuid', 'a', 'c']);
-  });
-
-  it('does not dedupe when adding to supporting', () => {
-    testInsertingForClipboardAndGroup(['d', '2'], 0, 'a')(['a', 'b', 'c']);
-    testCopyingForClipboardAndGroup(['d', '2'], 0, 'a')(['a', 'b', 'c']);
-  });
-
-  it('adding at an index that is too high adds to the end', () => {
-    testInsertingForClipboardAndGroup(['d', '4'], 9)(['a', 'b', 'c', 'd']);
-    testCopyingForClipboardAndGroup(['d', '4'], 9)(['a', 'b', 'c', 'uuid']);
+      const s2 = move(['a', '1'], 0, 'clipboard', 'clipboard', 'group', 'a');
+      expect(groupArticlesSelector(s2, 'a')).toEqual(['b', 'c']);
+      expect(clipboardSelector(s2)).toEqual(['a', 'd', 'e', 'f']);
+    });
   });
 });

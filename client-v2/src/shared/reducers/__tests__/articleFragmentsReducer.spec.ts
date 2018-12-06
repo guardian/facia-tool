@@ -4,18 +4,30 @@ import { stateWithClipboard } from 'fixtures/clipboard';
 
 describe('articleFragmentsReducer', () => {
   it('should update the article fragment meta', () => {
-    expect(reducer(stateWithClipboard.shared.articleFragments as any, updateArticleFragmentMeta('article', {
-      headline: 'headline'
-    })).article.meta).toEqual({
+    expect(
+      reducer(
+        stateWithClipboard.shared.articleFragments as any,
+        updateArticleFragmentMeta('article', {
+          headline: 'headline'
+        }),
+        stateWithClipboard.shared
+      ).article.meta
+    ).toEqual({
       headline: 'headline'
     });
   });
-  it('shouldn\'t overwrite properties', () => {
-    expect(reducer(stateWithClipboard.shared.articleFragments as any, updateArticleFragmentMeta('article2', {
-      headline: 'headline'
-    })).article2.meta).toEqual({
+  it("shouldn't overwrite properties", () => {
+    expect(
+      reducer(
+        stateWithClipboard.shared.articleFragments as any,
+        updateArticleFragmentMeta('article2', {
+          headline: 'headline'
+        }),
+        stateWithClipboard.shared
+      ).article2.meta
+    ).toEqual({
       headline: 'headline',
       supporting: ['article3']
     });
   });
-})
+});

@@ -1,24 +1,30 @@
 import { Action } from 'types/Action';
+import { insertAndDedupeSiblings } from 'shared/util/insertAndDedupeSiblings';
+import { State as SharedState } from '../shared/types/State';
+import { articleFragmentsSelector } from 'shared/selectors/shared';
 
 type State = string[];
 
-const clipboard = (state: State = [], action: Action): State => {
+const clipboard = (
+  state: State = [],
+  action: Action,
+  prevSharedState: SharedState
+): State => {
   switch (action.type) {
     case 'UPDATE_CLIPBOARD_CONTENT': {
       const { payload } = action;
       return payload;
     }
     case 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT': {
-      const { articleFragmentId } = action.payload;
-      return state.filter(id => id !== articleFragmentId);
+      return state.filter(id => id !== action.payload.articleFragmentId);
     }
-    case 'ADD_CLIPBOARD_ARTICLE_FRAGMENT': {
-      const { index, articleFragmentId } = action.payload;
-      return [
-        ...state.slice(0, index),
-        articleFragmentId,
-        ...state.slice(index)
-      ];
+    case 'INSERT_CLIPBOARD_ARTICLE_FRAGMENT': {
+      return insertAndDedupeSiblings(
+        state,
+        [action.payload.articleFragmentId],
+        action.payload.index,
+        articleFragmentsSelector(prevSharedState)
+      );
     }
 
     default: {

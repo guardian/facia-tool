@@ -16,8 +16,7 @@ import {
   HoverAddToClipboardButton
 } from 'shared/components/input/HoverActionButtons';
 
-import { insertClipboardArticleFragment } from 'actions/ArticleFragments';
-import { handleInsert } from 'util/collectionUtils';
+import { insertArticleFragment } from 'actions/ArticleFragments';
 import noop from 'lodash/noop';
 
 const LinkContainer = styled('div')`
@@ -169,7 +168,13 @@ const FeedItem = ({
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     onAddToClipboard: (id: string) =>
-      dispatch(handleInsert(id, insertClipboardArticleFragment, true))
+      dispatch(
+        insertArticleFragment(
+          { type: 'clipboard', id: 'clipboard', index: 0 },
+          id,
+          'clipboard'
+        )
+      )
   };
 };
 

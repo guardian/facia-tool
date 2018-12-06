@@ -1,56 +1,74 @@
 import {
-  addSupportingArticleFragment,
-  removeSupportingArticleFragment,
-  replaceArticleFragmentSupporting,
-  addGroupArticleFragment,
+  insertGroupArticleFragment,
+  insertSupportingArticleFragment,
   removeGroupArticleFragment,
-  replaceGroupArticleFragments,
-  insertAndDedupeSiblings,
+  removeSupportingArticleFragment,
   updateArticleFragmentMeta,
+  createArticleFragment,
   articleFragmentsReceived
 } from 'shared/actions/ArticleFragments';
-import {
-  createSupportingArticlesSelector,
-  createGroupArticlesSelector,
-  articleFragmentsFromRootStateSelector
-} from 'shared/selectors/shared';
-import { clipboardArticlesSelector } from 'selectors/clipboardSelectors';
-import { addPersistMetaToAction } from 'util/storeMiddleware';
-import { updateClipboardContent } from 'actions/Clipboard';
-import { State } from 'types/State';
-import {
-  AddClipboardArticleFragment,
-  RemoveClipboardArticleFragment,
-  Action
-} from 'types/Action';
 import { ArticleFragment } from 'shared/types/Collection';
-import { Dispatch, GetState } from 'types/Store';
+import {
+  selectSharedState,
+  articleFragmentsSelector
+} from 'shared/selectors/shared';
+import { ThunkResult, Dispatch } from 'types/Store';
+import { addPersistMetaToAction } from 'util/storeMiddleware';
 import { cloneFragment } from 'shared/util/articleFragment';
-import keyBy from 'lodash/keyBy';
+import { PosSpec } from 'lib/dnd';
+import { Action } from 'types/Action';
+import {
+  insertClipboardArticleFragment,
+  removeClipboardArticleFragment
+} from './Clipboard';
 
-function addClipboardArticleFragment(
-  articleFragmentId: string,
-  index: number
-): AddClipboardArticleFragment {
-  return {
-    type: 'ADD_CLIPBOARD_ARTICLE_FRAGMENT',
-    payload: {
-      articleFragmentId,
-      index
-    }
-  };
-}
-
-function removeClipboardArticleFragment(
+type InsertActionCreator = (
+  id: string,
+  index: number,
   articleFragmentId: string
-): RemoveClipboardArticleFragment {
-  return {
-    type: 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT',
-    payload: {
-      articleFragmentId
-    }
+) => Action;
+
+const getInsertionActionCreatorFromType = (
+  type: string,
+  persistTo?: 'collection' | 'clipboard'
+) => {
+  const actionMap: { [type: string]: InsertActionCreator | undefined } = {
+    articleFragment: insertSupportingArticleFragment,
+    group: insertGroupArticleFragment,
+    clipboard: insertClipboardArticleFragment
   };
-}
+
+  const actionCreator = actionMap[type] || null;
+
+  return actionCreator && persistTo
+    ? addPersistMetaToAction(actionCreator, {
+        persistTo,
+        key: 'articleFragmentId'
+      })
+    : actionCreator;
+};
+
+type RemoveActionCreator = (id: string, articleFragmentId: string) => Action;
+
+const getRemoveActionCreatorFromType = (
+  type: string,
+  persistTo?: 'collection' | 'clipboard'
+) => {
+  const actionMap: { [type: string]: RemoveActionCreator | undefined } = {
+    articleFragment: removeSupportingArticleFragment,
+    group: removeGroupArticleFragment,
+    clipboard: removeClipboardArticleFragment
+  };
+
+  const actionCreator = actionMap[type] || null;
+
+  return actionCreator && persistTo
+    ? addPersistMetaToAction(actionCreator, {
+        persistTo,
+        key: 'articleFragmentId'
+      })
+    : actionCreator;
+};
 
 const updateArticleFragmentMetaWithPersist = addPersistMetaToAction(
   updateArticleFragmentMeta,
@@ -66,182 +84,87 @@ const updateClipboardArticleFragmentMetaWithPersist = addPersistMetaToAction(
   }
 );
 
-const removeSupportingArticleFragmentWithPersist = addPersistMetaToAction(
-  removeSupportingArticleFragment,
-  {
-    persistTo: 'collection'
-  }
-);
-
-const removeGroupArticleFragmentWithPersist = addPersistMetaToAction(
-  removeGroupArticleFragment,
-  {
-    persistTo: 'collection',
-    applyBeforeReducer: true,
-    key: 'articleFragmentId'
-  }
-);
-
-const removeClipboardArticleFragmentWithPersist = addPersistMetaToAction(
-  removeClipboardArticleFragment,
-  {
-    persistTo: 'clipboard',
-    applyBeforeReducer: true,
-    key: 'articleFragmentId'
-  }
-);
-
-const removeClipboardSupportingArticleFragmentWithPersist = addPersistMetaToAction(
-  removeSupportingArticleFragment,
-  {
-    persistTo: 'clipboard',
-    applyBeforeReducer: true,
-    key: 'articleFragmentId'
-  }
-);
-
-const supportingArticlesSelector = createSupportingArticlesSelector();
-const groupArticlesSelector = createGroupArticlesSelector();
-
-const selectorMap: {
-  [key: string]: (state: State, id: string) => ArticleFragment[];
-} = {
-  articleFragment: (state: State, id: string) =>
-    supportingArticlesSelector(state, {
-      articleFragmentId: id
-    }),
-  group: (state: State, id: string) =>
-    groupArticlesSelector(state, {
-      groupId: id
-    }),
-  clipboard: clipboardArticlesSelector
-};
-
-interface ActionMap<T> {
-  [key: string]: T;
-}
-
-type InsertAction = (parentId: string, id: string, index: number) => Action;
-const insertActionMap: ActionMap<InsertAction> = {
-  articleFragment: addSupportingArticleFragment,
-  group: addGroupArticleFragment,
-  clipboard: (_: string, id: string, index: number) =>
-    addClipboardArticleFragment(id, index)
-};
-
-type RemoveAction = (parentId: string, id: string) => Action;
-const removeActionMap: ActionMap<RemoveAction> = {
-  articleFragment: removeSupportingArticleFragment,
-  group: removeGroupArticleFragment,
-  clipboard: (_: string, id: string) => removeClipboardArticleFragment(id)
-};
-
-type ReplaceAction = (parentId: string, children: string[]) => Action;
-const replaceActionMap: ActionMap<ReplaceAction> = {
-  articleFragment: replaceArticleFragmentSupporting,
-  group: replaceGroupArticleFragments,
-  clipboard: (_: string, children?: string[]) =>
-    updateClipboardContent(children)
-};
-
-const createInsertArticleFragment = (
-  persistTo: 'collection' | 'clipboard',
-  copy: boolean = false
-) => (
-  parentType: string,
-  parentId: string,
-  fragment: ArticleFragment,
-  index: number
-) => (dispatch: Dispatch, getState: GetState) => {
-  const { parent, supporting } = copy
-    ? cloneFragment(fragment, articleFragmentsFromRootStateSelector(getState()))
-    : { parent: fragment, supporting: [] };
-
-  const insert = insertActionMap[parentType];
-  const replaceAction = replaceActionMap[parentType];
-  const selector = selectorMap[parentType];
-
-  if (!insert || !replaceAction || !selector) {
-    return () => undefined; // noop
-  }
-
-  const replace = addPersistMetaToAction(replaceAction, {
-    persistTo,
-    id: parent.uuid
-  });
-
-  return insertAndDedupeSiblings(
-    parent.uuid,
-    state => selector(state, parentId),
-    [
-      articleFragmentsReceived(
-        keyBy([parent, ...supporting], ({ uuid }) => uuid)
-      ),
-      insert(parentId, parent.uuid, index)
-    ],
-    children => replace(parentId, children)
-  )(dispatch, getState, undefined);
-  // TS Issue ----------^
-  // https://github.com/Microsoft/TypeScript/issues/12400
-};
-
-const insertArticleFragment = createInsertArticleFragment('collection');
-const copyArticleFragment = createInsertArticleFragment('collection', true);
-
-const insertClipboardArticleFragment = createInsertArticleFragment('clipboard');
-const copyClipboardArticleFragment = createInsertArticleFragment(
-  'clipboard',
-  true
-);
-
-/* separate clipboard */
-
-const createMoveArticleFragment = (persistTo: 'collection' | 'clipboard') => (
-  fromParentType: string,
-  fromParentId: string,
+const insertArticleFragmentWithCreate = (
+  to: PosSpec,
   id: string,
-  toParentType: string,
-  toParentId: string,
-  index: number
-) => {
-  const selector = selectorMap[toParentType];
-  const remove = removeActionMap[fromParentType];
-  const insert = insertActionMap[toParentType];
-  const replaceAction = replaceActionMap[toParentType];
-  if (!selector || !insert || !remove || !replaceAction) {
-    return () => undefined;
-  }
-
-  const replace = addPersistMetaToAction(replaceAction, {
-    // this serves as a reference article fragment id which the persistence can
-    // derive the collection from, otherwise it will use`id` on the action,
-    // which is a group id *not* an article fragment id
-    id,
-    persistTo
-  });
-
-  return insertAndDedupeSiblings(
-    id,
-    state => selector(state, toParentId),
-    [remove(fromParentId, id), insert(toParentId, id, index)],
-    children => replace(toParentId, children)
-  );
+  persistTo: 'collection' | 'clipboard'
+): ThunkResult<void> => {
+  return (dispatch: Dispatch) => {
+    const insertActionCreator = getInsertionActionCreatorFromType(
+      to.type,
+      persistTo
+    );
+    if (!insertActionCreator) {
+      return;
+    }
+    dispatch(createArticleFragment(id))
+      .then(fragment => {
+        if (fragment) {
+          dispatch(insertActionCreator(to.id, to.index, fragment.uuid));
+        }
+      })
+      .catch(() => {
+        // @todo: implement once error handling is done
+      });
+  };
 };
 
-const moveArticleFragment = createMoveArticleFragment('collection');
-const moveClipboardArticleFragment = createMoveArticleFragment('clipboard');
+const removeArticleFragment = (
+  type: string,
+  id: string,
+  articleFragmentId: string,
+  persistTo: 'collection' | 'clipboard'
+): ThunkResult<void> => {
+  return (dispatch: Dispatch) => {
+    const removeActionCreator = getRemoveActionCreatorFromType(type, persistTo);
+    if (!removeActionCreator) {
+      return;
+    }
+    dispatch(removeActionCreator(id, articleFragmentId));
+  };
+};
+
+const moveArticleFragment = (
+  to: PosSpec,
+  fragment: ArticleFragment,
+  from: PosSpec | null,
+  persistTo: 'collection' | 'clipboard'
+): ThunkResult<void> => {
+  return (dispatch: Dispatch, getState) => {
+    const removeActionCreator =
+      from && getRemoveActionCreatorFromType(from.type);
+    const insertActionCreator = getInsertionActionCreatorFromType(
+      to.type,
+      persistTo
+    );
+
+    if (!insertActionCreator || (!removeActionCreator && from)) {
+      return;
+    }
+
+    // if from is not null then assume we're copying a moved article fragment
+    // into this new position
+    const { parent, supporting } = !from
+      ? cloneFragment(
+          fragment,
+          articleFragmentsSelector(selectSharedState(getState()))
+        )
+      : { parent: fragment, supporting: [] };
+
+    if (!from) {
+      dispatch(articleFragmentsReceived([parent, ...supporting]));
+    } else {
+      dispatch((removeActionCreator as RemoveActionCreator)(from.id, fragment.uuid));
+    }
+
+    dispatch(insertActionCreator(to.id, to.index, parent.uuid));
+  };
+};
 
 export {
-  insertArticleFragment,
-  insertClipboardArticleFragment,
+  insertArticleFragmentWithCreate as insertArticleFragment,
   moveArticleFragment,
-  moveClipboardArticleFragment,
-  copyArticleFragment,
-  copyClipboardArticleFragment,
   updateArticleFragmentMetaWithPersist as updateArticleFragmentMeta,
   updateClipboardArticleFragmentMetaWithPersist as updateClipboardArticleFragmentMeta,
-  removeSupportingArticleFragmentWithPersist as removeSupportingArticleFragment,
-  removeGroupArticleFragmentWithPersist as removeGroupArticleFragment,
-  removeClipboardArticleFragmentWithPersist as removeArticleFragmentFromClipboard,
-  removeClipboardSupportingArticleFragmentWithPersist as removeSupportingArticleFragmentFromClipboard
+  removeArticleFragment
 };

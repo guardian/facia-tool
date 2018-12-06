@@ -5,14 +5,11 @@ import { Root, Move, PosSpec } from 'lib/dnd';
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import {
-  insertArticleFragment,
-  moveArticleFragment,
   updateArticleFragmentMeta,
-  copyArticleFragment,
-  removeSupportingArticleFragment,
-  removeGroupArticleFragment
+  removeArticleFragment,
+  moveArticleFragment
 } from 'actions/ArticleFragments';
-import { handleMove, handleInsertFromEvent } from 'util/collectionUtils';
+import { insertArticleFragmentFromDropEvent } from 'util/collectionUtils';
 import { AlsoOnDetail } from 'types/Collection';
 import {
   editorSelectArticleFragment,
@@ -85,16 +82,15 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   };
 
   public handleMove = (move: Move<TArticleFragment>) => {
-    handleMove(
-      moveArticleFragment,
-      copyArticleFragment,
-      this.props.dispatch,
-      move
+    this.props.dispatch(
+      moveArticleFragment(move.to, move.data, move.from || null, 'collection')
     );
   };
 
   public handleInsert = (e: React.DragEvent, to: PosSpec) => {
-    handleInsertFromEvent(e, insertArticleFragment, this.props.dispatch, to);
+    this.props.dispatch(
+      insertArticleFragmentFromDropEvent(e, to, 'collection')
+    );
   };
 
   public removeCollectionItem(parentId: string, id: string) {
@@ -132,7 +128,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
           <FrontContentContainer>
             <Root id={this.props.id} data-testid={this.props.id}>
               {front.collections.map(collectionId => {
-                const collectionArticlesVisible = articlesVisible && articlesVisible[collectionId];
+                const collectionArticlesVisible =
+                  articlesVisible && articlesVisible[collectionId];
                 let collectionItemCount: number = 0;
                 return (
                   <Collection
@@ -153,10 +150,18 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                           {(articleFragment, afProps) => {
                             collectionItemCount += 1;
                             const articleNotifications: string[] = [];
-                            if (collectionArticlesVisible && collectionItemCount === collectionArticlesVisible.mobile) {
+                            if (
+                              collectionArticlesVisible &&
+                              collectionItemCount ===
+                                collectionArticlesVisible.mobile
+                            ) {
                               articleNotifications.push('mobile');
                             }
-                            if (collectionArticlesVisible && collectionItemCount === collectionArticlesVisible.desktop) {
+                            if (
+                              collectionArticlesVisible &&
+                              collectionItemCount ===
+                                collectionArticlesVisible.desktop
+                            ) {
                               articleNotifications.push('desktop');
                             }
                             return (
@@ -173,7 +178,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                 }
                                 isSelected={
                                   !selectedArticleFragmentId ||
-                                  selectedArticleFragmentId === articleFragment.uuid
+                                  selectedArticleFragmentId ===
+                                    articleFragment.uuid
                                 }
                                 articleNotifications={articleNotifications}
                               >
@@ -187,7 +193,9 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                       uuid={supporting.uuid}
                                       parentId={articleFragment.uuid}
                                       getNodeProps={() => sProps}
-                                      onSelect={this.props.selectArticleFragment}
+                                      onSelect={
+                                        this.props.selectArticleFragment
+                                      }
                                       isSelected={
                                         !selectedArticleFragmentId ||
                                         selectedArticleFragmentId ===
@@ -203,15 +211,15 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                     />
                                   )}
                                 </ArticleFragmentLevel>
-                            </CollectionItem>
-                          );
-                        }}
+                              </CollectionItem>
+                            );
+                          }}
                         </GroupLevel>
                       </GroupDisplay>
                     )}
-                    </Collection>
-                  );
-                })}
+                  </Collection>
+                );
+              })}
             </Root>
           </FrontContentContainer>
           {selectedArticleFragmentId && (
@@ -241,7 +249,9 @@ const mapStateToProps = (state: State, props: FrontPropsBeforeState) => ({
   unpublishedChanges: state.unpublishedChanges,
   selectedArticleFragmentId: selectEditorArticleFragment(state, props.id),
   front: getFront(state, props.id),
-  articlesVisible: visibleFrontArticlesSelector(state, { collectionSet: props.browsingStage })
+  articlesVisible: visibleFrontArticlesSelector(state, {
+    collectionSet: props.browsingStage
+  })
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
@@ -254,10 +264,12 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     clearArticleFragmentSelection: (frontId: string) =>
       dispatch(editorClearArticleFragmentSelection(frontId)),
     removeCollectionItem: (parentId: string, uuid: string) => {
-      dispatch(removeGroupArticleFragment(parentId, uuid));
+      dispatch(removeArticleFragment('group', parentId, uuid, 'collection'));
     },
     removeSupportingCollectionItem: (parentId: string, uuid: string) => {
-      dispatch(removeSupportingArticleFragment(parentId, uuid));
+      dispatch(
+        removeArticleFragment('articleFragment', parentId, uuid, 'collection')
+      );
     }
   };
 };

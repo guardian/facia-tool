@@ -11,9 +11,7 @@ import {
   CollectionItemDisplayTypes
 } from 'shared/types/Collection';
 import SnapLink from 'shared/components/snapLink/SnapLink';
-
 import { insertArticleFragment } from 'actions/ArticleFragments';
-import { handleInsert } from 'util/collectionUtils';
 import noop from 'lodash/noop';
 
 interface ContainerProps {
@@ -47,8 +45,10 @@ const CollectionItem = ({
   size,
   articleNotifications
 }: ArticleContainerProps) => {
-
-  const notifications = (articleNotifications && articleNotifications.length) ? articleNotifications : undefined;
+  const notifications =
+    articleNotifications && articleNotifications.length
+      ? articleNotifications
+      : undefined;
 
   switch (type) {
     case collectionItemTypes.ARTICLE:
@@ -101,7 +101,13 @@ const createMapStateToProps = () => {
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     onAddToClipboard: (id: string) =>
-      dispatch(handleInsert(id, insertArticleFragment))
+      dispatch(
+        insertArticleFragment(
+          { id: 'clipboard', type: 'clipboard', index: 0 },
+          id,
+          'clipboard'
+        )
+      )
   };
 };
 

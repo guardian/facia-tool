@@ -8,70 +8,55 @@ import {
 import { Actions } from '../util/createAsyncResourceBundle';
 
 interface ArticleFragmentsReceived {
-  type: 'SHARED/ARTICLE_FRAGMENTS_RECEIVED',
-  payload: { [id: string]: ArticleFragment }
+  type: 'SHARED/ARTICLE_FRAGMENTS_RECEIVED';
+  payload: { [id: string]: ArticleFragment };
 }
 interface GroupsReceived {
-  type: 'SHARED/GROUPS_RECEIVED',
-  payload: { [id: string]: Group }
+  type: 'SHARED/GROUPS_RECEIVED';
+  payload: { [id: string]: Group };
 }
 interface UpdateArticleFragmentMeta {
-  type: 'SHARED/UPDATE_ARTICLE_FRAGMENT_META',
-  payload: { id: string, meta: ArticleFragmentMeta }
+  type: 'SHARED/UPDATE_ARTICLE_FRAGMENT_META';
+  payload: { id: string; meta: ArticleFragmentMeta };
 }
-interface RemoveSupportingArticleFragment {
-  type: 'SHARED/REMOVE_SUPPORTING_ARTICLE_FRAGMENT',
+
+interface InsertArticleFragmentPayload {
   payload: {
-    id: string,
-    supportingArticleFragmentId: string
-  }
+    id: string;
+    index: number;
+    articleFragmentId: string;
+  };
 }
-interface AddSupportingArticleFragment {
-  type: 'SHARED/ADD_SUPPORTING_ARTICLE_FRAGMENT',
+
+type InsertGroupArticleFragment = {
+  type: 'SHARED/INSERT_GROUP_ARTICLE_FRAGMENT';
+} & InsertArticleFragmentPayload;
+
+type InsertSupportingArticleFragment = {
+  type: 'SHARED/INSERT_SUPPORTING_ARTICLE_FRAGMENT';
+} & InsertArticleFragmentPayload;
+
+interface RemoveArticleFragmentPayload {
   payload: {
-    id: string,
-    supportingArticleFragmentId: string,
-    index: number
-  }
-}
-interface ReplaceArticleFragmentSupporting {
-  type: 'SHARED/REPLACE_ARTICLE_FRAGMENT_SUPPORTING',
-  payload: {
-    id: string,
-    supporting: string[]
-  }
-}
-interface RemoveGroupArticleFragment {
-  type: 'SHARED/REMOVE_GROUP_ARTICLE_FRAGMENT',
-  payload: {
-    id: string,
-    articleFragmentId: string
-  }
-}
-interface AddGroupArticleFragment {
-  type: 'SHARED/ADD_GROUP_ARTICLE_FRAGMENT',
-  payload: {
-    id: string,
-    articleFragmentId: string,
-    index: number
-  }
-}
-interface ReplaceGroupArticleFragments {
-  type: 'SHARED/REPLACE_GROUP_ARTICLE_FRAGMENTS',
-  payload: {
-    id: string,
-    articleFragments: string[]
+    id: string;
+    articleFragmentId: string;
   }
 }
 
+type RemoveGroupArticleFragment = {
+  type: 'SHARED/REMOVE_GROUP_ARTICLE_FRAGMENT';
+} & RemoveArticleFragmentPayload;
+
+type RemoveSupportingArticleFragment = {
+  type: 'SHARED/REMOVE_SUPPORTING_ARTICLE_FRAGMENT';
+} & RemoveArticleFragmentPayload;
+
 type Action =
-  | RemoveSupportingArticleFragment
   | GroupsReceived
-  | AddSupportingArticleFragment
-  | ReplaceArticleFragmentSupporting
+  | InsertGroupArticleFragment
+  | InsertSupportingArticleFragment
   | RemoveGroupArticleFragment
-  | AddGroupArticleFragment
-  | ReplaceGroupArticleFragments
+  | RemoveSupportingArticleFragment
   | Actions<ExternalArticle>
   | Actions<Collection>
   | ArticleFragmentsReceived
@@ -79,12 +64,12 @@ type Action =
 
 export {
   Action,
-  RemoveSupportingArticleFragment,
-  AddSupportingArticleFragment,
+  InsertGroupArticleFragment,
+  InsertSupportingArticleFragment,
   RemoveGroupArticleFragment,
-  AddGroupArticleFragment,
+  RemoveSupportingArticleFragment,
   ArticleFragmentsReceived,
   UpdateArticleFragmentMeta,
-  ReplaceGroupArticleFragments,
-  ReplaceArticleFragmentSupporting
+  InsertArticleFragmentPayload,
+  RemoveArticleFragmentPayload
 };
