@@ -10,7 +10,6 @@ import { Collection, CollectionItemSets } from '../types/Collection';
 import ButtonCircularCaret from './input/ButtonCircularCaret';
 import { State as SharedState } from '../types/State';
 import { State } from '../../types/State';
-import { CollectionConfig } from '../../types/FaciaApi';
 import {
   selectSharedState,
   createArticlesInCollectionSelector
@@ -112,7 +111,7 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
     return collection ? (
-      <CollectionContainer>
+      <CollectionContainer id={`collection-${collection.id}`}>
         <ContainerHeadingPinline>
           <CollectionHeadingText>
             {collection.displayName}
