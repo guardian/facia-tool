@@ -1,4 +1,8 @@
 <div class="collection" data-bind="ownerClass: $data">
+    <div class="collectionEditWarning" data-bind="visible: containsEmptyAlerts() && getDraftArticles().value().length > 0">
+        Remove this story from the container and press the remove button before sending
+        another alert containing the story.
+    </div>
     <div class="list-header" data-bind="
         css: {collapsed: state.collapsed() || configMeta.uneditable()}
     ">
@@ -10,9 +14,10 @@
                 <span class="tool draft-warning">Show unlaunched changes</a>
 
             <span data-bind="
-                visible: front.mode() !== 'live',
+                visible: front.mode() !== 'live' && !containsEmptyAlerts(),
                 css: {'pending': isPending()}
             ">
+
                 <a class="tool draft-publish" data-bind="
                     click: publishDraft,
                     text: getPublishText()"></a
@@ -37,7 +42,7 @@
             (<span class="non-zero">updating...</span>)
         </span>
 
-        <span class="also" data-bind="if: alsoOn && alsoOn.length && !isPodcastCollection">
+        <span class="also" data-bind="if: alsoOn && alsoOn.length && !displayEditWarning">
             <a class="alsoOnToggle" data-bind="click: alsoOnToggle">
                 <span data-bind="if: !alsoOnHasDifferentPriority">Also on&hellip;</span>
                 <span data-bind="if: alsoOnHasDifferentPriority">
@@ -54,7 +59,7 @@
                 </span>
             </a>
         </span>
-        <span class="collectionEditWarning" data-bind="if: isPodcastCollection">
+        <span class="collectionEditWarning" data-bind="if: displayEditWarning">
             Warning: do not change or delete the <span data-bind="text: collectionMeta.displayName()"></span> container. Please speak to Central Production.
         </span>
 

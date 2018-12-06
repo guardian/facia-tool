@@ -5,14 +5,11 @@ import { Root, Move, PosSpec } from 'lib/dnd';
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import {
-  insertArticleFragment,
-  moveArticleFragment,
   updateArticleFragmentMeta,
-  copyArticleFragment,
-  removeSupportingArticleFragment,
-  removeGroupArticleFragment
+  removeArticleFragment,
+  moveArticleFragment
 } from 'actions/ArticleFragments';
-import { handleMove, handleInsertFromEvent } from 'util/collectionUtils';
+import { insertArticleFragmentFromDropEvent } from 'util/collectionUtils';
 import { AlsoOnDetail } from 'types/Collection';
 import {
   editorSelectArticleFragment,
@@ -85,16 +82,15 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   };
 
   public handleMove = (move: Move<TArticleFragment>) => {
-    handleMove(
-      moveArticleFragment,
-      copyArticleFragment,
-      this.props.dispatch,
-      move
+    this.props.dispatch(
+      moveArticleFragment(move.to, move.data, move.from || null, 'collection')
     );
   };
 
   public handleInsert = (e: React.DragEvent, to: PosSpec) => {
-    handleInsertFromEvent(e, insertArticleFragment, this.props.dispatch, to);
+    this.props.dispatch(
+      insertArticleFragmentFromDropEvent(e, to, 'collection')
+    );
   };
 
   public removeCollectionItem(parentId: string, id: string) {
@@ -281,10 +277,12 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     clearArticleFragmentSelection: (frontId: string) =>
       dispatch(editorClearArticleFragmentSelection(frontId)),
     removeCollectionItem: (parentId: string, uuid: string) => {
-      dispatch(removeGroupArticleFragment(parentId, uuid));
+      dispatch(removeArticleFragment('group', parentId, uuid, 'collection'));
     },
     removeSupportingCollectionItem: (parentId: string, uuid: string) => {
-      dispatch(removeSupportingArticleFragment(parentId, uuid));
+      dispatch(
+        removeArticleFragment('articleFragment', parentId, uuid, 'collection')
+      );
     }
   };
 };

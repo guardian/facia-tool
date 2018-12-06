@@ -3,11 +3,13 @@
  * for typing to work nicely in reducers
  */
 import {
-  AddGroupArticleFragment as SharedAddGroupArticleFragment,
+  InsertGroupArticleFragment as SharedInsertGroupArticleFragment,
+  InsertSupportingArticleFragment as SharedInsertSupportingArticleFragment,
   RemoveGroupArticleFragment as SharedRemoveGroupArticleFragment,
-  AddSupportingArticleFragment as SharedAddSupportingArticleFragment,
   RemoveSupportingArticleFragment as SharedRemoveSupportingArticleFragment,
-  Action as SharedActions
+  Action as SharedActions,
+  InsertArticleFragmentPayload,
+  RemoveArticleFragmentPayload
 } from 'shared/types/Action';
 import { PersistMeta } from 'util/storeMiddleware';
 import { Config } from './Config';
@@ -57,17 +59,21 @@ interface ActionPersistMeta {
   meta: PersistMeta;
 }
 
-type AddGroupArticleFragment = SharedAddGroupArticleFragment &
+type InsertGroupArticleFragment = SharedInsertGroupArticleFragment &
   ActionPersistMeta;
+type InsertSupportingArticleFragment = SharedInsertSupportingArticleFragment &
+  ActionPersistMeta;
+type InsertClipboardArticleFragment = {
+  type: 'INSERT_CLIPBOARD_ARTICLE_FRAGMENT';
+} & { payload: InsertArticleFragmentPayload };
 
 type RemoveGroupArticleFragment = SharedRemoveGroupArticleFragment &
   ActionPersistMeta;
-
-type AddSupportingArticleFragment = SharedAddSupportingArticleFragment &
-  ActionPersistMeta;
-
 type RemoveSupportingArticleFragment = SharedRemoveSupportingArticleFragment &
   ActionPersistMeta;
+type RemoveClipboardArticleFragment = {
+  type: 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT';
+} & RemoveArticleFragmentPayload;
 
 type ActionError =
   | 'Could not fetch fronts config'
@@ -138,22 +144,6 @@ interface UpdateClipboardContent {
   payload: string[];
 }
 
-interface AddClipboardArticleFragment {
-  type: 'ADD_CLIPBOARD_ARTICLE_FRAGMENT';
-  payload: { articleFragmentId: string; index: number };
-}
-
-interface AddClipboardContent {
-  type: 'ADD_CLIPBOARD_ARTICLE_FRAGMENT';
-  payload: { articleFragmentId: string; index: number };
-  meta: PersistMeta;
-}
-
-interface RemoveClipboardArticleFragment {
-  type: 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT';
-  payload: { articleFragmentId: string };
-}
-
 interface RecordStaleFronts {
   type: 'RECORD_STALE_FRONTS';
   payload: { [id: string]: boolean };
@@ -161,7 +151,25 @@ interface RecordStaleFronts {
 
 interface FetchVisibleArticlesSuccess {
   type: 'FETCH_VISIBLE_ARTICLES_SUCCESS';
-  payload: { collectionId: string, visibleArticles: VisibleArticlesResponse, stage: Stages }
+  payload: {
+    collectionId: string;
+    visibleArticles: VisibleArticlesResponse;
+    stage: Stages;
+  };
+}
+
+interface StartConfirm {
+  type: 'MODAL/START_CONFIRM';
+  payload: {
+    title: string;
+    description: string;
+    onAccept: Action[];
+    onReject: Action[];
+  };
+}
+
+interface EndConfirm {
+  type: 'MODAL/END_CONFIRM';
 }
 
 type Action =
@@ -176,14 +184,13 @@ type Action =
   | SharedActions
   | RecordUnpublishedChanges
   | PublishCollectionSuccess
-  | AddGroupArticleFragment
+  | InsertGroupArticleFragment
+  | InsertSupportingArticleFragment
+  | InsertClipboardArticleFragment
   | RemoveGroupArticleFragment
-  | AddSupportingArticleFragment
   | RemoveSupportingArticleFragment
-  | UpdateClipboardContent
-  | AddClipboardArticleFragment
   | RemoveClipboardArticleFragment
-  | AddClipboardContent
+  | UpdateClipboardContent
   | EditorAddFront
   | EditorClearOpenFronts
   | EditorSetOpenFronts
@@ -193,6 +200,8 @@ type Action =
   | RecordStaleFronts
   | BatchAction
   | FetchVisibleArticlesSuccess
+  | StartConfirm
+  | EndConfirm;
 
 export {
   ActionError,
@@ -209,19 +218,20 @@ export {
   SharedActions,
   RecordUnpublishedChanges,
   PublishCollectionSuccess,
-  AddGroupArticleFragment,
+  InsertGroupArticleFragment,
+  InsertSupportingArticleFragment,
+  InsertClipboardArticleFragment,
   RemoveGroupArticleFragment,
-  AddSupportingArticleFragment,
   RemoveSupportingArticleFragment,
-  UpdateClipboardContent,
-  AddClipboardArticleFragment,
   RemoveClipboardArticleFragment,
-  AddClipboardContent,
+  UpdateClipboardContent,
   EditorAddFront,
   EditorClearOpenFronts,
   EditorSetOpenFronts,
   EditorCloseFront,
   EditorSelectArticleFragment,
   EditorClearArticleFragmentSelection,
-  RecordStaleFronts
+  RecordStaleFronts,
+  StartConfirm,
+  EndConfirm
 };

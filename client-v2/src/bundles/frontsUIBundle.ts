@@ -3,7 +3,9 @@ import {
   EditorCloseFront,
   EditorClearOpenFronts,
   EditorSetOpenFronts,
-  EditorAddFront
+  EditorAddFront,
+  EditorSelectArticleFragment,
+  EditorClearArticleFragmentSelection
 } from 'types/Action';
 import { State as GlobalState } from 'types/State';
 
@@ -49,12 +51,14 @@ const editorSelectArticleFragment = (
   frontId: string,
   articleFragmentId: string,
   isSupporting = false
-) => ({
+): EditorSelectArticleFragment => ({
   type: EDITOR_SELECT_ARTICLE_FRAGMENT,
   payload: { articleFragmentId, frontId, isSupporting }
 });
 
-const editorClearArticleFragmentSelection = (frontId: string) => ({
+const editorClearArticleFragmentSelection = (
+  frontId: string
+): EditorClearArticleFragmentSelection => ({
   type: EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION,
   payload: { frontId }
 });

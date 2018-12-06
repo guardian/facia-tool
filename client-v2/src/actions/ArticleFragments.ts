@@ -1,56 +1,193 @@
 import {
-  addSupportingArticleFragment,
-  removeSupportingArticleFragment,
-  replaceArticleFragmentSupporting,
-  addGroupArticleFragment,
+  insertGroupArticleFragment,
+  insertSupportingArticleFragment,
   removeGroupArticleFragment,
-  replaceGroupArticleFragments,
-  insertAndDedupeSiblings,
+  removeSupportingArticleFragment,
   updateArticleFragmentMeta,
+  createArticleFragment,
   articleFragmentsReceived
 } from 'shared/actions/ArticleFragments';
-import {
-  createSupportingArticlesSelector,
-  createGroupArticlesSelector,
-  articleFragmentsFromRootStateSelector
-} from 'shared/selectors/shared';
-import { clipboardArticlesSelector } from 'selectors/clipboardSelectors';
-import { addPersistMetaToAction } from 'util/storeMiddleware';
-import { updateClipboardContent } from 'actions/Clipboard';
-import { State } from 'types/State';
-import {
-  AddClipboardArticleFragment,
-  RemoveClipboardArticleFragment,
-  Action
-} from 'types/Action';
 import { ArticleFragment } from 'shared/types/Collection';
-import { Dispatch, GetState } from 'types/Store';
+import {
+  selectSharedState,
+  articleFragmentsSelector,
+  groupSiblingsArticleCountSelector
+} from 'shared/selectors/shared';
+import { ThunkResult, Dispatch } from 'types/Store';
+import { addPersistMetaToAction } from 'util/storeMiddleware';
 import { cloneFragment } from 'shared/util/articleFragment';
-import keyBy from 'lodash/keyBy';
+import { PosSpec } from 'lib/dnd';
+import { Action } from 'types/Action';
+import {
+  insertClipboardArticleFragment,
+  removeClipboardArticleFragment
+} from './Clipboard';
+import { State } from 'types/State';
+import { startConfirmModal } from './ConfirmModal';
+import { capGroupSiblings } from 'shared/actions/Groups';
+import { collectionCapSelector } from 'selectors/configSelectors';
 
-function addClipboardArticleFragment(
-  articleFragmentId: string,
-  index: number
-): AddClipboardArticleFragment {
-  return {
-    type: 'ADD_CLIPBOARD_ARTICLE_FRAGMENT',
-    payload: {
-      articleFragmentId,
-      index
-    }
-  };
-}
-
-function removeClipboardArticleFragment(
+type InsertActionCreator = (
+  id: string,
+  index: number,
   articleFragmentId: string
-): RemoveClipboardArticleFragment {
-  return {
-    type: 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT',
-    payload: {
-      articleFragmentId
+) => Action;
+
+type InsertThunkActionCreator = (
+  persistTo: 'collection' | 'clipboard'
+) => (
+  id: string,
+  index: number,
+  articleFragmentId: string,
+  removeAction: Action | null
+) => ThunkResult<void>;
+
+// Creates a thunk action creator from a plain action creator that also allows
+// passing a persistence location
+// we need to create thunks for these to help TS as we may be dispatching either
+// an Action or a ThunkAction in some cases. The redux-thunk types don't support
+// this so we can make a thunk instead
+// the persistence stuff needs to be dynamic as we sometimes need to insert an
+// article fragment and save to clipboard and sometimes save to collection
+// depending on the location of that articlefragment
+const createInsertArticleFragmentThunk = (action: InsertActionCreator) => (
+  persistTo: 'collection' | 'clipboard'
+) => (
+  id: string,
+  index: number,
+  articleFragmentId: string,
+  removeAction: Action | null
+) => (dispatch: Dispatch) => {
+  if (removeAction) {
+    dispatch(removeAction);
+  }
+  dispatch(
+    addPersistMetaToAction(action, {
+      persistTo,
+      key: 'articleFragmentId'
+    })(id, index, articleFragmentId)
+  );
+};
+
+// Creates a thunk with persistence that will launch a confirm modal if required
+// when adding to a group, otherwise will just run the action
+// the confirm modal links to the collection caps
+const maybeInsertGroupArticleFragment = (
+  persistTo: 'collection' | 'clipboard'
+) => (
+  id: string,
+  index: number,
+  articleFragmentId: string,
+  removeAction: Action | null
+) => {
+  return (dispatch: Dispatch, getState: () => State) => {
+    // run the action and put the article fragment into the group
+    // if this was triggered with a move, this will be the same article fragment
+    // with the same uuid as the moved article fragment and until the modal
+    // confirmation / remove happens, there will be two with the same UUID in
+    // the state somewhere
+    // We can't just look at the amount of article fragments currently in the
+    // collection and show a modal if it's full because the reducer logic could
+    // result in some deduping or other logic, meaning an insertion into a full
+    // group may not result in that group getting any bigger, and hence won't
+    // require a modal!
+    dispatch(insertGroupArticleFragment(id, index, articleFragmentId));
+
+    const state = getState();
+
+    const collectionCap = collectionCapSelector(getState());
+    const collectionArticleCount = groupSiblingsArticleCountSelector(
+      selectSharedState(state),
+      id
+    );
+
+    if (collectionCap && collectionArticleCount > collectionCap) {
+      // if there are too many fragments now then launch a modal to ask the user
+      // what action to take
+      dispatch(
+        startConfirmModal(
+          'Collection limit',
+          `You can have a maximum of ${collectionCap} articles in a collection.
+          You can proceed, and the last article in the collection will be
+          removed automatically, or you can cancel and remove articles from the
+          collection yourself.`,
+          // if the user accepts then remove the moved item (if there was one),
+          // remove article fragments past the cap count and finally persist
+          [
+            ...(removeAction ? [removeAction] : []),
+            addPersistMetaToAction(capGroupSiblings, {
+              id: articleFragmentId,
+              persistTo,
+              applyBeforeReducer: true
+            })(id, collectionCap)
+          ],
+          // otherwise just undo the insertion and don't persist as nothing
+          // has actually changed
+          [removeGroupArticleFragment(id, articleFragmentId)]
+        )
+      );
+    } else {
+      // if we're not going over the cap then just remove a moved article if
+      // needed and insert the new article
+      if (removeAction) {
+        dispatch(removeAction);
+      }
+      dispatch(
+        addPersistMetaToAction(insertGroupArticleFragment, {
+          key: 'articleFragmentId',
+          persistTo
+        })(id, index, articleFragmentId)
+      );
     }
   };
-}
+};
+
+// This maps a type string such as `clipboard` to an insert action creator and
+// if persistTo is passed then the action creator will add persist meta
+// these are expected to be thunks that can be passed actions to run if an
+// insert was possible
+const getInsertionActionCreatorFromType = (
+  type: string,
+  persistTo: 'collection' | 'clipboard'
+) => {
+  const actionMap: { [type: string]: InsertThunkActionCreator | undefined } = {
+    articleFragment: createInsertArticleFragmentThunk(
+      insertSupportingArticleFragment
+    ),
+    group: maybeInsertGroupArticleFragment,
+    clipboard: createInsertArticleFragmentThunk(insertClipboardArticleFragment)
+  };
+
+  const actionCreator = actionMap[type] || null;
+
+  // partially apply the action creator with it's persist logic
+  return actionCreator && actionCreator(persistTo);
+};
+
+type RemoveActionCreator = (id: string, articleFragmentId: string) => Action;
+
+// this maps a type string such as `group` to a remove action creator and if
+// persistTo is passed then add persist meta
+const getRemoveActionCreatorFromType = (
+  type: string,
+  persistTo?: 'collection' | 'clipboard'
+) => {
+  const actionMap: { [type: string]: RemoveActionCreator | undefined } = {
+    articleFragment: removeSupportingArticleFragment,
+    group: removeGroupArticleFragment,
+    clipboard: removeClipboardArticleFragment
+  };
+
+  const actionCreator = actionMap[type] || null;
+
+  return actionCreator && persistTo
+    ? addPersistMetaToAction(actionCreator, {
+        persistTo,
+        key: 'articleFragmentId',
+        applyBeforeReducer: true
+      })
+    : actionCreator;
+};
 
 const updateArticleFragmentMetaWithPersist = addPersistMetaToAction(
   updateArticleFragmentMeta,
@@ -66,182 +203,94 @@ const updateClipboardArticleFragmentMetaWithPersist = addPersistMetaToAction(
   }
 );
 
-const removeSupportingArticleFragmentWithPersist = addPersistMetaToAction(
-  removeSupportingArticleFragment,
-  {
-    persistTo: 'collection'
-  }
-);
-
-const removeGroupArticleFragmentWithPersist = addPersistMetaToAction(
-  removeGroupArticleFragment,
-  {
-    persistTo: 'collection',
-    applyBeforeReducer: true,
-    key: 'articleFragmentId'
-  }
-);
-
-const removeClipboardArticleFragmentWithPersist = addPersistMetaToAction(
-  removeClipboardArticleFragment,
-  {
-    persistTo: 'clipboard',
-    applyBeforeReducer: true,
-    key: 'articleFragmentId'
-  }
-);
-
-const removeClipboardSupportingArticleFragmentWithPersist = addPersistMetaToAction(
-  removeSupportingArticleFragment,
-  {
-    persistTo: 'clipboard',
-    applyBeforeReducer: true,
-    key: 'articleFragmentId'
-  }
-);
-
-const supportingArticlesSelector = createSupportingArticlesSelector();
-const groupArticlesSelector = createGroupArticlesSelector();
-
-const selectorMap: {
-  [key: string]: (state: State, id: string) => ArticleFragment[];
-} = {
-  articleFragment: (state: State, id: string) =>
-    supportingArticlesSelector(state, {
-      articleFragmentId: id
-    }),
-  group: (state: State, id: string) =>
-    groupArticlesSelector(state, {
-      groupId: id
-    }),
-  clipboard: clipboardArticlesSelector
-};
-
-interface ActionMap<T> {
-  [key: string]: T;
-}
-
-type InsertAction = (parentId: string, id: string, index: number) => Action;
-const insertActionMap: ActionMap<InsertAction> = {
-  articleFragment: addSupportingArticleFragment,
-  group: addGroupArticleFragment,
-  clipboard: (_: string, id: string, index: number) =>
-    addClipboardArticleFragment(id, index)
-};
-
-type RemoveAction = (parentId: string, id: string) => Action;
-const removeActionMap: ActionMap<RemoveAction> = {
-  articleFragment: removeSupportingArticleFragment,
-  group: removeGroupArticleFragment,
-  clipboard: (_: string, id: string) => removeClipboardArticleFragment(id)
-};
-
-type ReplaceAction = (parentId: string, children: string[]) => Action;
-const replaceActionMap: ActionMap<ReplaceAction> = {
-  articleFragment: replaceArticleFragmentSupporting,
-  group: replaceGroupArticleFragments,
-  clipboard: (_: string, children?: string[]) =>
-    updateClipboardContent(children)
-};
-
-const createInsertArticleFragment = (
-  persistTo: 'collection' | 'clipboard',
-  copy: boolean = false
-) => (
-  parentType: string,
-  parentId: string,
-  fragment: ArticleFragment,
-  index: number
-) => (dispatch: Dispatch, getState: GetState) => {
-  const { parent, supporting } = copy
-    ? cloneFragment(fragment, articleFragmentsFromRootStateSelector(getState()))
-    : { parent: fragment, supporting: [] };
-
-  const insert = insertActionMap[parentType];
-  const replaceAction = replaceActionMap[parentType];
-  const selector = selectorMap[parentType];
-
-  if (!insert || !replaceAction || !selector) {
-    return () => undefined; // noop
-  }
-
-  const replace = addPersistMetaToAction(replaceAction, {
-    persistTo,
-    id: parent.uuid
-  });
-
-  return insertAndDedupeSiblings(
-    parent.uuid,
-    state => selector(state, parentId),
-    [
-      articleFragmentsReceived(
-        keyBy([parent, ...supporting], ({ uuid }) => uuid)
-      ),
-      insert(parentId, parent.uuid, index)
-    ],
-    children => replace(parentId, children)
-  )(dispatch, getState, undefined);
-  // TS Issue ----------^
-  // https://github.com/Microsoft/TypeScript/issues/12400
-};
-
-const insertArticleFragment = createInsertArticleFragment('collection');
-const copyArticleFragment = createInsertArticleFragment('collection', true);
-
-const insertClipboardArticleFragment = createInsertArticleFragment('clipboard');
-const copyClipboardArticleFragment = createInsertArticleFragment(
-  'clipboard',
-  true
-);
-
-/* separate clipboard */
-
-const createMoveArticleFragment = (persistTo: 'collection' | 'clipboard') => (
-  fromParentType: string,
-  fromParentId: string,
+const insertArticleFragmentWithCreate = (
+  to: PosSpec,
   id: string,
-  toParentType: string,
-  toParentId: string,
-  index: number
-) => {
-  const selector = selectorMap[toParentType];
-  const remove = removeActionMap[fromParentType];
-  const insert = insertActionMap[toParentType];
-  const replaceAction = replaceActionMap[toParentType];
-  if (!selector || !insert || !remove || !replaceAction) {
-    return () => undefined;
-  }
-
-  const replace = addPersistMetaToAction(replaceAction, {
-    // this serves as a reference article fragment id which the persistence can
-    // derive the collection from, otherwise it will use`id` on the action,
-    // which is a group id *not* an article fragment id
-    id,
-    persistTo
-  });
-
-  return insertAndDedupeSiblings(
-    id,
-    state => selector(state, toParentId),
-    [remove(fromParentId, id), insert(toParentId, id, index)],
-    children => replace(toParentId, children)
-  );
+  persistTo: 'collection' | 'clipboard'
+): ThunkResult<void> => {
+  return (dispatch: Dispatch) => {
+    const insertActionCreator = getInsertionActionCreatorFromType(
+      to.type,
+      persistTo
+    );
+    if (!insertActionCreator) {
+      return;
+    }
+    dispatch(createArticleFragment(id))
+      .then(fragment => {
+        if (fragment) {
+          dispatch(insertActionCreator(to.id, to.index, fragment.uuid, null));
+        }
+      })
+      .catch(() => {
+        // @todo: implement once error handling is done
+      });
+  };
 };
 
-const moveArticleFragment = createMoveArticleFragment('collection');
-const moveClipboardArticleFragment = createMoveArticleFragment('clipboard');
+const removeArticleFragment = (
+  type: string,
+  id: string,
+  articleFragmentId: string,
+  persistTo: 'collection' | 'clipboard'
+): ThunkResult<void> => {
+  return (dispatch: Dispatch) => {
+    const removeActionCreator = getRemoveActionCreatorFromType(type, persistTo);
+    if (!removeActionCreator) {
+      return;
+    }
+    dispatch(removeActionCreator(id, articleFragmentId));
+  };
+};
+
+const moveArticleFragment = (
+  to: PosSpec,
+  fragment: ArticleFragment,
+  from: PosSpec | null,
+  persistTo: 'collection' | 'clipboard'
+): ThunkResult<void> => {
+  return (dispatch: Dispatch, getState) => {
+    const removeActionCreator =
+      from && getRemoveActionCreatorFromType(from.type);
+    const insertActionCreator = getInsertionActionCreatorFromType(
+      to.type,
+      persistTo
+    );
+
+    if (!insertActionCreator) {
+      return;
+    }
+
+    // if from is not null then assume we're copying a moved article fragment
+    // into this new position
+    const { parent, supporting } = !from
+      ? cloneFragment(
+          fragment,
+          articleFragmentsSelector(selectSharedState(getState()))
+        )
+      : { parent: fragment, supporting: [] };
+
+    if (!from) {
+      dispatch(articleFragmentsReceived([parent, ...supporting]));
+    }
+
+    dispatch(
+      insertActionCreator(
+        to.id,
+        to.index,
+        parent.uuid,
+        from && removeActionCreator
+          ? removeActionCreator(from.id, fragment.uuid)
+          : null
+      )
+    );
+  };
+};
 
 export {
-  insertArticleFragment,
-  insertClipboardArticleFragment,
+  insertArticleFragmentWithCreate as insertArticleFragment,
   moveArticleFragment,
-  moveClipboardArticleFragment,
-  copyArticleFragment,
-  copyClipboardArticleFragment,
   updateArticleFragmentMetaWithPersist as updateArticleFragmentMeta,
   updateClipboardArticleFragmentMetaWithPersist as updateClipboardArticleFragmentMeta,
-  removeSupportingArticleFragmentWithPersist as removeSupportingArticleFragment,
-  removeGroupArticleFragmentWithPersist as removeGroupArticleFragment,
-  removeClipboardArticleFragmentWithPersist as removeArticleFragmentFromClipboard,
-  removeClipboardSupportingArticleFragmentWithPersist as removeSupportingArticleFragmentFromClipboard
+  removeArticleFragment
 };

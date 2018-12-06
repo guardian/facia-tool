@@ -2,9 +2,13 @@ import { State as SharedState } from '../types/State';
 import createAsyncResourceBundle from '../util/createAsyncResourceBundle';
 import { Collection } from 'shared/types/Collection';
 
-const { actions, actionNames, reducer, selectors } = createAsyncResourceBundle<
-  Collection
->('collections', { indexById: true });
+const {
+  actions,
+  actionNames,
+  reducer,
+  selectors,
+  initialState
+} = createAsyncResourceBundle<Collection>('collections', { indexById: true });
 
 const collectionSelectors = {
   ...selectors,
@@ -45,4 +49,10 @@ const collectionSelectors = {
   }
 };
 
-export { actions, actionNames, collectionSelectors as selectors, reducer };
+export {
+  actions,
+  actionNames,
+  collectionSelectors as selectors,
+  reducer,
+  initialState
+};

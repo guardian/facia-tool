@@ -240,6 +240,66 @@ const createDemornalisedArticleFragment = (
       }
     : { ...articleFragments[articleFragmentId] };
 
+// this creates a map between a group id and it's parent collection id
+// { [groupId: string]: string /* collectionId */ }
+const groupCollectionMapSelector = createSelector(
+  collectionSelectors.selectAll,
+  (collections: {
+    [id: string]: Collection;
+  }): {
+    [id: string]: {
+      collectionItemSet: CollectionItemSets;
+      collectionId: string;
+    };
+  } =>
+    Object.values(collections).reduce(
+      (mapAcc, collection) => ({
+        ...mapAcc,
+        ...(['live', 'draft', 'previously'] as CollectionItemSets[]).reduce(
+          (stageAcc, stage) => ({
+            ...stageAcc,
+            ...(collection[stage] || []).reduce(
+              (groupsAcc, groupId) => ({
+                ...groupsAcc,
+                [groupId]: {
+                  collectionId: collection.id,
+                  collectionItemSet: stage
+                }
+              }),
+              {}
+            )
+          }),
+          {}
+        )
+      }),
+      {}
+    )
+);
+
+const groupCollectionSelector = (state: State, groupId: string) => {
+  const { collectionId, collectionItemSet } = groupCollectionMapSelector(state)[
+    groupId
+  ];
+  const collection = collectionSelectors.selectById(state, collectionId);
+  return { collection, collectionItemSet };
+};
+
+const groupSiblingsSelector = (state: State, groupId: string) => {
+  const { collection, collectionItemSet } = groupCollectionSelector(
+    state,
+    groupId
+  );
+  return (collection[collectionItemSet] || []).map(
+    id => groupsSelector(state)[id]
+  );
+};
+
+const groupSiblingsArticleCountSelector = (state: State, groupId: string) =>
+  groupSiblingsSelector(state, groupId).reduce(
+    (acc, group) => acc + group.articleFragments.length,
+    0
+  );
+
 export {
   externalArticleFromArticleFragmentSelector,
   createArticleFromArticleFragmentSelector,
@@ -254,5 +314,9 @@ export {
   selectSharedState,
   articleFragmentSelector,
   articleKickerOptionsSelector,
-  createCollectionEditWarningSelector
+  createCollectionEditWarningSelector,
+  articleFragmentsSelector,
+  groupCollectionSelector,
+  groupSiblingsSelector,
+  groupSiblingsArticleCountSelector
 };

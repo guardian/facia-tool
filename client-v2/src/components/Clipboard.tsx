@@ -3,13 +3,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Root, Move, PosSpec } from 'lib/dnd';
 import { State } from 'types/State';
-import { handleMove, handleInsertFromEvent } from 'util/collectionUtils';
+import { insertArticleFragmentFromDropEvent } from 'util/collectionUtils';
 import {
-  insertClipboardArticleFragment,
-  moveClipboardArticleFragment,
-  copyClipboardArticleFragment,
-  removeArticleFragmentFromClipboard,
-  removeSupportingArticleFragmentFromClipboard
+  moveArticleFragment,
+  removeArticleFragment
 } from 'actions/ArticleFragments';
 import {
   editorSelectArticleFragment,
@@ -36,21 +33,13 @@ class Clipboard extends React.Component<ClipboardProps> {
   // refactor
 
   public handleMove = (move: Move<TArticleFragment>) => {
-    handleMove(
-      moveClipboardArticleFragment,
-      copyClipboardArticleFragment,
-      this.props.dispatch,
-      move
+    this.props.dispatch(
+      moveArticleFragment(move.to, move.data, move.from || null, 'clipboard')
     );
   };
 
   public handleInsert = (e: React.DragEvent, to: PosSpec) => {
-    handleInsertFromEvent(
-      e,
-      insertClipboardArticleFragment,
-      this.props.dispatch,
-      to
-    );
+    this.props.dispatch(insertArticleFragmentFromDropEvent(e, to, 'clipboard'));
   };
 
   public removeCollectionItem = (id: string) => {
@@ -98,6 +87,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                 articleFragmentId={articleFragment.uuid}
                 onMove={this.handleMove}
                 onDrop={this.handleInsert}
+                displayType="polaroid"
               >
                 {(supporting, sProps) => (
                   <CollectionItem
@@ -139,10 +129,14 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   clearArticleFragmentSelection: () =>
     dispatch(editorClearArticleFragmentSelection(clipboardId)),
   removeCollectionItem: (uuid: string) => {
-    dispatch(removeArticleFragmentFromClipboard(uuid));
+    dispatch(
+      removeArticleFragment('clipboard', 'clipboard', uuid, 'clipboard')
+    );
   },
   removeSupportingCollectionItem: (parentId: string, uuid: string) => {
-    dispatch(removeSupportingArticleFragmentFromClipboard(parentId, uuid));
+    dispatch(
+      removeArticleFragment('articleFragment', parentId, uuid, 'clipboard')
+    );
   },
   dispatch
 });

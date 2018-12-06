@@ -11,6 +11,7 @@ import { configReceived } from 'actions/Config';
 import { editorSetOpenFronts } from 'bundles/frontsUIBundle';
 import { storeClipboardContent } from 'actions/Clipboard';
 import { Dispatch } from 'types/Store';
+import Modal from 'react-modal';
 
 const store = configureStore();
 const config = extractConfigFromPage();
@@ -30,6 +31,7 @@ if (config.frontIds) {
 const reactMount = document.getElementById('react-mount');
 
 if (reactMount) {
+  Modal.setAppElement(reactMount);
   render(
     <Provider store={store}>
       <BrowserRouter basename="/v2">

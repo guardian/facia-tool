@@ -1,11 +1,13 @@
 import { Action } from '../types/Action';
-import { ArticleFragment } from '../types/Collection';
+import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
+import { State } from './sharedReducer';
+import { articleFragmentsSelector } from 'shared/selectors/shared';
 
-interface State {
-  [id: string]: ArticleFragment;
-}
-
-const articleFragments = (state: State = {}, action: Action) => {
+const articleFragments = (
+  state: State['articleFragments'] = {},
+  action: Action,
+  prevSharedState: State
+) => {
   switch (action.type) {
     case 'SHARED/UPDATE_ARTICLE_FRAGMENT_META': {
       const { id } = action.payload;
@@ -25,68 +27,51 @@ const articleFragments = (state: State = {}, action: Action) => {
       return Object.assign({}, state, payload);
     }
     case 'SHARED/REMOVE_SUPPORTING_ARTICLE_FRAGMENT': {
-      const { id, supportingArticleFragmentId } = action.payload;
-      const articleFragment = state[id];
+      const articleFragment = state[action.payload.id];
       return {
         ...state,
-        [id]: {
+        [action.payload.id]: {
           ...articleFragment,
           meta: {
             ...articleFragment.meta,
             supporting: (articleFragment.meta.supporting || []).filter(
-              sid => sid !== supportingArticleFragmentId
+              sid => sid !== action.payload.articleFragmentId
             )
           }
         }
       };
     }
-    case 'SHARED/ADD_SUPPORTING_ARTICLE_FRAGMENT': {
-      const { id, index, supportingArticleFragmentId } = action.payload;
-      const target = state[id];
-      const targetMeta = target.meta || {};
-      const targetSupporting = targetMeta.supporting || [];
-
-      const source = state[supportingArticleFragmentId];
-      const sourceMeta = source.meta || {};
-      const sourceSupporting = sourceMeta.supporting || [];
+    case 'SHARED/INSERT_SUPPORTING_ARTICLE_FRAGMENT': {
+      const { id, articleFragmentId, index } = action.payload;
+      const targetArticleFragment = state[id];
+      const insertedArticleFragment = state[articleFragmentId];
+      const supporting = insertAndDedupeSiblings(
+        targetArticleFragment.meta.supporting || [],
+        [
+          insertedArticleFragment.uuid,
+          ...(insertedArticleFragment.meta.supporting || [])
+        ],
+        index,
+        articleFragmentsSelector(prevSharedState)
+      );
 
       return {
         ...state,
         [id]: {
-          ...target,
+          ...targetArticleFragment,
           meta: {
-            ...targetMeta,
-            supporting: [
-              ...targetSupporting.slice(0, index),
-              supportingArticleFragmentId,
-              // Flatten: add the supporting from the source ...
-              ...sourceSupporting,
-              ...targetSupporting.slice(index)
-            ]
+            ...targetArticleFragment.meta,
+            supporting
           }
         },
         //
-        [supportingArticleFragmentId]: {
-          ...source,
+        [articleFragmentId]: {
+          ...insertedArticleFragment,
           meta: {
-            ...sourceMeta,
-            // ...and remove it from here
+            ...insertedArticleFragment.meta,
+            // ...ensuer that after flattening we remove the supporting from
+            // the inserted article fragment
             supporting: []
-          }
-        }
-      };
-    }
-    case 'SHARED/REPLACE_ARTICLE_FRAGMENT_SUPPORTING': {
-      const { id, supporting } = action.payload;
-      const group = state[id];
-
-      return {
-        ...state,
-        [id]: {
-          ...group,
-          meta: {
-            ...state[id].meta,
-            supporting
           }
         }
       };
