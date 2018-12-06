@@ -206,7 +206,8 @@ const updateClipboardArticleFragmentMetaWithPersist = addPersistMetaToAction(
 const insertArticleFragmentWithCreate = (
   to: PosSpec,
   id: string,
-  persistTo: 'collection' | 'clipboard'
+  persistTo: 'collection' | 'clipboard',
+  articleFragmentFactory = createArticleFragment
 ): ThunkResult<void> => {
   return (dispatch: Dispatch) => {
     const insertActionCreator = getInsertionActionCreatorFromType(
@@ -216,7 +217,7 @@ const insertArticleFragmentWithCreate = (
     if (!insertActionCreator) {
       return;
     }
-    dispatch(createArticleFragment(id))
+    return dispatch(articleFragmentFactory(id))
       .then(fragment => {
         if (fragment) {
           dispatch(insertActionCreator(to.id, to.index, fragment.uuid, null));
