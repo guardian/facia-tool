@@ -82,18 +82,20 @@ interface Tag {
   sectionName?: string;
 }
 
+type CapiBool = "true" | "false";
+
 interface CapiArticleFields {
   headline?: string;
   standfirst?: string;
   trailText?: string;
   byline?: string;
   internalPageCode?: string;
-  isLive?: string;
+  isLive?: CapiBool;
   firstPublicationDate?: string;
   scheduledPublicationDate?: CapiDate;
   secureThumbnail?: string;
   thumbnail?: string | void;
-  liveBloggingNow?: boolean;
+  liveBloggingNow?: CapiBool;
   shortUrl?: string;
   membershipUrl?: string;
 }

@@ -2,15 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import {
   reduxForm,
-  Field,
   FieldArray,
   InjectedFormProps,
   formValueSelector,
   WrappedFieldArrayProps
 } from 'redux-form';
 import styled from 'styled-components';
-import omit from 'lodash/omit';
-import compact from 'lodash/compact';
 import Button from 'shared/components/input/ButtonDefault';
 import ContentContainer from 'shared/components/layout/ContentContainer';
 import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
@@ -19,8 +16,7 @@ import {
   selectSharedState,
   articleKickerOptionsSelector
 } from 'shared/selectors/shared';
-import { DerivedArticle } from 'shared/types/Article';
-import { ArticleFragmentMeta, ArticleFragment } from 'shared/types/Collection';
+import { ArticleFragmentMeta } from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
 import HorizontalRule from 'shared/components/layout/HorizontalRule';
@@ -30,9 +26,14 @@ import InputGroup from 'shared/components/input/InputGroup';
 import Row from '../Row';
 import Col from '../Col';
 import { State } from 'types/State';
-import { getFormFieldsForCollectionItem } from './getFormFieldsForCollectionItem';
 import ConditionalField from 'components/inputs/ConditionalField';
 import ConditionalComponent from 'components/layout/ConditionalComponent';
+import {
+  ArticleFragmentFormData,
+  getArticleFragmentMetaFromFormValues,
+  getInitialValuesForArticleFragmentForm,
+  createSelectFormFieldsForCollectionItem
+} from 'util/form';
 
 interface ComponentProps extends ContainerProps {
   articleFragmentId: string;
@@ -40,31 +41,6 @@ interface ComponentProps extends ContainerProps {
 
 type Props = ComponentProps &
   InjectedFormProps<ArticleFragmentFormData, ComponentProps, {}>;
-
-interface ImageData {
-  src?: string;
-  width?: number;
-  height?: number;
-  origin?: string;
-  thumb?: string;
-}
-interface ArticleFragmentFormData {
-  headline: string;
-  isBoosted: boolean;
-  showQuotedHeadline: boolean;
-  showBoostedHeadline: boolean;
-  customKicker: string;
-  isBreaking: boolean;
-  byline: string;
-  showByline: boolean;
-  trailText: string;
-  imageHide: boolean;
-  primaryImage: ImageData;
-  cutoutImage: ImageData;
-  imageCutoutReplace: boolean;
-  imageSlideshowReplace: boolean;
-  slideshow: Array<ImageData | void> | void;
-}
 
 const FormContainer = ContentContainer.withComponent('form').extend`
   display: flex;
@@ -332,91 +308,6 @@ const formComponent: React.StatelessComponent<Props> = ({
   </FormContainer>
 );
 
-const strToInt = (str: string | void) => (str ? parseInt(str, 10) : undefined);
-const intToStr = (int: number | void) => (int ? int.toString() : undefined);
-
-const getInitialValuesForArticleFragmentForm = (
-  article: DerivedArticle | void
-): ArticleFragmentFormData | void => {
-  if (!article) {
-    return undefined;
-  }
-  const slideshowBackfill: Array<ImageData | void> = [];
-  const slideshow: Array<ImageData | void> = (article.slideshow || []).map(
-    image => ({
-      ...image,
-      width: strToInt(image.width),
-      height: strToInt(image.height)
-    })
-  );
-  slideshowBackfill.length = 4 - slideshow.length;
-  slideshowBackfill.fill(undefined);
-  return article
-    ? {
-        headline: article.headline || '',
-        isBoosted: article.isBoosted || false,
-        showQuotedHeadline: article.showQuotedHeadline || false,
-        showBoostedHeadline: article.showBoostedHeadline || false,
-        customKicker: article.customKicker || '',
-        isBreaking: article.isBreaking || false,
-        byline: article.byline || '',
-        showByline: article.showByline || false,
-        trailText: article.trailText || '',
-        imageCutoutReplace: article.imageCutoutReplace || false,
-        imageHide: article.imageHide || false,
-        imageSlideshowReplace: article.imageSlideshowReplace || false,
-        primaryImage: {
-          src: article.imageSrc,
-          width: strToInt(article.imageSrcWidth),
-          height: strToInt(article.imageSrcHeight),
-          origin: article.imageSrcOrigin,
-          thumb: article.imageSrcThumb
-        },
-        cutoutImage: {
-          src: article.imageCutoutSrc,
-          width: strToInt(article.imageCutoutSrcWidth),
-          height: strToInt(article.imageCutoutSrcHeight),
-          origin: article.imageCutoutSrcOrigin
-        },
-        slideshow: slideshow.concat(slideshowBackfill)
-      }
-    : undefined;
-};
-
-const getArticleFragmentMetaFromFormValues = (
-  values: ArticleFragmentFormData
-): ArticleFragmentMeta => {
-  const primaryImage = values.primaryImage || {};
-  const cutoutImage = values.cutoutImage || {};
-  // Lodash doesn't remove undefined in the type settings here, hence the any.
-  const slideshow = compact(values.slideshow as any).map(
-    (image: ImageData) => ({
-      ...image,
-      width: intToStr(image.width),
-      height: intToStr(image.height)
-    })
-  );
-  return omit(
-    {
-      ...values,
-      imageReplace: !!primaryImage.src && !values.imageHide,
-      showKickerCustom: !!values.customKicker,
-      imageSrc: primaryImage.src,
-      imageSrcThumb: primaryImage.thumb,
-      imageSrcWidth: intToStr(primaryImage.width),
-      imageSrcHeight: intToStr(primaryImage.height),
-      imageSrcOrigin: primaryImage.origin,
-      imageCutoutSrc: cutoutImage.src,
-      imageCutoutSrcWidth: intToStr(cutoutImage.width),
-      imageCutoutSrcHeight: intToStr(cutoutImage.height),
-      imageCutoutSrcOrigin: cutoutImage.origin,
-      slideshow: slideshow.length ? slideshow : undefined
-    },
-    'primaryImage',
-    'cutoutImage'
-  );
-};
-
 const ArticleFragmentForm = reduxForm<
   ArticleFragmentFormData,
   ComponentProps,
@@ -454,13 +345,15 @@ const formContainer: React.SFC<ContainerProps> = props => (
 );
 
 const createMapStateToProps = () => {
-  const articleSelector = createArticleFromArticleFragmentSelector();
+  const selectArticle = createArticleFromArticleFragmentSelector();
+  const selectFormFields = createSelectFormFieldsForCollectionItem();
   return (
     state: State,
     { articleFragmentId, isSupporting = false }: InterfaceProps
   ) => {
     const valueSelector = formValueSelector(articleFragmentId);
-    const article = articleSelector(
+    const sharedState = selectSharedState(state);
+    const article = selectArticle(
       selectSharedState(state),
       articleFragmentId
     );
@@ -468,13 +361,10 @@ const createMapStateToProps = () => {
     return {
       initialValues: getInitialValuesForArticleFragmentForm(article),
       editableFields: article
-        ? getFormFieldsForCollectionItem(state, article, isSupporting)
+        ? selectFormFields(state, article.uuid, isSupporting)
         : [],
       kickerOptions: article
-        ? articleKickerOptionsSelector(
-            selectSharedState(state),
-            articleFragmentId
-          )
+        ? articleKickerOptionsSelector(sharedState, articleFragmentId)
         : [],
       imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
       imageHide: valueSelector(state, 'imageHide'),
@@ -488,4 +378,5 @@ export {
   getArticleFragmentMetaFromFormValues,
   getInitialValuesForArticleFragmentForm
 };
+
 export default connect(createMapStateToProps)(formContainer);

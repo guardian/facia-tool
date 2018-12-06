@@ -73,6 +73,91 @@ const capiArticle = {
     }
   },
   atoms: {
+    media: []
+  },
+  frontsMeta: {
+    defaults: {}
+  },
+  isHosted: false,
+  pillarId: 'pillar/news',
+  pillarName: 'News'
+};
+
+const capiArticleWithVideo = {
+  id:
+    'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina',
+  type: 'liveblog',
+  sectionId: 'world',
+  sectionName: 'World news',
+  webPublicationDate: '2018-09-15T05:54:07Z',
+  webTitle:
+    'Five dead in tropical storm as flooding and surges continue – as it happened',
+  webUrl:
+    'https://www.theguardian.com/world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina',
+  apiUrl:
+    'https://content.guardianapis.com/world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina',
+  fields: {
+    headline:
+      'Five dead in tropical storm as flooding and surges continue – as it happened',
+    trailText:
+      'More than 600,000 people without power as Florence, downgraded to tropical storm, continues to lash Carolinas',
+    byline:
+      'Kate Lyons (now),  Sam Levin, Matthew Weaver and Jamiles Lartey (earlier)',
+    firstPublicationDate: '2018-09-13T20:18:37Z',
+    internalPageCode: '5029528',
+    liveBloggingNow: 'false',
+    shortUrl: 'https://gu.com/p/9ce5m',
+    thumbnail:
+      'https://media.guim.co.uk/35b940fe70bfa86b82c45f6c7a8c3b342028a3be/0_2_3000_1800/500.jpg'
+  },
+  tags: [
+    {
+      id: 'world/hurricane-florence',
+      type: 'keyword',
+      sectionId: 'world',
+      sectionName: 'World news',
+      webTitle: 'Hurricane Florence',
+      webUrl: 'https://www.theguardian.com/world/hurricane-florence',
+      apiUrl: 'https://content.guardianapis.com/world/hurricane-florence',
+      references: []
+    }
+  ],
+  blocks: {
+    main: {
+      id: '5b9ad6b2e4b0543ecbf2c7d8',
+      bodyHtml:
+        '<figure class="element element-atom"> <gu-atom data-atom-id="06666fe2-10f1-468f-b4de-91f5653931ac"         data-atom-type="media"    > </gu-atom> </figure>',
+      bodyTextSummary: '',
+      attributes: {},
+      published: true,
+      createdDate: '2018-09-13T21:29:22Z',
+      firstPublishedDate: '2018-09-13T20:01:47Z',
+      publishedDate: '2018-09-13T21:29:25Z',
+      lastModifiedDate: '2018-09-13T21:29:22Z',
+      contributors: [],
+      createdBy: {
+        email: 'akshata.rao.casual@guardian.co.uk',
+        firstName: 'Akshata',
+        lastName: 'Rao'
+      },
+      lastModifiedBy: {
+        email: 'akshata.rao.casual@guardian.co.uk',
+        firstName: 'Akshata',
+        lastName: 'Rao'
+      },
+      elements: [
+        {
+          type: 'contentatom',
+          assets: [],
+          contentAtomTypeData: {
+            atomId: '06666fe2-10f1-468f-b4de-91f5653931ac',
+            atomType: 'media'
+          }
+        }
+      ]
+    }
+  },
+  atoms: {
     media: [
       {
         id: '06666fe2-10f1-468f-b4de-91f5653931ac',
@@ -355,6 +440,9 @@ const capiArticle = {
       }
     ]
   },
+  frontsMeta: {
+    defaults: {}
+  },
   isHosted: false,
   pillarId: 'pillar/news',
   pillarName: 'News'
@@ -440,7 +528,8 @@ const stateWithCollection: any = {
         fronts: {},
         collections: {
           exampleCollection: {
-            displayName: 'Example Collection'
+            displayName: 'Example Collection',
+            type: 'type'
           }
         }
       }
@@ -463,9 +552,7 @@ const stateWithCollection: any = {
       abc: {
         id: '1',
         uuid: 'abc',
-        articleFragments: [
-          '95e2bfc0-8999-4e6e-a359-19960967c1e0'
-        ]
+        articleFragments: ['95e2bfc0-8999-4e6e-a359-19960967c1e0']
       },
       def: {
         id: null,
@@ -605,6 +692,7 @@ const stateWithSnaplinksAndArticles: any = {
 
 export {
   capiArticle,
+  capiArticleWithVideo,
   collection,
   collectionWithSupportingArticles,
   stateWithCollection,

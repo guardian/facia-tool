@@ -1,4 +1,10 @@
-import { Action, EditorCloseFront, EditorClearOpenFronts, EditorSetOpenFronts, EditorAddFront } from 'types/Action';
+import {
+  Action,
+  EditorCloseFront,
+  EditorClearOpenFronts,
+  EditorSetOpenFronts,
+  EditorAddFront
+} from 'types/Action';
 import { State as GlobalState } from 'types/State';
 
 const EDITOR_OPEN_FRONT = 'EDITOR_OPEN_FRONT';

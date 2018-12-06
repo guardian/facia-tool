@@ -30,7 +30,8 @@ declare module 'panda-session' {
 }
 
 declare module 'normalise-with-fields' {
-  export const createType: any
+  export const createType: any;
   export const build: any;
   export const createFieldType: any;
 }
+
