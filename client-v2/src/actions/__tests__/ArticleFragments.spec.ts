@@ -86,7 +86,7 @@ const buildStore = (added: ArticleFragmentSpec, collectionCap = Infinity) => {
 };
 
 const insert = async (
-  [uuid, id]: [string, string],
+  insertedArticleFragmentSpec: [string, string],
   index: number,
   parentType: string,
   parentId: string,
@@ -97,6 +97,7 @@ const insert = async (
     accept: boolean | null;
   }
 ) => {
+  const [uuid, id] = insertedArticleFragmentSpec;
   const { dispatch, getState } = buildStore(
     [uuid, id, undefined],
     collectionCapInfo ? collectionCapInfo.cap : Infinity
@@ -119,7 +120,7 @@ const insert = async (
 };
 
 const move = (
-  [uuid, id]: [string, string],
+  movedArticleFragmentSpec: [string, string],
   index: number,
   toType: string,
   toId: string,
@@ -132,6 +133,7 @@ const move = (
     accept: boolean | null;
   }
 ) => {
+  const [uuid, id] = movedArticleFragmentSpec;
   const { dispatch, getState } = buildStore(
     [uuid, id, undefined],
     collectionCapInfo ? collectionCapInfo.cap : Infinity
