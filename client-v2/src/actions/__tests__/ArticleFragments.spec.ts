@@ -90,9 +90,11 @@ const insert = async (
   index: number,
   parentType: string,
   parentId: string,
+  // sets the collection cap and allows a way to accept, reject, ignore the
+  // modal immediately
   collectionCapInfo?: {
     cap: number;
-    accept: boolean;
+    accept: boolean | null;
   }
 ) => {
   const { dispatch, getState } = buildStore(
@@ -109,7 +111,7 @@ const insert = async (
       )
   ) as any);
 
-  if (collectionCapInfo) {
+  if (collectionCapInfo && collectionCapInfo.accept !== null) {
     dispatch(endConfirmModal(collectionCapInfo.accept));
   }
 
@@ -123,6 +125,8 @@ const move = (
   toId: string,
   fromType: string,
   fromId: string,
+  // sets the collection cap and allows a way to accept, reject, ignore the
+  // modal immediately
   collectionCapInfo?: {
     cap: number;
     accept: boolean | null;

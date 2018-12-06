@@ -207,6 +207,7 @@ const insertArticleFragmentWithCreate = (
   to: PosSpec,
   id: string,
   persistTo: 'collection' | 'clipboard',
+  // allow the factory to be injected for testing
   articleFragmentFactory = createArticleFragment
 ): ThunkResult<void> => {
   return (dispatch: Dispatch) => {
