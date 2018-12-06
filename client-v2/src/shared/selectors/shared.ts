@@ -68,15 +68,6 @@ const articleTagSelector = (state: State, id: string): ArticleTag => {
   return emptyTag
 };
 
-const articleKickerOptionsSelector = (state: State, id: string): string[] => {
-
-  const tag = articleTagSelector(state, id);
-
-  const filterNulls = <T>(s: T | null | undefined): s is T => !!s;
-
-  return uniq([tag.webTitle, tag.sectionName].filter(filterNulls));
-};
-
 const articleKickerSelector = (state: State, id: string): string | undefined => {
 
   const articleFragment = articleFragmentSelector(state, id);
@@ -353,7 +344,6 @@ export {
   createDemornalisedArticleFragment,
   selectSharedState,
   articleFragmentSelector,
-  articleKickerOptionsSelector,
   createCollectionEditWarningSelector,
   articleFragmentsSelector,
   groupCollectionSelector,
