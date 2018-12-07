@@ -24,6 +24,7 @@ import {
 import Collection from './CollectionComponents/Collection';
 import CollectionItem from './CollectionComponents/CollectionItem';
 import ArticleFragmentForm from './ArticleFragmentForm';
+import FrontCollectionsOverview from './FrontCollectionsOverview';
 import GroupDisplay from 'shared/components/GroupDisplay';
 import ArticleFragmentLevel from 'components/clipboard/ArticleFragmentLevel';
 import GroupLevel from 'components/clipboard/GroupLevel';
@@ -41,8 +42,6 @@ const FrontContentContainer = styled('div')`
   overflow-y: scroll;
   padding-top: 1px;
 `;
-
-const FrontFormContainer = FrontContentContainer;
 
 interface FrontPropsBeforeState {
   id: string;
@@ -228,8 +227,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
               })}
             </Root>
           </FrontContentContainer>
-          {selectedArticleFragment && (
-            <FrontFormContainer>
+          <FrontContentContainer>
+            {selectedArticleFragment ? (
               <ArticleFragmentForm
                 articleFragmentId={selectedArticleFragment.id}
                 isSupporting={selectedArticleFragment.isSupporting}
@@ -244,8 +243,13 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                 }}
                 onCancel={this.props.clearArticleFragmentSelection}
               />
-            </FrontFormContainer>
-          )}
+            ) : (
+              <FrontCollectionsOverview
+                id={this.props.id}
+                browsingStage={this.props.browsingStage}
+              />
+            )}
+          </FrontContentContainer>
         </FrontContainer>
       </React.Fragment>
     );
