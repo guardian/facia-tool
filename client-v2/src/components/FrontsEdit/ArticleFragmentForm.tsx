@@ -5,7 +5,8 @@ import {
   FieldArray,
   InjectedFormProps,
   formValueSelector,
-  WrappedFieldArrayProps
+  WrappedFieldArrayProps,
+  Field
 } from 'redux-form';
 import styled from 'styled-components';
 import Button from 'shared/components/input/ButtonDefault';
@@ -198,58 +199,60 @@ const formComponent: React.StatelessComponent<Props> = ({
           useHeadlineFont
           format={value => {
             if (showKickerTag) {
-              return kickerOptions.webTitle
+              return kickerOptions.webTitle;
             }
             if (showKickerSection) {
-              return kickerOptions.sectionName
+              return kickerOptions.sectionName;
             }
             return value;
           }}
-          onChange={(e) => {
-            change('showKickerCustom', true)
-            change('showKickerTag', false)
-            change('showKickerSection', false)
+          onChange={e => {
+            change('showKickerCustom', true);
+            change('showKickerTag', false);
+            change('showKickerSection', false);
             if (e) {
-              change('customKicker', e.target.value)
+              change('customKicker', e.target.value);
             }
           }}
         />
-        { kickerOptions.webTitle && (
-          <ConditionalField
-            permittedFields={editableFields}
-            name="showKickerTag"
-            component={InputButton}
-            buttonText={kickerOptions.webTitle}
-            selected={showKickerTag}
-            onClick={() => {
-              if (!showKickerTag) {
-                change('showKickerTag', true)
-                change('showKickerSection', false)
-                change('showKickerCustom', false)
-              } else {
-                change('showKickerTag', false)
-              }
-            }}
-          />
-        )}
-        { kickerOptions.sectionName && (
-          <ConditionalField
-            permittedFields={editableFields}
-            name="showKickerSection"
-            component={InputButton}
-            selected={showKickerSection}
-            buttonText={kickerOptions.sectionName}
-            onClick={() => {
-              if (!showKickerSection) {
-                change('showKickerSection', true)
-                change('showKickerTag', false)
-                change('showKickerCustom', false)
-              } else {
-                change('showKickerSection', false);
-              }
-            }}
-          />
-        )}
+        <ConditionalComponent name="customKicker" permittedNames={editableFields}>
+          {kickerOptions.webTitle && (
+            <Field
+              permittedFields={editableFields}
+              name="showKickerTag"
+              component={InputButton}
+              buttonText={kickerOptions.webTitle}
+              selected={showKickerTag}
+              onClick={() => {
+                if (!showKickerTag) {
+                  change('showKickerTag', true);
+                  change('showKickerSection', false);
+                  change('showKickerCustom', false);
+                } else {
+                  change('showKickerTag', false);
+                }
+              }}
+            />
+          )}
+          {kickerOptions.sectionName && (
+            <Field
+              permittedFields={editableFields}
+              name="showKickerSection"
+              component={InputButton}
+              selected={showKickerSection}
+              buttonText={kickerOptions.sectionName}
+              onClick={() => {
+                if (!showKickerSection) {
+                  change('showKickerSection', true);
+                  change('showKickerTag', false);
+                  change('showKickerCustom', false);
+                } else {
+                  change('showKickerSection', false);
+                }
+              }}
+            />
+          )}
+        </ConditionalComponent>
         <ConditionalField
           permittedFields={editableFields}
           name="isBreaking"
@@ -425,10 +428,7 @@ const createMapStateToProps = () => {
         ? selectFormFields(state, article.uuid, isSupporting)
         : [],
       kickerOptions: article
-        ? articleTagSelector(
-            selectSharedState(state),
-            articleFragmentId
-          )
+        ? articleTagSelector(selectSharedState(state), articleFragmentId)
         : {},
       imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
       imageHide: valueSelector(state, 'imageHide'),

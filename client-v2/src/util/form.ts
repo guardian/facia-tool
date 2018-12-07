@@ -19,6 +19,8 @@ export interface ArticleFragmentFormData {
   imageCutoutReplace: boolean;
   imageSlideshowReplace: boolean;
   slideshow: Array<ImageData | void> | void;
+  showKickerTag: boolean;
+  showKickerSection: boolean
 }
 
 export interface ImageData {
@@ -54,6 +56,8 @@ export const getInitialValuesForArticleFragmentForm = (
         isBoosted: article.isBoosted || false,
         showQuotedHeadline: article.showQuotedHeadline || false,
         showBoostedHeadline: article.showBoostedHeadline || false,
+        showKickerTag: article.showKickerTag || false,
+        showKickerSection: article.showKickerSection || false,
         customKicker: article.customKicker || '',
         isBreaking: article.isBreaking || false,
         byline: article.byline || '',
@@ -97,7 +101,6 @@ export const getArticleFragmentMetaFromFormValues = (
     {
       ...values,
       imageReplace: !!primaryImage.src && !values.imageHide,
-      showKickerCustom: !!values.customKicker,
       imageSrc: primaryImage.src,
       imageSrcThumb: primaryImage.thumb,
       imageSrcWidth: intToStr(primaryImage.width),
