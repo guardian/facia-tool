@@ -10,6 +10,7 @@ import CAPITagInput, {
   AsyncState
 } from '../FrontsCAPIInterface/TagInput';
 import { getIdFromURL } from 'util/CAPIUtils';
+import { getTodayDate } from 'util/getTodayDate';
 
 interface FrontsCAPISearchInputProps {
   children: any;
@@ -176,7 +177,7 @@ class FrontsCAPISearchInput extends React.Component<
     const allTags = tags.concat(sections);
 
     const dateParams = isPreview
-      ? { 'order-by': 'oldest' }
+      ? { 'order-by': 'oldest', 'from-date': getTodayDate() }
       : { 'order-by': 'newest', 'order-date': 'first-publication' };
 
     if (!displaySearchFilters) {
