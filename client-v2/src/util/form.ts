@@ -2,7 +2,7 @@ import { ArticleFragmentMeta } from 'shared/types/Collection';
 import { DerivedArticle } from 'shared/types/Article';
 import omit from 'lodash/omit';
 import compact from 'lodash/compact';
-
+import clamp from 'lodash/clamp';
 export interface ArticleFragmentFormData {
   headline: string;
   isBoosted: boolean;
@@ -46,7 +46,7 @@ export const getInitialValuesForArticleFragmentForm = (
       height: strToInt(image.height)
     })
   );
-  slideshowBackfill.length = 4 - slideshow.length;
+  slideshowBackfill.length = clamp(4 - slideshow.length, 0, 4);
   slideshowBackfill.fill(undefined);
   return article
     ? {
