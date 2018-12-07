@@ -8,14 +8,16 @@ interface ImageAsset {
   };
 }
 
-interface ImageElement {
+interface Element {
   id: string;
   relation: string;
-  type: 'image';
+  type: 'image' | 'video' | unknown;
   assets: ImageAsset[];
+  contentAtomTypeData?: {
+    atomId: string,
+    atomType: string
+  }
 }
-
-type Element = ImageElement;
 
 type CapiDate = string;
 
@@ -42,6 +44,28 @@ interface Block {
   elements: Element[];
 }
 
+interface Atoms {
+  media: Atom[];
+}
+
+interface Atom {
+  id: string;
+  atomType: string;
+  data: AtomData;
+}
+
+interface AtomData {
+  media: MediaAtom
+}
+
+interface MediaAtom {
+  assets: AtomAsset[]
+}
+
+interface AtomAsset {
+  assetType: 'audio' | 'video'
+}
+
 interface Blocks {
   main?: Block;
   body?: Block[];
@@ -58,18 +82,20 @@ interface Tag {
   sectionName?: string;
 }
 
+type CapiBool = "true" | "false";
+
 interface CapiArticleFields {
   headline?: string;
   standfirst?: string;
   trailText?: string;
   byline?: string;
   internalPageCode?: string;
-  isLive?: string;
+  isLive?: CapiBool;
   firstPublicationDate?: string;
   scheduledPublicationDate?: CapiDate;
   secureThumbnail?: string;
   thumbnail?: string | void;
-  liveBloggingNow?: boolean;
+  liveBloggingNow?: CapiBool;
   shortUrl?: string;
   membershipUrl?: string;
 }
@@ -91,6 +117,7 @@ interface CapiArticle {
   fields: CapiArticleFields;
   tags?: Tag[];
   blocks: Blocks;
+  atoms?: Atoms;
   frontsMeta: {
     defaults: {
       imageCutoutReplace: boolean;

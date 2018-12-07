@@ -2,15 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import {
   reduxForm,
-  Field,
   FieldArray,
   InjectedFormProps,
   formValueSelector,
-  WrappedFieldArrayProps
+  WrappedFieldArrayProps,
+  Field
 } from 'redux-form';
 import styled from 'styled-components';
-import omit from 'lodash/omit';
-import compact from 'lodash/compact';
 import Button from 'shared/components/input/ButtonDefault';
 import ContentContainer from 'shared/components/layout/ContentContainer';
 import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
@@ -19,6 +17,7 @@ import {
   selectSharedState,
   articleTagSelector
 } from 'shared/selectors/shared';
+import { createSelectFormFieldsForCollectionItem } from 'selectors/formSelectors';
 import { DerivedArticle } from 'shared/types/Article';
 import { ArticleFragmentMeta, ArticleTag } from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
@@ -31,49 +30,23 @@ import InputButton from 'shared/components/input/InputButton';
 import Row from '../Row';
 import Col from '../Col';
 import { State } from 'types/State';
+import ConditionalField from 'components/inputs/ConditionalField';
+import ConditionalComponent from 'components/layout/ConditionalComponent';
+import {
+  ArticleFragmentFormData,
+  getArticleFragmentMetaFromFormValues,
+  getInitialValuesForArticleFragmentForm
+} from 'util/form';
 
-interface ComponentProps {
-  onCancel: () => void;
-  onSave: (meta: ArticleFragmentMeta) => void;
-  imageSlideshowReplace: boolean;
-  showByline: boolean;
-  imageCutoutReplace: boolean;
-  imageHide: boolean;
-  kickerOptions: ArticleTag;
+interface ComponentProps extends ContainerProps {
   articleFragmentId: string;
   showKickerTag: boolean;
   showKickerSection: boolean;
+  kickerOptions: ArticleTag;
 }
 
 type Props = ComponentProps &
   InjectedFormProps<ArticleFragmentFormData, ComponentProps, {}>;
-
-interface ImageData {
-  src?: string;
-  width?: number;
-  height?: number;
-  origin?: string;
-  thumb?: string;
-}
-interface ArticleFragmentFormData {
-  headline: string;
-  isBoosted: boolean;
-  showQuotedHeadline: boolean;
-  showBoostedHeadline: boolean;
-  customKicker: string;
-  isBreaking: boolean;
-  byline: string;
-  showByline: boolean;
-  trailText: string;
-  imageHide: boolean;
-  primaryImage: ImageData;
-  cutoutImage: ImageData;
-  imageCutoutReplace: boolean;
-  imageSlideshowReplace: boolean;
-  slideshow: Array<ImageData | void> | void;
-  showKickerTag: boolean;
-  showKickerSection: boolean
-}
 
 const FormContainer = ContentContainer.withComponent('form').extend`
   display: flex;
@@ -127,12 +100,13 @@ const imageCriteria = {
 
 const renderSlideshow: React.StatelessComponent<
   WrappedFieldArrayProps<ImageData>
-> = ({ fields }) => (
+> = ({ fields }, editableFields: string[]) => (
   <>
     {fields.map((name, index) => (
       <Col key={`${name}-${index}`}>
-        <Field
-          name={name}
+        <ConditionalField
+          permittedFields={editableFields}
+          name="slideshow"
           component={InputImage}
           size="small"
           criteria={imageCriteria}
@@ -153,6 +127,7 @@ const formComponent: React.StatelessComponent<Props> = ({
   initialValues,
   pristine,
   showByline,
+  editableFields,
   reset,
   showKickerTag,
   showKickerSection
@@ -171,7 +146,8 @@ const formComponent: React.StatelessComponent<Props> = ({
     </CollectionHeadingPinline>
     <FormContent>
       <InputGroup>
-        <Field
+        <ConditionalField
+          permittedFields={editableFields}
           name="headline"
           label="Headline"
           placeholder={initialValues.headline}
@@ -179,28 +155,43 @@ const formComponent: React.StatelessComponent<Props> = ({
           useHeadlineFont
           rows="2"
         />
-        <Field
+        <ConditionalField
+          permittedFields={editableFields}
           name="isBoosted"
           component={InputCheckboxToggle}
           label="Boost"
           type="checkbox"
         />
-        <HorizontalRule noMargin />
-        <Field
+        <ConditionalField
+          permittedFields={editableFields}
           name="showQuotedHeadline"
           component={InputCheckboxToggle}
           label="Quote headline"
           type="checkbox"
         />
-        <HorizontalRule noMargin />
-        <Field
+        <ConditionalField
+          permittedFields={editableFields}
           name="showBoostedHeadline"
           component={InputCheckboxToggle}
           label="Large headline"
           type="checkbox"
         />
-        <HorizontalRule noMargin />
-        <Field
+        <ConditionalField
+          permittedFields={editableFields}
+          name="showLivePlayable"
+          component={InputCheckboxToggle}
+          label="Show updates"
+          type="checkbox"
+        />
+        <ConditionalField
+          permittedFields={editableFields}
+          name="showMainVideo"
+          component={InputCheckboxToggle}
+          label="Show video"
+          type="checkbox"
+        />
+        <ConditionalField
+          permittedFields={editableFields}
           name="customKicker"
           label="Kicker"
           component={InputText}
@@ -208,71 +199,77 @@ const formComponent: React.StatelessComponent<Props> = ({
           useHeadlineFont
           format={value => {
             if (showKickerTag) {
-              return kickerOptions.webTitle
+              return kickerOptions.webTitle;
             }
             if (showKickerSection) {
-              return kickerOptions.sectionName
+              return kickerOptions.sectionName;
             }
             return value;
           }}
-          onChange={(e) => {
-            change('showKickerCustom', true)
-            change('showKickerTag', false)
-            change('showKickerSection', false)
+          onChange={e => {
+            change('showKickerCustom', true);
+            change('showKickerTag', false);
+            change('showKickerSection', false);
             if (e) {
-              change('customKicker', e.target.value)
+              change('customKicker', e.target.value);
             }
           }}
         />
-        { kickerOptions.webTitle && (
-          <Field
-            name="showKickerTag"
-            component={InputButton}
-            buttonText={kickerOptions.webTitle}
-            selected={showKickerTag}
-            onClick={() => {
-              if (!showKickerTag) {
-                change('showKickerTag', true)
-                change('showKickerSection', false)
-                change('showKickerCustom', false)
-              } else {
-                change('showKickerTag', false)
-              }
-            }}
-          />
-        )}
-        { kickerOptions.sectionName && (
-          <Field
-            name="showKickerSection"
-            component={InputButton}
-            selected={showKickerSection}
-            buttonText={kickerOptions.sectionName}
-            onClick={() => {
-              if (!showKickerSection) {
-                change('showKickerSection', true)
-                change('showKickerTag', false)
-                change('showKickerCustom', false)
-              } else {
-                change('showKickerSection', false);
-              }
-            }}
-          />
-        )}
-        <Field
+        <ConditionalComponent name="customKicker" permittedNames={editableFields}>
+          {kickerOptions.webTitle && (
+            <Field
+              permittedFields={editableFields}
+              name="showKickerTag"
+              component={InputButton}
+              buttonText={kickerOptions.webTitle}
+              selected={showKickerTag}
+              onClick={() => {
+                if (!showKickerTag) {
+                  change('showKickerTag', true);
+                  change('showKickerSection', false);
+                  change('showKickerCustom', false);
+                } else {
+                  change('showKickerTag', false);
+                }
+              }}
+            />
+          )}
+          {kickerOptions.sectionName && (
+            <Field
+              permittedFields={editableFields}
+              name="showKickerSection"
+              component={InputButton}
+              selected={showKickerSection}
+              buttonText={kickerOptions.sectionName}
+              onClick={() => {
+                if (!showKickerSection) {
+                  change('showKickerSection', true);
+                  change('showKickerTag', false);
+                  change('showKickerCustom', false);
+                } else {
+                  change('showKickerSection', false);
+                }
+              }}
+            />
+          )}
+        </ConditionalComponent>
+        <ConditionalField
+          permittedFields={editableFields}
           name="isBreaking"
           component={InputCheckboxToggle}
           label="Breaking News"
           type="checkbox"
         />
-        <HorizontalRule noMargin />
-        <Field
+        <ConditionalField
+          permittedFields={editableFields}
           name="showByline"
           component={InputCheckboxToggle}
           label="Show Byline"
           type="checkbox"
         />
         {showByline && (
-          <Field
+          <ConditionalField
+            permittedFields={editableFields}
             name="byline"
             label="Byline"
             component={InputText}
@@ -280,8 +277,8 @@ const formComponent: React.StatelessComponent<Props> = ({
             useHeadlineFont
           />
         )}
-        <HorizontalRule noMargin />
-        <Field
+        <ConditionalField
+          permittedFields={editableFields}
           name="trailText"
           label="Standfirst"
           component={InputTextArea}
@@ -292,7 +289,8 @@ const formComponent: React.StatelessComponent<Props> = ({
         <Row>
           <Col>
             <ImageWrapper faded={imageHide}>
-              <Field
+              <ConditionalField
+                permittedFields={editableFields}
                 name="primaryImage"
                 component={InputImage}
                 disabled={imageHide}
@@ -301,7 +299,8 @@ const formComponent: React.StatelessComponent<Props> = ({
           </Col>
           <Col>
             <InputGroup>
-              <Field
+              <ConditionalField
+                permittedFields={editableFields}
                 name="imageHide"
                 component={InputCheckboxToggle}
                 label="Hide media"
@@ -311,11 +310,17 @@ const formComponent: React.StatelessComponent<Props> = ({
             </InputGroup>
           </Col>
         </Row>
-        <HorizontalRule />
+        <ConditionalComponent
+          permittedNames={editableFields}
+          name={['primaryImage', 'imageHide']}
+        >
+          <HorizontalRule />
+        </ConditionalComponent>
         <Row>
           <Col>
             <ImageWrapper faded={!imageCutoutReplace}>
-              <Field
+              <ConditionalField
+                permittedFields={editableFields}
                 name="cutoutImage"
                 component={InputImage}
                 disabled={imageHide}
@@ -324,7 +329,8 @@ const formComponent: React.StatelessComponent<Props> = ({
           </Col>
           <Col>
             <InputGroup>
-              <Field
+              <ConditionalField
+                permittedFields={editableFields}
                 name="imageCutoutReplace"
                 component={InputCheckboxToggle}
                 label="Use cutout"
@@ -335,110 +341,37 @@ const formComponent: React.StatelessComponent<Props> = ({
           </Col>
         </Row>
       </RowContainer>
-      <HorizontalRule />
-      <Field
-        name="imageSlideshowReplace"
-        component={InputCheckboxToggle}
-        label="Slideshow"
-        type="checkbox"
-      />
+      <ConditionalComponent
+        permittedNames={editableFields}
+        name={['cutoutImage', 'imageCutoutReplace']}
+      >
+        <HorizontalRule />
+      </ConditionalComponent>
+      <InputGroup>
+        <ConditionalField
+          permittedFields={editableFields}
+          name="imageSlideshowReplace"
+          component={InputCheckboxToggle}
+          label="Slideshow"
+          type="checkbox"
+        />
+      </InputGroup>
       {imageSlideshowReplace && (
         <RowContainer>
           <SlideshowRow>
-            <FieldArray name="slideshow" component={renderSlideshow} />
+            <FieldArray
+              name="slideshow"
+              component={(props: WrappedFieldArrayProps<ImageData>) =>
+                renderSlideshow(props, editableFields)
+              }
+            />
           </SlideshowRow>
-          <SlideshowLabel>Drag and drop up to four images</SlideshowLabel>
+          <SlideshowLabel>Drag and drop up to five images</SlideshowLabel>
         </RowContainer>
       )}
     </FormContent>
   </FormContainer>
 );
-
-const strToInt = (str: string | void) => (str ? parseInt(str, 10) : undefined);
-const intToStr = (int: number | void) => (int ? int.toString() : undefined);
-
-const getInitialValuesForArticleFragmentForm = (
-  article: DerivedArticle | void
-): ArticleFragmentFormData | void => {
-  if (!article) {
-    return undefined;
-  }
-  const slideshowBackfill: Array<ImageData | void> = [];
-  const slideshow: Array<ImageData | void> = (article.slideshow || []).map(
-    image => ({
-      ...image,
-      width: strToInt(image.width),
-      height: strToInt(image.height)
-    })
-  );
-  slideshowBackfill.length = 4 - slideshow.length;
-  slideshowBackfill.fill(undefined);
-  return article
-    ? {
-        headline: article.headline || '',
-        isBoosted: article.isBoosted || false,
-        showQuotedHeadline: article.showQuotedHeadline || false,
-        showBoostedHeadline: article.showBoostedHeadline || false,
-        customKicker: article.customKicker || '',
-        showKickerTag: article.showKickerTag || false,
-        showKickerSection: article.showKickerSection || false,
-        isBreaking: article.isBreaking || false,
-        byline: article.byline || '',
-        showByline: article.showByline || false,
-        trailText: article.trailText || '',
-        imageCutoutReplace: article.imageCutoutReplace || false,
-        imageHide: article.imageHide || false,
-        imageSlideshowReplace: article.imageSlideshowReplace || false,
-        primaryImage: {
-          src: article.imageSrc,
-          width: strToInt(article.imageSrcWidth),
-          height: strToInt(article.imageSrcHeight),
-          origin: article.imageSrcOrigin,
-          thumb: article.imageSrcThumb
-        },
-        cutoutImage: {
-          src: article.imageCutoutSrc,
-          width: strToInt(article.imageCutoutSrcWidth),
-          height: strToInt(article.imageCutoutSrcHeight),
-          origin: article.imageCutoutSrcOrigin
-        },
-        slideshow: slideshow.concat(slideshowBackfill)
-      }
-    : undefined;
-};
-
-const getArticleFragmentMetaFromFormValues = (
-  values: ArticleFragmentFormData
-): ArticleFragmentMeta => {
-  const primaryImage = values.primaryImage || {};
-  const cutoutImage = values.cutoutImage || {};
-  // Lodash doesn't remove undefined in the type settings here, hence the any.
-  const slideshow = compact(values.slideshow as any).map(
-    (image: ImageData) => ({
-      ...image,
-      width: intToStr(image.width),
-      height: intToStr(image.height)
-    })
-  );
-  return omit(
-    {
-      ...values,
-      imageReplace: !!primaryImage.src && !values.imageHide,
-      imageSrc: primaryImage.src,
-      imageSrcThumb: primaryImage.thumb,
-      imageSrcWidth: intToStr(primaryImage.width),
-      imageSrcHeight: intToStr(primaryImage.height),
-      imageSrcOrigin: primaryImage.origin,
-      imageCutoutSrc: cutoutImage.src,
-      imageCutoutSrcWidth: intToStr(cutoutImage.width),
-      imageCutoutSrcHeight: intToStr(cutoutImage.height),
-      imageCutoutSrcOrigin: cutoutImage.origin,
-      slideshow: slideshow.length ? slideshow : undefined
-    },
-    'primaryImage',
-    'cutoutImage'
-  );
-};
 
 const ArticleFragmentForm = reduxForm<
   ArticleFragmentFormData,
@@ -461,6 +394,7 @@ interface ContainerProps extends InterfaceProps {
   imageHide: boolean;
   kickerOptions: ArticleTag;
   showByline: boolean;
+  editableFields: string[];
   showKickerTag: boolean;
   showKickerSection: boolean;
 }
@@ -468,6 +402,7 @@ interface ContainerProps extends InterfaceProps {
 interface InterfaceProps {
   form: string;
   articleFragmentId: string;
+  isSupporting?: boolean;
   onCancel: () => void;
   onSave: (meta: ArticleFragmentMeta) => void;
 }
@@ -477,21 +412,23 @@ const formContainer: React.SFC<ContainerProps> = props => (
 );
 
 const createMapStateToProps = () => {
-  const articleSelector = createArticleFromArticleFragmentSelector();
-  return (state: State, props: InterfaceProps) => {
-    const valueSelector = formValueSelector(props.articleFragmentId);
-    const article = articleSelector(
-      selectSharedState(state),
-      props.articleFragmentId
-    );
+  const selectArticle = createArticleFromArticleFragmentSelector();
+  const selectFormFields = createSelectFormFieldsForCollectionItem();
+  return (
+    state: State,
+    { articleFragmentId, isSupporting = false }: InterfaceProps
+  ) => {
+    const valueSelector = formValueSelector(articleFragmentId);
+    const sharedState = selectSharedState(state);
+    const article = selectArticle(selectSharedState(state), articleFragmentId);
 
     return {
       initialValues: getInitialValuesForArticleFragmentForm(article),
+      editableFields: article
+        ? selectFormFields(state, article.uuid, isSupporting)
+        : [],
       kickerOptions: article
-        ? articleTagSelector(
-            selectSharedState(state),
-            props.articleFragmentId
-          )
+        ? articleTagSelector(selectSharedState(state), articleFragmentId)
         : {},
       imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
       imageHide: valueSelector(state, 'imageHide'),
@@ -507,4 +444,5 @@ export {
   getArticleFragmentMetaFromFormValues,
   getInitialValuesForArticleFragmentForm
 };
+
 export default connect(createMapStateToProps)(formContainer);

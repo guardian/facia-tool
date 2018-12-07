@@ -4,6 +4,7 @@ import { WrappedFieldProps } from 'redux-form';
 
 import InputLabel from './InputLabel';
 import InputContainer from './InputContainer';
+import HorizontalRule from '../layout/HorizontalRule';
 
 const CheckboxContainer = styled('div')`
   display: flex;
@@ -65,13 +66,16 @@ type Props = {
 } & WrappedFieldProps;
 
 export default ({ label, input, ...rest }: Props) => (
-  <InputContainer>
-    <CheckboxContainer>
-      <Label size="sm">{label}</Label>
-      <Switch onClick={() => input.onChange(!input.checked)}>
-        <Checkbox type="checkbox" {...input} {...rest} id={label} />
-        <CheckboxLabel for={label} />
-      </Switch>
-    </CheckboxContainer>
-  </InputContainer>
+  <>
+    <InputContainer>
+      <CheckboxContainer>
+        <Label size="sm">{label}</Label>
+        <Switch onClick={() => input.onChange(!input.checked)}>
+          <Checkbox type="checkbox" {...input} {...rest} id={label} />
+          <CheckboxLabel for={label} />
+        </Switch>
+      </CheckboxContainer>
+    </InputContainer>
+    <HorizontalRule noMargin />
+  </>
 );

@@ -52,9 +52,9 @@ interface FrontPropsBeforeState {
 
 type FrontProps = FrontPropsBeforeState & {
   updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) => void;
-  selectedArticleFragmentId: string | void;
+  selectedArticleFragment: { id: string; isSupporting: boolean } | void;
   dispatch: Dispatch;
-  selectArticleFragment: (id: string) => void;
+  selectArticleFragment: (id: string, isSupporting?: boolean) => void;
   clearArticleFragmentSelection: () => void;
   removeCollectionItem: (parentId: string, id: string) => void;
   removeSupportingCollectionItem: (parentId: string, id: string) => void;
@@ -103,13 +103,16 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   }
 
   public clearArticleFragmentSelectionIfNeeded(id: string) {
-    if (id === this.props.selectedArticleFragmentId) {
+    if (
+      this.props.selectedArticleFragment &&
+      id === this.props.selectedArticleFragment.id
+    ) {
       this.props.clearArticleFragmentSelection();
     }
   }
 
   public render() {
-    const { selectedArticleFragmentId, front, articlesVisible } = this.props;
+    const { selectedArticleFragment, front, articlesVisible } = this.props;
     return (
       <React.Fragment>
         <div
@@ -176,8 +179,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                   )
                                 }
                                 isSelected={
-                                  !selectedArticleFragmentId ||
-                                  selectedArticleFragmentId ===
+                                  !selectedArticleFragment ||
+                                  selectedArticleFragment.id ===
                                     articleFragment.uuid
                                 }
                                 articleNotifications={articleNotifications}
@@ -192,12 +195,15 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                       uuid={supporting.uuid}
                                       parentId={articleFragment.uuid}
                                       getNodeProps={() => sProps}
-                                      onSelect={
-                                        this.props.selectArticleFragment
+                                      onSelect={id =>
+                                        this.props.selectArticleFragment(
+                                          id,
+                                          true
+                                        )
                                       }
                                       isSelected={
-                                        !selectedArticleFragmentId ||
-                                        selectedArticleFragmentId ===
+                                        !selectedArticleFragment ||
+                                        selectedArticleFragment.id ===
                                           supporting.uuid
                                       }
                                       onDelete={() =>
@@ -222,14 +228,15 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
             </Root>
           </FrontContentContainer>
           <FrontContentContainer>
-            {selectedArticleFragmentId ? (
+            {selectedArticleFragment ? (
               <ArticleFragmentForm
-                articleFragmentId={selectedArticleFragmentId}
-                key={selectedArticleFragmentId}
-                form={selectedArticleFragmentId}
+                articleFragmentId={selectedArticleFragment.id}
+                isSupporting={selectedArticleFragment.isSupporting}
+                key={selectedArticleFragment.id}
+                form={selectedArticleFragment.id}
                 onSave={(meta: ArticleFragmentMeta) => {
                   this.props.updateArticleFragmentMeta(
-                    selectedArticleFragmentId,
+                    selectedArticleFragment.id,
                     meta
                   );
                   this.props.clearArticleFragmentSelection();
@@ -241,7 +248,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                 id={this.props.id}
                 browsingStage={this.props.browsingStage}
               />
-          )}
+            )}
           </FrontContentContainer>
         </FrontContainer>
       </React.Fragment>
@@ -251,7 +258,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
 
 const mapStateToProps = (state: State, props: FrontPropsBeforeState) => ({
   unpublishedChanges: state.unpublishedChanges,
-  selectedArticleFragmentId: selectEditorArticleFragment(state, props.id),
+  selectedArticleFragment: selectEditorArticleFragment(state, props.id),
   front: getFront(state, props.id),
   articlesVisible: visibleFrontArticlesSelector(state, {
     collectionSet: props.browsingStage
@@ -263,8 +270,14 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     dispatch,
     updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
       dispatch(updateArticleFragmentMeta(id, meta)),
-    selectArticleFragment: (frontId: string, articleFragmentId: string) =>
-      dispatch(editorSelectArticleFragment(frontId, articleFragmentId)),
+    selectArticleFragment: (
+      frontId: string,
+      articleFragmentId: string,
+      isSupporting?: boolean
+    ) =>
+      dispatch(
+        editorSelectArticleFragment(frontId, articleFragmentId, isSupporting)
+      ),
     clearArticleFragmentSelection: (frontId: string) =>
       dispatch(editorClearArticleFragmentSelection(frontId)),
     removeCollectionItem: (parentId: string, uuid: string) => {
@@ -289,8 +302,8 @@ const mergeProps = (
   ...props,
   ...stateProps,
   ...dispatchProps,
-  selectArticleFragment: (articleId: string) =>
-    dispatchProps.selectArticleFragment(props.id, articleId),
+  selectArticleFragment: (articleId: string, isSupporting?: boolean) =>
+    dispatchProps.selectArticleFragment(props.id, articleId, isSupporting),
   clearArticleFragmentSelection: () =>
     dispatchProps.clearArticleFragmentSelection(props.id)
 });

@@ -20,8 +20,8 @@ import ArticleFragmentLevel from './clipboard/ArticleFragmentLevel';
 import CollectionItem from './FrontsEdit/CollectionComponents/CollectionItem';
 
 interface ClipboardProps {
-  selectedArticleFragmentId: string | void;
-  selectArticleFragment: (id: string) => void;
+  selectedArticleFragment: { id: string; isSupporting: boolean } | void;
+  selectArticleFragment: (id: string, isSupporting?: boolean) => void;
   clearArticleFragmentSelection: () => void;
   removeCollectionItem: (id: string) => void;
   removeSupportingCollectionItem: (parentId: string, id: string) => void;
@@ -53,7 +53,10 @@ class Clipboard extends React.Component<ClipboardProps> {
   };
 
   public clearArticleFragmentSelectionIfNeeded = (id: string) => {
-    if (id === this.props.selectedArticleFragmentId) {
+    if (
+      this.props.selectedArticleFragment &&
+      id === this.props.selectedArticleFragment.id
+    ) {
       this.props.clearArticleFragmentSelection();
     }
   };
@@ -74,8 +77,8 @@ class Clipboard extends React.Component<ClipboardProps> {
               displayType="polaroid"
               onSelect={this.props.selectArticleFragment}
               isSelected={
-                !this.props.selectedArticleFragmentId ||
-                this.props.selectedArticleFragmentId === articleFragment.uuid
+                !this.props.selectedArticleFragment ||
+                this.props.selectedArticleFragment.id === articleFragment.uuid
               }
               onDelete={() => this.removeCollectionItem(articleFragment.uuid)}
               {...afProps}
@@ -93,10 +96,10 @@ class Clipboard extends React.Component<ClipboardProps> {
                     getNodeProps={() => sProps}
                     size="small"
                     displayType="polaroid"
-                    onSelect={this.props.selectArticleFragment}
+                    onSelect={id => this.props.selectArticleFragment(id, true)}
                     isSelected={
-                      !this.props.selectedArticleFragmentId ||
-                      this.props.selectedArticleFragmentId === supporting.uuid
+                      !this.props.selectedArticleFragment ||
+                      this.props.selectedArticleFragment.id === supporting.uuid
                     }
                     {...sProps}
                     onDelete={() =>
@@ -117,12 +120,12 @@ class Clipboard extends React.Component<ClipboardProps> {
 }
 
 const mapStateToProps = (state: State) => ({
-  selectedArticleFragmentId: selectEditorArticleFragment(state, clipboardId)
+  selectedArticleFragment: selectEditorArticleFragment(state, clipboardId)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  selectArticleFragment: (frontId: string, articleFragmentId: string) =>
-    dispatch(editorSelectArticleFragment(frontId, articleFragmentId)),
+  selectArticleFragment: (frontId: string, articleFragmentId: string, isSupporting: boolean) =>
+    dispatch(editorSelectArticleFragment(frontId, articleFragmentId, isSupporting)),
   clearArticleFragmentSelection: () =>
     dispatch(editorClearArticleFragmentSelection(clipboardId)),
   removeCollectionItem: (uuid: string) => {
@@ -147,8 +150,8 @@ const mergeProps = (
 ) => ({
   ...stateProps,
   ...dispatchProps,
-  selectArticleFragment: (articleId: string) =>
-    dispatchProps.selectArticleFragment(clipboardId, articleId)
+  selectArticleFragment: (articleId: string, isSupporting = false) =>
+    dispatchProps.selectArticleFragment(clipboardId, articleId, isSupporting)
 });
 
 export default connect(

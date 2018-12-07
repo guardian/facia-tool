@@ -14,6 +14,7 @@ import {
   ArticleTag
 } from '../types/Collection';
 import { State } from '../types/State';
+import { DerivedArticle } from 'shared/types/Article';
 
 // Selects the shared part of the application state mounted at its default point, '.shared'.
 const selectSharedState = (rootState: any): State => rootState.shared;
@@ -104,32 +105,38 @@ const createArticleFromArticleFragmentSelector = () =>
     articleFragmentSelector,
     articleKickerSelector,
     (externalArticle, articleFragment, kicker) => {
-      if (!externalArticle || !articleFragment) {
+      if (!articleFragment) {
         return undefined;
       }
 
-      const articleMeta = {
-        ...externalArticle.frontsMeta.defaults,
-        ...articleFragment.meta
-      };
+      const articleMeta = externalArticle
+        ? { ...externalArticle.frontsMeta.defaults, ...articleFragment.meta }
+        : articleFragment.meta;
 
       return {
-        ...omit(externalArticle, 'fields', 'frontsMeta'),
-        ...externalArticle.fields,
+        ...omit(externalArticle || {}, 'fields', 'frontsMeta'),
+        ...(externalArticle ? externalArticle.fields : {}),
         ...omit(articleFragment, 'meta'),
         ...articleMeta,
         headline:
-          articleFragment.meta.headline || externalArticle.fields.headline,
+          articleFragment.meta.headline ||
+          (externalArticle ? externalArticle.fields.headline : undefined),
         trailText:
-          articleFragment.meta.trailText || externalArticle.fields.trailText,
-        byline: articleFragment.meta.byline || externalArticle.fields.byline,
-        kicker,
-        pillarId: externalArticle.pillarId,
-        thumbnail: getThumbnail(externalArticle, articleMeta),
-        isLive: externalArticle.fields.isLive
-          ? externalArticle.fields.isLive === 'true'
-          : true,
-        firstPublicationDate: externalArticle.fields.firstPublicationDate
+          articleFragment.meta.trailText ||
+          (externalArticle ? externalArticle.fields.trailText : undefined),
+        byline:
+          articleFragment.meta.byline ||
+          (externalArticle ? externalArticle.fields.byline : undefined),
+          kicker,
+        pillarId: externalArticle ? externalArticle.pillarId : undefined,
+        thumbnail:
+          externalArticle ? getThumbnail(externalArticle, articleMeta) : undefined,
+        isLive:
+          externalArticle && externalArticle.fields.isLive
+            ? externalArticle.fields.isLive === 'true'
+            : true,
+        firstPublicationDate:
+          externalArticle ? externalArticle.fields.firstPublicationDate : undefined
       };
     }
   );
