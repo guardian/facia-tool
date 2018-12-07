@@ -142,9 +142,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                     canPublish={this.props.browsingStage !== 'live'}
                     browsingStage={this.props.browsingStage}
                   >
-                    {group => (
+                    {(group, isUneditable) => (
                       <GroupDisplay key={group.uuid} groupName={group.name}>
                         <GroupLevel
+                          isUneditable={isUneditable}
                           groupId={group.uuid}
                           onMove={this.handleMove}
                           onDrop={this.handleInsert}
@@ -168,6 +169,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                             }
                             return (
                               <CollectionItem
+                                isUneditable={isUneditable}
                                 uuid={articleFragment.uuid}
                                 parentId={group.uuid}
                                 getNodeProps={() => afProps}
@@ -186,6 +188,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                 articleNotifications={articleNotifications}
                               >
                                 <ArticleFragmentLevel
+                                  isUneditable={isUneditable}
                                   articleFragmentId={articleFragment.uuid}
                                   onMove={this.handleMove}
                                   onDrop={this.handleInsert}

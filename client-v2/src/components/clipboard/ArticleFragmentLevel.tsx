@@ -14,6 +14,7 @@ interface OuterProps {
   onMove: MoveHandler<ArticleFragment>;
   onDrop: DropHandler;
   displayType?: CollectionItemDisplayTypes;
+  isUneditable?: boolean;
 }
 
 interface InnerProps {
@@ -28,9 +29,11 @@ const ArticleFragmentLevel = ({
   supporting,
   onMove,
   onDrop,
-  displayType = 'default'
+  displayType = 'default',
+  isUneditable
 }: Props) => (
   <Level
+    isUneditable={isUneditable}
     arr={supporting || []}
     parentType="articleFragment"
     parentId={articleFragmentId}

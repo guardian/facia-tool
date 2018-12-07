@@ -13,6 +13,7 @@ import {
 import SnapLink from 'shared/components/snapLink/SnapLink';
 import { insertArticleFragment } from 'actions/ArticleFragments';
 import noop from 'lodash/noop';
+import { isUndefined } from 'util';
 
 interface ContainerProps {
   isSelected?: boolean;
@@ -25,6 +26,7 @@ interface ContainerProps {
   displayType?: CollectionItemDisplayTypes;
   size?: 'small' | 'default';
   articleNotifications?: string[];
+  isUneditable?: boolean;
 }
 
 type ArticleContainerProps = ContainerProps & {
@@ -43,7 +45,8 @@ const CollectionItem = ({
   displayType,
   type,
   size,
-  articleNotifications
+  articleNotifications,
+  isUneditable
 }: ArticleContainerProps) => {
   const notifications =
     articleNotifications && articleNotifications.length
@@ -51,10 +54,27 @@ const CollectionItem = ({
       : undefined;
 
   switch (type) {
+    // TODO MAKE UNEDITABLE
     case collectionItemTypes.ARTICLE:
-      return (
+      return isUneditable ? (
         <Article
           id={uuid}
+          // isUneditable={isUneditable}
+          {...getNodeProps()}
+          onDelete={onDelete}
+          onAddToClipboard={() => onAddToClipboard(uuid)}
+          onClick={() => onSelect(uuid)}
+          fade={!isSelected}
+          size={size}
+          displayType={displayType}
+          notifications={notifications}
+        >
+          {children}
+        </Article>
+      ) : (
+        <Article
+          id={uuid}
+          // isUneditable={isUneditable}
           {...getNodeProps()}
           onDelete={onDelete}
           onAddToClipboard={() => onAddToClipboard(uuid)}
@@ -68,6 +88,7 @@ const CollectionItem = ({
         </Article>
       );
     case collectionItemTypes.SNAP_LINK:
+      // TODO MAKE UNEDITABLE
       return (
         <SnapLink
           id={uuid}

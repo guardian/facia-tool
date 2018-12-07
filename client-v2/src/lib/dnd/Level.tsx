@@ -66,6 +66,7 @@ interface OuterProps<T> {
     isTarget: boolean,
     index: number
   ) => React.ReactNode;
+  isUneditable?: boolean;
 }
 
 interface ContextProps {
@@ -87,9 +88,10 @@ class Level<T> extends React.Component<Props<T>> {
       children,
       arr,
       getId,
-      type
+      type,
+      isUneditable
     } = this.props;
-    return (
+    return isUneditable ? (
       <>
         {arr.map((node, i) => (
           <React.Fragment key={getId(node)}>
@@ -113,6 +115,16 @@ class Level<T> extends React.Component<Props<T>> {
           }
         </DropZone>
       </>
+    ) : (
+      <>
+        {arr.map((node, i) => {
+          <React.Fragment key={getId(node)}>
+            <Node id={getId(node)} type={type} index={i} data={node}>
+              {props => children(node, this.getNodeProps(i, props), i)}
+            </Node>
+          </React.Fragment>;
+        })}
+      </>
     );
   }
 
@@ -120,9 +132,7 @@ class Level<T> extends React.Component<Props<T>> {
     return i + (isNode ? getDropIndexOffset(e) : 0);
   }
 
-  private onDragOver = (i: number, isNode: boolean) => (
-    e: React.DragEvent
-  ) => {
+  private onDragOver = (i: number, isNode: boolean) => (e: React.DragEvent) => {
     if (!this.props.store) {
       throw new Error(NO_STORE_ERROR);
     }

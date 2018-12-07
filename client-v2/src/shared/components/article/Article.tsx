@@ -41,6 +41,7 @@ interface ArticleComponentProps {
   onDelete?: (uuid: string) => void;
   onClick?: () => void;
   onAddToClipboard?: (id: string) => void;
+  // isUneditable?: boolean
 }
 
 interface ContainerProps extends ArticleComponentProps {
@@ -80,7 +81,8 @@ const ArticleComponent = ({
   onClick = noop,
   onAddToClipboard = noop,
   children
-}: ComponentProps) => {
+}: // isUneditable
+ComponentProps) => {
   const ArticleBody = articleBodyComponentMap[displayType];
   return (
     <CollectionItemContainer

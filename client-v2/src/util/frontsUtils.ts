@@ -40,8 +40,7 @@ const combineCollectionWithConfig = (
     type: collectionConfig.type,
     frontsToolSettings: collectionConfig.frontsToolSettings,
     platform: collectionConfig.platform,
-    metadata: collectionConfig.metadata,
-    uneditable: collectionConfig.uneditable
+    metadata: collectionConfig.metadata
   });
 };
 
