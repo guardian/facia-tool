@@ -21,5 +21,6 @@ declare module 'redux-form' {
     warn?: Validator | Validator[];
     withRef?: boolean;
     immutableProps?: string[];
+    [attr: string]: any;
   }
 }

@@ -125,6 +125,19 @@ const state: any = {
           trailText: 'external-trailText',
           byline: 'external-byline',
         }
+      },
+      ea5: {
+        id: 'ea5',
+        pillarName: 'external-pillar',
+        tags: [{ webTitle: 'tag', sectionName: 'section' }],
+        frontsMeta: {
+          defaults: {}
+        },
+        fields: {
+          headline: 'external-headline',
+          trailText: 'external-trailText',
+          byline: 'external-byline',
+        }
       }
     }
   },
@@ -145,7 +158,8 @@ const state: any = {
         headline: 'fragment-headline',
         trailText: 'fragment-trailText',
         byline: 'fragment-byline',
-        customKicker: 'fragment-kicker'
+        customKicker: 'fragment-kicker',
+        showKickerCustom: true
       }
     },
     afWithInvalidReference: {
@@ -170,7 +184,31 @@ const state: any = {
     },
     af5: {
       uuid: 'af5'
-    }
+    },
+    afWithTagKicker: {
+      uuid: 'afWithTagKicker',
+      id: 'ea5',
+      frontPublicationDate: 1,
+      publishedBy: 'A. N. Author',
+      meta: {
+        headline: 'fragment-headline',
+        trailText: 'fragment-trailText',
+        byline: 'fragment-byline',
+        showKickerTag: true,
+      }
+    },
+    afWithSectionKicker: {
+      uuid: 'afWithSectionKicker',
+      id: 'ea5',
+      frontPublicationDate: 1,
+      publishedBy: 'A. N. Author',
+      meta: {
+        headline: 'fragment-headline',
+        trailText: 'fragment-trailText',
+        byline: 'fragment-byline',
+        showKickerSection: true,
+      }
+    },
   }
 };
 
@@ -275,8 +313,9 @@ describe('Shared selectors', () => {
         trailText: 'external-trailText',
         byline: 'external-byline',
         isLive: true,
-        firstPublicationDate: '2018-10-19T10:30:39Z'
+        firstPublicationDate: '2018-10-19T10:30:39Z',
       });
+
       expect(
         selector(state, 'af1WithOverrides')
       ).toEqual({
@@ -292,7 +331,9 @@ describe('Shared selectors', () => {
         kicker: 'fragment-kicker',
         byline: 'fragment-byline',
         isLive: true,
-        firstPublicationDate: '2018-10-19T10:30:39Z'
+        firstPublicationDate: '2018-10-19T10:30:39Z',
+        pillarId: undefined,
+        showKickerCustom: true
       });
       expect(selector(state, 'invalid')).toEqual(
         undefined
@@ -432,6 +473,21 @@ describe('Shared selectors', () => {
         })
       ).toEqual(['af5']);
     });
+    it('should set the correct kicker when tag kicker is set ', () => {
+      const selector = createArticleFromArticleFragmentSelector();
+
+      expect(
+        selector(state, 'afWithTagKicker')
+      ).toMatchObject({kicker: 'tag'});
+    });
+    it('should set the correct kicker when section kicker is set ', () => {
+      const selector = createArticleFromArticleFragmentSelector();
+
+      expect(
+        selector(state, 'afWithSectionKicker')
+      ).toMatchObject({kicker: 'section'});
+    });
+
   });
 
   describe('groupSiblingsSelector', () => {

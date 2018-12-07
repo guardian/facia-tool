@@ -14,16 +14,18 @@ import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadi
 import {
   createArticleFromArticleFragmentSelector,
   selectSharedState,
-  articleKickerOptionsSelector
+  articleTagSelector
 } from 'shared/selectors/shared';
 import { createSelectFormFieldsForCollectionItem } from 'selectors/formSelectors';
-import { ArticleFragmentMeta } from 'shared/types/Collection';
+import { DerivedArticle } from 'shared/types/Article';
+import { ArticleFragmentMeta, ArticleTag } from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
 import HorizontalRule from 'shared/components/layout/HorizontalRule';
 import InputCheckboxToggle from 'shared/components/input/InputCheckboxToggle';
 import InputImage from 'shared/components/input/InputImage';
 import InputGroup from 'shared/components/input/InputGroup';
+import InputButton from 'shared/components/input/InputButton';
 import Row from '../Row';
 import Col from '../Col';
 import { State } from 'types/State';
@@ -37,6 +39,9 @@ import {
 
 interface ComponentProps extends ContainerProps {
   articleFragmentId: string;
+  showKickerTag: boolean;
+  showKickerSection: boolean;
+  kickerOptions: ArticleTag;
 }
 
 type Props = ComponentProps &
@@ -121,7 +126,10 @@ const formComponent: React.StatelessComponent<Props> = ({
   initialValues,
   pristine,
   showByline,
-  editableFields
+  editableFields,
+  reset,
+  showKickerTag,
+  showKickerSection
 }) => (
   <FormContainer onSubmit={handleSubmit}>
     <CollectionHeadingPinline>
@@ -188,20 +196,60 @@ const formComponent: React.StatelessComponent<Props> = ({
           component={InputText}
           placeholder="Add custom kicker"
           useHeadlineFont
-        />
-        {kickerOptions.map(kickerOption => (
-          <Button
-            key={kickerOption}
-            type="button"
-            pill
-            onClick={(e: React.FormEvent<HTMLButtonElement>) =>
-              change('customKicker', e.currentTarget.value)
+          format={value => {
+            if (showKickerTag) {
+              return kickerOptions.webTitle
             }
-            value={kickerOption}
-          >
-            {kickerOption}
-          </Button>
-        ))}
+            if (showKickerSection) {
+              return kickerOptions.sectionName
+            }
+            return value;
+          }}
+          onChange={(e) => {
+            change('showKickerCustom', true)
+            change('showKickerTag', false)
+            change('showKickerSection', false)
+            if (e) {
+              change('customKicker', e.target.value)
+            }
+          }}
+        />
+        { kickerOptions.webTitle && (
+          <ConditionalField
+            permittedFields={editableFields}
+            name="showKickerTag"
+            component={InputButton}
+            buttonText={kickerOptions.webTitle}
+            selected={showKickerTag}
+            onClick={() => {
+              if (!showKickerTag) {
+                change('showKickerTag', true)
+                change('showKickerSection', false)
+                change('showKickerCustom', false)
+              } else {
+                change('showKickerTag', false)
+              }
+            }}
+          />
+        )}
+        { kickerOptions.sectionName && (
+          <ConditionalField
+            permittedFields={editableFields}
+            name="showKickerSection"
+            component={InputButton}
+            selected={showKickerSection}
+            buttonText={kickerOptions.sectionName}
+            onClick={() => {
+              if (!showKickerSection) {
+                change('showKickerSection', true)
+                change('showKickerTag', false)
+                change('showKickerCustom', false)
+              } else {
+                change('showKickerSection', false);
+              }
+            }}
+          />
+        )}
         <ConditionalField
           permittedFields={editableFields}
           name="isBreaking"
@@ -341,9 +389,11 @@ interface ContainerProps extends InterfaceProps {
   imageSlideshowReplace: boolean;
   imageCutoutReplace: boolean;
   imageHide: boolean;
-  kickerOptions: string[];
+  kickerOptions: ArticleTag;
   showByline: boolean;
   editableFields: string[];
+  showKickerTag: boolean;
+  showKickerSection: boolean;
 }
 
 interface InterfaceProps {
@@ -375,12 +425,17 @@ const createMapStateToProps = () => {
         ? selectFormFields(state, article.uuid, isSupporting)
         : [],
       kickerOptions: article
-        ? articleKickerOptionsSelector(sharedState, articleFragmentId)
-        : [],
+        ? articleTagSelector(
+            selectSharedState(state),
+            articleFragmentId
+          )
+        : {},
       imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
       imageHide: valueSelector(state, 'imageHide'),
       imageCutoutReplace: valueSelector(state, 'imageCutoutReplace'),
-      showByline: valueSelector(state, 'showByline')
+      showByline: valueSelector(state, 'showByline'),
+      showKickerTag: valueSelector(state, 'showKickerTag'),
+      showKickerSection: valueSelector(state, 'showKickerSection')
     };
   };
 };

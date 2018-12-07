@@ -44,17 +44,17 @@ const colorMap = {
   disabled: {
     default: '#fff',
     primary: '#fff',
-    muted: '#999'
+    muted: '#333'
   },
   selected: {
     default: '#fff',
     primary: '#fff',
-    muted: '#999'
+    muted: '#333'
   },
   deselected: {
     default: '#fff',
     primary: '#fff',
-    muted: '#999'
+    muted: '#333'
   }
 };
 
