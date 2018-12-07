@@ -93,6 +93,9 @@ const getCollections = (state: State): CollectionConfigMap =>
 const getCollectionConfig = (state: State, id: string): CollectionConfig =>
   getCollections(state)[id] || null;
 
+const isCollectionUneditableSelector = (state: State, id: string): boolean =>
+  !!getCollectionConfig(state, id).uneditable;
+
 const frontsIdsSelector = createSelector(
   [getFronts],
   (fronts): string[] => {
@@ -275,6 +278,7 @@ export {
   getFront,
   getFrontsConfig,
   getCollectionConfig,
+  isCollectionUneditableSelector,
   frontsConfigSelector,
   collectionConfigsSelector,
   frontsIdsSelector,
