@@ -231,9 +231,13 @@ const formComponent: React.StatelessComponent<Props> = ({
             buttonText={kickerOptions.webTitle}
             selected={showKickerTag}
             onClick={() => {
-              change('showKickerTag', true)
-              change('showKickerSection', false)
-              change('showKickerCustom', false)
+              if (!showKickerTag) {
+                change('showKickerTag', true)
+                change('showKickerSection', false)
+                change('showKickerCustom', false)
+              } else {
+                change('showKickerTag', false)
+              }
             }}
           />
         )}
@@ -244,9 +248,13 @@ const formComponent: React.StatelessComponent<Props> = ({
             selected={showKickerSection}
             buttonText={kickerOptions.sectionName}
             onClick={() => {
-              change('showKickerSection', true)
-              change('showKickerTag', false)
-              change('showKickerCustom', false)
+              if (!showKickerSection) {
+                change('showKickerSection', true)
+                change('showKickerTag', false)
+                change('showKickerCustom', false)
+              } else {
+                change('showKickerSection', false);
+              }
             }}
           />
         )}
