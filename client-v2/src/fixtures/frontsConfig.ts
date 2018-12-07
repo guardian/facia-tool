@@ -18,6 +18,12 @@ const frontsConfig: { data: FrontsConfig } = {
       collection1: {
         id: 'collection1',
         displayName: 'name',
+        type: 'collection',
+        uneditable: true
+      },
+      collection2: {
+        id: 'collection1',
+        displayName: 'name',
         type: 'collection'
       }
     }
