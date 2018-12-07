@@ -8,6 +8,7 @@ import {
 } from 'shared/selectors/shared';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import { createCollectionId } from 'shared/components/Collection';
 
 interface FrontCollectionOverviewContainerProps {
   collectionId: string;
@@ -19,18 +20,31 @@ type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
   articleCount: number;
 };
 
-const Container = styled.a`
+const Container = styled.button`
   align-items: center;
+  appearance: none;
   background-color: #f6f6f6;
   border: 1px solid #c4c4c4;
   border-radius: 1.25em;
   color: inherit;
+  cursor: pointer;
   display: flex;
+  font-family: TS3TextSans;
   font-size: 14px;
   height: 2.5em;
   margin-top: 0.75em;
   padding: 0.25em 0.75em;
+  text-align: left;
   text-decoration: none;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #ddd;
+  }
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 const TextLeft = styled.div`
@@ -58,12 +72,12 @@ const CollectionOverview = ({
 }: FrontCollectionOverviewProps) =>
   collection ? (
     <Container
-      href={`#collection-${collection.id}`}
       onClick={e => {
         e.preventDefault();
-        const el = document.getElementById(`collection-${collection.id}`);
+        const el = document.getElementById(createCollectionId(collection));
         if (el) {
           el.scrollIntoView({
+            behavior: 'smooth',
             inline: 'start',
             block: 'start'
           });

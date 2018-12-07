@@ -18,6 +18,8 @@ import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 import FadeIn from './animation/FadeIn';
 import ContentContainer from './layout/ContentContainer';
 
+export const createCollectionId = ({ id }: Collection) => `collection-${id}`;
+
 interface ContainerProps {
   id: string;
   selectSharedState?: (state: any) => SharedState;
@@ -111,7 +113,7 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
     return collection ? (
-      <CollectionContainer id={`collection-${collection.id}`}>
+      <CollectionContainer id={createCollectionId(collection)}>
         <ContainerHeadingPinline>
           <CollectionHeadingText>
             {collection.displayName}
