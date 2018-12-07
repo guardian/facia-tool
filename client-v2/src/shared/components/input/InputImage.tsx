@@ -56,7 +56,7 @@ type Props = {
 } & WrappedFieldProps;
 interface State { isHovering: boolean }
 
-class InputImage<P> extends React.Component<Props & P, State> {
+class InputImage extends React.Component<Props, State> {
   public state = {
     isHovering: false
   };

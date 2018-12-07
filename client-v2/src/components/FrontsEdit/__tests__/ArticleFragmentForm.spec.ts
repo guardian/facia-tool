@@ -29,7 +29,7 @@ const formValues = {
   showBoostedHeadline: false,
   showByline: false,
   showQuotedHeadline: false,
-  slideshow: [undefined, undefined, undefined, undefined],
+  slideshow: [undefined, undefined, undefined, undefined, undefined],
   trailText:
     'Police noted concerns over Femi Nandap, who went on to stab lecturer, but released him'
 };
@@ -40,6 +40,24 @@ describe('ArticleFragmentForm transform functions', () => {
       expect(getInitialValuesForArticleFragmentForm(derivedArticle)).toEqual(
         formValues
       );
+    });
+    it('should handle existing slideshows of any length', () => {
+      const exampleImage = {
+        src: 'src',
+        width: 100,
+        height: 100,
+        origin: 'origin',
+        thumb: 'thumb'
+      }
+      const slideshow = Array(6).fill(exampleImage);
+      const slideshowArticle = {
+        ...derivedArticle,
+        slideshow
+      }
+      expect(getInitialValuesForArticleFragmentForm(slideshowArticle)).toEqual({
+        ...formValues,
+        slideshow
+      })
     });
     it('should get number values for all image widths and heights', () => {
       expect(
@@ -101,6 +119,7 @@ describe('ArticleFragmentForm transform functions', () => {
             origin: 'exampleOrigin',
             thumb: 'exampleThumb'
           },
+          undefined,
           undefined,
           undefined
         ]

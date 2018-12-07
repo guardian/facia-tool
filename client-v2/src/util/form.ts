@@ -21,7 +21,7 @@ export interface ArticleFragmentFormData {
   slideshow: Array<ImageData | void> | void;
 }
 
-interface ImageData {
+export interface ImageData {
   src?: string;
   width?: number;
   height?: number;
@@ -46,7 +46,7 @@ export const getInitialValuesForArticleFragmentForm = (
       height: strToInt(image.height)
     })
   );
-  slideshowBackfill.length = clamp(4 - slideshow.length, 0, 4);
+  slideshowBackfill.length = clamp(5 - slideshow.length, 0, 5);
   slideshowBackfill.fill(undefined);
   return article
     ? {

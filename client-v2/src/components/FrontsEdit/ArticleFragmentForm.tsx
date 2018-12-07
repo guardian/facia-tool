@@ -100,7 +100,7 @@ const renderSlideshow: React.StatelessComponent<
       <Col key={`${name}-${index}`}>
         <ConditionalField
           permittedFields={editableFields}
-          name={name}
+          name="slideshow"
           component={InputImage}
           size="small"
           criteria={imageCriteria}
@@ -315,7 +315,7 @@ const formComponent: React.StatelessComponent<Props> = ({
               }
             />
           </SlideshowRow>
-          <SlideshowLabel>Drag and drop up to four images</SlideshowLabel>
+          <SlideshowLabel>Drag and drop up to five images</SlideshowLabel>
         </RowContainer>
       )}
     </FormContent>
