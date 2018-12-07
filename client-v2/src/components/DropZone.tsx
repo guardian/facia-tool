@@ -15,6 +15,7 @@ class DropZone extends React.Component<
   {
     onDrop: (e: React.DragEvent) => void;
     onDragOver: (e: React.DragEvent) => void;
+    disabled?: boolean;
     style: React.CSSProperties;
     indicatorStyle: React.CSSProperties;
     override?: boolean;
@@ -33,9 +34,11 @@ class DropZone extends React.Component<
   };
 
   get isActive() {
-    return typeof this.props.override === 'boolean'
-      ? this.props.override
-      : this.state.isHoveredOver;
+    return this.props.disabled
+      ? false
+      : typeof this.props.override === 'boolean'
+        ? this.props.override
+        : this.state.isHoveredOver;
   }
 
   public handleDragEnter = (e: React.DragEvent) => {
@@ -51,16 +54,23 @@ class DropZone extends React.Component<
     return this.props.onDrop(e);
   };
 
+  public getEventProps = () =>
+    this.props.disabled
+      ? {
+          onDragEnter: this.handleDragEnter,
+          onDragLeave: this.handleDragLeave,
+          onDragExit: this.handleDragLeave,
+          onDrop: this.handleDrop,
+          onDragOver: this.props.onDragOver
+        }
+      : {};
+
   public render() {
-    const { onDragOver, style } = this.props;
+    const { style } = this.props;
     return (
       <DropContainer
+        {...this.getEventProps()}
         data-testid="drop-zone"
-        onDragEnter={this.handleDragEnter}
-        onDragLeave={this.handleDragLeave}
-        onDragExit={this.handleDragLeave}
-        onDrop={this.handleDrop}
-        onDragOver={onDragOver}
         style={style}
       >
         <DropIndicator

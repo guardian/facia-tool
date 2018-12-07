@@ -91,7 +91,8 @@ class Level<T> extends React.Component<Props<T>> {
       type,
       isUneditable
     } = this.props;
-    return isUneditable ? (
+    // return !isUneditable ? (
+    return (
       <>
         {arr.map((node, i) => (
           <React.Fragment key={getId(node)}>
@@ -114,16 +115,6 @@ class Level<T> extends React.Component<Props<T>> {
             renderDrop(this.getDropProps(arr.length), isTarget, arr.length)
           }
         </DropZone>
-      </>
-    ) : (
-      <>
-        {arr.map((node, i) => {
-          <React.Fragment key={getId(node)}>
-            <Node id={getId(node)} type={type} index={i} data={node}>
-              {props => children(node, this.getNodeProps(i, props), i)}
-            </Node>
-          </React.Fragment>;
-        })}
       </>
     );
   }

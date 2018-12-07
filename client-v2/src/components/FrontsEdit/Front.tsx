@@ -150,7 +150,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                           onMove={this.handleMove}
                           onDrop={this.handleInsert}
                         >
-                          {(articleFragment, afProps) => {
+                          {(articleFragment, afDragProps) => {
                             collectionItemCount += 1;
                             const articleNotifications: string[] = [];
                             if (
@@ -172,7 +172,9 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                 isUneditable={isUneditable}
                                 uuid={articleFragment.uuid}
                                 parentId={group.uuid}
-                                getNodeProps={() => afProps}
+                                getNodeProps={() =>
+                                  !isUneditable ? afDragProps : {}
+                                }
                                 onSelect={this.props.selectArticleFragment}
                                 onDelete={() =>
                                   this.removeCollectionItem(
@@ -193,16 +195,18 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                   onMove={this.handleMove}
                                   onDrop={this.handleInsert}
                                 >
-                                  {(supporting, sProps) => (
+                                  {(supporting, supportingDragProps) => (
                                     <CollectionItem
                                       uuid={supporting.uuid}
                                       parentId={articleFragment.uuid}
-                                      getNodeProps={() => sProps}
                                       onSelect={id =>
                                         this.props.selectArticleFragment(
                                           id,
                                           true
                                         )
+                                      }
+                                      getNodeProps={() =>
+                                        !isUneditable ? supportingDragProps : {}
                                       }
                                       isSelected={
                                         !selectedArticleFragment ||

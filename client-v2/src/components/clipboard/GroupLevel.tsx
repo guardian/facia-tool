@@ -40,7 +40,7 @@ const GroupLevel = ({
     onDrop={onDrop}
     renderDrag={af => <ArticleDrag id={af.uuid} />}
     renderDrop={(props, isTarget, index) => (
-      <DropZone {...props} override={isTarget} />
+      <DropZone {...props} disabled={isUneditable} override={isTarget} />
     )}
   >
     {children}

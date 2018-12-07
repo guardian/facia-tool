@@ -55,11 +55,12 @@ const CollectionItem = ({
 
   switch (type) {
     // TODO MAKE UNEDITABLE
+    // pointer events none ask rich css
     case collectionItemTypes.ARTICLE:
       return isUneditable ? (
         <Article
           id={uuid}
-          // isUneditable={isUneditable}
+          isUneditable={isUneditable}
           {...getNodeProps()}
           onDelete={onDelete}
           onAddToClipboard={() => onAddToClipboard(uuid)}
@@ -74,7 +75,7 @@ const CollectionItem = ({
       ) : (
         <Article
           id={uuid}
-          // isUneditable={isUneditable}
+          isUneditable={isUneditable}
           {...getNodeProps()}
           onDelete={onDelete}
           onAddToClipboard={() => onAddToClipboard(uuid)}
