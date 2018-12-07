@@ -121,6 +121,12 @@ interface Collection {
   frontsToolSettings?: FrontsToolSettings;
 }
 
+interface ArticleTag {
+  webTitle?: string
+  sectionName?: string
+};
+
+
 export {
   NestedArticleFragment,
   ArticleFragment,
@@ -135,5 +141,6 @@ export {
   CollectionItemSizes,
   Group,
   Stages,
-  CollectionItemSets
+  CollectionItemSets,
+  ArticleTag
 };

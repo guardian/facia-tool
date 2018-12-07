@@ -10,7 +10,8 @@ import {
   Collection,
   Group,
   CollectionItemSets,
-  ArticleFragmentDenormalised
+  ArticleFragmentDenormalised,
+  ArticleTag
 } from '../types/Collection';
 import { State } from '../types/State';
 
@@ -45,11 +46,64 @@ const externalArticleFromArticleFragmentSelector = (
   return externalArticles[articleFragment.id];
 };
 
+const articleTagSelector = (state: State, id: string): ArticleTag => {
+  const externalArticle = externalArticleFromArticleFragmentSelector(state, id);
+  const emptyTag = {
+    webTitle: undefined,
+    sectionName: undefined
+  };
+
+  if (!externalArticle) {
+    return emptyTag;
+  }
+
+  const tag = getPrimaryTag(externalArticle);
+
+  if (tag) {
+    return {
+      webTitle: tag.webTitle,
+      sectionName: tag.sectionName
+    }
+  }
+  return emptyTag
+};
+
+const articleKickerSelector = (state: State, id: string): string | undefined => {
+
+  const articleFragment = articleFragmentSelector(state, id);
+
+  if (!articleFragment) {
+    return undefined;
+  }
+
+  const kickerOptions = articleTagSelector(state, id);
+  const meta = articleFragment.meta;
+
+  if (!articleFragment) {
+    return undefined;
+  }
+  if (meta.showKickerTag) {
+    return kickerOptions.webTitle;
+  }
+
+  if (meta.showKickerSection) {
+    return kickerOptions.sectionName;
+  }
+
+  if (meta.showKickerCustom) {
+    return meta.customKicker;
+  }
+
+  return undefined;
+
+};
+
 const createArticleFromArticleFragmentSelector = () =>
   createSelector(
     externalArticleFromArticleFragmentSelector,
     articleFragmentSelector,
-    (externalArticle, articleFragment) => {
+    articleKickerSelector,
+    (externalArticle, articleFragment, kicker) => {
       if (!externalArticle || !articleFragment) {
         return undefined;
       }
@@ -69,7 +123,7 @@ const createArticleFromArticleFragmentSelector = () =>
         trailText:
           articleFragment.meta.trailText || externalArticle.fields.trailText,
         byline: articleFragment.meta.byline || externalArticle.fields.byline,
-        kicker: articleFragment.meta.customKicker,
+        kicker,
         pillarId: externalArticle.pillarId,
         thumbnail: getThumbnail(externalArticle, articleMeta),
         isLive: externalArticle.fields.isLive
@@ -79,22 +133,6 @@ const createArticleFromArticleFragmentSelector = () =>
       };
     }
   );
-
-const articleKickerOptionsSelector = (state: State, id: string): string[] => {
-  const externalArticle = externalArticleFromArticleFragmentSelector(state, id);
-  if (!externalArticle) {
-    return [];
-  }
-
-  const filterNulls = <T>(s: T | null | undefined): s is T => !!s;
-
-  const tag = getPrimaryTag(externalArticle) || {
-    webTitle: null,
-    sectionName: null
-  };
-
-  return uniq([tag.webTitle, tag.sectionName].filter(filterNulls));
-};
 
 const collectionIdSelector = (
   _: unknown,
@@ -306,10 +344,10 @@ export {
   createDemornalisedArticleFragment,
   selectSharedState,
   articleFragmentSelector,
-  articleKickerOptionsSelector,
   createCollectionEditWarningSelector,
   articleFragmentsSelector,
   groupCollectionSelector,
   groupSiblingsSelector,
-  groupSiblingsArticleCountSelector
+  groupSiblingsArticleCountSelector,
+  articleTagSelector
 };
