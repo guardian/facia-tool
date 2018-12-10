@@ -4,7 +4,9 @@ import {
   FrontsConfigResponse,
   FrontConfigMap,
   ArticleDetails,
-  VisibleArticlesResponse
+  VisibleArticlesResponse,
+  FrontConfig,
+  CollectionConfigMap
 } from 'types/FaciaApi';
 import { ExternalArticle } from 'shared/types/ExternalArticle';
 import {
@@ -24,29 +26,33 @@ function fetchFrontsConfig(): Promise<FrontsConfig> {
     credentials: 'same-origin'
   })
     .then(response => response.json())
-    .then((json: FrontsConfigResponse) => ({
-      fronts: Object.keys(json.fronts).reduce(
-        (acc: FrontConfigMap, id: string): FrontConfigMap => ({
-          ...acc,
-          [id]: {
-            ...json.fronts[id],
-            id,
-            priority: json.fronts[id].priority || 'editorial'
-          }
-        }),
-        {}
-      ),
-      collections: Object.keys(json.collections).reduce(
-        (acc, id) => ({
-          ...acc,
-          [id]: {
-            ...json.collections[id],
-            id
-          }
-        }),
-        {}
-      )
-    }));
+    .then((json: FrontsConfigResponse) => {
+      const fronts: FrontConfigMap = {};
+
+      Object.keys(json.fronts).forEach(id => {
+        const front: FrontConfig = {
+          ...json.fronts[id],
+          id,
+          priority: json.fronts[id].priority || 'editorial'
+        };
+        fronts[id] = front;
+      });
+
+      const collections: CollectionConfigMap = {};
+
+      Object.keys(json.collections).forEach(id => {
+        const collection = {
+          ...json.collections[id],
+          id
+        };
+        collections[id] = collection;
+      });
+
+      return {
+        fronts,
+        collections
+      };
+    });
 }
 
 async function fetchLastPressed(frontId: string): Promise<string> {
@@ -70,7 +76,10 @@ async function fetchLastPressed(frontId: string): Promise<string> {
     });
 }
 
-async function fetchVisibleArticles(collectionType: string, articles: ArticleDetails[]): Promise<VisibleArticlesResponse> {
+async function fetchVisibleArticles(
+  collectionType: string,
+  articles: ArticleDetails[]
+): Promise<VisibleArticlesResponse> {
   // The server does not respond with JSON
   try {
     const response = await pandaFetch(`/stories-visible/${collectionType}`, {
@@ -79,7 +88,7 @@ async function fetchVisibleArticles(collectionType: string, articles: ArticleDet
         'Content-Type': 'application/json'
       },
       credentials: 'same-origin',
-      body: JSON.stringify({stories: articles})
+      body: JSON.stringify({ stories: articles })
     });
     return await response.json();
   } catch (response) {
