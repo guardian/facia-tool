@@ -68,39 +68,78 @@ describe('articleFragments actions', () => {
         })
       );
     });
-    it('should fetch tag articles and create a corresponding collection item representing a snap of type \'latest\' given user input', async () => {
+    it("should fetch tag articles and create a corresponding collection item representing a snap of type 'latest' given user input", async () => {
       fetchMock.once('begin:/api/preview', {
         response: {
           results: [capiArticle, capiArticle],
           tag: { webTitle: 'Example title' }
         }
       });
-      fetchMock.once('/http/proxy/https://www.theguardian.com/example/tag/page?view=mobile', guardianTagPage);
+      fetchMock.once(
+        '/http/proxy/https://www.theguardian.com/example/tag/page?view=mobile',
+        guardianTagPage
+      );
       (window as any).confirm = jest.fn(() => true);
       const store = mockStore({});
-      await store.dispatch(createArticleFragment('https://www.theguardian.com/example/tag/page') as any);
+      await store.dispatch(createArticleFragment(
+        'https://www.theguardian.com/example/tag/page'
+      ) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         articleFragmentsReceived({
-          uuid: await createLatestSnap('https://www.theguardian.com/example/tag/page', 'Example title')
+          uuid: await createLatestSnap(
+            'https://www.theguardian.com/example/tag/page',
+            'Example title'
+          )
         })
       );
     });
-    it('should fetch tag articles and create a corresponding collection item representing a snap of type \'link\' given user input', async () => {
+    it("should fetch tag articles and create a corresponding collection item representing a snap of type 'link' given user input", async () => {
       fetchMock.once('begin:/api/preview', {
         response: {
           results: [capiArticle, capiArticle],
           tag: { webTitle: 'Example title' }
         }
       });
-      fetchMock.mock('/http/proxy/https://www.theguardian.com/example/tag/page?view=mobile', guardianTagPage);
+      fetchMock.mock(
+        '/http/proxy/https://www.theguardian.com/example/tag/page?view=mobile',
+        guardianTagPage
+      );
       (window as any).confirm = jest.fn(() => false);
       const store = mockStore({});
-      await store.dispatch(createArticleFragment('https://www.theguardian.com/example/tag/page') as any);
+      await store.dispatch(createArticleFragment(
+        'https://www.theguardian.com/example/tag/page'
+      ) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         articleFragmentsReceived({
-          uuid: await createLinkSnap('https://www.theguardian.com/example/tag/page')
+          uuid: await createLinkSnap(
+            'https://www.theguardian.com/example/tag/page'
+          )
+        })
+      );
+    });
+    it('should create a snap link if a Guardian URL is provided and no content is returned from CAPI', async () => {
+      fetchMock.once('begin:/api/preview', {
+        response: {
+          status: 'error',
+          message: 'The requested resource could not be found.'
+        }
+      });
+      fetchMock.mock(
+        '/http/proxy/https://www.theguardian.com/example/non/tag/page?view=mobile',
+        guardianTagPage
+      );
+      const store = mockStore({});
+      await store.dispatch(createArticleFragment(
+        'https://www.theguardian.com/example/non/tag/page'
+      ) as any);
+      const actions = store.getActions();
+      expect(actions[0]).toEqual(
+        articleFragmentsReceived({
+          uuid: await createLinkSnap(
+            'https://www.theguardian.com/example/non/tag/page'
+          )
         })
       );
     });
