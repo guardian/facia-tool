@@ -1,7 +1,7 @@
 import { Dispatch } from 'types/Store';
 import React from 'react';
 import { connect } from 'react-redux';
-import CollectionDisplay from 'shared/components/Collection'; // CollectionDetail
+import CollectionDisplay from 'shared/components/Collection';
 import CollectionNotification from 'components/CollectionNotification';
 import Button from 'shared/components/input/ButtonDefault';
 import { AlsoOnDetail } from 'types/Collection';
@@ -51,6 +51,7 @@ const Collection = ({
   <CollectionDisplay
     id={id}
     browsingStage={browsingStage}
+    isUneditable={isUneditable}
     headlineContent={
       hasUnpublishedChanges &&
       canPublish && (

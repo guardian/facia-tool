@@ -23,7 +23,7 @@ import { CollectionItemDisplayTypes } from 'shared/types/Collection';
 import CollectionItemTrail from '../collectionItem/CollectionItemTrail';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
 import CollectionItemNotification from '../collectionItem/CollectionItemNotification';
-
+import CollectionItemDisabledTheme from '../collectionItem/CollectionItemDisabledTheme';
 interface ContainerProps {
   selectSharedState?: (state: any) => State;
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -38,6 +38,7 @@ interface ContainerProps {
   fade?: boolean;
   children?: React.ReactNode;
   notifications?: string[];
+  isUneditable?: boolean;
 }
 
 interface SnapLinkProps extends ContainerProps {
@@ -53,6 +54,7 @@ const SnapLink = ({
   children,
   articleFragment,
   notifications,
+  isUneditable,
   ...rest
 }: SnapLinkProps) => {
   const headline =
@@ -61,7 +63,7 @@ const SnapLink = ({
       ? `{ ${articleFragment.meta.customKicker} }`
       : 'No headline');
   return (
-    <CollectionItemContainer {...rest}>
+    <CollectionItemContainer isUneditable={isUneditable} {...rest}>
       <CollectionItemBody
         size={size}
         fade={fade}
@@ -70,6 +72,9 @@ const SnapLink = ({
           borderTopColor: '#c9c9c9'
         }}
       >
+        {isUneditable ? (
+          <CollectionItemDisabledTheme className="DisabledTheme" />
+        ) : null}
         {displayType === 'default' && (
           <CollectionItemMetaContainer>
             <CollectionItemMetaHeading>Snap link</CollectionItemMetaHeading>
@@ -97,8 +102,15 @@ const SnapLink = ({
             )}
         </CollectionItemContent>
         {size === 'default' && displayType === 'default' && <Thumbnail />}
-        { notifications && ( <CollectionItemNotification>{notifications.map(notification => <span key={notification}>{notification} </span>)}</CollectionItemNotification> )}
+        {notifications && (
+          <CollectionItemNotification>
+            {notifications.map(notification => (
+              <span key={notification}>{notification} </span>
+            ))}
+          </CollectionItemNotification>
+        )}
         <HoverActionsAreaOverlay
+          disabled={isUneditable}
           justify={displayType === 'polaroid' ? 'flex-end' : 'space-between'}
         >
           <HoverActionsButtonWrapper

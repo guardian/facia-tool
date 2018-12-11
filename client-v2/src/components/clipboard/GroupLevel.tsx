@@ -30,7 +30,6 @@ const GroupLevel = ({
   isUneditable
 }: Props) => (
   <Level
-    isUneditable={isUneditable}
     arr={articleFragments}
     parentType="group"
     parentId={groupId}
@@ -39,7 +38,7 @@ const GroupLevel = ({
     onMove={onMove}
     onDrop={onDrop}
     renderDrag={af => <ArticleDrag id={af.uuid} />}
-    renderDrop={(props, isTarget, index) => (
+    renderDrop={(props, isTarget) => (
       <DropZone {...props} disabled={isUneditable} override={isTarget} />
     )}
   >

@@ -66,7 +66,6 @@ interface OuterProps<T> {
     isTarget: boolean,
     index: number
   ) => React.ReactNode;
-  isUneditable?: boolean;
 }
 
 interface ContextProps {
@@ -88,10 +87,8 @@ class Level<T> extends React.Component<Props<T>> {
       children,
       arr,
       getId,
-      type,
-      isUneditable
+      type
     } = this.props;
-    // return !isUneditable ? (
     return (
       <>
         {arr.map((node, i) => (

@@ -169,9 +169,9 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                             }
                             return (
                               <CollectionItem
-                                isUneditable={isUneditable}
                                 uuid={articleFragment.uuid}
                                 parentId={group.uuid}
+                                isUneditable={isUneditable}
                                 getNodeProps={() =>
                                   !isUneditable ? afDragProps : {}
                                 }
@@ -205,6 +205,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                           true
                                         )
                                       }
+                                      isUneditable={isUneditable}
                                       getNodeProps={() =>
                                         !isUneditable ? supportingDragProps : {}
                                       }

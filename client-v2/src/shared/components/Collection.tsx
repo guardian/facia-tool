@@ -34,6 +34,7 @@ type Props = ContainerProps & {
   headlineContent: React.ReactNode;
   metaContent: React.ReactNode;
   children: React.ReactNode;
+  isUneditable?: boolean;
 };
 
 const CollectionContainer = ContentContainer.extend`
@@ -109,9 +110,12 @@ const CollectionShortVerticalPinline = ShortVerticalPinline.extend`
   left: 0;
 `;
 
-class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
+class CollectionDisplay extends React.Component<Props, { isOpen: boolean }> {
+  public static defaultProps = {
+    isUneditable: false
+  };
   public state = {
-    isOpen: true
+    isOpen: !this.props.isUneditable
   };
 
   public toggleVisibility = () => {
@@ -211,4 +215,4 @@ const createMapStateToProps = () => {
   };
 };
 
-export default connect(createMapStateToProps)(CollectionDetail);
+export default connect(createMapStateToProps)(CollectionDisplay);

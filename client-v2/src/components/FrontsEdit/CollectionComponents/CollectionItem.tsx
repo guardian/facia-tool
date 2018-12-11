@@ -55,24 +55,8 @@ const CollectionItem = ({
 
   switch (type) {
     // TODO MAKE UNEDITABLE
-    // pointer events none ask rich css
     case collectionItemTypes.ARTICLE:
-      return isUneditable ? (
-        <Article
-          id={uuid}
-          isUneditable={isUneditable}
-          {...getNodeProps()}
-          onDelete={onDelete}
-          onAddToClipboard={() => onAddToClipboard(uuid)}
-          onClick={() => onSelect(uuid)}
-          fade={!isSelected}
-          size={size}
-          displayType={displayType}
-          notifications={notifications}
-        >
-          {children}
-        </Article>
-      ) : (
+      return (
         <Article
           id={uuid}
           isUneditable={isUneditable}
@@ -93,6 +77,7 @@ const CollectionItem = ({
       return (
         <SnapLink
           id={uuid}
+          isUneditable={isUneditable}
           {...getNodeProps()}
           onDelete={onDelete}
           onClick={() => onSelect(uuid)}

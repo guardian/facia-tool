@@ -33,7 +33,6 @@ const ArticleFragmentLevel = ({
   isUneditable
 }: Props) => (
   <Level
-    isUneditable={isUneditable}
     arr={supporting || []}
     parentType="articleFragment"
     parentId={articleFragmentId}
@@ -42,23 +41,22 @@ const ArticleFragmentLevel = ({
     onMove={onMove}
     onDrop={onDrop}
     renderDrag={af => <ArticleDrag id={af.uuid} />}
-    renderDrop={(props, isTarget) =>
-      !isUneditable ? (
-        <DropZone
-          {...props}
-          override={isTarget}
-          dropColor="hsl(0, 0%, 64%)"
-          style={{
-            marginTop: '-15px',
-            padding: '3px'
-          }}
-          indicatorStyle={{
-            marginLeft: '20px',
-            marginRight: `${displayType === 'default' ? '130px' : 0}`
-          }}
-        />
-      ) : null
-    }
+    renderDrop={(props, isTarget) => (
+      <DropZone
+        {...props}
+        disabled={isUneditable}
+        override={isTarget}
+        dropColor="hsl(0, 0%, 64%)"
+        style={{
+          marginTop: '-15px',
+          padding: '3px'
+        }}
+        indicatorStyle={{
+          marginLeft: '20px',
+          marginRight: `${displayType === 'default' ? '130px' : 0}`
+        }}
+      />
+    )}
   >
     {children}
   </Level>

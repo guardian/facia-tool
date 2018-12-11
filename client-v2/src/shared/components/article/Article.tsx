@@ -14,6 +14,7 @@ import { DerivedArticle } from '../../types/Article';
 import CollectionItemBody from '../collectionItem/CollectionItemBody';
 import CollectionItemContainer from '../collectionItem/CollectionItemContainer';
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
+import CollectionItemDisabledTheme from '../collectionItem/CollectionItemDisabledTheme';
 import ArticleBodyPolaroid from './ArticleBodyPolaroid';
 import ArticleBodyDefault, { ArticleBodyProps } from './ArticleBodyDefault';
 import {
@@ -84,9 +85,15 @@ const ArticleComponent = ({
   isUneditable
 }: ComponentProps) => {
   const ArticleBody = articleBodyComponentMap[displayType];
+  const getOverlayEventProps = () => ({
+    onDelete,
+    onAddToClipboard
+  });
+
   return (
     <CollectionItemContainer
       draggable={draggable}
+      isUneditable={isUneditable}
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDragEnter={onDragEnter}
@@ -111,12 +118,15 @@ const ArticleComponent = ({
               : '#c9c9c9'
         }}
       >
+        {isUneditable ? (
+          <CollectionItemDisabledTheme className="DisabledTheme" />
+        ) : null}
         {article && (
           <ArticleBody
             {...article}
             size={size}
-            onDelete={onDelete}
-            onAddToClipboard={onAddToClipboard}
+            isUneditable={isUneditable}
+            {...getOverlayEventProps()}
             notifications={notifications}
           />
         )}
@@ -124,9 +134,8 @@ const ArticleComponent = ({
           isLoading && (
             <ArticleBody
               uuid={id}
+              isUneditable={true}
               displayPlaceholders={true}
-              onDelete={onDelete}
-              onAddToClipboard={onAddToClipboard}
               size={size}
             />
           )}
@@ -135,8 +144,7 @@ const ArticleComponent = ({
             <ArticleBody
               headline="Content not found"
               uuid={id}
-              onDelete={onDelete}
-              onAddToClipboard={onAddToClipboard}
+              isUneditable={true}
               size={size}
             />
           )}
