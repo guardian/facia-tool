@@ -95,6 +95,7 @@ export {
   FrontsConfig,
   FrontsConfigResponse,
   FrontConfigMap,
+  CollectionConfigMap,
   ArticleDetails,
   VisibleArticlesResponse,
   FrontsToolSettings
