@@ -13,7 +13,6 @@ import {
 import SnapLink from 'shared/components/snapLink/SnapLink';
 import { insertArticleFragment } from 'actions/ArticleFragments';
 import noop from 'lodash/noop';
-import { isUndefined } from 'util';
 
 interface ContainerProps {
   isSelected?: boolean;
@@ -54,7 +53,6 @@ const CollectionItem = ({
       : undefined;
 
   switch (type) {
-    // TODO MAKE UNEDITABLE
     case collectionItemTypes.ARTICLE:
       return (
         <Article
@@ -73,7 +71,6 @@ const CollectionItem = ({
         </Article>
       );
     case collectionItemTypes.SNAP_LINK:
-      // TODO MAKE UNEDITABLE
       return (
         <SnapLink
           id={uuid}

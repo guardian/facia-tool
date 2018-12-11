@@ -33,17 +33,12 @@ class DropZone extends React.Component<
     isHoveredOver: false
   };
 
-  // get isActive() {
-  //   return !!this.props.disabled
-  //     ? console.log('active', false) || false
-  //     : typeof this.props.override === 'boolean'
-  //       ? this.props.override
-  //       : this.state.isHoveredOver;
-  // }
   get isActive() {
-    return typeof this.props.override === 'boolean'
-      ? this.props.override
-      : this.state.isHoveredOver;
+    return !!this.props.disabled
+      ? false
+      : typeof this.props.override === 'boolean'
+        ? this.props.override
+        : this.state.isHoveredOver;
   }
 
   public handleDragEnter = (e: React.DragEvent) => {
@@ -61,14 +56,14 @@ class DropZone extends React.Component<
 
   public getEventProps = () =>
     this.props.disabled
-      ? {
+      ? {}
+      : {
           onDragEnter: this.handleDragEnter,
           onDragLeave: this.handleDragLeave,
           onDragExit: this.handleDragLeave,
           onDrop: this.handleDrop,
           onDragOver: this.props.onDragOver
-        }
-      : {};
+        };
 
   public render() {
     const { style } = this.props;

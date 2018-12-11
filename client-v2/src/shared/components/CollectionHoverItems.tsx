@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-//TODO disabled=true == display = none
 const HoverActionsAreaOverlay = styled('div')<{
   justify?: 'space-between' | 'flex-end';
   disabled?: boolean;
