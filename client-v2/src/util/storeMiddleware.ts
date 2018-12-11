@@ -149,7 +149,9 @@ const persistCollectionOnEdit = (
     const sharedState = selectSharedState(store.getState());
     collectionIds.forEach(id => {
       const collection = selectors.selectById(sharedState, id);
-      store.dispatch(updateCollectionAction(collection));
+      if (collection) {
+        store.dispatch(updateCollectionAction(collection));
+      }
     });
 
     return result;
