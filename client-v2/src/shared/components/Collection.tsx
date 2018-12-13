@@ -80,7 +80,7 @@ const CollectionHeadingText = styled('span')`
 const CollectionHeadlineWithConfigContainer = styled('div')``;
 
 const CollectionConfigContainer = styled('span')`
-  margin: 0 0.1rem;
+  margin: 0 0.3rem;
 `;
 
 const CollectionConfigText = styled('span')`
