@@ -21,10 +21,10 @@ class V2App(isDev: Boolean, val acl: Acl, dynamo: Dynamo, val deps: BaseFaciaCon
     val userDataTable = Table[UserData](config.faciatool.userDataTable)
 
     val jsFileName = "dist/app.bundle.js"
-    val faviconFileName = "favicon/"
+    val faviconDirectoryName = "favicon/"
 
     val jsLocation: String = routes.V2Assets.at(jsFileName).toString
-    val faviconLocation: String = routes.V2Assets.at(faviconFileName).toString
+    val faviconLocation: String = routes.V2Assets.at(faviconDirectoryName).toString
 
     val hasBreakingNews = acl.testUser(Permissions.BreakingNewsAlert, "facia-tool-allow-breaking-news-for-all")(req.user.email)
     val hasConfigureFronts = acl.testUser(Permissions.ConfigureFronts, "facia-tool-allow-config-for-all")(req.user.email)
