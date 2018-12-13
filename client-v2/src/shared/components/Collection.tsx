@@ -46,28 +46,6 @@ const HeadlineContentContainer = styled('span')`
   line-height: 0px;
 `;
 
-const ConfigContentContainer = styled('span')`
-  position: relative;
-  font-family: TS3TextSans;
-  font-size: 14px;
-  font-weight: bold;
-  margin: 0 0;
-  flex-grow: 1;
-  display: flex;
-  justify-content: space-between;
-`;
-
-const ConfigPlatformTag = styled('span')`
-  /* Styling tbc */
-  padding: 0 15px;
-`;
-
-const ConfigMetadataTypeTag = styled('span')`
-  /* Styling tbc */
-  padding: 3px 25px 0px 24px;
-  font-style: italic;
-`;
-
 const CollectionMetaContainer = styled('div')`
   display: flex;
   position: relative;
@@ -95,6 +73,29 @@ const CollectionHeadingText = styled('span')`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+`;
+
+const CollectionHeadlineWithConfigContainer = styled('div')``;
+
+const CollectionConfigContainer = styled('span')`
+  margin: 0 0.1rem;
+`;
+
+const CollectionConfigText = styled('span')`
+  font-family: GHGuardianHeadline-Regular;
+  font-size: 22px;
+  color: #333333;
+  height: 40px;
+  line-height: 40px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: normal;
+  font-style: normal;
+`;
+
+const CollectionConfigTextPipe = styled('span')`
+  color: #c9c9c9;
 `;
 
 const CollectionToggleContainer = styled('div')`
@@ -128,22 +129,27 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
     return collection ? (
       <CollectionContainer id={createCollectionId(collection)}>
         <ContainerHeadingPinline>
-          <CollectionHeadingText>
-            {collection.displayName}
-          </CollectionHeadingText>
-          <ConfigContentContainer>
-            <ConfigMetadataTypeTag>
-              {collection.metadata && collection.metadata[0].type
-                ? `${collection.metadata[0].type}`
-                : null}
-            </ConfigMetadataTypeTag>
-            <ConfigPlatformTag>
-              {' '}
-              {collection.platform && collection.platform !== 'Any'
-                ? `${collection.platform} only`
-                : null}
-            </ConfigPlatformTag>
-          </ConfigContentContainer>
+          <CollectionHeadlineWithConfigContainer>
+            <CollectionHeadingText>
+              {collection.displayName}
+            </CollectionHeadingText>
+            <CollectionConfigContainer>
+              <CollectionConfigText>
+                {collection.metadata && collection.metadata[0].type
+                  ? `${collection.metadata[0].type}`
+                  : null}
+              </CollectionConfigText>
+              <CollectionConfigText>
+                {collection.platform && collection.platform !== 'Any' ? (
+                  <>
+                    <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
+                    {`${collection.platform} only`}
+                  </>
+                ) : null}
+              </CollectionConfigText>
+            </CollectionConfigContainer>
+          </CollectionHeadlineWithConfigContainer>
+
           {headlineContent && (
             <HeadlineContentContainer>
               {headlineContent}
