@@ -33,7 +33,6 @@ const combineCollectionWithConfig = (
   collectionConfig: CollectionConfig,
   collection: CollectionWithNestedArticles
 ): CollectionWithNestedArticles => {
-  console.log(collectionConfig);
   return Object.assign({}, collection, {
     id: collection.id,
     displayName: collectionConfig.displayName,

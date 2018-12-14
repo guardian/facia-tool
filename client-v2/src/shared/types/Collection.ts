@@ -100,7 +100,7 @@ interface CollectionResponse {
   platform?: string;
   displayName: string;
   groups?: string[];
-  metadata?: { type: string }[];
+  metadata?: Array<{ type: string }>;
   uneditable?: boolean;
 }
 
@@ -119,17 +119,16 @@ interface Collection {
   platform?: string;
   displayName: string;
   groups?: string[];
-  metadata?: { type: string }[];
+  metadata?: Array<{ type: string }>;
   uneditable?: boolean;
   type: string;
   frontsToolSettings?: FrontsToolSettings;
 }
 
 interface ArticleTag {
-  webTitle?: string
-  sectionName?: string
-};
-
+  webTitle?: string;
+  sectionName?: string;
+}
 
 export {
   NestedArticleFragment,
