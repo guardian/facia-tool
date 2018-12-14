@@ -7,7 +7,8 @@ import FrontList from '../components/FrontList';
 import { getFrontsWithPriority } from '../selectors/frontsSelectors';
 
 type Props = {
-  match: match<{ priority: string }>
+  match: match<{ priority: string }>,
+  searchString: string;
 } & RouteComponentProps<any>;
 
 const mapStateToProps = (state: State, props: Props) => {

@@ -8,6 +8,8 @@ import ButtonOverlay from '../inputs/ButtonOverlay';
 import ScrollContainer from '../ScrollContainer';
 import Overlay from '../layout/Overlay';
 import FrontsList from '../../containers/FrontsList';
+import Row from 'components/Row';
+import Col from 'components/Col';
 
 const FrontsMenuContent = styled('div')`
   flex: 1;
@@ -27,6 +29,7 @@ const FrontsMenuHeading = LargeSectionHeader.extend`
 const FrontsMenuSubHeading = styled('div')`
   padding: 10px 0;
   font-size: 16px;
+  line-height: 28px;
   font-weight: bold;
   line-height: 20px;
   border-bottom: solid 1px #5e5e5e;
@@ -39,7 +42,7 @@ const ButtonOverlayContainer = styled('div')`
   bottom: 30px;
 `;
 
-const FrontsMenuContainer = styled('div')<{ isOpen?: boolean}>`
+const FrontsMenuContainer = styled('div')<{ isOpen?: boolean }>`
   background-color: #333;
   position: fixed;
   height: 100%;
@@ -52,22 +55,45 @@ const FrontsMenuContainer = styled('div')<{ isOpen?: boolean}>`
     isOpen ? 'translate3d(0px, 0, 0)' : 'translate3d(390px, 0, 0)'};
 `;
 
+const FrontsMenuInput = styled('input')`
+  background-color: rgba(0, 0, 0, 0.2);
+  width: 100%;
+  padding: 2px;
+  border: 0;
+  color: white;
+  font-size: 16px;
+  :active, :focus {
+    outline: none;
+  }
+`;
+
 interface Props {
-  onSelectFront: (frontId: string) => void
+  onSelectFront: (frontId: string) => void;
 }
 
 interface State {
-  isOpen: boolean
+  isOpen: boolean;
+  searchString: string;
 }
 
 class FrontsMenu extends React.Component<Props, State> {
   public state = {
-    isOpen: false
+    isOpen: false,
+    searchString: ''
   };
 
   public onSelectFront = (frontId: string) => {
     this.toggleFrontsMenu();
     this.props.onSelectFront(frontId);
+  };
+
+  public onInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target || !(event.target instanceof HTMLInputElement)) {
+      return;
+    }
+    this.setState({
+      searchString: event.target.value
+    });
   };
 
   public toggleFrontsMenu = () => {
@@ -97,9 +123,23 @@ class FrontsMenu extends React.Component<Props, State> {
             fixed={<FrontsMenuHeading>Add Front</FrontsMenuHeading>}
           >
             <FrontsMenuContent>
-              <FrontsMenuSubHeading>All</FrontsMenuSubHeading>
+              <FrontsMenuSubHeading>
+                <Row>
+                  <Col>All</Col>
+                  <Col>
+                    <FrontsMenuInput
+                      value={this.state.searchString}
+                      onChange={this.onInput}
+                      autoFocus
+                    />
+                  </Col>
+                </Row>
+              </FrontsMenuSubHeading>
               <FrontsMenuItems>
-                <FrontsList onSelect={this.onSelectFront} />
+                <FrontsList
+                  onSelect={this.onSelectFront}
+                  searchString={this.state.searchString}
+                />
               </FrontsMenuItems>
             </FrontsMenuContent>
           </ScrollContainer>

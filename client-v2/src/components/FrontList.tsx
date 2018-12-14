@@ -3,10 +3,12 @@ import styled, { css } from 'styled-components';
 
 import ButtonCircular from 'shared/components/input/ButtonCircular';
 import MoreImage from 'shared/images/icons/more.svg';
+import TextHighlighter from './util/TextHighlighter';
 
 interface Props {
-  fronts: Array<{ id: string, isOpen: boolean }>,
-  onSelect: (frontId: string) => void
+  fronts: Array<{ id: string; isOpen: boolean }>;
+  onSelect: (frontId: string) => void;
+  searchString: string;
 }
 
 const ListItem = styled('li')`
@@ -41,12 +43,23 @@ const ButtonAdd = ButtonCircular.extend`
   padding: 3px;
 `;
 
-const FrontList = ({ fronts, onSelect }: Props) =>
-  fronts ? (
+const FrontList = ({ fronts, onSelect, searchString }: Props) => {
+  if (!fronts) {
+    return null;
+  }
+  const frontsToRender = searchString
+    ? fronts.filter(_ => _.id.includes(searchString))
+    : fronts;
+  return (
     <ListContainer>
-      {fronts.map(front => (
+      {frontsToRender.map(front => (
         <ListItem key={front.id}>
-          <ListLabel isActive={front.isOpen}>{front.id}</ListLabel>
+          <ListLabel isActive={front.isOpen}>
+            <TextHighlighter
+              originalString={front.id}
+              searchString={searchString}
+            />
+          </ListLabel>
           {front.isOpen && (
             <ButtonAdd onClick={() => onSelect(front.id)}>
               <img src={MoreImage} alt="" width="100%" height="100%" />
@@ -55,6 +68,7 @@ const FrontList = ({ fronts, onSelect }: Props) =>
         </ListItem>
       ))}
     </ListContainer>
-  ) : null;
+  );
+};
 
 export default FrontList;
