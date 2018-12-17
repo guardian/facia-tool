@@ -5,7 +5,8 @@ import { WrappedFieldProps } from 'redux-form';
 import deleteIcon from '../../images/icons/delete-copy.svg';
 import ButtonDefault from './ButtonDefault';
 import InputContainer from './InputContainer';
-import { validateImageEvent } from '../../util/validateImageSrc';
+import { validateImageEvent, validateMediaItem } from '../../util/validateImageSrc';
+import { GridModal } from 'components/GridModal';
 
 const ImageContainer = styled('div')<{
   size?: 'small';
@@ -53,12 +54,14 @@ type Props = {
     widthAspectRatio?: number;
     heightAspectRatio?: number;
   };
+  gridUrl?: string
 } & WrappedFieldProps;
-interface State { isHovering: boolean }
+interface State { isHovering: boolean, modalOpen: boolean }
 
 class InputImage extends React.Component<Props, State> {
   public state = {
-    isHovering: false
+    isHovering: false,
+    modalOpen: false
   };
 
   public handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
@@ -83,10 +86,76 @@ class InputImage extends React.Component<Props, State> {
   };
   public clearField = () => this.props.input.onChange(null);
 
+  public parseMimeType(mimeType: string) {
+    switch (mimeType) {
+      case 'jpg':
+        return 'image/jpeg';
+      case 'png':
+        return 'image/png';
+    }
+
+    return mimeType;
+  }
+
+  public validMessage(data) {
+    return data &&
+           data.crop &&
+           data.crop.data &&
+           data.image &&
+           data.image.data;
+  }
+
+  public onMessage = (event) => {
+    if (event.origin !== this.props.gridUrl) {
+      // Log: did not come from the grid
+      return;
+    }
+
+    const data = event.data;
+
+    if (!data) {
+      // TODO Log did not get data
+      return;
+    }
+
+    if (!this.validMessage(data)) {
+      // TODO Log not a valid message
+      return;
+    }
+
+    this.closeModal();
+    const crop = data.crop.data;
+    const gridImage = data.image;
+
+    return validateMediaItem(data.crop.data, data.image.data, this.props.gridUrl)
+    .then(mediaItem => {
+      this.props.input.onChange(mediaItem);
+    })
+    .catch(err => console.log('@todo:handle error', err));
+  };
+
+  public closeModal = () => {
+    this.setState({ modalOpen: false });
+    window.removeEventListener('message', this.onMessage, false);
+  };
+
+  public openModal = () => {
+    this.setState({ modalOpen: true });
+    window.addEventListener('message', this.onMessage, false);
+  };
+
   public render() {
+    const gridSearchUrl = `${this.props.gridUrl}?cropType=landscape`;
     return (
       <InputContainer>
+        <GridModal
+          url={gridSearchUrl}
+          isOpen={this.state.modalOpen}
+          onClose={this.closeModal}
+          onMessage={this.onMessage}
+        />
         <ImageContainer
+          onClick={this.openModal}
           onDragEnter={this.handleDragEnter}
           onDragLeave={this.handleDragLeave}
           onDragOver={this.handleDragOver}

@@ -46,6 +46,11 @@ const collectionCapSelector = createSelector(
   config => (config && config.collectionCap) || Infinity
 );
 
+const gridUrlSelector = createSelector(
+  configSelector,
+  config => (config && config.mediaBaseUrl)
+);
+
 export {
   capiLiveURLSelector,
   capiPreviewURLSelector,
@@ -53,5 +58,6 @@ export {
   selectUserEmail,
   selectFirstName,
   selectLastName,
-  collectionCapSelector
+  collectionCapSelector,
+  gridUrlSelector
 };

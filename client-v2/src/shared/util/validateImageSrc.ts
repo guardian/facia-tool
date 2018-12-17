@@ -252,6 +252,38 @@ function getData(
     : null;
 }
 
+function validateMediaItem(crop, image, gridUrl) {
+  const criteria = {};
+  //TODO: pass in criteria correctly
+  if (crop) {
+    return getSuitableAsset(
+      [
+        {
+          assets: crop.assets,
+          master: crop.master
+        }
+      ],
+      crop.id,
+      criteria || {}
+    )
+      .then(asset => {
+        const newAsset = asset;
+        const origin =  `${urlConstants.media.mediaBaseUrl}/images/${image.id}`;
+        newAsset.criteria = criteria;
+        newAsset.origin = origin;
+        return newAsset;
+      })
+      .then(img => validateActualImage(img, 'todo: frontusages'))
+      .then(({ path, origin, thumb, width, height }) => ({
+        src: path,
+        origin: origin || path,
+        thumb: thumb || path,
+        width,
+        height
+      }));
+  }
+}
+
 function validateImageEvent(
   event: DragEvent | React.DragEvent<HTMLElement>,
   frontId: string,
@@ -300,5 +332,6 @@ export {
   ImageDescription,
   ValidationResponse,
   validateImageSrc,
-  validateImageEvent
+  validateImageEvent,
+  validateMediaItem
 };

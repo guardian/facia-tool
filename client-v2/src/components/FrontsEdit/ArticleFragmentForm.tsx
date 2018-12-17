@@ -18,6 +18,7 @@ import {
   articleTagSelector
 } from 'shared/selectors/shared';
 import { createSelectFormFieldsForCollectionItem } from 'selectors/formSelectors';
+import { gridUrlSelector } from 'selectors/configSelectors';
 import { ArticleFragmentMeta, ArticleTag } from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
@@ -36,12 +37,14 @@ import {
   getArticleFragmentMetaFromFormValues,
   getInitialValuesForArticleFragmentForm
 } from 'util/form';
+import urlConstants from 'shared/constants/url';
 
 interface ComponentProps extends ContainerProps {
   articleFragmentId: string;
   showKickerTag: boolean;
   showKickerSection: boolean;
   kickerOptions: ArticleTag;
+  gridUrl: string;
 }
 
 type Props = ComponentProps &
@@ -128,7 +131,8 @@ const formComponent: React.StatelessComponent<Props> = ({
   editableFields,
   reset,
   showKickerTag,
-  showKickerSection
+  showKickerSection,
+  gridUrl
 }) => (
   <FormContainer onSubmit={handleSubmit}>
     <CollectionHeadingPinline>
@@ -292,6 +296,7 @@ const formComponent: React.StatelessComponent<Props> = ({
                 name="primaryImage"
                 component={InputImage}
                 disabled={imageHide}
+                gridUrl={gridUrl}
               />
             </ImageWrapper>
           </Col>
@@ -322,6 +327,7 @@ const formComponent: React.StatelessComponent<Props> = ({
                 name="cutoutImage"
                 component={InputImage}
                 disabled={imageHide}
+                gridUrl={gridUrl}
               />
             </ImageWrapper>
           </Col>
@@ -430,7 +436,8 @@ const createMapStateToProps = () => {
       imageCutoutReplace: valueSelector(state, 'imageCutoutReplace'),
       showByline: valueSelector(state, 'showByline'),
       showKickerTag: valueSelector(state, 'showKickerTag'),
-      showKickerSection: valueSelector(state, 'showKickerSection')
+      showKickerSection: valueSelector(state, 'showKickerSection'),
+      gridUrl: gridUrlSelector(state)
     };
   };
 };
