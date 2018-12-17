@@ -11,6 +11,7 @@ import fullTrim from 'utils/full-trim';
 import populateObservables from 'utils/populate-observables';
 import urlAbsPath from 'utils/url-abs-path';
 import isPlatformSpecificCollection from 'utils/platform';
+import CONST from 'constants/defaults';
 
 export default class ConfigCollection extends DropTarget {
     constructor(opts = {}) {
@@ -19,6 +20,7 @@ export default class ConfigCollection extends DropTarget {
         this.id = opts.id;
 
         this.parents = ko.observableArray(findParents(opts.id));
+        this.userVisibilities = CONST.userVisibilities;
 
         this.meta = Object.assign(
             asObservableProps([
@@ -39,7 +41,8 @@ export default class ConfigCollection extends DropTarget {
                 'description',
                 'metadata',
                 'platform',
-                'frontsToolSettings'
+                'frontsToolSettings',
+                'userVisibility'
             ]),
             {
                 displayHints: asObservableProps([

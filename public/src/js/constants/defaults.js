@@ -246,5 +246,7 @@ export default {
         app: 'App',
         web: 'Web',
         any: 'Any'
-    }
+    },
+
+    userVisibilities: ['all', 'subscriber', 'non-subscriber']
 };

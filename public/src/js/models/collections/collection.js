@@ -105,7 +105,7 @@ export default class Collection extends BaseClass {
 
         this.lastAlertSentHuman = ko.observable(this.getLastAlertHuman());
 
-        this.displayEditWarning = this.configMeta.frontsToolSettings()  && this.configMeta.frontsToolSettings().displayEditWarning;
+        this.displayEditWarning = this.configMeta.frontsToolSettings() && this.configMeta.frontsToolSettings().displayEditWarning;
 
     }
 
