@@ -71,7 +71,9 @@ const ItemCountMeta = CollectionMetaBase.extend`
   flex: 0;
 `;
 
-const CollectionHeadingText = styled('span')`
+const CollectionHeadingText = styled('div')`
+  display: inline-block;
+  width: calc(100% - 250px);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -79,25 +81,30 @@ const CollectionHeadingText = styled('span')`
 
 const CollectionHeadlineWithConfigContainer = styled('div')``;
 
-const CollectionConfigContainer = styled('span')`
-  margin: 0 0.3rem;
-`;
-
-const CollectionConfigText = styled('span')`
+const CollectionConfigContainer = styled('div')`
+  display: inline-block;
   font-family: GHGuardianHeadline-Regular;
-  font-size: 22px;
+  font-size: 17px;
   color: #333333;
   height: 40px;
   line-height: 40px;
+  margin: 0 0.2rem;
+`;
+
+const CollectionConfigText = styled('div')`
+  display: inline-block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: normal;
   font-style: normal;
+  padding: 0 0.2rem;
 `;
 
-const CollectionConfigTextPipe = styled('span')`
+const CollectionConfigTextPipe = styled('div')`
+  display: inline-block;
   color: #c9c9c9;
+  padding: 0 0.2rem;
 `;
 
 const CollectionToggleContainer = styled('div')`
@@ -145,6 +152,7 @@ class CollectionDisplay extends React.Component<Props, { isOpen: boolean }> {
                   ? `${oc(collection).metadata[0].type()}`
                   : null}
               </CollectionConfigText>
+              <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
               <CollectionConfigText>
                 {oc(collection).platform() !== 'Any' ? (
                   <>
