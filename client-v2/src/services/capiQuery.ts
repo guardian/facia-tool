@@ -13,7 +13,7 @@ interface CAPISearchQueryReponse {
     content?: CapiArticle;
     tag?: Tag;
     section?: {
-      webTitle: string
+      webTitle: string;
     };
     status: CAPIStatus;
     message?: string;
@@ -65,13 +65,18 @@ const capiQuery = (
     );
 
     return response.json();
+  },
+  desks: async (params: any): Promise<CAPITagQueryReponse> => {
+    const response = await fetch(
+      `${baseURL}tags${qs({
+        type: 'tracking',
+        ...params
+      })}`
+    );
+
+    return response.json();
   }
 });
 
-export {
-  Fetch,
-  CapiArticle,
-  CAPISearchQueryReponse,
-  CAPITagQueryReponse
-};
+export { Fetch, CapiArticle, CAPISearchQueryReponse, CAPITagQueryReponse };
 export default capiQuery;

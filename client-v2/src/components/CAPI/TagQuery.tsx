@@ -9,13 +9,13 @@ interface CAPITagQueryProps {
   fetch?: Fetch;
   children: any;
   params: object;
-  tagType: 'sections' | 'tags';
+  tagType: 'sections' | 'tags' | 'desks';
 }
 
 interface CAPITagQueryState {
   capi: $ElementType<
     $Call<typeof capiQuery>,
-    number | 'sections' | 'tags' | 'search'
+    number | 'sections' | 'tags' | 'desks' | 'search'
   > | void;
   baseURL: string | void;
   fetch: Fetch | void;
