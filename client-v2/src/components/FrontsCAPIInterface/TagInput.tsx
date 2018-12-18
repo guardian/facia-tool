@@ -23,14 +23,14 @@ const TagDropdown = styled('div')`
 `;
 
 const DropdownItem = styled('div')`
-  background-color: ${({ selected }: { selected: boolean }) =>
-    selected ? '#dcdcdc' : 'white'};
+  background-color: ${({ highlighted }: { highlighted: boolean }) =>
+    highlighted ? '#dcdcdc' : 'white'};
   :hover {
-    background-color: #dcdcdc
+    background-color: #dcdcdc;
   }
   font-size: 14px;
-  front-weight: bold;
-  padding: 7px; 15px; 7px; 15px;
+  font-weight: bold;
+  padding: 7px 15px 7px 15px;
   border-left: 1px solid #c4c4c4;
   color: #121212;
 `;
