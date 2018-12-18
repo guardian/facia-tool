@@ -36,6 +36,7 @@ export default class CAPIDateRangeInput extends React.Component<CAPIDateInputPro
         onDatesChange={ ({ startDate, endDate }) => {
           onDateChange(startDate, endDate);
         }}
+        initialVisibleMonth={() => moment().subtract(1, 'months')}
         isOutsideRange={(day) => day.isAfter(moment())}
         focusedInput={this.state.focusedInput}
         onFocusChange={focusedInput => {
