@@ -17,7 +17,7 @@ interface CAPIDateInputState {
 export default class CAPIDateRangeInput extends React.Component<CAPIDateInputProps, CAPIDateInputState> {
 
   public state = {
-    focusedInput: 'startDate'
+    focusedInput: null
   };
 
   public render() {
@@ -40,7 +40,7 @@ export default class CAPIDateRangeInput extends React.Component<CAPIDateInputPro
         isOutsideRange={(day) => day.isAfter(moment())}
         focusedInput={this.state.focusedInput}
         onFocusChange={focusedInput => {
-          this.setState({ focusedInput: focusedInput || 'startDate' })
+          this.setState({ focusedInput })
         }}
       />
       </div>
