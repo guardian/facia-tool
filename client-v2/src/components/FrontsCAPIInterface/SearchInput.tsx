@@ -12,8 +12,10 @@ import CAPITagInput, {
 import CAPIFieldFilter, {
   FilterTypes
 } from '../FrontsCAPIInterface/FieldFilter';
+import CAPIDateRangeInput from '../FrontsCAPIInterface/DateInput';
 import { getIdFromURL } from 'util/CAPIUtils';
 import { getTodayDate } from 'util/getTodayDate';
+import moment from 'moment';
 
 interface FrontsCAPISearchInputProps {
   children: any;
@@ -32,6 +34,8 @@ interface FrontsCAPISearchInputState {
   q: string | void;
   searchTerms: SearchTerms;
   selected: SelectedTags;
+  fromDate: moment.Moment | null;
+  toDate: moment.Moment | null;
 }
 
 const InputContainer = styled('div')`
@@ -56,7 +60,9 @@ const emptySearchTerms = {
   tags: '',
   sections: '',
   desks: '',
-  ratings: ''
+  ratings: '',
+  fromDate: null,
+  toDate: null
 };
 
 const emptyState = {
@@ -67,7 +73,9 @@ const emptyState = {
     sections: [] as string[],
     desks: [] as string[],
     ratings: [] as string[]
-  }
+  },
+  fromDate: null,
+  toDate: null
 };
 
 class FrontsCAPISearchInput extends React.Component<
@@ -75,6 +83,10 @@ class FrontsCAPISearchInput extends React.Component<
   FrontsCAPISearchInputState
 > {
   public state = emptyState;
+
+  public onDateChange = (fromDate: moment.Moment | null, toDate: moment.Moment | null) => {
+    this.setState({fromDate, toDate});
+  };
 
   public clearInput = () => {
     this.setState(emptyState);
@@ -192,7 +204,9 @@ class FrontsCAPISearchInput extends React.Component<
 
     const {
       q,
-      selected: { tags, sections, desks, ratings }
+      selected: { tags, sections, desks, ratings },
+      fromDate,
+      toDate
     } = this.state;
 
     const searchTermsExist =
@@ -200,7 +214,9 @@ class FrontsCAPISearchInput extends React.Component<
       !!sections.length ||
       !!desks.length ||
       !!ratings.length ||
-      !!q;
+      !!q ||
+      !!fromDate ||
+      !!toDate
 
     const allSearchTerms = tags.concat(sections, desks, ratings);
 
@@ -245,6 +261,8 @@ class FrontsCAPISearchInput extends React.Component<
                 .map(rating => rating.slice(0, 1))
                 .join('|'),
               q,
+              'to-date': toDate && toDate.format('YYYY-MM-DD'),
+              'from-date': fromDate && fromDate.format('YYYY-MM-DD'),
               'page-size': '20',
               'show-elements': 'image',
               'show-fields':
@@ -289,6 +307,7 @@ class FrontsCAPISearchInput extends React.Component<
           onChange={this.handleTypeInput}
           searchType="sections"
         />
+
         <CAPITagInput
           placeholder={`Type commissioning desk name`}
           onSearchChange={this.handleTagSearchInput}
@@ -308,6 +327,11 @@ class FrontsCAPISearchInput extends React.Component<
             { value: '5', id: '5 Stars' }
           ]}
           onChange={this.handleDropdownInput}
+        />
+        <CAPIDateRangeInput
+          start={this.state.fromDate}
+          end={this.state.toDate}
+          onDateChange={this.onDateChange}
         />
       </React.Fragment>
     );

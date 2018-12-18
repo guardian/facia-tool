@@ -22,6 +22,7 @@ import FrontsEdit from './FrontsEdit/Edit';
 import Home from './Home';
 import NotFound from './NotFound';
 import ConfirmModal from './ConfirmModal';
+import '../globalStyles';
 
 // tslint:disable:no-unused-expression
 injectGlobal`
