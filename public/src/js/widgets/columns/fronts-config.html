@@ -237,6 +237,12 @@
                 <label>Groups</label>
                 <span class="cnf-form__value" data-bind="text: meta.groups"></span>
             <!-- /ko -->
+            <label for="userVisibility">User visibility</label>
+            <select data-bind="
+                optionsCaption: 'Select user visibility',
+                options: userVisibilities,
+                value: meta.userVisibility,
+                valueAllowUnset: true"></select>
 
 
             <label for="showTags" >Show tag kickers</label>
