@@ -96,9 +96,6 @@ class FrontsMenu extends React.Component<Props, State> {
     searchString: ''
   };
   public inputRef = React.createRef<HTMLInputElement>();
-  public constructor(props: Props) {
-    super(props);
-  }
 
   public onSelectFront = (frontId: string) => {
     this.toggleFrontsMenu();
