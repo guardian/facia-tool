@@ -111,6 +111,13 @@ class FrontsCAPISearchInput extends React.Component<
     this.setState({ selected });
   };
 
+  public clearSelectedDates = () => {
+    this.setState({
+      fromDate: null,
+      toDate: null
+    });
+  };
+
   public handleSearchInput = ({
     currentTarget
   }: React.SyntheticEvent<HTMLInputElement>) => {
@@ -185,7 +192,6 @@ class FrontsCAPISearchInput extends React.Component<
         >
           <ClearButtonIcon
             src={moreImage}
-            onClick={() => this.clearIndividualSearchTerm(searchTerm)}
             alt=""
             height="22px"
             width="22px"
@@ -193,6 +199,36 @@ class FrontsCAPISearchInput extends React.Component<
         </SmallRoundButton>
       </SearchTermItem>
     ));
+
+  public renderSelectedDates = (fromDate: moment.Moment | null, toDate: moment.Moment | null) => {
+    const renderDateAsString = (date: moment.Moment | null) => {
+      if (!date) {
+        return 'Not selected';
+      }
+      return date.format('DD/MM/YYYY');
+    }
+
+    if (fromDate || toDate) {
+      return (
+        <TagItem>
+          <span>From: { renderDateAsString(fromDate) } </span>
+          <span>To: { renderDateAsString(toDate) } </span>
+          <SmallRoundButton
+            onClick={() => this.clearSelectedDates()}
+            title="Clear search"
+          >
+            <ClearButtonIcon
+              src={moreImage}
+              alt=""
+              height="22px"
+              width="22px"
+            />
+          </SmallRoundButton>
+        </TagItem>
+      );
+    }
+    return null;
+  }
 
   public render() {
     const {
@@ -249,6 +285,7 @@ class FrontsCAPISearchInput extends React.Component<
                 />
               </InputContainer>
               {this.renderSelectedSearchTerms(allSearchTerms)}
+              {this.renderSelectedDates(fromDate, toDate)}
               {AdditionalFixedContent && <AdditionalFixedContent />}
             </React.Fragment>
           }
@@ -293,6 +330,7 @@ class FrontsCAPISearchInput extends React.Component<
           />
         </InputContainer>
         {this.renderSelectedSearchTerms(allSearchTerms)}
+        {this.renderSelectedDates(fromDate, toDate)}
         <CAPITagInput
           placeholder={`Type tag name`}
           onSearchChange={this.handleTagSearchInput}

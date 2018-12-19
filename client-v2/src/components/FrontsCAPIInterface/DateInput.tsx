@@ -7,7 +7,7 @@ import moment from 'moment';
 interface CAPIDateInputProps {
   start: moment.Moment | null
   end: moment.Moment | null
-  onDateChange: (startDate: moment.Moment, endDate: moment.Moment) => void
+  onDateChange: (startDate: moment.Moment | null, endDate: moment.Moment | null) => void
 }
 
 interface CAPIDateInputState {
