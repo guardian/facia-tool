@@ -864,4 +864,48 @@ injectGlobal`
     width: 15px;
     fill: #cacccd
   }
+
+  /* React datepicker overriden styles */
+
+ .DateInput_input {
+   font-size: 16px;
+   font-family: TS3TextSans;
+   color: #121212;
+ }
+
+  .DateRangePickerInput__withBorder {
+    border: solid 1px #c9c9c9;
+  }
+
+  .CalendarMonth_caption {
+    color: #121212;
+    font-family: TS3TextSans;
+  }
+
+ .CalendarDay__selected {
+   background: #ff7f0f;
+   border: 1px double #444444;
+   color: #121212;
+ }
+
+ .CalendarDay__selected_span {
+   background: #dcdcdc;
+   border: 1px double #444444;
+   color: #121212;
+ }
+
+ .CalendarDay__hovered_span,
+ .CalendarDay__hovered_span: hover {
+   background: #f2f2f2;
+   border: 1px double #444444;
+   color: #121212;
+
+ }
+
+ .CalendarDay__selected: hover,
+ .CalendarDay__selected_span: hover {
+    background: #dcdcdc;
+    border: 1px double #444444;
+    color: #121212;
+ }
 `

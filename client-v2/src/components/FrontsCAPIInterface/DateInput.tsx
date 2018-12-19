@@ -7,7 +7,7 @@ import moment from 'moment';
 interface CAPIDateInputProps {
   start: moment.Moment | null
   end: moment.Moment | null
-  onDateChange: (startDate: moment.Moment | null, endDate: moment.Moment | null) => void
+  onDateChange: (startDate: moment.Moment, endDate: moment.Moment) => void
 }
 
 interface CAPIDateInputState {
@@ -21,12 +21,9 @@ const DatePickerContainer = styled('div')`
 `;
 
 const SearchTitle = styled('div')`
-  font-size: 16px;
   font-weight: bold;
-  color: #121212;
   margin-right: 3px;
-  float: left;
-  margin-bottom: 5px;
+  margin-bottom: 7px;
 `;
 
 export default class CAPIDateRangeInput extends React.Component<CAPIDateInputProps, CAPIDateInputState> {
