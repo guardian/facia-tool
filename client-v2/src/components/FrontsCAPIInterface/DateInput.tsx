@@ -7,7 +7,7 @@ import moment from 'moment';
 interface CAPIDateInputProps {
   start: moment.Moment | null
   end: moment.Moment | null
-  onDateChange: (startDate: moment.Moment, endDate: moment.Moment) => void
+  onDateChange: (startDate: moment.Moment | null, endDate: moment.Moment | null) => void
 }
 
 interface CAPIDateInputState {
@@ -17,7 +17,6 @@ interface CAPIDateInputState {
 const DatePickerContainer = styled('div')`
   padding-top: 24px;
   padding-left: 2px;
-
 `;
 
 const SearchTitle = styled('div')`

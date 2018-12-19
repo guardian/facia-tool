@@ -1,6 +1,6 @@
 import { injectGlobal } from 'styled-components';
 
-injectGlobal`
+const styles = injectGlobal`
   .PresetDateRangePicker_panel {
     padding: 0 22px 11px
   }

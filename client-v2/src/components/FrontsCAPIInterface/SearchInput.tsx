@@ -63,7 +63,7 @@ const emptySearchTerms = {
   ratings: '',
   fromDate: null,
   toDate: null
-};
+}
 
 const emptyState = {
   q: undefined,
@@ -76,7 +76,7 @@ const emptyState = {
   },
   fromDate: null,
   toDate: null
-};
+} as FrontsCAPISearchInputState
 
 class FrontsCAPISearchInput extends React.Component<
   FrontsCAPISearchInputProps,
