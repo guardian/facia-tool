@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import TagQuery, { AsyncState, CAPITagQueryReponse } from '../CAPI/TagQuery';
 import { Tag } from 'types/Capi';
 
-type SearchTypes = 'tags' | 'sections';
+type SearchTypes = 'tags' | 'sections' | 'desks';
 
 interface CAPITagInputProps<T> {
   onChange: (value: T, type: SearchTypes) => void;

@@ -51,7 +51,8 @@ const TagItem = styled('div')`
 
 const emptySearchTerms = {
   tags: '',
-  sections: ''
+  sections: '',
+  desks: ''
 };
 
 const emptyState = {
@@ -59,7 +60,8 @@ const emptyState = {
   searchTerms: emptySearchTerms,
   selected: {
     tags: [] as string[],
-    sections: [] as string[]
+    sections: [] as string[],
+    desks: [] as string[]
   }
 };
 
@@ -122,6 +124,7 @@ class FrontsCAPISearchInput extends React.Component<
   public handleTypeInput = (item: any, type: SearchTypes) => {
     let newTags = [] as string[];
     const oldTags = this.state.selected[type];
+
     if (item && oldTags.indexOf(item.id) === -1) {
       newTags = oldTags.concat([item.id]);
     }
@@ -169,12 +172,20 @@ class FrontsCAPISearchInput extends React.Component<
 
     const {
       q,
-      selected: { tags, sections }
+      selected: { tags, sections, desks }
     } = this.state;
 
-    const searchTermsExist = !!tags.length || !!sections.length || !!q;
+    const searchTermsExist =
+      !!tags.length || !!sections.length || !!desks.length || !!q;
 
-    const allTags = tags.concat(sections);
+    const allTags = tags.concat(sections, desks);
+
+    const searchTags =
+      tags.length && desks.length
+        ? tags.join(',') + ',' + desks.join(',')
+        : desks.length && !tags.length
+          ? desks.join(',')
+          : tags.join(',');
 
     const dateParams = isPreview
       ? { 'order-by': 'oldest', 'from-date': getTodayDate() }
@@ -204,7 +215,7 @@ class FrontsCAPISearchInput extends React.Component<
         >
           <SearchQuery
             params={{
-              tag: tags.join(','),
+              tag: searchTags,
               section: sections.join(','),
               q,
               'page-size': '20',
@@ -251,6 +262,13 @@ class FrontsCAPISearchInput extends React.Component<
           tagsSearchTerm={this.state.searchTerms.sections}
           onChange={this.handleTypeInput}
           searchType="sections"
+        />
+        <CAPITagInput
+          placeholder={`Type commissioning desk name`}
+          onSearchChange={this.handleTagSearchInput}
+          tagsSearchTerm={this.state.searchTerms.desks}
+          onChange={this.handleTypeInput}
+          searchType="desks"
         />
       </React.Fragment>
     );

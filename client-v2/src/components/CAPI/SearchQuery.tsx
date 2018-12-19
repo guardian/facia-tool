@@ -39,7 +39,9 @@ class SearchQuery extends React.Component<
       (fetch && prevState.fetch !== fetch)
     ) {
       return {
-        capi: isPreview ? capiQuery(baseURL, fetch).scheduled : capiQuery(baseURL, fetch).search,
+        capi: isPreview
+          ? capiQuery(baseURL, fetch).scheduled
+          : capiQuery(baseURL, fetch).search,
         baseURL,
         fetch
       };
