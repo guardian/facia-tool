@@ -76,7 +76,7 @@
     "@types/uuid": "^3.4.4",
     "babel-polyfill": "^6.26.0",
     "date-fns": "^1.29.0",
-    "downshift": "^1.31.6",
+    "downshift": "^3.1.7",
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "fetch": "^1.1.0",
