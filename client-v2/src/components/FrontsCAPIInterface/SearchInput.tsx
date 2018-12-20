@@ -14,7 +14,6 @@ import CAPIFieldFilter, {
 } from '../FrontsCAPIInterface/FieldFilter';
 import { getIdFromURL } from 'util/CAPIUtils';
 import { getTodayDate } from 'util/getTodayDate';
-import { removeArticleFragment } from 'actions/ArticleFragments';
 
 interface FrontsCAPISearchInputProps {
   children: any;
