@@ -7,7 +7,7 @@ import time
 session = boto3.Session(profile_name='cmsFronts')
 s3 = session.resource('s3')
 bucket = 'facia-tool-store'
-stage = 'PROD'
+stage = 'CODE'
 configPath = stage + '/frontsapi/config/config.json'
 collectionPath = stage + '/frontsapi/collection/'
 fileName = 'config.json'
@@ -72,8 +72,13 @@ def run():
                         live = edited_collection.get('live')
                         draft = edited_collection.get('draft')
                         if name == 'new':
-                            if (live and len(live) > 0) or (draft and len(draft) > 0):
-                                automated = False
+                            if live and len(live) > 0:
+                                if any("snap" not in item.get('id') for item in live):
+                                    automated = False
+
+                            if draft and len(draft) > 0:
+                                if any("snap" not in item.get('id') for item in draft):
+                                    automated = False
                 else:
                     automated = False
 
