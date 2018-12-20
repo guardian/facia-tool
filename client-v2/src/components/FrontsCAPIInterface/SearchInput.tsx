@@ -9,8 +9,12 @@ import CAPITagInput, {
   SearchTypes,
   AsyncState
 } from '../FrontsCAPIInterface/TagInput';
+import CAPIFieldFilter, {
+  FilterTypes
+} from '../FrontsCAPIInterface/FieldFilter';
 import { getIdFromURL } from 'util/CAPIUtils';
 import { getTodayDate } from 'util/getTodayDate';
+import { removeArticleFragment } from 'actions/ArticleFragments';
 
 interface FrontsCAPISearchInputProps {
   children: any;
@@ -52,7 +56,8 @@ const TagItem = styled('div')`
 const emptySearchTerms = {
   tags: '',
   sections: '',
-  desks: ''
+  desks: '',
+  ratings: ''
 };
 
 const emptyState = {
@@ -61,7 +66,8 @@ const emptyState = {
   selected: {
     tags: [] as string[],
     sections: [] as string[],
-    desks: [] as string[]
+    desks: [] as string[],
+    ratings: [] as string[]
   }
 };
 
@@ -121,6 +127,21 @@ class FrontsCAPISearchInput extends React.Component<
     });
   };
 
+  public handleDropdownInput = (item: any, type: FilterTypes) => {
+    let newTags = [] as string[];
+    const oldTags = this.state.selected[type];
+
+    if (item && oldTags.indexOf(item.id) === -1) {
+      newTags = oldTags.concat([item.id]);
+    }
+    this.setState({
+      selected: {
+        ...this.state.selected,
+        [type]: newTags
+      }
+    });
+  };
+
   public handleTypeInput = (item: any, type: SearchTypes) => {
     let newTags = [] as string[];
     const oldTags = this.state.selected[type];
@@ -172,13 +193,13 @@ class FrontsCAPISearchInput extends React.Component<
 
     const {
       q,
-      selected: { tags, sections, desks }
+      selected: { tags, sections, desks, ratings }
     } = this.state;
 
     const searchTermsExist =
       !!tags.length || !!sections.length || !!desks.length || !!q;
 
-    const allTags = tags.concat(sections, desks);
+    const allTags = tags.concat(sections, desks, ratings);
 
     const searchTags =
       tags.length && desks.length
@@ -217,6 +238,9 @@ class FrontsCAPISearchInput extends React.Component<
             params={{
               tag: searchTags,
               section: sections.join(','),
+              'star-rating': ratings
+                .map(rating => rating.slice(0, 1))
+                .join('|'),
               q,
               'page-size': '20',
               'show-elements': 'image',
@@ -237,7 +261,6 @@ class FrontsCAPISearchInput extends React.Component<
       <React.Fragment>
         <InputContainer>
           <TextInput
-            // searchTerms={tags.concat(sections)} @todo -- is this used?
             placeholder={searchTermsExist ? '' : 'Search content'}
             value={this.state.q || ''}
             onChange={this.handleSearchInput}
@@ -269,6 +292,19 @@ class FrontsCAPISearchInput extends React.Component<
           tagsSearchTerm={this.state.searchTerms.desks}
           onChange={this.handleTypeInput}
           searchType="desks"
+        />
+        <CAPIFieldFilter
+          placeholder={'Select one or more'}
+          filterTitle="star rating"
+          filterType="ratings"
+          items={[
+            { value: '1', id: '1 Star' },
+            { value: '2', id: '2 Stars' },
+            { value: '3', id: '3 Stars' },
+            { value: '4', id: '4 Stars' },
+            { value: '5', id: '5 Stars' }
+          ]}
+          onChange={this.handleDropdownInput}
         />
       </React.Fragment>
     );
