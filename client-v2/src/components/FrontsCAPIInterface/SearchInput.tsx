@@ -12,8 +12,10 @@ import CAPITagInput, {
 import CAPIFieldFilter, {
   FilterTypes
 } from '../FrontsCAPIInterface/FieldFilter';
+import CAPIDateRangeInput from '../FrontsCAPIInterface/DateInput';
 import { getIdFromURL } from 'util/CAPIUtils';
 import { getTodayDate } from 'util/getTodayDate';
+import moment from 'moment';
 
 interface FrontsCAPISearchInputProps {
   children: any;
@@ -23,7 +25,7 @@ interface FrontsCAPISearchInputProps {
   isPreview: boolean;
 }
 
-type SearchTypeMap<T> = { [K in SearchTypes]: T };
+type SearchTypeMap<T> = { [K in SearchTypes | FilterTypes]: T };
 
 type SearchTerms = SearchTypeMap<string>;
 type SelectedTags = SearchTypeMap<string[]>;
@@ -32,6 +34,8 @@ interface FrontsCAPISearchInputState {
   q: string | void;
   searchTerms: SearchTerms;
   selected: SelectedTags;
+  fromDate: moment.Moment | null;
+  toDate: moment.Moment | null;
 }
 
 const InputContainer = styled('div')`
@@ -56,8 +60,10 @@ const emptySearchTerms = {
   tags: '',
   sections: '',
   desks: '',
-  ratings: ''
-};
+  ratings: '',
+  fromDate: null,
+  toDate: null
+}
 
 const emptyState = {
   q: undefined,
@@ -67,14 +73,20 @@ const emptyState = {
     sections: [] as string[],
     desks: [] as string[],
     ratings: [] as string[]
-  }
-};
+  },
+  fromDate: null,
+  toDate: null
+} as FrontsCAPISearchInputState
 
 class FrontsCAPISearchInput extends React.Component<
   FrontsCAPISearchInputProps,
   FrontsCAPISearchInputState
 > {
   public state = emptyState;
+
+  public onDateChange = (fromDate: moment.Moment | null, toDate: moment.Moment | null) => {
+    this.setState({fromDate, toDate});
+  };
 
   public clearInput = () => {
     this.setState(emptyState);
@@ -97,6 +109,13 @@ class FrontsCAPISearchInput extends React.Component<
       {} as SelectedTags
     );
     this.setState({ selected });
+  };
+
+  public clearSelectedDates = () => {
+    this.setState({
+      fromDate: null,
+      toDate: null
+    });
   };
 
   public handleSearchInput = ({
@@ -173,7 +192,6 @@ class FrontsCAPISearchInput extends React.Component<
         >
           <ClearButtonIcon
             src={moreImage}
-            onClick={() => this.clearIndividualSearchTerm(searchTerm)}
             alt=""
             height="22px"
             width="22px"
@@ -181,6 +199,36 @@ class FrontsCAPISearchInput extends React.Component<
         </SmallRoundButton>
       </SearchTermItem>
     ));
+
+  public renderSelectedDates = (fromDate: moment.Moment | null, toDate: moment.Moment | null) => {
+    const renderDateAsString = (date: moment.Moment | null) => {
+      if (!date) {
+        return 'Not selected';
+      }
+      return date.format('DD/MM/YYYY');
+    }
+
+    if (fromDate || toDate) {
+      return (
+        <SearchTermItem>
+          <span>From: { renderDateAsString(fromDate) } </span>
+          <span>To: { renderDateAsString(toDate) } </span>
+          <SmallRoundButton
+            onClick={() => this.clearSelectedDates()}
+            title="Clear search"
+          >
+            <ClearButtonIcon
+              src={moreImage}
+              alt=""
+              height="22px"
+              width="22px"
+            />
+          </SmallRoundButton>
+        </SearchTermItem>
+      );
+    }
+    return null;
+  }
 
   public render() {
     const {
@@ -192,7 +240,9 @@ class FrontsCAPISearchInput extends React.Component<
 
     const {
       q,
-      selected: { tags, sections, desks, ratings }
+      selected: { tags, sections, desks, ratings },
+      fromDate,
+      toDate
     } = this.state;
 
     const searchTermsExist =
@@ -200,7 +250,9 @@ class FrontsCAPISearchInput extends React.Component<
       !!sections.length ||
       !!desks.length ||
       !!ratings.length ||
-      !!q;
+      !!q ||
+      !!fromDate ||
+      !!toDate
 
     const allSearchTerms = tags.concat(sections, desks, ratings);
 
@@ -233,6 +285,7 @@ class FrontsCAPISearchInput extends React.Component<
                 />
               </InputContainer>
               {this.renderSelectedSearchTerms(allSearchTerms)}
+              {this.renderSelectedDates(fromDate, toDate)}
               {AdditionalFixedContent && <AdditionalFixedContent />}
             </React.Fragment>
           }
@@ -245,6 +298,8 @@ class FrontsCAPISearchInput extends React.Component<
                 .map(rating => rating.slice(0, 1))
                 .join('|'),
               q,
+              'to-date': toDate && toDate.format('YYYY-MM-DD'),
+              'from-date': fromDate && fromDate.format('YYYY-MM-DD'),
               'page-size': '20',
               'show-elements': 'image',
               'show-fields':
@@ -275,6 +330,7 @@ class FrontsCAPISearchInput extends React.Component<
           />
         </InputContainer>
         {this.renderSelectedSearchTerms(allSearchTerms)}
+        {this.renderSelectedDates(fromDate, toDate)}
         <CAPITagInput
           placeholder={`Type tag name`}
           onSearchChange={this.handleTagSearchInput}
@@ -289,6 +345,7 @@ class FrontsCAPISearchInput extends React.Component<
           onChange={this.handleTypeInput}
           searchType="sections"
         />
+
         <CAPITagInput
           placeholder={`Type commissioning desk name`}
           onSearchChange={this.handleTagSearchInput}
@@ -308,6 +365,11 @@ class FrontsCAPISearchInput extends React.Component<
             { value: '5', id: '5 Stars' }
           ]}
           onChange={this.handleDropdownInput}
+        />
+        <CAPIDateRangeInput
+          start={this.state.fromDate}
+          end={this.state.toDate}
+          onDateChange={this.onDateChange}
         />
       </React.Fragment>
     );

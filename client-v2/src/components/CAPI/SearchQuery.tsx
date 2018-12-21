@@ -49,7 +49,7 @@ class SearchQuery extends React.Component<
     return {};
   }
   public state: CAPISearchQueryState = {};
-  public interval: NodeJS.Timer | void = undefined;
+  public interval: number | void = undefined;
   public async: Async<any[], SearchReturn> | null = null;
 
   public componentDidMount() {
@@ -74,7 +74,7 @@ class SearchQuery extends React.Component<
 
   public startPolling = (rate: number) => {
     if (this.props.poll) {
-      this.interval = setInterval(this.poll, rate);
+      this.interval = window.setInterval(this.poll, rate);
     }
   };
 

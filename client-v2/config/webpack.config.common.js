@@ -20,6 +20,10 @@ module.exports = {
         options: {
           publicPath: '/assets/client-v2/dist/'
         }
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
       }
     ]
   },
