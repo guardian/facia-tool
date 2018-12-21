@@ -39,7 +39,7 @@ const InputContainer = styled('div')`
   background: #ffffff;
 `;
 
-const TagItem = styled('div')`
+const SearchTermItem = styled('div')`
   color: #121212;
   font-weight: bold;
   border: solid 1px #c4c4c4;
@@ -127,16 +127,16 @@ class FrontsCAPISearchInput extends React.Component<
   };
 
   public handleDropdownInput = (item: any, type: FilterTypes) => {
-    let newTags = [] as string[];
-    const oldTags = this.state.selected[type];
+    let newFilterFields = [] as string[];
+    const oldFilterFields = this.state.selected[type];
 
-    if (item && oldTags.indexOf(item.id) === -1) {
-      newTags = oldTags.concat([item.id]);
+    if (item && oldFilterFields.indexOf(item.id) === -1) {
+      newFilterFields = oldFilterFields.concat([item.id]);
     }
     this.setState({
       selected: {
         ...this.state.selected,
-        [type]: newTags
+        [type]: newFilterFields
       }
     });
   };
@@ -163,9 +163,9 @@ class FrontsCAPISearchInput extends React.Component<
     this.props.updateDisplaySearchFilters(!this.props.displaySearchFilters);
   };
 
-  public renderSelectedTags = (selectedTags: string[]) =>
-    selectedTags.map(searchTerm => (
-      <TagItem key={searchTerm}>
+  public renderSelectedSearchTerms = (selectedSearchTerms: string[]) =>
+    selectedSearchTerms.map(searchTerm => (
+      <SearchTermItem key={searchTerm}>
         <span>{searchTerm}</span>
         <SmallRoundButton
           onClick={() => this.clearIndividualSearchTerm(searchTerm)}
@@ -179,7 +179,7 @@ class FrontsCAPISearchInput extends React.Component<
             width="22px"
           />
         </SmallRoundButton>
-      </TagItem>
+      </SearchTermItem>
     ));
 
   public render() {
@@ -198,7 +198,7 @@ class FrontsCAPISearchInput extends React.Component<
     const searchTermsExist =
       !!tags.length || !!sections.length || !!desks.length || !!q;
 
-    const allTags = tags.concat(sections, desks, ratings);
+    const allSearchTerms = tags.concat(sections, desks, ratings);
 
     const searchTags =
       tags.length && desks.length
@@ -228,7 +228,7 @@ class FrontsCAPISearchInput extends React.Component<
                   onDisplaySearchFilters={this.handleDisplaySearchFilters}
                 />
               </InputContainer>
-              {this.renderSelectedTags(allTags)}
+              {this.renderSelectedSearchTerms(allSearchTerms)}
               {AdditionalFixedContent && <AdditionalFixedContent />}
             </React.Fragment>
           }
@@ -270,7 +270,7 @@ class FrontsCAPISearchInput extends React.Component<
             onDisplaySearchFilters={this.handleDisplaySearchFilters}
           />
         </InputContainer>
-        {this.renderSelectedTags(allTags)}
+        {this.renderSelectedSearchTerms(allSearchTerms)}
         <CAPITagInput
           placeholder={`Type tag name`}
           onSearchChange={this.handleTagSearchInput}
