@@ -146,12 +146,9 @@ class FrontsCAPISearchInput extends React.Component<
   };
 
   public handleDropdownInput = (item: any, type: FilterTypes) => {
-    let newFilterFields = [] as string[];
-    const oldFilterFields = this.state.selected[type];
+    const oldFilterFields = this.state.selected[type].filter(field => field !== item.id);
 
-    if (item && oldFilterFields.indexOf(item.id) === -1) {
-      newFilterFields = oldFilterFields.concat([item.id]);
-    }
+    const newFilterFields = oldFilterFields.concat([item.id]);
     this.setState({
       selected: {
         ...this.state.selected,
