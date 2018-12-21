@@ -1,5 +1,5 @@
 import React from 'react';
-import Downshift from 'downshift';
+import Downshift, { GetInputPropsOptions } from 'downshift';
 import capitalize from 'lodash/capitalize';
 import styled from 'styled-components';
 import TagQuery, { AsyncState, CAPITagQueryReponse } from '../CAPI/TagQuery';
@@ -35,7 +35,7 @@ const DropdownItem = styled('div')`
   color: #121212;
 `;
 
-const SearchTitle = styled('span')`
+const SearchTitle = styled('label')`
   font-size: 16px;
   font-weight: bold;
   color: #121212;
@@ -79,29 +79,33 @@ const CAPITagInput = <T extends any>({
     onChange={value => {
       onChange(value, searchType);
     }}
-    render={({
+  >
+    {({
       getInputProps,
+      getLabelProps,
+      getMenuProps,
       getItemProps,
       isOpen,
       inputValue,
-      selectedItem,
       highlightedIndex
     }) => (
       <div>
         <SearchContainer>
-          <SearchTitle>{capitalize(searchType)}:</SearchTitle>
+          <SearchTitle {...getLabelProps()}>
+            {capitalize(searchType)}:
+          </SearchTitle>
           <SearchInput
             {...getInputProps({
               placeholder,
               width: '100%',
               value: tagsSearchTerm,
-              onChange: input => {
+              onChange: (input: any) => {
                 onSearchChange(input, searchType);
               }
-            })}
+            }) as GetInputPropsOptions & { ref: any }}
           />
         </SearchContainer>
-        <TagDropdown>
+        <TagDropdown {...getMenuProps()}>
           <TagQuery tagType={searchType} params={{ q: inputValue }}>
             {({ value }: any) => {
               if (!value || !isOpen) {
@@ -123,9 +127,9 @@ const CAPITagInput = <T extends any>({
                     <DropdownItem
                       {...getItemProps({
                         item: tag,
-                        highlighted: highlightedIndex === index,
-                        selected: selectedItem === tag
+                        index
                       })}
+                      highlighted={highlightedIndex === index}
                       key={tag.id}
                     >
                       {tag.id}
@@ -138,7 +142,7 @@ const CAPITagInput = <T extends any>({
         </TagDropdown>
       </div>
     )}
-  />
+  </Downshift>
 );
 
 CAPITagInput.defaultProps = {
