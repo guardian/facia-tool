@@ -48,6 +48,16 @@ const HeadlineContentContainer = styled('span')`
   line-height: 0px;
 `;
 
+const LockedCollectionFlag = styled('span')`
+  font-family: GHGuardianHeadline-Regular;
+  font-size: 22px;
+  color: #333333;
+  height: 40px;
+  line-height: 40px;
+  font-weight: bold;
+  font-style: normal;
+`;
+
 const CollectionMetaContainer = styled('div')`
   display: flex;
   position: relative;
@@ -84,27 +94,24 @@ const CollectionHeadlineWithConfigContainer = styled('div')``;
 const CollectionConfigContainer = styled('div')`
   display: inline-block;
   font-family: GHGuardianHeadline-Regular;
-  font-size: 17px;
+  font-size: 22px;
   color: #333333;
   height: 40px;
   line-height: 40px;
-  margin: 0 0.2rem;
-`;
-
-const CollectionConfigText = styled('div')`
-  display: inline-block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-weight: normal;
-  font-style: normal;
-  padding: 0 0.2rem;
+  margin-left: 3px;
 `;
 
-const CollectionConfigTextPipe = styled('div')`
-  display: inline-block;
+const CollectionConfigText = styled('div')`
+  display: inline;
+  font-weight: normal;
+  font-style: normal;
+`;
+
+const CollectionConfigTextPipe = styled('span')`
   color: #c9c9c9;
-  padding: 0 0.2rem;
 `;
 
 const CollectionToggleContainer = styled('div')`
@@ -135,6 +142,7 @@ class CollectionDisplay extends React.Component<Props, { isOpen: boolean }> {
       articleIds,
       headlineContent,
       metaContent,
+      isUneditable,
       children
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
@@ -146,6 +154,7 @@ class CollectionDisplay extends React.Component<Props, { isOpen: boolean }> {
             <CollectionHeadingText>
               {collection.displayName}
             </CollectionHeadingText>
+
             <CollectionConfigContainer>
               <CollectionConfigText>
                 {oc(collection).metadata[0].type()
@@ -163,6 +172,11 @@ class CollectionDisplay extends React.Component<Props, { isOpen: boolean }> {
               </CollectionConfigText>
             </CollectionConfigContainer>
           </CollectionHeadlineWithConfigContainer>
+
+          {isUneditable &&
+            !headlineContent && (
+              <LockedCollectionFlag>Locked</LockedCollectionFlag>
+            )}
 
           {headlineContent && (
             <HeadlineContentContainer>
