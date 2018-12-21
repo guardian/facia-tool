@@ -25,7 +25,7 @@ interface FrontsCAPISearchInputProps {
   isPreview: boolean;
 }
 
-type SearchTypeMap<T> = { [K in SearchTypes]: T };
+type SearchTypeMap<T> = { [K in SearchTypes | FilterTypes]: T };
 
 type SearchTerms = SearchTypeMap<string>;
 type SelectedTags = SearchTypeMap<string[]>;
@@ -210,7 +210,7 @@ class FrontsCAPISearchInput extends React.Component<
 
     if (fromDate || toDate) {
       return (
-        <TagItem>
+        <SearchTermItem>
           <span>From: { renderDateAsString(fromDate) } </span>
           <span>To: { renderDateAsString(toDate) } </span>
           <SmallRoundButton
@@ -224,7 +224,7 @@ class FrontsCAPISearchInput extends React.Component<
               width="22px"
             />
           </SmallRoundButton>
-        </TagItem>
+        </SearchTermItem>
       );
     }
     return null;
