@@ -196,7 +196,11 @@ class FrontsCAPISearchInput extends React.Component<
     } = this.state;
 
     const searchTermsExist =
-      !!tags.length || !!sections.length || !!desks.length || !!q;
+      !!tags.length ||
+      !!sections.length ||
+      !!desks.length ||
+      !!ratings.length ||
+      !!q;
 
     const allSearchTerms = tags.concat(sections, desks, ratings);
 
