@@ -298,7 +298,7 @@ class FrontsCAPISearchInput extends React.Component<
         />
         <CAPIFieldFilter
           placeholder={'Select one or more'}
-          filterTitle="star rating"
+          filterTitle="star rating for reviews"
           filterType="ratings"
           items={[
             { value: '1', id: '1 Star' },
