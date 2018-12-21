@@ -23,7 +23,7 @@ import { CollectionItemDisplayTypes } from 'shared/types/Collection';
 import CollectionItemTrail from '../collectionItem/CollectionItemTrail';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
 import CollectionItemNotification from '../collectionItem/CollectionItemNotification';
-import CollectionItemDisabledTheme from '../collectionItem/CollectionItemDisabledTheme';
+
 interface ContainerProps {
   selectSharedState?: (state: any) => State;
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -72,9 +72,6 @@ const SnapLink = ({
           borderTopColor: '#c9c9c9'
         }}
       >
-        {isUneditable ? (
-          <CollectionItemDisabledTheme className="DisabledTheme" />
-        ) : null}
         {displayType === 'default' && (
           <CollectionItemMetaContainer>
             <CollectionItemMetaHeading>Snap link</CollectionItemMetaHeading>

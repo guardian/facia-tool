@@ -14,7 +14,6 @@ import { DerivedArticle } from '../../types/Article';
 import CollectionItemBody from '../collectionItem/CollectionItemBody';
 import CollectionItemContainer from '../collectionItem/CollectionItemContainer';
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
-import CollectionItemDisabledTheme from '../collectionItem/CollectionItemDisabledTheme';
 import ArticleBodyPolaroid from './ArticleBodyPolaroid';
 import ArticleBodyDefault, { ArticleBodyProps } from './ArticleBodyDefault';
 import {
@@ -118,9 +117,6 @@ const ArticleComponent = ({
               : '#c9c9c9'
         }}
       >
-        {isUneditable ? (
-          <CollectionItemDisabledTheme className="DisabledTheme" />
-        ) : null}
         {article && (
           <ArticleBody
             {...article}
