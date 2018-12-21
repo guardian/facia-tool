@@ -161,12 +161,9 @@ class FrontsCAPISearchInput extends React.Component<
   };
 
   public handleTypeInput = (item: any, type: SearchTypes) => {
-    let newTags = [] as string[];
-    const oldTags = this.state.selected[type];
+    const oldTags = this.state.selected[type].filter(tag => tag !== item.id);
 
-    if (item && oldTags.indexOf(item.id) === -1) {
-      newTags = oldTags.concat([item.id]);
-    }
+    const newTags = oldTags.concat([item.id]);
     const newSearchTerms = { ...this.state.searchTerms, ...{ [type]: '' } };
 
     this.setState({
