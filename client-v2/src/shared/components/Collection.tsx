@@ -48,13 +48,22 @@ const HeadlineContentContainer = styled('span')`
   line-height: 0px;
 `;
 
+const CollectionDisabledTheme = styled('div')`
+  position: absolute;
+  background-color: hsla(0, 0%, 100%, 0.5);
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+`;
+
 const LockedCollectionFlag = styled('span')`
   font-family: GHGuardianHeadline-Regular;
   font-size: 22px;
   color: #333333;
   height: 40px;
   line-height: 40px;
-  font-weight: bold;
+  font-weight: normal;
   font-style: normal;
 `;
 
@@ -81,15 +90,17 @@ const ItemCountMeta = CollectionMetaBase.extend`
   flex: 0;
 `;
 
+const CollectionHeadlineWithConfigContainer = styled('div')`
+  flex-grow: 1;
+`;
+
 const CollectionHeadingText = styled('div')`
   display: inline-block;
-  width: calc(100% - 250px);
+  max-width: calc(100% - 250px);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
-
-const CollectionHeadlineWithConfigContainer = styled('div')``;
 
 const CollectionConfigContainer = styled('div')`
   display: inline-block;
@@ -117,6 +128,7 @@ const CollectionConfigTextPipe = styled('span')`
 const CollectionToggleContainer = styled('div')`
   padding-top: 5px;
   margin-left: auto;
+  z-index: 2;
 `;
 
 const CollectionShortVerticalPinline = ShortVerticalPinline.extend`
@@ -214,6 +226,9 @@ class CollectionDisplay extends React.Component<Props, { isOpen: boolean }> {
           </CollectionToggleContainer>
         </CollectionMetaContainer>
         {this.state.isOpen && <FadeIn>{children}</FadeIn>}
+        {isUneditable ? (
+          <CollectionDisabledTheme className="DisabledTheme" />
+        ) : null}
       </CollectionContainer>
     ) : (
       <span>Waiting for collection</span>
