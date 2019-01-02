@@ -17,10 +17,6 @@ const FrontsMenuContent = styled('div')`
   padding: 0 20px;
 `;
 
-const FrontsMenuItems = styled('div')`
-  padding-left: 10px;
-`;
-
 const FrontsMenuHeading = LargeSectionHeader.extend`
   padding: 10px;
   margin: 0 10px 10px;
@@ -157,12 +153,10 @@ class FrontsMenu extends React.Component<Props, State> {
                   </FrontsMenuSearchInputContainer>
                 </Row>
               </FrontsMenuSubHeading>
-              <FrontsMenuItems>
-                <FrontsList
-                  onSelect={this.onSelectFront}
-                  searchString={this.state.searchString}
-                />
-              </FrontsMenuItems>
+              <FrontsList
+                onSelect={this.onSelectFront}
+                searchString={this.state.searchString}
+              />
             </FrontsMenuContent>
           </ScrollContainer>
         </FrontsMenuContainer>
