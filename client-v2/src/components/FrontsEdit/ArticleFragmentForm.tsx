@@ -18,7 +18,6 @@ import {
   articleTagSelector
 } from 'shared/selectors/shared';
 import { createSelectFormFieldsForCollectionItem } from 'selectors/formSelectors';
-import { DerivedArticle } from 'shared/types/Article';
 import { ArticleFragmentMeta, ArticleTag } from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
@@ -280,9 +279,9 @@ const formComponent: React.StatelessComponent<Props> = ({
         <ConditionalField
           permittedFields={editableFields}
           name="trailText"
-          label="Standfirst"
+          label="Trail text"
           component={InputTextArea}
-          placeholder="Replace standfirst"
+          placeholder="Replace trail text"
         />
       </InputGroup>
       <RowContainer>
