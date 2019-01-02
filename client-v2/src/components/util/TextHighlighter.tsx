@@ -17,7 +17,7 @@ const textHighlighter: React.StatelessComponent<IProps> = ({
   originalString,
   searchString
 }) => {
-  if (!searchString) {
+  if (!searchString || searchString.length < 2) {
     return <span>{originalString}</span>
   }
   const splitStr = originalString.split(searchString);
