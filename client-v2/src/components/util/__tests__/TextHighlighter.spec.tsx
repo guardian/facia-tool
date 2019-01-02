@@ -22,4 +22,20 @@ describe('TextHighlighter', () => {
     );
     expect(getAllByText('example').length).toBe(2);
   });
+  it('should only search for two characters or more', () => {
+    let element = render(
+      <TextHighlighter
+        originalString="An example string with two examples"
+        searchString="e"
+      />
+    );
+    expect(element.getAllByText('An example string with two examples').length).toBe(1);
+    element = render(
+      <TextHighlighter
+        originalString="An example string with two examples"
+        searchString="ex"
+      />
+    );
+    expect(element.getAllByText('ex').length).toBe(2);
+  });
 });
