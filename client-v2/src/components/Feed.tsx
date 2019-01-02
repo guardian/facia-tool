@@ -12,6 +12,7 @@ import Loader from './Loader';
 import { capiFeedSpecsSelector } from '../selectors/configSelectors';
 import { RadioButton, RadioGroup } from './inputs/RadioButtons';
 import { State } from 'types/State';
+import { CapiArticle } from 'types/Capi';
 
 interface ErrorDisplayProps {
   error: Error | string | void;
@@ -133,14 +134,23 @@ class Feed extends React.Component<FeedProps, FeedState> {
                 pending,
                 error,
                 value
-              }: AsyncState<CAPISearchQueryReponse>) => (
-                <React.Fragment>
-                  <ErrorDisplay error={error}>
-                    <LoaderDisplay loading={!value && pending}>
-                      <div>
-                        {value &&
-                          value.response.results &&
-                          value.response.results
+              }: AsyncState<CAPISearchQueryReponse>) => {
+                let results: CapiArticle[];
+                if (!value) {
+                  results = [];
+                } else {
+                  results =
+                    value.response.results ||
+                    (value.response.content && [value.response.content]) ||
+                    [];
+                }
+
+                return (
+                  <React.Fragment>
+                    <ErrorDisplay error={error}>
+                      <LoaderDisplay loading={!value && pending}>
+                        <div>
+                          {results
                             .filter(result => result.webTitle)
                             .map(
                               ({
@@ -172,16 +182,17 @@ class Feed extends React.Component<FeedProps, FeedState> {
                                 />
                               )
                             )}
-                        {value &&
-                          value.response.results &&
-                          value.response.results.length === 0 && (
-                            <NoResults>No results found</NoResults>
-                          )}
-                      </div>
-                    </LoaderDisplay>
-                  </ErrorDisplay>
-                </React.Fragment>
-              )}
+                          {value &&
+                            value.response.results &&
+                            value.response.results.length === 0 && (
+                              <NoResults>No results found</NoResults>
+                            )}
+                        </div>
+                      </LoaderDisplay>
+                    </ErrorDisplay>
+                  </React.Fragment>
+                );
+              }}
             </SearchInput>
           </CAPIParamsContext.Provider>
         )}

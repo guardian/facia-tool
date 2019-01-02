@@ -20,6 +20,12 @@ interface CAPISearchQueryReponse {
   };
 }
 
+interface CAPIOptions {
+  // Does the query represent a single resource, e.g. an article
+  // or a tag/section page?
+  isResource: boolean;
+}
+
 interface CAPITagQueryReponse {
   response: {
     results: Tag[];
@@ -30,11 +36,17 @@ const capiQuery = (
   baseURL: string = API_BASE,
   fetch: Fetch = window.fetch
 ) => ({
-  search: async (params: any): Promise<CAPISearchQueryReponse> => {
+  search: async (
+    params: any,
+    options?: CAPIOptions
+  ): Promise<CAPISearchQueryReponse> => {
+    const { q, ...rest } = params;
     const response = await fetch(
-      `${baseURL}search${qs({
-        ...params
-      })}`
+      options && options.isResource
+        ? `${baseURL}${encodeURIComponent(q)}${qs({ ...rest })}`
+        : `${baseURL}search${qs({
+            ...params
+          })}`
     );
 
     return response.json();

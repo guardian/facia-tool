@@ -32,6 +32,8 @@ type SelectedTags = SearchTypeMap<string[]>;
 
 interface FrontsCAPISearchInputState {
   q: string | void;
+  // Was the current search string derived from a URL?
+  isResource: boolean;
   searchTerms: SearchTerms;
   selected: SelectedTags;
   fromDate: moment.Moment | null;
@@ -63,10 +65,11 @@ const emptySearchTerms = {
   ratings: '',
   fromDate: null,
   toDate: null
-}
+};
 
 const emptyState = {
   q: undefined,
+  isResource: false,
   searchTerms: emptySearchTerms,
   selected: {
     tags: [] as string[],
@@ -76,7 +79,7 @@ const emptyState = {
   },
   fromDate: null,
   toDate: null
-} as FrontsCAPISearchInputState
+} as FrontsCAPISearchInputState;
 
 class FrontsCAPISearchInput extends React.Component<
   FrontsCAPISearchInputProps,
@@ -84,8 +87,11 @@ class FrontsCAPISearchInput extends React.Component<
 > {
   public state = emptyState;
 
-  public onDateChange = (fromDate: moment.Moment | null, toDate: moment.Moment | null) => {
-    this.setState({fromDate, toDate});
+  public onDateChange = (
+    fromDate: moment.Moment | null,
+    toDate: moment.Moment | null
+  ) => {
+    this.setState({ fromDate, toDate });
   };
 
   public clearInput = () => {
@@ -128,7 +134,8 @@ class FrontsCAPISearchInput extends React.Component<
     const searchTerm = maybeArticleId ? maybeArticleId : targetValue;
 
     this.setState({
-      q: searchTerm
+      q: searchTerm,
+      isResource: !!maybeArticleId
     });
   };
 
@@ -190,29 +197,27 @@ class FrontsCAPISearchInput extends React.Component<
           onClick={() => this.clearIndividualSearchTerm(searchTerm)}
           title="Clear search"
         >
-          <ClearButtonIcon
-            src={moreImage}
-            alt=""
-            height="22px"
-            width="22px"
-          />
+          <ClearButtonIcon src={moreImage} alt="" height="22px" width="22px" />
         </SmallRoundButton>
       </SearchTermItem>
     ));
 
-  public renderSelectedDates = (fromDate: moment.Moment | null, toDate: moment.Moment | null) => {
+  public renderSelectedDates = (
+    fromDate: moment.Moment | null,
+    toDate: moment.Moment | null
+  ) => {
     const renderDateAsString = (date: moment.Moment | null) => {
       if (!date) {
         return 'Not selected';
       }
       return date.format('DD/MM/YYYY');
-    }
+    };
 
     if (fromDate || toDate) {
       return (
         <SearchTermItem>
-          <span>From: { renderDateAsString(fromDate) } </span>
-          <span>To: { renderDateAsString(toDate) } </span>
+          <span>From: {renderDateAsString(fromDate)} </span>
+          <span>To: {renderDateAsString(toDate)} </span>
           <SmallRoundButton
             onClick={() => this.clearSelectedDates()}
             title="Clear search"
@@ -228,7 +233,7 @@ class FrontsCAPISearchInput extends React.Component<
       );
     }
     return null;
-  }
+  };
 
   public render() {
     const {
@@ -240,6 +245,7 @@ class FrontsCAPISearchInput extends React.Component<
 
     const {
       q,
+      isResource,
       selected: { tags, sections, desks, ratings },
       fromDate,
       toDate
@@ -252,7 +258,7 @@ class FrontsCAPISearchInput extends React.Component<
       !!ratings.length ||
       !!q ||
       !!fromDate ||
-      !!toDate
+      !!toDate;
 
     const allSearchTerms = tags.concat(sections, desks, ratings);
 
@@ -291,6 +297,7 @@ class FrontsCAPISearchInput extends React.Component<
           }
         >
           <SearchQuery
+            options={{ isResource }}
             params={{
               tag: searchTags,
               section: sections.join(','),

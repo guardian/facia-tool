@@ -7,11 +7,12 @@ type CAPISearch = ReturnType<typeof capiQuery>['search'];
 type SearchReturn = ReturnType<CAPISearch>;
 type ChildrenParams = AsyncState<SearchReturn>;
 
-interface CAPISearchQueryProps {
+interface CAPISearchQueryProps<SearchOptions = {}> {
   baseURL?: string;
   fetch?: Fetch;
   children: AsyncChild<SearchReturn>;
   params: object;
+  options?: SearchOptions;
   poll?: number;
   isPreview: boolean;
 }
@@ -22,8 +23,8 @@ interface CAPISearchQueryState {
   fetch?: Fetch;
 }
 
-class SearchQuery extends React.Component<
-  CAPISearchQueryProps,
+class SearchQuery<SearchOptions = {}> extends React.Component<
+  CAPISearchQueryProps<SearchOptions>,
   CAPISearchQueryState
 > {
   public static defaultProps = {
@@ -85,7 +86,7 @@ class SearchQuery extends React.Component<
   };
 
   public render() {
-    const { params, children, fetch, baseURL, ...props } = this.props;
+    const { params, children, fetch, baseURL, options, ...props } = this.props;
     return (
       <Async<any[], SearchReturn>
         ref={(node: Async<any[], SearchReturn> | null) => {
@@ -93,7 +94,7 @@ class SearchQuery extends React.Component<
         }}
         {...props}
         fn={this.state.capi}
-        args={[params]}
+        args={[params, options]}
       >
         {children}
       </Async>
