@@ -169,7 +169,13 @@ class InputImage extends React.Component<Props, State> {
         >
           <ButtonDelete type="button" priority="primary">
             {this.props.input.value ? (
-              <IconDelete src={deleteIcon} onClick={this.clearField} />
+              <IconDelete
+                src={deleteIcon}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  this.clearField()
+                }}
+              />
             ) : (
               <IconAdd src={deleteIcon} onClick={this.handleAdd} />
             )}
