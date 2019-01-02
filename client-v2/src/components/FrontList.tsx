@@ -11,13 +11,21 @@ interface Props {
   searchString: string;
 }
 
-const ListItem = styled('li')`
+const ListItem = styled('li')<{ isActive?: boolean }>`
   position: relative;
-  padding: 10px 0;
+  padding: 10px 5px;
   font-family: TS3TextSans;
   font-size: 16px;
   line-height: 20px;
   border-bottom: solid 1px #5e5e5e;
+  ${({ isActive }) =>
+    isActive &&
+    css`
+      cursor: pointer;
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+    `};
 `;
 
 const ListContainer = styled('ul')`
@@ -39,7 +47,7 @@ const ButtonAdd = ButtonCircular.extend`
   background-color: #4d4d4d;
   position: absolute;
   top: 8px;
-  right: 0;
+  right: 5px;
   padding: 3px;
 `;
 
@@ -53,15 +61,19 @@ const FrontList = ({ fronts, onSelect, searchString }: Props) => {
   return (
     <ListContainer>
       {frontsToRender.map(front => (
-        <ListItem key={front.id}>
-          <ListLabel isActive={front.isOpen}>
+        <ListItem
+          isActive={!front.isOpen}
+          key={front.id}
+          onClick={!front.isOpen ? () => onSelect(front.id) : undefined}
+        >
+          <ListLabel isActive={!front.isOpen}>
             <TextHighlighter
               originalString={front.id}
               searchString={searchString}
             />
           </ListLabel>
-          {front.isOpen && (
-            <ButtonAdd onClick={() => onSelect(front.id)}>
+          {!front.isOpen && (
+            <ButtonAdd>
               <img src={MoreImage} alt="" width="100%" height="100%" />
             </ButtonAdd>
           )}

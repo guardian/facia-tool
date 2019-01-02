@@ -16,7 +16,7 @@ const mapStateToProps = (state: State, props: Props) => {
     fronts: getFrontsWithPriority(state, props.match.params.priority || '').map(
       ({ id }) => ({
         id,
-        isOpen: openFrontIds.indexOf(id) === -1
+        isOpen: openFrontIds.indexOf(id) !== -1
       })
     )
   };
