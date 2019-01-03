@@ -2,6 +2,7 @@ import React from 'react';
 import Modal from 'react-modal';
 import styled from 'styled-components';
 import ButtonDefault from 'shared/components/input/ButtonDefault';
+import deleteIcon from 'shared/images/icons/delete-copy.svg';
 
 interface ModalProps {
   isOpen: boolean;
@@ -13,18 +14,35 @@ interface ModalProps {
 const StyledModal = styled(Modal)`
   position: absolute;
   font-size: 14px;
-  background: rgb(255, 255, 255);
   overflow: auto;
   outline: none;
   padding: 20px;
   min-height: 200px;
-  width: calc(100% - 60px);
-  height: calc(100% - 60px);
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+`;
+
+const ModalButton = styled(ButtonDefault)`
+  position: absolute;
+  right: 17px;
+  top: 15px;
+  border-radius: 50%
+  height: 27px;
+  width: 27px;
 `;
 
 const GridIFrame = styled('iframe')`
   height: 100%;
-  width: 100%;
+  width: 96%;
+  margin-left: 2%;
+`;
+
+const ImageContainer = styled('img')`
+  position: absolute;
+  top: 10px;
+  left: 10px;
+
 `;
 
 export const GridModal = ({
@@ -32,12 +50,15 @@ export const GridModal = ({
   url,
   onMessage,
   onClose
-}: ModalProps) => console.log({isOpen}) ||
+}: ModalProps) =>
   <React.Fragment>
-    { isOpen && <ButtonDefault onClick={onClose}>Close</ButtonDefault> }
     <StyledModal
       isOpen={isOpen}
     >
+      <ModalButton type="button" priority="primary" onClick={onClose}>
+        <ImageContainer src={deleteIcon}/>
+      </ModalButton>
+
       <GridIFrame src={url}/>
     </StyledModal>
   </React.Fragment>
