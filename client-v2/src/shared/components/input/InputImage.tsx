@@ -1,12 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 import { WrappedFieldProps } from 'redux-form';
-
 import deleteIcon from '../../images/icons/delete-copy.svg';
 import ButtonDefault from './ButtonDefault';
 import InputContainer from './InputContainer';
 import { validateImageEvent, validateMediaItem } from '../../util/validateImageSrc';
 import { GridModal } from 'components/GridModal';
+import { gridUrlSelector } from 'selectors/configSelectors';
+import { State } from 'types/State';
 
 const ImageContainer = styled('div')<{
   size?: 'small';
@@ -46,19 +48,20 @@ const IconAdd = IconDelete.extend`
   transform: rotate(45deg);
 `;
 
-type Props = {
+type ComponentProps = {
   frontId?: string;
+  gridUrl: string | null,
   criteria?: {
     minHeight?: string;
     minWidth?: string;
     widthAspectRatio?: number;
     heightAspectRatio?: number;
   };
-  gridUrl?: string
 } & WrappedFieldProps;
-interface State { isHovering: boolean, modalOpen: boolean }
 
-class InputImage extends React.Component<Props, State> {
+interface ComponentState { isHovering: boolean, modalOpen: boolean }
+
+class InputImage extends React.Component<ComponentProps, ComponentState> {
   public state = {
     isHovering: false,
     modalOpen: false
@@ -186,4 +189,10 @@ class InputImage extends React.Component<Props, State> {
   }
 }
 
-export default InputImage;
+const mapStateToProps = (state: State) => {
+  return {
+    gridUrl: gridUrlSelector(state)
+  };
+};
+
+export default connect(mapStateToProps)(InputImage);
