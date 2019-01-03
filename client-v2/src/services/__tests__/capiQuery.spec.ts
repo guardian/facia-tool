@@ -42,6 +42,36 @@ describe('CAPI', () => {
     });
   });
 
+  describe('scheduled', () => {
+    it('makes a network request on a query', () => {
+      const apiKey = 'my-api-key';
+      const capi = capiQuery();
+      capi.scheduled({
+        'api-key': apiKey
+      });
+      expect((global as any).fetch).toBeCalled();
+      const fetchEndpoint = (global as any).fetch.mock.calls[0][0];
+      expect(fetchEndpoint).toEqual('https://content.guardianapis.com/content/scheduled?api-key=my-api-key')
+    });
+    it('changes URL appropriately if the isResource option is passed', () => {
+      const apiKey = 'my-api-key';
+      const capi = capiQuery();
+      const q = 'an/example/url';
+      capi.scheduled(
+        {
+          'api-key': apiKey,
+          q
+        },
+        {
+          isResource: true
+        }
+      );
+      expect((global as any).fetch).toBeCalled();
+      const fetchEndpoint = (global as any).fetch.mock.calls[0][0];
+      expect(fetchEndpoint).toBe('https://content.guardianapis.com/an%2Fexample%2Furl?api-key=my-api-key');
+    });
+  });
+
   describe('tags', () => {
     it('makes a network request on a query', () => {
       const apiKey = 'my-api-key';
