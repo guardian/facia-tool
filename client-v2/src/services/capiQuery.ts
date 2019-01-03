@@ -34,63 +34,72 @@ interface CAPITagQueryReponse {
   };
 }
 
-const capiQuery = (
-  baseURL: string = API_BASE,
-  fetch: Fetch = window.fetch
-) => ({
-  search: async (
+
+const capiQuery = (baseURL: string = API_BASE, fetch: Fetch = window.fetch) => {
+  const getCAPISearchString = (
+    path: string,
     params: any,
     options?: CAPIOptions
-  ): Promise<CAPISearchQueryReponse> => {
+  ) => {
     const { q, ...rest } = params;
-    const response = await fetch(
-      options && options.isResource
-        ? `${baseURL}${encodeURIComponent(q)}${qs({ ...rest })}`
-        : `${baseURL}search${qs({
-            ...params
-          })}`
-    );
+    return options && options.isResource
+      ? `${baseURL}${encodeURIComponent(q)}${qs({ ...rest })}`
+      : `${baseURL}${path}${qs({
+          ...params
+        })}`;
+  };
 
-    return response.json();
-  },
-  scheduled: async (params: any): Promise<CAPISearchQueryReponse> => {
-    const response = await fetch(
-      `${baseURL}content/scheduled${qs({
-        ...params
-      })}`
-    );
+  return {
+    search: async (
+      params: any,
+      options?: CAPIOptions
+    ): Promise<CAPISearchQueryReponse> => {
+      const response = await fetch(
+        getCAPISearchString(`search`, params, options)
+      );
 
-    return response.json();
-  },
-  tags: async (params: any): Promise<CAPITagQueryReponse> => {
-    const response = await fetch(
-      `${baseURL}tags${qs({
-        ...params
-      })}`
-    );
+      return response.json();
+    },
+    scheduled: async (
+      params: any,
+      options?: CAPIOptions
+    ): Promise<CAPISearchQueryReponse> => {
+      const response = await fetch(
+        getCAPISearchString(`content/scheduled`, params, options)
+      );
 
-    return response.json();
-  },
-  sections: async (params: any): Promise<CAPITagQueryReponse> => {
-    const response = await fetch(
-      `${baseURL}sections${qs({
-        ...params
-      })}`
-    );
+      return response.json();
+    },
+    tags: async (params: any): Promise<CAPITagQueryReponse> => {
+      const response = await fetch(
+        `${baseURL}tags${qs({
+          ...params
+        })}`
+      );
 
-    return response.json();
-  },
-  desks: async (params: any): Promise<CAPITagQueryReponse> => {
-    const response = await fetch(
-      `${baseURL}tags${qs({
-        type: 'tracking',
-        ...params
-      })}`
-    );
+      return response.json();
+    },
+    sections: async (params: any): Promise<CAPITagQueryReponse> => {
+      const response = await fetch(
+        `${baseURL}sections${qs({
+          ...params
+        })}`
+      );
 
-    return response.json();
-  }
-});
+      return response.json();
+    },
+    desks: async (params: any): Promise<CAPITagQueryReponse> => {
+      const response = await fetch(
+        `${baseURL}tags${qs({
+          type: 'tracking',
+          ...params
+        })}`
+      );
+
+      return response.json();
+    }
+  };
+};
 
 export { Fetch, CapiArticle, CAPISearchQueryReponse, CAPITagQueryReponse };
 export default capiQuery;
