@@ -294,6 +294,7 @@ const formComponent: React.StatelessComponent<Props> = ({
                 name="primaryImage"
                 component={InputImage}
                 disabled={imageHide}
+                criteria={imageCriteria}
               />
             </ImageWrapper>
           </Col>
@@ -324,6 +325,7 @@ const formComponent: React.StatelessComponent<Props> = ({
                 name="cutoutImage"
                 component={InputImage}
                 disabled={imageHide}
+                criteria={imageCriteria}
               />
             </ImageWrapper>
           </Col>

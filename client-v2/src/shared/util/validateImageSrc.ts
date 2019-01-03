@@ -252,9 +252,7 @@ function getData(
     : null;
 }
 
-function validateMediaItem(crop, image, gridUrl) {
-  const criteria = {};
-  //TODO: pass in criteria correctly
+function validateMediaItem(crop, image, gridUrl, criteria) {
   if (crop) {
     return getSuitableAsset(
       [
@@ -264,7 +262,7 @@ function validateMediaItem(crop, image, gridUrl) {
         }
       ],
       crop.id,
-      criteria || {}
+      criteria
     )
       .then(asset => {
         const newAsset = asset;

@@ -130,7 +130,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     const crop = data.crop.data;
     const gridImage = data.image;
 
-    return validateMediaItem(data.crop.data, data.image.data, this.props.gridUrl)
+    return validateMediaItem(data.crop.data, data.image.data, this.props.gridUrl, this.props.criteria)
     .then(mediaItem => {
       this.props.input.onChange(mediaItem);
     })
