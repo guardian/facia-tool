@@ -128,9 +128,7 @@ class FrontsCAPISearchInput extends React.Component<
     currentTarget
   }: React.SyntheticEvent<HTMLInputElement>) => {
     const targetValue = currentTarget.value;
-
     const maybeArticleId = getIdFromURL(targetValue);
-
     const searchTerm = maybeArticleId ? maybeArticleId : targetValue;
 
     this.setState({

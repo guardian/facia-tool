@@ -15,9 +15,30 @@ describe('CAPI', () => {
         'api-key': apiKey
       });
       expect((global as any).fetch).toBeCalled();
-      expect((global as any).fetch.mock.calls[0][0].includes(apiKey)).toBe(true);
+      expect((global as any).fetch.mock.calls[0][0].includes(apiKey)).toBe(
+        true
+      );
       // bad heuristic to check it's going to the right endpoint
-      expect((global as any).fetch.mock.calls[0][0].includes('search')).toBe(true);
+      expect((global as any).fetch.mock.calls[0][0].includes('search')).toBe(
+        true
+      );
+    });
+    it('changes URL appropriately if the isResource option is passed', () => {
+      const apiKey = 'my-api-key';
+      const capi = capiQuery();
+      const q = 'an/example/url';
+      capi.search(
+        {
+          'api-key': apiKey,
+          q
+        },
+        {
+          isResource: true
+        }
+      );
+      expect((global as any).fetch).toBeCalled();
+      const fetchEndpoint = (global as any).fetch.mock.calls[0][0];
+      expect(fetchEndpoint).toBe('https://content.guardianapis.com/an%2Fexample%2Furl?api-key=my-api-key');
     });
   });
 
@@ -29,9 +50,13 @@ describe('CAPI', () => {
         'api-key': apiKey
       });
       expect((global as any).fetch).toBeCalled();
-      expect((global as any).fetch.mock.calls[0][0].includes(apiKey)).toBe(true);
+      expect((global as any).fetch.mock.calls[0][0].includes(apiKey)).toBe(
+        true
+      );
       // bad heuristic to check it's going to the right endpoint
-      expect((global as any).fetch.mock.calls[0][0].includes('tags')).toBe(true);
+      expect((global as any).fetch.mock.calls[0][0].includes('tags')).toBe(
+        true
+      );
     });
   });
 });

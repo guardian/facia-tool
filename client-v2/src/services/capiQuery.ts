@@ -21,8 +21,10 @@ interface CAPISearchQueryReponse {
 }
 
 interface CAPIOptions {
-  // Does the query represent a single resource, e.g. an article
-  // or a tag/section page?
+  // Does the query represent a single resource, e.g. an article or a
+  // tag/section page? If so, we need to make a slightly different query.
+  // We can't derive it from the query string becuase it has already been
+  // trimmed of everything but its path and parameters.
   isResource: boolean;
 }
 
