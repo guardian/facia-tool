@@ -251,7 +251,7 @@ function validateMediaItem(crop: Crop, imageOrigin: string, criteria?: Criteria)
     .then(asset => {
       const newImageDetails = asset;
       newImageDetails.criteria = criteria;
-      newImageDetails.origin = origin;
+      newImageDetails.origin = imageOrigin;
       return newImageDetails;
     })
     .then(img => validateActualImage(img, 'todo: frontusages'))
