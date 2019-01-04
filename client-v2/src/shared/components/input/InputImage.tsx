@@ -9,6 +9,7 @@ import { validateImageEvent, validateMediaItem } from '../../util/validateImageS
 import { GridModal } from 'components/GridModal';
 import { gridUrlSelector } from 'selectors/configSelectors';
 import { State } from 'types/State';
+import { GridData, Criteria } from 'shared/types/Grid';
 
 const ImageContainer = styled('div')<{
   size?: 'small';
@@ -51,12 +52,7 @@ const IconAdd = IconDelete.extend`
 type ComponentProps = {
   frontId?: string;
   gridUrl: string | null,
-  criteria?: {
-    minHeight?: string;
-    minWidth?: string;
-    widthAspectRatio?: number;
-    heightAspectRatio?: number;
-  };
+  criteria?: Criteria
 } & WrappedFieldProps;
 
 interface ComponentState { isHovering: boolean, modalOpen: boolean }
@@ -100,7 +96,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     return mimeType;
   }
 
-  public validMessage(data) {
+  public validMessage(data: GridData) {
     return data &&
            data.crop &&
            data.crop.data &&
@@ -108,13 +104,13 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
            data.image.data;
   }
 
-  public onMessage = (event) => {
+  public onMessage = (event: MessageEvent) => {
     if (event.origin !== this.props.gridUrl) {
       // Log: did not come from the grid
       return;
     }
 
-    const data = event.data;
+    const data: GridData = event.data;
 
     if (!data) {
       // TODO Log did not get data
@@ -134,6 +130,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     .then(mediaItem => {
       this.props.input.onChange(mediaItem);
     })
+    // tslint:disable-next-line no-console
     .catch(err => console.log('@todo:handle error', err));
   };
 

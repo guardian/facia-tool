@@ -4,13 +4,7 @@ import urlConstants from '../constants/url';
 import deepGet from 'lodash/get';
 import grid, { recordUsage } from './grid';
 import fetchImage from './fetchImage';
-
-interface Criteria {
-  maxWidth?: number;
-  minWidth?: number;
-  widthAspectRatio?: number;
-  heightAspectRatio?: number;
-}
+import { Crop, Image, ImageDetails, Criteria } from 'shared/types/Grid';
 
 interface ImageDescription {
   height?: number;
@@ -29,10 +23,6 @@ interface ValidationResponse {
   height: number;
   width: number;
 }
-
-// @todo -- find type signature
-type Crop = any;
-type Asset = any;
 
 function filterGridCrops(
   json: string,
@@ -64,7 +54,7 @@ function filterGridCrops(
   });
 }
 
-function getSuitableAsset(
+function getSuitableImageDetails(
   crops: Crop[],
   id: string,
   desired: Criteria
@@ -95,9 +85,9 @@ function getSuitableAsset(
   );
 
   if (assets.length) {
-    const mainAsset = assets[0];
-    const path = mainAsset.secureUrl;
-    const { height, width } = mainAsset.dimensions;
+    const mainImageDetails = assets[0];
+    const path = mainImageDetails.secureUrl;
+    const { height, width } = mainImageDetails.dimensions;
     return Promise.resolve({
       path,
       thumb: assets[assets.length - 1].secureUrl,
@@ -189,9 +179,9 @@ function stripImplementationDetails(
           filterGridCrops(gridImageJson, maybeFromGrid, criteria)
         )
         .then((crops: Crop[]) =>
-          getSuitableAsset(crops, maybeFromGrid.id, criteria || {})
+          getSuitableImageDetails(crops, maybeFromGrid.id, criteria || {})
         )
-        .then((asset: Asset) =>
+        .then((asset: ImageDescription) =>
           resolve({
             ...asset,
             criteria
@@ -252,34 +242,27 @@ function getData(
     : null;
 }
 
-function validateMediaItem(crop, image, gridUrl, criteria) {
-  if (crop) {
-    return getSuitableAsset(
-      [
-        {
-          assets: crop.assets,
-          master: crop.master
-        }
-      ],
-      crop.id,
-      criteria
-    )
-      .then(asset => {
-        const newAsset = asset;
-        const origin =  `${urlConstants.media.mediaBaseUrl}/images/${image.id}`;
-        newAsset.criteria = criteria;
-        newAsset.origin = origin;
-        return newAsset;
-      })
-      .then(img => validateActualImage(img, 'todo: frontusages'))
-      .then(({ path, origin, thumb, width, height }) => ({
+function validateMediaItem(crop: Crop, image: Image, gridUrl: string, criteria?: Criteria): Promise<ValidationResponse | Error> {
+  return getSuitableImageDetails(
+    [crop],
+    crop.id,
+    criteria || {}
+  )
+    .then(asset => {
+      const newImageDetails = asset;
+      const origin =  `${urlConstants.media.mediaBaseUrl}/images/${image.id}`;
+      newImageDetails.criteria = criteria;
+      newImageDetails.origin = origin;
+      return newImageDetails;
+    })
+    .then(img => validateActualImage(img, 'todo: frontusages'))
+    .then(({ path, origin, thumb, width, height }) => ({
         src: path,
         origin: origin || path,
         thumb: thumb || path,
         width,
         height
-      }));
-  }
+    }));
 }
 
 function validateImageEvent(
@@ -290,20 +273,15 @@ function validateImageEvent(
   const mediaItem = grid.gridInstance.getCropFromEvent(event);
 
   if (mediaItem) {
-    return getSuitableAsset(
-      [
-        {
-          assets: mediaItem.assets,
-          master: mediaItem.master
-        }
-      ],
+    return getSuitableImageDetails(
+      [mediaItem],
       mediaItem.id,
       criteria || {}
     )
       .then(asset => {
-        const newAsset = asset;
-        newAsset.origin = grid.gridInstance.getGridUrlFromEvent(event);
-        newAsset.criteria = criteria;
+        const newImageDetails = asset;
+        newImageDetails.origin = grid.gridInstance.getGridUrlFromEvent(event);
+        newImageDetails.criteria = criteria;
         return asset;
       })
       .then(image => validateActualImage(image, frontId))
