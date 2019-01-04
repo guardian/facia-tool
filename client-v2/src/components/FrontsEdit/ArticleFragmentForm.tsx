@@ -99,13 +99,12 @@ const imageCriteria = {
 
 const renderSlideshow: React.StatelessComponent<
   WrappedFieldArrayProps<ImageData>
-> = ({ fields }, editableFields: string[]) => (
+> = ({ fields }) => (
   <>
     {fields.map((name, index) => (
       <Col key={`${name}-${index}`}>
-        <ConditionalField
-          permittedFields={editableFields}
-          name="slideshow"
+        <Field
+          name={name}
           component={InputImage}
           size="small"
           criteria={imageCriteria}
@@ -360,9 +359,7 @@ const formComponent: React.StatelessComponent<Props> = ({
           <SlideshowRow>
             <FieldArray
               name="slideshow"
-              component={(props: WrappedFieldArrayProps<ImageData>) =>
-                renderSlideshow(props, editableFields)
-              }
+              component={renderSlideshow}
             />
           </SlideshowRow>
           <SlideshowLabel>Drag and drop up to five images</SlideshowLabel>
@@ -418,7 +415,6 @@ const createMapStateToProps = () => {
     { articleFragmentId, isSupporting = false }: InterfaceProps
   ) => {
     const valueSelector = formValueSelector(articleFragmentId);
-    const sharedState = selectSharedState(state);
     const article = selectArticle(selectSharedState(state), articleFragmentId);
 
     return {
