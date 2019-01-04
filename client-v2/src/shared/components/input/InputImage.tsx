@@ -85,17 +85,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
   };
   public clearField = () => this.props.input.onChange(null);
 
-  public parseMimeType(mimeType: string) {
-    switch (mimeType) {
-      case 'jpg':
-        return 'image/jpeg';
-      case 'png':
-        return 'image/png';
-    }
-
-    return mimeType;
-  }
-
   public validMessage(data: GridData) {
     return data &&
            data.crop &&
@@ -124,9 +113,11 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 
     this.closeModal();
     const crop = data.crop.data;
-    const gridImage = data.image;
+    const gridImage = data.image.data;
+    const imageOrigin = `${this.props.gridUrl}/images/${gridImage.id}`;
 
-    return validateMediaItem(data.crop.data, data.image.data, this.props.gridUrl, this.props.criteria)
+
+    return validateMediaItem(crop, imageOrigin, this.props.criteria)
     .then(mediaItem => {
       this.props.input.onChange(mediaItem);
     })

@@ -4,7 +4,7 @@ import urlConstants from '../constants/url';
 import deepGet from 'lodash/get';
 import grid, { recordUsage } from './grid';
 import fetchImage from './fetchImage';
-import { Crop, Image, ImageDetails, Criteria } from 'shared/types/Grid';
+import { Crop, ImageDetails, Criteria } from 'shared/types/Grid';
 
 interface ImageDescription {
   height?: number;
@@ -242,7 +242,7 @@ function getData(
     : null;
 }
 
-function validateMediaItem(crop: Crop, image: Image, gridUrl: string, criteria?: Criteria): Promise<ValidationResponse | Error> {
+function validateMediaItem(crop: Crop, imageOrigin: string, criteria?: Criteria): Promise<ValidationResponse | Error> {
   return getSuitableImageDetails(
     [crop],
     crop.id,
@@ -250,7 +250,6 @@ function validateMediaItem(crop: Crop, image: Image, gridUrl: string, criteria?:
   )
     .then(asset => {
       const newImageDetails = asset;
-      const origin =  `${urlConstants.media.mediaBaseUrl}/images/${image.id}`;
       newImageDetails.criteria = criteria;
       newImageDetails.origin = origin;
       return newImageDetails;
@@ -271,27 +270,10 @@ function validateImageEvent(
   criteria?: Criteria
 ): Promise<ValidationResponse | Error> {
   const mediaItem = grid.gridInstance.getCropFromEvent(event);
+  const imageOrigin = grid.gridInstance.getGridUrlFromEvent(event);
 
   if (mediaItem) {
-    return getSuitableImageDetails(
-      [mediaItem],
-      mediaItem.id,
-      criteria || {}
-    )
-      .then(asset => {
-        const newImageDetails = asset;
-        newImageDetails.origin = grid.gridInstance.getGridUrlFromEvent(event);
-        newImageDetails.criteria = criteria;
-        return asset;
-      })
-      .then(image => validateActualImage(image, frontId))
-      .then(({ path, origin, thumb, width, height }) => ({
-        src: path,
-        origin: origin || path,
-        thumb: thumb || path,
-        width,
-        height
-      }));
+    return validateMediaItem(mediaItem, imageOrigin, criteria);
   }
   const url =
     grid.gridInstance.getGridUrlFromEvent(event) || getData(event, 'Url');

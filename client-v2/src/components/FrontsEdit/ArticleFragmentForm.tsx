@@ -18,7 +18,6 @@ import {
   articleTagSelector
 } from 'shared/selectors/shared';
 import { createSelectFormFieldsForCollectionItem } from 'selectors/formSelectors';
-import { DerivedArticle } from 'shared/types/Article';
 import { ArticleFragmentMeta, ArticleTag } from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
@@ -37,7 +36,6 @@ import {
   getArticleFragmentMetaFromFormValues,
   getInitialValuesForArticleFragmentForm
 } from 'util/form';
-import urlConstants from 'shared/constants/url';
 
 interface ComponentProps extends ContainerProps {
   articleFragmentId: string;
@@ -130,7 +128,7 @@ const formComponent: React.StatelessComponent<Props> = ({
   editableFields,
   reset,
   showKickerTag,
-  showKickerSection,
+  showKickerSection
 }) => (
   <FormContainer onSubmit={handleSubmit}>
     <CollectionHeadingPinline>
@@ -434,7 +432,7 @@ const createMapStateToProps = () => {
       imageCutoutReplace: valueSelector(state, 'imageCutoutReplace'),
       showByline: valueSelector(state, 'showByline'),
       showKickerTag: valueSelector(state, 'showKickerTag'),
-      showKickerSection: valueSelector(state, 'showKickerSection'),
+      showKickerSection: valueSelector(state, 'showKickerSection')
     };
   };
 };
