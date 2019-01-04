@@ -34,7 +34,6 @@ interface CAPITagQueryReponse {
   };
 }
 
-
 const capiQuery = (baseURL: string = API_BASE, fetch: Fetch = window.fetch) => {
   const getCAPISearchString = (
     path: string,
@@ -43,7 +42,7 @@ const capiQuery = (baseURL: string = API_BASE, fetch: Fetch = window.fetch) => {
   ) => {
     const { q, ...rest } = params;
     return options && options.isResource
-      ? `${baseURL}${encodeURIComponent(q)}${qs({ ...rest })}`
+      ? `${baseURL}${q}${qs({ ...rest })}`
       : `${baseURL}${path}${qs({
           ...params
         })}`;

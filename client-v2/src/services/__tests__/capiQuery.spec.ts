@@ -38,7 +38,7 @@ describe('CAPI', () => {
       );
       expect((global as any).fetch).toBeCalled();
       const fetchEndpoint = (global as any).fetch.mock.calls[0][0];
-      expect(fetchEndpoint).toBe('https://content.guardianapis.com/an%2Fexample%2Furl?api-key=my-api-key');
+      expect(fetchEndpoint).toBe('https://content.guardianapis.com/an/example/url?api-key=my-api-key');
     });
   });
 
@@ -68,7 +68,7 @@ describe('CAPI', () => {
       );
       expect((global as any).fetch).toBeCalled();
       const fetchEndpoint = (global as any).fetch.mock.calls[0][0];
-      expect(fetchEndpoint).toBe('https://content.guardianapis.com/an%2Fexample%2Furl?api-key=my-api-key');
+      expect(fetchEndpoint).toBe('https://content.guardianapis.com/an/example/url?api-key=my-api-key');
     });
   });
 
