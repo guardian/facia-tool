@@ -12,6 +12,7 @@ interface CAPISearchQueryProps {
   fetch?: Fetch;
   children: AsyncChild<SearchReturn>;
   params: object;
+  options?: { isResource: boolean };
   poll?: number;
   isPreview: boolean;
 }
@@ -85,7 +86,7 @@ class SearchQuery extends React.Component<
   };
 
   public render() {
-    const { params, children, fetch, baseURL, ...props } = this.props;
+    const { params, children, fetch, baseURL, options, ...props } = this.props;
     return (
       <Async<any[], SearchReturn>
         ref={(node: Async<any[], SearchReturn> | null) => {
@@ -93,7 +94,7 @@ class SearchQuery extends React.Component<
         }}
         {...props}
         fn={this.state.capi}
-        args={[params]}
+        args={[params, options]}
       >
         {children}
       </Async>
