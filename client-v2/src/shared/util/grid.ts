@@ -29,6 +29,9 @@ export function recordUsage(mediaId: string, frontId?: string) {
 
   return fetch(urlConstants.media.usageBaseUrl, {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify(usageData)
   });
 }
