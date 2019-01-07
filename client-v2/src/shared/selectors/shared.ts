@@ -332,9 +332,17 @@ const groupSiblingsSelector = (state: State, groupId: string) => {
   );
 };
 
-const groupSiblingsArticleCountSelector = (state: State, groupId: string) =>
+/**
+ * Given a group id, give the total number of live articles contained in the
+ * group's parent collection.
+ */
+const groupSiblingsLiveArticleCountSelector = (state: State, groupId: string) =>
   groupSiblingsSelector(state, groupId).reduce(
-    (acc, group) => acc + group.articleFragments.length,
+    (acc, group) => acc + group.articleFragments.filter(id => {
+      const maybeArticleFragment = articleFragmentSelector(state, id);
+      const maybeExternalArticle = maybeArticleFragment && externalArticleSelectors.selectById(state, maybeArticleFragment.id)
+      return maybeExternalArticle && maybeExternalArticle.fields.isLive === 'true'
+    }).length,
     0
   );
 
@@ -355,6 +363,6 @@ export {
   articleFragmentsSelector,
   groupCollectionSelector,
   groupSiblingsSelector,
-  groupSiblingsArticleCountSelector,
+  groupSiblingsLiveArticleCountSelector,
   articleTagSelector
 };

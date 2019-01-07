@@ -13,7 +13,8 @@ import { clipboardSelector as innerClipboardSelector } from '../../selectors/fro
 import {
   createArticleFragmentStateFromSpec,
   ArticleFragmentSpec,
-  specToFragment
+  specToFragment,
+  creatExternalArticleStateFromSpec
 } from './utils';
 import {
   moveArticleFragment,
@@ -23,6 +24,7 @@ import {
   reducer as collectionsReducer,
   initialState as collectionsState
 } from 'shared/bundles/collectionsBundle';
+import { reducer as externalArticlesReducer } from 'shared/bundles/externalArticlesBundle';
 import confirmModal from 'reducers/confirmModalReducer';
 import { endConfirmModal } from 'actions/ConfirmModal';
 import config from 'reducers/configReducer';
@@ -37,7 +39,8 @@ const root = (state: any = {}, action: any) => ({
       state.shared
     ),
     collections: collectionsReducer(state.shared.collections, action),
-    groups: groupsReducer(state.shared.groups, action, state.shared)
+    groups: groupsReducer(state.shared.groups, action, state.shared),
+    externalArticles: externalArticlesReducer(state.shared.externalArticles, action)
   },
   config: config(state.config, action)
 });
@@ -75,6 +78,7 @@ const buildStore = (added: ArticleFragmentSpec, collectionCap = Infinity) => {
         }
       },
       articleFragments: createArticleFragmentStateFromSpec(all),
+      externalArticles: { data: creatExternalArticleStateFromSpec(all) },
       groups: {
         a: { articleFragments: groupA.map(([uuid]) => uuid), uuid: 'a' },
         b: { articleFragments: groupB.map(([uuid]) => uuid), uuid: 'b' }

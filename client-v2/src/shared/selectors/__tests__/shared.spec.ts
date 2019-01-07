@@ -4,7 +4,8 @@ import {
   createArticlesInCollectionGroupSelector,
   createArticlesInCollectionSelector,
   createCollectionSelector,
-  groupSiblingsSelector
+  groupSiblingsSelector,
+  groupSiblingsLiveArticleCountSelector
 } from '../shared';
 
 const state: any = {
@@ -97,6 +98,7 @@ const state: any = {
           headline: 'external-headline',
           trailText: 'external-trailText',
           byline: 'external-byline',
+          isLive: 'true'
         }
       },
       ea4: {
@@ -124,6 +126,7 @@ const state: any = {
           headline: 'external-headline',
           trailText: 'external-trailText',
           byline: 'external-byline',
+          isLive: 'true'
         }
       },
       ea5: {
@@ -137,6 +140,7 @@ const state: any = {
           headline: 'external-headline',
           trailText: 'external-trailText',
           byline: 'external-byline',
+          isLive: 'true'
         }
       }
     }
@@ -494,6 +498,14 @@ describe('Shared selectors', () => {
     it('selects the sibling groups of a given group id', () => {
       expect(groupSiblingsSelector(state, 'g1').map(({ uuid }) => uuid)).toEqual(
         ['g1', 'g2']
+      );
+    });
+  });
+
+  describe('groupSiblingsArticleCountSelector', () => {
+    it('selects the number of articles in a given group and its siblings', () => {
+      expect(groupSiblingsLiveArticleCountSelector(state, 'g1')).toEqual(
+       1
       );
     });
   });

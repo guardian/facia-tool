@@ -21,6 +21,13 @@ export const specToFragment = ([uuid, id, supporting]: ArticleFragmentSpec) => (
   }
 });
 
+export const specToExternalArticle = (id: string) => ({
+  id,
+  fields: {
+    isLive: 'true'
+  }
+});
+
 export const createArticleFragmentStateFromSpec = (
   specs: ArticleFragmentSpec[]
 ) =>
@@ -44,3 +51,23 @@ export const createArticleFragmentStateFromSpec = (
     }),
     {} as ArticleFragmentMap
   );
+
+  export const creatExternalArticleStateFromSpec = (
+    specs: ArticleFragmentSpec[]
+  ) =>
+    specs.reduce(
+      (acc, [_, id, supporting]) => ({
+        ...acc,
+        [id]: specToExternalArticle(id),
+        ...(supporting
+          ? supporting.reduce(
+              (sacc, [__, sid]) => ({
+                ...sacc,
+                [sid]: specToExternalArticle(sid)
+              }),
+              {}
+            )
+          : {})
+      }),
+      {}
+    );

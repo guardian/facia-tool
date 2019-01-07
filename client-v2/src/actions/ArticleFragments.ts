@@ -11,7 +11,7 @@ import { ArticleFragment } from 'shared/types/Collection';
 import {
   selectSharedState,
   articleFragmentsSelector,
-  groupSiblingsArticleCountSelector
+  groupSiblingsLiveArticleCountSelector
 } from 'shared/selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
@@ -96,7 +96,7 @@ const maybeInsertGroupArticleFragment = (
     const state = getState();
 
     const collectionCap = collectionCapSelector(getState());
-    const collectionArticleCount = groupSiblingsArticleCountSelector(
+    const collectionArticleCount = groupSiblingsLiveArticleCountSelector(
       selectSharedState(state),
       id
     );
