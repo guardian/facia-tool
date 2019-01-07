@@ -126,7 +126,8 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
       children
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
-    return collection ? (
+
+    return !!collection ? (
       <CollectionContainer id={createCollectionId(collection)}>
         <ContainerHeadingPinline>
           <CollectionHeadlineWithConfigContainer>
