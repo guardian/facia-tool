@@ -234,6 +234,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                 isSupporting={selectedArticleFragment.isSupporting}
                 key={selectedArticleFragment.id}
                 form={selectedArticleFragment.id}
+                frontId={this.props.id}
                 onSave={(meta: ArticleFragmentMeta) => {
                   this.props.updateArticleFragmentMeta(
                     selectedArticleFragment.id,

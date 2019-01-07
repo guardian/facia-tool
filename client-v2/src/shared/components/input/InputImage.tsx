@@ -50,7 +50,7 @@ const IconAdd = IconDelete.extend`
 `;
 
 type ComponentProps = {
-  frontId?: string;
+  frontId: string;
   gridUrl: string | null,
   criteria?: Criteria
 } & WrappedFieldProps;
@@ -75,7 +75,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
   public handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.persist();
-    validateImageEvent(e, '@todo:frontId', this.props.criteria)
+    validateImageEvent(e, this.props.frontId, this.props.criteria)
       .then(this.props.input.onChange)
       .catch(err => {
         alert(err);
@@ -121,7 +121,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     const imageOrigin = `${this.props.gridUrl}/images/${gridImage.id}`;
 
 
-    return validateMediaItem(crop, imageOrigin, this.props.criteria)
+    return validateMediaItem(crop, imageOrigin, this.props.frontId, this.props.criteria)
     .then(mediaItem => {
       this.props.input.onChange(mediaItem);
     })

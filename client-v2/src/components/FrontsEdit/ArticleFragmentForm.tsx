@@ -128,7 +128,8 @@ const formComponent: React.StatelessComponent<Props> = ({
   editableFields,
   reset,
   showKickerTag,
-  showKickerSection
+  showKickerSection,
+  frontId
 }) => (
   <FormContainer onSubmit={handleSubmit}>
     <CollectionHeadingPinline>
@@ -403,6 +404,7 @@ interface InterfaceProps {
   isSupporting?: boolean;
   onCancel: () => void;
   onSave: (meta: ArticleFragmentMeta) => void;
+  frontId: string;
 }
 
 const formContainer: React.SFC<ContainerProps> = props => (
