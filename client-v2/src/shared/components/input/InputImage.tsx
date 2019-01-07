@@ -1,11 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 import { WrappedFieldProps } from 'redux-form';
-
 import deleteIcon from '../../images/icons/delete-copy.svg';
 import ButtonDefault from './ButtonDefault';
 import InputContainer from './InputContainer';
-import { validateImageEvent } from '../../util/validateImageSrc';
+import { validateImageEvent, validateMediaItem } from '../../util/validateImageSrc';
+import { GridModal } from 'components/GridModal';
+import { gridUrlSelector } from 'selectors/configSelectors';
+import { State } from 'types/State';
+import { GridData, Criteria } from 'shared/types/Grid';
 
 const ImageContainer = styled('div')<{
   size?: 'small';
@@ -45,20 +49,18 @@ const IconAdd = IconDelete.extend`
   transform: rotate(45deg);
 `;
 
-type Props = {
+type ComponentProps = {
   frontId?: string;
-  criteria?: {
-    minHeight?: string;
-    minWidth?: string;
-    widthAspectRatio?: number;
-    heightAspectRatio?: number;
-  };
+  gridUrl: string | null,
+  criteria?: Criteria
 } & WrappedFieldProps;
-interface State { isHovering: boolean }
 
-class InputImage extends React.Component<Props, State> {
+interface ComponentState { isHovering: boolean, modalOpen: boolean }
+
+class InputImage extends React.Component<ComponentProps, ComponentState> {
   public state = {
-    isHovering: false
+    isHovering: false,
+    modalOpen: false
   };
 
   public handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
@@ -83,10 +85,68 @@ class InputImage extends React.Component<Props, State> {
   };
   public clearField = () => this.props.input.onChange(null);
 
+  public validMessage(data: GridData) {
+    return data &&
+           data.crop &&
+           data.crop.data &&
+           data.image &&
+           data.image.data;
+  }
+
+  public onMessage = (event: MessageEvent) => {
+    if (event.origin !== this.props.gridUrl) {
+      // Log: did not come from the grid
+      return;
+    }
+
+    const data: GridData = event.data;
+
+    if (!data) {
+      // TODO Log did not get data
+      return;
+    }
+
+    if (!this.validMessage(data)) {
+      // TODO Log not a valid message
+      return;
+    }
+
+    this.closeModal();
+    const crop = data.crop.data;
+    const gridImage = data.image.data;
+    const imageOrigin = `${this.props.gridUrl}/images/${gridImage.id}`;
+
+
+    return validateMediaItem(crop, imageOrigin, this.props.criteria)
+    .then(mediaItem => {
+      this.props.input.onChange(mediaItem);
+    })
+    // tslint:disable-next-line no-console
+    .catch(err => console.log('@todo:handle error', err));
+  };
+
+  public closeModal = () => {
+    this.setState({ modalOpen: false });
+    window.removeEventListener('message', this.onMessage, false);
+  };
+
+  public openModal = () => {
+    this.setState({ modalOpen: true });
+    window.addEventListener('message', this.onMessage, false);
+  };
+
   public render() {
+    const gridSearchUrl = `${this.props.gridUrl}?cropType=landscape`;
     return (
       <InputContainer>
+        <GridModal
+          url={gridSearchUrl}
+          isOpen={this.state.modalOpen}
+          onClose={this.closeModal}
+          onMessage={this.onMessage}
+        />
         <ImageContainer
+          onClick={this.openModal}
           onDragEnter={this.handleDragEnter}
           onDragLeave={this.handleDragLeave}
           onDragOver={this.handleDragOver}
@@ -100,7 +160,13 @@ class InputImage extends React.Component<Props, State> {
         >
           <ButtonDelete type="button" priority="primary">
             {this.props.input.value ? (
-              <IconDelete src={deleteIcon} onClick={this.clearField} />
+              <IconDelete
+                src={deleteIcon}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  this.clearField()
+                }}
+              />
             ) : (
               <IconAdd src={deleteIcon} onClick={this.handleAdd} />
             )}
@@ -111,4 +177,10 @@ class InputImage extends React.Component<Props, State> {
   }
 }
 
-export default InputImage;
+const mapStateToProps = (state: State) => {
+  return {
+    gridUrl: gridUrlSelector(state)
+  };
+};
+
+export default connect(mapStateToProps)(InputImage);
