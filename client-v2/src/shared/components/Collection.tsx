@@ -50,7 +50,7 @@ const HeadlineContentContainer = styled('span')`
 
 const CollectionDisabledTheme = styled('div')`
   position: absolute;
-  background-color: hsla(0, 0%, 100%, 0.5);
+  background-color: hsla(0, 0%, 100%, 0.3);
   height: 100%;
   width: 100%;
   top: 0;
@@ -92,11 +92,13 @@ const ItemCountMeta = CollectionMetaBase.extend`
 
 const CollectionHeadlineWithConfigContainer = styled('div')`
   flex-grow: 1;
+  max-width: calc(100% - 90px);
+  display: flex;
 `;
 
 const CollectionHeadingText = styled('div')`
   display: inline-block;
-  max-width: calc(100% - 250px);
+  max-width: 400px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -110,8 +112,6 @@ const CollectionConfigContainer = styled('div')`
   height: 40px;
   line-height: 40px;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   margin-left: 3px;
 `;
 
@@ -158,7 +158,6 @@ class CollectionDisplay extends React.Component<Props, { isOpen: boolean }> {
       children
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
-
     return !!collection ? (
       <CollectionContainer id={createCollectionId(collection)}>
         <ContainerHeadingPinline>
