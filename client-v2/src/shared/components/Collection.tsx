@@ -183,16 +183,13 @@ class CollectionDisplay extends React.Component<Props, { isOpen: boolean }> {
             </CollectionConfigContainer>
           </CollectionHeadlineWithConfigContainer>
 
-          {isUneditable &&
-            !headlineContent && (
-              <LockedCollectionFlag>Locked</LockedCollectionFlag>
-            )}
-
-          {headlineContent && (
+          {isUneditable ? (
+            <LockedCollectionFlag>Locked</LockedCollectionFlag>
+          ) : headlineContent ? (
             <HeadlineContentContainer>
               {headlineContent}
             </HeadlineContentContainer>
-          )}
+          ) : null}
         </ContainerHeadingPinline>
 
         <CollectionMetaContainer>
