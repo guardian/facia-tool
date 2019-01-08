@@ -138,11 +138,12 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
             <CollectionConfigContainer>
               <CollectionConfigText>
                 {oc(collection).metadata[0].type()
-                  ? `${oc(collection).metadata[0].type()}`
+                  ? ` ${oc(collection).metadata[0].type()}`
                   : null}
               </CollectionConfigText>
               <CollectionConfigText>
-                {oc(collection).platform() !== 'Any' ? (
+                {oc(collection).platform() &&
+                oc(collection).platform() !== 'Any' ? (
                   <>
                     <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
                     {`${collection.platform} only`}
