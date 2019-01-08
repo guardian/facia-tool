@@ -63,7 +63,7 @@ const SnapLink = ({
       ? `{ ${articleFragment.meta.customKicker} }`
       : 'No headline');
   return (
-    <CollectionItemContainer isUneditable={isUneditable} {...rest}>
+    <CollectionItemContainer {...rest}>
       <CollectionItemBody
         size={size}
         fade={fade}

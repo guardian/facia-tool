@@ -92,7 +92,6 @@ const ArticleComponent = ({
   return (
     <CollectionItemContainer
       draggable={draggable}
-      isUneditable={isUneditable}
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDragEnter={onDragEnter}
