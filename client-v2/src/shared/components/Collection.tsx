@@ -92,7 +92,7 @@ const ItemCountMeta = CollectionMetaBase.extend`
 
 const CollectionHeadlineWithConfigContainer = styled('div')`
   flex-grow: 1;
-  max-width: calc(100% - 90px);
+  max-width: calc(100% - 95px);
   display: flex;
 `;
 
@@ -167,20 +167,19 @@ class CollectionDisplay extends React.Component<Props, { isOpen: boolean }> {
             </CollectionHeadingText>
 
             <CollectionConfigContainer>
-              <CollectionConfigText>
-                {oc(collection).metadata[0].type()
-                  ? `${oc(collection).metadata[0].type()}`
-                  : null}
-              </CollectionConfigText>
-              <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
-              <CollectionConfigText>
-                {oc(collection).platform() !== 'Any' ? (
-                  <>
-                    <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
-                    {`${collection.platform} only`}
-                  </>
-                ) : null}
-              </CollectionConfigText>
+              {oc(collection).metadata[0].type() ? (
+                <CollectionConfigText>
+                  <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
+                  {oc(collection).metadata[0].type()}
+                </CollectionConfigText>
+              ) : null}
+
+              {collection.platform && collection.platform !== 'Any' ? (
+                <CollectionConfigText>
+                  <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
+                  {`${collection.platform} Only`}
+                </CollectionConfigText>
+              ) : null}
             </CollectionConfigContainer>
           </CollectionHeadlineWithConfigContainer>
 
@@ -195,6 +194,7 @@ class CollectionDisplay extends React.Component<Props, { isOpen: boolean }> {
             </HeadlineContentContainer>
           )}
         </ContainerHeadingPinline>
+
         <CollectionMetaContainer>
           <ItemCountMeta>
             <strong>{itemCount}</strong>
