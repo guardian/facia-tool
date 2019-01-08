@@ -1,4 +1,4 @@
-import createAsyncResourceBundle from '../util/createAsyncResourceBundle';
+import createAsyncResourceBundle from 'lib/createAsyncResourceBundle';
 import { ExternalArticle } from 'shared/types/ExternalArticle';
 
 export const {

@@ -1,5 +1,5 @@
 import { State as SharedState } from '../types/State';
-import createAsyncResourceBundle from '../util/createAsyncResourceBundle';
+import createAsyncResourceBundle from 'lib/createAsyncResourceBundle';
 import { Collection } from 'shared/types/Collection';
 
 const {
