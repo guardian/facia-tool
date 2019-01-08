@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import distanceFromNow from 'date-fns/distance_in_words_to_now';
 import upperFirst from 'lodash/upperFirst';
+import { oc } from 'ts-optchain';
 
 import ShortVerticalPinline from './layout/ShortVerticalPinline';
 import ContainerHeadingPinline from './typography/ContainerHeadingPinline';
@@ -136,12 +137,12 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
             </CollectionHeadingText>
             <CollectionConfigContainer>
               <CollectionConfigText>
-                {collection.metadata && collection.metadata[0].type
-                  ? `${collection.metadata[0].type}`
+                {oc(collection).metadata[0].type()
+                  ? `${oc(collection).metadata[0].type()}`
                   : null}
               </CollectionConfigText>
               <CollectionConfigText>
-                {collection.platform && collection.platform !== 'Any' ? (
+                {oc(collection).platform() !== 'Any' ? (
                   <>
                     <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
                     {`${collection.platform} only`}
