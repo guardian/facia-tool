@@ -56,7 +56,7 @@ const getParams = (
   q: query,
   tag: [...tags, ...desks].join(','),
   section: sections.join(','),
-  'star-rating': ratings.map(rating => rating.slice(0, 1)).join('|'),
+  'star-rating': ratings.join('|'),
   'from-date': from && from.format('YYYY-MM-DD'),
   'to-date': to && to.format('YYYY-MM-DD'),
   'page-size': '20',
@@ -235,14 +235,14 @@ class FrontsCAPISearchInput extends React.Component<
               searchType="desks"
             />
             <CAPIFieldFilter
-              placeholder={'Select one or more'}
+              placeholder="Select one or more"
               filterTitle="star rating for reviews"
               items={[
-                { value: '1', id: '1 Star' },
-                { value: '2', id: '2 Stars' },
-                { value: '3', id: '3 Stars' },
-                { value: '4', id: '4 Stars' },
-                { value: '5', id: '5 Stars' }
+                { id: '1', label: '1 Star' },
+                { id: '2', label: '2 Stars' },
+                { id: '3', label: '3 Stars' },
+                { id: '4', label: '4 Stars' },
+                { id: '5', label: '5 Stars' }
               ]}
               onChange={this.addUniqueStringToStateKey('ratings')}
             />

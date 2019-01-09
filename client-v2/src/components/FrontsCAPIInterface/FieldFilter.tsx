@@ -62,7 +62,7 @@ const FilterContainer = styled('div')`
 
 // The extension here is the result of JSX ambiguity -
 // see https://github.com/Microsoft/TypeScript/issues/4922.
-const CAPIFieldFilter = <T extends { value: string; id: string }>({
+const CAPIFieldFilter = <T extends { label: string; id: string }>({
   onChange,
   items,
   placeholder,
@@ -119,7 +119,7 @@ const CAPIFieldFilter = <T extends { value: string; id: string }>({
                   })}
                   highlighted={highlightedIndex === index}
                 >
-                  {item.id}
+                  {item.label}
                 </DropdownItem>
               ))}
         </FilterFieldDropdownMenu>
