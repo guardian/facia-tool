@@ -41,25 +41,40 @@ class FaciaToolController(
         Ok(Json.toJson(configJson)).as("application/json")}}}
 
   def getCollection(collectionId: String) = AccessAPIAuthAction.async { implicit request =>
-
     val collectionPriorities = configAgent.getFrontsPermissionsPriorityByCollectionId(collectionId)
 
     withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
+      val collections = fetchCollections(List(collectionId))
 
-      FaciaToolMetrics.ApiUsageCount.increment()
-      val collection = frontsApi.amazonClient.collection(collectionId).flatMap { collectionJson =>
-        collectionJson.map(json => mediaServiceClient.addThumbnailsToCollection(json, collectionId)) match {
-          case Some(f) => f.map(Some(_))
-          case None => Future.successful(None)
-
-        }
-      }
-      collection.map(c => NoCache {
+      collections.head.map(c => NoCache {
         Ok(Json.toJson(c)).as("application/json")
       })
-
     }
   }
+
+  def getCollections(collectionIdsString: String) = AccessAPIAuthAction.async { implicit request =>
+    val collectionIds = collectionIdsString.split(",").toList
+    val collectionPriorities = collectionIds.flatMap(configAgent.getFrontsPermissionsPriorityByCollectionId(_)).toSet
+
+    withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
+      val collections = fetchCollections(collectionIds)
+
+      Future.sequence(collections).map(c => NoCache {
+        Ok(Json.toJson(c)).as("application/json")
+      })
+    }
+  }
+
+  def fetchCollections(collectionIds: List[String]) = {
+    FaciaToolMetrics.ApiUsageCount.increment()
+    collectionIds.map(collectionId => frontsApi.amazonClient.collection(collectionId).flatMap { collectionJson =>
+      collectionJson.map(json => mediaServiceClient.addThumbnailsToCollection(json, collectionId)) match {
+        case Some(f) => f.map(Some(_))
+        case None => Future.successful(None)
+      }
+    })
+  }
+
 
   def publishCollection(collectionId: String) = AccessAPIAuthAction.async { implicit request =>
 

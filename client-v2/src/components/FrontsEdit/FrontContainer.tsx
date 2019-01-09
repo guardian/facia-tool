@@ -58,7 +58,7 @@ type FrontsComponentProps = FrontsContainerProps & {
   alsoOn: { [id: string]: AlsoOnDetail };
   lastPressed: string | null;
   frontsActions: {
-    getCollectionsAndArticles: (collectionIds: string[]) => Promise<void[]>;
+    getCollectionsAndArticles: (collectionIds: string[]) => Promise<void>;
     fetchLastPressed: (frontId: string) => void;
     editorCloseFront: (frontId: string) => void;
   };

@@ -10,7 +10,7 @@ import {
 } from 'types/FaciaApi';
 import { ExternalArticle } from 'shared/types/ExternalArticle';
 import {
-  CollectionResponse,
+  CollectionsResponse,
   CollectionWithNestedArticles,
   NestedArticleFragment
 } from 'shared/types/Collection';
@@ -185,18 +185,32 @@ async function saveOpenFrontIds(frontIds?: string[]): Promise<void> {
   }
 }
 
-function getCollection(
+async function getCollection(
   collectionId: string
 ): Promise<CollectionWithNestedArticles> {
-  return pandaFetch(`/collection/${collectionId}`, {
+  const response = await pandaFetch(`/collection/${collectionId}`, {
     method: 'get',
     credentials: 'same-origin'
   })
-    .then(response => response.json())
-    .then((json: CollectionResponse) => ({
-      ...json,
-      id: collectionId
-    }));
+  const collection: CollectionsResponse = await response.json();
+  return {
+    ...collection,
+    id: collectionId
+  };
+}
+
+async function getCollections(
+  collectionIds: string[]
+): Promise<CollectionWithNestedArticles[]> {
+  const response = await pandaFetch(`/collections/${collectionIds.join(',')}`, {
+    method: 'get',
+    credentials: 'same-origin'
+  })
+  const collections: CollectionsResponse[] = await response.json();
+  return collections.map((collection, index) => ({
+    ...collection,
+    id: collectionIds[index]
+  }));
 }
 
 /**
@@ -292,6 +306,7 @@ async function getArticlesBatched(
 export {
   fetchFrontsConfig,
   getCollection,
+  getCollections,
   getContent,
   getTagOrSectionTitle,
   getArticlesBatched,

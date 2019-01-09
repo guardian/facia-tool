@@ -90,7 +90,7 @@ interface ArticleFragmentDenormalised extends ArticleFragmentRootFields {
   meta: ArticleFragmentMetaDenormalised;
 }
 
-interface CollectionResponse {
+interface CollectionsResponse {
   live: NestedArticleFragment[];
   draft?: NestedArticleFragment[];
   previously?: NestedArticleFragment[];
@@ -102,7 +102,7 @@ interface CollectionResponse {
   groups?: string[];
 }
 
-type CollectionWithNestedArticles = CollectionResponse & {
+type CollectionWithNestedArticles = CollectionsResponse & {
   id: string;
 };
 
@@ -134,7 +134,7 @@ export {
   ArticleFragmentRootFields,
   ArticleFragmentMeta,
   CollectionWithNestedArticles,
-  CollectionResponse,
+  CollectionsResponse,
   Collection,
   CollectionItemTypes,
   CollectionItemDisplayTypes,

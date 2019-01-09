@@ -45,9 +45,9 @@ trait ModifyCollectionsPermissionsCheck extends Logging { self: BaseFaciaControl
   }
 
   def withModifyGroupPermissionForCollections[A](priorities: Set[PermissionsPriority], secondaryPriorities: Set[PermissionsPriority],
-                                                 isLaunch: Boolean = false)(block: => Future[Result])
-                                                (implicit request: UserRequest[A],
-                                                 executionContext: ExecutionContext): Future[Result] = {
+    isLaunch: Boolean = false)(block: => Future[Result])
+  (implicit request: UserRequest[A],
+  executionContext: ExecutionContext): Future[Result] = {
 
     (testAccess(request.user.email, priorities, isLaunch), testAccess(request.user.email, secondaryPriorities, isLaunch)) match {
       case (AccessGranted, AccessGranted) => block
