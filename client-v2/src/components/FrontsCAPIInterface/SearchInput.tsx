@@ -37,8 +37,8 @@ interface StringArrSearchItems {
 
 type FrontsCAPISearchInputState = StringArrSearchItems & {
   query: string;
-  from: null | moment.Moment;
-  to: null | moment.Moment;
+  fromDate: null | moment.Moment;
+  toDate: null | moment.Moment;
 };
 
 const getParams = (
@@ -48,8 +48,8 @@ const getParams = (
     desks,
     ratings,
     query,
-    to,
-    from
+    toDate: to,
+    fromDate: from
   }: FrontsCAPISearchInputState,
   isPreview: boolean
 ) => ({
@@ -80,8 +80,8 @@ const initState = {
   desks: [],
   ratings: [],
   query: '',
-  to: null,
-  from: null
+  toDate: null,
+  fromDate: null
 } as FrontsCAPISearchInputState;
 
 class FrontsCAPISearchInput extends React.Component<
@@ -111,7 +111,7 @@ class FrontsCAPISearchInput extends React.Component<
     from: moment.Moment | null,
     to: moment.Moment | null
   ) => {
-    this.setStateAndRunSearch({ from, to });
+    this.setStateAndRunSearch({ fromDate: from, toDate: to });
   };
 
   public clearInput = () => {
@@ -125,8 +125,8 @@ class FrontsCAPISearchInput extends React.Component<
 
   public clearSelectedDates = () => {
     this.setStateAndRunSearch({
-      from: null,
-      to: null
+      fromDate: null,
+      toDate: null
     });
   };
 
@@ -153,7 +153,15 @@ class FrontsCAPISearchInput extends React.Component<
       additionalFixedContent: AdditionalFixedContent
     } = this.props;
 
-    const { query, tags, sections, desks, ratings, from, to } = this.state;
+    const {
+      query,
+      tags,
+      sections,
+      desks,
+      ratings,
+      fromDate: from,
+      toDate: to
+    } = this.state;
 
     return (
       <ScrollContainer
@@ -247,8 +255,8 @@ class FrontsCAPISearchInput extends React.Component<
               onChange={this.addUniqueStringToStateKey('ratings')}
             />
             <CAPIDateRangeInput
-              start={this.state.from}
-              end={this.state.to}
+              start={this.state.fromDate}
+              end={this.state.toDate}
               onDateChange={this.onDateChange}
             />
           </>
@@ -284,13 +292,13 @@ class FrontsCAPISearchInput extends React.Component<
       !!this.state.desks.length ||
       !!this.state.ratings.length ||
       !!this.state.query ||
-      !!this.state.from ||
-      !!this.state.to
+      !!this.state.fromDate ||
+      !!this.state.toDate
     );
   }
 
   private get shouldShowDate() {
-    return this.state.from || this.state.to;
+    return this.state.fromDate || this.state.toDate;
   }
 
   private addUniqueStringToStateKey(key: keyof StringArrSearchItems) {
