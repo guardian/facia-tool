@@ -35,6 +35,7 @@ const ClipboardMeta = (props: Props) => {
         );
         props.clearArticleFragmentSelection();
       }}
+      frontId="clipboard"
       onCancel={props.clearArticleFragmentSelection}
     />
   ) : null;

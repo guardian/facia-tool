@@ -242,7 +242,7 @@ function getData(
     : null;
 }
 
-function validateMediaItem(crop: Crop, imageOrigin: string, criteria?: Criteria): Promise<ValidationResponse | Error> {
+function validateMediaItem(crop: Crop, imageOrigin: string, frontId: string, criteria?: Criteria): Promise<ValidationResponse | Error> {
   return getSuitableImageDetails(
     [crop],
     crop.id,
@@ -254,7 +254,7 @@ function validateMediaItem(crop: Crop, imageOrigin: string, criteria?: Criteria)
       newImageDetails.origin = imageOrigin;
       return newImageDetails;
     })
-    .then(img => validateActualImage(img, 'todo: frontusages'))
+    .then(img => validateActualImage(img, frontId))
     .then(({ path, origin, thumb, width, height }) => ({
         src: path,
         origin: origin || path,
@@ -273,7 +273,7 @@ function validateImageEvent(
   const imageOrigin = grid.gridInstance.getGridUrlFromEvent(event);
 
   if (mediaItem) {
-    return validateMediaItem(mediaItem, imageOrigin, criteria);
+    return validateMediaItem(mediaItem, imageOrigin, frontId, criteria);
   }
   const url =
     grid.gridInstance.getGridUrlFromEvent(event) || getData(event, 'Url');
