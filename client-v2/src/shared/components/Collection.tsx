@@ -160,12 +160,12 @@ class CollectionDisplay extends React.Component<Props, { isOpen: boolean }> {
     const itemCount = articleIds ? articleIds.length : 0;
     return !!collection ? (
       <CollectionContainer id={createCollectionId(collection)}>
+
         <ContainerHeadingPinline>
           <CollectionHeadlineWithConfigContainer>
             <CollectionHeadingText>
               {collection.displayName}
             </CollectionHeadingText>
-
             <CollectionConfigContainer>
               {oc(collection).metadata[0].type() ? (
                 <CollectionConfigText>
@@ -173,7 +173,6 @@ class CollectionDisplay extends React.Component<Props, { isOpen: boolean }> {
                   {oc(collection).metadata[0].type()}
                 </CollectionConfigText>
               ) : null}
-
               {collection.platform && collection.platform !== 'Any' ? (
                 <CollectionConfigText>
                   <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
