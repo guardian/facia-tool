@@ -75,10 +75,14 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
   public handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.persist();
-    validateImageEvent(e, '@todo:frontId')
+    validateImageEvent(e, '@todo:frontId', this.props.criteria)
       .then(this.props.input.onChange)
-      // tslint:disable-next-line no-console
-      .catch(err => console.log('@todo:handle error', err));
+      .catch(err => {
+        alert(err);
+        // tslint:disable-next-line no-console
+        console.log('@todo:handle error', err)
+      });
+
   };
   public handleAdd = () => {
     // @todo: grid integration
@@ -121,8 +125,11 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     .then(mediaItem => {
       this.props.input.onChange(mediaItem);
     })
-    // tslint:disable-next-line no-console
-    .catch(err => console.log('@todo:handle error', err));
+    .catch(err => {
+      alert(err);
+        // tslint:disable-next-line no-console
+        console.log('@todo:handle error', err)
+    });
   };
 
   public closeModal = () => {
