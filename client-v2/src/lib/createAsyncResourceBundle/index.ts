@@ -20,7 +20,11 @@ interface FetchStartAction {
 interface FetchSuccessAction<Resource> {
   entity: string;
   type: 'FETCH_SUCCESS';
-  payload: { data: Resource | Resource[] | any; time: number };
+  payload: {
+    data: Resource | Resource[] | any;
+    time: number;
+    loadingId?: string;
+  };
 }
 
 interface FetchErrorAction {
@@ -209,11 +213,12 @@ function createAsyncResourceBundle<Resource>(
   });
 
   const fetchSuccessAction = (
-    data: Resource | Resource[] | any
+    data: Resource | Resource[] | any,
+    loadingId?: string // can remove a specific loading id that was set when `indexById` is false
   ): FetchSuccessAction<Resource> => ({
     entity: entityName,
     type: FETCH_SUCCESS,
-    payload: { data, time: Date.now() }
+    payload: { data, time: Date.now(), loadingId }
   });
 
   const fetchErrorAction = (
@@ -272,12 +277,14 @@ function createAsyncResourceBundle<Resource>(
               : applyNewData(state.data, action.payload.data, entityName),
             lastFetch: action.payload.time,
             error: null,
-            loadingIds: indexById
-              ? removeStatusIds(
-                  state.loadingIds,
-                  getStatusIdsFromData(action.payload.data)
-                )
-              : []
+            loadingIds: removeStatusIds(
+              state.loadingIds,
+              indexById
+                ? getStatusIdsFromData(action.payload.data)
+                : action.payload.loadingId
+                  ? [action.payload.loadingId]
+                  : state.loadingIds
+            )
           };
         }
         case FETCH_ERROR: {
