@@ -20,7 +20,11 @@ interface FrontsCAPISearchInputProps {
   displaySearchFilters: boolean;
   updateDisplaySearchFilters: (value: boolean) => void;
   isPreview: boolean;
-  fetchFeed: (q: string, liveParams: object, previewParams: object) => void;
+  fetchFeed: (
+    liveParams: object,
+    previewParams: object,
+    isResource: boolean
+  ) => void;
 }
 
 const InputContainer = styled('div')`
@@ -42,12 +46,12 @@ type FrontsCAPISearchInputState = StringArrSearchItems & {
 };
 
 const getParams = (
+  query: string,
   {
     tags,
     sections,
     desks,
     ratings,
-    query,
     toDate: to,
     fromDate: from
   }: FrontsCAPISearchInputState,
@@ -133,12 +137,8 @@ class FrontsCAPISearchInput extends React.Component<
   public handleSearchInput = ({
     currentTarget
   }: React.SyntheticEvent<HTMLInputElement>) => {
-    const targetValue = currentTarget.value;
-    const maybeArticleId = getIdFromURL(targetValue);
-    const searchTerm = maybeArticleId ? maybeArticleId : targetValue;
-
     this.setStateAndRunSearch({
-      query: searchTerm
+      query: currentTarget.value
     });
   };
 
@@ -266,10 +266,13 @@ class FrontsCAPISearchInput extends React.Component<
   }
 
   private runSearch() {
+    const { query } = this.state;
+    const maybeArticleId = getIdFromURL(query);
+    const searchTerm = maybeArticleId ? maybeArticleId : query;
     this.props.fetchFeed(
-      this.state.query,
-      getParams(this.state, false),
-      getParams(this.state, true)
+      getParams(searchTerm, this.state, false),
+      getParams(searchTerm, this.state, true),
+      !!maybeArticleId
     );
   }
 
@@ -334,10 +337,13 @@ class FrontsCAPISearchInput extends React.Component<
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchFeed: (query: string, liveParams: object, previewParams: object) => {
-    const maybeArticleId = getIdFromURL(query);
-    dispatch(fetchLive(liveParams, !!maybeArticleId));
-    dispatch(fetchPreview(previewParams, !!maybeArticleId));
+  fetchFeed: (
+    liveParams: object,
+    previewParams: object,
+    isResource: boolean
+  ) => {
+    dispatch(fetchLive(liveParams, isResource));
+    dispatch(fetchPreview(previewParams, isResource));
   }
 });
 
