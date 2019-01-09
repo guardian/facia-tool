@@ -41,6 +41,7 @@ interface ArticleComponentProps {
   onDelete?: (uuid: string) => void;
   onClick?: () => void;
   onAddToClipboard?: (id: string) => void;
+  isUneditable?: boolean;
 }
 
 interface ContainerProps extends ArticleComponentProps {
@@ -79,9 +80,15 @@ const ArticleComponent = ({
   onDelete = noop,
   onClick = noop,
   onAddToClipboard = noop,
-  children
+  children,
+  isUneditable
 }: ComponentProps) => {
   const ArticleBody = articleBodyComponentMap[displayType];
+  const getOverlayEventProps = () => ({
+    onDelete,
+    onAddToClipboard
+  });
+
   return (
     <CollectionItemContainer
       draggable={draggable}
@@ -113,8 +120,8 @@ const ArticleComponent = ({
           <ArticleBody
             {...article}
             size={size}
-            onDelete={onDelete}
-            onAddToClipboard={onAddToClipboard}
+            isUneditable={isUneditable}
+            {...getOverlayEventProps()}
             notifications={notifications}
           />
         )}
@@ -122,9 +129,8 @@ const ArticleComponent = ({
           isLoading && (
             <ArticleBody
               uuid={id}
+              isUneditable={true}
               displayPlaceholders={true}
-              onDelete={onDelete}
-              onAddToClipboard={onAddToClipboard}
               size={size}
             />
           )}
@@ -133,8 +139,7 @@ const ArticleComponent = ({
             <ArticleBody
               headline="Content not found"
               uuid={id}
-              onDelete={onDelete}
-              onAddToClipboard={onAddToClipboard}
+              isUneditable={true}
               size={size}
             />
           )}

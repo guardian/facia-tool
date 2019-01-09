@@ -120,9 +120,7 @@ class Level<T> extends React.Component<Props<T>> {
     return i + (isNode ? getDropIndexOffset(e) : 0);
   }
 
-  private onDragOver = (i: number, isNode: boolean) => (
-    e: React.DragEvent
-  ) => {
+  private onDragOver = (i: number, isNode: boolean) => (e: React.DragEvent) => {
     if (!this.props.store) {
       throw new Error(NO_STORE_ERROR);
     }

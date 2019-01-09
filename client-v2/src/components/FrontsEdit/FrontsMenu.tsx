@@ -40,6 +40,7 @@ const ButtonOverlayContainer = styled('div')`
 `;
 
 const FrontsMenuContainer = styled('div')<{ isOpen?: boolean }>`
+  z-index: 100;
   background-color: #333;
   position: fixed;
   height: 100%;
@@ -118,7 +119,7 @@ class FrontsMenu extends React.Component<Props, State> {
 
   public render() {
     return (
-      <React.Fragment>
+      <>
         {this.state.isOpen && (
           <FadeIn>
             <Overlay />
@@ -160,7 +161,7 @@ class FrontsMenu extends React.Component<Props, State> {
             </FrontsMenuContent>
           </ScrollContainer>
         </FrontsMenuContainer>
-      </React.Fragment>
+      </>
     );
   }
 }

@@ -38,6 +38,7 @@ interface ContainerProps {
   fade?: boolean;
   children?: React.ReactNode;
   notifications?: string[];
+  isUneditable?: boolean;
 }
 
 interface SnapLinkProps extends ContainerProps {
@@ -53,6 +54,7 @@ const SnapLink = ({
   children,
   articleFragment,
   notifications,
+  isUneditable,
   ...rest
 }: SnapLinkProps) => {
   const headline =
@@ -97,8 +99,15 @@ const SnapLink = ({
             )}
         </CollectionItemContent>
         {size === 'default' && displayType === 'default' && <Thumbnail />}
-        { notifications && ( <CollectionItemNotification>{notifications.map(notification => <span key={notification}>{notification} </span>)}</CollectionItemNotification> )}
+        {notifications && (
+          <CollectionItemNotification>
+            {notifications.map(notification => (
+              <span key={notification}>{notification} </span>
+            ))}
+          </CollectionItemNotification>
+        )}
         <HoverActionsAreaOverlay
+          disabled={isUneditable}
           justify={displayType === 'polaroid' ? 'flex-end' : 'space-between'}
         >
           <HoverActionsButtonWrapper

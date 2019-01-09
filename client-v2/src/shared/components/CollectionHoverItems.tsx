@@ -2,8 +2,9 @@ import styled from 'styled-components';
 
 const HoverActionsAreaOverlay = styled('div')<{
   justify?: 'space-between' | 'flex-end';
+  disabled?: boolean;
 }>`
-  display: flex;
+  display: ${({ disabled }) => (disabled ? 'none' : 'flex')};
   justify-content: ${({ justify }) => justify};
   padding: 4px 8px;
 `;

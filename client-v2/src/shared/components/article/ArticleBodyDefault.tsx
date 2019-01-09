@@ -69,9 +69,10 @@ interface ArticleBodyProps {
   sectionName?: string;
   displayPlaceholders?: boolean;
   uuid: string;
-  onDelete: (id: string) => void;
-  onAddToClipboard: (id: string) => void;
+  onDelete?: (id: string) => void;
+  onAddToClipboard?: (id: string) => void;
   notifications?: string[];
+  isUneditable?: boolean;
 }
 
 const articleBodyDefault = ({
@@ -89,7 +90,8 @@ const articleBodyDefault = ({
   displayPlaceholders,
   onDelete,
   onAddToClipboard,
-  notifications
+  notifications,
+  isUneditable
 }: ArticleBodyProps) => {
   const ArticleHeadingContainer =
     size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
@@ -136,7 +138,7 @@ const articleBodyDefault = ({
               {size === 'default' && <TextPlaceholder width={25} />}
             </>
           )}
-          { kicker && (
+          {kicker && (
             <KickerHeading style={{ color: getPillarColor(pillarId, true) }}>
               {kicker}
             </KickerHeading>
@@ -164,8 +166,14 @@ const articleBodyDefault = ({
             }}
           />
         ))}
-      { notifications && ( <CollectionItemNotification>{notifications.map(notification => <span key={notification}>{notification} </span>)}</CollectionItemNotification> )}
-      <HoverActionsAreaOverlay>
+      {notifications && (
+        <CollectionItemNotification>
+          {notifications.map(notification => (
+            <span key={notification}>{notification} </span>
+          ))}
+        </CollectionItemNotification>
+      )}
+      <HoverActionsAreaOverlay disabled={isUneditable}>
         <HoverActionsButtonWrapper
           buttons={[
             { text: 'View', component: HoverViewButton },

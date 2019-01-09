@@ -6,7 +6,10 @@ import CollectionNotification from 'components/CollectionNotification';
 import Button from 'shared/components/input/ButtonDefault';
 import { AlsoOnDetail } from 'types/Collection';
 import { publishCollection } from 'actions/Fronts';
-import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
+import {
+  hasUnpublishedChangesSelector,
+  isCollectionUneditableSelector
+} from 'selectors/frontsSelectors';
 import { State } from 'types/State';
 import { CollectionItemSets, Group } from 'shared/types/Collection';
 import {
@@ -17,7 +20,7 @@ import {
 
 interface CollectionPropsBeforeState {
   id: string;
-  children: (group: Group) => React.ReactNode;
+  children: (group: Group, isUneditable: boolean) => React.ReactNode;
   alsoOn: { [id: string]: AlsoOnDetail };
   frontId: string;
   browsingStage: CollectionItemSets;
@@ -29,6 +32,7 @@ type CollectionProps = CollectionPropsBeforeState & {
   canPublish: boolean;
   groups: Group[];
   displayEditWarning: boolean;
+  isUneditable: boolean;
 };
 
 const Collection = ({
@@ -41,11 +45,13 @@ const Collection = ({
   canPublish = true,
   publishCollection: publish,
   frontId,
-  displayEditWarning
+  displayEditWarning,
+  isUneditable
 }: CollectionProps) => (
   <CollectionDisplay
     id={id}
     browsingStage={browsingStage}
+    isUneditable={isUneditable}
     headlineContent={
       hasUnpublishedChanges &&
       canPublish && (
@@ -55,12 +61,15 @@ const Collection = ({
       )
     }
     metaContent={
-      (alsoOn[id].fronts.length || displayEditWarning) ? (
-        <CollectionNotification displayEditWarning={displayEditWarning} alsoOn={alsoOn[id]} />
+      alsoOn[id].fronts.length || displayEditWarning ? (
+        <CollectionNotification
+          displayEditWarning={displayEditWarning}
+          alsoOn={alsoOn[id]}
+        />
       ) : null
     }
   >
-    {groups.map(group => children(group))}
+    {groups.map(group => children(group, isUneditable))}
   </CollectionDisplay>
 );
 
@@ -71,6 +80,7 @@ const createMapStateToProps = () => {
     hasUnpublishedChanges: hasUnpublishedChangesSelector(state, {
       collectionId: id
     }),
+    isUneditable: isCollectionUneditableSelector(state, id),
     groups: collectionStageGroupsSelector(selectSharedState(state), {
       collectionSet: browsingStage,
       collectionId: id

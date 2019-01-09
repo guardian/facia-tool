@@ -14,6 +14,7 @@ interface OuterProps {
   onMove: MoveHandler<ArticleFragment>;
   onDrop: DropHandler;
   displayType?: CollectionItemDisplayTypes;
+  isUneditable?: boolean;
 }
 
 interface InnerProps {
@@ -28,7 +29,8 @@ const ArticleFragmentLevel = ({
   supporting,
   onMove,
   onDrop,
-  displayType = 'default'
+  displayType = 'default',
+  isUneditable
 }: Props) => (
   <Level
     arr={supporting || []}
@@ -42,6 +44,7 @@ const ArticleFragmentLevel = ({
     renderDrop={(props, isTarget) => (
       <DropZone
         {...props}
+        disabled={isUneditable}
         override={isTarget}
         dropColor="hsl(0, 0%, 64%)"
         style={{

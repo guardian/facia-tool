@@ -25,6 +25,7 @@ interface ContainerProps {
   displayType?: CollectionItemDisplayTypes;
   size?: 'small' | 'default';
   articleNotifications?: string[];
+  isUneditable?: boolean;
 }
 
 type ArticleContainerProps = ContainerProps & {
@@ -43,7 +44,8 @@ const CollectionItem = ({
   displayType,
   type,
   size,
-  articleNotifications
+  articleNotifications,
+  isUneditable
 }: ArticleContainerProps) => {
   const notifications =
     articleNotifications && articleNotifications.length
@@ -55,6 +57,7 @@ const CollectionItem = ({
       return (
         <Article
           id={uuid}
+          isUneditable={isUneditable}
           {...getNodeProps()}
           onDelete={onDelete}
           onAddToClipboard={() => onAddToClipboard(uuid)}
@@ -71,6 +74,7 @@ const CollectionItem = ({
       return (
         <SnapLink
           id={uuid}
+          isUneditable={isUneditable}
           {...getNodeProps()}
           onDelete={onDelete}
           onClick={() => onSelect(uuid)}

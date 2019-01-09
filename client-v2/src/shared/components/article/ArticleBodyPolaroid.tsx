@@ -13,9 +13,7 @@ import {
   HoverOphanButton,
   HoverDeleteButton
 } from '../input/HoverActionButtons';
-import {
-  HoverActionsAreaOverlay
-} from '../CollectionHoverItems';
+import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
 import ImagePlaceholder from '../ImagePlaceholder';
 import TextPlaceholder from '../TextPlaceholder';
 
@@ -35,7 +33,8 @@ const ArticlePolaroidComponent = ({
   pillarId,
   thumbnail,
   kicker,
-  isLive
+  isLive,
+  isUneditable
 }: ArticleBodyProps) => {
   const articleLabel =
     getArticleLabel(firstPublicationDate, kicker, isLive) || '';
@@ -68,7 +67,7 @@ const ArticlePolaroidComponent = ({
           </>
         )}
       </CollectionItemContent>
-      <HoverActionsAreaOverlay justify={'flex-end'}>
+      <HoverActionsAreaOverlay disabled={isUneditable} justify={'flex-end'}>
         <HoverActionsButtonWrapper
           buttons={[
             { text: 'View', component: HoverViewButton },

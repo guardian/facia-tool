@@ -4,7 +4,7 @@ import { TRANSFER_TYPE } from './constants';
 
 interface ChildrenProps {
   draggable: true;
-  onDragStart: (e: React.DragEvent) => void;
+  onDragStart?: (e: React.DragEvent) => void;
 }
 
 interface OuterProps<T> {

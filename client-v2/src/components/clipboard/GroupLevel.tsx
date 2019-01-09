@@ -12,6 +12,7 @@ interface OuterProps {
   children: LevelChild<ArticleFragment>;
   onMove: MoveHandler<ArticleFragment>;
   onDrop: DropHandler;
+  isUneditable?: boolean;
 }
 
 interface InnerProps {
@@ -25,7 +26,8 @@ const GroupLevel = ({
   groupId,
   articleFragments,
   onMove,
-  onDrop
+  onDrop,
+  isUneditable
 }: Props) => (
   <Level
     arr={articleFragments}
@@ -36,8 +38,8 @@ const GroupLevel = ({
     onMove={onMove}
     onDrop={onDrop}
     renderDrag={af => <ArticleDrag id={af.uuid} />}
-    renderDrop={(props, isTarget, index) => (
-      <DropZone {...props} override={isTarget} />
+    renderDrop={(props, isTarget) => (
+      <DropZone {...props} disabled={isUneditable} override={isTarget} />
     )}
   >
     {children}

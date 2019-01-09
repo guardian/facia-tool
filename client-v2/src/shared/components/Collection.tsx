@@ -34,6 +34,7 @@ type Props = ContainerProps & {
   headlineContent: React.ReactNode;
   metaContent: React.ReactNode;
   children: React.ReactNode;
+  isUneditable?: boolean;
 };
 
 const CollectionContainer = ContentContainer.extend`
@@ -45,6 +46,25 @@ const HeadlineContentContainer = styled('span')`
   position: relative;
   right: -11px;
   line-height: 0px;
+`;
+
+const CollectionDisabledTheme = styled('div')`
+  position: absolute;
+  background-color: hsla(0, 0%, 100%, 0.3);
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+`;
+
+const LockedCollectionFlag = styled('span')`
+  font-family: GHGuardianHeadline-Regular;
+  font-size: 22px;
+  color: #333333;
+  height: 40px;
+  line-height: 40px;
+  font-weight: normal;
+  font-style: normal;
 `;
 
 const CollectionMetaContainer = styled('div')`
@@ -70,27 +90,33 @@ const ItemCountMeta = CollectionMetaBase.extend`
   flex: 0;
 `;
 
-const CollectionHeadingText = styled('span')`
+const CollectionHeadlineWithConfigContainer = styled('div')`
+  flex-grow: 1;
+  max-width: calc(100% - 95px);
+  display: flex;
+`;
+
+const CollectionHeadingText = styled('div')`
+  display: inline-block;
+  max-width: 400px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
 
-const CollectionHeadlineWithConfigContainer = styled('div')``;
-
-const CollectionConfigContainer = styled('span')`
-  margin: 0 0.1rem;
-`;
-
-const CollectionConfigText = styled('span')`
+const CollectionConfigContainer = styled('div')`
+  display: inline-block;
   font-family: GHGuardianHeadline-Regular;
   font-size: 22px;
   color: #333333;
   height: 40px;
   line-height: 40px;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin-left: 3px;
+`;
+
+const CollectionConfigText = styled('div')`
+  display: inline;
   font-weight: normal;
   font-style: normal;
 `;
@@ -102,6 +128,7 @@ const CollectionConfigTextPipe = styled('span')`
 const CollectionToggleContainer = styled('div')`
   padding-top: 5px;
   margin-left: auto;
+  z-index: 2;
 `;
 
 const CollectionShortVerticalPinline = ShortVerticalPinline.extend`
@@ -109,9 +136,12 @@ const CollectionShortVerticalPinline = ShortVerticalPinline.extend`
   left: 0;
 `;
 
-class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
+class CollectionDisplay extends React.Component<Props, { isOpen: boolean }> {
+  public static defaultProps = {
+    isUneditable: false
+  };
   public state = {
-    isOpen: true
+    isOpen: !this.props.isUneditable
   };
 
   public toggleVisibility = () => {
@@ -124,41 +154,43 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
       articleIds,
       headlineContent,
       metaContent,
+      isUneditable,
       children
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
-
     return !!collection ? (
       <CollectionContainer id={createCollectionId(collection)}>
+
         <ContainerHeadingPinline>
           <CollectionHeadlineWithConfigContainer>
             <CollectionHeadingText>
               {collection.displayName}
             </CollectionHeadingText>
             <CollectionConfigContainer>
-              <CollectionConfigText>
-                {oc(collection).metadata[0].type()
-                  ? ` ${oc(collection).metadata[0].type()}`
-                  : null}
-              </CollectionConfigText>
-              <CollectionConfigText>
-                {oc(collection).platform() &&
-                oc(collection).platform() !== 'Any' ? (
-                  <>
-                    <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
-                    {`${collection.platform} only`}
-                  </>
-                ) : null}
-              </CollectionConfigText>
+              {oc(collection).metadata[0].type() ? (
+                <CollectionConfigText>
+                  <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
+                  {oc(collection).metadata[0].type()}
+                </CollectionConfigText>
+              ) : null}
+              {collection.platform && collection.platform !== 'Any' ? (
+                <CollectionConfigText>
+                  <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
+                  {`${collection.platform} Only`}
+                </CollectionConfigText>
+              ) : null}
             </CollectionConfigContainer>
           </CollectionHeadlineWithConfigContainer>
 
-          {headlineContent && (
+          {isUneditable ? (
+            <LockedCollectionFlag>Locked</LockedCollectionFlag>
+          ) : headlineContent ? (
             <HeadlineContentContainer>
               {headlineContent}
             </HeadlineContentContainer>
-          )}
+          ) : null}
         </ContainerHeadingPinline>
+
         <CollectionMetaContainer>
           <ItemCountMeta>
             <strong>{itemCount}</strong>
@@ -189,6 +221,9 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
           </CollectionToggleContainer>
         </CollectionMetaContainer>
         {this.state.isOpen && <FadeIn>{children}</FadeIn>}
+        {isUneditable ? (
+          <CollectionDisabledTheme className="DisabledTheme" />
+        ) : null}
       </CollectionContainer>
     ) : (
       <span>Waiting for collection</span>
@@ -212,4 +247,4 @@ const createMapStateToProps = () => {
   };
 };
 
-export default connect(createMapStateToProps)(CollectionDetail);
+export default connect(createMapStateToProps)(CollectionDisplay);

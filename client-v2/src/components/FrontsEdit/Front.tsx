@@ -142,14 +142,15 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                     canPublish={this.props.browsingStage !== 'live'}
                     browsingStage={this.props.browsingStage}
                   >
-                    {group => (
+                    {(group, isUneditable) => (
                       <GroupDisplay key={group.uuid} groupName={group.name}>
                         <GroupLevel
+                          isUneditable={isUneditable}
                           groupId={group.uuid}
                           onMove={this.handleMove}
                           onDrop={this.handleInsert}
                         >
-                          {(articleFragment, afProps) => {
+                          {(articleFragment, afDragProps) => {
                             collectionItemCount += 1;
                             const articleNotifications: string[] = [];
                             if (
@@ -170,7 +171,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                               <CollectionItem
                                 uuid={articleFragment.uuid}
                                 parentId={group.uuid}
-                                getNodeProps={() => afProps}
+                                isUneditable={isUneditable}
+                                getNodeProps={() =>
+                                  !isUneditable ? afDragProps : {}
+                                }
                                 onSelect={this.props.selectArticleFragment}
                                 onDelete={() =>
                                   this.removeCollectionItem(
@@ -186,20 +190,24 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                 articleNotifications={articleNotifications}
                               >
                                 <ArticleFragmentLevel
+                                  isUneditable={isUneditable}
                                   articleFragmentId={articleFragment.uuid}
                                   onMove={this.handleMove}
                                   onDrop={this.handleInsert}
                                 >
-                                  {(supporting, sProps) => (
+                                  {(supporting, supportingDragProps) => (
                                     <CollectionItem
                                       uuid={supporting.uuid}
                                       parentId={articleFragment.uuid}
-                                      getNodeProps={() => sProps}
                                       onSelect={id =>
                                         this.props.selectArticleFragment(
                                           id,
                                           true
                                         )
+                                      }
+                                      isUneditable={isUneditable}
+                                      getNodeProps={() =>
+                                        !isUneditable ? supportingDragProps : {}
                                       }
                                       isSelected={
                                         !selectedArticleFragment ||
