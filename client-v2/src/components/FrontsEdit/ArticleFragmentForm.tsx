@@ -23,7 +23,7 @@ import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
 import HorizontalRule from 'shared/components/layout/HorizontalRule';
 import InputCheckboxToggle from 'shared/components/input/InputCheckboxToggle';
-import InputImage from 'shared/components/input/InputImage';
+import InputImage, { InputImageContainerProps } from 'shared/components/input/InputImage';
 import InputGroup from 'shared/components/input/InputGroup';
 import InputButton from 'shared/components/input/InputButton';
 import Row from '../Row';
@@ -97,17 +97,16 @@ const imageCriteria = {
   heightAspectRatio: 3
 };
 
-const renderSlideshow: React.StatelessComponent<
-  WrappedFieldArrayProps<ImageData>
-> = ({ fields }) => (
+const renderSlideshow = ({ fields }: WrappedFieldArrayProps<ImageData>, frontId: string) => (
   <>
     {fields.map((name, index) => (
       <Col key={`${name}-${index}`}>
-        <Field
+        <Field<InputImageContainerProps>
           name={name}
           component={InputImage}
           size="small"
           criteria={imageCriteria}
+          frontId={frontId}
         />
       </Col>
     ))}
@@ -294,6 +293,7 @@ const formComponent: React.StatelessComponent<Props> = ({
                 component={InputImage}
                 disabled={imageHide}
                 criteria={imageCriteria}
+                frontId={frontId}
               />
             </ImageWrapper>
           </Col>
@@ -325,6 +325,7 @@ const formComponent: React.StatelessComponent<Props> = ({
                 component={InputImage}
                 disabled={imageHide}
                 criteria={imageCriteria}
+                frontId={frontId}
               />
             </ImageWrapper>
           </Col>
@@ -362,7 +363,8 @@ const formComponent: React.StatelessComponent<Props> = ({
           <SlideshowRow>
             <FieldArray
               name="slideshow"
-              component={renderSlideshow}
+              component={(args: WrappedFieldArrayProps<ImageData>) => renderSlideshow(args, frontId)
+              }
             />
           </SlideshowRow>
           <SlideshowLabel>Drag and drop up to five images</SlideshowLabel>

@@ -49,11 +49,13 @@ const IconAdd = IconDelete.extend`
   transform: rotate(45deg);
 `;
 
-type ComponentProps = {
-  frontId: string;
-  gridUrl: string | null,
-  criteria?: Criteria
-} & WrappedFieldProps;
+export interface InputImageContainerProps {
+  frontId: string,
+  criteria?: Criteria,
+  size?: 'small'
+}
+
+type ComponentProps = InputImageContainerProps & WrappedFieldProps & { gridUrl: string | null }
 
 interface ComponentState { isHovering: boolean, modalOpen: boolean }
 
