@@ -5,4 +5,5 @@ export default ContainerHeading.extend`
   height: 40px;
   line-height: 40px;
   vertical-align: middle;
+  justify-content: space-between;
 `;

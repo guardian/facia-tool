@@ -32,15 +32,18 @@ const getFrontCollections = (
 const combineCollectionWithConfig = (
   collectionConfig: CollectionConfig,
   collection: CollectionWithNestedArticles
-): CollectionWithNestedArticles =>
-  Object.assign({}, collection, {
+): CollectionWithNestedArticles => {
+  return Object.assign({}, collection, {
     id: collection.id,
     displayName: collectionConfig.displayName,
     groups: collectionConfig.groups,
     type: collectionConfig.type,
     frontsToolSettings: collectionConfig.frontsToolSettings,
-    platform: collectionConfig.platform
+    platform: collectionConfig.platform,
+    metadata: collectionConfig.metadata,
+    uneditable: collectionConfig.uneditable
   });
+};
 
 const populateDraftArticles = (collection: CollectionWithNestedArticles) =>
   !collection.draft ? collection.live : collection.draft;

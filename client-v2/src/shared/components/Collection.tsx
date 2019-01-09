@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import distanceFromNow from 'date-fns/distance_in_words_to_now';
 import upperFirst from 'lodash/upperFirst';
+import { oc } from 'ts-optchain';
 
 import ShortVerticalPinline from './layout/ShortVerticalPinline';
 import ContainerHeadingPinline from './typography/ContainerHeadingPinline';
@@ -10,6 +11,7 @@ import { Collection, CollectionItemSets } from '../types/Collection';
 import ButtonCircularCaret from './input/ButtonCircularCaret';
 import { State as SharedState } from '../types/State';
 import { State } from '../../types/State';
+
 import {
   selectSharedState,
   createArticlesInCollectionSelector
@@ -41,18 +43,8 @@ const CollectionContainer = ContentContainer.extend`
 
 const HeadlineContentContainer = styled('span')`
   position: relative;
-  margin-left: auto;
   right: -11px;
   line-height: 0px;
-`;
-
-const ConfigContentContainer = styled('span')`
-  position: relative;
-  font-family: TS3TextSans;
-  font-size: 14px;
-  font-weight: bold;
-  margin: 0 0;
-  padding: 0 25px;
 `;
 
 const CollectionMetaContainer = styled('div')`
@@ -61,6 +53,7 @@ const CollectionMetaContainer = styled('div')`
   font-family: TS3TextSans;
   font-size: 12px;
   font-weight: normal;
+  justify-content: space-between;
 `;
 
 const CollectionMetaBase = styled('span')`
@@ -81,7 +74,29 @@ const CollectionHeadingText = styled('span')`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  flex: 1;
+`;
+
+const CollectionHeadlineWithConfigContainer = styled('div')``;
+
+const CollectionConfigContainer = styled('span')`
+  margin: 0 0.1rem;
+`;
+
+const CollectionConfigText = styled('span')`
+  font-family: GHGuardianHeadline-Regular;
+  font-size: 22px;
+  color: #333333;
+  height: 40px;
+  line-height: 40px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: normal;
+  font-style: normal;
+`;
+
+const CollectionConfigTextPipe = styled('span')`
+  color: #c9c9c9;
 `;
 
 const CollectionToggleContainer = styled('div')`
@@ -112,18 +127,32 @@ class CollectionDetail extends React.Component<Props, { isOpen: boolean }> {
       children
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
-    return collection ? (
+
+    return !!collection ? (
       <CollectionContainer id={createCollectionId(collection)}>
         <ContainerHeadingPinline>
-          <CollectionHeadingText>
-            {collection.displayName}
-          </CollectionHeadingText>
-          {/* extra info containter */}
-          <ConfigContentContainer>
-            {collection.platform && collection.platform !== 'Any'
-              ? `${collection.platform} only`
-              : null}
-          </ConfigContentContainer>
+          <CollectionHeadlineWithConfigContainer>
+            <CollectionHeadingText>
+              {collection.displayName}
+            </CollectionHeadingText>
+            <CollectionConfigContainer>
+              <CollectionConfigText>
+                {oc(collection).metadata[0].type()
+                  ? ` ${oc(collection).metadata[0].type()}`
+                  : null}
+              </CollectionConfigText>
+              <CollectionConfigText>
+                {oc(collection).platform() &&
+                oc(collection).platform() !== 'Any' ? (
+                  <>
+                    <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
+                    {`${collection.platform} only`}
+                  </>
+                ) : null}
+              </CollectionConfigText>
+            </CollectionConfigContainer>
+          </CollectionHeadlineWithConfigContainer>
+
           {headlineContent && (
             <HeadlineContentContainer>
               {headlineContent}

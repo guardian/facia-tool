@@ -12,6 +12,9 @@ import GHGuardianHeadlineBoldWoff2 from '../fonts/headline/GHGuardianHeadline-Bo
 import GHGuardianHeadlineMediumTtf from '../fonts/headline/GHGuardianHeadline-Medium.ttf';
 import GHGuardianHeadlineMediumWoff from '../fonts/headline/GHGuardianHeadline-Medium.woff';
 import GHGuardianHeadlineMediumWoff2 from '../fonts/headline/GHGuardianHeadline-Medium.woff2';
+import GHGuardianHeadlineRegularTtf from '../fonts/headline/GHGuardianHeadline-Regular.ttf';
+import GHGuardianHeadlineRegularWoff from '../fonts/headline/GHGuardianHeadline-Regular.woff';
+import GHGuardianHeadlineRegularWoff2 from '../fonts/headline/GHGuardianHeadline-Regular.woff2';
 import GuardianTextSansTtf from '../fonts/text/GuardianTextSans-Regular.ttf';
 import GuardianTextSansWoff from '../fonts/text/GuardianTextSans-Regular.woff';
 import GuardianTextSansWoff2 from '../fonts/text/GuardianTextSans-Regular.woff2';
@@ -33,6 +36,16 @@ injectGlobal`
 
     font-style: 'bold',
     font-weight: 800
+  }
+
+  @font-face {
+    font-family: GHGuardianHeadline-Regular
+    src: url(${GHGuardianHeadlineRegularWoff2}) format('woff2'),
+      url(${GHGuardianHeadlineRegularWoff}) format('woff'),
+      url(${GHGuardianHeadlineRegularTtf}) format('truetype');
+
+     font-style: 'normal',
+     font-weight: 'normal'
   }
 
   @font-face {
