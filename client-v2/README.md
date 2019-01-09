@@ -39,6 +39,8 @@ The v2 application will be running here:
 
 View [client-dev.sh](scripts/client-dev.sh).
 
+If you wish to use git grep to search the code base you can use [fronts-find.sh](scripts/fronts-find.sh)
+
 ### Technologies
 
 V2 is a ReactRedux Javascript application hooking into the existing Fronts API and CAPI.
@@ -124,7 +126,7 @@ yarn lint-fix
 | [TSLint](https://palantir.github.io/tslint/)      | Typescript Linting | [tslint](tslint.json)|
 
 ## Typescript
-We are using Typescript for typing in Fronts V2. 
+We are using Typescript for typing in Fronts V2.
 
 ## File Structure
 
@@ -137,6 +139,6 @@ We are using Typescript for typing in Fronts V2.
 - `services` contains the modules for requests to APIs such as CAPI and FaciaAPI
 - `lib` contains modules designed to be reusable such as the Drag N' Drop (dnd) module
 - `shared` is a library written using React and Redux and Typescript for typing designed to make it easier to develop tools which need to provide the ability to curate collections of content. [Read more.](src/shared/.README)
-- `types` at the top level contains types that have no obvious home: e.g. Action which is a union of things that are split across a few files. 
-- `types` and `__tests__` are co-located with their modules at the folder level 
+- `types` at the top level contains types that have no obvious home: e.g. Action which is a union of things that are split across a few files.
+- `types` and `__tests__` are co-located with their modules at the folder level
 
