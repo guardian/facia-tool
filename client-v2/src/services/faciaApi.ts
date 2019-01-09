@@ -10,7 +10,7 @@ import {
 } from 'types/FaciaApi';
 import { ExternalArticle } from 'shared/types/ExternalArticle';
 import {
-  CollectionsResponse,
+  CollectionResponse,
   CollectionWithNestedArticles,
   NestedArticleFragment
 } from 'shared/types/Collection';
@@ -185,28 +185,30 @@ async function saveOpenFrontIds(frontIds?: string[]): Promise<void> {
   }
 }
 
-async function getCollection(
+function getCollection(
   collectionId: string
 ): Promise<CollectionWithNestedArticles> {
-  const response = await pandaFetch(`/collection/${collectionId}`, {
+  return pandaFetch(`/collection/${collectionId}`, {
     method: 'get',
     credentials: 'same-origin'
   })
-  const collection: CollectionsResponse = await response.json();
-  return {
-    ...collection,
-    id: collectionId
-  };
+    .then(response => response.json())
+    .then((json: CollectionResponse) => ({
+      ...json,
+      id: collectionId
+    }));
 }
 
 async function getCollections(
   collectionIds: string[]
 ): Promise<CollectionWithNestedArticles[]> {
-  const response = await pandaFetch(`/collections/${collectionIds.join(',')}`, {
+  const params = new URLSearchParams();
+  collectionIds.map(_ => params.append('ids', _))
+  const response = await pandaFetch(`/collections?${params.toString()}`, {
     method: 'get',
     credentials: 'same-origin'
   })
-  const collections: CollectionsResponse[] = await response.json();
+  const collections: CollectionResponse[] = await response.json();
   return collections.map((collection, index) => ({
     ...collection,
     id: collectionIds[index]
@@ -305,8 +307,8 @@ async function getArticlesBatched(
 
 export {
   fetchFrontsConfig,
-  getCollection,
   getCollections,
+  getCollection,
   getContent,
   getTagOrSectionTitle,
   getArticlesBatched,
