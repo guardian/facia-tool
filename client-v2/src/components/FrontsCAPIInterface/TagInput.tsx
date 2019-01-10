@@ -1,20 +1,16 @@
 import React from 'react';
 import Downshift, { GetInputPropsOptions } from 'downshift';
 import capitalize from 'lodash/capitalize';
+import debounce from 'lodash/debounce';
 import styled from 'styled-components';
-import TagQuery, { AsyncState, CAPITagQueryReponse } from '../CAPI/TagQuery';
 import { Tag } from 'types/Capi';
+import { liveCapi } from 'services/frontsCapi';
 
 type SearchTypes = 'tags' | 'sections' | 'desks';
 
-interface CAPITagInputProps<T> {
-  onChange: (value: T, type: SearchTypes) => void;
-  onSearchChange: (
-    value: React.FormEvent<HTMLInputElement>,
-    type: SearchTypes
-  ) => void;
+interface CAPITagInputProps {
+  onSelect: (value: Tag, type: SearchTypes) => void;
   placeholder?: string;
-  tagsSearchTerm: string;
   searchType: SearchTypes;
 }
 
@@ -67,88 +63,120 @@ const SearchContainer = styled('div')`
 
 // The extension here is the result of JSX ambiguity -
 // see https://github.com/Microsoft/TypeScript/issues/4922.
-const CAPITagInput = <T extends any>({
-  onChange,
-  onSearchChange,
-  placeholder,
-  tagsSearchTerm,
-  searchType
-}: CAPITagInputProps<T>) => (
-  <Downshift
-    itemToString={item => (item ? item.id : '')}
-    onChange={value => {
-      onChange(value, searchType);
-    }}
-  >
-    {({
-      getInputProps,
-      getLabelProps,
-      getMenuProps,
-      getItemProps,
-      isOpen,
-      inputValue,
-      highlightedIndex
-    }) => (
-      <div>
-        <SearchContainer>
-          <SearchTitle {...getLabelProps()}>
-            {capitalize(searchType)}:
-          </SearchTitle>
-          <SearchInput
-            {...getInputProps({
-              placeholder,
-              width: '100%',
-              value: tagsSearchTerm,
-              onChange: (input: any) => {
-                onSearchChange(input, searchType);
-              }
-            }) as GetInputPropsOptions & { ref: any }}
-          />
-        </SearchContainer>
-        <TagDropdown {...getMenuProps()}>
-          <TagQuery tagType={searchType} params={{ q: inputValue }}>
-            {({ value }: any) => {
-              if (!value || !isOpen) {
-                return false;
-              }
 
-              /**
-               * Filter tags based on ids
-               * think this is only for the test/test tag but sometime tags
-               * come through more than once
-               */
-              const seenIds: string[] = [];
+class CAPITagInput extends React.Component<
+  CAPITagInputProps,
+  { input: string; tags: Tag[] }
+> {
+  public static defaultProps = {
+    placeholder: 'Type tag name'
+  };
 
-              return value.response.results.map((tag: Tag, index: number) => {
-                const wasSeen = seenIds.indexOf(tag.id);
-                seenIds.push();
-                return (
-                  wasSeen && (
-                    <DropdownItem
-                      {...getItemProps({
-                        item: tag,
-                        index
-                      })}
-                      highlighted={highlightedIndex === index}
-                      key={tag.id}
-                    >
-                      {tag.id}
-                    </DropdownItem>
-                  )
-                );
-              });
-            }}
-          </TagQuery>
-        </TagDropdown>
-      </div>
-    )}
-  </Downshift>
-);
+  public state = {
+    input: '',
+    tags: []
+  };
 
-CAPITagInput.defaultProps = {
-  placeholder: 'Type tag name'
-};
+  private run: (value: string) => void;
 
-export { SearchTypes, AsyncState, CAPITagQueryReponse };
+  constructor(props: CAPITagInputProps) {
+    super(props);
+    this.run = debounce(this.updateTags, 250);
+  }
+
+  public render() {
+    const { onSelect, placeholder, searchType } = this.props;
+
+    /**
+     * Filter tags based on ids
+     * think this is only for the test/test tag but sometime tags
+     * come through more than once
+     */
+    return (
+      <Downshift
+        defaultIsOpen={false}
+        itemToString={item => (item ? item.id : '')}
+        onSelect={value => {
+          onSelect(value, searchType);
+        }}
+      >
+        {({
+          getInputProps,
+          getLabelProps,
+          getMenuProps,
+          getItemProps,
+          highlightedIndex,
+          isOpen
+        }) => (
+          <div>
+            <SearchContainer>
+              <SearchTitle {...getLabelProps()}>
+                {capitalize(searchType)}:
+              </SearchTitle>
+              <SearchInput
+                {...getInputProps({
+                  placeholder,
+                  width: '100%',
+                  value: this.state.input,
+                  onChange: (input: any) => this.onSearchChange(input)
+                }) as GetInputPropsOptions & { ref: any }}
+              />
+            </SearchContainer>
+            <TagDropdown {...getMenuProps()}>
+              {isOpen &&
+                this.state.tags.reduce(
+                  ({ els, seen }, tag: Tag) => {
+                    const { id } = tag;
+                    return seen.includes(id)
+                      ? { els, seen }
+                      : {
+                          els: [
+                            ...els,
+                            <DropdownItem
+                              {...getItemProps({
+                                item: tag,
+                                index: seen.length
+                              })}
+                              highlighted={highlightedIndex === seen.length}
+                              key={id}
+                            >
+                              {id}
+                            </DropdownItem>
+                          ],
+                          seen: [...seen, id]
+                        };
+                  },
+                  { els: [], seen: [] } as {
+                    els: React.ReactNode[];
+                    seen: string[];
+                  }
+                ).els}
+            </TagDropdown>
+          </div>
+        )}
+      </Downshift>
+    );
+  }
+
+  private async updateTags(q: string) {
+    const tags = (await liveCapi[this.props.searchType]({ q })).response
+      .results;
+    this.setState({
+      tags
+    });
+  }
+
+  private onSearchChange(e: React.SyntheticEvent<HTMLInputElement>) {
+    const { value } = e.currentTarget;
+    this.setState(
+      {
+        input: value
+      },
+      () => this.run(value)
+    );
+  }
+}
+
+export { SearchTypes };
 
 export default CAPITagInput;

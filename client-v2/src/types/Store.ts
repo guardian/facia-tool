@@ -5,5 +5,5 @@ import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 
 export type Store = ReduxStore<State>;
 export type GetState = () => State;
-export type Dispatch = ThunkDispatch<State, undefined, Action>;
-export type ThunkResult<R> = ThunkAction<R, State, undefined, Action>;
+export type Dispatch = ThunkDispatch<State, void, Action>;
+export type ThunkResult<R> = ThunkAction<R, State, void, Action>;

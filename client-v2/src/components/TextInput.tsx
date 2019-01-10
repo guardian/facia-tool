@@ -60,7 +60,6 @@ interface TextInputProps {
   placeholder?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onClear?: () => void;
-  onClearTag?: (searchTerm: string) => void;
   onSearch?: () => void;
   onDisplaySearchFilters?: () => void;
   width?: string;

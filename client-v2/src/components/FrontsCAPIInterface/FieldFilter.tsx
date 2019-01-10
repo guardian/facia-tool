@@ -5,14 +5,11 @@ import styled from 'styled-components';
 import ButtonCircularCaret from '../../shared/components/input/ButtonCircularCaret';
 import FadeIn from 'shared/components/animation/FadeIn';
 
-type FilterTypes = 'ratings';
-
 interface CAPIFieldFilterProps<T> {
-  onChange: (value: T, filterType: FilterTypes) => void;
-  items: Array<{ value: string; id: string }>;
+  onChange: (value: T) => void;
+  items: T[];
   placeholder?: string;
   filterTitle: string;
-  filterType: FilterTypes;
 }
 
 const FilterFieldDropdownMenu = FadeIn.extend`
@@ -65,17 +62,16 @@ const FilterContainer = styled('div')`
 
 // The extension here is the result of JSX ambiguity -
 // see https://github.com/Microsoft/TypeScript/issues/4922.
-const CAPIFieldFilter = <T extends any>({
+const CAPIFieldFilter = <T extends { label: string; id: string }>({
   onChange,
   items,
   placeholder,
-  filterTitle,
-  filterType
+  filterTitle
 }: CAPIFieldFilterProps<T>) => (
   <Downshift
     itemToString={item => (item ? item.id : '')}
     onChange={value => {
-      return onChange(value, filterType);
+      return onChange(value);
     }}
   >
     {({
@@ -123,7 +119,7 @@ const CAPIFieldFilter = <T extends any>({
                   })}
                   highlighted={highlightedIndex === index}
                 >
-                  {item.id}
+                  {item.label}
                 </DropdownItem>
               ))}
         </FilterFieldDropdownMenu>
@@ -135,7 +131,5 @@ const CAPIFieldFilter = <T extends any>({
 CAPIFieldFilter.defaultProps = {
   placeholder: 'Select field filters'
 };
-
-export { FilterTypes };
 
 export default CAPIFieldFilter;
