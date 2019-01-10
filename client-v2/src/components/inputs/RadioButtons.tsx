@@ -30,7 +30,6 @@ const ControlIndicator = styled('div')`
 const ControlRadio = styled('label')<{ inline?: boolean }>`
   position: relative;
   display: ${({ inline }) => (inline ? 'inline-block' : 'block')};
-  margin-bottom: 15px;
   padding-left: 24px;
   padding-top: 3px;
   cursor: pointer;
