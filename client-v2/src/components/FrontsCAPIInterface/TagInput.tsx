@@ -125,7 +125,7 @@ class CAPITagInput extends React.Component<
             <TagDropdown {...getMenuProps()}>
               {isOpen &&
                 this.state.tags.reduce(
-                  ({ els, seen }, tag: Tag, index: number) => {
+                  ({ els, seen }, tag: Tag) => {
                     const { id } = tag;
                     return seen.includes(id)
                       ? { els, seen }
@@ -135,9 +135,9 @@ class CAPITagInput extends React.Component<
                             <DropdownItem
                               {...getItemProps({
                                 item: tag,
-                                index
+                                index: seen.length
                               })}
-                              highlighted={highlightedIndex === index}
+                              highlighted={highlightedIndex === seen.length}
                               key={id}
                             >
                               {id}
