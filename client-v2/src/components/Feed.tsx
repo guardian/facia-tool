@@ -3,17 +3,11 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import FeedItem from './FeedItem';
 import SearchInput from './FrontsCAPIInterface/SearchInput';
-import Loader from './Loader';
 import { capiFeedSpecsSelector } from '../selectors/configSelectors';
 import { RadioButton, RadioGroup } from './inputs/RadioButtons';
 import { State } from 'types/State';
 import { CapiArticle } from 'types/Capi';
-import {
-  selectLiveFeed,
-  selectPreviewFeed,
-  selectLiveLoading,
-  selectPreviewLoading
-} from 'bundles/capiFeedBundle';
+import { liveSelectors, previewSelectors } from 'bundles/capiFeedBundle';
 
 interface FeedSpec {
   name: string;
@@ -26,6 +20,8 @@ interface FeedProps {
   capiFeedPreviewArticles: CapiArticle[];
   previewLoading: boolean;
   liveLoading: boolean;
+  liveError: string | null;
+  previewError: string | null;
 }
 
 interface FeedState {
@@ -33,13 +29,21 @@ interface FeedState {
   displaySearchFilters: boolean;
 }
 
+interface ErrorDisplayProps {
+  error: string | null;
+  children: React.ReactNode;
+}
+
+const ErrorDisplay = ({ error, children }: ErrorDisplayProps) =>
+  error ? <div>{error}</div> : <>{children}</>;
+
 interface LoaderDisplayProps {
   children: React.ReactNode;
   loading: boolean;
 }
 
 const LoaderDisplay = ({ loading, children }: LoaderDisplayProps) =>
-  loading ? <Loader /> : <React.Fragment>{children}</React.Fragment>;
+  loading ? <div>Loading!</div> : <>{children}</>;
 
 const FeedContainer = styled('div')`
   height: 100%;
@@ -107,6 +111,14 @@ class Feed extends React.Component<FeedProps, FeedState> {
     );
   }
 
+  get error() {
+    return (
+      (this.state.capiFeedIndex === 0 && this.props.liveError) ||
+      (this.state.capiFeedIndex === 1 && this.props.previewError) ||
+      null
+    );
+  }
+
   public render() {
     const getId = (internalPageCode: string | number | undefined) =>
       `internal-code/page/${internalPageCode}`;
@@ -124,40 +136,42 @@ class Feed extends React.Component<FeedProps, FeedState> {
           additionalFixedContent={this.renderFixedContent}
           isPreview={this.state.capiFeedIndex !== 0}
         >
-          <LoaderDisplay loading={this.isLoading}>
-            {articles.length ? (
-              articles
-                .filter(result => result.webTitle)
-                .map(
-                  ({
-                    id,
-                    webTitle,
-                    webUrl,
-                    webPublicationDate,
-                    sectionName,
-                    fields,
-                    pillarId
-                  }) => (
-                    <FeedItem
-                      id={id}
-                      key={webUrl}
-                      title={webTitle}
-                      href={webUrl}
-                      publicationDate={webPublicationDate}
-                      sectionName={sectionName}
-                      pillarId={pillarId}
-                      internalPageCode={
-                        fields && getId(fields.internalPageCode)
-                      }
-                      firstPublicationDate={fields.firstPublicationDate}
-                      isLive={!fields.isLive || fields.isLive === 'true'}
-                    />
+          <ErrorDisplay error={this.error}>
+            <LoaderDisplay loading={this.isLoading}>
+              {articles.length ? (
+                articles
+                  .filter(result => result.webTitle)
+                  .map(
+                    ({
+                      id,
+                      webTitle,
+                      webUrl,
+                      webPublicationDate,
+                      sectionName,
+                      fields,
+                      pillarId
+                    }) => (
+                      <FeedItem
+                        id={id}
+                        key={webUrl}
+                        title={webTitle}
+                        href={webUrl}
+                        publicationDate={webPublicationDate}
+                        sectionName={sectionName}
+                        pillarId={pillarId}
+                        internalPageCode={
+                          fields && getId(fields.internalPageCode)
+                        }
+                        firstPublicationDate={fields.firstPublicationDate}
+                        isLive={!fields.isLive || fields.isLive === 'true'}
+                      />
+                    )
                   )
-                )
-            ) : (
-              <NoResults>No results found</NoResults>
-            )}
-          </LoaderDisplay>
+              ) : (
+                <NoResults>No results found</NoResults>
+              )}
+            </LoaderDisplay>
+          </ErrorDisplay>
         </SearchInput>
       </FeedContainer>
     );
@@ -166,10 +180,12 @@ class Feed extends React.Component<FeedProps, FeedState> {
 
 const mapStateToProps = (state: State) => ({
   capiFeedSpecs: capiFeedSpecsSelector(state) as any,
-  capiFeedLiveArticles: selectLiveFeed(state),
-  capiFeedPreviewArticles: selectPreviewFeed(state),
-  liveLoading: selectLiveLoading(state),
-  previewLoading: selectPreviewLoading(state)
+  capiFeedLiveArticles: liveSelectors.selectAll(state),
+  capiFeedPreviewArticles: previewSelectors.selectAll(state),
+  liveLoading: liveSelectors.selectIsLoading(state),
+  previewLoading: previewSelectors.selectIsLoading(state),
+  liveError: liveSelectors.selectCurrentError(state),
+  previewError: previewSelectors.selectCurrentError(state)
 });
 
 export default connect(mapStateToProps)(Feed);

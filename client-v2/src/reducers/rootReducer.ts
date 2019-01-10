@@ -9,7 +9,7 @@ import unpublishedChanges from './unpublishedChangesReducer';
 import clipboard from './clipboardReducer';
 import confirmModal from './confirmModalReducer';
 import editor from '../bundles/frontsUIBundle';
-import { reducer as capiFeed } from '../bundles/capiFeedBundle';
+import { capiLiveFeed, capiPreviewFeed } from '../bundles/capiFeedBundle';
 import staleFronts from './staleFrontsReducer';
 
 const rootReducer = (state: any = {}, action: any) => ({
@@ -24,7 +24,8 @@ const rootReducer = (state: any = {}, action: any) => ({
   staleFronts: staleFronts(state.staleFronts, action),
   form: form(state.form, action),
   confirmModal: confirmModal(state.confirmModal, action),
-  capiFeed: capiFeed(state.capiFeed, action)
+  capiLiveFeed: capiLiveFeed(state.capiLiveFeed, action),
+  capiPreviewFeed: capiPreviewFeed(state.capiPreviewFeed, action)
 });
 
 export default rootReducer;
