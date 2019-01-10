@@ -38,7 +38,7 @@ export const fetchLive = (
   }
 
   if (results) {
-    dispatch(liveActions.fetchSuccess(results, 'live'));
+    dispatch(liveActions.fetchSuccess(results));
   }
 };
 
@@ -56,7 +56,7 @@ export const fetchPreview = (
   }
 
   if (results) {
-    dispatch(previewActions.fetchSuccess(results, 'preview'));
+    dispatch(previewActions.fetchSuccess(results));
   }
 };
 
