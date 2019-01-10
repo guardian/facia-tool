@@ -65,6 +65,7 @@ const SnapLink = ({
   return (
     <CollectionItemContainer {...rest}>
       <CollectionItemBody
+        data-testid="snap"
         size={size}
         fade={fade}
         displayType={displayType}

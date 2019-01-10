@@ -6,6 +6,9 @@ const config = require('../fixtures/config');
 const collection = require('../fixtures/collection');
 const capiCollection = require('../fixtures/capi-collection');
 const capiSearch = require('../fixtures/capi-search');
+const snapTag = require('../fixtures/snap-tag');
+const snapTagPage = require('../fixtures/snap-tag-page');
+const snapExternalPage = require('../../src/shared/fixtures/bbcSectionPage.ts');
 
 const findArticleWithIDFromResponse = id =>
   capiSearch.response.results.filter(
@@ -16,6 +19,7 @@ const findArticleWithIDFromResponse = id =>
 module.exports = async () =>
   new Promise((res, rej) => {
     const app = express();
+
     app.get('/v2/*', (_, res) =>
       res.sendFile(path.join(__dirname, './index.html'))
     );
@@ -54,18 +58,45 @@ module.exports = async () =>
       }
     });
 
+    // Endpoints to snap links - /tone/ & bbc specific to fixtures.
+    app.get('/api/preview/tone/*', (req, res) => res.json(snapTag));
+    app.get('/http/proxy/*', (req, res) => {
+      const path = req.params[0];
+      return path.includes(`bbc`)
+        ? res.json(snapExternalPage)
+        : res.json(snapTagPage);
+    });
+
     // Endpoint for api requests for single pieces of content
     const handler = (req, res) => {
       const match = req.params[0];
       if (!match) {
         throw new Error('No match for content - no id');
       }
-      const internalPageCode = match.replace(/[^\d.]/g, '');
+      if (/internal-code\/page\//.test(match)) {
+        const internalPageCode = match.replace(/[^\d.]/g, '');
+        const article = capiSearch.response.results.find(
+          article => article.fields.internalPageCode === internalPageCode
+        );
+        if (!article) {
+          throw new Error(`No match for content with id ${internalPageCode}`);
+        }
+        const result = {
+          response: {
+            content: article,
+            status: 'ok',
+            total: 1
+          }
+        };
+        return res.json(result);
+      }
+
       const article = capiSearch.response.results.find(
-        article => article.fields.internalPageCode === internalPageCode
+        article => article.id === match
       );
+
       if (!article) {
-        throw new Error(`No match for content with id ${internalPageCode}`);
+        throw new Error(`No match for content with id ${match}`);
       }
       const result = {
         response: {
@@ -76,26 +107,31 @@ module.exports = async () =>
       };
       return res.json(result);
     };
+
     // Attempts at a capture group:
     // /api/(preview|live)/*
-    // /api/(?:preview|live)/*
+    // /api/(?:preview|live)/
     app.get('/api/live/*', handler);
     app.get('/api/preview/*', handler);
 
     app.get('/config', (_, res) => res.json(config));
     app.get('/collection/:id', (_, res) => res.json(collection));
+
     // send the assets from dist
     app.get(
       '*/:file',
       (req, res) =>
-        res.sendFile(
-          path.join(
-            __dirname,
-            '../../../public/client-v2/dist',
-            req.params.file
-          )
-        )
+        req.params[0].includes('bbc') // prevents error messages from External Snap Link fixture
+          ? res.json('')
+          : res.sendFile(
+              path.join(
+                __dirname,
+                '../../../public/client-v2/dist',
+                req.params.file
+              )
+            )
     );
+
     // this catches update requests and pretends they went through ok
     app.post('*', (_, res) => res.json({ ok: true }));
     const server = app.listen(port, err => {

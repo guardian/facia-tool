@@ -1,10 +1,13 @@
 import setup from '../server/setup';
 import teardown from '../server/teardown';
 import {
-  frontHeadline,
-  feedItemHeadline,
   frontDropZone,
-  feedItem
+  frontHeadline,
+  frontSnapLink,
+  feedItem,
+  feedItemHeadline,
+  guardianSnapLink,
+  externalSnapLink
 } from '../selectors';
 
 fixture`Fronts edit`.page`http://localhost:3456/v2/editorial`
@@ -33,4 +36,47 @@ test('Drag and drop', async t => {
     .notEql(topFeedHeadline)
     .expect(frontHeadline().textContent)
     .eql(topFrontHeadline);
+});
+
+test('Snap Links - Guardian', async t => {
+  const frontDropsCount = await frontDropZone().count;
+  const tagSnap = await guardianSnapLink();
+  await t
+    .maximizeWindow() // needed to find DOM elements in headless mode
+    .setNativeDialogHandler(() => false)
+    .dragToElement(tagSnap, frontDropZone(1))
+    .expect(frontDropZone().count)
+    .eql(frontDropsCount + 1)
+    .expect(frontSnapLink(0).textContent)
+    .contains('Recipes | The Guardian')
+    .expect(frontSnapLink(0).textContent)
+    .notContains('Latest');
+});
+
+test('Snap Links - Guardian Latest', async t => {
+  const frontDropsCount = await frontDropZone().count;
+  const tagSnap = await guardianSnapLink();
+  await t
+    .maximizeWindow() // needed to find DOM elements in headless mode
+    .setNativeDialogHandler(() => true)
+    .dragToElement(tagSnap, frontDropZone(1))
+    .expect(frontDropZone().count)
+    .eql(frontDropsCount + 1)
+    .expect(frontSnapLink(0).textContent)
+    .contains('{ Recipes }')
+    .expect(frontSnapLink(0).textContent)
+    .contains('Latest');
+});
+
+test('Snap Links - External', async t => {
+  const frontDropsCount = await frontDropZone().count;
+  const externalSnap = await externalSnapLink();
+  await t
+    .maximizeWindow() // needed to find DOM elements in headless mode
+    .setNativeDialogHandler(() => false)
+    .dragToElement(externalSnap, frontDropZone(1))
+    .expect(frontDropZone().count)
+    .eql(frontDropsCount + 1)
+    .expect(frontSnapLink(0).textContent)
+    .contains('Business - BBC News');
 });
