@@ -17,6 +17,11 @@ import {
   createCollectionEditWarningSelector,
   selectSharedState
 } from 'shared/selectors/shared';
+import {
+  selectIsCollectionOpen,
+  editorOpenCollections,
+  editorCloseCollections
+} from 'bundles/frontsUIBundle';
 
 interface CollectionPropsBeforeState {
   id: string;
@@ -33,6 +38,8 @@ type CollectionProps = CollectionPropsBeforeState & {
   groups: Group[];
   displayEditWarning: boolean;
   isUneditable: boolean;
+  isOpen: boolean;
+  onChangeOpenState: (id: string, isOpen: boolean) => void;
 };
 
 const Collection = ({
@@ -46,12 +53,16 @@ const Collection = ({
   publishCollection: publish,
   frontId,
   displayEditWarning,
-  isUneditable
+  isUneditable,
+  isOpen,
+  onChangeOpenState
 }: CollectionProps) => (
   <CollectionDisplay
     id={id}
     browsingStage={browsingStage}
     isUneditable={isUneditable}
+    isOpen={isOpen}
+    onChangeOpenState={() => onChangeOpenState(id, !isOpen)}
     headlineContent={
       hasUnpublishedChanges &&
       canPublish && (
@@ -87,16 +98,17 @@ const createMapStateToProps = () => {
     }),
     displayEditWarning: editWarningSelector(selectSharedState(state), {
       collectionId: id
-    })
+    }),
+    isOpen: selectIsCollectionOpen(state, id)
   });
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
-  return {
-    publishCollection: (id: string, frontId: string) =>
-      dispatch(publishCollection(id, frontId))
-  };
-};
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  publishCollection: (id: string, frontId: string) =>
+    dispatch(publishCollection(id, frontId)),
+  onChangeOpenState: (id: string, isOpen: boolean) =>
+    dispatch(isOpen ? editorOpenCollections(id) : editorCloseCollections(id))
+});
 
 export default connect(
   createMapStateToProps,

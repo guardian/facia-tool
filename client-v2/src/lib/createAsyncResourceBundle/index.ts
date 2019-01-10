@@ -143,10 +143,6 @@ type RootState = any;
  *
  * Consumers can add add their own actions and selectors, and extend
  * the given reducer, to provide additional functionality.
- *
- * @todo The any type here is a massive cop-out to cope with the fact
- * that the shape of the resource might be keyed by ID, or just a blob
- * of state that we don't index. Solutions welcome!
  */
 function createAsyncResourceBundle<Resource>(
   // The name of the entity for which this reducer is responsible
@@ -160,11 +156,10 @@ function createAsyncResourceBundle<Resource>(
     // Provides a namespace for the created actions, separated by a slash,
     // e.g.the resource 'books' namespaced with 'shared' becomes SHARED/BOOKS
     namespace?: string;
-    // The initial state of the reducer data. Defaults to null.
-    initialData?: any;
+    // The initial state of the reducer data. Defaults to an empty object.
+    initialData?: Resource;
   } = {
-    indexById: false,
-    initialData: {}
+    indexById: false
   }
 ) {
   const { indexById } = options;

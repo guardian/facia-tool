@@ -14,7 +14,8 @@ import { AlsoOnDetail } from 'types/Collection';
 import {
   editorSelectArticleFragment,
   selectEditorArticleFragment,
-  editorClearArticleFragmentSelection
+  editorClearArticleFragmentSelection,
+  editorOpenCollections
 } from 'bundles/frontsUIBundle';
 import {
   ArticleFragmentMeta,
@@ -32,6 +33,7 @@ import { getFront } from 'selectors/frontsSelectors';
 import { FrontConfig } from 'types/FaciaApi';
 import { visibleFrontArticlesSelector } from 'selectors/frontsSelectors';
 import { VisibleArticlesResponse } from 'types/FaciaApi';
+import { noOfOpenCollectionsOnFirstLoad } from 'constants/fronts';
 
 const FrontContainer = styled('div')`
   display: flex;
@@ -58,6 +60,7 @@ type FrontProps = FrontPropsBeforeState & {
   clearArticleFragmentSelection: () => void;
   removeCollectionItem: (parentId: string, id: string) => void;
   removeSupportingCollectionItem: (parentId: string, id: string) => void;
+  editorOpenCollections: (ids: string[]) => void;
   front: FrontConfig;
   articlesVisible: { [id: string]: VisibleArticlesResponse };
 };
@@ -72,6 +75,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     this.state = {
       error: undefined
     };
+  }
+
+  public componentWillMount() {
+    this.props.editorOpenCollections(this.props.front.collections.slice(0, noOfOpenCollectionsOnFirstLoad))
   }
 
   public handleError = (error: string) => {
@@ -296,7 +303,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
       dispatch(
         removeArticleFragment('articleFragment', parentId, uuid, 'collection')
       );
-    }
+    },
+    editorOpenCollections: (ids: string[]) => dispatch(editorOpenCollections(ids))
   };
 };
 
