@@ -1,4 +1,4 @@
-import createAsyncResourceBundle, { State } from 'lib/createAsyncResourceBundle';
+import createAsyncResourceBundle, { State } from 'shared/util/createAsyncResourceBundle';
 import { FrontsConfig } from 'types/FaciaApi';
 
 export const {

@@ -5,7 +5,7 @@ import {
   Group,
   ArticleFragmentMeta
 } from './Collection';
-import { Actions } from 'lib/createAsyncResourceBundle';
+import { Actions } from '../util/createAsyncResourceBundle';
 
 interface ArticleFragmentsReceived {
   type: 'SHARED/ARTICLE_FRAGMENTS_RECEIVED';

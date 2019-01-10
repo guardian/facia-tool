@@ -1,4 +1,4 @@
-import createAsyncResourceBundle from '../';
+import createAsyncResourceBundle from '../createAsyncResourceBundle';
 
 const { actions, reducer, selectors, initialState } = createAsyncResourceBundle(
   'books'
