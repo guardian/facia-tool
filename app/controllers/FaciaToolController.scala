@@ -1,7 +1,7 @@
 package controllers
 
 import _root_.util.Acl
-import com.gu.facia.api.models.TrainingPriority
+import com.gu.facia.client.models.{CollectionJson}
 import com.gu.facia.api.models.faciapress.{Draft, FrontPath, Live, PressJob}
 import com.gu.facia.client.models.Metadata
 import com.gu.pandomainauth.action.UserRequest
@@ -40,26 +40,46 @@ class FaciaToolController(
       NoCache {
         Ok(Json.toJson(configJson)).as("application/json")}}}
 
-  def getCollection(collectionId: String) = AccessAPIAuthAction.async { implicit request =>
-
+  def getCollection(collectionId: String): Action[AnyContent] = AccessAPIAuthAction.async { implicit request =>
     val collectionPriorities = configAgent.getFrontsPermissionsPriorityByCollectionId(collectionId)
 
     withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
+      val collectionsFuture = fetchCollections(List(collectionId))
 
-      FaciaToolMetrics.ApiUsageCount.increment()
-      val collection = frontsApi.amazonClient.collection(collectionId).flatMap { collectionJson =>
-        collectionJson.map(json => mediaServiceClient.addThumbnailsToCollection(json, collectionId)) match {
-          case Some(f) => f.map(Some(_))
-          case None => Future.successful(None)
-
-        }
+      collectionsFuture.map { collections =>
+        collections.headOption.map { collection =>
+           NoCache {
+            Ok(Json.toJson(collection)).as("application/json")
+          }
+        }.getOrElse(Results.NotFound)
       }
-      collection.map(c => NoCache {
-        Ok(Json.toJson(c)).as("application/json")
-      })
-
     }
   }
+
+  def getCollections(): Action[AnyContent] = AccessAPIAuthAction.async { implicit request =>
+    val collectionIds = request.queryString.getOrElse("ids", Seq()).toList
+    val collectionPriorities = collectionIds.flatMap(configAgent.getFrontsPermissionsPriorityByCollectionId(_)).toSet
+
+    withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
+      val collections = fetchCollections(collectionIds)
+
+      collections.map(c => NoCache {
+        Ok(Json.toJson(c)).as("application/json")
+      })
+    }
+  }
+
+  def fetchCollections(collectionIds: List[String]): Future[List[Option[CollectionJson]]] = {
+    FaciaToolMetrics.ApiUsageCount.increment()
+    val futures = collectionIds.map(collectionId => frontsApi.amazonClient.collection(collectionId).flatMap { collectionJson =>
+      collectionJson.map(json => mediaServiceClient.addThumbnailsToCollection(json, collectionId)) match {
+        case Some(collectionFuture) => collectionFuture.map(Some(_))
+        case None => Future.successful(None)
+      }
+    })
+    Future.sequence(futures)
+  }
+
 
   def publishCollection(collectionId: String) = AccessAPIAuthAction.async { implicit request =>
 

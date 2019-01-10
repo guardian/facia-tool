@@ -199,6 +199,22 @@ function getCollection(
     }));
 }
 
+async function getCollections(
+  collectionIds: string[]
+): Promise<CollectionWithNestedArticles[]> {
+  const params = new URLSearchParams();
+  collectionIds.map(_ => params.append('ids', _))
+  const response = await pandaFetch(`/collections?${params.toString()}`, {
+    method: 'get',
+    credentials: 'same-origin'
+  })
+  const collections: CollectionResponse[] = await response.json();
+  return collections.map((collection, index) => ({
+    ...collection,
+    id: collectionIds[index]
+  }));
+}
+
 /**
  * Get a CAPI query string for the given content ids. This could be a single article
  * or tag/section, or a list of articles.
@@ -291,6 +307,7 @@ async function getArticlesBatched(
 
 export {
   fetchFrontsConfig,
+  getCollections,
   getCollection,
   getContent,
   getTagOrSectionTitle,

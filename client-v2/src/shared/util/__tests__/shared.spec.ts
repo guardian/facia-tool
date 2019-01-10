@@ -39,8 +39,8 @@ describe('Shared utilities', () => {
         collection,
         collectionConfig
       );
-      expect(result.collection.live).toHaveLength(3);
-      const [gId1, gId2, gId3] = result.collection.live;
+      expect(result.normalisedCollection.live).toHaveLength(3);
+      const [gId1, gId2, gId3] = result.normalisedCollection.live!;
       const g1Articles = result.groups[gId1].articleFragments;
       const g2Articles = result.groups[gId2].articleFragments;
       const g3Articles = result.groups[gId3].articleFragments;
@@ -81,28 +81,28 @@ describe('Shared utilities', () => {
         },
         collectionConfig
       );
-      expect(result.collection.live.length).toEqual(3);
-      expect(result.collection.draft.length).toEqual(3);
-      expect(result.collection.previously.length).toEqual(3);
+      expect(result.normalisedCollection.live!.length).toEqual(3);
+      expect(result.normalisedCollection.draft!.length).toEqual(3);
+      expect(result.normalisedCollection.previously!.length).toEqual(3);
       expect(
-        result.collection.live.every(
+        result.normalisedCollection.live!.every(
           (articleId: string) => typeof articleId === 'string'
         )
       ).toBe(true);
       expect(
-        result.collection.draft.every(
+        result.normalisedCollection.draft!.every(
           (articleId: string) => typeof articleId === 'string'
         )
       ).toBe(true);
       expect(
-        result.collection.previously.every(
+        result.normalisedCollection.previously!.every(
           (articleId: string) => typeof articleId === 'string'
         )
       ).toBe(true);
       expect(Object.keys(result.articleFragments).length).toEqual(5);
-      const liveGroup2 = result.groups[result.collection.live[1]];
-      const draftGroup3 = result.groups[result.collection.draft[2]];
-      const prevGroup3= result.groups[result.collection.previously[2]];
+      const liveGroup2 = result.groups[result.normalisedCollection.live![1]];
+      const draftGroup3 = result.groups[result.normalisedCollection.draft![2]];
+      const prevGroup3= result.groups[result.normalisedCollection.previously![2]];
       expect(result.articleFragments[liveGroup2.articleFragments[0]].id).toBe(
         'article/live/0'
       );
@@ -122,9 +122,9 @@ describe('Shared utilities', () => {
         },
         collectionConfigWithoutGroups
       );
-      expect(result.collection.live).toHaveLength(1);
-      expect(result.collection.draft).toHaveLength(1);
-      expect(result.collection.previously).toHaveLength(1);
+      expect(result.normalisedCollection.live).toHaveLength(1);
+      expect(result.normalisedCollection.draft).toHaveLength(1);
+      expect(result.normalisedCollection.previously).toHaveLength(1);
       expect(Object.keys(result.articleFragments)).toHaveLength(0);
     });
     it('should normalise supporting article fragments', () => {
@@ -132,13 +132,13 @@ describe('Shared utilities', () => {
         collectionWithSupportingArticles,
         collectionConfig
       );
-      expect(result.collection.live.length).toEqual(3);
+      expect(result.normalisedCollection.live!.length).toEqual(3);
       expect(Object.keys(result.articleFragments).length).toEqual(4);
       expect(
         Object.keys(result.articleFragments).every(
           articleId =>
-            !result.articleFragments[articleId].supporting ||
-            result.articleFragments[articleId].supporting.map(
+            !result.articleFragments[articleId].meta.supporting ||
+            result.articleFragments[articleId].meta.supporting!.every(
               (id: string) => typeof id === 'string'
             )
         )
@@ -153,7 +153,7 @@ describe('Shared utilities', () => {
           groups: undefined
         }
       );
-      const groupId = result.collection.live[0];
+      const groupId = result.normalisedCollection.live![0];
       expect(result.groups[groupId].articleFragments).toHaveLength(3);
     })
   });

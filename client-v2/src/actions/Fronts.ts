@@ -5,12 +5,13 @@ import {
   fetchFrontsConfig,
   fetchLastPressed as fetchLastPressedApi,
   publishCollection as publishCollectionApi,
+  getCollections as getCollectionsApi,
   getCollection as getCollectionApi
 } from 'services/faciaApi';
 import { actions as frontsConfigActions } from 'bundles/frontsConfigBundle';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import { isFrontStale } from 'util/frontsUtils';
-import { getCollection } from 'actions/Collections';
+import { getCollections } from 'actions/Collections';
 import { VisibleArticlesResponse } from 'types/FaciaApi';
 import { visibleArticlesSelector } from 'selectors/frontsSelectors';
 import { Stages } from 'shared/types/Collection';
@@ -87,7 +88,7 @@ function publishCollection(
           ])
         );
 
-        dispatch(getCollection(collectionId));
+        dispatch(getCollections([collectionId]));
 
         return new Promise(resolve => setTimeout(resolve, 10000))
           .then(() =>

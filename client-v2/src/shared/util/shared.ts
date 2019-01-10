@@ -1,4 +1,4 @@
-import { CollectionWithNestedArticles, Group } from 'shared/types/Collection';
+import { CollectionWithNestedArticles, Group, Collection, ArticleFragment } from 'shared/types/Collection';
 import { selectors as collectionSelectors } from 'shared/bundles/collectionsBundle';
 import { selectSharedState } from 'shared/selectors/shared';
 import { State } from 'types/State';
@@ -92,7 +92,11 @@ const addEmptyGroupsFromCollectionConfig = (
 const normaliseCollectionWithNestedArticles = (
   collection: CollectionWithNestedArticles,
   collectionConfig: CollectionConfig
-) => {
+): {
+  normalisedCollection: Collection,
+  groups: {[key: string]: Group},
+  articleFragments: {[key: string]: ArticleFragment}
+} => {
   const normalisedCollection = normalize(collection);
   const {
     addedGroups,
@@ -104,7 +108,7 @@ const normaliseCollectionWithNestedArticles = (
     collectionConfig
   );
   return {
-    collection: {
+    normalisedCollection: {
       ...normalisedCollection.result,
       live,
       draft,
