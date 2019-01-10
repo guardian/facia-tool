@@ -9,6 +9,8 @@ import {
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { createCollectionId } from 'shared/components/Collection';
+import { editorOpenCollections } from 'bundles/frontsUIBundle';
+import { Dispatch } from 'types/Store';
 
 interface FrontCollectionOverviewContainerProps {
   collectionId: string;
@@ -18,6 +20,7 @@ interface FrontCollectionOverviewContainerProps {
 type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
   collection: Collection | undefined;
   articleCount: number;
+  openCollection: (id: string) => void;
 };
 
 const Container = styled.button`
@@ -68,7 +71,8 @@ const Name = styled.span`
 
 const CollectionOverview = ({
   collection,
-  articleCount
+  articleCount,
+  openCollection
 }: FrontCollectionOverviewProps) =>
   collection ? (
     <Container
@@ -82,6 +86,7 @@ const CollectionOverview = ({
             block: 'start'
           });
         }
+        openCollection(collection.id)
       }}
     >
       <TextLeft>
@@ -105,4 +110,8 @@ const mapStateToProps = () => {
   });
 };
 
-export default connect(mapStateToProps)(CollectionOverview);
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  openCollection: (id: string) => dispatch(editorOpenCollections(id))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(CollectionOverview);
