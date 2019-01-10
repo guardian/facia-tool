@@ -36,6 +36,7 @@ const GridIFrame = styled('iframe')`
   height: 100%;
   width: 96%;
   margin-left: 2%;
+  border: 0;
 `;
 
 const ImageContainer = styled('img')`
