@@ -15,10 +15,8 @@ import {
   persistClipboardOnEdit,
   persistOpenFrontsOnEdit
 } from './storeMiddleware';
-import { Config } from 'types/Config';
-import { ThunkArgs } from 'types/ThunkArgs';
 
-export default function configureStore(config: Config, extraArgs: ThunkArgs) {
+export default function configureStore() {
   const history = createBrowserHistory();
   const router = routerMiddleware(history);
   const store = createStore(
@@ -26,7 +24,7 @@ export default function configureStore(config: Config, extraArgs: ThunkArgs) {
     enableBatching(rootReducer),
     compose(
       applyMiddleware(
-        thunkMiddleware.withExtraArgument(extraArgs),
+        thunkMiddleware,
         updateStateFromUrlChange,
         router,
         persistCollectionOnEdit(),

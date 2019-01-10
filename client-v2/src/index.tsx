@@ -11,18 +11,10 @@ import { configReceived } from 'actions/Config';
 import { editorSetOpenFronts } from 'bundles/frontsUIBundle';
 import { storeClipboardContent } from 'actions/Clipboard';
 import { Dispatch } from 'types/Store';
-import capiQuery from 'services/capiQuery';
-import CAPIServiceContext from './components/CAPIServiceContext';
 import Modal from 'react-modal';
 
+const store = configureStore();
 const config = extractConfigFromPage();
-
-const capiServices = {
-  capiLiveService: capiQuery(config.capiLiveUrl),
-  capiPreviewService: capiQuery(config.capiPreviewUrl)
-};
-
-const store = configureStore(config, capiServices);
 
 // publish uncaught errors to sentry.io
 if (config.stage === 'PROD' && config.ravenUrl) {
@@ -43,9 +35,7 @@ if (reactMount) {
   render(
     <Provider store={store}>
       <BrowserRouter basename="/v2">
-        <CAPIServiceContext.Provider value={capiServices}>
-          <App />
-        </CAPIServiceContext.Provider>
+        <App />
       </BrowserRouter>
     </Provider>,
     reactMount

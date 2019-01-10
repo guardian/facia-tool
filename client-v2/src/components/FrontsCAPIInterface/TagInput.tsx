@@ -4,8 +4,7 @@ import capitalize from 'lodash/capitalize';
 import debounce from 'lodash/debounce';
 import styled from 'styled-components';
 import { Tag } from 'types/Capi';
-import capiQuery from 'services/capiQuery';
-import CAPIServiceContext from 'components/CAPIServiceContext';
+import { liveCapi } from 'services/frontsCapi';
 
 type SearchTypes = 'tags' | 'sections' | 'desks';
 
@@ -14,10 +13,6 @@ interface CAPITagInputProps {
   placeholder?: string;
   searchType: SearchTypes;
 }
-
-type CAPITagInputContextProps = CAPITagInputProps & {
-  capiService: ReturnType<typeof capiQuery>;
-};
 
 const TagDropdown = styled('div')`
   margin-right: 19px;
@@ -70,7 +65,7 @@ const SearchContainer = styled('div')`
 // see https://github.com/Microsoft/TypeScript/issues/4922.
 
 class CAPITagInput extends React.Component<
-  CAPITagInputContextProps,
+  CAPITagInputProps,
   { input: string; tags: Tag[] }
 > {
   public static defaultProps = {
@@ -84,7 +79,7 @@ class CAPITagInput extends React.Component<
 
   private run: (value: string) => void;
 
-  constructor(props: CAPITagInputContextProps) {
+  constructor(props: CAPITagInputProps) {
     super(props);
     this.run = debounce(this.updateTags, 250);
   }
@@ -164,8 +159,8 @@ class CAPITagInput extends React.Component<
   }
 
   private async updateTags(q: string) {
-    const tags = (await this.props.capiService[this.props.searchType]({ q }))
-      .response.results;
+    const tags = (await liveCapi[this.props.searchType]({ q })).response
+      .results;
     this.setState({
       tags
     });
@@ -184,10 +179,4 @@ class CAPITagInput extends React.Component<
 
 export { SearchTypes };
 
-export default (props: CAPITagInputProps) => (
-  <CAPIServiceContext.Consumer>
-    {({ capiLiveService }) => (
-      <CAPITagInput {...props} capiService={capiLiveService} />
-    )}
-  </CAPIServiceContext.Consumer>
-);
+export default CAPITagInput;

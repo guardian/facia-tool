@@ -2,6 +2,7 @@ import createAsyncResourceBundle from 'lib/createAsyncResourceBundle';
 import { CapiArticle } from 'types/Capi';
 import { ThunkResult } from 'types/Store';
 import { State } from 'types/State';
+import { previewCapi, liveCapi } from 'services/frontsCapi';
 
 interface FeedState {
   live: CapiArticle[];
@@ -26,9 +27,9 @@ const {
 export const fetchLive = (
   params: object,
   isResource: boolean
-): ThunkResult<void> => (dispatch, getState, { capiLiveService }) => {
+): ThunkResult<void> => (dispatch, getState) => {
   dispatch(actions.fetchStart('live'));
-  capiLiveService.search(params, { isResource }).then(response => {
+  liveCapi.search(params, { isResource }).then(response => {
     const { results } = response.response;
     const state = selectAll(getState());
     if (results) {
@@ -48,9 +49,9 @@ export const fetchLive = (
 export const fetchPreview = (
   params: object,
   isResource: boolean
-): ThunkResult<void> => (dispatch, getState, { capiPreviewService }) => {
+): ThunkResult<void> => (dispatch, getState) => {
   dispatch(actions.fetchStart('preview'));
-  capiPreviewService.search(params, { isResource }).then(response => {
+  previewCapi.search(params, { isResource }).then(response => {
     const { results } = response.response;
     const state = selectAll(getState());
     if (results) {
