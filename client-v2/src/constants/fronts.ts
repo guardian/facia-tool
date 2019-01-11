@@ -20,3 +20,5 @@ export const notLiveLabels: { [key: string]: string } = {
 };
 
 export const detectPressFailureMs = 10000;
+
+export const noOfOpenCollectionsOnFirstLoad = 3;

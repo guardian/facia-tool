@@ -28,6 +28,15 @@ interface EditorCloseFront {
   payload: { frontId: string };
   meta: PersistMeta;
 }
+interface EditorOpenCollection {
+  type: 'EDITOR_OPEN_COLLECTION';
+  payload: { collectionIds: string|string[] };
+}
+
+interface EditorCloseCollection {
+  type: 'EDITOR_CLOSE_COLLECTION';
+  payload: { collectionIds: string|string[] };
+}
 
 interface EditorClearOpenFronts {
   type: 'EDITOR_CLEAR_OPEN_FRONTS';
@@ -201,7 +210,9 @@ type Action =
   | BatchAction
   | FetchVisibleArticlesSuccess
   | StartConfirm
-  | EndConfirm;
+  | EndConfirm
+  | EditorOpenCollection
+  | EditorCloseCollection
 
 export {
   ActionError,
@@ -229,6 +240,8 @@ export {
   EditorClearOpenFronts,
   EditorSetOpenFronts,
   EditorCloseFront,
+  EditorOpenCollection,
+  EditorCloseCollection,
   EditorSelectArticleFragment,
   EditorClearArticleFragmentSelection,
   RecordStaleFronts,

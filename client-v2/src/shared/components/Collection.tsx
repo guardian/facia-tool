@@ -35,6 +35,8 @@ type Props = ContainerProps & {
   metaContent: React.ReactNode;
   children: React.ReactNode;
   isUneditable?: boolean;
+  isOpen?: boolean;
+  onChangeOpenState?: (isOpen: boolean) => void;
 };
 
 const CollectionContainer = ContentContainer.extend`
@@ -136,16 +138,16 @@ const CollectionShortVerticalPinline = ShortVerticalPinline.extend`
   left: 0;
 `;
 
-class CollectionDisplay extends React.Component<Props, { isOpen: boolean }> {
+class CollectionDisplay extends React.Component<Props> {
   public static defaultProps = {
-    isUneditable: false
-  };
-  public state = {
-    isOpen: !this.props.isUneditable
+    isUneditable: false,
+    isOpen: true
   };
 
   public toggleVisibility = () => {
-    this.setState({ isOpen: !this.state.isOpen });
+    if (this.props.onChangeOpenState) {
+      this.props.onChangeOpenState(!this.props.isOpen);
+    }
   };
 
   public render() {
@@ -160,7 +162,6 @@ class CollectionDisplay extends React.Component<Props, { isOpen: boolean }> {
     const itemCount = articleIds ? articleIds.length : 0;
     return !!collection ? (
       <CollectionContainer id={createCollectionId(collection)}>
-
         <ContainerHeadingPinline>
           <CollectionHeadlineWithConfigContainer>
             <CollectionHeadingText>
@@ -215,12 +216,12 @@ class CollectionDisplay extends React.Component<Props, { isOpen: boolean }> {
           )}
           <CollectionToggleContainer>
             <ButtonCircularCaret
-              active={this.state.isOpen}
+              active={this.props.isOpen!}
               onClick={this.toggleVisibility}
             />
           </CollectionToggleContainer>
         </CollectionMetaContainer>
-        {this.state.isOpen && <FadeIn>{children}</FadeIn>}
+        {this.props.isOpen && <FadeIn>{children}</FadeIn>}
         {isUneditable ? (
           <CollectionDisabledTheme className="DisabledTheme" />
         ) : null}
