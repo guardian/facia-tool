@@ -3,7 +3,7 @@ import styled, { injectGlobal, ThemeProvider } from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
 import DropDisabler from './util/DropDisabler';
 
-import theme from 'shared/constants/theme';
+import { theme } from 'shared/constants/theme';
 import { priorities } from 'constants/priorities';
 import SectionHeaderWithLogo from './layout/SectionHeaderWithLogo';
 import GHGuardianHeadlineBoldTtf from '../fonts/headline/GHGuardianHeadline-Bold.ttf';
