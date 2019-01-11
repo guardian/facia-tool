@@ -116,6 +116,7 @@ module.exports = async () =>
 
     app.get('/config', (_, res) => res.json(config));
     app.get('/collection/:id', (_, res) => res.json(collection));
+    app.get('/collections*', (_, res) => res.json([collection]));
 
     // send the assets from dist
     app.get(
