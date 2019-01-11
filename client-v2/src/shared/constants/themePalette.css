@@ -1,0 +1,18 @@
+/* Color palette */
+:root {
+  --greyish-brown: #444444;
+  --warm-grey: #767676;
+  --pumpkin-orange: #ff7f0f;
+  --pinkish-grey: #c9c9c9;
+  --pinkish-grey-two: #c4c4c4;
+  --white: #ffffff;
+  --black: #333333;
+  --white-two: #f6f6f6;
+  --deep-orange: #e05e00;
+  --greyish-brown-two: #515151;
+  --white-three: #ededed;
+  --warm-grey-two: #999999;
+  --white-four: #dcdcdc;
+  --greyish-brown-three: #4d4d4d;
+  --black-two: #121212;
+}

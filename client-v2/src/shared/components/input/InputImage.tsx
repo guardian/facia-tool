@@ -5,7 +5,10 @@ import { WrappedFieldProps } from 'redux-form';
 import deleteIcon from '../../images/icons/delete-copy.svg';
 import ButtonDefault from './ButtonDefault';
 import InputContainer from './InputContainer';
-import { validateImageEvent, validateMediaItem } from '../../util/validateImageSrc';
+import {
+  validateImageEvent,
+  validateMediaItem
+} from '../../util/validateImageSrc';
 import { GridModal } from 'components/GridModal';
 import { gridUrlSelector } from 'selectors/configSelectors';
 import { State } from 'types/State';
@@ -19,7 +22,10 @@ const ImageContainer = styled('div')<{
   width: 100%;
   max-width: ${props => (props.size === 'small' ? '100px' : '180px')};
   height: ${props => (props.size === 'small' ? '60px' : '115px')};
-  background-color: ${props => (props.isHovering ? '#bbb' : '#ccc')};
+  background-color: ${props =>
+    props.isHovering
+      ? props.theme.base.colos.placeholderLight
+      : props.theme.base.colors.placeholderDark};
   background-size: cover;
   transition: background-color 0.15s;
 `;
@@ -50,14 +56,18 @@ const IconAdd = IconDelete.extend`
 `;
 
 export interface InputImageContainerProps {
-  frontId: string,
-  criteria?: Criteria,
-  size?: 'small'
+  frontId: string;
+  criteria?: Criteria;
+  size?: 'small';
 }
 
-type ComponentProps = InputImageContainerProps & WrappedFieldProps & { gridUrl: string | null }
+type ComponentProps = InputImageContainerProps &
+  WrappedFieldProps & { gridUrl: string | null };
 
-interface ComponentState { isHovering: boolean, modalOpen: boolean }
+interface ComponentState {
+  isHovering: boolean;
+  modalOpen: boolean;
+}
 
 class InputImage extends React.Component<ComponentProps, ComponentState> {
   public state = {
@@ -73,7 +83,8 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     e.preventDefault();
     this.setState({ isHovering: false });
   };
-  public handleDragOver = (e: React.DragEvent<HTMLDivElement>) => e.preventDefault();
+  public handleDragOver = (e: React.DragEvent<HTMLDivElement>) =>
+    e.preventDefault();
   public handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.persist();
@@ -82,9 +93,8 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       .catch(err => {
         alert(err);
         // tslint:disable-next-line no-console
-        console.log('@todo:handle error', err)
+        console.log('@todo:handle error', err);
       });
-
   };
   public handleAdd = () => {
     // @todo: grid integration
@@ -92,11 +102,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
   public clearField = () => this.props.input.onChange(null);
 
   public validMessage(data: GridData) {
-    return data &&
-           data.crop &&
-           data.crop.data &&
-           data.image &&
-           data.image.data;
+    return data && data.crop && data.crop.data && data.image && data.image.data;
   }
 
   public onMessage = (event: MessageEvent) => {
@@ -122,16 +128,20 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     const gridImage = data.image.data;
     const imageOrigin = `${this.props.gridUrl}/images/${gridImage.id}`;
 
-
-    return validateMediaItem(crop, imageOrigin, this.props.frontId, this.props.criteria)
-    .then(mediaItem => {
-      this.props.input.onChange(mediaItem);
-    })
-    .catch(err => {
-      alert(err);
+    return validateMediaItem(
+      crop,
+      imageOrigin,
+      this.props.frontId,
+      this.props.criteria
+    )
+      .then(mediaItem => {
+        this.props.input.onChange(mediaItem);
+      })
+      .catch(err => {
+        alert(err);
         // tslint:disable-next-line no-console
-        console.log('@todo:handle error', err)
-    });
+        console.log('@todo:handle error', err);
+      });
   };
 
   public closeModal = () => {
@@ -171,9 +181,9 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
             {this.props.input.value ? (
               <IconDelete
                 src={deleteIcon}
-                onClick={(event) => {
+                onClick={event => {
                   event.stopPropagation();
-                  this.clearField()
+                  this.clearField();
                 }}
               />
             ) : (

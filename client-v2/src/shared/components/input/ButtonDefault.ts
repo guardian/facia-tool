@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { theme } from '../../constants/theme';
 
 type ButtonSizes = 's' | 'm' | 'l';
 type ButtonPriorities = 'primary' | 'default' | 'muted';
@@ -42,55 +43,55 @@ const fontSizeMap = {
 
 const colorMap = {
   disabled: {
-    default: '#fff',
-    primary: '#fff',
-    muted: '#333'
+    default: theme.colors.white,
+    primary: theme.colors.white,
+    muted: theme.colors.blackLight
   },
   selected: {
-    default: '#fff',
-    primary: '#fff',
-    muted: '#333'
+    default: theme.colors.white,
+    primary: theme.colors.white,
+    muted: theme.colors.blackLight
   },
   deselected: {
-    default: '#fff',
-    primary: '#fff',
-    muted: '#333'
+    default: theme.colors.white,
+    primary: theme.colors.white,
+    muted: theme.colors.blackLight
   }
 };
 
 const backgroundMap = {
   disabled: {
-    default: '#999',
-    primary: '#fda354',
-    muted: '#aaa'
+    default: theme.colors.greyMedium,
+    primary: theme.colors.orangeDark,
+    muted: theme.colors.greyLight
   },
   selected: {
-    default: '#555',
-    primary: '#ff983f',
-    muted: '#aaa'
+    default: theme.colors.greyDark,
+    primary: theme.colors.orangeLight,
+    muted: theme.colors.greyLight
   },
   deselected: {
-    default: '#333',
-    primary: '#ff7f0f',
-    muted: '#ccc'
+    default: theme.colors.blackLight,
+    primary: theme.colors.orange,
+    muted: theme.colors.greyLightPinkish
   }
 };
 
 const backgroundHoverMap = {
   disabled: {
-    default: '#999',
-    primary: '#fda354',
-    muted: '#bbb'
+    default: theme.colors.greyMedium,
+    primary: theme.colors.orangeDark,
+    muted: theme.colors.greyLight
   },
   selected: {
-    default: '#555',
-    primary: '#ff983f',
-    muted: '#aaa'
+    default: theme.colors.greyDark,
+    primary: theme.colors.orangeLight,
+    muted: theme.colors.greyLight
   },
   deselected: {
-    default: '#555',
-    primary: '#ff983f',
-    muted: '#aaa'
+    default: theme.colors.greyDark,
+    primary: theme.colors.orangeLight,
+    muted: theme.colors.greyLight
   }
 };
 
@@ -98,8 +99,8 @@ const getMapKey = ({
   disabled,
   selected
 }: {
-  disabled?: boolean|undefined;
-  selected?: boolean|undefined;
+  disabled?: boolean | undefined;
+  selected?: boolean | undefined;
 }) => {
   if (disabled) {
     return 'disabled';

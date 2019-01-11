@@ -30,21 +30,21 @@ const CheckboxLabel = styled('label')<{ for?: string }>`
   height: 24px;
   padding: 0;
   line-height: 24px;
-  border: 2px solid #e3e3e3;
+  border: ${({ theme }) => `2px solid ${theme.input.borderColor}`};
   border-radius: 24px;
-  background-color: #ffffff;
+  background-color: ${({ theme }) => theme.input.checkboxColorInactive};
   transition: background-color 0.1s ease-in;
   :before {
     content: '';
     display: block;
     width: 24px;
     margin: 0px;
-    background: #ffffff;
+    background: ${({ theme }) => theme.input.checkboxColorInactive};
     position: absolute;
     top: 0;
     bottom: 0;
     right: 16px;
-    border: 2px solid #e3e3e3;
+    border: ${({ theme }) => `2px solid ${theme.input.borderColor}`};
     border-radius: 24px;
     transition: all 0.1s ease-in 0s;
   }
@@ -53,10 +53,10 @@ const CheckboxLabel = styled('label')<{ for?: string }>`
 const Checkbox = styled('input')`
   display: none;
   :checked + ${CheckboxLabel} {
-    background-color: ${props => props.theme.base.colors.highlight};
+    background-color: ${({ theme }) => theme.input.checkboxColorActive};
   }
   &:checked + ${CheckboxLabel}, &:checked + ${CheckboxLabel}:before {
-    border-color: ${props => props.theme.base.colors.highlight};
+    border-color: ${({ theme }) => theme.input.checkboxColorActive};
     right: 0px;
   }
 `;

@@ -12,5 +12,5 @@ export default styled('label')<{
       : props.theme.label.fontSize};
   line-height: ${props => props.theme.label.lineHeight};
   font-weight: bold;
-  ${props => !props.active && `color: `};
+  ${props => !props.active && `color:`};
 `;

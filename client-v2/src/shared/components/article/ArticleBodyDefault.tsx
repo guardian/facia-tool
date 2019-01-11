@@ -34,7 +34,7 @@ const ThumbnailPlaceholder = styled(BasePlaceholder)`
 `;
 
 const NotLiveContainer = styled(CollectionItemMetaHeading)`
-  color: #ff7f0f;
+  color: ${({ theme }) => theme.base.colors.highlightColor};
 `;
 
 const KickerHeading = styled(CollectionItemHeading)`

@@ -22,10 +22,20 @@ import {
 } from 'shared/types/Collection';
 import { getPillarColor } from 'shared/util/getPillarColor';
 
-const ArticleBodyContainer = styled(CollectionItemBody)`
+const ArticleBodyContainer = styled(CollectionItemBody)<{
+  pillarId: string | undefined; // codeSmell
+  isLive: boolean;
+}>`
+  border-top-color: ${(
+    { size, pillarId, isLive, theme } // TODO code smell article type not shared - Generic??
+  ) =>
+    size === 'default' && pillarId && isLive
+      ? getPillarColor(pillarId, isLive)
+      : theme.base.colors.borderColor};
+
   :hover {
     ${CollectionItemMetaHeading} {
-      color: #999;
+      color: ${({ theme }) => theme.base.colors.textMuted};
     }
   }
 `;
@@ -109,12 +119,8 @@ const ArticleComponent = ({
         size={size}
         fade={fade}
         displayType={displayType}
-        style={{
-          borderTopColor:
-            size === 'default' && article
-              ? getPillarColor(article.pillarId, article.isLive)
-              : '#c9c9c9'
-        }}
+        pillarId={article ? article.pillarId : undefined}
+        isLive={article ? article.isLive : false}
       >
         {article && (
           <ArticleBody

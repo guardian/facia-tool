@@ -65,7 +65,7 @@ const CollectionDisabledTheme = styled('div')`
 const LockedCollectionFlag = styled('span')`
   font-family: GHGuardianHeadline-Regular;
   font-size: 22px;
-  color: #333333;
+  color: ${({ theme }) => theme.base.colors.text};
   height: 40px;
   line-height: 40px;
   font-weight: normal;
@@ -118,7 +118,7 @@ const CollectionConfigContainer = styled('div')`
   display: inline-block;
   font-family: GHGuardianHeadline-Regular;
   font-size: 22px;
-  color: #333333;
+  color: ${({ theme }) => theme.base.colors.text};
   height: 40px;
   line-height: 40px;
   white-space: nowrap;
@@ -132,7 +132,7 @@ const CollectionConfigText = styled('div')`
 `;
 
 const CollectionConfigTextPipe = styled('span')`
-  color: #c9c9c9;
+  color: ${({ theme }) => theme.base.colors.borderColor};
 `;
 
 const CollectionToggleContainer = styled('div')`

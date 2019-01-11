@@ -19,7 +19,7 @@ export default styled('input')<{
   background-clip: padding-box;
   ${props => props.useHeadlineFont && `font-family: GHGuardianHeadline-Medium`};
   ::placeholder {
-    color: #aaa;
+    color: ${props => props.theme.input.placeholderText};
   }
   :focus {
     outline: none;

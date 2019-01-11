@@ -13,12 +13,12 @@ injectGlobal`
 `;
 
 export default styled('div')`
-  background-color: #eee;
+  background-color: ${({ theme }) => theme.base.colors.backgroundColorFocused};
   position: relative;
   overflow: hidden;
 
   &::before {
-    content: " ";
+    content: ' ';
     position: absolute;
     top: 0;
     right: 0;
@@ -28,6 +28,12 @@ export default styled('div')`
     width: 500%;
     margin-left: -250%;
     animation: phAnimation 1.2s linear infinite;
-    background: linear-gradient(to right, rgba(255, 255, 255, 0) 46%, rgba(255, 255, 255, .35) 50%, rgba(255, 255, 255, 0) 54%) 50% 50%;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 46%,
+        rgba(255, 255, 255, 0.35) 50%,
+        rgba(255, 255, 255, 0) 54%
+      )
+      50% 50%;
   }
 `;

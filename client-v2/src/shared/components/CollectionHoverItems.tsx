@@ -16,7 +16,7 @@ HoverActionsAreaOverlay.defaultProps = {
 const HideMetaDataOnToolTipDisplay = styled('div')<{
   size?: 'small' | 'default'; // Article Component size
 }>`
-  background-color: #ededed;
+  background-color: ${({ theme }) => theme.base.colors.backgroundColorFocused};
   position: absolute;
   width: 70px;
   height: ${({ size }) => (size === 'small' ? '90%' : '180%')};

@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 import upperFirst from 'lodash/upperFirst';
 
@@ -23,6 +24,10 @@ import { CollectionItemDisplayTypes } from 'shared/types/Collection';
 import CollectionItemTrail from '../collectionItem/CollectionItemTrail';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
 import CollectionItemNotification from '../collectionItem/CollectionItemNotification';
+
+const SnapLinkBodyContainer = styled(CollectionItemBody)`
+  border-top-color: ${({ theme }) => theme.base.colors.borderColor};
+`;
 
 interface ContainerProps {
   selectSharedState?: (state: any) => State;
@@ -64,14 +69,11 @@ const SnapLink = ({
       : 'No headline');
   return (
     <CollectionItemContainer {...rest}>
-      <CollectionItemBody
+      <SnapLinkBodyContainer
         data-testid="snap"
         size={size}
         fade={fade}
         displayType={displayType}
-        style={{
-          borderTopColor: '#c9c9c9'
-        }}
       >
         {displayType === 'default' && (
           <CollectionItemMetaContainer>
@@ -121,7 +123,7 @@ const SnapLink = ({
             toolTipAlign={'right'}
           />
         </HoverActionsAreaOverlay>
-      </CollectionItemBody>
+      </SnapLinkBodyContainer>
       {children}
     </CollectionItemContainer>
   );
