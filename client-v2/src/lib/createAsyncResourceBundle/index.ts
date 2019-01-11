@@ -182,7 +182,7 @@ function createAsyncResourceBundle<Resource>(
   const selectIsLoadingById = (state: RootState, id: string) =>
     selectLocalState(state).loadingIds.indexOf(id) !== -1;
 
-  const selectById = (state: RootState, id: string): Resource =>
+  const selectById = (state: RootState, id: string): Resource | undefined =>
     selectLocalState(state).data[id];
 
   const selectAll = (state: RootState) => selectLocalState(state).data;

@@ -327,6 +327,9 @@ const groupSiblingsSelector = (state: State, groupId: string) => {
     state,
     groupId
   );
+  if (!collection) {
+    return [];
+  }
   return (collection[collectionItemSet] || []).map(
     id => groupsSelector(state)[id]
   );

@@ -19,6 +19,7 @@ import {
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 import FadeIn from './animation/FadeIn';
 import ContentContainer from './layout/ContentContainer';
+import { css } from 'styled-components';
 
 export const createCollectionId = ({ id }: Collection) => `collection-${id}`;
 
@@ -29,7 +30,7 @@ interface ContainerProps {
 }
 
 type Props = ContainerProps & {
-  collection: Collection;
+  collection: Collection | undefined;
   articleIds?: string[];
   headlineContent: React.ReactNode;
   metaContent: React.ReactNode;
@@ -92,16 +93,22 @@ const ItemCountMeta = CollectionMetaBase.extend`
   flex: 0;
 `;
 
+
 const CollectionHeadlineWithConfigContainer = styled('div')`
   flex-grow: 1;
   max-width: calc(100% - 95px);
   display: flex;
 `;
 
-const CollectionHeadingText = styled('div')`
+const CollectionHeadingText = styled('span')<{ isLoading: boolean }>`
   display: inline-block;
   max-width: 400px;
   white-space: nowrap;
+  ${({ isLoading }) =>
+    isLoading &&
+    css`
+      color: #999;
+    `} white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
@@ -160,13 +167,13 @@ class CollectionDisplay extends React.Component<Props> {
       children
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
-    return !!collection ? (
-      <CollectionContainer id={createCollectionId(collection)}>
+    return (
+      <CollectionContainer id={collection && createCollectionId(collection)}>
         <ContainerHeadingPinline>
           <CollectionHeadlineWithConfigContainer>
-            <CollectionHeadingText>
-              {collection.displayName}
-            </CollectionHeadingText>
+          <CollectionHeadingText isLoading={!collection}>
+            {collection ? collection.displayName : 'Loading'}
+          </CollectionHeadingText>
             <CollectionConfigContainer>
               {oc(collection).metadata[0].type() ? (
                 <CollectionConfigText>
@@ -174,7 +181,7 @@ class CollectionDisplay extends React.Component<Props> {
                   {oc(collection).metadata[0].type()}
                 </CollectionConfigText>
               ) : null}
-              {collection.platform && collection.platform !== 'Any' ? (
+              {collection && collection.platform && collection.platform !== 'Any' ? (
                 <CollectionConfigText>
                   <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
                   {`${collection.platform} Only`}
@@ -182,7 +189,6 @@ class CollectionDisplay extends React.Component<Props> {
               ) : null}
             </CollectionConfigContainer>
           </CollectionHeadlineWithConfigContainer>
-
           {isUneditable ? (
             <LockedCollectionFlag>Locked</LockedCollectionFlag>
           ) : headlineContent ? (
@@ -194,18 +200,23 @@ class CollectionDisplay extends React.Component<Props> {
 
         <CollectionMetaContainer>
           <ItemCountMeta>
-            <strong>{itemCount}</strong>
-            <br />
-            {itemCount === 1 ? 'item' : 'items'}
+            {collection && (
+              <>
+                <strong>{itemCount}</strong>
+                <br />
+                {itemCount === 1 ? 'item' : 'items'}
+              </>
+            )}
           </ItemCountMeta>
           <CollectionMeta>
             <div>
               <strong>
-                {collection.lastUpdated &&
+                {collection &&
+                  collection.lastUpdated &&
                   `${upperFirst(distanceFromNow(collection.lastUpdated))} ago`}
               </strong>
             </div>
-            <div>{collection.updatedBy}</div>
+            <div>{collection && collection.updatedBy}</div>
             <CollectionShortVerticalPinline />
           </CollectionMeta>
           {metaContent && (
@@ -226,8 +237,6 @@ class CollectionDisplay extends React.Component<Props> {
           <CollectionDisabledTheme className="DisabledTheme" />
         ) : null}
       </CollectionContainer>
-    ) : (
-      <span>Waiting for collection</span>
     );
   }
 }
