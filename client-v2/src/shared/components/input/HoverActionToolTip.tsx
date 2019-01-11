@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const ToolTip = styled('div')<{ text: string }>`
   font-family: TS3TextSans-Bold;
   font-size: 12px;
-  color: #fff;
+  color: ${({ theme }) => theme.button.color};
   background-color: ${({ theme }) => theme.base.colors.button};
   padding: 2px 3px;
 `;

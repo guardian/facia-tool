@@ -34,7 +34,7 @@ const ActionButton = ButtonCircular.extend<{ danger?: boolean }>`
     danger
       ? theme.button.backgroundColorHighlight
       : theme.button.backgroundColor};
-  color: #fff;
+  color: ${({ theme }) => theme.button.color};
   margin: 1.5px;
   margin-bottom: 2px;
   line-height: 1;

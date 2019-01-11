@@ -105,10 +105,10 @@ const CollectionHeadingText = styled('span')<{ isLoading: boolean }>`
   display: inline-block;
   max-width: 400px;
   white-space: nowrap;
-  ${({ isLoading }) =>
+  ${({ isLoading, theme }) =>
     isLoading &&
     css`
-      color: #999;
+      color: ${theme.base.colors.textMuted};
     `} white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
