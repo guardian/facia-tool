@@ -9,7 +9,10 @@ import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeadi
 import Thumbnail from '../Thumbnail';
 import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
 import { HoverDeleteButton } from '../input/HoverActionButtons';
-import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
+import {
+  HoverActionsAreaOverlay,
+  HideMetaDataOnToolTipDisplay
+} from '../CollectionHoverItems';
 import { ArticleFragment, CollectionItemSizes } from 'shared/types/Collection';
 import {
   selectSharedState,
@@ -122,6 +125,7 @@ const SnapLink = ({
             toolTipPosition={'top'}
             toolTipAlign={'right'}
           />
+          <HideMetaDataOnToolTipDisplay size={size} />
         </HoverActionsAreaOverlay>
       </SnapLinkBodyContainer>
       {children}
