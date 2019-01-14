@@ -1,8 +1,4 @@
-import {
-  applyMiddleware,
-  compose,
-  createStore
-} from 'redux';
+import { applyMiddleware, compose, createStore } from 'redux';
 import { enableBatching } from 'redux-batched-actions';
 import thunkMiddleware from 'redux-thunk';
 import createBrowserHistory from 'history/createBrowserHistory';
@@ -15,25 +11,26 @@ import {
   persistClipboardOnEdit,
   persistOpenFrontsOnEdit
 } from './storeMiddleware';
+import { State } from 'types/State';
 
-export default function configureStore() {
+export default function configureStore(initialState: State) {
   const history = createBrowserHistory();
   const router = routerMiddleware(history);
-  const store = createStore(
-    // @todo -- AnyAction in batch reducer definition not compatible with our action types
-    enableBatching(rootReducer),
-    compose(
-      applyMiddleware(
-        thunkMiddleware,
-        updateStateFromUrlChange,
-        router,
-        persistCollectionOnEdit(),
-        persistClipboardOnEdit(),
-        persistOpenFrontsOnEdit()
-      ),
-      window.devToolsExtension ? window.devToolsExtension() : (f: unknown) => f
-    )
+  const reducer = enableBatching(rootReducer);
+  const middleware = compose(
+    applyMiddleware(
+      thunkMiddleware,
+      updateStateFromUrlChange,
+      router,
+      persistCollectionOnEdit(),
+      persistClipboardOnEdit(),
+      persistOpenFrontsOnEdit()
+    ),
+    window.devToolsExtension ? window.devToolsExtension() : (f: unknown) => f
   );
+  const store = initialState
+    ? createStore(reducer, initialState, middleware)
+    : createStore(reducer, middleware);
 
   if (module.hot) {
     module.hot.accept('reducers/rootReducer.js', () => {

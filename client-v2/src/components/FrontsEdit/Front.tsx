@@ -33,8 +33,7 @@ import { getFront } from 'selectors/frontsSelectors';
 import { FrontConfig } from 'types/FaciaApi';
 import { visibleFrontArticlesSelector } from 'selectors/frontsSelectors';
 import { VisibleArticlesResponse } from 'types/FaciaApi';
-import { noOfOpenCollectionsOnFirstLoad } from 'constants/fronts';
-import { getCollections, getArticlesForCollections } from 'actions/Collections';
+import { initialiseFront } from 'actions/Fronts';
 
 const FrontContainer = styled('div')`
   display: flex;
@@ -57,13 +56,7 @@ type FrontProps = FrontPropsBeforeState & {
   updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) => void;
   selectedArticleFragment: { id: string; isSupporting: boolean } | void;
   dispatch: Dispatch;
-  fetchCollections: (
-    ids: string[]
-  ) => void;
-  fetchArticlesForCollections: (
-    ids: string[],
-    collectionItemSet: CollectionItemSets
-  ) => void;
+  initialiseFront: () => void;
   selectArticleFragment: (id: string, isSupporting?: boolean) => void;
   clearArticleFragmentSelection: () => void;
   removeCollectionItem: (parentId: string, id: string) => void;
@@ -85,19 +78,14 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     };
   }
 
-  public async componentWillMount() {
-    const collectionsWithArticlesToLoad = this.props.front.collections.slice(
-      0,
-      noOfOpenCollectionsOnFirstLoad
-    );
-    this.props.editorOpenCollections(collectionsWithArticlesToLoad);
-    await this.props.fetchCollections(
-      this.props.front.collections
-    );
-    this.props.fetchArticlesForCollections(
-      collectionsWithArticlesToLoad,
-      this.props.browsingStage
-    );
+  public componentWillMount() {
+    this.props.initialiseFront();
+  }
+
+  public componentWillReceiveProps(newProps: FrontProps) {
+    if (this.props.browsingStage !== newProps.browsingStage) {
+      this.props.initialiseFront();
+    }
   }
 
   public handleError = (error: string) => {
@@ -300,17 +288,15 @@ const mapStateToProps = (state: State, props: FrontPropsBeforeState) => ({
   })
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
+const mapDispatchToProps = (
+  dispatch: Dispatch,
+  props: FrontPropsBeforeState
+) => {
   return {
     dispatch,
     updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
       dispatch(updateArticleFragmentMeta(id, meta)),
-    fetchCollections: (ids: string[]) =>
-      dispatch(getCollections(ids)),
-    fetchArticlesForCollections: (
-      ids: string[],
-      collectionItemSet: CollectionItemSets
-    ) => dispatch(getArticlesForCollections(ids, collectionItemSet)),
+    initialiseFront: () => initialiseFront(props.id, props.browsingStage),
     selectArticleFragment: (
       frontId: string,
       articleFragmentId: string,
