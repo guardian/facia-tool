@@ -164,7 +164,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
           {...this.props}
           style={{
             backgroundImage:
-              this.props.input.value && `url(${this.props.input.value.src}`
+              this.props.input.value && `url(${this.props.input.value.thumb}`
           }}
         >
           <ButtonDelete type="button" priority="primary">
