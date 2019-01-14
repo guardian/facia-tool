@@ -42,12 +42,10 @@ import {
 } from 'shared/types/Collection';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import difference from 'lodash/difference';
-import flatten from 'lodash/flatten';
 import { selectArticlesInCollections } from 'shared/selectors/collection';
 
 function getCollections(
-  collectionIds: string[],
-  itemSet?: CollectionItemSets
+  collectionIds: string[]
 ): ThunkResult<Promise<void>> {
   return async (dispatch: Dispatch, getState: () => State) => {
     dispatch(collectionActions.fetchStart(collectionIds));
