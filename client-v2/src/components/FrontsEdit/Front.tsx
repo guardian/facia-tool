@@ -34,6 +34,7 @@ import { FrontConfig } from 'types/FaciaApi';
 import { visibleFrontArticlesSelector } from 'selectors/frontsSelectors';
 import { VisibleArticlesResponse } from 'types/FaciaApi';
 import { noOfOpenCollectionsOnFirstLoad } from 'constants/fronts';
+import { getCollections, getArticlesForCollections } from 'actions/Collections';
 
 const FrontContainer = styled('div')`
   display: flex;
@@ -56,6 +57,7 @@ type FrontProps = FrontPropsBeforeState & {
   updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) => void;
   selectedArticleFragment: { id: string; isSupporting: boolean } | void;
   dispatch: Dispatch;
+  fetchCollectionsAndArticles: (ids: string[], collectionItemSet: CollectionItemSets) => void;
   selectArticleFragment: (id: string, isSupporting?: boolean) => void;
   clearArticleFragmentSelection: () => void;
   removeCollectionItem: (parentId: string, id: string) => void;
@@ -78,7 +80,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   }
 
   public componentWillMount() {
-    this.props.editorOpenCollections(this.props.front.collections.slice(0, noOfOpenCollectionsOnFirstLoad))
+    this.props.fetchCollectionsAndArticles(this.props.front.collections, this.props.browsingStage);
+    this.props.editorOpenCollections(
+      this.props.front.collections.slice(0, noOfOpenCollectionsOnFirstLoad)
+    );
   }
 
   public handleError = (error: string) => {
@@ -286,6 +291,14 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     dispatch,
     updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
       dispatch(updateArticleFragmentMeta(id, meta)),
+    fetchCollectionsAndArticles: async (ids: string[], collectionItemSet: CollectionItemSets) => {
+      await getCollections(ids, collectionItemSet);
+      await getArticlesForCollections(ids, collectionItemSet);
+    },
+    fetchArticlesForCollections: (
+      ids: string[],
+      collectionItemSet: CollectionItemSets
+    ) => dispatch(getCollections(ids, collectionItemSet)),
     selectArticleFragment: (
       frontId: string,
       articleFragmentId: string,
@@ -304,7 +317,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
         removeArticleFragment('articleFragment', parentId, uuid, 'collection')
       );
     },
-    editorOpenCollections: (ids: string[]) => dispatch(editorOpenCollections(ids))
+    editorOpenCollections: (ids: string[]) =>
+      dispatch(editorOpenCollections(ids))
   };
 };
 
