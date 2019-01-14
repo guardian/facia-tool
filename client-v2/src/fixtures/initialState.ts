@@ -203,6 +203,7 @@ const state = {
   },
   config: {
     dev: true,
+    stage: 'CODE',
     env: 'code',
     editions: ['uk', 'us', 'au'],
     email: 'jonathon.herbert@guardian.co.uk',
