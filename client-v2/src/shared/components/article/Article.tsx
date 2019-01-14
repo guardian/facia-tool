@@ -23,12 +23,10 @@ import {
 import { getPillarColor } from 'shared/util/getPillarColor';
 
 const ArticleBodyContainer = styled(CollectionItemBody)<{
-  pillarId: string | undefined; // codeSmell
+  pillarId: string | undefined;
   isLive: boolean;
 }>`
-  border-top-color: ${(
-    { size, pillarId, isLive, theme } // TODO code smell article type not shared - Generic??
-  ) =>
+  border-top-color: ${({ size, pillarId, isLive, theme }) =>
     size === 'default' && pillarId && isLive
       ? getPillarColor(pillarId, isLive)
       : theme.base.colors.borderColor};
@@ -114,42 +112,44 @@ const ArticleComponent = ({
         onClick();
       }}
     >
-      <ArticleBodyContainer
-        data-testid="article-body"
-        size={size}
-        fade={fade}
-        displayType={displayType}
-        pillarId={article ? article.pillarId : undefined}
-        isLive={article ? article.isLive : false}
-      >
-        {article && (
-          <ArticleBody
-            {...article}
-            size={size}
-            isUneditable={isUneditable}
-            {...getOverlayEventProps()}
-            notifications={notifications}
-          />
-        )}
-        {!article &&
-          isLoading && (
+      {article && (
+        <ArticleBodyContainer
+          data-testid="article-body"
+          size={size}
+          fade={fade}
+          displayType={displayType}
+          pillarId={article.pillarId}
+          isLive={article.isLive}
+        >
+          {article && (
             <ArticleBody
-              uuid={id}
-              isUneditable={true}
-              displayPlaceholders={true}
+              {...article}
               size={size}
+              isUneditable={isUneditable}
+              {...getOverlayEventProps()}
+              notifications={notifications}
             />
           )}
-        {!article &&
-          !isLoading && (
-            <ArticleBody
-              headline="Content not found"
-              uuid={id}
-              isUneditable={true}
-              size={size}
-            />
-          )}
-      </ArticleBodyContainer>
+          {!article &&
+            isLoading && (
+              <ArticleBody
+                uuid={id}
+                isUneditable={true}
+                displayPlaceholders={true}
+                size={size}
+              />
+            )}
+          {!article &&
+            !isLoading && (
+              <ArticleBody
+                headline="Content not found"
+                uuid={id}
+                isUneditable={true}
+                size={size}
+              />
+            )}
+        </ArticleBodyContainer>
+      )}
       {children}
     </CollectionItemContainer>
   );
