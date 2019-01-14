@@ -1,8 +1,10 @@
 import React from 'react';
-import { render, prettyDOM, cleanup } from 'react-testing-library';
+import { render, cleanup } from 'react-testing-library';
 import { ArticleComponent } from '../Article';
 import 'jest-dom/extend-expect';
 import derivedArticle from 'fixtures/derivedArticle';
+import { ThemeProvider } from 'styled-components';
+import { theme } from 'shared/constants/theme';
 
 const takenDownArticle = { ...derivedArticle, ...{ isLive: false } };
 
@@ -14,12 +16,14 @@ const draftArticle = {
 describe('Article component ', () => {
   afterEach(cleanup);
   it('should render kicker correctly', () => {
-    const { getByTestId, container } = render(
-      <ArticleComponent
-        children={<React.Fragment />}
-        article={derivedArticle}
-        id="ea1"
-      />
+    const { getByTestId } = render(
+      <ThemeProvider theme={theme}>
+        <ArticleComponent
+          children={<React.Fragment />}
+          article={derivedArticle}
+          id="ea1"
+        />
+      </ThemeProvider>
     );
     expect(getByTestId('article-body')).toHaveTextContent(
       derivedArticle.kicker ? derivedArticle.kicker : ''
@@ -29,11 +33,13 @@ describe('Article component ', () => {
   });
   it('should render draft labels correctly', () => {
     const { getByTestId } = render(
-      <ArticleComponent
-        children={<React.Fragment />}
-        article={draftArticle}
-        id="ea1"
-      />
+      <ThemeProvider theme={theme}>
+        <ArticleComponent
+          children={<React.Fragment />}
+          article={draftArticle}
+          id="ea1"
+        />
+      </ThemeProvider>
     );
     expect(getByTestId('article-body')).toHaveTextContent('Draft');
     expect(getByTestId('article-body')).not.toHaveTextContent('Taken Down');
@@ -41,11 +47,13 @@ describe('Article component ', () => {
 
   it('should render taken down labels correctly', () => {
     const { getByTestId } = render(
-      <ArticleComponent
-        children={<React.Fragment />}
-        article={takenDownArticle}
-        id="ea1"
-      />
+      <ThemeProvider theme={theme}>
+        <ArticleComponent
+          children={<React.Fragment />}
+          article={takenDownArticle}
+          id="ea1"
+        />
+      </ThemeProvider>
     );
     expect(getByTestId('article-body')).toHaveTextContent('Taken Down');
     expect(getByTestId('article-body')).not.toHaveTextContent('Draft');

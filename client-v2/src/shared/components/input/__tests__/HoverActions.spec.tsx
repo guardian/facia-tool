@@ -12,6 +12,8 @@ import {
   HoverViewButton,
   HoverOphanButton
 } from '../HoverActionButtons';
+import { ThemeProvider } from 'styled-components';
+import { theme } from 'shared/constants/theme';
 
 afterEach(cleanup);
 
@@ -22,17 +24,20 @@ const Buttons = [
   { text: 'Ophan', component: HoverOphanButton },
   { text: 'Delete', component: HoverDeleteButton }
 ];
+
 const HoverWrapper = (
-  <HoverActionsButtonWrapper
-    buttons={Buttons}
-    buttonProps={{
-      isLive: true,
-      urlPath: 'test-string',
-      onDelete
-    }}
-    toolTipPosition={'top'}
-    toolTipAlign={'center'}
-  />
+  <ThemeProvider theme={theme}>
+    <HoverActionsButtonWrapper
+      buttons={Buttons}
+      buttonProps={{
+        isLive: true,
+        urlPath: 'test-string',
+        onDelete
+      }}
+      toolTipPosition={'top'}
+      toolTipAlign={'center'}
+    />
+  </ThemeProvider>
 );
 
 // Tests //
@@ -47,18 +52,20 @@ describe('Hover Action Button Wrapper', () => {
     expect(getByAltText('Delete')).toBeTruthy();
   });
 
-  it('should render Wrapper with without Ophan Button when Draft', () => {
+  it('should render Wrapper without Ophan Button when Draft', () => {
     const { container } = render(
-      <HoverActionsButtonWrapper
-        buttons={Buttons}
-        buttonProps={{
-          isLive: false, // testing isLive
-          urlPath: 'test-string',
-          onDelete
-        }}
-        toolTipPosition={'top'}
-        toolTipAlign={'center'}
-      />
+      <ThemeProvider theme={theme}>
+        <HoverActionsButtonWrapper
+          buttons={Buttons}
+          buttonProps={{
+            isLive: false, // testing isLive
+            urlPath: 'test-string',
+            onDelete
+          }}
+          toolTipPosition={'top'}
+          toolTipAlign={'center'}
+        />
+      </ThemeProvider>
     );
 
     const wrapper = container.firstChild as HTMLElement;
