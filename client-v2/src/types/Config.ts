@@ -25,6 +25,7 @@ interface Config {
   mediaBaseUrl: string,
   apiBaseUrl: string,
   switches: {[key: string]: boolean},
+  stage: string;
   acl: Acl,
   collectionCap: number,
   navListCap: number,

@@ -13,7 +13,7 @@ import {
 } from './storeMiddleware';
 import { State } from 'types/State';
 
-export default function configureStore(initialState: State) {
+export default function configureStore(initialState?: State) {
   const history = createBrowserHistory();
   const router = routerMiddleware(history);
   const reducer = enableBatching(rootReducer);
