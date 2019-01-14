@@ -126,10 +126,11 @@ export default styled(`button`)`
   font-weight: bold;
   height: ${mapSize(heightMap)};
   line-height: 1;
-  margin: 0 ${({ inline }) => (inline ? '5px' : '0')}
+  margin: 0 ${({ inline }) => (inline ? '5px' : '0')};
   padding: 0 ${mapSize(paddingMap)};
   border: none;
-  :disabled, :disabled:hover {
+  :disabled,
+  :disabled:hover {
     cursor: not-allowed;
   }
   :hover {
