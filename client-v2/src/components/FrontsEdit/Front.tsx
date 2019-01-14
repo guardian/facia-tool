@@ -296,7 +296,7 @@ const mapDispatchToProps = (
     dispatch,
     updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
       dispatch(updateArticleFragmentMeta(id, meta)),
-    initialiseFront: () => initialiseFront(props.id, props.browsingStage),
+    initialiseFront: () => dispatch(initialiseFront(props.id, props.browsingStage)),
     selectArticleFragment: (
       frontId: string,
       articleFragmentId: string,
