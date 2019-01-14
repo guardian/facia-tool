@@ -57,7 +57,9 @@ type FrontProps = FrontPropsBeforeState & {
   updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) => void;
   selectedArticleFragment: { id: string; isSupporting: boolean } | void;
   dispatch: Dispatch;
-  fetchCollections: (ids: string[]) => void;
+  fetchCollections: (
+    ids: string[]
+  ) => void;
   fetchArticlesForCollections: (
     ids: string[],
     collectionItemSet: CollectionItemSets
@@ -89,7 +91,9 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
       noOfOpenCollectionsOnFirstLoad
     );
     this.props.editorOpenCollections(collectionsWithArticlesToLoad);
-    await this.props.fetchCollections(this.props.front.collections);
+    await this.props.fetchCollections(
+      this.props.front.collections
+    );
     this.props.fetchArticlesForCollections(
       collectionsWithArticlesToLoad,
       this.props.browsingStage
@@ -301,7 +305,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     dispatch,
     updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
       dispatch(updateArticleFragmentMeta(id, meta)),
-    fetchCollections: (ids: string[]) => dispatch(getCollections(ids)),
+    fetchCollections: (ids: string[]) =>
+      dispatch(getCollections(ids)),
     fetchArticlesForCollections: (
       ids: string[],
       collectionItemSet: CollectionItemSets
