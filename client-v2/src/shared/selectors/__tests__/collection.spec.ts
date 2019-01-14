@@ -10,10 +10,26 @@ describe('Collection selectors', () => {
           itemSet: 'live'
         })
       ).toEqual(['article/live/0', 'article/draft/1', 'a/long/path/2']);
-      // expect(selectArticlesInCollections(stateWithCollection, {
-      //   collectionIds: ['id', 'id'],
-      //   itemSet: 'draft'
-      // })).toEqual([])
+      expect(
+        selectArticlesInCollections(stateWithCollection.shared, {
+          collectionIds: ['exampleCollectionTwo'],
+          itemSet: 'live'
+        })
+      ).toEqual(['article/live/0']);
+      expect(
+        selectArticlesInCollections(stateWithCollection.shared, {
+          collectionIds: ['exampleCollectionTwo'],
+          itemSet: 'draft'
+        })
+      ).toEqual(["article/draft/1", "a/long/path/2"]);
+    });
+    it('should return an empty array if no collections are found', () => {
+      expect(
+        selectArticlesInCollections(stateWithCollection.shared, {
+          collectionIds: ['invalidCollectionId'],
+          itemSet: 'draft'
+        })
+      ).toEqual([]);
     });
   });
 });
