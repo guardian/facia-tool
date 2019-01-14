@@ -57,7 +57,14 @@ type FrontProps = FrontPropsBeforeState & {
   updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) => void;
   selectedArticleFragment: { id: string; isSupporting: boolean } | void;
   dispatch: Dispatch;
-  fetchCollectionsAndArticles: (ids: string[], collectionItemSet: CollectionItemSets) => void;
+  fetchCollections: (
+    ids: string[],
+    collectionItemSet: CollectionItemSets
+  ) => void;
+  fetchArticlesForCollections: (
+    ids: string[],
+    collectionItemSet: CollectionItemSets
+  ) => void;
   selectArticleFragment: (id: string, isSupporting?: boolean) => void;
   clearArticleFragmentSelection: () => void;
   removeCollectionItem: (parentId: string, id: string) => void;
@@ -79,10 +86,19 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     };
   }
 
-  public componentWillMount() {
-    this.props.fetchCollectionsAndArticles(this.props.front.collections, this.props.browsingStage);
-    this.props.editorOpenCollections(
-      this.props.front.collections.slice(0, noOfOpenCollectionsOnFirstLoad)
+  public async componentWillMount() {
+    const collectionsWithArticlesToLoad = this.props.front.collections.slice(
+      0,
+      noOfOpenCollectionsOnFirstLoad
+    );
+    this.props.editorOpenCollections(collectionsWithArticlesToLoad);
+    await this.props.fetchCollections(
+      this.props.front.collections,
+      this.props.browsingStage
+    );
+    this.props.fetchArticlesForCollections(
+      collectionsWithArticlesToLoad,
+      this.props.browsingStage
     );
   }
 
@@ -291,14 +307,12 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     dispatch,
     updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
       dispatch(updateArticleFragmentMeta(id, meta)),
-    fetchCollectionsAndArticles: async (ids: string[], collectionItemSet: CollectionItemSets) => {
-      await getCollections(ids, collectionItemSet);
-      await getArticlesForCollections(ids, collectionItemSet);
-    },
+    fetchCollections: (ids: string[], collectionItemSet: CollectionItemSets) =>
+      dispatch(getCollections(ids, collectionItemSet)),
     fetchArticlesForCollections: (
       ids: string[],
       collectionItemSet: CollectionItemSets
-    ) => dispatch(getCollections(ids, collectionItemSet)),
+    ) => dispatch(getArticlesForCollections(ids, collectionItemSet)),
     selectArticleFragment: (
       frontId: string,
       articleFragmentId: string,
