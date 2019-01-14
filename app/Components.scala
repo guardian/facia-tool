@@ -42,8 +42,6 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val press = new Press(faciaPress)
   val assetsManager = new AssetsManager(config, isDev)
   val encryption = new Encryption(config)
-  val mediaApi = new MediaApi(config, wsClient)
-  val mediaServiceClient = new MediaServiceClient(mediaApi)
   override lazy val httpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, sourceMapper, Some(router))
 
 //  Controllers
@@ -51,7 +49,7 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val defaults = new DefaultsController(acl, isDev, this)
   val faciaCapiProxy = new FaciaContentApiProxy(this)
   val faciaTool = new FaciaToolController(acl, frontsApi, faciaApiIO, updateActions, breakingNewsUpdate,
-    structuredLogger, faciaPress, faciaPressQueue, configAgent, s3FrontsApi, mediaServiceClient, this)
+    structuredLogger, faciaPress, faciaPressQueue, configAgent, s3FrontsApi, this)
   val front = new FrontController(acl, structuredLogger, updateManager, press, this)
   val pandaAuth = new PandaAuthController(this)
   val status = new StatusController(this)
