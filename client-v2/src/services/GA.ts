@@ -12,7 +12,8 @@
 const DIMENSION_MAP = {
   dimension1: 'front_id',
   dimension2: 'drag_source',
-  dimension3: 'collection_id'
+  dimension3: 'collection_id',
+  dimension4: 'version'
 };
 
 const w: any = window;
@@ -27,7 +28,8 @@ const init = () => {
   // script provided from GA
   gtag('js', new Date());
   gtag('config', 'UA-78290349-2', {
-    custom_map: DIMENSION_MAP
+    custom_map: DIMENSION_MAP,
+    version: '2'
   });
 };
 
