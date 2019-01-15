@@ -43,10 +43,9 @@ import {
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import difference from 'lodash/difference';
 import { selectArticlesInCollections } from 'shared/selectors/collection';
+import { editorOpenCollections } from 'bundles/frontsUIBundle';
 
-function getCollections(
-  collectionIds: string[]
-): ThunkResult<Promise<void>> {
+function getCollections(collectionIds: string[]): ThunkResult<Promise<void>> {
   return async (dispatch: Dispatch, getState: () => State) => {
     dispatch(collectionActions.fetchStart(collectionIds));
     try {
@@ -198,6 +197,14 @@ const getArticlesForCollections = (
   await dispatch(fetchArticles(articleIds));
 };
 
+const openCollectionsAndFetchTheirArticles = (
+  collectionIds: string[],
+  itemSet: CollectionItemSets
+): ThunkResult<Promise<void>> => async dispatch => {
+  dispatch(editorOpenCollections(collectionIds));
+  return dispatch(getArticlesForCollections(collectionIds, itemSet));
+};
+
 function getVisibleArticles(
   collection: Collection,
   state: State,
@@ -217,6 +224,7 @@ function getVisibleArticles(
 export {
   getCollections,
   getArticlesForCollections,
+  openCollectionsAndFetchTheirArticles,
   fetchArticles,
   updateCollection
 };
