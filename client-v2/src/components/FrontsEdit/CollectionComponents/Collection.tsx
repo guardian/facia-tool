@@ -45,6 +45,7 @@ type CollectionProps = CollectionPropsBeforeState & {
 
 const Collection = ({
   id,
+  frontId,
   children,
   alsoOn,
   groups,
@@ -52,13 +53,13 @@ const Collection = ({
   hasUnpublishedChanges,
   canPublish = true,
   publishCollection: publish,
-  frontId,
   displayEditWarning,
   isUneditable,
   isOpen,
   onChangeOpenState
 }: CollectionProps) => (
   <CollectionDisplay
+    frontId={frontId}
     id={id}
     browsingStage={browsingStage}
     isUneditable={isUneditable}

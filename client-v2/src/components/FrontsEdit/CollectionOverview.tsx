@@ -9,11 +9,12 @@ import {
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { createCollectionId } from 'shared/components/Collection';
-import { editorOpenCollections } from 'bundles/frontsUIBundle';
 import { Dispatch } from 'types/Store';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
+import { events } from 'services/GA';
 
 interface FrontCollectionOverviewContainerProps {
+  frontId: string;
   collectionId: string;
   browsingStage: CollectionItemSets;
 }
@@ -73,12 +74,14 @@ const Name = styled.span`
 const CollectionOverview = ({
   collection,
   articleCount,
-  openCollection
+  openCollection,
+  frontId
 }: FrontCollectionOverviewProps) =>
   collection ? (
     <Container
       onClick={e => {
         e.preventDefault();
+        events.overviewItemClicked(frontId)
         const el = document.getElementById(createCollectionId(collection));
         if (el) {
           el.scrollIntoView({

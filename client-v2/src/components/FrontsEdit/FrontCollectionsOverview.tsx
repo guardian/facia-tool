@@ -27,15 +27,15 @@ const Container = styled(ContentContainer)`
 `;
 
 const FrontCollectionsOverview = ({
+  id,
   front,
   browsingStage
 }: FrontCollectionOverviewProps) => (
   <Container setBack>
-    <ContainerHeadingPinline>
-      Overview
-    </ContainerHeadingPinline>
+    <ContainerHeadingPinline>Overview</ContainerHeadingPinline>
     {front.collections.map(collectionId => (
       <CollectionOverview
+        frontId={id}
         key={collectionId}
         collectionId={collectionId}
         browsingStage={browsingStage}

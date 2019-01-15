@@ -11,6 +11,8 @@ import {
   EditorCloseCollection
 } from 'types/Action';
 import { State as GlobalState } from 'types/State';
+import { ThunkResult } from 'types/Store';
+import { events } from 'services/GA';
 
 const EDITOR_OPEN_FRONT = 'EDITOR_OPEN_FRONT';
 const EDITOR_CLOSE_FRONT = 'EDITOR_CLOSE_FRONT';
@@ -36,7 +38,7 @@ const editorCloseCollections = (
   payload: { collectionIds }
 });
 
-const editorOpenFront = (frontId: string): EditorAddFront => ({
+const editorOpenFrontPure = (frontId: string): EditorAddFront => ({
   type: EDITOR_OPEN_FRONT,
   payload: { frontId },
   meta: {
@@ -44,13 +46,23 @@ const editorOpenFront = (frontId: string): EditorAddFront => ({
   }
 });
 
-const editorCloseFront = (frontId: string): EditorCloseFront => ({
+const editorOpenFront = (frontId: string): ThunkResult<void> => dispatch => {
+  events.addFront(frontId);
+  dispatch(editorOpenFrontPure(frontId));
+};
+
+const editorCloseFrontPure = (frontId: string): EditorCloseFront => ({
   type: EDITOR_CLOSE_FRONT,
   payload: { frontId },
   meta: {
     persistTo: 'openFrontIds'
   }
 });
+
+const editorCloseFront = (frontId: string): ThunkResult<void> => dispatch => {
+  events.removeFront(frontId);
+  dispatch(editorCloseFrontPure(frontId));
+};
 
 const editorClearOpenFronts = (): EditorClearOpenFronts => ({
   type: EDITOR_CLEAR_OPEN_FRONTS,
@@ -196,7 +208,10 @@ export {
   selectEditorFronts,
   selectEditorFrontsByPriority,
   selectEditorArticleFragment,
-  selectIsCollectionOpen
+  selectIsCollectionOpen,
+  // testing
+  editorOpenFrontPure,
+  editorCloseFrontPure
 };
 
 export default reducer;

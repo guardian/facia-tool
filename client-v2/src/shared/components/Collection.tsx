@@ -20,6 +20,7 @@ import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 import FadeIn from './animation/FadeIn';
 import ContentContainer from './layout/ContentContainer';
 import { css } from 'styled-components';
+import { events } from 'services/GA';
 
 export const createCollectionId = ({ id }: Collection) => `collection-${id}`;
 
@@ -27,6 +28,7 @@ interface ContainerProps {
   id: string;
   selectSharedState?: (state: any) => SharedState;
   browsingStage: CollectionItemSets;
+  frontId: string;
 }
 
 type Props = ContainerProps & {
@@ -93,7 +95,6 @@ const ItemCountMeta = CollectionMetaBase.extend`
   flex: 0;
 `;
 
-
 const CollectionHeadlineWithConfigContainer = styled('div')`
   flex-grow: 1;
   max-width: calc(100% - 95px);
@@ -152,6 +153,7 @@ class CollectionDisplay extends React.Component<Props> {
   };
 
   public toggleVisibility = () => {
+    events.collectionToggleClicked(this.props.frontId);
     if (this.props.onChangeOpenState) {
       this.props.onChangeOpenState(!this.props.isOpen);
     }
@@ -171,9 +173,9 @@ class CollectionDisplay extends React.Component<Props> {
       <CollectionContainer id={collection && createCollectionId(collection)}>
         <ContainerHeadingPinline>
           <CollectionHeadlineWithConfigContainer>
-          <CollectionHeadingText isLoading={!collection}>
-            {collection ? collection.displayName : 'Loading'}
-          </CollectionHeadingText>
+            <CollectionHeadingText isLoading={!collection}>
+              {collection ? collection.displayName : 'Loading'}
+            </CollectionHeadingText>
             <CollectionConfigContainer>
               {oc(collection).metadata[0].type() ? (
                 <CollectionConfigText>
@@ -181,7 +183,9 @@ class CollectionDisplay extends React.Component<Props> {
                   {oc(collection).metadata[0].type()}
                 </CollectionConfigText>
               ) : null}
-              {collection && collection.platform && collection.platform !== 'Any' ? (
+              {collection &&
+              collection.platform &&
+              collection.platform !== 'Any' ? (
                 <CollectionConfigText>
                   <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
                   {`${collection.platform} Only`}
