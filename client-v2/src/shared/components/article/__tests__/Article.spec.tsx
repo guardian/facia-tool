@@ -17,6 +17,7 @@ describe('Article component ', () => {
   afterEach(cleanup);
   it('should render kicker correctly', () => {
     const { getByTestId } = render(
+<<<<<<< HEAD
       <ThemeProvider theme={theme}>
         <ArticleComponent
           children={<React.Fragment />}
@@ -24,6 +25,13 @@ describe('Article component ', () => {
           id="ea1"
         />
       </ThemeProvider>
+=======
+      <ArticleComponent
+        children={<React.Fragment />}
+        article={derivedArticle}
+        id="ea1"
+      />
+>>>>>>> Bang, and the unused stuff is gone
     );
     expect(getByTestId('article-body')).toHaveTextContent(
       derivedArticle.kicker ? derivedArticle.kicker : ''

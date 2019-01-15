@@ -1,4 +1,4 @@
-import { Action, StartConfirm, EndConfirm } from 'types/Action';
+import { Action, StartConfirm } from 'types/Action';
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import { confirmModalActionsSelector } from 'selectors/confirmModalSelectors';

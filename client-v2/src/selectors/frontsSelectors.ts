@@ -1,12 +1,11 @@
 import uniq from 'lodash/uniq';
 import { createSelector } from 'reselect';
-import { FrontConfig, CollectionConfig, FrontsConfig } from 'types/FaciaApi';
+import { FrontConfig, CollectionConfig } from 'types/FaciaApi';
 import { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
 import { CollectionItemSets, Stages } from 'shared/types/Collection';
-import { ArticleDetails } from 'types/FaciaApi';
 
 interface FrontConfigMap {
   [id: string]: FrontConfig;

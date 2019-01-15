@@ -5,7 +5,6 @@ import {
 import { clipboardSelector } from 'selectors/frontsSelectors';
 import { State } from 'types/State';
 import { normalize, denormalize } from './clipboardSchema';
-import { DerivedArticle } from 'shared/types/Article';
 import { notLiveLabels } from 'constants/fronts';
 
 function normaliseClipboard(clipboard: {

@@ -1,5 +1,4 @@
 import omit from 'lodash/omit';
-import uniq from 'lodash/uniq';
 import { createSelector } from 'reselect';
 import { getThumbnail, getPrimaryTag } from 'util/CAPIUtils';
 import { selectors as externalArticleSelectors } from '../bundles/externalArticlesBundle';
@@ -14,7 +13,6 @@ import {
   ArticleTag
 } from '../types/Collection';
 import { State } from '../types/State';
-import { DerivedArticle } from 'shared/types/Article';
 
 // Selects the shared part of the application state mounted at its default point, '.shared'.
 const selectSharedState = (rootState: any): State => rootState.shared;

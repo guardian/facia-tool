@@ -1,5 +1,4 @@
 import { Group } from 'shared/types/Collection';
-import { State } from 'shared/reducers/sharedReducer';
 
 // runs through an array of groups, assumed to be ordered, and removes all
 // article fragments beyond maxArticleFragments
