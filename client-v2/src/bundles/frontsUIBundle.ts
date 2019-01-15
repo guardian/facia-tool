@@ -211,10 +211,7 @@ export {
   selectEditorFronts,
   selectEditorFrontsByPriority,
   selectEditorArticleFragment,
-  selectIsCollectionOpen,
-  // testing
-  editorOpenFrontPure,
-  editorCloseFrontPure
+  selectIsCollectionOpen
 };
 
 export default reducer;

@@ -1,6 +1,6 @@
 import reducer, {
-  editorOpenFrontPure as editorOpenFront,
-  editorCloseFrontPure as editorCloseFront,
+  editorOpenFront,
+  editorCloseFront,
   editorClearOpenFronts,
   editorSetOpenFronts,
   editorOpenCollections,
