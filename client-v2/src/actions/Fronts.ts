@@ -133,7 +133,10 @@ function publishCollection(
  * - Fetch all of its collections from the server
  * - Mark as open number of collections indicated by the constant, and fetch their articles
  */
-function initialiseFront(frontId: string, browsingStage: CollectionItemSets): ThunkResult<Promise<void>> {
+function initialiseFront(
+  frontId: string,
+  browsingStage: CollectionItemSets
+): ThunkResult<Promise<void>> {
   return async (dispatch: Dispatch, getState: () => State) => {
     const front = getFront(getState(), frontId);
     if (!front) {
@@ -144,14 +147,11 @@ function initialiseFront(frontId: string, browsingStage: CollectionItemSets): Th
       noOfOpenCollectionsOnFirstLoad
     );
     dispatch(editorOpenCollections(collectionsWithArticlesToLoad));
-    await dispatch(getCollections(
-      front.collections
-    ));
-    await dispatch(getArticlesForCollections(
-      collectionsWithArticlesToLoad,
-      browsingStage
-    ))
-  }
+    await dispatch(getCollections(front.collections));
+    await dispatch(
+      getArticlesForCollections(collectionsWithArticlesToLoad, browsingStage)
+    );
+  };
 }
 
 export {
