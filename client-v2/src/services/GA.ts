@@ -11,7 +11,8 @@
  */
 const DIMENSION_MAP = {
   dimension1: 'front_id',
-  dimension2: 'drag_source'
+  dimension2: 'drag_source',
+  dimension3: 'collection_id'
 };
 
 const w: any = window;
