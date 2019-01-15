@@ -23,6 +23,8 @@ function gtag(...args: any[]) {
 }
 
 const init = () => {
+  // these calls have been extracted (and modified) from the original tracking
+  // script provided from GA
   gtag('js', new Date());
   gtag('config', 'UA-78290349-2', {
     custom_map: DIMENSION_MAP
