@@ -545,6 +545,14 @@ const stateWithCollection: any = {
           draft: [],
           previously: undefined,
           type: 'type'
+        },
+        exampleCollectionTwo: {
+          id: 'exampleCollection',
+          displayName: 'Example Collection',
+          live: ['abc'],
+          draft: ['def'],
+          previously: undefined,
+          type: 'type'
         }
       }
     },

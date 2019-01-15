@@ -8,7 +8,11 @@ import {
   actions as externalArticleActions,
   actionNames as externalArticleActionNames
 } from 'shared/bundles/externalArticlesBundle';
-import { getCollectionsAndArticles, updateCollection, fetchArticles } from '../Collections';
+import {
+  getArticlesForCollections,
+  updateCollection,
+  fetchArticles
+} from '../Collections';
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
@@ -70,30 +74,30 @@ describe('Collection actions', () => {
     });
     beforeEach(() => {
       store.clearActions();
-    })
+    });
     it('should issue fetch requests for the given articles and dispatch start and success actions', async () => {
-      fetchMock.once(
-        'begin:/api/preview/internal-code/page/5029528',
-        { response: { results: [capiArticle] } }
-      );
-      await store.dispatch(fetchArticles(['internal-code/page/5029528']) as any);
+      fetchMock.once('begin:/api/preview/internal-code/page/5029528', {
+        response: { results: [capiArticle] }
+      });
+      await store.dispatch(fetchArticles([
+        'internal-code/page/5029528'
+      ]) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         externalArticleActions.fetchStart(['internal-code/page/5029528'])
       );
-      expect(actions[1]).toEqual(externalArticleActions.fetchSuccess([
-        {
-          ...capiArticle,
-          id: 'internal-code/page/5029528',
-          urlPath: capiArticle.id
-        }
-      ]));
+      expect(actions[1]).toEqual(
+        externalArticleActions.fetchSuccess([
+          {
+            ...capiArticle,
+            id: 'internal-code/page/5029528',
+            urlPath: capiArticle.id
+          }
+        ])
+      );
     });
     it('should dispatch start and error actions when something goes wrong', async () => {
-      fetchMock.once(
-        'begin:/api/preview/internal-code/page/1',
-        400
-      );
+      fetchMock.once('begin:/api/preview/internal-code/page/1', 400);
       await store.dispatch(fetchArticles(['internal-code/page/1']) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
@@ -102,82 +106,94 @@ describe('Collection actions', () => {
       expect(actions[1].type).toEqual(externalArticleActionNames.fetchError);
     });
     it('should remove snaplinks', async () => {
-      fetchMock.once(
-        'begin:/api/preview/internal-code/page/5029528',
-        { response: { results: [capiArticle] } }
-      );
-      await store.dispatch(fetchArticles(['internal-code/page/5029528', 'snap/12345']) as any);
+      fetchMock.once('begin:/api/preview/internal-code/page/5029528', {
+        response: { results: [capiArticle] }
+      });
+      await store.dispatch(fetchArticles([
+        'internal-code/page/5029528',
+        'snap/12345'
+      ]) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         externalArticleActions.fetchStart(['internal-code/page/5029528'])
       );
     });
-    it('should dispatch errors when the CAPI result count doesn\'t match the requested articles', async () => {
-      fetchMock.once(
-        'begin:/api/preview/search',
-        { response: { results: [capiArticle] } }
-      );
-      await store.dispatch(fetchArticles(['internal-code/page/5029528', 'internal-code/page/12345']) as any);
+    it("should dispatch errors when the CAPI result count doesn't match the requested articles", async () => {
+      fetchMock.once('begin:/api/preview/search', {
+        response: { results: [capiArticle] }
+      });
+      await store.dispatch(fetchArticles([
+        'internal-code/page/5029528',
+        'internal-code/page/12345'
+      ]) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
-        externalArticleActions.fetchStart(['internal-code/page/5029528', 'internal-code/page/12345'])
+        externalArticleActions.fetchStart([
+          'internal-code/page/5029528',
+          'internal-code/page/12345'
+        ])
       );
-      expect(actions[1]).toEqual(externalArticleActions.fetchSuccess([
-        {
-          ...capiArticle,
-          id: 'internal-code/page/5029528',
-          urlPath: capiArticle.id
-        }
-      ]));
+      expect(actions[1]).toEqual(
+        externalArticleActions.fetchSuccess([
+          {
+            ...capiArticle,
+            id: 'internal-code/page/5029528',
+            urlPath: capiArticle.id
+          }
+        ])
+      );
       // We raise an error here for the missing article in the response
       expect(actions[2].type).toEqual(externalArticleActionNames.fetchError);
       expect(actions[2].payload.error).toContain('internal-code/page/12345');
     });
   });
 
-  describe('getCollectionsAndArticles thunk', () => {
+  describe('getArticlesForCollections thunk', () => {
     it('should dispatch start and success actions for articles returned from getCollection()', async () => {
-      const collection: any =
-        stateWithCollection.shared.collections.data.exampleCollection;
-      fetchMock.once('/collection/exampleCollection', collection);
       fetchMock.once(
-        'begin:/api/preview/world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina',
+        'begin:/api/preview/search?ids=article/live/0,article/draft/1,a/long/path/2',
         { response: { results: [capiArticle] } }
       );
       const store = mockStore({
         config,
         ...stateWithCollection
       });
-      await store.dispatch(
-        getCollectionsAndArticles(['exampleCollection'], (() => () =>
-          Promise.resolve([capiArticle.id]) as any)
-        ) as any
-      );
+      await store.dispatch(getArticlesForCollections(
+        ['exampleCollection'],
+        'live'
+      ) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
-        externalArticleActions.fetchStart([capiArticle.id])
+        externalArticleActions.fetchStart([
+          'article/live/0',
+          'article/draft/1',
+          'a/long/path/2'
+        ])
       );
       // We don't care about the implementation of getArticle here,
       // so we just check that the action type is correct
       expect(actions[1].type).toEqual(externalArticleActionNames.fetchSuccess);
     });
     it('should dispatch start and error actions when getArticles throws', async () => {
-      const collection: any =
-        stateWithCollection.shared.collections.data.exampleCollection;
-      fetchMock.once('/collection/exampleCollection', collection);
-      fetchMock.once('begin:/api/preview/world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina', 400);
+      fetchMock.once(
+        'begin:/api/preview/search?ids=article/live/0,article/draft/1,a/long/path/2',
+        400
+      );
       const store = mockStore({
         config,
         ...stateWithCollection
       });
-      await store.dispatch(
-        getCollectionsAndArticles(['exampleCollection'], () => () =>
-          Promise.resolve([capiArticle.id])
-        ) as any
-      );
+      await store.dispatch(getArticlesForCollections(
+        ['exampleCollection'],
+        'live'
+      ) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
-        externalArticleActions.fetchStart([capiArticle.id])
+        externalArticleActions.fetchStart([
+          'article/live/0',
+          'article/draft/1',
+          'a/long/path/2'
+        ])
       );
       expect(actions[1].type).toEqual(externalArticleActionNames.fetchError);
       expect(actions[1].payload.error).toContain('400');

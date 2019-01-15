@@ -5,18 +5,18 @@ import {
   fetchFrontsConfig,
   fetchLastPressed as fetchLastPressedApi,
   publishCollection as publishCollectionApi,
-  getCollections as getCollectionsApi,
   getCollection as getCollectionApi
 } from 'services/faciaApi';
 import { actions as frontsConfigActions } from 'bundles/frontsConfigBundle';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import { isFrontStale } from 'util/frontsUtils';
-import { getCollections } from 'actions/Collections';
+import { getCollections, getArticlesForCollections } from 'actions/Collections';
 import { VisibleArticlesResponse } from 'types/FaciaApi';
-import { visibleArticlesSelector } from 'selectors/frontsSelectors';
-import { Stages } from 'shared/types/Collection';
-import { frontStages } from 'constants/fronts';
+import { visibleArticlesSelector, getFront } from 'selectors/frontsSelectors';
+import { Stages, CollectionItemSets } from 'shared/types/Collection';
+import { frontStages, noOfOpenCollectionsOnFirstLoad } from 'constants/fronts';
 import { State } from 'types/State';
+import { editorOpenCollections } from 'bundles/frontsUIBundle';
 
 function fetchLastPressedSuccess(frontId: string, datePressed: string): Action {
   return {
@@ -47,7 +47,11 @@ function recordStaleFronts(frontId: string, frontIsStale: boolean): Action {
   };
 }
 
-function recordVisibleArticles(collectionId: string, visibleArticles: VisibleArticlesResponse, stage: Stages): Action {
+function recordVisibleArticles(
+  collectionId: string,
+  visibleArticles: VisibleArticlesResponse,
+  stage: Stages
+): Action {
   return {
     type: 'FETCH_VISIBLE_ARTICLES_SUCCESS',
     payload: {
@@ -55,7 +59,7 @@ function recordVisibleArticles(collectionId: string, visibleArticles: VisibleArt
       visibleArticles,
       stage
     }
-  }
+  };
 }
 
 function fetchLastPressed(frontId: string): ThunkResult<void> {
@@ -73,10 +77,11 @@ function publishCollection(
   collectionId: string,
   frontId: string
 ): ThunkResult<Promise<void>> {
-
   return (dispatch: Dispatch, getState: () => State) => {
-
-  const draftVisibleArticles = visibleArticlesSelector(getState(), { collectionId, stage: frontStages.draft });
+    const draftVisibleArticles = visibleArticlesSelector(getState(), {
+      collectionId,
+      stage: frontStages.draft
+    });
 
     return publishCollectionApi(collectionId)
       .then(() => {
@@ -84,7 +89,11 @@ function publishCollection(
           batchActions([
             publishCollectionSuccess(collectionId),
             recordUnpublishedChanges(collectionId, false),
-            recordVisibleArticles(collectionId, draftVisibleArticles, frontStages.live)
+            recordVisibleArticles(
+              collectionId,
+              draftVisibleArticles,
+              frontStages.live
+            )
           ])
         );
 
@@ -103,7 +112,10 @@ function publishCollection(
               batchActions([
                 recordStaleFronts(
                   frontId,
-                  isFrontStale(collection.lastUpdated, lastPressedInMilliseconds)
+                  isFrontStale(
+                    collection.lastUpdated,
+                    lastPressedInMilliseconds
+                  )
                 ),
                 fetchLastPressedSuccess(frontId, lastPressed)
               ])
@@ -113,10 +125,42 @@ function publishCollection(
       .catch(() => {
         // @todo: implement once error handling is done
       });
-  }
+  };
 }
 
-export { fetchLastPressed, fetchLastPressedSuccess, publishCollection, recordVisibleArticles };
+/**
+ * Initialise a front --
+ * - Fetch all of its collections from the server
+ * - Mark as open number of collections indicated by the constant, and fetch their articles
+ */
+function initialiseFront(
+  frontId: string,
+  browsingStage: CollectionItemSets
+): ThunkResult<Promise<void>> {
+  return async (dispatch: Dispatch, getState: () => State) => {
+    const front = getFront(getState(), frontId);
+    if (!front) {
+      return;
+    }
+    const collectionsWithArticlesToLoad = front.collections.slice(
+      0,
+      noOfOpenCollectionsOnFirstLoad
+    );
+    dispatch(editorOpenCollections(collectionsWithArticlesToLoad));
+    await dispatch(getCollections(front.collections));
+    await dispatch(
+      getArticlesForCollections(collectionsWithArticlesToLoad, browsingStage)
+    );
+  };
+}
+
+export {
+  fetchLastPressed,
+  fetchLastPressedSuccess,
+  publishCollection,
+  recordVisibleArticles,
+  initialiseFront
+};
 
 export default function getFrontsConfig(): ThunkResult<
   Promise<

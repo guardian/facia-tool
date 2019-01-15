@@ -22,6 +22,7 @@ import {
   editorOpenCollections,
   editorCloseCollections
 } from 'bundles/frontsUIBundle';
+import { getCollections, getArticlesForCollections } from 'actions/Collections';
 
 interface CollectionPropsBeforeState {
   id: string;
@@ -62,7 +63,7 @@ const Collection = ({
     browsingStage={browsingStage}
     isUneditable={isUneditable}
     isOpen={isOpen}
-    onChangeOpenState={() => onChangeOpenState(id, !isOpen)}
+    onChangeOpenState={() => onChangeOpenState(id, isOpen)}
     headlineContent={
       hasUnpublishedChanges &&
       canPublish && (
@@ -103,11 +104,17 @@ const createMapStateToProps = () => {
   });
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
+const mapDispatchToProps = (dispatch: Dispatch, { browsingStage }: CollectionPropsBeforeState) => ({
   publishCollection: (id: string, frontId: string) =>
     dispatch(publishCollection(id, frontId)),
-  onChangeOpenState: (id: string, isOpen: boolean) =>
-    dispatch(isOpen ? editorOpenCollections(id) : editorCloseCollections(id))
+  onChangeOpenState: (id: string, isOpen: boolean) => {
+    if (isOpen) {
+      dispatch(editorCloseCollections(id))
+    } else {
+      dispatch(getArticlesForCollections([id], browsingStage))
+      dispatch(editorOpenCollections(id))
+    }
+  }
 });
 
 export default connect(

@@ -7,7 +7,7 @@ import { Dispatch } from 'types/Store';
 
 import { fetchLastPressed } from 'actions/Fronts';
 import {
-  getCollectionsAndArticles,
+  getCollections,
   updateCollection
 } from 'actions/Collections';
 import { editorCloseFront } from 'bundles/frontsUIBundle';
@@ -58,7 +58,6 @@ type FrontsComponentProps = FrontsContainerProps & {
   alsoOn: { [id: string]: AlsoOnDetail };
   lastPressed: string | null;
   frontsActions: {
-    getCollectionsAndArticles: (collectionIds: string[]) => Promise<void>;
     fetchLastPressed: (frontId: string) => void;
     editorCloseFront: (frontId: string) => void;
   };
@@ -74,25 +73,8 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   };
 
   public componentDidMount() {
-    // If we've already got the front configuration, fetch
-    // collections and articles immediately.
-    if (this.props.selectedFront) {
-      this.props.frontsActions.getCollectionsAndArticles(
-        this.props.selectedFront.collections
-      );
-    }
     if (!this.props.lastPressed) {
       this.props.frontsActions.fetchLastPressed(this.props.frontId);
-    }
-  }
-
-  public componentWillReceiveProps(nextProps: FrontsComponentProps) {
-    // If we mounted without a front configuration,
-    // fetch it when it's eventually available.
-    if (!this.props.selectedFront && nextProps.selectedFront) {
-      nextProps.frontsActions.getCollectionsAndArticles(
-        nextProps.selectedFront.collections
-      );
     }
   }
 
@@ -140,7 +122,9 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                 <Button
                   key={key}
                   size="l"
-                  selected={collectionItemSets[key] === this.state.collectionSet}
+                  selected={
+                    collectionItemSets[key] === this.state.collectionSet
+                  }
                   onClick={() => this.handleCollectionSetSelect(key)}
                 >
                   {collectionItemSets[key]}
@@ -175,8 +159,6 @@ const createMapStateToProps = () => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   frontsActions: {
-    getCollectionsAndArticles: (ids: string[]) =>
-      dispatch(getCollectionsAndArticles(ids)),
     fetchLastPressed: (id: string) => dispatch(fetchLastPressed(id)),
     updateCollection: (collection: Collection) =>
       dispatch(updateCollection(collection)),

@@ -35,69 +35,88 @@ import { getCollectionConfig } from 'selectors/frontsSelectors';
 import { State } from 'types/State';
 import { Dispatch, ThunkResult, GetState } from 'types/Store';
 import { frontStages } from 'constants/fronts';
-import { Stages, Collection } from 'shared/types/Collection';
+import {
+  Stages,
+  Collection,
+  CollectionItemSets
+} from 'shared/types/Collection';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import difference from 'lodash/difference';
-import flatten from 'lodash/flatten';
+import { selectArticlesInCollections } from 'shared/selectors/collection';
+import { editorOpenCollections } from 'bundles/frontsUIBundle';
 
-function getCollections(collectionIds: string[]): ThunkResult<Promise<string[]>> {
+function getCollections(collectionIds: string[]): ThunkResult<Promise<void>> {
   return async (dispatch: Dispatch, getState: () => State) => {
     dispatch(collectionActions.fetchStart(collectionIds));
     try {
-      const collections = await fetchCollection(collectionIds)
-      return flatten(await Promise.all(collections.map(async collection => {
-        const collectionConfig = getCollectionConfig(getState(), collection.id);
-        const collectionWithNestedArticles = combineCollectionWithConfig(
-          collectionConfig,
-          collection
-        );
-        const hasUnpublishedChanges =
-          collectionWithNestedArticles.draft !== undefined;
+      const collections = await fetchCollection(collectionIds);
+      await Promise.all(
+        collections.map(async collection => {
+          const collectionConfig = getCollectionConfig(
+            getState(),
+            collection.id
+          );
+          const collectionWithNestedArticles = combineCollectionWithConfig(
+            collectionConfig,
+            collection
+          );
+          const hasUnpublishedChanges =
+            collectionWithNestedArticles.draft !== undefined;
 
-        const collectionWithDraftArticles = {
-          ...collectionWithNestedArticles,
-          draft: populateDraftArticles(collectionWithNestedArticles)
-        };
-        const {
-          normalisedCollection,
-          articleFragments,
-          groups
-        } = normaliseCollectionWithNestedArticles(
-          collectionWithDraftArticles,
-          collectionConfig
-        );
+          const collectionWithDraftArticles = {
+            ...collectionWithNestedArticles,
+            draft: populateDraftArticles(collectionWithNestedArticles)
+          };
+          const {
+            normalisedCollection,
+            articleFragments,
+            groups
+          } = normaliseCollectionWithNestedArticles(
+            collectionWithDraftArticles,
+            collectionConfig
+          );
 
-        dispatch(
-          batchActions([
-            collectionActions.fetchSuccess(normalisedCollection),
-            articleFragmentsReceived(articleFragments),
-            recordUnpublishedChanges(collection.id, hasUnpublishedChanges),
-            groupsReceived(groups),
-          ])
-        );
+          dispatch(
+            batchActions([
+              collectionActions.fetchSuccess(normalisedCollection),
+              articleFragmentsReceived(articleFragments),
+              recordUnpublishedChanges(collection.id, hasUnpublishedChanges),
+              groupsReceived(groups)
+            ])
+          );
 
-        const state = getState();
-        const liveVisibleArticles = await getVisibleArticles(normalisedCollection, state, frontStages.live);
-        const draftVisibleArticles = await getVisibleArticles(normalisedCollection, state, frontStages.draft);
+          const state = getState();
+          const liveVisibleArticles = await getVisibleArticles(
+            normalisedCollection,
+            state,
+            frontStages.live
+          );
+          const draftVisibleArticles = await getVisibleArticles(
+            normalisedCollection,
+            state,
+            frontStages.draft
+          );
 
-        dispatch(
-          batchActions([
-            recordVisibleArticles(collection.id, liveVisibleArticles, frontStages.live),
-            recordVisibleArticles(collection.id, draftVisibleArticles, frontStages.draft)
-          ])
-        );
-
-        // We dedupe ids here to ensure that articles aren't requested twice,
-        // e.g. multiple articles containing the same supporting article.
-        return uniq(
-          Object.keys(articleFragments).map(afId => articleFragments[afId].id)
-        );
-      })))
-    } catch(error) {
+          dispatch(
+            batchActions([
+              recordVisibleArticles(
+                collection.id,
+                liveVisibleArticles,
+                frontStages.live
+              ),
+              recordVisibleArticles(
+                collection.id,
+                draftVisibleArticles,
+                frontStages.draft
+              )
+            ])
+          );
+        })
+      );
+    } catch (error) {
       dispatch(collectionActions.fetchError(error, collectionIds));
-      return [];
     }
-  }
+  };
 }
 
 function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
@@ -120,9 +139,15 @@ function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
         collection.id
       );
       await updateCollectionFromApi(collection.id, denormalisedCollection);
-      dispatch(collectionActions.updateSuccess(collection.id, collection))
-      const visibleArticles = await getVisibleArticles(collection, getState(), frontStages.draft)
-      dispatch(recordVisibleArticles(collection.id, visibleArticles, frontStages.draft))
+      dispatch(collectionActions.updateSuccess(collection.id, collection));
+      const visibleArticles = await getVisibleArticles(
+        collection,
+        getState(),
+        frontStages.draft
+      );
+      dispatch(
+        recordVisibleArticles(collection.id, visibleArticles, frontStages.draft)
+      );
     } catch (e) {
       dispatch(collectionActions.updateError(e, collection.id));
       throw e;
@@ -161,23 +186,45 @@ const fetchArticles = (articleIds: string[]) => async (dispatch: Dispatch) => {
   }
 };
 
-const getCollectionsAndArticles = (
+const getArticlesForCollections = (
   collectionIds: string[],
-  getCollectionAction = getCollections
-): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
-  const articleIds = flatten(await dispatch(getCollectionAction(collectionIds)));
+  itemSet: CollectionItemSets
+): ThunkResult<Promise<void>> => async (dispatch, getState) => {
+  const articleIds = selectArticlesInCollections(
+    selectSharedState(getState()),
+    { collectionIds, itemSet }
+  );
   await dispatch(fetchArticles(articleIds));
-}
+};
 
-function getVisibleArticles(collection: Collection, state: State, stage: Stages): Promise<VisibleArticlesResponse> {
+const openCollectionsAndFetchTheirArticles = (
+  collectionIds: string[],
+  itemSet: CollectionItemSets
+): ThunkResult<Promise<void>> => async dispatch => {
+  dispatch(editorOpenCollections(collectionIds));
+  return dispatch(getArticlesForCollections(collectionIds, itemSet));
+};
+
+function getVisibleArticles(
+  collection: Collection,
+  state: State,
+  stage: Stages
+): Promise<VisibleArticlesResponse> {
   const collectionType = collection.type;
   const groups = getGroupsByStage(collection, stage);
   const groupArticleSelector = createGroupArticlesSelector();
-  const groupsWithArticles = groups.map(id => groupArticleSelector(state, { groupId: id }));
+  const groupsWithArticles = groups.map(id =>
+    groupArticleSelector(state, { groupId: id })
+  );
   const articleDetails = getVisibilityArticleDetails(groupsWithArticles);
 
   return fetchVisibleArticles(collectionType, articleDetails);
 }
 
-
-export { getCollections, getCollectionsAndArticles, fetchArticles, updateCollection };
+export {
+  getCollections,
+  getArticlesForCollections,
+  openCollectionsAndFetchTheirArticles,
+  fetchArticles,
+  updateCollection
+};

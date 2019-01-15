@@ -24,8 +24,8 @@ interface Config {
   sentryPublicDSN: string,
   mediaBaseUrl: string,
   apiBaseUrl: string,
-  stage: string,
-  switches: unknown,
+  switches: {[key: string]: boolean},
+  stage: string;
   acl: Acl,
   collectionCap: number,
   navListCap: number,

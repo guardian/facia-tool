@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import { createCollectionId } from 'shared/components/Collection';
 import { editorOpenCollections } from 'bundles/frontsUIBundle';
 import { Dispatch } from 'types/Store';
+import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 
 interface FrontCollectionOverviewContainerProps {
   collectionId: string;
@@ -86,7 +87,7 @@ const CollectionOverview = ({
             block: 'start'
           });
         }
-        openCollection(collection.id)
+        openCollection(collection.id);
       }}
     >
       <TextLeft>
@@ -110,8 +111,15 @@ const mapStateToProps = () => {
   });
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  openCollection: (id: string) => dispatch(editorOpenCollections(id))
-})
+const mapDispatchToProps = (
+  dispatch: Dispatch,
+  props: FrontCollectionOverviewContainerProps
+) => ({
+  openCollection: (id: string) =>
+    dispatch(openCollectionsAndFetchTheirArticles([id], props.browsingStage))
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(CollectionOverview);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CollectionOverview);
