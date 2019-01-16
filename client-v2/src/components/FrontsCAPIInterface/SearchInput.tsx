@@ -2,35 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import ScrollContainer from '../ScrollContainer';
 import TextInput from '../TextInput';
-import CAPITagInput, { SearchTypes } from '../FrontsCAPIInterface/TagInput';
-import CAPIFieldFilter from '../FrontsCAPIInterface/FieldFilter';
-import CAPIDateRangeInput from '../FrontsCAPIInterface/DateInput';
-import { getIdFromURL } from 'util/CAPIUtils';
-import { getTodayDate } from 'util/getTodayDate';
+import CAPITagInput from './TagInput';
+import CAPIFieldFilter from './FieldFilter';
+import CAPIDateRangeInput from './DateInput';
 import moment from 'moment';
-import { fetchLive, fetchPreview } from 'bundles/capiFeedBundle';
-import { Dispatch } from 'types/Store';
-import { connect } from 'react-redux';
 import FilterItem from './FilterItem';
-import debounce from 'lodash/debounce';
-
-interface FrontsCAPISearchInputProps {
-  children: any;
-  additionalFixedContent?: React.ComponentType<any>;
-  displaySearchFilters: boolean;
-  updateDisplaySearchFilters: (value: boolean) => void;
-  isPreview: boolean;
-  fetchFeed: (
-    liveParams: object,
-    previewParams: object,
-    isResource: boolean
-  ) => void;
-}
-
-const InputContainer = styled('div')`
-  margin-bottom: 20px;
-  background: #ffffff;
-`;
 
 interface StringArrSearchItems {
   tags: string[];
@@ -39,37 +15,24 @@ interface StringArrSearchItems {
   ratings: string[];
 }
 
-type FrontsCAPISearchInputState = StringArrSearchItems & {
+type SearchInputState = StringArrSearchItems & {
   query: string;
   fromDate: null | moment.Moment;
   toDate: null | moment.Moment;
 };
 
-const getParams = (
-  query: string,
-  {
-    tags,
-    sections,
-    desks,
-    ratings,
-    toDate: to,
-    fromDate: from
-  }: FrontsCAPISearchInputState,
-  isPreview: boolean
-) => ({
-  q: query,
-  tag: [...tags, ...desks].join(','),
-  section: sections.join(','),
-  'star-rating': ratings.join('|'),
-  'from-date': from && from.format('YYYY-MM-DD'),
-  'to-date': to && to.format('YYYY-MM-DD'),
-  'page-size': '20',
-  'show-elements': 'image',
-  'show-fields': 'internalPageCode,trailText,firstPublicationDate,isLive',
-  ...(isPreview
-    ? { 'order-by': 'oldest', 'from-date': getTodayDate() }
-    : { 'order-by': 'newest', 'order-date': 'first-publication' })
-});
+interface SearchInputProps {
+  onUpdate: (state: SearchInputState) => void;
+  children: React.ReactNode;
+  additionalFixedContent?: React.ComponentType<any>;
+  displaySearchFilters: boolean;
+  updateDisplaySearchFilters: (value: boolean) => void;
+}
+
+const InputContainer = styled('div')`
+  margin-bottom: 20px;
+  background: #ffffff;
+`;
 
 const renderDateAsString = (date: moment.Moment | null) => {
   if (!date) {
@@ -86,40 +49,20 @@ const initState = {
   query: '',
   toDate: null,
   fromDate: null
-} as FrontsCAPISearchInputState;
+} as SearchInputState;
 
-class FrontsCAPISearchInput extends React.Component<
-  FrontsCAPISearchInputProps,
-  FrontsCAPISearchInputState
-> {
+class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
   public state = initState;
-  private interval: null | number = null;
-
-  constructor(props: FrontsCAPISearchInputProps) {
-    super(props);
-    this.debouncedRunSearchAndRestartPolling = debounce(
-      () => this.runSearchAndRestartPolling(),
-      250
-    );
-  }
-
-  public componentDidMount() {
-    this.runSearchAndRestartPolling();
-  }
-
-  public componentWillUnmount() {
-    this.stopPolling();
-  }
 
   public onDateChange = (
     from: moment.Moment | null,
     to: moment.Moment | null
   ) => {
-    this.setStateAndRunSearch({ fromDate: from, toDate: to });
+    this.setStateInner({ fromDate: from, toDate: to });
   };
 
   public clearInput = () => {
-    this.setStateAndRunSearch(initState);
+    this.setStateInner(initState);
     this.props.updateDisplaySearchFilters(false);
   };
 
@@ -128,7 +71,7 @@ class FrontsCAPISearchInput extends React.Component<
   };
 
   public clearSelectedDates = () => {
-    this.setStateAndRunSearch({
+    this.setStateInner({
       fromDate: null,
       toDate: null
     });
@@ -137,7 +80,7 @@ class FrontsCAPISearchInput extends React.Component<
   public handleSearchInput = ({
     currentTarget
   }: React.SyntheticEvent<HTMLInputElement>) => {
-    this.setStateAndRunSearch({
+    this.setStateInner({
       query: currentTarget.value
     });
   };
@@ -265,29 +208,6 @@ class FrontsCAPISearchInput extends React.Component<
     );
   }
 
-  private runSearch() {
-    const { query } = this.state;
-    const maybeArticleId = getIdFromURL(query);
-    const searchTerm = maybeArticleId ? maybeArticleId : query;
-    this.props.fetchFeed(
-      getParams(searchTerm, this.state, false),
-      getParams(searchTerm, this.state, true),
-      !!maybeArticleId
-    );
-  }
-
-  private runSearchAndRestartPolling() {
-    this.stopPolling();
-    this.interval = window.setInterval(() => this.runSearch(), 30000);
-    this.runSearch();
-  }
-
-  private stopPolling() {
-    if (this.interval) {
-      window.clearInterval(this.interval);
-    }
-  }
-
   private get searchTermsExist() {
     return (
       !!this.state.tags.length ||
@@ -307,7 +227,7 @@ class FrontsCAPISearchInput extends React.Component<
   private addUniqueStringToStateKey(key: keyof StringArrSearchItems) {
     return ({ id }: { id: string }) => {
       const arr = this.state[key];
-      this.setStateAndRunSearch({
+      this.setStateInner({
         ...this.state,
         [key]: arr.includes(id) ? arr : [...arr, id]
       });
@@ -319,35 +239,21 @@ class FrontsCAPISearchInput extends React.Component<
     val: string
   ) {
     const arr = this.state[key];
-    this.setStateAndRunSearch({
+    this.setStateInner({
       ...this.state,
       [key]: arr.includes(val) ? arr.filter(v => v !== val) : arr
     });
   }
 
-  private debouncedRunSearchAndRestartPolling = () => {};
-
-  private setStateAndRunSearch<K extends keyof FrontsCAPISearchInputState>(
-    state: Pick<FrontsCAPISearchInputState, K>
+  private setStateInner<K extends keyof SearchInputState>(
+    state: Pick<SearchInputState, K>
   ) {
     this.setState(state, () => {
-      this.debouncedRunSearchAndRestartPolling();
+      this.props.onUpdate(this.state);
     });
   }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  fetchFeed: (
-    liveParams: object,
-    previewParams: object,
-    isResource: boolean
-  ) => {
-    dispatch(fetchLive(liveParams, isResource));
-    dispatch(fetchPreview(previewParams, isResource));
-  }
-});
+export { SearchInputState, initState };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(FrontsCAPISearchInput);
+export default SearchInput;

@@ -26,21 +26,6 @@ const capiPreviewURLSelector = createSelector(
   config => config && config.capiPreviewUrl
 );
 
-const capiFeedSpecsSelector = createSelector(
-  capiLiveURLSelector,
-  capiPreviewURLSelector,
-  (liveUrl, previewUrl) => [
-    {
-      name: 'Live',
-      baseUrl: liveUrl
-    },
-    {
-      name: 'Draft',
-      baseUrl: previewUrl
-    }
-  ]
-);
-
 const collectionCapSelector = createSelector(
   configSelector,
   config => (config && config.collectionCap) || Infinity
@@ -54,7 +39,6 @@ const gridUrlSelector = createSelector(
 export {
   capiLiveURLSelector,
   capiPreviewURLSelector,
-  capiFeedSpecsSelector,
   selectUserEmail,
   selectFirstName,
   selectLastName,
