@@ -1,4 +1,6 @@
 import React from 'react';
+import distanceFromNow from 'date-fns/distance_in_words_to_now';
+import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
 import { Collection, CollectionItemSets } from 'shared/types/Collection';
 import { State } from 'types/State';
 import {
@@ -12,6 +14,7 @@ import { createCollectionId } from 'shared/components/Collection';
 import { Dispatch } from 'types/Store';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 import { events } from 'services/GA';
+import CollectionNotification from 'components/CollectionNotification';
 
 interface FrontCollectionOverviewContainerProps {
   frontId: string;
@@ -96,7 +99,12 @@ const CollectionOverview = ({
       <TextLeft>
         <Name>{collection.displayName}</Name> {articleCount} items
       </TextLeft>
-      <TextRight>{/* more metadata */}</TextRight>
+      <TextRight>
+        {collection &&
+          collection.lastUpdated &&
+          // @TODO this is buggy
+          `${distanceFromNow(collection.lastUpdated)} ago`}
+      </TextRight>
     </Container>
   ) : null;
 
@@ -111,6 +119,11 @@ const mapStateToProps = () => {
       collectionSet: props.browsingStage,
       collectionId: props.collectionId
     }).length
+    // lastUpdated: use collection.lastUpdated
+    // hasUnpublishedChanges: use hasUnpublishedChangesSelector // 'launched'
+    // isUndeditable: use isUneditableSelector // 'locked'
+    // isBackfilled: new selector // similar to uneditable selector config data
+    // unsavedArticleEdits: new selector // form.submitSucceeded
   });
 };
 
