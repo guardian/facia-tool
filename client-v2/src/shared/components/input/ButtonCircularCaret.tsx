@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'shared/constants/theme';
 
 import caretIcon from 'shared/images/icons/single-down.svg';
 import ButtonCircular from './ButtonCircular';

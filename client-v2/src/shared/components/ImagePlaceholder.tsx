@@ -1,5 +1,5 @@
 import BasePlaceholder from './BasePlaceholder';
-import styled from 'styled-components';
+import { styled } from 'shared/constants/theme';
 
 export default styled(BasePlaceholder)<{ width?: number, height?: number }>`
   width: ${({ width }) => (width ? `${width}px` : '100%')}

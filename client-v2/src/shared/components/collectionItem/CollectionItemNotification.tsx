@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import { styled } from 'shared/constants/theme';
 
 export default styled('div')`
   padding-left: 8px;
@@ -6,9 +6,8 @@ export default styled('div')`
   opacity: 1;
   position: absolute;
   right: 0;
-  color: #121212;
+  color: ${({ theme }) => theme.base.colors.textDark};
   font-size: 12px;
   font-weight: bold;
-  background-color: #f6f6f6;
+  background-color: ${({ theme }) => theme.base.colors.backgroundColor};
 `;
-

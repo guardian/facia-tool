@@ -1,11 +1,54 @@
-// @flow
+/* Strongly-typed theme property:
+*  The default 'styled' method from styled-components is typed with 'any'.
+*  To use the strongly-typed theme from this file, in your components
+*  replace: `import styled from 'styled-components';`
+*  with : `import { styled } from 'shared/constants/theme';`
+*/
+
+import baseStyled, { ThemedStyledInterface } from 'styled-components';
+
+const colors = {
+  blackDark: '#121212', // darkest
+  blackLight: '#333',
+  greyDark: '#515151',
+  greyMedium: '#999999',
+  greyLight: '#A9A9A9',
+  greyLightPinkish: '#C9C9C9',
+  whiteDark: '#DCDCDC',
+  whiteMedium: '#EDEDED',
+  whiteLight: '#F6F6F6',
+  white: '#FFF', // lightest
+  orange: '#FF7F0F',
+  orangeLight: '#FD8A2E',
+  orangeDark: '#E05E00'
+};
 
 const base = {
   colors: {
-    text: '#333',
-    textMuted: '#999999',
-    highlight: '#ff7f0f'
+    text: colors.blackLight,
+    textMuted: colors.greyMedium,
+    textLight: colors.white,
+    textDark: colors.blackDark,
+    highlightColor: colors.orange,
+    highlightColorFocused: colors.orangeLight,
+    button: colors.blackLight,
+    buttonFocused: colors.greyDark,
+    backgroundColor: colors.whiteLight,
+    backgroundColorLight: colors.white,
+    backgroundColorFocused: colors.whiteMedium,
+    borderColor: colors.greyLightPinkish,
+    borderColorFocus: colors.greyLight,
+    placeholderLight: colors.greyLightPinkish,
+    placeholderDark: colors.greyLight
   }
+};
+
+const button = {
+  color: base.colors.textLight,
+  backgroundColor: base.colors.button,
+  backgroundColorFocused: base.colors.buttonFocused,
+  backgroundColorHighlight: base.colors.highlightColor,
+  backgroundColorHighlightFocused: base.colors.highlightColorFocused
 };
 
 const input = {
@@ -15,9 +58,13 @@ const input = {
   fontSize: '14px',
   fontSizeHeadline: '16px',
   color: base.colors.text,
-  backgroundColor: 'white',
-  borderColor: '#c9c9c9',
-  borderColorFocus: '#a9a9a9'
+  backgroundColor: base.colors.backgroundColorLight,
+  borderColor: base.colors.borderColor,
+  borderColorFocus: base.colors.borderColorFocus,
+  checkboxColorInactive: base.colors.backgroundColorLight,
+  checkboxBorderColorInactive: base.colors.borderColor,
+  checkboxColorActive: base.colors.highlightColor,
+  placeholderText: base.colors.placeholderDark
 };
 
 const label = {
@@ -26,8 +73,13 @@ const label = {
   lineHeight: '24px'
 };
 
-export default {
+export const theme = {
+  colors,
   base,
+  button,
   input,
   label
 };
+
+export type Theme = typeof theme;
+export const styled = baseStyled as ThemedStyledInterface<Theme>;

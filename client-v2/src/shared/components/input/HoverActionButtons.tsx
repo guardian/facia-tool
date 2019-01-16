@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'shared/constants/theme';
 import ButtonCircular from './ButtonCircular';
 import Link from '../Link';
 import { getPaths } from '../../../util/paths';
@@ -29,16 +29,20 @@ const Icon = styled('img')`
   vertical-align: middle;
 `;
 
-const ActionButton = ButtonCircular.extend`
-  background: ${({ danger }: { danger?: boolean }) =>
-    danger ? '#ff7f0f' : '#333333'};
-  color: #fff;
+const ActionButton = ButtonCircular.extend<{ danger?: boolean }>`
+  background: ${({ danger, theme }) =>
+    danger
+      ? theme.button.backgroundColorHighlight
+      : theme.button.backgroundColor};
+  color: ${({ theme }) => theme.button.color};
   margin: 1.5px;
   margin-bottom: 2px;
   line-height: 1;
   &:hover {
-    background: ${({ danger }: { danger?: boolean }) =>
-      danger ? '#e05e00' : '#767676'};
+    background: ${({ danger, theme }) =>
+      danger
+        ? theme.button.backgroundColorHighlightFocused
+        : theme.button.backgroundColorFocused};
   }
 `;
 

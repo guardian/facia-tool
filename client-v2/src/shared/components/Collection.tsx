@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
+import { styled } from 'shared/constants/theme';
 import distanceFromNow from 'date-fns/distance_in_words_to_now';
 import upperFirst from 'lodash/upperFirst';
 import { oc } from 'ts-optchain';
@@ -65,7 +65,7 @@ const CollectionDisabledTheme = styled('div')`
 const LockedCollectionFlag = styled('span')`
   font-family: GHGuardianHeadline-Regular;
   font-size: 22px;
-  color: #333333;
+  color: ${({ theme }) => theme.base.colors.text};
   height: 40px;
   line-height: 40px;
   font-weight: normal;
@@ -105,10 +105,10 @@ const CollectionHeadingText = styled('span')<{ isLoading: boolean }>`
   display: inline-block;
   max-width: 400px;
   white-space: nowrap;
-  ${({ isLoading }) =>
+  ${({ isLoading, theme }) =>
     isLoading &&
     css`
-      color: #999;
+      color: ${theme.base.colors.textMuted};
     `} white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -118,7 +118,7 @@ const CollectionConfigContainer = styled('div')`
   display: inline-block;
   font-family: GHGuardianHeadline-Regular;
   font-size: 22px;
-  color: #333333;
+  color: ${({ theme }) => theme.base.colors.text};
   height: 40px;
   line-height: 40px;
   white-space: nowrap;
@@ -132,7 +132,7 @@ const CollectionConfigText = styled('div')`
 `;
 
 const CollectionConfigTextPipe = styled('span')`
-  color: #c9c9c9;
+  color: ${({ theme }) => theme.base.colors.borderColor};
 `;
 
 const CollectionToggleContainer = styled('div')`

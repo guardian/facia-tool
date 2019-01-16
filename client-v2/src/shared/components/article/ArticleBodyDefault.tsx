@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'shared/constants/theme';
 import startCase from 'lodash/startCase';
 import distanceInWords from 'date-fns/distance_in_words_to_now';
 
@@ -34,7 +34,7 @@ const ThumbnailPlaceholder = styled(BasePlaceholder)`
 `;
 
 const NotLiveContainer = styled(CollectionItemMetaHeading)`
-  color: #ff7f0f;
+  color: ${({ theme }) => theme.base.colors.highlightColor};
 `;
 
 const KickerHeading = styled(CollectionItemHeading)`

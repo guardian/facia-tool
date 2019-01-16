@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'shared/constants/theme';
 import { connect } from 'react-redux';
 import noop from 'lodash/noop';
 
@@ -22,10 +22,18 @@ import {
 } from 'shared/types/Collection';
 import { getPillarColor } from 'shared/util/getPillarColor';
 
-const ArticleBodyContainer = styled(CollectionItemBody)`
+const ArticleBodyContainer = styled(CollectionItemBody)<{
+  pillarId: string | undefined;
+  isLive: boolean;
+}>`
+  border-top-color: ${({ size, pillarId, isLive, theme }) =>
+    size === 'default' && pillarId && isLive
+      ? getPillarColor(pillarId, isLive)
+      : theme.base.colors.borderColor};
+
   :hover {
     ${CollectionItemMetaHeading} {
-      color: #999;
+      color: ${({ theme }) => theme.base.colors.textMuted};
     }
   }
 `;
@@ -104,46 +112,44 @@ const ArticleComponent = ({
         onClick();
       }}
     >
-      <ArticleBodyContainer
-        data-testid="article-body"
-        size={size}
-        fade={fade}
-        displayType={displayType}
-        style={{
-          borderTopColor:
-            size === 'default' && article
-              ? getPillarColor(article.pillarId, article.isLive)
-              : '#c9c9c9'
-        }}
-      >
-        {article && (
-          <ArticleBody
-            {...article}
-            size={size}
-            isUneditable={isUneditable}
-            {...getOverlayEventProps()}
-            notifications={notifications}
-          />
-        )}
-        {!article &&
-          isLoading && (
+      {article && (
+        <ArticleBodyContainer
+          data-testid="article-body"
+          size={size}
+          fade={fade}
+          displayType={displayType}
+          pillarId={article.pillarId}
+          isLive={article.isLive}
+        >
+          {article && (
             <ArticleBody
-              uuid={id}
-              isUneditable={true}
-              displayPlaceholders={true}
+              {...article}
               size={size}
+              isUneditable={isUneditable}
+              {...getOverlayEventProps()}
+              notifications={notifications}
             />
           )}
-        {!article &&
-          !isLoading && (
-            <ArticleBody
-              headline="Content not found"
-              uuid={id}
-              isUneditable={true}
-              size={size}
-            />
-          )}
-      </ArticleBodyContainer>
+          {!article &&
+            isLoading && (
+              <ArticleBody
+                uuid={id}
+                isUneditable={true}
+                displayPlaceholders={true}
+                size={size}
+              />
+            )}
+          {!article &&
+            !isLoading && (
+              <ArticleBody
+                headline="Content not found"
+                uuid={id}
+                isUneditable={true}
+                size={size}
+              />
+            )}
+        </ArticleBodyContainer>
+      )}
       {children}
     </CollectionItemContainer>
   );

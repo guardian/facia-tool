@@ -1,6 +1,6 @@
 import React from 'react';
 import HorizontalRule from 'shared/components/layout/HorizontalRule';
-import styled from 'styled-components';
+import { styled } from 'shared/constants/theme';
 
 interface GroupDisplayComponentProps {
   groupName: string | null;

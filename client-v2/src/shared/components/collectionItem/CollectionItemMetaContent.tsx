@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import { styled } from 'shared/constants/theme';
 
 export default styled('div')`
   font-size: 12px;

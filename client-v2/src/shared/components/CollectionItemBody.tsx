@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import { styled } from 'shared/constants/theme';
 import {
   HoverActionsAreaOverlay,
   HideMetaDataOnToolTipDisplay
@@ -12,13 +12,13 @@ export default styled('div')<{
 }>`
   display: flex;
   position: relative;
-  border-top: 1px solid #333;
+  border-top: ${({ theme }) => `1px solid ${theme.base.colors.text}`};
   min-height: 35px;
   cursor: pointer;
   position: relative;
   min-height: ${({ size }) => (size === 'small' ? '35px' : '83px')};
   opacity: ${({ fade }) => (fade ? 0.5 : 1)};
-  background-color: white;
+  background-color: ${({ theme }) => theme.base.colors.backgroundColorLight};
 
   ${HoverActionsAreaOverlay} {
     bottom: 0;
@@ -33,7 +33,8 @@ export default styled('div')<{
   }
 
   :hover {
-    background-color: #ededed;
+    background-color: ${({ theme }) =>
+      theme.base.colors.backgroundColorFocused};
 
     ${Thumbnail} {
       opacity: 0.2;

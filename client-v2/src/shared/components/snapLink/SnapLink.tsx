@@ -1,4 +1,5 @@
 import React from 'react';
+import { styled } from 'shared/constants/theme';
 import { connect } from 'react-redux';
 import upperFirst from 'lodash/upperFirst';
 
@@ -8,7 +9,10 @@ import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeadi
 import Thumbnail from '../Thumbnail';
 import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
 import { HoverDeleteButton } from '../input/HoverActionButtons';
-import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
+import {
+  HoverActionsAreaOverlay,
+  HideMetaDataOnToolTipDisplay
+} from '../CollectionHoverItems';
 import { ArticleFragment, CollectionItemSizes } from 'shared/types/Collection';
 import {
   selectSharedState,
@@ -23,6 +27,10 @@ import { CollectionItemDisplayTypes } from 'shared/types/Collection';
 import CollectionItemTrail from '../collectionItem/CollectionItemTrail';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
 import CollectionItemNotification from '../collectionItem/CollectionItemNotification';
+
+const SnapLinkBodyContainer = styled(CollectionItemBody)`
+  border-top-color: ${({ theme }) => theme.base.colors.borderColor};
+`;
 
 interface ContainerProps {
   selectSharedState?: (state: any) => State;
@@ -64,14 +72,11 @@ const SnapLink = ({
       : 'No headline');
   return (
     <CollectionItemContainer {...rest}>
-      <CollectionItemBody
+      <SnapLinkBodyContainer
         data-testid="snap"
         size={size}
         fade={fade}
         displayType={displayType}
-        style={{
-          borderTopColor: '#c9c9c9'
-        }}
       >
         {displayType === 'default' && (
           <CollectionItemMetaContainer>
@@ -120,8 +125,9 @@ const SnapLink = ({
             toolTipPosition={'top'}
             toolTipAlign={'right'}
           />
+          <HideMetaDataOnToolTipDisplay size={size} />
         </HoverActionsAreaOverlay>
-      </CollectionItemBody>
+      </SnapLinkBodyContainer>
       {children}
     </CollectionItemContainer>
   );

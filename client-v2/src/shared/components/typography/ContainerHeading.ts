@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import { styled } from 'shared/constants/theme';
 
 const ContainerHeading = styled('div')`
   display: flex;
@@ -7,7 +7,7 @@ const ContainerHeading = styled('div')`
   line-height: 22px;
   font-weight: bold;
   font-style: normal;
-  color: #333333;
+  color: ${({ theme }) => theme.base.colors.text};
 `;
 
 export default ContainerHeading;
