@@ -1,20 +1,21 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import styled from 'styled-components';
 import distanceFromNow from 'date-fns/distance_in_words_to_now';
-import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
-import { Collection, CollectionItemSets } from 'shared/types/Collection';
+import { events } from 'services/GA';
+
 import { State } from 'types/State';
+import { Dispatch } from 'types/Store';
+import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
+import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
+
+import { Collection, CollectionItemSets } from 'shared/types/Collection';
+import { createCollectionId } from 'shared/components/Collection';
 import {
   createCollectionSelector,
   selectSharedState,
   createArticlesInCollectionSelector
 } from 'shared/selectors/shared';
-import { connect } from 'react-redux';
-import styled from 'styled-components';
-import { createCollectionId } from 'shared/components/Collection';
-import { Dispatch } from 'types/Store';
-import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
-import { events } from 'services/GA';
-import CollectionNotification from 'components/CollectionNotification';
 
 interface FrontCollectionOverviewContainerProps {
   frontId: string;
@@ -26,6 +27,7 @@ type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
   collection: Collection | undefined;
   articleCount: number;
   openCollection: (id: string) => void;
+  hasUnpublishedChanges: boolean;
 };
 
 const Container = styled.button`
@@ -78,7 +80,8 @@ const CollectionOverview = ({
   collection,
   articleCount,
   openCollection,
-  frontId
+  frontId,
+  hasUnpublishedChanges
 }: FrontCollectionOverviewProps) =>
   collection ? (
     <Container
@@ -118,9 +121,11 @@ const mapStateToProps = () => {
     articleCount: articlesInCollectionSelector(selectSharedState(state), {
       collectionSet: props.browsingStage,
       collectionId: props.collectionId
-    }).length
+    }).length,
     // lastUpdated: use collection.lastUpdated
-    // hasUnpublishedChanges: use hasUnpublishedChangesSelector // 'launched'
+    hasUnpublishedChanges: hasUnpublishedChangesSelector(state, {
+      collectionId: props.collectionId
+    })
     // isUndeditable: use isUneditableSelector // 'locked'
     // isBackfilled: new selector // similar to uneditable selector config data
     // unsavedArticleEdits: new selector // form.submitSucceeded
