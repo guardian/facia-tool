@@ -25,6 +25,15 @@ const {
   initialData: []
 });
 
+const fetchResourceOrResults = async (
+  capiService: typeof liveCapi,
+  params: object,
+  isResource: boolean
+) => {
+  const res = await capiService.search(params, { isResource });
+  return isResource ? [res.response.content] : res.response.results;
+}
+
 export const fetchLive = (
   params: object,
   isResource: boolean
@@ -32,7 +41,7 @@ export const fetchLive = (
   dispatch(liveActions.fetchStart('live'));
   let results;
   try {
-    results = (await liveCapi.search(params, { isResource })).response.results;
+    results = await fetchResourceOrResults(liveCapi, params, isResource);
   } catch (e) {
     dispatch(liveActions.fetchError(e.message));
   }
@@ -49,8 +58,7 @@ export const fetchPreview = (
   dispatch(previewActions.fetchStart('preview'));
   let results;
   try {
-    results = (await previewCapi.search(params, { isResource })).response
-      .results;
+    results = await fetchResourceOrResults(previewCapi, params, isResource);
   } catch (e) {
     dispatch(previewActions.fetchError(e.message));
   }
