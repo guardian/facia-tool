@@ -43,7 +43,7 @@ export const fetchLive = (
   try {
     results = await fetchResourceOrResults(liveCapi, params, isResource);
   } catch (e) {
-    dispatch(liveActions.fetchError(e.message));
+    return dispatch(liveActions.fetchError(e.message));
   }
 
   if (results) {
@@ -62,7 +62,6 @@ export const fetchPreview = (
   } catch (e) {
     dispatch(previewActions.fetchError(e.message));
   }
-
   if (results) {
     dispatch(previewActions.fetchSuccess(results));
   }
