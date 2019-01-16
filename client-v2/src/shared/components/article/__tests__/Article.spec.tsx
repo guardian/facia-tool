@@ -58,4 +58,39 @@ describe('Article component ', () => {
     expect(getByTestId('article-body')).toHaveTextContent('Taken Down');
     expect(getByTestId('article-body')).not.toHaveTextContent('Draft');
   });
+
+  it('should render loading placeholders when the isLoading prop is true', () => {
+    const { getByTestId } = render(
+      <ArticleComponent
+        children={<React.Fragment />}
+        article={takenDownArticle}
+        id="ea1"
+        isLoading={true}
+      />
+    );
+    expect(getByTestId('loading-placeholder')).toBeTruthy();
+  });
+  it('should not render loading placeholders when the isLoading prop is false or not present', () => {
+    let renderResult = render(
+      <ArticleComponent
+        children={<React.Fragment />}
+        article={takenDownArticle}
+        id="ea1"
+        isLoading={false}
+      />
+    );
+    expect(
+      renderResult.getByTestId.bind(renderResult, 'loading-placeholder')
+    ).toThrow();
+    renderResult = render(
+      <ArticleComponent
+        children={<React.Fragment />}
+        article={takenDownArticle}
+        id="ea1"
+      />
+    );
+    expect(
+      renderResult.getByTestId.bind(renderResult, 'loading-placeholder')
+    ).toThrow();
+  });
 });
