@@ -6,7 +6,11 @@ import { events } from 'services/GA';
 
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
-import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
+import {
+  hasUnpublishedChangesSelector,
+  isCollectionUneditableSelector,
+  isCollectionBackfilledSelector
+} from 'selectors/frontsSelectors';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 
 import { Collection, CollectionItemSets } from 'shared/types/Collection';
@@ -28,6 +32,8 @@ type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
   articleCount: number;
   openCollection: (id: string) => void;
   hasUnpublishedChanges: boolean;
+  isUneditable: boolean;
+  isBackfilled: boolean;
 };
 
 const Container = styled.button`
@@ -81,7 +87,9 @@ const CollectionOverview = ({
   articleCount,
   openCollection,
   frontId,
-  hasUnpublishedChanges
+  hasUnpublishedChanges,
+  isUneditable,
+  isBackfilled
 }: FrontCollectionOverviewProps) =>
   collection ? (
     <Container
@@ -122,12 +130,11 @@ const mapStateToProps = () => {
       collectionSet: props.browsingStage,
       collectionId: props.collectionId
     }).length,
-    // lastUpdated: use collection.lastUpdated
     hasUnpublishedChanges: hasUnpublishedChangesSelector(state, {
       collectionId: props.collectionId
-    })
-    // isUndeditable: use isUneditableSelector // 'locked'
-    // isBackfilled: new selector // similar to uneditable selector config data
+    }),
+    isUneditable: isCollectionUneditableSelector(state, props.collectionId),
+    isBackfilled: isCollectionBackfilledSelector(state, props.collectionId)
     // unsavedArticleEdits: new selector // form.submitSucceeded
   });
 };

@@ -98,6 +98,9 @@ const getCollectionConfig = (state: State, id: string): CollectionConfig =>
 const isCollectionUneditableSelector = (state: State, id: string): boolean =>
   !!getCollectionConfig(state, id).uneditable;
 
+const isCollectionBackfilledSelector = (state: State, id: string): boolean =>
+  getCollectionConfig(state, id).backfill ? true : false;
+
 const frontsIdsSelector = createSelector(
   [getFronts],
   (fronts): string[] => {
@@ -284,6 +287,7 @@ export {
   getFrontsConfig,
   getCollectionConfig,
   isCollectionUneditableSelector,
+  isCollectionBackfilledSelector,
   frontsConfigSelector,
   collectionConfigsSelector,
   frontsIdsSelector,
