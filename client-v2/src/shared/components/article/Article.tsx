@@ -121,31 +121,34 @@ const ArticleComponent = ({
           pillarId={article.pillarId}
           isLive={article.isLive}
         >
-          {article && (
-            <ArticleBody
-              {...article}
-              size={size}
-              isUneditable={isUneditable}
-              {...getOverlayEventProps()}
-              notifications={notifications}
-            />
-          )}
-          {!article && isLoading && (
-            <ArticleBody
-              uuid={id}
-              isUneditable={true}
-              displayPlaceholders={true}
-              size={size}
-            />
-          )}
-          {!article && !isLoading && (
-            <ArticleBody
-              headline="Content not found"
-              uuid={id}
-              isUneditable={true}
-              size={size}
-            />
-          )}
+          {article &&
+            !isLoading && (
+              <ArticleBody
+                {...article}
+                size={size}
+                isUneditable={isUneditable}
+                {...getOverlayEventProps()}
+                notifications={notifications}
+              />
+            )}
+          {!article &&
+            isLoading && (
+              <ArticleBody
+                uuid={id}
+                isUneditable={true}
+                displayPlaceholders={true}
+                size={size}
+              />
+            )}
+          {!article &&
+            !isLoading && (
+              <ArticleBody
+                headline="Content not found"
+                uuid={id}
+                isUneditable={true}
+                size={size}
+              />
+            )}
         </ArticleBodyContainer>
       )}
       {children}
@@ -164,11 +167,12 @@ const createMapStateToProps = () => {
       : selectSharedState(state);
     const article = articleSelector(sharedState, props.id);
     const articleFragment = articleFragmentSelector(sharedState, props.id);
+    const isLoading =
+      !!articleFragment &&
+      selectors.selectIsLoadingById(sharedState, articleFragment.id);
     return {
       article,
-      isLoading:
-        !!articleFragment &&
-        selectors.selectIsLoadingById(sharedState, articleFragment.id)
+      isLoading
     };
   };
 };
