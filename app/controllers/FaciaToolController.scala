@@ -29,7 +29,6 @@ class FaciaToolController(
                            val faciaPressQueue: FaciaPressQueue,
                            val configAgent: ConfigAgent,
                            val s3FrontsApi: S3FrontsApi,
-                           val mediaServiceClient: MediaServiceClient,
                            val deps: BaseFaciaControllerComponents
                          )(implicit ec: ExecutionContext)
   extends BaseFaciaController(deps) with BreakingNewsEditCollectionsCheck with ModifyCollectionsPermissionsCheck with Logging {
@@ -71,12 +70,7 @@ class FaciaToolController(
 
   def fetchCollections(collectionIds: List[String]): Future[List[Option[CollectionJson]]] = {
     FaciaToolMetrics.ApiUsageCount.increment()
-    val futures = collectionIds.map(collectionId => frontsApi.amazonClient.collection(collectionId).flatMap { collectionJson =>
-      collectionJson.map(json => mediaServiceClient.addThumbnailsToCollection(json, collectionId)) match {
-        case Some(collectionFuture) => collectionFuture.map(Some(_))
-        case None => Future.successful(None)
-      }
-    })
+    val futures = collectionIds.map(collectionId => frontsApi.amazonClient.collection(collectionId))
     Future.sequence(futures)
   }
 
