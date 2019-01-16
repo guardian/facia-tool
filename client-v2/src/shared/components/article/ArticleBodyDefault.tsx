@@ -27,6 +27,7 @@ import { CollectionItemSizes } from 'shared/types/Collection';
 import CollectionItemTrail from '../collectionItem/CollectionItemTrail';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
 import CollectionItemNotification from '../collectionItem/CollectionItemNotification';
+import { sanitizeHTML } from 'shared/util/sanitizeHTML';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   width: 130px;
@@ -151,7 +152,9 @@ const articleBodyDefault = ({
           )}
         </ArticleHeadingContainer>
         {size === 'default' && trailText && (
-          <CollectionItemTrail>{trailText}</CollectionItemTrail>
+          <CollectionItemTrail
+            dangerouslySetInnerHTML={{ __html: sanitizeHTML(trailText) }}
+          />
         )}
       </CollectionItemContent>
       {size === 'default' &&

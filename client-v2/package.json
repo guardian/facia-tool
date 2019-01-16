@@ -36,6 +36,7 @@
     "@types/react-router-redux": "^5.0.16",
     "@types/redux-form": "^7.4.9",
     "@types/redux-mock-store": "^1.0.0",
+    "@types/sanitize-html": "^1.18.2",
     "@types/styled-components": "^4.0.1",
     "@types/webpack-env": "^1.13.6",
     "babel-core": "^7.0.0-0",
@@ -110,6 +111,7 @@
     "redux-form": "^7.4.2",
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",
+    "sanitize-html": "^1.20.0",
     "styled-components": "^3.2.5",
     "ts-optchain": "^0.1.2",
     "uuid": "^3.2.1"
