@@ -15,7 +15,8 @@ import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadi
 import {
   createArticleFromArticleFragmentSelector,
   selectSharedState,
-  articleTagSelector
+  articleTagSelector,
+  externalArticleFromArticleFragmentSelector
 } from 'shared/selectors/shared';
 import { createSelectFormFieldsForCollectionItem } from 'selectors/formSelectors';
 import { ArticleFragmentMeta, ArticleTag } from 'shared/types/Collection';
@@ -34,8 +35,10 @@ import ConditionalComponent from 'components/layout/ConditionalComponent';
 import {
   ArticleFragmentFormData,
   getArticleFragmentMetaFromFormValues,
-  getInitialValuesForArticleFragmentForm
+  getInitialValuesForArticleFragmentForm,
+  getCapiValuesForArticleTextFields
 } from 'util/form';
+import { CapiTextFields } from 'util/form';
 
 interface ComponentProps extends ContainerProps {
   articleFragmentId: string;
@@ -122,6 +125,7 @@ const formComponent: React.StatelessComponent<Props> = ({
   imageCutoutReplace,
   onCancel,
   initialValues,
+  articleCapiFieldValues,
   pristine,
   showByline,
   editableFields,
@@ -148,7 +152,7 @@ const formComponent: React.StatelessComponent<Props> = ({
           permittedFields={editableFields}
           name="headline"
           label="Headline"
-          placeholder={initialValues.headline}
+          placeholder={articleCapiFieldValues.headline}
           component={InputTextArea}
           useHeadlineFont
           rows="2"
@@ -271,7 +275,7 @@ const formComponent: React.StatelessComponent<Props> = ({
             name="byline"
             label="Byline"
             component={InputText}
-            placeholder="Replace byline"
+            placeholder={articleCapiFieldValues.byline}
             useHeadlineFont
           />
         )}
@@ -280,7 +284,7 @@ const formComponent: React.StatelessComponent<Props> = ({
           name="trailText"
           label="Trail text"
           component={InputTextArea}
-          placeholder="Replace trail text"
+          placeholder={articleCapiFieldValues.trailText}
         />
       </InputGroup>
       <RowContainer>
@@ -398,6 +402,7 @@ interface ContainerProps extends InterfaceProps {
   editableFields: string[];
   showKickerTag: boolean;
   showKickerSection: boolean;
+  articleCapiFieldValues: CapiTextFields;
 }
 
 interface InterfaceProps {
@@ -420,11 +425,13 @@ const createMapStateToProps = () => {
     state: State,
     { articleFragmentId, isSupporting = false }: InterfaceProps
   ) => {
+    const externalArticle = externalArticleFromArticleFragmentSelector(selectSharedState(state), articleFragmentId);
     const valueSelector = formValueSelector(articleFragmentId);
     const article = selectArticle(selectSharedState(state), articleFragmentId);
 
     return {
       initialValues: getInitialValuesForArticleFragmentForm(article),
+      articleCapiFieldValues: getCapiValuesForArticleTextFields(externalArticle),
       editableFields: article
         ? selectFormFields(state, article.uuid, isSupporting)
         : [],

@@ -1,5 +1,6 @@
 import { ArticleFragmentMeta } from 'shared/types/Collection';
 import { DerivedArticle } from 'shared/types/Article';
+import { CapiArticle } from 'types/Capi';
 import omit from 'lodash/omit';
 import compact from 'lodash/compact';
 import clamp from 'lodash/clamp';
@@ -31,8 +32,29 @@ export interface ImageData {
   thumb?: string;
 }
 
+export interface CapiTextFields {
+  headline: string,
+  trailText: string,
+  byline: string
+}
+
 const strToInt = (str: string | void) => (str ? parseInt(str, 10) : undefined);
 const intToStr = (int: number | void) => (int ? int.toString() : undefined);
+
+export const getCapiValuesForArticleTextFields = (article: CapiArticle | void): CapiTextFields => {
+  if (!article) {
+    return {
+      headline: '',
+      trailText: '',
+      byline: ''
+    };
+  }
+  return {
+    headline: article.fields.headline || '',
+    trailText: article.fields.trailText || '',
+    byline: article.fields.byline || ''
+  };
+}
 
 export const getInitialValuesForArticleFragmentForm = (
   article: DerivedArticle | void
@@ -97,9 +119,19 @@ export const getArticleFragmentMetaFromFormValues = (
       height: intToStr(image.height)
     })
   );
+  const getStringField = (field: string) => {
+    if (field.length === 0) {
+      return undefined;
+    }
+    return field;
+  }
+
   return omit(
     {
       ...values,
+      headline: getStringField(values.headline),
+      trailText: getStringField(values.trailText),
+      byline: getStringField(values.byline),
       imageReplace: !!primaryImage.src && !values.imageHide,
       imageSrc: primaryImage.src,
       imageSrcThumb: primaryImage.thumb,
