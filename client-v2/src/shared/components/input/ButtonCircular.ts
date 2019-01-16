@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import { styled } from 'shared/constants/theme';
 import ButtonDefault from './ButtonDefault';
 
 export default styled(ButtonDefault)`

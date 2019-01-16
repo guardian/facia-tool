@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'shared/constants/theme';
 import ButtonCircular from './ButtonCircular';
 import Link from '../Link';
 import { getPaths } from '../../../util/paths';

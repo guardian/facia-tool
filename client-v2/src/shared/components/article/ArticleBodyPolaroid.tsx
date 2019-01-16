@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'shared/constants/theme';
 import truncate from 'lodash/truncate';
 
 import { ArticleBodyProps } from './ArticleBodyDefault';

@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'shared/constants/theme';
 
 const ToolTip = styled('div')<{ text: string }>`
   font-family: TS3TextSans-Bold;

@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'shared/constants/theme';
 import { connect } from 'react-redux';
 import { WrappedFieldProps } from 'redux-form';
 import deleteIcon from '../../images/icons/delete-copy.svg';
