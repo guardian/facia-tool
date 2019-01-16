@@ -24,7 +24,7 @@ const ImageContainer = styled('div')<{
   height: ${props => (props.size === 'small' ? '60px' : '115px')};
   background-color: ${props =>
     props.isHovering
-      ? props.theme.base.colos.placeholderLight
+      ? props.theme.base.colors.placeholderLight
       : props.theme.base.colors.placeholderDark};
   background-size: cover;
   transition: background-color 0.15s;
