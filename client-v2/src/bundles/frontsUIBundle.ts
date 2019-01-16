@@ -11,6 +11,8 @@ import {
   EditorCloseCollection
 } from 'types/Action';
 import { State as GlobalState } from 'types/State';
+import { ThunkResult } from 'types/Store';
+import { events } from 'services/GA';
 
 const EDITOR_OPEN_FRONT = 'EDITOR_OPEN_FRONT';
 const EDITOR_CLOSE_FRONT = 'EDITOR_CLOSE_FRONT';
@@ -36,21 +38,34 @@ const editorCloseCollections = (
   payload: { collectionIds }
 });
 
-const editorOpenFront = (frontId: string): EditorAddFront => ({
-  type: EDITOR_OPEN_FRONT,
-  payload: { frontId },
-  meta: {
-    persistTo: 'openFrontIds'
-  }
-});
+/**
+ * !SIDE EFFECTS IN ACTION CREATOR
+ * we could change these to thunks but the analytics calls are essentially
+ * transparent and adding thunks makese the tests for these actions more
+ * involved. On balance we're going for it ...
+ */
 
-const editorCloseFront = (frontId: string): EditorCloseFront => ({
-  type: EDITOR_CLOSE_FRONT,
-  payload: { frontId },
-  meta: {
-    persistTo: 'openFrontIds'
-  }
-});
+const editorOpenFront = (frontId: string): EditorAddFront => {
+  events.addFront(frontId);
+  return {
+    type: EDITOR_OPEN_FRONT,
+    payload: { frontId },
+    meta: {
+      persistTo: 'openFrontIds'
+    }
+  };
+};
+
+const editorCloseFront = (frontId: string): EditorCloseFront => {
+  events.removeFront(frontId);
+  return {
+    type: EDITOR_CLOSE_FRONT,
+    payload: { frontId },
+    meta: {
+      persistTo: 'openFrontIds'
+    }
+  };
+};
 
 const editorClearOpenFronts = (): EditorClearOpenFronts => ({
   type: EDITOR_CLEAR_OPEN_FRONTS,

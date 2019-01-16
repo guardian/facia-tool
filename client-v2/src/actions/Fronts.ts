@@ -17,6 +17,7 @@ import { Stages, CollectionItemSets } from 'shared/types/Collection';
 import { frontStages, noOfOpenCollectionsOnFirstLoad } from 'constants/fronts';
 import { State } from 'types/State';
 import { editorOpenCollections } from 'bundles/frontsUIBundle';
+import { events } from 'services/GA';
 
 function fetchLastPressedSuccess(frontId: string, datePressed: string): Action {
   return {
@@ -77,6 +78,9 @@ function publishCollection(
   collectionId: string,
   frontId: string
 ): ThunkResult<Promise<void>> {
+
+  events.collectionPublished(frontId, collectionId);
+
   return (dispatch: Dispatch, getState: () => State) => {
     const draftVisibleArticles = visibleArticlesSelector(getState(), {
       collectionId,

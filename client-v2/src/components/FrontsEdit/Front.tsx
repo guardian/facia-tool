@@ -34,6 +34,7 @@ import { FrontConfig } from 'types/FaciaApi';
 import { visibleFrontArticlesSelector } from 'selectors/frontsSelectors';
 import { VisibleArticlesResponse } from 'types/FaciaApi';
 import { initialiseFront } from 'actions/Fronts';
+import { events } from 'services/GA';
 
 const FrontContainer = styled('div')`
   display: flex;
@@ -70,6 +71,9 @@ interface FrontState {
   error: string | void;
 }
 
+const isDropFromCAPIFeed = (e: React.DragEvent) =>
+  e.dataTransfer.types.includes('capi');
+
 class FrontComponent extends React.Component<FrontProps, FrontState> {
   constructor(props: FrontProps) {
     super(props);
@@ -95,12 +99,17 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   };
 
   public handleMove = (move: Move<TArticleFragment>) => {
+    events.dropArticle(this.props.front.id, 'collection');
     this.props.dispatch(
       moveArticleFragment(move.to, move.data, move.from || null, 'collection')
     );
   };
 
   public handleInsert = (e: React.DragEvent, to: PosSpec) => {
+    events.dropArticle(
+      this.props.front.id,
+      isDropFromCAPIFeed(e) ? 'feed' : 'url'
+    );
     this.props.dispatch(
       insertArticleFragmentFromDropEvent(e, to, 'collection')
     );
