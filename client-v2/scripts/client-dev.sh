@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+IS_DEBUG=false
+for arg in "$@"
+do
+    if [[ "$arg" == "--debug" ]]; then
+        IS_DEBUG=true
+        shift
+    fi
+done
+
 printf "\n\rStarting Yarn... \n\r\n\r"
 
 yarn watch &
@@ -8,4 +17,9 @@ cd ..
 
 printf "\n\rStarting Play App... \n\r\n\r"
 
-sbt "run"
+if [[ "$IS_DEBUG" = true ]] ; then
+  sbt -jvm-debug 5005 "run"
+else
+  sbt "run"
+fi
+
