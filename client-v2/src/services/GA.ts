@@ -16,18 +16,19 @@ const DIMENSION_MAP = {
   dimension4: 'version'
 };
 
-const w: any = window;
-w.dataLayer = w.dataLayer || [];
+let gtag = (window as any).gtag;
 
-function gtag(...args: any[]) {
-  w.dataLayer.push(...args);
+if (!gtag) {
+  // warn and add a noop incase of missing tracking script
+  // tslint:disable-next-line
+  console.warn('To use Google Analytics add the tracking code to the page.');
+  gtag = () => { };
 }
 
+// we keep this init here so that if we decide to type `gtag` then we can use
+// DIMENSION_MAP to help type it
 const init = () => {
-  // these calls have been extracted (and modified) from the original tracking
-  // script provided from GA
-  gtag('js', new Date());
-  gtag('config', 'UA-78290349-2', {
+  gtag('set', {
     custom_map: DIMENSION_MAP,
     version: '2'
   });

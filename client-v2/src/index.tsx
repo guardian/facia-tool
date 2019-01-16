@@ -12,6 +12,9 @@ import { editorSetOpenFronts } from 'bundles/frontsUIBundle';
 import { storeClipboardContent } from 'actions/Clipboard';
 import { Dispatch } from 'types/Store';
 import Modal from 'react-modal';
+import { init as initGA } from 'services/GA';
+
+initGA();
 
 const store = configureStore();
 const config = extractConfigFromPage();

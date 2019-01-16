@@ -1,26 +1,18 @@
 @(title: String, jsLocation: String, faviconLocation: String, clientConfigJson:
-String) <!DOCTYPE html>
+String)
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <link
-            rel="icon"
-            type="image/png"
-            sizes="32x32"
-            href="@{faviconLocation}favicon-32x32.png"
-        />
-        <link
-            rel="icon"
-            type="image/png"
-            sizes="16x16"
-            href="@{faviconLocation}favicon-16x16.png"
-        />
-        <link rel="shortcut icon" href="@{faviconLocation}favicon.ico" />
-        <title>@title</title>
-        <style>
-            *,
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="icon" type="image/png" sizes="32x32" href="@{faviconLocation}favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="@{faviconLocation}favicon-16x16.png" />
+    <link rel="shortcut icon" href="@{faviconLocation}favicon.ico" />
+    <title>@title</title>
+    <style>
+        *,
             *:before,
             *:after {
                 box-sizing: border-box;
@@ -35,17 +27,25 @@ String) <!DOCTYPE html>
                 width: 100%;
             }
         </style>
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-78290349-2"></script>
-    </head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-78290349-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'UA-78290349-2');
+    </script>
 
-    <body>
-        <div class="wrap" id="react-mount"></div>
+</head>
 
-        <script type="application/json" id="config">
+<body>
+    <div class="wrap" id="react-mount"></div>
+
+    <script type="application/json" id="config">
             @Html(clientConfigJson)
         </script>
 
-        <script src="@jsLocation" type="application/javascript"></script>
-    </body>
+    <script src="@jsLocation" type="application/javascript"></script>
+</body>
+
 </html>
