@@ -100,7 +100,7 @@ const articleBodyDefault = ({
       <CollectionItemMetaContainer>
         {displayPlaceholders && (
           <>
-            <TextPlaceholder />
+            <TextPlaceholder data-testid="loading-placeholder" />
             {size === 'default' && <TextPlaceholder width={25} />}
           </>
         )}

@@ -121,7 +121,7 @@ const ArticleComponent = ({
           pillarId={article.pillarId}
           isLive={article.isLive}
         >
-          {article && (
+          {article && !isLoading && (
             <ArticleBody
               {...article}
               size={size}
@@ -130,7 +130,7 @@ const ArticleComponent = ({
               notifications={notifications}
             />
           )}
-          {!article && isLoading && (
+          {isLoading && (
             <ArticleBody
               uuid={id}
               isUneditable={true}
@@ -164,11 +164,12 @@ const createMapStateToProps = () => {
       : selectSharedState(state);
     const article = articleSelector(sharedState, props.id);
     const articleFragment = articleFragmentSelector(sharedState, props.id);
+    const isLoading =
+      !!articleFragment &&
+      selectors.selectIsLoadingById(sharedState, articleFragment.id);
     return {
       article,
-      isLoading:
-        !!articleFragment &&
-        selectors.selectIsLoadingById(sharedState, articleFragment.id)
+      isLoading
     };
   };
 };
