@@ -31,10 +31,57 @@ interface CAPIOptions {
 interface CAPITagQueryReponse {
   response: {
     results: Tag[];
+    status: CAPIStatus;
+    message?: string;
   };
 }
 
-const capiQuery = (baseURL: string = API_BASE, fetch: Fetch = window.fetch) => {
+const getErrorMessageFromResponse = (response: Response) =>
+  `Error making a request to CAPI: the server returned ${response.status}, ${
+    response.statusText
+  }`;
+
+/**
+ * Fetch a CAPI response.
+ *
+ * @throws If the response fails for any reason.
+ */
+const fetchCAPIResponse = async <
+  TCAPIResponse extends CAPISearchQueryReponse | CAPITagQueryReponse
+>(
+  request: string
+) => {
+  let response: Response;
+  try {
+    response = await fetch(request);
+  } catch (e) {
+    if (e.status && e.statusText) {
+      // pandaFetch can throw a Response or an Error
+      throw new Error(getErrorMessageFromResponse(e));
+    }
+    throw e;
+  }
+  if (!response.ok) {
+    throw new Error(getErrorMessageFromResponse(response));
+  }
+  let result: TCAPIResponse;
+  try {
+    result = await response.json();
+  } catch (e) {
+    throw new Error(`Error parsing a response from CAPI: ${e.message}`);
+  }
+  if (result.response.status === 'error') {
+    throw new Error(`CAPI returned an error: ${result.response.message}`);
+  }
+  return result;
+};
+
+/**
+ * Make various CAPI queries.
+ *
+ * @throws {Error} If fetch throws, CAPI returns an unparsable result, or CAPI returns an error.
+ */
+const capiQuery = (baseURL: string = API_BASE) => {
   const getCAPISearchString = (
     path: string,
     params: any,
@@ -53,49 +100,39 @@ const capiQuery = (baseURL: string = API_BASE, fetch: Fetch = window.fetch) => {
       params: any,
       options?: CAPIOptions
     ): Promise<CAPISearchQueryReponse> => {
-      const response = await fetch(
+      return fetchCAPIResponse<CAPISearchQueryReponse>(
         getCAPISearchString(`search`, params, options)
       );
-
-      return response.json();
     },
     scheduled: async (
       params: any,
       options?: CAPIOptions
     ): Promise<CAPISearchQueryReponse> => {
-      const response = await fetch(
+      return fetchCAPIResponse<CAPISearchQueryReponse>(
         getCAPISearchString(`content/scheduled`, params, options)
       );
-
-      return response.json();
     },
     tags: async (params: any): Promise<CAPITagQueryReponse> => {
-      const response = await fetch(
+      return fetchCAPIResponse<CAPITagQueryReponse>(
         `${baseURL}tags${qs({
           ...params
         })}`
       );
-
-      return response.json();
     },
     sections: async (params: any): Promise<CAPITagQueryReponse> => {
-      const response = await fetch(
+      return fetchCAPIResponse<CAPITagQueryReponse>(
         `${baseURL}sections${qs({
           ...params
         })}`
       );
-
-      return response.json();
     },
     desks: async (params: any): Promise<CAPITagQueryReponse> => {
-      const response = await fetch(
+      return fetchCAPIResponse<CAPITagQueryReponse>(
         `${baseURL}tags${qs({
           type: 'tracking',
           ...params
         })}`
       );
-
-      return response.json();
     }
   };
 };
