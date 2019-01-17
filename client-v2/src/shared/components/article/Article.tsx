@@ -131,15 +131,14 @@ const ArticleComponent = ({
                 notifications={notifications}
               />
             )}
-          {!article &&
-            isLoading && (
-              <ArticleBody
-                uuid={id}
-                isUneditable={true}
-                displayPlaceholders={true}
-                size={size}
-              />
-            )}
+          {isLoading && (
+            <ArticleBody
+              uuid={id}
+              isUneditable={true}
+              displayPlaceholders={true}
+              size={size}
+            />
+          )}
           {!article &&
             !isLoading && (
               <ArticleBody

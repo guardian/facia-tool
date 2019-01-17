@@ -61,33 +61,39 @@ describe('Article component ', () => {
 
   it('should render loading placeholders when the isLoading prop is true', () => {
     const { getByTestId } = render(
-      <ArticleComponent
-        children={<React.Fragment />}
-        article={takenDownArticle}
-        id="ea1"
-        isLoading={true}
-      />
+      <ThemeProvider theme={theme}>
+        <ArticleComponent
+          children={<React.Fragment />}
+          article={takenDownArticle}
+          id="ea1"
+          isLoading={true}
+        />
+      </ThemeProvider>
     );
     expect(getByTestId('loading-placeholder')).toBeTruthy();
   });
   it('should not render loading placeholders when the isLoading prop is false or not present', () => {
     let renderResult = render(
-      <ArticleComponent
-        children={<React.Fragment />}
-        article={takenDownArticle}
-        id="ea1"
-        isLoading={false}
-      />
+      <ThemeProvider theme={theme}>
+        <ArticleComponent
+          children={<React.Fragment />}
+          article={takenDownArticle}
+          id="ea1"
+          isLoading={false}
+        />
+      </ThemeProvider>
     );
     expect(
       renderResult.getByTestId.bind(renderResult, 'loading-placeholder')
     ).toThrow();
     renderResult = render(
-      <ArticleComponent
-        children={<React.Fragment />}
-        article={takenDownArticle}
-        id="ea1"
-      />
+      <ThemeProvider theme={theme}>
+        <ArticleComponent
+          children={<React.Fragment />}
+          article={takenDownArticle}
+          id="ea1"
+        />
+      </ThemeProvider>
     );
     expect(
       renderResult.getByTestId.bind(renderResult, 'loading-placeholder')
