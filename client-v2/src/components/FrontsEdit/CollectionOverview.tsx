@@ -13,13 +13,17 @@ import {
 } from 'selectors/frontsSelectors';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 
-import { Collection, CollectionItemSets } from 'shared/types/Collection';
+import {
+  Collection,
+  CollectionItemSets
+} from 'shared/types/Collection';
 import { createCollectionId } from 'shared/components/Collection';
 import {
   createCollectionSelector,
   selectSharedState,
   createArticlesInCollectionSelector
 } from 'shared/selectors/shared';
+import { isDirty } from 'redux-form';
 
 interface FrontCollectionOverviewContainerProps {
   frontId: string;
@@ -32,6 +36,7 @@ type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
   articleCount: number;
   openCollection: (id: string) => void;
   hasUnpublishedChanges: boolean;
+  hasUnsavedArticleEdits: boolean;
   isUneditable: boolean;
   isBackfilled: boolean;
 };
@@ -134,8 +139,18 @@ const mapStateToProps = () => {
       collectionId: props.collectionId
     }),
     isUneditable: isCollectionUneditableSelector(state, props.collectionId),
-    isBackfilled: isCollectionBackfilledSelector(state, props.collectionId)
-    // unsavedArticleEdits: new selector // form.submitSucceeded
+    isBackfilled: isCollectionBackfilledSelector(state, props.collectionId),
+    hasUnsavedArticleEdits: articlesInCollectionSelector(
+      selectSharedState(state),
+      {
+        collectionSet: props.browsingStage,
+        collectionId: props.collectionId
+      }
+    ).reduce(
+      (hasEdits: boolean, article: string) =>
+        hasEdits || isDirty(article)(state),
+      false
+    )
   });
 };
 
