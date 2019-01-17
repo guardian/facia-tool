@@ -91,7 +91,7 @@ const SnapLink = ({
         )}
         <CollectionItemContent displayType={displayType}>
           {displayType === 'default' ? (
-            <CollectionItemHeading>{headline}</CollectionItemHeading>
+            <CollectionItemHeading html>{headline}</CollectionItemHeading>
           ) : (
             <>
               <strong>Snap link </strong>
@@ -99,7 +99,7 @@ const SnapLink = ({
             </>
           )}
           {size === 'default' && articleFragment.meta.trailText && (
-            <CollectionItemTrail>
+            <CollectionItemTrail html>
               {articleFragment.meta.trailText}
             </CollectionItemTrail>
           )}

@@ -27,7 +27,6 @@ import { CollectionItemSizes } from 'shared/types/Collection';
 import CollectionItemTrail from '../collectionItem/CollectionItemTrail';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
 import CollectionItemNotification from '../collectionItem/CollectionItemNotification';
-import { sanitizeHTML } from 'shared/util/sanitizeHTML';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   width: 130px;
@@ -43,7 +42,7 @@ const KickerHeading = styled(CollectionItemHeading)`
   padding-right: 3px;
 `;
 
-const ArticleHeadingSmall = CollectionItemHeading.extend`
+const ArticleHeadingSmall = styled(CollectionItemHeading)`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -142,19 +141,17 @@ const articleBodyDefault = ({
             </KickerHeading>
           )}
           {size === 'default' ? (
-            <CollectionItemHeading data-testid="headline">
+            <CollectionItemHeading html data-testid="headline">
               {headline}
             </CollectionItemHeading>
           ) : (
-            <ArticleHeadingSmall data-testid="headline">
+            <ArticleHeadingSmall html data-testid="headline">
               {headline}
             </ArticleHeadingSmall>
           )}
         </ArticleHeadingContainer>
         {size === 'default' && trailText && (
-          <CollectionItemTrail
-            dangerouslySetInnerHTML={{ __html: sanitizeHTML(trailText) }}
-          />
+          <CollectionItemTrail html>{trailText}</CollectionItemTrail>
         )}
       </CollectionItemContent>
       {size === 'default' &&

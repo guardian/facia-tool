@@ -30,10 +30,12 @@ export const sanitizeHTML = (html: string) =>
       'tr',
       'th',
       'td',
-      'pre'
+      'pre',
+      'span'
       // 'iframe'
     ],
     allowedAttributes: {
+      '*': ['data-testid'],
       a: ['href', 'name', 'target'],
       img: ['src'],
       selfClosing: [
