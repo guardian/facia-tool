@@ -13,11 +13,9 @@ import {
 } from 'selectors/frontsSelectors';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 
-import {
-  Collection,
-  CollectionItemSets
-} from 'shared/types/Collection';
+import { Collection, CollectionItemSets } from 'shared/types/Collection';
 import { createCollectionId } from 'shared/components/Collection';
+import ButtonDefault from 'shared/components/input/ButtonCircular';
 import {
   createCollectionSelector,
   selectSharedState,
@@ -41,6 +39,14 @@ type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
   isBackfilled: boolean;
 };
 
+interface CollectionStatusProps {
+  isUneditable: boolean; // locked
+  hasUnpublishedChanges: boolean; // ! warning
+  hasUnsavedArticleEdits: boolean; // ! warning
+  isBackfilled: boolean;
+  lastUpdatedTimeStamp: number | undefined;
+}
+
 const Container = styled.button`
   align-items: center;
   appearance: none;
@@ -52,9 +58,10 @@ const Container = styled.button`
   display: flex;
   font-family: TS3TextSans;
   font-size: 14px;
-  height: 2.5em;
+  min-height: 2.5em;
   margin-top: 0.75em;
-  padding: 0.25em 0.75em;
+  margin-right: 0.75em;
+  padding: 0.55em 0.75em;
   text-align: left;
   text-decoration: none;
   transition: background-color 0.3s;
@@ -68,14 +75,12 @@ const Container = styled.button`
   }
 `;
 
-const TextLeft = styled.div`
+const TextContainerLeft = styled.div`
   flex: 1 1;
   font-size: 14px;
-  overflow: hidden;
-  white-space: nowrap;
 `;
 
-const TextRight = styled.div`
+const TextContainerRight = styled.div`
   flex: 0 0 auto;
   font-size: 14px;
   overflow: hidden;
@@ -85,7 +90,60 @@ const TextRight = styled.div`
 const Name = styled.span`
   color: #333;
   font-weight: 700;
+  padding-right: 0.25em;
 `;
+
+const LastUpdated = styled.span`
+  color: #333;
+  font-weight: 400;
+`;
+
+const StatusFlag = ButtonDefault.extend`
+  outline: transparent;
+  :not(:first-child) {
+    margin-left: 5px;
+  }
+  height: 20px;
+  width: 20px;
+  border-radius: 20px;
+  &:hover,
+  &:active {
+    outline: transparent;
+  }
+`;
+
+const StatusLocked = StatusFlag.extend`
+  &:disabled,
+  &:disabled:hover {
+    cursor: auto;
+  }
+`;
+
+const CollectionStatus = ({
+  hasUnpublishedChanges,
+  hasUnsavedArticleEdits,
+  isUneditable,
+  isBackfilled,
+  lastUpdatedTimeStamp
+}: CollectionStatusProps) => (
+  <>
+    <LastUpdated>{`${distanceFromNow(
+      lastUpdatedTimeStamp as number
+    )} ago`}</LastUpdated>
+
+    {!!isBackfilled ? <LastUpdated> | Backfill</LastUpdated> : null}
+    {!!hasUnsavedArticleEdits || !!hasUnpublishedChanges ? (
+      <StatusFlag priority="primary" size="s">
+        !
+      </StatusFlag>
+    ) : null}
+    {!!isUneditable ? (
+      <StatusLocked disabled={true} size="s">
+        L
+      </StatusLocked>
+    ) : null}
+  </>
+);
 
 const CollectionOverview = ({
   collection,
@@ -93,6 +151,7 @@ const CollectionOverview = ({
   openCollection,
   frontId,
   hasUnpublishedChanges,
+  hasUnsavedArticleEdits,
   isUneditable,
   isBackfilled
 }: FrontCollectionOverviewProps) =>
@@ -112,15 +171,21 @@ const CollectionOverview = ({
         openCollection(collection.id);
       }}
     >
-      <TextLeft>
+      <TextContainerLeft>
         <Name>{collection.displayName}</Name> {articleCount} items
-      </TextLeft>
-      <TextRight>
+      </TextContainerLeft>
+      <TextContainerRight>
         {collection &&
-          collection.lastUpdated &&
-          // @TODO this is buggy
-          `${distanceFromNow(collection.lastUpdated)} ago`}
-      </TextRight>
+          collection.lastUpdated && (
+            <CollectionStatus
+              hasUnpublishedChanges={hasUnpublishedChanges}
+              hasUnsavedArticleEdits={hasUnsavedArticleEdits}
+              isUneditable={isUneditable}
+              isBackfilled={isBackfilled}
+              lastUpdatedTimeStamp={collection.lastUpdated}
+            />
+          )}
+      </TextContainerRight>
     </Container>
   ) : null;
 
