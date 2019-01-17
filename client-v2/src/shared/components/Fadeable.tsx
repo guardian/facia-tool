@@ -1,7 +1,7 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export default styled('div')<{
-  fade?: boolean
+  fade?: boolean;
 }>`
   opacity: ${({ fade }) => (fade ? 0.5 : 1)};
 `;

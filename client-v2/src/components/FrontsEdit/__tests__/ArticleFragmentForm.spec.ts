@@ -50,16 +50,16 @@ describe('ArticleFragmentForm transform functions', () => {
         height: 100,
         origin: 'origin',
         thumb: 'thumb'
-      }
+      };
       const slideshow = Array(6).fill(exampleImage);
       const slideshowArticle = {
         ...derivedArticle,
         slideshow
-      }
+      };
       expect(getInitialValuesForArticleFragmentForm(slideshowArticle)).toEqual({
         ...formValues,
         slideshow
-      })
+      });
     });
     it('should get number values for all image widths and heights', () => {
       expect(

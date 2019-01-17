@@ -30,12 +30,12 @@ interface EditorCloseFront {
 }
 interface EditorOpenCollection {
   type: 'EDITOR_OPEN_COLLECTION';
-  payload: { collectionIds: string|string[] };
+  payload: { collectionIds: string | string[] };
 }
 
 interface EditorCloseCollection {
   type: 'EDITOR_CLOSE_COLLECTION';
-  payload: { collectionIds: string|string[] };
+  payload: { collectionIds: string | string[] };
 }
 
 interface EditorClearOpenFronts {
@@ -212,7 +212,7 @@ type Action =
   | StartConfirm
   | EndConfirm
   | EditorOpenCollection
-  | EditorCloseCollection
+  | EditorCloseCollection;
 
 export {
   ActionError,

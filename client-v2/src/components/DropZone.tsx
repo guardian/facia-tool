@@ -37,8 +37,8 @@ class DropZone extends React.Component<
     return !!this.props.disabled
       ? false
       : typeof this.props.override === 'boolean'
-        ? this.props.override
-        : this.state.isHoveredOver;
+      ? this.props.override
+      : this.state.isHoveredOver;
   }
 
   public handleDragEnter = (e: React.DragEvent) => {

@@ -7,7 +7,7 @@ import FrontList from '../components/FrontList';
 import { getFrontsWithPriority } from '../selectors/frontsSelectors';
 
 type Props = {
-  match: match<{ priority: string }>
+  match: match<{ priority: string }>;
 } & RouteComponentProps<any>;
 
 const mapStateToProps = (state: State, props: Props) => {
@@ -22,6 +22,4 @@ const mapStateToProps = (state: State, props: Props) => {
   };
 };
 
-export default withRouter(
-  connect(mapStateToProps)(FrontList)
-);
+export default withRouter(connect(mapStateToProps)(FrontList));

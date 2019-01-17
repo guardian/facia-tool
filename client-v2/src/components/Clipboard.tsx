@@ -124,8 +124,14 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  selectArticleFragment: (frontId: string, articleFragmentId: string, isSupporting: boolean) =>
-    dispatch(editorSelectArticleFragment(frontId, articleFragmentId, isSupporting)),
+  selectArticleFragment: (
+    frontId: string,
+    articleFragmentId: string,
+    isSupporting: boolean
+  ) =>
+    dispatch(
+      editorSelectArticleFragment(frontId, articleFragmentId, isSupporting)
+    ),
   clearArticleFragmentSelection: () =>
     dispatch(editorClearArticleFragmentSelection(clipboardId)),
   removeCollectionItem: (uuid: string) => {

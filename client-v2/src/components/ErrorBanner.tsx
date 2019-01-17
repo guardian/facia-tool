@@ -4,7 +4,7 @@ import { ActionError } from 'types/Action';
 import { error } from '../styleConstants';
 
 interface Props {
-  error: ActionError
+  error: ActionError;
 }
 
 const ErrorContainer = styled('div')`

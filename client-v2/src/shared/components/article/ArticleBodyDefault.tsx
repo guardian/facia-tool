@@ -104,26 +104,23 @@ const articleBodyDefault = ({
             {size === 'default' && <TextPlaceholder width={25} />}
           </>
         )}
-        {size === 'default' &&
-          isLive && (
-            <CollectionItemMetaHeading>
-              {startCase(sectionName)}
-            </CollectionItemMetaHeading>
-          )}
-        {(isLive || size === 'default') &&
-          firstPublicationDate && (
-            <CollectionItemMetaContent>
-              {distanceInWords(new Date(firstPublicationDate))}
-            </CollectionItemMetaContent>
-          )}
-        {!isLive &&
-          !displayPlaceholders && (
-            <NotLiveContainer>
-              {firstPublicationDate
-                ? notLiveLabels.takenDown
-                : notLiveLabels.draft}
-            </NotLiveContainer>
-          )}
+        {size === 'default' && isLive && (
+          <CollectionItemMetaHeading>
+            {startCase(sectionName)}
+          </CollectionItemMetaHeading>
+        )}
+        {(isLive || size === 'default') && firstPublicationDate && (
+          <CollectionItemMetaContent>
+            {distanceInWords(new Date(firstPublicationDate))}
+          </CollectionItemMetaContent>
+        )}
+        {!isLive && !displayPlaceholders && (
+          <NotLiveContainer>
+            {firstPublicationDate
+              ? notLiveLabels.takenDown
+              : notLiveLabels.draft}
+          </NotLiveContainer>
+        )}
         {scheduledPublicationDate && (
           <CollectionItemMetaContent>
             {distanceInWords(new Date(scheduledPublicationDate))}
@@ -153,8 +150,9 @@ const articleBodyDefault = ({
             </ArticleHeadingSmall>
           )}
         </ArticleHeadingContainer>
-        {size === 'default' &&
-          trailText && <CollectionItemTrail>{trailText}</CollectionItemTrail>}
+        {size === 'default' && trailText && (
+          <CollectionItemTrail>{trailText}</CollectionItemTrail>
+        )}
       </CollectionItemContent>
       {size === 'default' &&
         (displayPlaceholders ? (

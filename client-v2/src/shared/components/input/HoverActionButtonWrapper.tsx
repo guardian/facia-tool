@@ -27,8 +27,8 @@ const ToolTipWrapper = styled('div')<{
     props.toolTipAlign === 'center'
       ? '-10px'
       : props.toolTipPosition === 'right' || props.toolTipAlign === 'right'
-        ? '0px'
-        : null};
+      ? '0px'
+      : null};
 `;
 
 interface HoverButtonInterface {

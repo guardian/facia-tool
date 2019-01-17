@@ -102,7 +102,8 @@ describe('Shared utilities', () => {
       expect(Object.keys(result.articleFragments).length).toEqual(5);
       const liveGroup2 = result.groups[result.normalisedCollection.live![1]];
       const draftGroup3 = result.groups[result.normalisedCollection.draft![2]];
-      const prevGroup3= result.groups[result.normalisedCollection.previously![2]];
+      const prevGroup3 =
+        result.groups[result.normalisedCollection.previously![2]];
       expect(result.articleFragments[liveGroup2.articleFragments[0]].id).toBe(
         'article/live/0'
       );
@@ -146,15 +147,12 @@ describe('Shared utilities', () => {
     });
 
     it('should create a single group with with all article fragments when the collection config has no groups', () => {
-      const result = normaliseCollectionWithNestedArticles(
-        collection,
-        {
-          ...collectionConfig,
-          groups: undefined
-        }
-      );
+      const result = normaliseCollectionWithNestedArticles(collection, {
+        ...collectionConfig,
+        groups: undefined
+      });
       const groupId = result.normalisedCollection.live![0];
       expect(result.groups[groupId].articleFragments).toHaveLength(3);
-    })
+    });
   });
 });

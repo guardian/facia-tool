@@ -14,9 +14,9 @@ interface Element {
   type: 'image' | 'video' | unknown;
   assets: ImageAsset[];
   contentAtomTypeData?: {
-    atomId: string,
-    atomType: string
-  }
+    atomId: string;
+    atomType: string;
+  };
 }
 
 type CapiDate = string;
@@ -55,15 +55,15 @@ interface Atom {
 }
 
 interface AtomData {
-  media: MediaAtom
+  media: MediaAtom;
 }
 
 interface MediaAtom {
-  assets: AtomAsset[]
+  assets: AtomAsset[];
 }
 
 interface AtomAsset {
-  assetType: 'audio' | 'video'
+  assetType: 'audio' | 'video';
 }
 
 interface Blocks {
@@ -82,7 +82,7 @@ interface Tag {
   sectionName?: string;
 }
 
-type CapiBool = "true" | "false";
+type CapiBool = 'true' | 'false';
 
 interface CapiArticleFields {
   headline?: string;

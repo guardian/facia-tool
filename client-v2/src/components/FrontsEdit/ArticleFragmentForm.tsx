@@ -24,7 +24,9 @@ import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
 import HorizontalRule from 'shared/components/layout/HorizontalRule';
 import InputCheckboxToggle from 'shared/components/input/InputCheckboxToggle';
-import InputImage, { InputImageContainerProps } from 'shared/components/input/InputImage';
+import InputImage, {
+  InputImageContainerProps
+} from 'shared/components/input/InputImage';
 import InputGroup from 'shared/components/input/InputGroup';
 import InputButton from 'shared/components/input/InputButton';
 import Row from '../Row';
@@ -100,7 +102,10 @@ const imageCriteria = {
   heightAspectRatio: 3
 };
 
-const renderSlideshow = ({ fields }: WrappedFieldArrayProps<ImageData>, frontId: string) => (
+const renderSlideshow = (
+  { fields }: WrappedFieldArrayProps<ImageData>,
+  frontId: string
+) => (
   <>
     {fields.map((name, index) => (
       <Col key={`${name}-${index}`}>
@@ -217,7 +222,10 @@ const formComponent: React.StatelessComponent<Props> = ({
             }
           }}
         />
-        <ConditionalComponent name="customKicker" permittedNames={editableFields}>
+        <ConditionalComponent
+          name="customKicker"
+          permittedNames={editableFields}
+        >
           {kickerOptions.webTitle && (
             <Field
               permittedFields={editableFields}
@@ -367,7 +375,8 @@ const formComponent: React.StatelessComponent<Props> = ({
           <SlideshowRow>
             <FieldArray
               name="slideshow"
-              component={(args: WrappedFieldArrayProps<ImageData>) => renderSlideshow(args, frontId)
+              component={(args: WrappedFieldArrayProps<ImageData>) =>
+                renderSlideshow(args, frontId)
               }
             />
           </SlideshowRow>
@@ -425,13 +434,18 @@ const createMapStateToProps = () => {
     state: State,
     { articleFragmentId, isSupporting = false }: InterfaceProps
   ) => {
-    const externalArticle = externalArticleFromArticleFragmentSelector(selectSharedState(state), articleFragmentId);
+    const externalArticle = externalArticleFromArticleFragmentSelector(
+      selectSharedState(state),
+      articleFragmentId
+    );
     const valueSelector = formValueSelector(articleFragmentId);
     const article = selectArticle(selectSharedState(state), articleFragmentId);
 
     return {
       initialValues: getInitialValuesForArticleFragmentForm(article),
-      articleCapiFieldValues: getCapiValuesForArticleTextFields(externalArticle),
+      articleCapiFieldValues: getCapiValuesForArticleTextFields(
+        externalArticle
+      ),
       editableFields: article
         ? selectFormFields(state, article.uuid, isSupporting)
         : [],

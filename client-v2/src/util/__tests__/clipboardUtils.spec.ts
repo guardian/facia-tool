@@ -10,8 +10,8 @@ describe('Clipboard utilities', () => {
       });
       const { articleFragments } = result;
       const clipboardArticles = result.clipboard.articles;
-      const supportingArticle =
-        articleFragments[clipboardArticles[1]].meta.supporting![0];
+      const supportingArticle = articleFragments[clipboardArticles[1]].meta
+        .supporting![0];
       expect(clipboardArticles.length).toEqual(2);
       expect(Object.keys(articleFragments).length).toEqual(4);
       expect(articleFragments[clipboardArticles[0]].id).toBe('article/live/0');

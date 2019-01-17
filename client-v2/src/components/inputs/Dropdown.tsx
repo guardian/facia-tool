@@ -2,14 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 
 interface DropdownProps {
-  current?: string | void,
+  current?: string | void;
   items: Array<{
-    value: string,
-    label: string
-  }> | void,
-  onChange: (value: string) => void,
-  deselectValue?: string,
-  deselectText?: string
+    value: string;
+    label: string;
+  }> | void;
+  onChange: (value: string) => void;
+  deselectValue?: string;
+  deselectText?: string;
 }
 
 const Select = styled('select')`

@@ -33,7 +33,7 @@ const collectionCapSelector = createSelector(
 
 const gridUrlSelector = createSelector(
   configSelector,
-  config => (config && config.mediaBaseUrl)
+  config => config && config.mediaBaseUrl
 );
 
 export {

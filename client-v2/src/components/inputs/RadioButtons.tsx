@@ -98,10 +98,10 @@ const RadioButton = ({
   inline = false,
   ...rest
 }: {
-  label: string,
-  inline?: boolean,
-  checked?: boolean,
-  disabled?: boolean
+  label: string;
+  inline?: boolean;
+  checked?: boolean;
+  disabled?: boolean;
 } & React.HTMLAttributes<HTMLInputElement>) => (
   <ControlRadio inline={inline}>
     {label}

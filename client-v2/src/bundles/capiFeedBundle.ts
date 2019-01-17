@@ -32,7 +32,7 @@ const fetchResourceOrResults = async (
 ) => {
   const res = await capiService.search(params, { isResource });
   return isResource ? [res.response.content] : res.response.results;
-}
+};
 
 export const fetchLive = (
   params: object,

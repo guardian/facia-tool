@@ -105,15 +105,18 @@ const createMapStateToProps = () => {
   });
 };
 
-const mapDispatchToProps = (dispatch: Dispatch, { browsingStage }: CollectionPropsBeforeState) => ({
+const mapDispatchToProps = (
+  dispatch: Dispatch,
+  { browsingStage }: CollectionPropsBeforeState
+) => ({
   publishCollection: (id: string, frontId: string) =>
     dispatch(publishCollection(id, frontId)),
   onChangeOpenState: (id: string, isOpen: boolean) => {
     if (isOpen) {
-      dispatch(editorCloseCollections(id))
+      dispatch(editorCloseCollections(id));
     } else {
-      dispatch(getArticlesForCollections([id], browsingStage))
-      dispatch(editorOpenCollections(id))
+      dispatch(getArticlesForCollections([id], browsingStage));
+      dispatch(editorOpenCollections(id));
     }
   }
 });

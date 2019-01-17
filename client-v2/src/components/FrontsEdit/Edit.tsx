@@ -6,10 +6,11 @@ import { match } from 'react-router-dom';
 import styled from 'styled-components';
 
 import getFrontsConfig from 'actions/Fronts';
+import {} from 'bundles/frontsUIBundle';
 import {
-
+  editorOpenFront,
+  selectEditorFrontsByPriority
 } from 'bundles/frontsUIBundle';
-import { editorOpenFront, selectEditorFrontsByPriority } from 'bundles/frontsUIBundle';
 import { State } from 'types/State';
 import { ActionError } from 'types/Action';
 import FrontContainer from './FrontContainer';

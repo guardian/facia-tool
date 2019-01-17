@@ -6,10 +6,7 @@ import styled from 'styled-components';
 import { Dispatch } from 'types/Store';
 
 import { fetchLastPressed } from 'actions/Fronts';
-import {
-  getCollections,
-  updateCollection
-} from 'actions/Collections';
+import { getCollections, updateCollection } from 'actions/Collections';
 import { editorCloseFront } from 'bundles/frontsUIBundle';
 import Button from 'shared/components/input/ButtonDefault';
 import { collectionItemSets } from 'constants/fronts';

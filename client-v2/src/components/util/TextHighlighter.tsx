@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-const  Muted = styled('span')`
+const Muted = styled('span')`
   opacity: 0.5;
 `;
 
@@ -18,7 +18,7 @@ const textHighlighter: React.StatelessComponent<IProps> = ({
   searchString
 }) => {
   if (!searchString || searchString.length < 2) {
-    return <span>{originalString}</span>
+    return <span>{originalString}</span>;
   }
   const splitStr = originalString.split(searchString);
   if (splitStr.length === 1) {
@@ -36,13 +36,12 @@ const textHighlighter: React.StatelessComponent<IProps> = ({
 
   return (
     <span>
-      {results.map(
-        (result, index) =>
-          result === searchString ? (
-            <span key={`${result}-${index}`}>{result}</span>
-          ) : (
-            <Muted key={`${result}-${index}`}>{result}</Muted>
-          )
+      {results.map((result, index) =>
+        result === searchString ? (
+          <span key={`${result}-${index}`}>{result}</span>
+        ) : (
+          <Muted key={`${result}-${index}`}>{result}</Muted>
+        )
       )}
     </span>
   );

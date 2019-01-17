@@ -1,9 +1,9 @@
 /* Strongly-typed theme property:
-*  The default 'styled' method from styled-components is typed with 'any'.
-*  To use the strongly-typed theme from this file, in your components
-*  replace: `import styled from 'styled-components';`
-*  with : `import { styled } from 'shared/constants/theme';`
-*/
+ *  The default 'styled' method from styled-components is typed with 'any'.
+ *  To use the strongly-typed theme from this file, in your components
+ *  replace: `import styled from 'styled-components';`
+ *  with : `import { styled } from 'shared/constants/theme';`
+ */
 
 import baseStyled, { ThemedStyledInterface } from 'styled-components';
 

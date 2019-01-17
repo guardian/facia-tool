@@ -7,7 +7,7 @@ interface DropDisablerChildren {
 
 const DisablerWrapper = styled('div')`
   height: 100%;
-`
+`;
 
 // This component prevents the default behaviour for drop events on this node,
 // or its child nodes. When dropping links (perhaps when missing a drop
