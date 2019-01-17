@@ -4,7 +4,17 @@ describe('CAPI', () => {
   beforeEach(() => {
     (global as any).fetch = jest
       .fn()
-      .mockImplementation(() => Promise.resolve({ json: () => {} }));
+      .mockImplementation(() =>
+        Promise.resolve({
+          json: () => ({
+            response: {
+              results: []
+            }
+          }),
+          status: 200,
+          ok: true
+        })
+      );
   });
 
   describe('search', () => {

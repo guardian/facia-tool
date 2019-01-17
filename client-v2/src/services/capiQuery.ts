@@ -49,7 +49,6 @@ const getErrorMessageFromResponse = (response: Response) =>
 const fetchCAPIResponse = async <
   TCAPIResponse extends CAPISearchQueryReponse | CAPITagQueryReponse
 >(
-  fetch: Fetch = window.fetch,
   request: string
 ) => {
   let response: Response;
@@ -57,6 +56,7 @@ const fetchCAPIResponse = async <
     response = await fetch(request);
   } catch (e) {
     if (e.status && e.statusText) {
+      // pandaFetch can throw a Response or an Error
       throw new Error(getErrorMessageFromResponse(e));
     }
     throw e;
@@ -81,7 +81,7 @@ const fetchCAPIResponse = async <
  *
  * @throws {Error} If fetch throws, CAPI returns an unparsable result, or CAPI returns an error.
  */
-const capiQuery = (baseURL: string = API_BASE, fetch: Fetch = window.fetch) => {
+const capiQuery = (baseURL: string = API_BASE) => {
   const getCAPISearchString = (
     path: string,
     params: any,
@@ -101,7 +101,6 @@ const capiQuery = (baseURL: string = API_BASE, fetch: Fetch = window.fetch) => {
       options?: CAPIOptions
     ): Promise<CAPISearchQueryReponse> => {
       return fetchCAPIResponse<CAPISearchQueryReponse>(
-        fetch,
         getCAPISearchString(`search`, params, options)
       );
     },
@@ -110,13 +109,11 @@ const capiQuery = (baseURL: string = API_BASE, fetch: Fetch = window.fetch) => {
       options?: CAPIOptions
     ): Promise<CAPISearchQueryReponse> => {
       return fetchCAPIResponse<CAPISearchQueryReponse>(
-        fetch,
         getCAPISearchString(`content/scheduled`, params, options)
       );
     },
     tags: async (params: any): Promise<CAPITagQueryReponse> => {
       return fetchCAPIResponse<CAPITagQueryReponse>(
-        fetch,
         `${baseURL}tags${qs({
           ...params
         })}`
@@ -124,7 +121,6 @@ const capiQuery = (baseURL: string = API_BASE, fetch: Fetch = window.fetch) => {
     },
     sections: async (params: any): Promise<CAPITagQueryReponse> => {
       return fetchCAPIResponse<CAPITagQueryReponse>(
-        fetch,
         `${baseURL}sections${qs({
           ...params
         })}`
@@ -132,7 +128,6 @@ const capiQuery = (baseURL: string = API_BASE, fetch: Fetch = window.fetch) => {
     },
     desks: async (params: any): Promise<CAPITagQueryReponse> => {
       return fetchCAPIResponse<CAPITagQueryReponse>(
-        fetch,
         `${baseURL}tags${qs({
           type: 'tracking',
           ...params
