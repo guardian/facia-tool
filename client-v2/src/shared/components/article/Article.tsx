@@ -121,16 +121,15 @@ const ArticleComponent = ({
           pillarId={article.pillarId}
           isLive={article.isLive}
         >
-          {article &&
-            !isLoading && (
-              <ArticleBody
-                {...article}
-                size={size}
-                isUneditable={isUneditable}
-                {...getOverlayEventProps()}
-                notifications={notifications}
-              />
-            )}
+          {article && !isLoading && (
+            <ArticleBody
+              {...article}
+              size={size}
+              isUneditable={isUneditable}
+              {...getOverlayEventProps()}
+              notifications={notifications}
+            />
+          )}
           {isLoading && (
             <ArticleBody
               uuid={id}
@@ -139,15 +138,14 @@ const ArticleComponent = ({
               size={size}
             />
           )}
-          {!article &&
-            !isLoading && (
-              <ArticleBody
-                headline="Content not found"
-                uuid={id}
-                isUneditable={true}
-                size={size}
-              />
-            )}
+          {!article && !isLoading && (
+            <ArticleBody
+              headline="Content not found"
+              uuid={id}
+              isUneditable={true}
+              size={size}
+            />
+          )}
         </ArticleBodyContainer>
       )}
       {children}
