@@ -21,7 +21,7 @@ describe('Collection selectors', () => {
           collectionIds: ['exampleCollectionTwo'],
           itemSet: 'draft'
         })
-      ).toEqual(["article/draft/1", "a/long/path/2"]);
+      ).toEqual(['article/draft/1', 'a/long/path/2']);
     });
     it('should return an empty array if no collections are found', () => {
       expect(

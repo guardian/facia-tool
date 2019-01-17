@@ -69,17 +69,15 @@ function getSuitableImageDetails(
     [crops[0].master]
       .concat(crops[0].assets)
       .filter(Boolean)
-      .filter(
-        asset =>
-          maxWidth
-            ? parseInt(deepGet(asset, ['dimensions', 'width']), 10) <= maxWidth
-            : true
+      .filter(asset =>
+        maxWidth
+          ? parseInt(deepGet(asset, ['dimensions', 'width']), 10) <= maxWidth
+          : true
       )
-      .filter(
-        asset =>
-          minWidth
-            ? parseInt(deepGet(asset, ['dimensions', 'width']), 10) >= minWidth
-            : true
+      .filter(asset =>
+        minWidth
+          ? parseInt(deepGet(asset, ['dimensions', 'width']), 10) >= minWidth
+          : true
       ),
     asset => parseInt(deepGet(asset, ['dimensions', 'width']), 10) * -1
   );
@@ -118,8 +116,7 @@ function validateActualImage(image: ImageDescription, frontId?: string) {
       minWidth,
       widthAspectRatio,
       heightAspectRatio
-    }: Criteria =
-      criteria || {};
+    }: Criteria = criteria || {};
     const criteriaRatio =
       widthAspectRatio && heightAspectRatio
         ? widthAspectRatio / heightAspectRatio
@@ -191,7 +188,9 @@ function stripImplementationDetails(
     } else if (!urlConstants.media.imageCdnDomainExpr.test(src)) {
       reject(
         new Error(
-          `Images must come from ${urlConstants.media.imageCdnDomain} or the Grid`
+          `Images must come from ${
+            urlConstants.media.imageCdnDomain
+          } or the Grid`
         )
       );
     } else {
@@ -242,12 +241,13 @@ function getData(
     : null;
 }
 
-function validateMediaItem(crop: Crop, imageOrigin: string, frontId: string, criteria?: Criteria): Promise<ValidationResponse | Error> {
-  return getSuitableImageDetails(
-    [crop],
-    crop.id,
-    criteria || {}
-  )
+function validateMediaItem(
+  crop: Crop,
+  imageOrigin: string,
+  frontId: string,
+  criteria?: Criteria
+): Promise<ValidationResponse | Error> {
+  return getSuitableImageDetails([crop], crop.id, criteria || {})
     .then(asset => {
       const newImageDetails = asset;
       newImageDetails.criteria = criteria;
@@ -256,11 +256,11 @@ function validateMediaItem(crop: Crop, imageOrigin: string, frontId: string, cri
     })
     .then(img => validateActualImage(img, frontId))
     .then(({ path, origin, thumb, width, height }) => ({
-        src: path,
-        origin: origin || path,
-        thumb: thumb || path,
-        width,
-        height
+      src: path,
+      origin: origin || path,
+      thumb: thumb || path,
+      width,
+      height
     }));
 }
 

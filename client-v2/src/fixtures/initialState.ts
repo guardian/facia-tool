@@ -1,4 +1,4 @@
-import { State } from "types/State";
+import { State } from 'types/State';
 
 const state = {
   confirmModal: null,

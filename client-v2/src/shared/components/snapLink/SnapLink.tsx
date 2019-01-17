@@ -86,8 +86,9 @@ const SnapLink = ({
             </CollectionItemMetaContent>
           </CollectionItemMetaContainer>
         )}
-        {size === 'default' &&
-          displayType === 'polaroid' && <PolaroidThumbnail />}
+        {size === 'default' && displayType === 'polaroid' && (
+          <PolaroidThumbnail />
+        )}
         <CollectionItemContent displayType={displayType}>
           {displayType === 'default' ? (
             <CollectionItemHeading>{headline}</CollectionItemHeading>
@@ -97,12 +98,11 @@ const SnapLink = ({
               {headline}
             </>
           )}
-          {size === 'default' &&
-            articleFragment.meta.trailText && (
-              <CollectionItemTrail>
-                {articleFragment.meta.trailText}
-              </CollectionItemTrail>
-            )}
+          {size === 'default' && articleFragment.meta.trailText && (
+            <CollectionItemTrail>
+              {articleFragment.meta.trailText}
+            </CollectionItemTrail>
+          )}
         </CollectionItemContent>
         {size === 'default' && displayType === 'default' && <Thumbnail />}
         {notifications && (

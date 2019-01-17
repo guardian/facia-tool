@@ -76,18 +76,17 @@ const TextInput = ({
   <InputWrapper>
     <Input {...props} />
     <ButtonsContainer>
-      {onClear &&
-        searchTermsExist && (
-          <SmallRoundButtonOrange onClick={onSearch} title="Clear search">
-            <ClearButtonIcon
-              src={moreImage}
-              onClick={onClear}
-              alt=""
-              height="22px"
-              width="22px"
-            />
-          </SmallRoundButtonOrange>
-        )}
+      {onClear && searchTermsExist && (
+        <SmallRoundButtonOrange onClick={onSearch} title="Clear search">
+          <ClearButtonIcon
+            src={moreImage}
+            onClick={onClear}
+            alt=""
+            height="22px"
+            width="22px"
+          />
+        </SmallRoundButtonOrange>
+      )}
       {onDisplaySearchFilters && (
         <SmallRoundButtonBlack onClick={onDisplaySearchFilters} title="Search">
           <SearchButtonIcon

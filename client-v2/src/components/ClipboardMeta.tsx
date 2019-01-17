@@ -12,7 +12,7 @@ import { ArticleFragmentMeta } from 'shared/types/Collection';
 import ArticleFragmentForm from './FrontsEdit/ArticleFragmentForm';
 
 interface Props {
-  selectedArticleFragment: { id: string, isSupporting: boolean } | void;
+  selectedArticleFragment: { id: string; isSupporting: boolean } | void;
   updateClipboardArticleFragmentMeta: (
     id: string,
     meta: ArticleFragmentMeta

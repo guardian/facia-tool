@@ -21,7 +21,7 @@ export interface ArticleFragmentFormData {
   imageSlideshowReplace: boolean;
   slideshow: Array<ImageData | void> | void;
   showKickerTag: boolean;
-  showKickerSection: boolean
+  showKickerSection: boolean;
 }
 
 export interface ImageData {
@@ -33,15 +33,17 @@ export interface ImageData {
 }
 
 export interface CapiTextFields {
-  headline: string,
-  trailText: string,
-  byline: string
+  headline: string;
+  trailText: string;
+  byline: string;
 }
 
 const strToInt = (str: string | void) => (str ? parseInt(str, 10) : undefined);
 const intToStr = (int: number | void) => (int ? int.toString() : undefined);
 
-export const getCapiValuesForArticleTextFields = (article: CapiArticle | void): CapiTextFields => {
+export const getCapiValuesForArticleTextFields = (
+  article: CapiArticle | void
+): CapiTextFields => {
   if (!article) {
     return {
       headline: '',
@@ -54,7 +56,7 @@ export const getCapiValuesForArticleTextFields = (article: CapiArticle | void): 
     trailText: article.fields.trailText || '',
     byline: article.fields.byline || ''
   };
-}
+};
 
 export const getInitialValuesForArticleFragmentForm = (
   article: DerivedArticle | void
@@ -124,7 +126,7 @@ export const getArticleFragmentMetaFromFormValues = (
       return undefined;
     }
     return field;
-  }
+  };
 
   return omit(
     {

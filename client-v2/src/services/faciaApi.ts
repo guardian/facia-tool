@@ -203,11 +203,11 @@ async function getCollections(
   collectionIds: string[]
 ): Promise<CollectionWithNestedArticles[]> {
   const params = new URLSearchParams();
-  collectionIds.map(_ => params.append('ids', _))
+  collectionIds.map(_ => params.append('ids', _));
   const response = await pandaFetch(`/collections?${params.toString()}`, {
     method: 'get',
     credentials: 'same-origin'
-  })
+  });
   const collections: CollectionResponse[] = await response.json();
   return collections.map((collection, index) => ({
     ...collection,

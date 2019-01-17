@@ -6,10 +6,10 @@ export const clipboardId: string = 'clipboard';
 
 export const frontStages: { [key: string]: Stages } = {
   draft: 'draft',
-  live: 'live',
+  live: 'live'
 };
 
-export const collectionItemSets: { [key: string]: CollectionItemSets                                  } = {
+export const collectionItemSets: { [key: string]: CollectionItemSets } = {
   ...frontStages,
   previously: 'previously'
 };

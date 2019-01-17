@@ -38,7 +38,9 @@ describe('CAPI', () => {
       );
       expect((global as any).fetch).toBeCalled();
       const fetchEndpoint = (global as any).fetch.mock.calls[0][0];
-      expect(fetchEndpoint).toBe('https://content.guardianapis.com/an/example/url?api-key=my-api-key');
+      expect(fetchEndpoint).toBe(
+        'https://content.guardianapis.com/an/example/url?api-key=my-api-key'
+      );
     });
   });
 
@@ -51,7 +53,9 @@ describe('CAPI', () => {
       });
       expect((global as any).fetch).toBeCalled();
       const fetchEndpoint = (global as any).fetch.mock.calls[0][0];
-      expect(fetchEndpoint).toEqual('https://content.guardianapis.com/content/scheduled?api-key=my-api-key')
+      expect(fetchEndpoint).toEqual(
+        'https://content.guardianapis.com/content/scheduled?api-key=my-api-key'
+      );
     });
     it('changes URL appropriately if the isResource option is passed', () => {
       const apiKey = 'my-api-key';
@@ -68,7 +72,9 @@ describe('CAPI', () => {
       );
       expect((global as any).fetch).toBeCalled();
       const fetchEndpoint = (global as any).fetch.mock.calls[0][0];
-      expect(fetchEndpoint).toBe('https://content.guardianapis.com/an/example/url?api-key=my-api-key');
+      expect(fetchEndpoint).toBe(
+        'https://content.guardianapis.com/an/example/url?api-key=my-api-key'
+      );
     });
   });
 

@@ -13,12 +13,12 @@ interface State {
   frontsConfig: FrontsConfigState;
   lastPressed: {
     [id: string]: string;
-  }
+  };
   collectionVisibility: {
     [stage in Stages]: {
-      [collectionId: string]: VisibleArticlesResponse
+      [collectionId: string]: VisibleArticlesResponse;
     }
-  }
+  };
 }
 
 const reducer = (
@@ -32,7 +32,6 @@ const reducer = (
   },
   action: Action
 ): State => {
-
   // @todo - note the sneaky :any.
   const frontsConfig = frontsConfigReducer(state.frontsConfig, action as any);
   let newState = state;
@@ -60,11 +59,7 @@ const reducer = (
         ...newCollectionVisibility
       };
 
-      return set(
-        ['collectionVisibility', stage],
-        newVisibilities,
-        newState
-      );
+      return set(['collectionVisibility', stage], newVisibilities, newState);
     }
     default: {
       return newState;

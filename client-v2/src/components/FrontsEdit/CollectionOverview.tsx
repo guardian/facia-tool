@@ -81,7 +81,7 @@ const CollectionOverview = ({
     <Container
       onClick={e => {
         e.preventDefault();
-        events.overviewItemClicked(frontId)
+        events.overviewItemClicked(frontId);
         const el = document.getElementById(createCollectionId(collection));
         if (el) {
           el.scrollIntoView({

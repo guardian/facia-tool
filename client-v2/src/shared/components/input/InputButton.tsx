@@ -9,6 +9,6 @@ type Props = {
 
 export default ({ buttonText, ...rest }: Props) => (
   <Button type="button" priority="muted" pill {...rest}>
-    { buttonText }
+    {buttonText}
   </Button>
 );

@@ -1,4 +1,4 @@
-import { DerivedArticle } from "shared/types/Article";
+import { DerivedArticle } from 'shared/types/Article';
 
 export default {
   id: 'internal-code/page/4784278',

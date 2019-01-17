@@ -49,10 +49,7 @@ describe('CAPIUtils', () => {
   describe('getThumbnail', () => {
     it('should get a thumbnail from article elements', () => {
       expect(
-        getThumbnail(
-          capiArticleWithElementsThumbnail,
-          articleFragmentMeta
-        )
+        getThumbnail(capiArticleWithElementsThumbnail, articleFragmentMeta)
       ).toEqual(
         'https://media.guim.co.uk/6780f7f6f3dca00e549487d9ca6b7bd1cdbe1556/337_105_1313_788/500.jpg'
       );

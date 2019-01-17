@@ -5,12 +5,12 @@ import { AlsoOnDetail } from 'types/Collection';
 import Button from 'shared/components/input/ButtonDefault';
 
 interface CollectionNotificationProps {
-  alsoOn: AlsoOnDetail,
-  displayEditWarning: boolean
+  alsoOn: AlsoOnDetail;
+  displayEditWarning: boolean;
 }
 
 interface ComponentState {
-  showFrontDetails: boolean
+  showFrontDetails: boolean;
 }
 
 const WarningText = styled('span')`
@@ -30,7 +30,12 @@ class CollectionNotification extends React.Component<
     const { alsoOn, displayEditWarning } = this.props;
     if (displayEditWarning) {
       return (
-        <div><WarningText>Warning: do not change or delete this container. Please speak to Central Production.</WarningText></div>
+        <div>
+          <WarningText>
+            Warning: do not change or delete this container. Please speak to
+            Central Production.
+          </WarningText>
+        </div>
       );
     }
 

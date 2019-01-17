@@ -22,7 +22,7 @@ if (!gtag) {
   // warn and add a noop incase of missing tracking script
   // tslint:disable-next-line
   console.warn('To use Google Analytics add the tracking code to the page.');
-  gtag = () => { };
+  gtag = () => {};
 }
 
 // we keep this init here so that if we decide to type `gtag` then we can use

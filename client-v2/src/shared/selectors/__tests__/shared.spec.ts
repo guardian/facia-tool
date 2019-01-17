@@ -96,7 +96,7 @@ const state: any = {
         fields: {
           headline: 'external-headline',
           trailText: 'external-trailText',
-          byline: 'external-byline',
+          byline: 'external-byline'
         }
       },
       ea4: {
@@ -118,12 +118,12 @@ const state: any = {
             showLivePlayable: false,
             showMainVideo: false,
             showQuotedHeadline: false
-          },
+          }
         },
         fields: {
           headline: 'external-headline',
           trailText: 'external-trailText',
-          byline: 'external-byline',
+          byline: 'external-byline'
         }
       },
       ea5: {
@@ -136,7 +136,7 @@ const state: any = {
         fields: {
           headline: 'external-headline',
           trailText: 'external-trailText',
-          byline: 'external-byline',
+          byline: 'external-byline'
         }
       }
     }
@@ -194,7 +194,7 @@ const state: any = {
         headline: 'fragment-headline',
         trailText: 'fragment-trailText',
         byline: 'fragment-byline',
-        showKickerTag: true,
+        showKickerTag: true
       }
     },
     afWithSectionKicker: {
@@ -206,9 +206,9 @@ const state: any = {
         headline: 'fragment-headline',
         trailText: 'fragment-trailText',
         byline: 'fragment-byline',
-        showKickerSection: true,
+        showKickerSection: true
       }
-    },
+    }
   }
 };
 
@@ -313,12 +313,10 @@ describe('Shared selectors', () => {
         trailText: 'external-trailText',
         byline: 'external-byline',
         isLive: true,
-        firstPublicationDate: '2018-10-19T10:30:39Z',
+        firstPublicationDate: '2018-10-19T10:30:39Z'
       });
 
-      expect(
-        selector(state, 'af1WithOverrides')
-      ).toEqual({
+      expect(selector(state, 'af1WithOverrides')).toEqual({
         id: 'ea1',
         customKicker: 'fragment-kicker',
         pillarName: 'external-pillar',
@@ -335,22 +333,20 @@ describe('Shared selectors', () => {
         pillarId: undefined,
         showKickerCustom: true
       });
-      expect(selector(state, 'invalid')).toEqual(
-        undefined
-      );
+      expect(selector(state, 'invalid')).toEqual(undefined);
     });
     it('should set isLive property to false if article is not live', () => {
       const selector = createArticleFromArticleFragmentSelector();
       expect(selector(state, 'af2')).toEqual({
         id: 'ea2',
         pillarName: 'external-pillar',
-        firstPublicationDate: "2018-10-19T10:30:39Z",
+        firstPublicationDate: '2018-10-19T10:30:39Z',
         uuid: 'af2',
         headline: 'external-headline',
         thumbnail: undefined,
         trailText: 'external-trailText',
         byline: 'external-byline',
-        isLive: false,
+        isLive: false
       });
     });
     it('should set isLive to true if property is missing', () => {
@@ -363,7 +359,7 @@ describe('Shared selectors', () => {
         thumbnail: undefined,
         trailText: 'external-trailText',
         byline: 'external-byline',
-        isLive: true,
+        isLive: true
       });
     });
     it('should populate default metadata correctly', () => {
@@ -390,8 +386,7 @@ describe('Shared selectors', () => {
         showKickerTag: false,
         showLivePlayable: false,
         showMainVideo: false,
-        showQuotedHeadline: false,
-
+        showQuotedHeadline: false
       });
     });
   });
@@ -476,25 +471,24 @@ describe('Shared selectors', () => {
     it('should set the correct kicker when tag kicker is set ', () => {
       const selector = createArticleFromArticleFragmentSelector();
 
-      expect(
-        selector(state, 'afWithTagKicker')
-      ).toMatchObject({kicker: 'tag'});
+      expect(selector(state, 'afWithTagKicker')).toMatchObject({
+        kicker: 'tag'
+      });
     });
     it('should set the correct kicker when section kicker is set ', () => {
       const selector = createArticleFromArticleFragmentSelector();
 
-      expect(
-        selector(state, 'afWithSectionKicker')
-      ).toMatchObject({kicker: 'section'});
+      expect(selector(state, 'afWithSectionKicker')).toMatchObject({
+        kicker: 'section'
+      });
     });
-
   });
 
   describe('groupSiblingsSelector', () => {
     it('selects the sibling groups of a given group id', () => {
-      expect(groupSiblingsSelector(state, 'g1').map(({ uuid }) => uuid)).toEqual(
-        ['g1', 'g2']
-      );
+      expect(
+        groupSiblingsSelector(state, 'g1').map(({ uuid }) => uuid)
+      ).toEqual(['g1', 'g2']);
     });
   });
 });

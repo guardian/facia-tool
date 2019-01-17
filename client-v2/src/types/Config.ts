@@ -1,41 +1,41 @@
 import { NestedArticleFragment } from 'shared/types/Collection';
 
 interface Permission {
-  [id: string]: boolean
+  [id: string]: boolean;
 }
 
 interface Acl {
-  fronts: Permission,
-  permissions: Permission
+  fronts: Permission;
+  permissions: Permission;
 }
 
 interface Metadata {
-  type: string
+  type: string;
 }
 
 interface Config {
-  dev: boolean,
-  env: string,
-  editions: string[],
-  email: string,
-  avararUrl?: string,
-  firstName: string,
-  lastName: string,
-  sentryPublicDSN: string,
-  mediaBaseUrl: string,
-  apiBaseUrl: string,
-  switches: {[key: string]: boolean},
+  dev: boolean;
+  env: string;
+  editions: string[];
+  email: string;
+  avararUrl?: string;
+  firstName: string;
+  lastName: string;
+  sentryPublicDSN: string;
+  mediaBaseUrl: string;
+  apiBaseUrl: string;
+  switches: { [key: string]: boolean };
   stage: string;
-  acl: Acl,
-  collectionCap: number,
-  navListCap: number,
-  navListType: string,
-  collectionMetadata: Metadata[],
-  capiLiveUrl: string,
-  capiPreviewUrl: string,
-  ravenUrl?: string,
-  frontIds: string[],
-  clipboardArticles: NestedArticleFragment[]
+  acl: Acl;
+  collectionCap: number;
+  navListCap: number;
+  navListType: string;
+  collectionMetadata: Metadata[];
+  capiLiveUrl: string;
+  capiPreviewUrl: string;
+  ravenUrl?: string;
+  frontIds: string[];
+  clipboardArticles: NestedArticleFragment[];
 }
 
 export { Config };

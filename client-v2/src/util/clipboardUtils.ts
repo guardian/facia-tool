@@ -9,10 +9,10 @@ import { DerivedArticle } from 'shared/types/Article';
 import { notLiveLabels } from 'constants/fronts';
 
 function normaliseClipboard(clipboard: {
-  articles: NestedArticleFragment[]
+  articles: NestedArticleFragment[];
 }): {
-  clipboard: { articles: string[] },
-  articleFragments: { [id: string]: ArticleFragment }
+  clipboard: { articles: string[] };
+  articleFragments: { [id: string]: ArticleFragment };
 } {
   const normalisedClipboard = normalize(clipboard);
   return {
@@ -32,7 +32,11 @@ function denormaliseClipboard(
   );
 }
 
-const getArticleLabel = (firstPublicationDate?: string, sectionName?: string, isLive?: boolean) => {
+const getArticleLabel = (
+  firstPublicationDate?: string,
+  sectionName?: string,
+  isLive?: boolean
+) => {
   if (isLive) {
     return sectionName;
   }
@@ -42,8 +46,6 @@ const getArticleLabel = (firstPublicationDate?: string, sectionName?: string, is
   }
 
   return notLiveLabels.draft;
-}
-
-
+};
 
 export { normaliseClipboard, denormaliseClipboard, getArticleLabel };

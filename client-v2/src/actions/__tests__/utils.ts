@@ -12,7 +12,11 @@ export type ArticleFragmentSpec = [
   Array<[string, string]> | undefined
 ];
 
-export const specToFragment = ([uuid, id, supporting]: ArticleFragmentSpec) => ({
+export const specToFragment = ([
+  uuid,
+  id,
+  supporting
+]: ArticleFragmentSpec) => ({
   uuid,
   id,
   frontPublicationDate: 0,

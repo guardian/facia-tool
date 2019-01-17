@@ -64,13 +64,15 @@ const articleTagSelector = (state: State, id: string): ArticleTag => {
     return {
       webTitle: tag.webTitle,
       sectionName: tag.sectionName
-    }
+    };
   }
-  return emptyTag
+  return emptyTag;
 };
 
-const articleKickerSelector = (state: State, id: string): string | undefined => {
-
+const articleKickerSelector = (
+  state: State,
+  id: string
+): string | undefined => {
   const articleFragment = articleFragmentSelector(state, id);
 
   if (!articleFragment) {
@@ -96,7 +98,6 @@ const articleKickerSelector = (state: State, id: string): string | undefined => 
   }
 
   return undefined;
-
 };
 
 const createArticleFromArticleFragmentSelector = () =>
@@ -127,16 +128,18 @@ const createArticleFromArticleFragmentSelector = () =>
         byline:
           articleFragment.meta.byline ||
           (externalArticle ? externalArticle.fields.byline : undefined),
-          kicker,
+        kicker,
         pillarId: externalArticle ? externalArticle.pillarId : undefined,
-        thumbnail:
-          externalArticle ? getThumbnail(externalArticle, articleMeta) : undefined,
+        thumbnail: externalArticle
+          ? getThumbnail(externalArticle, articleMeta)
+          : undefined,
         isLive:
           externalArticle && externalArticle.fields.isLive
             ? externalArticle.fields.isLive === 'true'
             : true,
-        firstPublicationDate:
-          externalArticle ? externalArticle.fields.firstPublicationDate : undefined
+        firstPublicationDate: externalArticle
+          ? externalArticle.fields.firstPublicationDate
+          : undefined
       };
     }
   );

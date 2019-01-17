@@ -1,8 +1,4 @@
-import {
-  getAbsolutePath,
-  isGuardianUrl,
-  isPreviewUrl
-} from './url';
+import { getAbsolutePath, isGuardianUrl, isPreviewUrl } from './url';
 import fetchOpenGraphData from './openGraph';
 import { ArticleFragment } from '../types/Collection';
 import v4 from 'uuid/v4';

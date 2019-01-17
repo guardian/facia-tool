@@ -1,4 +1,3 @@
-
 import { selectors } from 'shared/bundles/collectionsBundle';
 import {
   selectSharedState,
@@ -35,11 +34,8 @@ export const supportingFields = [
   'showKickerCustom'
 ];
 
-const selectIsSupporting = (
-  _: unknown,
-  __: unknown,
-  isSupporting: boolean
-) => isSupporting;
+const selectIsSupporting = (_: unknown, __: unknown, isSupporting: boolean) =>
+  isSupporting;
 
 const selectParentCollectionConfig = (
   state: State,

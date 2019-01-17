@@ -163,7 +163,7 @@ function createArticleFragment(
         // and create a link snap as a fallback. This catches cases like non-tag or
         // section guardian.co.uk URLs, which aren't in CAPI and are sometimes linked.
         const fragment = await createLinkSnap(resourceId);
-        return persistAndReturnFragment(dispatch, fragment)
+        return persistAndReturnFragment(dispatch, fragment);
       }
       dispatch(externalArticleActions.fetchError(e.message, [id]));
     }

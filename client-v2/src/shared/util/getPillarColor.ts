@@ -6,19 +6,21 @@ const pillarColorMap = {
   'pillar/arts': '#a1845c'
 } as { [pillar: string]: string };
 
-
 const notLiveColour = '#ff7f0f';
 const labsColour = '#65A897';
 const noPillarColour = '#221133';
 
-export const getPillarColor = (pillar: string | undefined, isLive?: boolean) => {
-    if (!isLive) {
-      return notLiveColour;
-    }
+export const getPillarColor = (
+  pillar: string | undefined,
+  isLive?: boolean
+) => {
+  if (!isLive) {
+    return notLiveColour;
+  }
 
-    if (!pillar) {
-      return noPillarColour;
-    }
+  if (!pillar) {
+    return noPillarColour;
+  }
 
-    return pillarColorMap[pillar];
-  };
+  return pillarColorMap[pillar];
+};

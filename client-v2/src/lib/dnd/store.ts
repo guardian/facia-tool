@@ -4,8 +4,8 @@ type Index = number | null;
 type Sub = (key: Key, index: Index) => void;
 
 interface State {
-  key: Key,
-  index: Index
+  key: Key;
+  index: Index;
 }
 
 const createStore = (initState: State = { key: null, index: null }) => {

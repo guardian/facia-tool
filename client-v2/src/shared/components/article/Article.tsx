@@ -130,24 +130,22 @@ const ArticleComponent = ({
               notifications={notifications}
             />
           )}
-          {!article &&
-            isLoading && (
-              <ArticleBody
-                uuid={id}
-                isUneditable={true}
-                displayPlaceholders={true}
-                size={size}
-              />
-            )}
-          {!article &&
-            !isLoading && (
-              <ArticleBody
-                headline="Content not found"
-                uuid={id}
-                isUneditable={true}
-                size={size}
-              />
-            )}
+          {!article && isLoading && (
+            <ArticleBody
+              uuid={id}
+              isUneditable={true}
+              displayPlaceholders={true}
+              size={size}
+            />
+          )}
+          {!article && !isLoading && (
+            <ArticleBody
+              headline="Content not found"
+              uuid={id}
+              isUneditable={true}
+              size={size}
+            />
+          )}
         </ArticleBodyContainer>
       )}
       {children}

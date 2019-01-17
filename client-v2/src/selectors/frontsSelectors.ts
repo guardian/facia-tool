@@ -69,20 +69,23 @@ const collectionIdSelector = (
 
 const unpublishedChangesSelector = (state: State) => state.unpublishedChanges;
 
-const frontsAsArraySelector = createSelector([getFronts], fronts => {
-  if (!fronts) {
-    return [];
+const frontsAsArraySelector = createSelector(
+  [getFronts],
+  fronts => {
+    if (!fronts) {
+      return [];
+    }
+    return Object.keys(fronts).reduce(
+      (frontsAsArray, frontId) => {
+        const front = fronts[frontId];
+        const withId = Object.assign({}, front, { id: frontId });
+        frontsAsArray.push(withId);
+        return frontsAsArray;
+      },
+      [] as FrontConfig[]
+    );
   }
-  return Object.keys(fronts).reduce(
-    (frontsAsArray, frontId) => {
-      const front = fronts[frontId];
-      const withId = Object.assign({}, front, { id: frontId });
-      frontsAsArray.push(withId);
-      return frontsAsArray;
-    },
-    [] as FrontConfig[]
-  );
-});
+);
 
 const getFrontsWithPriority = (state: State, priority: string): FrontConfig[] =>
   getFrontsByPriority(state)[priority] || [];
@@ -250,7 +253,10 @@ const alsoOnFrontSelector = (
 };
 
 const createAlsoOnSelector = () =>
-  createSelector([getFront, frontsAsArraySelector], alsoOnFrontSelector);
+  createSelector(
+    [getFront, frontsAsArraySelector],
+    alsoOnFrontSelector
+  );
 
 const lastPressedSelector = (state: State, frontId: string): string | null =>
   state.fronts.lastPressed[frontId] || null;

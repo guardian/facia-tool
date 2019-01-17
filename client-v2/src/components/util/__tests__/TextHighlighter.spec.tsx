@@ -29,7 +29,9 @@ describe('TextHighlighter', () => {
         searchString="e"
       />
     );
-    expect(element.getAllByText('An example string with two examples').length).toBe(1);
+    expect(
+      element.getAllByText('An example string with two examples').length
+    ).toBe(1);
     element = render(
       <TextHighlighter
         originalString="An example string with two examples"

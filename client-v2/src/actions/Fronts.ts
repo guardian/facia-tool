@@ -78,7 +78,6 @@ function publishCollection(
   collectionId: string,
   frontId: string
 ): ThunkResult<Promise<void>> {
-
   events.collectionPublished(frontId, collectionId);
 
   return (dispatch: Dispatch, getState: () => State) => {

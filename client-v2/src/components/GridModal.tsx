@@ -7,8 +7,8 @@ import deleteIcon from 'shared/images/icons/delete-copy.svg';
 interface ModalProps {
   isOpen: boolean;
   url: string;
-  onClose: () => void,
-  onMessage: (message: any) => void
+  onClose: () => void;
+  onMessage: (message: any) => void;
 }
 
 const StyledModal = styled(Modal)`
@@ -43,23 +43,16 @@ const ImageContainer = styled('img')`
   position: absolute;
   top: 10px;
   left: 10px;
-
 `;
 
-export const GridModal = ({
-  isOpen,
-  url,
-  onMessage,
-  onClose
-}: ModalProps) =>
+export const GridModal = ({ isOpen, url, onMessage, onClose }: ModalProps) => (
   <React.Fragment>
-    <StyledModal
-      isOpen={isOpen}
-    >
+    <StyledModal isOpen={isOpen}>
       <ModalButton type="button" priority="primary" onClick={onClose}>
-        <ImageContainer src={deleteIcon}/>
+        <ImageContainer src={deleteIcon} />
       </ModalButton>
 
-      <GridIFrame src={url}/>
+      <GridIFrame src={url} />
     </StyledModal>
   </React.Fragment>
+);

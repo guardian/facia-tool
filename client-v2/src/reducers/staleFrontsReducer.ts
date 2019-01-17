@@ -1,7 +1,7 @@
 import { Action } from 'types/Action';
 
 interface State {
-  [id: string]: boolean
+  [id: string]: boolean;
 }
 
 const staleFronts = (state: State = {}, action: Action): State => {
