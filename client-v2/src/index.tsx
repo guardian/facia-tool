@@ -20,8 +20,16 @@ const store = configureStore();
 const config = extractConfigFromPage();
 
 // publish uncaught errors to sentry.io
-if (config.stage === 'PROD' && config.ravenUrl) {
-  Raven.config(config.ravenUrl).install();
+if (config.env.toUpperCase() !== 'DEV' && config.sentryPublicDSN) {
+  const sentryOptions = {
+    tags: {
+      stack: 'cms-fronts',
+      stage: config.env.toUpperCase(),
+      app: 'facia-tool-v2'
+    }
+  };
+
+  Raven.config(config.sentryPublicDSN, sentryOptions).install();
 }
 
 store.dispatch(configReceived(config));

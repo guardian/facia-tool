@@ -27,8 +27,16 @@ function checkEnabled (res) {
 }
 
 function registerRaven (res) {
-    if (!res.defaults.dev) {
-        Raven.config(res.defaults.sentryPublicDSN).install();
+    if (res.defaults.env.toUpperCase() !== 'DEV' && res.defaults.sentryPublicDSN) {
+        const sentryOptions = {
+            tags: {
+                stack: 'cms-fronts',
+                stage: res.defaults.env.toUpperCase(),
+                app: 'facia-tool'
+            }
+        };
+
+        Raven.config(res.defaults.sentryPublicDSN, sentryOptions).install();
         Raven.setUser({
             email: res.defaults.email || 'anonymous'
         });

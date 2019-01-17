@@ -33,7 +33,6 @@ interface Config {
   collectionMetadata: Metadata[];
   capiLiveUrl: string;
   capiPreviewUrl: string;
-  ravenUrl?: string;
   frontIds: string[];
   clipboardArticles: NestedArticleFragment[];
 }
