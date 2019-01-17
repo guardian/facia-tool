@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-import { styled } from 'shared/constants/theme';
-=======
->>>>>>> Bang, and the unused stuff is gone
 import React from 'react';
 import { WrappedFieldProps } from 'redux-form';
 import Button from 'shared/components/input/ButtonDefault';
