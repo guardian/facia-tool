@@ -1,4 +1,3 @@
-import uniq from 'lodash/uniq';
 import { batchActions } from 'redux-batched-actions';
 import {
   getArticlesBatched,
@@ -33,7 +32,7 @@ import { recordVisibleArticles } from 'actions/Fronts';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import { getCollectionConfig } from 'selectors/frontsSelectors';
 import { State } from 'types/State';
-import { Dispatch, ThunkResult, GetState } from 'types/Store';
+import { Dispatch, ThunkResult } from 'types/Store';
 import { frontStages } from 'constants/fronts';
 import {
   Stages,

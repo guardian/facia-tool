@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import FeedItem from './FeedItem';
-import moment from 'moment';
 import { CapiArticle } from 'types/Capi';
 
 const getId = (internalPageCode: string | number | undefined) =>
@@ -32,19 +31,6 @@ const LoaderDisplay = ({ loading, children }: LoaderDisplayProps) =>
 const NoResults = styled('div')`
   margin: 4px;
 `;
-
-interface StringArrSearchItems {
-  tags: string[];
-  sections: string[];
-  desks: string[];
-  ratings: string[];
-}
-
-type FeedState = StringArrSearchItems & {
-  query: string;
-  fromDate: null | moment.Moment;
-  toDate: null | moment.Moment;
-};
 
 const Feed = ({ articles = [], error, loading }: FeedProps) => (
   <ErrorDisplay error={error}>

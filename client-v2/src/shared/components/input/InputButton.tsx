@@ -1,4 +1,3 @@
-import { styled } from 'shared/constants/theme';
 import React from 'react';
 import { WrappedFieldProps } from 'redux-form';
 import Button from 'shared/components/input/ButtonDefault';

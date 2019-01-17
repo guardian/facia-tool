@@ -7,7 +7,6 @@ import {
 describe('Front utilities', () => {
   describe('getVisibilityArticleDetails', () => {
     it('summarise articles correctly according to group ', () => {
-      const groups = [];
       const result = getVisibilityArticleDetails([
         [boostedArticleFragment],
         [articleFragment, articleFragment]

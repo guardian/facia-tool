@@ -1,4 +1,3 @@
-import reducer from 'reducers/rootReducer';
 import { StateType } from 'typesafe-actions';
 import rootReducer from 'reducers/rootReducer';
 

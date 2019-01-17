@@ -1,4 +1,3 @@
-import { frontsConfig } from 'fixtures/frontsConfig';
 import {
   stateWithCollection,
   capiArticle,

@@ -4,7 +4,7 @@ import urlConstants from '../constants/url';
 import deepGet from 'lodash/get';
 import grid, { recordUsage } from './grid';
 import fetchImage from './fetchImage';
-import { Crop, ImageDetails, Criteria } from 'shared/types/Grid';
+import { Crop, Criteria } from 'shared/types/Grid';
 
 interface ImageDescription {
   height?: number;

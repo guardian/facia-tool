@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import ScrollContainer from '../ScrollContainer';
 import TextInput from '../TextInput';
-import CAPITagInput from './TagInput';
-import CAPIFieldFilter from './FieldFilter';
-import CAPIDateRangeInput from './DateInput';
+import CAPITagInput from '../FrontsCAPIInterface/TagInput';
+import CAPIFieldFilter from '../FrontsCAPIInterface/FieldFilter';
+import CAPIDateRangeInput from '../FrontsCAPIInterface/DateInput';
 import moment from 'moment';
 import FilterItem from './FilterItem';
 

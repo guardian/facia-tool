@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, prettyDOM, cleanup } from 'react-testing-library';
+import { render, cleanup } from 'react-testing-library';
 import TextHighlighter from 'components/util/TextHighlighter';
 
 describe('TextHighlighter', () => {

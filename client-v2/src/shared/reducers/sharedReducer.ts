@@ -1,10 +1,8 @@
-import { combineReducers } from 'redux';
 import articleFragments from './articleFragmentsReducer';
 import groups from './groupsReducer';
 import { reducer as collections } from '../bundles/collectionsBundle';
 import { reducer as externalArticles } from '../bundles/externalArticlesBundle';
-import { ArticleFragment, Group, Collection } from 'shared/types/Collection';
-import { ExternalArticle } from 'shared/types/ExternalArticle';
+import { ArticleFragment, Group } from 'shared/types/Collection';
 
 interface State {
   articleFragments: {

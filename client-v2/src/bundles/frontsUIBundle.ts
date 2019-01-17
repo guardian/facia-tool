@@ -11,7 +11,6 @@ import {
   EditorCloseCollection
 } from 'types/Action';
 import { State as GlobalState } from 'types/State';
-import { ThunkResult } from 'types/Store';
 import { events } from 'services/GA';
 
 const EDITOR_OPEN_FRONT = 'EDITOR_OPEN_FRONT';

@@ -22,7 +22,7 @@ import {
   editorOpenCollections,
   editorCloseCollections
 } from 'bundles/frontsUIBundle';
-import { getCollections, getArticlesForCollections } from 'actions/Collections';
+import { getArticlesForCollections } from 'actions/Collections';
 
 interface CollectionPropsBeforeState {
   id: string;
