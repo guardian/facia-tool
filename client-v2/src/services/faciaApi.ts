@@ -203,11 +203,11 @@ async function getCollections(
   collectionIds: string[]
 ): Promise<CollectionWithNestedArticles[]> {
   const params = new URLSearchParams();
-  collectionIds.map(_ => params.append('ids', _));
+  collectionIds.map(_ => params.append('ids', _))
   const response = await pandaFetch(`/collections?${params.toString()}`, {
     method: 'get',
     credentials: 'same-origin'
-  });
+  })
   const collections: CollectionResponse[] = await response.json();
   return collections.map((collection, index) => ({
     ...collection,
@@ -232,12 +232,6 @@ const getTagOrSectionTitle = (queryResponse: CAPISearchQueryReponse) =>
   (queryResponse.response.tag && queryResponse.response.tag.webTitle) ||
   (queryResponse.response.section && queryResponse.response.section.webTitle);
 
-const getResultsFromCapiResponse = (queryResponse: CAPISearchQueryReponse) =>
-  // We may be dealing with a single result, or an array of results -
-  // CAPI formats each query differently.
-  queryResponse.response.results ||
-  (queryResponse.response.content ? [queryResponse.response.content] : []);
-
 const parseArticleListFromResponses = (
   queryResponse: CAPISearchQueryReponse
 ): ExternalArticle[] => {
@@ -247,14 +241,17 @@ const parseArticleListFromResponses = (
         queryResponse.response.message || 'Unknown error from CAPI'
       );
     }
+    // We may be dealing with a single result, or an array of results -
+    // CAPI formats each query differently.
+    const results: CapiArticle[] =
+      queryResponse.response.results ||
+      (queryResponse.response.content ? [queryResponse.response.content] : []);
 
-    return getResultsFromCapiResponse(queryResponse).map(
-      (externalArticle: CapiArticle) => ({
-        ...externalArticle,
-        urlPath: externalArticle.id,
-        id: `internal-code/page/${externalArticle.fields.internalPageCode}`
-      })
-    );
+    return results.map((externalArticle: CapiArticle) => ({
+      ...externalArticle,
+      urlPath: externalArticle.id,
+      id: `internal-code/page/${externalArticle.fields.internalPageCode}`
+    }));
   } catch (e) {
     throw new Error(
       `Error getting articles from CAPI: cannot parse response - ${e.message}`
@@ -320,7 +317,6 @@ export {
   updateCollection,
   saveClipboard,
   saveOpenFrontIds,
-  getResultsFromCapiResponse,
   getCapiUriForContentIds,
   fetchVisibleArticles
 };
