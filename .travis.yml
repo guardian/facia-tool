@@ -2,6 +2,13 @@ language: scala
 scala: 2.12.5
 jdk:
 - oraclejdk8
+addons:
+  firefox: latest
+  apt:
+    sources:
+     - google-chrome
+    packages:
+     - google-chrome-stable fluxbox
 before_install:
 - nvm install 5
 - nvm install 9
@@ -16,8 +23,13 @@ install:
 - jspm config registries.github.auth $JSPM_GITHUB_AUTH_SECRET
 - jspm registry export github
 - jspm install
+before_script:
+- "export DISPLAY=:99.0"
+- "sh -e /etc/init.d/xvfb start"
+- sleep 3
+- fluxbox >/dev/null 2>&1 &
 script:
-- grunt --stack validate test && sbt ++$TRAVIS_SCALA_VERSION compile test assets && grunt --stack bundle && cd client-v2 && nvm use && yarn install && yarn lint && yarn test &&  yarn run build && cd .. && sbt ++$TRAVIS_SCALA_VERSION riffRaffUpload
+- grunt --stack validate test && sbt ++$TRAVIS_SCALA_VERSION compile test assets && grunt --stack bundle && cd client-v2 && nvm use && yarn install && yarn lint && yarn test &&  yarn test-integration && yarn run build && cd .. && sbt ++$TRAVIS_SCALA_VERSION riffRaffUpload
 env:
   global:
   - secure: Ah5DLXodRgTSh4sxLTTtW7l6dD7nTGD1HUsL2m4k+fLUTkwteG1qEuWFMXKigqCRwBp93T+yOoGZo7pKLa7WKJNq5plFbzcGYjWom+VJ3p4C45Ma03+FiY8wSRh7DYsdtTzjqZv9NIZP5ifnNDiVgwyDNOxA165FPDExLnBt6ZdslRV8OxH/3ILjpwxx8fhnLPyBqIuEY4M+dLoFGLienhfBvziKpA6Q3vQjH/ZvE5CQ+U6aVZdilRJOSU9wvDIQJYZrXbwl8fDGBorcVa5On31gE6nySx77i2M/3xSt02iN+0PKs+V5I+gn9+hCKDhSKgwHxXho2lgkAHI/to2xtw7h0XCJ/E0tylfwRLSg/zl32gO9UW+Hw1Mbju0j4CJSU4ArK6753pl0vQEpebl8ohI5vsytDMD9DzH+Fzdha6YSJJz5ml7DkehhrSZvdTsvJ5iDDqTmXObJSORsFF7Qpy4UQk4oLUgt2g57m8XeU4GPX/6DDOuzf4Rvz+Y9b0MnBbWhm97A3uYPIP+Ou/1oqmZsxBTB/pf+vq0ipfm0c/Vdk0NmtDl9mvNL5eHvSVgnGXIn1XOR3mJkOlxnbkOJA3qLCJUeKdyDiC2i7OBSIFu7ts41qghalppk67c57mUNhRKB181+d7rUf5xXtNeevJsOUaT0BYn4I2X56Dy0cTI=
