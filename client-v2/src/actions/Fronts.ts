@@ -109,14 +109,14 @@ function publishCollection(
               fetchLastPressedApi(frontId)
             ])
           )
-          .then(([collection, lastPressed]) => {
+          .then(([collectionResponse, lastPressed]) => {
             const lastPressedInMilliseconds = new Date(lastPressed).getTime();
             dispatch(
               batchActions([
                 recordStaleFronts(
                   frontId,
                   isFrontStale(
-                    collection.lastUpdated,
+                    collectionResponse.collection.lastUpdated,
                     lastPressedInMilliseconds
                   )
                 ),

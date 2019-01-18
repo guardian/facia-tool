@@ -1,5 +1,6 @@
 import { PriorityName } from './Priority';
 import { $Diff } from 'utility-types';
+import { CollectionWithNestedArticles } from 'shared/types/Collection';
 
 interface FrontConfigResponse {
   collections: string[];
@@ -84,6 +85,14 @@ interface ArticleDetails {
   isBoosted: boolean;
 }
 
+interface CollectionResponse {
+  collection: CollectionWithNestedArticles;
+  storiesVisibleByStage: {
+    live: VisibleArticlesResponse;
+    draft: VisibleArticlesResponse;
+  };
+}
+
 interface VisibleArticlesResponse {
   desktop: number;
   mobile: number;
@@ -97,6 +106,7 @@ export {
   FrontConfigMap,
   CollectionConfigMap,
   ArticleDetails,
+  CollectionResponse,
   VisibleArticlesResponse,
   FrontsToolSettings
 };
