@@ -118,6 +118,7 @@ interface CapiArticle {
   tags?: Tag[];
   blocks: Blocks;
   atoms?: Atoms;
+  isHosted?: boolean;
   frontsMeta: {
     defaults: {
       imageCutoutReplace: boolean;
