@@ -21,6 +21,7 @@ import {
   editorCloseCollections
 } from 'bundles/frontsUIBundle';
 import { getArticlesForCollections } from 'actions/Collections';
+import { collectionItemSets } from 'constants/fronts';
 
 interface CollectionPropsBeforeState {
   id: string;
@@ -36,7 +37,7 @@ type CollectionProps = CollectionPropsBeforeState & {
   canPublish: boolean;
   groups: Group[];
   displayEditWarning: boolean;
-  isUneditable: boolean;
+  isCollectionUneditable: boolean;
   isOpen: boolean;
   onChangeOpenState: (id: string, isOpen: boolean) => void;
 };
@@ -52,41 +53,47 @@ const Collection = ({
   canPublish = true,
   publishCollection: publish,
   displayEditWarning,
-  isUneditable,
+  isCollectionUneditable,
   isOpen,
   onChangeOpenState
-}: CollectionProps) => (
-  <CollectionDisplay
-    frontId={frontId}
-    id={id}
-    browsingStage={browsingStage}
-    isUneditable={isUneditable}
-    isOpen={isOpen}
-    onChangeOpenState={() => onChangeOpenState(id, isOpen)}
-    headlineContent={
-      hasUnpublishedChanges &&
-      canPublish && (
-        <Button
-          size="l"
-          priority="primary"
-          onClick={() => publish(id, frontId)}
-        >
-          Launch
-        </Button>
-      )
-    }
-    metaContent={
-      alsoOn[id].fronts.length || displayEditWarning ? (
-        <CollectionNotification
-          displayEditWarning={displayEditWarning}
-          alsoOn={alsoOn[id]}
-        />
-      ) : null
-    }
-  >
-    {groups.map(group => children(group, isUneditable))}
-  </CollectionDisplay>
-);
+}: CollectionProps) => {
+
+  const isUneditable =
+    isCollectionUneditable || browsingStage !== collectionItemSets.draft;
+
+  return (
+    <CollectionDisplay
+      frontId={frontId}
+      id={id}
+      browsingStage={browsingStage}
+      isUneditable={isUneditable}
+      isOpen={isOpen}
+      onChangeOpenState={() => onChangeOpenState(id, isOpen)}
+      headlineContent={
+        hasUnpublishedChanges &&
+        canPublish && (
+          <Button
+            size="l"
+            priority="primary"
+            onClick={() => publish(id, frontId)}
+          >
+            Launch
+          </Button>
+        )
+      }
+      metaContent={
+        alsoOn[id].fronts.length || displayEditWarning ? (
+          <CollectionNotification
+            displayEditWarning={displayEditWarning}
+            alsoOn={alsoOn[id]}
+          />
+        ) : null
+      }
+    >
+      {groups.map(group => children(group, isUneditable))}
+    </CollectionDisplay>
+  );
+};
 
 const createMapStateToProps = () => {
   const collectionStageGroupsSelector = createCollectionStageGroupsSelector();
@@ -95,7 +102,7 @@ const createMapStateToProps = () => {
     hasUnpublishedChanges: hasUnpublishedChangesSelector(state, {
       collectionId: id
     }),
-    isUneditable: isCollectionUneditableSelector(state, id),
+    isCollectionUneditable: isCollectionUneditableSelector(state, id),
     groups: collectionStageGroupsSelector(selectSharedState(state), {
       collectionSet: browsingStage,
       collectionId: id
