@@ -8,7 +8,7 @@ import slices.Story
 @DoNotDiscover class CollectionServiceTest extends FreeSpec with Matchers {
   "getArticleDetailsForCollection" - {
     "should return article details for a given collection" in {
-      CollectionService.getArticleDetailsForCollection(collectionJson) should be(
+      CollectionService.getStoriesForCollection(collectionJson) should be(
         Seq(Story(1, true))
       )
     }
