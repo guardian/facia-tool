@@ -48,9 +48,10 @@ function getCollections(collectionIds: string[]): ThunkResult<Promise<void>> {
   return async (dispatch: Dispatch, getState: () => State) => {
     dispatch(collectionActions.fetchStart(collectionIds));
     try {
-      const collections = await fetchCollection(collectionIds);
+      const collectionResponses = await fetchCollection(collectionIds);
       await Promise.all(
-        collections.map(async collection => {
+        collectionResponses.map(async collectionResponse => {
+          const { collection, storiesVisibleByStage } = collectionResponse;
           const collectionConfig = getCollectionConfig(
             getState(),
             collection.id
@@ -80,32 +81,15 @@ function getCollections(collectionIds: string[]): ThunkResult<Promise<void>> {
               collectionActions.fetchSuccess(normalisedCollection),
               articleFragmentsReceived(articleFragments),
               recordUnpublishedChanges(collection.id, hasUnpublishedChanges),
-              groupsReceived(groups)
-            ])
-          );
-
-          const state = getState();
-          const liveVisibleArticles = await getVisibleArticles(
-            normalisedCollection,
-            state,
-            frontStages.live
-          );
-          const draftVisibleArticles = await getVisibleArticles(
-            normalisedCollection,
-            state,
-            frontStages.draft
-          );
-
-          dispatch(
-            batchActions([
+              groupsReceived(groups),
               recordVisibleArticles(
                 collection.id,
-                liveVisibleArticles,
+                storiesVisibleByStage.live,
                 frontStages.live
               ),
               recordVisibleArticles(
                 collection.id,
-                draftVisibleArticles,
+                storiesVisibleByStage.draft,
                 frontStages.draft
               )
             ])

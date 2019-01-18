@@ -6,11 +6,11 @@ import {
   ArticleDetails,
   VisibleArticlesResponse,
   FrontConfig,
-  CollectionConfigMap
+  CollectionConfigMap,
+  CollectionResponse
 } from 'types/FaciaApi';
 import { ExternalArticle } from 'shared/types/ExternalArticle';
 import {
-  CollectionResponse,
   CollectionWithNestedArticles,
   NestedArticleFragment
 } from 'shared/types/Collection';
@@ -187,7 +187,7 @@ async function saveOpenFrontIds(frontIds?: string[]): Promise<void> {
 
 async function getCollection(
   collectionId: string
-): Promise<CollectionWithNestedArticles> {
+): Promise<CollectionResponse> {
   const collections = await getCollections([collectionId]);
   const [collection] = collections;
   if (!collection) {
@@ -198,17 +198,20 @@ async function getCollection(
 
 async function getCollections(
   collectionIds: string[]
-): Promise<CollectionWithNestedArticles[]> {
+): Promise<CollectionResponse[]> {
   const params = new URLSearchParams();
   collectionIds.map(_ => params.append('ids', _));
   const response = await pandaFetch(`/collections?${params.toString()}`, {
     method: 'get',
     credentials: 'same-origin'
   });
-  const collections: CollectionResponse[] = await response.json();
-  return collections.map((collection, index) => ({
-    ...collection,
-    id: collectionIds[index]
+  const collectionResponses: CollectionResponse[] = await response.json();
+  return collectionResponses.map((collectionResponse, index) => ({
+    ...collectionResponse,
+    collection: {
+      ...collectionResponse.collection,
+      id: collectionIds[index]
+    }
   }));
 }
 
