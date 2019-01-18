@@ -185,18 +185,15 @@ async function saveOpenFrontIds(frontIds?: string[]): Promise<void> {
   }
 }
 
-function getCollection(
+async function getCollection(
   collectionId: string
 ): Promise<CollectionWithNestedArticles> {
-  return pandaFetch(`/collection/${collectionId}`, {
-    method: 'get',
-    credentials: 'same-origin'
-  })
-    .then(response => response.json())
-    .then((json: CollectionResponse) => ({
-      ...json,
-      id: collectionId
-    }));
+  const collections = await getCollections([collectionId]);
+  const [collection] = collections;
+  if (!collection) {
+    throw new Error(`Collection with id ${collectionId} not found`);
+  }
+  return collection;
 }
 
 async function getCollections(

@@ -21,6 +21,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class FaciaToolController(
                            val acl: Acl,
                            val frontsApi: FrontsApi,
+                           val collectionService: CollectionService,
                            val faciaApiIO: FaciaApiIO,
                            val updateActions: UpdateActions,
                            breakingNewsUpdate: BreakingNewsUpdate,
@@ -43,7 +44,7 @@ class FaciaToolController(
     val collectionPriorities = configAgent.getFrontsPermissionsPriorityByCollectionId(collectionId)
 
     withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
-      val collectionsFuture = fetchCollections(List(collectionId))
+      val collectionsFuture = collectionService.fetchCollections(List(collectionId))
 
       collectionsFuture.map { collections =>
         collections.headOption.map { collection =>
@@ -53,25 +54,6 @@ class FaciaToolController(
         }.getOrElse(Results.NotFound)
       }
     }
-  }
-
-  def getCollections(): Action[AnyContent] = AccessAPIAuthAction.async { implicit request =>
-    val collectionIds = request.queryString.getOrElse("ids", Seq()).toList
-    val collectionPriorities = collectionIds.flatMap(configAgent.getFrontsPermissionsPriorityByCollectionId(_)).toSet
-
-    withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
-      val collections = fetchCollections(collectionIds)
-
-      collections.map(c => NoCache {
-        Ok(Json.toJson(c)).as("application/json")
-      })
-    }
-  }
-
-  def fetchCollections(collectionIds: List[String]): Future[List[Option[CollectionJson]]] = {
-    FaciaToolMetrics.ApiUsageCount.increment()
-    val futures = collectionIds.map(collectionId => frontsApi.amazonClient.collection(collectionId))
-    Future.sequence(futures)
   }
 
 
