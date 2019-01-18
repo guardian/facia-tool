@@ -27,6 +27,7 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val acl = new Acl(permissions)
   val frontsApi = new FrontsApi(config, awsEndpoints)
   val s3FrontsApi = new S3FrontsApi(config, isTest, awsEndpoints)
+  val collectionService = new CollectionService(frontsApi)
   val faciaApiIO = new FaciaApiIO(frontsApi, s3FrontsApi)
   val configAgent = new ConfigAgent(config, frontsApi)
   val structuredLogger = new StructuredLogger(config, configAgent)
@@ -48,7 +49,7 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val collection = new CollectionController(acl, structuredLogger, updateManager, press, this)
   val defaults = new DefaultsController(acl, isDev, this)
   val faciaCapiProxy = new FaciaContentApiProxy(this)
-  val faciaTool = new FaciaToolController(acl, frontsApi, faciaApiIO, updateActions, breakingNewsUpdate,
+  val faciaTool = new FaciaToolController(acl, frontsApi, collectionService, faciaApiIO, updateActions, breakingNewsUpdate,
     structuredLogger, faciaPress, faciaPressQueue, configAgent, s3FrontsApi, this)
   val front = new FrontController(acl, structuredLogger, updateManager, press, this)
   val pandaAuth = new PandaAuthController(this)
@@ -62,7 +63,7 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val views = new ViewsController(acl, assetsManager, isDev, encryption, this)
   val pressController = new PressController(dynamo, this)
   val v2App = new V2App(isDev, acl, dynamo, this)
-  val faciaToolV2 = new FaciaToolV2Controller(acl, structuredLogger, faciaPress, updateActions, configAgent, this)
+  val faciaToolV2 = new FaciaToolV2Controller(acl, structuredLogger, faciaPress, updateActions, configAgent, collectionService, this)
   val userDataController = new UserDataController(dynamo, this)
   val gridProxy = new GridProxy(this)
   val loggingFilter = new LoggingFilter

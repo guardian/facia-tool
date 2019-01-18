@@ -1,7 +1,8 @@
 package controllers
 
 import play.api.libs.json.Json
-import slices._
+import services.{ ContainerService }
+import slices.{ Story }
 
 object StoriesVisibleRequest {
   implicit val jsonFormat = Json.format[StoriesVisibleRequest]
@@ -11,57 +12,11 @@ case class StoriesVisibleRequest(
   stories: Seq[Story]
 )
 
-object StoriesVisibleResponse {
-  implicit val jsonFormat = Json.format[StoriesVisibleResponse]
-}
-
-case class StoriesVisibleResponse(
-  desktop: Option[Int],
-  mobile: Option[Int]
-)
-
-class StoriesVisibleController(val containers: Containers, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
+class StoriesVisibleController(val containerService: ContainerService, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
   def storiesVisible(containerType: String) = AccessAPIAuthAction(parse.json[StoriesVisibleRequest]) { implicit request =>
-    val numberOfStories = request.body.stories.length
+    val storiesVisible = containerService.getStoriesVisible(containerType, request.body.stories)
 
-    containers.all.get(containerType) map {
-      case Fixed(container) =>
-        val maxDesktop = container.numItems
-        val desktopVisible = maxDesktop min numberOfStories
-
-        Ok(Json.toJson(StoriesVisibleResponse(
-          Some(desktopVisible),
-          container.mobileShowMore match {
-            case DesktopBehaviour => Some(desktopVisible)
-            case RestrictTo(maxMobile) if maxMobile > desktopVisible => Some(desktopVisible)
-            case RestrictTo(maxMobile) => Some(maxMobile min numberOfStories)
-          }
-        )))
-
-      case Dynamic(container) =>
-        val slices = container.slicesFor(request.body.stories)
-
-        val maxItems = slices.map(_.map(_.layout.numItems).sum).getOrElse(0)
-        val numberVisible = maxItems min numberOfStories
-
-        Ok(Json.toJson(StoriesVisibleResponse(
-          Some(numberVisible),
-          Some(numberVisible)
-        )))
-
-      case MostPopular =>
-        Ok(Json.toJson(StoriesVisibleResponse(
-          Some(10 min numberOfStories),
-          Some(10 min numberOfStories)
-        )))
-
-      case NavList | NavMediaList =>
-        Ok(Json.toJson(StoriesVisibleResponse(
-          None,
-          None
-        )))
-
-    } getOrElse {
+    storiesVisible.map { storiesVisibleResponse => Ok(Json.toJson(storiesVisibleResponse)) } getOrElse {
       NotFound(s"$containerType is not a valid container id")
     }
   }
