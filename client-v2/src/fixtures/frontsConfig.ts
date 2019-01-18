@@ -19,7 +19,12 @@ const frontsConfig: { data: FrontsConfig } = {
         id: 'collection1',
         displayName: 'name',
         type: 'collection',
-        uneditable: true
+        uneditable: true,
+        backfill: {
+          type: 'capi',
+          query:
+            'uk/commentisfree?show-most-viewed=true&show-editors-picks=false&hide-recent-content=true'
+        }
       },
       collection2: {
         id: 'collection1',
