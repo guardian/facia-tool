@@ -1,5 +1,6 @@
 import { qs } from 'util/qs';
 import { CapiArticle, Tag } from 'types/Capi';
+import pandaFetch from 'services/pandaFetch';
 
 const API_BASE = 'https://content.guardianapis.com/';
 
@@ -53,16 +54,13 @@ const fetchCAPIResponse = async <
 ) => {
   let response: Response;
   try {
-    response = await fetch(request);
+    response = await pandaFetch(request);
   } catch (e) {
     if (e.status && e.statusText) {
       // pandaFetch can throw a Response or an Error
       throw new Error(getErrorMessageFromResponse(e));
     }
     throw e;
-  }
-  if (!response.ok) {
-    throw new Error(getErrorMessageFromResponse(response));
   }
   let result: TCAPIResponse;
   try {
