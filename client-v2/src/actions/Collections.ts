@@ -51,7 +51,21 @@ function getCollections(collectionIds: string[]): ThunkResult<Promise<void>> {
       const collectionResponses = await fetchCollection(collectionIds);
       await Promise.all(
         collectionResponses.map(async (collectionResponse, index) => {
+          const collectionId = collectionIds[index];
+          const collectionConfig = getCollectionConfig(
+            getState(),
+            collectionId
+          );
           if (!collectionResponse) {
+            if (collectionId) {
+              return dispatch(
+                collectionActions.fetchSuccess({
+                  id: collectionId,
+                  displayName: collectionConfig.description,
+                  type: collectionConfig.type
+                })
+              );
+            }
             return dispatch(
               collectionActions.fetchError(
                 `No collection returned in collections request for id ${
@@ -62,10 +76,6 @@ function getCollections(collectionIds: string[]): ThunkResult<Promise<void>> {
             );
           }
           const { collection, storiesVisibleByStage } = collectionResponse;
-          const collectionConfig = getCollectionConfig(
-            getState(),
-            collection.id
-          );
           const collectionWithNestedArticles = combineCollectionWithConfig(
             collectionConfig,
             collection

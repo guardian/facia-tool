@@ -20,7 +20,7 @@ object CollectionAndStoriesResponse {
 }
 
 class CollectionService(frontsApi: FrontsApi, containerService: ContainerService)(implicit ec: ExecutionContext) {
-  def fetchCollections(collectionIds: List[String]) = {
+  def fetchCollections(collectionIds: List[String]): Future[List[Option[CollectionAndStoriesResponse]]] = {
     FaciaToolMetrics.ApiUsageCount.increment()
     frontsApi.amazonClient.config.flatMap { config =>
       val futures = collectionIds.map(collectionId => {
@@ -34,7 +34,7 @@ class CollectionService(frontsApi: FrontsApi, containerService: ContainerService
                 containerService
               )
             )
-            Future.successful(collectionAndStoriesResponse)
+            Future.successful(Some(collectionAndStoriesResponse))
           }
           case None => Future.successful(None)
         }
@@ -47,8 +47,10 @@ class CollectionService(frontsApi: FrontsApi, containerService: ContainerService
 object CollectionService {
   def getStoriesVisibleByStage(collectionId: String, collection: CollectionJson, config: ConfigJson, containerService: ContainerService): Option[StoriesVisibleByStage] = {
     val stages = CollectionService.getStoriesForCollectionStages(collectionId, collection, config)
+
     config.collections.get(collectionId).flatMap(_.`type`) match {
-      case Some(cType) => Some(
+      case Some(cType) =>
+        Some(
         StoriesVisibleByStage(
           containerService.getStoriesVisible(cType, stages._1),
           containerService.getStoriesVisible(cType, stages._2)
