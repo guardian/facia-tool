@@ -24,36 +24,45 @@ class CollectionService(frontsApi: FrontsApi, containerService: ContainerService
     FaciaToolMetrics.ApiUsageCount.increment()
     frontsApi.amazonClient.config.flatMap { config =>
       val futures = collectionIds.map(collectionId => {
-        frontsApi.amazonClient.collection(collectionId).map(_.map(collection => {
-          val stages = CollectionService.getStoriesForCollectionStages(collectionId, collection, config)
-          val containerType = config.collections.get(collectionId).flatMap(_.`type`)
-          val maybeStoriesVisible = containerType match {
-            case Some(cType) => Some(
-              (
-                containerService.getStoriesVisible(cType, stages._1),
-                containerService.getStoriesVisible(cType, stages._2)
-              ))
-            case None => None
+        frontsApi.amazonClient.collection(collectionId).flatMap {
+          case Some(collection) => {
+            val collectionAndStoriesResponse = CollectionAndStoriesResponse(collection,
+              CollectionService.getStoriesVisibleByStage(
+                collectionId,
+                collection,
+                config,
+                containerService
+              )
+            )
+            Future.successful(collectionAndStoriesResponse)
           }
-          val storiesVisibleByStage = maybeStoriesVisible match {
-            case Some(storiesVisible) => Some(StoriesVisibleByStage(storiesVisible._1, storiesVisible._2))
-            case None => None
-          }
-          CollectionAndStoriesResponse(collection, storiesVisibleByStage)
-        }))
+          case None => Future.successful(None)
+        }
       })
-      Future.sequence(futures).map(_.flatten)
+      Future.sequence(futures)
     }
   }
 }
 
 object CollectionService {
-  def getStoriesForCollectionStages(collectionId: String, collection: CollectionJson, config: ConfigJson) = {
-    val maybeNumberOfGroups = config.collections.get(collectionId) match {
-      case Some(collectionConfig) => collectionConfig.groups.map(group => group.length)
+  def getStoriesVisibleByStage(collectionId: String, collection: CollectionJson, config: ConfigJson, containerService: ContainerService): Option[StoriesVisibleByStage] = {
+    val stages = CollectionService.getStoriesForCollectionStages(collectionId, collection, config)
+    config.collections.get(collectionId).flatMap(_.`type`) match {
+      case Some(cType) => Some(
+        StoriesVisibleByStage(
+          containerService.getStoriesVisible(cType, stages._1),
+          containerService.getStoriesVisible(cType, stages._2)
+        )
+      )
       case None => None
     }
-    val numberOfGroups = maybeNumberOfGroups.getOrElse(0)
+  }
+
+  def getStoriesForCollectionStages(collectionId: String, collection: CollectionJson, config: ConfigJson): (Seq[Story], Seq[Story]) = {
+    val numberOfGroups = config.collections.get(collectionId) match {
+      case Some(collectionConfig) => collectionConfig.groups.map(group => group.length).getOrElse(0)
+      case None => 0
+    }
 
     (
       Some(collection.live).map { getStoriesForStage(_, numberOfGroups) }.getOrElse(Seq()),
@@ -61,11 +70,11 @@ object CollectionService {
     )
   }
 
-  def getStoriesForStage(stage: List[Trail], numberOfGroups: Int) = {
+  def getStoriesForStage(stage: List[Trail], numberOfGroups: Int): Seq[Story] = {
     stage.zipWithIndex.map {
       case (article, index) => Story(
         numberOfGroups - index - 1,
         article.meta.flatMap(_.isBoosted).getOrElse(false)
-      )}.toSeq
+      )}
   }
 }
