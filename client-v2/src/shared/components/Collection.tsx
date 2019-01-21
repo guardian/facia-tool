@@ -9,6 +9,7 @@ import ShortVerticalPinline from './layout/ShortVerticalPinline';
 import ContainerHeadingPinline from './typography/ContainerHeadingPinline';
 import { Collection, CollectionItemSets } from '../types/Collection';
 import ButtonCircularCaret from './input/ButtonCircularCaret';
+import DragIntentContainer from './DragIntentContainer';
 import { State as SharedState } from '../types/State';
 import { State } from '../../types/State';
 
@@ -160,53 +161,11 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
     hasDragOpenIntent: false
   };
 
-  private dragTimer: number | null = null;
-
-  // Keeps track of dragEvents over the Collection's toggleVisibility button to determine enter/leave events
-  private dragHoverDepth: number = 0;
-
   public toggleVisibility = () => {
     events.collectionToggleClicked(this.props.frontId);
     if (this.props.onChangeOpenState) {
       this.props.onChangeOpenState(!this.props.isOpen);
     }
-  };
-
-  public handleToggleButtonDragEnter = () => {
-    if (this.dragHoverDepth === 0 && !this.props.isOpen) {
-      this.registerDragOpenIntent();
-    }
-    this.dragHoverDepth += 1;
-  };
-
-  public handleToggleButtonDragLeave = () => {
-    this.dragHoverDepth -= 1;
-    if (this.dragHoverDepth === 0) {
-      this.deregisterDragOpenIntent();
-    }
-  };
-
-  public handleToggleButtonDrop = () => {
-    this.dragHoverDepth = 0;
-    this.deregisterDragOpenIntent();
-  };
-
-  public registerDragOpenIntent = () => {
-    this.dragTimer = window.setTimeout(() => {
-      if (!this.props.isOpen) {
-        this.toggleVisibility();
-        this.deregisterDragOpenIntent();
-      }
-    }, 300);
-    this.setState({ hasDragOpenIntent: true });
-  };
-
-  public deregisterDragOpenIntent = () => {
-    if (this.dragTimer) {
-      window.clearTimeout(this.dragTimer);
-    }
-    this.dragTimer = null;
-    this.setState({ hasDragOpenIntent: false });
   };
 
   public render() {
@@ -252,46 +211,54 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
             </HeadlineContentContainer>
           ) : null}
         </ContainerHeadingPinline>
-
-        <CollectionMetaContainer
-          onClick={this.toggleVisibility}
-          onDragEnter={this.handleToggleButtonDragEnter}
-          onDragLeave={this.handleToggleButtonDragLeave}
-          onDrop={this.handleToggleButtonDrop}
+        <DragIntentContainer
+          onIntentConfirm={this.toggleVisibility}
+          onDragIntentStart={() => {
+            this.setState({ hasDragOpenIntent: true });
+          }}
+          onDragIntentEnd={() => {
+            this.setState({ hasDragOpenIntent: false });
+          }}
+          active={!this.props.isOpen}
         >
-          <ItemCountMeta>
-            {collection && (
-              <>
-                <strong>{itemCount}</strong>
-                <br />
-                {itemCount === 1 ? 'item' : 'items'}
-              </>
-            )}
-          </ItemCountMeta>
-          <CollectionMeta>
-            <div>
-              <strong>
-                {collection &&
-                  collection.lastUpdated &&
-                  `${upperFirst(distanceFromNow(collection.lastUpdated))} ago`}
-              </strong>
-            </div>
-            <div>{collection && collection.updatedBy}</div>
-            <CollectionShortVerticalPinline />
-          </CollectionMeta>
-          {metaContent && (
+          <CollectionMetaContainer>
+            <ItemCountMeta>
+              {collection && (
+                <>
+                  <strong>{itemCount}</strong>
+                  <br />
+                  {itemCount === 1 ? 'item' : 'items'}
+                </>
+              )}
+            </ItemCountMeta>
             <CollectionMeta>
-              {metaContent}
+              <div>
+                <strong>
+                  {collection &&
+                    collection.lastUpdated &&
+                    `${upperFirst(
+                      distanceFromNow(collection.lastUpdated)
+                    )} ago`}
+                </strong>
+              </div>
+              <div>{collection && collection.updatedBy}</div>
               <CollectionShortVerticalPinline />
             </CollectionMeta>
-          )}
-          <CollectionToggleContainer>
-            <ButtonCircularCaret
-              active={this.props.isOpen!}
-              preActive={this.state.hasDragOpenIntent}
-            />
-          </CollectionToggleContainer>
-        </CollectionMetaContainer>
+            {metaContent && (
+              <CollectionMeta>
+                {metaContent}
+                <CollectionShortVerticalPinline />
+              </CollectionMeta>
+            )}
+            <CollectionToggleContainer>
+              <ButtonCircularCaret
+                active={this.props.isOpen!}
+                preActive={this.state.hasDragOpenIntent}
+                onClick={this.toggleVisibility}
+              />
+            </CollectionToggleContainer>
+          </CollectionMetaContainer>
+        </DragIntentContainer>
         {this.props.isOpen && <FadeIn>{children}</FadeIn>}
         {isUneditable ? (
           <CollectionDisabledTheme className="DisabledTheme" />
