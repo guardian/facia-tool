@@ -95,6 +95,7 @@ const getParams = (
   'to-date': to && to.format('YYYY-MM-DD'),
   'page-size': '20',
   'show-elements': 'image',
+  'show-tags': 'all',
   'show-fields': 'internalPageCode,trailText,firstPublicationDate,isLive',
   ...(isPreview
     ? { 'order-by': 'oldest', 'from-date': getTodayDate() }

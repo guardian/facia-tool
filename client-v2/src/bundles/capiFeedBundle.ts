@@ -2,6 +2,7 @@ import createAsyncResourceBundle from 'lib/createAsyncResourceBundle';
 import { CapiArticle } from 'types/Capi';
 import { ThunkResult } from 'types/Store';
 import { previewCapi, liveCapi } from 'services/frontsCapi';
+import { State } from 'types/State';
 
 type FeedState = CapiArticle[];
 
@@ -14,6 +15,22 @@ const {
   selectLocalState: state => state.capiLiveFeed,
   initialData: []
 });
+
+const isCommercialArticle = (article: CapiArticle | undefined): boolean => {
+  if (!article) {
+    return false;
+  }
+
+  if (article.isHosted) {
+    return true;
+  }
+
+  if (!article.tags) {
+    return true;
+  }
+
+  return article.tags.every(tag => tag.type !== 'paid-content');
+};
 
 const {
   actions: previewActions,
@@ -47,7 +64,8 @@ export const fetchLive = (
   }
 
   if (results) {
-    dispatch(liveActions.fetchSuccess(results));
+    const nonCommercialResults = results.filter(isCommercialArticle);
+    dispatch(liveActions.fetchSuccess(nonCommercialResults));
   }
 };
 
@@ -63,7 +81,8 @@ export const fetchPreview = (
     dispatch(previewActions.fetchError(e.message));
   }
   if (results) {
-    dispatch(previewActions.fetchSuccess(results));
+    const nonCommercialResults = results.filter(isCommercialArticle);
+    dispatch(previewActions.fetchSuccess(nonCommercialResults));
   }
 };
 
