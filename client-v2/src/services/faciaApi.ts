@@ -198,21 +198,26 @@ async function getCollection(
 
 async function getCollections(
   collectionIds: string[]
-): Promise<CollectionResponse[]> {
+): Promise<Array<CollectionResponse | null>> {
   const params = new URLSearchParams();
   collectionIds.map(_ => params.append('ids', _));
   const response = await pandaFetch(`/collections?${params.toString()}`, {
     method: 'get',
     credentials: 'same-origin'
   });
-  const collectionResponses: CollectionResponse[] = await response.json();
-  return collectionResponses.map((collectionResponse, index) => ({
-    ...collectionResponse,
-    collection: {
-      ...collectionResponse.collection,
-      id: collectionIds[index]
-    }
-  }));
+  const collectionResponses: Array<CollectionResponse | null> = await response.json();
+  return collectionResponses.map(
+    (collectionResponse, index) =>
+      collectionResponse
+        ? {
+            ...collectionResponse,
+            collection: {
+              ...collectionResponse.collection,
+              id: collectionIds[index]
+            }
+          }
+        : null
+  );
 }
 
 /**

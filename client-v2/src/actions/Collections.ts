@@ -50,7 +50,17 @@ function getCollections(collectionIds: string[]): ThunkResult<Promise<void>> {
     try {
       const collectionResponses = await fetchCollection(collectionIds);
       await Promise.all(
-        collectionResponses.map(async collectionResponse => {
+        collectionResponses.map(async (collectionResponse, index) => {
+          if (!collectionResponse) {
+            return dispatch(
+              collectionActions.fetchError(
+                `No collection returned in collections request for id ${
+                  collectionIds[index]
+                }`,
+                collectionIds[index]
+              )
+            );
+          }
           const { collection, storiesVisibleByStage } = collectionResponse;
           const collectionConfig = getCollectionConfig(
             getState(),
