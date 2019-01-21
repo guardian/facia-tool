@@ -44,9 +44,13 @@ const {
 const fetchResourceOrResults = async (
   capiService: typeof liveCapi,
   params: object,
-  isResource: boolean
+  isResource: boolean,
+  fetchFromPreview: boolean = false
 ) => {
-  const res = await capiService.search(params, { isResource });
+  const capiEndpoint = fetchFromPreview
+    ? capiService.scheduled
+    : capiService.search;
+  const res = await capiEndpoint(params, { isResource });
   return isResource ? [res.response.content] : res.response.results;
 };
 
@@ -75,7 +79,12 @@ export const fetchPreview = (
   dispatch(previewActions.fetchStart('preview'));
   let results;
   try {
-    results = await fetchResourceOrResults(previewCapi, params, isResource);
+    results = await fetchResourceOrResults(
+      previewCapi,
+      params,
+      isResource,
+      true
+    );
   } catch (e) {
     dispatch(previewActions.fetchError(e.message));
   }

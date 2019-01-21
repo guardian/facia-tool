@@ -75,6 +75,17 @@ const ResultsHeadingContainer = styled('div')`
   margin-bottom: 10px;
 `;
 
+const getCapiFieldsToShow = (isPreview: boolean) => {
+  const defaultFieldsToShow =
+    'internalPageCode,trailText,firstPublicationDate,isLive';
+
+  if (!isPreview) {
+    return defaultFieldsToShow;
+  }
+
+  return defaultFieldsToShow + ',scheduledPublicationDate';
+};
+
 const getParams = (
   query: string,
   {
@@ -96,7 +107,7 @@ const getParams = (
   'page-size': '20',
   'show-elements': 'image',
   'show-tags': 'all',
-  'show-fields': 'internalPageCode,trailText,firstPublicationDate,isLive',
+  'show-fields': getCapiFieldsToShow(isPreview),
   ...(isPreview
     ? { 'order-by': 'oldest', 'from-date': getTodayDate() }
     : { 'order-by': 'newest', 'order-date': 'first-publication' })
