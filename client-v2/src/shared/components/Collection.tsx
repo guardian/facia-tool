@@ -42,6 +42,10 @@ type Props = ContainerProps & {
   onChangeOpenState?: (isOpen: boolean) => void;
 };
 
+interface CollectionState {
+  hasDragOpenIntent: boolean;
+}
+
 const CollectionContainer = ContentContainer.extend`
   flex: 1;
   width: 600px;
@@ -146,17 +150,63 @@ const CollectionShortVerticalPinline = ShortVerticalPinline.extend`
   left: 0;
 `;
 
-class CollectionDisplay extends React.Component<Props> {
+class CollectionDisplay extends React.Component<Props, CollectionState> {
   public static defaultProps = {
     isUneditable: false,
     isOpen: true
   };
+
+  public state = {
+    hasDragOpenIntent: false
+  };
+
+  private dragTimer: number | null = null;
+
+  // Keeps track of dragEvents over the Collection's toggleVisibility button to determine enter/leave events
+  private dragHoverDepth: number = 0;
 
   public toggleVisibility = () => {
     events.collectionToggleClicked(this.props.frontId);
     if (this.props.onChangeOpenState) {
       this.props.onChangeOpenState(!this.props.isOpen);
     }
+  };
+
+  public handleToggleButtonDragEnter = () => {
+    if (this.dragHoverDepth === 0 && !this.props.isOpen) {
+      this.registerDragOpenIntent();
+    }
+    this.dragHoverDepth += 1;
+  };
+
+  public handleToggleButtonDragLeave = () => {
+    this.dragHoverDepth -= 1;
+    if (this.dragHoverDepth === 0) {
+      this.deregisterDragOpenIntent();
+    }
+  };
+
+  public handleToggleButtonDrop = () => {
+    this.dragHoverDepth = 0;
+    this.deregisterDragOpenIntent();
+  };
+
+  public registerDragOpenIntent = () => {
+    this.dragTimer = window.setTimeout(() => {
+      if (!this.props.isOpen) {
+        this.toggleVisibility();
+        this.deregisterDragOpenIntent();
+      }
+    }, 300);
+    this.setState({ hasDragOpenIntent: true });
+  };
+
+  public deregisterDragOpenIntent = () => {
+    if (this.dragTimer) {
+      window.clearTimeout(this.dragTimer);
+    }
+    this.dragTimer = null;
+    this.setState({ hasDragOpenIntent: false });
   };
 
   public render() {
@@ -169,6 +219,7 @@ class CollectionDisplay extends React.Component<Props> {
       children
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
+
     return (
       <CollectionContainer id={collection && createCollectionId(collection)}>
         <ContainerHeadingPinline>
@@ -202,7 +253,12 @@ class CollectionDisplay extends React.Component<Props> {
           ) : null}
         </ContainerHeadingPinline>
 
-        <CollectionMetaContainer>
+        <CollectionMetaContainer
+          onClick={this.toggleVisibility}
+          onDragEnter={this.handleToggleButtonDragEnter}
+          onDragLeave={this.handleToggleButtonDragLeave}
+          onDrop={this.handleToggleButtonDrop}
+        >
           <ItemCountMeta>
             {collection && (
               <>
@@ -232,7 +288,7 @@ class CollectionDisplay extends React.Component<Props> {
           <CollectionToggleContainer>
             <ButtonCircularCaret
               active={this.props.isOpen!}
-              onClick={this.toggleVisibility}
+              preActive={this.state.hasDragOpenIntent}
             />
           </CollectionToggleContainer>
         </CollectionMetaContainer>
