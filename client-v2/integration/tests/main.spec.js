@@ -30,6 +30,8 @@ test('Drag and drop', async t => {
     .eql(topFeedHeadline)
     // drag top to bottom in front
     .dragToElement(frontHeadline(), frontDropZone(-1))
+    // wait for collection to update
+    .wait(1000)
     .expect(frontDropZone().count)
     .eql(frontDropsCount + 2)
     .expect(frontHeadline().textContent)
