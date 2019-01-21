@@ -67,6 +67,7 @@ const Collection = ({
       id={id}
       browsingStage={browsingStage}
       isUneditable={isUneditable}
+      isLocked={isCollectionUneditable}
       isOpen={isOpen}
       onChangeOpenState={() => onChangeOpenState(id, isOpen)}
       headlineContent={

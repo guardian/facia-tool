@@ -41,6 +41,7 @@ type Props = ContainerProps & {
   metaContent: React.ReactNode;
   children: React.ReactNode;
   isUneditable?: boolean;
+  isLocked?: boolean;
   isOpen?: boolean;
   onChangeOpenState?: (isOpen: boolean) => void;
 };
@@ -187,6 +188,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       headlineContent,
       metaContent,
       isUneditable,
+      isLocked,
       children
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
@@ -215,7 +217,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
               ) : null}
             </CollectionConfigContainer>
           </CollectionHeadlineWithConfigContainer>
-          {isUneditable ? (
+          {isLocked ? (
             <LockedCollectionFlag>Locked</LockedCollectionFlag>
           ) : headlineContent ? (
             <HeadlineContentContainer>
