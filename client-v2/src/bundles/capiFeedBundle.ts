@@ -2,7 +2,6 @@ import createAsyncResourceBundle from 'lib/createAsyncResourceBundle';
 import { CapiArticle } from 'types/Capi';
 import { ThunkResult } from 'types/Store';
 import { previewCapi, liveCapi } from 'services/frontsCapi';
-import { State } from 'types/State';
 
 type FeedState = CapiArticle[];
 
