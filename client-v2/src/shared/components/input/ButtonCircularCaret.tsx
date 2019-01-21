@@ -39,8 +39,8 @@ export default ({
       transform: active
         ? 'rotate(0deg)'
         : preActive
-          ? 'rotate(-45deg)'
-          : undefined
+        ? 'rotate(-45deg)'
+        : undefined
     }}
   >
     <CaretImg src={caretIcon} alt="" />
