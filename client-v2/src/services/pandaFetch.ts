@@ -21,8 +21,8 @@ const pandaFetch = (
       });
 
       if (res.status === 419 && count < 1) {
-        await reEstablishSession(reauthUrl, 5000);
         try {
+          await reEstablishSession(reauthUrl, 5000);
           const res2 = await pandaFetch(url, options, count + 1);
           return resolve(res2);
         } catch (e) {
