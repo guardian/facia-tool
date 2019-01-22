@@ -34,13 +34,16 @@ class DragIntentContainer extends React.Component<Props> {
   };
 
   public registerDragIntent = () => {
-    this.dragTimer = window.setTimeout(() => {
-      if (this.props.active) {
+    // only register if active
+    // all other events will fire even if not active to allow the parent
+    // to reset its state that was created when drag intent was initialised
+    if (this.props.active) {
+      this.props.onDragIntentStart();
+      this.dragTimer = window.setTimeout(() => {
         this.props.onIntentConfirm();
         this.deregisterDragIntent();
-      }
-    }, 300);
-    this.props.onDragIntentStart();
+      }, 300);
+    }
   };
 
   public deregisterDragIntent = () => {
