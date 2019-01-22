@@ -18,6 +18,7 @@ import {
 
 import { insertArticleFragment } from 'actions/ArticleFragments';
 import noop from 'lodash/noop';
+import { getPaths } from 'util/paths';
 
 const LinkContainer = styled('div')`
   background-color: #f6f6f6;
@@ -63,6 +64,13 @@ const Title = styled(`h2`)`
   font-family: GHGuardianHeadline-Medium;
   font-size: 16px;
   font-weight: 500;
+`;
+
+const VisitedWrapper = styled.a`
+  text-decoration: none;
+  :visited ${Title} {
+    color: #888;
+  }
 `;
 
 const MetaContainer = styled('div')`
@@ -119,50 +127,56 @@ const FeedItem = ({
   isLive,
   onAddToClipboard = noop
 }: FeedItemProps) => (
-  <Container
-    data-testid="feed-item"
-    draggable={true}
-    onDragStart={event => dragStart(internalPageCode, event)}
+  <VisitedWrapper
+    href={getPaths(id).live}
+    onClick={e => e.preventDefault()}
+    aria-disabled
   >
-    <MetaContainer>
-      <Tone
-        style={{
-          color: getPillarColor(pillarId, isLive) || '#c9c9c9'
-        }}
-      >
-        {isLive && startCase(sectionName)}
-        {!isLive &&
-          (firstPublicationDate
-            ? notLiveLabels.takendDown
-            : notLiveLabels.draft)}
-      </Tone>
-      {publicationDate && (
-        <FirstPublished>
-          {distanceInWords(new Date(publicationDate))}
-        </FirstPublished>
-      )}
-      <ShortVerticalPinline />
-    </MetaContainer>
-    <Body>
-      <Title data-testid="headline">{title}</Title>
-    </Body>
-    <HoverActionsAreaOverlay justify="flex-end" data-testid="hover-overlay">
-      <HoverActionsButtonWrapper
-        buttons={[
-          { text: 'Clipboard', component: HoverAddToClipboardButton },
-          { text: 'View', component: HoverViewButton },
-          { text: 'Ophan', component: HoverOphanButton }
-        ]}
-        buttonProps={{
-          isLive,
-          urlPath: id,
-          onAddToClipboard: () => onAddToClipboard(id)
-        }}
-        toolTipPosition={'top'}
-        toolTipAlign={'right'}
-      />
-    </HoverActionsAreaOverlay>
-  </Container>
+    <Container
+      data-testid="feed-item"
+      draggable={true}
+      onDragStart={event => dragStart(internalPageCode, event)}
+    >
+      <MetaContainer>
+        <Tone
+          style={{
+            color: getPillarColor(pillarId, isLive) || '#c9c9c9'
+          }}
+        >
+          {isLive && startCase(sectionName)}
+          {!isLive &&
+            (firstPublicationDate
+              ? notLiveLabels.takendDown
+              : notLiveLabels.draft)}
+        </Tone>
+        {publicationDate && (
+          <FirstPublished>
+            {distanceInWords(new Date(publicationDate))}
+          </FirstPublished>
+        )}
+        <ShortVerticalPinline />
+      </MetaContainer>
+      <Body>
+        <Title data-testid="headline">{title}</Title>
+      </Body>
+      <HoverActionsAreaOverlay justify="flex-end" data-testid="hover-overlay">
+        <HoverActionsButtonWrapper
+          buttons={[
+            { text: 'Clipboard', component: HoverAddToClipboardButton },
+            { text: 'View', component: HoverViewButton },
+            { text: 'Ophan', component: HoverOphanButton }
+          ]}
+          buttonProps={{
+            isLive,
+            urlPath: id,
+            onAddToClipboard: () => onAddToClipboard(id)
+          }}
+          toolTipPosition={'top'}
+          toolTipAlign={'right'}
+        />
+      </HoverActionsAreaOverlay>
+    </Container>
+  </VisitedWrapper>
 );
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
