@@ -135,9 +135,9 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
 }
 
 class NotificationHttpProvider(val ws: WSClient) extends HttpProvider with Logging {
-  override def post(url: String, contentType: ContentType, body: Array[Byte]): Future[HttpResponse] = {
+  override def post(url: String, apiKey: String, contentType: ContentType, body: Array[Byte]): Future[HttpResponse] = {
     ws.url(url)
-      .withHttpHeaders("Content-Type" -> s"${contentType.mediaType}; charset=${contentType.charset}")
+      .withHttpHeaders("Content-Type" -> s"${contentType.mediaType}; charset=${contentType.charset}", "Authorization" -> s"Bearer: $apiKey")
       .post(body)
       .map(extract)
   }

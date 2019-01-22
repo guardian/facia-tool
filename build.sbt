@@ -70,6 +70,7 @@ val json4sVersion = "3.6.0-M2"
 
 resolvers ++= Seq(
     Resolver.file("Local", file( Path.userHome.absolutePath + "/.ivy2/local"))(Resolver.ivyStylePatterns),
+    "Guardian Mobile Bintray" at "https://dl.bintray.com/guardian/mobile",
     "Guardian Frontend Bintray" at "https://dl.bintray.com/guardian/frontend"
 )
 
@@ -92,7 +93,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "editorial-permissions-client" % "2.0",
     "com.gu" %% "fapi-client-play26" % "2.6.6",
     "com.gu" % "kinesis-logback-appender" % "1.4.2",
-    "com.gu" %% "mobile-notifications-client" % "1.2",
+    "com.gu" %% "mobile-notifications-client" % "1.5",
     "com.gu" %% "pan-domain-auth-play_2-6" % "0.7.1",
 
     "com.gu" %% "scanamo" % "1.0.0-M7",
