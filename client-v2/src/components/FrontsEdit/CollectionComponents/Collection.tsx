@@ -68,7 +68,11 @@ const Collection = ({
     headlineContent={
       hasUnpublishedChanges &&
       canPublish && (
-        <Button size="l" onClick={() => publish(id, frontId)}>
+        <Button
+          size="l"
+          priority="primary"
+          onClick={() => publish(id, frontId)}
+        >
           Launch
         </Button>
       )
