@@ -42,7 +42,7 @@ const KickerHeading = styled(CollectionItemHeading)`
   padding-right: 3px;
 `;
 
-const ArticleHeadingSmall = CollectionItemHeading.extend`
+const ArticleHeadingSmall = styled(CollectionItemHeading)`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -141,17 +141,17 @@ const articleBodyDefault = ({
             </KickerHeading>
           )}
           {size === 'default' ? (
-            <CollectionItemHeading data-testid="headline">
+            <CollectionItemHeading html data-testid="headline">
               {headline}
             </CollectionItemHeading>
           ) : (
-            <ArticleHeadingSmall data-testid="headline">
+            <ArticleHeadingSmall html data-testid="headline">
               {headline}
             </ArticleHeadingSmall>
           )}
         </ArticleHeadingContainer>
         {size === 'default' && trailText && (
-          <CollectionItemTrail>{trailText}</CollectionItemTrail>
+          <CollectionItemTrail html>{trailText}</CollectionItemTrail>
         )}
       </CollectionItemContent>
       {size === 'default' &&
