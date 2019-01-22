@@ -57,6 +57,7 @@ const ArticleHeadingContainerSmall = styled('div')`
 `;
 
 interface ArticleBodyProps {
+  frontPublicationTime?: string;
   firstPublicationDate?: string;
   scheduledPublicationDate?: string;
   pillarId?: string;
@@ -92,7 +93,8 @@ const articleBodyDefault = ({
   onDelete,
   onAddToClipboard,
   notifications,
-  isUneditable
+  isUneditable,
+  frontPublicationTime
 }: ArticleBodyProps) => {
   const ArticleHeadingContainer =
     size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
@@ -117,6 +119,7 @@ const articleBodyDefault = ({
               : notLiveLabels.draft}
           </NotLiveContainer>
         )}
+
         {scheduledPublicationDate && (
           <CollectionItemDraftMetaContent>
             {distanceInWordsStrict(
@@ -125,9 +128,10 @@ const articleBodyDefault = ({
             )}
           </CollectionItemDraftMetaContent>
         )}
-        {(isLive || size === 'default') && firstPublicationDate && (
+
+        {size === 'default' && frontPublicationTime && (
           <CollectionItemMetaContent>
-            {distanceInWordsStrict(Date.now(), new Date(firstPublicationDate))}
+            {distanceInWordsStrict(Date.now(), new Date(frontPublicationTime))}
           </CollectionItemMetaContent>
         )}
       </CollectionItemMetaContainer>

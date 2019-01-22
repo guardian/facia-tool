@@ -268,7 +268,8 @@ describe('Shared selectors', () => {
         trailText: 'external-trailText',
         byline: 'external-byline',
         isLive: true,
-        firstPublicationDate: '2018-10-19T10:30:39Z'
+        firstPublicationDate: '2018-10-19T10:30:39Z',
+        frontPublicationTime: 1
       });
 
       expect(selector(state, 'af1WithOverrides')).toEqual({
@@ -286,7 +287,8 @@ describe('Shared selectors', () => {
         isLive: true,
         firstPublicationDate: '2018-10-19T10:30:39Z',
         pillarId: undefined,
-        showKickerCustom: true
+        showKickerCustom: true,
+        frontPublicationTime: 1
       });
       expect(selector(state, 'invalid')).toEqual(undefined);
     });

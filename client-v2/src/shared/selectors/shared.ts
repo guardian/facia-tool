@@ -137,7 +137,8 @@ const createArticleFromArticleFragmentSelector = () =>
             : true,
         firstPublicationDate: externalArticle
           ? externalArticle.fields.firstPublicationDate
-          : undefined
+          : undefined,
+        frontPublicationTime: articleFragment.frontPublicationDate
       };
     }
   );
