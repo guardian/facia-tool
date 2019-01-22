@@ -156,9 +156,12 @@ class FeedsContainer extends React.Component<
     });
 
   public handleFeedClick = (index: number) =>
-    this.setState({
-      capiFeedIndex: index
-    });
+    this.setState(
+      {
+        capiFeedIndex: index
+      },
+      this.runSearch
+    );
 
   public renderFixedContent = () => {
     if (!this.state.displaySearchFilters) {
@@ -228,16 +231,20 @@ class FeedsContainer extends React.Component<
 
   private runSearch() {
     const { inputState } = this.state;
+    const { capiFeedIndex } = this.state;
     const maybeArticleId = getIdFromURL(inputState.query);
     const searchTerm = maybeArticleId ? maybeArticleId : inputState.query;
-    this.props.fetchLive(
-      getParams(searchTerm, inputState, false),
-      !!maybeArticleId
-    );
-    this.props.fetchPreview(
-      getParams(searchTerm, inputState, true),
-      !!maybeArticleId
-    );
+    if (capiFeedIndex === 0) {
+      this.props.fetchLive(
+        getParams(searchTerm, inputState, false),
+        !!maybeArticleId
+      );
+    } else {
+      this.props.fetchPreview(
+        getParams(searchTerm, inputState, true),
+        !!maybeArticleId
+      );
+    }
   }
 
   private runSearchAndRestartPolling() {
