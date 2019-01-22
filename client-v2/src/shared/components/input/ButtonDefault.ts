@@ -54,7 +54,7 @@ const colorMap = {
   },
   deselected: {
     default: theme.colors.white,
-    primary: theme.colors.white,
+    primary: theme.colors.blackDark,
     muted: theme.colors.blackLight
   }
 };
@@ -95,6 +95,12 @@ const backgroundHoverMap = {
   }
 };
 
+const letterSpacingMap = {
+  s: '0px',
+  m: '0px',
+  l: '0.5px'
+};
+
 const getMapKey = ({
   disabled,
   selected
@@ -125,6 +131,7 @@ export default styled(`button`)`
   font-size: ${mapSize(fontSizeMap)};
   font-weight: bold;
   height: ${mapSize(heightMap)};
+  letter-spacing: ${mapSize(letterSpacingMap)};
   line-height: 1;
   margin: 0 ${({ inline }) => (inline ? '5px' : '0')};
   padding: 0 ${mapSize(paddingMap)};
