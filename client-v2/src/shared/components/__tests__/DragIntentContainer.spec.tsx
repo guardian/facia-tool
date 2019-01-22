@@ -7,12 +7,12 @@ jest.useFakeTimers();
 
 describe('DragIntentContainer', () => {
   it('should fire onIntentConfirm callback 300ms after Drag has entered', async () => {
-    const callback1 = jest.fn();
-    const callback2 = jest.fn();
+    const onDragIntentStart = jest.fn();
+    const onIntentConfirm = jest.fn();
     const DragIntent = (
       <DragIntentContainer
-        onIntentConfirm={callback2}
-        onDragIntentStart={callback1}
+        onIntentConfirm={onIntentConfirm}
+        onDragIntentStart={onDragIntentStart}
         onDragIntentEnd={() => {}}
         active={true}
       >
@@ -22,19 +22,19 @@ describe('DragIntentContainer', () => {
       </DragIntentContainer>
     );
     const { getByText } = render(DragIntent);
-    expect(callback1).not.toBeCalled();
-    expect(callback2).not.toBeCalled();
+    expect(onDragIntentStart).not.toBeCalled();
+    expect(onIntentConfirm).not.toBeCalled();
     fireEvent.dragEnter(getByText('Child'));
-    expect(callback1).toHaveBeenCalledTimes(1);
-    expect(callback2).not.toBeCalled();
+    expect(onDragIntentStart).toHaveBeenCalledTimes(1);
+    expect(onIntentConfirm).not.toBeCalled();
     jest.runOnlyPendingTimers();
-    expect(callback2).toHaveBeenCalledTimes(1);
+    expect(onIntentConfirm).toHaveBeenCalledTimes(1);
   });
   it('should not fire onIntentConfirm callback after 300ms if Drag has left', () => {
-    const callback = jest.fn();
+    const onIntentConfirm = jest.fn();
     const DragIntent = (
       <DragIntentContainer
-        onIntentConfirm={callback}
+        onIntentConfirm={onIntentConfirm}
         onDragIntentStart={() => {}}
         onDragIntentEnd={() => {}}
         active={true}
@@ -45,19 +45,19 @@ describe('DragIntentContainer', () => {
       </DragIntentContainer>
     );
     const { getByText } = render(DragIntent);
-    expect(callback).not.toBeCalled();
+    expect(onIntentConfirm).not.toBeCalled();
     fireEvent.dragEnter(getByText('Child'));
     fireEvent.dragLeave(getByText('Child'));
     jest.runOnlyPendingTimers();
-    expect(callback).toHaveBeenCalledTimes(0);
+    expect(onIntentConfirm).toHaveBeenCalledTimes(0);
   });
   it('should reset DragIntent on Drop', () => {
-    const callback = jest.fn();
+    const onDragIntentEnd = jest.fn();
     const DragIntent = (
       <DragIntentContainer
         onIntentConfirm={() => {}}
         onDragIntentStart={() => {}}
-        onDragIntentEnd={callback}
+        onDragIntentEnd={onDragIntentEnd}
         active={true}
       >
         <span>
@@ -67,19 +67,19 @@ describe('DragIntentContainer', () => {
     );
     const { getByText } = render(DragIntent);
     fireEvent.dragEnter(getByText('Child'));
-    expect(callback).not.toBeCalled();
+    expect(onDragIntentEnd).not.toBeCalled();
     fireEvent.drop(getByText('Child'));
     jest.runOnlyPendingTimers();
-    expect(callback).toHaveBeenCalledTimes(1);
+    expect(onDragIntentEnd).toHaveBeenCalledTimes(1);
   });
   it('should reset DragIntent when onIntentConfirm callback fired', () => {
-    const callback1 = jest.fn();
-    const callback2 = jest.fn();
+    const onIntentConfirm = jest.fn();
+    const onDragIntentEnd = jest.fn();
     const DragIntent = (
       <DragIntentContainer
-        onIntentConfirm={callback1}
+        onIntentConfirm={onIntentConfirm}
         onDragIntentStart={() => {}}
-        onDragIntentEnd={callback2}
+        onDragIntentEnd={onDragIntentEnd}
         active={true}
       >
         <span>
@@ -89,18 +89,18 @@ describe('DragIntentContainer', () => {
     );
     const { getByText } = render(DragIntent);
     fireEvent.dragEnter(getByText('Child'));
-    expect(callback1).not.toBeCalled();
+    expect(onIntentConfirm).not.toBeCalled();
     jest.runOnlyPendingTimers();
-    expect(callback1).toHaveBeenCalledTimes(1);
-    expect(callback2).toHaveBeenCalledTimes(1);
+    expect(onIntentConfirm).toHaveBeenCalledTimes(1);
+    expect(onDragIntentEnd).toHaveBeenCalledTimes(1);
   });
   it('should do nothing on Drag events if Active prop is false', async () => {
-    const callback1 = jest.fn();
-    const callback2 = jest.fn();
+    const onDragIntentStart = jest.fn();
+    const onIntentConfirm = jest.fn();
     const DragIntent = (
       <DragIntentContainer
-        onIntentConfirm={callback2}
-        onDragIntentStart={callback1}
+        onIntentConfirm={onIntentConfirm}
+        onDragIntentStart={onDragIntentStart}
         onDragIntentEnd={() => {}}
         active={false}
       >
@@ -112,7 +112,7 @@ describe('DragIntentContainer', () => {
     const { getByText } = render(DragIntent);
     fireEvent.dragEnter(getByText('Child'));
     jest.runOnlyPendingTimers();
-    expect(callback1).not.toBeCalled();
-    expect(callback2).not.toBeCalled();
+    expect(onDragIntentStart).not.toBeCalled();
+    expect(onIntentConfirm).not.toBeCalled();
   });
 });
