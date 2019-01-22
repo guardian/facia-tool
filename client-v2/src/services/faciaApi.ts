@@ -206,17 +206,16 @@ async function getCollections(
     credentials: 'same-origin'
   });
   const collectionResponses: Array<CollectionResponse | null> = await response.json();
-  return collectionResponses.map(
-    (collectionResponse, index) =>
-      collectionResponse
-        ? {
-            ...collectionResponse,
-            collection: {
-              ...collectionResponse.collection,
-              id: collectionIds[index]
-            }
+  return collectionResponses.map((collectionResponse, index) =>
+    collectionResponse
+      ? {
+          ...collectionResponse,
+          collection: {
+            ...collectionResponse.collection,
+            id: collectionIds[index]
           }
-        : null
+        }
+      : null
   );
 }
 
