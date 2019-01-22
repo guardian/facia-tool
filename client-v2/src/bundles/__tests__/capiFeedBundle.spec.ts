@@ -10,11 +10,17 @@ import {
 import { capiArticle } from 'shared/fixtures/shared';
 
 const resources = [
-  { fetchAction: fetchLive, selectors: liveSelectors, endpoint: 'live' },
+  {
+    fetchAction: fetchLive,
+    selectors: liveSelectors,
+    endpoint: 'live',
+    searchQuery: '/search'
+  },
   {
     fetchAction: fetchPreview,
     selectors: previewSelectors,
-    endpoint: 'preview'
+    endpoint: 'preview',
+    searchQuery: '/content/scheduled'
   }
 ];
 const createStoreAndFetchMock = (
@@ -32,7 +38,7 @@ describe('capiFeedBundle', () => {
     await Promise.all(
       resources.map(async resource => {
         const store = createStoreAndFetchMock(
-          `begin:/api/${resource.endpoint}/search`,
+          `begin:/api/${resource.endpoint}${resource.searchQuery}`,
           {
             response: {
               results: [capiArticle]
@@ -78,7 +84,7 @@ describe('capiFeedBundle', () => {
     await Promise.all(
       resources.map(async resource => {
         const store = createStoreAndFetchMock(
-          `begin:/api/${resource.endpoint}/search`,
+          `begin:/api/${resource.endpoint}${resource.searchQuery}`,
           400
         );
         await store.dispatch(resource.fetchAction(
@@ -98,7 +104,7 @@ describe('capiFeedBundle', () => {
     await Promise.all(
       resources.map(async resource => {
         const store = createStoreAndFetchMock(
-          `begin:/api/${resource.endpoint}/search`,
+          `begin:/api/${resource.endpoint}${resource.searchQuery}`,
           '{This is not JSON}'
         );
         await store.dispatch(resource.fetchAction(
@@ -118,7 +124,7 @@ describe('capiFeedBundle', () => {
     await Promise.all(
       resources.map(async resource => {
         const store = createStoreAndFetchMock(
-          `begin:/api/${resource.endpoint}/search`,
+          `begin:/api/${resource.endpoint}${resource.searchQuery}`,
           { response: { status: 'error', message: 'CAPI is unwell' } }
         );
         await store.dispatch(resource.fetchAction(
