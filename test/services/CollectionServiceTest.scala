@@ -17,7 +17,7 @@ import slices.{Containers, FixedContainers, Story}
   "getArticleDetailsForCollection" - {
     "should return article details for a given collection" in {
       CollectionService.getStoriesVisibleByStage("id", collectionJson, configJson, containerService) should be(
-        getStoriesVisible(0,0,0,0)
+        getStoriesVisible(1,1,2,2)
       )
     }
   }
@@ -56,7 +56,7 @@ import slices.{Containers, FixedContainers, Story}
     `type` = Some("dynamic/slow"),
     href = None,
     description = None,
-    groups = None,
+    groups = Some(List("Group 1", "Group 2")),
     uneditable = None,
     showTags = None,
     showSections = None,
