@@ -16,6 +16,8 @@ import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 import { Collection, CollectionItemSets } from 'shared/types/Collection';
 import { createCollectionId } from 'shared/components/Collection';
 import ButtonDefault from 'shared/components/input/ButtonCircular';
+import lockedPadlock from 'shared/images/icons/locked-padlock.svg';
+
 import {
   createCollectionSelector,
   selectSharedState,
@@ -98,7 +100,7 @@ const LastUpdated = styled.span`
   font-weight: 400;
 `;
 
-const StatusFlag = ButtonDefault.extend`
+const StatusWarning = ButtonDefault.extend`
   outline: transparent;
   :not(:first-child) {
     margin-left: 5px;
@@ -112,11 +114,16 @@ const StatusFlag = ButtonDefault.extend`
   }
 `;
 
-const StatusLocked = StatusFlag.extend`
+const StatusFlag = StatusWarning.extend`
   &:disabled,
   &:disabled:hover {
     cursor: auto;
   }
+`;
+const PadlockImg = styled('img')`
+  width: 12px;
+  display: inline-block;
+  vertical-align: middle;
 `;
 
 const CollectionStatus = ({
@@ -133,14 +140,14 @@ const CollectionStatus = ({
 
     {!!isBackfilled ? <LastUpdated> | Backfill</LastUpdated> : null}
     {!!hasUnsavedArticleEdits || !!hasUnpublishedChanges ? (
-      <StatusFlag priority="primary" size="s">
+      <StatusWarning priority="primary" size="s">
         !
-      </StatusFlag>
+      </StatusWarning>
     ) : null}
     {!!isUneditable ? (
-      <StatusLocked disabled={true} size="s">
-        L
-      </StatusLocked>
+      <StatusFlag disabled={true} size="s">
+        <PadlockImg src={lockedPadlock} alt="Locked" />
+      </StatusFlag>
     ) : null}
   </>
 );
@@ -175,16 +182,15 @@ const CollectionOverview = ({
         <Name>{collection.displayName}</Name> {articleCount} items
       </TextContainerLeft>
       <TextContainerRight>
-        {collection &&
-          collection.lastUpdated && (
-            <CollectionStatus
-              hasUnpublishedChanges={hasUnpublishedChanges}
-              hasUnsavedArticleEdits={hasUnsavedArticleEdits}
-              isUneditable={isUneditable}
-              isBackfilled={isBackfilled}
-              lastUpdatedTimeStamp={collection.lastUpdated}
-            />
-          )}
+        {collection && collection.lastUpdated && (
+          <CollectionStatus
+            hasUnpublishedChanges={hasUnpublishedChanges}
+            hasUnsavedArticleEdits={hasUnsavedArticleEdits}
+            isUneditable={isUneditable}
+            isBackfilled={isBackfilled}
+            lastUpdatedTimeStamp={collection.lastUpdated}
+          />
+        )}
       </TextContainerRight>
     </Container>
   ) : null;
