@@ -43,79 +43,70 @@ import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import difference from 'lodash/difference';
 import { selectArticlesInCollections } from 'shared/selectors/collection';
 import { editorOpenCollections } from 'bundles/frontsUIBundle';
+import flatten from 'lodash/flatten';
 
 function getCollections(collectionIds: string[]): ThunkResult<Promise<void>> {
   return async (dispatch: Dispatch, getState: () => State) => {
     dispatch(collectionActions.fetchStart(collectionIds));
     try {
       const collectionResponses = await fetchCollection(collectionIds);
-      await Promise.all(
-        collectionResponses.map(async (collectionResponse, index) => {
-          const collectionId = collectionIds[index];
-          const collectionConfig = getCollectionConfig(
-            getState(),
-            collectionId
-          );
-          if (!collectionResponse) {
-            if (collectionId) {
-              return dispatch(
-                collectionActions.fetchSuccess({
-                  id: collectionId,
-                  displayName: collectionConfig.description,
-                  type: collectionConfig.type
-                })
-              );
-            }
-            return dispatch(
-              collectionActions.fetchError(
-                `No collection returned in collections request for id ${
-                  collectionIds[index]
-                }`,
-                collectionIds[index]
-              )
-            );
+      const actions = collectionResponses.map((collectionResponse, index) => {
+        const collectionId = collectionIds[index];
+        const collectionConfig = getCollectionConfig(getState(), collectionId);
+        if (!collectionResponse) {
+          if (collectionId) {
+            return collectionActions.fetchSuccess({
+              id: collectionId,
+              displayName: collectionConfig.description,
+              type: collectionConfig.type
+            });
           }
-          const { collection, storiesVisibleByStage } = collectionResponse;
-          const collectionWithNestedArticles = combineCollectionWithConfig(
-            collectionConfig,
-            collection
+          return collectionActions.fetchError(
+            `No collection returned in collections request for id ${
+              collectionIds[index]
+            }`,
+            collectionIds[index]
           );
-          const hasUnpublishedChanges =
-            collectionWithNestedArticles.draft !== undefined;
+        }
+        const { collection, storiesVisibleByStage } = collectionResponse;
+        const collectionWithNestedArticles = combineCollectionWithConfig(
+          collectionConfig,
+          collection
+        );
+        const hasUnpublishedChanges =
+          collectionWithNestedArticles.draft !== undefined;
 
-          const collectionWithDraftArticles = {
-            ...collectionWithNestedArticles,
-            draft: populateDraftArticles(collectionWithNestedArticles)
-          };
-          const {
-            normalisedCollection,
-            articleFragments,
-            groups
-          } = normaliseCollectionWithNestedArticles(
-            collectionWithDraftArticles,
-            collectionConfig
-          );
+        const collectionWithDraftArticles = {
+          ...collectionWithNestedArticles,
+          draft: populateDraftArticles(collectionWithNestedArticles)
+        };
+        const {
+          normalisedCollection,
+          articleFragments,
+          groups
+        } = normaliseCollectionWithNestedArticles(
+          collectionWithDraftArticles,
+          collectionConfig
+        );
 
-          dispatch(
-            batchActions([
-              collectionActions.fetchSuccess(normalisedCollection),
-              articleFragmentsReceived(articleFragments),
-              recordUnpublishedChanges(collection.id, hasUnpublishedChanges),
-              groupsReceived(groups),
-              recordVisibleArticles(
-                collection.id,
-                storiesVisibleByStage.live,
-                frontStages.live
-              ),
-              recordVisibleArticles(
-                collection.id,
-                storiesVisibleByStage.draft,
-                frontStages.draft
-              )
-            ])
-          );
-        })
-      );
+        return [
+          collectionActions.fetchSuccess(normalisedCollection),
+          articleFragmentsReceived(articleFragments),
+          recordUnpublishedChanges(collection.id, hasUnpublishedChanges),
+          groupsReceived(groups),
+          recordVisibleArticles(
+            collection.id,
+            storiesVisibleByStage.live,
+            frontStages.live
+          ),
+          recordVisibleArticles(
+            collection.id,
+            storiesVisibleByStage.draft,
+            frontStages.draft
+          )
+        ];
+      });
+      dispatch(batchActions(flatten(actions)));
     } catch (error) {
       dispatch(collectionActions.fetchError(error, collectionIds));
     }
