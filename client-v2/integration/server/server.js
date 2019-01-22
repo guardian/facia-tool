@@ -116,7 +116,17 @@ module.exports = async () =>
 
     app.get('/config', (_, res) => res.json(config));
     app.get('/collection/:id', (_, res) => res.json(collection));
-    app.get('/collections*', (_, res) => res.json([collection]));
+    app.get('/collections*', (_, res) =>
+      res.json([
+        {
+          collection,
+          storiesVisibleByStage: {
+            live: { desktop: 4, mobile: 4 },
+            draft: { desktop: 4, mobile: 4 }
+          }
+        }
+      ])
+    );
 
     // send the assets from dist
     app.get(
