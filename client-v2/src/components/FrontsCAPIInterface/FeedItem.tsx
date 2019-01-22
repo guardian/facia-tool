@@ -109,6 +109,7 @@ interface FeedItemProps {
   firstPublicationDate?: string;
   isLive: boolean;
   onAddToClipboard: (id: string) => void;
+  scheduledPublicationDate?: string;
 }
 
 const dragStart = (
@@ -128,7 +129,8 @@ const FeedItem = ({
   internalPageCode,
   firstPublicationDate,
   isLive,
-  onAddToClipboard = noop
+  onAddToClipboard = noop,
+  scheduledPublicationDate
 }: FeedItemProps) => (
   <Container
     data-testid="feed-item"
@@ -155,6 +157,11 @@ const FeedItem = ({
         {publicationDate && (
           <FirstPublished>
             {distanceInWords(new Date(publicationDate))}
+          </FirstPublished>
+        )}
+        {scheduledPublicationDate && (
+          <FirstPublished>
+            {distanceInWords(new Date(scheduledPublicationDate))}
           </FirstPublished>
         )}
         <ShortVerticalPinline />
