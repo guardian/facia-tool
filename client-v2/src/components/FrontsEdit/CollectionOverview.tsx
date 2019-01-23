@@ -49,7 +49,7 @@ interface CollectionStatusProps {
   lastUpdatedTimeStamp: number | undefined;
 }
 
-const Container = styled.button`
+const Container = styled.div`
   align-items: center;
   appearance: none;
   background-color: #f6f6f6;
@@ -123,7 +123,6 @@ const StatusFlag = StatusWarning.extend`
 const PadlockImg = styled('img')`
   width: 12px;
   display: inline-block;
-  vertical-align: middle;
 `;
 
 const CollectionStatus = ({
@@ -138,13 +137,17 @@ const CollectionStatus = ({
       lastUpdatedTimeStamp as number
     )} ago`}</LastUpdated>
 
-    {!!isBackfilled ? <LastUpdated> | Backfill</LastUpdated> : null}
-    {!!hasUnsavedArticleEdits || !!hasUnpublishedChanges ? (
-      <StatusWarning priority="primary" size="s">
+    {isBackfilled ? <LastUpdated> | Backfill</LastUpdated> : null}
+    {hasUnsavedArticleEdits || !!hasUnpublishedChanges ? (
+      <StatusWarning
+        priority="primary"
+        size="s"
+        title="Collection changes have not been launched"
+      >
         !
       </StatusWarning>
     ) : null}
-    {!!isUneditable ? (
+    {isUneditable ? (
       <StatusFlag disabled={true} size="s">
         <PadlockImg src={lockedPadlock} alt="Locked" />
       </StatusFlag>
