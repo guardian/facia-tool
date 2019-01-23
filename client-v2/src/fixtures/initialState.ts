@@ -261,9 +261,26 @@ const state = {
         uuid: '56a3b407-741c-439f-a678-175abea44a9f'
       }
     },
-    groups: {},
+    groups: {
+      group123: {
+        id: 'gobbleygook',
+        name: 'groupname',
+        uuid: 'group123',
+        articleFragments: ['56a3b407-741c-439f-a678-175abea44a9f']
+      }
+    },
     collections: {
-      data: {},
+      data: {
+        'e59785e9-ba82-48d8-b79a-0a80b2f9f808': {
+          live: ['group123'],
+          lastUpdated: 1547202598354,
+          updatedBy: 'Name Surname',
+          updatedEmail: 'email@email.co.uk',
+          displayName: 'headlines',
+          id: '5a32abdf-2d1c-4f9e-a116-617e4d055ab9',
+          type: 'fixed/small/slow-IV'
+        }
+      },
       lastError: null,
       error: null,
       lastFetch: null,
