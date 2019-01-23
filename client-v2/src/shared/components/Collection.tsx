@@ -8,8 +8,10 @@ import { oc } from 'ts-optchain';
 import ShortVerticalPinline from './layout/ShortVerticalPinline';
 import ContainerHeadingPinline from './typography/ContainerHeadingPinline';
 import { Collection, CollectionItemSets } from '../types/Collection';
-import ButtonCircularCaret from './input/ButtonCircularCaret';
 import DragIntentContainer from './DragIntentContainer';
+import ButtonCircularCaret, {
+  ButtonCircularWithTransition
+} from './input/ButtonCircularCaret';
 import { State as SharedState } from '../types/State';
 import { State } from '../../types/State';
 
@@ -119,6 +121,21 @@ const CollectionHeadingText = styled('span')<{ isLoading: boolean }>`
   text-overflow: ellipsis;
 `;
 
+const CollectionToggleContainer = styled('div')`
+  padding-top: 5px;
+  width: 100%;
+  max-width: 130px;
+  display: flex;
+  justify-content: flex-end;
+  z-index: 2;
+  cursor: pointer;
+  :hover {
+    ${ButtonCircularWithTransition} {
+      background-color: ${({ theme }) => theme.button.backgroundColorFocused};
+    }
+  }
+`;
+
 const CollectionConfigContainer = styled('div')`
   display: inline-block;
   font-family: GHGuardianHeadline-Regular;
@@ -138,12 +155,6 @@ const CollectionConfigText = styled('div')`
 
 const CollectionConfigTextPipe = styled('span')`
   color: ${({ theme }) => theme.base.colors.borderColor};
-`;
-
-const CollectionToggleContainer = styled('div')`
-  padding-top: 5px;
-  margin-left: auto;
-  z-index: 2;
 `;
 
 const CollectionShortVerticalPinline = ShortVerticalPinline.extend`
@@ -221,7 +232,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
           }}
           active={!this.props.isOpen}
         >
-          <CollectionMetaContainer>
+          <CollectionMetaContainer onClick={this.toggleVisibility}>
             <ItemCountMeta>
               {collection && (
                 <>
@@ -254,7 +265,6 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
               <ButtonCircularCaret
                 active={this.props.isOpen!}
                 preActive={this.state.hasDragOpenIntent}
-                onClick={this.toggleVisibility}
               />
             </CollectionToggleContainer>
           </CollectionMetaContainer>
