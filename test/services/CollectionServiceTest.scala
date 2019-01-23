@@ -3,11 +3,11 @@ package services
 import com.gu.facia.client.models.{CollectionConfigJson, CollectionJson, ConfigJson, FrontJson, Trail}
 import conf.ApplicationConfiguration
 import org.joda.time.DateTime
-import org.scalatest.{DoNotDiscover, FreeSpec, Matchers}
+import org.scalatest.{FreeSpec, Matchers}
 import play.api.{Configuration}
-import slices.{Containers, FixedContainers, Story}
+import slices.{Containers, FixedContainers}
 
-@DoNotDiscover class CollectionServiceTest extends FreeSpec with Matchers {
+class CollectionServiceTest extends FreeSpec with Matchers {
   val configuration = Configuration("example" -> "config")
   val config = new ApplicationConfiguration(configuration, false)
   val fixedContainers = new FixedContainers(config)
