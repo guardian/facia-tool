@@ -5,11 +5,6 @@ import { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
-import {
-  selectSharedState,
-  createArticlesInCollectionSelector
-} from 'shared/selectors/shared';
-import { isDirty } from 'redux-form';
 
 import { CollectionItemSets, Stages } from 'shared/types/Collection';
 
@@ -112,23 +107,6 @@ const frontsIdsSelector = createSelector(
       .sort();
   }
 );
-
-const collectionHasUnsavedArticleEditsWarningSelector = () => {
-  const articlesInCollectionSelector = createArticlesInCollectionSelector();
-
-  return (
-    state: State,
-    props: {
-      collectionSet: CollectionItemSets;
-      collectionId: string;
-    }
-  ) =>
-    articlesInCollectionSelector(selectSharedState(state), props).reduce(
-      (hasEdits: boolean, article: string) =>
-        hasEdits || isDirty(article)(state),
-      false
-    );
-};
 
 const getFrontsConfig = (
   fronts: FrontConfigMap,
