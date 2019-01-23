@@ -68,6 +68,9 @@ const Title = styled(`h2`)`
 
 const VisitedWrapper = styled.a`
   text-decoration: none;
+  display: flex;
+  color: inherit;
+  cursor: auto;
   :visited ${Title} {
     color: #888;
   }
@@ -127,15 +130,15 @@ const FeedItem = ({
   isLive,
   onAddToClipboard = noop
 }: FeedItemProps) => (
-  <VisitedWrapper
-    href={getPaths(id).live}
-    onClick={e => e.preventDefault()}
-    aria-disabled
+  <Container
+    data-testid="feed-item"
+    draggable={true}
+    onDragStart={event => dragStart(internalPageCode, event)}
   >
-    <Container
-      data-testid="feed-item"
-      draggable={true}
-      onDragStart={event => dragStart(internalPageCode, event)}
+    <VisitedWrapper
+      href={getPaths(id).live}
+      onClick={e => e.preventDefault()}
+      aria-disabled
     >
       <MetaContainer>
         <Tone
@@ -159,24 +162,24 @@ const FeedItem = ({
       <Body>
         <Title data-testid="headline">{title}</Title>
       </Body>
-      <HoverActionsAreaOverlay justify="flex-end" data-testid="hover-overlay">
-        <HoverActionsButtonWrapper
-          buttons={[
-            { text: 'Clipboard', component: HoverAddToClipboardButton },
-            { text: 'View', component: HoverViewButton },
-            { text: 'Ophan', component: HoverOphanButton }
-          ]}
-          buttonProps={{
-            isLive,
-            urlPath: id,
-            onAddToClipboard: () => onAddToClipboard(id)
-          }}
-          toolTipPosition={'top'}
-          toolTipAlign={'right'}
-        />
-      </HoverActionsAreaOverlay>
-    </Container>
-  </VisitedWrapper>
+    </VisitedWrapper>
+    <HoverActionsAreaOverlay justify="flex-end" data-testid="hover-overlay">
+      <HoverActionsButtonWrapper
+        buttons={[
+          { text: 'Clipboard', component: HoverAddToClipboardButton },
+          { text: 'View', component: HoverViewButton },
+          { text: 'Ophan', component: HoverOphanButton }
+        ]}
+        buttonProps={{
+          isLive,
+          urlPath: id,
+          onAddToClipboard: () => onAddToClipboard(id)
+        }}
+        toolTipPosition={'top'}
+        toolTipAlign={'right'}
+      />
+    </HoverActionsAreaOverlay>
+  </Container>
 );
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
