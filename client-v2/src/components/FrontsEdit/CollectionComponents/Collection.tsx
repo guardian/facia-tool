@@ -6,10 +6,8 @@ import CollectionNotification from 'components/CollectionNotification';
 import Button from 'shared/components/input/ButtonDefault';
 import { AlsoOnDetail } from 'types/Collection';
 import { publishCollection } from 'actions/Fronts';
-import {
-  hasUnpublishedChangesSelector,
-  isCollectionUneditableSelector
-} from 'selectors/frontsSelectors';
+import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
+import { isCollectionUneditableSelector } from 'selectors/collectionSelectors';
 import { State } from 'types/State';
 import { CollectionItemSets, Group } from 'shared/types/Collection';
 import {

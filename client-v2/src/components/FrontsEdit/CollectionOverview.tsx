@@ -6,11 +6,12 @@ import { events } from 'services/GA';
 
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
+import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
 import {
-  hasUnpublishedChangesSelector,
   isCollectionUneditableSelector,
-  isCollectionBackfilledSelector
-} from 'selectors/frontsSelectors';
+  isCollectionBackfilledSelector,
+  createCollectionHasUnsavedArticleEditsWarningSelector
+} from 'selectors/collectionSelectors';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 
 import { Collection, CollectionItemSets } from 'shared/types/Collection';
@@ -23,7 +24,6 @@ import {
   selectSharedState,
   createArticlesInCollectionSelector
 } from 'shared/selectors/shared';
-import { isDirty } from 'redux-form';
 
 interface FrontCollectionOverviewContainerProps {
   frontId: string;
@@ -201,6 +201,8 @@ const CollectionOverview = ({
 const mapStateToProps = () => {
   const collectionSelector = createCollectionSelector();
   const articlesInCollectionSelector = createArticlesInCollectionSelector();
+  const hasUnsavedArticleEditsSelector = createCollectionHasUnsavedArticleEditsWarningSelector();
+
   return (state: State, props: FrontCollectionOverviewContainerProps) => ({
     collection: collectionSelector(selectSharedState(state), {
       collectionId: props.collectionId
@@ -214,17 +216,10 @@ const mapStateToProps = () => {
     }),
     isUneditable: isCollectionUneditableSelector(state, props.collectionId),
     isBackfilled: isCollectionBackfilledSelector(state, props.collectionId),
-    hasUnsavedArticleEdits: articlesInCollectionSelector(
-      selectSharedState(state),
-      {
-        collectionSet: props.browsingStage,
-        collectionId: props.collectionId
-      }
-    ).reduce(
-      (hasEdits: boolean, article: string) =>
-        hasEdits || isDirty(article)(state),
-      false
-    )
+    hasUnsavedArticleEdits: hasUnsavedArticleEditsSelector(state, {
+      collectionSet: props.browsingStage,
+      collectionId: props.collectionId
+    })
   });
 };
 

@@ -5,6 +5,12 @@ import { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
+import {
+  selectSharedState,
+  createArticlesInCollectionSelector
+} from 'shared/selectors/shared';
+import { isDirty } from 'redux-form';
+
 import { CollectionItemSets, Stages } from 'shared/types/Collection';
 
 interface FrontConfigMap {
@@ -95,12 +101,6 @@ const getCollections = (state: State): CollectionConfigMap =>
 const getCollectionConfig = (state: State, id: string): CollectionConfig =>
   getCollections(state)[id] || null;
 
-const isCollectionUneditableSelector = (state: State, id: string): boolean =>
-  !!getCollectionConfig(state, id).uneditable;
-
-const isCollectionBackfilledSelector = (state: State, id: string): boolean =>
-  !!getCollectionConfig(state, id).backfill ? true : false;
-
 const frontsIdsSelector = createSelector(
   [getFronts],
   (fronts): string[] => {
@@ -112,6 +112,23 @@ const frontsIdsSelector = createSelector(
       .sort();
   }
 );
+
+const collectionHasUnsavedArticleEditsWarningSelector = () => {
+  const articlesInCollectionSelector = createArticlesInCollectionSelector();
+
+  return (
+    state: State,
+    props: {
+      collectionSet: CollectionItemSets;
+      collectionId: string;
+    }
+  ) =>
+    articlesInCollectionSelector(selectSharedState(state), props).reduce(
+      (hasEdits: boolean, article: string) =>
+        hasEdits || isDirty(article)(state),
+      false
+    );
+};
 
 const getFrontsConfig = (
   fronts: FrontConfigMap,
@@ -286,8 +303,6 @@ export {
   getFront,
   getFrontsConfig,
   getCollectionConfig,
-  isCollectionUneditableSelector,
-  isCollectionBackfilledSelector,
   frontsConfigSelector,
   collectionConfigsSelector,
   frontsIdsSelector,
