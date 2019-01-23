@@ -373,7 +373,7 @@ const formComponent: React.StatelessComponent<Props> = ({
       {imageSlideshowReplace && (
         <RowContainer>
           <SlideshowRow>
-            <FieldArray
+            <FieldArray<WrappedFieldArrayProps<ImageData>>
               name="slideshow"
               component={(args: WrappedFieldArrayProps<ImageData>) =>
                 renderSlideshow(args, frontId)

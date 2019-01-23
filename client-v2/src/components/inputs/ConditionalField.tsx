@@ -12,7 +12,7 @@ const ConditionalField = <P extends {}>(props: Props & P) => (
     name={props.name}
     permittedNames={props.permittedFields}
   >
-    <Field {...props} />
+    <Field<Props & P> {...props} />
   </ConditionalComponent>
 );
 
