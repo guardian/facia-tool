@@ -61,9 +61,12 @@ class CollectionNotification extends React.Component<
           &nbsp;
           <Button
             size="s"
-            onClick={() =>
-              this.setState({ showFrontDetails: !this.state.showFrontDetails })
-            }
+            onClick={e => {
+              e.stopPropagation();
+              return this.setState({
+                showFrontDetails: !this.state.showFrontDetails
+              });
+            }}
           >
             {this.state.showFrontDetails ? 'Hide Details' : 'Show More'}
           </Button>
