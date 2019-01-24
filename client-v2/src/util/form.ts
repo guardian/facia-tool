@@ -1,9 +1,13 @@
-import { ArticleFragmentMeta } from 'shared/types/Collection';
-import { DerivedArticle } from 'shared/types/Article';
-import { CapiArticle } from 'types/Capi';
 import omit from 'lodash/omit';
 import compact from 'lodash/compact';
 import clamp from 'lodash/clamp';
+import pickBy from 'lodash/pickBy';
+import { isDirty } from 'redux-form';
+import { ArticleFragmentMeta } from 'shared/types/Collection';
+import { DerivedArticle } from 'shared/types/Article';
+import { CapiArticle } from 'types/Capi';
+import { State } from 'types/State';
+
 export interface ArticleFragmentFormData {
   headline: string;
   isBoosted: boolean;
@@ -108,7 +112,22 @@ export const getInitialValuesForArticleFragmentForm = (
     : undefined;
 };
 
+const formToMetaFieldMap: { [fieldName: string]: string } = {
+  imageReplace: 'primaryImage',
+  imageSrc: 'primaryImage',
+  imageSrcThumb: 'primaryImage',
+  imageSrcWidth: 'primaryImage',
+  imageSrcHeight: 'primaryImage',
+  imageSrcOrigin: 'primaryImage',
+  imageCutoutSrc: 'cutoutImage',
+  imageCutoutSrcWidth: 'cutoutImage',
+  imageCutoutSrcHeight: 'cutoutImage',
+  imageCutoutSrcOrigin: 'cutoutImage'
+};
+
 export const getArticleFragmentMetaFromFormValues = (
+  state: State,
+  formName: string,
   values: ArticleFragmentFormData
 ): ArticleFragmentMeta => {
   const primaryImage = values.primaryImage || {};
@@ -128,7 +147,7 @@ export const getArticleFragmentMetaFromFormValues = (
     return field;
   };
 
-  return omit(
+  const completeMeta = omit(
     {
       ...values,
       headline: getStringField(values.headline),
@@ -149,4 +168,10 @@ export const getArticleFragmentMetaFromFormValues = (
     'primaryImage',
     'cutoutImage'
   );
+
+  // We only return dirtied values.
+  const isDirtySelector = isDirty(formName);
+  return pickBy(completeMeta, (_, key) => {
+    return isDirtySelector(state, formToMetaFieldMap[key] || key);
+  });
 };

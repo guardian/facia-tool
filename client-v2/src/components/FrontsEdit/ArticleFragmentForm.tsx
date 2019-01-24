@@ -41,6 +41,7 @@ import {
   getCapiValuesForArticleTextFields
 } from 'util/form';
 import { CapiTextFields } from 'util/form';
+import { Dispatch } from 'types/Store';
 
 interface ComponentProps extends ContainerProps {
   articleFragmentId: string;
@@ -394,11 +395,22 @@ const ArticleFragmentForm = reduxForm<
 >({
   destroyOnUnmount: false,
   enableReinitialize: true,
-  onSubmit: (values: ArticleFragmentFormData, _, props: ComponentProps) => {
-    const meta: ArticleFragmentMeta = getArticleFragmentMetaFromFormValues(
-      values
-    );
-    props.onSave(meta);
+  onSubmit: (
+    values: ArticleFragmentFormData,
+    dispatch: Dispatch,
+    props: ComponentProps
+  ) => {
+    // By using a thunk, we get access to the application state. We could use
+    // mergeProps, or thread state through the component, to achieve the same
+    // result -- this seemed to be the most concise way.
+    dispatch((_, getState) => {
+      const meta: ArticleFragmentMeta = getArticleFragmentMetaFromFormValues(
+        getState(),
+        props.articleFragmentId,
+        values
+      );
+      props.onSave(meta);
+    });
   }
 })(formComponent);
 
