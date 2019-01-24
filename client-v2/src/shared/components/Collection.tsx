@@ -9,6 +9,7 @@ import ShortVerticalPinline from './layout/ShortVerticalPinline';
 import ContainerHeadingPinline from './typography/ContainerHeadingPinline';
 import { Collection, CollectionItemSets } from '../types/Collection';
 import ButtonCircularCaret from './input/ButtonCircularCaret';
+import DragIntentContainer from './DragIntentContainer';
 import { State as SharedState } from '../types/State';
 import { State } from '../../types/State';
 
@@ -41,6 +42,10 @@ type Props = ContainerProps & {
   isOpen?: boolean;
   onChangeOpenState?: (isOpen: boolean) => void;
 };
+
+interface CollectionState {
+  hasDragOpenIntent: boolean;
+}
 
 const CollectionContainer = ContentContainer.extend`
   flex: 1;
@@ -146,10 +151,14 @@ const CollectionShortVerticalPinline = ShortVerticalPinline.extend`
   left: 0;
 `;
 
-class CollectionDisplay extends React.Component<Props> {
+class CollectionDisplay extends React.Component<Props, CollectionState> {
   public static defaultProps = {
     isUneditable: false,
     isOpen: true
+  };
+
+  public state = {
+    hasDragOpenIntent: false
   };
 
   public toggleVisibility = () => {
@@ -169,6 +178,7 @@ class CollectionDisplay extends React.Component<Props> {
       children
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
+
     return (
       <CollectionContainer id={collection && createCollectionId(collection)}>
         <ContainerHeadingPinline>
@@ -201,41 +211,54 @@ class CollectionDisplay extends React.Component<Props> {
             </HeadlineContentContainer>
           ) : null}
         </ContainerHeadingPinline>
-
-        <CollectionMetaContainer>
-          <ItemCountMeta>
-            {collection && (
-              <>
-                <strong>{itemCount}</strong>
-                <br />
-                {itemCount === 1 ? 'item' : 'items'}
-              </>
-            )}
-          </ItemCountMeta>
-          <CollectionMeta>
-            <div>
-              <strong>
-                {collection &&
-                  collection.lastUpdated &&
-                  `${upperFirst(distanceFromNow(collection.lastUpdated))} ago`}
-              </strong>
-            </div>
-            <div>{collection && collection.updatedBy}</div>
-            <CollectionShortVerticalPinline />
-          </CollectionMeta>
-          {metaContent && (
+        <DragIntentContainer
+          onIntentConfirm={this.toggleVisibility}
+          onDragIntentStart={() => {
+            this.setState({ hasDragOpenIntent: true });
+          }}
+          onDragIntentEnd={() => {
+            this.setState({ hasDragOpenIntent: false });
+          }}
+          active={!this.props.isOpen}
+        >
+          <CollectionMetaContainer>
+            <ItemCountMeta>
+              {collection && (
+                <>
+                  <strong>{itemCount}</strong>
+                  <br />
+                  {itemCount === 1 ? 'item' : 'items'}
+                </>
+              )}
+            </ItemCountMeta>
             <CollectionMeta>
-              {metaContent}
+              <div>
+                <strong>
+                  {collection &&
+                    collection.lastUpdated &&
+                    `${upperFirst(
+                      distanceFromNow(collection.lastUpdated)
+                    )} ago`}
+                </strong>
+              </div>
+              <div>{collection && collection.updatedBy}</div>
               <CollectionShortVerticalPinline />
             </CollectionMeta>
-          )}
-          <CollectionToggleContainer>
-            <ButtonCircularCaret
-              active={this.props.isOpen!}
-              onClick={this.toggleVisibility}
-            />
-          </CollectionToggleContainer>
-        </CollectionMetaContainer>
+            {metaContent && (
+              <CollectionMeta>
+                {metaContent}
+                <CollectionShortVerticalPinline />
+              </CollectionMeta>
+            )}
+            <CollectionToggleContainer>
+              <ButtonCircularCaret
+                active={this.props.isOpen!}
+                preActive={this.state.hasDragOpenIntent}
+                onClick={this.toggleVisibility}
+              />
+            </CollectionToggleContainer>
+          </CollectionMetaContainer>
+        </DragIntentContainer>
         {this.props.isOpen && <FadeIn>{children}</FadeIn>}
         {isUneditable ? (
           <CollectionDisabledTheme className="DisabledTheme" />
