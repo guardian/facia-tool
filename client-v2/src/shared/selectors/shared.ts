@@ -198,7 +198,7 @@ const groupNameSelector = (
   {
     groupName
   }: {
-    groupName: string;
+    groupName?: string;
     collectionSet: CollectionItemSets;
     collectionId: string;
   }
@@ -210,26 +210,50 @@ const createArticlesInCollectionGroupSelector = () => {
     articleFragmentsSelector,
     collectionStageGroupsSelector,
     groupNameSelector,
-    (_, collectionGroups, groupName) => {
-      const group = collectionGroups.find(({ id }) => id === groupName) || {
-        articleFragments: []
-      };
-      return group.articleFragments || [];
+    (articleFragments, collectionGroups, groupName) => {
+      const groups = groupName
+        ? [
+            collectionGroups.find(({ id }) => id === groupName) || {
+              articleFragments: []
+            }
+          ]
+        : collectionGroups;
+      const groupArticleFragmentIds = groups.reduce(
+        (acc, group) => acc.concat(group.articleFragments || []),
+        [] as string[]
+      );
+      return groupArticleFragmentIds.reduce(
+        (acc, id) => {
+          const articleFragment = articleFragments[id];
+          if (
+            !articleFragment ||
+            !articleFragment.meta ||
+            !articleFragment.meta.supporting ||
+            !articleFragment.meta.supporting.length
+          ) {
+            return acc.concat(id);
+          }
+          return acc.concat(id, articleFragment.meta.supporting);
+        },
+        [] as string[]
+      );
     }
   );
 };
 
 const createArticlesInCollectionSelector = () => {
-  const collectionStageGroupsSelector = createCollectionStageGroupsSelector();
-  return createSelector(
-    articleFragmentsSelector,
-    collectionStageGroupsSelector,
-    (_, collectionGroups) =>
-      collectionGroups.reduce(
-        (acc, group) => acc.concat(group.articleFragments),
-        [] as string[]
-      )
-  );
+  const selectArticlesInCollectionGroups = createArticlesInCollectionGroupSelector();
+  return (
+    state: State,
+    {
+      collectionId,
+      collectionSet
+    }: { collectionId: string; collectionSet: CollectionItemSets }
+  ) =>
+    selectArticlesInCollectionGroups(state, {
+      collectionId,
+      collectionSet
+    });
 };
 
 const articleFragmentIdSelector = (
