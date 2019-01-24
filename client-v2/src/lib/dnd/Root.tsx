@@ -40,8 +40,11 @@ export default class Root extends React.Component<Props, State> {
   }
 
   private onDragOver = (e: React.DragEvent) => {
-    if (!e.defaultPrevented) {
+    if (!(e as any).wasHandled) {
       this.reset();
+    } else {
+      // because events are pooled in React we have to remove this by hand
+      delete (e as any).wasHandled;
     }
   };
 

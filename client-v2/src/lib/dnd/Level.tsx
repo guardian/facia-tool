@@ -37,14 +37,22 @@ interface Move<T> {
   to: PosSpec;
 }
 
+type DragHandler = (e: React.DragEvent) => void;
+
 interface DropProps {
-  onDragOver: (e: React.DragEvent) => void;
-  onDrop: (e: React.DragEvent) => void;
+  onDragOver: DragHandler;
+  onDrop: DragHandler;
 }
+
+type EventProps = { [K in keyof DropProps]?: DropProps[K] };
+
+type ChildPropGetter = (
+  maybeDropProps?: EventProps
+) => DropProps & NodeChildrenProps;
 
 type LevelChild<T> = (
   node: T,
-  props: DropProps & NodeChildrenProps,
+  getChildProps: ChildPropGetter,
   index: number
 ) => React.ReactNode;
 
@@ -62,10 +70,13 @@ interface OuterProps<T> {
   onDrop: (e: React.DragEvent, to: PosSpec) => void;
   renderDrag?: (data: T) => React.ReactNode;
   renderDrop: (
-    props: DropProps,
+    getDropProps: (maybeDropProps?: EventProps) => DropProps,
     isTarget: boolean,
     index: number
   ) => React.ReactNode;
+  // any occurence of these in the data transfer will cause all dragging
+  // behaviour to be bypassed
+  blockingDataTransferTypes?: string[];
 }
 
 interface ContextProps {
@@ -94,7 +105,14 @@ class Level<T> extends React.Component<Props<T>> {
         {arr.map((node, i) => (
           <React.Fragment key={getId(node)}>
             <DropZone parentKey={this.key} index={i}>
-              {isTarget => renderDrop(this.getDropProps(i), isTarget, i)}
+              {isTarget =>
+                renderDrop(
+                  (maybeDropProps: EventProps = {}) =>
+                    this.getDropProps(i, maybeDropProps),
+                  isTarget,
+                  i
+                )
+              }
             </DropZone>
             <Node
               renderDrag={renderDrag}
@@ -103,16 +121,34 @@ class Level<T> extends React.Component<Props<T>> {
               index={i}
               data={node}
             >
-              {props => children(node, this.getNodeProps(i, props), i)}
+              {nodeProps =>
+                children(
+                  node,
+                  (maybeDropProps: EventProps = {}) =>
+                    this.getNodeProps(i, nodeProps, maybeDropProps),
+                  i
+                )
+              }
             </Node>
           </React.Fragment>
         ))}
         <DropZone parentKey={this.key} index={arr.length}>
           {isTarget =>
-            renderDrop(this.getDropProps(arr.length), isTarget, arr.length)
+            renderDrop(
+              (maybeDropProps: EventProps = {}) =>
+                this.getDropProps(arr.length, maybeDropProps),
+              isTarget,
+              arr.length
+            )
           }
         </DropZone>
       </>
+    );
+  }
+
+  private dragEventIsBlacklisted(e: React.DragEvent) {
+    return e.dataTransfer.types.some(type =>
+      (this.props.blockingDataTransferTypes || []).includes(type)
     );
   }
 
@@ -120,23 +156,36 @@ class Level<T> extends React.Component<Props<T>> {
     return i + (isNode ? getDropIndexOffset(e) : 0);
   }
 
-  private onDragOver = (i: number, isNode: boolean) => (e: React.DragEvent) => {
+  private onDragOver = (
+    i: number,
+    isNode: boolean,
+    handleDragOver: DragHandler = () => {}
+  ) => (e: React.DragEvent) => {
+    e.preventDefault();
+    handleDragOver(e);
     if (!this.props.store) {
       throw new Error(NO_STORE_ERROR);
     }
-    if (e.defaultPrevented) {
+    if ((e as any).wasHandled || this.dragEventIsBlacklisted(e)) {
       return;
     }
-    e.preventDefault();
+    (e as any).wasHandled = true;
     this.props.store.update(this.key, this.getDropIndex(e, i, isNode));
   };
 
-  private onDrop = (i: number, isNode: boolean) => (e: React.DragEvent) => {
-    if (e.defaultPrevented) {
+  private onDrop = (
+    i: number,
+    isNode: boolean,
+    handleDrop: DragHandler = () => {}
+  ) => (e: React.DragEvent) => {
+    // defaultPrevented is being used as a way to communicate whether something
+    // has already prevented
+    handleDrop(e);
+    if ((e as any).wasHandled || this.dragEventIsBlacklisted(e)) {
       return;
     }
+    (e as any).wasHandled = true;
 
-    e.preventDefault();
     const { onMove = () => null, onDrop = () => null } = this.props;
     const af = e.dataTransfer.getData(TRANSFER_TYPE);
 
@@ -168,18 +217,24 @@ class Level<T> extends React.Component<Props<T>> {
     }
   };
 
-  private getDropProps(i: number) {
+  private getDropProps(i: number, maybeDropProps: EventProps) {
     return {
-      onDragOver: this.onDragOver(i, false),
-      onDrop: this.onDrop(i, false)
+      ...maybeDropProps,
+      onDragOver: this.onDragOver(i, false, maybeDropProps.onDragOver),
+      onDrop: this.onDrop(i, false, maybeDropProps.onDrop)
     };
   }
 
-  private getNodeProps(i: number, props: NodeChildrenProps) {
+  private getNodeProps(
+    i: number,
+    props: NodeChildrenProps,
+    maybeDropProps: EventProps
+  ) {
     return {
+      ...maybeDropProps,
       ...props,
-      onDragOver: this.onDragOver(i, true),
-      onDrop: this.onDrop(i, true)
+      onDragOver: this.onDragOver(i, true, maybeDropProps.onDragOver),
+      onDrop: this.onDrop(i, true, maybeDropProps.onDrop)
     };
   }
 }
