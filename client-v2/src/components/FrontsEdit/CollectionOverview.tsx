@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
+import { styled } from 'shared/constants/theme';
 import distanceFromNow from 'date-fns/distance_in_words_to_now';
 import { events } from 'services/GA';
 
@@ -105,6 +105,7 @@ const StatusWarning = ButtonDefault.extend`
   :not(:first-child) {
     margin-left: 5px;
   }
+  color: ${({ theme }) => (theme ? theme.button.color : null)};
   height: 20px;
   width: 20px;
   border-radius: 20px;
