@@ -42,6 +42,7 @@ import {
 } from 'util/form';
 import { CapiTextFields } from 'util/form';
 import { Dispatch } from 'types/Store';
+import { articleFragmentImageCriteria as imageCriteria } from 'constants/image';
 
 interface ComponentProps extends ContainerProps {
   articleFragmentId: string;
@@ -96,12 +97,6 @@ const ImageWrapper = styled('div')`
   transition: opacity 0.15s;
   opacity: ${(props: { faded: boolean }) => (props.faded ? 0.6 : 1)};
 `;
-
-const imageCriteria = {
-  minWidth: 400,
-  widthAspectRatio: 5,
-  heightAspectRatio: 3
-};
 
 const renderSlideshow = (
   { fields }: WrappedFieldArrayProps<ImageData>,

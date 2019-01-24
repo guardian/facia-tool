@@ -6,6 +6,7 @@ import { ArticleFragment } from 'shared/types/Collection';
 import ArticleDrag from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone from 'components/DropZone';
 import { createGroupArticlesSelector } from 'shared/selectors/shared';
+import { gridDataTransferTypes } from 'constants/image';
 
 interface OuterProps {
   groupId: string;
@@ -31,6 +32,7 @@ const GroupLevel = ({
 }: Props) => (
   <Level
     arr={articleFragments}
+    blockingDataTransferTypes={Object.values(gridDataTransferTypes)}
     parentType="group"
     parentId={groupId}
     type="articleFragment"
@@ -38,8 +40,8 @@ const GroupLevel = ({
     onMove={onMove}
     onDrop={onDrop}
     renderDrag={af => <ArticleDrag id={af.uuid} />}
-    renderDrop={(props, isTarget) => (
-      <DropZone {...props} disabled={isUneditable} override={isTarget} />
+    renderDrop={(getProps, isTarget) => (
+      <DropZone {...getProps()} disabled={isUneditable} override={isTarget} />
     )}
   >
     {children}

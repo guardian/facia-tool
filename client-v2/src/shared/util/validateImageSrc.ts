@@ -212,7 +212,7 @@ function validateImageSrc(
   src: string,
   frontId?: string,
   criteria?: Criteria
-): Promise<ValidationResponse | Error> {
+): Promise<ValidationResponse> {
   if (!src) {
     return Promise.reject(new Error('Missing image'));
   }
@@ -246,7 +246,7 @@ function validateMediaItem(
   imageOrigin: string,
   frontId: string,
   criteria?: Criteria
-): Promise<ValidationResponse | Error> {
+): Promise<ValidationResponse> {
   return getSuitableImageDetails([crop], crop.id, criteria || {})
     .then(asset => {
       const newImageDetails = asset;
@@ -268,7 +268,7 @@ function validateImageEvent(
   event: DragEvent | React.DragEvent<HTMLElement>,
   frontId: string,
   criteria?: Criteria
-): Promise<ValidationResponse | Error> {
+): Promise<ValidationResponse> {
   const mediaItem = grid.gridInstance.getCropFromEvent(event);
   const imageOrigin = grid.gridInstance.getGridUrlFromEvent(event);
 
