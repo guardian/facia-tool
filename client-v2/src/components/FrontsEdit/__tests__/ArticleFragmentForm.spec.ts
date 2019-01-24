@@ -1,8 +1,11 @@
+import { reducer, initialize, change } from 'redux-form';
 import {
   getArticleFragmentMetaFromFormValues,
   getInitialValuesForArticleFragmentForm
 } from '../ArticleFragmentForm';
 import derivedArticle from 'fixtures/derivedArticle';
+import initialState from 'fixtures/initialState';
+import { State } from 'types/State';
 
 const formValues = {
   byline: 'Caroline Davies',
@@ -34,6 +37,21 @@ const formValues = {
   showKickerSection: false,
   trailText:
     'Police noted concerns over Femi Nandap, who went on to stab lecturer, but released him'
+};
+
+const createStateWithChangedFormFields = (
+  cleanState: State,
+  articleId: string,
+  fieldValueMap: { [field: string]: any }
+) => {
+  const formState = reducer(undefined, initialize(articleId, formValues));
+  return {
+    ...cleanState,
+    form: Object.keys(fieldValueMap).reduce(
+      (acc, key) => reducer(acc, change(articleId, key, fieldValueMap[key])),
+      formState
+    )
+  };
 };
 
 describe('ArticleFragmentForm transform functions', () => {
@@ -129,132 +147,118 @@ describe('ArticleFragmentForm transform functions', () => {
     });
   });
   describe('Derive articleFragment meta from form values', () => {
+    it('should return nothing if no form values were dirtied', () => {
+      const state = createStateWithChangedFormFields(
+        initialState,
+        'exampleId',
+        {}
+      );
+      expect(
+        getArticleFragmentMetaFromFormValues(state, 'exampleId', formValues)
+      ).toEqual({});
+    });
     it('should derive values, removing the slideshow array if empty', () => {
-      expect(getArticleFragmentMetaFromFormValues(formValues)).toEqual({
-        byline: 'Caroline Davies',
-        customKicker: '',
+      const byline = 'Caroline Davies edited';
+      const headline =
+        "Sister of academic's killer warned police he was mentally ill edited";
+      const trailText =
+        'Police noted concerns over Femi Nandap, who went on to stab lecturer, but released him edited';
+      const state = createStateWithChangedFormFields(
+        initialState,
+        'exampleId',
+        {
+          byline,
+          headline,
+          trailText
+        }
+      );
+      expect(
+        getArticleFragmentMetaFromFormValues(state, 'exampleId', {
+          ...formValues,
+          byline,
+          headline,
+          trailText
+        })
+      ).toEqual({
+        byline: 'Caroline Davies edited',
         headline:
-          "Sister of academic's killer warned police he was mentally ill",
-        imageCutoutReplace: false,
-        imageCutoutSrc: undefined,
-        imageCutoutSrcHeight: undefined,
-        imageCutoutSrcOrigin: undefined,
-        imageCutoutSrcWidth: undefined,
-        imageHide: false,
-        imageReplace: false,
-        imageSlideshowReplace: false,
-        imageSrc: undefined,
-        imageSrcHeight: undefined,
-        imageSrcOrigin: undefined,
-        imageSrcThumb: undefined,
-        imageSrcWidth: undefined,
-        isBoosted: false,
-        isBreaking: false,
-        showBoostedHeadline: false,
-        showByline: false,
-        showKickerTag: false,
-        showKickerSection: false,
-        showQuotedHeadline: false,
-        slideshow: undefined,
+          "Sister of academic's killer warned police he was mentally ill edited",
         trailText:
-          'Police noted concerns over Femi Nandap, who went on to stab lecturer, but released him'
+          'Police noted concerns over Femi Nandap, who went on to stab lecturer, but released him edited'
       });
     });
     it('should derive values, setting the imageReplace value if necessary', () => {
+      const values = {
+        primaryImage: {
+          src: 'exampleSrc',
+          width: 100,
+          height: 100,
+          origin: 'exampleOrigin',
+          thumb: 'exampleThumb'
+        }
+      };
+      const state = createStateWithChangedFormFields(
+        initialState,
+        'exampleId',
+        values
+      );
       expect(
-        getArticleFragmentMetaFromFormValues({
+        getArticleFragmentMetaFromFormValues(state, 'exampleId', {
           ...formValues,
-          primaryImage: {
-            src: 'exampleSrc',
-            width: 100,
-            height: 100,
-            origin: 'exampleOrigin',
-            thumb: 'exampleThumb'
-          }
+          ...values
         })
       ).toEqual({
-        byline: 'Caroline Davies',
-        customKicker: '',
-        headline:
-          "Sister of academic's killer warned police he was mentally ill",
-        imageCutoutReplace: false,
-        imageCutoutSrc: undefined,
-        imageCutoutSrcHeight: undefined,
-        imageCutoutSrcOrigin: undefined,
-        imageCutoutSrcWidth: undefined,
-        imageHide: false,
         imageReplace: true,
-        imageSlideshowReplace: false,
         imageSrc: 'exampleSrc',
         imageSrcHeight: '100',
         imageSrcOrigin: 'exampleOrigin',
         imageSrcThumb: 'exampleThumb',
-        imageSrcWidth: '100',
-        isBoosted: false,
-        isBreaking: false,
-        showBoostedHeadline: false,
-        showByline: false,
-        showKickerSection: false,
-        showKickerTag: false,
-        showQuotedHeadline: false,
-        slideshow: undefined,
-        trailText:
-          'Police noted concerns over Femi Nandap, who went on to stab lecturer, but released him'
+        imageSrcWidth: '100'
       });
     });
     it('should handle conversion of string values for images', () => {
-      expect(
-        getArticleFragmentMetaFromFormValues({
-          ...formValues,
-          primaryImage: {
+      const values = {
+        primaryImage: {
+          src: 'exampleSrc',
+          width: 100,
+          height: 100,
+          origin: 'exampleOrigin',
+          thumb: 'exampleThumb'
+        },
+        slideshow: [
+          {
             src: 'exampleSrc',
             width: 100,
             height: 100,
             origin: 'exampleOrigin',
             thumb: 'exampleThumb'
           },
-          slideshow: [
-            {
-              src: 'exampleSrc',
-              width: 100,
-              height: 100,
-              origin: 'exampleOrigin',
-              thumb: 'exampleThumb'
-            },
-            {
-              src: 'exampleSrc',
-              width: 100,
-              height: 100,
-              origin: 'exampleOrigin',
-              thumb: 'exampleThumb'
-            }
-          ]
+          {
+            src: 'exampleSrc',
+            width: 100,
+            height: 100,
+            origin: 'exampleOrigin',
+            thumb: 'exampleThumb'
+          }
+        ]
+      };
+      const state = createStateWithChangedFormFields(
+        initialState,
+        'exampleId',
+        values
+      );
+      expect(
+        getArticleFragmentMetaFromFormValues(state, 'exampleId', {
+          ...formValues,
+          ...values
         })
       ).toEqual({
-        byline: 'Caroline Davies',
-        customKicker: '',
-        headline:
-          "Sister of academic's killer warned police he was mentally ill",
-        imageCutoutReplace: false,
-        imageCutoutSrc: undefined,
-        imageCutoutSrcHeight: undefined,
-        imageCutoutSrcOrigin: undefined,
-        imageCutoutSrcWidth: undefined,
-        imageHide: false,
         imageReplace: true,
-        imageSlideshowReplace: false,
         imageSrc: 'exampleSrc',
         imageSrcHeight: '100',
         imageSrcOrigin: 'exampleOrigin',
         imageSrcThumb: 'exampleThumb',
         imageSrcWidth: '100',
-        isBoosted: false,
-        isBreaking: false,
-        showBoostedHeadline: false,
-        showByline: false,
-        showKickerSection: false,
-        showKickerTag: false,
-        showQuotedHeadline: false,
         slideshow: [
           {
             src: 'exampleSrc',
@@ -270,9 +274,7 @@ describe('ArticleFragmentForm transform functions', () => {
             origin: 'exampleOrigin',
             thumb: 'exampleThumb'
           }
-        ],
-        trailText:
-          'Police noted concerns over Femi Nandap, who went on to stab lecturer, but released him'
+        ]
       });
     });
   });
