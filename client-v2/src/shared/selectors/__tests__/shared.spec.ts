@@ -27,6 +27,11 @@ const state: any = {
       c4: {
         groups: ['group1'],
         draft: ['g5']
+      },
+      c5: {
+        id: 'c5',
+        groups: ['group6'],
+        live: ['g6']
       }
     }
   },
@@ -55,6 +60,11 @@ const state: any = {
       uuid: 'g5',
       id: 'group1',
       articleFragments: ['af5']
+    },
+    g6: {
+      uuid: 'g6',
+      id: 'group6',
+      articleFragments: ['afWithSupporting']
     }
   },
   externalArticles: {
@@ -208,6 +218,15 @@ const state: any = {
         byline: 'fragment-byline',
         showKickerSection: true
       }
+    },
+    afWithSupporting: {
+      uuid: 'afWithSupporting',
+      id: 'ea5',
+      frontPublicationDate: 1,
+      publishedBy: 'A. N. Author',
+      meta: {
+        supporting: ['afWithSectionKicker']
+      }
     }
   }
 };
@@ -327,7 +346,7 @@ describe('Shared selectors', () => {
     });
   });
 
-  describe('createArticlesInCollectionGroupSelector', () => {
+  describe('createArticlesInCollectionSelector', () => {
     it('should return a list of all the articles in a given collection', () => {
       const selector = createArticlesInCollectionSelector();
       expect(
@@ -336,6 +355,15 @@ describe('Shared selectors', () => {
           collectionSet: 'live'
         })
       ).toEqual(['af2', 'af1']);
+    });
+    it('should return articles in supporting positions', () => {
+      const selector = createArticlesInCollectionSelector();
+      expect(
+        selector(state, {
+          collectionId: 'c5',
+          collectionSet: 'live'
+        })
+      ).toEqual(['afWithSupporting', 'afWithSectionKicker']);
     });
   });
 
@@ -363,6 +391,16 @@ describe('Shared selectors', () => {
           groupName: 'group1'
         })
       ).toEqual(['af3', 'af4']);
+    });
+    it('should return articles in supporting positions', () => {
+      const selector = createArticlesInCollectionGroupSelector();
+      expect(
+        selector(state, {
+          collectionId: 'c5',
+          collectionSet: 'live',
+          groupName: 'group6'
+        })
+      ).toEqual(['afWithSupporting', 'afWithSectionKicker']);
     });
     it('should return an empty array if the collection is not found', () => {
       const selector = createArticlesInCollectionGroupSelector();
