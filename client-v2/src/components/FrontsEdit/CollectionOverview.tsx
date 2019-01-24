@@ -1,17 +1,29 @@
 import React from 'react';
-import { Collection, CollectionItemSets } from 'shared/types/Collection';
+import { connect } from 'react-redux';
+import { styled } from 'shared/constants/theme';
+import distanceFromNow from 'date-fns/distance_in_words_to_now';
+import { events } from 'services/GA';
+
 import { State } from 'types/State';
+import { Dispatch } from 'types/Store';
+import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
+import {
+  isCollectionUneditableSelector,
+  isCollectionBackfilledSelector,
+  createCollectionHasUnsavedArticleEditsWarningSelector
+} from 'selectors/collectionSelectors';
+import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
+
+import { Collection, CollectionItemSets } from 'shared/types/Collection';
+import { createCollectionId } from 'shared/components/Collection';
+import ButtonDefault from 'shared/components/input/ButtonCircular';
+import lockedPadlock from 'shared/images/icons/locked-padlock.svg';
+
 import {
   createCollectionSelector,
   selectSharedState,
   createArticlesInCollectionSelector
 } from 'shared/selectors/shared';
-import { connect } from 'react-redux';
-import styled from 'styled-components';
-import { createCollectionId } from 'shared/components/Collection';
-import { Dispatch } from 'types/Store';
-import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
-import { events } from 'services/GA';
 
 interface FrontCollectionOverviewContainerProps {
   frontId: string;
@@ -23,9 +35,21 @@ type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
   collection: Collection | undefined;
   articleCount: number;
   openCollection: (id: string) => void;
+  hasUnpublishedChanges: boolean;
+  hasUnsavedArticleEdits: boolean;
+  isUneditable: boolean;
+  isBackfilled: boolean;
 };
 
-const Container = styled.button`
+interface CollectionStatusProps {
+  isUneditable: boolean; // locked
+  hasUnpublishedChanges: boolean; // ! warning
+  hasUnsavedArticleEdits: boolean; // ! warning
+  isBackfilled: boolean;
+  lastUpdatedTimeStamp: number | undefined;
+}
+
+const Container = styled.div`
   align-items: center;
   appearance: none;
   background-color: #f6f6f6;
@@ -36,9 +60,10 @@ const Container = styled.button`
   display: flex;
   font-family: TS3TextSans;
   font-size: 14px;
-  height: 2.5em;
+  min-height: 2.5em;
   margin-top: 0.75em;
-  padding: 0.25em 0.75em;
+  margin-right: 0.75em;
+  padding: 0.55em 0.75em;
   text-align: left;
   text-decoration: none;
   transition: background-color 0.3s;
@@ -52,14 +77,12 @@ const Container = styled.button`
   }
 `;
 
-const TextLeft = styled.div`
+const TextContainerLeft = styled.div`
   flex: 1 1;
   font-size: 14px;
-  overflow: hidden;
-  white-space: nowrap;
 `;
 
-const TextRight = styled.div`
+const TextContainerRight = styled.div`
   flex: 0 0 auto;
   font-size: 14px;
   overflow: hidden;
@@ -69,13 +92,79 @@ const TextRight = styled.div`
 const Name = styled.span`
   color: #333;
   font-weight: 700;
+  padding-right: 0.25em;
 `;
+
+const LastUpdated = styled.span`
+  color: #333;
+  font-weight: 400;
+`;
+
+const StatusWarning = ButtonDefault.extend`
+  outline: transparent;
+  :not(:first-child) {
+    margin-left: 5px;
+  }
+  color: ${({ theme }) => (theme ? theme.button.color : null)};
+  height: 20px;
+  width: 20px;
+  border-radius: 20px;
+  &:hover,
+  &:active {
+    outline: transparent;
+  }
+`;
+
+const StatusFlag = StatusWarning.extend`
+  &:disabled,
+  &:disabled:hover {
+    cursor: auto;
+  }
+`;
+const PadlockImg = styled.img.attrs({ src: lockedPadlock, alt: 'Locked' })`
+  width: 12px;
+  display: inline-block;
+`;
+
+const CollectionStatus = ({
+  hasUnpublishedChanges,
+  hasUnsavedArticleEdits,
+  isUneditable,
+  isBackfilled,
+  lastUpdatedTimeStamp
+}: CollectionStatusProps) => (
+  <>
+    <LastUpdated>{`${distanceFromNow(
+      lastUpdatedTimeStamp as number
+    )} ago`}</LastUpdated>
+
+    {isBackfilled ? <LastUpdated> | Backfill</LastUpdated> : null}
+    {hasUnsavedArticleEdits || !!hasUnpublishedChanges ? (
+      <StatusWarning
+        priority="primary"
+        size="s"
+        title="Collection changes have not been launched"
+      >
+        !
+      </StatusWarning>
+    ) : null}
+    {isUneditable ? (
+      <StatusFlag disabled={true} size="s">
+        <PadlockImg />
+      </StatusFlag>
+    ) : null}
+  </>
+);
 
 const CollectionOverview = ({
   collection,
   articleCount,
   openCollection,
-  frontId
+  frontId,
+  hasUnpublishedChanges,
+  hasUnsavedArticleEdits,
+  isUneditable,
+  isBackfilled
 }: FrontCollectionOverviewProps) =>
   collection ? (
     <Container
@@ -93,16 +182,28 @@ const CollectionOverview = ({
         openCollection(collection.id);
       }}
     >
-      <TextLeft>
+      <TextContainerLeft>
         <Name>{collection.displayName}</Name> {articleCount} items
-      </TextLeft>
-      <TextRight>{/* more metadata */}</TextRight>
+      </TextContainerLeft>
+      <TextContainerRight>
+        {collection && collection.lastUpdated && (
+          <CollectionStatus
+            hasUnpublishedChanges={hasUnpublishedChanges}
+            hasUnsavedArticleEdits={hasUnsavedArticleEdits}
+            isUneditable={isUneditable}
+            isBackfilled={isBackfilled}
+            lastUpdatedTimeStamp={collection.lastUpdated}
+          />
+        )}
+      </TextContainerRight>
     </Container>
   ) : null;
 
 const mapStateToProps = () => {
   const collectionSelector = createCollectionSelector();
   const articlesInCollectionSelector = createArticlesInCollectionSelector();
+  const hasUnsavedArticleEditsSelector = createCollectionHasUnsavedArticleEditsWarningSelector();
+
   return (state: State, props: FrontCollectionOverviewContainerProps) => ({
     collection: collectionSelector(selectSharedState(state), {
       collectionId: props.collectionId
@@ -110,7 +211,16 @@ const mapStateToProps = () => {
     articleCount: articlesInCollectionSelector(selectSharedState(state), {
       collectionSet: props.browsingStage,
       collectionId: props.collectionId
-    }).length
+    }).length,
+    hasUnpublishedChanges: hasUnpublishedChangesSelector(state, {
+      collectionId: props.collectionId
+    }),
+    isUneditable: isCollectionUneditableSelector(state, props.collectionId),
+    isBackfilled: isCollectionBackfilledSelector(state, props.collectionId),
+    hasUnsavedArticleEdits: hasUnsavedArticleEditsSelector(state, {
+      collectionSet: props.browsingStage,
+      collectionId: props.collectionId
+    })
   });
 };
 

@@ -5,6 +5,7 @@ import { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
+
 import { CollectionItemSets, Stages } from 'shared/types/Collection';
 
 interface FrontConfigMap {
@@ -94,9 +95,6 @@ const getCollections = (state: State): CollectionConfigMap =>
 
 const getCollectionConfig = (state: State, id: string): CollectionConfig =>
   getCollections(state)[id] || null;
-
-const isCollectionUneditableSelector = (state: State, id: string): boolean =>
-  !!getCollectionConfig(state, id).uneditable;
 
 const frontsIdsSelector = createSelector(
   [getFronts],
@@ -283,7 +281,6 @@ export {
   getFront,
   getFrontsConfig,
   getCollectionConfig,
-  isCollectionUneditableSelector,
   frontsConfigSelector,
   collectionConfigsSelector,
   frontsIdsSelector,

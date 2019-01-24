@@ -1,8 +1,7 @@
 import {
   getFrontsWithPriority,
   alsoOnFrontSelector,
-  lastPressedSelector,
-  isCollectionUneditableSelector
+  lastPressedSelector
 } from 'selectors/frontsSelectors';
 import { frontsConfig } from 'fixtures/frontsConfig';
 import { FrontConfig } from 'types/FaciaApi';
@@ -43,31 +42,6 @@ const commercialFronts: FrontConfig[] = [
     priority: 'commercial'
   }
 ];
-
-describe('Getting Front Collection editable state', () => {
-  it('returns true boolean if Collection is uneditable ', () => {
-    expect(
-      isCollectionUneditableSelector(
-        {
-          fronts: {
-            frontsConfig
-          }
-        } as any,
-        'collection1'
-      )
-    ).toEqual(true);
-    expect(
-      isCollectionUneditableSelector(
-        {
-          fronts: {
-            frontsConfig
-          }
-        } as any,
-        'collection2'
-      )
-    ).toEqual(false);
-  });
-});
 
 describe('Filtering fronts correctly', () => {
   it('return an empty array if config is empty', () => {
