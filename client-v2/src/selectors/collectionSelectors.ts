@@ -11,7 +11,7 @@ const isCollectionUneditableSelector = (state: State, id: string): boolean =>
   !!getCollectionConfig(state, id).uneditable;
 
 const isCollectionBackfilledSelector = (state: State, id: string): boolean =>
-  !!getCollectionConfig(state, id).backfill ? true : false;
+  !!getCollectionConfig(state, id).backfill;
 
 const collectionHasUnsavedArticleEditsWarningSelector = () => {
   const articlesInCollectionSelector = createArticlesInCollectionSelector();
