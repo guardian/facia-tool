@@ -121,7 +121,7 @@ const StatusFlag = StatusWarning.extend`
     cursor: auto;
   }
 `;
-const PadlockImg = styled('img')`
+const PadlockImg = styled.img.attrs({ src: lockedPadlock, alt: 'Locked' })`
   width: 12px;
   display: inline-block;
 `;
@@ -150,7 +150,7 @@ const CollectionStatus = ({
     ) : null}
     {isUneditable ? (
       <StatusFlag disabled={true} size="s">
-        <PadlockImg src={lockedPadlock} alt="Locked" />
+        <PadlockImg />
       </StatusFlag>
     ) : null}
   </>
