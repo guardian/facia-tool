@@ -7,7 +7,7 @@ import Button from 'shared/components/input/ButtonDefault';
 import { AlsoOnDetail } from 'types/Collection';
 import { publishCollection } from 'actions/Fronts';
 import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
-import { isCollectionUneditableSelector } from 'selectors/collectionSelectors';
+import { isCollectionLockedSelector } from 'selectors/collectionSelectors';
 import { State } from 'types/State';
 import { CollectionItemSets, Group } from 'shared/types/Collection';
 import {
@@ -37,7 +37,7 @@ type CollectionProps = CollectionPropsBeforeState & {
   canPublish: boolean;
   groups: Group[];
   displayEditWarning: boolean;
-  isCollectionUneditable: boolean;
+  isCollectionLocked: boolean;
   isOpen: boolean;
   onChangeOpenState: (id: string, isOpen: boolean) => void;
 };
@@ -53,13 +53,12 @@ const Collection = ({
   canPublish = true,
   publishCollection: publish,
   displayEditWarning,
-  isCollectionUneditable,
+  isCollectionLocked,
   isOpen,
   onChangeOpenState
 }: CollectionProps) => {
-
   const isUneditable =
-    isCollectionUneditable || browsingStage !== collectionItemSets.draft;
+    isCollectionLocked || browsingStage !== collectionItemSets.draft;
 
   return (
     <CollectionDisplay
@@ -67,7 +66,7 @@ const Collection = ({
       id={id}
       browsingStage={browsingStage}
       isUneditable={isUneditable}
-      isLocked={isCollectionUneditable}
+      isLocked={isCollectionLocked}
       isOpen={isOpen}
       onChangeOpenState={() => onChangeOpenState(id, isOpen)}
       headlineContent={
@@ -103,7 +102,7 @@ const createMapStateToProps = () => {
     hasUnpublishedChanges: hasUnpublishedChangesSelector(state, {
       collectionId: id
     }),
-    isCollectionUneditable: isCollectionUneditableSelector(state, id),
+    isCollectionLocked: isCollectionLockedSelector(state, id),
     groups: collectionStageGroupsSelector(selectSharedState(state), {
       collectionSet: browsingStage,
       collectionId: id

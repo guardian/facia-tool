@@ -7,7 +7,7 @@ import {
 import { isDirty } from 'redux-form';
 import { CollectionItemSets } from 'shared/types/Collection';
 
-const isCollectionUneditableSelector = (state: State, id: string): boolean =>
+const isCollectionLockedSelector = (state: State, id: string): boolean =>
   !!getCollectionConfig(state, id).uneditable;
 
 const isCollectionBackfilledSelector = (state: State, id: string): boolean =>
@@ -31,7 +31,7 @@ const collectionHasUnsavedArticleEditsWarningSelector = () => {
 };
 
 export {
-  isCollectionUneditableSelector,
+  isCollectionLockedSelector,
   isCollectionBackfilledSelector,
   collectionHasUnsavedArticleEditsWarningSelector as createCollectionHasUnsavedArticleEditsWarningSelector
 };
