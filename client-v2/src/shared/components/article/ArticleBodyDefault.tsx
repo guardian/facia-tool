@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from 'shared/constants/theme';
 import startCase from 'lodash/startCase';
-import distanceInWords from 'date-fns/distance_in_words_to_now';
+import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
 
 import CollectionItemHeading from '../collectionItem/CollectionItemHeading';
 import BasePlaceholder from '../BasePlaceholder';
@@ -26,6 +26,7 @@ import {
 import { CollectionItemSizes } from 'shared/types/Collection';
 import CollectionItemTrail from '../collectionItem/CollectionItemTrail';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
+import CollectionItemDraftMetaContent from '../collectionItem/CollectionItemDraftMetaContent';
 import CollectionItemNotification from '../collectionItem/CollectionItemNotification';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
@@ -109,11 +110,6 @@ const articleBodyDefault = ({
             {startCase(sectionName)}
           </CollectionItemMetaHeading>
         )}
-        {(isLive || size === 'default') && firstPublicationDate && (
-          <CollectionItemMetaContent>
-            {distanceInWords(new Date(firstPublicationDate))}
-          </CollectionItemMetaContent>
-        )}
         {!isLive && !displayPlaceholders && (
           <NotLiveContainer>
             {firstPublicationDate
@@ -122,8 +118,16 @@ const articleBodyDefault = ({
           </NotLiveContainer>
         )}
         {scheduledPublicationDate && (
+          <CollectionItemDraftMetaContent>
+            {distanceInWordsStrict(
+              new Date(scheduledPublicationDate),
+              Date.now()
+            )}
+          </CollectionItemDraftMetaContent>
+        )}
+        {(isLive || size === 'default') && firstPublicationDate && (
           <CollectionItemMetaContent>
-            {distanceInWords(new Date(scheduledPublicationDate))}
+            {distanceInWordsStrict(Date.now(), new Date(firstPublicationDate))}
           </CollectionItemMetaContent>
         )}
       </CollectionItemMetaContainer>
