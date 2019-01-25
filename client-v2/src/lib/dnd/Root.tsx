@@ -44,6 +44,9 @@ export default class Root extends React.Component<Props, State> {
       this.reset();
     } else {
       // because events are pooled in React we have to remove this by hand
+      // all in all this probably isn't the best solution to the problem
+      // search for `(e as any)` to see where this is set. That said it's
+      // definitely the simplest to reason about
       delete (e as any).wasHandled;
     }
   };
