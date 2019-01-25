@@ -49,7 +49,7 @@ class FaciaToolController(
       collectionsFuture.map { collections =>
         collections.headOption.map { collection =>
            NoCache {
-            Ok(Json.toJson(collection)).as("application/json")
+            Ok(Json.toJson(collection.map(_.collection))).as("application/json")
           }
         }.getOrElse(Results.NotFound)
       }

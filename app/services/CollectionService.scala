@@ -47,7 +47,6 @@ class CollectionService(frontsApi: FrontsApi, containerService: ContainerService
 object CollectionService {
   def getStoriesVisibleByStage(collectionId: String, collection: CollectionJson, config: ConfigJson, containerService: ContainerService): Option[StoriesVisibleByStage] = {
     val stages = CollectionService.getStoriesForCollectionStages(collectionId, collection, config)
-
     config.collections.get(collectionId).flatMap(_.`type`) match {
       case Some(cType) =>
         Some(
@@ -62,7 +61,7 @@ object CollectionService {
 
   def getStoriesForCollectionStages(collectionId: String, collection: CollectionJson, config: ConfigJson): (Seq[Story], Seq[Story]) = {
     val numberOfGroups = config.collections.get(collectionId) match {
-      case Some(collectionConfig) => collectionConfig.groups.map(group => group.length).getOrElse(0)
+      case Some(collectionConfig) => collectionConfig.groups.map(_.length).getOrElse(0)
       case None => 0
     }
 
@@ -74,9 +73,23 @@ object CollectionService {
 
   def getStoriesForStage(stage: List[Trail], numberOfGroups: Int): Seq[Story] = {
     stage.zipWithIndex.map {
-      case (article, index) => Story(
-        numberOfGroups - index - 1,
-        article.meta.flatMap(_.isBoosted).getOrElse(false)
-      )}
+      case (article, index) =>
+        val maybeGroup = for {
+          meta <- article.meta
+          group <- meta.group
+        } yield {
+          group.toInt
+        }
+        val group = maybeGroup match {
+          case Some(group) =>
+            val res = numberOfGroups - group - 1
+           res
+          case None => 0
+        }
+        Story(
+          group,
+          article.meta.flatMap(_.isBoosted).getOrElse(false)
+        )
+    }.sortBy(_.group).reverse
   }
 }
