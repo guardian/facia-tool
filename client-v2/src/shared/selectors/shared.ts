@@ -199,10 +199,23 @@ const groupNameSelector = (
     groupName
   }: {
     groupName?: string;
+    includeSupportingArticles?: boolean;
     collectionSet: CollectionItemSets;
     collectionId: string;
   }
 ) => groupName;
+
+const includeSupportingArticlesSelector = (
+  _: unknown,
+  {
+    includeSupportingArticles
+  }: {
+    groupName?: string;
+    includeSupportingArticles?: boolean;
+    collectionSet: CollectionItemSets;
+    collectionId: string;
+  }
+) => includeSupportingArticles;
 
 const createArticlesInCollectionGroupSelector = () => {
   const collectionStageGroupsSelector = createCollectionStageGroupsSelector();
@@ -210,7 +223,13 @@ const createArticlesInCollectionGroupSelector = () => {
     articleFragmentsSelector,
     collectionStageGroupsSelector,
     groupNameSelector,
-    (articleFragments, collectionGroups, groupName) => {
+    includeSupportingArticlesSelector,
+    (
+      articleFragments,
+      collectionGroups,
+      groupName,
+      includeSupportingArticles = true
+    ) => {
       const groups = groupName
         ? [
             collectionGroups.find(({ id }) => id === groupName) || {
@@ -222,6 +241,9 @@ const createArticlesInCollectionGroupSelector = () => {
         (acc, group) => acc.concat(group.articleFragments || []),
         [] as string[]
       );
+      if (!includeSupportingArticles) {
+        return groupArticleFragmentIds;
+      }
       return groupArticleFragmentIds.reduce(
         (acc, id) => {
           const articleFragment = articleFragments[id];
@@ -247,12 +269,18 @@ const createArticlesInCollectionSelector = () => {
     state: State,
     {
       collectionId,
-      collectionSet
-    }: { collectionId: string; collectionSet: CollectionItemSets }
+      collectionSet,
+      includeSupportingArticles = true
+    }: {
+      collectionId: string;
+      collectionSet: CollectionItemSets;
+      includeSupportingArticles?: boolean;
+    }
   ) =>
     selectArticlesInCollectionGroups(state, {
       collectionId,
-      collectionSet
+      collectionSet,
+      includeSupportingArticles
     });
 };
 

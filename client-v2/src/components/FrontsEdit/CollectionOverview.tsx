@@ -210,7 +210,8 @@ const mapStateToProps = () => {
     }),
     articleCount: articlesInCollectionSelector(selectSharedState(state), {
       collectionSet: props.browsingStage,
-      collectionId: props.collectionId
+      collectionId: props.collectionId,
+      includeSupportingArticles: false
     }).length,
     hasUnpublishedChanges: hasUnpublishedChangesSelector(state, {
       collectionId: props.collectionId
