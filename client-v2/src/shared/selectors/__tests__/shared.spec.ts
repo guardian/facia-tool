@@ -365,6 +365,16 @@ describe('Shared selectors', () => {
         })
       ).toEqual(['afWithSupporting', 'afWithSectionKicker']);
     });
+    it('should not return articles in supporting positions if includeSupportingArticles is false', () => {
+      const selector = createArticlesInCollectionSelector();
+      expect(
+        selector(state, {
+          collectionId: 'c5',
+          collectionSet: 'live',
+          includeSupportingArticles: false
+        })
+      ).toEqual(['afWithSupporting']);
+    });
   });
 
   describe('createArticlesInCollectionGroupSelector', () => {
@@ -401,6 +411,17 @@ describe('Shared selectors', () => {
           groupName: 'group6'
         })
       ).toEqual(['afWithSupporting', 'afWithSectionKicker']);
+    });
+    it('should not return articles in supporting positions if includeSupportingArticles is false', () => {
+      const selector = createArticlesInCollectionGroupSelector();
+      expect(
+        selector(state, {
+          collectionId: 'c5',
+          collectionSet: 'live',
+          groupName: 'group6',
+          includeSupportingArticles: false
+        })
+      ).toEqual(['afWithSupporting']);
     });
     it('should return an empty array if the collection is not found', () => {
       const selector = createArticlesInCollectionGroupSelector();
