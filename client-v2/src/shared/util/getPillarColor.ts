@@ -6,8 +6,9 @@ const pillarColorMap = {
   'pillar/arts': '#a1845c'
 } as { [pillar: string]: string };
 
-const notLiveColour = '#ff7f0f';
 const noPillarColour = '#221133';
+
+export const notLiveColour = '#ff7f0f';
 
 export const getPillarColor = (
   pillar: string | undefined,
