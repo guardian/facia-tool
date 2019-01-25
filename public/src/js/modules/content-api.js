@@ -324,7 +324,7 @@ function isCommercialArticle(article) {
     }
 
     if (!article.tags) {
-        return true;
+        return false;
     }
 
     return article.tags.every(tag => tag.type !== 'paid-content');
