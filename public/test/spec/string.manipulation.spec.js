@@ -12,19 +12,19 @@ import * as snap from 'utils/snap';
 import humanTime from 'utils/human-time';
 
 describe('utils/parse-query-params', function () {
-    var value = params('');
     describe('URL Parameters', function () {
         it('parses an empty string', function () {
+            const value = params('');
             expect(value).toEqual({});
         });
 
         it('parses an url with no parameters', function () {
-            value = params('url/with/no/params');
+            const value = params('url/with/no/params');
             expect(value).toEqual({});
         });
 
         it('parses an url with multiple parameters', function () {
-            value = params('url?params=1&banana=true&q=search%20string');
+            const value = params('url?params=1&banana=true&q=search%20string');
             expect(value).toEqual({
                 params: '1',
                 banana: 'true',
@@ -33,7 +33,7 @@ describe('utils/parse-query-params', function () {
         });
 
         it('parses an url with duplicate parameters', function () {
-            value = params('url?array=1&array=2&array=3&string=array');
+            const value = params('url?array=1&array=2&array=3&string=array');
             expect(value).toEqual({
                 array: '3',
                 string: 'array'
@@ -41,7 +41,7 @@ describe('utils/parse-query-params', function () {
         });
 
         it('parses an url with hash', function () {
-            value = params('url?value=this#page');
+            const value = params('url?value=this#page');
             expect(value).toEqual({
                 value: 'this'
             });
@@ -50,7 +50,7 @@ describe('utils/parse-query-params', function () {
 
     describe('URL Parameters as array', function () {
         it('parses an url as an array', function () {
-            value = params('url?array=1&array=2&array=3&string=array', {
+            const value = params('url?array=1&array=2&array=3&string=array', {
                 multipleValues: true
             });
             expect(value).toEqual({
