@@ -4,7 +4,7 @@ import { styled } from 'shared/constants/theme';
 import caretIcon from 'shared/images/icons/single-down.svg';
 import ButtonCircular from './ButtonCircular';
 
-const ButtonCircularWithTransition = ButtonCircular.extend<{
+export const ButtonCircularWithTransition = ButtonCircular.extend<{
   highlight?: boolean;
 }>`
   transition: transform 0.15s;
