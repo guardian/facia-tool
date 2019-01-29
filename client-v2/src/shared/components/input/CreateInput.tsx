@@ -16,7 +16,7 @@ export default (
   type?: string
 ) => ({ label, input, ...rest }: Props) => (
   <InputContainer>
-    {label && <InputLabel for={label}>{label}</InputLabel>}
+    {label && <InputLabel htmlFor={label}>{label}</InputLabel>}
     <Component id={label} {...input} {...rest} type={type} />
   </InputContainer>
 );

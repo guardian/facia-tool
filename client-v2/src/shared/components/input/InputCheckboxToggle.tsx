@@ -23,7 +23,7 @@ const Switch = styled('div')`
   -ms-user-select: none;
 `;
 
-const CheckboxLabel = styled('label')<{ for?: string }>`
+const CheckboxLabel = styled('label')`
   display: block;
   overflow: hidden;
   cursor: pointer;
@@ -65,14 +65,24 @@ type Props = {
   label?: string;
 } & WrappedFieldProps;
 
-export default ({ label, input, ...rest }: Props) => (
+export default ({
+  label,
+  input: { onChange, ...inputRest },
+  ...rest
+}: Props) => (
   <>
     <InputContainer>
       <CheckboxContainer>
         <Label size="sm">{label}</Label>
-        <Switch onClick={() => input.onChange(!input.checked)}>
-          <Checkbox type="checkbox" {...input} {...rest} id={label} />
-          <CheckboxLabel for={label} />
+        <Switch>
+          <Checkbox
+            type="checkbox"
+            onClick={() => onChange(!inputRest.checked)}
+            {...inputRest}
+            {...rest}
+            id={label}
+          />
+          <CheckboxLabel htmlFor={label} />
         </Switch>
       </CheckboxContainer>
     </InputContainer>
