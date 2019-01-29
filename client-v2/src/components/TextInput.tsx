@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 import moreImage from 'shared/images/icons/more.svg';
 import searchImage from 'shared/images/icons/search.svg';
 import { SmallRoundButton, ClearButtonIcon } from 'util/sharedStyles/buttons';
@@ -9,7 +9,7 @@ const InputWrapper = styled('div')`
   width: ${({ width }: { width?: number }) => width || 'auto'};
   display: flex;
   border: solid 1px #c9c9c9;
-  backgroud: #fffff;
+  background: #ffffff;
 `;
 
 const Input = styled(`input`)`

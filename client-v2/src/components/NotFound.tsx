@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 
 const NotFoundContainer = styled('div')`
   background-color: #221133;

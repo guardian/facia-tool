@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 
 import SectionHeaderWithLogo from './layout/SectionHeaderWithLogo';
 import SectionContent from './layout/SectionContent';

@@ -3,8 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { match } from 'react-router-dom';
-import styled from 'styled-components';
-
+import { styled } from 'constants/theme';
 import getFrontsConfig from 'actions/Fronts';
 import {} from 'bundles/frontsUIBundle';
 import {

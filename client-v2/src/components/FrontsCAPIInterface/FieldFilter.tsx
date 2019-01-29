@@ -1,7 +1,7 @@
 import React from 'react';
 import Downshift from 'downshift';
 import startCase from 'lodash/startCase';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 import ButtonCircularCaret from '../../shared/components/input/ButtonCircularCaret';
 import FadeIn from 'shared/components/animation/FadeIn';
 

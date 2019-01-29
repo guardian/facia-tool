@@ -5,7 +5,7 @@ import { FrontConfig } from 'types/FaciaApi';
 import CollectionOverview from './CollectionOverview';
 import { connect } from 'react-redux';
 import { CollectionItemSets } from 'shared/types/Collection';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
 import ContentContainer from 'shared/components/layout/ContentContainer';
 

@@ -2,7 +2,7 @@ import React from 'react';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import { DateRangePicker } from 'react-dates';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 import moment from 'moment';
 
 interface CAPIDateInputProps {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'types/Store';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
 import startCase from 'lodash/startCase';
 

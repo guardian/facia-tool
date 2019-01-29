@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 import SearchInput, {
   SearchInputState,
   initState

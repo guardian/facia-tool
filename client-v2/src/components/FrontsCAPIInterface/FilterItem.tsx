@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 import moreImage from 'shared/images/icons/more.svg';
 import { SmallRoundButton, ClearButtonIcon } from 'util/sharedStyles/buttons';
 

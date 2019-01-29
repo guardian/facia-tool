@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { styled } from 'shared/constants/theme';
+import { styled } from 'constants/theme';
 import distanceFromNow from 'date-fns/distance_in_words_to_now';
 import { events } from 'services/GA';
 

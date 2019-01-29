@@ -2,7 +2,7 @@ import React from 'react';
 import Downshift, { GetInputPropsOptions } from 'downshift';
 import capitalize from 'lodash/capitalize';
 import debounce from 'lodash/debounce';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 import { Tag } from 'types/Capi';
 import { liveCapi } from 'services/frontsCapi';
 

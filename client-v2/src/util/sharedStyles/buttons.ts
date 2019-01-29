@@ -1,6 +1,6 @@
 // @flow
 
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 
 export const SmallRoundButton = styled('button')`
   appearance: none;

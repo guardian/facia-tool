@@ -1,6 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
-
+import { styled } from 'constants/theme';
 import FrontsLogo from 'images/icons/fronts-logo.svg';
 import { SectionHeaderUnpadded } from './SectionHeader';
 

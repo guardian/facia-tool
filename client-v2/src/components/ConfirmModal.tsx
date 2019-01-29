@@ -9,7 +9,7 @@ import {
 import { Dispatch } from 'types/Store';
 import { endConfirmModal } from 'actions/ConfirmModal';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 import ButtonDefault from 'shared/components/input/ButtonDefault';
 
 type StyledModalProps = Modal.Props & {

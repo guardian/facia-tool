@@ -1,6 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
-
+import { styled } from 'constants/theme';
 import FadeIn from 'shared/components/animation/FadeIn';
 import MoreImage from 'shared/images/icons/more.svg';
 import LargeSectionHeader from '../layout/LargeSectionHeader';

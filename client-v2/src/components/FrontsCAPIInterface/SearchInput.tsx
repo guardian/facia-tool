@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 import ScrollContainer from '../ScrollContainer';
 import TextInput from '../TextInput';
 import CAPITagInput from '../FrontsCAPIInterface/TagInput';

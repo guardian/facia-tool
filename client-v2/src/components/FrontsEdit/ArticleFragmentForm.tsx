@@ -8,7 +8,7 @@ import {
   WrappedFieldArrayProps,
   Field
 } from 'redux-form';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 import Button from 'shared/components/input/ButtonDefault';
 import ContentContainer from 'shared/components/layout/ContentContainer';
 import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
