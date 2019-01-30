@@ -10,8 +10,10 @@ import baseStyled, { ThemedStyledInterface } from 'styled-components';
 const colors = {
   blackDark: '#121212', // darkest
   blackLight: '#333',
-  greyDark: '#515151',
-  greyMedium: '#999999',
+  greyDark: '#444444', //
+  greyMediumDark: '#515151',
+  greyMedium: '#767676', //
+  greyMediumLight: '#999999',
   greyLight: '#A9A9A9',
   greyLightPinkish: '#C9C9C9',
   whiteDark: '#DCDCDC',
@@ -26,13 +28,13 @@ const colors = {
 const base = {
   colors: {
     text: colors.blackLight,
-    textMuted: colors.greyMedium,
+    textMuted: colors.greyMediumLight,
     textLight: colors.white,
     textDark: colors.blackDark,
     highlightColor: colors.orange,
     highlightColorFocused: colors.orangeLight,
     button: colors.blackLight,
-    buttonFocused: colors.greyDark,
+    buttonFocused: colors.greyMediumDark,
     backgroundColor: colors.whiteLight,
     backgroundColorLight: colors.white,
     backgroundColorFocused: colors.whiteMedium,

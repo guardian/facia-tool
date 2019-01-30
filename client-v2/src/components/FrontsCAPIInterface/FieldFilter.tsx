@@ -18,23 +18,25 @@ const FilterFieldDropdownMenu = FadeIn.extend`
   display: ${({ isOpen }: { isOpen: boolean }) => (isOpen ? 'auto' : 'none')};
 `;
 
-const DropdownItem = styled('div')`
-  background-color: ${({ hightlighted }: { hightlighted: boolean }) =>
-    hightlighted ? '#dcdcdc' : 'white'};
+const DropdownItem = styled('div')<{ highlighted: boolean }>`
+  background-color: ${({ highlighted, theme }) =>
+    highlighted
+      ? theme.capiInterface.backgroundDark
+      : theme.capiInterface.backgroundLight};
   :hover {
-    background-color: #dcdcdc;
+    background-color: ${({ theme }) => theme.capiInterface.backgroundDark};
   }
   font-size: 14px;
   font-weight: bold;
   padding: 7px 15px 7px 15px;
-  border-left: 1px solid #c4c4c4;
-  color: #121212;
+  border-left: ${({ theme }) => `1px solid ${theme.capiInterface.borderLight}`};
+  color: ${({ theme }) => theme.capiInterface.text};
 `;
 
 const FilterTitle = styled('label')`
   font-size: 16px;
   font-weight: bold;
-  color: #121212;
+  color: ${({ theme }) => theme.capiInterface.text};
   width: min-content;
   white-space: nowrap;
   margin-right: 9px;
@@ -43,7 +45,7 @@ const FilterTitle = styled('label')`
 const FilterPlaceHolderText = styled('div')`
   display: inline-block;
   background-color: transparent;
-  color: #808080;
+  color: ${({ theme }) => theme.capiInterface.textPlaceholder};
   cursor: pointer;
   border: none;
   padding: 0;
@@ -52,7 +54,8 @@ const FilterPlaceHolderText = styled('div')`
 `;
 
 const FilterContainer = styled('div')`
-  border-bottom: solid 2px #c4c4c4;
+  border-bottom: ${({ theme }) =>
+    `2px solid ${theme.capiInterface.borderLight}`};
   padding: 2px;
   padding-top: 24px;
   margin-right: 19px;

@@ -31,7 +31,7 @@ interface SearchInputProps {
 
 const InputContainer = styled('div')`
   margin-bottom: 20px;
-  background: #ffffff;
+  background: ${({ theme }) => theme.capiInterface.backgroundWhite};
 `;
 
 const renderDateAsString = (date: moment.Moment | null) => {

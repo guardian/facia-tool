@@ -8,6 +8,7 @@ import startCase from 'lodash/startCase';
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 import { getPillarColor, notLiveColour } from 'shared/util/getPillarColor';
 import { notLiveLabels } from 'constants/fronts';
+import { theme } from 'constants/theme';
 import { HoverActionsAreaOverlay } from 'shared/components/CollectionHoverItems';
 import { HoverActionsButtonWrapper } from 'shared/components/input/HoverActionButtonWrapper';
 import {
@@ -21,7 +22,7 @@ import noop from 'lodash/noop';
 import { getPaths } from 'util/paths';
 
 const LinkContainer = styled('div')`
-  background-color: #f6f6f6;
+  background-color: ${({ theme }) => theme.capiInterface.backgroundLight};
   display: none;
   position: absolute;
   bottom: 20px;
@@ -30,10 +31,11 @@ const LinkContainer = styled('div')`
   padding: 1px 3px;
 `;
 
+//TODO
 const Container = styled('div')`
   display: flex;
   position: relative;
-  border-top: solid 1px #c9c9c9;
+  border-top: ${({ theme }) => `1px solid ${theme.capiInterface.borderLight}`};
   color: #221133;
   display: flex;
   font-weight: 400;
@@ -72,7 +74,7 @@ const VisitedWrapper = styled.a`
   color: inherit;
   cursor: auto;
   :visited ${Title} {
-    color: #888;
+    color: ${({ theme }) => theme.capiInterface.textVisited};
   }
 `;
 
@@ -149,7 +151,8 @@ const FeedItem = ({
       <MetaContainer>
         <Tone
           style={{
-            color: getPillarColor(pillarId, isLive) || '#c9c9c9'
+            color:
+              getPillarColor(pillarId, isLive) || theme.capiInterface.textLight
           }}
         >
           {isLive && startCase(sectionName)}

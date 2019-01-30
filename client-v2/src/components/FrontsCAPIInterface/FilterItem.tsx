@@ -4,15 +4,15 @@ import moreImage from 'shared/images/icons/more.svg';
 import { SmallRoundButton, ClearButtonIcon } from 'util/sharedStyles/buttons';
 
 const SearchTermItem = styled('div')`
-  color: #121212;
+  color: ${({ theme }) => theme.capiInterface.text};
   font-weight: bold;
-  border: solid 1px #c4c4c4;
+  border: ${({ theme }) => `1px solid ${theme.capiInterface.borderLight}`};
   font-size: 14px;
-  background-color: #ffffff;
+  background-color: ${({ theme }) => theme.capiInterface.backgroundWhite};
   padding: 7px 15px 7px 15px;
   margin-bottom: 10px;
   :hover {
-    color: #c4c4c4;
+    color: ${({ theme }) => theme.capiInterface.textLight};
   }
 `;
 

@@ -33,42 +33,42 @@ const DatePicker = styled('div')`
   .DateInput_input {
     font-size: 16px;
     font-family: TS3TextSans;
-    color: #121212;
+    color: ${({ theme }) => theme.capiInterface.text};
   }
 
   .DateRangePickerInput__withBorder {
-    border: solid 1px #c9c9c9;
+    border: ${({ theme }) => `1px solid ${theme.capiInterface.borderLight}`};
   }
 
   .CalendarMonth_caption {
-    color: #121212;
+    color: ${({ theme }) => theme.capiInterface.text};
     font-family: TS3TextSans;
   }
 
   .CalendarDay__selected {
-    background: #ff7f0f;
-    border: 1px double #444444;
-    color: #121212;
+    background: ${({ theme }) => theme.capiInterface.backgroundSelected};
+    border: ${({ theme }) => `1px double ${theme.capiInterface.border}`};
+    color: ${({ theme }) => theme.capiInterface.text};
   }
 
   .CalendarDay__selected_span {
-    background: #dcdcdc;
-    border: 1px double #444444;
-    color: #121212;
+    background: ${({ theme }) => theme.capiInterface.backgroundDark};
+    border: ${({ theme }) => `1px double ${theme.capiInterface.border}`};
+    color: ${({ theme }) => theme.capiInterface.text};
   }
 
   .CalendarDay__hovered_span,
  .CalendarDay__hovered_span: hover {
-    background: #f2f2f2;
-    border: 1px double #444444;
-    color: #121212;
+    background: ${({ theme }) => theme.capiInterface.backgroundLight};
+    border: ${({ theme }) => `1px double ${theme.capiInterface.border}`};
+    color: ${({ theme }) => theme.capiInterface.text};
   }
 
   .CalendarDay__selected: hover,
  .CalendarDay__selected_span: hover {
-    background: #dcdcdc;
-    border: 1px double #444444;
-    color: #121212;
+    background: ${({ theme }) => theme.capiInterface.backgroundDark};
+    border: ${({ theme }) => `1px double ${theme.capiInterface.border}`};
+    color: ${({ theme }) => theme.capiInterface.text};
   }
 `;
 
