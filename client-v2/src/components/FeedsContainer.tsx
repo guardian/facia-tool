@@ -75,6 +75,17 @@ const ResultsHeadingContainer = styled('div')`
   margin-bottom: 10px;
 `;
 
+const getCapiFieldsToShow = (isPreview: boolean) => {
+  const defaultFieldsToShow =
+    'internalPageCode,trailText,firstPublicationDate,isLive';
+
+  if (!isPreview) {
+    return defaultFieldsToShow;
+  }
+
+  return defaultFieldsToShow + ',scheduledPublicationDate';
+};
+
 const getParams = (
   query: string,
   {
@@ -96,7 +107,7 @@ const getParams = (
   'page-size': '20',
   'show-elements': 'image',
   'show-tags': 'all',
-  'show-fields': 'internalPageCode,trailText,firstPublicationDate,isLive',
+  'show-fields': getCapiFieldsToShow(isPreview),
   ...(isPreview
     ? { 'order-by': 'oldest', 'from-date': getTodayDate() }
     : { 'order-by': 'newest', 'order-date': 'first-publication' })
@@ -145,9 +156,12 @@ class FeedsContainer extends React.Component<
     });
 
   public handleFeedClick = (index: number) =>
-    this.setState({
-      capiFeedIndex: index
-    });
+    this.setState(
+      {
+        capiFeedIndex: index
+      },
+      this.runSearch
+    );
 
   public renderFixedContent = () => {
     if (!this.state.displaySearchFilters) {
@@ -217,16 +231,20 @@ class FeedsContainer extends React.Component<
 
   private runSearch() {
     const { inputState } = this.state;
+    const { capiFeedIndex } = this.state;
     const maybeArticleId = getIdFromURL(inputState.query);
     const searchTerm = maybeArticleId ? maybeArticleId : inputState.query;
-    this.props.fetchLive(
-      getParams(searchTerm, inputState, false),
-      !!maybeArticleId
-    );
-    this.props.fetchPreview(
-      getParams(searchTerm, inputState, true),
-      !!maybeArticleId
-    );
+    if (capiFeedIndex === 0) {
+      this.props.fetchLive(
+        getParams(searchTerm, inputState, false),
+        !!maybeArticleId
+      );
+    } else {
+      this.props.fetchPreview(
+        getParams(searchTerm, inputState, true),
+        !!maybeArticleId
+      );
+    }
   }
 
   private runSearchAndRestartPolling() {

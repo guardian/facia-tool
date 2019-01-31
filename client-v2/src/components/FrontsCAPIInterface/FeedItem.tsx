@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'types/Store';
 import styled from 'styled-components';
-import distanceInWords from 'date-fns/distance_in_words_to_now';
+import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
 import startCase from 'lodash/startCase';
 
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
-import { getPillarColor } from 'shared/util/getPillarColor';
+import { getPillarColor, notLiveColour } from 'shared/util/getPillarColor';
 import { notLiveLabels } from 'constants/fronts';
 import { HoverActionsAreaOverlay } from 'shared/components/CollectionHoverItems';
 import { HoverActionsButtonWrapper } from 'shared/components/input/HoverActionButtonWrapper';
@@ -87,6 +87,10 @@ const FirstPublished = styled('div')`
   margin: 2px 0;
 `;
 
+const ScheduledPublication = styled(FirstPublished)`
+  color: ${notLiveColour};
+`;
+
 const Tone = styled('div')`
   padding-top: 2px;
   font-size: 12px;
@@ -109,6 +113,7 @@ interface FeedItemProps {
   firstPublicationDate?: string;
   isLive: boolean;
   onAddToClipboard: (id: string) => void;
+  scheduledPublicationDate?: string;
 }
 
 const dragStart = (
@@ -128,7 +133,8 @@ const FeedItem = ({
   internalPageCode,
   firstPublicationDate,
   isLive,
-  onAddToClipboard = noop
+  onAddToClipboard = noop,
+  scheduledPublicationDate
 }: FeedItemProps) => (
   <Container
     data-testid="feed-item"
@@ -152,9 +158,17 @@ const FeedItem = ({
               ? notLiveLabels.takendDown
               : notLiveLabels.draft)}
         </Tone>
+        {scheduledPublicationDate && (
+          <ScheduledPublication>
+            {distanceInWordsStrict(
+              new Date(scheduledPublicationDate),
+              Date.now()
+            )}
+          </ScheduledPublication>
+        )}
         {publicationDate && (
           <FirstPublished>
-            {distanceInWords(new Date(publicationDate))}
+            {distanceInWordsStrict(Date.now(), new Date(publicationDate))}
           </FirstPublished>
         )}
         <ShortVerticalPinline />

@@ -59,6 +59,7 @@ const Feed = ({ articles = [], error, loading }: FeedProps) => (
                 internalPageCode={fields && getId(fields.internalPageCode)}
                 firstPublicationDate={fields.firstPublicationDate}
                 isLive={!fields.isLive || fields.isLive === 'true'}
+                scheduledPublicationDate={fields.scheduledPublicationDate}
               />
             )
           )
