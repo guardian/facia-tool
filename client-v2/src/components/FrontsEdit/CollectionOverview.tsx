@@ -100,6 +100,10 @@ const LastUpdated = styled.span`
   font-weight: 400;
 `;
 
+const ItemCount = styled.span`
+  white-space: nowrap;
+`;
+
 const StatusWarning = ButtonDefault.extend`
   outline: transparent;
   :not(:first-child) {
@@ -183,7 +187,8 @@ const CollectionOverview = ({
       }}
     >
       <TextContainerLeft>
-        <Name>{collection.displayName}</Name> {articleCount} items
+        <Name>{collection.displayName}</Name>
+        <ItemCount>{articleCount} items</ItemCount>
       </TextContainerLeft>
       <TextContainerRight>
         {collection && collection.lastUpdated && (
