@@ -122,7 +122,8 @@ describe('ArticleFragmentForm transform functions', () => {
           src: 'exampleSrc2',
           width: 200,
           height: 200,
-          origin: 'exampleOrigin'
+          origin: 'exampleOrigin',
+          thumb: 'exampleSrc2'
         },
         slideshow: [
           {
