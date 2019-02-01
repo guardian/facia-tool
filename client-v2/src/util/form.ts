@@ -113,6 +113,10 @@ export const getInitialValuesForArticleFragmentForm = (
     : undefined;
 };
 
+// Because multiple fields in the article meta map to
+// a single field in the form, we need a way to map between
+// the two models to figure out which meta fields should be
+// added to the form output when a form field is dirtied.
 const formToMetaFieldMap: { [fieldName: string]: string } = {
   imageReplace: 'primaryImage',
   imageSrc: 'primaryImage',
