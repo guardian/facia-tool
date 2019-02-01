@@ -9,14 +9,15 @@ import ClipboardMeta from './ClipboardMeta';
 import Button from 'shared/components/input/ButtonDefault';
 
 const FeedSectionContainer = styled('div')`
-  background-color: #f6f6f6;
+  background-color: ${({ theme }) => theme.shared.base.colors.backgroundColor};
 `;
 
 const FeedWrapper = styled('div')`
   width: 389px;
   padding-right: 10px;
   margin-right: 10px;
-  border-right: solid 1px #c9c9c9;
+  border-right: ${({ theme }) =>
+    `solid 1px ${theme.shared.base.colors.borderColor}`};
 `;
 
 const ClipboardWrapper = styled('div')`

@@ -22,7 +22,7 @@ import SectionHeader from '../layout/SectionHeader';
 import SectionContent from '../layout/SectionContent';
 import { CollectionItemSets, Collection } from 'shared/types/Collection';
 
-const FrontHeader = SectionHeader.extend`
+const FrontHeader = styled(SectionHeader)`
   display: flex;
 `;
 

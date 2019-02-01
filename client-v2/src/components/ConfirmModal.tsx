@@ -21,7 +21,7 @@ const StyledModal = styled(Modal)`
   top: 40px;
   font-size: 14px;
   left: 50%;
-  background: rgb(255, 255, 255);
+  background: ${({ theme }) => theme.shared.base.colors.backgroundColorLight};
   overflow: auto;
   outline: none;
   padding: 20px;
@@ -31,7 +31,8 @@ const StyledModal = styled(Modal)`
 `;
 
 const Actions = styled.div`
-  border-top: 1px solid #ccc;
+  border-top: ${({ theme }) =>
+    `solid 1px ${theme.shared.base.colors.borderColor}`};
   margin-top: 1.5em;
   padding-top: 1.5em;
   text-align: right;

@@ -12,7 +12,7 @@ interface CAPIFieldFilterProps<T> {
   filterTitle: string;
 }
 
-const FilterFieldDropdownMenu = FadeIn.extend`
+const FilterFieldDropdownMenu = styled(FadeIn)`
   margin-right: 19px;
   margin-left: 93px;
   display: ${({ isOpen }: { isOpen: boolean }) => (isOpen ? 'auto' : 'none')};

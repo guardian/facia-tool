@@ -6,6 +6,7 @@ import {
 } from 'shared/selectors/shared';
 import { State } from 'types/State';
 import { DerivedArticle } from 'shared/types/Article';
+import { theme } from '../../../constants/theme';
 
 interface ContainerProps {
   id: string;
@@ -20,7 +21,7 @@ const ArticleDrag = ({ article }: ComponentProps) => (
     {article && (
       <div
         style={{
-          background: '#eee',
+          background: `${theme.shared.base.colors.backgroundColorFocused}`,
           borderRadius: '4px',
           boxShadow: '-2px -2px 5px 0 rgba(0, 0, 0, 0.5)',
           overflow: 'hidden',

@@ -41,11 +41,11 @@ const SingleFrontContainer = styled('div')`
   min-width: 1011px;
 `;
 
-const FeedContainer = SectionContainer.extend`
+const FeedContainer = styled(SectionContainer)`
   height: 100%;
 `;
 
-const FrontsContainer = SectionContainer.extend`
+const FrontsContainer = styled(SectionContainer)`
   overflow-x: scroll;
 `;
 

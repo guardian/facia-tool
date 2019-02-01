@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { styled } from 'constants/theme';
+
 const Muted = styled('span')`
   opacity: 0.5;
 `;

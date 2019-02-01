@@ -31,12 +31,11 @@ const LinkContainer = styled('div')`
   padding: 1px 3px;
 `;
 
-//TODO
 const Container = styled('div')`
   display: flex;
   position: relative;
   border-top: ${({ theme }) => `1px solid ${theme.capiInterface.borderLight}`};
-  color: #221133;
+  color: ${({ theme }) => theme.capiInterface.feedItemText};
   display: flex;
   font-weight: 400;
   padding-bottom: 20px;

@@ -52,8 +52,8 @@ interface CollectionStatusProps {
 const Container = styled.div`
   align-items: center;
   appearance: none;
-  background-color: #f6f6f6;
-  border: 1px solid #c4c4c4;
+  background-color: ${({ theme }) => theme.shared.base.colors.backgroundColor};
+  border: ${({ theme }) => `solid 1px ${theme.shared.base.colors.borderColor}`};
   border-radius: 1.25em;
   color: inherit;
   cursor: pointer;
@@ -69,7 +69,7 @@ const Container = styled.div`
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: #ddd;
+    background-color: ${({ theme }) => theme.shared.colors.whiteDark};
   }
 
   &:focus {
@@ -90,13 +90,13 @@ const TextContainerRight = styled.div`
 `;
 
 const Name = styled.span`
-  color: #333;
+  color: ${({ theme }) => theme.shared.base.colors.text};
   font-weight: 700;
   padding-right: 0.25em;
 `;
 
 const LastUpdated = styled.span`
-  color: #333;
+  color: ${({ theme }) => theme.shared.base.colors.text};
   font-weight: 400;
 `;
 
@@ -109,7 +109,7 @@ const StatusWarning = ButtonDefault.extend`
   :not(:first-child) {
     margin-left: 5px;
   }
-  color: ${({ theme }) => (theme ? theme.button.color : null)};
+  color: ${({ theme }) => theme.shared.button.color};
   height: 20px;
   width: 20px;
   border-radius: 20px;
@@ -119,7 +119,7 @@ const StatusWarning = ButtonDefault.extend`
   }
 `;
 
-const StatusFlag = StatusWarning.extend`
+const StatusFlag = styled(StatusWarning)`
   &:disabled,
   &:disabled:hover {
     cursor: auto;

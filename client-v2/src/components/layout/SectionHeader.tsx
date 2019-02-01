@@ -1,11 +1,12 @@
+import { styled } from '../../constants/theme';
 import LargeSectionHeader from './LargeSectionHeader';
 
-const SectionHeader = LargeSectionHeader.extend`
-  background-color: #333;
-  border-right: solid 1px #dcdcdc;
+const SectionHeader = styled(LargeSectionHeader)`
+  background-color: ${({ theme }) => theme.shared.colors.blackLight};
+  border-right: ${({ theme }) => `solid 1px ${theme.shared.colors.whiteDark}`};
 `;
 
-const SectionHeaderUnpadded = SectionHeader.extend`
+const SectionHeaderUnpadded = styled(SectionHeader)`
   padding: 0;
 `;
 

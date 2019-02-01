@@ -15,7 +15,7 @@ interface ComponentState {
 
 const WarningText = styled('span')`
   font-weight: bold;
-  color: #e05e00;
+  color: ${({ theme }) => theme.shared.colors.orangeDark};
 `;
 
 const ToggleDetailsButton = Button.extend`

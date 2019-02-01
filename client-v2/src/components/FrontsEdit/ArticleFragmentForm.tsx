@@ -53,7 +53,7 @@ interface ComponentProps extends ContainerProps {
 type Props = ComponentProps &
   InjectedFormProps<ArticleFragmentFormData, ComponentProps, {}>;
 
-const FormContainer = ContentContainer.withComponent('form').extend`
+const FormContainer = styled(ContentContainer.withComponent('form'))`
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -67,7 +67,7 @@ const FormContent = styled('div')`
   overflow-y: scroll;
 `;
 
-const CollectionHeadingPinline = ContainerHeadingPinline.extend`
+const CollectionHeadingPinline = styled(ContainerHeadingPinline)`
   display: flex;
   margin-right: -11px;
   margin-bottom: 10px;
@@ -82,14 +82,14 @@ const ButtonContainer = styled('div')`
   line-height: 0;
 `;
 
-const SlideshowRow = Row.extend`
+const SlideshowRow = styled(Row)`
   margin-top: 10px;
   margin-bottom: 5px;
 `;
 
 const SlideshowLabel = styled('div')`
   font-size: 12px;
-  color: #767676;
+  color: ${({ theme }) => theme.shared.colors.greyMedium};
 `;
 
 const ImageWrapper = styled('div')`
