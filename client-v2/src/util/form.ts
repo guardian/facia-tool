@@ -105,7 +105,8 @@ export const getInitialValuesForArticleFragmentForm = (
           src: article.imageCutoutSrc,
           width: strToInt(article.imageCutoutSrcWidth),
           height: strToInt(article.imageCutoutSrcHeight),
-          origin: article.imageCutoutSrcOrigin
+          origin: article.imageCutoutSrcOrigin,
+          thumb: article.imageCutoutSrc
         },
         slideshow: slideshow.concat(slideshowBackfill)
       }
