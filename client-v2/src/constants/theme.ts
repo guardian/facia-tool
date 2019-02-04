@@ -31,10 +31,6 @@ const capiInterface = {
   backgroundSelected: shared.colors.orange
 };
 
-/* Additional styling exclusive to the application
- *  should be added to the extendedTheme type object
- *  along with the shared component library theme.
- */
 export const theme = {
   shared,
   base,
