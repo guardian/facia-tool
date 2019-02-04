@@ -65,9 +65,11 @@ object CollectionService {
       case None => 0
     }
 
+    val liveStages = Some(collection.live).map { getStoriesForStage(_, numberOfGroups) }.getOrElse(Seq())
+
     (
-      Some(collection.live).map { getStoriesForStage(_, numberOfGroups) }.getOrElse(Seq()),
-      collection.draft.map { getStoriesForStage(_, numberOfGroups) }.getOrElse(Seq())
+      liveStages,
+      collection.draft.map { getStoriesForStage(_, numberOfGroups) }.getOrElse(liveStages)
     )
   }
 
@@ -80,12 +82,7 @@ object CollectionService {
         } yield {
           group.toInt
         }
-        val group = maybeGroup match {
-          case Some(group) =>
-            val res = numberOfGroups - group - 1
-           res
-          case None => 0
-        }
+        val group = maybeGroup.getOrElse(0)
         Story(
           group,
           article.meta.flatMap(_.isBoosted).getOrElse(false)
