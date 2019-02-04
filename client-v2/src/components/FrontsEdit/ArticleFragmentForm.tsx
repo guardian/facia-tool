@@ -6,7 +6,8 @@ import {
   InjectedFormProps,
   formValueSelector,
   WrappedFieldArrayProps,
-  Field
+  Field,
+  reset
 } from 'redux-form';
 import { styled } from 'constants/theme';
 import Button from 'shared/components/input/ButtonDefault';
@@ -124,13 +125,12 @@ const formComponent: React.StatelessComponent<Props> = ({
   imageSlideshowReplace,
   imageHide,
   imageCutoutReplace,
-  onCancel,
-  initialValues,
+  onClose,
+  onDiscard,
   articleCapiFieldValues,
   pristine,
   showByline,
   editableFields,
-  reset,
   showKickerTag,
   showKickerSection,
   frontId
@@ -139,8 +139,11 @@ const formComponent: React.StatelessComponent<Props> = ({
     <CollectionHeadingPinline>
       Edit
       <ButtonContainer>
-        <Button priority="primary" onClick={onCancel} type="button" size="l">
-          Cancel
+        <Button priority="primary" onClick={onClose} type="button" size="l">
+          Close
+        </Button>
+        <Button priority="primary" onClick={onDiscard} type="button" size="l">
+          Discard
         </Button>
         <Button onClick={handleSubmit} disabled={pristine} size="l">
           Save
@@ -390,6 +393,7 @@ const ArticleFragmentForm = reduxForm<
 >({
   destroyOnUnmount: false,
   enableReinitialize: true,
+  keepDirtyOnReinitialize: true,
   onSubmit: (
     values: ArticleFragmentFormData,
     dispatch: Dispatch,
@@ -425,7 +429,8 @@ interface InterfaceProps {
   form: string;
   articleFragmentId: string;
   isSupporting?: boolean;
-  onCancel: () => void;
+  onClose: () => void;
+  onDiscard: () => void;
   onSave: (meta: ArticleFragmentMeta) => void;
   frontId: string;
 }
@@ -469,9 +474,21 @@ const createMapStateToProps = () => {
   };
 };
 
+const mapDispatchToProps = (dispatch: Dispatch, props: InterfaceProps) => ({
+  onDiscard: () => {
+    if (props.onDiscard) {
+      dispatch(reset(props.articleFragmentId));
+      props.onDiscard();
+    }
+  }
+});
+
 export {
   getArticleFragmentMetaFromFormValues,
   getInitialValuesForArticleFragmentForm
 };
 
-export default connect(createMapStateToProps)(formContainer);
+export default connect(
+  createMapStateToProps,
+  mapDispatchToProps
+)(formContainer);
