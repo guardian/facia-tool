@@ -2,7 +2,8 @@ import React from 'react';
 import { styled } from 'shared/constants/theme';
 import { connect } from 'react-redux';
 import { WrappedFieldProps } from 'redux-form';
-import deleteIcon from '../../images/icons/delete-copy.svg';
+import deleteIcon from '../../images/icons/trash.svg';
+import crossIcon from '../../images/icons/delete-copy.svg';
 import ButtonDefault from './ButtonDefault';
 import InputContainer from './InputContainer';
 import {
@@ -33,10 +34,10 @@ const ImageContainer = styled('div')<{
 const ButtonDelete = styled(ButtonDefault)`
   position: absolute;
   display: block;
-  top: calc(50% - 12px);
-  left: calc(50% - 12px);
-  height: 24px;
-  width: 24px;
+  top: 6px;
+  right: 6px;
+  height: 32px;
+  width: 32px;
   text-align: center;
   padding: 0;
   border-radius: 24px;
@@ -45,10 +46,10 @@ const ButtonDelete = styled(ButtonDefault)`
 const IconDelete = styled('img')`
   display: block;
   position: absolute;
-  height: 10px;
-  width: 10px;
-  top: 7px;
-  left: 7px;
+  height: 14px;
+  width: 14px;
+  top: 9px;
+  left: 9px;
 `;
 
 const IconAdd = IconDelete.extend`
@@ -187,7 +188,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                 }}
               />
             ) : (
-              <IconAdd src={deleteIcon} onClick={this.handleAdd} />
+              <IconAdd src={crossIcon} onClick={this.handleAdd} />
             )}
           </ButtonDelete>
         </ImageContainer>
