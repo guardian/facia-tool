@@ -53,7 +53,7 @@ class DragIntentContainer extends React.Component<Props> {
     // all other events will fire even if not active to allow the parent
     // to reset its state that was created when drag intent was initialised
     const { delay, filterEvent } = this.props;
-    if (filterEvent && filterEvent(e)) {
+    if (!filterEvent || filterEvent(e)) {
       if (this.props.active) {
         this.props.onDragIntentStart();
         if (typeof delay !== 'undefined') {

@@ -64,7 +64,7 @@ type ComponentProps = {
   size?: CollectionItemSizes;
   notifications?: string[];
   children: React.ReactNode;
-  imageDropTypes: string[];
+  imageDropTypes?: string[];
   onImageDrop?: (e: React.DragEvent<HTMLElement>) => void;
 } & ContainerProps;
 
