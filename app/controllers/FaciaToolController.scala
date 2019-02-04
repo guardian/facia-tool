@@ -44,12 +44,12 @@ class FaciaToolController(
     val collectionPriorities = configAgent.getFrontsPermissionsPriorityByCollectionId(collectionId)
 
     withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
-      val collectionsFuture = collectionService.fetchCollections(List(collectionId))
+      val collectionsFuture = collectionService.fetchCollection(collectionId)
 
-      collectionsFuture.map { collections =>
-        collections.headOption.map { collection =>
+      collectionsFuture.map { collection =>
+        collection.map { collection =>
            NoCache {
-            Ok(Json.toJson(collection.map(_.collection))).as("application/json")
+            Ok(Json.toJson(collection)).as("application/json")
           }
         }.getOrElse(Results.NotFound)
       }
