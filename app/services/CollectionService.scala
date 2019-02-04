@@ -20,11 +20,15 @@ object CollectionAndStoriesResponse {
 }
 
 class CollectionService(frontsApi: FrontsApi, containerService: ContainerService)(implicit ec: ExecutionContext) {
-  def fetchCollections(collectionIds: List[String]): Future[List[Option[CollectionAndStoriesResponse]]] = {
+
+  def fetchCollection(collectionId: String): Future[Option[CollectionJson]] = {
+    frontsApi.amazonClient.collection(collectionId)
+  }
+
+  def fetchCollectionsAndStoriesVisible(collectionIds: List[String]): Future[List[Option[CollectionAndStoriesResponse]]] = {
     FaciaToolMetrics.ApiUsageCount.increment()
     frontsApi.amazonClient.config.flatMap { config =>
-      val futures = collectionIds.map(collectionId => {
-        frontsApi.amazonClient.collection(collectionId).flatMap {
+      val futures = collectionIds.map { collectionId => fetchCollection(collectionId).flatMap {
           case Some(collection) => {
             val collectionAndStoriesResponse = CollectionAndStoriesResponse(collection,
               CollectionService.getStoriesVisibleByStage(
@@ -38,7 +42,7 @@ class CollectionService(frontsApi: FrontsApi, containerService: ContainerService
           }
           case None => Future.successful(None)
         }
-      })
+      }
       Future.sequence(futures)
     }
   }
