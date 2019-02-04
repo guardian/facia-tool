@@ -50,7 +50,7 @@ describe('Fronts actions', () => {
       expect(
         selectArticlesInCollections(sharedState, {
           collectionIds,
-          itemSet: 'live'
+          itemSet: 'draft'
         }).every(_ => !!articleFragmentSelector(sharedState, _))
       ).toBe(true);
     });
