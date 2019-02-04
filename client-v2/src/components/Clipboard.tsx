@@ -6,7 +6,8 @@ import { State } from 'types/State';
 import { insertArticleFragmentFromDropEvent } from 'util/collectionUtils';
 import {
   moveArticleFragment,
-  removeArticleFragment
+  removeArticleFragment,
+  updateArticleFragmentMeta
 } from 'actions/ArticleFragments';
 import {
   editorSelectArticleFragment,
@@ -16,7 +17,10 @@ import {
   editorCloseClipboard
 } from 'bundles/frontsUIBundle';
 import { clipboardId } from 'constants/fronts';
-import { ArticleFragment as TArticleFragment } from 'shared/types/Collection';
+import {
+  ArticleFragment as TArticleFragment,
+  ArticleFragmentMeta
+} from 'shared/types/Collection';
 import ClipboardLevel from './clipboard/ClipboardLevel';
 import ArticleFragmentLevel from './clipboard/ArticleFragmentLevel';
 import CollectionItem from './FrontsEdit/CollectionComponents/CollectionItem';
@@ -192,6 +196,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   },
   toggleClipboard: (open: boolean) =>
     dispatch(open ? editorOpenClipboard() : editorCloseClipboard()),
+  updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
+    dispatch(updateArticleFragmentMeta(id, meta)),
   dispatch
 });
 
