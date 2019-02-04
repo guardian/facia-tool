@@ -18,6 +18,16 @@ const WarningText = styled('span')`
   color: #e05e00;
 `;
 
+const ToggleDetailsButton = Button.extend`
+  position: relative;
+  z-index: 5;
+`;
+
+const AlsoOnLinksWrapper = styled('div')`
+  position: relative;
+  z-index: 5;
+`;
+
 class CollectionNotification extends React.Component<
   CollectionNotificationProps,
   ComponentState
@@ -59,7 +69,7 @@ class CollectionNotification extends React.Component<
           )}
           {!alsoOn.meritsWarning && <span>Also on other fronts.</span>}
           &nbsp;
-          <Button
+          <ToggleDetailsButton
             size="s"
             onClick={e => {
               e.stopPropagation();
@@ -69,15 +79,15 @@ class CollectionNotification extends React.Component<
             }}
           >
             {this.state.showFrontDetails ? 'Hide Details' : 'Show More'}
-          </Button>
+          </ToggleDetailsButton>
           {this.state.showFrontDetails && (
-            <div>
+            <AlsoOnLinksWrapper>
               {alsoOn.fronts.map(front => (
                 <div key={front.id}>
                   <a href={`/v2/${front.priority}/${front.id}`}>{front.id}</a>
                 </div>
               ))}
-            </div>
+            </AlsoOnLinksWrapper>
           )}
         </div>
       );
