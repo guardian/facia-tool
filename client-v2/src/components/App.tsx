@@ -3,7 +3,7 @@ import { injectGlobal, ThemeProvider } from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
 import DropDisabler from './util/DropDisabler';
 
-import { theme, styled } from 'constants/theme';
+import { theme as styleTheme, styled } from 'constants/theme';
 import { priorities } from 'constants/priorities';
 import SectionHeaderWithLogo from './layout/SectionHeaderWithLogo';
 import GHGuardianHeadlineBoldTtf from '../fonts/headline/GHGuardianHeadline-Bold.ttf';
@@ -102,7 +102,7 @@ const BackgroundHeader = styled('div')`
 `;
 
 const App = () => (
-  <ThemeProvider theme={theme}>
+  <ThemeProvider theme={styleTheme}>
     <DropDisabler>
       <AppContainer>
         <BackgroundHeader>
