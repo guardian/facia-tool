@@ -18,7 +18,10 @@ import {
   validateImageEvent,
   ValidationResponse
 } from 'shared/util/validateImageSrc';
-import { articleFragmentImageCriteria as imageCriteria } from 'constants/image';
+import {
+  articleFragmentImageCriteria as imageCriteria,
+  gridDataTransferTypes
+} from 'constants/image';
 
 interface ContainerProps {
   uuid: string;
@@ -81,9 +84,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
           <Article
             id={uuid}
             isUneditable={isUneditable}
-            {...getNodeProps({
-              onDrop: this.onDrop
-            })}
+            {...getNodeProps()}
             onDelete={onDelete}
             onAddToClipboard={() => onAddToClipboard(uuid)}
             onClick={() => onSelect(uuid)}
@@ -91,6 +92,8 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
             size={size}
             displayType={displayType}
             notifications={notifications}
+            imageDropTypes={Object.values(gridDataTransferTypes)}
+            onImageDrop={this.onDrop}
           >
             {children}
           </Article>

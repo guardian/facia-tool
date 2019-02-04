@@ -21,6 +21,7 @@ import {
   CollectionItemSizes
 } from 'shared/types/Collection';
 import { getPillarColor } from 'shared/util/getPillarColor';
+import DragIntentContainer from '../DragIntentContainer';
 
 const ArticleBodyContainer = styled(CollectionItemBody)<{
   pillarId: string | undefined;
@@ -63,6 +64,8 @@ type ComponentProps = {
   size?: CollectionItemSizes;
   notifications?: string[];
   children: React.ReactNode;
+  imageDropTypes: string[];
+  onImageDrop?: (e: React.DragEvent<HTMLElement>) => void;
 } & ContainerProps;
 
 const articleBodyComponentMap: {
@@ -72,86 +75,114 @@ const articleBodyComponentMap: {
   polaroid: ArticleBodyPolaroid
 };
 
-const ArticleComponent = ({
-  id,
-  displayType = 'default',
-  isLoading,
-  article,
-  notifications,
-  size = 'default',
-  fade = false,
-  draggable = false,
-  onDragStart = noop,
-  onDragEnter = noop,
-  onDragOver = noop,
-  onDrop = noop,
-  onDelete = noop,
-  onClick = noop,
-  onAddToClipboard = noop,
-  children,
-  isUneditable
-}: ComponentProps) => {
-  const ArticleBody = articleBodyComponentMap[displayType];
-  const getOverlayEventProps = () => ({
-    onDelete,
-    onAddToClipboard
-  });
+class ArticleComponent extends React.Component<ComponentProps> {
+  public state = {
+    isHoveredWithImage: false
+  };
 
-  return (
-    <CollectionItemContainer
-      draggable={draggable}
-      onDragStart={onDragStart}
-      onDragOver={onDragOver}
-      onDragEnter={onDragEnter}
-      onDrop={onDrop}
-      onClick={e => {
-        if (isLoading || !article) {
-          return;
-        }
-        e.stopPropagation();
-        onClick();
-      }}
-    >
-      {article && (
-        <ArticleBodyContainer
-          data-testid="article-body"
-          size={size}
-          fade={fade}
-          displayType={displayType}
-          pillarId={article.pillarId}
-          isLive={article.isLive}
-        >
-          {article && !isLoading && (
-            <ArticleBody
-              {...article}
+  public setIsHovered = (isHoveredWithImage: boolean) =>
+    this.setState({ isHoveredWithImage });
+
+  public render() {
+    const {
+      id,
+      displayType = 'default',
+      isLoading,
+      article,
+      notifications,
+      size = 'default',
+      fade = false,
+      draggable = false,
+      onDragStart = noop,
+      onDragEnter = noop,
+      onDragOver = noop,
+      onDrop = noop,
+      onDelete = noop,
+      onClick = noop,
+      onAddToClipboard = noop,
+      children,
+      isUneditable,
+      imageDropTypes = [],
+      onImageDrop = () => {}
+    } = this.props;
+    const ArticleBody = articleBodyComponentMap[displayType];
+    const getOverlayEventProps = () => ({
+      onDelete,
+      onAddToClipboard
+    });
+
+    return (
+      <CollectionItemContainer
+        draggable={draggable}
+        onDragStart={onDragStart}
+        onDragOver={onDragOver}
+        onDragEnter={onDragEnter}
+        onDrop={onDrop}
+        onClick={e => {
+          if (isLoading || !article) {
+            return;
+          }
+          e.stopPropagation();
+          onClick();
+        }}
+      >
+        {article && (
+          <DragIntentContainer
+            filterEvent={e => {
+              return e.dataTransfer.types.some(dataTransferType =>
+                imageDropTypes.includes(dataTransferType)
+              );
+            }}
+            onDragIntentStart={() => this.setIsHovered(true)}
+            onDragIntentEnd={() => this.setIsHovered(false)}
+            onDrop={onImageDrop}
+          >
+            <ArticleBodyContainer
+              data-testid="article-body"
+              style={{
+                boxShadow: this.state.isHoveredWithImage
+                  ? 'inset 0 0 0 1px orange'
+                  : 'none'
+              }}
               size={size}
-              isUneditable={isUneditable}
-              {...getOverlayEventProps()}
-              notifications={notifications}
-            />
-          )}
-          {isLoading && (
-            <ArticleBody
-              uuid={id}
-              isUneditable={true}
-              displayPlaceholders={true}
-              size={size}
-            />
-          )}
-          {!article && !isLoading && (
-            <ArticleBody
-              headline="Content not found"
-              uuid={id}
-              isUneditable={true}
-              size={size}
-            />
-          )}
-        </ArticleBodyContainer>
-      )}
-      {children}
-    </CollectionItemContainer>
-  );
-};
+              fade={fade}
+              displayType={displayType}
+              pillarId={article.pillarId}
+              isLive={article.isLive}
+            >
+              {article && !isLoading && (
+                <ArticleBody
+                  {...article}
+                  size={size}
+                  isUneditable={isUneditable}
+                  {...getOverlayEventProps()}
+                  notifications={notifications}
+                />
+              )}
+              {isLoading && (
+                <ArticleBody
+                  uuid={id}
+                  isUneditable={true}
+                  displayPlaceholders={true}
+                  size={size}
+                />
+              )}
+              {!article && !isLoading && (
+                <ArticleBody
+                  headline="Content not found"
+                  uuid={id}
+                  isUneditable={true}
+                  size={size}
+                />
+              )}
+            </ArticleBodyContainer>
+          </DragIntentContainer>
+        )}
+        {children}
+      </CollectionItemContainer>
+    );
+  }
+}
 
 const createMapStateToProps = () => {
   const articleSelector = createArticleFromArticleFragmentSelector();

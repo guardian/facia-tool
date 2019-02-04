@@ -169,6 +169,7 @@ class Level<T> extends React.Component<Props<T>> {
     if ((e as any).wasHandled || this.dragEventIsBlacklisted(e)) {
       return;
     }
+    // TODO: uncool
     (e as any).wasHandled = true;
     this.props.store.update(this.key, this.getDropIndex(e, i, isNode));
   };
@@ -184,6 +185,7 @@ class Level<T> extends React.Component<Props<T>> {
     if ((e as any).wasHandled || this.dragEventIsBlacklisted(e)) {
       return;
     }
+    // TODO: uncool
     (e as any).wasHandled = true;
 
     const { onMove = () => null, onDrop = () => null } = this.props;
