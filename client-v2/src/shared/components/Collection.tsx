@@ -131,7 +131,8 @@ const CollectionToggleContainer = styled('div')`
   cursor: pointer;
   :hover {
     ${ButtonCircularWithTransition} {
-      background-color: ${({ theme }) => theme.button.backgroundColorFocused};
+      background-color: ${({ theme }) =>
+        theme.shared.button.backgroundColorFocused};
     }
   }
 `;
