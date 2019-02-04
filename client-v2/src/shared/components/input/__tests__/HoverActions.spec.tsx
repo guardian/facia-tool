@@ -13,7 +13,7 @@ import {
   HoverOphanButton
 } from '../HoverActionButtons';
 import { ThemeProvider } from 'styled-components';
-import { theme } from 'shared/constants/theme';
+import { theme } from '../../../../constants/theme';
 
 afterEach(cleanup);
 

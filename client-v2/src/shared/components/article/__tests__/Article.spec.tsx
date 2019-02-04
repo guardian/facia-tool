@@ -4,7 +4,7 @@ import { ArticleComponent } from '../Article';
 import 'jest-dom/extend-expect';
 import derivedArticle from 'fixtures/derivedArticle';
 import { ThemeProvider } from 'styled-components';
-import { theme } from 'shared/constants/theme';
+import { theme } from '../../../../constants/theme';
 
 const takenDownArticle = { ...derivedArticle, ...{ isLive: false } };
 
