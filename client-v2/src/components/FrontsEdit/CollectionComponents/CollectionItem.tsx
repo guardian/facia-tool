@@ -27,7 +27,7 @@ interface ContainerProps {
   uuid: string;
   frontId: string;
   children?: React.ReactNode;
-  getNodeProps: (extraProps?: object) => object;
+  getNodeProps: () => object;
   onSelect: (uuid: string) => void;
   onDelete: (uuid: string) => void;
   onImageDrop?: (data: ValidationResponse) => void;

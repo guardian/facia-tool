@@ -7,7 +7,6 @@ import { CollectionItemDisplayTypes } from 'shared/types/Collection';
 import ArticleDrag from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone from 'components/DropZone';
 import { createSupportingArticlesSelector } from 'shared/selectors/shared';
-import { gridDataTransferTypes } from 'constants/image';
 
 interface OuterProps {
   articleFragmentId: string;
@@ -35,7 +34,6 @@ const ArticleFragmentLevel = ({
 }: Props) => (
   <Level
     arr={supporting || []}
-    blockingDataTransferTypes={Object.values(gridDataTransferTypes)}
     parentType="articleFragment"
     parentId={articleFragmentId}
     type="articleFragment"
@@ -43,9 +41,9 @@ const ArticleFragmentLevel = ({
     onMove={onMove}
     onDrop={onDrop}
     renderDrag={af => <ArticleDrag id={af.uuid} />}
-    renderDrop={(getProps, isTarget) => (
+    renderDrop={(props, isTarget) => (
       <DropZone
-        {...getProps()}
+        {...props}
         disabled={isUneditable}
         override={isTarget}
         dropColor="hsl(0, 0%, 64%)"

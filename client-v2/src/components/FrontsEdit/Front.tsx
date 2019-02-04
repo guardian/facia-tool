@@ -164,7 +164,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                           onMove={this.handleMove}
                           onDrop={this.handleInsert}
                         >
-                          {(articleFragment, getAfDragProps) => {
+                          {(articleFragment, afDragProps) => {
                             collectionItemCount += 1;
                             const articleNotifications: string[] = [];
                             if (
@@ -193,8 +193,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                 uuid={articleFragment.uuid}
                                 parentId={group.uuid}
                                 isUneditable={isUneditable}
-                                getNodeProps={
-                                  !isUneditable ? getAfDragProps : () => ({})
+                                getNodeProps={() =>
+                                  !isUneditable ? afDragProps : {}
                                 }
                                 onSelect={this.props.selectArticleFragment}
                                 onDelete={() =>
@@ -211,7 +211,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                   onMove={this.handleMove}
                                   onDrop={this.handleInsert}
                                 >
-                                  {(supporting, getSupportingDragProps) => (
+                                  {(supporting, supportingDragProps) => (
                                     <CollectionItem
                                       frontId={this.props.id}
                                       uuid={supporting.uuid}
@@ -223,10 +223,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                         )
                                       }
                                       isUneditable={isUneditable}
-                                      getNodeProps={
-                                        !isUneditable
-                                          ? getSupportingDragProps
-                                          : () => ({})
+                                      getNodeProps={() =>
+                                        !isUneditable ? supportingDragProps : {}
                                       }
                                       onDelete={() =>
                                         this.props.removeSupportingCollectionItem(
