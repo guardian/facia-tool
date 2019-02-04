@@ -15,7 +15,7 @@ export const ButtonCircularWithTransition = ButtonCircular.extend<{
 
   ${({ highlight, theme }) =>
     highlight
-      ? `background-color: ${theme.button.backgroundColorHighlight}`
+      ? `background-color: ${theme.shared.button.backgroundColorHighlight}`
       : ``};
 `;
 

@@ -67,7 +67,7 @@ const FormContent = styled('div')`
   overflow-y: scroll;
 `;
 
-const CollectionHeadingPinline = styled(ContainerHeadingPinline)`
+const CollectionHeadingPinline = ContainerHeadingPinline.extend`
   display: flex;
   margin-right: -11px;
   margin-bottom: 10px;

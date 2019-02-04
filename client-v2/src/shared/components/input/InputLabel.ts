@@ -8,9 +8,9 @@ export default styled('label')<{
   display: block;
   font-size: ${props =>
     props.size === 'sm'
-      ? props.theme.label.fontSizeSmall
-      : props.theme.label.fontSize};
-  line-height: ${props => props.theme.label.lineHeight};
+      ? props.theme.shared.label.fontSizeSmall
+      : props.theme.shared.label.fontSize};
+  line-height: ${props => props.theme.shared.label.lineHeight};
   font-weight: bold;
   ${props => !props.active && `color:`};
 `;

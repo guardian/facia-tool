@@ -7,7 +7,7 @@ const ContainerHeading = styled('div')`
   line-height: 22px;
   font-weight: bold;
   font-style: normal;
-  color: ${({ theme }) => theme.base.colors.text};
+  color: ${({ theme }) => theme.shared.base.colors.text};
 `;
 
 export default ContainerHeading;

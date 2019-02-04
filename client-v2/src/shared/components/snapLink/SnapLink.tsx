@@ -29,7 +29,7 @@ import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaConte
 import CollectionItemNotification from '../collectionItem/CollectionItemNotification';
 
 const SnapLinkBodyContainer = styled(CollectionItemBody)`
-  border-top-color: ${({ theme }) => theme.base.colors.borderColor};
+  border-top-color: ${({ theme }) => theme.shared.base.colors.borderColor};
 `;
 
 interface ContainerProps {

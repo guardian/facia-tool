@@ -12,13 +12,14 @@ export default styled('div')<{
 }>`
   display: flex;
   position: relative;
-  border-top: ${({ theme }) => `1px solid ${theme.base.colors.text}`};
+  border-top: ${({ theme }) => `1px solid ${theme.shared.base.colors.text}`};
   min-height: 35px;
   cursor: pointer;
   position: relative;
   min-height: ${({ size }) => (size === 'small' ? '35px' : '83px')};
   opacity: ${({ fade }) => (fade ? 0.5 : 1)};
-  background-color: ${({ theme }) => theme.base.colors.backgroundColorLight};
+  background-color: ${({ theme }) =>
+    theme.shared.base.colors.backgroundColorLight};
 
   ${HoverActionsAreaOverlay} {
     bottom: 0;
@@ -34,7 +35,7 @@ export default styled('div')<{
 
   :hover {
     background-color: ${({ theme }) =>
-      theme.base.colors.backgroundColorFocused};
+      theme.shared.base.colors.backgroundColorFocused};
 
     ${Thumbnail} {
       opacity: 0.2;
