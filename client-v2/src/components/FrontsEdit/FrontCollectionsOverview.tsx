@@ -1,5 +1,6 @@
 import React from 'react';
 import { State } from 'types/State';
+import { Dispatch } from 'types/Store';
 import { getFront } from 'selectors/frontsSelectors';
 import { FrontConfig } from 'types/FaciaApi';
 import CollectionOverview from './CollectionOverview';
@@ -8,6 +9,7 @@ import { CollectionItemSets } from 'shared/types/Collection';
 import { styled } from 'constants/theme';
 import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
 import ContentContainer from 'shared/components/layout/ContentContainer';
+import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 
 interface FrontContainerProps {
   id: string;
@@ -16,6 +18,7 @@ interface FrontContainerProps {
 
 type FrontCollectionOverviewProps = FrontContainerProps & {
   front: FrontConfig;
+  openAllCollections: (collections: string[]) => void;
 };
 
 const Container = styled(ContentContainer)`
@@ -29,10 +32,21 @@ const Container = styled(ContentContainer)`
 const FrontCollectionsOverview = ({
   id,
   front,
-  browsingStage
+  browsingStage,
+  openAllCollections
 }: FrontCollectionOverviewProps) => (
   <Container setBack>
-    <ContainerHeadingPinline>Overview</ContainerHeadingPinline>
+    <ContainerHeadingPinline>
+      Overview
+      <button
+        onClick={e => {
+          e.preventDefault();
+          openAllCollections(front.collections);
+        }}
+      >
+        toggle
+      </button>
+    </ContainerHeadingPinline>
     {front.collections.map(collectionId => (
       <CollectionOverview
         frontId={id}
@@ -48,4 +62,17 @@ const mapStateToProps = (state: State, props: FrontContainerProps) => ({
   front: getFront(state, props.id)
 });
 
-export default connect(mapStateToProps)(FrontCollectionsOverview);
+const mapDispatchToProps = (
+  dispatch: Dispatch,
+  props: FrontContainerProps
+) => ({
+  openAllCollections: (collections: string[]) =>
+    dispatch(
+      openCollectionsAndFetchTheirArticles(collections, props.browsingStage)
+    )
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FrontCollectionsOverview);
