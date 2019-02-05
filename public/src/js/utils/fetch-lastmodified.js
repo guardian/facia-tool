@@ -3,9 +3,16 @@ import {model, CONST} from 'modules/vars';
 import humanTime from 'utils/human-time';
 
 function getFrontAgeAlertMs(front) {
+
+    const defaultAlertAge = 600000;
+
+    if (!model) {
+      return defaultAlertAge;
+    }
+
     return CONST.frontAgeAlertMs[
         CONST.highFrequencyPaths.indexOf(front) > -1 ? 'front' : model.fullPriority
-    ] || 600000;
+    ] || defaultAlertAge;
 }
 
 export default function(front) {
