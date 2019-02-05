@@ -9,7 +9,10 @@ import { CollectionItemSets } from 'shared/types/Collection';
 import { styled } from 'constants/theme';
 import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
 import ContentContainer from 'shared/components/layout/ContentContainer';
-import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
+import {
+  openCollectionsAndFetchTheirArticles,
+  closeCollections
+} from 'actions/Collections';
 
 interface FrontContainerProps {
   id: string;
@@ -19,6 +22,7 @@ interface FrontContainerProps {
 type FrontCollectionOverviewProps = FrontContainerProps & {
   front: FrontConfig;
   openAllCollections: (collections: string[]) => void;
+  closeAllCollections: (collections: string[]) => void;
 };
 
 const Container = styled(ContentContainer)`
@@ -33,7 +37,8 @@ const FrontCollectionsOverview = ({
   id,
   front,
   browsingStage,
-  openAllCollections
+  openAllCollections,
+  closeAllCollections
 }: FrontCollectionOverviewProps) => (
   <Container setBack>
     <ContainerHeadingPinline>
@@ -41,10 +46,18 @@ const FrontCollectionsOverview = ({
       <button
         onClick={e => {
           e.preventDefault();
+          closeAllCollections(front.collections);
+        }}
+      >
+        close all
+      </button>
+      <button
+        onClick={e => {
+          e.preventDefault();
           openAllCollections(front.collections);
         }}
       >
-        toggle
+        open all
       </button>
     </ContainerHeadingPinline>
     {front.collections.map(collectionId => (
@@ -69,7 +82,9 @@ const mapDispatchToProps = (
   openAllCollections: (collections: string[]) =>
     dispatch(
       openCollectionsAndFetchTheirArticles(collections, props.browsingStage)
-    )
+    ),
+  closeAllCollections: (collections: string[]) =>
+    dispatch(closeCollections(collections))
 });
 
 export default connect(
