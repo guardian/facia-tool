@@ -10,9 +10,8 @@ addons:
     packages:
      - google-chrome-stable fluxbox
 before_install:
-- nvm install 5
 - nvm install 9
-- nvm use 5
+- nvm use 9
 - npm install -g grunt-cli
 - npm -g install jspm
 - npm install -g yarn

@@ -114,7 +114,7 @@ export default class ConfigFront extends BaseClass {
         this.placeholders.webTitle = ko.pureComputed(() => {
             var path = asPath(this.id());
 
-            return this.props.webTitle() || this.capiProps.webTitle() || (toTitleCase(path.slice(path.length > 1 ? 1 : 0).join(' ').replace(/\-/g, ' ')) || this.id());
+            return this.props.webTitle() || this.capiProps.webTitle() || (toTitleCase(path.slice(path.length > 1 ? 1 : 0).join(' ').replace(/-/g, ' ')) || this.id());
         });
 
         this.placeholders.title = ko.pureComputed(() => {
@@ -179,7 +179,7 @@ export default class ConfigFront extends BaseClass {
             .toLowerCase()
             .replace(/\/+/g, '/')
             .replace(/^\/|\/$/g, '')
-            .replace(/[^a-z0-9\/\-+]*/g, '')
+            .replace(/[^a-z0-9/\-+]*/g, '')
             .split('/')
             .slice(0, 3)
             .join('/')

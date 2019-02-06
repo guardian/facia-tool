@@ -232,7 +232,7 @@ function fetchMetaForPath(path) {
                 m.section = m.section || _.last((obj.id || obj.sectionId || '').split('/'));
                 m.webTitle = m.webTitle || obj.webTitle;
                 m.description = m.description || obj.description; // upcoming in Capi, at time of writing
-                m.title = m.title || obj.title;                   // this may never be added to Capi, or may under another name
+                m.title = m.title || obj.title; // this may never be added to Capi, or may under another name
                 return m;
              }, {})
             .value();

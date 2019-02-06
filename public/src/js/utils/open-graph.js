@@ -15,7 +15,7 @@ export default function (url) {
 
         const graph = {};
         Array.prototype.forEach.call(doc.querySelectorAll('meta[property^="og:"]'), tag => {
-            graph[tag.getAttribute('property').replace(/^og\:/, '')] = tag.getAttribute('content');
+            graph[tag.getAttribute('property').replace(/^og:/, '')] = tag.getAttribute('content');
         });
 
         const titleTag = doc.querySelector('title');

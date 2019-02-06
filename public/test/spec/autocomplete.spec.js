@@ -28,7 +28,12 @@ describe('Autocomplete', function () {
         it('rejects invalid characters', function (done) {
             autocomplete({
                 query: '!@£$%^&*('
-            }).then(done.fail, done);
+            }).then(() => {
+              done(new Error('Should fail with an invalid search term'));
+            }, (error) => {
+              expect(error.toString()).toEqual('Error: Invalid search term');
+              done();
+            });
         });
 
         it('rejects malformed response', function (done) {
@@ -42,7 +47,12 @@ describe('Autocomplete', function () {
             autocomplete({
                 query: 'banana',
                 path: 'fruit'
-            }).then(done.fail, done);
+            }).then(() => {
+                done(new Error('Should fail with invalid results from capi'));
+            }, (error) => {
+              expect(error.toString()).toEqual('Error: No results from CAPI');
+              done();
+            });
         });
 
         it('handles missing results', function (done) {

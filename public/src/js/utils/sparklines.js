@@ -96,10 +96,14 @@ ko.bindingHandlers.sparklines = {
 };
 
 function isEnabled () {
-    var disabledFromSwitch = vars.model.switches()['facia-tool-sparklines'] === false,
+
+     if (vars.model) {
+      const disabledFromSwitch = vars.model.switches()['facia-tool-sparklines'] === false,
         enabledFromParam = parseQueryParams().sparklines === 'please';
 
-    return !disabledFromSwitch || enabledFromParam;
+      return !disabledFromSwitch || enabledFromParam;
+    }
+    return false;
 }
 
 function allWebUrls (front) {

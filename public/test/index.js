@@ -12,7 +12,7 @@ System.config({
 });
 
 System.import('./base/public/test/test-main').then(function (testRunner) {
-    var filterTests = document.location.search.match(/[\?\&]test=[a-z-\.]+/gi) || [];
+    var filterTests = document.location.search.match(/[?&]test=[a-z-.]+/gi) || [];
 
     return testRunner.run(filterTests, window.__karma__.files);
 })
