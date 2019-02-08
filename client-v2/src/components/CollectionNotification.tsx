@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 
 import { AlsoOnDetail } from 'types/Collection';
 import Button from 'shared/components/input/ButtonDefault';
@@ -15,7 +15,7 @@ interface ComponentState {
 
 const WarningText = styled('span')`
   font-weight: bold;
-  color: #e05e00;
+  color: ${({ theme }) => theme.shared.colors.orangeDark};
 `;
 
 const ToggleDetailsButton = Button.extend`

@@ -5,24 +5,24 @@ export default styled('input')<{
 }>`
   display: block;
   appearance: none;
-  height: ${props => props.theme.input.height};
-  padding: ${props => props.theme.input.paddingY}
-    ${props => props.theme.input.paddingX};
+  height: ${props => props.theme.shared.input.height};
+  padding: ${props => props.theme.shared.input.paddingY}
+    ${props => props.theme.shared.input.paddingX};
   font-size: ${props =>
     props.useHeadlineFont
-      ? props.theme.input.fontSizeHeadline
-      : props.theme.input.fontSize};
-  color: ${props => props.theme.input.color};
-  background-color: ${props => props.theme.input.backgroundColor};
-  border: 1px solid ${props => props.theme.input.borderColor};
+      ? props.theme.shared.input.fontSizeHeadline
+      : props.theme.shared.input.fontSize};
+  color: ${props => props.theme.shared.input.color};
+  background-color: ${props => props.theme.shared.input.backgroundColor};
+  border: 1px solid ${props => props.theme.shared.input.borderColor};
   width: 100%;
   background-clip: padding-box;
   ${props => props.useHeadlineFont && `font-family: GHGuardianHeadline-Medium`};
   ::placeholder {
-    color: ${props => props.theme.input.placeholderText};
+    color: ${props => props.theme.shared.input.placeholderText};
   }
   :focus {
     outline: none;
-    border: solid 1px ${props => props.theme.input.borderColorFocus};
+    border: solid 1px ${props => props.theme.shared.input.borderColorFocus};
   }
 `;

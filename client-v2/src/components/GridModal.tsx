@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from 'react-modal';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 import ButtonDefault from 'shared/components/input/ButtonDefault';
 import deleteIcon from 'shared/images/icons/delete-copy.svg';
 
@@ -27,7 +27,7 @@ const ModalButton = styled(ButtonDefault)`
   position: absolute;
   right: 17px;
   top: 15px;
-  border-radius: 50%
+  border-radius: 50%;
   height: 27px;
   width: 27px;
 `;

@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 
 const RadioGroup = styled('div')`
   text-align: left;
@@ -18,7 +18,7 @@ const ControlIndicator = styled('div')`
   left: 0;
   width: 18px;
   height: 18px;
-  background: #fff;
+  background: ${({ theme }) => theme.shared.base.colors.backgroundColorFocused};
   /* Check mark */
   &:after {
     position: absolute;
@@ -42,7 +42,7 @@ const ControlRadio = styled('label')<{ inline?: boolean }>`
 
   & > ${ControlIndicator} {
     border-radius: 50%;
-    border: solid 1px #c9c9c9;
+    border:  ${({ theme }) => `solid 1px ${theme.shared.input.borderColor}`};
   }
 
   /* Checked state */
@@ -57,7 +57,8 @@ const ControlRadio = styled('label')<{ inline?: boolean }>`
     ${Input}:disabled ~ ${ControlIndicator} {
       pointer-events: none;
       opacity: 0.6;
-      background: #e6e6e6;
+      background:${({ theme }) =>
+        theme.base.colors.radioButtonBackgroundDisabled};
     }
   }
 
@@ -77,17 +78,19 @@ const ControlRadio = styled('label')<{ inline?: boolean }>`
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background-color: #ff7f0f;
+      background-color: ${({ theme }) =>
+        theme.shared.base.colors.highlightColor};
     }
 
     ${Input}:hover:not(:checked) ~ ${ControlIndicator}:after {
-      background-color: #ff7f0f66;
+      background-color: ${({ theme }) =>
+        theme.shared.base.colors.highlightColor};
     }
   }
 
   /* Disabled circle colour */
   & ${Input}:disabled ~ ${ControlIndicator}:after {
-    background: #7b7b7b;
+    background:${({ theme }) => theme.shared.colors.greyMedium};
   }
 `;
 

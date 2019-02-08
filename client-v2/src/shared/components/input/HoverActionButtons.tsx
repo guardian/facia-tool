@@ -32,17 +32,17 @@ const Icon = styled('img')`
 const ActionButton = ButtonCircular.extend<{ danger?: boolean }>`
   background: ${({ danger, theme }) =>
     danger
-      ? theme.button.backgroundColorHighlight
-      : theme.button.backgroundColor};
-  color: ${({ theme }) => theme.button.color};
+      ? theme.shared.button.backgroundColorHighlight
+      : theme.shared.button.backgroundColor};
+  color: ${({ theme }) => theme.shared.button.color};
   margin: 1.5px;
   margin-bottom: 2px;
   line-height: 1;
   &:hover {
     background: ${({ danger, theme }) =>
       danger
-        ? theme.button.backgroundColorHighlightFocused
-        : theme.button.backgroundColorFocused};
+        ? theme.shared.button.backgroundColorHighlightFocused
+        : theme.shared.button.backgroundColorFocused};
   }
 `;
 

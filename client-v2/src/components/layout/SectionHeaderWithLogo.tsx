@@ -1,6 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
-
+import { styled } from 'constants/theme';
 import FrontsLogo from 'images/icons/fronts-logo.svg';
 import { SectionHeaderUnpadded } from './SectionHeader';
 
@@ -9,7 +8,7 @@ const SectionHeader = styled(SectionHeaderUnpadded)`
 `;
 
 const LogoTypeContainer = styled('div')`
-  background-color: #121212;
+  background-color: ${({ theme }) => theme.shared.colors.blackDark};
   display: inline-block;
   padding: 0 16px;
   height: 60px;
@@ -17,7 +16,7 @@ const LogoTypeContainer = styled('div')`
 `;
 
 const LogoContainer = styled('div')`
-  background-color: #515151;
+  background-color: ${({ theme }) => theme.shared.colors.greyMediumDark};
   position: relative;
   display: inline-block;
   vertical-align: top;

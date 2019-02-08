@@ -1,5 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
+import { theme } from 'constants/theme';
 
 const DropContainer = styled('div')`
   position: relative;
@@ -26,7 +27,7 @@ class DropZone extends React.Component<
   public static defaultProps = {
     style: {},
     indicatorStyle: {},
-    dropColor: 'hsl(0, 0%, 84%)'
+    dropColor: theme.base.colors.dropZone
   };
 
   public state = {

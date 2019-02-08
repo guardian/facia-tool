@@ -4,5 +4,6 @@ export default styled('div')`
   width: 130px;
   height: 83px;
   background-size: cover;
-  background-color: ${({ theme }) => theme.base.colors.backgroundColorFocused};
+  background-color: ${({ theme }) =>
+    theme.shared.base.colors.backgroundColorFocused};
 `;

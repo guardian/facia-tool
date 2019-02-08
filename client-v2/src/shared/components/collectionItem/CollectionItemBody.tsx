@@ -20,7 +20,8 @@ export default styled('div')<{
     displayType === 'default' &&
     css`
       display: flex;
-      border-top: ${({ theme }) => `1px solid ${theme.base.colors.text}`};
+      border-top: ${({ theme }) =>
+        `1px solid ${theme.shared.base.colors.text}`};
     `}
   ${({ displayType }) =>
     displayType === 'polaroid' &&
@@ -31,7 +32,7 @@ export default styled('div')<{
   cursor: pointer;
   background-color: ${({ displayType, theme }) =>
     displayType === 'default'
-      ? theme.base.colors.backgroundColorLight
+      ? theme.shared.base.colors.backgroundColorLight
       : 'transparent'};
   opacity: ${({ fade }) => (fade ? 0.5 : 1)};
 
@@ -50,7 +51,7 @@ export default styled('div')<{
   :hover {
     background-color: ${({ displayType, theme }) =>
       displayType === 'default'
-        ? theme.base.colors.backgroundColorFocused
+        ? theme.shared.base.colors.backgroundColorFocused
         : 'transparent'};
 
       ${HoverActionsAreaOverlay} {

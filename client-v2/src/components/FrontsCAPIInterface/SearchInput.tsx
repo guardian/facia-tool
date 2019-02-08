@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 import ScrollContainer from '../ScrollContainer';
 import TextInput from '../TextInput';
 import CAPITagInput from '../FrontsCAPIInterface/TagInput';
@@ -31,7 +31,7 @@ interface SearchInputProps {
 
 const InputContainer = styled('div')`
   margin-bottom: 20px;
-  background: #ffffff;
+  background: ${({ theme }) => theme.capiInterface.backgroundWhite};
 `;
 
 const renderDateAsString = (date: moment.Moment | null) => {

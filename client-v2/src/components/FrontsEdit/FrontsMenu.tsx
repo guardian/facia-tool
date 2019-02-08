@@ -1,6 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
-
+import { styled } from 'constants/theme';
 import FadeIn from 'shared/components/animation/FadeIn';
 import MoreImage from 'shared/images/icons/more.svg';
 import LargeSectionHeader from '../layout/LargeSectionHeader';
@@ -17,10 +16,11 @@ const FrontsMenuContent = styled('div')`
   padding: 0 20px;
 `;
 
-const FrontsMenuHeading = LargeSectionHeader.extend`
+const FrontsMenuHeading = styled(LargeSectionHeader)`
   padding: 10px;
   margin: 0 10px 10px;
-  border-bottom: solid 1px #5e5e5e;
+  border-bottom: ${({ theme }) =>
+    `solid 1px ${theme.base.colors.frontListBorder}`};
 `;
 
 const FrontsMenuSubHeading = styled('div')`
@@ -29,7 +29,8 @@ const FrontsMenuSubHeading = styled('div')`
   font-size: 16px;
   line-height: 30px;
   font-weight: bold;
-  border-bottom: solid 1px #5e5e5e;
+  border-bottom: ${({ theme }) =>
+    `solid 1px ${theme.base.colors.frontListBorder}`};
   max-height: 100%;
 `;
 
@@ -41,19 +42,19 @@ const ButtonOverlayContainer = styled('div')`
 
 const FrontsMenuContainer = styled('div')<{ isOpen?: boolean }>`
   z-index: 100;
-  background-color: #333;
+  background-color: ${({ theme }) => theme.shared.colors.blackLight};
   position: fixed;
   height: 100%;
   width: 390px;
   top: 0;
   right: 0;
-  color: #fff;
+  color: ${({ theme }) => theme.shared.base.colors.textLight};
   transition: transform 0.15s;
   transform: ${({ isOpen }) =>
     isOpen ? 'translate3d(0px, 0, 0)' : 'translate3d(390px, 0, 0)'};
 `;
 
-const FrontsMenuSearchInputContainer = Col.extend`
+const FrontsMenuSearchInputContainer = styled(Col)`
   position: relative;
 `;
 

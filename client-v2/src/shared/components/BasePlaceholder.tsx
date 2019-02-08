@@ -13,7 +13,8 @@ injectGlobal`
 `;
 
 export default styled('div')`
-  background-color: ${({ theme }) => theme.base.colors.backgroundColorFocused};
+  background-color: ${({ theme }) =>
+    theme.shared.base.colors.backgroundColorFocused};
   position: relative;
   overflow: hidden;
 

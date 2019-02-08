@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'types/Store';
-import styled from 'styled-components';
+import { styled, theme as styleTheme } from 'constants/theme';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
 import startCase from 'lodash/startCase';
 
@@ -21,7 +21,7 @@ import noop from 'lodash/noop';
 import { getPaths } from 'util/paths';
 
 const LinkContainer = styled('div')`
-  background-color: #f6f6f6;
+  background-color: ${({ theme }) => theme.capiInterface.backgroundLight};
   display: none;
   position: absolute;
   bottom: 20px;
@@ -33,8 +33,8 @@ const LinkContainer = styled('div')`
 const Container = styled('div')`
   display: flex;
   position: relative;
-  border-top: solid 1px #c9c9c9;
-  color: #221133;
+  border-top: ${({ theme }) => `1px solid ${theme.capiInterface.borderLight}`};
+  color: ${({ theme }) => theme.capiInterface.feedItemText};
   display: flex;
   font-weight: 400;
   padding-bottom: 20px;
@@ -72,7 +72,7 @@ const VisitedWrapper = styled.a`
   color: inherit;
   cursor: auto;
   :visited ${Title} {
-    color: #888;
+    color: ${({ theme }) => theme.capiInterface.textVisited};
   }
 `;
 
@@ -149,7 +149,9 @@ const FeedItem = ({
       <MetaContainer>
         <Tone
           style={{
-            color: getPillarColor(pillarId, isLive) || '#c9c9c9'
+            color:
+              getPillarColor(pillarId, isLive) ||
+              styleTheme.capiInterface.textLight
           }}
         >
           {isLive && startCase(sectionName)}

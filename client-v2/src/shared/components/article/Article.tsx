@@ -29,11 +29,11 @@ const ArticleBodyContainer = styled(CollectionItemBody)<{
   border-top-color: ${({ size, pillarId, isLive, theme }) =>
     size === 'default' && pillarId && isLive
       ? getPillarColor(pillarId, isLive)
-      : theme.base.colors.borderColor};
+      : theme.shared.base.colors.borderColor};
 
   :hover {
     ${CollectionItemMetaHeading} {
-      color: ${({ theme }) => theme.base.colors.textMuted};
+      color: ${({ theme }) => theme.shared.base.colors.textMuted};
     }
   }
 `;

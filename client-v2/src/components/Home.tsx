@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 
 import { priorities } from 'constants/priorities';
 

@@ -8,7 +8,7 @@ import {
   WrappedFieldArrayProps,
   Field
 } from 'redux-form';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 import Button from 'shared/components/input/ButtonDefault';
 import ContentContainer from 'shared/components/layout/ContentContainer';
 import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
@@ -53,7 +53,7 @@ interface ComponentProps extends ContainerProps {
 type Props = ComponentProps &
   InjectedFormProps<ArticleFragmentFormData, ComponentProps, {}>;
 
-const FormContainer = ContentContainer.withComponent('form').extend`
+const FormContainer = styled(ContentContainer.withComponent('form'))`
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -82,14 +82,14 @@ const ButtonContainer = styled('div')`
   line-height: 0;
 `;
 
-const SlideshowRow = Row.extend`
+const SlideshowRow = styled(Row)`
   margin-top: 10px;
   margin-bottom: 5px;
 `;
 
 const SlideshowLabel = styled('div')`
   font-size: 12px;
-  color: #767676;
+  color: ${({ theme }) => theme.shared.colors.greyMedium};
 `;
 
 const ImageWrapper = styled('div')`

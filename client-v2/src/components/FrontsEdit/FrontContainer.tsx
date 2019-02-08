@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import distanceInWords from 'date-fns/distance_in_words';
 import startCase from 'lodash/startCase';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 import { Dispatch } from 'types/Store';
 import { fetchLastPressed } from 'actions/Fronts';
 import { updateCollection } from 'actions/Collections';
@@ -22,7 +22,7 @@ import SectionHeader from '../layout/SectionHeader';
 import SectionContent from '../layout/SectionContent';
 import { CollectionItemSets, Collection } from 'shared/types/Collection';
 
-const FrontHeader = SectionHeader.extend`
+const FrontHeader = styled(SectionHeader)`
   display: flex;
 `;
 

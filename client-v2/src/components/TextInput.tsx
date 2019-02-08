@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 import moreImage from 'shared/images/icons/more.svg';
 import searchImage from 'shared/images/icons/search.svg';
 import { SmallRoundButton, ClearButtonIcon } from 'util/sharedStyles/buttons';
@@ -8,12 +8,12 @@ const InputWrapper = styled('div')`
   position: relative;
   width: ${({ width }: { width?: number }) => width || 'auto'};
   display: flex;
-  border: solid 1px #c9c9c9;
-  backgroud: #fffff;
+  border: ${({ theme }) => `solid 1px ${theme.shared.input.borderColor}`};
+  background: ${({ theme }) => theme.shared.input.backgroundColor};
 `;
 
 const Input = styled(`input`)`
-  background: #fff;
+  background: ${({ theme }) => theme.shared.input.backgroundColor};
   border: none;
   width: 100%;
   height: 50px;
@@ -29,19 +29,22 @@ const Input = styled(`input`)`
   }
 `;
 
-const SmallRoundButtonOrange = SmallRoundButton.extend`
-  background-color: #ff7f0f;
+const SmallRoundButtonOrange = styled(SmallRoundButton)`
+  background-color: ${({ theme }) =>
+    theme.shared.button.backgroundColorHighlight};
   margin-right: 4px;
   padding: 4px;
   :hover {
-    background-color: #ff983f;
+    background-color: ${({ theme }) =>
+      theme.shared.button.backgroundColorHighlightFocused};
   }
 `;
 
-const SmallRoundButtonBlack = SmallRoundButton.extend`
-  background-color: #333333;
+const SmallRoundButtonBlack = styled(SmallRoundButton)`
+  background-color: ${({ theme }) => theme.shared.button.backgroundColor};
   :hover {
-    background-color: #505050;
+    background-color: ${({ theme }) =>
+      theme.shared.button.backgroundColorFocused};
   }
 `;
 

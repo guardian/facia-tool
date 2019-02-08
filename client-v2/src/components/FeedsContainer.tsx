@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 import SearchInput, {
   SearchInputState,
   initState
@@ -49,7 +49,7 @@ const RefreshButton = styled.button`
   appearance: none;
   border: none;
   background: transparent;
-  color: #333;
+  color: ${({ theme }) => theme.shared.base.colors.text};
   cursor: pointer;
   font-family: inherit;
   font-size: 13px;
@@ -57,7 +57,7 @@ const RefreshButton = styled.button`
   outline: none;
 
   &:hover {
-    color: #555;
+    color: ${({ theme }) => theme.shared.base.colors.buttonFocused};
   }
 `;
 

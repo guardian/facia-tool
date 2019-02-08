@@ -1,9 +1,9 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 
 const NotFoundContainer = styled('div')`
-  background-color: #221133;
-  color: white;
+  background-color: ${({ theme }) => theme.capiInterface.feedItemText};
+  color: ${({ theme }) => theme.shared.base.colors.textLight};
   display: flex;
   font-size: 20px;
   padding: 5px;

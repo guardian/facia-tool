@@ -2,7 +2,7 @@ import React from 'react';
 import Downshift, { GetInputPropsOptions } from 'downshift';
 import capitalize from 'lodash/capitalize';
 import debounce from 'lodash/debounce';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 import { Tag } from 'types/Capi';
 import { liveCapi } from 'services/frontsCapi';
 
@@ -18,23 +18,25 @@ const TagDropdown = styled('div')`
   margin-right: 19px;
 `;
 
-const DropdownItem = styled('div')`
-  background-color: ${({ highlighted }: { highlighted: boolean }) =>
-    highlighted ? '#dcdcdc' : 'white'};
+const DropdownItem = styled('div')<{ highlighted: boolean }>`
+  background-color: ${({ highlighted, theme }) =>
+    highlighted
+      ? theme.capiInterface.backgroundDark
+      : theme.capiInterface.backgroundLight};
   :hover {
-    background-color: #dcdcdc;
+    background-color: ${({ theme }) => theme.capiInterface.backgroundDark};
   }
   font-size: 14px;
   font-weight: bold;
   padding: 7px 15px 7px 15px;
-  border-left: 1px solid #c4c4c4;
-  color: #121212;
+  border-left: ${({ theme }) => `1px solid ${theme.capiInterface.borderLight}`};
+  color: ${({ theme }) => theme.capiInterface.text};
 `;
 
 const SearchTitle = styled('label')`
   font-size: 16px;
   font-weight: bold;
-  color: #121212;
+  color: ${({ theme }) => theme.capiInterface.text};
   margin-right: 3px;
 `;
 
@@ -54,7 +56,8 @@ const SearchInput = styled('input')`
 `;
 
 const SearchContainer = styled('div')`
-  border-bottom: solid 2px #c4c4c4;
+  border-bottom: ${({ theme }) =>
+    `2px solid ${theme.capiInterface.borderLight}`};
   padding: 2px;
   padding-top: 24px;
   margin-right: 19px;

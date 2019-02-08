@@ -3,8 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { match } from 'react-router-dom';
-import styled from 'styled-components';
-
+import { styled } from 'constants/theme';
 import getFrontsConfig from 'actions/Fronts';
 import {} from 'bundles/frontsUIBundle';
 import {
@@ -42,11 +41,11 @@ const SingleFrontContainer = styled('div')`
   min-width: 1011px;
 `;
 
-const FeedContainer = SectionContainer.extend`
+const FeedContainer = styled(SectionContainer)`
   height: 100%;
 `;
 
-const FrontsContainer = SectionContainer.extend`
+const FrontsContainer = styled(SectionContainer)`
   overflow-x: scroll;
 `;
 

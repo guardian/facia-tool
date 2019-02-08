@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 
 export default styled('div')`
   background-color: rgba(0, 0, 0, 0.5);

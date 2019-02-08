@@ -61,12 +61,12 @@ const colorMap = {
 
 const backgroundMap = {
   disabled: {
-    default: theme.colors.greyMedium,
+    default: theme.colors.greyMediumLight,
     primary: theme.colors.orangeDark,
     muted: theme.colors.greyLight
   },
   selected: {
-    default: theme.colors.greyDark,
+    default: theme.colors.greyMediumDark,
     primary: theme.colors.orangeLight,
     muted: theme.colors.greyLight
   },
@@ -79,17 +79,17 @@ const backgroundMap = {
 
 const backgroundHoverMap = {
   disabled: {
-    default: theme.colors.greyMedium,
+    default: theme.colors.greyMediumLight,
     primary: theme.colors.orangeDark,
     muted: theme.colors.greyLight
   },
   selected: {
-    default: theme.colors.greyDark,
+    default: theme.colors.greyMediumDark,
     primary: theme.colors.orangeLight,
     muted: theme.colors.greyLight
   },
   deselected: {
-    default: theme.colors.greyDark,
+    default: theme.colors.greyMediumDark,
     primary: theme.colors.orangeLight,
     muted: theme.colors.greyLight
   }

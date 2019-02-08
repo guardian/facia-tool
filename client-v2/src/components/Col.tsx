@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
 
 const Col = styled(`div`)<{
   flex?: number;

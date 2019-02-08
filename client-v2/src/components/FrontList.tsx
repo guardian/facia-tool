@@ -1,5 +1,6 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import { css } from 'styled-components';
+import { styled } from 'constants/theme';
 
 import ButtonCircular from 'shared/components/input/ButtonCircular';
 import MoreImage from 'shared/images/icons/more.svg';
@@ -17,7 +18,8 @@ const ListItem = styled('li')<{ isActive?: boolean }>`
   font-family: TS3TextSans;
   font-size: 16px;
   line-height: 20px;
-  border-bottom: solid 1px #5e5e5e;
+  border-bottom: ${({ theme }) =>
+    `solid 1px ${theme.base.colors.frontListBorder}`};
   ${({ isActive }) =>
     isActive &&
     css`
@@ -39,12 +41,12 @@ const ListLabel = styled('span')<{ isActive?: boolean }>`
   ${({ isActive }) =>
     !isActive &&
     css`
-      color: #999;
+      color: ${({ theme }) => theme.base.colors.frontListLabel};
     `};
 `;
 
-const ButtonAdd = ButtonCircular.extend`
-  background-color: #4d4d4d;
+const ButtonAdd = styled(ButtonCircular)`
+  background-color: ${({ theme }) => theme.base.colors.frontListButton};
   position: absolute;
   top: 8px;
   right: 5px;

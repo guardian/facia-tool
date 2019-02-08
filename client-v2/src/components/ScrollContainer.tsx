@@ -1,6 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
-
+import { styled } from 'constants/theme';
 // TODO: get apiKey from context (or speak directly to FrontsAPI)
 
 interface ScrollContainerProps {

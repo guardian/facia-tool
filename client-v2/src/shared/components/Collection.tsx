@@ -72,7 +72,7 @@ const CollectionDisabledTheme = styled('div')`
 const LockedCollectionFlag = styled('span')`
   font-family: GHGuardianHeadline-Regular;
   font-size: 22px;
-  color: ${({ theme }) => theme.base.colors.text};
+  color: ${({ theme }) => theme.shared.base.colors.text};
   height: 40px;
   line-height: 40px;
   font-weight: normal;
@@ -94,11 +94,11 @@ const CollectionMetaBase = styled('span')`
   padding-right: 40px;
 `;
 
-const CollectionMeta = CollectionMetaBase.extend`
+const CollectionMeta = styled(CollectionMetaBase)`
   padding-left: 10px;
 `;
 
-const ItemCountMeta = CollectionMetaBase.extend`
+const ItemCountMeta = styled(CollectionMetaBase)`
   flex: 0;
 `;
 
@@ -115,7 +115,7 @@ const CollectionHeadingText = styled('span')<{ isLoading: boolean }>`
   ${({ isLoading, theme }) =>
     isLoading &&
     css`
-      color: ${theme.base.colors.textMuted};
+      color: ${theme.shared.base.colors.textMuted};
     `} white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -131,7 +131,8 @@ const CollectionToggleContainer = styled('div')`
   cursor: pointer;
   :hover {
     ${ButtonCircularWithTransition} {
-      background-color: ${({ theme }) => theme.button.backgroundColorFocused};
+      background-color: ${({ theme }) =>
+        theme.shared.button.backgroundColorFocused};
     }
   }
 `;
@@ -140,7 +141,7 @@ const CollectionConfigContainer = styled('div')`
   display: inline-block;
   font-family: GHGuardianHeadline-Regular;
   font-size: 22px;
-  color: ${({ theme }) => theme.base.colors.text};
+  color: ${({ theme }) => theme.shared.base.colors.text};
   height: 40px;
   line-height: 40px;
   white-space: nowrap;
@@ -154,7 +155,7 @@ const CollectionConfigText = styled('div')`
 `;
 
 const CollectionConfigTextPipe = styled('span')`
-  color: ${({ theme }) => theme.base.colors.borderColor};
+  color: ${({ theme }) => theme.shared.base.colors.borderColor};
 `;
 
 const CollectionShortVerticalPinline = ShortVerticalPinline.extend`

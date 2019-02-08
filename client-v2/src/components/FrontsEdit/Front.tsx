@@ -1,5 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'constants/theme';
+import { theme } from 'constants/theme';
 import { connect } from 'react-redux';
 import { Root, Move, PosSpec } from 'lib/dnd';
 import { State } from 'types/State';
@@ -140,7 +141,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
       <React.Fragment>
         <div
           style={{
-            background: '#fff',
+            background: theme.shared.base.colors.backgroundColorLight,
             display: this.state.error ? 'block' : 'none',
             padding: '1em',
             position: 'absolute',

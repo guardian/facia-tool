@@ -25,8 +25,8 @@ const ImageContainer = styled('div')<{
   height: ${props => (props.size === 'small' ? '60px' : '115px')};
   background-color: ${props =>
     props.isHovering
-      ? props.theme.base.colors.placeholderLight
-      : props.theme.base.colors.placeholderDark};
+      ? props.theme.shared.base.colors.placeholderLight
+      : props.theme.shared.base.colors.placeholderDark};
   background-size: cover;
   transition: background-color 0.15s;
 `;
@@ -52,7 +52,7 @@ const IconDelete = styled('img')`
   left: 9px;
 `;
 
-const IconAdd = IconDelete.extend`
+const IconAdd = styled(IconDelete)`
   transform: rotate(45deg);
 `;
 
