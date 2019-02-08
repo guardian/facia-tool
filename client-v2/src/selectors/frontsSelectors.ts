@@ -279,6 +279,7 @@ const visibleFrontArticlesSelector = createSelector(
 
 export {
   getFront,
+  getFronts,
   getFrontsConfig,
   getCollectionConfig,
   frontsConfigSelector,

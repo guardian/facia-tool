@@ -79,10 +79,9 @@ class FrontsEdit extends React.Component<Props> {
 const mapStateToProps = (state: State, props: Props) => ({
   error: state.error,
   staleFronts: state.staleFronts,
-  frontIds: selectEditorFrontsByPriority(
-    state,
-    props.match.params.priority || ''
-  )
+  frontIds: selectEditorFrontsByPriority(state, {
+    priority: props.match.params.priority || ''
+  })
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>

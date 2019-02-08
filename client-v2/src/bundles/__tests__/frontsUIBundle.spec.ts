@@ -15,8 +15,10 @@ import {
   selectIsClipboardOpen,
   editorOpenClipboard,
   editorCloseAllOverviews,
-  editorOpenAllOverviews
+  editorOpenAllOverviews,
+  selectEditorFrontsByPriority
 } from '../frontsUIBundle';
+import initialState from 'fixtures/initialState';
 import { Action } from 'types/Action';
 
 type State = ReturnType<typeof innerReducer>;
@@ -28,6 +30,21 @@ const reducer = (state: State | undefined, action: Action) => ({
 });
 
 describe('frontsUIBundle', () => {
+  describe('selectors', () => {
+    it('should select editor fronts by priority', () => {
+      expect(
+        selectEditorFrontsByPriority(initialState, { priority: 'commercial' })
+          .length
+      ).toEqual(1);
+    });
+    it('should memoize editor fronts by priority', () => {
+      expect(
+        selectEditorFrontsByPriority(initialState, { priority: 'commercial' })
+      ).toBe(
+        selectEditorFrontsByPriority(initialState, { priority: 'commercial' })
+      );
+    });
+  });
   describe('reducer', () => {
     it('should add a front to the open editor fronts', () => {
       const state = reducer(undefined, editorOpenFront('exampleFront') as any);

@@ -18,6 +18,8 @@ import {
 } from 'types/Action';
 import { State as GlobalState } from 'types/State';
 import { events } from 'services/GA';
+import { getFronts } from 'selectors/frontsSelectors';
+import { createSelector } from 'reselect';
 
 const EDITOR_OPEN_FRONT = 'EDITOR_OPEN_FRONT';
 const EDITOR_CLOSE_FRONT = 'EDITOR_CLOSE_FRONT';
@@ -166,18 +168,22 @@ const selectIsFrontOverviewOpen = <T extends { editor: State }>(
   frontId: string
 ) => !state.editor.closedOverviews.includes(frontId);
 
-const selectEditorFrontsByPriority = <
-  T extends { editor: State; fronts: GlobalState['fronts'] }
->(
-  state: T,
-  priority: string
-) => {
-  const frontsInConfig = state.fronts.frontsConfig.data.fronts;
-  return state.editor.frontIds.filter(frontId => {
-    const frontConfig = frontsInConfig[frontId];
-    return frontConfig && frontConfig.priority === priority;
-  });
-};
+const selectPriority = (
+  _: GlobalState,
+  { priority }: { priority: string }
+): string => priority;
+
+const selectEditorFrontsByPriority = createSelector(
+  getFronts,
+  selectEditorFronts,
+  selectPriority,
+  (fronts, openFrontIds, priority) => {
+    return openFrontIds.filter(frontId => {
+      const frontConfig = fronts[frontId];
+      return frontConfig && frontConfig.priority === priority;
+    });
+  }
+);
 
 const selectEditorArticleFragment = <T extends { editor: State }>(
   state: T,
