@@ -50,7 +50,7 @@ class CollectionService(frontsApi: FrontsApi, containerService: ContainerService
 
 object CollectionService {
   def getStoriesVisibleByStage(collectionId: String, collection: CollectionJson, config: ConfigJson, containerService: ContainerService): Option[StoriesVisibleByStage] = {
-    val stages = CollectionService.getStoriesForCollectionStages(collectionId, collection, config)
+    val stages = CollectionService.getStoriesForCollectionStages(collectionId, collection)
     config.collections.get(collectionId).flatMap(_.`type`) match {
       case Some(cType) =>
         Some(
@@ -63,34 +63,28 @@ object CollectionService {
     }
   }
 
-  def getStoriesForCollectionStages(collectionId: String, collection: CollectionJson, config: ConfigJson): (Seq[Story], Seq[Story]) = {
-    val numberOfGroups = config.collections.get(collectionId) match {
-      case Some(collectionConfig) => collectionConfig.groups.map(_.length).getOrElse(0)
-      case None => 0
-    }
-
-    val liveStages = Some(collection.live).map { getStoriesForStage(_, numberOfGroups) }.getOrElse(Seq())
+  def getStoriesForCollectionStages(collectionId: String, collection: CollectionJson): (Seq[Story], Seq[Story]) = {
+    val liveStages = Some(collection.live).map(getStoriesForStage).getOrElse(Seq())
 
     (
       liveStages,
-      collection.draft.map { getStoriesForStage(_, numberOfGroups) }.getOrElse(liveStages)
+      collection.draft.map(getStoriesForStage).getOrElse(liveStages)
     )
   }
 
-  def getStoriesForStage(stage: List[Trail], numberOfGroups: Int): Seq[Story] = {
-    stage.zipWithIndex.map {
-      case (article, index) =>
-        val maybeGroup = for {
-          meta <- article.meta
-          group <- meta.group
-        } yield {
-          group.toInt
-        }
-        val group = maybeGroup.getOrElse(0)
-        Story(
-          group,
-          article.meta.flatMap(_.isBoosted).getOrElse(false)
-        )
+  def getStoriesForStage(stage: List[Trail]): Seq[Story] = {
+    stage.map { article =>
+      val maybeGroup = for {
+        meta <- article.meta
+        group <- meta.group
+      } yield {
+        group.toInt
+      }
+      val group = maybeGroup.getOrElse(0)
+      Story(
+        group,
+        article.meta.flatMap(_.isBoosted).getOrElse(false)
+      )
     }.sortBy(_.group).reverse
   }
 }
