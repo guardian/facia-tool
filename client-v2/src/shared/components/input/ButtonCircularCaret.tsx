@@ -11,7 +11,7 @@ export const ButtonCircularWithTransition = ButtonCircular.extend<{
   display: inline-block;
   text-align: center;
   padding: 0;
-  transform: rotate(-90deg);
+  transform: rotate(0deg);
 
   ${({ highlight, theme }) =>
     highlight
@@ -37,7 +37,7 @@ export default ({
     highlight={preActive}
     style={{
       transform: active
-        ? 'rotate(0deg)'
+        ? 'rotate(-180deg)'
         : preActive
         ? 'rotate(-45deg)'
         : undefined
