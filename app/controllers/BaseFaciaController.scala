@@ -74,7 +74,7 @@ abstract class BaseFaciaController(deps: BaseFaciaControllerComponents) extends 
   override def invalidUserMessage(claimedAuth: AuthenticatedUser): String = {
     if( (claimedAuth.user.emailDomain == "guardian.co.uk") && !claimedAuth.multiFactor)
       s"${claimedAuth.user.email} is not valid for use with the Fronts Tool. You need to have two factor authentication enabled and be granted permission." +
-        s" Please contact Central Production by emailing core.central.production@guardian.co.uk and request access to The Fronts Tool."
+        s" Please contact Central Production by emailing central.production@theguardian.com and request access to The Fronts Tool."
     else if (!userInGroups(claimedAuth)) s"${claimedAuth.user.email} does not have permission to access the Fronts tool. Please contact Central Production by emailing core.central.production@guardian.co.uk"
 
     else s"${claimedAuth.user.email} is not valid for use with the Fronts Tool. You need to use your Guardian Google account to login. Please sign in with your Guardian Google account first, then retry logging in."
