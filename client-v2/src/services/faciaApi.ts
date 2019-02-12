@@ -19,6 +19,10 @@ import { CapiArticle } from 'types/Capi';
 import chunk from 'lodash/chunk';
 import { CAPISearchQueryReponse } from './capiQuery';
 import flatMap from 'lodash/flatMap';
+import { State } from 'types/State';
+import { Dispatch, ThunkResult } from 'types/Store';
+import { selectParamsAndFetchCollection } from 'actions/Collections';
+import { collection } from 'shared/fixtures/shared';
 
 function fetchFrontsConfig(): Promise<FrontsConfig> {
   return pandaFetch('/config', {
@@ -188,7 +192,7 @@ async function saveOpenFrontIds(frontIds?: string[]): Promise<void> {
 async function getCollection(
   collectionId: string
 ): Promise<CollectionResponse> {
-  const collections = await getCollections([collectionId]);
+  const collections = await getCollections([collectionId]); //collections: {id: string;type: string;lastUpdated?: number | undefined;}[]):
   const [collection] = collections;
   if (!collection) {
     throw new Error(`Collection with id ${collectionId} not found`);
@@ -197,26 +201,14 @@ async function getCollection(
 }
 
 async function getCollections(
-  collectionIds: string[]
-): Promise<Array<CollectionResponse | null>> {
-  const params = new URLSearchParams();
-  collectionIds.map(_ => params.append('ids', _));
-  const response = await pandaFetch(`/collections?${params.toString()}`, {
-    method: 'get',
+  collections: Array<{ id: string; type: string; lastUpdated?: number }>
+): Promise<Array<CollectionResponse>> {
+  const response = await pandaFetch(`/collections`, {
+    body: JSON.stringify(collections),
+    method: 'post',
     credentials: 'same-origin'
   });
-  const collectionResponses: Array<CollectionResponse | null> = await response.json();
-  return collectionResponses.map((collectionResponse, index) =>
-    collectionResponse
-      ? {
-          ...collectionResponse,
-          collection: {
-            ...collectionResponse.collection,
-            id: collectionIds[index]
-          }
-        }
-      : null
-  );
+  return await response.json();
 }
 
 /**
