@@ -5,7 +5,7 @@ import {
   updateCollection as updateCollectionFromApi,
   fetchVisibleArticles
 } from 'services/faciaApi';
-import { VisibleArticlesResponse } from 'types/FaciaApi';
+import { VisibleArticlesResponse, CollectionResponse } from 'types/FaciaApi';
 import {
   selectUserEmail,
   selectFirstName,
@@ -44,12 +44,49 @@ import difference from 'lodash/difference';
 import { selectArticlesInCollections } from 'shared/selectors/collection';
 import { editorOpenCollections } from 'bundles/frontsUIBundle';
 import flatten from 'lodash/flatten';
+import { createCollectionSelector } from 'shared/selectors/shared';
 
-function getCollections(collectionIds: string[]): ThunkResult<Promise<void>> {
+const selectCollection = createCollectionSelector();
+
+function selectParamsAndFetchCollection(
+  collectionIds: string[],
+  returnOnlyUpdatedCollections: boolean
+): ThunkResult<Promise<Array<CollectionResponse>>> {
+  return async (dispatch: Dispatch, getState: () => State) => {
+    const state = getState();
+    const params = collectionIds.map(id => {
+      const maybeCollection = selectCollection(state, { collectionId: id });
+      const config = getCollectionConfig(state, id);
+      if (!maybeCollection) {
+        throw new Error(`Collection ID ${id} does not exist in state`);
+      }
+      if (!config) {
+        throw new Error(`Collection ID ${id} does not exist in config`);
+      }
+      const lastUpdated = maybeCollection.lastUpdated;
+      const type = config.type;
+      return returnOnlyUpdatedCollections
+        ? { id, type, lastUpdated }
+        : { id, type };
+    });
+
+    return await fetchCollection(params);
+  };
+}
+
+function getCollections(
+  collectionIds: string[],
+  returnOnlyUpdatedCollections: boolean = false
+): ThunkResult<Promise<void>> {
   return async (dispatch: Dispatch, getState: () => State) => {
     dispatch(collectionActions.fetchStart(collectionIds));
     try {
-      const collectionResponses = await fetchCollection(collectionIds);
+      const collectionResponses = await dispatch(
+        selectParamsAndFetchCollection(
+          collectionIds,
+          returnOnlyUpdatedCollections
+        )
+      );
       const actions = collectionResponses.map((collectionResponse, index) => {
         const collectionId = collectionIds[index];
         const collectionConfig = getCollectionConfig(getState(), collectionId);
@@ -219,6 +256,7 @@ export {
   getCollections,
   getArticlesForCollections,
   openCollectionsAndFetchTheirArticles,
+  selectParamsAndFetchCollection,
   fetchArticles,
   updateCollection
 };
