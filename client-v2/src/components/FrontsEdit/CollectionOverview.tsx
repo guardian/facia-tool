@@ -8,7 +8,7 @@ import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
 import {
-  isCollectionUneditableSelector,
+  isCollectionLockedSelector,
   isCollectionBackfilledSelector,
   createCollectionHasUnsavedArticleEditsWarningSelector
 } from 'selectors/collectionSelectors';
@@ -221,7 +221,7 @@ const mapStateToProps = () => {
     hasUnpublishedChanges: hasUnpublishedChangesSelector(state, {
       collectionId: props.collectionId
     }),
-    isUneditable: isCollectionUneditableSelector(state, props.collectionId),
+    isUneditable: isCollectionLockedSelector(state, props.collectionId),
     isBackfilled: isCollectionBackfilledSelector(state, props.collectionId),
     hasUnsavedArticleEdits: hasUnsavedArticleEditsSelector(state, {
       collectionSet: props.browsingStage,

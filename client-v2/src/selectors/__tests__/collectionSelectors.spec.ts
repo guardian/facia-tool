@@ -1,6 +1,6 @@
 import {
   isCollectionBackfilledSelector,
-  isCollectionUneditableSelector,
+  isCollectionLockedSelector,
   createCollectionHasUnsavedArticleEditsWarningSelector
 } from 'selectors/collectionSelectors';
 import { frontsConfig } from 'fixtures/frontsConfig';
@@ -46,7 +46,7 @@ describe('Checking if Collection Articles on Fronts have dirty form data', () =>
 describe('Validating Front Collection configuration metadata', () => {
   it('validates correctly if Collection is uneditable ', () => {
     expect(
-      isCollectionUneditableSelector(
+      isCollectionLockedSelector(
         {
           fronts: {
             frontsConfig
@@ -56,7 +56,7 @@ describe('Validating Front Collection configuration metadata', () => {
       )
     ).toEqual(true);
     expect(
-      isCollectionUneditableSelector(
+      isCollectionLockedSelector(
         {
           fronts: {
             frontsConfig
