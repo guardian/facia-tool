@@ -42,7 +42,10 @@ import {
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import difference from 'lodash/difference';
 import { selectArticlesInCollections } from 'shared/selectors/collection';
-import { editorOpenCollections } from 'bundles/frontsUIBundle';
+import {
+  editorOpenCollections,
+  editorCloseCollections
+} from 'bundles/frontsUIBundle';
 import flatten from 'lodash/flatten';
 
 function getCollections(collectionIds: string[]): ThunkResult<Promise<void>> {
@@ -199,6 +202,12 @@ const openCollectionsAndFetchTheirArticles = (
   return dispatch(getArticlesForCollections(collectionIds, itemSet));
 };
 
+const closeCollections = (collectionIds: string[]): ThunkResult<void> => {
+  return dispatch => {
+    return dispatch(editorCloseCollections(collectionIds));
+  };
+};
+
 function getVisibleArticles(
   collection: Collection,
   state: State,
@@ -219,6 +228,7 @@ export {
   getCollections,
   getArticlesForCollections,
   openCollectionsAndFetchTheirArticles,
+  closeCollections,
   fetchArticles,
   updateCollection
 };
