@@ -21,7 +21,8 @@ const FeedWrapper = styled('div')`
 `;
 
 const ClipboardWrapper = styled('div')`
-  width: 180px;
+  border: 1px solid #c9c9c9;
+  border-top: 1px solid black;
   overflow-y: scroll;
 `;
 

@@ -64,6 +64,35 @@ interface EditorClearArticleFragmentSelection {
   };
 }
 
+interface EditorOpenClipboard {
+  type: 'EDITOR_OPEN_CLIPBOARD';
+}
+
+interface EditorCloseClipboard {
+  type: 'EDITOR_CLOSE_CLIPBOARD';
+}
+
+interface EditorOpenOverview {
+  type: 'EDITOR_OPEN_OVERVIEW';
+  payload: {
+    frontId: string;
+  };
+}
+interface EditorCloseOverview {
+  type: 'EDITOR_CLOSE_OVERVIEW';
+  payload: {
+    frontId: string;
+  };
+}
+
+interface EditorOpenAllOverviews {
+  type: 'EDITOR_OPEN_ALL_OVERVIEWS';
+}
+
+interface EditorCloseAllOverviews {
+  type: 'EDITOR_CLOSE_ALL_OVERVIEWS';
+}
+
 interface ActionPersistMeta {
   meta: PersistMeta;
 }
@@ -206,6 +235,12 @@ type Action =
   | EditorCloseFront
   | EditorSelectArticleFragment
   | EditorClearArticleFragmentSelection
+  | EditorOpenClipboard
+  | EditorCloseClipboard
+  | EditorOpenOverview
+  | EditorCloseOverview
+  | EditorOpenAllOverviews
+  | EditorCloseAllOverviews
   | RecordStaleFronts
   | BatchAction
   | FetchVisibleArticlesSuccess
@@ -244,6 +279,12 @@ export {
   EditorCloseCollection,
   EditorSelectArticleFragment,
   EditorClearArticleFragmentSelection,
+  EditorOpenClipboard,
+  EditorCloseClipboard,
+  EditorOpenOverview,
+  EditorCloseOverview,
+  EditorOpenAllOverviews,
+  EditorCloseAllOverviews,
   RecordStaleFronts,
   StartConfirm,
   EndConfirm

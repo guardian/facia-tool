@@ -11,13 +11,37 @@ import {
 import {
   editorSelectArticleFragment,
   selectEditorArticleFragment,
-  editorClearArticleFragmentSelection
+  editorClearArticleFragmentSelection,
+  selectIsClipboardOpen,
+  editorOpenClipboard,
+  editorCloseClipboard
 } from 'bundles/frontsUIBundle';
 import { clipboardId } from 'constants/fronts';
 import { ArticleFragment as TArticleFragment } from 'shared/types/Collection';
 import ClipboardLevel from './clipboard/ClipboardLevel';
 import ArticleFragmentLevel from './clipboard/ArticleFragmentLevel';
 import CollectionItem from './FrontsEdit/CollectionComponents/CollectionItem';
+import { styled } from 'constants/theme';
+import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
+
+const ClipboardHeader = styled.div`
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: ${({ theme }) =>
+    `1px solid ${theme.shared.base.colors.borderColor}`};
+  display: flex;
+  padding: 10px;
+`;
+
+const ClipboardTitle = styled.h2`
+  font-size: 14px;
+  line-height: 1;
+  margin: 0;
+`;
+
+const ClipboardBody = styled.div`
+  padding: 10px;
+`;
 
 interface ClipboardProps {
   selectedArticleFragment: { id: string; isSupporting: boolean } | void;
@@ -25,6 +49,8 @@ interface ClipboardProps {
   clearArticleFragmentSelection: () => void;
   removeCollectionItem: (id: string) => void;
   removeSupportingCollectionItem: (parentId: string, id: string) => void;
+  isClipboardOpen: boolean;
+  toggleClipboard: (open: boolean) => void;
   dispatch: Dispatch;
 }
 
@@ -63,64 +89,97 @@ class Clipboard extends React.Component<ClipboardProps> {
 
   public render() {
     return (
-      <Root
-        id="clipboard"
-        data-testid="clipboard"
-        style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
-      >
-        <ClipboardLevel onMove={this.handleMove} onDrop={this.handleInsert}>
-          {(articleFragment, afProps) => (
-            <CollectionItem
-              uuid={articleFragment.uuid}
-              parentId={clipboardId}
-              getNodeProps={() => afProps}
-              displayType="polaroid"
-              onSelect={this.props.selectArticleFragment}
-              isSelected={
-                !this.props.selectedArticleFragment ||
-                this.props.selectedArticleFragment.id === articleFragment.uuid
-              }
-              onDelete={() => this.removeCollectionItem(articleFragment.uuid)}
-              {...afProps}
+      <>
+        <ClipboardHeader>
+          {this.props.isClipboardOpen && (
+            <ClipboardTitle>Clipboard</ClipboardTitle>
+          )}
+          <ButtonCircularCaret
+            openDir="right"
+            active={this.props.isClipboardOpen}
+            preActive={false}
+            onClick={() =>
+              this.props.toggleClipboard(!this.props.isClipboardOpen)
+            }
+          />
+        </ClipboardHeader>
+        <ClipboardBody>
+          {this.props.isClipboardOpen && (
+            <Root
+              id="clipboard"
+              data-testid="clipboard"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+                width: '160px'
+              }}
             >
-              <ArticleFragmentLevel
-                articleFragmentId={articleFragment.uuid}
+              <ClipboardLevel
                 onMove={this.handleMove}
                 onDrop={this.handleInsert}
-                displayType="polaroid"
               >
-                {(supporting, sProps) => (
+                {(articleFragment, afProps) => (
                   <CollectionItem
-                    uuid={supporting.uuid}
-                    parentId={articleFragment.uuid}
-                    getNodeProps={() => sProps}
-                    size="small"
+                    uuid={articleFragment.uuid}
+                    parentId={clipboardId}
+                    getNodeProps={() => afProps}
                     displayType="polaroid"
-                    onSelect={id => this.props.selectArticleFragment(id, true)}
+                    onSelect={this.props.selectArticleFragment}
                     isSelected={
                       !this.props.selectedArticleFragment ||
-                      this.props.selectedArticleFragment.id === supporting.uuid
+                      this.props.selectedArticleFragment.id ===
+                        articleFragment.uuid
                     }
-                    {...sProps}
                     onDelete={() =>
-                      this.removeSupportingCollectionItem(
-                        articleFragment.uuid,
-                        supporting.uuid
-                      )
+                      this.removeCollectionItem(articleFragment.uuid)
                     }
-                  />
+                    {...afProps}
+                  >
+                    <ArticleFragmentLevel
+                      articleFragmentId={articleFragment.uuid}
+                      onMove={this.handleMove}
+                      onDrop={this.handleInsert}
+                      displayType="polaroid"
+                    >
+                      {(supporting, sProps) => (
+                        <CollectionItem
+                          uuid={supporting.uuid}
+                          parentId={articleFragment.uuid}
+                          getNodeProps={() => sProps}
+                          size="small"
+                          displayType="polaroid"
+                          onSelect={id =>
+                            this.props.selectArticleFragment(id, true)
+                          }
+                          isSelected={
+                            !this.props.selectedArticleFragment ||
+                            this.props.selectedArticleFragment.id ===
+                              supporting.uuid
+                          }
+                          onDelete={() =>
+                            this.removeSupportingCollectionItem(
+                              articleFragment.uuid,
+                              supporting.uuid
+                            )
+                          }
+                        />
+                      )}
+                    </ArticleFragmentLevel>
+                  </CollectionItem>
                 )}
-              </ArticleFragmentLevel>
-            </CollectionItem>
+              </ClipboardLevel>
+            </Root>
           )}
-        </ClipboardLevel>
-      </Root>
+        </ClipboardBody>
+      </>
     );
   }
 }
 
 const mapStateToProps = (state: State) => ({
-  selectedArticleFragment: selectEditorArticleFragment(state, clipboardId)
+  selectedArticleFragment: selectEditorArticleFragment(state, clipboardId),
+  isClipboardOpen: selectIsClipboardOpen(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -144,6 +203,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       removeArticleFragment('articleFragment', parentId, uuid, 'clipboard')
     );
   },
+  toggleClipboard: (open: boolean) =>
+    dispatch(open ? editorOpenClipboard() : editorCloseClipboard()),
   dispatch
 });
 
