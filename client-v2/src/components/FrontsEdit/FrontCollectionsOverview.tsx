@@ -8,11 +8,12 @@ import { closeCollections } from 'actions/Collections';
 import { FrontConfig } from 'types/FaciaApi';
 import CollectionOverview from './CollectionOverview';
 import { CollectionItemSets } from 'shared/types/Collection';
+import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
+import ContentContainer from 'shared/components/layout/ContentContainer';
+import ButtonCircularWithLabel from 'shared/components/input/ButtonCircularWithLabel';
 import ButtonCircularCaret, {
   ButtonCircularWithTransition
 } from 'shared/components/input/ButtonCircularCaret';
-import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
-import ContentContainer from 'shared/components/layout/ContentContainer';
 
 interface FrontContainerProps {
   id: string;
@@ -23,10 +24,6 @@ type FrontCollectionOverviewProps = FrontContainerProps & {
   front: FrontConfig;
   closeAllCollections: (collections: string[]) => void;
 };
-interface CollectionOverviewCollapseAllButtonProps {
-  front: FrontConfig;
-  closeAllCollections: (collections: string[]) => void;
-}
 
 const Container = styled(ContentContainer)`
   display: flex;
@@ -36,11 +33,14 @@ const Container = styled(ContentContainer)`
   width: 380px;
 `;
 
-const CollapseAllButtonContainer = styled('div')`
+const ContainerMeta = styled('div')`
   margin-top: 10px;
   width: 100%;
   display: flex;
   justify-content: flex-end;
+`;
+
+const CollapseAllButton = styled(ButtonCircularWithLabel)`
   :hover {
     ${ButtonCircularWithTransition} {
       background-color: ${({ theme }) =>
@@ -48,31 +48,6 @@ const CollapseAllButtonContainer = styled('div')`
     }
   }
 `;
-
-const CollapseAllDiv = styled('div')`
-  cursor: pointer;
-  font-family: TS3TextSans-Bold;
-  font-size: 14px;
-`;
-
-const CollapseAllLabel = styled('div')`
-  display: inline-block;
-`;
-
-const CollapseAllButton = ({
-  front,
-  closeAllCollections
-}: CollectionOverviewCollapseAllButtonProps) => (
-  <CollapseAllDiv
-    onClick={e => {
-      e.preventDefault();
-      closeAllCollections(front.collections);
-    }}
-  >
-    <ButtonCircularCaret small={true} active={true} preActive={false} />{' '}
-    <CollapseAllLabel>Collapse all</CollapseAllLabel>
-  </CollapseAllDiv>
-);
 
 const FrontCollectionsOverview = ({
   id,
@@ -82,12 +57,17 @@ const FrontCollectionsOverview = ({
 }: FrontCollectionOverviewProps) => (
   <Container setBack>
     <ContainerHeadingPinline>Overview</ContainerHeadingPinline>
-    <CollapseAllButtonContainer>
+    <ContainerMeta>
       <CollapseAllButton
-        front={front}
-        closeAllCollections={closeAllCollections}
-      />
-    </CollapseAllButtonContainer>
+        onClick={e => {
+          e.preventDefault();
+          closeAllCollections(front.collections);
+        }}
+        label={'Collapse all'}
+      >
+        <ButtonCircularCaret small active preActive={false} />
+      </CollapseAllButton>
+    </ContainerMeta>
     {front.collections.map(collectionId => (
       <CollectionOverview
         frontId={id}
