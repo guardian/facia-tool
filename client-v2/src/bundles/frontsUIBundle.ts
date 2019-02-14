@@ -151,17 +151,27 @@ interface State {
   };
 }
 
-const selectEditorFronts = (state: GlobalState) => state.editor.frontIds;
-const selectIsCollectionOpen = (state: GlobalState, collectionId: string) =>
-  state.editor.collectionIds.indexOf(collectionId) !== -1;
+const selectEditorFronts = <T extends { editor: State }>(state: T) =>
+  state.editor.frontIds;
+const selectIsCollectionOpen = <T extends { editor: State }>(
+  state: T,
+  collectionId: string
+) => state.editor.collectionIds.indexOf(collectionId) !== -1;
 
-const selectIsClipboardOpen = (state: GlobalState) =>
+const selectIsClipboardOpen = <T extends { editor: State }>(state: T) =>
   state.editor.clipboardOpen;
 
-const selectIsFrontOverviewOpen = (state: GlobalState, frontId: string) =>
-  !state.editor.closedOverviews.includes(frontId);
+const selectIsFrontOverviewOpen = <T extends { editor: State }>(
+  state: T,
+  frontId: string
+) => !state.editor.closedOverviews.includes(frontId);
 
-const selectEditorFrontsByPriority = (state: GlobalState, priority: string) => {
+const selectEditorFrontsByPriority = <
+  T extends { editor: State; fronts: GlobalState['fronts'] }
+>(
+  state: T,
+  priority: string
+) => {
   const frontsInConfig = state.fronts.frontsConfig.data.fronts;
   return state.editor.frontIds.filter(frontId => {
     const frontConfig = frontsInConfig[frontId];
@@ -169,8 +179,10 @@ const selectEditorFrontsByPriority = (state: GlobalState, priority: string) => {
   });
 };
 
-const selectEditorArticleFragment = (state: GlobalState, frontId: string) =>
-  state.editor.selectedArticleFragments[frontId];
+const selectEditorArticleFragment = <T extends { editor: State }>(
+  state: T,
+  frontId: string
+) => state.editor.selectedArticleFragments[frontId];
 
 const defaultState = {
   frontIds: [],

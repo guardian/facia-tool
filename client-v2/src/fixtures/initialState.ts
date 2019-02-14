@@ -649,7 +649,13 @@ const state = {
   },
   unpublishedChanges: {},
   clipboard: ['56a3b407-741c-439f-a678-175abea44a9f'],
-  editor: { frontIds: [], collectionIds: [], selectedArticleFragments: {} },
+  editor: {
+    frontIds: [],
+    collectionIds: [],
+    selectedArticleFragments: {},
+    closedOverviews: [],
+    clipboardOpen: true
+  },
   staleFronts: {},
   form: {},
   capiLiveFeed: {
