@@ -701,6 +701,11 @@
   version "4.14.117"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.117.tgz#695a7f514182771a1e0f4345d189052ee33c8778"
 
+"@types/mousetrap@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@types/mousetrap/-/mousetrap-1.6.1.tgz#2016a2e68a12e5a8d693715c28d5dc26f2f7e00b"
+  integrity sha512-OB0WDTEzIi2sXIySkGEEFvYnH9et3hXXJnn74lKO0xZgGFdCNxQqVRbwcYHc9Q07h9yqFLJFEA5zvdAd7nf8Vg==
+
 "@types/node@*":
   version "10.12.1"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.1.tgz#da61b64a2930a80fa708e57c45cd5441eb379d5b"
@@ -6012,6 +6017,11 @@ moment@^2.10.3, moment@^2.14.1:
 moo@^0.4.3:
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/moo/-/moo-0.4.3.tgz#3f847a26f31cf625a956a87f2b10fbc013bfd10e"
+
+mousetrap@^1.6.2:
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/mousetrap/-/mousetrap-1.6.2.tgz#caadd9cf886db0986fb2fee59a82f6bd37527587"
+  integrity sha512-jDjhi7wlHwdO6q6DS7YRmSHcuI+RVxadBkLt3KHrhd3C2b+w5pKefg3oj5beTcHZyVFA9Aksf+yEE1y5jxUjVA==
 
 move-concurrently@^1.0.1:
   version "1.0.1"

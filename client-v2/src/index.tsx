@@ -13,6 +13,7 @@ import { storeClipboardContent } from 'actions/Clipboard';
 import { Dispatch } from 'types/Store';
 import Modal from 'react-modal';
 import { init as initGA } from 'services/GA';
+import { init } from 'keyboard-shortcuts/init';
 
 initGA();
 
@@ -38,6 +39,10 @@ if (config.frontIds) {
 }
 
 (store.dispatch as Dispatch)(storeClipboardContent(config.clipboardArticles));
+
+// @ts-ignore unbind is not used yet but can be used for removed all the
+// keyboard events
+const unbind = init(store);
 
 const reactMount = document.getElementById('react-mount');
 

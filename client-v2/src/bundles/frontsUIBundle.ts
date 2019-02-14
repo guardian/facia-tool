@@ -181,7 +181,6 @@ const defaultState = {
 };
 
 const reducer = (state: State = defaultState, action: Action): State => {
-  console.log(action);
   switch (action.type) {
     case EDITOR_OPEN_FRONT: {
       return {
