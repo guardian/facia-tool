@@ -23,6 +23,7 @@ import ArticleFragmentLevel from './clipboard/ArticleFragmentLevel';
 import CollectionItem from './FrontsEdit/CollectionComponents/CollectionItem';
 import { styled } from 'constants/theme';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
+import DragIntentContainer from 'shared/components/DragIntentContainer';
 
 const ClipboardHeader = styled.div`
   align-items: center;
@@ -55,6 +56,9 @@ interface ClipboardProps {
 }
 
 class Clipboard extends React.Component<ClipboardProps> {
+  public state = {
+    preActive: false
+  };
   // TODO: this code is repeated in src/components/FrontsEdit/Front.js
   // refactor
 
@@ -89,7 +93,13 @@ class Clipboard extends React.Component<ClipboardProps> {
 
   public render() {
     return (
-      <>
+      <DragIntentContainer
+        active={!this.props.isClipboardOpen}
+        style={{ height: '100%' }}
+        onDragIntentStart={() => this.setState({ preActive: true })}
+        onDragIntentEnd={() => this.setState({ preActive: false })}
+        onIntentConfirm={() => this.props.toggleClipboard(true)}
+      >
         <ClipboardHeader>
           {this.props.isClipboardOpen && (
             <ClipboardTitle>Clipboard</ClipboardTitle>
@@ -97,7 +107,7 @@ class Clipboard extends React.Component<ClipboardProps> {
           <ButtonCircularCaret
             openDir="right"
             active={this.props.isClipboardOpen}
-            preActive={false}
+            preActive={this.state.preActive}
             onClick={() =>
               this.props.toggleClipboard(!this.props.isClipboardOpen)
             }
@@ -172,7 +182,7 @@ class Clipboard extends React.Component<ClipboardProps> {
             </Root>
           )}
         </ClipboardBody>
-      </>
+      </DragIntentContainer>
     );
   }
 }

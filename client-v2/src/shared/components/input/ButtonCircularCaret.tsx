@@ -54,8 +54,8 @@ const getRotation = (
   preActive: boolean
 ) => {
   const baseRotation = getBaseRotation(openDir);
-  const activeRotation = active ? baseRotation - 180 : baseRotation;
-  return preActive ? activeRotation - 45 : activeRotation;
+  const activeRotation = active ? baseRotation + 180 : baseRotation;
+  return preActive ? activeRotation + 45 : activeRotation;
 };
 
 export default ({
