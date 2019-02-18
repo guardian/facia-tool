@@ -45,7 +45,9 @@ const getFrontsByPriority = createSelector(
 // TODO test
 const collectionsInOpenFrontsSelector = (state: State): string[] => {
   const openFrontIds = selectEditorFronts(state);
-  const openFronts = openFrontIds.map(frontId => getFront(state, frontId));
+  const openFronts = openFrontIds
+    .map(frontId => getFront(state, frontId))
+    .filter(Boolean); // TODO How do we want to handle non-existent frontconfigs?
   return flatten(openFronts.map(front => front.collections));
 };
 
