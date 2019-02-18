@@ -58,7 +58,9 @@ function selectParamsAndFetchCollections(
   return async (dispatch: Dispatch, getState: () => State) => {
     const state = getState();
     const params = collectionIds.map(id => {
-      const maybeCollection = selectCollection(state, { collectionId: id });
+      const maybeCollection = selectCollection(selectSharedState(state), {
+        collectionId: id
+      });
       const config = getCollectionConfig(state, id);
       if (!maybeCollection) {
         throw new Error(`Collection ID ${id} does not exist in state`);
