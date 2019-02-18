@@ -41,8 +41,8 @@ const FrontsHeaderText = styled('span')`
 `;
 
 const LastPressedContainer = styled('span')`
-  margin-right: 6px;
   font-size: 10px;
+  margin-bottom: 10px;
 `;
 
 interface FrontsContainerProps {
@@ -94,14 +94,6 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                 startCase(this.props.selectedFront.id)}
             </FrontsHeaderText>
             <FrontHeaderMeta>
-              <LastPressedContainer>
-                {this.props.lastPressed &&
-                  `Last refreshed ${distanceInWords(
-                    new Date(this.props.lastPressed),
-                    Date.now()
-                  )} ago`}
-              </LastPressedContainer>
-              &nbsp;
               <Button onClick={this.handleRemoveFront} size="l">
                 Remove
               </Button>
@@ -129,7 +121,14 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
             </FrontHeaderMeta>
           </FrontHeader>
         </React.Fragment>
-        <SectionContent>
+        <SectionContent direction="column">
+          <LastPressedContainer>
+            {this.props.lastPressed &&
+              `Last refreshed ${distanceInWords(
+                new Date(this.props.lastPressed),
+                Date.now()
+              )} ago`}
+          </LastPressedContainer>
           {this.props.selectedFront && (
             <Front
               id={this.props.frontId}
