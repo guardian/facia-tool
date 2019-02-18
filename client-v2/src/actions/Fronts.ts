@@ -105,7 +105,7 @@ function publishCollection(
         return new Promise(resolve => setTimeout(resolve, 10000))
           .then(() =>
             Promise.all([
-              getCollectionApi(collectionId),
+              dispatch(getCollectionApi(collectionId)),
               fetchLastPressedApi(frontId)
             ])
           )

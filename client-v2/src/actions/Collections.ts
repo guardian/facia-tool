@@ -1,7 +1,7 @@
 import { batchActions } from 'redux-batched-actions';
 import {
   getArticlesBatched,
-  getCollections as fetchCollection,
+  getCollections as fetchCollections,
   updateCollection as updateCollectionFromApi,
   fetchVisibleArticles
 } from 'services/faciaApi';
@@ -30,7 +30,10 @@ import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
 import { groupsReceived } from 'shared/actions/Groups';
 import { recordVisibleArticles } from 'actions/Fronts';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
-import { getCollectionConfig } from 'selectors/frontsSelectors';
+import {
+  getCollectionConfig,
+  collectionsInOpenFrontsSelector
+} from 'selectors/frontsSelectors';
 import { State } from 'types/State';
 import { Dispatch, ThunkResult } from 'types/Store';
 import { frontStages } from 'constants/fronts';
@@ -51,7 +54,7 @@ import { createCollectionSelector } from 'shared/selectors/shared';
 
 const selectCollection = createCollectionSelector();
 
-function selectParamsAndFetchCollection(
+function selectParamsAndFetchCollections(
   collectionIds: string[],
   returnOnlyUpdatedCollections: boolean
 ): ThunkResult<Promise<Array<CollectionResponse>>> {
@@ -73,7 +76,14 @@ function selectParamsAndFetchCollection(
         : { id, type };
     });
 
-    return await fetchCollection(params);
+    return await fetchCollections(params);
+  };
+}
+
+function fetchStaleOpenCollections(): ThunkResult<Promise<void>> {
+  return async (dispatch: Dispatch, getState: () => State) => {
+    const collectionIds = collectionsInOpenFrontsSelector(getState());
+    dispatch(getCollections(collectionIds, true));
   };
 }
 
@@ -85,7 +95,7 @@ function getCollections(
     dispatch(collectionActions.fetchStart(collectionIds));
     try {
       const collectionResponses = await dispatch(
-        selectParamsAndFetchCollection(
+        selectParamsAndFetchCollections(
           collectionIds,
           returnOnlyUpdatedCollections
         )
@@ -266,7 +276,8 @@ export {
   getArticlesForCollections,
   openCollectionsAndFetchTheirArticles,
   closeCollections,
-  selectParamsAndFetchCollection,
+  selectParamsAndFetchCollections,
+  fetchStaleOpenCollections,
   fetchArticles,
   updateCollection
 };

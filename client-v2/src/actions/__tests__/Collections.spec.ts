@@ -11,6 +11,7 @@ import {
 import {
   getArticlesForCollections,
   updateCollection,
+  getCollections, // TODO ADD TEST
   fetchArticles
 } from '../Collections';
 
