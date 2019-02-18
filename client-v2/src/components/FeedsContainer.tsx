@@ -59,6 +59,10 @@ const RefreshButton = styled.button`
   &:hover {
     color: ${({ theme }) => theme.shared.base.colors.buttonFocused};
   }
+
+  &:disabled {
+    color: ${({ theme }) => theme.shared.base.colors.textMuted};
+  }
 `;
 
 const FeedsContainerWrapper = styled('div')`
@@ -163,13 +167,23 @@ class FeedsContainer extends React.Component<
       this.runSearch
     );
 
+  public get isLoading() {
+    return (
+      (this.state.capiFeedIndex === 0 && this.props.liveLoading) ||
+      (this.state.capiFeedIndex === 1 && this.props.previewLoading)
+    );
+  }
+
   public renderFixedContent = () => {
     if (!this.state.displaySearchFilters) {
       return (
         <ResultsHeadingContainer>
           <Title>Latest</Title>
-          <RefreshButton onClick={() => this.runSearchAndRestartPolling()}>
-            Refresh
+          <RefreshButton
+            disabled={this.isLoading}
+            onClick={() => this.runSearchAndRestartPolling()}
+          >
+            {this.isLoading ? 'Loading' : 'Refresh'}
           </RefreshButton>
           <StageSelectionContainer>
             <RadioGroup>
@@ -198,9 +212,7 @@ class FeedsContainer extends React.Component<
       liveArticles,
       previewArticles,
       liveError,
-      liveLoading,
-      previewError,
-      previewLoading
+      previewError
     } = this.props;
 
     return (
@@ -212,17 +224,9 @@ class FeedsContainer extends React.Component<
           onUpdate={this.handleParamsUpdate}
         >
           {this.state.capiFeedIndex === 0 ? (
-            <Feed
-              loading={liveLoading}
-              error={liveError}
-              articles={liveArticles}
-            />
+            <Feed error={liveError} articles={liveArticles} />
           ) : (
-            <Feed
-              loading={previewLoading}
-              error={previewError}
-              articles={previewArticles}
-            />
+            <Feed error={previewError} articles={previewArticles} />
           )}
         </SearchInput>
       </FeedsContainerWrapper>
