@@ -13,6 +13,7 @@ import { storeClipboardContent } from 'actions/Clipboard';
 import { Dispatch } from 'types/Store';
 import Modal from 'react-modal';
 import { init as initGA } from 'services/GA';
+import pollingConfig from 'util/pollingConfig';
 
 initGA();
 
@@ -38,6 +39,8 @@ if (config.frontIds) {
 }
 
 (store.dispatch as Dispatch)(storeClipboardContent(config.clipboardArticles));
+
+pollingConfig(store);
 
 const reactMount = document.getElementById('react-mount');
 
