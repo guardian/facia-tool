@@ -14,6 +14,7 @@ import { Dispatch } from 'types/Store';
 import Modal from 'react-modal';
 import { init as initGA } from 'services/GA';
 import { init } from 'keyboard-shortcuts/init';
+import pollingConfig from 'util/pollingConfig';
 
 initGA();
 
@@ -43,6 +44,7 @@ if (config.frontIds) {
 // @ts-ignore unbind is not used yet but can be used for removed all the
 // keyboard events
 const unbind = init(store);
+pollingConfig(store);
 
 const reactMount = document.getElementById('react-mount');
 

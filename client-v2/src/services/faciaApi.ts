@@ -19,10 +19,8 @@ import { CapiArticle } from 'types/Capi';
 import chunk from 'lodash/chunk';
 import { CAPISearchQueryReponse } from './capiQuery';
 import flatMap from 'lodash/flatMap';
-import { State } from 'types/State';
 import { Dispatch, ThunkResult } from 'types/Store';
-import { selectParamsAndFetchCollection } from 'actions/Collections';
-import { collection } from 'shared/fixtures/shared';
+import { selectParamsAndFetchCollections } from 'actions/Collections';
 
 function fetchFrontsConfig(): Promise<FrontsConfig> {
   return pandaFetch('/config', {
@@ -189,18 +187,22 @@ async function saveOpenFrontIds(frontIds?: string[]): Promise<void> {
   }
 }
 
-async function getCollection(
+function getCollection(
   collectionId: string
-): Promise<CollectionResponse> {
-  const collections = await getCollections([collectionId]); //collections: {id: string;type: string;lastUpdated?: number | undefined;}[]):
-  const [collection] = collections;
-  if (!collection) {
-    throw new Error(`Collection with id ${collectionId} not found`);
-  }
-  return collection;
+): ThunkResult<Promise<CollectionResponse>> {
+  return async (dispatch: Dispatch) => {
+    const [collection] = await dispatch(
+      selectParamsAndFetchCollections([collectionId], false)
+    );
+
+    if (!collection) {
+      throw new Error(`Collection with id ${collectionId} not found`);
+    }
+    return collection;
+  };
 }
 
-async function getCollections(
+async function getCollections( // fetchCollections
   collections: Array<{ id: string; type: string; lastUpdated?: number }>
 ): Promise<Array<CollectionResponse>> {
   const response = await pandaFetch(`/collections`, {

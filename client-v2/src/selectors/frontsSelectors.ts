@@ -5,6 +5,8 @@ import { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
+import { selectEditorFronts } from 'bundles/frontsUIBundle';
+import flatten from 'lodash/flatten';
 
 import { CollectionItemSets, Stages } from 'shared/types/Collection';
 
@@ -39,6 +41,13 @@ const getFrontsByPriority = createSelector(
         };
       }, {})
 );
+
+// TODO test
+const collectionsInOpenFrontsSelector = (state: State): string[] => {
+  const openFrontIds = selectEditorFronts(state);
+  const openFronts = openFrontIds.map(frontId => getFront(state, frontId));
+  return flatten(openFronts.map(front => front.collections));
+};
 
 const prioritySelector = (state: State, { priority }: { priority: string }) =>
   priority;
@@ -285,6 +294,7 @@ export {
   collectionConfigsSelector,
   frontsIdsSelector,
   getFrontsWithPriority,
+  collectionsInOpenFrontsSelector,
   alsoOnFrontSelector,
   createAlsoOnSelector,
   lastPressedSelector,
