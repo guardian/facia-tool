@@ -13,7 +13,7 @@ object StoriesVisibleByStage {
   implicit val jsonFormat = Json.format[StoriesVisibleByStage]
 }
 
-case class CollectionAndStoriesResponse(collection: CollectionJson, storiesVisibleByStage: Option[StoriesVisibleByStage])
+case class CollectionAndStoriesResponse(id: String, collection: CollectionJson, storiesVisibleByStage: Option[StoriesVisibleByStage])
 
 object CollectionAndStoriesResponse {
   implicit val jsonFormat = Json.format[CollectionAndStoriesResponse]
@@ -30,7 +30,7 @@ class CollectionService(frontsApi: FrontsApi, containerService: ContainerService
     frontsApi.amazonClient.config.flatMap { config =>
       val futures = collectionIds.map { collectionId => fetchCollection(collectionId).flatMap {
           case Some(collection) => {
-            val collectionAndStoriesResponse = CollectionAndStoriesResponse(collection,
+            val collectionAndStoriesResponse = CollectionAndStoriesResponse(collectionId, collection,
               CollectionService.getStoriesVisibleByStage(
                 collectionId,
                 collection,
