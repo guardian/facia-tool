@@ -47,3 +47,36 @@ export const scJohnsonPartnerZoneCollection = [
   },
   null
 ];
+
+export const getCollectionsThunkFaciaApiResponse = [
+  {
+    collection: {
+      id: 'testCollection1',
+      displayName: 'testCollection1',
+      live: ['abc', 'def'],
+      draft: [],
+      lastUpdated: 1547479667115,
+      previously: undefined,
+      type: 'type'
+    },
+    storiesVisibleByStage: {
+      live: { desktop: 4, mobile: 4 },
+      draft: { desktop: 4, mobile: 4 }
+    }
+  },
+  {
+    collection: {
+      id: 'testCollection2',
+      displayName: 'testCollection2',
+      live: ['abc'],
+      draft: ['def'],
+      lastUpdated: 1547479667115,
+      previously: undefined,
+      type: 'type'
+    },
+    storiesVisibleByStage: {
+      live: { desktop: 4, mobile: 4 },
+      draft: { desktop: 4, mobile: 4 }
+    }
+  }
+];

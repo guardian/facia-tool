@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import fetchMock from 'fetch-mock';
 import config from 'fixtures/config';
 import { stateWithCollection, capiArticle } from 'shared/fixtures/shared';
+import { getCollectionsThunkFaciaApiResponse } from 'fixtures/collectionsEndpointResponse';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import {
   actions as externalArticleActions,
@@ -70,53 +71,20 @@ describe('Collection actions', () => {
     });
   });
 
-  // Missing tests - it should send only collection ids and type by defualt
-  // Missing tests - it should sendl collectin id, type and last updated when flagged returnOnlyUpdatedCollections
   describe('Get Collections thunk', () => {
     beforeEach(() => fetchMock.reset());
+    const store = configureStore({
+      config,
+      ...stateWithCollection
+    });
+
     it('should add fetched Collections to the store', async () => {
       const collectionIds = ['testCollection1', 'testCollection2'];
-      const fetchResponse = [
-        {
-          collection: {
-            id: 'testCollection1',
-            displayName: 'testCollection1',
-            live: ['abc', 'def'],
-            draft: [],
-            previously: undefined,
-            type: 'type'
-          },
-          storiesVisibleByStage: {
-            live: { desktop: 4, mobile: 4 },
-            draft: { desktop: 4, mobile: 4 }
-          }
-        },
-        {
-          collection: {
-            id: 'testCollection2',
-            displayName: 'testCollection2',
-            live: ['abc'],
-            draft: ['def'],
-            previously: undefined,
-            type: 'type'
-          },
-          storiesVisibleByStage: {
-            live: { desktop: 4, mobile: 4 },
-            draft: { desktop: 4, mobile: 4 }
-          }
-        }
-      ];
-
-      fetchMock.post('/collections', fetchResponse, {
+      fetchMock.post('/collections', getCollectionsThunkFaciaApiResponse, {
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      const store = configureStore({
-        config,
-        ...stateWithCollection
-      });
-
       await store.dispatch(getCollections(collectionIds) as any);
       expect(store.getState().shared.collections.data).toEqual({
         exampleCollection: {
@@ -141,6 +109,7 @@ describe('Collection actions', () => {
           frontsToolSettings: undefined,
           groups: undefined,
           id: 'testCollection1',
+          lastUpdated: 1547479667115,
           live: ['uuid'],
           metadata: undefined,
           platform: undefined,
@@ -153,6 +122,7 @@ describe('Collection actions', () => {
           frontsToolSettings: undefined,
           groups: undefined,
           id: 'testCollection2',
+          lastUpdated: 1547479667115,
           live: ['uuid'],
           metadata: undefined,
           platform: undefined,
@@ -160,6 +130,42 @@ describe('Collection actions', () => {
           type: 'type'
         }
       });
+    });
+    it('should send only collection id and type in request body when returnOnlyUpdatedCollection is false or default', async () => {
+      const collectionIds = ['testCollection1', 'testCollection2'];
+      const request = fetchMock.post(
+        '/collections',
+        getCollectionsThunkFaciaApiResponse,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      await store.dispatch(getCollections(collectionIds) as any);
+      const result = request.lastOptions().body;
+      expect(JSON.parse(result as string)).toEqual([
+        { id: 'testCollection1', type: 'type' },
+        { id: 'testCollection2', type: 'type' }
+      ]);
+    });
+    it('should send collection id, type and lastUpdated in request body when returnOnlyUpdatedCollection is true', async () => {
+      const collectionIds = ['testCollection1', 'testCollection2'];
+      const request = fetchMock.post(
+        '/collections',
+        getCollectionsThunkFaciaApiResponse,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      await store.dispatch(getCollections(collectionIds, true) as any);
+      const result = request.lastOptions().body;
+      expect(JSON.parse(result as string)).toEqual([
+        { id: 'testCollection1', type: 'type', lastUpdated: 1547479667115 },
+        { id: 'testCollection2', type: 'type', lastUpdated: 1547479667115 }
+      ]);
     });
   });
 
