@@ -18,6 +18,7 @@ import { frontStages, noOfOpenCollectionsOnFirstLoad } from 'constants/fronts';
 import { State } from 'types/State';
 import { editorOpenCollections } from 'bundles/frontsUIBundle';
 import { events } from 'services/GA';
+import { collectionParamsSelector } from 'selectors/collectionSelectors';
 
 function fetchLastPressedSuccess(frontId: string, datePressed: string): Action {
   return {
@@ -103,12 +104,15 @@ function publishCollection(
         dispatch(getCollections([collectionId]));
 
         return new Promise(resolve => setTimeout(resolve, 10000))
-          .then(() =>
-            Promise.all([
-              dispatch(getCollectionApi(collectionId)),
+          .then(() => {
+            const [params] = collectionParamsSelector(getState(), [
+              collectionId
+            ]);
+            return Promise.all([
+              getCollectionApi(params),
               fetchLastPressedApi(frontId)
-            ])
-          )
+            ]);
+          })
           .then(([collectionResponse, lastPressed]) => {
             const lastPressedInMilliseconds = new Date(lastPressed).getTime();
             dispatch(

@@ -16,13 +16,14 @@ export const selectArticlesInCollections = createSelector(
       itemSet
     }: { collectionIds: string[]; itemSet: CollectionItemSets }
   ) =>
-    collectionIds.map(_ =>
-      selectArticleIdsInCollection(state, {
-        collectionId: _,
-        collectionSet: itemSet
-      })
-        .map(articleId => articleFragmentSelector(state, articleId))
-        .map(article => article.id)
+    collectionIds.map(
+      _ =>
+        selectArticleIdsInCollection(state, {
+          collectionId: _,
+          collectionSet: itemSet
+        })
+          .map(articleId => articleFragmentSelector(state, articleId))
+          .map(article => article.id) // TODO WHY IS THIS WORKING? should it not retrun the UUID?
     ),
   articleIds => uniq(flatten(articleIds))
 );
