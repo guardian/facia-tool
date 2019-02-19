@@ -15,10 +15,11 @@ describe('Fronts actions', () => {
   describe('initialiseFront', () => {
     afterEach(() => fetchMock.flush());
     it('should fetch all of the front collections, mark <n> first collections as open, and fetch articles for <n> first collections', async () => {
-      fetchMock.once(
-        '/collections?ids=e59785e9-ba82-48d8-b79a-0a80b2f9f808&ids=4ab657ff-c105-4292-af23-cda00457b6b7&ids=c7f48719-6cbc-4024-ae92-1b5f9f6c0c99',
-        scJohnsonPartnerZoneCollection
-      );
+      fetchMock.postOnce('/collections', scJohnsonPartnerZoneCollection, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
       fetchMock.post('begin:/stories-visible', {
         desktop: 2,
         mobile: 4
@@ -36,6 +37,7 @@ describe('Fronts actions', () => {
 
       const state = store.getState();
       const sharedState = selectSharedState(state);
+      console.log(sharedState);
       const collectionIds = [
         'e59785e9-ba82-48d8-b79a-0a80b2f9f808',
         '4ab657ff-c105-4292-af23-cda00457b6b7',
@@ -47,11 +49,17 @@ describe('Fronts actions', () => {
         true
       );
       // The collections and articles should be fetched
+
+      // TODO this selectArticalsInCollections returns internal code pages which means we cannot use it with articleFragmentSelector
+      //  This worked previously because selectArticles in Collection was returning an empty array which was erroneous - TODO
       expect(
         selectArticlesInCollections(sharedState, {
           collectionIds,
           itemSet: 'draft'
-        }).every(_ => !!articleFragmentSelector(sharedState, _))
+        }).every(_ => {
+          console.log(_);
+          return !!articleFragmentSelector(sharedState, _);
+        })
       ).toBe(true);
     });
   });

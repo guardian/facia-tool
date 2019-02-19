@@ -8,6 +8,11 @@ const frontsConfig: { data: FrontsConfig } = {
         collections: ['collection1'],
         priority: 'editorial'
       },
+      editorialFront2: {
+        id: 'editorialFront2',
+        collections: ['collection6'],
+        priority: 'editorial'
+      },
       commercialFront: {
         id: 'commercialFront',
         collections: ['collection1'],
