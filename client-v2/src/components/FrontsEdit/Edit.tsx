@@ -38,7 +38,6 @@ const FrontsEditContainer = styled('div')`
 
 const SingleFrontContainer = styled('div')`
   height: 100%;
-  min-width: 1011px;
 `;
 
 const FeedContainer = styled(SectionContainer)`
