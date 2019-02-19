@@ -59,7 +59,6 @@ function fetchStaleOpenCollections(): ThunkResult<Promise<void>> {
   };
 }
 
-// TEST TODO
 function getCollections(
   collectionIds: string[],
   returnOnlyUpdatedCollections: boolean = false
@@ -131,7 +130,6 @@ function getCollections(
       });
       dispatch(batchActions(flatten(actions)));
     } catch (error) {
-      console.log('ERRR', error);
       dispatch(collectionActions.fetchError(error, collectionIds));
     }
   };

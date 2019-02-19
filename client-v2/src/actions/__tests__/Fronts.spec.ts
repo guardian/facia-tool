@@ -37,7 +37,6 @@ describe('Fronts actions', () => {
 
       const state = store.getState();
       const sharedState = selectSharedState(state);
-      console.log(sharedState);
       const collectionIds = [
         'e59785e9-ba82-48d8-b79a-0a80b2f9f808',
         '4ab657ff-c105-4292-af23-cda00457b6b7',

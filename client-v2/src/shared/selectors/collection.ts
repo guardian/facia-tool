@@ -8,6 +8,7 @@ import { articleFragmentSelector } from '../selectors/shared';
 
 const selectArticleIdsInCollection = createArticlesInCollectionSelector();
 
+// Does not return UUIDs. Returns interal page codes for fetching articleFragments
 export const selectArticlesInCollections = createSelector(
   (
     state: State,
@@ -16,14 +17,13 @@ export const selectArticlesInCollections = createSelector(
       itemSet
     }: { collectionIds: string[]; itemSet: CollectionItemSets }
   ) =>
-    collectionIds.map(
-      _ =>
-        selectArticleIdsInCollection(state, {
-          collectionId: _,
-          collectionSet: itemSet
-        })
-          .map(articleId => articleFragmentSelector(state, articleId))
-          .map(article => article.id) // TODO WHY IS THIS WORKING? should it not retrun the UUID?
+    collectionIds.map(_ =>
+      selectArticleIdsInCollection(state, {
+        collectionId: _,
+        collectionSet: itemSet
+      })
+        .map(articleId => articleFragmentSelector(state, articleId))
+        .map(article => article.id)
     ),
   articleIds => uniq(flatten(articleIds))
 );
