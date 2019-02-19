@@ -1,17 +1,15 @@
 import {
   getFrontsWithPriority,
   alsoOnFrontSelector,
-  lastPressedSelector
+  lastPressedSelector,
+  collectionsInOpenFrontsSelector // Write Test
 } from 'selectors/frontsSelectors';
 import { frontsConfig } from 'fixtures/frontsConfig';
 import { FrontConfig } from 'types/FaciaApi';
 
 const editorialFrontsInConfig: FrontConfig[] = [
-  {
-    collections: ['collection1'],
-    id: 'editorialFront',
-    priority: 'editorial'
-  }
+  { collections: ['collection1'], id: 'editorialFront', priority: 'editorial' },
+  { collections: ['collection6'], id: 'editorialFront2', priority: 'editorial' }
 ];
 
 const additionalEditorialFronts: FrontConfig[] = [
@@ -105,6 +103,45 @@ describe('Filtering fronts correctly', () => {
 const allFronts = editorialFrontsInConfig
   .concat(additionalEditorialFronts)
   .concat(trainingFronts.concat(commercialFronts));
+
+describe('Selecting collections on all open Fronts', () => {
+  it('return correct collections for one open Front', () => {
+    expect(
+      collectionsInOpenFrontsSelector({
+        fronts: {
+          frontsConfig
+        },
+        editor: {
+          frontIds: ['editorialFront']
+        }
+      } as any)
+    ).toEqual(['collection1']);
+  });
+  it('return correct collections for multiple open Fronts', () => {
+    expect(
+      collectionsInOpenFrontsSelector({
+        fronts: {
+          frontsConfig
+        },
+        editor: {
+          frontIds: ['editorialFront', 'editorialFront2']
+        }
+      } as any)
+    ).toEqual(['collection1', 'collection6']);
+  });
+  it('return enpty array for no open Fronts', () => {
+    expect(
+      collectionsInOpenFrontsSelector({
+        fronts: {
+          frontsConfig
+        },
+        editor: {
+          frontIds: []
+        }
+      } as any)
+    ).toEqual([]);
+  });
+});
 
 describe('Selecting which front collection is also on correctly', () => {
   it('fills in also details for all collections on a front', () => {

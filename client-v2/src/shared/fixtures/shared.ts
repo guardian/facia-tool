@@ -530,10 +530,26 @@ const stateWithCollection: any = {
           exampleCollection: {
             displayName: 'Example Collection',
             type: 'type'
+          },
+          testCollection1: {
+            displayName: 'testCollection',
+            type: 'type'
+          },
+          testCollection2: {
+            displayName: 'testCollection',
+            type: 'type'
           }
         }
-      }
-    }
+      },
+      lastError: null,
+      error: null,
+      lastFetch: 1547474511048,
+      loading: false,
+      loadingIds: [],
+      updatingIds: []
+    },
+    lastPressed: {},
+    collectionVisibility: { draft: {}, live: {} }
   },
   shared: {
     collections: {
@@ -554,7 +570,13 @@ const stateWithCollection: any = {
           previously: undefined,
           type: 'type'
         }
-      }
+      },
+      lastError: null,
+      error: null,
+      lastFetch: null,
+      loading: false,
+      loadingIds: [],
+      updatingIds: []
     },
     groups: {
       abc: {

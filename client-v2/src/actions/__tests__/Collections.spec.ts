@@ -1,4 +1,5 @@
-import configureStore from 'redux-mock-store';
+import configureMockStore from 'redux-mock-store';
+import configureStore from 'util/configureStore';
 import thunk from 'redux-thunk';
 import fetchMock from 'fetch-mock';
 import config from 'fixtures/config';
@@ -9,14 +10,15 @@ import {
   actionNames as externalArticleActionNames
 } from 'shared/bundles/externalArticlesBundle';
 import {
+  getCollections,
   getArticlesForCollections,
   updateCollection,
-  getCollections, // TODO ADD TEST
   fetchArticles
 } from '../Collections';
 
 const middlewares = [thunk];
-const mockStore = configureStore(middlewares);
+const mockStore = configureMockStore(middlewares);
+jest.mock('uuid/v4', () => () => 'uuid');
 
 describe('Collection actions', () => {
   const { now } = Date;
@@ -65,6 +67,99 @@ describe('Collection actions', () => {
       expect(actions[1]).toEqual(
         collectionActions.updateSuccess('exampleCollection', collection)
       );
+    });
+  });
+
+  // Missing tests - it should send only collection ids and type by defualt
+  // Missing tests - it should sendl collectin id, type and last updated when flagged returnOnlyUpdatedCollections
+  describe('Get Collections thunk', () => {
+    beforeEach(() => fetchMock.reset());
+    it('should add fetched Collections to the store', async () => {
+      const collectionIds = ['testCollection1', 'testCollection2'];
+      const fetchResponse = [
+        {
+          collection: {
+            id: 'testCollection1',
+            displayName: 'testCollection1',
+            live: ['abc', 'def'],
+            draft: [],
+            previously: undefined,
+            type: 'type'
+          },
+          storiesVisibleByStage: {
+            live: { desktop: 4, mobile: 4 },
+            draft: { desktop: 4, mobile: 4 }
+          }
+        },
+        {
+          collection: {
+            id: 'testCollection2',
+            displayName: 'testCollection2',
+            live: ['abc'],
+            draft: ['def'],
+            previously: undefined,
+            type: 'type'
+          },
+          storiesVisibleByStage: {
+            live: { desktop: 4, mobile: 4 },
+            draft: { desktop: 4, mobile: 4 }
+          }
+        }
+      ];
+
+      fetchMock.post('/collections', fetchResponse, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const store = configureStore({
+        config,
+        ...stateWithCollection
+      });
+
+      await store.dispatch(getCollections(collectionIds) as any);
+      expect(store.getState().shared.collections.data).toEqual({
+        exampleCollection: {
+          displayName: 'Example Collection',
+          draft: [],
+          id: 'exampleCollection',
+          live: ['abc', 'def'],
+          previously: undefined,
+          type: 'type'
+        },
+        exampleCollectionTwo: {
+          displayName: 'Example Collection',
+          draft: ['def'],
+          id: 'exampleCollection',
+          live: ['abc'],
+          previously: undefined,
+          type: 'type'
+        },
+        testCollection1: {
+          displayName: 'testCollection',
+          draft: ['uuid'],
+          frontsToolSettings: undefined,
+          groups: undefined,
+          id: 'testCollection1',
+          live: ['uuid'],
+          metadata: undefined,
+          platform: undefined,
+          previously: ['uuid'],
+          type: 'type'
+        },
+        testCollection2: {
+          displayName: 'testCollection',
+          draft: ['uuid'],
+          frontsToolSettings: undefined,
+          groups: undefined,
+          id: 'testCollection2',
+          live: ['uuid'],
+          metadata: undefined,
+          platform: undefined,
+          previously: ['uuid'],
+          type: 'type'
+        }
+      });
     });
   });
 
