@@ -10,13 +10,11 @@ import { CollectionItemSets } from 'shared/types/Collection';
 
 const selectCollection = createCollectionSelector();
 
-// TODO Test
 function collectionParamsSelector(
   state: State,
   collectionIds: string[],
   returnOnlyUpdatedCollections: boolean = false
 ): Array<{ id: string; type: string; lastUpdated?: number }> {
-  console.log('return only', returnOnlyUpdatedCollections);
   const params = collectionIds.map(id => {
     const config = getCollectionConfig(state, id);
     if (!config) {
