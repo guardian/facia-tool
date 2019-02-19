@@ -42,7 +42,6 @@ const getFrontsByPriority = createSelector(
       }, {})
 );
 
-// TODO test
 const collectionsInOpenFrontsSelector = (state: State): string[] => {
   const openFrontIds = selectEditorFronts(state);
   const openFronts = openFrontIds
