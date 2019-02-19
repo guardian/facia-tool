@@ -19,8 +19,6 @@ import { CapiArticle } from 'types/Capi';
 import chunk from 'lodash/chunk';
 import { CAPISearchQueryReponse } from './capiQuery';
 import flatMap from 'lodash/flatMap';
-import { Dispatch, ThunkResult } from 'types/Store';
-import { selectParamsAndFetchCollections } from 'actions/Collections';
 
 function fetchFrontsConfig(): Promise<FrontsConfig> {
   return pandaFetch('/config', {
@@ -187,27 +185,28 @@ async function saveOpenFrontIds(frontIds?: string[]): Promise<void> {
   }
 }
 
-function getCollection(
-  collectionId: string
-): ThunkResult<Promise<CollectionResponse>> {
-  return async (dispatch: Dispatch) => {
-    const [collection] = await dispatch(
-      selectParamsAndFetchCollections([collectionId], false)
-    );
+async function getCollection(collectionId: {
+  id: string;
+  type: string;
+  lastUpdated?: number;
+}): Promise<CollectionResponse> {
+  const [collection] = await getCollections([collectionId]);
 
-    if (!collection) {
-      throw new Error(`Collection with id ${collectionId} not found`);
-    }
-    return collection;
-  };
+  if (!collection) {
+    throw new Error(`Collection with id ${collectionId} not found`);
+  }
+  return collection;
 }
 
 async function getCollections( // fetchCollections
   collections: Array<{ id: string; type: string; lastUpdated?: number }>
 ): Promise<Array<CollectionResponse>> {
-  const response = await pandaFetch(`/collections`, {
+  const response = await pandaFetch('/collections', {
     body: JSON.stringify(collections),
-    method: 'post',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
     credentials: 'same-origin'
   });
   return await response.json();

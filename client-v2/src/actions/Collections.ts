@@ -5,7 +5,7 @@ import {
   updateCollection as updateCollectionFromApi,
   fetchVisibleArticles
 } from 'services/faciaApi';
-import { VisibleArticlesResponse, CollectionResponse } from 'types/FaciaApi';
+import { VisibleArticlesResponse } from 'types/FaciaApi';
 import {
   selectUserEmail,
   selectFirstName,
@@ -47,37 +47,7 @@ import difference from 'lodash/difference';
 import { selectArticlesInCollections } from 'shared/selectors/collection';
 import { editorOpenCollections } from 'bundles/frontsUIBundle';
 import flatten from 'lodash/flatten';
-import { createCollectionSelector } from 'shared/selectors/shared';
-
-const selectCollection = createCollectionSelector();
-
-function selectParamsAndFetchCollections(
-  collectionIds: string[],
-  returnOnlyUpdatedCollections: boolean
-): ThunkResult<Promise<Array<CollectionResponse>>> {
-  return async (dispatch: Dispatch, getState: () => State) => {
-    const state = getState();
-    const params = collectionIds.map(id => {
-      const maybeCollection = selectCollection(selectSharedState(state), {
-        collectionId: id
-      });
-      const config = getCollectionConfig(state, id);
-      if (!maybeCollection) {
-        throw new Error(`Collection ID ${id} does not exist in state`);
-      }
-      if (!config) {
-        throw new Error(`Collection ID ${id} does not exist in config`);
-      }
-      const lastUpdated = maybeCollection.lastUpdated;
-      const type = config.type;
-      return returnOnlyUpdatedCollections
-        ? { id, type, lastUpdated }
-        : { id, type };
-    });
-
-    return await fetchCollections(params);
-  };
-}
+import { collectionParamsSelector } from 'selectors/collectionSelectors';
 
 function fetchStaleOpenCollections(): ThunkResult<Promise<void>> {
   return async (dispatch: Dispatch, getState: () => State) => {
@@ -86,6 +56,7 @@ function fetchStaleOpenCollections(): ThunkResult<Promise<void>> {
   };
 }
 
+// TEST TODO
 function getCollections(
   collectionIds: string[],
   returnOnlyUpdatedCollections: boolean = false
@@ -93,12 +64,12 @@ function getCollections(
   return async (dispatch: Dispatch, getState: () => State) => {
     dispatch(collectionActions.fetchStart(collectionIds));
     try {
-      const collectionResponses = await dispatch(
-        selectParamsAndFetchCollections(
-          collectionIds,
-          returnOnlyUpdatedCollections
-        )
+      const params = collectionParamsSelector(
+        getState(),
+        collectionIds,
+        returnOnlyUpdatedCollections
       );
+      const collectionResponses = await fetchCollections(params);
       const actions = collectionResponses.map((collectionResponse, index) => {
         const collectionId = collectionIds[index];
         const collectionConfig = getCollectionConfig(getState(), collectionId);
@@ -157,6 +128,7 @@ function getCollections(
       });
       dispatch(batchActions(flatten(actions)));
     } catch (error) {
+      console.log('ERRR', error);
       dispatch(collectionActions.fetchError(error, collectionIds));
     }
   };
@@ -229,6 +201,7 @@ const fetchArticles = (articleIds: string[]) => async (dispatch: Dispatch) => {
   }
 };
 
+//ref
 const getArticlesForCollections = (
   collectionIds: string[],
   itemSet: CollectionItemSets
@@ -268,7 +241,6 @@ export {
   getCollections,
   getArticlesForCollections,
   openCollectionsAndFetchTheirArticles,
-  selectParamsAndFetchCollections,
   fetchStaleOpenCollections,
   fetchArticles,
   updateCollection

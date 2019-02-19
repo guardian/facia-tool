@@ -2,10 +2,43 @@ import { State } from 'types/State';
 import { getCollectionConfig } from './frontsSelectors';
 import {
   selectSharedState,
-  createArticlesInCollectionSelector
+  createArticlesInCollectionSelector,
+  createCollectionSelector
 } from 'shared/selectors/shared';
 import { isDirty } from 'redux-form';
 import { CollectionItemSets } from 'shared/types/Collection';
+
+const selectCollection = createCollectionSelector();
+
+// TODO Test
+function collectionParamsSelector(
+  state: State,
+  collectionIds: string[],
+  returnOnlyUpdatedCollections: boolean = false
+): Array<{ id: string; type: string; lastUpdated?: number }> {
+  console.log('return only', returnOnlyUpdatedCollections);
+  const params = collectionIds.map(id => {
+    const config = getCollectionConfig(state, id);
+    if (!config) {
+      throw new Error(`Collection ID ${id} does not exist in config`);
+    }
+    const type = config.type;
+    if (!returnOnlyUpdatedCollections) {
+      return { id, type };
+    }
+
+    const maybeCollection = selectCollection(selectSharedState(state), {
+      collectionId: id
+    });
+    if (!maybeCollection) {
+      throw new Error(`Collection ID ${id} does not exist in state`);
+    }
+    const lastUpdated = maybeCollection.lastUpdated;
+    return { id, type, lastUpdated };
+  });
+
+  return params;
+}
 
 const isCollectionUneditableSelector = (state: State, id: string): boolean =>
   !!getCollectionConfig(state, id).uneditable;
@@ -31,6 +64,7 @@ const collectionHasUnsavedArticleEditsWarningSelector = () => {
 };
 
 export {
+  collectionParamsSelector,
   isCollectionUneditableSelector,
   isCollectionBackfilledSelector,
   collectionHasUnsavedArticleEditsWarningSelector as createCollectionHasUnsavedArticleEditsWarningSelector
