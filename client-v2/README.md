@@ -28,7 +28,7 @@ View [setup.sh](scripts/setup.sh).
 
 ## Developing
 
-To start developing, first get [Janus credentials](https://janus.gutools.co.uk/multi-credentials?&permissionIds=cmsFronts-dev,capi-api-gateway,frontend-frontend-local-dev&tzOffset=0) then run:
+To start developing, first get [Janus credentials](https://janus.gutools.co.uk/multi-credentials?&permissionIds=cmsFronts-dev,capi-api-gateway,frontend-dev) then run:
 
 ```bash
 ./scripts/client-dev.sh
