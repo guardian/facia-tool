@@ -21,6 +21,7 @@ import Front from './Front';
 import SectionHeader from '../layout/SectionHeader';
 import SectionContent from '../layout/SectionContent';
 import { CollectionItemSets, Collection } from 'shared/types/Collection';
+import { toTitleCase } from 'util/stringUtils';
 
 const FrontHeader = styled(SectionHeader)`
   display: flex;
@@ -115,7 +116,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                   }
                   onClick={() => this.handleCollectionSetSelect(key)}
                 >
-                  {collectionItemSets[key]}
+                  {toTitleCase(collectionItemSets[key])}
                 </Button>
               ))}
             </FrontHeaderMeta>
