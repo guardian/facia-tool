@@ -50,8 +50,8 @@ export const scJohnsonPartnerZoneCollection = [
 
 export const getCollectionsThunkFaciaApiResponse = [
   {
+    id: 'testCollection1',
     collection: {
-      id: 'testCollection1',
       displayName: 'testCollection1',
       live: ['abc', 'def'],
       draft: [],
@@ -65,8 +65,8 @@ export const getCollectionsThunkFaciaApiResponse = [
     }
   },
   {
+    id: 'testCollection2',
     collection: {
-      id: 'testCollection2',
       displayName: 'testCollection2',
       live: ['abc'],
       draft: ['def'],

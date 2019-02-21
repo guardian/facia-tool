@@ -66,7 +66,7 @@ describe('Collection actions', () => {
         }
       });
       expect(actions[1]).toEqual(
-        collectionActions.updateSuccess('exampleCollection', collection)
+        collectionActions.updateSuccess('exampleCollection')
       );
     });
   });
@@ -80,11 +80,7 @@ describe('Collection actions', () => {
 
     it('should add fetched Collections to the store', async () => {
       const collectionIds = ['testCollection1', 'testCollection2'];
-      fetchMock.post('/collections', getCollectionsThunkFaciaApiResponse, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+      fetchMock.post('/collections', getCollectionsThunkFaciaApiResponse);
       await store.dispatch(getCollections(collectionIds) as any);
       expect(store.getState().shared.collections.data).toEqual({
         exampleCollection: {
@@ -135,12 +131,7 @@ describe('Collection actions', () => {
       const collectionIds = ['testCollection1', 'testCollection2'];
       const request = fetchMock.post(
         '/collections',
-        getCollectionsThunkFaciaApiResponse,
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
+        getCollectionsThunkFaciaApiResponse
       );
       await store.dispatch(getCollections(collectionIds) as any);
       const result = request.lastOptions().body;
@@ -153,12 +144,7 @@ describe('Collection actions', () => {
       const collectionIds = ['testCollection1', 'testCollection2'];
       const request = fetchMock.post(
         '/collections',
-        getCollectionsThunkFaciaApiResponse,
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
+        getCollectionsThunkFaciaApiResponse
       );
       await store.dispatch(getCollections(collectionIds, true) as any);
       const result = request.lastOptions().body;
