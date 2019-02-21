@@ -69,7 +69,6 @@ function getCollections(
         returnOnlyUpdatedCollections
       );
       const collectionResponses = await fetchCollections(params);
-
       // TODO: test that this works!
       // find all collections missing in the response and ensure their 'fetch'
       // status is reset
@@ -77,17 +76,10 @@ function getCollections(
         collectionResponses.map(cr => cr.id),
         collectionIds
       );
-
-      // TODO: test the boolean in the second parameter
-      // this will mark the data as fetched but will allows us to not have
-      // to supply any data and just use the previous data
       const missingActions = missingCollections.map(id =>
-        collectionActions.fetchSuccess(
-          {
-            id
-          },
-          true
-        )
+        collectionActions.fetchSuccessIgnore({
+          id
+        })
       );
       const actions = collectionResponses.map(collectionResponse => {
         const {
