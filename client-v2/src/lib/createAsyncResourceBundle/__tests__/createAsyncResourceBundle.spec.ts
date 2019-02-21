@@ -20,6 +20,7 @@ describe('createAsyncResourceBundle', () => {
       expect(actionNames).toEqual({
         fetchStart: 'FETCH_START',
         fetchSuccess: 'FETCH_SUCCESS',
+        fetchSuccessIgnore: 'FETCH_SUCCESS_IGNORE',
         fetchError: 'FETCH_ERROR',
         updateStart: 'UPDATE_START',
         updateSuccess: 'UPDATE_SUCCESS',
@@ -43,6 +44,11 @@ describe('createAsyncResourceBundle', () => {
       expect(actions.fetchSuccess({ data: 'exampleData' })).toEqual({
         entity: 'books',
         type: 'FETCH_SUCCESS',
+        payload: { data: { data: 'exampleData' }, time: 1337 }
+      });
+      expect(actions.fetchSuccessIgnore({ data: 'exampleData' })).toEqual({
+        entity: 'books',
+        type: 'FETCH_SUCCESS_IGNORE',
         payload: { data: { data: 'exampleData' }, time: 1337 }
       });
       expect(actions.fetchError('Something went wrong')).toEqual({
@@ -164,7 +170,7 @@ describe('createAsyncResourceBundle', () => {
       describe('Success action handler', () => {
         it('should merge data and mark the state as not loading when a success action is dispatched', () => {
           const newState = reducer(
-            { ...initialState, loading: true },
+            { ...initialState },
             actions.fetchSuccess({ uuid: { id: 'uuid', author: 'Mark Twain' } })
           );
           expect(newState.loadingIds).toEqual([]);
@@ -190,7 +196,7 @@ describe('createAsyncResourceBundle', () => {
             indexById: true
           });
           const newState = bundle.reducer(
-            { ...initialState, loading: true },
+            { ...initialState },
             bundle.actions.fetchSuccess([
               { id: 'uuid', author: 'Mark Twain' },
               { id: 'uuid2', author: 'Elizabeth Gaskell' }
@@ -201,6 +207,20 @@ describe('createAsyncResourceBundle', () => {
             uuid: { id: 'uuid', author: 'Mark Twain' },
             uuid2: { id: 'uuid2', author: 'Elizabeth Gaskell' }
           });
+        });
+      });
+      describe('Success Ignore action handler', () => {
+        const newState = reducer(
+          { ...initialState, loadingIds: ['uuid'] },
+          actions.fetchSuccessIgnore({
+            uuid: { id: 'uuid', author: 'Mark Twain' }
+          })
+        );
+        it('should return initial state data when a successIgnore action is dispatched', () => {
+          expect(newState.data).toEqual(initialState.data);
+        });
+        it('should clear ID data from loadingIds when a successIgnore action is dispatched', () => {
+          expect(newState.loadingIds).toEqual([]);
         });
       });
       describe('Error action handler', () => {

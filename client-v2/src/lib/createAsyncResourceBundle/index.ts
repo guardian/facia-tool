@@ -6,6 +6,7 @@ interface BaseResource {
 
 const FETCH_START = 'FETCH_START';
 const FETCH_SUCCESS = 'FETCH_SUCCESS';
+const FETCH_SUCCESS_IGNORE = 'FETCH_SUCCESS_IGNORE'; // clears loading ids for unchanged collections during collection polling
 const FETCH_ERROR = 'FETCH_ERROR';
 const UPDATE_START = 'UPDATE_START';
 const UPDATE_SUCCESS = 'UPDATE_SUCCESS';
@@ -23,7 +24,15 @@ interface FetchSuccessAction<Resource> {
   payload: {
     data: Resource | Resource[] | any;
     time: number;
-    ignoreIncomingData: boolean;
+  };
+}
+
+interface FetchSuccessIgnoreAction<Resource> {
+  entity: string;
+  type: 'FETCH_SUCCESS_IGNORE';
+  payload: {
+    data: Resource | Resource[] | any;
+    time: number;
   };
 }
 
@@ -62,6 +71,7 @@ interface UpdateErrorAction {
 type Actions<Resource> =
   | FetchStartAction
   | FetchSuccessAction<Resource>
+  | FetchSuccessIgnoreAction<Resource>
   | FetchErrorAction
   | UpdateStartAction<Resource>
   | UpdateSuccessAction<Resource>
@@ -131,7 +141,6 @@ interface State<Resource> {
   lastFetch: number | null;
   loadingIds: string[];
   updatingIds: string[];
-  loading: boolean;
 }
 
 // @todo -- figure out a way to provide root state definition
@@ -196,7 +205,6 @@ function createAsyncResourceBundle<Resource>(
     lastError: null,
     error: null,
     lastFetch: null,
-    loading: false,
     loadingIds: [],
     updatingIds: []
   };
@@ -208,12 +216,19 @@ function createAsyncResourceBundle<Resource>(
   });
 
   const fetchSuccessAction = (
-    data: Resource | Resource[] | any,
-    ignoreIncomingData: boolean = false
+    data: Resource | Resource[] | any
   ): FetchSuccessAction<Resource> => ({
     entity: entityName,
     type: FETCH_SUCCESS,
-    payload: { data, time: Date.now(), ignoreIncomingData }
+    payload: { data, time: Date.now() }
+  });
+
+  const fetchSuccessIgnoreAction = (
+    data: Resource | Resource[] | any
+  ): FetchSuccessIgnoreAction<Resource> => ({
+    entity: entityName,
+    type: FETCH_SUCCESS_IGNORE,
+    payload: { data, time: Date.now() }
   });
 
   const fetchErrorAction = (
@@ -267,12 +282,22 @@ function createAsyncResourceBundle<Resource>(
         case FETCH_SUCCESS: {
           return {
             ...state,
-            data: action.payload.ignoreIncomingData
-              ? state.data
-              : !indexById
+            data: !indexById
               ? action.payload.data
               : applyNewData(state.data, action.payload.data, entityName),
             lastFetch: action.payload.time,
+            error: null,
+            loadingIds: indexById
+              ? removeStatusIds(
+                  state.loadingIds,
+                  getStatusIdsFromData(action.payload.data)
+                )
+              : []
+          };
+        }
+        case FETCH_SUCCESS_IGNORE: {
+          return {
+            ...state,
             error: null,
             loadingIds: indexById
               ? removeStatusIds(
@@ -348,6 +373,7 @@ function createAsyncResourceBundle<Resource>(
     actionNames: {
       fetchStart: FETCH_START,
       fetchSuccess: FETCH_SUCCESS,
+      fetchSuccessIgnore: FETCH_SUCCESS_IGNORE,
       fetchError: FETCH_ERROR,
       updateStart: UPDATE_START,
       updateSuccess: UPDATE_SUCCESS,
@@ -356,6 +382,7 @@ function createAsyncResourceBundle<Resource>(
     actions: {
       fetchStart: fetchStartAction,
       fetchSuccess: fetchSuccessAction,
+      fetchSuccessIgnore: fetchSuccessIgnoreAction,
       fetchError: fetchErrorAction,
       updateStart: updateStartAction,
       updateSuccess: updateSuccessAction,
