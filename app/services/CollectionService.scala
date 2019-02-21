@@ -13,7 +13,9 @@ object StoriesVisibleByStage {
   implicit val jsonFormat = Json.format[StoriesVisibleByStage]
 }
 
-case class CollectionAndStoriesResponse(id: String, collection: CollectionJson, storiesVisibleByStage: Option[StoriesVisibleByStage])
+case class CollectionAndStoriesResponse(id: String, collection: CollectionJson, storiesVisibleByStage: Option[StoriesVisibleByStage]) {
+  def wasUpdatedAfter(millis: Long) = collection.lastUpdated.getMillis() > millis
+}
 
 object CollectionAndStoriesResponse {
   implicit val jsonFormat = Json.format[CollectionAndStoriesResponse]

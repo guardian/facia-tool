@@ -20,7 +20,11 @@ interface FetchStartAction {
 interface FetchSuccessAction<Resource> {
   entity: string;
   type: 'FETCH_SUCCESS';
-  payload: { data: Resource | Resource[] | any; time: number };
+  payload: {
+    data: Resource | Resource[] | any;
+    time: number;
+    ignoreIncomingData: boolean;
+  };
 }
 
 interface FetchErrorAction {
@@ -204,11 +208,12 @@ function createAsyncResourceBundle<Resource>(
   });
 
   const fetchSuccessAction = (
-    data: Resource | Resource[] | any
+    data: Resource | Resource[] | any,
+    ignoreIncomingData: boolean = false
   ): FetchSuccessAction<Resource> => ({
     entity: entityName,
     type: FETCH_SUCCESS,
-    payload: { data, time: Date.now() }
+    payload: { data, time: Date.now(), ignoreIncomingData }
   });
 
   const fetchErrorAction = (
@@ -228,7 +233,7 @@ function createAsyncResourceBundle<Resource>(
 
   const updateSuccessAction = (
     id: string,
-    data: Resource
+    data?: Resource
   ): UpdateSuccessAction<Resource> => ({
     entity: entityName,
     type: UPDATE_SUCCESS,
@@ -262,7 +267,9 @@ function createAsyncResourceBundle<Resource>(
         case FETCH_SUCCESS: {
           return {
             ...state,
-            data: !indexById
+            data: action.payload.ignoreIncomingData
+              ? state.data
+              : !indexById
               ? action.payload.data
               : applyNewData(state.data, action.payload.data, entityName),
             lastFetch: action.payload.time,
