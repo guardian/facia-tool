@@ -1,6 +1,6 @@
 import { PriorityName } from './Priority';
 import { $Diff } from 'utility-types';
-import { CollectionWithNestedArticles } from 'shared/types/Collection';
+import { CollectionFromResponse } from 'shared/types/Collection';
 
 interface FrontConfigResponse {
   collections: string[];
@@ -86,7 +86,8 @@ interface ArticleDetails {
 }
 
 interface CollectionResponse {
-  collection: CollectionWithNestedArticles;
+  id: string;
+  collection: CollectionFromResponse;
   storiesVisibleByStage: {
     live: VisibleArticlesResponse;
     draft: VisibleArticlesResponse;

@@ -69,25 +69,29 @@ function getCollections(
         returnOnlyUpdatedCollections
       );
       const collectionResponses = await fetchCollections(params);
-      const actions = collectionResponses.map((collectionResponse, index) => {
-        const collectionId = collectionIds[index];
+      
+      // TODO: test that this works!
+      // find all collections missing in the response and ensure their 'fetch'
+      // status is reset
+      const missingCollections = difference(collectionResponses.map(cr => cr.id), collectionIds);
+
+      // TODO: test the boolean in the second parameter
+      // this will mark the data as fetched but will allows us to not have
+      // to supply any data and just use the previous data
+      const missingActions = missingCollections.map(id => collectionActions.fetchSuccess(
+        {
+          id
+        },
+        true
+      ))
+      const actions = collectionResponses.map(collectionResponse => {
+        const { id: collectionId, collection: collectionWithoutId,
+          storiesVisibleByStage } = collectionResponse;
         const collectionConfig = getCollectionConfig(getState(), collectionId);
-        if (!collectionResponse) {
-          if (collectionId) {
-            return collectionActions.fetchSuccess({
-              id: collectionId,
-              displayName: collectionConfig.description,
-              type: collectionConfig.type
-            });
-          }
-          return collectionActions.fetchError(
-            `No collection returned in collections request for id ${
-              collectionIds[index]
-            }`,
-            collectionIds[index]
-          );
-        }
-        const { collection, storiesVisibleByStage } = collectionResponse;
+        const collection = {
+          ...collectionWithoutId,
+          id: collectionId
+        };
         const collectionWithNestedArticles = combineCollectionWithConfig(
           collectionConfig,
           collection
@@ -125,7 +129,7 @@ function getCollections(
           )
         ];
       });
-      dispatch(batchActions(flatten(actions)));
+      dispatch(batchActions(flatten([...actions, ...missingActions])));
     } catch (error) {
       dispatch(collectionActions.fetchError(error, collectionIds));
     }
@@ -152,7 +156,7 @@ function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
         collection.id
       );
       await updateCollectionFromApi(collection.id, denormalisedCollection);
-      dispatch(collectionActions.updateSuccess(collection.id, collection));
+      dispatch(collectionActions.updateSuccess(collection.id));
       const visibleArticles = await getVisibleArticles(
         collection,
         getState(),
@@ -199,7 +203,7 @@ const fetchArticles = (articleIds: string[]) => async (dispatch: Dispatch) => {
   }
 };
 
-//ref
+// ref
 const getArticlesForCollections = (
   collectionIds: string[],
   itemSet: CollectionItemSets

@@ -200,7 +200,7 @@ async function getCollection(collectionId: {
 
 async function getCollections( // fetchCollections
   collections: Array<{ id: string; type: string; lastUpdated?: number }>
-): Promise<Array<CollectionResponse>> {
+): Promise<CollectionResponse[]> {
   const response = await pandaFetch('/collections', {
     body: JSON.stringify(collections),
     method: 'POST',
