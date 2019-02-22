@@ -14,11 +14,11 @@ case class V2GetCollectionsCommand(
   def process(): Future[List[CollectionAndStoriesResponse]] =
     collectionService
       .fetchCollectionsAndStoriesVisible(collectionSpecs.map(_.id))
-      .map(filterOldData(collectionSpecs, _))
+      .map(keepOnlyNewerCollectionData(collectionSpecs, _))
 }
 
 object V2GetCollectionsCommand {
-  def filterOldData(
+  def keepOnlyNewerCollectionData(
       specs: List[CollectionSpec],
       responses: List[Option[CollectionAndStoriesResponse]]
   ): List[CollectionAndStoriesResponse] =
