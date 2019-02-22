@@ -15,11 +15,7 @@ describe('Fronts actions', () => {
   describe('initialiseFront', () => {
     afterEach(() => fetchMock.flush());
     it('should fetch all of the front collections, mark <n> first collections as open, and fetch articles for <n> first collections', async () => {
-      fetchMock.postOnce('/collections', scJohnsonPartnerZoneCollection, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+      fetchMock.postOnce('/collections', scJohnsonPartnerZoneCollection);
       fetchMock.post('begin:/stories-visible', {
         desktop: 2,
         mobile: 4
@@ -55,10 +51,7 @@ describe('Fronts actions', () => {
         selectArticlesInCollections(sharedState, {
           collectionIds,
           itemSet: 'draft'
-        }).every(_ => {
-          console.log(_);
-          return !!articleFragmentSelector(sharedState, _);
-        })
+        }).every(_ => !!articleFragmentSelector(sharedState, _))
       ).toBe(true);
     });
   });

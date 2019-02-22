@@ -206,7 +206,6 @@ const fetchArticles = (articleIds: string[]) => async (dispatch: Dispatch) => {
   }
 };
 
-// ref
 const getArticlesForCollections = (
   collectionIds: string[],
   itemSet: CollectionItemSets

@@ -22,14 +22,14 @@ object CollectionSpec {
 case class CollectionSpec(id: String, lastUpdated: Option[Long], `type`: String)
 
 class FaciaToolV2Controller(
-                             val acl: Acl,
-                             val structuredLogger: StructuredLogger,
-                             val faciaPress: FaciaPress,
-                             val updateActions: UpdateActions,
-                             val configAgent: ConfigAgent,
-                             val collectionService: CollectionService,
-                             val deps: BaseFaciaControllerComponents
-                           )(implicit ec: ExecutionContext)
+                           val acl: Acl,
+                           val structuredLogger: StructuredLogger,
+                           val faciaPress: FaciaPress,
+                           val updateActions: UpdateActions,
+                           val configAgent: ConfigAgent,
+                           val collectionService: CollectionService,
+                           val deps: BaseFaciaControllerComponents
+                         )(implicit ec: ExecutionContext)
   extends BaseFaciaController(deps) with ModifyCollectionsPermissionsCheck with Logging {
 
     def getCollections() =
