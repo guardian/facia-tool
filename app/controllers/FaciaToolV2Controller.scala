@@ -11,6 +11,7 @@ import util.Acl
 import permissions.ModifyCollectionsPermissionsCheck
 import org.joda.time.{DateTime}
 import play.api.mvc.{Action, AnyContent}
+import commands.{V2GetCollectionsCommand}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -40,26 +41,10 @@ class FaciaToolV2Controller(
           .flatMap(configAgent.getFrontsPermissionsPriorityByCollectionId(_))
           .toSet
 
-        //TODO write tests
-
         withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
-          collectionService
-            .fetchCollectionsAndStoriesVisible(collectionIds)
-            .map(
-              collectionResponses =>
-                NoCache {
-                  val list = collectionResponses.zip(collectionSpecs).flatMap {
-                    case (response, spec) =>
-                      // getOrElse ensures that if lastUpdated does not exist,
-                      // it will always be less, and the server data will always
-                      // be returned
-                      response.filter(
-                        _.wasUpdatedAfter(spec.lastUpdated.getOrElse(-1L))
-                      )
-                  }
-                  Ok(Json.toJson(list)).as("application/json")
-                }
-            )
+          V2GetCollectionsCommand(collectionService, collectionSpecs).process().map(result => NoCache {
+            Ok(Json.toJson(result)).as("application/json")
+          })
         }
     }
 
