@@ -14,7 +14,10 @@ object StoriesVisibleByStage {
 }
 
 case class CollectionAndStoriesResponse(id: String, collection: CollectionJson, storiesVisibleByStage: Option[StoriesVisibleByStage]) {
-  def wasUpdatedAfter(millis: Long) = collection.lastUpdated.getMillis() > millis
+  // getOrElse ensures that if millis is None
+  // this method will return true assuming i.e. that it was updatedAfter no time
+  def wasUpdatedAfter(millis: Option[Long]): Boolean =
+    collection.lastUpdated.getMillis() > millis.getOrElse(-1L)
 }
 
 object CollectionAndStoriesResponse {
