@@ -42,6 +42,13 @@ const ClipboardTitle = styled.h2`
 
 const ClipboardBody = styled.div`
   padding: 10px;
+  flex-basis: 100%;
+`;
+
+const StyledDragIntentContainer = styled(DragIntentContainer)`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 interface ClipboardProps {
@@ -93,9 +100,8 @@ class Clipboard extends React.Component<ClipboardProps> {
 
   public render() {
     return (
-      <DragIntentContainer
+      <StyledDragIntentContainer
         active={!this.props.isClipboardOpen}
-        style={{ height: '100%' }}
         onDragIntentStart={() => this.setState({ preActive: true })}
         onDragIntentEnd={() => this.setState({ preActive: false })}
         onIntentConfirm={() => this.props.toggleClipboard(true)}
@@ -182,7 +188,7 @@ class Clipboard extends React.Component<ClipboardProps> {
             </Root>
           )}
         </ClipboardBody>
-      </DragIntentContainer>
+      </StyledDragIntentContainer>
     );
   }
 }

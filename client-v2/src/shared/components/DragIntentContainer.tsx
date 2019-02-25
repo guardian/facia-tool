@@ -5,6 +5,7 @@ type Props = {
   onDragIntentStart: () => void;
   onDragIntentEnd: () => void;
   active: boolean;
+  className?: string;
 } & React.HTMLProps<HTMLDivElement>;
 
 class DragIntentContainer extends React.Component<Props> {
