@@ -43,6 +43,7 @@ const ClipboardTitle = styled.h2`
 const ClipboardBody = styled.div`
   padding: 10px;
   flex-basis: 100%;
+  display: flex;
 `;
 
 const StyledDragIntentContainer = styled(DragIntentContainer)`
