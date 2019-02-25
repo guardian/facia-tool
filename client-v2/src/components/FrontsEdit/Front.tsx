@@ -6,7 +6,6 @@ import { Root, Move, PosSpec } from 'lib/dnd';
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import {
-  updateArticleFragmentMeta,
   removeArticleFragment,
   moveArticleFragment
 } from 'actions/ArticleFragments';
@@ -14,19 +13,14 @@ import { insertArticleFragmentFromDropEvent } from 'util/collectionUtils';
 import { AlsoOnDetail } from 'types/Collection';
 import {
   editorSelectArticleFragment,
-  selectEditorArticleFragment,
   editorClearArticleFragmentSelection,
   editorOpenCollections
 } from 'bundles/frontsUIBundle';
 import {
-  ArticleFragmentMeta,
   CollectionItemSets,
   ArticleFragment as TArticleFragment
 } from 'shared/types/Collection';
 import Collection from './CollectionComponents/Collection';
-import CollectionItem from './CollectionComponents/CollectionItem';
-import ArticleFragmentForm from './ArticleFragmentForm';
-import FrontCollectionsOverview from './FrontCollectionsOverview';
 import GroupDisplay from 'shared/components/GroupDisplay';
 import ArticleFragmentLevel from 'components/clipboard/ArticleFragmentLevel';
 import GroupLevel from 'components/clipboard/GroupLevel';
@@ -36,6 +30,8 @@ import { visibleFrontArticlesSelector } from 'selectors/frontsSelectors';
 import { VisibleArticlesResponse } from 'types/FaciaApi';
 import { initialiseFront } from 'actions/Fronts';
 import { events } from 'services/GA';
+import FrontDetailView from './FrontDetailView';
+import CollectionItem from './CollectionComponents/CollectionItem';
 
 const FrontContainer = styled('div')`
   display: flex;
@@ -55,8 +51,6 @@ interface FrontPropsBeforeState {
 }
 
 type FrontProps = FrontPropsBeforeState & {
-  updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) => void;
-  selectedArticleFragment: { id: string; isSupporting: boolean } | void;
   dispatch: Dispatch;
   initialiseFront: () => void;
   selectArticleFragment: (id: string, isSupporting?: boolean) => void;
@@ -116,27 +110,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     );
   };
 
-  public removeCollectionItem(parentId: string, id: string) {
-    this.props.removeCollectionItem(parentId, id);
-    this.clearArticleFragmentSelectionIfNeeded(id);
-  }
-
-  public removeSupportingCollectionItem(parentId: string, id: string) {
-    this.props.removeSupportingCollectionItem(parentId, id);
-    this.clearArticleFragmentSelectionIfNeeded(id);
-  }
-
-  public clearArticleFragmentSelectionIfNeeded(id: string) {
-    if (
-      this.props.selectedArticleFragment &&
-      id === this.props.selectedArticleFragment.id
-    ) {
-      this.props.clearArticleFragmentSelection();
-    }
-  }
-
   public render() {
-    const { selectedArticleFragment, front, articlesVisible } = this.props;
+    const { front, articlesVisible } = this.props;
     return (
       <React.Fragment>
         <div
@@ -193,6 +168,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                             }
                             return (
                               <CollectionItem
+                                frontId={this.props.id}
                                 uuid={articleFragment.uuid}
                                 parentId={group.uuid}
                                 isUneditable={isUneditable}
@@ -201,15 +177,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                 }
                                 onSelect={this.props.selectArticleFragment}
                                 onDelete={() =>
-                                  this.removeCollectionItem(
+                                  this.props.removeCollectionItem(
                                     group.uuid,
                                     articleFragment.uuid
                                   )
-                                }
-                                isSelected={
-                                  !selectedArticleFragment ||
-                                  selectedArticleFragment.id ===
-                                    articleFragment.uuid
                                 }
                                 articleNotifications={articleNotifications}
                               >
@@ -221,6 +192,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                 >
                                   {(supporting, supportingDragProps) => (
                                     <CollectionItem
+                                      frontId={this.props.id}
                                       uuid={supporting.uuid}
                                       parentId={articleFragment.uuid}
                                       onSelect={id =>
@@ -233,13 +205,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                       getNodeProps={() =>
                                         !isUneditable ? supportingDragProps : {}
                                       }
-                                      isSelected={
-                                        !selectedArticleFragment ||
-                                        selectedArticleFragment.id ===
-                                          supporting.uuid
-                                      }
                                       onDelete={() =>
-                                        this.removeSupportingCollectionItem(
+                                        this.props.removeSupportingCollectionItem(
                                           articleFragment.uuid,
                                           supporting.uuid
                                         )
@@ -260,28 +227,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
             </Root>
           </FrontContentContainer>
           <FrontContentContainer>
-            {selectedArticleFragment ? (
-              <ArticleFragmentForm
-                articleFragmentId={selectedArticleFragment.id}
-                isSupporting={selectedArticleFragment.isSupporting}
-                key={selectedArticleFragment.id}
-                form={selectedArticleFragment.id}
-                frontId={this.props.id}
-                onSave={(meta: ArticleFragmentMeta) => {
-                  this.props.updateArticleFragmentMeta(
-                    selectedArticleFragment.id,
-                    meta
-                  );
-                  this.props.clearArticleFragmentSelection();
-                }}
-                onCancel={this.props.clearArticleFragmentSelection}
-              />
-            ) : (
-              <FrontCollectionsOverview
-                id={this.props.id}
-                browsingStage={this.props.browsingStage}
-              />
-            )}
+            <FrontDetailView
+              id={this.props.id}
+              browsingStage={this.props.browsingStage}
+            />
           </FrontContentContainer>
         </FrontContainer>
       </React.Fragment>
@@ -291,7 +240,6 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
 
 const mapStateToProps = (state: State, props: FrontPropsBeforeState) => ({
   unpublishedChanges: state.unpublishedChanges,
-  selectedArticleFragment: selectEditorArticleFragment(state, props.id),
   front: getFront(state, props.id),
   articlesVisible: visibleFrontArticlesSelector(state, {
     collectionSet: props.browsingStage
@@ -304,8 +252,6 @@ const mapDispatchToProps = (
 ) => {
   return {
     dispatch,
-    updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
-      dispatch(updateArticleFragmentMeta(id, meta)),
     initialiseFront: () =>
       dispatch(initialiseFront(props.id, props.browsingStage)),
     selectArticleFragment: (

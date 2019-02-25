@@ -20,6 +20,10 @@ import {
 } from '../frontsUIBundle';
 import initialState from 'fixtures/initialState';
 import { Action } from 'types/Action';
+import {
+  removeSupportingArticleFragment,
+  removeGroupArticleFragment
+} from 'shared/actions/ArticleFragments';
 
 type State = ReturnType<typeof innerReducer>;
 
@@ -63,6 +67,48 @@ describe('frontsUIBundle', () => {
         editorClearOpenFronts()
       );
       expect(selectEditorFronts(state)).toEqual([]);
+    });
+    it('should clear the article fragment selection when selected article fragments are removed from a front', () => {
+      const state = reducer(
+        {
+          selectedArticleFragments: {
+            frontId: { id: 'articleFragmentId', isSupporting: false }
+          }
+        } as any,
+        removeGroupArticleFragment('collectionId', 'articleFragmentId')
+      );
+      expect(state.editor.selectedArticleFragments.frontId).toBe(undefined);
+    });
+    describe('Clearing article selection in response to persistence events', () => {
+      const stateWithSelectedArticleFragments = {
+        selectedArticleFragments: {
+          frontId: { id: 'articleFragmentId', isSupporting: false }
+        }
+      } as any;
+      it("should not clear the article fragment selection when selected article fragments aren't in the front", () => {
+        const state = reducer(
+          stateWithSelectedArticleFragments,
+          removeGroupArticleFragment('collectionId', 'anotherArticleFragmentId')
+        );
+        expect(state.editor).toBe(stateWithSelectedArticleFragments);
+      });
+      it('should clear the article fragment selection when selected supporting article fragments are removed from a front', () => {
+        const state = reducer(
+          stateWithSelectedArticleFragments,
+          removeSupportingArticleFragment('collectionId', 'articleFragmentId')
+        );
+        expect(state.editor.selectedArticleFragments.frontId).toBe(undefined);
+      });
+      it("should not clear the article fragment selection when selected supporting article fragments aren't in the front", () => {
+        const state = reducer(
+          stateWithSelectedArticleFragments,
+          removeSupportingArticleFragment(
+            'collectionId',
+            'anotherArticleFragmentId'
+          )
+        );
+        expect(state.editor).toBe(stateWithSelectedArticleFragments);
+      });
     });
     it('should set the fronts to the open editor fronts', () => {
       const state = reducer(
