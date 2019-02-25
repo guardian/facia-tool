@@ -65,15 +65,15 @@ object CollectionService {
 
   def getStoriesForCollectionStages(collectionId: String, collection: CollectionJson): (Seq[Story], Seq[Story]) = {
     val liveStages = Some(collection.live).map(getStoriesForStage).getOrElse(Seq())
-
+    val draftStages = collection.draft.map(getStoriesForStage).getOrElse(liveStages)
     (
       liveStages,
-      collection.draft.map(getStoriesForStage).getOrElse(liveStages)
+      draftStages
     )
   }
 
-  def getStoriesForStage(stage: List[Trail]): Seq[Story] = {
-    stage.map { article =>
+  def getStoriesForStage(trailsInStage: List[Trail]): Seq[Story] = {
+    trailsInStage.map { article =>
       val maybeGroup = for {
         meta <- article.meta
         group <- meta.group
