@@ -267,11 +267,13 @@ const visibleArticlesSelector = createSelector(
   }
 );
 
+const defaultVisibleFrontArticles = {};
+
 const visibleFrontArticlesSelector = createSelector(
   [collectionVisibilitiesSelector, collectionSetSelector],
   (collectionVisibilities, collectionSet) => {
     if (collectionSet === 'previously') {
-      return {};
+      return defaultVisibleFrontArticles;
     }
     return collectionVisibilities[collectionSet];
   }
