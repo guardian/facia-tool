@@ -5,6 +5,7 @@ import SearchInput, {
   SearchInputState,
   initState
 } from './FrontsCAPIInterface/SearchInput';
+import Pagination from './FrontsCAPIInterface/Pagination';
 import Feed from './FrontsCAPIInterface/Feed';
 import { RadioButton, RadioGroup } from './inputs/RadioButtons';
 import { State } from 'types/State';
@@ -108,7 +109,7 @@ const getParams = (
   'star-rating': ratings.join('|'),
   'from-date': from && from.format('YYYY-MM-DD'),
   'to-date': to && to.format('YYYY-MM-DD'),
-  'page-size': '20',
+  'page-size': '6',
   'show-elements': 'image',
   'show-tags': 'all',
   'show-fields': getCapiFieldsToShow(isPreview),
@@ -223,6 +224,15 @@ class FeedsContainer extends React.Component<
           additionalFixedContent={this.renderFixedContent}
           onUpdate={this.handleParamsUpdate}
         >
+          <Pagination
+            stopPolling={this.stopPolling}
+            getParams={getParams}
+            fetchLive={this.props.fetchLive}
+            liveArticles={liveArticles}
+            capiFeedIndex={this.state.capiFeedIndex}
+            inputState={this.state.inputState}
+          />
+
           {this.state.capiFeedIndex === 0 ? (
             <Feed error={liveError} articles={liveArticles} />
           ) : (
