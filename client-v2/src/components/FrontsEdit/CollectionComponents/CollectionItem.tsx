@@ -100,15 +100,15 @@ const CollectionItem = ({
 const createMapStateToProps = () => {
   const selectType = createCollectionItemTypeSelector();
   return (state: State, props: ContainerProps) => {
-    const selectedArticleFragmentData = selectEditorArticleFragment(
+    const selectArticleFragmentData = selectEditorArticleFragment(
       state,
       props.frontId
     );
     return {
       type: selectType(selectSharedState(state), props.uuid),
       isSelected:
-        !selectedArticleFragmentData ||
-        selectedArticleFragmentData.id === props.uuid
+        !!selectArticleFragmentData &&
+        selectArticleFragmentData.id === props.uuid
     };
   };
 };
