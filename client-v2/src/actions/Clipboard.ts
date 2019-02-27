@@ -14,17 +14,11 @@ import {
   RemoveClipboardArticleFragment
 } from 'types/Action';
 
-export const REMOVE_CLIPBOARD_ARTICLE_FRAGMENT =
-  'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT';
-export const UPDATE_CLIPBOARD_CONTENT = 'UPDATE_CLIPBOARD_CONTENT';
-export const INSERT_CLIPBOARD_ARTICLE_FRAGMENT =
-  'INSERT_CLIPBOARD_ARTICLE_FRAGMENT';
-
 function updateClipboardContent(
   clipboardContent: string[] = []
 ): UpdateClipboardContent {
   return {
-    type: UPDATE_CLIPBOARD_CONTENT,
+    type: 'UPDATE_CLIPBOARD_CONTENT',
     payload: clipboardContent
   };
 }
@@ -68,7 +62,7 @@ const insertClipboardArticleFragment = (
   index: number,
   articleFragmentId: string
 ): InsertClipboardArticleFragment => ({
-  type: INSERT_CLIPBOARD_ARTICLE_FRAGMENT,
+  type: 'INSERT_CLIPBOARD_ARTICLE_FRAGMENT',
   payload: {
     id,
     index,
@@ -80,7 +74,7 @@ const removeClipboardArticleFragment = (
   id: string,
   articleFragmentId: string
 ): RemoveClipboardArticleFragment => ({
-  type: REMOVE_CLIPBOARD_ARTICLE_FRAGMENT,
+  type: 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT',
   payload: {
     id,
     articleFragmentId
