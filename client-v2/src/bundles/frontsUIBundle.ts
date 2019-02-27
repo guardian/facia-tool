@@ -24,7 +24,6 @@ import {
   REMOVE_GROUP_ARTICLE_FRAGMENT,
   REMOVE_SUPPORTING_ARTICLE_FRAGMENT
 } from 'shared/actions/ArticleFragments';
-import { REMOVE_CLIPBOARD_ARTICLE_FRAGMENT } from 'actions/Clipboard';
 
 const EDITOR_OPEN_FRONT = 'EDITOR_OPEN_FRONT';
 const EDITOR_CLOSE_FRONT = 'EDITOR_CLOSE_FRONT';
@@ -270,8 +269,7 @@ const reducer = (state: State = defaultState, action: Action): State => {
       return clearArticleFragmentSelection(state, action.payload.frontId);
     }
     case REMOVE_SUPPORTING_ARTICLE_FRAGMENT:
-    case REMOVE_GROUP_ARTICLE_FRAGMENT:
-    case REMOVE_CLIPBOARD_ARTICLE_FRAGMENT: {
+    case REMOVE_GROUP_ARTICLE_FRAGMENT: {
       const articleFragmentId = action.payload.articleFragmentId;
       const selectedFrontId = Object.keys(state.selectedArticleFragments).find(
         frontId => {

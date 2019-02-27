@@ -24,7 +24,6 @@ import {
   removeSupportingArticleFragment,
   removeGroupArticleFragment
 } from 'shared/actions/ArticleFragments';
-import { removeClipboardArticleFragment } from 'actions/Clipboard';
 
 type State = ReturnType<typeof innerReducer>;
 
@@ -104,23 +103,6 @@ describe('frontsUIBundle', () => {
         const state = reducer(
           stateWithSelectedArticleFragments,
           removeSupportingArticleFragment(
-            'collectionId',
-            'anotherArticleFragmentId'
-          )
-        );
-        expect(state.editor).toBe(stateWithSelectedArticleFragments);
-      });
-      it('should clear the article fragment selection when selected clipboard article fragments are removed from a front', () => {
-        const state = reducer(
-          stateWithSelectedArticleFragments,
-          removeClipboardArticleFragment('collectionId', 'articleFragmentId')
-        );
-        expect(state.editor.selectedArticleFragments.frontId).toBe(undefined);
-      });
-      it("should not clear the article fragment selection when selected clipboard article fragments aren't in the front", () => {
-        const state = reducer(
-          stateWithSelectedArticleFragments,
-          removeClipboardArticleFragment(
             'collectionId',
             'anotherArticleFragmentId'
           )
