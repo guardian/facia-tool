@@ -6,7 +6,7 @@ import {
   ArticleFragmentMeta,
   CollectionItemSets
 } from 'shared/types/Collection';
-import { updateArticleFragmentMeta } from 'actions/ArticleFragments';
+import { updateArticleFragmentMeta as updateArticleFragmentMetaAction } from 'actions/ArticleFragments';
 import {
   editorClearArticleFragmentSelection,
   selectEditorArticleFragment
@@ -29,7 +29,8 @@ const FrontsDetailView = ({
   selectedArticleFragment,
   id,
   browsingStage,
-  clearArticleFragmentSelection
+  clearArticleFragmentSelection,
+  updateArticleFragmentMeta
 }: ComponentProps) =>
   selectedArticleFragment ? (
     <ArticleFragmentForm
@@ -54,7 +55,7 @@ const mapStateToProps = (state: State, props: ContainerProps) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
-    dispatch(updateArticleFragmentMeta(id, meta)),
+    dispatch(updateArticleFragmentMetaAction(id, meta)),
   clearArticleFragmentSelection: (frontId: string) =>
     dispatch(editorClearArticleFragmentSelection(frontId))
 });
