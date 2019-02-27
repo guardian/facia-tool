@@ -16,24 +16,12 @@ import { createLinkSnap, createLatestSnap } from 'shared/util/snap';
 import { getIdFromURL } from 'util/CAPIUtils';
 import { isValidURL } from 'shared/util/url';
 
-export const UPDATE_ARTICLE_FRAGMENT_META =
-  'SHARED/UPDATE_ARTICLE_FRAGMENT_META';
-export const ARTICLE_FRAGMENTS_RECEIVED = 'SHARED/ARTICLE_FRAGMENTS_RECEIVED';
-export const REMOVE_GROUP_ARTICLE_FRAGMENT =
-  'SHARED/REMOVE_GROUP_ARTICLE_FRAGMENT';
-export const REMOVE_SUPPORTING_ARTICLE_FRAGMENT =
-  'SHARED/REMOVE_SUPPORTING_ARTICLE_FRAGMENT';
-export const INSERT_GROUP_ARTICLE_FRAGMENT =
-  'SHARED/INSERT_GROUP_ARTICLE_FRAGMENT';
-export const INSERT_SUPPORTING_ARTICLE_FRAGMENT =
-  'SHARED/INSERT_SUPPORTING_ARTICLE_FRAGMENT';
-
 function updateArticleFragmentMeta(
   id: string,
   meta: ArticleFragmentMeta
 ): UpdateArticleFragmentMeta {
   return {
-    type: UPDATE_ARTICLE_FRAGMENT_META,
+    type: 'SHARED/UPDATE_ARTICLE_FRAGMENT_META',
     payload: {
       id,
       meta
@@ -54,7 +42,7 @@ function articleFragmentsReceived(
     ? keyBy(articleFragments, ({ uuid }) => uuid)
     : articleFragments;
   return {
-    type: ARTICLE_FRAGMENTS_RECEIVED,
+    type: 'SHARED/ARTICLE_FRAGMENTS_RECEIVED',
     payload
   };
 }
@@ -64,7 +52,7 @@ function removeGroupArticleFragment(
   articleFragmentId: string
 ): RemoveGroupArticleFragment {
   return {
-    type: REMOVE_GROUP_ARTICLE_FRAGMENT,
+    type: 'SHARED/REMOVE_GROUP_ARTICLE_FRAGMENT',
     payload: {
       id,
       articleFragmentId
@@ -77,7 +65,7 @@ function removeSupportingArticleFragment(
   articleFragmentId: string
 ): RemoveSupportingArticleFragment {
   return {
-    type: REMOVE_SUPPORTING_ARTICLE_FRAGMENT,
+    type: 'SHARED/REMOVE_SUPPORTING_ARTICLE_FRAGMENT',
     payload: {
       id,
       articleFragmentId
@@ -90,7 +78,7 @@ const insertGroupArticleFragment = (
   index: number,
   articleFragmentId: string
 ): InsertGroupArticleFragment => ({
-  type: INSERT_GROUP_ARTICLE_FRAGMENT,
+  type: 'SHARED/INSERT_GROUP_ARTICLE_FRAGMENT',
   payload: {
     id,
     index,
@@ -103,7 +91,7 @@ const insertSupportingArticleFragment = (
   index: number,
   articleFragmentId: string
 ): InsertSupportingArticleFragment => ({
-  type: INSERT_SUPPORTING_ARTICLE_FRAGMENT,
+  type: 'SHARED/INSERT_SUPPORTING_ARTICLE_FRAGMENT',
   payload: {
     id,
     index,

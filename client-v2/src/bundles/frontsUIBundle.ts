@@ -20,10 +20,6 @@ import { State as GlobalState } from 'types/State';
 import { events } from 'services/GA';
 import { getFronts } from 'selectors/frontsSelectors';
 import { createSelector } from 'reselect';
-import {
-  REMOVE_GROUP_ARTICLE_FRAGMENT,
-  REMOVE_SUPPORTING_ARTICLE_FRAGMENT
-} from 'shared/actions/ArticleFragments';
 
 const EDITOR_OPEN_FRONT = 'EDITOR_OPEN_FRONT';
 const EDITOR_CLOSE_FRONT = 'EDITOR_CLOSE_FRONT';
@@ -202,14 +198,6 @@ const defaultState = {
   selectedArticleFragments: {}
 };
 
-const clearArticleFragmentSelection = (state: State, frontId: string) => ({
-  ...state,
-  selectedArticleFragments: {
-    ...state.selectedArticleFragments,
-    [frontId]: undefined
-  }
-});
-
 const reducer = (state: State = defaultState, action: Action): State => {
   switch (action.type) {
     case EDITOR_OPEN_FRONT: {
@@ -266,23 +254,13 @@ const reducer = (state: State = defaultState, action: Action): State => {
       };
     }
     case EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION: {
-      return clearArticleFragmentSelection(state, action.payload.frontId);
-    }
-    case REMOVE_SUPPORTING_ARTICLE_FRAGMENT:
-    case REMOVE_GROUP_ARTICLE_FRAGMENT: {
-      const articleFragmentId = action.payload.articleFragmentId;
-      const selectedFrontId = Object.keys(state.selectedArticleFragments).find(
-        frontId => {
-          const selectedArticleFragmentData =
-            state.selectedArticleFragments[frontId];
-          return selectedArticleFragmentData
-            ? selectedArticleFragmentData.id === articleFragmentId
-            : false;
+      return {
+        ...state,
+        selectedArticleFragments: {
+          ...state.selectedArticleFragments,
+          [action.payload.frontId]: undefined
         }
-      );
-      return selectedFrontId
-        ? clearArticleFragmentSelection(state, selectedFrontId)
-        : state;
+      };
     }
     case EDITOR_OPEN_CLIPBOARD: {
       return {

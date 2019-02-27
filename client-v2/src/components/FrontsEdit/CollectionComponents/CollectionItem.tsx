@@ -13,11 +13,10 @@ import {
 import SnapLink from 'shared/components/snapLink/SnapLink';
 import { insertArticleFragment } from 'actions/ArticleFragments';
 import noop from 'lodash/noop';
-import { selectEditorArticleFragment } from 'bundles/frontsUIBundle';
 
 interface ContainerProps {
+  isSelected?: boolean;
   uuid: string;
-  frontId: string;
   children?: React.ReactNode;
   getNodeProps: () => object;
   onSelect: (uuid: string) => void;
@@ -32,7 +31,6 @@ interface ContainerProps {
 type ArticleContainerProps = ContainerProps & {
   onAddToClipboard: (uuid: string) => void;
   type: CollectionItemTypes;
-  isSelected: boolean;
 };
 
 const CollectionItem = ({
@@ -99,18 +97,9 @@ const CollectionItem = ({
 
 const createMapStateToProps = () => {
   const selectType = createCollectionItemTypeSelector();
-  return (state: State, props: ContainerProps) => {
-    const selectArticleFragmentData = selectEditorArticleFragment(
-      state,
-      props.frontId
-    );
-    return {
-      type: selectType(selectSharedState(state), props.uuid),
-      isSelected:
-        !!selectArticleFragmentData &&
-        selectArticleFragmentData.id === props.uuid
-    };
-  };
+  return (state: State, props: ContainerProps) => ({
+    type: selectType(selectSharedState(state), props.uuid)
+  });
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
