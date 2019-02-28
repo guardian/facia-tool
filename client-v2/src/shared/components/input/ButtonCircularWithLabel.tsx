@@ -12,11 +12,13 @@ const ContainerButtonDiv = styled('div')`
   cursor: pointer;
   font-family: TS3TextSans-Bold;
   font-size: 14px;
+  height: 100%;
 `;
 
 const ContainerButtonLabel = styled('div')`
   display: inline-block;
   vertical-align: top;
+  margin-right: 5px;
 `;
 
 export default ({
@@ -26,6 +28,7 @@ export default ({
   children
 }: ContainerButtonWithLabelProps) => (
   <ContainerButtonDiv className={className} onClick={onClick}>
-    {children} <ContainerButtonLabel>{label}</ContainerButtonLabel>
+    <ContainerButtonLabel>{label} </ContainerButtonLabel>
+    {children}
   </ContainerButtonDiv>
 );
