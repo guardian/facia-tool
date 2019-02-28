@@ -177,6 +177,9 @@ function createAsyncResourceBundle<Resource>(
     ? options.selectLocalState
     : (state: any): State<Resource> => state[entityName];
 
+  const selectPagination = (state: RootState) =>
+    selectLocalState(state).pagination;
+
   const selectCurrentError = (state: RootState) =>
     selectLocalState(state).error;
 
@@ -368,6 +371,7 @@ function createAsyncResourceBundle<Resource>(
       updateError: updateErrorAction
     },
     selectors: {
+      selectPagination,
       selectCurrentError,
       selectLastError,
       selectLastFetch,
@@ -379,5 +383,5 @@ function createAsyncResourceBundle<Resource>(
   };
 }
 
-export { Actions, State };
+export { Actions, State, IPagination };
 export default createAsyncResourceBundle;

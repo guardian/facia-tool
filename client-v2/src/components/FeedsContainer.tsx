@@ -5,7 +5,6 @@ import SearchInput, {
   SearchInputState,
   initState
 } from './FrontsCAPIInterface/SearchInput';
-import Pagination from './FrontsCAPIInterface/Pagination';
 import Feed from './FrontsCAPIInterface/Feed';
 import { RadioButton, RadioGroup } from './inputs/RadioButtons';
 import { State } from 'types/State';
@@ -20,22 +19,27 @@ import { getIdFromURL } from 'util/CAPIUtils';
 import { Dispatch } from 'types/Store';
 import debounce from 'lodash/debounce';
 import { CapiArticle } from 'types/Capi';
+import Pagination from './FrontsCAPIInterface/Pagination';
+import { IPagination } from 'lib/createAsyncResourceBundle';
 
 interface FeedsContainerProps {
   fetchLive: (params: object, isResource: boolean) => void;
   fetchPreview: (params: object, isResource: boolean) => void;
   liveArticles: CapiArticle[];
   previewArticles: CapiArticle[];
-  previewLoading: boolean;
   liveLoading: boolean;
+  previewLoading: boolean;
   liveError: string | null;
   previewError: string | null;
+  livePagination: IPagination | null;
+  previewPagination: IPagination | null;
 }
 
 interface FeedsContainerState {
   capiFeedIndex: number;
   displaySearchFilters: boolean;
   inputState: SearchInputState;
+  displayPrevResults: boolean;
 }
 
 const Title = styled.h1`
@@ -91,6 +95,7 @@ const getCapiFieldsToShow = (isPreview: boolean) => {
   return defaultFieldsToShow + ',scheduledPublicationDate';
 };
 
+export type directionParam = 'from-date' | 'to-date';
 const getParams = (
   query: string,
   {
@@ -109,7 +114,7 @@ const getParams = (
   'star-rating': ratings.join('|'),
   'from-date': from && from.format('YYYY-MM-DD'),
   'to-date': to && to.format('YYYY-MM-DD'),
-  'page-size': '6',
+  'page-size': '20',
   'show-elements': 'image',
   'show-tags': 'all',
   'show-fields': getCapiFieldsToShow(isPreview),
@@ -117,7 +122,6 @@ const getParams = (
     ? { 'order-by': 'oldest', 'from-date': getTodayDate() }
     : { 'order-by': 'newest', 'order-date': 'first-publication' })
 });
-
 class FeedsContainer extends React.Component<
   FeedsContainerProps,
   FeedsContainerState
@@ -125,7 +129,8 @@ class FeedsContainer extends React.Component<
   public state = {
     capiFeedIndex: 0,
     displaySearchFilters: false,
-    inputState: initState
+    inputState: initState,
+    displayPrevResults: false
   };
 
   private interval: null | number = null;
@@ -213,7 +218,9 @@ class FeedsContainer extends React.Component<
       liveArticles,
       previewArticles,
       liveError,
-      previewError
+      previewError,
+      livePagination,
+      previewPagination
     } = this.props;
 
     return (
@@ -224,24 +231,46 @@ class FeedsContainer extends React.Component<
           additionalFixedContent={this.renderFixedContent}
           onUpdate={this.handleParamsUpdate}
         >
-          <Pagination
-            stopPolling={this.stopPolling}
-            getParams={getParams}
-            fetchLive={this.props.fetchLive}
-            liveArticles={liveArticles}
-            capiFeedIndex={this.state.capiFeedIndex}
-            inputState={this.state.inputState}
-          />
-
           {this.state.capiFeedIndex === 0 ? (
-            <Feed error={liveError} articles={liveArticles} />
+            <>
+              {!!livePagination && livePagination.totalPages > 1 ? ( // TODO change this to total resutls / Action fix
+                <Pagination
+                  pageChange={this.pageChange}
+                  currentPage={livePagination.currentPage}
+                  totalPages={livePagination.totalPages}
+                />
+              ) : null}
+              <Feed error={liveError} articles={liveArticles} />
+            </>
           ) : (
-            <Feed error={previewError} articles={previewArticles} />
+            <>
+              {!!previewPagination && previewPagination.totalPages > 1 ? ( // TODO change this to total resutls / Action fix
+                <Pagination
+                  pageChange={this.pageChange}
+                  currentPage={previewPagination.currentPage}
+                  totalPages={previewPagination.totalPages}
+                />
+              ) : null}
+              <Feed error={previewError} articles={previewArticles} />
+            </>
           )}
         </SearchInput>
       </FeedsContainerWrapper>
     );
   }
+
+  private pageChange = (requestPage: number) => {
+    const { inputState } = this.state;
+    const { capiFeedIndex } = this.state;
+    const searchTerm = inputState.query;
+    const paginationParams = {
+      ...getParams(searchTerm, inputState, false),
+      page: requestPage
+    };
+    if (capiFeedIndex === 0) {
+      this.props.fetchLive(paginationParams, false);
+    }
+  };
 
   private runSearch() {
     const { inputState } = this.state;
@@ -282,7 +311,9 @@ const mapStateToProps = (state: State) => ({
   liveLoading: liveSelectors.selectIsLoading(state),
   previewLoading: previewSelectors.selectIsLoading(state),
   liveError: liveSelectors.selectCurrentError(state),
-  previewError: previewSelectors.selectCurrentError(state)
+  previewError: previewSelectors.selectCurrentError(state),
+  livePagination: liveSelectors.selectPagination(state),
+  previewPagination: previewSelectors.selectPagination(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
