@@ -111,7 +111,10 @@ describe('faciaApi', () => {
               type: 'tag',
               webUrl: 'exampleUrl',
               webTitle: 'Example tag title'
-            }
+            },
+            currentPage: 0,
+            pageSize: 0,
+            pages: 0
           }
         })
       ).toEqual('Example tag title');
@@ -122,7 +125,10 @@ describe('faciaApi', () => {
             results: [],
             section: {
               webTitle: 'Example section title'
-            }
+            },
+            currentPage: 0,
+            pageSize: 0,
+            pages: 0
           }
         })
       ).toEqual('Example section title');

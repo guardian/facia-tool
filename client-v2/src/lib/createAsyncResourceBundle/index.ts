@@ -20,7 +20,11 @@ interface FetchStartAction {
 interface FetchSuccessAction<Resource> {
   entity: string;
   type: 'FETCH_SUCCESS';
-  payload: { data: Resource | Resource[] | any; time: number };
+  payload: {
+    data: Resource | Resource[] | any;
+    pagination: IPagination | null;
+    time: number;
+  };
 }
 
 interface FetchErrorAction {
@@ -120,8 +124,14 @@ function applyNewData<Resource extends BaseResource>(
   };
 }
 
+interface IPagination {
+  pageSize: number;
+  totalPages: number;
+  currentPage: number;
+}
 interface State<Resource> {
   data: Resource | { [id: string]: Resource } | any;
+  pagination: IPagination | null;
   lastError: string | null;
   error: string | null;
   lastFetch: number | null;
@@ -189,6 +199,7 @@ function createAsyncResourceBundle<Resource>(
 
   const initialState: State<Resource> = {
     data: options.initialData || {},
+    pagination: null,
     lastError: null,
     error: null,
     lastFetch: null,
@@ -204,11 +215,12 @@ function createAsyncResourceBundle<Resource>(
   });
 
   const fetchSuccessAction = (
-    data: Resource | Resource[] | any
+    data: Resource | Resource[] | any,
+    pagination: IPagination | null = null
   ): FetchSuccessAction<Resource> => ({
     entity: entityName,
     type: FETCH_SUCCESS,
-    payload: { data, time: Date.now() }
+    payload: { data, pagination, time: Date.now() }
   });
 
   const fetchErrorAction = (
@@ -265,6 +277,7 @@ function createAsyncResourceBundle<Resource>(
             data: !indexById
               ? action.payload.data
               : applyNewData(state.data, action.payload.data, entityName),
+            pagination: action.payload.pagination,
             lastFetch: action.payload.time,
             error: null,
             loadingIds: indexById
