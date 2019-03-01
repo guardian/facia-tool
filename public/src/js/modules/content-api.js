@@ -310,7 +310,7 @@ function cleanFetchResponse (data, propName) {
     const rawArticles = data.response && data.response[propName] ? [].concat(data.response[propName]) : [];
 
     return _.extend({}, data.response, {
-        results: _.filter(rawArticles, opts => opts.fields && opts.fields.headline && isCommercialArticle(opts))
+        results: _.filter(rawArticles, opts => opts.fields && opts.fields.headline && !isCommercialArticle(opts))
     });
 }
 
@@ -327,7 +327,7 @@ function isCommercialArticle(article) {
         return false;
     }
 
-    return article.tags.every(tag => tag.type !== 'paid-content');
+    return article.tags.some(tag => tag.type === 'paid-content');
 }
 
 export {
