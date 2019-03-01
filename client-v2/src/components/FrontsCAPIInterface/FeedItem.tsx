@@ -114,6 +114,7 @@ interface FeedItemProps {
   isLive: boolean;
   onAddToClipboard: (id: string) => void;
   scheduledPublicationDate?: string;
+  tone?: string;
 }
 
 const dragStart = (
@@ -121,6 +122,26 @@ const dragStart = (
   event: React.DragEvent<HTMLDivElement>
 ) => {
   event.dataTransfer.setData('capi', href || '');
+};
+
+const getArticleLabel = (
+  firstPublicationDate: string | undefined,
+  sectionName: string,
+  isLive: boolean,
+  tone?: string
+) => {
+  if (!isLive) {
+    if (firstPublicationDate) {
+      return notLiveLabels.takenDown;
+    }
+    return notLiveLabels.draft;
+  }
+
+  if (tone === 'dead' || tone === 'live') {
+    return startCase(tone);
+  }
+
+  return startCase(sectionName);
 };
 
 const FeedItem = ({
@@ -134,7 +155,8 @@ const FeedItem = ({
   firstPublicationDate,
   isLive,
   onAddToClipboard = noop,
-  scheduledPublicationDate
+  scheduledPublicationDate,
+  tone
 }: FeedItemProps) => (
   <Container
     data-testid="feed-item"
@@ -154,11 +176,7 @@ const FeedItem = ({
               styleTheme.capiInterface.textLight
           }}
         >
-          {isLive && startCase(sectionName)}
-          {!isLive &&
-            (firstPublicationDate
-              ? notLiveLabels.takendDown
-              : notLiveLabels.draft)}
+          {getArticleLabel(firstPublicationDate, sectionName, isLive, tone)}
         </Tone>
         {scheduledPublicationDate && (
           <ScheduledPublication>
