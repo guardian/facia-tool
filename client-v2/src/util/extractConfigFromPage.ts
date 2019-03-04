@@ -7,7 +7,7 @@ export default () => {
     throw new Error('Missing config');
   }
 
-  const json: Config = JSON.parse(configEl.innerHTML);
+  const json: Config = JSON.parse(configEl.dataset.value || '');
 
   return json;
 };
