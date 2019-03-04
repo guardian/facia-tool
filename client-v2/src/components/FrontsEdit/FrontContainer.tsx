@@ -8,7 +8,7 @@ import { fetchLastPressed } from 'actions/Fronts';
 import { updateCollection } from 'actions/Collections';
 import { editorCloseFront } from 'bundles/frontsUIBundle';
 import Button from 'shared/components/input/ButtonDefault';
-import { collectionItemSets } from 'constants/fronts';
+import { frontStages } from 'constants/fronts';
 import { FrontConfig } from 'types/FaciaApi';
 import { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
@@ -73,7 +73,7 @@ interface ComponentState {
 
 class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   public state = {
-    collectionSet: collectionItemSets.draft
+    collectionSet: frontStages.draft
   };
 
   public componentDidMount() {
@@ -84,7 +84,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
 
   public handleCollectionSetSelect(key: string) {
     this.setState({
-      collectionSet: collectionItemSets[key]
+      collectionSet: frontStages[key]
     });
   }
 
@@ -113,14 +113,14 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
               </a>
               <StageSelectButtons>
                 <RadioGroup>
-                  {Object.keys(collectionItemSets).map(key => (
+                  {Object.keys(frontStages).map(key => (
                     <RadioButton
                       inline
                       checked={
-                        collectionItemSets[key] === this.state.collectionSet
+                        frontStages[key] === this.state.collectionSet
                       }
                       onChange={() => this.handleCollectionSetSelect(key)}
-                      label={toTitleCase(collectionItemSets[key])}
+                      label={toTitleCase(frontStages[key])}
                     />
                   ))}
                 </RadioGroup>
