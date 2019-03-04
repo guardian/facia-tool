@@ -22,17 +22,19 @@ import { FrontSectionHeader } from '../layout/SectionHeader';
 import SectionContent from '../layout/SectionContent';
 import { CollectionItemSets, Collection } from 'shared/types/Collection';
 import { toTitleCase } from 'util/stringUtils';
+import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
 
 const FrontHeader = styled(FrontSectionHeader)`
   display: flex;
 `;
 
-const FrontHeaderMeta = styled('span')`
+const FrontHeaderMeta = styled('div')`
   position: relative;
   margin-left: auto;
   font-family: TS3TextSans;
   font-size: 14px;
   white-space: nowrap;
+  display: flex;
 `;
 
 const FrontsHeaderText = styled('span')`
@@ -47,6 +49,10 @@ const LastPressedContainer = styled('span')`
   margin-bottom: 10px;
 `;
 
+const StageSelectButtons = styled('div')`
+  color: ${({ theme }) => theme.shared.colors.blackDark};
+  padding: 0px 30px;
+`;
 interface FrontsContainerProps {
   frontId: string;
 }
@@ -96,9 +102,6 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                 startCase(this.props.selectedFront.id)}
             </FrontsHeaderText>
             <FrontHeaderMeta>
-              <Button onClick={this.handleRemoveFront} size="l">
-                Remove
-              </Button>
               <a
                 href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${
                   this.props.frontId
@@ -108,18 +111,23 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
               >
                 <Button size="l">Preview</Button>
               </a>
-              {Object.keys(collectionItemSets).map(key => (
-                <Button
-                  key={key}
-                  size="l"
-                  selected={
-                    collectionItemSets[key] === this.state.collectionSet
-                  }
-                  onClick={() => this.handleCollectionSetSelect(key)}
-                >
-                  {toTitleCase(collectionItemSets[key])}
-                </Button>
-              ))}
+              <StageSelectButtons>
+                <RadioGroup>
+                  {Object.keys(collectionItemSets).map(key => (
+                    <RadioButton
+                      inline
+                      checked={
+                        collectionItemSets[key] === this.state.collectionSet
+                      }
+                      onChange={() => this.handleCollectionSetSelect(key)}
+                      label={toTitleCase(collectionItemSets[key])}
+                    />
+                  ))}
+                </RadioGroup>
+              </StageSelectButtons>
+              <Button onClick={this.handleRemoveFront} size="l">
+                Close
+              </Button>
             </FrontHeaderMeta>
           </FrontHeader>
         </React.Fragment>
