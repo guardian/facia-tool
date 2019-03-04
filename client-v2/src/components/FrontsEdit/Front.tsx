@@ -8,7 +8,7 @@ import { Dispatch } from 'types/Store';
 import {
   removeArticleFragment,
   moveArticleFragment,
-  updateArticleFragmentMeta
+  addImageToArticleFragment
 } from 'actions/ArticleFragments';
 import { insertArticleFragmentFromDropEvent } from 'util/collectionUtils';
 import { AlsoOnDetail } from 'types/Collection';
@@ -19,8 +19,7 @@ import {
 } from 'bundles/frontsUIBundle';
 import {
   CollectionItemSets,
-  ArticleFragment as TArticleFragment,
-  ArticleFragmentMeta
+  ArticleFragment as TArticleFragment
 } from 'shared/types/Collection';
 import Collection from './CollectionComponents/Collection';
 import GroupDisplay from 'shared/components/GroupDisplay';
@@ -35,7 +34,6 @@ import { events } from 'services/GA';
 import FrontDetailView from './FrontDetailView';
 import CollectionItem from './CollectionComponents/CollectionItem';
 import { ValidationResponse } from 'shared/util/validateImageSrc';
-import { getImageMetaFromValidationResponse } from 'util/form';
 
 const FrontContainer = styled('div')`
   display: flex;
@@ -62,7 +60,7 @@ type FrontProps = FrontPropsBeforeState & {
   removeCollectionItem: (parentId: string, id: string) => void;
   removeSupportingCollectionItem: (parentId: string, id: string) => void;
   editorOpenCollections: (ids: string[]) => void;
-  updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) => void;
+  addImageToArticleFragment: (id: string, response: ValidationResponse) => void;
   front: FrontConfig;
   articlesVisible: { [id: string]: VisibleArticlesResponse };
 };
@@ -114,16 +112,6 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
       insertArticleFragmentFromDropEvent(e, to, 'collection')
     );
   };
-
-  public addImageToArticleFragment(
-    uuid: string,
-    imageData: ValidationResponse
-  ) {
-    this.props.updateArticleFragmentMeta(
-      uuid,
-      getImageMetaFromValidationResponse(imageData)
-    );
-  }
 
   public render() {
     const { front, articlesVisible } = this.props;
@@ -185,7 +173,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                               <CollectionItem
                                 frontId={this.props.id}
                                 onImageDrop={imageData => {
-                                  this.addImageToArticleFragment(
+                                  this.props.addImageToArticleFragment(
                                     articleFragment.uuid,
                                     imageData
                                   );
@@ -295,8 +283,8 @@ const mapDispatchToProps = (
     },
     editorOpenCollections: (ids: string[]) =>
       dispatch(editorOpenCollections(ids)),
-    updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
-      updateArticleFragmentMeta(id, meta)
+    addImageToArticleFragment: (id: string, response: ValidationResponse) =>
+      dispatch(addImageToArticleFragment(id, response))
   };
 };
 
