@@ -17,7 +17,8 @@ import {
 } from './utils';
 import {
   moveArticleFragment,
-  insertArticleFragment
+  insertArticleFragment,
+  addImageToArticleFragment
 } from 'actions/ArticleFragments';
 import {
   reducer as collectionsReducer,
@@ -291,6 +292,41 @@ describe('ArticleFragments actions', () => {
         accept: null
       });
       expect(groupArticlesSelector(s1, 'a')).toEqual(['b', 'a', 'c']);
+    });
+  });
+
+  describe('insert image', () => {
+    fit('adds the correct image data', () => {
+      const s1 = root(
+        { shared: { articleFragments: { a: {} } } },
+        { type: '@@INIT' }
+      );
+
+      const src = 'http://www.images.com/image/1/master';
+      const thumb = 'http://www.images.com/image/1/thumb';
+      const origin = 'http://www.images.com/image/1';
+      const height = 3000;
+      const width = 3000;
+
+      const s2 = root(
+        s1,
+        addImageToArticleFragment('a', {
+          src,
+          thumb,
+          origin,
+          height,
+          width
+        })
+      );
+
+      expect(s2.shared.articleFragments.a.meta).toMatchObject({
+        imageReplace: true,
+        imageSrc: src,
+        imageSrcThumb: thumb,
+        imageSrcOrigin: origin,
+        imageSrcWidth: width.toString(),
+        imageSrcHeight: height.toString()
+      });
     });
   });
 });

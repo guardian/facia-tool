@@ -5,6 +5,7 @@ import Level from '../Level';
 
 const createDragEvent = () => {
   const data: { [k: string]: any } = {};
+  const types: string[] = [];
   let defaultPrevented = false;
 
   return {
@@ -16,8 +17,12 @@ const createDragEvent = () => {
       defaultPrevented = true;
     },
     dataTransfer: {
+      get types() {
+        return types.slice();
+      },
       setData: (key: string, val: any) => {
         data[key] = val;
+        types.push(key);
       },
       getData: (key: string) => data[key]
     }
@@ -25,8 +30,7 @@ const createDragEvent = () => {
 };
 
 const runDrag = (type: any, data?: any, json: boolean = true) => (
-  dropProps: any,
-  inst?: any
+  dropProps: any
 ) => {
   const e = createDragEvent();
 

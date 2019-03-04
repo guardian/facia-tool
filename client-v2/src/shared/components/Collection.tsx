@@ -226,6 +226,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
           ) : null}
         </ContainerHeadingPinline>
         <DragIntentContainer
+          delay={300}
           onIntentConfirm={this.toggleVisibility}
           onDragIntentStart={() => {
             this.setState({ hasDragOpenIntent: true });

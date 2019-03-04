@@ -7,7 +7,8 @@ import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import {
   removeArticleFragment,
-  moveArticleFragment
+  moveArticleFragment,
+  addImageToArticleFragment
 } from 'actions/ArticleFragments';
 import { insertArticleFragmentFromDropEvent } from 'util/collectionUtils';
 import { AlsoOnDetail } from 'types/Collection';
@@ -32,6 +33,7 @@ import { initialiseFront } from 'actions/Fronts';
 import { events } from 'services/GA';
 import FrontDetailView from './FrontDetailView';
 import CollectionItem from './CollectionComponents/CollectionItem';
+import { ValidationResponse } from 'shared/util/validateImageSrc';
 
 const FrontContainer = styled('div')`
   display: flex;
@@ -58,6 +60,7 @@ type FrontProps = FrontPropsBeforeState & {
   removeCollectionItem: (parentId: string, id: string) => void;
   removeSupportingCollectionItem: (parentId: string, id: string) => void;
   editorOpenCollections: (ids: string[]) => void;
+  addImageToArticleFragment: (id: string, response: ValidationResponse) => void;
   front: FrontConfig;
   articlesVisible: { [id: string]: VisibleArticlesResponse };
 };
@@ -169,6 +172,12 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                             return (
                               <CollectionItem
                                 frontId={this.props.id}
+                                onImageDrop={imageData => {
+                                  this.props.addImageToArticleFragment(
+                                    articleFragment.uuid,
+                                    imageData
+                                  );
+                                }}
                                 uuid={articleFragment.uuid}
                                 parentId={group.uuid}
                                 isUneditable={isUneditable}
@@ -273,7 +282,9 @@ const mapDispatchToProps = (
       );
     },
     editorOpenCollections: (ids: string[]) =>
-      dispatch(editorOpenCollections(ids))
+      dispatch(editorOpenCollections(ids)),
+    addImageToArticleFragment: (id: string, response: ValidationResponse) =>
+      dispatch(addImageToArticleFragment(id, response))
   };
 };
 

@@ -26,6 +26,8 @@ import { State } from 'types/State';
 import { startConfirmModal } from './ConfirmModal';
 import { capGroupSiblings } from 'shared/actions/Groups';
 import { collectionCapSelector } from 'selectors/configSelectors';
+import { getImageMetaFromValidationResponse } from 'util/form';
+import { ValidationResponse } from 'shared/util/validateImageSrc';
 
 type InsertActionCreator = (
   id: string,
@@ -289,10 +291,20 @@ const moveArticleFragment = (
   };
 };
 
+const addImageToArticleFragment = (
+  uuid: string,
+  imageData: ValidationResponse
+) =>
+  updateArticleFragmentMeta(
+    uuid,
+    getImageMetaFromValidationResponse(imageData)
+  );
+
 export {
   insertArticleFragmentWithCreate as insertArticleFragment,
   moveArticleFragment,
   updateArticleFragmentMetaWithPersist as updateArticleFragmentMeta,
   updateClipboardArticleFragmentMetaWithPersist as updateClipboardArticleFragmentMeta,
-  removeArticleFragment
+  removeArticleFragment,
+  addImageToArticleFragment
 };
