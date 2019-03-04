@@ -192,12 +192,14 @@ class FeedsContainer extends React.Component<
                 onChange={() => this.handleFeedClick(0)}
                 label="Live"
                 inline
+                name="capiFeed"
               />
               <RadioButton
                 checked={this.state.capiFeedIndex === 1}
                 onChange={() => this.handleFeedClick(1)}
                 label="Draft"
                 inline
+                name="capiFeed"
               />
             </RadioGroup>
           </StageSelectionContainer>

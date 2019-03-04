@@ -102,6 +102,7 @@ const RadioButton = ({
   ...rest
 }: {
   label: string;
+  name: string;
   inline?: boolean;
   checked?: boolean;
   disabled?: boolean;
@@ -110,7 +111,7 @@ const RadioButton = ({
     {label}
     <Input
       type="radio"
-      name="radio"
+      name={name}
       checked={checked}
       disabled={disabled}
       {...rest}
