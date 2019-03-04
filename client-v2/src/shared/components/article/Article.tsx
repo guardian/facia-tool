@@ -138,8 +138,8 @@ class ArticleComponent extends React.Component<ComponentProps> {
             onDragIntentStart={() => this.setIsHovered(true)}
             onDragIntentEnd={() => this.setIsHovered(false)}
             onDrop={e => {
-              if (dragEventHasImageData(e)) {
-                onImageDrop && onImageDrop(e);
+              if (dragEventHasImageData(e) && onImageDrop) {
+                onImageDrop(e);
               }
             }}
           >
