@@ -6,7 +6,7 @@ type Props = {
   onDragIntentEnd: () => void;
   active: boolean;
   delay?: number;
-  filterEvent?: (event: React.DragEvent) => boolean;
+  filterRegisterEvent?: (event: React.DragEvent) => boolean;
 } & React.HTMLProps<HTMLDivElement>;
 
 class DragIntentContainer extends React.Component<Props> {
@@ -52,8 +52,8 @@ class DragIntentContainer extends React.Component<Props> {
     // only register if active
     // all other events will fire even if not active to allow the parent
     // to reset its state that was created when drag intent was initialised
-    const { delay, filterEvent } = this.props;
-    if (!filterEvent || filterEvent(e)) {
+    const { delay, filterRegisterEvent } = this.props;
+    if (!filterRegisterEvent || filterRegisterEvent(e)) {
       if (this.props.active) {
         this.props.onDragIntentStart();
         if (typeof delay !== 'undefined') {
@@ -84,10 +84,11 @@ class DragIntentContainer extends React.Component<Props> {
     const {
       children,
       active, // active prop must be destructured here so it's not passed into div props
+      onDrop,
       onIntentConfirm,
       onDragIntentStart,
       onDragIntentEnd,
-      filterEvent,
+      filterRegisterEvent,
       ...props
     }: Props = this.props;
 

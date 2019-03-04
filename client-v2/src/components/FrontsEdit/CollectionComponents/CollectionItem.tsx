@@ -45,17 +45,22 @@ type ArticleContainerProps = ContainerProps & {
 };
 
 class CollectionItem extends React.Component<ArticleContainerProps> {
-  public onDrop = (e: React.DragEvent<HTMLElement>) => {
-    e.preventDefault();
-    e.persist();
-    validateImageEvent(e, this.props.frontId, imageCriteria)
-      .then(this.props.onImageDrop)
-      .catch(err => {
-        // swallowing errors here as the drop may well be an articleFragment
-        // rather than an image which is expected - TBD
-        // console.log('@todo:handle error', err);
-      });
-  };
+  public getDropHandler(onDrop?: (data: ValidationResponse) => void) {
+    if (!onDrop) {
+      return;
+    }
+    return (e: React.DragEvent<HTMLElement>) => {
+      e.preventDefault();
+      e.persist();
+      validateImageEvent(e, this.props.frontId, imageCriteria)
+        .then(onDrop)
+        .catch(err => {
+          // swallowing errors here as the drop may well be an articleFragment
+          // rather than an image which is expected - TBD
+          // console.log('@todo:handle error', err);
+        });
+    };
+  }
 
   public render() {
     const {
@@ -93,7 +98,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
             displayType={displayType}
             notifications={notifications}
             imageDropTypes={Object.values(gridDataTransferTypes)}
-            onImageDrop={this.onDrop}
+            onImageDrop={this.getDropHandler(this.props.onImageDrop)}
           >
             {children}
           </Article>

@@ -103,13 +103,18 @@ class ArticleComponent extends React.Component<ComponentProps> {
       children,
       isUneditable,
       imageDropTypes = [],
-      onImageDrop = () => {}
+      onImageDrop
     } = this.props;
     const ArticleBody = articleBodyComponentMap[displayType];
     const getOverlayEventProps = () => ({
       onDelete,
       onAddToClipboard
     });
+
+    const dragEventHasImageData = (e: React.DragEvent) =>
+      e.dataTransfer.types.some(dataTransferType =>
+        imageDropTypes.includes(dataTransferType)
+      );
 
     return (
       <CollectionItemContainer
@@ -128,14 +133,15 @@ class ArticleComponent extends React.Component<ComponentProps> {
       >
         {article && (
           <DragIntentContainer
-            filterEvent={e => {
-              return e.dataTransfer.types.some(dataTransferType =>
-                imageDropTypes.includes(dataTransferType)
-              );
-            }}
+            active={!!onImageDrop}
+            filterRegisterEvent={dragEventHasImageData}
             onDragIntentStart={() => this.setIsHovered(true)}
             onDragIntentEnd={() => this.setIsHovered(false)}
-            onDrop={onImageDrop}
+            onDrop={e => {
+              if (dragEventHasImageData(e)) {
+                onImageDrop && onImageDrop(e);
+              }
+            }}
           >
             <ArticleBodyContainer
               data-testid="article-body"
