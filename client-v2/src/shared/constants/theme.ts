@@ -15,6 +15,7 @@ const colors = {
   greyMedium: '#767676', //
   greyMediumLight: '#999999',
   greyLight: '#A9A9A9',
+  greyVeryLight: '#c9c9c9',
   greyLightPinkish: '#C9C9C9',
   whiteDark: '#DCDCDC',
   whiteMedium: '#EDEDED',

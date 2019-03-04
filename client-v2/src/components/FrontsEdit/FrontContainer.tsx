@@ -18,12 +18,12 @@ import {
   lastPressedSelector
 } from 'selectors/frontsSelectors';
 import Front from './Front';
-import SectionHeader from '../layout/SectionHeader';
+import { FrontSectionHeader } from '../layout/SectionHeader';
 import SectionContent from '../layout/SectionContent';
 import { CollectionItemSets, Collection } from 'shared/types/Collection';
 import { toTitleCase } from 'util/stringUtils';
 
-const FrontHeader = styled(SectionHeader)`
+const FrontHeader = styled(FrontSectionHeader)`
   display: flex;
 `;
 
@@ -39,6 +39,7 @@ const FrontsHeaderText = styled('span')`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: ${({ theme }) => theme.shared.colors.blackDark};
 `;
 
 const LastPressedContainer = styled('span')`
