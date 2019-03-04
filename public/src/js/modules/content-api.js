@@ -310,8 +310,24 @@ function cleanFetchResponse (data, propName) {
     const rawArticles = data.response && data.response[propName] ? [].concat(data.response[propName]) : [];
 
     return _.extend({}, data.response, {
-        results: _.filter(rawArticles, opts => opts.fields && opts.fields.headline)
+        results: _.filter(rawArticles, opts => opts.fields && opts.fields.headline && !isCommercialArticle(opts))
     });
+}
+
+function isCommercialArticle(article) {
+    if (!article) {
+        return false;
+    }
+
+    if (article.isHosted) {
+        return true;
+    }
+
+    if (!article.tags) {
+        return false;
+    }
+
+    return article.tags.some(tag => tag.type === 'paid-content');
 }
 
 export {

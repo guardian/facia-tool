@@ -15,13 +15,13 @@ const {
   initialData: []
 });
 
-const isCommercialArticle = (article: CapiArticle | undefined): boolean => {
+const isNonCommercialArticle = (article: CapiArticle | undefined): boolean => {
   if (!article) {
-    return false;
+    return true;
   }
 
   if (article.isHosted) {
-    return true;
+    return false;
   }
 
   if (!article.tags) {
@@ -67,7 +67,7 @@ export const fetchLive = (
   }
 
   if (results) {
-    const nonCommercialResults = results.filter(isCommercialArticle);
+    const nonCommercialResults = results.filter(isNonCommercialArticle);
     dispatch(liveActions.fetchSuccess(nonCommercialResults));
   }
 };
@@ -89,7 +89,7 @@ export const fetchPreview = (
     dispatch(previewActions.fetchError(e.message));
   }
   if (results) {
-    const nonCommercialResults = results.filter(isCommercialArticle);
+    const nonCommercialResults = results.filter(isNonCommercialArticle);
     dispatch(previewActions.fetchSuccess(nonCommercialResults));
   }
 };
