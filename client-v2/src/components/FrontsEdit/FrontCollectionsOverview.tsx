@@ -38,9 +38,8 @@ const Container = styled(ContentContainer)<ContainerProps>`
   display: flex;
   flex-direction: column;
   flex: 1;
-  height: 100%;
   margin-left: 10px;
-  ${({ isClosed }) => (isClosed ? 'padding: 0;' : '')}
+  ${({ isClosed }) => (isClosed ? 'padding: 0; height: 100%' : '')}
 `;
 
 const ContainerBody = styled.div`

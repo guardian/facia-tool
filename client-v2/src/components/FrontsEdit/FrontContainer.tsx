@@ -23,10 +23,8 @@ import SectionContent from '../layout/SectionContent';
 import { CollectionItemSets, Collection } from 'shared/types/Collection';
 import { toTitleCase } from 'util/stringUtils';
 import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
-import ButtonCircularWithLabel from 'shared/components/input/ButtonCircularWithLabel';
-import ButtonCircularCaret, {
-  ButtonCircularWithTransition
-} from 'shared/components/input/ButtonCircularCaret';
+import ButtonRoundedWithLabel from 'shared/components/input/ButtonRoundedWithLabel';
+import caretIcon from 'shared/images/icons/single-down.svg';
 
 const FrontHeader = styled(FrontSectionHeader)`
   display: flex;
@@ -50,6 +48,7 @@ const FrontsHeaderText = styled('span')`
 
 const SectionContentMetaContainer = styled('div')`
   display: flex;
+  flex-shrink: 0;
   justify-content: space-between;
   margin-bottom: 10px;
 `;
@@ -59,17 +58,17 @@ const StageSelectButtons = styled('div')`
   padding: 0px 30px;
 `;
 const LastPressed = styled('span')`
-  font-size: 10px;
-  height: 100%;
+  font-size: 14px;
 `;
 
-const CollapseAllButton = styled(ButtonCircularWithLabel)`
-  margin-right: 30px;
+const CollapseAllButton = styled(ButtonRoundedWithLabel)`
+  & img {
+    filter: invert(1);
+    transform: rotate(180deg);
+  }
   :hover {
-    ${ButtonCircularWithTransition} {
-      background-color: ${({ theme }) =>
-        theme.shared.button.backgroundColorFocused};
-    }
+    background-color: ${({ theme }) =>
+      theme.shared.base.colors.backgroundColorFocused};
   }
 `;
 
@@ -168,10 +167,9 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                   this.props.selectedFront.collections
                 );
               }}
+              icon={caretIcon}
               label={'Collapse all'}
-            >
-              <ButtonCircularCaret small active preActive={false} />
-            </CollapseAllButton>
+            />
           </SectionContentMetaContainer>
           {this.props.selectedFront && (
             <Front
