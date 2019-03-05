@@ -22,7 +22,7 @@ interface ContainerProps {
 interface ComponentProps extends ContainerProps {
   selectedArticleFragment: { id: string; isSupporting: boolean } | void;
   updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) => void;
-  clearArticleFragmentSelection: (id: string) => void;
+  clearArticleFragmentSelection: () => void;
 }
 
 const FrontsDetailView = ({
@@ -41,9 +41,10 @@ const FrontsDetailView = ({
       frontId={id}
       onSave={(meta: ArticleFragmentMeta) => {
         updateArticleFragmentMeta(selectedArticleFragment.id, meta);
-        clearArticleFragmentSelection(id);
+        clearArticleFragmentSelection();
       }}
-      onCancel={() => clearArticleFragmentSelection(id)}
+      onClose={clearArticleFragmentSelection}
+      onDiscard={clearArticleFragmentSelection}
     />
   ) : (
     <FrontCollectionsOverview id={id} browsingStage={browsingStage} />
@@ -53,10 +54,13 @@ const mapStateToProps = (state: State, props: ContainerProps) => ({
   selectedArticleFragment: selectEditorArticleFragment(state, props.id)
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
+const mapDispatchToProps = (
+  dispatch: Dispatch,
+  { id: frontId }: ContainerProps
+) => ({
   updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
     dispatch(updateArticleFragmentMetaAction(id, meta)),
-  clearArticleFragmentSelection: (frontId: string) =>
+  clearArticleFragmentSelection: () =>
     dispatch(editorClearArticleFragmentSelection(frontId))
 });
 

@@ -236,35 +236,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
             </Root>
           </FrontContentContainer>
           <FrontContentContainer>
-<<<<<<< HEAD
             <FrontDetailView
               id={this.props.id}
               browsingStage={this.props.browsingStage}
             />
-=======
-            {selectedArticleFragment ? (
-              <ArticleFragmentForm
-                articleFragmentId={selectedArticleFragment.id}
-                isSupporting={selectedArticleFragment.isSupporting}
-                form={selectedArticleFragment.id}
-                frontId={this.props.id}
-                onSave={(meta: ArticleFragmentMeta) => {
-                  this.props.updateArticleFragmentMeta(
-                    selectedArticleFragment.id,
-                    meta
-                  );
-                  this.props.clearArticleFragmentSelection();
-                }}
-                onClose={this.props.clearArticleFragmentSelection}
-                onDiscard={this.props.clearArticleFragmentSelection}
-              />
-            ) : (
-              <FrontCollectionsOverview
-                id={this.props.id}
-                browsingStage={this.props.browsingStage}
-              />
-            )}
->>>>>>> Began discard logic
           </FrontContentContainer>
         </FrontContainer>
       </React.Fragment>

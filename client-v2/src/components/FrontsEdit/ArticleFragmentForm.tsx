@@ -430,7 +430,7 @@ interface InterfaceProps {
   articleFragmentId: string;
   isSupporting?: boolean;
   onClose: () => void;
-  onDiscard: () => void;
+  onDiscard?: () => void;
   onSave: (meta: ArticleFragmentMeta) => void;
   frontId: string;
 }
