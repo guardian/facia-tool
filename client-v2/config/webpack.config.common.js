@@ -3,7 +3,7 @@ const TSConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 // https://github.com/Igorbek/typescript-plugin-styled-components
 const createStyledComponentsTransformer = require('typescript-plugin-styled-components').default;
 const styledComponentsTransformer = createStyledComponentsTransformer();
-var ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
   entry: './src/index.tsx',
