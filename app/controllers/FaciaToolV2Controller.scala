@@ -19,7 +19,7 @@ object CollectionSpec {
   implicit val jsonFormat = Json.format[CollectionSpec]
 }
 
-case class CollectionSpec(id: String, lastUpdated: Option[Long], `type`: String)
+case class CollectionSpec(id: String, lastUpdated: Option[Long])
 
 class FaciaToolV2Controller(
                            val acl: Acl,

@@ -136,8 +136,8 @@ describe('Collection actions', () => {
       await store.dispatch(getCollections(collectionIds) as any);
       const result = request.lastOptions().body;
       expect(JSON.parse(result as string)).toEqual([
-        { id: 'testCollection1', type: 'type' },
-        { id: 'testCollection2', type: 'type' }
+        { id: 'testCollection1' },
+        { id: 'testCollection2' }
       ]);
     });
     it('should send collection id, type and lastUpdated in request body when returnOnlyUpdatedCollection is true', async () => {
@@ -149,8 +149,8 @@ describe('Collection actions', () => {
       await store.dispatch(getCollections(collectionIds, true) as any);
       const result = request.lastOptions().body;
       expect(JSON.parse(result as string)).toEqual([
-        { id: 'testCollection1', type: 'type', lastUpdated: 1547479667115 },
-        { id: 'testCollection2', type: 'type', lastUpdated: 1547479667115 }
+        { id: 'testCollection1', lastUpdated: 1547479667115 },
+        { id: 'testCollection2', lastUpdated: 1547479667115 }
       ]);
     });
   });

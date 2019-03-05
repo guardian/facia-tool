@@ -187,7 +187,6 @@ async function saveOpenFrontIds(frontIds?: string[]): Promise<void> {
 
 async function getCollection(collectionId: {
   id: string;
-  type: string;
   lastUpdated?: number;
 }): Promise<CollectionResponse> {
   const [collection] = await getCollections([collectionId]);
@@ -199,7 +198,7 @@ async function getCollection(collectionId: {
 }
 
 async function getCollections( // fetchCollections
-  collections: Array<{ id: string; type: string; lastUpdated?: number }>
+  collections: Array<{ id: string; lastUpdated?: number }>
 ): Promise<CollectionResponse[]> {
   const response = await pandaFetch('/collections', {
     body: JSON.stringify(collections),

@@ -14,15 +14,15 @@ function collectionParamsSelector(
   state: State,
   collectionIds: string[],
   returnOnlyUpdatedCollections: boolean = false
-): Array<{ id: string; type: string; lastUpdated?: number }> {
+): Array<{ id: string; lastUpdated?: number }> {
   const params = collectionIds.map(id => {
     const config = getCollectionConfig(state, id);
     if (!config) {
       throw new Error(`Collection ID ${id} does not exist in config`);
     }
-    const type = config.type;
+
     if (!returnOnlyUpdatedCollections) {
-      return { id, type };
+      return { id };
     }
 
     const maybeCollection = selectCollection(selectSharedState(state), {
@@ -32,7 +32,7 @@ function collectionParamsSelector(
       throw new Error(`Collection ID ${id} does not exist in state`);
     }
     const lastUpdated = maybeCollection.lastUpdated;
-    return { id, type, lastUpdated };
+    return { id, lastUpdated };
   });
 
   return params;
