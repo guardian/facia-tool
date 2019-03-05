@@ -50,6 +50,7 @@
     "express": "^4.16.4",
     "fetch-mock": "^6.4.2",
     "file-loader": "^1.1.11",
+    "fork-ts-checker-webpack-plugin": "^0.5.2",
     "jest": "^23.6.0",
     "jest-dom": "^2.1.0",
     "markdown-toc": "^1.2.0",
