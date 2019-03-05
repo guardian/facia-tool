@@ -113,6 +113,7 @@ interface ArticleBodyProps {
   showQuotedHeadline?: boolean;
   imageHide?: boolean;
   imageSlideshowReplace?: boolean;
+  isBreaking?: boolean;
 }
 
 const articleBodyDefault = ({
@@ -137,7 +138,8 @@ const articleBodyDefault = ({
   showByline,
   showQuotedHeadline,
   imageHide,
-  imageSlideshowReplace
+  imageSlideshowReplace,
+  isBreaking
 }: ArticleBodyProps) => {
   const ArticleHeadingContainer =
     size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
@@ -145,6 +147,8 @@ const articleBodyDefault = ({
   const displayByline = size === 'default' && showByline && byline;
   const displayTrail =
     size === 'default' && trailText && !(showByline && byline);
+
+  const kickerToDisplay = isBreaking ? 'Breaking news' : kicker;
 
   return (
     <>
@@ -191,9 +195,9 @@ const articleBodyDefault = ({
               {size === 'default' && <TextPlaceholder width={25} />}
             </>
           )}
-          {kicker && (
+          {kickerToDisplay && (
             <KickerHeading style={{ color: getPillarColor(pillarId, true) }}>
-              {kicker}
+              {kickerToDisplay}
             </KickerHeading>
           )}
           {showQuotedHeadline && <ArticleBodyQuote>&quot;</ArticleBodyQuote>}
