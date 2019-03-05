@@ -56,6 +56,17 @@ const ArticleHeadingContainerSmall = styled('div')`
   text-overflow: ellipsis;
 `;
 
+const ArticleBodyByline = styled('div')`
+  font-style: italic;
+  padding-top: 5px;
+`;
+
+const ArticleBodyQuote = styled('span')`
+  font-family: GHGuardianHeadline;
+  font-size: 20px;
+  font-weight: bold;
+`;
+
 interface ArticleBodyProps {
   frontPublicationTime?: string;
   firstPublicationDate?: string;
@@ -75,6 +86,9 @@ interface ArticleBodyProps {
   onAddToClipboard?: (id: string) => void;
   notifications?: string[];
   isUneditable?: boolean;
+  byline?: string;
+  showByline?: boolean;
+  showQuotedHeadline?: boolean;
 }
 
 const articleBodyDefault = ({
@@ -94,10 +108,18 @@ const articleBodyDefault = ({
   onAddToClipboard,
   notifications,
   isUneditable,
-  frontPublicationTime
+  frontPublicationTime,
+  byline,
+  showByline,
+  showQuotedHeadline
 }: ArticleBodyProps) => {
   const ArticleHeadingContainer =
     size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
+
+  const displayByline = size === 'default' && showByline && byline;
+  const displayTrail =
+    size === 'default' && trailText && !(showByline && byline);
+
   return (
     <>
       <CollectionItemMetaContainer>
@@ -148,6 +170,7 @@ const articleBodyDefault = ({
               {kicker}
             </KickerHeading>
           )}
+          {showQuotedHeadline && <ArticleBodyQuote>&quot;</ArticleBodyQuote>}
           {size === 'default' ? (
             <CollectionItemHeading html data-testid="headline">
               {headline}
@@ -158,9 +181,10 @@ const articleBodyDefault = ({
             </ArticleHeadingSmall>
           )}
         </ArticleHeadingContainer>
-        {size === 'default' && trailText && (
+        {displayTrail && (
           <CollectionItemTrail html>{trailText}</CollectionItemTrail>
         )}
+        {displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
       </CollectionItemContent>
       {size === 'default' &&
         (displayPlaceholders ? (
