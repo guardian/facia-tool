@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack')
 const TSConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 // https://github.com/Igorbek/typescript-plugin-styled-components
 const createStyledComponentsTransformer = require('typescript-plugin-styled-components').default;
@@ -20,8 +21,8 @@ module.exports = {
         loader: 'ts-loader',
         exclude: /node_modules/,
         options: {
-          getCustomTransformers: () => ({ 
-            before: [styledComponentsTransformer] 
+          getCustomTransformers: () => ({
+            before: [styledComponentsTransformer]
           })
         }
       },
@@ -38,6 +39,7 @@ module.exports = {
       }
     ]
   },
+  plugins: [new webpack.EnvironmentPlugin(['BUILD_ENV'])],
   resolve: {
     modules: [path.resolve(__dirname, 'src'), 'node_modules'],
     plugins: [new TSConfigPathsPlugin()],

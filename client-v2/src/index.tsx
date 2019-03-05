@@ -45,7 +45,9 @@ if (config.frontIds) {
 // keyboard events
 const unbind = init(store);
 
-pollingConfig(store);
+if (process.env.BUILD_ENV !== 'integration') {
+  pollingConfig(store);
+}
 
 const reactMount = document.getElementById('react-mount');
 
