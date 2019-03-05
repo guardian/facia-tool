@@ -2,6 +2,7 @@ import React from 'react';
 import { styled } from 'shared/constants/theme';
 import startCase from 'lodash/startCase';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
+import { MdCollections } from 'react-icons/md';
 
 import CollectionItemHeading from '../collectionItem/CollectionItemHeading';
 import BasePlaceholder from '../BasePlaceholder';
@@ -67,6 +68,27 @@ const ArticleBodyQuote = styled('span')`
   font-weight: bold;
 `;
 
+const ArticleSlideshow = styled('div')`
+  position: absolute;
+  background: ${({ theme }) => theme.shared.colors.white};
+  width: 24px;
+  height: 24px;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  vertical-align: middle;
+  top: 2px;
+  right: 2px;
+`;
+
+const SlideshowIcon = styled('div')`
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 14px;
+  height: 14px;
+`;
+
+
 interface ArticleBodyProps {
   frontPublicationTime?: string;
   firstPublicationDate?: string;
@@ -89,6 +111,8 @@ interface ArticleBodyProps {
   byline?: string;
   showByline?: boolean;
   showQuotedHeadline?: boolean;
+  imageHide?: boolean;
+  imageSlideshowReplace?: boolean;
 }
 
 const articleBodyDefault = ({
@@ -111,7 +135,9 @@ const articleBodyDefault = ({
   frontPublicationTime,
   byline,
   showByline,
-  showQuotedHeadline
+  showQuotedHeadline,
+  imageHide,
+  imageSlideshowReplace
 }: ArticleBodyProps) => {
   const ArticleHeadingContainer =
     size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
@@ -190,11 +216,21 @@ const articleBodyDefault = ({
         (displayPlaceholders ? (
           <ThumbnailPlaceholder />
         ) : (
-          <Thumbnail
-            style={{
-              backgroundImage: `url('${thumbnail}')`
-            }}
-          />
+          <div>
+            {imageSlideshowReplace && (
+              <ArticleSlideshow>
+                <SlideshowIcon>
+                  <MdCollections />
+                </SlideshowIcon>
+              </ArticleSlideshow>
+            )}
+            <Thumbnail
+              style={{
+                backgroundImage: `url('${thumbnail}')`,
+                opacity: imageHide ? 0.7 : 1
+              }}
+            />
+          </div>
         ))}
       {notifications && (
         <CollectionItemNotification>
