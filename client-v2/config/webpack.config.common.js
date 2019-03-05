@@ -3,7 +3,7 @@ const TSConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 // https://github.com/Igorbek/typescript-plugin-styled-components
 const createStyledComponentsTransformer = require('typescript-plugin-styled-components').default;
 const styledComponentsTransformer = createStyledComponentsTransformer();
-
+var ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
   entry: './src/index.tsx',
@@ -11,6 +11,7 @@ module.exports = {
     path: path.resolve(__dirname, '../../public/client-v2/dist'),
     filename: 'app.bundle.js'
   },
+  plugins: [new ForkTsCheckerWebpackPlugin()],
   module: {
     rules: [
       {
@@ -41,5 +42,9 @@ module.exports = {
     modules: [path.resolve(__dirname, 'src'), 'node_modules'],
     plugins: [new TSConfigPathsPlugin()],
     extensions: ['.ts', '.tsx', '.js']
+  },
+  stats: {
+    // See https://github.com/TypeStrong/ts-loader#loader-options
+    warningsFilter: /export .* was not found in/
   }
 };
