@@ -29,6 +29,7 @@ import CollectionItemTrail from '../collectionItem/CollectionItemTrail';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
 import CollectionItemDraftMetaContent from '../collectionItem/CollectionItemDraftMetaContent';
 import CollectionItemNotification from '../collectionItem/CollectionItemNotification';
+import ColouredQuote from '../collectionItem/CollectionItemQuote';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   width: 130px;
@@ -62,10 +63,9 @@ const ArticleBodyByline = styled('div')`
   padding-top: 5px;
 `;
 
-const ArticleBodyQuote = styled('span')`
-  font-family: GHGuardianHeadline;
-  font-size: 20px;
-  font-weight: bold;
+const ArticleBodyQuoteContainer = styled('span')`
+  margin-left: 0.3rem;
+  margin-right: 0.1rem;
 `;
 
 const ArticleSlideshow = styled('div')`
@@ -87,7 +87,6 @@ const SlideshowIcon = styled('div')`
   width: 14px;
   height: 14px;
 `;
-
 
 interface ArticleBodyProps {
   frontPublicationTime?: string;
@@ -115,6 +114,16 @@ interface ArticleBodyProps {
   imageSlideshowReplace?: boolean;
   isBreaking?: boolean;
 }
+
+const renderColouredQuotes = (pillarId?: string, isLive?: boolean) => {
+  const pillarColour = getPillarColor(pillarId, isLive);
+  return (
+    <React.Fragment>
+      <ColouredQuote colour={pillarColour} />
+      <ColouredQuote colour={pillarColour} />
+    </React.Fragment>
+  );
+};
 
 const articleBodyDefault = ({
   firstPublicationDate,
@@ -200,7 +209,11 @@ const articleBodyDefault = ({
               {kickerToDisplay}
             </KickerHeading>
           )}
-          {showQuotedHeadline && <ArticleBodyQuote>&quot;</ArticleBodyQuote>}
+          {showQuotedHeadline && (
+            <ArticleBodyQuoteContainer>
+              {renderColouredQuotes(pillarId, isLive)}
+            </ArticleBodyQuoteContainer>
+          )}
           {size === 'default' ? (
             <CollectionItemHeading html data-testid="headline">
               {headline}
