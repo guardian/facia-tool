@@ -244,7 +244,7 @@ const articleBodyDefault = ({
             <Thumbnail
               style={{
                 backgroundImage: `url('${thumbnail}')`,
-                opacity: imageHide ? 0.7 : 1
+                opacity: imageHide ? 0.5 : 1
               }}
             />
           </div>
