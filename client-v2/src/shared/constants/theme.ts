@@ -85,7 +85,8 @@ export const theme = {
 };
 
 export type Theme = typeof theme;
-interface SharedTheme {
+export interface SharedTheme {
   shared: Theme;
 }
+
 export const styled = baseStyled as ThemedStyledInterface<SharedTheme>;

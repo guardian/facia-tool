@@ -1,7 +1,8 @@
+import { styled } from 'shared/constants/theme';
 import InputBase from './InputBase';
 import createInput from './CreateInput';
 
-const InputTextAreaBase = InputBase.withComponent('textarea').extend<{
+const InputTextAreaBase = styled(InputBase)<{
   minHeight?: number;
   maxHeight?: number;
 }>`
@@ -11,4 +12,4 @@ const InputTextAreaBase = InputBase.withComponent('textarea').extend<{
   max-height: ${({ maxHeight = 120 }) => maxHeight}px;
 `;
 
-export default createInput(InputTextAreaBase);
+export default createInput(InputTextAreaBase, 'textarea');

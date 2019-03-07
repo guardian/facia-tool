@@ -24,9 +24,7 @@ import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
 import HorizontalRule from 'shared/components/layout/HorizontalRule';
 import InputCheckboxToggle from 'shared/components/input/InputCheckboxToggle';
-import InputImage, {
-  InputImageContainerProps
-} from 'shared/components/input/InputImage';
+import InputImage from 'shared/components/input/InputImage';
 import InputGroup from 'shared/components/input/InputGroup';
 import InputButton from 'shared/components/input/InputButton';
 import Row from '../Row';
@@ -68,7 +66,7 @@ const FormContent = styled('div')`
   overflow-y: scroll;
 `;
 
-const CollectionHeadingPinline = ContainerHeadingPinline.extend`
+const CollectionHeadingPinline = styled(ContainerHeadingPinline)`
   display: flex;
   margin-right: -11px;
   margin-bottom: 10px;
@@ -105,10 +103,10 @@ const renderSlideshow = (
   <>
     {fields.map((name, index) => (
       <Col key={`${name}-${index}`}>
-        <Field<InputImageContainerProps>
+        <Field
           name={name}
           component={InputImage}
-          size="small"
+          displaySize="small"
           criteria={imageCriteria}
           frontId={frontId}
         />

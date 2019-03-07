@@ -1,5 +1,5 @@
 import React from 'react';
-import { injectGlobal, ThemeProvider } from 'styled-components';
+import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
 import DropDisabler from './util/DropDisabler';
 
@@ -25,9 +25,10 @@ import FrontsEdit from './FrontsEdit/Edit';
 import Home from './Home';
 import NotFound from './NotFound';
 import ConfirmModal from './ConfirmModal';
+import { BasePlaceholderStylesheet } from 'shared/components/BasePlaceholder';
 
 // tslint:disable:no-unused-expression
-injectGlobal`
+const FontsStylesheet = createGlobalStyle`
   @font-face {
     font-family: GHGuardianHeadline-Bold
     src: url(${GHGuardianHeadlineBoldWoff2}) format('woff2'),
@@ -104,6 +105,8 @@ const BackgroundHeader = styled('div')`
 const App = () => (
   <ThemeProvider theme={styleTheme}>
     <DropDisabler>
+      <FontsStylesheet />
+      <BasePlaceholderStylesheet />
       <AppContainer>
         <BackgroundHeader>
           <SectionHeaderWithLogo />

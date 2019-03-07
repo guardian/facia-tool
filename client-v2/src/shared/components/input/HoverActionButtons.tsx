@@ -29,7 +29,7 @@ const Icon = styled('img')`
   vertical-align: middle;
 `;
 
-const ActionButton = ButtonCircular.extend<{ danger?: boolean }>`
+const ActionButton = styled(ButtonCircular)<{ danger?: boolean }>`
   background: ${({ danger, theme }) =>
     danger
       ? theme.shared.button.backgroundColorHighlight

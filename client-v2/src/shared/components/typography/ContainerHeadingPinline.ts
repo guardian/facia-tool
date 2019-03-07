@@ -1,6 +1,7 @@
 import ContainerHeading from './ContainerHeading';
+import { styled } from 'shared/constants/theme';
 
-export default ContainerHeading.extend`
+export default styled(ContainerHeading)`
   align-items: center;
   border-bottom: ${({ theme }) =>
     `1px solid ${theme.shared.base.colors.borderColor}`};

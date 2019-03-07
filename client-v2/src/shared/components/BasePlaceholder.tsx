@@ -1,7 +1,7 @@
-import styled, { injectGlobal } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 
 // tslint:disable:no-unused-expression
-injectGlobal`
+export const BasePlaceholderStylesheet = createGlobalStyle`
   @keyframes phAnimation {
     0% {
       transform: translate3d(-30%, 0, 0);

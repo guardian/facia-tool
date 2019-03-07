@@ -59,7 +59,7 @@ const IconAdd = styled(IconDelete)`
 export interface InputImageContainerProps {
   frontId: string;
   criteria?: Criteria;
-  size?: 'small';
+  displaySize?: 'small';
 }
 
 type ComponentProps = InputImageContainerProps &

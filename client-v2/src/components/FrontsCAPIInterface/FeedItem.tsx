@@ -21,7 +21,7 @@ import noop from 'lodash/noop';
 import { getPaths } from 'util/paths';
 
 const LinkContainer = styled('div')`
-  background-color: ${({ theme }) => theme.capiInterface.backgroundLight};
+  background-color: ${({ theme }) => theme.capiInterface.backgroundLight}
   display: none;
   position: absolute;
   bottom: 20px;

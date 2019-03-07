@@ -146,7 +146,7 @@ class FrontsMenu extends React.Component<Props, State> {
                     <FrontsMenuSearchInput
                       value={this.state.searchString}
                       onChange={this.onInput}
-                      innerRef={this.inputRef}
+                      ref={this.inputRef}
                     />
                     <FrontsMenuSearchImage
                       src={searchImage}

@@ -104,7 +104,7 @@ const ItemCount = styled.span`
   white-space: nowrap;
 `;
 
-const StatusWarning = ButtonDefault.extend`
+const StatusWarning = styled(ButtonDefault)`
   outline: transparent;
   :not(:first-child) {
     margin-left: 5px;

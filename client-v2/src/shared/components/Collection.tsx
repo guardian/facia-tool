@@ -50,7 +50,7 @@ interface CollectionState {
   hasDragOpenIntent: boolean;
 }
 
-const CollectionContainer = ContentContainer.extend`
+const CollectionContainer = styled(ContentContainer)`
   flex: 1;
   width: 600px;
 `;
@@ -159,7 +159,7 @@ const CollectionConfigTextPipe = styled('span')`
   color: ${({ theme }) => theme.shared.base.colors.borderColor};
 `;
 
-const CollectionShortVerticalPinline = ShortVerticalPinline.extend`
+const CollectionShortVerticalPinline = styled(ShortVerticalPinline)`
   right: initial;
   left: 0;
 `;

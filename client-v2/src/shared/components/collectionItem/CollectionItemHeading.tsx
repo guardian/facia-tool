@@ -1,5 +1,6 @@
 import React from 'react';
-import { styled } from 'shared/constants/theme';
+import { styled, SharedTheme } from 'shared/constants/theme';
+import { StyledComponentProps } from 'styled-components';
 import { sanitizeHTML } from 'shared/util/sanitizeHTML';
 
 const Wrapper = styled('span')`
@@ -8,17 +9,24 @@ const Wrapper = styled('span')`
   font-size: 16px;
 `;
 
-type CollectionItemHeading = {
+interface CollectionItemHeadingProps {
   children?: string;
   html?: boolean;
-} & React.HTMLProps<HTMLSpanElement>;
+}
+
+type Props = StyledComponentProps<
+  'div',
+  SharedTheme,
+  CollectionItemHeadingProps,
+  ''
+>;
 
 const CollectionItemHeading = ({
   children = '',
   html = false,
   ref, // remove this for TS reasons
   ...props
-}: CollectionItemHeading) =>
+}: Props) =>
   html ? (
     <Wrapper
       dangerouslySetInnerHTML={{ __html: sanitizeHTML(children) }}

@@ -1,5 +1,6 @@
 import React from 'react';
-import { styled } from 'shared/constants/theme';
+import { styled, SharedTheme } from 'shared/constants/theme';
+import { StyledComponentProps } from 'styled-components';
 import { sanitizeHTML } from 'shared/util/sanitizeHTML';
 
 const Wrapper = styled('div')`
@@ -12,17 +13,24 @@ const Wrapper = styled('div')`
   font-family: TS3TextSans;
 `;
 
-type CollectionItemTrailProps = {
+interface CollectionItemTrailProps {
   children?: string;
   html?: boolean;
-} & React.HTMLProps<HTMLDivElement>;
+}
+
+type Props = StyledComponentProps<
+  'div',
+  SharedTheme,
+  CollectionItemTrailProps,
+  ''
+>;
 
 const CollectionItemTrail = ({
   children = '',
   html = false,
   ref, // remove this for TS reasons
   ...props
-}: CollectionItemTrailProps) =>
+}: Props) =>
   html ? (
     <Wrapper
       dangerouslySetInnerHTML={{ __html: sanitizeHTML(children) }}

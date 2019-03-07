@@ -10,7 +10,7 @@ type Props = {
 } & WrappedFieldProps;
 
 export default (
-  Component: new (props: any) => React.Component<
+  Component: React.ComponentType<
     React.HTMLAttributes<HTMLInputElement> & StyledProps<any>
   >,
   type?: string

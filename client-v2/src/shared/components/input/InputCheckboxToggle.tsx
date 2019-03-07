@@ -10,7 +10,7 @@ const CheckboxContainer = styled('div')`
   display: flex;
 `;
 
-const Label = InputLabel.extend`
+const Label = styled(InputLabel)`
   color: ${props => props.theme.shared.base.colors.textMuted};
 `;
 

@@ -26,7 +26,7 @@ const ClipboardWrapper = styled('div')`
   overflow-y: scroll;
 `;
 
-const FeedbackButton = Button.extend<{
+const FeedbackButton = styled(Button)<{
   href: string;
   target: string;
 }>`
@@ -34,7 +34,7 @@ const FeedbackButton = Button.extend<{
   align-self: center;
   margin-right: 10px;
   line-height: 24px;
-`.withComponent('a');
+`;
 
 export default () => (
   <FeedSectionContainer>
@@ -42,6 +42,7 @@ export default () => (
       <FeedbackButton
         href="https://docs.google.com/forms/d/e/1FAIpQLSc4JF0GxrKoxQgsFE9_tQfjAo1RKRU4M5bJWJRKaVlHbR2rpA/viewform?c=0&w=1"
         target="_blank"
+        as="a"
       >
         Send us feedback
       </FeedbackButton>
