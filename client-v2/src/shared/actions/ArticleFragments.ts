@@ -9,7 +9,8 @@ import {
   InsertSupportingArticleFragment,
   RemoveGroupArticleFragment,
   RemoveSupportingArticleFragment,
-  UpdateArticleFragmentMeta
+  UpdateArticleFragmentMeta,
+  ClearArticleFragments
 } from 'shared/types/Action';
 import { createFragment } from 'shared/util/articleFragment';
 import { createLinkSnap, createLatestSnap } from 'shared/util/snap';
@@ -19,6 +20,7 @@ import { isValidURL } from 'shared/util/url';
 export const UPDATE_ARTICLE_FRAGMENT_META =
   'SHARED/UPDATE_ARTICLE_FRAGMENT_META';
 export const ARTICLE_FRAGMENTS_RECEIVED = 'SHARED/ARTICLE_FRAGMENTS_RECEIVED';
+export const CLEAR_ARTICLE_FRAGMENTS = 'SHARED/CLEAR_ARTICLE_FRAGMENTS';
 export const REMOVE_GROUP_ARTICLE_FRAGMENT =
   'SHARED/REMOVE_GROUP_ARTICLE_FRAGMENT';
 export const REMOVE_SUPPORTING_ARTICLE_FRAGMENT =
@@ -56,6 +58,15 @@ function articleFragmentsReceived(
   return {
     type: ARTICLE_FRAGMENTS_RECEIVED,
     payload
+  };
+}
+
+function clearArticleFragments(ids: string[]): ClearArticleFragments {
+  return {
+    type: 'SHARED/CLEAR_ARTICLE_FRAGMENTS',
+    payload: {
+      ids
+    }
   };
 }
 
@@ -189,5 +200,6 @@ export {
   insertSupportingArticleFragment,
   removeGroupArticleFragment,
   removeSupportingArticleFragment,
-  createArticleFragment
+  createArticleFragment,
+  clearArticleFragments
 };

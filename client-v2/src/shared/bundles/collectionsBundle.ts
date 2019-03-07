@@ -15,7 +15,7 @@ const collectionSelectors = {
   selectParentCollectionOfArticleFragment: (
     state: SharedState,
     articleFragmentId: string
-  ) => {
+  ): string | null => {
     let collectionId: null | string = null;
     Object.keys(state.collections.data).some(id =>
       ['live', 'draft', 'previously'].some(stage => {

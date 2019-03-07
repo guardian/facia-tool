@@ -13,7 +13,8 @@ import {
 } from 'selectors/configSelectors';
 import {
   createGroupArticlesSelector,
-  selectSharedState
+  selectSharedState,
+  createAllArticlesInCollectionSelector
 } from 'shared/selectors/shared';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import {
@@ -26,7 +27,10 @@ import {
   normaliseCollectionWithNestedArticles,
   denormaliseCollection
 } from 'shared/util/shared';
-import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
+import {
+  articleFragmentsReceived,
+  clearArticleFragments
+} from 'shared/actions/ArticleFragments';
 import { groupsReceived } from 'shared/actions/Groups';
 import { recordVisibleArticles } from 'actions/Fronts';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
@@ -52,17 +56,27 @@ import {
 import flatten from 'lodash/flatten';
 import { collectionParamsSelector } from 'selectors/collectionSelectors';
 
+const articlesInCollection = createAllArticlesInCollectionSelector();
+
 function fetchStaleOpenCollections(): ThunkResult<Promise<void>> {
   return async (dispatch: Dispatch, getState: () => State) => {
     const collectionIds = collectionsInOpenFrontsSelector(getState());
-    dispatch(getCollections(collectionIds, true));
+    const prevState = getState();
+    const fetchedCollectionIds = await dispatch(
+      getCollections(collectionIds, true)
+    );
+    const prevArticleIds = articlesInCollection(
+      selectSharedState(prevState),
+      fetchedCollectionIds
+    );
+    dispatch(clearArticleFragments(prevArticleIds));
   };
 }
 
 function getCollections(
   collectionIds: string[],
   returnOnlyUpdatedCollections: boolean = false
-): ThunkResult<Promise<void>> {
+): ThunkResult<Promise<string[]>> {
   return async (dispatch: Dispatch, getState: () => State) => {
     dispatch(collectionActions.fetchStart(collectionIds));
     try {
@@ -133,8 +147,10 @@ function getCollections(
         ];
       });
       dispatch(batchActions(flatten([...actions, ...missingActions])));
+      return collectionResponses.map(({ id }) => id);
     } catch (error) {
       dispatch(collectionActions.fetchError(error, collectionIds));
+      return [];
     }
   };
 }

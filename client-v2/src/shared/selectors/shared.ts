@@ -285,6 +285,28 @@ const createArticlesInCollectionSelector = () => {
     });
 };
 
+const createAllArticlesInCollectionSelector = () => {
+  const articlesInCollection = createArticlesInCollectionSelector();
+
+  return (state: State, collectionIds: string[]) =>
+    collectionIds.reduce(
+      (acc, id) => [
+        ...acc,
+        ...(['live', 'draft', 'previously'] as CollectionItemSets[]).reduce(
+          (acc1, collectionSet) => [
+            ...acc1,
+            ...articlesInCollection(state, {
+              collectionId: id,
+              collectionSet
+            })
+          ],
+          [] as string[]
+        )
+      ],
+      [] as string[]
+    );
+};
+
 const articleFragmentIdSelector = (
   _: unknown,
   { articleFragmentId }: { articleFragmentId: string }
@@ -401,6 +423,7 @@ export {
   articleFragmentsFromRootStateSelector,
   createArticlesInCollectionGroupSelector,
   createArticlesInCollectionSelector,
+  createAllArticlesInCollectionSelector,
   createGroupArticlesSelector,
   createSupportingArticlesSelector,
   createCollectionSelector,

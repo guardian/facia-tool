@@ -38,6 +38,12 @@ const groups = (
       const { id, index, articleFragmentId } = action.payload;
       const articleFragmentsMap = articleFragmentsSelector(prevSharedState);
       const groupSiblings = groupSiblingsSelector(prevSharedState, id);
+
+      if (!articleFragmentsMap[articleFragmentId]) {
+        // this may have happened if we've purged after a poll
+        return state;
+      }
+
       const dedupedSiblings = groupSiblings.reduce(
         (acc, sibling) => ({
           ...acc,

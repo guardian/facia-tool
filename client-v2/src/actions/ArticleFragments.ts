@@ -255,7 +255,7 @@ const moveArticleFragment = (
 ): ThunkResult<void> => {
   return (dispatch: Dispatch, getState) => {
     const removeActionCreator =
-      from && getRemoveActionCreatorFromType(from.type);
+      from && getRemoveActionCreatorFromType(from.type, persistTo);
     const insertActionCreator = getInsertionActionCreatorFromType(
       to.type,
       persistTo
