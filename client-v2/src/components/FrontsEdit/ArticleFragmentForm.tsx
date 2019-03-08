@@ -142,7 +142,7 @@ const formComponent: React.StatelessComponent<Props> = ({
         <Button priority="primary" onClick={onClose} type="button" size="l">
           Close
         </Button>
-        <Button priority="primary" onClick={onDiscard} type="button" size="l">
+        <Button priority="primary" onClick={onDiscard} disabled={pristine} type="button" size="l">
           Discard
         </Button>
         <Button onClick={handleSubmit} disabled={pristine} size="l">
@@ -480,6 +480,10 @@ const mapDispatchToProps = (dispatch: Dispatch, props: InterfaceProps) => ({
       dispatch(reset(props.articleFragmentId));
       props.onDiscard();
     }
+  },
+  onSave: (meta: ArticleFragmentMeta) => {
+    dispatch(reset(props.articleFragmentId));
+    props.onSave(meta);
   }
 });
 

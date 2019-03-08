@@ -62,7 +62,7 @@ const colorMap = {
 const backgroundMap = {
   disabled: {
     default: theme.colors.greyMediumLight,
-    primary: theme.colors.orangeDark,
+    primary: theme.colors.orangeVeryLight,
     muted: theme.colors.greyLight
   },
   selected: {
@@ -80,7 +80,7 @@ const backgroundMap = {
 const backgroundHoverMap = {
   disabled: {
     default: theme.colors.greyMediumLight,
-    primary: theme.colors.orangeDark,
+    primary: theme.colors.orangeVeryLight,
     muted: theme.colors.greyLight
   },
   selected: {

@@ -23,6 +23,7 @@ const colors = {
   white: '#FFF', // lightest
   orange: '#FF7F0F',
   orangeLight: '#FD8A2E',
+  orangeVeryLight: '#FFB274',
   orangeDark: '#E05E00'
 };
 
