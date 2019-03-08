@@ -116,7 +116,7 @@ interface ArticleBodyProps {
 }
 
 const renderColouredQuotes = (pillarId?: string, isLive?: boolean) => {
-  const pillarColour = getPillarColor(pillarId, isLive);
+  const pillarColour = getPillarColor(pillarId, isLive || true);
   return (
     <React.Fragment>
       <ColouredQuote colour={pillarColour} />
