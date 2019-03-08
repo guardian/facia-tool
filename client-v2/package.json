@@ -106,6 +106,7 @@
     "react": "^16.3.0",
     "react-dates": "^18.3.1",
     "react-dom": "^16.3.0",
+    "react-icons": "^3.4.0",
     "react-modal": "^3.6.1",
     "react-redux": "^5.0.7",
     "react-router": "^4.2.0",
