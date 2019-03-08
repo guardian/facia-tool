@@ -100,8 +100,8 @@ const Tone = styled('div')`
 `;
 
 const Body = styled('div')`
-  width: calc(100% - 170px);
-  padding-left: 4px;
+  width: calc(100% - 163px);
+  padding-left: 1px;
 `;
 
 interface FeedItemProps {

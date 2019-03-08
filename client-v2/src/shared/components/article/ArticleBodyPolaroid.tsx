@@ -43,7 +43,7 @@ const ArticlePolaroidComponent = ({
     <>
       {size === 'default' &&
         (displayPlaceholders ? (
-          <ImagePlaceholder height={108} />
+          <ImagePlaceholder height={84} />
         ) : (
           <PolaroidThumbnail
             style={{
