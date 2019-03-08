@@ -138,7 +138,7 @@ const getArticleLabel = (
   }
 
   if (tone === 'dead' || tone === 'live') {
-    return startCase(tone);
+    return 'Live';
   }
 
   return startCase(sectionName);
@@ -172,7 +172,7 @@ const FeedItem = ({
         <Tone
           style={{
             color:
-              getPillarColor(pillarId, isLive) ||
+              getPillarColor(pillarId, isLive, tone === 'dead') ||
               styleTheme.capiInterface.textLight
           }}
         >

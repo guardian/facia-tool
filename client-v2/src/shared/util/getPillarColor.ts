@@ -1,3 +1,5 @@
+import { theme } from 'constants/theme';
+
 const pillarColorMap = {
   'pillar/news': '#c70000',
   'pillar/sport': '#0084c6',
@@ -7,15 +9,21 @@ const pillarColorMap = {
 } as { [pillar: string]: string };
 
 const noPillarColour = '#221133';
+const deadLiveBlogColour = theme.shared.colors.greyMediumDark;
 
 export const notLiveColour = '#ff7f0f';
 
 export const getPillarColor = (
   pillar: string | undefined,
-  isLive?: boolean
+  isLive?: boolean,
+  deadLiveBlog?: boolean
 ) => {
   if (!isLive) {
     return notLiveColour;
+  }
+
+  if (deadLiveBlog) {
+    return deadLiveBlogColour;
   }
 
   if (!pillar) {
