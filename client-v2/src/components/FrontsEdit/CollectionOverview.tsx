@@ -136,38 +136,34 @@ const CollectionStatus = ({
   isUneditable,
   isBackfilled,
   lastUpdatedTimeStamp
-}: CollectionStatusProps) => (
-  <>
-    <LastUpdated>{`${distanceFromNow(
-      lastUpdatedTimeStamp as number
-    )} ago`}</LastUpdated>
+}: CollectionStatusProps) => {
+  let statusWarningText = '';
+  if (hasUnpublishedChanges) {
+    statusWarningText += 'Collection changes have not been launched. ';
+  }
+  if (hasUnsavedArticleEdits) {
+    statusWarningText += 'Collection contains unsaved changes to articles. ';
+  }
+  return (
+    <>
+      <LastUpdated>{`${distanceFromNow(
+        lastUpdatedTimeStamp as number
+      )} ago`}</LastUpdated>
 
-    {isBackfilled ? <LastUpdated> | Backfill</LastUpdated> : null}
-    {hasUnpublishedChanges ? (
-      <StatusWarning
-        priority="primary"
-        size="s"
-        title="Collection changes have not been launched"
-      >
-        !
-      </StatusWarning>
-    ) : null}
-    {hasUnsavedArticleEdits ? (
-      <StatusWarning
-        priority="default"
-        size="s"
-        title="Collection contains unsaved changes to articles"
-      >
-        !
-      </StatusWarning>
-    ) : null}
-    {isUneditable ? (
-      <StatusFlag disabled={true} size="s">
-        <PadlockImg />
-      </StatusFlag>
-    ) : null}
-  </>
-);
+      {isBackfilled ? <LastUpdated> | Backfill</LastUpdated> : null}
+      {!!statusWarningText ? (
+        <StatusWarning priority="primary" size="s" title={statusWarningText}>
+          !
+        </StatusWarning>
+      ) : null}
+      {isUneditable ? (
+        <StatusFlag disabled={true} size="s">
+          <PadlockImg />
+        </StatusFlag>
+      ) : null}
+    </>
+  );
+};
 
 const CollectionOverview = ({
   collection,
