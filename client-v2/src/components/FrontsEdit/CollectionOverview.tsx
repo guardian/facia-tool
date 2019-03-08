@@ -143,11 +143,20 @@ const CollectionStatus = ({
     )} ago`}</LastUpdated>
 
     {isBackfilled ? <LastUpdated> | Backfill</LastUpdated> : null}
-    {hasUnsavedArticleEdits || !!hasUnpublishedChanges ? (
+    {hasUnpublishedChanges ? (
       <StatusWarning
         priority="primary"
         size="s"
         title="Collection changes have not been launched"
+      >
+        !
+      </StatusWarning>
+    ) : null}
+    {hasUnsavedArticleEdits ? (
+      <StatusWarning
+        priority="default"
+        size="s"
+        title="Collection contains unsaved changes to articles"
       >
         !
       </StatusWarning>

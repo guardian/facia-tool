@@ -23,10 +23,8 @@ const collectionHasUnsavedArticleEditsWarningSelector = () => {
       collectionId: string;
     }
   ) =>
-    articlesInCollectionSelector(selectSharedState(state), props).reduce(
-      (hasEdits: boolean, article: string) =>
-        hasEdits || isDirty(article)(state),
-      false
+    articlesInCollectionSelector(selectSharedState(state), props).some(
+      articleId => isDirty(articleId)(state)
     );
 };
 
