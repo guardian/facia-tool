@@ -19,6 +19,7 @@ import {
 import { insertArticleFragment } from 'actions/ArticleFragments';
 import noop from 'lodash/noop';
 import { getPaths } from 'util/paths';
+import { liveBlogTones } from 'constants/fronts';
 
 const LinkContainer = styled('div')`
   background-color: ${({ theme }) => theme.capiInterface.backgroundLight};
@@ -137,8 +138,8 @@ const getArticleLabel = (
     return notLiveLabels.draft;
   }
 
-  if (tone === 'dead' || tone === 'live') {
-    return 'Live';
+  if (tone === liveBlogTones.dead || tone === liveBlogTones.live) {
+    return startCase(liveBlogTones.live);
   }
 
   return startCase(sectionName);
@@ -172,7 +173,7 @@ const FeedItem = ({
         <Tone
           style={{
             color:
-              getPillarColor(pillarId, isLive, tone === 'dead') ||
+              getPillarColor(pillarId, isLive, tone === liveBlogTones.dead) ||
               styleTheme.capiInterface.textLight
           }}
         >
