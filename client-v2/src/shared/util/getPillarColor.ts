@@ -15,7 +15,7 @@ export const notLiveColour = '#ff7f0f';
 
 export const getPillarColor = (
   pillar: string | undefined,
-  isLive?: boolean,
+  isLive: boolean,
   deadLiveBlog?: boolean
 ) => {
   if (!isLive) {
