@@ -136,9 +136,7 @@ interface CapiArticle {
       showMainVideo: boolean;
       showQuotedHeadline: boolean;
     };
-    frontsMeta?: {
-      tone?: string;
-    };
+    tone?: string;
   };
 }
 

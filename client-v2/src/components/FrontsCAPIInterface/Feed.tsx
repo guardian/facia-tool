@@ -36,7 +36,8 @@ const Feed = ({ articles = [], error }: FeedProps) => (
             webPublicationDate,
             sectionName,
             fields,
-            pillarId
+            pillarId,
+            frontsMeta
           }) => (
             <FeedItem
               id={id}
@@ -50,6 +51,7 @@ const Feed = ({ articles = [], error }: FeedProps) => (
               firstPublicationDate={fields.firstPublicationDate}
               isLive={!fields.isLive || fields.isLive === 'true'}
               scheduledPublicationDate={fields.scheduledPublicationDate}
+              tone={frontsMeta.tone}
             />
           )
         )

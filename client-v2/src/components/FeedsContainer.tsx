@@ -81,7 +81,7 @@ const ResultsHeadingContainer = styled('div')`
 
 const getCapiFieldsToShow = (isPreview: boolean) => {
   const defaultFieldsToShow =
-    'internalPageCode,trailText,firstPublicationDate,isLive';
+    'internalPageCode,trailText,firstPublicationDate,isLive,liveBloggingNow';
 
   if (!isPreview) {
     return defaultFieldsToShow;

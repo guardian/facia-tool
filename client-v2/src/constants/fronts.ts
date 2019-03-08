@@ -19,6 +19,11 @@ export const notLiveLabels: { [key: string]: string } = {
   takenDown: 'Taken Down'
 };
 
+export const liveBlogTones: { [key: string]: string } = {
+  dead: 'dead',
+  live: 'live'
+};
+
 export const detectPressFailureMs = 10000;
 
 export const noOfOpenCollectionsOnFirstLoad = 3;
