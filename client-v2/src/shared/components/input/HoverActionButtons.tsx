@@ -1,33 +1,9 @@
 import React from 'react';
-import { styled } from 'shared/constants/theme';
 import ButtonCircular from './ButtonCircular';
 import Link from '../Link';
 import { getPaths } from '../../../util/paths';
 import { ButtonPropsFromWrapper } from './HoverActionButtonWrapper';
-
-import {
-  View,
-  Ophan,
-  Copy,
-  Paste,
-  Clipboard,
-  Delete
-} from '../../images/icons-hover/index';
-
-const hoverActionIcons = {
-  view: View,
-  ophan: Ophan,
-  copy: Copy,
-  paste: Paste,
-  clipboard: Clipboard,
-  delete: Delete
-};
-
-const Icon = styled('img')`
-  width: 10px;
-  display: inline-block;
-  vertical-align: middle;
-`;
+import Icon from '../icons/HoverIcons';
 
 const ActionButton = ButtonCircular.extend<{ danger?: boolean }>`
   background: ${({ danger, theme }) =>
@@ -74,7 +50,7 @@ const HoverDeleteButton = ({
       return onDelete && onDelete();
     }}
   >
-    <Icon src={hoverActionIcons.delete} alt="Delete" />
+    <Icon name="delete" />
   </ActionButton>
 );
 
@@ -92,7 +68,7 @@ const HoverAddToClipboardButton = ({
       return onAddToClipboard && onAddToClipboard();
     }}
   >
-    <Icon src={hoverActionIcons.clipboard} alt="Add to clipboard" />
+    <Icon name="add-to-clipboard" />
   </ActionButton>
 );
 
@@ -104,7 +80,7 @@ const HoverViewButton = ({
 }: ButtonProps) => (
   <Link href={isLive ? getPaths(urlPath).live : getPaths(urlPath).preview}>
     <ActionButton onMouseEnter={showToolTip} onMouseLeave={hideToolTip}>
-      <Icon src={hoverActionIcons.view} alt="View" />
+      <Icon name="view" />
     </ActionButton>
   </Link>
 );
@@ -121,7 +97,7 @@ const HoverOphanButton = ({
       data-testid={'ophan-hover-button'}
     >
       <ActionButton onMouseEnter={showToolTip} onMouseLeave={hideToolTip}>
-        <Icon src={hoverActionIcons.ophan} alt="Ophan" />
+        <Icon name="ophan" />
       </ActionButton>
     </Link>
   ) : null;
