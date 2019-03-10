@@ -43,13 +43,13 @@ const HoverWrapper = (
 // Tests //
 describe('Hover Action Button Wrapper', () => {
   it('should render Wrapper with Buttons', () => {
-    const { container, getByAltText } = render(HoverWrapper);
+    const { container, getByTitle } = render(HoverWrapper);
     const wrapper = container.firstChild as ChildNode;
     expect(wrapper).toBeTruthy();
     expect(wrapper.childNodes.length).toEqual(3);
-    expect(getByAltText('View')).toBeTruthy();
-    expect(getByAltText('Ophan')).toBeTruthy();
-    expect(getByAltText('Delete')).toBeTruthy();
+    expect(getByTitle('view')).toBeTruthy();
+    expect(getByTitle('ophan')).toBeTruthy();
+    expect(getByTitle('delete')).toBeTruthy();
   });
 
   it('should render Wrapper without Ophan Button when Draft', () => {
@@ -80,17 +80,17 @@ describe('Hover Action Button Wrapper', () => {
 
 describe('Hover Action Button ToolTip', () => {
   it('should display correct tool tip on mouseEnter', async () => {
-    const { getByAltText, getByText } = render(HoverWrapper);
-    const button = getByAltText('Ophan').parentNode as HTMLButtonElement;
+    const { getByTitle, getByText } = render(HoverWrapper);
+    const button = getByTitle('ophan').parentNode as HTMLButtonElement;
     fireEvent.mouseEnter(button);
-    const ToolTip = await waitForElement(() => getByText('Ophan'));
+    const ToolTip = await waitForElement(() => getByText('ophan'));
     expect(ToolTip).toBeTruthy();
   });
 
   it('should hide tool tip on mouseLeave', () => {
-    const { getByAltText, queryByText } = render(HoverWrapper);
-    const button = getByAltText('View').parentNode as HTMLButtonElement;
+    const { getByTitle, queryByText } = render(HoverWrapper);
+    const button = getByTitle('view').parentNode as HTMLButtonElement;
     fireEvent.mouseLeave(button);
-    wait(() => expect(queryByText('View')).toBeFalsy());
+    wait(() => expect(queryByText('view')).toBeFalsy());
   });
 });

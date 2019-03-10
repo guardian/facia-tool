@@ -1,6 +1,5 @@
 import React from 'react';
 import { theme } from 'shared/constants/theme';
-
 interface IconProps {
   name?: string;
   fill?: string;
@@ -49,12 +48,14 @@ export default ({
   viewBox = '0 0 10 10'
 }: IconProps) => (
   <svg
+    style={{ pointerEvents: 'none' }}
     width={size}
     height={size}
     viewBox={viewBox}
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
   >
+    <title>{name}</title>
     {getPath(name, { fill })}
   </svg>
 );
