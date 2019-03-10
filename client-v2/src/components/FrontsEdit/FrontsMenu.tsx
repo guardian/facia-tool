@@ -1,7 +1,11 @@
 import React from 'react';
 import { styled } from 'constants/theme';
 import FadeIn from 'shared/components/animation/FadeIn';
-import MoreImage from 'shared/images/icons/more.svg';
+import {
+  MoreIcon,
+  MagnifyingGlassIcon as SearchIcon
+} from 'shared/components/icons/Icons';
+
 import LargeSectionHeader from '../layout/LargeSectionHeader';
 import ButtonOverlay from '../inputs/ButtonOverlay';
 import ScrollContainer from '../ScrollContainer';
@@ -9,7 +13,6 @@ import Overlay from '../layout/Overlay';
 import FrontsList from '../../containers/FrontsList';
 import Row from 'components/Row';
 import Col from 'components/Col';
-import searchImage from 'shared/images/icons/search.svg';
 
 const FrontsMenuContent = styled('div')`
   flex: 1;
@@ -73,7 +76,7 @@ const FrontsMenuSearchInput = styled('input')`
   }
 `;
 
-const FrontsMenuSearchImage = styled('img')`
+const FrontsMenuSearchImage = styled('div')`
   position: absolute;
   right: 5px;
   top: 0;
@@ -132,7 +135,7 @@ class FrontsMenu extends React.Component<Props, State> {
               onClick={this.toggleFrontsMenu}
               active={this.state.isOpen}
             >
-              <img src={MoreImage} alt="" width="100%" height="100%" />
+              <MoreIcon size={40} />
             </ButtonOverlay>
           </ButtonOverlayContainer>
           <ScrollContainer
@@ -148,10 +151,9 @@ class FrontsMenu extends React.Component<Props, State> {
                       onChange={this.onInput}
                       innerRef={this.inputRef}
                     />
-                    <FrontsMenuSearchImage
-                      src={searchImage}
-                      alt="Search fronts"
-                    />
+                    <FrontsMenuSearchImage>
+                      <SearchIcon size={30} title={'Search fronts'} />
+                    </FrontsMenuSearchImage>
                   </FrontsMenuSearchInputContainer>
                 </Row>
               </FrontsMenuSubHeading>

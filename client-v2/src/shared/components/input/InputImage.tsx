@@ -2,8 +2,7 @@ import React from 'react';
 import { styled } from 'shared/constants/theme';
 import { connect } from 'react-redux';
 import { WrappedFieldProps } from 'redux-form';
-import deleteIcon from '../../images/icons/trash.svg';
-import crossIcon from '../../images/icons/delete-copy.svg';
+
 import ButtonDefault from './ButtonDefault';
 import InputContainer from './InputContainer';
 import {
@@ -14,6 +13,7 @@ import { GridModal } from 'components/GridModal';
 import { gridUrlSelector } from 'selectors/configSelectors';
 import { State } from 'types/State';
 import { GridData, Criteria } from 'shared/types/Grid';
+import { RubbishBinIcon } from '../icons/Icons';
 
 const ImageContainer = styled('div')<{
   size?: 'small';
@@ -43,7 +43,7 @@ const ButtonDelete = styled(ButtonDefault)`
   border-radius: 24px;
 `;
 
-const IconDelete = styled('img')`
+const IconDelete = styled('div')`
   display: block;
   position: absolute;
   height: 14px;
@@ -52,9 +52,9 @@ const IconDelete = styled('img')`
   left: 9px;
 `;
 
-const IconAdd = styled(IconDelete)`
-  transform: rotate(45deg);
-`;
+// const IconAdd = styled(IconDelete)`
+//   transform: rotate(45deg);
+// `;
 
 export interface InputImageContainerProps {
   frontId: string;
@@ -181,15 +181,16 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
           <ButtonDelete type="button" priority="primary">
             {this.props.input.value ? (
               <IconDelete
-                src={deleteIcon}
                 onClick={event => {
                   event.stopPropagation();
                   this.clearField();
                 }}
-              />
-            ) : (
-              <IconAdd src={crossIcon} onClick={this.handleAdd} />
-            )}
+              >
+                <RubbishBinIcon size={14} />
+              </IconDelete>
+            ) : null
+            // <IconAdd src={crossIcon} onClick={this.handleAdd} />
+            }{' '}
           </ButtonDelete>
         </ImageContainer>
       </InputContainer>
