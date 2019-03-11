@@ -3,7 +3,12 @@ import ButtonCircular from './ButtonCircular';
 import Link from '../Link';
 import { getPaths } from '../../../util/paths';
 import { ButtonPropsFromWrapper } from './HoverActionButtonWrapper';
-import Icon from '../icons/HoverIcons';
+import {
+  AddToClipboardHoverIcon,
+  OphanHoverIcon,
+  ViewHoverIcon,
+  DeleteHoverIcon
+} from '../icons/HoverIcons';
 
 const ActionButton = ButtonCircular.extend<{ danger?: boolean }>`
   background: ${({ danger, theme }) =>
@@ -50,7 +55,7 @@ const HoverDeleteButton = ({
       return onDelete && onDelete();
     }}
   >
-    <Icon name="delete" />
+    <DeleteHoverIcon />
   </ActionButton>
 );
 
@@ -68,7 +73,7 @@ const HoverAddToClipboardButton = ({
       return onAddToClipboard && onAddToClipboard();
     }}
   >
-    <Icon name="add-to-clipboard" />
+    <AddToClipboardHoverIcon />
   </ActionButton>
 );
 
@@ -80,7 +85,7 @@ const HoverViewButton = ({
 }: ButtonProps) => (
   <Link href={isLive ? getPaths(urlPath).live : getPaths(urlPath).preview}>
     <ActionButton onMouseEnter={showToolTip} onMouseLeave={hideToolTip}>
-      <Icon name="view" />
+      <ViewHoverIcon />
     </ActionButton>
   </Link>
 );
@@ -97,7 +102,7 @@ const HoverOphanButton = ({
       data-testid={'ophan-hover-button'}
     >
       <ActionButton onMouseEnter={showToolTip} onMouseLeave={hideToolTip}>
-        <Icon name="ophan" />
+        <OphanHoverIcon />
       </ActionButton>
     </Link>
   ) : null;
