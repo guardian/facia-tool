@@ -40,7 +40,7 @@ import {
 } from 'selectors/frontsSelectors';
 import { State } from 'types/State';
 import { Dispatch, ThunkResult } from 'types/Store';
-import { frontStages } from 'constants/fronts';
+import { frontStages, collectionItemSets } from 'constants/fronts';
 import {
   Stages,
   Collection,
@@ -55,6 +55,7 @@ import {
 } from 'bundles/frontsUIBundle';
 import flatten from 'lodash/flatten';
 import { collectionParamsSelector } from 'selectors/collectionSelectors';
+import uniq from 'lodash/uniq';
 
 const articlesInCollection = createAllArticlesInCollectionSelector();
 
@@ -69,6 +70,17 @@ function fetchStaleOpenCollections(): ThunkResult<Promise<void>> {
       selectSharedState(prevState),
       fetchedCollectionIds
     );
+
+    dispatch(
+      getArticlesForCollections(
+        fetchedCollectionIds,
+        // get article for *all* collecitonItemSets as it reduces complexity of
+        // this code (finding which collectionItemSets we need), and the overlap
+        // should be pretty large between all of the sets
+        Object.values(collectionItemSets)
+      )
+    );
+
     dispatch(clearArticleFragments(prevArticleIds));
   };
 }
@@ -195,7 +207,9 @@ function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
  * Fetch articles from CAPI and add them to the store.
  */
 const fetchArticles = (articleIds: string[]) => async (dispatch: Dispatch) => {
-  const articleIdsWithoutSnaps = articleIds.filter(id => !id.match(/^snap/));
+  const articleIdsWithoutSnaps = uniq(
+    articleIds.filter(id => !id.match(/^snap/))
+  );
   if (!articleIdsWithoutSnaps.length) {
     return;
   }
@@ -224,11 +238,20 @@ const fetchArticles = (articleIds: string[]) => async (dispatch: Dispatch) => {
 
 const getArticlesForCollections = (
   collectionIds: string[],
-  itemSet: CollectionItemSets
+  itemSetCandidate: CollectionItemSets | CollectionItemSets[]
 ): ThunkResult<Promise<void>> => async (dispatch, getState) => {
-  const articleIds = selectArticlesInCollections(
-    selectSharedState(getState()),
-    { collectionIds, itemSet }
+  const itemSets = Array.isArray(itemSetCandidate)
+    ? itemSetCandidate
+    : [itemSetCandidate];
+  const articleIds = itemSets.reduce(
+    (acc, itemSet) => [
+      ...acc,
+      ...selectArticlesInCollections(selectSharedState(getState()), {
+        collectionIds,
+        itemSet
+      })
+    ],
+    [] as string[]
   );
   await dispatch(fetchArticles(articleIds));
 };
