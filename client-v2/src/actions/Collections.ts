@@ -34,10 +34,7 @@ import {
 import { groupsReceived } from 'shared/actions/Groups';
 import { recordVisibleArticles } from 'actions/Fronts';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
-import {
-  getCollectionConfig,
-  collectionsInOpenFrontsSelector
-} from 'selectors/frontsSelectors';
+import { getCollectionConfig } from 'selectors/frontsSelectors';
 import { State } from 'types/State';
 import { Dispatch, ThunkResult } from 'types/Store';
 import { frontStages, collectionItemSets } from 'constants/fronts';
@@ -54,7 +51,10 @@ import {
   editorCloseCollections
 } from 'bundles/frontsUIBundle';
 import flatten from 'lodash/flatten';
-import { collectionParamsSelector } from 'selectors/collectionSelectors';
+import {
+  collectionParamsSelector,
+  collectionsInOpenFrontsSelector
+} from 'selectors/collectionSelectors';
 import uniq from 'lodash/uniq';
 
 const articlesInCollection = createAllArticlesInCollectionSelector();

@@ -5,8 +5,6 @@ import { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
-import { selectEditorFronts } from 'bundles/frontsUIBundle';
-import flatten from 'lodash/flatten';
 
 import { CollectionItemSets, Stages } from 'shared/types/Collection';
 
@@ -22,9 +20,8 @@ interface FrontsByPriority {
   [id: string]: FrontConfig[];
 }
 
-function getFronts(state: State): FrontConfigMap {
-  return frontsConfigSelectors.selectAll(state).fronts || {};
-}
+const getFronts = (state: State): FrontConfigMap =>
+  frontsConfigSelectors.selectAll(state).fronts || {};
 
 const getFront = (state: State, id: string) => getFronts(state)[id];
 
@@ -42,14 +39,6 @@ const getFrontsByPriority = createSelector(
         };
       }, {})
 );
-
-const collectionsInOpenFrontsSelector = (state: State): string[] => {
-  const openFrontIds = selectEditorFronts(state);
-  const openFronts = openFrontIds
-    .map(frontId => getFront(state, frontId))
-    .filter(Boolean); // TODO How do we want to handle non-existent frontconfigs?
-  return flatten(openFronts.map(front => front.collections));
-};
 
 const prioritySelector = (state: State, { priority }: { priority: string }) =>
   priority;
@@ -299,7 +288,6 @@ export {
   collectionConfigsSelector,
   frontsIdsSelector,
   getFrontsWithPriority,
-  collectionsInOpenFrontsSelector,
   alsoOnFrontSelector,
   createAlsoOnSelector,
   lastPressedSelector,

@@ -70,7 +70,7 @@ describe('Article component ', () => {
         />
       </ThemeProvider>
     );
-    expect(() => getByTestId('loading-placeholder')).toThrow();
+    expect(getByTestId('loading-placeholder')).toBeTruthy();
   });
 
   it('should not render loading placeholders when the isLoading prop is true but the article is present', () => {

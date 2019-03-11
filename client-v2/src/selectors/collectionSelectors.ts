@@ -1,5 +1,5 @@
 import { State } from 'types/State';
-import { getCollectionConfig } from './frontsSelectors';
+import { getCollectionConfig, getFront } from './frontsSelectors';
 import {
   selectSharedState,
   createArticlesInCollectionSelector,
@@ -7,6 +7,8 @@ import {
 } from 'shared/selectors/shared';
 import { isDirty } from 'redux-form';
 import { CollectionItemSets } from 'shared/types/Collection';
+import { selectEditorFronts } from 'bundles/frontsUIBundle';
+import flatten from 'lodash/flatten';
 
 const selectCollection = createCollectionSelector();
 
@@ -38,6 +40,14 @@ function collectionParamsSelector(
   return params;
 }
 
+const collectionsInOpenFrontsSelector = (state: State): string[] => {
+  const openFrontIds = selectEditorFronts(state);
+  const openFronts = openFrontIds
+    .map(frontId => getFront(state, frontId))
+    .filter(Boolean); // TODO How do we want to handle non-existent frontconfigs?
+  return flatten(openFronts.map(front => front.collections));
+};
+
 const isCollectionLockedSelector = (state: State, id: string): boolean =>
   !!getCollectionConfig(state, id).uneditable;
 
@@ -65,5 +75,6 @@ export {
   collectionParamsSelector,
   isCollectionLockedSelector,
   isCollectionBackfilledSelector,
+  collectionsInOpenFrontsSelector,
   collectionHasUnsavedArticleEditsWarningSelector as createCollectionHasUnsavedArticleEditsWarningSelector
 };
