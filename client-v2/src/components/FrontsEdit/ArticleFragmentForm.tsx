@@ -117,6 +117,9 @@ const renderSlideshow = (
   </>
 );
 
+const getInputId = (articleFragmentId: string, label: string) =>
+  `${articleFragmentId}-${label}`;
+
 const formComponent: React.StatelessComponent<Props> = ({
   change,
   kickerOptions,
@@ -133,7 +136,8 @@ const formComponent: React.StatelessComponent<Props> = ({
   reset,
   showKickerTag,
   showKickerSection,
-  frontId
+  frontId,
+  articleFragmentId
 }) => (
   <FormContainer onSubmit={handleSubmit}>
     <CollectionHeadingPinline>
@@ -163,6 +167,7 @@ const formComponent: React.StatelessComponent<Props> = ({
           name="isBoosted"
           component={InputCheckboxToggle}
           label="Boost"
+          id={getInputId(articleFragmentId, 'boost')}
           type="checkbox"
         />
         <ConditionalField
@@ -170,6 +175,7 @@ const formComponent: React.StatelessComponent<Props> = ({
           name="showQuotedHeadline"
           component={InputCheckboxToggle}
           label="Quote headline"
+          id={getInputId(articleFragmentId, 'quote-headline')}
           type="checkbox"
         />
         <ConditionalField
@@ -177,12 +183,14 @@ const formComponent: React.StatelessComponent<Props> = ({
           name="showBoostedHeadline"
           component={InputCheckboxToggle}
           label="Large headline"
+          id={getInputId(articleFragmentId, 'large-headline')}
           type="checkbox"
         />
         <ConditionalField
           permittedFields={editableFields}
           name="showLivePlayable"
           component={InputCheckboxToggle}
+          id={getInputId(articleFragmentId, 'show-updates')}
           label="Show updates"
           type="checkbox"
         />
@@ -191,6 +199,7 @@ const formComponent: React.StatelessComponent<Props> = ({
           name="showMainVideo"
           component={InputCheckboxToggle}
           label="Show video"
+          id={getInputId(articleFragmentId, 'show-video')}
           type="checkbox"
         />
         <ConditionalField
@@ -264,6 +273,7 @@ const formComponent: React.StatelessComponent<Props> = ({
           name="isBreaking"
           component={InputCheckboxToggle}
           label="Breaking News"
+          id={getInputId(articleFragmentId, 'breaking-news')}
           type="checkbox"
         />
         <ConditionalField
@@ -271,6 +281,7 @@ const formComponent: React.StatelessComponent<Props> = ({
           name="showByline"
           component={InputCheckboxToggle}
           label="Show Byline"
+          id={getInputId(articleFragmentId, 'show-byline')}
           type="checkbox"
         />
         {showByline && (
@@ -312,6 +323,7 @@ const formComponent: React.StatelessComponent<Props> = ({
                 name="imageHide"
                 component={InputCheckboxToggle}
                 label="Hide media"
+                id={getInputId(articleFragmentId, 'hide-media')}
                 type="checkbox"
                 default={false}
               />
@@ -344,6 +356,7 @@ const formComponent: React.StatelessComponent<Props> = ({
                 name="imageCutoutReplace"
                 component={InputCheckboxToggle}
                 label="Use cutout"
+                id={getInputId(articleFragmentId, 'use-cutout')}
                 type="checkbox"
                 default={false}
               />
@@ -363,6 +376,7 @@ const formComponent: React.StatelessComponent<Props> = ({
           name="imageSlideshowReplace"
           component={InputCheckboxToggle}
           label="Slideshow"
+          id={getInputId(articleFragmentId, 'slideshow')}
           type="checkbox"
         />
       </InputGroup>

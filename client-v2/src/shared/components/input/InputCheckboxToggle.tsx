@@ -63,10 +63,12 @@ const Checkbox = styled('input')`
 
 type Props = {
   label?: string;
+  id: string;
 } & WrappedFieldProps;
 
 export default ({
   label,
+  id,
   input: { onChange, ...inputRest },
   ...rest
 }: Props) => (
@@ -80,9 +82,9 @@ export default ({
             onChange={() => onChange(!inputRest.checked)}
             {...inputRest}
             {...rest}
-            id={label}
+            id={id}
           />
-          <CheckboxLabel htmlFor={label} />
+          <CheckboxLabel htmlFor={id} />
         </Switch>
       </CheckboxContainer>
     </InputContainer>
