@@ -39,6 +39,10 @@ const events = {
     gtag('event', 'add_front', {
       front_id: frontId // either front id or 'clipboard'
     }),
+  moveFront: (frontId: string) =>
+    gtag('event', 'move_front', {
+      front_id: frontId // either front id or 'clipboard'
+    }),
   removeFront: (frontId: string) =>
     gtag('event', 'remove_front', {
       front_id: frontId

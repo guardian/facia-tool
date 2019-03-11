@@ -23,6 +23,12 @@ interface EditorAddFront {
   meta: PersistMeta;
 }
 
+interface EditorMoveFront {
+  type: 'EDITOR_MOVE_FRONT';
+  payload: { frontId: string; fromIndex: number; toIndex: number };
+  meta: PersistMeta;
+}
+
 interface EditorCloseFront {
   type: 'EDITOR_CLOSE_FRONT';
   payload: { frontId: string };
@@ -230,6 +236,7 @@ type Action =
   | RemoveClipboardArticleFragment
   | UpdateClipboardContent
   | EditorAddFront
+  | EditorMoveFront
   | EditorClearOpenFronts
   | EditorSetOpenFronts
   | EditorCloseFront
@@ -272,6 +279,7 @@ export {
   RemoveClipboardArticleFragment,
   UpdateClipboardContent,
   EditorAddFront,
+  EditorMoveFront,
   EditorClearOpenFronts,
   EditorSetOpenFronts,
   EditorCloseFront,
