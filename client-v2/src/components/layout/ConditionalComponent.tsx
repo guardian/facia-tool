@@ -2,7 +2,7 @@ import React from 'react';
 
 export interface ConditionalComponentProps {
   name: string | string[];
-  permittedNames: string[];
+  permittedNames?: string[];
 }
 
 /**
@@ -15,7 +15,7 @@ const ConditionalComponent: React.StatelessComponent<
 > = ({ name, permittedNames, children }): React.ReactElement<any> | null => {
   const names = Array.isArray(name) ? name : [name];
   for (const nameIndex in names) {
-    if (permittedNames.indexOf(names[nameIndex]) !== -1) {
+    if (!permittedNames || permittedNames.indexOf(names[nameIndex]) !== -1) {
       return children ? <>{children}</> : null;
     }
   }

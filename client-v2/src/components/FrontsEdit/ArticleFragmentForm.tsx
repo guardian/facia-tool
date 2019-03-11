@@ -107,6 +107,12 @@ const ImageWrapper = styled('div')`
   opacity: ${(props: { faded: boolean }) => (props.faded ? 0.6 : 1)};
 `;
 
+const CollectionEditedError = styled.div`
+  background-color: yellow;
+  margin-bottom: 1em;
+  padding: 1em;
+`;
+
 const renderSlideshow = (
   { fields }: WrappedFieldArrayProps<ImageData>,
   frontId: string
@@ -177,261 +183,266 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             >
               Cancel
             </Button>
-            <Button onClick={handleSubmit} disabled={pristine} size="l">
+            <Button
+              onClick={handleSubmit}
+              disabled={pristine || !articleExists}
+              size="l"
+            >
               Save
             </Button>
           </ButtonContainer>
         </CollectionHeadingPinline>
-        {articleExists ? (
-          <FormContent>
-            <InputGroup>
-              <ConditionalField
-                permittedFields={editableFields}
-                name="headline"
-                label="Headline"
-                placeholder={articleCapiFieldValues.headline}
-                component={InputTextArea}
-                useHeadlineFont
-                rows="2"
-              />
-              <ConditionalField
-                permittedFields={editableFields}
-                name="isBoosted"
-                component={InputCheckboxToggle}
-                label="Boost"
-                id={getInputId(articleFragmentId, 'boost')}
-                type="checkbox"
-              />
-              <ConditionalField
-                permittedFields={editableFields}
-                name="showQuotedHeadline"
-                component={InputCheckboxToggle}
-                label="Quote headline"
-                id={getInputId(articleFragmentId, 'quote-headline')}
-                type="checkbox"
-              />
-              <ConditionalField
-                permittedFields={editableFields}
-                name="showBoostedHeadline"
-                component={InputCheckboxToggle}
-                label="Large headline"
-                id={getInputId(articleFragmentId, 'large-headline')}
-                type="checkbox"
-              />
-              <ConditionalField
-                permittedFields={editableFields}
-                name="showLivePlayable"
-                component={InputCheckboxToggle}
-                label="Show updates"
-                id={getInputId(articleFragmentId, 'show-updates')}
-                type="checkbox"
-              />
-              <ConditionalField
-                permittedFields={editableFields}
-                name="showMainVideo"
-                component={InputCheckboxToggle}
-                label="Show video"
-                id={getInputId(articleFragmentId, 'show-video')}
-                type="checkbox"
-              />
-              <ConditionalField
-                permittedFields={editableFields}
-                name="customKicker"
-                label="Kicker"
-                component={InputText}
-                placeholder="Add custom kicker"
-                useHeadlineFont
-                format={value => {
-                  if (showKickerTag) {
-                    return kickerOptions.webTitle;
-                  }
-                  if (showKickerSection) {
-                    return kickerOptions.sectionName;
-                  }
-                  return value;
-                }}
-                onChange={e => {
-                  change('showKickerCustom', true);
-                  change('showKickerTag', false);
-                  change('showKickerSection', false);
-                  if (e) {
-                    change('customKicker', e.target.value);
-                  }
-                }}
-              />
-              <ConditionalComponent
-                name="customKicker"
-                permittedNames={editableFields}
-              >
-                {kickerOptions.webTitle && (
-                  <Field
-                    permittedFields={editableFields}
-                    name="showKickerTag"
-                    component={InputButton}
-                    buttonText={kickerOptions.webTitle}
-                    selected={showKickerTag}
-                    onClick={() => {
-                      if (!showKickerTag) {
-                        change('showKickerTag', true);
-                        change('showKickerSection', false);
-                        change('showKickerCustom', false);
-                      } else {
-                        change('showKickerTag', false);
-                      }
-                    }}
-                  />
-                )}
-                {kickerOptions.sectionName && (
-                  <Field
-                    permittedFields={editableFields}
-                    name="showKickerSection"
-                    component={InputButton}
-                    selected={showKickerSection}
-                    buttonText={kickerOptions.sectionName}
-                    onClick={() => {
-                      if (!showKickerSection) {
-                        change('showKickerSection', true);
-                        change('showKickerTag', false);
-                        change('showKickerCustom', false);
-                      } else {
-                        change('showKickerSection', false);
-                      }
-                    }}
-                  />
-                )}
-              </ConditionalComponent>
-              <ConditionalField
-                permittedFields={editableFields}
-                name="isBreaking"
-                component={InputCheckboxToggle}
-                label="Breaking News"
-                id={getInputId(articleFragmentId, 'breaking-news')}
-                type="checkbox"
-              />
-              <ConditionalField
-                permittedFields={editableFields}
-                name="showByline"
-                component={InputCheckboxToggle}
-                label="Show Byline"
-                id={getInputId(articleFragmentId, 'show-byline')}
-                type="checkbox"
-              />
-              {showByline && (
-                <ConditionalField
+        {!articleExists && (
+          <CollectionEditedError>
+            {this.state.lastKnownCollectionId &&
+              `This collection has been edited by ${this.props.getLastUpdatedBy(
+                this.state.lastKnownCollectionId
+              )} since you started editing this article. Your changes have not been saved.`}
+          </CollectionEditedError>
+        )}
+        <FormContent>
+          <InputGroup>
+            <ConditionalField
+              permittedFields={editableFields}
+              name="headline"
+              label="Headline"
+              placeholder={articleCapiFieldValues.headline}
+              component={InputTextArea}
+              useHeadlineFont
+              rows="2"
+            />
+            <ConditionalField
+              permittedFields={editableFields}
+              name="isBoosted"
+              component={InputCheckboxToggle}
+              label="Boost"
+              id={getInputId(articleFragmentId, 'boost')}
+              type="checkbox"
+            />
+            <ConditionalField
+              permittedFields={editableFields}
+              name="showQuotedHeadline"
+              component={InputCheckboxToggle}
+              label="Quote headline"
+              id={getInputId(articleFragmentId, 'quote-headline')}
+              type="checkbox"
+            />
+            <ConditionalField
+              permittedFields={editableFields}
+              name="showBoostedHeadline"
+              component={InputCheckboxToggle}
+              label="Large headline"
+              id={getInputId(articleFragmentId, 'large-headline')}
+              type="checkbox"
+            />
+            <ConditionalField
+              permittedFields={editableFields}
+              name="showLivePlayable"
+              component={InputCheckboxToggle}
+              label="Show updates"
+              id={getInputId(articleFragmentId, 'show-updates')}
+              type="checkbox"
+            />
+            <ConditionalField
+              permittedFields={editableFields}
+              name="showMainVideo"
+              component={InputCheckboxToggle}
+              label="Show video"
+              id={getInputId(articleFragmentId, 'show-video')}
+              type="checkbox"
+            />
+            <ConditionalField
+              permittedFields={editableFields}
+              name="customKicker"
+              label="Kicker"
+              component={InputText}
+              placeholder="Add custom kicker"
+              useHeadlineFont
+              format={value => {
+                if (showKickerTag) {
+                  return kickerOptions.webTitle;
+                }
+                if (showKickerSection) {
+                  return kickerOptions.sectionName;
+                }
+                return value;
+              }}
+              onChange={e => {
+                change('showKickerCustom', true);
+                change('showKickerTag', false);
+                change('showKickerSection', false);
+                if (e) {
+                  change('customKicker', e.target.value);
+                }
+              }}
+            />
+            <ConditionalComponent
+              name="customKicker"
+              permittedNames={editableFields}
+            >
+              {kickerOptions.webTitle && (
+                <Field
                   permittedFields={editableFields}
-                  name="byline"
-                  label="Byline"
-                  component={InputText}
-                  placeholder={articleCapiFieldValues.byline}
-                  useHeadlineFont
+                  name="showKickerTag"
+                  component={InputButton}
+                  buttonText={kickerOptions.webTitle}
+                  selected={showKickerTag}
+                  onClick={() => {
+                    if (!showKickerTag) {
+                      change('showKickerTag', true);
+                      change('showKickerSection', false);
+                      change('showKickerCustom', false);
+                    } else {
+                      change('showKickerTag', false);
+                    }
+                  }}
                 />
               )}
+              {kickerOptions.sectionName && (
+                <Field
+                  permittedFields={editableFields}
+                  name="showKickerSection"
+                  component={InputButton}
+                  selected={showKickerSection}
+                  buttonText={kickerOptions.sectionName}
+                  onClick={() => {
+                    if (!showKickerSection) {
+                      change('showKickerSection', true);
+                      change('showKickerTag', false);
+                      change('showKickerCustom', false);
+                    } else {
+                      change('showKickerSection', false);
+                    }
+                  }}
+                />
+              )}
+            </ConditionalComponent>
+            <ConditionalField
+              permittedFields={editableFields}
+              name="isBreaking"
+              component={InputCheckboxToggle}
+              label="Breaking News"
+              id={getInputId(articleFragmentId, 'breaking-news')}
+              type="checkbox"
+            />
+            <ConditionalField
+              permittedFields={editableFields}
+              name="showByline"
+              component={InputCheckboxToggle}
+              label="Show Byline"
+              id={getInputId(articleFragmentId, 'show-byline')}
+              type="checkbox"
+            />
+            {showByline && (
               <ConditionalField
                 permittedFields={editableFields}
-                name="trailText"
-                label="Trail text"
-                component={InputTextArea}
-                placeholder={articleCapiFieldValues.trailText}
+                name="byline"
+                label="Byline"
+                component={InputText}
+                placeholder={articleCapiFieldValues.byline}
+                useHeadlineFont
               />
-            </InputGroup>
-            <RowContainer>
-              <Row>
-                <Col>
-                  <ImageWrapper faded={imageHide}>
-                    <ConditionalField
-                      permittedFields={editableFields}
-                      name="primaryImage"
-                      component={InputImage}
-                      disabled={imageHide}
-                      criteria={imageCriteria}
-                      frontId={frontId}
-                    />
-                  </ImageWrapper>
-                </Col>
-                <Col>
-                  <InputGroup>
-                    <ConditionalField
-                      permittedFields={editableFields}
-                      name="imageHide"
-                      component={InputCheckboxToggle}
-                      label="Hide media"
-                      id={getInputId(articleFragmentId, 'hide-media')}
-                      type="checkbox"
-                      default={false}
-                    />
-                  </InputGroup>
-                </Col>
-              </Row>
-              <ConditionalComponent
-                permittedNames={editableFields}
-                name={['primaryImage', 'imageHide']}
-              >
-                <HorizontalRule />
-              </ConditionalComponent>
-              <Row>
-                <Col>
-                  <ImageWrapper faded={!imageCutoutReplace}>
-                    <ConditionalField
-                      permittedFields={editableFields}
-                      name="cutoutImage"
-                      component={InputImage}
-                      disabled={imageHide}
-                      criteria={imageCriteria}
-                      frontId={frontId}
-                    />
-                  </ImageWrapper>
-                </Col>
-                <Col>
-                  <InputGroup>
-                    <ConditionalField
-                      permittedFields={editableFields}
-                      name="imageCutoutReplace"
-                      component={InputCheckboxToggle}
-                      label="Use cutout"
-                      id={getInputId(articleFragmentId, 'use-cutout')}
-                      type="checkbox"
-                      default={false}
-                    />
-                  </InputGroup>
-                </Col>
-              </Row>
-            </RowContainer>
+            )}
+            <ConditionalField
+              permittedFields={editableFields}
+              name="trailText"
+              label="Trail text"
+              component={InputTextArea}
+              placeholder={articleCapiFieldValues.trailText}
+            />
+          </InputGroup>
+          <RowContainer>
+            <Row>
+              <Col>
+                <ImageWrapper faded={imageHide}>
+                  <ConditionalField
+                    permittedFields={editableFields}
+                    name="primaryImage"
+                    component={InputImage}
+                    disabled={imageHide}
+                    criteria={imageCriteria}
+                    frontId={frontId}
+                  />
+                </ImageWrapper>
+              </Col>
+              <Col>
+                <InputGroup>
+                  <ConditionalField
+                    permittedFields={editableFields}
+                    name="imageHide"
+                    component={InputCheckboxToggle}
+                    label="Hide media"
+                    id={getInputId(articleFragmentId, 'hide-media')}
+                    type="checkbox"
+                    default={false}
+                  />
+                </InputGroup>
+              </Col>
+            </Row>
             <ConditionalComponent
               permittedNames={editableFields}
-              name={['cutoutImage', 'imageCutoutReplace']}
+              name={['primaryImage', 'imageHide']}
             >
               <HorizontalRule />
             </ConditionalComponent>
-            <InputGroup>
-              <ConditionalField
-                permittedFields={editableFields}
-                name="imageSlideshowReplace"
-                component={InputCheckboxToggle}
-                label="Slideshow"
-                id={getInputId(articleFragmentId, 'slideshow')}
-                type="checkbox"
-              />
-            </InputGroup>
-            {imageSlideshowReplace && (
-              <RowContainer>
-                <SlideshowRow>
-                  <FieldArray<WrappedFieldArrayProps<ImageData>>
-                    name="slideshow"
-                    component={(args: WrappedFieldArrayProps<ImageData>) =>
-                      renderSlideshow(args, frontId)
-                    }
+            <Row>
+              <Col>
+                <ImageWrapper faded={!imageCutoutReplace}>
+                  <ConditionalField
+                    permittedFields={editableFields}
+                    name="cutoutImage"
+                    component={InputImage}
+                    disabled={imageHide}
+                    criteria={imageCriteria}
+                    frontId={frontId}
                   />
-                </SlideshowRow>
-                <SlideshowLabel>Drag and drop up to five images</SlideshowLabel>
-              </RowContainer>
-            )}
-          </FormContent>
-        ) : (
-          this.state.lastKnownCollectionId &&
-          `This collection has been edited by ${this.props.getLastUpdatedBy(
-            this.state.lastKnownCollectionId
-          )} since you started editing this article. Your changes have not been saved.`
-        )}
+                </ImageWrapper>
+              </Col>
+              <Col>
+                <InputGroup>
+                  <ConditionalField
+                    permittedFields={editableFields}
+                    name="imageCutoutReplace"
+                    component={InputCheckboxToggle}
+                    label="Use cutout"
+                    id={getInputId(articleFragmentId, 'use-cutout')}
+                    type="checkbox"
+                    default={false}
+                  />
+                </InputGroup>
+              </Col>
+            </Row>
+          </RowContainer>
+          <ConditionalComponent
+            permittedNames={editableFields}
+            name={['cutoutImage', 'imageCutoutReplace']}
+          >
+            <HorizontalRule />
+          </ConditionalComponent>
+          <InputGroup>
+            <ConditionalField
+              permittedFields={editableFields}
+              name="imageSlideshowReplace"
+              component={InputCheckboxToggle}
+              label="Slideshow"
+              id={getInputId(articleFragmentId, 'slideshow')}
+              type="checkbox"
+            />
+          </InputGroup>
+          {imageSlideshowReplace && (
+            <RowContainer>
+              <SlideshowRow>
+                <FieldArray<WrappedFieldArrayProps<ImageData>>
+                  name="slideshow"
+                  component={(args: WrappedFieldArrayProps<ImageData>) =>
+                    renderSlideshow(args, frontId)
+                  }
+                />
+              </SlideshowRow>
+              <SlideshowLabel>Drag and drop up to five images</SlideshowLabel>
+            </RowContainer>
+          )}
+        </FormContent>
       </FormContainer>
     );
   }
@@ -443,7 +454,6 @@ const ArticleFragmentForm = reduxForm<
   {}
 >({
   destroyOnUnmount: false,
-  enableReinitialize: true,
   onSubmit: (
     values: ArticleFragmentFormData,
     dispatch: Dispatch,
@@ -472,7 +482,7 @@ interface ContainerProps {
   imageHide: boolean;
   kickerOptions: ArticleTag;
   showByline: boolean;
-  editableFields: string[];
+  editableFields?: string[];
   showKickerTag: boolean;
   showKickerSection: boolean;
   articleCapiFieldValues: CapiTextFields;
@@ -535,9 +545,8 @@ const createMapStateToProps = () => {
       articleCapiFieldValues: getCapiValuesForArticleTextFields(
         externalArticle
       ),
-      editableFields: article
-        ? selectFormFields(state, article.uuid, isSupporting)
-        : [],
+      editableFields:
+        article && selectFormFields(state, article.uuid, isSupporting),
       kickerOptions: article
         ? articleTagSelector(selectSharedState(state), articleFragmentId)
         : {},
