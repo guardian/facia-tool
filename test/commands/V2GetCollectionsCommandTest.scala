@@ -13,7 +13,7 @@ class V2GetCollectionsCommandTest extends FreeSpec with Matchers {
   val tomorrow = now.plusDays(1)
 
   private def createCollectionSpec(id: String, lastUpdated: Option[Long] = None) = {
-    CollectionSpec(id, lastUpdated, "type")
+    CollectionSpec(id, lastUpdated)
   }
 
   private def createCollectionJson(lastUpdated: DateTime) = {

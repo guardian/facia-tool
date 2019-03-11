@@ -1,8 +1,9 @@
 const path = require('path');
-const webpack = require('webpack')
+const webpack = require('webpack');
 const TSConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 // https://github.com/Igorbek/typescript-plugin-styled-components
-const createStyledComponentsTransformer = require('typescript-plugin-styled-components').default;
+const createStyledComponentsTransformer = require('typescript-plugin-styled-components')
+  .default;
 const styledComponentsTransformer = createStyledComponentsTransformer();
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
@@ -12,7 +13,10 @@ module.exports = {
     path: path.resolve(__dirname, '../../public/client-v2/dist'),
     filename: 'app.bundle.js'
   },
-  plugins: [new ForkTsCheckerWebpackPlugin()],
+  plugins: [
+    new webpack.EnvironmentPlugin(['BUILD_ENV']),
+    new ForkTsCheckerWebpackPlugin()
+  ],
   module: {
     rules: [
       {
@@ -35,11 +39,10 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        use: ['style-loader', 'css-loader']
       }
     ]
   },
-  plugins: [new webpack.EnvironmentPlugin(['BUILD_ENV'])],
   resolve: {
     modules: [path.resolve(__dirname, 'src'), 'node_modules'],
     plugins: [new TSConfigPathsPlugin()],

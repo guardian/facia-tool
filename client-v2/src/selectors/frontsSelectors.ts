@@ -22,8 +22,9 @@ interface FrontsByPriority {
   [id: string]: FrontConfig[];
 }
 
-const getFronts = (state: State): FrontConfigMap =>
-  frontsConfigSelectors.selectAll(state).fronts || {};
+function getFronts(state: State): FrontConfigMap {
+  return frontsConfigSelectors.selectAll(state).fronts || {};
+}
 
 const getFront = (state: State, id: string) => getFronts(state)[id];
 
