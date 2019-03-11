@@ -6,7 +6,7 @@ import {
   editorSetOpenFronts,
   editorOpenCollections,
   editorCloseCollections,
-  selectEditorFronts,
+  selectEditorFrontIds,
   selectIsCollectionOpen,
   editorCloseOverview,
   selectIsFrontOverviewOpen,
@@ -25,14 +25,15 @@ import {
   removeGroupArticleFragment
 } from 'shared/actions/ArticleFragments';
 import { removeClipboardArticleFragment } from 'actions/Clipboard';
+import { State as GlobalState } from 'types/State';
 
 type State = ReturnType<typeof innerReducer>;
 
 // this allows us to put _in_ our own slice of state but receive a _global_
 // state so that we can test out selectors
-const reducer = (state: State | undefined, action: Action) => ({
+const reducer = (state: State | undefined, action: Action): GlobalState => ({
   editor: innerReducer(state, action)
-});
+} as any);
 
 describe('frontsUIBundle', () => {
   describe('selectors', () => {
@@ -53,21 +54,21 @@ describe('frontsUIBundle', () => {
   describe('reducer', () => {
     it('should add a front to the open editor fronts', () => {
       const state = reducer(undefined, editorOpenFront('exampleFront') as any);
-      expect(selectEditorFronts(state)).toEqual(['exampleFront']);
+      expect(selectEditorFrontIds(state)).toEqual(['exampleFront']);
     });
     it('should remove a front to the open editor fronts', () => {
       const state = reducer(
         { frontIds: ['front1', 'front2'] } as any,
         editorCloseFront('front1')
       );
-      expect(selectEditorFronts(state)).toEqual(['front2']);
+      expect(selectEditorFrontIds(state)).toEqual(['front2']);
     });
     it('should clear fronts to the open editor fronts', () => {
       const state = reducer(
         { frontIds: ['front1', 'front2'] } as any,
         editorClearOpenFronts()
       );
-      expect(selectEditorFronts(state)).toEqual([]);
+      expect(selectEditorFrontIds(state)).toEqual([]);
     });
     it('should clear the article fragment selection when selected article fragments are removed from a front', () => {
       const state = reducer(
@@ -133,7 +134,7 @@ describe('frontsUIBundle', () => {
         { frontIds: ['front1', 'front2'] } as any,
         editorSetOpenFronts(['front1', 'front3'])
       );
-      expect(selectEditorFronts(state)).toEqual(['front1', 'front3']);
+      expect(selectEditorFrontIds(state)).toEqual(['front1', 'front3']);
     });
     it('should add a collection to the open editor collections', () => {
       const state = reducer(undefined, editorOpenCollections(

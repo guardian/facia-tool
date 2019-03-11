@@ -105,6 +105,7 @@
     "raven": "^2.5.0",
     "raven-js": "^3.24.1",
     "react": "^16.3.0",
+    "react-beautiful-dnd": "^10.0.4",
     "react-dates": "^18.3.1",
     "react-dom": "^16.3.0",
     "react-icons": "^3.4.0",

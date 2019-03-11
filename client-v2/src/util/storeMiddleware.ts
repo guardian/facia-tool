@@ -5,7 +5,7 @@ import { Dispatch } from 'types/Store';
 import { BATCH } from 'redux-batched-actions';
 import { Action, ActionPersistMeta } from 'types/Action';
 import { selectors } from 'shared/bundles/collectionsBundle';
-import { selectEditorFronts } from 'bundles/frontsUIBundle';
+import { selectEditorFrontIds } from 'bundles/frontsUIBundle';
 import { updateCollection } from 'actions/Collections';
 import { updateClipboard } from 'actions/Clipboard';
 import { selectSharedState } from 'shared/selectors/shared';
@@ -201,7 +201,7 @@ const persistOpenFrontsOnEdit: (
     return next(action);
   }
   const result = next(action);
-  const frontIds = selectEditorFronts(store.getState());
+  const frontIds = selectEditorFrontIds(store.getState());
   // Now they're in the state, persist the relevant front ids.
   persistFrontIds(frontIds);
   return result;
