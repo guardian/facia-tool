@@ -87,14 +87,14 @@ const TextInput = ({
       {onClear && searchTermsExist && (
         <SmallRoundButtonOrange onClick={onSearch} title="Clear search">
           <ClearButtonIcon onClick={onClear}>
-            <ClearIcon size={22} />
+            <ClearIcon size={'l'} />
           </ClearButtonIcon>
         </SmallRoundButtonOrange>
       )}
       {onDisplaySearchFilters && (
         <SmallRoundButtonBlack onClick={onDisplaySearchFilters} title="Search">
           <SearchButtonIcon onClick={onSearch}>
-            <SearchIcon size={22} />
+            <SearchIcon size={'l'} />
           </SearchButtonIcon>
         </SmallRoundButtonBlack>
       )}

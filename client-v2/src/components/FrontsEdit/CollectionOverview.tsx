@@ -150,7 +150,7 @@ const CollectionStatus = ({
     ) : null}
     {isUneditable ? (
       <StatusFlag disabled={true} size="s" title="Locked">
-        <LockedPadlockIcon size={12} />
+        <LockedPadlockIcon size={'xs'} />
       </StatusFlag>
     ) : null}
   </>

@@ -25,7 +25,7 @@ const FilterItem = ({ children, onClear }: FilterItemProps) => (
   <SearchTermItem>
     {children}
     <SmallRoundButton onClick={() => onClear()} title="Clear search">
-      <ClearIcon size={22} />
+      <ClearIcon size={'l'} />
     </SmallRoundButton>
   </SearchTermItem>
 );

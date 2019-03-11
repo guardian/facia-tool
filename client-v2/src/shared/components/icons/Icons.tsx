@@ -3,18 +3,30 @@ import { theme } from 'shared/constants/theme';
 
 interface IconProps {
   fill?: string;
-  size?: number | string;
+  size?: IconSizes;
   title?: string | null;
 }
 
+type IconSizes = 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
+const IconSizeMap = {
+  xxs: 10,
+  xs: 12,
+  s: 14,
+  m: 18,
+  l: 22,
+  xl: 30,
+  xxl: 40
+};
+const mapSize = (size: IconSizes): number => IconSizeMap[size];
+
 const DownCaretIcon = ({
   fill = theme.colors.white,
-  size = 18,
+  size = 'm',
   title = null
 }: IconProps) => (
   <svg
-    width={size}
-    height={size}
+    width={mapSize(size)}
+    height={mapSize(size)}
     viewBox="0 0 30 30"
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -29,12 +41,12 @@ const DownCaretIcon = ({
 
 const RubbishBinIcon = ({
   fill = theme.colors.white,
-  size = 18,
+  size = 'm',
   title = null
 }: IconProps) => (
   <svg
-    width={size}
-    height={size}
+    width={mapSize(size)}
+    height={mapSize(size)}
     viewBox="0 0 128 128"
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -49,12 +61,12 @@ const RubbishBinIcon = ({
 
 const MagnifyingGlassIcon = ({
   fill = theme.colors.white,
-  size = 18,
+  size = 'm',
   title = 'Search'
 }: IconProps) => (
   <svg
-    width={size}
-    height={size}
+    width={mapSize(size)}
+    height={mapSize(size)}
     viewBox="0 0 30 30"
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -70,12 +82,12 @@ const MagnifyingGlassIcon = ({
 // block x
 const CloseIcon = ({
   fill = theme.colors.white,
-  size = 18,
+  size = 'm',
   title = null
 }: IconProps) => (
   <svg
-    width={size}
-    height={size}
+    width={mapSize(size)}
+    height={mapSize(size)}
     viewBox="0 0 10 10"
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -92,13 +104,13 @@ const CloseIcon = ({
 // tapered x
 const ClearIcon = ({
   fill = theme.colors.white,
-  size = 18,
+  size = 'm',
   title = null
 }: IconProps) => (
   <svg
     style={{ transform: 'rotate(45deg)' }}
-    width={size}
-    height={size}
+    width={mapSize(size)}
+    height={mapSize(size)}
     viewBox="0 0 30 30"
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -114,12 +126,12 @@ const ClearIcon = ({
 // tapered +
 const MoreIcon = ({
   fill = theme.colors.white,
-  size = 18,
+  size = 'm',
   title = null
 }: IconProps) => (
   <svg
-    width={size}
-    height={size}
+    width={mapSize(size)}
+    height={mapSize(size)}
     viewBox="0 0 30 30"
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -134,10 +146,10 @@ const MoreIcon = ({
 
 const LockedPadlockIcon = ({
   fill = theme.colors.white,
-  size = 18,
+  size = 'm',
   title = 'Locked'
 }: IconProps) => (
-  <svg width={size} height={size} viewBox="0 0 535 535">
+  <svg width={mapSize(size)} height={mapSize(size)} viewBox="0 0 535 535">
     <title>{title}</title>
     <path
       fill={fill}

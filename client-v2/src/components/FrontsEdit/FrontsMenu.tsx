@@ -135,7 +135,7 @@ class FrontsMenu extends React.Component<Props, State> {
               onClick={this.toggleFrontsMenu}
               active={this.state.isOpen}
             >
-              <MoreIcon size={40} />
+              <MoreIcon size={'xxl'} />
             </ButtonOverlay>
           </ButtonOverlayContainer>
           <ScrollContainer
@@ -152,7 +152,7 @@ class FrontsMenu extends React.Component<Props, State> {
                       innerRef={this.inputRef}
                     />
                     <FrontsMenuSearchImage>
-                      <SearchIcon size={30} title={'Search fronts'} />
+                      <SearchIcon size={'xl'} title={'Search fronts'} />
                     </FrontsMenuSearchImage>
                   </FrontsMenuSearchInputContainer>
                 </Row>

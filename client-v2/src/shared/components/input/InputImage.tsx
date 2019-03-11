@@ -52,10 +52,6 @@ const IconDelete = styled('div')`
   left: 9px;
 `;
 
-// const IconAdd = styled(IconDelete)`
-//   transform: rotate(45deg);
-// `;
-
 export interface InputImageContainerProps {
   frontId: string;
   criteria?: Criteria;
@@ -186,11 +182,9 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                   this.clearField();
                 }}
               >
-                <RubbishBinIcon size={14} />
+                <RubbishBinIcon size={'s'} />
               </IconDelete>
-            ) : null
-            // <IconAdd src={crossIcon} onClick={this.handleAdd} />
-            }{' '}
+            ) : null}
           </ButtonDelete>
         </ImageContainer>
       </InputContainer>
