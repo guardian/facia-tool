@@ -13,6 +13,7 @@ import {
   ArticleTag
 } from '../types/Collection';
 import { State } from '../types/State';
+import { collectionItemSets } from 'constants/fronts';
 
 // Selects the shared part of the application state mounted at its default point, '.shared'.
 const selectSharedState = (rootState: any): State => rootState.shared;
@@ -292,7 +293,7 @@ const createAllArticlesInCollectionSelector = () => {
     collectionIds.reduce(
       (acc, id) => [
         ...acc,
-        ...(['live', 'draft', 'previously'] as CollectionItemSets[]).reduce(
+        ...Object.values(collectionItemSets).reduce(
           (acc1, collectionSet) => [
             ...acc1,
             ...articlesInCollection(state, {

@@ -2,7 +2,7 @@ import {
   getFrontsWithPriority,
   alsoOnFrontSelector,
   lastPressedSelector,
-  collectionsInOpenFrontsSelector // Write Test
+  collectionsInOpenFrontsSelector
 } from 'selectors/frontsSelectors';
 import { frontsConfig } from 'fixtures/frontsConfig';
 import { FrontConfig } from 'types/FaciaApi';
