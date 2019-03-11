@@ -77,7 +77,7 @@ export default ({
         <Switch>
           <Checkbox
             type="checkbox"
-            onClick={() => onChange(!inputRest.checked)}
+            onChange={() => onChange(!inputRest.checked)}
             {...inputRest}
             {...rest}
             id={label}
