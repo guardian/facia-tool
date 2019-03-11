@@ -47,7 +47,8 @@ import { selectors as collectionSelectors } from 'shared/bundles/collectionsBund
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
-  collectionLastUpdatedBy: string | null;
+  collectionId: string | null;
+  getLastUpdatedBy: (id: string) => string | null;
   articleFragmentId: string;
   showKickerTag: boolean;
   showKickerSection: boolean;
@@ -129,18 +130,18 @@ const getInputId = (articleFragmentId: string, label: string) =>
   `${articleFragmentId}-${label}`;
 
 interface FormComponentState {
-  lastKnownCollectionLastUpdatedBy: string | null;
+  lastKnownCollectionId: string | null;
 }
 
 class FormComponent extends React.Component<Props, FormComponentState> {
   public static getDerivedStateFromProps(props: Props) {
-    return props.collectionLastUpdatedBy
-      ? { lastKnownCollectionLastUpdatedBy: props.collectionLastUpdatedBy }
+    return props.collectionId
+      ? { lastKnownCollectionId: props.collectionId }
       : {};
   }
 
   public state: FormComponentState = {
-    lastKnownCollectionLastUpdatedBy: null
+    lastKnownCollectionId: null
   };
 
   public render() {
@@ -426,9 +427,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             )}
           </FormContent>
         ) : (
-          `This collection has been edited since you started. Your changes have not been saved. Contact ${
-            this.state.lastKnownCollectionLastUpdatedBy
-          }.`
+          this.state.lastKnownCollectionId &&
+          `This collection has been edited by ${this.props.getLastUpdatedBy(
+            this.state.lastKnownCollectionId
+          )} since you started editing this article. Your changes have not been saved.`
         )}
       </FormContainer>
     );
@@ -463,7 +465,8 @@ const ArticleFragmentForm = reduxForm<
 
 interface ContainerProps {
   articleExists: boolean;
-  collectionLastUpdatedBy: string | null;
+  collectionId: string | null;
+  getLastUpdatedBy: (collectionId: string) => string | null;
   imageSlideshowReplace: boolean;
   imageCutoutReplace: boolean;
   imageHide: boolean;
@@ -513,10 +516,21 @@ const createMapStateToProps = () => {
         )
       : null;
 
+    function getLastUpdatedBy(collectionId: string) {
+      const collection = collectionSelectors.selectById(
+        selectSharedState(state),
+        collectionId
+      );
+      if (!collection) {
+        return null;
+      }
+      return collection.updatedBy || null;
+    }
+
     return {
       articleExists: !!article,
-      collectionLastUpdatedBy:
-        (parentCollection && parentCollection.updatedBy) || null,
+      collectionId: (parentCollection && parentCollection.id) || null,
+      getLastUpdatedBy,
       initialValues: getInitialValuesForArticleFragmentForm(article),
       articleCapiFieldValues: getCapiValuesForArticleTextFields(
         externalArticle
