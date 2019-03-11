@@ -1,8 +1,7 @@
 import React from 'react';
 import { styled } from 'shared/constants/theme';
-
-import caretIcon from 'shared/images/icons/single-down.svg';
 import ButtonCircular from './ButtonCircular';
+import { DownCaretIcon } from '../icons/Icons';
 
 export const ButtonCircularWithTransition = ButtonCircular.extend<{
   highlight?: boolean;
@@ -21,7 +20,7 @@ export const ButtonCircularWithTransition = ButtonCircular.extend<{
       : ``};
 `;
 
-const CaretImg = styled('img')<{
+const CaretIcon = styled(DownCaretIcon)<{
   small?: boolean;
 }>`
   width: ${({ small }) => (small ? '14px' : '18px')};
@@ -75,6 +74,6 @@ export default ({
       ...props.style
     }}
   >
-    <CaretImg src={caretIcon} alt="" small={small} />
+    <CaretIcon small={small} />
   </ButtonCircularWithTransition>
 );

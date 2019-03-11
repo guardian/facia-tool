@@ -2,7 +2,7 @@ import React from 'react';
 import Modal from 'react-modal';
 import { styled } from 'constants/theme';
 import ButtonDefault from 'shared/components/input/ButtonDefault';
-import deleteIcon from 'shared/images/icons/delete-copy.svg';
+import { CloseIcon } from 'shared/components/icons/Icons';
 
 interface ModalProps {
   isOpen: boolean;
@@ -39,17 +39,19 @@ const GridIFrame = styled('iframe')`
   border: 0;
 `;
 
-const ImageContainer = styled('img')`
+const ImageContainer = styled('div')`
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 5px;
+  left: 6px;
 `;
 
 export const GridModal = ({ isOpen, url, onMessage, onClose }: ModalProps) => (
   <React.Fragment>
     <StyledModal isOpen={isOpen}>
       <ModalButton type="button" priority="primary" onClick={onClose}>
-        <ImageContainer src={deleteIcon} />
+        <ImageContainer>
+          <CloseIcon />
+        </ImageContainer>
       </ModalButton>
 
       <GridIFrame src={url} />
