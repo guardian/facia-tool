@@ -198,6 +198,10 @@ function createAsyncResourceBundle<Resource>(
   const selectById = (state: RootState, id: string): Resource | undefined =>
     selectLocalState(state).data[id];
 
+  const selectIsLoadingInitialDataById = (state: RootState, id: string) =>
+    !selectById(state, id) &&
+    selectLocalState(state).loadingIds.indexOf(id) !== -1;
+
   const selectAll = (state: RootState) => selectLocalState(state).data;
 
   const initialState: State<Resource> = {
@@ -394,6 +398,7 @@ function createAsyncResourceBundle<Resource>(
       selectLastFetch,
       selectIsLoading,
       selectIsLoadingById,
+      selectIsLoadingInitialDataById,
       selectById,
       selectAll
     }

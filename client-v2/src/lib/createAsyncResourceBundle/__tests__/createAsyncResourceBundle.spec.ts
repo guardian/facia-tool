@@ -137,6 +137,20 @@ describe('createAsyncResourceBundle', () => {
         id: '2'
       });
     });
+    it('should provide a selector to select whether a resource is loading for the first time', () => {
+      const bundle = createAsyncResourceBundle('books', {
+        indexById: true
+      });
+      const state = {
+        books: { data: { '1': { id: '1' } }, loadingIds: ['1', '2'] }
+      };
+      expect(bundle.selectors.selectIsLoadingInitialDataById(state, '1')).toBe(
+        false
+      );
+      expect(bundle.selectors.selectIsLoadingInitialDataById(state, '2')).toBe(
+        true
+      );
+    });
   });
 
   describe('Reducer', () => {

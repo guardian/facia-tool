@@ -59,7 +59,21 @@ describe('Article component ', () => {
     expect(getByTestId('article-body')).not.toHaveTextContent('Draft');
   });
 
-  it('should render loading placeholders when the isLoading prop is true', () => {
+  it('should render loading placeholders when the isLoading prop is true and there is not article', () => {
+    const { getByTestId } = render(
+      <ThemeProvider theme={theme}>
+        <ArticleComponent
+          children={<React.Fragment />}
+          article={undefined}
+          id="ea1"
+          isLoading={true}
+        />
+      </ThemeProvider>
+    );
+    expect(() => getByTestId('loading-placeholder')).toThrow();
+  });
+
+  it('should not render loading placeholders when the isLoading prop is true but the article is present', () => {
     const { getByTestId } = render(
       <ThemeProvider theme={theme}>
         <ArticleComponent
@@ -72,6 +86,7 @@ describe('Article component ', () => {
     );
     expect(getByTestId('loading-placeholder')).toBeTruthy();
   });
+
   it('should not render loading placeholders when the isLoading prop is false or not present', () => {
     let renderResult = render(
       <ThemeProvider theme={theme}>
