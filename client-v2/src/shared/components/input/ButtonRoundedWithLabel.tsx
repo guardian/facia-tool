@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { styled } from 'shared/constants/theme';
 
 interface ContainerButtonWithLabelProps {
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   label: string;
-  icon?: any | null;
+  icon?: ReactNode | null;
   className?: string;
 }
 
@@ -22,16 +22,7 @@ const ContainerButton = styled('button')`
 
 const Label = styled('div')`
   display: inline-block;
-  vertical-align: sub;
-  padding-inline-end: 5px;
-`;
-
-const Icon = styled('img')<{
-  small?: boolean;
-}>`
-  width: ${({ small }) => (small ? '14px' : '18px')};
-  display: inline-block;
-  vertical-align: -webkit-baseline-middle;
+  padding: 3px 5px 3px 0;
 `;
 
 export default ({
@@ -42,6 +33,6 @@ export default ({
 }: ContainerButtonWithLabelProps) => (
   <ContainerButton className={className} onClick={onClick}>
     <Label>{label}</Label>
-    {!!icon ? <Icon src={icon} alt={label} /> : null}
+    {!!icon ? icon : null}
   </ContainerButton>
 );

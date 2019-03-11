@@ -24,7 +24,8 @@ import { CollectionItemSets, Collection } from 'shared/types/Collection';
 import { toTitleCase } from 'util/stringUtils';
 import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
 import ButtonRoundedWithLabel from 'shared/components/input/ButtonRoundedWithLabel';
-import caretIcon from 'shared/images/icons/single-down.svg';
+import { DownCaretIcon } from 'shared/components/icons/Icons';
+import { theme as sharedTheme } from 'shared/constants/theme';
 
 const FrontHeader = styled(FrontSectionHeader)`
   display: flex;
@@ -62,16 +63,15 @@ const LastPressed = styled('span')`
 `;
 
 const CollapseAllButton = styled(ButtonRoundedWithLabel)`
-  & img {
-    filter: invert(1);
+  & svg {
     transform: rotate(180deg);
+    vertical-align: middle;
   }
   :hover {
     background-color: ${({ theme }) =>
       theme.shared.base.colors.backgroundColorFocused};
   }
 `;
-
 interface FrontsContainerProps {
   frontId: string;
 }
@@ -167,7 +167,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                   this.props.selectedFront.collections
                 );
               }}
-              icon={caretIcon}
+              icon={<DownCaretIcon fill={sharedTheme.base.colors.text} />}
               label={'Collapse all'}
             />
           </SectionContentMetaContainer>
