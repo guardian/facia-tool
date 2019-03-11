@@ -1,15 +1,18 @@
 import React from 'react';
-import { styled } from 'shared/constants/theme';
+import { theme, styled } from 'shared/constants/theme';
 import { connect } from 'react-redux';
 import { WrappedFieldProps } from 'redux-form';
 
 import ButtonDefault from './ButtonDefault';
 import InputContainer from './InputContainer';
+import InputBase from './InputBase';
+import InputLabel from './InputLabel';
+import DragIntentContainer from '../DragIntentContainer';
+import { GridModal } from 'components/GridModal';
 import {
   validateImageEvent,
   validateMediaItem
 } from '../../util/validateImageSrc';
-import { GridModal } from 'components/GridModal';
 import { gridUrlSelector } from 'selectors/configSelectors';
 import { State } from 'types/State';
 import { GridData, Criteria } from 'shared/types/Grid';
@@ -17,18 +20,47 @@ import { RubbishBinIcon } from '../icons/Icons';
 
 const ImageContainer = styled('div')<{
   size?: 'small';
-  isHovering: boolean;
+  isHovering?: boolean;
 }>`
   position: relative;
   width: 100%;
   max-width: ${props => (props.size === 'small' ? '100px' : '180px')};
   height: ${props => (props.size === 'small' ? '60px' : '115px')};
-  background-color: ${props =>
-    props.isHovering
-      ? props.theme.shared.base.colors.placeholderLight
-      : props.theme.shared.base.colors.placeholderDark};
   background-size: cover;
   transition: background-color 0.15s;
+  border-left: ${props =>
+    props.isHovering
+      ? `4px solid ${theme.base.colors.highlightColor}`
+      : 'none'};
+`;
+
+const AddImageViaGridModalButton = styled(ButtonDefault)`
+  height: 50%;
+  width: 100%;
+  border-bottom: ${props =>
+    `1px solid ${props.theme.shared.base.colors.backgroundColor}`};
+  background-color: ${props => props.theme.shared.colors.greyLight};
+  :hover {
+    background-color: ${props => props.theme.shared.colors.greyLightPinkish};
+  }
+`;
+
+const AddImageViaUrlInput = styled('div')`
+  padding: 11px 5px 5px 5px;
+  height: 50%;
+  background-color: ${props => props.theme.shared.colors.greyLight};
+`;
+
+const ImageUrlInput = styled(InputBase)`
+  ::placeholder {
+    font-size: 12px;
+  }
+`;
+
+const Label = styled(InputLabel)`
+  cursor: pointer;
+  display: inline-block;
+  color: ${props => props.theme.shared.base.colors.text};
 `;
 
 const ButtonDelete = styled(ButtonDefault)`
@@ -72,16 +104,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     modalOpen: false
   };
 
-  public handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    this.setState({ isHovering: true });
-  };
-  public handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    this.setState({ isHovering: false });
-  };
-  public handleDragOver = (e: React.DragEvent<HTMLDivElement>) =>
-    e.preventDefault();
   public handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.persist();
@@ -161,32 +183,53 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
           onClose={this.closeModal}
           onMessage={this.onMessage}
         />
-        <ImageContainer
-          onClick={this.openModal}
-          onDragEnter={this.handleDragEnter}
-          onDragLeave={this.handleDragLeave}
-          onDragOver={this.handleDragOver}
-          onDrop={this.handleDrop}
-          isHovering={this.state.isHovering}
-          {...this.props}
-          style={{
-            backgroundImage:
-              this.props.input.value && `url(${this.props.input.value.thumb}`
-          }}
+        <DragIntentContainer
+          active
+          onIntentConfirm={() => this.setState({ isHovering: true })}
+          onDragIntentStart={() => this.setState({ isHovering: true })}
+          onDragIntentEnd={() => this.setState({ isHovering: false })}
         >
-          <ButtonDelete type="button" priority="primary">
-            {this.props.input.value ? (
-              <IconDelete
-                onClick={event => {
-                  event.stopPropagation();
-                  this.clearField();
-                }}
-              >
-                <RubbishBinIcon size={'s'} />
-              </IconDelete>
-            ) : null}
-          </ButtonDelete>
-        </ImageContainer>
+          <ImageContainer
+            onDrop={this.handleDrop}
+            isHovering={this.state.isHovering}
+            {...this.props}
+            style={{
+              backgroundImage:
+                this.props.input.value && `url(${this.props.input.value.thumb}`
+            }}
+          >
+            {!!this.props.input.value && !!this.props.input.value.thumb ? (
+              <ButtonDelete type="button" priority="primary">
+                {this.props.input.value ? (
+                  <IconDelete
+                    onClick={event => {
+                      event.stopPropagation();
+                      this.clearField();
+                    }}
+                  >
+                    <RubbishBinIcon size={'s'} />
+                  </IconDelete>
+                ) : null}
+              </ButtonDelete>
+            ) : (
+              <>
+                <AddImageViaGridModalButton
+                  type="button"
+                  priority="muted"
+                  onClick={this.openModal}
+                >
+                  {/* <IconAdd src={crossIcon} onClick={this.handleAdd} />{' '} */}
+                  <Label size="sm">Add image</Label>
+                </AddImageViaGridModalButton>
+
+                <AddImageViaUrlInput>
+                  <ImageUrlInput placeholder={'Paste URL or embed code'} />
+                  {/* <InputLabel>Paste</InputLabel> */}
+                </AddImageViaUrlInput>
+              </>
+            )}
+          </ImageContainer>
+        </DragIntentContainer>
       </InputContainer>
     );
   }
