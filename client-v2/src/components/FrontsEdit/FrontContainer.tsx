@@ -106,8 +106,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                 href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${
                   this.props.frontId
                 }`}
-                target="_blank"
-                rel="noopener noreferrer"
+                target="preview"
               >
                 <Button size="l">Preview</Button>
               </a>
