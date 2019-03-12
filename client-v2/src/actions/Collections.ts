@@ -1,7 +1,7 @@
 import { batchActions } from 'redux-batched-actions';
 import {
   getArticlesBatched,
-  getCollections as fetchCollection,
+  getCollections as fetchCollections,
   updateCollection as updateCollectionFromApi,
   fetchVisibleArticles
 } from 'services/faciaApi';
@@ -13,7 +13,8 @@ import {
 } from 'selectors/configSelectors';
 import {
   createGroupArticlesSelector,
-  selectSharedState
+  selectSharedState,
+  createAllArticlesInCollectionSelector
 } from 'shared/selectors/shared';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import {
@@ -26,14 +27,17 @@ import {
   normaliseCollectionWithNestedArticles,
   denormaliseCollection
 } from 'shared/util/shared';
-import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
+import {
+  articleFragmentsReceived,
+  clearArticleFragments
+} from 'shared/actions/ArticleFragments';
 import { groupsReceived } from 'shared/actions/Groups';
 import { recordVisibleArticles } from 'actions/Fronts';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import { getCollectionConfig } from 'selectors/frontsSelectors';
 import { State } from 'types/State';
 import { Dispatch, ThunkResult } from 'types/Store';
-import { frontStages } from 'constants/fronts';
+import { frontStages, collectionItemSets } from 'constants/fronts';
 import {
   Stages,
   Collection,
@@ -47,31 +51,76 @@ import {
   editorCloseCollections
 } from 'bundles/frontsUIBundle';
 import flatten from 'lodash/flatten';
+import {
+  collectionParamsSelector,
+  collectionsInOpenFrontsSelector
+} from 'selectors/collectionSelectors';
+import uniq from 'lodash/uniq';
 
-function getCollections(collectionIds: string[]): ThunkResult<Promise<void>> {
+const articlesInCollection = createAllArticlesInCollectionSelector();
+
+function fetchStaleOpenCollections(): ThunkResult<Promise<void>> {
+  return async (dispatch: Dispatch, getState: () => State) => {
+    const collectionIds = collectionsInOpenFrontsSelector(getState());
+    const prevState = getState();
+    const fetchedCollectionIds = await dispatch(
+      getCollections(collectionIds, true)
+    );
+    const prevArticleIds = articlesInCollection(
+      selectSharedState(prevState),
+      fetchedCollectionIds
+    );
+
+    dispatch(
+      getArticlesForCollections(
+        fetchedCollectionIds,
+        // get article for *all* collecitonItemSets as it reduces complexity of
+        // this code (finding which collectionItemSets we need), and the overlap
+        // should be pretty large between all of the sets
+        Object.values(collectionItemSets)
+      )
+    );
+
+    dispatch(clearArticleFragments(prevArticleIds));
+  };
+}
+
+function getCollections(
+  collectionIds: string[],
+  returnOnlyUpdatedCollections: boolean = false
+): ThunkResult<Promise<string[]>> {
   return async (dispatch: Dispatch, getState: () => State) => {
     dispatch(collectionActions.fetchStart(collectionIds));
     try {
-      const collectionResponses = await fetchCollection(collectionIds);
-      const actions = collectionResponses.map((collectionResponse, index) => {
-        const collectionId = collectionIds[index];
-        const collectionConfig = getCollectionConfig(getState(), collectionId);
-        if (!collectionResponse) {
-          if (collectionId) {
-            return collectionActions.fetchSuccess({
-              id: collectionId,
-              displayName: collectionConfig.description,
-              type: collectionConfig.type
-            });
-          }
-          return collectionActions.fetchError(
-            `No collection returned in collections request for id ${
-              collectionIds[index]
-            }`,
-            collectionIds[index]
-          );
-        }
-        const { collection, storiesVisibleByStage } = collectionResponse;
+      const params = collectionParamsSelector(
+        getState(),
+        collectionIds,
+        returnOnlyUpdatedCollections
+      );
+      const collectionResponses = await fetchCollections(params);
+      // TODO: test that this works!
+      // find all collections missing in the response and ensure their 'fetch'
+      // status is reset
+      const missingCollections = difference(
+        collectionResponses.map(cr => cr.id),
+        collectionIds
+      );
+      const missingActions = missingCollections.map(id =>
+        collectionActions.fetchSuccessIgnore({
+          id
+        })
+      );
+      const actions = collectionResponses.map(collectionResponse => {
+        const {
+          id,
+          collection: collectionWithoutId,
+          storiesVisibleByStage
+        } = collectionResponse;
+        const collectionConfig = getCollectionConfig(getState(), id);
+        const collection = {
+          ...collectionWithoutId,
+          id
+        };
         const collectionWithNestedArticles = combineCollectionWithConfig(
           collectionConfig,
           collection
@@ -109,9 +158,11 @@ function getCollections(collectionIds: string[]): ThunkResult<Promise<void>> {
           )
         ];
       });
-      dispatch(batchActions(flatten(actions)));
+      dispatch(batchActions(flatten([...actions, ...missingActions])));
+      return collectionResponses.map(({ id }) => id);
     } catch (error) {
       dispatch(collectionActions.fetchError(error, collectionIds));
+      return [];
     }
   };
 }
@@ -136,7 +187,7 @@ function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
         collection.id
       );
       await updateCollectionFromApi(collection.id, denormalisedCollection);
-      dispatch(collectionActions.updateSuccess(collection.id, collection));
+      dispatch(collectionActions.updateSuccess(collection.id));
       const visibleArticles = await getVisibleArticles(
         collection,
         getState(),
@@ -156,7 +207,9 @@ function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
  * Fetch articles from CAPI and add them to the store.
  */
 const fetchArticles = (articleIds: string[]) => async (dispatch: Dispatch) => {
-  const articleIdsWithoutSnaps = articleIds.filter(id => !id.match(/^snap/));
+  const articleIdsWithoutSnaps = uniq(
+    articleIds.filter(id => !id.match(/^snap/))
+  );
   if (!articleIdsWithoutSnaps.length) {
     return;
   }
@@ -185,11 +238,20 @@ const fetchArticles = (articleIds: string[]) => async (dispatch: Dispatch) => {
 
 const getArticlesForCollections = (
   collectionIds: string[],
-  itemSet: CollectionItemSets
+  itemSetCandidate: CollectionItemSets | CollectionItemSets[]
 ): ThunkResult<Promise<void>> => async (dispatch, getState) => {
-  const articleIds = selectArticlesInCollections(
-    selectSharedState(getState()),
-    { collectionIds, itemSet }
+  const itemSets = Array.isArray(itemSetCandidate)
+    ? itemSetCandidate
+    : [itemSetCandidate];
+  const articleIds = itemSets.reduce(
+    (acc, itemSet) => [
+      ...acc,
+      ...selectArticlesInCollections(selectSharedState(getState()), {
+        collectionIds,
+        itemSet
+      })
+    ],
+    [] as string[]
   );
   await dispatch(fetchArticles(articleIds));
 };
@@ -229,6 +291,7 @@ export {
   getArticlesForCollections,
   openCollectionsAndFetchTheirArticles,
   closeCollections,
+  fetchStaleOpenCollections,
   fetchArticles,
   updateCollection
 };

@@ -6,6 +6,7 @@ interface BaseResource {
 
 const FETCH_START = 'FETCH_START';
 const FETCH_SUCCESS = 'FETCH_SUCCESS';
+const FETCH_SUCCESS_IGNORE = 'FETCH_SUCCESS_IGNORE'; // clears loading ids for unchanged collections during collection polling
 const FETCH_ERROR = 'FETCH_ERROR';
 const UPDATE_START = 'UPDATE_START';
 const UPDATE_SUCCESS = 'UPDATE_SUCCESS';
@@ -20,7 +21,19 @@ interface FetchStartAction {
 interface FetchSuccessAction<Resource> {
   entity: string;
   type: 'FETCH_SUCCESS';
-  payload: { data: Resource | Resource[] | any; time: number };
+  payload: {
+    data: Resource | Resource[] | any;
+    time: number;
+  };
+}
+
+interface FetchSuccessIgnoreAction<Resource> {
+  entity: string;
+  type: 'FETCH_SUCCESS_IGNORE';
+  payload: {
+    data: Resource | Resource[] | any;
+    time: number;
+  };
 }
 
 interface FetchErrorAction {
@@ -58,6 +71,7 @@ interface UpdateErrorAction {
 type Actions<Resource> =
   | FetchStartAction
   | FetchSuccessAction<Resource>
+  | FetchSuccessIgnoreAction<Resource>
   | FetchErrorAction
   | UpdateStartAction<Resource>
   | UpdateSuccessAction<Resource>
@@ -127,7 +141,6 @@ interface State<Resource> {
   lastFetch: number | null;
   loadingIds: string[];
   updatingIds: string[];
-  loading: boolean;
 }
 
 // @todo -- figure out a way to provide root state definition
@@ -185,6 +198,10 @@ function createAsyncResourceBundle<Resource>(
   const selectById = (state: RootState, id: string): Resource | undefined =>
     selectLocalState(state).data[id];
 
+  const selectIsLoadingInitialDataById = (state: RootState, id: string) =>
+    !selectById(state, id) &&
+    selectLocalState(state).loadingIds.indexOf(id) !== -1;
+
   const selectAll = (state: RootState) => selectLocalState(state).data;
 
   const initialState: State<Resource> = {
@@ -192,7 +209,6 @@ function createAsyncResourceBundle<Resource>(
     lastError: null,
     error: null,
     lastFetch: null,
-    loading: false,
     loadingIds: [],
     updatingIds: []
   };
@@ -208,6 +224,14 @@ function createAsyncResourceBundle<Resource>(
   ): FetchSuccessAction<Resource> => ({
     entity: entityName,
     type: FETCH_SUCCESS,
+    payload: { data, time: Date.now() }
+  });
+
+  const fetchSuccessIgnoreAction = (
+    data: Resource | Resource[] | any
+  ): FetchSuccessIgnoreAction<Resource> => ({
+    entity: entityName,
+    type: FETCH_SUCCESS_IGNORE,
     payload: { data, time: Date.now() }
   });
 
@@ -228,7 +252,7 @@ function createAsyncResourceBundle<Resource>(
 
   const updateSuccessAction = (
     id: string,
-    data: Resource
+    data?: Resource
   ): UpdateSuccessAction<Resource> => ({
     entity: entityName,
     type: UPDATE_SUCCESS,
@@ -266,6 +290,18 @@ function createAsyncResourceBundle<Resource>(
               ? action.payload.data
               : applyNewData(state.data, action.payload.data, entityName),
             lastFetch: action.payload.time,
+            error: null,
+            loadingIds: indexById
+              ? removeStatusIds(
+                  state.loadingIds,
+                  getStatusIdsFromData(action.payload.data)
+                )
+              : []
+          };
+        }
+        case FETCH_SUCCESS_IGNORE: {
+          return {
+            ...state,
             error: null,
             loadingIds: indexById
               ? removeStatusIds(
@@ -341,6 +377,7 @@ function createAsyncResourceBundle<Resource>(
     actionNames: {
       fetchStart: FETCH_START,
       fetchSuccess: FETCH_SUCCESS,
+      fetchSuccessIgnore: FETCH_SUCCESS_IGNORE,
       fetchError: FETCH_ERROR,
       updateStart: UPDATE_START,
       updateSuccess: UPDATE_SUCCESS,
@@ -349,6 +386,7 @@ function createAsyncResourceBundle<Resource>(
     actions: {
       fetchStart: fetchStartAction,
       fetchSuccess: fetchSuccessAction,
+      fetchSuccessIgnore: fetchSuccessIgnoreAction,
       fetchError: fetchErrorAction,
       updateStart: updateStartAction,
       updateSuccess: updateSuccessAction,
@@ -360,6 +398,7 @@ function createAsyncResourceBundle<Resource>(
       selectLastFetch,
       selectIsLoading,
       selectIsLoadingById,
+      selectIsLoadingInitialDataById,
       selectById,
       selectAll
     }

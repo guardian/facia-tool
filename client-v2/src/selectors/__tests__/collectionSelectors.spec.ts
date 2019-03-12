@@ -1,7 +1,8 @@
 import {
   isCollectionBackfilledSelector,
   isCollectionLockedSelector,
-  createCollectionHasUnsavedArticleEditsWarningSelector
+  createCollectionHasUnsavedArticleEditsWarningSelector,
+  collectionsInOpenFrontsSelector
 } from 'selectors/collectionSelectors';
 import { frontsConfig } from 'fixtures/frontsConfig';
 
@@ -87,5 +88,44 @@ describe('Validating Front Collection configuration metadata', () => {
         'collection2'
       )
     ).toEqual(false);
+  });
+});
+
+describe('Selecting collections on all open Fronts', () => {
+  it('return correct collections for one open Front', () => {
+    expect(
+      collectionsInOpenFrontsSelector({
+        fronts: {
+          frontsConfig
+        },
+        editor: {
+          frontIds: ['editorialFront']
+        }
+      } as any)
+    ).toEqual(['collection1']);
+  });
+  it('return correct collections for multiple open Fronts', () => {
+    expect(
+      collectionsInOpenFrontsSelector({
+        fronts: {
+          frontsConfig
+        },
+        editor: {
+          frontIds: ['editorialFront', 'editorialFront2']
+        }
+      } as any)
+    ).toEqual(['collection1', 'collection6']);
+  });
+  it('return enpty array for no open Fronts', () => {
+    expect(
+      collectionsInOpenFrontsSelector({
+        fronts: {
+          frontsConfig
+        },
+        editor: {
+          frontIds: []
+        }
+      } as any)
+    ).toEqual([]);
   });
 });

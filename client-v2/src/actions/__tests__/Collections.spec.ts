@@ -1,21 +1,25 @@
-import configureStore from 'redux-mock-store';
+import configureMockStore from 'redux-mock-store';
+import configureStore from 'util/configureStore';
 import thunk from 'redux-thunk';
 import fetchMock from 'fetch-mock';
 import config from 'fixtures/config';
 import { stateWithCollection, capiArticle } from 'shared/fixtures/shared';
+import { getCollectionsThunkFaciaApiResponse } from 'fixtures/collectionsEndpointResponse';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import {
   actions as externalArticleActions,
   actionNames as externalArticleActionNames
 } from 'shared/bundles/externalArticlesBundle';
 import {
+  getCollections,
   getArticlesForCollections,
   updateCollection,
   fetchArticles
 } from '../Collections';
 
 const middlewares = [thunk];
-const mockStore = configureStore(middlewares);
+const mockStore = configureMockStore(middlewares);
+jest.mock('uuid/v4', () => () => 'uuid');
 
 describe('Collection actions', () => {
   const { now } = Date;
@@ -62,8 +66,92 @@ describe('Collection actions', () => {
         }
       });
       expect(actions[1]).toEqual(
-        collectionActions.updateSuccess('exampleCollection', collection)
+        collectionActions.updateSuccess('exampleCollection')
       );
+    });
+  });
+
+  describe('Get Collections thunk', () => {
+    beforeEach(() => fetchMock.reset());
+    const store = configureStore({
+      config,
+      ...stateWithCollection
+    });
+
+    it('should add fetched Collections to the store', async () => {
+      const collectionIds = ['testCollection1', 'testCollection2'];
+      fetchMock.post('/collections', getCollectionsThunkFaciaApiResponse);
+      await store.dispatch(getCollections(collectionIds) as any);
+      expect(store.getState().shared.collections.data).toEqual({
+        exampleCollection: {
+          displayName: 'Example Collection',
+          draft: [],
+          id: 'exampleCollection',
+          live: ['abc', 'def'],
+          previously: undefined,
+          type: 'type'
+        },
+        exampleCollectionTwo: {
+          displayName: 'Example Collection',
+          draft: ['def'],
+          id: 'exampleCollection',
+          live: ['abc'],
+          previously: undefined,
+          type: 'type'
+        },
+        testCollection1: {
+          displayName: 'testCollection',
+          draft: ['uuid'],
+          frontsToolSettings: undefined,
+          groups: undefined,
+          id: 'testCollection1',
+          lastUpdated: 1547479667115,
+          live: ['uuid'],
+          metadata: undefined,
+          platform: undefined,
+          previously: ['uuid'],
+          type: 'type'
+        },
+        testCollection2: {
+          displayName: 'testCollection',
+          draft: ['uuid'],
+          frontsToolSettings: undefined,
+          groups: undefined,
+          id: 'testCollection2',
+          lastUpdated: 1547479667115,
+          live: ['uuid'],
+          metadata: undefined,
+          platform: undefined,
+          previously: ['uuid'],
+          type: 'type'
+        }
+      });
+    });
+    it('should send only collection id and type in request body when returnOnlyUpdatedCollection is false or default', async () => {
+      const collectionIds = ['testCollection1', 'testCollection2'];
+      const request = fetchMock.post(
+        '/collections',
+        getCollectionsThunkFaciaApiResponse
+      );
+      await store.dispatch(getCollections(collectionIds) as any);
+      const result = request.lastOptions().body;
+      expect(JSON.parse(result as string)).toEqual([
+        { id: 'testCollection1' },
+        { id: 'testCollection2' }
+      ]);
+    });
+    it('should send collection id, type and lastUpdated in request body when returnOnlyUpdatedCollection is true', async () => {
+      const collectionIds = ['testCollection1', 'testCollection2'];
+      const request = fetchMock.post(
+        '/collections',
+        getCollectionsThunkFaciaApiResponse
+      );
+      await store.dispatch(getCollections(collectionIds, true) as any);
+      const result = request.lastOptions().body;
+      expect(JSON.parse(result as string)).toEqual([
+        { id: 'testCollection1', lastUpdated: 1547479667115 },
+        { id: 'testCollection2', lastUpdated: 1547479667115 }
+      ]);
     });
   });
 

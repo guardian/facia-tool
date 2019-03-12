@@ -7,11 +7,8 @@ import { frontsConfig } from 'fixtures/frontsConfig';
 import { FrontConfig } from 'types/FaciaApi';
 
 const editorialFrontsInConfig: FrontConfig[] = [
-  {
-    collections: ['collection1'],
-    id: 'editorialFront',
-    priority: 'editorial'
-  }
+  { collections: ['collection1'], id: 'editorialFront', priority: 'editorial' },
+  { collections: ['collection6'], id: 'editorialFront2', priority: 'editorial' }
 ];
 
 const additionalEditorialFronts: FrontConfig[] = [

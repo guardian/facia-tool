@@ -43,7 +43,9 @@ GET         /front/lastmodified/*path                controllers.PressController
 GET         /front/lastmodifiedstatus/:stage/*path   controllers.PressController.getLastModifiedStatus(stage, path)
 
 GET         /collection/*collectionId                controllers.FaciaToolController.getCollection(collectionId)
-GET         /collections                             controllers.FaciaToolV2Controller.getCollections
+# The below endpoint is a GET but it was decided to send params in the body as they were more than just ids
+# a pragmatic decision if not a semantic one
+POST        /collections                             controllers.FaciaToolV2Controller.getCollections
 POST        /edits                                   controllers.FaciaToolController.collectionEdits
 POST        /v2Edits                                 controllers.FaciaToolV2Controller.collectionEdits
 GET         /config                                  controllers.FaciaToolController.getConfig

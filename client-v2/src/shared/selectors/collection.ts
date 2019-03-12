@@ -8,6 +8,7 @@ import { articleFragmentSelector } from '../selectors/shared';
 
 const selectArticleIdsInCollection = createArticlesInCollectionSelector();
 
+// Does not return UUIDs. Returns interal page codes for fetching articleFragments
 export const selectArticlesInCollections = createSelector(
   (
     state: State,

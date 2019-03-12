@@ -5,6 +5,7 @@ import { articleFragmentsSelector } from 'shared/selectors/shared';
 import {
   UPDATE_ARTICLE_FRAGMENT_META,
   ARTICLE_FRAGMENTS_RECEIVED,
+  CLEAR_ARTICLE_FRAGMENTS,
   REMOVE_SUPPORTING_ARTICLE_FRAGMENT,
   INSERT_SUPPORTING_ARTICLE_FRAGMENT
 } from 'shared/actions/ArticleFragments';
@@ -27,6 +28,12 @@ const articleFragments = (
           }
         }
       };
+    }
+    case CLEAR_ARTICLE_FRAGMENTS: {
+      return action.payload.ids.reduce((newState, id) => {
+        const { [id]: omit, ...rest } = newState;
+        return rest;
+      }, state);
     }
     case ARTICLE_FRAGMENTS_RECEIVED: {
       const { payload } = action;
@@ -51,6 +58,12 @@ const articleFragments = (
       const { id, articleFragmentId, index } = action.payload;
       const targetArticleFragment = state[id];
       const insertedArticleFragment = state[articleFragmentId];
+
+      if (!insertedArticleFragment) {
+        // this may have happened if we've purged after a poll
+        return state;
+      }
+
       const supporting = insertAndDedupeSiblings(
         targetArticleFragment.meta.supporting || [],
         [

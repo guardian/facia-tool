@@ -99,16 +99,19 @@ const persistCollectionOnEdit = (
           (act.meta.key ? act.payload[act.meta.key] : act.payload.id)
       )
     );
-    const collectionIds: string[] = articleFragmentIds.reduce((acc, id) => {
-      const collectionId = selectors.selectParentCollectionOfArticleFragment(
-        selectSharedState(store.getState()),
-        id
-      );
-      if (!collectionId) {
-        return acc;
-      }
-      return acc.concat(collectionId);
-    }, []);
+    const collectionIds: string[] = articleFragmentIds.reduce(
+      (acc, id) => {
+        const collectionId = selectors.selectParentCollectionOfArticleFragment(
+          selectSharedState(store.getState()),
+          id
+        );
+        if (!collectionId) {
+          return acc;
+        }
+        return acc.concat(collectionId);
+      },
+      [] as string[]
+    );
     return collectionIds;
   };
 
