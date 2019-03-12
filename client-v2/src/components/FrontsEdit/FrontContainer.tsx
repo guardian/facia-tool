@@ -5,7 +5,7 @@ import startCase from 'lodash/startCase';
 import { styled } from 'constants/theme';
 import { Dispatch } from 'types/Store';
 import { fetchLastPressed } from 'actions/Fronts';
-import { updateCollection } from 'actions/Collections';
+import { updateCollection, closeCollections } from 'actions/Collections';
 import { editorCloseFront } from 'bundles/frontsUIBundle';
 import Button from 'shared/components/input/ButtonDefault';
 import { frontStages } from 'constants/fronts';
@@ -23,6 +23,9 @@ import SectionContent from '../layout/SectionContent';
 import { CollectionItemSets, Collection } from 'shared/types/Collection';
 import { toTitleCase } from 'util/stringUtils';
 import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
+import ButtonRoundedWithLabel from 'shared/components/input/ButtonRoundedWithLabel';
+import { DownCaretIcon } from 'shared/components/icons/Icons';
+import { theme as sharedTheme } from 'shared/constants/theme';
 
 const FrontHeader = styled(FrontSectionHeader)`
   display: flex;
@@ -44,14 +47,30 @@ const FrontsHeaderText = styled('span')`
   color: ${({ theme }) => theme.shared.colors.blackDark};
 `;
 
-const LastPressedContainer = styled('span')`
-  font-size: 10px;
+const SectionContentMetaContainer = styled('div')`
+  display: flex;
+  flex-shrink: 0;
+  justify-content: space-between;
   margin-bottom: 10px;
 `;
 
 const StageSelectButtons = styled('div')`
   color: ${({ theme }) => theme.shared.colors.blackDark};
   padding: 0px 30px;
+`;
+const LastPressed = styled('span')`
+  font-size: 14px;
+`;
+
+const CollapseAllButton = styled(ButtonRoundedWithLabel)`
+  & svg {
+    transform: rotate(180deg);
+    vertical-align: middle;
+  }
+  :hover {
+    background-color: ${({ theme }) =>
+      theme.shared.base.colors.backgroundColorFocused};
+  }
 `;
 interface FrontsContainerProps {
   frontId: string;
@@ -64,6 +83,8 @@ type FrontsComponentProps = FrontsContainerProps & {
   frontsActions: {
     fetchLastPressed: (frontId: string) => void;
     editorCloseFront: (frontId: string) => void;
+    updateCollection: (collection: Collection) => void;
+    closeAllCollections: (collections: string[]) => void;
   };
 };
 
@@ -131,13 +152,25 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
           </FrontHeader>
         </React.Fragment>
         <SectionContent direction="column">
-          <LastPressedContainer>
-            {this.props.lastPressed &&
-              `Last refreshed ${distanceInWords(
-                new Date(this.props.lastPressed),
-                Date.now()
-              )} ago`}
-          </LastPressedContainer>
+          <SectionContentMetaContainer>
+            <LastPressed>
+              {this.props.lastPressed &&
+                `Last refreshed ${distanceInWords(
+                  new Date(this.props.lastPressed),
+                  Date.now()
+                )} ago`}
+            </LastPressed>
+            <CollapseAllButton
+              onClick={e => {
+                e.preventDefault();
+                this.props.frontsActions.closeAllCollections(
+                  this.props.selectedFront.collections
+                );
+              }}
+              icon={<DownCaretIcon fill={sharedTheme.base.colors.text} />}
+              label={'Collapse all'}
+            />
+          </SectionContentMetaContainer>
           {this.props.selectedFront && (
             <Front
               id={this.props.frontId}
@@ -166,7 +199,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     fetchLastPressed: (id: string) => dispatch(fetchLastPressed(id)),
     updateCollection: (collection: Collection) =>
       dispatch(updateCollection(collection)),
-    editorCloseFront: (id: string) => dispatch(editorCloseFront(id))
+    editorCloseFront: (id: string) => dispatch(editorCloseFront(id)),
+    closeAllCollections: (collections: string[]) =>
+      dispatch(closeCollections(collections))
   }
 });
 

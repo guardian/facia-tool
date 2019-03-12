@@ -296,7 +296,7 @@ describe('ArticleFragments actions', () => {
   });
 
   describe('insert image', () => {
-    fit('adds the correct image data', () => {
+    it('adds the correct image data', () => {
       const s1 = root(
         { shared: { articleFragments: { a: {} } } },
         { type: '@@INIT' }
