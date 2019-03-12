@@ -7,8 +7,7 @@ import { Dispatch } from 'types/Store';
 import { fetchLastPressed } from 'actions/Fronts';
 import { updateCollection, closeCollections } from 'actions/Collections';
 import {
-  editorCloseFront,
-  selectIsCurrentFrontsMenuOpen
+  editorCloseFront
 } from 'bundles/frontsUIBundle';
 import Button from 'shared/components/input/ButtonDefault';
 import { frontStages } from 'constants/fronts';
@@ -29,7 +28,6 @@ import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
 import ButtonRoundedWithLabel from 'shared/components/input/ButtonRoundedWithLabel';
 import { DownCaretIcon } from 'shared/components/icons/Icons';
 import { theme as sharedTheme } from 'shared/constants/theme';
-import { css } from 'styled-components';
 
 const FrontHeader = styled(FrontSectionHeader)`
   display: flex;
@@ -77,14 +75,8 @@ const CollapseAllButton = styled(ButtonRoundedWithLabel)`
   }
 `;
 
-const FrontsContainer = styled('div')<{ makeRoomForExtraHeader: boolean }>`
+const FrontsContainer = styled('div')`
   transform: translate3d(0, 0, 0);
-  transition: transform 0.15s;
-  ${({ makeRoomForExtraHeader }) =>
-    makeRoomForExtraHeader &&
-    css`
-      transform: translate3d(0, 60px, 0);
-    `}
 `;
 
 interface FrontsContainerProps {
@@ -95,7 +87,6 @@ type FrontsComponentProps = FrontsContainerProps & {
   selectedFront: FrontConfig;
   alsoOn: { [id: string]: AlsoOnDetail };
   lastPressed: string | null;
-  isCurrentFrontsMenuOpen: boolean;
   frontsActions: {
     fetchLastPressed: (frontId: string) => void;
     editorCloseFront: (frontId: string) => void;
@@ -131,9 +122,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
 
   public render() {
     return (
-      <FrontsContainer
-        makeRoomForExtraHeader={this.props.isCurrentFrontsMenuOpen}
-      >
+      <FrontsContainer>
         <>
           <FrontHeader>
             <FrontsHeaderText>
@@ -208,8 +197,7 @@ const createMapStateToProps = () => {
   return (state: State, props: FrontsContainerProps) => ({
     selectedFront: getFront(state, props.frontId),
     alsoOn: alsoOnSelector(state, props.frontId),
-    lastPressed: lastPressedSelector(state, props.frontId),
-    isCurrentFrontsMenuOpen: selectIsCurrentFrontsMenuOpen(state)
+    lastPressed: lastPressedSelector(state, props.frontId)
   });
 };
 

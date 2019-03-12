@@ -9,10 +9,12 @@ import { State } from 'types/State';
 import {
   selectIsCurrentFrontsMenuOpen,
   editorShowOpenFrontsMenu,
-  editorHideOpenFrontsMenu
+  editorHideOpenFrontsMenu,
+  selectEditorFrontIds
 } from 'bundles/frontsUIBundle';
 import { Dispatch } from 'types/Store';
 import FadeOnMountTransition from './transitions/FadeOnMountTransition';
+import MoreImage from 'shared/images/icons/more.svg';
 
 const FeedbackButton = Button.extend<{
   href: string;
@@ -20,8 +22,9 @@ const FeedbackButton = Button.extend<{
 }>`
   margin-left: auto;
   align-self: center;
-  margin-right: 10px;
-  line-height: 24px;
+  padding-right: 10px;
+  line-height: 60px;
+  height: 60px;
 `.withComponent('a');
 
 const SectionHeaderContent = styled('div')`
@@ -36,34 +39,83 @@ const LogoContainer = styled('div')`
   display: flex;
   vertical-align: top;
   cursor: pointer;
+  z-index: 2;
+  &:hover {
+    background-color: ${({ theme }) => theme.shared.colors.greyMedium};
+  }
 `;
 
-const LogoBackground = styled('div')`
+const LogoBackground = styled('div')<{ includeBorder?: boolean }>`
   display: flex;
   flex-direction: row;
   width: 60px;
   height: 60px;
+  border-right: 1px solid
+    ${({ theme, includeBorder }) =>
+      includeBorder ? theme.shared.colors.greyMedium : 'transparent'};
 `;
 
 const Logo = styled('img')`
   margin: auto;
-  width: 38px;
-  height: 24px;
+  width: 40px;
+  height: 35px;
+`;
+
+const FrontCount = styled.div`
+  position: absolute;
+  display: inline-block;
+  font-size: 20px;
+  line-height: 60px;
+  width: 100%;
+  top: -6px;
+  text-align: center;
+  color: ${({ theme }) => theme.shared.colors.blackDark};
+`;
+
+const CloseButtonOuter = styled.div`
+  margin: auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  border: solid 1px #ffffff;
+`;
+
+const CloseIcon = styled.img`
+  transform: rotate(45deg);
+  display: block;
+  margin: 0 auto;
+  width: 30px;
+  top: 4px;
+  position: relative;
 `;
 
 interface Props {
   toggleCurrentFrontsMenu: () => void;
   isCurrentFrontsMenuOpen: boolean;
+  frontCount: number;
 }
 
 const FeedSectionHeader = ({
   toggleCurrentFrontsMenu,
-  isCurrentFrontsMenuOpen
+  isCurrentFrontsMenuOpen,
+  frontCount
 }: Props) => (
-  <SectionHeaderWithLogo>
-    <LogoContainer onClick={toggleCurrentFrontsMenu}>
-      <LogoBackground>
-        <Logo src={FrontsLogo} alt="The Fronts tool" />
+  <SectionHeaderWithLogo includeBorder={!isCurrentFrontsMenuOpen}>
+    <LogoContainer
+      onClick={toggleCurrentFrontsMenu}
+      title="Click to manage active fronts"
+    >
+      <LogoBackground includeBorder={isCurrentFrontsMenuOpen}>
+        {!isCurrentFrontsMenuOpen ? (
+          <>
+            <Logo src={FrontsLogo} alt="The Fronts tool" />
+            <FrontCount>{frontCount}</FrontCount>
+          </>
+        ) : (
+          <CloseButtonOuter>
+            <CloseIcon src={MoreImage} />
+          </CloseButtonOuter>
+        )}
       </LogoBackground>
     </LogoContainer>
     <SectionHeaderContent>
@@ -86,7 +138,8 @@ const FeedSectionHeader = ({
 );
 
 const mapStateToProps = (state: State) => ({
-  isCurrentFrontsMenuOpen: selectIsCurrentFrontsMenuOpen(state)
+  isCurrentFrontsMenuOpen: selectIsCurrentFrontsMenuOpen(state),
+  frontCount: selectEditorFrontIds(state).length
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

@@ -1,8 +1,13 @@
 import { styled } from '../../constants/theme';
 import LargeSectionHeader from './LargeSectionHeader';
 
-const SectionHeaderBase = styled(LargeSectionHeader)`
-  border-right: ${({ theme }) => `solid 1px ${theme.shared.colors.whiteDark}`};
+const SectionHeaderBase = styled(LargeSectionHeader)<{
+  includeBorder?: boolean;
+}>`
+  border-right: ${({ theme, includeBorder }) =>
+    `solid 1px ${
+      includeBorder ? theme.shared.colors.whiteDark : 'transparent'
+    }`};
 `;
 
 const SectionHeader = styled(SectionHeaderBase)`

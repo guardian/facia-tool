@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { match } from 'react-router-dom';
 import { styled } from 'constants/theme';
 import getFrontsConfig from 'actions/Fronts';
-import {} from 'bundles/frontsUIBundle';
+import { selectIsCurrentFrontsMenuOpen } from 'bundles/frontsUIBundle';
 import {
   editorOpenFront,
   selectEditorFrontsByPriority
@@ -27,6 +27,7 @@ interface Props {
   staleFronts: { [id: string]: boolean };
   editorOpenFront: (frontId: string) => void;
   getFrontsConfig: () => void;
+  isCurrentFrontsMenuOpen: boolean;
 }
 
 const FrontsEditContainer = styled('div')`
@@ -44,8 +45,13 @@ const FeedContainer = styled(SectionContainer)`
   height: 100%;
 `;
 
-const FrontsContainer = styled(SectionContainer)`
+const FrontsContainer = styled(SectionContainer)<{
+  makeRoomForExtraHeader: boolean;
+}>`
   overflow-x: scroll;
+  transition: transform 0.15s;
+  ${({ makeRoomForExtraHeader }) =>
+    makeRoomForExtraHeader && 'transform: translate3d(0, 60px, 0)'}
 `;
 
 class FrontsEdit extends React.Component<Props> {
@@ -62,7 +68,9 @@ class FrontsEdit extends React.Component<Props> {
           <FeedContainer>
             <FeedSection />
           </FeedContainer>
-          <FrontsContainer>
+          <FrontsContainer
+            makeRoomForExtraHeader={this.props.isCurrentFrontsMenuOpen}
+          >
             {this.props.frontIds.map(frontId => (
               <SingleFrontContainer key={frontId}>
                 <FrontContainer frontId={frontId} />
@@ -81,7 +89,8 @@ const mapStateToProps = (state: State, props: Props) => ({
   staleFronts: state.staleFronts,
   frontIds: selectEditorFrontsByPriority(state, {
     priority: props.match.params.priority || ''
-  })
+  }),
+  isCurrentFrontsMenuOpen: selectIsCurrentFrontsMenuOpen(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
