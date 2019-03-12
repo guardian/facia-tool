@@ -9,13 +9,14 @@ const SectionHeader = styled(SectionHeaderUnpadded)`
 const LogoTypeContainer = styled('div')`
   background-color: ${({ theme }) => theme.shared.colors.blackDark};
   display: inline-block;
-  padding: 0 16px;
+  text-align: center;
   height: 60px;
+  width: 60px;
   line-height: 60px;
 `;
 
-export default ({ children }: { children?: React.ReactNode }) => (
-  <SectionHeader>
+export default ({ children, includeBorder }: { children?: React.ReactNode, includeBorder?: boolean }) => (
+  <SectionHeader includeBorder={includeBorder}>
     <LogoTypeContainer>F</LogoTypeContainer>
     {children}
   </SectionHeader>

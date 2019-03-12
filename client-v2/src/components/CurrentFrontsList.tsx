@@ -21,29 +21,37 @@ interface ComponentProps {
   moveFront: (dropResult: DropResult) => void;
 }
 
-const FrontTabList = styled('div')<{ isDraggingOver: boolean }>`
+const FrontTabList = styled('div')<{ isDraggingOver?: boolean }>`
   background-color: ${({ isDraggingOver, theme }) =>
     isDraggingOver
       ? theme.shared.colors.greyDark
       : theme.shared.colors.blackLight};
   position: absolute;
   height: 60px;
-  min-width: 100%;
+  line-height: 60px;
+  width: calc(100vw - 120px);
   transition: background-color 0.15s;
   white-space: nowrap;
   overflow: hidden;
+`;
+
+const NoFronts = styled(FrontTabList)`
+  padding-left: 10px;
+  font-family: TS3TextSans;
+  font-size: 14px;
 `;
 
 const FrontTab = styled('div')<{ isDragging: boolean }>`
   display: inline-block;
   vertical-align: top;
   height: 100%;
-  padding: 0 10px;
+  line-height: 60px;
+  padding: 0 22px;
   font-size: 16px;
   background-color: ${({ isDragging }) =>
     isDragging
-      ? themeConstants.shared.colors.greyLight
-      : themeConstants.shared.colors.greyDark};
+      ? themeConstants.shared.colors.blackDark
+      : themeConstants.shared.colors.greyMediumDark};
   & + & {
     box-shadow: -1px 0 0 0
       ${({ isDragging }) =>
@@ -56,6 +64,9 @@ const FrontTab = styled('div')<{ isDragging: boolean }>`
 
 class Component extends React.Component<ComponentProps> {
   public render() {
+    if (!this.props.fronts.length) {
+      return <NoFronts>There are no open fronts.</NoFronts>
+    }
     return (
       <DragDropContext onDragEnd={this.props.moveFront}>
         <Droppable droppableId="front-list" direction="horizontal">

@@ -22,7 +22,8 @@ const directionMap = {
 const applyDirection = ({ direction, length = 15 }: TransitionProps) =>
   directionMap[direction](length);
 
-const Container = styled.div<TransitionProps>`
+const TransitionContainer = styled.div<TransitionProps>`
+  position: relative;
   &.${transitionName}-${({ direction }) => direction}-enter {
     opacity: 0.01;
     transform: translate3d(${applyDirection});
@@ -61,9 +62,9 @@ const FadeOnMountTransition: React.StatelessComponent<
     transitionName={`fade-${direction}`}
     timeout={duration}
   >
-    <Container duration={duration} direction={direction}>
+    <TransitionContainer duration={duration} direction={direction}>
       {children}
-    </Container>
+    </TransitionContainer>
   </CSSTransition>
 );
 
