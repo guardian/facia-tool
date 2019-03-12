@@ -3,9 +3,10 @@ import { styled } from 'shared/constants/theme';
 export default styled('label')<{
   size?: 'sm';
   active?: boolean;
+  hidden?: boolean;
   for?: string;
 }>`
-  display: block;
+  display: ${props => (props.hidden ? 'none' : 'block')};
   font-size: ${props =>
     props.size === 'sm'
       ? props.theme.shared.label.fontSizeSmall

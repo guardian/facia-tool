@@ -11,7 +11,8 @@ import DragIntentContainer from '../DragIntentContainer';
 import { GridModal } from 'components/GridModal';
 import {
   validateImageEvent,
-  validateMediaItem
+  validateMediaItem,
+  validateImageSrc
 } from '../../util/validateImageSrc';
 import { gridUrlSelector } from 'selectors/configSelectors';
 import { State } from 'types/State';
@@ -45,7 +46,7 @@ const AddImageViaGridModalButton = styled(ButtonDefault)`
   }
 `;
 
-const AddImageViaUrlInput = styled('div')`
+const AddImageViaUrlInput = styled(InputContainer)`
   padding: 11px 5px 5px 5px;
   height: 50%;
   background-color: ${props => props.theme.shared.colors.greyLight};
@@ -96,12 +97,14 @@ type ComponentProps = InputImageContainerProps &
 interface ComponentState {
   isHovering: boolean;
   modalOpen: boolean;
+  imageSrc: string;
 }
 
 class InputImage extends React.Component<ComponentProps, ComponentState> {
   public state = {
     isHovering: false,
-    modalOpen: false
+    modalOpen: false,
+    imageSrc: ''
   };
 
   public handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -115,6 +118,34 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
         console.log('@todo:handle error', err);
       });
   };
+
+  public handlePasteImgSrcInputChange = (
+    e: React.FormEvent<HTMLInputElement>
+  ) => {
+    this.setState({ imageSrc: e.currentTarget.value });
+  };
+
+  public handlePasteImgSrcInputSubmit = (e: React.KeyboardEvent) => {
+    e.persist();
+    if (e.keyCode === 13) {
+      validateImageSrc(
+        //crop???
+        this.state.imageSrc,
+        this.props.frontId,
+        this.props.criteria
+      )
+        .then(mediaItem => {
+          this.props.input.onChange(mediaItem);
+        })
+        .catch(err => {
+          alert(err);
+          // tslint:disable-next-line no-console
+          console.log('@todo:handle error', err);
+        });
+      this.setState({ imageSrc: '' });
+    }
+  };
+
   public handleAdd = () => {
     // @todo: grid integration
   };
@@ -218,13 +249,20 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                   priority="muted"
                   onClick={this.openModal}
                 >
-                  {/* <IconAdd src={crossIcon} onClick={this.handleAdd} />{' '} */}
                   <Label size="sm">Add image</Label>
                 </AddImageViaGridModalButton>
 
                 <AddImageViaUrlInput>
-                  <ImageUrlInput placeholder={'Paste URL or embed code'} />
-                  {/* <InputLabel>Paste</InputLabel> */}
+                  <ImageUrlInput
+                    name="paste-url"
+                    placeholder="Paste URL or embed code"
+                    defaultValue={this.state.imageSrc}
+                    onKeyDown={this.handlePasteImgSrcInputSubmit}
+                    onChange={this.handlePasteImgSrcInputChange}
+                  />
+                  <InputLabel hidden htmlFor="paste-url">
+                    Paste URL or embed code
+                  </InputLabel>
                 </AddImageViaUrlInput>
               </>
             )}
