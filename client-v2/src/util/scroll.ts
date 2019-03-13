@@ -2,7 +2,11 @@
  * Scroll an element to the given value, animated over the duration.
  * Uses an easing function.
  */
-export function scrollToLeft(element: HTMLElement, to: number, duration: number) {
+export function scrollToLeft(
+  element: HTMLElement,
+  to: number,
+  duration: number
+) {
   const start = element.scrollLeft;
   const change = to - start;
   const startTime = Date.now();
