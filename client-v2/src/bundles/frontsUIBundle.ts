@@ -2,8 +2,8 @@ import without from 'lodash/without';
 import compact from 'lodash/compact';
 import {
   Action,
-  EditorShowOpenFrontsMenu,
-  EditorHideOpenFrontsMenu,
+  EditorShowOpenFrontsMenu as EditorOpenCurrentFrontsMenu,
+  EditorHideOpenFrontsMenu as EditorCloseCurrentFrontsMenu,
   EditorCloseFront,
   EditorMoveFront,
   EditorClearOpenFronts,
@@ -30,24 +30,24 @@ import {
 } from 'shared/actions/ArticleFragments';
 import { REMOVE_CLIPBOARD_ARTICLE_FRAGMENT } from 'actions/Clipboard';
 
-const EDITOR_SHOW_OPEN_FRONTS_MENU = 'EDITOR_SHOW_OPEN_FRONTS_MENU';
-const EDITOR_HIDE_OPEN_FRONTS_MENU = 'EDITOR_HIDE_OPEN_FRONTS_MENU';
-const EDITOR_OPEN_FRONT = 'EDITOR_OPEN_FRONT';
-const EDITOR_MOVE_FRONT = 'EDITOR_MOVE_FRONT';
-const EDITOR_CLOSE_FRONT = 'EDITOR_CLOSE_FRONT';
-const EDITOR_CLEAR_OPEN_FRONTS = 'EDITOR_CLEAR_OPEN_FRONTS';
-const EDITOR_SET_OPEN_FRONTS = 'EDITOR_SET_OPEN_FRONTS';
-const EDITOR_OPEN_COLLECTION = 'EDITOR_OPEN_COLLECTION';
-const EDITOR_CLOSE_COLLECTION = 'EDITOR_CLOSE_COLLECTION';
-const EDITOR_SELECT_ARTICLE_FRAGMENT = 'EDITOR_SELECT_ARTICLE_FRAGMENT';
-const EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION =
+export const EDITOR_OPEN_CURRENT_FRONTS_MENU = 'EDITOR_OPEN_CURRENT_FRONTS_MENU';
+export const EDITOR_CLOSE_CURRENT_FRONTS_MENU = 'EDITOR_CLOSE_CURRENT_FRONTS_MENU';
+export const EDITOR_OPEN_FRONT = 'EDITOR_OPEN_FRONT';
+export const EDITOR_MOVE_FRONT = 'EDITOR_MOVE_FRONT';
+export const EDITOR_CLOSE_FRONT = 'EDITOR_CLOSE_FRONT';
+export const EDITOR_CLEAR_OPEN_FRONTS = 'EDITOR_CLEAR_OPEN_FRONTS';
+export const EDITOR_SET_OPEN_FRONTS = 'EDITOR_SET_OPEN_FRONTS';
+export const EDITOR_OPEN_COLLECTION = 'EDITOR_OPEN_COLLECTION';
+export const EDITOR_CLOSE_COLLECTION = 'EDITOR_CLOSE_COLLECTION';
+export const EDITOR_SELECT_ARTICLE_FRAGMENT = 'EDITOR_SELECT_ARTICLE_FRAGMENT';
+export const EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION =
   'EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION';
-const EDITOR_OPEN_CLIPBOARD = 'EDITOR_OPEN_CLIPBOARD';
-const EDITOR_CLOSE_CLIPBOARD = 'EDITOR_CLOSE_CLIPBOARD';
-const EDITOR_OPEN_OVERVIEW = 'EDITOR_OPEN_OVERVIEW';
-const EDITOR_CLOSE_OVERVIEW = 'EDITOR_CLOSE_OVERVIEW';
-const EDITOR_OPEN_ALL_OVERVIEWS = 'EDITOR_OPEN_ALL_OVERVIEWS';
-const EDITOR_CLOSE_ALL_OVERVIEWS = 'EDITOR_CLOSE_ALL_OVERVIEWS';
+export const EDITOR_OPEN_CLIPBOARD = 'EDITOR_OPEN_CLIPBOARD';
+export const EDITOR_CLOSE_CLIPBOARD = 'EDITOR_CLOSE_CLIPBOARD';
+export const EDITOR_OPEN_OVERVIEW = 'EDITOR_OPEN_OVERVIEW';
+export const EDITOR_CLOSE_OVERVIEW = 'EDITOR_CLOSE_OVERVIEW';
+export const EDITOR_OPEN_ALL_OVERVIEWS = 'EDITOR_OPEN_ALL_OVERVIEWS';
+export const EDITOR_CLOSE_ALL_OVERVIEWS = 'EDITOR_CLOSE_ALL_OVERVIEWS';
 
 const editorOpenCollections = (
   collectionIds: string | string[]
@@ -63,12 +63,12 @@ const editorCloseCollections = (
   payload: { collectionIds }
 });
 
-const editorShowOpenFrontsMenu = (): EditorShowOpenFrontsMenu => ({
-  type: EDITOR_SHOW_OPEN_FRONTS_MENU
+const editorOpenCurrentFrontsMenu = (): EditorOpenCurrentFrontsMenu => ({
+  type: EDITOR_OPEN_CURRENT_FRONTS_MENU
 });
 
-const editorHideOpenFrontsMenu = (): EditorHideOpenFrontsMenu => ({
-  type: EDITOR_HIDE_OPEN_FRONTS_MENU
+const editorCloseCurrentFrontsMenu = (): EditorCloseCurrentFrontsMenu => ({
+  type: EDITOR_CLOSE_CURRENT_FRONTS_MENU
 });
 
 /**
@@ -254,14 +254,14 @@ const clearArticleFragmentSelection = (state: State, frontId: string) => ({
 
 const reducer = (state: State = defaultState, action: Action): State => {
   switch (action.type) {
-    case EDITOR_SHOW_OPEN_FRONTS_MENU: {
+    case EDITOR_OPEN_CURRENT_FRONTS_MENU: {
       return {
         ...state,
         showOpenFrontsMenu: true
       };
     }
 
-    case EDITOR_HIDE_OPEN_FRONTS_MENU: {
+    case EDITOR_CLOSE_CURRENT_FRONTS_MENU: {
       return {
         ...state,
         showOpenFrontsMenu: false
@@ -403,8 +403,8 @@ const reducer = (state: State = defaultState, action: Action): State => {
 };
 
 export {
-  editorShowOpenFrontsMenu,
-  editorHideOpenFrontsMenu,
+  editorOpenCurrentFrontsMenu as editorShowOpenFrontsMenu,
+  editorCloseCurrentFrontsMenu as editorHideOpenFrontsMenu,
   editorOpenFront,
   editorMoveFront,
   editorCloseFront,
