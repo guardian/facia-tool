@@ -12,6 +12,7 @@ import { selectSharedState } from 'shared/selectors/shared';
 import { saveOpenFrontIds } from 'services/faciaApi';
 import { NestedArticleFragment } from 'shared/types/Collection';
 import { denormaliseClipboard } from 'util/clipboardUtils';
+import { getFront } from 'selectors/frontsSelectors';
 
 const updateStateFromUrlChange: Middleware<{}, State, Dispatch> = ({
   dispatch,
@@ -201,7 +202,12 @@ const persistOpenFrontsOnEdit: (
     return next(action);
   }
   const result = next(action);
-  const frontIds = selectEditorFrontIds(store.getState());
+  const state = store.getState();
+  const frontIds = selectEditorFrontIds(state).filter(
+    // Only persist fronts that exist in the state, clearing out
+    // fronts that have been changed or deleted.
+    frontId => !!getFront(state, frontId)
+  );
   // Now they're in the state, persist the relevant front ids.
   persistFrontIds(frontIds);
   return result;
