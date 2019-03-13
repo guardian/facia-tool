@@ -7,7 +7,7 @@ interface IconProps {
   title?: string | null;
 }
 
-type IconSizes = 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
+type IconSizes = 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl' | 'fill';
 const IconSizeMap = {
   xxs: 10,
   xs: 12,
@@ -15,9 +15,10 @@ const IconSizeMap = {
   m: 18,
   l: 22,
   xl: 30,
-  xxl: 40
+  xxl: 40,
+  fill: '100%'
 };
-const mapSize = (size: IconSizes): number => IconSizeMap[size];
+const mapSize = (size: IconSizes): number|string => IconSizeMap[size];
 
 const DownCaretIcon = ({
   fill = theme.colors.white,

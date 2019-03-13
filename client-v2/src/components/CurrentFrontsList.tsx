@@ -24,8 +24,8 @@ interface ComponentProps {
 const FrontTabList = styled('div')<{ isDraggingOver?: boolean }>`
   background-color: ${({ isDraggingOver, theme }) =>
     isDraggingOver
-      ? theme.shared.colors.greyDark
-      : theme.shared.colors.blackLight};
+      ? theme.shared.colors.greyMedium
+      : theme.shared.colors.greyMediumDark};
   position: absolute;
   height: 60px;
   line-height: 60px;
@@ -92,6 +92,7 @@ class Component extends React.Component<ComponentProps> {
                   )}
                 </Draggable>
               ))}
+              {dropProvided.placeholder}
             </FrontTabList>
           )}
         </Droppable>
