@@ -111,7 +111,7 @@ class Component extends React.Component<ComponentProps> {
     // We can't use scrollIntoView here, as the fronts container is
     // translated, and this results in odd behaviour. Instead, we use
     // this function to scroll imperatively.
-    scrollToLeft(frontContainerElement, frontElement.offsetLeft, 150);
+    scrollToLeft(frontContainerElement, frontElement.offsetLeft, 300);
   }
 }
 
