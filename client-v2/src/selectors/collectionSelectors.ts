@@ -7,7 +7,7 @@ import {
 } from 'shared/selectors/shared';
 import { isDirty } from 'redux-form';
 import { CollectionItemSets } from 'shared/types/Collection';
-import { selectEditorFronts } from 'bundles/frontsUIBundle';
+import { selectEditorFrontIds } from 'bundles/frontsUIBundle';
 import flatten from 'lodash/flatten';
 
 const selectCollection = createCollectionSelector();
@@ -41,7 +41,7 @@ function collectionParamsSelector(
 }
 
 const collectionsInOpenFrontsSelector = (state: State): string[] => {
-  const openFrontIds = selectEditorFronts(state);
+  const openFrontIds = selectEditorFrontIds(state);
   const openFronts = openFrontIds
     .map(frontId => getFront(state, frontId))
     .filter(Boolean); // TODO How do we want to handle non-existent frontconfigs?

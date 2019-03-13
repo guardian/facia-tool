@@ -17,6 +17,14 @@ import { FrontsConfig, VisibleArticlesResponse } from './FaciaApi';
 import { BatchAction } from 'redux-batched-actions';
 import { Stages } from 'shared/types/Collection';
 
+interface EditorShowOpenFrontsMenu {
+  type: 'EDITOR_SHOW_OPEN_FRONTS_MENU';
+}
+
+interface EditorHideOpenFrontsMenu {
+  type: 'EDITOR_HIDE_OPEN_FRONTS_MENU';
+}
+
 interface EditorAddFront {
   type: 'EDITOR_OPEN_FRONT';
   payload: { frontId: string };
@@ -235,6 +243,8 @@ type Action =
   | RemoveSupportingArticleFragment
   | RemoveClipboardArticleFragment
   | UpdateClipboardContent
+  | EditorShowOpenFrontsMenu
+  | EditorHideOpenFrontsMenu
   | EditorAddFront
   | EditorMoveFront
   | EditorClearOpenFronts
@@ -278,6 +288,8 @@ export {
   RemoveSupportingArticleFragment,
   RemoveClipboardArticleFragment,
   UpdateClipboardContent,
+  EditorShowOpenFrontsMenu,
+  EditorHideOpenFrontsMenu,
   EditorAddFront,
   EditorMoveFront,
   EditorClearOpenFronts,
