@@ -20,6 +20,9 @@ import SectionsContainer from '../layout/SectionsContainer';
 import FrontsMenu from './FrontsMenu';
 import PressFailAlert from '../PressFailAlert';
 
+export const frontsContainerId = 'fronts-container';
+export const createFrontId = (frontId: string) => `front-${frontId}`;
+
 interface Props {
   match: match<{ priority: string }>;
   error: ActionError;
@@ -70,10 +73,11 @@ class FrontsEdit extends React.Component<Props> {
             <FeedSection />
           </FeedContainer>
           <FrontsContainer
+            id={frontsContainerId}
             makeRoomForExtraHeader={this.props.isCurrentFrontsMenuOpen}
           >
             {this.props.frontIds.map(frontId => (
-              <SingleFrontContainer key={frontId}>
+              <SingleFrontContainer key={frontId} id={createFrontId(frontId)}>
                 <FrontContainer frontId={frontId} />
               </SingleFrontContainer>
             ))}
