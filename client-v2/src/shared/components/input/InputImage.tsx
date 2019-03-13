@@ -122,14 +122,15 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
   public handlePasteImgSrcInputChange = (
     e: React.FormEvent<HTMLInputElement>
   ) => {
+    e.preventDefault();
     this.setState({ imageSrc: e.currentTarget.value });
   };
 
   public handlePasteImgSrcInputSubmit = (e: React.KeyboardEvent) => {
     e.persist();
     if (e.keyCode === 13) {
+      e.preventDefault();
       validateImageSrc(
-        //crop???
         this.state.imageSrc,
         this.props.frontId,
         this.props.criteria
