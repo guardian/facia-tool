@@ -15,7 +15,8 @@ import {
 } from 'bundles/frontsUIBundle';
 import { FrontConfig } from 'types/FaciaApi';
 import { styled, theme as themeConstants } from 'constants/theme';
-import { createFrontId } from './FrontsEdit/Front';
+import { scrollToLeft } from 'util/scroll';
+import { frontsContainerId, createFrontId } from './FrontsEdit/Edit';
 
 interface ComponentProps {
   fronts: FrontConfig[];
@@ -102,15 +103,15 @@ class Component extends React.Component<ComponentProps> {
     );
   }
   private scrollToFront(frontId: string) {
-    const element = document.getElementById(createFrontId(frontId));
-    if (!element) {
+    const frontElement = document.getElementById(createFrontId(frontId));
+    const frontContainerElement = document.getElementById(frontsContainerId);
+    if (!frontElement || !frontContainerElement) {
       return;
     }
-    element.scrollIntoView({
-      behavior: 'smooth',
-      inline: 'start',
-      block: 'nearest'
-    });
+    // We can't use scrollIntoView here, as the fronts container is
+    // translated, and this results in odd behaviour. Instead, we use
+    // this function to scroll imperatively.
+    scrollToLeft(frontContainerElement, frontElement.offsetLeft, 150);
   }
 }
 

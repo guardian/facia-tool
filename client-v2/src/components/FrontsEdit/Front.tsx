@@ -35,8 +35,6 @@ import FrontDetailView from './FrontDetailView';
 import CollectionItem from './CollectionComponents/CollectionItem';
 import { ValidationResponse } from 'shared/util/validateImageSrc';
 
-export const createFrontId = (frontId: string) => `front-${frontId}`;
-
 const FrontContainer = styled('div')`
   display: flex;
 `;
@@ -130,7 +128,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
         >
           {this.state.error || ''}
         </div>
-        <FrontContainer id={createFrontId(this.props.id)}>
+        <FrontContainer>
           <FrontContentContainer>
             <Root id={this.props.id} data-testid={this.props.id}>
               {front.collections.map(collectionId => {
