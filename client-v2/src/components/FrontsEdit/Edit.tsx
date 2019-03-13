@@ -55,7 +55,10 @@ const FrontsContainer = styled(SectionContainer)<{
   overflow-x: scroll;
   transition: transform 0.15s;
   ${({ makeRoomForExtraHeader }) =>
-    makeRoomForExtraHeader && 'transform: translate3d(0, 60px, 0)'}
+    makeRoomForExtraHeader &&
+    `
+    transform: translate3d(0, 60px, 0);
+    height: calc(100% - 60px)`}
 `;
 
 class FrontsEdit extends React.Component<Props> {
