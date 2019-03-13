@@ -2,6 +2,8 @@ import without from 'lodash/without';
 import compact from 'lodash/compact';
 import {
   Action,
+  EditorShowOpenFrontsMenu,
+  EditorHideOpenFrontsMenu,
   EditorCloseFront,
   EditorMoveFront,
   EditorClearOpenFronts,
@@ -28,6 +30,8 @@ import {
 } from 'shared/actions/ArticleFragments';
 import { REMOVE_CLIPBOARD_ARTICLE_FRAGMENT } from 'actions/Clipboard';
 
+const EDITOR_SHOW_OPEN_FRONTS_MENU = 'EDITOR_SHOW_OPEN_FRONTS_MENU';
+const EDITOR_HIDE_OPEN_FRONTS_MENU = 'EDITOR_HIDE_OPEN_FRONTS_MENU';
 const EDITOR_OPEN_FRONT = 'EDITOR_OPEN_FRONT';
 const EDITOR_MOVE_FRONT = 'EDITOR_MOVE_FRONT';
 const EDITOR_CLOSE_FRONT = 'EDITOR_CLOSE_FRONT';
@@ -57,6 +61,14 @@ const editorCloseCollections = (
 ): EditorCloseCollection => ({
   type: EDITOR_CLOSE_COLLECTION,
   payload: { collectionIds }
+});
+
+const editorShowOpenFrontsMenu = (): EditorShowOpenFrontsMenu => ({
+  type: EDITOR_SHOW_OPEN_FRONTS_MENU
+});
+
+const editorHideOpenFrontsMenu = (): EditorHideOpenFrontsMenu => ({
+  type: EDITOR_HIDE_OPEN_FRONTS_MENU
 });
 
 /**
@@ -164,6 +176,7 @@ const editorCloseAllOverviews = (): EditorCloseAllOverviews => ({
 });
 
 interface State {
+  showOpenFrontsMenu: boolean;
   frontIds: string[];
   collectionIds: string[];
   closedOverviews: string[];
@@ -175,6 +188,9 @@ interface State {
     } | void;
   };
 }
+
+const selectIsCurrentFrontsMenuOpen = (state: GlobalState) =>
+  state.editor.showOpenFrontsMenu;
 
 const selectEditorFrontIds = (state: GlobalState) => state.editor.frontIds;
 const selectIsCollectionOpen = <T extends { editor: State }>(
@@ -220,6 +236,7 @@ const selectEditorArticleFragment = <T extends { editor: State }>(
 ) => state.editor.selectedArticleFragments[frontId];
 
 const defaultState = {
+  showOpenFrontsMenu: false,
   frontIds: [],
   collectionIds: [],
   clipboardOpen: true,
@@ -237,6 +254,20 @@ const clearArticleFragmentSelection = (state: State, frontId: string) => ({
 
 const reducer = (state: State = defaultState, action: Action): State => {
   switch (action.type) {
+    case EDITOR_SHOW_OPEN_FRONTS_MENU: {
+      return {
+        ...state,
+        showOpenFrontsMenu: true
+      };
+    }
+
+    case EDITOR_HIDE_OPEN_FRONTS_MENU: {
+      return {
+        ...state,
+        showOpenFrontsMenu: false
+      };
+    }
+
     case EDITOR_OPEN_FRONT: {
       return {
         ...state,
@@ -372,6 +403,8 @@ const reducer = (state: State = defaultState, action: Action): State => {
 };
 
 export {
+  editorShowOpenFrontsMenu,
+  editorHideOpenFrontsMenu,
   editorOpenFront,
   editorMoveFront,
   editorCloseFront,
@@ -381,6 +414,7 @@ export {
   editorCloseCollections,
   editorSelectArticleFragment,
   editorClearArticleFragmentSelection,
+  selectIsCurrentFrontsMenuOpen,
   selectEditorFrontIds,
   selectEditorFrontsByPriority,
   selectEditorArticleFragment,

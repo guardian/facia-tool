@@ -23,7 +23,9 @@ interface ComponentProps {
 
 const FrontTabList = styled('div')<{ isDraggingOver: boolean }>`
   background-color: ${({ isDraggingOver, theme }) =>
-    isDraggingOver ? theme.shared.colors.greyDark : theme.shared.colors.blackLight};
+    isDraggingOver
+      ? theme.shared.colors.greyDark
+      : theme.shared.colors.blackLight};
   position: absolute;
   height: 60px;
   min-width: 100%;

@@ -31,9 +31,10 @@ type State = ReturnType<typeof innerReducer>;
 
 // this allows us to put _in_ our own slice of state but receive a _global_
 // state so that we can test out selectors
-const reducer = (state: State | undefined, action: Action): GlobalState => ({
-  editor: innerReducer(state, action)
-} as any);
+const reducer = (state: State | undefined, action: Action): GlobalState =>
+  ({
+    editor: innerReducer(state, action)
+  } as any);
 
 describe('frontsUIBundle', () => {
   describe('selectors', () => {

@@ -19,7 +19,7 @@ interface OuterProps {
 }
 
 interface InnerProps {
-  supporting: ArticleFragment[]
+  supporting: ArticleFragment[];
 }
 
 type Props = OuterProps & InnerProps;
