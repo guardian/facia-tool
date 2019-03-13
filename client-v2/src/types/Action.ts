@@ -36,11 +36,11 @@ import {
   EDITOR_CLOSE_ALL_OVERVIEWS
 } from 'bundles/frontsUIBundle';
 
-interface EditorShowOpenFrontsMenu {
+interface EditorOpenCurrentFrontsMenu {
   type: typeof EDITOR_OPEN_CURRENT_FRONTS_MENU;
 }
 
-interface EditorHideOpenFrontsMenu {
+interface EditorCloseCurrentFrontsMenu {
   type: typeof EDITOR_CLOSE_CURRENT_FRONTS_MENU;
 }
 
@@ -262,8 +262,8 @@ type Action =
   | RemoveSupportingArticleFragment
   | RemoveClipboardArticleFragment
   | UpdateClipboardContent
-  | EditorShowOpenFrontsMenu
-  | EditorHideOpenFrontsMenu
+  | EditorOpenCurrentFrontsMenu
+  | EditorCloseCurrentFrontsMenu
   | EditorAddFront
   | EditorMoveFront
   | EditorClearOpenFronts
@@ -307,8 +307,8 @@ export {
   RemoveSupportingArticleFragment,
   RemoveClipboardArticleFragment,
   UpdateClipboardContent,
-  EditorShowOpenFrontsMenu,
-  EditorHideOpenFrontsMenu,
+  EditorOpenCurrentFrontsMenu,
+  EditorCloseCurrentFrontsMenu,
   EditorAddFront,
   EditorMoveFront,
   EditorClearOpenFronts,
