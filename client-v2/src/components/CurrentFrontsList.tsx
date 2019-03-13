@@ -65,7 +65,7 @@ const FrontTab = styled('div')<{ isDragging: boolean }>`
 class Component extends React.Component<ComponentProps> {
   public render() {
     if (!this.props.fronts.length) {
-      return <NoFronts>There are no open fronts.</NoFronts>
+      return <NoFronts>There are no open fronts.</NoFronts>;
     }
     return (
       <DragDropContext onDragEnd={this.props.moveFront}>

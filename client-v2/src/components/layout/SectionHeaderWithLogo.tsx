@@ -15,7 +15,13 @@ const LogoTypeContainer = styled('div')`
   line-height: 60px;
 `;
 
-export default ({ children, includeBorder }: { children?: React.ReactNode, includeBorder?: boolean }) => (
+export default ({
+  children,
+  includeBorder
+}: {
+  children?: React.ReactNode;
+  includeBorder?: boolean;
+}) => (
   <SectionHeader includeBorder={includeBorder}>
     <LogoTypeContainer>F</LogoTypeContainer>
     {children}
