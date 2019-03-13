@@ -4,6 +4,7 @@
   "private": true,
   "description": "Guardian front pages editor",
   "dependencies": {
+    "@types/react-beautiful-dnd": "^10.0.3",
     "babel": "6.0.0",
     "eslint-plugin-jasmine": "1.8.1",
     "grunt": "1.0.3",
