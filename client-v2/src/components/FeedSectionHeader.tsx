@@ -29,7 +29,6 @@ const FeedbackButton = Button.extend<{
 
 const SectionHeaderContent = styled('div')`
   position: relative;
-  // overflow: hidden;
   flex: 1;
 `;
 
