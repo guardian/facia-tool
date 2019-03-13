@@ -278,11 +278,12 @@ const reducer = (state: State = defaultState, action: Action): State => {
     }
     case EDITOR_MOVE_FRONT: {
       const maxIndex = state.frontIds.length - 1;
-      if (
-        state.frontIds.indexOf(action.payload.frontId) === -1 ||
+      const indexNotFound =
+        state.frontIds.indexOf(action.payload.frontId) === -1;
+      const indexesOutOfBounds =
         action.payload.fromIndex > maxIndex ||
-        action.payload.toIndex > maxIndex
-      ) {
+        action.payload.toIndex > maxIndex;
+      if (indexNotFound || indexesOutOfBounds) {
         return state;
       }
       const frontIds = state.frontIds.slice();
