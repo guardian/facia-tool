@@ -18,7 +18,7 @@ const IconSizeMap = {
   xxl: 40,
   fill: '100%'
 };
-const mapSize = (size: IconSizes): number|string => IconSizeMap[size];
+const mapSize = (size: IconSizes): number | string => IconSizeMap[size];
 
 const DownCaretIcon = ({
   fill = theme.colors.white,

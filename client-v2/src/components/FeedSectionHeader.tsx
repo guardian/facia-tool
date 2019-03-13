@@ -14,7 +14,7 @@ import {
 } from 'bundles/frontsUIBundle';
 import { Dispatch } from 'types/Store';
 import FadeTransition from './transitions/FadeTransition';
-import { MoreIcon } from 'shared/components/icons/Icons'
+import { MoreIcon } from 'shared/components/icons/Icons';
 
 const FeedbackButton = Button.extend<{
   href: string;
@@ -114,7 +114,7 @@ const FeedSectionHeader = ({
           </>
         ) : (
           <CloseButtonOuter>
-            <CloseButtonInner >
+            <CloseButtonInner>
               <MoreIcon size="fill" />
             </CloseButtonInner>
           </CloseButtonOuter>
@@ -125,10 +125,7 @@ const FeedSectionHeader = ({
       <FadeTransition active={isCurrentFrontsMenuOpen} direction="left">
         <CurrentFrontsList />
       </FadeTransition>
-      <FadeTransition
-        active={!isCurrentFrontsMenuOpen}
-        direction="right"
-      >
+      <FadeTransition active={!isCurrentFrontsMenuOpen} direction="right">
         <FeedbackButton
           href="https://docs.google.com/forms/d/e/1FAIpQLSc4JF0GxrKoxQgsFE9_tQfjAo1RKRU4M5bJWJRKaVlHbR2rpA/viewform?c=0&w=1"
           target="_blank"
