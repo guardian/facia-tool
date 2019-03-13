@@ -111,7 +111,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                 display: 'flex',
                 flexDirection: 'column',
                 height: '100%',
-                width: '160px'
+                width: '140px'
               }}
             >
               <ClipboardLevel

@@ -20,6 +20,7 @@ import { insertArticleFragment } from 'actions/ArticleFragments';
 import noop from 'lodash/noop';
 import { getPaths } from 'util/paths';
 import { liveBlogTones } from 'constants/fronts';
+import { ThumbnailSmall } from 'shared/components/Thumbnail';
 
 const LinkContainer = styled('div')`
   background-color: ${({ theme }) => theme.capiInterface.backgroundLight};
@@ -80,7 +81,7 @@ const VisitedWrapper = styled.a`
 const MetaContainer = styled('div')`
   position: relative;
   width: 80px;
-  padding: 0px 8px;
+  padding: 0px 2px;
 `;
 
 const FirstPublished = styled('div')`
@@ -99,8 +100,8 @@ const Tone = styled('div')`
 `;
 
 const Body = styled('div')`
-  width: calc(100% - 80px);
-  padding-left: 10px;
+  width: calc(100% - 163px);
+  padding-left: 1px;
 `;
 
 interface FeedItemProps {
@@ -116,6 +117,7 @@ interface FeedItemProps {
   onAddToClipboard: (id: string) => void;
   scheduledPublicationDate?: string;
   tone?: string;
+  thumbnail?: string;
 }
 
 const dragStart = (
@@ -157,7 +159,8 @@ const FeedItem = ({
   isLive,
   onAddToClipboard = noop,
   scheduledPublicationDate,
-  tone
+  tone,
+  thumbnail
 }: FeedItemProps) => (
   <Container
     data-testid="feed-item"
@@ -197,6 +200,11 @@ const FeedItem = ({
       <Body>
         <Title data-testid="headline">{title}</Title>
       </Body>
+      <ThumbnailSmall
+        style={{
+          backgroundImage: `url('${thumbnail}')`
+        }}
+      />
     </VisitedWrapper>
     <HoverActionsAreaOverlay justify="flex-end" data-testid="hover-overlay">
       <HoverActionsButtonWrapper
