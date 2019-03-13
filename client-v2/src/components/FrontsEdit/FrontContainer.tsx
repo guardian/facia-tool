@@ -6,9 +6,7 @@ import { styled } from 'constants/theme';
 import { Dispatch } from 'types/Store';
 import { fetchLastPressed } from 'actions/Fronts';
 import { updateCollection, closeCollections } from 'actions/Collections';
-import {
-  editorCloseFront
-} from 'bundles/frontsUIBundle';
+import { editorCloseFront } from 'bundles/frontsUIBundle';
 import Button from 'shared/components/input/ButtonDefault';
 import { frontStages } from 'constants/fronts';
 import { FrontConfig } from 'types/FaciaApi';
