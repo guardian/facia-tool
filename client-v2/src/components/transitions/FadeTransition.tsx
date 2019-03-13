@@ -51,7 +51,7 @@ const TransitionContainer = styled.div<TransitionProps>`
   }
 `;
 
-const FadeOnMountTransition: React.StatelessComponent<
+const FadeTransition: React.StatelessComponent<
   TransitionProps & { active: boolean }
 > = ({ direction, duration = 150, active, children }) => (
   <CSSTransition
@@ -68,4 +68,4 @@ const FadeOnMountTransition: React.StatelessComponent<
   </CSSTransition>
 );
 
-export default FadeOnMountTransition;
+export default FadeTransition;

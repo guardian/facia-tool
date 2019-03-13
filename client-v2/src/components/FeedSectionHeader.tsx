@@ -13,8 +13,8 @@ import {
   selectEditorFrontIds
 } from 'bundles/frontsUIBundle';
 import { Dispatch } from 'types/Store';
-import FadeOnMountTransition from './transitions/FadeOnMountTransition';
-import MoreImage from 'shared/images/icons/more.svg';
+import FadeTransition from './transitions/FadeTransition';
+import { MoreIcon } from 'shared/components/icons/Icons'
 
 const FeedbackButton = Button.extend<{
   href: string;
@@ -80,12 +80,13 @@ const CloseButtonOuter = styled.div`
   border: solid 1px #ffffff;
 `;
 
-const CloseIcon = styled.img`
+const CloseButtonInner = styled.div`
   transform: rotate(45deg);
   display: block;
   margin: 0 auto;
   width: 30px;
-  top: 4px;
+  height: 32px;
+  top: 3px;
   position: relative;
 `;
 
@@ -113,16 +114,18 @@ const FeedSectionHeader = ({
           </>
         ) : (
           <CloseButtonOuter>
-            <CloseIcon src={MoreImage} />
+            <CloseButtonInner >
+              <MoreIcon size="fill" />
+            </CloseButtonInner>
           </CloseButtonOuter>
         )}
       </LogoBackground>
     </LogoContainer>
     <SectionHeaderContent>
-      <FadeOnMountTransition active={isCurrentFrontsMenuOpen} direction="left">
+      <FadeTransition active={isCurrentFrontsMenuOpen} direction="left">
         <CurrentFrontsList />
-      </FadeOnMountTransition>
-      <FadeOnMountTransition
+      </FadeTransition>
+      <FadeTransition
         active={!isCurrentFrontsMenuOpen}
         direction="right"
       >
@@ -132,7 +135,7 @@ const FeedSectionHeader = ({
         >
           Send us feedback
         </FeedbackButton>
-      </FadeOnMountTransition>
+      </FadeTransition>
     </SectionHeaderContent>
   </SectionHeaderWithLogo>
 );
