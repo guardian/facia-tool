@@ -48,6 +48,7 @@ const FeedContainer = styled(SectionContainer)`
 const FrontsContainer = styled(SectionContainer)<{
   makeRoomForExtraHeader: boolean;
 }>`
+  height: 100%;
   overflow-x: scroll;
   transition: transform 0.15s;
   ${({ makeRoomForExtraHeader }) =>

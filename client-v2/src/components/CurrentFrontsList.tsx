@@ -15,6 +15,7 @@ import {
 } from 'bundles/frontsUIBundle';
 import { FrontConfig } from 'types/FaciaApi';
 import { styled, theme as themeConstants } from 'constants/theme';
+import { createFrontId } from './FrontsEdit/Front';
 
 interface ComponentProps {
   fronts: FrontConfig[];
@@ -86,6 +87,7 @@ class Component extends React.Component<ComponentProps> {
                       style={provided.draggableProps.style}
                       isDragging={snapshot.isDragging}
                       key={front.id}
+                      onClick={() => this.scrollToFront(front.id)}
                     >
                       {startCase(front.id)}
                     </FrontTab>
@@ -98,6 +100,17 @@ class Component extends React.Component<ComponentProps> {
         </Droppable>
       </DragDropContext>
     );
+  }
+  private scrollToFront(frontId: string) {
+    const element = document.getElementById(createFrontId(frontId));
+    if (!element) {
+      return;
+    }
+    element.scrollIntoView({
+      behavior: 'smooth',
+      inline: 'start',
+      block: 'nearest'
+    });
   }
 }
 
