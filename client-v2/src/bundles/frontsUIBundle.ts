@@ -2,8 +2,8 @@ import without from 'lodash/without';
 import compact from 'lodash/compact';
 import {
   Action,
-  EditorShowOpenFrontsMenu as EditorOpenCurrentFrontsMenu,
-  EditorHideOpenFrontsMenu as EditorCloseCurrentFrontsMenu,
+  EditorOpenCurrentFrontsMenu,
+  EditorCloseCurrentFrontsMenu,
   EditorCloseFront,
   EditorMoveFront,
   EditorClearOpenFronts,
