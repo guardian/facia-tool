@@ -17,7 +17,7 @@ import {
 import { gridUrlSelector } from 'selectors/configSelectors';
 import { State } from 'types/State';
 import { GridData, Criteria } from 'shared/types/Grid';
-import { RubbishBinIcon } from '../icons/Icons';
+import { RubbishBinIcon, AddImageIcon } from '../icons/Icons';
 
 const ImageContainer = styled('div')<{
   size?: 'small';
@@ -61,7 +61,9 @@ const ImageUrlInput = styled(InputBase)`
 const Label = styled(InputLabel)`
   cursor: pointer;
   display: inline-block;
-  color: ${props => props.theme.shared.base.colors.text};
+  color: ${props => props.theme.shared.base.colors.textLight};
+  padding-inline-start: 5px;
+  vertical-align: super;
 `;
 
 const ButtonDelete = styled(ButtonDefault)`
@@ -239,7 +241,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                       this.clearField();
                     }}
                   >
-                    <RubbishBinIcon size={'s'} />
+                    <RubbishBinIcon size="s" />
                   </IconDelete>
                 ) : null}
               </ButtonDelete>
@@ -250,6 +252,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                   priority="muted"
                   onClick={this.openModal}
                 >
+                  <AddImageIcon size="l" />
                   <Label size="sm">Add image</Label>
                 </AddImageViaGridModalButton>
 
