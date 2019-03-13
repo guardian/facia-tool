@@ -6,7 +6,7 @@ import CollectionNotification from 'components/CollectionNotification';
 import Button from 'shared/components/input/ButtonDefault';
 import { AlsoOnDetail } from 'types/Collection';
 import { publishCollection } from 'actions/Fronts';
-import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
+import { hasUnpublishedChangesSelector, hasMultipleFrontsOpenSelector } from 'selectors/frontsSelectors';
 import { isCollectionLockedSelector } from 'selectors/collectionSelectors';
 import { State } from 'types/State';
 import { CollectionItemSets, Group } from 'shared/types/Collection';
@@ -39,6 +39,7 @@ type CollectionProps = CollectionPropsBeforeState & {
   displayEditWarning: boolean;
   isCollectionLocked: boolean;
   isOpen: boolean;
+  hasMultipleFrontsOpen: boolean
   onChangeOpenState: (id: string, isOpen: boolean) => void;
 };
 
@@ -55,7 +56,8 @@ const Collection = ({
   displayEditWarning,
   isCollectionLocked,
   isOpen,
-  onChangeOpenState
+  onChangeOpenState,
+  hasMultipleFrontsOpen
 }: CollectionProps) => {
   const isUneditable =
     isCollectionLocked || browsingStage !== collectionItemSets.draft;
@@ -68,6 +70,7 @@ const Collection = ({
       isUneditable={isUneditable}
       isLocked={isCollectionLocked}
       isOpen={isOpen}
+      hasMultipleFrontsOpen={isOpen}
       onChangeOpenState={() => onChangeOpenState(id, isOpen)}
       headlineContent={
         hasUnpublishedChanges &&
@@ -110,7 +113,8 @@ const createMapStateToProps = () => {
     displayEditWarning: editWarningSelector(selectSharedState(state), {
       collectionId: id
     }),
-    isOpen: selectIsCollectionOpen(state, id)
+    isOpen: selectIsCollectionOpen(state, id),
+    hasMultipleFrontsOpen: hasMultipleFrontsOpenSelector(state)
   });
 };
 

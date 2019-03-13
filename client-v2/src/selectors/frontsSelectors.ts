@@ -5,6 +5,7 @@ import { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
+import { selectEditorFrontIds } from 'bundles/frontsUIBundle';
 
 import { CollectionItemSets, Stages } from 'shared/types/Collection';
 
@@ -158,6 +159,14 @@ const getCollectionConfigs = (
   return [];
 };
 
+const hasMultipleFrontsOpenSelector = createSelector(
+  selectEditorFrontIds,
+  (frontIds) => {
+    console.log({frontIds});
+    return frontIds.length > 1;
+  }
+);
+
 const getUnpublishedChangesStatus = (
   collectionId: string,
   unpublishedChanges: { [id: string]: boolean }
@@ -294,5 +303,6 @@ export {
   hasUnpublishedChangesSelector,
   clipboardSelector,
   visibleArticlesSelector,
-  visibleFrontArticlesSelector
+  visibleFrontArticlesSelector,
+  hasMultipleFrontsOpenSelector
 };

@@ -43,6 +43,7 @@ type Props = ContainerProps & {
   isUneditable?: boolean;
   isLocked?: boolean;
   isOpen?: boolean;
+  hasMultipleFrontsOpen?: boolean;
   onChangeOpenState?: (isOpen: boolean) => void;
 };
 
@@ -52,7 +53,6 @@ interface CollectionState {
 
 const CollectionContainer = ContentContainer.extend`
   flex: 1;
-  width: 600px;
 `;
 
 const HeadlineContentContainer = styled('span')`
@@ -189,12 +189,17 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       metaContent,
       isUneditable,
       isLocked,
-      children
+      hasMultipleFrontsOpen,
+      children,
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
 
+    console.log({hasMultipleFrontsOpen});
     return (
-      <CollectionContainer id={collection && createCollectionId(collection)}>
+      <CollectionContainer
+        style={{ width: hasMultipleFrontsOpen ? '510px' : '590px' }}
+        id={collection && createCollectionId(collection)}
+       >
         <ContainerHeadingPinline>
           <CollectionHeadlineWithConfigContainer>
             <CollectionHeadingText isLoading={!collection}>
