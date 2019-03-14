@@ -22,7 +22,7 @@ export const insertAndDedupeSiblings = (
   );
 
   const isAnInsertedItem = (i: number) =>
-    i >= index && i < (index + insertionUUIDs.length);
+    i >= index && i < index + insertionUUIDs.length;
 
   // the filter alone should be enough here but just in case any of the
   // insertions were duplicates then run `uniqBy` over and dedupe again

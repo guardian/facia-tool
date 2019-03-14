@@ -87,7 +87,12 @@ describe('insertAndDedupeSiblings', () => {
 
   it('takes multiple insertions and only dedupes existing', () => {
     expect(
-      insertAndDedupeSiblings(['a', 'b', 'c'], ['d', 'e'], 1, articleFragmentMap)
+      insertAndDedupeSiblings(
+        ['a', 'b', 'c'],
+        ['d', 'e'],
+        1,
+        articleFragmentMap
+      )
     ).toEqual(['a', 'd', 'e']);
   });
 
