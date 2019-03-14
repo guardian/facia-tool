@@ -2,6 +2,7 @@ import React from 'react';
 import { theme, styled } from 'shared/constants/theme';
 import { connect } from 'react-redux';
 import { WrappedFieldProps } from 'redux-form';
+import { events } from 'services/GA';
 
 import ButtonDefault from './ButtonDefault';
 import InputContainer from './InputContainer';
@@ -110,6 +111,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
   };
 
   public handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    events.imageAdded(this.props.frontId, 'drop');
     e.preventDefault();
     e.persist();
     validateImageEvent(e, this.props.frontId, this.props.criteria)
@@ -129,6 +131,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
   };
 
   public handlePasteImgSrcInputSubmit = (e: React.KeyboardEvent) => {
+    events.imageAdded(this.props.frontId, 'paste');
     e.persist();
     if (e.keyCode === 13) {
       e.preventDefault();
@@ -188,6 +191,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       this.props.criteria
     )
       .then(mediaItem => {
+        events.imageAdded(this.props.frontId, 'click to modal');
         this.props.input.onChange(mediaItem);
       })
       .catch(err => {
