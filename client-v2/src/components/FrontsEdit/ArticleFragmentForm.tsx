@@ -44,9 +44,11 @@ import { CapiTextFields } from 'util/form';
 import { Dispatch } from 'types/Store';
 import { articleFragmentImageCriteria as imageCriteria } from 'constants/image';
 import { selectors as collectionSelectors } from 'shared/bundles/collectionsBundle';
+import { selectCurrentPresencePeople, Person } from 'presence';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
+  currentPresencePeople: Person[];
   collectionId: string | null;
   getLastUpdatedBy: (id: string) => string | null;
   articleFragmentId: string;
@@ -113,6 +115,16 @@ const CollectionEditedError = styled.div`
   padding: 1em;
 `;
 
+const PresenceCircle = styled.span`
+  border: 1px solid black;
+  border-radius: 50%;
+  height: 2em;
+  line-height: 2em;
+  text-align: center;
+  width: 2em;
+  display: inline-block;
+`;
+
 type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
   frontId: string;
 };
@@ -168,7 +180,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       showKickerTag,
       showKickerSection,
       frontId,
-      articleExists
+      articleExists,
+      currentPresencePeople
     } = this.props;
 
     return (
@@ -201,6 +214,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               )} since you started editing this article. Your changes have not been saved.`}
           </CollectionEditedError>
         )}
+        {currentPresencePeople.map(({ firstName, lastName }) => (
+          <PresenceCircle title={`${firstName} ${lastName}`}>
+            {`${firstName.slice(0, 1)}${lastName.slice(0, 1)}`}
+          </PresenceCircle>
+        ))}
         <FormContent>
           <InputGroup>
             <ConditionalField
@@ -475,6 +493,7 @@ const ArticleFragmentForm = reduxForm<
 
 interface ContainerProps {
   articleExists: boolean;
+  currentPresencePeople: Person[];
   collectionId: string | null;
   getLastUpdatedBy: (collectionId: string) => string | null;
   imageSlideshowReplace: boolean;
@@ -491,6 +510,7 @@ interface ContainerProps {
 interface InterfaceProps {
   form: string;
   articleFragmentId: string;
+  path: string[];
   isSupporting?: boolean;
   onCancel: () => void;
   onSave: (meta: ArticleFragmentMeta) => void;
@@ -506,7 +526,7 @@ const createMapStateToProps = () => {
   const selectFormFields = createSelectFormFieldsForCollectionItem();
   return (
     state: State,
-    { articleFragmentId, isSupporting = false }: InterfaceProps
+    { articleFragmentId, path, isSupporting = false }: InterfaceProps
   ) => {
     const externalArticle = externalArticleFromArticleFragmentSelector(
       selectSharedState(state),
@@ -539,6 +559,10 @@ const createMapStateToProps = () => {
 
     return {
       articleExists: !!article,
+      currentPresencePeople: selectCurrentPresencePeople(
+        state.presence,
+        path.join('') // TODO: createKeyFromPath
+      ),
       collectionId: (parentCollection && parentCollection.id) || null,
       getLastUpdatedBy,
       initialValues: getInitialValuesForArticleFragmentForm(article),

@@ -12,12 +12,16 @@ import { ArticleFragmentMeta } from 'shared/types/Collection';
 import ArticleFragmentForm from './FrontsEdit/ArticleFragmentForm';
 
 interface Props {
-  selectedArticleFragment: { id: string; isSupporting: boolean } | void;
+  selectedArticleFragment: {
+    id: string;
+    isSupporting: boolean;
+    path: string[];
+  } | void;
   updateClipboardArticleFragmentMeta: (
     id: string,
     meta: ArticleFragmentMeta
   ) => void;
-  clearArticleFragmentSelection: () => void;
+  clearArticleFragmentSelection: (path: string[]) => void;
 }
 
 const ClipboardMeta = (props: Props) => {
@@ -26,6 +30,7 @@ const ClipboardMeta = (props: Props) => {
     <ArticleFragmentForm
       articleFragmentId={selectedArticleFragment.id}
       isSupporting={selectedArticleFragment.isSupporting}
+      path={selectedArticleFragment.path}
       key={selectedArticleFragment.id}
       form={selectedArticleFragment.id}
       onSave={meta => {
@@ -33,10 +38,12 @@ const ClipboardMeta = (props: Props) => {
           selectedArticleFragment.id,
           meta
         );
-        props.clearArticleFragmentSelection();
+        props.clearArticleFragmentSelection(selectedArticleFragment.path);
       }}
       frontId="clipboard"
-      onCancel={props.clearArticleFragmentSelection}
+      onCancel={() =>
+        props.clearArticleFragmentSelection(selectedArticleFragment.path)
+      }
     />
   ) : null;
 };
@@ -48,22 +55,11 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   updateClipboardArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
     dispatch(updateClipboardArticleFragmentMeta(id, meta)),
-  clearArticleFragmentSelection: (frontId: string) =>
-    dispatch(editorClearArticleFragmentSelection(frontId))
-});
-
-const mergeProps = (
-  stateProps: ReturnType<typeof mapStateToProps>,
-  dispatchProps: ReturnType<typeof mapDispatchToProps>
-) => ({
-  ...stateProps,
-  ...dispatchProps,
-  clearArticleFragmentSelection: () =>
-    dispatchProps.clearArticleFragmentSelection(clipboardId)
+  clearArticleFragmentSelection: (path: string[]) =>
+    dispatch(editorClearArticleFragmentSelection(clipboardId, path))
 });
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
+  mapDispatchToProps
 )(ClipboardMeta);

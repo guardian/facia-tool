@@ -18,7 +18,7 @@ import pollingConfig from 'util/pollingConfig';
 
 initGA();
 
-const store = configureStore();
+const store = configureStore(pageConfig);
 
 // publish uncaught errors to sentry.io
 if (pageConfig.env.toUpperCase() !== 'DEV' && pageConfig.sentryPublicDSN) {

@@ -29,6 +29,7 @@ import {
   REMOVE_SUPPORTING_ARTICLE_FRAGMENT
 } from 'shared/actions/ArticleFragments';
 import { REMOVE_CLIPBOARD_ARTICLE_FRAGMENT } from 'actions/Clipboard';
+import { addPresenceMetaToAction } from 'presence';
 
 export const EDITOR_OPEN_CURRENT_FRONTS_MENU =
   'EDITOR_OPEN_CURRENT_FRONTS_MENU';
@@ -134,11 +135,22 @@ const editorSetOpenFronts = (frontIds: string[]): EditorSetOpenFronts => ({
 const editorSelectArticleFragment = (
   frontId: string,
   articleFragmentId: string,
-  isSupporting = false
+  isSupporting: boolean,
+  path: string[]
 ): EditorSelectArticleFragment => ({
   type: EDITOR_SELECT_ARTICLE_FRAGMENT,
-  payload: { articleFragmentId, frontId, isSupporting }
+  payload: { articleFragmentId, frontId, path, isSupporting }
 });
+
+const editorSelectArticleFragmentWithPresence = (
+  frontId: string,
+  articleFragmentId: string,
+  isSupporting: boolean,
+  path: string[]
+) =>
+  addPresenceMetaToAction('ENTER', path.join(''))(
+    editorSelectArticleFragment(frontId, articleFragmentId, isSupporting, path)
+  );
 
 const editorClearArticleFragmentSelection = (
   frontId: string
@@ -146,6 +158,14 @@ const editorClearArticleFragmentSelection = (
   type: EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION,
   payload: { frontId }
 });
+
+const editorClearArticleFragmentSelectionWithPresence = (
+  frontId: string,
+  path: string[]
+) =>
+  addPresenceMetaToAction('EXIT', path.join(''))(
+    editorClearArticleFragmentSelection(frontId)
+  );
 
 const editorOpenClipboard = (): EditorOpenClipboard => ({
   type: EDITOR_OPEN_CLIPBOARD
@@ -187,6 +207,7 @@ interface State {
     [frontId: string]: {
       id: string;
       isSupporting: boolean;
+      path: string[];
     } | void;
   };
 }
@@ -336,6 +357,7 @@ const reducer = (state: State = defaultState, action: Action): State => {
           ...state.selectedArticleFragments,
           [action.payload.frontId]: {
             id: action.payload.articleFragmentId,
+            path: action.payload.path,
             isSupporting: action.payload.isSupporting
           }
         }
@@ -415,8 +437,8 @@ export {
   editorSetOpenFronts,
   editorOpenCollections,
   editorCloseCollections,
-  editorSelectArticleFragment,
-  editorClearArticleFragmentSelection,
+  editorSelectArticleFragmentWithPresence as editorSelectArticleFragment,
+  editorClearArticleFragmentSelectionWithPresence as editorClearArticleFragmentSelection,
   selectIsCurrentFrontsMenuOpen,
   selectEditorFrontIds,
   selectEditorFrontsByPriority,

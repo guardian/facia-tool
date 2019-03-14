@@ -11,6 +11,7 @@ import confirmModal from './confirmModalReducer';
 import editor from '../bundles/frontsUIBundle';
 import { capiLiveFeed, capiPreviewFeed } from '../bundles/capiFeedBundle';
 import staleFronts from './staleFrontsReducer';
+import { reducer as presenceReducer } from '../presence';
 
 const rootReducer = (state: any = {}, action: any) => ({
   fronts: fronts(state.fronts, action),
@@ -25,7 +26,8 @@ const rootReducer = (state: any = {}, action: any) => ({
   form: form(state.form, action),
   confirmModal: confirmModal(state.confirmModal, action),
   capiLiveFeed: capiLiveFeed(state.capiLiveFeed, action),
-  capiPreviewFeed: capiPreviewFeed(state.capiPreviewFeed, action)
+  capiPreviewFeed: capiPreviewFeed(state.capiPreviewFeed, action),
+  presence: presenceReducer(state.presence, action)
 });
 
 export default rootReducer;

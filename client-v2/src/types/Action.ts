@@ -86,6 +86,7 @@ interface EditorSelectArticleFragment {
   payload: {
     articleFragmentId: string;
     frontId: string;
+    path: string[];
     isSupporting: boolean;
   };
 }

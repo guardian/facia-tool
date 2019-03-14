@@ -676,7 +676,8 @@ const state = {
     loading: false,
     loadingIds: [],
     updatingIds: []
-  }
+  },
+  presence: {}
 } as State;
 
 export default state;
