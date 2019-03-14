@@ -1,7 +1,5 @@
 import { Entry, UpdateResponse, UserSpec } from './types';
 
-const PRESENCE_DOMAIN = 'presence.local.dev-gutools.co.uk';
-
 const loadExternalScript = (url: string) =>
   new Promise((res, rej) => {
     const el = document.createElement('script');
@@ -11,8 +9,8 @@ const loadExternalScript = (url: string) =>
     document.head.appendChild(el);
   });
 
-const getPresenceClient = () =>
-  loadExternalScript(`https://${PRESENCE_DOMAIN}/client/1/lib.min.js`).then(
+const getPresenceClient = (presenceDomain: string) =>
+  loadExternalScript(`https://${presenceDomain}/client/1/lib.min.js`).then(
     () => {
       const { presenceClient } = window as any;
       if (!presenceClient) {
@@ -44,7 +42,7 @@ const init = async (
     key.replace(`${storagePrefix}---`, '');
 
   // should make the client a singleton here
-  const client = await getPresenceClient();
+  const client = await getPresenceClient(presenceDomain);
   const presence = client({
     user,
     presenceDomain
