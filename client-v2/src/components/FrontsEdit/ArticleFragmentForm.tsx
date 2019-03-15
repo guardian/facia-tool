@@ -113,10 +113,11 @@ const CollectionEditedError = styled.div`
   padding: 1em;
 `;
 
-const renderSlideshow = (
-  { fields }: WrappedFieldArrayProps<ImageData>,
-  frontId: string
-) => (
+type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
+  frontId: string;
+};
+
+const RenderSlideshow = ({ fields, frontId }: RenderSlideshowProps) => (
   <>
     {fields.map((name, index) => (
       <Col key={`${name}-${index}`}>
@@ -432,11 +433,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
           {imageSlideshowReplace && (
             <RowContainer>
               <SlideshowRow>
-                <FieldArray<WrappedFieldArrayProps<ImageData>>
+                <FieldArray<RenderSlideshowProps>
                   name="slideshow"
-                  component={(args: WrappedFieldArrayProps<ImageData>) =>
-                    renderSlideshow(args, frontId)
-                  }
+                  frontId={frontId}
+                  component={RenderSlideshow}
                 />
               </SlideshowRow>
               <SlideshowLabel>Drag and drop up to five images</SlideshowLabel>
