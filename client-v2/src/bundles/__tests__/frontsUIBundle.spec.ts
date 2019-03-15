@@ -42,11 +42,39 @@ describe('frontsUIBundle', () => {
   describe('selectors', () => {
     describe('createSelectEditorFrontsByPriority', () => {
       const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
-      it('should select editor fronts by priority', () => {
+      it('should select nothing if nothing is there', () => {
         expect(
           selectEditorFrontsByPriority(initialState, { priority: 'commercial' })
             .length
-        ).toEqual(1);
+        ).toEqual(0);
+      });
+      it('should select editor fronts by priority', () => {
+        const stateWithFronts = {
+          ...initialState,
+          fronts: {
+            frontsConfig: {
+              data: {
+                fronts: {
+                  '1': { id: '1', priority: 'commercial' },
+                  '2': { id: '2', priority: 'commercial' },
+                  '3': { id: '3', priority: 'editorial' }
+                }
+              }
+            }
+          },
+          editor: {
+            ...initialState.editor,
+            frontIdsByPriority: { commercial: ['1', '2'] }
+          }
+        } as any;
+        expect(
+          selectEditorFrontsByPriority(stateWithFronts, {
+            priority: 'commercial'
+          })
+        ).toEqual([
+          { id: '1', priority: 'commercial' },
+          { id: '2', priority: 'commercial' }
+        ]);
       });
       it('should memoize editor fronts by priority', () => {
         expect(

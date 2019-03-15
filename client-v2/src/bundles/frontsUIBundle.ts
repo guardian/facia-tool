@@ -231,7 +231,7 @@ const createSelectEditorFrontsByPriority = () =>
     selectEditorFrontIdsByPriority,
     selectPriority,
     (fronts, frontIdsByPriority, priority) => {
-      const openFrontIds = frontIdsByPriority[priority];
+      const openFrontIds = frontIdsByPriority[priority] || [];
       return compact(
         openFrontIds
           .filter(frontId => {
