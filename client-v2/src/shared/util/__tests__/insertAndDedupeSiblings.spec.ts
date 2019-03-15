@@ -24,6 +24,12 @@ const articleFragmentMap = {
     id: '3', // same as c
     meta: {},
     frontPublicationDate: 0
+  },
+  e: {
+    uuid: 'e',
+    id: '2', // same as b
+    meta: {},
+    frontPublicationDate: 0
   }
 };
 
@@ -77,5 +83,22 @@ describe('insertAndDedupeSiblings', () => {
     expect(
       insertAndDedupeSiblings(['a', 'c'], ['d'], 1, articleFragmentMap, false)
     ).toEqual(['a']);
+  });
+
+  it('takes multiple insertions and only dedupes existing', () => {
+    expect(
+      insertAndDedupeSiblings(
+        ['a', 'b', 'c'],
+        ['d', 'e'],
+        1,
+        articleFragmentMap
+      )
+    ).toEqual(['a', 'd', 'e']);
+  });
+
+  it('takes multiple insertions with duplicates and keeps the first', () => {
+    expect(
+      insertAndDedupeSiblings(['a', 'c'], ['b', 'e'], 1, articleFragmentMap)
+    ).toEqual(['a', 'b', 'c']);
   });
 });
