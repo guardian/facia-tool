@@ -73,10 +73,10 @@ const Label = styled(InputLabel)`
 const ButtonDelete = styled(ButtonDefault)`
   position: absolute;
   display: block;
-  top: 6px;
-  right: 6px;
-  height: 32px;
-  width: 32px;
+  top: 2px;
+  right: 2px;
+  height: 24px;
+  width: 24px;
   text-align: center;
   padding: 0;
   border-radius: 24px;
@@ -87,8 +87,8 @@ const IconDelete = styled('div')`
   position: absolute;
   height: 14px;
   width: 14px;
-  top: 9px;
-  left: 9px;
+  top: 5px;
+  left: 5px;
 `;
 
 export interface InputImageContainerProps {
