@@ -58,8 +58,8 @@ class UserDataController(frontsApi: FrontsApi, dynamo: Dynamo, val deps: BaseFac
           val frontIdsByPriority = frontIds.foldLeft(Map.empty[String, List[String]])((acc, frontId) => {
             val maybeAcc = for {
               front <- config.fronts.get(frontId)
-              priority <- front.priority
             } yield {
+              val priority = front.priority.getOrElse("editorial")
               val frontIdsByCurrentPriority = acc.getOrElse(priority, List.empty[String])
               acc + (priority -> (frontIdsByCurrentPriority :+ frontId))
             }
