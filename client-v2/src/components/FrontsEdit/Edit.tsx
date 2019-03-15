@@ -1,14 +1,13 @@
 import { Dispatch } from 'types/Store';
 import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { match } from 'react-router-dom';
 import { styled } from 'constants/theme';
 import getFrontsConfig from 'actions/Fronts';
-import { selectIsCurrentFrontsMenuOpen } from 'bundles/frontsUIBundle';
 import {
-  editorOpenFront,
-  selectEditorFrontsByPriority
+  selectIsCurrentFrontsMenuOpen,
+  createSelectEditorFrontsByPriority,
+  editorOpenFront
 } from 'bundles/frontsUIBundle';
 import { State } from 'types/State';
 import { ActionError } from 'types/Action';
@@ -19,6 +18,7 @@ import SectionContainer from '../layout/SectionContainer';
 import SectionsContainer from '../layout/SectionsContainer';
 import FrontsMenu from './FrontsMenu';
 import PressFailAlert from '../PressFailAlert';
+import { FrontConfig } from 'types/FaciaApi';
 
 export const frontsContainerId = 'fronts-container';
 export const createFrontId = (frontId: string) => `front-${frontId}`;
@@ -26,9 +26,9 @@ export const createFrontId = (frontId: string) => `front-${frontId}`;
 interface Props {
   match: match<{ priority: string }>;
   error: ActionError;
-  frontIds: string[];
+  fronts: FrontConfig[];
   staleFronts: { [id: string]: boolean };
-  editorOpenFront: (frontId: string) => void;
+  editorOpenFront: (frontId: string, priority: string) => void;
   getFrontsConfig: () => void;
   isCurrentFrontsMenuOpen: boolean;
 }
@@ -79,36 +79,41 @@ class FrontsEdit extends React.Component<Props> {
             id={frontsContainerId}
             makeRoomForExtraHeader={this.props.isCurrentFrontsMenuOpen}
           >
-            {this.props.frontIds.map(frontId => (
-              <SingleFrontContainer key={frontId} id={createFrontId(frontId)}>
-                <FrontContainer frontId={frontId} />
+            {this.props.fronts.map(front => (
+              <SingleFrontContainer key={front.id} id={createFrontId(front.id)}>
+                <FrontContainer frontId={front.id} />
               </SingleFrontContainer>
             ))}
           </FrontsContainer>
         </SectionsContainer>
-        <FrontsMenu onSelectFront={this.props.editorOpenFront} />
+        <FrontsMenu
+          onSelectFront={id =>
+            this.props.editorOpenFront(id, this.props.match.params.priority)
+          }
+        />
       </FrontsEditContainer>
     );
   }
 }
 
-const mapStateToProps = (state: State, props: Props) => ({
-  error: state.error,
-  staleFronts: state.staleFronts,
-  frontIds: selectEditorFrontsByPriority(state, {
-    priority: props.match.params.priority || ''
-  }),
-  isCurrentFrontsMenuOpen: selectIsCurrentFrontsMenuOpen(state)
-});
+const mapStateToProps = () => {
+  const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
+  return (state: State, props: Props) => ({
+    error: state.error,
+    staleFronts: state.staleFronts,
+    fronts: selectEditorFrontsByPriority(state, {
+      priority: props.match.params.priority || ''
+    }),
+    isCurrentFrontsMenuOpen: selectIsCurrentFrontsMenuOpen(state)
+  });
+};
 
-const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators(
-    {
-      editorOpenFront,
-      getFrontsConfig
-    },
-    dispatch
-  );
+const mapDispatchToProps = (dispatch: Dispatch, props: Props) => ({
+  editorOpenFront: (id: string) => {
+    dispatch(editorOpenFront(id, props.match.params.priority));
+  },
+  getFrontsConfig: () => dispatch(getFrontsConfig())
+});
 
 export default connect(
   mapStateToProps,

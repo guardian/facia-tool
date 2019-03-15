@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { styled } from 'constants/theme';
 import SectionHeaderWithLogo from './layout/SectionHeaderWithLogo';
@@ -10,11 +11,12 @@ import {
   selectIsCurrentFrontsMenuOpen,
   editorShowOpenFrontsMenu,
   editorHideOpenFrontsMenu,
-  selectEditorFrontIds
+  createSelectEditorFrontsByPriority
 } from 'bundles/frontsUIBundle';
 import { Dispatch } from 'types/Store';
 import FadeTransition from './transitions/FadeTransition';
 import { MoreIcon } from 'shared/components/icons/Icons';
+import { RouteComponentProps } from 'react-router';
 
 const FeedbackButton = Button.extend<{
   href: string;
@@ -89,17 +91,20 @@ const CloseButtonInner = styled.div`
   position: relative;
 `;
 
-interface Props {
+type ComponentProps = {
   toggleCurrentFrontsMenu: () => void;
   isCurrentFrontsMenuOpen: boolean;
   frontCount: number;
-}
+} & RouteComponentProps<{ priority: string }>;
+
+type ContainerProps = RouteComponentProps<{ priority: string }>;
 
 const FeedSectionHeader = ({
   toggleCurrentFrontsMenu,
   isCurrentFrontsMenuOpen,
-  frontCount
-}: Props) => (
+  frontCount,
+  match
+}: ComponentProps) => (
   <SectionHeaderWithLogo includeBorder={!isCurrentFrontsMenuOpen}>
     <LogoContainer
       onClick={toggleCurrentFrontsMenu}
@@ -122,7 +127,7 @@ const FeedSectionHeader = ({
     </LogoContainer>
     <SectionHeaderContent>
       <FadeTransition active={isCurrentFrontsMenuOpen} direction="left">
-        <CurrentFrontsList />
+        <CurrentFrontsList priority={match.params.priority} />
       </FadeTransition>
       <FadeTransition active={!isCurrentFrontsMenuOpen} direction="right">
         <FeedbackButton
@@ -136,10 +141,15 @@ const FeedSectionHeader = ({
   </SectionHeaderWithLogo>
 );
 
-const mapStateToProps = (state: State) => ({
-  isCurrentFrontsMenuOpen: selectIsCurrentFrontsMenuOpen(state),
-  frontCount: selectEditorFrontIds(state).length
-});
+const mapStateToProps = () => {
+  const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
+  return (state: State, props: ContainerProps) => ({
+    isCurrentFrontsMenuOpen: selectIsCurrentFrontsMenuOpen(state),
+    frontCount: selectEditorFrontsByPriority(state, {
+      priority: props.match.params.priority
+    }).length
+  });
+};
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   toggleCurrentFrontsMenu: (menuState: boolean) =>
@@ -149,16 +159,20 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 });
 
 const mergeProps = (
-  stateProps: ReturnType<typeof mapStateToProps>,
-  dispatchProps: ReturnType<typeof mapDispatchToProps>
+  stateProps: ReturnType<ReturnType<typeof mapStateToProps>>,
+  dispatchProps: ReturnType<typeof mapDispatchToProps>,
+  ownProps: ContainerProps
 ) => ({
   ...stateProps,
+  ...ownProps,
   toggleCurrentFrontsMenu: () =>
     dispatchProps.toggleCurrentFrontsMenu(!stateProps.isCurrentFrontsMenuOpen)
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
-)(FeedSectionHeader);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+    mergeProps
+  )(FeedSectionHeader)
+);

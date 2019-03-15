@@ -166,7 +166,9 @@ async function saveClipboard(
   }
 }
 
-async function saveOpenFrontIds(frontIds?: string[]): Promise<void> {
+async function saveOpenFrontIds(frontIds?: {
+  [id: string]: string[];
+}): Promise<void> {
   try {
     await pandaFetch(`/userdata/frontIds`, {
       method: 'put',

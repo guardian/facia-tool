@@ -79,7 +79,7 @@ type FrontsComponentProps = FrontsContainerProps & {
   alsoOn: { [id: string]: AlsoOnDetail };
   frontsActions: {
     fetchLastPressed: (frontId: string) => void;
-    editorCloseFront: (frontId: string) => void;
+    editorCloseFront: (frontId: string, priority: string) => void;
     updateCollection: (collection: Collection) => void;
     closeAllCollections: (collections: string[]) => void;
   };
@@ -101,7 +101,10 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   }
 
   public handleRemoveFront = () => {
-    this.props.frontsActions.editorCloseFront(this.props.frontId);
+    this.props.frontsActions.editorCloseFront(
+      this.props.frontId,
+      this.props.selectedFront.priority
+    );
   };
 
   public render() {
@@ -182,7 +185,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     fetchLastPressed: (id: string) => dispatch(fetchLastPressed(id)),
     updateCollection: (collection: Collection) =>
       dispatch(updateCollection(collection)),
-    editorCloseFront: (id: string) => dispatch(editorCloseFront(id)),
+    editorCloseFront: (id: string, priority: string) =>
+      dispatch(editorCloseFront(id, priority)),
     closeAllCollections: (collections: string[]) =>
       dispatch(closeCollections(collections))
   }

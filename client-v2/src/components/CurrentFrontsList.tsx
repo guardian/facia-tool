@@ -10,8 +10,8 @@ import {
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import {
-  createSelectEditorFronts,
-  editorMoveFront
+  editorMoveFront,
+  createSelectEditorFrontsByPriority
 } from 'bundles/frontsUIBundle';
 import { FrontConfig } from 'types/FaciaApi';
 import { styled, theme as themeConstants } from 'constants/theme';
@@ -19,8 +19,12 @@ import { scrollToLeft } from 'util/scroll';
 import { frontsContainerId, createFrontId } from './FrontsEdit/Edit';
 
 interface ComponentProps {
-  fronts: FrontConfig[];
   moveFront: (dropResult: DropResult) => void;
+  fronts: FrontConfig[];
+}
+
+interface ContainerProps {
+  priority: string;
 }
 
 const FrontTabList = styled('div')<{ isDraggingOver?: boolean }>`
@@ -34,7 +38,7 @@ const FrontTabList = styled('div')<{ isDraggingOver?: boolean }>`
   width: calc(100vw - 120px);
   transition: background-color 0.15s;
   white-space: nowrap;
-  overflow: hidden;
+  overflow-x: scroll;
 `;
 
 const NoFronts = styled(FrontTabList)`
@@ -116,19 +120,19 @@ class Component extends React.Component<ComponentProps> {
 }
 
 const mapStateToProps = () => {
-  const selectEditorFronts = createSelectEditorFronts();
-  return (state: State) => ({
-    fronts: selectEditorFronts(state)
+  const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
+  return (state: State, { priority }: ContainerProps) => ({
+    fronts: selectEditorFrontsByPriority(state, { priority })
   });
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
+const mapDispatchToProps = (dispatch: Dispatch, props: ContainerProps) => ({
   moveFront: (dropResult: DropResult) =>
     dropResult.destination &&
     dispatch(
       editorMoveFront(
         dropResult.draggableId,
-        dropResult.source.index,
+        props.priority,
         dropResult.destination.index
       )
     )

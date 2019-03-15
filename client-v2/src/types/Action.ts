@@ -46,19 +46,19 @@ interface EditorCloseCurrentFrontsMenu {
 
 interface EditorAddFront {
   type: typeof EDITOR_OPEN_FRONT;
-  payload: { frontId: string };
+  payload: { frontId: string; priority: string };
   meta: PersistMeta;
 }
 
 interface EditorMoveFront {
   type: typeof EDITOR_MOVE_FRONT;
-  payload: { frontId: string; fromIndex: number; toIndex: number };
+  payload: { frontId: string; priority: string; toIndex: number };
   meta: PersistMeta;
 }
 
 interface EditorCloseFront {
   type: typeof EDITOR_CLOSE_FRONT;
-  payload: { frontId: string };
+  payload: { frontId: string; priority: string };
   meta: PersistMeta;
 }
 interface EditorOpenCollection {

@@ -16,7 +16,9 @@ import {
   editorOpenClipboard,
   editorCloseAllOverviews,
   editorOpenAllOverviews,
-  selectEditorFrontsByPriority
+  createSelectEditorFrontsByPriority,
+  editorMoveFront,
+  selectEditorFrontIdsByPriority
 } from '../frontsUIBundle';
 import initialState from 'fixtures/initialState';
 import { Action } from 'types/Action';
@@ -38,31 +40,80 @@ const reducer = (state: State | undefined, action: Action): GlobalState =>
 
 describe('frontsUIBundle', () => {
   describe('selectors', () => {
-    it('should select editor fronts by priority', () => {
-      expect(
-        selectEditorFrontsByPriority(initialState, { priority: 'commercial' })
-          .length
-      ).toEqual(1);
-    });
-    it('should memoize editor fronts by priority', () => {
-      expect(
-        selectEditorFrontsByPriority(initialState, { priority: 'commercial' })
-      ).toBe(
-        selectEditorFrontsByPriority(initialState, { priority: 'commercial' })
-      );
+    describe('createSelectEditorFrontsByPriority', () => {
+      const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
+      it('should select editor fronts by priority', () => {
+        expect(
+          selectEditorFrontsByPriority(initialState, { priority: 'commercial' })
+            .length
+        ).toEqual(1);
+      });
+      it('should memoize editor fronts by priority', () => {
+        expect(
+          selectEditorFrontsByPriority(initialState, { priority: 'commercial' })
+        ).toBe(
+          selectEditorFrontsByPriority(initialState, { priority: 'commercial' })
+        );
+      });
     });
   });
   describe('reducer', () => {
+    it('should move a front within the open editor fronts by ID', () => {
+      const state = {
+        ...initialState.editor,
+        frontIdsByPriority: { editorial: ['1', '2', '3'] }
+      };
+      const newState = reducer(
+        state as any,
+        editorMoveFront('3', 'editorial', 0)
+      );
+      expect(selectEditorFrontIdsByPriority(newState)).toEqual({
+        editorial: ['3', '1', '2']
+      });
+    });
+    it('should do nothing when the front is not found', () => {
+      const state = {
+        ...initialState.editor,
+        frontIdsByPriority: { editorial: ['1', '2', '3'] }
+      };
+      const newState = reducer(
+        state as any,
+        editorMoveFront('who?', 'editorial', 0)
+      );
+      expect(selectEditorFrontIds(newState)).toEqual([
+        'sc-johnson-partner-zone'
+      ]);
+    });
+    it('should do nothing when the index is out of bounds', () => {
+      const state = {
+        ...initialState.editor,
+        frontIdsByPriority: { editorial: ['1', '2', '3'] }
+      };
+      const newState = reducer(
+        state,
+        editorMoveFront('sc-johnson-partner-zone', 'editorial', 5)
+      );
+      expect(selectEditorFrontIds(newState)).toEqual([
+        'sc-johnson-partner-zone'
+      ]);
+    });
     it('should add a front to the open editor fronts', () => {
-      const state = reducer(undefined, editorOpenFront('exampleFront') as any);
-      expect(selectEditorFrontIds(state)).toEqual(['exampleFront']);
+      const state = reducer(undefined, editorOpenFront(
+        'exampleFront',
+        'editorial'
+      ) as any);
+      expect(selectEditorFrontIdsByPriority(state)).toEqual({
+        editorial: ['exampleFront']
+      });
     });
     it('should remove a front to the open editor fronts', () => {
       const state = reducer(
-        { frontIds: ['front1', 'front2'] } as any,
-        editorCloseFront('front1')
+        { frontIdsByPriority: { editorial: ['front1', 'front2'] } } as any,
+        editorCloseFront('front1', 'editorial')
       );
-      expect(selectEditorFrontIds(state)).toEqual(['front2']);
+      expect(selectEditorFrontIdsByPriority(state)).toEqual({
+        editorial: ['front2']
+      });
     });
     it('should clear fronts to the open editor fronts', () => {
       const state = reducer(
@@ -70,6 +121,7 @@ describe('frontsUIBundle', () => {
         editorClearOpenFronts()
       );
       expect(selectEditorFrontIds(state)).toEqual([]);
+      expect(selectEditorFrontIdsByPriority(state)).toEqual({});
     });
     it('should clear the article fragment selection when selected article fragments are removed from a front', () => {
       const state = reducer(
