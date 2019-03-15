@@ -65,7 +65,7 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   val pressController = new PressController(dynamo, this)
   val v2App = new V2App(isDev, acl, dynamo, this)
   val faciaToolV2 = new FaciaToolV2Controller(acl, structuredLogger, faciaPress, updateActions, configAgent, collectionService, this)
-  val userDataController = new UserDataController(dynamo, this)
+  val userDataController = new UserDataController(frontsApi, dynamo, this)
   val gridProxy = new GridProxy(this)
   val loggingFilter = new LoggingFilter
 

@@ -55,8 +55,9 @@ GET         /metadata                                controllers.FaciaToolContro
 POST        /treats/*collectionId                    controllers.FaciaToolController.treatEdits(collectionId)
 
 PUT        /userdata/clipboard                       controllers.UserDataController.putClipboardContent()
-
 PUT        /userdata/frontIds                        controllers.UserDataController.putFrontIds()
+# For temporary internal use -- migrates user data to a new format
+PUT        /userdata/migrate                         controllers.UserDataController.migrateUserData()
 
 # endpoints for proxying https
 GET         /api/preview/*path                       controllers.FaciaContentApiProxy.capiPreview(path)
