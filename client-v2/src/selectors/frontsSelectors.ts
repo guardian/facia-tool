@@ -255,9 +255,6 @@ const createAlsoOnSelector = () =>
     alsoOnFrontSelector
   );
 
-const lastPressedSelector = (state: State, frontId: string): string | null =>
-  state.fronts.lastPressed[frontId] || null;
-
 const clipboardSelector = (state: State) => state.clipboard;
 
 const visibleArticlesSelector = createSelector(
@@ -290,7 +287,6 @@ export {
   getFrontsWithPriority,
   alsoOnFrontSelector,
   createAlsoOnSelector,
-  lastPressedSelector,
   hasUnpublishedChangesSelector,
   clipboardSelector,
   visibleArticlesSelector,

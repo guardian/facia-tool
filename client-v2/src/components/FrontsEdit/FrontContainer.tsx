@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import distanceInWords from 'date-fns/distance_in_words';
 import startCase from 'lodash/startCase';
 import { styled } from 'constants/theme';
 import { Dispatch } from 'types/Store';
@@ -12,11 +11,7 @@ import { frontStages } from 'constants/fronts';
 import { FrontConfig } from 'types/FaciaApi';
 import { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
-import {
-  getFront,
-  createAlsoOnSelector,
-  lastPressedSelector
-} from 'selectors/frontsSelectors';
+import { getFront, createAlsoOnSelector } from 'selectors/frontsSelectors';
 import Front from './Front';
 import { FrontSectionHeader } from '../layout/SectionHeader';
 import SectionContent from '../layout/SectionContent';
@@ -58,9 +53,6 @@ const StageSelectButtons = styled('div')`
   color: ${({ theme }) => theme.shared.colors.blackDark};
   padding: 0px 30px;
 `;
-const LastPressed = styled('span')`
-  font-size: 14px;
-`;
 
 const CollapseAllButton = styled(ButtonRoundedWithLabel)`
   & svg {
@@ -85,7 +77,6 @@ interface FrontsContainerProps {
 type FrontsComponentProps = FrontsContainerProps & {
   selectedFront: FrontConfig;
   alsoOn: { [id: string]: AlsoOnDetail };
-  lastPressed: string | null;
   frontsActions: {
     fetchLastPressed: (frontId: string) => void;
     editorCloseFront: (frontId: string) => void;
@@ -102,12 +93,6 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   public state = {
     collectionSet: frontStages.draft
   };
-
-  public componentDidMount() {
-    if (!this.props.lastPressed) {
-      this.props.frontsActions.fetchLastPressed(this.props.frontId);
-    }
-  }
 
   public handleCollectionSetSelect(key: string) {
     this.setState({
@@ -159,13 +144,6 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
         </>
         <SectionContent direction="column">
           <SectionContentMetaContainer>
-            <LastPressed>
-              {this.props.lastPressed &&
-                `Last refreshed ${distanceInWords(
-                  new Date(this.props.lastPressed),
-                  Date.now()
-                )} ago`}
-            </LastPressed>
             <CollapseAllButton
               onClick={e => {
                 e.preventDefault();
@@ -195,8 +173,7 @@ const createMapStateToProps = () => {
   const alsoOnSelector = createAlsoOnSelector();
   return (state: State, props: FrontsContainerProps) => ({
     selectedFront: getFront(state, props.frontId),
-    alsoOn: alsoOnSelector(state, props.frontId),
-    lastPressed: lastPressedSelector(state, props.frontId)
+    alsoOn: alsoOnSelector(state, props.frontId)
   });
 };
 

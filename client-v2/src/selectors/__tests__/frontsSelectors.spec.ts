@@ -1,7 +1,6 @@
 import {
   getFrontsWithPriority,
-  alsoOnFrontSelector,
-  lastPressedSelector
+  alsoOnFrontSelector
 } from 'selectors/frontsSelectors';
 import { frontsConfig } from 'fixtures/frontsConfig';
 import { FrontConfig } from 'types/FaciaApi';
@@ -82,20 +81,6 @@ describe('Filtering fronts correctly', () => {
         'commercial'
       )
     ).toEqual(commercialFronts);
-  });
-  it('gets the last press date for a given front and stage', () => {
-    expect(
-      lastPressedSelector(
-        {
-          fronts: {
-            lastPressed: {
-              exampleId: '2018-05-24T09:42:20.580Z'
-            }
-          }
-        } as any,
-        'exampleId'
-      )
-    ).toEqual('2018-05-24T09:42:20.580Z');
   });
 });
 
