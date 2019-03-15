@@ -5,7 +5,6 @@ import { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
-import { selectEditorFrontIds } from 'bundles/frontsUIBundle';
 
 import { CollectionItemSets, Stages } from 'shared/types/Collection';
 
@@ -20,6 +19,8 @@ interface CollectionConfigMap {
 interface FrontsByPriority {
   [id: string]: FrontConfig[];
 }
+
+const selectEditorFrontIds = (state: State) => state.editor.frontIds;
 
 const getFronts = (state: State): FrontConfigMap =>
   frontsConfigSelectors.selectAll(state).fronts || {};
@@ -161,8 +162,7 @@ const getCollectionConfigs = (
 
 const hasMultipleFrontsOpenSelector = createSelector(
   selectEditorFrontIds,
-  (frontIds) => {
-    console.log({frontIds});
+  frontIds => {
     return frontIds.length > 1;
   }
 );
@@ -304,5 +304,6 @@ export {
   clipboardSelector,
   visibleArticlesSelector,
   visibleFrontArticlesSelector,
-  hasMultipleFrontsOpenSelector
+  hasMultipleFrontsOpenSelector,
+  selectEditorFrontIds
 };

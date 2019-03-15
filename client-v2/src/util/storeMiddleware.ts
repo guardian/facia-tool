@@ -5,14 +5,13 @@ import { Dispatch } from 'types/Store';
 import { BATCH } from 'redux-batched-actions';
 import { Action, ActionPersistMeta } from 'types/Action';
 import { selectors } from 'shared/bundles/collectionsBundle';
-import { selectEditorFrontIds } from 'bundles/frontsUIBundle';
 import { updateCollection } from 'actions/Collections';
 import { updateClipboard } from 'actions/Clipboard';
 import { selectSharedState } from 'shared/selectors/shared';
 import { saveOpenFrontIds } from 'services/faciaApi';
 import { NestedArticleFragment } from 'shared/types/Collection';
 import { denormaliseClipboard } from 'util/clipboardUtils';
-import { getFront } from 'selectors/frontsSelectors';
+import { getFront, selectEditorFrontIds } from 'selectors/frontsSelectors';
 
 const updateStateFromUrlChange: Middleware<{}, State, Dispatch> = ({
   dispatch,

@@ -6,7 +6,10 @@ import CollectionNotification from 'components/CollectionNotification';
 import Button from 'shared/components/input/ButtonDefault';
 import { AlsoOnDetail } from 'types/Collection';
 import { publishCollection } from 'actions/Fronts';
-import { hasUnpublishedChangesSelector, hasMultipleFrontsOpenSelector } from 'selectors/frontsSelectors';
+import {
+  hasUnpublishedChangesSelector,
+  hasMultipleFrontsOpenSelector
+} from 'selectors/frontsSelectors';
 import { isCollectionLockedSelector } from 'selectors/collectionSelectors';
 import { State } from 'types/State';
 import { CollectionItemSets, Group } from 'shared/types/Collection';
@@ -39,7 +42,7 @@ type CollectionProps = CollectionPropsBeforeState & {
   displayEditWarning: boolean;
   isCollectionLocked: boolean;
   isOpen: boolean;
-  hasMultipleFrontsOpen: boolean
+  hasMultipleFrontsOpen: boolean;
   onChangeOpenState: (id: string, isOpen: boolean) => void;
 };
 
@@ -70,7 +73,7 @@ const Collection = ({
       isUneditable={isUneditable}
       isLocked={isCollectionLocked}
       isOpen={isOpen}
-      hasMultipleFrontsOpen={isOpen}
+      hasMultipleFrontsOpen={hasMultipleFrontsOpen}
       onChangeOpenState={() => onChangeOpenState(id, isOpen)}
       headlineContent={
         hasUnpublishedChanges &&

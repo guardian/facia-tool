@@ -1,5 +1,9 @@
 import { State } from 'types/State';
-import { getCollectionConfig, getFront } from './frontsSelectors';
+import {
+  getCollectionConfig,
+  getFront,
+  selectEditorFrontIds
+} from './frontsSelectors';
 import {
   selectSharedState,
   createArticlesInCollectionSelector,
@@ -7,7 +11,6 @@ import {
 } from 'shared/selectors/shared';
 import { isDirty } from 'redux-form';
 import { CollectionItemSets } from 'shared/types/Collection';
-import { selectEditorFrontIds } from 'bundles/frontsUIBundle';
 import flatten from 'lodash/flatten';
 
 const selectCollection = createCollectionSelector();
