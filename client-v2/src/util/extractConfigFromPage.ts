@@ -1,6 +1,6 @@
 import { Config } from 'types/Config';
 
-export default () => {
+const pageConfig = () => {
   const configEl = document.getElementById('config');
 
   if (!configEl) {
@@ -11,3 +11,5 @@ export default () => {
 
   return json;
 };
+
+export default pageConfig();

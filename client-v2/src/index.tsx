@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import Raven from 'raven-js';
 import { BrowserRouter } from 'react-router-dom';
 import configureStore from 'util/configureStore';
-import extractConfigFromPage from 'util/extractConfigFromPage';
+import pageConfig from 'util/extractConfigFromPage';
 import App from 'components/App';
 import { configReceived } from 'actions/Config';
 import { editorSetOpenFronts } from 'bundles/frontsUIBundle';
@@ -19,27 +19,28 @@ import pollingConfig from 'util/pollingConfig';
 initGA();
 
 const store = configureStore();
-const config = extractConfigFromPage();
 
 // publish uncaught errors to sentry.io
-if (config.env.toUpperCase() !== 'DEV' && config.sentryPublicDSN) {
+if (pageConfig.env.toUpperCase() !== 'DEV' && pageConfig.sentryPublicDSN) {
   const sentryOptions = {
     tags: {
       stack: 'cms-fronts',
-      stage: config.env.toUpperCase(),
+      stage: pageConfig.env.toUpperCase(),
       app: 'facia-tool-v2'
     }
   };
 
-  Raven.config(config.sentryPublicDSN, sentryOptions).install();
+  Raven.config(pageConfig.sentryPublicDSN, sentryOptions).install();
 }
 
-store.dispatch(configReceived(config));
-if (config.frontIds) {
-  store.dispatch(editorSetOpenFronts(config.frontIds));
+store.dispatch(configReceived(pageConfig));
+if (pageConfig.frontIds) {
+  store.dispatch(editorSetOpenFronts(pageConfig.frontIds));
 }
 
-(store.dispatch as Dispatch)(storeClipboardContent(config.clipboardArticles));
+(store.dispatch as Dispatch)(
+  storeClipboardContent(pageConfig.clipboardArticles)
+);
 
 // @ts-ignore unbind is not used yet but can be used for removed all the
 // keyboard events
