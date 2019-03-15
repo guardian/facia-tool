@@ -36,7 +36,7 @@ class V2App(isDev: Boolean, val acl: Acl, dynamo: Dynamo, val deps: BaseFaciaCon
 
     val userEmail: String = req.user.email
 
-    val record: Option[UserData] = Scanamo.exec(dynamo.client)(
+    val maybeUserData: Option[UserData] = Scanamo.exec(dynamo.client)(
       userDataTable.get('email -> userEmail)).flatMap(_.right.toOption)
 
     val conf = Defaults(
@@ -58,8 +58,9 @@ class V2App(isDev: Boolean, val acl: Acl, dynamo: Dynamo, val deps: BaseFaciaCon
       Metadata.tags.map {
         case (_, meta) => meta
       },
-      record.map(record => record.clipboardArticles.getOrElse(List())),
-      record.map(record => record.frontIds.getOrElse(List())),
+      maybeUserData.map(_.clipboardArticles.getOrElse(List())),
+      maybeUserData.map(_.frontIds.getOrElse(List())),
+      maybeUserData.map(_.frontIdsByPriority.getOrElse(Map())),
       routes.FaciaContentApiProxy.capiLive("").absoluteURL(true),
       routes.FaciaContentApiProxy.capiPreview("").absoluteURL(true)
     )
