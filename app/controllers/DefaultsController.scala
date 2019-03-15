@@ -30,6 +30,7 @@ case class Defaults(
   collectionMetadata: Iterable[Metadata],
   clipboardArticles: Option[List[Trail]],
   frontIds: Option[List[String]],
+  frontIdsByPriority: Option[Map[String, List[String]]],
   capiLiveUrl: String = "",
   capiPreviewUrl: String = ""
 )
@@ -64,6 +65,7 @@ class DefaultsController(val acl: Acl, val isDev: Boolean, val deps: BaseFaciaCo
         Metadata.tags.map{
           case (_, meta) => meta
         },
+        None,
         None,
         None
       )))
