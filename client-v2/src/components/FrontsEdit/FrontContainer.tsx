@@ -27,12 +27,13 @@ const FrontHeader = styled(FrontSectionHeader)`
 `;
 
 const FrontHeaderMeta = styled('div')`
+  display: flex;
   position: relative;
   margin-left: auto;
   font-family: TS3TextSans;
   font-size: 14px;
   white-space: nowrap;
-  display: flex;
+  border-right: 1px solid #767676;
 `;
 
 const FrontsHeaderText = styled('span')`
