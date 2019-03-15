@@ -127,10 +127,12 @@ const editorClearOpenFronts = (): EditorClearOpenFronts => ({
   }
 });
 
-const editorSetOpenFronts = (frontIds: string[]): EditorSetOpenFronts => ({
+const editorSetOpenFronts = (frontIdsByPriority: {
+  [id: string]: string[];
+}): EditorSetOpenFronts => ({
   type: EDITOR_SET_OPEN_FRONTS,
   payload: {
-    frontIds
+    frontIdsByPriority
   }
 });
 
@@ -205,13 +207,6 @@ const selectIsCollectionOpen = <T extends { editor: State }>(
   collectionId: string
 ) => state.editor.collectionIds.indexOf(collectionId) !== -1;
 
-const createSelectEditorFronts = () =>
-  createSelector(
-    selectEditorFrontIds,
-    getFronts,
-    (frontIds, fronts) => compact(frontIds.map(frontId => fronts[frontId]))
-  );
-
 const selectIsClipboardOpen = <T extends { editor: State }>(state: T) =>
   state.editor.clipboardOpen;
 
@@ -228,25 +223,19 @@ const selectPriority = (
 const createSelectEditorFrontsByPriority = () =>
   createSelector(
     getFronts,
-    selectEditorFrontIdsByPriority,
+    selectEditorFrontIds,
     selectPriority,
     (fronts, frontIdsByPriority, priority) => {
       const openFrontIds = frontIdsByPriority[priority] || [];
-      return compact(
-        openFrontIds
-          .filter(frontId => {
-            const frontConfig = fronts[frontId];
-            return frontConfig && frontConfig.priority === priority;
-          })
-          .map(frontId => fronts[frontId])
-      );
+      return compact(openFrontIds.map(frontId => fronts[frontId]));
     }
   );
 
-const selectEditorFrontIds = (state: GlobalState) => state.editor.frontIds;
-
-const selectEditorFrontIdsByPriority = (state: GlobalState) =>
+const selectEditorFrontIds = (state: GlobalState) =>
   state.editor.frontIdsByPriority;
+
+const selectEditorFrontIdsByPriority = (state: GlobalState, priority: string) =>
+  state.editor.frontIdsByPriority[priority];
 
 const selectEditorArticleFragment = <T extends { editor: State }>(
   state: T,
@@ -343,7 +332,7 @@ const reducer = (state: State = defaultState, action: Action): State => {
     case EDITOR_SET_OPEN_FRONTS: {
       return {
         ...state,
-        frontIds: action.payload.frontIds
+        frontIdsByPriority: action.payload.frontIdsByPriority
       };
     }
     case EDITOR_OPEN_COLLECTION: {
@@ -453,11 +442,10 @@ export {
   editorClearArticleFragmentSelection,
   selectIsCurrentFrontsMenuOpen,
   selectEditorFrontIds,
-  selectEditorFrontIdsByPriority,
   createSelectEditorFrontsByPriority,
+  selectEditorFrontIdsByPriority,
   selectEditorArticleFragment,
   selectIsCollectionOpen,
-  createSelectEditorFronts,
   editorOpenClipboard,
   editorCloseClipboard,
   editorOpenOverview,

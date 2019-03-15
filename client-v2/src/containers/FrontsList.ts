@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { match, withRouter, RouteComponentProps } from 'react-router';
 
-import { selectEditorFrontIds } from 'bundles/frontsUIBundle';
+import { selectEditorFrontIdsByPriority } from 'bundles/frontsUIBundle';
 import { State } from '../types/State';
 import FrontList from '../components/FrontList';
 import { getFrontsWithPriority } from '../selectors/frontsSelectors';
@@ -11,14 +11,13 @@ type Props = {
 } & RouteComponentProps<any>;
 
 const mapStateToProps = (state: State, props: Props) => {
-  const openFrontIds = selectEditorFrontIds(state);
+  const priority = props.match.params.priority;
+  const openFrontIds = selectEditorFrontIdsByPriority(state, priority);
   return {
-    fronts: getFrontsWithPriority(state, props.match.params.priority || '').map(
-      ({ id }) => ({
-        id,
-        isOpen: openFrontIds.indexOf(id) !== -1
-      })
-    )
+    fronts: getFrontsWithPriority(state, priority || '').map(({ id }) => ({
+      id,
+      isOpen: openFrontIds.indexOf(id) !== -1
+    }))
   };
 };
 

@@ -6,7 +6,7 @@ import { Dispatch } from 'types/Store';
 import { BATCH } from 'redux-batched-actions';
 import { Action, ActionPersistMeta } from 'types/Action';
 import { selectors } from 'shared/bundles/collectionsBundle';
-import { selectEditorFrontIdsByPriority } from 'bundles/frontsUIBundle';
+import { selectEditorFrontIds } from 'bundles/frontsUIBundle';
 import { updateCollection } from 'actions/Collections';
 import { updateClipboard } from 'actions/Clipboard';
 import { selectSharedState } from 'shared/selectors/shared';
@@ -204,7 +204,7 @@ const persistOpenFrontsOnEdit: (
   }
   const result = next(action);
   const state = store.getState();
-  const frontIdsByPriority = selectEditorFrontIdsByPriority(state);
+  const frontIdsByPriority = selectEditorFrontIds(state);
 
   // Only persist fronts that exist in the state, clearing out
   // fronts that have been deleted.

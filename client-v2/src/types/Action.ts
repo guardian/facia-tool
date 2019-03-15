@@ -78,7 +78,7 @@ interface EditorClearOpenFronts {
 
 interface EditorSetOpenFronts {
   type: typeof EDITOR_SET_OPEN_FRONTS;
-  payload: { frontIds: string[] };
+  payload: { frontIdsByPriority: { [id: string]: string[] } };
 }
 
 interface EditorSelectArticleFragment {

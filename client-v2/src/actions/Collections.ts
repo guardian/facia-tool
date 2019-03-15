@@ -53,15 +53,18 @@ import {
 import flatten from 'lodash/flatten';
 import {
   collectionParamsSelector,
-  collectionsInOpenFrontsSelector
+  createCollectionsInOpenFrontsSelector
 } from 'selectors/collectionSelectors';
 import uniq from 'lodash/uniq';
 
 const articlesInCollection = createAllArticlesInCollectionSelector();
+const collectionsInOpenFrontsSelector = createCollectionsInOpenFrontsSelector();
 
-function fetchStaleOpenCollections(): ThunkResult<Promise<void>> {
+function fetchStaleOpenCollections(
+  priority: string
+): ThunkResult<Promise<void>> {
   return async (dispatch: Dispatch, getState: () => State) => {
-    const collectionIds = collectionsInOpenFrontsSelector(getState());
+    const collectionIds = collectionsInOpenFrontsSelector(getState(), priority);
     const prevState = getState();
     const fetchedCollectionIds = await dispatch(
       getCollections(collectionIds, true)

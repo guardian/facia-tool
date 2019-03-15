@@ -17,8 +17,7 @@ import {
   editorCloseAllOverviews,
   editorOpenAllOverviews,
   createSelectEditorFrontsByPriority,
-  editorMoveFront,
-  selectEditorFrontIdsByPriority
+  editorMoveFront
 } from '../frontsUIBundle';
 import initialState from 'fixtures/initialState';
 import { Action } from 'types/Action';
@@ -95,7 +94,7 @@ describe('frontsUIBundle', () => {
         state as any,
         editorMoveFront('3', 'editorial', 0)
       );
-      expect(selectEditorFrontIdsByPriority(newState)).toEqual({
+      expect(selectEditorFrontIds(newState)).toEqual({
         editorial: ['3', '1', '2']
       });
     });
@@ -108,9 +107,9 @@ describe('frontsUIBundle', () => {
         state as any,
         editorMoveFront('who?', 'editorial', 0)
       );
-      expect(selectEditorFrontIds(newState)).toEqual([
-        'sc-johnson-partner-zone'
-      ]);
+      expect(selectEditorFrontIds(newState)).toEqual({
+        editorial: ['1', '2', '3']
+      });
     });
     it('should do nothing when the index is out of bounds', () => {
       const state = {
@@ -121,16 +120,16 @@ describe('frontsUIBundle', () => {
         state,
         editorMoveFront('sc-johnson-partner-zone', 'editorial', 5)
       );
-      expect(selectEditorFrontIds(newState)).toEqual([
-        'sc-johnson-partner-zone'
-      ]);
+      expect(selectEditorFrontIds(newState)).toEqual({
+        editorial: ['1', '2', '3']
+      });
     });
     it('should add a front to the open editor fronts', () => {
       const state = reducer(undefined, editorOpenFront(
         'exampleFront',
         'editorial'
       ) as any);
-      expect(selectEditorFrontIdsByPriority(state)).toEqual({
+      expect(selectEditorFrontIds(state)).toEqual({
         editorial: ['exampleFront']
       });
     });
@@ -139,7 +138,7 @@ describe('frontsUIBundle', () => {
         { frontIdsByPriority: { editorial: ['front1', 'front2'] } } as any,
         editorCloseFront('front1', 'editorial')
       );
-      expect(selectEditorFrontIdsByPriority(state)).toEqual({
+      expect(selectEditorFrontIds(state)).toEqual({
         editorial: ['front2']
       });
     });
@@ -148,8 +147,7 @@ describe('frontsUIBundle', () => {
         { frontIds: ['front1', 'front2'] } as any,
         editorClearOpenFronts()
       );
-      expect(selectEditorFrontIds(state)).toEqual([]);
-      expect(selectEditorFrontIdsByPriority(state)).toEqual({});
+      expect(selectEditorFrontIds(state)).toEqual({});
     });
     it('should clear the article fragment selection when selected article fragments are removed from a front', () => {
       const state = reducer(
@@ -213,9 +211,11 @@ describe('frontsUIBundle', () => {
     it('should set the fronts to the open editor fronts', () => {
       const state = reducer(
         { frontIds: ['front1', 'front2'] } as any,
-        editorSetOpenFronts(['front1', 'front3'])
+        editorSetOpenFronts({ editorial: ['front1', 'front3'] })
       );
-      expect(selectEditorFrontIds(state)).toEqual(['front1', 'front3']);
+      expect(selectEditorFrontIds(state)).toEqual({
+        editorial: ['front1', 'front3']
+      });
     });
     it('should add a collection to the open editor collections', () => {
       const state = reducer(undefined, editorOpenCollections(

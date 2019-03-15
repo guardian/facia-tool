@@ -101,6 +101,10 @@ const BackgroundHeader = styled('div')`
   width: 100%;
 `;
 
+export const frontsEditPath = `/:priority(${Object.keys(priorities).join(
+  '|'
+)})/:frontId?`;
+
 const App = () => (
   <ThemeProvider theme={styleTheme}>
     <DropDisabler>
@@ -109,11 +113,7 @@ const App = () => (
           <SectionHeaderWithLogo />
         </BackgroundHeader>
         <Switch>
-          <Route
-            exact
-            path={`/:priority(${Object.keys(priorities).join('|')})/:frontId?`}
-            component={FrontsEdit}
-          />
+          <Route exact path={frontsEditPath} component={FrontsEdit} />
           <Route exact path="/" component={Home} />
           <Route component={NotFound} />
         </Switch>

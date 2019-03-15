@@ -178,7 +178,9 @@ export default function getFrontsConfig(): ThunkResult<
   return (dispatch: Dispatch) => {
     dispatch(frontsConfigActions.fetchStart());
     return fetchFrontsConfig()
-      .then(res => dispatch(frontsConfigActions.fetchSuccess(res)))
+      .then(res => {
+        return dispatch(frontsConfigActions.fetchSuccess(res));
+      })
       .catch((error: string) =>
         dispatch(frontsConfigActions.fetchError(error))
       );

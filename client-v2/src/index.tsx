@@ -34,8 +34,8 @@ if (pageConfig.env.toUpperCase() !== 'DEV' && pageConfig.sentryPublicDSN) {
 }
 
 store.dispatch(configReceived(pageConfig));
-if (pageConfig.frontIds) {
-  store.dispatch(editorSetOpenFronts(pageConfig.frontIds));
+if (pageConfig.frontIdsByPriority) {
+  store.dispatch(editorSetOpenFronts(pageConfig.frontIdsByPriority));
 }
 
 (store.dispatch as Dispatch)(
