@@ -45,7 +45,7 @@ const FrontsHeaderText = styled('span')`
 const SectionContentMetaContainer = styled('div')`
   display: flex;
   flex-shrink: 0;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-bottom: 10px;
 `;
 
