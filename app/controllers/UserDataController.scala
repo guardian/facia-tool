@@ -36,8 +36,6 @@ class UserDataController(frontsApi: FrontsApi, dynamo: Dynamo, val deps: BaseFac
       _.asOpt[List[String]])
     val maybeFrontIdsByPriority: Option[Map[String, List[String]]] = request.body.asJson.flatMap(
       _.asOpt[Map[String, List[String]]])
-    Logger.info(maybeFrontIds.toString)
-    Logger.info(maybeFrontIdsByPriority.toString)
     (maybeFrontIds, maybeFrontIdsByPriority) match {
       case (Some(frontIds), _) =>
         Scanamo.exec(dynamo.client)(userDataTable.update('email -> request.user.email, set('frontIds -> frontIds)))
@@ -70,7 +68,6 @@ class UserDataController(frontsApi: FrontsApi, dynamo: Dynamo, val deps: BaseFac
       })
     }
     result.map(data => {
-      Logger.info(data.toString)
       Ok
     })
   }
