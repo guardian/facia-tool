@@ -44,11 +44,12 @@ import { CapiTextFields } from 'util/form';
 import { Dispatch } from 'types/Store';
 import { articleFragmentImageCriteria as imageCriteria } from 'constants/image';
 import { selectors as collectionSelectors } from 'shared/bundles/collectionsBundle';
-import { selectCurrentPresencePeople, Person } from 'presence';
+import { selectCurrentPresenceClients, Client } from 'presence';
+import PresenceBar from 'components/PresenceBar';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
-  currentPresencePeople: Person[];
+  currentPresencePeople: Client[];
   collectionId: string | null;
   getLastUpdatedBy: (id: string) => string | null;
   articleFragmentId: string;
@@ -115,16 +116,6 @@ const CollectionEditedError = styled.div`
   padding: 1em;
 `;
 
-const PresenceCircle = styled.span`
-  border: 1px solid black;
-  border-radius: 50%;
-  height: 2em;
-  line-height: 2em;
-  text-align: center;
-  width: 2em;
-  display: inline-block;
-`;
-
 type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
   frontId: string;
 };
@@ -181,7 +172,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       showKickerSection,
       frontId,
       articleExists,
-      currentPresencePeople
+      currentPresencePeople: currentPresenceClients
     } = this.props;
 
     return (
@@ -214,11 +205,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               )} since you started editing this article. Your changes have not been saved.`}
           </CollectionEditedError>
         )}
-        {currentPresencePeople.map(({ firstName, lastName }) => (
-          <PresenceCircle title={`${firstName} ${lastName}`}>
-            {`${firstName.slice(0, 1)}${lastName.slice(0, 1)}`}
-          </PresenceCircle>
-        ))}
+        <PresenceBar clients={currentPresenceClients} />
         <FormContent>
           <InputGroup>
             <ConditionalField
@@ -493,7 +480,7 @@ const ArticleFragmentForm = reduxForm<
 
 interface ContainerProps {
   articleExists: boolean;
-  currentPresencePeople: Person[];
+  currentPresencePeople: Client[];
   collectionId: string | null;
   getLastUpdatedBy: (collectionId: string) => string | null;
   imageSlideshowReplace: boolean;
@@ -559,7 +546,7 @@ const createMapStateToProps = () => {
 
     return {
       articleExists: !!article,
-      currentPresencePeople: selectCurrentPresencePeople(
+      currentPresencePeople: selectCurrentPresenceClients(
         state.presence,
         path.join('') // TODO: createKeyFromPath
       ),

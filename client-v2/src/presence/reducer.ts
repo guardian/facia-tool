@@ -1,16 +1,30 @@
 import { PresenceState, PresenceAction } from './types';
 
-const reducer = (state: PresenceState = {}, action: PresenceAction) => {
+const reducer = (
+  state: PresenceState = { entryMap: {}, isConnected: false },
+  action: PresenceAction
+) => {
   switch (action.type) {
     case 'PRESENCE/UPDATE_ENTRIES': {
       return {
         ...state,
-        [action.payload.articleFragmentId]: action.payload.entries
+        entryMap: { [action.payload.articleFragmentId]: action.payload.entries }
       };
     }
     case 'PRESENCE/REMOVE_ENTRIES': {
-      const { [action.payload.articleFragmentId]: omit, ...rest } = state;
-      return rest;
+      const {
+        entryMap: { [action.payload.articleFragmentId]: omit, ...rest }
+      } = state;
+      return {
+        ...state,
+        entryMap: rest
+      };
+    }
+    case 'PRESENCE/SET_CONNECTION_STATUS': {
+      return {
+        ...state,
+        isConnected: action.payload.isConnected
+      };
     }
     default: {
       return state;

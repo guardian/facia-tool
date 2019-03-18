@@ -1,4 +1,4 @@
-import { Entry, UpdateResponse, UserSpec } from './types';
+import { Entry, UserSpec, PresenceClient } from './types';
 
 const loadExternalScript = (url: string) =>
   new Promise((res, rej) => {
@@ -9,7 +9,9 @@ const loadExternalScript = (url: string) =>
     document.head.appendChild(el);
   });
 
-const getPresenceClient = (presenceDomain: string) =>
+const getPresenceClientInner = (
+  presenceDomain: string
+): Promise<PresenceClient> =>
   loadExternalScript(`https://${presenceDomain}/client/1/lib.min.js`).then(
     () => {
       const { presenceClient } = window as any;
@@ -20,26 +22,32 @@ const getPresenceClient = (presenceDomain: string) =>
     }
   );
 
-const connect = (presence: any) => {
-  presence.startConnection();
-  presence.addListener('connectionLog', (ev: any) => {
-    console.info('Presence info: ' + ev.event, ev.data);
-  });
-  return new Promise(res => {
-    presence.addListener('connected', res);
-  });
-};
+const awaitConnection = (presence: any) =>
+  new Promise(res => presence.once('connected', res));
+
+interface PresenceEventHandlers {
+  onUpdated?: (id: string, entries: Entry[]) => void;
+  onConnected?: () => string[]; // array of ids to enter
+  onDisconnected?: () => void;
+}
 
 const init = async (
   presenceDomain: string,
   user: UserSpec,
-  storagePrefix: string,
-  onUpdated: (id: string, entries: Entry[]) => void
+  storagePrefix = '',
+  {
+    onUpdated = () => {},
+    onConnected = () => [],
+    onDisconnected = () => {}
+  }: PresenceEventHandlers = {},
+  getPresenceClient: (
+    domain: string
+  ) => Promise<PresenceClient> = getPresenceClientInner
 ) => {
   // currently using the composer presence service to aid visibility, prefix with fronts
-  const addFrontsPrefix = (key: string) => `${storagePrefix}---${key}`;
+  const addFrontsPrefix = (key: string) => `${storagePrefix}${key}`;
   const removeFrontsPrefix = (key: string) =>
-    key.replace(`${storagePrefix}---`, '');
+    key.replace(`${storagePrefix}`, '');
 
   // should make the client a singleton here
   const client = await getPresenceClient(presenceDomain);
@@ -48,34 +56,65 @@ const init = async (
     presenceDomain
   });
 
-  await connect(presence);
+  function exitArticles(articleKeys: string[], existingArticleKeys: string[]) {
+    // enter no-mans land, can't exit something in presence
+    articleKeys.forEach((articleKey: string) => {
+      presence.enter(addFrontsPrefix(articleKey));
+    });
+    // unsbuscribe from updates about this article
+    presence.subscribe(
+      existingArticleKeys
+        .filter(key => !articleKeys.includes(key))
+        .map(addFrontsPrefix)
+    );
+  }
 
-  // presence.addListener('subscribed', (...args: any[]) => {
-  //   console.log('sbbd', ...args);
-  // });
+  function exitArticle(articleKey: string, existingArticleKeys: string[]) {
+    exitArticles([articleKey], existingArticleKeys);
+  }
 
-  presence.addListener('updated', (res: UpdateResponse) =>
+  function enterArticles(articleKeys: string[], existingArticleKeys: string[]) {
+    const prefixedArticlesKeys = articleKeys.map(addFrontsPrefix);
+    presence.subscribe([
+      ...prefixedArticlesKeys,
+      ...existingArticleKeys.map(addFrontsPrefix)
+    ]);
+    prefixedArticlesKeys.forEach((prefixedArticlesKey: string) => {
+      presence.enter(prefixedArticlesKey, 'meta-panel');
+    });
+  }
+
+  function enterArticle(articleKey: string, existingArticleKeys: string[]) {
+    enterArticles([articleKey], existingArticleKeys);
+  }
+
+  presence.startConnection();
+  presence.addListener('connectionLog', (e: any) => {
+    console.info('Presence info: ' + e.event, e.data);
+  });
+  presence.addListener('disconnected', (e: any) => {
+    onDisconnected();
+    console.info('Presence info: ' + e.event, e.data);
+  });
+  presence.addListener('connected', () => {
+    enterArticles(onConnected(), []);
+  });
+  presence.addListener('updated', res =>
     onUpdated(
       removeFrontsPrefix(res.subscriptionId),
       res.currentState.filter(
         (entry: any) =>
-          entry.clientId.connId !== presence.connectionId &&
+          // entry.clientId.connId !== presence.connectionId &&
           entry.location !== ' '
       )
     )
   );
 
-  function exitArticle(articleKey: string) {
-    // enter no-mans land, can't exit something in presence
-    presence.enter(addFrontsPrefix(articleKey));
-    // unsbuscribe from updates about this article
-    presence.subscribe([]);
-  }
+  await awaitConnection(presence);
 
-  function enterArticle(articleKey: string) {
-    presence.subscribe([addFrontsPrefix(articleKey)]);
-    presence.enter(addFrontsPrefix(articleKey), 'meta-panel');
-  }
+  // presence.addListener('subscribed', (...args: any[]) => {
+  //   console.log('sbbd', ...args);
+  // });
 
   return {
     exitArticle,

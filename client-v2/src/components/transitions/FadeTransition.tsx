@@ -5,6 +5,8 @@ import { styled } from 'constants/theme';
 type TransitionDirections = 'up' | 'right' | 'down' | 'left';
 
 interface TransitionProps {
+  inline?: boolean;
+  position?: React.CSSProperties['position'];
   duration?: number;
   length?: number;
   direction: TransitionDirections;
@@ -23,7 +25,8 @@ const applyDirection = ({ direction, length = 15 }: TransitionProps) =>
   directionMap[direction](length);
 
 const TransitionContainer = styled.div<TransitionProps>`
-  position: relative;
+  display: ${({ inline }) => (inline ? `inline-block` : 'block')};
+  position: ${({ position }) => position || 'relative'};
   &.${transitionName}-${({ direction }) => direction}-enter {
     opacity: 0.01;
     transform: translate3d(${applyDirection});
@@ -52,17 +55,21 @@ const TransitionContainer = styled.div<TransitionProps>`
 `;
 
 const FadeTransition: React.StatelessComponent<
-  TransitionProps & { active: boolean }
-> = ({ direction, duration = 150, active, children }) => (
+  TransitionProps & { in?: boolean }
+> = ({ direction, duration = 150, in: inProp, children, position }) => (
   <CSSTransition
-    in={active}
+    in={inProp}
     classNames={`${transitionName}-${direction}`}
     mountOnEnter
     unmountOnExit
     transitionName={`fade-${direction}`}
     timeout={duration}
   >
-    <TransitionContainer duration={duration} direction={direction}>
+    <TransitionContainer
+      position={position}
+      duration={duration}
+      direction={direction}
+    >
       {children}
     </TransitionContainer>
   </CSSTransition>

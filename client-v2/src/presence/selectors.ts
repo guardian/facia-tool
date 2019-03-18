@@ -1,6 +1,15 @@
 import { PresenceState } from './types';
 
-const selectCurrentPresencePeople = (state: PresenceState, id: string) =>
-  (state[id] || []).map(entry => entry.clientId.person);
+const selectPresenceIsConnected = (state: PresenceState) => state.isConnected;
 
-export { selectCurrentPresencePeople };
+const selectCurrentPresenceClients = (state: PresenceState, id: string) =>
+  (state.entryMap[id] || []).map(entry => entry.clientId);
+
+const selectEntryMapKeys = (state: PresenceState) =>
+  Object.keys(state.entryMap);
+
+export {
+  selectCurrentPresenceClients,
+  selectPresenceIsConnected,
+  selectEntryMapKeys
+};

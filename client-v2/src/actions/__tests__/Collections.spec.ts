@@ -73,10 +73,13 @@ describe('Collection actions', () => {
 
   describe('Get Collections thunk', () => {
     beforeEach(() => fetchMock.reset());
-    const store = configureStore({
-      config,
-      ...stateWithCollection
-    });
+    const store = configureStore(
+      { firstName: 'a', lastName: 'b', email: 'a@b.com' },
+      {
+        config,
+        ...stateWithCollection
+      }
+    );
 
     it('should add fetched Collections to the store', async () => {
       const collectionIds = ['testCollection1', 'testCollection2'];

@@ -4,6 +4,25 @@ export interface UserSpec {
   email: string;
 }
 
+export interface PresenceOptions {
+  user: UserSpec;
+  presenceDomain: string;
+}
+
+export type PresenceClient = (
+  options: PresenceOptions
+) => {
+  startConnection: () => void;
+  subscribe: (keys: string[]) => void;
+  enter: (key: string, place?: string) => void;
+  addListener(name: 'connectionLog', handler: (e: any) => void): void;
+  addListener(name: 'connected', handler: (e: any) => void): void;
+  addListener(name: 'disconnected', handler: (e: any) => void): void;
+  addListener(name: 'updated', handler: (e: UpdateResponse) => void): void;
+  emit(name: 'connect'): void;
+  once: () => void;
+};
+
 export interface UpdateResponse {
   subscriptionId: string;
   currentState: Entry[];
@@ -18,16 +37,19 @@ export interface Person {
 }
 
 export interface Entry {
-  clientId: {
-    connId: string;
-    person: Person;
-  };
+  clientId: Client;
   lastAction: string; // date
   location: string;
 }
 
+export interface Client {
+  connId: string;
+  person: Person;
+}
+
 export interface PresenceState {
-  [key: string]: Entry[];
+  isConnected: boolean;
+  entryMap: { [key: string]: Entry[] };
 }
 
 interface PresenceEnterMeta {
@@ -57,4 +79,14 @@ export interface RemoveEntriesAction {
   };
 }
 
-export type PresenceAction = UpdateEntriesAction | RemoveEntriesAction;
+export interface SetConnectionStatusAction {
+  type: 'PRESENCE/SET_CONNECTION_STATUS';
+  payload: {
+    isConnected: boolean;
+  };
+}
+
+export type PresenceAction =
+  | UpdateEntriesAction
+  | RemoveEntriesAction
+  | SetConnectionStatusAction;

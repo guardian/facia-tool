@@ -121,10 +121,10 @@ const FeedSectionHeader = ({
       </LogoBackground>
     </LogoContainer>
     <SectionHeaderContent>
-      <FadeTransition active={isCurrentFrontsMenuOpen} direction="left">
+      <FadeTransition in={isCurrentFrontsMenuOpen} direction="left">
         <CurrentFrontsList />
       </FadeTransition>
-      <FadeTransition active={!isCurrentFrontsMenuOpen} direction="right">
+      <FadeTransition in={!isCurrentFrontsMenuOpen} direction="right">
         <FeedbackButton
           href="https://docs.google.com/forms/d/e/1FAIpQLSc4JF0GxrKoxQgsFE9_tQfjAo1RKRU4M5bJWJRKaVlHbR2rpA/viewform?c=0&w=1"
           target="_blank"

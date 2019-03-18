@@ -3,7 +3,8 @@ import {
   PresenceActionMeta,
   Entry,
   UpdateEntriesAction,
-  RemoveEntriesAction
+  RemoveEntriesAction,
+  SetConnectionStatusAction
 } from './types';
 
 const addPresenceMetaToAction = (type: 'ENTER' | 'EXIT', id: string) => <
@@ -41,4 +42,18 @@ const removeEntries = (id: string): RemoveEntriesAction => ({
   }
 });
 
-export { addPresenceMetaToAction, updateEntries, removeEntries };
+const setConnectionStatus = (
+  isConnected: boolean
+): SetConnectionStatusAction => ({
+  type: 'PRESENCE/SET_CONNECTION_STATUS',
+  payload: {
+    isConnected
+  }
+});
+
+export {
+  addPresenceMetaToAction,
+  updateEntries,
+  removeEntries,
+  setConnectionStatus
+};

@@ -1,5 +1,5 @@
 export { middleware } from './middleware';
 export { addPresenceMetaToAction } from './actions';
-export { selectCurrentPresencePeople } from './selectors';
+export { selectCurrentPresenceClients } from './selectors';
 export { reducer } from './reducer';
-export { Person } from './types';
+export { Client } from './types';

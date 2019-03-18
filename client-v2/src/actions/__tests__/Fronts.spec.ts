@@ -24,7 +24,10 @@ describe('Fronts actions', () => {
         'begin:/api/preview/search?ids=internal-code/page/5607373,internal-code/page/5607569',
         articlesForScJohnsonPartnerZone
       );
-      const store = configureStore(initialState);
+      const store = configureStore(
+        { firstName: 'a', lastName: 'b', email: 'a@b.com' },
+        initialState
+      );
 
       await store.dispatch(initialiseFront(
         'sc-johnson-partner-zone',

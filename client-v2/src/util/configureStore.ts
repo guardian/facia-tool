@@ -14,9 +14,11 @@ import {
 } from './storeMiddleware';
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
-import { Config } from 'types/Config';
 
-export default function configureStore(config: Config, initialState?: State) {
+export default function configureStore(
+  config: { firstName: string; lastName: string; email: string },
+  initialState?: State
+) {
   const history = createBrowserHistory();
   const router = routerMiddleware(history);
   const reducer = enableBatching(rootReducer);
@@ -26,15 +28,16 @@ export default function configureStore(config: Config, initialState?: State) {
       updateStateFromUrlChange,
       router,
       // @TODO: take URL from config
-      presenceMiddleware<State, Dispatch>(
-        'presence.local.dev-gutools.co.uk',
-        {
+      presenceMiddleware<State, Dispatch>({
+        selectPresenceState: state => state.presence,
+        presenceDomain: 'presence.local.dev-gutools.co.uk',
+        user: {
           firstName: config.firstName,
           lastName: config.lastName,
           email: config.email
         },
-        'fronts'
-      ),
+        storagePrefix: 'fronts'
+      }),
       persistCollectionOnEdit(),
       persistClipboardOnEdit(),
       persistOpenFrontsOnEdit()

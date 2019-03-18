@@ -677,7 +677,10 @@ const state = {
     loadingIds: [],
     updatingIds: []
   },
-  presence: {}
+  presence: {
+    isConnected: false,
+    entryMap: {}
+  }
 } as State;
 
 export default state;

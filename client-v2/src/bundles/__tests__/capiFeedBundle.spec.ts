@@ -29,7 +29,7 @@ const createStoreAndFetchMock = (
   status = 200
 ) => {
   fetchMock.get(pattern, response, { overwriteRoutes: true });
-  return configureStore();
+  return configureStore({ firstName: 'a', lastName: 'b', email: 'a@b.com' });
 };
 
 describe('capiFeedBundle', () => {
