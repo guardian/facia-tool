@@ -47,7 +47,14 @@ const ImageContainer = styled('div')`
 
 export const GridModal = ({ isOpen, url, onMessage, onClose }: ModalProps) => (
   <React.Fragment>
-    <StyledModal isOpen={isOpen}>
+    <StyledModal
+      isOpen={isOpen}
+      style={{
+        overlay: {
+          zIndex: 900
+        }
+      }}
+    >
       <ModalButton type="button" priority="primary" onClick={onClose}>
         <ImageContainer>
           <CloseIcon />
