@@ -56,7 +56,8 @@ const ConfirmModal = ({
   <StyledModal
     style={{
       overlay: {
-        backgroundColor: 'rgba(0, 0, 0, 0.75)'
+        backgroundColor: 'rgba(0, 0, 0, 0.75)',
+        zIndex: 1000
       }
     }}
     isOpen={isOpen}
