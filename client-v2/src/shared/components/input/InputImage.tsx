@@ -126,17 +126,17 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       });
   };
 
-  public handlePasteImgSrcInputChange = (
-    e: React.FormEvent<HTMLInputElement>
-  ) => {
+  public handlePasteImgSrcChange = (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
     this.setState({ imageSrc: e.currentTarget.value });
   };
 
-  public handlePasteImgSrcInputSubmit = (e: React.KeyboardEvent) => {
+  public handlePasteImgSrcSubmit = (keyCode: number) => (
+    e: React.KeyboardEvent
+  ) => {
     events.imageAdded(this.props.frontId, 'paste');
     e.persist();
-    if (e.keyCode === 13) {
+    if (e.keyCode === keyCode) {
       e.preventDefault();
       validateImageSrc(
         this.state.imageSrc,
@@ -155,9 +155,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     }
   };
 
-  public handleAdd = () => {
-    // @todo: grid integration
-  };
   public clearField = () => this.props.input.onChange(null);
 
   public validMessage(data: GridData) {
@@ -270,8 +267,8 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                       name="paste-url"
                       placeholder=" Paste crop url from Grid"
                       defaultValue={this.state.imageSrc}
-                      onKeyDown={this.handlePasteImgSrcInputSubmit}
-                      onChange={this.handlePasteImgSrcInputChange}
+                      onKeyDown={this.handlePasteImgSrcSubmit(13)}
+                      onChange={this.handlePasteImgSrcChange}
                     />
                     <InputLabel hidden htmlFor="paste-url">
                       Paste crop url from Grid
