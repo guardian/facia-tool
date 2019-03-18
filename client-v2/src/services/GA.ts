@@ -73,7 +73,7 @@ const events = {
     // collectionId: string,
     method: ImageAdditionMethod
   ) =>
-    gtag('event', `imageAdded${method}`, {
+    gtag('event', `imageAdded: ${method}`, {
       // collection_id: collectionId,
       front_id: frontId,
       method
