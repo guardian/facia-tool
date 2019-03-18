@@ -70,25 +70,29 @@ const Label = styled(InputLabel)`
   vertical-align: super;
 `;
 
-const ButtonDelete = styled(ButtonDefault)`
+const ButtonDelete = styled(ButtonDefault)<{
+  small?: boolean;
+}>`
   position: absolute;
   display: block;
-  top: 2px;
-  right: 2px;
-  height: 24px;
-  width: 24px;
+  top: ${props => (props.small ? '2px' : '6px')};
+  right: ${props => (props.small ? '2px' : '6px')};
+  height: ${props => (props.small ? '24px' : '32px')};
+  width: ${props => (props.small ? '24px' : '32px')};
   text-align: center;
   padding: 0;
   border-radius: 24px;
 `;
 
-const IconDelete = styled('div')`
+const IconDelete = styled('div')<{
+  small?: boolean;
+}>`
   display: block;
   position: absolute;
   height: 14px;
   width: 14px;
-  top: 5px;
-  left: 5px;
+  top: ${props => (props.small ? '5px' : '9px')};
+  left: ${props => (props.small ? '5px' : '9px')};
 `;
 
 export interface InputImageContainerProps {
@@ -237,9 +241,10 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
             }}
           >
             {!!input.value && !!input.value.thumb ? (
-              <ButtonDelete type="button" priority="primary">
+              <ButtonDelete type="button" priority="primary" small={small}>
                 {input.value ? (
                   <IconDelete
+                    small={small}
                     onClick={event => {
                       event.stopPropagation();
                       this.clearField();
