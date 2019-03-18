@@ -124,7 +124,7 @@ const RenderSlideshow = ({ fields, frontId }: RenderSlideshowProps) => (
         <Field<InputImageContainerProps>
           name={name}
           component={InputImage}
-          size="small"
+          small
           criteria={imageCriteria}
           frontId={frontId}
         />
