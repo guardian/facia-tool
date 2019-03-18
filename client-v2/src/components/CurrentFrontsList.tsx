@@ -16,7 +16,7 @@ import {
 import { FrontConfig } from 'types/FaciaApi';
 import { styled, theme as themeConstants } from 'constants/theme';
 import { scrollToLeft } from 'util/scroll';
-import { frontsContainerId, createFrontId } from './FrontsEdit/Edit';
+import { frontsContainerId, createFrontId } from 'util/editUtils';
 
 interface ComponentProps {
   moveFront: (dropResult: DropResult) => void;

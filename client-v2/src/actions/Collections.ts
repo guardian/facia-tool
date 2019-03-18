@@ -32,18 +32,24 @@ import {
   clearArticleFragments
 } from 'shared/actions/ArticleFragments';
 import { groupsReceived } from 'shared/actions/Groups';
-import { recordVisibleArticles } from 'actions/Fronts';
+import {
+  recordVisibleArticles,
+  publishCollectionSuccess,
+  recordStaleFronts,
+  fetchLastPressedSuccess
+} from 'actions/Fronts';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
-import { getCollectionConfig } from 'selectors/frontsSelectors';
-import { State } from 'types/State';
+import { getCollectionConfig, getFront } from 'selectors/frontsSelectors';
 import { Dispatch, ThunkResult } from 'types/Store';
-import { frontStages, collectionItemSets } from 'constants/fronts';
+import {
+  collectionItemSets,
+  noOfOpenCollectionsOnFirstLoad
+} from 'constants/fronts';
 import {
   Stages,
   Collection,
   CollectionItemSets
 } from 'shared/types/Collection';
-import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import difference from 'lodash/difference';
 import { selectArticlesInCollections } from 'shared/selectors/collection';
 import {
@@ -51,11 +57,20 @@ import {
   editorCloseCollections
 } from 'bundles/frontsUIBundle';
 import flatten from 'lodash/flatten';
-import {
-  collectionParamsSelector,
-  createCollectionsInOpenFrontsSelector
-} from 'selectors/collectionSelectors';
+import { createCollectionsInOpenFrontsSelector } from 'selectors/collectionSelectors';
 import uniq from 'lodash/uniq';
+import {
+  fetchLastPressed as fetchLastPressedApi,
+  publishCollection as publishCollectionApi,
+  getCollection as getCollectionApi
+} from 'services/faciaApi';
+import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
+import { isFrontStale } from 'util/frontsUtils';
+import { visibleArticlesSelector } from 'selectors/frontsSelectors';
+import { frontStages } from 'constants/fronts';
+import { State } from 'types/State';
+import { events } from 'services/GA';
+import { collectionParamsSelector } from 'selectors/collectionSelectors';
 
 const articlesInCollection = createAllArticlesInCollectionSelector();
 const collectionsInOpenFrontsSelector = createCollectionsInOpenFrontsSelector();
@@ -289,6 +304,92 @@ function getVisibleArticles(
   return fetchVisibleArticles(collectionType, articleDetails);
 }
 
+/**
+ * Initialise the collections in a front --
+ * - Fetch all of its collections from the server
+ * - Mark as open number of collections indicated by the constant, and fetch their articles
+ */
+function initialiseCollectionsForFront(
+  frontId: string,
+  browsingStage: CollectionItemSets
+): ThunkResult<Promise<void>> {
+  return async (dispatch: Dispatch, getState: () => State) => {
+    const front = getFront(getState(), frontId);
+    if (!front) {
+      return;
+    }
+    const collectionsWithArticlesToLoad = front.collections.slice(
+      0,
+      noOfOpenCollectionsOnFirstLoad
+    );
+    dispatch(editorOpenCollections(collectionsWithArticlesToLoad));
+    await dispatch(getCollections(front.collections));
+    await dispatch(
+      getArticlesForCollections(collectionsWithArticlesToLoad, browsingStage)
+    );
+  };
+}
+
+function publishCollection(
+  collectionId: string,
+  frontId: string
+): ThunkResult<Promise<void>> {
+  events.collectionPublished(frontId, collectionId);
+
+  return (dispatch: Dispatch, getState: () => State) => {
+    const draftVisibleArticles = visibleArticlesSelector(getState(), {
+      collectionId,
+      stage: frontStages.draft
+    });
+
+    return publishCollectionApi(collectionId)
+      .then(() => {
+        dispatch(
+          batchActions([
+            publishCollectionSuccess(collectionId),
+            recordUnpublishedChanges(collectionId, false),
+            recordVisibleArticles(
+              collectionId,
+              draftVisibleArticles,
+              frontStages.live
+            )
+          ])
+        );
+
+        dispatch(getCollections([collectionId]));
+
+        return new Promise(resolve => setTimeout(resolve, 10000))
+          .then(() => {
+            const [params] = collectionParamsSelector(getState(), [
+              collectionId
+            ]);
+            return Promise.all([
+              getCollectionApi(params),
+              fetchLastPressedApi(frontId)
+            ]);
+          })
+          .then(([collectionResponse, lastPressed]) => {
+            const lastPressedInMilliseconds = new Date(lastPressed).getTime();
+            dispatch(
+              batchActions([
+                recordStaleFronts(
+                  frontId,
+                  isFrontStale(
+                    collectionResponse.collection.lastUpdated,
+                    lastPressedInMilliseconds
+                  )
+                ),
+                fetchLastPressedSuccess(frontId, lastPressed)
+              ])
+            );
+          });
+      })
+      .catch(() => {
+        // @todo: implement once error handling is done
+      });
+  };
+}
+
 export {
   getCollections,
   getArticlesForCollections,
@@ -296,5 +397,7 @@ export {
   closeCollections,
   fetchStaleOpenCollections,
   fetchArticles,
-  updateCollection
+  updateCollection,
+  initialiseCollectionsForFront,
+  publishCollection
 };

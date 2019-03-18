@@ -19,9 +19,7 @@ import SectionsContainer from '../layout/SectionsContainer';
 import FrontsMenu from './FrontsMenu';
 import PressFailAlert from '../PressFailAlert';
 import { FrontConfig } from 'types/FaciaApi';
-
-export const frontsContainerId = 'fronts-container';
-export const createFrontId = (frontId: string) => `front-${frontId}`;
+import { frontsContainerId, createFrontId } from 'util/editUtils';
 
 interface Props {
   match: match<{ priority: string }>;

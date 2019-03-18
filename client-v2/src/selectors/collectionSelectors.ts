@@ -7,8 +7,8 @@ import {
 } from 'shared/selectors/shared';
 import { isDirty } from 'redux-form';
 import { CollectionItemSets } from 'shared/types/Collection';
-import { createSelectEditorFrontsByPriority } from 'bundles/frontsUIBundle';
 import flatten from 'lodash/flatten';
+import { createSelectEditorFrontsByPriority } from 'bundles/frontsUIBundle';
 
 const selectCollection = createCollectionSelector();
 
@@ -40,7 +40,7 @@ function collectionParamsSelector(
   return params;
 }
 
-const createCollectionsInOpenFrontsSelector = () => {
+function createCollectionsInOpenFrontsSelector() {
   const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
   return (state: State, priority: string): string[] => {
     const openFrontsForPriority = selectEditorFrontsByPriority(state, {
@@ -48,7 +48,7 @@ const createCollectionsInOpenFrontsSelector = () => {
     });
     return flatten(openFrontsForPriority.map(front => front.collections));
   };
-};
+}
 
 const isCollectionLockedSelector = (state: State, id: string): boolean =>
   !!getCollectionConfig(state, id).uneditable;
@@ -56,7 +56,7 @@ const isCollectionLockedSelector = (state: State, id: string): boolean =>
 const isCollectionBackfilledSelector = (state: State, id: string): boolean =>
   !!getCollectionConfig(state, id).backfill;
 
-const collectionHasUnsavedArticleEditsWarningSelector = () => {
+const createCollectionHasUnsavedArticleEditsWarningSelector = () => {
   const articlesInCollectionSelector = createArticlesInCollectionSelector();
 
   return (
@@ -78,5 +78,5 @@ export {
   isCollectionLockedSelector,
   isCollectionBackfilledSelector,
   createCollectionsInOpenFrontsSelector,
-  collectionHasUnsavedArticleEditsWarningSelector as createCollectionHasUnsavedArticleEditsWarningSelector
+  createCollectionHasUnsavedArticleEditsWarningSelector
 };

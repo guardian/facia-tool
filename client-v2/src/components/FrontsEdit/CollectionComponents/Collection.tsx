@@ -5,7 +5,7 @@ import CollectionDisplay from 'shared/components/Collection';
 import CollectionNotification from 'components/CollectionNotification';
 import Button from 'shared/components/input/ButtonDefault';
 import { AlsoOnDetail } from 'types/Collection';
-import { publishCollection } from 'actions/Fronts';
+import { publishCollection } from 'actions/Collections';
 import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
 import { isCollectionLockedSelector } from 'selectors/collectionSelectors';
 import { State } from 'types/State';
