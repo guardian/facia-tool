@@ -100,6 +100,27 @@ async function fetchVisibleArticles(
   }
 }
 
+async function discardDraftChangesToCollection(
+  collectionId: string
+): Promise<void> {
+  // The server does not respond with JSON
+  try {
+    await pandaFetch(`/collection/discard/${collectionId}`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify({ collectionId })
+    });
+  } catch (response) {
+    throw new Error(
+      `Tried to discard changes to collection with id ${collectionId}, but the server responded with ${
+        response.status
+      }: ${response.body}`
+    );
+  }
+}
 async function publishCollection(collectionId: string): Promise<void> {
   // The server does not respond with JSON
   try {
@@ -316,5 +337,6 @@ export {
   saveClipboard,
   saveOpenFrontIds,
   getCapiUriForContentIds,
-  fetchVisibleArticles
+  fetchVisibleArticles,
+  discardDraftChangesToCollection
 };
