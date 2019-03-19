@@ -31,16 +31,21 @@ class UserDataController(frontsApi: FrontsApi, dynamo: Dynamo, val deps: BaseFac
   }
 
   def putFrontIds() = APIAuthAction { request =>
-    // We handle both cases here, because of the migration from a list to a map by priority
     val maybeFrontIds: Option[List[String]] = request.body.asJson.flatMap(
       _.asOpt[List[String]])
-    val maybeFrontIdsByPriority: Option[Map[String, List[String]]] = request.body.asJson.flatMap(
-      _.asOpt[Map[String, List[String]]])
-    (maybeFrontIds, maybeFrontIdsByPriority) match {
-      case (Some(frontIds), _) =>
+    maybeFrontIds match {
+      case Some(frontIds) =>
         Scanamo.exec(dynamo.client)(userDataTable.update('email -> request.user.email, set('frontIds -> frontIds)))
         Ok
-      case (_, Some(frontIdsByPriority)) =>
+      case _ => BadRequest
+    }
+  }
+
+  def putFrontIdsByPriority() = APIAuthAction { request =>
+    val maybeFrontIdsByPriority: Option[Map[String, List[String]]] = request.body.asJson.flatMap(
+      _.asOpt[Map[String, List[String]]])
+    maybeFrontIdsByPriority match {
+      case Some(frontIdsByPriority) =>
         Scanamo.exec(dynamo.client)(userDataTable.update('email -> request.user.email, set('frontIdsByPriority -> frontIdsByPriority)))
         Ok
       case _ => BadRequest
