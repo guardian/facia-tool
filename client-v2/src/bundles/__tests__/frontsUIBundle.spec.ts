@@ -6,7 +6,6 @@ import {
   editorSetOpenFronts,
   editorOpenCollections,
   editorCloseCollections,
-  selectEditorFrontIds,
   selectIsCollectionOpen,
   editorCloseOverview,
   selectIsFrontOverviewOpen,
@@ -17,7 +16,8 @@ import {
   editorCloseAllOverviews,
   editorOpenAllOverviews,
   createSelectEditorFrontsByPriority,
-  editorMoveFront
+  editorMoveFront,
+  selectEditorFrontIds
 } from '../frontsUIBundle';
 import initialState from 'fixtures/initialState';
 import { Action } from 'types/Action';

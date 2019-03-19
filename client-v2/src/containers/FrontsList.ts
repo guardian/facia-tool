@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import { match, withRouter, RouteComponentProps } from 'react-router';
-
 import { createSelectFrontIdAndOpenStateByPriority } from 'bundles/frontsUIBundle';
 import { State } from '../types/State';
 import FrontList from '../components/FrontList';

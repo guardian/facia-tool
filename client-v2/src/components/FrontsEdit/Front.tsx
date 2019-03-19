@@ -139,6 +139,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                   <Collection
                     key={collectionId}
                     id={collectionId}
+                    priority={front.priority}
                     frontId={this.props.id}
                     alsoOn={this.props.alsoOn}
                     canPublish={this.props.browsingStage !== 'live'}

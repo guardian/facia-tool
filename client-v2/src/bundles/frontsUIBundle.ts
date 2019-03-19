@@ -244,6 +244,13 @@ const selectEditorFrontIds = (state: GlobalState) =>
 const selectEditorFrontIdsByPriority = (state: GlobalState, priority: string) =>
   state.editor.frontIdsByPriority[priority];
 
+const selectHasMultipleFrontsOpen = createSelector(
+  selectEditorFrontIdsByPriority,
+  frontIdsByPriority => {
+    return frontIdsByPriority.length > 1;
+  }
+);
+
 const selectEditorArticleFragment = <T extends { editor: State }>(
   state: T,
   frontId: string
@@ -274,7 +281,7 @@ const getFrontPosition = (
   }
 ): { frontId: string; priority: string; index: number } | void => {
   const positions = Object.entries(frontIdsByPriority)
-    .filter(([priority, frontIds]) => frontIds.indexOf(frontId) !== -1)
+    .filter(([_, frontIds]) => frontIds.indexOf(frontId) !== -1)
     .map(([priority, frontIds]) => ({
       frontId,
       priority,
@@ -477,9 +484,9 @@ export {
   editorSelectArticleFragment,
   editorClearArticleFragmentSelection,
   selectIsCurrentFrontsMenuOpen,
-  selectEditorFrontIds,
   createSelectEditorFrontsByPriority,
   createSelectFrontIdAndOpenStateByPriority,
+  selectEditorFrontIds,
   selectEditorFrontIdsByPriority,
   selectEditorArticleFragment,
   selectIsCollectionOpen,
@@ -490,7 +497,8 @@ export {
   editorOpenAllOverviews,
   editorCloseAllOverviews,
   selectIsClipboardOpen,
-  selectIsFrontOverviewOpen
+  selectIsFrontOverviewOpen,
+  selectHasMultipleFrontsOpen
 };
 
 export default reducer;
