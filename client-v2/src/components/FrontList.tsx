@@ -95,7 +95,12 @@ const FrontList = ({ fronts, onSelect, onFavorite, searchString }: Props) => {
             />
           </ListLabel>
           {/* // onUnFavorite */}
-          <ButtonFavorite onClick={() => onFavorite(front.id)}>
+          <ButtonFavorite
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+              e.stopPropagation();
+              onFavorite(front.id);
+            }}
+          >
             <StarIcon
               size="l"
               fill={theme.shared.colors.blackLight}

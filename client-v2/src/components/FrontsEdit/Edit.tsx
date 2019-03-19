@@ -5,9 +5,10 @@ import { match } from 'react-router-dom';
 import { styled } from 'constants/theme';
 import getFrontsConfig from 'actions/Fronts';
 import {
-  selectIsCurrentFrontsMenuOpen,
   editorOpenFront,
-  selectEditorFrontIdsByPriority
+  editorStarFront,
+  selectEditorFrontIdsByPriority,
+  selectIsCurrentFrontsMenuOpen
 } from 'bundles/frontsUIBundle';
 import { State } from 'types/State';
 import { ActionError } from 'types/Action';
@@ -26,6 +27,7 @@ interface Props {
   frontIds: string[];
   staleFronts: { [id: string]: boolean };
   editorOpenFront: (frontId: string, priority: string) => void;
+  editorStarFront: (frontId: string) => void;
   getFrontsConfig: () => void;
   isCurrentFrontsMenuOpen: boolean;
 }
@@ -88,6 +90,7 @@ class FrontsEdit extends React.Component<Props> {
           onSelectFront={id =>
             this.props.editorOpenFront(id, this.props.match.params.priority)
           }
+          onFavoriteFront={this.props.editorStarFront}
         />
       </FrontsEditContainer>
     );
@@ -108,6 +111,7 @@ const mapDispatchToProps = (dispatch: Dispatch, props: Props) => ({
   editorOpenFront: (id: string) => {
     dispatch(editorOpenFront(id, props.match.params.priority));
   },
+  editorStarFront: (id: string) => dispatch(editorStarFront(id)),
   getFrontsConfig: () => dispatch(getFrontsConfig())
 });
 

@@ -10,7 +10,7 @@ import LargeSectionHeader from '../layout/LargeSectionHeader';
 import ButtonOverlay from '../inputs/ButtonOverlay';
 import ScrollContainer from '../ScrollContainer';
 import Overlay from '../layout/Overlay';
-import FrontsList from '../../containers/FrontsList';
+import FrontsList from '../FrontsListContainer';
 import Row from 'components/Row';
 import Col from 'components/Col';
 
@@ -85,6 +85,7 @@ const FrontsMenuSearchImage = styled('div')`
 
 interface Props {
   onSelectFront: (frontId: string) => void;
+  onFavoriteFront: (frontId: string) => void;
 }
 
 interface State {
@@ -102,6 +103,11 @@ class FrontsMenu extends React.Component<Props, State> {
   public onSelectFront = (frontId: string) => {
     this.toggleFrontsMenu();
     this.props.onSelectFront(frontId);
+  };
+
+  public onFavoriteFront = (frontId: string) => {
+    alert('favoriting' + frontId);
+    this.props.onFavoriteFront(frontId);
   };
 
   public onInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -160,6 +166,7 @@ class FrontsMenu extends React.Component<Props, State> {
               </FrontsMenuSubHeading>
               <FrontsList
                 onSelect={this.onSelectFront}
+                onFavorite={this.onFavoriteFront}
                 searchString={this.state.searchString}
               />
             </FrontsMenuContent>
