@@ -31,7 +31,11 @@ import { createSelectIsArticleInCollection } from 'shared/selectors/collection';
 
 interface CollectionPropsBeforeState {
   id: string;
-  children: (group: Group, isUneditable: boolean) => React.ReactNode;
+  children: (
+    group: Group,
+    isUneditable: boolean,
+    showGroupName: boolean
+  ) => React.ReactNode;
   alsoOn: { [id: string]: AlsoOnDetail };
   frontId: string;
   browsingStage: CollectionItemSets;

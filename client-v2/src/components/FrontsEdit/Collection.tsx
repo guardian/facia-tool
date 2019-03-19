@@ -159,8 +159,12 @@ class CollectionContext extends React.Component<
           canPublish={browsingStage !== 'live'}
           browsingStage={browsingStage}
         >
-          {(group, isUneditable) => (
-            <GroupDisplayComponent key={group.uuid} groupName={group.name}>
+          {(group, isUneditable, showGroupName) => (
+            <div key={group.uuid}>
+              <GroupDisplayComponent
+                key={group.uuid}
+                groupName={showGroupName ? group.name : null}
+              />
               <GroupLevel
                 isUneditable={isUneditable}
                 groupId={group.uuid}
@@ -237,7 +241,7 @@ class CollectionContext extends React.Component<
                   </>
                 )}
               </GroupLevel>
-            </GroupDisplayComponent>
+            </div>
           )}
         </Collection>
       </CollectionWrapper>
