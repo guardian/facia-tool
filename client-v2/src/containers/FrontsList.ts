@@ -1,10 +1,12 @@
 import { connect } from 'react-redux';
 import { match, withRouter, RouteComponentProps } from 'react-router';
 
-import { selectEditorFrontIds } from 'bundles/frontsUIBundle';
 import { State } from '../types/State';
 import FrontList from '../components/FrontList';
-import { getFrontsWithPriority } from '../selectors/frontsSelectors';
+import {
+  getFrontsWithPriority,
+  selectEditorFrontIds
+} from '../selectors/frontsSelectors';
 
 type Props = {
   match: match<{ priority: string }>;

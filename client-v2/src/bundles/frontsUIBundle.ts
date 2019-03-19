@@ -22,7 +22,7 @@ import {
 } from 'types/Action';
 import { State as GlobalState } from 'types/State';
 import { events } from 'services/GA';
-import { getFronts } from 'selectors/frontsSelectors';
+import { getFronts, selectEditorFrontIds } from 'selectors/frontsSelectors';
 import { createSelector } from 'reselect';
 import {
   REMOVE_GROUP_ARTICLE_FRAGMENT,
@@ -194,7 +194,6 @@ interface State {
 const selectIsCurrentFrontsMenuOpen = (state: GlobalState) =>
   state.editor.showOpenFrontsMenu;
 
-const selectEditorFrontIds = (state: GlobalState) => state.editor.frontIds;
 const selectIsCollectionOpen = <T extends { editor: State }>(
   state: T,
   collectionId: string
@@ -418,7 +417,6 @@ export {
   editorSelectArticleFragment,
   editorClearArticleFragmentSelection,
   selectIsCurrentFrontsMenuOpen,
-  selectEditorFrontIds,
   selectEditorFrontsByPriority,
   selectEditorArticleFragment,
   selectIsCollectionOpen,

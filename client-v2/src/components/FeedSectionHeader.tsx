@@ -9,12 +9,12 @@ import { State } from 'types/State';
 import {
   selectIsCurrentFrontsMenuOpen,
   editorShowOpenFrontsMenu,
-  editorHideOpenFrontsMenu,
-  selectEditorFrontIds
+  editorHideOpenFrontsMenu
 } from 'bundles/frontsUIBundle';
 import { Dispatch } from 'types/Store';
 import FadeTransition from './transitions/FadeTransition';
 import { MoreIcon } from 'shared/components/icons/Icons';
+import { selectEditorFrontIds } from 'selectors/frontsSelectors';
 
 const FeedbackButton = Button.extend<{
   href: string;

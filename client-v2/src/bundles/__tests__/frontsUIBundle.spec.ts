@@ -6,7 +6,6 @@ import {
   editorSetOpenFronts,
   editorOpenCollections,
   editorCloseCollections,
-  selectEditorFrontIds,
   selectIsCollectionOpen,
   editorCloseOverview,
   selectIsFrontOverviewOpen,
@@ -26,6 +25,7 @@ import {
 } from 'shared/actions/ArticleFragments';
 import { removeClipboardArticleFragment } from 'actions/Clipboard';
 import { State as GlobalState } from 'types/State';
+import { selectEditorFrontIds } from 'selectors/frontsSelectors';
 
 type State = ReturnType<typeof innerReducer>;
 
