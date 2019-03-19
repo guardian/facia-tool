@@ -6,8 +6,8 @@ import { styled } from 'constants/theme';
 import getFrontsConfig from 'actions/Fronts';
 import {
   selectIsCurrentFrontsMenuOpen,
-  createSelectEditorFrontsByPriority,
-  editorOpenFront
+  editorOpenFront,
+  selectEditorFrontIdsByPriority
 } from 'bundles/frontsUIBundle';
 import { State } from 'types/State';
 import { ActionError } from 'types/Action';
@@ -18,13 +18,12 @@ import SectionContainer from '../layout/SectionContainer';
 import SectionsContainer from '../layout/SectionsContainer';
 import FrontsMenu from './FrontsMenu';
 import PressFailAlert from '../PressFailAlert';
-import { FrontConfig } from 'types/FaciaApi';
 import { frontsContainerId, createFrontId } from 'util/editUtils';
 
 interface Props {
   match: match<{ priority: string }>;
   error: ActionError;
-  fronts: FrontConfig[];
+  frontIds: string[];
   staleFronts: { [id: string]: boolean };
   editorOpenFront: (frontId: string, priority: string) => void;
   getFrontsConfig: () => void;
@@ -77,9 +76,9 @@ class FrontsEdit extends React.Component<Props> {
             id={frontsContainerId}
             makeRoomForExtraHeader={this.props.isCurrentFrontsMenuOpen}
           >
-            {this.props.fronts.map(front => (
-              <SingleFrontContainer key={front.id} id={createFrontId(front.id)}>
-                <FrontContainer frontId={front.id} />
+            {this.props.frontIds.map(id => (
+              <SingleFrontContainer key={id} id={createFrontId(id)}>
+                <FrontContainer frontId={id} />
               </SingleFrontContainer>
             ))}
           </FrontsContainer>
@@ -94,17 +93,15 @@ class FrontsEdit extends React.Component<Props> {
   }
 }
 
-const mapStateToProps = () => {
-  const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
-  return (state: State, props: Props) => ({
-    error: state.error,
-    staleFronts: state.staleFronts,
-    fronts: selectEditorFrontsByPriority(state, {
-      priority: props.match.params.priority || ''
-    }),
-    isCurrentFrontsMenuOpen: selectIsCurrentFrontsMenuOpen(state)
-  });
-};
+const mapStateToProps = (state: State, props: Props) => ({
+  error: state.error,
+  staleFronts: state.staleFronts,
+  frontIds: selectEditorFrontIdsByPriority(
+    state,
+    props.match.params.priority || ''
+  ),
+  isCurrentFrontsMenuOpen: selectIsCurrentFrontsMenuOpen(state)
+});
 
 const mapDispatchToProps = (dispatch: Dispatch, props: Props) => ({
   editorOpenFront: (id: string) => {

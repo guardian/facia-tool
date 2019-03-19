@@ -90,10 +90,7 @@ describe('frontsUIBundle', () => {
         ...initialState.editor,
         frontIdsByPriority: { editorial: ['1', '2', '3'] }
       };
-      const newState = reducer(
-        state as any,
-        editorMoveFront('3', 'editorial', 0)
-      );
+      const newState = reducer(state as any, editorMoveFront('3', 0));
       expect(selectEditorFrontIds(newState)).toEqual({
         editorial: ['3', '1', '2']
       });
@@ -103,10 +100,7 @@ describe('frontsUIBundle', () => {
         ...initialState.editor,
         frontIdsByPriority: { editorial: ['1', '2', '3'] }
       };
-      const newState = reducer(
-        state as any,
-        editorMoveFront('who?', 'editorial', 0)
-      );
+      const newState = reducer(state as any, editorMoveFront('who?', 0));
       expect(selectEditorFrontIds(newState)).toEqual({
         editorial: ['1', '2', '3']
       });
@@ -118,7 +112,7 @@ describe('frontsUIBundle', () => {
       };
       const newState = reducer(
         state,
-        editorMoveFront('sc-johnson-partner-zone', 'editorial', 5)
+        editorMoveFront('sc-johnson-partner-zone', 5)
       );
       expect(selectEditorFrontIds(newState)).toEqual({
         editorial: ['1', '2', '3']
@@ -136,7 +130,7 @@ describe('frontsUIBundle', () => {
     it('should remove a front to the open editor fronts', () => {
       const state = reducer(
         { frontIdsByPriority: { editorial: ['front1', 'front2'] } } as any,
-        editorCloseFront('front1', 'editorial')
+        editorCloseFront('front1')
       );
       expect(selectEditorFrontIds(state)).toEqual({
         editorial: ['front2']

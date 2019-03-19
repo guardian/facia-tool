@@ -52,13 +52,13 @@ interface EditorAddFront {
 
 interface EditorMoveFront {
   type: typeof EDITOR_MOVE_FRONT;
-  payload: { frontId: string; priority: string; toIndex: number };
+  payload: { frontId: string; toIndex: number };
   meta: PersistMeta;
 }
 
 interface EditorCloseFront {
   type: typeof EDITOR_CLOSE_FRONT;
-  payload: { frontId: string; priority: string };
+  payload: { frontId: string };
   meta: PersistMeta;
 }
 interface EditorOpenCollection {

@@ -126,15 +126,11 @@ const mapStateToProps = () => {
   });
 };
 
-const mapDispatchToProps = (dispatch: Dispatch, props: ContainerProps) => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
   moveFront: (dropResult: DropResult) =>
     dropResult.destination &&
     dispatch(
-      editorMoveFront(
-        dropResult.draggableId,
-        props.priority,
-        dropResult.destination.index
-      )
+      editorMoveFront(dropResult.draggableId, dropResult.destination.index)
     )
 });
 

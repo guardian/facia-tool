@@ -2,9 +2,6 @@ import { State } from 'types/State';
 
 const state = {
   confirmModal: null,
-  router: {
-    location: { pathname: '/v2/editorial', search: '', state: '', hash: '' }
-  },
   fronts: {
     frontsConfig: {
       data: {

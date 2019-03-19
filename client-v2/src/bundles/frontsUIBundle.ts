@@ -90,29 +90,22 @@ const editorOpenFront = (frontId: string, priority: string): EditorAddFront => {
   };
 };
 
-const editorMoveFront = (
-  frontId: string,
-  priority: string,
-  toIndex: number
-): EditorMoveFront => {
+const editorMoveFront = (frontId: string, toIndex: number): EditorMoveFront => {
   events.moveFront(frontId);
   return {
     type: 'EDITOR_MOVE_FRONT',
-    payload: { frontId, priority, toIndex },
+    payload: { frontId, toIndex },
     meta: {
       persistTo: 'openFrontIds'
     }
   };
 };
 
-const editorCloseFront = (
-  frontId: string,
-  priority: string
-): EditorCloseFront => {
+const editorCloseFront = (frontId: string): EditorCloseFront => {
   events.removeFront(frontId);
   return {
     type: EDITOR_CLOSE_FRONT,
-    payload: { frontId, priority },
+    payload: { frontId },
     meta: {
       persistTo: 'openFrontIds'
     }
@@ -274,6 +267,24 @@ const clearArticleFragmentSelection = (state: State, frontId: string) => ({
   }
 });
 
+const getFrontPosition = (
+  frontId: string,
+  frontIdsByPriority: {
+    [priority: string]: string[];
+  }
+): { frontId: string; priority: string; index: number } | void => {
+  const positions = Object.entries(frontIdsByPriority)
+    .filter(([priority, frontIds]) => frontIds.indexOf(frontId) !== -1)
+    .map(([priority, frontIds]) => ({
+      frontId,
+      priority,
+      index: frontIds.indexOf(frontId)
+    }));
+  if (positions.length) {
+    return positions[0];
+  }
+};
+
 const reducer = (state: State = defaultState, action: Action): State => {
   switch (action.type) {
     case EDITOR_OPEN_CURRENT_FRONTS_MENU: {
@@ -303,17 +314,21 @@ const reducer = (state: State = defaultState, action: Action): State => {
       };
     }
     case EDITOR_MOVE_FRONT: {
-      const priority = action.payload.priority;
-      const maxIndex = state.frontIdsByPriority[priority].length - 1;
-      const frontIndex = state.frontIdsByPriority[priority].indexOf(
-        action.payload.frontId
+      const maybeFrontPosition = getFrontPosition(
+        action.payload.frontId,
+        state.frontIdsByPriority
       );
+      if (!maybeFrontPosition) {
+        return state;
+      }
+      const { priority, index } = maybeFrontPosition;
+      const maxIndex = state.frontIdsByPriority[priority].length - 1;
       const indexesOutOfBounds = action.payload.toIndex > maxIndex;
-      if (frontIndex === -1 || indexesOutOfBounds) {
+      if (indexesOutOfBounds) {
         return state;
       }
       const newFrontIds = state.frontIdsByPriority[priority].slice();
-      newFrontIds.splice(frontIndex, 1);
+      newFrontIds.splice(index, 1);
       newFrontIds.splice(action.payload.toIndex, 0, action.payload.frontId);
       return {
         ...state,
@@ -324,7 +339,14 @@ const reducer = (state: State = defaultState, action: Action): State => {
       };
     }
     case EDITOR_CLOSE_FRONT: {
-      const priority = action.payload.priority;
+      const maybeFrontPosition = getFrontPosition(
+        action.payload.frontId,
+        state.frontIdsByPriority
+      );
+      if (!maybeFrontPosition) {
+        return state;
+      }
+      const { priority } = maybeFrontPosition;
       return {
         ...state,
         frontIdsByPriority: {
