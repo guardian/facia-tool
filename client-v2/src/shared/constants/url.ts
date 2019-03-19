@@ -7,7 +7,7 @@ export default {
   },
   media: {
     apiBaseUrl: pageConfig.apiBaseUrl,
-    mediaBaseUrl: 'http://media',
+    mediaBaseUrl: 'https://media',
     usageBaseUrl: '/api/usage',
     imgIXDomainExpr: /^https:\/\/i\.guim\.co\.uk\/img\/static\//,
     imageCdnDomain: '.guim.co.uk',
