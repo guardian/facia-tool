@@ -55,7 +55,7 @@ class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec:
         logger.error(s"Request to capi preview with url $url failed with response $response, ${response.body}")
       }
       Cached(60) {
-        Status(response.status)(rewriteBody(response.body)).as("application/javascript")
+        Ok(rewriteBody(response.body)).as("application/javascript")
       }
     }
   }
@@ -76,7 +76,7 @@ class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec:
         logger.error(s"Request to live capi with url $url failed with response $response, ${response.body}")
       }
       Cached(60) {
-        Status(response.status)(rewriteBody(response.body)).as("application/javascript")
+        Ok(rewriteBody(response.body)).as("application/javascript")
       }
     }
   }
