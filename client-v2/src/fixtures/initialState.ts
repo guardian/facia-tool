@@ -657,6 +657,7 @@ const state = {
     showOpenFrontsMenu: false,
     frontIds: ['sc-johnson-partner-zone'],
     frontIdsByPriority: {},
+    faveFrontIds: [],
     collectionIds: [],
     selectedArticleFragments: {},
     closedOverviews: [],

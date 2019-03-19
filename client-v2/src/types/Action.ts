@@ -22,6 +22,8 @@ import {
   EDITOR_OPEN_FRONT,
   EDITOR_MOVE_FRONT,
   EDITOR_CLOSE_FRONT,
+  EDITOR_STAR_FRONT,
+  EDITOR_UNSTAR_FRONT,
   EDITOR_OPEN_COLLECTION,
   EDITOR_CLOSE_COLLECTION,
   EDITOR_CLEAR_OPEN_FRONTS,
@@ -61,6 +63,20 @@ interface EditorCloseFront {
   payload: { frontId: string };
   meta: PersistMeta;
 }
+
+//TODO persistence
+interface EditorStarFront {
+  type: typeof EDITOR_STAR_FRONT;
+  payload: { frontId: string };
+  // meta: PersistMeta;
+}
+
+interface EditorUnstarFront {
+  type: typeof EDITOR_UNSTAR_FRONT;
+  payload: { frontId: string };
+  // meta: PersistMeta;
+}
+
 interface EditorOpenCollection {
   type: typeof EDITOR_OPEN_COLLECTION;
   payload: { collectionIds: string | string[] };
@@ -269,6 +285,8 @@ type Action =
   | EditorClearOpenFronts
   | EditorSetOpenFronts
   | EditorCloseFront
+  | EditorStarFront
+  | EditorUnstarFront
   | EditorSelectArticleFragment
   | EditorClearArticleFragmentSelection
   | EditorOpenClipboard
@@ -314,6 +332,8 @@ export {
   EditorClearOpenFronts,
   EditorSetOpenFronts,
   EditorCloseFront,
+  EditorStarFront,
+  EditorUnstarFront,
   EditorOpenCollection,
   EditorCloseCollection,
   EditorSelectArticleFragment,

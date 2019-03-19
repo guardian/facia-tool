@@ -2,6 +2,8 @@ import {
   default as innerReducer,
   editorOpenFront,
   editorCloseFront,
+  // editorStarFront, // TODO add tests
+  // editorUnstarFront,
   editorClearOpenFronts,
   editorSetOpenFronts,
   editorOpenCollections,

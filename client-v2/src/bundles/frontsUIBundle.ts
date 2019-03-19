@@ -9,6 +9,8 @@ import {
   EditorClearOpenFronts,
   EditorSetOpenFronts,
   EditorAddFront,
+  EditorStarFront,
+  EditorUnstarFront,
   EditorSelectArticleFragment,
   EditorClearArticleFragmentSelection,
   EditorOpenCollection,
@@ -36,6 +38,8 @@ export const EDITOR_CLOSE_CURRENT_FRONTS_MENU =
 export const EDITOR_OPEN_FRONT = 'EDITOR_OPEN_FRONT';
 export const EDITOR_MOVE_FRONT = 'EDITOR_MOVE_FRONT';
 export const EDITOR_CLOSE_FRONT = 'EDITOR_CLOSE_FRONT';
+export const EDITOR_STAR_FRONT = 'EDITOR_STAR_FRONT';
+export const EDITOR_UNSTAR_FRONT = 'EDITOR_UNSTAR_FRONT';
 export const EDITOR_CLEAR_OPEN_FRONTS = 'EDITOR_CLEAR_OPEN_FRONTS';
 export const EDITOR_SET_OPEN_FRONTS = 'EDITOR_SET_OPEN_FRONTS';
 export const EDITOR_OPEN_COLLECTION = 'EDITOR_OPEN_COLLECTION';
@@ -112,6 +116,27 @@ const editorCloseFront = (frontId: string): EditorCloseFront => {
   };
 };
 
+// TODO: persistence
+const editorStarFront = (frontId: string): EditorStarFront => {
+  return {
+    type: EDITOR_STAR_FRONT,
+    payload: { frontId }
+    // meta: {
+    //   persistTo: 'openFrontIds'
+    // }
+  };
+};
+
+const editorUnstarFront = (frontId: string): EditorUnstarFront => {
+  return {
+    type: EDITOR_UNSTAR_FRONT,
+    payload: { frontId }
+    // meta: {
+    //   persistTo: 'openFrontIds'
+    // }
+  };
+};
+
 const editorClearOpenFronts = (): EditorClearOpenFronts => ({
   type: EDITOR_CLEAR_OPEN_FRONTS,
   meta: {
@@ -180,6 +205,7 @@ interface State {
   frontIdsByPriority: {
     [id: string]: string[];
   };
+  faveFrontIds: string[];
   collectionIds: string[];
   closedOverviews: string[];
   clipboardOpen: boolean;
@@ -262,6 +288,7 @@ const defaultState = {
   showOpenFrontsMenu: false,
   frontIds: [],
   frontIdsByPriority: {},
+  faveFrontIds: [],
   collectionIds: [],
   clipboardOpen: true,
   closedOverviews: [],
@@ -365,6 +392,18 @@ const reducer = (state: State = defaultState, action: Action): State => {
             action.payload.frontId
           )
         }
+      };
+    }
+    case EDITOR_STAR_FRONT: {
+      return {
+        ...state,
+        faveFrontIds: state.faveFrontIds.concat(action.payload.frontId)
+      };
+    }
+    case EDITOR_UNSTAR_FRONT: {
+      return {
+        ...state,
+        faveFrontIds: without(state.faveFrontIds, action.payload.frontId)
       };
     }
     case EDITOR_CLEAR_OPEN_FRONTS: {
@@ -479,6 +518,8 @@ export {
   editorOpenFront,
   editorMoveFront,
   editorCloseFront,
+  editorStarFront,
+  editorUnstarFront,
   editorClearOpenFronts,
   editorSetOpenFronts,
   editorOpenCollections,
