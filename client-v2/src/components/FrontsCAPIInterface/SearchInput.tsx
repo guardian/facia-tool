@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from 'constants/theme';
 import ScrollContainer from '../ScrollContainer';
-import TextInput from '../TextInput';
+import TextInput from '../inputs/TextInput';
 import CAPITagInput from '../FrontsCAPIInterface/TagInput';
 import CAPIFieldFilter from '../FrontsCAPIInterface/FieldFilter';
 import CAPIDateRangeInput from '../FrontsCAPIInterface/DateInput';
