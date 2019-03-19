@@ -170,7 +170,7 @@ async function saveOpenFrontIds(frontsByPriority?: {
   [priority: string]: string[];
 }): Promise<void> {
   try {
-    await pandaFetch(`/userdata/frontIds`, {
+    await pandaFetch(`/userdata/frontIdsByPriority`, {
       method: 'put',
       credentials: 'same-origin',
       body: JSON.stringify(frontsByPriority),
