@@ -90,7 +90,7 @@ class FrontsEdit extends React.Component<Props> {
           onSelectFront={id =>
             this.props.editorOpenFront(id, this.props.match.params.priority)
           }
-          onFavoriteFront={this.props.editorStarFront}
+          onStarFront={this.props.editorStarFront}
         />
       </FrontsEditContainer>
     );

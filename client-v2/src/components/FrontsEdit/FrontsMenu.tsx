@@ -85,7 +85,7 @@ const FrontsMenuSearchImage = styled('div')`
 
 interface Props {
   onSelectFront: (frontId: string) => void;
-  onFavoriteFront: (frontId: string) => void;
+  onStarFront: (frontId: string) => void;
 }
 
 interface State {
@@ -105,9 +105,9 @@ class FrontsMenu extends React.Component<Props, State> {
     this.props.onSelectFront(frontId);
   };
 
-  public onFavoriteFront = (frontId: string) => {
+  public onStarFront = (frontId: string) => {
     alert('favoriting' + frontId);
-    this.props.onFavoriteFront(frontId);
+    this.props.onStarFront(frontId);
   };
 
   public onInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -166,7 +166,7 @@ class FrontsMenu extends React.Component<Props, State> {
               </FrontsMenuSubHeading>
               <FrontsList
                 onSelect={this.onSelectFront}
-                onFavorite={this.onFavoriteFront}
+                onStar={this.onStarFront}
                 searchString={this.state.searchString}
               />
             </FrontsMenuContent>

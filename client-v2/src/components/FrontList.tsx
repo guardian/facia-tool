@@ -10,7 +10,7 @@ interface Props {
   fronts: Array<{ id: string; isOpen: boolean }>;
   // favouriteFronts: Array<{ id: string }>;
   onSelect: (frontId: string) => void;
-  onFavorite: (frontId: string) => void;
+  onStar: (frontId: string) => void;
   searchString: string;
 }
 
@@ -73,7 +73,7 @@ const ListLabel = styled('span')<{ isActive?: boolean }>`
     `};
 `;
 
-const FrontList = ({ fronts, onSelect, onFavorite, searchString }: Props) => {
+const FrontList = ({ fronts, onSelect, onStar, searchString }: Props) => {
   if (!fronts) {
     return null;
   }
@@ -98,7 +98,7 @@ const FrontList = ({ fronts, onSelect, onFavorite, searchString }: Props) => {
           <ButtonFavorite
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.stopPropagation();
-              onFavorite(front.id);
+              onStar(front.id);
             }}
           >
             <StarIcon
