@@ -24,6 +24,7 @@ import FadeIn from './animation/FadeIn';
 import ContentContainer from './layout/ContentContainer';
 import { css } from 'styled-components';
 import { events } from 'services/GA';
+import CollectionMetaContainer from './collection/CollectionMetaContainer';
 
 export const createCollectionId = ({ id }: Collection) => `collection-${id}`;
 
@@ -81,17 +82,6 @@ const LockedCollectionFlag = styled('span')`
   color: ${({ theme }) => theme.shared.base.colors.text};
   height: 40px;
   line-height: 40px;
-`;
-
-const CollectionMetaContainer = styled('div')`
-  display: flex;
-  flex-basis: 30%;
-  position: relative;
-  font-family: TS3TextSans;
-  font-size: 12px;
-  font-weight: normal;
-  justify-content: space-between;
-  cursor: pointer;
 `;
 
 const CollectionMetaBase = styled('span')`
