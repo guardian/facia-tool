@@ -6,8 +6,8 @@ interface ColouredQuoteProps {
 
 const ColouredQuote = ({ colour }: ColouredQuoteProps) => (
   <svg
-    width="0.5rem"
-    height="1.2rem"
+    width="8px"
+    height="19px"
     fill={colour}
     viewBox="0 0 35 25"
     xmlns="http://www.w3.org/2000/svg"
