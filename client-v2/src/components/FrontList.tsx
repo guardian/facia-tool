@@ -1,16 +1,45 @@
 import React from 'react';
 import { css } from 'styled-components';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 
 import ButtonCircular from 'shared/components/input/ButtonCircular';
-import { MoreIcon } from 'shared/components/icons/Icons';
+import { MoreIcon, StarIcon } from 'shared/components/icons/Icons';
 import TextHighlighter from './util/TextHighlighter';
 
 interface Props {
   fronts: Array<{ id: string; isOpen: boolean }>;
+  // favouriteFronts: Array<{ id: string }>;
   onSelect: (frontId: string) => void;
+  onFavorite: (frontId: string) => void;
   searchString: string;
 }
+
+const ButtonAdd = styled(ButtonCircular)`
+  background-color: ${({ theme }) => theme.base.colors.frontListButton};
+  position: absolute;
+  top: 8px;
+  right: 5px;
+  padding: 3px;
+`;
+
+const ButtonFavorite = styled(ButtonCircular)`
+  background-color: ${({ theme }) => theme.shared.colors.blackLight};
+  position: absolute;
+  top: 8px;
+  right: 35px;
+  :hover {
+    background-color: ${({ theme }) => theme.shared.colors.blackLight};
+  }
+  :hover > svg .fill {
+    fill: ${({ theme }) => theme.shared.colors.greyMedium};
+  }
+`;
+
+const ListContainer = styled('ul')`
+  list-style: none;
+  margin-top: 0;
+  padding-left: 0;
+`;
 
 const ListItem = styled('li')<{ isActive?: boolean }>`
   position: relative;
@@ -25,19 +54,18 @@ const ListItem = styled('li')<{ isActive?: boolean }>`
     css`
       cursor: pointer;
       &:hover {
-        background-color: rgba(255, 255, 255, 0.05);
+        background-color: ${({ theme }) => theme.base.colors.frontListButton};
+      }
+      &:hover ${ButtonFavorite} {
+        background-color: ${({ theme }) => theme.base.colors.frontListButton};
       }
     `};
 `;
 
-const ListContainer = styled('ul')`
-  list-style: none;
-  margin-top: 0;
-  padding-left: 0;
-`;
-
 const ListLabel = styled('span')<{ isActive?: boolean }>`
-  max-width: calc(100% - 30px);
+  max-width: calc(100% - 60px);
+  display: inline-block;
+  word-break: break-all;
   ${({ isActive }) =>
     !isActive &&
     css`
@@ -45,15 +73,7 @@ const ListLabel = styled('span')<{ isActive?: boolean }>`
     `};
 `;
 
-const ButtonAdd = styled(ButtonCircular)`
-  background-color: ${({ theme }) => theme.base.colors.frontListButton};
-  position: absolute;
-  top: 8px;
-  right: 5px;
-  padding: 3px;
-`;
-
-const FrontList = ({ fronts, onSelect, searchString }: Props) => {
+const FrontList = ({ fronts, onSelect, onFavorite, searchString }: Props) => {
   if (!fronts) {
     return null;
   }
@@ -74,6 +94,14 @@ const FrontList = ({ fronts, onSelect, searchString }: Props) => {
               searchString={searchString}
             />
           </ListLabel>
+          {/* // onUnFavorite */}
+          <ButtonFavorite onClick={() => onFavorite(front.id)}>
+            <StarIcon
+              size="l"
+              fill={theme.shared.colors.blackLight}
+              outline={theme.shared.colors.greyMedium}
+            />
+          </ButtonFavorite>
           {!front.isOpen && (
             <ButtonAdd>
               <MoreIcon />
