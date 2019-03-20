@@ -24,6 +24,7 @@ import { theme as sharedTheme } from 'shared/constants/theme';
 
 const FrontHeader = styled(FrontSectionHeader)`
   display: flex;
+  border-right: 1px solid #767676;
 `;
 
 const FrontHeaderMeta = styled('div')`
@@ -33,7 +34,6 @@ const FrontHeaderMeta = styled('div')`
   font-family: TS3TextSans;
   font-size: 14px;
   white-space: nowrap;
-  border-right: 1px solid #767676;
 `;
 
 const FrontsHeaderText = styled('span')`
