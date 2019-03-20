@@ -64,7 +64,6 @@ const ArticleBodyByline = styled('div')`
 `;
 
 const ArticleBodyQuoteContainer = styled('span')`
-  margin-left: 0.3rem;
   margin-right: 0.1rem;
 `;
 
