@@ -17,7 +17,8 @@ import {
   editorOpenAllOverviews,
   createSelectEditorFrontsByPriority,
   editorMoveFront,
-  selectEditorFrontIds
+  selectEditorFrontIds,
+  selectEditorFrontIdsByPriority
 } from '../frontsUIBundle';
 import initialState from 'fixtures/initialState';
 import { Action } from 'types/Action';
@@ -39,6 +40,24 @@ const reducer = (state: State | undefined, action: Action): GlobalState =>
 
 describe('frontsUIBundle', () => {
   describe('selectors', () => {
+    describe('selectEditorFrontIdsByPriority', () => {
+      it('should handle empty priorities', () => {
+        expect(
+          selectEditorFrontIdsByPriority(initialState, 'editorial')
+        ).toEqual([]);
+      });
+      it('should select priorities', () => {
+        const stateWithFronts = {
+          editor: {
+            ...initialState.editor,
+            frontIdsByPriority: { commercial: ['1', '2'] }
+          }
+        } as any;
+        expect(
+          selectEditorFrontIdsByPriority(stateWithFronts, 'commercial')
+        ).toEqual(['1', '2']);
+      });
+    });
     describe('createSelectEditorFrontsByPriority', () => {
       const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
       it('should select nothing if nothing is there', () => {
