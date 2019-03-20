@@ -241,8 +241,10 @@ const createSelectFrontIdAndOpenStateByPriority = () => {
 const selectEditorFrontIds = (state: GlobalState) =>
   state.editor.frontIdsByPriority;
 
-const selectEditorFrontIdsByPriority = (state: GlobalState, priority: string): string[] =>
-  state.editor.frontIdsByPriority[priority] || [];
+const selectEditorFrontIdsByPriority = (
+  state: GlobalState,
+  priority: string
+): string[] => state.editor.frontIdsByPriority[priority] || [];
 
 const selectHasMultipleFrontsOpen = createSelector(
   selectEditorFrontIdsByPriority,
