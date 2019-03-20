@@ -2,7 +2,8 @@ import React from 'react';
 import { styled } from 'shared/constants/theme';
 
 const ToolTip = styled('div')<{ text: string }>`
-  font-family: TS3TextSans-Bold;
+  font-family: TS3TextSans;
+  font-weight: bold;
   font-size: 12px;
   color: ${({ theme }) => theme.shared.button.color};
   background-color: ${({ theme }) => theme.shared.base.colors.button};

@@ -63,7 +63,7 @@ const Container = styled('div')`
 const Title = styled(`h2`)`
   margin: 2px 0 0;
   vertical-align: top;
-  font-family: GHGuardianHeadline-Medium;
+  font-family: GHGuardianHeadline;
   font-size: 16px;
   font-weight: 500;
 `;
@@ -96,7 +96,8 @@ const ScheduledPublication = styled(FirstPublished)`
 const Tone = styled('div')`
   padding-top: 2px;
   font-size: 12px;
-  font-family: TS3TextSans-Bold;
+  font-family: TS3TextSans;
+  font-weight: bold;
 `;
 
 const Body = styled('div')`

@@ -6,5 +6,6 @@ export default styled('div')`
   font-size: 32px;
   line-height: 40px;
   color: ${({ theme }) => theme.shared.base.colors.textLight};
-  font-family: GHGuardianHeadline-Bold;
+  font-family: GHGuardianHeadline;
+  font-weight: bold;
 `;

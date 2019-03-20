@@ -3,7 +3,8 @@ import { styled } from 'shared/constants/theme';
 import { sanitizeHTML } from 'shared/util/sanitizeHTML';
 
 const Wrapper = styled('span')`
-  font-family: GhGuardianHeadline-Medium;
+  font-family: GHGuardianHeadline;
+  font-weight: 500;
   padding-top: 2px;
   font-size: 16px;
 `;
