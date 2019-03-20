@@ -43,7 +43,7 @@ const Container = styled(ContentContainer)<ContainerProps>`
 `;
 
 const ContainerBody = styled.div`
-  width: 380px;
+  width: 360px;
 `;
 
 const FrontCollectionsOverview = ({

@@ -62,7 +62,6 @@ const Container = styled.div`
   font-size: 14px;
   min-height: 2.5em;
   margin-top: 0.75em;
-  margin-right: 0.75em;
   padding: 0.55em 0.75em;
   text-align: left;
   text-decoration: none;
