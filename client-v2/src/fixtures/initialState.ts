@@ -655,9 +655,9 @@ const state = {
   clipboard: ['56a3b407-741c-439f-a678-175abea44a9f'],
   editor: {
     showOpenFrontsMenu: false,
-    frontIds: ['sc-johnson-partner-zone'],
+    frontIds: [],
     frontIdsByPriority: {},
-    faveFrontIds: [],
+    faveFrontIdsByPriority: {},
     collectionIds: [],
     selectedArticleFragments: {},
     closedOverviews: [],

@@ -94,7 +94,6 @@ const FrontList = ({ fronts, onSelect, onStar, searchString }: Props) => {
               searchString={searchString}
             />
           </ListLabel>
-          {/* // onUnFavorite */}
           <ButtonFavorite
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.stopPropagation();

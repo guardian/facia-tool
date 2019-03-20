@@ -27,7 +27,7 @@ interface Props {
   frontIds: string[];
   staleFronts: { [id: string]: boolean };
   editorOpenFront: (frontId: string, priority: string) => void;
-  editorStarFront: (frontId: string) => void;
+  editorStarFront: (frontId: string, priority: string) => void;
   getFrontsConfig: () => void;
   isCurrentFrontsMenuOpen: boolean;
 }
@@ -90,7 +90,9 @@ class FrontsEdit extends React.Component<Props> {
           onSelectFront={id =>
             this.props.editorOpenFront(id, this.props.match.params.priority)
           }
-          onStarFront={this.props.editorStarFront}
+          onStarFront={id =>
+            this.props.editorStarFront(id, this.props.match.params.priority)
+          }
         />
       </FrontsEditContainer>
     );
@@ -111,7 +113,8 @@ const mapDispatchToProps = (dispatch: Dispatch, props: Props) => ({
   editorOpenFront: (id: string) => {
     dispatch(editorOpenFront(id, props.match.params.priority));
   },
-  editorStarFront: (id: string) => dispatch(editorStarFront(id)),
+  editorStarFront: (id: string) =>
+    dispatch(editorStarFront(id, props.match.params.priority)),
   getFrontsConfig: () => dispatch(getFrontsConfig())
 });
 

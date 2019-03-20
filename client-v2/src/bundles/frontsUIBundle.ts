@@ -117,20 +117,26 @@ const editorCloseFront = (frontId: string): EditorCloseFront => {
 };
 
 // TODO: persistence
-const editorStarFront = (frontId: string): EditorStarFront => {
+const editorStarFront = (
+  frontId: string,
+  priority: string
+): EditorStarFront => {
   return {
     type: EDITOR_STAR_FRONT,
-    payload: { frontId }
+    payload: { frontId, priority }
     // meta: {
     //   persistTo: 'openFrontIds'
     // }
   };
 };
 
-const editorUnstarFront = (frontId: string): EditorUnstarFront => {
+const editorUnstarFront = (
+  frontId: string,
+  priority: string
+): EditorUnstarFront => {
   return {
     type: EDITOR_UNSTAR_FRONT,
-    payload: { frontId }
+    payload: { frontId, priority }
     // meta: {
     //   persistTo: 'openFrontIds'
     // }
@@ -205,7 +211,9 @@ interface State {
   frontIdsByPriority: {
     [id: string]: string[];
   };
-  faveFrontIds: string[];
+  faveFrontIdsByPriority: {
+    [id: string]: string[];
+  };
   collectionIds: string[];
   closedOverviews: string[];
   clipboardOpen: boolean;
@@ -288,7 +296,7 @@ const defaultState = {
   showOpenFrontsMenu: false,
   frontIds: [],
   frontIdsByPriority: {},
-  faveFrontIds: [],
+  faveFrontIdsByPriority: {},
   collectionIds: [],
   clipboardOpen: true,
   closedOverviews: [],
@@ -395,15 +403,28 @@ const reducer = (state: State = defaultState, action: Action): State => {
       };
     }
     case EDITOR_STAR_FRONT: {
+      const priority = action.payload.priority;
       return {
         ...state,
-        faveFrontIds: state.faveFrontIds.concat(action.payload.frontId)
+        faveFrontIdsByPriority: {
+          ...state.faveFrontIdsByPriority,
+          [priority]: (state.faveFrontIdsByPriority[priority] || []).concat(
+            action.payload.frontId
+          )
+        }
       };
     }
     case EDITOR_UNSTAR_FRONT: {
+      const priority = action.payload.priority;
       return {
         ...state,
-        faveFrontIds: without(state.faveFrontIds, action.payload.frontId)
+        frontIdsByPriority: {
+          ...state.faveFrontIdsByPriority,
+          [priority]: without(
+            state.faveFrontIdsByPriority[priority],
+            action.payload.frontId
+          )
+        }
       };
     }
     case EDITOR_CLEAR_OPEN_FRONTS: {

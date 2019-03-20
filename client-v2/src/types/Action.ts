@@ -67,13 +67,13 @@ interface EditorCloseFront {
 //TODO persistence
 interface EditorStarFront {
   type: typeof EDITOR_STAR_FRONT;
-  payload: { frontId: string };
+  payload: { frontId: string; priority: string };
   // meta: PersistMeta;
 }
 
 interface EditorUnstarFront {
   type: typeof EDITOR_UNSTAR_FRONT;
-  payload: { frontId: string };
+  payload: { frontId: string; priority: string };
   // meta: PersistMeta;
 }
 
