@@ -1,5 +1,6 @@
 import { Middleware } from 'redux';
 import uniq from 'lodash/uniq';
+import mapValues from 'lodash/mapValues';
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import { BATCH } from 'redux-batched-actions';
@@ -11,7 +12,8 @@ import { selectSharedState } from 'shared/selectors/shared';
 import { saveOpenFrontIds } from 'services/faciaApi';
 import { NestedArticleFragment } from 'shared/types/Collection';
 import { denormaliseClipboard } from 'util/clipboardUtils';
-import { getFront, selectEditorFrontIds } from 'selectors/frontsSelectors';
+import { getFront } from 'selectors/frontsSelectors';
+import { selectEditorFrontIds } from 'bundles/frontsUIBundle';
 
 const updateStateFromUrlChange: Middleware<{}, State, Dispatch> = ({
   dispatch,
@@ -185,7 +187,9 @@ const persistClipboardOnEdit = (
 };
 
 const persistOpenFrontsOnEdit: (
-  persistFn?: (persistFrontIds?: string[]) => Promise<void>
+  persistFn?: (
+    persistFrontIds?: { [priority: string]: string[] }
+  ) => Promise<void>
 ) => Middleware<{}, State, Dispatch> = (
   persistFrontIds = saveOpenFrontIds
 ) => store => next => (action: Action) => {
@@ -202,13 +206,15 @@ const persistOpenFrontsOnEdit: (
   }
   const result = next(action);
   const state = store.getState();
-  const frontIds = selectEditorFrontIds(state).filter(
-    // Only persist fronts that exist in the state, clearing out
-    // fronts that have been changed or deleted.
-    frontId => !!getFront(state, frontId)
+  const frontIdsByPriority = selectEditorFrontIds(state);
+
+  // Only persist fronts that exist in the state, clearing out
+  // fronts that have been deleted.
+  const filteredFrontIdsByPriority = mapValues(frontIdsByPriority, frontIds =>
+    frontIds.filter(frontId => !!getFront(state, frontId))
   );
   // Now they're in the state, persist the relevant front ids.
-  persistFrontIds(frontIds);
+  persistFrontIds(filteredFrontIdsByPriority);
   return result;
 };
 

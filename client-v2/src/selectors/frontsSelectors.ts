@@ -20,8 +20,6 @@ interface FrontsByPriority {
   [id: string]: FrontConfig[];
 }
 
-const selectEditorFrontIds = (state: State) => state.editor.frontIds;
-
 const getFronts = (state: State): FrontConfigMap =>
   frontsConfigSelectors.selectAll(state).fronts || {};
 
@@ -160,13 +158,6 @@ const getCollectionConfigs = (
   return [];
 };
 
-const hasMultipleFrontsOpenSelector = createSelector(
-  selectEditorFrontIds,
-  frontIds => {
-    return frontIds.length > 1;
-  }
-);
-
 const getUnpublishedChangesStatus = (
   collectionId: string,
   unpublishedChanges: { [id: string]: boolean }
@@ -299,7 +290,5 @@ export {
   hasUnpublishedChangesSelector,
   clipboardSelector,
   visibleArticlesSelector,
-  visibleFrontArticlesSelector,
-  hasMultipleFrontsOpenSelector,
-  selectEditorFrontIds
+  visibleFrontArticlesSelector
 };

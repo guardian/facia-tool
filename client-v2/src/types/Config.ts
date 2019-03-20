@@ -33,7 +33,11 @@ interface Config {
   collectionMetadata: Metadata[];
   capiLiveUrl: string;
   capiPreviewUrl: string;
+  // frontIds is deprecated -- use frontIdsByPriority.
   frontIds: string[];
+  frontIdsByPriority: {
+    [id: string]: string[];
+  };
   clipboardArticles: NestedArticleFragment[];
 }
 

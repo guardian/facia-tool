@@ -29,11 +29,11 @@ import { getFront } from 'selectors/frontsSelectors';
 import { FrontConfig } from 'types/FaciaApi';
 import { visibleFrontArticlesSelector } from 'selectors/frontsSelectors';
 import { VisibleArticlesResponse } from 'types/FaciaApi';
-import { initialiseFront } from 'actions/Fronts';
 import { events } from 'services/GA';
 import FrontDetailView from './FrontDetailView';
 import CollectionItem from './CollectionComponents/CollectionItem';
 import { ValidationResponse } from 'shared/util/validateImageSrc';
+import { initialiseCollectionsForFront } from 'actions/Collections';
 
 const FrontContainer = styled('div')`
   display: flex;
@@ -139,6 +139,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                   <Collection
                     key={collectionId}
                     id={collectionId}
+                    priority={front.priority}
                     frontId={this.props.id}
                     alsoOn={this.props.alsoOn}
                     canPublish={this.props.browsingStage !== 'live'}
@@ -262,7 +263,7 @@ const mapDispatchToProps = (
   return {
     dispatch,
     initialiseFront: () =>
-      dispatch(initialiseFront(props.id, props.browsingStage)),
+      dispatch(initialiseCollectionsForFront(props.id, props.browsingStage)),
     selectArticleFragment: (
       frontId: string,
       articleFragmentId: string,

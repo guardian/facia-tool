@@ -247,6 +247,7 @@ const state = {
       }
     ],
     frontIds: [],
+    frontIdsByPriority: {},
     capiLiveUrl: 'https://fronts.local.dev-gutools.co.uk/api/live/',
     capiPreviewUrl: 'https://fronts.local.dev-gutools.co.uk/api/preview/'
   },
@@ -652,6 +653,7 @@ const state = {
   editor: {
     showOpenFrontsMenu: false,
     frontIds: ['sc-johnson-partner-zone'],
+    frontIdsByPriority: {},
     collectionIds: [],
     selectedArticleFragments: {},
     closedOverviews: [],

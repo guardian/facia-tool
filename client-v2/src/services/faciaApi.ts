@@ -166,12 +166,14 @@ async function saveClipboard(
   }
 }
 
-async function saveOpenFrontIds(frontIds?: string[]): Promise<void> {
+async function saveOpenFrontIds(frontsByPriority?: {
+  [priority: string]: string[];
+}): Promise<void> {
   try {
-    await pandaFetch(`/userdata/frontIds`, {
+    await pandaFetch(`/userdata/frontIdsByPriority`, {
       method: 'put',
       credentials: 'same-origin',
-      body: JSON.stringify(frontIds),
+      body: JSON.stringify(frontsByPriority),
       headers: {
         'Content-Type': 'application/json'
       }

@@ -1,7 +1,6 @@
 import configureStore from 'util/configureStore';
 import fetchMock from 'fetch-mock';
 import initialState from 'fixtures/initialState';
-import { initialiseFront } from 'actions/Fronts';
 import { scJohnsonPartnerZoneCollection } from 'fixtures/collectionsEndpointResponse';
 import { articlesForScJohnsonPartnerZone } from 'fixtures/capiEndpointResponse';
 import { selectIsCollectionOpen } from 'bundles/frontsUIBundle';
@@ -10,6 +9,7 @@ import {
   articleFragmentSelector,
   selectSharedState
 } from 'shared/selectors/shared';
+import { initialiseCollectionsForFront } from 'actions/Collections';
 
 describe('Fronts actions', () => {
   describe('initialiseFront', () => {
@@ -26,7 +26,7 @@ describe('Fronts actions', () => {
       );
       const store = configureStore(initialState);
 
-      await store.dispatch(initialiseFront(
+      await store.dispatch(initialiseCollectionsForFront(
         'sc-johnson-partner-zone',
         'draft'
       ) as any);

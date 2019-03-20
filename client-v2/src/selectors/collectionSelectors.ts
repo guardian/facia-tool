@@ -1,9 +1,5 @@
 import { State } from 'types/State';
-import {
-  getCollectionConfig,
-  getFront,
-  selectEditorFrontIds
-} from './frontsSelectors';
+import { getCollectionConfig } from './frontsSelectors';
 import {
   selectSharedState,
   createArticlesInCollectionSelector,
@@ -12,6 +8,7 @@ import {
 import { isDirty } from 'redux-form';
 import { CollectionItemSets } from 'shared/types/Collection';
 import flatten from 'lodash/flatten';
+import { createSelectEditorFrontsByPriority } from 'bundles/frontsUIBundle';
 
 const selectCollection = createCollectionSelector();
 
@@ -43,13 +40,15 @@ function collectionParamsSelector(
   return params;
 }
 
-const collectionsInOpenFrontsSelector = (state: State): string[] => {
-  const openFrontIds = selectEditorFrontIds(state);
-  const openFronts = openFrontIds
-    .map(frontId => getFront(state, frontId))
-    .filter(Boolean); // TODO How do we want to handle non-existent frontconfigs?
-  return flatten(openFronts.map(front => front.collections));
-};
+function createCollectionsInOpenFrontsSelector() {
+  const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
+  return (state: State, priority: string): string[] => {
+    const openFrontsForPriority = selectEditorFrontsByPriority(state, {
+      priority
+    });
+    return flatten(openFrontsForPriority.map(front => front.collections));
+  };
+}
 
 const isCollectionLockedSelector = (state: State, id: string): boolean =>
   !!getCollectionConfig(state, id).uneditable;
@@ -57,7 +56,7 @@ const isCollectionLockedSelector = (state: State, id: string): boolean =>
 const isCollectionBackfilledSelector = (state: State, id: string): boolean =>
   !!getCollectionConfig(state, id).backfill;
 
-const collectionHasUnsavedArticleEditsWarningSelector = () => {
+const createCollectionHasUnsavedArticleEditsWarningSelector = () => {
   const articlesInCollectionSelector = createArticlesInCollectionSelector();
 
   return (
@@ -78,6 +77,6 @@ export {
   collectionParamsSelector,
   isCollectionLockedSelector,
   isCollectionBackfilledSelector,
-  collectionsInOpenFrontsSelector,
-  collectionHasUnsavedArticleEditsWarningSelector as createCollectionHasUnsavedArticleEditsWarningSelector
+  createCollectionsInOpenFrontsSelector,
+  createCollectionHasUnsavedArticleEditsWarningSelector
 };

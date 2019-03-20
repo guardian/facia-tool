@@ -15,7 +15,9 @@ import {
   editorOpenClipboard,
   editorCloseAllOverviews,
   editorOpenAllOverviews,
-  selectEditorFrontsByPriority
+  createSelectEditorFrontsByPriority,
+  editorMoveFront,
+  selectEditorFrontIds
 } from '../frontsUIBundle';
 import initialState from 'fixtures/initialState';
 import { Action } from 'types/Action';
@@ -25,7 +27,6 @@ import {
 } from 'shared/actions/ArticleFragments';
 import { removeClipboardArticleFragment } from 'actions/Clipboard';
 import { State as GlobalState } from 'types/State';
-import { selectEditorFrontIds } from 'selectors/frontsSelectors';
 
 type State = ReturnType<typeof innerReducer>;
 
@@ -38,38 +39,109 @@ const reducer = (state: State | undefined, action: Action): GlobalState =>
 
 describe('frontsUIBundle', () => {
   describe('selectors', () => {
-    it('should select editor fronts by priority', () => {
-      expect(
-        selectEditorFrontsByPriority(initialState, { priority: 'commercial' })
-          .length
-      ).toEqual(1);
-    });
-    it('should memoize editor fronts by priority', () => {
-      expect(
-        selectEditorFrontsByPriority(initialState, { priority: 'commercial' })
-      ).toBe(
-        selectEditorFrontsByPriority(initialState, { priority: 'commercial' })
-      );
+    describe('createSelectEditorFrontsByPriority', () => {
+      const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
+      it('should select nothing if nothing is there', () => {
+        expect(
+          selectEditorFrontsByPriority(initialState, { priority: 'commercial' })
+            .length
+        ).toEqual(0);
+      });
+      it('should select editor fronts by priority', () => {
+        const stateWithFronts = {
+          ...initialState,
+          fronts: {
+            frontsConfig: {
+              data: {
+                fronts: {
+                  '1': { id: '1', priority: 'commercial' },
+                  '2': { id: '2', priority: 'commercial' },
+                  '3': { id: '3', priority: 'editorial' }
+                }
+              }
+            }
+          },
+          editor: {
+            ...initialState.editor,
+            frontIdsByPriority: { commercial: ['1', '2'] }
+          }
+        } as any;
+        expect(
+          selectEditorFrontsByPriority(stateWithFronts, {
+            priority: 'commercial'
+          })
+        ).toEqual([
+          { id: '1', priority: 'commercial' },
+          { id: '2', priority: 'commercial' }
+        ]);
+      });
+      it('should memoize editor fronts by priority', () => {
+        expect(
+          selectEditorFrontsByPriority(initialState, { priority: 'commercial' })
+        ).toBe(
+          selectEditorFrontsByPriority(initialState, { priority: 'commercial' })
+        );
+      });
     });
   });
   describe('reducer', () => {
+    it('should move a front within the open editor fronts by ID', () => {
+      const state = {
+        ...initialState.editor,
+        frontIdsByPriority: { editorial: ['1', '2', '3'] }
+      };
+      const newState = reducer(state as any, editorMoveFront('3', 0));
+      expect(selectEditorFrontIds(newState)).toEqual({
+        editorial: ['3', '1', '2']
+      });
+    });
+    it('should do nothing when the front is not found', () => {
+      const state = {
+        ...initialState.editor,
+        frontIdsByPriority: { editorial: ['1', '2', '3'] }
+      };
+      const newState = reducer(state as any, editorMoveFront('who?', 0));
+      expect(selectEditorFrontIds(newState)).toEqual({
+        editorial: ['1', '2', '3']
+      });
+    });
+    it('should do nothing when the index is out of bounds', () => {
+      const state = {
+        ...initialState.editor,
+        frontIdsByPriority: { editorial: ['1', '2', '3'] }
+      };
+      const newState = reducer(
+        state,
+        editorMoveFront('sc-johnson-partner-zone', 5)
+      );
+      expect(selectEditorFrontIds(newState)).toEqual({
+        editorial: ['1', '2', '3']
+      });
+    });
     it('should add a front to the open editor fronts', () => {
-      const state = reducer(undefined, editorOpenFront('exampleFront') as any);
-      expect(selectEditorFrontIds(state)).toEqual(['exampleFront']);
+      const state = reducer(undefined, editorOpenFront(
+        'exampleFront',
+        'editorial'
+      ) as any);
+      expect(selectEditorFrontIds(state)).toEqual({
+        editorial: ['exampleFront']
+      });
     });
     it('should remove a front to the open editor fronts', () => {
       const state = reducer(
-        { frontIds: ['front1', 'front2'] } as any,
+        { frontIdsByPriority: { editorial: ['front1', 'front2'] } } as any,
         editorCloseFront('front1')
       );
-      expect(selectEditorFrontIds(state)).toEqual(['front2']);
+      expect(selectEditorFrontIds(state)).toEqual({
+        editorial: ['front2']
+      });
     });
     it('should clear fronts to the open editor fronts', () => {
       const state = reducer(
         { frontIds: ['front1', 'front2'] } as any,
         editorClearOpenFronts()
       );
-      expect(selectEditorFrontIds(state)).toEqual([]);
+      expect(selectEditorFrontIds(state)).toEqual({});
     });
     it('should clear the article fragment selection when selected article fragments are removed from a front', () => {
       const state = reducer(
@@ -133,9 +205,11 @@ describe('frontsUIBundle', () => {
     it('should set the fronts to the open editor fronts', () => {
       const state = reducer(
         { frontIds: ['front1', 'front2'] } as any,
-        editorSetOpenFronts(['front1', 'front3'])
+        editorSetOpenFronts({ editorial: ['front1', 'front3'] })
       );
-      expect(selectEditorFrontIds(state)).toEqual(['front1', 'front3']);
+      expect(selectEditorFrontIds(state)).toEqual({
+        editorial: ['front1', 'front3']
+      });
     });
     it('should add a collection to the open editor collections', () => {
       const state = reducer(undefined, editorOpenCollections(

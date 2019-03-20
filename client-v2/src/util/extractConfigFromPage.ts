@@ -7,9 +7,9 @@ const pageConfig = () => {
     throw new Error('Missing config');
   }
 
-  const json: Config = JSON.parse(configEl.dataset.value || '');
+  const config: Config = JSON.parse(configEl.dataset.value || '');
 
-  return json;
+  return config;
 };
 
 export default pageConfig();

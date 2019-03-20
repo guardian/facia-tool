@@ -22,13 +22,12 @@ import {
 } from 'types/Action';
 import { State as GlobalState } from 'types/State';
 import { events } from 'services/GA';
-import { getFronts, selectEditorFrontIds } from 'selectors/frontsSelectors';
+import { getFronts, getFrontsWithPriority } from 'selectors/frontsSelectors';
 import { createSelector } from 'reselect';
 import {
   REMOVE_GROUP_ARTICLE_FRAGMENT,
   REMOVE_SUPPORTING_ARTICLE_FRAGMENT
 } from 'shared/actions/ArticleFragments';
-import { REMOVE_CLIPBOARD_ARTICLE_FRAGMENT } from 'actions/Clipboard';
 
 export const EDITOR_OPEN_CURRENT_FRONTS_MENU =
   'EDITOR_OPEN_CURRENT_FRONTS_MENU';
@@ -80,26 +79,22 @@ const editorCloseCurrentFrontsMenu = (): EditorCloseCurrentFrontsMenu => ({
  * involved. On balance we're going for it ...
  */
 
-const editorOpenFront = (frontId: string): EditorAddFront => {
+const editorOpenFront = (frontId: string, priority: string): EditorAddFront => {
   events.addFront(frontId);
   return {
     type: EDITOR_OPEN_FRONT,
-    payload: { frontId },
+    payload: { frontId, priority },
     meta: {
       persistTo: 'openFrontIds'
     }
   };
 };
 
-const editorMoveFront = (
-  frontId: string,
-  fromIndex: number,
-  toIndex: number
-): EditorMoveFront => {
+const editorMoveFront = (frontId: string, toIndex: number): EditorMoveFront => {
   events.moveFront(frontId);
   return {
     type: 'EDITOR_MOVE_FRONT',
-    payload: { frontId, fromIndex, toIndex },
+    payload: { frontId, toIndex },
     meta: {
       persistTo: 'openFrontIds'
     }
@@ -124,10 +119,12 @@ const editorClearOpenFronts = (): EditorClearOpenFronts => ({
   }
 });
 
-const editorSetOpenFronts = (frontIds: string[]): EditorSetOpenFronts => ({
+const editorSetOpenFronts = (frontIdsByPriority: {
+  [id: string]: string[];
+}): EditorSetOpenFronts => ({
   type: EDITOR_SET_OPEN_FRONTS,
   payload: {
-    frontIds
+    frontIdsByPriority
   }
 });
 
@@ -180,6 +177,9 @@ const editorCloseAllOverviews = (): EditorCloseAllOverviews => ({
 interface State {
   showOpenFrontsMenu: boolean;
   frontIds: string[];
+  frontIdsByPriority: {
+    [id: string]: string[];
+  };
   collectionIds: string[];
   closedOverviews: string[];
   clipboardOpen: boolean;
@@ -199,13 +199,6 @@ const selectIsCollectionOpen = <T extends { editor: State }>(
   collectionId: string
 ) => state.editor.collectionIds.indexOf(collectionId) !== -1;
 
-const createSelectEditorFronts = () =>
-  createSelector(
-    selectEditorFrontIds,
-    getFronts,
-    (frontIds, fronts) => compact(frontIds.map(frontId => fronts[frontId]))
-  );
-
 const selectIsClipboardOpen = <T extends { editor: State }>(state: T) =>
   state.editor.clipboardOpen;
 
@@ -219,15 +212,42 @@ const selectPriority = (
   { priority }: { priority: string }
 ): string => priority;
 
-const selectEditorFrontsByPriority = createSelector(
-  getFronts,
-  selectEditorFrontIds,
-  selectPriority,
-  (fronts, openFrontIds, priority) => {
-    return openFrontIds.filter(frontId => {
-      const frontConfig = fronts[frontId];
-      return frontConfig && frontConfig.priority === priority;
-    });
+const createSelectEditorFrontsByPriority = () =>
+  createSelector(
+    getFronts,
+    selectEditorFrontIds,
+    selectPriority,
+    (fronts, frontIdsByPriority, priority) => {
+      const openFrontIds = frontIdsByPriority[priority] || [];
+      return compact(openFrontIds.map(frontId => fronts[frontId]));
+    }
+  );
+
+const createSelectFrontIdAndOpenStateByPriority = () => {
+  const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
+  return createSelector(
+    getFrontsWithPriority,
+    (state, priority: string) =>
+      selectEditorFrontsByPriority(state, { priority }),
+    (frontsForPriority, openFronts) => {
+      return frontsForPriority.map(({ id }) => ({
+        id,
+        isOpen: !!openFronts.find(_ => _.id === id)
+      }));
+    }
+  );
+};
+
+const selectEditorFrontIds = (state: GlobalState) =>
+  state.editor.frontIdsByPriority;
+
+const selectEditorFrontIdsByPriority = (state: GlobalState, priority: string) =>
+  state.editor.frontIdsByPriority[priority];
+
+const selectHasMultipleFrontsOpen = createSelector(
+  selectEditorFrontIdsByPriority,
+  frontIdsByPriority => {
+    return frontIdsByPriority.length > 1;
   }
 );
 
@@ -239,6 +259,7 @@ const selectEditorArticleFragment = <T extends { editor: State }>(
 const defaultState = {
   showOpenFrontsMenu: false,
   frontIds: [],
+  frontIdsByPriority: {},
   collectionIds: [],
   clipboardOpen: true,
   closedOverviews: [],
@@ -252,6 +273,24 @@ const clearArticleFragmentSelection = (state: State, frontId: string) => ({
     [frontId]: undefined
   }
 });
+
+const getFrontPosition = (
+  frontId: string,
+  frontIdsByPriority: {
+    [priority: string]: string[];
+  }
+): { frontId: string; priority: string; index: number } | void => {
+  const positions = Object.entries(frontIdsByPriority)
+    .filter(([_, frontIds]) => frontIds.indexOf(frontId) !== -1)
+    .map(([priority, frontIds]) => ({
+      frontId,
+      priority,
+      index: frontIds.indexOf(frontId)
+    }));
+  if (positions.length) {
+    return positions[0];
+  }
+};
 
 const reducer = (state: State = defaultState, action: Action): State => {
   switch (action.type) {
@@ -270,45 +309,73 @@ const reducer = (state: State = defaultState, action: Action): State => {
     }
 
     case EDITOR_OPEN_FRONT: {
+      const priority = action.payload.priority;
       return {
         ...state,
-        frontIds: state.frontIds.concat(action.payload.frontId)
+        frontIdsByPriority: {
+          ...state.frontIdsByPriority,
+          [priority]: (state.frontIdsByPriority[priority] || []).concat(
+            action.payload.frontId
+          )
+        }
       };
     }
     case EDITOR_MOVE_FRONT: {
-      const maxIndex = state.frontIds.length - 1;
-      const indexNotFound =
-        state.frontIds.indexOf(action.payload.frontId) === -1;
-      const indexesOutOfBounds =
-        action.payload.fromIndex > maxIndex ||
-        action.payload.toIndex > maxIndex;
-      if (indexNotFound || indexesOutOfBounds) {
+      const maybeFrontPosition = getFrontPosition(
+        action.payload.frontId,
+        state.frontIdsByPriority
+      );
+      if (!maybeFrontPosition) {
         return state;
       }
-      const frontIds = state.frontIds.slice();
-      frontIds.splice(action.payload.fromIndex, 1);
-      frontIds.splice(action.payload.toIndex, 0, action.payload.frontId);
+      const { priority, index } = maybeFrontPosition;
+      const maxIndex = state.frontIdsByPriority[priority].length - 1;
+      const indexesOutOfBounds = action.payload.toIndex > maxIndex;
+      if (indexesOutOfBounds) {
+        return state;
+      }
+      const newFrontIds = state.frontIdsByPriority[priority].slice();
+      newFrontIds.splice(index, 1);
+      newFrontIds.splice(action.payload.toIndex, 0, action.payload.frontId);
       return {
         ...state,
-        frontIds
+        frontIdsByPriority: {
+          ...state.frontIdsByPriority,
+          [priority]: newFrontIds
+        }
       };
     }
     case EDITOR_CLOSE_FRONT: {
+      const maybeFrontPosition = getFrontPosition(
+        action.payload.frontId,
+        state.frontIdsByPriority
+      );
+      if (!maybeFrontPosition) {
+        return state;
+      }
+      const { priority } = maybeFrontPosition;
       return {
         ...state,
-        frontIds: without(state.frontIds, action.payload.frontId)
+        frontIdsByPriority: {
+          ...state.frontIdsByPriority,
+          [priority]: without(
+            state.frontIdsByPriority[priority],
+            action.payload.frontId
+          )
+        }
       };
     }
     case EDITOR_CLEAR_OPEN_FRONTS: {
       return {
         ...state,
-        frontIds: []
+        frontIds: [],
+        frontIdsByPriority: {}
       };
     }
     case EDITOR_SET_OPEN_FRONTS: {
       return {
         ...state,
-        frontIds: action.payload.frontIds
+        frontIdsByPriority: action.payload.frontIdsByPriority
       };
     }
     case EDITOR_OPEN_COLLECTION: {
@@ -345,7 +412,7 @@ const reducer = (state: State = defaultState, action: Action): State => {
     }
     case REMOVE_SUPPORTING_ARTICLE_FRAGMENT:
     case REMOVE_GROUP_ARTICLE_FRAGMENT:
-    case REMOVE_CLIPBOARD_ARTICLE_FRAGMENT: {
+    case 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT': {
       const articleFragmentId = action.payload.articleFragmentId;
       const selectedFrontId = Object.keys(state.selectedArticleFragments).find(
         frontId => {
@@ -417,10 +484,12 @@ export {
   editorSelectArticleFragment,
   editorClearArticleFragmentSelection,
   selectIsCurrentFrontsMenuOpen,
-  selectEditorFrontsByPriority,
+  createSelectEditorFrontsByPriority,
+  createSelectFrontIdAndOpenStateByPriority,
+  selectEditorFrontIds,
+  selectEditorFrontIdsByPriority,
   selectEditorArticleFragment,
   selectIsCollectionOpen,
-  createSelectEditorFronts,
   editorOpenClipboard,
   editorCloseClipboard,
   editorOpenOverview,
@@ -428,7 +497,8 @@ export {
   editorOpenAllOverviews,
   editorCloseAllOverviews,
   selectIsClipboardOpen,
-  selectIsFrontOverviewOpen
+  selectIsFrontOverviewOpen,
+  selectHasMultipleFrontsOpen
 };
 
 export default reducer;
