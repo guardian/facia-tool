@@ -38,7 +38,8 @@ const FrontTabList = styled('div')<{ isDraggingOver?: boolean }>`
   width: calc(100vw - 120px);
   transition: background-color 0.15s;
   white-space: nowrap;
-  overflow-x: scroll;
+  overflow-x: auto;
+  overflow-y: hidden;
 `;
 
 const NoFronts = styled(FrontTabList)`
