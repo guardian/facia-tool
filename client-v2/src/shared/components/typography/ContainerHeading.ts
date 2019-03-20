@@ -2,11 +2,10 @@ import { styled } from 'shared/constants/theme';
 
 const ContainerHeading = styled('div')`
   display: flex;
-  font-family: GHGuardianHeadline-Bold;
+  font-family: GHGuardianHeadline;
+  font-weight: bold;
   font-size: 22px;
   line-height: 22px;
-  font-weight: bold;
-  font-style: normal;
   color: ${({ theme }) => theme.shared.base.colors.text};
 `;
 

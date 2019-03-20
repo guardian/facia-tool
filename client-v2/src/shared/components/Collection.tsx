@@ -75,13 +75,11 @@ const CollectionDisabledTheme = styled('div')`
 `;
 
 const LockedCollectionFlag = styled('span')`
-  font-family: GHGuardianHeadline-Regular;
+  font-family: GHGuardianHeadline;
   font-size: 22px;
   color: ${({ theme }) => theme.shared.base.colors.text};
   height: 40px;
   line-height: 40px;
-  font-weight: normal;
-  font-style: normal;
 `;
 
 const CollectionMetaContainer = styled('div')`
@@ -144,7 +142,7 @@ const CollectionToggleContainer = styled('div')`
 
 const CollectionConfigContainer = styled('div')`
   display: inline-block;
-  font-family: GHGuardianHeadline-Regular;
+  font-family: GHGuardianHeadline;
   font-size: 22px;
   color: ${({ theme }) => theme.shared.base.colors.text};
   height: 40px;

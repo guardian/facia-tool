@@ -33,7 +33,8 @@ const ControlRadio = styled('label')<{ inline?: boolean }>`
   padding-left: 24px;
   padding-top: 3px;
   cursor: pointer;
-  font-family: TS3TextSans-Bold;
+  font-family: TS3TextSans;
+  font-weight: bold;
   font-size: 12px;
 
   & + & {

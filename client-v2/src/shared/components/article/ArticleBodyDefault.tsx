@@ -41,7 +41,8 @@ const NotLiveContainer = styled(CollectionItemMetaHeading)`
 `;
 
 const KickerHeading = styled(CollectionItemHeading)`
-  font-family: GHGuardianHeadline-Bold;
+  font-family: GHGuardianHeadline;
+  font-weight: bold;
   padding-right: 3px;
 `;
 

@@ -10,7 +10,8 @@ interface ContainerButtonWithLabelProps {
 
 const ContainerButton = styled('button')`
   cursor: pointer;
-  font-family: TS3TextSans-Bold;
+  font-family: TS3TextSans;
+  font-weight: bold;
   font-size: 12px;
   padding: 0 6px 0 8px;
   border: ${({ theme }) => `solid 1px ${theme.shared.colors.greyMediumLight}`};

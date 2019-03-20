@@ -40,7 +40,8 @@ interface FeedsContainerState {
 const Title = styled.h1`
   margin: 2px 0 0;
   vertical-align: top;
-  font-family: GHGuardianHeadline-Medium;
+  font-family: GHGuardianHeadline;
+  font-weight: 500;
   font-size: 20px;
   min-width: 80px;
 `;
