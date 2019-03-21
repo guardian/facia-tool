@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from 'constants/theme';
-import moreImage from 'shared/images/icons/more.svg';
-import { SmallRoundButton, ClearButtonIcon } from 'util/sharedStyles/buttons';
+import { ClearIcon } from 'shared/components/icons/Icons';
+import { SmallRoundButton } from 'util/sharedStyles/buttons';
 
 const SearchTermItem = styled('div')`
   color: ${({ theme }) => theme.capiInterface.text};
@@ -25,7 +25,7 @@ const FilterItem = ({ children, onClear }: FilterItemProps) => (
   <SearchTermItem>
     {children}
     <SmallRoundButton onClick={() => onClear()} title="Clear search">
-      <ClearButtonIcon src={moreImage} alt="" height="22px" width="22px" />
+      <ClearIcon size={'l'} />
     </SmallRoundButton>
   </SearchTermItem>
 );

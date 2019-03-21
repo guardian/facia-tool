@@ -19,6 +19,8 @@ import {
 import { insertArticleFragment } from 'actions/ArticleFragments';
 import noop from 'lodash/noop';
 import { getPaths } from 'util/paths';
+import { liveBlogTones } from 'constants/fronts';
+import { ThumbnailSmall } from 'shared/components/Thumbnail';
 
 const LinkContainer = styled('div')`
   background-color: ${({ theme }) => theme.capiInterface.backgroundLight};
@@ -61,7 +63,7 @@ const Container = styled('div')`
 const Title = styled(`h2`)`
   margin: 2px 0 0;
   vertical-align: top;
-  font-family: GHGuardianHeadline-Medium;
+  font-family: GHGuardianHeadline;
   font-size: 16px;
   font-weight: 500;
 `;
@@ -79,7 +81,7 @@ const VisitedWrapper = styled.a`
 const MetaContainer = styled('div')`
   position: relative;
   width: 80px;
-  padding: 0px 8px;
+  padding: 0px 2px;
 `;
 
 const FirstPublished = styled('div')`
@@ -94,12 +96,13 @@ const ScheduledPublication = styled(FirstPublished)`
 const Tone = styled('div')`
   padding-top: 2px;
   font-size: 12px;
-  font-family: TS3TextSans-Bold;
+  font-family: TS3TextSans;
+  font-weight: bold;
 `;
 
 const Body = styled('div')`
-  width: calc(100% - 80px);
-  padding-left: 10px;
+  width: calc(100% - 163px);
+  padding-left: 8px;
 `;
 
 interface FeedItemProps {
@@ -114,6 +117,8 @@ interface FeedItemProps {
   isLive: boolean;
   onAddToClipboard: (id: string) => void;
   scheduledPublicationDate?: string;
+  tone?: string;
+  thumbnail?: string;
 }
 
 const dragStart = (
@@ -121,6 +126,26 @@ const dragStart = (
   event: React.DragEvent<HTMLDivElement>
 ) => {
   event.dataTransfer.setData('capi', href || '');
+};
+
+const getArticleLabel = (
+  firstPublicationDate: string | undefined,
+  sectionName: string,
+  isLive: boolean,
+  tone?: string
+) => {
+  if (!isLive) {
+    if (firstPublicationDate) {
+      return notLiveLabels.takenDown;
+    }
+    return notLiveLabels.draft;
+  }
+
+  if (tone === liveBlogTones.dead || tone === liveBlogTones.live) {
+    return startCase(liveBlogTones.live);
+  }
+
+  return startCase(sectionName);
 };
 
 const FeedItem = ({
@@ -134,7 +159,9 @@ const FeedItem = ({
   firstPublicationDate,
   isLive,
   onAddToClipboard = noop,
-  scheduledPublicationDate
+  scheduledPublicationDate,
+  tone,
+  thumbnail
 }: FeedItemProps) => (
   <Container
     data-testid="feed-item"
@@ -150,15 +177,11 @@ const FeedItem = ({
         <Tone
           style={{
             color:
-              getPillarColor(pillarId, isLive) ||
+              getPillarColor(pillarId, isLive, tone === liveBlogTones.dead) ||
               styleTheme.capiInterface.textLight
           }}
         >
-          {isLive && startCase(sectionName)}
-          {!isLive &&
-            (firstPublicationDate
-              ? notLiveLabels.takendDown
-              : notLiveLabels.draft)}
+          {getArticleLabel(firstPublicationDate, sectionName, isLive, tone)}
         </Tone>
         {scheduledPublicationDate && (
           <ScheduledPublication>
@@ -178,6 +201,11 @@ const FeedItem = ({
       <Body>
         <Title data-testid="headline">{title}</Title>
       </Body>
+      <ThumbnailSmall
+        style={{
+          backgroundImage: `url('${thumbnail}')`
+        }}
+      />
     </VisitedWrapper>
     <HoverActionsAreaOverlay justify="flex-end" data-testid="hover-overlay">
       <HoverActionsButtonWrapper

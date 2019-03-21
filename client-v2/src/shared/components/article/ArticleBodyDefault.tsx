@@ -2,6 +2,7 @@ import React from 'react';
 import { styled } from 'shared/constants/theme';
 import startCase from 'lodash/startCase';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
+import { MdCollections } from 'react-icons/md';
 
 import CollectionItemHeading from '../collectionItem/CollectionItemHeading';
 import BasePlaceholder from '../BasePlaceholder';
@@ -28,6 +29,7 @@ import CollectionItemTrail from '../collectionItem/CollectionItemTrail';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
 import CollectionItemDraftMetaContent from '../collectionItem/CollectionItemDraftMetaContent';
 import CollectionItemNotification from '../collectionItem/CollectionItemNotification';
+import ColouredQuote from '../collectionItem/CollectionItemQuote';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   width: 130px;
@@ -39,7 +41,8 @@ const NotLiveContainer = styled(CollectionItemMetaHeading)`
 `;
 
 const KickerHeading = styled(CollectionItemHeading)`
-  font-family: GHGuardianHeadline-Bold;
+  font-family: GHGuardianHeadline;
+  font-weight: bold;
   padding-right: 3px;
 `;
 
@@ -56,7 +59,37 @@ const ArticleHeadingContainerSmall = styled('div')`
   text-overflow: ellipsis;
 `;
 
+const ArticleBodyByline = styled('div')`
+  font-style: italic;
+  padding-top: 5px;
+`;
+
+const ArticleBodyQuoteContainer = styled('span')`
+  margin-right: 0.1rem;
+`;
+
+const ArticleSlideshow = styled('div')`
+  position: absolute;
+  background: ${({ theme }) => theme.shared.colors.white};
+  width: 24px;
+  height: 24px;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  vertical-align: middle;
+  top: 2px;
+  right: 2px;
+`;
+
+const SlideshowIcon = styled('div')`
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 14px;
+  height: 14px;
+`;
+
 interface ArticleBodyProps {
+  frontPublicationTime?: string;
   firstPublicationDate?: string;
   scheduledPublicationDate?: string;
   pillarId?: string;
@@ -74,7 +107,23 @@ interface ArticleBodyProps {
   onAddToClipboard?: (id: string) => void;
   notifications?: string[];
   isUneditable?: boolean;
+  byline?: string;
+  showByline?: boolean;
+  showQuotedHeadline?: boolean;
+  imageHide?: boolean;
+  imageSlideshowReplace?: boolean;
+  isBreaking?: boolean;
 }
+
+const renderColouredQuotes = (pillarId?: string, isLive?: boolean) => {
+  const pillarColour = getPillarColor(pillarId, isLive || true);
+  return (
+    <React.Fragment>
+      <ColouredQuote colour={pillarColour} />
+      <ColouredQuote colour={pillarColour} />
+    </React.Fragment>
+  );
+};
 
 const articleBodyDefault = ({
   firstPublicationDate,
@@ -92,10 +141,24 @@ const articleBodyDefault = ({
   onDelete,
   onAddToClipboard,
   notifications,
-  isUneditable
+  isUneditable,
+  frontPublicationTime,
+  byline,
+  showByline,
+  showQuotedHeadline,
+  imageHide,
+  imageSlideshowReplace,
+  isBreaking
 }: ArticleBodyProps) => {
   const ArticleHeadingContainer =
     size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
+
+  const displayByline = size === 'default' && showByline && byline;
+  const displayTrail =
+    size === 'default' && trailText && !(showByline && byline);
+
+  const kickerToDisplay = isBreaking ? 'Breaking news' : kicker;
+
   return (
     <>
       <CollectionItemMetaContainer>
@@ -117,6 +180,7 @@ const articleBodyDefault = ({
               : notLiveLabels.draft}
           </NotLiveContainer>
         )}
+
         {scheduledPublicationDate && (
           <CollectionItemDraftMetaContent>
             {distanceInWordsStrict(
@@ -125,9 +189,10 @@ const articleBodyDefault = ({
             )}
           </CollectionItemDraftMetaContent>
         )}
-        {(isLive || size === 'default') && firstPublicationDate && (
+
+        {size === 'default' && frontPublicationTime && (
           <CollectionItemMetaContent>
-            {distanceInWordsStrict(Date.now(), new Date(firstPublicationDate))}
+            {distanceInWordsStrict(Date.now(), new Date(frontPublicationTime))}
           </CollectionItemMetaContent>
         )}
       </CollectionItemMetaContainer>
@@ -139,10 +204,15 @@ const articleBodyDefault = ({
               {size === 'default' && <TextPlaceholder width={25} />}
             </>
           )}
-          {kicker && (
+          {kickerToDisplay && (
             <KickerHeading style={{ color: getPillarColor(pillarId, true) }}>
-              {kicker}
+              {kickerToDisplay}
             </KickerHeading>
+          )}
+          {showQuotedHeadline && (
+            <ArticleBodyQuoteContainer>
+              {renderColouredQuotes(pillarId, isLive)}
+            </ArticleBodyQuoteContainer>
           )}
           {size === 'default' ? (
             <CollectionItemHeading html data-testid="headline">
@@ -154,19 +224,30 @@ const articleBodyDefault = ({
             </ArticleHeadingSmall>
           )}
         </ArticleHeadingContainer>
-        {size === 'default' && trailText && (
+        {displayTrail && (
           <CollectionItemTrail html>{trailText}</CollectionItemTrail>
         )}
+        {displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
       </CollectionItemContent>
       {size === 'default' &&
         (displayPlaceholders ? (
           <ThumbnailPlaceholder />
         ) : (
-          <Thumbnail
-            style={{
-              backgroundImage: `url('${thumbnail}')`
-            }}
-          />
+          <div>
+            {imageSlideshowReplace && (
+              <ArticleSlideshow>
+                <SlideshowIcon>
+                  <MdCollections />
+                </SlideshowIcon>
+              </ArticleSlideshow>
+            )}
+            <Thumbnail
+              style={{
+                backgroundImage: `url('${thumbnail}')`,
+                opacity: imageHide ? 0.5 : 1
+              }}
+            />
+          </div>
         ))}
       {notifications && (
         <CollectionItemNotification>

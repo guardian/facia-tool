@@ -12,7 +12,8 @@
     "sourceMap": true,
     "baseUrl": "src",
     "strict": true,
-    "outDir": "../../public/client-v2/dist"
+    "outDir": "../../public/client-v2/dist",
+    "skipLibCheck": true
   },
   "exclude": [
     "node_modules",

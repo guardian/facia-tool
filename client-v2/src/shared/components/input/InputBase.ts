@@ -17,7 +17,9 @@ export default styled('input')<{
   border: 1px solid ${props => props.theme.shared.input.borderColor};
   width: 100%;
   background-clip: padding-box;
-  ${props => props.useHeadlineFont && `font-family: GHGuardianHeadline-Medium`};
+  ${props =>
+    props.useHeadlineFont &&
+    `font-family: GHGuardianHeadline; font-weight: 500`};
   ::placeholder {
     color: ${props => props.theme.shared.input.placeholderText};
   }

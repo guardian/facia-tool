@@ -1,3 +1,4 @@
+import pageConfig from 'util/extractConfigFromPage';
 export default {
   base: {
     mainDomain: 'www.theguardian.com',
@@ -5,8 +6,8 @@ export default {
     previewDomain: 'preview.gutools.co.uk'
   },
   media: {
-    apiBaseUrl: '/api.grid',
-    mediaBaseUrl: 'http://media',
+    apiBaseUrl: pageConfig.apiBaseUrl,
+    mediaBaseUrl: 'https://media',
     usageBaseUrl: '/api/usage',
     imgIXDomainExpr: /^https:\/\/i\.guim\.co\.uk\/img\/static\//,
     imageCdnDomain: '.guim.co.uk',

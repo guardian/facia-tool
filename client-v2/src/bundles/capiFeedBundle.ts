@@ -16,13 +16,13 @@ const {
   initialData: []
 });
 
-const isCommercialArticle = (article: CapiArticle | undefined): boolean => {
+const isNonCommercialArticle = (article: CapiArticle | undefined): boolean => {
   if (!article) {
-    return false;
+    return true;
   }
 
   if (article.isHosted) {
-    return true;
+    return false;
   }
 
   if (!article.tags) {
@@ -78,7 +78,7 @@ export const fetchLive = (
   }
 
   if (resultData) {
-    const nonCommercialResults = resultData.results.filter(isCommercialArticle);
+    const nonCommercialResults = resultData.results.filter(isNonCommercialArticle);
     dispatch(
       liveActions.fetchSuccess(nonCommercialResults, resultData.pagination)
     );
@@ -102,7 +102,7 @@ export const fetchPreview = (
     dispatch(previewActions.fetchError(e.message));
   }
   if (resultData) {
-    const nonCommercialResults = resultData.results.filter(isCommercialArticle);
+    const nonCommercialResults = resultData.results.filter(isNonCommercialArticle);
     dispatch(
       previewActions.fetchSuccess(nonCommercialResults, resultData.pagination)
     );

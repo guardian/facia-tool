@@ -43,6 +43,7 @@ type Props = ContainerProps & {
   isUneditable?: boolean;
   isLocked?: boolean;
   isOpen?: boolean;
+  hasMultipleFrontsOpen?: boolean;
   onChangeOpenState?: (isOpen: boolean) => void;
 };
 
@@ -50,9 +51,12 @@ interface CollectionState {
   hasDragOpenIntent: boolean;
 }
 
-const CollectionContainer = ContentContainer.extend`
+const CollectionContainer = ContentContainer.extend<{
+  hasMultipleFrontsOpen?: boolean;
+}>`
   flex: 1;
-  width: 600px;
+  width: ${({ hasMultipleFrontsOpen }) =>
+    hasMultipleFrontsOpen ? '510px' : '590px'};
 `;
 
 const HeadlineContentContainer = styled('span')`
@@ -71,13 +75,11 @@ const CollectionDisabledTheme = styled('div')`
 `;
 
 const LockedCollectionFlag = styled('span')`
-  font-family: GHGuardianHeadline-Regular;
+  font-family: GHGuardianHeadline;
   font-size: 22px;
   color: ${({ theme }) => theme.shared.base.colors.text};
   height: 40px;
   line-height: 40px;
-  font-weight: normal;
-  font-style: normal;
 `;
 
 const CollectionMetaContainer = styled('div')`
@@ -140,7 +142,7 @@ const CollectionToggleContainer = styled('div')`
 
 const CollectionConfigContainer = styled('div')`
   display: inline-block;
-  font-family: GHGuardianHeadline-Regular;
+  font-family: GHGuardianHeadline;
   font-size: 22px;
   color: ${({ theme }) => theme.shared.base.colors.text};
   height: 40px;
@@ -189,12 +191,16 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       metaContent,
       isUneditable,
       isLocked,
+      hasMultipleFrontsOpen,
       children
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
 
     return (
-      <CollectionContainer id={collection && createCollectionId(collection)}>
+      <CollectionContainer
+        id={collection && createCollectionId(collection)}
+        hasMultipleFrontsOpen={hasMultipleFrontsOpen}
+      >
         <ContainerHeadingPinline>
           <CollectionHeadlineWithConfigContainer>
             <CollectionHeadingText isLoading={!collection}>
@@ -226,6 +232,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
           ) : null}
         </ContainerHeadingPinline>
         <DragIntentContainer
+          delay={300}
           onIntentConfirm={this.toggleVisibility}
           onDragIntentStart={() => {
             this.setState({ hasDragOpenIntent: true });

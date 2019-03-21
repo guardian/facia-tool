@@ -65,7 +65,7 @@ describe('Validate images', () => {
 
     it('unknown domain', done => {
       validateImageSrc('http://another-host/image.png').then(
-        err => done.fail(err as Error),
+        err => done.fail(err.toString()),
         err => {
           expect(err.message).toMatch(/images must come/i);
           done();
@@ -78,7 +78,7 @@ describe('Validate images', () => {
     it("fails if the image can't be found", done => {
       ImageMock.shouldError = true;
       validateImageSrc(getPath('this_image_doesnt_exists__promised.png')).then(
-        err => done.fail(err as Error),
+        err => done.fail(err.toString()),
         err => {
           expect(err.message).toMatch(/could not be found/i);
           done();
@@ -92,7 +92,7 @@ describe('Validate images', () => {
       };
       const path = getPath('square.png');
       validateImageSrc(path, 'front', criteria).then(
-        err => done.fail(err as Error),
+        err => done.fail(err.toString()),
         err => {
           expect(err.message).toMatch(/cannot be more/i);
           done();
@@ -105,7 +105,7 @@ describe('Validate images', () => {
         minWidth: 200
       };
       validateImageSrc(getPath('square.png'), 'front', criteria).then(
-        err => done.fail(err as Error),
+        err => done.fail(err.toString()),
         err => {
           expect(err.message).toMatch(/cannot be less/i);
           done();
@@ -120,7 +120,7 @@ describe('Validate images', () => {
       };
 
       validateImageSrc(getPath('square.png'), 'front', criteria).then(
-        err => done.fail(err as Error),
+        err => done.fail(err.toString()),
         err => {
           expect(err.message).toMatch(/aspect ratio/i);
           done();
@@ -188,7 +188,7 @@ describe('Validate images', () => {
       validateImageSrc(
         'http://grid.co.uk/1234567890123456789012345678901234567890'
       ).then(
-        err => done.fail(err as Error),
+        err => done.fail(err.toString()),
         err => {
           expect(err.message).toMatch(/unable to locate/i);
           done();
@@ -209,7 +209,7 @@ describe('Validate images', () => {
           'http://grid.co.uk/1234567890123456789012345678901234567890?crop=image_crop',
           'front'
         ).then(
-          err => done.fail(err as Error),
+          err => done.fail(err.toString()),
           err => {
             expect(err.message).toMatch(/does not have a valid crop/i);
             done();
@@ -244,7 +244,7 @@ describe('Validate images', () => {
             heightAspectRatio: 4
           }
         ).then(
-          err => done.fail(err as Error),
+          err => done.fail(err.toString()),
           err => {
             expect(err.message).toMatch(/does not have a valid crop/i);
             done();
@@ -307,7 +307,7 @@ describe('Validate images', () => {
         validateImageSrc(
           'http://grid.co.uk/1234567890123456789012345678901234567890'
         ).then(
-          err => done.fail(err as Error),
+          err => done.fail(err.toString()),
           err => {
             expect(err.message).toMatch(/does not have a valid crop/i);
             done();
@@ -344,7 +344,7 @@ describe('Validate images', () => {
             heightAspectRatio: 4
           }
         ).then(
-          err => done.fail(err as Error),
+          err => done.fail(err.toString()),
           err => {
             expect(err.message).toMatch(/does not have a valid crop/i);
             done();
@@ -442,7 +442,7 @@ describe('Validate images', () => {
       grid.gridInstance.getCropFromEvent = () => null;
 
       validateImageEvent('front' as any, {} as any).then(
-        err => done.fail(err as Error),
+        err => done.fail(err.toString()),
         err => {
           expect(err.message).toMatch(/invalid image/i);
           done();
@@ -464,7 +464,7 @@ describe('Validate images', () => {
       validateImageEvent(dragEvent, 'front', {
         maxWidth: 500
       }).then(
-        err => done.fail(err as Error),
+        err => done.fail(err.toString()),
         err => {
           expect(err.message).toMatch(/does not have a valid asset/i);
           done();
@@ -485,7 +485,7 @@ describe('Validate images', () => {
         widthAspectRatio: 4,
         heightAspectRatio: 1
       }).then(
-        err => done.fail(err as Error),
+        err => done.fail(err.toString()),
         err => {
           expect(err.message).toMatch(/aspect ratio/i);
           done();

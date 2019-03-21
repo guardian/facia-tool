@@ -5,7 +5,7 @@ import CollectionDisplay from 'shared/components/Collection';
 import CollectionNotification from 'components/CollectionNotification';
 import Button from 'shared/components/input/ButtonDefault';
 import { AlsoOnDetail } from 'types/Collection';
-import { publishCollection } from 'actions/Fronts';
+import { publishCollection } from 'actions/Collections';
 import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
 import { isCollectionLockedSelector } from 'selectors/collectionSelectors';
 import { State } from 'types/State';
@@ -18,7 +18,8 @@ import {
 import {
   selectIsCollectionOpen,
   editorOpenCollections,
-  editorCloseCollections
+  editorCloseCollections,
+  selectHasMultipleFrontsOpen
 } from 'bundles/frontsUIBundle';
 import { getArticlesForCollections } from 'actions/Collections';
 import { collectionItemSets } from 'constants/fronts';
@@ -29,6 +30,7 @@ interface CollectionPropsBeforeState {
   alsoOn: { [id: string]: AlsoOnDetail };
   frontId: string;
   browsingStage: CollectionItemSets;
+  priority: string;
 }
 
 type CollectionProps = CollectionPropsBeforeState & {
@@ -39,6 +41,7 @@ type CollectionProps = CollectionPropsBeforeState & {
   displayEditWarning: boolean;
   isCollectionLocked: boolean;
   isOpen: boolean;
+  hasMultipleFrontsOpen: boolean;
   onChangeOpenState: (id: string, isOpen: boolean) => void;
 };
 
@@ -55,7 +58,8 @@ const Collection = ({
   displayEditWarning,
   isCollectionLocked,
   isOpen,
-  onChangeOpenState
+  onChangeOpenState,
+  hasMultipleFrontsOpen
 }: CollectionProps) => {
   const isUneditable =
     isCollectionLocked || browsingStage !== collectionItemSets.draft;
@@ -68,6 +72,7 @@ const Collection = ({
       isUneditable={isUneditable}
       isLocked={isCollectionLocked}
       isOpen={isOpen}
+      hasMultipleFrontsOpen={hasMultipleFrontsOpen}
       onChangeOpenState={() => onChangeOpenState(id, isOpen)}
       headlineContent={
         hasUnpublishedChanges &&
@@ -98,7 +103,10 @@ const Collection = ({
 const createMapStateToProps = () => {
   const collectionStageGroupsSelector = createCollectionStageGroupsSelector();
   const editWarningSelector = createCollectionEditWarningSelector();
-  return (state: State, { browsingStage, id }: CollectionPropsBeforeState) => ({
+  return (
+    state: State,
+    { browsingStage, id, priority }: CollectionPropsBeforeState
+  ) => ({
     hasUnpublishedChanges: hasUnpublishedChangesSelector(state, {
       collectionId: id
     }),
@@ -110,7 +118,8 @@ const createMapStateToProps = () => {
     displayEditWarning: editWarningSelector(selectSharedState(state), {
       collectionId: id
     }),
-    isOpen: selectIsCollectionOpen(state, id)
+    isOpen: selectIsCollectionOpen(state, id),
+    hasMultipleFrontsOpen: selectHasMultipleFrontsOpen(state, priority)
   });
 };
 

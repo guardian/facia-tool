@@ -43,61 +43,69 @@
         >Business - BBC News</a
       >
     </div>
-    <script type="application/json" id="config">
-      {
-        "dev": true,
-        "env": "code",
-        "editions": ["uk", "us", "au"],
-        "email": "richard.beddington@guardian.co.uk",
-        "avatarUrl": "https://lh3.googleusercontent.com/-ZbWEH5tBZWU/AAAAAAAAAAI/AAAAAAAAAAA/ABtNlbDL_UpljZgqBjPvw4n0SmYiLD0amw/mo/photo.jpg",
-        "firstName": "Richard",
-        "lastName": "Beddington",
-        "sentryPublicDSN": "https://4527e03d554a4962ae99a7481e9278ff@app.getsentry.com/35467",
-        "mediaBaseUrl": "https://media.gutools.co.uk",
-        "apiBaseUrl": "https://api.media.test.dev-gutools.co.uk",
-        "switches": {
-          "facia-tool-allow-breaking-news-for-all": false,
-          "facia-tool-permissions-access": true,
-          "facia-tool-allow-edit-editorial-fronts-for-all": false,
-          "facia-tool-allow-config-for-all": false,
-          "facia-tool-allow-launch-editorial-fronts-for-all": false,
-          "facia-tool-allow-launch-commercial-fronts-for-all": false,
-          "facia-tool-sparklines": true,
-          "facia-tool-draft-content": true,
-          "facia-tool-disable": false
+    <div id="config"></div>
+    <script>
+      const config = document.getElementById('config');
+
+      config.dataset.value = JSON.stringify({
+        dev: true,
+        env: 'code',
+        editions: ['uk', 'us', 'au'],
+        email: 'richard.beddington@guardian.co.uk',
+        avatarUrl:
+          'https://lh3.googleusercontent.com/-ZbWEH5tBZWU/AAAAAAAAAAI/AAAAAAAAAAA/ABtNlbDL_UpljZgqBjPvw4n0SmYiLD0amw/mo/photo.jpg',
+        firstName: 'Richard',
+        lastName: 'Beddington',
+        sentryPublicDSN:
+          'https://4527e03d554a4962ae99a7481e9278ff@app.getsentry.com/35467',
+        mediaBaseUrl: 'https://media.gutools.co.uk',
+        apiBaseUrl: 'https://api.media.test.dev-gutools.co.uk',
+        switches: {
+          'facia-tool-allow-breaking-news-for-all': false,
+          'facia-tool-permissions-access': true,
+          'facia-tool-allow-edit-editorial-fronts-for-all': false,
+          'facia-tool-allow-config-for-all': false,
+          'facia-tool-allow-launch-editorial-fronts-for-all': false,
+          'facia-tool-allow-launch-commercial-fronts-for-all': false,
+          'facia-tool-sparklines': true,
+          'facia-tool-draft-content': true,
+          'facia-tool-disable': false
         },
-        "acl": {
-          "fronts": { "breaking-news": false },
-          "permissions": { "configure-config": true }
+        acl: {
+          fronts: { 'breaking-news': false },
+          permissions: { 'configure-config': true }
         },
-        "collectionCap": 20,
-        "navListCap": 40,
-        "navListType": "nav/list",
-        "collectionMetadata": [
-          { "type": "Canonical" },
-          { "type": "Special" },
-          { "type": "Breaking" },
-          { "type": "Branded" }
+        collectionCap: 20,
+        navListCap: 40,
+        navListType: 'nav/list',
+        collectionMetadata: [
+          { type: 'Canonical' },
+          { type: 'Special' },
+          { type: 'Breaking' },
+          { type: 'Branded' }
         ],
-        "clipboardArticles": [
+        clipboardArticles: [
           {
-            "id": "internal-code/page/5224281",
-            "frontPublicationDate": 1540381197498,
-            "meta": {
-              "supporting": [
+            id: 'internal-code/page/5224281',
+            frontPublicationDate: 1540381197498,
+            meta: {
+              supporting: [
                 {
-                  "id": "internal-code/page/2309422",
-                  "frontPublicationDate": 1540379258808,
-                  "meta": {}
+                  id: 'internal-code/page/2309422',
+                  frontPublicationDate: 1540379258808,
+                  meta: {}
                 }
               ]
             }
           }
         ],
-        "frontIds": ["test/front"],
-        "capiLiveUrl": "/api/live/",
-        "capiPreviewUrl": "/api/preview/"
-      }
+        frontIds: ['test/front'],
+        frontIdsByPriority: {
+          editorial: ['test/front']
+        },
+        capiLiveUrl: '/api/live/',
+        capiPreviewUrl: '/api/preview/'
+      });
     </script>
     <script src="/dist/app.bundle.js"></script>
   </body>

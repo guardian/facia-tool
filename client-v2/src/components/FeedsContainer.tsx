@@ -45,7 +45,8 @@ interface FeedsContainerState {
 const Title = styled.h1`
   margin: 2px 0 0;
   vertical-align: top;
-  font-family: GHGuardianHeadline-Medium;
+  font-family: GHGuardianHeadline;
+  font-weight: 500;
   font-size: 20px;
   min-width: 80px;
 `;
@@ -86,7 +87,7 @@ const ResultsHeadingContainer = styled('div')`
 
 const getCapiFieldsToShow = (isPreview: boolean) => {
   const defaultFieldsToShow =
-    'internalPageCode,trailText,firstPublicationDate,isLive';
+    'internalPageCode,trailText,firstPublicationDate,isLive,thumbnail,secureThumbnail,liveBloggingNow';
 
   if (!isPreview) {
     return defaultFieldsToShow;
@@ -198,12 +199,14 @@ class FeedsContainer extends React.Component<
                 onChange={() => this.handleFeedClick(0)}
                 label="Live"
                 inline
+                name="capiFeed"
               />
               <RadioButton
                 checked={this.state.capiFeedIndex === 1}
                 onChange={() => this.handleFeedClick(1)}
                 label="Draft"
                 inline
+                name="capiFeed"
               />
             </RadioGroup>
           </StageSelectionContainer>

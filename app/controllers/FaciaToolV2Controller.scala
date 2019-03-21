@@ -9,10 +9,17 @@ import services._
 import updates._
 import util.Acl
 import permissions.ModifyCollectionsPermissionsCheck
+import org.joda.time.{DateTime}
 import play.api.mvc.{Action, AnyContent}
+import commands.{V2GetCollectionsCommand}
 
 import scala.concurrent.{ExecutionContext, Future}
 
+object CollectionSpec {
+  implicit val jsonFormat = Json.format[CollectionSpec]
+}
+
+case class CollectionSpec(id: String, lastUpdated: Option[Long])
 
 class FaciaToolV2Controller(
                            val acl: Acl,
@@ -25,18 +32,21 @@ class FaciaToolV2Controller(
                          )(implicit ec: ExecutionContext)
   extends BaseFaciaController(deps) with ModifyCollectionsPermissionsCheck with Logging {
 
-  def getCollections(): Action[AnyContent] = AccessAPIAuthAction.async { implicit request =>
-    val collectionIds = request.queryString.getOrElse("ids", Seq()).toList
-    val collectionPriorities = collectionIds.flatMap(configAgent.getFrontsPermissionsPriorityByCollectionId(_)).toSet
+    def getCollections() =
+    AccessAPIAuthAction(parse.json[Seq[CollectionSpec]]).async {
+      implicit request =>
+        val collectionSpecs = request.body.toList
+        val collectionIds = collectionSpecs.map(_.id)
+        val collectionPriorities = collectionIds
+          .flatMap(configAgent.getFrontsPermissionsPriorityByCollectionId(_))
+          .toSet
 
-    withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
-      val collections = collectionService.fetchCollectionsAndStoriesVisible(collectionIds)
-
-      collections.map(c => NoCache {
-        Ok(Json.toJson(c)).as("application/json")
-      })
+        withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
+          V2GetCollectionsCommand(collectionService, collectionSpecs).process().map(result => NoCache {
+            Ok(Json.toJson(result)).as("application/json")
+          })
+        }
     }
-  }
 
   def collectionEdits() = AccessAPIAuthAction.async { implicit request =>
 

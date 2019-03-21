@@ -11,6 +11,10 @@ interface ArticleFragmentsReceived {
   type: 'SHARED/ARTICLE_FRAGMENTS_RECEIVED';
   payload: { [id: string]: ArticleFragment };
 }
+interface ClearArticleFragments {
+  type: 'SHARED/CLEAR_ARTICLE_FRAGMENTS';
+  payload: { ids: string[] };
+}
 interface GroupsReceived {
   type: 'SHARED/GROUPS_RECEIVED';
   payload: { [id: string]: Group };
@@ -70,6 +74,7 @@ type Action =
   | Actions<ExternalArticle>
   | Actions<Collection>
   | ArticleFragmentsReceived
+  | ClearArticleFragments
   | UpdateArticleFragmentMeta
   | CapGroupSiblings;
 
@@ -80,6 +85,7 @@ export {
   RemoveGroupArticleFragment,
   RemoveSupportingArticleFragment,
   ArticleFragmentsReceived,
+  ClearArticleFragments,
   UpdateArticleFragmentMeta,
   InsertArticleFragmentPayload,
   RemoveArticleFragmentPayload,

@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { ArticleFragment } from 'shared/types/Collection';
 import ArticleDrag from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone from 'components/DropZone';
+import { gridDataTransferTypes } from 'constants/image';
 
 interface OuterProps {
   children: LevelChild<ArticleFragment>;
@@ -26,6 +27,7 @@ const ClipboardLevel = ({
   onDrop
 }: Props) => (
   <Level
+    blockingDataTransferTypes={Object.values(gridDataTransferTypes)}
     arr={articleFragments}
     parentType="clipboard"
     parentId="clipboard"

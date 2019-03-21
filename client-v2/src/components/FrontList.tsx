@@ -3,7 +3,7 @@ import { css } from 'styled-components';
 import { styled } from 'constants/theme';
 
 import ButtonCircular from 'shared/components/input/ButtonCircular';
-import MoreImage from 'shared/images/icons/more.svg';
+import { MoreIcon } from 'shared/components/icons/Icons';
 import TextHighlighter from './util/TextHighlighter';
 
 interface Props {
@@ -76,7 +76,7 @@ const FrontList = ({ fronts, onSelect, searchString }: Props) => {
           </ListLabel>
           {!front.isOpen && (
             <ButtonAdd>
-              <img src={MoreImage} alt="" width="100%" height="100%" />
+              <MoreIcon />
             </ButtonAdd>
           )}
         </ListItem>

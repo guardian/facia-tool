@@ -11,6 +11,7 @@ describe('DragIntentContainer', () => {
     const onIntentConfirm = jest.fn();
     const DragIntent = (
       <DragIntentContainer
+        delay={300}
         onIntentConfirm={onIntentConfirm}
         onDragIntentStart={onDragIntentStart}
         onDragIntentEnd={() => {}}
@@ -34,6 +35,7 @@ describe('DragIntentContainer', () => {
     const onIntentConfirm = jest.fn();
     const DragIntent = (
       <DragIntentContainer
+        delay={300}
         onIntentConfirm={onIntentConfirm}
         onDragIntentStart={() => {}}
         onDragIntentEnd={() => {}}
@@ -55,6 +57,7 @@ describe('DragIntentContainer', () => {
     const onDragIntentEnd = jest.fn();
     const DragIntent = (
       <DragIntentContainer
+        delay={300}
         onIntentConfirm={() => {}}
         onDragIntentStart={() => {}}
         onDragIntentEnd={onDragIntentEnd}
@@ -77,6 +80,7 @@ describe('DragIntentContainer', () => {
     const onDragIntentEnd = jest.fn();
     const DragIntent = (
       <DragIntentContainer
+        delay={300}
         onIntentConfirm={onIntentConfirm}
         onDragIntentStart={() => {}}
         onDragIntentEnd={onDragIntentEnd}
@@ -99,6 +103,7 @@ describe('DragIntentContainer', () => {
     const onIntentConfirm = jest.fn();
     const DragIntent = (
       <DragIntentContainer
+        delay={300}
         onIntentConfirm={onIntentConfirm}
         onDragIntentStart={onDragIntentStart}
         onDragIntentEnd={() => {}}
@@ -112,6 +117,26 @@ describe('DragIntentContainer', () => {
     const { getByText } = render(DragIntent);
     fireEvent.dragEnter(getByText('Child'));
     jest.runOnlyPendingTimers();
+    expect(onDragIntentStart).not.toBeCalled();
+    expect(onIntentConfirm).not.toBeCalled();
+  });
+  it('runs synchronously without delay', async () => {
+    const onDragIntentStart = jest.fn();
+    const onIntentConfirm = jest.fn();
+    const DragIntent = (
+      <DragIntentContainer
+        onIntentConfirm={onIntentConfirm}
+        onDragIntentStart={onDragIntentStart}
+        onDragIntentEnd={() => {}}
+        active={false}
+      >
+        <span>
+          <span>Child</span>
+        </span>
+      </DragIntentContainer>
+    );
+    const { getByText } = render(DragIntent);
+    fireEvent.dragEnter(getByText('Child'));
     expect(onDragIntentStart).not.toBeCalled();
     expect(onIntentConfirm).not.toBeCalled();
   });

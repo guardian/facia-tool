@@ -17,7 +17,7 @@ import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 import { Collection, CollectionItemSets } from 'shared/types/Collection';
 import { createCollectionId } from 'shared/components/Collection';
 import ButtonDefault from 'shared/components/input/ButtonCircular';
-import lockedPadlock from 'shared/images/icons/locked-padlock.svg';
+import { LockedPadlockIcon } from 'shared/components/icons/Icons';
 
 import {
   createCollectionSelector,
@@ -62,7 +62,6 @@ const Container = styled.div`
   font-size: 14px;
   min-height: 2.5em;
   margin-top: 0.75em;
-  margin-right: 0.75em;
   padding: 0.55em 0.75em;
   text-align: left;
   text-decoration: none;
@@ -125,10 +124,6 @@ const StatusFlag = styled(StatusWarning)`
     cursor: auto;
   }
 `;
-const PadlockImg = styled.img.attrs({ src: lockedPadlock, alt: 'Locked' })`
-  width: 12px;
-  display: inline-block;
-`;
 
 const CollectionStatus = ({
   hasUnpublishedChanges,
@@ -153,8 +148,8 @@ const CollectionStatus = ({
       </StatusWarning>
     ) : null}
     {isUneditable ? (
-      <StatusFlag disabled={true} size="s">
-        <PadlockImg />
+      <StatusFlag disabled={true} size="s" title="Locked">
+        <LockedPadlockIcon size={'xs'} />
       </StatusFlag>
     ) : null}
   </>

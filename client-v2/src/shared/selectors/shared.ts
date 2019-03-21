@@ -13,6 +13,7 @@ import {
   ArticleTag
 } from '../types/Collection';
 import { State } from '../types/State';
+import { collectionItemSets } from 'constants/fronts';
 
 // Selects the shared part of the application state mounted at its default point, '.shared'.
 const selectSharedState = (rootState: any): State => rootState.shared;
@@ -137,7 +138,8 @@ const createArticleFromArticleFragmentSelector = () =>
             : true,
         firstPublicationDate: externalArticle
           ? externalArticle.fields.firstPublicationDate
-          : undefined
+          : undefined,
+        frontPublicationTime: articleFragment.frontPublicationDate
       };
     }
   );
@@ -284,6 +286,28 @@ const createArticlesInCollectionSelector = () => {
     });
 };
 
+const createAllArticlesInCollectionSelector = () => {
+  const articlesInCollection = createArticlesInCollectionSelector();
+
+  return (state: State, collectionIds: string[]) =>
+    collectionIds.reduce(
+      (acc, id) => [
+        ...acc,
+        ...Object.values(collectionItemSets).reduce(
+          (acc1, collectionSet) => [
+            ...acc1,
+            ...articlesInCollection(state, {
+              collectionId: id,
+              collectionSet
+            })
+          ],
+          [] as string[]
+        )
+      ],
+      [] as string[]
+    );
+};
+
 const articleFragmentIdSelector = (
   _: unknown,
   { articleFragmentId }: { articleFragmentId: string }
@@ -400,6 +424,7 @@ export {
   articleFragmentsFromRootStateSelector,
   createArticlesInCollectionGroupSelector,
   createArticlesInCollectionSelector,
+  createAllArticlesInCollectionSelector,
   createGroupArticlesSelector,
   createSupportingArticlesSelector,
   createCollectionSelector,

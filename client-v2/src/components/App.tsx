@@ -29,52 +29,47 @@ import ConfirmModal from './ConfirmModal';
 // tslint:disable:no-unused-expression
 injectGlobal`
   @font-face {
-    font-family: GHGuardianHeadline-Bold
+    font-family: GHGuardianHeadline;
     src: url(${GHGuardianHeadlineBoldWoff2}) format('woff2'),
       url(${GHGuardianHeadlineBoldWoff}) format('woff'),
       url(${GHGuardianHeadlineBoldTtf}) format('truetype');
-
-    font-style: 'bold',
-    font-weight: 800
+    font-weight: bold;
+    font-weight: 600 800;
   }
 
   @font-face {
-    font-family: GHGuardianHeadline-Regular
+    font-family: GHGuardianHeadline;
     src: url(${GHGuardianHeadlineRegularWoff2}) format('woff2'),
       url(${GHGuardianHeadlineRegularWoff}) format('woff'),
       url(${GHGuardianHeadlineRegularTtf}) format('truetype');
-
-     font-style: 'normal',
-     font-weight: 'normal'
+    font-style: normal;
+    font-weight: 100 400;
   }
 
   @font-face {
-    font-family: GHGuardianHeadline-Medium
+    font-family: GHGuardianHeadline;
     src: url(${GHGuardianHeadlineMediumWoff2}) format('woff2'),
       url(${GHGuardianHeadlineMediumWoff}) format('woff'),
       url(${GHGuardianHeadlineMediumTtf}) format('truetype');
-
-    font-style: 'bold',
-    font-weight: 800
+    font-weight: 500;
   }
 
   @font-face {
-    font-family: TS3TextSans
+    font-family: TS3TextSans;
     src: url(${GuardianTextSansWoff2}) format('woff2'),
       url(${GuardianTextSansWoff}) format('woff'),
       url(${GuardianTextSansTtf}) format('truetype');
-
-    font-style: 'normal',
-    font-weight: 'normal'
+    font-style: normal;
+    font-weight: 100 400;
   }
 
   @font-face {
-    font-family: TS3TextSans-Bold
+    font-family: TS3TextSans;
     src: url(${GuardianTextSansBoldWoff2}) format('woff2'),
       url(${GuardianTextSansTtfBold}) format('truetype'),
       url(${GuardianTextSansBoldWoff}) format('woff');
-    font-style: 'normal',
-    font-weight: 'normal'
+    font-weight: bold;
+    font-weight: 500 800;
   }
 
   html, body {
@@ -101,6 +96,10 @@ const BackgroundHeader = styled('div')`
   width: 100%;
 `;
 
+export const frontsEditPath = `/:priority(${Object.keys(priorities).join(
+  '|'
+)})/:frontId?`;
+
 const App = () => (
   <ThemeProvider theme={styleTheme}>
     <DropDisabler>
@@ -109,11 +108,7 @@ const App = () => (
           <SectionHeaderWithLogo />
         </BackgroundHeader>
         <Switch>
-          <Route
-            exact
-            path={`/:priority(${Object.keys(priorities).join('|')})/:frontId?`}
-            component={FrontsEdit}
-          />
+          <Route exact path={frontsEditPath} component={FrontsEdit} />
           <Route exact path="/" component={Home} />
           <Route component={NotFound} />
         </Switch>

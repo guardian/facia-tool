@@ -166,12 +166,14 @@ async function saveClipboard(
   }
 }
 
-async function saveOpenFrontIds(frontIds?: string[]): Promise<void> {
+async function saveOpenFrontIds(frontsByPriority?: {
+  [priority: string]: string[];
+}): Promise<void> {
   try {
-    await pandaFetch(`/userdata/frontIds`, {
+    await pandaFetch(`/userdata/frontIdsByPriority`, {
       method: 'put',
       credentials: 'same-origin',
-      body: JSON.stringify(frontIds),
+      body: JSON.stringify(frontsByPriority),
       headers: {
         'Content-Type': 'application/json'
       }
@@ -185,38 +187,30 @@ async function saveOpenFrontIds(frontIds?: string[]): Promise<void> {
   }
 }
 
-async function getCollection(
-  collectionId: string
-): Promise<CollectionResponse> {
-  const collections = await getCollections([collectionId]);
-  const [collection] = collections;
+async function getCollection(collectionId: {
+  id: string;
+  lastUpdated?: number;
+}): Promise<CollectionResponse> {
+  const [collection] = await getCollections([collectionId]);
+
   if (!collection) {
     throw new Error(`Collection with id ${collectionId} not found`);
   }
   return collection;
 }
 
-async function getCollections(
-  collectionIds: string[]
-): Promise<Array<CollectionResponse | null>> {
-  const params = new URLSearchParams();
-  collectionIds.map(_ => params.append('ids', _));
-  const response = await pandaFetch(`/collections?${params.toString()}`, {
-    method: 'get',
+async function getCollections( // fetchCollections
+  collections: Array<{ id: string; lastUpdated?: number }>
+): Promise<CollectionResponse[]> {
+  const response = await pandaFetch('/collections', {
+    body: JSON.stringify(collections),
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
     credentials: 'same-origin'
   });
-  const collectionResponses: Array<CollectionResponse | null> = await response.json();
-  return collectionResponses.map((collectionResponse, index) =>
-    collectionResponse
-      ? {
-          ...collectionResponse,
-          collection: {
-            ...collectionResponse.collection,
-            id: collectionIds[index]
-          }
-        }
-      : null
-  );
+  return await response.json();
 }
 
 /**

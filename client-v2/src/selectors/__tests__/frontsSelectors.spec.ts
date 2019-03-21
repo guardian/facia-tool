@@ -1,17 +1,13 @@
 import {
   getFrontsWithPriority,
-  alsoOnFrontSelector,
-  lastPressedSelector
+  alsoOnFrontSelector
 } from 'selectors/frontsSelectors';
 import { frontsConfig } from 'fixtures/frontsConfig';
 import { FrontConfig } from 'types/FaciaApi';
 
 const editorialFrontsInConfig: FrontConfig[] = [
-  {
-    collections: ['collection1'],
-    id: 'editorialFront',
-    priority: 'editorial'
-  }
+  { collections: ['collection1'], id: 'editorialFront', priority: 'editorial' },
+  { collections: ['collection6'], id: 'editorialFront2', priority: 'editorial' }
 ];
 
 const additionalEditorialFronts: FrontConfig[] = [
@@ -85,20 +81,6 @@ describe('Filtering fronts correctly', () => {
         'commercial'
       )
     ).toEqual(commercialFronts);
-  });
-  it('gets the last press date for a given front and stage', () => {
-    expect(
-      lastPressedSelector(
-        {
-          fronts: {
-            lastPressed: {
-              exampleId: '2018-05-24T09:42:20.580Z'
-            }
-          }
-        } as any,
-        'exampleId'
-      )
-    ).toEqual('2018-05-24T09:42:20.580Z');
   });
 });
 

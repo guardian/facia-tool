@@ -16,40 +16,73 @@ import { Config } from './Config';
 import { FrontsConfig, VisibleArticlesResponse } from './FaciaApi';
 import { BatchAction } from 'redux-batched-actions';
 import { Stages } from 'shared/types/Collection';
+import {
+  EDITOR_OPEN_CURRENT_FRONTS_MENU,
+  EDITOR_CLOSE_CURRENT_FRONTS_MENU,
+  EDITOR_OPEN_FRONT,
+  EDITOR_MOVE_FRONT,
+  EDITOR_CLOSE_FRONT,
+  EDITOR_OPEN_COLLECTION,
+  EDITOR_CLOSE_COLLECTION,
+  EDITOR_CLEAR_OPEN_FRONTS,
+  EDITOR_SET_OPEN_FRONTS,
+  EDITOR_SELECT_ARTICLE_FRAGMENT,
+  EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION,
+  EDITOR_OPEN_CLIPBOARD,
+  EDITOR_CLOSE_CLIPBOARD,
+  EDITOR_OPEN_OVERVIEW,
+  EDITOR_CLOSE_OVERVIEW,
+  EDITOR_OPEN_ALL_OVERVIEWS,
+  EDITOR_CLOSE_ALL_OVERVIEWS
+} from 'bundles/frontsUIBundle';
+
+interface EditorOpenCurrentFrontsMenu {
+  type: typeof EDITOR_OPEN_CURRENT_FRONTS_MENU;
+}
+
+interface EditorCloseCurrentFrontsMenu {
+  type: typeof EDITOR_CLOSE_CURRENT_FRONTS_MENU;
+}
 
 interface EditorAddFront {
-  type: 'EDITOR_OPEN_FRONT';
-  payload: { frontId: string };
+  type: typeof EDITOR_OPEN_FRONT;
+  payload: { frontId: string; priority: string };
+  meta: PersistMeta;
+}
+
+interface EditorMoveFront {
+  type: typeof EDITOR_MOVE_FRONT;
+  payload: { frontId: string; toIndex: number };
   meta: PersistMeta;
 }
 
 interface EditorCloseFront {
-  type: 'EDITOR_CLOSE_FRONT';
+  type: typeof EDITOR_CLOSE_FRONT;
   payload: { frontId: string };
   meta: PersistMeta;
 }
 interface EditorOpenCollection {
-  type: 'EDITOR_OPEN_COLLECTION';
+  type: typeof EDITOR_OPEN_COLLECTION;
   payload: { collectionIds: string | string[] };
 }
 
 interface EditorCloseCollection {
-  type: 'EDITOR_CLOSE_COLLECTION';
+  type: typeof EDITOR_CLOSE_COLLECTION;
   payload: { collectionIds: string | string[] };
 }
 
 interface EditorClearOpenFronts {
-  type: 'EDITOR_CLEAR_OPEN_FRONTS';
+  type: typeof EDITOR_CLEAR_OPEN_FRONTS;
   meta: PersistMeta;
 }
 
 interface EditorSetOpenFronts {
-  type: 'EDITOR_SET_OPEN_FRONTS';
-  payload: { frontIds: string[] };
+  type: typeof EDITOR_SET_OPEN_FRONTS;
+  payload: { frontIdsByPriority: { [id: string]: string[] } };
 }
 
 interface EditorSelectArticleFragment {
-  type: 'EDITOR_SELECT_ARTICLE_FRAGMENT';
+  type: typeof EDITOR_SELECT_ARTICLE_FRAGMENT;
   payload: {
     articleFragmentId: string;
     frontId: string;
@@ -58,39 +91,39 @@ interface EditorSelectArticleFragment {
 }
 
 interface EditorClearArticleFragmentSelection {
-  type: 'EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION';
+  type: typeof EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION;
   payload: {
     frontId: string;
   };
 }
 
 interface EditorOpenClipboard {
-  type: 'EDITOR_OPEN_CLIPBOARD';
+  type: typeof EDITOR_OPEN_CLIPBOARD;
 }
 
 interface EditorCloseClipboard {
-  type: 'EDITOR_CLOSE_CLIPBOARD';
+  type: typeof EDITOR_CLOSE_CLIPBOARD;
 }
 
 interface EditorOpenOverview {
-  type: 'EDITOR_OPEN_OVERVIEW';
+  type: typeof EDITOR_OPEN_OVERVIEW;
   payload: {
     frontId: string;
   };
 }
 interface EditorCloseOverview {
-  type: 'EDITOR_CLOSE_OVERVIEW';
+  type: typeof EDITOR_CLOSE_OVERVIEW;
   payload: {
     frontId: string;
   };
 }
 
 interface EditorOpenAllOverviews {
-  type: 'EDITOR_OPEN_ALL_OVERVIEWS';
+  type: typeof EDITOR_OPEN_ALL_OVERVIEWS;
 }
 
 interface EditorCloseAllOverviews {
-  type: 'EDITOR_CLOSE_ALL_OVERVIEWS';
+  type: typeof EDITOR_CLOSE_ALL_OVERVIEWS;
 }
 
 interface ActionPersistMeta {
@@ -229,7 +262,10 @@ type Action =
   | RemoveSupportingArticleFragment
   | RemoveClipboardArticleFragment
   | UpdateClipboardContent
+  | EditorOpenCurrentFrontsMenu
+  | EditorCloseCurrentFrontsMenu
   | EditorAddFront
+  | EditorMoveFront
   | EditorClearOpenFronts
   | EditorSetOpenFronts
   | EditorCloseFront
@@ -271,7 +307,10 @@ export {
   RemoveSupportingArticleFragment,
   RemoveClipboardArticleFragment,
   UpdateClipboardContent,
+  EditorOpenCurrentFrontsMenu,
+  EditorCloseCurrentFrontsMenu,
   EditorAddFront,
+  EditorMoveFront,
   EditorClearOpenFronts,
   EditorSetOpenFronts,
   EditorCloseFront,

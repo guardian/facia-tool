@@ -18,7 +18,8 @@ import ImagePlaceholder from '../ImagePlaceholder';
 import TextPlaceholder from '../TextPlaceholder';
 
 const PillaredSection = styled('span')<{ pillar?: string; isLive?: boolean }>`
-  color: ${({ pillar, isLive }) => getPillarColor(pillar, isLive) || 'inherit'};
+  color: ${({ pillar, isLive }) =>
+    getPillarColor(pillar, isLive || true) || 'inherit'};
   font-size: 13px;
   font-weight: bold;
 `;
@@ -42,7 +43,7 @@ const ArticlePolaroidComponent = ({
     <>
       {size === 'default' &&
         (displayPlaceholders ? (
-          <ImagePlaceholder height={108} />
+          <ImagePlaceholder height={84} />
         ) : (
           <PolaroidThumbnail
             style={{

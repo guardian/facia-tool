@@ -83,9 +83,7 @@ class CollectionNotification extends React.Component<
           {this.state.showFrontDetails && (
             <AlsoOnLinksWrapper>
               {alsoOn.fronts.map(front => (
-                <div key={front.id}>
-                  <a href={`/v2/${front.priority}/${front.id}`}>{front.id}</a>
-                </div>
+                <div key={front.id}>{front.id}</div>
               ))}
             </AlsoOnLinksWrapper>
           )}

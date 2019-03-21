@@ -4,7 +4,7 @@ import ConditionalComponent from 'components/layout/ConditionalComponent';
 import { BaseFieldProps } from 'redux-form';
 
 interface Props extends BaseFieldProps {
-  permittedFields: string[];
+  permittedFields?: string[];
 }
 
 const ConditionalField = <P extends {}>(props: Props & P) => (

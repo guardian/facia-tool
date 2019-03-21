@@ -13,7 +13,12 @@ object StoriesVisibleByStage {
   implicit val jsonFormat = Json.format[StoriesVisibleByStage]
 }
 
-case class CollectionAndStoriesResponse(collection: CollectionJson, storiesVisibleByStage: Option[StoriesVisibleByStage])
+case class CollectionAndStoriesResponse(id: String, collection: CollectionJson, storiesVisibleByStage: Option[StoriesVisibleByStage]) {
+  // getOrElse ensures that if millis is None
+  // this method will return true assuming i.e. that it was updatedAfter no time
+  def wasUpdatedAfter(millis: Option[Long]): Boolean =
+    collection.lastUpdated.getMillis() > millis.getOrElse(-1L)
+}
 
 object CollectionAndStoriesResponse {
   implicit val jsonFormat = Json.format[CollectionAndStoriesResponse]
@@ -30,7 +35,7 @@ class CollectionService(frontsApi: FrontsApi, containerService: ContainerService
     frontsApi.amazonClient.config.flatMap { config =>
       val futures = collectionIds.map { collectionId => fetchCollection(collectionId).flatMap {
           case Some(collection) => {
-            val collectionAndStoriesResponse = CollectionAndStoriesResponse(collection,
+            val collectionAndStoriesResponse = CollectionAndStoriesResponse(collectionId, collection,
               CollectionService.getStoriesVisibleByStage(
                 collectionId,
                 collection,
@@ -50,7 +55,7 @@ class CollectionService(frontsApi: FrontsApi, containerService: ContainerService
 
 object CollectionService {
   def getStoriesVisibleByStage(collectionId: String, collection: CollectionJson, config: ConfigJson, containerService: ContainerService): Option[StoriesVisibleByStage] = {
-    val stages = CollectionService.getStoriesForCollectionStages(collectionId, collection, config)
+    val stages = CollectionService.getStoriesForCollectionStages(collectionId, collection)
     config.collections.get(collectionId).flatMap(_.`type`) match {
       case Some(cType) =>
         Some(
@@ -63,34 +68,28 @@ object CollectionService {
     }
   }
 
-  def getStoriesForCollectionStages(collectionId: String, collection: CollectionJson, config: ConfigJson): (Seq[Story], Seq[Story]) = {
-    val numberOfGroups = config.collections.get(collectionId) match {
-      case Some(collectionConfig) => collectionConfig.groups.map(_.length).getOrElse(0)
-      case None => 0
-    }
-
-    val liveStages = Some(collection.live).map { getStoriesForStage(_, numberOfGroups) }.getOrElse(Seq())
-
+  def getStoriesForCollectionStages(collectionId: String, collection: CollectionJson): (Seq[Story], Seq[Story]) = {
+    val liveStages = Some(collection.live).map(getStoriesForStage).getOrElse(Seq())
+    val draftStages = collection.draft.map(getStoriesForStage).getOrElse(liveStages)
     (
       liveStages,
-      collection.draft.map { getStoriesForStage(_, numberOfGroups) }.getOrElse(liveStages)
+      draftStages
     )
   }
 
-  def getStoriesForStage(stage: List[Trail], numberOfGroups: Int): Seq[Story] = {
-    stage.zipWithIndex.map {
-      case (article, index) =>
-        val maybeGroup = for {
-          meta <- article.meta
-          group <- meta.group
-        } yield {
-          group.toInt
-        }
-        val group = maybeGroup.getOrElse(0)
-        Story(
-          group,
-          article.meta.flatMap(_.isBoosted).getOrElse(false)
-        )
+  def getStoriesForStage(trailsInStage: List[Trail]): Seq[Story] = {
+    trailsInStage.map { article =>
+      val maybeGroup = for {
+        meta <- article.meta
+        group <- meta.group
+      } yield {
+        group.toInt
+      }
+      val group = maybeGroup.getOrElse(0)
+      Story(
+        group,
+        article.meta.flatMap(_.isBoosted).getOrElse(false)
+      )
     }.sortBy(_.group).reverse
   }
 }

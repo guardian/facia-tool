@@ -21,6 +21,9 @@ export const insertAndDedupeSiblings = (
     id => articleFragmentMap[id]
   );
 
+  const isAnInsertedItem = (i: number) =>
+    i >= index && i < index + insertionUUIDs.length;
+
   // the filter alone should be enough here but just in case any of the
   // insertions were duplicates then run `uniqBy` over and dedupe again
   return uniqBy(
@@ -29,7 +32,7 @@ export const insertAndDedupeSiblings = (
         // keep anything that doesn't match on id or is the item we just
         // inserted
         !insertionIDs.includes(siblingArticleFragment.id) ||
-        (isInsertionGroup && i === index)
+        (isInsertionGroup && isAnInsertedItem(i))
     ),
     ({ id: dedupeKey }) => dedupeKey
   ).map(({ uuid }) => uuid);

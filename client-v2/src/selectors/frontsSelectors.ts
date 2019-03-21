@@ -255,9 +255,6 @@ const createAlsoOnSelector = () =>
     alsoOnFrontSelector
   );
 
-const lastPressedSelector = (state: State, frontId: string): string | null =>
-  state.fronts.lastPressed[frontId] || null;
-
 const clipboardSelector = (state: State) => state.clipboard;
 
 const visibleArticlesSelector = createSelector(
@@ -267,11 +264,13 @@ const visibleArticlesSelector = createSelector(
   }
 );
 
+const defaultVisibleFrontArticles = {};
+
 const visibleFrontArticlesSelector = createSelector(
   [collectionVisibilitiesSelector, collectionSetSelector],
   (collectionVisibilities, collectionSet) => {
     if (collectionSet === 'previously') {
-      return {};
+      return defaultVisibleFrontArticles;
     }
     return collectionVisibilities[collectionSet];
   }
@@ -279,6 +278,7 @@ const visibleFrontArticlesSelector = createSelector(
 
 export {
   getFront,
+  getFronts,
   getFrontsConfig,
   getCollectionConfig,
   frontsConfigSelector,
@@ -287,7 +287,6 @@ export {
   getFrontsWithPriority,
   alsoOnFrontSelector,
   createAlsoOnSelector,
-  lastPressedSelector,
   hasUnpublishedChangesSelector,
   clipboardSelector,
   visibleArticlesSelector,

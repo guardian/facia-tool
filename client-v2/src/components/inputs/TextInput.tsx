@@ -1,8 +1,10 @@
 import React from 'react';
 import { styled } from 'constants/theme';
-import moreImage from 'shared/images/icons/more.svg';
-import searchImage from 'shared/images/icons/search.svg';
-import { SmallRoundButton, ClearButtonIcon } from 'util/sharedStyles/buttons';
+import {
+  MagnifyingGlassIcon as SearchIcon,
+  ClearIcon
+} from 'shared/components/icons/Icons';
+import { SmallRoundButton } from 'util/sharedStyles/buttons';
 
 const InputWrapper = styled('div')`
   position: relative;
@@ -54,7 +56,10 @@ const ButtonsContainer = styled('div')`
   right: 8px;
 `;
 
-const SearchButtonIcon = styled('img')`
+const SearchButtonIcon = styled('div')`
+  vertical-align: middle;
+`;
+const ClearButtonIcon = styled('div')`
   vertical-align: middle;
 `;
 
@@ -81,24 +86,16 @@ const TextInput = ({
     <ButtonsContainer>
       {onClear && searchTermsExist && (
         <SmallRoundButtonOrange onClick={onSearch} title="Clear search">
-          <ClearButtonIcon
-            src={moreImage}
-            onClick={onClear}
-            alt=""
-            height="22px"
-            width="22px"
-          />
+          <ClearButtonIcon onClick={onClear}>
+            <ClearIcon size={'l'} />
+          </ClearButtonIcon>
         </SmallRoundButtonOrange>
       )}
       {onDisplaySearchFilters && (
         <SmallRoundButtonBlack onClick={onDisplaySearchFilters} title="Search">
-          <SearchButtonIcon
-            src={searchImage}
-            onClick={onSearch}
-            alt=""
-            height="22px"
-            width="22px"
-          />
+          <SearchButtonIcon onClick={onSearch}>
+            <SearchIcon size={'l'} />
+          </SearchButtonIcon>
         </SmallRoundButtonBlack>
       )}
     </ButtonsContainer>

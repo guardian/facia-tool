@@ -1,5 +1,3 @@
-// @flow
-
 import { styled } from 'constants/theme';
 
 export const SmallRoundButton = styled('button')`
@@ -25,10 +23,4 @@ export const SmallRoundButton = styled('button')`
     outline: none;
     font-weight: bold;
   }
-`;
-
-export const ClearButtonIcon = styled('img')`
-  transform: rotate(45deg);
-  vertical-align: middle;
-  margin-right: 4px;
 `;

@@ -34,9 +34,16 @@ const init = () => {
   });
 };
 
+type ImageAdditionMethod = 'drop' | 'paste' | 'click to modal';
+
+// NOTE: you are unable to set custom dimensions on events, so the final gtag argument {} being passed in below are not currently working.
 const events = {
   addFront: (frontId: string) =>
     gtag('event', 'add_front', {
+      front_id: frontId // either front id or 'clipboard'
+    }),
+  moveFront: (frontId: string) =>
+    gtag('event', 'move_front', {
       front_id: frontId // either front id or 'clipboard'
     }),
   removeFront: (frontId: string) =>
@@ -60,6 +67,16 @@ const events = {
     gtag('event', 'collection_published', {
       collection_id: collectionId,
       front_id: frontId
+    }),
+  imageAdded: (
+    frontId: string,
+    // collectionId: string,
+    method: ImageAdditionMethod
+  ) =>
+    gtag('event', `imageAdded: ${method}`, {
+      // collection_id: collectionId,
+      front_id: frontId,
+      method
     })
 };
 

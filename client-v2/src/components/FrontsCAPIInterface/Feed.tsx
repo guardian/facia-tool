@@ -2,6 +2,7 @@ import React from 'react';
 import { styled } from 'constants/theme';
 import FeedItem from './FeedItem';
 import { CapiArticle } from 'types/Capi';
+import { getThumbnail } from 'util/CAPIUtils';
 
 const getId = (internalPageCode: string | number | undefined) =>
   `internal-code/page/${internalPageCode}`;
@@ -28,31 +29,25 @@ const Feed = ({ articles = [], error }: FeedProps) => (
     {articles.length ? (
       articles
         .filter(result => result.webTitle)
-        .map(
-          ({
-            id,
-            webTitle,
-            webUrl,
-            webPublicationDate,
-            sectionName,
-            fields,
-            pillarId
-          }) => (
-            <FeedItem
-              id={id}
-              key={webUrl}
-              title={webTitle}
-              href={webUrl}
-              publicationDate={webPublicationDate}
-              sectionName={sectionName}
-              pillarId={pillarId}
-              internalPageCode={fields && getId(fields.internalPageCode)}
-              firstPublicationDate={fields.firstPublicationDate}
-              isLive={!fields.isLive || fields.isLive === 'true'}
-              scheduledPublicationDate={fields.scheduledPublicationDate}
-            />
-          )
-        )
+        .map(article => (
+          <FeedItem
+            id={article.id}
+            key={article.webUrl}
+            title={article.webTitle}
+            href={article.webUrl}
+            publicationDate={article.webPublicationDate}
+            sectionName={article.sectionName}
+            pillarId={article.pillarId}
+            internalPageCode={
+              article.fields && getId(article.fields.internalPageCode)
+            }
+            firstPublicationDate={article.fields.firstPublicationDate}
+            isLive={!article.fields.isLive || article.fields.isLive === 'true'}
+            scheduledPublicationDate={article.fields.scheduledPublicationDate}
+            thumbnail={getThumbnail(article, article.frontsMeta.defaults)}
+            tone={article.frontsMeta.tone}
+          />
+        ))
     ) : (
       <NoResults>No results found</NoResults>
     )}

@@ -1,17 +1,19 @@
 import { Middleware } from 'redux';
 import uniq from 'lodash/uniq';
+import mapValues from 'lodash/mapValues';
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import { BATCH } from 'redux-batched-actions';
 import { Action, ActionPersistMeta } from 'types/Action';
 import { selectors } from 'shared/bundles/collectionsBundle';
-import { selectEditorFronts } from 'bundles/frontsUIBundle';
 import { updateCollection } from 'actions/Collections';
 import { updateClipboard } from 'actions/Clipboard';
 import { selectSharedState } from 'shared/selectors/shared';
 import { saveOpenFrontIds } from 'services/faciaApi';
 import { NestedArticleFragment } from 'shared/types/Collection';
 import { denormaliseClipboard } from 'util/clipboardUtils';
+import { getFront } from 'selectors/frontsSelectors';
+import { selectEditorFrontIds } from 'bundles/frontsUIBundle';
 
 const updateStateFromUrlChange: Middleware<{}, State, Dispatch> = ({
   dispatch,
@@ -99,16 +101,19 @@ const persistCollectionOnEdit = (
           (act.meta.key ? act.payload[act.meta.key] : act.payload.id)
       )
     );
-    const collectionIds: string[] = articleFragmentIds.reduce((acc, id) => {
-      const collectionId = selectors.selectParentCollectionOfArticleFragment(
-        selectSharedState(store.getState()),
-        id
-      );
-      if (!collectionId) {
-        return acc;
-      }
-      return acc.concat(collectionId);
-    }, []);
+    const collectionIds: string[] = articleFragmentIds.reduce(
+      (acc, id) => {
+        const collectionId = selectors.selectParentCollectionOfArticleFragment(
+          selectSharedState(store.getState()),
+          id
+        );
+        if (!collectionId) {
+          return acc;
+        }
+        return acc.concat(collectionId);
+      },
+      [] as string[]
+    );
     return collectionIds;
   };
 
@@ -182,7 +187,9 @@ const persistClipboardOnEdit = (
 };
 
 const persistOpenFrontsOnEdit: (
-  persistFn?: (persistFrontIds?: string[]) => Promise<void>
+  persistFn?: (
+    persistFrontIds?: { [priority: string]: string[] }
+  ) => Promise<void>
 ) => Middleware<{}, State, Dispatch> = (
   persistFrontIds = saveOpenFrontIds
 ) => store => next => (action: Action) => {
@@ -198,9 +205,16 @@ const persistOpenFrontsOnEdit: (
     return next(action);
   }
   const result = next(action);
-  const frontIds = selectEditorFronts(store.getState());
+  const state = store.getState();
+  const frontIdsByPriority = selectEditorFrontIds(state);
+
+  // Only persist fronts that exist in the state, clearing out
+  // fronts that have been deleted.
+  const filteredFrontIdsByPriority = mapValues(frontIdsByPriority, frontIds =>
+    frontIds.filter(frontId => !!getFront(state, frontId))
+  );
   // Now they're in the state, persist the relevant front ids.
-  persistFrontIds(frontIds);
+  persistFrontIds(filteredFrontIdsByPriority);
   return result;
 };
 

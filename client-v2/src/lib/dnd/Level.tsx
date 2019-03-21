@@ -66,6 +66,9 @@ interface OuterProps<T> {
     isTarget: boolean,
     index: number
   ) => React.ReactNode;
+  // any occurence of these in the data transfer will cause all dragging
+  // behaviour to be bypassed
+  blockingDataTransferTypes?: string[];
 }
 
 interface ContextProps {
@@ -116,6 +119,12 @@ class Level<T> extends React.Component<Props<T>> {
     );
   }
 
+  private dragEventIsBlacklisted(e: React.DragEvent) {
+    return e.dataTransfer.types.some(type =>
+      (this.props.blockingDataTransferTypes || []).includes(type)
+    );
+  }
+
   private getDropIndex(e: React.DragEvent, i: number, isNode: boolean) {
     return i + (isNode ? getDropIndexOffset(e) : 0);
   }
@@ -124,7 +133,7 @@ class Level<T> extends React.Component<Props<T>> {
     if (!this.props.store) {
       throw new Error(NO_STORE_ERROR);
     }
-    if (e.defaultPrevented) {
+    if (e.defaultPrevented || this.dragEventIsBlacklisted(e)) {
       return;
     }
     e.preventDefault();
@@ -132,7 +141,7 @@ class Level<T> extends React.Component<Props<T>> {
   };
 
   private onDrop = (i: number, isNode: boolean) => (e: React.DragEvent) => {
-    if (e.defaultPrevented) {
+    if (e.defaultPrevented || this.dragEventIsBlacklisted(e)) {
       return;
     }
 

@@ -79,7 +79,17 @@ describe('Store middleware', () => {
     });
     it("should call the persist function with the state's open front ids if it receives an action the correct persistTo property", () => {
       const store = mockStore({
-        editor: { frontIds: ['front1', 'front2'] }
+        editor: { frontIdsByPriority: { editorial: ['front1', 'front2'] } },
+        fronts: {
+          frontsConfig: {
+            data: {
+              fronts: {
+                front1: {},
+                front2: {}
+              }
+            }
+          }
+        }
       });
       store.dispatch({
         type: 'ARBITRARY_ACTION',
@@ -88,7 +98,36 @@ describe('Store middleware', () => {
         }
       });
       expect(persistFrontIdsSpy.mock.calls.length).toBe(1);
-      expect(persistFrontIdsSpy.mock.calls[0][0]).toEqual(['front1', 'front2']);
+      expect(persistFrontIdsSpy.mock.calls[0][0]).toEqual({
+        editorial: ['front1', 'front2']
+      });
+    });
+    it('should not include fronts that are no longer in the state', () => {
+      const store = mockStore({
+        editor: {
+          frontIdsByPriority: { editorial: ['front1', 'front2', 'notInState'] }
+        },
+        fronts: {
+          frontsConfig: {
+            data: {
+              fronts: {
+                front1: {},
+                front2: {}
+              }
+            }
+          }
+        }
+      });
+      store.dispatch({
+        type: 'ARBITRARY_ACTION',
+        meta: {
+          persistTo: 'openFrontIds'
+        }
+      });
+      expect(persistFrontIdsSpy.mock.calls.length).toBe(1);
+      expect(persistFrontIdsSpy.mock.calls[0][0]).toEqual({
+        editorial: ['front1', 'front2']
+      });
     });
   });
 });

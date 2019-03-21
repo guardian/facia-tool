@@ -1,5 +1,6 @@
 const path = require('path');
 const express = require('express');
+const bodyParser = require('body-parser')
 const port = 3456;
 
 const config = require('../fixtures/config');
@@ -20,6 +21,7 @@ module.exports = async () =>
   new Promise((res, rej) => {
     const app = express();
 
+    app.use(bodyParser.json())
     app.get('/v2/*', (_, res) =>
       res.sendFile(path.join(__dirname, './index.html'))
     );
@@ -116,9 +118,10 @@ module.exports = async () =>
 
     app.get('/config', (_, res) => res.json(config));
     app.get('/collection/:id', (_, res) => res.json(collection));
-    app.get('/collections*', (_, res) =>
+    app.post('/collections*', (req, res) =>
       res.json([
         {
+          id: req.body[0].id,
           collection,
           storiesVisibleByStage: {
             live: { desktop: 4, mobile: 4 },
@@ -135,12 +138,12 @@ module.exports = async () =>
         req.params[0].includes('bbc') // prevents error messages from External Snap Link fixture
           ? res.json('')
           : res.sendFile(
-              path.join(
-                __dirname,
-                '../../../public/client-v2/dist',
-                req.params.file
-              )
+            path.join(
+              __dirname,
+              '../../../public/client-v2/dist',
+              req.params.file
             )
+          )
     );
 
     // this catches update requests and pretends they went through ok

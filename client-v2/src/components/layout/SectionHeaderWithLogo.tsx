@@ -1,6 +1,5 @@
 import React from 'react';
 import { styled } from 'constants/theme';
-import FrontsLogo from 'images/icons/fronts-logo.svg';
 import { SectionHeaderUnpadded } from './SectionHeader';
 
 const SectionHeader = styled(SectionHeaderUnpadded)`
@@ -10,39 +9,21 @@ const SectionHeader = styled(SectionHeaderUnpadded)`
 const LogoTypeContainer = styled('div')`
   background-color: ${({ theme }) => theme.shared.colors.blackDark};
   display: inline-block;
-  padding: 0 16px;
+  text-align: center;
   height: 60px;
+  width: 60px;
   line-height: 60px;
 `;
 
-const LogoContainer = styled('div')`
-  background-color: ${({ theme }) => theme.shared.colors.greyMediumDark};
-  position: relative;
-  display: inline-block;
-  vertical-align: top;
-`;
-
-const LogoBackground = styled('div')`
-  display: flex;
-  flex-direction: row;
-  width: 60px;
-  height: 60px;
-`;
-
-const Logo = styled('img')`
-  margin: auto;
-  width: 38px;
-  height: 24px;
-`;
-
-export default ({ children }: { children?: React.ReactNode }) => (
-  <SectionHeader>
+export default ({
+  children,
+  includeBorder
+}: {
+  children?: React.ReactNode;
+  includeBorder?: boolean;
+}) => (
+  <SectionHeader includeBorder={includeBorder}>
     <LogoTypeContainer>F</LogoTypeContainer>
-    <LogoContainer>
-      <LogoBackground>
-        <Logo src={FrontsLogo} alt="The Fronts tool" />
-      </LogoBackground>
-    </LogoContainer>
     {children}
   </SectionHeader>
 );

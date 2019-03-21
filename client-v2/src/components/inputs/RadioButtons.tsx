@@ -29,11 +29,12 @@ const ControlIndicator = styled('div')`
 
 const ControlRadio = styled('label')<{ inline?: boolean }>`
   position: relative;
-  display: ${({ inline }) => (inline ? 'inline-block' : 'block')};
+  display: ${({ inline }) => (inline ? 'inline' : 'block')};
   padding-left: 24px;
   padding-top: 3px;
   cursor: pointer;
-  font-family: TS3TextSans-Bold;
+  font-family: TS3TextSans;
+  font-weight: bold;
   font-size: 12px;
 
   & + & {
@@ -102,6 +103,7 @@ const RadioButton = ({
   ...rest
 }: {
   label: string;
+  name: string;
   inline?: boolean;
   checked?: boolean;
   disabled?: boolean;
@@ -110,7 +112,7 @@ const RadioButton = ({
     {label}
     <Input
       type="radio"
-      name="radio"
+      name={name}
       checked={checked}
       disabled={disabled}
       {...rest}
