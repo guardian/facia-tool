@@ -101,7 +101,7 @@ const Tone = styled('div')`
 `;
 
 const Body = styled('div')`
-  width: calc(100% - 163px);
+  width: 213px;
   padding-left: 8px;
 `;
 
