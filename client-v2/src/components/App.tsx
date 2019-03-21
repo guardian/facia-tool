@@ -5,7 +5,6 @@ import DropDisabler from './util/DropDisabler';
 
 import { theme as styleTheme, styled } from 'constants/theme';
 import { priorities } from 'constants/priorities';
-import SectionHeaderWithLogo from './layout/SectionHeaderWithLogo';
 import GHGuardianHeadlineBoldTtf from '../fonts/headline/GHGuardianHeadline-Bold.ttf';
 import GHGuardianHeadlineBoldWoff from '../fonts/headline/GHGuardianHeadline-Bold.woff';
 import GHGuardianHeadlineBoldWoff2 from '../fonts/headline/GHGuardianHeadline-Bold.woff2';
@@ -89,13 +88,6 @@ const AppContainer = styled('div')`
   width: 100%;
 `;
 
-const BackgroundHeader = styled('div')`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-`;
-
 export const frontsEditPath = `/:priority(${Object.keys(priorities).join(
   '|'
 )})/:frontId?`;
@@ -104,9 +96,6 @@ const App = () => (
   <ThemeProvider theme={styleTheme}>
     <DropDisabler>
       <AppContainer>
-        <BackgroundHeader>
-          <SectionHeaderWithLogo />
-        </BackgroundHeader>
         <Switch>
           <Route exact path={frontsEditPath} component={FrontsEdit} />
           <Route exact path="/" component={Home} />
