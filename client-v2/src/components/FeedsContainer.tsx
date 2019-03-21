@@ -134,7 +134,7 @@ class FeedsContainer extends React.Component<
     super(props);
     this.debouncedRunSearchAndRestartPolling = debounce(
       () => this.runSearchAndRestartPolling(),
-      250
+      750
     );
   }
 
