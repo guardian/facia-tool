@@ -249,6 +249,7 @@ const state = {
     ],
     frontIds: [],
     frontIdsByPriority: {},
+    faveFrontIdsByPriority: {},
     capiLiveUrl: 'https://fronts.local.dev-gutools.co.uk/api/live/',
     capiPreviewUrl: 'https://fronts.local.dev-gutools.co.uk/api/preview/'
   },

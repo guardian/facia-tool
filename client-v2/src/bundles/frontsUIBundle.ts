@@ -11,6 +11,7 @@ import {
   EditorAddFront,
   EditorStarFront,
   EditorUnstarFront,
+  EditorSetFaveFronts,
   EditorSelectArticleFragment,
   EditorClearArticleFragmentSelection,
   EditorOpenCollection,
@@ -40,6 +41,7 @@ export const EDITOR_MOVE_FRONT = 'EDITOR_MOVE_FRONT';
 export const EDITOR_CLOSE_FRONT = 'EDITOR_CLOSE_FRONT';
 export const EDITOR_STAR_FRONT = 'EDITOR_STAR_FRONT';
 export const EDITOR_UNSTAR_FRONT = 'EDITOR_UNSTAR_FRONT';
+export const EDITOR_SET_FAVE_FRONTS = 'EDITOR_SET_FAVE_FRONTS';
 export const EDITOR_CLEAR_OPEN_FRONTS = 'EDITOR_CLEAR_OPEN_FRONTS';
 export const EDITOR_SET_OPEN_FRONTS = 'EDITOR_SET_OPEN_FRONTS';
 export const EDITOR_OPEN_COLLECTION = 'EDITOR_OPEN_COLLECTION';
@@ -116,20 +118,20 @@ const editorCloseFront = (frontId: string): EditorCloseFront => {
   };
 };
 
-// TODO: persistence
 const editorStarFront = (
   frontId: string,
   priority: string
 ): EditorStarFront => {
   return {
     type: EDITOR_STAR_FRONT,
-    payload: { frontId, priority }
-    // meta: {
-    //   persistTo: 'openFrontIds'
-    // }
+    payload: { frontId, priority },
+    meta: {
+      persistTo: 'faveFrontIds'
+    }
   };
 };
 
+// TODO: persistence
 const editorUnstarFront = (
   frontId: string,
   priority: string
@@ -156,6 +158,15 @@ const editorSetOpenFronts = (frontIdsByPriority: {
   type: EDITOR_SET_OPEN_FRONTS,
   payload: {
     frontIdsByPriority
+  }
+});
+
+const editorSetFaveFronts = (faveFrontIdsByPriority: {
+  [id: string]: string[];
+}): EditorSetFaveFronts => ({
+  type: EDITOR_SET_FAVE_FRONTS,
+  payload: {
+    faveFrontIdsByPriority
   }
 });
 
@@ -275,10 +286,18 @@ const createSelectFrontIdAndOpenStateByPriority = () => {
 const selectEditorFrontIds = (state: GlobalState) =>
   state.editor.frontIdsByPriority;
 
+const selectEditorFaveFrontIds = (state: GlobalState) =>
+  state.editor.faveFrontIdsByPriority;
+
 const selectEditorFrontIdsByPriority = (
   state: GlobalState,
   priority: string
 ): string[] => state.editor.frontIdsByPriority[priority] || [];
+
+const selectEditorFaveFrontIdsByPriority = (
+  state: GlobalState,
+  priority: string
+): string[] => state.editor.faveFrontIdsByPriority[priority] || [];
 
 const selectHasMultipleFrontsOpen = createSelector(
   selectEditorFrontIdsByPriority,
@@ -418,13 +437,19 @@ const reducer = (state: State = defaultState, action: Action): State => {
       const priority = action.payload.priority;
       return {
         ...state,
-        frontIdsByPriority: {
+        faveFrontIdsByPriority: {
           ...state.faveFrontIdsByPriority,
           [priority]: without(
             state.faveFrontIdsByPriority[priority],
             action.payload.frontId
           )
         }
+      };
+    }
+    case EDITOR_SET_FAVE_FRONTS: {
+      return {
+        ...state,
+        faveFrontIdsByPriority: action.payload.faveFrontIdsByPriority
       };
     }
     case EDITOR_CLEAR_OPEN_FRONTS: {
@@ -541,6 +566,7 @@ export {
   editorCloseFront,
   editorStarFront,
   editorUnstarFront,
+  editorSetFaveFronts,
   editorClearOpenFronts,
   editorSetOpenFronts,
   editorOpenCollections,
@@ -551,7 +577,9 @@ export {
   createSelectEditorFrontsByPriority,
   createSelectFrontIdAndOpenStateByPriority,
   selectEditorFrontIds,
+  selectEditorFaveFrontIds,
   selectEditorFrontIdsByPriority,
+  selectEditorFaveFrontIdsByPriority,
   selectEditorArticleFragment,
   selectIsCollectionOpen,
   editorOpenClipboard,
