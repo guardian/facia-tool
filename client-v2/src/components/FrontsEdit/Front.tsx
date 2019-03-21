@@ -35,8 +35,11 @@ import CollectionItem from './CollectionComponents/CollectionItem';
 import { ValidationResponse } from 'shared/util/validateImageSrc';
 import { initialiseCollectionsForFront } from 'actions/Collections';
 
+// min-height required here to display scrollbar in Firefox:
+// https://stackoverflow.com/questions/28636832/firefox-overflow-y-not-working-with-nested-flexbox
 const FrontContainer = styled('div')`
   display: flex;
+  min-height: 0;
 `;
 
 const FrontContentContainer = styled('div')`
