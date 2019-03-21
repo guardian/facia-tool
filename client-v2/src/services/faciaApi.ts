@@ -209,6 +209,27 @@ async function saveOpenFrontIds(frontsByPriority?: {
   }
 }
 
+async function saveFaveFrontIds(faveFrontsByPriority?: {
+  [priority: string]: string[];
+}): Promise<void> {
+  try {
+    await pandaFetch(`/userdata/faveFrontIdsByPriority`, {
+      method: 'put',
+      credentials: 'same-origin',
+      body: JSON.stringify(faveFrontsByPriority),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  } catch (response) {
+    throw new Error(
+      `Tried to store the favourite fronts configuration but the server responded with ${
+        response.status
+      }: ${response.body}`
+    );
+  }
+}
+
 async function getCollection(collectionId: {
   id: string;
   lastUpdated?: number;
@@ -341,6 +362,7 @@ export {
   updateCollection,
   saveClipboard,
   saveOpenFrontIds,
+  saveFaveFrontIds,
   getCapiUriForContentIds,
   fetchVisibleArticles,
   discardDraftChangesToCollection
