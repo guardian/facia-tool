@@ -49,6 +49,7 @@ const FrontsContainer = styled(SectionContainer)<{
   makeRoomForExtraHeader: boolean;
 }>`
   height: 100%;
+  overflow-y: hidden;
   overflow-x: scroll;
   transition: transform 0.15s;
   ${({ makeRoomForExtraHeader }) =>
