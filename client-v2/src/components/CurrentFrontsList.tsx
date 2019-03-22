@@ -50,11 +50,14 @@ const NoFronts = styled(FrontTabList)`
 
 const FrontTab = styled('div')<{ isDragging: boolean }>`
   display: inline-block;
+  max-width: 250px;
   vertical-align: top;
   height: 100%;
   line-height: 60px;
   padding: 0 22px;
   font-size: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   background-color: ${({ isDragging }) =>
     isDragging
       ? themeConstants.shared.colors.blackDark
@@ -85,19 +88,23 @@ class Component extends React.Component<ComponentProps> {
             >
               {this.props.fronts.map((front, index) => (
                 <Draggable key={front.id} draggableId={front.id} index={index}>
-                  {(provided, snapshot) => (
-                    <FrontTab
-                      innerRef={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      style={provided.draggableProps.style}
-                      isDragging={snapshot.isDragging}
-                      key={front.id}
-                      onClick={() => this.scrollToFront(front.id)}
-                    >
-                      {startCase(front.id)}
-                    </FrontTab>
-                  )}
+                  {(provided, snapshot) => {
+                    const title = startCase(front.id);
+                    return (
+                      <FrontTab
+                        title={title}
+                        innerRef={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        style={provided.draggableProps.style}
+                        isDragging={snapshot.isDragging}
+                        key={front.id}
+                        onClick={() => this.scrollToFront(front.id)}
+                      >
+                        {title}
+                      </FrontTab>
+                    );
+                  }}
                 </Draggable>
               ))}
               {dropProvided.placeholder}
