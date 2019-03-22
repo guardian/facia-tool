@@ -3,7 +3,11 @@ import {
   getArticlesBatched,
   getCollections as fetchCollections,
   updateCollection as updateCollectionFromApi,
-  fetchVisibleArticles
+  discardDraftChangesToCollection as discardDraftChangesToCollectionApi,
+  fetchVisibleArticles,
+  fetchLastPressed as fetchLastPressedApi,
+  publishCollection as publishCollectionApi,
+  getCollection as getCollectionApi
 } from 'services/faciaApi';
 import { VisibleArticlesResponse } from 'types/FaciaApi';
 import {
@@ -59,11 +63,6 @@ import {
 import flatten from 'lodash/flatten';
 import { createCollectionsInOpenFrontsSelector } from 'selectors/collectionSelectors';
 import uniq from 'lodash/uniq';
-import {
-  fetchLastPressed as fetchLastPressedApi,
-  publishCollection as publishCollectionApi,
-  getCollection as getCollectionApi
-} from 'services/faciaApi';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import { isFrontStale } from 'util/frontsUtils';
 import { visibleArticlesSelector } from 'selectors/frontsSelectors';
@@ -390,6 +389,18 @@ function publishCollection(
   };
 }
 
+function discardDraftChangesToCollection(
+  collectionId: string
+): ThunkResult<Promise<void | string[]>> {
+  return (dispatch: Dispatch, getState: () => State) => {
+    return discardDraftChangesToCollectionApi(collectionId)
+      .then(() => dispatch(getCollections([collectionId])))
+      .catch(() => {
+        // @todo: implement once error handling is done
+      });
+  };
+}
+
 export {
   getCollections,
   getArticlesForCollections,
@@ -399,5 +410,6 @@ export {
   fetchArticles,
   updateCollection,
   initialiseCollectionsForFront,
-  publishCollection
+  publishCollection,
+  discardDraftChangesToCollection
 };
