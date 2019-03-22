@@ -23,7 +23,7 @@ import FrontsEdit from './FrontsEdit/Edit';
 import Home from './Home';
 import NotFound from './NotFound';
 import ConfirmModal from './ConfirmModal';
-import { frontsEdit, base } from 'constants/routes';
+import { frontsEdit } from 'constants/routes';
 
 // tslint:disable:no-unused-expression
 injectGlobal`
