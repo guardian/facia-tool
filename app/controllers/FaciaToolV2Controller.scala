@@ -10,8 +10,9 @@ import updates._
 import util.Acl
 import permissions.ModifyCollectionsPermissionsCheck
 import org.joda.time.{DateTime}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc._
 import commands.{V2GetCollectionsCommand}
+import tools.FaciaApiIO
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -28,6 +29,7 @@ class FaciaToolV2Controller(
                            val updateActions: UpdateActions,
                            val configAgent: ConfigAgent,
                            val collectionService: CollectionService,
+                           val faciaApiIO: FaciaApiIO,
                            val deps: BaseFaciaControllerComponents
                          )(implicit ec: ExecutionContext)
   extends BaseFaciaController(deps) with ModifyCollectionsPermissionsCheck with Logging {
@@ -42,8 +44,9 @@ class FaciaToolV2Controller(
           .toSet
 
         withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
-          V2GetCollectionsCommand(collectionService, collectionSpecs).process().map(result => NoCache {
-            Ok(Json.toJson(result)).as("application/json")
+          V2GetCollectionsCommand(collectionService, collectionSpecs).process()
+            .map(result => NoCache {
+              Ok(Json.toJson(result)).as("application/json")
           })
         }
     }
@@ -79,6 +82,21 @@ class FaciaToolV2Controller(
       case None => Future.successful(BadRequest)
     }
 
+  }
+
+  def discardCollection(collectionId: String) = AccessAPIAuthAction.async { implicit request =>
+    val identity = request.user
+    faciaApiIO.discardCollectionJson(collectionId, identity)
+    .flatMap { maybeCollectionJson =>
+      maybeCollectionJson.map { discardedCollection =>
+        updateActions.archiveDiscardBlock(collectionId, discardedCollection, identity)
+        faciaPress.press(PressCommand.forOneId(collectionId).withPressDraft())
+        structuredLogger.putLog(LogUpdate(DiscardUpdate(collectionId), identity.email))
+        collectionService.fetchStoriesVisibleForCollection(collectionId, discardedCollection).map { discardedWithVisibleStories =>
+          Ok(Json.toJson(discardedWithVisibleStories)).as("application/json")
+        }
+      }.getOrElse(Future.successful(NotFound))
+    }
   }
 }
 

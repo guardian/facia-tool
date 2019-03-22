@@ -34,7 +34,6 @@ GET         /training/config                         controllers.ViewsController
 GET         /email/config                            controllers.ViewsController.configEditor()
 
 POST        /collection/publish/*collectionId        controllers.FaciaToolController.publishCollection(collectionId)
-POST        /collection/discard/*collectionId        controllers.FaciaToolController.discardCollection(collectionId)
 
 POST        /press/live/*path                        controllers.FaciaToolController.pressLivePath(path)
 POST        /press/draft/*path                       controllers.FaciaToolController.pressDraftPath(path)
@@ -48,6 +47,7 @@ GET         /collection/*collectionId                controllers.FaciaToolContro
 POST        /collections                             controllers.FaciaToolV2Controller.getCollections
 POST        /edits                                   controllers.FaciaToolController.collectionEdits
 POST        /v2Edits                                 controllers.FaciaToolV2Controller.collectionEdits
+POST        /collection/v2Discard/*collectionId      controllers.FaciaToolV2Controller.discardCollection(collectionId)
 GET         /config                                  controllers.FaciaToolController.getConfig
 GET         /defaults                                controllers.DefaultsController.configuration()
 GET         /metadata                                controllers.FaciaToolController.getMetadata()

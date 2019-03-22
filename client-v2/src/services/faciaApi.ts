@@ -102,10 +102,10 @@ async function fetchVisibleArticles(
 
 async function discardDraftChangesToCollection(
   collectionId: string
-): Promise<void> {
+): Promise<CollectionResponse> {
   // The server does not respond with JSON
   try {
-    await pandaFetch(`/collection/discard/${collectionId}`, {
+    const response = await pandaFetch(`/collection/v2Discard/${collectionId}`, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json'
@@ -113,6 +113,7 @@ async function discardDraftChangesToCollection(
       credentials: 'same-origin',
       body: JSON.stringify({ collectionId })
     });
+    return await response.json();
   } catch (response) {
     throw new Error(
       `Tried to discard changes to collection with id ${collectionId}, but the server responded with ${
