@@ -2,7 +2,7 @@ import { fetchStaleOpenCollections } from 'actions/Collections';
 import { Dispatch } from 'types/Store';
 import { Store } from 'types/Store';
 import { matchPath } from 'react-router';
-import { frontsEdit } from 'constants/routes';
+import { frontsEdit, base } from 'constants/routes';
 
 /**
  * TODO: do we want to check if there are any collectionUpdates going out here
@@ -11,7 +11,7 @@ import { frontsEdit } from 'constants/routes';
  */
 export default (store: Store) =>
   setInterval(() => {
-    const path = `/v2${frontsEdit}`;
+    const path = `${base}${frontsEdit}`;
     const match = matchPath<{ priority: string }>(store.getState().path, {
       path
     });
