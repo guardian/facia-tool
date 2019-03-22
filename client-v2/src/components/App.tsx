@@ -94,7 +94,7 @@ const App = () => (
       <AppContainer>
         <Switch>
           <Route exact path={frontsEdit} component={FrontsEdit} />
-          <Route exact path={base} component={Home} />
+          <Route exact path="/" component={Home} />
           <Route component={NotFound} />
         </Switch>
       </AppContainer>

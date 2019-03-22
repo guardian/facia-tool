@@ -15,6 +15,7 @@ import Modal from 'react-modal';
 import { init as initGA } from 'services/GA';
 import { init } from 'keyboard-shortcuts/init';
 import pollingConfig from 'util/pollingConfig';
+import { base } from 'constants/routes';
 
 initGA();
 
@@ -56,7 +57,7 @@ if (reactMount) {
   Modal.setAppElement(reactMount);
   render(
     <Provider store={store}>
-      <BrowserRouter basename="/v2">
+      <BrowserRouter basename={base}>
         <App />
       </BrowserRouter>
     </Provider>,

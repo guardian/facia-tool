@@ -19,6 +19,6 @@ export default (store: Store) =>
       return;
     }
     (store.dispatch as Dispatch)(
-      fetchStaleOpenCollections((match.params as { priority: string }).priority)
+      fetchStaleOpenCollections(match.params.priority)
     );
   }, 10000);
