@@ -8,9 +8,10 @@ import TextHighlighter from './util/TextHighlighter';
 
 interface Props {
   fronts: Array<{ id: string; isOpen: boolean }>;
-  // favouriteFronts: Array<{ id: string }>;
+  favouriteFronts: string[];
   onSelect: (frontId: string) => void;
   onStar: (frontId: string) => void;
+  onUnstar: (frontId: string) => void;
   searchString: string;
 }
 
@@ -73,7 +74,14 @@ const ListLabel = styled('span')<{ isActive?: boolean }>`
     `};
 `;
 
-const FrontList = ({ fronts, onSelect, onStar, searchString }: Props) => {
+const FrontList = ({
+  fronts,
+  favouriteFronts,
+  onSelect,
+  onStar,
+  onUnstar,
+  searchString
+}: Props) => {
   if (!fronts) {
     return null;
   }
@@ -97,7 +105,9 @@ const FrontList = ({ fronts, onSelect, onStar, searchString }: Props) => {
           <ButtonFavorite
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.stopPropagation();
-              onStar(front.id);
+              return favouriteFronts.includes(front.id)
+                ? onUnstar(front.id)
+                : onStar(front.id);
             }}
           >
             <StarIcon

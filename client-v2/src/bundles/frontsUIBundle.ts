@@ -131,17 +131,16 @@ const editorStarFront = (
   };
 };
 
-// TODO: persistence
 const editorUnstarFront = (
   frontId: string,
   priority: string
 ): EditorUnstarFront => {
   return {
     type: EDITOR_UNSTAR_FRONT,
-    payload: { frontId, priority }
-    // meta: {
-    //   persistTo: 'openFrontIds'
-    // }
+    payload: { frontId, priority },
+    meta: {
+      persistTo: 'faveFrontIds'
+    }
   };
 };
 

@@ -149,7 +149,7 @@ describe('Store middleware', () => {
       });
       expect(persistFaveFrontIdsSpy.mock.calls.length).toBe(0);
     });
-    it("should call the persist function with the state's fave front ids if it receives an action the correct persistTo property", () => {
+    it("should call the persist function with the state's fave front ids if it receives an action with the correct persistTo property", () => {
       const store = mockStore({
         editor: { faveFrontIdsByPriority: { editorial: ['front1', 'front2'] } }
       });

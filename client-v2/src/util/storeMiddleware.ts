@@ -221,11 +221,6 @@ const persistOpenFrontsOnEdit: (
   return result;
 };
 
-// Dispatch payload
-// const noOpMiddleware = persistFrontIds/faciaApiCall => store => next => action => {
-//   return next(action)
-// }
-
 const persistFaveFrontsOnEdit: (
   persistFn?: (
     persistFrontIds?: { [priority: string]: string[] }

@@ -71,11 +71,10 @@ interface EditorStarFront {
   meta: PersistMeta;
 }
 
-// TODO persistence
 interface EditorUnstarFront {
   type: typeof EDITOR_UNSTAR_FRONT;
   payload: { frontId: string; priority: string };
-  // meta: PersistMeta;
+  meta: PersistMeta;
 }
 
 interface EditorSetFaveFronts {
