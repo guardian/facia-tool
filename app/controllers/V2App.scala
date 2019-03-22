@@ -61,6 +61,7 @@ class V2App(isDev: Boolean, val acl: Acl, dynamo: Dynamo, val deps: BaseFaciaCon
       maybeUserData.map(_.clipboardArticles.getOrElse(List())),
       maybeUserData.map(_.frontIds.getOrElse(List())),
       maybeUserData.map(_.frontIdsByPriority.getOrElse(Map())),
+      maybeUserData.map(_.faveFrontIdsByPriority.getOrElse(Map())),
       routes.FaciaContentApiProxy.capiLive("").absoluteURL(true),
       routes.FaciaContentApiProxy.capiPreview("").absoluteURL(true)
     )

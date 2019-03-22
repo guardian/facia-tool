@@ -21,4 +21,6 @@ case class UserData(
                      email: String,
                      clipboardArticles: Option[List[Trail]],
                      frontIds: Option[List[String]],
-                     frontIdsByPriority: Option[Map[String, List[String]]])
+                     frontIdsByPriority: Option[Map[String, List[String]]],
+                     faveFrontIdsByPriority: Option[Map[String, List[String]]]
+                   )
