@@ -63,6 +63,7 @@ const HeadlineContentContainer = styled('span')`
   position: relative;
   right: -11px;
   line-height: 0px;
+  display: flex;
 `;
 
 const CollectionDisabledTheme = styled('div')`
@@ -107,13 +108,13 @@ const ItemCountMeta = styled(CollectionMetaBase)`
 
 const CollectionHeadlineWithConfigContainer = styled('div')`
   flex-grow: 1;
-  max-width: calc(100% - 95px);
   display: flex;
+  min-width: 0;
+  flex-basis: 100%;
 `;
 
 const CollectionHeadingText = styled('span')<{ isLoading: boolean }>`
   display: inline-block;
-  max-width: 400px;
   white-space: nowrap;
   ${({ isLoading, theme }) =>
     isLoading &&
@@ -195,7 +196,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       children
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
-
+    const displayName = collection ? collection.displayName : 'Loading';
     return (
       <CollectionContainer
         id={collection && createCollectionId(collection)}
@@ -203,8 +204,8 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       >
         <ContainerHeadingPinline>
           <CollectionHeadlineWithConfigContainer>
-            <CollectionHeadingText isLoading={!collection}>
-              {collection ? collection.displayName : 'Loading'}
+            <CollectionHeadingText isLoading={!collection} title={displayName}>
+              {displayName}
             </CollectionHeadingText>
             <CollectionConfigContainer>
               {oc(collection).metadata[0].type() ? (
