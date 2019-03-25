@@ -3,9 +3,13 @@ import {
   getArticlesBatched,
   getCollections as fetchCollections,
   updateCollection as updateCollectionFromApi,
-  fetchVisibleArticles
+  discardDraftChangesToCollection as discardDraftChangesToCollectionApi,
+  fetchVisibleArticles,
+  fetchLastPressed as fetchLastPressedApi,
+  publishCollection as publishCollectionApi,
+  getCollection as getCollectionApi
 } from 'services/faciaApi';
-import { VisibleArticlesResponse } from 'types/FaciaApi';
+import { VisibleArticlesResponse, CollectionResponse } from 'types/FaciaApi';
 import {
   selectUserEmail,
   selectFirstName,
@@ -59,11 +63,6 @@ import {
 import flatten from 'lodash/flatten';
 import { createCollectionsInOpenFrontsSelector } from 'selectors/collectionSelectors';
 import uniq from 'lodash/uniq';
-import {
-  fetchLastPressed as fetchLastPressedApi,
-  publishCollection as publishCollectionApi,
-  getCollection as getCollectionApi
-} from 'services/faciaApi';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import { isFrontStale } from 'util/frontsUtils';
 import { visibleArticlesSelector } from 'selectors/frontsSelectors';
@@ -103,6 +102,58 @@ function fetchStaleOpenCollections(
   };
 }
 
+function getCollectionActions(
+  collectionResponse: CollectionResponse,
+  getState: () => State
+) {
+  const {
+    id,
+    collection: collectionWithoutId,
+    storiesVisibleByStage
+  } = collectionResponse;
+  const collectionConfig = getCollectionConfig(getState(), id);
+  const collection = {
+    ...collectionWithoutId,
+    id
+  };
+  const collectionWithNestedArticles = combineCollectionWithConfig(
+    collectionConfig,
+    collection
+  );
+  const hasUnpublishedChanges =
+    collectionWithNestedArticles.draft !== undefined;
+
+  const collectionWithDraftArticles = {
+    ...collectionWithNestedArticles,
+    draft: populateDraftArticles(collectionWithNestedArticles)
+  };
+  const {
+    normalisedCollection,
+    articleFragments,
+    groups
+  } = normaliseCollectionWithNestedArticles(
+    collectionWithDraftArticles,
+    collectionConfig
+  );
+
+  return [
+    collectionActions.fetchSuccess(normalisedCollection),
+    articleFragmentsReceived(articleFragments),
+    recordUnpublishedChanges(collection.id, hasUnpublishedChanges),
+    groupsReceived(groups),
+    recordVisibleArticles(
+      collection.id,
+      storiesVisibleByStage.live,
+      frontStages.live
+    ),
+    recordVisibleArticles(
+      collection.id,
+      storiesVisibleByStage.draft,
+      frontStages.draft
+    )
+  ];
+}
+
 function getCollections(
   collectionIds: string[],
   returnOnlyUpdatedCollections: boolean = false
@@ -128,54 +179,10 @@ function getCollections(
           id
         })
       );
-      const actions = collectionResponses.map(collectionResponse => {
-        const {
-          id,
-          collection: collectionWithoutId,
-          storiesVisibleByStage
-        } = collectionResponse;
-        const collectionConfig = getCollectionConfig(getState(), id);
-        const collection = {
-          ...collectionWithoutId,
-          id
-        };
-        const collectionWithNestedArticles = combineCollectionWithConfig(
-          collectionConfig,
-          collection
-        );
-        const hasUnpublishedChanges =
-          collectionWithNestedArticles.draft !== undefined;
+      const actions = collectionResponses.map(collectionResponse =>
+        getCollectionActions(collectionResponse, getState)
+      );
 
-        const collectionWithDraftArticles = {
-          ...collectionWithNestedArticles,
-          draft: populateDraftArticles(collectionWithNestedArticles)
-        };
-        const {
-          normalisedCollection,
-          articleFragments,
-          groups
-        } = normaliseCollectionWithNestedArticles(
-          collectionWithDraftArticles,
-          collectionConfig
-        );
-
-        return [
-          collectionActions.fetchSuccess(normalisedCollection),
-          articleFragmentsReceived(articleFragments),
-          recordUnpublishedChanges(collection.id, hasUnpublishedChanges),
-          groupsReceived(groups),
-          recordVisibleArticles(
-            collection.id,
-            storiesVisibleByStage.live,
-            frontStages.live
-          ),
-          recordVisibleArticles(
-            collection.id,
-            storiesVisibleByStage.draft,
-            frontStages.draft
-          )
-        ];
-      });
       dispatch(batchActions(flatten([...actions, ...missingActions])));
       return collectionResponses.map(({ id }) => id);
     } catch (error) {
@@ -390,6 +397,18 @@ function publishCollection(
   };
 }
 
+function discardDraftChangesToCollection(
+  collectionId: string
+): ThunkResult<Promise<void>> {
+  return (dispatch: Dispatch, getState: () => State) => {
+    return discardDraftChangesToCollectionApi(collectionId).then(
+      collectionJson => {
+        dispatch(batchActions(getCollectionActions(collectionJson, getState)));
+      }
+    );
+  };
+}
+
 export {
   getCollections,
   getArticlesForCollections,
@@ -399,5 +418,6 @@ export {
   fetchArticles,
   updateCollection,
   initialiseCollectionsForFront,
-  publishCollection
+  publishCollection,
+  discardDraftChangesToCollection
 };

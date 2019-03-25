@@ -68,13 +68,8 @@ const events = {
       collection_id: collectionId,
       front_id: frontId
     }),
-  imageAdded: (
-    frontId: string,
-    // collectionId: string,
-    method: ImageAdditionMethod
-  ) =>
-    gtag('event', `imageAdded: ${method}`, {
-      // collection_id: collectionId,
+  imageAdded: (frontId: string, method: ImageAdditionMethod) =>
+    gtag('event', `image_added: ${method}`, {
       front_id: frontId,
       method
     })

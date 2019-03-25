@@ -5,7 +5,10 @@ import CollectionDisplay from 'shared/components/Collection';
 import CollectionNotification from 'components/CollectionNotification';
 import Button from 'shared/components/input/ButtonDefault';
 import { AlsoOnDetail } from 'types/Collection';
-import { publishCollection } from 'actions/Collections';
+import {
+  publishCollection,
+  discardDraftChangesToCollection
+} from 'actions/Collections';
 import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
 import { isCollectionLockedSelector } from 'selectors/collectionSelectors';
 import { State } from 'types/State';
@@ -35,6 +38,9 @@ interface CollectionPropsBeforeState {
 
 type CollectionProps = CollectionPropsBeforeState & {
   publishCollection: (collectionId: string, frontId: string) => Promise<void>;
+  discardDraftChangesToCollection: (
+    collectionId: string
+  ) => Promise<void | string[]>;
   hasUnpublishedChanges: boolean;
   canPublish: boolean;
   groups: Group[];
@@ -59,7 +65,8 @@ const Collection = ({
   isCollectionLocked,
   isOpen,
   onChangeOpenState,
-  hasMultipleFrontsOpen
+  hasMultipleFrontsOpen,
+  discardDraftChangesToCollection: discardDraftChanges
 }: CollectionProps) => {
   const isUneditable =
     isCollectionLocked || browsingStage !== collectionItemSets.draft;
@@ -77,13 +84,22 @@ const Collection = ({
       headlineContent={
         hasUnpublishedChanges &&
         canPublish && (
-          <Button
-            size="l"
-            priority="primary"
-            onClick={() => publish(id, frontId)}
-          >
-            Launch
-          </Button>
+          <React.Fragment>
+            <Button
+              size="l"
+              priority="default"
+              onClick={() => discardDraftChanges(id)}
+            >
+              Discard
+            </Button>
+            <Button
+              size="l"
+              priority="primary"
+              onClick={() => publish(id, frontId)}
+            >
+              Launch
+            </Button>
+          </React.Fragment>
         )
       }
       metaContent={
@@ -129,6 +145,8 @@ const mapDispatchToProps = (
 ) => ({
   publishCollection: (id: string, frontId: string) =>
     dispatch(publishCollection(id, frontId)),
+  discardDraftChangesToCollection: (id: string) =>
+    dispatch(discardDraftChangesToCollection(id)),
   onChangeOpenState: (id: string, isOpen: boolean) => {
     if (isOpen) {
       dispatch(editorCloseCollections(id));

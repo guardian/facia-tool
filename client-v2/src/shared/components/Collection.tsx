@@ -143,7 +143,7 @@ const CollectionToggleContainer = styled('div')`
 const CollectionConfigContainer = styled('div')`
   display: inline-block;
   font-family: GHGuardianHeadline;
-  font-size: 22px;
+  font-size: 15px;
   color: ${({ theme }) => theme.shared.base.colors.text};
   height: 40px;
   line-height: 40px;

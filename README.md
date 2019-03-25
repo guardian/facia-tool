@@ -165,7 +165,7 @@ Run `sudo nginx -s reload` to restart nginx with the new configuration.
 
 #### Config Files
 
-To get the config files run `./fetch-config.sh`. This requires CMS front credentials which you get from [janus](https://janus.gutools.co.uk)
+To get the config files run `./scripts/fetch-config.sh`. This requires CMS front credentials which you get from [janus](https://janus.gutools.co.uk)
 
 ### Credentials
 
