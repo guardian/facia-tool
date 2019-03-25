@@ -1,6 +1,6 @@
 import React from 'react';
 import { css } from 'styled-components';
-import { styled, theme } from 'constants/theme';
+import { styled, theme as styleTheme } from 'constants/theme';
 
 import ButtonCircular from 'shared/components/input/ButtonCircular';
 import { MoreIcon, StarIcon } from 'shared/components/icons/Icons';
@@ -123,8 +123,8 @@ const FrontList = ({
           >
             <StarIcon
               size="l"
-              fill={theme.shared.colors.blackLight}
-              outline={theme.shared.colors.greyMedium}
+              fill={styleTheme.shared.colors.blackLight}
+              outline={styleTheme.shared.colors.greyMedium}
             />
           </ButtonFavorite>
           {!front.isOpen && (
