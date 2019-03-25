@@ -199,7 +199,7 @@ class FeedsContainer extends React.Component<
     if (!this.state.displaySearchFilters) {
       const { livePagination, previewPagination } = this.props;
       const pagination = this.isLive ? livePagination : previewPagination;
-      const hasPages = !!(pagination && pagination.totalPages > 1); // TODO change this to total resutls / Action fix
+      const hasPages = !!(pagination && pagination.totalPages > 1);
       return (
         <FixedContentContainer>
           <ResultsHeadingContainer>
