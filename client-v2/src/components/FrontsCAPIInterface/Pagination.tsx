@@ -2,6 +2,7 @@ import React from 'react';
 import range from 'lodash/range';
 import { IPagination as PaginationState } from 'lib/createAsyncResourceBundle';
 import { styled } from 'constants/theme';
+import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 
 interface PaginationProps {
   pageChange: (currentPage: number) => void;
@@ -9,13 +10,22 @@ interface PaginationProps {
   totalPages: number;
 }
 
-const Page = styled.span<{ isSelected: boolean }>`
-  padding: 2px 5px;
+const PaginationElement = styled.span`
+  padding: 0 5px;
+  font-weight: bold;
+  font-size: 14px;
+  vertical-align: middle;
+`;
+
+const Page = styled(PaginationElement)<{ isSelected: boolean }>`
   border-radius: 100%;
   ${({ isSelected, theme }) =>
-    isSelected &&
-    `background-color: ${theme.shared.base.colors.backgroundColorFocused}`}
+    isSelected && `background-color: ${theme.shared.colors.whiteDark}`}
   cursor: pointer;
+`;
+
+const PageContainer = styled.span`
+  margin: 0 5px;
 `;
 
 class Pagination extends React.Component<PaginationProps, PaginationState> {
@@ -34,33 +44,40 @@ class Pagination extends React.Component<PaginationProps, PaginationState> {
 
     return (
       <div>
-        <button
+        <ButtonCircularCaret
+          clear
+          openDir="left"
           disabled={currentPage < 2}
           onClick={() => pageChange(currentPage - 1)}
         >
           previous
-        </button>
-        {addFirstPage && (
-          <Page onClick={() => pageChange(1)} isSelected={currentPage === 1}>
-            1
-          </Page>
-        )}
-        {addStartingEllipsis && <span>...</span>}
-        {pages.map(page => (
-          <Page
-            onClick={() => pageChange(page)}
-            isSelected={currentPage === page}
-          >
-            {page}
-          </Page>
-        ))}
-        {addEndingEllipsis && <span>...</span>}
-        <button
+        </ButtonCircularCaret>
+        <PageContainer>
+          {addFirstPage && (
+            <Page onClick={() => pageChange(1)} isSelected={currentPage === 1}>
+              1
+            </Page>
+          )}
+          {addStartingEllipsis && <PaginationElement>...</PaginationElement>}
+          {pages.map(page => (
+            <Page
+              key={page}
+              onClick={() => pageChange(page)}
+              isSelected={currentPage === page}
+            >
+              {page}
+            </Page>
+          ))}
+          {addEndingEllipsis && <PaginationElement>...</PaginationElement>}
+        </PageContainer>
+        <ButtonCircularCaret
+          clear
+          openDir="right"
           disabled={currentPage === lastPage}
           onClick={() => pageChange(currentPage + 1)}
         >
           next
-        </button>
+        </ButtonCircularCaret>
       </div>
     );
   }

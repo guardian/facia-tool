@@ -2,41 +2,57 @@ import React from 'react';
 import { styled } from 'shared/constants/theme';
 import ButtonCircular from './ButtonCircular';
 import { DownCaretIcon } from '../icons/Icons';
+import { theme } from 'constants/theme';
 
 export const ButtonCircularWithTransition = ButtonCircular.extend<{
   highlight?: boolean;
   small?: boolean;
+  clear?: boolean;
 }>`
   transition: transform 0.15s;
   display: inline-block;
+  vertical-align: middle;
   text-align: center;
   padding: 0;
   height: ${({ small }) => (small ? '18px' : undefined)};
   width: ${({ small }) => (small ? '18px' : undefined)};
-
-  ${({ highlight, theme }) =>
-    highlight
+  ${({ clear }) => clear && 'background-color: transparent'}
+  ${({ highlight, clear }) =>
+    highlight && !clear
       ? `background-color: ${theme.shared.button.backgroundColorHighlight}`
       : ``};
+  ${({ clear }) =>
+    clear &&
+    `
+    & svg { fill: ${theme.shared.base.colors.text} }
+    &:hover {
+      background-color: transparent;
+      svg {
+        fill: ${theme.shared.base.colors.textMuted}
+      }
+    }`}
 `;
 
 const CaretIcon = styled(DownCaretIcon)<{
   small?: boolean;
+  fill?: string;
 }>`
   width: ${({ small }) => (small ? '14px' : '18px')};
   display: inline-block;
 `;
 
-type OpenDirections = 'down' | 'right';
+type Directions = 'up' | 'right' | 'down' | 'left';
 
 interface ButtonCircularCaretWithTransitionProps {
-  active: boolean;
-  preActive: boolean;
+  active?: boolean;
+  preActive?: boolean;
   small?: boolean;
-  openDir?: OpenDirections;
+  openDir?: Directions;
+  disabled?: boolean;
+  clear?: boolean;
 }
 
-const getBaseRotation = (openDir: OpenDirections) => {
+const getBaseRotation = (openDir: Directions) => {
   switch (openDir) {
     case 'down': {
       return 0;
@@ -44,11 +60,17 @@ const getBaseRotation = (openDir: OpenDirections) => {
     case 'right': {
       return -90;
     }
+    case 'up': {
+      return -180;
+    }
+    case 'left': {
+      return -270;
+    }
   }
 };
 
 const getRotation = (
-  openDir: 'down' | 'right',
+  openDir: Directions,
   active: boolean,
   preActive: boolean
 ) => {
@@ -58,9 +80,10 @@ const getRotation = (
 };
 
 export default ({
-  active,
-  preActive,
+  active = false,
+  preActive = false,
   small,
+  clear,
   openDir = 'down',
   ...props
 }: ButtonCircularCaretWithTransitionProps &
@@ -68,12 +91,16 @@ export default ({
   <ButtonCircularWithTransition
     {...props}
     small={small}
+    clear={clear}
     highlight={preActive}
     style={{
       transform: `rotate(${getRotation(openDir, active, preActive)}deg)`,
       ...props.style
     }}
   >
-    <CaretIcon small={small} />
+    <CaretIcon
+      small={small}
+      fill={clear ? undefined : theme.shared.colors.white}
+    />
   </ButtonCircularWithTransition>
 );

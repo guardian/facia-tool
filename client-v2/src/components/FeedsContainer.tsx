@@ -21,6 +21,7 @@ import debounce from 'lodash/debounce';
 import { CapiArticle } from 'types/Capi';
 import Pagination from './FrontsCAPIInterface/Pagination';
 import { IPagination } from 'lib/createAsyncResourceBundle';
+import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 
 interface FeedsContainerProps {
   fetchLive: (params: object, isResource: boolean) => void;
@@ -43,15 +44,19 @@ interface FeedsContainerState {
 }
 
 const Title = styled.h1`
-  margin: 2px 0 0;
+  position: relative;
+  margin: 0 10px 0 0;
+  padding-top: 2px;
+  padding-right: 10px;
   vertical-align: top;
   font-family: GHGuardianHeadline;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 20px;
   min-width: 80px;
 `;
 
 const RefreshButton = styled.button`
+  padding-left: 0;
   appearance: none;
   border: none;
   background: transparent;
@@ -75,11 +80,12 @@ const FeedsContainerWrapper = styled('div')`
   height: 100%;
 `;
 
-const StageSelectionContainer = styled('div')`
+const PaginationContainer = styled('div')`
   margin-left: auto;
 `;
 
 const ResultsHeadingContainer = styled('div')`
+  border-top: 1px solid ${({ theme }) => theme.shared.colors.greyVeryLight};
   align-items: baseline;
   display: flex;
   margin-bottom: 10px;
@@ -197,39 +203,44 @@ class FeedsContainer extends React.Component<
       return (
         <FixedContentContainer>
           <ResultsHeadingContainer>
-            <Title>Latest</Title>
-            <RefreshButton
-              disabled={this.isLoading}
-              onClick={() => this.runSearchAndRestartPolling()}
-            >
-              {this.isLoading ? 'Loading' : 'Refresh'}
-            </RefreshButton>
-            <StageSelectionContainer>
-              <RadioGroup>
-                <RadioButton
-                  checked={this.state.capiFeedIndex === 0}
-                  onChange={() => this.handleFeedClick(0)}
-                  label="Live"
-                  inline
-                  name="capiFeed"
+            <div>
+              <Title>
+                Latest
+                <ShortVerticalPinline />
+              </Title>
+              <RefreshButton
+                disabled={this.isLoading}
+                onClick={() => this.runSearchAndRestartPolling()}
+              >
+                {this.isLoading ? 'Loading' : 'Refresh'}
+              </RefreshButton>
+            </div>
+            <RadioGroup>
+              <RadioButton
+                checked={this.state.capiFeedIndex === 0}
+                onChange={() => this.handleFeedClick(0)}
+                label="Live"
+                inline
+                name="capiFeed"
+              />
+              <RadioButton
+                checked={this.state.capiFeedIndex === 1}
+                onChange={() => this.handleFeedClick(1)}
+                label="Draft"
+                inline
+                name="capiFeed"
+              />
+            </RadioGroup>
+            {pagination && hasPages && (
+              <PaginationContainer>
+                <Pagination
+                  pageChange={this.pageChange}
+                  currentPage={pagination.currentPage}
+                  totalPages={pagination.totalPages}
                 />
-                <RadioButton
-                  checked={this.state.capiFeedIndex === 1}
-                  onChange={() => this.handleFeedClick(1)}
-                  label="Draft"
-                  inline
-                  name="capiFeed"
-                />
-              </RadioGroup>
-            </StageSelectionContainer>
+              </PaginationContainer>
+            )}
           </ResultsHeadingContainer>
-          {pagination && hasPages && (
-            <Pagination
-              pageChange={this.pageChange}
-              currentPage={pagination.currentPage}
-              totalPages={pagination.totalPages}
-            />
-          )}
         </FixedContentContainer>
       );
     }
@@ -297,7 +308,7 @@ class FeedsContainer extends React.Component<
 
   private runSearchAndRestartPolling() {
     this.stopPolling();
-    this.interval = window.setInterval(() => this.runSearch(), 3000);
+    this.interval = window.setInterval(() => this.runSearch(), 30000);
     this.runSearch();
   }
 
