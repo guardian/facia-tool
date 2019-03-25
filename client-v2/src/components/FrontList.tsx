@@ -23,33 +23,41 @@ const ButtonAdd = styled(ButtonCircular)`
   padding: 3px;
 `;
 
-const ButtonFavorite = styled(ButtonCircular)<{ isStarred: boolean }>`
-  background-color: ${({ theme }) => theme.shared.colors.blackLight};
-  position: absolute;
-  top: 8px;
-  right: 35px;
-  :hover {
-    background-color: ${({ theme }) => theme.shared.colors.blackLight};
-  }
-  :hover > svg .fill {
-    fill: ${({ theme }) => theme.shared.colors.greyMedium};
-  }
-  ${({ isStarred }) =>
-    !!isStarred &&
-    css`
-      svg .fill {
-        fill: ${({ theme }) => theme.shared.colors.greyMedium};
-      }
-      :hover > svg .fill {
-        fill: ${({ theme }) => theme.shared.colors.blackLight};
-      }
-    `}
-`;
-
 const ListContainer = styled('ul')`
   list-style: none;
   margin-top: 0;
   padding-left: 0;
+`;
+
+const ButtonFavorite = styled(ButtonCircular)<{ isStarred: boolean }>`
+  position: absolute;
+  top: 8px;
+  right: 35px;
+  cursor: pointer;
+  background-color: ${({ theme }) => theme.shared.colors.blackLight};
+  :hover {
+    background-color: ${({ theme }) => theme.shared.colors.blackLight};
+  }
+  svg .fill {
+    fill: ${({ theme }) => theme.shared.colors.blackLight};
+  }
+  &&:hover svg .fill,
+  &&:hover svg .outline {
+    fill: ${({ theme }) => theme.shared.colors.greyMedium};
+  }
+
+  ${({ isStarred }) =>
+    !!isStarred &&
+    css`
+      svg .outline,
+      svg .fill {
+        fill: ${({ theme }) => `${theme.shared.colors.orangeLight}`};
+      }
+      &&:hover svg .fill,
+      &&:hover svg .outline {
+        fill: ${({ theme }) => theme.shared.colors.greyMedium};
+      }
+    `}
 `;
 
 const ListItem = styled('li')<{ isActive?: boolean; isStarred?: boolean }>`
@@ -64,10 +72,10 @@ const ListItem = styled('li')<{ isActive?: boolean; isStarred?: boolean }>`
     isActive &&
     css`
       cursor: pointer;
-      &:hover {
+      :hover {
         background-color: ${({ theme }) => theme.base.colors.frontListButton};
       }
-      &:hover ${ButtonFavorite} {
+      :hover ${ButtonFavorite} {
         background-color: ${({ theme }) => theme.base.colors.frontListButton};
       }
     `};
