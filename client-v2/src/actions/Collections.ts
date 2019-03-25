@@ -9,7 +9,7 @@ import {
   publishCollection as publishCollectionApi,
   getCollection as getCollectionApi
 } from 'services/faciaApi';
-import { VisibleArticlesResponse } from 'types/FaciaApi';
+import { VisibleArticlesResponse, CollectionResponse } from 'types/FaciaApi';
 import {
   selectUserEmail,
   selectFirstName,
@@ -102,6 +102,58 @@ function fetchStaleOpenCollections(
   };
 }
 
+function getCollectionActions(
+  collectionResponse: CollectionResponse,
+  getState: () => State
+) {
+  const {
+    id,
+    collection: collectionWithoutId,
+    storiesVisibleByStage
+  } = collectionResponse;
+  const collectionConfig = getCollectionConfig(getState(), id);
+  const collection = {
+    ...collectionWithoutId,
+    id
+  };
+  const collectionWithNestedArticles = combineCollectionWithConfig(
+    collectionConfig,
+    collection
+  );
+  const hasUnpublishedChanges =
+    collectionWithNestedArticles.draft !== undefined;
+
+  const collectionWithDraftArticles = {
+    ...collectionWithNestedArticles,
+    draft: populateDraftArticles(collectionWithNestedArticles)
+  };
+  const {
+    normalisedCollection,
+    articleFragments,
+    groups
+  } = normaliseCollectionWithNestedArticles(
+    collectionWithDraftArticles,
+    collectionConfig
+  );
+
+  return [
+    collectionActions.fetchSuccess(normalisedCollection),
+    articleFragmentsReceived(articleFragments),
+    recordUnpublishedChanges(collection.id, hasUnpublishedChanges),
+    groupsReceived(groups),
+    recordVisibleArticles(
+      collection.id,
+      storiesVisibleByStage.live,
+      frontStages.live
+    ),
+    recordVisibleArticles(
+      collection.id,
+      storiesVisibleByStage.draft,
+      frontStages.draft
+    )
+  ];
+}
+
 function getCollections(
   collectionIds: string[],
   returnOnlyUpdatedCollections: boolean = false
@@ -127,54 +179,10 @@ function getCollections(
           id
         })
       );
-      const actions = collectionResponses.map(collectionResponse => {
-        const {
-          id,
-          collection: collectionWithoutId,
-          storiesVisibleByStage
-        } = collectionResponse;
-        const collectionConfig = getCollectionConfig(getState(), id);
-        const collection = {
-          ...collectionWithoutId,
-          id
-        };
-        const collectionWithNestedArticles = combineCollectionWithConfig(
-          collectionConfig,
-          collection
-        );
-        const hasUnpublishedChanges =
-          collectionWithNestedArticles.draft !== undefined;
+      const actions = collectionResponses.map(collectionResponse =>
+        getCollectionActions(collectionResponse, getState)
+      );
 
-        const collectionWithDraftArticles = {
-          ...collectionWithNestedArticles,
-          draft: populateDraftArticles(collectionWithNestedArticles)
-        };
-        const {
-          normalisedCollection,
-          articleFragments,
-          groups
-        } = normaliseCollectionWithNestedArticles(
-          collectionWithDraftArticles,
-          collectionConfig
-        );
-
-        return [
-          collectionActions.fetchSuccess(normalisedCollection),
-          articleFragmentsReceived(articleFragments),
-          recordUnpublishedChanges(collection.id, hasUnpublishedChanges),
-          groupsReceived(groups),
-          recordVisibleArticles(
-            collection.id,
-            storiesVisibleByStage.live,
-            frontStages.live
-          ),
-          recordVisibleArticles(
-            collection.id,
-            storiesVisibleByStage.draft,
-            frontStages.draft
-          )
-        ];
-      });
       dispatch(batchActions(flatten([...actions, ...missingActions])));
       return collectionResponses.map(({ id }) => id);
     } catch (error) {
@@ -391,13 +399,13 @@ function publishCollection(
 
 function discardDraftChangesToCollection(
   collectionId: string
-): ThunkResult<Promise<void | string[]>> {
+): ThunkResult<Promise<void>> {
   return (dispatch: Dispatch, getState: () => State) => {
-    return discardDraftChangesToCollectionApi(collectionId)
-      .then(() => dispatch(getCollections([collectionId])))
-      .catch(() => {
-        // @todo: implement once error handling is done
-      });
+    return discardDraftChangesToCollectionApi(collectionId).then(
+      collectionJson => {
+        dispatch(batchActions(getCollectionActions(collectionJson, getState)));
+      }
+    );
   };
 }
 
