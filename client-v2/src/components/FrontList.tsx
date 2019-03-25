@@ -23,12 +23,6 @@ const ButtonAdd = styled(ButtonCircular)`
   padding: 3px;
 `;
 
-const ListContainer = styled('ul')`
-  list-style: none;
-  margin-top: 0;
-  padding-left: 0;
-`;
-
 const ButtonFavorite = styled(ButtonCircular)<{ isStarred: boolean }>`
   position: absolute;
   top: 8px;
@@ -58,6 +52,12 @@ const ButtonFavorite = styled(ButtonCircular)<{ isStarred: boolean }>`
         fill: ${({ theme }) => theme.shared.colors.greyMedium};
       }
     `}
+`;
+
+const ListContainer = styled('ul')`
+  list-style: none;
+  margin-top: 0;
+  padding-left: 0;
 `;
 
 const ListItem = styled('li')<{ isActive?: boolean; isStarred?: boolean }>`
