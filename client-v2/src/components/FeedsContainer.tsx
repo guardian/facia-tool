@@ -272,15 +272,14 @@ class FeedsContainer extends React.Component<
 
   private pageChange = (requestPage: number) => {
     const { inputState } = this.state;
-    const { capiFeedIndex } = this.state;
     const searchTerm = inputState.query;
     const paginationParams = {
       ...getParams(searchTerm, inputState, false),
       page: requestPage
     };
-    if (capiFeedIndex === 0) {
-      this.props.fetchLive(paginationParams, false);
-    }
+    this.isLive
+      ? this.props.fetchLive(paginationParams, false)
+      : this.props.fetchPreview(paginationParams, false);
     if (requestPage > 1) {
       this.stopPolling();
     } else {
