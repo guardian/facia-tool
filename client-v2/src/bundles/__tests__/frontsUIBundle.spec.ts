@@ -19,6 +19,7 @@ import {
   editorCloseAllOverviews,
   editorOpenAllOverviews,
   createSelectEditorFrontsByPriority,
+  createSelectFrontIdWithOpenAndStarredStatesByPriority,
   editorMoveFront,
   selectEditorFrontIds,
   selectEditorFrontIdsByPriority,
@@ -126,6 +127,68 @@ describe('frontsUIBundle', () => {
       });
     });
   });
+  describe('selectEditorFaveFrontIdsByPriority', () => {
+    it('should handle empty priorities', () => {
+      expect(
+        selectEditorFaveFrontIdsByPriority(initialState, 'editorial')
+      ).toEqual([]);
+    });
+    it('should select priorities', () => {
+      const stateWithFronts = {
+        editor: {
+          ...initialState.editor,
+          faveFrontIdsByPriority: { commercial: ['1', '2'] }
+        }
+      } as any;
+      expect(
+        selectEditorFaveFrontIdsByPriority(stateWithFronts, 'commercial')
+      ).toEqual(['1', '2']);
+    });
+  });
+  describe('createSelectFrontIdWithOpenAndStarredStatesByPriority', () => {
+    const selectFrontIdWithOpenAndStarredStatesByPriority = createSelectFrontIdWithOpenAndStarredStatesByPriority();
+    it('should select all fronts by priority', () => {
+      expect(
+        selectFrontIdWithOpenAndStarredStatesByPriority(
+          initialState,
+          'commercial'
+        )
+      ).toHaveLength(4);
+    });
+    it('should add correct Open State meta data', () => {
+      const stateWithEditorFronts = {
+        ...initialState,
+        editor: {
+          ...initialState.editor,
+          frontIdsByPriority: {
+            commercial: ['sc-johnson-partner-zone', 'a-shot-of-sustainability']
+          },
+          faveFrontIdsByPriority: {
+            commercial: [
+              'sc-johnson-partner-zone',
+              'un-global-compact-partner-zone'
+            ]
+          }
+        }
+      } as any;
+      expect(
+        selectFrontIdWithOpenAndStarredStatesByPriority(
+          stateWithEditorFronts,
+          'commercial'
+        )
+      ).toEqual([
+        { id: 'a-shot-of-sustainability', isOpen: true, isStarred: false },
+        { id: 'sc-johnson-partner-zone', isOpen: true, isStarred: true },
+        {
+          id: 'sustainable-business/fairtrade-partner-zone',
+          isOpen: false,
+          isStarred: false
+        },
+        { id: 'un-global-compact-partner-zone', isOpen: false, isStarred: true }
+      ]);
+    });
+  });
+
   describe('reducer', () => {
     it('should move a front within the open editor fronts by ID', () => {
       const state = {

@@ -267,16 +267,20 @@ const createSelectEditorFrontsByPriority = () =>
     }
   );
 
-const createSelectFrontIdAndOpenStateByPriority = () => {
+const createSelectFrontIdWithOpenAndStarredStatesByPriority = () => {
   const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
   return createSelector(
     getFrontsWithPriority,
     (state, priority: string) =>
       selectEditorFrontsByPriority(state, { priority }),
-    (frontsForPriority, openFronts) => {
+    (state, priority: string) =>
+      selectEditorFaveFrontIdsByPriority(state, priority),
+
+    (frontsForPriority, openFronts, faveFronts) => {
       return frontsForPriority.map(({ id }) => ({
         id,
-        isOpen: !!openFronts.find(_ => _.id === id)
+        isOpen: !!openFronts.find(_ => _.id === id),
+        isStarred: !!faveFronts.includes(id)
       }));
     }
   );
@@ -574,7 +578,7 @@ export {
   editorClearArticleFragmentSelection,
   selectIsCurrentFrontsMenuOpen,
   createSelectEditorFrontsByPriority,
-  createSelectFrontIdAndOpenStateByPriority,
+  createSelectFrontIdWithOpenAndStarredStatesByPriority,
   selectEditorFrontIds,
   selectEditorFaveFrontIds,
   selectEditorFrontIdsByPriority,
