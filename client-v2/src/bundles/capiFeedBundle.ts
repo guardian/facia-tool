@@ -78,7 +78,9 @@ export const fetchLive = (
   }
 
   if (resultData) {
-    const nonCommercialResults = resultData.results.filter(isNonCommercialArticle);
+    const nonCommercialResults = resultData.results.filter(
+      isNonCommercialArticle
+    );
     dispatch(
       liveActions.fetchSuccess(nonCommercialResults, resultData.pagination)
     );
@@ -102,7 +104,9 @@ export const fetchPreview = (
     dispatch(previewActions.fetchError(e.message));
   }
   if (resultData) {
-    const nonCommercialResults = resultData.results.filter(isNonCommercialArticle);
+    const nonCommercialResults = resultData.results.filter(
+      isNonCommercialArticle
+    );
     dispatch(
       previewActions.fetchSuccess(nonCommercialResults, resultData.pagination)
     );
