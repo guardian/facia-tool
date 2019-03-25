@@ -7,12 +7,12 @@ import { MoreIcon, StarIcon } from 'shared/components/icons/Icons';
 import TextHighlighter from './util/TextHighlighter';
 
 interface Props {
-  fronts: Array<{ id: string; isOpen: boolean }>;
-  favouriteFronts: string[];
+  fronts: Array<{ id: string; isOpen: boolean; isStarred: boolean }>;
+  renderOnlyStarred?: boolean;
   onSelect: (frontId: string) => void;
   onStar: (frontId: string) => void;
   onUnstar: (frontId: string) => void;
-  searchString: string;
+  searchString?: string;
 }
 
 const ButtonAdd = styled(ButtonCircular)`
@@ -23,7 +23,7 @@ const ButtonAdd = styled(ButtonCircular)`
   padding: 3px;
 `;
 
-const ButtonFavorite = styled(ButtonCircular)`
+const ButtonFavorite = styled(ButtonCircular)<{ isStarred: boolean }>`
   background-color: ${({ theme }) => theme.shared.colors.blackLight};
   position: absolute;
   top: 8px;
@@ -34,6 +34,16 @@ const ButtonFavorite = styled(ButtonCircular)`
   :hover > svg .fill {
     fill: ${({ theme }) => theme.shared.colors.greyMedium};
   }
+  ${({ isStarred }) =>
+    !!isStarred &&
+    css`
+      svg .fill {
+        fill: ${({ theme }) => theme.shared.colors.greyMedium};
+      }
+      :hover > svg .fill {
+        fill: ${({ theme }) => theme.shared.colors.blackLight};
+      }
+    `}
 `;
 
 const ListContainer = styled('ul')`
@@ -42,7 +52,7 @@ const ListContainer = styled('ul')`
   padding-left: 0;
 `;
 
-const ListItem = styled('li')<{ isActive?: boolean }>`
+const ListItem = styled('li')<{ isActive?: boolean; isStarred?: boolean }>`
   position: relative;
   padding: 10px 5px;
   font-family: TS3TextSans;
@@ -76,7 +86,7 @@ const ListLabel = styled('span')<{ isActive?: boolean }>`
 
 const FrontList = ({
   fronts,
-  favouriteFronts,
+  renderOnlyStarred,
   onSelect,
   onStar,
   onUnstar,
@@ -85,7 +95,9 @@ const FrontList = ({
   if (!fronts) {
     return null;
   }
-  const frontsToRender = searchString
+  const frontsToRender = renderOnlyStarred
+    ? fronts.filter(_ => _.isStarred)
+    : searchString
     ? fronts.filter(_ => _.id.includes(searchString))
     : fronts;
   return (
@@ -103,11 +115,10 @@ const FrontList = ({
             />
           </ListLabel>
           <ButtonFavorite
+            isStarred={!!front.isStarred}
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.stopPropagation();
-              return favouriteFronts.includes(front.id)
-                ? onUnstar(front.id)
-                : onStar(front.id);
+              return !!front.isStarred ? onUnstar(front.id) : onStar(front.id);
             }}
           >
             <StarIcon

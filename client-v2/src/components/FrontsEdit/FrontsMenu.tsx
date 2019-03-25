@@ -32,6 +32,7 @@ const FrontsMenuSubHeading = styled('div')`
   font-size: 16px;
   line-height: 30px;
   font-weight: bold;
+  color: ${({ theme }) => theme.shared.colors.orangeLight};
   border-bottom: ${({ theme }) =>
     `solid 1px ${theme.base.colors.frontListBorder}`};
   max-height: 100%;
@@ -153,6 +154,18 @@ class FrontsMenu extends React.Component<Props, State> {
             fixed={<FrontsMenuHeading>Add Front</FrontsMenuHeading>}
           >
             <FrontsMenuContent>
+              <FrontsMenuSubHeading>
+                <Row>
+                  <Col>Favourites</Col>
+                </Row>
+              </FrontsMenuSubHeading>
+              <FrontsList
+                renderOnlyStarred
+                onSelect={this.onSelectFront}
+                onStar={this.onStarFront}
+                onUnstar={this.onUnstarFront}
+              />
+
               <FrontsMenuSubHeading>
                 <Row>
                   <Col>All</Col>

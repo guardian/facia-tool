@@ -1,9 +1,6 @@
 import { connect } from 'react-redux';
 import { match, withRouter, RouteComponentProps } from 'react-router';
-import {
-  createSelectFrontIdAndOpenStateByPriority,
-  selectEditorFaveFrontIdsByPriority
-} from 'bundles/frontsUIBundle';
+import { createSelectFrontIdWithOpenAndStarredStatesByPriority } from 'bundles/frontsUIBundle';
 import { State } from '../types/State';
 import FrontList from './FrontList';
 
@@ -12,14 +9,10 @@ type Props = {
 } & RouteComponentProps<any>;
 
 const mapStateToProps = () => {
-  const selectFrontIdAndOpenState = createSelectFrontIdAndOpenStateByPriority();
+  const selectFrontIdWithOpenAndStarredStates = createSelectFrontIdWithOpenAndStarredStatesByPriority();
   return (state: State, props: Props) => {
     return {
-      fronts: selectFrontIdAndOpenState(
-        state,
-        props.match.params.priority || ''
-      ),
-      favouriteFronts: selectEditorFaveFrontIdsByPriority(
+      fronts: selectFrontIdWithOpenAndStarredStates(
         state,
         props.match.params.priority || ''
       )
