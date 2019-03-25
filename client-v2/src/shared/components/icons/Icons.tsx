@@ -20,11 +20,7 @@ const IconSizeMap = {
 };
 const mapSize = (size: IconSizes): number | string => IconSizeMap[size];
 
-const DownCaretIcon = ({
-  fill = theme.colors.white,
-  size = 'm',
-  title = null
-}: IconProps) => (
+const DownCaretIcon = ({ fill, size = 'm', title = null }: IconProps) => (
   <svg
     width={mapSize(size)}
     height={mapSize(size)}

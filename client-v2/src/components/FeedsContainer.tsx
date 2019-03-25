@@ -19,34 +19,44 @@ import { getIdFromURL } from 'util/CAPIUtils';
 import { Dispatch } from 'types/Store';
 import debounce from 'lodash/debounce';
 import { CapiArticle } from 'types/Capi';
+import Pagination from './FrontsCAPIInterface/Pagination';
+import { IPagination } from 'lib/createAsyncResourceBundle';
+import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 
 interface FeedsContainerProps {
   fetchLive: (params: object, isResource: boolean) => void;
   fetchPreview: (params: object, isResource: boolean) => void;
   liveArticles: CapiArticle[];
   previewArticles: CapiArticle[];
-  previewLoading: boolean;
   liveLoading: boolean;
+  previewLoading: boolean;
   liveError: string | null;
   previewError: string | null;
+  livePagination: IPagination | null;
+  previewPagination: IPagination | null;
 }
 
 interface FeedsContainerState {
   capiFeedIndex: number;
   displaySearchFilters: boolean;
   inputState: SearchInputState;
+  displayPrevResults: boolean;
 }
 
 const Title = styled.h1`
-  margin: 2px 0 0;
+  position: relative;
+  margin: 0 10px 0 0;
+  padding-top: 2px;
+  padding-right: 10px;
   vertical-align: top;
   font-family: GHGuardianHeadline;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 20px;
   min-width: 80px;
 `;
 
 const RefreshButton = styled.button`
+  padding-left: 0;
   appearance: none;
   border: none;
   background: transparent;
@@ -70,14 +80,19 @@ const FeedsContainerWrapper = styled('div')`
   height: 100%;
 `;
 
-const StageSelectionContainer = styled('div')`
+const PaginationContainer = styled('div')`
   margin-left: auto;
 `;
 
 const ResultsHeadingContainer = styled('div')`
+  border-top: 1px solid ${({ theme }) => theme.shared.colors.greyVeryLight};
   align-items: baseline;
   display: flex;
   margin-bottom: 10px;
+`;
+
+const FixedContentContainer = styled.div`
+  margin-bottom: 5px;
 `;
 
 const getCapiFieldsToShow = (isPreview: boolean) => {
@@ -91,6 +106,7 @@ const getCapiFieldsToShow = (isPreview: boolean) => {
   return defaultFieldsToShow + ',scheduledPublicationDate';
 };
 
+export type directionParam = 'from-date' | 'to-date';
 const getParams = (
   query: string,
   {
@@ -117,7 +133,6 @@ const getParams = (
     ? { 'order-by': 'oldest', 'from-date': getTodayDate() }
     : { 'order-by': 'newest', 'order-date': 'first-publication' })
 });
-
 class FeedsContainer extends React.Component<
   FeedsContainerProps,
   FeedsContainerState
@@ -125,7 +140,8 @@ class FeedsContainer extends React.Component<
   public state = {
     capiFeedIndex: 0,
     displaySearchFilters: false,
-    inputState: initState
+    inputState: initState,
+    displayPrevResults: false
   };
 
   private interval: null | number = null;
@@ -175,18 +191,30 @@ class FeedsContainer extends React.Component<
     );
   }
 
+  public get isLive() {
+    return this.state.capiFeedIndex === 0;
+  }
+
   public renderFixedContent = () => {
     if (!this.state.displaySearchFilters) {
+      const { livePagination, previewPagination } = this.props;
+      const pagination = this.isLive ? livePagination : previewPagination;
+      const hasPages = !!(pagination && pagination.totalPages > 1);
       return (
-        <ResultsHeadingContainer>
-          <Title>Latest</Title>
-          <RefreshButton
-            disabled={this.isLoading}
-            onClick={() => this.runSearchAndRestartPolling()}
-          >
-            {this.isLoading ? 'Loading' : 'Refresh'}
-          </RefreshButton>
-          <StageSelectionContainer>
+        <FixedContentContainer>
+          <ResultsHeadingContainer>
+            <div>
+              <Title>
+                Latest
+                <ShortVerticalPinline />
+              </Title>
+              <RefreshButton
+                disabled={this.isLoading}
+                onClick={() => this.runSearchAndRestartPolling()}
+              >
+                {this.isLoading ? 'Loading' : 'Refresh'}
+              </RefreshButton>
+            </div>
             <RadioGroup>
               <RadioButton
                 checked={this.state.capiFeedIndex === 0}
@@ -203,8 +231,17 @@ class FeedsContainer extends React.Component<
                 name="capiFeed"
               />
             </RadioGroup>
-          </StageSelectionContainer>
-        </ResultsHeadingContainer>
+            {pagination && hasPages && (
+              <PaginationContainer>
+                <Pagination
+                  pageChange={this.pageChange}
+                  currentPage={pagination.currentPage}
+                  totalPages={pagination.totalPages}
+                />
+              </PaginationContainer>
+            )}
+          </ResultsHeadingContainer>
+        </FixedContentContainer>
       );
     }
     return null;
@@ -217,7 +254,8 @@ class FeedsContainer extends React.Component<
       liveError,
       previewError
     } = this.props;
-
+    const error = this.isLive ? liveError : previewError;
+    const articles = this.isLive ? liveArticles : previewArticles;
     return (
       <FeedsContainerWrapper>
         <SearchInput
@@ -226,15 +264,28 @@ class FeedsContainer extends React.Component<
           additionalFixedContent={this.renderFixedContent}
           onUpdate={this.handleParamsUpdate}
         >
-          {this.state.capiFeedIndex === 0 ? (
-            <Feed error={liveError} articles={liveArticles} />
-          ) : (
-            <Feed error={previewError} articles={previewArticles} />
-          )}
+          <Feed error={error} articles={articles} />
         </SearchInput>
       </FeedsContainerWrapper>
     );
   }
+
+  private pageChange = (requestPage: number) => {
+    const { inputState } = this.state;
+    const searchTerm = inputState.query;
+    const paginationParams = {
+      ...getParams(searchTerm, inputState, false),
+      page: requestPage
+    };
+    this.isLive
+      ? this.props.fetchLive(paginationParams, false)
+      : this.props.fetchPreview(paginationParams, false);
+    if (requestPage > 1) {
+      this.stopPolling();
+    } else {
+      this.runSearchAndRestartPolling();
+    }
+  };
 
   private runSearch() {
     const { inputState } = this.state;
@@ -275,7 +326,9 @@ const mapStateToProps = (state: State) => ({
   liveLoading: liveSelectors.selectIsLoading(state),
   previewLoading: previewSelectors.selectIsLoading(state),
   liveError: liveSelectors.selectCurrentError(state),
-  previewError: previewSelectors.selectCurrentError(state)
+  previewError: previewSelectors.selectCurrentError(state),
+  livePagination: liveSelectors.selectPagination(state),
+  previewPagination: previewSelectors.selectPagination(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

@@ -8,19 +8,42 @@ type Fetch = (path: string) => Promise<Response>;
 
 type CAPIStatus = 'ok' | 'error';
 
-interface CAPISearchQueryReponse {
-  response: {
-    results?: CapiArticle[];
-    content?: CapiArticle;
-    tag?: Tag;
-    section?: {
-      webTitle: string;
-    };
-    status: CAPIStatus;
-    message?: string;
+function checkIsResults(
+  response: CAPISearchQueryContentResponse | CAPISearchQueryResultsResponse
+): response is CAPISearchQueryResultsResponse {
+  return !!(response as CAPISearchQueryResultsResponse).results;
+}
+interface CAPISearchQueryResultsResponse {
+  results: CapiArticle[];
+  section?: {
+    webTitle: string;
   };
+  tag?: Tag;
+  currentPage: number;
+  pageSize: number;
+  pages: number;
+  status: CAPIStatus;
+  message?: string;
 }
 
+function checkIsContent(
+  response: CAPISearchQueryContentResponse | CAPISearchQueryResultsResponse
+): response is CAPISearchQueryContentResponse {
+  return !!(response as CAPISearchQueryContentResponse).content;
+}
+interface CAPISearchQueryContentResponse {
+  content: CapiArticle;
+  tag?: Tag;
+  section?: {
+    webTitle: string;
+  };
+  status: CAPIStatus;
+  message?: string;
+}
+
+interface CAPISearchQueryResponse {
+  response: CAPISearchQueryContentResponse | CAPISearchQueryResultsResponse;
+}
 interface CAPIOptions {
   // Does the query represent a single resource, e.g. an article or a
   // tag/section page? If so, we need to make a slightly different query.
@@ -48,7 +71,7 @@ const getErrorMessageFromResponse = (response: Response) =>
  * @throws If the response fails for any reason.
  */
 const fetchCAPIResponse = async <
-  TCAPIResponse extends CAPISearchQueryReponse | CAPITagQueryReponse
+  TCAPIResponse extends CAPISearchQueryResponse | CAPITagQueryReponse
 >(
   request: string
 ) => {
@@ -97,16 +120,16 @@ const capiQuery = (baseURL: string = API_BASE) => {
     search: async (
       params: any,
       options?: CAPIOptions
-    ): Promise<CAPISearchQueryReponse> => {
-      return fetchCAPIResponse<CAPISearchQueryReponse>(
+    ): Promise<CAPISearchQueryResponse> => {
+      return fetchCAPIResponse<CAPISearchQueryResponse>(
         getCAPISearchString(`search`, params, options)
       );
     },
     scheduled: async (
       params: any,
       options?: CAPIOptions
-    ): Promise<CAPISearchQueryReponse> => {
-      return fetchCAPIResponse<CAPISearchQueryReponse>(
+    ): Promise<CAPISearchQueryResponse> => {
+      return fetchCAPIResponse<CAPISearchQueryResponse>(
         getCAPISearchString(`content/scheduled`, params, options)
       );
     },
@@ -135,5 +158,14 @@ const capiQuery = (baseURL: string = API_BASE) => {
   };
 };
 
-export { Fetch, CapiArticle, CAPISearchQueryReponse, CAPITagQueryReponse };
+export {
+  Fetch,
+  CapiArticle,
+  CAPISearchQueryResponse,
+  CAPISearchQueryContentResponse,
+  checkIsContent,
+  CAPISearchQueryResultsResponse,
+  checkIsResults,
+  CAPITagQueryReponse
+};
 export default capiQuery;

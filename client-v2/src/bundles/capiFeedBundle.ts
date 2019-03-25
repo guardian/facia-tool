@@ -2,6 +2,7 @@ import createAsyncResourceBundle from 'lib/createAsyncResourceBundle';
 import { CapiArticle } from 'types/Capi';
 import { ThunkResult } from 'types/Store';
 import { previewCapi, liveCapi } from 'services/frontsCapi';
+import { checkIsContent } from 'services/capiQuery';
 
 type FeedState = CapiArticle[];
 
@@ -50,8 +51,18 @@ const fetchResourceOrResults = async (
   const capiEndpoint = fetchFromPreview
     ? capiService.scheduled
     : capiService.search;
-  const res = await capiEndpoint(params, { isResource });
-  return isResource ? [res.response.content] : res.response.results;
+  const { response } = await capiEndpoint(params, { isResource });
+
+  return {
+    results: checkIsContent(response) ? [response.content] : response.results,
+    pagination: checkIsContent(response)
+      ? null
+      : {
+          totalPages: response.pages,
+          currentPage: response.currentPage,
+          pageSize: response.pageSize
+        }
+  };
 };
 
 export const fetchLive = (
@@ -59,16 +70,20 @@ export const fetchLive = (
   isResource: boolean
 ): ThunkResult<void> => async dispatch => {
   dispatch(liveActions.fetchStart('live'));
-  let results;
+  let resultData;
   try {
-    results = await fetchResourceOrResults(liveCapi, params, isResource);
+    resultData = await fetchResourceOrResults(liveCapi, params, isResource);
   } catch (e) {
     return dispatch(liveActions.fetchError(e.message));
   }
 
-  if (results) {
-    const nonCommercialResults = results.filter(isNonCommercialArticle);
-    dispatch(liveActions.fetchSuccess(nonCommercialResults));
+  if (resultData) {
+    const nonCommercialResults = resultData.results.filter(
+      isNonCommercialArticle
+    );
+    dispatch(
+      liveActions.fetchSuccess(nonCommercialResults, resultData.pagination)
+    );
   }
 };
 
@@ -77,9 +92,9 @@ export const fetchPreview = (
   isResource: boolean
 ): ThunkResult<void> => async dispatch => {
   dispatch(previewActions.fetchStart('preview'));
-  let results;
+  let resultData;
   try {
-    results = await fetchResourceOrResults(
+    resultData = await fetchResourceOrResults(
       previewCapi,
       params,
       isResource,
@@ -88,9 +103,13 @@ export const fetchPreview = (
   } catch (e) {
     dispatch(previewActions.fetchError(e.message));
   }
-  if (results) {
-    const nonCommercialResults = results.filter(isNonCommercialArticle);
-    dispatch(previewActions.fetchSuccess(nonCommercialResults));
+  if (resultData) {
+    const nonCommercialResults = resultData.results.filter(
+      isNonCommercialArticle
+    );
+    dispatch(
+      previewActions.fetchSuccess(nonCommercialResults, resultData.pagination)
+    );
   }
 };
 

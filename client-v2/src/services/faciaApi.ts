@@ -17,7 +17,7 @@ import {
 import pandaFetch from './pandaFetch';
 import { CapiArticle } from 'types/Capi';
 import chunk from 'lodash/chunk';
-import { CAPISearchQueryReponse } from './capiQuery';
+import { CAPISearchQueryResponse, checkIsResults } from './capiQuery';
 import flatMap from 'lodash/flatMap';
 
 function fetchFrontsConfig(): Promise<FrontsConfig> {
@@ -248,24 +248,28 @@ const getCapiUriForContentIds = (contentIds: string[]) => {
   return `/api/preview/${searchStr}page-size=50&show-elements=video,main&show-blocks=main&show-tags=all&show-atoms=media&show-fields=internalPageCode,isLive,firstPublicationDate,scheduledPublicationDate,headline,trailText,byline,thumbnail,secureThumbnail,liveBloggingNow,membershipAccess,shortUrl`;
 };
 
-const getTagOrSectionTitle = (queryResponse: CAPISearchQueryReponse) =>
-  (queryResponse.response.tag && queryResponse.response.tag.webTitle) ||
-  (queryResponse.response.section && queryResponse.response.section.webTitle);
+const getTagOrSectionTitle = (queryResponse: CAPISearchQueryResponse) => {
+  const { response } = queryResponse;
+
+  return response
+    ? (response.tag && response.tag.webTitle) ||
+        (response.section && response.section.webTitle)
+    : undefined;
+};
 
 const parseArticleListFromResponses = (
-  queryResponse: CAPISearchQueryReponse
+  queryResponseUnionType: CAPISearchQueryResponse
 ): ExternalArticle[] => {
+  const { response } = queryResponseUnionType;
   try {
-    if (queryResponse.response.status === 'error') {
-      throw new Error(
-        queryResponse.response.message || 'Unknown error from CAPI'
-      );
+    if (response.status === 'error') {
+      throw new Error(response.message || 'Unknown error from CAPI');
     }
     // We may be dealing with a single result, or an array of results -
     // CAPI formats each query differently.
-    const results: CapiArticle[] =
-      queryResponse.response.results ||
-      (queryResponse.response.content ? [queryResponse.response.content] : []);
+    const results: CapiArticle[] = checkIsResults(response)
+      ? response.results
+      : [response.content];
 
     return results.map((externalArticle: CapiArticle) => ({
       ...externalArticle,
@@ -292,7 +296,7 @@ async function getContent(
     method: 'get',
     credentials: 'same-origin'
   });
-  const parsedResponse: CAPISearchQueryReponse = await response.json();
+  const parsedResponse: CAPISearchQueryResponse = await response.json();
   return {
     articles: parseArticleListFromResponses(parsedResponse),
     title: getTagOrSectionTitle(parsedResponse)
@@ -316,7 +320,7 @@ async function getArticlesBatched(
 
   try {
     const responses = await Promise.all(capiPromises);
-    const parsedResponses: CAPISearchQueryReponse[] = await Promise.all(
+    const parsedResponses: CAPISearchQueryResponse[] = await Promise.all(
       responses.map(_ => _.json())
     );
     return flatMap(parsedResponses.map(parseArticleListFromResponses));

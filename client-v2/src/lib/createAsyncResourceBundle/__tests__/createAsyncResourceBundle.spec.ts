@@ -44,7 +44,7 @@ describe('createAsyncResourceBundle', () => {
       expect(actions.fetchSuccess({ data: 'exampleData' })).toEqual({
         entity: 'books',
         type: 'FETCH_SUCCESS',
-        payload: { data: { data: 'exampleData' }, time: 1337 }
+        payload: { data: { data: 'exampleData' }, pagination: null, time: 1337 }
       });
       expect(actions.fetchSuccessIgnore({ data: 'exampleData' })).toEqual({
         entity: 'books',
@@ -220,6 +220,27 @@ describe('createAsyncResourceBundle', () => {
           expect(newState.data).toEqual({
             uuid: { id: 'uuid', author: 'Mark Twain' },
             uuid2: { id: 'uuid2', author: 'Elizabeth Gaskell' }
+          });
+        });
+        it('should return null pagination object when no pagination data in response', () => {
+          const newState = reducer(
+            initialState,
+            actions.fetchSuccess({ uuid: { id: 'uuid', author: 'Mark Twain' } })
+          );
+          expect(newState.pagination).toEqual(null);
+        });
+        it('should return pagination data when supplied by action', () => {
+          const newState = reducer(
+            initialState,
+            actions.fetchSuccess(
+              { uuid: { id: 'uuid', author: 'Mark Twain' } },
+              { pageSize: 20, currentPage: 1, totalPages: 20 }
+            )
+          );
+          expect(newState.pagination).toEqual({
+            pageSize: 20,
+            currentPage: 1,
+            totalPages: 20
           });
         });
       });

@@ -191,6 +191,7 @@ const state = {
           }
         }
       },
+      pagination: null,
       lastError: null,
       error: null,
       lastFetch: 1547474511048,
@@ -282,6 +283,7 @@ const state = {
           type: 'fixed/small/slow-IV'
         }
       },
+      pagination: null,
       lastError: null,
       error: null,
       lastFetch: null,
@@ -640,6 +642,7 @@ const state = {
             'media/video/2019/jan/11/fiona-bruce-makes-debut-as-question-time-host-video'
         }
       },
+      pagination: null,
       lastError: null,
       error: null,
       lastFetch: 1547474510279,
@@ -663,6 +666,7 @@ const state = {
   form: {},
   capiLiveFeed: {
     data: [],
+    pagination: null,
     lastError: null,
     error: null,
     lastFetch: 1547474573228,
@@ -672,6 +676,7 @@ const state = {
   },
   capiPreviewFeed: {
     data: [],
+    pagination: null,
     lastError: null,
     error: null,
     lastFetch: 1547474573363,
