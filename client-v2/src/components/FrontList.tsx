@@ -35,8 +35,8 @@ const ButtonFavorite = styled(ButtonCircular)<{ isStarred: boolean }>`
   svg .fill {
     fill: ${({ theme }) => theme.shared.colors.blackLight};
   }
-  &&:hover svg .fill,
-  &&:hover svg .outline {
+  &:hover svg .fill,
+  &:hover svg .outline {
     fill: ${({ theme }) => theme.shared.colors.greyMedium};
   }
 
@@ -47,8 +47,7 @@ const ButtonFavorite = styled(ButtonCircular)<{ isStarred: boolean }>`
       svg .fill {
         fill: ${({ theme }) => `${theme.shared.colors.orangeLight}`};
       }
-      &&:hover svg .fill,
-      &&:hover svg .outline {
+      &:hover svg .outline {
         fill: ${({ theme }) => theme.shared.colors.greyMedium};
       }
     `}
@@ -77,6 +76,12 @@ const ListItem = styled('li')<{ isActive?: boolean; isStarred?: boolean }>`
       }
       :hover ${ButtonFavorite} {
         background-color: ${({ theme }) => theme.base.colors.frontListButton};
+      }
+      :hover svg .fill {
+        fill: ${({ theme, isStarred }) =>
+          isStarred
+            ? theme.base.colors.orangeLight
+            : theme.base.colors.frontListButton};
       }
     `};
 `;
@@ -113,6 +118,7 @@ const FrontList = ({
       {frontsToRender.map(front => (
         <ListItem
           isActive={!front.isOpen}
+          isStarred={!!front.isStarred}
           key={front.id}
           onClick={!front.isOpen ? () => onSelect(front.id) : undefined}
         >
