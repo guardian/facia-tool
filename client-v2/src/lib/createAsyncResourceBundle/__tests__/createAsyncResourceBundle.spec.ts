@@ -224,14 +224,14 @@ describe('createAsyncResourceBundle', () => {
         });
         it('should return null pagination object when no pagination data in response', () => {
           const newState = reducer(
-            { ...initialState, loading: true },
+            initialState,
             actions.fetchSuccess({ uuid: { id: 'uuid', author: 'Mark Twain' } })
           );
           expect(newState.pagination).toEqual(null);
         });
         it('should return pagination data when supplied by action', () => {
           const newState = reducer(
-            { ...initialState, loading: true },
+            initialState,
             actions.fetchSuccess(
               { uuid: { id: 'uuid', author: 'Mark Twain' } },
               { pageSize: 20, currentPage: 1, totalPages: 20 }

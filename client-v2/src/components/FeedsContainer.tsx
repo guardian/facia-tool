@@ -85,6 +85,10 @@ const ResultsHeadingContainer = styled('div')`
   margin-bottom: 10px;
 `;
 
+const FixedContentContainer = styled.div`
+  margin-bottom: 5px;
+`;
+
 const getCapiFieldsToShow = (isPreview: boolean) => {
   const defaultFieldsToShow =
     'internalPageCode,trailText,firstPublicationDate,isLive,thumbnail,secureThumbnail,liveBloggingNow';
@@ -181,36 +185,52 @@ class FeedsContainer extends React.Component<
     );
   }
 
+  public get isLive() {
+    return this.state.capiFeedIndex === 0;
+  }
+
   public renderFixedContent = () => {
     if (!this.state.displaySearchFilters) {
+      const { livePagination, previewPagination } = this.props;
+      const pagination = this.isLive ? livePagination : previewPagination;
+      const hasPages = !!(pagination && pagination.totalPages > 1); // TODO change this to total resutls / Action fix
       return (
-        <ResultsHeadingContainer>
-          <Title>Latest</Title>
-          <RefreshButton
-            disabled={this.isLoading}
-            onClick={() => this.runSearchAndRestartPolling()}
-          >
-            {this.isLoading ? 'Loading' : 'Refresh'}
-          </RefreshButton>
-          <StageSelectionContainer>
-            <RadioGroup>
-              <RadioButton
-                checked={this.state.capiFeedIndex === 0}
-                onChange={() => this.handleFeedClick(0)}
-                label="Live"
-                inline
-                name="capiFeed"
-              />
-              <RadioButton
-                checked={this.state.capiFeedIndex === 1}
-                onChange={() => this.handleFeedClick(1)}
-                label="Draft"
-                inline
-                name="capiFeed"
-              />
-            </RadioGroup>
-          </StageSelectionContainer>
-        </ResultsHeadingContainer>
+        <FixedContentContainer>
+          <ResultsHeadingContainer>
+            <Title>Latest</Title>
+            <RefreshButton
+              disabled={this.isLoading}
+              onClick={() => this.runSearchAndRestartPolling()}
+            >
+              {this.isLoading ? 'Loading' : 'Refresh'}
+            </RefreshButton>
+            <StageSelectionContainer>
+              <RadioGroup>
+                <RadioButton
+                  checked={this.state.capiFeedIndex === 0}
+                  onChange={() => this.handleFeedClick(0)}
+                  label="Live"
+                  inline
+                  name="capiFeed"
+                />
+                <RadioButton
+                  checked={this.state.capiFeedIndex === 1}
+                  onChange={() => this.handleFeedClick(1)}
+                  label="Draft"
+                  inline
+                  name="capiFeed"
+                />
+              </RadioGroup>
+            </StageSelectionContainer>
+          </ResultsHeadingContainer>
+          {pagination && hasPages && (
+            <Pagination
+              pageChange={this.pageChange}
+              currentPage={pagination.currentPage}
+              totalPages={pagination.totalPages}
+            />
+          )}
+        </FixedContentContainer>
       );
     }
     return null;
@@ -221,11 +241,10 @@ class FeedsContainer extends React.Component<
       liveArticles,
       previewArticles,
       liveError,
-      previewError,
-      livePagination,
-      previewPagination
+      previewError
     } = this.props;
-
+    const error = this.isLive ? liveError : previewError;
+    const articles = this.isLive ? liveArticles : previewArticles;
     return (
       <FeedsContainerWrapper>
         <SearchInput
@@ -234,29 +253,7 @@ class FeedsContainer extends React.Component<
           additionalFixedContent={this.renderFixedContent}
           onUpdate={this.handleParamsUpdate}
         >
-          {this.state.capiFeedIndex === 0 ? (
-            <>
-              {!!livePagination && livePagination.totalPages > 1 ? ( // TODO change this to total resutls / Action fix
-                <Pagination
-                  pageChange={this.pageChange}
-                  currentPage={livePagination.currentPage}
-                  totalPages={livePagination.totalPages}
-                />
-              ) : null}
-              <Feed error={liveError} articles={liveArticles} />
-            </>
-          ) : (
-            <>
-              {!!previewPagination && previewPagination.totalPages > 1 ? ( // TODO change this to total resutls / Action fix
-                <Pagination
-                  pageChange={this.pageChange}
-                  currentPage={previewPagination.currentPage}
-                  totalPages={previewPagination.totalPages}
-                />
-              ) : null}
-              <Feed error={previewError} articles={previewArticles} />
-            </>
-          )}
+          <Feed error={error} articles={articles} />
         </SearchInput>
       </FeedsContainerWrapper>
     );
@@ -272,6 +269,11 @@ class FeedsContainer extends React.Component<
     };
     if (capiFeedIndex === 0) {
       this.props.fetchLive(paginationParams, false);
+    }
+    if (requestPage > 1) {
+      this.stopPolling();
+    } else {
+      this.runSearchAndRestartPolling();
     }
   };
 
@@ -295,7 +297,7 @@ class FeedsContainer extends React.Component<
 
   private runSearchAndRestartPolling() {
     this.stopPolling();
-    this.interval = window.setInterval(() => this.runSearch(), 30000);
+    this.interval = window.setInterval(() => this.runSearch(), 3000);
     this.runSearch();
   }
 
