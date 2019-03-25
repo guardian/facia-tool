@@ -17,12 +17,14 @@ const LogoTypeContainer = styled('div')`
 
 export default ({
   children,
-  includeBorder
+  includeBorder,
+  greyHeader
 }: {
   children?: React.ReactNode;
   includeBorder?: boolean;
+  greyHeader?: boolean;
 }) => (
-  <SectionHeader includeBorder={includeBorder}>
+  <SectionHeader greyHeader={greyHeader} includeBorder={includeBorder}>
     <LogoTypeContainer>F</LogoTypeContainer>
     {children}
   </SectionHeader>

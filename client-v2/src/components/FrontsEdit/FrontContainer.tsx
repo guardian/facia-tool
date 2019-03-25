@@ -13,7 +13,7 @@ import { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
 import { getFront, createAlsoOnSelector } from 'selectors/frontsSelectors';
 import Front from './Front';
-import { FrontSectionHeader } from '../layout/SectionHeader';
+import SectionHeader from '../layout/SectionHeader';
 import SectionContent from '../layout/SectionContent';
 import { CollectionItemSets, Collection } from 'shared/types/Collection';
 import { toTitleCase } from 'util/stringUtils';
@@ -22,7 +22,7 @@ import ButtonRoundedWithLabel from 'shared/components/input/ButtonRoundedWithLab
 import { DownCaretIcon } from 'shared/components/icons/Icons';
 import { theme as sharedTheme } from 'shared/constants/theme';
 
-const FrontHeader = styled(FrontSectionHeader)`
+const FrontHeader = styled(SectionHeader)`
   display: flex;
   border-right: 1px solid #767676;
 `;
@@ -109,7 +109,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
     return (
       <FrontsContainer>
         <>
-          <FrontHeader>
+          <FrontHeader greyHeader={true}>
             <FrontsHeaderText>
               {this.props.selectedFront &&
                 startCase(this.props.selectedFront.id)}
