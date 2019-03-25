@@ -129,7 +129,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                     <RadioButton
                       inline
                       key={key}
-                      name="frontStages"
+                      name={`${this.props.frontId} - frontStages`}
                       checked={frontStages[key] === this.state.collectionSet}
                       onChange={() => this.handleCollectionSetSelect(key)}
                       label={toTitleCase(frontStages[key])}
