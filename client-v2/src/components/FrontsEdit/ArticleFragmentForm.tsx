@@ -205,55 +205,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
           <InputGroup>
             <ConditionalField
               permittedFields={editableFields}
-              name="headline"
-              label="Headline"
-              placeholder={articleCapiFieldValues.headline}
-              component={InputTextArea}
-              useHeadlineFont
-              rows="2"
-            />
-            <ConditionalField
-              permittedFields={editableFields}
-              name="isBoosted"
-              component={InputCheckboxToggle}
-              label="Boost"
-              id={getInputId(articleFragmentId, 'boost')}
-              type="checkbox"
-            />
-            <ConditionalField
-              permittedFields={editableFields}
-              name="showQuotedHeadline"
-              component={InputCheckboxToggle}
-              label="Quote headline"
-              id={getInputId(articleFragmentId, 'quote-headline')}
-              type="checkbox"
-            />
-            <ConditionalField
-              permittedFields={editableFields}
-              name="showBoostedHeadline"
-              component={InputCheckboxToggle}
-              label="Large headline"
-              id={getInputId(articleFragmentId, 'large-headline')}
-              type="checkbox"
-            />
-            <ConditionalField
-              permittedFields={editableFields}
-              name="showLivePlayable"
-              component={InputCheckboxToggle}
-              label="Show updates"
-              id={getInputId(articleFragmentId, 'show-updates')}
-              type="checkbox"
-            />
-            <ConditionalField
-              permittedFields={editableFields}
-              name="showMainVideo"
-              component={InputCheckboxToggle}
-              label="Show video"
-              id={getInputId(articleFragmentId, 'show-video')}
-              type="checkbox"
-            />
-            <ConditionalField
-              permittedFields={editableFields}
               name="customKicker"
               label="Kicker"
               component={InputText}
@@ -320,6 +271,46 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             </ConditionalComponent>
             <ConditionalField
               permittedFields={editableFields}
+              name="headline"
+              label="Headline"
+              placeholder={articleCapiFieldValues.headline}
+              component={InputTextArea}
+              useHeadlineFont
+              rows="2"
+            />
+            <ConditionalField
+              permittedFields={editableFields}
+              name="trailText"
+              label="Trail text"
+              component={InputTextArea}
+              placeholder={articleCapiFieldValues.trailText}
+            />
+            <ConditionalField
+              permittedFields={editableFields}
+              name="isBoosted"
+              component={InputCheckboxToggle}
+              label="Boost"
+              id={getInputId(articleFragmentId, 'boost')}
+              type="checkbox"
+            />
+            <ConditionalField
+              permittedFields={editableFields}
+              name="showQuotedHeadline"
+              component={InputCheckboxToggle}
+              label="Quote headline"
+              id={getInputId(articleFragmentId, 'quote-headline')}
+              type="checkbox"
+            />
+            <ConditionalField
+              permittedFields={editableFields}
+              name="showBoostedHeadline"
+              component={InputCheckboxToggle}
+              label="Large headline"
+              id={getInputId(articleFragmentId, 'large-headline')}
+              type="checkbox"
+            />
+            <ConditionalField
+              permittedFields={editableFields}
               name="isBreaking"
               component={InputCheckboxToggle}
               label="Breaking News"
@@ -346,10 +337,19 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             )}
             <ConditionalField
               permittedFields={editableFields}
-              name="trailText"
-              label="Trail text"
-              component={InputTextArea}
-              placeholder={articleCapiFieldValues.trailText}
+              name="showLivePlayable"
+              component={InputCheckboxToggle}
+              label="Show updates"
+              id={getInputId(articleFragmentId, 'show-updates')}
+              type="checkbox"
+            />
+            <ConditionalField
+              permittedFields={editableFields}
+              name="showMainVideo"
+              component={InputCheckboxToggle}
+              label="Show video"
+              id={getInputId(articleFragmentId, 'show-video')}
+              type="checkbox"
             />
           </InputGroup>
           <RowContainer>
