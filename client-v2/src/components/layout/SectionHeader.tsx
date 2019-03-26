@@ -1,27 +1,24 @@
 import { styled } from '../../constants/theme';
 import LargeSectionHeader from './LargeSectionHeader';
 
-const SectionHeaderBase = styled(LargeSectionHeader)<{
+const SectionHeader = styled(LargeSectionHeader)<{
   includeBorder?: boolean;
+  greyHeader?: boolean;
 }>`
   border-right: ${({ theme, includeBorder }) =>
     `solid 1px ${
       includeBorder ? theme.shared.colors.whiteDark : 'transparent'
     }`};
-`;
-
-const SectionHeader = styled(SectionHeaderBase)`
-  background-color: ${({ theme }) => theme.shared.colors.blackLight};
+  background-color: ${({ theme, greyHeader }) =>
+    greyHeader
+      ? theme.shared.colors.greyVeryLight
+      : theme.shared.colors.blackDark};
 `;
 
 const SectionHeaderUnpadded = styled(SectionHeader)`
   padding: 0;
 `;
 
-const FrontSectionHeader = styled(SectionHeaderBase)`
-  background-color: ${({ theme }) => theme.shared.colors.greyVeryLight};
-`;
-
-export { SectionHeaderUnpadded, FrontSectionHeader };
+export { SectionHeaderUnpadded };
 
 export default SectionHeader;

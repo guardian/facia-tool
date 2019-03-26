@@ -4,6 +4,7 @@ import { Switch, Route } from 'react-router-dom';
 import DropDisabler from './util/DropDisabler';
 
 import { theme as styleTheme, styled } from 'constants/theme';
+import SectionHeaderWithLogo from './layout/SectionHeaderWithLogo';
 import GHGuardianHeadlineBoldTtf from '../fonts/headline/GHGuardianHeadline-Bold.ttf';
 import GHGuardianHeadlineBoldWoff from '../fonts/headline/GHGuardianHeadline-Bold.woff';
 import GHGuardianHeadlineBoldWoff2 from '../fonts/headline/GHGuardianHeadline-Bold.woff2';
@@ -88,10 +89,20 @@ const AppContainer = styled('div')`
   width: 100%;
 `;
 
+const BackgroundHeader = styled('div')`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+`;
+
 const App = () => (
   <ThemeProvider theme={styleTheme}>
     <DropDisabler>
       <AppContainer>
+        <BackgroundHeader>
+          <SectionHeaderWithLogo greyHeader={true} />
+        </BackgroundHeader>
         <Switch>
           <Route exact path={frontsEdit} component={FrontsEdit} />
           <Route exact path="/" component={Home} />
