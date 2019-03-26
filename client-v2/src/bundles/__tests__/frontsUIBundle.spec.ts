@@ -274,7 +274,6 @@ describe('frontsUIBundle', () => {
         training: ['front1', 'front2']
       });
     });
-
     it('should clear the article fragment selection when selected article fragments are removed from a front', () => {
       const state = reducer(
         {
@@ -336,14 +335,13 @@ describe('frontsUIBundle', () => {
     });
     it('should set the fronts to the open editor fronts', () => {
       const state = reducer(
-        { frontIds: ['front1', 'front2'] } as any, // TODO should test be updated to frontIDs by priority???
+        { frontIds: ['front1', 'front2'] } as any,
         editorSetOpenFronts({ editorial: ['front1', 'front3'] })
       );
       expect(selectEditorFrontIds(state)).toEqual({
         editorial: ['front1', 'front3']
       });
     });
-    // TODO What is this doing? Getting fave fronts from config and setting it to editor state
     it('should set the fave fronts from config to the fave fronts in editor', () => {
       const state = reducer(
         {
@@ -357,7 +355,6 @@ describe('frontsUIBundle', () => {
         editorial: ['front1', 'front3']
       });
     });
-
     it('should add a collection to the open editor collections', () => {
       const state = reducer(undefined, editorOpenCollections(
         'exampleCollection'
