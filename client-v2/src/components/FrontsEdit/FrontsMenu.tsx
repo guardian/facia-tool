@@ -69,6 +69,7 @@ const FrontsMenuSearchInput = styled('input')`
   padding-right: 20px;
   border: 0;
   color: white;
+  font-family: TS3TextSans;
   font-size: 16px;
   :active,
   :focus {
