@@ -186,7 +186,7 @@ const articleBodyDefault = ({
           </CollectionItemDraftMetaContent>
         )}
 
-        {size === 'default' && frontPublicationTime && (
+        {frontPublicationTime && (
           <CollectionItemMetaContent>
             {distanceInWordsStrict(Date.now(), new Date(frontPublicationTime))}
           </CollectionItemMetaContent>
