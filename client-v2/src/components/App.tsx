@@ -17,6 +17,9 @@ import GHGuardianHeadlineRegularWoff2 from '../fonts/headline/GHGuardianHeadline
 import GuardianTextSansTtf from '../fonts/text/GuardianTextSans-Regular.ttf';
 import GuardianTextSansWoff from '../fonts/text/GuardianTextSans-Regular.woff';
 import GuardianTextSansWoff2 from '../fonts/text/GuardianTextSans-Regular.woff2';
+import GuardianTextSansItalicTtf from '../fonts/text/GuardianTextSans-RegularItalic.ttf';
+import GuardianTextSansItalicWoff from '../fonts/text/GuardianTextSans-RegularItalic.woff';
+import GuardianTextSansItalicWoff2 from '../fonts/text/GuardianTextSans-RegularItalic.woff2';
 import GuardianTextSansTtfBold from '../fonts/text/GuardianTextSans-Bold.ttf';
 import GuardianTextSansBoldWoff from '../fonts/text/GuardianTextSans-Bold.woff';
 import GuardianTextSansBoldWoff2 from '../fonts/text/GuardianTextSans-Bold.woff2';
@@ -60,6 +63,15 @@ injectGlobal`
       url(${GuardianTextSansWoff}) format('woff'),
       url(${GuardianTextSansTtf}) format('truetype');
     font-style: normal;
+    font-weight: 100 400;
+  }
+
+  @font-face {
+    font-family: TS3TextSans;
+    src: url(${GuardianTextSansItalicWoff2}) format('woff2'),
+      url(${GuardianTextSansItalicWoff}) format('woff'),
+      url(${GuardianTextSansItalicTtf}) format('truetype');
+    font-syle: italic;
     font-weight: 100 400;
   }
 
