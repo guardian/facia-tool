@@ -104,6 +104,7 @@ interface ArticleBodyProps {
   imageHide?: boolean;
   imageSlideshowReplace?: boolean;
   isBreaking?: boolean;
+  type?: string;
 }
 
 const renderColouredQuotes = (pillarId?: string, isLive?: boolean) => {
@@ -139,7 +140,8 @@ const articleBodyDefault = ({
   showQuotedHeadline,
   imageHide,
   imageSlideshowReplace,
-  isBreaking
+  isBreaking,
+  type
 }: ArticleBodyProps) => {
   const ArticleHeadingContainer =
     size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
@@ -163,6 +165,9 @@ const articleBodyDefault = ({
           <CollectionItemMetaHeading>
             {startCase(sectionName)}
           </CollectionItemMetaHeading>
+        )}
+        {type === 'liveblog' && (
+          <CollectionItemMetaContent>Liveblog</CollectionItemMetaContent>
         )}
         {!isLive && !displayPlaceholders && (
           <NotLiveContainer>
