@@ -20,10 +20,7 @@ import {
   HoverDeleteButton,
   HoverAddToClipboardButton
 } from '../input/HoverActionButtons';
-import {
-  HoverActionsAreaOverlay,
-  HideMetaDataOnToolTipDisplay
-} from '../CollectionHoverItems';
+import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
 import { CollectionItemSizes } from 'shared/types/Collection';
 import CollectionItemTrail from '../collectionItem/CollectionItemTrail';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
@@ -77,6 +74,10 @@ const SlideshowIcon = styled('div')`
   left: 4px;
   width: 14px;
   height: 14px;
+`;
+
+const FirstPublicationDate = styled(CollectionItemMetaContent)`
+  color: ${({ theme }) => theme.shared.colors.green};
 `;
 
 interface ArticleBodyProps {
@@ -145,12 +146,11 @@ const articleBodyDefault = ({
 }: ArticleBodyProps) => {
   const ArticleHeadingContainer =
     size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
-
   const displayByline = size === 'default' && showByline && byline;
   const displayTrail =
     size === 'default' && trailText && !(showByline && byline);
-
   const kickerToDisplay = isBreaking ? 'Breaking news' : kicker;
+  const now = Date.now();
 
   return (
     <>
@@ -178,18 +178,19 @@ const articleBodyDefault = ({
         )}
 
         {scheduledPublicationDate && (
-          <CollectionItemDraftMetaContent>
-            {distanceInWordsStrict(
-              new Date(scheduledPublicationDate),
-              Date.now()
-            )}
+          <CollectionItemDraftMetaContent title="The time until this article is scheduled to be published.">
+            {distanceInWordsStrict(new Date(scheduledPublicationDate), now)}
           </CollectionItemDraftMetaContent>
         )}
-
         {frontPublicationTime && (
-          <CollectionItemMetaContent>
-            {distanceInWordsStrict(Date.now(), new Date(frontPublicationTime))}
+          <CollectionItemMetaContent title="The time elapsed since this article was added to this front.">
+            {distanceInWordsStrict(now, new Date(frontPublicationTime))}
           </CollectionItemMetaContent>
+        )}
+        {size === 'default' && firstPublicationDate && (
+          <FirstPublicationDate title="The time elapsed since this article was first published.">
+            {distanceInWordsStrict(new Date(firstPublicationDate), now)}
+          </FirstPublicationDate>
         )}
       </CollectionItemMetaContainer>
       <CollectionItemContent displaySize={size}>
@@ -282,7 +283,6 @@ const articleBodyDefault = ({
           toolTipPosition={'top'}
           toolTipAlign={'right'}
         />
-        <HideMetaDataOnToolTipDisplay size={size} />
       </HoverActionsAreaOverlay>
     </>
   );
