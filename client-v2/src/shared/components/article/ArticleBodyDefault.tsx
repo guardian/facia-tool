@@ -20,10 +20,7 @@ import {
   HoverDeleteButton,
   HoverAddToClipboardButton
 } from '../input/HoverActionButtons';
-import {
-  HoverActionsAreaOverlay,
-  HideMetaDataOnToolTipDisplay
-} from '../CollectionHoverItems';
+import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
 import { CollectionItemSizes } from 'shared/types/Collection';
 import CollectionItemTrail from '../collectionItem/CollectionItemTrail';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
@@ -182,10 +179,7 @@ const articleBodyDefault = ({
 
         {scheduledPublicationDate && (
           <CollectionItemDraftMetaContent title="The time until this article is scheduled to be published.">
-            {distanceInWordsStrict(
-              new Date(scheduledPublicationDate),
-              now
-            )}
+            {distanceInWordsStrict(new Date(scheduledPublicationDate), now)}
           </CollectionItemDraftMetaContent>
         )}
         {frontPublicationTime && (
@@ -193,12 +187,9 @@ const articleBodyDefault = ({
             {distanceInWordsStrict(now, new Date(frontPublicationTime))}
           </CollectionItemMetaContent>
         )}
-        {firstPublicationDate && (
+        {size === 'default' && firstPublicationDate && (
           <FirstPublicationDate title="The time elapsed since this article was first published.">
-            {distanceInWordsStrict(
-              new Date(firstPublicationDate),
-              now
-            )}
+            {distanceInWordsStrict(new Date(firstPublicationDate), now)}
           </FirstPublicationDate>
         )}
       </CollectionItemMetaContainer>
