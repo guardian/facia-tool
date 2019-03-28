@@ -31,7 +31,7 @@ case class Defaults(
   clipboardArticles: Option[List[Trail]],
   frontIds: Option[List[String]],
   frontIdsByPriority: Option[Map[String, List[String]]],
-  faveFrontIdsByPriority: Option[Map[String, List[String]]],
+  favouriteFrontIdsByPriority: Option[Map[String, List[String]]],
   capiLiveUrl: String = "",
   capiPreviewUrl: String = ""
 )

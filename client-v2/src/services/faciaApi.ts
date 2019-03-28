@@ -209,14 +209,14 @@ async function saveOpenFrontIds(frontsByPriority?: {
   }
 }
 
-async function saveFaveFrontIds(faveFrontsByPriority?: {
+async function saveFavouriteFrontIds(favouriteFrontsByPriority?: {
   [priority: string]: string[];
 }): Promise<void> {
   try {
-    await pandaFetch(`/userdata/faveFrontIdsByPriority`, {
+    await pandaFetch(`/userdata/favouriteFrontIdsByPriority`, {
       method: 'put',
       credentials: 'same-origin',
-      body: JSON.stringify(faveFrontsByPriority),
+      body: JSON.stringify(favouriteFrontsByPriority),
       headers: {
         'Content-Type': 'application/json'
       }
@@ -362,7 +362,7 @@ export {
   updateCollection,
   saveClipboard,
   saveOpenFrontIds,
-  saveFaveFrontIds,
+  saveFavouriteFrontIds,
   getCapiUriForContentIds,
   fetchVisibleArticles,
   discardDraftChangesToCollection

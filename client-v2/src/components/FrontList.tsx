@@ -11,7 +11,7 @@ interface Props {
   renderOnlyStarred?: boolean;
   onSelect: (frontId: string) => void;
   onStar: (frontId: string) => void;
-  onUnstar: (frontId: string) => void;
+  onUnfavourite: (frontId: string) => void;
   searchString?: string;
 }
 
@@ -103,7 +103,7 @@ const FrontList = ({
   renderOnlyStarred,
   onSelect,
   onStar,
-  onUnstar,
+  onUnfavourite,
   searchString
 }: Props) => {
   if (!fronts) {
@@ -133,7 +133,9 @@ const FrontList = ({
             isStarred={!!front.isStarred}
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.stopPropagation();
-              return !!front.isStarred ? onUnstar(front.id) : onStar(front.id);
+              return !!front.isStarred
+                ? onUnfavourite(front.id)
+                : onStar(front.id);
             }}
           >
             <StarIcon

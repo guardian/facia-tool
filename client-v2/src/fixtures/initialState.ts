@@ -249,7 +249,7 @@ const state = {
     ],
     frontIds: [],
     frontIdsByPriority: {},
-    faveFrontIdsByPriority: {},
+    favouriteFrontIdsByPriority: {},
     capiLiveUrl: 'https://fronts.local.dev-gutools.co.uk/api/live/',
     capiPreviewUrl: 'https://fronts.local.dev-gutools.co.uk/api/preview/'
   },
@@ -658,7 +658,7 @@ const state = {
     showOpenFrontsMenu: false,
     frontIds: [],
     frontIdsByPriority: {},
-    faveFrontIdsByPriority: {},
+    favouriteFrontIdsByPriority: {},
     collectionIds: [],
     selectedArticleFragments: {},
     closedOverviews: [],

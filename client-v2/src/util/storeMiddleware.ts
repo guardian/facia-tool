@@ -9,13 +9,13 @@ import { selectors } from 'shared/bundles/collectionsBundle';
 import { updateCollection } from 'actions/Collections';
 import { updateClipboard } from 'actions/Clipboard';
 import { selectSharedState } from 'shared/selectors/shared';
-import { saveOpenFrontIds, saveFaveFrontIds } from 'services/faciaApi';
+import { saveOpenFrontIds, saveFavouriteFrontIds } from 'services/faciaApi';
 import { NestedArticleFragment } from 'shared/types/Collection';
 import { denormaliseClipboard } from 'util/clipboardUtils';
 import { getFront } from 'selectors/frontsSelectors';
 import {
   selectEditorFrontIds,
-  selectEditorFaveFrontIds
+  selectEditorFavouriteFrontIds
 } from 'bundles/frontsUIBundle';
 
 const updateStateFromUrlChange: Middleware<{}, State, Dispatch> = ({
@@ -46,7 +46,7 @@ const updateStateFromUrlChange: Middleware<{}, State, Dispatch> = ({
 
 interface PersistMeta {
   // The resource to persist the data to
-  persistTo: 'collection' | 'clipboard' | 'openFrontIds' | 'faveFrontIds';
+  persistTo: 'collection' | 'clipboard' | 'openFrontIds' | 'favouriteFrontIds';
   // The id to to search for in this resource
   id?: string;
   // The key to take from the action payload if it is not specified. Defaults to
@@ -221,12 +221,12 @@ const persistOpenFrontsOnEdit: (
   return result;
 };
 
-const persistFaveFrontsOnEdit: (
+const persistFavouriteFrontsOnEdit: (
   persistFn?: (
     persistFrontIds?: { [priority: string]: string[] }
   ) => Promise<void>
 ) => Middleware<{}, State, Dispatch> = (
-  persistFrontIds = saveFaveFrontIds
+  persistFrontIds = saveFavouriteFrontIds
 ) => store => next => (action: Action) => {
   const actions = unwrapBatchedActions(action);
 
@@ -234,16 +234,17 @@ const persistFaveFrontsOnEdit: (
     !actions.some(
       act =>
         (act as Action & ActionPersistMeta).meta &&
-        (act as Action & ActionPersistMeta).meta.persistTo === 'faveFrontIds'
+        (act as Action & ActionPersistMeta).meta.persistTo ===
+          'favouriteFrontIds'
     )
   ) {
     return next(action);
   }
   const result = next(action);
   const state = store.getState();
-  const faveFrontIdsByPriority = selectEditorFaveFrontIds(state);
+  const favouriteFrontIdsByPriority = selectEditorFavouriteFrontIds(state);
 
-  persistFrontIds(faveFrontIdsByPriority);
+  persistFrontIds(favouriteFrontIdsByPriority);
   return result;
 };
 
@@ -252,7 +253,7 @@ export {
   persistCollectionOnEdit,
   persistClipboardOnEdit,
   persistOpenFrontsOnEdit,
-  persistFaveFrontsOnEdit,
+  persistFavouriteFrontsOnEdit,
   updateStateFromUrlChange,
   addPersistMetaToAction
 };

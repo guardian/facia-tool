@@ -6,8 +6,8 @@ import { styled } from 'constants/theme';
 import getFrontsConfig from 'actions/Fronts';
 import {
   editorOpenFront,
-  editorStarFront,
-  editorUnstarFront,
+  editorFavouriteFront,
+  editorUnfavouriteFront,
   selectEditorFrontIdsByPriority,
   selectIsCurrentFrontsMenuOpen
 } from 'bundles/frontsUIBundle';
@@ -28,8 +28,8 @@ interface Props {
   frontIds: string[];
   staleFronts: { [id: string]: boolean };
   editorOpenFront: (frontId: string, priority: string) => void;
-  editorStarFront: (frontId: string, priority: string) => void;
-  editorUnstarFront: (frontId: string, priority: string) => void;
+  editorFavouriteFront: (frontId: string, priority: string) => void;
+  editorUnfavouriteFront: (frontId: string, priority: string) => void;
   getFrontsConfig: () => void;
   isCurrentFrontsMenuOpen: boolean;
 }
@@ -92,11 +92,17 @@ class FrontsEdit extends React.Component<Props> {
           onSelectFront={id =>
             this.props.editorOpenFront(id, this.props.match.params.priority)
           }
-          onStarFront={id =>
-            this.props.editorStarFront(id, this.props.match.params.priority)
+          onFavouriteFront={id =>
+            this.props.editorFavouriteFront(
+              id,
+              this.props.match.params.priority
+            )
           }
-          onUnstarFront={id =>
-            this.props.editorUnstarFront(id, this.props.match.params.priority)
+          onUnfavouriteFront={id =>
+            this.props.editorUnfavouriteFront(
+              id,
+              this.props.match.params.priority
+            )
           }
         />
       </FrontsEditContainer>
@@ -118,10 +124,10 @@ const mapDispatchToProps = (dispatch: Dispatch, props: Props) => ({
   editorOpenFront: (id: string) => {
     dispatch(editorOpenFront(id, props.match.params.priority));
   },
-  editorStarFront: (id: string) =>
-    dispatch(editorStarFront(id, props.match.params.priority)),
-  editorUnstarFront: (id: string) =>
-    dispatch(editorUnstarFront(id, props.match.params.priority)),
+  editorFavouriteFront: (id: string) =>
+    dispatch(editorFavouriteFront(id, props.match.params.priority)),
+  editorUnfavouriteFront: (id: string) =>
+    dispatch(editorUnfavouriteFront(id, props.match.params.priority)),
   getFrontsConfig: () => dispatch(getFrontsConfig())
 });
 

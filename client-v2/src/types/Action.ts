@@ -22,8 +22,8 @@ import {
   EDITOR_OPEN_FRONT,
   EDITOR_MOVE_FRONT,
   EDITOR_CLOSE_FRONT,
-  EDITOR_STAR_FRONT,
-  EDITOR_UNSTAR_FRONT,
+  EDITOR_FAVOURITE_FRONT,
+  EDITOR_UNFAVOURITE_FRONT,
   EDITOR_SET_OPEN_FRONTS,
   EDITOR_SET_FAVE_FRONTS,
   EDITOR_OPEN_COLLECTION,
@@ -65,21 +65,21 @@ interface EditorCloseFront {
   meta: PersistMeta;
 }
 
-interface EditorStarFront {
-  type: typeof EDITOR_STAR_FRONT;
+interface EditorFavouriteFront {
+  type: typeof EDITOR_FAVOURITE_FRONT;
   payload: { frontId: string; priority: string };
   meta: PersistMeta;
 }
 
-interface EditorUnstarFront {
-  type: typeof EDITOR_UNSTAR_FRONT;
+interface EditorUnfavouriteFront {
+  type: typeof EDITOR_UNFAVOURITE_FRONT;
   payload: { frontId: string; priority: string };
   meta: PersistMeta;
 }
 
-interface EditorSetFaveFronts {
+interface EditorSetFavouriteFronts {
   type: typeof EDITOR_SET_FAVE_FRONTS;
-  payload: { faveFrontIdsByPriority: { [id: string]: string[] } };
+  payload: { favouriteFrontIdsByPriority: { [id: string]: string[] } };
 }
 
 interface EditorOpenCollection {
@@ -290,9 +290,9 @@ type Action =
   | EditorClearOpenFronts
   | EditorSetOpenFronts
   | EditorCloseFront
-  | EditorStarFront
-  | EditorUnstarFront
-  | EditorSetFaveFronts
+  | EditorFavouriteFront
+  | EditorUnfavouriteFront
+  | EditorSetFavouriteFronts
   | EditorSelectArticleFragment
   | EditorClearArticleFragmentSelection
   | EditorOpenClipboard
@@ -338,9 +338,9 @@ export {
   EditorClearOpenFronts,
   EditorSetOpenFronts,
   EditorCloseFront,
-  EditorStarFront,
-  EditorUnstarFront,
-  EditorSetFaveFronts,
+  EditorFavouriteFront,
+  EditorUnfavouriteFront,
+  EditorSetFavouriteFronts,
   EditorOpenCollection,
   EditorCloseCollection,
   EditorSelectArticleFragment,

@@ -2,9 +2,9 @@ import {
   default as innerReducer,
   editorOpenFront,
   editorCloseFront,
-  editorStarFront,
-  editorUnstarFront,
-  editorSetFaveFronts,
+  editorFavouriteFront,
+  editorUnfavouriteFront,
+  editorSetFavouriteFronts,
   editorClearOpenFronts,
   editorSetOpenFronts,
   editorOpenCollections,
@@ -23,8 +23,8 @@ import {
   editorMoveFront,
   selectEditorFrontIds,
   selectEditorFrontIdsByPriority,
-  selectEditorFaveFrontIds,
-  selectEditorFaveFrontIdsByPriority
+  selectEditorFavouriteFrontIds,
+  selectEditorFavouriteFrontIdsByPriority
 } from '../frontsUIBundle';
 import initialState from 'fixtures/initialState';
 import { Action } from 'types/Action';
@@ -108,40 +108,40 @@ describe('frontsUIBundle', () => {
         );
       });
     });
-    describe('selectEditorFaveFrontIdsByPriority', () => {
+    describe('selectEditorFavouriteFrontIdsByPriority', () => {
       it('should handle empty priorities', () => {
         expect(
-          selectEditorFaveFrontIdsByPriority(initialState, 'editorial')
+          selectEditorFavouriteFrontIdsByPriority(initialState, 'editorial')
         ).toEqual([]);
       });
       it('should select priorities', () => {
         const stateWithFronts = {
           editor: {
             ...initialState.editor,
-            faveFrontIdsByPriority: { commercial: ['1', '2'] }
+            favouriteFrontIdsByPriority: { commercial: ['1', '2'] }
           }
         } as any;
         expect(
-          selectEditorFaveFrontIdsByPriority(stateWithFronts, 'commercial')
+          selectEditorFavouriteFrontIdsByPriority(stateWithFronts, 'commercial')
         ).toEqual(['1', '2']);
       });
     });
   });
-  describe('selectEditorFaveFrontIdsByPriority', () => {
+  describe('selectEditorFavouriteFrontIdsByPriority', () => {
     it('should handle empty priorities', () => {
       expect(
-        selectEditorFaveFrontIdsByPriority(initialState, 'editorial')
+        selectEditorFavouriteFrontIdsByPriority(initialState, 'editorial')
       ).toEqual([]);
     });
     it('should select priorities', () => {
       const stateWithFronts = {
         editor: {
           ...initialState.editor,
-          faveFrontIdsByPriority: { commercial: ['1', '2'] }
+          favouriteFrontIdsByPriority: { commercial: ['1', '2'] }
         }
       } as any;
       expect(
-        selectEditorFaveFrontIdsByPriority(stateWithFronts, 'commercial')
+        selectEditorFavouriteFrontIdsByPriority(stateWithFronts, 'commercial')
       ).toEqual(['1', '2']);
     });
   });
@@ -163,7 +163,7 @@ describe('frontsUIBundle', () => {
           frontIdsByPriority: {
             commercial: ['sc-johnson-partner-zone', 'a-shot-of-sustainability']
           },
-          faveFrontIdsByPriority: {
+          favouriteFrontIdsByPriority: {
             commercial: [
               'sc-johnson-partner-zone',
               'un-global-compact-partner-zone'
@@ -250,11 +250,11 @@ describe('frontsUIBundle', () => {
     });
 
     it('should add a front to the favourite editor fronts', () => {
-      const state = reducer(undefined, editorStarFront(
+      const state = reducer(undefined, editorFavouriteFront(
         'exampleFront',
         'editorial'
       ) as any);
-      expect(selectEditorFaveFrontIds(state)).toEqual({
+      expect(selectEditorFavouriteFrontIds(state)).toEqual({
         editorial: ['exampleFront']
       });
     });
@@ -262,14 +262,14 @@ describe('frontsUIBundle', () => {
     it('should remove a front to the favourite editor fronts', () => {
       const state = reducer(
         {
-          faveFrontIdsByPriority: {
+          favouriteFrontIdsByPriority: {
             editorial: ['front1', 'front2'],
             training: ['front1', 'front2']
           }
         } as any,
-        editorUnstarFront('front1', 'editorial')
+        editorUnfavouriteFront('front1', 'editorial')
       );
-      expect(selectEditorFaveFrontIds(state)).toEqual({
+      expect(selectEditorFavouriteFrontIds(state)).toEqual({
         editorial: ['front2'],
         training: ['front1', 'front2']
       });
@@ -349,9 +349,9 @@ describe('frontsUIBundle', () => {
             editorial: ['front1', 'front2']
           }
         } as any,
-        editorSetFaveFronts({ editorial: ['front1', 'front3'] })
+        editorSetFavouriteFronts({ editorial: ['front1', 'front3'] })
       );
-      expect(selectEditorFaveFrontIds(state)).toEqual({
+      expect(selectEditorFavouriteFrontIds(state)).toEqual({
         editorial: ['front1', 'front3']
       });
     });

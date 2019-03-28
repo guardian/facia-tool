@@ -5,7 +5,7 @@ import config from 'fixtures/config';
 import {
   persistCollectionOnEdit,
   persistOpenFrontsOnEdit,
-  persistFaveFrontsOnEdit
+  persistFavouriteFrontsOnEdit
 } from '../storeMiddleware';
 import { Collection } from 'shared/types/Collection';
 
@@ -133,13 +133,13 @@ describe('Store middleware', () => {
     });
   });
 
-  describe('persistFaveFrontsOnEdit', () => {
-    let persistFaveFrontIdsSpy: any;
+  describe('persistFavouriteFrontsOnEdit', () => {
+    let persistFavouriteFrontIdsSpy: any;
     beforeEach(() => {
-      persistFaveFrontIdsSpy = jest.fn();
+      persistFavouriteFrontIdsSpy = jest.fn();
       mockStore = configureStore([
         thunk,
-        persistFaveFrontsOnEdit(persistFaveFrontIdsSpy)
+        persistFavouriteFrontsOnEdit(persistFavouriteFrontIdsSpy)
       ]);
     });
     it('should do nothing for actions without the correct persistTo property in the action meta', () => {
@@ -147,20 +147,22 @@ describe('Store middleware', () => {
       store.dispatch({
         type: 'ARBITRARY_ACTION'
       });
-      expect(persistFaveFrontIdsSpy.mock.calls.length).toBe(0);
+      expect(persistFavouriteFrontIdsSpy.mock.calls.length).toBe(0);
     });
     it("should call the persist function with the state's fave front ids if it receives an action with the correct persistTo property", () => {
       const store = mockStore({
-        editor: { faveFrontIdsByPriority: { editorial: ['front1', 'front2'] } }
+        editor: {
+          favouriteFrontIdsByPriority: { editorial: ['front1', 'front2'] }
+        }
       });
       store.dispatch({
         type: 'ARBITRARY_ACTION',
         meta: {
-          persistTo: 'faveFrontIds'
+          persistTo: 'favouriteFrontIds'
         }
       });
-      expect(persistFaveFrontIdsSpy.mock.calls.length).toBe(1);
-      expect(persistFaveFrontIdsSpy.mock.calls[0][0]).toEqual({
+      expect(persistFavouriteFrontIdsSpy.mock.calls.length).toBe(1);
+      expect(persistFavouriteFrontIdsSpy.mock.calls[0][0]).toEqual({
         editorial: ['front1', 'front2']
       });
     });

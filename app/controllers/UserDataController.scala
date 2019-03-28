@@ -52,12 +52,12 @@ class UserDataController(frontsApi: FrontsApi, dynamo: Dynamo, val deps: BaseFac
     }
   }
 
-  def putFaveFrontIdsByPriority() = APIAuthAction { request =>
-    val maybeFaveFrontIdsByPriority: Option[Map[String, List[String]]] = request.body.asJson.flatMap(
+  def putFavouriteFrontIdsByPriority() = APIAuthAction { request =>
+    val maybeFavouriteFrontIdsByPriority: Option[Map[String, List[String]]] = request.body.asJson.flatMap(
       _.asOpt[Map[String, List[String]]])
-    maybeFaveFrontIdsByPriority match {
-      case Some(faveFrontIdsByPriority) =>
-        Scanamo.exec(dynamo.client)(userDataTable.update('email -> request.user.email, set('faveFrontIdsByPriority -> faveFrontIdsByPriority)))
+    maybeFavouriteFrontIdsByPriority match {
+      case Some(favouriteFrontIdsByPriority) =>
+        Scanamo.exec(dynamo.client)(userDataTable.update('email -> request.user.email, set('favouriteFrontIdsByPriority -> favouriteFrontIdsByPriority)))
         Ok
       case _ => BadRequest
     }

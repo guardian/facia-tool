@@ -10,7 +10,7 @@ import {
   persistCollectionOnEdit,
   persistClipboardOnEdit,
   persistOpenFrontsOnEdit,
-  persistFaveFrontsOnEdit
+  persistFavouriteFrontsOnEdit
 } from './storeMiddleware';
 import { State } from 'types/State';
 
@@ -26,7 +26,7 @@ export default function configureStore(initialState?: State) {
       persistCollectionOnEdit(),
       persistClipboardOnEdit(),
       persistOpenFrontsOnEdit(),
-      persistFaveFrontsOnEdit()
+      persistFavouriteFrontsOnEdit()
     ),
     window.devToolsExtension ? window.devToolsExtension() : (f: unknown) => f
   );

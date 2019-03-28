@@ -10,7 +10,7 @@ import App from 'components/App';
 import { configReceived } from 'actions/Config';
 import {
   editorSetOpenFronts,
-  editorSetFaveFronts
+  editorSetFavouriteFronts
 } from 'bundles/frontsUIBundle';
 import { storeClipboardContent } from 'actions/Clipboard';
 import { Dispatch } from 'types/Store';
@@ -41,8 +41,10 @@ store.dispatch(configReceived(pageConfig));
 if (pageConfig.frontIdsByPriority) {
   store.dispatch(editorSetOpenFronts(pageConfig.frontIdsByPriority));
 }
-if (pageConfig.faveFrontIdsByPriority) {
-  store.dispatch(editorSetFaveFronts(pageConfig.faveFrontIdsByPriority));
+if (pageConfig.favouriteFrontIdsByPriority) {
+  store.dispatch(
+    editorSetFavouriteFronts(pageConfig.favouriteFrontIdsByPriority)
+  );
 }
 
 (store.dispatch as Dispatch)(
