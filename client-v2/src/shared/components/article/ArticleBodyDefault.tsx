@@ -176,7 +176,6 @@ const articleBodyDefault = ({
               : notLiveLabels.draft}
           </NotLiveContainer>
         )}
-
         {scheduledPublicationDate && !firstPublicationDate && (
           <CollectionItemDraftMetaContent title="The time until this article is scheduled to be published.">
             {distanceInWordsStrict(new Date(scheduledPublicationDate), now)}
