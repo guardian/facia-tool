@@ -7,7 +7,7 @@ const Muted = styled('span')`
 
 interface IProps {
   originalString: string;
-  searchString: string;
+  searchString?: string;
 }
 
 /**

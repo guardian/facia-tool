@@ -38,6 +38,9 @@ interface Config {
   frontIdsByPriority: {
     [id: string]: string[];
   };
+  favouriteFrontIdsByPriority: {
+    [id: string]: string[];
+  };
   clipboardArticles: NestedArticleFragment[];
 }
 

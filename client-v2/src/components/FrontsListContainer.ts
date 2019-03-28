@@ -1,18 +1,18 @@
 import { connect } from 'react-redux';
 import { match, withRouter, RouteComponentProps } from 'react-router';
-import { createSelectFrontIdAndOpenStateByPriority } from 'bundles/frontsUIBundle';
+import { createSelectFrontIdWithOpenAndStarredStatesByPriority } from 'bundles/frontsUIBundle';
 import { State } from '../types/State';
-import FrontList from '../components/FrontList';
+import FrontList from './FrontList';
 
 type Props = {
   match: match<{ priority: string }>;
 } & RouteComponentProps<any>;
 
 const mapStateToProps = () => {
-  const selectFrontIdAndOpenState = createSelectFrontIdAndOpenStateByPriority();
+  const selectFrontIdWithOpenAndStarredStates = createSelectFrontIdWithOpenAndStarredStatesByPriority();
   return (state: State, props: Props) => {
     return {
-      fronts: selectFrontIdAndOpenState(
+      fronts: selectFrontIdWithOpenAndStarredStates(
         state,
         props.match.params.priority || ''
       )

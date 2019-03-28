@@ -52,6 +52,17 @@ class UserDataController(frontsApi: FrontsApi, dynamo: Dynamo, val deps: BaseFac
     }
   }
 
+  def putFavouriteFrontIdsByPriority() = APIAuthAction { request =>
+    val maybeFavouriteFrontIdsByPriority: Option[Map[String, List[String]]] = request.body.asJson.flatMap(
+      _.asOpt[Map[String, List[String]]])
+    maybeFavouriteFrontIdsByPriority match {
+      case Some(favouriteFrontIdsByPriority) =>
+        Scanamo.exec(dynamo.client)(userDataTable.update('email -> request.user.email, set('favouriteFrontIdsByPriority -> favouriteFrontIdsByPriority)))
+        Ok
+      case _ => BadRequest
+    }
+  }
+
   def migrateUserData() = AccessAPIAuthAction.async {
     val result = frontsApi.amazonClient.config.flatMap { config =>
       val maybeUserData = Scanamo.exec(dynamo.client)(userDataTable.scan)

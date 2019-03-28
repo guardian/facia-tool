@@ -17,8 +17,21 @@ object UserData {
     }
   )(Json.stringify(_))
 }
+
+/**
+  * Example of frontIdsByPriority data model:
+  * "favouriteFrontIdsByPriority": {
+  *   "editorial": [
+  *     "uk/news",
+  *     "au/news"
+  *   ]
+  * }
+  * @TODO make these strongly typed via com.gu.facia.client.models package
+  */
 case class UserData(
-                     email: String,
-                     clipboardArticles: Option[List[Trail]],
-                     frontIds: Option[List[String]],
-                     frontIdsByPriority: Option[Map[String, List[String]]])
+  email: String,
+  clipboardArticles: Option[List[Trail]],
+  frontIds: Option[List[String]],
+  frontIdsByPriority: Option[Map[String, List[String]]],
+  favouriteFrontIdsByPriority: Option[Map[String, List[String]]]
+)

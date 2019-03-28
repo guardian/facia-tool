@@ -2,6 +2,9 @@ import {
   default as innerReducer,
   editorOpenFront,
   editorCloseFront,
+  editorFavouriteFront,
+  editorUnfavouriteFront,
+  editorSetFavouriteFronts,
   editorClearOpenFronts,
   editorSetOpenFronts,
   editorOpenCollections,
@@ -16,9 +19,12 @@ import {
   editorCloseAllOverviews,
   editorOpenAllOverviews,
   createSelectEditorFrontsByPriority,
+  createSelectFrontIdWithOpenAndStarredStatesByPriority,
   editorMoveFront,
   selectEditorFrontIds,
-  selectEditorFrontIdsByPriority
+  selectEditorFrontIdsByPriority,
+  selectEditorFavouriteFrontIds,
+  selectEditorFavouriteFrontIdsByPriority
 } from '../frontsUIBundle';
 import initialState from 'fixtures/initialState';
 import { Action } from 'types/Action';
@@ -102,7 +108,87 @@ describe('frontsUIBundle', () => {
         );
       });
     });
+    describe('selectEditorFavouriteFrontIdsByPriority', () => {
+      it('should handle empty priorities', () => {
+        expect(
+          selectEditorFavouriteFrontIdsByPriority(initialState, 'editorial')
+        ).toEqual([]);
+      });
+      it('should select priorities', () => {
+        const stateWithFronts = {
+          editor: {
+            ...initialState.editor,
+            favouriteFrontIdsByPriority: { commercial: ['1', '2'] }
+          }
+        } as any;
+        expect(
+          selectEditorFavouriteFrontIdsByPriority(stateWithFronts, 'commercial')
+        ).toEqual(['1', '2']);
+      });
+    });
   });
+  describe('selectEditorFavouriteFrontIdsByPriority', () => {
+    it('should handle empty priorities', () => {
+      expect(
+        selectEditorFavouriteFrontIdsByPriority(initialState, 'editorial')
+      ).toEqual([]);
+    });
+    it('should select priorities', () => {
+      const stateWithFronts = {
+        editor: {
+          ...initialState.editor,
+          favouriteFrontIdsByPriority: { commercial: ['1', '2'] }
+        }
+      } as any;
+      expect(
+        selectEditorFavouriteFrontIdsByPriority(stateWithFronts, 'commercial')
+      ).toEqual(['1', '2']);
+    });
+  });
+  describe('createSelectFrontIdWithOpenAndStarredStatesByPriority', () => {
+    const selectFrontIdWithOpenAndStarredStatesByPriority = createSelectFrontIdWithOpenAndStarredStatesByPriority();
+    it('should select all fronts by priority', () => {
+      expect(
+        selectFrontIdWithOpenAndStarredStatesByPriority(
+          initialState,
+          'commercial'
+        )
+      ).toHaveLength(4);
+    });
+    it('should add correct Open State meta data', () => {
+      const stateWithEditorFronts = {
+        ...initialState,
+        editor: {
+          ...initialState.editor,
+          frontIdsByPriority: {
+            commercial: ['sc-johnson-partner-zone', 'a-shot-of-sustainability']
+          },
+          favouriteFrontIdsByPriority: {
+            commercial: [
+              'sc-johnson-partner-zone',
+              'un-global-compact-partner-zone'
+            ]
+          }
+        }
+      } as any;
+      expect(
+        selectFrontIdWithOpenAndStarredStatesByPriority(
+          stateWithEditorFronts,
+          'commercial'
+        )
+      ).toEqual([
+        { id: 'a-shot-of-sustainability', isOpen: true, isStarred: false },
+        { id: 'sc-johnson-partner-zone', isOpen: true, isStarred: true },
+        {
+          id: 'sustainable-business/fairtrade-partner-zone',
+          isOpen: false,
+          isStarred: false
+        },
+        { id: 'un-global-compact-partner-zone', isOpen: false, isStarred: true }
+      ]);
+    });
+  });
+
   describe('reducer', () => {
     it('should move a front within the open editor fronts by ID', () => {
       const state = {
@@ -161,6 +247,32 @@ describe('frontsUIBundle', () => {
         editorClearOpenFronts()
       );
       expect(selectEditorFrontIds(state)).toEqual({});
+    });
+
+    it('should add a front to the favourite editor fronts', () => {
+      const state = reducer(undefined, editorFavouriteFront(
+        'exampleFront',
+        'editorial'
+      ) as any);
+      expect(selectEditorFavouriteFrontIds(state)).toEqual({
+        editorial: ['exampleFront']
+      });
+    });
+
+    it('should remove a front to the favourite editor fronts', () => {
+      const state = reducer(
+        {
+          favouriteFrontIdsByPriority: {
+            editorial: ['front1', 'front2'],
+            training: ['front1', 'front2']
+          }
+        } as any,
+        editorUnfavouriteFront('front1', 'editorial')
+      );
+      expect(selectEditorFavouriteFrontIds(state)).toEqual({
+        editorial: ['front2'],
+        training: ['front1', 'front2']
+      });
     });
     it('should clear the article fragment selection when selected article fragments are removed from a front', () => {
       const state = reducer(
@@ -227,6 +339,19 @@ describe('frontsUIBundle', () => {
         editorSetOpenFronts({ editorial: ['front1', 'front3'] })
       );
       expect(selectEditorFrontIds(state)).toEqual({
+        editorial: ['front1', 'front3']
+      });
+    });
+    it('should set the fave fronts from config to the fave fronts in editor', () => {
+      const state = reducer(
+        {
+          frontIdsByPriority: {
+            editorial: ['front1', 'front2']
+          }
+        } as any,
+        editorSetFavouriteFronts({ editorial: ['front1', 'front3'] })
+      );
+      expect(selectEditorFavouriteFrontIds(state)).toEqual({
         editorial: ['front1', 'front3']
       });
     });

@@ -1,18 +1,66 @@
 import React from 'react';
 import { css } from 'styled-components';
-import { styled } from 'constants/theme';
+import { styled, theme as styleTheme } from 'constants/theme';
 
 import ButtonCircular from 'shared/components/input/ButtonCircular';
-import { MoreIcon } from 'shared/components/icons/Icons';
+import { MoreIcon, StarIcon } from 'shared/components/icons/Icons';
 import TextHighlighter from './util/TextHighlighter';
 
 interface Props {
-  fronts: Array<{ id: string; isOpen: boolean }>;
+  fronts: Array<{ id: string; isOpen: boolean; isStarred: boolean }>;
+  renderOnlyStarred?: boolean;
   onSelect: (frontId: string) => void;
-  searchString: string;
+  onStar: (frontId: string) => void;
+  onUnfavourite: (frontId: string) => void;
+  searchString?: string;
 }
 
-const ListItem = styled('li')<{ isActive?: boolean }>`
+const ButtonAdd = styled(ButtonCircular)`
+  background-color: ${({ theme }) => theme.base.colors.frontListButton};
+  position: absolute;
+  top: 8px;
+  right: 5px;
+  padding: 3px;
+`;
+
+const ButtonFavorite = styled(ButtonCircular)<{ isStarred: boolean }>`
+  position: absolute;
+  top: 8px;
+  right: 35px;
+  cursor: pointer;
+  background-color: ${({ theme }) => theme.shared.colors.blackLight};
+  :hover {
+    background-color: ${({ theme }) => theme.shared.colors.blackLight};
+  }
+  svg .fill {
+    fill: ${({ theme }) => theme.shared.colors.blackLight};
+  }
+  /* Double && needed to override css specificity of ListItem with isActive set */
+  &&:hover svg .fill,
+  &&:hover svg .outline {
+    fill: ${({ theme }) => theme.shared.colors.greyMedium};
+  }
+
+  ${({ isStarred }) =>
+    !!isStarred &&
+    css`
+      svg .outline,
+      svg .fill {
+        fill: ${({ theme }) => `${theme.shared.colors.orangeLight}`};
+      }
+      &:hover svg .outline {
+        fill: ${({ theme }) => theme.shared.colors.greyMedium};
+      }
+    `}
+`;
+
+const ListContainer = styled('ul')`
+  list-style: none;
+  margin-top: 0;
+  padding-left: 0;
+`;
+
+const ListItem = styled('li')<{ isActive?: boolean; isStarred?: boolean }>`
   position: relative;
   padding: 10px 5px;
   font-family: TS3TextSans;
@@ -24,20 +72,25 @@ const ListItem = styled('li')<{ isActive?: boolean }>`
     isActive &&
     css`
       cursor: pointer;
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.05);
+      :hover {
+        background-color: ${({ theme }) => theme.base.colors.frontListButton};
+      }
+      :hover ${ButtonFavorite} {
+        background-color: ${({ theme }) => theme.base.colors.frontListButton};
+      }
+      :hover svg .fill {
+        fill: ${({ theme, isStarred }) =>
+          isStarred
+            ? theme.base.colors.orangeLight
+            : theme.base.colors.frontListButton};
       }
     `};
 `;
 
-const ListContainer = styled('ul')`
-  list-style: none;
-  margin-top: 0;
-  padding-left: 0;
-`;
-
 const ListLabel = styled('span')<{ isActive?: boolean }>`
-  max-width: calc(100% - 30px);
+  max-width: calc(100% - 60px);
+  display: inline-block;
+  word-break: break-all;
   ${({ isActive }) =>
     !isActive &&
     css`
@@ -45,19 +98,20 @@ const ListLabel = styled('span')<{ isActive?: boolean }>`
     `};
 `;
 
-const ButtonAdd = styled(ButtonCircular)`
-  background-color: ${({ theme }) => theme.base.colors.frontListButton};
-  position: absolute;
-  top: 8px;
-  right: 5px;
-  padding: 3px;
-`;
-
-const FrontList = ({ fronts, onSelect, searchString }: Props) => {
+const FrontList = ({
+  fronts,
+  renderOnlyStarred,
+  onSelect,
+  onStar,
+  onUnfavourite,
+  searchString
+}: Props) => {
   if (!fronts) {
     return null;
   }
-  const frontsToRender = searchString
+  const frontsToRender = renderOnlyStarred
+    ? fronts.filter(_ => _.isStarred)
+    : searchString
     ? fronts.filter(_ => _.id.includes(searchString))
     : fronts;
   return (
@@ -65,6 +119,7 @@ const FrontList = ({ fronts, onSelect, searchString }: Props) => {
       {frontsToRender.map(front => (
         <ListItem
           isActive={!front.isOpen}
+          isStarred={!!front.isStarred}
           key={front.id}
           onClick={!front.isOpen ? () => onSelect(front.id) : undefined}
         >
@@ -74,6 +129,21 @@ const FrontList = ({ fronts, onSelect, searchString }: Props) => {
               searchString={searchString}
             />
           </ListLabel>
+          <ButtonFavorite
+            isStarred={!!front.isStarred}
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+              e.stopPropagation();
+              return !!front.isStarred
+                ? onUnfavourite(front.id)
+                : onStar(front.id);
+            }}
+          >
+            <StarIcon
+              size="l"
+              fill={styleTheme.shared.colors.blackLight}
+              outline={styleTheme.shared.colors.greyMedium}
+            />
+          </ButtonFavorite>
           {!front.isOpen && (
             <ButtonAdd>
               <MoreIcon />

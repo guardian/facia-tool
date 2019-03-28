@@ -4,7 +4,8 @@ import { stateWithCollection } from 'shared/fixtures/shared';
 import config from 'fixtures/config';
 import {
   persistCollectionOnEdit,
-  persistOpenFrontsOnEdit
+  persistOpenFrontsOnEdit,
+  persistFavouriteFrontsOnEdit
 } from '../storeMiddleware';
 import { Collection } from 'shared/types/Collection';
 
@@ -61,6 +62,7 @@ describe('Store middleware', () => {
       );
     });
   });
+
   describe('persistOpenFrontsOnEdit', () => {
     let persistFrontIdsSpy: any;
     beforeEach(() => {
@@ -126,6 +128,41 @@ describe('Store middleware', () => {
       });
       expect(persistFrontIdsSpy.mock.calls.length).toBe(1);
       expect(persistFrontIdsSpy.mock.calls[0][0]).toEqual({
+        editorial: ['front1', 'front2']
+      });
+    });
+  });
+
+  describe('persistFavouriteFrontsOnEdit', () => {
+    let persistFavouriteFrontIdsSpy: any;
+    beforeEach(() => {
+      persistFavouriteFrontIdsSpy = jest.fn();
+      mockStore = configureStore([
+        thunk,
+        persistFavouriteFrontsOnEdit(persistFavouriteFrontIdsSpy)
+      ]);
+    });
+    it('should do nothing for actions without the correct persistTo property in the action meta', () => {
+      const store = mockStore();
+      store.dispatch({
+        type: 'ARBITRARY_ACTION'
+      });
+      expect(persistFavouriteFrontIdsSpy.mock.calls.length).toBe(0);
+    });
+    it("should call the persist function with the state's fave front ids if it receives an action with the correct persistTo property", () => {
+      const store = mockStore({
+        editor: {
+          favouriteFrontIdsByPriority: { editorial: ['front1', 'front2'] }
+        }
+      });
+      store.dispatch({
+        type: 'ARBITRARY_ACTION',
+        meta: {
+          persistTo: 'favouriteFrontIds'
+        }
+      });
+      expect(persistFavouriteFrontIdsSpy.mock.calls.length).toBe(1);
+      expect(persistFavouriteFrontIdsSpy.mock.calls[0][0]).toEqual({
         editorial: ['front1', 'front2']
       });
     });

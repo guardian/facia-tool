@@ -8,7 +8,10 @@ import configureStore from 'util/configureStore';
 import pageConfig from 'util/extractConfigFromPage';
 import App from 'components/App';
 import { configReceived } from 'actions/Config';
-import { editorSetOpenFronts } from 'bundles/frontsUIBundle';
+import {
+  editorSetOpenFronts,
+  editorSetFavouriteFronts
+} from 'bundles/frontsUIBundle';
 import { storeClipboardContent } from 'actions/Clipboard';
 import { Dispatch } from 'types/Store';
 import Modal from 'react-modal';
@@ -37,6 +40,11 @@ if (pageConfig.env.toUpperCase() !== 'DEV' && pageConfig.sentryPublicDSN) {
 store.dispatch(configReceived(pageConfig));
 if (pageConfig.frontIdsByPriority) {
   store.dispatch(editorSetOpenFronts(pageConfig.frontIdsByPriority));
+}
+if (pageConfig.favouriteFrontIdsByPriority) {
+  store.dispatch(
+    editorSetFavouriteFronts(pageConfig.favouriteFrontIdsByPriority)
+  );
 }
 
 (store.dispatch as Dispatch)(

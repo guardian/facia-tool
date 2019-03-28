@@ -57,6 +57,7 @@ POST        /treats/*collectionId                    controllers.FaciaToolContro
 PUT        /userdata/clipboard                       controllers.UserDataController.putClipboardContent()
 PUT        /userdata/frontIds                        controllers.UserDataController.putFrontIds()
 PUT        /userdata/frontIdsByPriority              controllers.UserDataController.putFrontIdsByPriority()
+PUT        /userdata/favouriteFrontIdsByPriority     controllers.UserDataController.putFavouriteFrontIdsByPriority()
 # For temporary internal use -- migrates user data to a new format
 PUT        /userdata/migrate                         controllers.UserDataController.migrateUserData()
 

@@ -10,7 +10,7 @@ import LargeSectionHeader from '../layout/LargeSectionHeader';
 import ButtonOverlay from '../inputs/ButtonOverlay';
 import ScrollContainer from '../ScrollContainer';
 import Overlay from '../layout/Overlay';
-import FrontsList from '../../containers/FrontsList';
+import FrontsList from '../FrontsListContainer';
 import Row from 'components/Row';
 import Col from 'components/Col';
 
@@ -32,6 +32,7 @@ const FrontsMenuSubHeading = styled('div')`
   font-size: 16px;
   line-height: 30px;
   font-weight: bold;
+  color: ${({ theme }) => theme.shared.colors.orangeLight};
   border-bottom: ${({ theme }) =>
     `solid 1px ${theme.base.colors.frontListBorder}`};
   max-height: 100%;
@@ -85,6 +86,8 @@ const FrontsMenuSearchImage = styled('div')`
 
 interface Props {
   onSelectFront: (frontId: string) => void;
+  onFavouriteFront: (frontId: string) => void;
+  onUnfavouriteFront: (frontId: string) => void;
 }
 
 interface State {
@@ -102,6 +105,14 @@ class FrontsMenu extends React.Component<Props, State> {
   public onSelectFront = (frontId: string) => {
     this.toggleFrontsMenu();
     this.props.onSelectFront(frontId);
+  };
+
+  public onFavouriteFront = (frontId: string) => {
+    this.props.onFavouriteFront(frontId);
+  };
+
+  public onUnfavouriteFront = (frontId: string) => {
+    this.props.onUnfavouriteFront(frontId);
   };
 
   public onInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -145,6 +156,18 @@ class FrontsMenu extends React.Component<Props, State> {
             <FrontsMenuContent>
               <FrontsMenuSubHeading>
                 <Row>
+                  <Col>Favourites</Col>
+                </Row>
+              </FrontsMenuSubHeading>
+              <FrontsList
+                renderOnlyStarred
+                onSelect={this.onSelectFront}
+                onStar={this.onFavouriteFront}
+                onUnfavourite={this.onUnfavouriteFront}
+              />
+
+              <FrontsMenuSubHeading>
+                <Row>
                   <Col>All</Col>
                   <FrontsMenuSearchInputContainer>
                     <FrontsMenuSearchInput
@@ -160,6 +183,8 @@ class FrontsMenu extends React.Component<Props, State> {
               </FrontsMenuSubHeading>
               <FrontsList
                 onSelect={this.onSelectFront}
+                onStar={this.onFavouriteFront}
+                onUnfavourite={this.onUnfavouriteFront}
                 searchString={this.state.searchString}
               />
             </FrontsMenuContent>

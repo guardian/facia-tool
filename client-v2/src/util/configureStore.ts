@@ -9,7 +9,8 @@ import {
   updateStateFromUrlChange,
   persistCollectionOnEdit,
   persistClipboardOnEdit,
-  persistOpenFrontsOnEdit
+  persistOpenFrontsOnEdit,
+  persistFavouriteFrontsOnEdit
 } from './storeMiddleware';
 import { State } from 'types/State';
 
@@ -24,7 +25,8 @@ export default function configureStore(initialState?: State) {
       router,
       persistCollectionOnEdit(),
       persistClipboardOnEdit(),
-      persistOpenFrontsOnEdit()
+      persistOpenFrontsOnEdit(),
+      persistFavouriteFrontsOnEdit()
     ),
     window.devToolsExtension ? window.devToolsExtension() : (f: unknown) => f
   );
