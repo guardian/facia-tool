@@ -187,7 +187,7 @@ const articleBodyDefault = ({
             {distanceInWordsStrict(now, new Date(frontPublicationTime))}
           </CollectionItemMetaContent>
         )}
-        {size === 'default' && firstPublicationDate && (
+        {firstPublicationDate && (
           <FirstPublicationDate title="The time elapsed since this article was first published.">
             {distanceInWordsStrict(new Date(firstPublicationDate), now)}
           </FirstPublicationDate>
