@@ -35,8 +35,9 @@ const ButtonFavorite = styled(ButtonCircular)<{ isStarred: boolean }>`
   svg .fill {
     fill: ${({ theme }) => theme.shared.colors.blackLight};
   }
-  &:hover svg .fill,
-  &:hover svg .outline {
+  /* Double && needed to override css specificity of ListItem with isActive set */
+  &&:hover svg .fill,
+  &&:hover svg .outline {
     fill: ${({ theme }) => theme.shared.colors.greyMedium};
   }
 
