@@ -1,4 +1,7 @@
-import { selectArticlesInCollections } from '../collection';
+import {
+  selectArticlesInCollections,
+  createSelectIsArticleInCollection
+} from '../collection';
 import { stateWithCollection } from '../../fixtures/shared';
 
 describe('Collection selectors', () => {
@@ -30,6 +33,27 @@ describe('Collection selectors', () => {
           itemSet: 'draft'
         })
       ).toEqual([]);
+    });
+  });
+  describe('createSelectIsArticleInCollection', () => {
+    const selectIsArticleInCollection = createSelectIsArticleInCollection();
+    it('should return true if the article is within a given collection', () => {
+      expect(
+        selectIsArticleInCollection(stateWithCollection.shared, {
+          collectionId: 'exampleCollection',
+          collectionSet: 'live',
+          articleFragmentId: '95e2bfc0-8999-4e6e-a359-19960967c1e0'
+        })
+      ).toEqual(true);
+    });
+    it("should return false if it's not", () => {
+      expect(
+        selectIsArticleInCollection(stateWithCollection.shared, {
+          collectionId: 'exampleCollection',
+          collectionSet: 'live',
+          articleFragmentId: 'not-a-thing'
+        })
+      ).toEqual(false);
     });
   });
 });

@@ -62,7 +62,7 @@ const colorMap = {
 const backgroundMap = {
   disabled: {
     default: theme.colors.greyMediumLight,
-    primary: theme.colors.orangeDark,
+    primary: theme.colors.orangeFaded,
     muted: theme.colors.greyLight
   },
   selected: {

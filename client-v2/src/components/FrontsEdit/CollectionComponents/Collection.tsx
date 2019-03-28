@@ -22,10 +22,12 @@ import {
   selectIsCollectionOpen,
   editorOpenCollections,
   editorCloseCollections,
-  selectHasMultipleFrontsOpen
+  selectHasMultipleFrontsOpen,
+  selectEditorArticleFragment
 } from 'bundles/frontsUIBundle';
 import { getArticlesForCollections } from 'actions/Collections';
 import { collectionItemSets } from 'constants/fronts';
+import { createSelectIsArticleInCollection } from 'shared/selectors/collection';
 
 interface CollectionPropsBeforeState {
   id: string;
@@ -46,6 +48,7 @@ type CollectionProps = CollectionPropsBeforeState & {
   groups: Group[];
   displayEditWarning: boolean;
   isCollectionLocked: boolean;
+  isEditFormOpen: boolean;
   isOpen: boolean;
   hasMultipleFrontsOpen: boolean;
   onChangeOpenState: (id: string, isOpen: boolean) => void;
@@ -64,6 +67,7 @@ const Collection = ({
   displayEditWarning,
   isCollectionLocked,
   isOpen,
+  isEditFormOpen,
   onChangeOpenState,
   hasMultipleFrontsOpen,
   discardDraftChangesToCollection: discardDraftChanges
@@ -89,6 +93,12 @@ const Collection = ({
               size="l"
               priority="default"
               onClick={() => discardDraftChanges(id)}
+              disabled={isEditFormOpen}
+              title={
+                isEditFormOpen
+                  ? 'You cannot discard changes to this collection whilst the edit form is open.'
+                  : undefined
+              }
             >
               Discard
             </Button>
@@ -96,6 +106,12 @@ const Collection = ({
               size="l"
               priority="primary"
               onClick={() => publish(id, frontId)}
+              disabled={isEditFormOpen}
+              title={
+                isEditFormOpen
+                  ? 'You cannot launch this collection whilst the edit form is open.'
+                  : undefined
+              }
             >
               Launch
             </Button>
@@ -119,24 +135,38 @@ const Collection = ({
 const createMapStateToProps = () => {
   const collectionStageGroupsSelector = createCollectionStageGroupsSelector();
   const editWarningSelector = createCollectionEditWarningSelector();
+  const selectIsArticleInCollection = createSelectIsArticleInCollection();
   return (
     state: State,
-    { browsingStage, id, priority }: CollectionPropsBeforeState
-  ) => ({
-    hasUnpublishedChanges: hasUnpublishedChangesSelector(state, {
-      collectionId: id
-    }),
-    isCollectionLocked: isCollectionLockedSelector(state, id),
-    groups: collectionStageGroupsSelector(selectSharedState(state), {
-      collectionSet: browsingStage,
-      collectionId: id
-    }),
-    displayEditWarning: editWarningSelector(selectSharedState(state), {
-      collectionId: id
-    }),
-    isOpen: selectIsCollectionOpen(state, id),
-    hasMultipleFrontsOpen: selectHasMultipleFrontsOpen(state, priority)
-  });
+    { browsingStage, id, priority, frontId }: CollectionPropsBeforeState
+  ) => {
+    const selectedArticleFragmentData = selectEditorArticleFragment(
+      state,
+      frontId
+    );
+    return {
+      hasUnpublishedChanges: hasUnpublishedChangesSelector(state, {
+        collectionId: id
+      }),
+      isCollectionLocked: isCollectionLockedSelector(state, id),
+      groups: collectionStageGroupsSelector(selectSharedState(state), {
+        collectionSet: browsingStage,
+        collectionId: id
+      }),
+      displayEditWarning: editWarningSelector(selectSharedState(state), {
+        collectionId: id
+      }),
+      isOpen: selectIsCollectionOpen(state, id),
+      isEditFormOpen:
+        !!selectedArticleFragmentData &&
+        selectIsArticleInCollection(state.shared, {
+          collectionId: id,
+          collectionSet: browsingStage,
+          articleFragmentId: selectedArticleFragmentData.id
+        }),
+      hasMultipleFrontsOpen: selectHasMultipleFrontsOpen(state, priority)
+    };
+  };
 };
 
 const mapDispatchToProps = (

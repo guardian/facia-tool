@@ -27,3 +27,15 @@ export const selectArticlesInCollections = createSelector(
     ),
   articleIds => uniq(flatten(articleIds))
 );
+
+export const createSelectIsArticleInCollection = () => {
+  const articlesInCollectionSelector = createArticlesInCollectionSelector();
+  return createSelector(
+    articlesInCollectionSelector,
+    (
+      _: State,
+      { articleFragmentId: articleId }: { articleFragmentId: string }
+    ) => articleId,
+    (articleIds, articleId) => articleIds.indexOf(articleId) !== -1
+  );
+};
