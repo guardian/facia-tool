@@ -66,10 +66,10 @@ const ConfirmModal = ({
     <h1>{title}</h1>
     {description && <p>{description}</p>}
     <Actions>
-      <ButtonDefault size="l" inline pill onClick={onReject}>
+      <ButtonDefault size="l" inline onClick={onReject}>
         Cancel
       </ButtonDefault>
-      <ButtonDefault size="l" inline pill priority="primary" onClick={onAccept}>
+      <ButtonDefault size="l" inline priority="primary" onClick={onAccept}>
         Proceed
       </ButtonDefault>
     </Actions>
