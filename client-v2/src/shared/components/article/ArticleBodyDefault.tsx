@@ -79,6 +79,10 @@ const SlideshowIcon = styled('div')`
   height: 14px;
 `;
 
+const FirstPublicationDate = styled(CollectionItemMetaContent)`
+  color: ${({ theme }) => theme.shared.colors.green};
+`;
+
 interface ArticleBodyProps {
   frontPublicationTime?: string;
   firstPublicationDate?: string;
@@ -145,12 +149,11 @@ const articleBodyDefault = ({
 }: ArticleBodyProps) => {
   const ArticleHeadingContainer =
     size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
-
   const displayByline = size === 'default' && showByline && byline;
   const displayTrail =
     size === 'default' && trailText && !(showByline && byline);
-
   const kickerToDisplay = isBreaking ? 'Breaking news' : kicker;
+  const now = Date.now();
 
   return (
     <>
@@ -178,18 +181,25 @@ const articleBodyDefault = ({
         )}
 
         {scheduledPublicationDate && (
-          <CollectionItemDraftMetaContent>
+          <CollectionItemDraftMetaContent title="The time until this article is scheduled to be published.">
             {distanceInWordsStrict(
               new Date(scheduledPublicationDate),
-              Date.now()
+              now
             )}
           </CollectionItemDraftMetaContent>
         )}
-
         {frontPublicationTime && (
-          <CollectionItemMetaContent>
-            {distanceInWordsStrict(Date.now(), new Date(frontPublicationTime))}
+          <CollectionItemMetaContent title="The time elapsed since this article was added to this front.">
+            {distanceInWordsStrict(now, new Date(frontPublicationTime))}
           </CollectionItemMetaContent>
+        )}
+        {firstPublicationDate && (
+          <FirstPublicationDate title="The time elapsed since this article was first published.">
+            {distanceInWordsStrict(
+              new Date(firstPublicationDate),
+              now
+            )}
+          </FirstPublicationDate>
         )}
       </CollectionItemMetaContainer>
       <CollectionItemContent displaySize={size}>
@@ -282,7 +292,6 @@ const articleBodyDefault = ({
           toolTipPosition={'top'}
           toolTipAlign={'right'}
         />
-        <HideMetaDataOnToolTipDisplay size={size} />
       </HoverActionsAreaOverlay>
     </>
   );

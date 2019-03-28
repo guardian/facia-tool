@@ -10,9 +10,9 @@ import baseStyled, { ThemedStyledInterface } from 'styled-components';
 const colors = {
   blackDark: '#121212', // darkest
   blackLight: '#333',
-  greyDark: '#444444', //
+  greyDark: '#444444',
   greyMediumDark: '#515151',
-  greyMedium: '#767676', //
+  greyMedium: '#767676',
   greyMediumLight: '#999999',
   greyLight: '#A9A9A9',
   greyVeryLight: '#c9c9c9',
@@ -23,7 +23,8 @@ const colors = {
   white: '#FFF', // lightest
   orange: '#FF7F0F',
   orangeLight: '#FD8A2E',
-  orangeDark: '#E05E00'
+  orangeDark: '#E05E00',
+  green: '#4F9245'
 };
 
 const base = {
