@@ -94,6 +94,11 @@ const Collection = ({
               priority="default"
               onClick={() => discardDraftChanges(id)}
               disabled={isEditFormOpen}
+              title={
+                isEditFormOpen
+                  ? 'You cannot discard changes to this collection whilst the edit form is open.'
+                  : undefined
+              }
             >
               Discard
             </Button>
@@ -102,6 +107,11 @@ const Collection = ({
               priority="primary"
               onClick={() => publish(id, frontId)}
               disabled={isEditFormOpen}
+              title={
+                isEditFormOpen
+                  ? 'You cannot launch this collection whilst the edit form is open.'
+                  : undefined
+              }
             >
               Launch
             </Button>
