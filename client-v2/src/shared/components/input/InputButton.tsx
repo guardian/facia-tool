@@ -7,7 +7,7 @@ type Props = {
 } & WrappedFieldProps;
 
 export default ({ buttonText, ...rest }: Props) => (
-  <Button type="button" priority="muted" pill {...rest}>
+  <Button type="button" {...rest}>
     {buttonText}
   </Button>
 );

@@ -239,6 +239,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                   component={InputButton}
                   buttonText={kickerOptions.webTitle}
                   selected={showKickerTag}
+                  size="s"
                   onClick={() => {
                     if (!showKickerTag) {
                       change('showKickerTag', true);
@@ -249,13 +250,14 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     }
                   }}
                 />
-              )}
+              )}{' '}
               {kickerOptions.sectionName && (
                 <Field
                   permittedFields={editableFields}
                   name="showKickerSection"
                   component={InputButton}
                   selected={showKickerSection}
+                  size="s"
                   buttonText={kickerOptions.sectionName}
                   onClick={() => {
                     if (!showKickerSection) {

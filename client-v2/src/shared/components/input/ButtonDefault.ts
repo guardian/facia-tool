@@ -17,7 +17,6 @@ interface ButtonProps {
   selected?: boolean;
   priority?: ButtonPriorities;
   size?: ButtonSizes;
-  pill?: boolean;
   dark?: boolean;
   inline?: boolean;
   disabled?: boolean;
@@ -125,7 +124,6 @@ export default styled(`button`)`
   display: inline-block;
   appearance: none;
   background: ${mapAction(backgroundMap)};
-  border-radius: ${({ pill }) => (pill ? '0.5em' : '0')};
   color: ${mapAction(colorMap)};
   font-family: TS3TextSans;
   font-size: ${mapSize(fontSizeMap)};
