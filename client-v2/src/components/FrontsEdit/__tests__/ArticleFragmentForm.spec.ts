@@ -217,6 +217,23 @@ describe('ArticleFragmentForm transform functions', () => {
         imageSrcWidth: '100'
       });
     });
+    it('should remove customKicker and showKickerCustom if the kicker is empty', () => {
+      const values = {
+        customKicker: '',
+        showKickerCustom: true
+      };
+      const state = createStateWithChangedFormFields(
+        initialState,
+        'exampleId',
+        values
+      );
+      expect(
+        getArticleFragmentMetaFromFormValues(state, 'exampleId', {
+          ...formValues,
+          ...values
+        })
+      ).toEqual({});
+    });
     it('should handle conversion of string values for images', () => {
       const values = {
         primaryImage: {
