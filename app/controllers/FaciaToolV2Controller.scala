@@ -79,9 +79,11 @@ class FaciaToolV2Controller(
         }
 
       }
-      case None => Future.successful(BadRequest)
+      case None => {
+        logger.error(s"Could not parse collection edit. The data was: ${request.body.asJson}")
+        Future.successful(BadRequest)
+      }
     }
-
   }
 
   def discardCollection(collectionId: String) = AccessAPIAuthAction.async { implicit request =>
