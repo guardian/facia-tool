@@ -19,15 +19,21 @@ class LoggingFilter @Inject() (implicit val mat: Materializer, ec: ExecutionCont
 
       val endTime = System.currentTimeMillis
       val requestTime = endTime - startTime
-
-      val logMarker = MarkerContext(appendEntries(Map(
+      val message = s"${requestHeader.method} ${requestHeader.uri} took ${requestTime}ms and returned ${result.header.status}"
+      val markerEntries = Map(
         "method" -> requestHeader.method,
         "url" -> requestHeader.uri,
         "requestTime" -> requestTime,
         "status" -> result.header.status
-      ).asJava))
+      )
+      val logMarker = MarkerContext(appendEntries(markerEntries.asJava))
 
-      logger.info(s"${requestHeader.method} ${requestHeader.uri} took ${requestTime}ms and returned ${result.header.status}")(logMarker)
+      result.header.status match {
+        case status if (status >= 200 && status <= 399) =>
+          logger.info(message)(logMarker)
+        case _ =>
+          logger.error(message)(logMarker)
+      }
 
       result.withHeaders("Request-Time" -> requestTime.toString)
     }
