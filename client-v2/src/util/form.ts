@@ -164,7 +164,7 @@ export const getArticleFragmentMetaFromFormValues = (
     return field;
   };
 
-  const completeMeta = omit(
+  let completeMeta = omit(
     {
       ...values,
       headline: getStringField(values.headline),
@@ -180,6 +180,10 @@ export const getArticleFragmentMetaFromFormValues = (
     'primaryImage',
     'cutoutImage'
   );
+
+  if (!values.customKicker) {
+    completeMeta = omit(completeMeta, 'customKicker', 'showKickerCustom');
+  }
 
   // We only return dirtied values.
   const isDirtySelector = isDirty(formName);
