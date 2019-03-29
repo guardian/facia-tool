@@ -10,6 +10,7 @@ import {
 } from 'redux-form';
 import { styled } from 'constants/theme';
 import Button from 'shared/components/input/ButtonDefault';
+import Thumbnail from 'shared/components/Thumbnail';
 import ContentContainer from 'shared/components/layout/ContentContainer';
 import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
 import {
@@ -38,9 +39,9 @@ import {
   ArticleFragmentFormData,
   getArticleFragmentMetaFromFormValues,
   getInitialValuesForArticleFragmentForm,
-  getCapiValuesForArticleTextFields
+  getCapiValuesForArticleFields
 } from 'util/form';
-import { CapiTextFields } from 'util/form';
+import { CapiFields } from 'util/form';
 import { Dispatch } from 'types/Store';
 import { articleFragmentImageCriteria as imageCriteria } from 'constants/image';
 import { selectors as collectionSelectors } from 'shared/bundles/collectionsBundle';
@@ -168,7 +169,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       showKickerTag,
       showKickerSection,
       frontId,
-      articleExists
+      articleExists,
+      imageReplace
     } = this.props;
 
     return (
@@ -357,16 +359,28 @@ class FormComponent extends React.Component<Props, FormComponentState> {
           <RowContainer>
             <Row>
               <Col>
-                <ImageWrapper faded={imageHide}>
-                  <ConditionalField
-                    permittedFields={editableFields}
-                    name="primaryImage"
-                    component={InputImage}
-                    disabled={imageHide}
-                    criteria={imageCriteria}
-                    frontId={frontId}
+                {imageReplace && (
+                  <ImageWrapper faded={imageHide}>
+                    <ConditionalField
+                      permittedFields={editableFields}
+                      name="primaryImage"
+                      component={InputImage}
+                      disabled={imageHide}
+                      criteria={imageCriteria}
+                      frontId={frontId}
+                    />
+                  </ImageWrapper>
+                )}
+                {!imageReplace && (
+                  <Thumbnail
+                    style={{
+                      backgroundImage: `url('${
+                        articleCapiFieldValues.thumbnail
+                      }')`,
+                      opacity: imageHide ? 0.5 : 1
+                    }}
                   />
-                </ImageWrapper>
+                )}
               </Col>
               <Col>
                 <InputGroup>
@@ -376,6 +390,17 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     component={InputCheckboxToggle}
                     label="Hide media"
                     id={getInputId(articleFragmentId, 'hide-media')}
+                    type="checkbox"
+                    default={false}
+                  />
+                </InputGroup>
+                <InputGroup>
+                  <ConditionalField
+                    permittedFields={editableFields}
+                    name="imageReplace"
+                    component={InputCheckboxToggle}
+                    label="Replace media"
+                    id={getInputId(articleFragmentId, 'image-replace')}
                     type="checkbox"
                     default={false}
                   />
@@ -487,7 +512,8 @@ interface ContainerProps {
   editableFields?: string[];
   showKickerTag: boolean;
   showKickerSection: boolean;
-  articleCapiFieldValues: CapiTextFields;
+  articleCapiFieldValues: CapiFields;
+  imageReplace: boolean;
 }
 
 interface InterfaceProps {
@@ -544,9 +570,7 @@ const createMapStateToProps = () => {
       collectionId: (parentCollection && parentCollection.id) || null,
       getLastUpdatedBy,
       initialValues: getInitialValuesForArticleFragmentForm(article),
-      articleCapiFieldValues: getCapiValuesForArticleTextFields(
-        externalArticle
-      ),
+      articleCapiFieldValues: getCapiValuesForArticleFields(externalArticle),
       editableFields:
         article && selectFormFields(state, article.uuid, isSupporting),
       kickerOptions: article
@@ -554,6 +578,7 @@ const createMapStateToProps = () => {
         : {},
       imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
       imageHide: valueSelector(state, 'imageHide'),
+      imageReplace: valueSelector(state, 'imageReplace'),
       imageCutoutReplace: valueSelector(state, 'imageCutoutReplace'),
       showByline: valueSelector(state, 'showByline'),
       showKickerTag: valueSelector(state, 'showKickerTag'),

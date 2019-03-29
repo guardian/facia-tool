@@ -36,29 +36,32 @@ export interface ImageData {
   thumb?: string;
 }
 
-export interface CapiTextFields {
+export interface CapiFields {
   headline: string;
   trailText: string;
   byline: string;
+  thumbnail?: string | void;
 }
 
 const strToInt = (str: string | void) => (str ? parseInt(str, 10) : undefined);
 const intToStr = (int: number | void) => (int ? int.toString() : undefined);
 
-export const getCapiValuesForArticleTextFields = (
+export const getCapiValuesForArticleFields = (
   article: CapiArticle | void
-): CapiTextFields => {
+): CapiFields => {
   if (!article) {
     return {
       headline: '',
       trailText: '',
-      byline: ''
+      byline: '',
+      thumbnail: ''
     };
   }
   return {
     headline: article.fields.headline || '',
     trailText: article.fields.trailText || '',
-    byline: article.fields.byline || ''
+    byline: article.fields.byline || '',
+    thumbnail: article.fields.thumbnail
   };
 };
 

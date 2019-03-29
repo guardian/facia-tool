@@ -20,6 +20,7 @@ export const defaultFields = [
   'trailText',
   'imageCutoutReplace',
   'imageHide',
+  'imageReplace',
   'imageSlideshowReplace',
   'primaryImage',
   'cutoutImage',
