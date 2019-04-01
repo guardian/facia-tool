@@ -12,7 +12,13 @@ const ThumbnailSmall = styled(ThumbnailBase)`
   height: 50px;
 `;
 
-export { ThumbnailSmall };
+const ThumbnailEditForm = styled(ThumbnailBase)`
+  width: 100%;
+  height: 115px;
+  margin-bottom: 10px;
+`;
+
+export { ThumbnailSmall, ThumbnailEditForm };
 
 export default styled(ThumbnailBase)`
   width: 130px;

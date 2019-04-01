@@ -10,7 +10,7 @@ import {
 } from 'redux-form';
 import { styled } from 'constants/theme';
 import Button from 'shared/components/input/ButtonDefault';
-import Thumbnail from 'shared/components/Thumbnail';
+import { ThumbnailEditForm } from 'shared/components/Thumbnail';
 import ContentContainer from 'shared/components/layout/ContentContainer';
 import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
 import {
@@ -372,7 +372,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                   </ImageWrapper>
                 )}
                 {!imageReplace && (
-                  <Thumbnail
+                  <ThumbnailEditForm
                     style={{
                       backgroundImage: `url('${
                         articleCapiFieldValues.thumbnail
