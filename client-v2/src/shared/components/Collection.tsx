@@ -85,21 +85,24 @@ const LockedCollectionFlag = styled('span')`
 
 const CollectionMetaContainer = styled('div')`
   display: flex;
+  flex-basis: 30%;
   position: relative;
   font-family: TS3TextSans;
   font-size: 12px;
   font-weight: normal;
   justify-content: space-between;
+  cursor: pointer;
 `;
 
 const CollectionMetaBase = styled('span')`
   position: relative;
   padding-top: 3px;
-  padding-right: 40px;
+  padding-right: 20px;
 `;
 
 const CollectionMeta = styled(CollectionMetaBase)`
   padding-left: 10px;
+  min-width: 150px;
 `;
 
 const ItemCountMeta = styled(CollectionMetaBase)`
@@ -127,12 +130,10 @@ const CollectionHeadingText = styled('span')<{ isLoading: boolean }>`
 
 const CollectionToggleContainer = styled('div')`
   padding-top: 5px;
-  width: 100%;
   max-width: 130px;
   display: flex;
   justify-content: flex-end;
   z-index: 2;
-  cursor: pointer;
   :hover {
     ${ButtonCircularWithTransition} {
       background-color: ${({ theme }) =>
