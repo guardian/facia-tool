@@ -5,7 +5,8 @@ import {
   removeSupportingArticleFragment,
   updateArticleFragmentMeta,
   createArticleFragment,
-  articleFragmentsReceived
+  articleFragmentsReceived,
+  maybeAddFrontPublicationDate
 } from 'shared/actions/ArticleFragments';
 import { ArticleFragment } from 'shared/types/Collection';
 import {
@@ -94,6 +95,7 @@ const maybeInsertGroupArticleFragment = (
     // group may not result in that group getting any bigger, and hence won't
     // require a modal!
     dispatch(insertGroupArticleFragment(id, index, articleFragmentId));
+    dispatch(maybeAddFrontPublicationDate(articleFragmentId));
 
     const state = getState();
 

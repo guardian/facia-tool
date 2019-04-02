@@ -10,7 +10,8 @@ import {
   RemoveGroupArticleFragment,
   RemoveSupportingArticleFragment,
   UpdateArticleFragmentMeta,
-  ClearArticleFragments
+  ClearArticleFragments,
+  MaybeAddFrontPublicationDate
 } from 'shared/types/Action';
 import { createFragment } from 'shared/util/articleFragment';
 import { createLinkSnap, createLatestSnap } from 'shared/util/snap';
@@ -193,6 +194,16 @@ function createArticleFragment(
   };
 }
 
+const maybeAddFrontPublicationDate = (
+  fragmentId: string
+): MaybeAddFrontPublicationDate => ({
+  type: 'SHARED/MAYBE_ADD_FRONT_PUBLICATION',
+  payload: {
+    id: fragmentId,
+    date: Date.now()
+  }
+});
+
 export {
   updateArticleFragmentMeta,
   articleFragmentsReceived,
@@ -201,5 +212,6 @@ export {
   removeGroupArticleFragment,
   removeSupportingArticleFragment,
   createArticleFragment,
-  clearArticleFragments
+  clearArticleFragments,
+  maybeAddFrontPublicationDate
 };
