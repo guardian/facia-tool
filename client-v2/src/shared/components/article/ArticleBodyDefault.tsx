@@ -30,7 +30,7 @@ import ColouredQuote from '../collectionItem/CollectionItemQuote';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   width: 130px;
-  height: 83px;
+  height: 67px;
 `;
 
 const NotLiveContainer = styled(CollectionItemMetaHeading)`
@@ -181,17 +181,17 @@ const articleBodyDefault = ({
               : notLiveLabels.draft}
           </NotLiveContainer>
         )}
-        {scheduledPublicationDate && !firstPublicationDate && (
+        {!!scheduledPublicationDate && !firstPublicationDate && (
           <CollectionItemDraftMetaContent title="The time until this article is scheduled to be published.">
             {distanceInWordsStrict(new Date(scheduledPublicationDate), now)}
           </CollectionItemDraftMetaContent>
         )}
-        {frontPublicationTime && (
+        {!!frontPublicationTime && (
           <CollectionItemMetaContent title="The time elapsed since this article was added to this front.">
             {distanceInWordsStrict(now, new Date(frontPublicationTime))}
           </CollectionItemMetaContent>
         )}
-        {size === 'default' && firstPublicationDate && (
+        {!!firstPublicationDate && (
           <FirstPublicationDate title="The time elapsed since this article was first published.">
             {distanceInWordsStrict(new Date(firstPublicationDate), now)}
           </FirstPublicationDate>

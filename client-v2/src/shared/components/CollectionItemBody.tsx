@@ -16,7 +16,7 @@ export default styled('div')<{
   min-height: 35px;
   cursor: pointer;
   position: relative;
-  min-height: ${({ size }) => (size === 'small' ? '35px' : '83px')};
+  min-height: ${({ size }) => (size === 'small' ? '25px' : '67px')};
   opacity: ${({ fade }) => (fade ? 0.5 : 1)};
   background-color: ${({ theme }) =>
     theme.shared.base.colors.backgroundColorLight};

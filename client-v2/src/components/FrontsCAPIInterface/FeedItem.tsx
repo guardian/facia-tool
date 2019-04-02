@@ -72,7 +72,7 @@ const VisitedWrapper = styled.a`
   text-decoration: none;
   display: flex;
   color: inherit;
-  cursor: auto;
+  cursor: pointer;
   width: 100%;
   :visited ${Title} {
     color: ${({ theme }) => theme.capiInterface.textVisited};

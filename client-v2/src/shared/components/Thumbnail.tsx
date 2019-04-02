@@ -17,5 +17,5 @@ export { ThumbnailSmall };
 export default styled(ThumbnailBase)`
   width: 130px;
   min-width: 130px;
-  height: 83px;
+  height: 67px;
 `;
