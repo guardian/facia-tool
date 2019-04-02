@@ -64,7 +64,7 @@ const Title = styled(`h2`)`
   margin: 2px 0 0;
   vertical-align: top;
   font-family: GHGuardianHeadline;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
 `;
 
@@ -73,6 +73,7 @@ const VisitedWrapper = styled.a`
   display: flex;
   color: inherit;
   cursor: auto;
+  width: 100%;
   :visited ${Title} {
     color: ${({ theme }) => theme.capiInterface.textVisited};
   }
@@ -80,12 +81,12 @@ const VisitedWrapper = styled.a`
 
 const MetaContainer = styled('div')`
   position: relative;
-  width: 80px;
+  min-width: 80px;
   padding: 0px 2px;
 `;
 
 const FirstPublished = styled('div')`
-  font-size: 12px;
+  font-size: 11px;
   margin: 2px 0;
 `;
 
@@ -101,7 +102,6 @@ const Tone = styled('div')`
 `;
 
 const Body = styled('div')`
-  width: 213px;
   padding-left: 8px;
 `;
 

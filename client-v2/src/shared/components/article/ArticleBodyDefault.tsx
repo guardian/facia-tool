@@ -108,12 +108,17 @@ interface ArticleBodyProps {
   type?: string;
 }
 
-const renderColouredQuotes = (pillarId?: string, isLive?: boolean) => {
+const renderColouredQuotes = (
+  size?: 'small' | 'default',
+  pillarId?: string,
+  isLive?: boolean
+) => {
   const pillarColour = getPillarColor(pillarId, isLive || true);
+  const height = size === 'small' ? '12px' : '18px';
   return (
     <React.Fragment>
-      <ColouredQuote colour={pillarColour} />
-      <ColouredQuote colour={pillarColour} />
+      <ColouredQuote colour={pillarColour} height={height} />
+      <ColouredQuote colour={pillarColour} height={height} />
     </React.Fragment>
   );
 };
@@ -207,18 +212,12 @@ const articleBodyDefault = ({
           )}
           {showQuotedHeadline && (
             <ArticleBodyQuoteContainer>
-              {renderColouredQuotes(pillarId, isLive)}
+              {renderColouredQuotes(size, pillarId, isLive)}
             </ArticleBodyQuoteContainer>
           )}
-          {size === 'default' ? (
-            <CollectionItemHeading html data-testid="headline">
-              {headline}
-            </CollectionItemHeading>
-          ) : (
-            <CollectionItemHeading html data-testid="headline">
-              {headline}
-            </CollectionItemHeading>
-          )}
+          <CollectionItemHeading html data-testid="headline" displaySize={size}>
+            {headline}
+          </CollectionItemHeading>
         </ArticleHeadingContainer>
         {displayTrail && (
           <CollectionItemTrail html>{trailText}</CollectionItemTrail>

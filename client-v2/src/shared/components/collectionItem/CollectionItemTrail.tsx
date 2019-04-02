@@ -5,7 +5,8 @@ import { sanitizeHTML } from 'shared/util/sanitizeHTML';
 const Wrapper = styled('div')`
   width: 100%;
   margin-top: 3px;
-  font-size: 14px;
+  font-size: 13px;
+  line-height: 17px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
