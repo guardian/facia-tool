@@ -386,23 +386,31 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 <InputGroup>
                   <ConditionalField
                     permittedFields={editableFields}
-                    name="imageHide"
-                    component={InputCheckboxToggle}
-                    label="Hide media"
-                    id={getInputId(articleFragmentId, 'hide-media')}
-                    type="checkbox"
-                    default={false}
-                  />
-                </InputGroup>
-                <InputGroup>
-                  <ConditionalField
-                    permittedFields={editableFields}
                     name="imageReplace"
                     component={InputCheckboxToggle}
                     label="Replace media"
                     id={getInputId(articleFragmentId, 'image-replace')}
                     type="checkbox"
                     default={false}
+                    onChange={e => {
+                      change('imageHide', false);
+                      change('imageReplace', true);
+                    }}
+                  />
+                </InputGroup>
+                <InputGroup>
+                  <ConditionalField
+                    permittedFields={editableFields}
+                    name="imageHide"
+                    component={InputCheckboxToggle}
+                    label="Hide media"
+                    id={getInputId(articleFragmentId, 'hide-media')}
+                    type="checkbox"
+                    default={false}
+                    onChange={e => {
+                      change('imageReplace', false);
+                      change('imageHide', true);
+                    }}
                   />
                 </InputGroup>
               </Col>

@@ -26,6 +26,7 @@ export interface ArticleFragmentFormData {
   slideshow: Array<ImageData | void> | void;
   showKickerTag: boolean;
   showKickerSection: boolean;
+  imageReplace: boolean;
 }
 
 export interface ImageData {
@@ -96,6 +97,7 @@ export const getInitialValuesForArticleFragmentForm = (
         trailText: article.trailText || '',
         imageCutoutReplace: article.imageCutoutReplace || false,
         imageHide: article.imageHide || false,
+        imageReplace: article.imageReplace || false,
         imageSlideshowReplace: article.imageSlideshowReplace || false,
         primaryImage: {
           src: article.imageSrc,
@@ -121,7 +123,6 @@ export const getInitialValuesForArticleFragmentForm = (
 // the two models to figure out which meta fields should be
 // added to the form output when a form field is dirtied.
 const formToMetaFieldMap: { [fieldName: string]: string } = {
-  imageReplace: 'primaryImage',
   imageSrc: 'primaryImage',
   imageSrcThumb: 'primaryImage',
   imageSrcWidth: 'primaryImage',
@@ -135,9 +136,9 @@ const formToMetaFieldMap: { [fieldName: string]: string } = {
 
 export const getImageMetaFromValidationResponse = (
   image: ImageData,
-  hideImage?: boolean
+  hideImage?: boolean,
+  imageReplace?: boolean
 ) => ({
-  imageReplace: !!image.src && !hideImage,
   imageSrc: image.src,
   imageSrcThumb: image.thumb,
   imageSrcWidth: intToStr(image.width),
@@ -173,7 +174,11 @@ export const getArticleFragmentMetaFromFormValues = (
       headline: getStringField(values.headline),
       trailText: getStringField(values.trailText),
       byline: getStringField(values.byline),
-      ...getImageMetaFromValidationResponse(primaryImage, values.imageHide),
+      ...getImageMetaFromValidationResponse(
+        primaryImage,
+        values.imageHide,
+        values.imageReplace
+      ),
       imageCutoutSrc: cutoutImage.src,
       imageCutoutSrcWidth: intToStr(cutoutImage.width),
       imageCutoutSrcHeight: intToStr(cutoutImage.height),
@@ -190,7 +195,9 @@ export const getArticleFragmentMetaFromFormValues = (
 
   // We only return dirtied values.
   const isDirtySelector = isDirty(formName);
-  return pickBy(completeMeta, (_, key) => {
+  const returnValue = pickBy(completeMeta, (_, key) => {
     return isDirtySelector(state, formToMetaFieldMap[key] || key);
   });
+
+  return returnValue;
 };
