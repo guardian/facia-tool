@@ -83,7 +83,12 @@ const HoverViewButton = ({
   showToolTip,
   hideToolTip
 }: ButtonProps) => (
-  <Link href={isLive ? getPaths(urlPath).live : getPaths(urlPath).preview}>
+  <Link
+    onClick={e => {
+      e.stopPropagation();
+    }}
+    href={isLive ? getPaths(urlPath).live : getPaths(urlPath).preview}
+  >
     <ActionButton onMouseEnter={showToolTip} onMouseLeave={hideToolTip}>
       <ViewHoverIcon />
     </ActionButton>
@@ -98,6 +103,9 @@ const HoverOphanButton = ({
 }: ButtonProps) =>
   isLive ? (
     <Link
+      onClick={e => {
+        e.stopPropagation();
+      }}
       href={getPaths(`https://www.theguardian.com/${urlPath}`).ophan}
       data-testid={'ophan-hover-button'}
     >
