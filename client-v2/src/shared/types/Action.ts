@@ -65,6 +65,14 @@ interface CapGroupSiblings {
   };
 }
 
+interface MaybeAddFrontPublicationDate {
+  type: 'SHARED/MAYBE_ADD_FRONT_PUBLICATION';
+  payload: {
+    id: string;
+    date: number;
+  };
+}
+
 type Action =
   | GroupsReceived
   | InsertGroupArticleFragment
@@ -76,6 +84,7 @@ type Action =
   | ArticleFragmentsReceived
   | ClearArticleFragments
   | UpdateArticleFragmentMeta
+  | MaybeAddFrontPublicationDate
   | CapGroupSiblings;
 
 export {
@@ -89,5 +98,6 @@ export {
   UpdateArticleFragmentMeta,
   InsertArticleFragmentPayload,
   RemoveArticleFragmentPayload,
-  CapGroupSiblings
+  CapGroupSiblings,
+  MaybeAddFrontPublicationDate
 };

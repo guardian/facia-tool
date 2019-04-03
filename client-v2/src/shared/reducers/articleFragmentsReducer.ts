@@ -95,6 +95,23 @@ const articleFragments = (
         }
       };
     }
+    // We add frontPublicationDates here  because sublinks coming from the old tool do not have front publication
+    // dates. The new fronts tool adds these to sublinks always.
+    case 'SHARED/MAYBE_ADD_FRONT_PUBLICATION': {
+      const { id, date } = action.payload;
+      const fragment = state[id];
+
+      if (fragment.frontPublicationDate) {
+        return state;
+      }
+
+      const newFragment = { ...fragment, frontPublicationDate: date };
+      return {
+        ...state,
+        [id]: newFragment
+      };
+    }
+
     default: {
       return state;
     }
