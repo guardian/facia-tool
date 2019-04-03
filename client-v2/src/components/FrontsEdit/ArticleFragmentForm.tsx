@@ -455,7 +455,7 @@ const ArticleFragmentForm = reduxForm<
   ComponentProps & InterfaceProps,
   {}
 >({
-  destroyOnUnmount: false,
+  destroyOnUnmount: true,
   onSubmit: (
     values: ArticleFragmentFormData,
     dispatch: Dispatch,
