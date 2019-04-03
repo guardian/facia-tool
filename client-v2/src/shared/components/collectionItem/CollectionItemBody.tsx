@@ -28,7 +28,7 @@ export default styled('div')<{
     css`
       font-size: 14px;
     `}
-  min-height: ${({ size }) => (size === 'small' ? '35px' : '83px')};
+  min-height: ${({ size }) => (size === 'small' ? '25px' : '67px')};
   cursor: pointer;
   background-color: ${({ displayType, theme }) =>
     displayType === 'default'

@@ -2,12 +2,18 @@ import React from 'react';
 
 interface ColouredQuoteProps {
   colour: string;
+  width?: string;
+  height?: string;
 }
 
-const ColouredQuote = ({ colour }: ColouredQuoteProps) => (
+const ColouredQuote = ({
+  colour,
+  width = '8px',
+  height = '19px'
+}: ColouredQuoteProps) => (
   <svg
-    width="8px"
-    height="19px"
+    width={width}
+    height={height}
     fill={colour}
     viewBox="0 0 35 25"
     xmlns="http://www.w3.org/2000/svg"

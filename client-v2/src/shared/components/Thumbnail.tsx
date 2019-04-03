@@ -8,13 +8,14 @@ const ThumbnailBase = styled('div')`
 
 const ThumbnailSmall = styled(ThumbnailBase)`
   width: 83px;
+  min-width: 83px;
   height: 50px;
-  margin: 3px 5px 3px 5px;
 `;
 
 export { ThumbnailSmall };
 
 export default styled(ThumbnailBase)`
   width: 130px;
-  height: 83px;
+  min-width: 130px;
+  height: 67px;
 `;
