@@ -320,7 +320,6 @@ describe('ArticleFragments actions', () => {
       );
 
       expect(s2.shared.articleFragments.a.meta).toMatchObject({
-        imageReplace: true,
         imageSrc: src,
         imageSrcThumb: thumb,
         imageSrcOrigin: origin,

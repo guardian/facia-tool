@@ -19,6 +19,7 @@ const formValues = {
   headline: "Sister of academic's killer warned police he was mentally ill",
   imageCutoutReplace: false,
   imageHide: false,
+  imageReplace: false,
   imageSlideshowReplace: false,
   isBoosted: false,
   isBreaking: false,
@@ -209,7 +210,6 @@ describe('ArticleFragmentForm transform functions', () => {
           ...values
         })
       ).toEqual({
-        imageReplace: true,
         imageSrc: 'exampleSrc',
         imageSrcHeight: '100',
         imageSrcOrigin: 'exampleOrigin',
@@ -271,7 +271,6 @@ describe('ArticleFragmentForm transform functions', () => {
           ...values
         })
       ).toEqual({
-        imageReplace: true,
         imageSrc: 'exampleSrc',
         imageSrcHeight: '100',
         imageSrcOrigin: 'exampleOrigin',
