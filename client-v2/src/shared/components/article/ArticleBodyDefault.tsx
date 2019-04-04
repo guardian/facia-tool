@@ -41,6 +41,8 @@ const KickerHeading = styled(CollectionItemHeading)`
   font-family: GHGuardianHeadline;
   font-weight: bold;
   padding-right: 3px;
+  font-size: ${({ displaySize }) =>
+    displaySize === 'small' ? '13px' : '15px'};
 `;
 
 const ArticleHeadingContainerSmall = styled('div')`
@@ -206,7 +208,10 @@ const articleBodyDefault = ({
             </>
           )}
           {kickerToDisplay && (
-            <KickerHeading style={{ color: getPillarColor(pillarId, true) }}>
+            <KickerHeading
+              displaySize={size}
+              style={{ color: getPillarColor(pillarId, true) }}
+            >
               {kickerToDisplay}
             </KickerHeading>
           )}
