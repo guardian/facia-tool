@@ -12,6 +12,8 @@ import editor from '../bundles/frontsUIBundle';
 import { capiLiveFeed, capiPreviewFeed } from '../bundles/capiFeedBundle';
 import staleFronts from './staleFrontsReducer';
 
+import { reducer as focusReducer } from "../bundles/focusBundle";
+
 const rootReducer = (state: any = {}, action: any) => ({
   fronts: fronts(state.fronts, action),
   config: config(state.config, action),
@@ -25,7 +27,8 @@ const rootReducer = (state: any = {}, action: any) => ({
   form: form(state.form, action),
   confirmModal: confirmModal(state.confirmModal, action),
   capiLiveFeed: capiLiveFeed(state.capiLiveFeed, action),
-  capiPreviewFeed: capiPreviewFeed(state.capiPreviewFeed, action)
+  capiPreviewFeed: capiPreviewFeed(state.capiPreviewFeed, action),
+  focus: focusReducer(state.focus, action)
 });
 
 export default rootReducer;

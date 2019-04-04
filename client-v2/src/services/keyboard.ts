@@ -7,7 +7,8 @@ import {
   editorOpenClipboard
 } from 'bundles/frontsUIBundle';
 import { State } from 'types/State';
-import { ThunkResult} from 'types/Store';
+import { ThunkResult } from 'types/Store';
+import Mousetrap from 'mousetrap';
 
 export interface KeyboardActionMap {
   [focusable: string]: KeyboardAction;
@@ -18,6 +19,8 @@ type FocusableTypes = 'clipboard' | 'article';
 interface BaseFocusState {
   type: FocusableTypes;
 }
+
+export type ApplicationFocusState = BaseFocusState;
 
 // interface ClipboardFocusState extends BaseFocusState {
 //   type: 'clipboard';
