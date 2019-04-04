@@ -9,6 +9,7 @@ import {
 import { State } from 'types/State';
 import { ThunkResult } from 'types/Store';
 import Mousetrap from 'mousetrap';
+import { selectFocusState } from 'bundles/focusBundle';
 
 export interface KeyboardActionMap {
   [focusable: string]: KeyboardAction;
@@ -84,14 +85,10 @@ const paste: KeyboardActionMap = {
   }
 };
 
-const selectFocusable = (state: State): BaseFocusState => ({
-  type: 'clipboard'
-});
-
 const bindActionMap = (store: Store, actionMap: KeyboardActionMap) => {
   return (e: KeyboardEvent) => {
     // Get the focused thing
-    const focusable = selectFocusable(store.getState());
+    const focusable = selectFocusState(store.getState());
     // Action the focused thing
     (store.dispatch as Dispatch)(actionMap[focusable.type](focusable));
   };
