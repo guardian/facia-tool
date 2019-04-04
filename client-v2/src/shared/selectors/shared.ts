@@ -418,6 +418,19 @@ const groupSiblingsArticleCountSelector = (state: State, groupId: string) =>
     0
   );
 
+const externalArticleIdFromArticleFragmentSelector = (
+  state: State,
+  id: string
+): string | undefined => {
+  const externalArticle = externalArticleFromArticleFragmentSelector(state, id);
+
+  if (!externalArticle) {
+    return undefined;
+  }
+
+  return externalArticle.id;
+};
+
 export {
   externalArticleFromArticleFragmentSelector,
   createArticleFromArticleFragmentSelector,
@@ -437,5 +450,6 @@ export {
   groupCollectionSelector,
   groupSiblingsSelector,
   groupSiblingsArticleCountSelector,
-  articleTagSelector
+  articleTagSelector,
+  externalArticleIdFromArticleFragmentSelector
 };
