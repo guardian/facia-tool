@@ -1,5 +1,4 @@
 import { Store, Dispatch, GetState } from 'types/Store';
-import { trap } from 'util/trap';
 import {
   editorCloseAllOverviews,
   editorOpenAllOverviews,
@@ -8,9 +7,10 @@ import {
   editorOpenClipboard
 } from 'bundles/frontsUIBundle';
 import { State } from 'types/State';
+import { ThunkResult} from 'types/Store';
 
-interface ActionMap {
-  [focusable: string]: Action;
+export interface KeyboardActionMap {
+  [focusable: string]: KeyboardAction;
 }
 
 type FocusableTypes = 'clipboard' | 'article';
@@ -19,49 +19,86 @@ interface BaseFocusState {
   type: FocusableTypes;
 }
 
-interface ClipboardFocusState extends BaseFocusState {
-  type: 'clipboard';
+// interface ClipboardFocusState extends BaseFocusState {
+//   type: 'clipboard';
+// }
+
+type KeyboardAction = (focusState: BaseFocusState) => ThunkResult<any>;
+
+interface KeyboardBinding {
+  title: string;
+  description?: string;
+  action: (e: KeyboardEvent) => any;
 }
 
-type Action = any;
+interface KeyboardBindingMap {
+  [shortcut: string]: KeyboardBinding;
+}
 
-const init = (store: Store) =>
-  trap({
-    'command+v': bindActionMap(store, paste),
-    'command+j': () => {
+export const createKeyboardActionMap = (store: Store): KeyboardBindingMap => ({
+  'command+v': {
+    title: 'Paste',
+    description: 'Paste an entity',
+    action: bindActionMap(store, paste)
+  },
+  'command+j': {
+    title: 'Close all overviews',
+    action: () => {
       store.dispatch(editorCloseAllOverviews());
-    },
-    'command+k': () => {
+    }
+  },
+  'command+k': {
+    title: 'Open all overviews',
+    action: () => {
       store.dispatch(editorOpenAllOverviews());
-    },
-    'command+u': () => {
+    }
+  },
+  'command+u': {
+    title: 'Toggle clipboard',
+    action: () => {
       if (selectIsClipboardOpen(store.getState())) {
         store.dispatch(editorCloseClipboard());
       } else {
         store.dispatch(editorOpenClipboard());
       }
     }
-  });
+  }
+});
 
-const paste: ActionMap = {
-  clipboard: (focusable: ClipboardFocusState) => (
+const init = (store: Store) => {
+  const keyboardActionMap = createKeyboardActionMap(store);
+  applyKeyboardActionMap(keyboardActionMap);
+  return keyboardActionMap;
+};
+
+const paste: KeyboardActionMap = {
+  clipboard: (focusState: BaseFocusState) => (
     dispatch: Dispatch,
     getState: GetState
   ) => {
     // Do something with the clipboard here.
-    console.log({ focusable });
+    console.log({ focusState });
   }
 };
 
-const selectFocusable = (state: State) => 'clipboard';
+const selectFocusable = (state: State): BaseFocusState => ({
+  type: 'clipboard'
+});
 
-const bindActionMap = (store: Store, actionMap: ActionMap) => {
+const bindActionMap = (store: Store, actionMap: KeyboardActionMap) => {
   return (e: KeyboardEvent) => {
     // Get the focused thing
     const focusable = selectFocusable(store.getState());
     // Action the focused thing
-    store.dispatch(actionMap[focusable](focusable));
+    (store.dispatch as Dispatch)(actionMap[focusable.type](focusable));
   };
+};
+
+const applyKeyboardActionMap = (map: KeyboardBindingMap) => {
+  const entries = Object.entries(map);
+
+  entries.forEach(([seq, handler]) => Mousetrap.bind(seq, handler.action));
+  return () => entries.forEach(([seq]) => Mousetrap.unbind(seq));
 };
 
 export default init;
