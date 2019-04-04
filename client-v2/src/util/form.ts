@@ -195,9 +195,7 @@ export const getArticleFragmentMetaFromFormValues = (
 
   // We only return dirtied values.
   const isDirtySelector = isDirty(formName);
-  const returnValue = pickBy(completeMeta, (_, key) => {
+  return pickBy(completeMeta, (_, key) => {
     return isDirtySelector(state, formToMetaFieldMap[key] || key);
   });
-
-  return returnValue;
 };
