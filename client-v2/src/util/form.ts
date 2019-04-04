@@ -134,11 +134,7 @@ const formToMetaFieldMap: { [fieldName: string]: string } = {
   imageCutoutSrcOrigin: 'cutoutImage'
 };
 
-export const getImageMetaFromValidationResponse = (
-  image: ImageData,
-  hideImage?: boolean,
-  imageReplace?: boolean
-) => ({
+export const getImageMetaFromValidationResponse = (image: ImageData) => ({
   imageSrc: image.src,
   imageSrcThumb: image.thumb,
   imageSrcWidth: intToStr(image.width),
@@ -174,11 +170,7 @@ export const getArticleFragmentMetaFromFormValues = (
       headline: getStringField(values.headline),
       trailText: getStringField(values.trailText),
       byline: getStringField(values.byline),
-      ...getImageMetaFromValidationResponse(
-        primaryImage,
-        values.imageHide,
-        values.imageReplace
-      ),
+      ...getImageMetaFromValidationResponse(primaryImage),
       imageCutoutSrc: cutoutImage.src,
       imageCutoutSrcWidth: intToStr(cutoutImage.width),
       imageCutoutSrcHeight: intToStr(cutoutImage.height),
