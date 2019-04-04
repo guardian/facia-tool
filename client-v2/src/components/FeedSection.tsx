@@ -19,8 +19,6 @@ const FeedWrapper = styled('div')`
     `solid 1px ${theme.shared.base.colors.borderColor}`};
 `;
 
-
-
 export default () => (
   <FeedSectionContainer>
     <FeedSectionHeader />

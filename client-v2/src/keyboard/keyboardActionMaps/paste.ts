@@ -7,10 +7,10 @@ import { createArticleFragment } from 'shared/actions/ArticleFragments';
 const paste: KeyboardActionMap = {
   clipboard: (_: ApplicationFocusStates) => async (dispatch: Dispatch) => {
     try {
-      if (!navigator || (navigator as any).clipboard) {
+      if (!navigator || !(navigator as any).clipboard) {
         throw new Error('No navigator available on paste');
       }
-      // A temporary any here, as I'm not quite sure how to guarantee
+      // A temporary any here pending proper typings
       const content = await (navigator as any).clipboard.readText();
       if (!content) {
         return;

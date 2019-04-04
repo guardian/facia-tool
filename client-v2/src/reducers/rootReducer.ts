@@ -12,7 +12,7 @@ import editor from '../bundles/frontsUIBundle';
 import { capiLiveFeed, capiPreviewFeed } from '../bundles/capiFeedBundle';
 import staleFronts from './staleFrontsReducer';
 
-import { reducer as focusReducer } from "../bundles/focusBundle";
+import { reducer as focusReducer } from '../bundles/focusBundle';
 
 const rootReducer = (state: any = {}, action: any) => ({
   fronts: fronts(state.fronts, action),

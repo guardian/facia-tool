@@ -22,7 +22,6 @@ import { base } from 'constants/routes';
 
 initGA();
 
-
 const store = configureStore();
 
 // @ts-ignore -- Unbind is not used yet but can be used for removed all the
