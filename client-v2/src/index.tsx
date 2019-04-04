@@ -16,7 +16,7 @@ import { storeClipboardContent } from 'actions/Clipboard';
 import { Dispatch } from 'types/Store';
 import Modal from 'react-modal';
 import { init as initGA } from 'services/GA';
-import { init } from 'keyboard-shortcuts/init';
+import init from 'services/keyboard';
 import pollingConfig from 'util/pollingConfig';
 import { base } from 'constants/routes';
 
