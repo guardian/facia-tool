@@ -44,7 +44,8 @@ const base = {
     borderColor: colors.greyLightPinkish,
     borderColorFocus: colors.greyLight,
     placeholderLight: colors.greyLightPinkish,
-    placeholderDark: colors.greyLight
+    placeholderDark: colors.greyLight,
+    focusColor: colors.orange
   }
 };
 

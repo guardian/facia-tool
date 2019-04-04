@@ -29,6 +29,17 @@ import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import DragIntentContainer from 'shared/components/DragIntentContainer';
 import { setFocusState } from 'bundles/focusBundle';
 
+const ClipboardWrapper = styled('div')`
+  border: 1px solid #c9c9c9;
+  border-top: 1px solid black;
+  overflow-y: scroll;
+  &:focus {
+    border: 1px solid ${({ theme }) => theme.shared.base.colors.focusColor};
+    border-top: 1px solid ${({ theme }) => theme.shared.base.colors.focusColor};
+    outline: none;
+  }
+`;
+
 const ClipboardHeader = styled.div`
   align-items: center;
   justify-content: space-between;
@@ -86,95 +97,95 @@ class Clipboard extends React.Component<ClipboardProps> {
 
   public render() {
     return (
-      <StyledDragIntentContainer
-        active={!this.props.isClipboardOpen}
-        onDragIntentStart={() => this.setState({ preActive: true })}
-        onDragIntentEnd={() => this.setState({ preActive: false })}
-        onIntentConfirm={() => this.props.toggleClipboard(true)}
-        tabIndex={0}
-        onFocus={this.handleFocus}
-      >
-        <ClipboardHeader>
-          {this.props.isClipboardOpen && (
-            <ClipboardTitle>Clipboard</ClipboardTitle>
-          )}
-          <ButtonCircularCaret
-            openDir="right"
-            active={this.props.isClipboardOpen}
-            preActive={this.state.preActive}
-            onClick={() =>
-              this.props.toggleClipboard(!this.props.isClipboardOpen)
-            }
-          />
-        </ClipboardHeader>
-        <ClipboardBody>
-          {this.props.isClipboardOpen && (
-            <Root
-              id="clipboard"
-              data-testid="clipboard"
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                height: '100%',
-                width: '140px'
-              }}
-            >
-              <ClipboardLevel
-                onMove={this.handleMove}
-                onDrop={this.handleInsert}
+      <ClipboardWrapper tabIndex={0} onFocus={this.handleFocus}>
+        <StyledDragIntentContainer
+          active={!this.props.isClipboardOpen}
+          onDragIntentStart={() => this.setState({ preActive: true })}
+          onDragIntentEnd={() => this.setState({ preActive: false })}
+          onIntentConfirm={() => this.props.toggleClipboard(true)}
+        >
+          <ClipboardHeader>
+            {this.props.isClipboardOpen && (
+              <ClipboardTitle>Clipboard</ClipboardTitle>
+            )}
+            <ButtonCircularCaret
+              openDir="right"
+              active={this.props.isClipboardOpen}
+              preActive={this.state.preActive}
+              onClick={() =>
+                this.props.toggleClipboard(!this.props.isClipboardOpen)
+              }
+            />
+          </ClipboardHeader>
+          <ClipboardBody>
+            {this.props.isClipboardOpen && (
+              <Root
+                id="clipboard"
+                data-testid="clipboard"
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  height: '100%',
+                  width: '140px'
+                }}
               >
-                {(articleFragment, afProps) => (
-                  <CollectionItem
-                    uuid={articleFragment.uuid}
-                    parentId={clipboardId}
-                    frontId={clipboardId}
-                    getNodeProps={() => afProps}
-                    displayType="polaroid"
-                    onSelect={this.props.selectArticleFragment}
-                    onDelete={() =>
-                      this.props.removeCollectionItem(articleFragment.uuid)
-                    }
-                    {...afProps}
-                  >
-                    <ArticleFragmentLevel
-                      articleFragmentId={articleFragment.uuid}
-                      onMove={this.handleMove}
-                      onDrop={this.handleInsert}
+                <ClipboardLevel
+                  onMove={this.handleMove}
+                  onDrop={this.handleInsert}
+                >
+                  {(articleFragment, afProps) => (
+                    <CollectionItem
+                      uuid={articleFragment.uuid}
+                      parentId={clipboardId}
+                      frontId={clipboardId}
+                      getNodeProps={() => afProps}
                       displayType="polaroid"
+                      onSelect={this.props.selectArticleFragment}
+                      onDelete={() =>
+                        this.props.removeCollectionItem(articleFragment.uuid)
+                      }
+                      {...afProps}
                     >
-                      {(supporting, sProps) => (
-                        <CollectionItem
-                          uuid={supporting.uuid}
-                          frontId={clipboardId}
-                          parentId={articleFragment.uuid}
-                          getNodeProps={() => sProps}
-                          size="small"
-                          displayType="polaroid"
-                          onSelect={id =>
-                            this.props.selectArticleFragment(id, true)
-                          }
-                          onDelete={() =>
-                            this.props.removeSupportingCollectionItem(
-                              articleFragment.uuid,
-                              supporting.uuid
-                            )
-                          }
-                        />
-                      )}
-                    </ArticleFragmentLevel>
-                  </CollectionItem>
-                )}
-              </ClipboardLevel>
-            </Root>
-          )}
-        </ClipboardBody>
-      </StyledDragIntentContainer>
+                      <ArticleFragmentLevel
+                        articleFragmentId={articleFragment.uuid}
+                        onMove={this.handleMove}
+                        onDrop={this.handleInsert}
+                        displayType="polaroid"
+                      >
+                        {(supporting, sProps) => (
+                          <CollectionItem
+                            uuid={supporting.uuid}
+                            frontId={clipboardId}
+                            parentId={articleFragment.uuid}
+                            getNodeProps={() => sProps}
+                            size="small"
+                            displayType="polaroid"
+                            onSelect={id =>
+                              this.props.selectArticleFragment(id, true)
+                            }
+                            onDelete={() =>
+                              this.props.removeSupportingCollectionItem(
+                                articleFragment.uuid,
+                                supporting.uuid
+                              )
+                            }
+                          />
+                        )}
+                      </ArticleFragmentLevel>
+                    </CollectionItem>
+                  )}
+                </ClipboardLevel>
+              </Root>
+            )}
+          </ClipboardBody>
+        </StyledDragIntentContainer>
+      </ClipboardWrapper>
     );
   }
 
   private handleFocus = (e: React.FocusEvent<HTMLDivElement>) => {
     this.props.handleFocus();
-  }
+  };
 }
 
 const mapStateToProps = (state: State) => ({

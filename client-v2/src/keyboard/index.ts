@@ -1,4 +1,4 @@
-import { Store, Dispatch, GetState } from 'types/Store';
+import { Store, Dispatch } from 'types/Store';
 import {
   editorCloseAllOverviews,
   editorOpenAllOverviews,
@@ -6,33 +6,33 @@ import {
   editorCloseClipboard,
   editorOpenClipboard
 } from 'bundles/frontsUIBundle';
-import { State } from 'types/State';
 import { ThunkResult } from 'types/Store';
 import Mousetrap from 'mousetrap';
 import { selectFocusState } from 'bundles/focusBundle';
+import paste from './keyboardActionMaps/paste';
 
-export interface KeyboardActionMap {
-  [focusable: string]: KeyboardAction;
-}
-
-type FocusableTypes = 'clipboard' | 'article';
+type FocusableTypes = 'clipboard';
 
 interface BaseFocusState {
   type: FocusableTypes;
 }
 
-export type ApplicationFocusState = BaseFocusState;
+export type ApplicationFocusStates = BaseFocusState;
 
-// interface ClipboardFocusState extends BaseFocusState {
-//   type: 'clipboard';
-// }
+/**
+ * A map from a focusable type to an action. Used to determine which action to
+ * trigger for a given focus state.
+ */
+export interface KeyboardActionMap {
+  [type: string]: KeyboardAction;
+}
 
 type KeyboardAction = (focusState: BaseFocusState) => ThunkResult<any>;
 
 interface KeyboardBinding {
   title: string;
   description?: string;
-  action: (e: KeyboardEvent) => any;
+  action: (e: KeyboardEvent) => void;
 }
 
 interface KeyboardBindingMap {
@@ -69,27 +69,16 @@ export const createKeyboardActionMap = (store: Store): KeyboardBindingMap => ({
   }
 });
 
-const init = (store: Store) => {
-  const keyboardActionMap = createKeyboardActionMap(store);
-  applyKeyboardActionMap(keyboardActionMap);
-  return keyboardActionMap;
-};
-
-const paste: KeyboardActionMap = {
-  clipboard: (focusState: BaseFocusState) => (
-    dispatch: Dispatch,
-    getState: GetState
-  ) => {
-    // Do something with the clipboard here.
-    console.log({ focusState });
-  }
-};
-
+/**
+ * Bind a keyboard action map to a store, returning a closure that will call the
+ * appropriate action given the application focus state.
+ */
 const bindActionMap = (store: Store, actionMap: KeyboardActionMap) => {
-  return (e: KeyboardEvent) => {
-    // Get the focused thing
+  return () => {
     const focusable = selectFocusState(store.getState());
-    // Action the focused thing
+    if (!focusable) {
+      return;
+    }
     (store.dispatch as Dispatch)(actionMap[focusable.type](focusable));
   };
 };
@@ -101,4 +90,8 @@ const applyKeyboardActionMap = (map: KeyboardBindingMap) => {
   return () => entries.forEach(([seq]) => Mousetrap.unbind(seq));
 };
 
-export default init;
+export const listenForKeyboardEvents = (store: Store) => {
+  const keyboardActionMap = createKeyboardActionMap(store);
+  const unbind = applyKeyboardActionMap(keyboardActionMap);
+  return { keyboardActionMap, unbind };
+};

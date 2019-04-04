@@ -57,5 +57,8 @@
       "clean-css": "npm:clean-css@^3.4.12",
       "core-js": "npm:core-js@^1.1.4"
     }
+  },
+  "devDependencies": {
+    "@types/navigator-permissions": "^0.1.2"
   }
 }

@@ -4,8 +4,8 @@ describe('focusBundle', () => {
   describe('reducer', () => {
     it('should replace the focus state', () => {
       expect(
-        reducer(undefined, setFocusState({ type: "article" }))
-      ).toEqual({ focusState: { type: "article" }})
+        reducer(undefined, setFocusState({ type: "clipboard" }))
+      ).toEqual({ focusState: { focusableType: "clipboard" }})
     })
   })
 });

@@ -1,24 +1,20 @@
-import { ApplicationFocusState } from "services/keyboard";
+import { ApplicationFocusStates } from "keyboard";
 import { Action } from "../types/Action";
 import { State as GlobalState } from "../types/State";
 
-// Action types
-
 export const FOCUS_SET_FOCUS_STATE = 'FOCUS_SET_FOCUS_STATE';
 
-// Actions to add focus state
-
 export const setFocusState = (
-  focusState: ApplicationFocusState
+  focusState: ApplicationFocusStates
 ) => ({
   type: FOCUS_SET_FOCUS_STATE as typeof FOCUS_SET_FOCUS_STATE,
   payload: { focusState }
 });
 
-// Action handlers for each of those actions
+export const selectFocusState = (state: GlobalState) => state.focus.focusState;
 
 interface State {
-  focusState?: ApplicationFocusState
+  focusState?: ApplicationFocusStates
 }
 
 export const reducer = (state: State = { focusState: undefined }, action: Action) => {
@@ -34,5 +30,3 @@ export const reducer = (state: State = { focusState: undefined }, action: Action
     }
   }
 };
-
-export const selectFocusState = (state: GlobalState) => state.focus.focusState;

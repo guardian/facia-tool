@@ -16,15 +16,21 @@ import { storeClipboardContent } from 'actions/Clipboard';
 import { Dispatch } from 'types/Store';
 import Modal from 'react-modal';
 import { init as initGA } from 'services/GA';
-import init from 'services/keyboard';
+import { listenForKeyboardEvents } from 'keyboard';
 import pollingConfig from 'util/pollingConfig';
 import { base } from 'constants/routes';
 
 initGA();
 
+
 const store = configureStore();
 
-// publish uncaught errors to sentry.io
+// @ts-ignore -- Unbind is not used yet but can be used for removed all the
+// keyboard events. The keyboardActionMap contains a list of all active keyboard
+// shortcuts, which can eventually be displayed to the user.
+const { unbind, keyboardActionMap } = listenForKeyboardEvents(store);
+
+// Publish uncaught errors to sentry.io
 if (pageConfig.env.toUpperCase() !== 'DEV' && pageConfig.sentryPublicDSN) {
   const sentryOptions = {
     tags: {
@@ -50,10 +56,6 @@ if (pageConfig.favouriteFrontIdsByPriority) {
 (store.dispatch as Dispatch)(
   storeClipboardContent(pageConfig.clipboardArticles)
 );
-
-// @ts-ignore unbind is not used yet but can be used for removed all the
-// keyboard events
-const unbind = init(store);
 
 if (process.env.BUILD_ENV !== 'integration') {
   pollingConfig(store);

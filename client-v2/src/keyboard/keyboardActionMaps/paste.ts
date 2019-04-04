@@ -1,0 +1,34 @@
+import Raven from 'raven-js';
+import { KeyboardActionMap, ApplicationFocusStates } from 'keyboard';
+import { Dispatch, GetState } from 'types/Store';
+import { insertClipboardArticleFragment } from 'actions/Clipboard';
+import { createArticleFragment } from 'shared/actions/ArticleFragments';
+
+const paste: KeyboardActionMap = {
+  clipboard: (focusState: ApplicationFocusStates) => async (
+    dispatch: Dispatch,
+    getState: GetState
+  ) => {
+    try {
+      if (!navigator || (navigator as any).clipboard) {
+        throw new Error('No navigator available on paste');
+      }
+      // A temporary any here, as I'm not quite sure how to guarantee
+      const content = await (navigator as any).clipboard.readText();
+      if (!content) {
+        return;
+      }
+      const articleFragment = await dispatch(createArticleFragment(content));
+      if (!articleFragment) {
+        return;
+      }
+      dispatch(
+        insertClipboardArticleFragment('clipboard', 0, articleFragment.uuid)
+      );
+    } catch (e) {
+      Raven.captureMessage(`Paste to clipboard failed: ${e.message}`);
+    }
+  }
+};
+
+export default paste;
