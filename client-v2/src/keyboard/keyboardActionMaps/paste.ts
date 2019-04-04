@@ -1,14 +1,11 @@
 import Raven from 'raven-js';
 import { KeyboardActionMap, ApplicationFocusStates } from 'keyboard';
-import { Dispatch, GetState } from 'types/Store';
+import { Dispatch } from 'types/Store';
 import { insertClipboardArticleFragment } from 'actions/Clipboard';
 import { createArticleFragment } from 'shared/actions/ArticleFragments';
 
 const paste: KeyboardActionMap = {
-  clipboard: (focusState: ApplicationFocusStates) => async (
-    dispatch: Dispatch,
-    getState: GetState
-  ) => {
+  clipboard: (_: ApplicationFocusStates) => async (dispatch: Dispatch) => {
     try {
       if (!navigator || (navigator as any).clipboard) {
         throw new Error('No navigator available on paste');
