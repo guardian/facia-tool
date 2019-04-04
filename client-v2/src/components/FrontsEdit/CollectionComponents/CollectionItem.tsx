@@ -4,7 +4,10 @@ import { connect } from 'react-redux';
 import Article from 'shared/components/article/Article';
 import { State } from 'types/State';
 import { createCollectionItemTypeSelector } from 'shared/selectors/collectionItem';
-import { selectSharedState } from 'shared/selectors/shared';
+import {
+  selectSharedState,
+  externalArticleIdFromArticleFragmentSelector
+} from 'shared/selectors/shared';
 import collectionItemTypes from 'shared/constants/collectionItemTypes';
 import {
   CollectionItemTypes,
@@ -39,9 +42,10 @@ interface ContainerProps {
 }
 
 type ArticleContainerProps = ContainerProps & {
-  onAddToClipboard: (uuid: string) => void;
+  onAddToClipboard: (externalArticleId: string | undefined) => void;
   type: CollectionItemTypes;
   isSelected: boolean;
+  externalArticleId: string | undefined;
 };
 
 class CollectionItem extends React.Component<ArticleContainerProps> {
@@ -75,7 +79,8 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       type,
       size,
       articleNotifications,
-      isUneditable
+      isUneditable,
+      externalArticleId
     } = this.props;
 
     const notifications =
@@ -91,7 +96,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
             isUneditable={isUneditable}
             {...getNodeProps()}
             onDelete={onDelete}
-            onAddToClipboard={() => onAddToClipboard(uuid)}
+            onAddToClipboard={() => onAddToClipboard(externalArticleId)}
             onClick={() => onSelect(uuid)}
             fade={!isSelected}
             size={size}
@@ -140,21 +145,28 @@ const createMapStateToProps = () => {
       type: selectType(selectSharedState(state), props.uuid),
       isSelected:
         !selectedArticleFragmentData ||
-        selectedArticleFragmentData.id === props.uuid
+        selectedArticleFragmentData.id === props.uuid,
+      externalArticleId: externalArticleIdFromArticleFragmentSelector(
+        selectSharedState(state),
+        props.uuid
+      )
     };
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    onAddToClipboard: (id: string) =>
-      dispatch(
-        insertArticleFragment(
-          { id: 'clipboard', type: 'clipboard', index: 0 },
-          id,
-          'clipboard'
-        )
-      )
+    onAddToClipboard: (id: string | undefined) => {
+      if (id) {
+        dispatch(
+          insertArticleFragment(
+            { id: 'clipboard', type: 'clipboard', index: 0 },
+            id,
+            'clipboard'
+          )
+        );
+      }
+    }
   };
 };
 
