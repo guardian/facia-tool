@@ -424,6 +424,19 @@ const indexInGroupSelector = (
   articleId: string
 ) => groupsSelector(state)[groupId].articleFragments.indexOf(articleId);
 
+const externalArticleIdFromArticleFragmentSelector = (
+  state: State,
+  id: string
+): string | undefined => {
+  const externalArticle = externalArticleFromArticleFragmentSelector(state, id);
+
+  if (!externalArticle) {
+    return undefined;
+  }
+
+  return externalArticle.id;
+};
+
 export {
   externalArticleFromArticleFragmentSelector,
   createArticleFromArticleFragmentSelector,
@@ -445,5 +458,6 @@ export {
   groupSiblingsArticleCountSelector,
   articleTagSelector,
   indexInGroupSelector,
-  groupsSelector
+  groupsSelector,
+  externalArticleIdFromArticleFragmentSelector
 };
