@@ -373,12 +373,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 )}
                 {!imageReplace && (
                   <ThumbnailEditForm
-                    style={{
-                      backgroundImage: `url('${
-                        articleCapiFieldValues.thumbnail
-                      }')`,
-                      opacity: imageHide ? 0.5 : 1
-                    }}
+                    imageHide={imageHide}
+                    url={articleCapiFieldValues.thumbnail}
                   />
                 )}
               </Col>
