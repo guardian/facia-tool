@@ -139,6 +139,11 @@ class Clipboard extends React.Component<ClipboardProps> {
                   onDrop={this.handleInsert}
                 >
                   {(articleFragment, afProps) => (
+                    <div
+                      tabIndex={0}
+                      onFocus={this.handleArticleFocus}
+                      onBlur={this.handleArticleBlur}
+                    >
                     <CollectionItem
                       uuid={articleFragment.uuid}
                       parentId={clipboardId}
@@ -178,6 +183,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                         )}
                       </ArticleFragmentLevel>
                     </CollectionItem>
+                    </div>
                   )}
                 </ClipboardLevel>
               </Root>
@@ -191,6 +197,9 @@ class Clipboard extends React.Component<ClipboardProps> {
   private handleFocus = (e: React.FocusEvent<HTMLDivElement>) =>
     this.props.handleFocus();
   private handleBlur = () => this.props.handleBlur();
+
+  private handleArticleFocus = (e: React.FocusEvent<HTMLDivElement>) => console.log('article focused!');
+  private handleArticleBlur = () => console.log('article blurred');
 }
 
 const mapStateToProps = (state: State) => ({
