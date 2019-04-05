@@ -27,7 +27,7 @@ import CollectionItem from './FrontsEdit/CollectionComponents/CollectionItem';
 import { styled } from 'constants/theme';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import DragIntentContainer from 'shared/components/DragIntentContainer';
-import { setFocusState } from 'bundles/focusBundle';
+import { setFocusState, resetFocusState } from 'bundles/focusBundle';
 
 const ClipboardWrapper = styled('div')`
   border: 1px solid #c9c9c9;
@@ -75,6 +75,7 @@ interface ClipboardProps {
   isClipboardOpen: boolean;
   toggleClipboard: (open: boolean) => void;
   handleFocus: () => void;
+  handleBlur: () => void;
   dispatch: Dispatch;
 }
 
@@ -97,7 +98,11 @@ class Clipboard extends React.Component<ClipboardProps> {
 
   public render() {
     return (
-      <ClipboardWrapper tabIndex={0} onFocus={this.handleFocus}>
+      <ClipboardWrapper
+        tabIndex={0}
+        onFocus={this.handleFocus}
+        onBlur={this.handleBlur}
+      >
         <StyledDragIntentContainer
           active={!this.props.isClipboardOpen}
           onDragIntentStart={() => this.setState({ preActive: true })}
@@ -183,9 +188,9 @@ class Clipboard extends React.Component<ClipboardProps> {
     );
   }
 
-  private handleFocus = (e: React.FocusEvent<HTMLDivElement>) => {
+  private handleFocus = (e: React.FocusEvent<HTMLDivElement>) =>
     this.props.handleFocus();
-  };
+  private handleBlur = () => this.props.handleBlur();
 }
 
 const mapStateToProps = (state: State) => ({
@@ -217,13 +222,13 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch(open ? editorOpenClipboard() : editorCloseClipboard()),
   updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
     dispatch(updateArticleFragmentMeta(id, meta)),
-  handleFocus: () => {
+  handleFocus: () =>
     dispatch(
       setFocusState({
         type: 'clipboard'
       })
-    );
-  },
+    ),
+  handleBlur: () => dispatch(resetFocusState()),
   dispatch
 });
 
