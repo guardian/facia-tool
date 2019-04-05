@@ -261,10 +261,9 @@ const keyboardArticleFragmentMove = (
   groupId?: string
 ): ThunkResult<void> => {
   return (dispatch: Dispatch, getState) => {
-    // Pos spec: type, id, index
 
     const state = getState();
-    const { id } = fragment;
+    const id = fragment.uuid;
     if (persistTo === 'collection') {
       const fromIndex = indexInGroupSelector(
         selectSharedState(state),

@@ -75,6 +75,7 @@ interface ClipboardProps {
   isClipboardOpen: boolean;
   toggleClipboard: (open: boolean) => void;
   handleFocus: () => void;
+  handleArticleFocus: (articleFragment: TArticleFragment) => void;
   handleBlur: () => void;
   dispatch: Dispatch;
 }
@@ -100,7 +101,7 @@ class Clipboard extends React.Component<ClipboardProps> {
     return (
       <ClipboardWrapper
         tabIndex={0}
-        onFocus={this.handleFocus}
+        //onFocus={this.handleFocus}
         onBlur={this.handleBlur}
       >
         <StyledDragIntentContainer
@@ -141,8 +142,8 @@ class Clipboard extends React.Component<ClipboardProps> {
                   {(articleFragment, afProps) => (
                     <div
                       tabIndex={0}
-                      onFocus={this.handleArticleFocus}
-                      onBlur={this.handleArticleBlur}
+                      onFocus={(e) => this.handleArticleFocus(e, articleFragment)}
+                      onBlur={this.handleBlur}
                     >
                     <CollectionItem
                       uuid={articleFragment.uuid}
@@ -194,12 +195,10 @@ class Clipboard extends React.Component<ClipboardProps> {
     );
   }
 
-  private handleFocus = (e: React.FocusEvent<HTMLDivElement>) =>
-    this.props.handleFocus();
+  private handleFocus = (e: React.FocusEvent<HTMLDivElement>) => console.log('handling clipboard focus') || this.props.handleFocus();
   private handleBlur = () => this.props.handleBlur();
 
-  private handleArticleFocus = (e: React.FocusEvent<HTMLDivElement>) => console.log('article focused!');
-  private handleArticleBlur = () => console.log('article blurred');
+  private handleArticleFocus = (e: React.FocusEvent<HTMLDivElement>, articleFragment: TArticleFragment) => this.props.handleArticleFocus(articleFragment);
 }
 
 const mapStateToProps = (state: State) => ({
@@ -237,6 +236,15 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
         type: 'clipboard'
       })
     ),
+  handleArticleFocus: (articleFragment: TArticleFragment) => {
+    console.log('handling article focus!');
+    dispatch(
+      setFocusState({
+        type: 'clipboardArticle',
+        articleFragment
+      })
+    )
+  },
   handleBlur: () => dispatch(resetFocusState()),
   dispatch
 });

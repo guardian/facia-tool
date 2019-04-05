@@ -13,8 +13,10 @@ const nextClipboardIndexSelector = (
   action: string
 ) => {
   const clipboardContent = clipboardContentSelector(state);
+  console.log({clipboardContent});
 
   const fromIndex = clipboardContent.indexOf(articleId);
+  console.log({fromIndex});
 
   if (action === 'down') {
     if (fromIndex < clipboardContent.length - 1) {
@@ -22,7 +24,7 @@ const nextClipboardIndexSelector = (
     }
   }
   if (action === 'up') {
-    if (fromIndex !== 0) {
+    if (fromIndex > 0) {
       return { fromIndex, toIndex: fromIndex - 1 };
     }
   }

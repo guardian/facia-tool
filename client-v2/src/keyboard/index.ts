@@ -10,8 +10,9 @@ import { ThunkResult } from 'types/Store';
 import Mousetrap from 'mousetrap';
 import { selectFocusState } from 'bundles/focusBundle';
 import paste from './keyboardActionMaps/paste';
+import { moveUp, moveDown } from './keyboardActionMaps/move';
 
-type FocusableTypes = 'clipboard';
+type FocusableTypes = 'clipboard' | 'clipboardArticle';
 
 interface BaseFocusState {
   type: FocusableTypes;
@@ -40,6 +41,16 @@ interface KeyboardBindingMap {
 }
 
 export const createKeyboardActionMap = (store: Store): KeyboardBindingMap => ({
+  'up': {
+    title: 'Up',
+    description: 'Move an entity up',
+    action: bindActionMap(store, moveUp)
+  },
+  'down': {
+    title: 'Down',
+    description: 'Move an entity down',
+    action: bindActionMap(store, moveDown)
+  },
   'command+v': {
     title: 'Paste',
     description: 'Paste an entity',
