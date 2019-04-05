@@ -4,7 +4,30 @@ import {
   groupsSelector,
   groupCollectionSelector
 } from '../shared/selectors/shared';
+import { clipboardContentSelector } from 'selectors/clipboardSelectors';
 import { State } from 'types/State';
+
+const nextClipboardIndexSelector = (
+  state: State,
+  articleId: string,
+  action: string
+) => {
+  const clipboardContent = clipboardContentSelector(state);
+
+  const fromIndex = clipboardContent.indexOf(articleId);
+
+  if (action === 'down') {
+    if (fromIndex < clipboardContent.length - 1) {
+      return { fromIndex, toIndex: fromIndex + 1 };
+    }
+  }
+  if (action === 'up') {
+    if (fromIndex !== 0) {
+      return { fromIndex, toIndex: fromIndex - 1 };
+    }
+  }
+  return null;
+};
 
 const nextIndexAndGroupSelector = (
   state: State,
@@ -68,4 +91,4 @@ const nextIndexAndGroupSelector = (
   return null;
 };
 
-export { nextIndexAndGroupSelector };
+export { nextIndexAndGroupSelector, nextClipboardIndexSelector };

@@ -8,7 +8,10 @@ import {
   articleFragmentsReceived,
   maybeAddFrontPublicationDate
 } from 'shared/actions/ArticleFragments';
-import { nextIndexAndGroupSelector } from '../selectors/keyboardNavigationSelectors';
+import {
+  nextIndexAndGroupSelector,
+  nextClipboardIndexSelector
+} from '../selectors/keyboardNavigationSelectors';
 import { ArticleFragment } from 'shared/types/Collection';
 import {
   selectSharedState,
@@ -253,9 +256,9 @@ const removeArticleFragment = (
 
 const keyboardArticleFragmentMove = (
   fragment: ArticleFragment,
-  groupId: string,
   action: 'up' | 'down',
-  persistTo: 'collection' | 'clipboard'
+  persistTo: 'collection' | 'clipboard',
+  groupId?: string
 ): ThunkResult<void> => {
   return (dispatch: Dispatch, getState) => {
     // Pos spec: type, id, index
@@ -265,29 +268,36 @@ const keyboardArticleFragmentMove = (
     if (persistTo === 'collection') {
       const fromIndex = indexInGroupSelector(
         selectSharedState(state),
-        groupId,
+        groupId || '',
         id
       );
       const type = 'group';
 
-      const from = { type, index: fromIndex, id: groupId };
+      const from: PosSpec = { type, index: fromIndex, id: groupId || '' };
 
       const nextPosition = nextIndexAndGroupSelector(
         state,
         id,
-        groupId,
+        groupId || '',
         action
       );
 
-      if (nextPosition) {
+      if (nextPosition && nextPosition.nextGroupId) {
         const { toIndex, nextGroupId } = nextPosition;
 
-        const to = { type, index: toIndex, id: nextGroupId };
+        const to: PosSpec = { type, index: toIndex, id: nextGroupId };
 
         dispatch(moveArticleFragment(to, fragment, from, persistTo));
       }
     } else if (persistTo === 'clipboard') {
-      // TODO
+      const clipboardIndeces = nextClipboardIndexSelector(state, id, action);
+      if (clipboardIndeces) {
+        const { fromIndex, toIndex } = clipboardIndeces;
+        const type = 'clipboard';
+        const from = { type, index: fromIndex, id: 'clipboard' };
+        const to = { type, index: toIndex, id: 'clipboard' };
+        dispatch(moveArticleFragment(to, fragment, from, persistTo));
+      }
     }
   };
 };
