@@ -8,11 +8,13 @@ import {
   articleFragmentsReceived,
   maybeAddFrontPublicationDate
 } from 'shared/actions/ArticleFragments';
+import { nextIndexAndGroupSelector } from '../selectors/keyboardNavigationSelectors';
 import { ArticleFragment } from 'shared/types/Collection';
 import {
   selectSharedState,
   articleFragmentsSelector,
-  groupSiblingsArticleCountSelector
+  groupSiblingsArticleCountSelector,
+  indexInGroupSelector
 } from 'shared/selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
@@ -249,6 +251,47 @@ const removeArticleFragment = (
   };
 };
 
+const keyboardArticleFragmentMove = (
+  fragment: ArticleFragment,
+  groupId: string,
+  action: 'up' | 'down',
+  persistTo: 'collection' | 'clipboard'
+): ThunkResult<void> => {
+  return (dispatch: Dispatch, getState) => {
+    // Pos spec: type, id, index
+
+    const state = getState();
+    const { id } = fragment;
+    if (persistTo === 'collection') {
+      const fromIndex = indexInGroupSelector(
+        selectSharedState(state),
+        groupId,
+        id
+      );
+      const type = 'group';
+
+      const from = { type, index: fromIndex, id: groupId };
+
+      const nextPosition = nextIndexAndGroupSelector(
+        state,
+        id,
+        groupId,
+        action
+      );
+
+      if (nextPosition) {
+        const { toIndex, nextGroupId } = nextPosition;
+
+        const to = { type, index: toIndex, id: nextGroupId };
+
+        dispatch(moveArticleFragment(to, fragment, from, persistTo));
+      }
+    } else if (persistTo === 'clipboard') {
+      // TODO
+    }
+  };
+};
+
 const moveArticleFragment = (
   to: PosSpec,
   fragment: ArticleFragment,
@@ -308,5 +351,6 @@ export {
   updateArticleFragmentMetaWithPersist as updateArticleFragmentMeta,
   updateClipboardArticleFragmentMetaWithPersist as updateClipboardArticleFragmentMeta,
   removeArticleFragment,
-  addImageToArticleFragment
+  addImageToArticleFragment,
+  keyboardArticleFragmentMove
 };
