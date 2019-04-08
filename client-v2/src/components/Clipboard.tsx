@@ -101,7 +101,7 @@ class Clipboard extends React.Component<ClipboardProps> {
     return (
       <ClipboardWrapper
         tabIndex={0}
-        //onFocus={this.handleFocus}
+        onFocus={this.handleFocus}
         onBlur={this.handleBlur}
       >
         <StyledDragIntentContainer
@@ -195,10 +195,13 @@ class Clipboard extends React.Component<ClipboardProps> {
     );
   }
 
-  private handleFocus = (e: React.FocusEvent<HTMLDivElement>) => console.log('handling clipboard focus') || this.props.handleFocus();
+  private handleFocus = (e: React.FocusEvent<HTMLDivElement>) => this.props.handleFocus();
   private handleBlur = () => this.props.handleBlur();
 
-  private handleArticleFocus = (e: React.FocusEvent<HTMLDivElement>, articleFragment: TArticleFragment) => this.props.handleArticleFocus(articleFragment);
+  private handleArticleFocus = (e: React.FocusEvent<HTMLDivElement>, articleFragment: TArticleFragment) => {
+    this.props.handleArticleFocus(articleFragment);
+    e.stopPropagation();
+  }
 }
 
 const mapStateToProps = (state: State) => ({
@@ -237,7 +240,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       })
     ),
   handleArticleFocus: (articleFragment: TArticleFragment) => {
-    console.log('handling article focus!');
     dispatch(
       setFocusState({
         type: 'clipboardArticle',
