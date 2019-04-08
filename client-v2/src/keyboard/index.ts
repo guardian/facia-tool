@@ -17,7 +17,7 @@ type FocusableTypes = 'clipboard' | 'clipboardArticle';
 
 interface BaseFocusState {
   type: FocusableTypes;
-  articleFagment?: ArticleFragment;
+  articleFragment?: ArticleFragment;
 }
 
 export type ApplicationFocusStates = BaseFocusState;
