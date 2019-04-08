@@ -40,6 +40,13 @@ const ClipboardWrapper = styled('div')`
   }
 `;
 
+const ArticleWrapper = styled('div')`
+  &:focus {
+    border: 1px solid ${({ theme }) => theme.shared.base.colors.focusColor};
+    outline: none;
+  }
+`;
+
 const ClipboardHeader = styled.div`
   align-items: center;
   justify-content: space-between;
@@ -140,7 +147,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                   onDrop={this.handleInsert}
                 >
                   {(articleFragment, afProps) => (
-                    <div
+                    <ArticleWrapper
                       tabIndex={0}
                       onFocus={(e) => this.handleArticleFocus(e, articleFragment)}
                       onBlur={this.handleBlur}
@@ -184,7 +191,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                         )}
                       </ArticleFragmentLevel>
                     </CollectionItem>
-                    </div>
+                    </ArticleWrapper>
                   )}
                 </ClipboardLevel>
               </Root>
