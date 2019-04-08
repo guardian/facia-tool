@@ -1,7 +1,7 @@
 import Raven from 'raven-js';
 import { KeyboardActionMap, ApplicationFocusStates } from 'keyboard';
 import { Dispatch } from 'types/Store';
-import { keyboardArticleFragmentMove } from 'actions/ArticleFragments';
+import { keyboardArticleFragmentMove } from 'actions/KeyboardNavigation';
 
 const moveUp: KeyboardActionMap = {
   clipboardArticle: (focusData: ApplicationFocusStates) => async (
