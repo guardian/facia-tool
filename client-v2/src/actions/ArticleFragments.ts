@@ -261,7 +261,6 @@ const keyboardArticleFragmentMove = (
   groupId?: string
 ): ThunkResult<void> => {
   return (dispatch: Dispatch, getState) => {
-
     const state = getState();
     const id = fragment.uuid;
     if (persistTo === 'collection') {

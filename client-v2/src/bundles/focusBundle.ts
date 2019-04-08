@@ -16,6 +16,13 @@ export const resetFocusState = () => ({
 
 export const selectFocusState = (state: GlobalState) => state.focus.focusState;
 
+export const selectFocusedClipboardArticle = (state: GlobalState) => {
+  const focusState = selectFocusState(state);
+  if (focusState && focusState.type === 'clipboardArticle') {
+    return focusState.articleFragment.uuid;
+  }
+};
+
 interface State {
   focusState?: ApplicationFocusStates;
 }

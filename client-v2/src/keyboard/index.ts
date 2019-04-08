@@ -11,11 +11,13 @@ import Mousetrap from 'mousetrap';
 import { selectFocusState } from 'bundles/focusBundle';
 import paste from './keyboardActionMaps/paste';
 import { moveUp, moveDown } from './keyboardActionMaps/move';
+import { ArticleFragment } from 'shared/types/collection';
 
 type FocusableTypes = 'clipboard' | 'clipboardArticle';
 
 interface BaseFocusState {
   type: FocusableTypes;
+  articleFagment?: ArticleFragment;
 }
 
 export type ApplicationFocusStates = BaseFocusState;
@@ -41,12 +43,12 @@ interface KeyboardBindingMap {
 }
 
 export const createKeyboardActionMap = (store: Store): KeyboardBindingMap => ({
-  'up': {
+  up: {
     title: 'Up',
     description: 'Move an entity up',
     action: bindActionMap(store, moveUp)
   },
-  'down': {
+  down: {
     title: 'Down',
     description: 'Move an entity down',
     action: bindActionMap(store, moveDown)
