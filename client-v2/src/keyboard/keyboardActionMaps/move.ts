@@ -10,9 +10,9 @@ const moveUp: KeyboardActionMap = {
     try {
       dispatch(
         keyboardArticleFragmentMove(
-          focusData.articleFragment,
           'up',
-          'clipboard'
+          'clipboard',
+          focusData.articleFragment
         )
       );
     } catch (e) {
@@ -28,9 +28,9 @@ const moveDown: KeyboardActionMap = {
     try {
       dispatch(
         keyboardArticleFragmentMove(
-          focusData.articleFragment,
           'down',
-          'clipboard'
+          'clipboard',
+          focusData.articleFragment
         )
       );
     } catch (e) {

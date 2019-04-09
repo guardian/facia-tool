@@ -12,12 +12,16 @@ import { PosSpec } from 'lib/dnd';
 import { ThunkResult, Dispatch } from 'types/Store';
 
 const keyboardArticleFragmentMove = (
-  fragment: ArticleFragment,
   action: 'up' | 'down',
   persistTo: 'collection' | 'clipboard',
+  fragment?: ArticleFragment,
   groupId?: string
 ): ThunkResult<void> => {
   return (dispatch: Dispatch, getState) => {
+    if (!fragment) {
+      return;
+    }
+
     const state = getState();
     const id = fragment.uuid;
     if (persistTo === 'collection') {
