@@ -48,6 +48,22 @@ const FrontContentContainer = styled('div')`
   padding-top: 1px;
 `;
 
+const CollectionWrapper = styled('div')`
+ &:focus {
+    border: 1px solid ${({ theme }) => theme.shared.base.colors.focusColor};
+    border-top: 2px solid ${({ theme }) => theme.shared.base.colors.focusColor};
+    border-bottom: 2px solid ${({ theme }) => theme.shared.base.colors.focusColor};
+    outline: none;
+  }
+`;
+
+const CollectionItemWrapper = styled('div')`
+ &:focus {
+    border: 1px solid ${({ theme }) => theme.shared.base.colors.focusColor};
+    outline: none;
+  }
+`;
+
 interface FrontPropsBeforeState {
   id: string;
   browsingStage: CollectionItemSets;
@@ -91,6 +107,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     if (this.props.browsingStage !== newProps.browsingStage) {
       this.props.initialiseFront();
     }
+  }
+
+  public componentDidUpdate() {
+    console.log('rerendering');
   }
 
   public handleError = (error: string) => {
@@ -139,102 +159,108 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                   articlesVisible && articlesVisible[collectionId];
                 let collectionItemCount: number = 0;
                 return (
-                  <Collection
-                    key={collectionId}
-                    id={collectionId}
-                    priority={front.priority}
-                    frontId={this.props.id}
-                    alsoOn={this.props.alsoOn}
-                    canPublish={this.props.browsingStage !== 'live'}
-                    browsingStage={this.props.browsingStage}
-                  >
-                    {(group, isUneditable) => (
-                      <GroupDisplay key={group.uuid} groupName={group.name}>
-                        <GroupLevel
-                          isUneditable={isUneditable}
-                          groupId={group.uuid}
-                          onMove={this.handleMove}
-                          onDrop={this.handleInsert}
-                        >
-                          {(articleFragment, afDragProps) => {
-                            collectionItemCount += 1;
-                            const articleNotifications: string[] = [];
-                            if (
-                              collectionArticlesVisible &&
-                              collectionItemCount ===
-                                collectionArticlesVisible.mobile
-                            ) {
-                              articleNotifications.push('mobile');
-                            }
-                            if (
-                              collectionArticlesVisible &&
-                              collectionItemCount ===
-                                collectionArticlesVisible.desktop
-                            ) {
-                              articleNotifications.push('desktop');
-                            }
-                            return (
-                              <CollectionItem
-                                frontId={this.props.id}
-                                onImageDrop={imageData => {
-                                  this.props.addImageToArticleFragment(
-                                    articleFragment.uuid,
-                                    imageData
-                                  );
-                                }}
-                                uuid={articleFragment.uuid}
-                                parentId={group.uuid}
-                                isUneditable={isUneditable}
-                                getNodeProps={() =>
-                                  !isUneditable ? afDragProps : {}
-                                }
-                                onSelect={this.props.selectArticleFragment}
-                                onDelete={() =>
-                                  this.props.removeCollectionItem(
-                                    group.uuid,
-                                    articleFragment.uuid
-                                  )
-                                }
-                                articleNotifications={articleNotifications}
-                              >
-                                <ArticleFragmentLevel
-                                  isUneditable={isUneditable}
-                                  articleFragmentId={articleFragment.uuid}
-                                  onMove={this.handleMove}
-                                  onDrop={this.handleInsert}
+                  <CollectionWrapper tabIndex={0}>
+                    <Collection
+                      key={collectionId}
+                      id={collectionId}
+                      priority={front.priority}
+                      frontId={this.props.id}
+                      alsoOn={this.props.alsoOn}
+                      canPublish={this.props.browsingStage !== 'live'}
+                      browsingStage={this.props.browsingStage}
+                    >
+                      {(group, isUneditable) => (
+                        <GroupDisplay key={group.uuid} groupName={group.name}>
+                          <GroupLevel
+                            isUneditable={isUneditable}
+                            groupId={group.uuid}
+                            onMove={this.handleMove}
+                            onDrop={this.handleInsert}
+                          >
+                            {(articleFragment, afDragProps) => {
+                              collectionItemCount += 1;
+                              const articleNotifications: string[] = [];
+                              if (
+                                collectionArticlesVisible &&
+                                collectionItemCount ===
+                                  collectionArticlesVisible.mobile
+                              ) {
+                                articleNotifications.push('mobile');
+                              }
+                              if (
+                                collectionArticlesVisible &&
+                                collectionItemCount ===
+                                  collectionArticlesVisible.desktop
+                              ) {
+                                articleNotifications.push('desktop');
+                              }
+                              return (
+                                <CollectionItemWrapper
+                                  tabIndex={0}
                                 >
-                                  {(supporting, supportingDragProps) => (
-                                    <CollectionItem
-                                      frontId={this.props.id}
-                                      uuid={supporting.uuid}
-                                      parentId={articleFragment.uuid}
-                                      onSelect={id =>
-                                        this.props.selectArticleFragment(
-                                          id,
-                                          true
-                                        )
-                                      }
+                                  <CollectionItem
+                                    frontId={this.props.id}
+                                    onImageDrop={imageData => {
+                                      this.props.addImageToArticleFragment(
+                                        articleFragment.uuid,
+                                        imageData
+                                      );
+                                    }}
+                                    uuid={articleFragment.uuid}
+                                    parentId={group.uuid}
+                                    isUneditable={isUneditable}
+                                    getNodeProps={() =>
+                                      !isUneditable ? afDragProps : {}
+                                    }
+                                    onSelect={this.props.selectArticleFragment}
+                                    onDelete={() =>
+                                      this.props.removeCollectionItem(
+                                        group.uuid,
+                                        articleFragment.uuid
+                                      )
+                                    }
+                                    articleNotifications={articleNotifications}
+                                  >
+                                    <ArticleFragmentLevel
                                       isUneditable={isUneditable}
-                                      getNodeProps={() =>
-                                        !isUneditable ? supportingDragProps : {}
-                                      }
-                                      onDelete={() =>
-                                        this.props.removeSupportingCollectionItem(
-                                          articleFragment.uuid,
-                                          supporting.uuid
-                                        )
-                                      }
-                                      size="small"
-                                    />
-                                  )}
-                                </ArticleFragmentLevel>
-                              </CollectionItem>
-                            );
-                          }}
-                        </GroupLevel>
-                      </GroupDisplay>
-                    )}
-                  </Collection>
+                                      articleFragmentId={articleFragment.uuid}
+                                      onMove={this.handleMove}
+                                      onDrop={this.handleInsert}
+                                    >
+                                      {(supporting, supportingDragProps) => (
+                                        <CollectionItem
+                                          frontId={this.props.id}
+                                          uuid={supporting.uuid}
+                                          parentId={articleFragment.uuid}
+                                          onSelect={id =>
+                                            this.props.selectArticleFragment(
+                                              id,
+                                              true
+                                            )
+                                          }
+                                          isUneditable={isUneditable}
+                                          getNodeProps={() =>
+                                            !isUneditable ? supportingDragProps : {}
+                                          }
+                                          onDelete={() =>
+                                            this.props.removeSupportingCollectionItem(
+                                              articleFragment.uuid,
+                                              supporting.uuid
+                                            )
+                                          }
+                                          size="small"
+                                        />
+                                      )}
+                                    </ArticleFragmentLevel>
+                                  </CollectionItem>
+                                </CollectionItemWrapper>
+                              );
+                            }}
+                          </GroupLevel>
+                        </GroupDisplay>
+                      )}
+                    </Collection>
+                  </CollectionWrapper>
                 );
               })}
             </Root>
