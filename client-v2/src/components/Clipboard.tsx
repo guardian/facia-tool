@@ -1,5 +1,5 @@
 import { Dispatch } from 'types/Store';
-import React from 'react';
+import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { Root, Move, PosSpec } from 'lib/dnd';
 import { State } from 'types/State';
@@ -25,12 +25,14 @@ import ClipboardLevel from './clipboard/ClipboardLevel';
 import ArticleFragmentLevel from './clipboard/ArticleFragmentLevel';
 import CollectionItem from './FrontsEdit/CollectionComponents/CollectionItem';
 import { styled } from 'constants/theme';
+import { StyledComponentClass } from 'styled-components';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import DragIntentContainer from 'shared/components/DragIntentContainer';
 import {
   setFocusState,
   resetFocusState,
-  selectFocusedClipboardArticle
+  selectFocusedClipboardArticle,
+  selectIsClipboardFocused
 } from 'bundles/focusBundle';
 
 const ClipboardWrapper = styled('div')`
@@ -94,12 +96,31 @@ interface ClipboardProps {
   handleBlur: () => void;
   dispatch: Dispatch;
   focusedArticle?: string;
+  isClipboardFocused: boolean;
+  focusClipboardIfInFocus: () => void;
+  clipboardWrapper: RefObject<StyledComponentClass<{}, any>>;
 }
 
 class Clipboard extends React.Component<ClipboardProps> {
   public state = {
     preActive: false
   };
+
+  constructor(props: ClipboardProps) {
+    super(props);
+
+    this.clipboardWrapper = React.createRef();
+
+    this.focusClipboardIfInFocus = () => {
+      if (this.props.isClipboardFocused) {
+        this.clipboardWrapper.current.focus();
+      }
+    };
+  }
+
+  public componentDidUpdate() {
+    this.focusClipboardIfInFocus();
+  }
 
   // TODO: this code is repeated in src/components/FrontsEdit/Front.js
   // refactor
@@ -120,6 +141,7 @@ class Clipboard extends React.Component<ClipboardProps> {
         tabIndex={0}
         onFocus={this.handleFocus}
         onBlur={this.handleBlur}
+        innerRef={this.clipboardWrapper}
       >
         <StyledDragIntentContainer
           active={!this.props.isClipboardOpen}
@@ -132,6 +154,7 @@ class Clipboard extends React.Component<ClipboardProps> {
               <ClipboardTitle>Clipboard</ClipboardTitle>
             )}
             <ButtonCircularCaret
+              tabIndex={-1}
               openDir="right"
               active={this.props.isClipboardOpen}
               preActive={this.state.preActive}
@@ -230,7 +253,8 @@ class Clipboard extends React.Component<ClipboardProps> {
 
 const mapStateToProps = (state: State) => ({
   isClipboardOpen: selectIsClipboardOpen(state),
-  focusedArticle: selectFocusedClipboardArticle(state)
+  focusedArticle: selectFocusedClipboardArticle(state),
+  isClipboardFocused: selectIsClipboardFocused(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

@@ -8,7 +8,7 @@ import {
 } from 'bundles/frontsUIBundle';
 import { ThunkResult } from 'types/Store';
 import Mousetrap from 'mousetrap';
-import { selectFocusState } from 'bundles/focusBundle';
+import { selectFocusState, setFocusState } from 'bundles/focusBundle';
 import paste from './keyboardActionMaps/paste';
 import { moveUp, moveDown } from './keyboardActionMaps/move';
 import { ArticleFragment } from 'shared/types/collection';
@@ -77,6 +77,18 @@ export const createKeyboardActionMap = (store: Store): KeyboardBindingMap => ({
         store.dispatch(editorCloseClipboard());
       } else {
         store.dispatch(editorOpenClipboard());
+      }
+    }
+  },
+  'command+b': {
+    title: 'Focus clipboard',
+    action: () => {
+      if (selectIsClipboardOpen(store.getState())) {
+        store.dispatch(
+          setFocusState({
+            type: 'clipboard'
+          })
+        );
       }
     }
   }

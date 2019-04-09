@@ -16,10 +16,18 @@ export const resetFocusState = () => ({
 
 export const selectFocusState = (state: GlobalState) => state.focus.focusState;
 
+export const selectIsClipboardFocused = (state: GlobalState) => {
+  const focusState = selectFocusState(state);
+  if (focusState) {
+    return focusState.type === 'clipboard';
+  }
+  return false;
+};
+
 export const selectFocusedClipboardArticle = (state: GlobalState) => {
   const focusState = selectFocusState(state);
   if (focusState && focusState.type === 'clipboardArticle') {
-    return focusState.articleFragment.uuid;
+    return focusState.articleFragment && focusState.articleFragment.uuid;
   }
 };
 
