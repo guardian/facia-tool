@@ -97,8 +97,6 @@ interface ClipboardProps {
   dispatch: Dispatch;
   focusedArticle?: string;
   isClipboardFocused: boolean;
-  focusClipboardIfInFocus: () => void;
-  clipboardWrapper: RefObject<StyledComponentClass<{}, any>>;
 }
 
 class Clipboard extends React.Component<ClipboardProps> {
@@ -106,13 +104,16 @@ class Clipboard extends React.Component<ClipboardProps> {
     preActive: false
   };
 
+  private focusClipboardIfInFocus: () => void;
+  private clipboardWrapper: RefObject<StyledComponentClass<{}, any>>;
+
   constructor(props: ClipboardProps) {
     super(props);
 
     this.clipboardWrapper = React.createRef();
 
     this.focusClipboardIfInFocus = () => {
-      if (this.props.isClipboardFocused) {
+      if (this.props.isClipboardFocused && this.clipboardWrapper.current) {
         this.clipboardWrapper.current.focus();
       }
     };
