@@ -36,8 +36,12 @@ const nextIndexAndGroupSelector = (
   action: 'up' | 'down'
 ) => {
   const sharedState = selectSharedState(state);
-  const groupArticleFragments = groupsSelector(sharedState)[groupId]
-    .articleFragments;
+  const group = groupsSelector(sharedState)[groupId];
+  if (!group) {
+    return null;
+  }
+
+  const groupArticleFragments = group.articleFragments;
 
   const currentArticleIndex = indexInGroupSelector(
     sharedState,
@@ -53,7 +57,7 @@ const nextIndexAndGroupSelector = (
 
   if (action === 'up') {
     // If article is not the first item in the group it can stay in the group
-    if (currentArticleIndex !== 0) {
+    if (currentArticleIndex && currentArticleIndex !== 0) {
       return { toIndex: currentArticleIndex - 1, nextGroupId: groupId };
     }
   }
