@@ -33,7 +33,7 @@ import FrontDetailView from './FrontDetailView';
 import CollectionItem from './CollectionComponents/CollectionItem';
 import { ValidationResponse } from 'shared/util/validateImageSrc';
 import { initialiseCollectionsForFront } from 'actions/Collections';
-import { resetFocusState } from 'bundles/focusBundle';
+import { resetFocusState, setFocusState } from 'bundles/focusBundle';
 
 // min-height required here to display scrollbar in Firefox:
 // https://stackoverflow.com/questions/28636832/firefox-overflow-y-not-working-with-nested-flexbox
@@ -50,7 +50,7 @@ const FrontContentContainer = styled('div')`
 
 const CollectionWrapper = styled('div')`
   &:focus {
-    border: 1px solid ${({ themeColours }) => themeColours.shared.base.colors.focusColor};
+    border: 1px solid ${({ theme }) => theme.shared.base.colors.focusColor};
     border-top: 2px solid ${({ theme }) => theme.shared.base.colors.focusColor};
     border-bottom: 2px solid
       ${({ theme }) => theme.shared.base.colors.focusColor};
@@ -84,6 +84,11 @@ type FrontProps = FrontPropsBeforeState & {
   front: FrontConfig;
   articlesVisible: { [id: string]: VisibleArticlesResponse };
   handleBlur: () => void;
+  handleFocus: (collectionId: string) => void;
+  handleArticleFocus: (
+    collectionId: string,
+    articleFragment: TArticleFragment
+  ) => void;
 };
 
 interface FrontState {
@@ -157,7 +162,11 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                   articlesVisible && articlesVisible[collectionId];
                 let collectionItemCount: number = 0;
                 return (
-                  <CollectionWrapper tabIndex={0} onBlur={this.handleBlur}>
+                  <CollectionWrapper
+                    tabIndex={0}
+                    onBlur={this.handleBlur}
+                    onFocus={() => this.handleFocus(collectionId)}
+                  >
                     <Collection
                       key={collectionId}
                       id={collectionId}
@@ -196,6 +205,13 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                 <CollectionItemWrapper
                                   tabIndex={0}
                                   onBlur={this.handleBlur}
+                                  onFocus={event =>
+                                    this.handleArticleFocus(
+                                      event,
+                                      collectionId,
+                                      articleFragment
+                                    )
+                                  }
                                 >
                                   <CollectionItem
                                     frontId={this.props.id}
@@ -278,6 +294,16 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   }
 
   private handleBlur = () => this.props.handleBlur();
+  private handleFocus = (collectionId: string) =>
+    this.props.handleFocus(collectionId);
+  private handleArticleFocus = (
+    e: React.FocusEvent<HTMLDivElement>,
+    collectionId: string,
+    articleFragment: TArticleFragment
+  ) => {
+    this.props.handleArticleFocus(collectionId, articleFragment);
+    e.stopPropagation();
+  };
 }
 
 const mapStateToProps = (state: State, props: FrontPropsBeforeState) => ({
@@ -318,7 +344,20 @@ const mapDispatchToProps = (
       dispatch(editorOpenCollections(ids)),
     addImageToArticleFragment: (id: string, response: ValidationResponse) =>
       dispatch(addImageToArticleFragment(id, response)),
-    handleBlur: () => dispatch(resetFocusState())
+    handleBlur: () => dispatch(resetFocusState()),
+    handleFocus: (collectionId: string) =>
+      dispatch(setFocusState({ type: 'collection', collectionId })),
+    handleArticleFocus: (
+      collectionId: string,
+      articleFragment: TArticleFragment
+    ) =>
+      dispatch(
+        setFocusState({
+          type: 'collectionArticle',
+          collectionId,
+          articleFragment
+        })
+      )
   };
 };
 
