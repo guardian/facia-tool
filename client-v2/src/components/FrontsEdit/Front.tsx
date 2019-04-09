@@ -1,6 +1,5 @@
 import React from 'react';
-import { styled } from 'constants/theme';
-import { theme } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import { connect } from 'react-redux';
 import { Root, Move, PosSpec } from 'lib/dnd';
 import { State } from 'types/State';
@@ -34,6 +33,7 @@ import FrontDetailView from './FrontDetailView';
 import CollectionItem from './CollectionComponents/CollectionItem';
 import { ValidationResponse } from 'shared/util/validateImageSrc';
 import { initialiseCollectionsForFront } from 'actions/Collections';
+import { resetFocusState } from 'bundles/focusBundle';
 
 // min-height required here to display scrollbar in Firefox:
 // https://stackoverflow.com/questions/28636832/firefox-overflow-y-not-working-with-nested-flexbox
@@ -49,16 +49,17 @@ const FrontContentContainer = styled('div')`
 `;
 
 const CollectionWrapper = styled('div')`
- &:focus {
-    border: 1px solid ${({ theme }) => theme.shared.base.colors.focusColor};
+  &:focus {
+    border: 1px solid ${({ themeColours }) => themeColours.shared.base.colors.focusColor};
     border-top: 2px solid ${({ theme }) => theme.shared.base.colors.focusColor};
-    border-bottom: 2px solid ${({ theme }) => theme.shared.base.colors.focusColor};
+    border-bottom: 2px solid
+      ${({ theme }) => theme.shared.base.colors.focusColor};
     outline: none;
   }
 `;
 
 const CollectionItemWrapper = styled('div')`
- &:focus {
+  &:focus {
     border: 1px solid ${({ theme }) => theme.shared.base.colors.focusColor};
     outline: none;
   }
@@ -82,6 +83,7 @@ type FrontProps = FrontPropsBeforeState & {
   addImageToArticleFragment: (id: string, response: ValidationResponse) => void;
   front: FrontConfig;
   articlesVisible: { [id: string]: VisibleArticlesResponse };
+  handleBlur: () => void;
 };
 
 interface FrontState {
@@ -107,10 +109,6 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     if (this.props.browsingStage !== newProps.browsingStage) {
       this.props.initialiseFront();
     }
-  }
-
-  public componentDidUpdate() {
-    console.log('rerendering');
   }
 
   public handleError = (error: string) => {
@@ -159,7 +157,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                   articlesVisible && articlesVisible[collectionId];
                 let collectionItemCount: number = 0;
                 return (
-                  <CollectionWrapper tabIndex={0}>
+                  <CollectionWrapper tabIndex={0} onBlur={this.handleBlur}>
                     <Collection
                       key={collectionId}
                       id={collectionId}
@@ -197,6 +195,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                               return (
                                 <CollectionItemWrapper
                                   tabIndex={0}
+                                  onBlur={this.handleBlur}
                                 >
                                   <CollectionItem
                                     frontId={this.props.id}
@@ -240,7 +239,9 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                           }
                                           isUneditable={isUneditable}
                                           getNodeProps={() =>
-                                            !isUneditable ? supportingDragProps : {}
+                                            !isUneditable
+                                              ? supportingDragProps
+                                              : {}
                                           }
                                           onDelete={() =>
                                             this.props.removeSupportingCollectionItem(
@@ -275,6 +276,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
       </React.Fragment>
     );
   }
+
+  private handleBlur = () => this.props.handleBlur();
 }
 
 const mapStateToProps = (state: State, props: FrontPropsBeforeState) => ({
@@ -314,7 +317,8 @@ const mapDispatchToProps = (
     editorOpenCollections: (ids: string[]) =>
       dispatch(editorOpenCollections(ids)),
     addImageToArticleFragment: (id: string, response: ValidationResponse) =>
-      dispatch(addImageToArticleFragment(id, response))
+      dispatch(addImageToArticleFragment(id, response)),
+    handleBlur: () => dispatch(resetFocusState())
   };
 };
 
