@@ -11,7 +11,7 @@ import Mousetrap from 'mousetrap';
 import { selectFocusState, setFocusState } from 'bundles/focusBundle';
 import paste from './keyboardActionMaps/paste';
 import { moveUp, moveDown } from './keyboardActionMaps/move';
-import { ArticleFragment } from 'shared/types/collection';
+import { ArticleFragment } from '../shared/types/Collection';
 
 type FocusableTypes = 'clipboard' | 'clipboardArticle';
 
