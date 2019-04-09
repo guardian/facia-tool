@@ -25,7 +25,6 @@ import ClipboardLevel from './clipboard/ClipboardLevel';
 import ArticleFragmentLevel from './clipboard/ArticleFragmentLevel';
 import CollectionItem from './FrontsEdit/CollectionComponents/CollectionItem';
 import { styled } from 'constants/theme';
-import { StyledComponentClass } from 'styled-components';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import DragIntentContainer from 'shared/components/DragIntentContainer';
 import {
@@ -99,18 +98,23 @@ interface ClipboardProps {
   isClipboardFocused: boolean;
 }
 
+// Styled component typings for ref seem to be broken so any refs
+// passed to styled components has to be any for now.
+type Ref = any;
+type TClipboardWrapper = any;
+
 class Clipboard extends React.Component<ClipboardProps> {
   public state = {
     preActive: false
   };
 
   private focusClipboardIfInFocus: () => void;
-  private clipboardWrapper: RefObject<StyledComponentClass<{}, any>>;
+  private clipboardWrapper: RefObject<TClipboardWrapper>;
 
   constructor(props: ClipboardProps) {
     super(props);
 
-    this.clipboardWrapper = React.createRef();
+    this.clipboardWrapper = React.createRef<TClipboardWrapper>();
 
     this.focusClipboardIfInFocus = () => {
       if (this.props.isClipboardFocused && this.clipboardWrapper.current) {
@@ -142,7 +146,7 @@ class Clipboard extends React.Component<ClipboardProps> {
         tabIndex={0}
         onFocus={this.handleFocus}
         onBlur={this.handleBlur}
-        innerRef={this.clipboardWrapper}
+        innerRef={this.clipboardWrapper as Ref}
       >
         <StyledDragIntentContainer
           active={!this.props.isClipboardOpen}
