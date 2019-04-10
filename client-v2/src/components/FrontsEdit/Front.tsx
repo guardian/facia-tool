@@ -53,6 +53,9 @@ const FrontContentContainer = styled('div')`
 `;
 
 const CollectionWrapper = styled('div')`
+  & + & {
+    margin-top: 10px;
+  }
   &:focus {
     border: 1px solid ${props => props.theme.shared.base.colors.focusColor};
     border-top: 2px solid ${props => props.theme.shared.base.colors.focusColor};
