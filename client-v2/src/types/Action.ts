@@ -38,6 +38,7 @@ import {
   EDITOR_OPEN_ALL_OVERVIEWS,
   EDITOR_CLOSE_ALL_OVERVIEWS
 } from 'bundles/frontsUIBundle';
+import { setFocusState, resetFocusState } from '../bundles/focusBundle';
 
 interface EditorOpenCurrentFrontsMenu {
   type: typeof EDITOR_OPEN_CURRENT_FRONTS_MENU;
@@ -264,6 +265,9 @@ interface EndConfirm {
   type: 'MODAL/END_CONFIRM';
 }
 
+type SetFocusState = ReturnType<typeof setFocusState>;
+type ResetFocusState = ReturnType<typeof resetFocusState>;
+
 type Action =
   | ConfigReceivedAction
   | FrontsConfigReceivedAction
@@ -307,7 +311,9 @@ type Action =
   | StartConfirm
   | EndConfirm
   | EditorOpenCollection
-  | EditorCloseCollection;
+  | EditorCloseCollection
+  | SetFocusState
+  | ResetFocusState;
 
 export {
   ActionError,

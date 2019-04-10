@@ -19,12 +19,6 @@ const FeedWrapper = styled('div')`
     `solid 1px ${theme.shared.base.colors.borderColor}`};
 `;
 
-const ClipboardWrapper = styled('div')`
-  border: 1px solid #c9c9c9;
-  border-top: 1px solid black;
-  overflow-y: scroll;
-`;
-
 export default () => (
   <FeedSectionContainer>
     <FeedSectionHeader />
@@ -32,9 +26,7 @@ export default () => (
       <FeedWrapper>
         <FeedContainer />
       </FeedWrapper>
-      <ClipboardWrapper>
-        <Clipboard />
-      </ClipboardWrapper>
+      <Clipboard />
       <div>
         <ClipboardMeta />
       </div>

@@ -685,7 +685,8 @@ const state = {
     loading: false,
     loadingIds: [],
     updatingIds: []
-  }
+  },
+  focus: { focusState: undefined }
 } as State;
 
 export default state;

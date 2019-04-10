@@ -418,6 +418,12 @@ const groupSiblingsArticleCountSelector = (state: State, groupId: string) =>
     0
   );
 
+const indexInGroupSelector = (
+  state: State,
+  groupId: string,
+  articleId: string
+) => groupsSelector(state)[groupId].articleFragments.indexOf(articleId);
+
 const externalArticleIdFromArticleFragmentSelector = (
   state: State,
   id: string
@@ -451,5 +457,7 @@ export {
   groupSiblingsSelector,
   groupSiblingsArticleCountSelector,
   articleTagSelector,
+  indexInGroupSelector,
+  groupsSelector,
   externalArticleIdFromArticleFragmentSelector
 };
