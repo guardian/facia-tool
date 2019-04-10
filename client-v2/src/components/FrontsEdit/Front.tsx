@@ -54,21 +54,21 @@ const FrontContentContainer = styled('div')`
 
 const CollectionWrapper = styled('div')`
   &:focus {
-    border: 1px solid ${({ theme }) => theme.shared.base.colors.focusColor};
-    border-top: 2px solid ${({ theme }) => theme.shared.base.colors.focusColor};
+    border: 1px solid ${props => props.theme.shared.base.colors.focusColor};
+    border-top: 2px solid ${props => props.theme.shared.base.colors.focusColor};
     border-bottom: 2px solid
-      ${({ theme }) => theme.shared.base.colors.focusColor};
+      ${props => props.theme.shared.base.colors.focusColor};
     outline: none;
   }
 `;
 
 const CollectionItemWrapper = styled('div')<{ articleSelected?: boolean }>`
-  border: ${({ articleSelected, theme }) =>
-    articleSelected
-      ? `1px solid ${theme.shared.base.colors.focusColor}`
+  border: ${props =>
+    props.articleSelected
+      ? `1px solid ${props.theme.shared.base.colors.focusColor}`
       : `none`};
   &:focus {
-    border: 1px solid ${({ theme }) => theme.shared.base.colors.focusColor};
+    border: 1px solid ${props => props.theme.shared.base.colors.focusColor};
     outline: none;
   }
 `;
