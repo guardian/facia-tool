@@ -30,7 +30,7 @@ import DragIntentContainer from 'shared/components/DragIntentContainer';
 import {
   setFocusState,
   resetFocusState,
-  selectFocusedClipboardArticle,
+  selectFocusedArticle,
   selectIsClipboardFocused
 } from 'bundles/focusBundle';
 
@@ -258,7 +258,7 @@ class Clipboard extends React.Component<ClipboardProps> {
 
 const mapStateToProps = (state: State) => ({
   isClipboardOpen: selectIsClipboardOpen(state),
-  focusedArticle: selectFocusedClipboardArticle(state),
+  focusedArticle: selectFocusedArticle(state, 'clipboardArticle'),
   isClipboardFocused: selectIsClipboardFocused(state)
 });
 

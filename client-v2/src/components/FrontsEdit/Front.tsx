@@ -33,7 +33,11 @@ import FrontDetailView from './FrontDetailView';
 import CollectionItem from './CollectionComponents/CollectionItem';
 import { ValidationResponse } from 'shared/util/validateImageSrc';
 import { initialiseCollectionsForFront } from 'actions/Collections';
-import { resetFocusState, setFocusState } from 'bundles/focusBundle';
+import {
+  resetFocusState,
+  setFocusState,
+  selectFocusedArticle
+} from 'bundles/focusBundle';
 
 // min-height required here to display scrollbar in Firefox:
 // https://stackoverflow.com/questions/28636832/firefox-overflow-y-not-working-with-nested-flexbox
@@ -58,7 +62,11 @@ const CollectionWrapper = styled('div')`
   }
 `;
 
-const CollectionItemWrapper = styled('div')`
+const CollectionItemWrapper = styled('div')<{ articleSelected?: boolean }>`
+  border: ${({ articleSelected, theme }) =>
+    articleSelected
+      ? `1px solid ${theme.shared.base.colors.focusColor}`
+      : `none`};
   &:focus {
     border: 1px solid ${({ theme }) => theme.shared.base.colors.focusColor};
     outline: none;
@@ -89,6 +97,7 @@ type FrontProps = FrontPropsBeforeState & {
     groupId: string,
     articleFragment: TArticleFragment
   ) => void;
+  focusedArticle?: string;
 };
 
 interface FrontState {
@@ -213,6 +222,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                       articleFragment
                                     )
                                   }
+                                  articleSelected={
+                                    this.props.focusedArticle ===
+                                    articleFragment.uuid
+                                  }
                                 >
                                   <CollectionItem
                                     frontId={this.props.id}
@@ -312,7 +325,8 @@ const mapStateToProps = (state: State, props: FrontPropsBeforeState) => ({
   front: getFront(state, props.id),
   articlesVisible: visibleFrontArticlesSelector(state, {
     collectionSet: props.browsingStage
-  })
+  }),
+  focusedArticle: selectFocusedArticle(state, 'collectionArticle')
 });
 
 const mapDispatchToProps = (
