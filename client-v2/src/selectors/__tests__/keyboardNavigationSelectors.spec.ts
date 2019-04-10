@@ -263,7 +263,11 @@ describe('nextIndexAndGroupSelector', () => {
         'up',
         'sc-johnson-partner-zone'
       )
-    ).toEqual({ toIndex: 3, nextGroupId: 'group2' });
+    ).toEqual({
+      toIndex: 3,
+      nextGroupId: 'group2',
+      collectionId: 'e59785e9-ba82-48d8-b79a-0a80b2f9f808'
+    });
   });
 
   it('return next editable group id when moving down between collections', () => {
@@ -275,6 +279,10 @@ describe('nextIndexAndGroupSelector', () => {
         'down',
         'sc-johnson-partner-zone'
       )
-    ).toEqual({ toIndex: 0, nextGroupId: 'group3' });
+    ).toEqual({
+      toIndex: 0,
+      nextGroupId: 'group3',
+      collectionId: '4ab657ff-c105-4292-af23-cda00457b6b7'
+    });
   });
 });
