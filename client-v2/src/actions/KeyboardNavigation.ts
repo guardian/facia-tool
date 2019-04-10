@@ -36,8 +36,8 @@ const keyboardArticleFragmentMove = (
 
       const nextPosition = nextIndexAndGroupSelector(
         state,
-        id,
         groupId || '',
+        id,
         action
       );
 
@@ -45,7 +45,6 @@ const keyboardArticleFragmentMove = (
         const { toIndex, nextGroupId } = nextPosition;
 
         const to: PosSpec = { type, index: toIndex, id: nextGroupId };
-
         dispatch(moveArticleFragment(to, fragment, from, persistTo));
       }
     } else if (persistTo === 'clipboard') {

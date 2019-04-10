@@ -18,6 +18,22 @@ const moveUp: KeyboardActionMap = {
     } catch (e) {
       Raven.captureMessage(`Moving item up in clipboard failed: ${e.message}`);
     }
+  },
+  collectionArticle: (focusData: ApplicationFocusStates) => async (
+    dispatch: Dispatch
+  ) => {
+    try {
+      dispatch(
+        keyboardArticleFragmentMove(
+          'up',
+          'collection',
+          focusData.articleFragment,
+          focusData.groupId
+        )
+      );
+    } catch (e) {
+      Raven.captureMessage(`Moving item up in clipboard failed: ${e.message}`);
+    }
   }
 };
 
@@ -31,6 +47,22 @@ const moveDown: KeyboardActionMap = {
           'down',
           'clipboard',
           focusData.articleFragment
+        )
+      );
+    } catch (e) {
+      Raven.captureMessage(`Moving item up in clipboard failed: ${e.message}`);
+    }
+  },
+  collectionArticle: (focusData: ApplicationFocusStates) => async (
+    dispatch: Dispatch
+  ) => {
+    try {
+      dispatch(
+        keyboardArticleFragmentMove(
+          'down',
+          'collection',
+          focusData.articleFragment,
+          focusData.groupId
         )
       );
     } catch (e) {

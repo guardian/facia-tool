@@ -22,6 +22,7 @@ type FocusableTypes =
 interface BaseFocusState {
   type: FocusableTypes;
   articleFragment?: ArticleFragment;
+  groupId?: string;
   collectionId?: string;
 }
 

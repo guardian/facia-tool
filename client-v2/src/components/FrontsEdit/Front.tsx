@@ -86,7 +86,7 @@ type FrontProps = FrontPropsBeforeState & {
   handleBlur: () => void;
   handleFocus: (collectionId: string) => void;
   handleArticleFocus: (
-    collectionId: string,
+    groupId: string,
     articleFragment: TArticleFragment
   ) => void;
 };
@@ -166,6 +166,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                     tabIndex={0}
                     onBlur={this.handleBlur}
                     onFocus={() => this.handleFocus(collectionId)}
+                    key={collectionId}
                   >
                     <Collection
                       key={collectionId}
@@ -208,7 +209,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                   onFocus={event =>
                                     this.handleArticleFocus(
                                       event,
-                                      collectionId,
+                                      group.uuid,
                                       articleFragment
                                     )
                                   }
@@ -298,10 +299,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     this.props.handleFocus(collectionId);
   private handleArticleFocus = (
     e: React.FocusEvent<HTMLDivElement>,
-    collectionId: string,
+    groupId: string,
     articleFragment: TArticleFragment
   ) => {
-    this.props.handleArticleFocus(collectionId, articleFragment);
+    this.props.handleArticleFocus(groupId, articleFragment);
     e.stopPropagation();
   };
 }
@@ -347,14 +348,11 @@ const mapDispatchToProps = (
     handleBlur: () => dispatch(resetFocusState()),
     handleFocus: (collectionId: string) =>
       dispatch(setFocusState({ type: 'collection', collectionId })),
-    handleArticleFocus: (
-      collectionId: string,
-      articleFragment: TArticleFragment
-    ) =>
+    handleArticleFocus: (groupId: string, articleFragment: TArticleFragment) =>
       dispatch(
         setFocusState({
           type: 'collectionArticle',
-          collectionId,
+          groupId,
           articleFragment
         })
       )
