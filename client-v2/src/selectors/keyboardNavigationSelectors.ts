@@ -2,10 +2,12 @@ import {
   selectSharedState,
   indexInGroupSelector,
   groupsSelector,
-  groupCollectionSelector
+  groupCollectionSelector,
+  createCollectionSelector
 } from '../shared/selectors/shared';
 import { clipboardContentSelector } from 'selectors/clipboardSelectors';
 import { State } from 'types/State';
+import { getFrontCollections } from './frontsSelectors';
 
 const nextClipboardIndexSelector = (
   state: State,
@@ -33,7 +35,8 @@ const nextIndexAndGroupSelector = (
   state: State,
   groupId: string,
   articleId: string,
-  action: 'up' | 'down'
+  action: 'up' | 'down',
+  frontId: string
 ) => {
   const sharedState = selectSharedState(state);
   const group = groupsSelector(sharedState)[groupId];
@@ -88,10 +91,45 @@ const nextIndexAndGroupSelector = (
         }
       }
     }
+
+    if (frontId) {
+      const frontCollections = getFrontCollections(state, frontId);
+      const collectionIndex = frontCollections.indexOf(collection.id);
+
+      if (action === 'down') {
+        if (collectionIndex < frontCollections.length - 1) {
+          const collectionSelector = createCollectionSelector();
+          const coll = collectionSelector(sharedState, {
+            collectionId: frontCollections[collectionIndex + 1]
+          });
+
+          if (!coll || !coll.draft) { return null; }
+
+          const nextGroupId = coll.draft[0];
+          return { toIndex: 0, nextGroupId };
+        }
+      }
+      if (action === 'up') {
+        if (collectionIndex !== 0) {
+          const collectionSelector = createCollectionSelector();
+          const coll = collectionSelector(sharedState, {
+            collectionId: frontCollections[collectionIndex - 1]
+          });
+
+          if (!coll || !coll.draft) { return null; }
+
+          const nextIndex = coll.draft.length - 1;
+          const nextGroupId = coll.draft[nextIndex];
+
+          return { toIndex: nextIndex, nextGroupId };
+        }
+      }
+    }
   }
 
   // Move to the next collection: TODO
   // Else there is nowhere we can move
+
   return null;
 };
 

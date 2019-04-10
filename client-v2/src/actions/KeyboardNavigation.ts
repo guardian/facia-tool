@@ -16,7 +16,8 @@ const keyboardArticleFragmentMove = (
   action: 'up' | 'down',
   persistTo: 'collection' | 'clipboard',
   fragment?: ArticleFragment,
-  groupId?: string
+  groupId?: string,
+  frontId?: string
 ): ThunkResult<void> => {
   return (dispatch: Dispatch, getState) => {
     if (!fragment) {
@@ -39,7 +40,8 @@ const keyboardArticleFragmentMove = (
         state,
         groupId || '',
         id,
-        action
+        action,
+        frontId || ''
       );
 
       if (nextPosition && nextPosition.nextGroupId) {
@@ -51,7 +53,8 @@ const keyboardArticleFragmentMove = (
           setFocusState({
             type: 'collectionArticle',
             groupId: nextGroupId,
-            articleFragment: fragment
+            articleFragment: fragment,
+            frontId
           })
         );
       }

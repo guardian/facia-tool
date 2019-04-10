@@ -98,7 +98,8 @@ type FrontProps = FrontPropsBeforeState & {
   handleFocus: (collectionId: string) => void;
   handleArticleFocus: (
     groupId: string,
-    articleFragment: TArticleFragment
+    articleFragment: TArticleFragment,
+    frontId: string
   ) => void;
   focusedArticle?: string;
 };
@@ -222,7 +223,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                     this.handleArticleFocus(
                                       event,
                                       group.uuid,
-                                      articleFragment
+                                      articleFragment,
+                                      front.id
                                     )
                                   }
                                   articleSelected={
@@ -316,9 +318,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   private handleArticleFocus = (
     e: React.FocusEvent<HTMLDivElement>,
     groupId: string,
-    articleFragment: TArticleFragment
+    articleFragment: TArticleFragment,
+    frontId: string
   ) => {
-    this.props.handleArticleFocus(groupId, articleFragment);
+    this.props.handleArticleFocus(groupId, articleFragment, frontId);
     e.stopPropagation();
   };
 }
@@ -365,12 +368,17 @@ const mapDispatchToProps = (
     handleBlur: () => dispatch(resetFocusState()),
     handleFocus: (collectionId: string) =>
       dispatch(setFocusState({ type: 'collection', collectionId })),
-    handleArticleFocus: (groupId: string, articleFragment: TArticleFragment) =>
+    handleArticleFocus: (
+      groupId: string,
+      articleFragment: TArticleFragment,
+      frontId: string
+    ) =>
       dispatch(
         setFocusState({
           type: 'collectionArticle',
           groupId,
-          articleFragment
+          articleFragment,
+          frontId
         })
       )
   };

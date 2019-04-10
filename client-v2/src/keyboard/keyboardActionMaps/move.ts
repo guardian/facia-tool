@@ -28,7 +28,8 @@ const moveUp: KeyboardActionMap = {
           'up',
           'collection',
           focusData.articleFragment,
-          focusData.groupId
+          focusData.groupId,
+          focusData.frontId
         )
       );
     } catch (e) {
@@ -62,7 +63,8 @@ const moveDown: KeyboardActionMap = {
           'down',
           'collection',
           focusData.articleFragment,
-          focusData.groupId
+          focusData.groupId,
+          focusData.frontId
         )
       );
     } catch (e) {

@@ -25,6 +25,9 @@ const getFronts = (state: State): FrontConfigMap =>
 
 const getFront = (state: State, id: string) => getFronts(state)[id];
 
+const getFrontCollections = (state: State, frontId: string) =>
+  getFront(state, frontId).collections;
+
 const getFrontsByPriority = createSelector(
   [getFronts],
   (fronts: FrontConfigMap): FrontsByPriority =>
@@ -279,6 +282,7 @@ const visibleFrontArticlesSelector = createSelector(
 export {
   getFront,
   getFronts,
+  getFrontCollections,
   getFrontsConfig,
   getCollectionConfig,
   frontsConfigSelector,

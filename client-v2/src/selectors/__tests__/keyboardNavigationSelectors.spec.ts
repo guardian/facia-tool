@@ -146,44 +146,81 @@ describe('nextIndexAndGroupSelector', () => {
         stateWithEmptyGroup,
         'gobbleygook',
         'some-id',
-        'up'
+        'up',
+        'sc-johnson-partner-zone'
       )
     ).toEqual(null);
   });
 
   it('return null when moving top article in collection', () => {
     expect(
-      nextIndexAndGroupSelector(stateWithGroups, 'group1', 'fragment-1', 'up')
+      nextIndexAndGroupSelector(
+        stateWithGroups,
+        'group1',
+        'fragment-1',
+        'up',
+        'sc-johnson-partner-zone'
+      )
     ).toEqual(null);
   });
 
   it('return next group id and index when moving up article in collection', () => {
     expect(
-      nextIndexAndGroupSelector(stateWithGroups, 'group1', 'fragment-2', 'up')
+      nextIndexAndGroupSelector(
+        stateWithGroups,
+        'group1',
+        'fragment-2',
+        'up',
+        'sc-johnson-partner-zone'
+      )
     ).toEqual({ toIndex: 0, nextGroupId: 'group1' });
   });
 
   it('return null when moving bottom article in collection', () => {
     expect(
-      nextIndexAndGroupSelector(stateWithGroups, 'group2', 'fragment-6', 'down')
+      nextIndexAndGroupSelector(
+        stateWithGroups,
+        'group2',
+        'fragment-6',
+        'down',
+        'sc-johnson-partner-zone'
+      )
     ).toEqual(null);
   });
 
   it('return next group id and index when moving down article in collection', () => {
     expect(
-      nextIndexAndGroupSelector(stateWithGroups, 'group1', 'fragment-2', 'down')
+      nextIndexAndGroupSelector(
+        stateWithGroups,
+        'group1',
+        'fragment-2',
+        'down',
+        'sc-johnson-partner-zone'
+      )
     ).toEqual({ toIndex: 2, nextGroupId: 'group1' });
   });
 
   it('return next group id when moving down between groups', () => {
     expect(
-      nextIndexAndGroupSelector(stateWithGroups, 'group1', 'fragment-3', 'down')
+      nextIndexAndGroupSelector(
+        stateWithGroups,
+        'group1',
+        'fragment-3',
+        'down',
+        'sc-johnson-partner-zone'
+      )
     ).toEqual({ toIndex: 0, nextGroupId: 'group2' });
   });
 
   it('return next group id when moving up between groups', () => {
     expect(
-      nextIndexAndGroupSelector(stateWithGroups, 'group2', 'fragment-4', 'up')
+      nextIndexAndGroupSelector(
+        stateWithGroups,
+        'group2',
+        'fragment-4',
+        'up',
+        'sc-johnson-partner-zone'
+      )
     ).toEqual({ toIndex: 3, nextGroupId: 'group1' });
   });
 });

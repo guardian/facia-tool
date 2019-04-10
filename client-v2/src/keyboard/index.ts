@@ -24,6 +24,7 @@ interface BaseFocusState {
   articleFragment?: ArticleFragment;
   groupId?: string;
   collectionId?: string;
+  frontId?: string;
 }
 
 export type ApplicationFocusStates = BaseFocusState;
