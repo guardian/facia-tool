@@ -25,8 +25,13 @@ const getFronts = (state: State): FrontConfigMap =>
 
 const getFront = (state: State, id: string) => getFronts(state)[id];
 
-const getFrontCollections = (state: State, frontId: string) =>
-  getFront(state, frontId).collections;
+const getUnlockedFrontCollections = (state: State, frontId: string): string[] => getFront(state, frontId).collections.reduce((unlockedCollections: string[], collectionId) => {
+  const collection = getCollectionConfig(state, collectionId);
+  if (!collection.uneditable) {
+    unlockedCollections.push(collectionId);
+  }
+  return unlockedCollections;
+}, []);
 
 const getFrontsByPriority = createSelector(
   [getFronts],
@@ -282,7 +287,6 @@ const visibleFrontArticlesSelector = createSelector(
 export {
   getFront,
   getFronts,
-  getFrontCollections,
   getFrontsConfig,
   getCollectionConfig,
   frontsConfigSelector,
@@ -294,5 +298,6 @@ export {
   hasUnpublishedChangesSelector,
   clipboardSelector,
   visibleArticlesSelector,
-  visibleFrontArticlesSelector
+  visibleFrontArticlesSelector,
+  getUnlockedFrontCollections
 };

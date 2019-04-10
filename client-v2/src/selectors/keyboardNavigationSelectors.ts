@@ -7,7 +7,7 @@ import {
 } from '../shared/selectors/shared';
 import { clipboardContentSelector } from 'selectors/clipboardSelectors';
 import { State } from 'types/State';
-import { getFrontCollections } from './frontsSelectors';
+import { getUnlockedFrontCollections } from './frontsSelectors';
 
 const nextClipboardIndexSelector = (
   state: State,
@@ -95,7 +95,7 @@ const nextIndexAndGroupSelector = (
     }
 
     // Checking if moving between collections
-    const frontCollections = getFrontCollections(state, frontId);
+    const frontCollections = getUnlockedFrontCollections(state, frontId);
     const collectionIndex = frontCollections.indexOf(collection.id);
     if (action === 'down') {
       if (collectionIndex < frontCollections.length - 1) {

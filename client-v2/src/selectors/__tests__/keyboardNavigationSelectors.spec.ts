@@ -124,6 +124,9 @@ describe('nextIndexAndGroupSelector', () => {
         id: 'e59785e9-ba82-48d8-b79a-0a80b2f9f808',
         type: 'fixed/small/slow-IV'
       },
+      'c7f48719-6cbc-4024-ae92-1b5f9f6c0c99': {
+        uneditable: true
+      },
       '4ab657ff-c105-4292-af23-cda00457b6b7': {
         draft: ['group3'],
         lastUpdated: 1547202598354,
@@ -263,7 +266,7 @@ describe('nextIndexAndGroupSelector', () => {
     ).toEqual({ toIndex: 3, nextGroupId: 'group2' });
   });
 
-  it('return next group id when moving down between collections', () => {
+  it('return next editable group id when moving down between collections', () => {
     expect(
       nextIndexAndGroupSelector(
         stateWithGroups,
