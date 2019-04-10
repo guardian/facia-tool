@@ -34,6 +34,7 @@ GET         /training/config                         controllers.ViewsController
 GET         /email/config                            controllers.ViewsController.configEditor()
 
 POST        /collection/publish/*collectionId        controllers.FaciaToolController.publishCollection(collectionId)
+POST        /collection/discard/*collectionId        controllers.FaciaToolController.discardCollection(collectionId)
 
 POST        /press/live/*path                        controllers.FaciaToolController.pressLivePath(path)
 POST        /press/draft/*path                       controllers.FaciaToolController.pressDraftPath(path)
