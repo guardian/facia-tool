@@ -95,15 +95,15 @@ const nextIndexAndGroupSelector = (
     if (frontId) {
       const frontCollections = getFrontCollections(state, frontId);
       const collectionIndex = frontCollections.indexOf(collection.id);
-
       if (action === 'down') {
         if (collectionIndex < frontCollections.length - 1) {
           const collectionSelector = createCollectionSelector();
           const coll = collectionSelector(sharedState, {
             collectionId: frontCollections[collectionIndex + 1]
           });
-
-          if (!coll || !coll.draft) { return null; }
+          if (!coll || !coll.draft) {
+            return null;
+          }
 
           const nextGroupId = coll.draft[0];
           return { toIndex: 0, nextGroupId };
@@ -116,12 +116,17 @@ const nextIndexAndGroupSelector = (
             collectionId: frontCollections[collectionIndex - 1]
           });
 
-          if (!coll || !coll.draft) { return null; }
+          if (!coll || !coll.draft) {
+            return null;
+          }
 
-          const nextIndex = coll.draft.length - 1;
-          const nextGroupId = coll.draft[nextIndex];
+          const nextIndex = coll.draft.length;
+          const nextGroupId = coll.draft[nextIndex - 1];
 
-          return { toIndex: nextIndex, nextGroupId };
+          const nextGroupArticles = groupsSelector(sharedState)[nextGroupId]
+            .articleFragments;
+
+          return { toIndex: nextGroupArticles.length, nextGroupId };
         }
       }
     }
