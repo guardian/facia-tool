@@ -11,6 +11,7 @@ import { ArticleFragment } from 'shared/types/Collection';
 import { PosSpec } from 'lib/dnd';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { setFocusState } from 'bundles/focusBundle';
+import { editorOpenCollections } from 'bundles/frontsUIBundle';
 
 const keyboardArticleFragmentMove = (
   action: 'up' | 'down',
@@ -45,7 +46,12 @@ const keyboardArticleFragmentMove = (
       );
 
       if (nextPosition && nextPosition.nextGroupId) {
-        const { toIndex, nextGroupId } = nextPosition;
+        const { toIndex, nextGroupId, collectionId } = nextPosition;
+
+        // If we are moving between collections we should open the collection first
+        if (collectionId) {
+          dispatch(editorOpenCollections(collectionId));
+        }
 
         const to: PosSpec = { type, index: toIndex, id: nextGroupId };
         dispatch(moveArticleFragment(to, fragment, from, persistTo));

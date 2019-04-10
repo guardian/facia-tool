@@ -108,7 +108,7 @@ const nextIndexAndGroupSelector = (
         }
 
         const nextGroupId = coll.draft[0];
-        return { toIndex: 0, nextGroupId };
+        return { toIndex: 0, nextGroupId, collectionId: coll.id };
       }
     }
     if (action === 'up') {
@@ -128,7 +128,11 @@ const nextIndexAndGroupSelector = (
         const nextGroupArticles = groupsSelector(sharedState)[nextGroupId]
           .articleFragments;
 
-        return { toIndex: nextGroupArticles.length, nextGroupId };
+        return {
+          toIndex: nextGroupArticles.length,
+          nextGroupId,
+          collectionId: coll.id
+        };
       }
     }
   }
