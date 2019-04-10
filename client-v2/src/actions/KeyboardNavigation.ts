@@ -10,6 +10,7 @@ import {
 import { ArticleFragment } from 'shared/types/Collection';
 import { PosSpec } from 'lib/dnd';
 import { ThunkResult, Dispatch } from 'types/Store';
+import { setFocusState } from 'bundles/focusBundle';
 
 const keyboardArticleFragmentMove = (
   action: 'up' | 'down',
@@ -46,6 +47,13 @@ const keyboardArticleFragmentMove = (
 
         const to: PosSpec = { type, index: toIndex, id: nextGroupId };
         dispatch(moveArticleFragment(to, fragment, from, persistTo));
+        dispatch(
+          setFocusState({
+            type: 'collectionArticle',
+            groupId: nextGroupId,
+            articleFragment: fragment
+          })
+        );
       }
     } else if (persistTo === 'clipboard') {
       const clipboardIndeces = nextClipboardIndexSelector(state, id, action);
