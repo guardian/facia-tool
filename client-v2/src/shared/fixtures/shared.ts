@@ -538,6 +538,10 @@ const stateWithCollection: any = {
           testCollection2: {
             displayName: 'testCollection',
             type: 'type'
+          },
+          automatedCollection: {
+            displayName: 'automated',
+            type: 'type'
           }
         }
       },
