@@ -153,6 +153,23 @@ describe('Collection actions', () => {
         { id: 'testCollection2', lastUpdated: 1547479667115 }
       ]);
     });
+    it('should ignore automated collections without content', async () => {
+      const collectionIds = [
+        'testCollection1',
+        'testCollection2',
+        'automatedCollection'
+      ];
+      const request = fetchMock.post(
+        '/collections',
+        getCollectionsThunkFaciaApiResponse
+      );
+      await store.dispatch(getCollections(collectionIds, true) as any);
+      const result = request.lastOptions().body;
+      expect(JSON.parse(result as string)).toEqual([
+        { id: 'testCollection1', lastUpdated: 1547479667115 },
+        { id: 'testCollection2', lastUpdated: 1547479667115 }
+      ]);
+    });
   });
 
   describe('fetchArticles thunk', () => {

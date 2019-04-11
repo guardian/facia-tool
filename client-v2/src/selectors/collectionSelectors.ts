@@ -12,33 +12,37 @@ import { createSelectEditorFrontsByPriority } from 'bundles/frontsUIBundle';
 
 const selectCollection = createCollectionSelector();
 
-function collectionParamsSelector(
+const collectionParamsSelector = (
   state: State,
   collectionIds: string[],
   returnOnlyUpdatedCollections: boolean = false
-): Array<{ id: string; lastUpdated?: number }> {
-  const params = collectionIds.map(id => {
-    const config = getCollectionConfig(state, id);
-    if (!config) {
-      throw new Error(`Collection ID ${id} does not exist in config`);
-    }
+): Array<{ id: string; lastUpdated?: number }> =>
+  collectionIds.reduce(
+    (collections: Array<{ id: string; lastUpdated?: number }>, id) => {
+      const config = getCollectionConfig(state, id);
+      if (!config) {
+        throw new Error(`Collection ID ${id} does not exist in config`);
+      }
 
-    if (!returnOnlyUpdatedCollections) {
-      return { id };
-    }
+      if (!returnOnlyUpdatedCollections) {
+        collections.push({ id });
+      }
 
-    const maybeCollection = selectCollection(selectSharedState(state), {
-      collectionId: id
-    });
-    if (!maybeCollection) {
-      throw new Error(`Collection ID ${id} does not exist in state`);
-    }
-    const lastUpdated = maybeCollection.lastUpdated;
-    return { id, lastUpdated };
-  });
-
-  return params;
-}
+      if (returnOnlyUpdatedCollections) {
+        const maybeCollection = selectCollection(selectSharedState(state), {
+          collectionId: id
+        });
+        // Some collections are automated and they don't have any content in them.
+        // We ignore these collections and don't fetch updates for them.
+        if (maybeCollection) {
+          const lastUpdated = maybeCollection.lastUpdated;
+          collections.push({ id, lastUpdated });
+        }
+      }
+      return collections;
+    },
+    []
+  );
 
 function createCollectionsInOpenFrontsSelector() {
   const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
