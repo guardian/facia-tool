@@ -214,7 +214,7 @@ const persistOpenFrontsOnEdit: (
   // Only persist fronts that exist in the state, clearing out
   // fronts that have been deleted.
   const filteredFrontIdsByPriority = mapValues(frontIdsByPriority, frontIds =>
-    frontIds.filter(frontId => !!getFront(state, frontId))
+    frontIds.filter(frontId => !!getFront(state, { frontId }))
   );
   // Now they're in the state, persist the relevant front ids.
   persistFrontIds(filteredFrontIdsByPriority);

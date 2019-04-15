@@ -53,6 +53,13 @@ const reducer = (
       const { collectionId, visibleArticles, stage } = action.payload;
 
       const collectionVisibilities = state.collectionVisibility[stage];
+      const prevVisibilities = collectionVisibilities[collectionId] || {};
+      if (
+        visibleArticles.mobile === prevVisibilities.mobile &&
+        visibleArticles.desktop === visibleArticles.desktop
+      ) {
+        return newState;
+      }
       const newCollectionVisibility = { [collectionId]: visibleArticles };
       const newVisibilities = {
         ...collectionVisibilities,

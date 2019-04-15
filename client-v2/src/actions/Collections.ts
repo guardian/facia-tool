@@ -363,7 +363,7 @@ function initialiseCollectionsForFront(
   browsingStage: CollectionItemSets
 ): ThunkResult<Promise<void>> {
   return async (dispatch: Dispatch, getState: () => State) => {
-    const front = getFront(getState(), frontId);
+    const front = getFront(getState(), { frontId });
     if (!front) {
       return;
     }

@@ -173,8 +173,8 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
 const createMapStateToProps = () => {
   const alsoOnSelector = createAlsoOnSelector();
   return (state: State, props: FrontsContainerProps) => ({
-    selectedFront: getFront(state, props.frontId),
-    alsoOn: alsoOnSelector(state, props.frontId)
+    selectedFront: getFront(state, { frontId: props.frontId }),
+    alsoOn: alsoOnSelector(state, { frontId: props.frontId })
   });
 };
 

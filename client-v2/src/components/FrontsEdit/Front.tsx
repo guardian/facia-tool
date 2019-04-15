@@ -13,7 +13,6 @@ import { insertArticleFragmentFromDropEvent } from 'util/collectionUtils';
 import { AlsoOnDetail } from 'types/Collection';
 import {
   editorSelectArticleFragment,
-  editorClearArticleFragmentSelection,
   editorOpenCollections
 } from 'bundles/frontsUIBundle';
 import {
@@ -86,8 +85,9 @@ interface FrontPropsBeforeState {
 type FrontProps = FrontPropsBeforeState & {
   dispatch: Dispatch;
   initialiseFront: () => void;
-  selectArticleFragment: (id: string, isSupporting?: boolean) => void;
-  clearArticleFragmentSelection: () => void;
+  selectArticleFragment: (
+    frontId: string
+  ) => (id: string, isSupporting?: boolean) => void;
   removeCollectionItem: (parentId: string, id: string) => void;
   removeSupportingCollectionItem: (parentId: string, id: string) => void;
   editorOpenCollections: (ids: string[]) => void;
@@ -246,7 +246,9 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                     getNodeProps={() =>
                                       !isUneditable ? afDragProps : {}
                                     }
-                                    onSelect={this.props.selectArticleFragment}
+                                    onSelect={this.props.selectArticleFragment(
+                                      this.props.id
+                                    )}
                                     onDelete={() =>
                                       this.props.removeCollectionItem(
                                         group.uuid,
@@ -268,9 +270,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                           parentId={articleFragment.uuid}
                                           onSelect={id =>
                                             this.props.selectArticleFragment(
-                                              id,
-                                              true
-                                            )
+                                              this.props.id
+                                            )(id, true)
                                           }
                                           isUneditable={isUneditable}
                                           getNodeProps={() =>
@@ -326,14 +327,15 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   };
 }
 
-const mapStateToProps = (state: State, props: FrontPropsBeforeState) => ({
-  unpublishedChanges: state.unpublishedChanges,
-  front: getFront(state, props.id),
-  articlesVisible: visibleFrontArticlesSelector(state, {
-    collectionSet: props.browsingStage
-  }),
-  focusedArticle: selectFocusedArticle(state, 'collectionArticle')
-});
+const mapStateToProps = (state: State, props: FrontPropsBeforeState) => {
+  return {
+    front: getFront(state, { frontId: props.id }),
+    articlesVisible: visibleFrontArticlesSelector(state, {
+      collectionSet: props.browsingStage
+    }),
+    focusedArticle: selectFocusedArticle(state, 'collectionArticle')
+  };
+};
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
@@ -343,16 +345,13 @@ const mapDispatchToProps = (
     dispatch,
     initialiseFront: () =>
       dispatch(initialiseCollectionsForFront(props.id, props.browsingStage)),
-    selectArticleFragment: (
-      frontId: string,
+    selectArticleFragment: (frontId: string) => (
       articleFragmentId: string,
       isSupporting?: boolean
     ) =>
       dispatch(
         editorSelectArticleFragment(frontId, articleFragmentId, isSupporting)
       ),
-    clearArticleFragmentSelection: (frontId: string) =>
-      dispatch(editorClearArticleFragmentSelection(frontId)),
     removeCollectionItem: (parentId: string, uuid: string) => {
       dispatch(removeArticleFragment('group', parentId, uuid, 'collection'));
     },
@@ -384,25 +383,7 @@ const mapDispatchToProps = (
   };
 };
 
-type StateProps = ReturnType<typeof mapStateToProps>;
-type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-
-const mergeProps = (
-  stateProps: StateProps,
-  dispatchProps: DispatchProps,
-  props: FrontPropsBeforeState
-) => ({
-  ...props,
-  ...stateProps,
-  ...dispatchProps,
-  selectArticleFragment: (articleId: string, isSupporting?: boolean) =>
-    dispatchProps.selectArticleFragment(props.id, articleId, isSupporting),
-  clearArticleFragmentSelection: () =>
-    dispatchProps.clearArticleFragmentSelection(props.id)
-});
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
+  mapDispatchToProps
 )(FrontComponent);
