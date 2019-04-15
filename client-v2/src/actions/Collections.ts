@@ -45,6 +45,7 @@ import {
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import { getCollectionConfig, getFront } from 'selectors/frontsSelectors';
 import { Dispatch, ThunkResult } from 'types/Store';
+import { Action } from 'types/Action';
 import {
   collectionItemSets,
   noOfOpenCollectionsOnFirstLoad
@@ -100,6 +101,31 @@ function fetchStaleOpenCollections(
 
     dispatch(clearArticleFragments(prevArticleIds));
   };
+}
+
+// These are collections which exist in the config but have never had any content
+// added to them so they will not have their own collection file. They may be newly
+// created collections or fully automated collections.
+function getCollectionActionForMissingCollection(
+  id: string,
+  getState: () => State
+): Action[] {
+  const collectionConfig = getCollectionConfig(getState(), id);
+  const collection = combineCollectionWithConfig(collectionConfig, {
+    draft: [],
+    live: [],
+    previously: [],
+    id,
+    displayName: collectionConfig.displayName
+  });
+  const {
+    normalisedCollection,
+    groups
+  } = normaliseCollectionWithNestedArticles(collection, collectionConfig);
+  return [
+    collectionActions.fetchSuccess(normalisedCollection),
+    groupsReceived(groups)
+  ];
 }
 
 function getCollectionActions(
@@ -179,11 +205,27 @@ function getCollections(
           id
         })
       );
+
+      let missingCollectionActions: Action[][];
+      if (!returnOnlyUpdatedCollections) {
+        const missingCollectionIds = collectionIds.filter(
+          id => !collectionResponses.some(response => response.id === id)
+        );
+        missingCollectionActions = missingCollectionIds.map(id =>
+          getCollectionActionForMissingCollection(id, getState)
+        );
+      } else {
+        missingCollectionActions = [];
+      }
       const actions = collectionResponses.map(collectionResponse =>
         getCollectionActions(collectionResponse, getState)
       );
 
-      dispatch(batchActions(flatten([...actions, ...missingActions])));
+      dispatch(
+        batchActions(
+          flatten([...actions, ...missingActions, ...missingCollectionActions])
+        )
+      );
       return collectionResponses.map(({ id }) => id);
     } catch (error) {
       dispatch(collectionActions.fetchError(error, collectionIds));

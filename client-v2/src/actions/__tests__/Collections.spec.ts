@@ -127,6 +127,67 @@ describe('Collection actions', () => {
         }
       });
     });
+    it('should add fetched automated collections to the store', async () => {
+      const collectionIds = ['automatedCollection'];
+      fetchMock.post('/collections', []);
+      await store.dispatch(getCollections(collectionIds) as any);
+      expect(store.getState().shared.collections.data).toEqual({
+        exampleCollection: {
+          displayName: 'Example Collection',
+          draft: [],
+          id: 'exampleCollection',
+          live: ['abc', 'def'],
+          previously: undefined,
+          type: 'type'
+        },
+        exampleCollectionTwo: {
+          displayName: 'Example Collection',
+          draft: ['def'],
+          id: 'exampleCollection',
+          live: ['abc'],
+          previously: undefined,
+          type: 'type'
+        },
+        automatedCollection: {
+          id: 'automatedCollection',
+          displayName: 'automated',
+          type: 'type',
+          draft: ['uuid'],
+          live: ['uuid'],
+          metadata: undefined,
+          platform: undefined,
+          previously: ['uuid'],
+          groups: undefined,
+          frontsToolSettings: undefined
+        },
+        testCollection1: {
+          displayName: 'testCollection',
+          draft: ['uuid'],
+          frontsToolSettings: undefined,
+          groups: undefined,
+          id: 'testCollection1',
+          lastUpdated: 1547479667115,
+          live: ['uuid'],
+          metadata: undefined,
+          platform: undefined,
+          previously: ['uuid'],
+          type: 'type'
+        },
+        testCollection2: {
+          displayName: 'testCollection',
+          draft: ['uuid'],
+          frontsToolSettings: undefined,
+          groups: undefined,
+          id: 'testCollection2',
+          lastUpdated: 1547479667115,
+          live: ['uuid'],
+          metadata: undefined,
+          platform: undefined,
+          previously: ['uuid'],
+          type: 'type'
+        }
+      });
+    });
     it('should send only collection id and type in request body when returnOnlyUpdatedCollection is false or default', async () => {
       const collectionIds = ['testCollection1', 'testCollection2'];
       const request = fetchMock.post(
@@ -153,7 +214,7 @@ describe('Collection actions', () => {
         { id: 'testCollection2', lastUpdated: 1547479667115 }
       ]);
     });
-    it('should ignore automated collections without content', async () => {
+    it('should correctly poll for changes in automated collections', async () => {
       const collectionIds = [
         'testCollection1',
         'testCollection2',
@@ -167,7 +228,8 @@ describe('Collection actions', () => {
       const result = request.lastOptions().body;
       expect(JSON.parse(result as string)).toEqual([
         { id: 'testCollection1', lastUpdated: 1547479667115 },
-        { id: 'testCollection2', lastUpdated: 1547479667115 }
+        { id: 'testCollection2', lastUpdated: 1547479667115 },
+        { id: 'automatedCollection' }
       ]);
     });
   });
