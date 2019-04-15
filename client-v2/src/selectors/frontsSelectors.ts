@@ -103,8 +103,10 @@ const frontsAsArraySelector = createSelector(
   }
 );
 
+const defaultFrontsWithPriority = [] as [];
+
 const getFrontsWithPriority = (state: State, priority: string): FrontConfig[] =>
-  getFrontsByPriority(state)[priority] || [];
+  getFrontsByPriority(state)[priority] || defaultFrontsWithPriority;
 
 const getCollections = (state: State): CollectionConfigMap =>
   frontsConfigSelectors.selectAll(state).collections || {};

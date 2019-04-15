@@ -21,6 +21,15 @@ const selectSharedState = (rootState: any): State => rootState.shared;
 const groupsSelector = (state: State): { [id: string]: Group } => state.groups;
 const articleFragmentsSelector = (state: State) => state.articleFragments;
 
+const groupIdSelector = (state: State, { groupId }: { groupId: string }) =>
+  groupId;
+
+const groupSelector = createSelector(
+  groupsSelector,
+  groupIdSelector,
+  (groups, groupId) => groups[groupId]
+);
+
 const articleFragmentsFromRootStateSelector = createSelector(
   [selectSharedState],
   (state: State) => articleFragmentsSelector(state)
@@ -167,18 +176,13 @@ const stageSelector = (
   { collectionSet }: { collectionSet: CollectionItemSets; collectionId: string }
 ): CollectionItemSets => collectionSet;
 
-const createCollectionStageGroupsSelector = () => {
+const createCollectionStageGroupIdsSelector = () => {
   const collectionSelector = createCollectionSelector();
   return createSelector(
     collectionSelector,
-    groupsSelector,
     stageSelector,
-    (
-      collection: Collection | void,
-      groups: { [id: string]: Group },
-      stage: CollectionItemSets
-    ): Group[] =>
-      ((collection && collection[stage]) || []).map(id => groups[id])
+    (collection: Collection | void, stage: CollectionItemSets): string[] =>
+      (collection && collection[stage]) || []
   );
 };
 
@@ -220,26 +224,29 @@ const includeSupportingArticlesSelector = (
 ) => includeSupportingArticles;
 
 const createArticlesInCollectionGroupSelector = () => {
-  const collectionStageGroupsSelector = createCollectionStageGroupsSelector();
+  const collectionStageGroupsSelector = createCollectionStageGroupIdsSelector();
   return createSelector(
     articleFragmentsSelector,
+    groupsSelector,
     collectionStageGroupsSelector,
     groupNameSelector,
     includeSupportingArticlesSelector,
     (
       articleFragments,
-      collectionGroups,
+      groups,
+      collectionGroupIds,
       groupName,
       includeSupportingArticles = true
     ) => {
-      const groups = groupName
+      const collectionGroups = collectionGroupIds.map(id => groups[id]);
+      const allGroups = groupName
         ? [
             collectionGroups.find(({ id }) => id === groupName) || {
               articleFragments: []
             }
           ]
         : collectionGroups;
-      const groupArticleFragmentIds = groups.reduce(
+      const groupArticleFragmentIds = allGroups.reduce(
         (acc, group) => acc.concat(group.articleFragments || []),
         [] as string[]
       );
@@ -447,7 +454,7 @@ export {
   createGroupArticlesSelector,
   createSupportingArticlesSelector,
   createCollectionSelector,
-  createCollectionStageGroupsSelector,
+  createCollectionStageGroupIdsSelector,
   createDemornalisedArticleFragment,
   selectSharedState,
   articleFragmentSelector,
@@ -459,5 +466,6 @@ export {
   articleTagSelector,
   indexInGroupSelector,
   groupsSelector,
+  groupSelector,
   externalArticleIdFromArticleFragmentSelector
 };
