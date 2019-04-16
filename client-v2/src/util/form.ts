@@ -7,6 +7,10 @@ import { ArticleFragmentMeta } from 'shared/types/Collection';
 import { DerivedArticle } from 'shared/types/Article';
 import { CapiArticle } from 'types/Capi';
 import { State } from 'types/State';
+import {
+  articleFragmentSelector,
+  selectSharedState
+} from 'shared/selectors/shared';
 
 export interface ArticleFragmentFormData {
   headline: string;
@@ -144,7 +148,7 @@ export const getImageMetaFromValidationResponse = (image: ImageData) => ({
 
 export const getArticleFragmentMetaFromFormValues = (
   state: State,
-  formName: string,
+  id: string,
   values: ArticleFragmentFormData
 ): ArticleFragmentMeta => {
   const primaryImage = values.primaryImage || {};
@@ -164,7 +168,7 @@ export const getArticleFragmentMetaFromFormValues = (
     return field;
   };
 
-  let completeMeta = omit(
+  const completeMeta = omit(
     {
       ...values,
       headline: getStringField(values.headline),
@@ -181,13 +185,33 @@ export const getArticleFragmentMetaFromFormValues = (
     'cutoutImage'
   );
 
-  if (!values.customKicker) {
-    completeMeta = omit(completeMeta, 'customKicker', 'showKickerCustom');
-  }
-
   // We only return dirtied values.
-  const isDirtySelector = isDirty(formName);
-  return pickBy(completeMeta, (_, key) => {
+  const isDirtySelector = isDirty(id);
+  const dirtiedFields = pickBy(completeMeta, (_, key) => {
     return isDirtySelector(state, formToMetaFieldMap[key] || key);
   });
+
+  const existingArticleFragment = articleFragmentSelector(
+    selectSharedState(state),
+    id
+  );
+
+  const existingArticleFragmentMeta = existingArticleFragment
+    ? existingArticleFragment.meta || {}
+    : {};
+
+  let newArticleFragmentMeta = {
+    ...existingArticleFragmentMeta,
+    ...dirtiedFields
+  };
+
+  if (!values.customKicker) {
+    newArticleFragmentMeta = omit(
+      newArticleFragmentMeta,
+      'customKicker',
+      'showKickerCustom'
+    );
+  }
+
+  return newArticleFragmentMeta;
 };
