@@ -12,9 +12,9 @@ import {
 import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
 import { isCollectionLockedSelector } from 'selectors/collectionSelectors';
 import { State } from 'types/State';
-import { CollectionItemSets, Group as TGroup } from 'shared/types/Collection';
+import { CollectionItemSets, Group } from 'shared/types/Collection';
 import {
-  createCollectionStageGroupIdsSelector,
+  createCollectionStageGroupsSelector,
   createCollectionEditWarningSelector,
   selectSharedState
 } from 'shared/selectors/shared';
@@ -28,11 +28,10 @@ import {
 import { getArticlesForCollections } from 'actions/Collections';
 import { collectionItemSets } from 'constants/fronts';
 import { createSelectIsArticleInCollection } from 'shared/selectors/collection';
-import Group from './Group';
 
 interface CollectionPropsBeforeState {
   id: string;
-  children: (group: TGroup, isUneditable: boolean) => React.ReactNode;
+  children: (group: Group, isUneditable: boolean) => React.ReactNode;
   alsoOn: { [id: string]: AlsoOnDetail };
   frontId: string;
   browsingStage: CollectionItemSets;
@@ -46,7 +45,7 @@ type CollectionProps = CollectionPropsBeforeState & {
   ) => Promise<void | string[]>;
   hasUnpublishedChanges: boolean;
   canPublish: boolean;
-  groups: string[];
+  groups: Group[];
   displayEditWarning: boolean;
   isCollectionLocked: boolean;
   isEditFormOpen: boolean;
@@ -130,17 +129,13 @@ const Collection = ({
         ) : null
       }
     >
-      {groups.map(id => (
-        <Group key={id} id={id}>
-          {group => children(group, isUneditable)}
-        </Group>
-      ))}
+      {groups.map(group => children(group, isUneditable))}
     </CollectionDisplay>
   );
 };
 
 const createMapStateToProps = () => {
-  const collectionStageGroupIdsSelector = createCollectionStageGroupIdsSelector();
+  const collectionStageGroupsSelector = createCollectionStageGroupsSelector();
   const editWarningSelector = createCollectionEditWarningSelector();
   const selectIsArticleInCollection = createSelectIsArticleInCollection();
   return (
@@ -156,7 +151,7 @@ const createMapStateToProps = () => {
         collectionId: id
       }),
       isCollectionLocked: isCollectionLockedSelector(state, id),
-      groups: collectionStageGroupIdsSelector(selectSharedState(state), {
+      groups: collectionStageGroupsSelector(selectSharedState(state), {
         collectionSet: browsingStage,
         collectionId: id
       }),

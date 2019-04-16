@@ -21,7 +21,6 @@ const dropToArticle = (e: React.DragEvent): MappableDropType | null => {
   for (const [type, fn] of Object.entries(map)) {
     const data = e.dataTransfer.getData(type);
     if (data) {
-      console.log(type, data);
       return fn(data);
     }
   }

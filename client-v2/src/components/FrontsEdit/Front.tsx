@@ -153,6 +153,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   };
 
   public render() {
+    console.log('Front');
     const { front, articlesVisible } = this.props;
     return (
       <React.Fragment>
@@ -332,8 +333,7 @@ const mapStateToProps = (state: State, props: FrontPropsBeforeState) => {
     front: getFront(state, { frontId: props.id }),
     articlesVisible: visibleFrontArticlesSelector(state, {
       collectionSet: props.browsingStage
-    }),
-    focusedArticle: selectFocusedArticle(state, 'collectionArticle')
+    })
   };
 };
 

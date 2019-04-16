@@ -14,21 +14,13 @@ import {
 } from '../types/Collection';
 import { State } from '../types/State';
 import { collectionItemSets } from 'constants/fronts';
+import { createShallowEqualResultSelector } from 'shared/util/selectorUtils';
 
 // Selects the shared part of the application state mounted at its default point, '.shared'.
 const selectSharedState = (rootState: any): State => rootState.shared;
 
 const groupsSelector = (state: State): { [id: string]: Group } => state.groups;
 const articleFragmentsSelector = (state: State) => state.articleFragments;
-
-const groupIdSelector = (state: State, { groupId }: { groupId: string }) =>
-  groupId;
-
-const groupSelector = createSelector(
-  groupsSelector,
-  groupIdSelector,
-  (groups, groupId) => groups[groupId]
-);
 
 const articleFragmentsFromRootStateSelector = createSelector(
   [selectSharedState],
@@ -176,13 +168,18 @@ const stageSelector = (
   { collectionSet }: { collectionSet: CollectionItemSets; collectionId: string }
 ): CollectionItemSets => collectionSet;
 
-const createCollectionStageGroupIdsSelector = () => {
+const createCollectionStageGroupsSelector = () => {
   const collectionSelector = createCollectionSelector();
-  return createSelector(
+  return createShallowEqualResultSelector(
     collectionSelector,
+    groupsSelector,
     stageSelector,
-    (collection: Collection | void, stage: CollectionItemSets): string[] =>
-      (collection && collection[stage]) || []
+    (
+      collection: Collection | void,
+      groups: { [id: string]: Group },
+      stage: CollectionItemSets
+    ): Group[] =>
+      ((collection && collection[stage]) || []).map(id => groups[id])
   );
 };
 
@@ -224,29 +221,26 @@ const includeSupportingArticlesSelector = (
 ) => includeSupportingArticles;
 
 const createArticlesInCollectionGroupSelector = () => {
-  const collectionStageGroupsSelector = createCollectionStageGroupIdsSelector();
+  const collectionStageGroupsSelector = createCollectionStageGroupsSelector();
   return createSelector(
     articleFragmentsSelector,
-    groupsSelector,
     collectionStageGroupsSelector,
     groupNameSelector,
     includeSupportingArticlesSelector,
     (
       articleFragments,
-      groups,
-      collectionGroupIds,
+      collectionGroups,
       groupName,
       includeSupportingArticles = true
     ) => {
-      const collectionGroups = collectionGroupIds.map(id => groups[id]);
-      const allGroups = groupName
+      const groups = groupName
         ? [
             collectionGroups.find(({ id }) => id === groupName) || {
               articleFragments: []
             }
           ]
         : collectionGroups;
-      const groupArticleFragmentIds = allGroups.reduce(
+      const groupArticleFragmentIds = groups.reduce(
         (acc, group) => acc.concat(group.articleFragments || []),
         [] as string[]
       );
@@ -454,7 +448,7 @@ export {
   createGroupArticlesSelector,
   createSupportingArticlesSelector,
   createCollectionSelector,
-  createCollectionStageGroupIdsSelector,
+  createCollectionStageGroupsSelector,
   createDemornalisedArticleFragment,
   selectSharedState,
   articleFragmentSelector,
@@ -466,6 +460,5 @@ export {
   articleTagSelector,
   indexInGroupSelector,
   groupsSelector,
-  groupSelector,
   externalArticleIdFromArticleFragmentSelector
 };
