@@ -154,13 +154,7 @@ const createCollectionSelector = () =>
   createSelector(
     collectionSelectors.selectAll,
     collectionIdSelector,
-    (collections: { [id: string]: Collection }, id: string) =>
-      collections[id]
-        ? {
-            ...collections[id],
-            groups: collections[id].groups
-          }
-        : undefined
+    (collections: { [id: string]: Collection }, id: string) => collections[id]
   );
 
 const stageSelector = (
@@ -326,7 +320,7 @@ const createSupportingArticlesSelector = () =>
   );
 
 const createGroupArticlesSelector = () =>
-  createSelector(
+  createShallowEqualResultSelector(
     groupsFromRootStateSelector,
     articleFragmentsFromRootStateSelector,
     (_: any, { groupId }: { groupId: string }) => groupId,
