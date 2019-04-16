@@ -5,6 +5,8 @@ import {
   ClearIcon
 } from 'shared/components/icons/Icons';
 import { SmallRoundButton } from 'util/sharedStyles/buttons';
+import { OuterStyledProps } from 'styled-components';
+import { theme as globalTheme } from 'shared/constants/theme';
 
 const InputWrapper = styled('div')`
   position: relative;
@@ -42,14 +44,6 @@ const SmallRoundButtonOrange = styled(SmallRoundButton)`
   }
 `;
 
-const SmallRoundButtonBlack = styled(SmallRoundButton)`
-  background-color: ${({ theme }) => theme.shared.button.backgroundColor};
-  :hover {
-    background-color: ${({ theme }) =>
-      theme.shared.button.backgroundColorFocused};
-  }
-`;
-
 const ButtonsContainer = styled('div')`
   position: absolute;
   top: 9px;
@@ -57,20 +51,17 @@ const ButtonsContainer = styled('div')`
 `;
 
 const SearchButtonIcon = styled('div')`
+  display: inline-block;
+  height: 32px;
+  width: 32px;
   vertical-align: middle;
 `;
-const ClearButtonIcon = styled('div')`
-  vertical-align: middle;
-`;
+const ClearButtonIcon = styled('div')``;
 
-interface TextInputProps {
-  value?: string;
-  placeholder?: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   onClear?: () => void;
   onSearch?: () => void;
   onDisplaySearchFilters?: () => void;
-  width?: string;
   searchTermsExist: boolean;
 }
 
@@ -92,11 +83,9 @@ const TextInput = ({
         </SmallRoundButtonOrange>
       )}
       {onDisplaySearchFilters && (
-        <SmallRoundButtonBlack onClick={onDisplaySearchFilters} title="Search">
-          <SearchButtonIcon onClick={onSearch}>
-            <SearchIcon size={'l'} />
-          </SearchButtonIcon>
-        </SmallRoundButtonBlack>
+        <SearchButtonIcon>
+          <SearchIcon size={'fill'} fill={globalTheme.colors.blackLight} />
+        </SearchButtonIcon>
       )}
     </ButtonsContainer>
   </InputWrapper>

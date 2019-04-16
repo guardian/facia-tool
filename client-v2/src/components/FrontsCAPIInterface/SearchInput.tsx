@@ -7,6 +7,7 @@ import CAPIFieldFilter from '../FrontsCAPIInterface/FieldFilter';
 import CAPIDateRangeInput from '../FrontsCAPIInterface/DateInput';
 import moment from 'moment';
 import FilterItem from './FilterItem';
+import ButtonDefault from 'shared/components/input/ButtonDefault';
 
 interface StringArrSearchItems {
   tags: string[];
@@ -23,8 +24,6 @@ type SearchInputState = StringArrSearchItems & {
 
 interface SearchInputProps {
   onUpdate: (state: SearchInputState) => void;
-  children: React.ReactNode;
-  additionalFixedContent?: React.ComponentType<any>;
   displaySearchFilters: boolean;
   updateDisplaySearchFilters: (value: boolean) => void;
 }
@@ -32,6 +31,10 @@ interface SearchInputProps {
 const InputContainer = styled('div')`
   margin-bottom: 20px;
   background: ${({ theme }) => theme.capiInterface.backgroundWhite};
+`;
+
+const CloseButton = styled(ButtonDefault)`
+  margin: 10px 0;
 `;
 
 const renderDateAsString = (date: moment.Moment | null) => {
@@ -66,8 +69,12 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
     this.props.updateDisplaySearchFilters(false);
   };
 
-  public searchInput = () => {
+  public hideSearchFilters = () => {
     this.props.updateDisplaySearchFilters(false);
+  };
+
+  public showSearchFilters = () => {
+    this.props.updateDisplaySearchFilters(true);
   };
 
   public clearSelectedDates = () => {
@@ -90,11 +97,7 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
   };
 
   public render() {
-    const {
-      children,
-      displaySearchFilters,
-      additionalFixedContent: AdditionalFixedContent
-    } = this.props;
+    const { displaySearchFilters } = this.props;
 
     const {
       query,
@@ -107,67 +110,63 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
     } = this.state;
 
     return (
-      <ScrollContainer
-        fixed={
-          <React.Fragment>
-            <InputContainer>
-              <TextInput
-                placeholder="Search content"
-                value={query || ''}
-                onChange={this.handleSearchInput}
-                onClear={this.clearInput}
-                onSearch={this.searchInput}
-                searchTermsExist={this.searchTermsExist}
-                onDisplaySearchFilters={this.handleDisplaySearchFilters}
-              />
-            </InputContainer>
-            {tags.map(tag => (
-              <FilterItem
-                key={tag}
-                onClear={() => this.removeStringFromStateKey('tags', tag)}
-              >
-                <span>{tag}</span>
-              </FilterItem>
-            ))}
-            {sections.map(section => (
-              <FilterItem
-                key={section}
-                onClear={() =>
-                  this.removeStringFromStateKey('sections', section)
-                }
-              >
-                <span>{section}</span>
-              </FilterItem>
-            ))}
-            {desks.map(desk => (
-              <FilterItem
-                key={desk}
-                onClear={() => this.removeStringFromStateKey('desks', desk)}
-              >
-                <span>{desk}</span>
-              </FilterItem>
-            ))}
-            {ratings.map(rating => (
-              <FilterItem
-                key={rating}
-                onClear={() => this.removeStringFromStateKey('ratings', rating)}
-              >
-                <span>{rating}</span>
-              </FilterItem>
-            ))}
-            {this.shouldShowDate && (
-              <FilterItem onClear={() => this.clearSelectedDates()}>
-                <span>From: {renderDateAsString(from)} </span>
-                <span>To: {renderDateAsString(to)} </span>
-              </FilterItem>
-            )}
-            {AdditionalFixedContent && <AdditionalFixedContent />}
-          </React.Fragment>
-        }
-      >
-        {!displaySearchFilters ? (
-          children
-        ) : (
+      <React.Fragment>
+        <InputContainer>
+          <TextInput
+            placeholder="Search content"
+            value={query || ''}
+            onFocus={this.showSearchFilters}
+            onChange={this.handleSearchInput}
+            onClear={this.clearInput}
+            onSearch={this.hideSearchFilters}
+            searchTermsExist={this.searchTermsExist}
+            onDisplaySearchFilters={this.handleDisplaySearchFilters}
+            onKeyUp={e => {
+              if (e.keyCode === 13) {
+                this.hideSearchFilters();
+              }
+            }}
+          />
+        </InputContainer>
+        {tags.map(tag => (
+          <FilterItem
+            key={tag}
+            onClear={() => this.removeStringFromStateKey('tags', tag)}
+          >
+            <span>{tag}</span>
+          </FilterItem>
+        ))}
+        {sections.map(section => (
+          <FilterItem
+            key={section}
+            onClear={() => this.removeStringFromStateKey('sections', section)}
+          >
+            <span>{section}</span>
+          </FilterItem>
+        ))}
+        {desks.map(desk => (
+          <FilterItem
+            key={desk}
+            onClear={() => this.removeStringFromStateKey('desks', desk)}
+          >
+            <span>{desk}</span>
+          </FilterItem>
+        ))}
+        {ratings.map(rating => (
+          <FilterItem
+            key={rating}
+            onClear={() => this.removeStringFromStateKey('ratings', rating)}
+          >
+            <span>{rating}</span>
+          </FilterItem>
+        ))}
+        {this.shouldShowDate && (
+          <FilterItem onClear={() => this.clearSelectedDates()}>
+            <span>From: {renderDateAsString(from)} </span>
+            <span>To: {renderDateAsString(to)} </span>
+          </FilterItem>
+        )}
+        {displaySearchFilters && (
           <>
             <CAPITagInput
               placeholder={`Type tag name`}
@@ -202,9 +201,10 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
               end={this.state.toDate}
               onDateChange={this.onDateChange}
             />
+            <CloseButton onClick={this.hideSearchFilters}>Close</CloseButton>
           </>
         )}
-      </ScrollContainer>
+      </React.Fragment>
     );
   }
 

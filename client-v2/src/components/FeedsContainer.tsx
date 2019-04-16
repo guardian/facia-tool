@@ -23,6 +23,7 @@ import Pagination from './FrontsCAPIInterface/Pagination';
 import { IPagination } from 'lib/createAsyncResourceBundle';
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 import { DEFAULT_PARAMS } from 'services/faciaApi';
+import ScrollContainer from './ScrollContainer';
 
 interface FeedsContainerProps {
   fetchLive: (params: object, isResource: boolean) => void;
@@ -199,55 +200,52 @@ class FeedsContainer extends React.Component<
   }
 
   public renderFixedContent = () => {
-    if (!this.state.displaySearchFilters) {
-      const { livePagination, previewPagination } = this.props;
-      const pagination = this.isLive ? livePagination : previewPagination;
-      const hasPages = !!(pagination && pagination.totalPages > 1);
-      return (
-        <FixedContentContainer>
-          <ResultsHeadingContainer>
-            <div>
-              <Title>
-                Latest
-                <ShortVerticalPinline />
-              </Title>
-              <RefreshButton
-                disabled={this.isLoading}
-                onClick={() => this.runSearchAndRestartPolling()}
-              >
-                {this.isLoading ? 'Loading' : 'Refresh'}
-              </RefreshButton>
-            </div>
-            <RadioGroup>
-              <RadioButton
-                checked={this.state.capiFeedIndex === 0}
-                onChange={() => this.handleFeedClick(0)}
-                label="Live"
-                inline
-                name="capiFeed"
+    const { livePagination, previewPagination } = this.props;
+    const pagination = this.isLive ? livePagination : previewPagination;
+    const hasPages = !!(pagination && pagination.totalPages > 1);
+    return (
+      <FixedContentContainer>
+        <ResultsHeadingContainer>
+          <div>
+            <Title>
+              Latest
+              <ShortVerticalPinline />
+            </Title>
+            <RefreshButton
+              disabled={this.isLoading}
+              onClick={() => this.runSearchAndRestartPolling()}
+            >
+              {this.isLoading ? 'Loading' : 'Refresh'}
+            </RefreshButton>
+          </div>
+          <RadioGroup>
+            <RadioButton
+              checked={this.state.capiFeedIndex === 0}
+              onChange={() => this.handleFeedClick(0)}
+              label="Live"
+              inline
+              name="capiFeed"
+            />
+            <RadioButton
+              checked={this.state.capiFeedIndex === 1}
+              onChange={() => this.handleFeedClick(1)}
+              label="Draft"
+              inline
+              name="capiFeed"
+            />
+          </RadioGroup>
+          {pagination && hasPages && (
+            <PaginationContainer>
+              <Pagination
+                pageChange={this.pageChange}
+                currentPage={pagination.currentPage}
+                totalPages={pagination.totalPages}
               />
-              <RadioButton
-                checked={this.state.capiFeedIndex === 1}
-                onChange={() => this.handleFeedClick(1)}
-                label="Draft"
-                inline
-                name="capiFeed"
-              />
-            </RadioGroup>
-            {pagination && hasPages && (
-              <PaginationContainer>
-                <Pagination
-                  pageChange={this.pageChange}
-                  currentPage={pagination.currentPage}
-                  totalPages={pagination.totalPages}
-                />
-              </PaginationContainer>
-            )}
-          </ResultsHeadingContainer>
-        </FixedContentContainer>
-      );
-    }
-    return null;
+            </PaginationContainer>
+          )}
+        </ResultsHeadingContainer>
+      </FixedContentContainer>
+    );
   };
 
   public render() {
@@ -261,14 +259,20 @@ class FeedsContainer extends React.Component<
     const articles = this.isLive ? liveArticles : previewArticles;
     return (
       <FeedsContainerWrapper>
-        <SearchInput
-          updateDisplaySearchFilters={this.updateDisplaySearchFilters}
-          displaySearchFilters={this.state.displaySearchFilters}
-          additionalFixedContent={this.renderFixedContent}
-          onUpdate={this.handleParamsUpdate}
+        <ScrollContainer
+          fixed={
+            <>
+              <SearchInput
+                updateDisplaySearchFilters={this.updateDisplaySearchFilters}
+                displaySearchFilters={this.state.displaySearchFilters}
+                onUpdate={this.handleParamsUpdate}
+              />
+              {!this.state.displaySearchFilters && this.renderFixedContent()}
+            </>
+          }
         >
           <Feed error={error} articles={articles} />
-        </SearchInput>
+        </ScrollContainer>
       </FeedsContainerWrapper>
     );
   }
