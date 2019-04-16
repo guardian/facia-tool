@@ -7,9 +7,9 @@ function resultCheckMemoize<A extends any[], R>(func: (...args: A) => R) {
   let last: [A, R] | null = null;
   return (...args: A): R => {
     if (!last) {
-      let result = func(...args);
-      last = [args, result];
-      return result;
+      const res = func(...args);
+      last = [args, res];
+      return res;
     }
 
     const [lastArgs, lastResult] = last;
@@ -21,7 +21,7 @@ function resultCheckMemoize<A extends any[], R>(func: (...args: A) => R) {
       return lastResult;
     }
 
-    let result = func(...args);
+    const result = func(...args);
 
     if (shallowequal(lastResult, result)) {
       last = [args, lastResult];

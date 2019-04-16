@@ -4,8 +4,14 @@ import { PosSpec } from 'lib/dnd';
 import { insertArticleFragment } from 'actions/ArticleFragments';
 import { CapiArticle } from 'types/Capi';
 
-export type RefDrop = { type: 'REF'; data: string };
-export type CAPIDrop = { type: 'CAPI'; data: CapiArticle };
+export interface RefDrop {
+  type: 'REF';
+  data: string;
+}
+export interface CAPIDrop {
+  type: 'CAPI';
+  data: CapiArticle;
+}
 
 export type MappableDropType = RefDrop | CAPIDrop;
 
