@@ -34,7 +34,7 @@ const DropdownItem = styled('div')<{ highlighted: boolean }>`
 `;
 
 const SearchTitle = styled('label')`
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   color: ${({ theme }) => theme.capiInterface.text};
   margin-right: 3px;
@@ -45,13 +45,13 @@ const SearchInput = styled('input')`
   border: none;
   width: 109px;
   padding-left: 5px;
-  font-size: 16px;
+  font-size: 14px;
   flex: 1;
   :focus {
     outline: none;
   }
   &::placeholder {
-    font-size: 16px;
+    font-size: 14px;
   }
 `;
 

@@ -1,6 +1,5 @@
 import React from 'react';
 import { styled } from 'constants/theme';
-import ScrollContainer from '../ScrollContainer';
 import TextInput from '../inputs/TextInput';
 import CAPITagInput from '../FrontsCAPIInterface/TagInput';
 import CAPIFieldFilter from '../FrontsCAPIInterface/FieldFilter';
@@ -26,11 +25,12 @@ interface SearchInputProps {
   onUpdate: (state: SearchInputState) => void;
   displaySearchFilters: boolean;
   updateDisplaySearchFilters: (value: boolean) => void;
+  showReviewSearch: boolean;
 }
 
 const InputContainer = styled('div')`
-  margin-bottom: 20px;
   background: ${({ theme }) => theme.capiInterface.backgroundWhite};
+  margin-bottom: 10px;
 `;
 
 const CloseButton = styled(ButtonDefault)`
@@ -115,7 +115,7 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
           <TextInput
             placeholder="Search content"
             value={query || ''}
-            onFocus={this.showSearchFilters}
+            onClick={this.showSearchFilters}
             onChange={this.handleSearchInput}
             onClear={this.clearInput}
             onSearch={this.hideSearchFilters}
@@ -184,18 +184,20 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
               onSelect={this.addUniqueStringToStateKey('desks')}
               searchType="desks"
             />
-            <CAPIFieldFilter
-              placeholder="Select one or more"
-              filterTitle="star rating for reviews"
-              items={[
-                { id: '1', label: '1 Star' },
-                { id: '2', label: '2 Stars' },
-                { id: '3', label: '3 Stars' },
-                { id: '4', label: '4 Stars' },
-                { id: '5', label: '5 Stars' }
-              ]}
-              onChange={this.addUniqueStringToStateKey('ratings')}
-            />
+            {this.props.showReviewSearch && (
+              <CAPIFieldFilter
+                placeholder="Select one or more"
+                filterTitle="star rating for reviews"
+                items={[
+                  { id: '1', label: '1 Star' },
+                  { id: '2', label: '2 Stars' },
+                  { id: '3', label: '3 Stars' },
+                  { id: '4', label: '4 Stars' },
+                  { id: '5', label: '5 Stars' }
+                ]}
+                onChange={this.addUniqueStringToStateKey('ratings')}
+              />
+            )}
             <CAPIDateRangeInput
               start={this.state.fromDate}
               end={this.state.toDate}

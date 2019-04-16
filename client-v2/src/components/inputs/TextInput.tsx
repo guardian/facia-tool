@@ -5,7 +5,6 @@ import {
   ClearIcon
 } from 'shared/components/icons/Icons';
 import { SmallRoundButton } from 'util/sharedStyles/buttons';
-import { OuterStyledProps } from 'styled-components';
 import { theme as globalTheme } from 'shared/constants/theme';
 
 const InputWrapper = styled('div')`
@@ -56,6 +55,7 @@ const SearchButtonIcon = styled('div')`
   width: 32px;
   vertical-align: middle;
 `;
+
 const ClearButtonIcon = styled('div')``;
 
 interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {

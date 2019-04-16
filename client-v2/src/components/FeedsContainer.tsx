@@ -266,6 +266,7 @@ class FeedsContainer extends React.Component<
                 updateDisplaySearchFilters={this.updateDisplaySearchFilters}
                 displaySearchFilters={this.state.displaySearchFilters}
                 onUpdate={this.handleParamsUpdate}
+                showReviewSearch={false}
               />
               {!this.state.displaySearchFilters && this.renderFixedContent()}
             </>

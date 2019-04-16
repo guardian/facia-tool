@@ -19,8 +19,9 @@ interface CAPIDateInputState {
 }
 
 const DatePickerContainer = styled('div')`
-  padding-top: 24px;
+  padding-top: 20px;
   padding-left: 2px;
+  font-size: 14px;
 `;
 
 const SearchTitle = styled('div')`
@@ -31,7 +32,8 @@ const SearchTitle = styled('div')`
 
 const DatePicker = styled('div')`
   .DateInput_input {
-    font-size: 16px;
+    font-size: 14px;
+    line-height: 14px;
     font-family: TS3TextSans;
     color: ${({ theme }) => theme.capiInterface.text};
   }
