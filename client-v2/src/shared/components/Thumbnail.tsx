@@ -12,7 +12,18 @@ const ThumbnailSmall = styled(ThumbnailBase)`
   height: 50px;
 `;
 
-export { ThumbnailSmall };
+const ThumbnailEditForm = styled(ThumbnailBase)<{
+  imageHide: boolean;
+  url: string | undefined | void;
+}>`
+  width: 100%;
+  height: 115px;
+  margin-bottom: 10px;
+  opacity: ${({ imageHide }) => (imageHide ? 0.5 : 1)};
+  background-image: ${({ url }) => `url('${url}')`};
+`;
+
+export { ThumbnailSmall, ThumbnailEditForm };
 
 export default styled(ThumbnailBase)`
   width: 130px;

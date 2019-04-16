@@ -26,6 +26,7 @@ export interface ArticleFragmentFormData {
   slideshow: Array<ImageData | void> | void;
   showKickerTag: boolean;
   showKickerSection: boolean;
+  imageReplace: boolean;
 }
 
 export interface ImageData {
@@ -36,29 +37,32 @@ export interface ImageData {
   thumb?: string;
 }
 
-export interface CapiTextFields {
+export interface CapiFields {
   headline: string;
   trailText: string;
   byline: string;
+  thumbnail?: string | void;
 }
 
 const strToInt = (str: string | void) => (str ? parseInt(str, 10) : undefined);
 const intToStr = (int: number | void) => (int ? int.toString() : undefined);
 
-export const getCapiValuesForArticleTextFields = (
+export const getCapiValuesForArticleFields = (
   article: CapiArticle | void
-): CapiTextFields => {
+): CapiFields => {
   if (!article) {
     return {
       headline: '',
       trailText: '',
-      byline: ''
+      byline: '',
+      thumbnail: ''
     };
   }
   return {
     headline: article.fields.headline || '',
     trailText: article.fields.trailText || '',
-    byline: article.fields.byline || ''
+    byline: article.fields.byline || '',
+    thumbnail: article.fields.thumbnail
   };
 };
 
@@ -93,6 +97,7 @@ export const getInitialValuesForArticleFragmentForm = (
         trailText: article.trailText || '',
         imageCutoutReplace: article.imageCutoutReplace || false,
         imageHide: article.imageHide || false,
+        imageReplace: article.imageReplace || false,
         imageSlideshowReplace: article.imageSlideshowReplace || false,
         primaryImage: {
           src: article.imageSrc,
@@ -118,7 +123,6 @@ export const getInitialValuesForArticleFragmentForm = (
 // the two models to figure out which meta fields should be
 // added to the form output when a form field is dirtied.
 const formToMetaFieldMap: { [fieldName: string]: string } = {
-  imageReplace: 'primaryImage',
   imageSrc: 'primaryImage',
   imageSrcThumb: 'primaryImage',
   imageSrcWidth: 'primaryImage',
@@ -130,11 +134,7 @@ const formToMetaFieldMap: { [fieldName: string]: string } = {
   imageCutoutSrcOrigin: 'cutoutImage'
 };
 
-export const getImageMetaFromValidationResponse = (
-  image: ImageData,
-  hideImage?: boolean
-) => ({
-  imageReplace: !!image.src && !hideImage,
+export const getImageMetaFromValidationResponse = (image: ImageData) => ({
   imageSrc: image.src,
   imageSrcThumb: image.thumb,
   imageSrcWidth: intToStr(image.width),
@@ -170,7 +170,7 @@ export const getArticleFragmentMetaFromFormValues = (
       headline: getStringField(values.headline),
       trailText: getStringField(values.trailText),
       byline: getStringField(values.byline),
-      ...getImageMetaFromValidationResponse(primaryImage, values.imageHide),
+      ...getImageMetaFromValidationResponse(primaryImage),
       imageCutoutSrc: cutoutImage.src,
       imageCutoutSrcWidth: intToStr(cutoutImage.width),
       imageCutoutSrcHeight: intToStr(cutoutImage.height),
