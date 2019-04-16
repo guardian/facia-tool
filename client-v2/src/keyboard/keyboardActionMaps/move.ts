@@ -51,7 +51,9 @@ const moveDown: KeyboardActionMap = {
         )
       );
     } catch (e) {
-      Raven.captureMessage(`Moving item up in clipboard failed: ${e.message}`);
+      Raven.captureMessage(
+        `Moving item down in clipboard failed: ${e.message}`
+      );
     }
   },
   collectionArticle: (focusData: ApplicationFocusStates) => async (
@@ -68,7 +70,9 @@ const moveDown: KeyboardActionMap = {
         )
       );
     } catch (e) {
-      Raven.captureMessage(`Moving item up in clipboard failed: ${e.message}`);
+      Raven.captureMessage(
+        `Moving item down in clipboard failed: ${e.message}`
+      );
     }
   }
 };
