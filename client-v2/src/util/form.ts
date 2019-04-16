@@ -1,4 +1,5 @@
 import omit from 'lodash/omit';
+import omitBy from 'lodash/omitBy';
 import compact from 'lodash/compact';
 import clamp from 'lodash/clamp';
 import pickBy from 'lodash/pickBy';
@@ -206,12 +207,13 @@ export const getArticleFragmentMetaFromFormValues = (
   };
 
   if (!values.customKicker) {
-    newArticleFragmentMeta = omit(
-      newArticleFragmentMeta,
-      'customKicker',
-      'showKickerCustom'
-    );
+    newArticleFragmentMeta = omit(newArticleFragmentMeta, 'showKickerCustom');
   }
 
-  return newArticleFragmentMeta;
+  return omitBy(newArticleFragmentMeta, (value: string | boolean | any[]) => {
+    if (Array.isArray(value)) {
+      return value.length === 0;
+    }
+    return !value;
+  });
 };

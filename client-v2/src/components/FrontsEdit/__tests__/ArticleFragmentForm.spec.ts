@@ -157,7 +157,7 @@ describe('ArticleFragmentForm transform functions', () => {
       );
       expect(
         getArticleFragmentMetaFromFormValues(state, 'exampleId', formValues)
-      ).toEqual({ headline: 'Bill Shorten', supporting: [] });
+      ).toEqual({ headline: 'Bill Shorten' });
     });
     it('should derive values, removing the slideshow array if empty', () => {
       const byline = 'Caroline Davies edited';
@@ -186,8 +186,7 @@ describe('ArticleFragmentForm transform functions', () => {
         headline:
           "Sister of academic's killer warned police he was mentally ill edited",
         trailText:
-          'Police noted concerns over Femi Nandap, who went on to stab lecturer, but released him edited',
-        supporting: []
+          'Police noted concerns over Femi Nandap, who went on to stab lecturer, but released him edited'
       });
     });
     it('should derive values, setting the imageReplace value if necessary', () => {
@@ -216,7 +215,6 @@ describe('ArticleFragmentForm transform functions', () => {
         imageSrcOrigin: 'exampleOrigin',
         imageSrcThumb: 'exampleThumb',
         imageSrcWidth: '100',
-        supporting: [],
         headline: 'Bill Shorten'
       });
     });
@@ -235,7 +233,7 @@ describe('ArticleFragmentForm transform functions', () => {
           ...formValues,
           ...values
         })
-      ).toEqual({ supporting: [], headline: 'Bill Shorten' });
+      ).toEqual({ headline: 'Bill Shorten' });
     });
     it('should handle conversion of string values for images', () => {
       const values = {
@@ -295,8 +293,7 @@ describe('ArticleFragmentForm transform functions', () => {
             origin: 'exampleOrigin',
             thumb: 'exampleThumb'
           }
-        ],
-        supporting: []
+        ]
       });
     });
   });
