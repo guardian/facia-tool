@@ -3,7 +3,7 @@ import { CapGroupSiblings } from 'shared/types/Action';
 
 function groupsReceived(groups: { [id: string]: Group }) {
   return {
-    type: 'SHARED/GROUPS_RECEIVED',
+    type: 'SHARED/GROUPS_RECEIVED' as 'SHARED/GROUPS_RECEIVED',
     payload: groups
   };
 }
