@@ -105,7 +105,7 @@ const insert = async (
   );
   await dispatch(insertArticleFragment(
     { type: parentType, id: parentId, index },
-    parentId,
+    { type: 'REF', data: parentId },
     'collection',
     afId => () =>
       Promise.resolve(

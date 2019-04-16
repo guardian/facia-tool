@@ -256,6 +256,16 @@ async function getCollections( // fetchCollections
   return await response.json();
 }
 
+const DEFAULT_PARAMS = {
+  'page-size': 50,
+  'show-elements': 'video,main',
+  'show-blocks': 'main',
+  'show-tags': 'all',
+  'show-atoms': 'media',
+  'show-fields':
+    'internalPageCode,isLive,firstPublicationDate,scheduledPublicationDate,headline,trailText,byline,thumbnail,secureThumbnail,liveBloggingNow,membershipAccess,shortUrl'
+};
+
 /**
  * Get a CAPI query string for the given content ids. This could be a single article
  * or tag/section, or a list of articles.
@@ -266,7 +276,9 @@ const getCapiUriForContentIds = (contentIds: string[]) => {
     contentIds.length > 1
       ? `search?ids=${contentIdsStr}&`
       : `${contentIdsStr}?`;
-  return `/api/preview/${searchStr}page-size=50&show-elements=video,main&show-blocks=main&show-tags=all&show-atoms=media&show-fields=internalPageCode,isLive,firstPublicationDate,scheduledPublicationDate,headline,trailText,byline,thumbnail,secureThumbnail,liveBloggingNow,membershipAccess,shortUrl`;
+  return `/api/preview/${searchStr}${Object.entries(DEFAULT_PARAMS)
+    .map(e => e.join('='))
+    .join('&')}`;
 };
 
 const getTagOrSectionTitle = (queryResponse: CAPISearchQueryResponse) => {
@@ -277,6 +289,15 @@ const getTagOrSectionTitle = (queryResponse: CAPISearchQueryResponse) => {
         (response.section && response.section.webTitle)
     : undefined;
 };
+
+const getExternalArticleId = (article: CapiArticle) =>
+  `internal-code/page/${article.fields.internalPageCode}`;
+
+const transformExternalArticle = (article: CapiArticle) => ({
+  ...article,
+  urlPath: article.id,
+  id: getExternalArticleId(article)
+});
 
 const parseArticleListFromResponses = (
   queryResponseUnionType: CAPISearchQueryResponse
@@ -292,11 +313,7 @@ const parseArticleListFromResponses = (
       ? response.results
       : [response.content];
 
-    return results.map((externalArticle: CapiArticle) => ({
-      ...externalArticle,
-      urlPath: externalArticle.id,
-      id: `internal-code/page/${externalArticle.fields.internalPageCode}`
-    }));
+    return results.map(transformExternalArticle);
   } catch (e) {
     throw new Error(
       `Error getting articles from CAPI: cannot parse response - ${e.message}`
@@ -365,5 +382,7 @@ export {
   saveFavouriteFrontIds,
   getCapiUriForContentIds,
   fetchVisibleArticles,
-  discardDraftChangesToCollection
+  discardDraftChangesToCollection,
+  transformExternalArticle,
+  DEFAULT_PARAMS
 };

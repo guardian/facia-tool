@@ -22,6 +22,7 @@ import { CapiArticle } from 'types/Capi';
 import Pagination from './FrontsCAPIInterface/Pagination';
 import { IPagination } from 'lib/createAsyncResourceBundle';
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
+import { DEFAULT_PARAMS } from 'services/faciaApi';
 
 interface FeedsContainerProps {
   fetchLive: (params: object, isResource: boolean) => void;
@@ -96,8 +97,10 @@ const FixedContentContainer = styled.div`
 `;
 
 const getCapiFieldsToShow = (isPreview: boolean) => {
-  const defaultFieldsToShow =
-    'internalPageCode,trailText,firstPublicationDate,isLive,thumbnail,secureThumbnail,liveBloggingNow';
+  const defaultFieldsToShow = DEFAULT_PARAMS['show-fields']
+    .split(',')
+    .filter(f => f !== 'scheduledPublicationDate')
+    .join(',');
 
   if (!isPreview) {
     return defaultFieldsToShow;

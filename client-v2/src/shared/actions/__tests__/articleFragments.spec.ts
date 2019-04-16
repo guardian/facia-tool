@@ -11,10 +11,12 @@ import { createFragment } from 'shared/util/articleFragment';
 import { createLinkSnap, createLatestSnap } from 'shared/util/snap';
 import guardianTagPage from 'shared/fixtures/guardianTagPage';
 import bbcSectionPage from 'shared/fixtures/bbcSectionPage';
+import { RefDrop } from 'util/collectionUtils';
 
 jest.mock('uuid/v4', () => () => 'uuid');
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
+const idDrop = (id: string): RefDrop => ({ type: 'REF', data: id });
 
 describe('articleFragments actions', () => {
   const { confirm } = window;
@@ -40,7 +42,7 @@ describe('articleFragments actions', () => {
       });
       const store = mockStore({});
       await store.dispatch(createArticleFragment(
-        'internal-code/page/5029528'
+        idDrop('internal-code/page/5029528')
       ) as any);
       const actions = store.getActions();
       expect(actions[0].type).toEqual(externalArticleActionNames.fetchSuccess);
@@ -59,7 +61,7 @@ describe('articleFragments actions', () => {
       fetchMock.mock('/http/proxy/https://bbc.co.uk/some/page', bbcSectionPage);
       const store = mockStore({});
       await store.dispatch(createArticleFragment(
-        'https://bbc.co.uk/some/page'
+        idDrop('https://bbc.co.uk/some/page')
       ) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
@@ -82,7 +84,7 @@ describe('articleFragments actions', () => {
       (window as any).confirm = jest.fn(() => true);
       const store = mockStore({});
       await store.dispatch(createArticleFragment(
-        'https://www.theguardian.com/example/tag/page'
+        idDrop('https://www.theguardian.com/example/tag/page')
       ) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
@@ -108,7 +110,7 @@ describe('articleFragments actions', () => {
       (window as any).confirm = jest.fn(() => false);
       const store = mockStore({});
       await store.dispatch(createArticleFragment(
-        'https://www.theguardian.com/example/tag/page'
+        idDrop('https://www.theguardian.com/example/tag/page')
       ) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
@@ -132,7 +134,7 @@ describe('articleFragments actions', () => {
       );
       const store = mockStore({});
       await store.dispatch(createArticleFragment(
-        'https://www.theguardian.com/example/non/tag/page'
+        idDrop('https://www.theguardian.com/example/non/tag/page')
       ) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
