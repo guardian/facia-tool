@@ -2,10 +2,12 @@ import {
   selectSharedState,
   indexInGroupSelector,
   groupsSelector,
-  groupCollectionSelector
+  groupCollectionSelector,
+  createCollectionSelector
 } from '../shared/selectors/shared';
 import { clipboardContentSelector } from 'selectors/clipboardSelectors';
 import { State } from 'types/State';
+import { getUnlockedFrontCollections } from './frontsSelectors';
 
 const nextClipboardIndexSelector = (
   state: State,
@@ -33,7 +35,8 @@ const nextIndexAndGroupSelector = (
   state: State,
   groupId: string,
   articleId: string,
-  action: 'up' | 'down'
+  action: 'up' | 'down',
+  frontId: string
 ) => {
   const sharedState = selectSharedState(state);
   const group = groupsSelector(sharedState)[groupId];
@@ -48,6 +51,8 @@ const nextIndexAndGroupSelector = (
     groupId,
     articleId
   );
+
+  // Checking if moving inside the group
   if (action === 'down') {
     // If the article fragment is not the last in the group, the article stays in the group
     if (currentArticleIndex < groupArticleFragments.length - 1) {
@@ -62,7 +67,7 @@ const nextIndexAndGroupSelector = (
     }
   }
 
-  // If the article can't stay in the same group we check if there is another group it can move to
+  // Checking if moving between groups but inside the collection
   const { collection, collectionItemSet } = groupCollectionSelector(
     sharedState,
     groupId
@@ -88,10 +93,52 @@ const nextIndexAndGroupSelector = (
         }
       }
     }
+
+    // Checking if moving between collections
+    const frontCollections = getUnlockedFrontCollections(state, frontId);
+    const collectionIndex = frontCollections.indexOf(collection.id);
+    if (action === 'down') {
+      if (collectionIndex < frontCollections.length - 1) {
+        const collectionSelector = createCollectionSelector();
+        const coll = collectionSelector(sharedState, {
+          collectionId: frontCollections[collectionIndex + 1]
+        });
+        if (!coll || !coll.draft) {
+          return null;
+        }
+
+        const nextGroupId = coll.draft[0];
+        return { toIndex: 0, nextGroupId, collectionId: coll.id };
+      }
+    }
+    if (action === 'up') {
+      if (collectionIndex !== 0) {
+        const collectionSelector = createCollectionSelector();
+        const coll = collectionSelector(sharedState, {
+          collectionId: frontCollections[collectionIndex - 1]
+        });
+
+        if (!coll || !coll.draft) {
+          return null;
+        }
+
+        const nextIndex = coll.draft.length;
+        const nextGroupId = coll.draft[nextIndex - 1];
+
+        const nextGroupArticles = groupsSelector(sharedState)[nextGroupId]
+          .articleFragments;
+
+        return {
+          toIndex: nextGroupArticles.length,
+          nextGroupId,
+          collectionId: coll.id
+        };
+      }
+    }
   }
 
-  // Move to the next collection: TODO
-  // Else there is nowhere we can move
+  // If there is nowhere we can move we return null
+
   return null;
 };
 

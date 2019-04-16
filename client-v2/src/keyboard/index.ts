@@ -13,11 +13,18 @@ import paste from './keyboardActionMaps/paste';
 import { moveUp, moveDown } from './keyboardActionMaps/move';
 import { ArticleFragment } from '../shared/types/Collection';
 
-type FocusableTypes = 'clipboard' | 'clipboardArticle';
+type FocusableTypes =
+  | 'clipboard'
+  | 'clipboardArticle'
+  | 'collection'
+  | 'collectionArticle';
 
 interface BaseFocusState {
   type: FocusableTypes;
   articleFragment?: ArticleFragment;
+  groupId?: string;
+  collectionId?: string;
+  frontId?: string;
 }
 
 export type ApplicationFocusStates = BaseFocusState;

@@ -10,12 +10,15 @@ import {
 import { ArticleFragment } from 'shared/types/Collection';
 import { PosSpec } from 'lib/dnd';
 import { ThunkResult, Dispatch } from 'types/Store';
+import { setFocusState } from 'bundles/focusBundle';
+import { editorOpenCollections } from 'bundles/frontsUIBundle';
 
 const keyboardArticleFragmentMove = (
   action: 'up' | 'down',
   persistTo: 'collection' | 'clipboard',
   fragment?: ArticleFragment,
-  groupId?: string
+  groupId?: string,
+  frontId?: string
 ): ThunkResult<void> => {
   return (dispatch: Dispatch, getState) => {
     if (!fragment) {
@@ -36,17 +39,30 @@ const keyboardArticleFragmentMove = (
 
       const nextPosition = nextIndexAndGroupSelector(
         state,
-        id,
         groupId || '',
-        action
+        id,
+        action,
+        frontId || ''
       );
 
       if (nextPosition && nextPosition.nextGroupId) {
-        const { toIndex, nextGroupId } = nextPosition;
+        const { toIndex, nextGroupId, collectionId } = nextPosition;
+
+        // If we are moving between collections we should open the collection first
+        if (collectionId) {
+          dispatch(editorOpenCollections(collectionId));
+        }
 
         const to: PosSpec = { type, index: toIndex, id: nextGroupId };
-
         dispatch(moveArticleFragment(to, fragment, from, persistTo));
+        dispatch(
+          setFocusState({
+            type: 'collectionArticle',
+            groupId: nextGroupId,
+            articleFragment: fragment,
+            frontId
+          })
+        );
       }
     } else if (persistTo === 'clipboard') {
       const clipboardIndeces = nextClipboardIndexSelector(state, id, action);

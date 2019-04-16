@@ -203,7 +203,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
         id={collection && createCollectionId(collection)}
         hasMultipleFrontsOpen={hasMultipleFrontsOpen}
       >
-        <ContainerHeadingPinline>
+        <ContainerHeadingPinline tabIndex={-1}>
           <CollectionHeadlineWithConfigContainer>
             <CollectionHeadingText isLoading={!collection} title={displayName}>
               {displayName}
@@ -277,6 +277,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
               <ButtonCircularCaret
                 active={this.props.isOpen!}
                 preActive={this.state.hasDragOpenIntent}
+                tabIndex={-1}
               />
             </CollectionToggleContainer>
           </CollectionMetaContainer>

@@ -90,6 +90,7 @@ const Collection = ({
         canPublish && (
           <React.Fragment>
             <Button
+              tabIndex={-1}
               size="l"
               priority="default"
               onClick={() => discardDraftChanges(id)}
@@ -103,6 +104,7 @@ const Collection = ({
               Discard
             </Button>
             <Button
+              tabIndex={-1}
               size="l"
               priority="primary"
               onClick={() => publish(id, frontId)}

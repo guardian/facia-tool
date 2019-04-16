@@ -24,9 +24,9 @@ export const selectIsClipboardFocused = (state: GlobalState) => {
   return false;
 };
 
-export const selectFocusedClipboardArticle = (state: GlobalState) => {
+export const selectFocusedArticle = (state: GlobalState, focusType: string) => {
   const focusState = selectFocusState(state);
-  if (focusState && focusState.type === 'clipboardArticle') {
+  if (focusState && focusState.type === focusType) {
     return focusState.articleFragment && focusState.articleFragment.uuid;
   }
 };

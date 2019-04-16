@@ -70,6 +70,7 @@ class CollectionNotification extends React.Component<
           {!alsoOn.meritsWarning && <span>Also on other fronts.</span>}
           &nbsp;
           <ToggleDetailsButton
+            tabIndex={-1}
             size="s"
             onClick={e => {
               e.stopPropagation();

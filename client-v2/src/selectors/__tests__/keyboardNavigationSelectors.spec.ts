@@ -55,6 +55,12 @@ describe('nextIndexAndGroupSelector', () => {
       name: 'groupname',
       uuid: 'group2',
       articleFragments: ['fragment-4', 'fragment-5', 'fragment-6']
+    },
+    group3: {
+      id: 'group3',
+      name: 'groupname',
+      uuid: 'group3',
+      articleFragments: ['fragment-7', 'fragment-8']
     }
   };
   const artFragments = {
@@ -93,17 +99,41 @@ describe('nextIndexAndGroupSelector', () => {
       frontPublicationDate: 1547204861924,
       meta: { supporting: [] },
       uuid: 'id-6'
+    },
+    'fragment-7': {
+      id: 'internal-code/page/123',
+      frontPublicationDate: 1547204861924,
+      meta: { supporting: [] },
+      uuid: 'id-7'
+    },
+    'fragment-8': {
+      id: 'internal-code/page/123',
+      frontPublicationDate: 1547204861924,
+      meta: { supporting: [] },
+      uuid: 'id-8'
     }
   };
   const collections = {
     data: {
-      '5a32abdf-2d1c-4f9e-a116-617e4d055ab9': {
-        live: ['group1', 'group2'],
+      'e59785e9-ba82-48d8-b79a-0a80b2f9f808': {
+        draft: ['group1', 'group2'],
         lastUpdated: 1547202598354,
         updatedBy: 'Name Surname',
         updatedEmail: 'email@email.co.uk',
         displayName: 'headlines',
-        id: '5a32abdf-2d1c-4f9e-a116-617e4d055ab9',
+        id: 'e59785e9-ba82-48d8-b79a-0a80b2f9f808',
+        type: 'fixed/small/slow-IV'
+      },
+      'c7f48719-6cbc-4024-ae92-1b5f9f6c0c99': {
+        uneditable: true
+      },
+      '4ab657ff-c105-4292-af23-cda00457b6b7': {
+        draft: ['group3'],
+        lastUpdated: 1547202598354,
+        updatedBy: 'Name Surname',
+        updatedEmail: 'email@email.co.uk',
+        displayName: 'headlines',
+        id: '4ab657ff-c105-4292-af23-cda00457b6b7',
         type: 'fixed/small/slow-IV'
       }
     },
@@ -146,44 +176,113 @@ describe('nextIndexAndGroupSelector', () => {
         stateWithEmptyGroup,
         'gobbleygook',
         'some-id',
-        'up'
+        'up',
+        'sc-johnson-partner-zone'
       )
     ).toEqual(null);
   });
 
   it('return null when moving top article in collection', () => {
     expect(
-      nextIndexAndGroupSelector(stateWithGroups, 'group1', 'fragment-1', 'up')
+      nextIndexAndGroupSelector(
+        stateWithGroups,
+        'group1',
+        'fragment-1',
+        'up',
+        'sc-johnson-partner-zone'
+      )
     ).toEqual(null);
   });
 
   it('return next group id and index when moving up article in collection', () => {
     expect(
-      nextIndexAndGroupSelector(stateWithGroups, 'group1', 'fragment-2', 'up')
+      nextIndexAndGroupSelector(
+        stateWithGroups,
+        'group1',
+        'fragment-2',
+        'up',
+        'sc-johnson-partner-zone'
+      )
     ).toEqual({ toIndex: 0, nextGroupId: 'group1' });
   });
 
   it('return null when moving bottom article in collection', () => {
     expect(
-      nextIndexAndGroupSelector(stateWithGroups, 'group2', 'fragment-6', 'down')
+      nextIndexAndGroupSelector(
+        stateWithGroups,
+        'group3',
+        'fragment-8',
+        'down',
+        'sc-johnson-partner-zone'
+      )
     ).toEqual(null);
   });
 
   it('return next group id and index when moving down article in collection', () => {
     expect(
-      nextIndexAndGroupSelector(stateWithGroups, 'group1', 'fragment-2', 'down')
+      nextIndexAndGroupSelector(
+        stateWithGroups,
+        'group1',
+        'fragment-2',
+        'down',
+        'sc-johnson-partner-zone'
+      )
     ).toEqual({ toIndex: 2, nextGroupId: 'group1' });
   });
 
   it('return next group id when moving down between groups', () => {
     expect(
-      nextIndexAndGroupSelector(stateWithGroups, 'group1', 'fragment-3', 'down')
+      nextIndexAndGroupSelector(
+        stateWithGroups,
+        'group1',
+        'fragment-3',
+        'down',
+        'sc-johnson-partner-zone'
+      )
     ).toEqual({ toIndex: 0, nextGroupId: 'group2' });
   });
 
   it('return next group id when moving up between groups', () => {
     expect(
-      nextIndexAndGroupSelector(stateWithGroups, 'group2', 'fragment-4', 'up')
+      nextIndexAndGroupSelector(
+        stateWithGroups,
+        'group2',
+        'fragment-4',
+        'up',
+        'sc-johnson-partner-zone'
+      )
     ).toEqual({ toIndex: 3, nextGroupId: 'group1' });
+  });
+
+  it('return next group id when moving up between collections', () => {
+    expect(
+      nextIndexAndGroupSelector(
+        stateWithGroups,
+        'group3',
+        'fragment-7',
+        'up',
+        'sc-johnson-partner-zone'
+      )
+    ).toEqual({
+      toIndex: 3,
+      nextGroupId: 'group2',
+      collectionId: 'e59785e9-ba82-48d8-b79a-0a80b2f9f808'
+    });
+  });
+
+  it('return next editable group id when moving down between collections', () => {
+    expect(
+      nextIndexAndGroupSelector(
+        stateWithGroups,
+        'group2',
+        'fragment-6',
+        'down',
+        'sc-johnson-partner-zone'
+      )
+    ).toEqual({
+      toIndex: 0,
+      nextGroupId: 'group3',
+      collectionId: '4ab657ff-c105-4292-af23-cda00457b6b7'
+    });
   });
 });
