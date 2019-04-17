@@ -1,23 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { styled } from 'constants/theme';
-import distanceFromNow from 'date-fns/distance_in_words_to_now';
 import { events } from 'services/GA';
 
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
-import {
-  isCollectionLockedSelector,
-  isCollectionBackfilledSelector,
-  createCollectionHasUnsavedArticleEditsWarningSelector
-} from 'selectors/collectionSelectors';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 
 import { Collection, CollectionItemSets } from 'shared/types/Collection';
 import { createCollectionId } from 'shared/components/Collection';
 import ButtonDefault from 'shared/components/input/ButtonCircular';
-import { LockedPadlockIcon } from 'shared/components/icons/Icons';
 
 import {
   createCollectionSelector,
@@ -36,18 +29,7 @@ type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
   articleCount: number;
   openCollection: (id: string) => void;
   hasUnpublishedChanges: boolean;
-  hasUnsavedArticleEdits: boolean;
-  isUneditable: boolean;
-  isBackfilled: boolean;
 };
-
-interface CollectionStatusProps {
-  isUneditable: boolean; // locked
-  hasUnpublishedChanges: boolean; // ! warning
-  hasUnsavedArticleEdits: boolean; // ! warning
-  isBackfilled: boolean;
-  lastUpdatedTimeStamp: number | undefined;
-}
 
 const Container = styled.div`
   align-items: center;
@@ -94,11 +76,6 @@ const Name = styled.span`
   padding-right: 0.25em;
 `;
 
-const LastUpdated = styled.span`
-  color: ${({ theme }) => theme.shared.base.colors.text};
-  font-weight: 400;
-`;
-
 const ItemCount = styled.span`
   white-space: nowrap;
 `;
@@ -118,52 +95,12 @@ const StatusWarning = ButtonDefault.extend`
   }
 `;
 
-const StatusFlag = styled(StatusWarning)`
-  &:disabled,
-  &:disabled:hover {
-    cursor: auto;
-  }
-`;
-
-const CollectionStatus = ({
-  hasUnpublishedChanges,
-  hasUnsavedArticleEdits,
-  isUneditable,
-  isBackfilled,
-  lastUpdatedTimeStamp
-}: CollectionStatusProps) => (
-  <>
-    <LastUpdated>{`${distanceFromNow(
-      lastUpdatedTimeStamp as number
-    )} ago`}</LastUpdated>
-
-    {isBackfilled ? <LastUpdated> | Backfill</LastUpdated> : null}
-    {hasUnsavedArticleEdits || !!hasUnpublishedChanges ? (
-      <StatusWarning
-        priority="primary"
-        size="s"
-        title="Collection changes have not been launched"
-      >
-        !
-      </StatusWarning>
-    ) : null}
-    {isUneditable ? (
-      <StatusFlag disabled={true} size="s" title="Locked">
-        <LockedPadlockIcon size={'xs'} />
-      </StatusFlag>
-    ) : null}
-  </>
-);
-
 const CollectionOverview = ({
   collection,
   articleCount,
   openCollection,
   frontId,
-  hasUnpublishedChanges,
-  hasUnsavedArticleEdits,
-  isUneditable,
-  isBackfilled
+  hasUnpublishedChanges
 }: FrontCollectionOverviewProps) =>
   collection ? (
     <Container
@@ -183,18 +120,20 @@ const CollectionOverview = ({
     >
       <TextContainerLeft>
         <Name>{collection.displayName}</Name>
-        <ItemCount>{articleCount} items</ItemCount>
+        <ItemCount>({articleCount})</ItemCount>
       </TextContainerLeft>
       <TextContainerRight>
-        {collection && collection.lastUpdated && (
-          <CollectionStatus
-            hasUnpublishedChanges={hasUnpublishedChanges}
-            hasUnsavedArticleEdits={hasUnsavedArticleEdits}
-            isUneditable={isUneditable}
-            isBackfilled={isBackfilled}
-            lastUpdatedTimeStamp={collection.lastUpdated}
-          />
-        )}
+        {collection &&
+          collection.lastUpdated &&
+          (!!hasUnpublishedChanges ? (
+            <StatusWarning
+              priority="primary"
+              size="s"
+              title="Collection changes have not been launched"
+            >
+              !
+            </StatusWarning>
+          ) : null)}
       </TextContainerRight>
     </Container>
   ) : null;
@@ -202,7 +141,6 @@ const CollectionOverview = ({
 const mapStateToProps = () => {
   const collectionSelector = createCollectionSelector();
   const articlesInCollectionSelector = createArticlesInCollectionSelector();
-  const hasUnsavedArticleEditsSelector = createCollectionHasUnsavedArticleEditsWarningSelector();
 
   return (state: State, props: FrontCollectionOverviewContainerProps) => ({
     collection: collectionSelector(selectSharedState(state), {
@@ -214,12 +152,6 @@ const mapStateToProps = () => {
       includeSupportingArticles: false
     }).length,
     hasUnpublishedChanges: hasUnpublishedChangesSelector(state, {
-      collectionId: props.collectionId
-    }),
-    isUneditable: isCollectionLockedSelector(state, props.collectionId),
-    isBackfilled: isCollectionBackfilledSelector(state, props.collectionId),
-    hasUnsavedArticleEdits: hasUnsavedArticleEditsSelector(state, {
-      collectionSet: props.browsingStage,
       collectionId: props.collectionId
     })
   });
