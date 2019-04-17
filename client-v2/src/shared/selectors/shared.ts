@@ -14,6 +14,7 @@ import {
 } from '../types/Collection';
 import { State } from '../types/State';
 import { collectionItemSets } from 'constants/fronts';
+import { createShallowEqualResultSelector } from 'shared/util/selectorUtils';
 
 // Selects the shared part of the application state mounted at its default point, '.shared'.
 const selectSharedState = (rootState: any): State => rootState.shared;
@@ -153,13 +154,7 @@ const createCollectionSelector = () =>
   createSelector(
     collectionSelectors.selectAll,
     collectionIdSelector,
-    (collections: { [id: string]: Collection }, id: string) =>
-      collections[id]
-        ? {
-            ...collections[id],
-            groups: collections[id].groups
-          }
-        : undefined
+    (collections: { [id: string]: Collection }, id: string) => collections[id]
   );
 
 const stageSelector = (
@@ -169,7 +164,7 @@ const stageSelector = (
 
 const createCollectionStageGroupsSelector = () => {
   const collectionSelector = createCollectionSelector();
-  return createSelector(
+  return createShallowEqualResultSelector(
     collectionSelector,
     groupsSelector,
     stageSelector,
@@ -325,7 +320,7 @@ const createSupportingArticlesSelector = () =>
   );
 
 const createGroupArticlesSelector = () =>
-  createSelector(
+  createShallowEqualResultSelector(
     groupsFromRootStateSelector,
     articleFragmentsFromRootStateSelector,
     (_: any, { groupId }: { groupId: string }) => groupId,

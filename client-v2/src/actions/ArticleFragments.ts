@@ -29,6 +29,7 @@ import { capGroupSiblings } from 'shared/actions/Groups';
 import { collectionCapSelector } from 'selectors/configSelectors';
 import { getImageMetaFromValidationResponse } from 'util/form';
 import { ValidationResponse } from 'shared/util/validateImageSrc';
+import { MappableDropType } from 'util/collectionUtils';
 
 type InsertActionCreator = (
   id: string,
@@ -209,7 +210,7 @@ const updateClipboardArticleFragmentMetaWithPersist = addPersistMetaToAction(
 
 const insertArticleFragmentWithCreate = (
   to: PosSpec,
-  id: string,
+  drop: MappableDropType,
   persistTo: 'collection' | 'clipboard',
   // allow the factory to be injected for testing
   articleFragmentFactory = createArticleFragment
@@ -222,7 +223,7 @@ const insertArticleFragmentWithCreate = (
     if (!insertActionCreator) {
       return;
     }
-    return dispatch(articleFragmentFactory(id))
+    return dispatch(articleFragmentFactory(drop))
       .then(fragment => {
         if (fragment) {
           dispatch(insertActionCreator(to.id, to.index, fragment.uuid, null));

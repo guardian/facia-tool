@@ -82,7 +82,7 @@ const FrontCollectionsOverview = ({
 );
 
 const mapStateToProps = (state: State, props: FrontContainerProps) => ({
-  front: getFront(state, props.id),
+  front: getFront(state, { frontId: props.id }),
   overviewIsOpen: selectIsFrontOverviewOpen(state, props.id)
 });
 

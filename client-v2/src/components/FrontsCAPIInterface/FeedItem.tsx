@@ -21,6 +21,8 @@ import noop from 'lodash/noop';
 import { getPaths } from 'util/paths';
 import { liveBlogTones } from 'constants/fronts';
 import { ThumbnailSmall } from 'shared/components/Thumbnail';
+import { CapiArticle } from 'types/Capi';
+import { getThumbnail } from 'util/CAPIUtils';
 
 const LinkContainer = styled('div')`
   background-color: ${({ theme }) => theme.capiInterface.backgroundLight};
@@ -106,35 +108,27 @@ const Body = styled('div')`
 `;
 
 interface FeedItemProps {
-  id: string;
-  title: string;
-  href: string;
-  sectionName: string;
-  pillarId?: string;
-  internalPageCode: string | void;
-  publicationDate?: string;
-  firstPublicationDate?: string;
-  isLive: boolean;
-  onAddToClipboard: (id: string) => void;
-  scheduledPublicationDate?: string;
-  tone?: string;
-  thumbnail?: string;
+  article: CapiArticle;
+  onAddToClipboard: (article: CapiArticle) => void;
 }
 
 const dragStart = (
-  href: string | void,
+  article: CapiArticle,
   event: React.DragEvent<HTMLDivElement>
 ) => {
-  event.dataTransfer.setData('capi', href || '');
+  event.dataTransfer.setData('capi', JSON.stringify(article));
 };
 
-const getArticleLabel = (
-  firstPublicationDate: string | undefined,
-  sectionName: string,
-  isLive: boolean,
-  tone?: string
-) => {
-  if (!isLive) {
+const isLive = (article: CapiArticle) =>
+  !article.fields.isLive || article.fields.isLive === 'true';
+
+const getArticleLabel = (article: CapiArticle) => {
+  const {
+    fields: { firstPublicationDate },
+    sectionName,
+    frontsMeta: { tone }
+  } = article;
+  if (!isLive(article)) {
     if (firstPublicationDate) {
       return notLiveLabels.takenDown;
     }
@@ -148,28 +142,14 @@ const getArticleLabel = (
   return startCase(sectionName);
 };
 
-const FeedItem = ({
-  id,
-  title,
-  href,
-  sectionName,
-  pillarId,
-  publicationDate,
-  internalPageCode,
-  firstPublicationDate,
-  isLive,
-  onAddToClipboard = noop,
-  scheduledPublicationDate,
-  tone,
-  thumbnail
-}: FeedItemProps) => (
+const FeedItem = ({ article, onAddToClipboard = noop }: FeedItemProps) => (
   <Container
     data-testid="feed-item"
     draggable={true}
-    onDragStart={event => dragStart(internalPageCode, event)}
+    onDragStart={event => dragStart(article, event)}
   >
     <VisitedWrapper
-      href={getPaths(id).live}
+      href={getPaths(article.id).live}
       onClick={e => e.preventDefault()}
       aria-disabled
     >
@@ -177,33 +157,42 @@ const FeedItem = ({
         <Tone
           style={{
             color:
-              getPillarColor(pillarId, isLive, tone === liveBlogTones.dead) ||
-              styleTheme.capiInterface.textLight
+              getPillarColor(
+                article.pillarId,
+                isLive(article),
+                article.frontsMeta.tone === liveBlogTones.dead
+              ) || styleTheme.capiInterface.textLight
           }}
         >
-          {getArticleLabel(firstPublicationDate, sectionName, isLive, tone)}
+          {getArticleLabel(article)}
         </Tone>
-        {scheduledPublicationDate && (
+        {article.fields.scheduledPublicationDate && (
           <ScheduledPublication>
             {distanceInWordsStrict(
-              new Date(scheduledPublicationDate),
+              new Date(article.fields.scheduledPublicationDate),
               Date.now()
             )}
           </ScheduledPublication>
         )}
-        {publicationDate && (
+        {article.webPublicationDate && (
           <FirstPublished>
-            {distanceInWordsStrict(Date.now(), new Date(publicationDate))}
+            {distanceInWordsStrict(
+              Date.now(),
+              new Date(article.webPublicationDate)
+            )}
           </FirstPublished>
         )}
         <ShortVerticalPinline />
       </MetaContainer>
       <Body>
-        <Title data-testid="headline">{title}</Title>
+        <Title data-testid="headline">{article.webTitle}</Title>
       </Body>
       <ThumbnailSmall
         style={{
-          backgroundImage: `url('${thumbnail}')`
+          backgroundImage: `url('${getThumbnail(
+            article,
+            article.frontsMeta.defaults
+          )}')`
         }}
       />
     </VisitedWrapper>
@@ -215,9 +204,9 @@ const FeedItem = ({
           { text: 'Ophan', component: HoverOphanButton }
         ]}
         buttonProps={{
-          isLive,
-          urlPath: id,
-          onAddToClipboard: () => onAddToClipboard(id)
+          isLive: isLive(article),
+          urlPath: article.id,
+          onAddToClipboard: () => onAddToClipboard(article)
         }}
         toolTipPosition={'top'}
         toolTipAlign={'right'}
@@ -228,11 +217,11 @@ const FeedItem = ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    onAddToClipboard: (id: string) =>
+    onAddToClipboard: (article: CapiArticle) =>
       dispatch(
         insertArticleFragment(
           { type: 'clipboard', id: 'clipboard', index: 0 },
-          id,
+          { type: 'CAPI', data: article },
           'clipboard'
         )
       )

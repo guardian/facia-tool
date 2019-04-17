@@ -297,10 +297,13 @@ const selectEditorFrontIdsByPriority = (
   priority: string
 ): string[] => state.editor.frontIdsByPriority[priority] || [];
 
+const defaultFavouriteFronts = [] as [];
+
 const selectEditorFavouriteFrontIdsByPriority = (
   state: GlobalState,
   priority: string
-): string[] => state.editor.favouriteFrontIdsByPriority[priority] || [];
+): string[] =>
+  state.editor.favouriteFrontIdsByPriority[priority] || defaultFavouriteFronts;
 
 const selectHasMultipleFrontsOpen = createSelector(
   selectEditorFrontIdsByPriority,

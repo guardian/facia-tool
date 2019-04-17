@@ -23,10 +23,17 @@ interface FrontsByPriority {
 const getFronts = (state: State): FrontConfigMap =>
   frontsConfigSelectors.selectAll(state).fronts || {};
 
-const getFront = (state: State, id: string) => getFronts(state)[id];
+const frontIdSelector = (state: State, { frontId }: { frontId: string }) =>
+  frontId;
+
+const getFront = createSelector(
+  getFronts,
+  frontIdSelector,
+  (fronts, id) => fronts[id]
+);
 
 const getUnlockedFrontCollections = (state: State, frontId: string): string[] =>
-  getFront(state, frontId).collections.reduce(
+  getFront(state, { frontId }).collections.reduce(
     (unlockedCollections: string[], collectionId) => {
       const collection = getCollectionConfig(state, collectionId);
       if (!collection.uneditable) {
@@ -54,9 +61,6 @@ const getFrontsByPriority = createSelector(
 
 const prioritySelector = (state: State, { priority }: { priority: string }) =>
   priority;
-
-const frontIdSelector = (state: State, { frontId }: { frontId: string }) =>
-  frontId;
 
 const collectionSetSelector = (
   state: State,
@@ -99,8 +103,10 @@ const frontsAsArraySelector = createSelector(
   }
 );
 
+const defaultFrontsWithPriority = [] as [];
+
 const getFrontsWithPriority = (state: State, priority: string): FrontConfig[] =>
-  getFrontsByPriority(state)[priority] || [];
+  getFrontsByPriority(state)[priority] || defaultFrontsWithPriority;
 
 const getCollections = (state: State): CollectionConfigMap =>
   frontsConfigSelectors.selectAll(state).collections || {};

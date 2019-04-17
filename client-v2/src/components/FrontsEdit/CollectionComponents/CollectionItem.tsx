@@ -161,7 +161,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
         dispatch(
           insertArticleFragment(
             { id: 'clipboard', type: 'clipboard', index: 0 },
-            id,
+            // @TODO - if this is proving too slow we can pass the whole external article into
+            // this components and insert that data rather than fetching it from CAPI
+            { type: 'REF', data: id },
             'clipboard'
           )
         );

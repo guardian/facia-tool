@@ -1,7 +1,7 @@
 import keyBy from 'lodash/keyBy';
 import { ArticleFragment, ArticleFragmentMeta } from 'shared/types/Collection';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
-import { getContent } from 'services/faciaApi';
+import { getContent, transformExternalArticle } from 'services/faciaApi';
 import { Dispatch, ThunkResult } from 'types/Store';
 import {
   ArticleFragmentsReceived,
@@ -17,6 +17,7 @@ import { createFragment } from 'shared/util/articleFragment';
 import { createLinkSnap, createLatestSnap } from 'shared/util/snap';
 import { getIdFromURL } from 'util/CAPIUtils';
 import { isValidURL } from 'shared/util/url';
+import { MappableDropType } from 'util/collectionUtils';
 
 export const UPDATE_ARTICLE_FRAGMENT_META =
   'SHARED/UPDATE_ARTICLE_FRAGMENT_META';
@@ -145,9 +146,15 @@ const persistAndReturnFragment = (
  *  - an external link.
  */
 function createArticleFragment(
-  resourceId: string
+  drop: MappableDropType
 ): ThunkResult<Promise<ArticleFragment | undefined>> {
   return async (dispatch: Dispatch) => {
+    if (drop.type === 'CAPI') {
+      const article = transformExternalArticle(drop.data);
+      dispatch(externalArticleActions.fetchSuccess([article]));
+      return persistAndReturnFragment(dispatch, createFragment(article.id));
+    }
+    const resourceId = drop.data;
     const isURL = isValidURL(resourceId);
     const id = isURL ? getIdFromURL(resourceId) : resourceId;
     if (isURL && !id) {
