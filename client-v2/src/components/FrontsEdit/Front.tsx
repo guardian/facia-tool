@@ -86,8 +86,9 @@ type FrontProps = FrontPropsBeforeState & {
   dispatch: Dispatch;
   initialiseFront: () => void;
   selectArticleFragment: (
-    frontId: string
-  ) => (id: string, isSupporting?: boolean) => void;
+    frontId: string,
+    isSupporting?: boolean
+  ) => (id: string) => void;
   removeCollectionItem: (parentId: string, id: string) => void;
   removeSupportingCollectionItem: (parentId: string, id: string) => void;
   editorOpenCollections: (ids: string[]) => void;
@@ -268,11 +269,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                                           frontId={this.props.id}
                                           uuid={supporting.uuid}
                                           parentId={articleFragment.uuid}
-                                          onSelect={id =>
-                                            this.props.selectArticleFragment(
-                                              this.props.id
-                                            )(id, true)
-                                          }
+                                          onSelect={this.props.selectArticleFragment(
+                                            this.props.id,
+                                            true
+                                          )}
                                           isUneditable={isUneditable}
                                           getNodeProps={() =>
                                             !isUneditable
@@ -345,9 +345,8 @@ const mapDispatchToProps = (
     dispatch,
     initialiseFront: () =>
       dispatch(initialiseCollectionsForFront(props.id, props.browsingStage)),
-    selectArticleFragment: (frontId: string) => (
-      articleFragmentId: string,
-      isSupporting?: boolean
+    selectArticleFragment: (frontId: string, isSupporting?: boolean) => (
+      articleFragmentId: string
     ) =>
       dispatch(
         editorSelectArticleFragment(frontId, articleFragmentId, isSupporting)
