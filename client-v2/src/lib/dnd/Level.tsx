@@ -151,12 +151,6 @@ class Level<T> extends React.Component<Props<T>, State> {
 
     e.preventDefault();
 
-    // Reset the dragging state on drop
-    if (this.props.store) {
-      const { key, index: storeIndex } = this.props.store.getState();
-      this.props.store.update(key, storeIndex, false);
-    }
-
     const { onMove = () => null, onDrop = () => null } = this.props;
     const af = e.dataTransfer.getData(TRANSFER_TYPE);
 
