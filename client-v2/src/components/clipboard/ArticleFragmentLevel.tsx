@@ -50,14 +50,12 @@ const ArticleFragmentLevel = ({
         override={isTarget}
         dropColor="hsl(0, 0%, 64%)"
         style={{
-          marginTop: '-30px',
-          height: '30px'
+          marginTop: '-15px',
+          padding: '3px'
         }}
         indicatorStyle={{
-          marginLeft: '80px',
-          marginRight: `${displayType === 'default' ? '130px' : 0}`,
-          top: '66%',
-          height: '33%'
+          marginLeft: '20px',
+          marginRight: `${displayType === 'default' ? '130px' : 0}`
         }}
       />
     )}
