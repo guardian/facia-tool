@@ -43,6 +43,7 @@ interface FeedsContainerState {
   displaySearchFilters: boolean;
   inputState: SearchInputState;
   displayPrevResults: boolean;
+  sortByParam: string;
 }
 
 const Title = styled.h1`
@@ -91,10 +92,32 @@ const ResultsHeadingContainer = styled('div')`
   align-items: baseline;
   display: flex;
   margin-bottom: 10px;
+  flex-direction: row;
 `;
 
 const FixedContentContainer = styled.div`
   margin-bottom: 5px;
+`;
+
+const Sorters = styled('div')`
+  display: flex;
+  flex-direction: column;
+`;
+
+const TopOptions = styled('div')`
+  display: flex;
+  flex-direction: row;
+`;
+
+const SortByContainer = styled('div')`
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: row;
+  margin-top: 5px;
+  font-size: 12px;
+  > label {
+    margin-right: 15px;
+  }
 `;
 
 const getCapiFieldsToShow = (isPreview: boolean) => {
@@ -121,7 +144,8 @@ const getParams = (
     toDate: to,
     fromDate: from
   }: SearchInputState,
-  isPreview: boolean
+  isPreview: boolean,
+  sortByParam: string
 ) => ({
   q: query,
   tag: [...tags, ...desks].join(','),
@@ -135,7 +159,7 @@ const getParams = (
   'show-fields': getCapiFieldsToShow(isPreview),
   ...(isPreview
     ? { 'order-by': 'oldest', 'from-date': getTodayDate() }
-    : { 'order-by': 'newest', 'order-date': 'first-publication' })
+    : { 'order-by': 'newest', 'order-date': sortByParam })
 });
 class FeedsContainer extends React.Component<
   FeedsContainerProps,
@@ -145,7 +169,8 @@ class FeedsContainer extends React.Component<
     capiFeedIndex: 0,
     displaySearchFilters: false,
     inputState: initState,
-    displayPrevResults: false
+    displayPrevResults: false,
+    sortByParam: 'first-publication'
   };
 
   private interval: null | number = null;
@@ -188,6 +213,9 @@ class FeedsContainer extends React.Component<
       this.runSearch
     );
 
+  public sortResultsBy = (event: React.ChangeEvent<HTMLSelectElement>) =>
+    this.setState({ sortByParam: event.target.value }, this.runSearch);
+
   public get isLoading() {
     return (
       (this.state.capiFeedIndex === 0 && this.props.liveLoading) ||
@@ -218,31 +246,46 @@ class FeedsContainer extends React.Component<
               {this.isLoading ? 'Loading' : 'Refresh'}
             </RefreshButton>
           </div>
-          <RadioGroup>
-            <RadioButton
-              checked={this.state.capiFeedIndex === 0}
-              onChange={() => this.handleFeedClick(0)}
-              label="Live"
-              inline
-              name="capiFeed"
-            />
-            <RadioButton
-              checked={this.state.capiFeedIndex === 1}
-              onChange={() => this.handleFeedClick(1)}
-              label="Draft"
-              inline
-              name="capiFeed"
-            />
-          </RadioGroup>
-          {pagination && hasPages && (
-            <PaginationContainer>
-              <Pagination
-                pageChange={this.pageChange}
-                currentPage={pagination.currentPage}
-                totalPages={pagination.totalPages}
-              />
-            </PaginationContainer>
-          )}
+          <Sorters>
+            <TopOptions>
+              <RadioGroup>
+                <RadioButton
+                  checked={this.state.capiFeedIndex === 0}
+                  onChange={() => this.handleFeedClick(0)}
+                  label="Live"
+                  inline
+                  name="capiFeed"
+                />
+                <RadioButton
+                  checked={this.state.capiFeedIndex === 1}
+                  onChange={() => this.handleFeedClick(1)}
+                  label="Draft"
+                  inline
+                  name="capiFeed"
+                />
+              </RadioGroup>
+              {pagination && hasPages && (
+                <PaginationContainer>
+                  <Pagination
+                    pageChange={this.pageChange}
+                    currentPage={pagination.currentPage}
+                    totalPages={pagination.totalPages}
+                  />
+                </PaginationContainer>
+              )}
+            </TopOptions>
+            <SortByContainer>
+              <label htmlFor="sort-results">Sort by:</label>
+              <select
+                id="sort-results"
+                onChange={this.sortResultsBy}
+                value={this.state.sortByParam}
+              >
+                <option value="first-publication">First published</option>
+                <option value="published">Latest publish</option>
+              </select>
+            </SortByContainer>
+          </Sorters>
         </ResultsHeadingContainer>
       </FixedContentContainer>
     );
@@ -282,7 +325,7 @@ class FeedsContainer extends React.Component<
     const { inputState } = this.state;
     const searchTerm = inputState.query;
     const paginationParams = {
-      ...getParams(searchTerm, inputState, false),
+      ...getParams(searchTerm, inputState, false, this.state.sortByParam),
       page: requestPage
     };
     this.isLive
@@ -302,12 +345,12 @@ class FeedsContainer extends React.Component<
     const searchTerm = maybeArticleId ? maybeArticleId : inputState.query;
     if (capiFeedIndex === 0) {
       this.props.fetchLive(
-        getParams(searchTerm, inputState, false),
+        getParams(searchTerm, inputState, false, this.state.sortByParam),
         !!maybeArticleId
       );
     } else {
       this.props.fetchPreview(
-        getParams(searchTerm, inputState, true),
+        getParams(searchTerm, inputState, true, this.state.sortByParam),
         !!maybeArticleId
       );
     }
