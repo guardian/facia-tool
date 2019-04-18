@@ -4,11 +4,10 @@ import { theme } from 'constants/theme';
 
 const DropContainer = styled('div')`
   position: relative;
-  height: 10px;
+  height: 15px;
 `;
 
 const DropIndicator = styled('div')`
-  position: relative;
   height: 100%;
   pointer-events: none;
 `;
