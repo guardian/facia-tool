@@ -407,11 +407,11 @@ const groupSiblingsSelector = (state: State, groupId: string) => {
   );
 };
 
+const groupsArticleCount = (groups: Group[]) =>
+  groups.reduce((acc, group) => acc + group.articleFragments.length, 0);
+
 const groupSiblingsArticleCountSelector = (state: State, groupId: string) =>
-  groupSiblingsSelector(state, groupId).reduce(
-    (acc, group) => acc + group.articleFragments.length,
-    0
-  );
+  groupsArticleCount(groupSiblingsSelector(state, groupId));
 
 const indexInGroupSelector = (
   state: State,
@@ -454,5 +454,6 @@ export {
   articleTagSelector,
   indexInGroupSelector,
   groupsSelector,
+  groupsArticleCount,
   externalArticleIdFromArticleFragmentSelector
 };

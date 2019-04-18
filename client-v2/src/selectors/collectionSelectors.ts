@@ -2,10 +2,12 @@ import { State } from 'types/State';
 import { getCollectionConfig } from './frontsSelectors';
 import {
   selectSharedState,
-  createCollectionSelector
+  createCollectionSelector,
+  groupsArticleCount
 } from 'shared/selectors/shared';
 import flatten from 'lodash/flatten';
 import { createSelectEditorFrontsByPriority } from 'bundles/frontsUIBundle';
+import { getUpdatedSiblingGroupsForInsertion } from 'shared/reducers/groupsReducer';
 
 const selectCollection = createCollectionSelector();
 
@@ -54,7 +56,27 @@ function createCollectionsInOpenFrontsSelector() {
 const isCollectionLockedSelector = (state: State, id: string): boolean =>
   !!getCollectionConfig(state, id).uneditable;
 
+const willCollectionHitCollectionCapSelector = (
+  state: State,
+  groupId: string,
+  index: number,
+  articleFragmentId: string,
+  collectionCap: number
+) => {
+  const shared = selectSharedState(state);
+  const patch = getUpdatedSiblingGroupsForInsertion(
+    shared,
+    shared.groups,
+    groupId,
+    index,
+    articleFragmentId
+  );
+  const articleCount = groupsArticleCount(Object.values(patch));
+  return collectionCap && articleCount > collectionCap;
+};
+
 export {
+  willCollectionHitCollectionCapSelector,
   collectionParamsSelector,
   isCollectionLockedSelector,
   createCollectionsInOpenFrontsSelector

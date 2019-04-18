@@ -11,8 +11,7 @@ import {
 import { ArticleFragment } from 'shared/types/Collection';
 import {
   selectSharedState,
-  articleFragmentsSelector,
-  groupSiblingsArticleCountSelector
+  articleFragmentsSelector
 } from 'shared/selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
@@ -30,6 +29,8 @@ import { collectionCapSelector } from 'selectors/configSelectors';
 import { getImageMetaFromValidationResponse } from 'util/form';
 import { ValidationResponse } from 'shared/util/validateImageSrc';
 import { MappableDropType } from 'util/collectionUtils';
+import { willCollectionHitCollectionCapSelector } from 'selectors/collectionSelectors';
+import { batchActions } from 'redux-batched-actions';
 
 type InsertActionCreator = (
   id: string,
@@ -95,18 +96,19 @@ const maybeInsertGroupArticleFragment = (
     // result in some deduping or other logic, meaning an insertion into a full
     // group may not result in that group getting any bigger, and hence won't
     // require a modal!
-    dispatch(insertGroupArticleFragment(id, index, articleFragmentId));
-    dispatch(maybeAddFrontPublicationDate(articleFragmentId));
-
     const state = getState();
 
-    const collectionCap = collectionCapSelector(getState());
-    const collectionArticleCount = groupSiblingsArticleCountSelector(
-      selectSharedState(state),
-      id
+    const collectionCap = collectionCapSelector(state);
+
+    const willCollectionHitCollectionCap = willCollectionHitCollectionCapSelector(
+      state,
+      id,
+      index,
+      articleFragmentId,
+      collectionCap
     );
 
-    if (collectionCap && collectionArticleCount > collectionCap) {
+    if (willCollectionHitCollectionCap) {
       // if there are too many fragments now then launch a modal to ask the user
       // what action to take
       dispatch(
@@ -120,6 +122,8 @@ const maybeInsertGroupArticleFragment = (
           // remove article fragments past the cap count and finally persist
           [
             ...(removeAction ? [removeAction] : []),
+            insertGroupArticleFragment(id, index, articleFragmentId),
+            maybeAddFrontPublicationDate(articleFragmentId),
             addPersistMetaToAction(capGroupSiblings, {
               id: articleFragmentId,
               persistTo,
@@ -138,10 +142,13 @@ const maybeInsertGroupArticleFragment = (
         dispatch(removeAction);
       }
       dispatch(
-        addPersistMetaToAction(insertGroupArticleFragment, {
-          key: 'articleFragmentId',
-          persistTo
-        })(id, index, articleFragmentId)
+        batchActions([
+          maybeAddFrontPublicationDate(articleFragmentId),
+          addPersistMetaToAction(insertGroupArticleFragment, {
+            key: 'articleFragmentId',
+            persistTo
+          })(id, index, articleFragmentId)
+        ])
       );
     }
   };

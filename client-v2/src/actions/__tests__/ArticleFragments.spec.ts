@@ -27,6 +27,9 @@ import {
 import confirmModal from 'reducers/confirmModalReducer';
 import { endConfirmModal } from 'actions/ConfirmModal';
 import config from 'reducers/configReducer';
+import { enableBatching } from 'redux-batched-actions';
+import { Dispatch } from 'types/Store';
+import { State } from 'types/State';
 
 const root = (state: any = {}, action: any) => ({
   confirmModal: confirmModal(state.confirmModal, action),
@@ -43,7 +46,10 @@ const root = (state: any = {}, action: any) => ({
   config: config(state.config, action)
 });
 
-const buildStore = (added: ArticleFragmentSpec, collectionCap = Infinity) => {
+const buildStore = (
+  added: ArticleFragmentSpec,
+  collectionCap = Infinity
+): { dispatch: Dispatch; getState: () => State } => {
   const groupA: ArticleFragmentSpec[] = [
     ['a', '1', [['g', '7']]],
     ['b', '2', undefined],
@@ -83,7 +89,11 @@ const buildStore = (added: ArticleFragmentSpec, collectionCap = Infinity) => {
     },
     clipboard: clipboard.map(([uuid]) => uuid)
   };
-  return createStore(root, state as any, applyMiddleware(thunk));
+  return createStore(
+    enableBatching(root),
+    state as any,
+    applyMiddleware(thunk)
+  );
 };
 
 const insert = async (
@@ -288,10 +298,10 @@ describe('ArticleFragments actions', () => {
 
     it('collection caps allow moves within collections without a modal', () => {
       const s1 = move(['a', '1'], 2, 'group', 'a', 'group', 'a', {
-        cap: 3,
+        cap: 6,
         accept: null
       });
-      expect(groupArticlesSelector(s1, 'a')).toEqual(['b', 'a', 'c']);
+      expect(groupArticlesSelector(s1, 'a')).toEqual(['b', 'c', 'a']);
     });
   });
 
