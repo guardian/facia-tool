@@ -9,18 +9,18 @@ import { capGroupArticleFragments } from 'shared/util/capGroupArticleFragments';
 import keyBy from 'lodash/keyBy';
 
 const getUpdatedSiblingGroupsForInsertion = (
-  state: State,
-  groups: State['groups'],
+  sharedState: State,
+  groupsState: State['groups'],
   insertionGroupId: string,
   insertionIndex: number,
   articleFragmentId: string
 ) => {
-  const articleFragmentsMap = articleFragmentsSelector(state);
-  const groupSiblings = groupSiblingsSelector(state, insertionGroupId);
+  const articleFragmentsMap = articleFragmentsSelector(sharedState);
+  const groupSiblings = groupSiblingsSelector(sharedState, insertionGroupId);
 
   if (!articleFragmentsMap[articleFragmentId]) {
     // this may have happened if we've purged after a poll
-    return groups;
+    return groupsState;
   }
 
   return groupSiblings.reduce(
