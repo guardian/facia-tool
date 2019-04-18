@@ -77,6 +77,7 @@ const init = () => {
       // the second param here is debounce time, we have to set this
       // as longer debounce times with lodash/debounce don't play well
       // with jest fake timers
+      // https://github.com/facebook/jest/issues/3465
       persistCollectionOnEdit(updateCollection, 1)
     )
   );

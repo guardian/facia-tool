@@ -103,7 +103,7 @@ const persistCollectionOnEdit = (
       });
       pendingCollectionIds = [];
     },
-    debounceTime, // @TODO make this configurable
+    debounceTime,
     { trailing: true }
   );
 
