@@ -86,15 +86,6 @@ const maybeInsertGroupArticleFragment = (
   removeAction: Action | null
 ) => {
   return (dispatch: Dispatch, getState: () => State) => {
-    // run the action and put the article fragment into the group
-    // if this was triggered with a move, this will be the same article fragment
-    // with the same uuid as the moved article fragment and until the modal
-    // confirmation / remove happens, there will be two with the same UUID in
-    // the state somewhere
-    // We can't just look at the amount of article fragments currently in the
-    // collection and show a modal if it's full because the reducer logic could
-    // result in some deduping or other logic, meaning an insertion into a full
-    // group may not result in that group getting any bigger, and hence won't
     // require a modal!
     const state = getState();
 
@@ -120,8 +111,7 @@ const maybeInsertGroupArticleFragment = (
           collection yourself.`,
           // if the user accepts then remove the moved item (if there was one),
           // remove article fragments past the cap count and finally persist
-          [
-            ...(removeAction ? [removeAction] : []),
+          (removeAction ? [removeAction] : []).concat([
             insertGroupArticleFragment(id, index, articleFragmentId),
             maybeAddFrontPublicationDate(articleFragmentId),
             addPersistMetaToAction(capGroupSiblings, {
@@ -129,7 +119,7 @@ const maybeInsertGroupArticleFragment = (
               persistTo,
               applyBeforeReducer: true
             })(id, collectionCap)
-          ],
+          ]),
           // otherwise just undo the insertion and don't persist as nothing
           // has actually changed
           [removeGroupArticleFragment(id, articleFragmentId)]
@@ -138,17 +128,16 @@ const maybeInsertGroupArticleFragment = (
     } else {
       // if we're not going over the cap then just remove a moved article if
       // needed and insert the new article
-      if (removeAction) {
-        dispatch(removeAction);
-      }
       dispatch(
-        batchActions([
-          maybeAddFrontPublicationDate(articleFragmentId),
-          addPersistMetaToAction(insertGroupArticleFragment, {
-            key: 'articleFragmentId',
-            persistTo
-          })(id, index, articleFragmentId)
-        ])
+        batchActions(
+          (removeAction ? [removeAction] : []).concat([
+            maybeAddFrontPublicationDate(articleFragmentId),
+            addPersistMetaToAction(insertGroupArticleFragment, {
+              key: 'articleFragmentId',
+              persistTo
+            })(id, index, articleFragmentId)
+          ])
+        )
       );
     }
   };
