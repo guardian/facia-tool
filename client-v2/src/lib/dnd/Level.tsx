@@ -78,7 +78,11 @@ interface ContextProps {
 
 type Props<T> = OuterProps<T> & ContextProps;
 
-class Level<T> extends React.Component<Props<T>, { isDraggedOver: boolean }> {
+interface State {
+  isDraggedOver: boolean;
+}
+
+class Level<T> extends React.Component<Props<T>, State> {
   get key() {
     return `${this.props.parentId}:${this.props.parentType}`;
   }
