@@ -17,6 +17,7 @@ import {
   selectEditorFrontIds,
   selectEditorFavouriteFrontIds
 } from 'bundles/frontsUIBundle';
+import debounce from 'lodash/debounce';
 
 const updateStateFromUrlChange: Middleware<{}, State, Dispatch> = ({
   dispatch,
@@ -87,8 +88,33 @@ const isPersistingToCollection = (act: Action): boolean =>
  * possible.
  */
 const persistCollectionOnEdit = (
-  updateCollectionAction = updateCollection
+  updateCollectionAction = updateCollection,
+  debounceTime = 500
 ): Middleware<{}, State, Dispatch> => store => {
+  let pendingCollectionIds = [] as string[];
+  const throttledPersistCollectionEdits = debounce(
+    () => {
+      const sharedState = selectSharedState(store.getState());
+      pendingCollectionIds.forEach(id => {
+        const collection = selectors.selectById(sharedState, id);
+        if (collection) {
+          store.dispatch(updateCollectionAction(collection));
+        }
+      });
+      pendingCollectionIds = [];
+    },
+    debounceTime, // @TODO make this configurable
+    { trailing: true }
+  );
+
+  const persistCollectionEdits = (ids: string[]) => {
+    ids.forEach(id => {
+      if (!pendingCollectionIds.includes(id)) {
+        pendingCollectionIds.push(id);
+      }
+    });
+    throttledPersistCollectionEdits();
+  };
   /**
    * Get the relevant collection ids for the given actions.
    * @todo At the moment this just cares about updates to article fragments,
@@ -153,14 +179,7 @@ const persistCollectionOnEdit = (
       )
     );
 
-    // Persist the lot!
-    const sharedState = selectSharedState(store.getState());
-    collectionIds.forEach(id => {
-      const collection = selectors.selectById(sharedState, id);
-      if (collection) {
-        store.dispatch(updateCollectionAction(collection));
-      }
-    });
+    persistCollectionEdits(collectionIds);
 
     return result;
   };

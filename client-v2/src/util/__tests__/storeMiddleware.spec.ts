@@ -21,12 +21,14 @@ const state = {
   config
 };
 
+jest.useFakeTimers();
+
 describe('Store middleware', () => {
   describe('persistCollectionOnEdit', () => {
     beforeEach(() => {
       mockStore = configureStore([
         thunk,
-        persistCollectionOnEdit(mockCollectionUpdateAction)
+        persistCollectionOnEdit(mockCollectionUpdateAction, 1)
       ]);
     });
     it('should do nothing for actions without the correct persistTo property in the action meta', () => {
@@ -34,6 +36,7 @@ describe('Store middleware', () => {
       store.dispatch({
         type: 'ARBITRARY_ACTION'
       });
+      jest.runAllTimers();
       expect(store.getActions().length).toBe(1);
     });
     it('should issue updates for the relevant collection', () => {
@@ -50,6 +53,7 @@ describe('Store middleware', () => {
           key: 'articleFragmentId'
         }
       });
+      jest.runAllTimers();
       expect(store.getActions()[1]).toEqual(
         mockCollectionUpdateAction({
           id: 'exampleCollection',
