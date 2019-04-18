@@ -78,7 +78,11 @@ interface ContextProps {
 
 type Props<T> = OuterProps<T> & ContextProps;
 
-class Level<T> extends React.Component<Props<T>> {
+interface State {
+  isDraggedOver: boolean;
+}
+
+class Level<T> extends React.Component<Props<T>, State> {
   get key() {
     return `${this.props.parentId}:${this.props.parentType}`;
   }
@@ -137,7 +141,7 @@ class Level<T> extends React.Component<Props<T>> {
       return;
     }
     e.preventDefault();
-    this.props.store.update(this.key, this.getDropIndex(e, i, isNode));
+    this.props.store.update(this.key, this.getDropIndex(e, i, isNode), true);
   };
 
   private onDrop = (i: number, isNode: boolean) => (e: React.DragEvent) => {
@@ -146,6 +150,7 @@ class Level<T> extends React.Component<Props<T>> {
     }
 
     e.preventDefault();
+
     const { onMove = () => null, onDrop = () => null } = this.props;
     const af = e.dataTransfer.getData(TRANSFER_TYPE);
 

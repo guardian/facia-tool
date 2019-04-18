@@ -25,6 +25,7 @@ export default class Root extends React.Component<Props, State> {
     return (
       <div
         {...divProps}
+        onDragEnter={this.onDragEnter}
         onDragOver={this.onDragOver}
         onDragLeave={this.onDragLeave}
         onDragEnd={this.reset}
@@ -38,6 +39,11 @@ export default class Root extends React.Component<Props, State> {
       </div>
     );
   }
+
+  private onDragEnter = () => {
+    const { key, index } = this.state.store.getState();
+    this.state.store.update(key, index, true);
+  };
 
   private onDragOver = (e: React.DragEvent) => {
     if (!e.defaultPrevented) {
@@ -57,7 +63,7 @@ export default class Root extends React.Component<Props, State> {
     }
   };
 
-  private reset = () => this.state.store.update(null, null);
+  private reset = () => this.state.store.update(null, null, false);
 }
 
 export { StoreConsumer, isMove, isInside };
