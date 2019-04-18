@@ -1,12 +1,12 @@
 import React from 'react';
 import { styled } from 'constants/theme';
-import ScrollContainer from '../ScrollContainer';
 import TextInput from '../inputs/TextInput';
 import CAPITagInput from '../FrontsCAPIInterface/TagInput';
 import CAPIFieldFilter from '../FrontsCAPIInterface/FieldFilter';
 import CAPIDateRangeInput from '../FrontsCAPIInterface/DateInput';
 import moment from 'moment';
 import FilterItem from './FilterItem';
+import ButtonDefault from 'shared/components/input/ButtonDefault';
 
 interface StringArrSearchItems {
   tags: string[];
@@ -23,15 +23,18 @@ type SearchInputState = StringArrSearchItems & {
 
 interface SearchInputProps {
   onUpdate: (state: SearchInputState) => void;
-  children: React.ReactNode;
-  additionalFixedContent?: React.ComponentType<any>;
   displaySearchFilters: boolean;
   updateDisplaySearchFilters: (value: boolean) => void;
+  showReviewSearch: boolean;
 }
 
 const InputContainer = styled('div')`
-  margin-bottom: 20px;
   background: ${({ theme }) => theme.capiInterface.backgroundWhite};
+  margin-bottom: 10px;
+`;
+
+const CloseButton = styled(ButtonDefault)`
+  margin: 10px 0;
 `;
 
 const renderDateAsString = (date: moment.Moment | null) => {
@@ -66,8 +69,12 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
     this.props.updateDisplaySearchFilters(false);
   };
 
-  public searchInput = () => {
+  public hideSearchFilters = () => {
     this.props.updateDisplaySearchFilters(false);
+  };
+
+  public showSearchFilters = () => {
+    this.props.updateDisplaySearchFilters(true);
   };
 
   public clearSelectedDates = () => {
@@ -90,11 +97,7 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
   };
 
   public render() {
-    const {
-      children,
-      displaySearchFilters,
-      additionalFixedContent: AdditionalFixedContent
-    } = this.props;
+    const { displaySearchFilters } = this.props;
 
     const {
       query,
@@ -107,67 +110,63 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
     } = this.state;
 
     return (
-      <ScrollContainer
-        fixed={
-          <React.Fragment>
-            <InputContainer>
-              <TextInput
-                placeholder="Search content"
-                value={query || ''}
-                onChange={this.handleSearchInput}
-                onClear={this.clearInput}
-                onSearch={this.searchInput}
-                searchTermsExist={this.searchTermsExist}
-                onDisplaySearchFilters={this.handleDisplaySearchFilters}
-              />
-            </InputContainer>
-            {tags.map(tag => (
-              <FilterItem
-                key={tag}
-                onClear={() => this.removeStringFromStateKey('tags', tag)}
-              >
-                <span>{tag}</span>
-              </FilterItem>
-            ))}
-            {sections.map(section => (
-              <FilterItem
-                key={section}
-                onClear={() =>
-                  this.removeStringFromStateKey('sections', section)
-                }
-              >
-                <span>{section}</span>
-              </FilterItem>
-            ))}
-            {desks.map(desk => (
-              <FilterItem
-                key={desk}
-                onClear={() => this.removeStringFromStateKey('desks', desk)}
-              >
-                <span>{desk}</span>
-              </FilterItem>
-            ))}
-            {ratings.map(rating => (
-              <FilterItem
-                key={rating}
-                onClear={() => this.removeStringFromStateKey('ratings', rating)}
-              >
-                <span>{rating}</span>
-              </FilterItem>
-            ))}
-            {this.shouldShowDate && (
-              <FilterItem onClear={() => this.clearSelectedDates()}>
-                <span>From: {renderDateAsString(from)} </span>
-                <span>To: {renderDateAsString(to)} </span>
-              </FilterItem>
-            )}
-            {AdditionalFixedContent && <AdditionalFixedContent />}
-          </React.Fragment>
-        }
-      >
-        {!displaySearchFilters ? (
-          children
-        ) : (
+      <React.Fragment>
+        <InputContainer>
+          <TextInput
+            placeholder="Search content"
+            value={query || ''}
+            onClick={this.showSearchFilters}
+            onChange={this.handleSearchInput}
+            onClear={this.clearInput}
+            onSearch={this.hideSearchFilters}
+            searchTermsExist={this.searchTermsExist}
+            onDisplaySearchFilters={this.handleDisplaySearchFilters}
+            onKeyUp={e => {
+              if (e.keyCode === 13) {
+                this.hideSearchFilters();
+              }
+            }}
+          />
+        </InputContainer>
+        {tags.map(tag => (
+          <FilterItem
+            key={tag}
+            onClear={() => this.removeStringFromStateKey('tags', tag)}
+          >
+            <span>{tag}</span>
+          </FilterItem>
+        ))}
+        {sections.map(section => (
+          <FilterItem
+            key={section}
+            onClear={() => this.removeStringFromStateKey('sections', section)}
+          >
+            <span>{section}</span>
+          </FilterItem>
+        ))}
+        {desks.map(desk => (
+          <FilterItem
+            key={desk}
+            onClear={() => this.removeStringFromStateKey('desks', desk)}
+          >
+            <span>{desk}</span>
+          </FilterItem>
+        ))}
+        {ratings.map(rating => (
+          <FilterItem
+            key={rating}
+            onClear={() => this.removeStringFromStateKey('ratings', rating)}
+          >
+            <span>{rating}</span>
+          </FilterItem>
+        ))}
+        {this.shouldShowDate && (
+          <FilterItem onClear={() => this.clearSelectedDates()}>
+            <span>From: {renderDateAsString(from)} </span>
+            <span>To: {renderDateAsString(to)} </span>
+          </FilterItem>
+        )}
+        {displaySearchFilters && (
           <>
             <CAPITagInput
               placeholder={`Type tag name`}
@@ -185,26 +184,29 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
               onSelect={this.addUniqueStringToStateKey('desks')}
               searchType="desks"
             />
-            <CAPIFieldFilter
-              placeholder="Select one or more"
-              filterTitle="star rating for reviews"
-              items={[
-                { id: '1', label: '1 Star' },
-                { id: '2', label: '2 Stars' },
-                { id: '3', label: '3 Stars' },
-                { id: '4', label: '4 Stars' },
-                { id: '5', label: '5 Stars' }
-              ]}
-              onChange={this.addUniqueStringToStateKey('ratings')}
-            />
+            {this.props.showReviewSearch && (
+              <CAPIFieldFilter
+                placeholder="Select one or more"
+                filterTitle="star rating for reviews"
+                items={[
+                  { id: '1', label: '1 Star' },
+                  { id: '2', label: '2 Stars' },
+                  { id: '3', label: '3 Stars' },
+                  { id: '4', label: '4 Stars' },
+                  { id: '5', label: '5 Stars' }
+                ]}
+                onChange={this.addUniqueStringToStateKey('ratings')}
+              />
+            )}
             <CAPIDateRangeInput
               start={this.state.fromDate}
               end={this.state.toDate}
               onDateChange={this.onDateChange}
             />
+            <CloseButton onClick={this.hideSearchFilters}>Close</CloseButton>
           </>
         )}
-      </ScrollContainer>
+      </React.Fragment>
     );
   }
 

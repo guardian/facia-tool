@@ -49,8 +49,7 @@ const FilterPlaceHolderText = styled('div')`
   cursor: pointer;
   border: none;
   padding: 0;
-  font-size: 16px;
-  font-size: 16px;
+  font-size: 12px;
 `;
 
 const FilterContainer = styled('div')`
