@@ -64,6 +64,7 @@ interface OuterProps<T> {
   renderDrop: (
     props: DropProps,
     isTarget: boolean,
+    isActive: boolean,
     index: number
   ) => React.ReactNode;
   // any occurence of these in the data transfer will cause all dragging
@@ -101,7 +102,9 @@ class Level<T> extends React.Component<Props<T>, State> {
         {arr.map((node, i) => (
           <React.Fragment key={getId(node)}>
             <DropZone parentKey={this.key} index={i}>
-              {isTarget => renderDrop(this.getDropProps(i), isTarget, i)}
+              {(isTarget, isActive) =>
+                renderDrop(this.getDropProps(i), isTarget, isActive, i)
+              }
             </DropZone>
             <Node
               renderDrag={renderDrag}
@@ -115,8 +118,13 @@ class Level<T> extends React.Component<Props<T>, State> {
           </React.Fragment>
         ))}
         <DropZone parentKey={this.key} index={arr.length}>
-          {isTarget =>
-            renderDrop(this.getDropProps(arr.length), isTarget, arr.length)
+          {(isTarget, isActive) =>
+            renderDrop(
+              this.getDropProps(arr.length),
+              isTarget,
+              isActive,
+              arr.length
+            )
           }
         </DropZone>
       </>

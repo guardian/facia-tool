@@ -81,7 +81,7 @@ describe('Guration', () => {
                   edit = e;
                 }}
                 onDrop={() => null}
-                renderDrop={(getDropProps, _, j) => {
+                renderDrop={(getDropProps, _, __, j) => {
                   if (j === 1) {
                     dropProps = getDropProps;
                   }

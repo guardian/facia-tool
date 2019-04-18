@@ -2,12 +2,11 @@ import React from 'react';
 import { StoreConsumer } from './Root';
 import { Store, Sub } from './store';
 import { NO_STORE_ERROR } from './constants';
-import { styled } from 'constants/theme';
 
 interface OuterProps {
   parentKey: string;
   index: number;
-  children: (isTarget: boolean) => React.ReactNode;
+  children: (isTarget: boolean, isActive: boolean) => React.ReactNode;
 }
 
 interface ContextProps {
@@ -20,10 +19,6 @@ interface State {
   isTarget: boolean;
   isActive: boolean;
 }
-
-const DropZoneContainer = styled.div<{ isActive: boolean }>`
-  ${({ isActive }) => !isActive && 'pointer-events: none'}
-`;
 
 class DropZone extends React.Component<Props, State> {
   public state = { isTarget: false, isActive: false };
@@ -43,11 +38,7 @@ class DropZone extends React.Component<Props, State> {
   }
 
   public render() {
-    return (
-      <DropZoneContainer isActive={this.state.isActive}>
-        {this.props.children(this.state.isTarget)}
-      </DropZoneContainer>
-    );
+    return this.props.children(this.state.isTarget, this.state.isActive);
   }
 
   private handleStoreUpdate: Sub = (id, hoverIndex) => {
