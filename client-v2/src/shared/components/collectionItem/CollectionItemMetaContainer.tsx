@@ -9,7 +9,7 @@ const MetaContainer = styled('div')`
   padding: 0 4px;
 `;
 
-export default ({ children }: { children: React.ReactNode }) => (
+export default ({ children }: { children?: React.ReactNode }) => (
   <MetaContainer>
     {children}
     <ShortVerticalPinline />
