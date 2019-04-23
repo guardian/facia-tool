@@ -120,9 +120,8 @@ const maybeInsertGroupArticleFragment = (
               applyBeforeReducer: true
             })(id, collectionCap)
           ]),
-          // otherwise just undo the insertion and don't persist as nothing
-          // has actually changed
-          [removeGroupArticleFragment(id, articleFragmentId)]
+          // otherwise do nothing
+          []
         )
       );
     } else {
