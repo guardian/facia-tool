@@ -16,6 +16,7 @@ type Props = {
 const RewindButton = styled.button.attrs({
   type: 'button'
 })`
+  background: transparent;
   display: inline-block;
   border: none;
   opacity: 0.5;
@@ -43,7 +44,7 @@ export default (
     React.HTMLAttributes<HTMLInputElement> & StyledProps<any>
   >,
   type?: string
-) => ({ label, input, originalValue, meta, ...rest }: Props) => (
+) => ({ label, input, originalValue, ...rest }: Props) => (
   <InputContainer>
     {label && (
       <InputLabel htmlFor={label}>
