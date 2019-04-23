@@ -11,8 +11,7 @@ import {
 import { ArticleFragment } from 'shared/types/Collection';
 import {
   selectSharedState,
-  articleFragmentsSelector,
-  groupSiblingsArticleCountSelector
+  articleFragmentsSelector
 } from 'shared/selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
@@ -30,6 +29,8 @@ import { collectionCapSelector } from 'selectors/configSelectors';
 import { getImageMetaFromValidationResponse } from 'util/form';
 import { ValidationResponse } from 'shared/util/validateImageSrc';
 import { MappableDropType } from 'util/collectionUtils';
+import { willCollectionHitCollectionCapSelector } from 'selectors/collectionSelectors';
+import { batchActions } from 'redux-batched-actions';
 
 type InsertActionCreator = (
   id: string,
@@ -85,28 +86,20 @@ const maybeInsertGroupArticleFragment = (
   removeAction: Action | null
 ) => {
   return (dispatch: Dispatch, getState: () => State) => {
-    // run the action and put the article fragment into the group
-    // if this was triggered with a move, this will be the same article fragment
-    // with the same uuid as the moved article fragment and until the modal
-    // confirmation / remove happens, there will be two with the same UUID in
-    // the state somewhere
-    // We can't just look at the amount of article fragments currently in the
-    // collection and show a modal if it's full because the reducer logic could
-    // result in some deduping or other logic, meaning an insertion into a full
-    // group may not result in that group getting any bigger, and hence won't
     // require a modal!
-    dispatch(insertGroupArticleFragment(id, index, articleFragmentId));
-    dispatch(maybeAddFrontPublicationDate(articleFragmentId));
-
     const state = getState();
 
-    const collectionCap = collectionCapSelector(getState());
-    const collectionArticleCount = groupSiblingsArticleCountSelector(
-      selectSharedState(state),
-      id
+    const collectionCap = collectionCapSelector(state);
+
+    const willCollectionHitCollectionCap = willCollectionHitCollectionCapSelector(
+      state,
+      id,
+      index,
+      articleFragmentId,
+      collectionCap
     );
 
-    if (collectionCap && collectionArticleCount > collectionCap) {
+    if (willCollectionHitCollectionCap) {
       // if there are too many fragments now then launch a modal to ask the user
       // what action to take
       dispatch(
@@ -118,30 +111,32 @@ const maybeInsertGroupArticleFragment = (
           collection yourself.`,
           // if the user accepts then remove the moved item (if there was one),
           // remove article fragments past the cap count and finally persist
-          [
-            ...(removeAction ? [removeAction] : []),
+          (removeAction ? [removeAction] : []).concat([
+            insertGroupArticleFragment(id, index, articleFragmentId),
+            maybeAddFrontPublicationDate(articleFragmentId),
             addPersistMetaToAction(capGroupSiblings, {
               id: articleFragmentId,
               persistTo,
               applyBeforeReducer: true
             })(id, collectionCap)
-          ],
-          // otherwise just undo the insertion and don't persist as nothing
-          // has actually changed
-          [removeGroupArticleFragment(id, articleFragmentId)]
+          ]),
+          // otherwise do nothing
+          []
         )
       );
     } else {
       // if we're not going over the cap then just remove a moved article if
       // needed and insert the new article
-      if (removeAction) {
-        dispatch(removeAction);
-      }
       dispatch(
-        addPersistMetaToAction(insertGroupArticleFragment, {
-          key: 'articleFragmentId',
-          persistTo
-        })(id, index, articleFragmentId)
+        batchActions(
+          (removeAction ? [removeAction] : []).concat([
+            maybeAddFrontPublicationDate(articleFragmentId),
+            addPersistMetaToAction(insertGroupArticleFragment, {
+              key: 'articleFragmentId',
+              persistTo
+            })(id, index, articleFragmentId)
+          ])
+        )
       );
     }
   };

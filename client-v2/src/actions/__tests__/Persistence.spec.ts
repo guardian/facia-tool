@@ -30,6 +30,13 @@ const A3 = {
   meta: {}
 };
 
+const A4 = {
+  uuid: 'a4',
+  id: 'd',
+  frontPublicationDate: 2000,
+  meta: {}
+};
+
 const init = () => {
   const initState = {
     shared: {
@@ -60,13 +67,14 @@ const init = () => {
         g2: {
           uuid: 'g2',
           id: 'g2',
-          articleFragments: ['a3']
+          articleFragments: ['a3', 'a4']
         }
       },
       articleFragments: {
         a1: A1,
         a2: A2,
-        a3: A3
+        a3: A3,
+        a4: A4
       }
     }
   };
@@ -162,47 +170,47 @@ describe('Collection persistence', () => {
         JSON.parse(calls[1][1].body).collection.live
       );
       expect(c2afs).toEqual({
-        g2: ['a', 'c']
+        g2: ['a', 'c', 'd']
       });
     });
 
     // @TODO - fix this issue in another PR
-    // it('moves between collections UPWARDS make two persistence requests', () => {
-    //   const { dispatch }: { dispatch: Dispatch } = init();
-    //   fetchMock.mock(/stories-visible/, {});
-    //   fetchMock.mock(
-    //     /v2Edits/,
-    //     {},
-    //     {
-    //       name: 'edits'
-    //     }
-    //   );
-    //   dispatch(
-    //     moveArticleFragment(
-    //       { id: 'g1', type: 'group', index: 0 },
-    //       A3,
-    //       { id: 'g2', type: 'group', index: 0 },
-    //       'collection'
-    //     )
-    //   );
+    it('moves between collections UPWARDS make two persistence requests', () => {
+      const { dispatch }: { dispatch: Dispatch } = init();
+      fetchMock.mock(/stories-visible/, {});
+      fetchMock.mock(
+        /v2Edits/,
+        {},
+        {
+          name: 'edits'
+        }
+      );
+      dispatch(
+        moveArticleFragment(
+          { id: 'g1', type: 'group', index: 0 },
+          A3,
+          { id: 'g2', type: 'group', index: 0 },
+          'collection'
+        )
+      );
 
-    //   jest.runAllTimers();
+      jest.runAllTimers();
 
-    //   // fetch mock typings error
-    //   const calls: any = fetchMock.calls('edits');
-    //   expect(calls).toHaveLength(2);
-    //   const c1afs = groupedArticleFragmentIds(
-    //     JSON.parse(calls[0][1].body).collection.live
-    //   );
-    //   expect(c1afs).toEqual({
-    //     g1: ['c', 'a', 'b']
-    //   });
-    //   const c2afs = groupedArticleFragmentIds(
-    //     JSON.parse(calls[1][1].body).collection.live
-    //   );
-    //   expect(c2afs).toEqual({
-    //     g2: []
-    //   });
-    // });
+      // fetch mock typings error
+      const calls: any = fetchMock.calls('edits');
+      expect(calls).toHaveLength(2);
+      const c1afs = groupedArticleFragmentIds(
+        JSON.parse(calls[0][1].body).collection.live
+      );
+      expect(c1afs).toEqual({
+        g2: ['d']
+      });
+      const c2afs = groupedArticleFragmentIds(
+        JSON.parse(calls[1][1].body).collection.live
+      );
+      expect(c2afs).toEqual({
+        g1: ['c', 'a', 'b']
+      });
+    });
   });
 });

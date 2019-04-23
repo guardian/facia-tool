@@ -8,6 +8,39 @@ import {
 import { capGroupArticleFragments } from 'shared/util/capGroupArticleFragments';
 import keyBy from 'lodash/keyBy';
 
+const getUpdatedSiblingGroupsForInsertion = (
+  sharedState: State,
+  groupsState: State['groups'],
+  insertionGroupId: string,
+  insertionIndex: number,
+  articleFragmentId: string
+) => {
+  const articleFragmentsMap = articleFragmentsSelector(sharedState);
+  const groupSiblings = groupSiblingsSelector(sharedState, insertionGroupId);
+
+  if (!articleFragmentsMap[articleFragmentId]) {
+    // this may have happened if we've purged after a poll
+    return groupsState;
+  }
+
+  return groupSiblings.reduce(
+    (acc, sibling) => ({
+      ...acc,
+      [sibling.uuid]: {
+        ...sibling,
+        articleFragments: insertAndDedupeSiblings(
+          sibling.articleFragments || [],
+          [articleFragmentId],
+          insertionIndex,
+          articleFragmentsMap,
+          sibling.uuid === insertionGroupId // this means no insertions happen here if it's not this group
+        )
+      }
+    }),
+    {} as State['groups']
+  );
+};
+
 const groups = (
   state: State['groups'] = {},
   action: Action,
@@ -36,34 +69,15 @@ const groups = (
     }
     case 'SHARED/INSERT_GROUP_ARTICLE_FRAGMENT': {
       const { id, index, articleFragmentId } = action.payload;
-      const articleFragmentsMap = articleFragmentsSelector(prevSharedState);
-      const groupSiblings = groupSiblingsSelector(prevSharedState, id);
-
-      if (!articleFragmentsMap[articleFragmentId]) {
-        // this may have happened if we've purged after a poll
-        return state;
-      }
-
-      const dedupedSiblings = groupSiblings.reduce(
-        (acc, sibling) => ({
-          ...acc,
-          [sibling.uuid]: {
-            ...sibling,
-            articleFragments: insertAndDedupeSiblings(
-              sibling.articleFragments || [],
-              [articleFragmentId],
-              index,
-              articleFragmentsMap,
-              sibling.uuid === id // this means no insertions happen here if it's not this group
-            )
-          }
-        }),
-        {} as State['groups']
-      );
-
       return {
         ...state,
-        ...dedupedSiblings
+        ...getUpdatedSiblingGroupsForInsertion(
+          prevSharedState,
+          state,
+          id,
+          index,
+          articleFragmentId
+        )
       };
     }
     case 'SHARED/CAP_GROUP_SIBLINGS': {
@@ -84,5 +98,7 @@ const groups = (
     }
   }
 };
+
+export { getUpdatedSiblingGroupsForInsertion };
 
 export default groups;
