@@ -29,7 +29,6 @@ import { endConfirmModal } from 'actions/ConfirmModal';
 import config from 'reducers/configReducer';
 import { enableBatching } from 'redux-batched-actions';
 import { Dispatch } from 'types/Store';
-import { State } from 'types/State';
 
 const root = (state: any = {}, action: any) => ({
   confirmModal: confirmModal(state.confirmModal, action),
@@ -46,10 +45,7 @@ const root = (state: any = {}, action: any) => ({
   config: config(state.config, action)
 });
 
-const buildStore = (
-  added: ArticleFragmentSpec,
-  collectionCap = Infinity
-): { dispatch: Dispatch; getState: () => State } => {
+const buildStore = (added: ArticleFragmentSpec, collectionCap = Infinity) => {
   const groupA: ArticleFragmentSpec[] = [
     ['a', '1', [['g', '7']]],
     ['b', '2', undefined],
@@ -89,11 +85,15 @@ const buildStore = (
     },
     clipboard: clipboard.map(([uuid]) => uuid)
   };
-  return createStore(
+  const { getState, dispatch } = createStore(
     enableBatching(root),
     state as any,
     applyMiddleware(thunk)
   );
+  return {
+    getState,
+    dispatch: dispatch as Dispatch
+  };
 };
 
 const insert = async (
