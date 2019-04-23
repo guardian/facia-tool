@@ -281,6 +281,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               component={InputTextArea}
               useHeadlineFont
               rows="2"
+              originalValue={articleCapiFieldValues.headline}
             />
             <ConditionalField
               permittedFields={editableFields}
@@ -288,6 +289,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               label="Trail text"
               component={InputTextArea}
               placeholder={articleCapiFieldValues.trailText}
+              originalValue={articleCapiFieldValues.trailText}
             />
             <ConditionalField
               permittedFields={editableFields}
@@ -337,6 +339,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 component={InputText}
                 placeholder={articleCapiFieldValues.byline}
                 useHeadlineFont
+                originalValue={articleCapiFieldValues.byline}
               />
             )}
             <ConditionalField
