@@ -6,7 +6,7 @@ import { NO_STORE_ERROR } from './constants';
 interface OuterProps {
   parentKey: string;
   index: number;
-  children: (isTarget: boolean) => React.ReactNode;
+  children: (isTarget: boolean, isActive: boolean) => React.ReactNode;
 }
 
 interface ContextProps {
@@ -17,10 +17,11 @@ type Props = OuterProps & ContextProps;
 
 interface State {
   isTarget: boolean;
+  isActive: boolean;
 }
 
 class DropZone extends React.Component<Props, State> {
-  public state = { isTarget: false };
+  public state = { isTarget: false, isActive: false };
 
   public componentDidMount() {
     if (!this.props.store) {
@@ -37,10 +38,15 @@ class DropZone extends React.Component<Props, State> {
   }
 
   public render() {
-    return this.props.children(this.state.isTarget);
+    return this.props.children(this.state.isTarget, this.state.isActive);
   }
 
   private handleStoreUpdate: Sub = (id, hoverIndex) => {
+    const state = this.props.store && this.props.store.getState();
+    const isActive = state ? state.isDraggedOver : false;
+    if (isActive !== this.state.isActive) {
+      this.setState({ isActive });
+    }
     if (
       id === this.props.parentKey &&
       hoverIndex === this.props.index &&

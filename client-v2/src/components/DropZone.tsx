@@ -2,14 +2,15 @@ import React from 'react';
 import { styled } from 'constants/theme';
 import { theme } from 'constants/theme';
 
-const DropContainer = styled('div')`
+const DropContainer = styled('div')<{ disabled: boolean }>`
   position: relative;
-  height: 15px;
+  height: 10px;
+  ${({ disabled }) => disabled && 'pointer-events: none'}
 `;
 
 const DropIndicator = styled('div')`
+  position: relative;
   height: 100%;
-  pointer-events: none;
 `;
 
 class DropZone extends React.Component<
@@ -73,6 +74,7 @@ class DropZone extends React.Component<
         {...this.getEventProps()}
         data-testid="drop-zone"
         style={style}
+        disabled={!!this.props.disabled}
       >
         <DropIndicator
           style={{

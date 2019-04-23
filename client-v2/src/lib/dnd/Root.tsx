@@ -43,6 +43,11 @@ export default class Root extends React.Component<Props, State> {
     if (!e.defaultPrevented) {
       this.reset();
     }
+    const state = this.state.store.getState();
+    if (state.isDraggedOver === false) {
+      const { key, index } = state;
+      this.state.store.update(key, index, true);
+    }
   };
 
   private onDragLeave = ({
@@ -57,7 +62,7 @@ export default class Root extends React.Component<Props, State> {
     }
   };
 
-  private reset = () => this.state.store.update(null, null);
+  private reset = () => this.state.store.update(null, null, false);
 }
 
 export { StoreConsumer, isMove, isInside };
