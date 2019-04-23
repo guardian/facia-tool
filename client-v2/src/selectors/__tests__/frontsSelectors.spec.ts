@@ -1,6 +1,7 @@
 import {
   getFrontsWithPriority,
-  alsoOnFrontSelector
+  alsoOnFrontSelector,
+  createArticleVisiblityDetailsSelector
 } from 'selectors/frontsSelectors';
 import { frontsConfig } from 'fixtures/frontsConfig';
 import { FrontConfig } from 'types/FaciaApi';
@@ -160,6 +161,75 @@ describe('Selecting which front collection is also on correctly', () => {
         meritsWarning: true,
         fronts: [{ id: 'commercialFront', priority: 'commercial' }]
       }
+    });
+  });
+});
+
+const visibilityState = {
+  fronts: {
+    collectionVisibility: {
+      draft: {
+        a: {
+          desktop: 4,
+          mobile: 3
+        }
+      }
+    }
+  },
+  shared: {
+    collections: {
+      data: {
+        a: {
+          draft: ['g1', 'g2']
+        }
+      }
+    },
+    groups: {
+      g1: {
+        articleFragments: ['a1', 'a2', 'a3']
+      },
+      g2: {
+        articleFragments: ['a4', 'a5']
+      }
+    },
+    articleFragments: {
+      a1: {
+        uuid: 'a1',
+        meta: {
+          // this tests that we ignore supporting articles
+          supporting: ['a6']
+        }
+      },
+      a2: {
+        uuid: 'a2'
+      },
+      a3: {
+        uuid: 'a3'
+      },
+      a4: {
+        uuid: 'a4'
+      },
+      a5: {
+        uuid: 'a5'
+      },
+      a6: {
+        uuid: 'a5'
+      }
+    }
+  }
+};
+
+describe('Article visibility selector', () => {
+  it('returns the id of the articleFragment at the last visible position for mobile and desktop, ignoring supporting articleFragments', () => {
+    const articleVisiblityDetailsSelector = createArticleVisiblityDetailsSelector();
+    expect(
+      articleVisiblityDetailsSelector(visibilityState as any, {
+        collectionSet: 'draft',
+        collectionId: 'a'
+      })
+    ).toEqual({
+      desktop: 'a4',
+      mobile: 'a3'
     });
   });
 });
