@@ -23,11 +23,9 @@ export default styled('div')<{
       border-top: ${({ theme }) =>
         `1px solid ${theme.shared.base.colors.text}`};
     `}
-  ${({ displayType }) =>
+  ${({ displayType, size }) =>
     displayType === 'polaroid' &&
-    css`
-      font-size: 14px;
-    `}
+    `font-size: ${size === 'small' ? '12px' : '13px'};`}
   min-height: ${({ size }) => (size === 'small' ? '25px' : '67px')};
   cursor: pointer;
   background-color: ${({ displayType, theme }) =>

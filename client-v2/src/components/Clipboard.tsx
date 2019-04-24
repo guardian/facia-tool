@@ -83,6 +83,13 @@ const StyledDragIntentContainer = styled(DragIntentContainer)`
   height: 100%;
 `;
 
+const SupportingDivider = styled.hr`
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 0.5em 0 0.25em;
+  width: 50%;
+`;
+
 interface ClipboardProps {
   selectArticleFragment: (id: string, isSupporting?: boolean) => void;
   clearArticleFragmentSelection: () => void;
@@ -211,24 +218,27 @@ class Clipboard extends React.Component<ClipboardProps> {
                           onDrop={this.handleInsert}
                           displayType="polaroid"
                         >
-                          {(supporting, sProps) => (
-                            <CollectionItem
-                              uuid={supporting.uuid}
-                              frontId={clipboardId}
-                              parentId={articleFragment.uuid}
-                              getNodeProps={() => sProps}
-                              size="small"
-                              displayType="polaroid"
-                              onSelect={id =>
-                                this.props.selectArticleFragment(id, true)
-                              }
-                              onDelete={() =>
-                                this.props.removeSupportingCollectionItem(
-                                  articleFragment.uuid,
-                                  supporting.uuid
-                                )
-                              }
-                            />
+                          {(supporting, sProps, i, arr) => (
+                            <>
+                              {i < arr.length ? <SupportingDivider /> : null}
+                              <CollectionItem
+                                uuid={supporting.uuid}
+                                frontId={clipboardId}
+                                parentId={articleFragment.uuid}
+                                getNodeProps={() => sProps}
+                                size="small"
+                                displayType="polaroid"
+                                onSelect={id =>
+                                  this.props.selectArticleFragment(id, true)
+                                }
+                                onDelete={() =>
+                                  this.props.removeSupportingCollectionItem(
+                                    articleFragment.uuid,
+                                    supporting.uuid
+                                  )
+                                }
+                              />
+                            </>
                           )}
                         </ArticleFragmentLevel>
                       </CollectionItem>
