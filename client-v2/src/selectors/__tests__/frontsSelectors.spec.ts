@@ -1,7 +1,7 @@
 import {
   getFrontsWithPriority,
   alsoOnFrontSelector,
-  createArticleVisiblityDetailsSelector
+  createArticleVisibilityDetailsSelector
 } from 'selectors/frontsSelectors';
 import { frontsConfig } from 'fixtures/frontsConfig';
 import { FrontConfig } from 'types/FaciaApi';
@@ -221,9 +221,9 @@ const visibilityState = {
 
 describe('Article visibility selector', () => {
   it('returns the id of the articleFragment at the last visible position for mobile and desktop, ignoring supporting articleFragments', () => {
-    const articleVisiblityDetailsSelector = createArticleVisiblityDetailsSelector();
+    const articleVisibilityDetailsSelector = createArticleVisibilityDetailsSelector();
     expect(
-      articleVisiblityDetailsSelector(visibilityState as any, {
+      articleVisibilityDetailsSelector(visibilityState as any, {
         collectionSet: 'draft',
         collectionId: 'a'
       })

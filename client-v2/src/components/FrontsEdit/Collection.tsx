@@ -20,7 +20,7 @@ import {
 import { resetFocusState, setFocusState } from 'bundles/focusBundle';
 import { connect } from 'react-redux';
 import { State } from 'types/State';
-import { createArticleVisiblityDetailsSelector } from 'selectors/frontsSelectors';
+import { createArticleVisibilityDetailsSelector } from 'selectors/frontsSelectors';
 
 const getArticleNotifications = (
   id: string,
@@ -211,15 +211,15 @@ class CollectionContext extends React.Component<
 }
 
 const createMapStateToProps = () => {
-  const articleVisiblityDetailsSelector = createArticleVisiblityDetailsSelector();
+  const articleVisibilityDetailsSelector = createArticleVisibilityDetailsSelector();
   return (state: State, props: CollectionContextProps) => {
-    const articleVisiblityDetails = articleVisiblityDetailsSelector(state, {
+    const articleVisibilityDetails = articleVisibilityDetailsSelector(state, {
       collectionId: props.id,
       collectionSet: props.browsingStage
     });
     return {
-      lastDesktopArticle: articleVisiblityDetails.desktop,
-      lastMobileArticle: articleVisiblityDetails.mobile
+      lastDesktopArticle: articleVisibilityDetails.desktop,
+      lastMobileArticle: articleVisibilityDetails.mobile
     };
   };
 };
