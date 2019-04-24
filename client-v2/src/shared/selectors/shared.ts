@@ -184,8 +184,31 @@ const createCollectionStageGroupsSelector = () => {
       collection: Collection | void,
       groups: { [id: string]: Group },
       stage: CollectionItemSets
-    ): Group[] =>
-      ((collection && collection[stage]) || []).map(id => groups[id])
+    ): Group[] => {
+      const grps = ((collection && collection[stage]) || []).map(
+        id => groups[id]
+      );
+      if (grps.length < 2) {
+        return grps;
+      }
+
+      // Groups without names are groups which no longer exist in the config because
+      // the collection layout has changed. We need to collect the article fragments in these
+      // groups and display them in the top group.
+      const orphanedFragments: string[] = grps
+        .filter(grp => !grp.name)
+        .reduce((frags: string[], g) => frags.concat(g.articleFragments), []);
+
+      const finalGroups = grps.filter(grp => grp.name);
+      const grpF = finalGroups ? finalGroups[0].articleFragments : [];
+      const firstGroupFragments = orphanedFragments.concat(grpF);
+      const firstGroup = {
+        ...finalGroups[0],
+        ...{ articleFragments: firstGroupFragments }
+      };
+      finalGroups[0] = firstGroup;
+      return finalGroups;
+    }
   );
 };
 
@@ -265,7 +288,7 @@ const createArticlesInCollectionGroupSelector = () => {
       if (!includeSupportingArticles) {
         return groupArticleFragmentIds;
       }
-      return groupArticleFragmentIds.reduce(
+      const res = groupArticleFragmentIds.reduce(
         (acc, id) => {
           const articleFragment = articleFragments[id];
           if (
@@ -280,6 +303,7 @@ const createArticlesInCollectionGroupSelector = () => {
         },
         [] as string[]
       );
+      return res;
     }
   );
 };
@@ -352,6 +376,15 @@ const createGroupArticlesSelector = () =>
       (groups[groupId].articleFragments || []).map(
         afId => articleFragments[afId]
       )
+  );
+
+const createArticlesFromIdsSelector = () =>
+  createShallowEqualResultSelector(
+    articleFragmentsFromRootStateSelector,
+    (_: any, { articleFragmentIds }: { articleFragmentIds: string[] }) =>
+      articleFragmentIds,
+    (articleFragments, articleFragmentIds) =>
+      (articleFragmentIds || []).map((afId: string) => articleFragments[afId])
   );
 
 const createDemornalisedArticleFragment = (
@@ -481,5 +514,6 @@ export {
   groupsSelector,
   groupsArticleCount,
   externalArticleIdFromArticleFragmentSelector,
-  selectCollectionItemHasMediaOverrides
+  selectCollectionItemHasMediaOverrides,
+  createArticlesFromIdsSelector
 };

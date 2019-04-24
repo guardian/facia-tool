@@ -26,9 +26,7 @@ const createGroup = (
 
 const getUUID = <T extends { uuid: string }>({ uuid }: T) => uuid;
 
-// this is horrible but is the only way to do it!
-const groupByIndex = (groups: Group[], index: number): Group | undefined =>
-  groups.find(g => parseInt(g.id || '0', 10) === index);
+const getGroupIndex = (id?: string): number => parseInt(id || '0', 10);
 
 const getAllArticleFragments = (groups: Group[]) =>
   groups.reduce(
@@ -42,22 +40,60 @@ const addEmptyGroupsFromCollectionConfigForStage = (
   collectionConfig: CollectionConfig
 ) => {
   const groups = groupIds.map(id => entities[id]);
-  const addedGroups = collectionConfig.groups
-    ? collectionConfig.groups.map((name, i) => {
-        const existingGroup = groupByIndex(groups, i);
+  let groupsWithNames = groups.map(group => {
+    let name: string | null = null;
+    const groupNumberAsInt = getGroupIndex(group.id);
+    if (
+      collectionConfig.groups &&
+      groupNumberAsInt < collectionConfig.groups.length
+    ) {
+      name = collectionConfig.groups[groupNumberAsInt];
+    }
+    return { ...group, name };
+  });
 
-        return existingGroup
-          ? { ...existingGroup, name }
-          : createGroup(`${i}`, name);
-      })
-    : [createGroup('0', null, getAllArticleFragments(groups))];
+  // We may have empty groups in the config which would not show up in the normalised
+  // groups result. We need to add these into the groups array.
+  if (collectionConfig.groups) {
+    collectionConfig.groups.forEach((group, index) => {
+      if (
+        !groupsWithNames.some(addedGroup => {
+          if (addedGroup.id) {
+            return parseInt(addedGroup.id, 10) === index;
+          }
+          return index === 0;
+        })
+      ) {
+        groupsWithNames.push(createGroup(`${index}`, group));
+      }
+    });
+  }
+
+  // If we have no article fragments and no groups in a collection we still need to create
+  // and empty group for articles.
+  if (groupsWithNames.length === 0) {
+    groupsWithNames = [createGroup('0', null, getAllArticleFragments(groups))];
+  }
+
+  // Finally we need to sort the groups according to their ids.
+  groupsWithNames.sort((g1, g2) => {
+    const index1 = getGroupIndex(g1.id);
+    const index2 = getGroupIndex(g2.id);
+
+    if (index1 > index2) {
+      return -1;
+    }
+
+    if (index1 < index2) {
+      return 1;
+    }
+
+    return 0;
+  });
 
   return {
-    addedGroups: keyBy(addedGroups, getUUID),
-    groupIds: addedGroups
-      .map(getUUID)
-      .slice()
-      .reverse()
+    addedGroups: keyBy(groupsWithNames, getUUID),
+    groupIds: groupsWithNames.map(getUUID).slice()
   };
 };
 
@@ -119,10 +155,7 @@ const normaliseCollectionWithNestedArticles = (
       draft,
       previously
     },
-    groups: {
-      ...(normalisedCollection.entities.groups || {}),
-      ...addedGroups
-    },
+    groups: addedGroups,
     articleFragments: normalisedCollection.entities.articleFragments || {}
   };
 };
