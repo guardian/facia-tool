@@ -99,7 +99,7 @@ const VisibilityDivider = ({ notifications }: { notifications: string[] }) =>
   notifications.length ? (
     <VisibilityDividerEl>
       {notifications.map(notification => (
-        <Notification>{notification}</Notification>
+        <Notification key={notification}>{notification}</Notification>
       ))}
     </VisibilityDividerEl>
   ) : null;

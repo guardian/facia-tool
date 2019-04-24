@@ -27,8 +27,8 @@ export default class Root extends React.Component<Props, State> {
         {...divProps}
         onDragOver={this.onDragOver}
         onDragLeave={this.onDragLeave}
-        onDragEnd={this.reset}
-        onDrop={this.reset}
+        onDragEnd={() => this.reset(false)}
+        onDrop={() => this.reset(false)}
       >
         <StoreProvider value={this.state.store}>
           <AddParentInfo id={this.props.id} type="root">
@@ -41,14 +41,12 @@ export default class Root extends React.Component<Props, State> {
 
   private onDragOver = (e: React.DragEvent) => {
     if (!e.defaultPrevented) {
-      this.reset();
+      this.reset(true);
       return;
     }
     const state = this.state.store.getState();
-    if (state.isDraggedOver === false) {
-      const { key, index } = state;
-      this.state.store.update(key, index, true);
-    }
+    const { key, index } = state;
+    this.state.store.update(key, index, true);
   };
 
   private onDragLeave = ({
@@ -59,11 +57,13 @@ export default class Root extends React.Component<Props, State> {
     // is there a better way to do this?
     const { top, right, bottom, left } = currentTarget.getBoundingClientRect();
     if (cx <= left || cx >= right || cy <= top || cy >= bottom) {
-      this.reset();
+      this.reset(false);
     }
   };
 
-  private reset = () => this.state.store.update(null, null, false);
+  private reset = (over: boolean) => {
+    this.state.store.update(null, null, over);
+  };
 }
 
 export { StoreConsumer, isMove, isInside };
