@@ -159,28 +159,24 @@ describe('Shared utilities', () => {
       expect(result.groups[groupId].articleFragments).toHaveLength(3);
     });
     it('should create different groups for article fragments belonging to different groups even if they are not specificied in the config', () => {
-      console.log('hello');
-      const result = normaliseCollectionWithNestedArticles(
-        collection,
-        {
-          ...collectionConfig,
-          groups: undefined
-        }
-      );
+      const result = normaliseCollectionWithNestedArticles(collection, {
+        ...collectionConfig,
+        groups: undefined
+      });
       const groupId1 = result.normalisedCollection.live![0];
       expect(result.groups[groupId1].articleFragments).toHaveLength(1);
       const groupId2 = result.normalisedCollection.live![1];
       expect(result.groups[groupId2].articleFragments).toHaveLength(2);
     });
-    it('should create empty groups for groups in the config which don\'t have collections in them', () => {
-      const configWithExtraGroup = { ...collectionConfig, ...{groups: ['extra', 'large', 'medium', 'small' ]}};
-      const result = normaliseCollectionWithNestedArticles(
-        collection,
-        {
-          ...configWithExtraGroup,
-          groups: undefined
-        }
-      );
+    it("should create empty groups for groups in the config which don't have collections in them", () => {
+      const configWithExtraGroup = {
+        ...collectionConfig,
+        ...{ groups: ['extra', 'large', 'medium', 'small'] }
+      };
+      const result = normaliseCollectionWithNestedArticles(collection, {
+        ...configWithExtraGroup,
+        groups: undefined
+      });
       expect(Object.keys(result.groups)).toHaveLength(4);
     });
   });
