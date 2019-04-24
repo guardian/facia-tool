@@ -62,7 +62,6 @@ type ComponentProps = {
   isLoading?: boolean;
   displayType?: CollectionItemDisplayTypes;
   size?: CollectionItemSizes;
-  notifications?: string[];
   children: React.ReactNode;
   imageDropTypes?: string[];
   onImageDrop?: (e: React.DragEvent<HTMLElement>) => void;
@@ -89,7 +88,6 @@ class ArticleComponent extends React.Component<ComponentProps> {
       displayType = 'default',
       isLoading,
       article,
-      notifications,
       size = 'default',
       fade = false,
       draggable = false,
@@ -163,7 +161,6 @@ class ArticleComponent extends React.Component<ComponentProps> {
               isUneditable={!!article && isUneditable}
               onDelete={onDelete}
               onAddToClipboard={onAddToClipboard}
-              notifications={article ? notifications : []}
               displayPlaceholders={isLoading}
             />
           </ArticleBodyContainer>
