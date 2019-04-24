@@ -9,7 +9,8 @@
   * [Testing](#testing)
   * [Linting](#linting)
   * [Typescript](#typescript)
-  * [Technical Debt](#technical-debt)
+  * [Naming Conventions](#naming-conventions)
+  * [Tech Debt](#tech-debt)
 
 > _Tip:_ Run `yarn markdown-toc README.md` to regenerate the TOC.
 
@@ -143,13 +144,13 @@ We are using Typescript for typing in Fronts V2.
 - `types` at the top level contains types that have no obvious home: e.g. Action which is a union of things that are split across a few files.
 - `types` and `__tests__` are co-located with their modules at the folder level
 
-## Naming conventions
+## Naming Conventions
 
 ### Collections
 
 We use the term `Collection` to refer to the data structure that holds lists of collection items in groups and their layout. Other parts of the organisation -- editorial, dotcom -- call this a `Container`. The abstraction is there because a `Container` refers to a particular representation of a collection of curated content. `Collection` is more generic, and we can use it to refer to other kinds of collections of curated content in future.
 
-## Tech debt
+## Tech Debt
 
 There are a few areas that we'd like to address in the medium to long term for the purposes of reliability and maintainability.
 
