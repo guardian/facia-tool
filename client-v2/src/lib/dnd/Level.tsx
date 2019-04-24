@@ -114,8 +114,13 @@ class Level<T> extends React.Component<Props<T>, State> {
               index={i}
               data={node}
             >
-              {getOtherNodeProps =>
-                children(node, this.getNodeProps(i, getOtherNodeProps), i, arr)
+              {getNodeDragProps =>
+                children(
+                  node,
+                  this.getNodeDropProps(i, getNodeDragProps),
+                  i,
+                  arr
+                )
               }
             </Node>
           </React.Fragment>
@@ -201,12 +206,12 @@ class Level<T> extends React.Component<Props<T>, State> {
     };
   }
 
-  private getNodeProps(
+  private getNodeDropProps(
     i: number,
-    getOtherNodeProps: (forceClone: boolean) => NodeChildrenProps
+    getNodeDragProps: (forceClone: boolean) => NodeChildrenProps
   ) {
     return (forceClone = false) => ({
-      ...getOtherNodeProps(forceClone),
+      ...getNodeDragProps(forceClone),
       onDragOver: this.onDragOver(i, true),
       onDrop: this.onDrop(i, true)
     });
