@@ -4,11 +4,7 @@ import { connect } from 'react-redux';
 import { Root, Move, PosSpec } from 'lib/dnd';
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
-import {
-  removeArticleFragment,
-  moveArticleFragment,
-  addImageToArticleFragment
-} from 'actions/ArticleFragments';
+import { moveArticleFragment } from 'actions/ArticleFragments';
 import { insertArticleFragmentFromDropEvent } from 'util/collectionUtils';
 import { AlsoOnDetail } from 'types/Collection';
 import {
@@ -19,24 +15,13 @@ import {
   CollectionItemSets,
   ArticleFragment as TArticleFragment
 } from 'shared/types/Collection';
-import Collection from './CollectionComponents/Collection';
-import GroupDisplay from 'shared/components/GroupDisplay';
-import ArticleFragmentLevel from 'components/clipboard/ArticleFragmentLevel';
-import GroupLevel from 'components/clipboard/GroupLevel';
 import { getFront } from 'selectors/frontsSelectors';
 import { FrontConfig } from 'types/FaciaApi';
-import { visibleFrontArticlesSelector } from 'selectors/frontsSelectors';
-import { VisibleArticlesResponse } from 'types/FaciaApi';
 import { events } from 'services/GA';
 import FrontDetailView from './FrontDetailView';
-import CollectionItem from './CollectionComponents/CollectionItem';
-import { ValidationResponse } from 'shared/util/validateImageSrc';
 import { initialiseCollectionsForFront } from 'actions/Collections';
-import {
-  resetFocusState,
-  setFocusState,
-  selectFocusedArticle
-} from 'bundles/focusBundle';
+import { setFocusState, selectFocusedArticle } from 'bundles/focusBundle';
+import Collection from './Collection';
 
 // min-height required here to display scrollbar in Firefox:
 // https://stackoverflow.com/questions/28636832/firefox-overflow-y-not-working-with-nested-flexbox
@@ -51,30 +36,6 @@ const FrontContentContainer = styled('div')`
   padding-top: 1px;
 `;
 
-const CollectionWrapper = styled('div')`
-  & + & {
-    margin-top: 10px;
-  }
-  &:focus {
-    border: 1px solid ${props => props.theme.shared.base.colors.focusColor};
-    border-top: 2px solid ${props => props.theme.shared.base.colors.focusColor};
-    border-bottom: 2px solid
-      ${props => props.theme.shared.base.colors.focusColor};
-    outline: none;
-  }
-`;
-
-const CollectionItemWrapper = styled('div')<{ articleSelected?: boolean }>`
-  border: ${props =>
-    props.articleSelected
-      ? `1px solid ${props.theme.shared.base.colors.focusColor}`
-      : `none`};
-  &:focus {
-    border: 1px solid ${props => props.theme.shared.base.colors.focusColor};
-    outline: none;
-  }
-`;
-
 interface FrontPropsBeforeState {
   id: string;
   browsingStage: CollectionItemSets;
@@ -86,23 +47,16 @@ type FrontProps = FrontPropsBeforeState & {
   dispatch: Dispatch;
   initialiseFront: () => void;
   selectArticleFragment: (
-    frontId: string,
-    isSupporting?: boolean
-  ) => (id: string) => void;
-  removeCollectionItem: (parentId: string, id: string) => void;
-  removeSupportingCollectionItem: (parentId: string, id: string) => void;
+    frontId: string
+  ) => (isSupporting?: boolean) => (id: string) => void;
   editorOpenCollections: (ids: string[]) => void;
-  addImageToArticleFragment: (id: string, response: ValidationResponse) => void;
   front: FrontConfig;
-  articlesVisible: { [id: string]: VisibleArticlesResponse };
-  handleBlur: () => void;
-  handleFocus: (collectionId: string) => void;
+  focusedArticle?: string;
   handleArticleFocus: (
     groupId: string,
     articleFragment: TArticleFragment,
     frontId: string
   ) => void;
-  focusedArticle?: string;
 };
 
 interface FrontState {
@@ -154,7 +108,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   };
 
   public render() {
-    const { front, articlesVisible } = this.props;
+    const { front } = this.props;
     return (
       <React.Fragment>
         <div
@@ -171,135 +125,22 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
         <FrontContainer>
           <FrontContentContainer>
             <Root id={this.props.id} data-testid={this.props.id}>
-              {front.collections.map(collectionId => {
-                const collectionArticlesVisible =
-                  articlesVisible && articlesVisible[collectionId];
-                let collectionItemCount: number = 0;
-                return (
-                  <CollectionWrapper
-                    tabIndex={0}
-                    onBlur={this.handleBlur}
-                    onFocus={() => this.handleFocus(collectionId)}
-                    key={collectionId}
-                  >
-                    <Collection
-                      key={collectionId}
-                      id={collectionId}
-                      priority={front.priority}
-                      frontId={this.props.id}
-                      alsoOn={this.props.alsoOn}
-                      canPublish={this.props.browsingStage !== 'live'}
-                      browsingStage={this.props.browsingStage}
-                    >
-                      {(group, isUneditable) => (
-                        <GroupDisplay key={group.uuid} groupName={group.name}>
-                          <GroupLevel
-                            isUneditable={isUneditable}
-                            groupId={group.uuid}
-                            onMove={this.handleMove}
-                            onDrop={this.handleInsert}
-                          >
-                            {(articleFragment, afDragProps) => {
-                              collectionItemCount += 1;
-                              const articleNotifications: string[] = [];
-                              if (
-                                collectionArticlesVisible &&
-                                collectionItemCount ===
-                                  collectionArticlesVisible.mobile
-                              ) {
-                                articleNotifications.push('mobile');
-                              }
-                              if (
-                                collectionArticlesVisible &&
-                                collectionItemCount ===
-                                  collectionArticlesVisible.desktop
-                              ) {
-                                articleNotifications.push('desktop');
-                              }
-                              return (
-                                <CollectionItemWrapper
-                                  tabIndex={0}
-                                  onBlur={this.handleBlur}
-                                  onFocus={event =>
-                                    this.handleArticleFocus(
-                                      event,
-                                      group.uuid,
-                                      articleFragment,
-                                      front.id
-                                    )
-                                  }
-                                  articleSelected={
-                                    this.props.focusedArticle ===
-                                    articleFragment.uuid
-                                  }
-                                >
-                                  <CollectionItem
-                                    frontId={this.props.id}
-                                    onImageDrop={imageData => {
-                                      this.props.addImageToArticleFragment(
-                                        articleFragment.uuid,
-                                        imageData
-                                      );
-                                    }}
-                                    uuid={articleFragment.uuid}
-                                    parentId={group.uuid}
-                                    isUneditable={isUneditable}
-                                    getNodeProps={() =>
-                                      !isUneditable ? afDragProps : {}
-                                    }
-                                    onSelect={this.props.selectArticleFragment(
-                                      this.props.id
-                                    )}
-                                    onDelete={() =>
-                                      this.props.removeCollectionItem(
-                                        group.uuid,
-                                        articleFragment.uuid
-                                      )
-                                    }
-                                    articleNotifications={articleNotifications}
-                                  >
-                                    <ArticleFragmentLevel
-                                      isUneditable={isUneditable}
-                                      articleFragmentId={articleFragment.uuid}
-                                      onMove={this.handleMove}
-                                      onDrop={this.handleInsert}
-                                    >
-                                      {(supporting, supportingDragProps) => (
-                                        <CollectionItem
-                                          frontId={this.props.id}
-                                          uuid={supporting.uuid}
-                                          parentId={articleFragment.uuid}
-                                          onSelect={this.props.selectArticleFragment(
-                                            this.props.id,
-                                            true
-                                          )}
-                                          isUneditable={isUneditable}
-                                          getNodeProps={() =>
-                                            !isUneditable
-                                              ? supportingDragProps
-                                              : {}
-                                          }
-                                          onDelete={() =>
-                                            this.props.removeSupportingCollectionItem(
-                                              articleFragment.uuid,
-                                              supporting.uuid
-                                            )
-                                          }
-                                          size="small"
-                                        />
-                                      )}
-                                    </ArticleFragmentLevel>
-                                  </CollectionItem>
-                                </CollectionItemWrapper>
-                              );
-                            }}
-                          </GroupLevel>
-                        </GroupDisplay>
-                      )}
-                    </Collection>
-                  </CollectionWrapper>
-                );
-              })}
+              {front.collections.map(collectionId => (
+                <Collection
+                  key={collectionId}
+                  id={collectionId}
+                  frontId={this.props.id}
+                  priority={front.priority}
+                  browsingStage={this.props.browsingStage}
+                  alsoOn={this.props.alsoOn}
+                  handleInsert={this.handleInsert}
+                  handleMove={this.handleMove}
+                  selectArticleFragment={this.props.selectArticleFragment(
+                    this.props.id
+                  )}
+                  handleArticleFocus={this.handleArticleFocus}
+                />
+              ))}
             </Root>
           </FrontContentContainer>
           <FrontContentContainer>
@@ -312,10 +153,6 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
       </React.Fragment>
     );
   }
-
-  private handleBlur = () => this.props.handleBlur();
-  private handleFocus = (collectionId: string) =>
-    this.props.handleFocus(collectionId);
   private handleArticleFocus = (
     e: React.FocusEvent<HTMLDivElement>,
     groupId: string,
@@ -330,9 +167,6 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
 const mapStateToProps = (state: State, props: FrontPropsBeforeState) => {
   return {
     front: getFront(state, { frontId: props.id }),
-    articlesVisible: visibleFrontArticlesSelector(state, {
-      collectionSet: props.browsingStage
-    }),
     focusedArticle: selectFocusedArticle(state, 'collectionArticle')
   };
 };
@@ -345,27 +179,14 @@ const mapDispatchToProps = (
     dispatch,
     initialiseFront: () =>
       dispatch(initialiseCollectionsForFront(props.id, props.browsingStage)),
-    selectArticleFragment: (frontId: string, isSupporting?: boolean) => (
+    selectArticleFragment: (frontId: string) => (isSupporting?: boolean) => (
       articleFragmentId: string
     ) =>
       dispatch(
         editorSelectArticleFragment(frontId, articleFragmentId, isSupporting)
       ),
-    removeCollectionItem: (parentId: string, uuid: string) => {
-      dispatch(removeArticleFragment('group', parentId, uuid, 'collection'));
-    },
-    removeSupportingCollectionItem: (parentId: string, uuid: string) => {
-      dispatch(
-        removeArticleFragment('articleFragment', parentId, uuid, 'collection')
-      );
-    },
     editorOpenCollections: (ids: string[]) =>
       dispatch(editorOpenCollections(ids)),
-    addImageToArticleFragment: (id: string, response: ValidationResponse) =>
-      dispatch(addImageToArticleFragment(id, response)),
-    handleBlur: () => dispatch(resetFocusState()),
-    handleFocus: (collectionId: string) =>
-      dispatch(setFocusState({ type: 'collection', collectionId })),
     handleArticleFocus: (
       groupId: string,
       articleFragment: TArticleFragment,

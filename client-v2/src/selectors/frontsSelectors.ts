@@ -7,6 +7,11 @@ import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
 
 import { CollectionItemSets, Stages } from 'shared/types/Collection';
+import {
+  createArticlesInCollectionSelector,
+  selectSharedState
+} from 'shared/selectors/shared';
+import { createShallowEqualResultSelector } from 'shared/util/selectorUtils';
 
 interface FrontConfigMap {
   [id: string]: FrontConfig;
@@ -282,17 +287,49 @@ const visibleArticlesSelector = createSelector(
   }
 );
 
-const defaultVisibleFrontArticles = {};
+const defaultVisibleFrontArticles = {
+  desktop: undefined,
+  mobile: undefined
+};
 
-const visibleFrontArticlesSelector = createSelector(
-  [collectionVisibilitiesSelector, collectionSetSelector],
-  (collectionVisibilities, collectionSet) => {
-    if (collectionSet === 'previously') {
-      return defaultVisibleFrontArticles;
+const createArticleVisibilityDetailsSelector = () => {
+  const articlesInCollectionSelector = createArticlesInCollectionSelector();
+
+  // Have to adapt this to work on root state
+  const rootArticlesInCollectionSelector = (
+    state: State,
+    extra: {
+      collectionId: string;
+      collectionSet: CollectionItemSets;
     }
-    return collectionVisibilities[collectionSet];
-  }
-);
+  ) =>
+    articlesInCollectionSelector(selectSharedState(state), {
+      ...extra,
+      includeSupportingArticles: false
+    });
+
+  return createShallowEqualResultSelector(
+    collectionVisibilitiesSelector,
+    collectionSetSelector,
+    collectionIdSelector,
+    rootArticlesInCollectionSelector,
+    (collectionVisibilities, collectionSet, collectionId, articles) => {
+      if (collectionSet === 'previously') {
+        return defaultVisibleFrontArticles;
+      }
+      const visibilities = collectionVisibilities[collectionSet][collectionId];
+
+      if (!visibilities) {
+        return defaultVisibleFrontArticles;
+      }
+
+      return {
+        desktop: articles[visibilities.desktop - 1],
+        mobile: articles[visibilities.mobile - 1]
+      };
+    }
+  );
+};
 
 export {
   getFront,
@@ -308,6 +345,6 @@ export {
   hasUnpublishedChangesSelector,
   clipboardSelector,
   visibleArticlesSelector,
-  visibleFrontArticlesSelector,
-  getUnlockedFrontCollections
+  getUnlockedFrontCollections,
+  createArticleVisibilityDetailsSelector
 };
