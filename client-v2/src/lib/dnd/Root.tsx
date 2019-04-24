@@ -42,6 +42,7 @@ export default class Root extends React.Component<Props, State> {
   private onDragOver = (e: React.DragEvent) => {
     if (!e.defaultPrevented) {
       this.reset();
+      return;
     }
     const state = this.state.store.getState();
     if (state.isDraggedOver === false) {
