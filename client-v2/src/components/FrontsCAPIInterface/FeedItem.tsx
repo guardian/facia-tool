@@ -87,6 +87,10 @@ const MetaContainer = styled('div')`
   padding: 0px 2px;
 `;
 
+const ArticleThumbnail = styled(ThumbnailSmall)`
+  margin-left: auto;
+`;
+
 const FirstPublished = styled('div')`
   font-size: 11px;
   margin: 2px 0;
@@ -187,7 +191,7 @@ const FeedItem = ({ article, onAddToClipboard = noop }: FeedItemProps) => (
       <Body>
         <Title data-testid="headline">{article.webTitle}</Title>
       </Body>
-      <ThumbnailSmall
+      <ArticleThumbnail
         style={{
           backgroundImage: `url('${getThumbnail(
             article,
