@@ -8,8 +8,10 @@ interface Group {
   articleFragments: string[];
 }
 
-type Stages = 'draft' | 'live';
+// CollectionItemSets represent all of the lists of collectionItems available in a collection.
 type CollectionItemSets = 'draft' | 'live' | 'previously';
+// Stages represent only those lists which are curated by the user.
+type Stages = 'draft' | 'live';
 
 type CollectionItemTypes = 'SNAP_LINK' | 'ARTICLE';
 type CollectionItemDisplayTypes = 'default' | 'polaroid';
