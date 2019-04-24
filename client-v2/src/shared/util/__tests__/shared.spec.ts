@@ -1,6 +1,7 @@
 import {
   collection,
   collectionConfig,
+  collectionWithoutGroups,
   collectionWithSupportingArticles,
   stateWithCollection,
   stateWithCollectionAndSupporting
@@ -147,10 +148,13 @@ describe('Shared utilities', () => {
     });
 
     it('should create a single group with with all article fragments when the collection config has no groups', () => {
-      const result = normaliseCollectionWithNestedArticles(collection, {
-        ...collectionConfig,
-        groups: undefined
-      });
+      const result = normaliseCollectionWithNestedArticles(
+        collectionWithoutGroups,
+        {
+          ...collectionConfig,
+          groups: undefined
+        }
+      );
       const groupId = result.normalisedCollection.live![0];
       expect(result.groups[groupId].articleFragments).toHaveLength(3);
     });

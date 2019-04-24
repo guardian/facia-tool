@@ -39,12 +39,14 @@ const state: any = {
     g1: {
       uuid: 'g1',
       id: 'group1',
-      articleFragments: ['af2']
+      articleFragments: ['af2'],
+      name: 'g1'
     },
     g2: {
       uuid: 'g2',
       id: 'group2',
-      articleFragments: ['af1']
+      articleFragments: ['af1'],
+      name: 'g2'
     },
     g3: {
       uuid: 'g3',

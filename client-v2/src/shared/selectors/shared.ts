@@ -200,13 +200,15 @@ const createCollectionStageGroupsSelector = () => {
         .reduce((frags: string[], g) => frags.concat(g.articleFragments), []);
 
       const finalGroups = grps.filter(grp => grp.name);
-      const grpF = finalGroups ? finalGroups[0].articleFragments : [];
-      const firstGroupFragments = orphanedFragments.concat(grpF);
-      const firstGroup = {
-        ...finalGroups[0],
-        ...{ articleFragments: firstGroupFragments }
-      };
-      finalGroups[0] = firstGroup;
+      if (finalGroups.length > 0) {
+        const grpF = finalGroups ? finalGroups[0].articleFragments : [];
+        const firstGroupFragments = orphanedFragments.concat(grpF);
+        const firstGroup = {
+          ...finalGroups[0],
+          ...{ articleFragments: firstGroupFragments }
+        };
+        finalGroups[0] = firstGroup;
+      }
       return finalGroups;
     }
   );
