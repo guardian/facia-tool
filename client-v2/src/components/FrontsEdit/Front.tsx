@@ -164,12 +164,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   };
 }
 
-const createMapStateToProps = () => {
-  return (state: State, props: FrontPropsBeforeState) => {
-    return {
-      front: getFront(state, { frontId: props.id }),
-      focusedArticle: selectFocusedArticle(state, 'collectionArticle')
-    };
+const mapStateToProps = (state: State, props: FrontPropsBeforeState) => {
+  return {
+    front: getFront(state, { frontId: props.id }),
+    focusedArticle: selectFocusedArticle(state, 'collectionArticle')
   };
 };
 
@@ -206,6 +204,6 @@ const mapDispatchToProps = (
 };
 
 export default connect(
-  createMapStateToProps,
+  mapStateToProps,
   mapDispatchToProps
 )(FrontComponent);
