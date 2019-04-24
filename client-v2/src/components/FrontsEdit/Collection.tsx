@@ -171,7 +171,7 @@ class CollectionContext extends React.Component<
                 onMove={handleMove}
                 onDrop={handleInsert}
               >
-                {(articleFragment, afDragProps) => (
+                {(articleFragment, getAfNodeProps) => (
                   <>
                     <FocusWrapper
                       tabIndex={0}
@@ -197,7 +197,7 @@ class CollectionContext extends React.Component<
                         uuid={articleFragment.uuid}
                         parentId={group.uuid}
                         isUneditable={isUneditable}
-                        getNodeProps={() => (!isUneditable ? afDragProps : {})}
+                        getNodeProps={() => getAfNodeProps(isUneditable)}
                         onSelect={selectArticleFragment()}
                         onDelete={() =>
                           removeCollectionItem(group.uuid, articleFragment.uuid)
@@ -209,7 +209,7 @@ class CollectionContext extends React.Component<
                           onMove={handleMove}
                           onDrop={handleInsert}
                         >
-                          {(supporting, supportingDragProps) => (
+                          {(supporting, getSupportingProps) => (
                             <CollectionItem
                               frontId={this.props.id}
                               uuid={supporting.uuid}
@@ -217,7 +217,7 @@ class CollectionContext extends React.Component<
                               onSelect={selectArticleFragment(true)}
                               isUneditable={isUneditable}
                               getNodeProps={() =>
-                                !isUneditable ? supportingDragProps : {}
+                                getSupportingProps(isUneditable)
                               }
                               onDelete={() =>
                                 removeSupportingCollectionItem(

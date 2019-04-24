@@ -44,7 +44,7 @@ interface DropProps {
 
 type LevelChild<T> = (
   node: T,
-  props: DropProps & NodeChildrenProps,
+  getProps: (forceClone?: boolean) => DropProps & NodeChildrenProps,
   index: number,
   arr: T[]
 ) => React.ReactNode;
@@ -114,7 +114,9 @@ class Level<T> extends React.Component<Props<T>, State> {
               index={i}
               data={node}
             >
-              {props => children(node, this.getNodeProps(i, props), i, arr)}
+              {getOtherNodeProps =>
+                children(node, this.getNodeProps(i, getOtherNodeProps), i, arr)
+              }
             </Node>
           </React.Fragment>
         ))}
@@ -173,15 +175,16 @@ class Level<T> extends React.Component<Props<T>, State> {
       return onDrop(e, to);
     }
 
-    const { parents, id, index, type, data } = JSON.parse(af);
+    const { parents, id, index, type, data, forceClone } = JSON.parse(af);
 
     if (!isInside(this.props.parents, [type, id])) {
       const [parentType, parentId] = parents[parents.length - 1];
-      const from = isMove(this.props.parents, parents) && {
-        type: parentType,
-        id: parentId,
-        index
-      };
+      const from = !forceClone &&
+        isMove(this.props.parents, parents) && {
+          type: parentType,
+          id: parentId,
+          index
+        };
 
       const adjustedTo = from ? adjustToIndexForMove(from, to) : to;
 
@@ -198,12 +201,15 @@ class Level<T> extends React.Component<Props<T>, State> {
     };
   }
 
-  private getNodeProps(i: number, props: NodeChildrenProps) {
-    return {
-      ...props,
+  private getNodeProps(
+    i: number,
+    getOtherNodeProps: (forceClone: boolean) => NodeChildrenProps
+  ) {
+    return (forceClone = false) => ({
+      ...getOtherNodeProps(forceClone),
       onDragOver: this.onDragOver(i, true),
       onDrop: this.onDrop(i, true)
-    };
+    });
   }
 }
 
