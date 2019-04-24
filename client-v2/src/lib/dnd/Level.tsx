@@ -45,7 +45,8 @@ interface DropProps {
 type LevelChild<T> = (
   node: T,
   props: DropProps & NodeChildrenProps,
-  index: number
+  index: number,
+  arr: T[]
 ) => React.ReactNode;
 
 type MoveHandler<T> = (move: Move<T>) => void;
@@ -113,7 +114,7 @@ class Level<T> extends React.Component<Props<T>, State> {
               index={i}
               data={node}
             >
-              {props => children(node, this.getNodeProps(i, props), i)}
+              {props => children(node, this.getNodeProps(i, props), i, arr)}
             </Node>
           </React.Fragment>
         ))}
