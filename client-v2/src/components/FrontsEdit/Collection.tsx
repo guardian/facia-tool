@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'constants/theme';
+import { styled, Theme } from 'constants/theme';
 import Collection from './CollectionComponents/Collection';
 import { AlsoOnDetail } from 'types/Collection';
 import {
@@ -66,6 +66,9 @@ const Notification = styled.span`
   margin-left 0.25em;
 `;
 
+const selectGrey = ({ theme }: { theme: Theme }) =>
+  theme.shared.colors.greyMediumLight;
+
 const VisibilityDividerEl = styled.div`
   display: flex;
   font-weight: bold;
@@ -75,7 +78,7 @@ const VisibilityDividerEl = styled.div`
   text-transform: capitalize;
 
   :before {
-    background-image: linear-gradient(transparent 75%, #999 75%, #999 100%);
+    background-image: linear-gradient(transparent 75%, ${selectGrey} 75%, ${selectGrey} 100%);
     background-position: 0px 3px;
     background-size: 4px 4px;
     content: '';
@@ -85,6 +88,7 @@ const VisibilityDividerEl = styled.div`
 
   ${Notification} + ${Notification} {
     :before {
+      color: ${selectGrey};
       content: '|';
       margin-right: 0.25em;
     }
