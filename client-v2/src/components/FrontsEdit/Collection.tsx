@@ -180,20 +180,20 @@ class CollectionContext extends React.Component<
                 onDrop={handleInsert}
               >
                 {(articleFragment, afDragProps) => (
-                  <CollectionItemWrapper
-                    tabIndex={0}
-                    onBlur={() => handleBlur()}
-                    onFocus={e =>
-                      handleArticleFocus(
-                        e,
-                        group.uuid,
-                        articleFragment,
-                        frontId
-                      )
-                    }
-                    articleSelected={focusedArticle === articleFragment.uuid}
-                  >
-                    <>
+                  <>
+                    <CollectionItemWrapper
+                      tabIndex={0}
+                      onBlur={() => handleBlur()}
+                      onFocus={e =>
+                        handleArticleFocus(
+                          e,
+                          group.uuid,
+                          articleFragment,
+                          frontId
+                        )
+                      }
+                      articleSelected={focusedArticle === articleFragment.uuid}
+                    >
                       <CollectionItem
                         frontId={this.props.id}
                         onImageDrop={imageData => {
@@ -238,15 +238,15 @@ class CollectionContext extends React.Component<
                           )}
                         </ArticleFragmentLevel>
                       </CollectionItem>
-                      <VisibilityDivider
-                        notifications={getArticleNotifications(
-                          articleFragment.uuid,
-                          lastDesktopArticle,
-                          lastMobileArticle
-                        )}
-                      />
-                    </>
-                  </CollectionItemWrapper>
+                    </CollectionItemWrapper>
+                    <VisibilityDivider
+                      notifications={getArticleNotifications(
+                        articleFragment.uuid,
+                        lastDesktopArticle,
+                        lastMobileArticle
+                      )}
+                    />
+                  </>
                 )}
               </GroupLevel>
             </GroupDisplayComponent>
