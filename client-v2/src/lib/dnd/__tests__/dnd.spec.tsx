@@ -67,7 +67,7 @@ describe('Guration', () => {
         >
           {(child, getDragProps, i) => {
             if (i === 0) {
-              nodeProps = getDragProps;
+              nodeProps = getDragProps();
             }
 
             return (
@@ -178,7 +178,7 @@ describe('Guration', () => {
           renderDrop={() => null}
         >
           {(_, getNodeProps) => {
-            dragProps = getNodeProps;
+            dragProps = getNodeProps();
             return (
               <Level
                 arr={[{ id: '3' }]}
@@ -232,7 +232,7 @@ describe('Guration', () => {
         >
           {(child, getNodeProps, i) => {
             if (i === 0) {
-              dragProps = getNodeProps;
+              dragProps = getNodeProps();
             }
 
             return false;
@@ -269,7 +269,7 @@ describe('Guration', () => {
           }}
         >
           {(child, getNodeProps) => {
-            dragProps = getNodeProps;
+            dragProps = getNodeProps();
             return null;
           }}
         </Level>
@@ -300,7 +300,7 @@ describe('Guration', () => {
             arr={[{ id: '1' }]}
           >
             {(child, getNodeProps) => {
-              nodeProps = getNodeProps;
+              nodeProps = getNodeProps();
               return null;
             }}
           </Level>
