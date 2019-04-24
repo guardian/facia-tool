@@ -292,7 +292,7 @@ const defaultVisibleFrontArticles = {
   mobile: undefined
 };
 
-const createArticleVisiblityDetailsSelector = () => {
+const createArticleVisibilityDetailsSelector = () => {
   const articlesInCollectionSelector = createArticlesInCollectionSelector();
 
   // Have to adapt this to work on root state
@@ -346,5 +346,5 @@ export {
   clipboardSelector,
   visibleArticlesSelector,
   getUnlockedFrontCollections,
-  createArticleVisiblityDetailsSelector
+  createArticleVisibilityDetailsSelector
 };
