@@ -25,7 +25,6 @@ import { CollectionItemSizes } from 'shared/types/Collection';
 import CollectionItemTrail from '../collectionItem/CollectionItemTrail';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
 import CollectionItemDraftMetaContent from '../collectionItem/CollectionItemDraftMetaContent';
-import CollectionItemNotification from '../collectionItem/CollectionItemNotification';
 import ColouredQuote from '../collectionItem/CollectionItemQuote';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
@@ -99,7 +98,6 @@ interface ArticleBodyProps {
   uuid: string;
   onDelete?: (id: string) => void;
   onAddToClipboard?: (id: string) => void;
-  notifications?: string[];
   isUneditable?: boolean;
   byline?: string;
   showByline?: boolean;
@@ -140,7 +138,6 @@ const articleBodyDefault = ({
   displayPlaceholders,
   onDelete,
   onAddToClipboard,
-  notifications,
   isUneditable,
   frontPublicationTime,
   byline,
@@ -249,13 +246,6 @@ const articleBodyDefault = ({
             />
           </div>
         ))}
-      {notifications && (
-        <CollectionItemNotification>
-          {notifications.map(notification => (
-            <span key={notification}>{notification} </span>
-          ))}
-        </CollectionItemNotification>
-      )}
       <HoverActionsAreaOverlay disabled={isUneditable}>
         <HoverActionsButtonWrapper
           buttons={[

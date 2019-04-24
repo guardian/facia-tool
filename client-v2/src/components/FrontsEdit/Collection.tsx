@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'constants/theme';
+import { styled, Theme } from 'constants/theme';
 import Collection from './CollectionComponents/Collection';
 import { AlsoOnDetail } from 'types/Collection';
 import {
@@ -60,6 +60,49 @@ const CollectionItemWrapper = styled('div')<{ articleSelected?: boolean }>`
     outline: none;
   }
 `;
+
+const Notification = styled.span`
+  display: inline-block;
+  margin-left 0.25em;
+`;
+
+const selectGrey = ({ theme }: { theme: Theme }) =>
+  theme.shared.colors.greyMediumLight;
+
+const VisibilityDividerEl = styled.div`
+  display: flex;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 1.25;
+  margin: 0.5em 0;
+  text-transform: capitalize;
+
+  :before {
+    background-image: linear-gradient(transparent 75%, ${selectGrey} 75%, ${selectGrey} 100%);
+    background-position: 0px 3px;
+    background-size: 4px 4px;
+    content: '';
+    display: block;
+    flex: 1;
+  }
+
+  ${Notification} + ${Notification} {
+    :before {
+      color: ${selectGrey};
+      content: '|';
+      margin-right: 0.25em;
+    }
+  }
+`;
+
+const VisibilityDivider = ({ notifications }: { notifications: string[] }) =>
+  notifications.length ? (
+    <VisibilityDividerEl>
+      {notifications.map(notification => (
+        <Notification>{notification}</Notification>
+      ))}
+    </VisibilityDividerEl>
+  ) : null;
 
 interface CollectionContextProps {
   id: string;
@@ -137,69 +180,73 @@ class CollectionContext extends React.Component<
                 onDrop={handleInsert}
               >
                 {(articleFragment, afDragProps) => (
-                  <CollectionItemWrapper
-                    tabIndex={0}
-                    onBlur={() => handleBlur()}
-                    onFocus={e =>
-                      handleArticleFocus(
-                        e,
-                        group.uuid,
-                        articleFragment,
-                        frontId
-                      )
-                    }
-                    articleSelected={focusedArticle === articleFragment.uuid}
-                  >
-                    <CollectionItem
-                      frontId={this.props.id}
-                      onImageDrop={imageData => {
-                        this.props.addImageToArticleFragment(
-                          articleFragment.uuid,
-                          imageData
-                        );
-                      }}
-                      uuid={articleFragment.uuid}
-                      parentId={group.uuid}
-                      isUneditable={isUneditable}
-                      getNodeProps={() => (!isUneditable ? afDragProps : {})}
-                      onSelect={selectArticleFragment()}
-                      onDelete={() =>
-                        removeCollectionItem(group.uuid, articleFragment.uuid)
+                  <>
+                    <CollectionItemWrapper
+                      tabIndex={0}
+                      onBlur={() => handleBlur()}
+                      onFocus={e =>
+                        handleArticleFocus(
+                          e,
+                          group.uuid,
+                          articleFragment,
+                          frontId
+                        )
                       }
-                      articleNotifications={getArticleNotifications(
+                      articleSelected={focusedArticle === articleFragment.uuid}
+                    >
+                      <CollectionItem
+                        frontId={this.props.id}
+                        onImageDrop={imageData => {
+                          this.props.addImageToArticleFragment(
+                            articleFragment.uuid,
+                            imageData
+                          );
+                        }}
+                        uuid={articleFragment.uuid}
+                        parentId={group.uuid}
+                        isUneditable={isUneditable}
+                        getNodeProps={() => (!isUneditable ? afDragProps : {})}
+                        onSelect={selectArticleFragment()}
+                        onDelete={() =>
+                          removeCollectionItem(group.uuid, articleFragment.uuid)
+                        }
+                      >
+                        <ArticleFragmentLevel
+                          isUneditable={isUneditable}
+                          articleFragmentId={articleFragment.uuid}
+                          onMove={handleMove}
+                          onDrop={handleInsert}
+                        >
+                          {(supporting, supportingDragProps) => (
+                            <CollectionItem
+                              frontId={this.props.id}
+                              uuid={supporting.uuid}
+                              parentId={articleFragment.uuid}
+                              onSelect={selectArticleFragment(true)}
+                              isUneditable={isUneditable}
+                              getNodeProps={() =>
+                                !isUneditable ? supportingDragProps : {}
+                              }
+                              onDelete={() =>
+                                removeSupportingCollectionItem(
+                                  articleFragment.uuid,
+                                  supporting.uuid
+                                )
+                              }
+                              size="small"
+                            />
+                          )}
+                        </ArticleFragmentLevel>
+                      </CollectionItem>
+                    </CollectionItemWrapper>
+                    <VisibilityDivider
+                      notifications={getArticleNotifications(
                         articleFragment.uuid,
                         lastDesktopArticle,
                         lastMobileArticle
                       )}
-                    >
-                      <ArticleFragmentLevel
-                        isUneditable={isUneditable}
-                        articleFragmentId={articleFragment.uuid}
-                        onMove={handleMove}
-                        onDrop={handleInsert}
-                      >
-                        {(supporting, supportingDragProps) => (
-                          <CollectionItem
-                            frontId={this.props.id}
-                            uuid={supporting.uuid}
-                            parentId={articleFragment.uuid}
-                            onSelect={selectArticleFragment(true)}
-                            isUneditable={isUneditable}
-                            getNodeProps={() =>
-                              !isUneditable ? supportingDragProps : {}
-                            }
-                            onDelete={() =>
-                              removeSupportingCollectionItem(
-                                articleFragment.uuid,
-                                supporting.uuid
-                              )
-                            }
-                            size="small"
-                          />
-                        )}
-                      </ArticleFragmentLevel>
-                    </CollectionItem>
-                  </CollectionItemWrapper>
+                    />
+                  </>
                 )}
               </GroupLevel>
             </GroupDisplayComponent>

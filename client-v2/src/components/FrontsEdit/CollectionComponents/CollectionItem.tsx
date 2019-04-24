@@ -37,7 +37,6 @@ interface ContainerProps {
   parentId: string;
   displayType?: CollectionItemDisplayTypes;
   size?: 'small' | 'default';
-  articleNotifications?: string[];
   isUneditable?: boolean;
 }
 
@@ -78,15 +77,9 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       displayType,
       type,
       size,
-      articleNotifications,
       isUneditable,
       externalArticleId
     } = this.props;
-
-    const notifications =
-      articleNotifications && articleNotifications.length
-        ? articleNotifications
-        : undefined;
 
     switch (type) {
       case collectionItemTypes.ARTICLE:
@@ -101,7 +94,6 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
             fade={!isSelected}
             size={size}
             displayType={displayType}
-            notifications={notifications}
             imageDropTypes={Object.values(gridDataTransferTypes)}
             onImageDrop={this.getDropHandler(this.props.onImageDrop)}
           >
@@ -119,7 +111,6 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
             fade={!isSelected}
             size={size}
             displayType={displayType}
-            notifications={notifications}
           >
             {children}
           </SnapLink>
