@@ -12,6 +12,8 @@ const CheckboxContainer = styled('div')`
 
 const Label = InputLabel.extend`
   color: ${props => props.theme.shared.base.colors.textMuted};
+  flex: 1;
+  cursor: pointer;
 `;
 
 const Switch = styled('div')`
@@ -75,7 +77,9 @@ export default ({
   <>
     <InputContainer>
       <CheckboxContainer>
-        <Label size="sm">{label}</Label>
+        <Label htmlFor={id} size="sm">
+          {label}
+        </Label>
         <Switch>
           <Checkbox
             type="checkbox"
