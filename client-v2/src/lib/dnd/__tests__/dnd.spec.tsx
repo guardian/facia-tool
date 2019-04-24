@@ -281,6 +281,41 @@ describe('Guration', () => {
     expect(edit).toBeUndefined();
   });
 
+  it('does not creates MOVE events without a `from` when forceClone arg is passed to getNodeProps', () => {
+    let dragProps;
+    let dropProps;
+    let edit: any;
+
+    setup(
+      <Root id="@@ROOT">
+        <Level
+          arr={[{ id: '1' }]}
+          parentType="root"
+          parentId="root"
+          getId={({ id }) => id}
+          type="a"
+          onMove={e => {
+            edit = e;
+          }}
+          onDrop={() => null}
+          renderDrop={getDropProps => {
+            dropProps = getDropProps;
+            return null;
+          }}
+        >
+          {(child, getNodeProps) => {
+            dragProps = getNodeProps(true);
+            return null;
+          }}
+        </Level>
+      </Root>
+    );
+
+    runDrag(dragProps)(dropProps);
+
+    expect(edit.from).toBe(false);
+  });
+
   it('creates inserts between roots', () => {
     let nodeProps;
     let dropProps;
