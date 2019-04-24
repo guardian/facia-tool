@@ -301,7 +301,8 @@ const createMapStateToProps = () => {
       collection: collectionSelectors.selectById(sharedState, props.id),
       articleIds: selectArticlesInCollection(sharedState, {
         collectionId: props.id,
-        collectionSet: props.browsingStage
+        collectionSet: props.browsingStage,
+        includeSupportingArticles: false
       })
     };
   };
