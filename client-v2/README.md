@@ -142,3 +142,32 @@ We are using Typescript for typing in Fronts V2.
 - `types` at the top level contains types that have no obvious home: e.g. Action which is a union of things that are split across a few files.
 - `types` and `__tests__` are co-located with their modules at the folder level
 
+## Tech debt
+
+There are a few areas that we'd like to address in the medium to long term for the purposes of reliability and maintainability.
+
+### Persistent UUIDs
+
+At the moment, we create UUIDs for groups and article fragments at any level within a collection at the moment it's ingested by the client. This lets us reference them with confidence -- until the next reingestion! As soon as an update from the server is applied, we need create new UUIDs for the new data, and any client-side state that referred to the updated data loses its reference.
+
+For example, the article meta form references an article by its UUID. At the moment, if anything in the article's parent collection changes, our polling logic replaces the entire collection, along with a new set of UUIDs for its child articles. As a result, the form is now pointing to an article fragment that no longer exists, and becomes read only, limiting the ability of users to concurrently edit different articles in the same collection.
+
+One strategy to add UUIDS: add UUIDs to the server model where necessary as optional fields, and alter the client to ensure that UUIDs aren't added if they already exist. Then, run a script to add UUIDs across all collections where they don't exist, updating last edit times to ensure client polling picks up the change. It's possible that users might be holding on to old models in open instances of the client application, so we could consider running this script at a time when it's unlikely many users are using the tool.
+
+### Reading our own writes
+
+We don't currently read our writes back from the server when we save collections. This can mean that users are unaware of bugs until they preview launched changes, receive polling updates, or refresh the page, because the client model differs from the server model. It would be great to read the canonical version of the collection from the response of edit calls to ensure odd behaviour surfaces immediately. Implementing this would depend on 'Persistent UUIDs' above.
+
+### Collection Persistence
+
+At the moment, it is possible, although unlikely, for collection updates to go missing. This scenario is made more likely because in V2 we update entire collections in one go, regardless of the changes that are made to them:
+
+1. User makes Edit A to a collection, e.g. a move operation, and a POST request is sent to the server
+2. User makes Edit B to a collection, e.g. a change to article metadata, and a POST request is sent to the server
+3. Edit B reaches the server before Edit A, and Edit A replaces Edit B. Edit B is now lost.
+
+We already handle all of our persistence calls for collections in one place -- the persistCollection redux middleware. One solution would be to chain and debounce persistence calls. This would
+
+- Ensure that the latest changes to collections are always persisted for a single client
+- Keep the number of calls to the server low, especially important if we're chaining calls
+
