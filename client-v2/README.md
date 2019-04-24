@@ -150,13 +150,13 @@ There are a few areas that we'd like to address in the medium to long term for t
 
 At the moment, we create UUIDs for groups and article fragments at any level within a collection at the moment it's ingested by the client. This lets us reference them with confidence -- until the next reingestion! As soon as an update from the server is applied, we need create new UUIDs for the new data, and any client-side state that referred to the updated data loses its reference.
 
-For example, the article meta form uses the article UUID as a reference. At the moment, if anything in the article's parent collection changes, our polling logic replaces the entire collection, along with a new set of UUIDs for its child articles. As a result, the form is now pointing to an article fragment that no longer exists, and becomes read only, limiting the ability of users to concurrently edit different articles in the same collection.
+For example, the article meta form references an article by its UUID. At the moment, if anything in the article's parent collection changes, our polling logic replaces the entire collection, along with a new set of UUIDs for its child articles. As a result, the form is now pointing to an article fragment that no longer exists, and becomes read only, limiting the ability of users to concurrently edit different articles in the same collection.
 
 One strategy to add UUIDS: add UUIDs to the server model where necessary as optional fields, and alter the client to ensure that UUIDs aren't added if they already exist. Then, run a script to add UUIDs across all collections where they don't exist, updating last edit times to ensure client polling picks up the change. It's possible that users might be holding on to old models in open instances of the client application, so we could consider running this script at a time when it's unlikely many users are using the tool.
 
 ### Reading our own writes
 
-We don't currently read our writes back from the server when we save collections. This can mean that users are unaware of bugs until they preview launched changes, receive polling updates, or refresh the page, because the client model is correct but the server model is not. It would be great to read the canonical version of the collection from the response of edit calls to ensure odd behaviour surfaces immediately. Implementing this would depend on 'Persistent UUIDs' above.
+We don't currently read our writes back from the server when we save collections. This can mean that users are unaware of bugs until they preview launched changes, receive polling updates, or refresh the page, because the client model differs from the server model. It would be great to read the canonical version of the collection from the response of edit calls to ensure odd behaviour surfaces immediately. Implementing this would depend on 'Persistent UUIDs' above.
 
 ### Collection Persistence
 
