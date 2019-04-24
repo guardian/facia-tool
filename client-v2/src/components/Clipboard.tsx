@@ -80,7 +80,7 @@ const ClipboardBody = styled.div`
 const StyledDragIntentContainer = styled(DragIntentContainer)`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  min-height: 100%;
 `;
 
 const SupportingDivider = styled.hr`
