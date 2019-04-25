@@ -4,7 +4,7 @@
   "private": true,
   "description": "Guardian front pages editor",
   "scripts": {
-      "jspm": "jspm"
+    "jspm": "jspm"
   },
   "dependencies": {
     "babel": "6.0.0",

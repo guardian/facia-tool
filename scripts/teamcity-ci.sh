@@ -16,9 +16,9 @@ globalJsDependencies() {
 }
 
 javascriptV1() {
+    npm install
     npm run jspm config registries.github.auth ${JSPM_GITHUB_AUTH_SECRET}
     npm run jspm registry export github
-    npm install
     npm run jspm install
     grunt --stack validate
     grunt --stack bundle
