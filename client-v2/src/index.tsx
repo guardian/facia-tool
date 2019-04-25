@@ -56,9 +56,7 @@ if (pageConfig.favouriteFrontIdsByPriority) {
   storeClipboardContent(pageConfig.clipboardArticles)
 );
 
-if (process.env.BUILD_ENV !== 'integration') {
-  pollingConfig(store);
-}
+pollingConfig(store);
 
 const reactMount = document.getElementById('react-mount');
 

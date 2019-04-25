@@ -30,8 +30,8 @@ javascriptV2() {
     yarn install
     yarn lint
     yarn test
-    yarn test-integration
     yarn run build
+    yarn test-integration-ci
 
     popd
 }
