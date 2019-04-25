@@ -14,7 +14,8 @@
     "dev-server": "yarn compileWithBabel $(yarn bin)/webpack-dev-server --config config/webpack.config.dev.js",
     "dev": "yarn install && yarn dev-server --open",
     "test": "yarn jest",
-    "test-integration": "BUILD_ENV=integration echo 'RUNNING ON EXISTING PROD BUILD - run yarn build before this to catch changes since last build' && node ./integration/run.js",
+    "test-integration": "BUILD_ENV=integration yarn build && node ./integration/run.js",
+    "test-integration-ci": "BUILD_ENV=integration node ./integration/run.js",
     "run-checks": "yarn test && yarn lint"
   },
   "devDependencies": {
