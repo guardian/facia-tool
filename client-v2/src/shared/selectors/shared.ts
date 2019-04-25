@@ -192,14 +192,16 @@ const createCollectionStageGroupsSelector = () => {
         return grps;
       }
 
-      // Groups without names are groups which no longer exist in the config because
+      // Groups without names and ids are groups which no longer exist in the config because
       // the collection layout has changed. We need to collect the article fragments in these
       // groups and display them in the top group.
       const orphanedFragments: string[] = grps
-        .filter(grp => !grp.name)
+        .filter(grp => !grp.name && grp.id)
         .reduce((frags: string[], g) => frags.concat(g.articleFragments), []);
 
-      const finalGroups = grps.filter(grp => grp.name);
+      // The final array of groups consist of groups where all groups without names but with ids
+      // are filtered out as these groups no longer exist in the config of the collection.
+      const finalGroups = grps.filter(grp => grp.name || !grp.id);
       if (finalGroups.length > 0) {
         const grpF = finalGroups ? finalGroups[0].articleFragments : [];
         const firstGroupFragments = orphanedFragments.concat(grpF);
