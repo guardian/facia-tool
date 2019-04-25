@@ -13,10 +13,7 @@ module.exports = {
     path: path.resolve(__dirname, '../../public/client-v2/dist'),
     filename: 'app.bundle.js'
   },
-  plugins: [
-    new webpack.EnvironmentPlugin(['BUILD_ENV']),
-    new ForkTsCheckerWebpackPlugin()
-  ],
+  plugins: [new ForkTsCheckerWebpackPlugin()],
   module: {
     rules: [
       {

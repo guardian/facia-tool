@@ -11,6 +11,9 @@ import { frontsEdit, base } from 'constants/routes';
  */
 export default (store: Store) =>
   setInterval(() => {
+    if ((window as any).IS_INTEGRATION) {
+      return;
+    }
     const path = `${base}${frontsEdit}`;
     const match = matchPath<{ priority: string }>(store.getState().path, {
       path
