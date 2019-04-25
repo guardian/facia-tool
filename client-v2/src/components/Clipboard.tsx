@@ -66,7 +66,7 @@ const ClipboardTitle = styled.h2`
 
 const ClipboardBody = styled.div`
   padding: 10px;
-  flex-basis: 100%;
+  flex: 1;
   display: flex;
 `;
 
@@ -175,7 +175,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
-                  height: '100%',
+                  flex: '1',
                   width: '140px'
                 }}
               >
