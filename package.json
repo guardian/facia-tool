@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "description": "Guardian front pages editor",
+  "scripts": {
+      "jspm": "jspm"
+  },
   "dependencies": {
     "babel": "6.0.0",
     "eslint-plugin-jasmine": "1.8.1",
