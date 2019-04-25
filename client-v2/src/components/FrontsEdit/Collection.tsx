@@ -21,6 +21,7 @@ import { resetFocusState, setFocusState } from 'bundles/focusBundle';
 import { connect } from 'react-redux';
 import { State } from 'types/State';
 import { createArticleVisibilityDetailsSelector } from 'selectors/frontsSelectors';
+import FocusWrapper from 'components/FocusWrapper';
 
 const getArticleNotifications = (
   id: string,
@@ -46,17 +47,6 @@ const CollectionWrapper = styled('div')`
     border-top: 2px solid ${props => props.theme.shared.base.colors.focusColor};
     border-bottom: 2px solid
       ${props => props.theme.shared.base.colors.focusColor};
-    outline: none;
-  }
-`;
-
-const CollectionItemWrapper = styled('div')<{ articleSelected?: boolean }>`
-  border: ${props =>
-    props.articleSelected
-      ? `1px solid ${props.theme.shared.base.colors.focusColor}`
-      : `none`};
-  &:focus {
-    border: 1px solid ${props => props.theme.shared.base.colors.focusColor};
     outline: none;
   }
 `;
@@ -114,7 +104,6 @@ interface CollectionContextProps {
   browsingStage: CollectionItemSets;
   handleMove: (move: Move<TArticleFragment>) => void;
   handleInsert: (e: React.DragEvent, to: PosSpec) => void;
-  focusedArticle?: string;
   selectArticleFragment: (isSupporting?: boolean) => (id: string) => void;
 }
 
@@ -152,7 +141,6 @@ class CollectionContext extends React.Component<
       selectArticleFragment,
       removeCollectionItem,
       removeSupportingCollectionItem,
-      focusedArticle,
       lastDesktopArticle,
       lastMobileArticle
     } = this.props;
@@ -181,7 +169,7 @@ class CollectionContext extends React.Component<
               >
                 {(articleFragment, afDragProps) => (
                   <>
-                    <CollectionItemWrapper
+                    <FocusWrapper
                       tabIndex={0}
                       onBlur={() => handleBlur()}
                       onFocus={e =>
@@ -192,7 +180,7 @@ class CollectionContext extends React.Component<
                           frontId
                         )
                       }
-                      articleSelected={focusedArticle === articleFragment.uuid}
+                      uuid={articleFragment.uuid}
                     >
                       <CollectionItem
                         frontId={this.props.id}
@@ -238,7 +226,7 @@ class CollectionContext extends React.Component<
                           )}
                         </ArticleFragmentLevel>
                       </CollectionItem>
-                    </CollectionItemWrapper>
+                    </FocusWrapper>
                     <VisibilityDivider
                       notifications={getArticleNotifications(
                         articleFragment.uuid,

@@ -216,7 +216,7 @@ const includeSupportingArticlesSelector = (
 
 const createArticlesInCollectionGroupSelector = () => {
   const collectionStageGroupsSelector = createCollectionStageGroupsSelector();
-  return createSelector(
+  return createShallowEqualResultSelector(
     articleFragmentsSelector,
     collectionStageGroupsSelector,
     groupNameSelector,
@@ -309,7 +309,7 @@ const articleFragmentIdSelector = (
 ) => articleFragmentId;
 
 const createSupportingArticlesSelector = () =>
-  createSelector(
+  createShallowEqualResultSelector(
     articleFragmentsFromRootStateSelector,
     articleFragmentIdSelector,
     (articleFragments, id) =>

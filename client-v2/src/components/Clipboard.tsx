@@ -30,9 +30,9 @@ import DragIntentContainer from 'shared/components/DragIntentContainer';
 import {
   setFocusState,
   resetFocusState,
-  selectFocusedArticle,
   selectIsClipboardFocused
 } from 'bundles/focusBundle';
+import FocusWrapper from './FocusWrapper';
 
 const ClipboardWrapper = styled('div')`
   border: 1px solid #c9c9c9;
@@ -41,17 +41,6 @@ const ClipboardWrapper = styled('div')`
   &:focus {
     border: 1px solid ${({ theme }) => theme.shared.base.colors.focusColor};
     border-top: 1px solid ${({ theme }) => theme.shared.base.colors.focusColor};
-    outline: none;
-  }
-`;
-
-const ArticleWrapper = styled('div')<{ articleSelected?: boolean }>`
-  border: ${({ articleSelected, theme }) =>
-    articleSelected
-      ? `1px solid ${theme.shared.base.colors.focusColor}`
-      : `none`};
-  &:focus {
-    border: 1px solid ${({ theme }) => theme.shared.base.colors.focusColor};
     outline: none;
   }
 `;
@@ -101,7 +90,6 @@ interface ClipboardProps {
   handleArticleFocus: (articleFragment: TArticleFragment) => void;
   handleBlur: () => void;
   dispatch: Dispatch;
-  focusedArticle?: string;
   isClipboardFocused: boolean;
 }
 
@@ -192,13 +180,11 @@ class Clipboard extends React.Component<ClipboardProps> {
                   onDrop={this.handleInsert}
                 >
                   {(articleFragment, afProps) => (
-                    <ArticleWrapper
+                    <FocusWrapper
                       tabIndex={0}
                       onFocus={e => this.handleArticleFocus(e, articleFragment)}
                       onBlur={this.handleBlur}
-                      articleSelected={
-                        this.props.focusedArticle === articleFragment.uuid
-                      }
+                      uuid={articleFragment.uuid}
                     >
                       <CollectionItem
                         uuid={articleFragment.uuid}
@@ -242,7 +228,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                           )}
                         </ArticleFragmentLevel>
                       </CollectionItem>
-                    </ArticleWrapper>
+                    </FocusWrapper>
                   )}
                 </ClipboardLevel>
               </Root>
@@ -268,7 +254,6 @@ class Clipboard extends React.Component<ClipboardProps> {
 
 const mapStateToProps = (state: State) => ({
   isClipboardOpen: selectIsClipboardOpen(state),
-  focusedArticle: selectFocusedArticle(state, 'clipboardArticle'),
   isClipboardFocused: selectIsClipboardFocused(state)
 });
 
