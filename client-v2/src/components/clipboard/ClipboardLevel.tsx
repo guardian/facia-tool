@@ -7,6 +7,7 @@ import { ArticleFragment } from 'shared/types/Collection';
 import ArticleDrag from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone from 'components/DropZone';
 import { gridDataTransferTypes } from 'constants/image';
+import { DRAG_COLLECTION_ITEM_IMAGE } from 'shared/components/article/DraggableArticleImageContainer';
 
 interface OuterProps {
   children: LevelChild<ArticleFragment>;
@@ -27,7 +28,10 @@ const ClipboardLevel = ({
   onDrop
 }: Props) => (
   <Level
-    blockingDataTransferTypes={Object.values(gridDataTransferTypes)}
+    blockingDataTransferTypes={[
+      ...Object.values(gridDataTransferTypes),
+      DRAG_COLLECTION_ITEM_IMAGE
+    ]}
     arr={articleFragments}
     parentType="clipboard"
     parentId="clipboard"

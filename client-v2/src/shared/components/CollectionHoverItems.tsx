@@ -7,6 +7,10 @@ const HoverActionsAreaOverlay = styled('div')<{
   display: ${({ disabled }) => (disabled ? 'none' : 'flex')};
   justify-content: ${({ justify }) => justify};
   padding: 4px 8px;
+  /* We zero the height here to ensure the container doesn't */
+  /* interfere with clicks, as it overlays the collection item */
+  height: 0;
+  bottom: 30px;
 `;
 
 HoverActionsAreaOverlay.defaultProps = {

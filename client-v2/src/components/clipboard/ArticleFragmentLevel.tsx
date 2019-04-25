@@ -8,6 +8,7 @@ import ArticleDrag from 'components/FrontsEdit/CollectionComponents/ArticleDrag'
 import DropZone from 'components/DropZone';
 import { createSupportingArticlesSelector } from 'shared/selectors/shared';
 import { gridDataTransferTypes } from 'constants/image';
+import { DRAG_COLLECTION_ITEM_IMAGE } from 'shared/components/article/DraggableArticleImageContainer';
 
 interface OuterProps {
   articleFragmentId: string;
@@ -35,7 +36,10 @@ const ArticleFragmentLevel = ({
 }: Props) => (
   <Level
     arr={supporting || []}
-    blockingDataTransferTypes={Object.values(gridDataTransferTypes)}
+    blockingDataTransferTypes={[
+      ...Object.values(gridDataTransferTypes),
+      DRAG_COLLECTION_ITEM_IMAGE
+    ]}
     parentType="articleFragment"
     parentId={articleFragmentId}
     type="articleFragment"

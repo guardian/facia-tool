@@ -41,12 +41,10 @@ export default class Root extends React.Component<Props, State> {
 
   private onDragOver = (e: React.DragEvent) => {
     if (!e.defaultPrevented) {
-      this.reset(true);
+      const { isDraggedOver } = this.state.store.getState();
+      this.reset(isDraggedOver);
       return;
     }
-    const state = this.state.store.getState();
-    const { key, index } = state;
-    this.state.store.update(key, index, true);
   };
 
   private onDragLeave = ({
@@ -61,8 +59,8 @@ export default class Root extends React.Component<Props, State> {
     }
   };
 
-  private reset = (over: boolean) => {
-    this.state.store.update(null, null, over);
+  private reset = (isDraggedOver: boolean) => {
+    this.state.store.update(null, null, isDraggedOver);
   };
 }
 

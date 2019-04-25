@@ -26,6 +26,7 @@ import CollectionItemTrail from '../collectionItem/CollectionItemTrail';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
 import CollectionItemDraftMetaContent from '../collectionItem/CollectionItemDraftMetaContent';
 import ColouredQuote from '../collectionItem/CollectionItemQuote';
+import DraggableArticleImageContainer from './DraggableArticleImageContainer';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   width: 130px;
@@ -146,7 +147,8 @@ const articleBodyDefault = ({
   imageHide,
   imageSlideshowReplace,
   isBreaking,
-  type
+  type,
+  uuid
 }: ArticleBodyProps) => {
   const ArticleHeadingContainer =
     size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
@@ -230,7 +232,7 @@ const articleBodyDefault = ({
         (displayPlaceholders ? (
           <ThumbnailPlaceholder />
         ) : (
-          <div>
+          <DraggableArticleImageContainer id={uuid}>
             {imageSlideshowReplace && (
               <ArticleSlideshow>
                 <SlideshowIcon>
@@ -244,7 +246,7 @@ const articleBodyDefault = ({
                 opacity: imageHide ? 0.5 : 1
               }}
             />
-          </div>
+          </DraggableArticleImageContainer>
         ))}
       <HoverActionsAreaOverlay disabled={isUneditable}>
         <HoverActionsButtonWrapper

@@ -31,6 +31,8 @@ export const INSERT_GROUP_ARTICLE_FRAGMENT =
   'SHARED/INSERT_GROUP_ARTICLE_FRAGMENT';
 export const INSERT_SUPPORTING_ARTICLE_FRAGMENT =
   'SHARED/INSERT_SUPPORTING_ARTICLE_FRAGMENT';
+export const COPY_ARTICLE_FRAGMENT_IMAGE_META =
+  'SHARED/COPY_ARTICLE_FRAGMENT_IMAGE_META';
 
 function updateArticleFragmentMeta(
   id: string,
@@ -60,6 +62,13 @@ function articleFragmentsReceived(
   return {
     type: ARTICLE_FRAGMENTS_RECEIVED,
     payload
+  };
+}
+
+function copyArticleFragmentImageMeta(from: string, to: string) {
+  return {
+    type: COPY_ARTICLE_FRAGMENT_IMAGE_META as typeof COPY_ARTICLE_FRAGMENT_IMAGE_META,
+    payload: { from, to }
   };
 }
 
@@ -220,5 +229,6 @@ export {
   removeSupportingArticleFragment,
   createArticleFragment,
   clearArticleFragments,
-  maybeAddFrontPublicationDate
+  maybeAddFrontPublicationDate,
+  copyArticleFragmentImageMeta
 };

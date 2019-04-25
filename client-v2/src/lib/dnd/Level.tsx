@@ -157,7 +157,11 @@ class Level<T> extends React.Component<Props<T>, State> {
     if (!this.props.store) {
       throw new Error(NO_STORE_ERROR);
     }
-    if (e.defaultPrevented || this.dragEventIsBlacklisted(e)) {
+    const isBlacklisted = this.dragEventIsBlacklisted(e);
+    if (e.defaultPrevented || isBlacklisted) {
+      if (isBlacklisted) {
+        e.preventDefault();
+      }
       return;
     }
     e.preventDefault();

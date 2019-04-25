@@ -35,7 +35,6 @@ export default styled('div')<{
   opacity: ${({ fade }) => (fade ? 0.5 : 1)};
 
   ${HoverActionsAreaOverlay} {
-    bottom: 0;
     left: 0;
     right: 0;
     position: absolute;
