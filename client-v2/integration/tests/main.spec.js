@@ -14,6 +14,14 @@ fixture`Fronts edit`.page`http://localhost:3456/v2/editorial`
   .before(setup)
   .after(teardown);
 
+// quick and dirty check to see if there are any console errors on page load
+test('Console errors', async t => {
+  // await the front to load
+  const topFrontHeadline = await frontHeadline(0).textContent;
+  const { error } = await t.getBrowserConsoleMessages();
+  await t.expect(error.length).eql(0);
+});
+
 test('Drag and drop', async t => {
   const topFrontHeadline = await frontHeadline(0).textContent;
   const topFeedHeadline = await feedItemHeadline(0).textContent;

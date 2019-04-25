@@ -15,6 +15,7 @@
     "dev": "yarn install && yarn dev-server --open",
     "test": "yarn jest",
     "test-integration": "BUILD_ENV=integration yarn build && node ./integration/run.js",
+    "retest-integration": "BUILD_ENV=integration && node ./integration/run.js",
     "run-checks": "yarn test && yarn lint"
   },
   "devDependencies": {
