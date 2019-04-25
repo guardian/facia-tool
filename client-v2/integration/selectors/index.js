@@ -5,6 +5,7 @@ const FEED_ITEM_SELECTOR = 'feed-item';
 const COLLECTION_ITEM_SELECTOR = 'article-body';
 const CLIPBOARD_SELECTOR = 'clipboard';
 const PREVIOUSLY_SELECTOR = 'previously';
+const CLIPBOARD_WRAPPER_SELECTOR = 'clipboard-wrapper';
 const HEADLINE_SELECTOR = 'headline';
 const DROP_ZONE_SELECTOR = 'drop-zone';
 const HOVER_OVERLAY_SELECTOR = 'hover-overlay';
@@ -68,3 +69,4 @@ export const previouslyItem = maybeGetNth(
 export const previouslyDropZone = maybeGetNth(
   select(PREVIOUSLY_SELECTOR, DROP_ZONE_SELECTOR)
 );
+export const clipboardWrapper = () => select(CLIPBOARD_WRAPPER_SELECTOR);

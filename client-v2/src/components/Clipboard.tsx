@@ -38,7 +38,9 @@ import FocusWrapper from './FocusWrapper';
 const hasSupporting = (af: ArticleFragment) =>
   !!(af.meta.supporting || []).length;
 
-const ClipboardWrapper = styled('div')`
+const ClipboardWrapper = styled('div').attrs({
+  'data-testid': 'clipboard-wrapper'
+})`
   border: 1px solid #c9c9c9;
   border-top: 1px solid black;
   overflow-y: scroll;
