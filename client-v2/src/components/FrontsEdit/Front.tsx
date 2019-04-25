@@ -20,7 +20,7 @@ import { FrontConfig } from 'types/FaciaApi';
 import { events } from 'services/GA';
 import FrontDetailView from './FrontDetailView';
 import { initialiseCollectionsForFront } from 'actions/Collections';
-import { setFocusState, selectFocusedArticle } from 'bundles/focusBundle';
+import { setFocusState } from 'bundles/focusBundle';
 import Collection from './Collection';
 
 // min-height required here to display scrollbar in Firefox:
@@ -51,7 +51,6 @@ type FrontProps = FrontPropsBeforeState & {
   ) => (isSupporting?: boolean) => (id: string) => void;
   editorOpenCollections: (ids: string[]) => void;
   front: FrontConfig;
-  focusedArticle?: string;
   handleArticleFocus: (
     groupId: string,
     articleFragment: TArticleFragment,
@@ -166,8 +165,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
 
 const mapStateToProps = (state: State, props: FrontPropsBeforeState) => {
   return {
-    front: getFront(state, { frontId: props.id }),
-    focusedArticle: selectFocusedArticle(state, 'collectionArticle')
+    front: getFront(state, { frontId: props.id })
   };
 };
 
