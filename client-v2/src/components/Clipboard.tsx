@@ -19,7 +19,8 @@ import {
 import { clipboardId } from 'constants/fronts';
 import {
   ArticleFragment as TArticleFragment,
-  ArticleFragmentMeta
+  ArticleFragmentMeta,
+  ArticleFragment
 } from 'shared/types/Collection';
 import ClipboardLevel from './clipboard/ClipboardLevel';
 import ArticleFragmentLevel from './clipboard/ArticleFragmentLevel';
@@ -33,6 +34,9 @@ import {
   selectFocusedArticle,
   selectIsClipboardFocused
 } from 'bundles/focusBundle';
+
+const hasSupporting = (af: ArticleFragment) =>
+  !!(af.meta.supporting || []).length;
 
 const ClipboardWrapper = styled('div')`
   border: 1px solid #c9c9c9;
@@ -212,6 +216,9 @@ class Clipboard extends React.Component<ClipboardProps> {
                         }
                         {...afProps}
                       >
+                        {hasSupporting(articleFragment) && (
+                          <SupportingDivider />
+                        )}
                         <ArticleFragmentLevel
                           articleFragmentId={articleFragment.uuid}
                           onMove={this.handleMove}
@@ -220,7 +227,6 @@ class Clipboard extends React.Component<ClipboardProps> {
                         >
                           {(supporting, sProps, i, arr) => (
                             <>
-                              {i < arr.length ? <SupportingDivider /> : null}
                               <CollectionItem
                                 uuid={supporting.uuid}
                                 frontId={clipboardId}
@@ -237,7 +243,11 @@ class Clipboard extends React.Component<ClipboardProps> {
                                     supporting.uuid
                                   )
                                 }
-                              />
+                              >
+                                {i < arr.length - 1 ? (
+                                  <SupportingDivider />
+                                ) : null}
+                              </CollectionItem>
                             </>
                           )}
                         </ArticleFragmentLevel>
