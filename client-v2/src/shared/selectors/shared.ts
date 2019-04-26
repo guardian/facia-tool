@@ -179,7 +179,7 @@ const createCollectionStageGroupsSelector = () => {
 
 const createPreviouslyLiveArticlesInCollectionSelector = () => {
   const collectionSelector = createCollectionSelector();
-  return createSelector(
+  return createShallowEqualResultSelector(
     collectionSelector,
     groupsSelector,
     (collection: Collection | void, groups: { [id: string]: Group }): Group[] =>
