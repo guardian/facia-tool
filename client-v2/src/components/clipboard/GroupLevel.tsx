@@ -40,23 +40,27 @@ const GroupLevel = ({
     onMove={onMove}
     onDrop={onDrop}
     renderDrag={af => <ArticleDrag id={af.uuid} />}
-    renderDrop={(props, isTarget, isActive) => (
-      <DropZone
-        {...props}
-        disabled={isUneditable || !isActive}
-        override={isTarget}
-        style={
-          // Pad the drop zone for ease of dropping if there's
-          // nothing in the group.
-          articleFragments.length
-            ? undefined
-            : {
-                height: '30px',
-                paddingBottom: '20px'
+    renderDrop={
+      isUneditable
+        ? null
+        : (props, isTarget, isActive) => (
+            <DropZone
+              {...props}
+              disabled={!isActive}
+              override={isTarget}
+              style={
+                // Pad the drop zone for ease of dropping if there's
+                // nothing in the group.
+                articleFragments.length
+                  ? undefined
+                  : {
+                      height: '30px',
+                      paddingBottom: '20px'
+                    }
               }
-        }
-      />
-    )}
+            />
+          )
+    }
   >
     {children}
   </Level>
