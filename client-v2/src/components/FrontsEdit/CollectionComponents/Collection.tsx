@@ -69,12 +69,14 @@ const PreviouslyCollectionContainer = styled('div')`
 `;
 
 const PreviouslyCollectionToggle = styled(CollectionMetaContainer)`
+  align-items: center;
   font-size: 16px;
   font-weight: bold;
+  padding-top: 0.25em;
 `;
 
-const PreviouslyCollectionToggleCaret = styled(ButtonCircularCaret)`
-  margin-top: 5px;
+const PreviouslyGroupsWrapper = styled.div`
+  padding-top: 0.25em;
 `;
 
 class Collection extends React.Component<CollectionProps> {
@@ -175,10 +177,13 @@ class Collection extends React.Component<CollectionProps> {
         <PreviouslyCollectionContainer>
           <PreviouslyCollectionToggle onClick={this.togglePreviouslyOpen}>
             Previously
-            <PreviouslyCollectionToggleCaret active={isPreviouslyOpen} />
+            <ButtonCircularCaret active={isPreviouslyOpen} />
           </PreviouslyCollectionToggle>
-          {isPreviouslyOpen &&
-            previousGroups.map(group => children(group, true, false))}
+          {isPreviouslyOpen && (
+            <PreviouslyGroupsWrapper>
+              {previousGroups.map(group => children(group, true, false))}
+            </PreviouslyGroupsWrapper>
+          )}
         </PreviouslyCollectionContainer>
       </CollectionDisplay>
     );
