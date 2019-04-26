@@ -49,7 +49,9 @@ const runDrag = (type: any, data?: any, json: boolean = true) => (
     type.onDragStart(e);
   }
 
-  dropProps.onDrop && dropProps.onDrop(e);
+  if (dropProps.onDrop) {
+    dropProps.onDrop(e);
+  }
 };
 
 const setup = (jsx: React.ReactElement<any>) =>
@@ -148,8 +150,8 @@ describe('Guration', () => {
                 onDrop={() => null}
                 renderDrop={() => null}
               >
-                {(_, getNodeProps, i) =>
-                  i === 0 ? ((dropProps = getNodeProps()), null) : null
+                {(_, getNodeProps, j) =>
+                  j === 0 ? ((dropProps = getNodeProps()), null) : null
                 }
               </Level>
             );
@@ -209,8 +211,8 @@ describe('Guration', () => {
                 }}
                 onDrop={() => null}
               >
-                {(_, getNodeProps, i) =>
-                  i === 0 ? ((dropProps = getNodeProps()), null) : null
+                {(_, getNodeProps, j) =>
+                  j === 0 ? ((dropProps = getNodeProps()), null) : null
                 }
               </Level>
             );
