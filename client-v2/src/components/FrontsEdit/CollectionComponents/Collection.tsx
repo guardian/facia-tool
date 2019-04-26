@@ -174,8 +174,11 @@ class Collection extends React.Component<CollectionProps> {
       >
         {groups.map(group => children(group, isUneditable))}
 
-        <PreviouslyCollectionContainer>
-          <PreviouslyCollectionToggle onClick={this.togglePreviouslyOpen}>
+        <PreviouslyCollectionContainer data-testid="previously">
+          <PreviouslyCollectionToggle
+            onClick={this.togglePreviouslyOpen}
+            data-testid="previously-toggle"
+          >
             Previously
             <ButtonCircularCaret active={isPreviouslyOpen} />
           </PreviouslyCollectionToggle>

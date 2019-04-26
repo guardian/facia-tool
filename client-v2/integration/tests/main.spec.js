@@ -7,7 +7,10 @@ import {
   feedItem,
   feedItemHeadline,
   guardianSnapLink,
-  externalSnapLink
+  externalSnapLink,
+  previouslyToggle,
+  previouslyDropZone,
+  previouslyItem
 } from '../selectors';
 
 fixture`Fronts edit`.page`http://localhost:3456/v2/editorial`
@@ -90,4 +93,26 @@ test('Snap Links - External', async t => {
     .eql(frontDropsCount + 1)
     .expect(frontSnapLink(0).textContent)
     .contains('Business - BBC News');
+});
+
+test('Previously', async t => {
+  const frontDropsCount = await frontDropZone().count;
+
+  await t
+    .expect(previouslyItem().count)
+    .eql(0) // toggled closed initally
+    .click(previouslyToggle());
+
+  const previouslyDropsCount = await previouslyDropZone().count;
+  const previouslyItemCount = await previouslyItem().count;
+
+  await t
+    .expect(previouslyDropsCount)
+    .eql(0) // no places to drop!
+    .dragToElement(previouslyItem(0), frontDropZone(0))
+    .wait(1000)
+    .expect(frontDropZone().count)
+    .eql(frontDropsCount + 2) // clones into the front
+    .expect(previouslyItem().count)
+    .eql(previouslyItemCount); // does not remove the previously item
 });
