@@ -172,14 +172,14 @@ class Collection extends React.Component<CollectionProps> {
           ) : null
         }
       >
-        {groups.map(group => children(group, isUneditable))}
+        {groups.map(group => children(group, isUneditable, true))}
 
         <PreviouslyCollectionContainer data-testid="previously">
           <PreviouslyCollectionToggle
             onClick={this.togglePreviouslyOpen}
             data-testid="previously-toggle"
           >
-            Previously
+            Recently removed
             <ButtonCircularCaret active={isPreviouslyOpen} />
           </PreviouslyCollectionToggle>
           {isPreviouslyOpen && (
