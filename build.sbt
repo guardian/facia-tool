@@ -59,7 +59,7 @@ TwirlKeys.templateImports ++= Seq(
 )
 
 val awsVersion = "1.11.293"
-val capiModelsVersion = "12.10"
+val capiModelsVersion = "14.1"
 val json4sVersion = "3.6.0-M2"
 
 resolvers ++= Seq(
@@ -85,14 +85,14 @@ libraryDependencies ++= Seq(
     "com.gu" %% "content-api-models-json" % capiModelsVersion,
     "com.gu" %% "content-api-client-aws" % "0.5",
     "com.gu" %% "editorial-permissions-client" % "2.0",
-    "com.gu" %% "fapi-client-play26" % "2.6.6",
+    "com.gu" %% "fapi-client-play26" % "3.0.0",
     "com.gu" % "kinesis-logback-appender" % "1.4.2",
     "com.gu" %% "mobile-notifications-client" % "1.5",
     "com.gu" %% "pan-domain-auth-play_2-6" % "0.7.2",
 
     "com.gu" %% "scanamo" % "1.0.0-M7",
 
-    "com.gu" %% "thrift-serializer" % "2.1.0",
+    "com.gu" %% "thrift-serializer" % "4.0.0",
     "net.logstash.logback" % "logstash-logback-encoder" % "5.0",
     "org.julienrf" %% "play-json-derived-codecs" % "4.0.0",
     "org.json4s" %% "json4s-native" % json4sVersion,
