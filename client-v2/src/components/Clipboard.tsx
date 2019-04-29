@@ -83,6 +83,13 @@ const SupportingDivider = styled.hr`
   width: 50%;
 `;
 
+const FullDivider = styled('hr')`
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 8px -10px 4px;
+  width: 115%;
+`;
+
 interface ClipboardProps {
   selectArticleFragment: (id: string, isSupporting?: boolean) => void;
   clearArticleFragmentSelection: () => void;
@@ -184,58 +191,65 @@ class Clipboard extends React.Component<ClipboardProps> {
                   onDrop={this.handleInsert}
                 >
                   {(articleFragment, getAfProps) => (
-                    <FocusWrapper
-                      tabIndex={0}
-                      onFocus={e => this.handleArticleFocus(e, articleFragment)}
-                      onBlur={this.handleBlur}
-                      uuid={articleFragment.uuid}
-                    >
-                      <CollectionItem
-                        uuid={articleFragment.uuid}
-                        parentId={clipboardId}
-                        frontId={clipboardId}
-                        getNodeProps={getAfProps}
-                        displayType="polaroid"
-                        onSelect={this.props.selectArticleFragment}
-                        onDelete={() =>
-                          this.props.removeCollectionItem(articleFragment.uuid)
+                    <>
+                      <FocusWrapper
+                        tabIndex={0}
+                        onFocus={e =>
+                          this.handleArticleFocus(e, articleFragment)
                         }
+                        onBlur={this.handleBlur}
+                        uuid={articleFragment.uuid}
                       >
-                        {hasSupporting(articleFragment) && (
-                          <SupportingDivider />
-                        )}
-                        <ArticleFragmentLevel
-                          articleFragmentId={articleFragment.uuid}
-                          onMove={this.handleMove}
-                          onDrop={this.handleInsert}
+                        <CollectionItem
+                          uuid={articleFragment.uuid}
+                          parentId={clipboardId}
+                          frontId={clipboardId}
+                          getNodeProps={getAfProps}
                           displayType="polaroid"
+                          onSelect={this.props.selectArticleFragment}
+                          onDelete={() =>
+                            this.props.removeCollectionItem(
+                              articleFragment.uuid
+                            )
+                          }
                         >
-                          {(supporting, getSProps, i, arr) => (
-                            <CollectionItem
-                              uuid={supporting.uuid}
-                              frontId={clipboardId}
-                              parentId={articleFragment.uuid}
-                              getNodeProps={getSProps}
-                              size="small"
-                              displayType="polaroid"
-                              onSelect={id =>
-                                this.props.selectArticleFragment(id, true)
-                              }
-                              onDelete={() =>
-                                this.props.removeSupportingCollectionItem(
-                                  articleFragment.uuid,
-                                  supporting.uuid
-                                )
-                              }
-                            >
-                              {i < arr.length - 1 ? (
-                                <SupportingDivider />
-                              ) : null}
-                            </CollectionItem>
+                          {hasSupporting(articleFragment) && (
+                            <SupportingDivider />
                           )}
-                        </ArticleFragmentLevel>
-                      </CollectionItem>
-                    </FocusWrapper>
+                          <ArticleFragmentLevel
+                            articleFragmentId={articleFragment.uuid}
+                            onMove={this.handleMove}
+                            onDrop={this.handleInsert}
+                            displayType="polaroid"
+                          >
+                            {(supporting, getSProps, i, arr) => (
+                              <CollectionItem
+                                uuid={supporting.uuid}
+                                frontId={clipboardId}
+                                parentId={articleFragment.uuid}
+                                getNodeProps={getSProps}
+                                size="small"
+                                displayType="polaroid"
+                                onSelect={id =>
+                                  this.props.selectArticleFragment(id, true)
+                                }
+                                onDelete={() =>
+                                  this.props.removeSupportingCollectionItem(
+                                    articleFragment.uuid,
+                                    supporting.uuid
+                                  )
+                                }
+                              >
+                                {i < arr.length - 1 ? (
+                                  <SupportingDivider />
+                                ) : null}
+                              </CollectionItem>
+                            )}
+                          </ArticleFragmentLevel>
+                        </CollectionItem>
+                      </FocusWrapper>
+                      <FullDivider />
+                    </>
                   )}
                 </ClipboardLevel>
               </Root>

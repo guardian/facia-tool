@@ -58,9 +58,9 @@ test('Snap Links - Guardian', async t => {
   await t
     .maximizeWindow() // needed to find DOM elements in headless mode
     .setNativeDialogHandler(() => false)
-    .dragToElement(tagSnap, frontDropZone(1))
+    .dragToElement(tagSnap, frontDropZone(1)) //drag tag into parent position (not a sublink)
     .expect(frontDropZone().count)
-    .eql(frontDropsCount + 1)
+    .eql(frontDropsCount + 2) // adding a sublink adds 1 dropzone, adding a normal article adds 2
     .expect(frontSnapLink(0).textContent)
     .contains('Recipes | The Guardian')
     .expect(frontSnapLink(0).textContent)
@@ -75,7 +75,7 @@ test('Snap Links - Guardian Latest', async t => {
     .setNativeDialogHandler(() => true)
     .dragToElement(tagSnap, frontDropZone(1))
     .expect(frontDropZone().count)
-    .eql(frontDropsCount + 1)
+    .eql(frontDropsCount + 2)
     .expect(frontSnapLink(0).textContent)
     .contains('{ Recipes }')
     .expect(frontSnapLink(0).textContent)
@@ -90,7 +90,7 @@ test('Snap Links - External', async t => {
     .setNativeDialogHandler(() => false)
     .dragToElement(externalSnap, frontDropZone(1))
     .expect(frontDropZone().count)
-    .eql(frontDropsCount + 1)
+    .eql(frontDropsCount + 2)
     .expect(frontSnapLink(0).textContent)
     .contains('Business - BBC News');
 });

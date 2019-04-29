@@ -6,7 +6,8 @@ import { State } from 'types/State';
 import { createCollectionItemTypeSelector } from 'shared/selectors/collectionItem';
 import {
   selectSharedState,
-  externalArticleIdFromArticleFragmentSelector
+  externalArticleIdFromArticleFragmentSelector,
+  articleFragmentSelector
 } from 'shared/selectors/shared';
 import collectionItemTypes from 'shared/constants/collectionItemTypes';
 import {
@@ -25,6 +26,7 @@ import {
   articleFragmentImageCriteria as imageCriteria,
   gridDataTransferTypes
 } from 'constants/image';
+import Sublinks from './Sublinks';
 
 interface ContainerProps {
   uuid: string;
@@ -45,9 +47,22 @@ type ArticleContainerProps = ContainerProps & {
   type: CollectionItemTypes;
   isSelected: boolean;
   externalArticleId: string | undefined;
+  numSupportingArticles: number;
 };
 
 class CollectionItem extends React.Component<ArticleContainerProps> {
+  public state = {
+    showArticleSublinks: false
+  };
+
+  public toggleShowArticleSublinks = (e?: React.MouseEvent) => {
+    const togPos = this.state.showArticleSublinks ? false : true;
+    this.setState({ showArticleSublinks: togPos });
+    if (e) {
+      e.stopPropagation();
+    }
+  };
+
   public getDropHandler(onDrop?: (data: ValidationResponse) => void) {
     if (!onDrop) {
       return;
@@ -78,7 +93,9 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       type,
       size,
       isUneditable,
-      externalArticleId
+      externalArticleId,
+      numSupportingArticles,
+      parentId
     } = this.props;
 
     switch (type) {
@@ -97,23 +114,41 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
             imageDropTypes={Object.values(gridDataTransferTypes)}
             onImageDrop={this.getDropHandler(this.props.onImageDrop)}
           >
-            {children}
+            <Sublinks
+              numSupportingArticles={numSupportingArticles}
+              toggleShowArticleSublinks={this.toggleShowArticleSublinks}
+              showArticleSublinks={this.state.showArticleSublinks}
+              parentId={parentId}
+            />
+            {/* If there are no supporting articles, the children still need to be rendered, because the dropzone is a child  */}
+            {numSupportingArticles === 0
+              ? children
+              : this.state.showArticleSublinks && children}
           </Article>
         );
       case collectionItemTypes.SNAP_LINK:
         return (
-          <SnapLink
-            id={uuid}
-            isUneditable={isUneditable}
-            {...getNodeProps()}
-            onDelete={onDelete}
-            onClick={isUneditable ? undefined : () => onSelect(uuid)}
-            fade={!isSelected}
-            size={size}
-            displayType={displayType}
-          >
-            {children}
-          </SnapLink>
+          <>
+            <SnapLink
+              id={uuid}
+              isUneditable={isUneditable}
+              {...getNodeProps()}
+              onDelete={onDelete}
+              onClick={isUneditable ? undefined : () => onSelect(uuid)}
+              fade={!isSelected}
+              size={size}
+              displayType={displayType}
+            />
+            <Sublinks
+              numSupportingArticles={numSupportingArticles}
+              toggleShowArticleSublinks={this.toggleShowArticleSublinks}
+              showArticleSublinks={this.state.showArticleSublinks}
+              parentId={parentId}
+            />
+            {numSupportingArticles === 0
+              ? children
+              : this.state.showArticleSublinks && children}
+          </>
         );
       default:
         return (
@@ -132,6 +167,14 @@ const createMapStateToProps = () => {
       state,
       props.frontId
     );
+    const maybeArticle = articleFragmentSelector(
+      selectSharedState(state),
+      props.uuid
+    );
+    let numSupportingArticles = 0;
+    if (maybeArticle && maybeArticle.meta && maybeArticle.meta.supporting) {
+      numSupportingArticles = maybeArticle.meta.supporting.length;
+    }
     return {
       type: selectType(selectSharedState(state), props.uuid),
       isSelected:
@@ -140,7 +183,8 @@ const createMapStateToProps = () => {
       externalArticleId: externalArticleIdFromArticleFragmentSelector(
         selectSharedState(state),
         props.uuid
-      )
+      ),
+      numSupportingArticles
     };
   };
 };
