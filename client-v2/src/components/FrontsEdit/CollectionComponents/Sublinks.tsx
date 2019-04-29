@@ -74,7 +74,7 @@ class Sublinks extends React.Component<SublinkProps> {
             onDragIntentEnd={() => {
               this.setState({ dragHoverActive: false });
             }}
-            delay={750}
+            delay={300}
             onIntentConfirm={() => {
               toggleShowArticleSublinks();
             }}

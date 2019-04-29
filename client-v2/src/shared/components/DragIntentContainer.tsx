@@ -28,7 +28,6 @@ class DragIntentContainer extends React.Component<Props> {
       this.tryRegisterDragIntent(e);
     }
     this.dragHoverDepth += 1;
-    e.stopPropagation();
   };
 
   public handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
