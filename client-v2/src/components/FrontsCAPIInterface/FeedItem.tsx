@@ -113,6 +113,7 @@ const Body = styled('div')`
 
 const ContentContainer = styled.div`
   position: relative;
+  width: 100%;
 `;
 
 interface FeedItemProps {
