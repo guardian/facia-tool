@@ -9,6 +9,8 @@
   * [Testing](#testing)
   * [Linting](#linting)
   * [Typescript](#typescript)
+  * [Naming Conventions](#naming-conventions)
+  * [Tech Debt](#tech-debt)
 
 > _Tip:_ Run `yarn markdown-toc README.md` to regenerate the TOC.
 
@@ -142,9 +144,25 @@ We are using Typescript for typing in Fronts V2.
 - `types` at the top level contains types that have no obvious home: e.g. Action which is a union of things that are split across a few files.
 - `types` and `__tests__` are co-located with their modules at the folder level
 
-## Tech debt
+## Naming Conventions
+
+### Collections
+
+We use the term `Collection` to refer to the data structure that holds lists of collection items in groups and their layout. Other parts of the organisation -- editorial, dotcom -- call this a `Container`. The abstraction `Collection` is used because a `Container` refers to a particular representation of a collection of curated content. `Collection` is more generic, and we can use it to refer to other kinds of collections of curated content in future.
+
+## Tech Debt
 
 There are a few areas that we'd like to address in the medium to long term for the purposes of reliability and maintainability.
+
+### Naming conventions
+
+There are plenty of inconsistencies with the way we name things. This is a little manifesto for cleaning some of them up.
+
+- The types `ArticleFragment` and `CollectionItem` refer to the same thing. The latter is preferred as this type refers to either an article or a snap link, and in other curation context this list could grow. We should rename instances of `ArticleFragment` in favor of `CollectionItem`.
+- We confuse terminology for actions, selectors and API calls -- terms like `get`, `select` and `fetch` are easily confused, and prefixes and suffixes are used interchangably, when they're used at all. For precision's sake, we should rely on the following -
+ - Actions should be prefixed with `action`.
+ - Selectors be prefixed with `select`. Selector factories should use `createSelect`
+ - Service functions that make HTTP calls should be prefixed with `fetch`. Thunks that use these functions can make that clear with the prefix `actionFetch` where it's appropriate.
 
 ### Persistent UUIDs
 
