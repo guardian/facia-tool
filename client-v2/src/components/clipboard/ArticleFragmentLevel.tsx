@@ -43,24 +43,28 @@ const ArticleFragmentLevel = ({
     onMove={onMove}
     onDrop={onDrop}
     renderDrag={af => <ArticleDrag id={af.uuid} />}
-    renderDrop={(props, isTarget, isActive) => (
-      <DropZone
-        {...props}
-        disabled={isUneditable || !isActive}
-        override={isTarget}
-        dropColor="hsl(0, 0%, 64%)"
-        style={{
-          marginTop: '-30px',
-          height: '30px'
-        }}
-        indicatorStyle={{
-          marginLeft: `${displayType === 'default' ? '80px' : '20px'}`,
-          marginRight: `${displayType === 'default' ? '130px' : 0}`,
-          top: '66%',
-          height: '33%'
-        }}
-      />
-    )}
+    renderDrop={
+      isUneditable
+        ? null
+        : (props, isTarget, isActive) => (
+            <DropZone
+              {...props}
+              disabled={!isActive}
+              override={isTarget}
+              dropColor="hsl(0, 0%, 64%)"
+              style={{
+                marginTop: '-30px',
+                height: '30px'
+              }}
+              indicatorStyle={{
+                marginLeft: `${displayType === 'default' ? '80px' : '20px'}`,
+                marginRight: `${displayType === 'default' ? '130px' : 0}`,
+                top: '66%',
+                height: '33%'
+              }}
+            />
+          )
+    }
   >
     {children}
   </Level>

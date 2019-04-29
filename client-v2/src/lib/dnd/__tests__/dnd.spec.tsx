@@ -3,7 +3,7 @@ import TestRenderer from 'react-test-renderer';
 import Root from '../Root';
 import Level from '../Level';
 
-const createDragEvent = () => {
+const createDragEvent = (top: boolean) => {
   const data: { [k: string]: any } = {};
   const types: string[] = [];
   let defaultPrevented = false;
@@ -16,6 +16,13 @@ const createDragEvent = () => {
     preventDefault: () => {
       defaultPrevented = true;
     },
+    currentTarget: {
+      getBoundingClientRect: () => ({
+        top: 0,
+        height: 10
+      })
+    },
+    clientY: top ? 1 : 9,
     dataTransfer: {
       get types() {
         return types.slice();
@@ -30,9 +37,10 @@ const createDragEvent = () => {
 };
 
 const runDrag = (type: any, data?: any, json: boolean = true) => (
-  dropProps: any
+  dropProps: any,
+  top = true
 ) => {
-  const e = createDragEvent();
+  const e = createDragEvent(top);
 
   if (typeof type === 'string') {
     e.dataTransfer.setData(type, json ? JSON.stringify(data) : data);
@@ -41,7 +49,9 @@ const runDrag = (type: any, data?: any, json: boolean = true) => (
     type.onDragStart(e);
   }
 
-  dropProps.onDrop(e);
+  if (dropProps.onDrop) {
+    dropProps.onDrop(e);
+  }
 };
 
 const setup = (jsx: React.ReactElement<any>) =>
@@ -67,7 +77,7 @@ describe('Guration', () => {
         >
           {(child, getDragProps, i) => {
             if (i === 0) {
-              nodeProps = getDragProps;
+              nodeProps = getDragProps();
             }
 
             return (
@@ -103,6 +113,117 @@ describe('Guration', () => {
       from: { type: 'b', id: '0', index: 0 },
       to: { id: '2', type: 'a', index: 1 }
     });
+  });
+
+  it('allows dropping on to nodes when renderDrop is defined', () => {
+    let nodeProps;
+    let dropProps;
+    let edit: any;
+
+    setup(
+      <Root id="@@ROOT">
+        <Level
+          arr={[{ id: '1' }, { id: '2' }]}
+          type="a"
+          parentType="b"
+          parentId="0"
+          getId={({ id }) => id}
+          onMove={() => null}
+          onDrop={() => null}
+          renderDrop={() => null}
+        >
+          {(child, getDragProps, i) => {
+            if (i === 0) {
+              nodeProps = getDragProps();
+            }
+
+            return (
+              <Level
+                arr={[{ id: '3' }, { id: '4' }]}
+                type="a"
+                parentType="a"
+                parentId={child.id}
+                getId={({ id }) => id}
+                onMove={e => {
+                  edit = e;
+                }}
+                onDrop={() => null}
+                renderDrop={() => null}
+              >
+                {(_, getNodeProps, j) =>
+                  j === 0 ? ((dropProps = getNodeProps()), null) : null
+                }
+              </Level>
+            );
+          }}
+        </Level>
+      </Root>
+    );
+
+    runDrag(nodeProps)(dropProps);
+
+    expect(edit).toEqual({
+      data: { id: '1' },
+      from: { type: 'b', id: '0', index: 0 },
+      to: { id: '2', type: 'a', index: 0 }
+    });
+
+    runDrag(nodeProps)(dropProps, false);
+
+    expect(edit).toEqual({
+      data: { id: '1' },
+      from: { type: 'b', id: '0', index: 0 },
+      to: { id: '2', type: 'a', index: 1 }
+    });
+  });
+
+  it('does not allow dropping on to nodes when renderDrop is not defined', () => {
+    let nodeProps;
+    let dropProps;
+    let edit: any;
+
+    setup(
+      <Root id="@@ROOT">
+        <Level
+          arr={[{ id: '1' }, { id: '2' }]}
+          type="a"
+          parentType="b"
+          parentId="0"
+          getId={({ id }) => id}
+          onMove={() => null}
+          onDrop={() => null}
+          renderDrop={() => null}
+        >
+          {(child, getDragProps, i) => {
+            if (i === 0) {
+              nodeProps = getDragProps();
+            }
+
+            return (
+              <Level
+                arr={[{ id: '3' }, { id: '4' }]}
+                type="a"
+                parentType="a"
+                parentId={child.id}
+                getId={({ id }) => id}
+                onMove={e => {
+                  edit = e;
+                }}
+                onDrop={() => null}
+              >
+                {(_, getNodeProps, j) =>
+                  j === 0 ? ((dropProps = getNodeProps()), null) : null
+                }
+              </Level>
+            );
+          }}
+        </Level>
+      </Root>
+    );
+
+    runDrag(nodeProps)(dropProps);
+
+    expect(edit).toBeUndefined();
   });
 
   it('creates INSERT events from arbitrary drops', () => {
@@ -178,7 +299,7 @@ describe('Guration', () => {
           renderDrop={() => null}
         >
           {(_, getNodeProps) => {
-            dragProps = getNodeProps;
+            dragProps = getNodeProps();
             return (
               <Level
                 arr={[{ id: '3' }]}
@@ -232,7 +353,7 @@ describe('Guration', () => {
         >
           {(child, getNodeProps, i) => {
             if (i === 0) {
-              dragProps = getNodeProps;
+              dragProps = getNodeProps();
             }
 
             return false;
@@ -269,7 +390,7 @@ describe('Guration', () => {
           }}
         >
           {(child, getNodeProps) => {
-            dragProps = getNodeProps;
+            dragProps = getNodeProps();
             return null;
           }}
         </Level>
@@ -279,6 +400,41 @@ describe('Guration', () => {
     runDrag(dragProps)(dropProps);
 
     expect(edit).toBeUndefined();
+  });
+
+  it('does not creates MOVE events without a `from` when forceClone arg is passed to getNodeProps', () => {
+    let dragProps;
+    let dropProps;
+    let edit: any;
+
+    setup(
+      <Root id="@@ROOT">
+        <Level
+          arr={[{ id: '1' }]}
+          parentType="root"
+          parentId="root"
+          getId={({ id }) => id}
+          type="a"
+          onMove={e => {
+            edit = e;
+          }}
+          onDrop={() => null}
+          renderDrop={getDropProps => {
+            dropProps = getDropProps;
+            return null;
+          }}
+        >
+          {(child, getNodeProps) => {
+            dragProps = getNodeProps(true);
+            return null;
+          }}
+        </Level>
+      </Root>
+    );
+
+    runDrag(dragProps)(dropProps);
+
+    expect(edit.from).toBe(false);
   });
 
   it('creates inserts between roots', () => {
@@ -300,7 +456,7 @@ describe('Guration', () => {
             arr={[{ id: '1' }]}
           >
             {(child, getNodeProps) => {
-              nodeProps = getNodeProps;
+              nodeProps = getNodeProps();
               return null;
             }}
           </Level>

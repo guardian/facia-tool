@@ -4,7 +4,6 @@ import { styled } from 'shared/constants/theme';
 
 interface GroupDisplayComponentProps {
   groupName: string | null;
-  children: React.ReactNode;
 }
 
 const GroupHeading = styled('div')`
@@ -16,19 +15,12 @@ const GroupContainer = styled('div')`
   margin-top: 20px;
 `;
 
-const GroupDisplayComponent = ({
-  groupName,
-  children
-}: GroupDisplayComponentProps) => (
-  <>
-    {groupName && (
-      <GroupContainer data-testid={groupName}>
-        <GroupHeading style={{ margin: 0 }}>{groupName}</GroupHeading>
-        <HorizontalRule />
-      </GroupContainer>
-    )}
-    {children}
-  </>
-);
+const GroupDisplayComponent = ({ groupName }: GroupDisplayComponentProps) =>
+  groupName ? (
+    <GroupContainer data-testid={groupName}>
+      <GroupHeading style={{ margin: 0 }}>{groupName}</GroupHeading>
+      <HorizontalRule />
+    </GroupContainer>
+  ) : null;
 
 export default GroupDisplayComponent;

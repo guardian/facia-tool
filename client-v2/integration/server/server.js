@@ -1,6 +1,6 @@
 const path = require('path');
 const express = require('express');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 const port = 3456;
 
 const config = require('../fixtures/config');
@@ -21,7 +21,7 @@ module.exports = async () =>
   new Promise((res, rej) => {
     const app = express();
 
-    app.use(bodyParser.json())
+    app.use(bodyParser.json());
     app.get('/v2/*', (_, res) =>
       res.sendFile(path.join(__dirname, './index.html'))
     );
@@ -132,12 +132,10 @@ module.exports = async () =>
     );
 
     // send the assets from dist
-    app.get(
-      '*/:file',
-      (req, res) =>
-        req.params[0].includes('bbc') // prevents error messages from External Snap Link fixture
-          ? res.json('')
-          : res.sendFile(
+    app.get('*/:file', (req, res) =>
+      req.params[0].includes('bbc') // prevents error messages from External Snap Link fixture
+        ? res.json('')
+        : res.sendFile(
             path.join(
               __dirname,
               '../../../public/client-v2/dist',

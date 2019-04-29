@@ -44,7 +44,7 @@ interface DropProps {
 
 type LevelChild<T> = (
   node: T,
-  props: DropProps & NodeChildrenProps,
+  getProps: (forceClone?: boolean) => Partial<DropProps> & NodeChildrenProps,
   index: number,
   arr: T[]
 ) => React.ReactNode;
@@ -62,12 +62,14 @@ interface OuterProps<T> {
   onMove: (move: Move<T>) => void;
   onDrop: (e: React.DragEvent, to: PosSpec) => void;
   renderDrag?: (data: T) => React.ReactNode;
-  renderDrop: (
-    props: DropProps,
-    isTarget: boolean,
-    isActive: boolean,
-    index: number
-  ) => React.ReactNode;
+  renderDrop?:
+    | ((
+        props: DropProps,
+        isTarget: boolean,
+        isActive: boolean,
+        index: number
+      ) => React.ReactNode)
+    | null;
   // any occurence of these in the data transfer will cause all dragging
   // behaviour to be bypassed
   blockingDataTransferTypes?: string[];
@@ -91,7 +93,7 @@ class Level<T> extends React.Component<Props<T>, State> {
 
   public render() {
     const {
-      renderDrop = () => null,
+      renderDrop = null,
       renderDrag,
       children,
       arr,
@@ -104,6 +106,7 @@ class Level<T> extends React.Component<Props<T>, State> {
           <React.Fragment key={getId(node)}>
             <DropZone parentKey={this.key} index={i}>
               {(isTarget, isActive) =>
+                renderDrop &&
                 renderDrop(this.getDropProps(i), isTarget, isActive, i)
               }
             </DropZone>
@@ -114,12 +117,20 @@ class Level<T> extends React.Component<Props<T>, State> {
               index={i}
               data={node}
             >
-              {props => children(node, this.getNodeProps(i, props), i, arr)}
+              {getNodeDragProps =>
+                children(
+                  node,
+                  this.getNodeDropProps(i, getNodeDragProps),
+                  i,
+                  arr
+                )
+              }
             </Node>
           </React.Fragment>
         ))}
         <DropZone parentKey={this.key} index={arr.length}>
           {(isTarget, isActive) =>
+            renderDrop &&
             renderDrop(
               this.getDropProps(arr.length),
               isTarget,
@@ -173,15 +184,16 @@ class Level<T> extends React.Component<Props<T>, State> {
       return onDrop(e, to);
     }
 
-    const { parents, id, index, type, data } = JSON.parse(af);
+    const { parents, id, index, type, data, forceClone } = JSON.parse(af);
 
     if (!isInside(this.props.parents, [type, id])) {
       const [parentType, parentId] = parents[parents.length - 1];
-      const from = isMove(this.props.parents, parents) && {
-        type: parentType,
-        id: parentId,
-        index
-      };
+      const from = !forceClone &&
+        isMove(this.props.parents, parents) && {
+          type: parentType,
+          id: parentId,
+          index
+        };
 
       const adjustedTo = from ? adjustToIndexForMove(from, to) : to;
 
@@ -198,12 +210,16 @@ class Level<T> extends React.Component<Props<T>, State> {
     };
   }
 
-  private getNodeProps(i: number, props: NodeChildrenProps) {
-    return {
-      ...props,
-      onDragOver: this.onDragOver(i, true),
-      onDrop: this.onDrop(i, true)
-    };
+  private getNodeDropProps(
+    i: number,
+    getNodeDragProps: (forceClone: boolean) => NodeChildrenProps
+  ) {
+    return (forceClone = false) => ({
+      ...getNodeDragProps(forceClone),
+      ...(this.props.renderDrop
+        ? { onDragOver: this.onDragOver(i, true), onDrop: this.onDrop(i, true) }
+        : {})
+    });
   }
 }
 

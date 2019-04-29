@@ -16,7 +16,8 @@ import { CollectionItemSets, Group } from 'shared/types/Collection';
 import {
   createCollectionStageGroupsSelector,
   createCollectionEditWarningSelector,
-  selectSharedState
+  selectSharedState,
+  createPreviouslyLiveArticlesInCollectionSelector
 } from 'shared/selectors/shared';
 import {
   selectIsCollectionOpen,
@@ -28,10 +29,17 @@ import {
 import { getArticlesForCollections } from 'actions/Collections';
 import { collectionItemSets } from 'constants/fronts';
 import { createSelectIsArticleInCollection } from 'shared/selectors/collection';
+import CollectionMetaContainer from 'shared/components/collection/CollectionMetaContainer';
+import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
+import { styled } from 'constants/theme';
 
 interface CollectionPropsBeforeState {
   id: string;
-  children: (group: Group, isUneditable: boolean) => React.ReactNode;
+  children: (
+    group: Group,
+    isUneditable: boolean,
+    showGroupName?: boolean
+  ) => React.ReactNode;
   alsoOn: { [id: string]: AlsoOnDetail };
   frontId: string;
   browsingStage: CollectionItemSets;
@@ -46,102 +54,154 @@ type CollectionProps = CollectionPropsBeforeState & {
   hasUnpublishedChanges: boolean;
   canPublish: boolean;
   groups: Group[];
+  previousGroups: Group[];
   displayEditWarning: boolean;
   isCollectionLocked: boolean;
   isEditFormOpen: boolean;
   isOpen: boolean;
   hasMultipleFrontsOpen: boolean;
   onChangeOpenState: (id: string, isOpen: boolean) => void;
+  fetchPreviousCollectionArticles: (id: string) => void;
 };
 
-const Collection = ({
-  id,
-  frontId,
-  children,
-  alsoOn,
-  groups,
-  browsingStage,
-  hasUnpublishedChanges,
-  canPublish = true,
-  publishCollection: publish,
-  displayEditWarning,
-  isCollectionLocked,
-  isOpen,
-  isEditFormOpen,
-  onChangeOpenState,
-  hasMultipleFrontsOpen,
-  discardDraftChangesToCollection: discardDraftChanges
-}: CollectionProps) => {
-  const isUneditable =
-    isCollectionLocked || browsingStage !== collectionItemSets.draft;
+const PreviouslyCollectionContainer = styled('div')`
+  opacity: 0.5;
+`;
 
-  return (
-    <CollectionDisplay
-      frontId={frontId}
-      id={id}
-      browsingStage={browsingStage}
-      isUneditable={isUneditable}
-      isLocked={isCollectionLocked}
-      isOpen={isOpen}
-      hasMultipleFrontsOpen={hasMultipleFrontsOpen}
-      onChangeOpenState={() => onChangeOpenState(id, isOpen)}
-      headlineContent={
-        hasUnpublishedChanges &&
-        canPublish && (
-          <React.Fragment>
-            <Button
-              tabIndex={-1}
-              size="l"
-              priority="default"
-              onClick={() => discardDraftChanges(id)}
-              disabled={isEditFormOpen}
-              title={
-                isEditFormOpen
-                  ? 'You cannot discard changes to this collection whilst the edit form is open.'
-                  : undefined
-              }
-            >
-              Discard
-            </Button>
-            <Button
-              tabIndex={-1}
-              size="l"
-              priority="primary"
-              onClick={() => publish(id, frontId)}
-              disabled={isEditFormOpen}
-              title={
-                isEditFormOpen
-                  ? 'You cannot launch this collection whilst the edit form is open.'
-                  : undefined
-              }
-            >
-              Launch
-            </Button>
-          </React.Fragment>
-        )
-      }
-      metaContent={
-        alsoOn[id].fronts.length || displayEditWarning ? (
-          <CollectionNotification
-            displayEditWarning={displayEditWarning}
-            alsoOn={alsoOn[id]}
-          />
-        ) : null
-      }
-    >
-      {groups.map(group => children(group, isUneditable))}
-    </CollectionDisplay>
-  );
-};
+const PreviouslyCollectionToggle = styled(CollectionMetaContainer)`
+  align-items: center;
+  font-size: 16px;
+  font-weight: bold;
+  padding-top: 0.25em;
+`;
+
+const PreviouslyGroupsWrapper = styled.div`
+  padding-top: 0.25em;
+`;
+
+class Collection extends React.Component<CollectionProps> {
+  public state = {
+    isPreviouslyOpen: false
+  };
+
+  public togglePreviouslyOpen = () => {
+    const { isPreviouslyOpen } = this.state;
+    if (!isPreviouslyOpen) {
+      this.props.fetchPreviousCollectionArticles(this.props.id);
+    }
+    this.setState({ isPreviouslyOpen: !isPreviouslyOpen });
+  };
+
+  public render() {
+    const {
+      id,
+      frontId,
+      children,
+      alsoOn,
+      groups,
+      previousGroups,
+      browsingStage,
+      hasUnpublishedChanges,
+      canPublish = true,
+      publishCollection: publish,
+      displayEditWarning,
+      isCollectionLocked,
+      isOpen,
+      onChangeOpenState,
+      hasMultipleFrontsOpen,
+      isEditFormOpen,
+      discardDraftChangesToCollection: discardDraftChanges
+    } = this.props;
+
+    const { isPreviouslyOpen } = this.state;
+
+    const isUneditable =
+      isCollectionLocked || browsingStage !== collectionItemSets.draft;
+
+    return (
+      <CollectionDisplay
+        frontId={frontId}
+        id={id}
+        browsingStage={browsingStage}
+        isUneditable={isUneditable}
+        isLocked={isCollectionLocked}
+        isOpen={isOpen}
+        hasMultipleFrontsOpen={hasMultipleFrontsOpen}
+        onChangeOpenState={() => onChangeOpenState(id, isOpen)}
+        headlineContent={
+          hasUnpublishedChanges &&
+          canPublish && (
+            <React.Fragment>
+              <Button
+                size="l"
+                priority="default"
+                onClick={() => discardDraftChanges(id)}
+                tabIndex={-1}
+                disabled={isEditFormOpen}
+                title={
+                  isEditFormOpen
+                    ? 'You cannot discard changes to this collection whilst the edit form is open.'
+                    : undefined
+                }
+              >
+                Discard
+              </Button>
+              <Button
+                size="l"
+                priority="primary"
+                onClick={() => publish(id, frontId)}
+                tabIndex={-1}
+                disabled={isEditFormOpen}
+                title={
+                  isEditFormOpen
+                    ? 'You cannot launch this collection whilst the edit form is open.'
+                    : undefined
+                }
+              >
+                Launch
+              </Button>
+            </React.Fragment>
+          )
+        }
+        metaContent={
+          alsoOn[id].fronts.length || displayEditWarning ? (
+            <CollectionNotification
+              displayEditWarning={displayEditWarning}
+              alsoOn={alsoOn[id]}
+            />
+          ) : null
+        }
+      >
+        {groups.map(group => children(group, isUneditable))}
+
+        <PreviouslyCollectionContainer data-testid="previously">
+          <PreviouslyCollectionToggle
+            onClick={this.togglePreviouslyOpen}
+            data-testid="previously-toggle"
+          >
+            Previously
+            <ButtonCircularCaret active={isPreviouslyOpen} />
+          </PreviouslyCollectionToggle>
+          {isPreviouslyOpen && (
+            <PreviouslyGroupsWrapper>
+              {previousGroups.map(group => children(group, true, false))}
+            </PreviouslyGroupsWrapper>
+          )}
+        </PreviouslyCollectionContainer>
+      </CollectionDisplay>
+    );
+  }
+}
 
 const createMapStateToProps = () => {
   const collectionStageGroupsSelector = createCollectionStageGroupsSelector();
   const editWarningSelector = createCollectionEditWarningSelector();
-  const selectIsArticleInCollection = createSelectIsArticleInCollection();
+  const previouslySelector = createPreviouslyLiveArticlesInCollectionSelector();
   return (
     state: State,
     { browsingStage, id, priority, frontId }: CollectionPropsBeforeState
   ) => {
+    const selectIsArticleInCollection = createSelectIsArticleInCollection();
     const selectedArticleFragmentData = selectEditorArticleFragment(
       state,
       frontId
@@ -155,18 +215,21 @@ const createMapStateToProps = () => {
         collectionSet: browsingStage,
         collectionId: id
       }),
+      previousGroups: previouslySelector(selectSharedState(state), {
+        collectionId: id
+      }),
       displayEditWarning: editWarningSelector(selectSharedState(state), {
         collectionId: id
       }),
       isOpen: selectIsCollectionOpen(state, id),
+      hasMultipleFrontsOpen: selectHasMultipleFrontsOpen(state, priority),
       isEditFormOpen:
         !!selectedArticleFragmentData &&
         selectIsArticleInCollection(state.shared, {
           collectionId: id,
           collectionSet: browsingStage,
           articleFragmentId: selectedArticleFragmentData.id
-        }),
-      hasMultipleFrontsOpen: selectHasMultipleFrontsOpen(state, priority)
+        })
     };
   };
 };
@@ -186,6 +249,9 @@ const mapDispatchToProps = (
       dispatch(getArticlesForCollections([id], browsingStage));
       dispatch(editorOpenCollections(id));
     }
+  },
+  fetchPreviousCollectionArticles: (id: string) => {
+    dispatch(getArticlesForCollections([id], collectionItemSets.previously));
   }
 });
 

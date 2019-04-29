@@ -90,7 +90,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
             {...getNodeProps()}
             onDelete={onDelete}
             onAddToClipboard={() => onAddToClipboard(externalArticleId)}
-            onClick={() => onSelect(uuid)}
+            onClick={isUneditable ? undefined : () => onSelect(uuid)}
             fade={!isSelected}
             size={size}
             displayType={displayType}
@@ -107,7 +107,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
             isUneditable={isUneditable}
             {...getNodeProps()}
             onDelete={onDelete}
-            onClick={() => onSelect(uuid)}
+            onClick={isUneditable ? undefined : () => onSelect(uuid)}
             fade={!isSelected}
             size={size}
             displayType={displayType}

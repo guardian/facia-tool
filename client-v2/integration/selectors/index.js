@@ -4,6 +4,7 @@ const FRONT_SELECTOR = 'test/front';
 const FEED_ITEM_SELECTOR = 'feed-item';
 const COLLECTION_ITEM_SELECTOR = 'article-body';
 const CLIPBOARD_SELECTOR = 'clipboard';
+const PREVIOUSLY_SELECTOR = 'previously';
 const HEADLINE_SELECTOR = 'headline';
 const DROP_ZONE_SELECTOR = 'drop-zone';
 const HOVER_OVERLAY_SELECTOR = 'hover-overlay';
@@ -57,3 +58,13 @@ export const collectionItemHoverZone = maybeGetNth(
 export const guardianSnapLink = maybeGetNth(select(GUARDIAN_TAG_ANCHOR));
 export const externalSnapLink = maybeGetNth(select(EXTERNAL_LINK_ANCHOR));
 export const frontSnapLink = maybeGetNth(select(SNAP_SELECTOR));
+
+// Previously //
+export const previouslyToggle = () => select(PREVIOUSLY_SELECTOR);
+export const previouslyItem = maybeGetNth(
+  select(PREVIOUSLY_SELECTOR, COLLECTION_ITEM_SELECTOR)
+);
+// there should be none of these ever!
+export const previouslyDropZone = maybeGetNth(
+  select(PREVIOUSLY_SELECTOR, DROP_ZONE_SELECTOR)
+);

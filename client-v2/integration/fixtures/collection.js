@@ -39,5 +39,24 @@ module.exports = {
   updatedBy: 'Richard Beddington',
   updatedEmail: 'richard.beddington@guardian.co.uk',
   displayName: 'Main',
-  previously: []
+  previously: [
+    {
+      id: 'internal-code/page/5252100',
+      frontPublicationDate: 1540379258808,
+      meta: {
+        isBreaking: false,
+        isBoosted: false,
+        imageHide: false,
+        showKickerCustom: false,
+        showByline: false,
+        showQuotedHeadline: false,
+        imageSlideshowReplace: false,
+        supporting: [],
+        imageReplace: false,
+        imageCutoutReplace: false,
+        showBoostedHeadline: false,
+        customKicker: ''
+      }
+    }
+  ]
 };

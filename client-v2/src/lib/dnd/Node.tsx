@@ -8,7 +8,9 @@ interface ChildrenProps {
 }
 
 interface OuterProps<T> {
-  children: (props: ChildrenProps) => React.ReactNode;
+  children: (
+    getProps: (forceClone: boolean) => ChildrenProps
+  ) => React.ReactNode;
   renderDrag?: (data: T) => React.ReactNode;
   type: string;
   id: string;
@@ -42,15 +44,15 @@ class Node<T> extends React.Component<Props<T>> {
             {renderDrag(data)}
           </div>
         )}
-        {this.props.children({
+        {this.props.children(forceClone => ({
           draggable: true,
-          onDragStart: this.onDragStart
-        })}
+          onDragStart: this.onDragStart(forceClone)
+        }))}
       </>
     );
   }
 
-  private onDragStart = (e: React.DragEvent) => {
+  private onDragStart = (forceClone: boolean) => (e: React.DragEvent) => {
     if (e.dataTransfer.getData(TRANSFER_TYPE)) {
       return;
     }
@@ -60,7 +62,7 @@ class Node<T> extends React.Component<Props<T>> {
     const { parents, type, id, index, data } = this.props;
     e.dataTransfer.setData(
       TRANSFER_TYPE,
-      JSON.stringify({ parents, type, id, index, data })
+      JSON.stringify({ parents, type, id, index, data, forceClone })
     );
   };
 }

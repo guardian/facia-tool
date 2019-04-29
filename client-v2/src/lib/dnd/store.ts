@@ -19,6 +19,13 @@ const createStore = (
     subscribe: (fn: Sub) => (subs = [...subs, fn]),
     unsubscribe: (fn: Sub) => (subs = subs.filter(c => c !== fn)),
     update: (key: Key, index: Index, isDraggedOver: boolean) => {
+      if (
+        key === state.key &&
+        index === state.index &&
+        isDraggedOver === state.isDraggedOver
+      ) {
+        return;
+      }
       state = { key, index, isDraggedOver };
       subs.forEach(sub => sub(key, index));
     },
