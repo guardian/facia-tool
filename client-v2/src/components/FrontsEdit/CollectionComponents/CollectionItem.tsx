@@ -3,7 +3,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Article from 'shared/components/article/Article';
 import { State } from 'types/State';
-import { styled } from 'shared/constants/theme';
 import { createCollectionItemTypeSelector } from 'shared/selectors/collectionItem';
 import {
   selectSharedState,
@@ -27,21 +26,7 @@ import {
   articleFragmentImageCriteria as imageCriteria,
   gridDataTransferTypes
 } from 'constants/image';
-import CollectionItemBody from 'shared/components/collectionItem/CollectionItemBody';
-import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
-import CollectionItemContainer from 'shared/components/collectionItem/CollectionItemContainer';
-import CollectionItemContent from 'shared/components/collectionItem/CollectionItemContent';
-import CollectionItemMetaContainer from 'shared/components/collectionItem/CollectionItemMetaContainer';
-
-const SublinkCollectionItemBody = styled(CollectionItemBody)`
-  display: flex;
-  border-top: 1px solid #c9c9c9;
-  min-height: 30px;
-  span {
-    font-size: 12px;
-    font-weight: bold;
-  }
-`;
+import Sublinks from './Sublinks';
 
 interface ContainerProps {
   uuid: string;
@@ -70,9 +55,12 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
     showArticleSublinks: false
   };
 
-  public toggleShowArticleSublinks = () => {
+  public toggleShowArticleSublinks = (e?: React.MouseEvent) => {
     const togPos = this.state.showArticleSublinks ? false : true;
     this.setState({ showArticleSublinks: togPos });
+    if (e) {
+      e.stopPropagation();
+    }
   };
 
   public getDropHandler(onDrop?: (data: ValidationResponse) => void) {
@@ -106,7 +94,8 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       size,
       isUneditable,
       externalArticleId,
-      numSupportingArticles
+      numSupportingArticles,
+      parentId
     } = this.props;
 
     switch (type) {
@@ -125,46 +114,41 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
             imageDropTypes={Object.values(gridDataTransferTypes)}
             onImageDrop={this.getDropHandler(this.props.onImageDrop)}
           >
-            {numSupportingArticles > 0 && (
-              <CollectionItemContainer
-                draggable={false}
-                onClick={this.toggleShowArticleSublinks}
-              >
-                <SublinkCollectionItemBody>
-                  <CollectionItemMetaContainer />
-                  <CollectionItemContent
-                    displaySize="small"
-                    displayType="default"
-                  >
-                    <span>
-                      {numSupportingArticles} sublink
-                      {numSupportingArticles > 1 && 's'}
-                      <ButtonCircularCaret
-                        openDir={this.state.showArticleSublinks ? 'down' : 'up'}
-                        clear={true}
-                      />
-                    </span>
-                  </CollectionItemContent>
-                </SublinkCollectionItemBody>
-              </CollectionItemContainer>
-            )}
-            {this.state.showArticleSublinks && children}
+            <Sublinks
+              numSupportingArticles={numSupportingArticles}
+              toggleShowArticleSublinks={this.toggleShowArticleSublinks}
+              showArticleSublinks={this.state.showArticleSublinks}
+              parentId={parentId}
+            />
+            {/* If there are no supporting articles, the children still need to be rendered, because the dropzone is a child  */}
+            {numSupportingArticles === 0
+              ? children
+              : this.state.showArticleSublinks && children}
           </Article>
         );
       case collectionItemTypes.SNAP_LINK:
         return (
-          <SnapLink
-            id={uuid}
-            isUneditable={isUneditable}
-            {...getNodeProps()}
-            onDelete={onDelete}
-            onClick={isUneditable ? undefined : () => onSelect(uuid)}
-            fade={!isSelected}
-            size={size}
-            displayType={displayType}
-          >
-            {children}
-          </SnapLink>
+          <>
+            <SnapLink
+              id={uuid}
+              isUneditable={isUneditable}
+              {...getNodeProps()}
+              onDelete={onDelete}
+              onClick={isUneditable ? undefined : () => onSelect(uuid)}
+              fade={!isSelected}
+              size={size}
+              displayType={displayType}
+            />
+            <Sublinks
+              numSupportingArticles={numSupportingArticles}
+              toggleShowArticleSublinks={this.toggleShowArticleSublinks}
+              showArticleSublinks={this.state.showArticleSublinks}
+              parentId={parentId}
+            />
+            {numSupportingArticles === 0
+              ? children
+              : this.state.showArticleSublinks && children}
+          </>
         );
       default:
         return (
