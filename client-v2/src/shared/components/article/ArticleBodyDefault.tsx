@@ -30,7 +30,7 @@ import DraggableArticleImageContainer from './DraggableArticleImageContainer';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   width: 130px;
-  height: 67px;
+  height: 100%;
 `;
 
 const NotLiveContainer = styled(CollectionItemMetaHeading)`

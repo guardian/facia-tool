@@ -2,13 +2,14 @@ import React from 'react';
 import { styled } from 'shared/constants/theme';
 import { connect } from 'react-redux';
 import { Dispatch } from 'types/Store';
-import { copyArticleFragmentImageMeta } from 'shared/actions/ArticleFragments';
 import { State } from 'types/State';
 import {
   selectSharedState,
   selectCollectionItemHasMediaOverrides
 } from 'shared/selectors/shared';
-import imageDragIcon from 'images/icons/image-drag-icon.png';
+import imageDragIcon from 'images/icons/image-drag-icon.svg';
+import { theme } from 'constants/theme';
+import { copyArticleFragmentImageMetaWithPersist } from 'actions/ArticleFragments';
 
 interface ContainerProps {
   id: string;
@@ -16,38 +17,76 @@ interface ContainerProps {
 
 interface ComponentProps extends ContainerProps {
   copyCollectionItemImageMeta: (from: string, to: string) => void;
+  canDrag: boolean;
 }
 
-const DragIntentContainer = styled.div<{ isDraggingOver: boolean }>`
-  ${({ isDraggingOver }) => isDraggingOver && 'box-shadow: 0 0 1px 2px orange'}
+const DragIntentIndicator = styled.div`
+  display: none;
+  position: absolute;
+  height: 10px;
+  bottom: 0;
+  width: 100%;
+  background-color: ${theme.shared.colors.orange};
+`;
+const DragIntentContainer = styled.div<{
+  isDraggingOver: boolean;
+  isDragging: boolean;
+  canDrag: boolean;
+}>`
+  position: relative;
+  ${DragIntentIndicator} {
+    ${({ isDraggingOver }) => isDraggingOver && `display: block;`}
+  }
+  ${({ canDrag }) =>
+    canDrag &&
+    `&:hover {
+    opacity: 0.6;
+  }`};
+  ${({ isDragging }) => isDragging && `opacity: 0.6;`};
 `;
 
 interface ComponentState {
   isDraggingOver: boolean;
+  isDragging: boolean;
 }
 
 export const DRAG_COLLECTION_ITEM_IMAGE = '@@drag_collection_item_image@@';
+
+const dragImage = new Image();
+dragImage.src = imageDragIcon;
+
+const initialState = {
+  isDraggingOver: false,
+  isDragging: false
+};
 
 class DraggableArticleImageContainer extends React.Component<
   ComponentProps,
   ComponentState
 > {
-  public state = {
-    isDraggingOver: false
-  };
+  public state = initialState;
+
+  constructor(props: ComponentProps) {
+    super(props);
+  }
   public render() {
     const { children } = this.props;
     return (
       <DragIntentContainer
-        draggable
+        draggable={this.props.canDrag}
         onDragStart={this.handleDragStart}
-        onDragEnter={this.handleDragOver}
+        onDragEnd={this.handleDragEnd}
+        onDragEnter={this.handleDragEnter}
+        onDragOver={this.handleDragOver}
         onDragLeave={this.handleDragLeave}
         onDrop={this.handleDrop}
         isDraggingOver={this.state.isDraggingOver}
+        canDrag={this.props.canDrag}
+        isDragging={this.state.isDragging}
         title="Drag this media to add it to other articles"
       >
         {children}
+        <DragIntentIndicator />
       </DragIntentContainer>
     );
   }
@@ -55,13 +94,21 @@ class DraggableArticleImageContainer extends React.Component<
   private handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     e.stopPropagation();
     e.dataTransfer.setData(DRAG_COLLECTION_ITEM_IMAGE, this.props.id);
-    const img = document.createElement('img');
-    img.src = imageDragIcon;
-    e.dataTransfer.setDragImage(img, 0, 0);
+    e.dataTransfer.setDragImage(dragImage, -25, 50);
+    this.setState({ isDragging: true });
   };
 
+  private handleDragEnd = () => this.setState({ isDragging: false });
+
+  private handleDragEnter = (e: React.DragEvent<HTMLDivElement>) =>
+    e.preventDefault();
+
   private handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    if (e.dataTransfer.types.includes(DRAG_COLLECTION_ITEM_IMAGE)) {
+    e.preventDefault();
+    if (
+      e.dataTransfer.types.includes(DRAG_COLLECTION_ITEM_IMAGE) &&
+      !this.state.isDragging
+    ) {
       this.setState({ isDraggingOver: true });
     }
   };
@@ -73,13 +120,18 @@ class DraggableArticleImageContainer extends React.Component<
   };
 
   private handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    if (this.state.isDragging) {
+      return;
+    }
     const articleUuid = e.dataTransfer.getData(DRAG_COLLECTION_ITEM_IMAGE);
     if (!articleUuid) {
       return;
     }
-    this.setState({ isDraggingOver: false });
     this.props.copyCollectionItemImageMeta(articleUuid, this.props.id);
+    this.resetDragState();
   };
+
+  private resetDragState = () => this.setState(initialState);
 }
 
 const mapStateToProps = (state: State, { id }: ContainerProps) => ({
@@ -88,7 +140,7 @@ const mapStateToProps = (state: State, { id }: ContainerProps) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   copyCollectionItemImageMeta: (from: string, to: string) =>
-    dispatch(copyArticleFragmentImageMeta(from, to))
+    dispatch(copyArticleFragmentImageMetaWithPersist(from, to))
 });
 
 export default connect(

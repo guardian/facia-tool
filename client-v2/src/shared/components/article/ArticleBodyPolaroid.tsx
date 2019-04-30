@@ -16,7 +16,6 @@ import {
 import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
 import ImagePlaceholder from '../ImagePlaceholder';
 import TextPlaceholder from '../TextPlaceholder';
-import DraggableArticleImageContainer from './DraggableArticleImageContainer';
 
 const PillaredSection = styled('span')<{ pillar?: string; isLive?: boolean }>`
   color: ${({ pillar, isLive }) =>
@@ -47,13 +46,11 @@ const ArticlePolaroidComponent = ({
         (displayPlaceholders ? (
           <ImagePlaceholder height={84} />
         ) : (
-          <DraggableArticleImageContainer id={uuid}>
-            <PolaroidThumbnail
-              style={{
-                backgroundImage: `url('${thumbnail}')`
-              }}
-            />
-          </DraggableArticleImageContainer>
+          <PolaroidThumbnail
+            style={{
+              backgroundImage: `url('${thumbnail}')`
+            }}
+          />
         ))}
       <CollectionItemContent displayType="polaroid" data-testid="headline">
         {displayPlaceholders ? (
