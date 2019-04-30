@@ -4,5 +4,6 @@ export const priorities: Priorities = {
   editorial: {},
   commercial: {},
   training: {},
-  email: {}
+  email: {},
+  edition: {}
 };

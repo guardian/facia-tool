@@ -139,6 +139,12 @@ export default {
             hasGroups: false,
             isTypeLocked: false,
             isHiddenLocked: false
+        },
+        'edition': {
+            maxFronts: 350,
+            hasGroups: true,
+            isTypeLocked: true,
+            isHiddenLocked: true
         }
 
     },

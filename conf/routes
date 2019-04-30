@@ -27,11 +27,13 @@ GET         /editorial                               controllers.ViewsController
 GET         /commercial                              controllers.ViewsController.collectionEditor(priority="commercial")
 GET         /training                                controllers.ViewsController.collectionEditor(priority="training")
 GET         /email                                   controllers.ViewsController.collectionEditor(priority="email")
+GET         /edition                                 controllers.ViewsController.collectionEditor(priority="edition")
 
 GET         /editorial/config                        controllers.ViewsController.configEditor()
 GET         /commercial/config                       controllers.ViewsController.configEditor()
 GET         /training/config                         controllers.ViewsController.configEditor()
 GET         /email/config                            controllers.ViewsController.configEditor()
+GET         /edition/config                          controllers.ViewsController.configEditor()
 
 POST        /collection/publish/*collectionId        controllers.FaciaToolController.publishCollection(collectionId)
 POST        /collection/discard/*collectionId        controllers.FaciaToolController.discardCollection(collectionId)
