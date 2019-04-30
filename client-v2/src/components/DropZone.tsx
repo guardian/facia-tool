@@ -2,9 +2,12 @@ import React from 'react';
 import { styled } from 'constants/theme';
 import { theme } from 'constants/theme';
 
-const DropContainer = styled('div')<{ disabled: boolean }>`
+const DropContainer = styled('div')<{
+  disabled: boolean;
+  doubleHeight?: boolean;
+}>`
   position: relative;
-  height: 10px;
+  height: ${({ doubleHeight }) => (doubleHeight ? '20px' : '10px')};
   ${({ disabled }) => disabled && 'pointer-events: none'}
 `;
 
@@ -18,6 +21,7 @@ class DropZone extends React.Component<
     onDrop: (e: React.DragEvent) => void;
     onDragOver: (e: React.DragEvent) => void;
     disabled?: boolean;
+    doubleHeight?: boolean;
     style: React.CSSProperties;
     indicatorStyle: React.CSSProperties;
     override?: boolean;
@@ -68,10 +72,11 @@ class DropZone extends React.Component<
         };
 
   public render() {
-    const { style } = this.props;
+    const { style, doubleHeight } = this.props;
     return (
       <DropContainer
         {...this.getEventProps()}
+        doubleHeight={doubleHeight}
         data-testid="drop-zone"
         style={style}
         disabled={!!this.props.disabled}

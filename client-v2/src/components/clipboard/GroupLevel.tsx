@@ -54,16 +54,7 @@ const GroupLevel = ({
               {...props}
               disabled={!isActive}
               override={isTarget}
-              style={
-                // Pad the drop zone for ease of dropping if there's
-                // nothing in the group.
-                articleFragments.length
-                  ? undefined
-                  : {
-                      height: '30px',
-                      paddingBottom: '20px'
-                    }
-              }
+              doubleHeight={!articleFragments.length}
             />
           )
     }

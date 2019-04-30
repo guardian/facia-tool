@@ -11,16 +11,12 @@ const GroupHeading = styled('div')`
   font-weight: bold;
 `;
 
-const GroupContainer = styled('div')`
-  margin-top: 20px;
-`;
-
 const GroupDisplayComponent = ({ groupName }: GroupDisplayComponentProps) =>
   groupName ? (
-    <GroupContainer data-testid={groupName}>
+    <div data-testid={groupName}>
       <GroupHeading style={{ margin: 0 }}>{groupName}</GroupHeading>
       <HorizontalRule />
-    </GroupContainer>
+    </div>
   ) : null;
 
 export default GroupDisplayComponent;
