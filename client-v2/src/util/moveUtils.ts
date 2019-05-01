@@ -3,7 +3,7 @@ import { State } from 'shared/types/State';
 import { groupSiblingsSelector } from 'shared/selectors/shared';
 import { Group } from 'shared/types/Collection';
 
-function getFromGroupIndecesWithRespectToState(
+function getFromGroupIndicesWithRespectToState(
   position: PosSpec | null,
   state: State
 ): { fromWithRespectToState: PosSpec | null; fromOrphanedGroup: boolean } {
@@ -14,7 +14,7 @@ function getFromGroupIndecesWithRespectToState(
   if (position.type === 'clipboard') {
     return { fromWithRespectToState: position, fromOrphanedGroup: false };
   }
-  const { articleCount, groupSiblings } = getGroupIndecesWithRespectToState(
+  const { articleCount, groupSiblings } = getGroupIndicesWithRespectToState(
     position,
     state
   );
@@ -54,7 +54,7 @@ function getFromGroupIndecesWithRespectToState(
   };
 }
 
-function getToGroupIndecesWithRespectToState(
+function getToGroupIndicesWithRespectToState(
   position: PosSpec,
   state: State,
   fromOrphanedGroup: boolean
@@ -62,7 +62,7 @@ function getToGroupIndecesWithRespectToState(
   if (position.type === 'clipboard') {
     return position;
   }
-  const { articleCount } = getGroupIndecesWithRespectToState(position, state);
+  const { articleCount } = getGroupIndicesWithRespectToState(position, state);
   const adjustedArticleCount = fromOrphanedGroup
     ? articleCount - 1
     : articleCount;
@@ -76,7 +76,7 @@ function getToGroupIndecesWithRespectToState(
   return { ...position, ...{ index: adjustedIndex } };
 }
 
-function getGroupIndecesWithRespectToState(
+function getGroupIndicesWithRespectToState(
   position: PosSpec,
   state: State
 ): { articleCount: number; groupSiblings: Group[] } {
@@ -96,6 +96,6 @@ function getGroupIndecesWithRespectToState(
 }
 
 export {
-  getToGroupIndecesWithRespectToState,
-  getFromGroupIndecesWithRespectToState
+  getToGroupIndicesWithRespectToState,
+  getFromGroupIndicesWithRespectToState
 };

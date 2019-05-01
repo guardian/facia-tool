@@ -1,6 +1,6 @@
 import {
-  getFromGroupIndecesWithRespectToState,
-  getToGroupIndecesWithRespectToState
+  getFromGroupIndicesWithRespectToState,
+  getToGroupIndicesWithRespectToState
 } from '../moveUtils';
 
 describe('Move utilities', () => {
@@ -52,9 +52,9 @@ describe('Move utilities', () => {
   const position = { type: 'group', id: 'g1', index: 2 };
   const positionWithOrphanedGroups = { type: 'group', id: 'g3', index: 3 };
   const positionInOrphanedGroup = { type: 'group', id: 'g3', index: 0 };
-  describe('getFromGroupIndecesWithRespectToState', () => {
+  describe('getFromGroupIndicesWithRespectToState', () => {
     it('it returns null if position is null', () => {
-      const { fromWithRespectToState } = getFromGroupIndecesWithRespectToState(
+      const { fromWithRespectToState } = getFromGroupIndicesWithRespectToState(
         null,
         state
       );
@@ -63,7 +63,7 @@ describe('Move utilities', () => {
     });
 
     it('does not modify the position if there are no orphaned groups', () => {
-      const { fromWithRespectToState } = getFromGroupIndecesWithRespectToState(
+      const { fromWithRespectToState } = getFromGroupIndicesWithRespectToState(
         position,
         state
       );
@@ -72,7 +72,7 @@ describe('Move utilities', () => {
     });
 
     it('moves the article from the correct index when orphaned groups', () => {
-      const { fromWithRespectToState } = getFromGroupIndecesWithRespectToState(
+      const { fromWithRespectToState } = getFromGroupIndicesWithRespectToState(
         positionWithOrphanedGroups,
         state
       );
@@ -84,7 +84,7 @@ describe('Move utilities', () => {
     });
 
     it('moves articles correctly from orphaned groups', () => {
-      const { fromWithRespectToState } = getFromGroupIndecesWithRespectToState(
+      const { fromWithRespectToState } = getFromGroupIndicesWithRespectToState(
         positionInOrphanedGroup,
         state
       );
@@ -96,9 +96,9 @@ describe('Move utilities', () => {
     });
   });
 
-  describe('getToGroupIndecesWithRespectToState', () => {
+  describe('getToGroupIndicesWithRespectToState', () => {
     it('does not modify the position if there are no orphaned groups', () => {
-      const notTransformedPosition = getToGroupIndecesWithRespectToState(
+      const notTransformedPosition = getToGroupIndicesWithRespectToState(
         position,
         state,
         false
@@ -108,7 +108,7 @@ describe('Move utilities', () => {
     });
 
     it('moves the article to the correct index when there are orphaned groups', () => {
-      const toWithRespectToState = getToGroupIndecesWithRespectToState(
+      const toWithRespectToState = getToGroupIndicesWithRespectToState(
         positionWithOrphanedGroups,
         state,
         false
@@ -121,7 +121,7 @@ describe('Move utilities', () => {
     });
 
     it('moves articles coming from orphaned groups correctly', () => {
-      const toWithRespectToState = getToGroupIndecesWithRespectToState(
+      const toWithRespectToState = getToGroupIndicesWithRespectToState(
         positionWithOrphanedGroups,
         state,
         true
@@ -134,7 +134,7 @@ describe('Move utilities', () => {
     });
 
     it('does not move articles to orphaned groups', () => {
-      const toWithRespectToState = getToGroupIndecesWithRespectToState(
+      const toWithRespectToState = getToGroupIndicesWithRespectToState(
         positionInOrphanedGroup,
         state,
         true

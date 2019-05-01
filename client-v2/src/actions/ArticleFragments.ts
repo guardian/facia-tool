@@ -19,8 +19,8 @@ import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
 import { cloneFragment } from 'shared/util/articleFragment';
 import {
-  getFromGroupIndecesWithRespectToState,
-  getToGroupIndecesWithRespectToState
+  getFromGroupIndicesWithRespectToState,
+  getToGroupIndicesWithRespectToState
 } from 'util/moveUtils';
 import { PosSpec } from 'lib/dnd';
 import { Action } from 'types/Action';
@@ -281,9 +281,9 @@ const moveArticleFragment = (
     const fromDetails: {
       fromWithRespectToState: PosSpec | null;
       fromOrphanedGroup: boolean;
-    } = getFromGroupIndecesWithRespectToState(from, sharedState);
+    } = getFromGroupIndicesWithRespectToState(from, sharedState);
 
-    const toWithRespectToState: PosSpec | null = getToGroupIndecesWithRespectToState(
+    const toWithRespectToState: PosSpec | null = getToGroupIndicesWithRespectToState(
       to,
       sharedState,
       fromDetails.fromOrphanedGroup
