@@ -50,11 +50,14 @@ export default class Root extends React.Component<Props, State> {
   }
 
   private onDragOver = (e: React.DragEvent) => {
-    if (
-      !e.defaultPrevented ||
-      dragEventIsBlacklisted(e, this.props.blacklistedDataTransferTypes)
-    ) {
-      this.reset(false);
+    const isBlacklisted = dragEventIsBlacklisted(
+      e,
+      this.props.blacklistedDataTransferTypes
+    );
+    if (!e.defaultPrevented || isBlacklisted) {
+      // Don't alter the dragOver state if we're dealing with a
+      // blacklisted drag type.
+      this.reset(!isBlacklisted);
       return;
     }
     const state = this.state.store.getState();
