@@ -1,6 +1,11 @@
 import React from 'react';
 import Node, { ChildrenProps as NodeChildrenProps } from './Node';
-import { StoreConsumer, isMove, isInside } from './Root';
+import {
+  StoreConsumer,
+  isMove,
+  isInside,
+  dragEventIsBlacklisted
+} from './Root';
 import { Store } from './store';
 import AddParentInfo, { PathConsumer, Parent } from './AddParentInfo';
 import { TRANSFER_TYPE, NO_STORE_ERROR } from './constants';
@@ -70,8 +75,8 @@ interface OuterProps<T> {
         index: number
       ) => React.ReactNode)
     | null;
-  // any occurence of these in the data transfer will cause all dragging
-  // behaviour to be bypassed
+  // Any occurence of these in the data transfer will cause all dragging
+  // behaviour to be bypassed.
   blacklistedDataTransferTypes?: string[];
 }
 
@@ -143,12 +148,6 @@ class Level<T> extends React.Component<Props<T>, State> {
     );
   }
 
-  private dragEventIsBlacklisted(e: React.DragEvent) {
-    return e.dataTransfer.types.some(type =>
-      (this.props.blacklistedDataTransferTypes || []).includes(type)
-    );
-  }
-
   private getDropIndex(e: React.DragEvent, i: number, isNode: boolean) {
     return i + (isNode ? getDropIndexOffset(e) : 0);
   }
@@ -157,7 +156,10 @@ class Level<T> extends React.Component<Props<T>, State> {
     if (!this.props.store) {
       throw new Error(NO_STORE_ERROR);
     }
-    if (e.defaultPrevented || this.dragEventIsBlacklisted(e)) {
+    if (
+      e.defaultPrevented ||
+      dragEventIsBlacklisted(e, this.props.blacklistedDataTransferTypes)
+    ) {
       return;
     }
     e.preventDefault();
@@ -165,7 +167,10 @@ class Level<T> extends React.Component<Props<T>, State> {
   };
 
   private onDrop = (i: number, isNode: boolean) => (e: React.DragEvent) => {
-    if (e.defaultPrevented || this.dragEventIsBlacklisted(e)) {
+    if (
+      e.defaultPrevented ||
+      dragEventIsBlacklisted(e, this.props.blacklistedDataTransferTypes)
+    ) {
       return;
     }
 
