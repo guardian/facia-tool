@@ -147,6 +147,6 @@ export default styled(`button`)`
   }
 
   :not(:first-child) {
-    margin-left: ${({ inline }) => (inline ? '5px' : '0')};
+    ${({ inline }) => inline && 'margin-left: 5px'};
   }
 `;

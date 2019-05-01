@@ -30,10 +30,6 @@ class DragIntentContainer extends React.Component<Props> {
     this.dragHoverDepth += 1;
   };
 
-  public handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-  };
-
   public handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     this.dragHoverDepth -= 1;
     if (this.props.onDragLeave) {
@@ -102,7 +98,6 @@ class DragIntentContainer extends React.Component<Props> {
         onDragEnter={this.handleDragEnter}
         onDragLeave={this.handleDragLeave}
         onDrop={this.handleDrop}
-        onDragOver={this.handleDragOver}
       >
         {children}
       </div>
