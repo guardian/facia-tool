@@ -83,7 +83,7 @@ const ArticlePolaroidComponent = ({
           }}
           size={size}
           toolTipPosition={'top'}
-          toolTipAlign={'center'}
+          toolTipAlign={'right'}
         />
       </HoverActionsAreaOverlay>
     </>

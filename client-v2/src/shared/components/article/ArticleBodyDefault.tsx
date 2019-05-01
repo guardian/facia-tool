@@ -250,19 +250,7 @@ const articleBodyDefault = ({
         <HoverActionsButtonWrapper
           buttons={[
             { text: 'View', component: HoverViewButton },
-            { text: 'Ophan', component: HoverOphanButton }
-          ]}
-          buttonProps={{
-            isLive,
-            urlPath,
-            onDelete
-          }}
-          size={size}
-          toolTipPosition={'top'}
-          toolTipAlign={'left'}
-        />
-        <HoverActionsButtonWrapper
-          buttons={[
+            { text: 'Ophan', component: HoverOphanButton },
             { text: 'Clipboard', component: HoverAddToClipboardButton },
             { text: 'Delete', component: HoverDeleteButton }
           ]}
@@ -274,7 +262,7 @@ const articleBodyDefault = ({
           }}
           size={size}
           toolTipPosition={'top'}
-          toolTipAlign={'right'}
+          toolTipAlign={'left'}
         />
       </HoverActionsAreaOverlay>
     </>

@@ -16,8 +16,7 @@ const ActionButton = ButtonCircular.extend<{ danger?: boolean }>`
       ? theme.shared.button.backgroundColorHighlight
       : theme.shared.button.backgroundColor};
   color: ${({ theme }) => theme.shared.button.color};
-  margin: 1.5px;
-  margin-bottom: 2px;
+  margin: 0 2px 2px 2px;
   line-height: 1;
   &:hover {
     background: ${({ danger, theme }) =>

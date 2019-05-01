@@ -1,8 +1,5 @@
 import styled, { css } from 'styled-components';
-import {
-  HoverActionsAreaOverlay,
-  HideMetaDataOnToolTipDisplay
-} from '../CollectionHoverItems';
+import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
 import Thumbnail from '../Thumbnail';
 import {
   CollectionItemDisplayTypes,
@@ -35,15 +32,12 @@ export default styled('div')<{
   opacity: ${({ fade }) => (fade ? 0.5 : 1)};
 
   ${HoverActionsAreaOverlay} {
-    bottom: 0;
-    left: 0;
-    right: 0;
+    ${({ displayType }) =>
+      displayType === 'polaroid'
+        ? `bottom: 0px; right: 0px;`
+        : `bottom: 4px; left: 8px;`}
     position: absolute;
     visibility: hidden;
-    opacity: 0;
-    ${HideMetaDataOnToolTipDisplay} {
-      visibility: hidden;
-    }
   }
 
   :hover {
@@ -55,11 +49,6 @@ export default styled('div')<{
       ${HoverActionsAreaOverlay} {
         transition-delay: 0s;
         visibility: visible;
-        opacity: 1;
-
-        ${HideMetaDataOnToolTipDisplay} {
-          visibility: visible;
-        }
       }
 
     ${Thumbnail} {

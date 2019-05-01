@@ -24,16 +24,6 @@ import { ThumbnailSmall } from 'shared/components/Thumbnail';
 import { CapiArticle } from 'types/Capi';
 import { getThumbnail } from 'util/CAPIUtils';
 
-const LinkContainer = styled('div')`
-  background-color: ${({ theme }) => theme.capiInterface.backgroundLight};
-  display: none;
-  position: absolute;
-  bottom: 20px;
-  right: 10px;
-  border-radius: 2px;
-  padding: 1px 3px;
-`;
-
 const Container = styled('div')`
   display: flex;
   position: relative;
@@ -42,23 +32,17 @@ const Container = styled('div')`
   display: flex;
   font-weight: 400;
   padding-bottom: 20px;
+  cursor: pointer;
 
   ${HoverActionsAreaOverlay} {
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: 5px;
+    right: 4px;
     position: absolute;
     visibility: hidden;
-    opacity: 0;
-  }
-
-  :hover ${LinkContainer} {
-    display: block;
   }
 
   :hover ${HoverActionsAreaOverlay} {
     visibility: visible;
-    opacity: 1;
   }
 `;
 
@@ -74,7 +58,6 @@ const VisitedWrapper = styled.a`
   text-decoration: none;
   display: flex;
   color: inherit;
-  cursor: pointer;
   width: 100%;
   :visited ${Title} {
     color: ${({ theme }) => theme.capiInterface.textVisited};
@@ -203,9 +186,9 @@ const FeedItem = ({ article, onAddToClipboard = noop }: FeedItemProps) => (
     <HoverActionsAreaOverlay justify="flex-end" data-testid="hover-overlay">
       <HoverActionsButtonWrapper
         buttons={[
-          { text: 'Clipboard', component: HoverAddToClipboardButton },
           { text: 'View', component: HoverViewButton },
-          { text: 'Ophan', component: HoverOphanButton }
+          { text: 'Ophan', component: HoverOphanButton },
+          { text: 'Clipboard', component: HoverAddToClipboardButton }
         ]}
         buttonProps={{
           isLive: isLive(article),
