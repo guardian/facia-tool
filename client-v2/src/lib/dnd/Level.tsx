@@ -72,7 +72,7 @@ interface OuterProps<T> {
     | null;
   // any occurence of these in the data transfer will cause all dragging
   // behaviour to be bypassed
-  blockingDataTransferTypes?: string[];
+  blacklistedDataTransferTypes?: string[];
 }
 
 interface ContextProps {
@@ -145,7 +145,7 @@ class Level<T> extends React.Component<Props<T>, State> {
 
   private dragEventIsBlacklisted(e: React.DragEvent) {
     return e.dataTransfer.types.some(type =>
-      (this.props.blockingDataTransferTypes || []).includes(type)
+      (this.props.blacklistedDataTransferTypes || []).includes(type)
     );
   }
 

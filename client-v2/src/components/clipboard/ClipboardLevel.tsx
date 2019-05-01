@@ -27,7 +27,7 @@ const ClipboardLevel = ({
   onDrop
 }: Props) => (
   <Level
-    blockingDataTransferTypes={Object.values(gridDataTransferTypes)}
+    blacklistedDataTransferTypes={Object.values(gridDataTransferTypes)}
     arr={articleFragments}
     parentType="clipboard"
     parentId="clipboard"

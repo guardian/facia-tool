@@ -32,7 +32,7 @@ const GroupLevel = ({
 }: Props) => (
   <Level
     arr={articleFragments}
-    blockingDataTransferTypes={Object.values(gridDataTransferTypes)}
+    blacklistedDataTransferTypes={Object.values(gridDataTransferTypes)}
     parentType="group"
     parentId={groupId}
     type="articleFragment"

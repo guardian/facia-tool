@@ -35,7 +35,7 @@ const ArticleFragmentLevel = ({
 }: Props) => (
   <Level
     arr={supporting || []}
-    blockingDataTransferTypes={Object.values(gridDataTransferTypes)}
+    blacklistedDataTransferTypes={Object.values(gridDataTransferTypes)}
     parentType="articleFragment"
     parentId={articleFragmentId}
     type="articleFragment"
