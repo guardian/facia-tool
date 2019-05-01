@@ -83,8 +83,8 @@ const FirstPublicationDate = styled(CollectionItemMetaContent)`
 `;
 
 interface ArticleBodyProps {
-  frontPublicationTime?: string;
   firstPublicationDate?: string;
+  frontPublicationDate?: number;
   scheduledPublicationDate?: string;
   pillarId?: string;
   kicker?: string;
@@ -126,6 +126,7 @@ const renderColouredQuotes = (
 
 const articleBodyDefault = ({
   firstPublicationDate,
+  frontPublicationDate,
   scheduledPublicationDate,
   sectionName,
   pillarId,
@@ -140,7 +141,6 @@ const articleBodyDefault = ({
   onDelete,
   onAddToClipboard,
   isUneditable,
-  frontPublicationTime,
   byline,
   showByline,
   showQuotedHeadline,
@@ -187,9 +187,9 @@ const articleBodyDefault = ({
             {distanceInWordsStrict(new Date(scheduledPublicationDate), now)}
           </CollectionItemDraftMetaContent>
         )}
-        {!!frontPublicationTime && (
+        {!!frontPublicationDate && (
           <CollectionItemMetaContent title="The time elapsed since this article was added to this front.">
-            {distanceInWordsStrict(now, new Date(frontPublicationTime))}
+            {distanceInWordsStrict(now, new Date(frontPublicationDate))}
           </CollectionItemMetaContent>
         )}
         {!!firstPublicationDate && (
