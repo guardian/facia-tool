@@ -292,7 +292,7 @@ const createArticlesInCollectionGroupSelector = () => {
       if (!includeSupportingArticles) {
         return groupArticleFragmentIds;
       }
-      const res = groupArticleFragmentIds.reduce(
+      return groupArticleFragmentIds.reduce(
         (acc, id) => {
           const articleFragment = articleFragments[id];
           if (
@@ -307,7 +307,6 @@ const createArticlesInCollectionGroupSelector = () => {
         },
         [] as string[]
       );
-      return res;
     }
   );
 };
