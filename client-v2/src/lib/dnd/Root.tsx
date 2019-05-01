@@ -54,7 +54,7 @@ export default class Root extends React.Component<Props, State> {
       !e.defaultPrevented ||
       dragEventIsBlacklisted(e, this.props.blacklistedDataTransferTypes)
     ) {
-      this.reset(true);
+      this.reset(false);
       return;
     }
     const state = this.state.store.getState();
