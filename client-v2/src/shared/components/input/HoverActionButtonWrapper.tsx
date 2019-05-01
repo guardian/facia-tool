@@ -9,6 +9,8 @@ const HoverActionsWrapper = styled('div')<{
   bottom: 0;
   position: relative;
   z-index: 10;
+  /* Offset button margin spacing */
+  margin: 0 -2px;
 `;
 
 const ToolTipWrapper = styled('div')<{
