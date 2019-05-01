@@ -34,7 +34,7 @@ const getAllArticleFragments = (groups: Group[]) =>
     [] as string[]
   );
 
-const addEmptyGroupsFromCollectionConfigForStage = (
+const addGroupsForStage = (
   groupIds: string[],
   entities: { [id: string]: Group },
   collectionConfig: CollectionConfig
@@ -104,16 +104,13 @@ interface ReduceResult {
   addedGroups: { [key: string]: Group };
 }
 
-const addEmptyGroupsFromCollectionConfig = (
+const addGroups = (
   normalisedCollection: any,
   collectionConfig: CollectionConfig
 ) =>
   (['live', 'previously', 'draft'] as ['live', 'previously', 'draft']).reduce(
     (acc, key) => {
-      const {
-        addedGroups,
-        groupIds
-      } = addEmptyGroupsFromCollectionConfigForStage(
+      const { addedGroups, groupIds } = addGroupsForStage(
         normalisedCollection.result[key],
         normalisedCollection.entities.groups,
         collectionConfig
@@ -139,12 +136,7 @@ const normaliseCollectionWithNestedArticles = (
   articleFragments: { [key: string]: ArticleFragment };
 } => {
   const normalisedCollection = normalize(collection);
-  const {
-    addedGroups,
-    live,
-    draft,
-    previously
-  } = addEmptyGroupsFromCollectionConfig(
+  const { addedGroups, live, draft, previously } = addGroups(
     normalisedCollection,
     collectionConfig
   );
