@@ -121,7 +121,6 @@ const articleFragments = (
       if (!fromArticle || !toArticle) {
         return state;
       }
-      console.log(fromArticle, toArticle, cloneActiveImageMeta(fromArticle));
       return {
         ...state,
         [to]: {

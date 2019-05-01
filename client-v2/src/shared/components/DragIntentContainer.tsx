@@ -21,6 +21,9 @@ class DragIntentContainer extends React.Component<Props> {
   private dragHoverDepth: number = 0;
 
   public handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    if (!this.isEventValid(e)) {
+      return;
+    }
     if (this.props.onDragEnter) {
       this.props.onDragEnter(e);
     }
@@ -31,6 +34,9 @@ class DragIntentContainer extends React.Component<Props> {
   };
 
   public handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    if (!this.isEventValid(e)) {
+      return;
+    }
     this.dragHoverDepth -= 1;
     if (this.props.onDragLeave) {
       this.props.onDragLeave(e);
@@ -41,6 +47,9 @@ class DragIntentContainer extends React.Component<Props> {
   };
 
   public handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    if (!this.isEventValid(e)) {
+      return;
+    }
     this.dragHoverDepth = 0;
     if (this.props.onDrop) {
       this.props.onDrop(e);
@@ -52,22 +61,21 @@ class DragIntentContainer extends React.Component<Props> {
     // only register if active
     // all other events will fire even if not active to allow the parent
     // to reset its state that was created when drag intent was initialised
-    const { delay, filterRegisterEvent } = this.props;
-    if (!filterRegisterEvent || filterRegisterEvent(e)) {
-      if (this.props.active) {
-        this.props.onDragIntentStart();
-        if (typeof delay !== 'undefined') {
-          this.dragTimer = window.setTimeout(() => {
-            if (this.props.onIntentConfirm) {
-              this.props.onIntentConfirm();
-            }
-            this.tryDeregisterDragIntent();
-          }, delay);
-        } else {
-          if (this.props.onIntentConfirm) {
-            this.props.onIntentConfirm();
-          }
+    const { delay } = this.props;
+    if (!this.props.active) {
+      return;
+    }
+    this.props.onDragIntentStart();
+    if (typeof delay !== 'undefined') {
+      this.dragTimer = window.setTimeout(() => {
+        if (this.props.onIntentConfirm) {
+          this.props.onIntentConfirm();
         }
+        this.tryDeregisterDragIntent();
+      }, delay);
+    } else {
+      if (this.props.onIntentConfirm) {
+        this.props.onIntentConfirm();
       }
     }
   };
@@ -103,6 +111,11 @@ class DragIntentContainer extends React.Component<Props> {
       </div>
     );
   }
+
+  private isEventValid = (e: React.DragEvent) => {
+    const { filterRegisterEvent } = this.props;
+    return !filterRegisterEvent || filterRegisterEvent(e);
+  };
 }
 
 export default DragIntentContainer;

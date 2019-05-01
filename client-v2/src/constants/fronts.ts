@@ -28,8 +28,10 @@ export const liveBlogTones: { [key: string]: string } = {
 // All of the drag event types that we'd like our collection drop zones
 // to ignore, at any level.
 
-export const collectionDropZoneBlacklist = [
-  ...Object.values(gridDataTransferTypes),
+export const gridDropTypes = Object.values(gridDataTransferTypes);
+
+export const collectionDropTypeBlacklist = [
+  ...gridDropTypes,
   DRAG_COLLECTION_ITEM_IMAGE
 ];
 

@@ -31,7 +31,7 @@ export default class Root extends React.Component<Props, State> {
   public state = { store: createStore() };
 
   public render() {
-    const { id, ...divProps } = this.props;
+    const { id, blacklistedDataTransferTypes, ...divProps } = this.props;
     return (
       <div
         {...divProps}
