@@ -1,4 +1,5 @@
 import { Stages, CollectionItemSets } from 'shared/types/Collection';
+import { gridDataTransferTypes } from './image';
 
 export const breakingNewsFrontId: string = 'breaking-news';
 
@@ -23,6 +24,8 @@ export const liveBlogTones: { [key: string]: string } = {
   dead: 'dead',
   live: 'live'
 };
+
+export const collectionEventsBlacklist = Object.values(gridDataTransferTypes);
 
 export const detectPressFailureMs = 10000;
 
