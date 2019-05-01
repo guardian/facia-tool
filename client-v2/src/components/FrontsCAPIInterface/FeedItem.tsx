@@ -38,11 +38,11 @@ const Container = styled('div')`
     bottom: 5px;
     right: 4px;
     position: absolute;
-    display: none;
+    visibility: hidden;
   }
 
   :hover ${HoverActionsAreaOverlay} {
-    display: block;
+    visibility: visible;
   }
 `;
 
