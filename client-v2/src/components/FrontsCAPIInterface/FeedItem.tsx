@@ -187,8 +187,8 @@ const FeedItem = ({ article, onAddToClipboard = noop }: FeedItemProps) => (
       <HoverActionsButtonWrapper
         buttons={[
           { text: 'View', component: HoverViewButton },
-          { text: 'Clipboard', component: HoverAddToClipboardButton },
-          { text: 'Ophan', component: HoverOphanButton }
+          { text: 'Ophan', component: HoverOphanButton },
+          { text: 'Clipboard', component: HoverAddToClipboardButton }
         ]}
         buttonProps={{
           isLive: isLive(article),
