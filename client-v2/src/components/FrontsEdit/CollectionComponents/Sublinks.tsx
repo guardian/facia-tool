@@ -14,8 +14,7 @@ const SublinkCollectionItemBody = styled(CollectionItemBody)<{
 }>`
   display: flex;
   min-height: 30px;
-  border-width: ${({ isClipboard }) =>
-    isClipboard ? 'none' : '1px solid #c9c9c9'};
+  border: ${({ isClipboard }) => (isClipboard ? 'none' : '1px solid #c9c9c9')};
   background-color: ${({ isClipboard, dragHoverActive }) =>
     dragHoverActive ? `#ededed` : isClipboard ? '#f6f6f6' : '#fff'};
   flex-direction: ${({ isClipboard }) => (isClipboard ? 'column' : 'row')};
