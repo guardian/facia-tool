@@ -10,6 +10,7 @@ import {
 import imageDragIcon from 'images/icons/image-drag-icon.svg';
 import { theme } from 'constants/theme';
 import { copyArticleFragmentImageMetaWithPersist } from 'actions/ArticleFragments';
+import { DRAG_COLLECTION_ITEM_IMAGE } from 'constants/image';
 
 interface ContainerProps {
   id: string;
@@ -49,8 +50,6 @@ interface ComponentState {
   isDraggingOver: boolean;
   isDragging: boolean;
 }
-
-export const DRAG_COLLECTION_ITEM_IMAGE = '@@drag_collection_item_image@@';
 
 const dragImage = new Image();
 dragImage.src = imageDragIcon;
@@ -107,7 +106,8 @@ class DraggableArticleImageContainer extends React.Component<
     e.preventDefault();
     if (
       e.dataTransfer.types.includes(DRAG_COLLECTION_ITEM_IMAGE) &&
-      !this.state.isDragging
+      !this.state.isDragging &&
+      !this.state.isDraggingOver
     ) {
       this.setState({ isDraggingOver: true });
     }

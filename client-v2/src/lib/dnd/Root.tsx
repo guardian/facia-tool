@@ -6,8 +6,18 @@ const { Provider: StoreProvider, Consumer: StoreConsumer } = createContext(
   null as Store | null
 );
 
+const dragEventIsBlacklisted = (
+  e: React.DragEvent,
+  blacklist: string[] | undefined
+) => {
+  return e.dataTransfer.types.some(type => (blacklist || []).includes(type));
+};
+
 interface OuterProps {
   id: string;
+  // Any occurence of these in the data transfer will cause all dragging
+  // behaviour to be bypassed.
+  blacklistedDataTransferTypes?: string[];
 }
 
 type Props = OuterProps &
@@ -40,7 +50,10 @@ export default class Root extends React.Component<Props, State> {
   }
 
   private onDragOver = (e: React.DragEvent) => {
-    if (!e.defaultPrevented) {
+    if (
+      !e.defaultPrevented ||
+      dragEventIsBlacklisted(e, this.props.blacklistedDataTransferTypes)
+    ) {
       this.reset(true);
       return;
     }
@@ -66,4 +79,4 @@ export default class Root extends React.Component<Props, State> {
   };
 }
 
-export { StoreConsumer, isMove, isInside };
+export { StoreConsumer, isMove, isInside, dragEventIsBlacklisted };
