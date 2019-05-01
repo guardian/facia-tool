@@ -1,3 +1,5 @@
+import { ArticleFragmentMeta } from 'shared/types/Collection';
+
 export interface ArticleFragmentMap {
   [uuid: string]: {
     uuid: string;
@@ -7,20 +9,23 @@ export interface ArticleFragmentMap {
 }
 
 export type ArticleFragmentSpec = [
-  string,
-  string,
-  Array<[string, string]> | undefined
+  string, // uuid
+  string, // id
+  Array<[string, string]> | undefined, // all of supporting articles,
+  ArticleFragmentMeta? // metadata changes
 ];
 
 export const specToFragment = ([
   uuid,
   id,
-  supporting
+  supporting,
+  meta
 ]: ArticleFragmentSpec) => ({
   uuid,
   id,
   frontPublicationDate: 0,
   meta: {
+    ...meta,
     supporting: supporting && supporting.map(([suuid]) => suuid)
   }
 });
@@ -29,9 +34,9 @@ export const createArticleFragmentStateFromSpec = (
   specs: ArticleFragmentSpec[]
 ) =>
   specs.reduce(
-    (acc, [uuid, id, supporting]) => ({
+    (acc, [uuid, id, supporting, meta]) => ({
       ...acc,
-      [uuid]: specToFragment([uuid, id, supporting]),
+      [uuid]: specToFragment([uuid, id, supporting, meta]),
       ...(supporting
         ? supporting.reduce(
             (sacc, [suuid, sid]) => ({
@@ -39,7 +44,7 @@ export const createArticleFragmentStateFromSpec = (
               [suuid]: {
                 uuid: suuid,
                 id: sid,
-                meta: {}
+                meta: { ...meta }
               }
             }),
             {} as ArticleFragmentMap

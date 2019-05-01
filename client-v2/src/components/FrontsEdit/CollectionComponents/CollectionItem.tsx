@@ -15,7 +15,7 @@ import {
   CollectionItemDisplayTypes
 } from 'shared/types/Collection';
 import SnapLink from 'shared/components/snapLink/SnapLink';
-import { insertArticleFragment } from 'actions/ArticleFragments';
+import { cloneArticleFragmentToTarget } from 'actions/ArticleFragments';
 import noop from 'lodash/noop';
 import { selectEditorArticleFragment } from 'bundles/frontsUIBundle';
 import {
@@ -43,7 +43,10 @@ interface ContainerProps {
 }
 
 type ArticleContainerProps = ContainerProps & {
-  onAddToClipboard: (externalArticleId: string | undefined) => void;
+  onAddToClipboard: (
+    externalArticleId: string | undefined,
+    uuid: string
+  ) => void;
   type: CollectionItemTypes;
   isSelected: boolean;
   externalArticleId: string | undefined;
@@ -106,7 +109,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
             isUneditable={isUneditable}
             {...getNodeProps()}
             onDelete={onDelete}
-            onAddToClipboard={() => onAddToClipboard(externalArticleId)}
+            onAddToClipboard={() => onAddToClipboard(externalArticleId, uuid)}
             onClick={isUneditable ? undefined : () => onSelect(uuid)}
             fade={!isSelected}
             size={size}
@@ -191,18 +194,11 @@ const createMapStateToProps = () => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    onAddToClipboard: (id: string | undefined) => {
-      if (id) {
-        dispatch(
-          insertArticleFragment(
-            { id: 'clipboard', type: 'clipboard', index: 0 },
-            // @TODO - if this is proving too slow we can pass the whole external article into
-            // this components and insert that data rather than fetching it from CAPI
-            { type: 'REF', data: id },
-            'clipboard'
-          )
-        );
+    onAddToClipboard: (id: string | undefined, uuid: string) => {
+      if (!id) {
+        return;
       }
+      dispatch(cloneArticleFragmentToTarget(uuid, 'clipboard'));
     }
   };
 };
