@@ -16,7 +16,7 @@
     "test": "yarn jest",
     "test-integration": "yarn build && node ./integration/run.js",
     "test-integration-ci": "node ./integration/run.js",
-    "run-checks": "yarn test && yarn lint"
+    "run-checks": "yarn test && yarn lint && yarn test-integration"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.44",
