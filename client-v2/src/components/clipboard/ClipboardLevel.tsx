@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { ArticleFragment } from 'shared/types/Collection';
 import ArticleDrag from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone from 'components/DropZone';
-import { collectionEventsBlacklist } from 'constants/fronts';
+import { collectionDropZoneBlacklist } from 'constants/fronts';
 
 interface OuterProps {
   children: LevelChild<ArticleFragment>;
@@ -27,7 +27,7 @@ const ClipboardLevel = ({
   onDrop
 }: Props) => (
   <Level
-    blacklistedDataTransferTypes={collectionEventsBlacklist}
+    blacklistedDataTransferTypes={collectionDropZoneBlacklist}
     arr={articleFragments}
     parentType="clipboard"
     parentId="clipboard"

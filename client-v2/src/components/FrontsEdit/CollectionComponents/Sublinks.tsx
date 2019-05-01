@@ -7,6 +7,8 @@ import CollectionItemContainer from 'shared/components/collectionItem/Collection
 import CollectionItemContent from 'shared/components/collectionItem/CollectionItemContent';
 import CollectionItemMetaContainer from 'shared/components/collectionItem/CollectionItemMetaContainer';
 import DragIntentContainer from 'shared/components/DragIntentContainer';
+import { dragEventIsBlacklisted } from 'lib/dnd/Root';
+import { collectionDropZoneBlacklist } from 'constants/fronts';
 
 const SublinkCollectionItemBody = styled(CollectionItemBody)<{
   dragHoverActive: boolean;
@@ -75,6 +77,7 @@ class Sublinks extends React.Component<SublinkProps> {
               this.setState({ dragHoverActive: false });
             }}
             delay={300}
+            filterRegisterEvent={this.dragEventNotBlacklisted}
             onIntentConfirm={() => {
               toggleShowArticleSublinks();
             }}
@@ -110,6 +113,9 @@ class Sublinks extends React.Component<SublinkProps> {
       </>
     );
   }
+
+  private dragEventNotBlacklisted = (e: React.DragEvent) =>
+    !dragEventIsBlacklisted(e, collectionDropZoneBlacklist);
 }
 
 export default Sublinks;
