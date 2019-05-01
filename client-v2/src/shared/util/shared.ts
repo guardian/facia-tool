@@ -14,7 +14,7 @@ import v4 from 'uuid/v4';
 import keyBy from 'lodash/keyBy';
 
 const createGroup = (
-  id: string,
+  id: string | null,
   name: string | null,
   articleFragments: string[] = []
 ): Group => ({
@@ -26,7 +26,7 @@ const createGroup = (
 
 const getUUID = <T extends { uuid: string }>({ uuid }: T) => uuid;
 
-const getGroupIndex = (id?: string): number => parseInt(id || '0', 10);
+const getGroupIndex = (id: string | null): number => parseInt(id || '0', 10);
 
 const getAllArticleFragments = (groups: Group[]) =>
   groups.reduce(
@@ -72,7 +72,7 @@ const addEmptyGroupsFromCollectionConfigForStage = (
   // If we have no article fragments and no groups in a collection we still need to create
   // and empty group for articles.
   if (groupsWithNames.length === 0) {
-    groupsWithNames = [createGroup('0', null, getAllArticleFragments(groups))];
+    groupsWithNames = [createGroup(null, null, getAllArticleFragments(groups))];
   }
 
   // Finally we need to sort the groups according to their ids.
