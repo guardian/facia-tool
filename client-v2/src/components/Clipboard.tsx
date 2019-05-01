@@ -16,7 +16,7 @@ import {
   editorOpenClipboard,
   editorCloseClipboard
 } from 'bundles/frontsUIBundle';
-import { clipboardId } from 'constants/fronts';
+import { clipboardId, collectionDropZoneBlacklist } from 'constants/fronts';
 import {
   ArticleFragment as TArticleFragment,
   ArticleFragmentMeta,
@@ -178,6 +178,7 @@ class Clipboard extends React.Component<ClipboardProps> {
             {this.props.isClipboardOpen && (
               <Root
                 id="clipboard"
+                blacklistedDataTransferTypes={collectionDropZoneBlacklist}
                 data-testid="clipboard"
                 style={{
                   display: 'flex',
