@@ -34,7 +34,7 @@ const LinkContainer = styled('div')`
   padding: 1px 3px;
 `;
 
-const DragContainer = styled('div')`
+const Container = styled('div')`
   display: flex;
   position: relative;
   border-top: ${({ theme }) => `1px solid ${theme.capiInterface.borderLight}`};
@@ -42,10 +42,9 @@ const DragContainer = styled('div')`
   display: flex;
   font-weight: 400;
   padding-bottom: 20px;
-  cursor: pointer;
 
   ${HoverActionsAreaOverlay} {
-    bottom: 10px;
+    bottom: 0;
     left: 0;
     right: 0;
     position: absolute;
@@ -75,6 +74,7 @@ const VisitedWrapper = styled.a`
   text-decoration: none;
   display: flex;
   color: inherit;
+  cursor: pointer;
   width: 100%;
   :visited ${Title} {
     color: ${({ theme }) => theme.capiInterface.textVisited};
@@ -109,11 +109,6 @@ const Tone = styled('div')`
 
 const Body = styled('div')`
   padding-left: 8px;
-`;
-
-const ContentContainer = styled.div`
-  position: relative;
-  width: 100%;
 `;
 
 interface FeedItemProps {
@@ -152,78 +147,76 @@ const getArticleLabel = (article: CapiArticle) => {
 };
 
 const FeedItem = ({ article, onAddToClipboard = noop }: FeedItemProps) => (
-  <DragContainer
+  <Container
     data-testid="feed-item"
     draggable={true}
     onDragStart={event => dragStart(article, event)}
   >
-    <ContentContainer>
-      <VisitedWrapper
-        href={getPaths(article.id).live}
-        onClick={e => e.preventDefault()}
-        aria-disabled
-      >
-        <MetaContainer>
-          <Tone
-            style={{
-              color:
-                getPillarColor(
-                  article.pillarId,
-                  isLive(article),
-                  article.frontsMeta.tone === liveBlogTones.dead
-                ) || styleTheme.capiInterface.textLight
-            }}
-          >
-            {getArticleLabel(article)}
-          </Tone>
-          {article.fields.scheduledPublicationDate && (
-            <ScheduledPublication>
-              {distanceInWordsStrict(
-                new Date(article.fields.scheduledPublicationDate),
-                Date.now()
-              )}
-            </ScheduledPublication>
-          )}
-          {article.webPublicationDate && (
-            <FirstPublished>
-              {distanceInWordsStrict(
-                Date.now(),
-                new Date(article.webPublicationDate)
-              )}
-            </FirstPublished>
-          )}
-          <ShortVerticalPinline />
-        </MetaContainer>
-        <Body>
-          <Title data-testid="headline">{article.webTitle}</Title>
-        </Body>
-        <ArticleThumbnail
+    <VisitedWrapper
+      href={getPaths(article.id).live}
+      onClick={e => e.preventDefault()}
+      aria-disabled
+    >
+      <MetaContainer>
+        <Tone
           style={{
-            backgroundImage: `url('${getThumbnail(
-              article,
-              article.frontsMeta.defaults
-            )}')`
+            color:
+              getPillarColor(
+                article.pillarId,
+                isLive(article),
+                article.frontsMeta.tone === liveBlogTones.dead
+              ) || styleTheme.capiInterface.textLight
           }}
-        />
-      </VisitedWrapper>
-      <HoverActionsAreaOverlay justify="flex-end" data-testid="hover-overlay">
-        <HoverActionsButtonWrapper
-          buttons={[
-            { text: 'Clipboard', component: HoverAddToClipboardButton },
-            { text: 'View', component: HoverViewButton },
-            { text: 'Ophan', component: HoverOphanButton }
-          ]}
-          buttonProps={{
-            isLive: isLive(article),
-            urlPath: article.id,
-            onAddToClipboard: () => onAddToClipboard(article)
-          }}
-          toolTipPosition={'top'}
-          toolTipAlign={'right'}
-        />
-      </HoverActionsAreaOverlay>
-    </ContentContainer>
-  </DragContainer>
+        >
+          {getArticleLabel(article)}
+        </Tone>
+        {article.fields.scheduledPublicationDate && (
+          <ScheduledPublication>
+            {distanceInWordsStrict(
+              new Date(article.fields.scheduledPublicationDate),
+              Date.now()
+            )}
+          </ScheduledPublication>
+        )}
+        {article.webPublicationDate && (
+          <FirstPublished>
+            {distanceInWordsStrict(
+              Date.now(),
+              new Date(article.webPublicationDate)
+            )}
+          </FirstPublished>
+        )}
+        <ShortVerticalPinline />
+      </MetaContainer>
+      <Body>
+        <Title data-testid="headline">{article.webTitle}</Title>
+      </Body>
+      <ArticleThumbnail
+        style={{
+          backgroundImage: `url('${getThumbnail(
+            article,
+            article.frontsMeta.defaults
+          )}')`
+        }}
+      />
+    </VisitedWrapper>
+    <HoverActionsAreaOverlay justify="flex-end" data-testid="hover-overlay">
+      <HoverActionsButtonWrapper
+        buttons={[
+          { text: 'Clipboard', component: HoverAddToClipboardButton },
+          { text: 'View', component: HoverViewButton },
+          { text: 'Ophan', component: HoverOphanButton }
+        ]}
+        buttonProps={{
+          isLive: isLive(article),
+          urlPath: article.id,
+          onAddToClipboard: () => onAddToClipboard(article)
+        }}
+        toolTipPosition={'top'}
+        toolTipAlign={'right'}
+      />
+    </HoverActionsAreaOverlay>
+  </Container>
 );
 
 const mapDispatchToProps = (dispatch: Dispatch) => {

@@ -28,7 +28,7 @@ module.exports = {
         }
       },
       {
-        test: /\.(eot|svg|ttf|woff|woff2|otf|png)$/,
+        test: /\.(eot|svg|ttf|woff|woff2|otf)$/,
         loader: 'file-loader',
         options: {
           publicPath: '/assets/client-v2/dist/'

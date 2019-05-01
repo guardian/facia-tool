@@ -22,6 +22,7 @@ export default styled('div')<{
     theme.shared.base.colors.backgroundColorLight};
 
   ${HoverActionsAreaOverlay} {
+    bottom: 0;
     left: 0;
     right: 0;
     position: absolute;
