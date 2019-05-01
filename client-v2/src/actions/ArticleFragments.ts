@@ -18,6 +18,10 @@ import {
 import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
 import { cloneFragment } from 'shared/util/articleFragment';
+import {
+  getFromGroupIndecesWithRespectToState,
+  getToGroupIndecesWithRespectToState
+} from 'util/moveUtils';
 import { PosSpec } from 'lib/dnd';
 import { Action } from 'types/Action';
 import {
@@ -273,29 +277,43 @@ const moveArticleFragment = (
       return;
     }
 
-    // if from is not null then assume we're copying a moved article fragment
-    // into this new position
-    const { parent, supporting } = !from
-      ? cloneFragment(
-          fragment,
-          articleFragmentsSelector(selectSharedState(getState()))
-        )
-      : { parent: fragment, supporting: [] };
+    const sharedState = selectSharedState(getState());
+    const fromDetails: {
+      fromWithRespectToState: PosSpec | null;
+      fromOrphanedGroup: boolean;
+    } = getFromGroupIndecesWithRespectToState(from, sharedState);
 
-    if (!from) {
-      dispatch(articleFragmentsReceived([parent, ...supporting]));
-    }
-
-    dispatch(
-      insertActionCreator(
-        to.id,
-        to.index,
-        parent.uuid,
-        from && removeActionCreator
-          ? removeActionCreator(from.id, fragment.uuid)
-          : null
-      )
+    const toWithRespectToState: PosSpec | null = getToGroupIndecesWithRespectToState(
+      to,
+      sharedState,
+      fromDetails.fromOrphanedGroup
     );
+    if (toWithRespectToState) {
+      const { fromWithRespectToState } = fromDetails;
+
+      // if from is not null then assume we're copying a moved article fragment
+      // into this new position
+      const { parent, supporting } = !fromWithRespectToState
+        ? cloneFragment(fragment, articleFragmentsSelector(sharedState))
+        : { parent: fragment, supporting: [] };
+
+      if (toWithRespectToState) {
+        if (!fromWithRespectToState) {
+          dispatch(articleFragmentsReceived([parent, ...supporting]));
+        }
+
+        dispatch(
+          insertActionCreator(
+            toWithRespectToState.id,
+            toWithRespectToState.index,
+            parent.uuid,
+            fromWithRespectToState && removeActionCreator
+              ? removeActionCreator(fromWithRespectToState.id, fragment.uuid)
+              : null
+          )
+        );
+      }
+    }
   };
 };
 
