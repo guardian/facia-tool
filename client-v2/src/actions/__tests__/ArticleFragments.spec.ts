@@ -49,19 +49,19 @@ const root = (state: any = {}, action: any) => ({
 
 const buildStore = (added: ArticleFragmentSpec, collectionCap = Infinity) => {
   const groupA: ArticleFragmentSpec[] = [
-    ['a', '1', [['g', '7']], {}],
-    ['b', '2', undefined, {}],
-    ['c', '3', undefined, {}]
+    ['a', '1', [['g', '7']]],
+    ['b', '2', undefined],
+    ['c', '3', undefined]
   ];
   const groupB: ArticleFragmentSpec[] = [
-    ['i', '9', [['g', '7']], {}],
-    ['j', '10', undefined, {}],
-    ['k', '11', undefined, {}]
+    ['i', '9', [['g', '7']]],
+    ['j', '10', undefined],
+    ['k', '11', undefined]
   ];
   const clipboard: ArticleFragmentSpec[] = [
-    ['d', '4', undefined, {}],
-    ['e', '5', undefined, {}],
-    ['f', '6', undefined, {}]
+    ['d', '4', undefined],
+    ['e', '5', undefined],
+    ['f', '6', undefined]
   ];
   const all = [...groupA, ...groupB, ...clipboard, added];
   const state = {
@@ -112,7 +112,7 @@ const insert = async (
 ) => {
   const [uuid, id] = insertedArticleFragmentSpec;
   const { dispatch, getState } = buildStore(
-    [uuid, id, undefined, {}],
+    [uuid, id, undefined],
     collectionCapInfo ? collectionCapInfo.cap : Infinity
   );
   await dispatch(insertArticleFragment(
@@ -148,7 +148,7 @@ const move = (
 ) => {
   const [uuid, id] = movedArticleFragmentSpec;
   const { dispatch, getState } = buildStore(
-    [uuid, id, undefined, {}],
+    [uuid, id, undefined],
     collectionCapInfo ? collectionCapInfo.cap : Infinity
   );
   dispatch(moveArticleFragment(
@@ -157,7 +157,7 @@ const move = (
       id: toId,
       index
     },
-    specToFragment([uuid, id, undefined, {}]),
+    specToFragment([uuid, id, undefined]),
     {
       id: fromId,
       type: fromType,

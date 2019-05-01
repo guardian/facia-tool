@@ -1,3 +1,5 @@
+import { ArticleFragmentMeta } from 'shared/types/Collection';
+
 export interface ArticleFragmentMap {
   [uuid: string]: {
     uuid: string;
@@ -10,7 +12,7 @@ export type ArticleFragmentSpec = [
   string, // uuid
   string, // id
   Array<[string, string]> | undefined, // all of supporting articles,
-  object // metadata changes
+  ArticleFragmentMeta? // metadata changes
 ];
 
 export const specToFragment = ([
