@@ -7,7 +7,7 @@ import CollectionItemContainer from 'shared/components/collectionItem/Collection
 import CollectionItemContent from 'shared/components/collectionItem/CollectionItemContent';
 import CollectionItemMetaContainer from 'shared/components/collectionItem/CollectionItemMetaContainer';
 import DragIntentContainer from 'shared/components/DragIntentContainer';
-import { dragEventIsBlacklisted } from 'lib/dnd/Root';
+import { dragEventIsBlacklisted } from 'lib/dnd/Level';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
 
 const SublinkCollectionItemBody = styled(CollectionItemBody)<{
