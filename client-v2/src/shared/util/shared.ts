@@ -12,6 +12,7 @@ import { normalize, denormalize } from './schema';
 import { CollectionConfig } from 'types/FaciaApi';
 import v4 from 'uuid/v4';
 import keyBy from 'lodash/keyBy';
+import sortBy from 'lodash/sortBy';
 
 const createGroup = (
   id: string | null,
@@ -80,24 +81,10 @@ const addGroupsForStage = (
   }
 
   // Finally we need to sort the groups according to their ids.
-  groupsWithNames.sort((g1, g2) => {
-    const index1 = getGroupIndex(g1.id);
-    const index2 = getGroupIndex(g2.id);
-
-    if (index1 > index2) {
-      return -1;
-    }
-
-    if (index1 < index2) {
-      return 1;
-    }
-
-    return 0;
-  });
-
+  const sortedGroupsWithNames = sortBy(groupsWithNames, group => -getGroupIndex(group.id));
   return {
-    addedGroups: keyBy(groupsWithNames, getUUID),
-    groupIds: groupsWithNames.map(getUUID).slice()
+    addedGroups: keyBy(sortedGroupsWithNames, getUUID),
+    groupIds: sortedGroupsWithNames.map(getUUID)
   };
 };
 
