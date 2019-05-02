@@ -22,11 +22,9 @@ import {
   validateImageEvent,
   ValidationResponse
 } from 'shared/util/validateImageSrc';
-import {
-  articleFragmentImageCriteria as imageCriteria,
-  gridDataTransferTypes
-} from 'constants/image';
+import { articleFragmentImageCriteria as imageCriteria } from 'constants/image';
 import Sublinks from './Sublinks';
+import { collectionDropZoneBlacklist } from 'constants/fronts';
 
 interface ContainerProps {
   uuid: string;
@@ -114,7 +112,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
             fade={!isSelected}
             size={size}
             displayType={displayType}
-            imageDropTypes={Object.values(gridDataTransferTypes)}
+            imageDropTypes={collectionDropZoneBlacklist}
             onImageDrop={this.getDropHandler(this.props.onImageDrop)}
           >
             <Sublinks

@@ -31,6 +31,13 @@ const adjustToIndexForMove = (from: PosSpec, to: PosSpec): PosSpec =>
 const isMoveToSamePosition = (from: PosSpec, to: PosSpec): boolean =>
   isOnSameLevel(from, to) && from.index === to.index;
 
+const dragEventIsBlacklisted = (
+  e: React.DragEvent,
+  blacklist: string[] | undefined
+) => {
+  return e.dataTransfer.types.some(type => (blacklist || []).includes(type));
+};
+
 interface Move<T> {
   data: T;
   from: false | PosSpec;
@@ -51,6 +58,10 @@ type LevelChild<T> = (
 
 type MoveHandler<T> = (move: Move<T>) => void;
 type DropHandler = (e: React.DragEvent, to: PosSpec) => void;
+type ContainerDragTypes = Pick<
+  React.DOMAttributes<HTMLDivElement>,
+  'onDragOver'
+>;
 
 interface OuterProps<T> {
   arr: T[];
@@ -70,9 +81,10 @@ interface OuterProps<T> {
         index: number
       ) => React.ReactNode)
     | null;
-  // any occurence of these in the data transfer will cause all dragging
-  // behaviour to be bypassed
-  blockingDataTransferTypes?: string[];
+  // Any occurence of these in the data transfer will cause all dragging
+  // behaviour to be bypassed.
+  blacklistedDataTransferTypes?: string[];
+  containerElement?: React.ComponentType<ContainerDragTypes>;
 }
 
 interface ContextProps {
@@ -85,6 +97,11 @@ type Props<T> = OuterProps<T> & ContextProps;
 interface State {
   isDraggedOver: boolean;
 }
+
+const DefaultContainer: React.SFC<ContainerDragTypes> = ({
+  children,
+  ...rest
+}) => <div {...rest}>{children}</div>;
 
 class Level<T> extends React.Component<Props<T>, State> {
   get key() {
@@ -100,8 +117,9 @@ class Level<T> extends React.Component<Props<T>, State> {
       getId,
       type
     } = this.props;
+    const Container = this.props.containerElement || DefaultContainer;
     return (
-      <>
+      <Container onDragOver={this.onDragOver(null, false)}>
         {arr.map((node, i) => (
           <React.Fragment key={getId(node)}>
             <DropZone parentKey={this.key} index={i}>
@@ -139,13 +157,7 @@ class Level<T> extends React.Component<Props<T>, State> {
             )
           }
         </DropZone>
-      </>
-    );
-  }
-
-  private dragEventIsBlacklisted(e: React.DragEvent) {
-    return e.dataTransfer.types.some(type =>
-      (this.props.blockingDataTransferTypes || []).includes(type)
+      </Container>
     );
   }
 
@@ -153,19 +165,31 @@ class Level<T> extends React.Component<Props<T>, State> {
     return i + (isNode ? getDropIndexOffset(e) : 0);
   }
 
-  private onDragOver = (i: number, isNode: boolean) => (e: React.DragEvent) => {
+  private onDragOver = (i: number | null, isNode: boolean) => (
+    e: React.DragEvent
+  ) => {
     if (!this.props.store) {
       throw new Error(NO_STORE_ERROR);
     }
-    if (e.defaultPrevented || this.dragEventIsBlacklisted(e)) {
+    if (
+      e.defaultPrevented ||
+      dragEventIsBlacklisted(e, this.props.blacklistedDataTransferTypes)
+    ) {
       return;
     }
     e.preventDefault();
-    this.props.store.update(this.key, this.getDropIndex(e, i, isNode), true);
+    this.props.store.update(
+      this.key,
+      i && this.getDropIndex(e, i, isNode),
+      true
+    );
   };
 
   private onDrop = (i: number, isNode: boolean) => (e: React.DragEvent) => {
-    if (e.defaultPrevented || this.dragEventIsBlacklisted(e)) {
+    if (
+      e.defaultPrevented ||
+      dragEventIsBlacklisted(e, this.props.blacklistedDataTransferTypes)
+    ) {
       return;
     }
 
@@ -242,4 +266,11 @@ export default <T extends any>(props: OuterProps<T>) => (
   </StoreConsumer>
 );
 
-export { Move, PosSpec, LevelChild, MoveHandler, DropHandler };
+export {
+  Move,
+  PosSpec,
+  LevelChild,
+  MoveHandler,
+  DropHandler,
+  dragEventIsBlacklisted
+};

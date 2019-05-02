@@ -179,12 +179,7 @@ class Clipboard extends React.Component<ClipboardProps> {
               <Root
                 id="clipboard"
                 data-testid="clipboard"
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  flex: '1',
-                  width: '140px'
-                }}
+                style={{ display: 'flex', flex: 1 }}
               >
                 <ClipboardLevel
                   onMove={this.handleMove}
