@@ -13,7 +13,7 @@ const CollectionItemContent = styled('div')<{
     if (displayType === 'default') {
       if (displaySize !== 'small') {
         return css`
-          width: calc(100% - 210px);
+          width: calc(100% - 163px);
           padding: 0 8px;
         `;
       }

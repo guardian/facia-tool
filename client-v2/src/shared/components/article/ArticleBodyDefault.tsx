@@ -11,7 +11,7 @@ import CollectionItemMetaContainer from '../collectionItem/CollectionItemMetaCon
 import CollectionItemContent from '../collectionItem/CollectionItemContent';
 import { notLiveLabels } from 'constants/fronts';
 import TextPlaceholder from 'shared/components/TextPlaceholder';
-import Thumbnail from '../Thumbnail';
+import { ThumbnailSmall } from '../Thumbnail';
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
 import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
 import {
@@ -28,8 +28,8 @@ import ColouredQuote from '../collectionItem/CollectionItemQuote';
 import DraggableArticleImageContainer from './DraggableArticleImageContainer';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
-  width: 130px;
-  height: 100%;
+  width: 83px;
+  height: 50px;
 `;
 
 const NotLiveContainer = styled(CollectionItemMetaHeading)`
@@ -232,7 +232,7 @@ const articleBodyDefault = ({
                 </SlideshowIcon>
               </ArticleSlideshow>
             )}
-            <Thumbnail
+            <ThumbnailSmall
               style={{
                 backgroundImage: `url('${thumbnail}')`,
                 opacity: imageHide ? 0.5 : 1

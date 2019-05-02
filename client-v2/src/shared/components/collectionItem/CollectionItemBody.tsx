@@ -23,7 +23,7 @@ export default styled('div')<{
   ${({ displayType, size }) =>
     displayType === 'polaroid' &&
     `font-size: ${size === 'small' ? '12px' : '13px'};`}
-  min-height: ${({ size }) => (size === 'small' ? '25px' : '67px')};
+  min-height: ${({ size }) => (size === 'small' ? '25px' : '50px')};
   cursor: pointer;
   background-color: ${({ displayType, theme }) =>
     displayType === 'default'

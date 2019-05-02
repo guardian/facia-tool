@@ -65,7 +65,7 @@ const ClipboardTitle = styled.h2`
 `;
 
 const ClipboardBody = styled.div`
-  padding: 10px;
+  padding: 0 10px;
   flex: 1;
   display: flex;
 `;
@@ -86,7 +86,7 @@ const SupportingDivider = styled.hr`
 const FullDivider = styled('hr')`
   border: 0;
   border-top: 1px solid #ccc;
-  margin: 8px -10px 4px;
+  margin: 8px -10px 0px;
   width: 115%;
 `;
 
