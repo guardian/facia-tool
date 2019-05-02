@@ -203,8 +203,10 @@ const createCollectionStageGroupsSelector = () => {
       // are filtered out as these groups no longer exist in the config of the collection.
       const finalGroups = grps.filter(grp => grp.name || !grp.id);
       if (finalGroups.length > 0) {
-        const grpF = finalGroups ? finalGroups[0].articleFragments : [];
-        const firstGroupFragments = orphanedFragments.concat(grpF);
+        const originalFirstGroupFragments = finalGroups[0].articleFragments;
+        const firstGroupFragments = orphanedFragments.concat(
+          originalFirstGroupFragments
+        );
         const firstGroup = {
           ...finalGroups[0],
           ...{ articleFragments: firstGroupFragments }
