@@ -34,6 +34,17 @@ const getAllArticleFragments = (groups: Group[]) =>
     [] as string[]
   );
 
+const configGroupIndexExistsInGroups = (
+  groupsToSearch: Group[],
+  index: number
+): boolean =>
+  groupsToSearch.some(group => {
+    if (group.id) {
+      return parseInt(group.id, 10) === index;
+    }
+    return index === 0;
+  });
+
 const addGroupsForStage = (
   groupIds: string[],
   entities: { [id: string]: Group },
@@ -55,16 +66,9 @@ const addGroupsForStage = (
   // We may have empty groups in the config which would not show up in the normalised
   // groups result. We need to add these into the groups array.
   if (collectionConfig.groups) {
-    collectionConfig.groups.forEach((group, index) => {
-      if (
-        !groupsWithNames.some(addedGroup => {
-          if (addedGroup.id) {
-            return parseInt(addedGroup.id, 10) === index;
-          }
-          return index === 0;
-        })
-      ) {
-        groupsWithNames.push(createGroup(`${index}`, group));
+    collectionConfig.groups.forEach((group, configGroupIndex) => {
+      if (!configGroupIndexExistsInGroups(groupsWithNames, configGroupIndex)) {
+        groupsWithNames.push(createGroup(`${configGroupIndex}`, group));
       }
     });
   }
