@@ -52,7 +52,7 @@ const addGroupsForStage = (
   collectionConfig: CollectionConfig
 ) => {
   const groups = groupIds.map(id => entities[id]);
-  let groupsWithNames = groups.map(group => {
+  const groupsWithNames = groups.map(group => {
     let name: string | null = null;
     const groupNumberAsInt = getGroupIndex(group.id);
     if (
@@ -77,11 +77,16 @@ const addGroupsForStage = (
   // If we have no article fragments and no groups in a collection we still need to create
   // and empty group for articles.
   if (groupsWithNames.length === 0) {
-    groupsWithNames = [createGroup(null, null, getAllArticleFragments(groups))];
+    groupsWithNames.push(
+      createGroup(null, null, getAllArticleFragments(groups))
+    );
   }
 
   // Finally we need to sort the groups according to their ids.
-  const sortedGroupsWithNames = sortBy(groupsWithNames, group => -getGroupIndex(group.id));
+  const sortedGroupsWithNames = sortBy(
+    groupsWithNames,
+    group => -getGroupIndex(group.id)
+  );
   return {
     addedGroups: keyBy(sortedGroupsWithNames, getUUID),
     groupIds: sortedGroupsWithNames.map(getUUID)
