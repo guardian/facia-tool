@@ -21,7 +21,6 @@ import CollectionItemContent from '../collectionItem/CollectionItemContent';
 import CollectionItemBody from '../collectionItem/CollectionItemBody';
 import PolaroidThumbnail from '../PolaroidThumbnail';
 import { CollectionItemDisplayTypes } from 'shared/types/Collection';
-import CollectionItemTrail from '../collectionItem/CollectionItemTrail';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
 
 const SnapLinkBodyContainer = styled(CollectionItemBody)`
@@ -91,11 +90,6 @@ const SnapLink = ({
               <strong>Snap link </strong>
               {headline}
             </>
-          )}
-          {size === 'default' && articleFragment.meta.trailText && (
-            <CollectionItemTrail html>
-              {articleFragment.meta.trailText}
-            </CollectionItemTrail>
           )}
         </CollectionItemContent>
         {size === 'default' && displayType === 'default' && <Thumbnail />}
