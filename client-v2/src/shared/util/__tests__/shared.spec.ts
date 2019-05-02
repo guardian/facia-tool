@@ -168,7 +168,7 @@ describe('Shared utilities', () => {
       const groupId2 = result.normalisedCollection.live![1];
       expect(result.groups[groupId2].articleFragments).toHaveLength(2);
     });
-    it("should create empty groups for groups in the config which don't have collections in them", () => {
+    it("should create empty groups for groups in the config which don't have article fragments in them", () => {
       const configWithExtraGroup = {
         ...collectionConfig,
         ...{ groups: ['extra', 'large', 'medium', 'small'] }
