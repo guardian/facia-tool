@@ -262,6 +262,12 @@ const state = {
         frontPublicationDate: 1547204861924,
         meta: { supporting: [] },
         uuid: '56a3b407-741c-439f-a678-175abea44a9f'
+      },
+      exampleId: {
+        id: 'internal-code/page/5592826',
+        frontPublicationDate: 1547204861924,
+        meta: { headline: 'Bill Shorten', supporting: [] },
+        uuid: 'exampleId'
       }
     },
     groups: {

@@ -22,10 +22,7 @@ const articleFragments = (
         ...state,
         [id]: {
           ...state[id],
-          meta: {
-            ...(state[id].meta || {}),
-            ...action.payload.meta
-          }
+          meta: action.payload.meta
         }
       };
     }
