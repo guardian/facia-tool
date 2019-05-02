@@ -278,6 +278,10 @@ const moveArticleFragment = (
     }
 
     const sharedState = selectSharedState(getState());
+
+    // If move actions are happening to/from groups which have article fragments displayed
+    // in them which don't belong to these groups we need to adjust the indices of the move
+    // actions in these groups.
     const fromDetails: {
       fromWithRespectToState: PosSpec | null;
       fromOrphanedGroup: boolean;
