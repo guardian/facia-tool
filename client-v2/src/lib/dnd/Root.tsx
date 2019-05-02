@@ -6,18 +6,8 @@ const { Provider: StoreProvider, Consumer: StoreConsumer } = createContext(
   null as Store | null
 );
 
-const dragEventIsBlacklisted = (
-  e: React.DragEvent,
-  blacklist: string[] | undefined
-) => {
-  return e.dataTransfer.types.some(type => (blacklist || []).includes(type));
-};
-
 interface OuterProps {
   id: string;
-  // Any occurence of these in the data transfer will cause all dragging
-  // behaviour to be bypassed.
-  blacklistedDataTransferTypes?: string[];
 }
 
 type Props = OuterProps &
@@ -31,14 +21,14 @@ export default class Root extends React.Component<Props, State> {
   public state = { store: createStore() };
 
   public render() {
-    const { id, blacklistedDataTransferTypes, ...divProps } = this.props;
+    const { id, ...divProps } = this.props;
     return (
       <div
         {...divProps}
         onDragOver={this.onDragOver}
         onDragLeave={this.onDragLeave}
-        onDragEnd={() => this.reset(false)}
-        onDrop={() => this.reset(false)}
+        onDragEnd={this.reset}
+        onDrop={this.reset}
       >
         <StoreProvider value={this.state.store}>
           <AddParentInfo id={this.props.id} type="root">
@@ -50,19 +40,10 @@ export default class Root extends React.Component<Props, State> {
   }
 
   private onDragOver = (e: React.DragEvent) => {
-    const isBlacklisted = dragEventIsBlacklisted(
-      e,
-      this.props.blacklistedDataTransferTypes
-    );
-    if (!e.defaultPrevented || isBlacklisted) {
-      // Don't alter the dragOver state if we're dealing with a
-      // blacklisted drag type.
-      this.reset(!isBlacklisted);
+    if (!e.defaultPrevented) {
+      this.reset();
       return;
     }
-    const state = this.state.store.getState();
-    const { key, index } = state;
-    this.state.store.update(key, index, true);
   };
 
   private onDragLeave = ({
@@ -73,13 +54,13 @@ export default class Root extends React.Component<Props, State> {
     // is there a better way to do this?
     const { top, right, bottom, left } = currentTarget.getBoundingClientRect();
     if (cx <= left || cx >= right || cy <= top || cy >= bottom) {
-      this.reset(false);
+      this.reset();
     }
   };
 
-  private reset = (over: boolean) => {
-    this.state.store.update(null, null, over);
+  private reset = () => {
+    this.state.store.update(null, null, false);
   };
 }
 
-export { StoreConsumer, isMove, isInside, dragEventIsBlacklisted };
+export { StoreConsumer, isMove, isInside };

@@ -7,6 +7,7 @@ import { ArticleFragment } from 'shared/types/Collection';
 import ArticleDrag from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone from 'components/DropZone';
 import { collectionDropZoneBlacklist } from 'constants/fronts';
+import { styled } from 'constants/theme';
 
 interface OuterProps {
   children: LevelChild<ArticleFragment>;
@@ -20,6 +21,13 @@ interface InnerProps {
 
 type Props = OuterProps & InnerProps;
 
+const ClipboardItemContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 140px;
+`;
+
 const ClipboardLevel = ({
   children,
   articleFragments,
@@ -27,6 +35,7 @@ const ClipboardLevel = ({
   onDrop
 }: Props) => (
   <Level
+    containerElement={ClipboardItemContainer}
     blacklistedDataTransferTypes={collectionDropZoneBlacklist}
     arr={articleFragments}
     parentType="clipboard"

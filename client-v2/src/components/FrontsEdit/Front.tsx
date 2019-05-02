@@ -22,7 +22,6 @@ import FrontDetailView from './FrontDetailView';
 import { initialiseCollectionsForFront } from 'actions/Collections';
 import { setFocusState } from 'bundles/focusBundle';
 import Collection from './Collection';
-import { collectionDropZoneBlacklist } from 'constants/fronts';
 
 // min-height required here to display scrollbar in Firefox:
 // https://stackoverflow.com/questions/28636832/firefox-overflow-y-not-working-with-nested-flexbox
@@ -124,11 +123,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
         </div>
         <FrontContainer>
           <FrontContentContainer>
-            <Root
-              id={this.props.id}
-              data-testid={this.props.id}
-              blacklistedDataTransferTypes={collectionDropZoneBlacklist}
-            >
+            <Root id={this.props.id} data-testid={this.props.id}>
               {front.collections.map(collectionId => (
                 <Collection
                   key={collectionId}
