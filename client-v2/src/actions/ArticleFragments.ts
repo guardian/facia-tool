@@ -12,7 +12,8 @@ import {
 import { ArticleFragment } from 'shared/types/Collection';
 import {
   selectSharedState,
-  articleFragmentsSelector
+  articleFragmentsSelector,
+  articleFragmentSelector
 } from 'shared/selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
@@ -298,6 +299,21 @@ const moveArticleFragment = (
   };
 };
 
+const cloneArticleFragmentToTarget = (
+  uuid: string,
+  toType: 'clipboard' | 'collection'
+): ThunkResult<void> => {
+  return (dispatch, getState) => {
+    const to = { id: toType, type: toType, index: 0 };
+    const fragment = articleFragmentSelector(
+      selectSharedState(getState()),
+      uuid
+    );
+    const from = null;
+    dispatch(moveArticleFragment(to, fragment, from, toType));
+  };
+};
+
 const addImageToArticleFragment = (
   uuid: string,
   imageData: ValidationResponse
@@ -314,5 +330,6 @@ export {
   updateClipboardArticleFragmentMetaWithPersist as updateClipboardArticleFragmentMeta,
   removeArticleFragment,
   addImageToArticleFragment,
-  copyArticleFragmentImageMetaWithPersist
+  copyArticleFragmentImageMetaWithPersist,
+  cloneArticleFragmentToTarget
 };

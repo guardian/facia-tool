@@ -1,4 +1,5 @@
 import omit from 'lodash/omit';
+import omitBy from 'lodash/omitBy';
 import compact from 'lodash/compact';
 import clamp from 'lodash/clamp';
 import pickBy from 'lodash/pickBy';
@@ -7,6 +8,10 @@ import { ArticleFragmentMeta } from 'shared/types/Collection';
 import { DerivedArticle } from 'shared/types/Article';
 import { CapiArticle } from 'types/Capi';
 import { State } from 'types/State';
+import {
+  articleFragmentSelector,
+  selectSharedState
+} from 'shared/selectors/shared';
 
 export interface ArticleFragmentFormData {
   headline: string;
@@ -144,7 +149,7 @@ export const getImageMetaFromValidationResponse = (image: ImageData) => ({
 
 export const getArticleFragmentMetaFromFormValues = (
   state: State,
-  formName: string,
+  id: string,
   values: ArticleFragmentFormData
 ): ArticleFragmentMeta => {
   const primaryImage = values.primaryImage || {};
@@ -164,7 +169,7 @@ export const getArticleFragmentMetaFromFormValues = (
     return field;
   };
 
-  let completeMeta = omit(
+  const completeMeta = omit(
     {
       ...values,
       headline: getStringField(values.headline),
@@ -181,13 +186,34 @@ export const getArticleFragmentMetaFromFormValues = (
     'cutoutImage'
   );
 
+  // We only return dirtied values.
+  const isDirtySelector = isDirty(id);
+  const dirtiedFields = pickBy(completeMeta, (_, key) => {
+    return isDirtySelector(state, formToMetaFieldMap[key] || key);
+  });
+
+  const existingArticleFragment = articleFragmentSelector(
+    selectSharedState(state),
+    id
+  );
+
+  const existingArticleFragmentMeta = existingArticleFragment
+    ? existingArticleFragment.meta || {}
+    : {};
+
+  let newArticleFragmentMeta = {
+    ...existingArticleFragmentMeta,
+    ...dirtiedFields
+  };
+
   if (!values.customKicker) {
-    completeMeta = omit(completeMeta, 'customKicker', 'showKickerCustom');
+    newArticleFragmentMeta = omit(newArticleFragmentMeta, 'showKickerCustom');
   }
 
-  // We only return dirtied values.
-  const isDirtySelector = isDirty(formName);
-  return pickBy(completeMeta, (_, key) => {
-    return isDirtySelector(state, formToMetaFieldMap[key] || key);
+  return omitBy(newArticleFragmentMeta, (value: string | boolean | any[]) => {
+    if (Array.isArray(value)) {
+      return value.length === 0;
+    }
+    return !value;
   });
 };

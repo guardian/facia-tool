@@ -22,7 +22,6 @@ import {
 } from '../input/HoverActionButtons';
 import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
 import { CollectionItemSizes } from 'shared/types/Collection';
-import CollectionItemTrail from '../collectionItem/CollectionItemTrail';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
 import CollectionItemDraftMetaContent from '../collectionItem/CollectionItemDraftMetaContent';
 import ColouredQuote from '../collectionItem/CollectionItemQuote';
@@ -90,7 +89,6 @@ interface ArticleBodyProps {
   kicker?: string;
   size?: CollectionItemSizes;
   headline?: string;
-  trailText?: string;
   thumbnail?: string | void;
   isLive?: boolean;
   urlPath?: string;
@@ -133,7 +131,6 @@ const articleBodyDefault = ({
   kicker,
   size = 'default',
   headline,
-  trailText,
   thumbnail,
   isLive,
   urlPath,
@@ -153,8 +150,6 @@ const articleBodyDefault = ({
   const ArticleHeadingContainer =
     size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
   const displayByline = size === 'default' && showByline && byline;
-  const displayTrail =
-    size === 'default' && trailText && !(showByline && byline);
   const kickerToDisplay = isBreaking ? 'Breaking news' : kicker;
   const now = Date.now();
 
@@ -223,9 +218,6 @@ const articleBodyDefault = ({
             {headline}
           </CollectionItemHeading>
         </ArticleHeadingContainer>
-        {displayTrail && (
-          <CollectionItemTrail html>{trailText}</CollectionItemTrail>
-        )}
         {displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
       </CollectionItemContent>
       {size === 'default' &&

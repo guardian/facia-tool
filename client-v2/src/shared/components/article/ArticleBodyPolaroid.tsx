@@ -1,6 +1,5 @@
 import React from 'react';
 import { styled } from 'shared/constants/theme';
-import truncate from 'lodash/truncate';
 
 import { ArticleBodyProps } from './ArticleBodyDefault';
 import { getArticleLabel } from 'util/clipboardUtils';
@@ -22,6 +21,10 @@ const PillaredSection = styled('span')<{ pillar?: string; isLive?: boolean }>`
     getPillarColor(pillar, isLive || true) || 'inherit'};
   font-size: 13px;
   font-weight: bold;
+`;
+
+const HeadlinePolaroidSpan = styled('span')`
+  font-size: 12px;
 `;
 
 const ArticlePolaroidComponent = ({
@@ -63,9 +66,7 @@ const ArticlePolaroidComponent = ({
             <PillaredSection pillar={pillarId} isLive={isLive}>
               {articleLabel}
             </PillaredSection>
-            {` ${truncate(headline, {
-              length: 45 - articleLabel.length
-            })}`}
+            <HeadlinePolaroidSpan>{headline}</HeadlinePolaroidSpan>
           </>
         )}
       </CollectionItemContent>

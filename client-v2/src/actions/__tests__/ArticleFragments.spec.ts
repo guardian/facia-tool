@@ -18,7 +18,8 @@ import {
 import {
   moveArticleFragment,
   insertArticleFragment,
-  addImageToArticleFragment
+  addImageToArticleFragment,
+  cloneArticleFragmentToTarget
 } from 'actions/ArticleFragments';
 import {
   reducer as collectionsReducer,
@@ -29,6 +30,7 @@ import { endConfirmModal } from 'actions/ConfirmModal';
 import config from 'reducers/configReducer';
 import { enableBatching } from 'redux-batched-actions';
 import { Dispatch } from 'types/Store';
+import { clipboardArticlesSelector } from 'selectors/clipboardSelectors';
 
 const root = (state: any = {}, action: any) => ({
   confirmModal: confirmModal(state.confirmModal, action),
@@ -302,6 +304,24 @@ describe('ArticleFragments actions', () => {
         accept: null
       });
       expect(groupArticlesSelector(s1, 'a')).toEqual(['b', 'c', 'a']);
+    });
+  });
+
+  describe('cloneToTarget', () => {
+    it('clones an article fragment into a new collection preserving its metadata', () => {
+      const store = buildStore([
+        '123',
+        '456',
+        undefined,
+        { headline: 'Headline was overwritten with this' }
+      ]);
+      store.dispatch(cloneArticleFragmentToTarget('123', 'clipboard'));
+      const state = store.getState();
+      expect(clipboardArticlesSelector(state as any)[0].id).toEqual('456');
+      expect(clipboardArticlesSelector(state as any)[0].meta).toEqual({
+        supporting: [],
+        headline: 'Headline was overwritten with this'
+      });
     });
   });
 

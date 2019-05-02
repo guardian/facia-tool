@@ -149,7 +149,7 @@ describe('ArticleFragmentForm transform functions', () => {
     });
   });
   describe('Derive articleFragment meta from form values', () => {
-    it('should return nothing if no form values were dirtied', () => {
+    it('should return existing meta if no form values were dirtied', () => {
       const state = createStateWithChangedFormFields(
         initialState,
         'exampleId',
@@ -157,7 +157,7 @@ describe('ArticleFragmentForm transform functions', () => {
       );
       expect(
         getArticleFragmentMetaFromFormValues(state, 'exampleId', formValues)
-      ).toEqual({});
+      ).toEqual({ headline: 'Bill Shorten' });
     });
     it('should derive values, removing the slideshow array if empty', () => {
       const byline = 'Caroline Davies edited';
@@ -214,7 +214,8 @@ describe('ArticleFragmentForm transform functions', () => {
         imageSrcHeight: '100',
         imageSrcOrigin: 'exampleOrigin',
         imageSrcThumb: 'exampleThumb',
-        imageSrcWidth: '100'
+        imageSrcWidth: '100',
+        headline: 'Bill Shorten'
       });
     });
     it('should remove customKicker and showKickerCustom if the kicker is empty', () => {
@@ -232,7 +233,7 @@ describe('ArticleFragmentForm transform functions', () => {
           ...formValues,
           ...values
         })
-      ).toEqual({});
+      ).toEqual({ headline: 'Bill Shorten' });
     });
     it('should handle conversion of string values for images', () => {
       const values = {
@@ -271,6 +272,7 @@ describe('ArticleFragmentForm transform functions', () => {
           ...values
         })
       ).toEqual({
+        headline: 'Bill Shorten',
         imageSrc: 'exampleSrc',
         imageSrcHeight: '100',
         imageSrcOrigin: 'exampleOrigin',

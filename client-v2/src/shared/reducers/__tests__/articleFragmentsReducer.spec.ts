@@ -16,7 +16,7 @@ describe('articleFragmentsReducer', () => {
       headline: 'headline'
     });
   });
-  it("shouldn't overwrite properties", () => {
+  it('should overwrite properties', () => {
     expect(
       reducer(
         stateWithClipboard.shared.articleFragments as any,
@@ -26,8 +26,7 @@ describe('articleFragmentsReducer', () => {
         stateWithClipboard.shared
       ).article2.meta
     ).toEqual({
-      headline: 'headline',
-      supporting: ['article3']
+      headline: 'headline'
     });
   });
 });
