@@ -6,7 +6,8 @@ import {
   updateArticleFragmentMeta,
   createArticleFragment,
   articleFragmentsReceived,
-  maybeAddFrontPublicationDate
+  maybeAddFrontPublicationDate,
+  copyArticleFragmentImageMeta
 } from 'shared/actions/ArticleFragments';
 import { ArticleFragment } from 'shared/types/Collection';
 import {
@@ -74,6 +75,14 @@ const createInsertArticleFragmentThunk = (action: InsertActionCreator) => (
     })(id, index, articleFragmentId)
   );
 };
+
+const copyArticleFragmentImageMetaWithPersist = addPersistMetaToAction(
+  copyArticleFragmentImageMeta,
+  {
+    persistTo: 'collection',
+    key: 'to'
+  }
+);
 
 // Creates a thunk with persistence that will launch a confirm modal if required
 // when adding to a group, otherwise will just run the action
@@ -321,5 +330,6 @@ export {
   updateClipboardArticleFragmentMetaWithPersist as updateClipboardArticleFragmentMeta,
   removeArticleFragment,
   addImageToArticleFragment,
+  copyArticleFragmentImageMetaWithPersist,
   cloneArticleFragmentToTarget
 };

@@ -38,7 +38,8 @@ const ArticlePolaroidComponent = ({
   thumbnail,
   kicker,
   isLive,
-  isUneditable
+  isUneditable,
+  uuid
 }: ArticleBodyProps) => {
   const articleLabel =
     getArticleLabel(firstPublicationDate, kicker, isLive) || '';

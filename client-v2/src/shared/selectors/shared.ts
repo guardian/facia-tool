@@ -15,6 +15,7 @@ import {
 import { State } from '../types/State';
 import { collectionItemSets } from 'constants/fronts';
 import { createShallowEqualResultSelector } from 'shared/util/selectorUtils';
+import { DerivedArticle } from 'shared/types/Article';
 
 // Selects the shared part of the application state mounted at its default point, '.shared'.
 const selectSharedState = (rootState: any): State => rootState.shared;
@@ -100,12 +101,23 @@ const articleKickerSelector = (
   return undefined;
 };
 
+const selectCollectionItemHasMediaOverrides = (state: State, id: string) => {
+  const article = articleFragmentSelector(state, id);
+  return (
+    !!article &&
+    !!article.meta &&
+    (!!article.meta.imageCutoutReplace ||
+      !!article.meta.imageReplace ||
+      !!article.meta.imageSlideshowReplace)
+  );
+};
+
 const createArticleFromArticleFragmentSelector = () =>
   createSelector(
     externalArticleFromArticleFragmentSelector,
     articleFragmentSelector,
     articleKickerSelector,
-    (externalArticle, articleFragment, kicker) => {
+    (externalArticle, articleFragment, kicker): DerivedArticle | undefined => {
       if (!articleFragment) {
         return undefined;
       }
@@ -140,7 +152,7 @@ const createArticleFromArticleFragmentSelector = () =>
         firstPublicationDate: externalArticle
           ? externalArticle.fields.firstPublicationDate
           : undefined,
-        frontPublicationTime: articleFragment.frontPublicationDate
+        frontPublicationDate: articleFragment.frontPublicationDate
       };
     }
   );
@@ -468,5 +480,6 @@ export {
   indexInGroupSelector,
   groupsSelector,
   groupsArticleCount,
-  externalArticleIdFromArticleFragmentSelector
+  externalArticleIdFromArticleFragmentSelector,
+  selectCollectionItemHasMediaOverrides
 };

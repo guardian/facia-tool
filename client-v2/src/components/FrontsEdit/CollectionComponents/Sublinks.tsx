@@ -7,8 +7,8 @@ import CollectionItemContainer from 'shared/components/collectionItem/Collection
 import CollectionItemContent from 'shared/components/collectionItem/CollectionItemContent';
 import CollectionItemMetaContainer from 'shared/components/collectionItem/CollectionItemMetaContainer';
 import DragIntentContainer from 'shared/components/DragIntentContainer';
-import { collectionDropZoneBlacklist } from 'constants/fronts';
 import { dragEventIsBlacklisted } from 'lib/dnd/Level';
+import { collectionDropTypeBlacklist } from 'constants/fronts';
 
 const SublinkCollectionItemBody = styled(CollectionItemBody)<{
   dragHoverActive: boolean;
@@ -114,7 +114,7 @@ class Sublinks extends React.Component<SublinkProps> {
   }
 
   private dragEventNotBlacklisted = (e: React.DragEvent) =>
-    !dragEventIsBlacklisted(e, collectionDropZoneBlacklist);
+    !dragEventIsBlacklisted(e, collectionDropTypeBlacklist);
 }
 
 export default Sublinks;

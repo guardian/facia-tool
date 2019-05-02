@@ -7,7 +7,7 @@ import { CollectionItemDisplayTypes } from 'shared/types/Collection';
 import ArticleDrag from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone from 'components/DropZone';
 import { createSupportingArticlesSelector } from 'shared/selectors/shared';
-import { collectionDropZoneBlacklist } from 'constants/fronts';
+import { collectionDropTypeBlacklist } from 'constants/fronts';
 
 interface OuterProps {
   articleFragmentId: string;
@@ -35,7 +35,7 @@ const ArticleFragmentLevel = ({
 }: Props) => (
   <Level
     arr={supporting || []}
-    blacklistedDataTransferTypes={collectionDropZoneBlacklist}
+    blacklistedDataTransferTypes={collectionDropTypeBlacklist}
     parentType="articleFragment"
     parentId={articleFragmentId}
     type="articleFragment"

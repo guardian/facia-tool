@@ -1,5 +1,7 @@
 import v4 from 'uuid/v4';
-import { ArticleFragment } from 'shared/types/Collection';
+import { ArticleFragment, ArticleFragmentMeta } from 'shared/types/Collection';
+import pick from 'lodash/pick';
+import cloneDeep from 'lodash/cloneDeep';
 
 const createFragment = (id: string, supporting: string[] = []) => ({
   uuid: v4(),
@@ -42,4 +44,47 @@ const cloneFragment = (
   };
 };
 
-export { createFragment, cloneFragment };
+const cloneActiveImageMeta = ({
+  meta
+}: ArticleFragment): ArticleFragmentMeta => {
+  const newMeta: ArticleFragmentMeta = {
+    imageCutoutReplace: false,
+    imageSlideshowReplace: false,
+    imageReplace: false
+  };
+  if (meta.imageReplace) {
+    return {
+      ...newMeta,
+      ...pick(meta, [
+        'imageSrc',
+        'imageSrcThumb',
+        'imageSrcWidth',
+        'imageSrcHeight',
+        'imageSrcOrigin'
+      ]),
+      imageReplace: true
+    };
+  }
+  if (meta.imageSlideshowReplace) {
+    return {
+      ...newMeta,
+      slideshow: cloneDeep(meta.slideshow),
+      imageSlideshowReplace: true
+    };
+  }
+  if (meta.imageCutoutReplace) {
+    return {
+      ...newMeta,
+      ...pick(meta, [
+        'imageCutoutSrc',
+        'imageCutoutSrcWidth',
+        'imageCutoutSrcHeight',
+        'imageCutoutSrcOrigin'
+      ]),
+      imageCutoutReplace: true
+    };
+  }
+  return {};
+};
+
+export { createFragment, cloneFragment, cloneActiveImageMeta };

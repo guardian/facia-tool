@@ -9,3 +9,5 @@ export const gridDataTransferTypes = {
   gridUrl: 'application/vnd.mediaservice.kahuna.uri',
   imageData: 'application/vnd.mediaservice.image+json'
 };
+
+export const DRAG_COLLECTION_ITEM_IMAGE = '@@drag_collection_item_image@@';

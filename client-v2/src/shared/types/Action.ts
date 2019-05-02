@@ -6,6 +6,7 @@ import {
   ArticleFragmentMeta
 } from './Collection';
 import { Actions } from 'lib/createAsyncResourceBundle';
+import { copyArticleFragmentImageMeta } from 'shared/actions/ArticleFragments';
 
 interface ArticleFragmentsReceived {
   type: 'SHARED/ARTICLE_FRAGMENTS_RECEIVED';
@@ -73,6 +74,10 @@ interface MaybeAddFrontPublicationDate {
   };
 }
 
+type CopyArticleFragmentImageMeta = ReturnType<
+  typeof copyArticleFragmentImageMeta
+>;
+
 type Action =
   | GroupsReceived
   | InsertGroupArticleFragment
@@ -85,7 +90,8 @@ type Action =
   | ClearArticleFragments
   | UpdateArticleFragmentMeta
   | MaybeAddFrontPublicationDate
-  | CapGroupSiblings;
+  | CapGroupSiblings
+  | CopyArticleFragmentImageMeta;
 
 export {
   Action,

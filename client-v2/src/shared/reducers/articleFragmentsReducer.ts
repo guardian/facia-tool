@@ -7,8 +7,10 @@ import {
   ARTICLE_FRAGMENTS_RECEIVED,
   CLEAR_ARTICLE_FRAGMENTS,
   REMOVE_SUPPORTING_ARTICLE_FRAGMENT,
-  INSERT_SUPPORTING_ARTICLE_FRAGMENT
+  INSERT_SUPPORTING_ARTICLE_FRAGMENT,
+  COPY_ARTICLE_FRAGMENT_IMAGE_META
 } from 'shared/actions/ArticleFragments';
+import { cloneActiveImageMeta } from 'shared/util/articleFragment';
 
 const articleFragments = (
   state: State['articleFragments'] = {},
@@ -108,7 +110,25 @@ const articleFragments = (
         [id]: newFragment
       };
     }
+    case COPY_ARTICLE_FRAGMENT_IMAGE_META: {
+      const to = action.payload.to;
+      const fromArticle = state[action.payload.from];
+      const toArticle = state[to];
 
+      if (!fromArticle || !toArticle) {
+        return state;
+      }
+      return {
+        ...state,
+        [to]: {
+          ...state[to],
+          meta: {
+            ...(state[to].meta || {}),
+            ...cloneActiveImageMeta(fromArticle)
+          }
+        }
+      };
+    }
     default: {
       return state;
     }

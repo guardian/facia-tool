@@ -28,5 +28,6 @@ export { ThumbnailSmall, ThumbnailEditForm };
 export default styled(ThumbnailBase)`
   width: 130px;
   min-width: 130px;
-  height: 67px;
+  height: 100%;
+  min-height: 67px;
 `;
