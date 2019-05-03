@@ -105,6 +105,6 @@ object CollectionService {
         group,
         article.meta.flatMap(_.isBoosted).getOrElse(false)
       )
-    }.sortBy(_.group).reverse
+    }
   }
 }
