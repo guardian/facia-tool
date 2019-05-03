@@ -62,15 +62,15 @@ const selectGrey = ({ theme }: { theme: Theme }) =>
 const VisibilityDividerEl = styled.div`
   display: flex;
   font-weight: bold;
-  font-size: 14px;
-  line-height: 1.25;
+  font-size: 12px;
+  line-height: 1;
   margin: 0.5em 0;
   text-transform: capitalize;
 
   :before {
-    background-image: linear-gradient(transparent 75%, ${selectGrey} 75%, ${selectGrey} 100%);
-    background-position: 0px 3px;
-    background-size: 4px 4px;
+    background-image: linear-gradient(transparent 66.66666%, ${selectGrey} 66.66666%, ${selectGrey} 100%);
+    background-position: 0px 2px;
+    background-size: 3px 3px;
     content: '';
     display: block;
     flex: 1;
