@@ -23,7 +23,11 @@ import { liveBlogTones } from 'constants/fronts';
 import { ThumbnailSmall } from 'shared/components/Thumbnail';
 import { CapiArticle } from 'types/Capi';
 import { getThumbnail } from 'util/CAPIUtils';
-import { ArticleDragComponent, dragOffsetX, dragOffsetY } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
+import {
+  ArticleDragComponent,
+  dragOffsetX,
+  dragOffsetY
+} from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 
 const Container = styled('div')`
   display: flex;
@@ -216,12 +220,14 @@ class FeedItem extends React.Component<FeedItemProps> {
     );
   }
 
-  private handleDragStart = (
-    event: React.DragEvent<HTMLDivElement>
-  ) => {
+  private handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
     event.dataTransfer.setData('capi', JSON.stringify(this.props.article));
     if (this.dragNode.current) {
-      event.dataTransfer.setDragImage(this.dragNode.current, dragOffsetX, dragOffsetY);
+      event.dataTransfer.setDragImage(
+        this.dragNode.current,
+        dragOffsetX,
+        dragOffsetY
+      );
     }
   };
 }

@@ -4,7 +4,10 @@ import { State } from 'types/State';
 import { clipboardArticlesSelector } from 'selectors/clipboardSelectors';
 import { connect } from 'react-redux';
 import { ArticleFragment } from 'shared/types/Collection';
-import ArticleDrag, { dragOffsetX, dragOffsetY } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
+import ArticleDrag, {
+  dragOffsetX,
+  dragOffsetY
+} from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone from 'components/DropZone';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
 import { styled } from 'constants/theme';

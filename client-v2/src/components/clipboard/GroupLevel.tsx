@@ -3,7 +3,10 @@ import { Level, LevelChild, MoveHandler, DropHandler } from 'lib/dnd';
 import { State } from 'types/State';
 import { connect } from 'react-redux';
 import { ArticleFragment } from 'shared/types/Collection';
-import ArticleDrag, { dragOffsetX, dragOffsetY } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
+import ArticleDrag, {
+  dragOffsetX,
+  dragOffsetY
+} from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone from 'components/DropZone';
 import { createGroupArticlesSelector } from 'shared/selectors/shared';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
