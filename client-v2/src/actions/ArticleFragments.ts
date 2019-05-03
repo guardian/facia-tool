@@ -13,7 +13,8 @@ import { ArticleFragment } from 'shared/types/Collection';
 import {
   selectSharedState,
   articleFragmentsSelector,
-  articleFragmentSelector
+  articleFragmentSelector,
+  articleGroupSelector
 } from 'shared/selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
@@ -233,12 +234,23 @@ const insertArticleFragmentWithCreate = (
       return;
     }
     const sharedState = selectSharedState(getState());
-    const toWithRespectToState = getToGroupIndicesWithRespectToState(to, sharedState, false);
+    const toWithRespectToState = getToGroupIndicesWithRespectToState(
+      to,
+      sharedState,
+      false
+    );
     if (toWithRespectToState) {
       return dispatch(articleFragmentFactory(drop))
         .then(fragment => {
           if (fragment) {
-            dispatch(insertActionCreator(toWithRespectToState.id, toWithRespectToState.index, fragment.uuid, null));
+            dispatch(
+              insertActionCreator(
+                toWithRespectToState.id,
+                toWithRespectToState.index,
+                fragment.uuid,
+                null
+              )
+            );
           }
         })
         .catch(() => {
@@ -254,12 +266,20 @@ const removeArticleFragment = (
   articleFragmentId: string,
   persistTo: 'collection' | 'clipboard'
 ): ThunkResult<void> => {
-  return (dispatch: Dispatch) => {
+  return (dispatch: Dispatch, getState) => {
+    const groupIdFromState =
+      persistTo === 'clipboard'
+        ? 'clipboard'
+        : articleGroupSelector(
+            selectSharedState(getState()),
+            id,
+            articleFragmentId
+          );
     const removeActionCreator = getRemoveActionCreatorFromType(type, persistTo);
-    if (!removeActionCreator) {
+    if (!removeActionCreator || !groupIdFromState) {
       return;
     }
-    dispatch(removeActionCreator(id, articleFragmentId));
+    dispatch(removeActionCreator(groupIdFromState, articleFragmentId));
   };
 };
 

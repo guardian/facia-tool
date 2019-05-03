@@ -469,6 +469,23 @@ const groupSiblingsSelector = (state: State, groupId: string) => {
   );
 };
 
+const articleGroupSelector = (
+  state: State,
+  groupIdFromAction: string,
+  fragmentId: string
+) => {
+  const groups = groupsSelector(state);
+  if (groups[groupIdFromAction].articleFragments.includes(fragmentId)) {
+    return groupIdFromAction;
+  }
+
+  const actualFragmentGroup = Object.values(groups).find(group =>
+    group.articleFragments.includes(fragmentId)
+  );
+
+  return actualFragmentGroup && actualFragmentGroup.uuid;
+};
+
 const groupsArticleCount = (groups: Group[]) =>
   groups.reduce((acc, group) => acc + group.articleFragments.length, 0);
 
@@ -517,6 +534,7 @@ export {
   articleTagSelector,
   indexInGroupSelector,
   groupsSelector,
+  articleGroupSelector,
   groupsArticleCount,
   externalArticleIdFromArticleFragmentSelector,
   selectCollectionItemHasMediaOverrides,
