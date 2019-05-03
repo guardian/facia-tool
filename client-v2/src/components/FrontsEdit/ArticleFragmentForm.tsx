@@ -173,6 +173,23 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       imageReplace
     } = this.props;
 
+    // only one of the image fields can be set to true at any time.
+    const changeImageField = (fieldToSet: string) => {
+      const allImageFields = [
+        'imageHide',
+        'imageCutoutReplace',
+        'imageSlideshowReplace',
+        'imageReplace'
+      ];
+      allImageFields.forEach(field => {
+        if (field === fieldToSet) {
+          change(field, true);
+        } else {
+          change(field, false);
+        }
+      });
+    };
+
     return (
       <FormContainer onSubmit={handleSubmit}>
         <CollectionHeadingPinline>
@@ -391,10 +408,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     id={getInputId(articleFragmentId, 'image-replace')}
                     type="checkbox"
                     default={false}
-                    onChange={e => {
-                      change('imageHide', false);
-                      change('imageReplace', true);
-                    }}
+                    onChange={_ => changeImageField('imageReplace')}
                   />
                 </InputGroup>
                 <InputGroup>
@@ -406,10 +420,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     id={getInputId(articleFragmentId, 'hide-media')}
                     type="checkbox"
                     default={false}
-                    onChange={e => {
-                      change('imageReplace', false);
-                      change('imageHide', true);
-                    }}
+                    onChange={_ => changeImageField('imageHide')}
                   />
                 </InputGroup>
               </Col>
@@ -443,6 +454,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     id={getInputId(articleFragmentId, 'use-cutout')}
                     type="checkbox"
                     default={false}
+                    onChange={_ => changeImageField('imageCutoutReplace')}
                   />
                 </InputGroup>
               </Col>
@@ -462,6 +474,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               label="Slideshow"
               id={getInputId(articleFragmentId, 'slideshow')}
               type="checkbox"
+              onChange={_ => changeImageField('imageSlideshowReplace')}
             />
           </InputGroup>
           {imageSlideshowReplace && (
