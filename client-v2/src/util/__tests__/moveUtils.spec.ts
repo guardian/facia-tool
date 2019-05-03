@@ -15,7 +15,7 @@ describe('Move utilities', () => {
         c2: {
           id: 'c2',
           groups: ['group3', 'group4', 'group5'],
-          draft: ['g5', 'g4', 'g3']
+          draft: ['g5', 'g4', 'g3', 'g6']
         }
       }
     },
@@ -45,7 +45,13 @@ describe('Move utilities', () => {
         uuid: 'g5',
         id: 'group5',
         articleFragments: ['af6']
-      }
+      },
+      g6: {
+        uuid: 'g6',
+        id: 'group6',
+        name: 'group6',
+        articleFragments: ['af7', 'af8']
+      },
     }
   };
 
@@ -141,6 +147,17 @@ describe('Move utilities', () => {
       );
 
       expect(toWithRespectToState).toBeNull();
+    });
+    it('does not adjust to position if ', () => {
+
+      const position = { type: 'group', id: 'g6', index: 1 };
+      const toWithRespectToState = getToGroupIndicesWithRespectToState(
+        position,
+        state,
+        false
+      );
+
+      expect(toWithRespectToState).toEqual(position);
     });
   });
 });

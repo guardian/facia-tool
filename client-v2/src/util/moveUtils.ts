@@ -2,6 +2,7 @@ import { PosSpec } from 'lib/dnd';
 import { State } from 'shared/types/State';
 import { groupSiblingsSelector } from 'shared/selectors/shared';
 import { Group } from 'shared/types/Collection';
+import findIndex from 'lodash/findIndex';
 
 function getFromGroupIndicesWithRespectToState(
   position: PosSpec | null,
@@ -76,15 +77,22 @@ function getToGroupIndicesWithRespectToState(
   return { ...position, ...{ index: adjustedIndex } };
 }
 
+const isOrphanedGroup = (group: Group) => !group.name && group.id && group.id !== '0';
+
 function getGroupIndicesWithRespectToState(
   position: PosSpec,
   state: State
 ): { articleCount: number; groupSiblings: Group[] } {
   const groupId = position.id;
   const groupSiblings = groupSiblingsSelector(state, groupId);
+  const currentGroupIndex = findIndex(groupSiblings, group => group.uuid === groupId);
+  const groupAbove = groupSiblings[currentGroupIndex - 1];
+  if (groupAbove && !isOrphanedGroup(groupAbove)) {
+    return { groupSiblings, articleCount: 0 };
+  }
   const articleCount = groupSiblings.reduce(
     (orphanedArticleCount: number, group) => {
-      if (!group.name && group.id && group.id !== '0') {
+      if (isOrphanedGroup(group)) {
         orphanedArticleCount += group.articleFragments.length;
       }
       return orphanedArticleCount;
