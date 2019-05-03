@@ -224,7 +224,7 @@ const insertArticleFragmentWithCreate = (
   // allow the factory to be injected for testing
   articleFragmentFactory = createArticleFragment
 ): ThunkResult<void> => {
-  return (dispatch: Dispatch) => {
+  return (dispatch: Dispatch, getState) => {
     const insertActionCreator = getInsertionActionCreatorFromType(
       to.type,
       persistTo
@@ -232,15 +232,19 @@ const insertArticleFragmentWithCreate = (
     if (!insertActionCreator) {
       return;
     }
-    return dispatch(articleFragmentFactory(drop))
-      .then(fragment => {
-        if (fragment) {
-          dispatch(insertActionCreator(to.id, to.index, fragment.uuid, null));
-        }
-      })
-      .catch(() => {
-        // @todo: implement once error handling is done
-      });
+    const sharedState = selectSharedState(getState());
+    const toWithRespectToState = getToGroupIndicesWithRespectToState(to, sharedState, false);
+    if (toWithRespectToState) {
+      return dispatch(articleFragmentFactory(drop))
+        .then(fragment => {
+          if (fragment) {
+            dispatch(insertActionCreator(toWithRespectToState.id, toWithRespectToState.index, fragment.uuid, null));
+          }
+        })
+        .catch(() => {
+          // @todo: implement once error handling is done
+        });
+    }
   };
 };
 
