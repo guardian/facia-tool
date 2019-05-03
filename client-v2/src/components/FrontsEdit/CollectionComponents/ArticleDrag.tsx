@@ -5,46 +5,49 @@ import {
   selectSharedState
 } from 'shared/selectors/shared';
 import { State } from 'types/State';
-import { DerivedArticle } from 'shared/types/Article';
-import { theme } from '../../../constants/theme';
+import { theme, styled } from '../../../constants/theme';
 
 interface ContainerProps {
   id: string;
 }
 
-type ComponentProps = {
-  article: DerivedArticle | void;
-} & ContainerProps;
+interface ComponentProps {
+  headline?: string;
+}
 
-const ArticleDrag = ({ article }: ComponentProps) => (
-  <>
-    {article && (
-      <div
-        style={{
-          background: `${theme.shared.base.colors.backgroundColorFocused}`,
-          borderRadius: '4px',
-          boxShadow: '-2px -2px 5px 0 rgba(0, 0, 0, 0.5)',
-          overflow: 'hidden',
-          padding: '8px',
-          textOverflow: 'ellipsis',
-          width: '300px',
-          whiteSpace: 'nowrap'
-        }}
-      >
-        {article.headline}
-      </div>
-    )}
-  </>
-);
+// These constants can be added to setDragImage to
+// position the drag component in a consistent way.
+export const dragOffsetX = -5;
+export const dragOffsetY = 40;
+
+const DragContainer = styled.div`
+  position: relative;
+  padding: 0 0 10px 10px;
+`;
+
+const DragContent = styled.div`
+  background: ${theme.shared.base.colors.backgroundColorFocused};
+  border-radius: 4px;
+  overflow: hidden;
+  padding: 8px;
+  text-overflow: ellipsis;
+  width: 300px;
+  white-space: nowrap;
+`;
+
+export const ArticleDragComponent = ({ headline }: ComponentProps) =>
+  headline ? (
+    <DragContainer>
+      <DragContent>{headline}</DragContent>
+    </DragContainer>
+  ) : null;
 
 const createMapStateToProps = () => {
   const articleSelector = createArticleFromArticleFragmentSelector();
-  return (
-    state: State,
-    props: ContainerProps
-  ): { article: DerivedArticle | void } => ({
-    article: articleSelector(selectSharedState(state), props.id)
-  });
+  return (state: State, props: ContainerProps): { headline?: string } => {
+    const article = articleSelector(selectSharedState(state), props.id);
+    return { headline: article && article.headline };
+  };
 };
 
-export default connect(createMapStateToProps)(ArticleDrag);
+export default connect(createMapStateToProps)(ArticleDragComponent);
