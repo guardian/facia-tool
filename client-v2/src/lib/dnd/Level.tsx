@@ -71,6 +71,7 @@ interface OuterProps<T> {
   type: string;
   dragImageOffsetX?: number;
   dragImageOffsetY?: number;
+  canDrop?: boolean;
   getId: (t: T) => string;
   onMove: (move: Move<T>) => void;
   onDrop: (e: React.DragEvent, to: PosSpec) => void;
@@ -244,9 +245,10 @@ class Level<T> extends React.Component<Props<T>, State> {
     i: number,
     getNodeDragProps: (forceClone: boolean) => NodeChildrenProps
   ) {
+    const { canDrop = true } = this.props;
     return (forceClone = false) => ({
       ...getNodeDragProps(forceClone),
-      ...(this.props.renderDrop
+      ...(canDrop
         ? { onDragOver: this.onDragOver(i, true), onDrop: this.onDrop(i, true) }
         : {})
     });
