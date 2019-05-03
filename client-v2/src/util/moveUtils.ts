@@ -77,7 +77,8 @@ function getToGroupIndicesWithRespectToState(
   return { ...position, ...{ index: adjustedIndex } };
 }
 
-const isOrphanedGroup = (group: Group) => !group.name && group.id && group.id !== '0';
+const isOrphanedGroup = (group: Group) =>
+  !group.name && group.id && group.id !== '0';
 
 function getGroupIndicesWithRespectToState(
   position: PosSpec,
@@ -85,7 +86,10 @@ function getGroupIndicesWithRespectToState(
 ): { articleCount: number; groupSiblings: Group[] } {
   const groupId = position.id;
   const groupSiblings = groupSiblingsSelector(state, groupId);
-  const currentGroupIndex = findIndex(groupSiblings, group => group.uuid === groupId);
+  const currentGroupIndex = findIndex(
+    groupSiblings,
+    group => group.uuid === groupId
+  );
   const groupAbove = groupSiblings[currentGroupIndex - 1];
   if (groupAbove && !isOrphanedGroup(groupAbove)) {
     return { groupSiblings, articleCount: 0 };

@@ -51,7 +51,7 @@ describe('Move utilities', () => {
         id: 'group6',
         name: 'group6',
         articleFragments: ['af7', 'af8']
-      },
+      }
     }
   };
 
@@ -149,15 +149,14 @@ describe('Move utilities', () => {
       expect(toWithRespectToState).toBeNull();
     });
     it('does not adjust to position if ', () => {
-
-      const position = { type: 'group', id: 'g6', index: 1 };
+      const nonOrphanedPosition = { type: 'group', id: 'g6', index: 1 };
       const toWithRespectToState = getToGroupIndicesWithRespectToState(
-        position,
+        nonOrphanedPosition,
         state,
         false
       );
 
-      expect(toWithRespectToState).toEqual(position);
+      expect(toWithRespectToState).toEqual(nonOrphanedPosition);
     });
   });
 });
