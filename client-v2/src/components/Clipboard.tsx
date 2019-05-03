@@ -156,6 +156,7 @@ class Clipboard extends React.Component<ClipboardProps> {
       >
         <StyledDragIntentContainer
           active={!this.props.isClipboardOpen}
+          delay={300}
           onDragIntentStart={() => this.setState({ preActive: true })}
           onDragIntentEnd={() => this.setState({ preActive: false })}
           onIntentConfirm={() => this.props.toggleClipboard(true)}
