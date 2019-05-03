@@ -106,6 +106,7 @@ interface ArticleBodyProps {
   imageReplace?: boolean;
   isBreaking?: boolean;
   type?: string;
+  showBoostedHeadline?: boolean;
 }
 
 const renderColouredQuotes = (
@@ -147,7 +148,8 @@ const articleBodyDefault = ({
   imageReplace,
   isBreaking,
   type,
-  uuid
+  uuid,
+  showBoostedHeadline
 }: ArticleBodyProps) => {
   const ArticleHeadingContainer =
     size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
@@ -216,7 +218,12 @@ const articleBodyDefault = ({
               {renderColouredQuotes(size, pillarId, isLive)}
             </ArticleBodyQuoteContainer>
           )}
-          <CollectionItemHeading html data-testid="headline" displaySize={size}>
+          <CollectionItemHeading
+            showBoostedHeadline={showBoostedHeadline}
+            html
+            data-testid="headline"
+            displaySize={size}
+          >
             {headline}
           </CollectionItemHeading>
         </ArticleHeadingContainer>
