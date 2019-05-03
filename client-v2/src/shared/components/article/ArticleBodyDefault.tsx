@@ -2,8 +2,7 @@ import React from 'react';
 import { styled } from 'shared/constants/theme';
 import startCase from 'lodash/startCase';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
-import { MdCollections, MdImage } from 'react-icons/md';
-
+import { MdImage } from 'react-icons/md';
 import CollectionItemHeading from '../collectionItem/CollectionItemHeading';
 import BasePlaceholder from '../BasePlaceholder';
 import { getPillarColor } from 'shared/util/getPillarColor';
@@ -57,29 +56,11 @@ const ArticleBodyQuoteContainer = styled('span')`
   margin-right: 0.1rem;
 `;
 
-const ImageOverrideContainer = styled('div')`
-  position: absolute;
-  background: ${({ theme }) => theme.shared.colors.white};
-  width: 24px;
-  height: 24px;
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.3);
-  border-radius: 50%;
-  vertical-align: middle;
-  top: 2px;
-  right: 2px;
-`;
-
-const ImageOverrideIcon = styled('div')`
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  width: 14px;
-  height: 14px;
-`;
-
 const FirstPublicationDate = styled(CollectionItemMetaContent)`
   color: ${({ theme }) => theme.shared.colors.green};
 `;
+
+const ImageMetadataContainer = styled('div')``;
 
 interface ArticleBodyProps {
   firstPublicationDate?: string;
@@ -104,6 +85,7 @@ interface ArticleBodyProps {
   imageHide?: boolean;
   imageSlideshowReplace?: boolean;
   imageReplace?: boolean;
+  imageCutoutReplace?: boolean;
   isBreaking?: boolean;
   type?: string;
   showBoostedHeadline?: boolean;
@@ -146,6 +128,7 @@ const articleBodyDefault = ({
   imageHide,
   imageSlideshowReplace,
   imageReplace,
+  imageCutoutReplace,
   isBreaking,
   type,
   uuid,
@@ -234,26 +217,23 @@ const articleBodyDefault = ({
           <ThumbnailPlaceholder />
         ) : (
           <DraggableArticleImageContainer id={uuid}>
-            {imageSlideshowReplace && (
-              <ImageOverrideContainer title="This article has a slideshow override">
-                <ImageOverrideIcon>
-                  <MdCollections />
-                </ImageOverrideIcon>
-              </ImageOverrideContainer>
-            )}
-            {imageReplace && (
-              <ImageOverrideContainer title="This article has an image override">
-                <ImageOverrideIcon>
-                  <MdImage />
-                </ImageOverrideIcon>
-              </ImageOverrideContainer>
-            )}
             <ThumbnailSmall
               style={{
                 backgroundImage: `url('${thumbnail}')`,
                 opacity: imageHide ? 0.5 : 1
               }}
             />
+            {imageSlideshowReplace && (
+              <ImageMetadataContainer>Slideshow</ImageMetadataContainer>
+            )}
+            {imageReplace && (
+              <ImageMetadataContainer>Image Replace</ImageMetadataContainer>
+            )}
+            {imageCutoutReplace && (
+              <ImageMetadataContainer>
+                Image Cutout Replace
+              </ImageMetadataContainer>
+            )}
           </DraggableArticleImageContainer>
         ))}
       <HoverActionsAreaOverlay disabled={isUneditable}>
