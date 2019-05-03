@@ -12,6 +12,8 @@ interface OuterProps<T> {
     getProps: (forceClone: boolean) => ChildrenProps
   ) => React.ReactNode;
   renderDrag?: (data: T) => React.ReactNode;
+  dragImageOffsetX?: number;
+  dragImageOffsetY?: number;
   type: string;
   id: string;
   index: number;
@@ -57,7 +59,12 @@ class Node<T> extends React.Component<Props<T>> {
       return;
     }
     if (this.dragImage) {
-      e.dataTransfer.setDragImage(this.dragImage, 10, 10);
+      const { dragImageOffsetX = 10, dragImageOffsetY = 10 } = this.props;
+      e.dataTransfer.setDragImage(
+        this.dragImage,
+        dragImageOffsetX,
+        dragImageOffsetY
+      );
     }
     const { parents, type, id, index, data } = this.props;
     e.dataTransfer.setData(
