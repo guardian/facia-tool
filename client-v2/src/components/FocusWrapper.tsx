@@ -4,13 +4,12 @@ import { connect } from 'react-redux';
 import { State } from 'types/State';
 
 const Wrapper = styled('div')<{ isSelected: boolean }>`
-  border: ${props =>
+  outline: ${props =>
     props.isSelected
       ? `1px solid ${props.theme.shared.base.colors.focusColor}`
       : `none`};
   &:focus {
-    border: 1px solid ${props => props.theme.shared.base.colors.focusColor};
-    outline: none;
+    outline: 1px solid ${props => props.theme.shared.base.colors.focusColor};
   }
 `;
 

@@ -42,13 +42,6 @@ const CollectionWrapper = styled('div')`
   & + & {
     margin-top: 10px;
   }
-  &:focus {
-    border: 1px solid ${props => props.theme.shared.base.colors.focusColor};
-    border-top: 2px solid ${props => props.theme.shared.base.colors.focusColor};
-    border-bottom: 2px solid
-      ${props => props.theme.shared.base.colors.focusColor};
-    outline: none;
-  }
 `;
 
 const Notification = styled.span`
@@ -117,7 +110,6 @@ type ConnectedCollectionContextProps = CollectionContextProps & {
   addImageToArticleFragment: (id: string, response: ValidationResponse) => void;
   removeCollectionItem: (parentId: string, id: string) => void;
   removeSupportingCollectionItem: (parentId: string, id: string) => void;
-  handleFocus: (id: string) => void;
   handleBlur: () => void;
   lastDesktopArticle?: string;
   lastMobileArticle?: string;
@@ -131,7 +123,6 @@ class CollectionContext extends React.Component<
       id,
       frontId,
       handleBlur,
-      handleFocus,
       priority,
       alsoOn,
       browsingStage,
@@ -145,11 +136,7 @@ class CollectionContext extends React.Component<
       lastMobileArticle
     } = this.props;
     return (
-      <CollectionWrapper
-        tabIndex={0}
-        onBlur={() => handleBlur()}
-        onFocus={() => handleFocus(id)}
-      >
+      <CollectionWrapper>
         <Collection
           key={id}
           id={id}
@@ -275,9 +262,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   },
   addImageToArticleFragment: (id: string, response: ValidationResponse) =>
     dispatch(addImageToArticleFragment(id, response)),
-  handleBlur: () => dispatch(resetFocusState()),
-  handleFocus: (collectionId: string) =>
-    dispatch(setFocusState({ type: 'collection', collectionId }))
+  handleBlur: () => dispatch(resetFocusState())
 });
 
 export default connect(
