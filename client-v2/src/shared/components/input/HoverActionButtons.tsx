@@ -88,7 +88,11 @@ const HoverViewButton = ({
     }}
     href={isLive ? getPaths(urlPath).live : getPaths(urlPath).preview}
   >
-    <ActionButton onMouseEnter={showToolTip} onMouseLeave={hideToolTip}>
+    <ActionButton
+      tabIndex={-1}
+      onMouseEnter={showToolTip}
+      onMouseLeave={hideToolTip}
+    >
       <ViewHoverIcon />
     </ActionButton>
   </Link>
@@ -108,7 +112,11 @@ const HoverOphanButton = ({
       href={getPaths(`https://www.theguardian.com/${urlPath}`).ophan}
       data-testid={'ophan-hover-button'}
     >
-      <ActionButton onMouseEnter={showToolTip} onMouseLeave={hideToolTip}>
+      <ActionButton
+        tabIndex={-1}
+        onMouseEnter={showToolTip}
+        onMouseLeave={hideToolTip}
+      >
         <OphanHoverIcon />
       </ActionButton>
     </Link>

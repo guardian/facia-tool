@@ -13,8 +13,11 @@ const Wrapper = styled('div')<{ isSelected: boolean }>`
   }
 `;
 
-const mapStateToProps = (state: State, { uuid }: { uuid: string }) => ({
-  isSelected: selectFocusedArticle(state, 'clipboardArticle') === uuid
+const mapStateToProps = (
+  state: State,
+  { uuid, area }: { uuid: string; area: 'clipboard' | 'collection' }
+) => ({
+  isSelected: selectFocusedArticle(state, `${area}Article`) === uuid
 });
 
 export default connect(mapStateToProps)(Wrapper);

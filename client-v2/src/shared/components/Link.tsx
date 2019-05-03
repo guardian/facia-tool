@@ -5,4 +5,8 @@ export default styled(`a`).attrs({
   rel: 'noopener noreferrer'
 })`
   text-decoration: none;
+
+  &:focus {
+    outline: 1px solid ${props => props.theme.shared.base.colors.focusColor};
+  }
 `;

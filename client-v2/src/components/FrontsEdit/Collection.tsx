@@ -163,6 +163,7 @@ class CollectionContext extends React.Component<
                   <>
                     <FocusWrapper
                       tabIndex={0}
+                      area="collection"
                       onBlur={() => handleBlur()}
                       onFocus={e =>
                         handleArticleFocus(

@@ -193,6 +193,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                         onFocus={e =>
                           this.handleArticleFocus(e, articleFragment)
                         }
+                        area="clipboard"
                         onBlur={this.handleBlur}
                         uuid={articleFragment.uuid}
                       >
