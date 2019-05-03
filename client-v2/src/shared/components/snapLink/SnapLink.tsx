@@ -6,7 +6,7 @@ import upperFirst from 'lodash/upperFirst';
 import CollectionItemContainer from '../collectionItem/CollectionItemContainer';
 import CollectionItemMetaContainer from '../collectionItem/CollectionItemMetaContainer';
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
-import Thumbnail from '../Thumbnail';
+import { ThumbnailSmall } from '../Thumbnail';
 import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
 import { HoverDeleteButton } from '../input/HoverActionButtons';
 import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
@@ -92,7 +92,7 @@ const SnapLink = ({
             </>
           )}
         </CollectionItemContent>
-        {size === 'default' && displayType === 'default' && <Thumbnail />}
+        {size === 'default' && displayType === 'default' && <ThumbnailSmall />}
         <HoverActionsAreaOverlay
           disabled={isUneditable}
           justify={displayType === 'polaroid' ? 'flex-end' : 'space-between'}

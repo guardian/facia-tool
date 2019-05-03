@@ -37,6 +37,7 @@ const ArticleBodyContainer = styled(CollectionItemBody)<{
       color: ${({ theme }) => theme.shared.base.colors.textMuted};
     }
   }
+  height: 100%;
 `;
 
 interface ArticleComponentProps {
