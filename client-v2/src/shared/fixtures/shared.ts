@@ -479,31 +479,6 @@ const articleWithSupporting = {
   }
 };
 
-const collectionWithoutGroups = {
-  live: [
-    {
-      id: 'article/draft/1',
-      frontPublicationDate: 2,
-      publishedBy: 'Computers',
-      meta: {}
-    },
-    {
-      id: 'a/long/path/2',
-      frontPublicationDate: 2,
-      publishedBy: 'Computers',
-      meta: {}
-    },
-    {
-      id: 'a/long/path/3',
-      frontPublicationDate: 2,
-      publishedBy: 'Computers',
-      meta: {}
-    }
-  ],
-  id: 'collectionWithoutGroups',
-  displayName: 'Collection Without Groups',
-  type: 'type'
-};
 const collection = {
   live: [
     liveArticle,
@@ -611,13 +586,11 @@ const stateWithCollection: any = {
       abc: {
         id: '1',
         uuid: 'abc',
-        articleFragments: ['95e2bfc0-8999-4e6e-a359-19960967c1e0'],
-        name: 'group1'
+        articleFragments: ['95e2bfc0-8999-4e6e-a359-19960967c1e0']
       },
       def: {
         id: null,
         uuid: 'def',
-        name: 'group2',
         articleFragments: [
           '4bc11359-bb3e-45e7-a0a9-86c0ee52653d',
           '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d'
@@ -761,6 +734,5 @@ export {
   stateWithSnaplinksAndArticles,
   liveArticle,
   articleWithSupporting,
-  collectionConfig,
-  collectionWithoutGroups
+  collectionConfig
 };

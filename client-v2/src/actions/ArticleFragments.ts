@@ -13,16 +13,11 @@ import { ArticleFragment } from 'shared/types/Collection';
 import {
   selectSharedState,
   articleFragmentsSelector,
-  articleFragmentSelector,
-  articleGroupSelector
+  articleFragmentSelector
 } from 'shared/selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
 import { cloneFragment } from 'shared/util/articleFragment';
-import {
-  getFromGroupIndicesWithRespectToState,
-  getToGroupIndicesWithRespectToState
-} from 'util/moveUtils';
 import { PosSpec } from 'lib/dnd';
 import { Action } from 'types/Action';
 import {
@@ -225,7 +220,7 @@ const insertArticleFragmentWithCreate = (
   // allow the factory to be injected for testing
   articleFragmentFactory = createArticleFragment
 ): ThunkResult<void> => {
-  return (dispatch: Dispatch, getState) => {
+  return (dispatch: Dispatch) => {
     const insertActionCreator = getInsertionActionCreatorFromType(
       to.type,
       persistTo
@@ -233,30 +228,15 @@ const insertArticleFragmentWithCreate = (
     if (!insertActionCreator) {
       return;
     }
-    const sharedState = selectSharedState(getState());
-    const toWithRespectToState = getToGroupIndicesWithRespectToState(
-      to,
-      sharedState,
-      false
-    );
-    if (toWithRespectToState) {
-      return dispatch(articleFragmentFactory(drop))
-        .then(fragment => {
-          if (fragment) {
-            dispatch(
-              insertActionCreator(
-                toWithRespectToState.id,
-                toWithRespectToState.index,
-                fragment.uuid,
-                null
-              )
-            );
-          }
-        })
-        .catch(() => {
-          // @todo: implement once error handling is done
-        });
-    }
+    return dispatch(articleFragmentFactory(drop))
+      .then(fragment => {
+        if (fragment) {
+          dispatch(insertActionCreator(to.id, to.index, fragment.uuid, null));
+        }
+      })
+      .catch(() => {
+        // @todo: implement once error handling is done
+      });
   };
 };
 
@@ -266,20 +246,12 @@ const removeArticleFragment = (
   articleFragmentId: string,
   persistTo: 'collection' | 'clipboard'
 ): ThunkResult<void> => {
-  return (dispatch: Dispatch, getState) => {
-    const groupIdFromState =
-      persistTo === 'clipboard'
-        ? 'clipboard'
-        : articleGroupSelector(
-            selectSharedState(getState()),
-            id,
-            articleFragmentId
-          );
+  return (dispatch: Dispatch) => {
     const removeActionCreator = getRemoveActionCreatorFromType(type, persistTo);
-    if (!removeActionCreator || !groupIdFromState) {
+    if (!removeActionCreator) {
       return;
     }
-    dispatch(removeActionCreator(groupIdFromState, articleFragmentId));
+    dispatch(removeActionCreator(id, articleFragmentId));
   };
 };
 
@@ -301,47 +273,29 @@ const moveArticleFragment = (
       return;
     }
 
-    const sharedState = selectSharedState(getState());
+    // if from is not null then assume we're copying a moved article fragment
+    // into this new position
+    const { parent, supporting } = !from
+      ? cloneFragment(
+          fragment,
+          articleFragmentsSelector(selectSharedState(getState()))
+        )
+      : { parent: fragment, supporting: [] };
 
-    // If move actions are happening to/from groups which have article fragments displayed
-    // in them which don't belong to these groups we need to adjust the indices of the move
-    // actions in these groups.
-    const fromDetails: {
-      fromWithRespectToState: PosSpec | null;
-      fromOrphanedGroup: boolean;
-    } = getFromGroupIndicesWithRespectToState(from, sharedState);
-
-    const toWithRespectToState: PosSpec | null = getToGroupIndicesWithRespectToState(
-      to,
-      sharedState,
-      fromDetails.fromOrphanedGroup
-    );
-    if (toWithRespectToState) {
-      const { fromWithRespectToState } = fromDetails;
-
-      // if from is not null then assume we're copying a moved article fragment
-      // into this new position
-      const { parent, supporting } = !fromWithRespectToState
-        ? cloneFragment(fragment, articleFragmentsSelector(sharedState))
-        : { parent: fragment, supporting: [] };
-
-      if (toWithRespectToState) {
-        if (!fromWithRespectToState) {
-          dispatch(articleFragmentsReceived([parent, ...supporting]));
-        }
-
-        dispatch(
-          insertActionCreator(
-            toWithRespectToState.id,
-            toWithRespectToState.index,
-            parent.uuid,
-            fromWithRespectToState && removeActionCreator
-              ? removeActionCreator(fromWithRespectToState.id, fragment.uuid)
-              : null
-          )
-        );
-      }
+    if (!from) {
+      dispatch(articleFragmentsReceived([parent, ...supporting]));
     }
+
+    dispatch(
+      insertActionCreator(
+        to.id,
+        to.index,
+        parent.uuid,
+        from && removeActionCreator
+          ? removeActionCreator(from.id, fragment.uuid)
+          : null
+      )
+    );
   };
 };
 

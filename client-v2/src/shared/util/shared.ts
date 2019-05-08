@@ -12,10 +12,9 @@ import { normalize, denormalize } from './schema';
 import { CollectionConfig } from 'types/FaciaApi';
 import v4 from 'uuid/v4';
 import keyBy from 'lodash/keyBy';
-import sortBy from 'lodash/sortBy';
 
 const createGroup = (
-  id: string | null,
+  id: string,
   name: string | null,
   articleFragments: string[] = []
 ): Group => ({
@@ -27,7 +26,9 @@ const createGroup = (
 
 const getUUID = <T extends { uuid: string }>({ uuid }: T) => uuid;
 
-const getGroupIndex = (id: string | null): number => parseInt(id || '0', 10);
+// this is horrible but is the only way to do it!
+const groupByIndex = (groups: Group[], index: number): Group | undefined =>
+  groups.find(g => parseInt(g.id || '0', 10) === index);
 
 const getAllArticleFragments = (groups: Group[]) =>
   groups.reduce(
@@ -35,61 +36,28 @@ const getAllArticleFragments = (groups: Group[]) =>
     [] as string[]
   );
 
-const configGroupIndexExistsInGroups = (
-  groupsToSearch: Group[],
-  index: number
-): boolean =>
-  groupsToSearch.some(group => {
-    if (group.id) {
-      return parseInt(group.id, 10) === index;
-    }
-    return index === 0;
-  });
-
-const addGroupsForStage = (
+const addEmptyGroupsFromCollectionConfigForStage = (
   groupIds: string[],
   entities: { [id: string]: Group },
   collectionConfig: CollectionConfig
 ) => {
   const groups = groupIds.map(id => entities[id]);
-  const groupsWithNames = groups.map(group => {
-    let name: string | null = null;
-    const groupNumberAsInt = getGroupIndex(group.id);
-    if (
-      collectionConfig.groups &&
-      groupNumberAsInt < collectionConfig.groups.length
-    ) {
-      name = collectionConfig.groups[groupNumberAsInt];
-    }
-    return { ...group, name };
-  });
+  const addedGroups = collectionConfig.groups
+    ? collectionConfig.groups.map((name, i) => {
+        const existingGroup = groupByIndex(groups, i);
 
-  // We may have empty groups in the config which would not show up in the normalised
-  // groups result. We need to add these into the groups array.
-  if (collectionConfig.groups) {
-    collectionConfig.groups.forEach((group, configGroupIndex) => {
-      if (!configGroupIndexExistsInGroups(groupsWithNames, configGroupIndex)) {
-        groupsWithNames.push(createGroup(`${configGroupIndex}`, group));
-      }
-    });
-  }
+        return existingGroup
+          ? { ...existingGroup, name }
+          : createGroup(`${i}`, name);
+      })
+    : [createGroup('0', null, getAllArticleFragments(groups))];
 
-  // If we have no article fragments and no groups in a collection we still need to create
-  // and empty group for articles.
-  if (groupsWithNames.length === 0) {
-    groupsWithNames.push(
-      createGroup(null, null, getAllArticleFragments(groups))
-    );
-  }
-
-  // Finally we need to sort the groups according to their ids.
-  const sortedGroupsWithNames = sortBy(
-    groupsWithNames,
-    group => -getGroupIndex(group.id)
-  );
   return {
-    addedGroups: keyBy(sortedGroupsWithNames, getUUID),
-    groupIds: sortedGroupsWithNames.map(getUUID)
+    addedGroups: keyBy(addedGroups, getUUID),
+    groupIds: addedGroups
+      .map(getUUID)
+      .slice()
+      .reverse()
   };
 };
 
@@ -100,13 +68,16 @@ interface ReduceResult {
   addedGroups: { [key: string]: Group };
 }
 
-const addGroups = (
+const addEmptyGroupsFromCollectionConfig = (
   normalisedCollection: any,
   collectionConfig: CollectionConfig
 ) =>
   (['live', 'previously', 'draft'] as ['live', 'previously', 'draft']).reduce(
     (acc, key) => {
-      const { addedGroups, groupIds } = addGroupsForStage(
+      const {
+        addedGroups,
+        groupIds
+      } = addEmptyGroupsFromCollectionConfigForStage(
         normalisedCollection.result[key],
         normalisedCollection.entities.groups,
         collectionConfig
@@ -132,7 +103,12 @@ const normaliseCollectionWithNestedArticles = (
   articleFragments: { [key: string]: ArticleFragment };
 } => {
   const normalisedCollection = normalize(collection);
-  const { addedGroups, live, draft, previously } = addGroups(
+  const {
+    addedGroups,
+    live,
+    draft,
+    previously
+  } = addEmptyGroupsFromCollectionConfig(
     normalisedCollection,
     collectionConfig
   );
@@ -143,7 +119,10 @@ const normaliseCollectionWithNestedArticles = (
       draft,
       previously
     },
-    groups: addedGroups,
+    groups: {
+      ...(normalisedCollection.entities.groups || {}),
+      ...addedGroups
+    },
     articleFragments: normalisedCollection.entities.articleFragments || {}
   };
 };
