@@ -62,14 +62,12 @@ const init = () => {
         g1: {
           uuid: 'g1',
           id: 'g1',
-          articleFragments: ['a1', 'a2'],
-          name: 'g1'
+          articleFragments: ['a1', 'a2']
         },
         g2: {
           uuid: 'g2',
           id: 'g2',
-          articleFragments: ['a3', 'a4'],
-          name: 'g2'
+          articleFragments: ['a3', 'a4']
         }
       },
       articleFragments: {

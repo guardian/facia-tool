@@ -5,12 +5,11 @@ import { connect } from 'react-redux';
 import { ArticleFragment } from 'shared/types/Collection';
 import ArticleDrag from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone from 'components/DropZone';
+import { createGroupArticlesSelector } from 'shared/selectors/shared';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
-import { createArticlesFromIdsSelector } from 'shared/selectors/shared';
 
 interface OuterProps {
   groupId: string;
-  articleFragmentIds: string[];
   children: LevelChild<ArticleFragment>;
   onMove: MoveHandler<ArticleFragment>;
   onDrop: DropHandler;
@@ -68,10 +67,10 @@ const GroupLevel = ({
 );
 
 const createMapStateToProps = () => {
-  const articlesFromIdsSelector = createArticlesFromIdsSelector();
-  return (state: State, { articleFragmentIds }: OuterProps) => ({
-    articleFragments: articlesFromIdsSelector(state, {
-      articleFragmentIds
+  const groupArticleSelector = createGroupArticlesSelector();
+  return (state: State, { groupId }: OuterProps) => ({
+    articleFragments: groupArticleSelector(state, {
+      groupId
     })
   });
 };

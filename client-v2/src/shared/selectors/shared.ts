@@ -184,37 +184,8 @@ const createCollectionStageGroupsSelector = () => {
       collection: Collection | void,
       groups: { [id: string]: Group },
       stage: CollectionItemSets
-    ): Group[] => {
-      const grps = ((collection && collection[stage]) || []).map(
-        id => groups[id]
-      );
-      if (grps.length < 2) {
-        return grps;
-      }
-
-      // Groups without names and ids are groups which no longer exist in the config because
-      // the collection layout has changed. We need to collect the article fragments in these
-      // groups and display them in the top group.
-      const orphanedFragments: string[] = grps
-        .filter(grp => !grp.name && grp.id)
-        .reduce((frags: string[], g) => frags.concat(g.articleFragments), []);
-
-      // The final array of groups consist of groups where all groups without names but with ids
-      // are filtered out as these groups no longer exist in the config of the collection.
-      const finalGroups = grps.filter(grp => grp.name || !grp.id);
-      if (finalGroups.length > 0) {
-        const originalFirstGroupFragments = finalGroups[0].articleFragments;
-        const firstGroupFragments = orphanedFragments.concat(
-          originalFirstGroupFragments
-        );
-        const firstGroup = {
-          ...finalGroups[0],
-          ...{ articleFragments: firstGroupFragments }
-        };
-        finalGroups[0] = firstGroup;
-      }
-      return finalGroups;
-    }
+    ): Group[] =>
+      ((collection && collection[stage]) || []).map(id => groups[id])
   );
 };
 
@@ -383,15 +354,6 @@ const createGroupArticlesSelector = () =>
       )
   );
 
-const createArticlesFromIdsSelector = () =>
-  createShallowEqualResultSelector(
-    articleFragmentsFromRootStateSelector,
-    (_: any, { articleFragmentIds }: { articleFragmentIds: string[] }) =>
-      articleFragmentIds,
-    (articleFragments, articleFragmentIds) =>
-      (articleFragmentIds || []).map((afId: string) => articleFragments[afId])
-  );
-
 const createDemornalisedArticleFragment = (
   articleFragmentId: string,
   articleFragments: { [id: string]: ArticleFragment }
@@ -469,23 +431,6 @@ const groupSiblingsSelector = (state: State, groupId: string) => {
   );
 };
 
-const articleGroupSelector = (
-  state: State,
-  groupIdFromAction: string,
-  fragmentId: string
-) => {
-  const groups = groupsSelector(state);
-  if (groups[groupIdFromAction].articleFragments.includes(fragmentId)) {
-    return groupIdFromAction;
-  }
-
-  const actualFragmentGroup = Object.values(groups).find(group =>
-    group.articleFragments.includes(fragmentId)
-  );
-
-  return actualFragmentGroup && actualFragmentGroup.uuid;
-};
-
 const groupsArticleCount = (groups: Group[]) =>
   groups.reduce((acc, group) => acc + group.articleFragments.length, 0);
 
@@ -534,9 +479,7 @@ export {
   articleTagSelector,
   indexInGroupSelector,
   groupsSelector,
-  articleGroupSelector,
   groupsArticleCount,
   externalArticleIdFromArticleFragmentSelector,
-  selectCollectionItemHasMediaOverrides,
-  createArticlesFromIdsSelector
+  selectCollectionItemHasMediaOverrides
 };
