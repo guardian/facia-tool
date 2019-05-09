@@ -23,6 +23,11 @@ import { liveBlogTones } from 'constants/fronts';
 import { ThumbnailSmall } from 'shared/components/Thumbnail';
 import { CapiArticle } from 'types/Capi';
 import { getThumbnail } from 'util/CAPIUtils';
+import {
+  ArticleDragComponent,
+  dragOffsetX,
+  dragOffsetY
+} from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 
 const Container = styled('div')`
   display: flex;
@@ -59,6 +64,7 @@ const VisitedWrapper = styled.a`
   display: flex;
   color: inherit;
   width: 100%;
+  height: 100%;
   :visited ${Title} {
     color: ${({ theme }) => theme.capiInterface.textVisited};
   }
@@ -99,13 +105,6 @@ interface FeedItemProps {
   onAddToClipboard: (article: CapiArticle) => void;
 }
 
-const dragStart = (
-  article: CapiArticle,
-  event: React.DragEvent<HTMLDivElement>
-) => {
-  event.dataTransfer.setData('capi', JSON.stringify(article));
-};
-
 const isLive = (article: CapiArticle) =>
   !article.fields.isLive || article.fields.isLive === 'true';
 
@@ -129,78 +128,109 @@ const getArticleLabel = (article: CapiArticle) => {
   return startCase(sectionName);
 };
 
-const FeedItem = ({ article, onAddToClipboard = noop }: FeedItemProps) => (
-  <Container
-    data-testid="feed-item"
-    draggable={true}
-    onDragStart={event => dragStart(article, event)}
-  >
-    <VisitedWrapper
-      href={getPaths(article.id).live}
-      onClick={e => e.preventDefault()}
-      aria-disabled
-    >
-      <MetaContainer>
-        <Tone
+class FeedItem extends React.Component<FeedItemProps> {
+  private dragNode: React.RefObject<HTMLDivElement>;
+  public constructor(props: FeedItemProps) {
+    super(props);
+    this.dragNode = React.createRef();
+  }
+  public render() {
+    const { article, onAddToClipboard = noop } = this.props;
+    return (
+      <Container
+        data-testid="feed-item"
+        draggable={true}
+        onDragStart={this.handleDragStart}
+      >
+        <div
           style={{
-            color:
-              getPillarColor(
-                article.pillarId,
-                isLive(article),
-                article.frontsMeta.tone === liveBlogTones.dead
-              ) || styleTheme.capiInterface.textLight
+            position: 'absolute',
+            transform: 'translateX(-9999px)'
           }}
+          ref={this.dragNode}
         >
-          {getArticleLabel(article)}
-        </Tone>
-        {article.fields.scheduledPublicationDate && (
-          <ScheduledPublication>
-            {distanceInWordsStrict(
-              new Date(article.fields.scheduledPublicationDate),
-              Date.now()
+          <ArticleDragComponent headline={article.webTitle} />
+        </div>
+
+        <VisitedWrapper
+          href={getPaths(article.id).live}
+          onClick={e => e.preventDefault()}
+          aria-disabled
+        >
+          <MetaContainer>
+            <Tone
+              style={{
+                color:
+                  getPillarColor(
+                    article.pillarId,
+                    isLive(article),
+                    article.frontsMeta.tone === liveBlogTones.dead
+                  ) || styleTheme.capiInterface.textLight
+              }}
+            >
+              {getArticleLabel(article)}
+            </Tone>
+            {article.fields.scheduledPublicationDate && (
+              <ScheduledPublication>
+                {distanceInWordsStrict(
+                  new Date(article.fields.scheduledPublicationDate),
+                  Date.now()
+                )}
+              </ScheduledPublication>
             )}
-          </ScheduledPublication>
-        )}
-        {article.webPublicationDate && (
-          <FirstPublished>
-            {distanceInWordsStrict(
-              Date.now(),
-              new Date(article.webPublicationDate)
+            {article.webPublicationDate && (
+              <FirstPublished>
+                {distanceInWordsStrict(
+                  Date.now(),
+                  new Date(article.webPublicationDate)
+                )}
+              </FirstPublished>
             )}
-          </FirstPublished>
-        )}
-        <ShortVerticalPinline />
-      </MetaContainer>
-      <Body>
-        <Title data-testid="headline">{article.webTitle}</Title>
-      </Body>
-      <ArticleThumbnail
-        style={{
-          backgroundImage: `url('${getThumbnail(
-            article,
-            article.frontsMeta.defaults
-          )}')`
-        }}
-      />
-    </VisitedWrapper>
-    <HoverActionsAreaOverlay justify="flex-end" data-testid="hover-overlay">
-      <HoverActionsButtonWrapper
-        buttons={[
-          { text: 'View', component: HoverViewButton },
-          { text: 'Ophan', component: HoverOphanButton },
-          { text: 'Clipboard', component: HoverAddToClipboardButton }
-        ]}
-        buttonProps={{
-          isLive: isLive(article),
-          urlPath: article.id,
-          onAddToClipboard: () => onAddToClipboard(article)
-        }}
-        toolTipPosition={'top'}
-        toolTipAlign={'right'}
-      />
-    </HoverActionsAreaOverlay>
-  </Container>
-);
+            <ShortVerticalPinline />
+          </MetaContainer>
+          <Body>
+            <Title data-testid="headline">{article.webTitle}</Title>
+          </Body>
+          <ArticleThumbnail
+            style={{
+              backgroundImage: `url('${getThumbnail(
+                article,
+                article.frontsMeta.defaults
+              )}')`
+            }}
+          />
+        </VisitedWrapper>
+        <HoverActionsAreaOverlay justify="flex-end" data-testid="hover-overlay">
+          <HoverActionsButtonWrapper
+            buttons={[
+              { text: 'View', component: HoverViewButton },
+              { text: 'Ophan', component: HoverOphanButton },
+              { text: 'Clipboard', component: HoverAddToClipboardButton }
+            ]}
+            buttonProps={{
+              isLive: isLive(article),
+              urlPath: article.id,
+              onAddToClipboard: () => onAddToClipboard(article)
+            }}
+            toolTipPosition={'top'}
+            toolTipAlign={'right'}
+          />
+        </HoverActionsAreaOverlay>
+      </Container>
+    );
+  }
+
+  private handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+    event.dataTransfer.setData('capi', JSON.stringify(this.props.article));
+    if (this.dragNode.current) {
+      event.dataTransfer.setDragImage(
+        this.dragNode.current,
+        dragOffsetX,
+        dragOffsetY
+      );
+    }
+  };
+}
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {

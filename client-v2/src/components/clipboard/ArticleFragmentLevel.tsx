@@ -4,7 +4,10 @@ import { State } from 'types/State';
 import { connect } from 'react-redux';
 import { ArticleFragment } from 'shared/types/Collection';
 import { CollectionItemDisplayTypes } from 'shared/types/Collection';
-import ArticleDrag from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
+import ArticleDrag, {
+  dragOffsetX,
+  dragOffsetY
+} from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone from 'components/DropZone';
 import { createSupportingArticlesSelector } from 'shared/selectors/shared';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
@@ -43,6 +46,8 @@ const ArticleFragmentLevel = ({
     onMove={onMove}
     onDrop={onDrop}
     renderDrag={af => <ArticleDrag id={af.uuid} />}
+    dragImageOffsetX={dragOffsetX}
+    dragImageOffsetY={dragOffsetY}
     renderDrop={
       isUneditable
         ? null

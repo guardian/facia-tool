@@ -3,7 +3,10 @@ import { Level, LevelChild, MoveHandler, DropHandler } from 'lib/dnd';
 import { State } from 'types/State';
 import { connect } from 'react-redux';
 import { ArticleFragment } from 'shared/types/Collection';
-import ArticleDrag from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
+import ArticleDrag, {
+  dragOffsetX,
+  dragOffsetY
+} from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone from 'components/DropZone';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
 import { createArticlesFromIdsSelector } from 'shared/selectors/shared';
@@ -37,6 +40,8 @@ const GroupLevel = ({
     parentType="group"
     parentId={groupId}
     type="articleFragment"
+    dragImageOffsetX={dragOffsetX}
+    dragImageOffsetY={dragOffsetY}
     getId={({ uuid }) => uuid}
     onMove={onMove}
     onDrop={onDrop}

@@ -69,6 +69,8 @@ interface OuterProps<T> {
   parentId: string;
   parentType: string;
   type: string;
+  dragImageOffsetX?: number;
+  dragImageOffsetY?: number;
   getId: (t: T) => string;
   onMove: (move: Move<T>) => void;
   onDrop: (e: React.DragEvent, to: PosSpec) => void;
@@ -115,7 +117,9 @@ class Level<T> extends React.Component<Props<T>, State> {
       children,
       arr,
       getId,
-      type
+      type,
+      dragImageOffsetX,
+      dragImageOffsetY
     } = this.props;
     const Container = this.props.containerElement || DefaultContainer;
     return (
@@ -130,6 +134,8 @@ class Level<T> extends React.Component<Props<T>, State> {
             </DropZone>
             <Node
               renderDrag={renderDrag}
+              dragImageOffsetX={dragImageOffsetX}
+              dragImageOffsetY={dragImageOffsetY}
               id={getId(node)}
               type={type}
               index={i}
