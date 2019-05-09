@@ -12,7 +12,7 @@ function getFromGroupIndicesWithRespectToState(
     return { fromWithRespectToState: null, fromOrphanedGroup: false };
   }
 
-  if (position.type === 'clipboard') {
+  if (position.type !== 'group') {
     return { fromWithRespectToState: position, fromOrphanedGroup: false };
   }
   const { articleCount, groupSiblings } = getGroupIndicesWithRespectToState(
@@ -60,7 +60,7 @@ function getToGroupIndicesWithRespectToState(
   state: State,
   fromOrphanedGroup: boolean
 ): PosSpec | null {
-  if (position.type === 'clipboard') {
+  if (position.type !== 'group') {
     return position;
   }
   const { articleCount } = getGroupIndicesWithRespectToState(position, state);
