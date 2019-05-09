@@ -439,7 +439,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     name="cutoutImage"
                     component={InputImage}
                     disabled={imageHide}
-                    criteria={imageCriteria}
                     frontId={frontId}
                   />
                 </ImageWrapper>
