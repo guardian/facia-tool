@@ -2,7 +2,7 @@ import { Diff } from 'utility-types';
 import { FrontsToolSettings } from 'types/FaciaApi';
 
 interface Group {
-  id: string;
+  id: string | null;
   name: string | null;
   uuid: string;
   articleFragments: string[];

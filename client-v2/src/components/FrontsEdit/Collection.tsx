@@ -170,6 +170,7 @@ class CollectionContext extends React.Component<
                 groupId={group.uuid}
                 onMove={handleMove}
                 onDrop={handleInsert}
+                articleFragmentIds={group.articleFragments}
               >
                 {(articleFragment, getAfNodeProps) => (
                   <>

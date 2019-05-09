@@ -32,6 +32,11 @@ const state: any = {
         id: 'c5',
         groups: ['group6'],
         live: ['g6']
+      },
+      c6: {
+        id: 'c1',
+        groups: ['group1', 'group2'],
+        live: ['g1', 'g2', 'g7']
       }
     }
   },
@@ -39,12 +44,14 @@ const state: any = {
     g1: {
       uuid: 'g1',
       id: 'group1',
-      articleFragments: ['af2']
+      articleFragments: ['af2'],
+      name: 'g1'
     },
     g2: {
       uuid: 'g2',
       id: 'group2',
-      articleFragments: ['af1']
+      articleFragments: ['af1'],
+      name: 'g2'
     },
     g3: {
       uuid: 'g3',
@@ -193,6 +200,9 @@ const state: any = {
       id: 'ea4'
     },
     af5: {
+      uuid: 'af5'
+    },
+    af6: {
       uuid: 'af5'
     },
     afWithTagKicker: {
@@ -401,6 +411,40 @@ describe('Shared selectors', () => {
           groupName: 'group1'
         })
       ).toEqual(['af3', 'af4']);
+    });
+    it('should put articles which are in groups that don`t exis in the config in the first group', () => {
+      const selector = createArticlesInCollectionGroupSelector();
+      const currentGroups = state.groups;
+      const newGroups = {
+        ...currentGroups,
+        ...{ g7: { uuid: 'g7', id: 'group7', articleFragments: ['af6'] } }
+      };
+      expect(
+        selector(
+          { ...state, ...{ groups: newGroups } },
+          {
+            collectionId: 'c6',
+            collectionSet: 'live'
+          }
+        )
+      ).toEqual(['af6', 'af2', 'af1']);
+    });
+    it('should put articles which are in groups that don`t exis in the config in the first group even when none of the groups have names', () => {
+      const selector = createArticlesInCollectionGroupSelector();
+      const newGroups = {
+        ...{ g1: { uuid: 'g1', articleFragments: ['af4'] } },
+        ...{ g2: { uuid: 'g2', id: 'group6', articleFragments: ['af5'] } },
+        ...{ g7: { uuid: 'g7', id: 'group7', articleFragments: ['af6'] } }
+      };
+      expect(
+        selector(
+          { ...state, ...{ groups: newGroups } },
+          {
+            collectionId: 'c6',
+            collectionSet: 'live'
+          }
+        )
+      ).toEqual(['af5', 'af6', 'af4']);
     });
     it('should return articles in supporting positions', () => {
       const selector = createArticlesInCollectionGroupSelector();
