@@ -46,7 +46,7 @@ const CollectionWrapper = styled('div')`
 
 const Notification = styled.span`
   display: inline-block;
-  margin-left 0.25em;
+  margin-left: 0.25em;
 `;
 
 const selectGrey = ({ theme }: { theme: Theme }) =>
@@ -107,7 +107,6 @@ type ConnectedCollectionContextProps = CollectionContextProps & {
     articleFragment: TArticleFragment,
     frontId: string
   ) => void;
-  addImageToArticleFragment: (id: string, response: ValidationResponse) => void;
   removeCollectionItem: (parentId: string, id: string) => void;
   removeSupportingCollectionItem: (parentId: string, id: string) => void;
   handleBlur: () => void;
