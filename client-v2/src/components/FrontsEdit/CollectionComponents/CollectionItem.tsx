@@ -17,7 +17,8 @@ import {
 import SnapLink from 'shared/components/snapLink/SnapLink';
 import {
   cloneArticleFragmentToTarget,
-  copyArticleFragmentImageMetaWithPersist
+  copyArticleFragmentImageMetaWithPersist,
+  addImageToArticleFragment
 } from 'actions/ArticleFragments';
 import noop from 'lodash/noop';
 import { selectEditorArticleFragment } from 'bundles/frontsUIBundle';
@@ -54,6 +55,7 @@ type ArticleContainerProps = ContainerProps & {
     uuid: string
   ) => void;
   copyCollectionItemImageMeta: (from: string, to: string) => void;
+  addImageToArticleFragment: (id: string, response: ValidationResponse) => void;
   type: CollectionItemTypes;
   isSelected: boolean;
   externalArticleId: string | undefined;
@@ -95,7 +97,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
         // rather than an image which is expected - TBD
         // console.log('@todo:handle error', err);
       });
-  }
+  };
 
   public render() {
     const {
@@ -215,7 +217,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
       dispatch(cloneArticleFragmentToTarget(uuid, 'clipboard'));
     },
     copyCollectionItemImageMeta: (from: string, to: string) =>
-      dispatch(copyArticleFragmentImageMetaWithPersist(from, to))
+      dispatch(copyArticleFragmentImageMetaWithPersist(from, to)),
+    addImageToArticleFragment: (id: string, response: ValidationResponse) =>
+      dispatch(addImageToArticleFragment(id, response))
   };
 };
 
