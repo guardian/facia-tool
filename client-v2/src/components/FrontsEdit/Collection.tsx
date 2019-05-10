@@ -176,12 +176,6 @@ class CollectionContext extends React.Component<
                     >
                       <CollectionItem
                         frontId={this.props.id}
-                        onImageDrop={imageData => {
-                          this.props.addImageToArticleFragment(
-                            articleFragment.uuid,
-                            imageData
-                          );
-                        }}
                         uuid={articleFragment.uuid}
                         parentId={group.uuid}
                         isUneditable={isUneditable}
