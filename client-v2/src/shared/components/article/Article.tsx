@@ -22,11 +22,23 @@ import {
 } from 'shared/types/Collection';
 import { getPillarColor } from 'shared/util/getPillarColor';
 import DragIntentContainer from '../DragIntentContainer';
+import { theme as globalTheme } from 'shared/constants/theme';
+
+const DragIntentIndicator = styled.div`
+  display: none;
+  position: absolute;
+  height: 10px;
+  bottom: 0;
+  width: 100%;
+  background-color: ${globalTheme.colors.orange};
+`;
 
 const ArticleBodyContainer = styled(CollectionItemBody)<{
   pillarId: string | undefined;
   isLive: boolean;
+  isDraggingImageOver: boolean;
 }>`
+  position: relative;
   border-top-color: ${({ size, pillarId, isLive, theme }) =>
     size === 'default' && pillarId && isLive
       ? getPillarColor(pillarId, isLive)
@@ -36,6 +48,9 @@ const ArticleBodyContainer = styled(CollectionItemBody)<{
     ${CollectionItemMetaHeading} {
       color: ${({ theme }) => theme.shared.base.colors.textMuted};
     }
+  }
+  ${DragIntentIndicator} {
+    ${({ isDraggingImageOver }) => isDraggingImageOver && `display: block;`}
   }
   height: 100%;
 `;
@@ -75,13 +90,17 @@ const articleBodyComponentMap: {
   polaroid: ArticleBodyPolaroid
 };
 
-class ArticleComponent extends React.Component<ComponentProps> {
+interface ComponentState {
+  isDraggingImageOver: boolean;
+}
+
+class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
   public state = {
-    isHoveredWithImage: false
+    isDraggingImageOver: false
   };
 
-  public setIsHovered = (isHoveredWithImage: boolean) =>
-    this.setState({ isHoveredWithImage });
+  public setIsHovered = (isDraggingImageOver: boolean) =>
+    this.setState({ isDraggingImageOver });
 
   public render() {
     const {
@@ -145,16 +164,12 @@ class ArticleComponent extends React.Component<ComponentProps> {
         >
           <ArticleBodyContainer
             data-testid="article-body"
-            style={{
-              boxShadow: this.state.isHoveredWithImage
-                ? 'inset 0 0 0 1px orange'
-                : 'none'
-            }}
             size={size}
             fade={fade}
             displayType={displayType}
             pillarId={article && article.pillarId}
             isLive={!!article && article.isLive}
+            isDraggingImageOver={this.state.isDraggingImageOver}
           >
             <ArticleBody
               {...getArticleData()}
@@ -164,6 +179,7 @@ class ArticleComponent extends React.Component<ComponentProps> {
               onAddToClipboard={onAddToClipboard}
               displayPlaceholders={isLoading}
             />
+            <DragIntentIndicator />
           </ArticleBodyContainer>
         </DragIntentContainer>
         {children}
