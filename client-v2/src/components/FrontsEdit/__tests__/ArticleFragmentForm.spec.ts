@@ -43,9 +43,13 @@ const formValues = {
 const createStateWithChangedFormFields = (
   cleanState: State,
   articleId: string,
-  fieldValueMap: { [field: string]: any }
+  fieldValueMap: { [field: string]: any },
+  additionalFormValues: any = {}
 ) => {
-  const formState = reducer(undefined, initialize(articleId, formValues));
+  const formState = reducer(
+    undefined,
+    initialize(articleId, { formValues, ...additionalFormValues })
+  );
   return {
     ...cleanState,
     form: Object.keys(fieldValueMap).reduce(
@@ -295,6 +299,39 @@ describe('ArticleFragmentForm transform functions', () => {
           }
         ]
       });
+    });
+    it('should remove undefined values from the meta', () => {
+      const values = {
+        showQuotedHeadline: undefined
+      };
+      const state = createStateWithChangedFormFields(
+        initialState,
+        'exampleId',
+        values
+      );
+      expect(
+        getArticleFragmentMetaFromFormValues(state, 'exampleId', {
+          ...formValues,
+          ...values
+        } as any)
+      ).toEqual({ headline: 'Bill Shorten' });
+    });
+    it('should keep false values', () => {
+      const values = {
+        showQuotedHeadline: false
+      };
+      const state = createStateWithChangedFormFields(
+        initialState,
+        'exampleId',
+        values,
+        { showQuotedHeadline: true }
+      );
+      expect(
+        getArticleFragmentMetaFromFormValues(state, 'exampleId', {
+          ...formValues,
+          ...values
+        })
+      ).toEqual({ showQuotedHeadline: false, headline: 'Bill Shorten' });
     });
   });
 });
