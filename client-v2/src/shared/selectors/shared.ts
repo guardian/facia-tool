@@ -475,12 +475,13 @@ const articleGroupSelector = (
   fragmentId: string
 ) => {
   const groups = groupsSelector(state);
-  if (groups[groupIdFromAction].articleFragments.includes(fragmentId)) {
+  const groupInAction = groups[groupIdFromAction];
+  if (groupInAction && groupInAction.articleFragments.includes(fragmentId)) {
     return groupIdFromAction;
   }
 
-  const actualFragmentGroup = Object.values(groups).find(group =>
-    group.articleFragments.includes(fragmentId)
+  const actualFragmentGroup = Object.values(groups).find(
+    group => group && group.articleFragments.includes(fragmentId)
   );
 
   return actualFragmentGroup && actualFragmentGroup.uuid;

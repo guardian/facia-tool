@@ -267,16 +267,27 @@ const removeArticleFragment = (
   persistTo: 'collection' | 'clipboard'
 ): ThunkResult<void> => {
   return (dispatch: Dispatch, getState) => {
-    const groupIdFromState =
-      persistTo === 'clipboard'
-        ? 'clipboard'
-        : articleGroupSelector(
-            selectSharedState(getState()),
-            id,
-            articleFragmentId
-          );
+    const getGroupIdFromState = () => {
+      if (persistTo === 'clipboard') {
+        return 'clipboard';
+      }
+      // The article fragment may belong to an orphaned group -
+      // we need to find the actual group the article fragment belongs to
+      const idFromState = articleGroupSelector(
+        selectSharedState(getState()),
+        id,
+        articleFragmentId
+      );
+      if (idFromState) {
+        return idFromState;
+      }
+      // If we could not find a group id the article fragment belongs to
+      // then this article is a sublink and we don't have to adjust the id
+      return id;
+    };
+    const groupIdFromState = getGroupIdFromState();
     const removeActionCreator = getRemoveActionCreatorFromType(type, persistTo);
-    if (!removeActionCreator || !groupIdFromState) {
+    if (!removeActionCreator) {
       return;
     }
     dispatch(removeActionCreator(groupIdFromState, articleFragmentId));
