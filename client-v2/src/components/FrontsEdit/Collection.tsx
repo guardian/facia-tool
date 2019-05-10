@@ -11,7 +11,6 @@ import GroupLevel from 'components/clipboard/GroupLevel';
 import CollectionItem from './CollectionComponents/CollectionItem';
 import ArticleFragmentLevel from 'components/clipboard/ArticleFragmentLevel';
 import { PosSpec, Move } from 'lib/dnd';
-import { ValidationResponse } from 'shared/util/validateImageSrc';
 import { Dispatch } from 'types/Store';
 import {
   removeArticleFragment,
