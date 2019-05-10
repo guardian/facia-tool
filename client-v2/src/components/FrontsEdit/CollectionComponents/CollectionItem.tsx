@@ -42,7 +42,6 @@ interface ContainerProps {
   getNodeProps: () => object;
   onSelect: (uuid: string) => void;
   onDelete: (uuid: string) => void;
-  onImageDrop?: (data: ValidationResponse) => void;
   parentId: string;
   displayType?: CollectionItemDisplayTypes;
   size?: 'small' | 'default';
@@ -76,9 +75,6 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
   };
 
   public handleDrop = (e: React.DragEvent<HTMLElement>) => {
-    if (!this.props.onImageDrop) {
-      return;
-    }
     e.preventDefault();
     e.persist();
 
@@ -91,7 +87,9 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
 
     // Our drag contains Grid data
     validateImageEvent(e, this.props.frontId, imageCriteria)
-      .then(this.props.onImageDrop)
+      .then(imageData =>
+        this.props.addImageToArticleFragment(this.props.uuid, imageData)
+      )
       .catch(err => {
         // swallowing errors here as the drop may well be an articleFragment
         // rather than an image which is expected - TBD
