@@ -1,5 +1,8 @@
 import { Stages, CollectionItemSets } from 'shared/types/Collection';
-import { gridDataTransferTypes, DRAG_DATA_COLLECTION_ITEM_IMAGE } from './image';
+import {
+  gridDataTransferTypes,
+  DRAG_DATA_COLLECTION_ITEM_IMAGE
+} from './image';
 
 export const breakingNewsFrontId: string = 'breaking-news';
 
