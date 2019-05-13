@@ -10,7 +10,9 @@ import {
   externalSnapLink,
   previouslyToggle,
   previouslyDropZone,
-  previouslyItem
+  previouslyItem,
+  clipboardWrapper,
+  clipboardItem
 } from '../selectors';
 
 fixture`Fronts edit`.page`http://localhost:3456/v2/editorial`
@@ -115,4 +117,19 @@ test('Previously', async t => {
     .eql(frontDropsCount + 2) // clones into the front
     .expect(previouslyItem().count)
     .eql(previouslyItemCount); // does not remove the previously item
+});
+
+test('Clipboard - drop depth', async t => {
+  const prevCount = await clipboardItem().count;
+  await t
+    .maximizeWindow()
+    // drag to a position in the UI wrapper - NOT the clipboard itself
+    // this checks that the clipboard drop area extends to the bottom of the visual clipboard wrapper
+    .dragToElement(feedItem(0), clipboardWrapper(), {
+      destinationOffsetX: 40,
+      destinationOffsetY: -40
+    })
+    .wait(1000)
+    .expect(prevCount + 1)
+    .eql(2);
 });
