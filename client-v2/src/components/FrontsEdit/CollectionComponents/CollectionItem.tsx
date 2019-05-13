@@ -28,12 +28,13 @@ import {
 } from 'shared/util/validateImageSrc';
 import {
   articleFragmentImageCriteria as imageCriteria,
-  DRAG_COLLECTION_ITEM_IMAGE
+  DRAG_DATA_COLLECTION_ITEM_IMAGE
 } from 'constants/image';
 import Sublinks from './Sublinks';
 import { gridDropTypes } from 'constants/fronts';
+import { DragDataCollectionItemImage } from 'shared/components/article/DraggableArticleImageContainer';
 
-const imageDropTypes = [...gridDropTypes, DRAG_COLLECTION_ITEM_IMAGE];
+const imageDropTypes = [...gridDropTypes, DRAG_DATA_COLLECTION_ITEM_IMAGE];
 
 interface ContainerProps {
   uuid: string;
@@ -74,13 +75,18 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
     }
   };
 
-  public handleDrop = (e: React.DragEvent<HTMLElement>) => {
+  public handleImageDrop = (e: React.DragEvent<HTMLElement>) => {
     e.preventDefault();
     e.persist();
 
     // Our drag is a copy event, from another CollectionItem
-    const articleUuid = e.dataTransfer.getData(DRAG_COLLECTION_ITEM_IMAGE);
-    if (articleUuid) {
+    const collectionItemImageJson = e.dataTransfer.getData(
+      DRAG_DATA_COLLECTION_ITEM_IMAGE
+    );
+    if (collectionItemImageJson) {
+      const { id: articleUuid }: DragDataCollectionItemImage = JSON.parse(
+        collectionItemImageJson
+      );
       this.props.copyCollectionItemImageMeta(articleUuid, this.props.uuid);
       return;
     }
@@ -129,7 +135,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
             size={size}
             displayType={displayType}
             imageDropTypes={imageDropTypes}
-            onImageDrop={this.handleDrop}
+            onImageDrop={this.handleImageDrop}
           >
             <Sublinks
               numSupportingArticles={numSupportingArticles}
