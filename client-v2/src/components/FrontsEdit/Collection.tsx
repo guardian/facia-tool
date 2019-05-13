@@ -21,6 +21,7 @@ import { connect } from 'react-redux';
 import { State } from 'types/State';
 import { createArticleVisibilityDetailsSelector } from 'selectors/frontsSelectors';
 import FocusWrapper from 'components/FocusWrapper';
+import { ValidationResponse } from 'shared/util/validateImageSrc';
 
 const getArticleNotifications = (
   id: string,
