@@ -120,15 +120,16 @@ test('Previously', async t => {
 });
 
 test('Clipboard - drop depth', async t => {
+  const prevCount = await clipboardItem().count;
   await t
     .maximizeWindow()
     // drag to a position in the UI wrapper - NOT the clipboard itself
     // this checks that the clipboard drop area extends to the bottom of the visual clipboard wrapper
     .dragToElement(feedItem(0), clipboardWrapper(), {
-      destinationOffsetX: 20,
-      destinationOffsetY: -20
+      destinationOffsetX: 40,
+      destinationOffsetY: -40
     })
     .wait(1000)
-    .expect(clipboardItem().count)
-    .eql(3);
+    .expect(prevCount + 1)
+    .eql(2);
 });
