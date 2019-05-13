@@ -17,7 +17,7 @@ import {
   removeArticleFragment,
   addImageToArticleFragment
 } from 'actions/ArticleFragments';
-import { resetFocusState, setFocusState } from 'bundles/focusBundle';
+import { resetFocusState } from 'bundles/focusBundle';
 import { connect } from 'react-redux';
 import { State } from 'types/State';
 import { createArticleVisibilityDetailsSelector } from 'selectors/frontsSelectors';
