@@ -1,8 +1,5 @@
 import { createSelector } from 'reselect';
-import {
-  articleFragmentSelector,
-  externalArticleFromArticleFragmentSelector
-} from './shared';
+import { articleFragmentSelector } from './shared';
 import { validateId } from 'shared/util/snap';
 import CollectionItemTypes from 'shared/constants/collectionItemTypes';
 
@@ -16,31 +13,4 @@ const createCollectionItemTypeSelector = () =>
     }
   );
 
-const createSelectActiveImageUrl = () =>
-  createSelector(
-    articleFragmentSelector,
-    externalArticleFromArticleFragmentSelector,
-    (articleFragment, externalArticle): string | undefined => {
-      if (!articleFragment || !articleFragment.meta) {
-        return;
-      }
-      if (articleFragment.meta.imageReplace) {
-        return articleFragment.meta.imageSrc;
-      }
-      if (articleFragment.meta.imageCutoutReplace) {
-        return articleFragment.meta.imageCutoutSrc;
-      }
-      if (articleFragment.meta.imageSlideshowReplace) {
-        return (
-          articleFragment.meta.slideshow &&
-          articleFragment.meta.slideshow[0] &&
-          articleFragment.meta.slideshow[0].src
-        );
-      }
-      return externalArticle && externalArticle.fields.thumbnail
-        ? externalArticle.fields.thumbnail
-        : undefined;
-    }
-  );
-
-export { createCollectionItemTypeSelector, createSelectActiveImageUrl };
+export { createCollectionItemTypeSelector };

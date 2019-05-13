@@ -32,7 +32,6 @@ import {
 } from 'constants/image';
 import Sublinks from './Sublinks';
 import { gridDropTypes } from 'constants/fronts';
-import { DragDataCollectionItemImage } from 'shared/components/article/DraggableArticleImageContainer';
 
 const imageDropTypes = [...gridDropTypes, DRAG_DATA_COLLECTION_ITEM_IMAGE];
 
@@ -80,13 +79,8 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
     e.persist();
 
     // Our drag is a copy event, from another CollectionItem
-    const collectionItemImageJson = e.dataTransfer.getData(
-      DRAG_DATA_COLLECTION_ITEM_IMAGE
-    );
-    if (collectionItemImageJson) {
-      const { id: articleUuid }: DragDataCollectionItemImage = JSON.parse(
-        collectionItemImageJson
-      );
+    const articleUuid = e.dataTransfer.getData(DRAG_DATA_COLLECTION_ITEM_IMAGE);
+    if (articleUuid) {
       this.props.copyCollectionItemImageMeta(articleUuid, this.props.uuid);
       return;
     }
