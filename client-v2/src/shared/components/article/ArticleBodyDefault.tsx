@@ -2,7 +2,7 @@ import React from 'react';
 import { styled } from 'shared/constants/theme';
 import startCase from 'lodash/startCase';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
-import { MdCollections } from 'react-icons/md';
+import { MdCollections, MdImage } from 'react-icons/md';
 
 import CollectionItemHeading from '../collectionItem/CollectionItemHeading';
 import BasePlaceholder from '../BasePlaceholder';
@@ -57,7 +57,7 @@ const ArticleBodyQuoteContainer = styled('span')`
   margin-right: 0.1rem;
 `;
 
-const ArticleSlideshow = styled('div')`
+const ImageOverrideContainer = styled('div')`
   position: absolute;
   background: ${({ theme }) => theme.shared.colors.white};
   width: 24px;
@@ -69,7 +69,7 @@ const ArticleSlideshow = styled('div')`
   right: 2px;
 `;
 
-const SlideshowIcon = styled('div')`
+const ImageOverrideIcon = styled('div')`
   position: absolute;
   top: 4px;
   left: 4px;
@@ -103,6 +103,7 @@ interface ArticleBodyProps {
   showQuotedHeadline?: boolean;
   imageHide?: boolean;
   imageSlideshowReplace?: boolean;
+  imageReplace?: boolean;
   isBreaking?: boolean;
   type?: string;
 }
@@ -143,6 +144,7 @@ const articleBodyDefault = ({
   showQuotedHeadline,
   imageHide,
   imageSlideshowReplace,
+  imageReplace,
   isBreaking,
   type,
   uuid
@@ -226,11 +228,18 @@ const articleBodyDefault = ({
         ) : (
           <DraggableArticleImageContainer id={uuid}>
             {imageSlideshowReplace && (
-              <ArticleSlideshow>
-                <SlideshowIcon>
+              <ImageOverrideContainer title="This article has a slideshow override">
+                <ImageOverrideIcon>
                   <MdCollections />
-                </SlideshowIcon>
-              </ArticleSlideshow>
+                </ImageOverrideIcon>
+              </ImageOverrideContainer>
+            )}
+            {imageReplace && (
+              <ImageOverrideContainer title="This article has an image override">
+                <ImageOverrideIcon>
+                  <MdImage />
+                </ImageOverrideIcon>
+              </ImageOverrideContainer>
             )}
             <ThumbnailSmall
               style={{
