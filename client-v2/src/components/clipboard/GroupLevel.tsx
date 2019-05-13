@@ -10,6 +10,7 @@ import ArticleDrag, {
 import DropZone from 'components/DropZone';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
 import { createArticlesFromIdsSelector } from 'shared/selectors/shared';
+import { styled } from 'constants/theme';
 
 interface OuterProps {
   groupId: string;
@@ -25,6 +26,10 @@ interface InnerProps {
 }
 
 type Props = OuterProps & InnerProps;
+
+const Spacer = styled.div`
+  margin-top: 10px;
+`;
 
 const GroupLevel = ({
   children,
@@ -45,24 +50,25 @@ const GroupLevel = ({
     getId={({ uuid }) => uuid}
     onMove={onMove}
     onDrop={onDrop}
+    canDrop={!isUneditable}
     renderDrag={af => <ArticleDrag id={af.uuid} />}
     renderDrop={
       isUneditable
-        ? null
-        : (props, isTarget, isActive) => (
+        ? () => <Spacer />
+        : (props, isTarget, isActive, i) => (
             <DropZone
               {...props}
               disabled={!isActive}
               override={isTarget}
+              doubleHeight={!articleFragments.length || i === 0}
               style={
-                // Pad the drop zone for ease of dropping if there's
-                // nothing in the group.
-                articleFragments.length
-                  ? undefined
-                  : {
-                      height: '30px',
-                      paddingBottom: '20px'
+                i === 0
+                  ? {
+                      height: '32px',
+                      marginTop: '-22px',
+                      paddingTop: '22px'
                     }
+                  : {}
               }
             />
           )

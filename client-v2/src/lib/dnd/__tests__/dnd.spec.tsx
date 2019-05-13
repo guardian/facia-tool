@@ -177,7 +177,7 @@ describe('Guration', () => {
     });
   });
 
-  it('does not allow dropping on to nodes when renderDrop is not defined', () => {
+  it('does not allow dropping on to nodes when canDrop is false', () => {
     let nodeProps;
     let dropProps;
     let edit: any;
@@ -193,6 +193,7 @@ describe('Guration', () => {
           onMove={() => null}
           onDrop={() => null}
           renderDrop={() => null}
+          canDrop={false}
         >
           {(child, getDragProps, i) => {
             if (i === 0) {
@@ -210,6 +211,7 @@ describe('Guration', () => {
                   edit = e;
                 }}
                 onDrop={() => null}
+                canDrop={false}
               >
                 {(_, getNodeProps, j) =>
                   j === 0 ? ((dropProps = getNodeProps()), null) : null

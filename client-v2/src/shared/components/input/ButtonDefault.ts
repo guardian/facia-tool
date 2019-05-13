@@ -143,7 +143,7 @@ export default styled(`button`)`
     cursor: pointer;
   }
   &:focus {
-    outline: transparent;
+    outline: 1px solid ${props => props.theme.shared.base.colors.focusColor};
   }
 
   :not(:first-child) {

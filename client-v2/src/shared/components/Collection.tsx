@@ -25,6 +25,8 @@ import ContentContainer from './layout/ContentContainer';
 import { css } from 'styled-components';
 import { events } from 'services/GA';
 import CollectionMetaContainer from './collection/CollectionMetaContainer';
+import { resetFocusState, setFocusState } from 'bundles/focusBundle';
+import { Dispatch } from 'types/Store';
 
 export const createCollectionId = ({ id }: Collection) => `collection-${id}`;
 
@@ -46,6 +48,8 @@ type Props = ContainerProps & {
   isOpen?: boolean;
   hasMultipleFrontsOpen?: boolean;
   onChangeOpenState?: (isOpen: boolean) => void;
+  handleFocus: (id: string) => void;
+  handleBlur: () => void;
 };
 
 interface CollectionState {
@@ -58,6 +62,12 @@ const CollectionContainer = ContentContainer.extend<{
   flex: 1;
   width: ${({ hasMultipleFrontsOpen }) =>
     hasMultipleFrontsOpen ? '510px' : '590px'};
+
+  &:focus {
+    border: 1px solid ${props => props.theme.shared.base.colors.focusColor};
+    border-top: none;
+    outline: none;
+  }
 `;
 
 const HeadlineContentContainer = styled('span')`
@@ -177,6 +187,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 
   public render() {
     const {
+      id,
       collection,
       articleIds,
       headlineContent,
@@ -184,13 +195,18 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       isUneditable,
       isLocked,
       hasMultipleFrontsOpen,
-      children
+      children,
+      handleFocus,
+      handleBlur
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
     const displayName = collection ? collection.displayName : 'Loading';
     return (
       <CollectionContainer
         id={collection && createCollectionId(collection)}
+        tabIndex={0}
+        onFocus={() => handleFocus(id)}
+        onBlur={handleBlur}
         hasMultipleFrontsOpen={hasMultipleFrontsOpen}
       >
         <ContainerHeadingPinline tabIndex={-1}>
@@ -298,4 +314,13 @@ const createMapStateToProps = () => {
   };
 };
 
-export default connect(createMapStateToProps)(CollectionDisplay);
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  handleBlur: () => dispatch(resetFocusState()),
+  handleFocus: (collectionId: string) =>
+    dispatch(setFocusState({ type: 'collection', collectionId }))
+});
+
+export default connect(
+  createMapStateToProps,
+  mapDispatchToProps
+)(CollectionDisplay);

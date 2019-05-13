@@ -16,7 +16,8 @@ const SublinkCollectionItemBody = styled(CollectionItemBody)<{
 }>`
   display: flex;
   min-height: 30px;
-  border: ${({ isClipboard }) => (isClipboard ? 'none' : '1px solid #c9c9c9')};
+  border-top: ${({ isClipboard }) =>
+    isClipboard ? 'none' : '1px solid #c9c9c9'};
   background-color: ${({ isClipboard, dragHoverActive }) =>
     dragHoverActive ? `#ededed` : isClipboard ? '#f6f6f6' : '#fff'};
   flex-direction: ${({ isClipboard }) => (isClipboard ? 'column' : 'row')};
@@ -75,7 +76,7 @@ class Sublinks extends React.Component<SublinkProps> {
             onDragIntentEnd={() => {
               this.setState({ dragHoverActive: false });
             }}
-            delay={300}
+            delay={600}
             filterRegisterEvent={this.dragEventNotBlacklisted}
             onIntentConfirm={() => {
               toggleShowArticleSublinks();

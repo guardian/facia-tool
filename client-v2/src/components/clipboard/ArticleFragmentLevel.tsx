@@ -45,6 +45,7 @@ const ArticleFragmentLevel = ({
     getId={({ uuid }) => uuid}
     onMove={onMove}
     onDrop={onDrop}
+    canDrop={!isUneditable}
     renderDrag={af => <ArticleDrag id={af.uuid} />}
     dragImageOffsetX={dragOffsetX}
     dragImageOffsetY={dragOffsetY}

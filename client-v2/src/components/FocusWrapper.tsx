@@ -4,18 +4,20 @@ import { connect } from 'react-redux';
 import { State } from 'types/State';
 
 const Wrapper = styled('div')<{ isSelected: boolean }>`
-  border: ${props =>
+  outline: ${props =>
     props.isSelected
       ? `1px solid ${props.theme.shared.base.colors.focusColor}`
       : `none`};
   &:focus {
-    border: 1px solid ${props => props.theme.shared.base.colors.focusColor};
-    outline: none;
+    outline: 1px solid ${props => props.theme.shared.base.colors.focusColor};
   }
 `;
 
-const mapStateToProps = (state: State, { uuid }: { uuid: string }) => ({
-  isSelected: selectFocusedArticle(state, 'clipboardArticle') === uuid
+const mapStateToProps = (
+  state: State,
+  { uuid, area }: { uuid: string; area: 'clipboard' | 'collection' }
+) => ({
+  isSelected: selectFocusedArticle(state, `${area}Article`) === uuid
 });
 
 export default connect(mapStateToProps)(Wrapper);

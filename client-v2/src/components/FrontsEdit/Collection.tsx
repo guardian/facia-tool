@@ -17,7 +17,7 @@ import {
   removeArticleFragment,
   addImageToArticleFragment
 } from 'actions/ArticleFragments';
-import { resetFocusState, setFocusState } from 'bundles/focusBundle';
+import { resetFocusState } from 'bundles/focusBundle';
 import { connect } from 'react-redux';
 import { State } from 'types/State';
 import { createArticleVisibilityDetailsSelector } from 'selectors/frontsSelectors';
@@ -42,13 +42,6 @@ const CollectionWrapper = styled('div')`
   & + & {
     margin-top: 10px;
   }
-  &:focus {
-    border: 1px solid ${props => props.theme.shared.base.colors.focusColor};
-    border-top: 2px solid ${props => props.theme.shared.base.colors.focusColor};
-    border-bottom: 2px solid
-      ${props => props.theme.shared.base.colors.focusColor};
-    outline: none;
-  }
 `;
 
 const Notification = styled.span`
@@ -62,15 +55,15 @@ const selectGrey = ({ theme }: { theme: Theme }) =>
 const VisibilityDividerEl = styled.div`
   display: flex;
   font-weight: bold;
-  font-size: 14px;
-  line-height: 1.25;
+  font-size: 12px;
+  line-height: 1;
   margin: 0.5em 0;
   text-transform: capitalize;
 
   :before {
-    background-image: linear-gradient(transparent 75%, ${selectGrey} 75%, ${selectGrey} 100%);
-    background-position: 0px 3px;
-    background-size: 4px 4px;
+    background-image: linear-gradient(transparent 66.66666%, ${selectGrey} 66.66666%, ${selectGrey} 100%);
+    background-position: 0px 2px;
+    background-size: 3px 3px;
     content: '';
     display: block;
     flex: 1;
@@ -117,7 +110,6 @@ type ConnectedCollectionContextProps = CollectionContextProps & {
   addImageToArticleFragment: (id: string, response: ValidationResponse) => void;
   removeCollectionItem: (parentId: string, id: string) => void;
   removeSupportingCollectionItem: (parentId: string, id: string) => void;
-  handleFocus: (id: string) => void;
   handleBlur: () => void;
   lastDesktopArticle?: string;
   lastMobileArticle?: string;
@@ -131,7 +123,6 @@ class CollectionContext extends React.Component<
       id,
       frontId,
       handleBlur,
-      handleFocus,
       priority,
       alsoOn,
       browsingStage,
@@ -145,11 +136,7 @@ class CollectionContext extends React.Component<
       lastMobileArticle
     } = this.props;
     return (
-      <CollectionWrapper
-        tabIndex={0}
-        onBlur={() => handleBlur()}
-        onFocus={() => handleFocus(id)}
-      >
+      <CollectionWrapper>
         <Collection
           key={id}
           id={id}
@@ -176,6 +163,7 @@ class CollectionContext extends React.Component<
                   <>
                     <FocusWrapper
                       tabIndex={0}
+                      area="collection"
                       onBlur={() => handleBlur()}
                       onFocus={e =>
                         handleArticleFocus(
@@ -275,9 +263,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   },
   addImageToArticleFragment: (id: string, response: ValidationResponse) =>
     dispatch(addImageToArticleFragment(id, response)),
-  handleBlur: () => dispatch(resetFocusState()),
-  handleFocus: (collectionId: string) =>
-    dispatch(setFocusState({ type: 'collection', collectionId }))
+  handleBlur: () => dispatch(resetFocusState())
 });
 
 export default connect(
