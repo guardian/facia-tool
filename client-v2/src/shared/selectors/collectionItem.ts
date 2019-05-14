@@ -25,16 +25,16 @@ const createSelectActiveImageUrl = () =>
         return;
       }
       if (articleFragment.meta.imageReplace) {
-        return articleFragment.meta.imageSrc;
+        return articleFragment.meta.imageSrcOrigin;
       }
       if (articleFragment.meta.imageCutoutReplace) {
-        return articleFragment.meta.imageCutoutSrc;
+        return articleFragment.meta.imageCutoutSrcOrigin;
       }
       if (articleFragment.meta.imageSlideshowReplace) {
         return (
           articleFragment.meta.slideshow &&
           articleFragment.meta.slideshow[0] &&
-          articleFragment.meta.slideshow[0].src
+          articleFragment.meta.slideshow[0].origin
         );
       }
       return externalArticle && externalArticle.fields.thumbnail

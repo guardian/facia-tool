@@ -11,3 +11,4 @@ export const gridDataTransferTypes = {
 };
 
 export const DRAG_DATA_COLLECTION_ITEM_IMAGE = '@@drag_collection_item_image@@';
+export const DRAG_DATA_GRID_IMAGE_URL = '@@drag_grid_image_url@@';

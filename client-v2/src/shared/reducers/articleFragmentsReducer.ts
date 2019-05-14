@@ -114,7 +114,6 @@ const articleFragments = (
       const to = action.payload.to;
       const fromArticle = state[action.payload.from];
       const toArticle = state[to];
-
       if (!fromArticle || !toArticle) {
         return state;
       }

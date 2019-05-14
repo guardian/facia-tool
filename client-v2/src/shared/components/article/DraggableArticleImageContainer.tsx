@@ -10,11 +10,6 @@ import imageDragIcon from 'images/icons/image-drag-icon.svg';
 import { DRAG_DATA_COLLECTION_ITEM_IMAGE } from 'constants/image';
 import { createSelectActiveImageUrl } from 'shared/selectors/collectionItem';
 
-export interface DragDataCollectionItemImage {
-  id: string;
-  imageUrl: string;
-}
-
 interface ContainerProps {
   id: string;
 }
@@ -58,13 +53,10 @@ class DraggableArticleImageContainer extends React.Component<ComponentProps> {
 
   private handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    e.dataTransfer.setData(
-      DRAG_DATA_COLLECTION_ITEM_IMAGE,
-      JSON.stringify({
-        id: this.props.id,
-        imageUrl: this.props.activeImageUrl
-      })
-    );
+    e.dataTransfer.setData(DRAG_DATA_COLLECTION_ITEM_IMAGE, this.props.id);
+    if (this.props.activeImageUrl) {
+      e.dataTransfer.setData('url', this.props.activeImageUrl);
+    }
     e.dataTransfer.setDragImage(dragImage, -25, 50);
     this.setState({ isDragging: true });
   };
