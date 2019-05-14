@@ -49,6 +49,9 @@ const ArticleHeadingContainerSmall = styled('div')`
 `;
 
 const ArticleBodyByline = styled('div')`
+  font-family: GHGuardianHeadline;
+  font-weight: 500;
+  font-size: 15px;
   font-style: italic;
   padding-top: 5px;
 `;
