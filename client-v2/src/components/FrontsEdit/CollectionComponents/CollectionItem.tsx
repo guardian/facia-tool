@@ -6,7 +6,6 @@ import { State } from 'types/State';
 import { createCollectionItemTypeSelector } from 'shared/selectors/collectionItem';
 import {
   selectSharedState,
-  externalArticleIdFromArticleFragmentSelector,
   articleFragmentSelector
 } from 'shared/selectors/shared';
 import collectionItemTypes from 'shared/constants/collectionItemTypes';
@@ -49,15 +48,11 @@ interface ContainerProps {
 }
 
 type ArticleContainerProps = ContainerProps & {
-  onAddToClipboard: (
-    externalArticleId: string | undefined,
-    uuid: string
-  ) => void;
   copyCollectionItemImageMeta: (from: string, to: string) => void;
   addImageToArticleFragment: (id: string, response: ValidationResponse) => void;
+  onAddToClipboard: (uuid: string) => void;
   type: CollectionItemTypes;
   isSelected: boolean;
-  externalArticleId: string | undefined;
   numSupportingArticles: number;
 };
 
@@ -104,13 +99,11 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       children,
       getNodeProps,
       onSelect,
-      onDelete,
       onAddToClipboard = noop,
       displayType,
       type,
       size,
       isUneditable,
-      externalArticleId,
       numSupportingArticles,
       parentId
     } = this.props;
@@ -122,8 +115,8 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
             id={uuid}
             isUneditable={isUneditable}
             {...getNodeProps()}
-            onDelete={onDelete}
-            onAddToClipboard={() => onAddToClipboard(externalArticleId, uuid)}
+            onDelete={this.onDelete}
+            onAddToClipboard={onAddToClipboard}
             onClick={isUneditable ? undefined : () => onSelect(uuid)}
             fade={!isSelected}
             size={size}
@@ -150,7 +143,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
               id={uuid}
               isUneditable={isUneditable}
               {...getNodeProps()}
-              onDelete={onDelete}
+              onDelete={this.onDelete}
               onClick={isUneditable ? undefined : () => onSelect(uuid)}
               fade={!isSelected}
               size={size}
@@ -175,6 +168,10 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
         );
     }
   }
+
+  private onDelete = (uuid: string) => {
+    this.props.onDelete(uuid);
+  };
 }
 
 const createMapStateToProps = () => {
@@ -197,10 +194,6 @@ const createMapStateToProps = () => {
       isSelected:
         !selectedArticleFragmentData ||
         selectedArticleFragmentData.id === props.uuid,
-      externalArticleId: externalArticleIdFromArticleFragmentSelector(
-        selectSharedState(state),
-        props.uuid
-      ),
       numSupportingArticles
     };
   };
@@ -208,10 +201,7 @@ const createMapStateToProps = () => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    onAddToClipboard: (id: string | undefined, uuid: string) => {
-      if (!id) {
-        return;
-      }
+    onAddToClipboard: (uuid: string) => {
       dispatch(cloneArticleFragmentToTarget(uuid, 'clipboard'));
     },
     copyCollectionItemImageMeta: (from: string, to: string) =>

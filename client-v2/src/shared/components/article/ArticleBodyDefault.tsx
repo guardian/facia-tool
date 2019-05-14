@@ -260,8 +260,8 @@ const articleBodyDefault = ({
           buttonProps={{
             isLive,
             urlPath,
-            onDelete,
-            onAddToClipboard
+            onDelete: () => onDelete && onDelete(uuid),
+            onAddToClipboard: () => onAddToClipboard && onAddToClipboard(uuid)
           }}
           size={size}
           toolTipPosition={'top'}
