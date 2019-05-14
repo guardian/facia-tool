@@ -354,7 +354,10 @@ describe('ArticleFragments actions', () => {
         imageSrcThumb: thumb,
         imageSrcOrigin: origin,
         imageSrcWidth: width.toString(),
-        imageSrcHeight: height.toString()
+        imageSrcHeight: height.toString(),
+        imageReplace: true,
+        imageSlideshowReplace: false,
+        imageCutoutReplace: false
       });
     });
   });
