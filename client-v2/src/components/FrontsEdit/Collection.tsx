@@ -11,7 +11,6 @@ import GroupLevel from 'components/clipboard/GroupLevel';
 import CollectionItem from './CollectionComponents/CollectionItem';
 import ArticleFragmentLevel from 'components/clipboard/ArticleFragmentLevel';
 import { PosSpec, Move } from 'lib/dnd';
-import { ValidationResponse } from 'shared/util/validateImageSrc';
 import { Dispatch } from 'types/Store';
 import {
   removeArticleFragment,
@@ -22,6 +21,7 @@ import { connect } from 'react-redux';
 import { State } from 'types/State';
 import { createArticleVisibilityDetailsSelector } from 'selectors/frontsSelectors';
 import FocusWrapper from 'components/FocusWrapper';
+import { ValidationResponse } from 'shared/util/validateImageSrc';
 
 const getArticleNotifications = (
   id: string,
@@ -46,7 +46,7 @@ const CollectionWrapper = styled('div')`
 
 const Notification = styled.span`
   display: inline-block;
-  margin-left 0.25em;
+  margin-left: 0.25em;
 `;
 
 const selectGrey = ({ theme }: { theme: Theme }) =>
@@ -107,7 +107,6 @@ type ConnectedCollectionContextProps = CollectionContextProps & {
     articleFragment: TArticleFragment,
     frontId: string
   ) => void;
-  addImageToArticleFragment: (id: string, response: ValidationResponse) => void;
   removeCollectionItem: (parentId: string, id: string) => void;
   removeSupportingCollectionItem: (parentId: string, id: string) => void;
   handleBlur: () => void;
@@ -177,12 +176,6 @@ class CollectionContext extends React.Component<
                     >
                       <CollectionItem
                         frontId={this.props.id}
-                        onImageDrop={imageData => {
-                          this.props.addImageToArticleFragment(
-                            articleFragment.uuid,
-                            imageData
-                          );
-                        }}
                         uuid={articleFragment.uuid}
                         parentId={group.uuid}
                         isUneditable={isUneditable}

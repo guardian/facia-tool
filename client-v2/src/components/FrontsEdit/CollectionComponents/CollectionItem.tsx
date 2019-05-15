@@ -15,16 +15,25 @@ import {
   CollectionItemDisplayTypes
 } from 'shared/types/Collection';
 import SnapLink from 'shared/components/snapLink/SnapLink';
-import { cloneArticleFragmentToTarget } from 'actions/ArticleFragments';
+import {
+  cloneArticleFragmentToTarget,
+  copyArticleFragmentImageMetaWithPersist,
+  addImageToArticleFragment
+} from 'actions/ArticleFragments';
 import noop from 'lodash/noop';
 import { selectEditorArticleFragment } from 'bundles/frontsUIBundle';
 import {
   validateImageEvent,
   ValidationResponse
 } from 'shared/util/validateImageSrc';
-import { articleFragmentImageCriteria as imageCriteria } from 'constants/image';
+import {
+  articleFragmentImageCriteria as imageCriteria,
+  DRAG_DATA_COLLECTION_ITEM_IMAGE
+} from 'constants/image';
 import Sublinks from './Sublinks';
 import { gridDropTypes } from 'constants/fronts';
+
+const imageDropTypes = [...gridDropTypes, DRAG_DATA_COLLECTION_ITEM_IMAGE];
 
 interface ContainerProps {
   uuid: string;
@@ -33,7 +42,6 @@ interface ContainerProps {
   getNodeProps: () => object;
   onSelect: (uuid: string) => void;
   onDelete: (uuid: string) => void;
-  onImageDrop?: (data: ValidationResponse) => void;
   parentId: string;
   displayType?: CollectionItemDisplayTypes;
   size?: 'small' | 'default';
@@ -45,6 +53,8 @@ type ArticleContainerProps = ContainerProps & {
     externalArticleId: string | undefined,
     uuid: string
   ) => void;
+  copyCollectionItemImageMeta: (from: string, to: string) => void;
+  addImageToArticleFragment: (id: string, response: ValidationResponse) => void;
   type: CollectionItemTypes;
   isSelected: boolean;
   externalArticleId: string | undefined;
@@ -64,22 +74,28 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
     }
   };
 
-  public getDropHandler(onDrop?: (data: ValidationResponse) => void) {
-    if (!onDrop) {
+  public handleImageDrop = (e: React.DragEvent<HTMLElement>) => {
+    e.preventDefault();
+    e.persist();
+
+    // Our drag is a copy event, from another CollectionItem
+    const articleUuid = e.dataTransfer.getData(DRAG_DATA_COLLECTION_ITEM_IMAGE);
+    if (articleUuid) {
+      this.props.copyCollectionItemImageMeta(articleUuid, this.props.uuid);
       return;
     }
-    return (e: React.DragEvent<HTMLElement>) => {
-      e.preventDefault();
-      e.persist();
-      validateImageEvent(e, this.props.frontId, imageCriteria)
-        .then(onDrop)
-        .catch(err => {
-          // swallowing errors here as the drop may well be an articleFragment
-          // rather than an image which is expected - TBD
-          // console.log('@todo:handle error', err);
-        });
-    };
-  }
+
+    // Our drag contains Grid data
+    validateImageEvent(e, this.props.frontId, imageCriteria)
+      .then(imageData =>
+        this.props.addImageToArticleFragment(this.props.uuid, imageData)
+      )
+      .catch(err => {
+        // swallowing errors here as the drop may well be an articleFragment
+        // rather than an image which is expected - TBD
+        // console.log('@todo:handle error', err);
+      });
+  };
 
   public render() {
     const {
@@ -112,8 +128,8 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
             fade={!isSelected}
             size={size}
             displayType={displayType}
-            imageDropTypes={gridDropTypes}
-            onImageDrop={this.getDropHandler(this.props.onImageDrop)}
+            imageDropTypes={imageDropTypes}
+            onImageDrop={this.handleImageDrop}
           >
             <Sublinks
               numSupportingArticles={numSupportingArticles}
@@ -197,7 +213,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
         return;
       }
       dispatch(cloneArticleFragmentToTarget(uuid, 'clipboard'));
-    }
+    },
+    copyCollectionItemImageMeta: (from: string, to: string) =>
+      dispatch(copyArticleFragmentImageMetaWithPersist(from, to)),
+    addImageToArticleFragment: (id: string, response: ValidationResponse) =>
+      dispatch(addImageToArticleFragment(id, response))
   };
 };
 

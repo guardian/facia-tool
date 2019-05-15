@@ -10,4 +10,4 @@ export const gridDataTransferTypes = {
   imageData: 'application/vnd.mediaservice.image+json'
 };
 
-export const DRAG_COLLECTION_ITEM_IMAGE = '@@drag_collection_item_image@@';
+export const DRAG_DATA_COLLECTION_ITEM_IMAGE = '@@drag_collection_item_image@@';
