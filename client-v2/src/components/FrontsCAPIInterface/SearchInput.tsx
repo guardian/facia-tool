@@ -26,11 +26,12 @@ interface SearchInputProps {
   displaySearchFilters: boolean;
   updateDisplaySearchFilters: (value: boolean) => void;
   showReviewSearch: boolean;
+  rightHandContainer?: React.ReactElement<any>;
 }
 
 const InputContainer = styled('div')`
-  background: ${({ theme }) => theme.capiInterface.backgroundWhite};
   margin-bottom: 10px;
+  display: flex;
 `;
 
 const CloseButton = styled(ButtonDefault)`
@@ -97,7 +98,7 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
   };
 
   public render() {
-    const { displaySearchFilters } = this.props;
+    const { displaySearchFilters, rightHandContainer } = this.props;
 
     const {
       query,
@@ -127,6 +128,7 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
               }
             }}
           />
+          {rightHandContainer}
         </InputContainer>
         {tags.map(tag => (
           <FilterItem
