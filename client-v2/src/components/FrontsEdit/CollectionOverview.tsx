@@ -61,6 +61,9 @@ const Container = styled.div`
 const TextContainerLeft = styled.div`
   flex: 1 1;
   font-size: 14px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
 `;
 
 const TextContainerRight = styled.div`

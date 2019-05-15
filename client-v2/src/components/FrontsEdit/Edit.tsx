@@ -21,6 +21,7 @@ import SectionsContainer from '../layout/SectionsContainer';
 import FrontsMenu from './FrontsMenu';
 import PressFailAlert from '../PressFailAlert';
 import { frontsContainerId, createFrontId } from 'util/editUtils';
+import { MoreIcon } from 'shared/components/icons/Icons';
 
 interface Props {
   match: match<{ priority: string }>;
@@ -42,16 +43,31 @@ const FrontsEditContainer = styled('div')`
 `;
 
 const SingleFrontContainer = styled('div')`
+  flex: 1 1 auto;
   height: 100%;
 `;
 
+// This is just to stop the feed / clipboard from filling the screen when no fronts
+// are selected
+const NoFrontContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 24px;
+  color: #aaa;
+  width: 50vw;
+`;
+
 const FeedContainer = styled(SectionContainer)`
+  flex: 1 2 auto;
   height: 100%;
 `;
 
 const FrontsContainer = styled(SectionContainer)<{
   makeRoomForExtraHeader: boolean;
 }>`
+  display: flex;
+  flex: 1 1 auto;
   height: 100%;
   overflow-y: hidden;
   overflow-x: scroll;
@@ -81,11 +97,21 @@ class FrontsEdit extends React.Component<Props> {
             id={frontsContainerId}
             makeRoomForExtraHeader={this.props.isCurrentFrontsMenuOpen}
           >
-            {this.props.frontIds.map(id => (
-              <SingleFrontContainer key={id} id={createFrontId(id)}>
-                <FrontContainer frontId={id} />
-              </SingleFrontContainer>
-            ))}
+            {this.props.frontIds.length ? (
+              this.props.frontIds.map(id => (
+                <SingleFrontContainer key={id} id={createFrontId(id)}>
+                  <FrontContainer frontId={id} />
+                </SingleFrontContainer>
+              ))
+            ) : (
+              <NoFrontContainer>
+                <span>
+                  Select a front with the{' '}
+                  <MoreIcon verticalAlign="bottom" fill="#aaa" size={'xxl'} />{' '}
+                  button
+                </span>
+              </NoFrontContainer>
+            )}
           </FrontsContainer>
         </SectionsContainer>
         <FrontsMenu

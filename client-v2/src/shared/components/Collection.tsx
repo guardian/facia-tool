@@ -46,7 +46,6 @@ type Props = ContainerProps & {
   isUneditable?: boolean;
   isLocked?: boolean;
   isOpen?: boolean;
-  hasMultipleFrontsOpen?: boolean;
   onChangeOpenState?: (isOpen: boolean) => void;
   handleFocus: (id: string) => void;
   handleBlur: () => void;
@@ -56,12 +55,8 @@ interface CollectionState {
   hasDragOpenIntent: boolean;
 }
 
-const CollectionContainer = ContentContainer.extend<{
-  hasMultipleFrontsOpen?: boolean;
-}>`
+const CollectionContainer = styled(ContentContainer)`
   flex: 1;
-  width: ${({ hasMultipleFrontsOpen }) =>
-    hasMultipleFrontsOpen ? '510px' : '590px'};
 
   &:focus {
     border: 1px solid ${props => props.theme.shared.base.colors.focusColor};
@@ -110,10 +105,9 @@ const ItemCountMeta = styled(CollectionMetaBase)`
 `;
 
 const CollectionHeadlineWithConfigContainer = styled('div')`
-  flex-grow: 1;
+  flex: 1 1 0;
   display: flex;
   min-width: 0;
-  flex-basis: 100%;
 `;
 
 const CollectionHeadingText = styled('span')<{ isLoading: boolean }>`
@@ -194,7 +188,6 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       metaContent,
       isUneditable,
       isLocked,
-      hasMultipleFrontsOpen,
       children,
       handleFocus,
       handleBlur
@@ -207,7 +200,6 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
         tabIndex={0}
         onFocus={() => handleFocus(id)}
         onBlur={handleBlur}
-        hasMultipleFrontsOpen={hasMultipleFrontsOpen}
       >
         <ContainerHeadingPinline tabIndex={-1}>
           <CollectionHeadlineWithConfigContainer>
