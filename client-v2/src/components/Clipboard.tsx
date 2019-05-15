@@ -13,8 +13,6 @@ import {
   editorSelectArticleFragment,
   editorClearArticleFragmentSelection,
   selectIsClipboardOpen,
-  editorOpenClipboard,
-  editorCloseClipboard
 } from 'bundles/frontsUIBundle';
 import { clipboardId } from 'constants/fronts';
 import {
@@ -26,7 +24,6 @@ import ClipboardLevel from './clipboard/ClipboardLevel';
 import ArticleFragmentLevel from './clipboard/ArticleFragmentLevel';
 import CollectionItem from './FrontsEdit/CollectionComponents/CollectionItem';
 import { styled } from 'constants/theme';
-import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import DragIntentContainer from 'shared/components/DragIntentContainer';
 import {
   setFocusState,
@@ -52,21 +49,6 @@ const ClipboardWrapper = styled<
     border-top: 1px solid ${({ theme }) => theme.shared.base.colors.focusColor};
     outline: none;
   }
-`;
-
-const ClipboardHeader = styled.div`
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: ${({ theme }) =>
-    `1px solid ${theme.shared.base.colors.borderColor}`};
-  display: flex;
-  padding: 10px;
-`;
-
-const ClipboardTitle = styled.h2`
-  font-size: 14px;
-  line-height: 1;
-  margin: 0;
 `;
 
 const ClipboardBody = styled.div`
@@ -101,7 +83,6 @@ interface ClipboardProps {
   removeCollectionItem: (id: string) => void;
   removeSupportingCollectionItem: (parentId: string, id: string) => void;
   isClipboardOpen: boolean;
-  toggleClipboard: (open: boolean) => void;
   handleFocus: () => void;
   handleArticleFocus: (articleFragment: TArticleFragment) => void;
   handleBlur: () => void;
@@ -164,22 +145,7 @@ class Clipboard extends React.Component<ClipboardProps> {
           delay={300}
           onDragIntentStart={() => this.setState({ preActive: true })}
           onDragIntentEnd={() => this.setState({ preActive: false })}
-          onIntentConfirm={() => this.props.toggleClipboard(true)}
         >
-          <ClipboardHeader>
-            {this.props.isClipboardOpen && (
-              <ClipboardTitle>Clipboard</ClipboardTitle>
-            )}
-            <ButtonCircularCaret
-              tabIndex={-1}
-              openDir="right"
-              active={this.props.isClipboardOpen}
-              preActive={this.state.preActive}
-              onClick={() =>
-                this.props.toggleClipboard(!this.props.isClipboardOpen)
-              }
-            />
-          </ClipboardHeader>
           <ClipboardBody>
             {this.props.isClipboardOpen && (
               <Root
@@ -301,8 +267,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       removeArticleFragment('articleFragment', parentId, uuid, 'clipboard')
     );
   },
-  toggleClipboard: (open: boolean) =>
-    dispatch(open ? editorOpenClipboard() : editorCloseClipboard()),
   updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
     dispatch(updateArticleFragmentMeta(id, meta)),
   handleFocus: () =>
