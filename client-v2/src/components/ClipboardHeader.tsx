@@ -1,12 +1,15 @@
 import React from 'react';
 import { Dispatch } from 'types/Store';
 import { connect } from 'react-redux';
-import { selectIsClipboardOpen, editorOpenClipboard, editorCloseClipboard } from 'bundles/frontsUIBundle';
+import {
+  selectIsClipboardOpen,
+  editorOpenClipboard,
+  editorCloseClipboard
+} from 'bundles/frontsUIBundle';
 import { State } from 'types/State';
 import { styled } from 'constants/theme';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import DragIntentContainer from 'shared/components/DragIntentContainer';
-
 
 interface ClipboardHeaderProps {
   isClipboardOpen: boolean;
@@ -34,7 +37,6 @@ const ClipboardTitle = styled.h2`
   margin: 0;
 `;
 
-
 class ClipboardHeader extends React.Component<ClipboardHeaderProps> {
   public state = {
     preActive: false
@@ -42,11 +44,11 @@ class ClipboardHeader extends React.Component<ClipboardHeaderProps> {
   public render() {
     return (
       <StyledDragIntentContainer
-          active={!this.props.isClipboardOpen}
-          delay={300}
-          onDragIntentStart={() => this.setState({ preActive: true })}
-          onDragIntentEnd={() => this.setState({ preActive: false })}
-          onIntentConfirm={() => this.props.toggleClipboard(true)}
+        active={!this.props.isClipboardOpen}
+        delay={300}
+        onDragIntentStart={() => this.setState({ preActive: true })}
+        onDragIntentEnd={() => this.setState({ preActive: false })}
+        onIntentConfirm={() => this.props.toggleClipboard(true)}
       >
         <Header>
           {this.props.isClipboardOpen && (
@@ -64,7 +66,7 @@ class ClipboardHeader extends React.Component<ClipboardHeaderProps> {
         </Header>
       </StyledDragIntentContainer>
     );
-  };
+  }
 }
 
 const mapStateToProps = (state: State) => ({
@@ -73,8 +75,10 @@ const mapStateToProps = (state: State) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   toggleClipboard: (open: boolean) =>
-    dispatch(open ? editorOpenClipboard() : editorCloseClipboard()),
+    dispatch(open ? editorOpenClipboard() : editorCloseClipboard())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ClipboardHeader);
-
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ClipboardHeader);
