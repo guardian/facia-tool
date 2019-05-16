@@ -22,12 +22,12 @@ const FeedWrapper = styled('div')`
 
 const ClipboardWrapper = styled.div``;
 
-export default () => (
+export default ({ fontSize = '14px' }: { fontSize?: string }) => (
   <FeedSectionContainer>
     <FeedSectionHeader />
     <SectionContent>
       <FeedWrapper>
-        <FeedContainer />
+        <FeedContainer fontSize={fontSize} />
       </FeedWrapper>
       <ClipboardWrapper>
         <Clipboard />

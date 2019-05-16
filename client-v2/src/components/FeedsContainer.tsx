@@ -36,6 +36,7 @@ interface FeedsContainerProps {
   previewError: string | null;
   livePagination: IPagination | null;
   previewPagination: IPagination | null;
+  fontSize: string;
 }
 
 interface FeedsContainerState {
@@ -316,7 +317,11 @@ class FeedsContainer extends React.Component<
             </>
           }
         >
-          <Feed error={error} articles={articles} />
+          <Feed
+            error={error}
+            articles={articles}
+            fontSize={this.props.fontSize}
+          />
         </ScrollContainer>
       </FeedsContainerWrapper>
     );

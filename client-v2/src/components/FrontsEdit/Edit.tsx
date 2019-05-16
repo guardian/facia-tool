@@ -9,7 +9,8 @@ import {
   editorFavouriteFront,
   editorUnfavouriteFront,
   selectEditorFrontIdsByPriority,
-  selectIsCurrentFrontsMenuOpen
+  selectIsCurrentFrontsMenuOpen,
+  selectOpenFrontsCount
 } from 'bundles/frontsUIBundle';
 import { State } from 'types/State';
 import { ActionError } from 'types/Action';
@@ -33,6 +34,7 @@ interface Props {
   editorUnfavouriteFront: (frontId: string, priority: string) => void;
   getFrontsConfig: () => void;
   isCurrentFrontsMenuOpen: boolean;
+  feedFontSize: string;
 }
 
 const FrontsEditContainer = styled('div')`
@@ -92,7 +94,7 @@ class FrontsEdit extends React.Component<Props> {
         <PressFailAlert staleFronts={this.props.staleFronts} />
         <SectionsContainer>
           <FeedContainer>
-            <FeedSection />
+            <FeedSection fontSize={this.props.feedFontSize} />
           </FeedContainer>
           <FrontsContainer
             id={frontsContainerId}
@@ -144,7 +146,11 @@ const mapStateToProps = (state: State, props: Props) => ({
     state,
     props.match.params.priority || ''
   ),
-  isCurrentFrontsMenuOpen: selectIsCurrentFrontsMenuOpen(state)
+  isCurrentFrontsMenuOpen: selectIsCurrentFrontsMenuOpen(state),
+  feedFontSize:
+    selectOpenFrontsCount(state, props.match.params.priority) > 1
+      ? '13px'
+      : '15px'
 });
 
 const mapDispatchToProps = (dispatch: Dispatch, props: Props) => ({
