@@ -85,6 +85,7 @@ const FeedsContainerWrapper = styled('div')`
 
 const PaginationContainer = styled('div')`
   margin-left: auto;
+  white-space: nowrap;
 `;
 
 const ResultsHeadingContainer = styled('div')`
