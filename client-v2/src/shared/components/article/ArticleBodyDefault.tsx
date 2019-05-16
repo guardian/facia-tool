@@ -2,7 +2,6 @@ import React from 'react';
 import { styled } from 'shared/constants/theme';
 import startCase from 'lodash/startCase';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
-import { MdImage } from 'react-icons/md';
 import CollectionItemHeading from '../collectionItem/CollectionItemHeading';
 import BasePlaceholder from '../BasePlaceholder';
 import { getPillarColor } from 'shared/util/getPillarColor';
