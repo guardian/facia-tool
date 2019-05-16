@@ -45,6 +45,7 @@ const FrontsEditContainer = styled('div')`
 const SingleFrontContainer = styled('div')`
   flex: 1 1 auto;
   height: 100%;
+  min-width: 626px;
 `;
 
 // This is just to stop the feed / clipboard from filling the screen when no fronts
