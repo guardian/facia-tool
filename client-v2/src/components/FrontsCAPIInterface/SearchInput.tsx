@@ -29,9 +29,14 @@ interface SearchInputProps {
   rightHandContainer?: React.ReactElement<any>;
 }
 
+const TextInputContainer = styled('div')`
+  flex-grow: 2;
+`;
+
 const InputContainer = styled('div')`
   margin-bottom: 10px;
   display: flex;
+  justify-content: space-between;
 `;
 
 const CloseButton = styled(ButtonDefault)`
@@ -113,21 +118,23 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
     return (
       <React.Fragment>
         <InputContainer>
-          <TextInput
-            placeholder="Search content"
-            value={query || ''}
-            onClick={this.showSearchFilters}
-            onChange={this.handleSearchInput}
-            onClear={this.clearInput}
-            onSearch={this.hideSearchFilters}
-            searchTermsExist={this.searchTermsExist}
-            onDisplaySearchFilters={this.handleDisplaySearchFilters}
-            onKeyUp={e => {
-              if (e.keyCode === 13) {
-                this.hideSearchFilters();
-              }
-            }}
-          />
+          <TextInputContainer>
+            <TextInput
+              placeholder="Search content"
+              value={query || ''}
+              onClick={this.showSearchFilters}
+              onChange={this.handleSearchInput}
+              onClear={this.clearInput}
+              onSearch={this.hideSearchFilters}
+              searchTermsExist={this.searchTermsExist}
+              onDisplaySearchFilters={this.handleDisplaySearchFilters}
+              onKeyUp={e => {
+                if (e.keyCode === 13) {
+                  this.hideSearchFilters();
+                }
+              }}
+            />
+          </TextInputContainer>
           {rightHandContainer}
         </InputContainer>
         {tags.map(tag => (
