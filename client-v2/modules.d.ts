@@ -35,3 +35,7 @@ declare module 'normalise-with-fields' {
   export const createFieldType: any;
 }
 
+declare module 'tti-polyfill' {
+  const content: any;
+  export default content;
+}

@@ -75,4 +75,4 @@ const events = {
     })
 };
 
-export { init, events };
+export { init, events, gtag };

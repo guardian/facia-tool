@@ -128,6 +128,7 @@
     "shallowequal": "^1.1.0",
     "styled-components": "^3.2.5",
     "ts-optchain": "^0.1.2",
+    "tti-polyfill": "^0.2.2",
     "uuid": "^3.2.1"
   }
 }
