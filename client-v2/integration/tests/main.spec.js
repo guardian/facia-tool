@@ -12,7 +12,16 @@ import {
   previouslyDropZone,
   previouslyItem,
   clipboardWrapper,
-  clipboardItem
+  clipboardItem,
+  collection,
+  collectionItem,
+  collectionDropZone,
+  allCollectionItems,
+  allCollectionDropZones,
+  collectionItemDeleteButton,
+  collectionDiscardButton,
+  clipboardHoverActionsWrapper,
+  clipboardItemDeleteButton
 } from '../selectors';
 
 fixture`Fronts edit`.page`http://localhost:3456/v2/editorial`
@@ -52,6 +61,56 @@ test('Drag and drop', async t => {
     .notEql(topFeedHeadline)
     .expect(frontHeadline().textContent)
     .eql(topFrontHeadline);
+});
+
+test('Drag between two collections', async t => {
+  const firstCollectionStory = collectionItem(0, 0);
+  const secondCollectionDropZone = collectionDropZone(1, 0);
+  await t
+    .dragToElement(firstCollectionStory, secondCollectionDropZone)
+    .expect(allCollectionItems(0).count)
+    .eql(0)
+    .expect(allCollectionItems(1).count)
+    .eql(1);
+});
+
+test('Drag from clipboard to collection', async t => {
+  const firstCollectionStoryCount = await allCollectionItems(0).count;
+  const clipboardStoryCount = await clipboardItem().count;
+  await t
+    .dragToElement(clipboardItem(), collection(0))
+    .expect(allCollectionItems(0).count)
+    .eql(firstCollectionStoryCount + 1)
+    .expect(clipboardItem().count)
+    .eql(clipboardStoryCount);
+});
+
+test('Deleting an article from clipboard works', async t => {
+  // const actionsWrapper = await clipboardHoverActionsWrapper();
+  // console.log(actionsWrapper);
+  const clipboardStory = await clipboardItem();
+  const clipboardStoryCount = await clipboardItem().count;
+  const deleteButton = await clipboardItemDeleteButton();
+  //test cafe is interpreting the CSS correctly... visibility:hidden is set on these elements, and yet I can see them. WHY?
+  await t
+    .hover(clipboardStory)
+    .debug()
+    .click(deleteButton)
+    .expect(clipboardItem().count)
+    .eql(clipboardStoryCount - 1);
+});
+
+test('Deleting an article from a collection works', async t => {});
+
+test.only('Discarding a collection words', async t => {
+  const secondCollection = await collection(1);
+  const numberCollections = await collection().count;
+  const discardButton = await collectionDiscardButton(1);
+  await t
+    .click(discardButton)
+    .debug()
+    .expect(collection().count)
+    .eql(numberCollections - 1);
 });
 
 test('Snap Links - Guardian', async t => {

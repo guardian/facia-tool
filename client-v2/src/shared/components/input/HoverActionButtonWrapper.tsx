@@ -71,7 +71,10 @@ class HoverActionsButtonWrapper<ButtonProps> extends React.Component<
     const { isToolTipVisible, toolTipText } = this.state;
 
     return (
-      <HoverActionsWrapper size={this.props.size}>
+      <HoverActionsWrapper
+        size={this.props.size}
+        data-testid="hover-actions-wrapper"
+      >
         {isToolTipVisible ? (
           <ToolTipWrapper
             toolTipPosition={toolTipPosition}

@@ -1,16 +1,27 @@
 import { select } from '../helpers';
+import { Selector } from 'testcafe';
 
 const FRONT_SELECTOR = 'test/front';
 const FEED_ITEM_SELECTOR = 'feed-item';
-const COLLECTION_ITEM_SELECTOR = 'article-body';
 const CLIPBOARD_SELECTOR = 'clipboard';
 const PREVIOUSLY_SELECTOR = 'previously';
 const CLIPBOARD_WRAPPER_SELECTOR = 'clipboard-wrapper';
 const HEADLINE_SELECTOR = 'headline';
 const DROP_ZONE_SELECTOR = 'drop-zone';
+const KICKER_SELECTOR = 'kicker';
 const HOVER_OVERLAY_SELECTOR = 'hover-overlay';
 const ADD_TO_CLIPBOARD_BUTTON = 'add-to-clipboard-hover-button';
 const SNAP_SELECTOR = 'snap';
+const COLLECTION_SELECTOR = 'collection';
+const COLLECTION_ITEM_SELECTOR = 'article-body';
+const COLLECTION_DISCARD_BUTTON = 'collection-discard-button';
+const HOVER_ACTIONS_WRAPPER = 'hover-actions-wrapper';
+const DELETE_BUTTON = 'delete-hover-button';
+const EDIT_FORM = 'edit-form';
+const EDIT_FORM_HEADLINE_FIELD = 'edit-form-headline-field';
+const EDIT_FORM_SAVE_BUTTON = 'edit-form-save-button';
+const EDIT_FORM_BREAKING_NEWS_TOGGLE = 'edit-form-breaking-news-toggle';
+
 // Html Mocks //
 const GUARDIAN_TAG_ANCHOR = 'guardian-tag';
 const EXTERNAL_LINK_ANCHOR = 'external-link';
@@ -34,11 +45,75 @@ export const clipboardDropZone = maybeGetNth(
 export const clipboardItem = maybeGetNth(
   select(CLIPBOARD_SELECTOR, COLLECTION_ITEM_SELECTOR)
 );
-export const clipboardItemTruncatedHeadline = maybeGetNth(
-  select(CLIPBOARD_SELECTOR, COLLECTION_ITEM_SELECTOR, HEADLINE_SELECTOR)
-);
 export const feedItemAddToClipboardHoverButton = maybeGetNth(
   select(FEED_ITEM_SELECTOR, ADD_TO_CLIPBOARD_BUTTON)
+);
+export const clipboardHoverActionsWrapper = maybeGetNth(
+  select(CLIPBOARD_SELECTOR, COLLECTION_ITEM_SELECTOR, HOVER_ACTIONS_WRAPPER)
+);
+export const clipboardItemHeadline = maybeGetNth(
+  select(CLIPBOARD_SELECTOR, COLLECTION_ITEM_SELECTOR, HEADLINE_SELECTOR)
+);
+export const clipboardItemDeleteButton = maybeGetNth(
+  select(CLIPBOARD_SELECTOR, COLLECTION_ITEM_SELECTOR, DELETE_BUTTON)
+);
+
+// Collections //
+export const collection = maybeGetNth(select(COLLECTION_SELECTOR));
+
+export const allCollectionItems = collectionIndex => {
+  const collectionInIndex = collection(collectionIndex);
+  const articles = collectionInIndex.find(
+    `[data-testid="${COLLECTION_ITEM_SELECTOR}"]`
+  );
+  return articles;
+};
+
+export const allCollectionDropZones = collectionIndex => {
+  const collectionInIndex = collection(collectionIndex);
+  const dropZones = collectionInIndex.find(
+    `[data-testid="${DROP_ZONE_SELECTOR}"]`
+  );
+  return dropZones;
+};
+
+export const collectionItem = (collectionIndex, itemIndex = 0) =>
+  allCollectionItems(collectionIndex).nth(itemIndex);
+
+export const collectionDropZone = (collectionIndex, dropZoneIndex = 0) =>
+  allCollectionDropZones(collectionIndex).nth(dropZoneIndex);
+
+export const collectionItemHeadline = (collectionIndex, itemIndex = 0) =>
+  collectionItem(collectionIndex, itemIndex).find(
+    `[data-testid="${HEADLINE_SELECTOR}"]`
+  );
+
+export const collectionItemKicker = (collectionIndex, itemIndex = 0) =>
+  collectionItem(collectionIndex, itemIndex).find(
+    `[data-testid="${KICKER_SELECTOR}"]`
+  );
+export const collectionDiscardButton = collectionIndex =>
+  collection(collectionIndex).find(
+    `[data-testid="${COLLECTION_DISCARD_BUTTON}"]`
+  );
+
+export const collectionItemHoverZone = maybeGetNth(
+  select(COLLECTION_ITEM_SELECTOR, HOVER_OVERLAY_SELECTOR)
+);
+
+export const collectionItemDeleteButton = maybeGetNth(
+  select(COLLECTION_ITEM_SELECTOR, DELETE_BUTTON)
+);
+
+// Edit form //
+export const editForm = maybeGetNth(select(EDIT_FORM));
+export const editFormHeadlineInput = maybeGetNth(
+  select(EDIT_FORM, EDIT_FORM_HEADLINE_FIELD)
+);
+export const editFormSaveButton = select(EDIT_FORM_SAVE_BUTTON);
+
+export const editFormBreakingNewsToggle = maybeGetNth(
+  select(EDIT_FORM_BREAKING_NEWS_TOGGLE)
 );
 
 // Fronts //
@@ -50,9 +125,6 @@ export const frontDropZone = maybeGetNth(
 );
 export const frontItemAddToClipboardHoverButton = maybeGetNth(
   select(FRONT_SELECTOR, ADD_TO_CLIPBOARD_BUTTON)
-);
-export const collectionItemHoverZone = maybeGetNth(
-  select(COLLECTION_ITEM_SELECTOR, HOVER_OVERLAY_SELECTOR)
 );
 
 // Snaps //

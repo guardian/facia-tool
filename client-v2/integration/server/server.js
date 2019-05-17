@@ -5,6 +5,7 @@ const port = 3456;
 
 const config = require('../fixtures/config');
 const collection = require('../fixtures/collection');
+const collection2 = require('../fixtures/collection2');
 const capiCollection = require('../fixtures/capi-collection');
 const capiSearch = require('../fixtures/capi-search');
 const snapTag = require('../fixtures/snap-tag');
@@ -117,7 +118,12 @@ module.exports = async () =>
     app.get('/api/preview/*', handler);
 
     app.get('/config', (_, res) => res.json(config));
-    app.get('/collection/:id', (_, res) => res.json(collection));
+    app.get('/collection/13b2fc5d-ab47-4926-9a26-ee76184be485', (_, res) =>
+      res.json(collection)
+    );
+    app.get('/collection/e59785e9-ba82-48d8-b79a-0a80b2f9f808', (_, res) =>
+      res.json(collection2)
+    );
     app.post('/collections*', (req, res) =>
       res.json([
         {
