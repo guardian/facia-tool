@@ -47,6 +47,9 @@ const ArticleHeadingContainerSmall = styled('div')`
 `;
 
 const ArticleBodyByline = styled('div')`
+  font-family: GHGuardianHeadline;
+  font-weight: 500;
+  font-size: 15px;
   font-style: italic;
   padding-top: 5px;
 `;
@@ -108,152 +111,160 @@ const renderColouredQuotes = (
   );
 };
 
-const articleBodyDefault = ({
-  firstPublicationDate,
-  frontPublicationDate,
-  scheduledPublicationDate,
-  sectionName,
-  pillarId,
-  kicker,
-  size = 'default',
-  headline,
-  thumbnail,
-  isLive,
-  urlPath,
-  displayPlaceholders,
-  onDelete,
-  onAddToClipboard,
-  isUneditable,
-  byline,
-  showByline,
-  showQuotedHeadline,
-  imageHide,
-  imageSlideshowReplace,
-  imageReplace,
-  imageCutoutReplace,
-  isBreaking,
-  type,
-  uuid,
-  showBoostedHeadline
-}: ArticleBodyProps) => {
-  const ArticleHeadingContainer =
-    size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
-  const displayByline = size === 'default' && showByline && byline;
-  const kickerToDisplay = isBreaking ? 'Breaking news' : kicker;
-  const now = Date.now();
+const articleBodyDefault = React.memo(
+  ({
+    firstPublicationDate,
+    frontPublicationDate,
+    scheduledPublicationDate,
+    sectionName,
+    pillarId,
+    kicker,
+    size = 'default',
+    headline,
+    thumbnail,
+    isLive,
+    urlPath,
+    displayPlaceholders,
+    onDelete,
+    onAddToClipboard,
+    isUneditable,
+    byline,
+    showByline,
+    showQuotedHeadline,
+    imageHide,
+    imageSlideshowReplace,
+    imageReplace,
+    imageCutoutReplace,
+    isBreaking,
+    type,
+    uuid,
+    showBoostedHeadline
+  }: ArticleBodyProps) => {
+    const ArticleHeadingContainer =
+      size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
+    const displayByline = size === 'default' && showByline && byline;
+    const kickerToDisplay = isBreaking ? 'Breaking news' : kicker;
+    const now = Date.now();
 
-  return (
-    <>
-      <CollectionItemMetaContainer>
-        {displayPlaceholders && (
-          <>
-            <TextPlaceholder data-testid="loading-placeholder" />
-            {size === 'default' && <TextPlaceholder width={25} />}
-          </>
-        )}
-        {size === 'default' && isLive && (
-          <CollectionItemMetaHeading>
-            {startCase(sectionName)}
-          </CollectionItemMetaHeading>
-        )}
-        {type === 'liveblog' && (
-          <CollectionItemMetaContent>Liveblog</CollectionItemMetaContent>
-        )}
-        {!isLive && !displayPlaceholders && (
-          <NotLiveContainer>
-            {firstPublicationDate
-              ? notLiveLabels.takenDown
-              : notLiveLabels.draft}
-          </NotLiveContainer>
-        )}
-        {!!scheduledPublicationDate && !firstPublicationDate && (
-          <CollectionItemDraftMetaContent title="The time until this article is scheduled to be published.">
-            {distanceInWordsStrict(new Date(scheduledPublicationDate), now)}
-          </CollectionItemDraftMetaContent>
-        )}
-        {!!frontPublicationDate && (
-          <CollectionItemMetaContent title="The time elapsed since this article was added to this front.">
-            {distanceInWordsStrict(now, new Date(frontPublicationDate))}
-          </CollectionItemMetaContent>
-        )}
-        {!!firstPublicationDate && (
-          <FirstPublicationDate title="The time elapsed since this article was first published.">
-            {distanceInWordsStrict(new Date(firstPublicationDate), now)}
-          </FirstPublicationDate>
-        )}
-      </CollectionItemMetaContainer>
-      <CollectionItemContent displaySize={size}>
-        <ArticleHeadingContainer>
+    return (
+      <>
+        <CollectionItemMetaContainer>
           {displayPlaceholders && (
             <>
-              <TextPlaceholder />
+              <TextPlaceholder data-testid="loading-placeholder" />
               {size === 'default' && <TextPlaceholder width={25} />}
             </>
           )}
-          {kickerToDisplay && (
-            <KickerHeading
+          {size === 'default' && isLive && (
+            <CollectionItemMetaHeading>
+              {startCase(sectionName)}
+            </CollectionItemMetaHeading>
+          )}
+          {type === 'liveblog' && (
+            <CollectionItemMetaContent>Liveblog</CollectionItemMetaContent>
+          )}
+          {!isLive && !displayPlaceholders && (
+            <NotLiveContainer>
+              {firstPublicationDate
+                ? notLiveLabels.takenDown
+                : notLiveLabels.draft}
+            </NotLiveContainer>
+          )}
+          {!!scheduledPublicationDate && !firstPublicationDate && (
+            <CollectionItemDraftMetaContent title="The time until this article is scheduled to be published.">
+              {distanceInWordsStrict(new Date(scheduledPublicationDate), now)}
+            </CollectionItemDraftMetaContent>
+          )}
+          {!!frontPublicationDate && (
+            <CollectionItemMetaContent title="The time elapsed since this article was added to this front.">
+              {distanceInWordsStrict(now, new Date(frontPublicationDate))}
+            </CollectionItemMetaContent>
+          )}
+          {!!firstPublicationDate && (
+            <FirstPublicationDate title="The time elapsed since this article was first published.">
+              {distanceInWordsStrict(new Date(firstPublicationDate), now)}
+            </FirstPublicationDate>
+          )}
+        </CollectionItemMetaContainer>
+        <CollectionItemContent displaySize={size}>
+          <ArticleHeadingContainer>
+            {displayPlaceholders && (
+              <>
+                <TextPlaceholder />
+                {size === 'default' && <TextPlaceholder width={25} />}
+              </>
+            )}
+            {kickerToDisplay && (
+              <KickerHeading
+                displaySize={size}
+                style={{ color: getPillarColor(pillarId, true) }}
+              >
+                {kickerToDisplay}
+              </KickerHeading>
+            )}
+            {showQuotedHeadline && (
+              <ArticleBodyQuoteContainer>
+                {renderColouredQuotes(size, pillarId, isLive)}
+              </ArticleBodyQuoteContainer>
+            )}
+            <CollectionItemHeading
+              html
+              data-testid="headline"
               displaySize={size}
-              style={{ color: getPillarColor(pillarId, true) }}
+              showBoostedHeadline={showBoostedHeadline}
             >
-              {kickerToDisplay}
-            </KickerHeading>
-          )}
-          {showQuotedHeadline && (
-            <ArticleBodyQuoteContainer>
-              {renderColouredQuotes(size, pillarId, isLive)}
-            </ArticleBodyQuoteContainer>
-          )}
-          <CollectionItemHeading
-            showBoostedHeadline={showBoostedHeadline}
-            html
-            data-testid="headline"
-            displaySize={size}
-          >
-            {headline}
-          </CollectionItemHeading>
-        </ArticleHeadingContainer>
-        {displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
-      </CollectionItemContent>
-      {size === 'default' &&
-        (displayPlaceholders ? (
-          <ThumbnailPlaceholder />
-        ) : (
-          <DraggableArticleImageContainer id={uuid}>
-            <ThumbnailSmall
-              style={{
-                backgroundImage: `url('${thumbnail}')`,
-                opacity: imageHide ? 0.5 : 1
-              }}
-            />
-            <ImageMetadataContainer>
-              {imageSlideshowReplace && 'Slideshow'}
-              {imageReplace && 'Image replaced'}
-              {imageCutoutReplace && 'Cutout replaced'}
-            </ImageMetadataContainer>
-          </DraggableArticleImageContainer>
-        ))}
-      <HoverActionsAreaOverlay disabled={isUneditable}>
-        <HoverActionsButtonWrapper
-          buttons={[
-            { text: 'View', component: HoverViewButton },
-            { text: 'Ophan', component: HoverOphanButton },
-            { text: 'Clipboard', component: HoverAddToClipboardButton },
-            { text: 'Delete', component: HoverDeleteButton }
-          ]}
-          buttonProps={{
-            isLive,
-            urlPath,
-            onDelete,
-            onAddToClipboard
-          }}
-          size={size}
-          toolTipPosition={'top'}
-          toolTipAlign={'left'}
-        />
-      </HoverActionsAreaOverlay>
-    </>
-  );
-};
+              {headline}
+            </CollectionItemHeading>
+          </ArticleHeadingContainer>
+          {displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
+        </CollectionItemContent>
+        {size === 'default' &&
+          (displayPlaceholders ? (
+            <ThumbnailPlaceholder />
+          ) : (
+            <DraggableArticleImageContainer id={uuid}>
+              <ThumbnailSmall
+                style={{
+                  backgroundImage: `url('${thumbnail}')`,
+                  opacity: imageHide ? 0.5 : 1
+                }}
+              />
+              {imageSlideshowReplace && (
+                <ImageMetadataContainer>Slideshow</ImageMetadataContainer>
+              )}
+              {imageReplace && (
+                <ImageMetadataContainer>Image Replace</ImageMetadataContainer>
+              )}
+              {imageCutoutReplace && (
+                <ImageMetadataContainer>
+                  Image Cutout Replace
+                </ImageMetadataContainer>
+              )}
+            </DraggableArticleImageContainer>
+          ))}
+        <HoverActionsAreaOverlay disabled={isUneditable}>
+          <HoverActionsButtonWrapper
+            buttons={[
+              { text: 'View', component: HoverViewButton },
+              { text: 'Ophan', component: HoverOphanButton },
+              { text: 'Clipboard', component: HoverAddToClipboardButton },
+              { text: 'Delete', component: HoverDeleteButton }
+            ]}
+            buttonProps={{
+              isLive,
+              urlPath,
+              onDelete,
+              onAddToClipboard
+            }}
+            size={size}
+            toolTipPosition={'top'}
+            toolTipAlign={'left'}
+          />
+        </HoverActionsAreaOverlay>
+      </>
+    );
+  }
+);
 
 export { ArticleBodyProps };
 
