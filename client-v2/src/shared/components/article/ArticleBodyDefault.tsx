@@ -229,17 +229,11 @@ const articleBodyDefault = React.memo(
                   opacity: imageHide ? 0.5 : 1
                 }}
               />
-              {imageSlideshowReplace && (
-                <ImageMetadataContainer>Slideshow</ImageMetadataContainer>
-              )}
-              {imageReplace && (
-                <ImageMetadataContainer>Image Replace</ImageMetadataContainer>
-              )}
-              {imageCutoutReplace && (
-                <ImageMetadataContainer>
-                  Image Cutout Replace
-                </ImageMetadataContainer>
-              )}
+              <ImageMetadataContainer>
+                {imageSlideshowReplace && 'Slidehow'}
+                {imageReplace && 'Image replaced'}
+                {imageCutoutReplace && 'Cutout replaced'}
+              </ImageMetadataContainer>
             </DraggableArticleImageContainer>
           ))}
         <HoverActionsAreaOverlay disabled={isUneditable}>
