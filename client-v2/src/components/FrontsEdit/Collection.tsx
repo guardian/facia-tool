@@ -12,16 +12,12 @@ import CollectionItem from './CollectionComponents/CollectionItem';
 import ArticleFragmentLevel from 'components/clipboard/ArticleFragmentLevel';
 import { PosSpec, Move } from 'lib/dnd';
 import { Dispatch } from 'types/Store';
-import {
-  removeArticleFragment,
-  addImageToArticleFragment
-} from 'actions/ArticleFragments';
+import { removeArticleFragment } from 'actions/ArticleFragments';
 import { resetFocusState } from 'bundles/focusBundle';
 import { connect } from 'react-redux';
 import { State } from 'types/State';
 import { createArticleVisibilityDetailsSelector } from 'selectors/frontsSelectors';
 import FocusWrapper from 'components/FocusWrapper';
-import { ValidationResponse } from 'shared/util/validateImageSrc';
 
 const getArticleNotifications = (
   id: string,
@@ -254,8 +250,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       removeArticleFragment('articleFragment', parentId, uuid, 'collection')
     );
   },
-  addImageToArticleFragment: (id: string, response: ValidationResponse) =>
-    dispatch(addImageToArticleFragment(id, response)),
   handleBlur: () => dispatch(resetFocusState())
 });
 
