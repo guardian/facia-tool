@@ -25,7 +25,7 @@ interface UpdateArticleFragmentMeta {
   payload: {
     id: string;
     meta: ArticleFragmentMeta;
-    mergeWithCurrentMeta: boolean;
+    merge: boolean;
   };
 }
 

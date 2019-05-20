@@ -383,7 +383,7 @@ const addImageToArticleFragment = (
       imageCutoutReplace: false,
       imageSlideshowReplace: false
     },
-    true
+    { merge: true }
   );
 
 export {

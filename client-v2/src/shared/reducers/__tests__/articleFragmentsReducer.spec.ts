@@ -38,7 +38,7 @@ describe('articleFragmentsReducer', () => {
           {
             headline: 'headline'
           },
-          true
+          { merge: true }
         ),
         stateWithClipboard.shared
       ).article2.meta
