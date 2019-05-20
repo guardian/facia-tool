@@ -375,7 +375,7 @@ const addImageToArticleFragment = (
   uuid: string,
   imageData: ValidationResponse
 ) =>
-  updateArticleFragmentMeta(
+  updateArticleFragmentMetaWithPersist(
     uuid,
     {
       ...getImageMetaFromValidationResponse(imageData),
