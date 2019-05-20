@@ -5,7 +5,7 @@ import deepGet from 'lodash/get';
 import grid, { recordUsage } from './grid';
 import fetchImage from './fetchImage';
 import { Crop, Criteria } from 'shared/types/Grid';
-import { DRAG_DATA_GRID_IMAGE_URL } from 'constants/image';
+import { DRAG_DATA_IMAGE } from 'constants/image';
 
 interface ImageDescription {
   height?: number;
@@ -277,12 +277,19 @@ function validateImageEvent(
     return validateMediaItem(mediaItem, imageOrigin, frontId, criteria);
   }
   const url =
-    grid.gridInstance.getGridUrlFromEvent(event) ||
-    getData(event, 'url') ||
-    getData(event, DRAG_DATA_GRID_IMAGE_URL);
+    grid.gridInstance.getGridUrlFromEvent(event) || getData(event, 'url');
 
   if (url) {
     return validateImageSrc(url, frontId, criteria);
+  }
+
+  const imageDataJson = getData(event, DRAG_DATA_IMAGE);
+  if (imageDataJson) {
+    try {
+      return Promise.resolve(JSON.parse(imageDataJson));
+    } catch (e) {
+      return Promise.reject('Cannot parse image data');
+    }
   }
   return Promise.reject(
     new Error('Invalid image source, are you dragging from the grid?')

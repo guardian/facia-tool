@@ -28,16 +28,16 @@ import {
 } from 'shared/util/validateImageSrc';
 import {
   articleFragmentImageCriteria as imageCriteria,
-  DRAG_DATA_COLLECTION_ITEM_IMAGE,
-  DRAG_DATA_GRID_IMAGE_URL
+  DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
+  DRAG_DATA_IMAGE
 } from 'constants/image';
 import Sublinks from './Sublinks';
 import { gridDropTypes } from 'constants/fronts';
 
 const imageDropTypes = [
   ...gridDropTypes,
-  DRAG_DATA_COLLECTION_ITEM_IMAGE,
-  DRAG_DATA_GRID_IMAGE_URL
+  DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
+  DRAG_DATA_IMAGE
 ];
 
 interface ContainerProps {
@@ -84,7 +84,9 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
     e.persist();
 
     // Our drag is a copy event, from another CollectionItem
-    const articleUuid = e.dataTransfer.getData(DRAG_DATA_COLLECTION_ITEM_IMAGE);
+    const articleUuid = e.dataTransfer.getData(
+      DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE
+    );
     if (articleUuid) {
       this.props.copyCollectionItemImageMeta(articleUuid, this.props.uuid);
       return;

@@ -1,8 +1,8 @@
 import { Stages, CollectionItemSets } from 'shared/types/Collection';
 import {
   gridDataTransferTypes,
-  DRAG_DATA_COLLECTION_ITEM_IMAGE,
-  DRAG_DATA_GRID_IMAGE_URL
+  DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
+  DRAG_DATA_IMAGE
 } from './image';
 
 export const breakingNewsFrontId: string = 'breaking-news';
@@ -36,8 +36,8 @@ export const gridDropTypes = Object.values(gridDataTransferTypes);
 
 export const collectionDropTypeBlacklist = [
   ...gridDropTypes,
-  DRAG_DATA_COLLECTION_ITEM_IMAGE,
-  DRAG_DATA_GRID_IMAGE_URL
+  DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
+  DRAG_DATA_IMAGE
 ];
 
 export const detectPressFailureMs = 10000;

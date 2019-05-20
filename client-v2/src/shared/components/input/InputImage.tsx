@@ -20,7 +20,7 @@ import { State } from 'types/State';
 import { GridData, Criteria } from 'shared/types/Grid';
 import { RubbishBinIcon, AddImageIcon } from '../icons/Icons';
 import imageDragIcon from 'images/icons/image-drag-icon.svg';
-import { DRAG_DATA_GRID_IMAGE_URL } from 'constants/image';
+import { DRAG_DATA_IMAGE } from 'constants/image';
 
 const ImageContainer = styled('div')<{
   small?: boolean;
@@ -208,8 +208,8 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
   private handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     if (this.props.input.value.origin) {
       e.dataTransfer.setData(
-        DRAG_DATA_GRID_IMAGE_URL,
-        this.props.input.value.origin
+        DRAG_DATA_IMAGE,
+        JSON.stringify(this.props.input.value)
       );
       e.dataTransfer.setDragImage(dragImage, -25, 50);
     }
@@ -219,6 +219,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     events.imageAdded(this.props.frontId, 'drop');
     e.preventDefault();
     e.persist();
+
     validateImageEvent(e, this.props.frontId, this.props.criteria)
       .then(this.props.input.onChange)
       .catch(err => {
