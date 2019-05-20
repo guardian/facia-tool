@@ -22,7 +22,11 @@ interface GroupsReceived {
 }
 interface UpdateArticleFragmentMeta {
   type: 'SHARED/UPDATE_ARTICLE_FRAGMENT_META';
-  payload: { id: string; meta: ArticleFragmentMeta };
+  payload: {
+    id: string;
+    meta: ArticleFragmentMeta;
+    mergeWithCurrentMeta: boolean;
+  };
 }
 
 interface InsertArticleFragmentPayload {

@@ -36,13 +36,15 @@ export const COPY_ARTICLE_FRAGMENT_IMAGE_META =
 
 function updateArticleFragmentMeta(
   id: string,
-  meta: ArticleFragmentMeta
+  meta: ArticleFragmentMeta,
+  mergeWithCurrentMeta: boolean = false
 ): UpdateArticleFragmentMeta {
   return {
     type: UPDATE_ARTICLE_FRAGMENT_META,
     payload: {
       id,
-      meta
+      meta,
+      mergeWithCurrentMeta
     }
   };
 }

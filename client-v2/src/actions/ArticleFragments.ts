@@ -375,12 +375,16 @@ const addImageToArticleFragment = (
   uuid: string,
   imageData: ValidationResponse
 ) =>
-  updateArticleFragmentMeta(uuid, {
-    ...getImageMetaFromValidationResponse(imageData),
-    imageReplace: true,
-    imageCutoutReplace: false,
-    imageSlideshowReplace: false
-  });
+  updateArticleFragmentMeta(
+    uuid,
+    {
+      ...getImageMetaFromValidationResponse(imageData),
+      imageReplace: true,
+      imageCutoutReplace: false,
+      imageSlideshowReplace: false
+    },
+    true
+  );
 
 export {
   insertArticleFragmentWithCreate as insertArticleFragment,

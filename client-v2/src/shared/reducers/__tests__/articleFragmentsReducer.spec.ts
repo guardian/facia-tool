@@ -29,4 +29,22 @@ describe('articleFragmentsReducer', () => {
       headline: 'headline'
     });
   });
+  it('should merge properties if the merge flag is set', () => {
+    expect(
+      reducer(
+        stateWithClipboard.shared.articleFragments as any,
+        updateArticleFragmentMeta(
+          'article2',
+          {
+            headline: 'headline'
+          },
+          true
+        ),
+        stateWithClipboard.shared
+      ).article2.meta
+    ).toEqual({
+      headline: 'headline',
+      supporting: ['article3']
+    });
+  });
 });
