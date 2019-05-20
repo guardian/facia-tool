@@ -41,8 +41,7 @@ const ClipboardWrapper = styled<
 >('div').attrs({
   'data-testid': 'clipboard-wrapper'
 })`
-  border: 1px solid #c9c9c9;
-  border-top: 1px solid black;
+  border-top: 1px solid ${({ theme }) => theme.shared.colors.greyLightPinkish};
   overflow-y: scroll;
   &:focus {
     border: 1px solid ${({ theme }) => theme.shared.base.colors.focusColor};

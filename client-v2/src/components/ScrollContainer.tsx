@@ -23,6 +23,7 @@ const ScrollInner = styled(`div`)`
   overflow-y: scroll;
   display: block;
   height: 100%;
+  border-top: 1px solid shared.colors.greyLightPinkish;
 `;
 
 const ScrollContainer = ({ fixed, children }: ScrollContainerProps) => (

@@ -11,10 +11,12 @@ const FeedSectionContainer = styled('div')`
   background-color: ${({ theme }) => theme.shared.base.colors.backgroundColor};
 `;
 
+const FeedSectionContent = styled(SectionContent)`
+  padding-right: 0px;
+`;
+
 const FeedWrapper = styled('div')`
   width: 409px;
-  padding-right: 10px;
-  margin-right: 10px;
   border-right: ${({ theme }) =>
     `solid 1px ${theme.shared.base.colors.borderColor}`};
 `;
@@ -22,7 +24,7 @@ const FeedWrapper = styled('div')`
 export default () => (
   <FeedSectionContainer>
     <FeedSectionHeader />
-    <SectionContent>
+    <FeedSectionContent>
       <FeedWrapper>
         <FeedContainer />
       </FeedWrapper>
@@ -30,6 +32,6 @@ export default () => (
       <div>
         <ClipboardMeta />
       </div>
-    </SectionContent>
+    </FeedSectionContent>
   </FeedSectionContainer>
 );

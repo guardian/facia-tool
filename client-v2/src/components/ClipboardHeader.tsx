@@ -22,23 +22,29 @@ const StyledDragIntentContainer = styled(DragIntentContainer)`
   min-height: 100%;
 `;
 
-const Header = styled.div`
+const Header = styled.div<{
+  isOpen: boolean;
+}>`
   align-items: center;
   justify-content: space-between;
   border-right: none;
-  border: ${({ theme }) =>
-    `1px solid ${theme.shared.base.colors.borderColor}`};
+  border: ${({ theme }) => `1px solid ${theme.shared.base.colors.borderColor}`};
+  border-right: none;
   display: flex;
   padding: 10px;
   height: 52px;
-  width: 100%;
   margin-left: 8px;
+  box-shadow: ${({ theme, isOpen }) =>
+    `2px 0 0 -1px ${
+      isOpen ? theme.shared.base.colors.backgroundColor : 'none'
+    }`};
 `;
 
 const ClipboardTitle = styled.h2`
   font-size: 12px;
   line-height: 1;
   margin: 0;
+  padding: 5px;
 `;
 
 class ClipboardHeader extends React.Component<ClipboardHeaderProps> {
@@ -54,7 +60,7 @@ class ClipboardHeader extends React.Component<ClipboardHeaderProps> {
         onDragIntentEnd={() => this.setState({ preActive: false })}
         onIntentConfirm={() => this.props.toggleClipboard(true)}
       >
-        <Header>
+        <Header isOpen={this.props.isClipboardOpen}>
           <ClipboardTitle>Clipboard</ClipboardTitle>
           <ButtonCircularCaret
             openDir="right"
