@@ -24,7 +24,9 @@ const articleFragments = (
         ...state,
         [id]: {
           ...state[id],
-          meta: action.payload.meta
+          meta: action.payload.merge
+            ? { ...(state[id].meta || {}), ...action.payload.meta }
+            : action.payload.meta
         }
       };
     }

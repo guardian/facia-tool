@@ -2,8 +2,6 @@ import React from 'react';
 import { styled } from 'shared/constants/theme';
 import startCase from 'lodash/startCase';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
-import { MdCollections, MdImage } from 'react-icons/md';
-
 import CollectionItemHeading from '../collectionItem/CollectionItemHeading';
 import BasePlaceholder from '../BasePlaceholder';
 import { getPillarColor } from 'shared/util/getPillarColor';
@@ -49,6 +47,9 @@ const ArticleHeadingContainerSmall = styled('div')`
 `;
 
 const ArticleBodyByline = styled('div')`
+  font-family: GHGuardianHeadline;
+  font-weight: 500;
+  font-size: 15px;
   font-style: italic;
   padding-top: 5px;
 `;
@@ -57,28 +58,13 @@ const ArticleBodyQuoteContainer = styled('span')`
   margin-right: 0.1rem;
 `;
 
-const ImageOverrideContainer = styled('div')`
-  position: absolute;
-  background: ${({ theme }) => theme.shared.colors.white};
-  width: 24px;
-  height: 24px;
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.3);
-  border-radius: 50%;
-  vertical-align: middle;
-  top: 2px;
-  right: 2px;
-`;
-
-const ImageOverrideIcon = styled('div')`
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  width: 14px;
-  height: 14px;
-`;
-
 const FirstPublicationDate = styled(CollectionItemMetaContent)`
   color: ${({ theme }) => theme.shared.colors.green};
+`;
+
+const ImageMetadataContainer = styled('div')`
+  font-size: 10px;
+  background-color: ${({ theme }) => theme.shared.colors.whiteLight};
 `;
 
 interface ArticleBodyProps {
@@ -104,8 +90,10 @@ interface ArticleBodyProps {
   imageHide?: boolean;
   imageSlideshowReplace?: boolean;
   imageReplace?: boolean;
+  imageCutoutReplace?: boolean;
   isBreaking?: boolean;
   type?: string;
+  showBoostedHeadline?: boolean;
 }
 
 const renderColouredQuotes = (
@@ -123,154 +111,154 @@ const renderColouredQuotes = (
   );
 };
 
-const articleBodyDefault = ({
-  firstPublicationDate,
-  frontPublicationDate,
-  scheduledPublicationDate,
-  sectionName,
-  pillarId,
-  kicker,
-  size = 'default',
-  headline,
-  thumbnail,
-  isLive,
-  urlPath,
-  displayPlaceholders,
-  onDelete,
-  onAddToClipboard,
-  isUneditable,
-  byline,
-  showByline,
-  showQuotedHeadline,
-  imageHide,
-  imageSlideshowReplace,
-  imageReplace,
-  isBreaking,
-  type,
-  uuid
-}: ArticleBodyProps) => {
-  const ArticleHeadingContainer =
-    size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
-  const displayByline = size === 'default' && showByline && byline;
-  const kickerToDisplay = isBreaking ? 'Breaking news' : kicker;
-  const now = Date.now();
+const articleBodyDefault = React.memo(
+  ({
+    firstPublicationDate,
+    frontPublicationDate,
+    scheduledPublicationDate,
+    sectionName,
+    pillarId,
+    kicker,
+    size = 'default',
+    headline,
+    thumbnail,
+    isLive,
+    urlPath,
+    displayPlaceholders,
+    onDelete,
+    onAddToClipboard,
+    isUneditable,
+    byline,
+    showByline,
+    showQuotedHeadline,
+    imageHide,
+    imageSlideshowReplace,
+    imageReplace,
+    imageCutoutReplace,
+    isBreaking,
+    type,
+    uuid,
+    showBoostedHeadline
+  }: ArticleBodyProps) => {
+    const ArticleHeadingContainer =
+      size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
+    const displayByline = size === 'default' && showByline && byline;
+    const kickerToDisplay = isBreaking ? 'Breaking news' : kicker;
+    const now = Date.now();
 
-  return (
-    <>
-      <CollectionItemMetaContainer>
-        {displayPlaceholders && (
-          <>
-            <TextPlaceholder data-testid="loading-placeholder" />
-            {size === 'default' && <TextPlaceholder width={25} />}
-          </>
-        )}
-        {size === 'default' && isLive && (
-          <CollectionItemMetaHeading>
-            {startCase(sectionName)}
-          </CollectionItemMetaHeading>
-        )}
-        {type === 'liveblog' && (
-          <CollectionItemMetaContent>Liveblog</CollectionItemMetaContent>
-        )}
-        {!isLive && !displayPlaceholders && (
-          <NotLiveContainer>
-            {firstPublicationDate
-              ? notLiveLabels.takenDown
-              : notLiveLabels.draft}
-          </NotLiveContainer>
-        )}
-        {!!scheduledPublicationDate && !firstPublicationDate && (
-          <CollectionItemDraftMetaContent title="The time until this article is scheduled to be published.">
-            {distanceInWordsStrict(new Date(scheduledPublicationDate), now)}
-          </CollectionItemDraftMetaContent>
-        )}
-        {!!frontPublicationDate && (
-          <CollectionItemMetaContent title="The time elapsed since this article was added to this front.">
-            {distanceInWordsStrict(now, new Date(frontPublicationDate))}
-          </CollectionItemMetaContent>
-        )}
-        {!!firstPublicationDate && (
-          <FirstPublicationDate title="The time elapsed since this article was first published.">
-            {distanceInWordsStrict(new Date(firstPublicationDate), now)}
-          </FirstPublicationDate>
-        )}
-      </CollectionItemMetaContainer>
-      <CollectionItemContent displaySize={size}>
-        <ArticleHeadingContainer>
+    return (
+      <>
+        <CollectionItemMetaContainer>
           {displayPlaceholders && (
             <>
-              <TextPlaceholder />
+              <TextPlaceholder data-testid="loading-placeholder" />
               {size === 'default' && <TextPlaceholder width={25} />}
             </>
           )}
-          {kickerToDisplay && (
-            <KickerHeading
+          {size === 'default' && isLive && (
+            <CollectionItemMetaHeading>
+              {startCase(sectionName)}
+            </CollectionItemMetaHeading>
+          )}
+          {type === 'liveblog' && (
+            <CollectionItemMetaContent>Liveblog</CollectionItemMetaContent>
+          )}
+          {!isLive && !displayPlaceholders && (
+            <NotLiveContainer>
+              {firstPublicationDate
+                ? notLiveLabels.takenDown
+                : notLiveLabels.draft}
+            </NotLiveContainer>
+          )}
+          {!!scheduledPublicationDate && !firstPublicationDate && (
+            <CollectionItemDraftMetaContent title="The time until this article is scheduled to be published.">
+              {distanceInWordsStrict(new Date(scheduledPublicationDate), now)}
+            </CollectionItemDraftMetaContent>
+          )}
+          {!!frontPublicationDate && (
+            <CollectionItemMetaContent title="The time elapsed since this article was added to this front.">
+              {distanceInWordsStrict(now, new Date(frontPublicationDate))}
+            </CollectionItemMetaContent>
+          )}
+          {!!firstPublicationDate && (
+            <FirstPublicationDate title="The time elapsed since this article was first published.">
+              {distanceInWordsStrict(new Date(firstPublicationDate), now)}
+            </FirstPublicationDate>
+          )}
+        </CollectionItemMetaContainer>
+        <CollectionItemContent displaySize={size}>
+          <ArticleHeadingContainer>
+            {displayPlaceholders && (
+              <>
+                <TextPlaceholder />
+                {size === 'default' && <TextPlaceholder width={25} />}
+              </>
+            )}
+            {kickerToDisplay && (
+              <KickerHeading
+                displaySize={size}
+                style={{ color: getPillarColor(pillarId, true) }}
+              >
+                {kickerToDisplay}
+              </KickerHeading>
+            )}
+            {showQuotedHeadline && (
+              <ArticleBodyQuoteContainer>
+                {renderColouredQuotes(size, pillarId, isLive)}
+              </ArticleBodyQuoteContainer>
+            )}
+            <CollectionItemHeading
+              html
+              data-testid="headline"
               displaySize={size}
-              style={{ color: getPillarColor(pillarId, true) }}
+              showBoostedHeadline={showBoostedHeadline}
             >
-              {kickerToDisplay}
-            </KickerHeading>
-          )}
-          {showQuotedHeadline && (
-            <ArticleBodyQuoteContainer>
-              {renderColouredQuotes(size, pillarId, isLive)}
-            </ArticleBodyQuoteContainer>
-          )}
-          <CollectionItemHeading html data-testid="headline" displaySize={size}>
-            {headline}
-          </CollectionItemHeading>
-        </ArticleHeadingContainer>
-        {displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
-      </CollectionItemContent>
-      {size === 'default' &&
-        (displayPlaceholders ? (
-          <ThumbnailPlaceholder />
-        ) : (
-          <DraggableArticleImageContainer id={uuid}>
-            {imageSlideshowReplace && (
-              <ImageOverrideContainer title="This article has a slideshow override">
-                <ImageOverrideIcon>
-                  <MdCollections />
-                </ImageOverrideIcon>
-              </ImageOverrideContainer>
-            )}
-            {imageReplace && (
-              <ImageOverrideContainer title="This article has an image override">
-                <ImageOverrideIcon>
-                  <MdImage />
-                </ImageOverrideIcon>
-              </ImageOverrideContainer>
-            )}
-            <ThumbnailSmall
-              style={{
-                backgroundImage: `url('${thumbnail}')`,
-                opacity: imageHide ? 0.5 : 1
-              }}
-            />
-          </DraggableArticleImageContainer>
-        ))}
-      <HoverActionsAreaOverlay disabled={isUneditable}>
-        <HoverActionsButtonWrapper
-          buttons={[
-            { text: 'View', component: HoverViewButton },
-            { text: 'Ophan', component: HoverOphanButton },
-            { text: 'Clipboard', component: HoverAddToClipboardButton },
-            { text: 'Delete', component: HoverDeleteButton }
-          ]}
-          buttonProps={{
-            isLive,
-            urlPath,
-            onDelete,
-            onAddToClipboard
-          }}
-          size={size}
-          toolTipPosition={'top'}
-          toolTipAlign={'left'}
-        />
-      </HoverActionsAreaOverlay>
-    </>
-  );
-};
+              {headline}
+            </CollectionItemHeading>
+          </ArticleHeadingContainer>
+          {displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
+        </CollectionItemContent>
+        {size === 'default' &&
+          (displayPlaceholders ? (
+            <ThumbnailPlaceholder />
+          ) : (
+            <DraggableArticleImageContainer id={uuid}>
+              <ThumbnailSmall
+                style={{
+                  backgroundImage: `url('${thumbnail}')`,
+                  opacity: imageHide ? 0.5 : 1
+                }}
+              />
+              <ImageMetadataContainer>
+                {imageSlideshowReplace && 'Slidehow'}
+                {imageReplace && 'Image replaced'}
+                {imageCutoutReplace && 'Cutout replaced'}
+              </ImageMetadataContainer>
+            </DraggableArticleImageContainer>
+          ))}
+        <HoverActionsAreaOverlay disabled={isUneditable}>
+          <HoverActionsButtonWrapper
+            buttons={[
+              { text: 'View', component: HoverViewButton },
+              { text: 'Ophan', component: HoverOphanButton },
+              { text: 'Clipboard', component: HoverAddToClipboardButton },
+              { text: 'Delete', component: HoverDeleteButton }
+            ]}
+            buttonProps={{
+              isLive,
+              urlPath,
+              onDelete,
+              onAddToClipboard
+            }}
+            size={size}
+            toolTipPosition={'top'}
+            toolTipAlign={'left'}
+          />
+        </HoverActionsAreaOverlay>
+      </>
+    );
+  }
+);
 
 export { ArticleBodyProps };
 

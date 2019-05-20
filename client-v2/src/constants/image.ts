@@ -10,9 +10,6 @@ export const gridDataTransferTypes = {
   imageData: 'application/vnd.mediaservice.image+json'
 };
 
-// Represents a collectionItem's current image override.
 export const DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE =
   '@@drag_collection_item_image@@';
-
-// Represents a complete set of image data.
-export const DRAG_DATA_IMAGE = '@@drag_grid_image_url@@';
+export const DRAG_DATA_GRID_IMAGE_URL = '@@drag_grid_image_url@@';

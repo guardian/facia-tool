@@ -6,7 +6,6 @@ import { State } from 'types/State';
 import { createCollectionItemTypeSelector } from 'shared/selectors/collectionItem';
 import {
   selectSharedState,
-  externalArticleIdFromArticleFragmentSelector,
   articleFragmentSelector
 } from 'shared/selectors/shared';
 import collectionItemTypes from 'shared/constants/collectionItemTypes';
@@ -29,7 +28,7 @@ import {
 import {
   articleFragmentImageCriteria as imageCriteria,
   DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
-  DRAG_DATA_IMAGE
+  DRAG_DATA_GRID_IMAGE_URL
 } from 'constants/image';
 import Sublinks from './Sublinks';
 import { gridDropTypes } from 'constants/fronts';
@@ -37,7 +36,7 @@ import { gridDropTypes } from 'constants/fronts';
 const imageDropTypes = [
   ...gridDropTypes,
   DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
-  DRAG_DATA_IMAGE
+  DRAG_DATA_GRID_IMAGE_URL
 ];
 
 interface ContainerProps {
@@ -54,15 +53,11 @@ interface ContainerProps {
 }
 
 type ArticleContainerProps = ContainerProps & {
-  onAddToClipboard: (
-    externalArticleId: string | undefined,
-    uuid: string
-  ) => void;
+  onAddToClipboard: (uuid: string) => void;
   copyCollectionItemImageMeta: (from: string, to: string) => void;
   addImageToArticleFragment: (id: string, response: ValidationResponse) => void;
   type: CollectionItemTypes;
   isSelected: boolean;
-  externalArticleId: string | undefined;
   numSupportingArticles: number;
 };
 
@@ -79,31 +74,6 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
     }
   };
 
-  public handleImageDrop = (e: React.DragEvent<HTMLElement>) => {
-    e.preventDefault();
-    e.persist();
-
-    // Our drag is a copy event, from another CollectionItem
-    const articleUuid = e.dataTransfer.getData(
-      DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE
-    );
-    if (articleUuid) {
-      this.props.copyCollectionItemImageMeta(articleUuid, this.props.uuid);
-      return;
-    }
-
-    // Our drag contains Grid data
-    validateImageEvent(e, this.props.frontId, imageCriteria)
-      .then(imageData =>
-        this.props.addImageToArticleFragment(this.props.uuid, imageData)
-      )
-      .catch(err => {
-        // swallowing errors here as the drop may well be an articleFragment
-        // rather than an image which is expected - TBD
-        // console.log('@todo:handle error', err);
-      });
-  };
-
   public render() {
     const {
       uuid,
@@ -111,13 +81,11 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       children,
       getNodeProps,
       onSelect,
-      onDelete,
       onAddToClipboard = noop,
       displayType,
       type,
       size,
       isUneditable,
-      externalArticleId,
       numSupportingArticles,
       parentId
     } = this.props;
@@ -129,8 +97,8 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
             id={uuid}
             isUneditable={isUneditable}
             {...getNodeProps()}
-            onDelete={onDelete}
-            onAddToClipboard={() => onAddToClipboard(externalArticleId, uuid)}
+            onDelete={this.onDelete}
+            onAddToClipboard={onAddToClipboard}
             onClick={isUneditable ? undefined : () => onSelect(uuid)}
             fade={!isSelected}
             size={size}
@@ -157,7 +125,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
               id={uuid}
               isUneditable={isUneditable}
               {...getNodeProps()}
-              onDelete={onDelete}
+              onDelete={this.onDelete}
               onClick={isUneditable ? undefined : () => onSelect(uuid)}
               fade={!isSelected}
               size={size}
@@ -182,6 +150,35 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
         );
     }
   }
+
+  private onDelete = (uuid: string) => {
+    this.props.onDelete(uuid);
+  };
+
+  private handleImageDrop = (e: React.DragEvent<HTMLElement>) => {
+    e.preventDefault();
+    e.persist();
+
+    // Our drag is a copy event, from another CollectionItem
+    const articleUuid = e.dataTransfer.getData(
+      DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE
+    );
+    if (articleUuid) {
+      this.props.copyCollectionItemImageMeta(articleUuid, this.props.uuid);
+      return;
+    }
+
+    // Our drag contains Grid data
+    validateImageEvent(e, this.props.frontId, imageCriteria)
+      .then(imageData =>
+        this.props.addImageToArticleFragment(this.props.uuid, imageData)
+      )
+      .catch(err => {
+        // swallowing errors here as the drop may well be an articleFragment
+        // rather than an image which is expected - TBD
+        // console.log('@todo:handle error', err);
+      });
+  };
 }
 
 const createMapStateToProps = () => {
@@ -204,10 +201,6 @@ const createMapStateToProps = () => {
       isSelected:
         !selectedArticleFragmentData ||
         selectedArticleFragmentData.id === props.uuid,
-      externalArticleId: externalArticleIdFromArticleFragmentSelector(
-        selectSharedState(state),
-        props.uuid
-      ),
       numSupportingArticles
     };
   };
@@ -215,10 +208,7 @@ const createMapStateToProps = () => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    onAddToClipboard: (id: string | undefined, uuid: string) => {
-      if (!id) {
-        return;
-      }
+    onAddToClipboard: (uuid: string) => {
       dispatch(cloneArticleFragmentToTarget(uuid, 'clipboard'));
     },
     copyCollectionItemImageMeta: (from: string, to: string) =>
