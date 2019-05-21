@@ -91,7 +91,8 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
       },
       importance = parseImportance(trail.group),
       topic =  parseTopic(trail.topic),
-      debug = false
+      debug = false,
+      dryRun = Some(false)
     )
   }
 
