@@ -1,6 +1,5 @@
 package editions
-
-import java.time.LocalDate
+import org.joda.time.DateTime
 
 object WeekDay extends Enumeration(0) {
 
@@ -13,22 +12,22 @@ object WeekDay extends Enumeration(0) {
   //def LocalDateToWeekday: WeekDay = ???
 }
 
-/*
- * Things we want to model
- * 1. what the collection template looks like
- * 2. what the front template looks like
- * 3. what the daily edition template as a whole looks like
-*/
-
 case class FrontPresentation()
 case class CollectionPresentation()
 
 case class CapiQuery(query: String) extends AnyVal
 
 import WeekDay._
-trait Periodicity
-case class Daily() extends Periodicity
-case class WeekDays(days: List[WeekDay]) extends Periodicity
+trait Periodicity {
+  def isValid(date: DateTime): Boolean
+}
+case class Daily() extends Periodicity {
+  def isValid(date: DateTime) = true
+}
+
+case class WeekDays(days: List[WeekDay]) extends Periodicity {
+  def isValid(date: DateTime) = days.exists(WeekDayToInt(_) == date.dayOfWeek().get)
+}
 
 case class CollectionTemplate(
   name: String,
@@ -52,7 +51,6 @@ case class EditionTemplate(
 case class EditionTemplateForDate(
   name: String,
   fronts: List[FrontTemplate],
-  availability: Periodicity
 )
 
 
@@ -97,11 +95,14 @@ object DailyEdition {
 }
 
 object EditionTemplateHelpers {
-  def generateEditionTemplate(date: LocalDate, edition: EditionTemplate): EditionTemplateForDate = {
-
-    EditionTemplateForDate("template", List(), Daily())
+  def generateEditionTemplate(date: DateTime, edition: EditionTemplate): Option[EditionTemplateForDate] = {
+    edition.availability.isValid(date) match {
+      case false => None
+      case true => {
+        Some(EditionTemplateForDate(edition.name, edition.fronts.filter(_._2.isValid(date)).map(_._1)))
+      }
+    }
   }
-
 }
 
 
