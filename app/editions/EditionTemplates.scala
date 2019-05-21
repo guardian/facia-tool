@@ -44,6 +44,17 @@ case class FrontTemplate(
   hidden: Boolean = false
 )
 
+case class EditionTemplate(
+  name: String,
+  fronts: List[(FrontTemplate, Periodicity)],
+  availability: Periodicity
+)
+case class EditionTemplateForDate(
+  name: String,
+  fronts: List[FrontTemplate],
+  availability: Periodicity
+)
+
 
 // ??? Is this how we want to model collections??
 object Sport {
@@ -73,14 +84,24 @@ object Fronts {
 }
 
 object DailyEdition {
-  val dailyEdition: List[(Front, Periodicity)] =
+  val dailyEdition: EditionTemplate = EditionTemplate(
+    "dailyEdition",
     List(
-      (Fronts.ukNews, Daily),
-      (Fronts.sports, Daily),
+      (Fronts.ukNews, Daily()),
+      (Fronts.sports, Daily()),
       (Fronts.opinion, WeekDays(List(Thurs, Wed))),
       (Fronts.technology, WeekDays(List(Thurs)))
-    )
+    ),
+    Daily()
+  )
 }
 
+object EditionTemplateHelpers {
+  def generateEditionTemplate(date: LocalDate, edition: EditionTemplate): EditionTemplateForDate = {
+
+    EditionTemplateForDate("template", List(), Daily())
+  }
+
+}
 
 
