@@ -268,8 +268,8 @@ const removeArticleFragment = (
 ): ThunkResult<void> => {
   return (dispatch: Dispatch, getState) => {
     const getGroupIdFromState = () => {
-      if (persistTo === 'clipboard') {
-        return 'clipboard';
+      if (id === 'clipboard') {
+        return id;
       }
       // The article fragment may belong to an orphaned group -
       // we need to find the actual group the article fragment belongs to

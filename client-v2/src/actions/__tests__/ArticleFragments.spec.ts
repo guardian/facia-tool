@@ -17,6 +17,7 @@ import {
 } from './utils';
 import {
   moveArticleFragment,
+  removeArticleFragment,
   insertArticleFragment,
   addImageToArticleFragment,
   cloneArticleFragmentToTarget
@@ -59,7 +60,7 @@ const buildStore = (added: ArticleFragmentSpec, collectionCap = Infinity) => {
     ['k', '11', undefined]
   ];
   const clipboard: ArticleFragmentSpec[] = [
-    ['d', '4', undefined],
+    ['d', '4', [['g', '7']]],
     ['e', '5', undefined],
     ['f', '6', undefined]
   ];
@@ -171,6 +172,25 @@ const move = (
   if (collectionCapInfo && collectionCapInfo.accept !== null) {
     dispatch(endConfirmModal(collectionCapInfo.accept));
   }
+
+  return getState();
+};
+
+const remove = (
+  id: string,
+  parentId: string,
+  type: 'collection' | 'clipboard' | 'articleFragment'
+) => {
+  const { dispatch, getState } = buildStore(
+    ['uuid', 'id', undefined],
+    Infinity
+  );
+  dispatch(removeArticleFragment(
+    type,
+    parentId,
+    id,
+    'clipboard' // doesn't matter where we persist
+  ) as any);
 
   return getState();
 };
@@ -304,6 +324,22 @@ describe('ArticleFragments actions', () => {
         accept: null
       });
       expect(groupArticlesSelector(s1, 'a')).toEqual(['b', 'c', 'a']);
+    });
+  });
+
+  describe('remove', () => {
+    it('removes article fragments that exist in the state', async () => {
+      expect(
+        clipboardSelector(await remove('d', 'clipboard', 'clipboard'))
+      ).toEqual(['e', 'f']);
+    });
+    it('removes article fragments from supporting positions', async () => {
+      expect(
+        supportingArticlesSelector(
+          await remove('g', 'd', 'articleFragment'),
+          'd'
+        )
+      ).toEqual([]);
     });
   });
 
