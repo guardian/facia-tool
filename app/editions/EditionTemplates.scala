@@ -8,7 +8,6 @@ object WeekDay extends Enumeration(0) {
   type WeekDay = Value
   val Mon, Tues, Wed, Thurs, Fri, Sat, Sun = Value
   implicit def WeekDayToInt(weekDay: WeekDay): Int = weekDay.id
-  implicit def IntToWeekDay(int: Int): WeekDay = WeekDay(int)
 }
 
 case class FrontPresentation()
