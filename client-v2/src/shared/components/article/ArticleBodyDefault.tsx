@@ -230,7 +230,7 @@ const articleBodyDefault = React.memo(
                 }}
               />
               <ImageMetadataContainer>
-                {imageSlideshowReplace && 'Slidehow'}
+                {imageSlideshowReplace && 'Slideshow'}
                 {imageReplace && 'Image replaced'}
                 {imageCutoutReplace && 'Cutout replaced'}
               </ImageMetadataContainer>

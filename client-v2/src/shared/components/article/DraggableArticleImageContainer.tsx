@@ -7,7 +7,10 @@ import {
   selectCollectionItemHasMediaOverrides
 } from 'shared/selectors/shared';
 import imageDragIcon from 'images/icons/image-drag-icon.svg';
-import { DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE } from 'constants/image';
+import {
+  DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
+  DRAG_DATA_GRID_IMAGE_URL
+} from 'constants/image';
 import { createSelectActiveImageUrl } from 'shared/selectors/collectionItem';
 
 interface ContainerProps {
@@ -17,6 +20,7 @@ interface ContainerProps {
 interface ComponentProps extends ContainerProps {
   canDrag: boolean;
   activeImageUrl: string | undefined;
+  hasImageOverrides: boolean;
 }
 
 const DragIntentContainer = styled.div<{
@@ -53,12 +57,17 @@ class DraggableArticleImageContainer extends React.Component<ComponentProps> {
 
   private handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    e.dataTransfer.setData(
-      DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
-      this.props.id
-    );
+    if (this.props.hasImageOverrides) {
+      e.dataTransfer.setData(
+        DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
+        this.props.id
+      );
+    }
     if (this.props.activeImageUrl) {
-      e.dataTransfer.setData('url', this.props.activeImageUrl);
+      e.dataTransfer.setData(
+        DRAG_DATA_GRID_IMAGE_URL,
+        this.props.activeImageUrl
+      );
     }
     e.dataTransfer.setDragImage(dragImage, -25, 50);
     this.setState({ isDragging: true });
@@ -67,13 +76,17 @@ class DraggableArticleImageContainer extends React.Component<ComponentProps> {
 
 const mapStateToProps = () => {
   const selectActiveImageUrl = createSelectActiveImageUrl();
-  return (state: State, { id }: ContainerProps) => ({
-    canDrag: selectCollectionItemHasMediaOverrides(
-      selectSharedState(state),
-      id
-    ),
-    activeImageUrl: selectActiveImageUrl(selectSharedState(state), id)
-  });
+  return (state: State, { id }: ContainerProps) => {
+    const activeImageUrl = selectActiveImageUrl(selectSharedState(state), id);
+    return {
+      activeImageUrl,
+      canDrag: !!activeImageUrl,
+      hasImageOverrides: selectCollectionItemHasMediaOverrides(
+        selectSharedState(state),
+        id
+      )
+    };
+  };
 };
 
 export default connect(mapStateToProps)(DraggableArticleImageContainer);

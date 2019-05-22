@@ -170,8 +170,10 @@ function stripImplementationDetails(
     } else if (maybeFromGrid) {
       grid.gridInstance
         .getImage(maybeFromGrid.id)
-        .catch(() =>
-          reject(new Error('Unable to locate the image on the Grid'))
+        .catch((e: Error) =>
+          reject(
+            new Error(`There was a problem contacting The Grid - ${e.message}`)
+          )
         )
         .then((gridImageJson: string) =>
           filterGridCrops(gridImageJson, maybeFromGrid, criteria)
