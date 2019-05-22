@@ -19,10 +19,13 @@ import { gridUrlSelector } from 'selectors/configSelectors';
 import { State } from 'types/State';
 import { GridData, Criteria } from 'shared/types/Grid';
 import { RubbishBinIcon, AddImageIcon } from '../icons/Icons';
+import imageDragIcon from 'images/icons/image-drag-icon.svg';
+import { DRAG_DATA_GRID_IMAGE_URL } from 'constants/image';
 
 const ImageContainer = styled('div')<{
   small?: boolean;
   isHovering?: boolean;
+  hasImage?: boolean;
 }>`
   position: relative;
   width: 100%;
@@ -34,6 +37,7 @@ const ImageContainer = styled('div')<{
     props.isHovering
       ? `4px solid ${theme.base.colors.highlightColor}`
       : 'none'};
+  cursor: ${({ hasImage }) => (hasImage ? 'grab' : 'pointer')};
 `;
 
 const AddImageViaGridModalButton = styled(ButtonDefault)<{
@@ -110,6 +114,9 @@ interface ComponentState {
   imageSrc: string;
 }
 
+const dragImage = new Image();
+dragImage.src = imageDragIcon;
+
 class InputImage extends React.Component<ComponentProps, ComponentState> {
   public state = {
     isHovering: false,
@@ -117,10 +124,102 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     imageSrc: ''
   };
 
-  public handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  public render() {
+    const { small, input, gridUrl } = this.props;
+    const gridSearchUrl = `${gridUrl}?cropType=landscape`;
+    const hasImage = !!input.value && !!input.value.thumb;
+    return (
+      <InputContainer>
+        <GridModal
+          url={gridSearchUrl}
+          isOpen={this.state.modalOpen}
+          onClose={this.closeModal}
+          onMessage={this.onMessage}
+        />
+        <DragIntentContainer
+          active
+          onIntentConfirm={() => this.setState({ isHovering: true })}
+          onDragIntentStart={() => this.setState({ isHovering: true })}
+          onDragIntentEnd={() => this.setState({ isHovering: false })}
+        >
+          <ImageContainer
+            draggable={hasImage}
+            onDragStart={this.handleDragStart}
+            onDrop={this.handleDrop}
+            isHovering={this.state.isHovering}
+            small={small}
+            hasImage={hasImage}
+            style={{
+              backgroundImage: input.value && `url(${input.value.thumb}`
+            }}
+          >
+            {hasImage ? (
+              <ButtonDelete
+                type="button"
+                priority="primary"
+                small={small}
+                onClick={this.handleDelete}
+              >
+                {input.value ? (
+                  <IconDelete small={small}>
+                    <RubbishBinIcon size="s" />
+                  </IconDelete>
+                ) : null}
+              </ButtonDelete>
+            ) : (
+              <>
+                <AddImageViaGridModalButton
+                  type="button"
+                  priority="muted"
+                  onClick={this.openModal}
+                  small={small}
+                >
+                  <AddImageIcon size="l" />
+                  {!!small ? null : <Label size="sm">Add image</Label>}
+                </AddImageViaGridModalButton>
+
+                {!!small ? null : (
+                  <AddImageViaUrlInput>
+                    <ImageUrlInput
+                      name="paste-url"
+                      placeholder=" Paste crop url from Grid"
+                      defaultValue={this.state.imageSrc}
+                      onKeyDown={this.handlePasteImgSrcSubmit(13)}
+                      onChange={this.handlePasteImgSrcChange}
+                    />
+                    <InputLabel hidden htmlFor="paste-url">
+                      Paste crop url from Grid
+                    </InputLabel>
+                  </AddImageViaUrlInput>
+                )}
+              </>
+            )}
+          </ImageContainer>
+        </DragIntentContainer>
+      </InputContainer>
+    );
+  }
+
+  private handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    this.clearField();
+  };
+
+  private handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    if (this.props.input.value.origin) {
+      e.dataTransfer.setData(
+        DRAG_DATA_GRID_IMAGE_URL,
+        this.props.input.value.origin
+      );
+      e.dataTransfer.setDragImage(dragImage, -25, 50);
+    }
+  };
+
+  private handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     events.imageAdded(this.props.frontId, 'drop');
     e.preventDefault();
     e.persist();
+
     validateImageEvent(e, this.props.frontId, this.props.criteria)
       .then(this.props.input.onChange)
       .catch(err => {
@@ -130,12 +229,12 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       });
   };
 
-  public handlePasteImgSrcChange = (e: React.FormEvent<HTMLInputElement>) => {
+  private handlePasteImgSrcChange = (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
     this.setState({ imageSrc: e.currentTarget.value });
   };
 
-  public handlePasteImgSrcSubmit = (keyCode: number) => (
+  private handlePasteImgSrcSubmit = (keyCode: number) => (
     e: React.KeyboardEvent
   ) => {
     events.imageAdded(this.props.frontId, 'paste');
@@ -159,13 +258,13 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     }
   };
 
-  public clearField = () => this.props.input.onChange(null);
+  private clearField = () => this.props.input.onChange(null);
 
-  public validMessage(data: GridData) {
+  private validMessage(data: GridData) {
     return data && data.crop && data.crop.data && data.image && data.image.data;
   }
 
-  public onMessage = (event: MessageEvent) => {
+  private onMessage = (event: MessageEvent) => {
     if (event.origin !== this.props.gridUrl) {
       // Log: did not come from the grid
       return;
@@ -205,88 +304,15 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       });
   };
 
-  public closeModal = () => {
+  private closeModal = () => {
     this.setState({ modalOpen: false });
     window.removeEventListener('message', this.onMessage, false);
   };
 
-  public openModal = () => {
+  private openModal = () => {
     this.setState({ modalOpen: true });
     window.addEventListener('message', this.onMessage, false);
   };
-
-  public render() {
-    const { small, input, gridUrl } = this.props;
-    const gridSearchUrl = `${gridUrl}?cropType=landscape`;
-    return (
-      <InputContainer>
-        <GridModal
-          url={gridSearchUrl}
-          isOpen={this.state.modalOpen}
-          onClose={this.closeModal}
-          onMessage={this.onMessage}
-        />
-        <DragIntentContainer
-          active
-          onIntentConfirm={() => this.setState({ isHovering: true })}
-          onDragIntentStart={() => this.setState({ isHovering: true })}
-          onDragIntentEnd={() => this.setState({ isHovering: false })}
-        >
-          <ImageContainer
-            onDrop={this.handleDrop}
-            isHovering={this.state.isHovering}
-            small={small}
-            style={{
-              backgroundImage: input.value && `url(${input.value.thumb}`
-            }}
-          >
-            {!!input.value && !!input.value.thumb ? (
-              <ButtonDelete type="button" priority="primary" small={small}>
-                {input.value ? (
-                  <IconDelete
-                    small={small}
-                    onClick={event => {
-                      event.stopPropagation();
-                      this.clearField();
-                    }}
-                  >
-                    <RubbishBinIcon size="s" />
-                  </IconDelete>
-                ) : null}
-              </ButtonDelete>
-            ) : (
-              <>
-                <AddImageViaGridModalButton
-                  type="button"
-                  priority="muted"
-                  onClick={this.openModal}
-                  small={small}
-                >
-                  <AddImageIcon size="l" />
-                  {!!small ? null : <Label size="sm">Add image</Label>}
-                </AddImageViaGridModalButton>
-
-                {!!small ? null : (
-                  <AddImageViaUrlInput>
-                    <ImageUrlInput
-                      name="paste-url"
-                      placeholder=" Paste crop url from Grid"
-                      defaultValue={this.state.imageSrc}
-                      onKeyDown={this.handlePasteImgSrcSubmit(13)}
-                      onChange={this.handlePasteImgSrcChange}
-                    />
-                    <InputLabel hidden htmlFor="paste-url">
-                      Paste crop url from Grid
-                    </InputLabel>
-                  </AddImageViaUrlInput>
-                )}
-              </>
-            )}
-          </ImageContainer>
-        </DragIntentContainer>
-      </InputContainer>
-    );
-  }
 }
 
 const mapStateToProps = (state: State) => {

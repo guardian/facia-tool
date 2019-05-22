@@ -27,12 +27,17 @@ import {
 } from 'shared/util/validateImageSrc';
 import {
   articleFragmentImageCriteria as imageCriteria,
-  DRAG_DATA_COLLECTION_ITEM_IMAGE
+  DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
+  DRAG_DATA_GRID_IMAGE_URL
 } from 'constants/image';
 import Sublinks from './Sublinks';
 import { gridDropTypes } from 'constants/fronts';
 
-const imageDropTypes = [...gridDropTypes, DRAG_DATA_COLLECTION_ITEM_IMAGE];
+const imageDropTypes = [
+  ...gridDropTypes,
+  DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
+  DRAG_DATA_GRID_IMAGE_URL
+];
 
 interface ContainerProps {
   uuid: string;
@@ -48,9 +53,9 @@ interface ContainerProps {
 }
 
 type ArticleContainerProps = ContainerProps & {
+  onAddToClipboard: (uuid: string) => void;
   copyCollectionItemImageMeta: (from: string, to: string) => void;
   addImageToArticleFragment: (id: string, response: ValidationResponse) => void;
-  onAddToClipboard: (uuid: string) => void;
   type: CollectionItemTypes;
   isSelected: boolean;
   numSupportingArticles: number;
@@ -67,29 +72,6 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
     if (e) {
       e.stopPropagation();
     }
-  };
-
-  public handleImageDrop = (e: React.DragEvent<HTMLElement>) => {
-    e.preventDefault();
-    e.persist();
-
-    // Our drag is a copy event, from another CollectionItem
-    const articleUuid = e.dataTransfer.getData(DRAG_DATA_COLLECTION_ITEM_IMAGE);
-    if (articleUuid) {
-      this.props.copyCollectionItemImageMeta(articleUuid, this.props.uuid);
-      return;
-    }
-
-    // Our drag contains Grid data
-    validateImageEvent(e, this.props.frontId, imageCriteria)
-      .then(imageData =>
-        this.props.addImageToArticleFragment(this.props.uuid, imageData)
-      )
-      .catch(err => {
-        // swallowing errors here as the drop may well be an articleFragment
-        // rather than an image which is expected - TBD
-        // console.log('@todo:handle error', err);
-      });
   };
 
   public render() {
@@ -171,6 +153,31 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
 
   private onDelete = (uuid: string) => {
     this.props.onDelete(uuid);
+  };
+
+  private handleImageDrop = (e: React.DragEvent<HTMLElement>) => {
+    e.preventDefault();
+    e.persist();
+
+    // Our drag is a copy event, from another CollectionItem
+    const articleUuid = e.dataTransfer.getData(
+      DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE
+    );
+    if (articleUuid) {
+      this.props.copyCollectionItemImageMeta(articleUuid, this.props.uuid);
+      return;
+    }
+
+    // Our drag contains Grid data
+    validateImageEvent(e, this.props.frontId, imageCriteria)
+      .then(imageData =>
+        this.props.addImageToArticleFragment(this.props.uuid, imageData)
+      )
+      .catch(err => {
+        // swallowing errors here as the drop may well be an articleFragment
+        // rather than an image which is expected - TBD
+        // console.log('@todo:handle error', err);
+      });
   };
 }
 

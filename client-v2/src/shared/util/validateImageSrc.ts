@@ -5,6 +5,7 @@ import deepGet from 'lodash/get';
 import grid, { recordUsage } from './grid';
 import fetchImage from './fetchImage';
 import { Crop, Criteria } from 'shared/types/Grid';
+import { DRAG_DATA_GRID_IMAGE_URL } from 'constants/image';
 
 interface ImageDescription {
   height?: number;
@@ -276,7 +277,9 @@ function validateImageEvent(
     return validateMediaItem(mediaItem, imageOrigin, frontId, criteria);
   }
   const url =
-    grid.gridInstance.getGridUrlFromEvent(event) || getData(event, 'Url');
+    grid.gridInstance.getGridUrlFromEvent(event) ||
+    getData(event, 'url') ||
+    getData(event, DRAG_DATA_GRID_IMAGE_URL);
 
   if (url) {
     return validateImageSrc(url, frontId, criteria);
