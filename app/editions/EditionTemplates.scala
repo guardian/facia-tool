@@ -1,7 +1,8 @@
 package editions
 import org.joda.time.DateTime
 
-object WeekDay extends Enumeration(0) {
+
+object WeekDay extends Enumeration(1) {
 
   implicit lazy val implicitConversions = scala.language.implicitConversions
 
