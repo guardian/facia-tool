@@ -80,6 +80,7 @@ const FrontsContainer = styled('div')`
 const OverviewToggleContainer = styled('div')`
   font-size: 13px;
   font-weight: bold;
+  margin-right: 190px;
 `;
 
 interface FrontsContainerProps {
