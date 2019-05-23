@@ -190,7 +190,9 @@ describe('Validate images', () => {
       ).then(
         err => done.fail(err.toString()),
         err => {
-          expect(err.message).toMatch(/unable to locate/i);
+          expect(err.message).toMatch(
+            /There was a problem contacting The Grid/i
+          );
           done();
         }
       );

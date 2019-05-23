@@ -173,11 +173,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       .then(imageData =>
         this.props.addImageToArticleFragment(this.props.uuid, imageData)
       )
-      .catch(err => {
-        // swallowing errors here as the drop may well be an articleFragment
-        // rather than an image which is expected - TBD
-        // console.log('@todo:handle error', err);
-      });
+      .catch(alert);
   };
 }
 
