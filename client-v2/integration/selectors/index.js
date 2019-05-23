@@ -1,5 +1,4 @@
 import { select } from '../helpers';
-import { Selector } from 'testcafe';
 
 const FRONT_SELECTOR = 'test/front';
 const FEED_ITEM_SELECTOR = 'feed-item';
@@ -15,7 +14,6 @@ const SNAP_SELECTOR = 'snap';
 const COLLECTION_SELECTOR = 'collection';
 const COLLECTION_ITEM_SELECTOR = 'article-body';
 const COLLECTION_DISCARD_BUTTON = 'collection-discard-button';
-const HOVER_ACTIONS_WRAPPER = 'hover-actions-wrapper';
 const DELETE_BUTTON = 'delete-hover-button';
 const EDIT_FORM = 'edit-form';
 const EDIT_FORM_HEADLINE_FIELD = 'edit-form-headline-field';
@@ -48,9 +46,6 @@ export const clipboardItem = maybeGetNth(
 export const feedItemAddToClipboardHoverButton = maybeGetNth(
   select(FEED_ITEM_SELECTOR, ADD_TO_CLIPBOARD_BUTTON)
 );
-export const clipboardHoverActionsWrapper = maybeGetNth(
-  select(CLIPBOARD_SELECTOR, COLLECTION_ITEM_SELECTOR, HOVER_ACTIONS_WRAPPER)
-);
 export const clipboardItemHeadline = maybeGetNth(
   select(CLIPBOARD_SELECTOR, COLLECTION_ITEM_SELECTOR, HEADLINE_SELECTOR)
 );
@@ -62,19 +57,13 @@ export const clipboardItemDeleteButton = maybeGetNth(
 export const collection = maybeGetNth(select(COLLECTION_SELECTOR));
 
 export const allCollectionItems = collectionIndex => {
-  const collectionInIndex = collection(collectionIndex);
-  const articles = collectionInIndex.find(
-    `[data-testid="${COLLECTION_ITEM_SELECTOR}"]`
-  );
-  return articles;
+  const collectionSelected = collection(collectionIndex);
+  return collectionSelected.find(`[data-testid="${COLLECTION_ITEM_SELECTOR}"]`);
 };
 
 export const allCollectionDropZones = collectionIndex => {
-  const collectionInIndex = collection(collectionIndex);
-  const dropZones = collectionInIndex.find(
-    `[data-testid="${DROP_ZONE_SELECTOR}"]`
-  );
-  return dropZones;
+  const collectionSelected = collection(collectionIndex);
+  return collectionSelected.find(`[data-testid="${DROP_ZONE_SELECTOR}"]`);
 };
 
 export const collectionItem = (collectionIndex, itemIndex = 0) =>
@@ -92,25 +81,25 @@ export const collectionItemKicker = (collectionIndex, itemIndex = 0) =>
   collectionItem(collectionIndex, itemIndex).find(
     `[data-testid="${KICKER_SELECTOR}"]`
   );
+
 export const collectionDiscardButton = collectionIndex =>
   collection(collectionIndex).find(
     `[data-testid="${COLLECTION_DISCARD_BUTTON}"]`
   );
 
-export const collectionItemHoverZone = maybeGetNth(
-  select(COLLECTION_ITEM_SELECTOR, HOVER_OVERLAY_SELECTOR)
-);
-
-export const collectionItemDeleteButton = maybeGetNth(
-  select(COLLECTION_ITEM_SELECTOR, DELETE_BUTTON)
-);
+export const collectionItemDeleteButton = (collectionIndex, itemIndex = 0) =>
+  collectionItem(collectionIndex, itemIndex).find(
+    `[data-testid="${DELETE_BUTTON}"]`
+  );
 
 // Edit form //
 export const editForm = maybeGetNth(select(EDIT_FORM));
+
 export const editFormHeadlineInput = maybeGetNth(
   select(EDIT_FORM, EDIT_FORM_HEADLINE_FIELD)
 );
-export const editFormSaveButton = select(EDIT_FORM_SAVE_BUTTON);
+
+export const editFormSaveButton = maybeGetNth(select(EDIT_FORM_SAVE_BUTTON));
 
 export const editFormBreakingNewsToggle = maybeGetNth(
   select(EDIT_FORM_BREAKING_NEWS_TOGGLE)

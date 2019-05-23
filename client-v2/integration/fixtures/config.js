@@ -15,12 +15,7 @@ module.exports = {
       type: 'fixed/small/slow-IV'
     },
     'e59785e9-ba82-48d8-b79a-0a80b2f9f808': {
-      displayName: 'Second Collection',
-      metadata: [
-        {
-          type: 'Branded'
-        }
-      ],
+      displayName: 'Second Collection 2',
       type: 'fixed/large/slow-XIV'
     }
   }

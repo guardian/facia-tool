@@ -18,10 +18,9 @@ fixture`Fronts edit`.page`http://localhost:3456/v2/editorial`
   .beforeEach(async t => await t.eval(() => (window.IS_INTEGRATION = true)))
   .after(teardown);
 
-// ? Why can the headline input be defined ahead of the test but not the save button?
 test('Metadata edits are persisted in collections- headline', async t => {
-  const firstCollectionStory = await collectionItem(0, 0);
-  const headlineInput = await editFormHeadlineInput();
+  const firstCollectionStory = collectionItem(0, 0);
+  const headlineInput = editFormHeadlineInput();
   await t
     .click(firstCollectionStory)
     .click(headlineInput)
@@ -33,8 +32,8 @@ test('Metadata edits are persisted in collections- headline', async t => {
 });
 
 test('Metadata edits are persisted in clipboard - headline', async t => {
-  const firstClipboardStory = await clipboardItem(0);
-  const headlineInput = await editFormHeadlineInput();
+  const firstClipboardStory = clipboardItem(0);
+  const headlineInput = editFormHeadlineInput();
   await t
     .click(firstClipboardStory)
     .click(headlineInput)
@@ -45,9 +44,9 @@ test('Metadata edits are persisted in clipboard - headline', async t => {
     .eql('A better headline');
 });
 
-test.only('Metadata edits are persisted in collections- "breaking news" toggle button', async t => {
-  const firstCollectionStory = await collectionItem(0, 0);
-  const breakingNewsToggle = await editFormBreakingNewsToggle();
+test('Metadata edits are persisted in collections- "breaking news" toggle button', async t => {
+  const firstCollectionStory = collectionItem(0, 0);
+  const breakingNewsToggle = editFormBreakingNewsToggle();
   await t
     .click(firstCollectionStory)
     .click(breakingNewsToggle)
@@ -56,10 +55,10 @@ test.only('Metadata edits are persisted in collections- "breaking news" toggle b
     .eql(`Breaking news`);
 });
 
-test.only('Metadata edits are persisted in clipboard- "breaking news" toggle button', async t => {
-  const firstClipboardStory = await clipboardItem(0);
-  const breakingNewsToggle = await editFormBreakingNewsToggle();
-  const firstCollectionFirstDropZone = await collectionDropZone(0, 0);
+test('Metadata edits are persisted in clipboard- "breaking news" toggle button', async t => {
+  const firstClipboardStory = clipboardItem(0);
+  const breakingNewsToggle = editFormBreakingNewsToggle();
+  const firstCollectionFirstDropZone = collectionDropZone(0, 0);
   await t
     .click(firstClipboardStory)
     .click(breakingNewsToggle)

@@ -13,14 +13,16 @@ import {
   previouslyItem,
   clipboardWrapper,
   clipboardItem,
+  hoverOverlay,
   collection,
   collectionItem,
   collectionDropZone,
+  collectionItemHoverZone,
   allCollectionItems,
   allCollectionDropZones,
   collectionItemDeleteButton,
   collectionDiscardButton,
-  clipboardHoverActionsWrapper,
+  // clipboardHoverActionsWrapper,
   clipboardItemDeleteButton
 } from '../selectors';
 
@@ -86,31 +88,31 @@ test('Drag from clipboard to collection', async t => {
 });
 
 test('Deleting an article from clipboard works', async t => {
-  // const actionsWrapper = await clipboardHoverActionsWrapper();
-  // console.log(actionsWrapper);
   const clipboardStory = await clipboardItem();
   const clipboardStoryCount = await clipboardItem().count;
   const deleteButton = await clipboardItemDeleteButton();
-  //test cafe is interpreting the CSS correctly... visibility:hidden is set on these elements, and yet I can see them. WHY?
   await t
-    .hover(clipboardStory)
-    .debug()
+    .hover(clipboardStory, { speed: 0.7 })
     .click(deleteButton)
     .expect(clipboardItem().count)
     .eql(clipboardStoryCount - 1);
 });
 
-test('Deleting an article from a collection works', async t => {});
-
-test.only('Discarding a collection words', async t => {
-  const secondCollection = await collection(1);
-  const numberCollections = await collection().count;
-  const discardButton = await collectionDiscardButton(1);
+test('Deleting an article from a collection works', async t => {
+  const firstCollectionItem = await collectionItem(0, 0);
+  const firstCollectionStoryCount = await allCollectionItems(0).count;
   await t
-    .click(discardButton)
-    .debug()
-    .expect(collection().count)
-    .eql(numberCollections - 1);
+    .hover(firstCollectionItem, { speed: 0.7 }) // mouse speed needs to be slowed down for hover to trigger correctly
+    .click(collectionItemDeleteButton(0, 0))
+    .expect(allCollectionItems(0).count)
+    .eql(firstCollectionStoryCount - 1);
+});
+
+test('Discarding changes to a collection works', async t => {
+  await t
+    .click(collectionDiscardButton(1))
+    .expect(allCollectionItems(1).count) // discarding overwrites a collection's draft content with its live content
+    .eql(0);
 });
 
 test('Snap Links - Guardian', async t => {
