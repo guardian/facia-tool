@@ -22,7 +22,6 @@ import {
   allCollectionDropZones,
   collectionItemDeleteButton,
   collectionDiscardButton,
-  // clipboardHoverActionsWrapper,
   clipboardItemDeleteButton
 } from '../selectors';
 
@@ -101,9 +100,10 @@ test('Deleting an article from clipboard works', async t => {
 test('Deleting an article from a collection works', async t => {
   const firstCollectionItem = await collectionItem(0, 0);
   const firstCollectionStoryCount = await allCollectionItems(0).count;
+  const deleteButton = await collectionItemDeleteButton(0, 0);
   await t
     .hover(firstCollectionItem, { speed: 0.7 }) // mouse speed needs to be slowed down for hover to trigger correctly
-    .click(collectionItemDeleteButton(0, 0))
+    .click(deleteButton)
     .expect(allCollectionItems(0).count)
     .eql(firstCollectionStoryCount - 1);
 });
