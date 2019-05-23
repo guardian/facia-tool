@@ -182,10 +182,12 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
               label={'Collapse all'}
             />
             <OverviewToggleContainer>
-              <OverviewHeading>{this.props.overviewIsOpen ? 'Hide overview' : 'Overview'}</OverviewHeading>
+              <OverviewHeading>
+                {this.props.overviewIsOpen ? 'Hide overview' : 'Overview'}
+              </OverviewHeading>
               <ButtonCircularCaret
                 style={{
-                  margin: this.props.overviewIsOpen ? '0' : '10px'
+                  margin: '0'
                 }}
                 openDir="right"
                 active={this.props.overviewIsOpen}

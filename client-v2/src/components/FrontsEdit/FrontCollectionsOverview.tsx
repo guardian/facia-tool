@@ -40,7 +40,7 @@ const ContainerBody = styled.div`
 const FrontCollectionsOverview = ({
   id,
   front,
-  browsingStage,
+  browsingStage
 }: FrontCollectionOverviewProps) => (
   <Container setBack isClosed={false}>
     <ContainerHeadingPinline>'Overview'</ContainerHeadingPinline>
