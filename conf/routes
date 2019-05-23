@@ -101,4 +101,8 @@ GET         /v2/*path                                controllers.V2App.index(pat
 # Grid Usages
 POST        /api/usage                               controllers.GridProxy.addUsage()
 
+# Editions
+POST        /editions-api/issues/                    controllers.EditionsController.postIssue
+POST        /editions-api/available-editions/        controllers.EditionsController.getAvailableEditions
+
 

@@ -52,7 +52,6 @@ class editionTemplateTest extends FreeSpec with Matchers {
       editionTemplateFronts(10) should matchPattern { case FrontTemplate("review/review", _, _, _) => }
       editionTemplateFronts(11) should matchPattern { case FrontTemplate("feast/feast", _, _, _) => }
       editionTemplateFronts(12) should matchPattern { case FrontTemplate("special/special", _, _, _) => }
-
     }
   }
 }

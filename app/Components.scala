@@ -10,7 +10,10 @@ import play.filters.cors.CORSConfig
 import play.filters.cors.CORSConfig.Origins
 import filters._
 import router.Routes
+import scalikejdbc.DB
+import scalikejdbc.config.DBs
 import services._
+import services.editions.EditionsDB
 import slices.{Containers, FixedContainers}
 import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
@@ -18,11 +21,13 @@ import updates.{BreakingNewsUpdate, StructuredLogger}
 import util.{Acl, Encryption}
 
 class AppComponents(context: Context) extends BaseFaciaControllerComponents(context) {
+  DBs.setupAll()
   val isTest: Boolean = context.environment.mode == Mode.Test
   val isProd: Boolean = context.environment.mode == Mode.Prod
   val isDev: Boolean = context.environment.mode == Mode.Dev
   val config = new ApplicationConfiguration(configuration, isProd)
   val awsEndpoints = new AwsEndpoints(config)
+  val editionsDb = new EditionsDB()
   val dynamo = new Dynamo(awsEndpoints, config)
   val acl = new Acl(permissions)
   val frontsApi = new FrontsApi(config, awsEndpoints)
@@ -47,6 +52,7 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   override lazy val httpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, sourceMapper, Some(router))
 
 //  Controllers
+  val editions = new EditionsController(editionsDb, this)
   val collection = new CollectionController(acl, structuredLogger, updateManager, press, this)
   val defaults = new DefaultsController(acl, isDev, this)
   val faciaCapiProxy = new FaciaContentApiProxy(this)
@@ -76,7 +82,7 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   override lazy val assets: Assets = new controllers.Assets(httpErrorHandler, assetsMetadata)
 
   val router: Router = new Routes(httpErrorHandler, status, pandaAuth, v2Assets, uncachedAssets, views, faciaTool,
-    pressController, faciaToolV2, defaults, userDataController, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects, troubleshoot, v2App, gridProxy)
+    pressController, faciaToolV2, defaults, userDataController, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects, troubleshoot, v2App, gridProxy, editions)
 
 
   override lazy val httpFilters = Seq(

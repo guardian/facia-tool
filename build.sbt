@@ -98,7 +98,12 @@ libraryDependencies ++= Seq(
     "org.json4s" %% "json4s-native" % json4sVersion,
     "org.json4s" %% "json4s-jackson" % json4sVersion,
     "org.scalatest" %% "scalatest" % "3.0.5" % "test",
-    "com.typesafe.play" %% "play-json-joda" % "2.6.9"
+    "com.typesafe.play" %% "play-json-joda" % "2.6.9",
+
+    "org.postgresql"           %  "postgresql"                   % "42.2.5",
+    "org.scalikejdbc"          %% "scalikejdbc"                  % "3.1.0",
+    "org.scalikejdbc"          %% "scalikejdbc-config"           % "3.1.0",
+    "org.scalikejdbc"          %% "scalikejdbc-play-initializer" % "2.6.0-scalikejdbc-3.1"
 
 )
 

@@ -1,4 +1,8 @@
-package editions
+package model
+
+import java.time.ZonedDateTime
+import java.time.temporal.ChronoField
+
 import org.joda.time.DateTime
 
 
@@ -18,14 +22,14 @@ case class CapiQuery(query: String) extends AnyVal
 
 import WeekDay._
 trait Periodicity {
-  def isValid(date: DateTime): Boolean
+  def isValid(date: ZonedDateTime): Boolean
 }
 case class Daily() extends Periodicity {
-  def isValid(date: DateTime) = true
+  def isValid(date: ZonedDateTime) = true
 }
 
 case class WeekDays(days: List[WeekDay]) extends Periodicity {
-  def isValid(date: DateTime) = days.exists(WeekDayToInt(_) == date.dayOfWeek().get)
+  def isValid(date: ZonedDateTime) = days.exists(WeekDayToInt(_) == date.getDayOfWeek.get(ChronoField.DAY_OF_WEEK))
 }
 
 case class CollectionTemplate(
@@ -43,24 +47,12 @@ case class FrontTemplate(
 )
 
 case class EditionTemplate(
-  name: String,
   fronts: List[(FrontTemplate, Periodicity)],
   availability: Periodicity
 )
+
 case class EditionTemplateForDate(
-  name: String,
   fronts: List[FrontTemplate],
 )
-
-object EditionTemplateHelpers {
-  def generateEditionTemplate(date: DateTime, edition: EditionTemplate): Option[EditionTemplateForDate] = {
-    edition.availability.isValid(date) match {
-      case false => None
-      case true => {
-        Some(EditionTemplateForDate(edition.name, edition.fronts.filter(_._2.isValid(date)).map(_._1)))
-      }
-    }
-  }
-}
 
 
