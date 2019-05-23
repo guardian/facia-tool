@@ -13,6 +13,7 @@ const FeedSectionContainer = styled('div')`
 
 const FeedSectionContent = styled(SectionContent)`
   padding-right: 0px;
+  margin-top: 10px;
 `;
 
 const FeedWrapper = styled('div')`

@@ -53,7 +53,6 @@ const SectionContentMetaContainer = styled('div')`
   display: flex;
   flex-shrink: 0;
   justify-content: flex-end;
-  margin-bottom: 10px;
 `;
 
 const StageSelectButtons = styled('div')`
@@ -70,6 +69,10 @@ const CollapseAllButton = styled(ButtonRoundedWithLabel)`
     background-color: ${({ theme }) =>
       theme.shared.base.colors.backgroundColorFocused};
   }
+  margin-right: 10px;
+  font-size: 12px;
+  margin-bottom: 10px;
+  margin-top: 10px;
 `;
 
 const FrontsContainer = styled('div')`
@@ -81,6 +84,15 @@ const OverviewToggleContainer = styled('div')`
   font-size: 13px;
   font-weight: bold;
   margin-right: 190px;
+  padding-left: 10px;
+  padding-top: 3px;
+  border-left: ${({ theme }) =>
+    `solid 1px  ${theme.shared.colors.greyVeryLight}`}
+  padding-top: 13px;
+`;
+
+const OverviewHeading = styled('span')`
+  margin-right: 5px;
 `;
 
 interface FrontsContainerProps {
@@ -170,7 +182,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
               label={'Collapse all'}
             />
             <OverviewToggleContainer>
-              {this.props.overviewIsOpen ? 'Hide overview' : 'Overview'}
+              <OverviewHeading>{this.props.overviewIsOpen ? 'Hide overview' : 'Overview'}</OverviewHeading>
               <ButtonCircularCaret
                 style={{
                   margin: this.props.overviewIsOpen ? '0' : '10px'
