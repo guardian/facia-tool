@@ -3,6 +3,7 @@ import { KeyboardActionMap, ApplicationFocusStates } from 'keyboard';
 import { Dispatch } from 'types/Store';
 import { insertClipboardArticleFragment } from 'actions/Clipboard';
 import { createArticleFragment } from 'shared/actions/ArticleFragments';
+import { RefDrop } from 'util/collectionUtils';
 
 const paste: KeyboardActionMap = {
   clipboard: (_: ApplicationFocusStates) => async (dispatch: Dispatch) => {
@@ -11,11 +12,14 @@ const paste: KeyboardActionMap = {
         throw new Error('No navigator available on paste');
       }
       // A temporary any here pending proper typings
-      const content = await (navigator as any).clipboard.readText();
+      const content: string = await (navigator as any).clipboard.readText();
       if (!content) {
         return;
       }
-      const articleFragment = await dispatch(createArticleFragment(content));
+      const contentData: RefDrop = { type: 'REF', data: content };
+      const articleFragment = await dispatch(
+        createArticleFragment(contentData)
+      );
       if (!articleFragment) {
         return;
       }
