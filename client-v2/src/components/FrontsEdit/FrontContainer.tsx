@@ -4,13 +4,8 @@ import startCase from 'lodash/startCase';
 import { styled } from 'constants/theme';
 import { Dispatch } from 'types/Store';
 import { fetchLastPressed } from 'actions/Fronts';
-import { updateCollection, closeCollections } from 'actions/Collections';
-import {
-  editorCloseFront,
-  selectIsFrontOverviewOpen,
-  editorOpenOverview,
-  editorCloseOverview
-} from 'bundles/frontsUIBundle';
+import { updateCollection } from 'actions/Collections';
+import { editorCloseFront } from 'bundles/frontsUIBundle';
 import Button from 'shared/components/input/ButtonDefault';
 import { frontStages } from 'constants/fronts';
 import { FrontConfig } from 'types/FaciaApi';
@@ -23,10 +18,6 @@ import SectionContent from '../layout/SectionContent';
 import { CollectionItemSets, Collection } from 'shared/types/Collection';
 import { toTitleCase } from 'util/stringUtils';
 import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
-import ButtonRoundedWithLabel from 'shared/components/input/ButtonRoundedWithLabel';
-import { DownCaretIcon } from 'shared/components/icons/Icons';
-import { theme as sharedTheme } from 'shared/constants/theme';
-import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 
 const FrontHeader = styled(SectionHeader)`
   display: flex;
@@ -49,50 +40,14 @@ const FrontsHeaderText = styled('span')`
   color: ${({ theme }) => theme.shared.colors.blackDark};
 `;
 
-const SectionContentMetaContainer = styled('div')`
-  display: flex;
-  flex-shrink: 0;
-  justify-content: flex-end;
-`;
-
 const StageSelectButtons = styled('div')`
   color: ${({ theme }) => theme.shared.colors.blackDark};
   padding: 0px 30px;
 `;
 
-const CollapseAllButton = styled(ButtonRoundedWithLabel)`
-  & svg {
-    transform: rotate(180deg);
-    vertical-align: middle;
-  }
-  :hover {
-    background-color: ${({ theme }) =>
-      theme.shared.base.colors.backgroundColorFocused};
-  }
-  margin-right: 10px;
-  font-size: 12px;
-  margin-bottom: 10px;
-  margin-top: 10px;
-`;
-
 const FrontsContainer = styled('div')`
   height: 100%;
   transform: translate3d(0, 0, 0);
-`;
-
-const OverviewToggleContainer = styled('div')`
-  font-size: 13px;
-  font-weight: bold;
-  margin-right: 190px;
-  padding-left: 10px;
-  padding-top: 3px;
-  border-left: ${({ theme }) =>
-    `solid 1px  ${theme.shared.colors.greyVeryLight}`}
-  padding-top: 13px;
-`;
-
-const OverviewHeading = styled('span')`
-  margin-right: 5px;
 `;
 
 interface FrontsContainerProps {
@@ -102,13 +57,10 @@ interface FrontsContainerProps {
 type FrontsComponentProps = FrontsContainerProps & {
   selectedFront: FrontConfig;
   alsoOn: { [id: string]: AlsoOnDetail };
-  overviewIsOpen: boolean;
   frontsActions: {
     fetchLastPressed: (frontId: string) => void;
     editorCloseFront: (frontId: string) => void;
     updateCollection: (collection: Collection) => void;
-    closeAllCollections: (collections: string[]) => void;
-    toggleOverview: (open: boolean) => void;
   };
 };
 
@@ -170,37 +122,6 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
           </FrontHeader>
         </>
         <SectionContent direction="column">
-          <SectionContentMetaContainer>
-            <CollapseAllButton
-              onClick={e => {
-                e.preventDefault();
-                this.props.frontsActions.closeAllCollections(
-                  this.props.selectedFront.collections
-                );
-              }}
-              icon={<DownCaretIcon fill={sharedTheme.base.colors.text} />}
-              label={'Collapse all'}
-            />
-            <OverviewToggleContainer>
-              <OverviewHeading>
-                {this.props.overviewIsOpen ? 'Hide overview' : 'Overview'}
-              </OverviewHeading>
-              <ButtonCircularCaret
-                style={{
-                  margin: '0'
-                }}
-                openDir="right"
-                active={this.props.overviewIsOpen}
-                preActive={false}
-                onClick={() =>
-                  this.props.frontsActions.toggleOverview(
-                    !this.props.overviewIsOpen
-                  )
-                }
-                small={true}
-              />
-            </OverviewToggleContainer>
-          </SectionContentMetaContainer>
           {this.props.selectedFront && (
             <Front
               id={this.props.frontId}
@@ -219,8 +140,7 @@ const createMapStateToProps = () => {
   const alsoOnSelector = createAlsoOnSelector();
   return (state: State, props: FrontsContainerProps) => ({
     selectedFront: getFront(state, { frontId: props.frontId }),
-    alsoOn: alsoOnSelector(state, { frontId: props.frontId }),
-    overviewIsOpen: selectIsFrontOverviewOpen(state, props.frontId)
+    alsoOn: alsoOnSelector(state, { frontId: props.frontId })
   });
 };
 
@@ -232,15 +152,7 @@ const mapDispatchToProps = (
     fetchLastPressed: (id: string) => dispatch(fetchLastPressed(id)),
     updateCollection: (collection: Collection) =>
       dispatch(updateCollection(collection)),
-    editorCloseFront: (id: string) => dispatch(editorCloseFront(id)),
-    closeAllCollections: (collections: string[]) =>
-      dispatch(closeCollections(collections)),
-    toggleOverview: (open: boolean) =>
-      dispatch(
-        open
-          ? editorOpenOverview(props.frontId)
-          : editorCloseOverview(props.frontId)
-      )
+    editorCloseFront: (id: string) => dispatch(editorCloseFront(id))
   }
 });
 

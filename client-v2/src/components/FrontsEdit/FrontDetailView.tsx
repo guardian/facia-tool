@@ -18,13 +18,13 @@ import { State } from 'types/State';
 interface ContainerProps {
   id: string;
   browsingStage: CollectionItemSets;
-  overviewIsOpen: boolean;
 }
 
 interface ComponentProps extends ContainerProps {
   selectedArticleFragment: { id: string; isSupporting: boolean } | void;
   updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) => void;
   clearArticleFragmentSelection: (id: string) => void;
+  overviewIsOpen: boolean;
 }
 
 const FrontsDetailView = ({
