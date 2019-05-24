@@ -91,7 +91,7 @@ test('Deleting an article from clipboard works', async t => {
   const clipboardStoryCount = await clipboardItem().count;
   const deleteButton = await clipboardItemDeleteButton();
   await t
-    .hover(clipboardStory, { speed: 0.7 })
+    .hover(clipboardStory)
     .click(deleteButton)
     .expect(clipboardItem().count)
     .eql(clipboardStoryCount - 1);
@@ -102,7 +102,7 @@ test('Deleting an article from a collection works', async t => {
   const firstCollectionStoryCount = await allCollectionItems(0).count;
   const deleteButton = await collectionItemDeleteButton(0, 0);
   await t
-    .hover(firstCollectionItem, { speed: 0.7 }) // mouse speed needs to be slowed down for hover to trigger correctly
+    .hover(firstCollectionItem)
     .click(deleteButton)
     .expect(allCollectionItems(0).count)
     .eql(firstCollectionStoryCount - 1);
