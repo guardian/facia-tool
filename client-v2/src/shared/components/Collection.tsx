@@ -21,7 +21,9 @@ import {
 } from '../selectors/shared';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 import FadeIn from './animation/FadeIn';
-import ContentContainer from './layout/ContentContainer';
+import ContentContainer, {
+  contentContainerMargin
+} from './layout/ContentContainer';
 import { css } from 'styled-components';
 import { events } from 'services/GA';
 import CollectionMetaContainer from './collection/CollectionMetaContainer';
@@ -109,6 +111,16 @@ const ItemCountMeta = styled(CollectionMetaBase)`
   flex: 0;
 `;
 
+const CollectionHeadingSticky = styled(ContainerHeadingPinline)`
+  position: sticky;
+  top: 0;
+  background-color: ${({ theme }) => theme.shared.base.colors.backgroundColor};
+  box-shadow: 0 -1px 0 ${({ theme }) => theme.shared.base.colors.text};
+  z-index: 20;
+  margin: 0 -${contentContainerMargin};
+  padding: 0 ${contentContainerMargin};
+`;
+
 const CollectionHeadlineWithConfigContainer = styled('div')`
   flex-grow: 1;
   display: flex;
@@ -118,6 +130,7 @@ const CollectionHeadlineWithConfigContainer = styled('div')`
 
 const CollectionHeadingText = styled('span')<{ isLoading: boolean }>`
   display: inline-block;
+  width: 100%;
   white-space: nowrap;
   ${({ isLoading, theme }) =>
     isLoading &&
@@ -126,6 +139,8 @@ const CollectionHeadingText = styled('span')<{ isLoading: boolean }>`
     `} white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  border-bottom: 1px solid
+    ${({ theme }) => theme.shared.base.colors.borderColor};
 `;
 
 const CollectionToggleContainer = styled('div')`
@@ -209,7 +224,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
         onBlur={handleBlur}
         hasMultipleFrontsOpen={hasMultipleFrontsOpen}
       >
-        <ContainerHeadingPinline tabIndex={-1}>
+        <CollectionHeadingSticky setBack tabIndex={-1}>
           <CollectionHeadlineWithConfigContainer>
             <CollectionHeadingText isLoading={!collection} title={displayName}>
               {displayName}
@@ -238,7 +253,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
               {headlineContent}
             </HeadlineContentContainer>
           ) : null}
-        </ContainerHeadingPinline>
+        </CollectionHeadingSticky>
         <DragIntentContainer
           delay={300}
           onIntentConfirm={this.toggleVisibility}

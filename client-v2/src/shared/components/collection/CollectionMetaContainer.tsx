@@ -8,7 +8,5 @@ export default styled('div')`
   font-weight: normal;
   justify-content: space-between;
   margin-bottom: 0.5em;
-  border-top: ${({ theme }) =>
-    `1px solid ${theme.shared.base.colors.borderColor}`};
   cursor: pointer;
 `;
