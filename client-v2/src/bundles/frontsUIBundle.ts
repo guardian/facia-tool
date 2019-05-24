@@ -305,11 +305,9 @@ const selectEditorFavouriteFrontIdsByPriority = (
 ): string[] =>
   state.editor.favouriteFrontIdsByPriority[priority] || defaultFavouriteFronts;
 
-const selectHasMultipleFrontsOpen = createSelector(
+const selectOpenFrontsCount = createSelector(
   selectEditorFrontIdsByPriority,
-  frontIdsByPriority => {
-    return frontIdsByPriority.length > 1;
-  }
+  frontIdsByPriority => frontIdsByPriority.length
 );
 
 const selectEditorArticleFragment = <T extends { editor: State }>(
@@ -596,7 +594,7 @@ export {
   editorCloseAllOverviews,
   selectIsClipboardOpen,
   selectIsFrontOverviewOpen,
-  selectHasMultipleFrontsOpen
+  selectOpenFrontsCount
 };
 
 export default reducer;

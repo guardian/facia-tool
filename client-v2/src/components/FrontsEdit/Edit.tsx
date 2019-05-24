@@ -9,7 +9,8 @@ import {
   editorFavouriteFront,
   editorUnfavouriteFront,
   selectEditorFrontIdsByPriority,
-  selectIsCurrentFrontsMenuOpen
+  selectIsCurrentFrontsMenuOpen,
+  selectOpenFrontsCount
 } from 'bundles/frontsUIBundle';
 import { State } from 'types/State';
 import { ActionError } from 'types/Action';
@@ -21,6 +22,7 @@ import SectionsContainer from '../layout/SectionsContainer';
 import FrontsMenu from './FrontsMenu';
 import PressFailAlert from '../PressFailAlert';
 import { frontsContainerId, createFrontId } from 'util/editUtils';
+import { MoreIcon } from 'shared/components/icons/Icons';
 
 interface Props {
   match: match<{ priority: string }>;
@@ -32,6 +34,7 @@ interface Props {
   editorUnfavouriteFront: (frontId: string, priority: string) => void;
   getFrontsConfig: () => void;
   isCurrentFrontsMenuOpen: boolean;
+  feedFontSize: string;
 }
 
 const FrontsEditContainer = styled('div')`
@@ -42,16 +45,34 @@ const FrontsEditContainer = styled('div')`
 `;
 
 const SingleFrontContainer = styled('div')`
+  flex: 1 1 auto;
   height: 100%;
+  min-width: 626px;
+  max-width: 1000px;
+`;
+
+// This is just to stop the feed / clipboard from filling the screen when no fronts
+// are selected
+const NoFrontContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 24px;
+  color: #aaa;
+  width: 50vw;
 `;
 
 const FeedContainer = styled(SectionContainer)`
+  flex: 1 2 auto;
   height: 100%;
+  max-width: 1000px;
 `;
 
 const FrontsContainer = styled(SectionContainer)<{
   makeRoomForExtraHeader: boolean;
 }>`
+  display: flex;
+  flex: 1 1 auto;
   height: 100%;
   overflow-y: hidden;
   overflow-x: scroll;
@@ -75,17 +96,27 @@ class FrontsEdit extends React.Component<Props> {
         <PressFailAlert staleFronts={this.props.staleFronts} />
         <SectionsContainer>
           <FeedContainer>
-            <FeedSection />
+            <FeedSection fontSize={this.props.feedFontSize} />
           </FeedContainer>
           <FrontsContainer
             id={frontsContainerId}
             makeRoomForExtraHeader={this.props.isCurrentFrontsMenuOpen}
           >
-            {this.props.frontIds.map(id => (
-              <SingleFrontContainer key={id} id={createFrontId(id)}>
-                <FrontContainer frontId={id} />
-              </SingleFrontContainer>
-            ))}
+            {this.props.frontIds.length ? (
+              this.props.frontIds.map(id => (
+                <SingleFrontContainer key={id} id={createFrontId(id)}>
+                  <FrontContainer frontId={id} />
+                </SingleFrontContainer>
+              ))
+            ) : (
+              <NoFrontContainer>
+                <span>
+                  Select a front with the{' '}
+                  <MoreIcon verticalAlign="bottom" fill="#aaa" size={'xxl'} />{' '}
+                  button
+                </span>
+              </NoFrontContainer>
+            )}
           </FrontsContainer>
         </SectionsContainer>
         <FrontsMenu
@@ -117,7 +148,11 @@ const mapStateToProps = (state: State, props: Props) => ({
     state,
     props.match.params.priority || ''
   ),
-  isCurrentFrontsMenuOpen: selectIsCurrentFrontsMenuOpen(state)
+  isCurrentFrontsMenuOpen: selectIsCurrentFrontsMenuOpen(state),
+  feedFontSize:
+    selectOpenFrontsCount(state, props.match.params.priority) > 1
+      ? '13px'
+      : '15px'
 });
 
 const mapDispatchToProps = (dispatch: Dispatch, props: Props) => ({

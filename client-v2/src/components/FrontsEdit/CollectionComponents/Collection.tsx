@@ -23,7 +23,6 @@ import {
   selectIsCollectionOpen,
   editorOpenCollections,
   editorCloseCollections,
-  selectHasMultipleFrontsOpen,
   selectEditorArticleFragment
 } from 'bundles/frontsUIBundle';
 import { getArticlesForCollections } from 'actions/Collections';
@@ -59,7 +58,6 @@ type CollectionProps = CollectionPropsBeforeState & {
   isCollectionLocked: boolean;
   isEditFormOpen: boolean;
   isOpen: boolean;
-  hasMultipleFrontsOpen: boolean;
   onChangeOpenState: (id: string, isOpen: boolean) => void;
   fetchPreviousCollectionArticles: (id: string) => void;
 };
@@ -108,7 +106,6 @@ class Collection extends React.Component<CollectionProps> {
       isCollectionLocked,
       isOpen,
       onChangeOpenState,
-      hasMultipleFrontsOpen,
       isEditFormOpen,
       discardDraftChangesToCollection: discardDraftChanges
     } = this.props;
@@ -126,7 +123,6 @@ class Collection extends React.Component<CollectionProps> {
         isUneditable={isUneditable}
         isLocked={isCollectionLocked}
         isOpen={isOpen}
-        hasMultipleFrontsOpen={hasMultipleFrontsOpen}
         onChangeOpenState={() => onChangeOpenState(id, isOpen)}
         headlineContent={
           hasUnpublishedChanges &&
@@ -221,7 +217,6 @@ const createMapStateToProps = () => {
         collectionId: id
       }),
       isOpen: selectIsCollectionOpen(state, id),
-      hasMultipleFrontsOpen: selectHasMultipleFrontsOpen(state, priority),
       isEditFormOpen:
         !!selectedArticleFragmentData &&
         selectIsArticleInCollection(state.shared, {
