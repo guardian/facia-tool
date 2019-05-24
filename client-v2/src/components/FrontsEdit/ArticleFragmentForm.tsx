@@ -195,15 +195,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
         <CollectionHeadingPinline>
           Edit
           <ButtonContainer>
-            <Button
-              priority="primary"
-              onClick={onCancel}
-              type="button"
-              size="l"
-            >
+            <Button onClick={onCancel} type="button" size="l">
               Cancel
             </Button>
             <Button
+              priority="primary"
               onClick={handleSubmit}
               disabled={pristine || !articleExists}
               size="l"
