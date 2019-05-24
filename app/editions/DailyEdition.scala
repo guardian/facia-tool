@@ -12,7 +12,7 @@ object DailyEdition {
       FrontSport.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontTravel.front -> WeekDays(List(WeekDay.Sat)),
       FrontArts.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
-      FrontFridayArts.front -> WeekDays.(List(WeekDay.Fri))
+      FrontFridayArts.front -> WeekDays.(List(WeekDay.Fri)),
       FrontFeatures.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
       FrontFilm.front -> WeekDays(List(WeekDay.Fri)),
       FrontMusic.front -> WeekDays(List(WeekDay.Fri)),
@@ -99,7 +99,7 @@ object FrontMoney {
 }
 
 object FrontMedia {
-  val collectionEducation = CollectionTemplate(
+  val collectionMedia = CollectionTemplate(
     name = "Media",
     prefill = CapiQuery("???"),
     presentation = DailyEdition.defaultCollectionPresentation
@@ -205,12 +205,12 @@ object FrontFilm {
 object FrontFeatures {
   val collectionDepartments = CollectionTemplate(
     name = "G2 Departments",
-    prefil = CapiQuery("???"),
+    prefill = CapiQuery("???"),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val front = FrontTemplate(
     name = "features/features",
-    collections = List(collectionFeatures, collectionDepartments),
+    collections = List(collectionDepartments),
     presentation = DailyEdition.defaultFrontPresentation
   )
 }
@@ -243,7 +243,7 @@ object FrontFridayArts {
   )
   val front = FrontTemplate(
     name = "arts/artsfriday",
-    collections = List(collectionArts, collectionTvAndRadio),
+    collections = List(collectionArts),
     presentation = DailyEdition.defaultFrontPresentation
   )
 }
