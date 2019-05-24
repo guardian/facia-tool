@@ -43,7 +43,7 @@ const fontSizeMap = {
 const colorMap = {
   disabled: {
     default: theme.colors.white,
-    primary: theme.colors.white,
+    primary: theme.colors.greyLight,
     muted: theme.colors.blackLight
   },
   selected: {
@@ -61,7 +61,7 @@ const colorMap = {
 const backgroundMap = {
   disabled: {
     default: theme.colors.greyMediumLight,
-    primary: theme.colors.orangeFaded,
+    primary: theme.colors.whiteMedium,
     muted: theme.colors.greyLight
   },
   selected: {
@@ -138,7 +138,7 @@ export default styled(`button`)`
   :disabled:hover {
     cursor: not-allowed;
   }
-  :hover {
+  :hover:enabled {
     background: ${mapAction(backgroundHoverMap)};
     cursor: pointer;
   }
