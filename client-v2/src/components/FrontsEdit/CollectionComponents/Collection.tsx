@@ -130,14 +130,14 @@ class Collection extends React.Component<CollectionProps> {
         onChangeOpenState={() => onChangeOpenState(id, isOpen)}
         headlineContent={
           hasUnpublishedChanges &&
-          canPublish && (
+          canPublish &&
+          !isEditFormOpen && (
             <React.Fragment>
               <Button
                 size="l"
                 priority="default"
                 onClick={() => discardDraftChanges(id)}
                 tabIndex={-1}
-                disabled={isEditFormOpen}
                 title={
                   isEditFormOpen
                     ? 'You cannot discard changes to this collection whilst the edit form is open.'
@@ -151,7 +151,6 @@ class Collection extends React.Component<CollectionProps> {
                 priority="primary"
                 onClick={() => publish(id, frontId)}
                 tabIndex={-1}
-                disabled={isEditFormOpen}
                 title={
                   isEditFormOpen
                     ? 'You cannot launch this collection whilst the edit form is open.'
