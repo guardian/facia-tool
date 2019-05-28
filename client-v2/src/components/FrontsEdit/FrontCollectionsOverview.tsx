@@ -39,7 +39,11 @@ const Container = styled(ContentContainer)<ContainerProps>`
   flex-direction: column;
   flex: 1;
   margin-left: 10px;
-  ${({ isClosed }) => (isClosed ? 'padding: 0; height: 100%' : 'width: 180px;')}
+  ${({ isClosed }) => (isClosed ? 'padding: 0; height: 100%' : '')}
+`;
+
+const ContainerBody = styled.div`
+  width: 130px;
 `;
 
 const FrontCollectionsOverview = ({
@@ -62,15 +66,18 @@ const FrontCollectionsOverview = ({
         onClick={() => toggleOverview(!overviewIsOpen)}
       />
     </ContainerHeadingPinline>
-    {overviewIsOpen &&
-      front.collections.map(collectionId => (
-        <CollectionOverview
-          frontId={id}
-          key={collectionId}
-          collectionId={collectionId}
-          browsingStage={browsingStage}
-        />
-      ))}
+    {overviewIsOpen && (
+      <ContainerBody>
+        {front.collections.map(collectionId => (
+          <CollectionOverview
+            frontId={id}
+            key={collectionId}
+            collectionId={collectionId}
+            browsingStage={browsingStage}
+          />
+        ))}
+      </ContainerBody>
+    )}
   </Container>
 );
 
