@@ -5,7 +5,6 @@ interface IconProps {
   fill?: string;
   size?: IconSizes;
   title?: string | null;
-  verticalAlign?: string | undefined;
 }
 
 type IconSizes = 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl' | 'fill';
@@ -173,15 +172,11 @@ const ClearIcon = ({
 const MoreIcon = ({
   fill = theme.colors.white,
   size = 'm',
-  title = null,
-  verticalAlign = void 0
+  title = null
 }: IconProps) => (
   <svg
     width={mapSize(size)}
     height={mapSize(size)}
-    style={{
-      verticalAlign
-    }}
     viewBox="0 0 30 30"
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"

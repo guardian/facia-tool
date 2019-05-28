@@ -9,30 +9,27 @@ import FeedSectionHeader from './FeedSectionHeader';
 
 const FeedSectionContainer = styled('div')`
   background-color: ${({ theme }) => theme.shared.base.colors.backgroundColor};
-  width: 100%;
 `;
 
 const FeedWrapper = styled('div')`
-  flex: 3 1 20vw;
+  width: 409px;
   padding-right: 10px;
   margin-right: 10px;
   border-right: ${({ theme }) =>
     `solid 1px ${theme.shared.base.colors.borderColor}`};
 `;
 
-const ClipboardWrapper = styled.div``;
-
-export default ({ fontSize = '14px' }: { fontSize?: string }) => (
+export default () => (
   <FeedSectionContainer>
     <FeedSectionHeader />
     <SectionContent>
       <FeedWrapper>
-        <FeedContainer fontSize={fontSize} />
+        <FeedContainer />
       </FeedWrapper>
-      <ClipboardWrapper>
-        <Clipboard />
-      </ClipboardWrapper>
-      <ClipboardMeta />
+      <Clipboard />
+      <div>
+        <ClipboardMeta />
+      </div>
     </SectionContent>
   </FeedSectionContainer>
 );

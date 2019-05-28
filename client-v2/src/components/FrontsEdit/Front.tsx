@@ -28,21 +28,12 @@ import Collection from './Collection';
 const FrontContainer = styled('div')`
   display: flex;
   min-height: 0;
-  height: 100%;
 `;
 
 const FrontContentContainer = styled('div')`
   max-height: 100%;
   overflow-y: scroll;
   padding-top: 1px;
-`;
-
-const CollectionsContainer = styled(FrontContentContainer)`
-  flex: 4 0 400px;
-`;
-
-const DetailContainer = styled(FrontContentContainer)`
-  flex: 0 0 auto;
 `;
 
 interface FrontPropsBeforeState {
@@ -131,7 +122,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
           {this.state.error || ''}
         </div>
         <FrontContainer>
-          <CollectionsContainer>
+          <FrontContentContainer>
             <Root id={this.props.id} data-testid={this.props.id}>
               {front.collections.map(collectionId => (
                 <Collection
@@ -150,13 +141,13 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                 />
               ))}
             </Root>
-          </CollectionsContainer>
-          <DetailContainer>
+          </FrontContentContainer>
+          <FrontContentContainer>
             <FrontDetailView
               id={this.props.id}
               browsingStage={this.props.browsingStage}
             />
-          </DetailContainer>
+          </FrontContentContainer>
         </FrontContainer>
       </React.Fragment>
     );

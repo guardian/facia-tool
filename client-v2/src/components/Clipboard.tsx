@@ -46,7 +46,6 @@ const ClipboardWrapper = styled<
 })`
   border: 1px solid #c9c9c9;
   border-top: 1px solid black;
-  height: 100%;
   overflow-y: scroll;
   &:focus {
     border: 1px solid ${({ theme }) => theme.shared.base.colors.focusColor};
@@ -93,6 +92,7 @@ const FullDivider = styled('hr')`
   border: 0;
   border-top: 1px solid #ccc;
   margin: 8px -10px 0px;
+  width: 115%;
 `;
 
 interface ClipboardProps {

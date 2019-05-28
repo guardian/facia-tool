@@ -6,7 +6,6 @@ import { CapiArticle } from 'types/Capi';
 interface FeedProps {
   articles?: CapiArticle[];
   error: string | null;
-  fontSize: string;
 }
 
 interface ErrorDisplayProps {
@@ -21,14 +20,12 @@ const NoResults = styled('div')`
   margin: 4px;
 `;
 
-const Feed = ({ articles = [], error, fontSize }: FeedProps) => (
+const Feed = ({ articles = [], error }: FeedProps) => (
   <ErrorDisplay error={error}>
     {articles.length ? (
       articles
         .filter(result => result.webTitle)
-        .map(article => (
-          <FeedItem key={article.id} article={article} fontSize={fontSize} />
-        ))
+        .map(article => <FeedItem key={article.id} article={article} />)
     ) : (
       <NoResults>No results found</NoResults>
     )}

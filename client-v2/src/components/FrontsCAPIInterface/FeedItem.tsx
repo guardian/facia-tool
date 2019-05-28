@@ -51,11 +51,11 @@ const Container = styled('div')`
   }
 `;
 
-const Title = styled(`h2`)<{ fontSize: string }>`
+const Title = styled(`h2`)`
   margin: 2px 0 0;
   vertical-align: top;
   font-family: GHGuardianHeadline;
-  font-size: ${({ fontSize }) => fontSize};
+  font-size: 15px;
   font-weight: 500;
 `;
 
@@ -103,7 +103,6 @@ const Body = styled('div')`
 interface FeedItemProps {
   article: CapiArticle;
   onAddToClipboard: (article: CapiArticle) => void;
-  fontSize: string;
 }
 
 const isLive = (article: CapiArticle) =>
@@ -190,9 +189,7 @@ class FeedItem extends React.Component<FeedItemProps> {
             <ShortVerticalPinline />
           </MetaContainer>
           <Body>
-            <Title fontSize={this.props.fontSize} data-testid="headline">
-              {article.webTitle}
-            </Title>
+            <Title data-testid="headline">{article.webTitle}</Title>
           </Body>
           <ArticleThumbnail
             style={{
