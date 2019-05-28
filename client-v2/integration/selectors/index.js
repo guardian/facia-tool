@@ -92,6 +92,14 @@ export const collectionItemDeleteButton = (collectionIndex, itemIndex = 0) =>
     `[data-testid="${DELETE_BUTTON}"]`
   );
 
+export const collectionItemAddToClipboardButton = (
+  collectionIndex,
+  itemIndex = 0
+) =>
+  collectionItem(collectionIndex, itemIndex).find(
+    `[data-testid="${ADD_TO_CLIPBOARD_BUTTON}"]`
+  );
+
 // Edit form //
 export const editForm = maybeGetNth(select(EDIT_FORM));
 

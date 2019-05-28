@@ -22,6 +22,7 @@ import {
   allCollectionDropZones,
   collectionItemDeleteButton,
   collectionDiscardButton,
+  collectionItemAddToClipboardButton,
   clipboardItemDeleteButton
 } from '../selectors';
 
@@ -84,6 +85,20 @@ test('Drag from clipboard to collection', async t => {
     .eql(firstCollectionStoryCount + 1)
     .expect(clipboardItem().count)
     .eql(clipboardStoryCount);
+});
+
+test('Send item from collection to clipboard using hover button', async t => {
+  const firstCollectionItem = await collectionItem(0, 0);
+  const firstCollectionStoryCount = await allCollectionItems(0).count;
+  const clipboardStoryCount = await clipboardItem().count;
+  const sendToClipboardButton = await collectionItemAddToClipboardButton(0, 0);
+  await t
+    .hover(firstCollectionItem, { speed: 0.5 })
+    .click(sendToClipboardButton)
+    .expect(allCollectionItems(0).count)
+    .eql(firstCollectionStoryCount - 1)
+    .expect(clipboardItem().count)
+    .eql(clipboardStoryCount + 1);
 });
 
 test('Deleting an article from clipboard works', async t => {
