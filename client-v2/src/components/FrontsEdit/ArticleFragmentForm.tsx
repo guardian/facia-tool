@@ -67,7 +67,6 @@ type Props = ComponentProps &
 const FormContainer = styled(ContentContainer.withComponent('form'))`
   display: flex;
   flex-direction: column;
-  flex: 1;
   width: 380px;
   margin-left: 10px;
   height: 100%;
