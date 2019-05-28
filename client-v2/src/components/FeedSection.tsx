@@ -13,7 +13,7 @@ const FeedSectionContainer = styled('div')`
 `;
 
 const FeedWrapper = styled('div')`
-  flex: 3 1 20vw;
+  max-width: 600px;
   padding-right: 10px;
   margin-right: 10px;
   border-right: ${({ theme }) =>

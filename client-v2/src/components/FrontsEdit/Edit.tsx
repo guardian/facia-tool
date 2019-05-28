@@ -62,7 +62,6 @@ const NoFrontContainer = styled.div`
 `;
 
 const FeedContainer = styled(SectionContainer)`
-  flex: 1 2 auto;
   height: 100%;
 `;
 
@@ -72,6 +71,7 @@ const FrontsContainer = styled(SectionContainer)<{
   display: flex;
   flex: 1 1 auto;
   height: 100%;
+  max-width: 1000px;
   overflow-y: hidden;
   overflow-x: scroll;
   transition: transform 0.15s;
