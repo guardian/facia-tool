@@ -45,7 +45,7 @@ interface ContainerProps {
   children?: React.ReactNode;
   getNodeProps: () => object;
   onSelect: (uuid: string) => void;
-  onDelete: (uuid: string) => void;
+  onDelete: () => void;
   parentId: string;
   displayType?: CollectionItemDisplayTypes;
   size?: 'small' | 'default';
@@ -53,7 +53,7 @@ interface ContainerProps {
 }
 
 type ArticleContainerProps = ContainerProps & {
-  onAddToClipboard: (uuid: string) => void;
+  onAddToClipboard: () => void;
   copyCollectionItemImageMeta: (from: string, to: string) => void;
   addImageToArticleFragment: (id: string, response: ValidationResponse) => void;
   type: CollectionItemTypes;
@@ -151,8 +151,8 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
     }
   }
 
-  private onDelete = (uuid: string) => {
-    this.props.onDelete(uuid);
+  private onDelete = () => {
+    this.props.onDelete();
   };
 
   private handleImageDrop = (e: React.DragEvent<HTMLElement>) => {
@@ -202,10 +202,10 @@ const createMapStateToProps = () => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
+const mapDispatchToProps = (dispatch: Dispatch, props: ContainerProps) => {
   return {
-    onAddToClipboard: (uuid: string) => {
-      dispatch(cloneArticleFragmentToTarget(uuid, 'clipboard'));
+    onAddToClipboard: () => {
+      dispatch(cloneArticleFragmentToTarget(props.uuid, 'clipboard'));
     },
     copyCollectionItemImageMeta: (from: string, to: string) =>
       dispatch(copyArticleFragmentImageMetaWithPersist(from, to)),

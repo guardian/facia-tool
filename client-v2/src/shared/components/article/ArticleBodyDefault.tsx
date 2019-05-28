@@ -81,8 +81,8 @@ interface ArticleBodyProps {
   sectionName?: string;
   displayPlaceholders?: boolean;
   uuid: string;
-  onDelete?: (id: string) => void;
-  onAddToClipboard?: (id: string) => void;
+  onDelete?: () => void;
+  onAddToClipboard?: () => void;
   isUneditable?: boolean;
   byline?: string;
   showByline?: boolean;

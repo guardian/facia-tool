@@ -63,9 +63,9 @@ interface ArticleComponentProps {
   onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
   onDragEnter?: (d: React.DragEvent<HTMLElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
-  onDelete?: (uuid: string) => void;
+  onDelete?: () => void;
   onClick?: () => void;
-  onAddToClipboard?: (id: string) => void;
+  onAddToClipboard?: () => void;
   isUneditable?: boolean;
 }
 
