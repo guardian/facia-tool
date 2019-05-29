@@ -74,6 +74,7 @@ PlayKeys.devSettings := Seq("play.akka.dev-mode.akka.http.parsing.max-uri-length
 libraryDependencies ++= Seq(
     ws,
     filters,
+    "com.amazonaws" % "aws-java-sdk-rds" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-core" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-cloudwatch" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-kinesis" % awsVersion,

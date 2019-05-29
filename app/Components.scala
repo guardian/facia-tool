@@ -19,15 +19,15 @@ import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
 import updates.{BreakingNewsUpdate, StructuredLogger}
 import util.{Acl, Encryption}
+import scalikejdbc._
 
 class AppComponents(context: Context) extends BaseFaciaControllerComponents(context) {
-  DBs.setupAll()
   val isTest: Boolean = context.environment.mode == Mode.Test
   val isProd: Boolean = context.environment.mode == Mode.Prod
   val isDev: Boolean = context.environment.mode == Mode.Dev
   val config = new ApplicationConfiguration(configuration, isProd)
   val awsEndpoints = new AwsEndpoints(config)
-  val editionsDb = new EditionsDB()
+  val editionsDb = new EditionsDB(config)
   val dynamo = new Dynamo(awsEndpoints, config)
   val acl = new Acl(permissions)
   val frontsApi = new FrontsApi(config, awsEndpoints)

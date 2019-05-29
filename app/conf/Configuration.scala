@@ -6,12 +6,15 @@ import java.net.URL
 import com.amazonaws.AmazonClientException
 import com.amazonaws.auth._
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
+import com.amazonaws.services.rds.auth.{GetIamAuthTokenRequest, RdsIamAuthTokenGenerator}
 import org.apache.commons.io.IOUtils
 import play.api.{Configuration => PlayConfiguration}
 import logging.Logging
 
 import scala.collection.JavaConverters._
 import scala.language.reflectiveCalls
+import com.amazonaws.services.rds.model.{DescribeDBInstancesRequest, Filter => RDSFilter}
+import com.amazonaws.services.rds.AmazonRDSClientBuilder
 
 class BadConfigurationException(msg: String) extends RuntimeException(msg)
 
@@ -122,7 +125,62 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
           None
       }
     }
+    val rdsClient = AmazonRDSClientBuilder.standard().withCredentials(cmsFrontsAccountCredentials).withRegion(region).build()
   }
+
+  object postgres {
+    val hostname = findRDSEndpoint
+    val url = s"jdbc:postgres://$hostname:5432/facia-tool"
+    val user =  "facia-tool"
+    val password = getPassword
+
+    private def getPassword: String = {
+      if (stageFromProperties == "CODE" || stageFromProperties =="PROD") {
+        val generator = RdsIamAuthTokenGenerator.builder().credentials(credentialsProviderChain()).region(aws.region).build()
+        generator.getAuthToken(GetIamAuthTokenRequest.builder.hostname(hostname).port(5432).userName(user).build())
+      } else {
+        getMandatoryString("db.default.password")
+      }
+    }
+
+    private def findRDSEndpoint(): String = {
+      if (stageFromProperties == "CODE" || stageFromProperties =="PROD") {
+        val request = new DescribeDBInstancesRequest().withFilters(
+          new RDSFilter().withName("tag:App").withValues(environment.applicationName),
+          new RDSFilter().withName("tag:Stage").withValues(stageFromProperties)
+        )
+
+        val instances = aws.rdsClient.describeDBInstances(request).getDBInstances.asScala.toList
+
+        if (instances.length != 1) {
+          throw new IllegalStateException(s"Invalid number of RDS instances, expected 1, found ${instances.length}")
+        }
+
+        instances(0).getEndpoint.getAddress
+      } else {
+        getMandatoryString("db.default.hostname")
+      }
+    }
+
+
+    def credentialsProviderChain(accessKey: Option[String] = None, secretKey: Option[String] = None): AWSCredentialsProviderChain = {
+      new AWSCredentialsProviderChain(
+        new AWSCredentialsProvider {
+          override def getCredentials: AWSCredentials = (for {
+            key <- accessKey
+            secret <- secretKey
+          } yield new BasicAWSCredentials(key, secret)).orNull
+
+          override def refresh(): Unit = {}
+        },
+        new EnvironmentVariableCredentialsProvider,
+        new SystemPropertiesCredentialsProvider,
+        new ProfileCredentialsProvider("facia-tool"),
+        InstanceProfileCredentialsProvider.getInstance()
+      )
+    }
+  }
+
 
   object cdn {
     lazy val basePath = getString("assets.basePath").getOrElse("/")

@@ -1,8 +1,9 @@
 import logging.LogStashConfig
 import metrics.CloudWatchApplicationMetrics
 import play.api.ApplicationLoader.Context
-import play.api.{Application, ApplicationLoader, LoggerConfigurator}
+import play.api.{Application, ApplicationLoader, LoggerConfigurator, Mode, Configuration}
 import switchboard.{SwitchboardConfiguration, Lifecycle => SwitchboardLifecycle}
+import conf.ApplicationConfiguration
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -13,7 +14,12 @@ class Loader extends ApplicationLoader {
       _.configure(context.environment)
     }
 
-    val components = new AppComponents(context)
+    val isProd = context.environment.mode == Mode.Prod
+
+    val initialConfig = new ApplicationConfiguration(context.initialConfiguration, isProd)
+
+    val configWithPostgresPassword = context.initialConfiguration ++ Configuration.from(Map("db.default.password" -> initialConfig.postgres.password))
+    val components = new AppComponents(context.copy(initialConfiguration = configWithPostgresPassword))
 
     new SwitchboardLifecycle(SwitchboardConfiguration(
       objectKey = components.config.switchBoard.objectKey,
