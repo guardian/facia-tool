@@ -50,10 +50,6 @@ developer.properties
 .springBeans
 .cache
 
-# Scala test framework #
-local.conf
-application.local.conf
-
 ##
 public/client-v2/dist
 client-v2/.vscode
