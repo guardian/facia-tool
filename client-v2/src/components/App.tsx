@@ -24,7 +24,8 @@ import FrontsEdit from './FrontsEdit/Edit';
 import Home from './Home';
 import NotFound from './NotFound';
 import ConfirmModal from './ConfirmModal';
-import { frontsEdit } from 'constants/routes';
+import { frontsEdit, editions } from 'constants/routes';
+import ManagedView from './Editions/ManageView';
 
 // tslint:disable:no-unused-expression
 injectGlobal`
@@ -106,6 +107,7 @@ const App = () => (
         <Switch>
           <Route exact path={frontsEdit} component={FrontsEdit} />
           <Route exact path="/" component={Home} />
+          <Route exact path={editions} component={ManagedView} />
           <Route component={NotFound} />
         </Switch>
       </AppContainer>

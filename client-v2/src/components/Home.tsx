@@ -1,12 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { styled } from 'constants/theme';
 
 import { priorities } from 'constants/priorities';
-
-const HomeContainer = styled('div')`
-  padding-top: 60px;
-`;
+import HomeContainer from './layout/HomeContainer';
 
 const renderPriority = (priority: string) => (
   <li key={priority}>
