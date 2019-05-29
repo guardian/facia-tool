@@ -84,6 +84,16 @@ You must have [Python](https://www.python.org/) installed on your system first.
 brew install awscli
 ```
 
+#### Running postgres
+
+To start local postgres:
+- Make sure you have docker installed.
+- You will need `pg_isready` which you can get by running `brew install postgresql`
+- Run `scripts/start-postres.sh`
+
+If you make changes to the database schema you can delete your database by running `scripts/delete-local-db.sh`
+
+
 ### Clone repository
 
 1. [Generate and add an SSH key](https://help.github.com/articles/generating-ssh-keys) to your GitHub account.
