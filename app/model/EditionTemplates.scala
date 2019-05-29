@@ -3,10 +3,7 @@ package model
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoField
 
-import org.joda.time.DateTime
-
-
-object WeekDay extends Enumeration(1) {
+case object WeekDay extends Enumeration(1) {
 
   implicit lazy val implicitConversions = scala.language.implicitConversions
 

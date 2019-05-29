@@ -4,7 +4,6 @@ import java.time.ZonedDateTime
 
 import model._
 import model.WeekDay._
-import org.joda.time.DateTime
 
 object EditionTemplates {
   private val dailyEdition = EditionTemplate(

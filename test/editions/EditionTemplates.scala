@@ -1,7 +1,9 @@
-package editions
+package services
 
-import org.joda.time.DateTime
+import java.time.ZonedDateTime
 import org.scalatest.{FreeSpec, Matchers}
+import editions.{EditionTemplates}
+import model._
 
 class editionTemplateTest extends FreeSpec with Matchers {
 
