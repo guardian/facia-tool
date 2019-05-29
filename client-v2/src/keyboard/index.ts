@@ -66,31 +66,31 @@ export const createKeyboardActionMap = (store: Store): KeyboardBindingMap => ({
   'command+v': {
     title: 'Paste',
     description: 'Paste an entity',
-    action: () =>
-      (store.dispatch as Dispatch)(async (dispatch: Dispatch) => {
-        try {
-          if (!navigator || !(navigator as any).clipboard) {
-            throw new Error('No navigator available on paste');
-          }
-          // A temporary any here pending proper typings
-          const content: string = await (navigator as any).clipboard.readText();
-          if (!content) {
-            return;
-          }
-          const contentData: RefDrop = { type: 'REF', data: content };
-          const articleFragment = await dispatch(
-            createArticleFragment(contentData)
-          );
-          if (!articleFragment) {
-            return;
-          }
-          dispatch(
-            insertClipboardArticleFragment('clipboard', 0, articleFragment.uuid)
-          );
-        } catch (e) {
-          Raven.captureMessage(`Paste to clipboard failed: ${e.message}`);
+    action: async () => {
+      const dispatch: Dispatch = store.dispatch;
+      try {
+        if (!navigator || !(navigator as any).clipboard) {
+          throw new Error('No navigator available on paste');
         }
-      })
+        // A temporary any here pending proper typings
+        const content: string = await (navigator as any).clipboard.readText();
+        if (!content) {
+          return;
+        }
+        const contentData: RefDrop = { type: 'REF', data: content };
+        const articleFragment = await dispatch(
+          createArticleFragment(contentData)
+        );
+        if (!articleFragment) {
+          return;
+        }
+        dispatch(
+          insertClipboardArticleFragment('clipboard', 0, articleFragment.uuid)
+        );
+      } catch (e) {
+        Raven.captureMessage(`Paste to clipboard failed: ${e.message}`);
+      }
+    }
   },
   'command+j': {
     title: 'Close all overviews',
