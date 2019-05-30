@@ -21,11 +21,10 @@ import updates.{BreakingNewsUpdate, StructuredLogger}
 import util.{Acl, Encryption}
 import scalikejdbc._
 
-class AppComponents(context: Context) extends BaseFaciaControllerComponents(context) {
+class AppComponents(context: Context, val config: ApplicationConfiguration) extends BaseFaciaControllerComponents(context) {
   val isTest: Boolean = context.environment.mode == Mode.Test
   val isProd: Boolean = context.environment.mode == Mode.Prod
   val isDev: Boolean = context.environment.mode == Mode.Dev
-  val config = new ApplicationConfiguration(configuration, isProd)
   val awsEndpoints = new AwsEndpoints(config)
   val editionsDb = new EditionsDB(config)
   val dynamo = new Dynamo(awsEndpoints, config)

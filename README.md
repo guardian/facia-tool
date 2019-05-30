@@ -60,30 +60,6 @@ We use [NVM](https://github.com/creationix/nvm) to ensure a given Node version i
 
 Ubuntu/Mac: [Follow these instructions](https://github.com/nvm-sh/nvm#installation-and-update)
 
-#### nginx
-
-Mac:
-
-```bash
-brew install nginx
-```
-
-#### sbt
-
-Mac:
-
-```bash
-brew install sbt
-```
-
-#### aws cli
-
-You must have [Python](https://www.python.org/) installed on your system first.
-
-```bash
-brew install awscli
-```
-
 #### Running postgres
 
 To start local postgres:
@@ -93,6 +69,7 @@ To start local postgres:
 
 If you make changes to the database schema you can delete your database by running `scripts/delete-local-db.sh`
 
+If you wish to connect to the local database you can run `./scripts/local-psql.sh` which has the user, database and password preconfigured and ready to go.
 
 ### Clone repository
 

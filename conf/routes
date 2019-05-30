@@ -103,6 +103,6 @@ POST        /api/usage                               controllers.GridProxy.addUs
 
 # Editions
 POST        /editions-api/issues/                    controllers.EditionsController.postIssue
-POST        /editions-api/available-editions/        controllers.EditionsController.getAvailableEditions
+GET         /editions-api/available-editions         controllers.EditionsController.getAvailableEditions
 
 

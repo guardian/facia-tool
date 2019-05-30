@@ -135,7 +135,8 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     val password = getPassword
 
     private def getPassword: String = {
-      if (stageFromProperties == "CODE" || stageFromProperties =="PROD") {
+      // In fronts tool 'isProd' means is CODE or PROD because fuck it why not
+      if (isProd) {
         val generator = RdsIamAuthTokenGenerator.builder().credentials(credentialsProviderChain()).region(aws.region).build()
         generator.getAuthToken(GetIamAuthTokenRequest.builder.hostname(hostname).port(5432).userName(user).build())
       } else {
@@ -144,7 +145,8 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     }
 
     private def findRDSEndpoint(): String = {
-      if (stageFromProperties == "CODE" || stageFromProperties =="PROD") {
+      // In fronts tool 'isProd' means is CODE or PROD because fuck it why not
+      if (isProd) {
         val request = new DescribeDBInstancesRequest().withFilters(
           new RDSFilter().withName("tag:App").withValues(environment.applicationName),
           new RDSFilter().withName("tag:Stage").withValues(stageFromProperties)
@@ -156,7 +158,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
           throw new IllegalStateException(s"Invalid number of RDS instances, expected 1, found ${instances.length}")
         }
 
-        instances(0).getEndpoint.getAddress
+        instances.head.getEndpoint.getAddress
       } else {
         getMandatoryString("db.default.hostname")
       }

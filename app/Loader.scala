@@ -14,13 +14,12 @@ class Loader extends ApplicationLoader {
       _.configure(context.environment)
     }
 
+    // Play server
     val isProd = context.environment.mode == Mode.Prod
+    val config = new ApplicationConfiguration(context.initialConfiguration, isProd)
+    val components = new AppComponents(context, config)
 
-    val initialConfig = new ApplicationConfiguration(context.initialConfiguration, isProd)
-
-    val configWithPostgresPassword = context.initialConfiguration ++ Configuration.from(Map("db.default.password" -> initialConfig.postgres.password))
-    val components = new AppComponents(context.copy(initialConfiguration = configWithPostgresPassword))
-
+    // Background tasks
     new SwitchboardLifecycle(SwitchboardConfiguration(
       objectKey = components.config.switchBoard.objectKey,
       bucket = components.config.switchBoard.bucket,
