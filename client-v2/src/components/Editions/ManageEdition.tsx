@@ -1,6 +1,6 @@
 import React from 'react';
 import Raven from 'raven-js';
-import { styled, Theme } from 'constants/theme';
+import { styled } from 'constants/theme';
 import { SingleDatePicker } from 'react-dates';
 import moment, { Moment } from 'moment';
 import { EditionIssue } from 'types/Edition';

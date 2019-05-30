@@ -11,7 +11,12 @@ const renderPriority = (priority: string) => (
 );
 const Home = () => (
   <HomeContainer>
-    <ul>{Object.keys(priorities).map(renderPriority)}</ul>
+    <ul>
+      {Object.keys(priorities).map(renderPriority)}
+      <li>
+        <Link to={`/manage-editions`}>manage editions</Link>
+      </li>
+    </ul>
   </HomeContainer>
 );
 
