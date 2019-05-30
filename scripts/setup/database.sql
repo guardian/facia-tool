@@ -24,9 +24,10 @@ CREATE TABLE edition_issues (
 CREATE TABLE fronts (
     id            TEXT PRIMARY KEY DEFAULT uuid_generate_v4()::TEXT,
     issue_id      TEXT REFERENCES edition_issues(id) ON DELETE CASCADE NOT NULL,
+    index         INT NOT NULL,
 
-    name          TEXT,
-    is_hidden     BOOLEAN,
+    name          TEXT NOT NULL,
+    is_hidden     BOOLEAN NOT NULL,
     metadata      JSONB,
 
     updated_on    TIMESTAMPTZ,
@@ -34,9 +35,13 @@ CREATE TABLE fronts (
     updated_email TEXT
 );
 
+ALTER TABLE fronts ADD CONSTRAINT issue_index_must_be_unique UNIQUE (issue_id, index);
+
 CREATE TABLE collections (
     id            TEXT PRIMARY KEY DEFAULT uuid_generate_v4()::TEXT,
     front_id      TEXT REFERENCES fronts(id) ON DELETE CASCADE NOT NULL,
+    index         INT NOT NULL,
+
     name          TEXT NOT NULL,
     prefill       TEXT NOT NULL,
     metadata      JSONB,
@@ -45,6 +50,8 @@ CREATE TABLE collections (
     updated_by    TEXT,
     updated_email TEXT
 );
+
+ALTER TABLE collections ADD CONSTRAINT collection_index_must_be_unique UNIQUE (front_id, index);
 
 CREATE TYPE PUBLICATION_STATUS AS ENUM (
     'live',

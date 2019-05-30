@@ -103,6 +103,7 @@ POST        /api/usage                               controllers.GridProxy.addUs
 
 # Editions
 POST        /editions-api/issues/                    controllers.EditionsController.postIssue
+GET         /editions-api/issues/:id                 controllers.EditionsController.getIssue(id: String)
 GET         /editions-api/available-editions         controllers.EditionsController.getAvailableEditions
 
 

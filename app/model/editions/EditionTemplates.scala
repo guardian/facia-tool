@@ -1,4 +1,4 @@
-package model
+package model.editions
 
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoField
@@ -26,30 +26,31 @@ case class Daily() extends Periodicity {
 }
 
 case class WeekDays(days: List[WeekDay]) extends Periodicity {
-  def isValid(date: ZonedDateTime) = days.exists(WeekDayToInt(_) == date.getDayOfWeek.get(ChronoField.DAY_OF_WEEK))
+  def isValid(date: ZonedDateTime) =
+    days.exists(
+      WeekDayToInt(_) == date.getDayOfWeek.get(ChronoField.DAY_OF_WEEK)
+    )
 }
 
 case class CollectionTemplate(
-  name: String,
-  prefill: CapiQuery,
-  presentation: CollectionPresentation,
-  hidden: Boolean = false
+    name: String,
+    prefill: CapiQuery,
+    presentation: CollectionPresentation,
+    hidden: Boolean = false
 )
 
 case class FrontTemplate(
-  name: String,
-  collections: List[CollectionTemplate],
-  presentation: FrontPresentation,
-  hidden: Boolean = false
+    name: String,
+    collections: List[CollectionTemplate],
+    presentation: FrontPresentation,
+    hidden: Boolean = false
 )
 
 case class EditionTemplate(
-  fronts: List[(FrontTemplate, Periodicity)],
-  availability: Periodicity
+    fronts: List[(FrontTemplate, Periodicity)],
+    availability: Periodicity
 )
 
 case class EditionTemplateForDate(
-  fronts: List[FrontTemplate],
+    fronts: List[FrontTemplate]
 )
-
-

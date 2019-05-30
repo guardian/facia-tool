@@ -20,6 +20,12 @@ class EditionsController(db: EditionsDB, val deps: BaseFaciaControllerComponents
     }
   }
 
+  def getIssue(id: String)= AccessAPIAuthAction { req =>
+    db.getIssue(id).map { issue =>
+      Ok(Json.toJson(issue))
+    }.getOrElse(NotFound(s"Edition $id not found"))
+  }
+
   def getAvailableEditions = AccessAPIAuthAction { _ =>
     Ok(Json.toJson(EditionTemplates.getAvailableEditions))
   }
