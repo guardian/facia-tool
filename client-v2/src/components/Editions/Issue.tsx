@@ -1,6 +1,6 @@
 import React from 'react';
 import { EditionIssue } from 'types/Edition';
-import { styled, Theme } from 'constants/theme';
+import { styled } from 'constants/theme';
 import moment from 'moment';
 
 interface IssueProps {
@@ -29,6 +29,10 @@ const Issue = (props: IssueProps) => (
               'Do MMMM YYYY'
             )}
           </td>
+        </tr>
+        <tr>
+          <td>Published:</td>
+          <td>{props.issue.lastPublished ? 'Yes' : 'No'}</td>
         </tr>
         <tr>
           <td>Last published:</td>

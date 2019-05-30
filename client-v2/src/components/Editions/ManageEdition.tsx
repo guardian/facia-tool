@@ -1,18 +1,19 @@
 import React from 'react';
-import { styled } from 'constants/theme';
+import Raven from 'raven-js';
+import { styled, Theme } from 'constants/theme';
 import { SingleDatePicker } from 'react-dates';
 import moment, { Moment } from 'moment';
 import { EditionIssue } from 'types/Edition';
 import Issue from './Issue';
 import ButtonDefault from '../../shared/components/input/ButtonDefault';
-// import * as ButtonDefault from '../shared/components/input/ButtonDefault';
 
 interface ManageEditionState {
   date: Moment | null;
   isDatePickerOpen: boolean;
   issues: EditionIssue[];
   currentIssue: EditionIssue | null;
-  createMessage: string;
+  infoMessage: string;
+  isError: boolean;
 }
 
 const LinkButton = styled(ButtonDefault.withComponent('a'))`
@@ -20,25 +21,12 @@ const LinkButton = styled(ButtonDefault.withComponent('a'))`
   padding-top: 12px;
 `;
 
-const MsgBox = styled('div')`
-  max-width: 200px;
+const InformationMsg = styled.div<{ status?: 'info' | 'error' }>`
+  max-width: 250px;
+  margin: 5px 0;
   padding: 3px;
   color: white;
-  background: linear-gradient(45deg, red, blue);
-  background-size: 200% 2000%;
-  animation: Animation 1s ease infinite;
-
-  @keyframes Animation {
-    0% {
-      background-position: 10% 0%;
-    }
-    50% {
-      background-position: 91% 100%;
-    }
-    100% {
-      background-position: 10% 0%;
-    }
-  }
+  background-color: ${props => (props.status === 'info' ? 'green' : 'red')};
 `;
 
 const oneIssue = {
@@ -87,7 +75,8 @@ class ManageEdition extends React.Component {
     isDatePickerOpen: false,
     issues: [] as EditionIssue[],
     currentIssue: null,
-    createMessage: ''
+    infoMessage: '',
+    isError: false
   };
 
   public render() {
@@ -103,6 +92,7 @@ class ManageEdition extends React.Component {
           onPrevMonthClick={this.handleMonthClick}
           id="editions-date"
           isDayHighlighted={date => !!this.selectIssueForDate(date)}
+          isOutsideRange={() => false}
         />
         <div>
           {this.state.date && (
@@ -110,8 +100,12 @@ class ManageEdition extends React.Component {
               <p>You selected {this.state.date.format('Do MMMM YYYY')}</p>
               {this.state.currentIssue ? (
                 <>
-                  {this.state.createMessage && (
-                    <MsgBox>{this.state.createMessage}</MsgBox>
+                  {this.state.infoMessage && (
+                    <InformationMsg
+                      status={this.state.isError ? 'error' : 'info'}
+                    >
+                      {this.state.infoMessage}
+                    </InformationMsg>
                   )}
                   <Issue issue={this.state.currentIssue} />
                   <LinkButton
@@ -123,7 +117,9 @@ class ManageEdition extends React.Component {
                 </>
               ) : (
                 <>
-                  <p>No issue found for this date</p>
+                  <InformationMsg status="info">
+                    No issue found for this date
+                  </InformationMsg>
                   <ButtonDefault size="l" onClick={this.createEdition}>
                     Create
                   </ButtonDefault>
@@ -137,18 +133,30 @@ class ManageEdition extends React.Component {
   }
 
   private createEdition = () => {
-    // select and instantiate template that is valid for this date
     if (!this.state.date) {
+      Raven.captureMessage(
+        `Creating an issue failed because no date was selected`
+      );
+      this.setState({ infoMessage: 'The date is not valid', isError: true });
       return;
     }
-    this.setState({ createMessage: 'New issue created' });
-    this.createIssue(this.state.date).then(issue =>
-      this.setState({ currentIssue: issue })
-    );
+    this.setState({ infoMessage: 'New issue created' });
+    this.createIssue(this.state.date)
+      .then(issue => this.setState({ currentIssue: issue }))
+      .catch(err => {
+        Raven.captureMessage(
+          `Creating an issue for this date ${this.state.date} failed`,
+          err
+        );
+        this.setState({
+          infoMessage: 'Sorry creating an issue for this date failed',
+          isError: true
+        });
+      });
   };
 
   private handleDateChange = (date: Moment | null) => {
-    this.setState({ date });
+    this.setState({ date, infoMessage: '', isError: false });
     if (!date) {
       return;
     }
@@ -182,9 +190,17 @@ class ManageEdition extends React.Component {
     const startDate = month.clone().startOf('month');
     const endDate = month.clone().endOf('month');
 
-    this.fetchIssuesForDateRange(startDate, endDate).then(issues =>
-      this.setState({ issues })
-    );
+    this.fetchIssuesForDateRange(startDate, endDate)
+      .then(issues => this.setState({ issues }))
+      .catch(err => {
+        Raven.captureMessage(
+          `Fetching issues for this date range failed: ${startDate} to ${endDate}`,
+          err
+        );
+        this.setState({
+          infoMessage: `Fetching issues for this date range failed: ${startDate} to ${endDate}`
+        });
+      });
   };
 
   private fetchIssuesForDateRange = async (
