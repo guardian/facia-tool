@@ -9,7 +9,8 @@ import {
   editorFavouriteFront,
   editorUnfavouriteFront,
   selectEditorFrontIdsByPriority,
-  selectIsCurrentFrontsMenuOpen
+  selectIsCurrentFrontsMenuOpen,
+  selectIsClipboardOpen
 } from 'bundles/frontsUIBundle';
 import { State } from 'types/State';
 import { ActionError } from 'types/Action';
@@ -32,6 +33,7 @@ interface Props {
   editorUnfavouriteFront: (frontId: string, priority: string) => void;
   getFrontsConfig: () => void;
   isCurrentFrontsMenuOpen: boolean;
+  isClipboardOpen: boolean;
 }
 
 const FrontsEditContainer = styled('div')`
@@ -75,7 +77,7 @@ class FrontsEdit extends React.Component<Props> {
         <PressFailAlert staleFronts={this.props.staleFronts} />
         <SectionsContainer>
           <FeedContainer>
-            <FeedSection />
+            <FeedSection isClipboardOpen={this.props.isClipboardOpen} />
           </FeedContainer>
           <FrontsContainer
             id={frontsContainerId}
@@ -117,7 +119,8 @@ const mapStateToProps = (state: State, props: Props) => ({
     state,
     props.match.params.priority || ''
   ),
-  isCurrentFrontsMenuOpen: selectIsCurrentFrontsMenuOpen(state)
+  isCurrentFrontsMenuOpen: selectIsCurrentFrontsMenuOpen(state),
+  isClipboardOpen: selectIsClipboardOpen(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch, props: Props) => ({
