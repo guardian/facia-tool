@@ -31,6 +31,8 @@ const Container = styled(ContentContainer)<ContainerProps>`
   flex: 1;
   margin-left: 10px;
   margin-top: 43px;
+  max-height: calc(100% - 43px);
+  overflow: hidden;
   ${({ isClosed }) => (isClosed ? 'padding: 0; height: 100%' : '')}
 `;
 

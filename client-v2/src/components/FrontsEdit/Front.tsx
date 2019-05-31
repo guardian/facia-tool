@@ -81,7 +81,7 @@ const FrontContentContainer = styled('div')`
 
 const FrontCollectionsContainer = styled('div')`
   overflow-y: scroll;
-  max-height: 100%;
+  max-height: calc(100% - 43px);
   padding-top: 1px;
 `;
 
