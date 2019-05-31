@@ -117,6 +117,84 @@ test('Discarding changes to a collection works', async t => {
     .eql(0);
 });
 
+test('Send item from collection to clipboard using hover button', async t => {
+  const firstCollectionItem = await collectionItem(0, 0);
+  const firstCollectionStoryCount = await allCollectionItems(0).count;
+  const clipboardStoryCount = await clipboardItem().count;
+  const sendToClipboardButton = await collectionItemAddToClipboardButton(0, 0);
+  await t
+    .hover(firstCollectionItem, { speed: 0.5 })
+    .click(sendToClipboardButton)
+    .expect(allCollectionItems(0).count)
+    .eql(firstCollectionStoryCount - 1)
+    .expect(clipboardItem().count)
+    .eql(clipboardStoryCount + 1);
+});
+
+test('Deleting an article from clipboard with hover button works', async t => {
+  const clipboardStory = await clipboardItem();
+  const clipboardStoryCount = await clipboardItem().count;
+  const deleteButton = await clipboardItemDeleteButton();
+  await t
+    .hover(clipboardStory)
+    .click(deleteButton)
+    .expect(clipboardItem().count)
+    .eql(clipboardStoryCount - 1);
+});
+test('Deleting an article from a collection with hover button works', async t => {
+  const firstCollectionItem = await collectionItem(0, 0);
+  const firstCollectionStoryCount = await allCollectionItems(0).count;
+  const deleteButton = await collectionItemDeleteButton(0, 0);
+  await t
+    .hover(firstCollectionItem)
+    .click(deleteButton)
+    .expect(allCollectionItems(0).count)
+    .eql(firstCollectionStoryCount - 1);
+});
+
+test('Snap Links - Guardian', async t => {
+  const frontDropsCount = await frontDropZone().count;
+  const tagSnap = await guardianSnapLink();
+  await t
+    .maximizeWindow() // needed to find DOM elements in headless mode
+    .setNativeDialogHandler(() => false)
+    .dragToElement(tagSnap, frontDropZone(1)) //drag tag into parent position (not a sublink)
+    .expect(frontDropZone().count)
+    .eql(frontDropsCount + 2) // adding a sublink adds 1 dropzone, adding a normal article adds 2
+    .expect(frontSnapLink(0).textContent)
+    .contains('Recipes | The Guardian')
+    .expect(frontSnapLink(0).textContent)
+    .notContains('Latest');
+});
+
+test('Snap Links - Guardian Latest', async t => {
+  const frontDropsCount = await frontDropZone().count;
+  const tagSnap = await guardianSnapLink();
+  await t
+    .maximizeWindow() // needed to find DOM elements in headless mode
+    .setNativeDialogHandler(() => true)
+    .dragToElement(tagSnap, frontDropZone(1))
+    .expect(frontDropZone().count)
+    .eql(frontDropsCount + 2)
+    .expect(frontSnapLink(0).textContent)
+    .contains('{ Recipes }')
+    .expect(frontSnapLink(0).textContent)
+    .contains('Latest');
+});
+
+test('Snap Links - External', async t => {
+  const frontDropsCount = await frontDropZone().count;
+  const externalSnap = await externalSnapLink();
+  await t
+    .maximizeWindow() // needed to find DOM elements in headless mode
+    .setNativeDialogHandler(() => false)
+    .dragToElement(externalSnap, frontDropZone(1))
+    .expect(frontDropZone().count)
+    .eql(frontDropsCount + 2)
+    .expect(frontSnapLink(0).textContent)
+    .contains('Business - BBC News');
+});
+
 test('Previously', async t => {
   const frontDropsCount = await frontDropZone().count;
 
