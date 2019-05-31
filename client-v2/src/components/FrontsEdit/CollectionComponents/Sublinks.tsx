@@ -23,7 +23,7 @@ const SublinkCollectionItemBody = styled(CollectionItemBody)<{
   flex-direction: ${({ isClipboard }) => (isClipboard ? 'column' : 'row')};
   span {
     font-size: 12px;
-    font-weight: bold;
+    font-weight: 400;
   }
   :hover {
     background-color: #ededed;

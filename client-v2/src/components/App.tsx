@@ -20,6 +20,9 @@ import GuardianTextSansWoff2 from '../fonts/text/GuardianTextSans-Regular.woff2'
 import GuardianTextSansTtfBold from '../fonts/text/GuardianTextSans-Bold.ttf';
 import GuardianTextSansBoldWoff from '../fonts/text/GuardianTextSans-Bold.woff';
 import GuardianTextSansBoldWoff2 from '../fonts/text/GuardianTextSans-Bold.woff2';
+import GuardianTextSansItalicTtf from '../fonts/text/GuardianTextSans-RegularItalic.ttf';
+import GuardianTextSansItalicWoff from '../fonts/text/GuardianTextSans-RegularItalic.woff';
+import GuardianTextSansItalicWoff2 from '../fonts/text/GuardianTextSans-RegularItalic.woff2';
 import FrontsEdit from './FrontsEdit/Edit';
 import Home from './Home';
 import NotFound from './NotFound';
@@ -28,6 +31,8 @@ import { frontsEdit, manageEditions } from 'constants/routes';
 import ManageView from './Editions/ManageView';
 
 // tslint:disable:no-unused-expression
+// NB the properties described in font-face work as matchers, assigning text to the font imported by the source.
+// this is why we have 2 declarations of font-weight in several of these font-faces. Assigning either hits this font.
 injectGlobal`
   @font-face {
     font-family: GHGuardianHeadline;
@@ -73,6 +78,14 @@ injectGlobal`
     font-weight: 500 800;
   }
 
+  @font-face {
+    font-family: TS3TextSans;
+    src: url(${GuardianTextSansItalicWoff2}) format('woff2'),
+      url(${GuardianTextSansItalicTtf}) format('truetype'),
+      url(${GuardianTextSansItalicWoff}) format('woff');
+    font-style: italic;
+  }
+
   html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial;
     font-size: 16px;
@@ -85,7 +98,7 @@ injectGlobal`
 const AppContainer = styled('div')`
   background-color: ${({ theme }) =>
     theme.shared.base.colors.backgroundColorLight};
-  color: ${({ theme }) => theme.shared.base.colors.text};
+  color: ${({ theme }) => theme.shared.base.colors.textDark};
   height: 100%;
   width: 100%;
 `;

@@ -35,8 +35,8 @@ const NotLiveContainer = styled(CollectionItemMetaHeading)`
 `;
 
 const KickerHeading = styled(CollectionItemHeading)`
-  font-family: GHGuardianHeadline;
-  font-weight: bold;
+  font-family: TS3TextSans;
+  font-weight: 500;
   padding-right: 3px;
   font-size: ${({ displaySize }) =>
     displaySize === 'small' ? '13px' : '15px'};
@@ -47,7 +47,7 @@ const ArticleHeadingContainerSmall = styled('div')`
 `;
 
 const ArticleBodyByline = styled('div')`
-  font-family: GHGuardianHeadline;
+  font-family: TS3TextSans;
   font-weight: 500;
   font-size: 15px;
   font-style: italic;

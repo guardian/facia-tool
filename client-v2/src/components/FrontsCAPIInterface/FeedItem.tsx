@@ -54,9 +54,9 @@ const Container = styled('div')`
 const Title = styled(`h2`)`
   margin: 2px 0 0;
   vertical-align: top;
-  font-family: GHGuardianHeadline;
+  font-family: TS3TextSans;
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 400;
 `;
 
 const VisitedWrapper = styled.a`

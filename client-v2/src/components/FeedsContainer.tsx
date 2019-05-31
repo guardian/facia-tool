@@ -52,8 +52,8 @@ const Title = styled.h1`
   padding-top: 2px;
   padding-right: 10px;
   vertical-align: top;
-  font-family: GHGuardianHeadline;
-  font-weight: 600;
+  font-family: TS3TextSans;
+  font-weight: 500;
   font-size: 20px;
   min-width: 80px;
 `;
