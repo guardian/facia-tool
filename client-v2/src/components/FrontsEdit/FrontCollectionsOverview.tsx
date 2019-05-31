@@ -40,8 +40,11 @@ const Container = styled(ContentContainer)<ContainerProps>`
   ${({ isClosed }) => (isClosed ? 'padding: 0; height: 100%' : '')}
 `;
 
+export const overviewMinWidth = 160;
+
 const ContainerBody = styled.div`
-  max-width: 160px;
+  width: ${overviewMinWidth}px;
+  overflow: hidden;
 `;
 
 const FrontCollectionsOverview = ({

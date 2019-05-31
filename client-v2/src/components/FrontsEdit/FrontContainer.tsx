@@ -24,6 +24,8 @@ import { toTitleCase } from 'util/stringUtils';
 import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
 import { PreviewEyeIcon, ClearIcon } from 'shared/components/icons/Icons';
 import { createFrontId } from 'util/editUtils';
+import { formMinWidth } from './ArticleFragmentForm';
+import { overviewMinWidth } from './FrontCollectionsOverview';
 
 const FrontHeader = styled(SectionHeader)`
   display: flex;
@@ -51,12 +53,18 @@ const StageSelectButtons = styled('div')`
   padding: 0px 20px;
 `;
 
+const singleFrontMinWidth = 300;
+
 const SingleFrontContainer = styled('div')<{
   isOverviewOpen: boolean;
   isFormOpen: boolean;
 }>`
   min-width: ${({ isOverviewOpen, isFormOpen }) =>
-    isOverviewOpen ? '400px' : isFormOpen ? '500px' : '300px'};
+    isOverviewOpen
+      ? singleFrontMinWidth + overviewMinWidth
+      : isFormOpen
+      ? singleFrontMinWidth + formMinWidth
+      : singleFrontMinWidth}px;
   flex: 1 1 auto;
   height: 100%;
 `;

@@ -64,11 +64,14 @@ type Props = ComponentProps &
     {}
   >;
 
+export const formMinWidth = 250;
+
 const FormContainer = styled(ContentContainer.withComponent('form'))`
   display: flex;
   flex-direction: column;
   flex: 1;
-  width: 380px;
+  min-width: ${formMinWidth}px;
+  max-width: 380px;
   margin-left: 10px;
   height: 100%;
 `;

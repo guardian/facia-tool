@@ -82,6 +82,13 @@ const CollapseAllButton = styled(ButtonRoundedWithLabel)`
 const FrontContentContainer = styled('div')`
   height: 100%;
   min-height: 0;
+  /* Min-width is set to allow content within this container to shrink completely */
+  min-width: 0;
+`;
+
+const FrontDetailContainer = styled(FrontContentContainer)`
+  /* We don't want to shrink our overview or form any smaller than the containing content */
+  flex-shrink: 0;
 `;
 
 const FrontCollectionsContainer = styled('div')`
@@ -230,12 +237,12 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
               </Root>
             </FrontCollectionsContainer>
           </FrontContentContainer>
-          <FrontContentContainer>
+          <FrontDetailContainer>
             <FrontDetailView
               id={this.props.id}
               browsingStage={this.props.browsingStage}
             />
-          </FrontContentContainer>
+          </FrontDetailContainer>
         </FrontContainer>
       </React.Fragment>
     );
