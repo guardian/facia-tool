@@ -1,12 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { styled } from 'constants/theme';
 
 import { priorities } from 'constants/priorities';
-
-const HomeContainer = styled('div')`
-  padding-top: 60px;
-`;
+import HomeContainer from './layout/HomeContainer';
 
 const renderPriority = (priority: string) => (
   <li key={priority}>
@@ -15,7 +11,12 @@ const renderPriority = (priority: string) => (
 );
 const Home = () => (
   <HomeContainer>
-    <ul>{Object.keys(priorities).map(renderPriority)}</ul>
+    <ul>
+      {Object.keys(priorities).map(renderPriority)}
+      <li>
+        <Link to={`/manage-editions`}>manage editions</Link>
+      </li>
+    </ul>
   </HomeContainer>
 );
 
