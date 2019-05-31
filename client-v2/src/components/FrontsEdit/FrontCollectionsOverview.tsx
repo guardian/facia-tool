@@ -8,6 +8,7 @@ import CollectionOverview from './CollectionOverview';
 import { CollectionItemSets } from 'shared/types/Collection';
 import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
 import ContentContainer from 'shared/components/layout/ContentContainer';
+import { media } from 'shared/util/mediaQueries';
 
 interface FrontContainerProps {
   id: string;
@@ -23,6 +24,8 @@ interface ContainerProps {
 }
 
 const Container = styled(ContentContainer)<ContainerProps>`
+  ${media.medium`display: none;`}
+  ${media.small`display: none;`}
   border: ${({ isClosed, theme }) =>
     isClosed ? `1px solid ${theme.shared.base.colors.borderColor}` : 'none'};
   border-top: none;
@@ -33,11 +36,12 @@ const Container = styled(ContentContainer)<ContainerProps>`
   margin-top: 43px;
   max-height: calc(100% - 43px);
   overflow-y: scroll;
+  padding: 0;
   ${({ isClosed }) => (isClosed ? 'padding: 0; height: 100%' : '')}
 `;
 
 const ContainerBody = styled.div`
-  width: 130px;
+  max-width: 160px;
 `;
 
 const FrontCollectionsOverview = ({

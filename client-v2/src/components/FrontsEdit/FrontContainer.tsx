@@ -4,8 +4,12 @@ import startCase from 'lodash/startCase';
 import { styled } from 'constants/theme';
 import { Dispatch } from 'types/Store';
 import { fetchLastPressed } from 'actions/Fronts';
-import { updateCollection } from 'actions/Collections';
-import { editorCloseFront } from 'bundles/frontsUIBundle';
+import { updateCollection} from 'actions/Collections';
+import {
+  editorCloseFront,
+  selectIsFrontOverviewOpen,
+  selectEditorArticleFragment
+} from 'bundles/frontsUIBundle';
 import Button from 'shared/components/input/ButtonDefault';
 import { frontStages } from 'constants/fronts';
 import { FrontConfig } from 'types/FaciaApi';
@@ -19,6 +23,7 @@ import { CollectionItemSets, Collection } from 'shared/types/Collection';
 import { toTitleCase } from 'util/stringUtils';
 import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
 import { PreviewEyeIcon, ClearIcon } from 'shared/components/icons/Icons';
+import { createFrontId } from 'util/editUtils';
 
 const FrontHeader = styled(SectionHeader)`
   display: flex;
@@ -43,10 +48,20 @@ const FrontsHeaderText = styled('span')`
 
 const StageSelectButtons = styled('div')`
   color: ${({ theme }) => theme.shared.colors.blackDark};
-  padding: 0px 30px;
+  padding: 0px 20px;
 `;
 
-const FrontsContainer = styled('div')`
+const SingleFrontContainer = styled('div')<{
+  isOverviewOpen: boolean;
+  isFormOpen: boolean;
+}>`
+  min-width: ${({ isOverviewOpen, isFormOpen }) =>
+    isOverviewOpen ? '400px' : isFormOpen ? '500px' : '300px'};
+  flex: 1 1 auto;
+  height: 100%;
+`;
+
+const FrontContainer = styled('div')`
   height: 100%;
   transform: translate3d(0, 0, 0);
 `;
@@ -67,6 +82,8 @@ interface FrontsContainerProps {
 type FrontsComponentProps = FrontsContainerProps & {
   selectedFront: FrontConfig;
   alsoOn: { [id: string]: AlsoOnDetail };
+  isOverviewOpen: boolean;
+  isFormOpen: boolean;
   frontsActions: {
     fetchLastPressed: (frontId: string) => void;
     editorCloseFront: (frontId: string) => void;
@@ -94,15 +111,23 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   };
 
   public render() {
+    const { frontId, isFormOpen, isOverviewOpen } = this.props;
+    const title = this.props.selectedFront &&
+    startCase(this.props.selectedFront.id);
     return (
-      <FrontsContainer>
-        <>
-          <FrontHeader greyHeader={true}>
-            <FrontsHeaderText>
-              {this.props.selectedFront &&
-                startCase(this.props.selectedFront.id)}
-            </FrontsHeaderText>
-            <FrontHeaderMeta>
+      <SingleFrontContainer
+        key={frontId}
+        id={createFrontId(frontId)}
+        isFormOpen={isFormOpen}
+        isOverviewOpen={isOverviewOpen}
+      >
+        <FrontContainer>
+          <>
+            <FrontHeader greyHeader={true}>
+              <FrontsHeaderText title={title}>
+                {title}
+              </FrontsHeaderText>
+              <FrontHeaderMeta>
               <a
                 href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${
                   this.props.frontId
@@ -131,19 +156,20 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                 <ClearIcon size="xl" />
               </FrontHeaderButton>
             </FrontHeaderMeta>
-          </FrontHeader>
-        </>
-        <FrontSectionContent direction="column">
-          {this.props.selectedFront && (
-            <Front
-              id={this.props.frontId}
-              alsoOn={this.props.alsoOn}
-              collectionIds={this.props.selectedFront.collections}
-              browsingStage={this.state.collectionSet}
-            />
-          )}
-        </FrontSectionContent>
-      </FrontsContainer>
+            </FrontHeader>
+          </>
+          <SectionContent direction="column">
+            {this.props.selectedFront && (
+              <Front
+                id={this.props.frontId}
+                alsoOn={this.props.alsoOn}
+                collectionIds={this.props.selectedFront.collections}
+                browsingStage={this.state.collectionSet}
+              />
+            )}
+          </SectionContent>
+        </FrontContainer>
+      </SingleFrontContainer>
     );
   }
 }
@@ -152,7 +178,9 @@ const createMapStateToProps = () => {
   const alsoOnSelector = createAlsoOnSelector();
   return (state: State, props: FrontsContainerProps) => ({
     selectedFront: getFront(state, { frontId: props.frontId }),
-    alsoOn: alsoOnSelector(state, { frontId: props.frontId })
+    alsoOn: alsoOnSelector(state, { frontId: props.frontId }),
+    isOverviewOpen: selectIsFrontOverviewOpen(state, props.frontId),
+    isFormOpen: !!selectEditorArticleFragment(state, props.frontId)
   });
 };
 
