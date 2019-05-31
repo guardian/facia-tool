@@ -71,7 +71,7 @@ const CollectionContainer = ContentContainer.extend<{
 
 const HeadlineContentContainer = styled('span')`
   position: relative;
-  right: -11px;
+  margin-right: -11px;
   line-height: 0px;
   display: flex;
 `;
@@ -101,7 +101,7 @@ const CollectionMetaBase = styled('span')`
 
 const CollectionMeta = styled(CollectionMetaBase)`
   padding-left: 10px;
-  min-width: 150px;
+  min-width: 120px;
 `;
 
 const ItemCountMeta = styled(CollectionMetaBase)`
@@ -225,23 +225,23 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
           <CollectionHeadlineWithConfigContainer>
             <CollectionHeadingText isLoading={!collection} title={displayName}>
               {displayName}
+              <CollectionConfigContainer>
+                {oc(collection).metadata[0].type() ? (
+                  <CollectionConfigText>
+                    <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
+                    {oc(collection).metadata[0].type()}
+                  </CollectionConfigText>
+                ) : null}
+                {collection &&
+                collection.platform &&
+                collection.platform !== 'Any' ? (
+                  <CollectionConfigText>
+                    <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
+                    {`${collection.platform} Only`}
+                  </CollectionConfigText>
+                ) : null}
+              </CollectionConfigContainer>
             </CollectionHeadingText>
-            <CollectionConfigContainer>
-              {oc(collection).metadata[0].type() ? (
-                <CollectionConfigText>
-                  <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
-                  {oc(collection).metadata[0].type()}
-                </CollectionConfigText>
-              ) : null}
-              {collection &&
-              collection.platform &&
-              collection.platform !== 'Any' ? (
-                <CollectionConfigText>
-                  <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
-                  {`${collection.platform} Only`}
-                </CollectionConfigText>
-              ) : null}
-            </CollectionConfigContainer>
           </CollectionHeadlineWithConfigContainer>
           {isLocked ? (
             <LockedCollectionFlag>Locked</LockedCollectionFlag>

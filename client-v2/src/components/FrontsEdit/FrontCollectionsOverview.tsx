@@ -8,7 +8,6 @@ import CollectionOverview from './CollectionOverview';
 import { CollectionItemSets } from 'shared/types/Collection';
 import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
 import ContentContainer from 'shared/components/layout/ContentContainer';
-import { media } from 'shared/util/mediaQueries';
 
 interface FrontContainerProps {
   id: string;
@@ -24,8 +23,6 @@ interface ContainerProps {
 }
 
 const Container = styled(ContentContainer)<ContainerProps>`
-  ${media.medium`display: none;`}
-  ${media.small`display: none;`}
   border: ${({ isClosed, theme }) =>
     isClosed ? `1px solid ${theme.shared.base.colors.borderColor}` : 'none'};
   border-top: none;

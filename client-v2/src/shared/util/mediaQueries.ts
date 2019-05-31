@@ -29,12 +29,12 @@ type MediaQueryMap = {
  * For example --
  *
  * const Content = styled.div`
- *  ${media.desktop`background: dodgerblue;`}
- *  ${media.tablet`background: mediumseagreen;`}
- *  ${media.phone`background: palevioletred;`}
+ *  ${media.desktop`background: red;`}
+ *  ${media.tablet`background: blue;`}
+ *  ${media.phone`background: green;`}
  * `;
  *
- * Cribbed from https://www.styled-components.com/docs/advanced.
+ * Cribbed and typescriptified from https://www.styled-components.com/docs/advanced.
  */
 export const media = (Object.keys(sizes) as Breakpoints[]).reduce(
   (acc, label) => {

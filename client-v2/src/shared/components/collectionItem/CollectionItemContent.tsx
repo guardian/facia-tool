@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import {
   CollectionItemDisplayTypes,
   CollectionItemSizes
@@ -9,20 +9,8 @@ const CollectionItemContent = styled('div')<{
   displaySize?: CollectionItemSizes;
 }>`
   position: relative;
-  ${({ displayType, displaySize }) => {
-    if (displayType === 'default') {
-      if (displaySize !== 'small') {
-        return css`
-          width: calc(100% - 163px);
-          padding: 0 8px;
-        `;
-      }
-      return css`
-        width: calc(100% - 100px);
-        padding: 0 8px;
-      `;
-    }
-  }};
+  padding: 0 8px;
+  flex-basis: 100%;
 `;
 
 CollectionItemContent.defaultProps = {

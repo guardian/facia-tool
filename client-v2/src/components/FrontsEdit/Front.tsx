@@ -92,8 +92,13 @@ const FrontDetailContainer = styled(FrontContentContainer)`
 `;
 
 const FrontCollectionsContainer = styled('div')`
+<<<<<<< HEAD
   overflow-y: scroll;
   max-height: calc(100% - 43px);
+=======
+  overflow: hidden;
+  max-height: 100%;
+>>>>>>> 68bd68fff2... Lots of small tweaks to keep the layouts sane
   padding-top: 1px;
 `;
 

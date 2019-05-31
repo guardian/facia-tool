@@ -64,7 +64,7 @@ type Props = ComponentProps &
     {}
   >;
 
-export const formMinWidth = 250;
+export const formMinWidth = 300;
 
 const FormContainer = styled(ContentContainer.withComponent('form'))`
   display: flex;

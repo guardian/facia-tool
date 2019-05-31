@@ -39,6 +39,7 @@ const ArticleBodyContainer = styled(CollectionItemBody)<{
   isDraggingImageOver: boolean;
 }>`
   position: relative;
+  justify-content: space-between;
   border-top-color: ${({ size, pillarId, isLive, theme }) =>
     size === 'default' && pillarId && isLive
       ? getPillarColor(pillarId, isLive)

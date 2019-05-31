@@ -6,7 +6,6 @@ export default styled(ContainerHeading)<{ setBack?: boolean }>`
   height: 40px;
   line-height: 40px;
   vertical-align: middle;
-  overflow: hidden;
   justify-content: space-between;
   border-bottom: ${({ theme, setBack }) =>
     setBack

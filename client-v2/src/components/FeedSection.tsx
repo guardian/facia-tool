@@ -6,6 +6,7 @@ import FeedContainer from './FeedsContainer';
 import Clipboard from './Clipboard';
 import ClipboardMeta from './ClipboardMeta';
 import FeedSectionHeader from './FeedSectionHeader';
+import { media } from 'shared/util/mediaQueries';
 
 interface Props {
   isClipboardOpen: boolean;
@@ -22,6 +23,7 @@ const FeedSectionContent = styled(SectionContent)`
 
 const FeedWrapper = styled('div')<{ isClipboardOpen: boolean }>`
   width: 409px;
+  ${media.large`width: 335px;`}
   border-right: ${({ theme, isClipboardOpen }) =>
     isClipboardOpen
       ? `solid 1px ${theme.shared.base.colors.borderColor}`
