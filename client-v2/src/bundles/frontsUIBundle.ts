@@ -540,7 +540,7 @@ const reducer = (state: State = defaultState, action: Action): State => {
           id => id !== action.payload.frontId
         )
       };
-      return clearArticleFragmentSelection(newState, action.payload.frontId)
+      return clearArticleFragmentSelection(newState, action.payload.frontId);
     }
     case EDITOR_CLOSE_OVERVIEW: {
       return {

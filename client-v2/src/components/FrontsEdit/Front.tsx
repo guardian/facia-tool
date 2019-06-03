@@ -285,12 +285,14 @@ const mapDispatchToProps = (
       ),
     toggleOverview: (open: boolean) => {
       if (open) {
-        dispatch(editorOpenOverview(props.id))
+        dispatch(editorOpenOverview(props.id));
       } else {
-        dispatch(batchActions([
-          editorCloseOverview(props.id),
-          editorClearArticleFragmentSelection(props.id)
-        ]))
+        dispatch(
+          batchActions([
+            editorCloseOverview(props.id),
+            editorClearArticleFragmentSelection(props.id)
+          ])
+        );
       }
     },
     closeAllCollections: (collections: string[]) =>
