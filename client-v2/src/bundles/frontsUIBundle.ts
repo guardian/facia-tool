@@ -491,6 +491,7 @@ const reducer = (state: State = defaultState, action: Action): State => {
     case EDITOR_SELECT_ARTICLE_FRAGMENT: {
       return {
         ...state,
+        closedOverviews: state.closedOverviews.concat(action.payload.frontId),
         selectedArticleFragments: {
           ...state.selectedArticleFragments,
           [action.payload.frontId]: {
@@ -533,12 +534,13 @@ const reducer = (state: State = defaultState, action: Action): State => {
       };
     }
     case EDITOR_OPEN_OVERVIEW: {
-      return {
+      const newState = {
         ...state,
         closedOverviews: state.closedOverviews.filter(
           id => id !== action.payload.frontId
         )
       };
+      return clearArticleFragmentSelection(newState, action.payload.frontId)
     }
     case EDITOR_CLOSE_OVERVIEW: {
       return {
