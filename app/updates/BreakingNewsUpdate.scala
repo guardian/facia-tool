@@ -40,11 +40,19 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
     email: String
   ): Future[Result] = {
     structuredLogger.putLog(LogUpdate(HandlingBreakingNewsCollection(collectionId), email))
-    val futurePossibleErrors = Future.traverse(collection.trails)(trail => sendAlert(trail, email, collectionId))
+
+    val futurePossibleErrors = Future.traverse(collection.trails)(trail => sendAlert(trail, email, collectionId).map(trail -> _))
     futurePossibleErrors.map { listOfPossibleErrors => {
-      val errors = listOfPossibleErrors.flatten
-      if (errors.isEmpty) Ok
-      else InternalServerError(Json.toJson(errors))
+      val errors = listOfPossibleErrors.collect { case(trail, Some(error)) => trail -> error }
+      if (errors.isEmpty) {
+        Ok
+      } else {
+        errors.foreach { case (trail, error) =>
+          logger.error(s"Error sending breaking news. Returning to client: $error. Trail: $trail")
+        }
+
+        InternalServerError(Json.toJson(errors.map { case(_, error) => error }))
+      }
     }}
   }
 
