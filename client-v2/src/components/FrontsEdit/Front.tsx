@@ -76,6 +76,7 @@ const CollapseAllButton = styled(ButtonRoundedWithLabel)`
 // min-height required here to display scrollbar in Firefox:
 // https://stackoverflow.com/questions/28636832/firefox-overflow-y-not-working-with-nested-flexbox
 const FrontContentContainer = styled('div')`
+  height: 100%;
   min-height: 0;
 `;
 
