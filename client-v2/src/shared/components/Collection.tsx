@@ -91,6 +91,8 @@ const LockedCollectionFlag = styled('span')`
   color: ${({ theme }) => theme.shared.base.colors.text};
   height: 40px;
   line-height: 40px;
+  border-bottom: 1px solid
+    ${({ theme }) => theme.shared.base.colors.borderColor};
 `;
 
 const CollectionMetaBase = styled('span')`
@@ -108,7 +110,7 @@ const ItemCountMeta = styled(CollectionMetaBase)`
   flex: 0;
 `;
 
-const CollectionHeadingSticky = styled(ContainerHeadingPinline)`
+const CollectionHeadingSticky = styled.div`
   position: sticky;
   top: 0;
   background-color: ${({ theme }) => theme.shared.base.colors.backgroundColor};
@@ -118,9 +120,13 @@ const CollectionHeadingSticky = styled(ContainerHeadingPinline)`
   padding: 0 ${contentContainerMargin};
 `;
 
+const CollectionHeadingInner = styled(ContainerHeadingPinline)`
+  border-bottom: 1px solid
+    ${({ theme }) => theme.shared.base.colors.borderColor};
+`;
+
 const CollectionHeadlineWithConfigContainer = styled('div')`
   flex-grow: 1;
-  display: flex;
   min-width: 0;
   flex-basis: 100%;
 `;
@@ -136,8 +142,6 @@ const CollectionHeadingText = styled('span')<{ isLoading: boolean }>`
     `} white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  border-bottom: 1px solid
-    ${({ theme }) => theme.shared.base.colors.borderColor};
 `;
 
 const CollectionToggleContainer = styled('div')`
@@ -221,7 +225,9 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
         onBlur={handleBlur}
         hasMultipleFrontsOpen={hasMultipleFrontsOpen}
       >
-        <CollectionHeadingSticky setBack tabIndex={-1}>
+        <CollectionHeadingSticky tabIndex={-1}>
+          <CollectionHeadingInner>
+
           <CollectionHeadlineWithConfigContainer>
             <CollectionHeadingText isLoading={!collection} title={displayName}>
               {displayName}
@@ -250,6 +256,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
               {headlineContent}
             </HeadlineContentContainer>
           ) : null}
+          </CollectionHeadingInner>
         </CollectionHeadingSticky>
         <DragIntentContainer
           delay={300}
