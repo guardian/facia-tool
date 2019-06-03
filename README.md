@@ -149,20 +149,6 @@ brew install awscli
 
 Clone and follows the instructions to set up [dev-nginx](https://github.com/guardian/dev-nginx) (private repo - request access). The steps to follow are 'Install SSL certificates' and 'Install config for an application'. The path for nginx mapping is `nginx/nginx-mapping.yml`.
 
-Also add the root certificate `digital-ca.crt` file to your System Keychain and trust it for SSL connections:
-
-```
-sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain <certificate>
-```
-
-Modify the files
-
--   `/usr/local/etc/nginx/nginx.conf` and add this line at the bottom, inside the main block
-
-    > include sites-enabled/\*.conf;
-
-Run `sudo nginx -s reload` to restart nginx with the new configuration.
-
 #### Config Files
 
 To get the config files run `./scripts/fetch-config.sh`. This requires CMS front credentials which you get from [janus](https://janus.gutools.co.uk)
