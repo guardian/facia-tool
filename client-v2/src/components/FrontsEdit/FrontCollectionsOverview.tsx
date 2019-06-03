@@ -32,7 +32,7 @@ const Container = styled(ContentContainer)<ContainerProps>`
   margin-left: 10px;
   margin-top: 43px;
   max-height: calc(100% - 43px);
-  overflow: hidden;
+  overflow-y: scroll;
   ${({ isClosed }) => (isClosed ? 'padding: 0; height: 100%' : '')}
 `;
 
@@ -46,7 +46,7 @@ const FrontCollectionsOverview = ({
   browsingStage
 }: FrontCollectionOverviewProps) => (
   <Container setBack isClosed={false}>
-    <ContainerHeadingPinline>'Overview'</ContainerHeadingPinline>
+    <ContainerHeadingPinline>Overview</ContainerHeadingPinline>
     <ContainerBody>
       {front.collections.map(collectionId => (
         <CollectionOverview
