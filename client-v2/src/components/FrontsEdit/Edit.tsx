@@ -81,7 +81,7 @@ class FrontsEdit extends React.Component<Props> {
             makeRoomForExtraHeader={this.props.isCurrentFrontsMenuOpen}
           >
             {this.props.frontIds.map(id => (
-              <FrontContainer frontId={id} />
+              <FrontContainer key={id} frontId={id} />
             ))}
           </FrontsContainer>
         </SectionsContainer>
