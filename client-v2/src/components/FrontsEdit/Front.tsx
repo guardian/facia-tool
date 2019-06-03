@@ -12,7 +12,8 @@ import {
   editorOpenCollections,
   editorOpenOverview,
   editorCloseOverview,
-  selectIsFrontOverviewOpen
+  selectIsFrontOverviewOpen,
+  editorClearArticleFragmentSelection
 } from 'bundles/frontsUIBundle';
 import {
   CollectionItemSets,
@@ -32,6 +33,7 @@ import { DownCaretIcon } from 'shared/components/icons/Icons';
 import { theme as sharedTheme } from 'shared/constants/theme';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import ButtonRoundedWithLabel from 'shared/components/input/ButtonRoundedWithLabel';
+import { batchActions } from 'redux-batched-actions';
 
 const FrontContainer = styled('div')`
   display: flex;
@@ -281,10 +283,16 @@ const mapDispatchToProps = (
           frontId
         })
       ),
-    toggleOverview: (open: boolean) =>
-      dispatch(
-        open ? editorOpenOverview(props.id) : editorCloseOverview(props.id)
-      ),
+    toggleOverview: (open: boolean) => {
+      if (open) {
+        dispatch(editorOpenOverview(props.id))
+      } else {
+        dispatch(batchActions([
+          editorCloseOverview(props.id),
+          editorClearArticleFragmentSelection(props.id)
+        ]))
+      }
+    },
     closeAllCollections: (collections: string[]) =>
       dispatch(closeCollections(collections))
   };
