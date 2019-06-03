@@ -63,7 +63,9 @@ class ClipboardHeader extends React.Component<ClipboardHeaderProps> {
         onIntentConfirm={() => this.props.toggleClipboard(true)}
       >
         <Header isOpen={this.props.isClipboardOpen}>
-          <ClipboardTitle htmlFor="btn-clipboard-toggle">Clipboard</ClipboardTitle>
+          <ClipboardTitle htmlFor="btn-clipboard-toggle">
+            Clipboard
+          </ClipboardTitle>
           <ButtonCircularCaret
             id="btn-clipboard-toggle"
             openDir="right"
