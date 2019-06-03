@@ -6,8 +6,8 @@ const Wrapper = styled('span')<{
   displaySize?: 'small' | 'default';
   showBoostedHeadline?: boolean;
 }>`
-  font-family: GHGuardianHeadline;
-  font-weight: 500;
+  font-family: TS3TextSans;
+  font-weight: 400;
   padding-top: 2px;
   font-size: ${({ displaySize, showBoostedHeadline }) => {
     if (displaySize === 'small') {

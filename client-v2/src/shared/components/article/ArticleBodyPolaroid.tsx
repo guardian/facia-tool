@@ -20,7 +20,7 @@ const PillaredSection = styled('span')<{ pillar?: string; isLive?: boolean }>`
   color: ${({ pillar, isLive }) =>
     getPillarColor(pillar, isLive || true) || 'inherit'};
   font-size: 13px;
-  font-weight: bold;
+  font-weight: 400;
 `;
 
 const HeadlinePolaroidSpan = styled('span')`
