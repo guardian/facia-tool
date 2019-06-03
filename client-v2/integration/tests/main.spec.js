@@ -12,7 +12,18 @@ import {
   previouslyDropZone,
   previouslyItem,
   clipboardWrapper,
-  clipboardItem
+  clipboardItem,
+  hoverOverlay,
+  collection,
+  collectionItem,
+  collectionDropZone,
+  collectionItemHoverZone,
+  allCollectionItems,
+  allCollectionDropZones,
+  collectionItemDeleteButton,
+  collectionDiscardButton,
+  collectionItemAddToClipboardButton,
+  clipboardItemDeleteButton
 } from '../selectors';
 
 fixture`Fronts edit`.page`http://localhost:3456/v2/editorial`
@@ -52,6 +63,35 @@ test('Drag and drop', async t => {
     .notEql(topFeedHeadline)
     .expect(frontHeadline().textContent)
     .eql(topFrontHeadline);
+});
+
+test('Drag between two collections', async t => {
+  const firstCollectionStory = collectionItem(0, 0);
+  const secondCollectionDropZone = collectionDropZone(1, 0);
+  await t
+    .dragToElement(firstCollectionStory, secondCollectionDropZone)
+    .expect(allCollectionItems(0).count)
+    .eql(0)
+    .expect(allCollectionItems(1).count)
+    .eql(1);
+});
+
+test('Drag from clipboard to collection', async t => {
+  const firstCollectionStoryCount = await allCollectionItems(0).count;
+  const clipboardStoryCount = await clipboardItem().count;
+  await t
+    .dragToElement(clipboardItem(), collection(0))
+    .expect(allCollectionItems(0).count)
+    .eql(firstCollectionStoryCount + 1)
+    .expect(clipboardItem().count)
+    .eql(clipboardStoryCount);
+});
+
+test('Discarding changes to a collection works', async t => {
+  await t
+    .click(collectionDiscardButton(1))
+    .expect(allCollectionItems(1).count) // discarding overwrites a collection's draft content with its live content
+    .eql(0);
 });
 
 test('Snap Links - Guardian', async t => {

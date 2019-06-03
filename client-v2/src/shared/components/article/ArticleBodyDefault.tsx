@@ -198,6 +198,7 @@ const articleBodyDefault = React.memo(
               <KickerHeading
                 displaySize={size}
                 style={{ color: getPillarColor(pillarId, true) }}
+                data-testid="kicker"
               >
                 {kickerToDisplay}
               </KickerHeading>

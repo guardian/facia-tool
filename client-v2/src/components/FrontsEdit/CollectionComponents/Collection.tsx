@@ -138,6 +138,7 @@ class Collection extends React.Component<CollectionProps> {
                 priority="default"
                 onClick={() => discardDraftChanges(id)}
                 tabIndex={-1}
+                data-testid="collection-discard-button"
                 title={
                   isEditFormOpen
                     ? 'You cannot discard changes to this collection whilst the edit form is open.'

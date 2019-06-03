@@ -131,7 +131,7 @@ class CollectionContext extends React.Component<
       lastMobileArticle
     } = this.props;
     return (
-      <CollectionWrapper>
+      <CollectionWrapper data-testid="collection">
         <Collection
           key={id}
           id={id}

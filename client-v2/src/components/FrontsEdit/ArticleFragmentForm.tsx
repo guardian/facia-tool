@@ -191,7 +191,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     };
 
     return (
-      <FormContainer onSubmit={handleSubmit}>
+      <FormContainer onSubmit={handleSubmit} data-testid="edit-form">
         <CollectionHeadingPinline>
           Edit
           <ButtonContainer>
@@ -203,6 +203,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               onClick={handleSubmit}
               disabled={pristine || !articleExists}
               size="l"
+              data-testid="edit-form-save-button"
             >
               Save
             </Button>
@@ -295,6 +296,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               useHeadlineFont
               rows="2"
               originalValue={articleCapiFieldValues.headline}
+              data-testid="edit-form-headline-field"
             />
             <ConditionalField
               permittedFields={editableFields}
@@ -335,6 +337,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               label="Breaking News"
               id={getInputId(articleFragmentId, 'breaking-news')}
               type="checkbox"
+              dataTestId="edit-form-breaking-news-toggle"
             />
             <ConditionalField
               permittedFields={editableFields}

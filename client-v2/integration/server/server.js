@@ -5,6 +5,8 @@ const port = 3456;
 
 const config = require('../fixtures/config');
 const collection = require('../fixtures/collection');
+const collectionTwo = require('../fixtures/collection2');
+const collectionThree = require('../fixtures/collection3');
 const capiCollection = require('../fixtures/capi-collection');
 const capiSearch = require('../fixtures/capi-search');
 const snapTag = require('../fixtures/snap-tag');
@@ -110,16 +112,13 @@ module.exports = async () =>
       return res.json(result);
     };
 
-    // Attempts at a capture group:
-    // /api/(preview|live)/*
-    // /api/(?:preview|live)/
     app.get('/api/live/*', handler);
     app.get('/api/preview/*', handler);
 
     app.get('/config', (_, res) => res.json(config));
-    app.get('/collection/:id', (_, res) => res.json(collection));
-    app.post('/collections*', (req, res) =>
-      res.json([
+
+    app.post('/collections*', (req, res) => {
+      return res.json([
         {
           id: req.body[0].id,
           collection,
@@ -127,8 +126,31 @@ module.exports = async () =>
             live: { desktop: 4, mobile: 4 },
             draft: { desktop: 4, mobile: 4 }
           }
+        },
+        {
+          id: req.body[1].id,
+          collection: collectionTwo,
+          storiesVisibleByStage: {
+            live: { desktop: 4, mobile: 4 },
+            draft: { desktop: 4, mobile: 4 }
+          }
         }
-      ])
+      ]);
+    });
+
+    // catch requests to discard collection endpoint
+    app.post(
+      '/collection/v2Discard/e59785e9-ba82-48d8-b79a-0a80b2f9f808',
+      (req, res) => {
+        return res.json({
+          id: req.body.collectionId,
+          collection: collectionThree,
+          storiesVisibleByStage: {
+            live: { desktop: 4, mobile: 4 },
+            draft: { desktop: 4, mobile: 4 }
+          }
+        });
+      }
     );
 
     // send the assets from dist
