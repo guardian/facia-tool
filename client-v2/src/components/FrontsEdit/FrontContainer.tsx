@@ -4,7 +4,7 @@ import startCase from 'lodash/startCase';
 import { styled } from 'constants/theme';
 import { Dispatch } from 'types/Store';
 import { fetchLastPressed } from 'actions/Fronts';
-import { updateCollection} from 'actions/Collections';
+import { updateCollection } from 'actions/Collections';
 import {
   editorCloseFront,
   selectIsFrontOverviewOpen,
@@ -59,6 +59,10 @@ const SingleFrontContainer = styled('div')<{
   isOverviewOpen: boolean;
   isFormOpen: boolean;
 }>`
+  /**
+   * We parameterise the min-width of the fronts container to
+   * handle the presence of the form and overview content.
+   */
   min-width: ${({ isOverviewOpen, isFormOpen }) =>
     isOverviewOpen
       ? singleFrontMinWidth + overviewMinWidth + 10
@@ -120,8 +124,8 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
 
   public render() {
     const { frontId, isFormOpen, isOverviewOpen } = this.props;
-    const title = this.props.selectedFront &&
-    startCase(this.props.selectedFront.id);
+    const title =
+      this.props.selectedFront && startCase(this.props.selectedFront.id);
     return (
       <SingleFrontContainer
         key={frontId}
@@ -132,9 +136,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
         <FrontContainer>
           <>
             <FrontHeader greyHeader={true}>
-              <FrontsHeaderText title={title}>
-                {title}
-              </FrontsHeaderText>
+              <FrontsHeaderText title={title}>{title}</FrontsHeaderText>
               <FrontHeaderMeta>
               <a
                 href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${

@@ -227,35 +227,37 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       >
         <CollectionHeadingSticky tabIndex={-1}>
           <CollectionHeadingInner>
-
-          <CollectionHeadlineWithConfigContainer>
-            <CollectionHeadingText isLoading={!collection} title={displayName}>
-              {displayName}
-              <CollectionConfigContainer>
-                {oc(collection).metadata[0].type() ? (
-                  <CollectionConfigText>
-                    <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
-                    {oc(collection).metadata[0].type()}
-                  </CollectionConfigText>
-                ) : null}
-                {collection &&
-                collection.platform &&
-                collection.platform !== 'Any' ? (
-                  <CollectionConfigText>
-                    <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
-                    {`${collection.platform} Only`}
-                  </CollectionConfigText>
-                ) : null}
-              </CollectionConfigContainer>
-            </CollectionHeadingText>
-          </CollectionHeadlineWithConfigContainer>
-          {isLocked ? (
-            <LockedCollectionFlag>Locked</LockedCollectionFlag>
-          ) : headlineContent ? (
-            <HeadlineContentContainer>
-              {headlineContent}
-            </HeadlineContentContainer>
-          ) : null}
+            <CollectionHeadlineWithConfigContainer>
+              <CollectionHeadingText
+                isLoading={!collection}
+                title={displayName}
+              >
+                {displayName}
+                <CollectionConfigContainer>
+                  {oc(collection).metadata[0].type() ? (
+                    <CollectionConfigText>
+                      <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
+                      {oc(collection).metadata[0].type()}
+                    </CollectionConfigText>
+                  ) : null}
+                  {collection &&
+                  collection.platform &&
+                  collection.platform !== 'Any' ? (
+                    <CollectionConfigText>
+                      <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
+                      {`${collection.platform} Only`}
+                    </CollectionConfigText>
+                  ) : null}
+                </CollectionConfigContainer>
+              </CollectionHeadingText>
+            </CollectionHeadlineWithConfigContainer>
+            {isLocked ? (
+              <LockedCollectionFlag>Locked</LockedCollectionFlag>
+            ) : headlineContent ? (
+              <HeadlineContentContainer>
+                {headlineContent}
+              </HeadlineContentContainer>
+            ) : null}
           </CollectionHeadingInner>
         </CollectionHeadingSticky>
         <DragIntentContainer

@@ -12,8 +12,7 @@ import {
   editorOpenCollections,
   editorOpenOverview,
   editorCloseOverview,
-  selectIsFrontOverviewOpen,
-  editorClearArticleFragmentSelection
+  selectIsFrontOverviewOpen
 } from 'bundles/frontsUIBundle';
 import {
   CollectionItemSets,
@@ -33,7 +32,6 @@ import { DownCaretIcon } from 'shared/components/icons/Icons';
 import { theme as sharedTheme } from 'shared/constants/theme';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import ButtonRoundedWithLabel from 'shared/components/input/ButtonRoundedWithLabel';
-import { batchActions } from 'redux-batched-actions';
 
 const FrontContainer = styled('div')`
   height: 100%;
@@ -92,13 +90,8 @@ const FrontDetailContainer = styled(FrontContentContainer)`
 `;
 
 const FrontCollectionsContainer = styled('div')`
-<<<<<<< HEAD
   overflow-y: scroll;
   max-height: calc(100% - 43px);
-=======
-  overflow: hidden;
-  max-height: 100%;
->>>>>>> 68bd68fff2... Lots of small tweaks to keep the layouts sane
   padding-top: 1px;
 `;
 
@@ -299,18 +292,10 @@ const mapDispatchToProps = (
           frontId
         })
       ),
-    toggleOverview: (open: boolean) => {
-      if (open) {
-        dispatch(editorOpenOverview(props.id));
-      } else {
-        dispatch(
-          batchActions([
-            editorCloseOverview(props.id),
-            editorClearArticleFragmentSelection(props.id)
-          ])
-        );
-      }
-    },
+    toggleOverview: (open: boolean) =>
+      dispatch(
+        open ? editorOpenOverview(props.id) : editorCloseOverview(props.id)
+      ),
     closeAllCollections: (collections: string[]) =>
       dispatch(closeCollections(collections))
   };

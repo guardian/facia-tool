@@ -87,27 +87,6 @@ test('Drag from clipboard to collection', async t => {
     .eql(clipboardStoryCount);
 });
 
-test('Deleting an article from clipboard works', async t => {
-  const clipboardStory = await clipboardItem();
-  const clipboardStoryCount = await clipboardItem().count;
-  const deleteButton = await clipboardItemDeleteButton();
-  await t
-    .hover(clipboardStory, { speed: 0.7 })
-    .click(deleteButton)
-    .expect(clipboardItem().count)
-    .eql(clipboardStoryCount - 1);
-});
-
-test('Deleting an article from a collection works', async t => {
-  const firstCollectionItem = await collectionItem(0, 0);
-  const firstCollectionStoryCount = await allCollectionItems(0).count;
-  await t
-    .hover(firstCollectionItem, { speed: 0.7 }) // mouse speed needs to be slowed down for hover to trigger correctly
-    .click(collectionItemDeleteButton(0, 0))
-    .expect(allCollectionItems(0).count)
-    .eql(firstCollectionStoryCount - 1);
-});
-
 test('Discarding changes to a collection works', async t => {
   await t
     .click(collectionDiscardButton(1))
