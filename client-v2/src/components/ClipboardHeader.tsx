@@ -40,11 +40,13 @@ const Header = styled.div<{
     }`};
 `;
 
-const ClipboardTitle = styled.h2`
+const ClipboardTitle = styled.label`
   font-size: 12px;
+  font-weight: bold;
   line-height: 1;
   margin: 0;
   padding: 5px;
+  cursor: pointer;
 `;
 
 class ClipboardHeader extends React.Component<ClipboardHeaderProps> {
@@ -61,8 +63,9 @@ class ClipboardHeader extends React.Component<ClipboardHeaderProps> {
         onIntentConfirm={() => this.props.toggleClipboard(true)}
       >
         <Header isOpen={this.props.isClipboardOpen}>
-          <ClipboardTitle>Clipboard</ClipboardTitle>
+          <ClipboardTitle htmlFor="btn-clipboard-toggle">Clipboard</ClipboardTitle>
           <ButtonCircularCaret
+            id="btn-clipboard-toggle"
             openDir="right"
             active={this.props.isClipboardOpen}
             preActive={this.state.preActive}

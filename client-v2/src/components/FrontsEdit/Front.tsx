@@ -52,12 +52,13 @@ const OverviewToggleContainer = styled('div')`
   padding-left: 10px;
   padding-top: 3px;
   border-left: ${({ theme }) =>
-    `solid 1px  ${theme.shared.colors.greyVeryLight}`}
+    `solid 1px  ${theme.shared.colors.greyVeryLight}`};
   padding-top: 13px;
 `;
 
-const OverviewHeading = styled('span')`
+const OverviewHeading = styled('label')`
   margin-right: 5px;
+  cursor: pointer;
 `;
 
 const CollapseAllButton = styled(ButtonRoundedWithLabel)`
@@ -188,10 +189,11 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                 label={'Collapse all'}
               />
               <OverviewToggleContainer>
-                <OverviewHeading>
+                <OverviewHeading htmlFor="btn-overview-toggle">
                   {this.props.overviewIsOpen ? 'Hide overview' : 'Overview'}
                 </OverviewHeading>
                 <ButtonCircularCaret
+                  id="btn-overview-toggle"
                   style={{
                     margin: '0'
                   }}
