@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled, theme } from 'constants/theme';
+import { styled } from 'constants/theme';
 import { connect } from 'react-redux';
 import { Root, Move, PosSpec } from 'lib/dnd';
 import { State } from 'types/State';
@@ -9,7 +9,11 @@ import { insertArticleFragmentFromDropEvent } from 'util/collectionUtils';
 import { AlsoOnDetail } from 'types/Collection';
 import {
   editorSelectArticleFragment,
-  editorOpenCollections
+  editorOpenCollections,
+  editorOpenOverview,
+  editorCloseOverview,
+  selectIsFrontOverviewOpen,
+  editorClearArticleFragmentSelection
 } from 'bundles/frontsUIBundle';
 import {
   CollectionItemSets,
@@ -19,20 +23,69 @@ import { getFront } from 'selectors/frontsSelectors';
 import { FrontConfig } from 'types/FaciaApi';
 import { events } from 'services/GA';
 import FrontDetailView from './FrontDetailView';
-import { initialiseCollectionsForFront } from 'actions/Collections';
+import {
+  initialiseCollectionsForFront,
+  closeCollections
+} from 'actions/Collections';
 import { setFocusState } from 'bundles/focusBundle';
 import Collection from './Collection';
+import { DownCaretIcon } from 'shared/components/icons/Icons';
+import { theme as sharedTheme } from 'shared/constants/theme';
+import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
+import ButtonRoundedWithLabel from 'shared/components/input/ButtonRoundedWithLabel';
+import { batchActions } from 'redux-batched-actions';
+
+const FrontContainer = styled('div')`
+  display: flex;
+`;
+
+const SectionContentMetaContainer = styled('div')`
+  display: flex;
+  flex-shrink: 0;
+  justify-content: flex-end;
+  margin-right: 5px;
+`;
+
+const OverviewToggleContainer = styled('div')`
+  font-size: 13px;
+  font-weight: bold;
+  padding-left: 10px;
+  padding-top: 3px;
+  border-left: ${({ theme }) =>
+    `solid 1px  ${theme.shared.colors.greyVeryLight}`};
+  padding-top: 13px;
+`;
+
+const OverviewHeading = styled('label')`
+  margin-right: 5px;
+  cursor: pointer;
+`;
+
+const CollapseAllButton = styled(ButtonRoundedWithLabel)`
+  & svg {
+    transform: rotate(180deg);
+    vertical-align: middle;
+  }
+  :hover {
+    background-color: ${({ theme }) =>
+      theme.shared.base.colors.backgroundColorFocused};
+  }
+  margin-right: 10px;
+  font-size: 12px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+`;
 
 // min-height required here to display scrollbar in Firefox:
 // https://stackoverflow.com/questions/28636832/firefox-overflow-y-not-working-with-nested-flexbox
-const FrontContainer = styled('div')`
-  display: flex;
+const FrontContentContainer = styled('div')`
+  height: 100%;
   min-height: 0;
 `;
 
-const FrontContentContainer = styled('div')`
-  max-height: 100%;
+const FrontCollectionsContainer = styled('div')`
   overflow-y: scroll;
+  max-height: calc(100% - 43px);
   padding-top: 1px;
 `;
 
@@ -56,6 +109,9 @@ type FrontProps = FrontPropsBeforeState & {
     articleFragment: TArticleFragment,
     frontId: string
   ) => void;
+  toggleOverview: (open: boolean) => void;
+  overviewIsOpen: boolean;
+  closeAllCollections: (collections: string[]) => void;
 };
 
 interface FrontState {
@@ -112,7 +168,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
       <React.Fragment>
         <div
           style={{
-            background: theme.shared.base.colors.backgroundColorLight,
+            background: sharedTheme.base.colors.backgroundColorLight,
             display: this.state.error ? 'block' : 'none',
             padding: '1em',
             position: 'absolute',
@@ -123,24 +179,54 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
         </div>
         <FrontContainer>
           <FrontContentContainer>
-            <Root id={this.props.id} data-testid={this.props.id}>
-              {front.collections.map(collectionId => (
-                <Collection
-                  key={collectionId}
-                  id={collectionId}
-                  frontId={this.props.id}
-                  priority={front.priority}
-                  browsingStage={this.props.browsingStage}
-                  alsoOn={this.props.alsoOn}
-                  handleInsert={this.handleInsert}
-                  handleMove={this.handleMove}
-                  selectArticleFragment={this.props.selectArticleFragment(
-                    this.props.id
-                  )}
-                  handleArticleFocus={this.handleArticleFocus}
+            <SectionContentMetaContainer>
+              <CollapseAllButton
+                onClick={e => {
+                  e.preventDefault();
+                  this.props.closeAllCollections(this.props.collectionIds);
+                }}
+                icon={<DownCaretIcon fill={sharedTheme.base.colors.text} />}
+                label={'Collapse all'}
+              />
+              <OverviewToggleContainer>
+                <OverviewHeading htmlFor="btn-overview-toggle">
+                  {this.props.overviewIsOpen ? 'Hide overview' : 'Overview'}
+                </OverviewHeading>
+                <ButtonCircularCaret
+                  id="btn-overview-toggle"
+                  style={{
+                    margin: '0'
+                  }}
+                  openDir="right"
+                  active={this.props.overviewIsOpen}
+                  preActive={false}
+                  onClick={() =>
+                    this.props.toggleOverview(!this.props.overviewIsOpen)
+                  }
+                  small={true}
                 />
-              ))}
-            </Root>
+              </OverviewToggleContainer>
+            </SectionContentMetaContainer>
+            <FrontCollectionsContainer>
+              <Root id={this.props.id} data-testid={this.props.id}>
+                {front.collections.map(collectionId => (
+                  <Collection
+                    key={collectionId}
+                    id={collectionId}
+                    frontId={this.props.id}
+                    priority={front.priority}
+                    browsingStage={this.props.browsingStage}
+                    alsoOn={this.props.alsoOn}
+                    handleInsert={this.handleInsert}
+                    handleMove={this.handleMove}
+                    selectArticleFragment={this.props.selectArticleFragment(
+                      this.props.id
+                    )}
+                    handleArticleFocus={this.handleArticleFocus}
+                  />
+                ))}
+              </Root>
+            </FrontCollectionsContainer>
           </FrontContentContainer>
           <FrontContentContainer>
             <FrontDetailView
@@ -165,7 +251,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
 
 const mapStateToProps = (state: State, props: FrontPropsBeforeState) => {
   return {
-    front: getFront(state, { frontId: props.id })
+    front: getFront(state, { frontId: props.id }),
+    overviewIsOpen: selectIsFrontOverviewOpen(state, props.id)
   };
 };
 
@@ -197,7 +284,21 @@ const mapDispatchToProps = (
           articleFragment,
           frontId
         })
-      )
+      ),
+    toggleOverview: (open: boolean) => {
+      if (open) {
+        dispatch(editorOpenOverview(props.id));
+      } else {
+        dispatch(
+          batchActions([
+            editorCloseOverview(props.id),
+            editorClearArticleFragmentSelection(props.id)
+          ])
+        );
+      }
+    },
+    closeAllCollections: (collections: string[]) =>
+      dispatch(closeCollections(collections))
   };
 };
 

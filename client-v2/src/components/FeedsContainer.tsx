@@ -24,6 +24,7 @@ import { IPagination } from 'lib/createAsyncResourceBundle';
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 import { DEFAULT_PARAMS } from 'services/faciaApi';
 import ScrollContainer from './ScrollContainer';
+import ClipboardHeader from 'components/ClipboardHeader';
 
 interface FeedsContainerProps {
   fetchLive: (params: object, isResource: boolean) => void;
@@ -310,6 +311,7 @@ class FeedsContainer extends React.Component<
                 displaySearchFilters={this.state.displaySearchFilters}
                 onUpdate={this.handleParamsUpdate}
                 showReviewSearch={false}
+                rightHandContainer={<ClipboardHeader />}
               />
               {!this.state.displaySearchFilters && this.renderFixedContent()}
             </>

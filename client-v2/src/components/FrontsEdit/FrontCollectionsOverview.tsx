@@ -2,19 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { styled } from 'constants/theme';
 import { State } from 'types/State';
-import { Dispatch } from 'types/Store';
 import { getFront } from 'selectors/frontsSelectors';
 import { FrontConfig } from 'types/FaciaApi';
 import CollectionOverview from './CollectionOverview';
 import { CollectionItemSets } from 'shared/types/Collection';
 import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
 import ContentContainer from 'shared/components/layout/ContentContainer';
-import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
-import {
-  selectIsFrontOverviewOpen,
-  editorOpenOverview,
-  editorCloseOverview
-} from 'bundles/frontsUIBundle';
 
 interface FrontContainerProps {
   id: string;
@@ -23,8 +16,6 @@ interface FrontContainerProps {
 
 type FrontCollectionOverviewProps = FrontContainerProps & {
   front: FrontConfig;
-  overviewIsOpen: boolean;
-  toggleOverview: (open: boolean) => void;
 };
 
 interface ContainerProps {
@@ -39,6 +30,9 @@ const Container = styled(ContentContainer)<ContainerProps>`
   flex-direction: column;
   flex: 1;
   margin-left: 10px;
+  margin-top: 43px;
+  max-height: calc(100% - 43px);
+  overflow-y: scroll;
   ${({ isClosed }) => (isClosed ? 'padding: 0; height: 100%' : '')}
 `;
 
@@ -49,53 +43,25 @@ const ContainerBody = styled.div`
 const FrontCollectionsOverview = ({
   id,
   front,
-  browsingStage,
-  overviewIsOpen,
-  toggleOverview
+  browsingStage
 }: FrontCollectionOverviewProps) => (
-  <Container setBack isClosed={!overviewIsOpen}>
-    <ContainerHeadingPinline>
-      {overviewIsOpen && 'Overview'}
-      <ButtonCircularCaret
-        style={{
-          margin: overviewIsOpen ? '0' : '10px'
-        }}
-        openDir="right"
-        active={overviewIsOpen}
-        preActive={false}
-        onClick={() => toggleOverview(!overviewIsOpen)}
-      />
-    </ContainerHeadingPinline>
-    {overviewIsOpen && (
-      <ContainerBody>
-        {front.collections.map(collectionId => (
-          <CollectionOverview
-            frontId={id}
-            key={collectionId}
-            collectionId={collectionId}
-            browsingStage={browsingStage}
-          />
-        ))}
-      </ContainerBody>
-    )}
+  <Container setBack isClosed={false}>
+    <ContainerHeadingPinline>Overview</ContainerHeadingPinline>
+    <ContainerBody>
+      {front.collections.map(collectionId => (
+        <CollectionOverview
+          frontId={id}
+          key={collectionId}
+          collectionId={collectionId}
+          browsingStage={browsingStage}
+        />
+      ))}
+    </ContainerBody>
   </Container>
 );
 
 const mapStateToProps = (state: State, props: FrontContainerProps) => ({
-  front: getFront(state, { frontId: props.id }),
-  overviewIsOpen: selectIsFrontOverviewOpen(state, props.id)
+  front: getFront(state, { frontId: props.id })
 });
 
-const mapDispatchToProps = (
-  dispatch: Dispatch,
-  props: FrontContainerProps
-) => ({
-  toggleOverview: (open: boolean) =>
-    dispatch(
-      open ? editorOpenOverview(props.id) : editorCloseOverview(props.id)
-    )
-});
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FrontCollectionsOverview);
+export default connect(mapStateToProps)(FrontCollectionsOverview);

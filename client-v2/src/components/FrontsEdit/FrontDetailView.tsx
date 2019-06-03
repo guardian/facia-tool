@@ -9,7 +9,8 @@ import {
 import { updateArticleFragmentMeta as updateArticleFragmentMetaAction } from 'actions/ArticleFragments';
 import {
   editorClearArticleFragmentSelection,
-  selectEditorArticleFragment
+  selectEditorArticleFragment,
+  selectIsFrontOverviewOpen
 } from 'bundles/frontsUIBundle';
 import { Dispatch } from 'types/Store';
 import { State } from 'types/State';
@@ -23,6 +24,7 @@ interface ComponentProps extends ContainerProps {
   selectedArticleFragment: { id: string; isSupporting: boolean } | void;
   updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) => void;
   clearArticleFragmentSelection: (id: string) => void;
+  overviewIsOpen: boolean;
 }
 
 const FrontsDetailView = ({
@@ -30,27 +32,34 @@ const FrontsDetailView = ({
   id,
   browsingStage,
   clearArticleFragmentSelection,
-  updateArticleFragmentMeta
-}: ComponentProps) =>
-  selectedArticleFragment ? (
-    <ArticleFragmentForm
-      articleFragmentId={selectedArticleFragment.id}
-      isSupporting={selectedArticleFragment.isSupporting}
-      key={selectedArticleFragment.id}
-      form={selectedArticleFragment.id}
-      frontId={id}
-      onSave={(meta: ArticleFragmentMeta) => {
-        updateArticleFragmentMeta(selectedArticleFragment.id, meta);
-        clearArticleFragmentSelection(id);
-      }}
-      onCancel={() => clearArticleFragmentSelection(id)}
-    />
-  ) : (
-    <FrontCollectionsOverview id={id} browsingStage={browsingStage} />
-  );
+  updateArticleFragmentMeta,
+  overviewIsOpen
+}: ComponentProps) => {
+  if (selectedArticleFragment) {
+    return (
+      <ArticleFragmentForm
+        articleFragmentId={selectedArticleFragment.id}
+        isSupporting={selectedArticleFragment.isSupporting}
+        key={selectedArticleFragment.id}
+        form={selectedArticleFragment.id}
+        frontId={id}
+        onSave={(meta: ArticleFragmentMeta) => {
+          updateArticleFragmentMeta(selectedArticleFragment.id, meta);
+          clearArticleFragmentSelection(id);
+        }}
+        onCancel={() => clearArticleFragmentSelection(id)}
+      />
+    );
+  }
+  if (overviewIsOpen) {
+    return <FrontCollectionsOverview id={id} browsingStage={browsingStage} />;
+  }
+  return null;
+};
 
 const mapStateToProps = (state: State, props: ContainerProps) => ({
-  selectedArticleFragment: selectEditorArticleFragment(state, props.id)
+  selectedArticleFragment: selectEditorArticleFragment(state, props.id),
+  overviewIsOpen: selectIsFrontOverviewOpen(state, props.id)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

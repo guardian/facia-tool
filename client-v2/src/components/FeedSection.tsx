@@ -7,29 +7,38 @@ import Clipboard from './Clipboard';
 import ClipboardMeta from './ClipboardMeta';
 import FeedSectionHeader from './FeedSectionHeader';
 
+interface Props {
+  isClipboardOpen: boolean;
+}
+
 const FeedSectionContainer = styled('div')`
   background-color: ${({ theme }) => theme.shared.base.colors.backgroundColor};
 `;
 
-const FeedWrapper = styled('div')`
-  width: 409px;
-  padding-right: 10px;
-  margin-right: 10px;
-  border-right: ${({ theme }) =>
-    `solid 1px ${theme.shared.base.colors.borderColor}`};
+const FeedSectionContent = styled(SectionContent)`
+  padding-right: 0px;
+  padding-top: 10px;
 `;
 
-export default () => (
+const FeedWrapper = styled('div')<{ isClipboardOpen: boolean }>`
+  width: 409px;
+  border-right: ${({ theme, isClipboardOpen }) =>
+    isClipboardOpen
+      ? `solid 1px ${theme.shared.base.colors.borderColor}`
+      : null};
+`;
+
+export default ({ isClipboardOpen }: Props) => (
   <FeedSectionContainer>
     <FeedSectionHeader />
-    <SectionContent>
-      <FeedWrapper>
+    <FeedSectionContent>
+      <FeedWrapper isClipboardOpen={isClipboardOpen}>
         <FeedContainer />
       </FeedWrapper>
       <Clipboard />
       <div>
         <ClipboardMeta />
       </div>
-    </SectionContent>
+    </FeedSectionContent>
   </FeedSectionContainer>
 );
