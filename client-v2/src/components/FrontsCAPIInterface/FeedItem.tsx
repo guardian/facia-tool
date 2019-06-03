@@ -74,9 +74,12 @@ const VisitedWrapper = styled.a`
 
 const MetaContainer = styled('div')`
   position: relative;
-  min-width: 80px;
-  ${media.large`min-width: 60px;`}
+  width: 80px;
+  ${media.large`width: 60px;`};
+  flex-shrink: 0;
   padding: 0px 2px;
+  word-break: word;
+  hyphens: auto;
 `;
 
 const ArticleThumbnail = styled(ThumbnailSmall)`
