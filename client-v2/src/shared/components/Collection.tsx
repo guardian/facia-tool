@@ -103,12 +103,10 @@ const CollectionMetaBase = styled('span')`
 
 const CollectionMeta = styled(CollectionMetaBase)`
   padding-left: 10px;
-  min-width: 120px;
+  flex-grow: 1;
 `;
 
-const ItemCountMeta = styled(CollectionMetaBase)`
-  flex: 0;
-`;
+const ItemCountMeta = CollectionMetaBase;
 
 const CollectionHeadingSticky = styled.div`
   position: sticky;
@@ -131,8 +129,7 @@ const CollectionHeadlineWithConfigContainer = styled('div')`
   flex-basis: 100%;
 `;
 
-const CollectionHeadingText = styled('span')<{ isLoading: boolean }>`
-  display: inline-block;
+const CollectionHeadingText = styled('div')<{ isLoading: boolean }>`
   width: 100%;
   white-space: nowrap;
   ${({ isLoading, theme }) =>
@@ -163,10 +160,9 @@ const CollectionConfigContainer = styled('div')`
   font-family: GHGuardianHeadline;
   font-size: 15px;
   color: ${({ theme }) => theme.shared.base.colors.text};
-  height: 40px;
-  line-height: 40px;
   white-space: nowrap;
   margin-left: 3px;
+  vertical-align: bottom;
 `;
 
 const CollectionConfigText = styled('div')`

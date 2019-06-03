@@ -53,15 +53,16 @@ const StageSelectButtons = styled('div')`
   padding: 0px 20px;
 `;
 
-const singleFrontMinWidth = 300;
+const singleFrontMinWidth = 380;
 
 const SingleFrontContainer = styled('div')<{
   isOverviewOpen: boolean;
   isFormOpen: boolean;
 }>`
   /**
-   * We parameterise the min-width of the fronts container to
-   * handle the presence of the form and overview content.
+   * We parameterise the min-width of the fronts
+   * container to handle the presence of the form and overview content.
+   * Min-width provides sensible limits on the
    */
   min-width: ${({ isOverviewOpen, isFormOpen }) =>
     isOverviewOpen

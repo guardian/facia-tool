@@ -41,7 +41,7 @@ export const overviewMinWidth = 160;
 
 const ContainerBody = styled.div`
   width: ${overviewMinWidth}px;
-  overflow: hidden;
+  overflow-y: scroll;
 `;
 
 const FrontCollectionsOverview = ({

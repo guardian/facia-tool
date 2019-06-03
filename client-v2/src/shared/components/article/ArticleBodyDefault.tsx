@@ -202,7 +202,7 @@ const articleBodyDefault = React.memo(
                 style={{ color: getPillarColor(pillarId, true) }}
                 data-testid="kicker"
               >
-                {kickerToDisplay}
+                {`${kickerToDisplay} `}
               </KickerHeading>
             )}
             {showQuotedHeadline && (

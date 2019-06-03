@@ -12,7 +12,8 @@ import {
   editorOpenCollections,
   editorOpenOverview,
   editorCloseOverview,
-  selectIsFrontOverviewOpen
+  selectIsFrontOverviewOpen,
+  selectEditorArticleFragment
 } from 'bundles/frontsUIBundle';
 import {
   CollectionItemSets,
@@ -77,14 +78,18 @@ const CollapseAllButton = styled(ButtonRoundedWithLabel)`
 
 // min-height required here to display scrollbar in Firefox:
 // https://stackoverflow.com/questions/28636832/firefox-overflow-y-not-working-with-nested-flexbox
-const FrontContentContainer = styled('div')`
+const BaseFrontContentContainer = styled('div')`
   height: 100%;
   min-height: 0;
   /* Min-width is set to allow content within this container to shrink completely */
   min-width: 0;
 `;
 
-const FrontDetailContainer = styled(FrontContentContainer)`
+const FrontContentContainer = styled(BaseFrontContentContainer)`
+  width: 100%;
+`;
+
+const FrontDetailContainer = styled(BaseFrontContentContainer)`
   /* We don't want to shrink our overview or form any smaller than the containing content */
   flex-shrink: 0;
 `;
@@ -105,6 +110,7 @@ interface FrontPropsBeforeState {
 type FrontProps = FrontPropsBeforeState & {
   dispatch: Dispatch;
   initialiseFront: () => void;
+  formIsOpen: boolean;
   selectArticleFragment: (
     frontId: string
   ) => (isSupporting?: boolean) => (id: string) => void;
@@ -169,7 +175,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   };
 
   public render() {
-    const { front } = this.props;
+    const { front, overviewIsOpen, formIsOpen } = this.props;
     const overviewToggleId = `btn-overview-toggle-${this.props.id}`;
     return (
       <React.Fragment>
@@ -235,12 +241,14 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
               </Root>
             </FrontCollectionsContainer>
           </FrontContentContainer>
-          <FrontDetailContainer>
-            <FrontDetailView
-              id={this.props.id}
-              browsingStage={this.props.browsingStage}
-            />
-          </FrontDetailContainer>
+          {(overviewIsOpen || formIsOpen) && (
+            <FrontDetailContainer>
+              <FrontDetailView
+                id={this.props.id}
+                browsingStage={this.props.browsingStage}
+              />
+            </FrontDetailContainer>
+          )}
         </FrontContainer>
       </React.Fragment>
     );
@@ -259,7 +267,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
 const mapStateToProps = (state: State, props: FrontPropsBeforeState) => {
   return {
     front: getFront(state, { frontId: props.id }),
-    overviewIsOpen: selectIsFrontOverviewOpen(state, props.id)
+    overviewIsOpen: selectIsFrontOverviewOpen(state, props.id),
+    formIsOpen: !!selectEditorArticleFragment(state, props.id)
   };
 };
 

@@ -11,6 +11,8 @@ const CollectionItemContent = styled('div')<{
   position: relative;
   padding: 0 8px;
   flex-basis: 100%;
+  hyphens: auto;
+  word-break: break-word;
 `;
 
 CollectionItemContent.defaultProps = {
