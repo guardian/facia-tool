@@ -120,7 +120,7 @@ const mapAction = (map: ColorMap) => ({
   priority = 'default'
 }: ButtonProps) => map[getMapKey({ selected, disabled })][priority];
 
-export default styled(`button`)`
+export default styled(`button`)<ButtonProps>`
   display: inline-block;
   appearance: none;
   background: ${mapAction(backgroundMap)};

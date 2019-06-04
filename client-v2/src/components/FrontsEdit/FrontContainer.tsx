@@ -18,6 +18,7 @@ import SectionContent from '../layout/SectionContent';
 import { CollectionItemSets, Collection } from 'shared/types/Collection';
 import { toTitleCase } from 'util/stringUtils';
 import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
+import { PreviewEyeIcon, ClearIcon } from 'shared/components/icons/Icons';
 
 const FrontHeader = styled(SectionHeader)`
   display: flex;
@@ -52,6 +53,11 @@ const FrontsContainer = styled('div')`
 
 const FrontSectionContent = styled(SectionContent)`
   padding-top: 0;
+`;
+
+const FrontHeaderButton = styled(Button)`
+  color: ${({ theme }) => theme.shared.colors.greyMediumDark};
+  padding: 0 5px;
 `;
 
 interface FrontsContainerProps {
@@ -103,7 +109,9 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                 }`}
                 target="preview"
               >
-                <Button size="l">Preview</Button>
+                <FrontHeaderButton size="l">
+                  <PreviewEyeIcon size="xl" />
+                </FrontHeaderButton>
               </a>
               <StageSelectButtons>
                 <RadioGroup>
@@ -119,9 +127,9 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                   ))}
                 </RadioGroup>
               </StageSelectButtons>
-              <Button onClick={this.handleRemoveFront} size="l">
-                Close
-              </Button>
+              <FrontHeaderButton onClick={this.handleRemoveFront} size="l">
+                <ClearIcon size="xl" />
+              </FrontHeaderButton>
             </FrontHeaderMeta>
           </FrontHeader>
         </>
