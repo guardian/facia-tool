@@ -23,6 +23,9 @@ import GuardianTextSansBoldWoff2 from '../fonts/text/GuardianTextSans-Bold.woff2
 import GuardianTextSansItalicTtf from '../fonts/text/GuardianTextSans-RegularItalic.ttf';
 import GuardianTextSansItalicWoff from '../fonts/text/GuardianTextSans-RegularItalic.woff';
 import GuardianTextSansItalicWoff2 from '../fonts/text/GuardianTextSans-RegularItalic.woff2';
+import GuardianTextSansBoldItalicTtf from '../fonts/text/GuardianTextSans-BoldItalic.ttf';
+import GuardianTextSansBoldItalicWoff from '../fonts/text/GuardianTextSans-BoldItalic.woff';
+import GuardianTextSansBoldItalicWoff2 from '../fonts/text/GuardianTextSans-BoldItalic.woff2';
 import FrontsEdit from './FrontsEdit/Edit';
 import Home from './Home';
 import NotFound from './NotFound';
@@ -66,7 +69,7 @@ injectGlobal`
       url(${GuardianTextSansWoff}) format('woff'),
       url(${GuardianTextSansTtf}) format('truetype');
     font-style: normal;
-    font-weight: 100 400;
+    font-weight: 400;
   }
 
   @font-face {
@@ -75,7 +78,7 @@ injectGlobal`
       url(${GuardianTextSansTtfBold}) format('truetype'),
       url(${GuardianTextSansBoldWoff}) format('woff');
     font-weight: bold;
-    font-weight: 500 800;
+    font-weight: 500;
   }
 
   @font-face {
@@ -84,6 +87,16 @@ injectGlobal`
       url(${GuardianTextSansItalicTtf}) format('truetype'),
       url(${GuardianTextSansItalicWoff}) format('woff');
     font-style: italic;
+    font-weight: 400;
+  }
+
+  @font-face {
+    font-family: TS3TextSans;
+    src: url(${GuardianTextSansBoldItalicWoff2}) format('woff2'),
+      url(${GuardianTextSansBoldItalicTtf}) format('truetype'),
+      url(${GuardianTextSansBoldItalicWoff}) format('woff');
+    font-style: italic;
+    font-weight: 500;
   }
 
   html, body {
