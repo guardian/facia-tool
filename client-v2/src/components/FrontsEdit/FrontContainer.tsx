@@ -50,7 +50,7 @@ const FrontsHeaderText = styled('span')`
 
 const StageSelectButtons = styled('div')`
   color: ${({ theme }) => theme.shared.colors.blackDark};
-  padding: 0px 20px;
+  padding: 0px 15px;
 `;
 
 const singleFrontMinWidth = 380;
@@ -137,10 +137,9 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
         isOverviewOpen={isOverviewOpen}
       >
         <FrontContainer>
-          <>
-            <FrontHeader greyHeader={true}>
-              <FrontsHeaderText title={title}>{title}</FrontsHeaderText>
-              <FrontHeaderMeta>
+          <FrontHeader greyHeader={true}>
+            <FrontsHeaderText title={title}>{title}</FrontsHeaderText>
+            <FrontHeaderMeta>
               <a
                 href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${
                   this.props.frontId
@@ -169,9 +168,8 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                 <ClearIcon size="xl" />
               </FrontHeaderButton>
             </FrontHeaderMeta>
-            </FrontHeader>
-          </>
-          <SectionContent direction="column">
+          </FrontHeader>
+          <FrontSectionContent direction="column">
             {this.props.selectedFront && (
               <Front
                 id={this.props.frontId}
@@ -180,7 +178,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                 browsingStage={this.state.collectionSet}
               />
             )}
-          </SectionContent>
+          </FrontSectionContent>
         </FrontContainer>
       </SingleFrontContainer>
     );
