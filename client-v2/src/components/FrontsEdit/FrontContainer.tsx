@@ -50,6 +50,10 @@ const FrontsContainer = styled('div')`
   transform: translate3d(0, 0, 0);
 `;
 
+const FrontSectionContent = styled(SectionContent)`
+  padding-top: 0;
+`;
+
 interface FrontsContainerProps {
   frontId: string;
 }
@@ -121,7 +125,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
             </FrontHeaderMeta>
           </FrontHeader>
         </>
-        <SectionContent direction="column">
+        <FrontSectionContent direction="column">
           {this.props.selectedFront && (
             <Front
               id={this.props.frontId}
@@ -130,7 +134,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
               browsingStage={this.state.collectionSet}
             />
           )}
-        </SectionContent>
+        </FrontSectionContent>
       </FrontsContainer>
     );
   }
