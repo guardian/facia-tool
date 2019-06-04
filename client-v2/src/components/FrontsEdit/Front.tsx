@@ -165,6 +165,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
 
   public render() {
     const { front } = this.props;
+    const overviewToggleId = `btn-overview-toggle-${this.props.id}`;
     return (
       <React.Fragment>
         <div
@@ -190,11 +191,11 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                 label={'Collapse all'}
               />
               <OverviewToggleContainer>
-                <OverviewHeading htmlFor="btn-overview-toggle">
+                <OverviewHeading htmlFor={overviewToggleId}>
                   {this.props.overviewIsOpen ? 'Hide overview' : 'Overview'}
                 </OverviewHeading>
                 <ButtonCircularCaret
-                  id="btn-overview-toggle"
+                  id={overviewToggleId}
                   style={{
                     margin: '0'
                   }}
