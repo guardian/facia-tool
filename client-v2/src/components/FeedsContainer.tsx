@@ -288,7 +288,7 @@ class FeedsContainer extends React.Component<
                 value={this.state.sortByParam}
               >
                 <option value="first-publication">First published</option>
-                <option value="published">Latest publish</option>
+                <option value="published">Latest published</option>
               </select>
             </SortByContainer>
           </Sorters>
