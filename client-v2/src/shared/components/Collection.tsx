@@ -61,10 +61,7 @@ interface CollectionState {
 const CollectionContainer = ContentContainer.extend<{
   hasMultipleFrontsOpen?: boolean;
 }>`
-  flex: 1;
-  width: ${({ hasMultipleFrontsOpen }) =>
-    hasMultipleFrontsOpen ? '510px' : '590px'};
-
+  max-width: 590px;
   &:focus {
     border: 1px solid ${props => props.theme.shared.base.colors.focusColor};
     border-top: none;
@@ -74,7 +71,7 @@ const CollectionContainer = ContentContainer.extend<{
 
 const HeadlineContentContainer = styled('span')`
   position: relative;
-  right: -11px;
+  margin-right: -11px;
   line-height: 0px;
   display: flex;
 `;
@@ -94,6 +91,8 @@ const LockedCollectionFlag = styled('span')`
   color: ${({ theme }) => theme.shared.base.colors.text};
   height: 40px;
   line-height: 40px;
+  border-bottom: 1px solid
+    ${({ theme }) => theme.shared.base.colors.borderColor};
 `;
 
 const CollectionMetaBase = styled('span')`
@@ -104,14 +103,12 @@ const CollectionMetaBase = styled('span')`
 
 const CollectionMeta = styled(CollectionMetaBase)`
   padding-left: 10px;
-  min-width: 150px;
+  flex-grow: 1;
 `;
 
-const ItemCountMeta = styled(CollectionMetaBase)`
-  flex: 0;
-`;
+const ItemCountMeta = CollectionMetaBase;
 
-const CollectionHeadingSticky = styled(ContainerHeadingPinline)`
+const CollectionHeadingSticky = styled.div`
   position: sticky;
   top: 0;
   background-color: ${({ theme }) => theme.shared.base.colors.backgroundColor};
@@ -121,15 +118,18 @@ const CollectionHeadingSticky = styled(ContainerHeadingPinline)`
   padding: 0 ${contentContainerMargin};
 `;
 
+const CollectionHeadingInner = styled(ContainerHeadingPinline)`
+  border-bottom: 1px solid
+    ${({ theme }) => theme.shared.base.colors.borderColor};
+`;
+
 const CollectionHeadlineWithConfigContainer = styled('div')`
   flex-grow: 1;
-  display: flex;
   min-width: 0;
   flex-basis: 100%;
 `;
 
-const CollectionHeadingText = styled('span')<{ isLoading: boolean }>`
-  display: inline-block;
+const CollectionHeadingText = styled('div')<{ isLoading: boolean }>`
   width: 100%;
   white-space: nowrap;
   ${({ isLoading, theme }) =>
@@ -139,8 +139,6 @@ const CollectionHeadingText = styled('span')<{ isLoading: boolean }>`
     `} white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  border-bottom: 1px solid
-    ${({ theme }) => theme.shared.base.colors.borderColor};
 `;
 
 const CollectionToggleContainer = styled('div')`
@@ -162,10 +160,9 @@ const CollectionConfigContainer = styled('div')`
   font-family: GHGuardianHeadline;
   font-size: 15px;
   color: ${({ theme }) => theme.shared.base.colors.text};
-  height: 40px;
-  line-height: 40px;
   white-space: nowrap;
   margin-left: 3px;
+  vertical-align: bottom;
 `;
 
 const CollectionConfigText = styled('div')`
@@ -224,35 +221,40 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
         onBlur={handleBlur}
         hasMultipleFrontsOpen={hasMultipleFrontsOpen}
       >
-        <CollectionHeadingSticky setBack tabIndex={-1}>
-          <CollectionHeadlineWithConfigContainer>
-            <CollectionHeadingText isLoading={!collection} title={displayName}>
-              {displayName}
-            </CollectionHeadingText>
-            <CollectionConfigContainer>
-              {oc(collection).metadata[0].type() ? (
-                <CollectionConfigText>
-                  <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
-                  {oc(collection).metadata[0].type()}
-                </CollectionConfigText>
-              ) : null}
-              {collection &&
-              collection.platform &&
-              collection.platform !== 'Any' ? (
-                <CollectionConfigText>
-                  <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
-                  {`${collection.platform} Only`}
-                </CollectionConfigText>
-              ) : null}
-            </CollectionConfigContainer>
-          </CollectionHeadlineWithConfigContainer>
-          {isLocked ? (
-            <LockedCollectionFlag>Locked</LockedCollectionFlag>
-          ) : headlineContent ? (
-            <HeadlineContentContainer>
-              {headlineContent}
-            </HeadlineContentContainer>
-          ) : null}
+        <CollectionHeadingSticky tabIndex={-1}>
+          <CollectionHeadingInner>
+            <CollectionHeadlineWithConfigContainer>
+              <CollectionHeadingText
+                isLoading={!collection}
+                title={displayName}
+              >
+                {displayName}
+                <CollectionConfigContainer>
+                  {oc(collection).metadata[0].type() ? (
+                    <CollectionConfigText>
+                      <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
+                      {oc(collection).metadata[0].type()}
+                    </CollectionConfigText>
+                  ) : null}
+                  {collection &&
+                  collection.platform &&
+                  collection.platform !== 'Any' ? (
+                    <CollectionConfigText>
+                      <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
+                      {`${collection.platform} Only`}
+                    </CollectionConfigText>
+                  ) : null}
+                </CollectionConfigContainer>
+              </CollectionHeadingText>
+            </CollectionHeadlineWithConfigContainer>
+            {isLocked ? (
+              <LockedCollectionFlag>Locked</LockedCollectionFlag>
+            ) : headlineContent ? (
+              <HeadlineContentContainer>
+                {headlineContent}
+              </HeadlineContentContainer>
+            ) : null}
+          </CollectionHeadingInner>
         </CollectionHeadingSticky>
         <DragIntentContainer
           delay={300}

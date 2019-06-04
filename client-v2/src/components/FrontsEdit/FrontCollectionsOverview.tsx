@@ -33,11 +33,15 @@ const Container = styled(ContentContainer)<ContainerProps>`
   margin-top: 43px;
   max-height: calc(100% - 43px);
   overflow-y: scroll;
+  padding: 0;
   ${({ isClosed }) => (isClosed ? 'padding: 0; height: 100%' : '')}
 `;
 
+export const overviewMinWidth = 160;
+
 const ContainerBody = styled.div`
-  width: 130px;
+  width: ${overviewMinWidth}px;
+  overflow-y: scroll;
 `;
 
 const FrontCollectionsOverview = ({

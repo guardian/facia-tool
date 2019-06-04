@@ -40,6 +40,7 @@ const CheckboxLabel = styled('label')`
     content: '';
     display: block;
     width: 24px;
+    height: 24px;
     margin: 0px;
     background: ${({ theme }) => theme.shared.input.checkboxColorInactive};
     position: absolute;

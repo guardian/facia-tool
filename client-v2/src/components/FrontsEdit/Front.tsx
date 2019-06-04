@@ -13,7 +13,7 @@ import {
   editorOpenOverview,
   editorCloseOverview,
   selectIsFrontOverviewOpen,
-  editorClearArticleFragmentSelection
+  selectEditorArticleFragment
 } from 'bundles/frontsUIBundle';
 import {
   CollectionItemSets,
@@ -33,7 +33,6 @@ import { DownCaretIcon } from 'shared/components/icons/Icons';
 import { theme as sharedTheme } from 'shared/constants/theme';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import ButtonRoundedWithLabel from 'shared/components/input/ButtonRoundedWithLabel';
-import { batchActions } from 'redux-batched-actions';
 
 const FrontContainer = styled('div')`
   height: 100%;
@@ -79,9 +78,20 @@ const CollapseAllButton = styled(ButtonRoundedWithLabel)`
 
 // min-height required here to display scrollbar in Firefox:
 // https://stackoverflow.com/questions/28636832/firefox-overflow-y-not-working-with-nested-flexbox
-const FrontContentContainer = styled('div')`
+const BaseFrontContentContainer = styled('div')`
   height: 100%;
   min-height: 0;
+  /* Min-width is set to allow content within this container to shrink completely */
+  min-width: 0;
+`;
+
+const FrontContentContainer = styled(BaseFrontContentContainer)`
+  width: 100%;
+`;
+
+const FrontDetailContainer = styled(BaseFrontContentContainer)`
+  /* We don't want to shrink our overview or form any smaller than the containing content */
+  flex-shrink: 0;
 `;
 
 const FrontCollectionsContainer = styled('div')`
@@ -100,6 +110,7 @@ interface FrontPropsBeforeState {
 type FrontProps = FrontPropsBeforeState & {
   dispatch: Dispatch;
   initialiseFront: () => void;
+  formIsOpen: boolean;
   selectArticleFragment: (
     frontId: string
   ) => (isSupporting?: boolean) => (id: string) => void;
@@ -164,7 +175,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   };
 
   public render() {
-    const { front } = this.props;
+    const { front, overviewIsOpen, formIsOpen } = this.props;
     const overviewToggleId = `btn-overview-toggle-${this.props.id}`;
     return (
       <React.Fragment>
@@ -230,12 +241,14 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
               </Root>
             </FrontCollectionsContainer>
           </FrontContentContainer>
-          <FrontContentContainer>
-            <FrontDetailView
-              id={this.props.id}
-              browsingStage={this.props.browsingStage}
-            />
-          </FrontContentContainer>
+          {(overviewIsOpen || formIsOpen) && (
+            <FrontDetailContainer>
+              <FrontDetailView
+                id={this.props.id}
+                browsingStage={this.props.browsingStage}
+              />
+            </FrontDetailContainer>
+          )}
         </FrontContainer>
       </React.Fragment>
     );
@@ -254,7 +267,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
 const mapStateToProps = (state: State, props: FrontPropsBeforeState) => {
   return {
     front: getFront(state, { frontId: props.id }),
-    overviewIsOpen: selectIsFrontOverviewOpen(state, props.id)
+    overviewIsOpen: selectIsFrontOverviewOpen(state, props.id),
+    formIsOpen: !!selectEditorArticleFragment(state, props.id)
   };
 };
 
@@ -287,18 +301,10 @@ const mapDispatchToProps = (
           frontId
         })
       ),
-    toggleOverview: (open: boolean) => {
-      if (open) {
-        dispatch(editorOpenOverview(props.id));
-      } else {
-        dispatch(
-          batchActions([
-            editorCloseOverview(props.id),
-            editorClearArticleFragmentSelection(props.id)
-          ])
-        );
-      }
-    },
+    toggleOverview: (open: boolean) =>
+      dispatch(
+        open ? editorOpenOverview(props.id) : editorCloseOverview(props.id)
+      ),
     closeAllCollections: (collections: string[]) =>
       dispatch(closeCollections(collections))
   };

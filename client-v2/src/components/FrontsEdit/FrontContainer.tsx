@@ -5,7 +5,11 @@ import { styled } from 'constants/theme';
 import { Dispatch } from 'types/Store';
 import { fetchLastPressed } from 'actions/Fronts';
 import { updateCollection } from 'actions/Collections';
-import { editorCloseFront } from 'bundles/frontsUIBundle';
+import {
+  editorCloseFront,
+  selectIsFrontOverviewOpen,
+  selectEditorArticleFragment
+} from 'bundles/frontsUIBundle';
 import Button from 'shared/components/input/ButtonDefault';
 import { frontStages } from 'constants/fronts';
 import { FrontConfig } from 'types/FaciaApi';
@@ -19,6 +23,9 @@ import { CollectionItemSets, Collection } from 'shared/types/Collection';
 import { toTitleCase } from 'util/stringUtils';
 import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
 import { PreviewEyeIcon, ClearIcon } from 'shared/components/icons/Icons';
+import { createFrontId } from 'util/editUtils';
+import { formMinWidth } from './ArticleFragmentForm';
+import { overviewMinWidth } from './FrontCollectionsOverview';
 
 const FrontHeader = styled(SectionHeader)`
   display: flex;
@@ -43,10 +50,33 @@ const FrontsHeaderText = styled('span')`
 
 const StageSelectButtons = styled('div')`
   color: ${({ theme }) => theme.shared.colors.blackDark};
-  padding: 0px 30px;
+  padding: 0px 15px;
 `;
 
-const FrontsContainer = styled('div')`
+const singleFrontMinWidth = 380;
+
+const SingleFrontContainer = styled('div')<{
+  isOverviewOpen: boolean;
+  isFormOpen: boolean;
+}>`
+  /**
+   * We parameterise the min-width of the fronts container to handle the
+   * presence of the form and overview content. When containers are at their
+   * minimum widths and a form or overview is opened, we increase the min-width
+   * of the front container proportionally to keep the collection container the
+   * same width.
+   */
+  min-width: ${({ isOverviewOpen, isFormOpen }) =>
+    isOverviewOpen
+      ? singleFrontMinWidth + overviewMinWidth + 10
+      : isFormOpen
+      ? singleFrontMinWidth + formMinWidth + 10
+      : singleFrontMinWidth}px;
+  flex: 1 1 auto;
+  height: 100%;
+`;
+
+const FrontContainer = styled('div')`
   height: 100%;
   transform: translate3d(0, 0, 0);
 `;
@@ -67,6 +97,8 @@ interface FrontsContainerProps {
 type FrontsComponentProps = FrontsContainerProps & {
   selectedFront: FrontConfig;
   alsoOn: { [id: string]: AlsoOnDetail };
+  isOverviewOpen: boolean;
+  isFormOpen: boolean;
   frontsActions: {
     fetchLastPressed: (frontId: string) => void;
     editorCloseFront: (frontId: string) => void;
@@ -94,14 +126,19 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   };
 
   public render() {
+    const { frontId, isFormOpen, isOverviewOpen } = this.props;
+    const title =
+      this.props.selectedFront && startCase(this.props.selectedFront.id);
     return (
-      <FrontsContainer>
-        <>
+      <SingleFrontContainer
+        key={frontId}
+        id={createFrontId(frontId)}
+        isFormOpen={isFormOpen}
+        isOverviewOpen={isOverviewOpen}
+      >
+        <FrontContainer>
           <FrontHeader greyHeader={true}>
-            <FrontsHeaderText>
-              {this.props.selectedFront &&
-                startCase(this.props.selectedFront.id)}
-            </FrontsHeaderText>
+            <FrontsHeaderText title={title}>{title}</FrontsHeaderText>
             <FrontHeaderMeta>
               <a
                 href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${
@@ -132,18 +169,18 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
               </FrontHeaderButton>
             </FrontHeaderMeta>
           </FrontHeader>
-        </>
-        <FrontSectionContent direction="column">
-          {this.props.selectedFront && (
-            <Front
-              id={this.props.frontId}
-              alsoOn={this.props.alsoOn}
-              collectionIds={this.props.selectedFront.collections}
-              browsingStage={this.state.collectionSet}
-            />
-          )}
-        </FrontSectionContent>
-      </FrontsContainer>
+          <FrontSectionContent direction="column">
+            {this.props.selectedFront && (
+              <Front
+                id={this.props.frontId}
+                alsoOn={this.props.alsoOn}
+                collectionIds={this.props.selectedFront.collections}
+                browsingStage={this.state.collectionSet}
+              />
+            )}
+          </FrontSectionContent>
+        </FrontContainer>
+      </SingleFrontContainer>
     );
   }
 }
@@ -152,7 +189,9 @@ const createMapStateToProps = () => {
   const alsoOnSelector = createAlsoOnSelector();
   return (state: State, props: FrontsContainerProps) => ({
     selectedFront: getFront(state, { frontId: props.frontId }),
-    alsoOn: alsoOnSelector(state, { frontId: props.frontId })
+    alsoOn: alsoOnSelector(state, { frontId: props.frontId }),
+    isOverviewOpen: selectIsFrontOverviewOpen(state, props.frontId),
+    isFormOpen: !!selectEditorArticleFragment(state, props.frontId)
   });
 };
 

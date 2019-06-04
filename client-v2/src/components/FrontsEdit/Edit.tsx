@@ -21,7 +21,7 @@ import SectionContainer from '../layout/SectionContainer';
 import SectionsContainer from '../layout/SectionsContainer';
 import FrontsMenu from './FrontsMenu';
 import PressFailAlert from '../PressFailAlert';
-import { frontsContainerId, createFrontId } from 'util/editUtils';
+import { frontsContainerId } from 'util/editUtils';
 
 interface Props {
   match: match<{ priority: string }>;
@@ -43,10 +43,6 @@ const FrontsEditContainer = styled('div')`
   overflow: hidden;
 `;
 
-const SingleFrontContainer = styled('div')`
-  height: 100%;
-`;
-
 const FeedContainer = styled(SectionContainer)`
   height: 100%;
 `;
@@ -54,6 +50,7 @@ const FeedContainer = styled(SectionContainer)`
 const FrontsContainer = styled(SectionContainer)<{
   makeRoomForExtraHeader: boolean;
 }>`
+  display: flex;
   height: 100%;
   overflow-y: hidden;
   overflow-x: scroll;
@@ -84,9 +81,7 @@ class FrontsEdit extends React.Component<Props> {
             makeRoomForExtraHeader={this.props.isCurrentFrontsMenuOpen}
           >
             {this.props.frontIds.map(id => (
-              <SingleFrontContainer key={id} id={createFrontId(id)}>
-                <FrontContainer frontId={id} />
-              </SingleFrontContainer>
+              <FrontContainer key={id} frontId={id} />
             ))}
           </FrontsContainer>
         </SectionsContainer>

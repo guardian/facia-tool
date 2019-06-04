@@ -24,6 +24,7 @@ import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaConte
 import CollectionItemDraftMetaContent from '../collectionItem/CollectionItemDraftMetaContent';
 import ColouredQuote from '../collectionItem/CollectionItemQuote';
 import DraggableArticleImageContainer from './DraggableArticleImageContainer';
+import { media } from 'shared/util/mediaQueries';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   width: 83px;
@@ -40,6 +41,7 @@ const KickerHeading = styled(CollectionItemHeading)`
   padding-right: 3px;
   font-size: ${({ displaySize }) =>
     displaySize === 'small' ? '13px' : '15px'};
+  ${media.large`font-size: 13px;`}
 `;
 
 const ArticleHeadingContainerSmall = styled('div')`
@@ -200,7 +202,7 @@ const articleBodyDefault = React.memo(
                 style={{ color: getPillarColor(pillarId, true) }}
                 data-testid="kicker"
               >
-                {kickerToDisplay}
+                {`${kickerToDisplay} `}
               </KickerHeading>
             )}
             {showQuotedHeadline && (

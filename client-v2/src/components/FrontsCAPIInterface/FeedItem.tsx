@@ -28,6 +28,7 @@ import {
   dragOffsetX,
   dragOffsetY
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
+import { media } from 'shared/util/mediaQueries';
 
 const Container = styled('div')`
   display: flex;
@@ -56,6 +57,7 @@ const Title = styled(`h2`)`
   vertical-align: top;
   font-family: TS3TextSans;
   font-size: 15px;
+  ${media.large`font-size: 13px;`}
   font-weight: 400;
 `;
 
@@ -72,8 +74,12 @@ const VisitedWrapper = styled.a`
 
 const MetaContainer = styled('div')`
   position: relative;
-  min-width: 80px;
+  width: 80px;
+  ${media.large`width: 60px;`};
+  flex-shrink: 0;
   padding: 0px 2px;
+  word-break: word;
+  hyphens: auto;
 `;
 
 const ArticleThumbnail = styled(ThumbnailSmall)`

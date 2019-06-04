@@ -24,6 +24,7 @@ import { CollectionItemDisplayTypes } from 'shared/types/Collection';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
 
 const SnapLinkBodyContainer = styled(CollectionItemBody)`
+  justify-content: space-between;
   border-top-color: ${({ theme }) => theme.shared.base.colors.borderColor};
 `;
 
@@ -46,6 +47,10 @@ interface ContainerProps {
 interface SnapLinkProps extends ContainerProps {
   articleFragment: ArticleFragment;
 }
+
+const SnapThumbnail = styled(ThumbnailSmall)`
+  align-self: flex-end;
+`;
 
 const SnapLink = ({
   id,
@@ -92,7 +97,7 @@ const SnapLink = ({
             </>
           )}
         </CollectionItemContent>
-        {size === 'default' && displayType === 'default' && <ThumbnailSmall />}
+        {size === 'default' && displayType === 'default' && <SnapThumbnail />}
         <HoverActionsAreaOverlay
           disabled={isUneditable}
           justify={displayType === 'polaroid' ? 'flex-end' : 'space-between'}

@@ -5,7 +5,6 @@ const ContainerHeading = styled('div')`
   font-family: GHGuardianHeadline;
   font-weight: bold;
   font-size: 22px;
-  line-height: 22px;
   color: ${({ theme }) => theme.shared.base.colors.text};
 `;
 

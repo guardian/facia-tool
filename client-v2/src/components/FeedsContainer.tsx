@@ -25,6 +25,7 @@ import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline'
 import { DEFAULT_PARAMS } from 'services/faciaApi';
 import ScrollContainer from './ScrollContainer';
 import ClipboardHeader from 'components/ClipboardHeader';
+import { media } from 'shared/util/mediaQueries';
 
 interface FeedsContainerProps {
   fetchLive: (params: object, isResource: boolean) => void;
@@ -57,6 +58,10 @@ const Title = styled.h1`
   font-weight: 500;
   font-size: 20px;
   min-width: 80px;
+  ${media.large`
+    min-width: 60px;
+    font-size: 16px;
+  `}
 `;
 
 const RefreshButton = styled.button`

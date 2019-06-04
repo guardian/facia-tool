@@ -52,7 +52,7 @@ test('Metadata edits are persisted in collections- "breaking news" toggle button
     .click(breakingNewsToggle)
     .click(editFormSaveButton())
     .expect(collectionItemKicker(0, 0).textContent)
-    .eql(`Breaking news`);
+    .contains(`Breaking news`);
 });
 
 test('Metadata edits are persisted in clipboard- "breaking news" toggle button', async t => {
@@ -65,5 +65,5 @@ test('Metadata edits are persisted in clipboard- "breaking news" toggle button',
     .click(editFormSaveButton())
     .dragToElement(clipboardItem(0), firstCollectionFirstDropZone) // Kickers are not visible in clipboard, drag to collection to view
     .expect(collectionItemKicker(0, 0).textContent)
-    .eql(`Breaking news`);
+    .contains(`Breaking news`);
 });

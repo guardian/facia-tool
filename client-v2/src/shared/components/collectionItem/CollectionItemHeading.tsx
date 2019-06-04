@@ -1,6 +1,7 @@
 import React from 'react';
 import { styled } from 'shared/constants/theme';
 import { sanitizeHTML } from 'shared/util/sanitizeHTML';
+import { media } from 'shared/util/mediaQueries';
 
 const Wrapper = styled('span')<{
   displaySize?: 'small' | 'default';
@@ -18,6 +19,7 @@ const Wrapper = styled('span')<{
     }
     return '15px';
   }};
+  ${media.large`font-size: 13px;`}
 `;
 
 type CollectionItemHeading = {

@@ -31,7 +31,7 @@ const heightMap = {
 const paddingMap = {
   s: '5px',
   m: '15px',
-  l: '25px'
+  l: '15px'
 };
 
 const fontSizeMap = {

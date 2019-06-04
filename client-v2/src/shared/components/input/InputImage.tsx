@@ -27,6 +27,8 @@ const ImageContainer = styled('div')<{
   isHovering?: boolean;
   hasImage?: boolean;
 }>`
+  display: flex;
+  flex-direction: column;
   position: relative;
   width: 100%;
   max-width: ${props => (props.small ? '100px' : '180px')};
