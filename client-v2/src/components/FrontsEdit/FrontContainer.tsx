@@ -60,9 +60,11 @@ const SingleFrontContainer = styled('div')<{
   isFormOpen: boolean;
 }>`
   /**
-   * We parameterise the min-width of the fronts
-   * container to handle the presence of the form and overview content.
-   * Min-width provides sensible limits on the
+   * We parameterise the min-width of the fronts container to handle the
+   * presence of the form and overview content. When containers are at their
+   * minimum widths and a form or overview is opened, we increase the min-width
+   * of the front container proportionally to keep the collection container the
+   * same width.
    */
   min-width: ${({ isOverviewOpen, isFormOpen }) =>
     isOverviewOpen
