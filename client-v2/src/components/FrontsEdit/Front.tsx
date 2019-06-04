@@ -36,6 +36,7 @@ import ButtonRoundedWithLabel from 'shared/components/input/ButtonRoundedWithLab
 import { batchActions } from 'redux-batched-actions';
 
 const FrontContainer = styled('div')`
+  height: 100%;
   display: flex;
 `;
 
