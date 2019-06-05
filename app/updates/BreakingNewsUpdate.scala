@@ -9,18 +9,16 @@ import com.gu.mobile.notifications.client.models.Topic._
 import com.gu.mobile.notifications.client.models.TopicTypes.Breaking
 import com.gu.mobile.notifications.client.models._
 import conf.ApplicationConfiguration
-import org.apache.commons.lang3.StringEscapeUtils
 import logging.Logging
+import org.apache.commons.lang3.StringEscapeUtils
 import play.api.libs.json.Json
 import play.api.libs.ws.{WSClient, WSResponse}
 import play.api.mvc.Result
 import play.api.mvc.Results.{InternalServerError, Ok}
-import util.BreakingNewsClient
+import util.{BreakingNewsClient, BreakingNewsRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.util.control.NonFatal
-import scala.util.{Failure, Success, Try}
 
 
 class InvalidNotificationContentType(msg: String) extends Throwable(msg) {}
@@ -40,55 +38,66 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
     collection: ClientHydratedCollection,
     email: String
   ): Future[Result] = {
+    // TODO MRB:
+    // check we still log in the correct places
+    // does putting it in the web container set the "alert" flag?
+
     structuredLogger.putLog(LogUpdate(HandlingBreakingNewsCollection(collectionId), email))
 
-    val futurePossibleErrors = Future.traverse(collection.trails)(trail => sendAlert(trail, email, collectionId).map(trail -> _))
-    futurePossibleErrors.map { listOfPossibleErrors => {
-      val errors = listOfPossibleErrors.collect { case(trail, Some(error)) => trail -> error }
-      if (errors.isEmpty) {
-        Ok
+    val requests = createRequests(collection.trails, email)
+
+    Future.traverse(requests) { request =>
+      structuredLogger.putLog(LogUpdate(HandlingBreakingNewsTrail(collectionId, request.trail), email))
+
+      if(request.trail.alert.getOrElse(false)) {
+        client.send(request).map(request -> _)
       } else {
-        errors.foreach { case (trail, error) =>
-          logger.error(s"Error sending breaking news. Returning to client: $error. Trail: $trail")
-        }
-
-        InternalServerError(Json.toJson(errors.map { case(_, error) => error }))
+        // TODO MRB: use custom BreakingNewsError enum
+        logger.error(s"Failed to send a breaking news alert for trail ${request.trail} because alert was missing")
+        Future.successful(
+          request -> Left(UnexpectedApiResponseError(
+            "There may have been a problem in sending a breaking news alert. Please contact central production for information")
+          )
+        )
       }
-    }}
-  }
+    }.map { results =>
+      val successes = results.collect { case (request, Right(response)) => request -> response }
+      val errors = results.collect { case (request, Left(error)) => request -> error }
 
-  private def sendAlert(trail: ClientHydratedTrail, email: String, collectionId: String): Future[Option[String]] = {
-    def handleSuccessfulFuture(result: Either[ApiClientError, Unit]) = result match {
-      case Left(error) =>
-        structuredLogger.putLog(LogUpdate(HandlingBreakingNewsCollection(collectionId), email), "error", Some(new Exception(error.description)))
-        Some(error.description)
-      case Right(_) => None
-    }
-    def withExceptionHandling(block: => Future[Option[String]]): Future[Option[String]] = {
-      Try(block) match {
-        case Success(futureMaybeError) => futureMaybeError
-        case Failure(t: Throwable) =>
-          val message = s"Exception in breaking news client send for trail ${trail.headline} because ${t.getMessage}"
-          logger.error(message, t)
-          Future.successful(Some(message))}
-    }
-
-    if (trail.alert.getOrElse(false)) {
-      withExceptionHandling({
-        structuredLogger.putLog(LogUpdate(HandlingBreakingNewsTrail(collectionId, trail: ClientHydratedTrail), email))
-        client.send(createPayload(trail, email))
-          .map(handleSuccessfulFuture)
-          .recover {
-            case NonFatal(e) => Some(e.getMessage)
+      // We are currently not returning successful responses if there are any errors
+      // Ideally the notifications API would allow us to send a Global notification in a single request
+      if(errors.nonEmpty) {
+        InternalServerError(Json.toJson(
+          errors.map { case(request, error) =>
+            // TODO MRB: note this is a change in logging class (used to be HandlingBreakingNewsCollection)
+            structuredLogger.putLog(LogUpdate(HandlingBreakingNewsTrail(collectionId, request.trail), email), "error", Some(new Exception(error.description)))
+            error.description
           }
-      })
-    } else {
-      logger.error(s"Failed to send a breaking news alert for trail ${trail} because alert was missing")
-      Future.successful(Some("There may have been a problem in sending a breaking news alert. Please contact central production for information"))
+        ))
+      } else {
+        Ok(Json.toJson(
+          successes.map { case(request, response) =>
+            // TODO MRB: structured logging here?
+            logger.info(s"Successfully sent breaking news alert for ${request.trail} to ${request.topic}. ID: ${response.id}")
+            response.id
+          }
+        ))
+      }
     }
   }
 
-  private def createPayload(trail: ClientHydratedTrail, email: String): BreakingNewsPayload = {
+  private def createRequests(trails: List[ClientHydratedTrail], email: String): List[BreakingNewsRequest] = {
+    trails.flatMap { trail =>
+      // We send a Global notification as multiple notifications to each requested topic
+      // This is because there is a limit of 3 topics at once in mobile-n10n and we currently have 4 global editions
+      parseTopic(trail.topic).map { topic =>
+        val payload = createPayload(trail, email, topic)
+        BreakingNewsRequest(trail, topic, payload)
+      }
+    }
+  }
+
+  private def createPayload(trail: ClientHydratedTrail, email: String, topic: Topic): BreakingNewsPayload = {
     BreakingNewsPayload(
       message = StringEscapeUtils.unescapeHtml4(trail.headline),
       thumbnailUrl = trail.thumb.map{new URI(_)},
@@ -99,7 +108,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
         case _ => trail.image.map{new URI(_)}
       },
       importance = parseImportance(trail.group),
-      topic =  parseTopic(trail.topic),
+      topic = List(topic),
       debug = false
     )
   }
