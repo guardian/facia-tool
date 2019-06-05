@@ -67,10 +67,10 @@ const SingleFrontContainer = styled('div')<{
    * same width.
    */
   min-width: ${({ isOverviewOpen, isFormOpen }) =>
-    isOverviewOpen
-      ? singleFrontMinWidth + overviewMinWidth + 10
-      : isFormOpen
+    isFormOpen
       ? singleFrontMinWidth + formMinWidth + 10
+      : isOverviewOpen
+      ? singleFrontMinWidth + overviewMinWidth + 10
       : singleFrontMinWidth}px;
   flex: 1 1 auto;
   height: 100%;
