@@ -393,8 +393,8 @@ describe('frontsUIBundle', () => {
       });
     });
     describe('Collection item form display', () => {
-      it('should open and close a collection item form', () => {
-        let state = reducer(
+      it('should open a collection item form', () => {
+        const state = reducer(
           undefined,
           editorSelectArticleFragment('front1', 'exampleArticleFragment')
         );
@@ -402,8 +402,6 @@ describe('frontsUIBundle', () => {
           id: 'exampleArticleFragment',
           isSupporting: false
         });
-        state = reducer(state.editor, editorOpenOverview('front1'));
-        expect(selectEditorArticleFragment(state, 'front1')).toBe(undefined);
       });
     });
     it('should open and close all editing fronts', () => {
