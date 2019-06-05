@@ -73,7 +73,8 @@ const FormContainer = styled(ContentContainer.withComponent('form'))`
   min-width: ${formMinWidth}px;
   max-width: 380px;
   margin-left: 10px;
-  height: 100%;
+  margin-top: 10px;
+  height: calc(100% - 10px);
 `;
 
 const FormContent = styled('div')`

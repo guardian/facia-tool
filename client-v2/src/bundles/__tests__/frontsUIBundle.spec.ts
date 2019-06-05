@@ -391,22 +391,10 @@ describe('frontsUIBundle', () => {
         expect(selectIsFrontOverviewOpen(state, 'front1')).toBe(true);
         expect(selectIsFrontOverviewOpen(state, 'front2')).toBe(true);
       });
-      it('should close an overview when a form for that front is opened', () => {
-        let state = reducer(
-          { closedOverviews: [] } as any,
-          editorOpenOverview('front1')
-        );
-        expect(selectIsFrontOverviewOpen(state, 'front1')).toBe(true);
-        state = reducer(
-          state.editor,
-          editorSelectArticleFragment('front1', 'exampleArticleFragment')
-        );
-        expect(selectIsFrontOverviewOpen(state, 'front1')).toBe(false);
-      });
     });
     describe('Collection item form display', () => {
-      it('should open and close a collection item form', () => {
-        let state = reducer(
+      it('should open a collection item form', () => {
+        const state = reducer(
           undefined,
           editorSelectArticleFragment('front1', 'exampleArticleFragment')
         );
@@ -414,10 +402,7 @@ describe('frontsUIBundle', () => {
           id: 'exampleArticleFragment',
           isSupporting: false
         });
-        state = reducer(state.editor, editorOpenOverview('front1'));
-        expect(selectEditorArticleFragment(state, 'front1')).toBe(undefined);
       });
-      it('should close a collection item form when the overview for that front is opened', () => {});
     });
     it('should open and close all editing fronts', () => {
       const state = reducer(
