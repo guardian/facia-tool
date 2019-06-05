@@ -54,62 +54,11 @@ If you have more than one JDK version running, ensure you run JDK 8 by adding th
 export JAVA_HOME=`/usr/libexec/java_home -v 1.8
 ```
 
-#### Node.JS with NVM
+#### NVM
 
-Installation with [NVM](https://github.com/creationix/nvm) is highly recommended to ensure correct Node version is used and project setup scripts run correctly.
+We use [NVM](https://github.com/creationix/nvm) to ensure a given Node version is used and project setup scripts run correctly.
 
-Ubuntu/Mac:
-
-```bash
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
-```
-
-Verify installation:
-
-```bash
-command -v nvm
-```
-
-Install Node.JS:
-
-```bash
-nvm install node
-```
-
-#### Node.JS without NVM
-
-Ubuntu:
-
-```bash
-sudo apt-get install nodejs
-sudo apt-get install npm
-sudo ln -s /usr/bin/nodejs /usr/bin/node
-```
-
-Mac:
-
-```bash
-brew install node
-```
-
-#### Grunt (build tool)
-
-Ubuntu/Mac:
-
-```bash
-sudo npm -g install grunt-cli
-```
-
-#### JSPM (package management)
-
-Ubuntu/Mac:
-
-```bash
-sudo npm -g install jspm
-jspm registry config github
-```
-
-It'll ask for a GitHub access token. Go to GitHub Settings -> Applications and [generate new token](https://github.com/settings/tokens/new). Ensure only the public_repo scope is checked.
+Ubuntu/Mac: [Follow these instructions](https://github.com/nvm-sh/nvm#installation-and-update)
 
 #### nginx
 
@@ -177,11 +126,27 @@ You will also need to be a member of the Editorial Tools Google Group in order t
 
 ### Code Dependencies
 
+Ensure you are using the correct `node` version:
+
+```
+nvm install
+nvm use
+```
+
+Fronts v1 uses JSPM to build the frontend, which requires a GitHub access token. Go to GitHub Settings -> Applications and [generate new token](https://github.com/settings/tokens/new). Ensure only the public_repo scope is checked.
+
+If you have previously installed `jspm` globally using `sudo`, you may need to clear your `~/.jspm` folder to avoid errors when running locally.
+
+```
+npm run jspm config registries.github.auth ${GITHUB_AUTH_SECRET}
+npm run jspm registry export github
+```
+
 Inside the project
 
 ```bash
 npm install
-jspm install
+npm run jspm install
 ```
 
 ### Run the App
@@ -222,6 +187,13 @@ sbt test
 ```
 
 Unit tests on the client are run with `grunt`, `karma` and `jasmine`.
+
+Grunt must be installed globally (within the version of node used by nvm).
+
+```
+nvm use
+npm install -g grunt-cli
+```
 
 ```bash
 grunt test
