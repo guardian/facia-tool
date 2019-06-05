@@ -1,19 +1,20 @@
 import React from 'react';
-import { styled } from 'constants/theme';
+import { styled, theme as globalTheme } from 'constants/theme';
 import { ClearIcon } from 'shared/components/icons/Icons';
 import { SmallRoundButton } from 'util/sharedStyles/buttons';
 
 const SearchTermItem = styled('div')`
+  display: flex;
+  justify-content: space-between;
   color: ${({ theme }) => theme.capiInterface.text};
   font-weight: bold;
   border: ${({ theme }) => `1px solid ${theme.capiInterface.borderLight}`};
   font-size: 14px;
+  line-height: 32px;
   background-color: ${({ theme }) => theme.capiInterface.backgroundWhite};
-  padding: 7px 15px 7px 15px;
+  padding: 5px 10px 5px 10px;
   margin-bottom: 10px;
-  :hover {
-    color: ${({ theme }) => theme.capiInterface.textLight};
-  }
+  margin-right: 10px;
 `;
 
 interface FilterItemProps {
@@ -25,7 +26,7 @@ const FilterItem = ({ children, onClear }: FilterItemProps) => (
   <SearchTermItem>
     {children}
     <SmallRoundButton onClick={() => onClear()} title="Clear search">
-      <ClearIcon size={'l'} />
+      <ClearIcon fill={globalTheme.shared.base.colors.text} size={'l'} />
     </SmallRoundButton>
   </SearchTermItem>
 );
