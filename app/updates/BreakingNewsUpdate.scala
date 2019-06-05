@@ -15,6 +15,7 @@ import play.api.libs.json.Json
 import play.api.libs.ws.{WSClient, WSResponse}
 import play.api.mvc.Result
 import play.api.mvc.Results.{InternalServerError, Ok}
+import util.BreakingNewsClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -27,7 +28,7 @@ class InvalidNotificationContentType(msg: String) extends Throwable(msg) {}
 class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient, val structuredLogger: StructuredLogger) extends Logging {
   lazy val client = {
     logger.info(s"Configuring breaking news client to send notifications to ${config.notification.host}")
-    ApiClient(
+    new BreakingNewsClient(
       host = config.notification.host,
       apiKey = config.notification.key,
       httpProvider = new NotificationHttpProvider(ws)
