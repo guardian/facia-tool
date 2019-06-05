@@ -25,7 +25,7 @@ interface FilterItemProps {
 const FilterItem = ({ children, onClear }: FilterItemProps) => (
   <SearchTermItem>
     {children}
-    <SmallRoundButton color="" onClick={() => onClear()} title="Clear search">
+    <SmallRoundButton onClick={() => onClear()} title="Clear search">
       <ClearIcon fill={globalTheme.shared.base.colors.text} size={'l'} />
     </SmallRoundButton>
   </SearchTermItem>
