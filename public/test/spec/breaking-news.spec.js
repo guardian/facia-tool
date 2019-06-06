@@ -241,4 +241,94 @@ describe('Breaking News', function () {
         .then(done)
         .catch(done.fail);
     });
+
+    it('Allows the same alert to be sent multiple times', function(done) {
+        const regions = this.testPage.regions;
+
+        regions.latest().trail(1).copy()
+        .then(() => {
+            return this.testPage.actions.edit(() => {
+                return regions.front().collection(1).group(2).pasteOver();
+            })
+            .respondWith({
+                global: {
+                    draft: [{
+                        id: 'internal-code/page/1',
+                        meta: {
+                            imageHide: true,
+                            group: '0'
+                        }
+                    }]
+                }
+            })
+            .done;
+        })
+        .then(() => {
+            return regions.front().collection(1).publish()
+            // Wait for modal to appear
+            .then(() => wait.ms(100));
+        })
+        .then(() => {
+            return this.testPage.actions.publish(() => {
+                return regions.breakingNewsModal().confirm();
+            })
+            .respondWith({
+                global: {
+                    live: [{
+                        id: 'internal-code/page/1',
+                        meta: { group: 0 }
+                    }]
+                }
+            })
+            .done;
+        })
+        .then(() => wait.ms(100))
+        .then(() => {
+            return regions.alert().close();
+        })
+        .then(() => {
+            return this.testPage.actions.edit(() => {
+                return regions.front().collection(1).group(2).trail(1).remove();
+            })
+            .respondWith({
+                global: {
+                    draft: [],
+                    live: [{
+                        id: 'internal-code/page/1'
+                    }],
+                    lastUpdated: (new Date()).toISOString()
+                }
+            })
+            .done;
+        })
+        .then(() => {
+            expect(regions.front().collection(1).publishText()).toBe('Remove');
+            return regions.front().collection(1).publish();
+        })
+        .then(() => {
+            return regions.latest().trail(0).copy();
+        })
+        .then(() => {
+            return this.testPage.actions.edit(() => {
+              return regions.front().collection(1).group(1).pasteOver();
+            })
+            .respondWith({
+                global: {
+                    draft: [{
+                        id: 'internal-code/page/1',
+                        meta: {
+                            imageHide: true,
+                            group: '0'
+                        }
+                    }]
+                }
+            })
+            .done;
+        })
+        .then(() => {
+            expect(regions.front().collection(1).publishText()).toBe('Send alert');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
 });
