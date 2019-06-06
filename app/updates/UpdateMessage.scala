@@ -1,6 +1,7 @@
 package updates
 
-import com.gu.facia.client.models.{CollectionJson, CollectionConfigJson, FrontJson, TrailMetaData}
+import com.gu.facia.client.models.{CollectionConfigJson, CollectionJson, FrontJson, TrailMetaData}
+import com.gu.mobile.notifications.client.models.Topic
 import julienrf.json.derived
 import org.joda.time.DateTime
 import play.api.libs.json._
@@ -87,7 +88,15 @@ case class HandlingBreakingNewsCollection(id: String) extends UpdateMessage {
   def affectedFronts(configAgent: ConfigAgent) = configAgent.getConfigsUsingCollectionId(id).toSet[String]
 }
 
-case class HandlingBreakingNewsTrail(id: String, breakingNewsTrail: ClientHydratedTrail) extends UpdateMessage {
+case class HandlingBreakingNewsTrail(id: String, breakingNewsTrail: ClientHydratedTrail, topic: String) extends UpdateMessage {
+  def affectedFronts(configAgent: ConfigAgent) = configAgent.getConfigsUsingCollectionId(id).toSet[String]
+}
+
+case class SuppressedBreakingNewsSend(id: String, breakingNewsTrail: ClientHydratedTrail, topic: String) extends UpdateMessage {
+  def affectedFronts(configAgent: ConfigAgent) = configAgent.getConfigsUsingCollectionId(id).toSet[String]
+}
+
+case class SentBreakingNewsNotification(id: String, breakingNewsTrail: ClientHydratedTrail, topic: String, notificationApiId: String) extends UpdateMessage {
   def affectedFronts(configAgent: ConfigAgent) = configAgent.getConfigsUsingCollectionId(id).toSet[String]
 }
 

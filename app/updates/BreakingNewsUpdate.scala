@@ -39,25 +39,28 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
     email: String
   ): Future[Result] = {
     // TODO MRB:
-    // check we still log in the correct places
-    // does putting it in the web container set the "alert" flag?
+    // remove injected HTTP provider
 
-    structuredLogger.putLog(LogUpdate(HandlingBreakingNewsCollection(collectionId), email))
+    def structuredLog(update: UpdateMessage, level: String = "info", error: Option[String] = None) = {
+      structuredLogger.putLog(LogUpdate(update, email), level, error.map(new Exception(_)))
+    }
+
+    structuredLog(HandlingBreakingNewsCollection(collectionId))
 
     val requests = createRequests(collection.trails, email)
 
     Future.traverse(requests) { request =>
-      structuredLogger.putLog(LogUpdate(HandlingBreakingNewsTrail(collectionId, request.trail), email))
+      structuredLog(HandlingBreakingNewsTrail(collectionId, request.trail, request.topic.name))
 
       if(request.trail.alert.getOrElse(false)) {
         client.send(request).map(request -> _)
       } else {
-        // TODO MRB: use custom BreakingNewsError enum
-        logger.error(s"Failed to send a breaking news alert for trail ${request.trail} because alert was missing")
+        val errorMessage = "There has been a problem sending the breaking news alert. Please contact central production before sending additional alerts"
+        structuredLog(SuppressedBreakingNewsSend(collectionId, request.trail, request.topic.name), level = "error", error = Some(errorMessage))
+
+        // TODO MRB: use our own custom error enum rather than the MAPI client
         Future.successful(
-          request -> Left(UnexpectedApiResponseError(
-            "There may have been a problem in sending a breaking news alert. Please contact central production for information")
-          )
+          request -> Left(UnexpectedApiResponseError(errorMessage))
         )
       }
     }.map { results =>
@@ -69,16 +72,14 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
       if(errors.nonEmpty) {
         InternalServerError(Json.toJson(
           errors.map { case(request, error) =>
-            // TODO MRB: note this is a change in logging class (used to be HandlingBreakingNewsCollection)
-            structuredLogger.putLog(LogUpdate(HandlingBreakingNewsTrail(collectionId, request.trail), email), "error", Some(new Exception(error.description)))
+            structuredLog(HandlingBreakingNewsTrail(collectionId, request.trail, request.topic.name), level = "error", Some(error.description))
             error.description
           }
         ))
       } else {
         Ok(Json.toJson(
           successes.map { case(request, response) =>
-            // TODO MRB: structured logging here?
-            logger.info(s"Successfully sent breaking news alert for ${request.trail} to ${request.topic}. ID: ${response.id}")
+            structuredLog(SentBreakingNewsNotification(collectionId, request.trail, request.topic.name, response.id))
             response.id
           }
         ))
