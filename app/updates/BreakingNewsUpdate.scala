@@ -29,7 +29,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
     new BreakingNewsClient(
       host = config.notification.host,
       apiKey = config.notification.key,
-      httpProvider = new NotificationHttpProvider(ws)
+      ws
     )
   }
 
@@ -38,8 +38,6 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
     collection: ClientHydratedCollection,
     email: String
   ): Future[Result] = {
-    // TODO MRB:
-    // remove injected HTTP provider
 
     def structuredLog(update: UpdateMessage, level: String = "info", error: Option[String] = None) = {
       structuredLogger.putLog(LogUpdate(update, email), level, error.map(new Exception(_)))
