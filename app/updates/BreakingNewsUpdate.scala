@@ -15,7 +15,7 @@ import play.api.libs.json.Json
 import play.api.libs.ws.{WSClient, WSResponse}
 import play.api.mvc.Result
 import play.api.mvc.Results.{InternalServerError, Ok}
-import util.{BreakingNewsClient, BreakingNewsRequest}
+import util.{BreakingNewsClient, BreakingNewsError, BreakingNewsRequest, BreakingNewsSuppressedError}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -39,8 +39,8 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
     email: String
   ): Future[Result] = {
 
-    def structuredLog(update: UpdateMessage, level: String = "info", error: Option[String] = None) = {
-      structuredLogger.putLog(LogUpdate(update, email), level, error.map(new Exception(_)))
+    def structuredLog(update: UpdateMessage, level: String = "info", error: Option[BreakingNewsError] = None) = {
+      structuredLogger.putLog(LogUpdate(update, email), level, error.flatMap(BreakingNewsError.getThrowable))
     }
 
     structuredLog(HandlingBreakingNewsCollection(collectionId))
@@ -53,13 +53,12 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
       if(request.trail.alert.getOrElse(false)) {
         client.send(request).map(request -> _)
       } else {
-        val errorMessage = "There has been a problem sending the breaking news alert. Please contact central production before sending additional alerts"
-        structuredLog(SuppressedBreakingNewsSend(collectionId, request.trail, request.topic.name), level = "error", error = Some(errorMessage))
-
-        // TODO MRB: use our own custom error enum rather than the MAPI client
-        Future.successful(
-          request -> Left(UnexpectedApiResponseError(errorMessage))
+        val error = BreakingNewsSuppressedError(
+          "There has been a problem sending the breaking news alert. Please contact central production before sending additional alerts"
         )
+
+        structuredLog(HandlingBreakingNewsTrail(collectionId, request.trail, request.topic.name), level = "error", error = Some(error))
+        Future.successful(request -> Left(error))
       }
     }.map { results =>
       val successes = results.collect { case (request, Right(response)) => request -> response }
@@ -70,8 +69,8 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
       if(errors.nonEmpty) {
         InternalServerError(Json.toJson(
           errors.map { case(request, error) =>
-            structuredLog(HandlingBreakingNewsTrail(collectionId, request.trail, request.topic.name), level = "error", Some(error.description))
-            error.description
+            structuredLog(HandlingBreakingNewsTrail(collectionId, request.trail, request.topic.name), level = "error", Some(error))
+            BreakingNewsError.getDescription(error)
           }
         ))
       } else {

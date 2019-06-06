@@ -9,7 +9,7 @@ import services.ConfigAgent
 import scala.collection.JavaConverters._
 
 class StructuredLogger(val config: ApplicationConfiguration, val configAgent: ConfigAgent) extends Logging {
-  def putLog(log: LogUpdate, level: String = "info", error: Option[Exception] = None): Unit = {
+  def putLog(log: LogUpdate, level: String = "info", error: Option[Throwable] = None): Unit = {
     lazy val updatePayload = serializeUpdateMessage(log)
     lazy val shortMessagePayload = serializeShortMessage(log)
     log.fronts(configAgent).foreach { frontId => {
