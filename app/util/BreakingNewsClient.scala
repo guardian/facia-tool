@@ -19,8 +19,8 @@ object BreakingNewsResponse {
 
 sealed trait BreakingNewsError
 case class BreakingNewsResponseStatusError(status: Int, body: String) extends BreakingNewsError
-case class BreakingNewsResponseFormatError(error: Either[String, Throwable], body: String) extends BreakingNewsError
-case class BreakingNewsResponseException(err: Throwable) extends BreakingNewsError
+case class BreakingNewsResponseFormatError(error: Either[String, Exception], body: String) extends BreakingNewsError
+case class BreakingNewsResponseException(err: Exception) extends BreakingNewsError
 case class BreakingNewsSuppressedError(message: String) extends BreakingNewsError
 
 object BreakingNewsError {
@@ -32,7 +32,7 @@ object BreakingNewsError {
     case BreakingNewsSuppressedError(message) => message
   }
 
-  def getThrowable(error: BreakingNewsError): Option[Throwable] = error match {
+  def getException(error: BreakingNewsError): Option[Exception] = error match {
     case BreakingNewsResponseFormatError(Right(err), _) => Some(err)
     case BreakingNewsResponseException(err) => Some(err)
     case _ => None
@@ -58,7 +58,7 @@ class BreakingNewsClient(
         Left(BreakingNewsResponseStatusError(response.status, response.body))
       }
     } recover {
-      case NonFatal(e) => Left(BreakingNewsResponseException(e))
+      case NonFatal(e: Exception) => Left(BreakingNewsResponseException(e))
     }
   }
 
@@ -74,7 +74,7 @@ class BreakingNewsClient(
       }
     }
     catch {
-      case NonFatal(e) =>
+      case NonFatal(e: Exception) =>
         Left(BreakingNewsResponseFormatError(Right(e), jsonBody))
     }
   }

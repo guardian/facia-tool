@@ -40,7 +40,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
   ): Future[Result] = {
 
     def structuredLog(update: UpdateMessage, level: String = "info", error: Option[BreakingNewsError] = None) = {
-      structuredLogger.putLog(LogUpdate(update, email), level, error.flatMap(BreakingNewsError.getThrowable))
+      structuredLogger.putLog(LogUpdate(update, email), level, error.flatMap(BreakingNewsError.getException))
     }
 
     structuredLog(HandlingBreakingNewsCollection(collectionId))
