@@ -20,6 +20,7 @@ export interface ArticleFragmentFormData {
   showBoostedHeadline: boolean;
   customKicker: string;
   isBreaking: boolean;
+  showLivePlayable: boolean;
   byline: string;
   showByline: boolean;
   trailText: string;
@@ -97,6 +98,7 @@ export const getInitialValuesForArticleFragmentForm = (
         showKickerSection: article.showKickerSection || false,
         customKicker: article.customKicker || '',
         isBreaking: article.isBreaking || false,
+        showLivePlayable: article.showLivePlayable || false,
         byline: article.byline || '',
         showByline: article.showByline || false,
         trailText: article.trailText || '',
