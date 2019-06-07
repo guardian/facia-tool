@@ -3,7 +3,8 @@ package services
 import java.time.ZonedDateTime
 import org.scalatest.{FreeSpec, Matchers}
 import editions.{EditionTemplates}
-import model._
+import model.editions._
+import model.editions.WeekDay._
 
 class editionTemplateTest extends FreeSpec with Matchers {
 
