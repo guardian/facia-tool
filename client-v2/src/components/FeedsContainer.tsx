@@ -163,6 +163,7 @@ const getParams = (
   'show-elements': 'image',
   'show-tags': 'all',
   'show-fields': getCapiFieldsToShow(isPreview),
+  'show-atoms': 'media',
   ...(isPreview
     ? { 'order-by': 'oldest', 'from-date': getTodayDate() }
     : { 'order-by': 'newest', 'order-date': sortByParam })
