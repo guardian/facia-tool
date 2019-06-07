@@ -23,6 +23,7 @@ const formValues = {
   imageSlideshowReplace: false,
   isBoosted: false,
   isBreaking: false,
+  showLivePlayable: false,
   primaryImage: {
     height: undefined,
     origin: undefined,
