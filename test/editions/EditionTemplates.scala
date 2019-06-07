@@ -10,7 +10,7 @@ class editionTemplateTest extends FreeSpec with Matchers {
 
   "createEdition" - {
     "should return Monday's content for Monday" in {
-      val editionTemplateFronts = EditionTemplateHelpers.generateEditionTemplate(DateTime.parse("2019-03-11"), DailyEdition.template).get.fronts
+      val editionTemplateFronts = EditionTemplates.generateEditionTemplate("dailyEdition", ZonedDateTime.parse("2019-03-11T10:15:30+01:00[Europe/London]")).get.fronts
       editionTemplateFronts.length should be (10)
       editionTemplateFronts(0) should matchPattern { case FrontTemplate("comment/journal", _, _, _) => }
       editionTemplateFronts(1) should matchPattern { case FrontTemplate("sport/sport", _, _, _) => }
@@ -25,7 +25,7 @@ class editionTemplateTest extends FreeSpec with Matchers {
     }
 
     "should return Friday's content for Friday" in {
-      val editionTemplateFronts = EditionTemplateHelpers.generateEditionTemplate(DateTime.parse("2019-03-15"), DailyEdition.template).get.fronts
+      val editionTemplateFronts = EditionTemplates.generateEditionTemplate("dailyEdition", ZonedDateTime.parse("2019-03-15T10:15:30+01:00[Europe/London]")).get.fronts
       editionTemplateFronts.length should be (10)
       editionTemplateFronts(0) should matchPattern { case FrontTemplate("comment/journal", _, _, _) => }
       editionTemplateFronts(1) should matchPattern { case FrontTemplate("sport/sport", _, _, _) => }
@@ -40,7 +40,7 @@ class editionTemplateTest extends FreeSpec with Matchers {
     }
 
     "should return Saturday's content for Saturday" in {
-      val editionTemplateFronts = EditionTemplateHelpers.generateEditionTemplate(DateTime.parse("2019-03-16"), DailyEdition.template).get.fronts
+      val editionTemplateFronts = EditionTemplates.generateEditionTemplate("dailyEdition", ZonedDateTime.parse("2019-03-16T10:15:30+01:00[Europe/London]")).get.fronts
       editionTemplateFronts.length should be (13)
       editionTemplateFronts(0) should matchPattern { case FrontTemplate("comment/journal", _, _, _) => }
       editionTemplateFronts(1) should matchPattern { case FrontTemplate("weekend/weekend", _, _, _) => }
