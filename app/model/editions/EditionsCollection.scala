@@ -14,7 +14,8 @@ case class EditionsCollection(
     updatedOn: Option[ZonedDateTime],
     updatedBy: Option[String],
     updatedEmail: Option[String],
-    articles: List[EditionsArticle]
+    live: List[EditionsArticle],
+    draft: List[EditionsArticle]
 )
 
 object EditionsCollection {
@@ -30,6 +31,7 @@ object EditionsCollection {
       rs.zonedDateTimeOpt(prefix + "updated_on"),
       rs.stringOpt(prefix + "updated_by"),
       rs.stringOpt(prefix + "updated_email"),
+      Nil,
       Nil
     )
   }
@@ -53,6 +55,7 @@ object EditionsCollection {
         rs.zonedDateTimeOpt(prefix + "updated_on"),
         rs.stringOpt(prefix + "updated_by"),
         rs.stringOpt(prefix + "updated_email"),
+        Nil,
         Nil
       )
   }
