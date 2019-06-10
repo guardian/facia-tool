@@ -4,11 +4,13 @@ import { Element } from 'types/Capi';
 
 export const hasMainVideo = (article: DerivedArticle) => {
   return (
-    getMainMediaType(article) === 'video' || hasMainMediaVideoAtom(article)
+    hasMainMediaVideoAtom(article) ||
+    getArticleMainElementType(article) === 'video'
   );
 };
 
-export function getMainMediaType(article: DerivedArticle) {
+// this function probably refers to old-style video pages which have a main element of type video
+export function getArticleMainElementType(article: DerivedArticle) {
   const element = (article.elements || []).find(_ => _.relation === 'main');
   return element ? element.type : undefined;
 }
