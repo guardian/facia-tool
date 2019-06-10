@@ -9,6 +9,7 @@ case class EditionsCollection(
     id: String,
     name: String,
     prefill: String,
+    isHidden: Boolean,
     metadata: Option[String],
     updatedOn: Option[ZonedDateTime],
     updatedBy: Option[String],
@@ -24,6 +25,7 @@ object EditionsCollection {
       rs.string(prefix + "id"),
       rs.string(prefix + "name"),
       rs.string(prefix + "prefill"),
+      rs.boolean(prefix + "is_hidden"),
       rs.stringOpt(prefix + "metadata"),
       rs.zonedDateTimeOpt(prefix + "updated_on"),
       rs.stringOpt(prefix + "updated_by"),
@@ -40,11 +42,13 @@ object EditionsCollection {
       id <- rs.stringOpt(prefix + "id")
       name <- rs.stringOpt(prefix + "name")
       prefill <- rs.stringOpt(prefix + "prefill")
+      isHidden <- rs.booleanOpt(prefix + "is_hidden")
     } yield
       EditionsCollection(
         id,
         name,
         prefill,
+        isHidden,
         rs.stringOpt(prefix + "metadata"),
         rs.zonedDateTimeOpt(prefix + "updated_on"),
         rs.stringOpt(prefix + "updated_by"),

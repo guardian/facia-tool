@@ -44,6 +44,7 @@ CREATE TABLE collections (
 
     name          TEXT NOT NULL,
     prefill       TEXT NOT NULL,
+    is_hidden     BOOLEAN NOT NULL,
     metadata      JSONB,
 
     updated_on    TIMESTAMPTZ,

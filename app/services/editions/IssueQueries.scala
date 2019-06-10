@@ -65,8 +65,9 @@ trait IssueQueries {
             index,
             name,
             prefill,
+            is_hidden,
             metadata
-          ) VALUES ($frontId, $index, ${collection.name}, ${collection.prefill.query}, NULL);
+          ) VALUES ($frontId, $index, ${collection.name}, ${collection.prefill.query}, ${collection.hidden} NULL);
           """.execute().apply()
         }
     }
@@ -102,6 +103,7 @@ trait IssueQueries {
         collections.index AS collections_index,
         collections.name AS collections_name,
         collections.prefill AS collections_prefill,
+        collections.is_hidden AS collections_is_hidden,
         collections.metadata AS collections_metadata,
         collections.updated_on AS collections_updated_on,
         collections.updated_by AS collections_updated_by,
