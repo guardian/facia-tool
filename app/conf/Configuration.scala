@@ -130,8 +130,8 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
 
   object postgres {
     val hostname = findRDSEndpoint
-    val url = s"jdbc:postgresql://$hostname:5432/fronts-tool"
-    val user =  "fronts-tool"
+    val url = s"jdbc:postgresql://$hostname:5432/facia-tool"
+    val user =  "facia-tool"
     val password = getPassword
 
     private def getPassword: String = {

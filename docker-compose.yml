@@ -3,13 +3,13 @@ version: '3'
 services:
     postgres:
         image: postgres:10.7-alpine
-        container_name: fronts-tool-postgres
+        container_name: facia-tool-postgres
         ports:
             - 5432:5432
         environment:
-            - POSTGRES_USER=fronts-tool
-            - POSTGRES_PASSWORD=fronts-tool
-            - POSTGRES_DB=fronts-tool
+            - POSTGRES_USER=facia-tool
+            - POSTGRES_PASSWORD=facia-tool
+            - POSTGRES_DB=facia-tool
         volumes:
             - postgres-data:/var/lib/postgresql/data
 
