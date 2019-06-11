@@ -71,6 +71,17 @@ If you make changes to the database schema you can delete your database by runni
 
 If you wish to connect to the local database you can run `./scripts/local-psql.sh` which has the user, database and password preconfigured and ready to go.
 
+#### Postgres Master Passwords
+
+If you need the master passwords for the production postgres instances they are stored as SSM parameters and can be found at:
+
+CODE: `facia-tool/cms-fronts/CODE/db/password`
+PROD: `facia-tool/cms-fronts/PROD/db/password`
+
+To fetch these can be fetched using the aws cli like so:
+
+`aws ssm get-parameter --name /facia-tool/cms-fronts/CODE/db/password --profile cmsFronts --region eu-west-1`
+
 ### Clone repository
 
 1. [Generate and add an SSH key](https://help.github.com/articles/generating-ssh-keys) to your GitHub account.
