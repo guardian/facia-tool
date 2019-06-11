@@ -17,7 +17,18 @@ class Loader extends ApplicationLoader {
     // Play server
     val isProd = context.environment.mode == Mode.Prod
     val config = new ApplicationConfiguration(context.initialConfiguration, isProd)
-    val components = new AppComponents(context, config)
+
+    val playConfig = context.initialConfiguration
+    // Override the initial configuraiton from play to allow play evoltions to work with RDS IAM
+    val configWithPassword = playConfig ++ Configuration.from(
+      Map(
+        "db.default.url" ->  config.postgres.url,
+        "db.default.username" ->  config.postgres.user,
+        "db.default.password" ->  config.postgres.password
+      )
+    )
+
+    val components = new AppComponents(context.copy(initialConfiguration = configWithPassword), config)
 
     // Background tasks
     new SwitchboardLifecycle(SwitchboardConfiguration(

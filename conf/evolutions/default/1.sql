@@ -1,15 +1,7 @@
-BEGIN;
+# --- !Ups
 
 -- TODO use uuid in raw form isntead of converting to text in various PK
 CREATE EXTENSION "uuid-ossp";
-
--- Manifest --
--- Used to track the version of the database schema --
-
-CREATE TABLE manifest (
-  key   TEXT PRIMARY KEY,
-  value TEXT NOT NULL
-);
 
 CREATE TABLE edition_issues (
     id             TEXT PRIMARY KEY DEFAULT uuid_generate_v4()::TEXT,
@@ -71,5 +63,12 @@ CREATE TABLE trails (
     PRIMARY KEY (collection_id, status, id)
 );
 
+# --- !Downs
 
-COMMIT;
+DROP TABLE edition_issues;
+
+DROP TABLE fronts;
+
+DROP TABLE collections;
+
+DROP TABLE trails;

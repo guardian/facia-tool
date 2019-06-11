@@ -20,8 +20,14 @@ import tools.FaciaApiIO
 import updates.{BreakingNewsUpdate, StructuredLogger}
 import util.{Acl, Encryption}
 import scalikejdbc._
+import play.api.db.evolutions.EvolutionsComponents
+import play.api.db.DBComponents
+import play.api.db.HikariCPComponents
 
-class AppComponents(context: Context, val config: ApplicationConfiguration) extends BaseFaciaControllerComponents(context) {
+class AppComponents(context: Context, val config: ApplicationConfiguration) extends BaseFaciaControllerComponents(context) with EvolutionsComponents with DBComponents with HikariCPComponents {
+
+  applicationEvolutions
+
   val isTest: Boolean = context.environment.mode == Mode.Test
   val isProd: Boolean = context.environment.mode == Mode.Prod
   val isDev: Boolean = context.environment.mode == Mode.Dev
