@@ -80,7 +80,7 @@ PROD: `facia-tool/cms-fronts/PROD/db/password`
 
 To fetch these can be fetched using the aws cli like so:
 
-`aws ssm get-parameter --name /facia-tool/cms-fronts/CODE/db/password --profile cmsFronts --region eu-west-1`
+`aws ssm get-parameter --name /facia-tool/cms-fronts/CODE/db/password --with-decryption --profile cmsFronts --region eu-west-1`
 
 ### Clone repository
 
