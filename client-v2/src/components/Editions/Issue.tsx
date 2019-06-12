@@ -1,10 +1,10 @@
 import React from 'react';
-import { EditionIssue } from 'types/Edition';
+import { EditionsIssue } from 'types/Edition';
 import { styled } from 'constants/theme';
 import moment from 'moment';
 
 interface IssueProps {
-  issue: EditionIssue;
+  issue: EditionsIssue;
 }
 
 const IssueTable = styled.table`
