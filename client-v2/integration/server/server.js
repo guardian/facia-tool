@@ -11,7 +11,7 @@ const capiCollection = require('../fixtures/capi-collection');
 const capiSearch = require('../fixtures/capi-search');
 const snapTag = require('../fixtures/snap-tag');
 const snapTagPage = require('../fixtures/snap-tag-page');
-const snapExternalPage = require('../../src/shared/fixtures/bbcSectionPage.ts');
+const snapExternalPage = require('../../src/shared/fixtures/bbcSectionPage');
 
 const findArticleWithIDFromResponse = id =>
   capiSearch.response.results.filter(
