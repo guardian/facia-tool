@@ -10,9 +10,7 @@ fi
 
 SCRIPT_PATH=$( cd $(dirname $0) ; pwd -P )
 
-RDS_INSTANCE=$(aws rds describe-db-instances --db-instance-identifier facia-${LOWER_STAGE}-db --region eu-west-1 --profile cmsFronts | jq -r .DBInstances[0].Endpoint.Address)
-
-${SCRIPT_PATH}/setup-ssh-tunnel.sh -t "${RDS_INSTANCE}"
+${SCRIPT_PATH}/setup-ssh-tunnel.sh "$UPPER_STAGE"
 
 PASSWORD=$(aws ssm get-parameter --name /facia-tool/cms-fronts/${UPPER_STAGE}/db/password --with-decryption --profile cmsFronts --region eu-west-1 | jq -r .Parameter.Value)
 

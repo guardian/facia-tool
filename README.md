@@ -63,11 +63,11 @@ Ubuntu/Mac: [Follow these instructions](https://github.com/nvm-sh/nvm#installati
 #### Running postgres
 
 To start local postgres:
-- Make sure you have docker installed.
-- You will need `pg_isready` which you can get by running `brew install postgresql`
-- Run `scripts/start-postres.sh`
+- Make sure you have `docker` installed and `docker-compose`.
+- Run `docker-compose up` in the root of this repository
+- When you run the Play application it will seed the database with using Play's inbuilt database evolutions.
 
-If you make changes to the database schema you can delete your database by running `scripts/delete-local-db.sh`
+If you wish to delete everything in the database you can use `docker-compose down -v` which will delete the container's persistent volumes.
 
 If you wish to connect to the local database you can run `./scripts/local-psql.sh` which has the user, database and password preconfigured and ready to go.
 
