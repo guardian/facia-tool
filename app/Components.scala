@@ -26,6 +26,10 @@ import play.api.db.HikariCPComponents
 
 class AppComponents(context: Context, val config: ApplicationConfiguration) extends BaseFaciaControllerComponents(context) with EvolutionsComponents with DBComponents with HikariCPComponents {
 
+  println(context.initialConfiguration.getString("db.default.url"))
+  println(context.initialConfiguration.getString("db.default.username"))
+  println(context.initialConfiguration.getString("db.default.password"))
+
   applicationEvolutions
 
   val isTest: Boolean = context.environment.mode == Mode.Test
