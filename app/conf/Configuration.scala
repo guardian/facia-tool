@@ -147,11 +147,8 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     private def findRDSEndpoint(): String = {
       // In fronts tool 'isProd' means is CODE or PROD because fuck it why not
       if (isProd) {
-        val request = new DescribeDBInstancesRequest().withFilters(
-          new RDSFilter().withName("tag:App").withValues("facia-tool"),
-          new RDSFilter().withName("tag:Stage").withValues(stageFromProperties)
-        )
-
+        val dbIdentifier = if (stageFromProperties == "PROD") "facia-prod-db" else "facia-code-db"
+        val request = new DescribeDBInstancesRequest().withDBInstanceIdentifier(dbIdentifier)
         val instances = aws.rdsClient.describeDBInstances(request).getDBInstances.asScala.toList
 
         if (instances.length != 1) {
