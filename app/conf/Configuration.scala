@@ -148,7 +148,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
       // In fronts tool 'isProd' means is CODE or PROD because fuck it why not
       if (isProd) {
         val request = new DescribeDBInstancesRequest().withFilters(
-          new RDSFilter().withName("tag:App").withValues(environment.applicationName),
+          new RDSFilter().withName("tag:App").withValues("facia-tool"),
           new RDSFilter().withName("tag:Stage").withValues(stageFromProperties)
         )
 
