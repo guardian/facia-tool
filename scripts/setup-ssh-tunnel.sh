@@ -3,37 +3,17 @@ set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-function HELP {
->&2 cat << EOF
-  Usage: ${0} -t RDS-HOST
-  This script sets up an ssh tunnel from localhost port 5902 to the RDS-HOST provided on port 5432
-   using a workflow datastore instance discovered via prism as a bastion host.
-    -t RDS-HOST the hostname of the RDS instance e.g. workflow-code.1234abc567.eu-west-1.rds.amazonaws.com
-    -h            Displays this help message. No further functions are
-                  performed.
-EOF
-exit 1
-}
+UPPER_STAGE=$( echo "$1" | awk '{print toupper($0)}' )
+LOWER_STAGE=$( echo "$1" | awk '{print tolower($0)}' )
 
-# Process options
-while getopts t:h FLAG; do
-  case $FLAG in
-    t)
-      RDSHOST=$OPTARG
-      ;;
-    h)  #show help
-      HELP
-      ;;
-  esac
-done
-shift $((OPTIND-1))
-
-if [ -z "${RDSHOST}" ]; then
-    echo "Must specify hostname"
+if [ "$UPPER_STAGE" != "PROD" ] && [ "$UPPER_STAGE" != "CODE" ]; then
+    echo "Usage: ${0} <PROD | CODE>"
     exit 1
 fi
 
-DATASTORE_HOST=$(prism stage=CODE stack=cms-fronts app=facia-tool -f instanceName | awk '{print $4}' | head -1)
-echo $DATASTORE_HOST
+RDS_HOST=$(aws rds describe-db-instances --db-instance-identifier facia-${LOWER_STAGE}-db --region eu-west-1 --profile cmsFronts | jq -r .DBInstances[0].Endpoint.Address)
 
-eval $(ssm ssh --profile cmsFronts -i ${DATASTORE_HOST} --raw) -f -N -L 5902:${RDSHOST}:5432
+APP_HOST=$(prism stage=${UPPER_STAGE} stack=cms-fronts app=facia-tool -f instanceName | awk '{print $4}' | head -1)
+echo "Tunneling to '$RDS_HOST' via '$APP_HOST'"
+
+eval $(ssm ssh --profile cmsFronts -i ${APP_HOST} --raw) -f -N -L 5902:${RDS_HOST}:5432
