@@ -7,10 +7,10 @@ import scalikejdbc.WrappedResultSet
 
 case class EditionsCollection(
     id: String,
-    name: String,
-    prefill: String,
+    displayName: String,
+    prefill: Option[String],
     isHidden: Boolean,
-    updatedOn: Option[ZonedDateTime],
+    lastUpdated: Option[ZonedDateTime],
     updatedBy: Option[String],
     updatedEmail: Option[String],
     live: List[EditionsArticle],
@@ -24,7 +24,7 @@ object EditionsCollection {
     EditionsCollection(
       rs.string(prefix + "id"),
       rs.string(prefix + "name"),
-      rs.string(prefix + "prefill"),
+      rs.stringOpt(prefix + "prefill"),
       rs.boolean(prefix + "is_hidden"),
       rs.zonedDateTimeOpt(prefix + "updated_on"),
       rs.stringOpt(prefix + "updated_by"),
@@ -41,13 +41,12 @@ object EditionsCollection {
     for {
       id <- rs.stringOpt(prefix + "id")
       name <- rs.stringOpt(prefix + "name")
-      prefill <- rs.stringOpt(prefix + "prefill")
       isHidden <- rs.booleanOpt(prefix + "is_hidden")
     } yield
       EditionsCollection(
         id,
         name,
-        prefill,
+        rs.stringOpt(prefix + "prefill"),
         isHidden,
         rs.zonedDateTimeOpt(prefix + "updated_on"),
         rs.stringOpt(prefix + "updated_by"),

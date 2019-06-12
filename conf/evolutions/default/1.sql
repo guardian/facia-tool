@@ -35,7 +35,7 @@ CREATE TABLE collections (
     index         INT NOT NULL,
 
     name          TEXT NOT NULL,
-    prefill       TEXT NOT NULL,
+    prefill       TEXT,
     is_hidden     BOOLEAN NOT NULL,
     metadata      JSONB,
 

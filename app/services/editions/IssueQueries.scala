@@ -32,7 +32,7 @@ trait IssueQueries {
       publishDate: ZonedDateTime,
       template: EditionTemplateForDate,
       user: User
-  ) = DB localTx { implicit session =>
+  ): String  = DB localTx { implicit session =>
     val issueId = sql"""
           INSERT INTO edition_issues (
             name,
@@ -71,6 +71,8 @@ trait IssueQueries {
           """.execute().apply()
         }
     }
+
+    issueId
   }
 
   def getIssue(id: String): Option[EditionsIssue] = DB localTx { implicit session =>

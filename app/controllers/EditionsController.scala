@@ -13,8 +13,11 @@ class EditionsController(db: EditionsDB, val deps: BaseFaciaControllerComponents
     val form = req.body
 
     EditionTemplates.generateEditionTemplate(form.name, form.publishDate).map { template =>
-      db.insertIssue(form.name, form.publishDate, template, req.user)
-      Created
+      val issueId = db.insertIssue(form.name, form.publishDate, template, req.user)
+
+      db.getIssue(issueId).map { issue =>
+        Created(Json.toJson(issue))
+      }.getOrElse(NotFound("Issue created but could not retrieve it from the database"))
     }.getOrElse {
       NotFound(s"Edition ${form.name} not found")
     }

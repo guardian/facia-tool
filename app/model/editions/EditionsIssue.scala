@@ -7,7 +7,7 @@ import scalikejdbc.WrappedResultSet
 
 case class EditionsIssue(
     id: String,
-    name: String,
+    displayName: String,
     publishDate: ZonedDateTime,
     createdOn: ZonedDateTime,
     createdBy: String,

@@ -7,8 +7,8 @@ import scalikejdbc.WrappedResultSet
 
 case class EditionsFront(
     id: String,
-    name: String,
-    is_hidden: Boolean,
+    displayName: String,
+    isHidden: Boolean,
     updatedOn: Option[ZonedDateTime],
     updatedBy: Option[String],
     updatedEmail: Option[String],
