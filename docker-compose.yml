@@ -7,9 +7,9 @@ services:
         ports:
             - 5432:5432
         environment:
-            - POSTGRES_USER=facia-tool
-            - POSTGRES_PASSWORD=facia-tool
-            - POSTGRES_DB=facia-tool
+            - POSTGRES_USER=faciatool
+            - POSTGRES_PASSWORD=faciatool
+            - POSTGRES_DB=faciatool
         volumes:
             - postgres-data:/var/lib/postgresql/data
 
