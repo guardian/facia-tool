@@ -55,6 +55,14 @@ object EditionTemplates {
         )
       }
   }
+
+  private def applyPrefills(template: EditionTemplateForDate) = {
+    template.fronts.map { front =>
+      front.collections.map { collections =>
+        collections.prefill
+      }
+    }
+  }
 }
 
 object FrontSpecialFashionMagazine {

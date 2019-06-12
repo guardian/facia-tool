@@ -82,6 +82,7 @@ libraryDependencies ++= Seq(
     "com.amazonaws" % "aws-java-sdk-kinesis" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion,
+    "com.amazonaws" % "aws-java-sdk-ssm" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-sts" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion,
     "com.gu" %% "content-api-models" % capiModelsVersion,

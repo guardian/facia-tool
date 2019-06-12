@@ -15,6 +15,8 @@ import scala.collection.JavaConverters._
 import scala.language.reflectiveCalls
 import com.amazonaws.services.rds.model.{DescribeDBInstancesRequest, Filter => RDSFilter}
 import com.amazonaws.services.rds.AmazonRDSClientBuilder
+import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder
+import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest
 
 class BadConfigurationException(msg: String) extends RuntimeException(msg)
 
@@ -126,6 +128,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
       }
     }
     val rdsClient = AmazonRDSClientBuilder.standard().withCredentials(cmsFrontsAccountCredentials).withRegion(region).build()
+    val ssmClient = AWSSimpleSystemsManagementClientBuilder.standard().withCredentials(cmsFrontsAccountCredentials).withRegion(region).build()
   }
 
   object postgres {
@@ -137,8 +140,12 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     private def getPassword: String = {
       // In fronts tool 'isProd' means is CODE or PROD because fuck it why not
       if (isProd) {
-        val generator = RdsIamAuthTokenGenerator.builder().credentials(credentialsProviderChain()).region(aws.region).build()
-        generator.getAuthToken(GetIamAuthTokenRequest.builder.hostname(hostname).port(5432).userName(user).build())
+          val request = new GetParameterRequest()
+            .withName(s"/facia-tool/cms-fronts/$stageFromProperties/db/password")
+            .withWithDecryption(true)
+
+          val response = aws.ssmClient.getParameter(request)
+          response.getParameter.getValue
       } else {
         getMandatoryString("db.default.password")
       }
