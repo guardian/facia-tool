@@ -28,14 +28,18 @@ export const fetchIssueByDate = async (date: Moment): Promise<EditionIssue> => {
     }
   )
     .then(response => {
-      console.log('fetch issue by date', response);
       if (response.status === 200) {
         return response.json();
       } else {
         return [];
       }
     })
-    .catch(console.log('No issue was found for this date'));
+    .catch(() =>
+      // We want to catch this when no issue is present
+      console.warn(
+        'In FetchIssueByDate function: No issue was found for this date'
+      )
+    );
 };
 
 export const createIssue = async (date: Moment): Promise<EditionIssue> => {
@@ -48,7 +52,6 @@ export const createIssue = async (date: Moment): Promise<EditionIssue> => {
     credentials: 'include',
     body: JSON.stringify({ date: `${date.format(dateFormat)}` })
   }).then(response => {
-    console.log(response);
     return response.json();
   });
 };

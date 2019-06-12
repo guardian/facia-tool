@@ -56,7 +56,7 @@ class ManageEdition extends React.Component {
           onNextMonthClick={this.handleMonthClick}
           onPrevMonthClick={this.handleMonthClick}
           id="editions-date"
-          isDayHighlighted={date => !!this.getIssueForDate(date)}
+          isDayHighlighted={date => !!this.checkIssuePresentForDate(date)}
           isOutsideRange={() => false}
         />
         <div>
@@ -108,7 +108,6 @@ class ManageEdition extends React.Component {
     this.setState({ infoMessage: 'New issue created' });
     createIssue(this.state.date)
       .then(issue => {
-        console.log('CREATE ISSUE RAN, issue', issue);
         this.setState({ currentIssue: issue });
       })
       .catch(err => {
@@ -150,7 +149,7 @@ class ManageEdition extends React.Component {
     this.setState({ isDatePickerOpen: !!isFocussedObj.focused });
   };
 
-  private getIssueForDate = (date: Moment) =>
+  private checkIssuePresentForDate = (date: Moment) =>
     this.state.issues.find(i =>
       moment(i.publishDate, 'YYYY-MM-DD HH:mm:ss-ZZ').isSame(date, 'day')
     );
