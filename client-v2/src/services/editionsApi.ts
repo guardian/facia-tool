@@ -29,7 +29,7 @@ export const fetchIssueByDate = async (date: Moment): Promise<EditionIssue> => {
   )
     .then(response => {
       console.log('fetch issue by date', response);
-      if (response) {
+      if (response.status === 200) {
         return response.json();
       } else {
         return [];
@@ -41,7 +41,7 @@ export const fetchIssueByDate = async (date: Moment): Promise<EditionIssue> => {
 export const createIssue = async (date: Moment): Promise<EditionIssue> => {
   return pandaFetch(`http://localhost:3000/editions-api/issues`, {
     method: 'post',
-    // mode: 'no-cors',
+    mode: 'cors',
     headers: {
       'Content-Type': 'application/json'
     },
