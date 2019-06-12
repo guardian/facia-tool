@@ -129,8 +129,8 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
   }
 
   object postgres {
-    val hostname = findRDSEndpoint
-    val url = s"jdbc:postgresql://$hostname:5902/faciatool"
+    val (hostname, port) = findRDSEndpointAndPort
+    val url = s"jdbc:postgresql://$hostname:$port/faciatool"
     val user =  "faciatool"
     val password = getPassword
 
@@ -144,7 +144,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
       }
     }
 
-    private def findRDSEndpoint(): String = {
+    private def findRDSEndpointAndPort(): (String, String) = {
       // In fronts tool 'isProd' means is CODE or PROD because fuck it why not
       if (isProd) {
         val dbIdentifier = if (stageFromProperties == "PROD") "facia-prod-db" else "facia-code-db"
@@ -155,9 +155,14 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
           throw new IllegalStateException(s"Invalid number of RDS instances, expected 1, found ${instances.length}")
         }
 
-        instances.head.getEndpoint.getAddress
+        val instance = instances.head
+        val awsHost = instance.getEndpoint.getAddress
+        val awsPort = instance.getEndpoint.getPort.toString
+        (awsHost, awsPort)
       } else {
-        getMandatoryString("db.default.hostname")
+        val host = getMandatoryString("db.default.hostname")
+        val port = getMandatoryString("db.default.port")
+        (host, port)
       }
     }
 
