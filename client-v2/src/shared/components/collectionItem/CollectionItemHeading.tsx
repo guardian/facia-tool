@@ -8,7 +8,7 @@ const Wrapper = styled('span')<{
   showBoostedHeadline?: boolean;
 }>`
   font-family: TS3TextSans;
-  font-weight: 400;
+  font-weight: normal;
   padding-top: 2px;
   font-size: ${({ displaySize, showBoostedHeadline }) => {
     if (displaySize === 'small') {

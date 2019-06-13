@@ -14,15 +14,15 @@ import GHGuardianHeadlineMediumWoff2 from '../fonts/headline/GHGuardianHeadline-
 import GHGuardianHeadlineRegularTtf from '../fonts/headline/GHGuardianHeadline-Regular.ttf';
 import GHGuardianHeadlineRegularWoff from '../fonts/headline/GHGuardianHeadline-Regular.woff';
 import GHGuardianHeadlineRegularWoff2 from '../fonts/headline/GHGuardianHeadline-Regular.woff2';
-import GuardianTextSansTtf from '../fonts/text/GuardianTextSans-Regular.ttf';
-import GuardianTextSansWoff from '../fonts/text/GuardianTextSans-Regular.woff';
-import GuardianTextSansWoff2 from '../fonts/text/GuardianTextSans-Regular.woff2';
+import GuardianTextSansRegularTtf from '../fonts/text/GuardianTextSans-Regular.ttf';
+import GuardianTextSansRegularWoff from '../fonts/text/GuardianTextSans-Regular.woff';
+import GuardianTextSansRegularWoff2 from '../fonts/text/GuardianTextSans-Regular.woff2';
 import GuardianTextSansTtfBold from '../fonts/text/GuardianTextSans-Bold.ttf';
 import GuardianTextSansBoldWoff from '../fonts/text/GuardianTextSans-Bold.woff';
 import GuardianTextSansBoldWoff2 from '../fonts/text/GuardianTextSans-Bold.woff2';
-import GuardianTextSansItalicTtf from '../fonts/text/GuardianTextSans-RegularItalic.ttf';
-import GuardianTextSansItalicWoff from '../fonts/text/GuardianTextSans-RegularItalic.woff';
-import GuardianTextSansItalicWoff2 from '../fonts/text/GuardianTextSans-RegularItalic.woff2';
+import GuardianTextSansRegularItalicTtf from '../fonts/text/GuardianTextSans-RegularItalic.ttf';
+import GuardianTextSansRegularItalicWoff from '../fonts/text/GuardianTextSans-RegularItalic.woff';
+import GuardianTextSansRegularItalicWoff2 from '../fonts/text/GuardianTextSans-RegularItalic.woff2';
 import GuardianTextSansBoldItalicTtf from '../fonts/text/GuardianTextSans-BoldItalic.ttf';
 import GuardianTextSansBoldItalicWoff from '../fonts/text/GuardianTextSans-BoldItalic.woff';
 import GuardianTextSansBoldItalicWoff2 from '../fonts/text/GuardianTextSans-BoldItalic.woff2';
@@ -43,7 +43,7 @@ injectGlobal`
       url(${GHGuardianHeadlineBoldWoff}) format('woff'),
       url(${GHGuardianHeadlineBoldTtf}) format('truetype');
     font-weight: bold;
-    font-weight: 600 800;
+    font-weight: 700;
   }
 
   @font-face {
@@ -52,7 +52,7 @@ injectGlobal`
       url(${GHGuardianHeadlineRegularWoff}) format('woff'),
       url(${GHGuardianHeadlineRegularTtf}) format('truetype');
     font-style: normal;
-    font-weight: 100 400;
+    font-weight: 400;
   }
 
   @font-face {
@@ -65,9 +65,9 @@ injectGlobal`
 
   @font-face {
     font-family: TS3TextSans;
-    src: url(${GuardianTextSansWoff2}) format('woff2'),
-      url(${GuardianTextSansWoff}) format('woff'),
-      url(${GuardianTextSansTtf}) format('truetype');
+    src: url(${GuardianTextSansRegularWoff2}) format('woff2'),
+      url(${GuardianTextSansRegularWoff}) format('woff'),
+      url(${GuardianTextSansRegularTtf}) format('truetype');
     font-style: normal;
     font-weight: 400;
   }
@@ -78,15 +78,16 @@ injectGlobal`
       url(${GuardianTextSansTtfBold}) format('truetype'),
       url(${GuardianTextSansBoldWoff}) format('woff');
     font-weight: bold;
-    font-weight: 500;
+    font-weight: 700;
   }
 
   @font-face {
     font-family: TS3TextSans;
-    src: url(${GuardianTextSansItalicWoff2}) format('woff2'),
-      url(${GuardianTextSansItalicTtf}) format('truetype'),
-      url(${GuardianTextSansItalicWoff}) format('woff');
+    src: url(${GuardianTextSansRegularItalicWoff2}) format('woff2'),
+      url(${GuardianTextSansRegularItalicTtf}) format('truetype'),
+      url(${GuardianTextSansRegularItalicWoff}) format('woff');
     font-style: italic;
+    font-weight: normal;
     font-weight: 400;
   }
 
@@ -96,14 +97,14 @@ injectGlobal`
       url(${GuardianTextSansBoldItalicTtf}) format('truetype'),
       url(${GuardianTextSansBoldItalicWoff}) format('woff');
     font-style: italic;
-    font-weight: 500;
+    font-weight: bold;
+    font-weight: 700;
   }
 
   html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial;
+    font-family: TS3TextSans, 'Helvetica Neue', Helvetica, Arial;
     font-size: 16px;
     font-weight: 100;
-    font-family: TS3TextSans;
     -webkit-font-smoothing: antialiased;
   }
 `;

@@ -36,7 +36,7 @@ const Container = styled('div')`
   border-top: ${({ theme }) => `1px solid ${theme.capiInterface.borderLight}`};
   color: ${({ theme }) => theme.capiInterface.feedItemText};
   display: flex;
-  font-weight: 400;
+  font-weight: normal;
   padding-bottom: 20px;
   cursor: pointer;
 
@@ -58,7 +58,7 @@ const Title = styled(`h2`)`
   font-family: TS3TextSans;
   font-size: 15px;
   ${media.large`font-size: 13px;`}
-  font-weight: 400;
+  font-weight: normal;
 `;
 
 const VisitedWrapper = styled.a`

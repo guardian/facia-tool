@@ -37,7 +37,7 @@ const NotLiveContainer = styled(CollectionItemMetaHeading)`
 
 const KickerHeading = styled(CollectionItemHeading)`
   font-family: TS3TextSans;
-  font-weight: 500;
+  font-weight: bold;
   padding-right: 3px;
   font-size: ${({ displaySize }) =>
     displaySize === 'small' ? '13px' : '15px'};
@@ -50,7 +50,7 @@ const ArticleHeadingContainerSmall = styled('div')`
 
 const ArticleBodyByline = styled('div')`
   font-family: TS3TextSans;
-  font-weight: 500;
+  font-weight: bold;
   font-size: 15px;
   font-style: italic;
   padding-top: 5px;

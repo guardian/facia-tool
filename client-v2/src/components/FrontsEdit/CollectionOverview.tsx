@@ -72,7 +72,7 @@ const TextContainerRight = styled.div`
 
 const Name = styled.span`
   color: ${({ theme }) => theme.shared.base.colors.text};
-  font-weight: 700;
+  font-weight: bold;
   padding-right: 0.25em;
 `;
 
