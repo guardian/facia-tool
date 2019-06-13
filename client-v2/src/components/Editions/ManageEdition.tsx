@@ -6,6 +6,11 @@ import moment, { Moment } from 'moment';
 import { EditionIssue } from 'types/Edition';
 import Issue from './Issue';
 import ButtonDefault from '../../shared/components/input/ButtonDefault';
+import {
+  fetchIssuesForDateRange,
+  fetchIssueByDate,
+  createIssue
+} from 'services/editionsApi';
 
 interface ManageEditionState {
   date: Moment | null;
@@ -29,46 +34,6 @@ const InformationMsg = styled.div<{ status?: 'info' | 'error' }>`
   background-color: ${props => (props.status === 'info' ? 'green' : 'red')};
 `;
 
-const oneIssue = {
-  id: '12348',
-  name: 'Cool new issue just created',
-  publishDate: '2019-06-29 19:10:25', // in format TimestampZ, eg 2016-06-22 19:10:25-07
-  lastPublished: '2019-05-29 19:11:25',
-  createdOn: '2016-06-22 19:10:25-07',
-  createdBy: 'annaandjon',
-  createdEmail: 'a@g.com'
-};
-
-const allIssues = [
-  {
-    id: '12345',
-    name: 'MondayIssue',
-    publishDate: '2019-05-29 19:10:25', // in format TimestampZ, eg 2016-06-22 19:10:25-07
-    lastPublished: '2019-05-29 19:11:25',
-    createdOn: '2016-06-22 19:10:25-07',
-    createdBy: 'annaandjon',
-    createdEmail: 'a@g.com'
-  },
-  {
-    id: '12346',
-    name: 'TuesdayIssue',
-    publishDate: '2019-05-30 19:10:25', // in format TimestampZ, eg 2016-06-22 19:10:25-07
-    lastPublished: '2019-05-29 19:11:25',
-    createdOn: '2016-06-22 19:10:25-07',
-    createdBy: 'annaandjon',
-    createdEmail: 'a@g.com'
-  },
-  {
-    id: '12347',
-    name: 'WednesdayIssue',
-    publishDate: '2019-05-31 19:10:25', // in format TimestampZ, eg 2016-06-22 19:10:25-07
-    lastPublished: '2019-05-29 19:11:25',
-    createdOn: '2016-06-22 19:10:25-07',
-    createdBy: 'annaandjon',
-    createdEmail: 'a@g.com'
-  }
-];
-
 class ManageEdition extends React.Component {
   public state: ManageEditionState = {
     date: null,
@@ -91,7 +56,7 @@ class ManageEdition extends React.Component {
           onNextMonthClick={this.handleMonthClick}
           onPrevMonthClick={this.handleMonthClick}
           id="editions-date"
-          isDayHighlighted={date => !!this.selectIssueForDate(date)}
+          isDayHighlighted={date => !!this.checkIssuePresentForDate(date)}
           isOutsideRange={() => false}
         />
         <div>
@@ -141,8 +106,10 @@ class ManageEdition extends React.Component {
       return;
     }
     this.setState({ infoMessage: 'New issue created' });
-    this.createIssue(this.state.date)
-      .then(issue => this.setState({ currentIssue: issue }))
+    createIssue(this.state.date)
+      .then(issue => {
+        this.setState({ currentIssue: issue });
+      })
       .catch(err => {
         Raven.captureMessage(
           `Creating an issue for this date ${this.state.date} failed`,
@@ -160,12 +127,9 @@ class ManageEdition extends React.Component {
     if (!date) {
       return;
     }
-    const issue = this.selectIssueForDate(date);
-    if (issue) {
-      this.setState({ currentIssue: issue });
-    } else {
-      this.setState({ currentIssue: null });
-    }
+    fetchIssueByDate(date).then(issue =>
+      this.setState({ currentIssue: issue || null })
+    );
   };
 
   private handleFocusChange = (isFocussedObj: { focused: boolean | null }) => {
@@ -174,14 +138,14 @@ class ManageEdition extends React.Component {
       const endDate = moment()
         .add(1, 'month')
         .endOf('month');
-      this.fetchIssuesForDateRange(startDate, endDate).then(issues =>
+      fetchIssuesForDateRange(startDate, endDate).then(issues =>
         this.setState({ issues })
       );
     }
     this.setState({ isDatePickerOpen: !!isFocussedObj.focused });
   };
 
-  private selectIssueForDate = (date: Moment) =>
+  private checkIssuePresentForDate = (date: Moment) =>
     this.state.issues.find(i =>
       moment(i.publishDate, 'YYYY-MM-DD HH:mm:ss-ZZ').isSame(date, 'day')
     );
@@ -190,7 +154,7 @@ class ManageEdition extends React.Component {
     const startDate = month.clone().startOf('month');
     const endDate = month.clone().endOf('month');
 
-    this.fetchIssuesForDateRange(startDate, endDate)
+    fetchIssuesForDateRange(startDate, endDate)
       .then(issues => this.setState({ issues }))
       .catch(err => {
         Raven.captureMessage(
@@ -202,15 +166,6 @@ class ManageEdition extends React.Component {
         });
       });
   };
-
-  private fetchIssuesForDateRange = async (
-    start: Moment,
-    end: Moment
-  ): Promise<EditionIssue[]> => {
-    return allIssues;
-  };
-
-  private createIssue = async (date: Moment): Promise<EditionIssue> => oneIssue;
 }
 
 export default ManageEdition;
