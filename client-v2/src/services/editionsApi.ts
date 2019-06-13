@@ -19,7 +19,9 @@ export const fetchIssuesForDateRange = async (
   ).then(response => response.json());
 };
 
-export const fetchIssueByDate = async (date: Moment): Promise<EditionIssue> => {
+export const fetchIssueByDate = async (
+  date: Moment
+): Promise<EditionIssue | void> => {
   return pandaFetch(
     `http://localhost:3000/editions-api/issues/${date.format(dateFormat)}`,
     {
@@ -30,16 +32,13 @@ export const fetchIssueByDate = async (date: Moment): Promise<EditionIssue> => {
     .then(response => {
       if (response.status === 200) {
         return response.json();
-      } else {
-        return [];
       }
     })
-    .catch(() =>
-      // We want to catch this when no issue is present
-      console.warn(
-        'In FetchIssueByDate function: No issue was found for this date'
-      )
-    );
+    .catch(() => {
+      // We catch here to prevent 404s, which are expected, being uncaught.
+      // Other errors are possible, of course, and it'd be nice to catch them here,
+      // but without a general strategy for handling errors we drop them for now.
+    });
 };
 
 export const createIssue = async (date: Moment): Promise<EditionIssue> => {

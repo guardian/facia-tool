@@ -127,13 +127,9 @@ class ManageEdition extends React.Component {
     if (!date) {
       return;
     }
-    fetchIssueByDate(date).then(issue => {
-      if (issue) {
-        this.setState({ currentIssue: issue });
-      } else {
-        this.setState({ currentIssue: null });
-      }
-    });
+    fetchIssueByDate(date).then(issue =>
+      this.setState({ currentIssue: issue || null })
+    );
   };
 
   private handleFocusChange = (isFocussedObj: { focused: boolean | null }) => {
