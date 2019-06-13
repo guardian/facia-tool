@@ -46,6 +46,7 @@ const FrontsEditStrategyPicker = ({
 
   if (!thunk) {
     // TODO - this should never happen but can we handle this more gracefully than rendering nothing
+    // tslint:disable-next-line
     console.error(`Invalid URL`);
     return null;
   }
