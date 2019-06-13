@@ -20,7 +20,7 @@ const ThumbnailCutout = styled('img')<{
   width: 25px;
   bottom: 0;
   ${({ position }) =>
-    position === 'bottomRight' ? 'right: -15px' : 'left: -15px'};
+    position === 'bottomRight' ? 'right: -13px' : 'left: -13px'};
 `;
 
 const ThumbnailEditForm = styled(ThumbnailBase)<{

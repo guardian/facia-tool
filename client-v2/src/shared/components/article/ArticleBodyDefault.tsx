@@ -27,6 +27,7 @@ import DraggableArticleImageContainer from './DraggableArticleImageContainer';
 import { media } from 'shared/util/mediaQueries';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
+  flex-shrink: 0;
   width: 83px;
   height: 50px;
 `;
