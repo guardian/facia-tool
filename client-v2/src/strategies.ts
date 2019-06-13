@@ -11,11 +11,9 @@ const isValidPathForEdition = (priority: string, id?: string): id is string =>
 const isValidPathForOtherPriority = (priority: string, id?: string) =>
   !id && priority !== 'edition';
 
-const fetchFrontsConfigStrategy = (path: string) => {
-  const trimmedPath = path.replace(/^\/v2/, '');
-
+const fetchFrontsConfigStrategy = (v2Path: string) => {
   const editMatch = matchPath<{ priority: string; editionId?: string }>(
-    trimmedPath,
+    v2Path,
     {
       path: frontsEdit
     }

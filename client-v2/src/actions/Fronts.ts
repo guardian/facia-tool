@@ -2,9 +2,10 @@ import { Dispatch, ThunkResult } from 'types/Store';
 import { Action } from 'types/Action';
 import { fetchLastPressed as fetchLastPressedApi } from 'services/faciaApi';
 import { actions as frontsConfigActions } from 'bundles/frontsConfigBundle';
-import { VisibleArticlesResponse, FrontsConfig } from 'types/FaciaApi';
+import { VisibleArticlesResponse } from 'types/FaciaApi';
 import { Stages } from 'shared/types/Collection';
 import { State } from 'types/State';
+import { getV2Path } from 'selectors/pathSelectors';
 
 function fetchLastPressedSuccess(frontId: string, datePressed: string): Action {
   return {
@@ -77,7 +78,7 @@ export default function getFrontsConfig(): ThunkResult<
 > {
   return (dispatch: Dispatch, getState: () => State, { fetchFrontsConfig }) => {
     dispatch(frontsConfigActions.fetchStart());
-    const promise = fetchFrontsConfig(getState().path);
+    const promise = fetchFrontsConfig(getV2Path(getState()));
     if (!promise) {
       return Promise.resolve(
         dispatch(
