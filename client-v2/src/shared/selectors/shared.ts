@@ -1,6 +1,10 @@
 import omit from 'lodash/omit';
 import { createSelector } from 'reselect';
-import { getThumbnail, getPrimaryTag, getContributorImage } from 'util/CAPIUtils';
+import {
+  getThumbnail,
+  getPrimaryTag,
+  getContributorImage
+} from 'util/CAPIUtils';
 import { selectors as externalArticleSelectors } from '../bundles/externalArticlesBundle';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 import { ExternalArticle } from '../types/ExternalArticle';
