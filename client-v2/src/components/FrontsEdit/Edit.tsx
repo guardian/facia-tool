@@ -1,7 +1,9 @@
 import { Dispatch } from 'types/Store';
 import React from 'react';
 import { connect } from 'react-redux';
+import { match } from 'react-router-dom';
 import { styled } from 'constants/theme';
+import getFrontsConfig from 'actions/Fronts';
 import {
   editorOpenFront,
   editorFavouriteFront,
@@ -20,10 +22,9 @@ import SectionsContainer from '../layout/SectionsContainer';
 import FrontsMenu from './FrontsMenu';
 import PressFailAlert from '../PressFailAlert';
 import { frontsContainerId } from 'util/editUtils';
-import { PriorityName } from 'types/Priority';
 
-export interface EditProps {
-  priority: PriorityName;
+interface Props {
+  match: match<{ priority: string }>;
   error: ActionError;
   frontIds: string[];
   staleFronts: { [id: string]: boolean };
@@ -61,7 +62,7 @@ const FrontsContainer = styled(SectionContainer)<{
     height: calc(100% - 60px)`}
 `;
 
-class FrontsEdit extends React.Component<EditProps> {
+class FrontsEdit extends React.Component<Props> {
   public componentDidMount() {
     this.props.getFrontsConfig();
   }
@@ -86,13 +87,19 @@ class FrontsEdit extends React.Component<EditProps> {
         </SectionsContainer>
         <FrontsMenu
           onSelectFront={id =>
-            this.props.editorOpenFront(id, this.props.priority)
+            this.props.editorOpenFront(id, this.props.match.params.priority)
           }
           onFavouriteFront={id =>
-            this.props.editorFavouriteFront(id, this.props.priority)
+            this.props.editorFavouriteFront(
+              id,
+              this.props.match.params.priority
+            )
           }
           onUnfavouriteFront={id =>
-            this.props.editorUnfavouriteFront(id, this.props.priority)
+            this.props.editorUnfavouriteFront(
+              id,
+              this.props.match.params.priority
+            )
           }
         />
       </FrontsEditContainer>
@@ -100,22 +107,26 @@ class FrontsEdit extends React.Component<EditProps> {
   }
 }
 
-const mapStateToProps = (state: State, props: EditProps) => ({
+const mapStateToProps = (state: State, props: Props) => ({
   error: state.error,
   staleFronts: state.staleFronts,
-  frontIds: selectEditorFrontIdsByPriority(state, props.priority || ''),
+  frontIds: selectEditorFrontIdsByPriority(
+    state,
+    props.match.params.priority || ''
+  ),
   isCurrentFrontsMenuOpen: selectIsCurrentFrontsMenuOpen(state),
   isClipboardOpen: selectIsClipboardOpen(state)
 });
 
-const mapDispatchToProps = (dispatch: Dispatch, props: EditProps) => ({
+const mapDispatchToProps = (dispatch: Dispatch, props: Props) => ({
   editorOpenFront: (id: string) => {
-    dispatch(editorOpenFront(id, props.priority));
+    dispatch(editorOpenFront(id, props.match.params.priority));
   },
   editorFavouriteFront: (id: string) =>
-    dispatch(editorFavouriteFront(id, props.priority)),
+    dispatch(editorFavouriteFront(id, props.match.params.priority)),
   editorUnfavouriteFront: (id: string) =>
-    dispatch(editorUnfavouriteFront(id, props.priority))
+    dispatch(editorUnfavouriteFront(id, props.match.params.priority)),
+  getFrontsConfig: () => dispatch(getFrontsConfig())
 });
 
 export default connect(

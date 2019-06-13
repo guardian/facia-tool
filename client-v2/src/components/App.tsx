@@ -26,12 +26,12 @@ import GuardianTextSansItalicWoff2 from '../fonts/text/GuardianTextSans-RegularI
 import GuardianTextSansBoldItalicTtf from '../fonts/text/GuardianTextSans-BoldItalic.ttf';
 import GuardianTextSansBoldItalicWoff from '../fonts/text/GuardianTextSans-BoldItalic.woff';
 import GuardianTextSansBoldItalicWoff2 from '../fonts/text/GuardianTextSans-BoldItalic.woff2';
+import FrontsEdit from './FrontsEdit/Edit';
 import Home from './Home';
 import NotFound from './NotFound';
 import ConfirmModal from './ConfirmModal';
 import { frontsEdit, manageEditions } from 'constants/routes';
 import ManageView from './Editions/ManageView';
-import FrontsEditStrategyPicker from './FrontsEdit/FrontsEditStrategyPicker';
 
 // tslint:disable:no-unused-expression
 // NB the properties described in font-face work as matchers, assigning text to the font imported by the source.
@@ -131,7 +131,7 @@ const App = () => (
           <SectionHeaderWithLogo greyHeader={true} />
         </BackgroundHeader>
         <Switch>
-          <Route exact path={frontsEdit} component={FrontsEditStrategyPicker} />
+          <Route exact path={frontsEdit} component={FrontsEdit} />
           <Route exact path="/" component={Home} />
           <Route exact path={manageEditions} component={ManageView} />
           <Route component={NotFound} />
