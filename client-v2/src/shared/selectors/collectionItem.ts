@@ -5,6 +5,7 @@ import {
 } from './shared';
 import { validateId } from 'shared/util/snap';
 import CollectionItemTypes from 'shared/constants/collectionItemTypes';
+import { getContributorImage } from 'util/CAPIUtils';
 
 const createCollectionItemTypeSelector = () =>
   createSelector(
@@ -43,4 +44,16 @@ const createSelectActiveImageUrl = () =>
     }
   );
 
-export { createCollectionItemTypeSelector, createSelectActiveImageUrl };
+const createSelectCutoutUrl = () =>
+  createSelector(
+    externalArticleFromArticleFragmentSelector,
+    externalArticle => {
+      return externalArticle && getContributorImage(externalArticle);
+    }
+  );
+
+export {
+  createCollectionItemTypeSelector,
+  createSelectActiveImageUrl,
+  createSelectCutoutUrl
+};
