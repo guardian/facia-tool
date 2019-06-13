@@ -13,7 +13,7 @@ import {
   persistFavouriteFrontsOnEdit
 } from './storeMiddleware';
 import { State } from 'types/State';
-import { ExtraArgs } from 'types/Store';
+import { ExtraThunkArgs } from 'types/Store';
 import { fetchFrontsConfigStrategy } from 'strategies';
 
 export default function configureStore(initialState?: State) {
@@ -24,7 +24,7 @@ export default function configureStore(initialState?: State) {
     applyMiddleware(
       thunkMiddleware.withExtraArgument({
         fetchFrontsConfig: fetchFrontsConfigStrategy
-      } as ExtraArgs),
+      } as ExtraThunkArgs),
       updateStateFromUrlChange,
       router,
       persistCollectionOnEdit(),
