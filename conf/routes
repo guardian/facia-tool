@@ -102,8 +102,10 @@ GET         /v2/*path                                controllers.V2App.index(pat
 POST        /api/usage                               controllers.GridProxy.addUsage()
 
 # Editions
-POST        /editions-api/issues/                    controllers.EditionsController.postIssue
-GET         /editions-api/issues/:id                 controllers.EditionsController.getIssue(id: String)
-GET         /editions-api/available-editions         controllers.EditionsController.getAvailableEditions
+GET         /editions-api/editions                   controllers.EditionsController.getAvailableEditions
+GET         /editions-api/editions/:name/issues/:id      controllers.EditionsController.getIssue(name, id)
+POST        /editions-api/editions/:name/issues      controllers.EditionsController.postIssue(name)
+GET         /editions-api/editions/:name/issues     controllers.EditionsController.listIssues(name)
 
+#PUT         /editions-api/editions/:name/issues/:id/fronts/:frontId/collections/:collectionsId controllers.EditionsController.putCollection
 

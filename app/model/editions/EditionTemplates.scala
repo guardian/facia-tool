@@ -1,6 +1,6 @@
 package model.editions
 
-import java.time.ZonedDateTime
+import java.time.{ZonedDateTime, ZoneId}
 import java.time.temporal.ChronoField
 
 case object WeekDay extends Enumeration(1) {
@@ -48,9 +48,11 @@ case class FrontTemplate(
 
 case class EditionTemplate(
     fronts: List[(FrontTemplate, Periodicity)],
-    availability: Periodicity
+    zoneId: ZoneId,
+    availability: Periodicity,
 )
 
 case class EditionTemplateForDate(
-    fronts: List[FrontTemplate]
+    fronts: List[FrontTemplate],
+    issueDate: ZonedDateTime
 )

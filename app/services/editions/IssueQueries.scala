@@ -1,6 +1,6 @@
 package services.editions
 
-import java.time.ZonedDateTime
+import java.time.{ZonedDateTime, LocalDate}
 
 import com.gu.pandomainauth.model.User
 import model.editions._
@@ -75,7 +75,27 @@ trait IssueQueries {
     issueId
   }
 
-  def getIssue(id: String): Option[EditionsIssue] = DB localTx { implicit session =>
+  def listIssues(editionName: String, date: LocalDate) = DB readOnly { implicit session =>
+
+    val editionTimeZone = EditionTemplates.templates.get(editionName).get.zoneId;
+
+    val zonedDate = date.atStartOfDay(editionTimeZone)
+
+    sql"""
+    SELECT
+      id,
+      name,
+      publish_date,
+      created_on,
+      created_by,
+      created_email
+
+    FROM edition_issues
+    WHERE publish_date::date = $date::date
+    """.map(EditionsIssue.fromRow(_)).list().apply()
+  }
+
+  def getIssue(name: String, id: String): Option[EditionsIssue] = DB localTx { implicit session =>
       case class GetIssueRow(
           issue: EditionsIssue,
           front: Option[DbEditionsFront],

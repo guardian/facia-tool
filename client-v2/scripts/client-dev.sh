@@ -13,10 +13,11 @@ printf "\n\rStarting Yarn... \n\r\n\r"
 
 yarn watch &
 
-printf "\n\rStarting Postgres... \n\r\n\r"
-docker-compose up -d &
-
 cd ..
+
+printf "\n\rStarting Postgres... \n\r\n\r"
+docker-compose up -d
+
 
 printf "\n\rStarting Play App... \n\r\n\r"
 

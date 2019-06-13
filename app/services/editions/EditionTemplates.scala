@@ -1,6 +1,6 @@
 package services.editions
 
-import java.time.ZonedDateTime
+import java.time.{ZonedDateTime, ZoneId, LocalDate}
 
 import model.editions._
 import model.editions.WeekDay._
@@ -32,9 +32,10 @@ object EditionTemplates {
       FrontFeast.front -> WeekDays(List(WeekDay.Sat)),
       FrontSpecialFashionMagazine.front -> Daily()
     ),
+    zoneId = ZoneId.of("Europe/London"),
     availability = Daily()
   )
-  private val templates: Map[String, EditionTemplate] = Map(
+  val templates: Map[String, EditionTemplate] = Map(
     "dailyEdition" -> dailyEdition
   )
 
@@ -42,16 +43,19 @@ object EditionTemplates {
 
   def generateEditionTemplate(
       name: String,
-      date: ZonedDateTime
+      localDate: LocalDate
   ): Option[EditionTemplateForDate] = {
     templates
       .get(name)
       .filter { template =>
+        val date = localDate.atStartOfDay(template.zoneId)
         template.availability.isValid(date)
       }
       .map { template =>
+        val date = localDate.atStartOfDay(template.zoneId)
         EditionTemplateForDate(
-          template.fronts.filter(_._2.isValid(date)).map(_._1)
+          template.fronts.filter(_._2.isValid(date)).map(_._1),
+          date
         )
       }
   }

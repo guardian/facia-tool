@@ -1,1 +1,1 @@
-PGPASSWORD=facia-tool psql -h localhost -p 5432 -U faciatool -d faciatool
+PGPASSWORD=faciatool psql -h localhost -p 5432 -U faciatool -d faciatool
