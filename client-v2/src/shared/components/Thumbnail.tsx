@@ -7,9 +7,20 @@ const ThumbnailBase = styled('div')`
 `;
 
 const ThumbnailSmall = styled(ThumbnailBase)`
+  position: relative;
   width: 83px;
   min-width: 83px;
   height: 50px;
+`;
+
+const ThumbnailCutout = styled('img')<{
+  position?: 'bottomLeft' | 'bottomRight';
+}>`
+  position: absolute;
+  width: 25px;
+  bottom: 0;
+  ${({ position }) =>
+    position === 'bottomRight' ? 'right: -13px' : 'left: -13px'};
 `;
 
 const ThumbnailEditForm = styled(ThumbnailBase)<{
@@ -17,13 +28,13 @@ const ThumbnailEditForm = styled(ThumbnailBase)<{
   url: string | undefined | void;
 }>`
   width: 100%;
-  height: 115px;
+  height: 115px
   margin-bottom: 10px;
   opacity: ${({ imageHide }) => (imageHide ? 0.5 : 1)};
   background-image: ${({ url }) => `url('${url}')`};
 `;
 
-export { ThumbnailSmall, ThumbnailEditForm };
+export { ThumbnailSmall, ThumbnailEditForm, ThumbnailCutout };
 
 export default styled(ThumbnailBase)`
   width: 130px;

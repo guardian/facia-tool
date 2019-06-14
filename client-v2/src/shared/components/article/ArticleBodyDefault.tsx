@@ -9,7 +9,7 @@ import CollectionItemMetaContainer from '../collectionItem/CollectionItemMetaCon
 import CollectionItemContent from '../collectionItem/CollectionItemContent';
 import { notLiveLabels } from 'constants/fronts';
 import TextPlaceholder from 'shared/components/TextPlaceholder';
-import { ThumbnailSmall } from '../Thumbnail';
+import { ThumbnailSmall, ThumbnailCutout } from '../Thumbnail';
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
 import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
 import {
@@ -27,6 +27,7 @@ import DraggableArticleImageContainer from './DraggableArticleImageContainer';
 import { media } from 'shared/util/mediaQueries';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
+  flex-shrink: 0;
   width: 83px;
   height: 50px;
 `;
@@ -78,6 +79,7 @@ interface ArticleBodyProps {
   size?: CollectionItemSizes;
   headline?: string;
   thumbnail?: string | void;
+  cutoutThumbnail?: string | void;
   isLive?: boolean;
   urlPath?: string;
   sectionName?: string;
@@ -124,6 +126,7 @@ const articleBodyDefault = React.memo(
     size = 'default',
     headline,
     thumbnail,
+    cutoutThumbnail,
     isLive,
     urlPath,
     displayPlaceholders,
@@ -231,7 +234,11 @@ const articleBodyDefault = React.memo(
                   backgroundImage: `url('${thumbnail}')`,
                   opacity: imageHide ? 0.5 : 1
                 }}
-              />
+              >
+                {cutoutThumbnail ? (
+                  <ThumbnailCutout src={cutoutThumbnail} />
+                ) : null}
+              </ThumbnailSmall>
               <ImageMetadataContainer>
                 {imageSlideshowReplace && 'Slideshow'}
                 {imageReplace && 'Image replaced'}

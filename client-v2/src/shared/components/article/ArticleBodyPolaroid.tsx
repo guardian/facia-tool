@@ -15,6 +15,7 @@ import {
 import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
 import ImagePlaceholder from '../ImagePlaceholder';
 import TextPlaceholder from '../TextPlaceholder';
+import { ThumbnailCutout } from '../Thumbnail';
 
 const PillaredSection = styled('span')<{ pillar?: string; isLive?: boolean }>`
   color: ${({ pillar, isLive }) =>
@@ -39,7 +40,7 @@ const ArticlePolaroidComponent = ({
   kicker,
   isLive,
   isUneditable,
-  uuid
+  cutoutThumbnail
 }: ArticleBodyProps) => {
   const articleLabel =
     getArticleLabel(firstPublicationDate, kicker, isLive) || '';
@@ -53,7 +54,11 @@ const ArticlePolaroidComponent = ({
             style={{
               backgroundImage: `url('${thumbnail}')`
             }}
-          />
+          >
+            {cutoutThumbnail ? (
+              <ThumbnailCutout position="bottomRight" src={cutoutThumbnail} />
+            ) : null}
+          </PolaroidThumbnail>
         ))}
       <CollectionItemContent displayType="polaroid" data-testid="headline">
         {displayPlaceholders ? (

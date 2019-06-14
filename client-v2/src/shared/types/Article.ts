@@ -13,6 +13,7 @@ type DerivedArticle = Partial<
   ArticleFragmentRootFields &
   ArticleFragmentMeta & {
     thumbnail?: string | undefined;
+    cutoutThumbnail?: string | undefined;
     kicker?: string;
     isLive: boolean;
   };
