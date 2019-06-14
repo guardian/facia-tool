@@ -8,7 +8,7 @@ interface Props {
 
 const AlertContainer = styled('div')`
   background-color: ${error.primary};
-  font-weight: 50;
+  font-weight: normal;
   padding: 5px;
 `;
 

@@ -55,7 +55,7 @@ const Title = styled.h1`
   padding-right: 10px;
   vertical-align: top;
   font-family: TS3TextSans;
-  font-weight: 500;
+  font-weight: bold;
   font-size: 20px;
   min-width: 80px;
   ${media.large`
@@ -73,7 +73,7 @@ const RefreshButton = styled.button`
   cursor: pointer;
   font-family: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: bold;
   outline: none;
 
   &:hover {
