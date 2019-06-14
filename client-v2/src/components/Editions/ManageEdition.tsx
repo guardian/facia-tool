@@ -147,7 +147,7 @@ class ManageEdition extends React.Component {
 
   private checkIssuePresentForDate = (date: Moment) =>
     this.state.issues.find(i =>
-      moment(i.publishDate, 'YYYY-MM-DD HH:mm:ss-ZZ').isSame(date, 'day')
+      moment(i.issueDate, 'YYYY-MM-DD HH:mm:ss-ZZ').isSame(date, 'day')
     );
 
   private handleMonthClick = (month: Moment) => {

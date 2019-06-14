@@ -40,7 +40,7 @@ function fetchEditionsIssueAsConfig(editionId: string): Promise<FrontsConfig> {
         front.collections.forEach(collection => {
           collections[collection.id] = {
             ...collection,
-            displayName: collection.name,
+            displayName: collection.displayName,
             type: ''
           };
         });
