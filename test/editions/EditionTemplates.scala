@@ -1,6 +1,6 @@
 package services
 
-import java.time.ZonedDateTime
+import java.time.LocalDate
 import org.scalatest.{FreeSpec, Matchers}
 import editions.{EditionTemplates}
 import model.editions._
@@ -10,7 +10,7 @@ class editionTemplateTest extends FreeSpec with Matchers {
 
   "createEdition" - {
     "should return Monday's content for Monday" in {
-      val editionTemplateFronts = EditionTemplates.generateEditionTemplate("dailyEdition", ZonedDateTime.parse("2019-03-11T10:15:30+01:00[Europe/London]")).get.fronts
+      val editionTemplateFronts = EditionTemplates.generateEditionTemplate("dailyEdition", LocalDate.parse("2019-03-11")).get.fronts
       editionTemplateFronts.length should be (10)
       editionTemplateFronts(0) should matchPattern { case FrontTemplate("comment/journal", _, _, _) => }
       editionTemplateFronts(1) should matchPattern { case FrontTemplate("sport/sport", _, _, _) => }
@@ -25,7 +25,7 @@ class editionTemplateTest extends FreeSpec with Matchers {
     }
 
     "should return Friday's content for Friday" in {
-      val editionTemplateFronts = EditionTemplates.generateEditionTemplate("dailyEdition", ZonedDateTime.parse("2019-03-15T10:15:30+01:00[Europe/London]")).get.fronts
+      val editionTemplateFronts = EditionTemplates.generateEditionTemplate("dailyEdition", LocalDate.parse("2019-03-15")).get.fronts
       editionTemplateFronts.length should be (10)
       editionTemplateFronts(0) should matchPattern { case FrontTemplate("comment/journal", _, _, _) => }
       editionTemplateFronts(1) should matchPattern { case FrontTemplate("sport/sport", _, _, _) => }
@@ -40,7 +40,7 @@ class editionTemplateTest extends FreeSpec with Matchers {
     }
 
     "should return Saturday's content for Saturday" in {
-      val editionTemplateFronts = EditionTemplates.generateEditionTemplate("dailyEdition", ZonedDateTime.parse("2019-03-16T10:15:30+01:00[Europe/London]")).get.fronts
+      val editionTemplateFronts = EditionTemplates.generateEditionTemplate("dailyEdition", LocalDate.parse("2019-03-16")).get.fronts
       editionTemplateFronts.length should be (13)
       editionTemplateFronts(0) should matchPattern { case FrontTemplate("comment/journal", _, _, _) => }
       editionTemplateFronts(1) should matchPattern { case FrontTemplate("weekend/weekend", _, _, _) => }
