@@ -59,4 +59,9 @@ class EditionsController(db: EditionsDB, templating: EditionsTemplating, val dep
     }
 
   }
+
+  def updateCollection(collectionId: String) = AccessAPIAuthAction(parse.json[UpdateIssue]) { req =>
+    val form = req.body
+    Ok(Json.toJson(db.updateCollection(form.collection)))
+  }
 }

@@ -9,7 +9,7 @@ case class EditionsArticle(pageCode: String,
                            addedEmail: String)
 
 object EditionsArticle {
-  implicit val writes = Json.writes[EditionsArticle]
+  implicit val writes = Json.format[EditionsArticle]
 
   def fromRow(rs: WrappedResultSet, prefix: String = ""): EditionsArticle = {
     EditionsArticle(

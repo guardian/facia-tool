@@ -2,6 +2,7 @@ package services.editions
 
 import java.time.LocalDate
 
+import play.api.libs.json.Json
 import com.gu.pandomainauth.model.User
 import model.editions._
 import scalikejdbc._
