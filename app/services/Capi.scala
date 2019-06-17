@@ -25,8 +25,13 @@ case class PrintSentQuery(parameterHolder: Map[String, Parameter] = Map.empty)
   override def pathSegment: String = "content/print-sent"
 }
 
-class Capi(config: ApplicationConfiguration)(implicit ex: ExecutionContext) {
-  val client = new GuardianPreviewContentClient("teleporter-view")
+trait Capi {
+  def getPreviewHeaders(url: String): Seq[(String,String)]
+  def getPrefillArticlePageCodes(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[String]]
+}
+
+class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext) extends Capi {
+  val client = new GuardianPreviewContentClient("test")
 
   private val previewSigner = {
     val capiPreviewCredentials = new AWSCredentialsProviderChain(
@@ -42,7 +47,7 @@ class Capi(config: ApplicationConfiguration)(implicit ex: ExecutionContext) {
 
   def getPreviewHeaders(url: String): Seq[(String,String)] = previewSigner.addIAMHeaders(headers = Map.empty, URI.create(url)).toSeq
 
-  def getPrefillArticles(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery) = {
+  def getPrefillArticlePageCodes(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery) = {
     // Commenting this out so we can get this merged without prefill working
     Future.successful(Nil)
 

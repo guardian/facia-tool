@@ -34,7 +34,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration) exte
 
   // Services
   val awsEndpoints = new AwsEndpoints(config)
-  val capi = new Capi(config)
+  val capi = new GuardianCapi(config)
   val dynamo = new Dynamo(awsEndpoints, config)
   val acl = new Acl(permissions)
 

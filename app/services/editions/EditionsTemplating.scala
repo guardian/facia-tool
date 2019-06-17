@@ -30,7 +30,7 @@ class EditionsTemplating(capi: Capi) {
                     EditionsCollectionSkeleton(
                       collection.name,
                       collection.prefill.map { prefill =>
-                        Await.result(capi.getPrefillArticles(date, prefill), 10 seconds).toList
+                        Await.result(capi.getPrefillArticlePageCodes(date, prefill), 10 seconds)
                       }.getOrElse(Nil),
                       collection.prefill,
                       collection.presentation,
