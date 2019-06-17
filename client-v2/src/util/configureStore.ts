@@ -13,6 +13,8 @@ import {
   persistFavouriteFrontsOnEdit
 } from './storeMiddleware';
 import { State } from 'types/State';
+import { ExtraThunkArgs } from 'types/Store';
+import { fetchFrontsConfigStrategy } from 'strategies';
 
 export default function configureStore(initialState?: State) {
   const history = createBrowserHistory();
@@ -20,7 +22,9 @@ export default function configureStore(initialState?: State) {
   const reducer = enableBatching(rootReducer);
   const middleware = compose(
     applyMiddleware(
-      thunkMiddleware,
+      thunkMiddleware.withExtraArgument({
+        fetchFrontsConfig: fetchFrontsConfigStrategy
+      } as ExtraThunkArgs),
       updateStateFromUrlChange,
       router,
       persistCollectionOnEdit(),

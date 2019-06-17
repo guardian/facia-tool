@@ -1,12 +1,10 @@
 import { Dispatch, ThunkResult } from 'types/Store';
 import { Action } from 'types/Action';
-import {
-  fetchFrontsConfig,
-  fetchLastPressed as fetchLastPressedApi
-} from 'services/faciaApi';
+import { fetchLastPressed as fetchLastPressedApi } from 'services/faciaApi';
 import { actions as frontsConfigActions } from 'bundles/frontsConfigBundle';
 import { VisibleArticlesResponse } from 'types/FaciaApi';
 import { Stages } from 'shared/types/Collection';
+import { State } from 'types/State';
 
 function fetchLastPressedSuccess(frontId: string, datePressed: string): Action {
   return {
@@ -77,9 +75,17 @@ export default function getFrontsConfig(): ThunkResult<
     | ReturnType<typeof frontsConfigActions.fetchError>
   >
 > {
-  return (dispatch: Dispatch) => {
+  return (dispatch: Dispatch, getState: () => State, { fetchFrontsConfig }) => {
     dispatch(frontsConfigActions.fetchStart());
-    return fetchFrontsConfig()
+    const promise = fetchFrontsConfig(getState());
+    if (!promise) {
+      return Promise.resolve(
+        dispatch(
+          frontsConfigActions.fetchError('cannot fetch config for this route')
+        )
+      );
+    }
+    return promise
       .then(res => {
         return dispatch(frontsConfigActions.fetchSuccess(res));
       })

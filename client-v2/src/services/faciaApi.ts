@@ -19,6 +19,39 @@ import { CapiArticle } from 'types/Capi';
 import chunk from 'lodash/chunk';
 import { CAPISearchQueryResponse, checkIsResults } from './capiQuery';
 import flatMap from 'lodash/flatMap';
+import { EditionsIssue } from 'types/Edition';
+
+function fetchEditionsIssueAsConfig(editionId: string): Promise<FrontsConfig> {
+  return pandaFetch(`/editions-api/${editionId}`, {
+    method: 'get',
+    credentials: 'same-origin'
+  })
+    .then(response => response.json())
+    .then((json: EditionsIssue) => {
+      const fronts: FrontConfigMap = {};
+      const collections: CollectionConfigMap = {};
+
+      json.fronts.forEach(front => {
+        fronts[front.id] = {
+          ...front,
+          collections: front.collections.map(collection => collection.id),
+          priority: 'edition'
+        };
+        front.collections.forEach(collection => {
+          collections[collection.id] = {
+            ...collection,
+            displayName: collection.displayName,
+            type: ''
+          };
+        });
+      });
+
+      return {
+        fronts,
+        collections
+      };
+    });
+}
 
 function fetchFrontsConfig(): Promise<FrontsConfig> {
   return pandaFetch('/config', {
@@ -369,6 +402,7 @@ async function getArticlesBatched(
 
 export {
   fetchFrontsConfig,
+  fetchEditionsIssueAsConfig,
   getCollections,
   getCollection,
   getContent,

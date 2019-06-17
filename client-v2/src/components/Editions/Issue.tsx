@@ -1,10 +1,10 @@
 import React from 'react';
-import { EditionIssue } from 'types/Edition';
+import { EditionsIssue } from 'types/Edition';
 import { styled } from 'constants/theme';
 import moment from 'moment';
 
 interface IssueProps {
-  issue: EditionIssue;
+  issue: EditionsIssue;
 }
 
 const IssueTable = styled.table`
@@ -20,12 +20,12 @@ const Issue = (props: IssueProps) => (
       <tbody>
         <tr>
           <td>Issue name: </td>
-          <td>{props.issue.name}</td>
+          <td>{props.issue.displayName}</td>
         </tr>
         <tr>
           <td>Issue date:</td>
           <td>
-            {moment(props.issue.publishDate, 'YYYY-MM-DD HH:mm:ss-ZZ').format(
+            {moment(props.issue.issueDate, 'YYYY-MM-DD HH:mm:ss-ZZ').format(
               'Do MMMM YYYY'
             )}
           </td>
@@ -40,11 +40,11 @@ const Issue = (props: IssueProps) => (
         </tr>
         <tr>
           <td>Creator:</td>
-          <td>{props.issue.createdBy}</td>
+          <td>{props.issue.launchedBy}</td>
         </tr>
         <tr>
           <td>Creator email:</td>
-          <td>{props.issue.createdEmail}</td>
+          <td>{props.issue.launchedEmail}</td>
         </tr>
       </tbody>
     </IssueTable>

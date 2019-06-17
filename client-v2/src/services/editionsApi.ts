@@ -1,4 +1,4 @@
-import { EditionIssue } from 'types/Edition';
+import { EditionsIssue } from 'types/Edition';
 import { Moment } from 'moment';
 import pandaFetch from './pandaFetch';
 
@@ -7,7 +7,7 @@ const dateFormat = 'YYYY-MM-DD';
 export const fetchIssuesForDateRange = async (
   start: Moment,
   end: Moment
-): Promise<EditionIssue[]> => {
+): Promise<EditionsIssue[]> => {
   return pandaFetch(
     `http://localhost:3000/editions-api/issues?start=${start.format(
       dateFormat
@@ -21,7 +21,7 @@ export const fetchIssuesForDateRange = async (
 
 export const fetchIssueByDate = async (
   date: Moment
-): Promise<EditionIssue | void> => {
+): Promise<EditionsIssue | void> => {
   return pandaFetch(
     `http://localhost:3000/editions-api/issues/${date.format(dateFormat)}`,
     {
@@ -41,7 +41,7 @@ export const fetchIssueByDate = async (
     });
 };
 
-export const createIssue = async (date: Moment): Promise<EditionIssue> => {
+export const createIssue = async (date: Moment): Promise<EditionsIssue> => {
   return pandaFetch(`http://localhost:3000/editions-api/issues`, {
     method: 'post',
     mode: 'cors',

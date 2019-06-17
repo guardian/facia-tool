@@ -3,7 +3,7 @@ import Raven from 'raven-js';
 import { styled } from 'constants/theme';
 import { SingleDatePicker } from 'react-dates';
 import moment, { Moment } from 'moment';
-import { EditionIssue } from 'types/Edition';
+import { EditionsIssue } from 'types/Edition';
 import Issue from './Issue';
 import ButtonDefault from '../../shared/components/input/ButtonDefault';
 import {
@@ -15,8 +15,8 @@ import {
 interface ManageEditionState {
   date: Moment | null;
   isDatePickerOpen: boolean;
-  issues: EditionIssue[];
-  currentIssue: EditionIssue | null;
+  issues: EditionsIssue[];
+  currentIssue: EditionsIssue | null;
   infoMessage: string;
   isError: boolean;
 }
@@ -38,7 +38,7 @@ class ManageEdition extends React.Component {
   public state: ManageEditionState = {
     date: null,
     isDatePickerOpen: false,
-    issues: [] as EditionIssue[],
+    issues: [] as EditionsIssue[],
     currentIssue: null,
     infoMessage: '',
     isError: false
@@ -147,7 +147,7 @@ class ManageEdition extends React.Component {
 
   private checkIssuePresentForDate = (date: Moment) =>
     this.state.issues.find(i =>
-      moment(i.publishDate, 'YYYY-MM-DD HH:mm:ss-ZZ').isSame(date, 'day')
+      moment(i.issueDate, 'YYYY-MM-DD HH:mm:ss-ZZ').isSame(date, 'day')
     );
 
   private handleMonthClick = (month: Moment) => {

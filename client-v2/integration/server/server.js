@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const port = 3456;
 
 const config = require('../fixtures/config');
+const edition = require('../fixtures/edition');
 const collection = require('../fixtures/collection');
 const collectionTwo = require('../fixtures/collection2');
 const collectionThree = require('../fixtures/collection3');
@@ -11,7 +12,7 @@ const capiCollection = require('../fixtures/capi-collection');
 const capiSearch = require('../fixtures/capi-search');
 const snapTag = require('../fixtures/snap-tag');
 const snapTagPage = require('../fixtures/snap-tag-page');
-const snapExternalPage = require('../../src/shared/fixtures/bbcSectionPage.ts');
+const snapExternalPage = require('../../src/shared/fixtures/bbcSectionPage');
 
 const findArticleWithIDFromResponse = id =>
   capiSearch.response.results.filter(
@@ -116,6 +117,9 @@ module.exports = async () =>
     app.get('/api/preview/*', handler);
 
     app.get('/config', (_, res) => res.json(config));
+
+    // edition endpoint
+    app.get('/editions-api/*', (_, res) => res.json(edition));
 
     app.post('/collections*', (req, res) => {
       return res.json([
