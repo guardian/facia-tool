@@ -7,7 +7,8 @@ import {
   VisibleArticlesResponse,
   FrontConfig,
   CollectionConfigMap,
-  CollectionResponse
+  CollectionResponse,
+  EditionCollectionResponse
 } from 'types/FaciaApi';
 import { ExternalArticle } from 'shared/types/ExternalArticle';
 import {
@@ -275,10 +276,11 @@ async function getCollection(collectionId: {
   return collection;
 }
 
-async function getCollections( // fetchCollections
+const createGetCollections = <R>(path: string) => async (
+  // fetchCollections
   collections: Array<{ id: string; lastUpdated?: number }>
-): Promise<CollectionResponse[]> {
-  const response = await pandaFetch('/collections', {
+): Promise<R> => {
+  const response = await pandaFetch(path, {
     body: JSON.stringify(collections),
     method: 'POST',
     headers: {
@@ -286,8 +288,15 @@ async function getCollections( // fetchCollections
     },
     credentials: 'same-origin'
   });
-  return await response.json();
-}
+  return response.json();
+};
+
+const getCollections = createGetCollections<CollectionResponse[]>(
+  '/collections'
+);
+const getEditionsCollections = createGetCollections<
+  EditionCollectionResponse[]
+>('/editions-api/collections');
 
 const DEFAULT_PARAMS = {
   'page-size': 50,
@@ -404,6 +413,7 @@ export {
   fetchFrontsConfig,
   fetchEditionsIssueAsConfig,
   getCollections,
+  getEditionsCollections,
   getCollection,
   getContent,
   getTagOrSectionTitle,

@@ -142,6 +142,25 @@ module.exports = async () =>
       ]);
     });
 
+    app.post('/editions-api/collections*', (req, res) => {
+      return res.json([
+        {
+          id: req.body[0].id,
+          collection: {
+            ...collection,
+            items: collection.draft
+          }
+        },
+        {
+          id: req.body[1].id,
+          collection: {
+            ...collectionTwo,
+            items: collectionTwo.draft
+          }
+        }
+      ]);
+    });
+
     // catch requests to discard collection endpoint
     app.post(
       '/collection/v2Discard/e59785e9-ba82-48d8-b79a-0a80b2f9f808',

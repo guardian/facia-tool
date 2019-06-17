@@ -15,16 +15,19 @@ import {
 import { State } from 'types/State';
 import { ExtraThunkArgs } from 'types/Store';
 import { fetchFrontsConfigStrategy } from 'strategies/fetch-fronts-config';
+import { fetchCollectionsStrategy } from 'strategies/fetch-collection';
 
 export default function configureStore(initialState?: State) {
   const history = createBrowserHistory();
   const router = routerMiddleware(history);
   const reducer = enableBatching(rootReducer);
+  const extraArgs: ExtraThunkArgs = {
+    fetchFrontsConfig: fetchFrontsConfigStrategy,
+    fetchCollections: fetchCollectionsStrategy
+  };
   const middleware = compose(
     applyMiddleware(
-      thunkMiddleware.withExtraArgument({
-        fetchFrontsConfig: fetchFrontsConfigStrategy
-      } as ExtraThunkArgs),
+      thunkMiddleware.withExtraArgument(extraArgs),
       updateStateFromUrlChange,
       router,
       persistCollectionOnEdit(),
