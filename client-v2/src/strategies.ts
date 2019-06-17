@@ -10,9 +10,6 @@ import { State } from 'types/State';
 const isValidPathForEdition = (priority: string, id?: string): id is string =>
   !!id && priority === 'edition';
 
-const isValidPathForOtherPriority = (priority: string, id?: string) =>
-  !id && priority !== 'edition';
-
 const fetchFrontsConfigStrategy = (state: State) => {
   const editMatch = matchPath<{ priority: string; editionId?: string }>(
     getV2SubPath(state),
@@ -31,10 +28,9 @@ const fetchFrontsConfigStrategy = (state: State) => {
 
   if (isValidPathForEdition(priority, editionId)) {
     return fetchEditionsIssueAsConfig(editionId);
-  } else if (isValidPathForOtherPriority(priority, editionId)) {
-    return fetchFrontsConfig();
   }
-  return null;
+
+  return fetchFrontsConfig();
 };
 
 export { fetchFrontsConfigStrategy };

@@ -30,7 +30,11 @@ import FrontsEdit from './FrontsEdit/Edit';
 import Home from './Home';
 import NotFound from './NotFound';
 import ConfirmModal from './ConfirmModal';
-import { frontsEdit, manageEditions } from 'constants/routes';
+import {
+  frontsEdit,
+  manageEditions,
+  temporaryEditionPath
+} from 'constants/routes';
 import ManageView from './Editions/ManageView';
 
 // tslint:disable:no-unused-expression
@@ -131,6 +135,7 @@ const App = () => (
           <SectionHeaderWithLogo greyHeader={true} />
         </BackgroundHeader>
         <Switch>
+          <Route exact path={temporaryEditionPath} component={FrontsEdit} />
           <Route exact path={frontsEdit} component={FrontsEdit} />
           <Route exact path="/" component={Home} />
           <Route exact path={manageEditions} component={ManageView} />
