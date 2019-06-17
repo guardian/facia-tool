@@ -1,16 +1,18 @@
-import { frontsEdit } from 'constants/routes';
-import { matchPath } from 'react-router';
-import {
-  fetchEditionsIssueAsConfig,
-  fetchFrontsConfig
-} from 'services/faciaApi';
-import { getV2SubPath } from 'selectors/pathSelectors';
 import { State } from 'types/State';
+import { matchPath } from 'react-router';
+import { getV2SubPath } from 'selectors/pathSelectors';
+import { frontsEdit } from 'constants/routes';
+
+interface StrategyMap<R> {
+  edition: (editionId: string) => R;
+  front: (priority: string) => R;
+  none: () => R;
+}
 
 const isValidPathForEdition = (priority: string, id?: string): id is string =>
   !!id && priority === 'edition';
 
-const fetchFrontsConfigStrategy = (state: State) => {
+const runStrategy = <R>(state: State, strategies: StrategyMap<R>) => {
   const editMatch = matchPath<{ priority: string; editionId?: string }>(
     getV2SubPath(state),
     {
@@ -19,7 +21,7 @@ const fetchFrontsConfigStrategy = (state: State) => {
   );
 
   if (!editMatch) {
-    return null;
+    return strategies.none();
   }
 
   const {
@@ -27,10 +29,10 @@ const fetchFrontsConfigStrategy = (state: State) => {
   } = editMatch;
 
   if (isValidPathForEdition(priority, editionId)) {
-    return fetchEditionsIssueAsConfig(editionId);
+    return strategies.edition(editionId);
   }
 
-  return fetchFrontsConfig();
+  return strategies.front(priority);
 };
 
-export { fetchFrontsConfigStrategy };
+export { runStrategy };

@@ -14,7 +14,7 @@ import {
 } from './storeMiddleware';
 import { State } from 'types/State';
 import { ExtraThunkArgs } from 'types/Store';
-import { fetchFrontsConfigStrategy } from 'strategies';
+import { fetchFrontsConfigStrategy } from 'strategies/fetch-fronts-config';
 
 export default function configureStore(initialState?: State) {
   const history = createBrowserHistory();

@@ -1,7 +1,6 @@
 import { batchActions } from 'redux-batched-actions';
 import {
   getArticlesBatched,
-  getCollections as fetchCollections,
   updateCollection as updateCollectionFromApi,
   discardDraftChangesToCollection as discardDraftChangesToCollectionApi,
   fetchVisibleArticles,
@@ -184,15 +183,27 @@ function getCollections(
   collectionIds: string[],
   returnOnlyUpdatedCollections: boolean = false
 ): ThunkResult<Promise<string[]>> {
-  return async (dispatch: Dispatch, getState: () => State) => {
+  return async (
+    dispatch: Dispatch,
+    getState: () => State,
+    { fetchCollections }
+  ) => {
     dispatch(collectionActions.fetchStart(collectionIds));
     try {
-      const params = collectionParamsSelector(
+      const collectionResponses = await fetchCollections(
         getState(),
-        collectionIds,
-        returnOnlyUpdatedCollections
+        collectionIds
       );
-      const collectionResponses = await fetchCollections(params);
+
+      if (!collectionResponses) {
+        dispatch(
+          collectionActions.fetchError(
+            'cannot fetch collections for this route'
+          )
+        );
+        return Promise.resolve([]);
+      }
+
       // TODO: test that this works!
       // find all collections missing in the response and ensure their 'fetch'
       // status is reset

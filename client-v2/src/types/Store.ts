@@ -2,10 +2,14 @@ import { Store as ReduxStore, Dispatch } from 'redux';
 import { Action } from './Action';
 import { State } from './State';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
-import { FrontsConfig } from './FaciaApi';
+import { FrontsConfig, CollectionResponse } from './FaciaApi';
 
 export interface ExtraThunkArgs {
   fetchFrontsConfig: (state: State) => Promise<FrontsConfig> | null;
+  fetchCollections: (
+    state: State,
+    collectionIds: string[]
+  ) => Promise<CollectionResponse[]> | null;
 }
 
 export type Store = ReduxStore<State>;
