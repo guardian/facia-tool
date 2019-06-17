@@ -30,7 +30,7 @@ const editionCollectionToCollection = (
 const fetchCollectionsStrategy = (
   state: State,
   collectionIds: string[],
-  returnOnlyUpdatedCollections: boolean = false
+  returnOnlyUpdatedCollections: boolean
 ) =>
   runStrategy<Promise<CollectionResponse[]> | null>(state, {
     front: () =>

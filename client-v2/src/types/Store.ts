@@ -8,7 +8,8 @@ export interface ExtraThunkArgs {
   fetchFrontsConfig: (state: State) => Promise<FrontsConfig> | null;
   fetchCollections: (
     state: State,
-    collectionIds: string[]
+    collectionIds: string[],
+    returnOnlyUpdatedCollections: boolean
   ) => Promise<CollectionResponse[]> | null;
 }
 

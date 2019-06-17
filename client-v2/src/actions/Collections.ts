@@ -192,7 +192,8 @@ function getCollections(
     try {
       const collectionResponses = await fetchCollections(
         getState(),
-        collectionIds
+        collectionIds,
+        returnOnlyUpdatedCollections
       );
 
       if (!collectionResponses) {
