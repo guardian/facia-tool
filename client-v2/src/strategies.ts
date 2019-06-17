@@ -4,6 +4,8 @@ import {
   fetchEditionsIssueAsConfig,
   fetchFrontsConfig
 } from 'services/faciaApi';
+import { getV2SubPath } from 'selectors/pathSelectors';
+import { State } from 'types/State';
 
 const isValidPathForEdition = (priority: string, id?: string): id is string =>
   !!id && priority === 'edition';
@@ -11,9 +13,9 @@ const isValidPathForEdition = (priority: string, id?: string): id is string =>
 const isValidPathForOtherPriority = (priority: string, id?: string) =>
   !id && priority !== 'edition';
 
-const fetchFrontsConfigStrategy = (v2Path: string) => {
+const fetchFrontsConfigStrategy = (state: State) => {
   const editMatch = matchPath<{ priority: string; editionId?: string }>(
-    v2Path,
+    getV2SubPath(state),
     {
       path: frontsEdit
     }

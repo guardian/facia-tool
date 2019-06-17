@@ -5,7 +5,7 @@ import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { FrontsConfig } from './FaciaApi';
 
 export interface ExtraThunkArgs {
-  fetchFrontsConfig: (path: string) => Promise<FrontsConfig> | null;
+  fetchFrontsConfig: (state: State) => Promise<FrontsConfig> | null;
 }
 
 export type Store = ReduxStore<State>;
