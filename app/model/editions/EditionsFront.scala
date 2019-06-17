@@ -30,10 +30,7 @@ object EditionsFront {
     )
   }
 
-  def fromRowOpt(
-      rs: WrappedResultSet,
-      prefix: String = ""
-  ): Option[EditionsFront] = {
+  def fromRowOpt(rs: WrappedResultSet, prefix: String = ""): Option[EditionsFront] = {
     for {
       id <- rs.stringOpt(prefix + "id")
       name <- rs.stringOpt(prefix + "name")

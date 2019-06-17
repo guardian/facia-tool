@@ -60,6 +60,7 @@ TwirlKeys.templateImports ++= Seq(
 
 val awsVersion = "1.11.293"
 val capiModelsVersion = "14.1"
+val capiClientVersion = "14.3"
 val json4sVersion = "3.6.0-M2"
 
 resolvers ++= Seq(
@@ -88,6 +89,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "content-api-models" % capiModelsVersion,
     "com.gu" %% "content-api-models-json" % capiModelsVersion,
     "com.gu" %% "content-api-client-aws" % "0.5",
+    "com.gu" %% "content-api-client-default" % capiClientVersion,
     "com.gu" %% "editorial-permissions-client" % "2.0",
     "com.gu" %% "fapi-client-play26" % "3.0.0",
     "com.gu" % "kinesis-logback-appender" % "1.4.2",

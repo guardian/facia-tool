@@ -6,15 +6,14 @@ import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
 case class EditionsCollection(
-    id: String,
-    displayName: String,
-    prefill: Option[String],
-    isHidden: Boolean,
-    lastUpdated: Option[ZonedDateTime],
-    updatedBy: Option[String],
-    updatedEmail: Option[String],
-    live: List[EditionsArticle],
-    draft: List[EditionsArticle]
+                               id: String,
+                               displayName: String,
+                               isHidden: Boolean,
+                               lastUpdated: Option[ZonedDateTime],
+                               updatedBy: Option[String],
+                               updatedEmail: Option[String],
+                               prefill: Option[CapiPrefillQuery],
+                               items: List[EditionsArticle],
 )
 
 object EditionsCollection {
@@ -24,20 +23,16 @@ object EditionsCollection {
     EditionsCollection(
       rs.string(prefix + "id"),
       rs.string(prefix + "name"),
-      rs.stringOpt(prefix + "prefill"),
       rs.boolean(prefix + "is_hidden"),
       rs.zonedDateTimeOpt(prefix + "updated_on"),
       rs.stringOpt(prefix + "updated_by"),
       rs.stringOpt(prefix + "updated_email"),
-      Nil,
+      rs.stringOpt(prefix + "prefill").map(CapiPrefillQuery.apply),
       Nil
     )
   }
 
-  def fromRowOpt(
-      rs: WrappedResultSet,
-      prefix: String = ""
-  ): Option[EditionsCollection] = {
+  def fromRowOpt(rs: WrappedResultSet, prefix: String = ""): Option[EditionsCollection] = {
     for {
       id <- rs.stringOpt(prefix + "id")
       name <- rs.stringOpt(prefix + "name")
@@ -46,12 +41,11 @@ object EditionsCollection {
       EditionsCollection(
         id,
         name,
-        rs.stringOpt(prefix + "prefill"),
         isHidden,
         rs.zonedDateTimeOpt(prefix + "updated_on"),
         rs.stringOpt(prefix + "updated_by"),
         rs.stringOpt(prefix + "updated_email"),
-        Nil,
+        rs.stringOpt(prefix + "prefill").map(CapiPrefillQuery.apply),
         Nil
       )
   }

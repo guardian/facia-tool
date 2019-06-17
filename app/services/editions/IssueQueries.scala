@@ -1,13 +1,13 @@
 package services.editions
 
-import java.time.{ZonedDateTime, LocalDate}
+import java.time.LocalDate
 
 import com.gu.pandomainauth.model.User
 import model.editions._
 import scalikejdbc._
 
 // Little helpers so we don't contaminate our business model with relational data
-case class DbEditionsFront(front: EditionsFront, issue: String, index: Int)
+case class DbEditionsFront(front: EditionsFront, issueId: String, index: Int)
 object DbEditionsFront {
   def fromRowOpt(rs: WrappedResultSet): Option[DbEditionsFront] = {
     EditionsFront.fromRowOpt(rs, "fronts_").map { front =>
@@ -16,7 +16,7 @@ object DbEditionsFront {
   }
 }
 
-case class DbEditionsCollection(collection: EditionsCollection, front: String, index: Int)
+case class DbEditionsCollection(collection: EditionsCollection, frontId: String, index: Int)
 object DbEditionsCollection {
   def fromRowOpt(rs: WrappedResultSet): Option[DbEditionsCollection] = {
     EditionsCollection.fromRowOpt(rs, "collections_").map { collection =>
@@ -25,27 +25,38 @@ object DbEditionsCollection {
   }
 }
 
+case class DbEditionsArticle(article: EditionsArticle, collectionId: String, index: Int)
+object DbEditionsArticle {
+  def fromRowOpt(rs: WrappedResultSet): Option[DbEditionsArticle] = {
+    EditionsArticle.fromRowOpt(rs, "articles_").map { article =>
+      DbEditionsArticle(
+        article,
+        rs.string("articles_collection_id"),
+        rs.int("articles_index"))
+    }
+  }
+}
 
 trait IssueQueries {
+
   def insertIssue(
-      name: String,
-      publishDate: ZonedDateTime,
-      template: EditionTemplateForDate,
-      user: User
+                   name: String,
+                   skeleton: EditionsIssueSkeleton,
+                   user: User
   ): String  = DB localTx { implicit session =>
     val issueId = sql"""
           INSERT INTO edition_issues (
             name,
-            publish_date,
+            issue_date,
+            timezone_id,
             created_on,
             created_by,
             created_email
-          ) VALUES ($name, $publishDate, now(), ${user.firstName + " " + user.lastName}, ${user.email})
+          ) VALUES ($name, ${skeleton.issueDate}, ${skeleton.zoneId.toString}, now(), ${user.firstName + " " + user.lastName}, ${user.email})
           RETURNING id;
        """.map(_.string("id")).single().apply().get
 
-    template.fronts.zipWithIndex.foreach {
-      case (front, index) =>
+    skeleton.fronts.zipWithIndex.foreach { case (front, fIndex) =>
         val frontId = sql"""
         INSERT INTO fronts (
           issue_id,
@@ -53,22 +64,35 @@ trait IssueQueries {
           name,
           is_hidden,
           metadata
-        ) VALUES (${issueId}, ${index}, ${front.name}, ${front.hidden}, NULL)
+        ) VALUES (${issueId}, ${fIndex}, ${front.name}, ${front.hidden}, NULL)
         RETURNING id;
       """.map(_.string("id")).single().apply().get
 
-        front.collections.zipWithIndex.foreach {
-          case (collection, index) =>
-            sql"""
+        front.collections.zipWithIndex.foreach { case (collection, cIndex) =>
+          val collectionId = sql"""
           INSERT INTO collections (
             front_id,
             index,
             name,
-            prefill,
             is_hidden,
-            metadata
-          ) VALUES ($frontId, $index, ${collection.name}, ${collection.prefill.query}, ${collection.hidden} NULL);
+            metadata,
+            prefill
+          ) VALUES ($frontId, $cIndex, ${collection.name}, ${collection.hidden}, NULL, ${collection.prefill.map(_.tag)})
+          RETURNING id;
           """.execute().apply()
+
+          collection.items.zipWithIndex.foreach { case (pageCode, tIndex) =>
+              sql"""
+                    INSERT INTO articles (
+                    collection_id,
+                    page_code,
+                    index,
+                    added_on,
+                    added_by,
+                    added_email
+                    ) VALUES ($collectionId, $pageCode, $tIndex, now(), ${user.firstName + " " + user.lastName}}, ${user.email})
+                 """.execute().apply()
+          }
         }
     }
 
@@ -76,67 +100,87 @@ trait IssueQueries {
   }
 
   def listIssues(editionName: String, date: LocalDate) = DB readOnly { implicit session =>
+    val editionTimeZone = EditionsTemplates.templates(editionName).zoneId
 
-    val editionTimeZone = EditionTemplates.templates.get(editionName).get.zoneId;
-
-    val zonedDate = date.atStartOfDay(editionTimeZone)
+    val zonedIssueDate = date.atStartOfDay(editionTimeZone)
 
     sql"""
     SELECT
       id,
       name,
-      publish_date,
+      issue_date,
+      timezone_id,
       created_on,
       created_by,
-      created_email
-
+      created_email,
+      launched_on,
+      launched_by,
+      launched_email
     FROM edition_issues
-    WHERE publish_date::date = $date::date
+    WHERE issue_date = $zonedIssueDate AND name = $editionName
     """.map(EditionsIssue.fromRow(_)).list().apply()
   }
 
-  def getIssue(name: String, id: String): Option[EditionsIssue] = DB localTx { implicit session =>
+  def getIssue(name: String, id: String): Option[EditionsIssue] = DB readOnly { implicit session =>
       case class GetIssueRow(
           issue: EditionsIssue,
           front: Option[DbEditionsFront],
-          collection: Option[DbEditionsCollection]
+          collection: Option[DbEditionsCollection],
+          article: Option[DbEditionsArticle]
       )
 
       val rows: List[GetIssueRow] = sql"""
       SELECT
         edition_issues.id,
         edition_issues.name,
-        edition_issues.publish_date,
+        edition_issues.timezone_id,
+        edition_issues.issue_date,
         edition_issues.created_on,
-        edition_issues.created_by, edition_issues.created_email,
+        edition_issues.created_by,
+        edition_issues.created_email,
+        edition_issues.launched_on,
+        edition_issues.launched_by,
+        edition_issues.launched_email,
 
-        fronts.id AS fronts_id,
-        fronts.issue_id AS fronts_issue_id,
-        fronts.index AS fronts_index,
-        fronts.name AS fronts_name,
-        fronts.is_hidden AS fronts_is_hidden,
-        fronts.metadata AS fronts_metadata,
-        fronts.updated_on AS fronts_updated_on,
-        fronts.updated_by AS fronts_updated_by,
+        fronts.id            AS fronts_id,
+        fronts.issue_id      AS fronts_issue_id,
+        fronts.index         AS fronts_index,
+        fronts.name          AS fronts_name,
+        fronts.is_hidden     AS fronts_is_hidden,
+        fronts.metadata      AS fronts_metadata,
+        fronts.updated_on    AS fronts_updated_on,
+        fronts.updated_by    AS fronts_updated_by,
         fronts.updated_email AS fronts_updated_email,
 
-        collections.id AS collections_id,
-        collections.front_id AS collections_front_id,
-        collections.index AS collections_index,
-        collections.name AS collections_name,
-        collections.prefill AS collections_prefill,
-        collections.is_hidden AS collections_is_hidden,
-        collections.metadata AS collections_metadata,
-        collections.updated_on AS collections_updated_on,
-        collections.updated_by AS collections_updated_by,
-        collections.updated_email AS collections_updated_email
+        collections.id            AS collections_id,
+        collections.front_id      AS collections_front_id,
+        collections.index         AS collections_index,
+        collections.name          AS collections_name,
+        collections.is_hidden     AS collections_is_hidden,
+        collections.metadata      AS collections_metadata,
+        collections.updated_on    AS collections_updated_on,
+        collections.updated_by    AS collections_updated_by,
+        collections.updated_email AS collections_updated_email,
+        collections.prefill       AS collections_prefill,
+
+        articles.collection_id AS articles_collection_id,
+        articles.status        AS articles_status,
+        articles.page_code     AS articles_page_code,
+        articles.added_on      AS articles_added_on,
+        articles.added_by      AS articles_added_by,
+        articles.added_email   AS articles_added_email
+
       FROM edition_issues
       LEFT JOIN fronts ON (fronts.issue_id = edition_issues.id)
       LEFT JOIN collections ON (collections.front_id = fronts.id)
-      WHERE edition_issues.id = $id
-      """
-        .map { rs =>
-            GetIssueRow(EditionsIssue.fromRow(rs), DbEditionsFront.fromRowOpt(rs), DbEditionsCollection.fromRowOpt(rs))
+      LEFT JOIN articles ON (articles.collection_id = collections.id)
+      WHERE edition_issues.id = $id AND edition_issues.name = $name
+      """.map { rs =>
+            GetIssueRow(
+              EditionsIssue.fromRow(rs),
+              DbEditionsFront.fromRowOpt(rs),
+              DbEditionsCollection.fromRowOpt(rs),
+              DbEditionsArticle.fromRowOpt(rs))
         }
         .list()
         .apply()
@@ -148,10 +192,18 @@ trait IssueQueries {
         .foldLeft(List.empty[EditionsFront]) {(acc, cur) => if(acc.exists(f => f.id == cur.id)) acc else acc :+ cur}
         .map { front  =>
           val collectionsForFront = rows
-            .flatMap(row => row.collection.filter(_.front == front.id))
+            .flatMap(row => row.collection.filter(_.frontId == front.id))
             .sortBy(_.index)
-            .map(_.collection)
+            .map { collection =>
+              val articles = rows
+                .flatMap(row => row.article.filter(_.collectionId == collection.collection.id))
+                .sortBy(_.index)
+                .map(_.article)
 
+              collection.collection.copy(
+                items = articles
+              )
+            }
 
           front.copy(collections = collectionsForFront)
         }

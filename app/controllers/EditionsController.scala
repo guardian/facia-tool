@@ -3,25 +3,27 @@ package controllers
 import logging.Logging
 import model.forms.CreateIssue
 import play.api.libs.json.Json
-import services.editions.{EditionTemplates, EditionsDB}
+import services.editions.{EditionsDB, EditionsTemplating}
 import java.time.LocalDate
-import play.api.mvc._
+
+import model.editions.EditionsTemplates
 
 import scala.concurrent.ExecutionContext
+import scala.util.Try
 
-class EditionsController(db: EditionsDB, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps)  with Logging {
+class EditionsController(db: EditionsDB, templating: EditionsTemplating, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps)  with Logging {
 
   def postIssue(name: String) = AccessAPIAuthAction(parse.json[CreateIssue]) { req =>
     val form = req.body
 
-    EditionTemplates.generateEditionTemplate(name, form.issueDate).map { template =>
-      val issueId = db.insertIssue(name, template.issueDate, template, req.user)
+    templating.generateEditionTemplate(name, form.issueDate).map { skeleton =>
+      val issueId = db.insertIssue(name, skeleton, req.user)
 
       db.getIssue(name, issueId).map { issue =>
         Created(Json.toJson(issue))
       }.getOrElse(NotFound("Issue created but could not retrieve it from the database"))
     }.getOrElse {
-      NotFound(s"Edition ${name} not found")
+      NotFound(s"Edition $name not found")
     }
   }
 
@@ -32,17 +34,15 @@ class EditionsController(db: EditionsDB, val deps: BaseFaciaControllerComponents
   }
 
   def getAvailableEditions = AccessAPIAuthAction { _ =>
-    Ok(Json.toJson(EditionTemplates.getAvailableEditions))
+    Ok(Json.toJson(EditionsTemplates.getAvailableEditions))
   }
 
   def listIssues(name: String) = AccessAPIAuthAction { req =>
-
-    try {
+    Try {
       val date = req.queryString.get("date").map(_.head).get
-      val localDate = LocalDate.parse(date)
+      LocalDate.parse(date)
+    }.map { localDate =>
       Ok(Json.toJson(db.listIssues(name, localDate)))
-    } catch {
-      case e: Throwable => BadRequest
-    }
+    }.getOrElse(BadRequest("Invalid or missing date"))
   }
 }

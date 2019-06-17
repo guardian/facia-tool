@@ -13,7 +13,7 @@ import router.Routes
 import scalikejdbc.DB
 import scalikejdbc.config.DBs
 import services._
-import services.editions.EditionsDB
+import services.editions.{EditionsDB, EditionsTemplating}
 import slices.{Containers, FixedContainers}
 import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
@@ -31,10 +31,17 @@ class AppComponents(context: Context, val config: ApplicationConfiguration) exte
   val isTest: Boolean = context.environment.mode == Mode.Test
   val isProd: Boolean = context.environment.mode == Mode.Prod
   val isDev: Boolean = context.environment.mode == Mode.Dev
+
+  // Services
   val awsEndpoints = new AwsEndpoints(config)
-  val editionsDb = new EditionsDB(config)
+  val capi = new Capi(config)
   val dynamo = new Dynamo(awsEndpoints, config)
   val acl = new Acl(permissions)
+
+  // Editions services
+  val editionsDb = new EditionsDB(config)
+  val templating = new EditionsTemplating(capi)
+
   val frontsApi = new FrontsApi(config, awsEndpoints)
   val s3FrontsApi = new S3FrontsApi(config, isTest, awsEndpoints)
   val faciaApiIO = new FaciaApiIO(frontsApi, s3FrontsApi)
@@ -57,10 +64,10 @@ class AppComponents(context: Context, val config: ApplicationConfiguration) exte
   override lazy val httpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, sourceMapper, Some(router))
 
 //  Controllers
-  val editions = new EditionsController(editionsDb, this)
+  val editions = new EditionsController(editionsDb, templating, this)
   val collection = new CollectionController(acl, structuredLogger, updateManager, press, this)
   val defaults = new DefaultsController(acl, isDev, this)
-  val faciaCapiProxy = new FaciaContentApiProxy(this)
+  val faciaCapiProxy = new FaciaContentApiProxy(capi, this)
   val faciaTool = new FaciaToolController(acl, frontsApi, collectionService, faciaApiIO, updateActions, breakingNewsUpdate,
     structuredLogger, faciaPress, faciaPressQueue, configAgent, s3FrontsApi, this)
   val front = new FrontController(acl, structuredLogger, updateManager, press, this)

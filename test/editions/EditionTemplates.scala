@@ -2,9 +2,9 @@ package services
 
 import java.time.LocalDate
 import org.scalatest.{FreeSpec, Matchers}
-import editions.{EditionTemplates}
 import model.editions._
 import model.editions.WeekDay._
+import model.editions.templates.EditionTemplates
 
 class editionTemplateTest extends FreeSpec with Matchers {
 
