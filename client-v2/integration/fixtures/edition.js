@@ -23,7 +23,7 @@ module.exports = {
           // lastUpdated?: number,
           // updatedBy?: string,
           // updatedEmail?: string,
-          articles: []
+          items: []
         },
         {
           id: 'collection-2',
@@ -33,7 +33,7 @@ module.exports = {
           // lastUpdated?: number,
           // updatedBy?: string,
           // updatedEmail?: string,
-          articles: []
+          items: []
         }
       ]
     }
