@@ -2,7 +2,7 @@ import { applyMiddleware, compose, createStore } from 'redux';
 import { enableBatching } from 'redux-batched-actions';
 import thunkMiddleware from 'redux-thunk';
 import createBrowserHistory from 'history/createBrowserHistory';
-import { routerMiddleware } from 'react-router-redux';
+import { routerMiddleware, push } from 'react-router-redux';
 
 import rootReducer from 'reducers/rootReducer';
 import {
@@ -17,7 +17,10 @@ import { ExtraThunkArgs } from 'types/Store';
 import { fetchFrontsConfigStrategy } from 'strategies/fetch-fronts-config';
 import { fetchCollectionsStrategy } from 'strategies/fetch-collection';
 
-export default function configureStore(initialState?: State) {
+export default function configureStore(
+  initialState?: State,
+  initialPath?: string /* only used for tests */
+) {
   const history = createBrowserHistory();
   const router = routerMiddleware(history);
   const reducer = enableBatching(rootReducer);
@@ -45,6 +48,10 @@ export default function configureStore(initialState?: State) {
     module.hot.accept('reducers/rootReducer.js', () => {
       store.replaceReducer(rootReducer);
     });
+  }
+
+  if (initialPath) {
+    store.dispatch(push(initialPath));
   }
 
   return store;
