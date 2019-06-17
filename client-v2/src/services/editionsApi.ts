@@ -10,9 +10,9 @@ export const fetchIssuesForDateRange = async (
   end: Moment
 ): Promise<EditionsIssue[]> => {
   return pandaFetch(
-    `/editions-api/editions/${editionName}/issues?start=${start.format(dateFormat)}&end:${end.format(
+    `/editions-api/editions/${editionName}/issues?start=${start.format(
       dateFormat
-    )}`,
+    )}&end:${end.format(dateFormat)}`,
     {
       method: 'get',
       credentials: 'same-origin'
@@ -24,10 +24,13 @@ export const fetchIssueByDate = async (
   editionName: string,
   date: Moment
 ): Promise<EditionsIssue | void> => {
-  return pandaFetch(`/editions-api/editions/${editionName}/issues/${date.format(dateFormat)}`, {
-    method: 'get',
-    credentials: 'same-origin'
-  })
+  return pandaFetch(
+    `/editions-api/editions/${editionName}/issues/${date.format(dateFormat)}`,
+    {
+      method: 'get',
+      credentials: 'same-origin'
+    }
+  )
     .then(response => {
       if (response.status === 200) {
         return response.json();
