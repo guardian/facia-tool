@@ -70,6 +70,7 @@ import { frontStages } from 'constants/fronts';
 import { State } from 'types/State';
 import { events } from 'services/GA';
 import { collectionParamsSelector } from 'selectors/collectionSelectors';
+import { fetchCollectionsStrategy } from 'strategies/fetch-collection';
 
 const articlesInCollection = createAllArticlesInCollectionSelector();
 const collectionsInOpenFrontsSelector = createCollectionsInOpenFrontsSelector();
@@ -183,14 +184,10 @@ function getCollections(
   collectionIds: string[],
   returnOnlyUpdatedCollections: boolean = false
 ): ThunkResult<Promise<string[]>> {
-  return async (
-    dispatch: Dispatch,
-    getState: () => State,
-    { fetchCollections }
-  ) => {
+  return async (dispatch: Dispatch, getState: () => State) => {
     dispatch(collectionActions.fetchStart(collectionIds));
     try {
-      const collectionResponses = await fetchCollections(
+      const collectionResponses = await fetchCollectionsStrategy(
         getState(),
         collectionIds,
         returnOnlyUpdatedCollections
