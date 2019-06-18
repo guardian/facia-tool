@@ -46,7 +46,6 @@ const InformationMsg = styled.div<{ status?: 'info' | 'error' }>`
   &:before {
     content: ' ';
     position: absolute;
-    z-index: 1;
     top: -1px;
     left: 0;
     bottom: -1px;
@@ -119,8 +118,7 @@ class ManageEdition extends React.Component<
               </LinkButton>
             </>
           ) : (
-            (!this.state.isLoading || this.state.isCreatingIssue) &&
-            !this.state.isDatePickerOpen && (
+            (!this.state.isLoading || this.state.isCreatingIssue) && (
               <>
                 <p>No issue found for this date.</p>
                 <p>
@@ -215,7 +213,7 @@ class ManageEdition extends React.Component<
 
   private handleLoadingState = async <T extends void>(
     promise: Promise<T>,
-    message: string,
+    errorMessage: string,
     extraLoadingKey?: string
   ) => {
     this.setState(this.addExtraKey({ isLoading: true }, extraLoadingKey, true));
@@ -225,7 +223,7 @@ class ManageEdition extends React.Component<
       this.setState(
         this.addExtraKey(
           {
-            infoMessage: `${message}: ${response.status}, ${
+            infoMessage: `${errorMessage}: ${response.status}, ${
               response.statusText
             }`,
             isError: true,
