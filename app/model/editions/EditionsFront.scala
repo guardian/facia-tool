@@ -9,7 +9,7 @@ case class EditionsFront(
     id: String,
     displayName: String,
     isHidden: Boolean,
-    updatedOn: Option[ZonedDateTime],
+    updatedOn: Option[Long],
     updatedBy: Option[String],
     updatedEmail: Option[String],
     collections: List[EditionsCollection]
@@ -23,7 +23,7 @@ object EditionsFront {
       rs.string(prefix + "id"),
       rs.string(prefix + "name"),
       rs.boolean(prefix + "is_hidden"),
-      rs.zonedDateTimeOpt(prefix + "updated_on"),
+      rs.zonedDateTimeOpt(prefix + "updated_on").map(_.toInstant.toEpochMilli),
       rs.stringOpt(prefix + "updated_by"),
       rs.stringOpt(prefix + "updated_email"),
       Nil
@@ -40,7 +40,7 @@ object EditionsFront {
         id,
         name,
         isHidden,
-        rs.zonedDateTimeOpt(prefix + "updated_on"),
+        rs.zonedDateTimeOpt(prefix + "updated_on").map(_.toInstant.toEpochMilli),
         rs.stringOpt(prefix + "updated_by"),
         rs.stringOpt(prefix + "updated_email"),
         Nil

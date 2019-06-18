@@ -164,7 +164,6 @@ trait IssueQueries {
         collections.prefill       AS collections_prefill,
 
         articles.collection_id AS articles_collection_id,
-        articles.status        AS articles_status,
         articles.page_code     AS articles_page_code,
         articles.added_on      AS articles_added_on,
         articles.added_by      AS articles_added_by,
