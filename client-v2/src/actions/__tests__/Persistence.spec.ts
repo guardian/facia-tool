@@ -39,6 +39,7 @@ const A4 = {
 
 const init = () => {
   const initState = {
+    path: '/v2/editorial',
     shared: {
       collections: {
         loadingIds: [],

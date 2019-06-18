@@ -1,7 +1,6 @@
 import { batchActions } from 'redux-batched-actions';
 import {
   getArticlesBatched,
-  updateCollection as updateCollectionFromApi,
   discardDraftChangesToCollection as discardDraftChangesToCollectionApi,
   fetchVisibleArticles,
   fetchLastPressed as fetchLastPressedApi,
@@ -71,6 +70,7 @@ import { State } from 'types/State';
 import { events } from 'services/GA';
 import { collectionParamsSelector } from 'selectors/collectionSelectors';
 import { fetchCollectionsStrategy } from 'strategies/fetch-collection';
+import { updateCollectionStrategy } from 'strategies/update-collection';
 
 const articlesInCollection = createAllArticlesInCollectionSelector();
 const collectionsInOpenFrontsSelector = createCollectionsInOpenFrontsSelector();
@@ -262,7 +262,11 @@ function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
         getState(),
         collection.id
       );
-      await updateCollectionFromApi(collection.id, denormalisedCollection);
+      await updateCollectionStrategy(
+        getState(),
+        collection.id,
+        denormalisedCollection
+      );
       dispatch(collectionActions.updateSuccess(collection.id));
       const visibleArticles = await getVisibleArticles(
         collection,

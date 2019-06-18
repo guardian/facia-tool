@@ -16,7 +16,7 @@ const collectionToEditionCollection = (
   };
 };
 
-const fetchCollectionsStrategy = (
+const updateCollectionStrategy = (
   state: State,
   id: string,
   collection: CollectionWithNestedArticles
@@ -28,4 +28,4 @@ const fetchCollectionsStrategy = (
     none: () => null
   });
 
-export { fetchCollectionsStrategy };
+export { updateCollectionStrategy };
