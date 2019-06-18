@@ -5,6 +5,7 @@ import { actions as frontsConfigActions } from 'bundles/frontsConfigBundle';
 import { VisibleArticlesResponse } from 'types/FaciaApi';
 import { Stages } from 'shared/types/Collection';
 import { State } from 'types/State';
+import { fetchFrontsConfigStrategy } from 'strategies/fetch-fronts-config';
 
 function fetchLastPressedSuccess(frontId: string, datePressed: string): Action {
   return {
@@ -75,9 +76,9 @@ export default function getFrontsConfig(): ThunkResult<
     | ReturnType<typeof frontsConfigActions.fetchError>
   >
 > {
-  return (dispatch: Dispatch, getState: () => State, { fetchFrontsConfig }) => {
+  return (dispatch: Dispatch, getState: () => State) => {
     dispatch(frontsConfigActions.fetchStart());
-    const promise = fetchFrontsConfig(getState());
+    const promise = fetchFrontsConfigStrategy(getState());
     if (!promise) {
       return Promise.resolve(
         dispatch(

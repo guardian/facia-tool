@@ -1,6 +1,9 @@
 import { PriorityName } from './Priority';
 import { $Diff } from 'utility-types';
-import { CollectionFromResponse } from 'shared/types/Collection';
+import {
+  CollectionFromResponse,
+  NestedArticleFragment
+} from 'shared/types/Collection';
 
 interface FrontConfigResponse {
   collections: string[];
@@ -94,6 +97,23 @@ interface CollectionResponse {
   };
 }
 
+interface EditionCollectionFromResponse {
+  items: NestedArticleFragment[];
+  lastUpdated?: number;
+  updatedBy?: string;
+  updatedEmail?: string;
+  platform?: string;
+  displayName: string;
+  groups?: string[];
+  metadata?: Array<{ type: string }>;
+  uneditable?: boolean;
+}
+
+interface EditionCollectionResponse {
+  id: string;
+  collection: EditionCollectionFromResponse;
+}
+
 interface VisibleArticlesResponse {
   desktop: number;
   mobile: number;
@@ -108,6 +128,7 @@ export {
   CollectionConfigMap,
   ArticleDetails,
   CollectionResponse,
+  EditionCollectionResponse,
   VisibleArticlesResponse,
   FrontsToolSettings
 };

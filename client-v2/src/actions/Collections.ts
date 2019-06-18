@@ -1,7 +1,6 @@
 import { batchActions } from 'redux-batched-actions';
 import {
   getArticlesBatched,
-  getCollections as fetchCollections,
   updateCollection as updateCollectionFromApi,
   discardDraftChangesToCollection as discardDraftChangesToCollectionApi,
   fetchVisibleArticles,
@@ -71,6 +70,7 @@ import { frontStages } from 'constants/fronts';
 import { State } from 'types/State';
 import { events } from 'services/GA';
 import { collectionParamsSelector } from 'selectors/collectionSelectors';
+import { fetchCollectionsStrategy } from 'strategies/fetch-collection';
 
 const articlesInCollection = createAllArticlesInCollectionSelector();
 const collectionsInOpenFrontsSelector = createCollectionsInOpenFrontsSelector();
@@ -187,12 +187,21 @@ function getCollections(
   return async (dispatch: Dispatch, getState: () => State) => {
     dispatch(collectionActions.fetchStart(collectionIds));
     try {
-      const params = collectionParamsSelector(
+      const collectionResponses = await fetchCollectionsStrategy(
         getState(),
         collectionIds,
         returnOnlyUpdatedCollections
       );
-      const collectionResponses = await fetchCollections(params);
+
+      if (!collectionResponses) {
+        dispatch(
+          collectionActions.fetchError(
+            'cannot fetch collections for this route'
+          )
+        );
+        return Promise.resolve([]);
+      }
+
       // TODO: test that this works!
       // find all collections missing in the response and ensure their 'fetch'
       // status is reset
