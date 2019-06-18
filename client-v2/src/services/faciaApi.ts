@@ -176,8 +176,7 @@ async function publishCollection(collectionId: string): Promise<void> {
   }
 }
 
-const createUpdateCollection = <T>(path: string) => async (
-  id: string,
+const createUpdateCollection = <T>(path: string) => (id: string) => async (
   collection: T
 ): Promise<void> => {
   try {
@@ -202,9 +201,10 @@ const createUpdateCollection = <T>(path: string) => async (
 const updateCollection = createUpdateCollection<CollectionWithNestedArticles>(
   '/v2Edits'
 );
-const updateEditionsCollection = createUpdateCollection<EditionsCollection>(
-  '/editions-api/collections'
-);
+const updateEditionsCollection = (collectionId: string) =>
+  createUpdateCollection<EditionsCollection>(
+    `/editions-api/collections/${collectionId}`
+  )(collectionId);
 
 async function saveClipboard(
   clipboardContent: NestedArticleFragment[]

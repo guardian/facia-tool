@@ -22,9 +22,9 @@ const fetchCollectionsStrategy = (
   collection: CollectionWithNestedArticles
 ) =>
   runStrategy<void>(state, {
-    front: () => updateCollection(id, collection),
+    front: () => updateCollection(id)(collection),
     edition: () =>
-      updateEditionsCollection(id, collectionToEditionCollection(collection)),
+      updateEditionsCollection(id)(collectionToEditionCollection(collection)),
     none: () => null
   });
 
