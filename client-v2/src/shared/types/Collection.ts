@@ -96,6 +96,7 @@ interface CollectionFromResponse {
   live: NestedArticleFragment[];
   previously?: NestedArticleFragment[];
   draft?: NestedArticleFragment[];
+  isHidden?: boolean;
   lastUpdated?: number;
   updatedBy?: string;
   updatedEmail?: string;

@@ -5,11 +5,10 @@ interface EditionsCollection {
   displayName: string;
   prefill?: string;
   isHidden: boolean;
-  lastUpdated?: string;
+  lastUpdated?: number;
   updatedBy?: string;
   updatedEmail?: string;
-  live: EditionsArticle[];
-  draft: EditionsArticle[];
+  items: EditionsArticle[];
 }
 
 interface EditionsFront {
@@ -25,9 +24,10 @@ interface EditionsFront {
 interface EditionsIssue {
   id: string;
   displayName: string;
-  issueDate: string; // the date for which edition is made for, in format TimestampZ, eg 2016-06-22 19:10:25-07
-  lastPublished: string; // null if not published
-  launchedOn: string;
+  issueDate: number; // midnight on the expect publish date
+  createdOn: number;
+  createdBy: number;
+  launchedOn?: number;
   launchedBy: string;
   launchedEmail: string;
   fronts: EditionsFront[];
