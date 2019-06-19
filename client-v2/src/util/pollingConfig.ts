@@ -1,8 +1,7 @@
 import { fetchStaleOpenCollections } from 'actions/Collections';
 import { Dispatch } from 'types/Store';
 import { Store } from 'types/Store';
-import { matchPath } from 'react-router';
-import { frontsEdit } from 'constants/routes';
+import { matchFrontsEditPath } from 'routes/routes';
 import { getV2SubPath } from 'selectors/pathSelectors';
 
 /**
@@ -15,12 +14,7 @@ export default (store: Store) =>
     if ((window as any).IS_INTEGRATION) {
       return;
     }
-    const match = matchPath<{ priority: string }>(
-      getV2SubPath(store.getState()),
-      {
-        path: frontsEdit
-      }
-    );
+    const match = matchFrontsEditPath(getV2SubPath(store.getState()));
     if (!match || !match.params.priority) {
       return;
     }
