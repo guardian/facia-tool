@@ -140,7 +140,8 @@ class ManageEdition extends React.Component<
           this.setState({
             infoMessage: 'New issue created!',
             isError: false,
-            currentIssue: issue
+            currentIssue: issue,
+            isCreatingIssue: false
           });
         }
       ),
