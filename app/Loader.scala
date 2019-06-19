@@ -1,8 +1,9 @@
 import logging.LogStashConfig
 import metrics.CloudWatchApplicationMetrics
 import play.api.ApplicationLoader.Context
-import play.api.{Application, ApplicationLoader, LoggerConfigurator}
+import play.api.{Application, ApplicationLoader, LoggerConfigurator, Mode, Configuration}
 import switchboard.{SwitchboardConfiguration, Lifecycle => SwitchboardLifecycle}
+import conf.ApplicationConfiguration
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -13,8 +14,22 @@ class Loader extends ApplicationLoader {
       _.configure(context.environment)
     }
 
-    val components = new AppComponents(context)
+    // Play server
+    val isProd = context.environment.mode == Mode.Prod
+    val config = new ApplicationConfiguration(context.initialConfiguration, isProd)
 
+    val playConfig = context.initialConfiguration
+    // Override the initial configuration from play to allow play evoltions to work with RDS IAM
+    val configWithPassword = playConfig ++ Configuration.from(
+      Map(
+        "db.default.url" ->   config.postgres.url,
+        "db.default.password" ->  config.postgres.password
+      )
+    )
+
+    val components = new AppComponents(context.copy(initialConfiguration = configWithPassword), config)
+
+    // Background tasks
     new SwitchboardLifecycle(SwitchboardConfiguration(
       objectKey = components.config.switchBoard.objectKey,
       bucket = components.config.switchBoard.bucket,

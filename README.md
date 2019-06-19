@@ -60,29 +60,27 @@ We use [NVM](https://github.com/creationix/nvm) to ensure a given Node version i
 
 Ubuntu/Mac: [Follow these instructions](https://github.com/nvm-sh/nvm#installation-and-update)
 
-#### nginx
+#### Running postgres
 
-Mac:
+To start local postgres:
+- Make sure you have `docker` installed and `docker-compose`.
+- Run `docker-compose up` in the root of this repository
+- When you run the Play application it will seed the database with using Play's inbuilt database evolutions.
 
-```bash
-brew install nginx
-```
+If you wish to delete everything in the database you can use `docker-compose down -v` which will delete the container's persistent volumes.
 
-#### sbt
+If you wish to connect to the local database you can run `./scripts/local-psql.sh` which has the user, database and password preconfigured and ready to go.
 
-Mac:
+#### Postgres Master Passwords
 
-```bash
-brew install sbt
-```
+If you need the master passwords for the production postgres instances they are stored as SSM parameters and can be found at:
 
-#### aws cli
+CODE: `facia-tool/cms-fronts/CODE/db/password`
+PROD: `facia-tool/cms-fronts/PROD/db/password`
 
-You must have [Python](https://www.python.org/) installed on your system first.
+To fetch these can be fetched using the aws cli like so:
 
-```bash
-brew install awscli
-```
+`aws ssm get-parameter --name /facia-tool/cms-fronts/CODE/db/password --with-decryption --profile cmsFronts --region eu-west-1`
 
 ### Clone repository
 

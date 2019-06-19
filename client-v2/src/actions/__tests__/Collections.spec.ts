@@ -344,7 +344,7 @@ describe('Collection actions', () => {
       // so we just check that the action type is correct
       expect(actions[1].type).toEqual(externalArticleActionNames.fetchSuccess);
     });
-    it('should dispatch start and error actions when getArticles throws', async () => {
+    it('should dispatch start and error actions when getPrefillArticles throws', async () => {
       fetchMock.once(
         'begin:/api/preview/search?ids=article/live/0,article/draft/1,a/long/path/2',
         400

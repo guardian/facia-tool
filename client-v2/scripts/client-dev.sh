@@ -15,6 +15,10 @@ yarn watch &
 
 cd ..
 
+printf "\n\rStarting Postgres... \n\r\n\r"
+docker-compose up -d
+
+
 printf "\n\rStarting Play App... \n\r\n\r"
 
 if [[ "$IS_DEBUG" = true ]] ; then

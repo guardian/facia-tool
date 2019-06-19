@@ -6,12 +6,17 @@ import java.net.URL
 import com.amazonaws.AmazonClientException
 import com.amazonaws.auth._
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
+import com.amazonaws.services.rds.auth.{GetIamAuthTokenRequest, RdsIamAuthTokenGenerator}
 import org.apache.commons.io.IOUtils
 import play.api.{Configuration => PlayConfiguration}
 import logging.Logging
 
 import scala.collection.JavaConverters._
 import scala.language.reflectiveCalls
+import com.amazonaws.services.rds.model.{DescribeDBInstancesRequest, Filter => RDSFilter}
+import com.amazonaws.services.rds.AmazonRDSClientBuilder
+import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder
+import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest
 
 class BadConfigurationException(msg: String) extends RuntimeException(msg)
 
@@ -122,7 +127,71 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
           None
       }
     }
+    val rdsClient = AmazonRDSClientBuilder.standard().withCredentials(cmsFrontsAccountCredentials).withRegion(region).build()
+    val ssmClient = AWSSimpleSystemsManagementClientBuilder.standard().withCredentials(cmsFrontsAccountCredentials).withRegion(region).build()
   }
+
+  object postgres {
+    val (hostname, port) = findRDSEndpointAndPort
+    val url = s"jdbc:postgresql://$hostname:$port/faciatool"
+    val user =  "faciatool"
+    val password = getPassword
+
+    private def getPassword: String = {
+      // In fronts tool 'isProd' means is CODE or PROD because fuck it why not
+      if (isProd) {
+          val request = new GetParameterRequest()
+            .withName(s"/facia-tool/cms-fronts/$stageFromProperties/db/password")
+            .withWithDecryption(true)
+
+          val response = aws.ssmClient.getParameter(request)
+          response.getParameter.getValue
+      } else {
+        getMandatoryString("db.default.password")
+      }
+    }
+
+    private def findRDSEndpointAndPort(): (String, String) = {
+      // In fronts tool 'isProd' means is CODE or PROD because fuck it why not
+      if (isProd) {
+        val dbIdentifier = if (stageFromProperties == "PROD") "facia-prod-db" else "facia-code-db"
+        val request = new DescribeDBInstancesRequest().withDBInstanceIdentifier(dbIdentifier)
+        val instances = aws.rdsClient.describeDBInstances(request).getDBInstances.asScala.toList
+
+        if (instances.length != 1) {
+          throw new IllegalStateException(s"Invalid number of RDS instances, expected 1, found ${instances.length}")
+        }
+
+        val instance = instances.head
+        val awsHost = instance.getEndpoint.getAddress
+        val awsPort = instance.getEndpoint.getPort.toString
+        (awsHost, awsPort)
+      } else {
+        val host = getMandatoryString("db.default.hostname")
+        val port = getMandatoryString("db.default.port")
+        (host, port)
+      }
+    }
+
+
+    def credentialsProviderChain(accessKey: Option[String] = None, secretKey: Option[String] = None): AWSCredentialsProviderChain = {
+      new AWSCredentialsProviderChain(
+        new AWSCredentialsProvider {
+          override def getCredentials: AWSCredentials = (for {
+            key <- accessKey
+            secret <- secretKey
+          } yield new BasicAWSCredentials(key, secret)).orNull
+
+          override def refresh(): Unit = {}
+        },
+        new EnvironmentVariableCredentialsProvider,
+        new SystemPropertiesCredentialsProvider,
+        new ProfileCredentialsProvider("cmsFronts"),
+        InstanceProfileCredentialsProvider.getInstance()
+      )
+    }
+  }
+
 
   object cdn {
     lazy val basePath = getString("assets.basePath").getOrElse("/")
@@ -133,6 +202,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
 
     val contentApiLiveHost: String = getMandatoryString("content.api.host")
     def contentApiDraftHost: String = getMandatoryString("content.api.draft.iam-host")
+    val editionsPrefillHost: String = "https://preview.content.guardianapis.com"
 
     lazy val key: Option[String] = getString("content.api.key")
     lazy val timeout: Int = 2000

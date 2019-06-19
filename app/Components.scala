@@ -10,21 +10,38 @@ import play.filters.cors.CORSConfig
 import play.filters.cors.CORSConfig.Origins
 import filters._
 import router.Routes
+import scalikejdbc.DB
+import scalikejdbc.config.DBs
 import services._
+import services.editions.{EditionsDB, EditionsTemplating}
 import slices.{Containers, FixedContainers}
 import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
 import updates.{BreakingNewsUpdate, StructuredLogger}
 import util.{Acl, Encryption}
+import scalikejdbc._
+import play.api.db.evolutions.EvolutionsComponents
+import play.api.db.DBComponents
+import play.api.db.HikariCPComponents
 
-class AppComponents(context: Context) extends BaseFaciaControllerComponents(context) {
+class AppComponents(context: Context, val config: ApplicationConfiguration) extends BaseFaciaControllerComponents(context) with EvolutionsComponents with DBComponents with HikariCPComponents {
+
+  applicationEvolutions
+
   val isTest: Boolean = context.environment.mode == Mode.Test
   val isProd: Boolean = context.environment.mode == Mode.Prod
   val isDev: Boolean = context.environment.mode == Mode.Dev
-  val config = new ApplicationConfiguration(configuration, isProd)
+
+  // Services
   val awsEndpoints = new AwsEndpoints(config)
+  val capi = new GuardianCapi(config)
   val dynamo = new Dynamo(awsEndpoints, config)
   val acl = new Acl(permissions)
+
+  // Editions services
+  val editionsDb = new EditionsDB(config)
+  val templating = new EditionsTemplating(capi)
+
   val frontsApi = new FrontsApi(config, awsEndpoints)
   val s3FrontsApi = new S3FrontsApi(config, isTest, awsEndpoints)
   val faciaApiIO = new FaciaApiIO(frontsApi, s3FrontsApi)
@@ -47,9 +64,10 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   override lazy val httpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, sourceMapper, Some(router))
 
 //  Controllers
+  val editions = new EditionsController(editionsDb, templating, this)
   val collection = new CollectionController(acl, structuredLogger, updateManager, press, this)
   val defaults = new DefaultsController(acl, isDev, this)
-  val faciaCapiProxy = new FaciaContentApiProxy(this)
+  val faciaCapiProxy = new FaciaContentApiProxy(capi, this)
   val faciaTool = new FaciaToolController(acl, frontsApi, collectionService, faciaApiIO, updateActions, breakingNewsUpdate,
     structuredLogger, faciaPress, faciaPressQueue, configAgent, s3FrontsApi, this)
   val front = new FrontController(acl, structuredLogger, updateManager, press, this)
@@ -76,7 +94,7 @@ class AppComponents(context: Context) extends BaseFaciaControllerComponents(cont
   override lazy val assets: Assets = new controllers.Assets(httpErrorHandler, assetsMetadata)
 
   val router: Router = new Routes(httpErrorHandler, status, pandaAuth, v2Assets, uncachedAssets, views, faciaTool,
-    pressController, faciaToolV2, defaults, userDataController, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects, troubleshoot, v2App, gridProxy)
+    pressController, faciaToolV2, defaults, userDataController, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects, troubleshoot, v2App, gridProxy, editions)
 
 
   override lazy val httpFilters = Seq(

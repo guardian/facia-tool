@@ -60,6 +60,7 @@ TwirlKeys.templateImports ++= Seq(
 
 val awsVersion = "1.11.293"
 val capiModelsVersion = "14.1"
+val capiClientVersion = "14.3"
 val json4sVersion = "3.6.0-M2"
 
 resolvers ++= Seq(
@@ -74,16 +75,21 @@ PlayKeys.devSettings := Seq("play.akka.dev-mode.akka.http.parsing.max-uri-length
 libraryDependencies ++= Seq(
     ws,
     filters,
+    evolutions,
+    jdbc,
+    "com.amazonaws" % "aws-java-sdk-rds" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-core" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-cloudwatch" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-kinesis" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion,
+    "com.amazonaws" % "aws-java-sdk-ssm" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-sts" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion,
     "com.gu" %% "content-api-models" % capiModelsVersion,
     "com.gu" %% "content-api-models-json" % capiModelsVersion,
     "com.gu" %% "content-api-client-aws" % "0.5",
+    "com.gu" %% "content-api-client-default" % capiClientVersion,
     "com.gu" %% "editorial-permissions-client" % "2.0",
     "com.gu" %% "fapi-client-play26" % "3.0.0",
     "com.gu" % "kinesis-logback-appender" % "1.4.2",
@@ -98,7 +104,12 @@ libraryDependencies ++= Seq(
     "org.json4s" %% "json4s-native" % json4sVersion,
     "org.json4s" %% "json4s-jackson" % json4sVersion,
     "org.scalatest" %% "scalatest" % "3.0.5" % "test",
-    "com.typesafe.play" %% "play-json-joda" % "2.6.9"
+    "com.typesafe.play" %% "play-json-joda" % "2.6.9",
+
+    "org.postgresql"           %  "postgresql"                   % "42.2.5",
+    "org.scalikejdbc"          %% "scalikejdbc"                  % "3.1.0",
+    "org.scalikejdbc"          %% "scalikejdbc-config"           % "3.1.0",
+    "org.scalikejdbc"          %% "scalikejdbc-play-initializer" % "2.6.0-scalikejdbc-3.1"
 
 )
 

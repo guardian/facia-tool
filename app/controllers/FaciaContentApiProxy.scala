@@ -9,34 +9,21 @@ import metrics.FaciaToolMetrics
 import model.Cached
 import play.api.libs.concurrent.Futures
 import play.api.libs.concurrent.Futures._
+
 import scala.concurrent.duration._
 import logging.Logging
+import services.Capi
 import switchboard.SwitchManager
 import util.ContentUpgrade.rewriteBody
 
 import scala.concurrent.ExecutionContext
 
 
-class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) with Logging {
+class FaciaContentApiProxy(capi: Capi, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) with Logging {
   implicit val futures = new play.api.libs.concurrent.DefaultFutures(akka.actor.ActorSystem())
   implicit class string2encodings(s: String) {
     lazy val urlEncoded = URLEncoder.encode(s, "utf-8")
   }
-
-  private val previewSigner = {
-    val capiPreviewCredentials = new AWSCredentialsProviderChain(
-      new ProfileCredentialsProvider("capi"),
-      new STSAssumeRoleSessionCredentialsProvider.Builder(config.contentApi.previewRole, "capi").build()
-    )
-
-    new IAMSigner(
-      credentialsProvider = capiPreviewCredentials,
-      awsRegion = config.aws.region
-    )
-  }
-
-  private def getPreviewHeaders(url: String): Seq[(String,String)] =
-    previewSigner.addIAMHeaders(headers = Map.empty, URI.create(url)).toSeq
 
   def capiPreview(path: String) = AccessAPIAuthAction.async { request =>
     FaciaToolMetrics.ProxyCount.increment()
@@ -49,7 +36,7 @@ class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec:
 
     val url = s"$contentApiHost/$path?$queryString${config.contentApi.key.map(key => s"&api-key=$key").getOrElse("")}"
     
-    wsClient.url(url).withHttpHeaders(getPreviewHeaders(url): _*).get().map { response =>
+    wsClient.url(url).withHttpHeaders(capi.getPreviewHeaders(url): _*).get().map { response =>
 
       if (response.status != OK) {
         logger.error(s"Request to capi preview with url $url failed with response $response, ${response.body}")
@@ -94,7 +81,7 @@ class FaciaContentApiProxy(val deps: BaseFaciaControllerComponents)(implicit ec:
   def json(url: String) = AccessAPIAuthAction.async { request =>
     FaciaToolMetrics.ProxyCount.increment()
 
-    wsClient.url(url).withHttpHeaders(getPreviewHeaders(url): _*).get().map { response =>
+    wsClient.url(url).withHttpHeaders(capi.getPreviewHeaders(url): _*).get().map { response =>
       Cached(60) {
         Ok(rewriteBody(response.body)).as("application/json")
       }
