@@ -39,10 +39,13 @@ class EditionsController(db: EditionsDB, templating: EditionsTemplating, val dep
 
   def listIssues(name: String) = AccessAPIAuthAction { req =>
     Try {
-      val date = req.queryString.get("date").map(_.head).get
-      LocalDate.parse(date)
-    }.map { localDate =>
-      Ok(Json.toJson(db.listIssues(name, localDate)))
+      val dateFrom = req.queryString.get("dateFrom").map(_.head).get
+      val dateTo = req.queryString.get("dateTo").map(_.head).get
+      (LocalDate.parse(dateFrom), LocalDate.parse(dateTo))
+    }.map {
+      case (localDateFrom, localDateTo) => {
+        Ok(Json.toJson(db.listIssues(name, localDateFrom, localDateTo)))
+      }
     }.getOrElse(BadRequest("Invalid or missing date"))
   }
 

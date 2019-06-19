@@ -182,12 +182,12 @@ class ManageEdition extends React.Component<
 
   private isIssuePresentForDate = (date: Moment) =>
     this.state.issues.find(i =>
-      moment(i.issueDate, 'YYYY-MM-DD HH:mm:ss-ZZ').isSame(date, 'day')
+      moment(i.issueDate).isSame(date, 'day')
     );
 
   private handleMonthClick = (month: Moment) => {
     const startDate = month.clone().startOf('month');
-    const endDate = month.clone().endOf('month');
+    const endDate = month.clone().add(1, 'month').endOf('month');
 
     this.fetchDateRange(startDate, endDate);
   };
