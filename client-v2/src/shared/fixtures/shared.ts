@@ -547,6 +547,7 @@ const collectionWithSupportingArticles = {
 };
 
 const stateWithCollection: any = {
+  path: '/v2/editorial',
   fronts: {
     frontsConfig: {
       data: {
@@ -651,6 +652,7 @@ const stateWithCollection: any = {
 };
 
 const stateWithCollectionAndSupporting: any = {
+  path: '/v2/editorial',
   shared: {
     collections: {
       data: {
@@ -712,6 +714,7 @@ const stateWithCollectionAndSupporting: any = {
 };
 
 const stateWithSnaplinksAndArticles: any = {
+  path: '/v2/editorial',
   shared: {
     articleFragments: {
       '1269c42e-a341-4464-b206-a5731b92fa46': {

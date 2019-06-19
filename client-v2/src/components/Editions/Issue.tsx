@@ -32,11 +32,11 @@ const Issue = (props: IssueProps) => (
         </tr>
         <tr>
           <td>Published:</td>
-          <td>{props.issue.lastPublished ? 'Yes' : 'No'}</td>
+          <td>{props.issue.launchedOn ? 'Yes' : 'No'}</td>
         </tr>
         <tr>
           <td>Last published:</td>
-          <td>{props.issue.lastPublished}</td>
+          <td>{props.issue.launchedOn}</td>
         </tr>
         <tr>
           <td>Creator:</td>

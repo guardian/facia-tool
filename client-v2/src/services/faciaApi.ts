@@ -20,7 +20,7 @@ import { CapiArticle } from 'types/Capi';
 import chunk from 'lodash/chunk';
 import { CAPISearchQueryResponse, checkIsResults } from './capiQuery';
 import flatMap from 'lodash/flatMap';
-import { EditionsIssue } from 'types/Edition';
+import { EditionsIssue, EditionsCollection } from 'types/Edition';
 
 function fetchEditionsIssueAsConfig(editionId: string): Promise<FrontsConfig> {
   return pandaFetch(`/editions-api/${editionId}`, {
@@ -176,12 +176,11 @@ async function publishCollection(collectionId: string): Promise<void> {
   }
 }
 
-async function updateCollection(
-  id: string,
-  collection: CollectionWithNestedArticles
-): Promise<CollectionWithNestedArticles> {
+const createUpdateCollection = <T>(path: string) => (id: string) => async (
+  collection: T
+): Promise<void> => {
   try {
-    const response = await pandaFetch(`/v2Edits`, {
+    const response = await pandaFetch(path, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json'
@@ -197,7 +196,15 @@ async function updateCollection(
       }: ${response.body}`
     );
   }
-}
+};
+
+const updateCollection = createUpdateCollection<CollectionWithNestedArticles>(
+  '/v2Edits'
+);
+const updateEditionsCollection = (collectionId: string) =>
+  createUpdateCollection<EditionsCollection>(
+    `/editions-api/collections/${collectionId}`
+  )(collectionId);
 
 async function saveClipboard(
   clipboardContent: NestedArticleFragment[]
@@ -421,6 +428,7 @@ export {
   fetchLastPressed,
   publishCollection,
   updateCollection,
+  updateEditionsCollection,
   saveClipboard,
   saveOpenFrontIds,
   saveFavouriteFrontIds,

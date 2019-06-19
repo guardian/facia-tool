@@ -15,9 +15,9 @@ const editionCollectionToCollection = (
   return {
     ...restRes,
     collection: {
+      ...restCol,
       draft: items,
-      live: [],
-      ...restCol
+      live: []
     },
     storiesVisibleByStage: {
       // TODO - remove me once we figure out what to do here!

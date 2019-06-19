@@ -63,7 +63,7 @@ describe('faciaApi', () => {
           })
       });
       expect.assertions(1);
-      return expect(updateCollection('exampleId', collection)).resolves.toEqual(
+      return expect(updateCollection('exampleId')(collection)).resolves.toEqual(
         collection
       );
     });
@@ -71,7 +71,7 @@ describe('faciaApi', () => {
       fetchMock.once('/v2Edits', { status: 400 });
       expect.assertions(1);
       try {
-        await updateCollection('exampleId', collection);
+        await updateCollection('exampleId')(collection);
       } catch (e) {
         expect(e.message).toContain('exampleId');
       }
