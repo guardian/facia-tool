@@ -109,12 +109,15 @@ class ManageEdition extends React.Component<
   }
 
   private renderIssueData = () => {
-    const hasCurrentIssue = !this.state.isLoading && this.state.currentIssue
-      ? this.state.currentIssue
-      : null;
+    const hasCurrentIssue =
+      !this.state.isLoading && this.state.currentIssue
+        ? this.state.currentIssue
+        : null;
     // We don't want to remove the no current issue information as a new issue is being created
     const noCurrentIssue = !this.state.isLoading || this.state.isCreatingIssue;
-    const selectedDateText = this.state.date ? this.state.date.format('DD-MM-YYYY') : ''
+    const selectedDateText = this.state.date
+      ? this.state.date.format('DD-MM-YYYY')
+      : '';
     return hasCurrentIssue ? (
       <>
         <h3>Current issue: {selectedDateText}.</h3>

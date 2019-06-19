@@ -13,12 +13,12 @@ const Home = () => (
   <HomeContainer>
     <h3>Front priorities</h3>
     <ul>{Object.keys(priorities).map(renderPriority)}</ul>
-    <h3>Manage editions</h3>
+    {/* <h3>Manage editions</h3>
     <ul>
       <li>
         <Link to={`/manage-editions/daily-edition`}>Daily edition</Link>
       </li>
-    </ul>
+    </ul> */}
   </HomeContainer>
 );
 
