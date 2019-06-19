@@ -5,11 +5,12 @@ import pandaFetch from './pandaFetch';
 const dateFormat = 'YYYY-MM-DD';
 
 export const fetchIssuesForDateRange = async (
+  editionName: string,
   start: Moment,
   end: Moment
 ): Promise<EditionsIssue[]> => {
   return pandaFetch(
-    `http://localhost:3000/editions-api/issues?start=${start.format(
+    `/editions-api/editions/${editionName}/issues?start=${start.format(
       dateFormat
     )}&end:${end.format(dateFormat)}`,
     {
@@ -20,10 +21,11 @@ export const fetchIssuesForDateRange = async (
 };
 
 export const fetchIssueByDate = async (
+  editionName: string,
   date: Moment
 ): Promise<EditionsIssue | void> => {
   return pandaFetch(
-    `http://localhost:3000/editions-api/issues/${date.format(dateFormat)}`,
+    `/editions-api/editions/${editionName}/issues/${date.format(dateFormat)}`,
     {
       method: 'get',
       credentials: 'same-origin'
@@ -41,15 +43,18 @@ export const fetchIssueByDate = async (
     });
 };
 
-export const createIssue = async (date: Moment): Promise<EditionsIssue> => {
-  return pandaFetch(`http://localhost:3000/editions-api/issues`, {
+export const createIssue = async (
+  editionName: string,
+  date: Moment
+): Promise<EditionsIssue> => {
+  return pandaFetch(`/editions-api/editions/${editionName}/issues`, {
     method: 'post',
     mode: 'cors',
     headers: {
       'Content-Type': 'application/json'
     },
     credentials: 'include',
-    body: JSON.stringify({ date: `${date.format(dateFormat)}` })
+    body: JSON.stringify({ issueDate: `${date.format(dateFormat)}` })
   }).then(response => {
     return response.json();
   });

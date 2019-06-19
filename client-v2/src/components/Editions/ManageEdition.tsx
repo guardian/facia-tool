@@ -1,6 +1,6 @@
 import React from 'react';
-import Raven from 'raven-js';
-import { styled } from 'constants/theme';
+import startCase from 'lodash/startCase';
+import { styled, theme } from 'constants/theme';
 import { SingleDatePicker } from 'react-dates';
 import moment, { Moment } from 'moment';
 import { EditionsIssue } from 'types/Edition';
@@ -11,6 +11,8 @@ import {
   fetchIssueByDate,
   createIssue
 } from 'services/editionsApi';
+import { withRouter, RouteComponentProps } from 'react-router';
+import Spinner from 'shared/components/async/Spinner';
 
 interface ManageEditionState {
   date: Moment | null;
@@ -19,6 +21,8 @@ interface ManageEditionState {
   currentIssue: EditionsIssue | null;
   infoMessage: string;
   isError: boolean;
+  isLoading: boolean;
+  isCreatingIssue: boolean;
 }
 
 const LinkButton = styled(ButtonDefault.withComponent('a'))`
@@ -26,126 +30,174 @@ const LinkButton = styled(ButtonDefault.withComponent('a'))`
   padding-top: 12px;
 `;
 
-const InformationMsg = styled.div<{ status?: 'info' | 'error' }>`
-  max-width: 250px;
-  margin: 5px 0;
-  padding: 3px;
-  color: white;
-  background-color: ${props => (props.status === 'info' ? 'green' : 'red')};
+const SpinnerContainer = styled.div`
+  margin-left: 10px;
+  display: inline-block;
+  vertical-align: middle;
 `;
 
-class ManageEdition extends React.Component {
+const InformationMsg = styled.div<{ status?: 'info' | 'error' }>`
+  position: relative;
+  max-width: 250px;
+  margin: 10px 0;
+  padding: 10px 10px 10px 15px;
+  border: 1px solid ${theme.shared.colors.greyVeryLight};
+  border-left: none;
+  &:before {
+    content: ' ';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    bottom: -1px;
+    border-left: 4px solid
+      ${props => (props.status === 'info' ? 'green' : 'red')};
+  }
+`;
+
+const IssueContainer = styled.div`
+  margin: 10px 0;
+`;
+
+class ManageEdition extends React.Component<
+  RouteComponentProps<{ editionName: string }>
+> {
   public state: ManageEditionState = {
     date: null,
     isDatePickerOpen: false,
     issues: [] as EditionsIssue[],
     currentIssue: null,
     infoMessage: '',
-    isError: false
+    isError: false,
+    isLoading: false,
+    isCreatingIssue: false
   };
 
   public render() {
     return (
       <>
-        <h2>Pick a date</h2>
-        <SingleDatePicker
-          date={null}
-          onDateChange={this.handleDateChange}
-          focused={this.state.isDatePickerOpen}
-          onFocusChange={this.handleFocusChange}
-          onNextMonthClick={this.handleMonthClick}
-          onPrevMonthClick={this.handleMonthClick}
-          id="editions-date"
-          isDayHighlighted={date => !!this.checkIssuePresentForDate(date)}
-          isOutsideRange={() => false}
-        />
+        <h1>{startCase(this.props.match.params.editionName)}</h1>
+        <h3>Select a date to create or edit an issue.</h3>
         <div>
-          {this.state.date && (
-            <>
-              <p>You selected {this.state.date.format('Do MMMM YYYY')}</p>
-              {this.state.currentIssue ? (
-                <>
-                  {this.state.infoMessage && (
-                    <InformationMsg
-                      status={this.state.isError ? 'error' : 'info'}
-                    >
-                      {this.state.infoMessage}
-                    </InformationMsg>
-                  )}
-                  <Issue issue={this.state.currentIssue} />
-                  <LinkButton
-                    size="l"
-                    href={`editions/${this.state.currentIssue.id}`}
-                  >
-                    Open
-                  </LinkButton>
-                </>
-              ) : (
-                <>
-                  <InformationMsg status="info">
-                    No issue found for this date
-                  </InformationMsg>
-                  <ButtonDefault size="l" onClick={this.createEdition}>
-                    Create
-                  </ButtonDefault>
-                </>
-              )}
-            </>
+          <span>
+            <SingleDatePicker
+              date={this.state.date}
+              onDateChange={this.handleDateChange}
+              focused={this.state.isDatePickerOpen}
+              onFocusChange={this.handleFocusChange}
+              onNextMonthClick={this.handleMonthClick}
+              onPrevMonthClick={this.handleMonthClick}
+              id="editions-date"
+              displayFormat="DD-MM-YYYY"
+              isDayHighlighted={date => !!this.isIssuePresentForDate(date)}
+              isOutsideRange={() => false}
+            />
+          </span>
+          {this.state.isLoading && (
+            <SpinnerContainer>
+              <Spinner />
+            </SpinnerContainer>
           )}
         </div>
+        {this.state.infoMessage && (
+          <InformationMsg status={this.state.isError ? 'error' : 'info'}>
+            {this.state.infoMessage}
+          </InformationMsg>
+        )}
+        {this.state.date && this.renderIssueData()}
       </>
     );
   }
 
+  private renderIssueData = () => {
+    const hasCurrentIssue =
+      !this.state.isLoading && this.state.currentIssue
+        ? this.state.currentIssue
+        : null;
+    // We don't want to remove the no current issue information as a new issue is being created
+    const noCurrentIssue = !this.state.isLoading || this.state.isCreatingIssue;
+    const selectedDateText = this.state.date
+      ? this.state.date.format('DD-MM-YYYY')
+      : '';
+    return hasCurrentIssue ? (
+      <>
+        <h3>Current issue: {selectedDateText}.</h3>
+        <IssueContainer>
+          <Issue issue={this.state.currentIssue!} />
+        </IssueContainer>
+        <LinkButton size="l" href={`/editions/${this.state.currentIssue!.id}`}>
+          Open
+        </LinkButton>
+      </>
+    ) : (
+      noCurrentIssue && (
+        <>
+          <p>No issue found for {selectedDateText}.</p>
+          <p>
+            <ButtonDefault
+              size="l"
+              disabled={this.state.isCreatingIssue}
+              onClick={this.createEdition}
+            >
+              Create issue
+            </ButtonDefault>
+          </p>
+        </>
+      )
+    );
+  };
+
   private createEdition = () => {
     if (!this.state.date) {
-      Raven.captureMessage(
-        `Creating an issue failed because no date was selected`
-      );
-      this.setState({ infoMessage: 'The date is not valid', isError: true });
+      this.setState({ infoMessage: 'Please select a date.', isError: true });
       return;
     }
-    this.setState({ infoMessage: 'New issue created' });
-    createIssue(this.state.date)
-      .then(issue => {
-        this.setState({ currentIssue: issue });
-      })
-      .catch(err => {
-        Raven.captureMessage(
-          `Creating an issue for this date ${this.state.date} failed`,
-          err
-        );
-        this.setState({
-          infoMessage: 'Sorry creating an issue for this date failed',
-          isError: true
-        });
-      });
+    this.handleLoadingState(
+      createIssue(this.props.match.params.editionName, this.state.date).then(
+        issue => {
+          this.setState({
+            infoMessage: 'New issue created!',
+            isError: false,
+            currentIssue: issue
+          });
+        }
+      ),
+      `Creating an issue for the date ${this.state.date.format(
+        'DD-MM-YYYY'
+      )} failed`,
+      'isCreatingIssue'
+    );
   };
 
   private handleDateChange = (date: Moment | null) => {
-    this.setState({ date, infoMessage: '', isError: false });
     if (!date) {
       return;
     }
-    fetchIssueByDate(date).then(issue =>
-      this.setState({ currentIssue: issue || null })
+    this.setState({
+      date,
+      infoMessage: '',
+      isError: false,
+      currentIssue: null
+    });
+    this.handleLoadingState(
+      fetchIssueByDate(this.props.match.params.editionName, date).then(issue =>
+        this.setState({ currentIssue: issue || null })
+      ),
+      `Could not fetch an issue for the date ${date.format('DD-MM-YYYY')}`
     );
   };
 
   private handleFocusChange = (isFocussedObj: { focused: boolean | null }) => {
+    this.setState({ isDatePickerOpen: !!isFocussedObj.focused });
     if (isFocussedObj.focused) {
       const startDate = moment().startOf('month');
       const endDate = moment()
         .add(1, 'month')
         .endOf('month');
-      fetchIssuesForDateRange(startDate, endDate).then(issues =>
-        this.setState({ issues })
-      );
+      this.fetchDateRange(startDate, endDate);
     }
-    this.setState({ isDatePickerOpen: !!isFocussedObj.focused });
   };
 
-  private checkIssuePresentForDate = (date: Moment) =>
+  private isIssuePresentForDate = (date: Moment) =>
     this.state.issues.find(i =>
       moment(i.issueDate, 'YYYY-MM-DD HH:mm:ss-ZZ').isSame(date, 'day')
     );
@@ -154,18 +206,56 @@ class ManageEdition extends React.Component {
     const startDate = month.clone().startOf('month');
     const endDate = month.clone().endOf('month');
 
-    fetchIssuesForDateRange(startDate, endDate)
-      .then(issues => this.setState({ issues }))
-      .catch(err => {
-        Raven.captureMessage(
-          `Fetching issues for this date range failed: ${startDate} to ${endDate}`,
-          err
-        );
-        this.setState({
-          infoMessage: `Fetching issues for this date range failed: ${startDate} to ${endDate}`
-        });
-      });
+    this.fetchDateRange(startDate, endDate);
   };
+
+  private fetchDateRange = (startDate: Moment, endDate: Moment) => {
+    this.handleLoadingState(
+      fetchIssuesForDateRange(
+        this.props.match.params.editionName,
+        startDate,
+        endDate
+      ).then(issues => this.setState({ issues })),
+      `Fetching issues for this date range failed: ${startDate} to ${endDate}`
+    );
+  };
+
+  private handleLoadingState = async <T extends void>(
+    promise: Promise<T>,
+    errorMessage: string,
+    extraLoadingKey?: string
+  ) => {
+    this.setState(this.addExtraKey({ isLoading: true }, extraLoadingKey, true));
+    try {
+      await promise.then(() => this.setState({ isLoading: false }));
+    } catch (response) {
+      this.setState(
+        this.addExtraKey(
+          {
+            infoMessage: `${errorMessage}: ${response.status}, ${
+              response.statusText
+            }`,
+            isError: true,
+            isLoading: false
+          },
+          extraLoadingKey,
+          false
+        )
+      );
+    }
+  };
+
+  private addExtraKey = <Obj extends {}, Val>(
+    obj: Obj,
+    key: string | undefined,
+    value: Val
+  ) =>
+    key
+      ? {
+          ...obj,
+          [key]: value
+        }
+      : obj;
 }
 
-export default ManageEdition;
+export default withRouter(ManageEdition);

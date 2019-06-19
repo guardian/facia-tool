@@ -8,9 +8,13 @@ interface IssueProps {
 }
 
 const IssueTable = styled.table`
-  padding: 10px 0;
+  border: 1px solid #eee;
+  border-collapse: collapse;
+  tr:nth-child(even) {
+    background-color: #eee;
+  }
   td {
-    padding: 0 5px 0;
+    padding: 10px;
   }
 `;
 
