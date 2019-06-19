@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import { connect } from 'react-redux';
 import {
   reduxForm,
@@ -12,7 +12,7 @@ import { styled } from 'constants/theme';
 import Button from 'shared/components/input/ButtonDefault';
 import { ThumbnailEditForm } from 'shared/components/Thumbnail';
 import ContentContainer from 'shared/components/layout/ContentContainer';
-import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
+import ContainerHeading from 'shared/components/typography/ContainerHeading';
 import {
   createArticleFromArticleFragmentSelector,
   selectSharedState,
@@ -71,8 +71,6 @@ const FormContainer = styled(ContentContainer.withComponent('form'))`
   flex-direction: column;
   flex: 1;
   min-width: ${formMinWidth}px;
-  max-width: 380px;
-  margin-left: 10px;
   margin-top: 10px;
   height: calc(100% - 10px);
 `;
@@ -82,7 +80,7 @@ const FormContent = styled('div')`
   overflow-y: scroll;
 `;
 
-const CollectionHeadingPinline = ContainerHeadingPinline.extend`
+const CollectionHeadingPinline = ContainerHeading.extend`
   display: flex;
   margin-right: -11px;
   margin-bottom: 10px;
@@ -161,11 +159,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       articleFragmentId,
       change,
       kickerOptions,
-      handleSubmit,
       imageSlideshowReplace,
       imageHide,
       imageCutoutReplace,
-      onCancel,
       articleCapiFieldValues,
       pristine,
       showByline,
@@ -195,16 +191,15 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     };
 
     return (
-      <FormContainer onSubmit={handleSubmit} data-testid="edit-form">
+      <FormContainer data-testid="edit-form">
         <CollectionHeadingPinline>
-          Edit
           <ButtonContainer>
-            <Button onClick={onCancel} type="button" size="l">
+            <Button onClick={this.handleCancel} type="button" size="l">
               Cancel
             </Button>
             <Button
               priority="primary"
-              onClick={handleSubmit}
+              onClick={this.handleSubmit}
               disabled={pristine || !articleExists}
               size="l"
               data-testid="edit-form-save-button"
@@ -495,6 +490,16 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       </FormContainer>
     );
   }
+
+  private handleSubmit = (e: SyntheticEvent<any>) => {
+    e.stopPropagation();
+    this.props.handleSubmit(e);
+  };
+
+  private handleCancel = (e: SyntheticEvent<any>) => {
+    e.stopPropagation();
+    this.props.onCancel();
+  };
 }
 
 const ArticleFragmentForm = reduxForm<

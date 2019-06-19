@@ -11,16 +11,21 @@ import {
 import collectionItemTypes from 'shared/constants/collectionItemTypes';
 import {
   CollectionItemTypes,
-  CollectionItemDisplayTypes
+  CollectionItemDisplayTypes,
+  ArticleFragmentMeta
 } from 'shared/types/Collection';
 import SnapLink from 'shared/components/snapLink/SnapLink';
 import {
   cloneArticleFragmentToTarget,
   copyArticleFragmentImageMetaWithPersist,
-  addImageToArticleFragment
+  addImageToArticleFragment,
+  updateArticleFragmentMeta as updateArticleFragmentMetaAction
 } from 'actions/ArticleFragments';
 import noop from 'lodash/noop';
-import { selectEditorArticleFragment } from 'bundles/frontsUIBundle';
+import {
+  selectEditorArticleFragment,
+  editorClearArticleFragmentSelection
+} from 'bundles/frontsUIBundle';
 import {
   validateImageEvent,
   ValidationResponse
@@ -32,6 +37,7 @@ import {
 } from 'constants/image';
 import Sublinks from './Sublinks';
 import { gridDropTypes } from 'constants/fronts';
+import ArticleFragmentForm from '../ArticleFragmentForm';
 
 const imageDropTypes = [
   ...gridDropTypes,
@@ -50,14 +56,18 @@ interface ContainerProps {
   displayType?: CollectionItemDisplayTypes;
   size?: 'small' | 'default';
   isUneditable?: boolean;
+  isSupporting?: boolean;
 }
 
 type ArticleContainerProps = ContainerProps & {
   onAddToClipboard: () => void;
   copyCollectionItemImageMeta: (from: string, to: string) => void;
   addImageToArticleFragment: (id: string, response: ValidationResponse) => void;
+  updateArticleFragmentMeta: (meta: ArticleFragmentMeta) => void;
+  clearArticleFragmentSelection: () => void;
   type: CollectionItemTypes;
   isSelected: boolean;
+  selectionExists: boolean;
   numSupportingArticles: number;
 };
 
@@ -77,46 +87,67 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
   public render() {
     const {
       uuid,
+      selectionExists,
       isSelected,
       children,
       getNodeProps,
       onSelect,
       onAddToClipboard = noop,
+      isSupporting = false,
       displayType,
       type,
       size,
       isUneditable,
       numSupportingArticles,
-      parentId
+      updateArticleFragmentMeta,
+      clearArticleFragmentSelection,
+      parentId,
+      frontId
     } = this.props;
 
     switch (type) {
       case collectionItemTypes.ARTICLE:
         return (
-          <Article
-            id={uuid}
-            isUneditable={isUneditable}
-            {...getNodeProps()}
-            onDelete={this.onDelete}
-            onAddToClipboard={onAddToClipboard}
-            onClick={isUneditable ? undefined : () => onSelect(uuid)}
-            fade={!isSelected}
-            size={size}
-            displayType={displayType}
-            imageDropTypes={imageDropTypes}
-            onImageDrop={this.handleImageDrop}
-          >
-            <Sublinks
-              numSupportingArticles={numSupportingArticles}
-              toggleShowArticleSublinks={this.toggleShowArticleSublinks}
-              showArticleSublinks={this.state.showArticleSublinks}
-              parentId={parentId}
-            />
-            {/* If there are no supporting articles, the children still need to be rendered, because the dropzone is a child  */}
-            {numSupportingArticles === 0
-              ? children
-              : this.state.showArticleSublinks && children}
-          </Article>
+          <>
+            <Article
+              id={uuid}
+              isUneditable={isUneditable}
+              {...getNodeProps()}
+              onDelete={this.onDelete}
+              onAddToClipboard={onAddToClipboard}
+              onClick={isUneditable ? undefined : () => onSelect(uuid)}
+              fade={selectionExists && !isSelected}
+              size={size}
+              displayType={displayType}
+              imageDropTypes={imageDropTypes}
+              onImageDrop={this.handleImageDrop}
+            >
+              <Sublinks
+                numSupportingArticles={numSupportingArticles}
+                toggleShowArticleSublinks={this.toggleShowArticleSublinks}
+                showArticleSublinks={this.state.showArticleSublinks}
+                parentId={parentId}
+              />
+              {/* If there are no supporting articles, the children still need to be rendered, because the dropzone is a child  */}
+              {numSupportingArticles === 0
+                ? children
+                : this.state.showArticleSublinks && children}
+            </Article>
+            {isSelected && (
+              <ArticleFragmentForm
+                articleFragmentId={uuid}
+                isSupporting={isSupporting}
+                key={uuid}
+                form={uuid}
+                frontId={frontId}
+                onSave={meta => {
+                  updateArticleFragmentMeta(meta);
+                  clearArticleFragmentSelection();
+                }}
+                onCancel={() => clearArticleFragmentSelection()}
+              />
+            )}
+          </>
         );
       case collectionItemTypes.SNAP_LINK:
         return (
@@ -194,23 +225,31 @@ const createMapStateToProps = () => {
     }
     return {
       type: selectType(selectSharedState(state), props.uuid),
+      selectionExists: !!selectedArticleFragmentData,
       isSelected:
-        !selectedArticleFragmentData ||
+        !!selectedArticleFragmentData &&
         selectedArticleFragmentData.id === props.uuid,
       numSupportingArticles
     };
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch, props: ContainerProps) => {
+const mapDispatchToProps = (
+  dispatch: Dispatch,
+  { uuid, frontId }: ContainerProps
+) => {
   return {
     onAddToClipboard: () => {
-      dispatch(cloneArticleFragmentToTarget(props.uuid, 'clipboard'));
+      dispatch(cloneArticleFragmentToTarget(uuid, 'clipboard'));
     },
     copyCollectionItemImageMeta: (from: string, to: string) =>
       dispatch(copyArticleFragmentImageMetaWithPersist(from, to)),
     addImageToArticleFragment: (id: string, response: ValidationResponse) =>
-      dispatch(addImageToArticleFragment(id, response))
+      dispatch(addImageToArticleFragment(id, response)),
+    updateArticleFragmentMeta: (meta: ArticleFragmentMeta) =>
+      dispatch(updateArticleFragmentMetaAction(uuid, meta)),
+    clearArticleFragmentSelection: () =>
+      dispatch(editorClearArticleFragmentSelection(frontId))
   };
 };
 

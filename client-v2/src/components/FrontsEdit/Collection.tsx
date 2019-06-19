@@ -171,7 +171,7 @@ class CollectionContext extends React.Component<
                       uuid={articleFragment.uuid}
                     >
                       <CollectionItem
-                        frontId={this.props.id}
+                        frontId={this.props.frontId}
                         uuid={articleFragment.uuid}
                         parentId={group.uuid}
                         isUneditable={isUneditable}
@@ -189,7 +189,8 @@ class CollectionContext extends React.Component<
                         >
                           {(supporting, getSupportingProps) => (
                             <CollectionItem
-                              frontId={this.props.id}
+                              isSupporting={true}
+                              frontId={this.props.frontId}
                               uuid={supporting.uuid}
                               parentId={articleFragment.uuid}
                               onSelect={selectArticleFragment(true)}
