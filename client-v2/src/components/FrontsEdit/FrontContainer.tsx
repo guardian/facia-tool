@@ -128,7 +128,10 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   public render() {
     const { frontId, isFormOpen, isOverviewOpen } = this.props;
     const title =
-      this.props.selectedFront && startCase(this.props.selectedFront.id);
+      this.props.selectedFront &&
+      startCase(
+        this.props.selectedFront.displayName || this.props.selectedFront.id
+      );
     return (
       <SingleFrontContainer
         key={frontId}

@@ -7,6 +7,7 @@ import {
 interface FrontConfigResponse {
   collections: string[];
   priority?: string;
+  displayName?: string;
   canonical?: string;
   group?: string;
   isHidden?: boolean;

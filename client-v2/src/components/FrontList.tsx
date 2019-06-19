@@ -7,7 +7,12 @@ import { MoreIcon, StarIcon } from 'shared/components/icons/Icons';
 import TextHighlighter from './util/TextHighlighter';
 
 interface Props {
-  fronts: Array<{ id: string; isOpen: boolean; isStarred: boolean }>;
+  fronts: Array<{
+    id: string;
+    displayName?: string;
+    isOpen: boolean;
+    isStarred: boolean;
+  }>;
   renderOnlyStarred?: boolean;
   onSelect: (frontId: string) => void;
   onStar: (frontId: string) => void;
@@ -125,7 +130,7 @@ const FrontList = ({
         >
           <ListLabel isActive={!front.isOpen}>
             <TextHighlighter
-              originalString={front.id}
+              originalString={front.displayName || front.id}
               searchString={searchString}
             />
           </ListLabel>
