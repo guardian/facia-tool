@@ -1,5 +1,6 @@
 package services
 
+import java.io.IOException
 import java.net.{URI, URLEncoder}
 import java.nio.charset.StandardCharsets
 import java.time.{Period, ZonedDateTime}
@@ -10,11 +11,37 @@ import com.gu.contentapi.client.model._
 import com.gu.contentapi.client.{GuardianContentClient, IAMSigner, Parameter}
 import conf.ApplicationConfiguration
 import model.editions.CapiPrefillQuery
+import okhttp3.{Call, Callback, Request, Response}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext, Future, Promise}
 
-class GuardianPreviewContentClient(apiKey: String) extends GuardianContentClient(apiKey) {
+// TODO +--------------------------------------------------------------+
+// TODO | The inheritance hierarchy in this file is _DIRE_ sort it out |
+// TODO +--------------------------------------------------------------+
+
+class GuardianPreviewContentClient(capi: Capi, apiKey: String) extends GuardianContentClient(apiKey) {
   override def targetUrl: String = "https://preview.content.guardianapis.com"
+
+  override def get(url: String, headers: Map[String, String])(implicit context: ExecutionContext): Future[HttpResponse] = {
+    val reqBuilder = capi.getPreviewHeaders(url).foldLeft(new Request.Builder().url(url)) { case (builder, headerPair) =>
+      builder.addHeader(headerPair._1, headerPair._2)
+    }
+
+    val req = headers.foldLeft(reqBuilder) {
+      case (r, (name, value)) => r.header(name, value)
+    }
+
+    val promise = Promise[HttpResponse]()
+
+    http.newCall(req.build()).enqueue(new Callback() {
+      override def onFailure(call: Call, e: IOException): Unit = promise.failure(e)
+      override def onResponse(call: Call, response: Response): Unit = {
+        promise.success(HttpResponse(response.body().bytes, response.code(), response.message()))
+      }
+    })
+
+    promise.future
+  }
 }
 
 case class PrintSentQuery(parameterHolder: Map[String, Parameter] = Map.empty)
@@ -31,7 +58,7 @@ trait Capi {
 }
 
 class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext) extends Capi {
-  val client = new GuardianPreviewContentClient("test")
+  val client = new GuardianPreviewContentClient(this, "test")
 
   private val previewSigner = {
     val capiPreviewCredentials = new AWSCredentialsProviderChain(
@@ -49,23 +76,24 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
 
   def getPrefillArticlePageCodes(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery) = {
     // Commenting this out so we can get this merged without prefill working
-    Future.successful(Nil)
+    //Future.successful(Nil)
 
-    //val query = PrintSentQuery()
-    //  .page(1)
-    //  .pageSize(10)
-    //  .showFields("newspaper-edition-date")
-    //  .showFields("newspaper-page-number")
-    //  .showFields("internal-page-code")
-    //  .useDate("newspaper-edition")
-    //  .orderBy("newest")
-    //  .fromDate(issueDate.minus(Period.ofDays(3)).toInstant)
-    //  .toDate(issueDate.toInstant)
+    val query = PrintSentQuery()
+      .page(1)
+      .pageSize(10)
+      .showFields("newspaper-edition-date")
+      .showFields("newspaper-page-number")
+      .showFields("internal-page-code")
+      .useDate("newspaper-edition")
+      .orderBy("newest")
+      .fromDate(issueDate.minus(Period.ofDays(3)).toInstant)
+      .toDate(issueDate.toInstant)
+      .tag(capiPrefillQuery.tag)
 
-    //client.getResponse(query) map { response =>
-    //  response.results.map {
-    //    _.id
-    //  }
-    //}
+    client.getResponse(query) map { response =>
+      response.results.map {
+        _.id
+      }.toList
+    }
   }
 }
