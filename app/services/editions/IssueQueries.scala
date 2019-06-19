@@ -121,7 +121,7 @@ trait IssueQueries {
     """.map(EditionsIssue.fromRow(_)).list().apply()
   }
 
-  def getIssue(name: String, id: String): Option[EditionsIssue] = DB readOnly { implicit session =>
+  def getIssue(id: String): Option[EditionsIssue] = DB readOnly { implicit session =>
       case class GetIssueRow(
           issue: EditionsIssue,
           front: Option[DbEditionsFront],
@@ -173,7 +173,7 @@ trait IssueQueries {
       LEFT JOIN fronts ON (fronts.issue_id = edition_issues.id)
       LEFT JOIN collections ON (collections.front_id = fronts.id)
       LEFT JOIN articles ON (articles.collection_id = collections.id)
-      WHERE edition_issues.id = $id AND edition_issues.name = $name
+      WHERE edition_issues.id = $id
       """.map { rs =>
             GetIssueRow(
               EditionsIssue.fromRow(rs),

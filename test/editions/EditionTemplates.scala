@@ -20,7 +20,7 @@ class editionTemplateTest extends FreeSpec with Matchers {
 
   "createEdition" - {
     "should return Monday's content for Monday" in {
-      val editionTemplateFronts = templating.generateEditionTemplate("dailyEdition", LocalDate.parse("2019-03-11")).get.fronts
+      val editionTemplateFronts = templating.generateEditionTemplate("daily-edition", LocalDate.parse("2019-03-11")).get.fronts
       editionTemplateFronts.length should be (10)
       editionTemplateFronts(0) should matchPattern { case EditionsFrontSkeleton("comment/journal", _,  _, _) => }
       editionTemplateFronts(1) should matchPattern { case EditionsFrontSkeleton("sport/sport", _, _, _) => }
@@ -35,7 +35,7 @@ class editionTemplateTest extends FreeSpec with Matchers {
     }
 
     "should return Friday's content for Friday" in {
-      val editionTemplateFronts = templating.generateEditionTemplate("dailyEdition", LocalDate.parse("2019-03-15")).get.fronts
+      val editionTemplateFronts = templating.generateEditionTemplate("daily-edition", LocalDate.parse("2019-03-15")).get.fronts
       editionTemplateFronts.length should be (10)
       editionTemplateFronts(0) should matchPattern { case EditionsFrontSkeleton("comment/journal", _, _, _) => }
       editionTemplateFronts(1) should matchPattern { case EditionsFrontSkeleton("sport/sport", _, _, _) => }
@@ -50,7 +50,7 @@ class editionTemplateTest extends FreeSpec with Matchers {
     }
 
     "should return Saturday's content for Saturday" in {
-      val editionTemplateFronts = templating.generateEditionTemplate("dailyEdition", LocalDate.parse("2019-03-16")).get.fronts
+      val editionTemplateFronts = templating.generateEditionTemplate("daily-edition", LocalDate.parse("2019-03-16")).get.fronts
       editionTemplateFronts.length should be (13)
       editionTemplateFronts(0) should matchPattern { case EditionsFrontSkeleton("comment/journal", _, _, _) => }
       editionTemplateFronts(1) should matchPattern { case EditionsFrontSkeleton("weekend/weekend", _, _, _) => }

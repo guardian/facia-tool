@@ -8,7 +8,7 @@ import play.api.libs.json.Json
 
 object EditionsTemplates {
   val templates: Map[String, EditionTemplate] = Map(
-    "dailyEdition" -> DailyEdition.template
+    "daily-edition" -> DailyEdition.template
   )
 
   val getAvailableEditions: List[String] = templates.keys.toList

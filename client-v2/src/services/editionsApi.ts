@@ -25,7 +25,9 @@ export const fetchIssueByDate = async (
   date: Moment
 ): Promise<EditionsIssue | void> => {
   return pandaFetch(
-    `/editions-api/editions/${editionName}/issues/${date.format(dateFormat)}`,
+    `/editions-api/editions/${editionName}/issues?date=${date.format(
+      dateFormat
+    )}`,
     {
       method: 'get',
       credentials: 'same-origin'
@@ -36,6 +38,7 @@ export const fetchIssueByDate = async (
         return response.json();
       }
     })
+    .then(issues => issues[0])
     .catch(() => {
       // We catch here to prevent 404s, which are expected, being uncaught.
       // Other errors are possible, of course, and it'd be nice to catch them here,

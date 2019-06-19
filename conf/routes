@@ -105,7 +105,7 @@ POST        /api/usage                               controllers.GridProxy.addUs
 GET         /editions-api/editions                       controllers.EditionsController.getAvailableEditions
 GET         /editions-api/editions/:name/issues          controllers.EditionsController.listIssues(name)
 POST        /editions-api/editions/:name/issues          controllers.EditionsController.postIssue(name)
-GET         /editions-api/editions/:name/issues/:id      controllers.EditionsController.getIssue(name, id)
+GET         /editions-api/issues/:id                     controllers.EditionsController.getIssue(id)
 
 #PUT         /editions-api/editions/:name/issues/:id/fronts/:frontId/collections/:collectionsId controllers.EditionsController.putCollection
 

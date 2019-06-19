@@ -19,7 +19,7 @@ class EditionsController(db: EditionsDB, templating: EditionsTemplating, val dep
     templating.generateEditionTemplate(name, form.issueDate).map { skeleton =>
       val issueId = db.insertIssue(name, skeleton, req.user)
 
-      db.getIssue(name, issueId).map { issue =>
+      db.getIssue(issueId).map { issue =>
         Created(Json.toJson(issue))
       }.getOrElse(NotFound("Issue created but could not retrieve it from the database"))
     }.getOrElse {
@@ -27,8 +27,8 @@ class EditionsController(db: EditionsDB, templating: EditionsTemplating, val dep
     }
   }
 
-  def getIssue(name: String, id: String)= AccessAPIAuthAction { req =>
-    db.getIssue(name, id).map { issue =>
+  def getIssue(id: String)= AccessAPIAuthAction { req =>
+    db.getIssue(id).map { issue =>
       Ok(Json.toJson(issue))
     }.getOrElse(NotFound(s"Edition $id not found"))
   }
