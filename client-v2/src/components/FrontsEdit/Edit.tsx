@@ -22,9 +22,10 @@ import SectionsContainer from '../layout/SectionsContainer';
 import FrontsMenu from './FrontsMenu';
 import PressFailAlert from '../PressFailAlert';
 import { frontsContainerId } from 'util/editUtils';
+import { FrontsEditParams } from 'routes/routes';
 
 interface Props {
-  match: match<{ priority: string }>;
+  match: match<FrontsEditParams>;
   error: ActionError;
   frontIds: string[];
   staleFronts: { [id: string]: boolean };

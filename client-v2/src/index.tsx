@@ -19,7 +19,7 @@ import Modal from 'react-modal';
 import { init as initGA } from 'services/GA';
 import { listenForKeyboardEvents } from 'keyboard';
 import pollingConfig from 'util/pollingConfig';
-import { base } from 'constants/routes';
+import { base } from 'routes/routes';
 
 initGA();
 

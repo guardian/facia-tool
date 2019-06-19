@@ -21,9 +21,10 @@ import chunk from 'lodash/chunk';
 import { CAPISearchQueryResponse, checkIsResults } from './capiQuery';
 import flatMap from 'lodash/flatMap';
 import { EditionsIssue, EditionsCollection } from 'types/Edition';
+import { EditionsRoutes } from 'routes/routes';
 
-function fetchEditionsIssueAsConfig(editionId: string): Promise<FrontsConfig> {
-  return pandaFetch(`/editions-api/${editionId}`, {
+function fetchEditionsIssueAsConfig(issueId: string): Promise<FrontsConfig> {
+  return pandaFetch(EditionsRoutes.issuePath(issueId), {
     method: 'get',
     credentials: 'same-origin'
   })

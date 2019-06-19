@@ -1,38 +1,27 @@
 import { State } from 'types/State';
-import { matchPath } from 'react-router';
 import { getV2SubPath } from 'selectors/pathSelectors';
-import { frontsEdit } from 'constants/routes';
+import { matchFrontsEditPath, matchIssuePath } from 'routes/routes';
 
 interface StrategyMap<R> {
-  edition: (editionId: string) => R;
+  edition: (issueId: string) => R;
   front: (priority: string) => R;
   none: () => R;
 }
 
-const isValidPathForEdition = (priority: string, id?: string): id is string =>
-  !!id && priority === 'edition';
-
 const runStrategy = <R>(state: State, strategies: StrategyMap<R>) => {
-  const editMatch = matchPath<{ priority: string; editionId?: string }>(
-    getV2SubPath(state),
-    {
-      path: frontsEdit
-    }
-  );
+  const path = getV2SubPath(state);
 
-  if (!editMatch) {
-    return strategies.none();
+  const frontsMatch = matchFrontsEditPath(path);
+  if (frontsMatch) {
+    return strategies.front(frontsMatch.params.priority);
   }
 
-  const {
-    params: { priority, editionId }
-  } = editMatch;
-
-  if (isValidPathForEdition(priority, editionId)) {
-    return strategies.edition(editionId);
+  const editionsMatch = matchIssuePath(path);
+  if (editionsMatch) {
+    return strategies.edition(editionsMatch.params.priority);
   }
 
-  return strategies.front(priority);
+  return strategies.none();
 };
 
 export { runStrategy };
