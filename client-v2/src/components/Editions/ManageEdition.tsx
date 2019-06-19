@@ -103,39 +103,45 @@ class ManageEdition extends React.Component<
             {this.state.infoMessage}
           </InformationMsg>
         )}
-        {this.state.date &&
-          (!this.state.isLoading && this.state.currentIssue ? (
-            <>
-              <h3>Current issue</h3>
-              <IssueContainer>
-                <Issue issue={this.state.currentIssue} />
-              </IssueContainer>
-              <LinkButton
-                size="l"
-                href={`/editions/${this.state.currentIssue.id}`}
-              >
-                Open
-              </LinkButton>
-            </>
-          ) : (
-            (!this.state.isLoading || this.state.isCreatingIssue) && (
-              <>
-                <p>No issue found for this date.</p>
-                <p>
-                  <ButtonDefault
-                    size="l"
-                    disabled={this.state.isCreatingIssue}
-                    onClick={this.createEdition}
-                  >
-                    Create issue
-                  </ButtonDefault>
-                </p>
-              </>
-            )
-          ))}
+        {this.state.date && this.renderIssueData()}
       </>
     );
   }
+
+  private renderIssueData = () => {
+    const hasCurrentIssue = !this.state.isLoading && this.state.currentIssue
+      ? this.state.currentIssue
+      : null;
+    // We don't want to remove the no current issue information as a new issue is being created
+    const noCurrentIssue = !this.state.isLoading || this.state.isCreatingIssue;
+    const selectedDateText = this.state.date ? this.state.date.format('DD-MM-YYYY') : ''
+    return hasCurrentIssue ? (
+      <>
+        <h3>Current issue: {selectedDateText}.</h3>
+        <IssueContainer>
+          <Issue issue={this.state.currentIssue!} />
+        </IssueContainer>
+        <LinkButton size="l" href={`/editions/${this.state.currentIssue!.id}`}>
+          Open
+        </LinkButton>
+      </>
+    ) : (
+      noCurrentIssue && (
+        <>
+          <p>No issue found for {selectedDateText}.</p>
+          <p>
+            <ButtonDefault
+              size="l"
+              disabled={this.state.isCreatingIssue}
+              onClick={this.createEdition}
+            >
+              Create issue
+            </ButtonDefault>
+          </p>
+        </>
+      )
+    );
+  };
 
   private createEdition = () => {
     if (!this.state.date) {
