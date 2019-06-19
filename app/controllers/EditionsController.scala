@@ -1,7 +1,7 @@
 package controllers
 
 import logging.Logging
-import model.forms.CreateIssue
+import model.forms._
 import play.api.libs.json.Json
 import services.editions.{EditionsDB, EditionsTemplating}
 import java.time.LocalDate
@@ -44,5 +44,9 @@ class EditionsController(db: EditionsDB, templating: EditionsTemplating, val dep
     }.map { localDate =>
       Ok(Json.toJson(db.listIssues(name, localDate)))
     }.getOrElse(BadRequest("Invalid or missing date"))
+  }
+
+  def getCollections() = AccessAPIAuthAction(parse.json[List[GetCollectionsFilter]]) { req =>
+    Ok(Json.toJson(db.getCollections(req.body)))
   }
 }
