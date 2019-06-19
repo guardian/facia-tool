@@ -35,7 +35,7 @@ const issuePathProps = {
 const matchIssuePath = (path: string) =>
   matchPath<FrontsEditParams>(path, issuePathProps);
 
-export const manageEditions = `/manage-editions`;
+export const manageEditions = `/manage-editions/:editionName`;
 
 const EditionsRoutes = {
   issuePath: (issueId: string) => editionsApi(`/issues/${issueId}`),
