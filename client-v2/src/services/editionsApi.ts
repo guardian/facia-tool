@@ -27,9 +27,7 @@ export const fetchIssueByDate = async (
   return pandaFetch(
     `/editions-api/editions/${editionName}/issues?dateFrom=${date.format(
       dateFormat
-    )}&dateTo=${date.format(
-      dateFormat
-    )}`,
+    )}&dateTo=${date.format(dateFormat)}`,
     {
       method: 'get',
       credentials: 'same-origin'
