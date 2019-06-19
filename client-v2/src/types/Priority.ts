@@ -1,10 +1,3 @@
-type PriorityName =
-  | 'editorial'
-  | 'commercial'
-  | 'training'
-  | 'email'
-  | 'edition';
-
 interface Priorities {
   editorial: unknown;
   commercial: unknown;
@@ -13,4 +6,4 @@ interface Priorities {
   edition: unknown;
 }
 
-export { PriorityName, Priorities };
+export { Priorities };
