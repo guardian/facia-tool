@@ -74,10 +74,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
 
   def getPreviewHeaders(url: String): Seq[(String,String)] = previewSigner.addIAMHeaders(headers = Map.empty, URI.create(url)).toSeq
 
-  def getPrefillArticlePageCodes(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery) = {
-    // Commenting this out so we can get this merged without prefill working
-    //Future.successful(Nil)
-
+  def getPrefillArticlePageCodes(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[String]] = {
     val query = PrintSentQuery()
       .page(1)
       .pageSize(10)
@@ -91,8 +88,10 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
       .tag(capiPrefillQuery.tag)
 
     client.getResponse(query) map { response =>
-      response.results.map {
-        _.id
+      response.results.flatMap {
+        _.fields
+          .flatMap(field => field.internalPageCode)
+          .map(_.toString)
       }.toList
     }
   }
