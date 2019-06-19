@@ -1,6 +1,6 @@
 import React from 'react';
 import startCase from 'lodash/startCase';
-import { styled, theme } from 'constants/theme';
+import { styled } from 'constants/theme';
 import { SingleDatePicker } from 'react-dates';
 import moment, { Moment } from 'moment';
 import { EditionsIssue } from 'types/Edition';
@@ -13,6 +13,7 @@ import {
 } from 'services/editionsApi';
 import { withRouter, RouteComponentProps } from 'react-router';
 import Spinner from 'shared/components/async/Spinner';
+import InformationMsg from 'shared/components/alert/InformationMsg';
 
 interface ManageEditionState {
   date: Moment | null;
@@ -36,24 +37,6 @@ const SpinnerContainer = styled.div`
   vertical-align: middle;
 `;
 
-const InformationMsg = styled.div<{ status?: 'info' | 'error' }>`
-  position: relative;
-  max-width: 250px;
-  margin: 10px 0;
-  padding: 10px 10px 10px 15px;
-  border: 1px solid ${theme.shared.colors.greyVeryLight};
-  border-left: none;
-  &:before {
-    content: ' ';
-    position: absolute;
-    top: -1px;
-    left: 0;
-    bottom: -1px;
-    border-left: 4px solid
-      ${props => (props.status === 'info' ? 'green' : 'red')};
-  }
-`;
-
 const IssueContainer = styled.div`
   margin: 10px 0;
 `;
@@ -75,8 +58,8 @@ class ManageEdition extends React.Component<
   public render() {
     return (
       <>
-        <h1>{startCase(this.props.match.params.editionName)}</h1>
-        <h3>Select a date to create or edit an issue.</h3>
+        <h2>{startCase(this.props.match.params.editionName)}</h2>
+        <h4>Select a date to create or edit an issue.</h4>
         <div>
           <span>
             <SingleDatePicker
@@ -120,7 +103,7 @@ class ManageEdition extends React.Component<
       : '';
     return hasCurrentIssue ? (
       <>
-        <h3>Current issue: {selectedDateText}.</h3>
+        <h3>Current issue: {selectedDateText}</h3>
         <IssueContainer>
           <Issue issue={this.state.currentIssue!} />
         </IssueContainer>
@@ -134,7 +117,7 @@ class ManageEdition extends React.Component<
     ) : (
       noCurrentIssue && (
         <>
-          <p>No issue found for {selectedDateText}.</p>
+          <p>No issue found for {selectedDateText}</p>
           <p>
             <ButtonDefault
               size="l"

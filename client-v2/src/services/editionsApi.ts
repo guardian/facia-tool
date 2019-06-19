@@ -12,7 +12,7 @@ export const fetchIssuesForDateRange = async (
   return pandaFetch(
     `/editions-api/editions/${editionName}/issues?start=${start.format(
       dateFormat
-    )}&end:${end.format(dateFormat)}`,
+    )}&end=${end.format(dateFormat)}`,
     {
       method: 'get',
       credentials: 'same-origin'
