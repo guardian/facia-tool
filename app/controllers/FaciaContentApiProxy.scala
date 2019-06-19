@@ -35,7 +35,7 @@ class FaciaContentApiProxy(capi: Capi, val deps: BaseFaciaControllerComponents)(
       config.contentApi.contentApiLiveHost
 
     val url = s"$contentApiHost/$path?$queryString${config.contentApi.key.map(key => s"&api-key=$key").getOrElse("")}"
-    
+
     wsClient.url(url).withHttpHeaders(capi.getPreviewHeaders(url): _*).get().map { response =>
 
       if (response.status != OK) {
@@ -55,7 +55,7 @@ class FaciaContentApiProxy(capi: Capi, val deps: BaseFaciaControllerComponents)(
 
     val contentApiHost = config.contentApi.contentApiLiveHost
 
-    val url = s"$contentApiHost/$path?$queryString${config.contentApi.key.map(key => s"&api-key=$key").getOrElse("")}"
+    val url = s"$contentApiHost/$path?$queryString"
 
     wsClient.url(url).get().map { response =>
 
