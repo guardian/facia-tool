@@ -1,8 +1,7 @@
 package services
 
 import java.io.IOException
-import java.net.{URI, URLEncoder}
-import java.nio.charset.StandardCharsets
+import java.net.URI
 import java.time.{Period, ZonedDateTime}
 
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
@@ -15,15 +14,11 @@ import okhttp3.{Call, Callback, Request, Response}
 
 import scala.concurrent.{ExecutionContext, Future, Promise}
 
-// TODO +--------------------------------------------------------------+
-// TODO | The inheritance hierarchy in this file is _DIRE_ sort it out |
-// TODO +--------------------------------------------------------------+
-
-class GuardianPreviewContentClient(capi: Capi, apiKey: String) extends GuardianContentClient(apiKey) {
+class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext) extends GuardianContentClient(config.contentApi.editionsKey) with Capi  {
   override def targetUrl: String = "https://preview.content.guardianapis.com"
 
   override def get(url: String, headers: Map[String, String])(implicit context: ExecutionContext): Future[HttpResponse] = {
-    val reqBuilder = capi.getPreviewHeaders(url).foldLeft(new Request.Builder().url(url)) { case (builder, headerPair) =>
+    val reqBuilder = this.getPreviewHeaders(url).foldLeft(new Request.Builder().url(url)) { case (builder, headerPair) =>
       builder.addHeader(headerPair._1, headerPair._2)
     }
 
@@ -39,26 +34,8 @@ class GuardianPreviewContentClient(capi: Capi, apiKey: String) extends GuardianC
         promise.success(HttpResponse(response.body().bytes, response.code(), response.message()))
       }
     })
-
     promise.future
   }
-}
-
-case class PrintSentQuery(parameterHolder: Map[String, Parameter] = Map.empty)
-  extends SearchQueryBase[PrintSentQuery] {
-
-  def withParameters(parameterMap: Map[String, Parameter]) = copy(parameterMap)
-
-  override def pathSegment: String = "content/print-sent"
-}
-
-trait Capi {
-  def getPreviewHeaders(url: String): Seq[(String,String)]
-  def getPrefillArticlePageCodes(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[String]]
-}
-
-class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext) extends Capi {
-  val client = new GuardianPreviewContentClient(this, "test")
 
   private val previewSigner = {
     val capiPreviewCredentials = new AWSCredentialsProviderChain(
@@ -87,7 +64,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
       .toDate(issueDate.toInstant)
       .tag(capiPrefillQuery.tag)
 
-    client.getResponse(query) map { response =>
+    this.getResponse(query) map { response =>
       response.results.flatMap {
         _.fields
           .flatMap(field => field.internalPageCode)
@@ -95,4 +72,18 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
       }.toList
     }
   }
+}
+
+// Query generator for the print-sent endpoint
+case class PrintSentQuery(parameterHolder: Map[String, Parameter] = Map.empty)
+  extends SearchQueryBase[PrintSentQuery] {
+
+  def withParameters(parameterMap: Map[String, Parameter]) = copy(parameterMap)
+
+  override def pathSegment: String = "content/print-sent"
+}
+
+trait Capi {
+  def getPreviewHeaders(url: String): Seq[(String,String)]
+  def getPrefillArticlePageCodes(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[String]]
 }

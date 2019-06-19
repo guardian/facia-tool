@@ -192,7 +192,6 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     }
   }
 
-
   object cdn {
     lazy val basePath = getString("assets.basePath").getOrElse("/")
   }
@@ -202,7 +201,9 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
 
     val contentApiLiveHost: String = getMandatoryString("content.api.host")
     def contentApiDraftHost: String = getMandatoryString("content.api.draft.iam-host")
+
     val editionsPrefillHost: String = "https://preview.content.guardianapis.com"
+    lazy val editionsKey: String = "test"
 
     lazy val key: Option[String] = getString("content.api.key")
     lazy val timeout: Int = 2000
