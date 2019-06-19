@@ -9,7 +9,7 @@ const editionsApi = (path: string) => `/editions-api${path}`;
  * Fronts edit
  */
 
-interface FrontsEditParams {
+export interface FrontsEditParams {
   priority: string;
 }
 
@@ -25,19 +25,15 @@ const matchFrontsEditPath = (path: string) =>
  * Issue
  */
 
-interface IssueParams {
-  // The `priority` in this path is actually the edition issueId, but is mapped to priority
-  // so as to perserve things like favourite fronts and open fronts
-  priority: string;
-}
-
 const issuePathProps = {
   exact: true,
   path: '/issues/:priority'
 };
 
+// The `priority` in this path is actually the edition issueId, but is mapped to priority
+// so as to perserve things like favourite fronts and open fronts
 const matchIssuePath = (path: string) =>
-  matchPath<IssueParams>(path, issuePathProps);
+  matchPath<FrontsEditParams>(path, issuePathProps);
 
 export const manageEditions = `/manage-editions`;
 
