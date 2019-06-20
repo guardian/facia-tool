@@ -6,7 +6,7 @@ import play.api.libs.json.Json
 import services.editions.{EditionsDB, EditionsTemplating}
 import java.time.LocalDate
 
-import model.editions.{EditionsCollection, EditionsTemplates}
+import model.editions.{ EditionsFrontendCollectionWrapper, EditionsTemplates}
 
 import scala.concurrent.ExecutionContext
 import scala.util.Try
@@ -49,12 +49,13 @@ class EditionsController(db: EditionsDB, templating: EditionsTemplating, val dep
     }.getOrElse(BadRequest("Invalid or missing date"))
   }
 
+  // Ideally the frontend can be changed so we don't have this bonkers modelling!
   def getCollections() = AccessAPIAuthAction(parse.json[List[GetCollectionsFilter]]) { req =>
     val filters = req.body
     if (filters.isEmpty) {
-      Ok(Json.toJson(List.empty[EditionsCollection]))
+      Ok(Json.toJson(List.empty[EditionsFrontendCollectionWrapper]))
     } else {
-      Ok(Json.toJson(db.getCollections(filters)))
+      Ok(Json.toJson(db.getCollections(filters).map(EditionsFrontendCollectionWrapper.fromCollection)))
     }
 
   }
