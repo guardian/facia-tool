@@ -70,10 +70,11 @@ trait IssueQueries {
     issueId
   }
 
-  def listIssues(editionName: String, date: LocalDate) = DB readOnly { implicit session =>
+  def listIssues(editionName: String, dateFrom: LocalDate, dateTo: LocalDate) = DB readOnly { implicit session =>
     val editionTimeZone = EditionsTemplates.templates(editionName).zoneId
 
-    val zonedIssueDate = date.atStartOfDay(editionTimeZone)
+    val zonedIssueDateFrom = dateFrom.atStartOfDay(editionTimeZone)
+    val zonedIssueDateTo = dateTo.atStartOfDay(editionTimeZone)
 
     sql"""
     SELECT
@@ -88,7 +89,7 @@ trait IssueQueries {
       launched_by,
       launched_email
     FROM edition_issues
-    WHERE issue_date = $zonedIssueDate AND name = $editionName
+    WHERE issue_date BETWEEN $zonedIssueDateFrom AND $zonedIssueDateTo AND name = $editionName
     """.map(EditionsIssue.fromRow(_)).list().apply()
   }
 

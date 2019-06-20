@@ -10,9 +10,9 @@ export const fetchIssuesForDateRange = async (
   end: Moment
 ): Promise<EditionsIssue[]> => {
   return pandaFetch(
-    `/editions-api/editions/${editionName}/issues?start=${start.format(
+    `/editions-api/editions/${editionName}/issues?dateFrom=${start.format(
       dateFormat
-    )}&end=${end.format(dateFormat)}`,
+    )}&dateTo=${end.format(dateFormat)}`,
     {
       method: 'get',
       credentials: 'same-origin'
@@ -25,9 +25,9 @@ export const fetchIssueByDate = async (
   date: Moment
 ): Promise<EditionsIssue | void> => {
   return pandaFetch(
-    `/editions-api/editions/${editionName}/issues?date=${date.format(
+    `/editions-api/editions/${editionName}/issues?dateFrom=${date.format(
       dateFormat
-    )}`,
+    )}&dateTo=${date.format(dateFormat)}`,
     {
       method: 'get',
       credentials: 'same-origin'
