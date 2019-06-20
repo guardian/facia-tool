@@ -2,7 +2,6 @@ package services.editions
 
 import java.time.{LocalDate, LocalTime, ZonedDateTime}
 
-import model.editions.templates.DailyEdition
 import model.editions._
 import services.Capi
 

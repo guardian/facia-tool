@@ -207,7 +207,7 @@ object FrontFilm {
 object FrontFeatures {
   val collectionDepartments = CollectionTemplate(
     name = "G2 Departments",
-    prefill = Some(CapiPrefillQuery("theguardian/g2/features")),
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/g2/features")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
   val front = FrontTemplate(

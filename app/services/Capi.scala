@@ -2,8 +2,10 @@ package services
 
 import java.io.IOException
 import java.net.URI
+import java.nio.charset.Charset
 import java.time.{Period, ZonedDateTime}
 
+import org.apache.http.client.utils.URLEncodedUtils
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
 import com.gu.contentapi.client.model._
@@ -12,6 +14,7 @@ import conf.ApplicationConfiguration
 import model.editions.CapiPrefillQuery
 import okhttp3.{Call, Callback, Request, Response}
 
+import scala.collection.JavaConverters._
 import scala.concurrent.{ExecutionContext, Future, Promise}
 
 class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext) extends GuardianContentClient(config.contentApi.editionsKey) with Capi  {
@@ -52,9 +55,13 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
   def getPreviewHeaders(url: String): Seq[(String,String)] = previewSigner.addIAMHeaders(headers = Map.empty, URI.create(url)).toSeq
 
   def getPrefillArticlePageCodes(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[String]] = {
-    val query = PrintSentQuery()
+    val params = URLEncodedUtils
+      .parse(new URI(capiPrefillQuery.queryString), Charset.forName("UTF-8"))
+      .asScala
+
+    var query = PrintSentQuery()
       .page(1)
-      .pageSize(10)
+      .pageSize(20)
       .showFields("newspaper-edition-date")
       .showFields("newspaper-page-number")
       .showFields("internal-page-code")
@@ -62,7 +69,14 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
       .orderBy("newest")
       .fromDate(issueDate.minus(Period.ofDays(3)).toInstant)
       .toDate(issueDate.toInstant)
-      .tag(capiPrefillQuery.tag)
+
+    params.filter(pair => pair.getName == "tag").foreach { tagPair =>
+      query = query.tag(tagPair.getValue)
+    }
+
+    params.find(pair => pair.getName == "q").foreach { queryPair =>
+      query = query.q(queryPair.getValue)
+    }
 
     this.getResponse(query) map { response =>
       response.results.flatMap {

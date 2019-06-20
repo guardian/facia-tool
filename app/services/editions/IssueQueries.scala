@@ -53,7 +53,7 @@ trait IssueQueries {
             updated_on,
             updated_by,
             updated_email
-          ) VALUES ($frontId, $cIndex, ${collection.name}, ${collection.hidden}, NULL, ${collection.prefill.map(_.tag)}, NOW(), ${userName}, ${user.email})
+          ) VALUES ($frontId, $cIndex, ${collection.name}, ${collection.hidden}, NULL, ${collection.prefill.map(_.queryString)}, NOW(), $userName, ${user.email})
           RETURNING id;
           """.map(_.string("id")).single().apply().get
 

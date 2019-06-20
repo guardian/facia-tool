@@ -1,7 +1,5 @@
 package model.editions
 
-import java.time.ZonedDateTime
-
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 

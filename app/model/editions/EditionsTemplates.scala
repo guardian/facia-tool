@@ -26,7 +26,7 @@ case object WeekDay extends Enumeration(1) {
 case class FrontPresentation()
 case class CollectionPresentation()
 
-case class CapiPrefillQuery(tag: String) extends AnyVal
+case class CapiPrefillQuery(queryString: String) extends AnyVal
 
 object CapiPrefillQuery {
   implicit def format = Json.format[CapiPrefillQuery]
