@@ -26,7 +26,8 @@ interface EditionsIssue {
   displayName: string;
   issueDate: number; // midnight on the expect publish date
   createdOn: number;
-  createdBy: number;
+  createdBy: string;
+  createdEmail: string;
   launchedOn?: number;
   launchedBy: string;
   launchedEmail: string;
