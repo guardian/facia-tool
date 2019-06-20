@@ -6,7 +6,7 @@ import play.api.libs.json.Json
 import services.editions.{EditionsDB, EditionsTemplating}
 import java.time.LocalDate
 
-import model.editions.EditionsTemplates
+import model.editions.{EditionsCollection, EditionsTemplates}
 
 import scala.concurrent.ExecutionContext
 import scala.util.Try
@@ -50,6 +50,12 @@ class EditionsController(db: EditionsDB, templating: EditionsTemplating, val dep
   }
 
   def getCollections() = AccessAPIAuthAction(parse.json[List[GetCollectionsFilter]]) { req =>
-    Ok(Json.toJson(db.getCollections(req.body)))
+    val filters = req.body
+    if (filters.isEmpty) {
+      Ok(Json.toJson(List.empty[EditionsCollection]))
+    } else {
+      Ok(Json.toJson(db.getCollections(filters)))
+    }
+
   }
 }
