@@ -142,6 +142,7 @@ trait IssueQueries {
 
         articles.collection_id AS articles_collection_id,
         articles.page_code     AS articles_page_code,
+        articles.index         AS articles_index,
         articles.added_on      AS articles_added_on,
         articles.added_by      AS articles_added_by,
         articles.added_email   AS articles_added_email

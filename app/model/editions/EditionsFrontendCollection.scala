@@ -2,8 +2,7 @@ package model.editions
 
 import play.api.libs.json.Json
 
-// May god have mercy on our souls.
-// Ideally the frontend can be changed so we don't have this bonkers modelling!
+// Ideally the frontend can be changed so we don't have this weird modelling!
 
 case class EditionsFrontendArticle(id: String, frontPublicationDate: Long)
 
@@ -16,7 +15,7 @@ object EditionsFrontendArticle {
   }
 }
 
-case class EditionsFrontendCollection(live: List[EditionsFrontendArticle])
+case class EditionsFrontendCollection(items: List[EditionsFrontendArticle])
 case class EditionsFrontendCollectionWrapper(id: String, collection: EditionsFrontendCollection)
 
 object EditionsFrontendCollectionWrapper {
@@ -26,8 +25,8 @@ object EditionsFrontendCollectionWrapper {
 
   def fromCollection(collection: EditionsCollection): EditionsFrontendCollectionWrapper = {
     EditionsFrontendCollectionWrapper(
-      id = collection.id,
-      collection = EditionsFrontendCollection(collection.items.map(EditionsFrontendArticle.fromArticle))
+      collection.id,
+      EditionsFrontendCollection(collection.items.map(EditionsFrontendArticle.fromArticle))
     )
   }
 }
