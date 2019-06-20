@@ -124,10 +124,7 @@ class ManageEdition extends React.Component<
         <IssueContainer>
           <Issue issue={this.state.currentIssue!} />
         </IssueContainer>
-        <LinkButton
-          size="l"
-          href={`/editions-api/issues/${this.state.currentIssue!.id}`}
-        >
+        <LinkButton size="l" href={`/v2/issues/${this.state.currentIssue!.id}`}>
           Open
         </LinkButton>
       </>
