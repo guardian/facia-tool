@@ -37,7 +37,7 @@ function fetchEditionsIssueAsConfig(issueId: string): Promise<FrontsConfig> {
         fronts[front.id] = {
           ...front,
           collections: front.collections.map(collection => collection.id),
-          priority: 'edition'
+          priority: issueId
         };
         front.collections.forEach(collection => {
           collections[collection.id] = {

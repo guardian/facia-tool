@@ -1,4 +1,3 @@
-import { PriorityName } from './Priority';
 import { $Diff } from 'utility-types';
 import {
   CollectionFromResponse,
@@ -7,7 +6,7 @@ import {
 
 interface FrontConfigResponse {
   collections: string[];
-  priority?: PriorityName;
+  priority?: string;
   canonical?: string;
   group?: string;
   isHidden?: boolean;
@@ -58,12 +57,9 @@ interface FrontsConfigResponse {
   };
 }
 
-type FrontConfig = $Diff<
-  FrontConfigResponse,
-  { priority?: PriorityName | void }
-> & {
+type FrontConfig = $Diff<FrontConfigResponse, { priority?: string | void }> & {
   id: string;
-  priority: PriorityName;
+  priority: string;
 };
 
 type CollectionConfig = CollectionConfigResponse & {
