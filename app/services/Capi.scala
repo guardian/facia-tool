@@ -70,6 +70,10 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
       .fromDate(issueDate.minus(Period.ofDays(3)).toInstant)
       .toDate(issueDate.toInstant)
 
+    params.filter(pair => pair.getName == "section").foreach { sectionPair =>
+      query = query.section(sectionPair.getValue)
+    }
+
     params.filter(pair => pair.getName == "tag").foreach { tagPair =>
       query = query.tag(tagPair.getValue)
     }
