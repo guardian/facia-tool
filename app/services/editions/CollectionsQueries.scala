@@ -19,16 +19,16 @@ trait CollectionsQueries {
 
     val rows: List[GetCollectionsRow] = sql"""
       SELECT
-        collections.id
-        collections.front_id
-        collections.index
-        collections.name
-        collections.is_hidden
-        collections.metadata
-        collections.updated_on
-        collections.updated_by
-        collections.updated_email
-        collections.prefill
+        collections.id,
+        collections.front_id,
+        collections.index,
+        collections.name,
+        collections.is_hidden,
+        collections.metadata,
+        collections.updated_on,
+        collections.updated_by,
+        collections.updated_email,
+        collections.prefill,
 
         articles.collection_id AS articles_collection_id,
         articles.page_code     AS articles_page_code,
@@ -42,7 +42,7 @@ trait CollectionsQueries {
       WHERE EXISTS (
         SELECT *
         FROM (VALUES ${sqlFilters.map(f => sqls"(${f.id}, ${f.updatedAt})")}) AS F(id, updated_on)
-        WHERE collection.id = F.id AND (F.updated_on IS NULL OR collection.updated_on > F.updated_on)
+        WHERE collections.id = F.id AND (F.updated_on IS NULL OR collections.updated_on > F.updated_on::TIMESTAMPTZ)
       )
       """.map { rs =>
       GetCollectionsRow(
