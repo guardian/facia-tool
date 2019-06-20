@@ -15,6 +15,8 @@ trait IssueQueries {
                    skeleton: EditionsIssueSkeleton,
                    user: User
   ): String  = DB localTx { implicit session =>
+    val userName = user.firstName + " " + user.lastName
+
     val issueId = sql"""
           INSERT INTO edition_issues (
             name,
@@ -23,7 +25,7 @@ trait IssueQueries {
             created_on,
             created_by,
             created_email
-          ) VALUES ($name, ${skeleton.issueDate}, ${skeleton.zoneId.toString}, now(), ${user.firstName + " " + user.lastName}, ${user.email})
+          ) VALUES ($name, ${skeleton.issueDate}, ${skeleton.zoneId.toString}, now(), ${userName}, ${user.email})
           RETURNING id;
        """.map(_.string("id")).single().apply().get
 
@@ -47,8 +49,11 @@ trait IssueQueries {
             name,
             is_hidden,
             metadata,
-            prefill
-          ) VALUES ($frontId, $cIndex, ${collection.name}, ${collection.hidden}, NULL, ${collection.prefill.map(_.tag)})
+            prefill,
+            updated_on,
+            updated_by,
+            updated_email
+          ) VALUES ($frontId, $cIndex, ${collection.name}, ${collection.hidden}, NULL, ${collection.prefill.map(_.tag)}, NOW(), ${userName}, ${user.email})
           RETURNING id;
           """.execute().apply()
 
@@ -61,7 +66,7 @@ trait IssueQueries {
                     added_on,
                     added_by,
                     added_email
-                    ) VALUES ($collectionId, $pageCode, $tIndex, now(), ${user.firstName + " " + user.lastName}}, ${user.email})
+                    ) VALUES ($collectionId, $pageCode, $tIndex, now(), ${userName}, ${user.email})
                  """.execute().apply()
           }
         }
