@@ -5,37 +5,8 @@ import java.time.LocalDate
 import com.gu.pandomainauth.model.User
 import model.editions._
 import scalikejdbc._
+import services.editions.CollectionsHelpers._
 
-// Little helpers so we don't contaminate our business model with relational data
-case class DbEditionsFront(front: EditionsFront, issueId: String, index: Int)
-object DbEditionsFront {
-  def fromRowOpt(rs: WrappedResultSet): Option[DbEditionsFront] = {
-    EditionsFront.fromRowOpt(rs, "fronts_").map { front =>
-      DbEditionsFront(front, rs.string("fronts_issue_id"), rs.int("fronts_index"))
-    }
-  }
-}
-
-case class DbEditionsCollection(collection: EditionsCollection, frontId: String, index: Int)
-object DbEditionsCollection {
-  def fromRowOpt(rs: WrappedResultSet): Option[DbEditionsCollection] = {
-    EditionsCollection.fromRowOpt(rs, "collections_").map { collection =>
-      DbEditionsCollection(collection, rs.string("collections_front_id"), rs.int("collections_index"))
-    }
-  }
-}
-
-case class DbEditionsArticle(article: EditionsArticle, collectionId: String, index: Int)
-object DbEditionsArticle {
-  def fromRowOpt(rs: WrappedResultSet): Option[DbEditionsArticle] = {
-    EditionsArticle.fromRowOpt(rs, "articles_").map { article =>
-      DbEditionsArticle(
-        article,
-        rs.string("articles_collection_id"),
-        rs.int("articles_index"))
-    }
-  }
-}
 
 trait IssueQueries {
 
@@ -177,9 +148,9 @@ trait IssueQueries {
       """.map { rs =>
             GetIssueRow(
               EditionsIssue.fromRow(rs),
-              DbEditionsFront.fromRowOpt(rs),
-              DbEditionsCollection.fromRowOpt(rs),
-              DbEditionsArticle.fromRowOpt(rs))
+              DbEditionsFront.fromRowOpt(rs, "fronts_"),
+              DbEditionsCollection.fromRowOpt(rs, "collections_"),
+              DbEditionsArticle.fromRowOpt(rs, "articles_"))
         }
         .list()
         .apply()
@@ -188,7 +159,7 @@ trait IssueQueries {
         .flatMap(row => row.front)
         .sortBy(_.index)
         .map(_.front)
-        .foldLeft(List.empty[EditionsFront]) {(acc, cur) => if(acc.exists(f => f.id == cur.id)) acc else acc :+ cur}
+        .distinctBy(_.id)
         .map { front  =>
           val collectionsForFront = rows
             .flatMap(row => row.collection.filter(_.frontId == front.id))
