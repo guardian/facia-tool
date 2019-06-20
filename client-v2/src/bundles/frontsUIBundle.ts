@@ -277,8 +277,9 @@ const createSelectFrontIdWithOpenAndStarredStatesByPriority = () => {
       selectEditorFavouriteFrontIdsByPriority(state, priority),
 
     (frontsForPriority, openFronts, favouriteFronts) => {
-      return frontsForPriority.map(({ id }) => ({
+      return frontsForPriority.map(({ id, displayName }) => ({
         id,
+        displayName,
         isOpen: !!openFronts.find(_ => _.id === id),
         isStarred: !!favouriteFronts.includes(id)
       }));
