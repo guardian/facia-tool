@@ -103,12 +103,12 @@ object FrontNewsWorldGuardian {
   )
   val collectionNewsWorldGuardian = CollectionTemplate(
     name = "World News",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/international")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionNewsWorldFinancialGuardian = CollectionTemplate(
     name = "World Financial",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/international")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionNewsWorldSpecial1 = CollectionTemplate(
