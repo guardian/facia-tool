@@ -8,7 +8,7 @@ object DailyEdition {
   val template = EditionTemplate(
     List(
       FrontSpecialSpecial1.front -> Daily(),
-      FrontTopStories.front -> Daily()),
+      FrontTopStories.front -> Daily(),
       FrontNewsUkGuardian.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontNewsWorldGuardian.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontNewsUkObserver.front -> WeekDays(List(WeekDay.Sun)),
@@ -27,7 +27,8 @@ object DailyEdition {
       FrontFoodObserver.front -> WeekDays(List(WeekDay.Sun)),
       FrontSportGuardian.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontSportObserver.front -> WeekDays(List(WeekDay.Sun)),
-      FrontSpecialFashionMagazine.front -> WeekDays(List(WeekDay.Sun))
+      FrontSpecialFashionMagazine.front -> WeekDays(List(WeekDay.Sun)),
+      FrontCrosswords.front -> Daily(),
     ),
     zoneId = ZoneId.of("Europe/London"),
     availability = Daily()
@@ -508,5 +509,18 @@ object FrontSportObserver {
     prefill = none,
     presentation = DailyEdition.defaultCollectionPresentation,
     hidden = true
+  )
+}
+
+object FrontCrosswords {
+  val front = FrontTemplate(
+    name = "crosswords/crossword",
+    collections = List(collectionCrosswords),
+    presentation = DailyEdition.defaultFrontPresentation
+  )
+  val collectionCrosswords = CollectionTemplate(
+    name = "Crosswords",
+    prefill = Some(CapiPrefillQuery("?tag=type/crossword")),
+    presentation = DailyEdition.defaultCollectionPresentation
   )
 }
