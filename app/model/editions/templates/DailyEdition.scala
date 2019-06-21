@@ -69,7 +69,7 @@ object FrontNewsUkGuardian {
   )
    val collectionNewsFrontPage = CollectionTemplate(
     name = "Front Page",
-    prefill = none,
+    prefill =  Some(CapiPrefillQuery("?tag=theguardian/mainsection/topstories")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionNewsSpecial1 = CollectionTemplate(
@@ -80,17 +80,17 @@ object FrontNewsUkGuardian {
   )
   val collectionNewsUkNewsGuardian = CollectionTemplate(
     name = "UK News",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/uknews|theguardian/mainsection/education|theguardian/mainsection/society|theguardian/mainsection/media")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionNewsUkFinancial = CollectionTemplate(
     name = "UK Financial",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/financial3")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionNewsWeather = CollectionTemplate(
     name = "Weather",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/weather2")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
 }
