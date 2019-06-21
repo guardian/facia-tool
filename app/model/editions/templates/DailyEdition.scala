@@ -400,12 +400,12 @@ object FrontLifeMagazine {
   )
   val collectionLifeMagazineFeatures = CollectionTemplate(
     name = "Features",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theobserver/magazine/features2")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionLifeLifeStyle = CollectionTemplate(
     name = "Life & Style",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theobserver/magazine/life-and-style")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionLifeSpecial3 = CollectionTemplate(
@@ -424,11 +424,11 @@ object FrontBooks {
   )
   val collectionBooksSaturdayReview = CollectionTemplate(
     name = "Saturday Review",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/guardianreview/saturdayreviewsfeatres")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionBooksSpecial1 = CollectionTemplate(
-    name = "Culture Special",
+    name = "Books Special",
     prefill = none,
     presentation = DailyEdition.defaultCollectionPresentation,
     hidden = true
@@ -443,7 +443,7 @@ object FrontFood {
   )
   val collectionFeast = CollectionTemplate(
     name = "Feast",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/feast/feast")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionFoodSpecial1 = CollectionTemplate(
@@ -462,7 +462,7 @@ object FrontFoodObserver {
   )
   val collectionFood = CollectionTemplate(
     name = "Food",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theobserver/magazine/life-and-style,food/food")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionFoodSpecial2 = CollectionTemplate(
