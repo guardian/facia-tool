@@ -33,9 +33,7 @@ trait CollectionsQueries {
         articles.collection_id AS articles_collection_id,
         articles.page_code     AS articles_page_code,
         articles.index         AS articles_index,
-        articles.added_on      AS articles_added_on,
-        articles.added_by      AS articles_added_by,
-        articles.added_email   AS articles_added_email
+        articles.added_on      AS articles_added_on
 
       FROM collections
       LEFT JOIN articles ON (articles.collection_id = collections.id)
@@ -69,7 +67,7 @@ trait CollectionsQueries {
       UPDATE collections
       SET is_hidden = ${collection.isHidden},
           updated_on = NOW(),
-          updated_by = ${collection.updatedBy}
+          updated_by = ${collection.updatedBy},
           updated_email = ${collection.updatedEmail}
       WHERE id = ${collection.id}
     """.execute().apply
@@ -85,10 +83,8 @@ trait CollectionsQueries {
           collection_id,
           page_code,
           index,
-          added_on,
-          added_by,
-          added_email
-          ) VALUES (${collection.id}, ${article.pageCode}, $index, now(), ${article.addedBy}}, ${article.addedEmail})
+          added_on
+          ) VALUES (${collection.id}, ${article.pageCode}, $index, now())
        """.execute().apply()
     }
 
