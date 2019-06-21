@@ -108,7 +108,7 @@ object FrontNewsWorldGuardian {
   )
   val collectionNewsWorldFinancialGuardian = CollectionTemplate(
     name = "World Financial",
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/international")),
+    prefill = none,
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionNewsWorldSpecial1 = CollectionTemplate(
@@ -127,12 +127,12 @@ object FrontNewsUkObserver {
   )
   val collectionNewsUkNewsObserver = CollectionTemplate(
     name = "UK News",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theobserver/news/uknews")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionNewsUkFinancialObserver = CollectionTemplate(
-    name = "UK News",
-    prefill = none,
+    name = "UK Financial",
+    prefill = Some(CapiPrefillQuery("?tag=theobserver/news/business")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionNewsUkNewsSpecial2 = CollectionTemplate(
@@ -151,7 +151,7 @@ object FrontNewsWorldObserver {
   )
   val collectionNewsWorldObserver = CollectionTemplate(
     name = "World News",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theobserver/news/worldnews")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionNewsWorldBusinessObserver = CollectionTemplate(
@@ -175,22 +175,22 @@ object FrontJournal {
   )
   val collectionJournalLongRead = CollectionTemplate(
     name = "The Long Read",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/journal/the-long-read")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionJournalComment = CollectionTemplate(
     name = "Comment",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/journal/opinion")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionJournalLetters = CollectionTemplate(
     name = "Letters",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/journal/letters")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionJournalObits = CollectionTemplate(
     name = "Obits",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/journal/obituaries")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionJournalSpecial1 = CollectionTemplate(
