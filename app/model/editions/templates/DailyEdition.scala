@@ -303,22 +303,22 @@ object FrontCultureNewReview {
   )
   val collectionCultureFeatures = CollectionTemplate(
     name = "Features",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theobserver/new-review/features")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionCultureScience = CollectionTemplate(
     name = "Science & Technology",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theobserver/new-review/discover")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionCultureCritics = CollectionTemplate(
     name = "Critics",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theobserver/new-review/critics")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionCultureBooks = CollectionTemplate(
     name = "Books",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theobserver/new-review/books")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionCultureSpecial3 = CollectionTemplate(
@@ -337,12 +337,12 @@ object FrontLife {
   )
   val collectionLifeFeatures = CollectionTemplate(
     name = "Features",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/g2/features")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionLifeTVandRadio = CollectionTemplate(
     name = "TV & Radio",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/g2/tvandradio")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionLifeSpecial1 = CollectionTemplate(
@@ -361,7 +361,7 @@ object FrontLifeWeekend {
   )
   val collectionLifeWeekend = CollectionTemplate(
     name = "Weekend",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/weekend/starters|theguardian/weekend/features2|theguardian/weekend/back")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionLifeFamily = CollectionTemplate(
