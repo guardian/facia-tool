@@ -366,22 +366,22 @@ object FrontLifeWeekend {
   )
   val collectionLifeFamily = CollectionTemplate(
     name = "Family",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/weekend/family")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionLifeSpace = CollectionTemplate(
     name = "Space",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/weekend/space2")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionLifeFashion = CollectionTemplate(
     name = "Fashion & Beauty",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/weekend/fashion-and-beauty")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionLifeBody = CollectionTemplate(
     name = "Body & Mind",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/weekend/body-and-mind")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionLifeSpecial2 = CollectionTemplate(
