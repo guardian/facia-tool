@@ -177,12 +177,12 @@ async function publishCollection(collectionId: string): Promise<void> {
   }
 }
 
-const createUpdateCollection = <T>(path: string) => (id: string) => async (
-  collection: T
-): Promise<void> => {
+const createUpdateCollection = <T>(path: string, method: string) => (
+  id: string
+) => async (collection: T): Promise<void> => {
   try {
     const response = await pandaFetch(path, {
-      method: 'post',
+      method,
       headers: {
         'Content-Type': 'application/json'
       },
@@ -200,11 +200,13 @@ const createUpdateCollection = <T>(path: string) => (id: string) => async (
 };
 
 const updateCollection = createUpdateCollection<CollectionWithNestedArticles>(
-  '/v2Edits'
+  '/v2Edits',
+  'post'
 );
 const updateEditionsCollection = (collectionId: string) =>
   createUpdateCollection<EditionsCollection>(
-    `/editions-api/collections/${collectionId}`
+    `/editions-api/collections/${collectionId}`,
+    'put'
   )(collectionId);
 
 async function saveClipboard(
