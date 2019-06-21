@@ -257,7 +257,7 @@ object FrontCultureFilmMusic {
   )
   val collectionCultureMusic = CollectionTemplate(
     name = "Music",
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/g2/music")),,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/g2/music")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionCultureSpecial2 = CollectionTemplate(
@@ -275,17 +275,17 @@ object FrontCultureGuide {
   )
   val collectionCultureFeatures = CollectionTemplate(
     name = "Features",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/theguide/features")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionCulturePreview = CollectionTemplate(
     name = "Preview",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/theguide/reviews")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionCultureTVandRadio = CollectionTemplate(
     name = "TV and Radio",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/theguide/tv-radio")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionCultureSpecial3 = CollectionTemplate(
