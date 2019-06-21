@@ -209,12 +209,12 @@ object FrontComment {
   )
   val collectionOpinionComment = CollectionTemplate(
     name = "Comment",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theobserver/news/comment")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionOpinionAgenda = CollectionTemplate(
     name = "Agenda",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theobserver/new-review/agenda")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionOpinionSpecial1 = CollectionTemplate(
@@ -233,7 +233,7 @@ object FrontCulture {
   )
   val collectionCultureArts = CollectionTemplate(
     name = "Arts",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/g2/arts")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionCultureSpecial1 = CollectionTemplate(
@@ -252,12 +252,12 @@ object FrontCultureFilmMusic {
   )
   val collectionCultureFilm = CollectionTemplate(
     name = "Film",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/g2/film")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionCultureMusic = CollectionTemplate(
     name = "Music",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/g2/music")),,
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionCultureSpecial2 = CollectionTemplate(
