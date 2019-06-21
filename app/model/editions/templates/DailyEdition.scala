@@ -405,7 +405,7 @@ object FrontLifeMagazine {
   )
   val collectionLifeLifeStyle = CollectionTemplate(
     name = "Life & Style",
-    prefill = Some(CapiPrefillQuery("?tag=theobserver/magazine/life-and-style")),
+    prefill = Some(CapiPrefillQuery("?tag=theobserver/magazine/life-and-style,-food/food")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionLifeSpecial3 = CollectionTemplate(
