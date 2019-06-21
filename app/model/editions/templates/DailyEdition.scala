@@ -481,7 +481,7 @@ object FrontSportGuardian {
   )
   val collectionSport = CollectionTemplate(
     name = "Sport",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/sport/news")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionSportSpecial1 = CollectionTemplate(
@@ -500,7 +500,7 @@ object FrontSportObserver {
   )
   val collectionObsSport = CollectionTemplate(
     name = "Sport",
-    prefill = none,
+    prefill = Some(CapiPrefillQuery("?tag=theobserver/sport/news")),
     presentation = DailyEdition.defaultCollectionPresentation
   )
   val collectionSportSpecial2 = CollectionTemplate(
