@@ -1,37 +1,44 @@
 package services
 
-import java.net.{URI, URLEncoder}
-import java.nio.charset.StandardCharsets
+import java.io.IOException
+import java.net.URI
+import java.nio.charset.Charset
 import java.time.{Period, ZonedDateTime}
 
+import org.apache.http.client.utils.URLEncodedUtils
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
 import com.gu.contentapi.client.model._
 import com.gu.contentapi.client.{GuardianContentClient, IAMSigner, Parameter}
 import conf.ApplicationConfiguration
 import model.editions.CapiPrefillQuery
+import okhttp3.{Call, Callback, Request, Response}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.collection.JavaConverters._
+import scala.concurrent.{ExecutionContext, Future, Promise}
 
-class GuardianPreviewContentClient(apiKey: String) extends GuardianContentClient(apiKey) {
-  override def targetUrl: String = "https://preview.content.guardianapis.com"
-}
+class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext) extends GuardianContentClient(config.contentApi.editionsKey) with Capi  {
+  override def targetUrl: String = config.contentApi.editionsPrefillHost
 
-case class PrintSentQuery(parameterHolder: Map[String, Parameter] = Map.empty)
-  extends SearchQueryBase[PrintSentQuery] {
+  override def get(url: String, headers: Map[String, String])(implicit context: ExecutionContext): Future[HttpResponse] = {
+    val reqBuilder = this.getPreviewHeaders(url).foldLeft(new Request.Builder().url(url)) { case (builder, headerPair) =>
+      builder.addHeader(headerPair._1, headerPair._2)
+    }
 
-  def withParameters(parameterMap: Map[String, Parameter]) = copy(parameterMap)
+    val req = headers.foldLeft(reqBuilder) {
+      case (r, (name, value)) => r.header(name, value)
+    }
 
-  override def pathSegment: String = "content/print-sent"
-}
+    val promise = Promise[HttpResponse]()
 
-trait Capi {
-  def getPreviewHeaders(url: String): Seq[(String,String)]
-  def getPrefillArticlePageCodes(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[String]]
-}
-
-class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext) extends Capi {
-  val client = new GuardianPreviewContentClient("test")
+    http.newCall(req.build()).enqueue(new Callback() {
+      override def onFailure(call: Call, e: IOException): Unit = promise.failure(e)
+      override def onResponse(call: Call, response: Response): Unit = {
+        promise.success(HttpResponse(response.body().bytes, response.code(), response.message()))
+      }
+    })
+    promise.future
+  }
 
   private val previewSigner = {
     val capiPreviewCredentials = new AWSCredentialsProviderChain(
@@ -47,25 +54,58 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
 
   def getPreviewHeaders(url: String): Seq[(String,String)] = previewSigner.addIAMHeaders(headers = Map.empty, URI.create(url)).toSeq
 
-  def getPrefillArticlePageCodes(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery) = {
-    // Commenting this out so we can get this merged without prefill working
-    Future.successful(Nil)
+  def geneneratePrefillQuery(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery) = {
+    val params = URLEncodedUtils
+      .parse(new URI(capiPrefillQuery.queryString), Charset.forName("UTF-8"))
+      .asScala
 
-    //val query = PrintSentQuery()
-    //  .page(1)
-    //  .pageSize(10)
-    //  .showFields("newspaper-edition-date")
-    //  .showFields("newspaper-page-number")
-    //  .showFields("internal-page-code")
-    //  .useDate("newspaper-edition")
-    //  .orderBy("newest")
-    //  .fromDate(issueDate.minus(Period.ofDays(3)).toInstant)
-    //  .toDate(issueDate.toInstant)
+    var query = PrintSentQuery()
+      .page(1)
+      .pageSize(20)
+      .showFields("newspaper-edition-date")
+      .showFields("newspaper-page-number")
+      .showFields("internal-page-code")
+      .useDate("newspaper-edition")
+      .orderBy("newest")
+      .fromDate(issueDate.toInstant)
+      .toDate(issueDate.toInstant)
 
-    //client.getResponse(query) map { response =>
-    //  response.results.map {
-    //    _.id
-    //  }
-    //}
+    params.filter(pair => pair.getName == "section").foreach { sectionPair =>
+      query = query.section(sectionPair.getValue)
+    }
+
+    params.filter(pair => pair.getName == "tag").foreach { tagPair =>
+      query = query.tag(tagPair.getValue)
+    }
+
+    params.find(pair => pair.getName == "q").foreach { queryPair =>
+      query = query.q(queryPair.getValue)
+    }
+
+    query
   }
+
+  def getPrefillArticlePageCodes(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[String]] = {
+    this.getResponse(geneneratePrefillQuery(issueDate, capiPrefillQuery)) map { response =>
+      response.results.flatMap {
+        _.fields
+          .flatMap(field => field.internalPageCode)
+          .map(_.toString)
+      }.toList
+    }
+  }
+}
+
+// Query generator for the print-sent endpoint
+case class PrintSentQuery(parameterHolder: Map[String, Parameter] = Map.empty)
+  extends SearchQueryBase[PrintSentQuery] {
+
+  def withParameters(parameterMap: Map[String, Parameter]) = copy(parameterMap)
+
+  override def pathSegment: String = "content/print-sent"
+}
+
+trait Capi {
+  def getPreviewHeaders(url: String): Seq[(String,String)]
+  def getPrefillArticlePageCodes(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[String]]
 }

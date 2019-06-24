@@ -53,9 +53,9 @@ trait IssueQueries {
             updated_on,
             updated_by,
             updated_email
-          ) VALUES ($frontId, $cIndex, ${collection.name}, ${collection.hidden}, NULL, ${collection.prefill.map(_.tag)}, NOW(), ${userName}, ${user.email})
+          ) VALUES ($frontId, $cIndex, ${collection.name}, ${collection.hidden}, NULL, ${collection.prefill.map(_.queryString)}, NOW(), $userName, ${user.email})
           RETURNING id;
-          """.execute().apply()
+          """.map(_.string("id")).single().apply().get
 
           collection.items.zipWithIndex.foreach { case (pageCode, tIndex) =>
               sql"""
@@ -171,13 +171,15 @@ trait IssueQueries {
           val collectionsForFront = rows
             .flatMap(row => row.collection.filter(_.frontId == front.id))
             .sortBy(_.index)
+            .map(_.collection)
+            .foldLeft(List.empty[EditionsCollection]) {(acc, cur) => if(acc.exists(c => c.id == cur.id)) acc else acc :+ cur}
             .map { collection =>
               val articles = rows
-                .flatMap(row => row.article.filter(_.collectionId == collection.collection.id))
+                .flatMap(row => row.article.filter(_.collectionId == collection.id))
                 .sortBy(_.index)
                 .map(_.article)
 
-              collection.collection.copy(
+              collection.copy(
                 items = articles
               )
             }

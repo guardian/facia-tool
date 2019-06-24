@@ -2,12 +2,12 @@ package services.editions
 
 import java.time.{LocalDate, LocalTime, ZonedDateTime}
 
-import model.editions.templates.DailyEdition
 import model.editions._
 import services.Capi
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
+import scala.util.Try
 
 class EditionsTemplating(capi: Capi) {
   def generateEditionTemplate(name: String, localDate: LocalDate): Option[EditionsIssueSkeleton] = {
@@ -30,7 +30,9 @@ class EditionsTemplating(capi: Capi) {
                     EditionsCollectionSkeleton(
                       collection.name,
                       collection.prefill.map { prefill =>
-                        Await.result(capi.getPrefillArticlePageCodes(date, prefill), 10 seconds)
+                        Try {
+                          Await.result(capi.getPrefillArticlePageCodes(date, prefill), 10 seconds)
+                        }.getOrElse(Nil)
                       }.getOrElse(Nil),
                       collection.prefill,
                       collection.presentation,

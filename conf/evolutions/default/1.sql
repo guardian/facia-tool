@@ -70,7 +70,6 @@ CREATE TABLE articles (
 CREATE INDEX article_collection_id_index ON articles(collection_id);
 ALTER TABLE articles ADD CONSTRAINT article_index_must_be_unique UNIQUE (collection_id, index);
 
-
 # --- !Downs
 
 DROP TABLE edition_issues;
