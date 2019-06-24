@@ -219,3 +219,16 @@ export const getArticleFragmentMetaFromFormValues = (
     return value === undefined;
   });
 };
+
+export const shouldRenderField = (
+  name: string | string[],
+  permittedNames?: string[]
+) => {
+  const names = Array.isArray(name) ? name : [name];
+  for (const nameIndex in names) {
+    if (!permittedNames || permittedNames.indexOf(names[nameIndex]) !== -1) {
+      return true;
+    }
+  }
+  return null;
+};

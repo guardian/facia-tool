@@ -5,13 +5,18 @@
  *  with : `import { styled } from 'shared/constants/theme';`
  */
 
-import baseStyled, { ThemedStyledInterface } from 'styled-components';
+import baseStyled, {
+  css as baseCss,
+  ThemedStyledInterface
+} from 'styled-components';
+import { ThemedCssFunction } from 'styled-components';
 
 const colors = {
   blackDark: '#121212', // darkest
   blackLight: '#333',
   greyDark: '#444444',
   greyMediumDark: '#515151',
+  greyMediumDarkish: '#676767',
   greyMedium: '#767676',
   greyMediumLight: '#999999',
   greyLight: '#A9A9A9',
@@ -64,11 +69,12 @@ const input = {
   fontSize: '14px',
   fontSizeHeadline: '16px',
   color: base.colors.text,
+  colorLabel: colors.greyMediumDarkish,
   backgroundColor: base.colors.backgroundColorLight,
   borderColor: base.colors.borderColor,
+  checkboxBorderColor: colors.greyLight,
   borderColorFocus: base.colors.borderColorFocus,
   checkboxColorInactive: base.colors.backgroundColorLight,
-  checkboxBorderColorInactive: base.colors.borderColor,
   checkboxColorActive: base.colors.highlightColor,
   placeholderText: base.colors.placeholderDark
 };
@@ -92,3 +98,4 @@ interface SharedTheme {
   shared: Theme;
 }
 export const styled = baseStyled as ThemedStyledInterface<SharedTheme>;
+export const css = baseCss as ThemedCssFunction<SharedTheme>;

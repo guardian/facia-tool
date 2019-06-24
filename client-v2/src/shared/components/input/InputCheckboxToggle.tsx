@@ -1,17 +1,23 @@
-import { styled } from 'shared/constants/theme';
+import { styled, css } from 'shared/constants/theme';
 import React from 'react';
 import { WrappedFieldProps } from 'redux-form';
 
 import InputLabel from './InputLabel';
 import InputContainer from './InputContainer';
-import HorizontalRule from '../layout/HorizontalRule';
 
-const CheckboxContainer = styled('div')`
+const CheckboxContainer = styled('div')<{ addBorder: boolean }>`
   display: flex;
+  ${({ addBorder }) =>
+    addBorder &&
+    css`
+      border-bottom: ${({ theme }) =>
+        `1px solid ${theme.shared.base.colors.borderColor}`};
+      padding-bottom: 6px;
+    `}
 `;
 
 const Label = InputLabel.extend`
-  color: ${props => props.theme.shared.base.colors.textMuted};
+  color: ${props => props.theme.shared.input.colorLabel};
   flex: 1;
   cursor: pointer;
 `;
@@ -32,9 +38,9 @@ const CheckboxLabel = styled('label')`
   height: 24px;
   padding: 0;
   line-height: 24px;
-  border: ${({ theme }) => `2px solid ${theme.shared.input.borderColor}`};
+  border: ${({ theme }) => `2px solid ${theme.shared.input.checkboxBorderColor}`};
   border-radius: 24px;
-  background-color: ${({ theme }) => theme.shared.input.checkboxColorInactive};
+  background-color: ${({ theme }) => theme.shared.input.checkboxBorderColor};
   transition: background-color 0.1s ease-in;
   :before {
     content: '';
@@ -47,7 +53,7 @@ const CheckboxLabel = styled('label')`
     top: 0;
     bottom: 0;
     right: 16px;
-    border: ${({ theme }) => `2px solid ${theme.shared.input.borderColor}`};
+    border: ${({ theme }) => `2px solid ${theme.shared.input.checkboxBorderColor}`};
     border-radius: 24px;
     transition: all 0.1s ease-in 0s;
   }
@@ -68,18 +74,20 @@ type Props = {
   label?: string;
   id: string;
   dataTestId: string;
+  addBorder?: boolean;
 } & WrappedFieldProps;
 
 export default ({
   label,
   id,
   dataTestId,
+  addBorder = true,
   input: { onChange, ...inputRest },
   ...rest
 }: Props) => (
   <>
     <InputContainer data-testid={dataTestId}>
-      <CheckboxContainer>
+      <CheckboxContainer addBorder={addBorder}>
         <Label htmlFor={id} size="sm">
           {label}
         </Label>
@@ -95,6 +103,5 @@ export default ({
         </Switch>
       </CheckboxContainer>
     </InputContainer>
-    <HorizontalRule noMargin />
   </>
 );

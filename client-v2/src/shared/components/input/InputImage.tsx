@@ -31,7 +31,7 @@ const ImageContainer = styled('div')<{
   flex-direction: column;
   position: relative;
   width: 100%;
-  max-width: ${props => (props.small ? '100px' : '180px')};
+  ${props => props.small && 'max-width: 100px'};
   height: ${props => (props.small ? '60px' : '115px')};
   background-size: cover;
   transition: background-color 0.15s;

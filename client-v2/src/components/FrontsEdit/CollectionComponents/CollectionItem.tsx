@@ -109,30 +109,32 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       case collectionItemTypes.ARTICLE:
         return (
           <>
-            <Article
-              id={uuid}
-              isUneditable={isUneditable}
-              {...getNodeProps()}
-              onDelete={this.onDelete}
-              onAddToClipboard={onAddToClipboard}
-              onClick={isUneditable ? undefined : () => onSelect(uuid)}
-              fade={selectionExists && !isSelected}
-              size={size}
-              displayType={displayType}
-              imageDropTypes={imageDropTypes}
-              onImageDrop={this.handleImageDrop}
-            >
-              <Sublinks
-                numSupportingArticles={numSupportingArticles}
-                toggleShowArticleSublinks={this.toggleShowArticleSublinks}
-                showArticleSublinks={this.state.showArticleSublinks}
-                parentId={parentId}
-              />
-              {/* If there are no supporting articles, the children still need to be rendered, because the dropzone is a child  */}
-              {numSupportingArticles === 0
-                ? children
-                : this.state.showArticleSublinks && children}
-            </Article>
+            {!isSelected && (
+              <Article
+                id={uuid}
+                isUneditable={isUneditable}
+                {...getNodeProps()}
+                onDelete={this.onDelete}
+                onAddToClipboard={onAddToClipboard}
+                onClick={isUneditable ? undefined : () => onSelect(uuid)}
+                fade={selectionExists && !isSelected}
+                size={size}
+                displayType={displayType}
+                imageDropTypes={imageDropTypes}
+                onImageDrop={this.handleImageDrop}
+              >
+                <Sublinks
+                  numSupportingArticles={numSupportingArticles}
+                  toggleShowArticleSublinks={this.toggleShowArticleSublinks}
+                  showArticleSublinks={this.state.showArticleSublinks}
+                  parentId={parentId}
+                />
+                {/* If there are no supporting articles, the children still need to be rendered, because the dropzone is a child  */}
+                {numSupportingArticles === 0
+                  ? children
+                  : this.state.showArticleSublinks && children}
+              </Article>
+            )}
             {isSelected && (
               <ArticleFragmentForm
                 articleFragmentId={uuid}
