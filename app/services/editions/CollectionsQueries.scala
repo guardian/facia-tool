@@ -33,9 +33,7 @@ trait CollectionsQueries {
         articles.collection_id AS articles_collection_id,
         articles.page_code     AS articles_page_code,
         articles.index         AS articles_index,
-        articles.added_on      AS articles_added_on,
-        articles.added_by      AS articles_added_by,
-        articles.added_email   AS articles_added_email
+        articles.added_on      AS articles_added_on
 
       FROM collections
       LEFT JOIN articles ON (articles.collection_id = collections.id)
@@ -62,5 +60,34 @@ trait CollectionsQueries {
             .map(_.article)
         collection.copy(items = articles)
       }
+  }
+
+  def updateCollection(collection: EditionsCollection): EditionsCollection  = DB localTx { implicit session =>
+    sql"""
+      UPDATE collections
+      SET is_hidden = ${collection.isHidden},
+          updated_on = NOW(),
+          updated_by = ${collection.updatedBy},
+          updated_email = ${collection.updatedEmail}
+      WHERE id = ${collection.id}
+    """.execute().apply
+
+    // At the moment we don't do partial updates so simply delete all of them and reinsert.
+    sql"""
+          DELETE FROM articles WHERE collection_id = ${collection.id}
+    """.execute().apply()
+
+    collection.items.zipWithIndex.foreach { case (article, index) =>
+      sql"""
+          INSERT INTO articles (
+          collection_id,
+          page_code,
+          index,
+          added_on
+          ) VALUES (${collection.id}, ${article.pageCode}, $index, now())
+       """.execute().apply()
+    }
+
+    collection
   }
 }

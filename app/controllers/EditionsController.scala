@@ -59,4 +59,11 @@ class EditionsController(db: EditionsDB, templating: EditionsTemplating, val dep
     }
 
   }
+
+  def updateCollection(collectionId: String) = AccessAPIAuthAction(parse.json[EditionsFrontendCollectionWrapper]) { req =>
+    val form = req.body
+    val collectionToUpdate = EditionsFrontendCollectionWrapper.toCollection(form)
+    val updatedCollection = db.updateCollection(collectionToUpdate)
+    Ok(Json.toJson(EditionsFrontendCollectionWrapper.fromCollection(updatedCollection)))
+  }
 }

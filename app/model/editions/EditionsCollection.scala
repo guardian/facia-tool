@@ -17,7 +17,7 @@ case class EditionsCollection(
 )
 
 object EditionsCollection {
-  implicit val writes = Json.writes[EditionsCollection]
+  implicit val format = Json.format[EditionsCollection]
 
   def fromRow(rs: WrappedResultSet, prefix: String = ""): EditionsCollection = {
     EditionsCollection(

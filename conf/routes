@@ -107,6 +107,5 @@ GET         /editions-api/editions/:name/issues          controllers.EditionsCon
 POST        /editions-api/editions/:name/issues          controllers.EditionsController.postIssue(name)
 GET         /editions-api/issues/:id                     controllers.EditionsController.getIssue(id)
 POST        /editions-api/collections                    controllers.EditionsController.getCollections
-
-#PUT         /editions-api/editions/:name/issues/:id/fronts/:frontId/collections/:collectionsId controllers.EditionsController.putCollection
+PUT         /editions-api/collections/:collectionId      controllers.EditionsController.updateCollection(collectionId)
 

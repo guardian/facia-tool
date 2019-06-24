@@ -2,6 +2,7 @@ package services.editions
 
 import java.time.LocalDate
 
+import play.api.libs.json.Json
 import com.gu.pandomainauth.model.User
 import model.editions._
 import scalikejdbc._
@@ -63,10 +64,8 @@ trait IssueQueries {
                     collection_id,
                     page_code,
                     index,
-                    added_on,
-                    added_by,
-                    added_email
-                    ) VALUES ($collectionId, $pageCode, $tIndex, now(), ${userName}, ${user.email})
+                    added_on
+                    ) VALUES ($collectionId, $pageCode, $tIndex, now())
                  """.execute().apply()
           }
         }
@@ -143,9 +142,7 @@ trait IssueQueries {
         articles.collection_id AS articles_collection_id,
         articles.page_code     AS articles_page_code,
         articles.index         AS articles_index,
-        articles.added_on      AS articles_added_on,
-        articles.added_by      AS articles_added_by,
-        articles.added_email   AS articles_added_email
+        articles.added_on      AS articles_added_on
 
       FROM edition_issues
       LEFT JOIN fronts ON (fronts.issue_id = edition_issues.id)
