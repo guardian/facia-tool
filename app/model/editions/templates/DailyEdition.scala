@@ -80,7 +80,7 @@ object FrontNewsUkGuardian {
   )
   val collectionNewsUkNewsGuardian = CollectionTemplate(
     name = "UK News",
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/uknews,theguardian/mainsection/education,theguardian/mainsection/society,theguardian/mainsection/media")),
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/uknews|theguardian/mainsection/education|theguardian/mainsection/society|theguardian/mainsection/media")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
   val collectionNewsUkFinancial = CollectionTemplate(
@@ -361,7 +361,7 @@ object FrontLifeWeekend {
   )
   val collectionLifeWeekend = CollectionTemplate(
     name = "Weekend",
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/weekend/starters,theguardian/weekend/features2,theguardian/weekend/back")),
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/weekend/starters|theguardian/weekend/features2|theguardian/weekend/back")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
   val collectionLifeFamily = CollectionTemplate(
