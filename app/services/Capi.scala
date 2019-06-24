@@ -18,7 +18,7 @@ import scala.collection.JavaConverters._
 import scala.concurrent.{ExecutionContext, Future, Promise}
 
 class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext) extends GuardianContentClient(config.contentApi.editionsKey) with Capi  {
-  override def targetUrl: String = "https://preview.content.guardianapis.com"
+  override def targetUrl: String = config.contentApi.editionsPrefillHost
 
   override def get(url: String, headers: Map[String, String])(implicit context: ExecutionContext): Future[HttpResponse] = {
     val reqBuilder = this.getPreviewHeaders(url).foldLeft(new Request.Builder().url(url)) { case (builder, headerPair) =>
@@ -54,7 +54,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
 
   def getPreviewHeaders(url: String): Seq[(String,String)] = previewSigner.addIAMHeaders(headers = Map.empty, URI.create(url)).toSeq
 
-  def getPrefillArticlePageCodes(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[String]] = {
+  def geneneratePrefillQuery(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery) = {
     val params = URLEncodedUtils
       .parse(new URI(capiPrefillQuery.queryString), Charset.forName("UTF-8"))
       .asScala
@@ -67,7 +67,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
       .showFields("internal-page-code")
       .useDate("newspaper-edition")
       .orderBy("newest")
-      .fromDate(issueDate.minus(Period.ofDays(3)).toInstant)
+      .fromDate(issueDate.toInstant)
       .toDate(issueDate.toInstant)
 
     params.filter(pair => pair.getName == "section").foreach { sectionPair =>
@@ -82,7 +82,11 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
       query = query.q(queryPair.getValue)
     }
 
-    this.getResponse(query) map { response =>
+    query
+  }
+
+  def getPrefillArticlePageCodes(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[String]] = {
+    this.getResponse(geneneratePrefillQuery(issueDate, capiPrefillQuery)) map { response =>
       response.results.flatMap {
         _.fields
           .flatMap(field => field.internalPageCode)

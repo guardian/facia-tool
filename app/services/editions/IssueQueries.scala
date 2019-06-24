@@ -172,7 +172,7 @@ trait IssueQueries {
             .flatMap(row => row.collection.filter(_.frontId == front.id))
             .sortBy(_.index)
             .map(_.collection)
-            .foldLeft(List.empty[EditionsCollection]) {(acc, cur) => if(acc.exists(f => f.id == cur.id)) acc else acc :+ cur}
+            .foldLeft(List.empty[EditionsCollection]) {(acc, cur) => if(acc.exists(c => c.id == cur.id)) acc else acc :+ cur}
             .map { collection =>
               val articles = rows
                 .flatMap(row => row.article.filter(_.collectionId == collection.id))

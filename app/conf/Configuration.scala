@@ -6,14 +6,13 @@ import java.net.URL
 import com.amazonaws.AmazonClientException
 import com.amazonaws.auth._
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
-import com.amazonaws.services.rds.auth.{GetIamAuthTokenRequest, RdsIamAuthTokenGenerator}
 import org.apache.commons.io.IOUtils
 import play.api.{Configuration => PlayConfiguration}
 import logging.Logging
 
 import scala.collection.JavaConverters._
 import scala.language.reflectiveCalls
-import com.amazonaws.services.rds.model.{DescribeDBInstancesRequest, Filter => RDSFilter}
+import com.amazonaws.services.rds.model.DescribeDBInstancesRequest
 import com.amazonaws.services.rds.AmazonRDSClientBuilder
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder
 import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest
@@ -202,8 +201,8 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     val contentApiLiveHost: String = getMandatoryString("content.api.host")
     def contentApiDraftHost: String = getMandatoryString("content.api.draft.iam-host")
 
-    val editionsPrefillHost: String = "https://preview.content.guardianapis.com"
-    lazy val editionsKey: String = "test"
+    val editionsPrefillHost: String = getMandatoryString("content.api.editions.prefillHost")
+    lazy val editionsKey: String = getMandatoryString("content.api.editions.apiKey")
 
     lazy val key: Option[String] = getString("content.api.key")
     lazy val timeout: Int = 2000
