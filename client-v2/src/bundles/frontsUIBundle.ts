@@ -179,10 +179,10 @@ const editorSelectArticleFragment = (
 });
 
 const editorClearArticleFragmentSelection = (
-  frontId: string
+  articleFragmentId: string
 ): EditorClearArticleFragmentSelection => ({
   type: EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION,
-  payload: { frontId }
+  payload: { articleFragmentId }
 });
 
 const editorOpenClipboard = (): EditorOpenClipboard => ({
@@ -215,6 +215,11 @@ const editorCloseAllOverviews = (): EditorCloseAllOverviews => ({
   type: EDITOR_CLOSE_ALL_OVERVIEWS
 });
 
+interface OpenArticleFragmentData {
+  id: string;
+  isSupporting: boolean;
+}
+
 interface State {
   showOpenFrontsMenu: boolean;
   frontIds: string[];
@@ -228,10 +233,7 @@ interface State {
   closedOverviews: string[];
   clipboardOpen: boolean;
   selectedArticleFragments: {
-    [frontId: string]: {
-      id: string;
-      isSupporting: boolean;
-    } | void;
+    [frontId: string]: OpenArticleFragmentData[];
   };
 }
 
@@ -277,9 +279,8 @@ const createSelectFrontIdWithOpenAndStarredStatesByPriority = () => {
       selectEditorFavouriteFrontIdsByPriority(state, priority),
 
     (frontsForPriority, openFronts, favouriteFronts) => {
-      return frontsForPriority.map(({ id, displayName }) => ({
+      return frontsForPriority.map(({ id }) => ({
         id,
-        displayName,
         isOpen: !!openFronts.find(_ => _.id === id),
         isStarred: !!favouriteFronts.includes(id)
       }));
@@ -329,13 +330,36 @@ const defaultState = {
   selectedArticleFragments: {}
 };
 
-const clearArticleFragmentSelection = (state: State, frontId: string) => ({
-  ...state,
-  selectedArticleFragments: {
-    ...state.selectedArticleFragments,
-    [frontId]: undefined
+const clearArticleFragmentSelection = (
+  state: State,
+  articleFragmentId: string
+): State => {
+  let frontId: string | null = null;
+  for (const entry of Object.entries(state.selectedArticleFragments)) {
+    const [currentFrontId, fragmentDatas] = entry;
+    const currentFragmentDataIndex = fragmentDatas.findIndex(
+      _ => _.id === articleFragmentId
+    );
+    if (currentFragmentDataIndex !== -1) {
+      frontId = currentFrontId;
+      break;
+    }
   }
-});
+
+  if (!frontId) {
+    return state;
+  }
+
+  return {
+    ...state,
+    selectedArticleFragments: {
+      ...state.selectedArticleFragments,
+      [frontId]: state.selectedArticleFragments[frontId].filter(
+        _ => _.id !== articleFragmentId
+      )
+    }
+  };
+};
 
 const getFrontPosition = (
   frontId: string,
@@ -490,36 +514,32 @@ const reducer = (state: State = defaultState, action: Action): State => {
       };
     }
     case EDITOR_SELECT_ARTICLE_FRAGMENT: {
+      const currentlyOpenArticleFragments =
+        state.selectedArticleFragments[action.payload.frontId] || [];
       return {
         ...state,
         selectedArticleFragments: {
           ...state.selectedArticleFragments,
-          [action.payload.frontId]: {
-            id: action.payload.articleFragmentId,
-            isSupporting: action.payload.isSupporting
-          }
+          [action.payload.frontId]: currentlyOpenArticleFragments.concat([
+            {
+              id: action.payload.articleFragmentId,
+              isSupporting: action.payload.isSupporting
+            }
+          ])
         }
       };
     }
     case EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION: {
-      return clearArticleFragmentSelection(state, action.payload.frontId);
+      return clearArticleFragmentSelection(
+        state,
+        action.payload.articleFragmentId
+      );
     }
     case REMOVE_SUPPORTING_ARTICLE_FRAGMENT:
     case REMOVE_GROUP_ARTICLE_FRAGMENT:
     case 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT': {
       const articleFragmentId = action.payload.articleFragmentId;
-      const selectedFrontId = Object.keys(state.selectedArticleFragments).find(
-        frontId => {
-          const selectedArticleFragmentData =
-            state.selectedArticleFragments[frontId];
-          return selectedArticleFragmentData
-            ? selectedArticleFragmentData.id === articleFragmentId
-            : false;
-        }
-      );
-      return selectedFrontId
-        ? clearArticleFragmentSelection(state, selectedFrontId)
-        : state;
+      return clearArticleFragmentSelection(state, articleFragmentId);
     }
     case EDITOR_OPEN_CLIPBOARD: {
       return {

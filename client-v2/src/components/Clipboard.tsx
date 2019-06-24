@@ -11,7 +11,6 @@ import {
 } from 'actions/ArticleFragments';
 import {
   editorSelectArticleFragment,
-  editorClearArticleFragmentSelection,
   selectIsClipboardOpen
 } from 'bundles/frontsUIBundle';
 import { clipboardId } from 'constants/fronts';
@@ -78,7 +77,6 @@ const FullDivider = styled('hr')`
 
 interface ClipboardProps {
   selectArticleFragment: (id: string, isSupporting?: boolean) => void;
-  clearArticleFragmentSelection: () => void;
   removeCollectionItem: (id: string) => void;
   removeSupportingCollectionItem: (parentId: string, id: string) => void;
   isClipboardOpen: boolean;
@@ -256,8 +254,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch(
       editorSelectArticleFragment(frontId, articleFragmentId, isSupporting)
     ),
-  clearArticleFragmentSelection: () =>
-    dispatch(editorClearArticleFragmentSelection(clipboardId)),
   removeCollectionItem: (uuid: string) => {
     dispatch(
       removeArticleFragment('clipboard', 'clipboard', uuid, 'clipboard')
