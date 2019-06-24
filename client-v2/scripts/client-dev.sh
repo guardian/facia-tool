@@ -21,6 +21,8 @@ docker-compose up -d
 
 printf "\n\rStarting Play App... \n\r\n\r"
 
+export SBT_OPTS="-XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=4G -Xmx4G"
+
 if [[ "$IS_DEBUG" = true ]] ; then
   sbt -jvm-debug 5005 "run"
 else
