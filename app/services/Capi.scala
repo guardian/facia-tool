@@ -3,7 +3,7 @@ package services
 import java.io.IOException
 import java.net.URI
 import java.nio.charset.Charset
-import java.time.{Period, ZonedDateTime}
+import java.time.{Period, ZoneOffset, ZonedDateTime}
 
 import org.apache.http.client.utils.URLEncodedUtils
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
@@ -59,6 +59,9 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
       .parse(new URI(capiPrefillQuery.queryString), Charset.forName("UTF-8"))
       .asScala
 
+    // Horrible hack because composer/capi/whoever doesn't worry about timezones in the newspaper-edition date
+    val localDate = issueDate.toLocalDate.atStartOfDay().toInstant(ZoneOffset.UTC)
+
     var query = PrintSentQuery()
       .page(1)
       .pageSize(20)
@@ -67,8 +70,8 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
       .showFields("internal-page-code")
       .useDate("newspaper-edition")
       .orderBy("newest")
-      .fromDate(issueDate.toInstant)
-      .toDate(issueDate.toInstant)
+      .fromDate(localDate)
+      .toDate(localDate)
 
     params.filter(pair => pair.getName == "section").foreach { sectionPair =>
       query = query.section(sectionPair.getValue)
