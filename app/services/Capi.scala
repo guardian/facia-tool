@@ -89,10 +89,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
   }
 
   def getPrefillArticlePageCodes(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[String]] = {
-    val query = geneneratePrefillQuery(issueDate, capiPrefillQuery)
-
-    println(query.toString())
-    this.getResponse(query) map { response =>
+    this.getResponse(geneneratePrefillQuery(issueDate, capiPrefillQuery)) map { response =>
       response.results.flatMap {
         _.fields
           .flatMap(field => field.internalPageCode)
