@@ -57,6 +57,7 @@ trait CollectionsQueries {
           val articles = rows
             .flatMap(_.article)
             .filter(_.collectionId == collection.id)
+            .sortBy(_.index)
             .map(_.article)
         collection.copy(items = articles)
       }
