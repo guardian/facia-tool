@@ -314,10 +314,15 @@ const selectHasMultipleFrontsOpen = createSelector(
   }
 );
 
-const selectEditorArticleFragment = <T extends { editor: State }>(
-  state: T,
+const selectOpenArticleFragmentForms = (
+  state: GlobalState,
   frontId: string
 ) => state.editor.selectedArticleFragments[frontId];
+
+const selectIsArticleFragmentFormOpen = (state: GlobalState, articleFragmentId: string, frontId: string) => {
+  return (selectOpenArticleFragmentForms(state, frontId) || []).some(_ => _.id === articleFragmentId)
+}
+
 
 const defaultState = {
   showOpenFrontsMenu: false,
@@ -607,8 +612,9 @@ export {
   selectEditorFavouriteFrontIds,
   selectEditorFrontIdsByPriority,
   selectEditorFavouriteFrontIdsByPriority,
-  selectEditorArticleFragment,
+  selectOpenArticleFragmentForms,
   selectIsCollectionOpen,
+  selectIsArticleFragmentFormOpen,
   editorOpenClipboard,
   editorCloseClipboard,
   editorOpenOverview,

@@ -2,17 +2,14 @@ import React, { SyntheticEvent } from 'react';
 import { connect } from 'react-redux';
 import {
   reduxForm,
-  FieldArray,
   InjectedFormProps,
   formValueSelector,
-  WrappedFieldArrayProps,
   Field
 } from 'redux-form';
 import { styled } from 'constants/theme';
 import Button from 'shared/components/input/ButtonDefault';
 import { ThumbnailEditForm } from 'shared/components/Thumbnail';
 import ContentContainer from 'shared/components/layout/ContentContainer';
-import ContainerHeading from 'shared/components/typography/ContainerHeading';
 import {
   createArticleFromArticleFragmentSelector,
   selectSharedState,
@@ -25,9 +22,7 @@ import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
 import HorizontalRule from 'shared/components/layout/HorizontalRule';
 import InputCheckboxToggle from 'shared/components/input/InputCheckboxToggle';
-import InputImage, {
-  InputImageContainerProps
-} from 'shared/components/input/InputImage';
+import InputImage from 'shared/components/input/InputImage';
 import InputGroup from 'shared/components/input/InputGroup';
 import InputButton from 'shared/components/input/InputButton';
 import Row from '../Row';
@@ -83,11 +78,11 @@ const FormContent = styled('div')`
   overflow-y: scroll;
 `;
 
-const CollectionHeadingPinline = ContainerHeading.extend`
-  display: flex;
-  margin-right: -11px;
-  margin-bottom: 10px;
-`;
+// const CollectionHeadingPinline = ContainerHeading.extend`
+//   display: flex;
+//   margin-right: -11px;
+//   margin-bottom: 10px;
+// `;
 
 const RowContainer = styled('div')`
   overflow: hidden;
@@ -98,15 +93,15 @@ const ButtonContainer = styled('div')`
   line-height: 0;
 `;
 
-const SlideshowRow = styled(Row)`
-  margin-top: 10px;
-  margin-bottom: 5px;
-`;
+// const SlideshowRow = styled(Row)`
+//   margin-top: 10px;
+//   margin-bottom: 5px;
+// `;
 
-const SlideshowLabel = styled('div')`
-  font-size: 12px;
-  color: ${({ theme }) => theme.shared.colors.greyMedium};
-`;
+// const SlideshowLabel = styled('div')`
+//   font-size: 12px;
+//   color: ${({ theme }) => theme.shared.colors.greyMedium};
+// `;
 
 const ImageWrapper = styled('div')`
   transition: opacity 0.15s;
@@ -153,9 +148,9 @@ const FieldContainer = styled(Col)`
   max-width: calc(100% / 3);
 `;
 
-type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
-  frontId: string;
-};
+// type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
+//   frontId: string;
+// };
 
 const KickerSuggestionsContainer = styled.div`
   position: absolute;
@@ -164,21 +159,21 @@ const KickerSuggestionsContainer = styled.div`
   font-size: 12px;
 `;
 
-const RenderSlideshow = ({ fields, frontId }: RenderSlideshowProps) => (
-  <>
-    {fields.map((name, index) => (
-      <Col key={`${name}-${index}`}>
-        <Field<InputImageContainerProps>
-          name={name}
-          component={InputImage}
-          small
-          criteria={imageCriteria}
-          frontId={frontId}
-        />
-      </Col>
-    ))}
-  </>
-);
+// const RenderSlideshow = ({ fields, frontId }: RenderSlideshowProps) => (
+//   <>
+//     {fields.map((name, index) => (
+//       <Col key={`${name}-${index}`}>
+//         <Field<InputImageContainerProps>
+//           name={name}
+//           component={InputImage}
+//           small
+//           criteria={imageCriteria}
+//           frontId={frontId}
+//         />
+//       </Col>
+//     ))}
+//   </>
+// );
 
 const getInputId = (articleFragmentId: string, label: string) =>
   `${articleFragmentId}-${label}`;
@@ -203,9 +198,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       articleFragmentId,
       change,
       kickerOptions,
-      imageSlideshowReplace,
+      // imageSlideshowReplace,
       imageHide,
-      imageCutoutReplace,
+      // imageCutoutReplace,
       articleCapiFieldValues,
       pristine,
       showByline,
@@ -331,7 +326,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               <Field
                 name="isBoosted"
                 component={InputCheckboxToggle}
-                container={FieldContainer}
                 label="Boost"
                 id={getInputId(articleFragmentId, 'boost')}
                 type="checkbox"
@@ -339,7 +333,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               <Field
                 name="showBoostedHeadline"
                 component={InputCheckboxToggle}
-                container={FieldContainer}
                 label="Large headline"
                 id={getInputId(articleFragmentId, 'large-headline')}
                 type="checkbox"
@@ -347,7 +340,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               <Field
                 name="showQuotedHeadline"
                 component={InputCheckboxToggle}
-                container={FieldContainer}
                 label="Quote headline"
                 id={getInputId(articleFragmentId, 'quote-headline')}
                 type="checkbox"
@@ -355,7 +347,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               <Field
                 name="isBreaking"
                 component={InputCheckboxToggle}
-                container={FieldContainer}
                 label="Breaking News"
                 id={getInputId(articleFragmentId, 'breaking-news')}
                 type="checkbox"
@@ -364,7 +355,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               <Field
                 name="showByline"
                 component={InputCheckboxToggle}
-                container={FieldContainer}
                 label="Show Byline"
                 id={getInputId(articleFragmentId, 'show-byline')}
                 type="checkbox"
@@ -372,7 +362,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               <Field
                 name="showLivePlayable"
                 component={InputCheckboxToggle}
-                container={FieldContainer}
                 label="Show updates"
                 id={getInputId(articleFragmentId, 'show-updates')}
                 type="checkbox"
@@ -380,7 +369,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               <Field
                 name="showMainVideo"
                 component={InputCheckboxToggle}
-                container={FieldContainer}
                 label="Show video"
                 id={getInputId(articleFragmentId, 'show-video')}
                 type="checkbox"

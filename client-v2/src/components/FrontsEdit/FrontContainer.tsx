@@ -8,7 +8,7 @@ import { updateCollection } from 'actions/Collections';
 import {
   editorCloseFront,
   selectIsFrontOverviewOpen,
-  selectEditorArticleFragment
+  selectOpenArticleFragmentForms
 } from 'bundles/frontsUIBundle';
 import Button from 'shared/components/input/ButtonDefault';
 import { frontStages } from 'constants/fronts';
@@ -194,7 +194,7 @@ const createMapStateToProps = () => {
     selectedFront: getFront(state, { frontId: props.frontId }),
     alsoOn: alsoOnSelector(state, { frontId: props.frontId }),
     isOverviewOpen: selectIsFrontOverviewOpen(state, props.frontId),
-    isFormOpen: !!selectEditorArticleFragment(state, props.frontId)
+    isFormOpen: !!selectOpenArticleFragmentForms(state, props.frontId)
   });
 };
 

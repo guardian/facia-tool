@@ -23,8 +23,8 @@ import {
 } from 'actions/ArticleFragments';
 import noop from 'lodash/noop';
 import {
-  selectEditorArticleFragment,
-  editorClearArticleFragmentSelection
+  editorClearArticleFragmentSelection,
+  selectIsArticleFragmentFormOpen
 } from 'bundles/frontsUIBundle';
 import {
   validateImageEvent,
@@ -67,7 +67,6 @@ type ArticleContainerProps = ContainerProps & {
   clearArticleFragmentSelection: () => void;
   type: CollectionItemTypes;
   isSelected: boolean;
-  selectionExists: boolean;
   numSupportingArticles: number;
 };
 
@@ -87,7 +86,6 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
   public render() {
     const {
       uuid,
-      selectionExists,
       isSelected,
       children,
       getNodeProps,
@@ -117,7 +115,6 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
                 onDelete={this.onDelete}
                 onAddToClipboard={onAddToClipboard}
                 onClick={isUneditable ? undefined : () => onSelect(uuid)}
-                fade={selectionExists && !isSelected}
                 size={size}
                 displayType={displayType}
                 imageDropTypes={imageDropTypes}
@@ -213,10 +210,6 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
 const createMapStateToProps = () => {
   const selectType = createCollectionItemTypeSelector();
   return (state: State, props: ContainerProps) => {
-    const selectedArticleFragmentData = selectEditorArticleFragment(
-      state,
-      props.frontId
-    );
     const maybeArticle = articleFragmentSelector(
       selectSharedState(state),
       props.uuid
@@ -227,10 +220,11 @@ const createMapStateToProps = () => {
     }
     return {
       type: selectType(selectSharedState(state), props.uuid),
-      selectionExists: !!selectedArticleFragmentData,
-      isSelected:
-        !!selectedArticleFragmentData &&
-        selectedArticleFragmentData.id === props.uuid,
+      isSelected: selectIsArticleFragmentFormOpen(
+        state,
+        props.uuid,
+        props.frontId
+      ),
       numSupportingArticles
     };
   };

@@ -24,7 +24,7 @@ import {
   editorOpenCollections,
   editorCloseCollections,
   selectHasMultipleFrontsOpen,
-  selectEditorArticleFragment
+  selectOpenArticleFragmentForms
 } from 'bundles/frontsUIBundle';
 import { getArticlesForCollections } from 'actions/Collections';
 import { collectionItemSets } from 'constants/fronts';
@@ -202,7 +202,7 @@ const createMapStateToProps = () => {
     { browsingStage, id, priority, frontId }: CollectionPropsBeforeState
   ) => {
     const selectIsArticleInCollection = createSelectIsArticleInCollection();
-    const selectedArticleFragmentData = selectEditorArticleFragment(
+    const selectedArticleFragmentData = selectOpenArticleFragmentForms(
       state,
       frontId
     );
@@ -225,11 +225,11 @@ const createMapStateToProps = () => {
       hasMultipleFrontsOpen: selectHasMultipleFrontsOpen(state, priority),
       isEditFormOpen:
         !!selectedArticleFragmentData &&
-        selectIsArticleInCollection(state.shared, {
+        selectedArticleFragmentData.some(_ => selectIsArticleInCollection(state.shared, {
           collectionId: id,
           collectionSet: browsingStage,
-          articleFragmentId: selectedArticleFragmentData.id
-        })
+          articleFragmentId: _.id
+        }))
     };
   };
 };

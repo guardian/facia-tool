@@ -13,7 +13,7 @@ import {
   editorOpenOverview,
   editorCloseOverview,
   selectIsFrontOverviewOpen,
-  selectEditorArticleFragment
+  selectOpenArticleFragmentForms
 } from 'bundles/frontsUIBundle';
 import {
   CollectionItemSets,
@@ -268,7 +268,7 @@ const mapStateToProps = (state: State, props: FrontPropsBeforeState) => {
   return {
     front: getFront(state, { frontId: props.id }),
     overviewIsOpen: selectIsFrontOverviewOpen(state, props.id),
-    formIsOpen: !!selectEditorArticleFragment(state, props.id)
+    formIsOpen: !!selectOpenArticleFragmentForms(state, props.id)
   };
 };
 
