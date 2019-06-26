@@ -26,7 +26,14 @@ case object WeekDay extends Enumeration(1) {
 case class FrontPresentation()
 case class CollectionPresentation()
 
-case class CapiPrefillQuery(queryString: String) extends AnyVal
+case class CapiPrefillQuery(queryString: String) extends AnyVal {
+  def escapedQueryString(): String =
+    queryString
+      .replace(",", "%2C")
+      .replace("|", "%7C")
+      .replace("(", "%28")
+      .replace(")", "%29")
+}
 
 object CapiPrefillQuery {
   implicit def format = Json.format[CapiPrefillQuery]

@@ -1,7 +1,7 @@
 package services
 
 import java.io.IOException
-import java.net.URI
+import java.net.{URI, URLEncoder}
 import java.nio.charset.Charset
 import java.time.{Period, ZoneOffset, ZonedDateTime}
 
@@ -56,7 +56,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
 
   def geneneratePrefillQuery(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery) = {
     val params = URLEncodedUtils
-      .parse(new URI(capiPrefillQuery.queryString), Charset.forName("UTF-8"))
+      .parse(new URI(capiPrefillQuery.escapedQueryString()), Charset.forName("UTF-8"))
       .asScala
 
     // Horrible hack because composer/capi/whoever doesn't worry about timezones in the newspaper-edition date
@@ -64,7 +64,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
 
     var query = PrintSentQuery()
       .page(1)
-      .pageSize(20)
+      .pageSize(200)
       .showFields("newspaper-edition-date")
       .showFields("newspaper-page-number")
       .showFields("internal-page-code")
