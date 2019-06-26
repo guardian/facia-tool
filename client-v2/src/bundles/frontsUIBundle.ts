@@ -32,6 +32,7 @@ import {
   REMOVE_GROUP_ARTICLE_FRAGMENT,
   REMOVE_SUPPORTING_ARTICLE_FRAGMENT
 } from 'shared/actions/ArticleFragments';
+import { FrontConfig } from 'types/FaciaApi';
 
 export const EDITOR_OPEN_CURRENT_FRONTS_MENU =
   'EDITOR_OPEN_CURRENT_FRONTS_MENU';
@@ -276,18 +277,16 @@ const createSelectFrontIdWithOpenAndStarredStatesByPriority = () => {
       selectEditorFrontsByPriority(state, { priority }),
     (state, priority: string) =>
       selectEditorFavouriteFrontIdsByPriority(state, priority),
-    (_, __, sortByName = true) => sortByName,
-    (frontsForPriority, openFronts, favouriteFronts, shouldSort) => {
-      const fronts = frontsForPriority.map(({ id, displayName }) => ({
+    (_, __, sortKey: 'id' | 'index' = 'id') => sortKey,
+    (frontsForPriority, openFronts, favouriteFronts, sortKey) => {
+      const fronts = frontsForPriority.map(({ id, displayName, index }) => ({
         id,
         displayName,
+        index,
         isOpen: !!openFronts.find(_ => _.id === id),
         isStarred: !!favouriteFronts.includes(id)
       }));
-      if (shouldSort) {
-        return sortBy(fronts, _ => _.id);
-      }
-      return fronts;
+      return sortBy(fronts, front => front[sortKey]);
     }
   );
 };

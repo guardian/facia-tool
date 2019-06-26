@@ -8,6 +8,7 @@ import scalikejdbc.WrappedResultSet
 case class EditionsFront(
     id: String,
     displayName: String,
+    index: Int,
     isHidden: Boolean,
     updatedOn: Option[Long],
     updatedBy: Option[String],
@@ -22,6 +23,7 @@ object EditionsFront {
     EditionsFront(
       rs.string(prefix + "id"),
       rs.string(prefix + "name"),
+      rs.int(prefix + "index"),
       rs.boolean(prefix + "is_hidden"),
       rs.zonedDateTimeOpt(prefix + "updated_on").map(_.toInstant.toEpochMilli),
       rs.stringOpt(prefix + "updated_by"),
@@ -34,11 +36,13 @@ object EditionsFront {
     for {
       id <- rs.stringOpt(prefix + "id")
       name <- rs.stringOpt(prefix + "name")
+      index <- rs.intOpt(prefix + "index")
       isHidden <- rs.booleanOpt(prefix + "is_hidden")
     } yield
       EditionsFront(
         id,
         name,
+        index,
         isHidden,
         rs.zonedDateTimeOpt(prefix + "updated_on").map(_.toInstant.toEpochMilli),
         rs.stringOpt(prefix + "updated_by"),

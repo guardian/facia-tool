@@ -16,7 +16,7 @@ const mapStateToProps = () => {
       fronts: selectFrontIdWithOpenAndStarredStates(
         state,
         props.match.params.priority || '',
-        !selectIsEditingEditions(state)
+        selectIsEditingEditions(state) ? 'index' : 'id'
       )
     };
   };
