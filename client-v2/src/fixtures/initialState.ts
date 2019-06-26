@@ -15,7 +15,8 @@ const state = {
             priority: 'commercial',
             canonical: 'e59785e9-ba82-48d8-b79a-0a80b2f9f808',
             group: 'US professional',
-            id: 'sc-johnson-partner-zone'
+            id: 'sc-johnson-partner-zone',
+            index: 0
           },
           'a-shot-of-sustainability': {
             collections: [
@@ -27,7 +28,8 @@ const state = {
             priority: 'commercial',
             canonical: 'e4e9d1f0-542b-4df2-bbc4-6ac0532396bb',
             group: 'UK consumer',
-            id: 'a-shot-of-sustainability'
+            id: 'a-shot-of-sustainability',
+            index: 1
           },
           'sustainable-business/fairtrade-partner-zone': {
             collections: [
@@ -40,13 +42,15 @@ const state = {
               'd5a943c6-ce77-4ffa-a9ab-3c9e736cc611'
             ],
             priority: 'commercial',
-            id: 'sustainable-business/fairtrade-partner-zone'
+            id: 'sustainable-business/fairtrade-partner-zone',
+            index: 2
           },
           'un-global-compact-partner-zone': {
             collections: ['082d2dc8-f196-4c00-979e-7f541f2772f4'],
             priority: 'commercial',
             canonical: '082d2dc8-f196-4c00-979e-7f541f2772f4',
-            id: 'un-global-compact-partner-zone'
+            id: 'un-global-compact-partner-zone',
+            index: 3
           },
           'gnm-archive': {
             collections: [
@@ -57,7 +61,8 @@ const state = {
               '7a35f3e8-3fab-4b2a-bc2f-7649f8342b56'
             ],
             id: 'gnm-archive',
-            priority: 'editorial'
+            priority: 'editorial',
+            index: 4
           }
         },
         collections: {
