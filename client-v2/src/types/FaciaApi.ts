@@ -8,6 +8,7 @@ interface FrontConfigResponse {
   collections: string[];
   priority?: string;
   displayName?: string;
+  index?: number;
   canonical?: string;
   group?: string;
   isHidden?: boolean;

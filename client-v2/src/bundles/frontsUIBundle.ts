@@ -1,5 +1,6 @@
 import without from 'lodash/without';
 import compact from 'lodash/compact';
+import sortBy from 'lodash/sortBy';
 import {
   Action,
   EditorOpenCurrentFrontsMenu,
@@ -275,14 +276,16 @@ const createSelectFrontIdWithOpenAndStarredStatesByPriority = () => {
       selectEditorFrontsByPriority(state, { priority }),
     (state, priority: string) =>
       selectEditorFavouriteFrontIdsByPriority(state, priority),
-
-    (frontsForPriority, openFronts, favouriteFronts) => {
-      return frontsForPriority.map(({ id, displayName }) => ({
+    (_, __, sortKey: 'id' | 'index' = 'id') => sortKey,
+    (frontsForPriority, openFronts, favouriteFronts, sortKey) => {
+      const fronts = frontsForPriority.map(({ id, displayName, index }) => ({
         id,
         displayName,
+        index,
         isOpen: !!openFronts.find(_ => _.id === id),
         isStarred: !!favouriteFronts.includes(id)
       }));
+      return sortBy(fronts, front => front[sortKey]);
     }
   );
 };
