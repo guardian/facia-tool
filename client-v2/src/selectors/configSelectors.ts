@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import { State } from 'types/State';
+import { selectIsEditingEditions } from './pathSelectors';
 
 const configSelector = (state: State) => state.config;
 
@@ -28,7 +29,9 @@ const capiPreviewURLSelector = createSelector(
 
 const collectionCapSelector = createSelector(
   configSelector,
-  config => (config && config.collectionCap) || Infinity
+  selectIsEditingEditions,
+  (config, isEditingEditions) =>
+    (!isEditingEditions && config && config.collectionCap) || Infinity
 );
 
 const gridUrlSelector = createSelector(

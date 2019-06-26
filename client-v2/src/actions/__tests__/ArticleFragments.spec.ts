@@ -36,6 +36,7 @@ import { clipboardArticlesSelector } from 'selectors/clipboardSelectors';
 const root = (state: any = {}, action: any) => ({
   confirmModal: confirmModal(state.confirmModal, action),
   clipboard: clipboardReducer(state.clipboard, action, state.shared),
+  path: '',
   shared: {
     articleFragments: articleFragmentsReducer(
       state.shared.articleFragments,
@@ -67,6 +68,7 @@ const buildStore = (added: ArticleFragmentSpec, collectionCap = Infinity) => {
   const all = [...groupA, ...groupB, ...clipboard, added];
   const state = {
     confirmModal: null,
+    path: '',
     config: {
       collectionCap
     },
