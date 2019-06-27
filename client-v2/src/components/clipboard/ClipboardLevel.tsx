@@ -10,7 +10,7 @@ import ArticleDrag, {
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone from 'components/DropZone';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 
 interface OuterProps {
   children: LevelChild<ArticleFragment>;
@@ -55,6 +55,7 @@ const ClipboardLevel = ({
         {...props}
         override={isTarget}
         disabled={!isActive}
+        dropColor={theme.base.colors.dropZoneActiveStory}
         style={{
           flexBasis: '15px',
           flexGrow: articleFragments.length === index ? 1 : 0

@@ -11,9 +11,31 @@ const DropContainer = styled('div')<{
   ${({ disabled }) => disabled && 'pointer-events: none'}
 `;
 
-const DropIndicator = styled('div')`
+const DropIndicator = styled(`div`)`
+  display: flex;
+  flex-direction: row;
+  height: 20px;
+`;
+
+const DropIndicatorBar = styled('div')`
   position: relative;
-  height: 100%;
+  height: 8px;
+  width: 100%;
+  top: 6px;
+  margin-left: -5px;
+`;
+
+const DropIndicatorMessage = styled(`div`)`
+  flex: 1 0 60px;
+  border-radius: 10px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-family: TS3TextSans;
+  font-size: 10px;
+  color: white;
 `;
 
 class DropZone extends React.Component<
@@ -26,13 +48,15 @@ class DropZone extends React.Component<
     indicatorStyle: React.CSSProperties;
     override?: boolean;
     dropColor?: string;
+    dropMessage?: string;
   },
   { isHoveredOver: boolean }
 > {
   public static defaultProps = {
     style: {},
     indicatorStyle: {},
-    dropColor: theme.base.colors.dropZone
+    dropColor: theme.base.colors.dropZone,
+    dropMessage: 'Place here'
   };
 
   public state = {
@@ -81,13 +105,25 @@ class DropZone extends React.Component<
         style={style}
         disabled={!!this.props.disabled}
       >
-        <DropIndicator
-          style={{
-            ...this.props.indicatorStyle,
-            zIndex: this.isActive ? 1 : undefined,
-            backgroundColor: this.isActive ? this.props.dropColor : undefined
-          }}
-        />
+        {this.isActive && (
+          <DropIndicator
+            style={{
+              ...this.props.indicatorStyle,
+              zIndex: this.isActive ? 1 : undefined
+            }}
+          >
+            <DropIndicatorMessage
+              style={{ backgroundColor: this.props.dropColor }}
+            >
+              <div>{this.props.dropMessage}</div>
+            </DropIndicatorMessage>
+            <DropIndicatorBar
+              style={{
+                backgroundColor: this.props.dropColor
+              }}
+            />
+          </DropIndicator>
+        )}
       </DropContainer>
     );
   }

@@ -11,6 +11,7 @@ import ArticleDrag, {
 import DropZone from 'components/DropZone';
 import { createSelectSupportingArticles } from 'shared/selectors/shared';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
+import { theme } from 'constants/theme';
 
 interface OuterProps {
   articleFragmentId: string;
@@ -57,16 +58,15 @@ const ArticleFragmentLevel = ({
               {...props}
               disabled={!isActive}
               override={isTarget}
-              dropColor="hsl(0, 0%, 64%)"
+              dropColor={theme.base.colors.dropZoneActiveSublink}
+              dropMessage={'Sublink'}
               style={{
                 marginTop: '-30px',
                 height: '30px'
               }}
               indicatorStyle={{
-                marginLeft: `${displayType === 'default' ? '80px' : '20px'}`,
-                marginRight: `${displayType === 'default' ? '130px' : 0}`,
-                top: '66%',
-                height: '33%'
+                marginLeft: `${displayType === 'default' ? '60px' : '20px'}`,
+                marginRight: `0`
               }}
             />
           )
@@ -84,4 +84,3 @@ const createMapStateToProps = () => {
 };
 
 export default connect(createMapStateToProps)(ArticleFragmentLevel);
-//

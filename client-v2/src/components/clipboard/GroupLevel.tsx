@@ -9,8 +9,8 @@ import ArticleDrag, {
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone from 'components/DropZone';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
-import { createSelectArticlesFromIds } from 'shared/selectors/shared';
-import { styled } from 'constants/theme';
+import { createArticlesFromIdsSelector } from 'shared/selectors/shared';
+import { theme, styled } from 'constants/theme';
 
 interface OuterProps {
   groupId: string;
@@ -60,6 +60,7 @@ const GroupLevel = ({
               {...props}
               disabled={!isActive}
               override={isTarget}
+              dropColor={theme.base.colors.dropZoneActiveStory}
               doubleHeight={!articleFragments.length || i === 0}
               style={
                 i === 0
