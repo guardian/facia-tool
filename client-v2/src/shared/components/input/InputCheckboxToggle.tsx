@@ -1,33 +1,29 @@
-import { styled, css } from 'shared/constants/theme';
+import { styled } from 'shared/constants/theme';
 import React from 'react';
 import { WrappedFieldProps } from 'redux-form';
 
 import InputLabel from './InputLabel';
 import InputContainer from './InputContainer';
 
-const CheckboxContainer = styled('div')<{ addBorder: boolean }>`
+const checkboxHeight = 15;
+const checkboxWidth = 24;
+
+const CheckboxContainer = styled('div')`
   display: flex;
   align-items: center;
-  ${({ addBorder }) =>
-    addBorder &&
-    css`
-      border-bottom: ${({ theme }) =>
-        `1px solid ${theme.shared.base.colors.borderColor}`};
-      padding-bottom: 6px;
-    `}
 `;
 
 const Label = InputLabel.extend`
   padding-left: 5px;
   color: ${props => props.theme.shared.input.colorLabel};
-  line-height: 16px;
+  line-height: 15px;
   flex: 1;
   cursor: pointer;
 `;
 
 const Switch = styled('div')`
   position: relative;
-  width: 40px;
+  width: ${checkboxWidth}px;
   margin-left: auto;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -38,28 +34,28 @@ const CheckboxLabel = styled('label')`
   display: block;
   overflow: hidden;
   cursor: pointer;
-  height: 24px;
+  height: ${checkboxHeight}px;
   padding: 0;
-  line-height: 24px;
+  line-height: ${checkboxHeight}px;
   border: ${({ theme }) =>
     `2px solid ${theme.shared.input.checkboxBorderColor}`};
-  border-radius: 24px;
+  border-radius: ${checkboxHeight}px;
   background-color: ${({ theme }) => theme.shared.input.checkboxBorderColor};
   transition: background-color 0.1s ease-in;
   :before {
     content: '';
     display: block;
-    width: 24px;
-    height: 24px;
+    width: ${checkboxHeight}px;
+    height: ${checkboxHeight}px;
     margin: 0px;
     background: ${({ theme }) => theme.shared.input.checkboxColorInactive};
     position: absolute;
     top: 0;
     bottom: 0;
-    right: 16px;
+    right: ${checkboxWidth - checkboxHeight}px;
     border: ${({ theme }) =>
       `2px solid ${theme.shared.input.checkboxBorderColor}`};
-    border-radius: 24px;
+    border-radius: ${checkboxHeight}px;
     transition: all 0.1s ease-in 0s;
   }
 `;
@@ -79,20 +75,18 @@ type Props = {
   label?: string;
   id: string;
   dataTestId: string;
-  addBorder?: boolean;
 } & WrappedFieldProps;
 
 export default ({
   label,
   id,
   dataTestId,
-  addBorder = true,
   input: { onChange, ...inputRest },
   ...rest
 }: Props) => (
   <>
     <InputContainer data-testid={dataTestId}>
-      <CheckboxContainer addBorder={addBorder}>
+      <CheckboxContainer>
         <Switch>
           <Checkbox
             type="checkbox"

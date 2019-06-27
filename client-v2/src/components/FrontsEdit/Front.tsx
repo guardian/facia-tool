@@ -112,6 +112,7 @@ type FrontProps = FrontPropsBeforeState & {
   initialiseFront: () => void;
   formIsOpen: boolean;
   selectArticleFragment: (
+    collectionId: string,
     frontId: string
   ) => (isSupporting?: boolean) => (id: string) => void;
   editorOpenCollections: (ids: string[]) => void;
@@ -233,6 +234,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                     handleInsert={this.handleInsert}
                     handleMove={this.handleMove}
                     selectArticleFragment={this.props.selectArticleFragment(
+                      collectionId,
                       this.props.id
                     )}
                     handleArticleFocus={this.handleArticleFocus}
@@ -280,11 +282,16 @@ const mapDispatchToProps = (
     dispatch,
     initialiseFront: () =>
       dispatch(initialiseCollectionsForFront(props.id, props.browsingStage)),
-    selectArticleFragment: (frontId: string) => (isSupporting?: boolean) => (
-      articleFragmentId: string
-    ) =>
+    selectArticleFragment: (collectionId: string, frontId: string) => (
+      isSupporting?: boolean
+    ) => (articleFragmentId: string) =>
       dispatch(
-        editorSelectArticleFragment(frontId, articleFragmentId, isSupporting)
+        editorSelectArticleFragment(
+          articleFragmentId,
+          collectionId,
+          frontId,
+          isSupporting
+        )
       ),
     editorOpenCollections: (ids: string[]) =>
       dispatch(editorOpenCollections(ids)),

@@ -32,7 +32,7 @@ const ImageContainer = styled('div')<{
   position: relative;
   width: 100%;
   ${props => props.small && 'max-width: 100px'};
-  height: ${props => (props.small ? '60px' : '115px')};
+  height: ${props => (props.small ? '60px' : '90px')};
   background-size: cover;
   transition: background-color 0.15s;
   border-left: ${props =>

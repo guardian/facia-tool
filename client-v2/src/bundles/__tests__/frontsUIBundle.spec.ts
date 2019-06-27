@@ -396,12 +396,19 @@ describe('frontsUIBundle', () => {
       it('should open a collection item form', () => {
         const state = reducer(
           undefined,
-          editorSelectArticleFragment('front1', 'exampleArticleFragment')
+          editorSelectArticleFragment(
+            'front1',
+            'exampleArticleFragment',
+            'exampleCollection'
+          )
         );
-        expect(selectOpenArticleFragmentForms(state, 'front1')).toEqual([{
-          id: 'exampleArticleFragment',
-          isSupporting: false
-        }]);
+        expect(selectOpenArticleFragmentForms(state, 'front1')).toEqual([
+          {
+            id: 'exampleArticleFragment',
+            isSupporting: false,
+            collectionId: 'collectionId'
+          }
+        ]);
       });
     });
     it('should open and close all editing fronts', () => {

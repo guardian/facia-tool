@@ -63,11 +63,10 @@ const button = {
 };
 
 const input = {
-  height: '34px',
+  height: '30px',
   paddingY: '3px',
   paddingX: '5px',
   fontSize: '14px',
-  fontSizeHeadline: '16px',
   color: base.colors.text,
   colorLabel: colors.greyMediumDarkish,
   backgroundColor: base.colors.backgroundColorLight,

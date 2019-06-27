@@ -246,13 +246,14 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  selectArticleFragment: (
-    frontId: string,
-    articleFragmentId: string,
-    isSupporting: boolean
-  ) =>
+  selectArticleFragment: (articleFragmentId: string, isSupporting?: boolean) =>
     dispatch(
-      editorSelectArticleFragment(frontId, articleFragmentId, isSupporting)
+      editorSelectArticleFragment(
+        articleFragmentId,
+        clipboardId,
+        clipboardId,
+        !!isSupporting
+      )
     ),
   removeCollectionItem: (uuid: string) => {
     dispatch(
@@ -284,21 +285,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   dispatch
 });
 
-type TStateProps = ReturnType<typeof mapStateToProps>;
-type TDispatchProps = ReturnType<typeof mapDispatchToProps>;
-
-const mergeProps = (
-  stateProps: TStateProps,
-  dispatchProps: TDispatchProps
-) => ({
-  ...stateProps,
-  ...dispatchProps,
-  selectArticleFragment: (articleId: string, isSupporting = false) =>
-    dispatchProps.selectArticleFragment(clipboardId, articleId, isSupporting)
-});
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
+  mapDispatchToProps
 )(Clipboard);

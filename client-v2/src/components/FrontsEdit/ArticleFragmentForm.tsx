@@ -65,7 +65,6 @@ const FormContainer = styled(ContentContainer.withComponent('form'))`
   display: flex;
   flex-direction: column;
   flex: 1;
-  margin-top: 10px;
   height: calc(100% - 10px);
   background-color: ${({ theme }) => theme.base.colors.formBackground};
 `;
@@ -87,6 +86,8 @@ const RowContainer = styled('div')`
 
 const ButtonContainer = styled('div')`
   margin-left: auto;
+  margin-right: -10px;
+  margin-bottom: -10px;
   line-height: 0;
 `;
 
@@ -113,6 +114,7 @@ const CollectionEditedError = styled.div`
 
 const FieldsContainerWrap = styled(Row)`
   flex-wrap: wrap;
+  padding-bottom: 4px;
   border-bottom: 1px solid
     ${({ theme }) => theme.shared.base.colors.borderColor};
 `;
@@ -126,15 +128,8 @@ const CheckboxFieldsContainer: React.SFC<{
   );
   return (
     <FieldsContainerWrap>
-      {childrenToRender.map((child, index) => {
-        // Add a border to the last three children. Is there a cleaner way of doing this?
-        return (
-          <FieldContainer key={child.props.name}>
-            {index > childrenToRender.length - (childrenToRender.length % 3) - 1
-              ? React.cloneElement<any>(child, { addBorder: false })
-              : child}
-          </FieldContainer>
-        );
+      {childrenToRender.map(child => {
+        return <FieldContainer key={child.props.name}>{child}</FieldContainer>;
       })}
     </FieldsContainerWrap>
   );
@@ -143,6 +138,7 @@ const CheckboxFieldsContainer: React.SFC<{
 const FieldContainer = styled(Col)`
   flex-basis: calc(100% / 3);
   max-width: calc(100% / 3);
+  min-width: 125px; /* Prevents labels breaking across lines */
 `;
 
 // type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
@@ -414,7 +410,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                   />
                 )}
               </Col>
-              <Col>
+              <Col flex={2}>
                 <InputGroup>
                   <ConditionalField
                     permittedFields={editableFields}
@@ -444,9 +440,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             <ConditionalComponent
               permittedNames={editableFields}
               name={['primaryImage', 'imageHide']}
-            >
-              <HorizontalRule />
-            </ConditionalComponent>
+            />
             {/* <Row>
               <Col>
                 <ImageWrapper faded={!imageCutoutReplace}>

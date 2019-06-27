@@ -17,6 +17,7 @@ import {
   selectSharedState,
   createArticlesInCollectionSelector
 } from 'shared/selectors/shared';
+import { createSelectCollectionIdsWithOpenForms } from 'bundles/frontsUIBundle';
 
 interface FrontCollectionOverviewContainerProps {
   frontId: string;
@@ -29,6 +30,7 @@ type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
   articleCount: number;
   openCollection: (id: string) => void;
   hasUnpublishedChanges: boolean;
+  hasOpenForms: boolean;
 };
 
 const Container = styled.div`
@@ -100,7 +102,8 @@ const CollectionOverview = ({
   articleCount,
   openCollection,
   frontId,
-  hasUnpublishedChanges
+  hasUnpublishedChanges,
+  hasOpenForms
 }: FrontCollectionOverviewProps) =>
   collection ? (
     <Container
@@ -123,9 +126,18 @@ const CollectionOverview = ({
         <ItemCount>({articleCount})</ItemCount>
       </TextContainerLeft>
       <TextContainerRight>
+        {hasOpenForms && (
+          <StatusWarning
+            priority="default"
+            size="s"
+            title="Collection changes have not been launched"
+          >
+            !
+          </StatusWarning>
+        )}
         {collection &&
           collection.lastUpdated &&
-          (!!hasUnpublishedChanges ? (
+          (hasUnpublishedChanges ? (
             <StatusWarning
               priority="primary"
               size="s"
@@ -141,19 +153,29 @@ const CollectionOverview = ({
 const mapStateToProps = () => {
   const collectionSelector = createCollectionSelector();
   const articlesInCollectionSelector = createArticlesInCollectionSelector();
-
-  return (state: State, props: FrontCollectionOverviewContainerProps) => ({
+  const selectCollectionIdsWithOpenForms = createSelectCollectionIdsWithOpenForms();
+  return (
+    state: State,
+    {
+      collectionId,
+      browsingStage,
+      frontId
+    }: FrontCollectionOverviewContainerProps
+  ) => ({
     collection: collectionSelector(selectSharedState(state), {
-      collectionId: props.collectionId
+      collectionId
     }),
     articleCount: articlesInCollectionSelector(selectSharedState(state), {
-      collectionSet: props.browsingStage,
-      collectionId: props.collectionId,
+      collectionSet: browsingStage,
+      collectionId,
       includeSupportingArticles: false
     }).length,
     hasUnpublishedChanges: hasUnpublishedChangesSelector(state, {
-      collectionId: props.collectionId
-    })
+      collectionId
+    }),
+    hasOpenForms:
+      selectCollectionIdsWithOpenForms(state, frontId).indexOf(collectionId) !==
+      -1
   });
 };
 

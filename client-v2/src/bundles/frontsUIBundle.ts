@@ -1,5 +1,6 @@
 import without from 'lodash/without';
 import compact from 'lodash/compact';
+import uniq from 'lodash/uniq';
 import {
   Action,
   EditorOpenCurrentFrontsMenu,
@@ -170,12 +171,13 @@ const editorSetFavouriteFronts = (favouriteFrontIdsByPriority: {
 });
 
 const editorSelectArticleFragment = (
-  frontId: string,
   articleFragmentId: string,
+  collectionId: string,
+  frontId: string,
   isSupporting = false
 ): EditorSelectArticleFragment => ({
   type: EDITOR_SELECT_ARTICLE_FRAGMENT,
-  payload: { articleFragmentId, frontId, isSupporting }
+  payload: { articleFragmentId, frontId, collectionId, isSupporting }
 });
 
 const editorClearArticleFragmentSelection = (
@@ -218,6 +220,7 @@ const editorCloseAllOverviews = (): EditorCloseAllOverviews => ({
 interface OpenArticleFragmentData {
   id: string;
   isSupporting: boolean;
+  collectionId: string;
 }
 
 interface State {
@@ -314,15 +317,26 @@ const selectHasMultipleFrontsOpen = createSelector(
   }
 );
 
-const selectOpenArticleFragmentForms = (
+const defaultOpenForms = [] as [];
+
+const selectOpenArticleFragmentForms = (state: GlobalState, frontId: string) =>
+  state.editor.selectedArticleFragments[frontId] || defaultOpenForms;
+
+const selectIsArticleFragmentFormOpen = (
   state: GlobalState,
+  articleFragmentId: string,
   frontId: string
-) => state.editor.selectedArticleFragments[frontId];
+) => {
+  return (selectOpenArticleFragmentForms(state, frontId) || []).some(
+    _ => _.id === articleFragmentId
+  );
+};
 
-const selectIsArticleFragmentFormOpen = (state: GlobalState, articleFragmentId: string, frontId: string) => {
-  return (selectOpenArticleFragmentForms(state, frontId) || []).some(_ => _.id === articleFragmentId)
-}
-
+const createSelectCollectionIdsWithOpenForms = () =>
+  createSelector(
+    selectOpenArticleFragmentForms,
+    forms => uniq(forms.map(_ => _.collectionId))
+  );
 
 const defaultState = {
   showOpenFrontsMenu: false,
@@ -521,14 +535,21 @@ const reducer = (state: State = defaultState, action: Action): State => {
     case EDITOR_SELECT_ARTICLE_FRAGMENT: {
       const currentlyOpenArticleFragments =
         state.selectedArticleFragments[action.payload.frontId] || [];
+      const {
+        frontId,
+        collectionId,
+        isSupporting,
+        articleFragmentId: id
+      } = action.payload;
       return {
         ...state,
         selectedArticleFragments: {
           ...state.selectedArticleFragments,
-          [action.payload.frontId]: currentlyOpenArticleFragments.concat([
+          [frontId]: currentlyOpenArticleFragments.concat([
             {
-              id: action.payload.articleFragmentId,
-              isSupporting: action.payload.isSupporting
+              id,
+              isSupporting,
+              collectionId
             }
           ])
         }
@@ -606,12 +627,16 @@ export {
   editorSelectArticleFragment,
   editorClearArticleFragmentSelection,
   selectIsCurrentFrontsMenuOpen,
-  createSelectEditorFrontsByPriority,
-  createSelectFrontIdWithOpenAndStarredStatesByPriority,
   selectEditorFrontIds,
   selectEditorFavouriteFrontIds,
   selectEditorFrontIdsByPriority,
   selectEditorFavouriteFrontIdsByPriority,
+  selectIsClipboardOpen,
+  selectIsFrontOverviewOpen,
+  selectHasMultipleFrontsOpen,
+  createSelectCollectionIdsWithOpenForms,
+  createSelectEditorFrontsByPriority,
+  createSelectFrontIdWithOpenAndStarredStatesByPriority,
   selectOpenArticleFragmentForms,
   selectIsCollectionOpen,
   selectIsArticleFragmentFormOpen,
@@ -620,10 +645,7 @@ export {
   editorOpenOverview,
   editorCloseOverview,
   editorOpenAllOverviews,
-  editorCloseAllOverviews,
-  selectIsClipboardOpen,
-  selectIsFrontOverviewOpen,
-  selectHasMultipleFrontsOpen
+  editorCloseAllOverviews
 };
 
 export default reducer;

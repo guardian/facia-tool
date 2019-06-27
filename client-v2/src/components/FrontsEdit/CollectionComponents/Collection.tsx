@@ -130,8 +130,7 @@ class Collection extends React.Component<CollectionProps> {
         onChangeOpenState={() => onChangeOpenState(id, isOpen)}
         headlineContent={
           hasUnpublishedChanges &&
-          canPublish &&
-          !isEditFormOpen && (
+          canPublish && (
             <React.Fragment>
               <Button
                 size="l"
@@ -139,9 +138,10 @@ class Collection extends React.Component<CollectionProps> {
                 onClick={() => discardDraftChanges(id)}
                 tabIndex={-1}
                 data-testid="collection-discard-button"
+                disabled={isEditFormOpen}
                 title={
                   isEditFormOpen
-                    ? 'You cannot discard changes to this collection whilst the edit form is open.'
+                    ? 'You cannot discard changes to this collection whilst an edit form is open.'
                     : undefined
                 }
               >
@@ -152,9 +152,10 @@ class Collection extends React.Component<CollectionProps> {
                 priority="primary"
                 onClick={() => publish(id, frontId)}
                 tabIndex={-1}
+                disabled={isEditFormOpen}
                 title={
                   isEditFormOpen
-                    ? 'You cannot launch this collection whilst the edit form is open.'
+                    ? 'You cannot launch this collection whilst an edit form is open.'
                     : undefined
                 }
               >
@@ -225,11 +226,13 @@ const createMapStateToProps = () => {
       hasMultipleFrontsOpen: selectHasMultipleFrontsOpen(state, priority),
       isEditFormOpen:
         !!selectedArticleFragmentData &&
-        selectedArticleFragmentData.some(_ => selectIsArticleInCollection(state.shared, {
-          collectionId: id,
-          collectionSet: browsingStage,
-          articleFragmentId: _.id
-        }))
+        selectedArticleFragmentData.some(_ =>
+          selectIsArticleInCollection(state.shared, {
+            collectionId: id,
+            collectionSet: browsingStage,
+            articleFragmentId: _.id
+          })
+        )
     };
   };
 };
