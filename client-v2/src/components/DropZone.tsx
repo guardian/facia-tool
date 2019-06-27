@@ -5,10 +5,12 @@ import { theme } from 'constants/theme';
 const DropContainer = styled('div')<{
   disabled: boolean;
   doubleHeight?: boolean;
+  isActive: boolean;
 }>`
   position: relative;
   height: ${({ doubleHeight }) => (doubleHeight ? '20px' : '10px')};
-  ${({ disabled }) => disabled && 'pointer-events: none'}
+  ${({ disabled }) => disabled && 'pointer-events: none'};
+  ${({ isActive }) => `z-index: ${isActive ? 1 : 1}`}
 `;
 
 const DropIndicator = styled(`div`)`
@@ -104,12 +106,12 @@ class DropZone extends React.Component<
         data-testid="drop-zone"
         style={style}
         disabled={!!this.props.disabled}
+        isActive={this.isActive}
       >
         {this.isActive && (
           <DropIndicator
             style={{
-              ...this.props.indicatorStyle,
-              zIndex: this.isActive ? 1 : undefined
+              ...this.props.indicatorStyle
             }}
           >
             <DropIndicatorMessage
