@@ -61,13 +61,10 @@ type Props = ComponentProps &
     {}
   >;
 
-export const formMinWidth = 300;
-
 const FormContainer = styled(ContentContainer.withComponent('form'))`
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-width: ${formMinWidth}px;
   margin-top: 10px;
   height: calc(100% - 10px);
   background-color: ${({ theme }) => theme.base.colors.formBackground};
@@ -75,7 +72,7 @@ const FormContainer = styled(ContentContainer.withComponent('form'))`
 
 const FormContent = styled('div')`
   flex: 1;
-  overflow-y: scroll;
+  overflow: hidden;
 `;
 
 // const CollectionHeadingPinline = ContainerHeading.extend`

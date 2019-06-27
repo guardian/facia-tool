@@ -2,10 +2,7 @@ import { Dispatch } from 'types/Store';
 import React from 'react';
 import { connect } from 'react-redux';
 import { State } from 'types/State';
-import {
-  selectEditorArticleFragment,
-  editorClearArticleFragmentSelection
-} from 'bundles/frontsUIBundle';
+import { editorClearArticleFragmentSelection } from 'bundles/frontsUIBundle';
 import { clipboardId } from 'constants/fronts';
 import { updateClipboardArticleFragmentMeta } from 'actions/ArticleFragments';
 import { ArticleFragmentMeta } from 'shared/types/Collection';
@@ -42,7 +39,7 @@ const ClipboardMeta = (props: Props) => {
 };
 
 const mapStateToProps = (state: State) => ({
-  selectedArticleFragment: selectEditorArticleFragment(state, clipboardId)
+  selectedArticleFragment: undefined // selectEditorArticleFragment(state, clipboardId)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

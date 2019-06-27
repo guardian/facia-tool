@@ -7,8 +7,7 @@ import { fetchLastPressed } from 'actions/Fronts';
 import { updateCollection } from 'actions/Collections';
 import {
   editorCloseFront,
-  selectIsFrontOverviewOpen,
-  selectOpenArticleFragmentForms
+  selectIsFrontOverviewOpen
 } from 'bundles/frontsUIBundle';
 import Button from 'shared/components/input/ButtonDefault';
 import { frontStages } from 'constants/fronts';
@@ -24,7 +23,6 @@ import { toTitleCase } from 'util/stringUtils';
 import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
 import { PreviewEyeIcon, ClearIcon } from 'shared/components/icons/Icons';
 import { createFrontId } from 'util/editUtils';
-import { formMinWidth } from './ArticleFragmentForm';
 import { overviewMinWidth } from './FrontCollectionsOverview';
 
 const FrontHeader = styled(SectionHeader)`
@@ -57,7 +55,6 @@ const singleFrontMinWidth = 380;
 
 const SingleFrontContainer = styled('div')<{
   isOverviewOpen: boolean;
-  isFormOpen: boolean;
 }>`
   /**
    * We parameterise the min-width of the fronts container to handle the
@@ -66,10 +63,8 @@ const SingleFrontContainer = styled('div')<{
    * of the front container proportionally to keep the collection container the
    * same width.
    */
-  min-width: ${({ isOverviewOpen, isFormOpen }) =>
-    isFormOpen
-      ? singleFrontMinWidth + formMinWidth + 10
-      : isOverviewOpen
+  min-width: ${({ isOverviewOpen }) =>
+    isOverviewOpen
       ? singleFrontMinWidth + overviewMinWidth + 10
       : singleFrontMinWidth}px;
   flex: 1 1 auto;
@@ -126,7 +121,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   };
 
   public render() {
-    const { frontId, isFormOpen, isOverviewOpen } = this.props;
+    const { frontId, isOverviewOpen } = this.props;
     const title =
       this.props.selectedFront &&
       startCase(
@@ -136,7 +131,6 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
       <SingleFrontContainer
         key={frontId}
         id={createFrontId(frontId)}
-        isFormOpen={isFormOpen}
         isOverviewOpen={isOverviewOpen}
       >
         <FrontContainer>
@@ -193,8 +187,7 @@ const createMapStateToProps = () => {
   return (state: State, props: FrontsContainerProps) => ({
     selectedFront: getFront(state, { frontId: props.frontId }),
     alsoOn: alsoOnSelector(state, { frontId: props.frontId }),
-    isOverviewOpen: selectIsFrontOverviewOpen(state, props.frontId),
-    isFormOpen: !!selectOpenArticleFragmentForms(state, props.frontId)
+    isOverviewOpen: selectIsFrontOverviewOpen(state, props.frontId)
   });
 };
 

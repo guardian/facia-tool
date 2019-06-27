@@ -64,7 +64,7 @@ type ArticleContainerProps = ContainerProps & {
   copyCollectionItemImageMeta: (from: string, to: string) => void;
   addImageToArticleFragment: (id: string, response: ValidationResponse) => void;
   updateArticleFragmentMeta: (meta: ArticleFragmentMeta) => void;
-  clearArticleFragmentSelection: () => void;
+  clearArticleFragmentSelection: (id: string) => void;
   type: CollectionItemTypes;
   isSelected: boolean;
   numSupportingArticles: number;
@@ -141,9 +141,9 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
                 frontId={frontId}
                 onSave={meta => {
                   updateArticleFragmentMeta(meta);
-                  clearArticleFragmentSelection();
+                  clearArticleFragmentSelection(uuid);
                 }}
-                onCancel={() => clearArticleFragmentSelection()}
+                onCancel={() => clearArticleFragmentSelection(uuid)}
               />
             )}
           </>
@@ -244,8 +244,8 @@ const mapDispatchToProps = (
       dispatch(addImageToArticleFragment(id, response)),
     updateArticleFragmentMeta: (meta: ArticleFragmentMeta) =>
       dispatch(updateArticleFragmentMetaAction(uuid, meta)),
-    clearArticleFragmentSelection: () =>
-      dispatch(editorClearArticleFragmentSelection(frontId))
+    clearArticleFragmentSelection: (id: string) =>
+      dispatch(editorClearArticleFragmentSelection(id))
   };
 };
 

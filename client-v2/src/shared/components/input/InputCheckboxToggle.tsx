@@ -7,6 +7,7 @@ import InputContainer from './InputContainer';
 
 const CheckboxContainer = styled('div')<{ addBorder: boolean }>`
   display: flex;
+  align-items: center;
   ${({ addBorder }) =>
     addBorder &&
     css`
@@ -17,7 +18,9 @@ const CheckboxContainer = styled('div')<{ addBorder: boolean }>`
 `;
 
 const Label = InputLabel.extend`
+  padding-left: 5px;
   color: ${props => props.theme.shared.input.colorLabel};
+  line-height: 16px;
   flex: 1;
   cursor: pointer;
 `;
@@ -38,7 +41,8 @@ const CheckboxLabel = styled('label')`
   height: 24px;
   padding: 0;
   line-height: 24px;
-  border: ${({ theme }) => `2px solid ${theme.shared.input.checkboxBorderColor}`};
+  border: ${({ theme }) =>
+    `2px solid ${theme.shared.input.checkboxBorderColor}`};
   border-radius: 24px;
   background-color: ${({ theme }) => theme.shared.input.checkboxBorderColor};
   transition: background-color 0.1s ease-in;
@@ -53,7 +57,8 @@ const CheckboxLabel = styled('label')`
     top: 0;
     bottom: 0;
     right: 16px;
-    border: ${({ theme }) => `2px solid ${theme.shared.input.checkboxBorderColor}`};
+    border: ${({ theme }) =>
+      `2px solid ${theme.shared.input.checkboxBorderColor}`};
     border-radius: 24px;
     transition: all 0.1s ease-in 0s;
   }
@@ -88,9 +93,6 @@ export default ({
   <>
     <InputContainer data-testid={dataTestId}>
       <CheckboxContainer addBorder={addBorder}>
-        <Label htmlFor={id} size="sm">
-          {label}
-        </Label>
         <Switch>
           <Checkbox
             type="checkbox"
@@ -101,6 +103,9 @@ export default ({
           />
           <CheckboxLabel htmlFor={id} />
         </Switch>
+        <Label htmlFor={id} size="sm">
+          {label}
+        </Label>
       </CheckboxContainer>
     </InputContainer>
   </>
