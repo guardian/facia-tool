@@ -3,15 +3,21 @@ package controllers
 import logging.Logging
 import model.forms._
 import play.api.libs.json.Json
-import services.editions.{EditionsDB, EditionsTemplating}
+import services.editions.EditionsTemplating
 import java.time.LocalDate
 
-import model.editions.{ EditionsFrontendCollectionWrapper, EditionsTemplates}
+import model.editions.{EditionsFrontendCollectionWrapper, EditionsTemplates}
+import services.editions.db.EditionsDB
+import services.editions.publishing.{EditionsPublishing, PublishedIssuesBucket}
+import services.editions.publishing.PublishedIssueFormatters._
 
 import scala.concurrent.ExecutionContext
 import scala.util.Try
 
-class EditionsController(db: EditionsDB, templating: EditionsTemplating, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps)  with Logging {
+class EditionsController(db: EditionsDB,
+                         templating: EditionsTemplating,
+                         publishing: EditionsPublishing,
+                         val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps)  with Logging {
 
   def postIssue(name: String) = AccessAPIAuthAction(parse.json[CreateIssue]) { req =>
     val form = req.body
@@ -27,10 +33,10 @@ class EditionsController(db: EditionsDB, templating: EditionsTemplating, val dep
     }
   }
 
-  def getIssue(id: String)= AccessAPIAuthAction { req =>
+  def getIssue(id: String)= AccessAPIAuthAction { _ =>
     db.getIssue(id).map { issue =>
       Ok(Json.toJson(issue))
-    }.getOrElse(NotFound(s"Edition $id not found"))
+    }.getOrElse(NotFound(s"Issue $id not found"))
   }
 
   def getAvailableEditions = AccessAPIAuthAction { _ =>
@@ -65,5 +71,18 @@ class EditionsController(db: EditionsDB, templating: EditionsTemplating, val dep
     val collectionToUpdate = EditionsFrontendCollectionWrapper.toCollection(form)
     val updatedCollection = db.updateCollection(collectionToUpdate)
     Ok(Json.toJson(EditionsFrontendCollectionWrapper.fromCollection(updatedCollection)))
+  }
+
+  def getPreviewEdition(id: String) = AccessAPIAuthAction { _ =>
+    db.getIssue(id).map { issue =>
+      Ok(Json.toJson(issue.toPublishedIssue()))
+    }.getOrElse(NotFound(s"Issue $id not found"))
+  }
+
+  def publishIssue(id: String) = AccessAPIAuthAction { req =>
+    db.getIssue(id).map { issue =>
+      publishing.publish(issue, req.user)
+      NoContent
+    }.getOrElse(NotFound(s"Issue $id not found"))
   }
 }

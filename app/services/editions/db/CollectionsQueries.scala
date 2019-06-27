@@ -1,12 +1,12 @@
-package services.editions
+package services.editions.db
 
 import java.time.{Instant, ZoneId, ZonedDateTime}
 
-import services.editions.CollectionsHelpers._
-import model.editions._
+import model.editions.EditionsCollection
 import model.forms.GetCollectionsFilter
 import scalikejdbc._
-
+import services.editions.DbEditionsArticle
+import services.editions.CollectionsHelpers._
 
 trait CollectionsQueries {
   def getCollections(filters : List[GetCollectionsFilter]) = DB readOnly { implicit session =>

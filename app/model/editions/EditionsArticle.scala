@@ -1,9 +1,15 @@
 package model.editions
 
+import com.gu.editions.PublishedArticle
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
-case class EditionsArticle(pageCode: String, addedOn: Long)
+case class EditionsArticle(pageCode: String, addedOn: Long) {
+  def toPublishedArticle(): PublishedArticle = PublishedArticle(
+    pageCode.toLong,
+    None
+  )
+}
 
 object EditionsArticle {
   implicit val writes = Json.format[EditionsArticle]

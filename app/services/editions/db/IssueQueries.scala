@@ -1,13 +1,12 @@
-package services.editions
+package services.editions.db
 
 import java.time.LocalDate
 
-import play.api.libs.json.Json
 import com.gu.pandomainauth.model.User
 import model.editions._
 import scalikejdbc._
+import services.editions.{DbEditionsArticle, DbEditionsCollection, DbEditionsFront}
 import services.editions.CollectionsHelpers._
-
 
 trait IssueQueries {
 
@@ -185,5 +184,17 @@ trait IssueQueries {
         }
 
     rows.headOption.map(_.issue.copy(fronts = fronts))
+  }
+
+  def publishIssue(issueId: String, user: User) = DB localTx { implicit session =>
+    val userName = user.firstName + " " + user.lastName
+
+    sql"""
+    UPDATE edition_issues
+    SET launched_on = now(),
+        launched_by = $userName,
+        launched_email = ${user.email}
+    WHERE id = $issueId
+    """.execute().apply()
   }
 }

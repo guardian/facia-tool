@@ -8,7 +8,7 @@ packageSummary := "Facia tool"
 
 packageDescription := "Guardian front pages editor"
 
-scalaVersion := "2.12.5"
+scalaVersion in ThisBuild := "2.12.5"
 
 import sbt.Resolver
 import sbt.io.Path._
@@ -31,7 +31,7 @@ riffRaffArtifactResources := {
     ) ++ ((jsBundlesDir * "*") pair rebase(jsBundlesDir, "static-facia-tool"))
 }
 
-javacOptions := Seq("-g","-encoding", "utf8")
+javacOptions in ThisBuild := Seq("-g","-encoding", "utf8")
 
 javaOptions in Universal ++= Seq(
     "-Dpidfile.path=/dev/null",
@@ -110,7 +110,17 @@ libraryDependencies ++= Seq(
     "org.scalikejdbc"          %% "scalikejdbc"                  % "3.1.0",
     "org.scalikejdbc"          %% "scalikejdbc-config"           % "3.1.0",
     "org.scalikejdbc"          %% "scalikejdbc-play-initializer" % "2.6.0-scalikejdbc-3.1"
-
 )
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala, RiffRaffArtifact, JDebPackaging, SystemdPlugin)
+val editionsCommon = (project in file("./editions-common"))
+    .settings(
+        name := "editions-common",
+        version := "0.1.0"
+    )
+
+lazy val root = (project in file("."))
+    .dependsOn(editionsCommon)
+    .enablePlugins(PlayScala, RiffRaffArtifact, JDebPackaging, SystemdPlugin)
+
+
+

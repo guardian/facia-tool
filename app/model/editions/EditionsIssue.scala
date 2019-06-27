@@ -1,7 +1,8 @@
 package model.editions
 
-import java.time.ZonedDateTime
+import java.time.{Instant, ZoneId, ZonedDateTime}
 
+import com.gu.editions.PublishedIssue
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
@@ -17,7 +18,14 @@ case class EditionsIssue(
     launchedBy: Option[String],
     launchedEmail: Option[String],
     fronts: List[EditionsFront]
-)
+) {
+  def toPublishedIssue(): PublishedIssue = PublishedIssue(
+    id,
+    displayName,
+    ZonedDateTime.ofInstant(Instant.ofEpochMilli(issueDate), ZoneId.of(timezoneId)),
+    fronts.map(_.toPublishedFront)
+  )
+}
 
 object EditionsIssue {
   implicit val writes = Json.writes[EditionsIssue]
