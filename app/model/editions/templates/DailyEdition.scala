@@ -37,7 +37,7 @@ object DailyEdition {
 object FrontSpecialSpecial1 {
   val collectionSpecialSpecial1 = CollectionTemplate(
     name = "Special",
-    prefill = None,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/special-supplement")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
 
