@@ -1,9 +1,10 @@
 package services.editions.db
 
-import java.time.{Instant, ZoneId, ZonedDateTime}
+import java.time._
 
 import model.editions.EditionsCollection
 import model.forms.GetCollectionsFilter
+import play.api.libs.json.Json
 import scalikejdbc._
 import services.editions.DbEditionsArticle
 import services.editions.CollectionsHelpers._
@@ -14,10 +15,22 @@ trait CollectionsQueries {
     case class GetCollectionsRow(collection: EditionsCollection, article: Option[DbEditionsArticle])
 
     val sqlFilters = filters.map { f =>
-      TypedFilters(f.id, f.lastUpdated.map(Instant.ofEpochMilli(_).atZone(ZoneId.of("UTC"))))
+      // We add a single millisecond here because the precision in the database is higher than what the client
+      // provides (μs in the DB vs ms from the client) so the clients value is effectively truncated.
+      //
+      // Rather than fiddle with timestamp resolution in the query in the database which would affect our
+      // indexing strategy we can just add a single millisecond here.
+      TypedFilters(
+        f.id,
+        f.lastUpdated
+          .map(
+            Instant
+              .ofEpochMilli(_)
+              .atZone(ZoneId.of("UTC"))
+              .plus(Duration.ofMillis(1))))
     }
 
-    val rows: List[GetCollectionsRow] = sql"""
+    val rows = sql"""
       SELECT
         collections.id,
         collections.front_id,
@@ -33,7 +46,8 @@ trait CollectionsQueries {
         articles.collection_id AS articles_collection_id,
         articles.page_code     AS articles_page_code,
         articles.index         AS articles_index,
-        articles.added_on      AS articles_added_on
+        articles.added_on      AS articles_added_on,
+        articles.metadata      AS articles_metadata
 
       FROM collections
       LEFT JOIN articles ON (articles.collection_id = collections.id)
@@ -84,8 +98,9 @@ trait CollectionsQueries {
           collection_id,
           page_code,
           index,
-          added_on
-          ) VALUES (${collection.id}, ${article.pageCode}, $index, now())
+          added_on,
+          metadata
+          ) VALUES (${collection.id}, ${article.pageCode}, $index, now(), ${article.metadata.map(m => Json.toJson(m).toString)}::JSONB)
        """.execute().apply()
     }
 

@@ -4,7 +4,13 @@ import com.gu.editions.{PublishedArticle, PublishedArticleMetadata}
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
-case class EditionsArticle(pageCode: String, addedOn: Long) {
+case class ArticleMetadata(headline: String)
+
+object ArticleMetadata {
+  implicit val format = Json.format[ArticleMetadata]
+}
+
+case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[ArticleMetadata]) {
   def toPublishedArticle: PublishedArticle = PublishedArticle(
     pageCode.toLong,
     PublishedArticleMetadata(None, None, None) // TODO (sihil): Store in DB and populate here
@@ -17,7 +23,8 @@ object EditionsArticle {
   def fromRow(rs: WrappedResultSet, prefix: String = ""): EditionsArticle = {
     EditionsArticle(
       rs.string(prefix + "page_code"),
-      rs.zonedDateTime(prefix + "added_on").toInstant.toEpochMilli
+      rs.zonedDateTime(prefix + "added_on").toInstant.toEpochMilli,
+      rs.stringOpt(prefix + "metadata").map(s => Json.parse(s).validate[ArticleMetadata].get)
     )
   }
 
@@ -25,6 +32,11 @@ object EditionsArticle {
     for {
       pageCode <- rs.stringOpt(prefix + "page_code")
       addedOn <- rs.zonedDateTimeOpt(prefix + "added_on").map(_.toInstant.toEpochMilli)
-    } yield EditionsArticle(pageCode, addedOn)
+    } yield
+      EditionsArticle(
+        pageCode,
+        addedOn,
+        rs.stringOpt(prefix + "metadata").map(s => Json.parse(s).validate[ArticleMetadata].get)
+      )
   }
 }

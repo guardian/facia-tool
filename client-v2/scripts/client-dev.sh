@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-IS_DEBUG=false
+NO_DEBUG=false
 for arg in "$@"
 do
-    if [[ "$arg" == "--debug" ]]; then
-        IS_DEBUG=true
+    if [[ "$arg" == "--no-debug" ]]; then
+        NO_DEBUG=true
         shift
     fi
 done
@@ -18,14 +18,13 @@ cd ..
 printf "\n\rStarting Postgres... \n\r\n\r"
 docker-compose up -d
 
-
 printf "\n\rStarting Play App... \n\r\n\r"
 
 export SBT_OPTS="-XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=4G -Xmx4G"
 
-if [[ "$IS_DEBUG" = true ]] ; then
-  sbt -jvm-debug 5005 "run"
-else
+if [[ "$NO_DEBUG" = true ]] ; then
   sbt "run"
+else
+  sbt -jvm-debug 5005 "run"
 fi
 

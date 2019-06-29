@@ -141,7 +141,8 @@ trait IssueQueries {
         articles.collection_id AS articles_collection_id,
         articles.page_code     AS articles_page_code,
         articles.index         AS articles_index,
-        articles.added_on      AS articles_added_on
+        articles.added_on      AS articles_added_on,
+        articles.metadata      AS articles_metadata
 
       FROM edition_issues
       LEFT JOIN fronts ON (fronts.issue_id = edition_issues.id)
