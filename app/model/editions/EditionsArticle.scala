@@ -4,7 +4,7 @@ import com.gu.editions.{PublishedArticle, PublishedArticleMetadata}
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
-case class ArticleMetadata(headline: String)
+case class ArticleMetadata(headline: Option[String])
 
 object ArticleMetadata {
   implicit val format = Json.format[ArticleMetadata]
