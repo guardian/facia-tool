@@ -5,7 +5,11 @@
  *  with : `import { styled } from 'shared/constants/theme';`
  */
 
-import baseStyled, { ThemedStyledInterface } from 'styled-components';
+import baseStyled, {
+  css as baseCss,
+  ThemedStyledInterface,
+  ThemedCssFunction
+} from 'styled-components';
 
 const colors = {
   blackDark: '#121212', // darkest
@@ -92,3 +96,4 @@ interface SharedTheme {
   shared: Theme;
 }
 export const styled = baseStyled as ThemedStyledInterface<SharedTheme>;
+export const css = baseCss as ThemedCssFunction<SharedTheme>;

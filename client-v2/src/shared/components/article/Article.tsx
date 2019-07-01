@@ -85,15 +85,19 @@ const articleBodyComponentMap: {
 
 interface ComponentState {
   isDraggingImageOver: boolean;
+  isDraggingArticleOver: boolean;
 }
 
 class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
   public state = {
-    isDraggingImageOver: false
+    isDraggingImageOver: false,
+    isDraggingArticleOver: false
   };
 
-  public setIsHovered = (isDraggingImageOver: boolean) =>
+  public setIsImageHovering = (isDraggingImageOver: boolean) =>
     this.setState({ isDraggingImageOver });
+  public setIsArticleHovering = (isDraggingArticleOver: boolean) =>
+    this.setState({ isDraggingArticleOver });
 
   public render() {
     const {
@@ -130,53 +134,60 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
       };
 
     return (
-      <CollectionItemContainer
-        draggable={draggable}
-        onDragStart={onDragStart}
-        onDragOver={onDragOver}
-        onDragEnter={onDragEnter}
-        onDrop={onDrop}
-        onClick={e => {
-          if (isLoading || !article) {
-            return;
-          }
-          e.stopPropagation();
-          onClick();
-        }}
+      <DragIntentContainer
+        filterRegisterEvent={e => !dragEventHasImageData(e)}
+        onDragIntentStart={() => this.setIsArticleHovering(true)}
+        onDragIntentEnd={() => this.setIsArticleHovering(false)}
       >
-        <DragIntentContainer
-          active={!!onImageDrop}
-          filterRegisterEvent={dragEventHasImageData}
-          onDragIntentStart={() => this.setIsHovered(true)}
-          onDragIntentEnd={() => this.setIsHovered(false)}
-          onDrop={e => {
-            if (dragEventHasImageData(e) && onImageDrop) {
-              onImageDrop(e);
+        <CollectionItemContainer
+          draggable={draggable}
+          isDraggingArticleOver={this.state.isDraggingArticleOver}
+          onDragStart={onDragStart}
+          onDragOver={onDragOver}
+          onDragEnter={onDragEnter}
+          onDrop={onDrop}
+          onClick={e => {
+            if (isLoading || !article) {
+              return;
             }
+            e.stopPropagation();
+            onClick();
           }}
         >
-          <ArticleBodyContainer
-            data-testid="article-body"
-            size={size}
-            fade={fade}
-            displayType={displayType}
-            pillarId={article && article.pillarId}
-            isLive={!!article && article.isLive}
-            isDraggingImageOver={this.state.isDraggingImageOver}
+          <DragIntentContainer
+            active={!!onImageDrop}
+            filterRegisterEvent={dragEventHasImageData}
+            onDragIntentStart={() => this.setIsImageHovering(true)}
+            onDragIntentEnd={() => this.setIsImageHovering(false)}
+            onDrop={e => {
+              if (dragEventHasImageData(e) && onImageDrop) {
+                onImageDrop(e);
+              }
+            }}
           >
-            <ArticleBody
-              {...getArticleData()}
+            <ArticleBodyContainer
+              data-testid="article-body"
               size={size}
-              isUneditable={!!article && isUneditable}
-              onDelete={onDelete}
-              onAddToClipboard={onAddToClipboard}
-              displayPlaceholders={isLoading}
-            />
-            <ImageDragIntentIndicator />
-          </ArticleBodyContainer>
-        </DragIntentContainer>
-        {children}
-      </CollectionItemContainer>
+              fade={fade}
+              displayType={displayType}
+              pillarId={article && article.pillarId}
+              isLive={!!article && article.isLive}
+              isDraggingImageOver={this.state.isDraggingImageOver}
+            >
+              <ArticleBody
+                {...getArticleData()}
+                size={size}
+                isUneditable={!!article && isUneditable}
+                onDelete={onDelete}
+                onAddToClipboard={onAddToClipboard}
+                displayPlaceholders={isLoading}
+              />
+              <DragIntentIndicator />
+            </ArticleBodyContainer>
+          </DragIntentContainer>
+          {children}
+        </CollectionItemContainer>
+      </DragIntentContainer>
     );
   }
 }

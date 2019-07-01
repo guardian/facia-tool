@@ -2,7 +2,7 @@ import React from 'react';
 import { styled } from 'constants/theme';
 import { theme } from 'constants/theme';
 
-const DropContainer = styled('div')<{
+export const DropContainer = styled('div')<{
   disabled: boolean;
   doubleHeight?: boolean;
   isActive: boolean;
@@ -13,21 +13,38 @@ const DropContainer = styled('div')<{
   ${({ isActive }) => `z-index: ${isActive ? 1 : 1}`}
 `;
 
-const DropIndicator = styled(`div`)`
+export const DropIndicator = styled(`div`)<{ isActive: boolean }>`
   display: flex;
   flex-direction: row;
   height: 20px;
+  opacity: 0;
+  ${({ isActive }) =>
+    isActive &&
+    `
+  z-index: 1;
+  opacity: 1;
+  `}
 `;
 
-const DropIndicatorBar = styled('div')`
+export const DropIndicatorBar = styled('div')<{
+  color?: string;
+  isActive: boolean;
+}>`
   position: relative;
   height: 8px;
   width: 100%;
   top: 6px;
   margin-left: -5px;
+  ${({ color, isActive }) =>
+    `background-color: ${
+      isActive ? color : theme.shared.colors.greyMediumLight
+    } !important`}
 `;
 
-const DropIndicatorMessage = styled(`div`)`
+export const DropIndicatorMessage = styled(`div`)<{
+  color?: string;
+  isActive: boolean;
+}>`
   flex: 1 0 60px;
   border-radius: 10px;
   height: 20px;
@@ -38,6 +55,10 @@ const DropIndicatorMessage = styled(`div`)`
   font-family: TS3TextSans;
   font-size: 10px;
   color: white;
+  ${({ color, isActive }) =>
+    `background-color: ${
+      isActive ? color : theme.shared.colors.greyMediumLight
+    } !important`}
 `;
 
 class DropZone extends React.Component<
@@ -98,34 +119,34 @@ class DropZone extends React.Component<
         };
 
   public render() {
-    const { style, doubleHeight } = this.props;
+    const {
+      style,
+      doubleHeight,
+      dropColor,
+      indicatorStyle,
+      disabled,
+      dropMessage
+    } = this.props;
     return (
       <DropContainer
         {...this.getEventProps()}
         doubleHeight={doubleHeight}
         data-testid="drop-zone"
         style={style}
-        disabled={!!this.props.disabled}
+        disabled={!!disabled}
         isActive={this.isActive}
       >
-        {this.isActive && (
-          <DropIndicator
-            style={{
-              ...this.props.indicatorStyle
-            }}
-          >
-            <DropIndicatorMessage
-              style={{ backgroundColor: this.props.dropColor }}
-            >
-              <div>{this.props.dropMessage}</div>
-            </DropIndicatorMessage>
-            <DropIndicatorBar
-              style={{
-                backgroundColor: this.props.dropColor
-              }}
-            />
-          </DropIndicator>
-        )}
+        <DropIndicator
+          style={{
+            ...indicatorStyle
+          }}
+          isActive={this.isActive}
+        >
+          <DropIndicatorMessage isActive={this.isActive} color={dropColor}>
+            <div>{dropMessage}</div>
+          </DropIndicatorMessage>
+          <DropIndicatorBar isActive={this.isActive} color={dropColor} />
+        </DropIndicator>
       </DropContainer>
     );
   }
