@@ -2,21 +2,22 @@ import React from 'react';
 import { styled } from 'constants/theme';
 import { theme } from 'constants/theme';
 
-export const DropContainer = styled('div')<{
+export const DefaultDropContainer = styled('div')<{
   disabled: boolean;
   doubleHeight?: boolean;
-  isActive: boolean;
+  isActive?: boolean;
 }>`
   position: relative;
-  height: ${({ doubleHeight }) => (doubleHeight ? '20px' : '10px')};
+  height: ${({ doubleHeight }) => (doubleHeight ? '20px' : '8px')};
   ${({ disabled }) => disabled && 'pointer-events: none'};
   ${({ isActive }) => `z-index: ${isActive ? 1 : 1}`}
 `;
 
-export const DropIndicator = styled(`div`)<{ isActive: boolean }>`
+export const DefaultDropIndicator = styled(`div`)<{ isActive?: boolean }>`
+  position: relative;
   display: flex;
   flex-direction: row;
-  height: 20px;
+  height: 8px;
   opacity: 0;
   ${({ isActive }) =>
     isActive &&
@@ -28,13 +29,12 @@ export const DropIndicator = styled(`div`)<{ isActive: boolean }>`
 
 export const DropIndicatorBar = styled('div')<{
   color?: string;
-  isActive: boolean;
+  isActive?: boolean;
 }>`
   position: relative;
   height: 8px;
   width: 100%;
-  top: 6px;
-  margin-left: -5px;
+  margin-left: 5px;
   ${({ color, isActive }) =>
     `background-color: ${
       isActive ? color : theme.shared.colors.greyMediumLight
@@ -43,14 +43,14 @@ export const DropIndicatorBar = styled('div')<{
 
 export const DropIndicatorMessage = styled(`div`)<{
   color?: string;
-  isActive: boolean;
+  isActive?: boolean;
 }>`
-  flex: 1 0 60px;
+  position: absolute;
+  padding: 0 10px;
   border-radius: 10px;
   height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  line-height: 20px;
+  top: -5px;
   font-weight: bold;
   font-family: TS3TextSans;
   font-size: 10px;
@@ -67,17 +67,15 @@ class DropZone extends React.Component<
     onDragOver: (e: React.DragEvent) => void;
     disabled?: boolean;
     doubleHeight?: boolean;
-    style: React.CSSProperties;
-    indicatorStyle: React.CSSProperties;
     override?: boolean;
     dropColor?: string;
     dropMessage?: string;
+    dropContainer?: React.ComponentType<any>;
+    dropIndicator?: React.ComponentType<any>;
   },
   { isHoveredOver: boolean }
 > {
   public static defaultProps = {
-    style: {},
-    indicatorStyle: {},
     dropColor: theme.base.colors.dropZone,
     dropMessage: 'Place here'
   };
@@ -120,32 +118,26 @@ class DropZone extends React.Component<
 
   public render() {
     const {
-      style,
       doubleHeight,
       dropColor,
-      indicatorStyle,
       disabled,
-      dropMessage
+      dropMessage,
+      dropContainer: DropContainer = DefaultDropContainer,
+      dropIndicator: DropIndicator = DefaultDropIndicator
     } = this.props;
     return (
       <DropContainer
         {...this.getEventProps()}
         doubleHeight={doubleHeight}
         data-testid="drop-zone"
-        style={style}
         disabled={!!disabled}
         isActive={this.isActive}
       >
-        <DropIndicator
-          style={{
-            ...indicatorStyle
-          }}
-          isActive={this.isActive}
-        >
+        <DropIndicator isActive={this.isActive}>
+          <DropIndicatorBar isActive={this.isActive} color={dropColor} />
           <DropIndicatorMessage isActive={this.isActive} color={dropColor}>
             <div>{dropMessage}</div>
           </DropIndicatorMessage>
-          <DropIndicatorBar isActive={this.isActive} color={dropColor} />
         </DropIndicator>
       </DropContainer>
     );

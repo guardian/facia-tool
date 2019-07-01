@@ -6,14 +6,6 @@ import AddParentInfo, { PathConsumer, Parent } from './AddParentInfo';
 import { TRANSFER_TYPE, NO_STORE_ERROR } from './constants';
 import DropZone from './DropZone';
 
-const getDropIndexOffset = ({
-  currentTarget: el,
-  clientY
-}: React.DragEvent) => {
-  const { top, height } = el.getBoundingClientRect();
-  return clientY - top > height / 2 ? 1 : 0;
-};
-
 interface PosSpec {
   type: string;
   id: string;
@@ -168,10 +160,6 @@ class Level<T> extends React.Component<Props<T>, State> {
     );
   }
 
-  private getDropIndex(e: React.DragEvent, i: number, isNode: boolean) {
-    return i + (isNode ? getDropIndexOffset(e) : 0);
-  }
-
   private onDragOver = (i: number | null, isNode: boolean) => (
     e: React.DragEvent
   ) => {
@@ -185,14 +173,10 @@ class Level<T> extends React.Component<Props<T>, State> {
       return;
     }
     e.preventDefault();
-    this.props.store.update(
-      this.key,
-      i && this.getDropIndex(e, i, isNode),
-      true
-    );
+    this.props.store.update(this.key, i, true);
   };
 
-  private onDrop = (i: number, isNode: boolean) => (e: React.DragEvent) => {
+  private onDrop = (i: number) => (e: React.DragEvent) => {
     if (
       e.defaultPrevented ||
       dragEventIsBlacklisted(e, this.props.blacklistedDataTransferTypes)
@@ -206,7 +190,7 @@ class Level<T> extends React.Component<Props<T>, State> {
     const af = e.dataTransfer.getData(TRANSFER_TYPE);
 
     const to = {
-      index: this.getDropIndex(e, i, isNode),
+      index: i,
       type: this.props.parentType,
       id: this.props.parentId
     };
@@ -237,7 +221,7 @@ class Level<T> extends React.Component<Props<T>, State> {
   private getDropProps(i: number) {
     return {
       onDragOver: this.onDragOver(i, false),
-      onDrop: this.onDrop(i, false)
+      onDrop: this.onDrop(i)
     };
   }
 
@@ -249,7 +233,7 @@ class Level<T> extends React.Component<Props<T>, State> {
     return (forceClone = false) => ({
       ...getNodeDragProps(forceClone),
       ...(canDrop
-        ? { onDragOver: this.onDragOver(i, true), onDrop: this.onDrop(i, true) }
+        ? { onDragOver: this.onDragOver(i, true), onDrop: this.onDrop(i) }
         : {})
     });
   }

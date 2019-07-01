@@ -8,10 +8,13 @@ import ArticleDrag, {
   dragOffsetX,
   dragOffsetY
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
-import DropZone from 'components/DropZone';
-import { createSelectSupportingArticles } from 'shared/selectors/shared';
+import DropZone, {
+  DefaultDropContainer,
+  DefaultDropIndicator
+} from 'components/DropZone';
+import { createSupportingArticlesSelector } from 'shared/selectors/shared';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
-import { theme } from 'constants/theme';
+import { theme, styled } from 'constants/theme';
 
 interface OuterProps {
   articleFragmentId: string;
@@ -27,6 +30,24 @@ interface InnerProps {
 }
 
 type Props = OuterProps & InnerProps;
+
+const ArticleFragmentDropContainer = styled(DefaultDropContainer)`
+  margin-top: -30px;
+  margin-left: 80px;
+  height: 30px;
+`;
+
+const PolaroidArticleFragmentDropContainer = styled(DefaultDropContainer)`
+  margin-top: -30px;
+  height: 30px;
+  margin-left: 20px;
+`;
+
+const ArticleFragmentDropIndicator = styled(DefaultDropIndicator)`
+  position: absolute;
+  width: 100%;
+  bottom: 0px;
+`;
 
 const ArticleFragmentLevel = ({
   children,
@@ -60,14 +81,12 @@ const ArticleFragmentLevel = ({
               override={isTarget}
               dropColor={theme.base.colors.dropZoneActiveSublink}
               dropMessage={'Sublink'}
-              style={{
-                marginTop: '-30px',
-                height: '30px'
-              }}
-              indicatorStyle={{
-                marginLeft: `${displayType === 'default' ? '60px' : '20px'}`,
-                marginRight: `0`
-              }}
+              dropContainer={
+                displayType === 'default'
+                  ? ArticleFragmentDropContainer
+                  : PolaroidArticleFragmentDropContainer
+              }
+              dropIndicator={ArticleFragmentDropIndicator}
             />
           )
     }
