@@ -19,14 +19,14 @@ interface ComponentProps {
 // These constants can be added to setDragImage to
 // position the drag component in a consistent way.
 export const dragOffsetX = -5;
-export const dragOffsetY = 40;
+export const dragOffsetY = 50;
 
 const DragContainer = styled.div`
   position: relative;
   padding: 0 0 10px 10px;
   display: flex;
   flex-direction: column;
-  width: 300px;
+  width: 330px;
 `;
 
 const DragContent = styled.div`
@@ -41,17 +41,17 @@ const DragContent = styled.div`
   font: TS3TextSans;
   flex: 4;
   align-self: flex-end;
-  width: 270px;
+  width: 300px;
 `;
 
 const DragContentIcon = styled('div')`
-  width: 30px;
-  height: 30px;
-  border-radius: 15px;
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
   background: ${theme.shared.colors.yellow};
   flex: 1;
   align-self: flex-start;
-  padding: 7px;
+  padding: 6px;
   margin-top: -15px;
   box-shadow: 1px -1px 20px black;
 `;
