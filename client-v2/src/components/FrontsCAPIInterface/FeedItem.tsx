@@ -24,7 +24,7 @@ import { ThumbnailSmall } from 'shared/components/Thumbnail';
 import { CapiArticle } from 'types/Capi';
 import { getThumbnail } from 'util/CAPIUtils';
 import {
-  ArticleDragComponent,
+  DraggingArticleComponent,
   dragOffsetX,
   dragOffsetY
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
@@ -106,6 +106,13 @@ const Body = styled('div')`
   padding-left: 8px;
 `;
 
+// The visual representation of an article as it is being dragged.
+// This needs to be rendered by the DOM before it can be used by the Drag&Drop API, so we pushed it off to the side.
+const DraggingArticleContainer = styled('div')`
+  position: absolute;
+  transform: translateX(-9999px);
+`;
+
 interface FeedItemProps {
   article: CapiArticle;
   onAddToClipboard: (article: CapiArticle) => void;
@@ -148,15 +155,9 @@ class FeedItem extends React.Component<FeedItemProps> {
         draggable={true}
         onDragStart={this.handleDragStart}
       >
-        <div
-          style={{
-            position: 'absolute',
-            transform: 'translateX(-9999px)'
-          }}
-          ref={this.dragNode}
-        >
-          <ArticleDragComponent headline={article.webTitle} />
-        </div>
+        <DraggingArticleContainer innerRef={this.dragNode}>
+          <DraggingArticleComponent headline={article.webTitle} />
+        </DraggingArticleContainer>
 
         <VisitedWrapper
           href={getPaths(article.id).live}

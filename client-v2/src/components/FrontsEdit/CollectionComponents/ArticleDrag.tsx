@@ -6,6 +6,7 @@ import {
 } from 'shared/selectors/shared';
 import { State } from 'types/State';
 import { theme, styled } from '../../../constants/theme';
+import documentDragIcon from 'images/icons/document-drag-icon.svg';
 
 interface ContainerProps {
   id: string;
@@ -23,22 +24,45 @@ export const dragOffsetY = 40;
 const DragContainer = styled.div`
   position: relative;
   padding: 0 0 10px 10px;
+  display: flex;
+  flex-direction: column;
+  width: 300px;
 `;
 
 const DragContent = styled.div`
-  background: ${theme.shared.base.colors.backgroundColorFocused};
+  background: ${theme.shared.colors.yellow};
   border-radius: 4px;
   overflow: hidden;
   padding: 8px;
   text-overflow: ellipsis;
-  width: 300px;
   white-space: nowrap;
+  font-weight: 600;
+  font-size: 12px;
+  font: TS3TextSans;
+  flex: 4;
+  align-self: flex-end;
+  width: 270px;
 `;
 
-export const ArticleDragComponent = ({ headline }: ComponentProps) =>
+const DragContentIcon = styled('div')`
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  background: ${theme.shared.colors.yellow};
+  flex: 1;
+  align-self: flex-start;
+  padding: 7px;
+  margin-top: -15px;
+  box-shadow: 1px -1px 20px black;
+`;
+
+export const DraggingArticleComponent = ({ headline }: ComponentProps) =>
   headline ? (
     <DragContainer>
       <DragContent>{headline}</DragContent>
+      <DragContentIcon>
+        <img src={documentDragIcon} />
+      </DragContentIcon>
     </DragContainer>
   ) : null;
 
@@ -50,4 +74,4 @@ const createMapStateToProps = () => {
   };
 };
 
-export default connect(createMapStateToProps)(ArticleDragComponent);
+export default connect(createMapStateToProps)(DraggingArticleComponent);
