@@ -86,9 +86,15 @@ const FrontSectionContent = styled(SectionContent)`
 `;
 
 const FrontHeaderButton = styled(Button)`
-  color: ${({ theme }) => theme.shared.colors.greyMediumDark};
+  color: #fff;
   padding: 0 5px;
+  display: flex;
+  align-items: center;
 `;
+
+const PreviewButtonText = styled('span')`
+  padding 0 5px;
+`
 
 interface FrontsContainerProps {
   frontId: string;
@@ -150,9 +156,14 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                 target="preview"
               >
                 <FrontHeaderButton size="l">
+
                   <PreviewEyeIcon size="xl" />
+                  <PreviewButtonText>
+                    Preview
+                  </PreviewButtonText>
+
                 </FrontHeaderButton>
-              </a>
+                </a>
               <StageSelectButtons>
                 <RadioGroup>
                   {Object.keys(frontStages).map(key => (
