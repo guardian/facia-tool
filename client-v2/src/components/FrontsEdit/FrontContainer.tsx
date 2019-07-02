@@ -93,8 +93,8 @@ const FrontHeaderButton = styled(Button)`
 `;
 
 const PreviewButtonText = styled('span')`
-  padding 0 5px;
-`
+  padding: 0 5px;
+`;
 
 interface FrontsContainerProps {
   frontId: string;
@@ -156,14 +156,10 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                 target="preview"
               >
                 <FrontHeaderButton size="l">
-
                   <PreviewEyeIcon size="xl" />
-                  <PreviewButtonText>
-                    Preview
-                  </PreviewButtonText>
-
+                  <PreviewButtonText>Preview</PreviewButtonText>
                 </FrontHeaderButton>
-                </a>
+              </a>
               <StageSelectButtons>
                 <RadioGroup>
                   {Object.keys(frontStages).map(key => (
