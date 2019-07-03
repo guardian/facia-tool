@@ -83,7 +83,6 @@ const OverviewHeadingButton = styled(ButtonRoundedWithLabel)`
       theme.shared.base.colors.backgroundColorFocused};
   }
   margin-right: 10px;
-  font-size: 12px;
   margin-bottom: 10px;
   margin-top: 10px;
 `;
@@ -263,34 +262,38 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                 }}
               >
                 <ButtonLabel>Expand all&nbsp;</ButtonLabel>
-<<<<<<< HEAD
                 <DownCaretIcon fill={sharedTheme.base.colors.text} />
               </OverviewHeadingButton>
               <OverviewHeadingButton
-=======
-                <DownCaretIcon
-                  fill={sharedTheme.base.colors.text}
-                  direction="down"
-                />
-              </CollapseAllButton>
-              <CollapseAllButton
->>>>>>> Correct spacing
                 onClick={e => {
                   e.preventDefault();
                   this.props.closeAllCollections(this.props.collectionIds);
                 }}
               >
                 <ButtonLabel>Collapse all&nbsp;</ButtonLabel>
-<<<<<<< HEAD
                 <DownCaretIcon
                   direction="up"
                   fill={sharedTheme.base.colors.text}
                 />
               </OverviewHeadingButton>
-=======
-                <DownCaretIcon fill={sharedTheme.base.colors.text} />
-              </CollapseAllButton>
->>>>>>> Correct spacing
+              <OverviewToggleContainer>
+                <OverviewHeading htmlFor={overviewToggleId}>
+                  {this.props.overviewIsOpen ? 'Hide overview' : 'Overview'}
+                </OverviewHeading>
+                <ButtonCircularCaret
+                  id={overviewToggleId}
+                  style={{
+                    margin: '0'
+                  }}
+                  openDir="right"
+                  active={this.props.overviewIsOpen}
+                  preActive={false}
+                  onClick={() =>
+                    this.props.toggleOverview(!this.props.overviewIsOpen)
+                  }
+                  small={true}
+                />
+              </OverviewToggleContainer>
               <OverviewToggleContainer>
                 <OverviewHeading htmlFor={overviewToggleId}>
                   {this.props.overviewIsOpen ? 'Hide overview' : 'Overview'}

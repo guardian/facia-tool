@@ -11,6 +11,13 @@ export default styled.button`
   :focus {
     outline: none;
   }
+  & svg {
+    vertical-align: middle;
+  }
+  :hover {
+    background-color: ${({ theme }) =>
+      theme.shared.base.colors.backgroundColorFocused};
+  }
 `;
 
 export const ButtonLabel = styled.div`

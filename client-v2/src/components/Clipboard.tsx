@@ -29,6 +29,10 @@ import {
 } from 'bundles/focusBundle';
 import FocusWrapper from './FocusWrapper';
 import { bindActionCreators } from 'redux';
+import ButtonRoundedWithLabel, {
+  ButtonLabel
+} from 'shared/components/input/ButtonRoundedWithLabel';
+import { clearClipboardWithPersist } from 'actions/Clipboard';
 
 const ClipboardWrapper = styled<
   HTMLProps<HTMLDivElement> & {
@@ -55,6 +59,7 @@ const ClipboardBody = styled.div`
   padding: 0 10px;
   flex: 1;
   display: flex;
+  flex-direction: column;
 `;
 
 const StyledDragIntentContainer = styled(DragIntentContainer)`
@@ -63,11 +68,35 @@ const StyledDragIntentContainer = styled(DragIntentContainer)`
   min-height: 100%;
 `;
 
+const SupportingDivider = styled.hr`
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 0.5em 0 0.25em;
+  width: 50%;
+`;
+
+const FullDivider = styled('hr')`
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 8px -10px 0px;
+  width: 115%;
+`;
+
+const ClipboardHeader = styled.div`
+  padding-top: 10px;
+  display: flex;
+`;
+
+const ClearClipboardButton = styled(ButtonRoundedWithLabel)`
+  width: 100%;
+`;
+
 interface ClipboardProps {
   selectArticleFragment: (id: string, isSupporting?: boolean) => void;
   clearArticleFragmentSelection: () => void;
   removeCollectionItem: (id: string) => void;
   removeSupportingCollectionItem: (parentId: string, id: string) => void;
+  clearClipboard: () => void;
   handleFocus: () => void;
   handleArticleFocus: (articleFragment: TArticleFragment) => void;
   handleBlur: () => void;
@@ -144,6 +173,11 @@ class Clipboard extends React.Component<ClipboardProps> {
               onDragIntentEnd={() => this.setState({ preActive: false })}
             >
               <ClipboardBody>
+                <ClipboardHeader>
+                  <ClearClipboardButton onClick={this.props.clearClipboard}>
+                    <ButtonLabel>Clear clipboard</ButtonLabel>
+                  </ClearClipboardButton>
+                </ClipboardHeader>
                 <Root
                   id="clipboard"
                   data-testid="clipboard"
@@ -254,7 +288,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       removeArticleFragment('articleFragment', parentId, uuid, 'clipboard')
     );
   },
-
+  clearClipboard: () => {
+    dispatch(clearClipboardWithPersist(clipboardId));
+  },
   handleFocus: () =>
     dispatch(
       setFocusState({
