@@ -52,6 +52,7 @@ const FrontsContainer = styled(SectionContainer)<{
   makeRoomForExtraHeader: boolean;
 }>`
   display: flex;
+  flex-grow: 1;
   height: 100%;
   overflow-y: hidden;
   overflow-x: scroll;
