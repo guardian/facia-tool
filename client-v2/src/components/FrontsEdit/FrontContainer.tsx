@@ -94,8 +94,8 @@ const FrontHeaderButton = styled(Button)`
 
 const PreviewButtonText = styled('span')`
   padding: 0 5px;
+  text-decoration: none;
 `;
-
 interface FrontsContainerProps {
   frontId: string;
 }
