@@ -93,8 +93,12 @@ To fetch these can be fetched using the aws cli like so:
     ```
 
 ### Local test server
+Install `dev-nginx` and configure a new virtual host:
 
-Clone and follows the instructions to set up [dev-nginx](https://github.com/guardian/dev-nginx) (private repo - request access). The steps to follow are 'Install SSL certificates' and 'Install config for an application'. The path for nginx mapping is `nginx/nginx-mapping.yml`.
+```bash
+brew install guardian/devtools/dev-nginx
+dev-nginx setup-app nginx/nginx-mapping.yml
+```
 
 #### Config Files
 
