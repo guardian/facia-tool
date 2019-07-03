@@ -57,11 +57,23 @@ function storeClipboardContent(clipboardContent: NestedArticleFragment[]) {
 
 function updateClipboard(clipboardContent: {
   articles: NestedArticleFragment[];
-}): ThunkResult<Promise<NestedArticleFragment[] | void>> {
-  return (_, getState: () => State) =>
-    saveClipboardStrategy(getState(), clipboardContent.articles).catch(() => {
+}): ThunkResult<Promise<NestedArticleFragment[]>> {
+  return async (_, getState: () => State) => {
+    const saveClipboardResponse = await saveClipboardStrategy(
+      getState(),
+      clipboardContent.articles
+    );
+    try {
+      if (!saveClipboardResponse) {
+        // @todo: implement once error handling is done
+        return Promise.resolve([]);
+      }
+      return saveClipboardResponse;
+    } catch (error) {
       // @todo: implement once error handling is done
-    });
+      return [];
+    }
+  };
 }
 
 const insertClipboardArticleFragment = (

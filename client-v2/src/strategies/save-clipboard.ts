@@ -6,8 +6,8 @@ import { NestedArticleFragment } from 'shared/types/Collection';
 const saveClipboardStrategy = (
   state: State,
   content: NestedArticleFragment[]
-) =>
-  runStrategy<void>(state, {
+): Promise<NestedArticleFragment[]> | null =>
+  runStrategy<Promise<NestedArticleFragment[]> | null>(state, {
     front: () => saveClipboard(content),
     edition: () => saveEditionsClipboard(content),
     none: () => null
