@@ -28,7 +28,7 @@ const DownCaretIcon = ({
   fill,
   size = 'm',
   title = null,
-  direction = 'down'
+  direction = 'up'
 }: IconProps & Directions) => (
   <svg
     width={mapSize(size)}
