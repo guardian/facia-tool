@@ -30,6 +30,21 @@ class UserDataController(frontsApi: FrontsApi, dynamo: Dynamo, val deps: BaseFac
     }
   }
 
+  def putEditionsClipboardContent() = APIAuthAction { request =>
+
+    val clipboardArticles: Option[List[Trail]] = request.body.asJson.flatMap(jsValue =>
+      jsValue.asOpt[List[Trail]])
+
+    clipboardArticles match {
+      case Some(articles) => {
+        val userEmail = request.user.email
+        Scanamo.exec(dynamo.client)(userDataTable.update('email -> request.user.email, set('editionsClipboardArticles -> articles)))
+        Ok
+      }
+      case None => BadRequest
+    }
+  }
+
   def putFrontIds() = APIAuthAction { request =>
     val maybeFrontIds: Option[List[String]] = request.body.asJson.flatMap(
       _.asOpt[List[String]])

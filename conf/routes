@@ -58,6 +58,7 @@ GET         /metadata                                controllers.FaciaToolContro
 POST        /treats/*collectionId                    controllers.FaciaToolController.treatEdits(collectionId)
 
 PUT        /userdata/clipboard                       controllers.UserDataController.putClipboardContent()
+PUT        /userdata/editionsClipboard               controllers.UserDataController.putEditionsClipboardContent()
 PUT        /userdata/frontIds                        controllers.UserDataController.putFrontIds()
 PUT        /userdata/frontIdsByPriority              controllers.UserDataController.putFrontIdsByPriority()
 PUT        /userdata/favouriteFrontIdsByPriority     controllers.UserDataController.putFavouriteFrontIdsByPriority()
