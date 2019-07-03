@@ -209,12 +209,18 @@ const updateEditionsCollection = (collectionId: string) =>
     'put'
   )(collectionId);
 
-async function saveClipboard(
-  clipboardContent: NestedArticleFragment[]
+const saveClipboard = (content: NestedArticleFragment[]) =>
+  createSaveClipboard(content, '/clipboard');
+const saveEditionsClipboard = (content: NestedArticleFragment[]) =>
+  createSaveClipboard(content, '/editionsClipboard');
+
+async function createSaveClipboard(
+  clipboardContent: NestedArticleFragment[],
+  pathSuffix: string
 ): Promise<NestedArticleFragment[]> {
   // The server does not respond with JSON
   try {
-    const response = await pandaFetch(`/userdata/clipboard`, {
+    const response = await pandaFetch(`/userdata${pathSuffix}`, {
       method: 'put',
       credentials: 'same-origin',
       body: JSON.stringify(clipboardContent),
@@ -433,6 +439,7 @@ export {
   updateCollection,
   updateEditionsCollection,
   saveClipboard,
+  saveEditionsClipboard,
   saveOpenFrontIds,
   saveFavouriteFrontIds,
   getCapiUriForContentIds,
