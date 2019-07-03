@@ -20,7 +20,6 @@ import { createSelectFormFieldsForCollectionItem } from 'selectors/formSelectors
 import { ArticleFragmentMeta, ArticleTag } from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
-import HorizontalRule from 'shared/components/layout/HorizontalRule';
 import InputCheckboxToggle from 'shared/components/input/InputCheckboxToggle';
 import InputImage from 'shared/components/input/InputImage';
 import InputGroup from 'shared/components/input/InputGroup';
@@ -226,7 +225,13 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     );
 
     return (
-      <FormContainer data-testid="edit-form">
+      <FormContainer
+        data-testid="edit-form"
+        onClick={
+          (e: React.MouseEvent) =>
+            e.stopPropagation() /* Prevent clicks passing through the form */
+        }
+      >
         {!articleExists && (
           <CollectionEditedError>
             {this.state.lastKnownCollectionId &&
