@@ -202,7 +202,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                   this.props.openAllCollections(this.props.collectionIds);
                 }}
               >
-                <ButtonLabel>{'Expand all '}</ButtonLabel>
+                <ButtonLabel>Expand all&nbsp;</ButtonLabel>
                 <DownCaretIcon
                   fill={sharedTheme.base.colors.text}
                   direction="down"
@@ -214,7 +214,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                   this.props.closeAllCollections(this.props.collectionIds);
                 }}
               >
-                <ButtonLabel>{'Collapse all '}</ButtonLabel>
+                <ButtonLabel>Collapse all&nbsp;</ButtonLabel>
                 <DownCaretIcon fill={sharedTheme.base.colors.text} />
               </CollapseAllButton>
               <OverviewToggleContainer>
