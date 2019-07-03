@@ -13,6 +13,7 @@ import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
 import { isCollectionLockedSelector } from 'selectors/collectionSelectors';
 import { State } from 'types/State';
 import { CollectionItemSets, Group } from 'shared/types/Collection';
+import { selectIsEditingEditions } from 'selectors/pathSelectors';
 import {
   createCollectionStageGroupsSelector,
   createCollectionEditWarningSelector,
@@ -62,6 +63,7 @@ type CollectionProps = CollectionPropsBeforeState & {
   hasMultipleFrontsOpen: boolean;
   onChangeOpenState: (id: string, isOpen: boolean) => void;
   fetchPreviousCollectionArticles: (id: string) => void;
+  isEditingEditions: boolean;
 };
 
 const PreviouslyCollectionContainer = styled('div')`
@@ -110,7 +112,8 @@ class Collection extends React.Component<CollectionProps> {
       onChangeOpenState,
       hasMultipleFrontsOpen,
       isEditFormOpen,
-      discardDraftChangesToCollection: discardDraftChanges
+      discardDraftChangesToCollection: discardDraftChanges,
+      isEditingEditions
     } = this.props;
 
     const { isPreviouslyOpen } = this.state;
@@ -174,20 +177,22 @@ class Collection extends React.Component<CollectionProps> {
       >
         {groups.map(group => children(group, isUneditable, true))}
 
-        <PreviouslyCollectionContainer data-testid="previously">
-          <PreviouslyCollectionToggle
-            onClick={this.togglePreviouslyOpen}
-            data-testid="previously-toggle"
-          >
-            Recently removed
-            <ButtonCircularCaret active={isPreviouslyOpen} />
-          </PreviouslyCollectionToggle>
-          {isPreviouslyOpen && (
-            <PreviouslyGroupsWrapper>
-              {previousGroups.map(group => children(group, true, false))}
-            </PreviouslyGroupsWrapper>
-          )}
-        </PreviouslyCollectionContainer>
+        {!isEditingEditions && (
+          <PreviouslyCollectionContainer data-testid="previously">
+            <PreviouslyCollectionToggle
+              onClick={this.togglePreviouslyOpen}
+              data-testid="previously-toggle"
+            >
+              Recently removed
+              <ButtonCircularCaret active={isPreviouslyOpen} />
+            </PreviouslyCollectionToggle>
+            {isPreviouslyOpen && (
+              <PreviouslyGroupsWrapper>
+                {previousGroups.map(group => children(group, true, false))}
+              </PreviouslyGroupsWrapper>
+            )}
+          </PreviouslyCollectionContainer>
+        )}
       </CollectionDisplay>
     );
   }
@@ -229,7 +234,8 @@ const createMapStateToProps = () => {
           collectionId: id,
           collectionSet: browsingStage,
           articleFragmentId: selectedArticleFragmentData.id
-        })
+        }),
+      isEditingEditions: selectIsEditingEditions(state)
     };
   };
 };
