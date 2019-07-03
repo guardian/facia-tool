@@ -31,6 +31,7 @@ object UserData {
 case class UserData(
   email: String,
   clipboardArticles: Option[List[Trail]],
+  editionsClipboardArticles: Option[List[Trail]],
   frontIds: Option[List[String]],
   frontIdsByPriority: Option[Map[String, List[String]]],
   favouriteFrontIdsByPriority: Option[Map[String, List[String]]]
