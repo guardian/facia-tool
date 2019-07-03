@@ -51,7 +51,7 @@ const DragContentIcon = styled('div')`
   background: ${theme.shared.colors.yellow};
   flex: 1;
   align-self: flex-start;
-  padding: 6px;
+  padding: 6px 8px;
   margin-top: -15px;
   box-shadow: 1px -1px 20px black;
 `;
