@@ -10,6 +10,7 @@ import baseStyled, { ThemedStyledInterface } from 'styled-components';
 const base = {
   colors: {
     radioButtonBackgroundDisabled: '#E6E6E6',
+    radioButtonSelected: shared.colors.blackDark,
     dropZone: '#D6D6D6',
     frontListBorder: '#5E5E5E',
     frontListLabel: shared.colors.greyMediumLight,
