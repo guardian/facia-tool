@@ -1,5 +1,5 @@
 import React from 'react';
-import { theme, styled } from 'shared/constants/theme';
+import { theme as globalTheme, styled } from 'shared/constants/theme';
 import { connect } from 'react-redux';
 import { WrappedFieldProps } from 'redux-form';
 import { events } from 'services/GA';
@@ -24,45 +24,56 @@ import { DRAG_DATA_GRID_IMAGE_URL } from 'constants/image';
 
 const ImageContainer = styled('div')<{
   small?: boolean;
-  isHovering?: boolean;
-  hasImage?: boolean;
 }>`
   display: flex;
   flex-direction: column;
   position: relative;
   width: 100%;
   max-width: ${props => (props.small ? '100px' : '180px')};
-  height: ${props => (props.small ? '60px' : '115px')};
-  background-size: cover;
+  height: ${props => (props.small ? '40px' : '115px')};
   transition: background-color 0.15s;
-  border-left: ${props =>
-    props.isHovering
-      ? `4px solid ${theme.base.colors.highlightColor}`
-      : 'none'};
-  cursor: ${({ hasImage }) => (hasImage ? 'grab' : 'pointer')};
 `;
 
-const AddImageViaGridModalButton = styled(ButtonDefault)<{
-  small?: boolean;
-}>`
-  height: ${props => (!!props.small ? '100%' : '50%')};
-  background-size: cover;
+const AddImageButton = styled(ButtonDefault)<{ small?: boolean }>`
   width: 100%;
-  border-bottom: ${props =>
-    `1px solid ${props.theme.shared.base.colors.backgroundColor}`};
-  background-color: ${props => props.theme.shared.colors.greyLight};
-  :hover {
-    background-color: ${props => props.theme.shared.colors.greyLightPinkish};
+  height: 100%;
+  background-color: ${({ small, theme }) =>
+    small ? theme.shared.colors.greyLight : `#7a7a7a69`};
+  &:hover,
+  &:active,
+  &:hover:enabled,
+  &:active:enabled {
+    background-color: ${({ small, theme }) =>
+      small
+        ? theme.shared.colors.greyVeryLight
+        : theme.shared.colors.greyLight};
   }
 `;
 
+const ImageComponent = styled.div<{ isHovering?: boolean }>`
+  background-size: cover;
+  flex-grow: 1;
+  cursor: grab;
+  ${props =>
+    props.isHovering &&
+    `box-shadow inset 0 -10px 0 ${globalTheme.base.colors.highlightColor}`};
+`;
+
+const AddImageViaGridModalButton = styled.div`
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+`;
+
 const AddImageViaUrlInput = styled(InputContainer)`
-  padding: 11px 5px 5px 5px;
-  height: 50%;
-  background-color: ${props => props.theme.shared.colors.greyLight};
+  flex-grow: 0;
+  margin-top: 5px;
 `;
 
 const ImageUrlInput = styled(InputBase)`
+  border: none;
   ::placeholder {
     font-size: 12px;
   }
@@ -101,10 +112,17 @@ const IconDelete = styled('div')<{
   left: ${props => (props.small ? '5px' : '9px')};
 `;
 
+const InputImageContainer = styled(InputContainer)`
+  padding: 5px;
+  background-color: ${props => props.theme.shared.colors.greyLight};
+`;
+
 export interface InputImageContainerProps {
   frontId: string;
   criteria?: Criteria;
   small?: boolean;
+  defaultImageUrl?: string;
+  useDefault?: boolean;
 }
 
 type ComponentProps = InputImageContainerProps &
@@ -127,11 +145,15 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
   };
 
   public render() {
-    const { small, input, gridUrl } = this.props;
+    const { small, input, gridUrl, defaultImageUrl, useDefault } = this.props;
     const gridSearchUrl = `${gridUrl}?cropType=landscape`;
-    const hasImage = !!input.value && !!input.value.thumb;
+    const hasImage = !useDefault && !!input.value && !!input.value.thumb;
+    const imageUrl =
+      !useDefault && input.value && input.value.thumb
+        ? input.value.thumb
+        : defaultImageUrl;
     return (
-      <InputContainer>
+      <InputImageContainer>
         <GridModal
           url={gridSearchUrl}
           isOpen={this.state.modalOpen}
@@ -144,61 +166,57 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
           onDragIntentStart={() => this.setState({ isHovering: true })}
           onDragIntentEnd={() => this.setState({ isHovering: false })}
         >
-          <ImageContainer
-            draggable={hasImage}
-            onDragStart={this.handleDragStart}
-            onDrop={this.handleDrop}
-            isHovering={this.state.isHovering}
-            small={small}
-            hasImage={hasImage}
-            style={{
-              backgroundImage: input.value && `url(${input.value.thumb}`
-            }}
-          >
-            {hasImage ? (
-              <ButtonDelete
-                type="button"
-                priority="primary"
-                small={small}
-                onClick={this.handleDelete}
-              >
-                {input.value ? (
+          <ImageContainer small={small}>
+            <ImageComponent
+              style={{
+                backgroundImage: `url(${imageUrl}`
+              }}
+              draggable
+              onDragStart={this.handleDragStart}
+              onDrop={this.handleDrop}
+              isHovering={this.state.isHovering}
+            >
+              {hasImage ? (
+                <ButtonDelete
+                  type="button"
+                  priority="primary"
+                  small={small}
+                  onClick={this.handleDelete}
+                >
                   <IconDelete small={small}>
                     <RubbishBinIcon size="s" />
                   </IconDelete>
-                ) : null}
-              </ButtonDelete>
-            ) : (
-              <>
-                <AddImageViaGridModalButton
-                  type="button"
-                  priority="muted"
-                  onClick={this.openModal}
-                  small={small}
-                >
-                  <AddImageIcon size="l" />
-                  {!!small ? null : <Label size="sm">Add image</Label>}
+                </ButtonDelete>
+              ) : (
+                <AddImageViaGridModalButton>
+                  <AddImageButton
+                    type="button"
+                    onClick={this.openModal}
+                    small={small}
+                  >
+                    <AddImageIcon size="l" />
+                    {!!small ? null : <Label size="sm">Add image</Label>}
+                  </AddImageButton>
                 </AddImageViaGridModalButton>
-
-                {!!small ? null : (
-                  <AddImageViaUrlInput>
-                    <ImageUrlInput
-                      name="paste-url"
-                      placeholder=" Paste crop url from Grid"
-                      defaultValue={this.state.imageSrc}
-                      onKeyDown={this.handlePasteImgSrcSubmit(13)}
-                      onChange={this.handlePasteImgSrcChange}
-                    />
-                    <InputLabel hidden htmlFor="paste-url">
-                      Paste crop url from Grid
-                    </InputLabel>
-                  </AddImageViaUrlInput>
-                )}
-              </>
+              )}
+            </ImageComponent>
+            {!!small ? null : (
+              <AddImageViaUrlInput>
+                <ImageUrlInput
+                  name="paste-url"
+                  placeholder=" Paste crop url from Grid"
+                  defaultValue={this.state.imageSrc}
+                  onKeyDown={this.handlePasteImgSrcSubmit(13)}
+                  onChange={this.handlePasteImgSrcChange}
+                />
+                <InputLabel hidden htmlFor="paste-url">
+                  Paste crop url from Grid
+                </InputLabel>
+              </AddImageViaUrlInput>
             )}
           </ImageContainer>
         </DragIntentContainer>
-      </InputContainer>
+      </InputImageContainer>
     );
   }
 
@@ -208,11 +226,9 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
   };
 
   private handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
-    if (this.props.input.value.origin) {
-      e.dataTransfer.setData(
-        DRAG_DATA_GRID_IMAGE_URL,
-        this.props.input.value.origin
-      );
+    const origin = this.props.input.value.origin || this.props.defaultImageUrl;
+    if (origin) {
+      e.dataTransfer.setData(DRAG_DATA_GRID_IMAGE_URL, origin);
       e.dataTransfer.setDragImage(dragImage, -25, 50);
     }
   };
