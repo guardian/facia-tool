@@ -16,7 +16,7 @@ object DailyEdition {
       FrontJournal.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontComment.front -> WeekDays(List(WeekDay.Sun)),
       FrontCulture.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
-      FrontCultureFilmMusic.front -> WeekDays(List(WeekDay.Sat)),
+      FrontCultureFilmMusic.front -> WeekDays(List(WeekDay.Fri)),
       FrontCultureGuide.front -> WeekDays(List(WeekDay.Sat)),
       FrontCultureNewReview.front -> WeekDays(List(WeekDay.Sun)),
       FrontLife.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
@@ -77,7 +77,7 @@ object FrontNewsUkGuardian {
   )
   val collectionNewsUkNewsGuardian = CollectionTemplate(
     name = "UK News",
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/uknews|theguardian/mainsection/education|theguardian/mainsection/society|theguardian/mainsection/media")),
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/uknews|theguardian/mainsection/education|theguardian/mainsection/society|theguardian/mainsection/media|theguardian/guardian-members/guardian-members")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
   val collectionNewsUkFinancial = CollectionTemplate(
