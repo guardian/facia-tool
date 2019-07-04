@@ -27,14 +27,13 @@ const ControlIndicator = styled('div')`
   }
 `;
 
-const ControlRadio = styled('label')<{ inline?: boolean }>`
+const ControlRadio = styled('label')<{ inline?: boolean; checked?: boolean }>`
   position: relative;
   display: ${({ inline }) => (inline ? 'inline' : 'block')};
-  padding-left: 24px;
-  padding-top: 3px;
+  padding: 3px 5px 0 24px;
   cursor: pointer;
   font-family: TS3TextSans;
-  font-weight: bold;
+  font-weight: ${({ checked }) => (checked ? 'bold' : 'initial')};
   font-size: 12px;
 
   & + & {
@@ -49,7 +48,8 @@ const ControlRadio = styled('label')<{ inline?: boolean }>`
   /* Checked state */
   & {
     ${Input}:checked ~ ${ControlIndicator} {
-
+      border:  ${({ theme }) =>
+        `solid 1px ${theme.base.colors.radioButtonSelected}`};
     }
   }
 
@@ -108,7 +108,7 @@ const RadioButton = ({
   checked?: boolean;
   disabled?: boolean;
 } & React.HTMLAttributes<HTMLInputElement>) => (
-  <ControlRadio inline={inline}>
+  <ControlRadio inline={inline} checked={checked}>
     {label}
     <Input
       type="radio"
