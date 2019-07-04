@@ -27,7 +27,7 @@ const ControlIndicator = styled('div')`
   }
 `;
 
-const ControlRadio = styled('label')<{ inline?: boolean; checked?: boolean;}>`
+const ControlRadio = styled('label')<{ inline?: boolean; checked?: boolean }>`
   position: relative;
   display: ${({ inline }) => (inline ? 'inline' : 'block')};
   padding: 3px 5px 0 24px;
@@ -48,7 +48,8 @@ const ControlRadio = styled('label')<{ inline?: boolean; checked?: boolean;}>`
   /* Checked state */
   & {
     ${Input}:checked ~ ${ControlIndicator} {
-      border:  ${({ theme }) => `solid 1px ${theme.base.colors.radioButtonSelected}`};
+      border:  ${({ theme }) =>
+        `solid 1px ${theme.base.colors.radioButtonSelected}`};
     }
   }
 
