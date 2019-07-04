@@ -6,6 +6,7 @@ import com.gu.scanamo.syntax._
 import services.{Dynamo, FrontsApi}
 import model.UserData
 import play.api.Logger
+import play.api.libs.json.JsValue
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -14,35 +15,31 @@ class UserDataController(frontsApi: FrontsApi, dynamo: Dynamo, val deps: BaseFac
 
   private lazy val userDataTable = Table[UserData](config.faciatool.userDataTable)
 
-
-  def putClipboardContent() = APIAuthAction { request =>
-
-    val clipboardArticles: Option[List[Trail]] = request.body.asJson.flatMap(jsValue =>
+  private def updateClipboardContentByFieldName(articles: Option[JsValue], userEmail: String, fieldName: String) = {
+    val clipboardArticles: Option[List[Trail]] = articles.flatMap(jsValue =>
       jsValue.asOpt[List[Trail]])
 
     clipboardArticles match {
       case Some(articles) => {
-        val userEmail = request.user.email
-        Scanamo.exec(dynamo.client)(userDataTable.update('email -> request.user.email, set('clipboardArticles -> articles)))
+        Scanamo.exec(dynamo.client)(userDataTable.update('email -> userEmail, set(Symbol(fieldName) -> articles)))
         Ok
       }
       case None => BadRequest
     }
+
+  }
+
+
+  def putClipboardContent() = APIAuthAction { request =>
+
+    updateClipboardContentByFieldName(request.body.asJson, request.user.email, "clipboardArticles")
+
   }
 
   def putEditionsClipboardContent() = APIAuthAction { request =>
 
-    val clipboardArticles: Option[List[Trail]] = request.body.asJson.flatMap(jsValue =>
-      jsValue.asOpt[List[Trail]])
+    updateClipboardContentByFieldName(request.body.asJson, request.user.email, "editionsClipboardArticles")
 
-    clipboardArticles match {
-      case Some(articles) => {
-        val userEmail = request.user.email
-        Scanamo.exec(dynamo.client)(userDataTable.update('email -> request.user.email, set('editionsClipboardArticles -> articles)))
-        Ok
-      }
-      case None => BadRequest
-    }
   }
 
   def putFrontIds() = APIAuthAction { request =>
