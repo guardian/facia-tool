@@ -111,6 +111,10 @@ injectGlobal`
     font-weight: 100;
     -webkit-font-smoothing: antialiased;
   }
+
+  input, textarea {
+    font-family: TS3TextSans, 'Helvetica Neue', Helvetica, Arial;
+  }
 `;
 
 const AppContainer = styled('div')`
