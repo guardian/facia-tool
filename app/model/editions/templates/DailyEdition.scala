@@ -353,7 +353,7 @@ object FrontLife {
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
   val collectionLifeSpecial1 = CollectionTemplate(
-    name = "Culture Special",
+    name = "Life Special",
     prefill = None,
     presentation = TemplateDefaults.defaultCollectionPresentation,
     hidden = true
