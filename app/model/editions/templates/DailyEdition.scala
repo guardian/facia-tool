@@ -122,6 +122,11 @@ object FrontNewsWorldGuardian {
 }
 
 object FrontNewsUkObserver {
+  val collectionNewsFrontPageObserver = CollectionTemplate(
+    name = "Front Page",
+    prefill =  None,
+    presentation = TemplateDefaults.defaultCollectionPresentation
+  )
   val collectionNewsUkNewsObserver = CollectionTemplate(
     name = "UK News",
     prefill = Some(CapiPrefillQuery("?tag=theobserver/news/uknews")),
@@ -132,6 +137,12 @@ object FrontNewsUkObserver {
     prefill = Some(CapiPrefillQuery("?tag=theobserver/news/business")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
+  val collectionNewsUkFocusObserver = CollectionTemplate(
+    name = "Focus",
+    prefill = Some(CapiPrefillQuery("?tag=theobserver/news/focus")),
+    presentation = TemplateDefaults.defaultCollectionPresentation,
+    hidden = true
+  )
   val collectionNewsUkNewsSpecial2 = CollectionTemplate(
     name = "News Special",
     prefill = None,
@@ -140,7 +151,7 @@ object FrontNewsUkObserver {
   )
   val front = FrontTemplate(
     name = "new/uknewsobserver",
-    collections = List(collectionNewsUkNewsObserver, collectionNewsUkFinancialObserver, collectionNewsUkNewsSpecial2),
+    collections = List(collectionNewsFrontPageObserver, collectionNewsUkNewsObserver, collectionNewsUkFinancialObserver, collectionNewsUkFocusObserver, collectionNewsUkNewsSpecial2),
     presentation = TemplateDefaults.defaultFrontPresentation
   )
 }
