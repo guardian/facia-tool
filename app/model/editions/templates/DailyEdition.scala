@@ -233,6 +233,11 @@ object FrontCulture {
     prefill = Some(CapiPrefillQuery("?tag=theguardian/g2/arts")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
+    val collectionCultureTVandRadio = CollectionTemplate(
+    name = "TV & Radio",
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/g2/tvandradio")),
+    presentation = TemplateDefaults.defaultCollectionPresentation
+  )
   val collectionCultureSpecial1 = CollectionTemplate(
     name = "Culture Special",
     prefill = None,
@@ -241,7 +246,7 @@ object FrontCulture {
   )
   val front = FrontTemplate(
     name = "culture/arts",
-    collections = List(collectionCultureArts, collectionCultureSpecial1),
+    collections = List(collectionCultureArts, collectionCultureTVandRadio, collectionCultureSpecial1),
     presentation = TemplateDefaults.defaultFrontPresentation
   )
 }
@@ -337,11 +342,6 @@ object FrontLife {
     prefill = Some(CapiPrefillQuery("?tag=theguardian/g2/features")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
-  val collectionLifeTVandRadio = CollectionTemplate(
-    name = "TV & Radio",
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/g2/tvandradio")),
-    presentation = TemplateDefaults.defaultCollectionPresentation
-  )
   val collectionLifeSpecial1 = CollectionTemplate(
     name = "Culture Special",
     prefill = None,
@@ -350,7 +350,7 @@ object FrontLife {
   )
   val front = FrontTemplate(
     name = "life/features",
-    collections = List(collectionLifeFeatures, collectionLifeTVandRadio, collectionLifeSpecial1),
+    collections = List(collectionLifeFeatures, collectionLifeSpecial1),
     presentation = TemplateDefaults.defaultFrontPresentation
   )
 }
