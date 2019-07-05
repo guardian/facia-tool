@@ -220,11 +220,6 @@ object FrontComment {
     prefill = Some(CapiPrefillQuery("?tag=theobserver/news/comment")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
-  val collectionOpinionAgenda = CollectionTemplate(
-    name = "Agenda",
-    prefill = Some(CapiPrefillQuery("?tag=theobserver/new-review/agenda")),
-    presentation = TemplateDefaults.defaultCollectionPresentation
-  )
   val collectionOpinionSpecial1 = CollectionTemplate(
     name = "Comment Special",
     prefill = None,
@@ -233,7 +228,7 @@ object FrontComment {
   )
   val front = FrontTemplate(
     name = "opinion/comment",
-    collections = List(collectionOpinionComment, collectionOpinionAgenda, collectionOpinionSpecial1),
+    collections = List(collectionOpinionComment, collectionOpinionSpecial1),
     presentation = TemplateDefaults.defaultFrontPresentation
   )
 }
@@ -334,6 +329,11 @@ object FrontCultureNewReview {
     prefill = Some(CapiPrefillQuery("?tag=theobserver/new-review/discover")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
+  val collectionCultureAgenda = CollectionTemplate(
+    name = "Agenda",
+    prefill = Some(CapiPrefillQuery("?tag=theobserver/new-review/agenda")),
+    presentation = TemplateDefaults.defaultCollectionPresentation
+  )
   val collectionCultureCritics = CollectionTemplate(
     name = "Critics",
     prefill = Some(CapiPrefillQuery("?tag=theobserver/new-review/critics")),
@@ -352,7 +352,7 @@ object FrontCultureNewReview {
   )
   val front = FrontTemplate(
     name = "culture/newreview",
-    collections = List(collectionCultureFeatures, collectionCultureScience, collectionCultureCritics, collectionCultureBooks, collectionCultureSpecial3),
+    collections = List(collectionCultureFeatures, collectionCultureScience, collectionCultureAgenda, collectionCultureCritics, collectionCultureBooks, collectionCultureSpecial3),
     presentation = TemplateDefaults.defaultFrontPresentation
   )
 }
