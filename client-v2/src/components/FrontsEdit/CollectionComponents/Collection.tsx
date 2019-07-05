@@ -7,7 +7,8 @@ import Button from 'shared/components/input/ButtonDefault';
 import { AlsoOnDetail } from 'types/Collection';
 import {
   publishCollection,
-  discardDraftChangesToCollection
+  discardDraftChangesToCollection,
+  openCollectionsAndFetchTheirArticles
 } from 'actions/Collections';
 import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
 import { isCollectionLockedSelector } from 'selectors/collectionSelectors';
@@ -22,7 +23,6 @@ import {
 } from 'shared/selectors/shared';
 import {
   selectIsCollectionOpen,
-  editorOpenCollections,
   editorCloseCollections,
   selectHasMultipleFrontsOpen,
   selectEditorArticleFragment
@@ -252,8 +252,7 @@ const mapDispatchToProps = (
     if (isOpen) {
       dispatch(editorCloseCollections(id));
     } else {
-      dispatch(getArticlesForCollections([id], browsingStage));
-      dispatch(editorOpenCollections(id));
+      dispatch(openCollectionsAndFetchTheirArticles([id], browsingStage));
     }
   },
   fetchPreviousCollectionArticles: (id: string) => {

@@ -13,7 +13,8 @@ import {
   editorOpenOverview,
   editorCloseOverview,
   selectIsFrontOverviewOpen,
-  selectEditorArticleFragment
+  selectEditorArticleFragment,
+  editorCloseCollections
 } from 'bundles/frontsUIBundle';
 import {
   CollectionItemSets,
@@ -25,14 +26,16 @@ import { events } from 'services/GA';
 import FrontDetailView from './FrontDetailView';
 import {
   initialiseCollectionsForFront,
-  closeCollections
+  openCollectionsAndFetchTheirArticles
 } from 'actions/Collections';
 import { setFocusState } from 'bundles/focusBundle';
 import Collection from './Collection';
 import { DownCaretIcon } from 'shared/components/icons/Icons';
 import { theme as sharedTheme } from 'shared/constants/theme';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
-import ButtonRoundedWithLabel from 'shared/components/input/ButtonRoundedWithLabel';
+import ButtonRoundedWithLabel, {
+  ButtonLabel
+} from 'shared/components/input/ButtonRoundedWithLabel';
 
 const FrontContainer = styled('div')`
   height: 100%;
@@ -61,9 +64,8 @@ const OverviewHeading = styled('label')`
   cursor: pointer;
 `;
 
-const CollapseAllButton = styled(ButtonRoundedWithLabel)`
+const OverviewHeadingButton = styled(ButtonRoundedWithLabel)`
   & svg {
-    transform: rotate(180deg);
     vertical-align: middle;
   }
   :hover {
@@ -124,6 +126,7 @@ type FrontProps = FrontPropsBeforeState & {
   toggleOverview: (open: boolean) => void;
   overviewIsOpen: boolean;
   closeAllCollections: (collections: string[]) => void;
+  openAllCollections: (collections: string[]) => void;
 };
 
 interface FrontState {
@@ -193,14 +196,27 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
         <FrontContainer>
           <FrontContentContainer>
             <SectionContentMetaContainer>
-              <CollapseAllButton
+              <OverviewHeadingButton
+                onClick={e => {
+                  e.preventDefault();
+                  this.props.openAllCollections(this.props.collectionIds);
+                }}
+              >
+                <ButtonLabel>Expand all&nbsp;</ButtonLabel>
+                <DownCaretIcon
+                  fill={sharedTheme.base.colors.text}
+                  direction="down"
+                />
+              </OverviewHeadingButton>
+              <OverviewHeadingButton
                 onClick={e => {
                   e.preventDefault();
                   this.props.closeAllCollections(this.props.collectionIds);
                 }}
-                icon={<DownCaretIcon fill={sharedTheme.base.colors.text} />}
-                label={'Collapse all'}
-              />
+              >
+                <ButtonLabel>Collapse all&nbsp;</ButtonLabel>
+                <DownCaretIcon fill={sharedTheme.base.colors.text} />
+              </OverviewHeadingButton>
               <OverviewToggleContainer>
                 <OverviewHeading htmlFor={overviewToggleId}>
                   {this.props.overviewIsOpen ? 'Hide overview' : 'Overview'}
@@ -264,22 +280,22 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   };
 }
 
-const mapStateToProps = (state: State, props: FrontPropsBeforeState) => {
+const mapStateToProps = (state: State, { id }: FrontPropsBeforeState) => {
   return {
-    front: getFront(state, { frontId: props.id }),
-    overviewIsOpen: selectIsFrontOverviewOpen(state, props.id),
-    formIsOpen: !!selectEditorArticleFragment(state, props.id)
+    front: getFront(state, { frontId: id }),
+    overviewIsOpen: selectIsFrontOverviewOpen(state, id),
+    formIsOpen: !!selectEditorArticleFragment(state, id)
   };
 };
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
-  props: FrontPropsBeforeState
+  { id, browsingStage }: FrontPropsBeforeState
 ) => {
   return {
     dispatch,
     initialiseFront: () =>
-      dispatch(initialiseCollectionsForFront(props.id, props.browsingStage)),
+      dispatch(initialiseCollectionsForFront(id, browsingStage)),
     selectArticleFragment: (frontId: string) => (isSupporting?: boolean) => (
       articleFragmentId: string
     ) =>
@@ -302,11 +318,11 @@ const mapDispatchToProps = (
         })
       ),
     toggleOverview: (open: boolean) =>
-      dispatch(
-        open ? editorOpenOverview(props.id) : editorCloseOverview(props.id)
-      ),
+      dispatch(open ? editorOpenOverview(id) : editorCloseOverview(id)),
     closeAllCollections: (collections: string[]) =>
-      dispatch(closeCollections(collections))
+      dispatch(editorCloseCollections(collections)),
+    openAllCollections: (collections: string[]) =>
+      dispatch(openCollectionsAndFetchTheirArticles(collections, browsingStage))
   };
 };
 

@@ -7,6 +7,10 @@ interface IconProps {
   title?: string | null;
 }
 
+interface Directions {
+  direction?: 'up' | 'down';
+}
+
 type IconSizes = 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl' | 'fill';
 const IconSizeMap = {
   xxs: 10,
@@ -20,10 +24,16 @@ const IconSizeMap = {
 };
 const mapSize = (size: IconSizes): number | string => IconSizeMap[size];
 
-const DownCaretIcon = ({ fill, size = 'm', title = null }: IconProps) => (
+const DownCaretIcon = ({
+  fill,
+  size = 'm',
+  title = null,
+  direction = 'up'
+}: IconProps & Directions) => (
   <svg
     width={mapSize(size)}
     height={mapSize(size)}
+    transform={direction === 'down' ? 'none' : 'rotate(180)'}
     viewBox="0 0 30 30"
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
