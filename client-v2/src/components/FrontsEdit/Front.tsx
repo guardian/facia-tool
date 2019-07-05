@@ -64,7 +64,7 @@ const OverviewHeading = styled('label')`
   cursor: pointer;
 `;
 
-const CollapseAllButton = styled(ButtonRoundedWithLabel)`
+const OverviewHeadingButton = styled(ButtonRoundedWithLabel)`
   & svg {
     vertical-align: middle;
   }
@@ -196,7 +196,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
         <FrontContainer>
           <FrontContentContainer>
             <SectionContentMetaContainer>
-              <CollapseAllButton
+              <OverviewHeadingButton
                 onClick={e => {
                   e.preventDefault();
                   this.props.openAllCollections(this.props.collectionIds);
@@ -207,8 +207,8 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                   fill={sharedTheme.base.colors.text}
                   direction="down"
                 />
-              </CollapseAllButton>
-              <CollapseAllButton
+              </OverviewHeadingButton>
+              <OverviewHeadingButton
                 onClick={e => {
                   e.preventDefault();
                   this.props.closeAllCollections(this.props.collectionIds);
@@ -216,7 +216,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
               >
                 <ButtonLabel>Collapse all&nbsp;</ButtonLabel>
                 <DownCaretIcon fill={sharedTheme.base.colors.text} />
-              </CollapseAllButton>
+              </OverviewHeadingButton>
               <OverviewToggleContainer>
                 <OverviewHeading htmlFor={overviewToggleId}>
                   {this.props.overviewIsOpen ? 'Hide overview' : 'Overview'}
