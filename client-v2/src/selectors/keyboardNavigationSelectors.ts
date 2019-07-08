@@ -8,6 +8,7 @@ import {
 import { clipboardContentSelector } from 'selectors/clipboardSelectors';
 import { State } from 'types/State';
 import { getUnlockedFrontCollections } from './frontsSelectors';
+import { selectIsEditingEditions } from 'selectors/pathSelectors';
 
 const nextClipboardIndexSelector = (
   state: State,
@@ -15,11 +16,18 @@ const nextClipboardIndexSelector = (
   action: string
 ) => {
   const clipboardContent = clipboardContentSelector(state);
+  const isEditingEditions = selectIsEditingEditions(state);
+  let clipboardArticles;
+  if (isEditingEditions) {
+    clipboardArticles = clipboardContent.editionsClipboard;
+  } else {
+    clipboardArticles = clipboardContent.frontsClipboard;
+  }
 
-  const fromIndex = clipboardContent.indexOf(articleId);
+  const fromIndex = clipboardArticles.indexOf(articleId);
 
   if (action === 'down') {
-    if (fromIndex < clipboardContent.length - 1) {
+    if (fromIndex < clipboardArticles.length - 1) {
       return { fromIndex, toIndex: fromIndex + 1 };
     }
   }

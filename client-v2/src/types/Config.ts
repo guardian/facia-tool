@@ -41,7 +41,10 @@ interface Config {
   favouriteFrontIdsByPriority: {
     [id: string]: string[];
   };
-  clipboardArticles: NestedArticleFragment[];
+  clipboardArticles: {
+    frontsClipboard: NestedArticleFragment[];
+    editionsClipboard: NestedArticleFragment[];
+  };
 }
 
 export { Config };

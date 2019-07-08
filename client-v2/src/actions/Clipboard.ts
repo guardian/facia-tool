@@ -3,10 +3,7 @@ import { saveClipboard } from 'services/faciaApi';
 import { fetchArticles } from 'actions/Collections';
 import { batchActions } from 'redux-batched-actions';
 import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
-import {
-  ArticleFragment,
-  NestedArticleFragment
-} from 'shared/types/Collection';
+import { NestedArticleFragment } from 'shared/types/Collection';
 import { normaliseClipboard } from 'util/clipboardUtils';
 import {
   UpdateClipboardContent,
@@ -20,24 +17,28 @@ export const UPDATE_CLIPBOARD_CONTENT = 'UPDATE_CLIPBOARD_CONTENT';
 export const INSERT_CLIPBOARD_ARTICLE_FRAGMENT =
   'INSERT_CLIPBOARD_ARTICLE_FRAGMENT';
 
-function updateClipboardContent(
-  clipboardContent: string[] = []
-): UpdateClipboardContent {
+function updateClipboardContent(clipboardContent: {
+  frontsClipboard: string[];
+  editionsClipboard: string[];
+}): UpdateClipboardContent {
   return {
     type: UPDATE_CLIPBOARD_CONTENT,
     payload: clipboardContent
   };
 }
 
-function storeClipboardContent(clipboardContent: NestedArticleFragment[]) {
+function storeClipboardContent(clipboardContent: {
+  frontsClipboard: NestedArticleFragment[];
+  editionsClipboard: NestedArticleFragment[];
+}) {
   return (dispatch: Dispatch) => {
-    const normalisedClipboard: {
-      clipboard: { articles: string[] };
-      articleFragments: { [id: string]: ArticleFragment };
-    } = normaliseClipboard({
-      articles: clipboardContent
-    });
-    const clipboardArticles = normalisedClipboard.clipboard.articles;
+    const normalisedClipboard = normaliseClipboard(clipboardContent);
+    const { frontsClipboard } = normalisedClipboard;
+    const { editionsClipboard } = normalisedClipboard;
+    const clipboardArticles: {
+      frontsClipboard: string[];
+      editionsClipboard: string[];
+    } = { frontsClipboard, editionsClipboard };
     const { articleFragments } = normalisedClipboard;
 
     dispatch(
@@ -55,37 +56,49 @@ function storeClipboardContent(clipboardContent: NestedArticleFragment[]) {
 }
 
 function updateClipboard(clipboardContent: {
-  articles: NestedArticleFragment[];
+  frontsClipboard: NestedArticleFragment[];
+  editionsClipboard: NestedArticleFragment[];
 }): ThunkResult<Promise<NestedArticleFragment[] | void>> {
-  return () =>
-    saveClipboard(clipboardContent.articles).catch(() => {
+  return () => {
+    return saveClipboard(clipboardContent).catch(() => {
       // @todo: implement once error handling is done
     });
+  };
 }
 
 const insertClipboardArticleFragment = (
   id: string,
   index: number,
-  articleFragmentId: string
-): InsertClipboardArticleFragment => ({
-  type: INSERT_CLIPBOARD_ARTICLE_FRAGMENT,
-  payload: {
-    id,
-    index,
-    articleFragmentId
-  }
-});
+  articleFragmentId: string,
+  type?: string
+): InsertClipboardArticleFragment => {
+  const clipboardType = type || '';
+  return {
+    type: INSERT_CLIPBOARD_ARTICLE_FRAGMENT,
+    payload: {
+      id,
+      index,
+      articleFragmentId,
+      clipboardType
+    }
+  };
+};
 
 const removeClipboardArticleFragment = (
   id: string,
-  articleFragmentId: string
-): RemoveClipboardArticleFragment => ({
-  type: REMOVE_CLIPBOARD_ARTICLE_FRAGMENT,
-  payload: {
-    id,
-    articleFragmentId
-  }
-});
+  articleFragmentId: string,
+  type?: string
+): RemoveClipboardArticleFragment => {
+  const clipboardType = type || '';
+  return {
+    type: REMOVE_CLIPBOARD_ARTICLE_FRAGMENT,
+    payload: {
+      id,
+      articleFragmentId,
+      clipboardType
+    }
+  };
+};
 
 export {
   storeClipboardContent,

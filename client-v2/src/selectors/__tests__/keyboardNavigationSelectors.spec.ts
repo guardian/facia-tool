@@ -7,11 +7,17 @@ import state from 'fixtures/initialState';
 describe('nextClipboardIndexSelector', () => {
   const stateWithClipboard = {
     ...state,
-    clipboard: ['id-1', 'id-2', 'id-3', 'id-4']
+    clipboard: {
+      frontsClipboard: ['id-1', 'id-2', 'id-3', 'id-4'],
+      editionsClipboard: []
+    }
   };
 
   it('return null when clipboard is empty', () => {
-    const stateWithEmptyClipboard = { ...state, clipboard: [] };
+    const stateWithEmptyClipboard = {
+      ...state,
+      clipboard: { frontsClipboard: [], editionsClipboard: [] }
+    };
     expect(
       nextClipboardIndexSelector(stateWithEmptyClipboard, 'some-id', 'up')
     ).toEqual(null);

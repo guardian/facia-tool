@@ -16,7 +16,10 @@ const articleFragments = createType('articleFragments', {
 });
 
 export const { normalize, denormalize } = build({
-  articles: articleFragments({
+  frontsClipboard: articleFragments({
+    'meta.supporting': supportingArticles()
+  }),
+  editionsClipboard: articleFragments({
     'meta.supporting': supportingArticles()
   })
 });

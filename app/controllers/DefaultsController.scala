@@ -28,7 +28,7 @@ case class Defaults(
   navListCap: Int,
   navListType: String,
   collectionMetadata: Iterable[Metadata],
-  clipboardArticles: Option[List[Trail]],
+  clipboardArticles: Map[String, Option[List[Trail]]],
   frontIds: Option[List[String]],
   frontIdsByPriority: Option[Map[String, List[String]]],
   favouriteFrontIdsByPriority: Option[Map[String, List[String]]],
@@ -66,7 +66,7 @@ class DefaultsController(val acl: Acl, val isDev: Boolean, val deps: BaseFaciaCo
         Metadata.tags.map{
           case (_, meta) => meta
         },
-        None,
+        Map(),
         None,
         None,
         None

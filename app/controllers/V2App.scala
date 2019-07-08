@@ -5,7 +5,7 @@ import com.gu.scanamo.syntax._
 import model.UserData
 
 import scala.concurrent.ExecutionContext
-import com.gu.facia.client.models.Metadata
+import com.gu.facia.client.models.{Metadata, Trail}
 import permissions.Permissions
 import play.api.libs.json.Json
 import switchboard.SwitchManager
@@ -39,6 +39,11 @@ class V2App(isDev: Boolean, val acl: Acl, dynamo: Dynamo, val deps: BaseFaciaCon
     val maybeUserData: Option[UserData] = Scanamo.exec(dynamo.client)(
       userDataTable.get('email -> userEmail)).flatMap(_.right.toOption)
 
+    val clipboardArticles: Map[String, Option[List[Trail]]] = Map(
+      "frontsClipboard" -> maybeUserData.map(_.clipboardArticles.getOrElse(List())),
+      "editionsClipboard" -> maybeUserData.map(_.editionsClipboardArticles.getOrElse(List()))
+    )
+
     val conf = Defaults(
       isDev,
       config.environment.stage,
@@ -58,7 +63,7 @@ class V2App(isDev: Boolean, val acl: Acl, dynamo: Dynamo, val deps: BaseFaciaCon
       Metadata.tags.map {
         case (_, meta) => meta
       },
-      maybeUserData.map(_.clipboardArticles.getOrElse(List())),
+      clipboardArticles,
       maybeUserData.map(_.frontIds.getOrElse(List())),
       maybeUserData.map(_.frontIdsByPriority.getOrElse(Map())),
       maybeUserData.map(_.favouriteFrontIdsByPriority.getOrElse(Map())),

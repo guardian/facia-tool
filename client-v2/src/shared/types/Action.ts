@@ -33,6 +33,7 @@ interface InsertArticleFragmentPayload {
   id: string;
   index: number;
   articleFragmentId: string;
+  clipboardType?: string;
 }
 
 type InsertGroupArticleFragment = {
@@ -51,6 +52,7 @@ interface RemoveArticleFragmentPayload {
   payload: {
     id: string;
     articleFragmentId: string;
+    clipboardType?: string;
   };
 }
 

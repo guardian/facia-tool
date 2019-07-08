@@ -202,7 +202,8 @@ const persistClipboardOnEdit = (
   const result = next(action);
   const state = store.getState();
   const denormalisedClipboard: {
-    articles: NestedArticleFragment[];
+    frontsClipboard: NestedArticleFragment[];
+    editionsClipboard: NestedArticleFragment[];
   } = denormaliseClipboard(state);
   store.dispatch(updateClipboardAction(denormalisedClipboard));
   return result;

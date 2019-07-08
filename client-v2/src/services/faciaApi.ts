@@ -209,9 +209,10 @@ const updateEditionsCollection = (collectionId: string) =>
     'put'
   )(collectionId);
 
-async function saveClipboard(
-  clipboardContent: NestedArticleFragment[]
-): Promise<NestedArticleFragment[]> {
+async function saveClipboard(clipboardContent: {
+  frontsClipboard: NestedArticleFragment[];
+  editionsClipboard: NestedArticleFragment[];
+}): Promise<NestedArticleFragment[]> {
   // The server does not respond with JSON
   try {
     const response = await pandaFetch(`/userdata/clipboard`, {

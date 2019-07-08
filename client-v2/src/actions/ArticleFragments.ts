@@ -38,11 +38,14 @@ import { ValidationResponse } from 'shared/util/validateImageSrc';
 import { MappableDropType } from 'util/collectionUtils';
 import { willCollectionHitCollectionCapSelector } from 'selectors/collectionSelectors';
 import { batchActions } from 'redux-batched-actions';
+import { selectIsEditingEditions } from 'selectors/pathSelectors';
 
 type InsertActionCreator = (
   id: string,
   index: number,
-  articleFragmentId: string
+  articleFragmentId: string,
+  // TO do change
+  editingMode?: string
 ) => Action;
 
 type InsertThunkActionCreator = (
@@ -69,16 +72,29 @@ const createInsertArticleFragmentThunk = (action: InsertActionCreator) => (
   index: number,
   articleFragmentId: string,
   removeAction: Action | null
-) => (dispatch: Dispatch) => {
+) => (dispatch: Dispatch, getState: () => State) => {
+  // TODO
   if (removeAction) {
     dispatch(removeAction);
   }
-  dispatch(
-    addPersistMetaToAction(action, {
-      persistTo,
-      key: 'articleFragmentId'
-    })(id, index, articleFragmentId)
-  );
+  const isEditionEditions = selectIsEditingEditions(getState());
+  const editingMode = isEditionEditions ? 'editions' : 'fronts';
+  // const argumentsToPass = persistToClipboard ? [id, index, articleFragmentId, editingMode] : [id, index, articleFragmentId, editingMode];
+  if (persistTo === 'collection') {
+    dispatch(
+      addPersistMetaToAction(action, {
+        persistTo,
+        key: 'articleFragmentId'
+      })(id, index, articleFragmentId)
+    );
+  } else {
+    dispatch(
+      addPersistMetaToAction(action, {
+        persistTo,
+        key: 'articleFragmentId'
+      })(id, index, articleFragmentId, editingMode)
+    );
+  }
 };
 
 const copyArticleFragmentImageMetaWithPersist = addPersistMetaToAction(
@@ -179,7 +195,11 @@ const getInsertionActionCreatorFromType = (
   return actionCreator && actionCreator(persistTo);
 };
 
-type RemoveActionCreator = (id: string, articleFragmentId: string) => Action;
+type RemoveActionCreator = (
+  id: string,
+  articleFragmentId: string,
+  editingMode?: string
+) => Action;
 
 // this maps a type string such as `group` to a remove action creator and if
 // persistTo is passed then add persist meta
@@ -290,7 +310,11 @@ const removeArticleFragment = (
     if (!removeActionCreator) {
       return;
     }
-    dispatch(removeActionCreator(groupIdFromState, articleFragmentId));
+    const isEditionEditions = selectIsEditingEditions(getState());
+    const editingMode = isEditionEditions ? 'editions' : 'fronts';
+    dispatch(
+      removeActionCreator(groupIdFromState, articleFragmentId, editingMode)
+    );
   };
 };
 
@@ -340,6 +364,8 @@ const moveArticleFragment = (
         if (!fromWithRespectToState) {
           dispatch(articleFragmentsReceived([parent, ...supporting]));
         }
+        const isEditionEditions = selectIsEditingEditions(getState());
+        const editingMode = isEditionEditions ? 'editions' : 'fronts';
 
         dispatch(
           insertActionCreator(
@@ -347,7 +373,11 @@ const moveArticleFragment = (
             toWithRespectToState.index,
             parent.uuid,
             fromWithRespectToState && removeActionCreator
-              ? removeActionCreator(fromWithRespectToState.id, fragment.uuid)
+              ? removeActionCreator(
+                  fromWithRespectToState.id,
+                  fragment.uuid,
+                  editingMode
+                )
               : null
           )
         );

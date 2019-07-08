@@ -234,7 +234,7 @@ interface PublishCollectionSuccess {
 
 interface UpdateClipboardContent {
   type: 'UPDATE_CLIPBOARD_CONTENT';
-  payload: string[];
+  payload: { frontsClipboard: string[]; editionsClipboard: string[] };
 }
 
 interface RecordStaleFronts {

@@ -8,10 +8,13 @@ import {
   UPDATE_CLIPBOARD_CONTENT
 } from 'actions/Clipboard';
 
-type State = string[];
+interface State {
+  frontsClipboard: string[];
+  editionsClipboard: string[];
+}
 
 const clipboard = (
-  state: State = [],
+  state: State = { frontsClipboard: [], editionsClipboard: [] },
   action: Action,
   prevSharedState: SharedState
 ): State => {
@@ -21,15 +24,51 @@ const clipboard = (
       return payload;
     }
     case REMOVE_CLIPBOARD_ARTICLE_FRAGMENT: {
-      return state.filter(id => id !== action.payload.articleFragmentId);
+      if (action.payload.clipboardType === 'fronts') {
+        return {
+          ...state,
+          ...{
+            frontsClipboard: state.frontsClipboard.filter(
+              id => id !== action.payload.articleFragmentId
+            )
+          }
+        };
+      }
+      if (action.payload.clipboardType === 'editions') {
+        return {
+          ...state,
+          ...{
+            editionsClipboard: state.editionsClipboard.filter(
+              id => id !== action.payload.articleFragmentId
+            )
+          }
+        };
+      }
+      return state;
     }
+
     case INSERT_CLIPBOARD_ARTICLE_FRAGMENT: {
-      return insertAndDedupeSiblings(
-        state,
-        [action.payload.articleFragmentId],
-        action.payload.index,
-        articleFragmentsSelector(prevSharedState)
-      );
+      if (action.payload.clipboardType === 'fronts') {
+        const newFrontsClipboard = insertAndDedupeSiblings(
+          state.frontsClipboard,
+          [action.payload.articleFragmentId],
+          action.payload.index,
+          articleFragmentsSelector(prevSharedState)
+        );
+        return { ...state, frontsClipboard: newFrontsClipboard };
+      }
+
+      if (action.payload.clipboardType === 'editions') {
+        const newEditionsClipboard = insertAndDedupeSiblings(
+          state.editionsClipboard,
+          [action.payload.articleFragmentId],
+          action.payload.index,
+          articleFragmentsSelector(prevSharedState)
+        );
+        return { ...state, editionsClipboard: newEditionsClipboard };
+      }
+
+      return state;
     }
 
     default: {

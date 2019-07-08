@@ -2,7 +2,10 @@ import { initialState as externalArticlesState } from 'shared/bundles/externalAr
 import { initialState as collectionsState } from 'shared/bundles/collectionsBundle';
 
 const stateWithClipboard = {
-  clipboard: ['article', 'article2'],
+  clipboard: {
+    frontsClipboard: ['article', 'article2'],
+    editionsClipboard: ['article3']
+  },
   shared: {
     groups: {},
     externalArticles: externalArticlesState,

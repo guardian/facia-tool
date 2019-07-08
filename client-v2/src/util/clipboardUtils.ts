@@ -8,27 +8,33 @@ import { normalize, denormalize } from './clipboardSchema';
 import { notLiveLabels } from 'constants/fronts';
 
 function normaliseClipboard(clipboard: {
-  articles: NestedArticleFragment[];
+  frontsClipboard: NestedArticleFragment[];
+  editionsClipboard: NestedArticleFragment[];
 }): {
-  clipboard: { articles: string[] };
+  frontsClipboard: string[];
+  editionsClipboard: string[];
   articleFragments: { [id: string]: ArticleFragment };
 } {
   const normalisedClipboard = normalize(clipboard);
   return {
-    clipboard: normalisedClipboard.result,
+    frontsClipboard: normalisedClipboard.result.frontsClipboard,
+    editionsClipboard: normalisedClipboard.result.editionsClipboard,
     articleFragments: normalisedClipboard.entities.articleFragments || {}
   };
 }
 
 function denormaliseClipboard(
   state: State
-): { articles: NestedArticleFragment[] } {
+): {
+  frontsClipboard: NestedArticleFragment[];
+  editionsClipboard: NestedArticleFragment[];
+} {
   const clipboard = clipboardSelector(state);
 
-  return denormalize(
-    { articles: clipboard },
-    { articleFragments: state.shared.articleFragments }
-  );
+  const denormalised = denormalize(clipboard, {
+    articleFragments: state.shared.articleFragments
+  });
+  return denormalised;
 }
 
 const getArticleLabel = (

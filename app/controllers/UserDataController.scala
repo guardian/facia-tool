@@ -16,14 +16,24 @@ class UserDataController(frontsApi: FrontsApi, dynamo: Dynamo, val deps: BaseFac
 
 
   def putClipboardContent() = APIAuthAction { request =>
+    println("-----")
+    println(request.body)
+    println(request.body.asJson)
 
-    val clipboardArticles: Option[List[Trail]] = request.body.asJson.flatMap(jsValue =>
-      jsValue.asOpt[List[Trail]])
+    val clipboardArticleRequest: Option[Map[String, List[Trail]]] = request.body.asJson.flatMap(jsValue => {
+        //TODO we should not fail if the list is missing
+      println("js value is ", jsValue)
+      val js = jsValue.as[Map[String, List[Trail]]]
+      println("js is ", js)
+      jsValue.asOpt[Map[String, List[Trail]]]
+    })
+    println(clipboardArticleRequest)
 
-    clipboardArticles match {
-      case Some(articles) => {
+    clipboardArticleRequest match {
+      case Some(cliboardArticleLists) => {
         val userEmail = request.user.email
-        Scanamo.exec(dynamo.client)(userDataTable.update('email -> request.user.email, set('clipboardArticles -> articles)))
+        Scanamo.exec(dynamo.client)(userDataTable.update('email -> userEmail, set('clipboardArticles -> cliboardArticleLists.get("frontsClipboard"))))
+        Scanamo.exec(dynamo.client)(userDataTable.update('email -> userEmail, set('editionsClipboardArticles -> cliboardArticleLists.get("editionsClipboard"))))
         Ok
       }
       case None => BadRequest
