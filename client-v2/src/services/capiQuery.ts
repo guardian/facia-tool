@@ -108,8 +108,8 @@ const capiQuery = (baseURL: string) => {
   ) => {
     const { q, ...rest } = params;
     return options && options.isResource
-      ? `${q}${qs({ ...rest })}`
-      : `${path}${qs({
+      ? `${baseURL}/${q}${qs({ ...rest })}`
+      : `${baseURL}/${path}${qs({
           ...params
         })}`;
   };
