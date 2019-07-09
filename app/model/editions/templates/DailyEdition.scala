@@ -122,15 +122,26 @@ object FrontNewsWorldGuardian {
 }
 
 object FrontNewsUkObserver {
+  val collectionNewsFrontPageObserver = CollectionTemplate(
+    name = "Front Page",
+    prefill =  None,
+    presentation = TemplateDefaults.defaultCollectionPresentation
+  )
   val collectionNewsUkNewsObserver = CollectionTemplate(
     name = "UK News",
     prefill = Some(CapiPrefillQuery("?tag=theobserver/news/uknews")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
-  val collectionNewsUkFinancialObserver = CollectionTemplate(
-    name = "UK Financial",
-    prefill = Some(CapiPrefillQuery("?tag=theobserver/news/business")),
+  val collectionNewsUkBusinessObserver = CollectionTemplate(
+    name = "Business & Cash",
+    prefill = Some(CapiPrefillQuery("?tag=theobserver/news/business|theobserver/news/cash")),
     presentation = TemplateDefaults.defaultCollectionPresentation
+  )
+  val collectionNewsUkFocusObserver = CollectionTemplate(
+    name = "Focus",
+    prefill = Some(CapiPrefillQuery("?tag=theobserver/news/focus")),
+    presentation = TemplateDefaults.defaultCollectionPresentation,
+    hidden = true
   )
   val collectionNewsUkNewsSpecial2 = CollectionTemplate(
     name = "News Special",
@@ -140,7 +151,7 @@ object FrontNewsUkObserver {
   )
   val front = FrontTemplate(
     name = "new/uknewsobserver",
-    collections = List(collectionNewsUkNewsObserver, collectionNewsUkFinancialObserver, collectionNewsUkNewsSpecial2),
+    collections = List(collectionNewsFrontPageObserver, collectionNewsUkNewsObserver, collectionNewsUkBusinessObserver, collectionNewsUkFocusObserver, collectionNewsUkNewsSpecial2),
     presentation = TemplateDefaults.defaultFrontPresentation
   )
 }
@@ -209,11 +220,6 @@ object FrontComment {
     prefill = Some(CapiPrefillQuery("?tag=theobserver/news/comment")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
-  val collectionOpinionAgenda = CollectionTemplate(
-    name = "Agenda",
-    prefill = Some(CapiPrefillQuery("?tag=theobserver/new-review/agenda")),
-    presentation = TemplateDefaults.defaultCollectionPresentation
-  )
   val collectionOpinionSpecial1 = CollectionTemplate(
     name = "Comment Special",
     prefill = None,
@@ -222,7 +228,7 @@ object FrontComment {
   )
   val front = FrontTemplate(
     name = "opinion/comment",
-    collections = List(collectionOpinionComment, collectionOpinionAgenda, collectionOpinionSpecial1),
+    collections = List(collectionOpinionComment, collectionOpinionSpecial1),
     presentation = TemplateDefaults.defaultFrontPresentation
   )
 }
@@ -233,6 +239,11 @@ object FrontCulture {
     prefill = Some(CapiPrefillQuery("?tag=theguardian/g2/arts")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
+  val collectionCultureTVandRadio = CollectionTemplate(
+    name = "TV & Radio",
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/g2/tvandradio")),
+    presentation = TemplateDefaults.defaultCollectionPresentation
+  )
   val collectionCultureSpecial1 = CollectionTemplate(
     name = "Culture Special",
     prefill = None,
@@ -241,7 +252,7 @@ object FrontCulture {
   )
   val front = FrontTemplate(
     name = "culture/arts",
-    collections = List(collectionCultureArts, collectionCultureSpecial1),
+    collections = List(collectionCultureArts, collectionCultureTVandRadio, collectionCultureSpecial1),
     presentation = TemplateDefaults.defaultFrontPresentation
   )
 }
@@ -257,6 +268,16 @@ object FrontCultureFilmMusic {
     prefill = Some(CapiPrefillQuery("?tag=theguardian/g2/music")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
+  val collectionCultureArts = CollectionTemplate(
+    name = "Arts",
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/g2/arts")),
+    presentation = TemplateDefaults.defaultCollectionPresentation
+  )
+  val collectionCultureTVandRadio = CollectionTemplate(
+    name = "TV & Radio",
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/g2/tvandradio")),
+    presentation = TemplateDefaults.defaultCollectionPresentation
+  )
   val collectionCultureSpecial2 = CollectionTemplate(
     name = "Culture Special",
     prefill = None,
@@ -264,7 +285,7 @@ object FrontCultureFilmMusic {
   )
   val front = FrontTemplate(
     name = "culture/filmandmusic",
-    collections = List(collectionCultureFilm, collectionCultureMusic, collectionCultureSpecial2),
+    collections = List(collectionCultureFilm, collectionCultureMusic, collectionCultureArts, collectionCultureTVandRadio, collectionCultureSpecial2),
     presentation = TemplateDefaults.defaultFrontPresentation
   )
 }
@@ -308,6 +329,11 @@ object FrontCultureNewReview {
     prefill = Some(CapiPrefillQuery("?tag=theobserver/new-review/discover")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
+  val collectionCultureAgenda = CollectionTemplate(
+    name = "Agenda",
+    prefill = Some(CapiPrefillQuery("?tag=theobserver/new-review/agenda")),
+    presentation = TemplateDefaults.defaultCollectionPresentation
+  )
   val collectionCultureCritics = CollectionTemplate(
     name = "Critics",
     prefill = Some(CapiPrefillQuery("?tag=theobserver/new-review/critics")),
@@ -326,7 +352,7 @@ object FrontCultureNewReview {
   )
   val front = FrontTemplate(
     name = "culture/newreview",
-    collections = List(collectionCultureFeatures, collectionCultureScience, collectionCultureCritics, collectionCultureBooks, collectionCultureSpecial3),
+    collections = List(collectionCultureFeatures, collectionCultureScience, collectionCultureAgenda, collectionCultureCritics, collectionCultureBooks, collectionCultureSpecial3),
     presentation = TemplateDefaults.defaultFrontPresentation
   )
 }
@@ -337,20 +363,15 @@ object FrontLife {
     prefill = Some(CapiPrefillQuery("?tag=theguardian/g2/features")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
-  val collectionLifeTVandRadio = CollectionTemplate(
-    name = "TV & Radio",
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/g2/tvandradio")),
-    presentation = TemplateDefaults.defaultCollectionPresentation
-  )
   val collectionLifeSpecial1 = CollectionTemplate(
-    name = "Culture Special",
+    name = "Life Special",
     prefill = None,
     presentation = TemplateDefaults.defaultCollectionPresentation,
     hidden = true
   )
   val front = FrontTemplate(
     name = "life/features",
-    collections = List(collectionLifeFeatures, collectionLifeTVandRadio, collectionLifeSpecial1),
+    collections = List(collectionLifeFeatures, collectionLifeSpecial1),
     presentation = TemplateDefaults.defaultFrontPresentation
   )
 }
