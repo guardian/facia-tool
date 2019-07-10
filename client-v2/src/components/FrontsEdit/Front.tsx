@@ -182,7 +182,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
         currentlyScrolledCollectionId: sortedIdsAndOffsets[0][0]
       });
     }
-  }, 50);
+  }, 100);
 
   constructor(props: FrontProps) {
     super(props);
