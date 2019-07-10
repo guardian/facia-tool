@@ -11,7 +11,6 @@ import {
 } from 'redux-form';
 import { styled } from 'constants/theme';
 import Button from 'shared/components/input/ButtonDefault';
-import { ThumbnailEditForm } from 'shared/components/Thumbnail';
 import ContentContainer from 'shared/components/layout/ContentContainer';
 import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
 import {
@@ -24,7 +23,6 @@ import { createSelectFormFieldsForCollectionItem } from 'selectors/formSelectors
 import { ArticleFragmentMeta, ArticleTag } from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
-import HorizontalRule from 'shared/components/layout/HorizontalRule';
 import InputCheckboxToggle from 'shared/components/input/InputCheckboxToggle';
 import InputImage, {
   InputImageContainerProps
@@ -46,6 +44,7 @@ import { CapiFields } from 'util/form';
 import { Dispatch } from 'types/Store';
 import { articleFragmentImageCriteria as imageCriteria } from 'constants/image';
 import { selectors as collectionSelectors } from 'shared/bundles/collectionsBundle';
+import { getContributorImage } from 'util/CAPIUtils';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -55,6 +54,7 @@ interface ComponentProps extends ContainerProps {
   showKickerTag: boolean;
   showKickerSection: boolean;
   kickerOptions: ArticleTag;
+  cutoutImage?: string;
 }
 
 type Props = ComponentProps &
@@ -173,6 +173,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       imageSlideshowReplace,
       imageHide,
       imageCutoutReplace,
+      cutoutImage,
       imageReplace,
       onCancel,
       articleCapiFieldValues,
@@ -381,8 +382,13 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     disabled={imageHide}
                     criteria={imageCriteria}
                     frontId={frontId}
-                    defaultImageUrl={articleCapiFieldValues.thumbnail}
+                    defaultImageUrl={
+                      imageCutoutReplace
+                        ? cutoutImage
+                        : articleCapiFieldValues.thumbnail
+                    }
                     useDefault={!imageCutoutReplace && !imageReplace}
+                    message={imageCutoutReplace ? 'Add cutout' : 'Add image'}
                     onChange={this.handleImageChange}
                   />
                 </ImageWrapper>
@@ -592,7 +598,10 @@ const createMapStateToProps = () => {
       imageCutoutReplace: valueSelector(state, 'imageCutoutReplace'),
       showByline: valueSelector(state, 'showByline'),
       showKickerTag: valueSelector(state, 'showKickerTag'),
-      showKickerSection: valueSelector(state, 'showKickerSection')
+      showKickerSection: valueSelector(state, 'showKickerSection'),
+      cutoutImage: externalArticle
+        ? getContributorImage(externalArticle)
+        : undefined
     };
   };
 };

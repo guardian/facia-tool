@@ -21,6 +21,7 @@ import { GridData, Criteria } from 'shared/types/Grid';
 import { RubbishBinIcon, AddImageIcon } from '../icons/Icons';
 import imageDragIcon from 'images/icons/image-drag-icon.svg';
 import { DRAG_DATA_GRID_IMAGE_URL } from 'constants/image';
+import ImageDragIntentIndicator from '../ImageDragIntentIndicator';
 
 const ImageContainer = styled('div')<{
   small?: boolean;
@@ -38,25 +39,21 @@ const AddImageButton = styled(ButtonDefault)<{ small?: boolean }>`
   width: 100%;
   height: 100%;
   background-color: ${({ small, theme }) =>
-    small ? theme.shared.colors.greyLight : `#7a7a7a69`};
+    small ? theme.shared.colors.greyLight : `#5e5e5e50`};
+  text-shadow: 0 0 2px black;
   &:hover,
   &:active,
   &:hover:enabled,
   &:active:enabled {
     background-color: ${({ small, theme }) =>
-      small
-        ? theme.shared.colors.greyVeryLight
-        : theme.shared.colors.greyLight};
+      small ? theme.shared.colors.greyVeryLight : '#5e5e5e99'};
   }
 `;
 
-const ImageComponent = styled.div<{ isHovering?: boolean }>`
+const ImageComponent = styled.div`
   background-size: cover;
   flex-grow: 1;
   cursor: grab;
-  ${props =>
-    props.isHovering &&
-    `box-shadow inset 0 -10px 0 ${globalTheme.base.colors.highlightColor}`};
 `;
 
 const AddImageViaGridModalButton = styled.div`
@@ -112,9 +109,13 @@ const IconDelete = styled('div')<{
   left: ${props => (props.small ? '5px' : '9px')};
 `;
 
-const InputImageContainer = styled(InputContainer)`
+const InputImageContainer = styled(InputContainer)<{ isHovering?: boolean }>`
+  position: relative;
   padding: 5px;
   background-color: ${props => props.theme.shared.colors.greyLight};
+  ${props =>
+    props.isHovering &&
+    `box-shadow inset 0 -10px 0 ${globalTheme.base.colors.highlightColor}`};
 `;
 
 export interface InputImageContainerProps {
@@ -123,6 +124,7 @@ export interface InputImageContainerProps {
   small?: boolean;
   defaultImageUrl?: string;
   useDefault?: boolean;
+  message?: string;
 }
 
 type ComponentProps = InputImageContainerProps &
@@ -145,7 +147,14 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
   };
 
   public render() {
-    const { small, input, gridUrl, defaultImageUrl, useDefault } = this.props;
+    const {
+      small,
+      input,
+      gridUrl,
+      defaultImageUrl,
+      useDefault,
+      message = 'Add image'
+    } = this.props;
     const gridSearchUrl = `${gridUrl}?cropType=landscape`;
     const hasImage = !useDefault && !!input.value && !!input.value.thumb;
     const imageUrl =
@@ -153,7 +162,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
         ? input.value.thumb
         : defaultImageUrl;
     return (
-      <InputImageContainer>
+      <InputImageContainer isHovering={this.state.isHovering}>
         <GridModal
           url={gridSearchUrl}
           isOpen={this.state.modalOpen}
@@ -174,7 +183,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
               draggable
               onDragStart={this.handleDragStart}
               onDrop={this.handleDrop}
-              isHovering={this.state.isHovering}
             >
               {hasImage ? (
                 <ButtonDelete
@@ -195,7 +203,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                     small={small}
                   >
                     <AddImageIcon size="l" />
-                    {!!small ? null : <Label size="sm">Add image</Label>}
+                    {!!small ? null : <Label size="sm">{message}</Label>}
                   </AddImageButton>
                 </AddImageViaGridModalButton>
               )}
@@ -204,18 +212,19 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
               <AddImageViaUrlInput>
                 <ImageUrlInput
                   name="paste-url"
-                  placeholder=" Paste crop url from Grid"
+                  placeholder=" Paste crop url"
                   defaultValue={this.state.imageSrc}
                   onKeyDown={this.handlePasteImgSrcSubmit(13)}
                   onChange={this.handlePasteImgSrcChange}
                 />
                 <InputLabel hidden htmlFor="paste-url">
-                  Paste crop url from Grid
+                  Paste crop url
                 </InputLabel>
               </AddImageViaUrlInput>
             )}
           </ImageContainer>
         </DragIntentContainer>
+        {this.state.isHovering && <ImageDragIntentIndicator />}
       </InputImageContainer>
     );
   }

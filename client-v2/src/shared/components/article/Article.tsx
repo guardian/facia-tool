@@ -22,16 +22,7 @@ import {
 } from 'shared/types/Collection';
 import { getPillarColor } from 'shared/util/getPillarColor';
 import DragIntentContainer from '../DragIntentContainer';
-import { theme as globalTheme } from 'shared/constants/theme';
-
-const DragIntentIndicator = styled.div`
-  display: none;
-  position: absolute;
-  height: 10px;
-  bottom: 0;
-  width: 100%;
-  background-color: ${globalTheme.colors.orange};
-`;
+import ImageDragIntentIndicator from '../ImageDragIntentIndicator';
 
 const ArticleBodyContainer = styled(CollectionItemBody)<{
   pillarId: string | undefined;
@@ -50,7 +41,8 @@ const ArticleBodyContainer = styled(CollectionItemBody)<{
       color: ${({ theme }) => theme.shared.base.colors.textMuted};
     }
   }
-  ${DragIntentIndicator} {
+  ${ImageDragIntentIndicator} {
+    display: none;
     ${({ isDraggingImageOver }) => isDraggingImageOver && `display: block;`}
   }
   height: 100%;
@@ -180,7 +172,7 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
               onAddToClipboard={onAddToClipboard}
               displayPlaceholders={isLoading}
             />
-            <DragIntentIndicator />
+            <ImageDragIntentIndicator />
           </ArticleBodyContainer>
         </DragIntentContainer>
         {children}
