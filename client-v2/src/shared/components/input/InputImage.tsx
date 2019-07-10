@@ -31,16 +31,13 @@ const ImageContainer = styled('div')<{
   position: relative;
   width: 100%;
   max-width: ${props => (props.small ? '100px' : '180px')};
-  height: ${props => (props.small ? '40px' : '115px')};
+  height: ${props => (props.small ? '50px' : '115px')};
   transition: background-color 0.15s;
 `;
 
 const AddImageButton = styled(ButtonDefault)<{ small?: boolean }>`
-  width: 100%;
-  height: 100%;
   background-color: ${({ small, theme }) =>
     small ? theme.shared.colors.greyLight : `#5e5e5e50`};
-  text-shadow: 0 0 2px black;
   &:hover,
   &:active,
   &:hover:enabled,
@@ -48,6 +45,10 @@ const AddImageButton = styled(ButtonDefault)<{ small?: boolean }>`
     background-color: ${({ small, theme }) =>
       small ? theme.shared.colors.greyVeryLight : '#5e5e5e99'};
   }
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  text-shadow: 0 0 2px black;
 `;
 
 const ImageComponent = styled.div`
@@ -109,9 +110,12 @@ const IconDelete = styled('div')<{
   left: ${props => (props.small ? '5px' : '9px')};
 `;
 
-const InputImageContainer = styled(InputContainer)<{ isHovering?: boolean }>`
+const InputImageContainer = styled(InputContainer)<{
+  small: boolean;
+  isHovering?: boolean;
+}>`
   position: relative;
-  padding: 5px;
+  ${props => !props.small && `padding: 5px;`}
   background-color: ${props => props.theme.shared.colors.greyLight};
   ${props =>
     props.isHovering &&
@@ -148,11 +152,11 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 
   public render() {
     const {
-      small,
+      small = false,
       input,
       gridUrl,
-      defaultImageUrl,
       useDefault,
+      defaultImageUrl,
       message = 'Add image'
     } = this.props;
     const gridSearchUrl = `${gridUrl}?cropType=landscape`;
@@ -162,7 +166,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
         ? input.value.thumb
         : defaultImageUrl;
     return (
-      <InputImageContainer isHovering={this.state.isHovering}>
+      <InputImageContainer small={small} isHovering={this.state.isHovering}>
         <GridModal
           url={gridSearchUrl}
           isOpen={this.state.modalOpen}
@@ -235,7 +239,9 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
   };
 
   private handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
-    const origin = this.props.input.value.origin || this.props.defaultImageUrl;
+    const origin =
+      (!this.props.useDefault && this.props.input.value.origin) ||
+      this.props.defaultImageUrl;
     if (origin) {
       e.dataTransfer.setData(DRAG_DATA_GRID_IMAGE_URL, origin);
       e.dataTransfer.setDragImage(dragImage, -25, 50);
