@@ -14,11 +14,16 @@ case class EditionsFront(
     updatedEmail: Option[String],
     collections: List[EditionsCollection]
 ) {
-  def toPublishedFront(): PublishedFront = PublishedFront(
-    id,
-    isHidden,
-    collections.map(_.toPublishedCollection)
-  )
+  def toPublishedFront: Option[PublishedFront] = {
+    if (isHidden)
+      None
+    else
+      Some(PublishedFront(
+        id,
+        displayName,
+        collections.map(_.toPublishedCollection)
+      ))
+  }
 }
 
 object EditionsFront {

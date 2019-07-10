@@ -14,7 +14,7 @@ case class EditionsCollection(
                                prefill: Option[CapiPrefillQuery],
                                items: List[EditionsArticle],
 ) {
-  def toPublishedCollection(): PublishedCollection = PublishedCollection(
+  def toPublishedCollection: PublishedCollection = PublishedCollection(
     id,
     items.map(_.toPublishedArticle)
   )

@@ -26,7 +26,8 @@ import play.api.db.HikariCPComponents
 import services.editions.db.EditionsDB
 import services.editions.publishing.{EditionsPublishing, PublishedIssuesBucket}
 
-class AppComponents(context: Context, val config: ApplicationConfiguration) extends BaseFaciaControllerComponents(context) with EvolutionsComponents with DBComponents with HikariCPComponents {
+class AppComponents(context: Context, val config: ApplicationConfiguration)
+  extends BaseFaciaControllerComponents(context) with EvolutionsComponents with DBComponents with HikariCPComponents {
 
   applicationEvolutions
 

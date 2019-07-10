@@ -1,13 +1,13 @@
 package model.editions
 
-import com.gu.editions.PublishedArticle
+import com.gu.editions.{PublishedArticle, PublishedArticleMetadata}
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
 case class EditionsArticle(pageCode: String, addedOn: Long) {
-  def toPublishedArticle(): PublishedArticle = PublishedArticle(
+  def toPublishedArticle: PublishedArticle = PublishedArticle(
     pageCode.toLong,
-    None
+    PublishedArticleMetadata(None, None, None) // TODO (sihil): Store in DB and populate here
   )
 }
 

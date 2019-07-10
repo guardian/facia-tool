@@ -1,6 +1,6 @@
 package model.editions
 
-import java.time.{Instant, ZoneId, ZonedDateTime}
+import java.time.{Instant, OffsetDateTime, ZoneId, ZonedDateTime}
 
 import com.gu.editions.PublishedIssue
 import play.api.libs.json.Json
@@ -19,11 +19,11 @@ case class EditionsIssue(
     launchedEmail: Option[String],
     fronts: List[EditionsFront]
 ) {
-  def toPublishedIssue(): PublishedIssue = PublishedIssue(
+  def toPublishedIssue: PublishedIssue = PublishedIssue(
     id,
     displayName,
-    ZonedDateTime.ofInstant(Instant.ofEpochMilli(issueDate), ZoneId.of(timezoneId)),
-    fronts.map(_.toPublishedFront)
+    OffsetDateTime.ofInstant(Instant.ofEpochMilli(issueDate), ZoneId.of(timezoneId)),
+    fronts.flatMap(_.toPublishedFront)
   )
 }
 
