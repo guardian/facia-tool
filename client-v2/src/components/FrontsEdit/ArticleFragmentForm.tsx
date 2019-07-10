@@ -24,9 +24,7 @@ import { ArticleFragmentMeta, ArticleTag } from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
 import InputCheckboxToggle from 'shared/components/input/InputCheckboxToggle';
-import InputImage, {
-  InputImageContainerProps
-} from 'shared/components/input/InputImage';
+import InputImage from 'shared/components/input/InputImage';
 import InputGroup from 'shared/components/input/InputGroup';
 import InputButton from 'shared/components/input/InputButton';
 import Row from '../Row';
@@ -127,7 +125,7 @@ const RenderSlideshow = ({ fields, frontId }: RenderSlideshowProps) => (
   <>
     {fields.map((name, index) => (
       <Col key={`${name}-${index}`}>
-        <Field<InputImageContainerProps>
+        <Field
           name={name}
           component={InputImage}
           small
@@ -447,7 +445,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
           {imageSlideshowReplace && (
             <RowContainer>
               <SlideshowRow>
-                <FieldArray<RenderSlideshowProps>
+                <FieldArray
                   name="slideshow"
                   frontId={frontId}
                   component={RenderSlideshow}
