@@ -18,6 +18,7 @@ import { State } from 'types/State';
 interface ContainerProps {
   id: string;
   browsingStage: CollectionItemSets;
+  currentCollection?: string | undefined;
 }
 
 interface ComponentProps extends ContainerProps {
@@ -33,7 +34,8 @@ const FrontsDetailView = ({
   browsingStage,
   clearArticleFragmentSelection,
   updateArticleFragmentMeta,
-  overviewIsOpen
+  overviewIsOpen,
+  currentCollection
 }: ComponentProps) => {
   if (selectedArticleFragment) {
     return (
@@ -52,7 +54,13 @@ const FrontsDetailView = ({
     );
   }
   if (overviewIsOpen) {
-    return <FrontCollectionsOverview id={id} browsingStage={browsingStage} />;
+    return (
+      <FrontCollectionsOverview
+        id={id}
+        browsingStage={browsingStage}
+        currentCollection={currentCollection}
+      />
+    );
   }
   return null;
 };

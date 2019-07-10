@@ -12,6 +12,7 @@ import ContentContainer from 'shared/components/layout/ContentContainer';
 interface FrontContainerProps {
   id: string;
   browsingStage: CollectionItemSets;
+  currentCollection: string | undefined;
 }
 
 type FrontCollectionOverviewProps = FrontContainerProps & {
@@ -47,7 +48,8 @@ const ContainerBody = styled.div`
 const FrontCollectionsOverview = ({
   id,
   front,
-  browsingStage
+  browsingStage,
+  currentCollection
 }: FrontCollectionOverviewProps) => (
   <Container setBack isClosed={false}>
     <ContainerHeadingPinline>Overview</ContainerHeadingPinline>
@@ -57,6 +59,7 @@ const FrontCollectionsOverview = ({
           frontId={id}
           key={collectionId}
           collectionId={collectionId}
+          isSelected={currentCollection === collectionId}
           browsingStage={browsingStage}
         />
       ))}

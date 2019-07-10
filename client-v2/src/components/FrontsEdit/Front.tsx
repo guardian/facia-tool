@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'constants/theme';
+import { styled, theme as globalTheme } from 'constants/theme';
 import { connect } from 'react-redux';
 import { Root, Move, PosSpec } from 'lib/dnd';
 import { State } from 'types/State';
@@ -36,6 +36,8 @@ import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import ButtonRoundedWithLabel, {
   ButtonLabel
 } from 'shared/components/input/ButtonRoundedWithLabel';
+import sortBy from 'lodash/sortBy';
+import debounce from 'lodash/debounce';
 
 const FrontContainer = styled('div')`
   height: 100%;
@@ -62,6 +64,10 @@ const OverviewToggleContainer = styled('div')`
 const OverviewHeading = styled('label')`
   margin-right: 5px;
   cursor: pointer;
+`;
+
+const CollectionContainer = styled.div`
+  position: relative;
 `;
 
 const OverviewHeadingButton = styled(ButtonRoundedWithLabel)`
@@ -97,6 +103,7 @@ const FrontDetailContainer = styled(BaseFrontContentContainer)`
 `;
 
 const FrontCollectionsContainer = styled('div')`
+  position: relative;
   overflow-y: scroll;
   max-height: calc(100% - 43px);
   padding-top: 1px;
@@ -131,16 +138,57 @@ type FrontProps = FrontPropsBeforeState & {
 
 interface FrontState {
   error: string | void;
+  currentlyScrolledCollectionId: string | undefined;
 }
 
 const isDropFromCAPIFeed = (e: React.DragEvent) =>
   e.dataTransfer.types.includes('capi');
 
 class FrontComponent extends React.Component<FrontProps, FrontState> {
+  private collectionRefs: {
+    [collectionId: string]: HTMLDivElement | null;
+  } = {};
+  private collectionContainerRef: HTMLDivElement | null = null;
+
+  /**
+   * Handle a scroll event. We debounce this as it's called many times by the
+   * event handler, and triggers an expensive rerender.
+   */
+  private handleScroll = debounce(() => {
+    if (!this.collectionContainerRef) {
+      return;
+    }
+    const scrollTop = this.collectionContainerRef.scrollTop;
+    const currentIdsAndOffsets = Object.entries(this.collectionRefs)
+      .filter(
+        ([_, element]) =>
+          // We filter everything that comes before the collection here, as we
+          // know we won't need it. The constant here refers to the height of
+          // the container heading.
+          !!element &&
+          element.offsetTop +
+            element.clientHeight -
+            globalTheme.layout.sectionHeaderHeight >
+            scrollTop
+      )
+      .map(([id, element]) => [id, element!.offsetTop] as [string, number]);
+
+    const sortedIdsAndOffsets = sortBy(
+      currentIdsAndOffsets,
+      ([_, offset]) => offset
+    );
+    if (sortedIdsAndOffsets.length) {
+      this.setState({
+        currentlyScrolledCollectionId: sortedIdsAndOffsets[0][0]
+      });
+    }
+  }, 50);
+
   constructor(props: FrontProps) {
     super(props);
     this.state = {
-      error: undefined
+      error: undefined,
+      currentlyScrolledCollectionId: undefined
     };
   }
 
@@ -152,6 +200,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
     if (this.props.browsingStage !== newProps.browsingStage) {
       this.props.initialiseFront();
     }
+  }
+
+  public componentDidMount() {
+    this.handleScroll();
   }
 
   public handleError = (error: string) => {
@@ -236,23 +288,30 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                 />
               </OverviewToggleContainer>
             </SectionContentMetaContainer>
-            <FrontCollectionsContainer>
+            <FrontCollectionsContainer
+              onScroll={this.handleScroll}
+              innerRef={ref => (this.collectionContainerRef = ref)}
+            >
               <Root id={this.props.id} data-testid={this.props.id}>
                 {front.collections.map(collectionId => (
-                  <Collection
-                    key={collectionId}
-                    id={collectionId}
-                    frontId={this.props.id}
-                    priority={front.priority}
-                    browsingStage={this.props.browsingStage}
-                    alsoOn={this.props.alsoOn}
-                    handleInsert={this.handleInsert}
-                    handleMove={this.handleMove}
-                    selectArticleFragment={this.props.selectArticleFragment(
-                      this.props.id
-                    )}
-                    handleArticleFocus={this.handleArticleFocus}
-                  />
+                  <CollectionContainer
+                    innerRef={ref => (this.collectionRefs[collectionId] = ref)}
+                  >
+                    <Collection
+                      key={collectionId}
+                      id={collectionId}
+                      frontId={this.props.id}
+                      priority={front.priority}
+                      browsingStage={this.props.browsingStage}
+                      alsoOn={this.props.alsoOn}
+                      handleInsert={this.handleInsert}
+                      handleMove={this.handleMove}
+                      selectArticleFragment={this.props.selectArticleFragment(
+                        this.props.id
+                      )}
+                      handleArticleFocus={this.handleArticleFocus}
+                    />
+                  </CollectionContainer>
                 ))}
               </Root>
             </FrontCollectionsContainer>
@@ -262,6 +321,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
               <FrontDetailView
                 id={this.props.id}
                 browsingStage={this.props.browsingStage}
+                currentCollection={this.state.currentlyScrolledCollectionId}
               />
             </FrontDetailContainer>
           )}

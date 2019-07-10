@@ -22,6 +22,7 @@ interface FrontCollectionOverviewContainerProps {
   frontId: string;
   collectionId: string;
   browsingStage: CollectionItemSets;
+  isSelected: boolean;
 }
 
 type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
@@ -31,7 +32,7 @@ type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
   hasUnpublishedChanges: boolean;
 };
 
-const Container = styled.div`
+const Container = styled.div<{ isSelected: boolean }>`
   align-items: center;
   appearance: none;
   background-color: ${({ theme }) => theme.shared.base.colors.backgroundColor};
@@ -48,6 +49,10 @@ const Container = styled.div`
   text-align: left;
   text-decoration: none;
   transition: background-color 0.3s;
+
+  ${props =>
+    props.isSelected &&
+    `background-color: ${props.theme.shared.colors.whiteDark}`}
 
   &:hover {
     background-color: ${({ theme }) => theme.shared.colors.whiteDark};
@@ -100,7 +105,8 @@ const CollectionOverview = ({
   articleCount,
   openCollection,
   frontId,
-  hasUnpublishedChanges
+  hasUnpublishedChanges,
+  isSelected
 }: FrontCollectionOverviewProps) =>
   collection ? (
     <Container
@@ -117,6 +123,7 @@ const CollectionOverview = ({
         }
         openCollection(collection.id);
       }}
+      isSelected={isSelected}
     >
       <TextContainerLeft>
         <Name>{collection.displayName}</Name>

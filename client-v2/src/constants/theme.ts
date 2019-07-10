@@ -32,10 +32,15 @@ const capiInterface = {
   backgroundSelected: shared.colors.orange
 };
 
+const layout = {
+  sectionHeaderHeight: 40
+}
+
 export const theme = {
   shared,
   base,
-  capiInterface
+  capiInterface,
+  layout
 };
 
 export type Theme = typeof theme;
