@@ -1,8 +1,7 @@
 package model.editions
 
-import java.time.ZonedDateTime
+import com.gu.editions.PublishedCollection
 import play.api.libs.json.Json
-
 import scalikejdbc.WrappedResultSet
 
 case class EditionsCollection(
@@ -14,7 +13,12 @@ case class EditionsCollection(
                                updatedEmail: Option[String],
                                prefill: Option[CapiPrefillQuery],
                                items: List[EditionsArticle],
-)
+) {
+  def toPublishedCollection: PublishedCollection = PublishedCollection(
+    id,
+    items.map(_.toPublishedArticle)
+  )
+}
 
 object EditionsCollection {
   implicit val format = Json.format[EditionsCollection]

@@ -1,7 +1,7 @@
-package services.editions
+package services.editions.db
 
-import scalikejdbc._
 import conf.ApplicationConfiguration
+import scalikejdbc._
 
 class EditionsDB (config: ApplicationConfiguration) extends IssueQueries with CollectionsQueries {
   Class.forName("org.postgresql.Driver")

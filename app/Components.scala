@@ -13,7 +13,7 @@ import router.Routes
 import scalikejdbc.DB
 import scalikejdbc.config.DBs
 import services._
-import services.editions.{EditionsDB, EditionsTemplating}
+import services.editions.EditionsTemplating
 import slices.{Containers, FixedContainers}
 import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
@@ -23,14 +23,17 @@ import scalikejdbc._
 import play.api.db.evolutions.EvolutionsComponents
 import play.api.db.DBComponents
 import play.api.db.HikariCPComponents
+import services.editions.db.EditionsDB
+import services.editions.publishing.{EditionsPublishing, PublishedIssuesBucket}
 
-class AppComponents(context: Context, val config: ApplicationConfiguration) extends BaseFaciaControllerComponents(context) with EvolutionsComponents with DBComponents with HikariCPComponents {
+class AppComponents(context: Context, val config: ApplicationConfiguration)
+  extends BaseFaciaControllerComponents(context) with EvolutionsComponents with DBComponents with HikariCPComponents {
 
   applicationEvolutions
 
+  val isDev: Boolean = context.environment.mode == Mode.Dev
   val isTest: Boolean = context.environment.mode == Mode.Test
   val isProd: Boolean = context.environment.mode == Mode.Prod
-  val isDev: Boolean = context.environment.mode == Mode.Dev
 
   // Services
   val awsEndpoints = new AwsEndpoints(config)
@@ -41,7 +44,10 @@ class AppComponents(context: Context, val config: ApplicationConfiguration) exte
   // Editions services
   val editionsDb = new EditionsDB(config)
   val templating = new EditionsTemplating(capi)
+  val publishingBucket = new PublishedIssuesBucket(config, awsEndpoints)
+  val editionsPublishing = new EditionsPublishing(publishingBucket, editionsDb)
 
+  // Controllers
   val frontsApi = new FrontsApi(config, awsEndpoints)
   val s3FrontsApi = new S3FrontsApi(config, isTest, awsEndpoints)
   val faciaApiIO = new FaciaApiIO(frontsApi, s3FrontsApi)
@@ -64,7 +70,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration) exte
   override lazy val httpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, sourceMapper, Some(router))
 
 //  Controllers
-  val editions = new EditionsController(editionsDb, templating, this)
+  val editions = new EditionsController(editionsDb, templating, editionsPublishing, this)
   val collection = new CollectionController(acl, structuredLogger, updateManager, press, this)
   val defaults = new DefaultsController(acl, isDev, this)
   val faciaCapiProxy = new FaciaContentApiProxy(capi, this)
