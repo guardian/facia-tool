@@ -296,12 +296,12 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
               <Root id={this.props.id} data-testid={this.props.id}>
                 {front.collections.map(collectionId => (
                   <CollectionContainer
+                    key={collectionId}
                     innerRef={ref =>
                       (this.collectionElements[collectionId] = ref)
                     }
                   >
                     <Collection
-                      key={collectionId}
                       id={collectionId}
                       frontId={this.props.id}
                       priority={front.priority}
