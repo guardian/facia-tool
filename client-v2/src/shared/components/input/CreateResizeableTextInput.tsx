@@ -18,7 +18,7 @@ type Props = {
 } & WrappedFieldProps;
 
 interface State {
-  inputHeight: number|string;
+  inputHeight: number | string;
 }
 
 const RewindButton = styled.button.attrs({
@@ -72,10 +72,10 @@ const createResizeableTextInput = (
     }
 
     public updateHeight() {
-      if(this.inputElement.current) {
-        this.setState({inputHeight: this.inputElement.current.scrollHeight})
+      if (this.inputElement.current) {
+        this.setState({ inputHeight: this.inputElement.current.scrollHeight });
+      }
     }
-  }
 
     public render() {
       const { label, input, originalValue, ...rest } = this.props;
@@ -107,4 +107,4 @@ const createResizeableTextInput = (
   };
 };
 
-export {createResizeableTextInput}
+export { createResizeableTextInput };

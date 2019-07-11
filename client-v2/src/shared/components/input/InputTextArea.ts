@@ -1,5 +1,5 @@
 import InputBase from './InputBase';
-import {createResizeableTextInput} from './CreateResizeableTextInput';
+import { createResizeableTextInput } from './CreateResizeableTextInput';
 
 const InputTextAreaBase = InputBase.withComponent('textarea').extend<{
   minHeight?: number;
