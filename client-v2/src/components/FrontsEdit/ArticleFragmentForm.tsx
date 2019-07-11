@@ -288,7 +288,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               placeholder={articleCapiFieldValues.headline}
               component={InputTextArea}
               useHeadlineFont
-              rows="2"
               originalValue={articleCapiFieldValues.headline}
               data-testid="edit-form-headline-field"
             />

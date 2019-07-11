@@ -1,4 +1,4 @@
 import InputBase from './InputBase';
-import createInput from './CreateInput';
+import {createResizeableTextInput} from './CreateResizeableTextInput';
 
-export default createInput(InputBase, 'text');
+export default createResizeableTextInput(InputBase, 'text');
