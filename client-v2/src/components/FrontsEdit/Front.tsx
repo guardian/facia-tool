@@ -145,21 +145,21 @@ const isDropFromCAPIFeed = (e: React.DragEvent) =>
   e.dataTransfer.types.includes('capi');
 
 class FrontComponent extends React.Component<FrontProps, FrontState> {
-  private collectionRefs: {
+  private collectionElements: {
     [collectionId: string]: HTMLDivElement | null;
   } = {};
-  private collectionContainerRef: HTMLDivElement | null = null;
+  private collectionContainerElement: HTMLDivElement | null = null;
 
   /**
    * Handle a scroll event. We debounce this as it's called many times by the
    * event handler, and triggers an expensive rerender.
    */
   private handleScroll = debounce(() => {
-    if (!this.collectionContainerRef) {
+    if (!this.collectionContainerElement) {
       return;
     }
-    const scrollTop = this.collectionContainerRef.scrollTop;
-    const currentIdsAndOffsets = Object.entries(this.collectionRefs)
+    const scrollTop = this.collectionContainerElement.scrollTop;
+    const currentIdsAndOffsets = Object.entries(this.collectionElements)
       .filter(
         ([_, element]) =>
           // We filter everything that comes before the collection here, as we
@@ -177,6 +177,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
       currentIdsAndOffsets,
       ([_, offset]) => offset
     );
+
     if (sortedIdsAndOffsets.length) {
       this.setState({
         currentlyScrolledCollectionId: sortedIdsAndOffsets[0][0]
@@ -290,12 +291,14 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
             </SectionContentMetaContainer>
             <FrontCollectionsContainer
               onScroll={this.handleScroll}
-              innerRef={ref => (this.collectionContainerRef = ref)}
+              innerRef={ref => (this.collectionContainerElement = ref)}
             >
               <Root id={this.props.id} data-testid={this.props.id}>
                 {front.collections.map(collectionId => (
                   <CollectionContainer
-                    innerRef={ref => (this.collectionRefs[collectionId] = ref)}
+                    innerRef={ref =>
+                      (this.collectionElements[collectionId] = ref)
+                    }
                   >
                     <Collection
                       key={collectionId}
