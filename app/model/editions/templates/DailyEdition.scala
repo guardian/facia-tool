@@ -22,7 +22,7 @@ object DailyEdition {
       FrontLife.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
       FrontLifeWeekend.front -> WeekDays(List(WeekDay.Sat)),
       FrontLifeMagazineObserver.front -> WeekDays(List(WeekDay.Sun)),
-      FrontBooks.front -> WeekDays(List(WeekDay.Sat)),
+      FrontBooks.front -> WeekDays(List(WeekDay.Sat, WeekDay.Sun)),
       FrontFood.front -> WeekDays(List(WeekDay.Sat)),
       FrontFoodObserver.front -> WeekDays(List(WeekDay.Sun)),
       FrontSportGuardian.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
@@ -339,11 +339,6 @@ object FrontCultureNewReview {
     prefill = Some(CapiPrefillQuery("?tag=theobserver/new-review/critics")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
-  val collectionCultureBooks = CollectionTemplate(
-    name = "Books",
-    prefill = Some(CapiPrefillQuery("?tag=theobserver/new-review/books")),
-    presentation = TemplateDefaults.defaultCollectionPresentation
-  )
   val collectionCultureSpecial3 = CollectionTemplate(
     name = "Life Special",
     prefill = None,
@@ -352,7 +347,7 @@ object FrontCultureNewReview {
   )
   val front = FrontTemplate(
     name = "culture/newreview",
-    collections = List(collectionCultureFeatures, collectionCultureScience, collectionCultureAgenda, collectionCultureCritics, collectionCultureBooks, collectionCultureSpecial3),
+    collections = List(collectionCultureFeatures, collectionCultureScience, collectionCultureAgenda, collectionCultureCritics, collectionCultureSpecial3),
     presentation = TemplateDefaults.defaultFrontPresentation
   )
 }
@@ -450,9 +445,9 @@ object FrontLifeMagazineObserver {
 }
 
 object FrontBooks {
-  val collectionBooksSaturdayReview = CollectionTemplate(
-    name = "Saturday Review",
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/guardianreview/saturdayreviewsfeatres")),
+  val collectionBooks = CollectionTemplate(
+    name = "Books",
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/guardianreview/saturdayreviewsfeatres|theobserver/new-review/books")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
   val collectionBooksSpecial1 = CollectionTemplate(
@@ -463,7 +458,7 @@ object FrontBooks {
   )
   val front = FrontTemplate(
     name = "review/books",
-    collections = List(collectionBooksSaturdayReview, collectionBooksSpecial1),
+    collections = List(collectionBooks, collectionBooksSpecial1),
     presentation = TemplateDefaults.defaultFrontPresentation
   )
 }
