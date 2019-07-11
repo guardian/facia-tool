@@ -203,10 +203,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                 }}
               >
                 <ButtonLabel>Expand all&nbsp;</ButtonLabel>
-                <DownCaretIcon
-                  fill={sharedTheme.base.colors.text}
-                  direction="down"
-                />
+                <DownCaretIcon fill={sharedTheme.base.colors.text} />
               </OverviewHeadingButton>
               <OverviewHeadingButton
                 onClick={e => {
@@ -215,7 +212,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                 }}
               >
                 <ButtonLabel>Collapse all&nbsp;</ButtonLabel>
-                <DownCaretIcon fill={sharedTheme.base.colors.text} />
+                <DownCaretIcon
+                  direction="up"
+                  fill={sharedTheme.base.colors.text}
+                />
               </OverviewHeadingButton>
               <OverviewToggleContainer>
                 <OverviewHeading htmlFor={overviewToggleId}>
