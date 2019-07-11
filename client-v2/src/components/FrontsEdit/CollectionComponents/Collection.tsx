@@ -10,8 +10,8 @@ import {
   discardDraftChangesToCollection,
   openCollectionsAndFetchTheirArticles
 } from 'actions/Collections';
-import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
-import { isCollectionLockedSelector } from 'selectors/collectionSelectors';
+import { selectHasUnpublishedChanges } from 'selectors/frontsSelectors';
+import { selectIsCollectionLocked } from 'selectors/collectionSelectors';
 import { State } from 'types/State';
 import { CollectionItemSets, Group } from 'shared/types/Collection';
 import { selectIsEditingEditions } from 'selectors/pathSelectors';
@@ -212,10 +212,10 @@ const createMapStateToProps = () => {
       frontId
     );
     return {
-      hasUnpublishedChanges: hasUnpublishedChangesSelector(state, {
+      hasUnpublishedChanges: selectHasUnpublishedChanges(state, {
         collectionId: id
       }),
-      isCollectionLocked: isCollectionLockedSelector(state, id),
+      isCollectionLocked: selectIsCollectionLocked(state, id),
       groups: selectCollectionStageGroups(selectSharedState(state), {
         collectionSet: browsingStage,
         collectionId: id
