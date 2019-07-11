@@ -6,11 +6,11 @@ import {
   InjectedFormProps,
   formValueSelector,
   WrappedFieldArrayProps,
-  Field
+  Field,
+  EventWithDataHandler
 } from 'redux-form';
 import { styled } from 'constants/theme';
 import Button from 'shared/components/input/ButtonDefault';
-import { ThumbnailEditForm } from 'shared/components/Thumbnail';
 import ContentContainer from 'shared/components/layout/ContentContainer';
 import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
 import {
@@ -23,11 +23,8 @@ import { createSelectFormFieldsForCollectionItem } from 'selectors/formSelectors
 import { ArticleFragmentMeta, ArticleTag } from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
-import HorizontalRule from 'shared/components/layout/HorizontalRule';
 import InputCheckboxToggle from 'shared/components/input/InputCheckboxToggle';
-import InputImage, {
-  InputImageContainerProps
-} from 'shared/components/input/InputImage';
+import InputImage from 'shared/components/input/InputImage';
 import InputGroup from 'shared/components/input/InputGroup';
 import InputButton from 'shared/components/input/InputButton';
 import Row from '../Row';
@@ -45,6 +42,7 @@ import { CapiFields } from 'util/form';
 import { Dispatch } from 'types/Store';
 import { articleFragmentImageCriteria as imageCriteria } from 'constants/image';
 import { selectors as collectionSelectors } from 'shared/bundles/collectionsBundle';
+import { getContributorImage } from 'util/CAPIUtils';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -54,6 +52,7 @@ interface ComponentProps extends ContainerProps {
   showKickerTag: boolean;
   showKickerSection: boolean;
   kickerOptions: ArticleTag;
+  cutoutImage?: string;
 }
 
 type Props = ComponentProps &
@@ -126,7 +125,7 @@ const RenderSlideshow = ({ fields, frontId }: RenderSlideshowProps) => (
   <>
     {fields.map((name, index) => (
       <Col key={`${name}-${index}`}>
-        <Field<InputImageContainerProps>
+        <Field
           name={name}
           component={InputImage}
           small
@@ -156,6 +155,13 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     lastKnownCollectionId: null
   };
 
+  private allImageFields = [
+    'imageHide',
+    'imageCutoutReplace',
+    'imageSlideshowReplace',
+    'imageReplace'
+  ];
+
   public render() {
     const {
       articleFragmentId,
@@ -165,6 +171,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       imageSlideshowReplace,
       imageHide,
       imageCutoutReplace,
+      cutoutImage,
+      imageReplace,
       onCancel,
       articleCapiFieldValues,
       pristine,
@@ -173,26 +181,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       showKickerTag,
       showKickerSection,
       frontId,
-      articleExists,
-      imageReplace
+      articleExists
     } = this.props;
-
-    // only one of the image fields can be set to true at any time.
-    const changeImageField = (fieldToSet: string) => {
-      const allImageFields = [
-        'imageHide',
-        'imageCutoutReplace',
-        'imageSlideshowReplace',
-        'imageReplace'
-      ];
-      allImageFields.forEach(field => {
-        if (field === fieldToSet) {
-          change(field, true);
-        } else {
-          change(field, false);
-        }
-      });
-    };
 
     return (
       <FormContainer onSubmit={handleSubmit} data-testid="edit-form">
@@ -382,24 +372,24 @@ class FormComponent extends React.Component<Props, FormComponentState> {
           <RowContainer>
             <Row>
               <Col>
-                {imageReplace && (
-                  <ImageWrapper faded={imageHide}>
-                    <ConditionalField
-                      permittedFields={editableFields}
-                      name="primaryImage"
-                      component={InputImage}
-                      disabled={imageHide}
-                      criteria={imageCriteria}
-                      frontId={frontId}
-                    />
-                  </ImageWrapper>
-                )}
-                {!imageReplace && (
-                  <ThumbnailEditForm
-                    imageHide={imageHide}
-                    url={articleCapiFieldValues.thumbnail}
+                <ImageWrapper faded={imageHide}>
+                  <ConditionalField
+                    permittedFields={editableFields}
+                    name={this.getImageFieldName()}
+                    component={InputImage}
+                    disabled={imageHide}
+                    criteria={imageCriteria}
+                    frontId={frontId}
+                    defaultImageUrl={
+                      imageCutoutReplace
+                        ? cutoutImage
+                        : articleCapiFieldValues.thumbnail
+                    }
+                    useDefault={!imageCutoutReplace && !imageReplace}
+                    message={imageCutoutReplace ? 'Add cutout' : 'Add image'}
+                    onChange={this.handleImageChange}
                   />
-                )}
+                </ImageWrapper>
               </Col>
               <Col>
                 <InputGroup>
@@ -411,7 +401,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     id={getInputId(articleFragmentId, 'image-replace')}
                     type="checkbox"
                     default={false}
-                    onChange={_ => changeImageField('imageReplace')}
+                    onChange={_ => this.changeImageField('imageReplace')}
                   />
                 </InputGroup>
                 <InputGroup>
@@ -423,30 +413,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     id={getInputId(articleFragmentId, 'hide-media')}
                     type="checkbox"
                     default={false}
-                    onChange={_ => changeImageField('imageHide')}
+                    onChange={_ => this.changeImageField('imageHide')}
                   />
                 </InputGroup>
-              </Col>
-            </Row>
-            <ConditionalComponent
-              permittedNames={editableFields}
-              name={['primaryImage', 'imageHide']}
-            >
-              <HorizontalRule />
-            </ConditionalComponent>
-            <Row>
-              <Col>
-                <ImageWrapper faded={!imageCutoutReplace}>
-                  <ConditionalField
-                    permittedFields={editableFields}
-                    name="cutoutImage"
-                    component={InputImage}
-                    disabled={imageHide}
-                    frontId={frontId}
-                  />
-                </ImageWrapper>
-              </Col>
-              <Col>
                 <InputGroup>
                   <ConditionalField
                     permittedFields={editableFields}
@@ -456,18 +425,12 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     id={getInputId(articleFragmentId, 'use-cutout')}
                     type="checkbox"
                     default={false}
-                    onChange={_ => changeImageField('imageCutoutReplace')}
+                    onChange={_ => this.changeImageField('imageCutoutReplace')}
                   />
                 </InputGroup>
               </Col>
             </Row>
           </RowContainer>
-          <ConditionalComponent
-            permittedNames={editableFields}
-            name={['cutoutImage', 'imageCutoutReplace']}
-          >
-            <HorizontalRule />
-          </ConditionalComponent>
           <InputGroup>
             <ConditionalField
               permittedFields={editableFields}
@@ -476,13 +439,13 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               label="Slideshow"
               id={getInputId(articleFragmentId, 'slideshow')}
               type="checkbox"
-              onChange={_ => changeImageField('imageSlideshowReplace')}
+              onChange={_ => this.changeImageField('imageSlideshowReplace')}
             />
           </InputGroup>
           {imageSlideshowReplace && (
             <RowContainer>
               <SlideshowRow>
-                <FieldArray<RenderSlideshowProps>
+                <FieldArray
                   name="slideshow"
                   frontId={frontId}
                   component={RenderSlideshow}
@@ -495,6 +458,35 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       </FormContainer>
     );
   }
+
+  private changeImageField = (fieldToSet: string) => {
+    this.allImageFields.forEach(field => {
+      if (field === fieldToSet) {
+        this.props.change(field, true);
+      } else {
+        this.props.change(field, false);
+      }
+    });
+  };
+
+  private getImageFieldName = () => {
+    if (this.props.imageCutoutReplace) {
+      return 'cutoutImage';
+    }
+    return 'primaryImage';
+  };
+
+  private handleImageChange: EventWithDataHandler<React.ChangeEvent<any>> = (
+    e,
+    ...args: [any?, any?, string?]
+  ) => {
+    // If we don't already have an image override enabled, enable the default imageReplace property.
+    // This saves the user a click; adding an image without enabling would be very unusual.
+    if (!this.props.imageCutoutReplace && !this.props.imageReplace) {
+      this.changeImageField('imageReplace');
+    }
+    this.props.change(this.getImageFieldName(), e);
+  };
 }
 
 const ArticleFragmentForm = reduxForm<
@@ -604,7 +596,10 @@ const createMapStateToProps = () => {
       imageCutoutReplace: valueSelector(state, 'imageCutoutReplace'),
       showByline: valueSelector(state, 'showByline'),
       showKickerTag: valueSelector(state, 'showKickerTag'),
-      showKickerSection: valueSelector(state, 'showKickerSection')
+      showKickerSection: valueSelector(state, 'showKickerSection'),
+      cutoutImage: externalArticle
+        ? getContributorImage(externalArticle)
+        : undefined
     };
   };
 };
