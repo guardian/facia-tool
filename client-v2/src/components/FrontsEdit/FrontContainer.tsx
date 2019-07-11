@@ -75,7 +75,7 @@ const SingleFrontContainer = styled('div')<{
       : isOverviewOpen
       ? singleFrontMinWidth + overviewMinWidth + 10
       : singleFrontMinWidth}px;
-  flex: 1 1 auto;
+  flex: 1 1;
   height: 100%;
 `;
 
