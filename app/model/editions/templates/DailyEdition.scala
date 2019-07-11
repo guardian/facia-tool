@@ -541,7 +541,7 @@ object FrontSportObserver {
 }
 
 object FrontSpecialSpecial2 {
-  val collectionSpecialSpecial1 = CollectionTemplate(
+  val collectionSpecialSpecial2 = CollectionTemplate(
     name = "Special",
     prefill = Some(CapiPrefillQuery("?tag=theguardian/special-supplement/special-supplement|theobserver/special-supplement/special-supplement")),
     presentation = TemplateDefaults.defaultCollectionPresentation
