@@ -488,6 +488,12 @@ object FrontFoodObserver {
     prefill = Some(CapiPrefillQuery("?tag=theobserver/magazine/life-and-style,food/food")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
+ val collectionFoodMonthly = CollectionTemplate(
+    name = "OFM",
+    prefill = Some(CapiPrefillQuery("?tag=theobserver/foodmonthly/features|theobserver/foodmonthly")),
+    presentation = TemplateDefaults.defaultCollectionPresentation,
+    hidden = true
+  )
   val collectionFoodSpecial2 = CollectionTemplate(
     name = "Food Special",
     prefill = None,
@@ -496,7 +502,7 @@ object FrontFoodObserver {
   )
   val front = FrontTemplate(
     name = "food/observerfood",
-    collections = List(collectionFood, collectionFoodSpecial2),
+    collections = List(collectionFood, collectionFoodMonthly, collectionFoodSpecial2),
     presentation = TemplateDefaults.defaultFrontPresentation
   )
 }
