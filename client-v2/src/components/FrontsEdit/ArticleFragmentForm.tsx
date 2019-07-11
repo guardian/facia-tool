@@ -480,7 +480,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     e,
     ...args: [any?, any?, string?]
   ) => {
-    // If no image overrides are enabled, enable the default imageReplace property.
+    // If we don't already have an image override enabled, enable the default imageReplace property.
     // This saves the user a click; adding an image without enabling would be very unusual.
     if (!this.props.imageCutoutReplace && !this.props.imageReplace) {
       this.changeImageField('imageReplace');
