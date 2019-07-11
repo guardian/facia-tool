@@ -1,5 +1,5 @@
 import InputBase from './InputBase';
-import createInput from './CreateInput';
+import {createResizeableTextInput} from './CreateResizeableTextInput';
 
 const InputTextAreaBase = InputBase.withComponent('textarea').extend<{
   minHeight?: number;
@@ -10,4 +10,4 @@ const InputTextAreaBase = InputBase.withComponent('textarea').extend<{
   max-height: ${({ maxHeight = 120 }) => maxHeight}px;
 `;
 
-export default createInput(InputTextAreaBase);
+export default createResizeableTextInput(InputTextAreaBase);

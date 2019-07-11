@@ -18,7 +18,7 @@ type Props = {
 } & WrappedFieldProps;
 
 interface State {
-  inputHeight: number;
+  inputHeight: number|string;
 }
 
 const RewindButton = styled.button.attrs({
@@ -47,18 +47,18 @@ const InputComponentContainer = styled.div`
   }
 `;
 
-export default (
+const createResizeableTextInput = (
   Component: new (props: any) => React.Component<
     React.HTMLAttributes<HTMLInputElement> & StyledProps<any>
   >,
   type?: string
 ) => {
-  return class extends React.Component<Props, State> {
+  return class ResizeableTextInput extends React.Component<Props, State> {
     private inputElement: React.RefObject<HTMLInputElement>;
     constructor(props: Props) {
       super(props);
       this.inputElement = React.createRef();
-      this.state = { inputHeight: 36 };
+      this.state = { inputHeight: 'auto' };
     }
 
     public componentDidMount() {
@@ -66,18 +66,16 @@ export default (
     }
 
     public componentDidUpdate(prevProps: Props) {
-      if (prevProps !== this.props) {
+      if (prevProps.input.value !== this.props.input.value) {
         this.updateHeight();
       }
     }
 
     public updateHeight() {
-      this.setState({
-        inputHeight: this.inputElement.current
-          ? this.inputElement.current.scrollHeight
-          : this.state.inputHeight
-      });
+      if(this.inputElement.current) {
+        this.setState({inputHeight: this.inputElement.current.scrollHeight})
     }
+  }
 
     public render() {
       const { label, input, originalValue, ...rest } = this.props;
@@ -108,3 +106,5 @@ export default (
     }
   };
 };
+
+export {createResizeableTextInput}
