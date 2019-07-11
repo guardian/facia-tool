@@ -20,7 +20,7 @@ import {
   CollectionItemSets,
   ArticleFragment as TArticleFragment
 } from 'shared/types/Collection';
-import { getFront } from 'selectors/frontsSelectors';
+import { selectFront } from 'selectors/frontsSelectors';
 import { FrontConfig } from 'types/FaciaApi';
 import { events } from 'services/GA';
 import FrontDetailView from './FrontDetailView';
@@ -345,7 +345,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
 
 const mapStateToProps = (state: State, { id }: FrontPropsBeforeState) => {
   return {
-    front: getFront(state, { frontId: id }),
+    front: selectFront(state, { frontId: id }),
     overviewIsOpen: selectIsFrontOverviewOpen(state, id),
     formIsOpen: !!selectEditorArticleFragment(state, id)
   };

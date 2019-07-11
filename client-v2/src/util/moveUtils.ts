@@ -1,6 +1,6 @@
 import { PosSpec } from 'lib/dnd';
 import { State } from 'shared/types/State';
-import { groupSiblingsSelector } from 'shared/selectors/shared';
+import { selectGroupSiblings } from 'shared/selectors/shared';
 import { Group } from 'shared/types/Collection';
 import findIndex from 'lodash/findIndex';
 
@@ -85,7 +85,7 @@ function getGroupIndicesWithRespectToState(
   state: State
 ): { articleCount: number; groupSiblings: Group[] } {
   const groupId = position.id;
-  const groupSiblings = groupSiblingsSelector(state, groupId);
+  const groupSiblings = selectGroupSiblings(state, groupId);
   const currentGroupIndex = findIndex(
     groupSiblings,
     group => group.uuid === groupId

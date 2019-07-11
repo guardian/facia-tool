@@ -16,10 +16,10 @@ import { State } from 'types/State';
 import { CollectionItemSets, Group } from 'shared/types/Collection';
 import { selectIsEditingEditions } from 'selectors/pathSelectors';
 import {
-  createCollectionStageGroupsSelector,
-  createCollectionEditWarningSelector,
+  createSelectCollectionStageGroups,
+  createSelectCollectionEditWarning,
   selectSharedState,
-  createPreviouslyLiveArticlesInCollectionSelector
+  createSelectPreviouslyLiveArticlesInCollection
 } from 'shared/selectors/shared';
 import {
   selectIsCollectionOpen,
@@ -199,9 +199,9 @@ class Collection extends React.Component<CollectionProps> {
 }
 
 const createMapStateToProps = () => {
-  const collectionStageGroupsSelector = createCollectionStageGroupsSelector();
-  const editWarningSelector = createCollectionEditWarningSelector();
-  const previouslySelector = createPreviouslyLiveArticlesInCollectionSelector();
+  const selectCollectionStageGroups = createSelectCollectionStageGroups();
+  const selectEditWarning = createSelectCollectionEditWarning();
+  const selectPreviously = createSelectPreviouslyLiveArticlesInCollection();
   return (
     state: State,
     { browsingStage, id, priority, frontId }: CollectionPropsBeforeState
@@ -216,14 +216,14 @@ const createMapStateToProps = () => {
         collectionId: id
       }),
       isCollectionLocked: isCollectionLockedSelector(state, id),
-      groups: collectionStageGroupsSelector(selectSharedState(state), {
+      groups: selectCollectionStageGroups(selectSharedState(state), {
         collectionSet: browsingStage,
         collectionId: id
       }),
-      previousGroups: previouslySelector(selectSharedState(state), {
+      previousGroups: selectPreviously(selectSharedState(state), {
         collectionId: id
       }),
-      displayEditWarning: editWarningSelector(selectSharedState(state), {
+      displayEditWarning: selectEditWarning(selectSharedState(state), {
         collectionId: id
       }),
       isOpen: selectIsCollectionOpen(state, id),

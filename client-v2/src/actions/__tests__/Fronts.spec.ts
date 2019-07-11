@@ -6,7 +6,7 @@ import { articlesForScJohnsonPartnerZone } from 'fixtures/capiEndpointResponse';
 import { selectIsCollectionOpen } from 'bundles/frontsUIBundle';
 import { selectArticlesInCollections } from 'shared/selectors/collection';
 import {
-  articleFragmentSelector,
+  selectArticleFragment,
   selectSharedState
 } from 'shared/selectors/shared';
 import { initialiseCollectionsForFront } from 'actions/Collections';
@@ -51,7 +51,7 @@ describe('Fronts actions', () => {
         selectArticlesInCollections(sharedState, {
           collectionIds,
           itemSet: 'draft'
-        }).every(_ => !!articleFragmentSelector(sharedState, _))
+        }).every(_ => !!selectArticleFragment(sharedState, _))
       ).toBe(true);
     });
   });

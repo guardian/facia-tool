@@ -14,9 +14,9 @@ import {
   selectLastName
 } from 'selectors/configSelectors';
 import {
-  createGroupArticlesSelector,
+  createSelectGroupArticles,
   selectSharedState,
-  createAllArticlesInCollectionSelector
+  createSelectAllArticlesInCollection
 } from 'shared/selectors/shared';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import {
@@ -41,7 +41,7 @@ import {
   fetchLastPressedSuccess
 } from 'actions/Fronts';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
-import { getCollectionConfig, getFront } from 'selectors/frontsSelectors';
+import { selectCollectionConfig, selectFront } from 'selectors/frontsSelectors';
 import { Dispatch, ThunkResult } from 'types/Store';
 import { Action } from 'types/Action';
 import {
@@ -60,26 +60,26 @@ import {
   editorCloseCollections
 } from 'bundles/frontsUIBundle';
 import flatten from 'lodash/flatten';
-import { createCollectionsInOpenFrontsSelector } from 'selectors/collectionSelectors';
+import { createSelectCollectionsInOpenFronts } from 'selectors/collectionSelectors';
 import uniq from 'lodash/uniq';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import { isFrontStale } from 'util/frontsUtils';
-import { visibleArticlesSelector } from 'selectors/frontsSelectors';
+import { selectVisibleArticles } from 'selectors/frontsSelectors';
 import { frontStages } from 'constants/fronts';
 import { State } from 'types/State';
 import { events } from 'services/GA';
-import { collectionParamsSelector } from 'selectors/collectionSelectors';
+import { selectCollectionParams } from 'selectors/collectionSelectors';
 import { fetchCollectionsStrategy } from 'strategies/fetch-collection';
 import { updateCollectionStrategy } from 'strategies/update-collection';
 
-const articlesInCollection = createAllArticlesInCollectionSelector();
-const collectionsInOpenFrontsSelector = createCollectionsInOpenFrontsSelector();
+const articlesInCollection = createSelectAllArticlesInCollection();
+const selectCollectionsInOpenFronts = createSelectCollectionsInOpenFronts();
 
 function fetchStaleOpenCollections(
   priority: string
 ): ThunkResult<Promise<void>> {
   return async (dispatch: Dispatch, getState: () => State) => {
-    const collectionIds = collectionsInOpenFrontsSelector(getState(), priority);
+    const collectionIds = selectCollectionsInOpenFronts(getState(), priority);
     const prevState = getState();
     const fetchedCollectionIds = await dispatch(
       getCollections(collectionIds, true)
@@ -110,7 +110,7 @@ function getCollectionActionForMissingCollection(
   id: string,
   getState: () => State
 ): Action[] {
-  const collectionConfig = getCollectionConfig(getState(), id);
+  const collectionConfig = selectCollectionConfig(getState(), id);
   const collection = combineCollectionWithConfig(collectionConfig, {
     draft: [],
     live: [],
@@ -137,7 +137,7 @@ function getCollectionActions(
     collection: collectionWithoutId,
     storiesVisibleByStage
   } = collectionResponse;
-  const collectionConfig = getCollectionConfig(getState(), id);
+  const collectionConfig = selectCollectionConfig(getState(), id);
   const collection = {
     ...collectionWithoutId,
     id
@@ -357,9 +357,9 @@ function getVisibleArticles(
 ): Promise<VisibleArticlesResponse> {
   const collectionType = collection.type;
   const groups = getGroupsByStage(collection, stage);
-  const groupArticleSelector = createGroupArticlesSelector();
+  const selectGroupArticles = createSelectGroupArticles();
   const groupsWithArticles = groups.map(id =>
-    groupArticleSelector(state, { groupId: id })
+    selectGroupArticles(state, { groupId: id })
   );
   const articleDetails = getVisibilityArticleDetails(groupsWithArticles);
 
@@ -376,7 +376,7 @@ function initialiseCollectionsForFront(
   browsingStage: CollectionItemSets
 ): ThunkResult<Promise<void>> {
   return async (dispatch: Dispatch, getState: () => State) => {
-    const front = getFront(getState(), { frontId });
+    const front = selectFront(getState(), { frontId });
     if (!front) {
       return;
     }
@@ -399,7 +399,7 @@ function publishCollection(
   events.collectionPublished(frontId, collectionId);
 
   return (dispatch: Dispatch, getState: () => State) => {
-    const draftVisibleArticles = visibleArticlesSelector(getState(), {
+    const draftVisibleArticles = selectVisibleArticles(getState(), {
       collectionId,
       stage: frontStages.draft
     });
@@ -422,7 +422,7 @@ function publishCollection(
 
         return new Promise(resolve => setTimeout(resolve, 10000))
           .then(() => {
-            const [params] = collectionParamsSelector(getState(), [
+            const [params] = selectCollectionParams(getState(), [
               collectionId
             ]);
             return Promise.all([

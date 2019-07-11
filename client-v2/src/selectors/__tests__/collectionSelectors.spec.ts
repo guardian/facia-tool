@@ -1,13 +1,13 @@
 import {
-  isCollectionLockedSelector,
-  createCollectionsInOpenFrontsSelector
+  selectIsCollectionLocked,
+  createSelectCollectionsInOpenFronts
 } from 'selectors/collectionSelectors';
 import { frontsConfig } from 'fixtures/frontsConfig';
 
 describe('Validating Front Collection configuration metadata', () => {
   it('validates correctly if Collection is uneditable ', () => {
     expect(
-      isCollectionLockedSelector(
+      selectIsCollectionLocked(
         {
           fronts: {
             frontsConfig
@@ -17,7 +17,7 @@ describe('Validating Front Collection configuration metadata', () => {
       )
     ).toEqual(true);
     expect(
-      isCollectionLockedSelector(
+      selectIsCollectionLocked(
         {
           fronts: {
             frontsConfig
@@ -30,10 +30,10 @@ describe('Validating Front Collection configuration metadata', () => {
 });
 
 describe('Selecting collections on all open Fronts', () => {
-  const collectionsInOpenFrontsSelector = createCollectionsInOpenFrontsSelector();
+  const selectCollectionsInOpenFronts = createSelectCollectionsInOpenFronts();
   it('return correct collections for one open Front', () => {
     expect(
-      collectionsInOpenFrontsSelector(
+      selectCollectionsInOpenFronts(
         {
           fronts: {
             frontsConfig
@@ -48,7 +48,7 @@ describe('Selecting collections on all open Fronts', () => {
   });
   it('return correct collections for multiple open Fronts', () => {
     expect(
-      collectionsInOpenFrontsSelector(
+      selectCollectionsInOpenFronts(
         {
           fronts: {
             frontsConfig
@@ -65,7 +65,7 @@ describe('Selecting collections on all open Fronts', () => {
   });
   it('return enpty array for no open Fronts', () => {
     expect(
-      collectionsInOpenFrontsSelector(
+      selectCollectionsInOpenFronts(
         {
           fronts: {
             frontsConfig

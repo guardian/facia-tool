@@ -15,7 +15,7 @@ import {
   validateMediaItem,
   validateImageSrc
 } from '../../util/validateImageSrc';
-import { gridUrlSelector } from 'selectors/configSelectors';
+import { selectGridUrl } from 'selectors/configSelectors';
 import { State } from 'types/State';
 import { GridData, Criteria } from 'shared/types/Grid';
 import { RubbishBinIcon, AddImageIcon } from '../icons/Icons';
@@ -350,7 +350,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 
 const mapStateToProps = (state: State) => {
   return {
-    gridUrl: gridUrlSelector(state)
+    gridUrl: selectGridUrl(state)
   };
 };
 

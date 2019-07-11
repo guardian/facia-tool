@@ -24,27 +24,27 @@ import { DerivedArticle } from 'shared/types/Article';
 // Selects the shared part of the application state mounted at its default point, '.shared'.
 const selectSharedState = (rootState: any): State => rootState.shared;
 
-const groupsSelector = (state: State): { [id: string]: Group } => state.groups;
-const articleFragmentsSelector = (state: State) => state.articleFragments;
+const selectGroups = (state: State): { [id: string]: Group } => state.groups;
+const selectArticleFragments = (state: State) => state.articleFragments;
 
-const articleFragmentsFromRootStateSelector = createSelector(
+const selectArticleFragmentsFromRootState = createSelector(
   [selectSharedState],
-  (state: State) => articleFragmentsSelector(state)
+  (state: State) => selectArticleFragments(state)
 );
 
-const groupsFromRootStateSelector = createSelector(
+const selectGroupsFromRootState = createSelector(
   [selectSharedState],
-  (state: State) => groupsSelector(state)
+  (state: State) => selectGroups(state)
 );
 
-const articleFragmentSelector = (state: State, id: string): ArticleFragment =>
+const selectArticleFragment = (state: State, id: string): ArticleFragment =>
   state.articleFragments[id];
 
-const externalArticleFromArticleFragmentSelector = (
+const selectExternalArticleFromArticleFragment = (
   state: State,
   id: string
 ): ExternalArticle | void => {
-  const articleFragment = articleFragmentSelector(state, id);
+  const articleFragment = selectArticleFragment(state, id);
   const externalArticles = externalArticleSelectors.selectAll(state);
   if (!articleFragment) {
     return undefined;
@@ -52,8 +52,8 @@ const externalArticleFromArticleFragmentSelector = (
   return externalArticles[articleFragment.id];
 };
 
-const articleTagSelector = (state: State, id: string): ArticleTag => {
-  const externalArticle = externalArticleFromArticleFragmentSelector(state, id);
+const selectArticleTag = (state: State, id: string): ArticleTag => {
+  const externalArticle = selectExternalArticleFromArticleFragment(state, id);
   const emptyTag = {
     webTitle: undefined,
     sectionName: undefined
@@ -74,17 +74,14 @@ const articleTagSelector = (state: State, id: string): ArticleTag => {
   return emptyTag;
 };
 
-const articleKickerSelector = (
-  state: State,
-  id: string
-): string | undefined => {
-  const articleFragment = articleFragmentSelector(state, id);
+const selectArticleKicker = (state: State, id: string): string | undefined => {
+  const articleFragment = selectArticleFragment(state, id);
 
   if (!articleFragment) {
     return undefined;
   }
 
-  const kickerOptions = articleTagSelector(state, id);
+  const kickerOptions = selectArticleTag(state, id);
   const meta = articleFragment.meta;
 
   if (!articleFragment) {
@@ -106,7 +103,7 @@ const articleKickerSelector = (
 };
 
 const selectCollectionItemHasMediaOverrides = (state: State, id: string) => {
-  const article = articleFragmentSelector(state, id);
+  const article = selectArticleFragment(state, id);
   return (
     !!article &&
     !!article.meta &&
@@ -116,11 +113,11 @@ const selectCollectionItemHasMediaOverrides = (state: State, id: string) => {
   );
 };
 
-const createArticleFromArticleFragmentSelector = () =>
+const createSelectArticleFromArticleFragment = () =>
   createSelector(
-    externalArticleFromArticleFragmentSelector,
-    articleFragmentSelector,
-    articleKickerSelector,
+    selectExternalArticleFromArticleFragment,
+    selectArticleFragment,
+    selectArticleKicker,
     (externalArticle, articleFragment, kicker): DerivedArticle | undefined => {
       if (!articleFragment) {
         return undefined;
@@ -164,29 +161,29 @@ const createArticleFromArticleFragmentSelector = () =>
     }
   );
 
-const collectionIdSelector = (
+const selectCollectionId = (
   _: unknown,
   { collectionId }: { collectionId: string }
 ) => collectionId;
 
-const createCollectionSelector = () =>
+const createSelectCollection = () =>
   createSelector(
     collectionSelectors.selectAll,
-    collectionIdSelector,
+    selectCollectionId,
     (collections: { [id: string]: Collection }, id: string) => collections[id]
   );
 
-const stageSelector = (
+const selectStage = (
   _: unknown,
   { collectionSet }: { collectionSet: CollectionItemSets; collectionId: string }
 ): CollectionItemSets => collectionSet;
 
-const createCollectionStageGroupsSelector = () => {
-  const collectionSelector = createCollectionSelector();
+const createSelectCollectionStageGroups = () => {
+  const selectCollection = createSelectCollection();
   return createShallowEqualResultSelector(
-    collectionSelector,
-    groupsSelector,
-    stageSelector,
+    selectCollection,
+    selectGroups,
+    selectStage,
     (
       collection: Collection | void,
       groups: { [id: string]: Group },
@@ -225,11 +222,11 @@ const createCollectionStageGroupsSelector = () => {
   );
 };
 
-const createPreviouslyLiveArticlesInCollectionSelector = () => {
-  const collectionSelector = createCollectionSelector();
+const createSelectPreviouslyLiveArticlesInCollection = () => {
+  const selectCollection = createSelectCollection();
   return createShallowEqualResultSelector(
-    collectionSelector,
-    groupsSelector,
+    selectCollection,
+    selectGroups,
     (collection: Collection | void, groups: { [id: string]: Group }): Group[] =>
       ((collection && collection[collectionItemSets.previously]) || []).map(
         id => groups[id]
@@ -237,10 +234,10 @@ const createPreviouslyLiveArticlesInCollectionSelector = () => {
   );
 };
 
-const createCollectionEditWarningSelector = () => {
-  const collectionSelector = createCollectionSelector();
+const createSelectCollectionEditWarning = () => {
+  const selectCollection = createSelectCollection();
   return createSelector(
-    collectionSelector,
+    selectCollection,
     (collection: Collection | void): boolean =>
       !!(
         collection &&
@@ -250,7 +247,7 @@ const createCollectionEditWarningSelector = () => {
   );
 };
 
-const groupNameSelector = (
+const selectGroupName = (
   _: unknown,
   {
     groupName
@@ -262,7 +259,7 @@ const groupNameSelector = (
   }
 ) => groupName;
 
-const includeSupportingArticlesSelector = (
+const selectIncludeSupportingArticles = (
   _: unknown,
   {
     includeSupportingArticles
@@ -274,13 +271,13 @@ const includeSupportingArticlesSelector = (
   }
 ) => includeSupportingArticles;
 
-const createArticlesInCollectionGroupSelector = () => {
-  const collectionStageGroupsSelector = createCollectionStageGroupsSelector();
+const createSelectArticlesInCollectionGroup = () => {
+  const selectCollectionStageGroups = createSelectCollectionStageGroups();
   return createShallowEqualResultSelector(
-    articleFragmentsSelector,
-    collectionStageGroupsSelector,
-    groupNameSelector,
-    includeSupportingArticlesSelector,
+    selectArticleFragments,
+    selectCollectionStageGroups,
+    selectGroupName,
+    selectIncludeSupportingArticles,
     (
       articleFragments,
       collectionGroups,
@@ -320,8 +317,8 @@ const createArticlesInCollectionGroupSelector = () => {
   );
 };
 
-const createArticlesInCollectionSelector = () => {
-  const selectArticlesInCollectionGroups = createArticlesInCollectionGroupSelector();
+const createSelectArticlesInCollection = () => {
+  const selectArticlesInCollectionGroups = createSelectArticlesInCollectionGroup();
   return (
     state: State,
     {
@@ -341,8 +338,8 @@ const createArticlesInCollectionSelector = () => {
     });
 };
 
-const createAllArticlesInCollectionSelector = () => {
-  const articlesInCollection = createArticlesInCollectionSelector();
+const createSelectAllArticlesInCollection = () => {
+  const articlesInCollection = createSelectArticlesInCollection();
 
   return (state: State, collectionIds: string[]) =>
     collectionIds.reduce(
@@ -363,15 +360,15 @@ const createAllArticlesInCollectionSelector = () => {
     );
 };
 
-const articleFragmentIdSelector = (
+const selectArticleFragmentId = (
   _: unknown,
   { articleFragmentId }: { articleFragmentId: string }
 ) => articleFragmentId;
 
-const createSupportingArticlesSelector = () =>
+const createSelectSupportingArticles = () =>
   createShallowEqualResultSelector(
-    articleFragmentsFromRootStateSelector,
-    articleFragmentIdSelector,
+    selectArticleFragmentsFromRootState,
+    selectArticleFragmentId,
     (articleFragments, id) =>
       (articleFragments[id].meta.supporting
         ? articleFragments[id].meta.supporting!
@@ -379,10 +376,10 @@ const createSupportingArticlesSelector = () =>
       ).map((sId: string) => articleFragments[sId])
   );
 
-const createGroupArticlesSelector = () =>
+const createSelectGroupArticles = () =>
   createShallowEqualResultSelector(
-    groupsFromRootStateSelector,
-    articleFragmentsFromRootStateSelector,
+    selectGroupsFromRootState,
+    selectArticleFragmentsFromRootState,
     (_: any, { groupId }: { groupId: string }) => groupId,
     (groups, articleFragments, groupId) =>
       (groups[groupId].articleFragments || []).map(
@@ -390,9 +387,9 @@ const createGroupArticlesSelector = () =>
       )
   );
 
-const createArticlesFromIdsSelector = () =>
+const createSelectArticlesFromIds = () =>
   createShallowEqualResultSelector(
-    articleFragmentsFromRootStateSelector,
+    selectArticleFragmentsFromRootState,
     (_: any, { articleFragmentIds }: { articleFragmentIds: string[] }) =>
       articleFragmentIds,
     (articleFragments, articleFragmentIds) =>
@@ -421,7 +418,7 @@ const createDemornalisedArticleFragment = (
 
 // this creates a map between a group id and it's parent collection id
 // { [groupId: string]: string /* collectionId */ }
-const groupCollectionMapSelector = createSelector(
+const selectGroupCollectionMap = createSelector(
   collectionSelectors.selectAll,
   (collections: {
     [id: string]: Collection;
@@ -455,16 +452,16 @@ const groupCollectionMapSelector = createSelector(
     )
 );
 
-const groupCollectionSelector = (state: State, groupId: string) => {
-  const { collectionId, collectionItemSet } = groupCollectionMapSelector(state)[
+const selectGroupCollection = (state: State, groupId: string) => {
+  const { collectionId, collectionItemSet } = selectGroupCollectionMap(state)[
     groupId
   ];
   const collection = collectionSelectors.selectById(state, collectionId);
   return { collection, collectionItemSet };
 };
 
-const groupSiblingsSelector = (state: State, groupId: string) => {
-  const { collection, collectionItemSet } = groupCollectionSelector(
+const selectGroupSiblings = (state: State, groupId: string) => {
+  const { collection, collectionItemSet } = selectGroupCollection(
     state,
     groupId
   );
@@ -472,16 +469,16 @@ const groupSiblingsSelector = (state: State, groupId: string) => {
     return [];
   }
   return (collection[collectionItemSet] || []).map(
-    id => groupsSelector(state)[id]
+    id => selectGroups(state)[id]
   );
 };
 
-const articleGroupSelector = (
+const selectArticleGroup = (
   state: State,
   groupIdFromAction: string,
   fragmentId: string
 ) => {
-  const groups = groupsSelector(state);
+  const groups = selectGroups(state);
   const groupInAction = groups[groupIdFromAction];
   if (groupInAction && groupInAction.articleFragments.includes(fragmentId)) {
     return groupIdFromAction;
@@ -497,20 +494,17 @@ const articleGroupSelector = (
 const groupsArticleCount = (groups: Group[]) =>
   groups.reduce((acc, group) => acc + group.articleFragments.length, 0);
 
-const groupSiblingsArticleCountSelector = (state: State, groupId: string) =>
-  groupsArticleCount(groupSiblingsSelector(state, groupId));
+const selectGroupSiblingsArticleCount = (state: State, groupId: string) =>
+  groupsArticleCount(selectGroupSiblings(state, groupId));
 
-const indexInGroupSelector = (
-  state: State,
-  groupId: string,
-  articleId: string
-) => groupsSelector(state)[groupId].articleFragments.indexOf(articleId);
+const selectIndexInGroup = (state: State, groupId: string, articleId: string) =>
+  selectGroups(state)[groupId].articleFragments.indexOf(articleId);
 
-const externalArticleIdFromArticleFragmentSelector = (
+const selectExternalArticleIdFromArticleFragment = (
   state: State,
   id: string
 ): string | undefined => {
-  const externalArticle = externalArticleFromArticleFragmentSelector(state, id);
+  const externalArticle = selectExternalArticleFromArticleFragment(state, id);
 
   if (!externalArticle) {
     return undefined;
@@ -520,31 +514,31 @@ const externalArticleIdFromArticleFragmentSelector = (
 };
 
 export {
-  externalArticleFromArticleFragmentSelector,
-  createArticleFromArticleFragmentSelector,
-  articleFragmentsFromRootStateSelector,
-  createArticlesInCollectionGroupSelector,
-  createArticlesInCollectionSelector,
-  createAllArticlesInCollectionSelector,
-  createGroupArticlesSelector,
-  createSupportingArticlesSelector,
-  createCollectionSelector,
-  createCollectionStageGroupsSelector,
-  createPreviouslyLiveArticlesInCollectionSelector,
+  selectExternalArticleFromArticleFragment,
+  createSelectArticleFromArticleFragment,
+  selectArticleFragmentsFromRootState,
+  createSelectArticlesInCollectionGroup,
+  createSelectArticlesInCollection,
+  createSelectAllArticlesInCollection,
+  createSelectGroupArticles,
+  createSelectSupportingArticles,
+  createSelectCollection,
+  createSelectCollectionStageGroups,
+  createSelectPreviouslyLiveArticlesInCollection,
   createDemornalisedArticleFragment,
   selectSharedState,
-  articleFragmentSelector,
-  createCollectionEditWarningSelector,
-  articleFragmentsSelector,
-  groupCollectionSelector,
-  groupSiblingsSelector,
-  groupSiblingsArticleCountSelector,
-  articleTagSelector,
-  indexInGroupSelector,
-  groupsSelector,
-  articleGroupSelector,
+  selectArticleFragment,
+  createSelectCollectionEditWarning,
+  selectArticleFragments,
+  selectGroupCollection,
+  selectGroupSiblings,
+  selectGroupSiblingsArticleCount,
+  selectArticleTag,
+  selectIndexInGroup,
+  selectGroups,
+  selectArticleGroup,
   groupsArticleCount,
-  externalArticleIdFromArticleFragmentSelector,
+  selectExternalArticleIdFromArticleFragment,
   selectCollectionItemHasMediaOverrides,
-  createArticlesFromIdsSelector
+  createSelectArticlesFromIds
 };

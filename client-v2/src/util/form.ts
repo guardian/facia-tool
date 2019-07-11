@@ -9,7 +9,7 @@ import { DerivedArticle } from 'shared/types/Article';
 import { CapiArticle } from 'types/Capi';
 import { State } from 'types/State';
 import {
-  articleFragmentSelector,
+  selectArticleFragment,
   selectSharedState
 } from 'shared/selectors/shared';
 
@@ -189,12 +189,12 @@ export const getArticleFragmentMetaFromFormValues = (
   );
 
   // We only return dirtied values.
-  const isDirtySelector = isDirty(id);
+  const selectIsDirty = isDirty(id);
   const dirtiedFields = pickBy(completeMeta, (_, key) => {
-    return isDirtySelector(state, formToMetaFieldMap[key] || key);
+    return selectIsDirty(state, formToMetaFieldMap[key] || key);
   });
 
-  const existingArticleFragment = articleFragmentSelector(
+  const existingArticleFragment = selectArticleFragment(
     selectSharedState(state),
     id
   );

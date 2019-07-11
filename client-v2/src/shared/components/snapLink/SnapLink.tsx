@@ -13,7 +13,7 @@ import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
 import { ArticleFragment, CollectionItemSizes } from 'shared/types/Collection';
 import {
   selectSharedState,
-  articleFragmentSelector
+  selectArticleFragment
 } from '../../selectors/shared';
 import { State } from '../../types/State';
 import CollectionItemHeading from '../collectionItem/CollectionItemHeading';
@@ -126,7 +126,7 @@ const mapStateToProps = (
     ? props.selectSharedState(state)
     : selectSharedState(state);
   return {
-    articleFragment: articleFragmentSelector(sharedState, props.id)
+    articleFragment: selectArticleFragment(sharedState, props.id)
   };
 };
 

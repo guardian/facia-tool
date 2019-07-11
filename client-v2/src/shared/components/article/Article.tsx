@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import noop from 'lodash/noop';
 
 import {
-  createArticleFromArticleFragmentSelector,
+  createSelectArticleFromArticleFragment,
   selectSharedState,
-  articleFragmentSelector
+  selectArticleFragment
 } from '../../selectors/shared';
 import { selectors } from 'shared/bundles/externalArticlesBundle';
 import { State } from '../../types/State';
@@ -182,7 +182,7 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
 }
 
 const createMapStateToProps = () => {
-  const articleSelector = createArticleFromArticleFragmentSelector();
+  const selectArticle = createSelectArticleFromArticleFragment();
   return (
     state: State,
     props: ContainerProps
@@ -190,8 +190,8 @@ const createMapStateToProps = () => {
     const sharedState = props.selectSharedState
       ? props.selectSharedState(state)
       : selectSharedState(state);
-    const article = articleSelector(sharedState, props.id);
-    const articleFragment = articleFragmentSelector(sharedState, props.id);
+    const article = selectArticle(sharedState, props.id);
+    const articleFragment = selectArticleFragment(sharedState, props.id);
     return {
       article,
       isLoading: selectors.selectIsLoadingInitialDataById(

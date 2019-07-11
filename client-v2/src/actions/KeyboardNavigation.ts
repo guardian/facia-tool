@@ -1,11 +1,11 @@
 import { moveArticleFragment } from 'actions/ArticleFragments';
 import {
-  nextIndexAndGroupSelector,
-  nextClipboardIndexSelector
+  selectNextIndexAndGroup,
+  selectNextClipboardIndexSelector
 } from '../selectors/keyboardNavigationSelectors';
 import {
   selectSharedState,
-  indexInGroupSelector
+  selectIndexInGroup
 } from 'shared/selectors/shared';
 import { ArticleFragment } from 'shared/types/Collection';
 import { PosSpec } from 'lib/dnd';
@@ -28,7 +28,7 @@ const keyboardArticleFragmentMove = (
     const state = getState();
     const id = fragment.uuid;
     if (persistTo === 'collection') {
-      const fromIndex = indexInGroupSelector(
+      const fromIndex = selectIndexInGroup(
         selectSharedState(state),
         groupId || '',
         id
@@ -37,7 +37,7 @@ const keyboardArticleFragmentMove = (
 
       const from: PosSpec = { type, index: fromIndex, id: groupId || '' };
 
-      const nextPosition = nextIndexAndGroupSelector(
+      const nextPosition = selectNextIndexAndGroup(
         state,
         groupId || '',
         id,
@@ -65,7 +65,7 @@ const keyboardArticleFragmentMove = (
         );
       }
     } else if (persistTo === 'clipboard') {
-      const clipboardIndeces = nextClipboardIndexSelector(state, id, action);
+      const clipboardIndeces = selectNextClipboardIndexSelector(state, id, action);
       if (clipboardIndeces) {
         const { fromIndex, toIndex } = clipboardIndeces;
         const type = 'clipboard';

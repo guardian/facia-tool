@@ -1,5 +1,5 @@
 import { State } from 'types/State';
-import { collectionParamsSelector } from 'selectors/collectionSelectors';
+import { selectCollectionParams } from 'selectors/collectionSelectors';
 import { getCollections as fetchCollections } from 'services/faciaApi';
 import { getEditionsCollections as fetchEditionsCollections } from 'services/faciaApi';
 import { runStrategy } from './run-strategy';
@@ -35,7 +35,7 @@ const fetchCollectionsStrategy = (
   runStrategy<Promise<CollectionResponse[]> | null>(state, {
     front: () =>
       fetchCollections(
-        collectionParamsSelector(
+        selectCollectionParams(
           state,
           collectionIds,
           returnOnlyUpdatedCollections
@@ -43,7 +43,7 @@ const fetchCollectionsStrategy = (
       ),
     edition: () =>
       fetchEditionsCollections(
-        collectionParamsSelector(
+        selectCollectionParams(
           state,
           collectionIds,
           returnOnlyUpdatedCollections

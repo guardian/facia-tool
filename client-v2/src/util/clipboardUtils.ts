@@ -2,7 +2,7 @@ import {
   ArticleFragment,
   NestedArticleFragment
 } from 'shared/types/Collection';
-import { clipboardSelector } from 'selectors/frontsSelectors';
+import { selectClipboard } from 'selectors/frontsSelectors';
 import { State } from 'types/State';
 import { normalize, denormalize } from './clipboardSchema';
 import { notLiveLabels } from 'constants/fronts';
@@ -23,7 +23,7 @@ function normaliseClipboard(clipboard: {
 function denormaliseClipboard(
   state: State
 ): { articles: NestedArticleFragment[] } {
-  const clipboard = clipboardSelector(state);
+  const clipboard = selectClipboard(state);
 
   return denormalize(
     { articles: clipboard },

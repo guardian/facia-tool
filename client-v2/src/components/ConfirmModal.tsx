@@ -2,9 +2,9 @@ import React from 'react';
 import Modal from 'react-modal';
 import { State } from 'types/State';
 import {
-  confirmModalIsOpenSelector,
-  confirmModalTitleSelector,
-  confirmModalDescriptionSelector
+  selectConfirmModalIsOpen,
+  selectConfirmModalTitle,
+  selectConfirmModalDescription
 } from 'selectors/confirmModalSelectors';
 import { Dispatch } from 'types/Store';
 import { endConfirmModal } from 'actions/ConfirmModal';
@@ -77,9 +77,9 @@ const ConfirmModal = ({
 );
 
 const mapStateToProps = (state: State) => ({
-  isOpen: confirmModalIsOpenSelector(state),
-  title: confirmModalTitleSelector(state),
-  description: confirmModalDescriptionSelector(state)
+  isOpen: selectConfirmModalIsOpen(state),
+  title: selectConfirmModalTitle(state),
+  description: selectConfirmModalDescription(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

@@ -1,7 +1,7 @@
 import { Action, StartConfirm } from 'types/Action';
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
-import { confirmModalActionsSelector } from 'selectors/confirmModalSelectors';
+import { selectConfirmModalActions } from 'selectors/confirmModalSelectors';
 
 const startConfirmModal = (
   title: string,
@@ -22,7 +22,7 @@ const endConfirmModal = (accept: boolean) => (
   dispatch: Dispatch,
   getState: () => State
 ) => {
-  const actions = confirmModalActionsSelector(getState(), accept) || [];
+  const actions = selectConfirmModalActions(getState(), accept) || [];
   actions.forEach(ac => dispatch(ac));
   dispatch({
     type: 'MODAL/END_CONFIRM'

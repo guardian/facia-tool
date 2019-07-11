@@ -1,24 +1,24 @@
 import { State } from 'types/State';
-import { getCollectionConfig } from './frontsSelectors';
+import { selectCollectionConfig } from './frontsSelectors';
 import {
   selectSharedState,
-  createCollectionSelector,
+  createSelectCollection,
   groupsArticleCount
 } from 'shared/selectors/shared';
 import flatten from 'lodash/flatten';
 import { createSelectEditorFrontsByPriority } from 'bundles/frontsUIBundle';
 import { getUpdatedSiblingGroupsForInsertion } from 'shared/reducers/groupsReducer';
 
-const selectCollection = createCollectionSelector();
+const selectCollection = createSelectCollection();
 
-const collectionParamsSelector = (
+const selectCollectionParams = (
   state: State,
   collectionIds: string[],
   returnOnlyUpdatedCollections: boolean = false
 ): Array<{ id: string; lastUpdated?: number }> =>
   collectionIds.reduce(
     (collections: Array<{ id: string; lastUpdated?: number }>, id) => {
-      const config = getCollectionConfig(state, id);
+      const config = selectCollectionConfig(state, id);
       if (!config) {
         throw new Error(`Collection ID ${id} does not exist in config`);
       }
@@ -43,7 +43,7 @@ const collectionParamsSelector = (
     []
   );
 
-function createCollectionsInOpenFrontsSelector() {
+function createSelectCollectionsInOpenFronts() {
   const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
   return (state: State, priority: string): string[] => {
     const openFrontsForPriority = selectEditorFrontsByPriority(state, {
@@ -53,10 +53,10 @@ function createCollectionsInOpenFrontsSelector() {
   };
 }
 
-const isCollectionLockedSelector = (state: State, id: string): boolean =>
-  !!getCollectionConfig(state, id).uneditable;
+const selectIsCollectionLocked = (state: State, id: string): boolean =>
+  !!selectCollectionConfig(state, id).uneditable;
 
-const willCollectionHitCollectionCapSelector = (
+const selectWillCollectionHitCollectionCap = (
   state: State,
   groupId: string,
   index: number,
@@ -76,8 +76,8 @@ const willCollectionHitCollectionCapSelector = (
 };
 
 export {
-  willCollectionHitCollectionCapSelector,
-  collectionParamsSelector,
-  isCollectionLockedSelector,
-  createCollectionsInOpenFrontsSelector
+  selectWillCollectionHitCollectionCap,
+  selectCollectionParams,
+  selectIsCollectionLocked,
+  createSelectCollectionsInOpenFronts
 };

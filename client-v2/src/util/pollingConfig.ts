@@ -2,7 +2,7 @@ import { fetchStaleOpenCollections } from 'actions/Collections';
 import { Dispatch } from 'types/Store';
 import { Store } from 'types/Store';
 import { matchFrontsEditPath, matchIssuePath } from 'routes/routes';
-import { getV2SubPath } from 'selectors/pathSelectors';
+import { selectV2SubPath } from 'selectors/pathSelectors';
 
 /**
  * TODO: do we want to check if there are any collectionUpdates going out here
@@ -14,7 +14,7 @@ export default (store: Store) =>
     if ((window as any).IS_INTEGRATION) {
       return;
     }
-    const path = getV2SubPath(store.getState());
+    const path = selectV2SubPath(store.getState());
     const match = matchFrontsEditPath(path) || matchIssuePath(path);
     if (!match || !match.params.priority) {
       return;

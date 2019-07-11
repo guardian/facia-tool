@@ -1,7 +1,7 @@
 import { Action } from '../types/Action';
 import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
 import { State } from './sharedReducer';
-import { articleFragmentsSelector } from 'shared/selectors/shared';
+import { selectArticleFragments } from 'shared/selectors/shared';
 import {
   UPDATE_ARTICLE_FRAGMENT_META,
   ARTICLE_FRAGMENTS_RECEIVED,
@@ -72,7 +72,7 @@ const articleFragments = (
           ...(insertedArticleFragment.meta.supporting || [])
         ],
         index,
-        articleFragmentsSelector(prevSharedState)
+        selectArticleFragments(prevSharedState)
       );
 
       return {

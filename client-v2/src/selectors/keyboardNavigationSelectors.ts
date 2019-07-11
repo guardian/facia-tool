@@ -1,20 +1,20 @@
 import {
   selectSharedState,
-  indexInGroupSelector,
-  groupsSelector,
-  groupCollectionSelector,
-  createCollectionSelector
+  selectIndexInGroup,
+  selectGroups,
+  selectGroupCollection,
+  createSelectCollection
 } from '../shared/selectors/shared';
-import { clipboardContentSelector } from 'selectors/clipboardSelectors';
+import { selectClipboardContent } from 'selectors/clipboardSelectors';
 import { State } from 'types/State';
-import { getUnlockedFrontCollections } from './frontsSelectors';
+import { selectUnlockedFrontCollections } from './frontsSelectors';
 
-const nextClipboardIndexSelector = (
+const selectNextClipboardIndex = (
   state: State,
   articleId: string,
   action: string
 ) => {
-  const clipboardContent = clipboardContentSelector(state);
+  const clipboardContent = selectClipboardContent(state);
 
   const fromIndex = clipboardContent.indexOf(articleId);
 
@@ -31,7 +31,7 @@ const nextClipboardIndexSelector = (
   return null;
 };
 
-const nextIndexAndGroupSelector = (
+const selectNextIndexAndGroup = (
   state: State,
   groupId: string,
   articleId: string,
@@ -39,14 +39,14 @@ const nextIndexAndGroupSelector = (
   frontId: string
 ) => {
   const sharedState = selectSharedState(state);
-  const group = groupsSelector(sharedState)[groupId];
+  const group = selectGroups(sharedState)[groupId];
   if (!group) {
     return null;
   }
 
   const groupArticleFragments = group.articleFragments;
 
-  const currentArticleIndex = indexInGroupSelector(
+  const currentArticleIndex = selectIndexInGroup(
     sharedState,
     groupId,
     articleId
@@ -68,7 +68,7 @@ const nextIndexAndGroupSelector = (
   }
 
   // Checking if moving between groups but inside the collection
-  const { collection, collectionItemSet } = groupCollectionSelector(
+  const { collection, collectionItemSet } = selectGroupCollection(
     sharedState,
     groupId
   );
@@ -87,7 +87,7 @@ const nextIndexAndGroupSelector = (
       if (action === 'up') {
         if (groupIndex !== 0) {
           const nextGroupId = collectionGroups[groupIndex - 1];
-          const nextGroupArticles = groupsSelector(sharedState)[nextGroupId]
+          const nextGroupArticles = selectGroups(sharedState)[nextGroupId]
             .articleFragments;
           return { toIndex: nextGroupArticles.length, nextGroupId };
         }
@@ -95,12 +95,12 @@ const nextIndexAndGroupSelector = (
     }
 
     // Checking if moving between collections
-    const frontCollections = getUnlockedFrontCollections(state, frontId);
+    const frontCollections = selectUnlockedFrontCollections(state, frontId);
     const collectionIndex = frontCollections.indexOf(collection.id);
     if (action === 'down') {
       if (collectionIndex < frontCollections.length - 1) {
-        const collectionSelector = createCollectionSelector();
-        const coll = collectionSelector(sharedState, {
+        const selectCollection = createSelectCollection();
+        const coll = selectCollection(sharedState, {
           collectionId: frontCollections[collectionIndex + 1]
         });
         if (!coll || !coll.draft) {
@@ -113,8 +113,8 @@ const nextIndexAndGroupSelector = (
     }
     if (action === 'up') {
       if (collectionIndex !== 0) {
-        const collectionSelector = createCollectionSelector();
-        const coll = collectionSelector(sharedState, {
+        const selectCollection = createSelectCollection();
+        const coll = selectCollection(sharedState, {
           collectionId: frontCollections[collectionIndex - 1]
         });
 
@@ -125,7 +125,7 @@ const nextIndexAndGroupSelector = (
         const nextIndex = coll.draft.length;
         const nextGroupId = coll.draft[nextIndex - 1];
 
-        const nextGroupArticles = groupsSelector(sharedState)[nextGroupId]
+        const nextGroupArticles = selectGroups(sharedState)[nextGroupId]
           .articleFragments;
 
         return {
@@ -142,4 +142,4 @@ const nextIndexAndGroupSelector = (
   return null;
 };
 
-export { nextIndexAndGroupSelector, nextClipboardIndexSelector };
+export { selectNextIndexAndGroup, selectNextClipboardIndex as selectNextClipboardIndexSelector };

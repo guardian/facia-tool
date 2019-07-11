@@ -8,7 +8,7 @@ import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
 
 import { CollectionItemSets, Stages } from 'shared/types/Collection';
 import {
-  createArticlesInCollectionSelector,
+  createSelectArticlesInCollection,
   selectSharedState
 } from 'shared/selectors/shared';
 import { createShallowEqualResultSelector } from 'shared/util/selectorUtils';
@@ -25,22 +25,25 @@ interface FrontsByPriority {
   [id: string]: FrontConfig[];
 }
 
-const getFronts = (state: State): FrontConfigMap =>
+const selectFronts = (state: State): FrontConfigMap =>
   frontsConfigSelectors.selectAll(state).fronts || {};
 
-const frontIdSelector = (state: State, { frontId }: { frontId: string }) =>
+const selectFrontId = (state: State, { frontId }: { frontId: string }) =>
   frontId;
 
-const getFront = createSelector(
-  getFronts,
-  frontIdSelector,
+const selectFront = createSelector(
+  selectFronts,
+  selectFrontId,
   (fronts, id) => fronts[id]
 );
 
-const getUnlockedFrontCollections = (state: State, frontId: string): string[] =>
-  getFront(state, { frontId }).collections.reduce(
+const selectUnlockedFrontCollections = (
+  state: State,
+  frontId: string
+): string[] =>
+  selectFront(state, { frontId }).collections.reduce(
     (unlockedCollections: string[], collectionId) => {
-      const collection = getCollectionConfig(state, collectionId);
+      const collection = selectCollectionConfig(state, collectionId);
       if (!collection.uneditable) {
         unlockedCollections.push(collectionId);
       }
@@ -50,7 +53,7 @@ const getUnlockedFrontCollections = (state: State, frontId: string): string[] =>
   );
 
 const getFrontsByPriority = createSelector(
-  [getFronts],
+  [selectFronts],
   (fronts: FrontConfigMap): FrontsByPriority =>
     Object.keys(fronts)
       .filter(id => id !== breakingNewsFrontId)
@@ -63,15 +66,15 @@ const getFrontsByPriority = createSelector(
       }, {})
 );
 
-const prioritySelector = (state: State, { priority }: { priority: string }) =>
+const selectPriority = (state: State, { priority }: { priority: string }) =>
   priority;
 
-const collectionSetSelector = (
+const selectCollectionSet = (
   state: State,
   { collectionSet }: { collectionSet: CollectionItemSets }
 ) => collectionSet;
 
-const collectionIdAndStageSelector = (
+const selectCollectionIdAndStage = (
   state: State,
   { stage, collectionId }: { stage: Stages; collectionId: string }
 ) => ({
@@ -79,18 +82,18 @@ const collectionIdAndStageSelector = (
   collectionId
 });
 
-const collectionVisibilitiesSelector = (state: State) =>
+const selectCollectionVisibilities = (state: State) =>
   state.fronts.collectionVisibility;
 
-const collectionIdSelector = (
+const selectCollectionId = (
   state: State,
   { collectionId }: { collectionId: string }
 ) => collectionId;
 
-const unpublishedChangesSelector = (state: State) => state.unpublishedChanges;
+const selectUnpublishedChanges = (state: State) => state.unpublishedChanges;
 
-const frontsAsArraySelector = createSelector(
-  [getFronts],
+const selectFrontsAsArray = createSelector(
+  [selectFronts],
   fronts => {
     if (!fronts) {
       return [];
@@ -109,17 +112,20 @@ const frontsAsArraySelector = createSelector(
 
 const defaultFrontsWithPriority = [] as [];
 
-const getFrontsWithPriority = (state: State, priority: string): FrontConfig[] =>
+const selectFrontsWithPriority = (
+  state: State,
+  priority: string
+): FrontConfig[] =>
   getFrontsByPriority(state)[priority] || defaultFrontsWithPriority;
 
 const getCollections = (state: State): CollectionConfigMap =>
   frontsConfigSelectors.selectAll(state).collections || {};
 
-const getCollectionConfig = (state: State, id: string): CollectionConfig =>
+const selectCollectionConfig = (state: State, id: string): CollectionConfig =>
   getCollections(state)[id] || null;
 
-const frontsIdsSelector = createSelector(
-  [getFronts],
+const selectFrontsIds = createSelector(
+  [selectFronts],
   (fronts): string[] => {
     if (!fronts) {
       return [];
@@ -130,7 +136,7 @@ const frontsIdsSelector = createSelector(
   }
 );
 
-const getFrontsConfig = (
+const deriveFrontsFromIdsAndPriority = (
   fronts: FrontConfigMap,
   collections: CollectionConfigMap,
   frontIds: string[],
@@ -185,22 +191,22 @@ const getUnpublishedChangesStatus = (
   unpublishedChanges: { [id: string]: boolean }
 ): boolean => (unpublishedChanges ? unpublishedChanges[collectionId] : false);
 
-const collectionConfigsSelector = createSelector(
-  [frontIdSelector, frontsAsArraySelector, getCollections],
+const selectCollectionConfigs = createSelector(
+  [selectFrontId, selectFrontsAsArray, getCollections],
   getCollectionConfigs
 );
 
-const frontsConfigSelector = createSelector(
-  [getFronts, getCollections, frontsIdsSelector, prioritySelector],
-  getFrontsConfig
+const selectFrontsConfig = createSelector(
+  [selectFronts, getCollections, selectFrontsIds, selectPriority],
+  deriveFrontsFromIdsAndPriority
 );
 
-const hasUnpublishedChangesSelector = createSelector(
-  [collectionIdSelector, unpublishedChangesSelector],
+const selectHasUnpublishedChanges = createSelector(
+  [selectCollectionId, selectUnpublishedChanges],
   getUnpublishedChangesStatus
 );
 
-const alsoOnFrontSelector = (
+const selectAlsoOnFront = (
   currentFront: FrontConfig | void,
   fronts: FrontConfig[]
 ): { [id: string]: AlsoOnDetail } => {
@@ -271,16 +277,16 @@ const alsoOnFrontSelector = (
   );
 };
 
-const createAlsoOnSelector = () =>
+const createSelectAlsoOnFronts = () =>
   createSelector(
-    [getFront, frontsAsArraySelector],
-    alsoOnFrontSelector
+    [selectFront, selectFrontsAsArray],
+    selectAlsoOnFront
   );
 
-const clipboardSelector = (state: State) => state.clipboard;
+const selectClipboard = (state: State) => state.clipboard;
 
-const visibleArticlesSelector = createSelector(
-  [collectionVisibilitiesSelector, collectionIdAndStageSelector],
+const selectVisibleArticles = createSelector(
+  [selectCollectionVisibilities, selectCollectionIdAndStage],
   (collectionVisibilities, { collectionId, stage }) => {
     return collectionVisibilities[stage][collectionId];
   }
@@ -291,27 +297,27 @@ const defaultVisibleFrontArticles = {
   mobile: undefined
 };
 
-const createArticleVisibilityDetailsSelector = () => {
-  const articlesInCollectionSelector = createArticlesInCollectionSelector();
+const createSelectArticleVisibilityDetails = () => {
+  const selectArticlesInCollection = createSelectArticlesInCollection();
 
   // Have to adapt this to work on root state
-  const rootArticlesInCollectionSelector = (
+  const selectRootArticlesInCollection = (
     state: State,
     extra: {
       collectionId: string;
       collectionSet: CollectionItemSets;
     }
   ) =>
-    articlesInCollectionSelector(selectSharedState(state), {
+    selectArticlesInCollection(selectSharedState(state), {
       ...extra,
       includeSupportingArticles: false
     });
 
   return createShallowEqualResultSelector(
-    collectionVisibilitiesSelector,
-    collectionSetSelector,
-    collectionIdSelector,
-    rootArticlesInCollectionSelector,
+    selectCollectionVisibilities,
+    selectCollectionSet,
+    selectCollectionId,
+    selectRootArticlesInCollection,
     (collectionVisibilities, collectionSet, collectionId, articles) => {
       if (collectionSet === 'previously') {
         return defaultVisibleFrontArticles;
@@ -331,19 +337,18 @@ const createArticleVisibilityDetailsSelector = () => {
 };
 
 export {
-  getFront,
-  getFronts,
-  getFrontsConfig,
-  getCollectionConfig,
-  frontsConfigSelector,
-  collectionConfigsSelector,
-  frontsIdsSelector,
-  getFrontsWithPriority,
-  alsoOnFrontSelector,
-  createAlsoOnSelector,
-  hasUnpublishedChangesSelector,
-  clipboardSelector,
-  visibleArticlesSelector,
-  getUnlockedFrontCollections,
-  createArticleVisibilityDetailsSelector
+  selectFront,
+  selectFronts,
+  selectCollectionConfig,
+  selectFrontsConfig,
+  selectCollectionConfigs,
+  selectFrontsIds,
+  selectFrontsWithPriority,
+  selectAlsoOnFront,
+  createSelectAlsoOnFronts,
+  selectHasUnpublishedChanges,
+  selectClipboard,
+  selectVisibleArticles,
+  selectUnlockedFrontCollections,
+  createSelectArticleVisibilityDetails
 };

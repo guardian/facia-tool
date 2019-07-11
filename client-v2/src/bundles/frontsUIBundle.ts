@@ -26,7 +26,7 @@ import {
 } from 'types/Action';
 import { State as GlobalState } from 'types/State';
 import { events } from 'services/GA';
-import { getFronts, getFrontsWithPriority } from 'selectors/frontsSelectors';
+import { selectFronts, selectFrontsWithPriority } from 'selectors/frontsSelectors';
 import { createSelector } from 'reselect';
 import {
   REMOVE_GROUP_ARTICLE_FRAGMENT,
@@ -259,7 +259,7 @@ const selectPriority = (
 
 const createSelectEditorFrontsByPriority = () =>
   createSelector(
-    getFronts,
+    selectFronts,
     selectEditorFrontIds,
     selectPriority,
     (fronts, frontIdsByPriority, priority) => {
@@ -271,7 +271,7 @@ const createSelectEditorFrontsByPriority = () =>
 const createSelectFrontIdWithOpenAndStarredStatesByPriority = () => {
   const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
   return createSelector(
-    getFrontsWithPriority,
+    selectFrontsWithPriority,
     (state, priority: string) =>
       selectEditorFrontsByPriority(state, { priority }),
     (state, priority: string) =>

@@ -2,49 +2,49 @@ import { createSelector } from 'reselect';
 import { State } from 'types/State';
 import { selectIsEditingEditions } from './pathSelectors';
 
-const configSelector = (state: State) => state.config;
+const selectConfig = (state: State) => state.config;
 
 const selectUserEmail = createSelector(
-  configSelector,
+  selectConfig,
   config => config && config.email
 );
 const selectFirstName = createSelector(
-  configSelector,
+  selectConfig,
   config => config && config.firstName
 );
 const selectLastName = createSelector(
-  configSelector,
+  selectConfig,
   config => config && config.lastName
 );
 
-const capiLiveURLSelector = createSelector(
-  configSelector,
+const selectCapiLiveURL = createSelector(
+  selectConfig,
   config => config && config.capiLiveUrl
 );
 
-const capiPreviewURLSelector = createSelector(
-  configSelector,
+const selectCapiPreviewURL = createSelector(
+  selectConfig,
   config => config && config.capiPreviewUrl
 );
 
-const collectionCapSelector = createSelector(
-  configSelector,
+const selectCollectionCap = createSelector(
+  selectConfig,
   selectIsEditingEditions,
   (config, isEditingEditions) =>
     (!isEditingEditions && config && config.collectionCap) || Infinity
 );
 
-const gridUrlSelector = createSelector(
-  configSelector,
+const selectGridUrl = createSelector(
+  selectConfig,
   config => config && config.mediaBaseUrl
 );
 
 export {
-  capiLiveURLSelector,
-  capiPreviewURLSelector,
+  selectCapiLiveURL,
+  selectCapiPreviewURL,
   selectUserEmail,
   selectFirstName,
   selectLastName,
-  collectionCapSelector,
-  gridUrlSelector
+  selectCollectionCap,
+  selectGridUrl
 };

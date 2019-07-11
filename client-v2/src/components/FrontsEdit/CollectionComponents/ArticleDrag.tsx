@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {
-  createArticleFromArticleFragmentSelector,
+  createSelectArticleFromArticleFragment,
   selectSharedState
 } from 'shared/selectors/shared';
 import { State } from 'types/State';
@@ -43,9 +43,9 @@ export const ArticleDragComponent = ({ headline }: ComponentProps) =>
   ) : null;
 
 const createMapStateToProps = () => {
-  const articleSelector = createArticleFromArticleFragmentSelector();
+  const selectArticle = createSelectArticleFromArticleFragment();
   return (state: State, props: ContainerProps): { headline?: string } => {
-    const article = articleSelector(selectSharedState(state), props.id);
+    const article = selectArticle(selectSharedState(state), props.id);
     return { headline: article && article.headline };
   };
 };

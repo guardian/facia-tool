@@ -1,7 +1,7 @@
 import React from 'react';
 import { Level, LevelChild, MoveHandler, DropHandler } from 'lib/dnd';
 import { State } from 'types/State';
-import { clipboardArticlesSelector } from 'selectors/clipboardSelectors';
+import { selectClipboardArticles } from 'selectors/clipboardSelectors';
 import { connect } from 'react-redux';
 import { ArticleFragment } from 'shared/types/Collection';
 import ArticleDrag, {
@@ -67,7 +67,7 @@ const ClipboardLevel = ({
 );
 
 const mapStateToProps = (state: State) => ({
-  articleFragments: clipboardArticlesSelector(state)
+  articleFragments: selectClipboardArticles(state)
 });
 
 export default connect(mapStateToProps)(ClipboardLevel);
