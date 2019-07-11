@@ -20,6 +20,7 @@ object DailyEdition {
       FrontCultureGuide.front -> WeekDays(List(WeekDay.Sat)),
       FrontCultureNewReview.front -> WeekDays(List(WeekDay.Sun)),
       FrontLife.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
+      FrontLifeFashion.front -> WeekDays(List(WeekDay.Sat)),
       FrontLifeWeekend.front -> WeekDays(List(WeekDay.Sat)),
       FrontLifeMagazineObserver.front -> WeekDays(List(WeekDay.Sun)),
       FrontBooks.front -> WeekDays(List(WeekDay.Sat, WeekDay.Sun)),
@@ -370,6 +371,33 @@ object FrontLife {
     presentation = TemplateDefaults.defaultFrontPresentation
   )
 }
+
+object FrontLifeFashion {
+  val collectionLifeFashion1 = CollectionTemplate(
+    name = "Fashion 1",
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/the-fashion/the-fashion")),
+    presentation = TemplateDefaults.defaultCollectionPresentation
+  )
+  val collectionLifeFashion2 = CollectionTemplate(
+    name = "Fashion 2",
+    prefill = None,
+    presentation = TemplateDefaults.defaultCollectionPresentation,
+    hidden = true
+  )
+  val collectionLifeFashion3 = CollectionTemplate(
+    name = "Fashion 3",
+    prefill = None,
+    presentation = TemplateDefaults.defaultCollectionPresentation,
+    hidden = true
+  )
+  val front = FrontTemplate(
+    name = "life/fashion",
+    collections = List(collectionLifeFashion1, collectionLifeFashion2, collectionLifeFashion3),
+    presentation = TemplateDefaults.defaultFrontPresentation,
+    hidden = true
+  )
+}
+
 
 object FrontLifeWeekend {
   val collectionLifeWeekend = CollectionTemplate(
