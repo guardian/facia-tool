@@ -39,7 +39,7 @@ import { MappableDropType } from 'util/collectionUtils';
 import { willCollectionHitCollectionCapSelector } from 'selectors/collectionSelectors';
 import { batchActions } from 'redux-batched-actions';
 import { selectIsEditingEditions } from 'selectors/pathSelectors';
-import { ClipboardType } from 'shared/types/Clipboard';
+import { ClipboardType } from 'shared/types/clipboard';
 
 type InsertActionCreator = (
   id: string,

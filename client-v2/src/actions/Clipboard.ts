@@ -10,7 +10,7 @@ import {
   InsertClipboardArticleFragment,
   RemoveClipboardArticleFragment
 } from 'types/Action';
-import { ClipboardType } from 'shared/types/Clipboard';
+import { ClipboardType } from 'shared/types/clipboard';
 
 export const REMOVE_CLIPBOARD_ARTICLE_FRAGMENT =
   'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT';
