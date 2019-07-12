@@ -20,8 +20,8 @@ object DailyEdition {
       FrontCultureGuide.front -> WeekDays(List(WeekDay.Sat)),
       FrontCultureNewReview.front -> WeekDays(List(WeekDay.Sun)),
       FrontLife.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
-      FrontLifeFashion.front -> WeekDays(List(WeekDay.Sat)),
       FrontLifeWeekend.front -> WeekDays(List(WeekDay.Sat)),
+      FrontLifeDesign.front -> WeekDays(List(WeekDay.Sun)), 
       FrontLifeMagazineObserver.front -> WeekDays(List(WeekDay.Sun)),
       FrontBooks.front -> WeekDays(List(WeekDay.Sat, WeekDay.Sun)),
       FrontFood.front -> WeekDays(List(WeekDay.Sat)),
@@ -448,6 +448,7 @@ object FrontLifeWeekend {
   )
 }
 
+
 object FrontLifeMagazineObserver {
   val collectionLifeMagazineFeatures = CollectionTemplate(
     name = "Features",
@@ -461,7 +462,7 @@ object FrontLifeMagazineObserver {
   )
   val collectionLifeSpecial3 = CollectionTemplate(
     name = "Life Special",
-    prefill = None,
+    prefill = Some(CapiPrefillQuery("?tag=theobserver/design/design")),
     presentation = TemplateDefaults.defaultCollectionPresentation,
     hidden = true
   )
