@@ -39,13 +39,13 @@ import { MappableDropType } from 'util/collectionUtils';
 import { willCollectionHitCollectionCapSelector } from 'selectors/collectionSelectors';
 import { batchActions } from 'redux-batched-actions';
 import { selectIsEditingEditions } from 'selectors/pathSelectors';
+import { ClipboardType } from 'shared/types/Clipboard';
 
 type InsertActionCreator = (
   id: string,
   index: number,
   articleFragmentId: string,
-  // TO do change
-  editingMode?: string
+  editingMode?: ClipboardType
 ) => Action;
 
 type InsertThunkActionCreator = (
@@ -79,7 +79,6 @@ const createInsertArticleFragmentThunk = (action: InsertActionCreator) => (
   }
   const isEditionEditions = selectIsEditingEditions(getState());
   const editingMode = isEditionEditions ? 'editions' : 'fronts';
-  // const argumentsToPass = persistToClipboard ? [id, index, articleFragmentId, editingMode] : [id, index, articleFragmentId, editingMode];
   if (persistTo === 'collection') {
     dispatch(
       addPersistMetaToAction(action, {
@@ -198,7 +197,7 @@ const getInsertionActionCreatorFromType = (
 type RemoveActionCreator = (
   id: string,
   articleFragmentId: string,
-  editingMode?: string
+  editingMode?: ClipboardType
 ) => Action;
 
 // this maps a type string such as `group` to a remove action creator and if

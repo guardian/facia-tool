@@ -10,6 +10,7 @@ import {
   InsertClipboardArticleFragment,
   RemoveClipboardArticleFragment
 } from 'types/Action';
+import { ClipboardType } from 'shared/types/Clipboard';
 
 export const REMOVE_CLIPBOARD_ARTICLE_FRAGMENT =
   'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT';
@@ -70,9 +71,9 @@ const insertClipboardArticleFragment = (
   id: string,
   index: number,
   articleFragmentId: string,
-  type?: string
+  type?: ClipboardType
 ): InsertClipboardArticleFragment => {
-  const clipboardType = type || '';
+  const clipboardType = type;
   return {
     type: INSERT_CLIPBOARD_ARTICLE_FRAGMENT,
     payload: {
@@ -87,9 +88,9 @@ const insertClipboardArticleFragment = (
 const removeClipboardArticleFragment = (
   id: string,
   articleFragmentId: string,
-  type?: string
+  type?: ClipboardType
 ): RemoveClipboardArticleFragment => {
-  const clipboardType = type || '';
+  const clipboardType = type;
   return {
     type: REMOVE_CLIPBOARD_ARTICLE_FRAGMENT,
     payload: {

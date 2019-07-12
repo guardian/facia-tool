@@ -7,6 +7,7 @@ import {
 } from './Collection';
 import { Actions } from 'lib/createAsyncResourceBundle';
 import { copyArticleFragmentImageMeta } from 'shared/actions/ArticleFragments';
+import { ClipboardType } from 'shared/types/clipboard';
 
 interface ArticleFragmentsReceived {
   type: 'SHARED/ARTICLE_FRAGMENTS_RECEIVED';
@@ -38,7 +39,7 @@ interface InsertArticleFragmentPayload {
   id: string;
   index: number;
   articleFragmentId: string;
-  clipboardType?: string;
+  clipboardType?: ClipboardType;
 }
 
 type InsertGroupArticleFragment = {
@@ -57,7 +58,7 @@ interface RemoveArticleFragmentPayload {
   payload: {
     id: string;
     articleFragmentId: string;
-    clipboardType?: string;
+    clipboardType?: ClipboardType;
   };
 }
 
