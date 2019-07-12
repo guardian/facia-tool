@@ -16,18 +16,11 @@ class UserDataController(frontsApi: FrontsApi, dynamo: Dynamo, val deps: BaseFac
 
 
   def putClipboardContent() = APIAuthAction { request =>
-    println("-----")
-    println(request.body)
-    println(request.body.asJson)
 
     val clipboardArticleRequest: Option[Map[String, List[Trail]]] = request.body.asJson.flatMap(jsValue => {
-        //TODO we should not fail if the list is missing
-      println("js value is ", jsValue)
       val js = jsValue.as[Map[String, List[Trail]]]
-      println("js is ", js)
       jsValue.asOpt[Map[String, List[Trail]]]
     })
-    println(clipboardArticleRequest)
 
     clipboardArticleRequest match {
       case Some(cliboardArticleLists) => {
