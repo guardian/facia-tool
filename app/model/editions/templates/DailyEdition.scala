@@ -182,9 +182,9 @@ object FrontNewsWorldObserver {
 }
 
 object FrontJournal {
-  val collectionJournalLongRead = CollectionTemplate(
-    name = "The Long Read",
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/journal/the-long-read")),
+  val collectionJournalFeatures = CollectionTemplate(
+    name = "Features",
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/journal/the-long-read|theguardian/journal/features")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
   val collectionJournalComment = CollectionTemplate(
@@ -210,7 +210,7 @@ object FrontJournal {
   )
   val front = FrontTemplate(
     name = "opinion/journal",
-    collections = List(collectionJournalLongRead, collectionJournalComment, collectionJournalLetters, collectionJournalObits, collectionJournalSpecial1),
+    collections = List(collectionJournalFeatures, collectionJournalComment, collectionJournalLetters, collectionJournalObits, collectionJournalSpecial1),
     presentation = TemplateDefaults.defaultFrontPresentation
   )
 }
