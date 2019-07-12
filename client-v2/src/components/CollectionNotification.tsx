@@ -2,7 +2,7 @@ import React from 'react';
 import { styled } from 'constants/theme';
 
 import { AlsoOnDetail } from 'types/Collection';
-import Button from 'shared/components/input/ButtonDefault';
+import ButtonRoundedWithLabel from 'shared/components/input/ButtonRoundedWithLabel';
 
 interface CollectionNotificationProps {
   alsoOn: AlsoOnDetail;
@@ -18,7 +18,7 @@ const WarningText = styled('span')`
   color: ${({ theme }) => theme.shared.colors.orangeDark};
 `;
 
-const ToggleDetailsButton = Button.extend`
+const ToggleDetailsButton = ButtonRoundedWithLabel.extend`
   position: relative;
   z-index: 5;
 `;
@@ -71,7 +71,6 @@ class CollectionNotification extends React.Component<
           &nbsp;
           <ToggleDetailsButton
             tabIndex={-1}
-            size="s"
             onClick={e => {
               e.stopPropagation();
               return this.setState({
