@@ -72,7 +72,10 @@ const createResizeableTextInput = (
     }
 
     public updateHeight() {
-      if (this.inputElement.current) {
+      if (
+        this.inputElement.current &&
+        this.inputElement.current.type === 'textarea'
+      ) {
         this.setState({ inputHeight: this.inputElement.current.scrollHeight });
       }
     }
