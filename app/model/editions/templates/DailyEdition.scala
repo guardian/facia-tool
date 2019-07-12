@@ -22,7 +22,6 @@ object DailyEdition {
       FrontCultureNewReview.front -> WeekDays(List(WeekDay.Sun)),
       FrontLife.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
       FrontLifeWeekend.front -> WeekDays(List(WeekDay.Sat)),
-      FrontLifeDesign.front -> WeekDays(List(WeekDay.Sun)), 
       FrontLifeMagazineObserver.front -> WeekDays(List(WeekDay.Sun)),
       FrontBooks.front -> WeekDays(List(WeekDay.Sat, WeekDay.Sun)),
       FrontFood.front -> WeekDays(List(WeekDay.Sat)),
