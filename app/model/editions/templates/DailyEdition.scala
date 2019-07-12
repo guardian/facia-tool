@@ -425,14 +425,14 @@ object FrontLifeWeekend {
     prefill = Some(CapiPrefillQuery("?tag=theguardian/weekend/body-and-mind")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
-  val collectionLifeMoney = CollectionTemplate(
-    name = "Money",
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/money")),
-    presentation = TemplateDefaults.defaultCollectionPresentation
-  )
   val collectionLifeTravel = CollectionTemplate(
     name = "Travel",
     prefill = Some(CapiPrefillQuery("?tag=theguardian/travel/travel")),
+    presentation = TemplateDefaults.defaultCollectionPresentation
+  )
+  val collectionLifeMoney = CollectionTemplate(
+    name = "Money",
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/money")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
   val collectionLifeSpecial2 = CollectionTemplate(
@@ -443,7 +443,7 @@ object FrontLifeWeekend {
   )
   val front = FrontTemplate(
     name = "life/weekend",
-    collections = List(collectionLifeWeekend, collectionLifeFamily, collectionLifeSpace, collectionLifeFashion, collectionLifeBody, collectionLifeMoney, collectionLifeTravel, collectionLifeSpecial2),
+    collections = List(collectionLifeWeekend, collectionLifeFamily, collectionLifeSpace, collectionLifeFashion, collectionLifeBody, collectionLifeTravel, collectionLifeMoney, collectionLifeSpecial2),
     presentation = TemplateDefaults.defaultFrontPresentation
   )
 }
