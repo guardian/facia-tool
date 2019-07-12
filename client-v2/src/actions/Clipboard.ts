@@ -60,11 +60,10 @@ function updateClipboard(clipboardContent: {
   frontsClipboard: NestedArticleFragment[];
   editionsClipboard: NestedArticleFragment[];
 }): ThunkResult<Promise<NestedArticleFragment[] | void>> {
-  return () => {
-    return saveClipboard(clipboardContent).catch(() => {
+  return () =>
+    saveClipboard(clipboardContent).catch(() => {
       // @todo: implement once error handling is done
     });
-  };
 }
 
 const insertClipboardArticleFragment = (
