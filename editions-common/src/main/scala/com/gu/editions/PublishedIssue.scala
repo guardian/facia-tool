@@ -6,9 +6,13 @@ import java.time.OffsetDateTime
 
 case class MediaUrl(url: String) extends AnyVal
 
-case class PublishedArticleMetadata(kicker: Option[String], headline: Option[String], imageSrc: Option[MediaUrl])
+case class PublishedFurniture(
+  kickerOverride: Option[String],
+  headlineOverride: Option[String],
+  imageSrcOverride: Option[MediaUrl]
+)
 
-case class PublishedArticle(internalPageCode: Long, meta: PublishedArticleMetadata)
+case class PublishedArticle(internalPageCode: Long, furniture: PublishedFurniture)
 
 case class PublishedCollection(id: String, items: List[PublishedArticle])
 

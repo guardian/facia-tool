@@ -4,19 +4,21 @@ import play.api.libs.json.Json
 
 // Ideally the frontend can be changed so we don't have this weird modelling!
 
-case class EditionsFrontendArticle(id: String, frontPublicationDate: Long)
+case class EditionsFrontendArticle(id: String, frontPublicationDate: Long, meta: Option[ArticleMetadata])
 
 object EditionsFrontendArticle {
   def fromArticle(article: EditionsArticle): EditionsFrontendArticle = {
     EditionsFrontendArticle(
       "internal-code/page/" + article.pageCode,
-      article.addedOn
+      article.addedOn,
+      article.metadata
     )
   }
   def toArticle(article: EditionsFrontendArticle): EditionsArticle = {
     EditionsArticle(
       article.id.split("/").last,
-      article.frontPublicationDate
+      article.frontPublicationDate,
+      article.meta
     )
   }
 }

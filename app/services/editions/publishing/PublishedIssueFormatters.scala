@@ -5,7 +5,7 @@ import play.api.libs.json.Json
 
 object PublishedIssueFormatters {
   implicit val mediaUrlFormat = Json.format[MediaUrl]
-  implicit val publishedArticleMetadataFormat = Json.format[PublishedArticleMetadata]
+  implicit val publishedFurnitureFormat = Json.format[PublishedFurniture]
   implicit val publishedArticleFormat = Json.format[PublishedArticle]
   implicit val publishedCollectionsFormat = Json.format[PublishedCollection]
   implicit val publishedFrontsFormat = Json.format[PublishedFront]
