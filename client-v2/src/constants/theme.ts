@@ -34,7 +34,7 @@ const capiInterface = {
 
 const layout = {
   sectionHeaderHeight: 40
-}
+};
 
 export const theme = {
   shared,
