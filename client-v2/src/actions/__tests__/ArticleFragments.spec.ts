@@ -88,7 +88,10 @@ const buildStore = (added: ArticleFragmentSpec, collectionCap = Infinity) => {
         b: { articleFragments: groupB.map(([uuid]) => uuid), uuid: 'b' }
       }
     },
-    clipboard: clipboard.map(([uuid]) => uuid)
+    clipboard: {
+      frontsClipboard: clipboard.map(([uuid]) => uuid),
+      editionsClipboard: clipboard.map(([uuid]) => uuid)
+    }
   };
   const { getState, dispatch } = createStore(
     enableBatching(root),
@@ -101,6 +104,7 @@ const buildStore = (added: ArticleFragmentSpec, collectionCap = Infinity) => {
   };
 };
 
+const getPersistTo = (parentType: string) => parentType === 'clipboard' ? 'clipboard' : 'collection';
 const insert = async (
   insertedArticleFragmentSpec: [string, string],
   index: number,
@@ -121,7 +125,7 @@ const insert = async (
   await dispatch(insertArticleFragment(
     { type: parentType, id: parentId, index },
     { type: 'REF', data: parentId },
-    'collection',
+    getPersistTo(parentType),
     afId => () =>
       Promise.resolve(
         articleFragmentSelector(selectSharedState(getState()), uuid)
@@ -166,7 +170,7 @@ const move = (
       type: fromType,
       index: -1 // this doesn't matter
     },
-    'clipboard' // doesn't matter where we persist
+    getPersistTo(toType),
   ) as any);
 
   // setting accept to null will enuse the modal is still "open" during the test
@@ -191,13 +195,13 @@ const remove = (
     type,
     parentId,
     id,
-    'clipboard' // doesn't matter where we persist
+    getPersistTo(type)
   ) as any);
 
   return getState();
 };
 
-const clipboardSelector = (state: any) => innerClipboardSelector(state);
+const clipboardSelector = (state: any) => innerClipboardSelector(state).frontsClipboard;
 
 const groupArticlesSelectorInner = createGroupArticlesSelector();
 const groupArticlesSelector = (state: any, groupId: string) =>
@@ -216,7 +220,7 @@ describe('ArticleFragments actions', () => {
         clipboardSelector(await insert(['h', '8'], 2, 'clipboard', 'clipboard'))
       ).toEqual(['d', 'e', 'h', 'f']);
 
-      expect(
+       expect(
         groupArticlesSelector(await insert(['h', '8'], 2, 'group', 'a'), 'a')
       ).toEqual(['a', 'b', 'h', 'c']);
 
