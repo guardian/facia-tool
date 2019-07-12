@@ -29,6 +29,11 @@ interface UpdateArticleFragmentMeta {
   };
 }
 
+// The clipboard type here is only needed for when we are inserting
+//  into a clipboard. Ideally clipboard type would only belong to the
+//  clipboard insert action because a lot of the code to handle insertions
+//  in different places in shared is cleaner to have clipboard type here
+//  as optional
 interface InsertArticleFragmentPayload {
   id: string;
   index: number;
