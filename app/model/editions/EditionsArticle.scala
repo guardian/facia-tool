@@ -1,6 +1,6 @@
 package model.editions
 
-import com.gu.editions.{PublishedArticle, PublishedArticleMetadata}
+import com.gu.editions.{PublishedArticle, PublishedFurniture}
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
@@ -13,7 +13,7 @@ object ArticleMetadata {
 case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[ArticleMetadata]) {
   def toPublishedArticle: PublishedArticle = PublishedArticle(
     pageCode.toLong,
-    PublishedArticleMetadata(None, None, None) // TODO (sihil): Store in DB and populate here
+    PublishedFurniture(None, metadata.flatMap(_.headline), None) // TODO (sihil): Store in DB and populate here
   )
 }
 
