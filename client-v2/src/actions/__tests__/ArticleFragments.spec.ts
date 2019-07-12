@@ -104,7 +104,8 @@ const buildStore = (added: ArticleFragmentSpec, collectionCap = Infinity) => {
   };
 };
 
-const getPersistTo = (parentType: string) => parentType === 'clipboard' ? 'clipboard' : 'collection';
+const getPersistTo = (parentType: string) =>
+  parentType === 'clipboard' ? 'clipboard' : 'collection';
 const insert = async (
   insertedArticleFragmentSpec: [string, string],
   index: number,
@@ -170,7 +171,7 @@ const move = (
       type: fromType,
       index: -1 // this doesn't matter
     },
-    getPersistTo(toType),
+    getPersistTo(toType)
   ) as any);
 
   // setting accept to null will enuse the modal is still "open" during the test
@@ -201,7 +202,8 @@ const remove = (
   return getState();
 };
 
-const clipboardSelector = (state: any) => innerClipboardSelector(state).frontsClipboard;
+const clipboardSelector = (state: any) =>
+  innerClipboardSelector(state).frontsClipboard;
 
 const groupArticlesSelectorInner = createGroupArticlesSelector();
 const groupArticlesSelector = (state: any, groupId: string) =>
@@ -220,7 +222,7 @@ describe('ArticleFragments actions', () => {
         clipboardSelector(await insert(['h', '8'], 2, 'clipboard', 'clipboard'))
       ).toEqual(['d', 'e', 'h', 'f']);
 
-       expect(
+      expect(
         groupArticlesSelector(await insert(['h', '8'], 2, 'group', 'a'), 'a')
       ).toEqual(['a', 'b', 'h', 'c']);
 
