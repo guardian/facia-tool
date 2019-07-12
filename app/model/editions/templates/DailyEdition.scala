@@ -9,7 +9,8 @@ object DailyEdition {
     List(
       FrontSpecialSpecial1.front -> Daily(),
       FrontTopStories.front -> Daily(),
-      FrontNewsUkGuardian.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
+      FrontNewsUkGuardian.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri)),
+      FrontNewsUkGuardianSaturday.front -> WeekDays(List(WeekDay.Sat)),
       FrontNewsWorldGuardian.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontNewsUkObserver.front -> WeekDays(List(WeekDay.Sun)),
       FrontNewsWorldObserver.front -> WeekDays(List(WeekDay.Sun)),
@@ -97,6 +98,46 @@ object FrontNewsUkGuardian {
     presentation = TemplateDefaults.defaultFrontPresentation
   )
 }
+
+object FrontNewsUkGuardianSaturday {
+   val collectionNewsFrontPage = CollectionTemplate(
+    name = "Front Page",
+    prefill =  Some(CapiPrefillQuery("?tag=theguardian/mainsection/topstories")),
+    presentation = TemplateDefaults.defaultCollectionPresentation
+  )
+  val collectionNewsSpecial1 = CollectionTemplate(
+    name = "News Special",
+    prefill = None,
+    presentation = TemplateDefaults.defaultCollectionPresentation,
+    hidden = true
+  )
+  val collectionNewsUkNewsGuardian = CollectionTemplate(
+    name = "UK News",
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/uknews|theguardian/mainsection/education|theguardian/mainsection/society|theguardian/mainsection/media|theguardian/guardian-members/guardian-members")),
+    presentation = TemplateDefaults.defaultCollectionPresentation
+  )
+  val collectionNewsWeekInReviewGuardian = CollectionTemplate(
+    name = "Week in Review",
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/week-in-review")),
+    presentation = TemplateDefaults.defaultCollectionPresentation
+  )
+  val collectionNewsUkFinancial = CollectionTemplate(
+    name = "UK Financial",
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/financial3")),
+    presentation = TemplateDefaults.defaultCollectionPresentation
+  )
+  val collectionNewsWeather = CollectionTemplate(
+    name = "Weather",
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/weather2")),
+    presentation = TemplateDefaults.defaultCollectionPresentation
+  )
+  val front = FrontTemplate(
+    name = "news/uknewsguardian",
+    collections = List(collectionNewsFrontPage, collectionNewsSpecial1, collectionNewsUkNewsGuardian, collectionNewsWeekInReviewGuardian, collectionNewsUkFinancial, collectionNewsWeather),
+    presentation = TemplateDefaults.defaultFrontPresentation
+  )
+}
+
 
 object FrontNewsWorldGuardian {
   val collectionNewsWorldGuardian = CollectionTemplate(
