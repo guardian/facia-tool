@@ -57,6 +57,11 @@ type InsertThunkActionCreator = (
   removeAction: Action | null
 ) => ThunkResult<void>;
 
+const getEditingMode = (state: State): ClipboardType => {
+  const isEditionEditions = selectIsEditingEditions(state);
+  return isEditionEditions ? 'editions' : 'fronts';
+};
+
 // Creates a thunk action creator from a plain action creator that also allows
 // passing a persistence location
 // we need to create thunks for these to help TS as we may be dispatching either
@@ -77,8 +82,7 @@ const createInsertArticleFragmentThunk = (action: InsertActionCreator) => (
   if (removeAction) {
     dispatch(removeAction);
   }
-  const isEditionEditions = selectIsEditingEditions(getState());
-  const editingMode = isEditionEditions ? 'editions' : 'fronts';
+  const editingMode = getEditingMode(getState());
   if (persistTo === 'collection') {
     dispatch(
       addPersistMetaToAction(action, {
@@ -309,8 +313,7 @@ const removeArticleFragment = (
     if (!removeActionCreator) {
       return;
     }
-    const isEditionEditions = selectIsEditingEditions(getState());
-    const editingMode = isEditionEditions ? 'editions' : 'fronts';
+    const editingMode = getEditingMode(getState());
     dispatch(
       removeActionCreator(groupIdFromState, articleFragmentId, editingMode)
     );
@@ -363,8 +366,7 @@ const moveArticleFragment = (
         if (!fromWithRespectToState) {
           dispatch(articleFragmentsReceived([parent, ...supporting]));
         }
-        const isEditionEditions = selectIsEditingEditions(getState());
-        const editingMode = isEditionEditions ? 'editions' : 'fronts';
+        const editingMode = getEditingMode(getState());
 
         dispatch(
           insertActionCreator(
