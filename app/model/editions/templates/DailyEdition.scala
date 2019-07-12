@@ -27,6 +27,7 @@ object DailyEdition {
       FrontFoodObserver.front -> WeekDays(List(WeekDay.Sun)),
       FrontSportGuardian.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontSportObserver.front -> WeekDays(List(WeekDay.Sun)),
+      FrontSpecialSpecial2.front -> Daily(),
       FrontCrosswords.front -> Daily(),
     ),
     zoneId = ZoneId.of("Europe/London"),
@@ -37,7 +38,7 @@ object DailyEdition {
 object FrontSpecialSpecial1 {
   val collectionSpecialSpecial1 = CollectionTemplate(
     name = "Special",
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/special-supplement")),
+    prefill = None,
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
 
@@ -536,6 +537,21 @@ object FrontSportObserver {
     name = "sport/observersport",
     collections = List(collectionObsSport, collectionSportSpecial2),
     presentation = TemplateDefaults.defaultFrontPresentation
+  )
+}
+
+object FrontSpecialSpecial2 {
+  val collectionSpecialSpecial2 = CollectionTemplate(
+    name = "Special",
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/special-supplement/special-supplement|theobserver/special-supplement/special-supplement")),
+    presentation = TemplateDefaults.defaultCollectionPresentation
+  )
+
+  val front = FrontTemplate(
+    name = "special/special2",
+    collections = List(collectionSpecialSpecial2),
+    presentation = TemplateDefaults.defaultFrontPresentation,
+    hidden = true
   )
 }
 
