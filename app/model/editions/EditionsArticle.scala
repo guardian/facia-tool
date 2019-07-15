@@ -4,7 +4,12 @@ import com.gu.editions.{PublishedArticle, PublishedFurniture}
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
-case class ArticleMetadata(headline: Option[String])
+case class ArticleMetadata(
+  headline: Option[String],
+  customKicker: Option[String],
+  showKickerCustom: Option[Boolean],
+  trailText: Option[String]
+)
 
 object ArticleMetadata {
   implicit val format = Json.format[ArticleMetadata]
@@ -13,7 +18,7 @@ object ArticleMetadata {
 case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[ArticleMetadata]) {
   def toPublishedArticle: PublishedArticle = PublishedArticle(
     pageCode.toLong,
-    PublishedFurniture(None, metadata.flatMap(_.headline), None) // TODO (sihil): Store in DB and populate here
+    PublishedFurniture(metadata.flatMap(_.customKicker), metadata.flatMap(_.headline), None) // TODO (sihil): Store in DB and populate here
   )
 }
 
