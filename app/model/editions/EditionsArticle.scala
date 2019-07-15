@@ -7,8 +7,10 @@ import scalikejdbc.WrappedResultSet
 case class ArticleMetadata(
   headline: Option[String],
   customKicker: Option[String],
-  showKickerCustom: Option[Boolean],
-  trailText: Option[String]
+  trailText: Option[String],
+  showQuotedHeadline: Option[Boolean],
+  showByline: Option[Boolean],
+  byline: Option[String],
 )
 
 object ArticleMetadata {
