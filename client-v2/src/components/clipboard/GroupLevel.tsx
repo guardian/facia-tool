@@ -9,7 +9,7 @@ import ArticleDrag, {
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone, { DefaultDropContainer } from 'components/DropZone';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
-import { createArticlesFromIdsSelector } from 'shared/selectors/shared';
+import { createSelectArticlesFromIds } from 'shared/selectors/shared';
 import { theme, styled } from 'constants/theme';
 
 interface OuterProps {

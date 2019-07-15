@@ -12,7 +12,7 @@ import DropZone, {
   DefaultDropContainer,
   DefaultDropIndicator
 } from 'components/DropZone';
-import { createSupportingArticlesSelector } from 'shared/selectors/shared';
+import { createSelectSupportingArticles } from 'shared/selectors/shared';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
 import { theme, styled } from 'constants/theme';
 

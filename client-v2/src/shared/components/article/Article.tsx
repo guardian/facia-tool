@@ -182,7 +182,7 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
                 onAddToClipboard={onAddToClipboard}
                 displayPlaceholders={isLoading}
               />
-              <DragIntentIndicator />
+              <ImageDragIntentIndicator />
             </ArticleBodyContainer>
           </DragIntentContainer>
           {children}

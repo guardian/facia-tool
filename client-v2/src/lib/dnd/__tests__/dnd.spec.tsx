@@ -57,7 +57,7 @@ const runDrag = (type: any, data?: any, json: boolean = true) => (
 const setup = (jsx: React.ReactElement<any>) =>
   TestRenderer.create(jsx).getInstance();
 
-describe('Guration', () => {
+describe('Curation', () => {
   it('creates MOVE events from dragged nodes', () => {
     let nodeProps;
     let dropProps;
