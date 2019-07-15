@@ -1,15 +1,14 @@
 import { State } from 'types/State';
 
-export const confirmModalIsOpenSelector = (state: State) =>
-  !!state.confirmModal;
+export const selectConfirmModalIsOpen = (state: State) => !!state.confirmModal;
 
-export const confirmModalTitleSelector = ({ confirmModal }: State) =>
+export const selectConfirmModalTitle = ({ confirmModal }: State) =>
   confirmModal ? confirmModal.title : '';
 
-export const confirmModalDescriptionSelector = ({ confirmModal }: State) =>
+export const selectConfirmModalDescription = ({ confirmModal }: State) =>
   confirmModal ? confirmModal.description : '';
 
-export const confirmModalActionsSelector = (
+export const selectConfirmModalActions = (
   { confirmModal }: State,
   accept: boolean
 ) =>

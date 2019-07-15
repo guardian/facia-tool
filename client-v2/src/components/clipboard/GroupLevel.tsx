@@ -9,7 +9,7 @@ import ArticleDrag, {
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone from 'components/DropZone';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
-import { createArticlesFromIdsSelector } from 'shared/selectors/shared';
+import { createSelectArticlesFromIds } from 'shared/selectors/shared';
 import { styled } from 'constants/theme';
 
 interface OuterProps {
@@ -79,9 +79,9 @@ const GroupLevel = ({
 );
 
 const createMapStateToProps = () => {
-  const articlesFromIdsSelector = createArticlesFromIdsSelector();
+  const selectArticlesFromIds = createSelectArticlesFromIds();
   return (state: State, { articleFragmentIds }: OuterProps) => ({
-    articleFragments: articlesFromIdsSelector(state, {
+    articleFragments: selectArticlesFromIds(state, {
       articleFragmentIds
     })
   });

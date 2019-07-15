@@ -1,15 +1,15 @@
 import { createSelector } from 'reselect';
 import {
-  articleFragmentSelector,
-  externalArticleFromArticleFragmentSelector
+  selectArticleFragment,
+  selectExternalArticleFromArticleFragment
 } from './shared';
 import { validateId } from 'shared/util/snap';
 import CollectionItemTypes from 'shared/constants/collectionItemTypes';
 import { getContributorImage } from 'util/CAPIUtils';
 
-const createCollectionItemTypeSelector = () =>
+const createSelectCollectionItemType = () =>
   createSelector(
-    articleFragmentSelector,
+    selectArticleFragment,
     articleFragment => {
       return articleFragment && validateId(articleFragment.id)
         ? CollectionItemTypes.SNAP_LINK
@@ -19,8 +19,8 @@ const createCollectionItemTypeSelector = () =>
 
 const createSelectActiveImageUrl = () =>
   createSelector(
-    articleFragmentSelector,
-    externalArticleFromArticleFragmentSelector,
+    selectArticleFragment,
+    selectExternalArticleFromArticleFragment,
     (articleFragment, externalArticle): string | undefined => {
       if (!articleFragment || !articleFragment.meta) {
         return;
@@ -46,14 +46,14 @@ const createSelectActiveImageUrl = () =>
 
 const createSelectCutoutUrl = () =>
   createSelector(
-    externalArticleFromArticleFragmentSelector,
+    selectExternalArticleFromArticleFragment,
     externalArticle => {
       return externalArticle && getContributorImage(externalArticle);
     }
   );
 
 export {
-  createCollectionItemTypeSelector,
+  createSelectCollectionItemType,
   createSelectActiveImageUrl,
   createSelectCutoutUrl
 };

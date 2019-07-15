@@ -1,12 +1,12 @@
 import { State } from 'shared/types/State';
 import { CollectionItemSets } from 'shared/types/Collection';
-import { createArticlesInCollectionSelector } from './shared';
+import { createSelectArticlesInCollection } from './shared';
 import uniq from 'lodash/uniq';
 import flatten from 'lodash/flatten';
 import { createSelector } from 'reselect';
-import { articleFragmentSelector } from '../selectors/shared';
+import { selectArticleFragment } from '../selectors/shared';
 
-const selectArticleIdsInCollection = createArticlesInCollectionSelector();
+const selectArticleIdsInCollection = createSelectArticlesInCollection();
 
 // Does not return UUIDs. Returns interal page codes for fetching articleFragments
 export const selectArticlesInCollections = createSelector(
@@ -22,16 +22,16 @@ export const selectArticlesInCollections = createSelector(
         collectionId: _,
         collectionSet: itemSet
       })
-        .map(articleId => articleFragmentSelector(state, articleId))
+        .map(articleId => selectArticleFragment(state, articleId))
         .map(article => article.id)
     ),
   articleIds => uniq(flatten(articleIds))
 );
 
 export const createSelectIsArticleInCollection = () => {
-  const articlesInCollectionSelector = createArticlesInCollectionSelector();
+  const selectArticlesInCollection = createSelectArticlesInCollection();
   return createSelector(
-    articlesInCollectionSelector,
+    selectArticlesInCollection,
     (
       _: State,
       { articleFragmentId: articleId }: { articleFragmentId: string }

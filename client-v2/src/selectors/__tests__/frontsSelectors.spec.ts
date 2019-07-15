@@ -1,7 +1,7 @@
 import {
-  getFrontsWithPriority,
-  alsoOnFrontSelector,
-  createArticleVisibilityDetailsSelector
+  selectFrontsWithPriority,
+  selectAlsoOnFront,
+  createSelectArticleVisibilityDetails
 } from 'selectors/frontsSelectors';
 import { frontsConfig } from 'fixtures/frontsConfig';
 import { FrontConfig } from 'types/FaciaApi';
@@ -43,7 +43,7 @@ const commercialFronts: FrontConfig[] = [
 describe('Filtering fronts correctly', () => {
   it('return an empty array if config is empty', () => {
     expect(
-      getFrontsWithPriority(
+      selectFrontsWithPriority(
         {
           fronts: {
             frontsConfig: {
@@ -60,7 +60,7 @@ describe('Filtering fronts correctly', () => {
 
   it('filters editorial fronts correctly', () => {
     expect(
-      getFrontsWithPriority(
+      selectFrontsWithPriority(
         {
           fronts: {
             frontsConfig
@@ -73,7 +73,7 @@ describe('Filtering fronts correctly', () => {
 
   it('filters non-editorial fronts correctly', () => {
     expect(
-      getFrontsWithPriority(
+      selectFrontsWithPriority(
         {
           fronts: {
             frontsConfig
@@ -92,7 +92,7 @@ const allFronts = editorialFrontsInConfig
 describe('Selecting which front collection is also on correctly', () => {
   it('fills in also details for all collections on a front', () => {
     expect(
-      alsoOnFrontSelector(
+      selectAlsoOnFront(
         additionalEditorialFronts.find(
           front => front.id === 'editorialSharedWithTraining'
         ),
@@ -108,7 +108,7 @@ describe('Selecting which front collection is also on correctly', () => {
 
   it('returns an empty list of fronts for collection which is not shared', () => {
     expect(
-      alsoOnFrontSelector(
+      selectAlsoOnFront(
         additionalEditorialFronts.find(
           front => front.id === 'editorialNotShared'
         ),
@@ -121,7 +121,7 @@ describe('Selecting which front collection is also on correctly', () => {
 
   it('returns correct list of shared fronts and priorities for shared collections', () => {
     expect(
-      alsoOnFrontSelector(
+      selectAlsoOnFront(
         trainingFronts.find(front => front.id === 'trainingFront'),
         allFronts
       )
@@ -136,7 +136,7 @@ describe('Selecting which front collection is also on correctly', () => {
 
   it('sets merit warning to false if shared collection appears on a commercial front', () => {
     expect(
-      alsoOnFrontSelector(
+      selectAlsoOnFront(
         commercialFronts.find(front => front.id === 'commercialFront'),
         allFronts
       )
@@ -151,7 +151,7 @@ describe('Selecting which front collection is also on correctly', () => {
 
   it('sets merits warnign to true if a commercial collection is shared on another priority', () => {
     expect(
-      alsoOnFrontSelector(
+      selectAlsoOnFront(
         editorialFrontsInConfig.find(front => front.id === 'editorialFront'),
         allFronts
       )
@@ -221,9 +221,9 @@ const visibilityState = {
 
 describe('Article visibility selector', () => {
   it('returns the id of the articleFragment at the last visible position for mobile and desktop, ignoring supporting articleFragments', () => {
-    const articleVisibilityDetailsSelector = createArticleVisibilityDetailsSelector();
+    const selectArticleVisibilityDetails = createSelectArticleVisibilityDetails();
     expect(
-      articleVisibilityDetailsSelector(visibilityState as any, {
+      selectArticleVisibilityDetails(visibilityState as any, {
         collectionSet: 'draft',
         collectionId: 'a'
       })

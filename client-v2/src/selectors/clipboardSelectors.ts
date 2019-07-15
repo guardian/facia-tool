@@ -1,13 +1,13 @@
 import { State } from 'types/State';
-import { articleFragmentsFromRootStateSelector } from 'shared/selectors/shared';
+import { selectArticleFragmentsFromRootState } from 'shared/selectors/shared';
 import { createShallowEqualResultSelector } from 'shared/util/selectorUtils';
 
-const clipboardContentSelector = (state: State) => state.clipboard || [];
+const selectClipboardContent = (state: State) => state.clipboard || [];
 
-const clipboardArticlesSelector = createShallowEqualResultSelector(
-  clipboardContentSelector,
-  articleFragmentsFromRootStateSelector,
+const selectClipboardArticles = createShallowEqualResultSelector(
+  selectClipboardContent,
+  selectArticleFragmentsFromRootState,
   (clipboard, articleFragments) => clipboard.map(afId => articleFragments[afId])
 );
 
-export { clipboardArticlesSelector, clipboardContentSelector };
+export { selectClipboardArticles, selectClipboardContent };

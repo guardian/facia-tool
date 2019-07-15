@@ -4,12 +4,12 @@ import clipboardReducer from '../../reducers/clipboardReducer';
 import groupsReducer from '../../shared/reducers/groupsReducer';
 import articleFragmentsReducer from '../../shared/reducers/articleFragmentsReducer';
 import {
-  createGroupArticlesSelector,
-  createSupportingArticlesSelector,
-  articleFragmentSelector,
+  createSelectGroupArticles,
+  createSelectSupportingArticles,
+  selectArticleFragment,
   selectSharedState
 } from '../../shared/selectors/shared';
-import { clipboardSelector as innerClipboardSelector } from '../../selectors/frontsSelectors';
+import { selectClipboard as innerClipboardSelector } from '../../selectors/frontsSelectors';
 import {
   createArticleFragmentStateFromSpec,
   ArticleFragmentSpec,
@@ -31,7 +31,7 @@ import { endConfirmModal } from 'actions/ConfirmModal';
 import config from 'reducers/configReducer';
 import { enableBatching } from 'redux-batched-actions';
 import { Dispatch } from 'types/Store';
-import { clipboardArticlesSelector } from 'selectors/clipboardSelectors';
+import { selectClipboardArticles } from 'selectors/clipboardSelectors';
 
 const root = (state: any = {}, action: any) => ({
   confirmModal: confirmModal(state.confirmModal, action),
@@ -124,7 +124,7 @@ const insert = async (
     'collection',
     afId => () =>
       Promise.resolve(
-        articleFragmentSelector(selectSharedState(getState()), uuid)
+        selectArticleFragment(selectSharedState(getState()), uuid)
       )
   ) as any);
 
@@ -197,15 +197,15 @@ const remove = (
   return getState();
 };
 
-const clipboardSelector = (state: any) => innerClipboardSelector(state);
+const selectClipboard = (state: any) => innerClipboardSelector(state);
 
-const groupArticlesSelectorInner = createGroupArticlesSelector();
-const groupArticlesSelector = (state: any, groupId: string) =>
-  groupArticlesSelectorInner(state, { groupId }).map(({ uuid }) => uuid);
+const selectGroupArticlesInner = createSelectGroupArticles();
+const selectGroupArticles = (state: any, groupId: string) =>
+  selectGroupArticlesInner(state, { groupId }).map(({ uuid }) => uuid);
 
-const supportingArticlesSelectorInner = createSupportingArticlesSelector();
-const supportingArticlesSelector = (state: any, articleFragmentId: string) =>
-  supportingArticlesSelectorInner(state, { articleFragmentId }).map(
+const selectSupportingArticlesInner = createSelectSupportingArticles();
+const selectSupportingArticles = (state: any, articleFragmentId: string) =>
+  selectSupportingArticlesInner(state, { articleFragmentId }).map(
     ({ uuid }) => uuid
   );
 
@@ -213,15 +213,15 @@ describe('ArticleFragments actions', () => {
   describe('insert', () => {
     it('adds article fragments that exist in the state', async () => {
       expect(
-        clipboardSelector(await insert(['h', '8'], 2, 'clipboard', 'clipboard'))
+        selectClipboard(await insert(['h', '8'], 2, 'clipboard', 'clipboard'))
       ).toEqual(['d', 'e', 'h', 'f']);
 
       expect(
-        groupArticlesSelector(await insert(['h', '8'], 2, 'group', 'a'), 'a')
+        selectGroupArticles(await insert(['h', '8'], 2, 'group', 'a'), 'a')
       ).toEqual(['a', 'b', 'h', 'c']);
 
       expect(
-        supportingArticlesSelector(
+        selectSupportingArticles(
           await insert(['h', '8'], 2, 'articleFragment', 'a'),
           'a'
         )
@@ -230,15 +230,15 @@ describe('ArticleFragments actions', () => {
 
     it('moves existing articles when duplicates are added', async () => {
       expect(
-        clipboardSelector(await insert(['h', '6'], 0, 'clipboard', 'clipboard'))
+        selectClipboard(await insert(['h', '6'], 0, 'clipboard', 'clipboard'))
       ).toEqual(['h', 'd', 'e']);
 
       expect(
-        groupArticlesSelector(await insert(['h', '3'], 0, 'group', 'a'), 'a')
+        selectGroupArticles(await insert(['h', '3'], 0, 'group', 'a'), 'a')
       ).toEqual(['h', 'a', 'b']);
 
       expect(
-        supportingArticlesSelector(
+        selectSupportingArticles(
           await insert(['h', '7'], 0, 'articleFragment', 'a'),
           'a'
         )
@@ -247,23 +247,21 @@ describe('ArticleFragments actions', () => {
 
     it('dedupe across groups in the same collection', async () => {
       const state = await insert(['h', '3'], 0, 'group', 'b');
-      expect(groupArticlesSelector(state, 'a')).toEqual(['a', 'b']);
-      expect(groupArticlesSelector(state, 'b')).toEqual(['h', 'i', 'j', 'k']);
+      expect(selectGroupArticles(state, 'a')).toEqual(['a', 'b']);
+      expect(selectGroupArticles(state, 'b')).toEqual(['h', 'i', 'j', 'k']);
     });
 
     it('adds to the end when the index is too high', async () => {
       expect(
-        clipboardSelector(
-          await insert(['h', '8'], 100, 'clipboard', 'clipboard')
-        )
+        selectClipboard(await insert(['h', '8'], 100, 'clipboard', 'clipboard'))
       ).toEqual(['d', 'e', 'f', 'h']);
 
       expect(
-        groupArticlesSelector(await insert(['h', '8'], 100, 'group', 'a'), 'a')
+        selectGroupArticles(await insert(['h', '8'], 100, 'group', 'a'), 'a')
       ).toEqual(['a', 'b', 'c', 'h']);
 
       expect(
-        supportingArticlesSelector(
+        selectSupportingArticles(
           await insert(['h', '8'], 100, 'articleFragment', 'a'),
           'a'
         )
@@ -273,7 +271,7 @@ describe('ArticleFragments actions', () => {
 
   it('enforces collection caps on insert through a modal', async () => {
     expect(
-      groupArticlesSelector(
+      selectGroupArticles(
         await insert(['h', '8'], 2, 'group', 'a', {
           cap: 3,
           accept: true
@@ -283,7 +281,7 @@ describe('ArticleFragments actions', () => {
     ).toEqual(['a', 'b', 'h']);
 
     expect(
-      groupArticlesSelector(
+      selectGroupArticles(
         await insert(['h', '8'], 2, 'group', 'a', {
           cap: 3,
           accept: false
@@ -296,12 +294,12 @@ describe('ArticleFragments actions', () => {
   describe('move', () => {
     it('removes articles from their previous position', () => {
       const s1 = move(['d', '4'], 0, 'group', 'a', 'clipboard', 'clipboard');
-      expect(groupArticlesSelector(s1, 'a')).toEqual(['d', 'a', 'b', 'c']);
-      expect(clipboardSelector(s1)).toEqual(['e', 'f']);
+      expect(selectGroupArticles(s1, 'a')).toEqual(['d', 'a', 'b', 'c']);
+      expect(selectClipboard(s1)).toEqual(['e', 'f']);
 
       const s2 = move(['a', '1'], 0, 'clipboard', 'clipboard', 'group', 'a');
-      expect(groupArticlesSelector(s2, 'a')).toEqual(['b', 'c']);
-      expect(clipboardSelector(s2)).toEqual(['a', 'd', 'e', 'f']);
+      expect(selectGroupArticles(s2, 'a')).toEqual(['b', 'c']);
+      expect(selectClipboard(s2)).toEqual(['a', 'd', 'e', 'f']);
     });
 
     it('enforces collection caps on move through a modal', () => {
@@ -309,15 +307,15 @@ describe('ArticleFragments actions', () => {
         cap: 3,
         accept: true
       });
-      expect(groupArticlesSelector(s1, 'a')).toEqual(['d', 'a', 'b']);
-      expect(clipboardSelector(s1)).toEqual(['e', 'f']);
+      expect(selectGroupArticles(s1, 'a')).toEqual(['d', 'a', 'b']);
+      expect(selectClipboard(s1)).toEqual(['e', 'f']);
 
       const s2 = move(['d', '4'], 0, 'group', 'a', 'clipboard', 'clipboard', {
         cap: 3,
         accept: false
       });
-      expect(groupArticlesSelector(s2, 'a')).toEqual(['a', 'b', 'c']);
-      expect(clipboardSelector(s2)).toEqual(['d', 'e', 'f']);
+      expect(selectGroupArticles(s2, 'a')).toEqual(['a', 'b', 'c']);
+      expect(selectClipboard(s2)).toEqual(['d', 'e', 'f']);
     });
 
     it('collection caps allow moves within collections without a modal', () => {
@@ -325,22 +323,19 @@ describe('ArticleFragments actions', () => {
         cap: 6,
         accept: null
       });
-      expect(groupArticlesSelector(s1, 'a')).toEqual(['b', 'c', 'a']);
+      expect(selectGroupArticles(s1, 'a')).toEqual(['b', 'c', 'a']);
     });
   });
 
   describe('remove', () => {
     it('removes article fragments that exist in the state', async () => {
       expect(
-        clipboardSelector(await remove('d', 'clipboard', 'clipboard'))
+        selectClipboard(await remove('d', 'clipboard', 'clipboard'))
       ).toEqual(['e', 'f']);
     });
     it('removes article fragments from supporting positions', async () => {
       expect(
-        supportingArticlesSelector(
-          await remove('g', 'd', 'articleFragment'),
-          'd'
-        )
+        selectSupportingArticles(await remove('g', 'd', 'articleFragment'), 'd')
       ).toEqual([]);
     });
   });
@@ -355,8 +350,8 @@ describe('ArticleFragments actions', () => {
       ]);
       store.dispatch(cloneArticleFragmentToTarget('123', 'clipboard'));
       const state = store.getState();
-      expect(clipboardArticlesSelector(state as any)[0].id).toEqual('456');
-      expect(clipboardArticlesSelector(state as any)[0].meta).toEqual({
+      expect(selectClipboardArticles(state as any)[0].id).toEqual('456');
+      expect(selectClipboardArticles(state as any)[0].meta).toEqual({
         supporting: [],
         headline: 'Headline was overwritten with this'
       });

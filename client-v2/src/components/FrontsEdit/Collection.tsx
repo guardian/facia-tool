@@ -16,7 +16,7 @@ import { removeArticleFragment } from 'actions/ArticleFragments';
 import { resetFocusState } from 'bundles/focusBundle';
 import { connect } from 'react-redux';
 import { State } from 'types/State';
-import { createArticleVisibilityDetailsSelector } from 'selectors/frontsSelectors';
+import { createSelectArticleVisibilityDetails } from 'selectors/frontsSelectors';
 import FocusWrapper from 'components/FocusWrapper';
 
 const getArticleNotifications = (
@@ -228,9 +228,9 @@ class CollectionContext extends React.Component<
 }
 
 const createMapStateToProps = () => {
-  const articleVisibilityDetailsSelector = createArticleVisibilityDetailsSelector();
+  const selectArticleVisibilityDetails = createSelectArticleVisibilityDetails();
   return (state: State, props: CollectionContextProps) => {
-    const articleVisibilityDetails = articleVisibilityDetailsSelector(state, {
+    const articleVisibilityDetails = selectArticleVisibilityDetails(state, {
       collectionId: props.id,
       collectionSet: props.browsingStage
     });

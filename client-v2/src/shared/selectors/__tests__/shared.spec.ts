@@ -1,10 +1,10 @@
 import {
-  externalArticleFromArticleFragmentSelector,
-  createArticleFromArticleFragmentSelector,
-  createArticlesInCollectionGroupSelector,
-  createArticlesInCollectionSelector,
-  createCollectionSelector,
-  groupSiblingsSelector
+  selectExternalArticleFromArticleFragment,
+  createSelectArticleFromArticleFragment,
+  createSelectArticlesInCollectionGroup,
+  createSelectArticlesInCollection,
+  createSelectCollection,
+  selectGroupSiblings
 } from '../shared';
 
 const state: any = {
@@ -244,7 +244,7 @@ const state: any = {
 describe('Shared selectors', () => {
   describe('createCollectionSelector', () => {
     it('should select a collection by id', () => {
-      const selector = createCollectionSelector();
+      const selector = createSelectCollection();
       expect(selector(state, { collectionId: 'c1' })).toEqual({
         groups: ['group1', 'group2'],
         live: ['g1', 'g2'],
@@ -255,18 +255,18 @@ describe('Shared selectors', () => {
 
   describe('externalArticleFromArticleFragmentSelector', () => {
     it('should create a selector that returns an external article referenced by the given article fragment', () => {
-      expect(externalArticleFromArticleFragmentSelector(state, 'af1')).toEqual(
+      expect(selectExternalArticleFromArticleFragment(state, 'af1')).toEqual(
         state.externalArticles.data.ea1
       );
       expect(
-        externalArticleFromArticleFragmentSelector(state, 'invalid')
+        selectExternalArticleFromArticleFragment(state, 'invalid')
       ).toEqual(undefined);
     });
   });
 
   describe('createArticleFromArticleFragmentSelector', () => {
     it('should create a selector that returns an article (externalArticle + articleFragment) referenced by the given article fragment', () => {
-      const selector = createArticleFromArticleFragmentSelector();
+      const selector = createSelectArticleFromArticleFragment();
       expect(selector(state, 'af1')).toEqual({
         id: 'ea1',
         pillarName: 'external-pillar',
@@ -301,7 +301,7 @@ describe('Shared selectors', () => {
       expect(selector(state, 'invalid')).toEqual(undefined);
     });
     it('should set isLive property to false if article is not live', () => {
-      const selector = createArticleFromArticleFragmentSelector();
+      const selector = createSelectArticleFromArticleFragment();
       expect(selector(state, 'af2')).toEqual({
         id: 'ea2',
         pillarName: 'external-pillar',
@@ -315,7 +315,7 @@ describe('Shared selectors', () => {
       });
     });
     it('should set isLive to true if property is missing', () => {
-      const selector = createArticleFromArticleFragmentSelector();
+      const selector = createSelectArticleFromArticleFragment();
       expect(selector(state, 'af3')).toEqual({
         id: 'ea3',
         pillarName: 'external-pillar',
@@ -328,7 +328,7 @@ describe('Shared selectors', () => {
       });
     });
     it('should populate default metadata correctly', () => {
-      const selector = createArticleFromArticleFragmentSelector();
+      const selector = createSelectArticleFromArticleFragment();
       expect(selector(state, 'af4')).toEqual({
         id: 'ea4',
         pillarName: 'external-pillar',
@@ -358,7 +358,7 @@ describe('Shared selectors', () => {
 
   describe('createArticlesInCollectionSelector', () => {
     it('should return a list of all the articles in a given collection', () => {
-      const selector = createArticlesInCollectionSelector();
+      const selector = createSelectArticlesInCollection();
       expect(
         selector(state, {
           collectionId: 'c1',
@@ -367,7 +367,7 @@ describe('Shared selectors', () => {
       ).toEqual(['af2', 'af1']);
     });
     it('should return articles in supporting positions', () => {
-      const selector = createArticlesInCollectionSelector();
+      const selector = createSelectArticlesInCollection();
       expect(
         selector(state, {
           collectionId: 'c5',
@@ -376,7 +376,7 @@ describe('Shared selectors', () => {
       ).toEqual(['afWithSupporting', 'afWithSectionKicker']);
     });
     it('should not return articles in supporting positions if includeSupportingArticles is false', () => {
-      const selector = createArticlesInCollectionSelector();
+      const selector = createSelectArticlesInCollection();
       expect(
         selector(state, {
           collectionId: 'c5',
@@ -389,7 +389,7 @@ describe('Shared selectors', () => {
 
   describe('createArticlesInCollectionGroupSelector', () => {
     it('should return a list of articles held by the given collection for the given display index', () => {
-      const selector = createArticlesInCollectionGroupSelector();
+      const selector = createSelectArticlesInCollectionGroup();
       expect(
         selector(state, {
           collectionId: 'c1',
@@ -413,7 +413,7 @@ describe('Shared selectors', () => {
       ).toEqual(['af3', 'af4']);
     });
     it('should put articles which are in groups that don`t exis in the config in the first group', () => {
-      const selector = createArticlesInCollectionGroupSelector();
+      const selector = createSelectArticlesInCollectionGroup();
       const currentGroups = state.groups;
       const newGroups = {
         ...currentGroups,
@@ -430,7 +430,7 @@ describe('Shared selectors', () => {
       ).toEqual(['af6', 'af2', 'af1']);
     });
     it('should put articles which are in groups that don`t exis in the config in the first group even when none of the groups have names', () => {
-      const selector = createArticlesInCollectionGroupSelector();
+      const selector = createSelectArticlesInCollectionGroup();
       const newGroups = {
         ...{ g1: { uuid: 'g1', articleFragments: ['af4'] } },
         ...{ g2: { uuid: 'g2', id: 'group6', articleFragments: ['af5'] } },
@@ -447,7 +447,7 @@ describe('Shared selectors', () => {
       ).toEqual(['af5', 'af6', 'af4']);
     });
     it('should return articles in supporting positions', () => {
-      const selector = createArticlesInCollectionGroupSelector();
+      const selector = createSelectArticlesInCollectionGroup();
       expect(
         selector(state, {
           collectionId: 'c5',
@@ -457,7 +457,7 @@ describe('Shared selectors', () => {
       ).toEqual(['afWithSupporting', 'afWithSectionKicker']);
     });
     it('should not return articles in supporting positions if includeSupportingArticles is false', () => {
-      const selector = createArticlesInCollectionGroupSelector();
+      const selector = createSelectArticlesInCollectionGroup();
       expect(
         selector(state, {
           collectionId: 'c5',
@@ -468,7 +468,7 @@ describe('Shared selectors', () => {
       ).toEqual(['afWithSupporting']);
     });
     it('should return an empty array if the collection is not found', () => {
-      const selector = createArticlesInCollectionGroupSelector();
+      const selector = createSelectArticlesInCollectionGroup();
       expect(
         selector(state, {
           collectionId: 'invalid',
@@ -478,7 +478,7 @@ describe('Shared selectors', () => {
       ).toEqual([]);
     });
     it('should return an empty array if the collectionSet is not found', () => {
-      const selector = createArticlesInCollectionGroupSelector();
+      const selector = createSelectArticlesInCollectionGroup();
       expect(
         selector(state, {
           collectionId: 'c1',
@@ -488,7 +488,7 @@ describe('Shared selectors', () => {
       ).toEqual([]);
     });
     it("should handle articles that don't contain a meta key", () => {
-      const selector = createArticlesInCollectionGroupSelector();
+      const selector = createSelectArticlesInCollectionGroup();
       expect(
         selector(state, {
           collectionId: 'c4',
@@ -498,7 +498,7 @@ describe('Shared selectors', () => {
       ).toEqual([]);
     });
     it('should assume that articles without a meta key are in the first available group', () => {
-      const selector = createArticlesInCollectionGroupSelector();
+      const selector = createSelectArticlesInCollectionGroup();
       expect(
         selector(state, {
           collectionId: 'c3',
@@ -508,14 +508,14 @@ describe('Shared selectors', () => {
       ).toEqual(['af5']);
     });
     it('should set the correct kicker when tag kicker is set ', () => {
-      const selector = createArticleFromArticleFragmentSelector();
+      const selector = createSelectArticleFromArticleFragment();
 
       expect(selector(state, 'afWithTagKicker')).toMatchObject({
         kicker: 'tag'
       });
     });
     it('should set the correct kicker when section kicker is set ', () => {
-      const selector = createArticleFromArticleFragmentSelector();
+      const selector = createSelectArticleFromArticleFragment();
 
       expect(selector(state, 'afWithSectionKicker')).toMatchObject({
         kicker: 'section'
@@ -525,9 +525,10 @@ describe('Shared selectors', () => {
 
   describe('groupSiblingsSelector', () => {
     it('selects the sibling groups of a given group id', () => {
-      expect(
-        groupSiblingsSelector(state, 'g1').map(({ uuid }) => uuid)
-      ).toEqual(['g1', 'g2']);
+      expect(selectGroupSiblings(state, 'g1').map(({ uuid }) => uuid)).toEqual([
+        'g1',
+        'g2'
+      ]);
     });
   });
 });

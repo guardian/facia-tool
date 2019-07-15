@@ -1,6 +1,6 @@
 import {
-  nextClipboardIndexSelector,
-  nextIndexAndGroupSelector
+  selectNextClipboardIndexSelector,
+  selectNextIndexAndGroup
 } from 'selectors/keyboardNavigationSelectors';
 import state from 'fixtures/initialState';
 
@@ -13,31 +13,31 @@ describe('nextClipboardIndexSelector', () => {
   it('return null when clipboard is empty', () => {
     const stateWithEmptyClipboard = { ...state, clipboard: [] };
     expect(
-      nextClipboardIndexSelector(stateWithEmptyClipboard, 'some-id', 'up')
+      selectNextClipboardIndexSelector(stateWithEmptyClipboard, 'some-id', 'up')
     ).toEqual(null);
   });
 
   it('return null when moving top article up', () => {
     expect(
-      nextClipboardIndexSelector(stateWithClipboard, 'id-1', 'up')
+      selectNextClipboardIndexSelector(stateWithClipboard, 'id-1', 'up')
     ).toEqual(null);
   });
 
   it('return next article when moving top article up', () => {
     expect(
-      nextClipboardIndexSelector(stateWithClipboard, 'id-3', 'up')
+      selectNextClipboardIndexSelector(stateWithClipboard, 'id-3', 'up')
     ).toEqual({ fromIndex: 2, toIndex: 1 });
   });
 
   it('return null when moving bottom article down', () => {
     expect(
-      nextClipboardIndexSelector(stateWithClipboard, 'id-4', 'down')
+      selectNextClipboardIndexSelector(stateWithClipboard, 'id-4', 'down')
     ).toEqual(null);
   });
 
   it('return next article when moving bottom article down', () => {
     expect(
-      nextClipboardIndexSelector(stateWithClipboard, 'id-3', 'down')
+      selectNextClipboardIndexSelector(stateWithClipboard, 'id-3', 'down')
     ).toEqual({ fromIndex: 2, toIndex: 3 });
   });
 });
@@ -172,7 +172,7 @@ describe('nextIndexAndGroupSelector', () => {
       }
     };
     expect(
-      nextIndexAndGroupSelector(
+      selectNextIndexAndGroup(
         stateWithEmptyGroup,
         'gobbleygook',
         'some-id',
@@ -184,7 +184,7 @@ describe('nextIndexAndGroupSelector', () => {
 
   it('return null when moving top article in collection', () => {
     expect(
-      nextIndexAndGroupSelector(
+      selectNextIndexAndGroup(
         stateWithGroups,
         'group1',
         'fragment-1',
@@ -196,7 +196,7 @@ describe('nextIndexAndGroupSelector', () => {
 
   it('return next group id and index when moving up article in collection', () => {
     expect(
-      nextIndexAndGroupSelector(
+      selectNextIndexAndGroup(
         stateWithGroups,
         'group1',
         'fragment-2',
@@ -208,7 +208,7 @@ describe('nextIndexAndGroupSelector', () => {
 
   it('return null when moving bottom article in collection', () => {
     expect(
-      nextIndexAndGroupSelector(
+      selectNextIndexAndGroup(
         stateWithGroups,
         'group3',
         'fragment-8',
@@ -220,7 +220,7 @@ describe('nextIndexAndGroupSelector', () => {
 
   it('return next group id and index when moving down article in collection', () => {
     expect(
-      nextIndexAndGroupSelector(
+      selectNextIndexAndGroup(
         stateWithGroups,
         'group1',
         'fragment-2',
@@ -232,7 +232,7 @@ describe('nextIndexAndGroupSelector', () => {
 
   it('return next group id when moving down between groups', () => {
     expect(
-      nextIndexAndGroupSelector(
+      selectNextIndexAndGroup(
         stateWithGroups,
         'group1',
         'fragment-3',
@@ -244,7 +244,7 @@ describe('nextIndexAndGroupSelector', () => {
 
   it('return next group id when moving up between groups', () => {
     expect(
-      nextIndexAndGroupSelector(
+      selectNextIndexAndGroup(
         stateWithGroups,
         'group2',
         'fragment-4',
@@ -256,7 +256,7 @@ describe('nextIndexAndGroupSelector', () => {
 
   it('return next group id when moving up between collections', () => {
     expect(
-      nextIndexAndGroupSelector(
+      selectNextIndexAndGroup(
         stateWithGroups,
         'group3',
         'fragment-7',
@@ -272,7 +272,7 @@ describe('nextIndexAndGroupSelector', () => {
 
   it('return next editable group id when moving down between collections', () => {
     expect(
-      nextIndexAndGroupSelector(
+      selectNextIndexAndGroup(
         stateWithGroups,
         'group2',
         'fragment-6',

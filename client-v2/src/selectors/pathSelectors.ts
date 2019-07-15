@@ -3,9 +3,10 @@ import { matchIssuePath } from 'routes/routes';
 
 const maybeRemoveV2Prefix = (path: string) => path.replace(/^\/v2/, '');
 
-const getFullPath = (state: State) => state.path;
-const getV2SubPath = (state: State) => maybeRemoveV2Prefix(getFullPath(state));
+const selectFullPath = (state: State) => state.path;
+const selectV2SubPath = (state: State) =>
+  maybeRemoveV2Prefix(selectFullPath(state));
 const selectIsEditingEditions = (state: State) =>
-  !!matchIssuePath(getV2SubPath(state));
+  !!matchIssuePath(selectV2SubPath(state));
 
-export { getFullPath, getV2SubPath, selectIsEditingEditions };
+export { selectFullPath, selectV2SubPath, selectIsEditingEditions };

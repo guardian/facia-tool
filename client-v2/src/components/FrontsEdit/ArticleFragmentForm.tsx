@@ -14,10 +14,10 @@ import Button from 'shared/components/input/ButtonDefault';
 import ContentContainer from 'shared/components/layout/ContentContainer';
 import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
 import {
-  createArticleFromArticleFragmentSelector,
+  createSelectArticleFromArticleFragment,
   selectSharedState,
-  articleTagSelector,
-  externalArticleFromArticleFragmentSelector
+  selectArticleTag,
+  selectExternalArticleFromArticleFragment
 } from 'shared/selectors/shared';
 import { createSelectFormFieldsForCollectionItem } from 'selectors/formSelectors';
 import { ArticleFragmentMeta, ArticleTag } from 'shared/types/Collection';
@@ -543,17 +543,17 @@ const formContainer: React.SFC<ContainerProps & InterfaceProps> = props => (
 );
 
 const createMapStateToProps = () => {
-  const selectArticle = createArticleFromArticleFragmentSelector();
+  const selectArticle = createSelectArticleFromArticleFragment();
   const selectFormFields = createSelectFormFieldsForCollectionItem();
   return (
     state: State,
     { articleFragmentId, isSupporting = false }: InterfaceProps
   ) => {
-    const externalArticle = externalArticleFromArticleFragmentSelector(
+    const externalArticle = selectExternalArticleFromArticleFragment(
       selectSharedState(state),
       articleFragmentId
     );
-    const valueSelector = formValueSelector(articleFragmentId);
+    const selectValue = formValueSelector(articleFragmentId);
     const article = selectArticle(selectSharedState(state), articleFragmentId);
     const parentCollectionId =
       collectionSelectors.selectParentCollectionOfArticleFragment(
@@ -587,15 +587,15 @@ const createMapStateToProps = () => {
       editableFields:
         article && selectFormFields(state, article.uuid, isSupporting),
       kickerOptions: article
-        ? articleTagSelector(selectSharedState(state), articleFragmentId)
+        ? selectArticleTag(selectSharedState(state), articleFragmentId)
         : {},
-      imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
-      imageHide: valueSelector(state, 'imageHide'),
-      imageReplace: valueSelector(state, 'imageReplace'),
-      imageCutoutReplace: valueSelector(state, 'imageCutoutReplace'),
-      showByline: valueSelector(state, 'showByline'),
-      showKickerTag: valueSelector(state, 'showKickerTag'),
-      showKickerSection: valueSelector(state, 'showKickerSection'),
+      imageSlideshowReplace: selectValue(state, 'imageSlideshowReplace'),
+      imageHide: selectValue(state, 'imageHide'),
+      imageReplace: selectValue(state, 'imageReplace'),
+      imageCutoutReplace: selectValue(state, 'imageCutoutReplace'),
+      showByline: selectValue(state, 'showByline'),
+      showKickerTag: selectValue(state, 'showKickerTag'),
+      showKickerSection: selectValue(state, 'showKickerSection'),
       cutoutImage: externalArticle
         ? getContributorImage(externalArticle)
         : undefined

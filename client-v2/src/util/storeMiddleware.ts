@@ -12,7 +12,7 @@ import { selectSharedState } from 'shared/selectors/shared';
 import { saveOpenFrontIds, saveFavouriteFrontIds } from 'services/faciaApi';
 import { NestedArticleFragment } from 'shared/types/Collection';
 import { denormaliseClipboard } from 'util/clipboardUtils';
-import { getFront } from 'selectors/frontsSelectors';
+import { selectFront } from 'selectors/frontsSelectors';
 import {
   selectEditorFrontIds,
   selectEditorFavouriteFrontIds
@@ -233,7 +233,7 @@ const persistOpenFrontsOnEdit: (
   // Only persist fronts that exist in the state, clearing out
   // fronts that have been deleted.
   const filteredFrontIdsByPriority = mapValues(frontIdsByPriority, frontIds =>
-    frontIds.filter(frontId => !!getFront(state, { frontId }))
+    frontIds.filter(frontId => !!selectFront(state, { frontId }))
   );
   // Now they're in the state, persist the relevant front ids.
   persistFrontIds(filteredFrontIdsByPriority);

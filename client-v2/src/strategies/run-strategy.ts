@@ -1,5 +1,5 @@
 import { State } from 'types/State';
-import { getV2SubPath } from 'selectors/pathSelectors';
+import { selectV2SubPath } from 'selectors/pathSelectors';
 import { matchFrontsEditPath, matchIssuePath } from 'routes/routes';
 
 interface StrategyMap<R> {
@@ -9,7 +9,7 @@ interface StrategyMap<R> {
 }
 
 const runStrategy = <R>(state: State, strategies: StrategyMap<R>) => {
-  const path = getV2SubPath(state);
+  const path = selectV2SubPath(state);
 
   const frontsMatch = matchFrontsEditPath(path);
   if (frontsMatch) {

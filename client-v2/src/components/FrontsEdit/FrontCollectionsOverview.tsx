@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { styled } from 'constants/theme';
 import { State } from 'types/State';
-import { getFront } from 'selectors/frontsSelectors';
+import { selectFront } from 'selectors/frontsSelectors';
 import { FrontConfig } from 'types/FaciaApi';
 import CollectionOverview from './CollectionOverview';
 import { CollectionItemSets } from 'shared/types/Collection';
@@ -68,7 +68,7 @@ const FrontCollectionsOverview = ({
 );
 
 const mapStateToProps = (state: State, props: FrontContainerProps) => ({
-  front: getFront(state, { frontId: props.id })
+  front: selectFront(state, { frontId: props.id })
 });
 
 export default connect(mapStateToProps)(FrontCollectionsOverview);

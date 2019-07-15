@@ -9,7 +9,7 @@ import ArticleDrag, {
   dragOffsetY
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone from 'components/DropZone';
-import { createSupportingArticlesSelector } from 'shared/selectors/shared';
+import { createSelectSupportingArticles } from 'shared/selectors/shared';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
 
 interface OuterProps {
@@ -77,9 +77,9 @@ const ArticleFragmentLevel = ({
 );
 
 const createMapStateToProps = () => {
-  const supportingArticlesSelector = createSupportingArticlesSelector();
+  const selectSupportingArticles = createSelectSupportingArticles();
   return (state: State, { articleFragmentId }: OuterProps) => ({
-    supporting: supportingArticlesSelector(state, { articleFragmentId })
+    supporting: selectSupportingArticles(state, { articleFragmentId })
   });
 };
 

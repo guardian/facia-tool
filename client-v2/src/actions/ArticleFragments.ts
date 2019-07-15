@@ -12,9 +12,9 @@ import {
 import { ArticleFragment } from 'shared/types/Collection';
 import {
   selectSharedState,
-  articleFragmentsSelector,
-  articleFragmentSelector,
-  articleGroupSelector
+  selectArticleFragments,
+  selectArticleFragment,
+  selectArticleGroup
 } from 'shared/selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/storeMiddleware';
@@ -32,11 +32,11 @@ import {
 import { State } from 'types/State';
 import { startConfirmModal } from './ConfirmModal';
 import { capGroupSiblings } from 'shared/actions/Groups';
-import { collectionCapSelector } from 'selectors/configSelectors';
+import { selectCollectionCap } from 'selectors/configSelectors';
 import { getImageMetaFromValidationResponse } from 'util/form';
 import { ValidationResponse } from 'shared/util/validateImageSrc';
 import { MappableDropType } from 'util/collectionUtils';
-import { willCollectionHitCollectionCapSelector } from 'selectors/collectionSelectors';
+import { selectWillCollectionHitCollectionCap } from 'selectors/collectionSelectors';
 import { batchActions } from 'redux-batched-actions';
 
 type InsertActionCreator = (
@@ -104,9 +104,9 @@ const maybeInsertGroupArticleFragment = (
     // require a modal!
     const state = getState();
 
-    const collectionCap = collectionCapSelector(state);
+    const collectionCap = selectCollectionCap(state);
 
-    const willCollectionHitCollectionCap = willCollectionHitCollectionCapSelector(
+    const willCollectionHitCollectionCap = selectWillCollectionHitCollectionCap(
       state,
       id,
       index,
@@ -273,7 +273,7 @@ const removeArticleFragment = (
       }
       // The article fragment may belong to an orphaned group -
       // we need to find the actual group the article fragment belongs to
-      const idFromState = articleGroupSelector(
+      const idFromState = selectArticleGroup(
         selectSharedState(getState()),
         id,
         articleFragmentId
@@ -333,7 +333,7 @@ const moveArticleFragment = (
       // if from is not null then assume we're copying a moved article fragment
       // into this new position
       const { parent, supporting } = !fromWithRespectToState
-        ? cloneFragment(fragment, articleFragmentsSelector(sharedState))
+        ? cloneFragment(fragment, selectArticleFragments(sharedState))
         : { parent: fragment, supporting: [] };
 
       if (toWithRespectToState) {
@@ -362,10 +362,7 @@ const cloneArticleFragmentToTarget = (
 ): ThunkResult<void> => {
   return (dispatch, getState) => {
     const to = { id: toType, type: toType, index: 0 };
-    const fragment = articleFragmentSelector(
-      selectSharedState(getState()),
-      uuid
-    );
+    const fragment = selectArticleFragment(selectSharedState(getState()), uuid);
     const from = null;
     dispatch(moveArticleFragment(to, fragment, from, toType));
   };

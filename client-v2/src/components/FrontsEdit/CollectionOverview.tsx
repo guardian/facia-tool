@@ -5,7 +5,7 @@ import { events } from 'services/GA';
 
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
-import { hasUnpublishedChangesSelector } from 'selectors/frontsSelectors';
+import { selectHasUnpublishedChanges } from 'selectors/frontsSelectors';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 
 import { Collection, CollectionItemSets } from 'shared/types/Collection';
@@ -13,9 +13,9 @@ import { createCollectionId } from 'shared/components/Collection';
 import ButtonDefault from 'shared/components/input/ButtonCircular';
 
 import {
-  createCollectionSelector,
+  createSelectCollection,
   selectSharedState,
-  createArticlesInCollectionSelector
+  createSelectArticlesInCollection
 } from 'shared/selectors/shared';
 
 interface FrontCollectionOverviewContainerProps {
@@ -146,19 +146,19 @@ const CollectionOverview = ({
   ) : null;
 
 const mapStateToProps = () => {
-  const collectionSelector = createCollectionSelector();
-  const articlesInCollectionSelector = createArticlesInCollectionSelector();
+  const selectCollection = createSelectCollection();
+  const selectArticlesInCollection = createSelectArticlesInCollection();
 
   return (state: State, props: FrontCollectionOverviewContainerProps) => ({
-    collection: collectionSelector(selectSharedState(state), {
+    collection: selectCollection(selectSharedState(state), {
       collectionId: props.collectionId
     }),
-    articleCount: articlesInCollectionSelector(selectSharedState(state), {
+    articleCount: selectArticlesInCollection(selectSharedState(state), {
       collectionSet: props.browsingStage,
       collectionId: props.collectionId,
       includeSupportingArticles: false
     }).length,
-    hasUnpublishedChanges: hasUnpublishedChangesSelector(state, {
+    hasUnpublishedChanges: selectHasUnpublishedChanges(state, {
       collectionId: props.collectionId
     })
   });

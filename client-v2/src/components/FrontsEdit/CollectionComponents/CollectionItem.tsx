@@ -3,10 +3,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Article from 'shared/components/article/Article';
 import { State } from 'types/State';
-import { createCollectionItemTypeSelector } from 'shared/selectors/collectionItem';
+import { createSelectCollectionItemType } from 'shared/selectors/collectionItem';
 import {
   selectSharedState,
-  articleFragmentSelector
+  selectArticleFragment
 } from 'shared/selectors/shared';
 import collectionItemTypes from 'shared/constants/collectionItemTypes';
 import {
@@ -178,13 +178,13 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
 }
 
 const createMapStateToProps = () => {
-  const selectType = createCollectionItemTypeSelector();
+  const selectType = createSelectCollectionItemType();
   return (state: State, props: ContainerProps) => {
     const selectedArticleFragmentData = selectEditorArticleFragment(
       state,
       props.frontId
     );
-    const maybeArticle = articleFragmentSelector(
+    const maybeArticle = selectArticleFragment(
       selectSharedState(state),
       props.uuid
     );

@@ -1,9 +1,9 @@
 import { selectors } from 'shared/bundles/collectionsBundle';
 import {
   selectSharedState,
-  createArticleFromArticleFragmentSelector
+  createSelectArticleFromArticleFragment
 } from 'shared/selectors/shared';
-import { getCollectionConfig } from 'selectors/frontsSelectors';
+import { selectCollectionConfig } from 'selectors/frontsSelectors';
 import { hasMainVideo } from 'shared/util/derivedArticle';
 import { isCollectionConfigDynamic } from '../util/frontsUtils';
 import { createSelector } from 'reselect';
@@ -46,11 +46,11 @@ const selectParentCollectionConfig = (
     selectSharedState(state),
     articleFragmentId
   );
-  return collectionId ? getCollectionConfig(state, collectionId) : undefined;
+  return collectionId ? selectCollectionConfig(state, collectionId) : undefined;
 };
 
 export const createSelectFormFieldsForCollectionItem = () => {
-  const selectDerivedArticle = createArticleFromArticleFragmentSelector();
+  const selectDerivedArticle = createSelectArticleFromArticleFragment();
   const selectDerivedArticleFromRootState = (state: State, id: string) =>
     selectDerivedArticle(selectSharedState(state), id);
   return createSelector(

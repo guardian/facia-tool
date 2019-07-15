@@ -15,7 +15,10 @@ import { frontStages } from 'constants/fronts';
 import { FrontConfig } from 'types/FaciaApi';
 import { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
-import { getFront, createAlsoOnSelector } from 'selectors/frontsSelectors';
+import {
+  selectFront,
+  createSelectAlsoOnFronts
+} from 'selectors/frontsSelectors';
 import Front from './Front';
 import SectionHeader from '../layout/SectionHeader';
 import SectionContent from '../layout/SectionContent';
@@ -196,10 +199,10 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
 }
 
 const createMapStateToProps = () => {
-  const alsoOnSelector = createAlsoOnSelector();
+  const selectAlsoOnFronts = createSelectAlsoOnFronts();
   return (state: State, props: FrontsContainerProps) => ({
-    selectedFront: getFront(state, { frontId: props.frontId }),
-    alsoOn: alsoOnSelector(state, { frontId: props.frontId }),
+    selectedFront: selectFront(state, { frontId: props.frontId }),
+    alsoOn: selectAlsoOnFronts(state, { frontId: props.frontId }),
     isOverviewOpen: selectIsFrontOverviewOpen(state, props.frontId),
     isFormOpen: !!selectEditorArticleFragment(state, props.frontId)
   });

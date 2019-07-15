@@ -2,8 +2,8 @@ import { Action } from '../types/Action';
 import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
 import { State } from './sharedReducer';
 import {
-  articleFragmentsSelector,
-  groupSiblingsSelector
+  selectArticleFragments,
+  selectGroupSiblings
 } from 'shared/selectors/shared';
 import { capGroupArticleFragments } from 'shared/util/capGroupArticleFragments';
 import keyBy from 'lodash/keyBy';
@@ -15,8 +15,8 @@ const getUpdatedSiblingGroupsForInsertion = (
   insertionIndex: number,
   articleFragmentId: string
 ) => {
-  const articleFragmentsMap = articleFragmentsSelector(sharedState);
-  const groupSiblings = groupSiblingsSelector(sharedState, insertionGroupId);
+  const articleFragmentsMap = selectArticleFragments(sharedState);
+  const groupSiblings = selectGroupSiblings(sharedState, insertionGroupId);
 
   if (!articleFragmentsMap[articleFragmentId]) {
     // this may have happened if we've purged after a poll
@@ -82,7 +82,7 @@ const groups = (
     }
     case 'SHARED/CAP_GROUP_SIBLINGS': {
       const { id, collectionCap } = action.payload;
-      const groupSiblings = groupSiblingsSelector(prevSharedState, id);
+      const groupSiblings = selectGroupSiblings(prevSharedState, id);
       const cappedSiblings = keyBy(
         capGroupArticleFragments(groupSiblings, collectionCap),
         ({ uuid }) => uuid

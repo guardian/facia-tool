@@ -1,7 +1,7 @@
 import { Action } from 'types/Action';
 import { insertAndDedupeSiblings } from 'shared/util/insertAndDedupeSiblings';
 import { State as SharedState } from '../shared/types/State';
-import { articleFragmentsSelector } from 'shared/selectors/shared';
+import { selectArticleFragments } from 'shared/selectors/shared';
 import {
   INSERT_CLIPBOARD_ARTICLE_FRAGMENT,
   REMOVE_CLIPBOARD_ARTICLE_FRAGMENT,
@@ -28,7 +28,7 @@ const clipboard = (
         state,
         [action.payload.articleFragmentId],
         action.payload.index,
-        articleFragmentsSelector(prevSharedState)
+        selectArticleFragments(prevSharedState)
       );
     }
 

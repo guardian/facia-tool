@@ -17,7 +17,7 @@ import { State } from '../../types/State';
 
 import {
   selectSharedState,
-  createArticlesInCollectionSelector
+  createSelectArticlesInCollection
 } from '../selectors/shared';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 import FadeIn from './animation/FadeIn';
@@ -315,7 +315,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 }
 
 const createMapStateToProps = () => {
-  const selectArticlesInCollection = createArticlesInCollectionSelector();
+  const selectArticlesInCollection = createSelectArticlesInCollection();
   return (state: State, props: ContainerProps) => {
     const sharedState = props.selectSharedState
       ? props.selectSharedState(state)
