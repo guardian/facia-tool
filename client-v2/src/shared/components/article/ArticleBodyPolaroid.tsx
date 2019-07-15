@@ -68,9 +68,11 @@ const ArticlePolaroidComponent = ({
           </>
         ) : (
           <>
-            <PillaredSection pillar={pillarId} isLive={isLive}>
-              {articleLabel}
-            </PillaredSection>
+            {articleLabel && (
+              <PillaredSection pillar={pillarId} isLive={isLive}>
+                {articleLabel} &nbsp;
+              </PillaredSection>
+            )}
             <HeadlinePolaroidSpan>{headline}</HeadlinePolaroidSpan>
           </>
         )}
