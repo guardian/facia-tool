@@ -16,11 +16,8 @@ class V2App(isDev: Boolean, val acl: Acl, dynamo: Dynamo, val deps: BaseFaciaCon
 
   import model.UserData._
 
-  def index(priority: String = "", frontId: String = "") = getCollectionPermissionFilterByPriority(priority, acl)(ec) { implicit req =>
-
+  def index(priority: String = "", jsFileName: String = "dist/app.bundle.js") = getCollectionPermissionFilterByPriority(priority, acl)(ec) { implicit req =>
     val userDataTable = Table[UserData](config.faciatool.userDataTable)
-
-    val jsFileName = "dist/app.bundle.js"
     val faviconDirectoryName = "favicon/"
 
     val jsLocation: String = routes.V2Assets.at(jsFileName).toString
@@ -73,5 +70,4 @@ class V2App(isDev: Boolean, val acl: Acl, dynamo: Dynamo, val deps: BaseFaciaCon
       Json.toJson(conf).toString()
     ))
   }
-
 }

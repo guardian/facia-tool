@@ -95,8 +95,11 @@ GET         /troubleshoot                            controllers.TroubleshootCon
 GET         /troubleshoot/*section                   controllers.TroubleshootController.troubleshoot(section)
 
 # React App
-GET         /v2                                      controllers.V2App.index(path="")
-GET         /v2/*path                                controllers.V2App.index(path)
+GET         /v2                                      controllers.V2App.index(path: String = "", jsFileName: String = "dist/app.bundle.js")
+GET         /v2/*path                                controllers.V2App.index(path: String, jsFileName: String = "dist/app.bundle.js")
+
+GET         /v2-prototype                            controllers.V2App.index(path="", jsFileName="dist-prototype/app.bundle.js")
+GET         /v2-prototype/*path                      controllers.V2App.index(path, jsFileName="dist-prototype/app.bundle.js")
 
 # Grid Usages
 POST        /api/usage                               controllers.GridProxy.addUsage()

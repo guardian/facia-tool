@@ -31,6 +31,7 @@ javascriptV2() {
     yarn lint
     yarn test
     yarn run build
+    yarn run build-prototype
     yarn test-integration-ci
 
     popd
