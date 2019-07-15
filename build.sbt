@@ -62,6 +62,7 @@ val awsVersion = "1.11.293"
 val capiModelsVersion = "14.1"
 val capiClientVersion = "14.3"
 val json4sVersion = "3.6.0-M2"
+val enumeratumPlayVersion = "1.5.13"
 
 resolvers ++= Seq(
     Resolver.file("Local", file( Path.userHome.absolutePath + "/.ivy2/local"))(Resolver.ivyStylePatterns),
@@ -109,7 +110,9 @@ libraryDependencies ++= Seq(
     "org.postgresql"           %  "postgresql"                   % "42.2.5",
     "org.scalikejdbc"          %% "scalikejdbc"                  % "3.1.0",
     "org.scalikejdbc"          %% "scalikejdbc-config"           % "3.1.0",
-    "org.scalikejdbc"          %% "scalikejdbc-play-initializer" % "2.6.0-scalikejdbc-3.1"
+    "org.scalikejdbc"          %% "scalikejdbc-play-initializer" % "2.6.0-scalikejdbc-3.1",
+    "com.beachape" %% "enumeratum" % enumeratumPlayVersion,
+    "com.beachape" %% "enumeratum-play" % enumeratumPlayVersion
 )
 
 val editionsCommon = (project in file("./editions-common"))

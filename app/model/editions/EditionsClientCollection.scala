@@ -1,29 +1,30 @@
 package model.editions
 
+import model.editions.client.ClientArticleMetadata
 import play.api.libs.json.Json
 
 // Ideally the frontend can be changed so we don't have this weird modelling!
 
-case class EditionsFrontendArticle(id: String, frontPublicationDate: Long, meta: Option[ArticleMetadata])
+case class EditionsClientArticle(id: String, frontPublicationDate: Long, meta: Option[ClientArticleMetadata])
 
-object EditionsFrontendArticle {
-  def fromArticle(article: EditionsArticle): EditionsFrontendArticle = {
-    EditionsFrontendArticle(
+object EditionsClientArticle {
+  def fromArticle(article: EditionsArticle): EditionsClientArticle = {
+    EditionsClientArticle(
       "internal-code/page/" + article.pageCode,
       article.addedOn,
-      article.metadata
+      article.metadata.map(ClientArticleMetadata.fromArticleMetadata)
     )
   }
-  def toArticle(article: EditionsFrontendArticle): EditionsArticle = {
+  def toArticle(article: EditionsClientArticle): EditionsArticle = {
     EditionsArticle(
       article.id.split("/").last,
       article.frontPublicationDate,
-      article.meta
+      article.meta.map(_.toArticleMetadata)
     )
   }
 }
 
-case class EditionsFrontendCollection(
+case class EditionsClientCollection(
   id: String,
   displayName: String,
   isHidden: Boolean,
@@ -31,19 +32,19 @@ case class EditionsFrontendCollection(
   updatedBy: Option[String],
   updatedEmail: Option[String],
   prefill: Option[CapiPrefillQuery],
-  items: List[EditionsFrontendArticle]
+  items: List[EditionsClientArticle]
 )
-case class EditionsFrontendCollectionWrapper(id: String, collection: EditionsFrontendCollection)
+case class EditionsFrontendCollectionWrapper(id: String, collection: EditionsClientCollection)
 
 object EditionsFrontendCollectionWrapper {
-  implicit def articleFormat = Json.format[EditionsFrontendArticle]
-  implicit def collectionFormat = Json.format[EditionsFrontendCollection]
+  implicit def articleFormat = Json.format[EditionsClientArticle]
+  implicit def collectionFormat = Json.format[EditionsClientCollection]
   implicit def collectionWrapperFormat = Json.format[EditionsFrontendCollectionWrapper]
 
   def fromCollection(collection: EditionsCollection): EditionsFrontendCollectionWrapper = {
     EditionsFrontendCollectionWrapper(
       collection.id,
-      EditionsFrontendCollection(
+      EditionsClientCollection(
         collection.id,
         collection.displayName,
         collection.isHidden,
@@ -51,7 +52,7 @@ object EditionsFrontendCollectionWrapper {
         collection.updatedBy,
         collection.updatedEmail,
         collection.prefill,
-        collection.items.map(EditionsFrontendArticle.fromArticle)
+        collection.items.map(EditionsClientArticle.fromArticle)
       )
     )
   }
@@ -65,7 +66,7 @@ object EditionsFrontendCollectionWrapper {
       frontendCollection.collection.updatedBy,
       frontendCollection.collection.updatedEmail,
       frontendCollection.collection.prefill,
-      frontendCollection.collection.items.map(EditionsFrontendArticle.toArticle)
+      frontendCollection.collection.items.map(EditionsClientArticle.toArticle)
     )
   }
 }

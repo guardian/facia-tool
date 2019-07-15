@@ -4,13 +4,32 @@ import com.gu.editions.{PublishedArticle, PublishedFurniture}
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
-case class ArticleMetadata(
+case class Image (
+  height: String,
+  width: String,
+  origin: String,
+  src: String,
+  thumb: Option[String] = None
+)
+
+object Image{
+  implicit val format = Json.format[Image]
+}
+
+case class ArticleMetadata (
   headline: Option[String],
   customKicker: Option[String],
   trailText: Option[String],
   showQuotedHeadline: Option[Boolean],
   showByline: Option[Boolean],
   byline: Option[String],
+
+  imageOption: Option[ImageOption],
+
+  // keep overrides even if not used so user can switch back w/out needing to re-crop
+  cutoutImage: Option[Image],
+  replaceImage: Option[Image],
+  slideshowImages: Option[List[Image]]
 )
 
 object ArticleMetadata {
