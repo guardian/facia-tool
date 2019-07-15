@@ -48,7 +48,7 @@ export const scJohnsonPartnerZoneCollection = [
   null
 ];
 
-export const getCollectionsThunkFaciaApiResponse = [
+export const getCollectionsApiResponse = [
   {
     id: 'testCollection1',
     collection: {
@@ -78,5 +78,20 @@ export const getCollectionsThunkFaciaApiResponse = [
       live: { desktop: 4, mobile: 4 },
       draft: { desktop: 4, mobile: 4 }
     }
+  }
+];
+
+export const getCollectionsApiResponseWithoutStoriesVisible = [
+  {
+    id: 'testCollection1',
+    collection: {
+      displayName: 'testCollection1',
+      live: ['abc', 'def'],
+      draft: [],
+      lastUpdated: 1547479667115,
+      previously: undefined,
+      type: 'type'
+    },
+    storiesVisibleByStage: {}
   }
 ];

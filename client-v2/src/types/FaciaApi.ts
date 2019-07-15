@@ -90,8 +90,8 @@ interface CollectionResponse {
   id: string;
   collection: CollectionFromResponse;
   storiesVisibleByStage: {
-    live: VisibleArticlesResponse;
-    draft: VisibleArticlesResponse;
+    live?: VisibleArticlesResponse;
+    draft?: VisibleArticlesResponse;
   };
 }
 

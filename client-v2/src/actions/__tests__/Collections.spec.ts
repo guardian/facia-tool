@@ -4,7 +4,10 @@ import thunk from 'redux-thunk';
 import fetchMock from 'fetch-mock';
 import config from 'fixtures/config';
 import { stateWithCollection, capiArticle } from 'shared/fixtures/shared';
-import { getCollectionsThunkFaciaApiResponse } from 'fixtures/collectionsEndpointResponse';
+import {
+  getCollectionsApiResponse,
+  getCollectionsApiResponseWithoutStoriesVisible
+} from 'fixtures/collectionsEndpointResponse';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import {
   actions as externalArticleActions,
@@ -16,6 +19,10 @@ import {
   updateCollection,
   fetchArticles
 } from '../Collections';
+import {
+  createSelectCollection,
+  selectSharedState
+} from 'shared/selectors/shared';
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
@@ -83,7 +90,7 @@ describe('Collection actions', () => {
 
     it('should add fetched Collections to the store', async () => {
       const collectionIds = ['testCollection1', 'testCollection2'];
-      fetchMock.post('/collections', getCollectionsThunkFaciaApiResponse);
+      fetchMock.post('/collections', getCollectionsApiResponse);
       await store.dispatch(getCollections(collectionIds) as any);
       expect(store.getState().shared.collections.data).toEqual({
         exampleCollection: {
@@ -193,10 +200,7 @@ describe('Collection actions', () => {
     });
     it('should send only collection id and type in request body when returnOnlyUpdatedCollection is false or default', async () => {
       const collectionIds = ['testCollection1', 'testCollection2'];
-      const request = fetchMock.post(
-        '/collections',
-        getCollectionsThunkFaciaApiResponse
-      );
+      const request = fetchMock.post('/collections', getCollectionsApiResponse);
       await store.dispatch(getCollections(collectionIds) as any);
       const result = request.lastOptions().body;
       expect(JSON.parse(result as string)).toEqual([
@@ -204,12 +208,22 @@ describe('Collection actions', () => {
         { id: 'testCollection2' }
       ]);
     });
+    it('should handle an empty storiesVisibleByStage object in the server response', async () => {
+      const collectionIds = ['testCollection1'];
+      fetchMock.post(
+        '/collections',
+        getCollectionsApiResponseWithoutStoriesVisible
+      );
+      await store.dispatch(getCollections(collectionIds) as any);
+      const selector = createSelectCollection();
+      const sharedState = selectSharedState(store.getState());
+      expect(
+        selector(sharedState, { collectionId: 'testCollection1' }).displayName
+      ).toEqual('testCollection');
+    });
     it('should send collection id, type and lastUpdated in request body when returnOnlyUpdatedCollection is true', async () => {
       const collectionIds = ['testCollection1', 'testCollection2'];
-      const request = fetchMock.post(
-        '/collections',
-        getCollectionsThunkFaciaApiResponse
-      );
+      const request = fetchMock.post('/collections', getCollectionsApiResponse);
       await store.dispatch(getCollections(collectionIds, true) as any);
       const result = request.lastOptions().body;
       expect(JSON.parse(result as string)).toEqual([
@@ -223,10 +237,7 @@ describe('Collection actions', () => {
         'testCollection2',
         'automatedCollection'
       ];
-      const request = fetchMock.post(
-        '/collections',
-        getCollectionsThunkFaciaApiResponse
-      );
+      const request = fetchMock.post('/collections', getCollectionsApiResponse);
       await store.dispatch(getCollections(collectionIds, true) as any);
       const result = request.lastOptions().body;
       expect(JSON.parse(result as string)).toEqual([
