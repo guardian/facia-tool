@@ -162,22 +162,32 @@ function getCollectionActions(
     collectionConfig
   );
 
-  return [
+  const actions = [
     collectionActions.fetchSuccess(normalisedCollection),
     articleFragmentsReceived(articleFragments),
     recordUnpublishedChanges(collection.id, hasUnpublishedChanges),
-    groupsReceived(groups),
-    recordVisibleArticles(
-      collection.id,
-      storiesVisibleByStage.live,
-      frontStages.live
-    ),
-    recordVisibleArticles(
-      collection.id,
-      storiesVisibleByStage.draft,
-      frontStages.draft
-    )
+    groupsReceived(groups)
   ];
+
+  if (storiesVisibleByStage.live) {
+    actions.push(
+      recordVisibleArticles(
+        collection.id,
+        storiesVisibleByStage.live,
+        frontStages.live
+      )
+    );
+  }
+  if (storiesVisibleByStage.draft) {
+    actions.push(
+      recordVisibleArticles(
+        collection.id,
+        storiesVisibleByStage.draft,
+        frontStages.draft
+      )
+    );
+  }
+  return actions;
 }
 
 function getCollections(
