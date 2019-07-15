@@ -422,9 +422,7 @@ function publishCollection(
 
         return new Promise(resolve => setTimeout(resolve, 10000))
           .then(() => {
-            const [params] = selectCollectionParams(getState(), [
-              collectionId
-            ]);
+            const [params] = selectCollectionParams(getState(), [collectionId]);
             return Promise.all([
               getCollectionApi(params),
               fetchLastPressedApi(frontId)

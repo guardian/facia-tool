@@ -15,7 +15,10 @@ import { frontStages } from 'constants/fronts';
 import { FrontConfig } from 'types/FaciaApi';
 import { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
-import { selectFront, createSelectAlsoOnFronts } from 'selectors/frontsSelectors';
+import {
+  selectFront,
+  createSelectAlsoOnFronts
+} from 'selectors/frontsSelectors';
 import Front from './Front';
 import SectionHeader from '../layout/SectionHeader';
 import SectionContent from '../layout/SectionContent';

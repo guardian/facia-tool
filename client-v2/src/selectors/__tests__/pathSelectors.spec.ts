@@ -10,7 +10,9 @@ describe('pathSelectors', () => {
   });
   describe('getV2SubPath', () => {
     it('gets the path below /v2', () => {
-      expect(selectV2SubPath({ path: '/v2/test/path' } as any)).toBe('/test/path');
+      expect(selectV2SubPath({ path: '/v2/test/path' } as any)).toBe(
+        '/test/path'
+      );
     });
 
     it('returns the full path if not in a /v2 root path', () => {

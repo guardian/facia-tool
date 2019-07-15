@@ -26,7 +26,10 @@ import {
 } from 'types/Action';
 import { State as GlobalState } from 'types/State';
 import { events } from 'services/GA';
-import { selectFronts, selectFrontsWithPriority } from 'selectors/frontsSelectors';
+import {
+  selectFronts,
+  selectFrontsWithPriority
+} from 'selectors/frontsSelectors';
 import { createSelector } from 'reselect';
 import {
   REMOVE_GROUP_ARTICLE_FRAGMENT,

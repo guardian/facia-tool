@@ -362,10 +362,7 @@ const cloneArticleFragmentToTarget = (
 ): ThunkResult<void> => {
   return (dispatch, getState) => {
     const to = { id: toType, type: toType, index: 0 };
-    const fragment = selectArticleFragment(
-      selectSharedState(getState()),
-      uuid
-    );
+    const fragment = selectArticleFragment(selectSharedState(getState()), uuid);
     const from = null;
     dispatch(moveArticleFragment(to, fragment, from, toType));
   };

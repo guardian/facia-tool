@@ -142,4 +142,7 @@ const selectNextIndexAndGroup = (
   return null;
 };
 
-export { selectNextIndexAndGroup, selectNextClipboardIndex as selectNextClipboardIndexSelector };
+export {
+  selectNextIndexAndGroup,
+  selectNextClipboardIndex as selectNextClipboardIndexSelector
+};

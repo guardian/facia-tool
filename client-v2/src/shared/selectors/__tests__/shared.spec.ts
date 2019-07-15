@@ -525,9 +525,10 @@ describe('Shared selectors', () => {
 
   describe('groupSiblingsSelector', () => {
     it('selects the sibling groups of a given group id', () => {
-      expect(
-        selectGroupSiblings(state, 'g1').map(({ uuid }) => uuid)
-      ).toEqual(['g1', 'g2']);
+      expect(selectGroupSiblings(state, 'g1').map(({ uuid }) => uuid)).toEqual([
+        'g1',
+        'g2'
+      ]);
     });
   });
 });

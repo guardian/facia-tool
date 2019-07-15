@@ -3,10 +3,7 @@ import {
   selectNextIndexAndGroup,
   selectNextClipboardIndexSelector
 } from '../selectors/keyboardNavigationSelectors';
-import {
-  selectSharedState,
-  selectIndexInGroup
-} from 'shared/selectors/shared';
+import { selectSharedState, selectIndexInGroup } from 'shared/selectors/shared';
 import { ArticleFragment } from 'shared/types/Collection';
 import { PosSpec } from 'lib/dnd';
 import { ThunkResult, Dispatch } from 'types/Store';
@@ -65,7 +62,11 @@ const keyboardArticleFragmentMove = (
         );
       }
     } else if (persistTo === 'clipboard') {
-      const clipboardIndeces = selectNextClipboardIndexSelector(state, id, action);
+      const clipboardIndeces = selectNextClipboardIndexSelector(
+        state,
+        id,
+        action
+      );
       if (clipboardIndeces) {
         const { fromIndex, toIndex } = clipboardIndeces;
         const type = 'clipboard';
