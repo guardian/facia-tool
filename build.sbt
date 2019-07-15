@@ -125,9 +125,20 @@ val editionsCommon = (project in file("./editions-common"))
         )
     )
 
+val UsesDatabaseTest = config("database-int") extend Test
+
 lazy val root = (project in file("."))
     .dependsOn(editionsCommon)
     .enablePlugins(PlayScala, RiffRaffArtifact, JDebPackaging, SystemdPlugin)
+    .configs(UsesDatabaseTest)
+    .settings(inConfig(UsesDatabaseTest)(Defaults.testTasks): _*)
+    .settings(testOptions in UsesDatabaseTest := Seq(
+        Tests.Argument(TestFrameworks.ScalaTest, "-n","fixtures.UsesDatabase"))
+    )
+    // We exclude in other tests
+    .settings(testOptions in Test := Seq(
+        Tests.Argument(TestFrameworks.ScalaTest, "-l", "fixtures.UsesDatabase"))
+    )
 
 
 
