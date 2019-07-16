@@ -14,6 +14,7 @@ import {
 import { withRouter, RouteComponentProps } from 'react-router';
 import Spinner from 'shared/components/async/Spinner';
 import InformationMsg from 'shared/components/alert/InformationMsg';
+import urls from 'constants/urls';
 
 interface ManageEditionState {
   date: Moment | null;
@@ -107,7 +108,10 @@ class ManageEdition extends React.Component<
         <IssueContainer>
           <Issue issue={this.state.currentIssue!} />
         </IssueContainer>
-        <LinkButton size="l" href={`/v2/issues/${this.state.currentIssue!.id}`}>
+        <LinkButton
+          size="l"
+          href={`/${urls.appRoot}/issues/${this.state.currentIssue!.id}`}
+        >
           Open
         </LinkButton>
       </>
