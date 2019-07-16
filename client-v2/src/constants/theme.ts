@@ -14,7 +14,9 @@ const base = {
     dropZone: '#D6D6D6',
     frontListBorder: '#5E5E5E',
     frontListLabel: shared.colors.greyMediumLight,
-    frontListButton: shared.colors.greyDark
+    frontListButton: shared.colors.greyDark,
+    dropZoneActiveSublink: '#36842A',
+    dropZoneActiveStory: '#117ABB'
   }
 };
 

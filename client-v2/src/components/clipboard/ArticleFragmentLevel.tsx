@@ -8,9 +8,13 @@ import ArticleDrag, {
   dragOffsetX,
   dragOffsetY
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
-import DropZone from 'components/DropZone';
+import DropZone, {
+  DefaultDropContainer,
+  DefaultDropIndicator
+} from 'components/DropZone';
 import { createSelectSupportingArticles } from 'shared/selectors/shared';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
+import { theme, styled } from 'constants/theme';
 
 interface OuterProps {
   articleFragmentId: string;
@@ -26,6 +30,24 @@ interface InnerProps {
 }
 
 type Props = OuterProps & InnerProps;
+
+const ArticleFragmentDropContainer = styled(DefaultDropContainer)`
+  margin-top: -30px;
+  margin-left: 80px;
+  height: 30px;
+`;
+
+const PolaroidArticleFragmentDropContainer = styled(DefaultDropContainer)`
+  margin-top: -30px;
+  height: 30px;
+  margin-left: 20px;
+`;
+
+const ArticleFragmentDropIndicator = styled(DefaultDropIndicator)`
+  position: absolute;
+  width: 100%;
+  bottom: 0px;
+`;
 
 const ArticleFragmentLevel = ({
   children,
@@ -57,17 +79,14 @@ const ArticleFragmentLevel = ({
               {...props}
               disabled={!isActive}
               override={isTarget}
-              dropColor="hsl(0, 0%, 64%)"
-              style={{
-                marginTop: '-30px',
-                height: '30px'
-              }}
-              indicatorStyle={{
-                marginLeft: `${displayType === 'default' ? '80px' : '20px'}`,
-                marginRight: `${displayType === 'default' ? '130px' : 0}`,
-                top: '66%',
-                height: '33%'
-              }}
+              dropColor={theme.base.colors.dropZoneActiveSublink}
+              dropMessage={'Sublink'}
+              dropContainer={
+                displayType === 'default'
+                  ? ArticleFragmentDropContainer
+                  : PolaroidArticleFragmentDropContainer
+              }
+              dropIndicator={ArticleFragmentDropIndicator}
             />
           )
     }
@@ -84,4 +103,3 @@ const createMapStateToProps = () => {
 };
 
 export default connect(createMapStateToProps)(ArticleFragmentLevel);
-//

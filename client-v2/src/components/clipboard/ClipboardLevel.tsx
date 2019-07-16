@@ -10,7 +10,8 @@ import ArticleDrag, {
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone from 'components/DropZone';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
+import { CollectionDropContainer } from './GroupLevel';
 
 interface OuterProps {
   children: LevelChild<ArticleFragment>;
@@ -29,6 +30,13 @@ const ClipboardItemContainer = styled.div`
   flex-direction: column;
   flex: 1;
   width: 140px;
+`;
+
+const ClipboardDropContainer = styled(CollectionDropContainer)<{
+  isLast: boolean;
+}>`
+  flex-basis: 15px;
+  flex-grow: ${({ isLast }) => (isLast ? 1 : 0)};
 `;
 
 const ClipboardLevel = ({
@@ -55,10 +63,13 @@ const ClipboardLevel = ({
         {...props}
         override={isTarget}
         disabled={!isActive}
-        style={{
-          flexBasis: '15px',
-          flexGrow: articleFragments.length === index ? 1 : 0
-        }}
+        dropColor={theme.base.colors.dropZoneActiveStory}
+        dropContainer={dropProps => (
+          <ClipboardDropContainer
+            {...dropProps}
+            isLast={articleFragments.length === index}
+          />
+        )}
       />
     )}
   >

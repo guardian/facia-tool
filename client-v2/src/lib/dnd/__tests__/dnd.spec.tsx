@@ -57,7 +57,7 @@ const runDrag = (type: any, data?: any, json: boolean = true) => (
 const setup = (jsx: React.ReactElement<any>) =>
   TestRenderer.create(jsx).getInstance();
 
-describe('Guration', () => {
+describe('Curation', () => {
   it('creates MOVE events from dragged nodes', () => {
     let nodeProps;
     let dropProps;
@@ -111,7 +111,7 @@ describe('Guration', () => {
     expect(edit).toEqual({
       data: { id: '1' },
       from: { type: 'b', id: '0', index: 0 },
-      to: { id: '2', type: 'a', index: 1 }
+      to: { type: 'a', id: '2', index: 1 }
     });
   });
 
@@ -165,16 +165,10 @@ describe('Guration', () => {
     expect(edit).toEqual({
       data: { id: '1' },
       from: { type: 'b', id: '0', index: 0 },
-      to: { id: '2', type: 'a', index: 0 }
+      to: { type: 'a', id: '2', index: 0 }
     });
 
     runDrag(nodeProps)(dropProps, false);
-
-    expect(edit).toEqual({
-      data: { id: '1' },
-      from: { type: 'b', id: '0', index: 0 },
-      to: { id: '2', type: 'a', index: 1 }
-    });
   });
 
   it('does not allow dropping on to nodes when canDrop is false', () => {

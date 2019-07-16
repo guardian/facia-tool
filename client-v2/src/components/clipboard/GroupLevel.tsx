@@ -7,10 +7,10 @@ import ArticleDrag, {
   dragOffsetX,
   dragOffsetY
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
-import DropZone from 'components/DropZone';
+import DropZone, { DefaultDropContainer } from 'components/DropZone';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
 import { createSelectArticlesFromIds } from 'shared/selectors/shared';
-import { styled } from 'constants/theme';
+import { theme, styled } from 'constants/theme';
 
 interface OuterProps {
   groupId: string;
@@ -29,6 +29,16 @@ type Props = OuterProps & InnerProps;
 
 const Spacer = styled.div`
   margin-top: 10px;
+`;
+
+export const CollectionDropContainer = styled(DefaultDropContainer)`
+  margin: 0 -10px;
+`;
+
+const OffsetDropContainer = styled(CollectionDropContainer)`
+  height: 32px;
+  margin-top: -22px;
+  padding-top: 24px;
 `;
 
 const GroupLevel = ({
@@ -60,15 +70,10 @@ const GroupLevel = ({
               {...props}
               disabled={!isActive}
               override={isTarget}
+              dropColor={theme.base.colors.dropZoneActiveStory}
               doubleHeight={!articleFragments.length || i === 0}
-              style={
-                i === 0
-                  ? {
-                      height: '32px',
-                      marginTop: '-22px',
-                      paddingTop: '22px'
-                    }
-                  : {}
+              dropContainer={
+                i === 0 ? OffsetDropContainer : CollectionDropContainer
               }
             />
           )
