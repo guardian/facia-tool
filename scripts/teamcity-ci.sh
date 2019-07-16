@@ -31,11 +31,18 @@ javascriptV2() {
     yarn lint
     yarn test
     yarn run build
-    git checkout v2-prototype
-    yarn run build-prototype
-    git checkout -
-    yarn test-integration-ci
 
+    wget https://github.com/guardian/facia-tool/archive/v2-prototype.zip
+    tar -zxvf v2-prototype.zip
+    pushd facia-tool-2-prototype/client-v2
+    yarn
+    yarn run build-prototype
+    popd
+    mv facia-tool-2-prototype/public/client-v2/dist-prototype ../public/client-v2/dist-prototype
+    rm -r facia-tool-2-prototype
+    rm v2-prototype.zip
+
+    yarn test-integration-ci
     popd
 }
 
