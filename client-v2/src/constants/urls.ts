@@ -1,4 +1,5 @@
 export default {
   capiLiveUrl: '/api/live/',
-  capiPreviewUrl: '/api/preview/'
+  capiPreviewUrl: '/api/preview/',
+  appRoot: 'v2'
 };
