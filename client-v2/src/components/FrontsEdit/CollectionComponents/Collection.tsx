@@ -1,5 +1,5 @@
 import { Dispatch } from 'types/Store';
-import React from 'react';
+import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import CollectionDisplay from 'shared/components/Collection';
 import CollectionNotification from 'components/CollectionNotification';
@@ -10,7 +10,10 @@ import {
   discardDraftChangesToCollection,
   openCollectionsAndFetchTheirArticles
 } from 'actions/Collections';
-import { selectHasUnpublishedChanges } from 'selectors/frontsSelectors';
+import {
+  selectHasUnpublishedChanges,
+  selectCollectionHasPrefill
+} from 'selectors/frontsSelectors';
 import { selectIsCollectionLocked } from 'selectors/collectionSelectors';
 import { State } from 'types/State';
 import { CollectionItemSets, Group } from 'shared/types/Collection';
@@ -32,6 +35,8 @@ import CollectionMetaContainer from 'shared/components/collection/CollectionMeta
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import { styled } from 'constants/theme';
 import EditModeVisibility from 'components/util/EditModeVisibility';
+import { getPrefills } from 'services/editionsApi';
+import { fetchPrefill } from 'bundles/capiFeedBundle';
 
 interface CollectionPropsBeforeState {
   id: string;
@@ -62,6 +67,8 @@ type CollectionProps = CollectionPropsBeforeState & {
   hasMultipleFrontsOpen: boolean;
   onChangeOpenState: (id: string, isOpen: boolean) => void;
   fetchPreviousCollectionArticles: (id: string) => void;
+  fetchPrefill: (id: string) => void;
+  hasPrefill: boolean;
 };
 
 const PreviouslyCollectionContainer = styled('div')`
@@ -110,7 +117,9 @@ class Collection extends React.Component<CollectionProps> {
       onChangeOpenState,
       hasMultipleFrontsOpen,
       isEditFormOpen,
-      discardDraftChangesToCollection: discardDraftChanges
+      discardDraftChangesToCollection: discardDraftChanges,
+      hasPrefill,
+      fetchPrefill
     } = this.props;
 
     const { isPreviouslyOpen } = this.state;
@@ -132,35 +141,49 @@ class Collection extends React.Component<CollectionProps> {
           hasUnpublishedChanges &&
           canPublish &&
           !isEditFormOpen && (
-            <EditModeVisibility visibleMode="fronts">
-              <Button
-                size="l"
-                priority="default"
-                onClick={() => discardDraftChanges(id)}
-                tabIndex={-1}
-                data-testid="collection-discard-button"
-                title={
-                  isEditFormOpen
-                    ? 'You cannot discard changes to this collection whilst the edit form is open.'
-                    : undefined
-                }
-              >
-                Discard
-              </Button>
-              <Button
-                size="l"
-                priority="primary"
-                onClick={() => publish(id, frontId)}
-                tabIndex={-1}
-                title={
-                  isEditFormOpen
-                    ? 'You cannot launch this collection whilst the edit form is open.'
-                    : undefined
-                }
-              >
-                Launch
-              </Button>
-            </EditModeVisibility>
+            <Fragment>
+              {hasPrefill && (
+                <EditModeVisibility visibleMode="editions">
+                  <Button
+                    size="l"
+                    priority="default"
+                    onClick={() => fetchPrefill(id)}
+                    title="Get suggested articles for this collection"
+                  >
+                    Suggest Articles
+                  </Button>
+                </EditModeVisibility>
+              )}
+              <EditModeVisibility visibleMode="fronts">
+                <Button
+                  size="l"
+                  priority="default"
+                  onClick={() => discardDraftChanges(id)}
+                  tabIndex={-1}
+                  data-testid="collection-discard-button"
+                  title={
+                    isEditFormOpen
+                      ? 'You cannot discard changes to this collection whilst the edit form is open.'
+                      : undefined
+                  }
+                >
+                  Discard
+                </Button>
+                <Button
+                  size="l"
+                  priority="primary"
+                  onClick={() => publish(id, frontId)}
+                  tabIndex={-1}
+                  title={
+                    isEditFormOpen
+                      ? 'You cannot launch this collection whilst the edit form is open.'
+                      : undefined
+                  }
+                >
+                  Launch
+                </Button>
+              </EditModeVisibility>
+            </Fragment>
           )
         }
         metaContent={
@@ -210,6 +233,7 @@ const createMapStateToProps = () => {
   ) => {
     const selectDoesCollectionHaveOpenForms = createSelectDoesCollectionHaveOpenForms();
     return {
+      hasPrefill: selectCollectionHasPrefill(state, id),
       hasUnpublishedChanges: selectHasUnpublishedChanges(state, {
         collectionId
       }),
@@ -235,6 +259,7 @@ const mapDispatchToProps = (
   dispatch: Dispatch,
   { browsingStage }: CollectionPropsBeforeState
 ) => ({
+  fetchPrefill: (id: string) => dispatch(fetchPrefill(id)),
   publishCollection: (id: string, frontId: string) =>
     dispatch(publishCollection(id, frontId)),
   discardDraftChangesToCollection: (id: string) =>

@@ -2,9 +2,7 @@ package controllers
 
 import java.net.{URI, URLEncoder}
 
-import com.amazonaws.auth.profile.ProfileCredentialsProvider
-import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
-import com.gu.contentapi.client.{IAMEncoder, IAMSigner}
+import com.gu.contentapi.client.IAMEncoder
 import metrics.FaciaToolMetrics
 import model.Cached
 import play.api.libs.concurrent.Futures

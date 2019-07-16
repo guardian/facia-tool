@@ -121,8 +121,13 @@ const selectFrontsWithPriority = (
 const getCollections = (state: State): CollectionConfigMap =>
   frontsConfigSelectors.selectAll(state).collections || {};
 
-const selectCollectionConfig = (state: State, id: string): CollectionConfig =>
-  getCollections(state)[id] || null;
+const selectCollectionConfig = (
+  state: State,
+  id: string
+): CollectionConfig | null => getCollections(state)[id] || null;
+
+const selectCollectionHasPrefill = (state: State, id: string): boolean =>
+  !!(selectCollectionConfig(state, id) || { prefill: undefined }).prefill;
 
 const selectFrontsIds = createSelector(
   [selectFronts],
@@ -340,6 +345,7 @@ export {
   selectFront,
   selectFronts,
   selectCollectionConfig,
+  selectCollectionHasPrefill,
   selectFrontsConfig,
   selectCollectionConfigs,
   selectFrontsIds,

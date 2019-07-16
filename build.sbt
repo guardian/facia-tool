@@ -62,6 +62,7 @@ val capiModelsVersion = "14.1"
 val capiClientVersion = "14.3"
 val json4sVersion = "3.6.0-M2"
 val enumeratumPlayVersion = "1.5.13"
+val circeVersion = "0.11.1"
 
 resolvers ++= Seq(
     Resolver.file("Local", file( Path.userHome.absolutePath + "/.ivy2/local"))(Resolver.ivyStylePatterns),
@@ -109,6 +110,11 @@ libraryDependencies ++= Seq(
     "org.scalikejdbc"          %% "scalikejdbc"                  % "3.1.0",
     "org.scalikejdbc"          %% "scalikejdbc-config"           % "3.1.0",
     "org.scalikejdbc"          %% "scalikejdbc-play-initializer" % "2.6.0-scalikejdbc-3.1",
+
+    "io.circe"                 %% "circe-core"                   % circeVersion,
+    "io.circe"                 %% "circe-generic"                % circeVersion,
+    "io.circe"                 %% "circe-parser"                 % circeVersion,
+    
     "com.beachape" %% "enumeratum" % enumeratumPlayVersion,
     "com.beachape" %% "enumeratum-play" % enumeratumPlayVersion,
 

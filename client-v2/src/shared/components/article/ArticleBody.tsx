@@ -74,6 +74,7 @@ const ImageMetadataContainer = styled('div')`
 `;
 
 interface ArticleBodyProps {
+  newspaperEditionDate?: string;
   firstPublicationDate?: string;
   frontPublicationDate?: number;
   scheduledPublicationDate?: string;
@@ -124,6 +125,7 @@ const renderColouredQuotes = (
 
 const articleBodyDefault = React.memo(
   ({
+    newspaperEditionDate,
     firstPublicationDate,
     frontPublicationDate,
     scheduledPublicationDate,
@@ -172,7 +174,7 @@ const articleBodyDefault = React.memo(
                 {size === 'default' && <TextPlaceholder width={25} />}
               </>
             )}
-            {size === 'default' && isLive && (
+            {size === 'default' && (isLive || newspaperEditionDate) && (
               <CollectionItemMetaHeading>
                 {startCase(sectionName)}
               </CollectionItemMetaHeading>
@@ -180,7 +182,7 @@ const articleBodyDefault = React.memo(
             {type === 'liveblog' && (
               <CollectionItemMetaContent>Liveblog</CollectionItemMetaContent>
             )}
-            {!isLive && !displayPlaceholders && (
+            {!isLive && !newspaperEditionDate && !displayPlaceholders && (
               <NotLiveContainer>
                 {firstPublicationDate
                   ? notLiveLabels.takenDown

@@ -12,7 +12,9 @@ import {
   liveSelectors,
   previewSelectors,
   fetchLive,
-  fetchPreview
+  fetchPreview,
+  prefillSelectors,
+  hidePrefills
 } from 'bundles/capiFeedBundle';
 import { getTodayDate } from 'util/getTodayDate';
 import { getIdFromURL } from 'util/CAPIUtils';
@@ -26,18 +28,28 @@ import { DEFAULT_PARAMS } from 'services/faciaApi';
 import ScrollContainer from './ScrollContainer';
 import ClipboardHeader from 'components/ClipboardHeader';
 import { media } from 'shared/util/mediaQueries';
+import ContainerHeading from 'shared/components/typography/ContainerHeading';
+import { ClearIcon } from 'shared/components/icons/Icons';
+import Button from 'shared/components/input/ButtonDefault';
+import { selectIsPrefillMode } from 'selectors/feedStateSelectors';
 
 interface FeedsContainerProps {
   fetchLive: (params: object, isResource: boolean) => void;
   fetchPreview: (params: object, isResource: boolean) => void;
+  hidePrefills: () => void;
+  isPrefillMode: boolean;
   liveArticles: CapiArticle[];
   previewArticles: CapiArticle[];
+  prefillArticles: CapiArticle[];
   liveLoading: boolean;
   previewLoading: boolean;
+  prefillLoading: boolean;
   liveError: string | null;
   previewError: string | null;
+  prefillError: string | null;
   livePagination: IPagination | null;
   previewPagination: IPagination | null;
+  prefillPagination: IPagination | null;
 }
 
 interface FeedsContainerState {
@@ -128,6 +140,27 @@ const SortByContainer = styled('div')`
   > label {
     margin-right: 15px;
   }
+`;
+
+const PrefillNoticeContainer = styled('div')`
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const PrefillNotice = styled('div')`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 2;
+`;
+
+const PrefillCloseButton = styled(Button)`
+  color: #fff;
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
 `;
 
 const getCapiFieldsToShow = (isPreview: boolean) => {
@@ -239,93 +272,124 @@ class FeedsContainer extends React.Component<
     return this.state.capiFeedIndex === 0;
   }
 
-  public renderFixedContent = () => {
+  renderPrefillFixedContent = () => {
+    return (
+      <PrefillNoticeContainer>
+        <PrefillNotice>
+          <ContainerHeading>Suggested Articles</ContainerHeading>
+          <PrefillCloseButton size="l" onClick={this.props.hidePrefills}>
+            <ClearIcon size="xl" />
+          </PrefillCloseButton>
+        </PrefillNotice>
+        <ClipboardHeader />
+      </PrefillNoticeContainer>
+    );
+  };
+
+  public renderSearchFixedContent = (displaySearchFilters: boolean) => {
     const { livePagination, previewPagination } = this.props;
     const pagination = this.isLive ? livePagination : previewPagination;
     const hasPages = !!(pagination && pagination.totalPages > 1);
     return (
-      <FixedContentContainer>
-        <ResultsHeadingContainer>
-          <div>
-            <Title>
-              Latest
-              <ShortVerticalPinline />
-            </Title>
-            <RefreshButton
-              disabled={this.isLoading}
-              onClick={() => this.runSearchAndRestartPolling()}
-            >
-              {this.isLoading ? 'Loading' : 'Refresh'}
-            </RefreshButton>
-          </div>
-          <Sorters>
-            <TopOptions>
-              <RadioGroup>
-                <RadioButton
-                  checked={this.state.capiFeedIndex === 0}
-                  onChange={() => this.handleFeedClick(0)}
-                  label="Live"
-                  inline
-                  name="capiFeed"
-                />
-                <RadioButton
-                  checked={this.state.capiFeedIndex === 1}
-                  onChange={() => this.handleFeedClick(1)}
-                  label="Draft"
-                  inline
-                  name="capiFeed"
-                />
-              </RadioGroup>
-              {pagination && hasPages && (
-                <PaginationContainer>
-                  <Pagination
-                    pageChange={this.pageChange}
-                    currentPage={pagination.currentPage}
-                    totalPages={pagination.totalPages}
-                  />
-                </PaginationContainer>
-              )}
-            </TopOptions>
-            <SortByContainer>
-              <label htmlFor="sort-results">Sort by:</label>
-              <select
-                id="sort-results"
-                onChange={this.sortResultsBy}
-                value={this.state.sortByParam}
-              >
-                <option value="first-publication">First published</option>
-                <option value="published">Latest published</option>
-              </select>
-            </SortByContainer>
-          </Sorters>
-        </ResultsHeadingContainer>
-      </FixedContentContainer>
+      <React.Fragment>
+        <SearchInput
+          updateDisplaySearchFilters={this.updateDisplaySearchFilters}
+          displaySearchFilters={this.state.displaySearchFilters}
+          onUpdate={this.handleParamsUpdate}
+          showReviewSearch={false}
+          rightHandContainer={<ClipboardHeader />}
+        />
+        {!displaySearchFilters && (
+          <FixedContentContainer>
+            <ResultsHeadingContainer>
+              <div>
+                <Title>
+                  Latest
+                  <ShortVerticalPinline />
+                </Title>
+                <RefreshButton
+                  disabled={this.isLoading}
+                  onClick={() => this.runSearchAndRestartPolling()}
+                >
+                  {this.isLoading ? 'Loading' : 'Refresh'}
+                </RefreshButton>
+              </div>
+              <Sorters>
+                <TopOptions>
+                  <RadioGroup>
+                    <RadioButton
+                      checked={this.state.capiFeedIndex === 0}
+                      onChange={() => this.handleFeedClick(0)}
+                      label="Live"
+                      inline
+                      name="capiFeed"
+                    />
+                    <RadioButton
+                      checked={this.state.capiFeedIndex === 1}
+                      onChange={() => this.handleFeedClick(1)}
+                      label="Draft"
+                      inline
+                      name="capiFeed"
+                    />
+                  </RadioGroup>
+                  {pagination && hasPages && (
+                    <PaginationContainer>
+                      <Pagination
+                        pageChange={this.pageChange}
+                        currentPage={pagination.currentPage}
+                        totalPages={pagination.totalPages}
+                      />
+                    </PaginationContainer>
+                  )}
+                </TopOptions>
+                <SortByContainer>
+                  <label htmlFor="sort-results">Sort by:</label>
+                  <select
+                    id="sort-results"
+                    onChange={this.sortResultsBy}
+                    value={this.state.sortByParam}
+                  >
+                    <option value="first-publication">First published</option>
+                    <option value="published">Latest published</option>
+                  </select>
+                </SortByContainer>
+              </Sorters>
+            </ResultsHeadingContainer>
+          </FixedContentContainer>
+        )}
+      </React.Fragment>
     );
   };
 
   public render() {
     const {
+      isPrefillMode,
       liveArticles,
       previewArticles,
       liveError,
-      previewError
+      previewError,
+      prefillArticles,
+      prefillError
     } = this.props;
-    const error = this.isLive ? liveError : previewError;
-    const articles = this.isLive ? liveArticles : previewArticles;
+    const error = isPrefillMode
+      ? prefillError
+      : this.isLive
+      ? liveError
+      : previewError;
+
+    const articles = isPrefillMode
+      ? prefillArticles
+      : this.isLive
+      ? liveArticles
+      : previewArticles;
+
     return (
       <FeedsContainerWrapper>
         <ScrollContainer
           fixed={
-            <>
-              <SearchInput
-                updateDisplaySearchFilters={this.updateDisplaySearchFilters}
-                displaySearchFilters={this.state.displaySearchFilters}
-                onUpdate={this.handleParamsUpdate}
-                showReviewSearch={false}
-                rightHandContainer={<ClipboardHeader />}
-              />
-              {!this.state.displaySearchFilters && this.renderFixedContent()}
-            </>
+            isPrefillMode
+              ? this.renderPrefillFixedContent()
+              : this.renderSearchFixedContent(this.state.displaySearchFilters)
           }
         >
           <ResultsContainer>
@@ -389,19 +453,29 @@ class FeedsContainer extends React.Component<
 const mapStateToProps = (state: State) => ({
   liveArticles: liveSelectors.selectAll(state),
   previewArticles: previewSelectors.selectAll(state),
+  prefillArticles: prefillSelectors.selectAll(state),
+
   liveLoading: liveSelectors.selectIsLoading(state),
   previewLoading: previewSelectors.selectIsLoading(state),
+  prefillLoading: prefillSelectors.selectIsLoading(state),
+
   liveError: liveSelectors.selectCurrentError(state),
   previewError: previewSelectors.selectCurrentError(state),
+  prefillError: prefillSelectors.selectCurrentError(state),
+
   livePagination: liveSelectors.selectPagination(state),
-  previewPagination: previewSelectors.selectPagination(state)
+  previewPagination: previewSelectors.selectPagination(state),
+  prefillPagination: prefillSelectors.selectPagination(state),
+
+  isPrefillMode: selectIsPrefillMode(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchLive: (params: object, isResource: boolean) =>
     dispatch(fetchLive(params, isResource)),
   fetchPreview: (params: object, isResource: boolean) =>
-    dispatch(fetchPreview(params, isResource))
+    dispatch(fetchPreview(params, isResource)),
+  hidePrefills: (id: string) => dispatch(hidePrefills())
 });
 
 export default connect(

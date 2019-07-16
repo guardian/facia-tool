@@ -75,7 +75,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   override lazy val httpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, sourceMapper, Some(router))
 
 //  Controllers
-  val editions = new EditionsController(editionsDb, templating, editionsPublishing, this)
+  val editions = new EditionsController(editionsDb, templating, editionsPublishing, capi, this)
   val collection = new CollectionController(acl, structuredLogger, updateManager, press, this)
   val defaults = new DefaultsController(acl, isDev, this)
   val faciaCapiProxy = new FaciaContentApiProxy(capi, this)

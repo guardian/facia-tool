@@ -3,6 +3,9 @@ import { CapiArticle } from 'types/Capi';
 import { ThunkResult } from 'types/Store';
 import { previewCapi, liveCapi } from 'services/frontsCapi';
 import { checkIsContent } from 'services/capiQuery';
+import { getPrefills } from 'services/editionsApi';
+import { Dispatch } from 'redux';
+import { PrefillModeOn, PrefillModeOff } from 'types/Action';
 
 type FeedState = CapiArticle[];
 
@@ -12,7 +15,7 @@ const {
   selectors: liveSelectors
 } = createAsyncResourceBundle<FeedState>('capiLiveFeed', {
   indexById: false,
-  selectLocalState: state => state.capiLiveFeed,
+  selectLocalState: state => state.capi.capiLiveFeed,
   initialData: []
 });
 
@@ -38,7 +41,7 @@ const {
   selectors: previewSelectors
 } = createAsyncResourceBundle<FeedState>('capiPreviewFeed', {
   indexById: false,
-  selectLocalState: state => state.capiPreviewFeed,
+  selectLocalState: state => state.capi.capiPreviewFeed,
   initialData: []
 });
 
@@ -113,11 +116,58 @@ export const fetchPreview = (
   }
 };
 
+const {
+  actions: prefillActions,
+  reducer: prefillFeed,
+  selectors: prefillSelectors
+} = createAsyncResourceBundle<FeedState>('prefillFeed', {
+  indexById: false,
+  selectLocalState: state => state.capi.prefillFeed,
+  initialData: []
+});
+
+export const fetchPrefill = (
+  id: string
+): ThunkResult<void> => async dispatch => {
+  dispatch({
+    type: 'FEED_STATE_IS_PREFILL_MODE',
+    payload: { isPrefillMode: true }
+  });
+  dispatch(prefillActions.fetchStart('prefill'));
+
+  try {
+    const { response } = await getPrefills(id);
+    if (!checkIsContent(response)) {
+      dispatch(
+        prefillActions.fetchSuccess(
+          response.results.filter(isNonCommercialArticle, {
+            totalPages: response.pages,
+            currentPage: response.currentPage,
+            pageSize: response.pageSize
+          })
+        )
+      );
+    }
+  } catch (e) {
+    dispatch(prefillActions.fetchError(e.message));
+  }
+};
+
+export const hidePrefills = () => (dispatch: Dispatch) => {
+  dispatch({
+    type: 'FEED_STATE_IS_PREFILL_MODE',
+    payload: { isPrefillMode: false }
+  });
+};
+
 export {
   liveActions,
   previewActions,
+  prefillActions,
   capiLiveFeed,
   capiPreviewFeed,
+  prefillFeed,
   liveSelectors,
-  previewSelectors
+  previewSelectors,
+  prefillSelectors
 };

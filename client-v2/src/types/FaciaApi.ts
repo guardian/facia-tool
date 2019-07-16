@@ -29,6 +29,10 @@ interface FrontsToolSettings {
   displayEditWarning?: boolean;
 }
 
+interface EditionsPrefill {
+  queryString: string;
+}
+
 interface CollectionConfigResponse {
   displayName: string;
   type: string;
@@ -48,6 +52,7 @@ interface CollectionConfigResponse {
   hideShowMore?: boolean;
   platform?: Platform;
   frontsToolSettings?: FrontsToolSettings;
+  prefill?: EditionsPrefill;
 }
 
 interface FrontsConfigResponse {
