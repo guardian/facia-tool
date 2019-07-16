@@ -8,7 +8,7 @@
     "compileWithBabel": "node -r @babel/register",
     "bundle": "yarn compileWithBabel $(yarn bin)/webpack",
     "build": "yarn bundle --config config/webpack.config.prod.js",
-    "build-prototype": "git checkout v2-prototype && yarn bundle --config config/webpack.config.prod-prototype.js && git checkout -",
+    "build-prototype": "yarn bundle --config config/webpack.config.prod-prototype.js",
     "watch": "yarn bundle --config config/webpack.config.dev.js --watch",
     "lint": "yarn compileWithBabel $(yarn bin)/eslint './src/**/*.ts?(x)' && $(yarn bin)/tslint './src/**/*.ts?(x)'",
     "lint-fix": "yarn compileWithBabel $(yarn bin)/eslint './src/**/*.ts?(x)' --fix && $(yarn bin)/tslint --fix './src/**/*.ts?(x)'",
