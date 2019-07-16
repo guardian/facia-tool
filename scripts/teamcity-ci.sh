@@ -33,7 +33,7 @@ javascriptV2() {
     yarn run build
 
     wget https://github.com/guardian/facia-tool/archive/v2-prototype.zip
-    tar -zxvf v2-prototype.zip
+    unzip v2-prototype.zip
     pushd facia-tool-2-prototype/client-v2
     yarn
     yarn run build-prototype
