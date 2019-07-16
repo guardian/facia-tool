@@ -32,6 +32,7 @@ javascriptV2() {
     yarn test
     yarn run build
 
+    # Temporary steps to inject the client of the v2-prototype branch into the project
     wget https://github.com/guardian/facia-tool/archive/v2-prototype.zip
     unzip v2-prototype.zip
     pushd facia-tool-2-prototype/client-v2
@@ -41,6 +42,7 @@ javascriptV2() {
     mv facia-tool-2-prototype/public/client-v2/dist-prototype ../public/client-v2/dist-prototype
     rm -r facia-tool-2-prototype
     rm v2-prototype.zip
+    # End of temporary steps
 
     yarn test-integration-ci
     popd
