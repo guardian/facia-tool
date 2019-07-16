@@ -61,7 +61,6 @@ interface CollectionState {
 const CollectionContainer = ContentContainer.extend<{
   hasMultipleFrontsOpen?: boolean;
 }>`
-  max-width: 590px;
   &:focus {
     border: 1px solid ${props => props.theme.shared.base.colors.focusColor};
     border-top: none;
