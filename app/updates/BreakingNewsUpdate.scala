@@ -2,8 +2,8 @@ package updates
 
 import java.net.URI
 import java.security.InvalidParameterException
+import java.util.UUID
 
-import com.gu.mobile.notifications.client._
 import com.gu.mobile.notifications.client.models.Importance.Importance
 import com.gu.mobile.notifications.client.models.Topic._
 import com.gu.mobile.notifications.client.models.TopicTypes.Breaking
@@ -11,7 +11,7 @@ import com.gu.mobile.notifications.client.models._
 import conf.ApplicationConfiguration
 import org.apache.commons.lang3.StringEscapeUtils
 import logging.Logging
-import play.api.libs.json.Json
+import play.api.libs.json._
 import play.api.libs.ws.{WSClient, WSResponse}
 import play.api.mvc.Result
 import play.api.mvc.Results.{InternalServerError, Ok}
@@ -27,10 +27,10 @@ class InvalidNotificationContentType(msg: String) extends Throwable(msg) {}
 class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient, val structuredLogger: StructuredLogger) extends Logging {
   lazy val client = {
     logger.info(s"Configuring breaking news client to send notifications to ${config.notification.host}")
-    ApiClient(
+    new BreakingNewsClientImpl(
+      ws = ws,
       host = config.notification.host,
-      apiKey = config.notification.key,
-      httpProvider = new NotificationHttpProvider(ws)
+      apiKey = config.notification.key
     )
   }
 
@@ -57,7 +57,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
   }
 
   private def sendAlert(trail: ClientHydratedTrail, email: String, collectionId: String): Future[Option[String]] = {
-    def handleSuccessfulFuture(result: Either[ApiClientError, Unit]) = result match {
+    def handleSuccessfulFuture(result: Either[ApiClientError, UUID]) = result match {
       case Left(error) =>
         structuredLogger.putLog(LogUpdate(HandlingBreakingNewsCollection(collectionId), email), "error", Some(new Exception(error.description)))
         Some(error.description)
@@ -99,7 +99,8 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
       },
       importance = parseImportance(trail.group),
       topic =  parseTopic(trail.topic),
-      debug = false
+      debug = false,
+      dryRun = None
     )
   }
 
@@ -142,23 +143,32 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
   }
 }
 
-class NotificationHttpProvider(val ws: WSClient) extends HttpProvider with Logging {
-  override def post(url: String, apiKey: String, contentType: ContentType, body: Array[Byte]): Future[HttpResponse] = {
+case class ApiClientError(description: String)
+
+trait BreakingNewsClient {
+  def send(breakingNewsPayload: BreakingNewsPayload): Future[Either[ApiClientError, UUID]]
+}
+
+class BreakingNewsClientImpl(ws: WSClient, host: String, apiKey: String) extends BreakingNewsClient with Logging {
+
+  private val url = s"$host/push/topic"
+
+  override def send(breakingNewsPayload: BreakingNewsPayload): Future[Either[ApiClientError, UUID]] = {
+    val body: String = Json.stringify(NotificationPayload.jf.writes(breakingNewsPayload))
     ws.url(url)
-      .withHttpHeaders("Content-Type" -> s"${contentType.mediaType}; charset=${contentType.charset}", "Authorization" -> s"Bearer $apiKey")
+      .withHttpHeaders("Content-Type" -> "application/json; charset=UTF-8", "Authorization" -> s"Bearer $apiKey")
       .post(body)
-      .map(extract)
-  }
-
-  override def get(url: String): Future[HttpResponse] = ws.url(url).get().map(extract)
-
-  private def extract(response: WSResponse): HttpResponse = {
-    if (response.status >= 200 && response.status < 300) {
-      logger.info("Breaking news notification sent correctly")
-      HttpOk(response.status, response.body)
-    } else {
-      logger.error(s"Unable to send breaking news notification, status ${response.status}: ${response.statusText}")
-      HttpError(response.status, response.body)
-    }
+      .map { response =>
+        if (response.status >= 200 && response.status < 300) {
+          logger.info("Breaking news notification sent correctly")
+          response.body[JsValue] \ "id" match {
+            case JsDefined(JsString(id)) => Right(UUID.fromString(id))
+            case _ => Left(ApiClientError(s"Notification sent successfully but unable to parse response. Status: ${response.status}, Body: ${response.body}"))
+          }
+        } else {
+          logger.error(s"Unable to send breaking news notification, Status ${response.status}: ${response.statusText}, Body: ${response.body}")
+          Left(ApiClientError("Unable to send breaking news notification, status ${response.status}: ${response.statusText}"))
+        }
+      }
   }
 }
