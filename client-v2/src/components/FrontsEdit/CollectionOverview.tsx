@@ -6,12 +6,12 @@ import { events } from 'services/GA';
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import { selectHasUnpublishedChanges } from 'selectors/frontsSelectors';
+import { selectIsEditingEditions } from 'selectors/pathSelectors';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 
 import { Collection, CollectionItemSets } from 'shared/types/Collection';
 import { createCollectionId } from 'shared/components/Collection';
 import ButtonDefault from 'shared/components/input/ButtonCircular';
-
 import {
   createSelectCollection,
   selectSharedState,
@@ -23,6 +23,7 @@ interface FrontCollectionOverviewContainerProps {
   collectionId: string;
   browsingStage: CollectionItemSets;
   isSelected: boolean;
+  isEditingEditions: boolean;
 }
 
 type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
@@ -106,7 +107,8 @@ const CollectionOverview = ({
   openCollection,
   frontId,
   hasUnpublishedChanges,
-  isSelected
+  isSelected,
+  isEditingEditions
 }: FrontCollectionOverviewProps) =>
   collection ? (
     <Container
@@ -130,7 +132,8 @@ const CollectionOverview = ({
         <ItemCount>({articleCount})</ItemCount>
       </TextContainerLeft>
       <TextContainerRight>
-        {collection &&
+        {!isEditingEditions &&
+          collection &&
           collection.lastUpdated &&
           (!!hasUnpublishedChanges ? (
             <StatusWarning
@@ -160,7 +163,8 @@ const mapStateToProps = () => {
     }).length,
     hasUnpublishedChanges: selectHasUnpublishedChanges(state, {
       collectionId: props.collectionId
-    })
+    }),
+    isEditingEditions: selectIsEditingEditions(state)
   });
 };
 

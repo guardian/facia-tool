@@ -132,6 +132,7 @@ class Collection extends React.Component<CollectionProps> {
         hasMultipleFrontsOpen={hasMultipleFrontsOpen}
         onChangeOpenState={() => onChangeOpenState(id, isOpen)}
         headlineContent={
+          !isEditingEditions &&
           hasUnpublishedChanges &&
           canPublish &&
           !isEditFormOpen && (

@@ -17,6 +17,7 @@ import { Dispatch } from 'types/Store';
 import FadeTransition from './transitions/FadeTransition';
 import { MoreIcon } from 'shared/components/icons/Icons';
 import { RouteComponentProps } from 'react-router';
+import { selectIsEditingEditions } from 'selectors/pathSelectors';
 
 const FeedbackButton = Button.extend<{
   href: string;
@@ -91,10 +92,28 @@ const CloseButtonInner = styled.div`
   position: relative;
 `;
 
+const EditionIssueInfo = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 12px;
+  line-height: initial;
+`;
+
+const EditionTitle = styled.div`
+  font-size: 20px;
+`;
+
+const EditionDate = styled.div`
+  font-size: 16px;
+`;
+
 type ComponentProps = {
   toggleCurrentFrontsMenu: () => void;
   isCurrentFrontsMenuOpen: boolean;
   frontCount: number;
+  isEditingEditions: boolean;
 } & RouteComponentProps<{ priority: string }>;
 
 type ContainerProps = RouteComponentProps<{ priority: string }>;
@@ -103,7 +122,8 @@ const FeedSectionHeader = ({
   toggleCurrentFrontsMenu,
   isCurrentFrontsMenuOpen,
   frontCount,
-  match
+  match,
+  isEditingEditions
 }: ComponentProps) => (
   <SectionHeaderWithLogo includeBorder={!isCurrentFrontsMenuOpen}>
     <LogoContainer
@@ -130,12 +150,19 @@ const FeedSectionHeader = ({
         <CurrentFrontsList priority={match.params.priority} />
       </FadeTransition>
       <FadeTransition active={!isCurrentFrontsMenuOpen} direction="right">
-        <FeedbackButton
-          href="https://docs.google.com/forms/d/e/1FAIpQLSc4JF0GxrKoxQgsFE9_tQfjAo1RKRU4M5bJWJRKaVlHbR2rpA/viewform?c=0&w=1"
-          target="_blank"
-        >
-          Send us feedback
-        </FeedbackButton>
+        {isEditingEditions ? (
+          <EditionIssueInfo>
+            <EditionTitle>Daily Edition</EditionTitle>
+            <EditionDate>16/09/1992</EditionDate>
+          </EditionIssueInfo>
+        ) : (
+          <FeedbackButton
+            href="https://docs.google.com/forms/d/e/1FAIpQLSc4JF0GxrKoxQgsFE9_tQfjAo1RKRU4M5bJWJRKaVlHbR2rpA/viewform?c=0&w=1"
+            target="_blank"
+          >
+            Send us feedback
+          </FeedbackButton>
+        )}
       </FadeTransition>
     </SectionHeaderContent>
   </SectionHeaderWithLogo>
@@ -147,7 +174,8 @@ const mapStateToProps = () => {
     isCurrentFrontsMenuOpen: selectIsCurrentFrontsMenuOpen(state),
     frontCount: selectEditorFrontsByPriority(state, {
       priority: props.match.params.priority
-    }).length
+    }).length,
+    isEditingEditions: selectIsEditingEditions(state)
   });
 };
 

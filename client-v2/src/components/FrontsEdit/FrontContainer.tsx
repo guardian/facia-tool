@@ -19,6 +19,7 @@ import {
   selectFront,
   createSelectAlsoOnFronts
 } from 'selectors/frontsSelectors';
+import { selectIsEditingEditions } from 'selectors/pathSelectors';
 import Front from './Front';
 import SectionHeader from '../layout/SectionHeader';
 import SectionContent from '../layout/SectionContent';
@@ -108,6 +109,7 @@ type FrontsComponentProps = FrontsContainerProps & {
   alsoOn: { [id: string]: AlsoOnDetail };
   isOverviewOpen: boolean;
   isFormOpen: boolean;
+  isEditingEditions: boolean;
   frontsActions: {
     fetchLastPressed: (frontId: string) => void;
     editorCloseFront: (frontId: string) => void;
@@ -135,7 +137,12 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   };
 
   public render() {
-    const { frontId, isFormOpen, isOverviewOpen } = this.props;
+    const {
+      frontId,
+      isFormOpen,
+      isOverviewOpen,
+      isEditingEditions
+    } = this.props;
     const title =
       this.props.selectedFront &&
       startCase(
@@ -152,31 +159,33 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
           <FrontHeader greyHeader={true}>
             <FrontsHeaderText title={title}>{title}</FrontsHeaderText>
             <FrontHeaderMeta>
-              <a
-                href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${
-                  this.props.frontId
-                }`}
-                target="preview"
-              >
-                <FrontHeaderButton size="l">
-                  <PreviewEyeIcon size="xl" />
-                  <PreviewButtonText>Preview</PreviewButtonText>
-                </FrontHeaderButton>
-              </a>
-              <StageSelectButtons>
-                <RadioGroup>
-                  {Object.keys(frontStages).map(key => (
-                    <RadioButton
-                      inline
-                      key={key}
-                      name={`${this.props.frontId} - frontStages`}
-                      checked={frontStages[key] === this.state.collectionSet}
-                      onChange={() => this.handleCollectionSetSelect(key)}
-                      label={toTitleCase(frontStages[key])}
-                    />
-                  ))}
-                </RadioGroup>
-              </StageSelectButtons>
+              {!isEditingEditions && (
+                <a
+                  href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${this.props.frontId}`}
+                  target="preview"
+                >
+                  <FrontHeaderButton size="l">
+                    <PreviewEyeIcon size="xl" />
+                    <PreviewButtonText>Preview</PreviewButtonText>
+                  </FrontHeaderButton>
+                </a>
+              )}
+              {!isEditingEditions && (
+                <StageSelectButtons>
+                  <RadioGroup>
+                    {Object.keys(frontStages).map(key => (
+                      <RadioButton
+                        inline
+                        key={key}
+                        name={`${this.props.frontId} - frontStages`}
+                        checked={frontStages[key] === this.state.collectionSet}
+                        onChange={() => this.handleCollectionSetSelect(key)}
+                        label={toTitleCase(frontStages[key])}
+                      />
+                    ))}
+                  </RadioGroup>
+                </StageSelectButtons>
+              )}
               <FrontHeaderButton onClick={this.handleRemoveFront} size="l">
                 <ClearIcon size="xl" />
               </FrontHeaderButton>
@@ -204,7 +213,8 @@ const createMapStateToProps = () => {
     selectedFront: selectFront(state, { frontId: props.frontId }),
     alsoOn: selectAlsoOnFronts(state, { frontId: props.frontId }),
     isOverviewOpen: selectIsFrontOverviewOpen(state, props.frontId),
-    isFormOpen: !!selectEditorArticleFragment(state, props.frontId)
+    isFormOpen: !!selectEditorArticleFragment(state, props.frontId),
+    isEditingEditions: selectIsEditingEditions(state)
   });
 };
 
