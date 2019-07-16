@@ -3,7 +3,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 const definePlugin = new webpack.DefinePlugin({
-  'process.env.APP_URL_PREFIX': 'v2-prototype'
+  'process.env.APP_URL_PREFIX': JSON.stringify('v2-prototype')
 });
 
 export default {
