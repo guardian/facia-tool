@@ -36,3 +36,12 @@ case class UserData(
   frontIdsByPriority: Option[Map[String, List[String]]],
   favouriteFrontIdsByPriority: Option[Map[String, List[String]]]
 )
+
+object PutFeatureStatus {
+  implicit val reads = Json.reads[PutFeatureStatus]
+  implicit val writes = Json.writes[PutFeatureStatus]
+}
+
+case class PutFeatureStatus(featureName: String, enabled: Boolean)
+
+

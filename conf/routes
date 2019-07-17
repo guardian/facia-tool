@@ -62,6 +62,7 @@ PUT        /userdata/editionsClipboard               controllers.UserDataControl
 PUT        /userdata/frontIds                        controllers.UserDataController.putFrontIds()
 PUT        /userdata/frontIdsByPriority              controllers.UserDataController.putFrontIdsByPriority()
 PUT        /userdata/favouriteFrontIdsByPriority     controllers.UserDataController.putFavouriteFrontIdsByPriority()
+PUT        /userdata/feature                         controllers.UserDataController.putFeature()
 # For temporary internal use -- migrates user data to a new format
 PUT        /userdata/migrate                         controllers.UserDataController.migrateUserData()
 

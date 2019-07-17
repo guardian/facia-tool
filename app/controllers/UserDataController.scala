@@ -4,7 +4,7 @@ import com.gu.facia.client.models.Trail
 import com.gu.scanamo._
 import com.gu.scanamo.syntax._
 import services.{Dynamo, FrontsApi}
-import model.UserData
+import model.{PutFeatureStatus, UserData}
 import play.api.Logger
 import play.api.libs.json.JsValue
 
@@ -98,6 +98,19 @@ class UserDataController(frontsApi: FrontsApi, dynamo: Dynamo, val deps: BaseFac
     result.map(data => {
       Ok
     })
+  }
+
+  def putFeature() = APIAuthAction { request =>
+    val maybeFeatureStatus: Option[PutFeatureStatus] = request.body.asJson.flatMap(
+      _.asOpt[PutFeatureStatus])
+    maybeFeatureStatus match {
+      case Some(featureStatus) =>
+        Scanamo.exec(dynamo.client)(userDataTable.update(
+          'email -> request.user.email,
+          set(Symbol(featureStatus.featureName) -> featureStatus.enabled)))
+        Ok
+      case _ => BadRequest
+    }
   }
 }
 
