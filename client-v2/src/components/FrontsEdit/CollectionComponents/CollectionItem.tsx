@@ -9,7 +9,10 @@ import {
   selectArticleFragment
 } from 'shared/selectors/shared';
 import collectionItemTypes from 'shared/constants/collectionItemTypes';
-import { CollectionItemTypes } from 'shared/types/Collection';
+import {
+  CollectionItemTypes,
+  CollectionItemSizes
+} from 'shared/types/Collection';
 import SnapLink from 'shared/components/snapLink/SnapLink';
 import {
   cloneArticleFragmentToTarget,
@@ -44,7 +47,8 @@ interface ContainerProps {
   onSelect: (uuid: string) => void;
   onDelete: () => void;
   parentId: string;
-  size?: 'small' | 'default';
+  size?: CollectionItemSizes;
+  textSize?: CollectionItemSizes;
   isUneditable?: boolean;
   showMeta?: boolean;
 }
@@ -81,6 +85,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       onAddToClipboard = noop,
       type,
       size,
+      textSize,
       isUneditable,
       numSupportingArticles,
       parentId,
@@ -99,6 +104,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
             onClick={isUneditable ? undefined : () => onSelect(uuid)}
             fade={!isSelected}
             size={size}
+            textSize={textSize}
             showMeta={showMeta}
             imageDropTypes={imageDropTypes}
             onImageDrop={this.handleImageDrop}
@@ -126,6 +132,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
               onClick={isUneditable ? undefined : () => onSelect(uuid)}
               fade={!isSelected}
               size={size}
+              textSize={textSize}
               showMeta={showMeta}
             />
             <Sublinks

@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'shared/constants/theme';
+import { styled, theme as globalTheme } from 'constants/theme';
 import { theme as styleTheme } from 'constants/theme';
 import startCase from 'lodash/startCase';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
@@ -42,7 +42,9 @@ const KickerHeading = styled(CollectionItemHeading)`
   font-weight: bold;
   padding-right: 3px;
   font-size: ${({ displaySize }) =>
-    displaySize === 'small' ? '13px' : '15px'};
+    displaySize === 'small'
+      ? globalTheme.shared.collectionItem.fontSizeSmall
+      : globalTheme.shared.collectionItem.fontSizeDefault};
   ${media.large`font-size: 13px;`}
 `;
 
@@ -78,6 +80,7 @@ interface ArticleBodyProps {
   pillarId?: string;
   kicker?: string;
   size?: CollectionItemSizes;
+  textSize?: CollectionItemSizes;
   headline?: string;
   thumbnail?: string | void;
   cutoutThumbnail?: string | void;
@@ -126,6 +129,7 @@ const articleBodyDefault = React.memo(
     pillarId,
     kicker,
     size = 'default',
+    textSize,
     headline,
     thumbnail,
     cutoutThumbnail,
@@ -196,7 +200,7 @@ const articleBodyDefault = React.memo(
             )}
           </CollectionItemMetaContainer>
         )}
-        <CollectionItemContent displaySize={size}>
+        <CollectionItemContent displaySize={size} textSize={textSize}>
           <ArticleHeadingContainer>
             {displayPlaceholders && (
               <>

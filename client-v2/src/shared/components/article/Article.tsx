@@ -67,6 +67,7 @@ type ComponentProps = {
   article?: DerivedArticle;
   isLoading?: boolean;
   size?: CollectionItemSizes;
+  textSize?: CollectionItemSizes;
   children: React.ReactNode;
   imageDropTypes?: string[];
   onImageDrop?: (e: React.DragEvent<HTMLElement>) => void;
@@ -94,6 +95,7 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
       isLoading,
       article,
       size = 'default',
+      textSize = 'default',
       fade = false,
       draggable = false,
       onDragStart = noop,
@@ -164,6 +166,7 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
               <ArticleBody
                 {...getArticleData()}
                 size={size}
+                textSize={textSize}
                 isUneditable={!!article && isUneditable}
                 onDelete={onDelete}
                 onAddToClipboard={onAddToClipboard}

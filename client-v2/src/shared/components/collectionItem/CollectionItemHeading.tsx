@@ -11,14 +11,13 @@ const Wrapper = styled('span')<{
   font-family: TS3TextSans;
   font-weight: normal;
   padding-top: 2px;
-  font-size: ${({ displaySize, showBoostedHeadline }) => {
+  ${({ displaySize, showBoostedHeadline }) => {
     if (displaySize === 'small') {
-      return theme.shared.collectionItem.fontSizeSmall;
+      return `font-size: ${theme.shared.collectionItem.fontSizeSmall}`;
     }
     if (showBoostedHeadline) {
-      return '18px';
+      return `font-size: 18px`;
     }
-    return theme.shared.collectionItem.fontSizeDefault;
   }};
   ${media.large`font-size: 13px;`}
 `;

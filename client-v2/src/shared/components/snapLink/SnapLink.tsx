@@ -36,6 +36,7 @@ interface ContainerProps {
   id: string;
   draggable?: boolean;
   size?: CollectionItemSizes;
+  textSize?: CollectionItemSizes;
   showMeta?: boolean;
   fade?: boolean;
   children?: React.ReactNode;
@@ -50,6 +51,7 @@ const SnapLink = ({
   id,
   fade,
   size = 'default',
+  textSize = 'default',
   showMeta = true,
   onDelete,
   children,
@@ -73,7 +75,10 @@ const SnapLink = ({
             </CollectionItemMetaContent>
           </CollectionItemMetaContainer>
         )}
-        <CollectionItemContent>
+        <CollectionItemContent textSize={textSize}>
+          {!showMeta && (
+            <CollectionItemMetaHeading>Snap link </CollectionItemMetaHeading>
+          )}
           <CollectionItemHeading html>{headline}</CollectionItemHeading>
         </CollectionItemContent>
         {size === 'default' && <ThumbnailSmall />}

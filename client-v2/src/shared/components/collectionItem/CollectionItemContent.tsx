@@ -3,9 +3,14 @@ import { CollectionItemSizes } from 'shared/types/Collection';
 
 const CollectionItemContent = styled('div')<{
   displaySize?: CollectionItemSizes;
+  textSize?: CollectionItemSizes;
 }>`
   position: relative;
   padding: 0 8px;
+  font-size: ${({ textSize, theme }) =>
+    textSize === 'small'
+      ? theme.shared.collectionItem.fontSizeSmall
+      : theme.shared.collectionItem.fontSizeDefault};
   flex-basis: 100%;
   hyphens: auto;
   word-break: break-word;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'shared/constants/theme';
+import { styled, theme } from 'constants/theme';
 
 import CollectionItemBody from 'shared/components/collectionItem/CollectionItemBody';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
@@ -15,16 +15,16 @@ const SublinkCollectionItemBody = styled(CollectionItemBody)<{
 }>`
   display: flex;
   min-height: 30px;
-  border-top: 1px solid #c9c9c9;
+  border-top: 1px solid ${theme.shared.colors.greyLightPinkish};
   background-color: ${({ dragHoverActive }) =>
-    dragHoverActive ? `#ededed` : '#fff'};
+    dragHoverActive ? theme.shared.collectionItem.backgroundHover : theme.shared.colors.white};
   flex-direction: row;
   span {
     font-size: 12px;
     font-weight: normal;
   }
   :hover {
-    background-color: #ededed;
+    background-color: ${theme.shared.collectionItem.backgroundHover};
   }
 `;
 

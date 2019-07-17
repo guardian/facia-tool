@@ -92,7 +92,9 @@ const label = {
 const collectionItem = {
   fontSizeDefault: '14px',
   fontSizeSmall: '13px',
-  dropZone: '#D6D6D6'
+  dropZone: '#D6D6D6',
+  border: colors.greyLightPinkish,
+  backgroundHover: colors.whiteMedium
 };
 
 export const theme = {

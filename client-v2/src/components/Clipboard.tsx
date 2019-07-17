@@ -157,6 +157,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                             frontId={clipboardId}
                             getNodeProps={getAfProps}
                             showMeta={false}
+                            textSize="small"
                             onSelect={this.props.selectArticleFragment}
                             onDelete={() =>
                               this.props.removeCollectionItem(
