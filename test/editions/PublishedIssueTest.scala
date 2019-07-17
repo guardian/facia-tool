@@ -17,7 +17,7 @@ class PublishedIssueTest extends FreeSpec with Matchers {
     }
 
     "furniture defaults should be populated correctly" in {
-      val furniture = ArticleMetadata(None, None, None, None, None, None)
+      val furniture = ArticleMetadata(None, None, None, None, None, None, None, None, None, None)
       val article = EditionsArticle("123456", 0, Some(furniture))
       val published = article.toPublishedArticle
 
@@ -32,6 +32,7 @@ class PublishedIssueTest extends FreeSpec with Matchers {
         Some(true),
         Some(true),
         Some("byline"),
+        None, None, None, None
       )
       val article = EditionsArticle("123456", 0, Some(furniture))
       val published = article.toPublishedArticle
