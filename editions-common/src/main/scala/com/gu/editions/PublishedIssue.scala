@@ -7,8 +7,12 @@ import java.time.OffsetDateTime
 case class MediaUrl(url: String) extends AnyVal
 
 case class PublishedFurniture(
-  kickerOverride: Option[String],
+  kicker: Option[String],
   headlineOverride: Option[String],
+  trailTextOverride: Option[String],
+  bylineOverride: Option[String],
+  showByline: Boolean,
+  showQuotedHeadline: Boolean,
   imageSrcOverride: Option[MediaUrl]
 )
 
@@ -19,4 +23,3 @@ case class PublishedCollection(id: String, items: List[PublishedArticle])
 case class PublishedFront(id: String, name: String, collections: List[PublishedCollection])
 
 case class PublishedIssue(id: String, name: String, issueDate: OffsetDateTime, fronts: List[PublishedFront])
-

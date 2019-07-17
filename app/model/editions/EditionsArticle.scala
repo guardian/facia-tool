@@ -20,7 +20,15 @@ object ArticleMetadata {
 case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[ArticleMetadata]) {
   def toPublishedArticle: PublishedArticle = PublishedArticle(
     pageCode.toLong,
-    PublishedFurniture(metadata.flatMap(_.customKicker), metadata.flatMap(_.headline), None) // TODO (sihil): Store in DB and populate here
+    PublishedFurniture(
+      kicker = metadata.flatMap(_.customKicker),
+      headlineOverride = metadata.flatMap(_.headline),
+      trailTextOverride = metadata.flatMap(_.trailText),
+      bylineOverride = metadata.flatMap(_.byline),
+      showByline = metadata.flatMap(_.showByline).getOrElse(false),
+      showQuotedHeadline = metadata.flatMap(_.showQuotedHeadline).getOrElse(false),
+      imageSrcOverride = None // TODO (sihil): Store in DB and populate here
+    )
   )
 }
 
