@@ -23,6 +23,7 @@ const applyDirection = ({ direction, length = 15 }: TransitionProps) =>
   directionMap[direction](length);
 
 const TransitionContainer = styled.div<TransitionProps>`
+  display: contents;
   position: relative;
   &.${transitionName}-${({ direction }) => direction}-enter {
     opacity: 0.01;

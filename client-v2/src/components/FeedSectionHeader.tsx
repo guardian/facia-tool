@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import startCase from 'lodash/startCase';
 import { styled } from 'constants/theme';
 import SectionHeaderWithLogo from './layout/SectionHeaderWithLogo';
 import CurrentFrontsList from './CurrentFrontsList';
@@ -18,6 +19,9 @@ import FadeTransition from './transitions/FadeTransition';
 import { MoreIcon } from 'shared/components/icons/Icons';
 import { RouteComponentProps } from 'react-router';
 import { selectIsEditingEditions } from 'selectors/pathSelectors';
+import { getEditionIssue } from 'actions/Editions';
+import { EditionsIssue } from 'types/Edition';
+import { selectors as editionsIssueSelectors } from 'bundles/editionsIssueBundle';
 
 const FeedbackButton = Button.extend<{
   href: string;
@@ -113,60 +117,81 @@ type ComponentProps = {
   toggleCurrentFrontsMenu: () => void;
   isCurrentFrontsMenuOpen: boolean;
   frontCount: number;
+
+  getEditionsIssue: (id: string) => void;
   isEditingEditions: boolean;
+  editionsIssue?: EditionsIssue;
 } & RouteComponentProps<{ priority: string }>;
 
 type ContainerProps = RouteComponentProps<{ priority: string }>;
 
-const FeedSectionHeader = ({
-  toggleCurrentFrontsMenu,
-  isCurrentFrontsMenuOpen,
-  frontCount,
-  match,
-  isEditingEditions
-}: ComponentProps) => (
-  <SectionHeaderWithLogo includeBorder={!isCurrentFrontsMenuOpen}>
-    <LogoContainer
-      onClick={toggleCurrentFrontsMenu}
-      title="Click to manage active fronts"
-    >
-      <LogoBackground includeBorder={isCurrentFrontsMenuOpen}>
-        {!isCurrentFrontsMenuOpen ? (
-          <>
-            <Logo src={FrontsLogo} alt="The Fronts tool" />
-            <FrontCount>{frontCount}</FrontCount>
-          </>
-        ) : (
-          <CloseButtonOuter>
-            <CloseButtonInner>
-              <MoreIcon size="fill" />
-            </CloseButtonInner>
-          </CloseButtonOuter>
-        )}
-      </LogoBackground>
-    </LogoContainer>
-    <SectionHeaderContent>
-      <FadeTransition active={isCurrentFrontsMenuOpen} direction="left">
-        <CurrentFrontsList priority={match.params.priority} />
-      </FadeTransition>
-      <FadeTransition active={!isCurrentFrontsMenuOpen} direction="right">
-        {isEditingEditions ? (
-          <EditionIssueInfo>
-            <EditionTitle>Daily Edition</EditionTitle>
-            <EditionDate>16/09/1992</EditionDate>
-          </EditionIssueInfo>
-        ) : (
-          <FeedbackButton
-            href="https://docs.google.com/forms/d/e/1FAIpQLSc4JF0GxrKoxQgsFE9_tQfjAo1RKRU4M5bJWJRKaVlHbR2rpA/viewform?c=0&w=1"
-            target="_blank"
-          >
-            Send us feedback
-          </FeedbackButton>
-        )}
-      </FadeTransition>
-    </SectionHeaderContent>
-  </SectionHeaderWithLogo>
-);
+class FeedSectionHeader extends Component<ComponentProps> {
+  componentDidMount() {
+    if (this.props.isEditingEditions) {
+      this.props.getEditionsIssue(this.props.match.params.priority);
+    }
+  }
+
+  render() {
+    const {
+      toggleCurrentFrontsMenu,
+      isCurrentFrontsMenuOpen,
+      frontCount,
+      match,
+      isEditingEditions,
+      editionsIssue
+    } = this.props;
+    return (
+      <SectionHeaderWithLogo includeBorder={!isCurrentFrontsMenuOpen}>
+        <LogoContainer
+          onClick={toggleCurrentFrontsMenu}
+          title="Click to manage active fronts"
+        >
+          <LogoBackground includeBorder={isCurrentFrontsMenuOpen}>
+            {!isCurrentFrontsMenuOpen ? (
+              <>
+                <Logo src={FrontsLogo} alt="The Fronts tool" />
+                <FrontCount>{frontCount}</FrontCount>
+              </>
+            ) : (
+              <CloseButtonOuter>
+                <CloseButtonInner>
+                  <MoreIcon size="fill" />
+                </CloseButtonInner>
+              </CloseButtonOuter>
+            )}
+          </LogoBackground>
+        </LogoContainer>
+        <SectionHeaderContent>
+          <FadeTransition active={isCurrentFrontsMenuOpen} direction="left">
+            <CurrentFrontsList priority={match.params.priority} />
+          </FadeTransition>
+          <FadeTransition active={!isCurrentFrontsMenuOpen} direction="right">
+            {isEditingEditions ? (
+              editionsIssue ? (
+                <EditionIssueInfo>
+                  <EditionTitle>
+                    {startCase(editionsIssue.displayName)}
+                  </EditionTitle>
+                  <EditionDate>
+                    {new Date(editionsIssue.issueDate).toDateString()}
+                  </EditionDate>
+                </EditionIssueInfo>
+              ) : null
+            ) : (
+              <FeedbackButton
+                href="https://docs.google.com/forms/d/e/1FAIpQLSc4JF0GxrKoxQgsFE9_tQfjAo1RKRU4M5bJWJRKaVlHbR2rpA/viewform?c=0&w=1"
+                target="_blank"
+              >
+                Send us feedback
+              </FeedbackButton>
+            )}
+          </FadeTransition>
+        </SectionHeaderContent>
+      </SectionHeaderWithLogo>
+    );
+  }
+}
 
 const mapStateToProps = () => {
   const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
@@ -175,11 +200,13 @@ const mapStateToProps = () => {
     frontCount: selectEditorFrontsByPriority(state, {
       priority: props.match.params.priority
     }).length,
-    isEditingEditions: selectIsEditingEditions(state)
+    isEditingEditions: selectIsEditingEditions(state),
+    editionsIssue: editionsIssueSelectors.selectAll(state)
   });
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
+  getEditionsIssue: (id: string) => dispatch(getEditionIssue(id)),
   toggleCurrentFrontsMenu: (menuState: boolean) =>
     menuState
       ? dispatch(editorShowOpenFrontsMenu())
@@ -193,6 +220,7 @@ const mergeProps = (
 ) => ({
   ...stateProps,
   ...ownProps,
+  ...dispatchProps,
   toggleCurrentFrontsMenu: () =>
     dispatchProps.toggleCurrentFrontsMenu(!stateProps.isCurrentFrontsMenuOpen)
 });
