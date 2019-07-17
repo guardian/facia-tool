@@ -33,9 +33,11 @@ import ConfirmModal from './ConfirmModal';
 import {
   manageEditions,
   frontsEditPathProps,
-  issuePathProps
+  issuePathProps,
+  frontsFeatureProps
 } from 'routes/routes';
 import ManageView from './Editions/ManageView';
+import FeaturesView from './Features/FeaturesView';
 
 // tslint:disable:no-unused-expression
 // NB the properties described in font-face work as matchers, assigning text to the font imported by the source.
@@ -142,6 +144,7 @@ const App = () => (
         <Switch>
           <Route {...frontsEditPathProps} component={FrontsEdit} />
           <Route {...issuePathProps} component={FrontsEdit} />
+          <Route {...frontsFeatureProps} component={FeaturesView} />
           <Route exact path="/" component={Home} />
           <Route exact path={manageEditions} component={ManageView} />
           <Route component={NotFound} />

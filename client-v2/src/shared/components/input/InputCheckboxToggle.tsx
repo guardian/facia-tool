@@ -1,6 +1,6 @@
 import { styled } from 'shared/constants/theme';
 import React from 'react';
-import { WrappedFieldProps } from 'redux-form';
+import { WrappedFieldMetaProps, WrappedFieldInputProps } from 'redux-form';
 
 import InputLabel from './InputLabel';
 import InputContainer from './InputContainer';
@@ -67,8 +67,11 @@ const Checkbox = styled('input')`
 type Props = {
   label?: string;
   id: string;
-  dataTestId: string;
-} & WrappedFieldProps;
+  dataTestId?: string;
+} & {
+  input: Pick<WrappedFieldInputProps, 'onChange'> & Partial<WrappedFieldInputProps>;
+  meta?: WrappedFieldMetaProps;
+};
 
 export default ({
   label,
