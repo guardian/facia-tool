@@ -68,6 +68,9 @@ const OverviewHeading = styled('label')`
 
 const CollectionContainer = styled.div`
   position: relative;
+  & + & {
+    margin-top: 10px;
+  }
 `;
 
 const OverviewHeadingButton = styled(ButtonRoundedWithLabel)`

@@ -93,6 +93,10 @@ const PaginationContainer = styled('div')`
   margin-left: auto;
 `;
 
+const ResultsContainer = styled.div`
+  margin-right: 10px;
+`;
+
 const ResultsHeadingContainer = styled('div')`
   border-top: 1px solid ${({ theme }) => theme.shared.colors.greyVeryLight};
   align-items: baseline;
@@ -324,7 +328,9 @@ class FeedsContainer extends React.Component<
             </>
           }
         >
-          <Feed error={error} articles={articles} />
+          <ResultsContainer>
+            <Feed error={error} articles={articles} />
+          </ResultsContainer>
         </ScrollContainer>
       </FeedsContainerWrapper>
     );

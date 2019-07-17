@@ -17,8 +17,7 @@ import {
 import { clipboardId } from 'constants/fronts';
 import {
   ArticleFragment as TArticleFragment,
-  ArticleFragmentMeta,
-  ArticleFragment
+  ArticleFragmentMeta
 } from 'shared/types/Collection';
 import ClipboardLevel from './clipboard/ClipboardLevel';
 import ArticleFragmentLevel from './clipboard/ArticleFragmentLevel';
@@ -32,15 +31,13 @@ import {
 } from 'bundles/focusBundle';
 import FocusWrapper from './FocusWrapper';
 
-const hasSupporting = (af: ArticleFragment) =>
-  !!(af.meta.supporting || []).length;
-
 const ClipboardWrapper = styled<
   HTMLProps<HTMLDivElement> & { 'data-testid'?: string },
   'div'
 >('div').attrs({
   'data-testid': 'clipboard-wrapper'
 })`
+  background: ${({ theme }) => theme.shared.collection.background};
   border-top: 1px solid ${({ theme }) => theme.shared.colors.greyLightPinkish};
   overflow-y: scroll;
   &:focus {
@@ -60,20 +57,6 @@ const StyledDragIntentContainer = styled(DragIntentContainer)`
   display: flex;
   flex-direction: column;
   min-height: 100%;
-`;
-
-const SupportingDivider = styled.hr`
-  border: 0;
-  border-top: 1px solid #ccc;
-  margin: 0.5em 0 0.25em;
-  width: 50%;
-`;
-
-const FullDivider = styled('hr')`
-  border: 0;
-  border-top: 1px solid #ccc;
-  margin: 8px -10px 0px;
-  width: 115%;
 `;
 
 interface ClipboardProps {
@@ -173,7 +156,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                             parentId={clipboardId}
                             frontId={clipboardId}
                             getNodeProps={getAfProps}
-                            displayType="polaroid"
+                            showMeta={false}
                             onSelect={this.props.selectArticleFragment}
                             onDelete={() =>
                               this.props.removeCollectionItem(
@@ -181,14 +164,10 @@ class Clipboard extends React.Component<ClipboardProps> {
                               )
                             }
                           >
-                            {hasSupporting(articleFragment) && (
-                              <SupportingDivider />
-                            )}
                             <ArticleFragmentLevel
                               articleFragmentId={articleFragment.uuid}
                               onMove={this.handleMove}
                               onDrop={this.handleInsert}
-                              displayType="polaroid"
                             >
                               {(supporting, getSProps, i, arr) => (
                                 <CollectionItem
@@ -197,7 +176,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                                   parentId={articleFragment.uuid}
                                   getNodeProps={getSProps}
                                   size="small"
-                                  displayType="polaroid"
+                                  showMeta={false}
                                   onSelect={id =>
                                     this.props.selectArticleFragment(id, true)
                                   }
@@ -207,16 +186,11 @@ class Clipboard extends React.Component<ClipboardProps> {
                                       supporting.uuid
                                     )
                                   }
-                                >
-                                  {i < arr.length - 1 ? (
-                                    <SupportingDivider />
-                                  ) : null}
-                                </CollectionItem>
+                                />
                               )}
                             </ArticleFragmentLevel>
                           </CollectionItem>
                         </FocusWrapper>
-                        <FullDivider />
                       </>
                     )}
                   </ClipboardLevel>

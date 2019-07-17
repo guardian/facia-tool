@@ -25,6 +25,7 @@ const StyledDragIntentContainer = styled(DragIntentContainer)`
 const Header = styled.div<{
   isOpen: boolean;
 }>`
+  background-color: ${({ theme }) => theme.shared.collection.background};
   align-items: center;
   justify-content: space-between;
   border-right: none;
@@ -35,9 +36,7 @@ const Header = styled.div<{
   height: 52px;
   margin-left: 8px;
   box-shadow: ${({ theme, isOpen }) =>
-    `2px 0 0 -1px ${
-      isOpen ? theme.shared.base.colors.backgroundColor : 'none'
-    }`};
+    `2px 0 0 -1px ${isOpen ? theme.shared.collection.background : 'none'}`};
 `;
 
 const ClipboardTitle = styled.label`

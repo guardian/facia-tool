@@ -61,6 +61,8 @@ interface CollectionState {
 const CollectionContainer = ContentContainer.extend<{
   hasMultipleFrontsOpen?: boolean;
 }>`
+  background-color: ${props => props.theme.shared.collection.background};
+
   &:focus {
     border: 1px solid ${props => props.theme.shared.base.colors.focusColor};
     border-top: none;
@@ -110,7 +112,7 @@ const ItemCountMeta = CollectionMetaBase;
 const CollectionHeadingSticky = styled.div`
   position: sticky;
   top: 0;
-  background-color: ${({ theme }) => theme.shared.base.colors.backgroundColor};
+  background-color: ${({ theme }) => theme.shared.collection.background};
   box-shadow: 0 -1px 0 ${({ theme }) => theme.shared.base.colors.text};
   z-index: 20;
   margin: 0 -${contentContainerMargin};

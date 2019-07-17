@@ -1,55 +1,36 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
 import Thumbnail from '../Thumbnail';
-import {
-  CollectionItemDisplayTypes,
-  CollectionItemSizes
-} from 'shared/types/Collection';
+import { CollectionItemSizes } from 'shared/types/Collection';
+import { theme } from 'constants/theme';
 
 export default styled('div')<{
   fade?: boolean;
   size?: CollectionItemSizes;
   tone?: string | void;
-  displayType?: CollectionItemDisplayTypes;
 }>`
   position: relative;
-  ${({ displayType }) =>
-    displayType === 'default' &&
-    css`
-      display: flex;
-      border-top: ${({ theme }) =>
-        `1px solid ${theme.shared.base.colors.text}`};
-    `}
-  ${({ displayType, size }) =>
-    displayType === 'polaroid' &&
-    `font-size: ${size === 'small' ? '12px' : '13px'};`}
+  display: flex;
+  border-top: 1px solid ${theme.shared.base.colors.text};
   min-height: ${({ size }) => (size === 'small' ? '25px' : '50px')};
   cursor: pointer;
-  background-color: ${({ displayType, theme }) =>
-    displayType === 'default'
-      ? theme.shared.base.colors.backgroundColorLight
-      : 'transparent'};
+  background-color: ${theme.shared.base.colors.backgroundColorLight};
   opacity: ${({ fade }) => (fade ? 0.5 : 1)};
 
   ${HoverActionsAreaOverlay} {
-    ${({ displayType }) =>
-      displayType === 'polaroid'
-        ? `bottom: 0px; right: 0px;`
-        : `bottom: 4px; left: 8px;`}
+    bottom: 4px;
+    left: 8px;
     position: absolute;
     visibility: hidden;
   }
 
   :hover {
-    background-color: ${({ displayType, theme }) =>
-      displayType === 'default'
-        ? theme.shared.base.colors.backgroundColorFocused
-        : 'transparent'};
+    background-color: ${theme.shared.base.colors.backgroundColorFocused};
 
-      ${HoverActionsAreaOverlay} {
-        transition-delay: 0s;
-        visibility: visible;
-      }
+    ${HoverActionsAreaOverlay} {
+      transition-delay: 0s;
+      visibility: visible;
+    }
 
     ${Thumbnail} {
       opacity: 0.4;

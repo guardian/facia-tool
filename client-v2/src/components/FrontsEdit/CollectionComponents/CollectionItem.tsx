@@ -9,10 +9,7 @@ import {
   selectArticleFragment
 } from 'shared/selectors/shared';
 import collectionItemTypes from 'shared/constants/collectionItemTypes';
-import {
-  CollectionItemTypes,
-  CollectionItemDisplayTypes
-} from 'shared/types/Collection';
+import { CollectionItemTypes } from 'shared/types/Collection';
 import SnapLink from 'shared/components/snapLink/SnapLink';
 import {
   cloneArticleFragmentToTarget,
@@ -47,9 +44,9 @@ interface ContainerProps {
   onSelect: (uuid: string) => void;
   onDelete: () => void;
   parentId: string;
-  displayType?: CollectionItemDisplayTypes;
   size?: 'small' | 'default';
   isUneditable?: boolean;
+  showMeta?: boolean;
 }
 
 type ArticleContainerProps = ContainerProps & {
@@ -82,12 +79,12 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       getNodeProps,
       onSelect,
       onAddToClipboard = noop,
-      displayType,
       type,
       size,
       isUneditable,
       numSupportingArticles,
-      parentId
+      parentId,
+      showMeta
     } = this.props;
 
     switch (type) {
@@ -102,7 +99,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
             onClick={isUneditable ? undefined : () => onSelect(uuid)}
             fade={!isSelected}
             size={size}
-            displayType={displayType}
+            showMeta={showMeta}
             imageDropTypes={imageDropTypes}
             onImageDrop={this.handleImageDrop}
           >
@@ -129,7 +126,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
               onClick={isUneditable ? undefined : () => onSelect(uuid)}
               fade={!isSelected}
               size={size}
-              displayType={displayType}
+              showMeta={showMeta}
             />
             <Sublinks
               numSupportingArticles={numSupportingArticles}

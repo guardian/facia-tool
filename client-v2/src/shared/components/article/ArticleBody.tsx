@@ -1,5 +1,6 @@
 import React from 'react';
 import { styled } from 'shared/constants/theme';
+import { theme as styleTheme } from 'constants/theme';
 import startCase from 'lodash/startCase';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
 import CollectionItemHeading from '../collectionItem/CollectionItemHeading';
@@ -52,7 +53,7 @@ const ArticleHeadingContainerSmall = styled('div')`
 const ArticleBodyByline = styled('div')`
   font-family: TS3TextSans;
   font-weight: bold;
-  font-size: 15px;
+  font-size: ${styleTheme.shared.collectionItem.fontSizeDefault};
   font-style: italic;
   padding-top: 5px;
 `;
@@ -98,6 +99,7 @@ interface ArticleBodyProps {
   isBreaking?: boolean;
   type?: string;
   showBoostedHeadline?: boolean;
+  showMeta?: boolean;
 }
 
 const renderColouredQuotes = (
@@ -143,7 +145,8 @@ const articleBodyDefault = React.memo(
     isBreaking,
     type,
     uuid,
-    showBoostedHeadline
+    showBoostedHeadline,
+    showMeta = true
   }: ArticleBodyProps) => {
     const ArticleHeadingContainer =
       size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
@@ -153,44 +156,46 @@ const articleBodyDefault = React.memo(
 
     return (
       <>
-        <CollectionItemMetaContainer>
-          {displayPlaceholders && (
-            <>
-              <TextPlaceholder data-testid="loading-placeholder" />
-              {size === 'default' && <TextPlaceholder width={25} />}
-            </>
-          )}
-          {size === 'default' && isLive && (
-            <CollectionItemMetaHeading>
-              {startCase(sectionName)}
-            </CollectionItemMetaHeading>
-          )}
-          {type === 'liveblog' && (
-            <CollectionItemMetaContent>Liveblog</CollectionItemMetaContent>
-          )}
-          {!isLive && !displayPlaceholders && (
-            <NotLiveContainer>
-              {firstPublicationDate
-                ? notLiveLabels.takenDown
-                : notLiveLabels.draft}
-            </NotLiveContainer>
-          )}
-          {!!scheduledPublicationDate && !firstPublicationDate && (
-            <CollectionItemDraftMetaContent title="The time until this article is scheduled to be published.">
-              {distanceInWordsStrict(new Date(scheduledPublicationDate), now)}
-            </CollectionItemDraftMetaContent>
-          )}
-          {!!frontPublicationDate && (
-            <CollectionItemMetaContent title="The time elapsed since this article was added to this front.">
-              {distanceInWordsStrict(now, new Date(frontPublicationDate))}
-            </CollectionItemMetaContent>
-          )}
-          {!!firstPublicationDate && (
-            <FirstPublicationDate title="The time elapsed since this article was first published.">
-              {distanceInWordsStrict(new Date(firstPublicationDate), now)}
-            </FirstPublicationDate>
-          )}
-        </CollectionItemMetaContainer>
+        {showMeta && (
+          <CollectionItemMetaContainer>
+            {displayPlaceholders && (
+              <>
+                <TextPlaceholder data-testid="loading-placeholder" />
+                {size === 'default' && <TextPlaceholder width={25} />}
+              </>
+            )}
+            {size === 'default' && isLive && (
+              <CollectionItemMetaHeading>
+                {startCase(sectionName)}
+              </CollectionItemMetaHeading>
+            )}
+            {type === 'liveblog' && (
+              <CollectionItemMetaContent>Liveblog</CollectionItemMetaContent>
+            )}
+            {!isLive && !displayPlaceholders && (
+              <NotLiveContainer>
+                {firstPublicationDate
+                  ? notLiveLabels.takenDown
+                  : notLiveLabels.draft}
+              </NotLiveContainer>
+            )}
+            {!!scheduledPublicationDate && !firstPublicationDate && (
+              <CollectionItemDraftMetaContent title="The time until this article is scheduled to be published.">
+                {distanceInWordsStrict(new Date(scheduledPublicationDate), now)}
+              </CollectionItemDraftMetaContent>
+            )}
+            {!!frontPublicationDate && (
+              <CollectionItemMetaContent title="The time elapsed since this article was added to this front.">
+                {distanceInWordsStrict(now, new Date(frontPublicationDate))}
+              </CollectionItemMetaContent>
+            )}
+            {!!firstPublicationDate && (
+              <FirstPublicationDate title="The time elapsed since this article was first published.">
+                {distanceInWordsStrict(new Date(firstPublicationDate), now)}
+              </FirstPublicationDate>
+            )}
+          </CollectionItemMetaContainer>
+        )}
         <CollectionItemContent displaySize={size}>
           <ArticleHeadingContainer>
             {displayPlaceholders && (

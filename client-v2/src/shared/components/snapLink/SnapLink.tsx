@@ -19,8 +19,6 @@ import { State } from '../../types/State';
 import CollectionItemHeading from '../collectionItem/CollectionItemHeading';
 import CollectionItemContent from '../collectionItem/CollectionItemContent';
 import CollectionItemBody from '../collectionItem/CollectionItemBody';
-import PolaroidThumbnail from '../PolaroidThumbnail';
-import { CollectionItemDisplayTypes } from 'shared/types/Collection';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
 
 const SnapLinkBodyContainer = styled(CollectionItemBody)`
@@ -38,7 +36,7 @@ interface ContainerProps {
   id: string;
   draggable?: boolean;
   size?: CollectionItemSizes;
-  displayType?: CollectionItemDisplayTypes;
+  showMeta?: boolean;
   fade?: boolean;
   children?: React.ReactNode;
   isUneditable?: boolean;
@@ -48,15 +46,11 @@ interface SnapLinkProps extends ContainerProps {
   articleFragment: ArticleFragment;
 }
 
-const SnapThumbnail = styled(ThumbnailSmall)`
-  align-self: flex-end;
-`;
-
 const SnapLink = ({
   id,
   fade,
   size = 'default',
-  displayType = 'default',
+  showMeta = true,
   onDelete,
   children,
   articleFragment,
@@ -70,13 +64,8 @@ const SnapLink = ({
       : 'No headline');
   return (
     <CollectionItemContainer {...rest}>
-      <SnapLinkBodyContainer
-        data-testid="snap"
-        size={size}
-        fade={fade}
-        displayType={displayType}
-      >
-        {displayType === 'default' && (
+      <SnapLinkBodyContainer data-testid="snap" size={size} fade={fade}>
+        {showMeta && (
           <CollectionItemMetaContainer>
             <CollectionItemMetaHeading>Snap link</CollectionItemMetaHeading>
             <CollectionItemMetaContent>
@@ -84,23 +73,13 @@ const SnapLink = ({
             </CollectionItemMetaContent>
           </CollectionItemMetaContainer>
         )}
-        {size === 'default' && displayType === 'polaroid' && (
-          <PolaroidThumbnail />
-        )}
-        <CollectionItemContent displayType={displayType}>
-          {displayType === 'default' ? (
-            <CollectionItemHeading html>{headline}</CollectionItemHeading>
-          ) : (
-            <>
-              <strong>Snap link </strong>
-              {headline}
-            </>
-          )}
+        <CollectionItemContent>
+          <CollectionItemHeading html>{headline}</CollectionItemHeading>
         </CollectionItemContent>
-        {size === 'default' && displayType === 'default' && <SnapThumbnail />}
+        {size === 'default' && <ThumbnailSmall />}
         <HoverActionsAreaOverlay
           disabled={isUneditable}
-          justify={displayType === 'polaroid' ? 'flex-end' : 'space-between'}
+          justify={'space-between'}
         >
           <HoverActionsButtonWrapper
             buttons={[{ text: 'Delete', component: HoverDeleteButton }]}

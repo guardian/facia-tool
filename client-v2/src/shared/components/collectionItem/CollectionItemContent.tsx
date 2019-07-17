@@ -1,11 +1,7 @@
 import styled from 'styled-components';
-import {
-  CollectionItemDisplayTypes,
-  CollectionItemSizes
-} from 'shared/types/Collection';
+import { CollectionItemSizes } from 'shared/types/Collection';
 
 const CollectionItemContent = styled('div')<{
-  displayType?: CollectionItemDisplayTypes;
   displaySize?: CollectionItemSizes;
 }>`
   position: relative;
@@ -14,9 +10,5 @@ const CollectionItemContent = styled('div')<{
   hyphens: auto;
   word-break: break-word;
 `;
-
-CollectionItemContent.defaultProps = {
-  displayType: 'default'
-};
 
 export default CollectionItemContent;

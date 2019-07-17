@@ -1,6 +1,5 @@
 import React from 'react';
-import { css } from 'styled-components';
-import { styled, theme as styleTheme } from 'constants/theme';
+import { styled, theme as styleTheme, css } from 'constants/theme';
 
 import ButtonCircular from 'shared/components/input/ButtonCircular';
 import { MoreIcon, StarIcon } from 'shared/components/icons/Icons';
@@ -21,7 +20,7 @@ interface Props {
 }
 
 const ButtonAdd = styled(ButtonCircular)`
-  background-color: ${({ theme }) => theme.base.colors.frontListButton};
+  background-color: ${({ theme }) => theme.front.frontListButton};
   position: absolute;
   top: 8px;
   right: 5px;
@@ -71,23 +70,22 @@ const ListItem = styled('li')<{ isActive?: boolean; isStarred?: boolean }>`
   font-family: TS3TextSans;
   font-size: 16px;
   line-height: 20px;
-  border-bottom: ${({ theme }) =>
-    `solid 1px ${theme.base.colors.frontListBorder}`};
+  border-bottom: ${({ theme }) => `solid 1px ${theme.front.frontListBorder}`};
   ${({ isActive }) =>
     isActive &&
     css`
       cursor: pointer;
       :hover {
-        background-color: ${({ theme }) => theme.base.colors.frontListButton};
+        background-color: ${({ theme }) => theme.front.frontListButton};
       }
       :hover ${ButtonFavorite} {
-        background-color: ${({ theme }) => theme.base.colors.frontListButton};
+        background-color: ${({ theme }) => theme.front.frontListButton};
       }
       :hover svg .fill {
         fill: ${({ theme, isStarred }) =>
           isStarred
-            ? theme.base.colors.orangeLight
-            : theme.base.colors.frontListButton};
+            ? theme.shared.colors.orangeLight
+            : theme.front.frontListButton};
       }
     `};
 `;
@@ -99,7 +97,7 @@ const ListLabel = styled('span')<{ isActive?: boolean }>`
   ${({ isActive }) =>
     !isActive &&
     css`
-      color: ${({ theme }) => theme.base.colors.frontListLabel};
+      color: ${({ theme }) => theme.front.frontListLabel};
     `};
 `;
 

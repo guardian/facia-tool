@@ -59,7 +59,7 @@ const ControlRadio = styled('label')<{ inline?: boolean; checked?: boolean }>`
       pointer-events: none;
       opacity: 0.6;
       background:${({ theme }) =>
-        theme.base.colors.radioButtonBackgroundDisabled};
+        theme.shared.input.radioButtonBackgroundDisabled};
     }
   }
 

@@ -56,7 +56,7 @@ const Title = styled(`h2`)`
   margin: 2px 0 0;
   vertical-align: top;
   font-family: TS3TextSans;
-  font-size: 15px;
+  font-size: ${styleTheme.shared.collectionItem.fontSizeDefault};
   ${media.large`font-size: 13px;`}
   font-weight: normal;
 `;

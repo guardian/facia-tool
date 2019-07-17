@@ -14,12 +14,8 @@ import { DerivedArticle } from '../../types/Article';
 import CollectionItemBody from '../collectionItem/CollectionItemBody';
 import CollectionItemContainer from '../collectionItem/CollectionItemContainer';
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
-import ArticleBodyPolaroid from './ArticleBodyPolaroid';
-import ArticleBodyDefault, { ArticleBodyProps } from './ArticleBodyDefault';
-import {
-  CollectionItemDisplayTypes,
-  CollectionItemSizes
-} from 'shared/types/Collection';
+import ArticleBody from './ArticleBody';
+import { CollectionItemSizes } from 'shared/types/Collection';
 import { getPillarColor } from 'shared/util/getPillarColor';
 import DragIntentContainer from '../DragIntentContainer';
 import ImageDragIntentIndicator from '../ImageDragIntentIndicator';
@@ -60,6 +56,7 @@ interface ArticleComponentProps {
   onClick?: () => void;
   onAddToClipboard?: () => void;
   isUneditable?: boolean;
+  showMeta?: boolean;
 }
 
 interface ContainerProps extends ArticleComponentProps {
@@ -69,19 +66,11 @@ interface ContainerProps extends ArticleComponentProps {
 type ComponentProps = {
   article?: DerivedArticle;
   isLoading?: boolean;
-  displayType?: CollectionItemDisplayTypes;
   size?: CollectionItemSizes;
   children: React.ReactNode;
   imageDropTypes?: string[];
   onImageDrop?: (e: React.DragEvent<HTMLElement>) => void;
 } & ContainerProps;
-
-const articleBodyComponentMap: {
-  [id: string]: React.ComponentType<ArticleBodyProps>;
-} = {
-  default: ArticleBodyDefault,
-  polaroid: ArticleBodyPolaroid
-};
 
 interface ComponentState {
   isDraggingImageOver: boolean;
@@ -102,7 +91,6 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
   public render() {
     const {
       id,
-      displayType = 'default',
       isLoading,
       article,
       size = 'default',
@@ -118,9 +106,9 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
       children,
       isUneditable,
       imageDropTypes = [],
-      onImageDrop
+      onImageDrop,
+      showMeta
     } = this.props;
-    const ArticleBody = articleBodyComponentMap[displayType];
 
     const dragEventHasImageData = (e: React.DragEvent) =>
       e.dataTransfer.types.some(dataTransferType =>
@@ -169,7 +157,6 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
               data-testid="article-body"
               size={size}
               fade={fade}
-              displayType={displayType}
               pillarId={article && article.pillarId}
               isLive={!!article && article.isLive}
               isDraggingImageOver={this.state.isDraggingImageOver}
@@ -181,6 +168,7 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
                 onDelete={onDelete}
                 onAddToClipboard={onAddToClipboard}
                 displayPlaceholders={isLoading}
+                showMeta={showMeta}
               />
               <ImageDragIntentIndicator />
             </ArticleBodyContainer>

@@ -75,7 +75,12 @@ const input = {
   checkboxColorInactive: base.colors.backgroundColorLight,
   checkboxBorderColorInactive: base.colors.borderColor,
   checkboxColorActive: base.colors.highlightColor,
-  placeholderText: base.colors.placeholderDark
+  placeholderText: base.colors.placeholderDark,
+  radioButtonBackgroundDisabled: '#E6E6E6'
+};
+
+const collection = {
+  background: '#e5e5e5'
 };
 
 const label = {
@@ -84,17 +89,26 @@ const label = {
   lineHeight: '24px'
 };
 
+const collectionItem = {
+  fontSizeDefault: '14px',
+  fontSizeSmall: '13px',
+  dropZone: '#D6D6D6'
+};
+
 export const theme = {
   colors,
   base,
   button,
   input,
-  label
+  label,
+  collectionItem,
+  collection
 };
 
 export type Theme = typeof theme;
 interface SharedTheme {
   shared: Theme;
 }
+
 export const styled = baseStyled as ThemedStyledInterface<SharedTheme>;
 export const css = baseCss as ThemedCssFunction<SharedTheme>;
