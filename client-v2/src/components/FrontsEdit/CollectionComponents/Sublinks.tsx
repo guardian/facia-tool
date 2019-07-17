@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'shared/constants/theme';
+import { styled, theme } from 'constants/theme';
 
 import CollectionItemBody from 'shared/components/collectionItem/CollectionItemBody';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
@@ -12,36 +12,28 @@ import { collectionDropTypeBlacklist } from 'constants/fronts';
 
 const SublinkCollectionItemBody = styled(CollectionItemBody)<{
   dragHoverActive: boolean;
-  isClipboard: boolean;
 }>`
   display: flex;
   min-height: 30px;
-  border-top: ${({ isClipboard }) =>
-    isClipboard ? 'none' : '1px solid #c9c9c9'};
-  background-color: ${({ isClipboard, dragHoverActive }) =>
-    dragHoverActive ? `#ededed` : isClipboard ? '#f6f6f6' : '#fff'};
-  flex-direction: ${({ isClipboard }) => (isClipboard ? 'column' : 'row')};
+  border-top: 1px solid ${theme.shared.colors.greyLightPinkish};
+  background-color: ${({ dragHoverActive }) =>
+    dragHoverActive ? theme.shared.collectionItem.backgroundHover : theme.shared.colors.white};
+  flex-direction: row;
   span {
     font-size: 12px;
     font-weight: normal;
   }
   :hover {
-    background-color: #ededed;
+    background-color: ${theme.shared.collectionItem.backgroundHover};
   }
 `;
 
 const SublinkCollectionItemContent = styled(CollectionItemContent)<{
-  isClipboard: boolean;
+  showMeta: boolean;
 }>`
-  width: ${({ isClipboard }) => (isClipboard ? `auto` : `calc(100% - 100px)`)};
-  padding-left: ${({ isClipboard }) => (isClipboard ? `2px` : `8px`)};
-`;
-
-const SupportingDivider = styled('hr')`
-  border: 0;
-  border-top: 1px solid #ccc;
-  margin: 0.5em 0 0.25em;
-  width: 50%;
+  width: ${({ showMeta: showMeta }) =>
+    showMeta ? `auto` : `calc(100% - 100px)`};
+  padding-left: 8px;
 `;
 
 interface SublinkProps {
@@ -88,14 +80,11 @@ class Sublinks extends React.Component<SublinkProps> {
             >
               <SublinkCollectionItemBody
                 dragHoverActive={this.state.dragHoverActive}
-                isClipboard={isClipboard}
               >
                 {!isClipboard && <CollectionItemMetaContainer />}
-                {isClipboard && <SupportingDivider />}
                 <SublinkCollectionItemContent
                   displaySize="small"
-                  displayType="default"
-                  isClipboard={isClipboard}
+                  showMeta={isClipboard}
                 >
                   <span>
                     {numSupportingArticles} sublink

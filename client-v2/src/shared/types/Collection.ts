@@ -14,7 +14,6 @@ type CollectionItemSets = 'draft' | 'live' | 'previously';
 type Stages = 'draft' | 'live';
 
 type CollectionItemTypes = 'SNAP_LINK' | 'ARTICLE';
-type CollectionItemDisplayTypes = 'default' | 'polaroid';
 type CollectionItemSizes = 'default' | 'small';
 
 interface NestedArticleFragmentRootFields {
@@ -143,7 +142,6 @@ export {
   CollectionFromResponse,
   Collection,
   CollectionItemTypes,
-  CollectionItemDisplayTypes,
   CollectionItemSizes,
   Group,
   Stages,

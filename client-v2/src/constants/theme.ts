@@ -5,7 +5,11 @@
  *  with : `import { styled } from 'constants/theme';`
  */
 import { theme as shared } from 'shared/constants/theme';
-import baseStyled, { ThemedStyledInterface } from 'styled-components';
+import baseStyled, {
+  css as baseCss,
+  ThemedStyledInterface,
+  ThemedCssFunction
+} from 'styled-components';
 
 const base = {
   colors: {
@@ -34,6 +38,16 @@ const capiInterface = {
   backgroundSelected: shared.colors.orange
 };
 
+const front = {
+  frontListBorder: '#5E5E5E',
+  frontListLabel: shared.colors.greyMediumLight,
+  frontListButton: shared.colors.greyDark
+};
+
+const form = {
+  formBackground: '#dcdcdc'
+};
+
 const layout = {
   sectionHeaderHeight: 40
 };
@@ -41,9 +55,13 @@ const layout = {
 export const theme = {
   shared,
   base,
+  front,
+  form,
   capiInterface,
   layout
 };
 
 export type Theme = typeof theme;
+
+export const css = baseCss as ThemedCssFunction<Theme>;
 export const styled = baseStyled as ThemedStyledInterface<Theme>;

@@ -2,6 +2,7 @@ import React from 'react';
 import { styled } from 'shared/constants/theme';
 import { sanitizeHTML } from 'shared/util/sanitizeHTML';
 import { media } from 'shared/util/mediaQueries';
+import { theme } from 'constants/theme';
 
 const Wrapper = styled('span')<{
   displaySize?: 'small' | 'default';
@@ -10,14 +11,13 @@ const Wrapper = styled('span')<{
   font-family: TS3TextSans;
   font-weight: normal;
   padding-top: 2px;
-  font-size: ${({ displaySize, showBoostedHeadline }) => {
+  ${({ displaySize, showBoostedHeadline }) => {
     if (displaySize === 'small') {
-      return '13px';
+      return `font-size: ${theme.shared.collectionItem.fontSizeSmall}`;
     }
     if (showBoostedHeadline) {
-      return '18px';
+      return `font-size: 18px`;
     }
-    return '15px';
   }};
   ${media.large`font-size: 13px;`}
 `;

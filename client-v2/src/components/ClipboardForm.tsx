@@ -20,7 +20,7 @@ interface Props {
   clearArticleFragmentSelection: () => void;
 }
 
-const ClipboardMeta = (props: Props) => {
+const ClipboardForm = (props: Props) => {
   const { selectedArticleFragment } = props;
   return selectedArticleFragment ? (
     <ArticleFragmentForm
@@ -66,4 +66,4 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps,
   mergeProps
-)(ClipboardMeta);
+)(ClipboardForm);

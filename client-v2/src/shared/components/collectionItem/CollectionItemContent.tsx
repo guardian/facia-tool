@@ -1,22 +1,19 @@
 import styled from 'styled-components';
-import {
-  CollectionItemDisplayTypes,
-  CollectionItemSizes
-} from 'shared/types/Collection';
+import { CollectionItemSizes } from 'shared/types/Collection';
 
 const CollectionItemContent = styled('div')<{
-  displayType?: CollectionItemDisplayTypes;
   displaySize?: CollectionItemSizes;
+  textSize?: CollectionItemSizes;
 }>`
   position: relative;
   padding: 0 8px;
+  font-size: ${({ textSize, theme }) =>
+    textSize === 'small'
+      ? theme.shared.collectionItem.fontSizeSmall
+      : theme.shared.collectionItem.fontSizeDefault};
   flex-basis: 100%;
   hyphens: auto;
   word-break: break-word;
 `;
-
-CollectionItemContent.defaultProps = {
-  displayType: 'default'
-};
 
 export default CollectionItemContent;

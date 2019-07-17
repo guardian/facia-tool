@@ -22,8 +22,7 @@ const FrontsMenuContent = styled('div')`
 const FrontsMenuHeading = styled(LargeSectionHeader)`
   padding: 10px;
   margin: 0 10px 10px;
-  border-bottom: ${({ theme }) =>
-    `solid 1px ${theme.base.colors.frontListBorder}`};
+  border-bottom: ${({ theme }) => `solid 1px ${theme.front.frontListBorder}`};
 `;
 
 const FrontsMenuSubHeading = styled('div')`
@@ -33,8 +32,7 @@ const FrontsMenuSubHeading = styled('div')`
   line-height: 30px;
   font-weight: bold;
   color: ${({ theme }) => theme.shared.colors.orangeLight};
-  border-bottom: ${({ theme }) =>
-    `solid 1px ${theme.base.colors.frontListBorder}`};
+  border-bottom: ${({ theme }) => `solid 1px ${theme.front.frontListBorder}`};
   max-height: 100%;
 `;
 

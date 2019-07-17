@@ -3,7 +3,6 @@ import { Level, LevelChild, MoveHandler, DropHandler } from 'lib/dnd';
 import { State } from 'types/State';
 import { connect } from 'react-redux';
 import { ArticleFragment } from 'shared/types/Collection';
-import { CollectionItemDisplayTypes } from 'shared/types/Collection';
 import ArticleDrag, {
   dragOffsetX,
   dragOffsetY
@@ -21,7 +20,6 @@ interface OuterProps {
   children: LevelChild<ArticleFragment>;
   onMove: MoveHandler<ArticleFragment>;
   onDrop: DropHandler;
-  displayType?: CollectionItemDisplayTypes;
   isUneditable?: boolean;
 }
 
@@ -37,12 +35,6 @@ const ArticleFragmentDropContainer = styled(DefaultDropContainer)`
   height: 30px;
 `;
 
-const PolaroidArticleFragmentDropContainer = styled(DefaultDropContainer)`
-  margin-top: -30px;
-  height: 30px;
-  margin-left: 20px;
-`;
-
 const ArticleFragmentDropIndicator = styled(DefaultDropIndicator)`
   position: absolute;
   width: 100%;
@@ -55,7 +47,6 @@ const ArticleFragmentLevel = ({
   supporting,
   onMove,
   onDrop,
-  displayType = 'default',
   isUneditable
 }: Props) => (
   <Level
@@ -81,11 +72,7 @@ const ArticleFragmentLevel = ({
               override={isTarget}
               dropColor={theme.base.colors.dropZoneActiveSublink}
               dropMessage={'Sublink'}
-              dropContainer={
-                displayType === 'default'
-                  ? ArticleFragmentDropContainer
-                  : PolaroidArticleFragmentDropContainer
-              }
+              dropContainer={ArticleFragmentDropContainer}
               dropIndicator={ArticleFragmentDropIndicator}
             />
           )
