@@ -17,7 +17,9 @@ const SublinkCollectionItemBody = styled(CollectionItemBody)<{
   min-height: 30px;
   border-top: 1px solid ${theme.shared.colors.greyLightPinkish};
   background-color: ${({ dragHoverActive }) =>
-    dragHoverActive ? theme.shared.collectionItem.backgroundHover : theme.shared.colors.white};
+    dragHoverActive
+      ? theme.shared.collectionItem.backgroundHover
+      : theme.shared.colors.white};
   flex-direction: row;
   span {
     font-size: 12px;
