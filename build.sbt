@@ -118,7 +118,11 @@ libraryDependencies ++= Seq(
 val editionsCommon = (project in file("./editions-common"))
     .settings(
         name := "editions-common",
-        version := "0.1.0"
+        version := "0.1.0",
+        libraryDependencies ++= Seq(
+            "com.beachape" %% "enumeratum" % enumeratumPlayVersion,
+            "com.beachape" %% "enumeratum-play" % enumeratumPlayVersion
+        )
     )
 
 lazy val root = (project in file("."))

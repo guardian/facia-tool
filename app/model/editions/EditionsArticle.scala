@@ -1,16 +1,18 @@
 package model.editions
 
-import com.gu.editions.{PublishedArticle, PublishedFurniture, MediaUrl}
+import com.gu.editions.{PublishedArticle, PublishedFurniture, PublishedImage, PublishedMediaType}
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
 case class Image (
-  height: String,
-  width: String,
+  height: Int,
+  width: Int,
   origin: String,
   src: String,
   thumb: Option[String] = None
-)
+) {
+  def toPublishedImage: PublishedImage = PublishedImage(height,width,src)
+}
 
 object Image{
   implicit val format = Json.format[Image]
@@ -24,7 +26,7 @@ case class ArticleMetadata (
   showByline: Option[Boolean],
   byline: Option[String],
 
-  imageOption: Option[ImageOption],
+  mediaType: Option[MediaType],
 
   // keep overrides even if not used so user can switch back w/out needing to re-crop
   cutoutImage: Option[Image],
@@ -38,17 +40,17 @@ object ArticleMetadata {
 
 case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[ArticleMetadata]) {
   def toPublishedArticle: PublishedArticle = {
-    val imageSrcOverride: Option[MediaUrl] = metadata.flatMap(meta => {
-      meta.imageOption match {
-        case Some(ImageOption.Replace) => meta.replaceImage.map(i => MediaUrl(i.src))
-        case Some(ImageOption.ReplaceCutout) => meta.cutoutImage.map(i => MediaUrl(i.src))
+    val imageSrcOverride: Option[PublishedImage] = metadata.flatMap(meta => {
+      meta.mediaType match {
+        case Some(MediaType.Image) => meta.replaceImage.map(_.toPublishedImage)
+        case Some(MediaType.Cutout) => meta.cutoutImage.map(_.toPublishedImage)
         case _ => None
       }
     })
 
-    val slideshowImages: Option[List[MediaUrl]] = metadata.flatMap(meta => {
-      meta.imageOption match {
-        case Some(ImageOption.ReplaceSlideshow) => meta.slideshowImages.map(_.map(i => MediaUrl(i.src)))
+    val slideshowImages: Option[List[PublishedImage]] = metadata.flatMap(meta => {
+      meta.mediaType match {
+        case Some(MediaType.Slideshow) => meta.slideshowImages.map(_.map(_.toPublishedImage))
         case _ => None
       }
     })
@@ -62,6 +64,7 @@ case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[Art
         bylineOverride = metadata.flatMap(_.byline),
         showByline = metadata.flatMap(_.showByline).getOrElse(false),
         showQuotedHeadline = metadata.flatMap(_.showQuotedHeadline).getOrElse(false),
+        mediaType = metadata.flatMap(_.mediaType).map(_.toPublishedMediaType).getOrElse(PublishedMediaType.UseArticleTrail),
         imageSrcOverride = imageSrcOverride,
         slideshowImages = slideshowImages
       )

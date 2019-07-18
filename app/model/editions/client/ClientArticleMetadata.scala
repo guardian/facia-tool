@@ -1,6 +1,6 @@
 package model.editions.client
 
-import model.editions.{ArticleMetadata, Image, ImageOption}
+import model.editions.{ArticleMetadata, Image, MediaType}
 import play.api.libs.json.Json
 
 // This is a subset of the shared model here - https://github.com/guardian/facia-scala-client/blob/master/facia-json/src/main/scala/com/gu/facia/client/models/Collection.scala#L18
@@ -34,21 +34,21 @@ case class ClientArticleMetadata (
 ) {
   def toArticleMetadata: ArticleMetadata = {
     val cutoutImage: Option[Image] = (imageCutoutSrcHeight, imageCutoutSrcWidth, imageCutoutSrc, imageCutoutSrcOrigin) match {
-      case (Some(height), Some(width), Some(src), Some(origin)) => Some(Image(height, width, origin, src))
+      case (Some(height), Some(width), Some(src), Some(origin)) => Some(Image(height.toInt, width.toInt, origin, src))
       case _ => None
     }
 
     val replaceImage: Option[Image] = (imageSrcHeight, imageSrcWidth, imageSrc, imageSrcOrigin, imageSrcThumb) match {
-      case (Some(height), Some(width), Some(src), Some(origin), Some(thumb)) => Some(Image(height, width, origin, src, Some(thumb)))
+      case (Some(height), Some(width), Some(src), Some(origin), Some(thumb)) => Some(Image(height.toInt, width.toInt, origin, src, Some(thumb)))
       case _ => None
     }
 
     val imageOption = (imageHide, imageReplace, imageCutoutReplace, imageSlideshowReplace) match {
-      case (Some(true), _, _, _) => ImageOption.Hide
-      case (_, Some(true), _, _) => ImageOption.Replace
-      case (_, _, Some(true), _) => ImageOption.ReplaceCutout
-      case (_, _, _, Some(true)) => ImageOption.ReplaceSlideshow
-      case _ => ImageOption.UseArticleTrail
+      case (Some(true), _, _, _) => MediaType.Hide
+      case (_, Some(true), _, _) => MediaType.Image
+      case (_, _, Some(true), _) => MediaType.Cutout
+      case (_, _, _, Some(true)) => MediaType.Slideshow
+      case _ => MediaType.UseArticleTrail
     }
 
     ArticleMetadata(
@@ -70,7 +70,7 @@ object ClientArticleMetadata {
   implicit val format = Json.format[ClientArticleMetadata]
 
   def fromArticleMetadata(articleMetadata: ArticleMetadata): ClientArticleMetadata = {
-    val imgOpt: ImageOption = articleMetadata.imageOption.getOrElse(ImageOption.UseArticleTrail)
+    val mediaType: MediaType = articleMetadata.mediaType.getOrElse(MediaType.UseArticleTrail)
 
     ClientArticleMetadata(
       articleMetadata.headline,
@@ -81,22 +81,22 @@ object ClientArticleMetadata {
       articleMetadata.showByline,
       articleMetadata.byline,
 
-      articleMetadata.imageOption.collect{ case ImageOption.Hide => true },
+      articleMetadata.mediaType.collect{ case MediaType.Hide => true },
 
-      articleMetadata.replaceImage.map(_ => imgOpt == ImageOption.Replace),
+      articleMetadata.replaceImage.map(_ => mediaType == MediaType.Image),
       articleMetadata.replaceImage.map(_.src),
-      articleMetadata.replaceImage.map(_.height),
-      articleMetadata.replaceImage.map(_.width),
+      articleMetadata.replaceImage.map(_.height.toString),
+      articleMetadata.replaceImage.map(_.width.toString),
       articleMetadata.replaceImage.map(_.origin),
       articleMetadata.replaceImage.flatMap(_.thumb),
 
-      articleMetadata.cutoutImage.map(_ => imgOpt == ImageOption.ReplaceCutout),
+      articleMetadata.cutoutImage.map(_ => mediaType == MediaType.Cutout),
       articleMetadata.cutoutImage.map(_.src),
-      articleMetadata.cutoutImage.map(_.height),
-      articleMetadata.cutoutImage.map(_.width),
+      articleMetadata.cutoutImage.map(_.height.toString),
+      articleMetadata.cutoutImage.map(_.width.toString),
       articleMetadata.cutoutImage.map(_.origin),
 
-      articleMetadata.slideshowImages.map(_ => imgOpt == ImageOption.ReplaceSlideshow),
+      articleMetadata.slideshowImages.map(_ => mediaType == MediaType.Slideshow),
       articleMetadata.slideshowImages
     )
   }

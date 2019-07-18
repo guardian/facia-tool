@@ -1,6 +1,6 @@
 package model.editions.client
 
-import model.editions.{ArticleMetadata, Image, ImageOption}
+import model.editions.{ArticleMetadata, Image, MediaType}
 import org.scalatest.{FreeSpec, Matchers}
 
 class ClientArticleMetadataTest extends FreeSpec with Matchers {
@@ -44,8 +44,8 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         None,
         None,
         None,
-        Some(ImageOption.Hide),
-        Some(Image("100", "100", "file://origin-new-pokemon.gif", "file://new-pokemon.gif")),
+        Some(MediaType.Hide),
+        Some(Image(100, 100, "file://origin-new-pokemon.gif", "file://new-pokemon.gif")),
         None,
         None
       )
@@ -75,12 +75,12 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         None,
         None,
         None,
-        Some(ImageOption.Replace),
+        Some(MediaType.Image),
         None,
-        Some(Image("100", "100", "file://elephant.jpg", "file://elephant.png")),
+        Some(Image(100, 100, "file://elephant.jpg", "file://elephant.png")),
         Some(List(
-          Image("100", "100", "file://elephant-playing-in-mud.jpg", "file://elephant-playing-in-mud.png"),
-          Image("100", "100", "file://elephant-spraying-water.jpg", "file://elephant-spraying-water.png")
+          Image(100, 100, "file://elephant-playing-in-mud.jpg", "file://elephant-playing-in-mud.png"),
+          Image(100, 100, "file://elephant-spraying-water.jpg", "file://elephant-spraying-water.png")
         ))
       )
 
@@ -99,8 +99,8 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
 
       clientArticleMetadata.imageSlideshowReplace shouldBe Some(false)
       clientArticleMetadata.slideshow shouldBe Some(List(
-        Image("100", "100", "file://elephant-playing-in-mud.jpg", "file://elephant-playing-in-mud.png"),
-        Image("100", "100", "file://elephant-spraying-water.jpg", "file://elephant-spraying-water.png")
+        Image(100, 100, "file://elephant-playing-in-mud.jpg", "file://elephant-playing-in-mud.png"),
+        Image(100, 100, "file://elephant-spraying-water.jpg", "file://elephant-spraying-water.png")
       ))
     }
 
@@ -112,7 +112,7 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         None,
         None,
         None,
-        Some(ImageOption.Replace),
+        Some(MediaType.Image),
         None,
         None,
         None
@@ -155,19 +155,19 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
       articleMetadata.headline.isDefined shouldBe true
       articleMetadata.headline.get shouldBe "New Harry Potter book being written"
 
-      articleMetadata.imageOption.isDefined shouldBe true
-      articleMetadata.imageOption.get shouldBe ImageOption.Replace
+      articleMetadata.mediaType.isDefined shouldBe true
+      articleMetadata.mediaType.get shouldBe MediaType.Image
       articleMetadata.replaceImage shouldBe Some(Image(
-        "100",
-        "100",
+        100,
+        100,
         "file://lightning.gif",
         "file://lightning.jpg",
         Some("file://lightning.png")
       ))
 
       articleMetadata.cutoutImage shouldBe Some(Image(
-        "100",
-        "100",
+        100,
+        100,
         "file://broom.gif",
         "file://broom.jpg"
       ))
