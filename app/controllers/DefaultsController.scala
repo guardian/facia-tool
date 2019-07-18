@@ -1,7 +1,7 @@
 package controllers
 
-import com.gu.facia.client.models.{Trail, Metadata}
-import model.Cached
+import com.gu.facia.client.models.{Metadata, Trail}
+import model.{Cached, FeatureSwitch, UserDataForDefaults}
 import permissions.Permissions
 import play.api.libs.json.{JsValue, Json}
 import switchboard.SwitchManager
@@ -28,10 +28,7 @@ case class Defaults(
   navListCap: Int,
   navListType: String,
   collectionMetadata: Iterable[Metadata],
-  clipboardArticles: Option[List[Trail]],
-  frontIds: Option[List[String]],
-  frontIdsByPriority: Option[Map[String, List[String]]],
-  favouriteFrontIdsByPriority: Option[Map[String, List[String]]],
+  userData: Option[UserDataForDefaults],
   capiLiveUrl: String = "",
   capiPreviewUrl: String = ""
 )
@@ -66,9 +63,6 @@ class DefaultsController(val acl: Acl, val isDev: Boolean, val deps: BaseFaciaCo
         Metadata.tags.map{
           case (_, meta) => meta
         },
-        None,
-        None,
-        None,
         None
       )))
     }

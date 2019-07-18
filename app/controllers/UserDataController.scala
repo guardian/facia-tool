@@ -4,7 +4,7 @@ import com.gu.facia.client.models.Trail
 import com.gu.scanamo._
 import com.gu.scanamo.syntax._
 import services.{Dynamo, FrontsApi}
-import model.{PutFeatureStatus, UserData}
+import model.{FeatureSwitch, FeatureSwitches, UserData}
 import play.api.Logger
 import play.api.libs.json.JsValue
 
@@ -100,15 +100,25 @@ class UserDataController(frontsApi: FrontsApi, dynamo: Dynamo, val deps: BaseFac
     })
   }
 
-  def putFeature() = APIAuthAction { request =>
-    val maybeFeatureStatus: Option[PutFeatureStatus] = request.body.asJson.flatMap(
-      _.asOpt[PutFeatureStatus])
-    maybeFeatureStatus match {
-      case Some(featureStatus) =>
-        Scanamo.exec(dynamo.client)(userDataTable.update(
-          'email -> request.user.email,
-          set(Symbol(featureStatus.featureName) -> featureStatus.enabled)))
-        Ok
+  def putFeatureSwitch() = APIAuthAction { request =>
+    val maybeFeatureSwitch: Option[FeatureSwitch] = request.body.asJson.flatMap(
+      _.asOpt[FeatureSwitch])
+    val maybeUserData: Option[UserData] = Scanamo.exec(dynamo.client)(
+      userDataTable.get('email -> request.user.email)).flatMap(_.right.toOption)
+
+    (maybeUserData, maybeFeatureSwitch) match {
+      case (Some(userData), Some(featureSwitch)) =>
+        if (FeatureSwitches.all.map(_.key).contains(featureSwitch.key)) {
+          val featureSwitches = userData.featureSwitches.getOrElse(List.empty).map { switch => {
+            if (switch.key != featureSwitch.key) { switch } else { featureSwitch }
+          }}
+          Scanamo.exec(dynamo.client)(userDataTable.update(
+            'email -> request.user.email,
+            set('featureSwitches -> featureSwitches)))
+          Ok
+        } else {
+          BadRequest(s"Feature with key ${featureSwitch.key} not found")
+        }
       case _ => BadRequest
     }
   }

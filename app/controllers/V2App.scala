@@ -2,7 +2,7 @@ package controllers
 
 import com.gu.scanamo._
 import com.gu.scanamo.syntax._
-import model.UserData
+import model.{FeatureSwitch, UserData, UserDataForDefaults}
 
 import scala.concurrent.ExecutionContext
 import com.gu.facia.client.models.Metadata
@@ -45,6 +45,7 @@ class V2App(isDev: Boolean, val acl: Acl, dynamo: Dynamo, val deps: BaseFaciaCon
     else
       maybeUserData.map(_.clipboardArticles.getOrElse(List()))
 
+    val maybeUserDataForDefaults = maybeUserData.map { data => UserDataForDefaults.fromUserData(data, clipboardArticles) }
 
     val conf = Defaults(
       isDev,
@@ -65,10 +66,7 @@ class V2App(isDev: Boolean, val acl: Acl, dynamo: Dynamo, val deps: BaseFaciaCon
       Metadata.tags.map {
         case (_, meta) => meta
       },
-      clipboardArticles,
-      maybeUserData.map(_.frontIds.getOrElse(List())),
-      maybeUserData.map(_.frontIdsByPriority.getOrElse(Map())),
-      maybeUserData.map(_.favouriteFrontIdsByPriority.getOrElse(Map())),
+      maybeUserDataForDefaults,
       routes.FaciaContentApiProxy.capiLive("").absoluteURL(true),
       routes.FaciaContentApiProxy.capiPreview("").absoluteURL(true)
     )
