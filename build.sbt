@@ -104,6 +104,7 @@ libraryDependencies ++= Seq(
     "org.julienrf" %% "play-json-derived-codecs" % "4.0.0",
     "org.json4s" %% "json4s-native" % json4sVersion,
     "org.json4s" %% "json4s-jackson" % json4sVersion,
+    "org.scalatest" %% "scalatest" % "3.0.5" % "test",
     "com.typesafe.play" %% "play-json-joda" % "2.6.9",
 
     "org.postgresql"           %  "postgresql"                   % "42.2.5",
@@ -111,11 +112,7 @@ libraryDependencies ++= Seq(
     "org.scalikejdbc"          %% "scalikejdbc-config"           % "3.1.0",
     "org.scalikejdbc"          %% "scalikejdbc-play-initializer" % "2.6.0-scalikejdbc-3.1",
     "com.beachape" %% "enumeratum" % enumeratumPlayVersion,
-    "com.beachape" %% "enumeratum-play" % enumeratumPlayVersion,
-
-    "org.scalatest" %% "scalatest" % "3.0.5" % "test",
-    "com.whisk" %% "docker-testkit-scalatest" % "0.9.9" % "test",
-    "com.whisk" %% "docker-testkit-impl-docker-java" % "0.9.9" % "test"
+    "com.beachape" %% "enumeratum-play" % enumeratumPlayVersion
 )
 
 val editionsCommon = (project in file("./editions-common"))
@@ -128,20 +125,9 @@ val editionsCommon = (project in file("./editions-common"))
         )
     )
 
-val UsesDatabaseTest = config("database-int") extend Test
-
 lazy val root = (project in file("."))
     .dependsOn(editionsCommon)
     .enablePlugins(PlayScala, RiffRaffArtifact, JDebPackaging, SystemdPlugin)
-    .configs(UsesDatabaseTest)
-    .settings(inConfig(UsesDatabaseTest)(Defaults.testTasks): _*)
-    .settings(testOptions in UsesDatabaseTest := Seq(
-        Tests.Argument(TestFrameworks.ScalaTest, "-n","fixtures.UsesDatabase"))
-    )
-    // We exclude in other tests
-    .settings(testOptions in Test := Seq(
-        Tests.Argument(TestFrameworks.ScalaTest, "-l", "fixtures.UsesDatabase"))
-    )
 
 
 
