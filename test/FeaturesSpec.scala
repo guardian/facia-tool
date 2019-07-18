@@ -12,7 +12,7 @@ class FeaturesSpec extends WordSpec with Matchers {
         val switchToChange = InlineForm
         val userDataSwitches: Option[List[FeatureSwitch]] = Some(List(switchToChange, unchangedSwitch))
 
-        FeatureSwitches.updateFeatureSwitchesForUser(userDataSwitches, switchToChange) should contain theSameElementsAs List(switchToChange.copy(enabled = true), unchangedSwitch)
+        FeatureSwitches.updateFeatureSwitchesForUser(userDataSwitches, switchToChange) should contain theSameElementsAs List(switchToChange, unchangedSwitch)
       }
 
     }
