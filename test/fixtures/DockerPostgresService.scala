@@ -8,14 +8,14 @@ trait DockerPostgresService extends DockerKit {
   val containerPort = 5432
   val user = "user"
   val password = "safepassword"
-  val database = "mydb"
-  val dbUrl = s"jdbc:postgresql://localhost:$externalPort/$database?autoReconnect=true&useSSL=false"
+  val databaseName = "mydb"
+  val dbUrl = s"jdbc:postgresql://localhost:$externalPort/$databaseName?autoReconnect=true&useSSL=false"
   val driver = "org.postgresql.Driver"
   val dockerImage = "postgres:10.7-alpine"
 
   val postgresContainer = DockerContainer(dockerImage)
     .withPorts((containerPort, Some(externalPort)))
-    .withEnv(s"POSTGRES_USER=$user", s"POSTGRES_PASSWORD=$password", s"POSTGRES_DB=$database")
+    .withEnv(s"POSTGRES_USER=$user", s"POSTGRES_PASSWORD=$password", s"POSTGRES_DB=$databaseName")
     .withReadyChecker(
       new PostgresReadyChecker(dbUrl, user, password, driver).looped(30, 1.second)
     )
