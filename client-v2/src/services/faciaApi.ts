@@ -104,7 +104,9 @@ async function fetchLastPressed(frontId: string): Promise<string> {
     })
     .catch(response => {
       throw new Error(
-        `Tried to fetch last pressed time for front with id ${frontId}, but the server responded with ${response.status}: ${response.body}`
+        `Tried to fetch last pressed time for front with id ${frontId}, but the server responded with ${
+          response.status
+        }: ${response.body}`
       );
     });
 }
@@ -126,7 +128,9 @@ async function fetchVisibleArticles(
     return await response.json();
   } catch (response) {
     throw new Error(
-      `Tried to fetch visible stories for collection type ${collectionType}, but the server responded with ${response.status}: ${response.body}`
+      `Tried to fetch visible stories for collection type ${collectionType}, but the server responded with ${
+        response.status
+      }: ${response.body}`
     );
   }
 }
@@ -147,7 +151,9 @@ async function discardDraftChangesToCollection(
     return await response.json();
   } catch (response) {
     throw new Error(
-      `Tried to discard changes to collection with id ${collectionId}, but the server responded with ${response.status}: ${response.body}`
+      `Tried to discard changes to collection with id ${collectionId}, but the server responded with ${
+        response.status
+      }: ${response.body}`
     );
   }
 }
@@ -164,7 +170,9 @@ async function publishCollection(collectionId: string): Promise<void> {
     });
   } catch (response) {
     throw new Error(
-      `Tried to publish collection with id ${collectionId}, but the server responded with ${response.status}: ${response.body}`
+      `Tried to publish collection with id ${collectionId}, but the server responded with ${
+        response.status
+      }: ${response.body}`
     );
   }
 }
@@ -184,7 +192,9 @@ const createUpdateCollection = <T>(path: string, method: string) => (
     return await response.json();
   } catch (response) {
     throw new Error(
-      `Tried to update collection with id ${id}, but the server responded with ${response.status}: ${response.body}`
+      `Tried to update collection with id ${id}, but the server responded with ${
+        response.status
+      }: ${response.body}`
     );
   }
 };
@@ -220,7 +230,9 @@ async function createSaveClipboard(
     });
   } catch (response) {
     throw new Error(
-      `Tried to update a clipboard but the server responded with ${response.status}: ${response.body}`
+      `Tried to update a clipboard but the server responded with ${
+        response.status
+      }: ${response.body}`
     );
   }
 }
@@ -239,7 +251,9 @@ async function saveOpenFrontIds(frontsByPriority?: {
     });
   } catch (response) {
     throw new Error(
-      `Tried to store the open fronts configuration but the server responded with ${response.status}: ${response.body}`
+      `Tried to store the open fronts configuration but the server responded with ${
+        response.status
+      }: ${response.body}`
     );
   }
 }
@@ -258,7 +272,9 @@ async function saveFavouriteFrontIds(favouriteFrontsByPriority?: {
     });
   } catch (response) {
     throw new Error(
-      `Tried to store the favourite fronts configuration but the server responded with ${response.status}: ${response.body}`
+      `Tried to store the favourite fronts configuration but the server responded with ${
+        response.status
+      }: ${response.body}`
     );
   }
 }
