@@ -6,7 +6,6 @@ import { events } from 'services/GA';
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import { selectHasUnpublishedChanges } from 'selectors/frontsSelectors';
-import { selectIsEditingEditions } from 'selectors/pathSelectors';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 
 import { Collection, CollectionItemSets } from 'shared/types/Collection';
@@ -17,13 +16,13 @@ import {
   selectSharedState,
   createSelectArticlesInCollection
 } from 'shared/selectors/shared';
+import EditModeVisibility from 'components/util/EditModeVisibility';
 
 interface FrontCollectionOverviewContainerProps {
   frontId: string;
   collectionId: string;
   browsingStage: CollectionItemSets;
   isSelected: boolean;
-  isEditingEditions: boolean;
 }
 
 type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
@@ -107,8 +106,7 @@ const CollectionOverview = ({
   openCollection,
   frontId,
   hasUnpublishedChanges,
-  isSelected,
-  isEditingEditions
+  isSelected
 }: FrontCollectionOverviewProps) =>
   collection ? (
     <Container
@@ -132,17 +130,18 @@ const CollectionOverview = ({
         <ItemCount>({articleCount})</ItemCount>
       </TextContainerLeft>
       <TextContainerRight>
-        {!isEditingEditions &&
-          collection &&
+        {collection &&
           collection.lastUpdated &&
           (!!hasUnpublishedChanges ? (
-            <StatusWarning
-              priority="primary"
-              size="s"
-              title="Collection changes have not been launched"
-            >
-              !
-            </StatusWarning>
+            <EditModeVisibility visibleMode="fronts">
+              <StatusWarning
+                priority="primary"
+                size="s"
+                title="Collection changes have not been launched"
+              >
+                !
+              </StatusWarning>
+            </EditModeVisibility>
           ) : null)}
       </TextContainerRight>
     </Container>
@@ -164,7 +163,6 @@ const mapStateToProps = () => {
     hasUnpublishedChanges: selectHasUnpublishedChanges(state, {
       collectionId: props.collectionId
     }),
-    isEditingEditions: selectIsEditingEditions(state)
   });
 };
 

@@ -18,10 +18,11 @@ import { Dispatch } from 'types/Store';
 import FadeTransition from './transitions/FadeTransition';
 import { MoreIcon } from 'shared/components/icons/Icons';
 import { RouteComponentProps } from 'react-router';
-import { selectIsEditingEditions } from 'selectors/pathSelectors';
+import { selectEditMode } from 'selectors/pathSelectors';
 import { getEditionIssue } from 'actions/Editions';
 import { EditionsIssue } from 'types/Edition';
 import { selectors as editionsIssueSelectors } from 'bundles/editionsIssueBundle';
+import { EditMode } from 'types/EditMode';
 
 const FeedbackButton = Button.extend<{
   href: string;
@@ -119,7 +120,7 @@ type ComponentProps = {
   frontCount: number;
 
   getEditionsIssue: (id: string) => void;
-  isEditingEditions: boolean;
+  editMode: EditMode;
   editionsIssue?: EditionsIssue;
 } & RouteComponentProps<{ priority: string }>;
 
@@ -127,7 +128,7 @@ type ContainerProps = RouteComponentProps<{ priority: string }>;
 
 class FeedSectionHeader extends Component<ComponentProps> {
   public componentDidMount() {
-    if (this.props.isEditingEditions) {
+    if (this.props.editMode === 'editions') {
       this.props.getEditionsIssue(this.props.match.params.priority);
     }
   }
@@ -138,7 +139,7 @@ class FeedSectionHeader extends Component<ComponentProps> {
       isCurrentFrontsMenuOpen,
       frontCount,
       match,
-      isEditingEditions,
+      editMode,
       editionsIssue
     } = this.props;
     return (
@@ -167,7 +168,7 @@ class FeedSectionHeader extends Component<ComponentProps> {
             <CurrentFrontsList priority={match.params.priority} />
           </FadeTransition>
           <FadeTransition active={!isCurrentFrontsMenuOpen} direction="right">
-            {isEditingEditions ? (
+            {editMode === 'editions' ? (
               editionsIssue ? (
                 <EditionIssueInfo>
                   <EditionTitle>
@@ -200,7 +201,7 @@ const mapStateToProps = () => {
     frontCount: selectEditorFrontsByPriority(state, {
       priority: props.match.params.priority
     }).length,
-    isEditingEditions: selectIsEditingEditions(state),
+    editMode: selectEditMode(state),
     editionsIssue: editionsIssueSelectors.selectAll(state)
   });
 };

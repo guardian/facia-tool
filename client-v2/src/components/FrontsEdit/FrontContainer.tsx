@@ -19,7 +19,6 @@ import {
   selectFront,
   createSelectAlsoOnFronts
 } from 'selectors/frontsSelectors';
-import { selectIsEditingEditions } from 'selectors/pathSelectors';
 import Front from './Front';
 import SectionHeader from '../layout/SectionHeader';
 import SectionContent from '../layout/SectionContent';
@@ -30,6 +29,7 @@ import { PreviewEyeIcon, ClearIcon } from 'shared/components/icons/Icons';
 import { createFrontId } from 'util/editUtils';
 import { formMinWidth } from './ArticleFragmentForm';
 import { overviewMinWidth } from './FrontCollectionsOverview';
+import EditModeVisibility from 'components/util/EditModeVisibility';
 
 const FrontHeader = styled(SectionHeader)`
   display: flex;
@@ -109,7 +109,6 @@ type FrontsComponentProps = FrontsContainerProps & {
   alsoOn: { [id: string]: AlsoOnDetail };
   isOverviewOpen: boolean;
   isFormOpen: boolean;
-  isEditingEditions: boolean;
   frontsActions: {
     fetchLastPressed: (frontId: string) => void;
     editorCloseFront: (frontId: string) => void;
@@ -137,12 +136,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   };
 
   public render() {
-    const {
-      frontId,
-      isFormOpen,
-      isOverviewOpen,
-      isEditingEditions
-    } = this.props;
+    const { frontId, isFormOpen, isOverviewOpen } = this.props;
     const title =
       this.props.selectedFront &&
       startCase(
@@ -159,11 +153,9 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
           <FrontHeader greyHeader={true}>
             <FrontsHeaderText title={title}>{title}</FrontsHeaderText>
             <FrontHeaderMeta>
-              {!isEditingEditions && (
+              <EditModeVisibility visibleMode="fronts">
                 <a
-                  href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${
-                    this.props.frontId
-                  }`}
+                  href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${this.props.frontId}`}
                   target="preview"
                 >
                   <FrontHeaderButton size="l">
@@ -171,8 +163,6 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                     <PreviewButtonText>Preview</PreviewButtonText>
                   </FrontHeaderButton>
                 </a>
-              )}
-              {!isEditingEditions && (
                 <StageSelectButtons>
                   <RadioGroup>
                     {Object.keys(frontStages).map(key => (
@@ -187,7 +177,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                     ))}
                   </RadioGroup>
                 </StageSelectButtons>
-              )}
+              </EditModeVisibility>
               <FrontHeaderButton onClick={this.handleRemoveFront} size="l">
                 <ClearIcon size="xl" />
               </FrontHeaderButton>
@@ -215,8 +205,7 @@ const createMapStateToProps = () => {
     selectedFront: selectFront(state, { frontId: props.frontId }),
     alsoOn: selectAlsoOnFronts(state, { frontId: props.frontId }),
     isOverviewOpen: selectIsFrontOverviewOpen(state, props.frontId),
-    isFormOpen: !!selectEditorArticleFragment(state, props.frontId),
-    isEditingEditions: selectIsEditingEditions(state)
+    isFormOpen: !!selectEditorArticleFragment(state, props.frontId)
   });
 };
 
