@@ -4,7 +4,7 @@ import com.gu.facia.client.models.{CollectionConfigJson => CollectionConfig, Con
 import org.scalatest._
 import updates.CreateFront
 
-class TransformationsSpec extends FlatSpec with Matchers {
+@DoNotDiscover class TransformationsSpec extends FlatSpec with Matchers {
   val collectionFixture = CollectionConfig.withDefaults(
     displayName = Some("New collection"),
     `type` = Some("???"),

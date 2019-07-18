@@ -4,7 +4,7 @@ import logging.Logging
 import model.forms._
 import play.api.libs.json.Json
 import services.editions.EditionsTemplating
-import java.time.{LocalDate, OffsetDateTime}
+import java.time.LocalDate
 
 import model.editions.{EditionsFrontendCollectionWrapper, EditionsTemplates}
 import services.editions.db.EditionsDB
@@ -23,7 +23,7 @@ class EditionsController(db: EditionsDB,
     val form = req.body
 
     templating.generateEditionTemplate(name, form.issueDate).map { skeleton =>
-      val issueId = db.insertIssue(name, skeleton, req.user, OffsetDateTime.now())
+      val issueId = db.insertIssue(name, skeleton, req.user)
 
       db.getIssue(issueId).map { issue =>
         Created(Json.toJson(issue))

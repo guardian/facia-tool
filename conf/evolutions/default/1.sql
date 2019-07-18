@@ -72,17 +72,15 @@ ALTER TABLE articles ADD CONSTRAINT article_index_must_be_unique UNIQUE (collect
 
 # --- !Downs
 
-DROP INDEX article_collection_id_index;
-DROP TABLE articles;
-
-DROP INDEX collections_front_id_index;
-DROP TABLE collections;
-
-DROP INDEX fronts_issue_id_index;
-DROP TABLE fronts;
-
-DROP INDEX edition_issues_issue_date_index;
 DROP TABLE edition_issues;
+DROP INDEX edition_issues_issue_date_index;
 
-DROP EXTENSION "uuid-ossp";
+DROP TABLE fronts;
+DROP INDEX fronts_issue_id_index;
+
+DROP TABLE collections;
+DROP INDEX collections_front_id_index;
+
+DROP TABLE articles;
+DROP INDEX article_collection_id_index;
 
