@@ -13,7 +13,8 @@ case class PublishedFurniture(
   bylineOverride: Option[String],
   showByline: Boolean,
   showQuotedHeadline: Boolean,
-  imageSrcOverride: Option[MediaUrl]
+  imageSrcOverride: Option[MediaUrl],
+  slideshowImages: Option[List[MediaUrl]]
 )
 
 case class PublishedArticle(internalPageCode: Long, furniture: PublishedFurniture)

@@ -1,6 +1,6 @@
 package model.editions
 
-import com.gu.editions.{PublishedArticle, PublishedFurniture}
+import com.gu.editions.{PublishedArticle, PublishedFurniture, MediaUrl}
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
@@ -37,18 +37,36 @@ object ArticleMetadata {
 }
 
 case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[ArticleMetadata]) {
-  def toPublishedArticle: PublishedArticle = PublishedArticle(
-    pageCode.toLong,
-    PublishedFurniture(
-      kicker = metadata.flatMap(_.customKicker),
-      headlineOverride = metadata.flatMap(_.headline),
-      trailTextOverride = metadata.flatMap(_.trailText),
-      bylineOverride = metadata.flatMap(_.byline),
-      showByline = metadata.flatMap(_.showByline).getOrElse(false),
-      showQuotedHeadline = metadata.flatMap(_.showQuotedHeadline).getOrElse(false),
-      imageSrcOverride = None // TODO (sihil): Store in DB and populate here
+  def toPublishedArticle: PublishedArticle = {
+    val imageSrcOverride: Option[MediaUrl] = metadata.flatMap(meta => {
+      meta.imageOption match {
+        case Some(ImageOption.Replace) => meta.replaceImage.map(i => MediaUrl(i.src))
+        case Some(ImageOption.ReplaceCutout) => meta.cutoutImage.map(i => MediaUrl(i.src))
+        case _ => None
+      }
+    })
+
+    val slideshowImages: Option[List[MediaUrl]] = metadata.flatMap(meta => {
+      meta.imageOption match {
+        case Some(ImageOption.ReplaceSlideshow) => meta.slideshowImages.map(_.map(i => MediaUrl(i.src)))
+        case _ => None
+      }
+    })
+
+    PublishedArticle(
+      pageCode.toLong,
+      PublishedFurniture(
+        kicker = metadata.flatMap(_.customKicker),
+        headlineOverride = metadata.flatMap(_.headline),
+        trailTextOverride = metadata.flatMap(_.trailText),
+        bylineOverride = metadata.flatMap(_.byline),
+        showByline = metadata.flatMap(_.showByline).getOrElse(false),
+        showQuotedHeadline = metadata.flatMap(_.showQuotedHeadline).getOrElse(false),
+        imageSrcOverride = imageSrcOverride,
+        slideshowImages = slideshowImages
+      )
     )
-  )
+  }
 }
 
 object EditionsArticle {
