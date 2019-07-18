@@ -1,5 +1,9 @@
 import { Dispatch, ThunkResult } from 'types/Store';
+<<<<<<< HEAD
 import { saveClipboardStrategy } from 'strategies/save-clipboard';
+=======
+import { saveClipboard } from 'services/userDataApi';
+>>>>>>> Rename Features.scala; lint; fix up fixtures for integration tests
 import { fetchArticles } from 'actions/Collections';
 import { batchActions } from 'redux-batched-actions';
 import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';

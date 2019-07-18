@@ -1,4 +1,4 @@
-import { FeatureSwitch } from "types/Features";
+import { FeatureSwitch } from 'types/Features';
 
 export const SET_FEATURE_VALUE = 'SET_FEATURE_VALUE';
 

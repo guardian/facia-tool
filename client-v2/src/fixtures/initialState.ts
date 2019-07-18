@@ -259,7 +259,7 @@ const state = {
       featureSwitches: []
     },
     capiLiveUrl: 'https://fronts.local.dev-gutools.co.uk/api/live/',
-    capiPreviewUrl: 'https://fronts.local.dev-gutools.co.uk/api/preview/',
+    capiPreviewUrl: 'https://fronts.local.dev-gutools.co.uk/api/preview/'
   },
   error: '',
   path: '/v2/editorial',
@@ -701,7 +701,7 @@ const state = {
     updatingIds: []
   },
   focus: { focusState: undefined },
-  features: {}
+  featureSwitches: {}
 } as State;
 
 export default state;

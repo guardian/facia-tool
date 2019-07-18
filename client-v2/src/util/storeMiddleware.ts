@@ -9,7 +9,7 @@ import { selectors } from 'shared/bundles/collectionsBundle';
 import { updateCollection } from 'actions/Collections';
 import { updateClipboard } from 'actions/Clipboard';
 import { selectSharedState } from 'shared/selectors/shared';
-import { saveOpenFrontIds, saveFavouriteFrontIds } from 'services/faciaApi';
+import { saveOpenFrontIds, saveFavouriteFrontIds } from 'services/userDataApi';
 import { NestedArticleFragment } from 'shared/types/Collection';
 import { denormaliseClipboard } from 'util/clipboardUtils';
 import { selectFront } from 'selectors/frontsSelectors';

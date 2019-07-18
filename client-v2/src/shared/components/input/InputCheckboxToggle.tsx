@@ -69,7 +69,8 @@ type Props = {
   id: string;
   dataTestId?: string;
 } & {
-  input: Pick<WrappedFieldInputProps, 'onChange'> & Partial<WrappedFieldInputProps>;
+  input: Pick<WrappedFieldInputProps, 'onChange'> &
+    Partial<WrappedFieldInputProps>;
   meta?: WrappedFieldMetaProps;
 };
 
