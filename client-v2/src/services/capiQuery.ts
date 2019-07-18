@@ -2,6 +2,8 @@ import { qs } from 'util/qs';
 import { CapiArticle, Tag } from 'types/Capi';
 import pandaFetch from 'services/pandaFetch';
 
+const API_BASE = 'https://content.guardianapis.com/';
+
 type Fetch = (path: string) => Promise<Response>;
 
 type CAPIStatus = 'ok' | 'error';
@@ -100,7 +102,7 @@ const fetchCAPIResponse = async <
  *
  * @throws {Error} If fetch throws, CAPI returns an unparsable result, or CAPI returns an error.
  */
-const capiQuery = (baseURL: string) => {
+const capiQuery = (baseURL: string = API_BASE) => {
   const getCAPISearchString = (
     path: string,
     params: any,
@@ -108,8 +110,8 @@ const capiQuery = (baseURL: string) => {
   ) => {
     const { q, ...rest } = params;
     return options && options.isResource
-      ? `${baseURL}/${q}${qs({ ...rest })}`
-      : `${baseURL}/${path}${qs({
+      ? `${baseURL}${q}${qs({ ...rest })}`
+      : `${baseURL}${path}${qs({
           ...params
         })}`;
   };
