@@ -1,13 +1,14 @@
 package com.gu.editions
 
 import java.time.OffsetDateTime
+
+import enumeratum.EnumEntry.Uncapitalised
 import enumeratum.{EnumEntry, PlayEnum}
-import enumeratum.EnumEntry.Camelcase
 
 // TODO traitify PublishedItem - when we have more than one type of collection item
 
-sealed abstract class PublishedMediaType extends EnumEntry with Camelcase
-object PublishedMediaType extends PlayEnum[PublishedMediaType ] {
+sealed abstract class PublishedMediaType extends EnumEntry with Uncapitalised
+object PublishedMediaType extends PlayEnum[PublishedMediaType] {
   case object UseArticleTrail extends PublishedMediaType
   case object Hide extends PublishedMediaType
   case object Cutout extends PublishedMediaType

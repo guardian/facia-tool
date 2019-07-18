@@ -1,10 +1,10 @@
 package model.editions
 
 import com.gu.editions.PublishedMediaType
+import enumeratum.EnumEntry.Uncapitalised
 import enumeratum.{EnumEntry, PlayEnum}
-import enumeratum.EnumEntry.Camelcase
 
-sealed abstract class MediaType extends EnumEntry with Camelcase {
+sealed abstract class MediaType extends EnumEntry with Uncapitalised {
   def toPublishedMediaType: PublishedMediaType = this match {
     case MediaType.UseArticleTrail => PublishedMediaType.UseArticleTrail
     case MediaType.Hide => PublishedMediaType.Hide
