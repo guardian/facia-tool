@@ -1,9 +1,9 @@
 package util
 
 import com.gu.facia.client.models.{ConfigJson => Config, FrontJson => Front}
-import org.scalatest.{DoNotDiscover, FlatSpec, Matchers}
+import org.scalatest.{FlatSpec, Matchers}
 
-@DoNotDiscover class SanitizeInputTest extends FlatSpec with Matchers {
+class SanitizeInputTest extends FlatSpec with Matchers {
 
   private def createConfigWithFront(section: Option[String] = None,
                                     title: Option[String] = None,

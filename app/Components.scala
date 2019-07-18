@@ -42,7 +42,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val acl = new Acl(permissions)
 
   // Editions services
-  val editionsDb = new EditionsDB(config)
+  val editionsDb = new EditionsDB(config.postgres.url, config.postgres.user, config.postgres.password)
   val templating = new EditionsTemplating(capi)
   val publishingBucket = new PublishedIssuesBucket(config, awsEndpoints)
   val editionsPublishing = new EditionsPublishing(publishingBucket, editionsDb)
