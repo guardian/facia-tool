@@ -187,6 +187,27 @@ trait IssueQueries {
     rows.headOption.map(_.issue.copy(fronts = fronts))
   }
 
+  def getIssueSummary(id: String) = DB readOnly { implicit session =>
+    sql"""
+       SELECT
+         edition_issues.id,
+         edition_issues.name,
+         edition_issues.timezone_id,
+         edition_issues.issue_date,
+         edition_issues.created_on,
+         edition_issues.created_by,
+         edition_issues.created_email,
+         edition_issues.launched_on,
+         edition_issues.launched_by,
+         edition_issues.launched_email
+       FROM edition_issues
+       WHERE edition_issues.id = $id
+       """
+      .map(rs => EditionsIssue.fromRow(rs))
+      .single()
+      .apply()
+  }
+
   def publishIssue(issueId: String, user: User) = DB localTx { implicit session =>
     val userName = user.firstName + " " + user.lastName
 

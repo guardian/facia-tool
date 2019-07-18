@@ -126,13 +126,13 @@ type ComponentProps = {
 type ContainerProps = RouteComponentProps<{ priority: string }>;
 
 class FeedSectionHeader extends Component<ComponentProps> {
-  componentDidMount() {
+  public componentDidMount() {
     if (this.props.isEditingEditions) {
       this.props.getEditionsIssue(this.props.match.params.priority);
     }
   }
 
-  render() {
+  public render() {
     const {
       toggleCurrentFrontsMenu,
       isCurrentFrontsMenuOpen,

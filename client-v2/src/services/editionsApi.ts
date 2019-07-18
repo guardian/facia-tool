@@ -63,8 +63,8 @@ export const createIssue = async (
   });
 };
 
-export const getIssue = async (id: string): Promise<EditionsIssue> => {
-  return pandaFetch(`/editions-api/issues/${id}`, {
+export const getIssueSummary = async (id: string): Promise<EditionsIssue> => {
+  return pandaFetch(`/editions-api/issues/${id}/summary`, {
     method: 'get',
     credentials: 'same-origin'
   }).then(response => {

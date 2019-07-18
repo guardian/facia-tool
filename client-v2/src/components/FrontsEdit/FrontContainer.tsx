@@ -161,7 +161,9 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
             <FrontHeaderMeta>
               {!isEditingEditions && (
                 <a
-                  href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${this.props.frontId}`}
+                  href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${
+                    this.props.frontId
+                  }`}
                   target="preview"
                 >
                   <FrontHeaderButton size="l">
