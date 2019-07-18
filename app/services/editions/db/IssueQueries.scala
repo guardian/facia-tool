@@ -97,6 +97,18 @@ trait IssueQueries {
     """.map(EditionsIssue.fromRow(_)).list().apply()
   }
 
+  def getIssueIdFromCollectionId(collectionId: String): Option[String] = DB readOnly { implicit session =>
+    sql"""
+    SELECT edition_issues.id AS id
+    FROM edition_issues
+    INNER JOIN fronts ON (fronts.issue_id = edition_issues.id)
+    INNER JOIN collections ON (collections.front_id = fronts.id)
+    WHERE collections.id = $collectionId
+    """.map { rs =>
+      rs.string("id")
+    }.toOption().apply()
+  }
+
   def getIssue(id: String): Option[EditionsIssue] = DB readOnly { implicit session =>
       case class GetIssueRow(
           issue: EditionsIssue,

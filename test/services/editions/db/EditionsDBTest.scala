@@ -41,6 +41,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     "should list issues" taggedAs UsesDatabase in {
       withEvolutions {
         val now = OffsetDateTime.of(2019, 7, 16, 17, 23, 23, 0, ZoneOffset.ofHours(1))
+
         def skeleton(year: Int, month: Int, dom: Int): EditionsIssueSkeleton = {
           EditionsIssueSkeleton(
             ZonedDateTime.of(year, month, dom, 0, 0, 0, 0, ZoneId.of("Europe/London")),
@@ -48,6 +49,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
             Nil
           )
         }
+
         editionsDB.insertIssue("daily-edition", skeleton(2019, 9, 28), User("Billy", "Bragg", "billy.bragg@justice.example.com", None), now)
         editionsDB.insertIssue("daily-edition", skeleton(2019, 9, 29), User("Billy", "Bragg", "billy.bragg@justice.example.com", None), now)
         editionsDB.insertIssue("daily-edition", skeleton(2019, 9, 30), User("Billy", "Bragg", "billy.bragg@justice.example.com", None), now)
@@ -160,6 +162,46 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
         commentFront.collections.length shouldBe 3
       }
     }
+
+    "should allow lookup of issue by collection id" taggedAs UsesDatabase in {
+      withEvolutions {
+        withEvolutions {
+          val skeleton = EditionsIssueSkeleton(
+            ZonedDateTime.of(2019, 9, 30, 0, 0, 0, 0, ZoneId.of("Europe/London")),
+            ZoneId.of("Europe/London"),
+            List(
+              EditionsFrontSkeleton(
+                name = "news/uk",
+                presentation = FrontPresentation(),
+                collections = List(
+                  EditionsCollectionSkeleton(
+                    name = "politics",
+                    prefill = Some(CapiPrefillQuery("magic-politics-query")),
+                    presentation = CollectionPresentation(),
+                    items = List("12345", "23456")
+                  ),
+                )
+              )
+            )
+          )
+
+          val now = OffsetDateTime.of(2019, 7, 16, 17, 51, 44, 0, ZoneOffset.ofHours(1))
+
+          val id = editionsDB.insertIssue("daily-edition",
+            skeleton,
+            User("Billy", "Bragg", "billy.bragg@justice.example.com", None),
+            now
+          )
+
+          val retrievedIssue = editionsDB.getIssue(id).value
+          val collectionsId = retrievedIssue.fronts.head.collections.head.id
+
+          val maybeIssueId = editionsDB.getIssueIdFromCollectionId(collectionsId)
+          maybeIssueId.value shouldBe id
+        }
+      }
+    }
+
   }
 
 }

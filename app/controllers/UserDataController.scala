@@ -1,16 +1,17 @@
 package controllers
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.gu.facia.client.models.Trail
 import com.gu.scanamo._
 import com.gu.scanamo.syntax._
-import services.{Dynamo, FrontsApi}
+import services.FrontsApi
 import model.UserData
 import play.api.Logger
 import play.api.libs.json.JsValue
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UserDataController(frontsApi: FrontsApi, dynamo: Dynamo, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
+class UserDataController(frontsApi: FrontsApi, dynamoClient: AmazonDynamoDB, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
   import model.UserData._
 
   private lazy val userDataTable = Table[UserData](config.faciatool.userDataTable)
@@ -21,7 +22,7 @@ class UserDataController(frontsApi: FrontsApi, dynamo: Dynamo, val deps: BaseFac
 
     clipboardArticles match {
       case Some(articles) => {
-        Scanamo.exec(dynamo.client)(userDataTable.update('email -> userEmail, set(Symbol(fieldName) -> articles)))
+        Scanamo.exec(dynamoClient)(userDataTable.update('email -> userEmail, set(Symbol(fieldName) -> articles)))
         Ok
       }
       case None => BadRequest
@@ -47,7 +48,7 @@ class UserDataController(frontsApi: FrontsApi, dynamo: Dynamo, val deps: BaseFac
       _.asOpt[List[String]])
     maybeFrontIds match {
       case Some(frontIds) =>
-        Scanamo.exec(dynamo.client)(userDataTable.update('email -> request.user.email, set('frontIds -> frontIds)))
+        Scanamo.exec(dynamoClient)(userDataTable.update('email -> request.user.email, set('frontIds -> frontIds)))
         Ok
       case _ => BadRequest
     }
@@ -58,7 +59,7 @@ class UserDataController(frontsApi: FrontsApi, dynamo: Dynamo, val deps: BaseFac
       _.asOpt[Map[String, List[String]]])
     maybeFrontIdsByPriority match {
       case Some(frontIdsByPriority) =>
-        Scanamo.exec(dynamo.client)(userDataTable.update('email -> request.user.email, set('frontIdsByPriority -> frontIdsByPriority)))
+        Scanamo.exec(dynamoClient)(userDataTable.update('email -> request.user.email, set('frontIdsByPriority -> frontIdsByPriority)))
         Ok
       case _ => BadRequest
     }
@@ -69,7 +70,7 @@ class UserDataController(frontsApi: FrontsApi, dynamo: Dynamo, val deps: BaseFac
       _.asOpt[Map[String, List[String]]])
     maybeFavouriteFrontIdsByPriority match {
       case Some(favouriteFrontIdsByPriority) =>
-        Scanamo.exec(dynamo.client)(userDataTable.update('email -> request.user.email, set('favouriteFrontIdsByPriority -> favouriteFrontIdsByPriority)))
+        Scanamo.exec(dynamoClient)(userDataTable.update('email -> request.user.email, set('favouriteFrontIdsByPriority -> favouriteFrontIdsByPriority)))
         Ok
       case _ => BadRequest
     }
@@ -77,7 +78,7 @@ class UserDataController(frontsApi: FrontsApi, dynamo: Dynamo, val deps: BaseFac
 
   def migrateUserData() = AccessAPIAuthAction.async {
     val result = frontsApi.amazonClient.config.flatMap { config =>
-      val maybeUserData = Scanamo.exec(dynamo.client)(userDataTable.scan)
+      val maybeUserData = Scanamo.exec(dynamoClient)(userDataTable.scan)
       Future.successful(maybeUserData.filter(_.isRight).map {
         case Right(userData) =>
           val frontIds = userData.frontIds.getOrElse(List.empty[String])
@@ -91,7 +92,7 @@ class UserDataController(frontsApi: FrontsApi, dynamo: Dynamo, val deps: BaseFac
             }
             maybeAcc.getOrElse(acc)
           })
-          Scanamo.exec(dynamo.client)(userDataTable.update('email -> userData.email, set('frontIdsByPriority -> frontIdsByPriority)))
+          Scanamo.exec(dynamoClient)(userDataTable.update('email -> userData.email, set('frontIdsByPriority -> frontIdsByPriority)))
           Map(userData.email -> frontIdsByPriority)
       })
     }
