@@ -712,7 +712,7 @@ const state = {
     loadingIds: [],
     updatingIds: []
   },
-  features: {}
+  featureSwitches: {}
 } as State;
 
 export default state;
