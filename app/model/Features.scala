@@ -15,9 +15,18 @@ case class FeatureSwitch(
 object InlineForm extends FeatureSwitch(
   key = "inline-form",
   title = "Use inline form for card overrides",
-  enabled = true
+  enabled = false
 )
 
 object FeatureSwitches {
   val all: List[FeatureSwitch] = List(InlineForm)
+
+  def updateFeatureSwitchesForUser(userDataSwitches: Option[List[FeatureSwitch]], switch: FeatureSwitch): List[FeatureSwitch] = {
+    userDataSwitches match {
+      case Some(switches) =>
+        FeatureSwitches.all.diff(switches) ++ switches.filter(_.key != switch.key) ++ List(switch)
+      case None =>
+        FeatureSwitches.all.filter(_.key == switch.key) ++ List(switch)
+    }
+  }
 }

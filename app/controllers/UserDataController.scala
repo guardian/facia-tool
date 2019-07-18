@@ -3,10 +3,10 @@ package controllers
 import com.gu.facia.client.models.Trail
 import com.gu.scanamo._
 import com.gu.scanamo.syntax._
-import services.{Dynamo, FrontsApi}
 import model.{FeatureSwitch, FeatureSwitches, UserData}
 import play.api.Logger
 import play.api.libs.json.JsValue
+import services.{Dynamo, FrontsApi}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -109,12 +109,10 @@ class UserDataController(frontsApi: FrontsApi, dynamo: Dynamo, val deps: BaseFac
     (maybeUserData, maybeFeatureSwitch) match {
       case (Some(userData), Some(featureSwitch)) =>
         if (FeatureSwitches.all.map(_.key).contains(featureSwitch.key)) {
-          val featureSwitches = userData.featureSwitches.getOrElse(List.empty).map { switch => {
-            if (switch.key != featureSwitch.key) { switch } else { featureSwitch }
-          }}
+          val updatedSwitches = FeatureSwitches.updateFeatureSwitchesForUser(userData.featureSwitches, featureSwitch)
           Scanamo.exec(dynamo.client)(userDataTable.update(
             'email -> request.user.email,
-            set('featureSwitches -> featureSwitches)))
+            set('featureSwitches -> updatedSwitches)))
           Ok
         } else {
           BadRequest(s"Feature with key ${featureSwitch.key} not found")
