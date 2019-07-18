@@ -1,24 +1,58 @@
 import React from 'react';
 import InputCheckboxToggle from 'shared/components/input/InputCheckboxToggle';
+import { connect } from 'react-redux';
+import { State } from 'types/State';
+import { selectAllFeatures } from 'redux/modules/featureSwitches/selectors';
+import { FeatureSwitch } from 'types/Features';
+import { Dispatch } from 'types/Store';
+import { actionSetFeatureValue } from 'redux/modules/featureSwitches';
+import { saveFeatureSwitch } from 'services/userDataApi';
 
-class FeaturesForm extends React.Component {
+interface Props {
+  featureSwitches: FeatureSwitch[];
+  setFeatureValue: (featureSwitch: FeatureSwitch) => void;
+}
 
-
+class FeaturesForm extends React.Component<Props> {
   public render() {
+    const { featureSwitches } = this.props;
     return (
       <form>
-        <InputCheckboxToggle
-          label="Use inline form for card overrides"
-          id="use-inline-form"
-          input={{ onChange: this.handleChange }}
-        />
+        {featureSwitches.map(featureSwitch => (
+          <InputCheckboxToggle
+            key={featureSwitch.key}
+            label={featureSwitch.title}
+            id={featureSwitch.key}
+            input={{
+              onChange: () => this.handleChange(featureSwitch),
+              checked: featureSwitch.enabled
+            }}
+          />
+        ))}
       </form>
     );
   }
 
-  private handleChange() {
-
+  private handleChange(featureSwitch: FeatureSwitch) {
+    const newFeatureSwitch = {
+      ...featureSwitch,
+      enabled: !featureSwitch.enabled
+    };
+    this.props.setFeatureValue(newFeatureSwitch);
+    saveFeatureSwitch(featureSwitch);
   }
 }
 
-export default FeaturesForm;
+const mapStateToProps = (state: State) => ({
+  featureSwitches: selectAllFeatures(state)
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  setFeatureValue: (featureSwitch: FeatureSwitch) =>
+    dispatch(actionSetFeatureValue(featureSwitch))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FeaturesForm);

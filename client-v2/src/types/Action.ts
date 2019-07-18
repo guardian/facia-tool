@@ -39,6 +39,7 @@ import {
   EDITOR_CLOSE_ALL_OVERVIEWS
 } from 'bundles/frontsUIBundle';
 import { setFocusState, resetFocusState } from '../bundles/focusBundle';
+import { ActionSetFeatureValue } from 'redux/modules/featureSwitches';
 
 interface EditorOpenCurrentFrontsMenu {
   type: typeof EDITOR_OPEN_CURRENT_FRONTS_MENU;
@@ -313,7 +314,8 @@ type Action =
   | EditorOpenCollection
   | EditorCloseCollection
   | SetFocusState
-  | ResetFocusState;
+  | ResetFocusState
+  | ActionSetFeatureValue;
 
 export {
   ActionError,

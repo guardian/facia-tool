@@ -245,18 +245,21 @@ const state = {
       { type: 'Breaking' },
       { type: 'Branded' }
     ],
-    clipboardArticles: [
-      {
-        id: 'internal-code/page/5592826',
-        frontPublicationDate: 1547204861924,
-        meta: {}
-      }
-    ],
-    frontIds: [],
-    frontIdsByPriority: {},
-    favouriteFrontIdsByPriority: {},
+    userData: {
+      clipboardArticles: [
+        {
+          id: 'internal-code/page/5592826',
+          frontPublicationDate: 1547204861924,
+          meta: {}
+        }
+      ],
+      frontIds: [],
+      frontIdsByPriority: {},
+      favouriteFrontIdsByPriority: {},
+      featureSwitches: []
+    },
     capiLiveUrl: 'https://fronts.local.dev-gutools.co.uk/api/live/',
-    capiPreviewUrl: 'https://fronts.local.dev-gutools.co.uk/api/preview/'
+    capiPreviewUrl: 'https://fronts.local.dev-gutools.co.uk/api/preview/',
   },
   error: '',
   path: '/v2/editorial',
@@ -697,7 +700,8 @@ const state = {
     loadingIds: [],
     updatingIds: []
   },
-  focus: { focusState: undefined }
+  focus: { focusState: undefined },
+  features: {}
 } as State;
 
 export default state;
