@@ -133,21 +133,21 @@ const capiQuery = (baseURL: string) => {
     },
     tags: async (params: any): Promise<CAPITagQueryReponse> => {
       return fetchCAPIResponse<CAPITagQueryReponse>(
-        `${baseURL}tags${qs({
+        `${baseURL}/tags${qs({
           ...params
         })}`
       );
     },
     sections: async (params: any): Promise<CAPITagQueryReponse> => {
       return fetchCAPIResponse<CAPITagQueryReponse>(
-        `${baseURL}sections${qs({
+        `${baseURL}/sections${qs({
           ...params
         })}`
       );
     },
     desks: async (params: any): Promise<CAPITagQueryReponse> => {
       return fetchCAPIResponse<CAPITagQueryReponse>(
-        `${baseURL}tags${qs({
+        `${baseURL}/tags${qs({
           type: 'tracking',
           ...params
         })}`
