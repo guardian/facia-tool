@@ -162,7 +162,7 @@ const mapStateToProps = () => {
     }).length,
     hasUnpublishedChanges: selectHasUnpublishedChanges(state, {
       collectionId: props.collectionId
-    }),
+    })
   });
 };
 

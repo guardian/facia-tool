@@ -232,7 +232,7 @@ const createMapStateToProps = () => {
           collectionId: id,
           collectionSet: browsingStage,
           articleFragmentId: selectedArticleFragmentData.id
-        }),
+        })
     };
   };
 };
