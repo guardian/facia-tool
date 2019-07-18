@@ -14,6 +14,7 @@ import { capiLiveFeed, capiPreviewFeed } from '../bundles/capiFeedBundle';
 import staleFronts from './staleFrontsReducer';
 
 import { reducer as focusReducer } from '../bundles/focusBundle';
+import { reducer as featureSwitchesReducer } from 'redux/modules/featureSwitches';
 
 const rootReducer = (state: any = {}, action: any) => ({
   fronts: fronts(state.fronts, action),
@@ -30,7 +31,8 @@ const rootReducer = (state: any = {}, action: any) => ({
   capiLiveFeed: capiLiveFeed(state.capiLiveFeed, action),
   capiPreviewFeed: capiPreviewFeed(state.capiPreviewFeed, action),
   focus: focusReducer(state.focus, action),
-  editionsIssue: editionsIssue(state.editionsIssue, action)
+  editionsIssue: editionsIssue(state.editionsIssue, action),
+  featureSwitches: featureSwitchesReducer(state.featureSwitches, action)
 });
 
 export default rootReducer;

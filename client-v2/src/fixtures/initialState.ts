@@ -711,7 +711,8 @@ const state = {
     loading: false,
     loadingIds: [],
     updatingIds: []
-  }
+  },
+  features: {}
 } as State;
 
 export default state;
