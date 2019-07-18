@@ -63,16 +63,11 @@ function updateClipboard(clipboardContent: {
       getState(),
       clipboardContent.articles
     );
-    try {
-      if (!saveClipboardResponse) {
-        // @todo: implement once error handling is done
-        return Promise.resolve([]);
-      }
-      return saveClipboardResponse;
-    } catch (error) {
+    if (!saveClipboardResponse) {
       // @todo: implement once error handling is done
-      return [];
+      return Promise.resolve([]);
     }
+    return saveClipboardResponse;
   };
 }
 
