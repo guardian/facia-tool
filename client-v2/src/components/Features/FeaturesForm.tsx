@@ -39,7 +39,7 @@ class FeaturesForm extends React.Component<Props> {
       enabled: !featureSwitch.enabled
     };
     this.props.setFeatureValue(newFeatureSwitch);
-    saveFeatureSwitch(featureSwitch);
+    saveFeatureSwitch(newFeatureSwitch);
   }
 }
 

@@ -25,7 +25,7 @@ const matchFrontsEditPath = (path: string) =>
 const frontsFeatureProps = {
   exact: true,
   path: '/features'
-}
+};
 
 /**
  * Issue
