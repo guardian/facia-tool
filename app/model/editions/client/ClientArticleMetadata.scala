@@ -81,10 +81,7 @@ object ClientArticleMetadata {
       articleMetadata.showByline,
       articleMetadata.byline,
 
-      articleMetadata.imageOption match {
-        case Some(io) if io == ImageOption.Hide => Some(true)
-        case _ => None
-      },
+      articleMetadata.imageOption.collect{ case ImageOption.Hide => true },
 
       articleMetadata.replaceImage.map(_ => imgOpt == ImageOption.Replace),
       articleMetadata.replaceImage.map(_.src),
