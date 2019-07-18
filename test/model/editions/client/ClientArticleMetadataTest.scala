@@ -4,7 +4,7 @@ import model.editions.{ArticleMetadata, Image, ImageOption}
 import org.scalatest.{FreeSpec, Matchers}
 
 class ClientArticleMetadataTest extends FreeSpec with Matchers {
-  "ClientArticleMetadata" - {
+  "ClientArticleMetadata from ArticleMetadata" - {
     "should serialise from a simple ArticleMetadata" in {
       val articleMetadata = ArticleMetadata(
         Some("Britain has summer!"),
@@ -121,6 +121,56 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
       val clientArticleMetadata = ClientArticleMetadata.fromArticleMetadata(articleMetadata)
 
       clientArticleMetadata.imageReplace shouldBe None
+    }
+  }
+
+  "ClientArticleMetadata to ArticleMetadata" - {
+    "should convert into ArticleMetadata with multiple image overrides" in {
+      val cam = ClientArticleMetadata(
+        Some("New Harry Potter book being written"),
+        None,
+        None,
+        None,
+        None,
+        None,
+        Some("J.K"),
+        None,
+        Some(true),
+        Some("file://lightning.jpg"),
+        Some("100"),
+        Some("100"),
+        Some("file://lightning.gif"),
+        Some("file://lightning.png"),
+        Some(false),
+        Some("file://broom.jpg"),
+        Some("100"),
+        Some("100"),
+        Some("file://broom.gif"),
+        None,
+        None
+      )
+
+      val articleMetadata = cam.toArticleMetadata
+
+      articleMetadata.headline.isDefined shouldBe true
+      articleMetadata.headline.get shouldBe "New Harry Potter book being written"
+
+      articleMetadata.imageOption.isDefined shouldBe true
+      articleMetadata.imageOption.get shouldBe ImageOption.Replace
+      articleMetadata.replaceImage shouldBe Some(Image(
+        "100",
+        "100",
+        "file://lightning.gif",
+        "file://lightning.jpg",
+        Some("file://lightning.png")
+      ))
+
+      articleMetadata.cutoutImage shouldBe Some(Image(
+        "100",
+        "100",
+        "file://broom.gif",
+        "file://broom.jpg"
+      ))
     }
   }
 }
