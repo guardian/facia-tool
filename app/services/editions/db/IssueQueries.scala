@@ -1,6 +1,6 @@
 package services.editions.db
 
-import java.time.LocalDate
+import java.time.{LocalDate, OffsetDateTime}
 
 import com.gu.pandomainauth.model.User
 import model.editions._
@@ -13,7 +13,8 @@ trait IssueQueries {
   def insertIssue(
                    name: String,
                    skeleton: EditionsIssueSkeleton,
-                   user: User
+                   user: User,
+                   now: OffsetDateTime
   ): String  = DB localTx { implicit session =>
     val userName = user.firstName + " " + user.lastName
 
@@ -25,7 +26,7 @@ trait IssueQueries {
             created_on,
             created_by,
             created_email
-          ) VALUES ($name, ${skeleton.issueDate}, ${skeleton.zoneId.toString}, now(), ${userName}, ${user.email})
+          ) VALUES ($name, ${skeleton.issueDate}, ${skeleton.zoneId.toString}, $now, $userName, ${user.email})
           RETURNING id;
        """.map(_.string("id")).single().apply().get
 
@@ -53,7 +54,7 @@ trait IssueQueries {
             updated_on,
             updated_by,
             updated_email
-          ) VALUES ($frontId, $cIndex, ${collection.name}, ${collection.hidden}, NULL, ${collection.prefill.map(_.queryString)}, NOW(), $userName, ${user.email})
+          ) VALUES ($frontId, $cIndex, ${collection.name}, ${collection.hidden}, NULL, ${collection.prefill.map(_.queryString)}, $now, $userName, ${user.email})
           RETURNING id;
           """.map(_.string("id")).single().apply().get
 
@@ -64,7 +65,7 @@ trait IssueQueries {
                     page_code,
                     index,
                     added_on
-                    ) VALUES ($collectionId, $pageCode, $tIndex, now())
+                    ) VALUES ($collectionId, $pageCode, $tIndex, $now)
                  """.execute().apply()
           }
         }
