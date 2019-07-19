@@ -445,16 +445,16 @@ describe('frontsUIBundle', () => {
         const state = reducer(
           undefined,
           editorSelectArticleFragment(
-            'front1',
             'exampleArticleFragment',
-            'exampleCollection'
+            'exampleCollection',
+            'front1'
           )
         );
         expect(selectOpenArticleFragmentForms(state, 'front1')).toEqual([
           {
             id: 'exampleArticleFragment',
             isSupporting: false,
-            collectionId: 'collectionId'
+            collectionId: 'exampleCollection'
           }
         ]);
       });
