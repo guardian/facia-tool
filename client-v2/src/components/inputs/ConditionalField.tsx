@@ -8,20 +8,17 @@ interface Props extends BaseFieldProps {
   container?: React.ComponentType;
 }
 
-const ConditionalField = <P extends {}>({
-  container: Container,
-  ...rest
-}: Props & P) => {
-  const FieldComponent = <Field<Props & P> {...rest} />;
-  const Component = Container ? (
-    <Container>{FieldComponent}</Container>
+const ConditionalField = <P extends {}>(props: Props & P) => {
+  const FieldComponent = <Field<Props & P> {...props} />;
+  const Component = props.Container ? (
+    <props.Container>{FieldComponent}</props.Container>
   ) : (
     FieldComponent
   );
   return (
     <ConditionalComponent
-      name={rest.name}
-      permittedNames={rest.permittedFields}
+      name={props.name}
+      permittedNames={props.permittedFields}
     >
       {Component}
     </ConditionalComponent>
