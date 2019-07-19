@@ -117,7 +117,7 @@ interface EditorSelectArticleFragment {
 interface EditorClearArticleFragmentSelection {
   type: typeof EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION;
   payload: {
-    articleFragmentId: string
+    articleFragmentId: string;
   };
 }
 

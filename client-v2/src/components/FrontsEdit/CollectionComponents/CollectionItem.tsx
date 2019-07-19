@@ -40,6 +40,7 @@ import {
 import { bindActionCreators } from 'redux';
 import ArticleFragmentFormInline from '../ArticleFragmentFormInline';
 import { updateArticleFragmentMeta as updateArticleFragmentMetaAction } from 'shared/actions/ArticleFragments';
+import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
 
 const imageDropTypes = [
   ...gridDropTypes,
@@ -71,6 +72,7 @@ type ArticleContainerProps = ContainerProps & {
   type: CollectionItemTypes;
   isSelected: boolean;
   isFaded: boolean;
+  displayInlineForm: boolean;
   numSupportingArticles: number;
 };
 
@@ -93,6 +95,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       isSelected,
       isFaded,
       isSupporting = false,
+      displayInlineForm,
       children,
       getNodeProps,
       onSelect,
@@ -170,9 +173,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       }
     };
 
-    return !isSelected ? (
-      getCard()
-    ) : (
+    return isSelected && displayInlineForm ? (
       <ArticleFragmentFormInline
         articleFragmentId={uuid}
         isSupporting={isSupporting}
@@ -185,6 +186,8 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
         }}
         onCancel={() => clearArticleFragmentSelection(uuid)}
       />
+    ) : (
+      getCard()
     );
   }
 
@@ -226,6 +229,10 @@ const createMapStateToProps = () => {
       type: selectType(selectSharedState(state), uuid),
       isSelected: selectIsArticleFragmentFormOpen(state, uuid, frontId),
       isFaded: selectIsArticleFragmentFaded(state, uuid, frontId),
+      displayInlineForm: selectFeatureValue(
+        selectSharedState(state),
+        'inline-form'
+      ),
       numSupportingArticles
     };
   };

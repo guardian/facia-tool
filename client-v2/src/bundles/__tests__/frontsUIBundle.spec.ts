@@ -25,7 +25,8 @@ import {
   selectEditorFrontIdsByPriority,
   selectEditorFavouriteFrontIds,
   selectEditorFavouriteFrontIdsByPriority,
-  editorSelectArticleFragment
+  editorSelectArticleFragment,
+  selectOpenArticleFragmentForms
 } from '../frontsUIBundle';
 import initialState from 'fixtures/initialState';
 import { Action } from 'types/Action';
@@ -45,7 +46,7 @@ type State = ReturnType<typeof innerReducer>;
 const reducer = (
   state: State | undefined,
   action: Action,
-  sharedState: GlobalSharedState
+  sharedState: GlobalSharedState = initialSharedState
 ): GlobalState =>
   ({
     editor: innerReducer(state, action, (sharedState = initialSharedState))
@@ -177,6 +178,7 @@ describe('frontsUIBundle', () => {
         )
       ).toHaveLength(4);
     });
+
     it('should add correct Open State meta data', () => {
       expect(
         selectFrontIdWithOpenAndStarredStatesByPriority(
@@ -326,17 +328,17 @@ describe('frontsUIBundle', () => {
       const state = reducer(
         {
           selectedArticleFragments: {
-            frontId: { id: 'articleFragmentId', isSupporting: false }
+            frontId: [{ id: 'articleFragmentId', isSupporting: false }]
           }
         } as any,
         removeGroupArticleFragment('collectionId', 'articleFragmentId')
       );
-      expect(state.editor.selectedArticleFragments.frontId).toBe(undefined);
+      expect(state.editor.selectedArticleFragments.frontId).toEqual([]);
     });
     describe('Clearing article selection in response to persistence events', () => {
       const stateWithSelectedArticleFragments = {
         selectedArticleFragments: {
-          frontId: { id: 'articleFragmentId', isSupporting: false }
+          frontId: [{ id: 'articleFragmentId', isSupporting: false }]
         }
       } as any;
       it("should not clear the article fragment selection when selected article fragments aren't in the front", () => {
@@ -351,7 +353,7 @@ describe('frontsUIBundle', () => {
           stateWithSelectedArticleFragments,
           removeSupportingArticleFragment('collectionId', 'articleFragmentId')
         );
-        expect(state.editor.selectedArticleFragments.frontId).toBe(undefined);
+        expect(state.editor.selectedArticleFragments.frontId).toEqual([]);
       });
       it("should not clear the article fragment selection when selected supporting article fragments aren't in the front", () => {
         const state = reducer(
@@ -368,7 +370,7 @@ describe('frontsUIBundle', () => {
           stateWithSelectedArticleFragments,
           removeClipboardArticleFragment('collectionId', 'articleFragmentId')
         );
-        expect(state.editor.selectedArticleFragments.frontId).toBe(undefined);
+        expect(state.editor.selectedArticleFragments.frontId).toEqual([]);
       });
       it("should not clear the article fragment selection when selected clipboard article fragments aren't in the front", () => {
         const state = reducer(
@@ -442,12 +444,19 @@ describe('frontsUIBundle', () => {
       it('should open a collection item form', () => {
         const state = reducer(
           undefined,
-          editorSelectArticleFragment('front1', 'exampleArticleFragment')
+          editorSelectArticleFragment(
+            'front1',
+            'exampleArticleFragment',
+            'exampleCollection'
+          )
         );
-        expect(selectEditorArticleFragment(state, 'front1')).toEqual({
-          id: 'exampleArticleFragment',
-          isSupporting: false
-        });
+        expect(selectOpenArticleFragmentForms(state, 'front1')).toEqual([
+          {
+            id: 'exampleArticleFragment',
+            isSupporting: false,
+            collectionId: 'collectionId'
+          }
+        ]);
       });
     });
     it('should open and close all editing fronts', () => {
