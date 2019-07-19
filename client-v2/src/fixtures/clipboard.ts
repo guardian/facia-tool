@@ -5,6 +5,7 @@ const stateWithClipboard = {
   clipboard: ['article', 'article2'],
   shared: {
     groups: {},
+    featureSwitches: {},
     externalArticles: externalArticlesState,
     collections: collectionsState,
     articleFragments: {

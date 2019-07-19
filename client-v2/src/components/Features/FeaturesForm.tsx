@@ -2,11 +2,12 @@ import React from 'react';
 import InputCheckboxToggle from 'shared/components/input/InputCheckboxToggle';
 import { connect } from 'react-redux';
 import { State } from 'types/State';
-import { selectAllFeatures } from 'redux/modules/featureSwitches/selectors';
+import { selectAllFeatures } from 'shared/redux/modules/featureSwitches/selectors';
 import { FeatureSwitch } from 'types/Features';
 import { Dispatch } from 'types/Store';
-import { actionSetFeatureValue } from 'redux/modules/featureSwitches';
+import { actionSetFeatureValue } from 'shared/redux/modules/featureSwitches';
 import { saveFeatureSwitch } from 'services/userDataApi';
+import { selectSharedState } from 'shared/selectors/shared';
 
 interface Props {
   featureSwitches: FeatureSwitch[];
@@ -44,7 +45,7 @@ class FeaturesForm extends React.Component<Props> {
 }
 
 const mapStateToProps = (state: State) => ({
-  featureSwitches: selectAllFeatures(state)
+  featureSwitches: selectAllFeatures(selectSharedState(state))
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

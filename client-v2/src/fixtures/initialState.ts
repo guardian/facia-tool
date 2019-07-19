@@ -264,6 +264,7 @@ const state = {
   error: '',
   path: '/v2/editorial',
   shared: {
+    featureSwitches: {},
     articleFragments: {
       '56a3b407-741c-439f-a678-175abea44a9f': {
         id: 'internal-code/page/5592826',
@@ -700,8 +701,7 @@ const state = {
     loadingIds: [],
     updatingIds: []
   },
-  focus: { focusState: undefined },
-  featureSwitches: {}
+  focus: { focusState: undefined }
 } as State;
 
 export default state;

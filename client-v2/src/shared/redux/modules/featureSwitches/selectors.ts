@@ -1,4 +1,4 @@
-import { State } from 'types/State';
+import { State } from 'shared/types/State';
 import { createSelector } from 'reselect';
 
 export const selectFeatureValue = (state: State, featureKey: string): boolean =>
