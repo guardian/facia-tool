@@ -2,8 +2,6 @@ import { qs } from 'util/qs';
 import { CapiArticle, Tag } from 'types/Capi';
 import pandaFetch from 'services/pandaFetch';
 
-const API_BASE = 'https://content.guardianapis.com/';
-
 type Fetch = (path: string) => Promise<Response>;
 
 type CAPIStatus = 'ok' | 'error';
@@ -102,7 +100,7 @@ const fetchCAPIResponse = async <
  *
  * @throws {Error} If fetch throws, CAPI returns an unparsable result, or CAPI returns an error.
  */
-const capiQuery = (baseURL: string = API_BASE) => {
+const capiQuery = (baseURL: string) => {
   const getCAPISearchString = (
     path: string,
     params: any,
@@ -110,8 +108,8 @@ const capiQuery = (baseURL: string = API_BASE) => {
   ) => {
     const { q, ...rest } = params;
     return options && options.isResource
-      ? `${baseURL}${q}${qs({ ...rest })}`
-      : `${baseURL}${path}${qs({
+      ? `${baseURL}/${q}${qs({ ...rest })}`
+      : `${baseURL}/${path}${qs({
           ...params
         })}`;
   };
@@ -135,21 +133,21 @@ const capiQuery = (baseURL: string = API_BASE) => {
     },
     tags: async (params: any): Promise<CAPITagQueryReponse> => {
       return fetchCAPIResponse<CAPITagQueryReponse>(
-        `${baseURL}tags${qs({
+        `${baseURL}/tags${qs({
           ...params
         })}`
       );
     },
     sections: async (params: any): Promise<CAPITagQueryReponse> => {
       return fetchCAPIResponse<CAPITagQueryReponse>(
-        `${baseURL}sections${qs({
+        `${baseURL}/sections${qs({
           ...params
         })}`
       );
     },
     desks: async (params: any): Promise<CAPITagQueryReponse> => {
       return fetchCAPIResponse<CAPITagQueryReponse>(
-        `${baseURL}tags${qs({
+        `${baseURL}/tags${qs({
           type: 'tracking',
           ...params
         })}`
