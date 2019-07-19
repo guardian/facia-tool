@@ -16,6 +16,7 @@ const colors = {
   blackLight: '#333',
   greyDark: '#444444',
   greyMediumDark: '#515151',
+  greyMediumDarkish: '#676767',
   greyMedium: '#767676',
   greyMediumLight: '#999999',
   greyLight: '#A9A9A9',
@@ -63,15 +64,17 @@ const button = {
 };
 
 const input = {
-  height: '34px',
+  height: '30px',
   paddingY: '3px',
   paddingX: '5px',
   fontSize: '14px',
   fontSizeHeadline: '16px',
   color: base.colors.text,
+  colorLabel: colors.greyMediumDarkish,
   backgroundColor: base.colors.backgroundColorLight,
   borderColor: base.colors.borderColor,
   borderColorFocus: base.colors.borderColorFocus,
+  checkboxBorderColor: colors.greyLight,
   checkboxColorInactive: base.colors.backgroundColorLight,
   checkboxBorderColorInactive: base.colors.borderColor,
   checkboxColorActive: base.colors.highlightColor,

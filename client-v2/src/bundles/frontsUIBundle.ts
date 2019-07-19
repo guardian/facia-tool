@@ -1,6 +1,6 @@
 import without from 'lodash/without';
 import compact from 'lodash/compact';
-import sortBy from 'lodash/sortBy';
+import uniq from 'lodash/uniq';
 import {
   Action,
   EditorOpenCurrentFrontsMenu,
@@ -25,6 +25,7 @@ import {
   EditorCloseAllOverviews
 } from 'types/Action';
 import { State as GlobalState } from 'types/State';
+import { State as GlobalSharedState } from 'shared/types/State';
 import { events } from 'services/GA';
 import {
   selectFronts,
@@ -35,6 +36,8 @@ import {
   REMOVE_GROUP_ARTICLE_FRAGMENT,
   REMOVE_SUPPORTING_ARTICLE_FRAGMENT
 } from 'shared/actions/ArticleFragments';
+import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
+import { selectSharedState } from 'shared/selectors/shared';
 
 export const EDITOR_OPEN_CURRENT_FRONTS_MENU =
   'EDITOR_OPEN_CURRENT_FRONTS_MENU';
@@ -174,19 +177,20 @@ const editorSetFavouriteFronts = (favouriteFrontIdsByPriority: {
 });
 
 const editorSelectArticleFragment = (
-  frontId: string,
   articleFragmentId: string,
+  collectionId: string,
+  frontId: string,
   isSupporting = false
 ): EditorSelectArticleFragment => ({
   type: EDITOR_SELECT_ARTICLE_FRAGMENT,
-  payload: { articleFragmentId, frontId, isSupporting }
+  payload: { articleFragmentId, frontId, collectionId, isSupporting }
 });
 
 const editorClearArticleFragmentSelection = (
-  frontId: string
+  articleFragmentId: string
 ): EditorClearArticleFragmentSelection => ({
   type: EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION,
-  payload: { frontId }
+  payload: { articleFragmentId }
 });
 
 const editorOpenClipboard = (): EditorOpenClipboard => ({
@@ -219,6 +223,12 @@ const editorCloseAllOverviews = (): EditorCloseAllOverviews => ({
   type: EDITOR_CLOSE_ALL_OVERVIEWS
 });
 
+interface OpenArticleFragmentData {
+  id: string;
+  isSupporting: boolean;
+  collectionId: string;
+}
+
 interface State {
   showOpenFrontsMenu: boolean;
   frontIds: string[];
@@ -232,10 +242,7 @@ interface State {
   closedOverviews: string[];
   clipboardOpen: boolean;
   selectedArticleFragments: {
-    [frontId: string]: {
-      id: string;
-      isSupporting: boolean;
-    } | void;
+    [frontId: string]: OpenArticleFragmentData[];
   };
 }
 
@@ -279,16 +286,13 @@ const createSelectFrontIdWithOpenAndStarredStatesByPriority = () => {
       selectEditorFrontsByPriority(state, { priority }),
     (state, priority: string) =>
       selectEditorFavouriteFrontIdsByPriority(state, priority),
-    (_, __, sortKey: 'id' | 'index' = 'id') => sortKey,
-    (frontsForPriority, openFronts, favouriteFronts, sortKey) => {
-      const fronts = frontsForPriority.map(({ id, displayName, index }) => ({
+
+    (frontsForPriority, openFronts, favouriteFronts) => {
+      return frontsForPriority.map(({ id }) => ({
         id,
-        displayName,
-        index,
         isOpen: !!openFronts.find(_ => _.id === id),
         isStarred: !!favouriteFronts.includes(id)
       }));
-      return sortBy(fronts, front => front[sortKey]);
     }
   );
 };
@@ -319,10 +323,68 @@ const selectHasMultipleFrontsOpen = createSelector(
   }
 );
 
-const selectEditorArticleFragment = <T extends { editor: State }>(
-  state: T,
+const defaultOpenForms = [] as [];
+
+const selectOpenArticleFragmentForms = (state: GlobalState, frontId: string) =>
+  state.editor.selectedArticleFragments[frontId] || defaultOpenForms;
+
+const selectSingleArticleFragmentForm = (
+  state: GlobalState,
   frontId: string
-) => state.editor.selectedArticleFragments[frontId];
+): OpenArticleFragmentData | undefined =>
+  !selectFeatureValue(selectSharedState(state), 'inline-form')
+    ? (state.editor.selectedArticleFragments[frontId] || [])[0]
+    : undefined;
+
+const selectIsArticleFragmentFormOpen = (
+  state: GlobalState,
+  articleFragmentId: string,
+  frontId: string
+) => {
+  return (selectOpenArticleFragmentForms(state, frontId) || []).some(
+    _ => _.id === articleFragmentId
+  );
+};
+
+/**
+ * An article fragment should be faded out if
+ *  - we're in not in inline-form mode
+ *  - there's an articleFragment form open
+ *  - it's not for the given articleFragment
+ */
+const selectIsArticleFragmentFaded = (
+  state: GlobalState,
+  articleFragmentId: string,
+  frontId: string
+) => {
+  if (selectFeatureValue(selectSharedState(state), 'inline-form')) {
+    return false;
+  }
+  const openArticleFragmentData = selectSingleArticleFragmentForm(
+    state,
+    frontId
+  );
+  if (!openArticleFragmentData) {
+    return false;
+  }
+  return openArticleFragmentData.id !== articleFragmentId;
+};
+
+const createSelectCollectionIdsWithOpenForms = () =>
+  createSelector(
+    selectOpenArticleFragmentForms,
+    forms => uniq(forms.map(_ => _.collectionId))
+  );
+
+const selectCollectionId = (_: GlobalState, collectionId: string) =>
+  collectionId;
+
+const createSelectDoesCollectionHaveOpenForms = () =>
+  createSelector(
+    selectOpenArticleFragmentForms,
+    selectCollectionId,
+    (forms, collectionId) => forms.some(_ => _.collectionId === collectionId)
+  );
 
 const defaultState = {
   showOpenFrontsMenu: false,
@@ -335,13 +397,36 @@ const defaultState = {
   selectedArticleFragments: {}
 };
 
-const clearArticleFragmentSelection = (state: State, frontId: string) => ({
-  ...state,
-  selectedArticleFragments: {
-    ...state.selectedArticleFragments,
-    [frontId]: undefined
+const clearArticleFragmentSelection = (
+  state: State,
+  articleFragmentId: string
+): State => {
+  let frontId: string | null = null;
+  for (const entry of Object.entries(state.selectedArticleFragments)) {
+    const [currentFrontId, fragmentDatas] = entry;
+    const currentFragmentDataIndex = fragmentDatas.findIndex(
+      _ => _.id === articleFragmentId
+    );
+    if (currentFragmentDataIndex !== -1) {
+      frontId = currentFrontId;
+      break;
+    }
   }
-});
+
+  if (!frontId) {
+    return state;
+  }
+
+  return {
+    ...state,
+    selectedArticleFragments: {
+      ...state.selectedArticleFragments,
+      [frontId]: state.selectedArticleFragments[frontId].filter(
+        _ => _.id !== articleFragmentId
+      )
+    }
+  };
+};
 
 const getFrontPosition = (
   frontId: string,
@@ -361,7 +446,11 @@ const getFrontPosition = (
   }
 };
 
-const reducer = (state: State = defaultState, action: Action): State => {
+const reducer = (
+  state: State = defaultState,
+  action: Action,
+  sharedState: GlobalSharedState
+): State => {
   switch (action.type) {
     case EDITOR_OPEN_CURRENT_FRONTS_MENU: {
       return {
@@ -496,36 +585,42 @@ const reducer = (state: State = defaultState, action: Action): State => {
       };
     }
     case EDITOR_SELECT_ARTICLE_FRAGMENT: {
+      const allowMultipleForms = selectFeatureValue(sharedState, 'inline-form');
+      const currentlyOpenArticleFragments = allowMultipleForms
+        ? state.selectedArticleFragments[action.payload.frontId] || []
+        : [];
+      const {
+        frontId,
+        collectionId,
+        isSupporting,
+        articleFragmentId: id
+      } = action.payload;
+      const openArticleFragments = currentlyOpenArticleFragments.concat([
+        {
+          id,
+          isSupporting,
+          collectionId
+        }
+      ]);
       return {
         ...state,
         selectedArticleFragments: {
           ...state.selectedArticleFragments,
-          [action.payload.frontId]: {
-            id: action.payload.articleFragmentId,
-            isSupporting: action.payload.isSupporting
-          }
+          [frontId]: openArticleFragments
         }
       };
     }
     case EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION: {
-      return clearArticleFragmentSelection(state, action.payload.frontId);
+      return clearArticleFragmentSelection(
+        state,
+        action.payload.articleFragmentId
+      );
     }
     case REMOVE_SUPPORTING_ARTICLE_FRAGMENT:
     case REMOVE_GROUP_ARTICLE_FRAGMENT:
     case 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT': {
       const articleFragmentId = action.payload.articleFragmentId;
-      const selectedFrontId = Object.keys(state.selectedArticleFragments).find(
-        frontId => {
-          const selectedArticleFragmentData =
-            state.selectedArticleFragments[frontId];
-          return selectedArticleFragmentData
-            ? selectedArticleFragmentData.id === articleFragmentId
-            : false;
-        }
-      );
-      return selectedFrontId
-        ? clearArticleFragmentSelection(state, selectedFrontId)
-        : state;
+      return clearArticleFragmentSelection(state, articleFragmentId);
     }
     case EDITOR_OPEN_CLIPBOARD: {
       return {
@@ -587,13 +682,15 @@ export {
   editorSelectArticleFragment,
   editorClearArticleFragmentSelection,
   selectIsCurrentFrontsMenuOpen,
+  selectIsArticleFragmentFormOpen,
+  selectIsArticleFragmentFaded,
+  selectSingleArticleFragmentForm,
   createSelectEditorFrontsByPriority,
   createSelectFrontIdWithOpenAndStarredStatesByPriority,
   selectEditorFrontIds,
   selectEditorFavouriteFrontIds,
   selectEditorFrontIdsByPriority,
   selectEditorFavouriteFrontIdsByPriority,
-  selectEditorArticleFragment,
   selectIsCollectionOpen,
   editorOpenClipboard,
   editorCloseClipboard,
@@ -603,7 +700,10 @@ export {
   editorCloseAllOverviews,
   selectIsClipboardOpen,
   selectIsFrontOverviewOpen,
-  selectHasMultipleFrontsOpen
+  selectHasMultipleFrontsOpen,
+  createSelectCollectionIdsWithOpenForms,
+  createSelectDoesCollectionHaveOpenForms,
+  OpenArticleFragmentData
 };
 
 export default reducer;

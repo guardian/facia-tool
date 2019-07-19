@@ -9,11 +9,13 @@ import {
 import { updateArticleFragmentMeta as updateArticleFragmentMetaAction } from 'actions/ArticleFragments';
 import {
   editorClearArticleFragmentSelection,
-  selectEditorArticleFragment,
-  selectIsFrontOverviewOpen
+  selectIsFrontOverviewOpen,
+  selectSingleArticleFragmentForm,
+  OpenArticleFragmentData
 } from 'bundles/frontsUIBundle';
 import { Dispatch } from 'types/Store';
 import { State } from 'types/State';
+import { bindActionCreators } from 'redux';
 
 interface ContainerProps {
   id: string;
@@ -22,7 +24,7 @@ interface ContainerProps {
 }
 
 interface ComponentProps extends ContainerProps {
-  selectedArticleFragment: { id: string; isSupporting: boolean } | void;
+  selectedArticleFragment: OpenArticleFragmentData | undefined;
   updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) => void;
   clearArticleFragmentSelection: (id: string) => void;
   overviewIsOpen: boolean;
@@ -38,18 +40,19 @@ const FrontsDetailView = ({
   currentCollection
 }: ComponentProps) => {
   if (selectedArticleFragment) {
+    const { id: articleFragmentId } = selectedArticleFragment;
     return (
       <ArticleFragmentForm
-        articleFragmentId={selectedArticleFragment.id}
+        articleFragmentId={articleFragmentId}
         isSupporting={selectedArticleFragment.isSupporting}
-        key={selectedArticleFragment.id}
-        form={selectedArticleFragment.id}
+        key={articleFragmentId}
+        form={articleFragmentId}
         frontId={id}
         onSave={(meta: ArticleFragmentMeta) => {
-          updateArticleFragmentMeta(selectedArticleFragment.id, meta);
-          clearArticleFragmentSelection(id);
+          updateArticleFragmentMeta(articleFragmentId, meta);
+          clearArticleFragmentSelection(articleFragmentId);
         }}
-        onCancel={() => clearArticleFragmentSelection(id)}
+        onCancel={() => clearArticleFragmentSelection(articleFragmentId)}
       />
     );
   }
@@ -66,16 +69,18 @@ const FrontsDetailView = ({
 };
 
 const mapStateToProps = (state: State, props: ContainerProps) => ({
-  selectedArticleFragment: selectEditorArticleFragment(state, props.id),
+  selectedArticleFragment: selectSingleArticleFragmentForm(state, props.id),
   overviewIsOpen: selectIsFrontOverviewOpen(state, props.id)
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
-    dispatch(updateArticleFragmentMetaAction(id, meta)),
-  clearArticleFragmentSelection: (frontId: string) =>
-    dispatch(editorClearArticleFragmentSelection(frontId))
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+  bindActionCreators(
+    {
+      updateArticleFragmentMeta: updateArticleFragmentMetaAction,
+      clearArticleFragmentSelection: editorClearArticleFragmentSelection
+    },
+    dispatch
+  );
 
 export default connect(
   mapStateToProps,

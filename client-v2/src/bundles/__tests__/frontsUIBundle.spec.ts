@@ -25,8 +25,7 @@ import {
   selectEditorFrontIdsByPriority,
   selectEditorFavouriteFrontIds,
   selectEditorFavouriteFrontIdsByPriority,
-  editorSelectArticleFragment,
-  selectEditorArticleFragment
+  editorSelectArticleFragment
 } from '../frontsUIBundle';
 import initialState from 'fixtures/initialState';
 import { Action } from 'types/Action';
@@ -36,14 +35,20 @@ import {
 } from 'shared/actions/ArticleFragments';
 import { removeClipboardArticleFragment } from 'actions/Clipboard';
 import { State as GlobalState } from 'types/State';
+import { State as GlobalSharedState } from 'shared/types/State';
+import { initialState as initialSharedState } from 'shared/fixtures/shared';
 
 type State = ReturnType<typeof innerReducer>;
 
 // this allows us to put _in_ our own slice of state but receive a _global_
 // state so that we can test out selectors
-const reducer = (state: State | undefined, action: Action): GlobalState =>
+const reducer = (
+  state: State | undefined,
+  action: Action,
+  sharedState: GlobalSharedState
+): GlobalState =>
   ({
-    editor: innerReducer(state, action)
+    editor: innerReducer(state, action, (sharedState = initialSharedState))
   } as any);
 
 describe('frontsUIBundle', () => {

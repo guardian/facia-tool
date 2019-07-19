@@ -3,13 +3,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { State } from 'types/State';
 import {
-  selectEditorArticleFragment,
-  editorClearArticleFragmentSelection
+  editorClearArticleFragmentSelection,
+  selectSingleArticleFragmentForm
 } from 'bundles/frontsUIBundle';
 import { clipboardId } from 'constants/fronts';
 import { updateClipboardArticleFragmentMeta } from 'actions/ArticleFragments';
 import { ArticleFragmentMeta } from 'shared/types/Collection';
 import ArticleFragmentForm from './FrontsEdit/ArticleFragmentForm';
+import { bindActionCreators } from 'redux';
 
 interface Props {
   selectedArticleFragment: { id: string; isSupporting: boolean } | void;
@@ -17,7 +18,7 @@ interface Props {
     id: string,
     meta: ArticleFragmentMeta
   ) => void;
-  clearArticleFragmentSelection: () => void;
+  clearArticleFragmentSelection: (articleFragmentId: string) => void;
 }
 
 const ClipboardForm = (props: Props) => {
@@ -33,34 +34,28 @@ const ClipboardForm = (props: Props) => {
           selectedArticleFragment.id,
           meta
         );
-        props.clearArticleFragmentSelection();
+        props.clearArticleFragmentSelection(selectedArticleFragment.id);
       }}
       frontId="clipboard"
-      onCancel={props.clearArticleFragmentSelection}
+      onCancel={() =>
+        props.clearArticleFragmentSelection(selectedArticleFragment.id)
+      }
     />
   ) : null;
 };
 
 const mapStateToProps = (state: State) => ({
-  selectedArticleFragment: selectEditorArticleFragment(state, clipboardId)
+  selectedArticleFragment: selectSingleArticleFragmentForm(state, clipboardId)
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  updateClipboardArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
-    dispatch(updateClipboardArticleFragmentMeta(id, meta)),
-  clearArticleFragmentSelection: (frontId: string) =>
-    dispatch(editorClearArticleFragmentSelection(frontId))
-});
-
-const mergeProps = (
-  stateProps: ReturnType<typeof mapStateToProps>,
-  dispatchProps: ReturnType<typeof mapDispatchToProps>
-) => ({
-  ...stateProps,
-  ...dispatchProps,
-  clearArticleFragmentSelection: () =>
-    dispatchProps.clearArticleFragmentSelection(clipboardId)
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+  bindActionCreators(
+    {
+      updateClipboardArticleFragmentMeta,
+      clearArticleFragmentSelection: editorClearArticleFragmentSelection
+    },
+    dispatch
+  );
 
 export default connect(
   mapStateToProps,

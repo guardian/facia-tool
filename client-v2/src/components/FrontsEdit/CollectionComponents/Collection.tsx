@@ -24,11 +24,10 @@ import {
   selectIsCollectionOpen,
   editorCloseCollections,
   selectHasMultipleFrontsOpen,
-  selectEditorArticleFragment
+  createSelectDoesCollectionHaveOpenForms
 } from 'bundles/frontsUIBundle';
 import { getArticlesForCollections } from 'actions/Collections';
 import { collectionItemSets } from 'constants/fronts';
-import { createSelectIsArticleInCollection } from 'shared/selectors/collection';
 import CollectionMetaContainer from 'shared/components/collection/CollectionMetaContainer';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import { styled } from 'constants/theme';
@@ -202,37 +201,33 @@ const createMapStateToProps = () => {
   const selectPreviously = createSelectPreviouslyLiveArticlesInCollection();
   return (
     state: State,
-    { browsingStage, id, priority, frontId }: CollectionPropsBeforeState
-  ) => {
-    const selectIsArticleInCollection = createSelectIsArticleInCollection();
-    const selectedArticleFragmentData = selectEditorArticleFragment(
-      state,
+    {
+      browsingStage,
+      id: collectionId,
+      priority,
       frontId
-    );
+    }: CollectionPropsBeforeState
+  ) => {
+    const selectDoesCollectionHaveOpenForms = createSelectDoesCollectionHaveOpenForms();
     return {
       hasUnpublishedChanges: selectHasUnpublishedChanges(state, {
-        collectionId: id
+        collectionId
       }),
-      isCollectionLocked: selectIsCollectionLocked(state, id),
+      isCollectionLocked: selectIsCollectionLocked(state, collectionId),
       groups: selectCollectionStageGroups(selectSharedState(state), {
         collectionSet: browsingStage,
-        collectionId: id
+        collectionId
       }),
       previousGroups: selectPreviously(selectSharedState(state), {
-        collectionId: id
+        collectionId
       }),
       displayEditWarning: selectEditWarning(selectSharedState(state), {
-        collectionId: id
+        collectionId
       }),
-      isOpen: selectIsCollectionOpen(state, id),
+      isOpen: selectIsCollectionOpen(state, collectionId),
       hasMultipleFrontsOpen: selectHasMultipleFrontsOpen(state, priority),
-      isEditFormOpen:
-        !!selectedArticleFragmentData &&
-        selectIsArticleInCollection(state.shared, {
-          collectionId: id,
-          collectionSet: browsingStage,
-          articleFragmentId: selectedArticleFragmentData.id
-        })
+      isEditFormOpen: selectDoesCollectionHaveOpenForms(state, collectionId),
+      isEditingEditions: selectIsEditingEditions(state)
     };
   };
 };

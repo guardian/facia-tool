@@ -8,7 +8,7 @@ import { updateCollection } from 'actions/Collections';
 import {
   editorCloseFront,
   selectIsFrontOverviewOpen,
-  selectEditorArticleFragment
+  selectSingleArticleFragmentForm
 } from 'bundles/frontsUIBundle';
 import Button from 'shared/components/input/ButtonDefault';
 import { frontStages } from 'constants/fronts';
@@ -203,11 +203,11 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
 
 const createMapStateToProps = () => {
   const selectAlsoOnFronts = createSelectAlsoOnFronts();
-  return (state: State, props: FrontsContainerProps) => ({
-    selectedFront: selectFront(state, { frontId: props.frontId }),
-    alsoOn: selectAlsoOnFronts(state, { frontId: props.frontId }),
-    isOverviewOpen: selectIsFrontOverviewOpen(state, props.frontId),
-    isFormOpen: !!selectEditorArticleFragment(state, props.frontId)
+  return (state: State, { frontId }: FrontsContainerProps) => ({
+    selectedFront: selectFront(state, { frontId }),
+    alsoOn: selectAlsoOnFronts(state, { frontId }),
+    isOverviewOpen: selectIsFrontOverviewOpen(state, frontId),
+    isFormOpen: !!selectSingleArticleFragmentForm(state, frontId)
   });
 };
 

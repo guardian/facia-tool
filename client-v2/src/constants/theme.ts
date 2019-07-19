@@ -19,6 +19,7 @@ const base = {
     frontListBorder: '#5E5E5E',
     frontListLabel: shared.colors.greyMediumLight,
     frontListButton: shared.colors.greyDark,
+    formBackground: '#dcdcdc',
     dropZoneActiveSublink: '#36842A',
     dropZoneActiveStory: '#117ABB'
   }

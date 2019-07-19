@@ -93,7 +93,7 @@ interface CollectionContextProps {
   browsingStage: CollectionItemSets;
   handleMove: (move: Move<TArticleFragment>) => void;
   handleInsert: (e: React.DragEvent, to: PosSpec) => void;
-  selectArticleFragment: (isSupporting?: boolean) => (id: string) => void;
+  selectArticleFragment: (id: string, isSupporting: boolean) => void;
 }
 
 type ConnectedCollectionContextProps = CollectionContextProps & {
@@ -171,12 +171,14 @@ class CollectionContext extends React.Component<
                       uuid={articleFragment.uuid}
                     >
                       <CollectionItem
-                        frontId={this.props.id}
+                        frontId={frontId}
                         uuid={articleFragment.uuid}
                         parentId={group.uuid}
                         isUneditable={isUneditable}
                         getNodeProps={() => getAfNodeProps(isUneditable)}
-                        onSelect={selectArticleFragment()}
+                        onSelect={() =>
+                          selectArticleFragment(articleFragment.uuid, false)
+                        }
                         onDelete={() =>
                           removeCollectionItem(group.uuid, articleFragment.uuid)
                         }
@@ -189,10 +191,12 @@ class CollectionContext extends React.Component<
                         >
                           {(supporting, getSupportingProps) => (
                             <CollectionItem
-                              frontId={this.props.id}
+                              frontId={frontId}
                               uuid={supporting.uuid}
                               parentId={articleFragment.uuid}
-                              onSelect={selectArticleFragment(true)}
+                              onSelect={() =>
+                                selectArticleFragment(supporting.uuid, true)
+                              }
                               isUneditable={isUneditable}
                               getNodeProps={() =>
                                 getSupportingProps(isUneditable)
