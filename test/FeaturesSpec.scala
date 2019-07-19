@@ -7,6 +7,11 @@ class FeaturesSpec extends WordSpec with Matchers {
 
     "FeatureSwitches.updateFeatureSwitchesForUser is called" must {
 
+      "return default feature switches when user data contains no pre-existing switches" in {
+        val testSwitch = FeatureSwitch("test","test", enabled = true)
+        FeatureSwitches.updateFeatureSwitchesForUser(None, testSwitch) should contain theSameElementsAs List(InlineForm, testSwitch)
+      }
+
       "return an updated list of feature switches" in {
         val unchangedSwitch = FeatureSwitch("test","test", enabled = true)
         val switchToChange = InlineForm

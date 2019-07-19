@@ -24,9 +24,9 @@ object FeatureSwitches {
   def updateFeatureSwitchesForUser(userDataSwitches: Option[List[FeatureSwitch]], switch: FeatureSwitch): List[FeatureSwitch] = {
     userDataSwitches match {
       case Some(switches) =>
-        FeatureSwitches.all.diff(switches) ++ switches.filter(_.key != switch.key) ++ List(switch)
+        all.diff(switches) ++ switches.filter(_.key != switch.key) ++ List(switch)
       case None =>
-        FeatureSwitches.all.filter(_.key == switch.key) ++ List(switch)
+        all.filter(_.key != switch.key) ++ List(switch)
     }
   }
 }
