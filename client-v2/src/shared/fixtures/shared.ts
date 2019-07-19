@@ -1,4 +1,4 @@
-import { State } from "shared/types/State";
+import { State } from 'shared/types/State';
 
 const capiArticle = {
   id:
@@ -792,5 +792,5 @@ export {
   liveArticle,
   articleWithSupporting,
   collectionConfig,
-  collectionWithoutGroups,
+  collectionWithoutGroups
 };
