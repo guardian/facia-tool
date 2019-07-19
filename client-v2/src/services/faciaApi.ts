@@ -209,12 +209,18 @@ const updateEditionsCollection = (collectionId: string) =>
     'put'
   )(collectionId);
 
-async function saveClipboard(
-  clipboardContent: NestedArticleFragment[]
-): Promise<NestedArticleFragment[]> {
+const saveClipboard = (content: NestedArticleFragment[]) =>
+  createSaveClipboard(content, '/clipboard');
+const saveEditionsClipboard = (content: NestedArticleFragment[]) =>
+  createSaveClipboard(content, '/editionsClipboard');
+
+async function createSaveClipboard(
+  clipboardContent: NestedArticleFragment[],
+  pathSuffix: string
+): Promise<void> {
   // The server does not respond with JSON
   try {
-    const response = await pandaFetch(`/userdata/clipboard`, {
+    await pandaFetch(`/userdata${pathSuffix}`, {
       method: 'put',
       credentials: 'same-origin',
       body: JSON.stringify(clipboardContent),
@@ -222,7 +228,6 @@ async function saveClipboard(
         'Content-Type': 'application/json'
       }
     });
-    return await response.json();
   } catch (response) {
     throw new Error(
       `Tried to update a clipboard but the server responded with ${
@@ -433,6 +438,7 @@ export {
   updateCollection,
   updateEditionsCollection,
   saveClipboard,
+  saveEditionsClipboard,
   saveOpenFrontIds,
   saveFavouriteFrontIds,
   getCapiUriForContentIds,

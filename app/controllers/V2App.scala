@@ -18,6 +18,7 @@ class V2App(isDev: Boolean, val acl: Acl, dynamo: Dynamo, val deps: BaseFaciaCon
 
   def index(priority: String = "", frontId: String = "") = getCollectionPermissionFilterByPriority(priority, acl)(ec) { implicit req =>
 
+    val editingEdition = priority.startsWith("issues")
     val userDataTable = Table[UserData](config.faciatool.userDataTable)
 
     val jsFileName = "dist/app.bundle.js"
@@ -39,6 +40,12 @@ class V2App(isDev: Boolean, val acl: Acl, dynamo: Dynamo, val deps: BaseFaciaCon
     val maybeUserData: Option[UserData] = Scanamo.exec(dynamo.client)(
       userDataTable.get('email -> userEmail)).flatMap(_.right.toOption)
 
+    val clipboardArticles = if (editingEdition)
+      maybeUserData.map(_.editionsClipboardArticles.getOrElse(List()))
+    else
+      maybeUserData.map(_.clipboardArticles.getOrElse(List()))
+
+
     val conf = Defaults(
       isDev,
       config.environment.stage,
@@ -58,7 +65,7 @@ class V2App(isDev: Boolean, val acl: Acl, dynamo: Dynamo, val deps: BaseFaciaCon
       Metadata.tags.map {
         case (_, meta) => meta
       },
-      maybeUserData.map(_.clipboardArticles.getOrElse(List())),
+      clipboardArticles,
       maybeUserData.map(_.frontIds.getOrElse(List())),
       maybeUserData.map(_.frontIdsByPriority.getOrElse(Map())),
       maybeUserData.map(_.favouriteFrontIdsByPriority.getOrElse(Map())),

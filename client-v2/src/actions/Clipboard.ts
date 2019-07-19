@@ -1,5 +1,5 @@
 import { Dispatch, ThunkResult } from 'types/Store';
-import { saveClipboard } from 'services/faciaApi';
+import { saveClipboardStrategy } from 'strategies/save-clipboard';
 import { fetchArticles } from 'actions/Collections';
 import { batchActions } from 'redux-batched-actions';
 import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
@@ -13,6 +13,7 @@ import {
   InsertClipboardArticleFragment,
   RemoveClipboardArticleFragment
 } from 'types/Action';
+import { State } from 'types/State';
 
 export const REMOVE_CLIPBOARD_ARTICLE_FRAGMENT =
   'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT';
@@ -56,11 +57,18 @@ function storeClipboardContent(clipboardContent: NestedArticleFragment[]) {
 
 function updateClipboard(clipboardContent: {
   articles: NestedArticleFragment[];
-}): ThunkResult<Promise<NestedArticleFragment[] | void>> {
-  return () =>
-    saveClipboard(clipboardContent.articles).catch(() => {
+}): ThunkResult<Promise<NestedArticleFragment[]>> {
+  return async (_, getState: () => State) => {
+    const saveClipboardResponse = await saveClipboardStrategy(
+      getState(),
+      clipboardContent.articles
+    );
+    if (!saveClipboardResponse) {
       // @todo: implement once error handling is done
-    });
+      return Promise.resolve([]);
+    }
+    return saveClipboardResponse;
+  };
 }
 
 const insertClipboardArticleFragment = (

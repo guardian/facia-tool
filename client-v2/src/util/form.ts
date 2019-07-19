@@ -156,8 +156,7 @@ export const getArticleFragmentMetaFromFormValues = (
 ): ArticleFragmentMeta => {
   const primaryImage = values.primaryImage || {};
   const cutoutImage = values.cutoutImage || {};
-  // Lodash doesn't remove undefined in the type settings here, hence the any.
-  const slideshow = compact(values.slideshow as any).map(
+  const slideshow = compact(values.slideshow as ImageData[]).map(
     (image: ImageData) => ({
       ...image,
       width: intToStr(image.width),

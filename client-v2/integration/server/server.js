@@ -189,8 +189,10 @@ module.exports = async () =>
           )
     );
 
-    // this catches update requests and pretends they went through ok
+    // this catches post requests and pretends they went through ok
     app.post('*', (_, res) => res.json({ ok: true }));
+    // this catches update requests and pretends they went through ok
+    app.put('*', (_, res) => res.json({ ok: true }));
     const server = app.listen(port, err => {
       if (err) {
         console.log("Intergration server couldn't start");
