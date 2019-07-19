@@ -1,7 +1,6 @@
 import { selectAllFeatures } from '../selectors';
 import { initialState } from 'shared/fixtures/shared';
 import { State } from 'shared/types/State';
-import { selectSharedState } from 'shared/selectors/shared';
 
 describe('Feature selectors', () => {
   describe('selectAllFeatures', () => {
@@ -22,7 +21,7 @@ describe('Feature selectors', () => {
         ...initialState,
         featureSwitches
       } as State;
-      expect(selectAllFeatures(selectSharedState(state))).toEqual([
+      expect(selectAllFeatures(state)).toEqual([
         featureSwitches.exampleFeature1,
         featureSwitches.exampleFeature2
       ]);
