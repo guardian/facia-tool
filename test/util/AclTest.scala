@@ -1,9 +1,9 @@
 package util
 
-import org.scalatest.{DoNotDiscover, FreeSpec, Matchers}
-import permissions.{TrainingPermission, EmailPermission, EditorialPermission, CommercialPermission}
+import org.scalatest.{FreeSpec, Matchers}
+import permissions.{CommercialPermission, EditorialPermission, EmailPermission, TrainingPermission}
 
-@DoNotDiscover class AclTest extends FreeSpec with Matchers {
+class AclTest extends FreeSpec with Matchers {
 
   "Grant access according to collection priorities" - {
 

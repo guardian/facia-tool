@@ -111,6 +111,3 @@ POST        /editions-api/issues/:id/publish             controllers.EditionsCon
 GET         /editions-api/issues/:id/preview             controllers.EditionsController.getPreviewEdition(id)
 POST        /editions-api/collections                    controllers.EditionsController.getCollections
 PUT         /editions-api/collections/:collectionId      controllers.EditionsController.updateCollection(collectionId)
-
-
-
