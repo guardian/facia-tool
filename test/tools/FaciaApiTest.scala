@@ -3,9 +3,9 @@ package tools
 import com.gu.facia.client.models.{CollectionJson, Trail}
 import com.gu.pandomainauth.model.User
 import org.joda.time.DateTime
-import org.scalatest.{DoNotDiscover, FreeSpec, Matchers}
+import org.scalatest.{FreeSpec, Matchers}
 
-@DoNotDiscover class FaciaApiTest extends FreeSpec with Matchers {
+class FaciaApiTest extends FreeSpec with Matchers {
 
   "update the published date only for a new article and retain existing article date" - {
 
