@@ -1,3 +1,5 @@
+import com.amazonaws.auth.AWSCredentialsProvider
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import conf.ApplicationConfiguration
 import config.{CustomGzipFilter, UpdateManager}
 import controllers._
@@ -24,7 +26,7 @@ import play.api.db.evolutions.EvolutionsComponents
 import play.api.db.DBComponents
 import play.api.db.HikariCPComponents
 import services.editions.db.EditionsDB
-import services.editions.publishing.{EditionsPublishing, PublishedIssuesBucket}
+import services.editions.publishing.{EditionsPublishing, PreviewIssuesBucket, PublishedIssuesBucket}
 
 class AppComponents(context: Context, val config: ApplicationConfiguration)
   extends BaseFaciaControllerComponents(context) with EvolutionsComponents with DBComponents with HikariCPComponents {
@@ -38,14 +40,17 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   // Services
   val awsEndpoints = new AwsEndpoints(config)
   val capi = new GuardianCapi(config)
-  val dynamo = new Dynamo(awsEndpoints, config)
+  val awsCredentials: AWSCredentialsProvider = config.aws.cmsFrontsAccountCredentials
+  val dynamo: AmazonDynamoDB = Dynamo.client(awsCredentials, config.aws.region)
+  val s3Client = S3.client(awsCredentials, config.aws.region)
   val acl = new Acl(permissions)
 
   // Editions services
   val editionsDb = new EditionsDB(config.postgres.url, config.postgres.user, config.postgres.password)
   val templating = new EditionsTemplating(capi)
-  val publishingBucket = new PublishedIssuesBucket(config, awsEndpoints)
-  val editionsPublishing = new EditionsPublishing(publishingBucket, editionsDb)
+  val publishingBucket = new PublishedIssuesBucket(s3Client, config.aws.publishedEditionsIssuesBucket)
+  val previewBucket = new PreviewIssuesBucket(s3Client, config.aws.previewEditionsIssuesBucket)
+  val editionsPublishing = new EditionsPublishing(publishingBucket, previewBucket, editionsDb)
 
   // Controllers
   val frontsApi = new FrontsApi(config, awsEndpoints)

@@ -76,6 +76,13 @@ class EditionsController(db: EditionsDB,
     val form = req.body
     val collectionToUpdate = EditionsFrontendCollectionWrapper.toCollection(form)
     val updatedCollection = db.updateCollection(collectionToUpdate)
+    for {
+      issueId <- db.getIssueIdFromCollectionId(updatedCollection.id)
+      issue <- db.getIssue(issueId)
+    } {
+      logger.info("Updating preview")
+      publishing.updatePreview(issue)
+    }
     Ok(Json.toJson(EditionsFrontendCollectionWrapper.fromCollection(updatedCollection)))
   }
 

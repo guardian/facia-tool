@@ -20,9 +20,7 @@ case class FrontPressRecord (
  actionTime: String
 )
 
-class PressController (dynamo: Dynamo, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
-  val client = dynamo.client
-
+class PressController (client: AmazonDynamoDB, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
   private lazy val pressedTable = Table[FrontPressRecord](config.faciatool.frontPressUpdateTable)
 
   def getLastModified (path: String) = AccessAPIAuthAction { request =>

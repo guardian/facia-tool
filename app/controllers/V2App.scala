@@ -1,5 +1,6 @@
 package controllers
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.gu.scanamo._
 import com.gu.scanamo.syntax._
 import model.UserData
@@ -10,9 +11,8 @@ import permissions.Permissions
 import play.api.libs.json.Json
 import switchboard.SwitchManager
 import util.{Acl, AclJson}
-import services.Dynamo
 
-class V2App(isDev: Boolean, val acl: Acl, dynamo: Dynamo, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
+class V2App(isDev: Boolean, val acl: Acl, dynamoClient: AmazonDynamoDB, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
 
   import model.UserData._
 
@@ -37,7 +37,7 @@ class V2App(isDev: Boolean, val acl: Acl, dynamo: Dynamo, val deps: BaseFaciaCon
 
     val userEmail: String = req.user.email
 
-    val maybeUserData: Option[UserData] = Scanamo.exec(dynamo.client)(
+    val maybeUserData: Option[UserData] = Scanamo.exec(dynamoClient)(
       userDataTable.get('email -> userEmail)).flatMap(_.right.toOption)
 
     val clipboardArticles = if (editingEdition)
