@@ -17,11 +17,11 @@ trait EditionsDBService extends DockerTestKit with DockerKitDockerJava with Dock
     super.beforeAll()
 
     database = Databases(driver, dbUrl, config = Map(
-      "username" -> user,
-      "password" -> password
+      "username" -> dbUser,
+      "password" -> dbPassword
     ))
 
-    editionsDB = new EditionsDB(dbUrl, user, password)
+    editionsDB = new EditionsDB(dbUrl, dbUser, dbPassword)
   }
 
   def withEvolutions[T]: (=> T) => T = Evolutions.withEvolutions[T](database)
