@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { State } from 'types/State';
-import { selectIsEditingEditions } from './pathSelectors';
+import { selectEditMode } from './pathSelectors';
 
 const selectConfig = (state: State) => state.config;
 
@@ -29,9 +29,9 @@ const selectCapiPreviewURL = createSelector(
 
 const selectCollectionCap = createSelector(
   selectConfig,
-  selectIsEditingEditions,
-  (config, isEditingEditions) =>
-    (!isEditingEditions && config && config.collectionCap) || Infinity
+  selectEditMode,
+  (config, editMode) =>
+    (editMode === 'fronts' && config && config.collectionCap) || Infinity
 );
 
 const selectGridUrl = createSelector(

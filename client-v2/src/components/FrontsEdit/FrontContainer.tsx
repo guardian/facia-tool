@@ -29,6 +29,7 @@ import { PreviewEyeIcon, ClearIcon } from 'shared/components/icons/Icons';
 import { createFrontId } from 'util/editUtils';
 import { formMinWidth } from './ArticleFragmentForm';
 import { overviewMinWidth } from './FrontCollectionsOverview';
+import EditModeVisibility from 'components/util/EditModeVisibility';
 
 const FrontHeader = styled(SectionHeader)`
   display: flex;
@@ -152,31 +153,33 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
           <FrontHeader greyHeader={true}>
             <FrontsHeaderText title={title}>{title}</FrontsHeaderText>
             <FrontHeaderMeta>
-              <a
-                href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${
-                  this.props.frontId
-                }`}
-                target="preview"
-              >
-                <FrontHeaderButton size="l">
-                  <PreviewEyeIcon size="xl" />
-                  <PreviewButtonText>Preview</PreviewButtonText>
-                </FrontHeaderButton>
-              </a>
-              <StageSelectButtons>
-                <RadioGroup>
-                  {Object.keys(frontStages).map(key => (
-                    <RadioButton
-                      inline
-                      key={key}
-                      name={`${this.props.frontId} - frontStages`}
-                      checked={frontStages[key] === this.state.collectionSet}
-                      onChange={() => this.handleCollectionSetSelect(key)}
-                      label={toTitleCase(frontStages[key])}
-                    />
-                  ))}
-                </RadioGroup>
-              </StageSelectButtons>
+              <EditModeVisibility visibleMode="fronts">
+                <a
+                  href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${
+                    this.props.frontId
+                  }`}
+                  target="preview"
+                >
+                  <FrontHeaderButton size="l">
+                    <PreviewEyeIcon size="xl" />
+                    <PreviewButtonText>Preview</PreviewButtonText>
+                  </FrontHeaderButton>
+                </a>
+                <StageSelectButtons>
+                  <RadioGroup>
+                    {Object.keys(frontStages).map(key => (
+                      <RadioButton
+                        inline
+                        key={key}
+                        name={`${this.props.frontId} - frontStages`}
+                        checked={frontStages[key] === this.state.collectionSet}
+                        onChange={() => this.handleCollectionSetSelect(key)}
+                        label={toTitleCase(frontStages[key])}
+                      />
+                    ))}
+                  </RadioGroup>
+                </StageSelectButtons>
+              </EditModeVisibility>
               <FrontHeaderButton onClick={this.handleRemoveFront} size="l">
                 <ClearIcon size="xl" />
               </FrontHeaderButton>

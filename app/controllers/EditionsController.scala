@@ -2,7 +2,7 @@ package controllers
 
 import logging.Logging
 import model.forms._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import services.editions.EditionsTemplating
 import java.time.{LocalDate, OffsetDateTime}
 
@@ -36,6 +36,12 @@ class EditionsController(db: EditionsDB,
   def getIssue(id: String)= AccessAPIAuthAction { _ =>
     db.getIssue(id).map { issue =>
       Ok(Json.toJson(issue))
+    }.getOrElse(NotFound(s"Issue $id not found"))
+  }
+
+  def getIssueSummary(id: String)= AccessAPIAuthAction { _ =>
+    db.getIssueSummary(id).map { issue =>
+      Ok(Json.toJson(issue).as[JsObject] - "fronts")
     }.getOrElse(NotFound(s"Issue $id not found"))
   }
 
