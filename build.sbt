@@ -10,6 +10,7 @@ packageDescription := "Guardian front pages editor"
 
 scalaVersion in ThisBuild := "2.12.5"
 
+import com.gu.riffraff.artifact.BuildInfo
 import sbt.Resolver
 import sbt.io.Path._
 
@@ -121,8 +122,22 @@ libraryDependencies ++= Seq(
 val UsesDatabaseTest = config("database-int") extend Test
 
 lazy val root = (project in file("."))
-    .enablePlugins(PlayScala, RiffRaffArtifact, JDebPackaging, SystemdPlugin)
+    .enablePlugins(PlayScala, RiffRaffArtifact, JDebPackaging, SystemdPlugin, BuildInfoPlugin)
     .configs(UsesDatabaseTest)
+    .settings(
+        buildInfoPackage := "facia",
+        buildInfoKeys := {
+            lazy val buildInfo = BuildInfo(baseDirectory.value)
+            Seq[BuildInfoKey](
+                BuildInfoKey.constant("buildNumber", buildInfo.buildIdentifier),
+                // so this next one is constant to avoid it always recompiling on dev machines.
+                // we only really care about build time on teamcity, when a constant based on when
+                // it was loaded is just fine
+                BuildInfoKey.constant("buildTime", System.currentTimeMillis),
+                BuildInfoKey.constant("gitCommitId", buildInfo.revision)
+            )
+        }
+    )
     .settings(inConfig(UsesDatabaseTest)(Defaults.testTasks): _*)
     .settings(testOptions in UsesDatabaseTest := Seq(
         Tests.Argument(TestFrameworks.ScalaTest, "-n","fixtures.UsesDatabase"))
@@ -131,6 +146,3 @@ lazy val root = (project in file("."))
     .settings(testOptions in Test := Seq(
         Tests.Argument(TestFrameworks.ScalaTest, "-l", "fixtures.UsesDatabase"))
     )
-
-
-
