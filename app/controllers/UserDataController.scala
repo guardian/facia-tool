@@ -5,10 +5,9 @@ import com.gu.facia.client.models.Trail
 import com.gu.scanamo._
 import com.gu.scanamo.syntax._
 import model.{FeatureSwitch, FeatureSwitches, UserData}
-import services.FrontsApi
 import play.api.Logger
 import play.api.libs.json.JsValue
-import services.{Dynamo, FrontsApi}
+import services.FrontsApi
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -105,14 +104,14 @@ class UserDataController(frontsApi: FrontsApi, dynamoClient: AmazonDynamoDB, val
   def putFeatureSwitch() = APIAuthAction { request =>
     val maybeFeatureSwitch: Option[FeatureSwitch] = request.body.asJson.flatMap(
       _.asOpt[FeatureSwitch])
-    val maybeUserData: Option[UserData] = Scanamo.exec(dynamo.client)(
+    val maybeUserData: Option[UserData] = Scanamo.exec(dynamoClient)(
       userDataTable.get('email -> request.user.email)).flatMap(_.right.toOption)
 
     (maybeUserData, maybeFeatureSwitch) match {
       case (Some(userData), Some(featureSwitch)) =>
         if (FeatureSwitches.all.map(_.key).contains(featureSwitch.key)) {
           val updatedSwitches = FeatureSwitches.updateFeatureSwitchesForUser(userData.featureSwitches, featureSwitch)
-          Scanamo.exec(dynamo.client)(userDataTable.update(
+          Scanamo.exec(dynamoClient)(userDataTable.update(
             'email -> request.user.email,
             set('featureSwitches -> updatedSwitches)))
           Ok
