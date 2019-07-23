@@ -1,6 +1,5 @@
 package model.editions
 
-import com.gu.editions.PublishedFront
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
