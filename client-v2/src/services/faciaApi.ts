@@ -11,7 +11,10 @@ import {
   EditionCollectionResponse
 } from 'types/FaciaApi';
 import { ExternalArticle } from 'shared/types/ExternalArticle';
-import { CollectionWithNestedArticles } from 'shared/types/Collection';
+import {
+  CollectionWithNestedArticles,
+  NestedArticleFragment
+} from 'shared/types/Collection';
 import pandaFetch from './pandaFetch';
 import { CapiArticle } from 'types/Capi';
 import chunk from 'lodash/chunk';
@@ -206,7 +209,6 @@ const updateEditionsCollection = (collectionId: string) =>
     'put'
   )(collectionId);
 
-<<<<<<< HEAD
 const saveClipboard = (content: NestedArticleFragment[]) =>
   createSaveClipboard(content, '/clipboard');
 const saveEditionsClipboard = (content: NestedArticleFragment[]) =>
@@ -277,8 +279,6 @@ async function saveFavouriteFrontIds(favouriteFrontsByPriority?: {
   }
 }
 
-=======
->>>>>>> Update client to ingest new feature switch data; form shows current features dynamically; add featureSwitch reducer and API calls
 async function getCollection(collectionId: {
   id: string;
   lastUpdated?: number;
@@ -437,13 +437,10 @@ export {
   publishCollection,
   updateCollection,
   updateEditionsCollection,
-<<<<<<< HEAD
   saveClipboard,
   saveEditionsClipboard,
   saveOpenFrontIds,
   saveFavouriteFrontIds,
-=======
->>>>>>> Update client to ingest new feature switch data; form shows current features dynamically; add featureSwitch reducer and API calls
   getCapiUriForContentIds,
   fetchVisibleArticles,
   discardDraftChangesToCollection,
