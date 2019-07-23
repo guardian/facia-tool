@@ -26,6 +26,7 @@ object DailyEdition {
       FrontBooks.front -> WeekDays(List(WeekDay.Sat, WeekDay.Sun)),
       FrontFood.front -> WeekDays(List(WeekDay.Sat)),
       FrontFoodObserver.front -> WeekDays(List(WeekDay.Sun)),
+      FrontLifeFashion.front -> WeekDays(List(WeekDay.Sat)),
       FrontSportGuardian.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontSportObserver.front -> WeekDays(List(WeekDay.Sun)),
       FrontSpecialSpecial2.front -> Daily(),
