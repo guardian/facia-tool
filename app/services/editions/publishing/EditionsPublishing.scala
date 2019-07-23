@@ -8,14 +8,14 @@ class EditionsPublishing(publishedBucket: PublishedIssuesBucket, previewBucket: 
 
   def updatePreview(issue: EditionsIssue) = {
     val previewIssue = issue.toPublishedIssue
-    previewBucket.putIssue(previewIssue, ())
+    previewBucket.putIssue(previewIssue)
   }
 
   def publish(issue: EditionsIssue, user: User) = {
     val publishedIssue = issue.toPublishedIssue
 
     // Archive a copy
-    publishedBucket.putIssue(publishedIssue, user)
+    publishedBucket.putIssue(publishedIssue)
 
     // Bump the recently published counters
     db.publishIssue(issue.id, user)
