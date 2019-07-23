@@ -20,8 +20,6 @@ def env(key: String): Option[String] = Option(System.getenv(key))
 
 riffRaffPackageName := s"cms-fronts::${name.value}"
 riffRaffManifestProjectName := riffRaffPackageName.value
-riffRaffBuildIdentifier := env("BUILD_NUMBER").getOrElse("DEV")
-riffRaffManifestBranch := env("GIT_BRANCH").getOrElse(git.gitCurrentBranch.value)
 riffRaffUploadArtifactBucket := Option("riffraff-artifact")
 riffRaffUploadManifestBucket := Option("riffraff-builds")
 riffRaffArtifactResources := {
