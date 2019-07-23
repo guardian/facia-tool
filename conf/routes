@@ -10,9 +10,6 @@ GET         /oauthCallback                           controllers.PandaAuthContro
 GET         /logout                                  controllers.PandaAuthController.logout
 GET         /login/status                            controllers.PandaAuthController.status
 
-# healthcheck
-GET         /status                                  controllers.StatusController.healthStatus
-
 # static files
 GET         /assets/client-v2/*file                  controllers.V2Assets.at(path="", file)
 GET         /assets/*file                            controllers.UncachedAssets.at(path="", file)
