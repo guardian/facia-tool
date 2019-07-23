@@ -432,7 +432,7 @@ object FrontLifeFashion {
     hidden = true
   )
   val front = FrontTemplate(
-    name = "Lifestyle",
+    name = "The Fashion",
     collections = List(collectionLifeFashion1, collectionLifeFashion2, collectionLifeFashion3),
     presentation = TemplateDefaults.defaultFrontPresentation,
     hidden = true
