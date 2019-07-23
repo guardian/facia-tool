@@ -1,8 +1,7 @@
 package model.editions
 
-import java.time.{Instant, OffsetDateTime, ZoneId, ZonedDateTime}
+import java.time.{Instant, OffsetDateTime, ZoneId}
 
-import com.gu.editions.PublishedIssue
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 

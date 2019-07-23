@@ -1,4 +1,4 @@
-package com.gu.editions
+package model.editions
 
 import java.time.OffsetDateTime
 

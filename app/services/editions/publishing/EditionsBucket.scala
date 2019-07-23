@@ -1,11 +1,11 @@
 package services.editions.publishing
 
 import com.amazonaws.services.s3.AmazonS3
-import com.gu.editions.PublishedIssue
-import play.api.libs.json.Json
-import PublishedIssueFormatters._
 import com.amazonaws.services.s3.model.{ObjectMetadata, PutObjectRequest}
 import com.amazonaws.util.StringInputStream
+import model.editions.PublishedIssue
+import play.api.libs.json.Json
+import PublishedIssueFormatters._
 
 abstract class EditionsBucket(s3Client: AmazonS3, bucketName: String) {
   def createIssuePrefix(issue: PublishedIssue): String = s"${issue.name}/${issue.issueDate.toLocalDate.toString}"

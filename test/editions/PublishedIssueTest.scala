@@ -2,8 +2,7 @@ package editions
 
 import java.time.{OffsetDateTime, ZoneOffset}
 
-import com.gu.editions._
-import model.editions.{ArticleMetadata, EditionsArticle, Image, MediaType}
+import model.editions._
 import org.scalatest.{FreeSpec, Matchers}
 
 class PublishedIssueTest extends FreeSpec with Matchers {

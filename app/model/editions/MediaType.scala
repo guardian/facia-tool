@@ -1,6 +1,5 @@
 package model.editions
 
-import com.gu.editions.PublishedMediaType
 import enumeratum.EnumEntry.Uncapitalised
 import enumeratum.{EnumEntry, PlayEnum}
 
