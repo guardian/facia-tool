@@ -14,7 +14,6 @@ import { selectHasUnpublishedChanges } from 'selectors/frontsSelectors';
 import { selectIsCollectionLocked } from 'selectors/collectionSelectors';
 import { State } from 'types/State';
 import { CollectionItemSets, Group } from 'shared/types/Collection';
-import { selectIsEditingEditions } from 'selectors/pathSelectors';
 import {
   createSelectCollectionStageGroups,
   createSelectCollectionEditWarning,
@@ -33,6 +32,7 @@ import { createSelectIsArticleInCollection } from 'shared/selectors/collection';
 import CollectionMetaContainer from 'shared/components/collection/CollectionMetaContainer';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import { styled } from 'constants/theme';
+import EditModeVisibility from 'components/util/EditModeVisibility';
 
 interface CollectionPropsBeforeState {
   id: string;
@@ -63,7 +63,6 @@ type CollectionProps = CollectionPropsBeforeState & {
   hasMultipleFrontsOpen: boolean;
   onChangeOpenState: (id: string, isOpen: boolean) => void;
   fetchPreviousCollectionArticles: (id: string) => void;
-  isEditingEditions: boolean;
 };
 
 const PreviouslyCollectionContainer = styled('div')`
@@ -112,8 +111,7 @@ class Collection extends React.Component<CollectionProps> {
       onChangeOpenState,
       hasMultipleFrontsOpen,
       isEditFormOpen,
-      discardDraftChangesToCollection: discardDraftChanges,
-      isEditingEditions
+      discardDraftChangesToCollection: discardDraftChanges
     } = this.props;
 
     const { isPreviouslyOpen } = this.state;
@@ -135,7 +133,7 @@ class Collection extends React.Component<CollectionProps> {
           hasUnpublishedChanges &&
           canPublish &&
           !isEditFormOpen && (
-            <React.Fragment>
+            <EditModeVisibility visibleMode="fronts">
               <Button
                 size="l"
                 priority="default"
@@ -163,7 +161,7 @@ class Collection extends React.Component<CollectionProps> {
               >
                 Launch
               </Button>
-            </React.Fragment>
+            </EditModeVisibility>
           )
         }
         metaContent={
@@ -177,7 +175,7 @@ class Collection extends React.Component<CollectionProps> {
       >
         {groups.map(group => children(group, isUneditable, true))}
 
-        {!isEditingEditions && (
+        <EditModeVisibility visibleMode="fronts">
           <PreviouslyCollectionContainer data-testid="previously">
             <PreviouslyCollectionToggle
               onClick={this.togglePreviouslyOpen}
@@ -192,7 +190,7 @@ class Collection extends React.Component<CollectionProps> {
               </PreviouslyGroupsWrapper>
             )}
           </PreviouslyCollectionContainer>
-        )}
+        </EditModeVisibility>
       </CollectionDisplay>
     );
   }
@@ -234,8 +232,7 @@ const createMapStateToProps = () => {
           collectionId: id,
           collectionSet: browsingStage,
           articleFragmentId: selectedArticleFragmentData.id
-        }),
-      isEditingEditions: selectIsEditingEditions(state)
+        })
     };
   };
 };

@@ -11,12 +11,12 @@ import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 import { Collection, CollectionItemSets } from 'shared/types/Collection';
 import { createCollectionId } from 'shared/components/Collection';
 import ButtonDefault from 'shared/components/input/ButtonCircular';
-
 import {
   createSelectCollection,
   selectSharedState,
   createSelectArticlesInCollection
 } from 'shared/selectors/shared';
+import EditModeVisibility from 'components/util/EditModeVisibility';
 
 interface FrontCollectionOverviewContainerProps {
   frontId: string;
@@ -133,13 +133,15 @@ const CollectionOverview = ({
         {collection &&
           collection.lastUpdated &&
           (!!hasUnpublishedChanges ? (
-            <StatusWarning
-              priority="primary"
-              size="s"
-              title="Collection changes have not been launched"
-            >
-              !
-            </StatusWarning>
+            <EditModeVisibility visibleMode="fronts">
+              <StatusWarning
+                priority="primary"
+                size="s"
+                title="Collection changes have not been launched"
+              >
+                !
+              </StatusWarning>
+            </EditModeVisibility>
           ) : null)}
       </TextContainerRight>
     </Container>

@@ -3,7 +3,7 @@ import { match, withRouter, RouteComponentProps } from 'react-router';
 import { createSelectFrontIdWithOpenAndStarredStatesByPriority } from 'bundles/frontsUIBundle';
 import { State } from '../types/State';
 import FrontList from './FrontList';
-import { selectIsEditingEditions } from 'selectors/pathSelectors';
+import { selectEditMode } from 'selectors/pathSelectors';
 
 type Props = {
   match: match<{ priority: string }>;
@@ -16,7 +16,7 @@ const mapStateToProps = () => {
       fronts: selectFrontIdWithOpenAndStarredStates(
         state,
         props.match.params.priority || '',
-        selectIsEditingEditions(state) ? 'index' : 'id'
+        selectEditMode(state) === 'editions' ? 'index' : 'id'
       )
     };
   };

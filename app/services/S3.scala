@@ -1,7 +1,7 @@
 package services
 
 import _root_.metrics.S3Metrics.S3ClientExceptionsMetric
-import com.amazonaws.client.builder.AwsClientBuilder
+import com.amazonaws.auth.AWSCredentialsProvider
 import com.amazonaws.services.s3.model.CannedAccessControlList.{Private, PublicRead}
 import com.amazonaws.services.s3.model._
 import com.amazonaws.services.s3.{AmazonS3, AmazonS3ClientBuilder}
@@ -20,14 +20,16 @@ sealed trait S3Accounts {
 case class CmsFrontsS3Account(config: ApplicationConfiguration, awsEndpoints: AwsEndpoints) extends S3Accounts {
   lazy val bucket = config.aws.frontsBucket
 
-  lazy val client: Option[AmazonS3] = {
-    val endpoint = new AwsClientBuilder.EndpointConfiguration(awsEndpoints.s3, config.aws.region)
-    config.aws.credentials.map (credentials => {
-      AmazonS3ClientBuilder.standard()
-        .withCredentials(credentials)
-        .withEndpointConfiguration(endpoint)
-        .build()
-    })
+  lazy val client: Option[AmazonS3] =
+    config.aws.credentials.map (credentials => S3.client(credentials, config.aws.region))
+}
+
+object S3 {
+  def client(credentials: AWSCredentialsProvider, region: String): AmazonS3 = {
+    AmazonS3ClientBuilder.standard()
+      .withCredentials(credentials)
+      .withRegion(region)
+      .build()
   }
 }
 

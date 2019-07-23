@@ -118,20 +118,9 @@ libraryDependencies ++= Seq(
     "com.whisk" %% "docker-testkit-impl-docker-java" % "0.9.9" % "test"
 )
 
-val editionsCommon = (project in file("./editions-common"))
-    .settings(
-        name := "editions-common",
-        version := "0.1.0",
-        libraryDependencies ++= Seq(
-            "com.beachape" %% "enumeratum" % enumeratumPlayVersion,
-            "com.beachape" %% "enumeratum-play" % enumeratumPlayVersion
-        )
-    )
-
 val UsesDatabaseTest = config("database-int") extend Test
 
 lazy val root = (project in file("."))
-    .dependsOn(editionsCommon)
     .enablePlugins(PlayScala, RiffRaffArtifact, JDebPackaging, SystemdPlugin)
     .configs(UsesDatabaseTest)
     .settings(inConfig(UsesDatabaseTest)(Defaults.testTasks): _*)

@@ -701,7 +701,17 @@ const state = {
     loadingIds: [],
     updatingIds: []
   },
-  focus: { focusState: undefined }
+  focus: { focusState: undefined },
+  editionsIssue: {
+    data: undefined,
+    pagination: null,
+    lastError: null,
+    error: null,
+    lastFetch: 1547474573363,
+    loading: false,
+    loadingIds: [],
+    updatingIds: []
+  }
 } as State;
 
 export default state;

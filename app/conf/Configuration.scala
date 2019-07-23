@@ -81,6 +81,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     lazy val bucket = getMandatoryString("aws.bucket")
     lazy val frontsBucket = getMandatoryString("aws.frontsBucket")
     lazy val publishedEditionsIssuesBucket = getMandatoryString("aws.publishedEditionsIssuesBucket")
+    lazy val previewEditionsIssuesBucket = getMandatoryString("aws.previewEditionsIssuesBucket")
 
     def cmsFrontsAccountCredentials: AWSCredentialsProvider = credentials.getOrElse(throw new BadConfigurationException("AWS credentials are not configured for CMS Fronts"))
     val credentials: Option[AWSCredentialsProvider] = {

@@ -2,7 +2,7 @@ package controllers
 
 import logging.Logging
 import model.forms._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import services.editions.EditionsTemplating
 import java.time.{LocalDate, OffsetDateTime}
 
@@ -39,6 +39,12 @@ class EditionsController(db: EditionsDB,
     }.getOrElse(NotFound(s"Issue $id not found"))
   }
 
+  def getIssueSummary(id: String)= AccessAPIAuthAction { _ =>
+    db.getIssueSummary(id).map { issue =>
+      Ok(Json.toJson(issue).as[JsObject] - "fronts")
+    }.getOrElse(NotFound(s"Issue $id not found"))
+  }
+
   def getAvailableEditions = AccessAPIAuthAction { _ =>
     Ok(Json.toJson(EditionsTemplates.getAvailableEditions))
   }
@@ -70,6 +76,13 @@ class EditionsController(db: EditionsDB,
     val form = req.body
     val collectionToUpdate = EditionsFrontendCollectionWrapper.toCollection(form)
     val updatedCollection = db.updateCollection(collectionToUpdate)
+    for {
+      issueId <- db.getIssueIdFromCollectionId(updatedCollection.id)
+      issue <- db.getIssue(issueId)
+    } {
+      logger.info("Updating preview")
+      publishing.updatePreview(issue)
+    }
     Ok(Json.toJson(EditionsFrontendCollectionWrapper.fromCollection(updatedCollection)))
   }
 

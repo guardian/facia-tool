@@ -1,6 +1,5 @@
 package model.editions
 
-import com.gu.editions.{PublishedArticle, PublishedFurniture, PublishedImage, PublishedMediaType}
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 

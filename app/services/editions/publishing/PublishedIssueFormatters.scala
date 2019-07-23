@@ -1,6 +1,6 @@
 package services.editions.publishing
 
-import com.gu.editions._
+import model.editions._
 import play.api.libs.json.Json
 
 object PublishedIssueFormatters {
