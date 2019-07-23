@@ -45,7 +45,7 @@ class FeaturesForm extends React.Component<Props> {
 }
 
 const mapStateToProps = (state: State) => ({
-  featureSwitches: selectAllFeatures(state)
+  featureSwitches: selectAllFeatures(selectSharedState(state))
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

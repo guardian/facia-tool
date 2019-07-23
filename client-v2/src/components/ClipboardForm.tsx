@@ -59,6 +59,5 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
+  mapDispatchToProps
 )(ClipboardForm);

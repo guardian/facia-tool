@@ -226,8 +226,7 @@ const createMapStateToProps = () => {
       }),
       isOpen: selectIsCollectionOpen(state, collectionId),
       hasMultipleFrontsOpen: selectHasMultipleFrontsOpen(state, priority),
-      isEditFormOpen: selectDoesCollectionHaveOpenForms(state, collectionId),
-      isEditingEditions: selectIsEditingEditions(state)
+      isEditFormOpen: selectDoesCollectionHaveOpenForms(state, collectionId)
     };
   };
 };

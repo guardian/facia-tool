@@ -102,7 +102,6 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       onAddToClipboard = noop,
       type,
       size,
-      textSize,
       isUneditable,
       numSupportingArticles,
       updateArticleFragmentMeta,
@@ -124,7 +123,6 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
               onClick={isUneditable ? undefined : () => onSelect(uuid)}
               fade={isFaded}
               size={size}
-              displayType={displayType}
               imageDropTypes={imageDropTypes}
               onImageDrop={this.handleImageDrop}
             >
@@ -151,7 +149,6 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
                 onClick={isUneditable ? undefined : () => onSelect(uuid)}
                 fade={!isSelected}
                 size={size}
-                displayType={displayType}
               />
               <Sublinks
                 numSupportingArticles={numSupportingArticles}

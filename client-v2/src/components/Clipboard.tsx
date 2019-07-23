@@ -15,10 +15,7 @@ import {
   selectIsClipboardOpen
 } from 'bundles/frontsUIBundle';
 import { clipboardId } from 'constants/fronts';
-import {
-  ArticleFragment as TArticleFragment,
-  ArticleFragment
-} from 'shared/types/Collection';
+import { ArticleFragment as TArticleFragment } from 'shared/types/Collection';
 import ClipboardLevel from './clipboard/ClipboardLevel';
 import ArticleFragmentLevel from './clipboard/ArticleFragmentLevel';
 import CollectionItem from './FrontsEdit/CollectionComponents/CollectionItem';
