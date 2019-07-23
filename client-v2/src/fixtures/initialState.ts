@@ -245,22 +245,26 @@ const state = {
       { type: 'Breaking' },
       { type: 'Branded' }
     ],
-    clipboardArticles: [
-      {
-        id: 'internal-code/page/5592826',
-        frontPublicationDate: 1547204861924,
-        meta: {}
-      }
-    ],
-    frontIds: [],
-    frontIdsByPriority: {},
-    favouriteFrontIdsByPriority: {},
+    userData: {
+      clipboardArticles: [
+        {
+          id: 'internal-code/page/5592826',
+          frontPublicationDate: 1547204861924,
+          meta: {}
+        }
+      ],
+      frontIds: [],
+      frontIdsByPriority: {},
+      favouriteFrontIdsByPriority: {},
+      featureSwitches: []
+    },
     capiLiveUrl: 'https://fronts.local.dev-gutools.co.uk/api/live/',
     capiPreviewUrl: 'https://fronts.local.dev-gutools.co.uk/api/preview/'
   },
   error: '',
   path: '/v2/editorial',
   shared: {
+    featureSwitches: {},
     articleFragments: {
       '56a3b407-741c-439f-a678-175abea44a9f': {
         id: 'internal-code/page/5592826',

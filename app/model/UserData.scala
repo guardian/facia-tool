@@ -29,10 +29,40 @@ object UserData {
   * @TODO make these strongly typed via com.gu.facia.client.models package
   */
 case class UserData(
-  email: String,
+                     email: String,
+                     clipboardArticles: Option[List[Trail]],
+                     editionsClipboardArticles: Option[List[Trail]],
+                     frontIds: Option[List[String]],
+                     frontIdsByPriority: Option[Map[String, List[String]]],
+                     favouriteFrontIdsByPriority: Option[Map[String, List[String]]],
+                     featureSwitches: Option[List[FeatureSwitch]] = Some(List.empty[FeatureSwitch])
+)
+
+object UserDataForDefaults {
+  implicit val jsonFormat = Json.format[UserDataForDefaults]
+
+  def fromUserData(userData: UserData, clipboardArticles: Option[List[Trail]]): UserDataForDefaults = {
+    val featureSwitches = userData.featureSwitches.fold(FeatureSwitches.all) { userFeatureSwitches =>
+      val unsetFeatureSwitches = FeatureSwitches.all.diff(userFeatureSwitches)
+      unsetFeatureSwitches ++ userFeatureSwitches
+    }
+    UserDataForDefaults(
+      clipboardArticles,
+      userData.frontIds,
+      userData.frontIdsByPriority,
+      userData.favouriteFrontIdsByPriority,
+      Some(featureSwitches)
+    )
+  }
+}
+
+case class UserDataForDefaults(
   clipboardArticles: Option[List[Trail]],
-  editionsClipboardArticles: Option[List[Trail]],
   frontIds: Option[List[String]],
   frontIdsByPriority: Option[Map[String, List[String]]],
-  favouriteFrontIdsByPriority: Option[Map[String, List[String]]]
+  favouriteFrontIdsByPriority: Option[Map[String, List[String]]],
+  featureSwitches: Option[List[FeatureSwitch]] = Some(List.empty[FeatureSwitch])
 )
+
+
+

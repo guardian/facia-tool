@@ -20,6 +20,7 @@ import { init as initGA } from 'services/GA';
 import { listenForKeyboardEvents } from 'keyboard';
 import pollingConfig from 'util/pollingConfig';
 import { base } from 'routes/routes';
+import { actionSetFeatureValue } from 'shared/redux/modules/featureSwitches';
 
 initGA();
 
@@ -44,18 +45,25 @@ if (pageConfig.env.toUpperCase() !== 'DEV' && pageConfig.sentryPublicDSN) {
 }
 
 store.dispatch(configReceived(pageConfig));
-if (pageConfig.frontIdsByPriority) {
-  store.dispatch(editorSetOpenFronts(pageConfig.frontIdsByPriority));
-}
-if (pageConfig.favouriteFrontIdsByPriority) {
-  store.dispatch(
-    editorSetFavouriteFronts(pageConfig.favouriteFrontIdsByPriority)
+if (pageConfig.userData) {
+  if (pageConfig.userData.frontIdsByPriority) {
+    store.dispatch(editorSetOpenFronts(pageConfig.userData.frontIdsByPriority));
+  }
+  if (pageConfig.userData.favouriteFrontIdsByPriority) {
+    store.dispatch(
+      editorSetFavouriteFronts(pageConfig.userData.favouriteFrontIdsByPriority)
+    );
+  }
+  if (pageConfig.userData.featureSwitches) {
+    pageConfig.userData.featureSwitches.forEach(featureSwitch =>
+      store.dispatch(actionSetFeatureValue(featureSwitch))
+    );
+  }
+
+  (store.dispatch as Dispatch)(
+    storeClipboardContent(pageConfig.userData.clipboardArticles)
   );
 }
-
-(store.dispatch as Dispatch)(
-  storeClipboardContent(pageConfig.clipboardArticles)
-);
 
 pollingConfig(store);
 

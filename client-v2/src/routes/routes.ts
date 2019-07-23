@@ -22,6 +22,11 @@ const frontsEditPathProps = {
 const matchFrontsEditPath = (path: string) =>
   matchPath<FrontsEditParams>(path, frontsEditPathProps);
 
+const frontsFeatureProps = {
+  exact: true,
+  path: '/features'
+};
+
 /**
  * Issue
  */
@@ -49,5 +54,6 @@ export {
   frontsEditPathProps,
   matchIssuePath,
   issuePathProps,
+  frontsFeatureProps,
   EditionsRoutes
 };

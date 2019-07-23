@@ -1,4 +1,5 @@
 import { NestedArticleFragment } from 'shared/types/Collection';
+import { FeatureSwitch } from './Features';
 
 interface Permission {
   [id: string]: boolean;
@@ -34,14 +35,17 @@ interface Config {
   capiLiveUrl: string;
   capiPreviewUrl: string;
   // frontIds is deprecated -- use frontIdsByPriority.
-  frontIds: string[];
-  frontIdsByPriority: {
-    [id: string]: string[];
+  userData?: {
+    frontIds: string[];
+    frontIdsByPriority: {
+      [id: string]: string[];
+    };
+    favouriteFrontIdsByPriority: {
+      [id: string]: string[];
+    };
+    clipboardArticles: NestedArticleFragment[];
+    featureSwitches: FeatureSwitch[];
   };
-  favouriteFrontIdsByPriority: {
-    [id: string]: string[];
-  };
-  clipboardArticles: NestedArticleFragment[];
 }
 
 export { Config };

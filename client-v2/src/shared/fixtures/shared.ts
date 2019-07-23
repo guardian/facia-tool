@@ -1,3 +1,5 @@
+import { State } from 'shared/types/State';
+
 const capiArticle = {
   id:
     'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina',
@@ -754,6 +756,30 @@ const stateWithSnaplinksAndArticles: any = {
   }
 };
 
+const initialState = {
+  collections: {
+    data: {},
+    pagination: null,
+    lastError: null,
+    loadingIds: [],
+    updatingIds: [],
+    lastFetch: null,
+    error: null
+  },
+  externalArticles: {
+    data: {},
+    pagination: null,
+    lastError: null,
+    loadingIds: [],
+    updatingIds: [],
+    lastFetch: null,
+    error: null
+  },
+  groups: {},
+  articleFragments: {},
+  featureSwitches: {}
+} as State;
+
 export {
   capiArticle,
   capiArticleWithVideo,
@@ -762,6 +788,7 @@ export {
   stateWithCollection,
   stateWithCollectionAndSupporting,
   stateWithSnaplinksAndArticles,
+  initialState,
   liveArticle,
   articleWithSupporting,
   collectionConfig,
