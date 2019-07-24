@@ -109,9 +109,8 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
       isUneditable,
       imageDropTypes = [],
       onImageDrop,
+      showMeta
     } = this.props;
-
-    const isClipboard: boolean =
 
     const dragEventHasImageData = (e: React.DragEvent) =>
       e.dataTransfer.types.some(dataTransferType =>
@@ -172,7 +171,7 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
                 onDelete={onDelete}
                 onAddToClipboard={onAddToClipboard}
                 displayPlaceholders={isLoading}
-                showMeta={isClipboard}
+                showMeta={showMeta}
               />
               <ImageDragIntentIndicator />
             </ArticleBodyContainer>
