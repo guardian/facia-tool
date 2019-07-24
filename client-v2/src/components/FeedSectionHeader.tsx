@@ -23,6 +23,7 @@ import { getEditionIssue } from 'actions/Editions';
 import { EditionsIssue } from 'types/Edition';
 import { selectors as editionsIssueSelectors } from 'bundles/editionsIssueBundle';
 import { EditMode } from 'types/EditMode';
+import EditModeVisibility from './util/EditModeVisibility';
 
 const FeedbackButton = Button.extend<{
   href: string;
@@ -99,11 +100,11 @@ const CloseButtonInner = styled.div`
 
 const EditionIssueInfo = styled.div`
   height: 100%;
-  display: flex;
+  display: inline-block;
   flex-direction: column;
   justify-content: center;
   margin-left: 12px;
-  line-height: initial;
+  line-height: 1em;
 `;
 
 const EditionTitle = styled.div`
@@ -112,6 +113,11 @@ const EditionTitle = styled.div`
 
 const EditionDate = styled.div`
   font-size: 16px;
+`;
+
+const EditionPublish = styled.div`
+  float: right;
+  margin: 5px 10px 0 0;
 `;
 
 type ComponentProps = {
@@ -139,8 +145,7 @@ class FeedSectionHeader extends Component<ComponentProps> {
       isCurrentFrontsMenuOpen,
       frontCount,
       match,
-      editMode,
-      editionsIssue
+      editMode
     } = this.props;
     return (
       <SectionHeaderWithLogo includeBorder={!isCurrentFrontsMenuOpen}>
@@ -169,18 +174,7 @@ class FeedSectionHeader extends Component<ComponentProps> {
           </FadeTransition>
           <FadeTransition active={!isCurrentFrontsMenuOpen} direction="right">
             {editMode === 'editions' ? (
-              editionsIssue ? (
-                <Link to="/v2/manage-editions/daily-edition">
-                  <EditionIssueInfo>
-                    <EditionTitle>
-                      {startCase(editionsIssue.displayName)}
-                    </EditionTitle>
-                    <EditionDate>
-                      {new Date(editionsIssue.issueDate).toDateString()}
-                    </EditionDate>
-                  </EditionIssueInfo>
-                </Link>
-              ) : null
+              this.renderEditionsActions()
             ) : (
               <FeedbackButton
                 href="https://docs.google.com/forms/d/e/1FAIpQLSc4JF0GxrKoxQgsFE9_tQfjAo1RKRU4M5bJWJRKaVlHbR2rpA/viewform?c=0&w=1"
@@ -192,6 +186,40 @@ class FeedSectionHeader extends Component<ComponentProps> {
           </FadeTransition>
         </SectionHeaderContent>
       </SectionHeaderWithLogo>
+    );
+  }
+
+  private renderEditionsActions() {
+    const { editionsIssue } = this.props;
+
+    if (!editionsIssue) {
+      return null;
+    }
+
+    return (
+      <>
+        <Link to="/v2/manage-editions/daily-edition">
+          <EditionIssueInfo>
+            <EditionTitle>{startCase(editionsIssue.displayName)}</EditionTitle>
+            <EditionDate>
+              {new Date(editionsIssue.issueDate).toDateString()}
+            </EditionDate>
+          </EditionIssueInfo>
+        </Link>
+        <EditionPublish>
+          <EditModeVisibility visibleMode="editions">
+            <Button
+              size="l"
+              priority="primary"
+              onClick={() => console.log('publish')}
+              tabIndex={-1}
+              title="Publish Edition"
+            >
+              Publish
+            </Button>
+          </EditModeVisibility>
+        </EditionPublish>
+      </>
     );
   }
 }
