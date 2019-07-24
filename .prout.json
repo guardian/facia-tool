@@ -1,7 +1,8 @@
 {
     "checkpoints": {
         "PROD": {
-            "url": "https://fronts.gutools.co.uk/_healthcheck"
+            "url": "https://fronts.gutools.co.uk/_healthcheck",
+             "overdue": "30M"
         }
     }
 }
