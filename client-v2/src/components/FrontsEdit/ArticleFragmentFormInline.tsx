@@ -73,12 +73,6 @@ const FormContent = styled('div')`
   overflow: hidden;
 `;
 
-// const CollectionHeadingPinline = ContainerHeading.extend`
-//   display: flex;
-//   margin-right: -11px;
-//   margin-bottom: 10px;
-// `;
-
 const RowContainer = styled('div')`
   overflow: hidden;
 `;
@@ -89,16 +83,6 @@ const ButtonContainer = styled('div')`
   margin-bottom: -10px;
   line-height: 0;
 `;
-
-// const SlideshowRow = styled(Row)`
-//   margin-top: 10px;
-//   margin-bottom: 5px;
-// `;
-
-// const SlideshowLabel = styled('div')`
-//   font-size: 12px;
-//   color: ${({ theme }) => theme.shared.colors.greyMedium};
-// `;
 
 const ImageWrapper = styled('div')`
   transition: opacity 0.15s;
@@ -147,10 +131,6 @@ const FieldContainer = styled(Col)<{ isClipboard: boolean }>`
   margin-bottom: 8px;
 `;
 
-// type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
-//   frontId: string;
-// };
-
 const KickerSuggestionsContainer = styled.div`
   position: absolute;
   right: 10px;
@@ -168,22 +148,6 @@ const KickerSuggestionsContainerClipboard = styled.div`
     width: fit-content;
   }
 `;
-
-// const RenderSlideshow = ({ fields, frontId }: RenderSlideshowProps) => (
-//   <>
-//     {fields.map((name, index) => (
-//       <Col key={`${name}-${index}`}>
-//         <Field<InputImageContainerProps>
-//           name={name}
-//           component={InputImage}
-//           small
-//           criteria={imageCriteria}
-//           frontId={frontId}
-//         />
-//       </Col>
-//     ))}
-//   </>
-// );
 
 const getInputId = (articleFragmentId: string, label: string) =>
   `${articleFragmentId}-${label}`;
@@ -208,9 +172,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       articleFragmentId,
       change,
       kickerOptions,
-      // imageSlideshowReplace,
       imageHide,
-      // imageCutoutReplace,
       articleCapiFieldValues,
       pristine,
       showByline,

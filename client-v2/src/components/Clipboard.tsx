@@ -271,8 +271,8 @@ const mergeProps = (
   selectArticleFragment: (articleId: string, isSupporting = false) =>
     dispatchProps.selectArticleFragment(
       articleId,
-      clipboardId,
-      clipboardId,
+      clipboardId, // clipboardId is passed twice here as both the collection ID...
+      clipboardId, // and the front ID
       isSupporting
     )
 });
