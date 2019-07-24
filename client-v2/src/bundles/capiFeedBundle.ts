@@ -5,7 +5,6 @@ import { previewCapi, liveCapi } from 'services/frontsCapi';
 import { checkIsContent } from 'services/capiQuery';
 import { getPrefills } from 'services/editionsApi';
 import { Dispatch } from 'redux';
-import { PrefillModeOn, PrefillModeOff } from 'types/Action';
 
 type FeedState = CapiArticle[];
 
@@ -15,7 +14,7 @@ const {
   selectors: liveSelectors
 } = createAsyncResourceBundle<FeedState>('capiLiveFeed', {
   indexById: false,
-  selectLocalState: state => state.capi.capiLiveFeed,
+  selectLocalState: state => state.feed.capiLiveFeed,
   initialData: []
 });
 
@@ -41,7 +40,7 @@ const {
   selectors: previewSelectors
 } = createAsyncResourceBundle<FeedState>('capiPreviewFeed', {
   indexById: false,
-  selectLocalState: state => state.capi.capiPreviewFeed,
+  selectLocalState: state => state.feed.capiPreviewFeed,
   initialData: []
 });
 
@@ -122,7 +121,7 @@ const {
   selectors: prefillSelectors
 } = createAsyncResourceBundle<FeedState>('prefillFeed', {
   indexById: false,
-  selectLocalState: state => state.capi.prefillFeed,
+  selectLocalState: state => state.feed.prefillFeed,
   initialData: []
 });
 

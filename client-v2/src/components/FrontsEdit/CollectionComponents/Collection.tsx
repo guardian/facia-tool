@@ -233,7 +233,7 @@ const createMapStateToProps = () => {
   ) => {
     const selectDoesCollectionHaveOpenForms = createSelectDoesCollectionHaveOpenForms();
     return {
-      hasPrefill: selectCollectionHasPrefill(state, id),
+      hasPrefill: selectCollectionHasPrefill(state, collectionId),
       hasUnpublishedChanges: selectHasUnpublishedChanges(state, {
         collectionId
       }),

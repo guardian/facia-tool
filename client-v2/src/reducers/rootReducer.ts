@@ -21,7 +21,7 @@ import feedState from './feedStateReducer';
 import { reducer as focusReducer } from '../bundles/focusBundle';
 import { reducer as featureSwitchesReducer } from 'redux/modules/featureSwitches';
 
-const rootReducer = (state: any = { capi: {} }, action: any) => ({
+const rootReducer = (state: any = { feed: {} }, action: any) => ({
   fronts: fronts(state.fronts, action),
   config: config(state.config, action),
   error: error(state.error, action),
@@ -33,11 +33,11 @@ const rootReducer = (state: any = { capi: {} }, action: any) => ({
   staleFronts: staleFronts(state.staleFronts, action),
   form: form(state.form, action),
   confirmModal: confirmModal(state.confirmModal, action),
-  capi: {
-    feedState: feedState(state.capi.feedState, action),
-    capiLiveFeed: capiLiveFeed(state.capi.capiLiveFeed, action),
-    capiPreviewFeed: capiPreviewFeed(state.capi.capiPreviewFeed, action),
-    prefillFeed: prefillFeed(state.capi.prefillFeed, action)
+  feed: {
+    feedState: feedState(state.feed.feedState, action),
+    capiLiveFeed: capiLiveFeed(state.feed.capiLiveFeed, action),
+    capiPreviewFeed: capiPreviewFeed(state.feed.capiPreviewFeed, action),
+    prefillFeed: prefillFeed(state.feed.prefillFeed, action)
   },
   focus: focusReducer(state.focus, action),
   editionsIssue: editionsIssue(state.editionsIssue, action),
