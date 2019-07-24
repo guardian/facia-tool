@@ -222,6 +222,50 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       imageReplace
     } = this.props;
 
+    const getKickerContents = () => {
+      return (
+        <>
+          {'Suggestions '}
+          {kickerOptions.webTitle && (
+            <Field
+              name="showKickerTag"
+              component={InputButton}
+              buttonText={kickerOptions.webTitle}
+              selected={showKickerTag}
+              size="s"
+              onClick={() => {
+                if (!showKickerTag) {
+                  change('showKickerTag', true);
+                  change('showKickerSection', false);
+                  change('showKickerCustom', false);
+                } else {
+                  change('showKickerTag', false);
+                }
+              }}
+            />
+          )}{' '}
+          {kickerOptions.sectionName && (
+            <Field
+              name="showKickerSection"
+              component={InputButton}
+              selected={showKickerSection}
+              size="s"
+              buttonText={kickerOptions.sectionName}
+              onClick={() => {
+                if (!showKickerSection) {
+                  change('showKickerSection', true);
+                  change('showKickerTag', false);
+                  change('showKickerCustom', false);
+                } else {
+                  change('showKickerSection', false);
+                }
+              }}
+            />
+          )}
+        </>
+      );
+    };
+
     // only one of the image fields can be set to true at any time.
     const changeImageField = (fieldToSet: string) => {
       const allImageFields = [
@@ -262,88 +306,16 @@ class FormComponent extends React.Component<Props, FormComponentState> {
         )}
         <FormContent>
           <InputGroup>
-            {hasKickerSuggestions && !isClipboard && (
-              <KickerSuggestionsContainer>
-                {'Suggestions '}
-                {kickerOptions.webTitle && (
-                  <Field
-                    name="showKickerTag"
-                    component={InputButton}
-                    buttonText={kickerOptions.webTitle}
-                    selected={showKickerTag}
-                    size="s"
-                    onClick={() => {
-                      if (!showKickerTag) {
-                        change('showKickerTag', true);
-                        change('showKickerSection', false);
-                        change('showKickerCustom', false);
-                      } else {
-                        change('showKickerTag', false);
-                      }
-                    }}
-                  />
-                )}{' '}
-                {kickerOptions.sectionName && (
-                  <Field
-                    name="showKickerSection"
-                    component={InputButton}
-                    selected={showKickerSection}
-                    size="s"
-                    buttonText={kickerOptions.sectionName}
-                    onClick={() => {
-                      if (!showKickerSection) {
-                        change('showKickerSection', true);
-                        change('showKickerTag', false);
-                        change('showKickerCustom', false);
-                      } else {
-                        change('showKickerSection', false);
-                      }
-                    }}
-                  />
-                )}
-              </KickerSuggestionsContainer>
-            )}
-            {hasKickerSuggestions && isClipboard && (
-              <KickerSuggestionsContainerClipboard>
-                {'Suggestions '}
-                {kickerOptions.webTitle && (
-                  <Field
-                    name="showKickerTag"
-                    component={InputButton}
-                    buttonText={kickerOptions.webTitle}
-                    selected={showKickerTag}
-                    size="s"
-                    onClick={() => {
-                      if (!showKickerTag) {
-                        change('showKickerTag', true);
-                        change('showKickerSection', false);
-                        change('showKickerCustom', false);
-                      } else {
-                        change('showKickerTag', false);
-                      }
-                    }}
-                  />
-                )}{' '}
-                {kickerOptions.sectionName && (
-                  <Field
-                    name="showKickerSection"
-                    component={InputButton}
-                    selected={showKickerSection}
-                    size="s"
-                    buttonText={kickerOptions.sectionName}
-                    onClick={() => {
-                      if (!showKickerSection) {
-                        change('showKickerSection', true);
-                        change('showKickerTag', false);
-                        change('showKickerCustom', false);
-                      } else {
-                        change('showKickerSection', false);
-                      }
-                    }}
-                  />
-                )}
-              </KickerSuggestionsContainerClipboard>
-            )}
+            {hasKickerSuggestions &&
+              (isClipboard ? (
+                <KickerSuggestionsContainerClipboard>
+                  {getKickerContents()}
+                </KickerSuggestionsContainerClipboard>
+              ) : (
+                <KickerSuggestionsContainer>
+                  {getKickerContents()}
+                </KickerSuggestionsContainer>
+              ))}
             <ConditionalField
               name="customKicker"
               label="Kicker"
