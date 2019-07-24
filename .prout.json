@@ -1,0 +1,7 @@
+{
+    "checkpoints": {
+        "PROD": {
+            "url": "https://fronts.gutools.co.uk/_healthcheck"
+        }
+    }
+}
