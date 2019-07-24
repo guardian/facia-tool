@@ -83,7 +83,7 @@ export const publishIssue = async (id: string): Promise<EditionsIssue> => {
 };
 
 export const getPrefills = async (
-  id: String
+  id: string
 ): Promise<CAPISearchQueryResponse> => {
   return pandaFetch(`/editions-api/collections/${id}/prefill`, {
     method: 'get',

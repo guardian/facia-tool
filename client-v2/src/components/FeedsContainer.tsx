@@ -272,7 +272,7 @@ class FeedsContainer extends React.Component<
     return this.state.capiFeedIndex === 0;
   }
 
-  renderPrefillFixedContent = () => {
+  public renderPrefillFixedContent = () => {
     return (
       <PrefillNoticeContainer>
         <PrefillNotice>

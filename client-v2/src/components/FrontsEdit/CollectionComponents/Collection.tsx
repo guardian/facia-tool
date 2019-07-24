@@ -35,7 +35,6 @@ import CollectionMetaContainer from 'shared/components/collection/CollectionMeta
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import { styled } from 'constants/theme';
 import EditModeVisibility from 'components/util/EditModeVisibility';
-import { getPrefills } from 'services/editionsApi';
 import { fetchPrefill } from 'bundles/capiFeedBundle';
 
 interface CollectionPropsBeforeState {
@@ -118,8 +117,7 @@ class Collection extends React.Component<CollectionProps> {
       hasMultipleFrontsOpen,
       isEditFormOpen,
       discardDraftChangesToCollection: discardDraftChanges,
-      hasPrefill,
-      fetchPrefill
+      hasPrefill
     } = this.props;
 
     const { isPreviouslyOpen } = this.state;
@@ -147,7 +145,7 @@ class Collection extends React.Component<CollectionProps> {
                   <Button
                     size="l"
                     priority="default"
-                    onClick={() => fetchPrefill(id)}
+                    onClick={() => this.props.fetchPrefill(id)}
                     title="Get suggested articles for this collection"
                   >
                     Suggest Articles
