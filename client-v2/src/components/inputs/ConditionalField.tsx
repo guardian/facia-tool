@@ -5,15 +5,24 @@ import { BaseFieldProps } from 'redux-form';
 
 interface Props extends BaseFieldProps {
   permittedFields?: string[];
+  container?: React.ComponentType;
 }
 
-const ConditionalField = <P extends {}>(props: Props & P) => (
-  <ConditionalComponent
-    name={props.name}
-    permittedNames={props.permittedFields}
-  >
-    <Field<Props & P> {...props} />
-  </ConditionalComponent>
-);
+const ConditionalField = <P extends {}>(props: Props & P) => {
+  const FieldComponent = <Field<Props & P> {...props} />;
+  const Component = props.Container ? (
+    <props.Container>{FieldComponent}</props.Container>
+  ) : (
+    FieldComponent
+  );
+  return (
+    <ConditionalComponent
+      name={props.name}
+      permittedNames={props.permittedFields}
+    >
+      {Component}
+    </ConditionalComponent>
+  );
+};
 
 export default ConditionalField;

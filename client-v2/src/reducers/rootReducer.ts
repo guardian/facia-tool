@@ -14,6 +14,7 @@ import { capiLiveFeed, capiPreviewFeed } from '../bundles/capiFeedBundle';
 import staleFronts from './staleFrontsReducer';
 
 import { reducer as focusReducer } from '../bundles/focusBundle';
+import { reducer as featureSwitchesReducer } from 'redux/modules/featureSwitches';
 
 const rootReducer = (state: any = {}, action: any) => ({
   fronts: fronts(state.fronts, action),
@@ -23,14 +24,15 @@ const rootReducer = (state: any = {}, action: any) => ({
   shared: shared(state.shared, action),
   unpublishedChanges: unpublishedChanges(state.unpublishedChanges, action),
   clipboard: clipboard(state.clipboard, action, state.shared),
-  editor: editor(state.editor, action),
+  editor: editor(state.editor, action, state.shared),
   staleFronts: staleFronts(state.staleFronts, action),
   form: form(state.form, action),
   confirmModal: confirmModal(state.confirmModal, action),
   capiLiveFeed: capiLiveFeed(state.capiLiveFeed, action),
   capiPreviewFeed: capiPreviewFeed(state.capiPreviewFeed, action),
   focus: focusReducer(state.focus, action),
-  editionsIssue: editionsIssue(state.editionsIssue, action)
+  editionsIssue: editionsIssue(state.editionsIssue, action),
+  featureSwitches: featureSwitchesReducer(state.featureSwitches, action)
 });
 
 export default rootReducer;

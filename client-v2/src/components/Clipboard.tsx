@@ -15,10 +15,7 @@ import {
   selectIsClipboardOpen
 } from 'bundles/frontsUIBundle';
 import { clipboardId } from 'constants/fronts';
-import {
-  ArticleFragment as TArticleFragment,
-  ArticleFragmentMeta
-} from 'shared/types/Collection';
+import { ArticleFragment as TArticleFragment } from 'shared/types/Collection';
 import ClipboardLevel from './clipboard/ClipboardLevel';
 import ArticleFragmentLevel from './clipboard/ArticleFragmentLevel';
 import CollectionItem from './FrontsEdit/CollectionComponents/CollectionItem';
@@ -30,6 +27,7 @@ import {
   selectIsClipboardFocused
 } from 'bundles/focusBundle';
 import FocusWrapper from './FocusWrapper';
+import { bindActionCreators } from 'redux';
 
 const ClipboardWrapper = styled<
   HTMLProps<HTMLDivElement> & { 'data-testid'?: string },
@@ -223,14 +221,6 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  selectArticleFragment: (
-    frontId: string,
-    articleFragmentId: string,
-    isSupporting: boolean
-  ) =>
-    dispatch(
-      editorSelectArticleFragment(frontId, articleFragmentId, isSupporting)
-    ),
   clearArticleFragmentSelection: () =>
     dispatch(editorClearArticleFragmentSelection(clipboardId)),
   removeCollectionItem: (uuid: string) => {
@@ -243,8 +233,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       removeArticleFragment('articleFragment', parentId, uuid, 'clipboard')
     );
   },
-  updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) =>
-    dispatch(updateArticleFragmentMeta(id, meta)),
+
   handleFocus: () =>
     dispatch(
       setFocusState({
@@ -259,7 +248,14 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       })
     );
   },
-  handleBlur: () => dispatch(resetFocusState()),
+  ...bindActionCreators(
+    {
+      selectArticleFragment: editorSelectArticleFragment,
+      updateArticleFragmentMeta,
+      handleBlur: resetFocusState
+    },
+    dispatch
+  ),
   dispatch
 });
 
@@ -273,7 +269,12 @@ const mergeProps = (
   ...stateProps,
   ...dispatchProps,
   selectArticleFragment: (articleId: string, isSupporting = false) =>
-    dispatchProps.selectArticleFragment(clipboardId, articleId, isSupporting)
+    dispatchProps.selectArticleFragment(
+      articleId,
+      clipboardId, // clipboardId is passed twice here as both the collection ID...
+      clipboardId, // and the front ID
+      isSupporting
+    )
 });
 
 export default connect(

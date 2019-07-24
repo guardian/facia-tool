@@ -11,7 +11,8 @@ import {
 import collectionItemTypes from 'shared/constants/collectionItemTypes';
 import {
   CollectionItemTypes,
-  CollectionItemSizes
+  CollectionItemSizes,
+  ArticleFragmentMeta
 } from 'shared/types/Collection';
 import SnapLink from 'shared/components/snapLink/SnapLink';
 import {
@@ -20,7 +21,6 @@ import {
   addImageToArticleFragment
 } from 'actions/ArticleFragments';
 import noop from 'lodash/noop';
-import { selectEditorArticleFragment } from 'bundles/frontsUIBundle';
 import {
   validateImageEvent,
   ValidationResponse
@@ -32,6 +32,15 @@ import {
 } from 'constants/image';
 import Sublinks from './Sublinks';
 import { gridDropTypes } from 'constants/fronts';
+import {
+  selectIsArticleFragmentFormOpen,
+  selectIsArticleFragmentFaded,
+  editorClearArticleFragmentSelection
+} from 'bundles/frontsUIBundle';
+import { bindActionCreators } from 'redux';
+import ArticleFragmentFormInline from '../ArticleFragmentFormInline';
+import { updateArticleFragmentMeta as updateArticleFragmentMetaAction } from 'shared/actions/ArticleFragments';
+import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
 
 const imageDropTypes = [
   ...gridDropTypes,
@@ -51,14 +60,19 @@ interface ContainerProps {
   textSize?: CollectionItemSizes;
   isUneditable?: boolean;
   showMeta?: boolean;
+  isSupporting?: boolean;
 }
 
 type ArticleContainerProps = ContainerProps & {
   onAddToClipboard: () => void;
   copyCollectionItemImageMeta: (from: string, to: string) => void;
   addImageToArticleFragment: (id: string, response: ValidationResponse) => void;
+  updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) => void;
+  clearArticleFragmentSelection: (id: string) => void;
   type: CollectionItemTypes;
   isSelected: boolean;
+  isFaded: boolean;
+  displayInlineForm: boolean;
   numSupportingArticles: number;
 };
 
@@ -79,6 +93,9 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
     const {
       uuid,
       isSelected,
+      isFaded,
+      isSupporting = false,
+      displayInlineForm,
       children,
       getNodeProps,
       onSelect,
@@ -88,71 +105,91 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       textSize,
       isUneditable,
       numSupportingArticles,
+      updateArticleFragmentMeta,
+      clearArticleFragmentSelection,
       parentId,
-      showMeta
+      showMeta,
+      frontId
     } = this.props;
 
-    switch (type) {
-      case collectionItemTypes.ARTICLE:
-        return (
-          <Article
-            id={uuid}
-            isUneditable={isUneditable}
-            {...getNodeProps()}
-            onDelete={this.onDelete}
-            onAddToClipboard={onAddToClipboard}
-            onClick={isUneditable ? undefined : () => onSelect(uuid)}
-            fade={!isSelected}
-            size={size}
-            textSize={textSize}
-            showMeta={showMeta}
-            imageDropTypes={imageDropTypes}
-            onImageDrop={this.handleImageDrop}
-          >
-            <Sublinks
-              numSupportingArticles={numSupportingArticles}
-              toggleShowArticleSublinks={this.toggleShowArticleSublinks}
-              showArticleSublinks={this.state.showArticleSublinks}
-              parentId={parentId}
-            />
-            {/* If there are no supporting articles, the children still need to be rendered, because the dropzone is a child  */}
-            {numSupportingArticles === 0
-              ? children
-              : this.state.showArticleSublinks && children}
-          </Article>
-        );
-      case collectionItemTypes.SNAP_LINK:
-        return (
-          <>
-            <SnapLink
+    const getCard = () => {
+      switch (type) {
+        case collectionItemTypes.ARTICLE:
+          return (
+            <Article
               id={uuid}
               isUneditable={isUneditable}
               {...getNodeProps()}
               onDelete={this.onDelete}
+              onAddToClipboard={onAddToClipboard}
               onClick={isUneditable ? undefined : () => onSelect(uuid)}
-              fade={!isSelected}
+              fade={isFaded}
               size={size}
               textSize={textSize}
               showMeta={showMeta}
-            />
-            <Sublinks
-              numSupportingArticles={numSupportingArticles}
-              toggleShowArticleSublinks={this.toggleShowArticleSublinks}
-              showArticleSublinks={this.state.showArticleSublinks}
-              parentId={parentId}
-            />
-            {numSupportingArticles === 0
-              ? children
-              : this.state.showArticleSublinks && children}
-          </>
-        );
-      default:
-        return (
-          <p>
-            Item with id {uuid} has unknown collection item type {type}
-          </p>
-        );
-    }
+              imageDropTypes={imageDropTypes}
+              onImageDrop={this.handleImageDrop}
+            >
+              <Sublinks
+                numSupportingArticles={numSupportingArticles}
+                toggleShowArticleSublinks={this.toggleShowArticleSublinks}
+                showArticleSublinks={this.state.showArticleSublinks}
+                parentId={parentId}
+              />
+              {/* If there are no supporting articles, the children still need to be rendered, because the dropzone is a child  */}
+              {numSupportingArticles === 0
+                ? children
+                : this.state.showArticleSublinks && children}
+            </Article>
+          );
+        case collectionItemTypes.SNAP_LINK:
+          return (
+            <>
+              <SnapLink
+                id={uuid}
+                isUneditable={isUneditable}
+                {...getNodeProps()}
+                onDelete={this.onDelete}
+                onClick={isUneditable ? undefined : () => onSelect(uuid)}
+                fade={!isSelected}
+                size={size}
+              />
+              <Sublinks
+                numSupportingArticles={numSupportingArticles}
+                toggleShowArticleSublinks={this.toggleShowArticleSublinks}
+                showArticleSublinks={this.state.showArticleSublinks}
+                parentId={parentId}
+              />
+              {numSupportingArticles === 0
+                ? children
+                : this.state.showArticleSublinks && children}
+            </>
+          );
+        default:
+          return (
+            <p>
+              Item with id {uuid} has unknown collection item type {type}
+            </p>
+          );
+      }
+    };
+
+    return isSelected && displayInlineForm ? (
+      <ArticleFragmentFormInline
+        articleFragmentId={uuid}
+        isSupporting={isSupporting}
+        key={uuid}
+        form={uuid}
+        frontId={frontId}
+        onSave={meta => {
+          updateArticleFragmentMeta(uuid, meta);
+          clearArticleFragmentSelection(uuid);
+        }}
+        onCancel={() => clearArticleFragmentSelection(uuid)}
+      />
+    ) : (
+      getCard()
+    );
   }
 
   private onDelete = () => {
@@ -183,24 +220,20 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
 
 const createMapStateToProps = () => {
   const selectType = createSelectCollectionItemType();
-  return (state: State, props: ContainerProps) => {
-    const selectedArticleFragmentData = selectEditorArticleFragment(
-      state,
-      props.frontId
-    );
-    const maybeArticle = selectArticleFragment(
-      selectSharedState(state),
-      props.uuid
-    );
+  return (state: State, { uuid, frontId }: ContainerProps) => {
+    const maybeArticle = selectArticleFragment(selectSharedState(state), uuid);
     let numSupportingArticles = 0;
     if (maybeArticle && maybeArticle.meta && maybeArticle.meta.supporting) {
       numSupportingArticles = maybeArticle.meta.supporting.length;
     }
     return {
-      type: selectType(selectSharedState(state), props.uuid),
-      isSelected:
-        !selectedArticleFragmentData ||
-        selectedArticleFragmentData.id === props.uuid,
+      type: selectType(selectSharedState(state), uuid),
+      isSelected: selectIsArticleFragmentFormOpen(state, uuid, frontId),
+      isFaded: selectIsArticleFragmentFaded(state, uuid, frontId),
+      displayInlineForm: selectFeatureValue(
+        selectSharedState(state),
+        'inline-form'
+      ),
       numSupportingArticles
     };
   };
@@ -211,10 +244,15 @@ const mapDispatchToProps = (dispatch: Dispatch, props: ContainerProps) => {
     onAddToClipboard: () => {
       dispatch(cloneArticleFragmentToTarget(props.uuid, 'clipboard'));
     },
-    copyCollectionItemImageMeta: (from: string, to: string) =>
-      dispatch(copyArticleFragmentImageMetaWithPersist(from, to)),
-    addImageToArticleFragment: (id: string, response: ValidationResponse) =>
-      dispatch(addImageToArticleFragment(id, response))
+    ...bindActionCreators(
+      {
+        copyCollectionItemImageMeta: copyArticleFragmentImageMetaWithPersist,
+        addImageToArticleFragment,
+        updateArticleFragmentMeta: updateArticleFragmentMetaAction,
+        clearArticleFragmentSelection: editorClearArticleFragmentSelection
+      },
+      dispatch
+    )
   };
 };
 

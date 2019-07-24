@@ -13,8 +13,8 @@ import {
   editorOpenOverview,
   editorCloseOverview,
   selectIsFrontOverviewOpen,
-  selectEditorArticleFragment,
-  editorCloseCollections
+  editorCloseCollections,
+  selectSingleArticleFragmentForm
 } from 'bundles/frontsUIBundle';
 import {
   CollectionItemSets,
@@ -38,6 +38,7 @@ import ButtonRoundedWithLabel, {
 } from 'shared/components/input/ButtonRoundedWithLabel';
 import sortBy from 'lodash/sortBy';
 import debounce from 'lodash/debounce';
+import { bindActionCreators } from 'redux';
 
 const FrontContainer = styled('div')`
   height: 100%;
@@ -122,10 +123,13 @@ interface FrontPropsBeforeState {
 type FrontProps = FrontPropsBeforeState & {
   dispatch: Dispatch;
   initialiseFront: () => void;
-  formIsOpen: boolean;
+  isFormOpen: boolean;
   selectArticleFragment: (
-    frontId: string
-  ) => (isSupporting?: boolean) => (id: string) => void;
+    articleFragmentId: string,
+    collectionId: string,
+    frontId: string,
+    isSupporting: boolean
+  ) => void;
   editorOpenCollections: (ids: string[]) => void;
   front: FrontConfig;
   handleArticleFocus: (
@@ -234,7 +238,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   };
 
   public render() {
-    const { front, overviewIsOpen, formIsOpen } = this.props;
+    const { front, overviewIsOpen, isFormOpen } = this.props;
     const overviewToggleId = `btn-overview-toggle-${this.props.id}`;
     return (
       <React.Fragment>
@@ -312,9 +316,17 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                       alsoOn={this.props.alsoOn}
                       handleInsert={this.handleInsert}
                       handleMove={this.handleMove}
-                      selectArticleFragment={this.props.selectArticleFragment(
-                        this.props.id
-                      )}
+                      selectArticleFragment={(
+                        articleFragmentId,
+                        isSupporting
+                      ) =>
+                        this.props.selectArticleFragment(
+                          articleFragmentId,
+                          collectionId,
+                          this.props.id,
+                          isSupporting
+                        )
+                      }
                       handleArticleFocus={this.handleArticleFocus}
                     />
                   </CollectionContainer>
@@ -322,7 +334,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
               </Root>
             </FrontCollectionsContainer>
           </FrontContentContainer>
-          {(overviewIsOpen || formIsOpen) && (
+          {(overviewIsOpen || isFormOpen) && (
             <FrontDetailContainer>
               <FrontDetailView
                 id={this.props.id}
@@ -350,7 +362,7 @@ const mapStateToProps = (state: State, { id }: FrontPropsBeforeState) => {
   return {
     front: selectFront(state, { frontId: id }),
     overviewIsOpen: selectIsFrontOverviewOpen(state, id),
-    formIsOpen: !!selectEditorArticleFragment(state, id)
+    isFormOpen: !!selectSingleArticleFragmentForm(state, id)
   };
 };
 
@@ -362,14 +374,6 @@ const mapDispatchToProps = (
     dispatch,
     initialiseFront: () =>
       dispatch(initialiseCollectionsForFront(id, browsingStage)),
-    selectArticleFragment: (frontId: string) => (isSupporting?: boolean) => (
-      articleFragmentId: string
-    ) =>
-      dispatch(
-        editorSelectArticleFragment(frontId, articleFragmentId, isSupporting)
-      ),
-    editorOpenCollections: (ids: string[]) =>
-      dispatch(editorOpenCollections(ids)),
     handleArticleFocus: (
       groupId: string,
       articleFragment: TArticleFragment,
@@ -385,10 +389,18 @@ const mapDispatchToProps = (
       ),
     toggleOverview: (open: boolean) =>
       dispatch(open ? editorOpenOverview(id) : editorCloseOverview(id)),
-    closeAllCollections: (collections: string[]) =>
-      dispatch(editorCloseCollections(collections)),
     openAllCollections: (collections: string[]) =>
-      dispatch(openCollectionsAndFetchTheirArticles(collections, browsingStage))
+      dispatch(
+        openCollectionsAndFetchTheirArticles(collections, browsingStage)
+      ),
+    ...bindActionCreators(
+      {
+        selectArticleFragment: editorSelectArticleFragment,
+        closeAllCollections: editorCloseCollections,
+        editorOpenCollections
+      },
+      dispatch
+    )
   };
 };
 
