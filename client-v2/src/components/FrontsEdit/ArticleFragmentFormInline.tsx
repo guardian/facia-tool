@@ -20,7 +20,7 @@ import { createSelectFormFieldsForCollectionItem } from 'selectors/formSelectors
 import { ArticleFragmentMeta, ArticleTag } from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
-import InputCheckboxToggle from 'shared/components/input/InputCheckboxToggle';
+import InputCheckboxToggleInline from 'shared/components/input/InputCheckboxToggleInline';
 import InputImage from 'shared/components/input/InputImage';
 import InputGroup from 'shared/components/input/InputGroup';
 import InputButton from 'shared/components/input/InputButton';
@@ -144,6 +144,7 @@ const FieldContainer = styled(Col)<{ isClipboard: boolean }>`
   max-width: calc(100% / 3);
   min-width: ${({ isClipboard }) => (isClipboard ? '180px' : '125px')}
     /* Prevents labels breaking across lines */;
+  margin-bottom: 8px;
 `;
 
 // type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
@@ -386,28 +387,28 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             >
               <Field
                 name="isBoosted"
-                component={InputCheckboxToggle}
+                component={InputCheckboxToggleInline}
                 label="Boost"
                 id={getInputId(articleFragmentId, 'boost')}
                 type="checkbox"
               />
               <Field
                 name="showBoostedHeadline"
-                component={InputCheckboxToggle}
+                component={InputCheckboxToggleInline}
                 label="Large headline"
                 id={getInputId(articleFragmentId, 'large-headline')}
                 type="checkbox"
               />
               <Field
                 name="showQuotedHeadline"
-                component={InputCheckboxToggle}
+                component={InputCheckboxToggleInline}
                 label="Quote headline"
                 id={getInputId(articleFragmentId, 'quote-headline')}
                 type="checkbox"
               />
               <Field
                 name="isBreaking"
-                component={InputCheckboxToggle}
+                component={InputCheckboxToggleInline}
                 label="Breaking News"
                 id={getInputId(articleFragmentId, 'breaking-news')}
                 type="checkbox"
@@ -415,21 +416,21 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               />
               <Field
                 name="showByline"
-                component={InputCheckboxToggle}
+                component={InputCheckboxToggleInline}
                 label="Show Byline"
                 id={getInputId(articleFragmentId, 'show-byline')}
                 type="checkbox"
               />
               <Field
                 name="showLivePlayable"
-                component={InputCheckboxToggle}
+                component={InputCheckboxToggleInline}
                 label="Show updates"
                 id={getInputId(articleFragmentId, 'show-updates')}
                 type="checkbox"
               />
               <Field
                 name="showMainVideo"
-                component={InputCheckboxToggle}
+                component={InputCheckboxToggleInline}
                 label="Show video"
                 id={getInputId(articleFragmentId, 'show-video')}
                 type="checkbox"
@@ -483,7 +484,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                   <ConditionalField
                     permittedFields={editableFields}
                     name="imageReplace"
-                    component={InputCheckboxToggle}
+                    component={InputCheckboxToggleInline}
                     label="Replace media"
                     id={getInputId(articleFragmentId, 'image-replace')}
                     type="checkbox"
@@ -495,7 +496,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                   <ConditionalField
                     permittedFields={editableFields}
                     name="imageHide"
-                    component={InputCheckboxToggle}
+                    component={InputCheckboxToggleInline}
                     label="Hide media"
                     id={getInputId(articleFragmentId, 'hide-media')}
                     type="checkbox"
@@ -509,63 +510,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               permittedNames={editableFields}
               name={['primaryImage', 'imageHide']}
             />
-            {/* <Row>
-              <Col>
-                <ImageWrapper faded={!imageCutoutReplace}>
-                  <ConditionalField
-                    permittedFields={editableFields}
-                    name="cutoutImage"
-                    component={InputImage}
-                    disabled={imageHide}
-                    frontId={frontId}
-                  />
-                </ImageWrapper>
-              </Col>
-              <Col>
-                <InputGroup>
-                  <ConditionalField
-                    permittedFields={editableFields}
-                    name="imageCutoutReplace"
-                    component={InputCheckboxToggle}
-                    label="Use cutout"
-                    id={getInputId(articleFragmentId, 'use-cutout')}
-                    type="checkbox"
-                    default={false}
-                    onChange={_ => changeImageField('imageCutoutReplace')}
-                  />
-                </InputGroup>
-              </Col>
-            </Row> */}
           </RowContainer>
-          {/* <ConditionalComponent
-            permittedNames={editableFields}
-            name={['cutoutImage', 'imageCutoutReplace']}
-          >
-            <HorizontalRule />
-          </ConditionalComponent>
-          <InputGroup>
-            <ConditionalField
-              permittedFields={editableFields}
-              name="imageSlideshowReplace"
-              component={InputCheckboxToggle}
-              label="Slideshow"
-              id={getInputId(articleFragmentId, 'slideshow')}
-              type="checkbox"
-              onChange={_ => changeImageField('imageSlideshowReplace')}
-            />
-          </InputGroup> */}
-          {/* {imageSlideshowReplace && (
-            <RowContainer>
-              <SlideshowRow>
-                <FieldArray<RenderSlideshowProps>
-                  name="slideshow"
-                  frontId={frontId}
-                  component={RenderSlideshow}
-                />
-              </SlideshowRow>
-              <SlideshowLabel>Drag and drop up to five images</SlideshowLabel>
-            </RowContainer>
-          )} */}
         </FormContent>
         <ButtonContainer>
           <Button onClick={this.handleCancel} type="button" size="l">

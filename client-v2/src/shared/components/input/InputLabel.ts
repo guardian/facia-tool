@@ -6,7 +6,7 @@ export default styled('label')<{
   hidden?: boolean;
   for?: string;
 }>`
-  display: ${props => (props.hidden ? 'none' : 'block')};
+  display: ${props => (props.hidden ? 'none' : 'inline-block')};
   font-size: ${props =>
     props.size === 'sm'
       ? props.theme.shared.label.fontSizeSmall
