@@ -121,23 +121,29 @@ const FieldsContainerWrap = styled(Row)`
 const CheckboxFieldsContainer: React.SFC<{
   children: JSX.Element[];
   editableFields: string[];
-}> = ({ children, editableFields }) => {
+  isClipboard: boolean;
+}> = ({ children, editableFields, isClipboard }) => {
   const childrenToRender = children.filter(child =>
     shouldRenderField(child.props.name, editableFields)
   );
   return (
     <FieldsContainerWrap>
       {childrenToRender.map(child => {
-        return <FieldContainer key={child.props.name}>{child}</FieldContainer>;
+        return (
+          <FieldContainer isClipboard={isClipboard} key={child.props.name}>
+            {child}
+          </FieldContainer>
+        );
       })}
     </FieldsContainerWrap>
   );
 };
 
-const FieldContainer = styled(Col)`
+const FieldContainer = styled(Col)<{ isClipboard: boolean }>`
   flex-basis: calc(100% / 3);
   max-width: calc(100% / 3);
-  min-width: 125px; /* Prevents labels breaking across lines */
+  min-width: ${({ isClipboard }) => (isClipboard ? '180px' : '125px')}
+    /* Prevents labels breaking across lines */;
 `;
 
 // type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
@@ -149,6 +155,17 @@ const KickerSuggestionsContainer = styled.div`
   right: 10px;
   top: 5px;
   font-size: 12px;
+`;
+
+const KickerSuggestionsContainerClipboard = styled.div`
+  position: relative;
+  top: 5px;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  button {
+    width: fit-content;
+  }
 `;
 
 // const RenderSlideshow = ({ fields, frontId }: RenderSlideshowProps) => (
@@ -224,6 +241,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       kickerOptions.webTitle || kickerOptions.sectionName
     );
 
+    const isClipboard = frontId === 'clipboard';
+
     return (
       <FormContainer
         data-testid="edit-form"
@@ -242,7 +261,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
         )}
         <FormContent>
           <InputGroup>
-            {hasKickerSuggestions && (
+            {hasKickerSuggestions && !isClipboard && (
               <KickerSuggestionsContainer>
                 {'Suggestions '}
                 {kickerOptions.webTitle && (
@@ -283,6 +302,47 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 )}
               </KickerSuggestionsContainer>
             )}
+            {hasKickerSuggestions && isClipboard && (
+              <KickerSuggestionsContainerClipboard>
+                {'Suggestions '}
+                {kickerOptions.webTitle && (
+                  <Field
+                    name="showKickerTag"
+                    component={InputButton}
+                    buttonText={kickerOptions.webTitle}
+                    selected={showKickerTag}
+                    size="s"
+                    onClick={() => {
+                      if (!showKickerTag) {
+                        change('showKickerTag', true);
+                        change('showKickerSection', false);
+                        change('showKickerCustom', false);
+                      } else {
+                        change('showKickerTag', false);
+                      }
+                    }}
+                  />
+                )}{' '}
+                {kickerOptions.sectionName && (
+                  <Field
+                    name="showKickerSection"
+                    component={InputButton}
+                    selected={showKickerSection}
+                    size="s"
+                    buttonText={kickerOptions.sectionName}
+                    onClick={() => {
+                      if (!showKickerSection) {
+                        change('showKickerSection', true);
+                        change('showKickerTag', false);
+                        change('showKickerCustom', false);
+                      } else {
+                        change('showKickerSection', false);
+                      }
+                    }}
+                  />
+                )}
+              </KickerSuggestionsContainerClipboard>
+            )}
             <ConditionalField
               name="customKicker"
               label="Kicker"
@@ -320,7 +380,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 data-testid="edit-form-headline-field"
               />
             )}
-            <CheckboxFieldsContainer editableFields={editableFields}>
+            <CheckboxFieldsContainer
+              isClipboard={isClipboard}
+              editableFields={editableFields}
+            >
               <Field
                 name="isBoosted"
                 component={InputCheckboxToggle}
@@ -394,7 +457,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             </HideableFormSection>
           </InputGroup>
           <RowContainer>
-            <Row>
+            <Row flexDirection={isClipboard ? 'column' : 'row'}>
               <Col>
                 {imageReplace && (
                   <ImageWrapper faded={imageHide}>
