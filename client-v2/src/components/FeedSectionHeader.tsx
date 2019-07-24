@@ -19,7 +19,7 @@ import FadeTransition from './transitions/FadeTransition';
 import { MoreIcon } from 'shared/components/icons/Icons';
 import { RouteComponentProps } from 'react-router';
 import { selectEditMode } from 'selectors/pathSelectors';
-import { getEditionIssue } from 'actions/Editions';
+import { getEditionIssue, publishEditionIssue } from 'actions/Editions';
 import { EditionsIssue } from 'types/Edition';
 import { selectors as editionsIssueSelectors } from 'bundles/editionsIssueBundle';
 import { EditMode } from 'types/EditMode';
@@ -128,6 +128,7 @@ type ComponentProps = {
   getEditionsIssue: (id: string) => void;
   editMode: EditMode;
   editionsIssue?: EditionsIssue;
+  publishEditionsIssue: (id: string) => Promise<void>;
 } & RouteComponentProps<{ priority: string }>;
 
 type ContainerProps = RouteComponentProps<{ priority: string }>;
@@ -190,7 +191,7 @@ class FeedSectionHeader extends Component<ComponentProps> {
   }
 
   private renderEditionsActions() {
-    const { editionsIssue } = this.props;
+    const { editionsIssue, publishEditionsIssue } = this.props;
 
     if (!editionsIssue) {
       return null;
@@ -211,7 +212,7 @@ class FeedSectionHeader extends Component<ComponentProps> {
             <Button
               size="l"
               priority="primary"
-              onClick={() => console.log('publish')}
+              onClick={() => publishEditionsIssue(editionsIssue.id)}
               tabIndex={-1}
               title="Publish Edition"
             >
@@ -238,6 +239,7 @@ const mapStateToProps = () => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   getEditionsIssue: (id: string) => dispatch(getEditionIssue(id)),
+  publishEditionsIssue: (id: string) => dispatch(publishEditionIssue(id)),
   toggleCurrentFrontsMenu: (menuState: boolean) =>
     menuState
       ? dispatch(editorShowOpenFrontsMenu())
