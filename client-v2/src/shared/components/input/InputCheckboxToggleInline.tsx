@@ -4,14 +4,13 @@ import { WrappedFieldMetaProps, WrappedFieldInputProps } from 'redux-form';
 
 import InputLabel from './InputLabel';
 import InputContainer from './InputContainer';
-import HorizontalRule from '../layout/HorizontalRule';
 
 const checkboxHeight = 17;
 const checkboxWidth = 28;
 
 const CheckboxContainer = styled('div')`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
 `;
 
 const Label = InputLabel.extend`
@@ -53,7 +52,7 @@ const CheckboxLabel = styled('label')`
     position: absolute;
     top: 0;
     bottom: 0;
-    right: 10px;
+    right: 11px;
     border: ${({ theme }) =>
       `2px solid ${theme.shared.input.checkboxBorderColor}`};
     border-radius: ${checkboxHeight}px;
@@ -107,6 +106,5 @@ export default ({
         </Label>
       </CheckboxContainer>
     </InputContainer>
-    <HorizontalRule />
   </>
 );

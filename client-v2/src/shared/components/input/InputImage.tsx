@@ -30,8 +30,12 @@ const ImageContainer = styled('div')<{
   flex-direction: column;
   position: relative;
   width: 100%;
-  max-width: ${props => (props.small ? '100px' : '180px')};
-  height: ${props => (props.small ? '50px' : '115px')};
+  max-width: ${props => !props.small && '180px'};
+  ${({ small }) =>
+    small &&
+    `min-width: 50px;
+    padding: 40%;`}
+  height: ${props => (props.small ? '0' : '115px')};
   transition: background-color 0.15s;
 `;
 
@@ -51,7 +55,14 @@ const AddImageButton = styled(ButtonDefault)<{ small?: boolean }>`
   text-shadow: 0 0 2px black;
 `;
 
-const ImageComponent = styled.div`
+const ImageComponent = styled.div<{ small: boolean }>`
+  ${({ small }) =>
+    small &&
+    `position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;`}
   background-size: cover;
   flex-grow: 1;
   cursor: grab;
@@ -187,6 +198,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
               draggable
               onDragStart={this.handleDragStart}
               onDrop={this.handleDrop}
+              small={small}
             >
               {hasImage ? (
                 <ButtonDelete
