@@ -5,13 +5,27 @@ import java.time._
 import com.gu.pandomainauth.model.User
 import fixtures.{EditionsDBService, UsesDatabase}
 import model.editions._
+import model.forms.GetCollectionsFilter
 import org.scalatest.{FreeSpec, Matchers, OptionValues}
 
 class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with OptionValues {
 
-  private val now: OffsetDateTime = OffsetDateTime.of(2019, 7, 16, 17, 23, 23, 0, ZoneOffset.ofHours(1))
+  private val now: OffsetDateTime = OffsetDateTime.of(2019, 7, 16, 17, 23, 23, 123456, ZoneOffset.ofHours(1))
 
   private val user: User = User("Billy", "Bragg", "billy.bragg@justice.example.com", None)
+
+  private val simpleMetadata = ArticleMetadata(
+    customKicker = Some("Kicker"),
+    headline = None,
+    trailText = None,
+    showQuotedHeadline = None,
+    showByline = None,
+    byline = None,
+    mediaType = None,
+    cutoutImage = None,
+    replaceImage = None,
+    slideshowImages = None
+  )
 
   private def insertSkeletonIssue(year: Int, month: Int, dom: Int, fronts: EditionsFrontSkeleton*): String = {
     val skeleton = EditionsIssueSkeleton(
@@ -34,101 +48,165 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
   "The editions DB" - {
     "should insert an empty issue" taggedAs UsesDatabase in {
-      withEvolutions {
-        val id = insertSkeletonIssue(2019, 9, 30)
+      val id = insertSkeletonIssue(2019, 9, 30)
 
-        val retrievedIssue = editionsDB.getIssue(id).value
-        retrievedIssue.displayName shouldBe "daily-edition"
-        retrievedIssue.createdEmail shouldBe "billy.bragg@justice.example.com"
-        retrievedIssue.createdOn shouldBe now.toInstant.toEpochMilli
-        retrievedIssue.createdBy shouldBe "Billy Bragg"
-        val issueDate = OffsetDateTime.ofInstant(Instant.ofEpochMilli(retrievedIssue.issueDate), ZoneId.of(retrievedIssue.timezoneId))
-        issueDate.getDayOfWeek shouldBe DayOfWeek.MONDAY
-        retrievedIssue.launchedOn.isDefined shouldBe false
-        retrievedIssue.launchedBy.isDefined shouldBe false
-        retrievedIssue.launchedEmail.isDefined shouldBe false
-        retrievedIssue.fronts shouldBe Nil
-      }
+      val retrievedIssue = editionsDB.getIssue(id).value
+      retrievedIssue.displayName shouldBe "daily-edition"
+      retrievedIssue.createdEmail shouldBe "billy.bragg@justice.example.com"
+      retrievedIssue.createdOn shouldBe now.toInstant.toEpochMilli
+      retrievedIssue.createdBy shouldBe "Billy Bragg"
+      val issueDate = OffsetDateTime.ofInstant(Instant.ofEpochMilli(retrievedIssue.issueDate), ZoneId.of(retrievedIssue.timezoneId))
+      issueDate.getDayOfWeek shouldBe DayOfWeek.MONDAY
+      retrievedIssue.launchedOn.isDefined shouldBe false
+      retrievedIssue.launchedBy.isDefined shouldBe false
+      retrievedIssue.launchedEmail.isDefined shouldBe false
+      retrievedIssue.fronts shouldBe Nil
     }
 
     "should list issues" taggedAs UsesDatabase in {
-      withEvolutions {
-        insertSkeletonIssue(2019, 9, 28)
-        insertSkeletonIssue(2019, 9, 29)
-        insertSkeletonIssue(2019, 9, 30)
-        insertSkeletonIssue(2019, 10, 10)
+      insertSkeletonIssue(2019, 9, 28)
+      insertSkeletonIssue(2019, 9, 29)
+      insertSkeletonIssue(2019, 9, 30)
+      insertSkeletonIssue(2019, 10, 10)
 
-        val allIssues = editionsDB.listIssues("daily-edition", LocalDate.of(2019, 9, 28), LocalDate.of(2019, 10, 10))
-        allIssues.length shouldBe 4
-        allIssues.head.createdEmail shouldBe "billy.bragg@justice.example.com"
+      val allIssues = editionsDB.listIssues("daily-edition", LocalDate.of(2019, 9, 28), LocalDate.of(2019, 10, 10))
+      allIssues.length shouldBe 4
+      allIssues.head.createdEmail shouldBe "billy.bragg@justice.example.com"
 
-        val someIssues = editionsDB.listIssues("daily-edition", LocalDate.of(2019, 9, 28), LocalDate.of(2019, 10, 3))
-        someIssues.length shouldBe 3
-      }
+      val someIssues = editionsDB.listIssues("daily-edition", LocalDate.of(2019, 9, 28), LocalDate.of(2019, 10, 3))
+      someIssues.length shouldBe 3
     }
 
     "should insert fronts, collections and articles" taggedAs UsesDatabase in {
-      withEvolutions {
-        val id = insertSkeletonIssue(2019, 9, 30,
-          front("news/uk",
-            collection("politics", Some(CapiPrefillQuery("magic-politics-query")),"12345", "23456"),
-            collection("international", None,"34567", "45678", "56789")
-          ),
-          front("comment",
-            collection("opinion", Some(CapiPrefillQuery("magic-opinion-query")),"54321", "65432"),
-            collection("brexshit", None,"76543", "87654"),
-            collection("sigh", None,"98765", "09876")
-          )
+      val id = insertSkeletonIssue(2019, 9, 30,
+        front("news/uk",
+          collection("politics", Some(CapiPrefillQuery("magic-politics-query")),"12345", "23456"),
+          collection("international", None,"34567", "45678", "56789")
+        ),
+        front("comment",
+          collection("opinion", Some(CapiPrefillQuery("magic-opinion-query")),"54321", "65432"),
+          collection("brexshit", None,"76543", "87654"),
+          collection("sigh", None,"98765", "09876")
         )
+      )
 
-        val retrievedIssue = editionsDB.getIssue(id).value
-        retrievedIssue.displayName shouldBe "daily-edition"
-        retrievedIssue.fronts.length shouldBe 2
+      val retrievedIssue = editionsDB.getIssue(id).value
+      retrievedIssue.displayName shouldBe "daily-edition"
+      retrievedIssue.fronts.length shouldBe 2
 
-        val newsFront = retrievedIssue.fronts.head
-        newsFront.displayName shouldBe "news/uk"
-        newsFront.collections.length shouldBe 2
+      val newsFront = retrievedIssue.fronts.head
+      newsFront.displayName shouldBe "news/uk"
+      newsFront.collections.length shouldBe 2
 
-        val newsPoliticsCollection = newsFront.collections.head
-        newsPoliticsCollection.displayName shouldBe "politics"
-        newsPoliticsCollection.prefill.value shouldBe CapiPrefillQuery("magic-politics-query")
-        newsPoliticsCollection.items.length shouldBe 2
+      val newsPoliticsCollection = newsFront.collections.head
+      newsPoliticsCollection.displayName shouldBe "politics"
+      newsPoliticsCollection.prefill.value shouldBe CapiPrefillQuery("magic-politics-query")
+      newsPoliticsCollection.items.length shouldBe 2
 
-        val newsInternationalCollection = newsFront.collections.tail.head
-        newsInternationalCollection.displayName shouldBe "international"
-        newsInternationalCollection.prefill.isDefined shouldBe false
-        newsInternationalCollection.items.length shouldBe 3
+      val newsInternationalCollection = newsFront.collections.tail.head
+      newsInternationalCollection.displayName shouldBe "international"
+      newsInternationalCollection.prefill.isDefined shouldBe false
+      newsInternationalCollection.items.length shouldBe 3
 
-        val commentFront = retrievedIssue.fronts.tail.head
-        commentFront.displayName shouldBe "comment"
-        commentFront.collections.length shouldBe 3
-      }
+      val commentFront = retrievedIssue.fronts.tail.head
+      commentFront.displayName shouldBe "comment"
+      commentFront.collections.length shouldBe 3
     }
 
     "should allow lookup of issue by collection id" taggedAs UsesDatabase in {
-      withEvolutions {
-        val id = insertSkeletonIssue(2019, 9, 30,
-          front("news/uk",
-            collection("politics", Some(CapiPrefillQuery("magic-politics-query")), "12345", "23456")
-          )
+      val id = insertSkeletonIssue(2019, 9, 30,
+        front("news/uk",
+          collection("politics", Some(CapiPrefillQuery("magic-politics-query")), "12345", "23456")
         )
-        insertSkeletonIssue(2019, 9, 29,
-          front("news/uk",
-            collection("politics", Some(CapiPrefillQuery("magic-politics-query")), "54321", "65432")
-          )
+      )
+      insertSkeletonIssue(2019, 9, 29,
+        front("news/uk",
+          collection("politics", Some(CapiPrefillQuery("magic-politics-query")), "54321", "65432")
         )
-        insertSkeletonIssue(2019, 9, 28,
-          front("news/uk",
-            collection("politics", None, "14789", "32147")
-          )
+      )
+      insertSkeletonIssue(2019, 9, 28,
+        front("news/uk",
+          collection("politics", None, "14789", "32147")
         )
+      )
 
-        val retrievedIssue = editionsDB.getIssue(id).value
-        val collectionsId = retrievedIssue.fronts.head.collections.head.id
+      val retrievedIssue = editionsDB.getIssue(id).value
+      val collectionsId = retrievedIssue.fronts.head.collections.head.id
 
-        val maybeIssueId = editionsDB.getIssueIdFromCollectionId(collectionsId)
-        maybeIssueId.value shouldBe id
-      }
+      val maybeIssueId = editionsDB.getIssueIdFromCollectionId(collectionsId)
+      maybeIssueId.value shouldBe id
+    }
+
+    "should allow a set of collections to be fetched individually" taggedAs UsesDatabase in {
+      val id = insertSkeletonIssue(2019, 9, 30,
+        front("news/uk",
+          collection("politics", Some(CapiPrefillQuery("magic-politics-query")),"12345", "23456"),
+          collection("international", None,"34567", "45678", "56789")
+        ),
+        front("comment",
+          collection("opinion", Some(CapiPrefillQuery("magic-opinion-query")),"54321", "65432"),
+          collection("brexshit", None,"76543", "87654"),
+          collection("sigh", None,"98765", "09876")
+        )
+      )
+
+      val retrievedIssue = editionsDB.getIssue(id).value
+      val collectionIds = retrievedIssue.fronts.flatMap(_.collections.map(_.id))
+
+      collectionIds.size shouldBe 5
+
+      val collections = editionsDB.getCollections(
+        collectionIds.map(GetCollectionsFilter(_, None))
+      )
+
+      collections.size shouldBe 5
+
+      collections.map(_.id).toSet shouldBe collectionIds.toSet
+
+    }
+
+    "should allow updating of a collection" taggedAs UsesDatabase in {
+      val id = insertSkeletonIssue(2019, 9, 30,
+        front("news/uk",
+          collection("politics", Some(CapiPrefillQuery("magic-politics-query")),"12345", "23456"),
+          collection("international", None,"34567", "45678", "56789")
+        ),
+        front("comment",
+          collection("opinion", Some(CapiPrefillQuery("magic-opinion-query")),"54321", "65432"),
+          collection("brexshit", None,"76543", "87654"),
+          collection("sigh", None,"98765", "09876")
+        )
+      )
+
+      val retrievedIssue = editionsDB.getIssue(id).value
+      val brexshit = retrievedIssue.fronts.tail.head.collections.tail.head
+
+      val future = now.plusMinutes(20)
+      val futureMillis = future.toInstant.toEpochMilli
+
+      val items = EditionsArticle("654789", futureMillis, Some(simpleMetadata)) :: brexshit.items
+
+      val evenMoreBrexshit = brexshit.copy(
+        lastUpdated = Some(futureMillis),
+        updatedBy = Some("BoJo"),
+        updatedEmail = Some("bojo@piffle.paffle"),
+        items = items
+      )
+
+      editionsDB.updateCollection(evenMoreBrexshit)
+
+      val collections = editionsDB.getCollections(List(GetCollectionsFilter(brexshit.id, None)))
+      collections.size shouldBe 1
+      val updatedBrexshit = collections.head
+      updatedBrexshit.items.size shouldBe 3
+
+      updatedBrexshit.updatedBy.value shouldBe "BoJo"
+      updatedBrexshit.updatedEmail.value shouldBe "bojo@piffle.paffle"
+      // this should be added to the test once it passes
+      // updatedBrexshit.lastUpdated.value shouldBe futureMillis
+
+      // check we are storing some metadata
+      updatedBrexshit.items.find(_.pageCode == "654789").value.metadata.value shouldBe simpleMetadata
     }
 
   }
