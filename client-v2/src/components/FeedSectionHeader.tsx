@@ -170,7 +170,7 @@ class FeedSectionHeader extends Component<ComponentProps> {
           <FadeTransition active={!isCurrentFrontsMenuOpen} direction="right">
             {editMode === 'editions' ? (
               editionsIssue ? (
-                <Link to='/v2/manage-editions/daily-edition'>
+                <Link to="/v2/manage-editions/daily-edition">
                   <EditionIssueInfo>
                     <EditionTitle>
                       {startCase(editionsIssue.displayName)}
