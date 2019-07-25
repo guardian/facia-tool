@@ -224,7 +224,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
         items = items
       )
 
-      editionsDB.updateCollection(evenMoreBrexshit, future)
+      editionsDB.updateCollection(evenMoreBrexshit)
 
       val collections = editionsDB.getCollections(List(GetCollectionsFilter(brexshit.id, None)))
       collections.size shouldBe 1

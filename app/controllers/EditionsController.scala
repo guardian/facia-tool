@@ -75,7 +75,7 @@ class EditionsController(db: EditionsDB,
   def updateCollection(collectionId: String) = AccessAPIAuthAction(parse.json[EditionsFrontendCollectionWrapper]) { req =>
     val form = req.body
     val collectionToUpdate = EditionsFrontendCollectionWrapper.toCollection(form)
-    val updatedCollection = db.updateCollection(collectionToUpdate, OffsetDateTime.now())
+    val updatedCollection = db.updateCollection(collectionToUpdate)
     for {
       issueId <- db.getIssueIdFromCollectionId(updatedCollection.id)
       issue <- db.getIssue(issueId)

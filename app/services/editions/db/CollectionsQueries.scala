@@ -33,13 +33,12 @@ trait CollectionsQueries {
     convertRowsToCollections(rows)
   }
 
-  def updateCollection(collection: EditionsCollection, now: OffsetDateTime): EditionsCollection  = DB localTx { implicit session =>
-    // always truncate any date times going into the DB to millis
-    val truncatedNow = EditionsDB.truncateDateTime(now)
+  def updateCollection(collection: EditionsCollection): EditionsCollection  = DB localTx { implicit session =>
+    val lastUpdated = collection.lastUpdated.map(EditionsDB.dateTimeFromMillis)
     sql"""
       UPDATE collections
       SET is_hidden = ${collection.isHidden},
-          updated_on = $truncatedNow,
+          updated_on = $lastUpdated,
           updated_by = ${collection.updatedBy},
           updated_email = ${collection.updatedEmail}
       WHERE id = ${collection.id}
