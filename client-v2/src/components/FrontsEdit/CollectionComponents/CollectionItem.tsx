@@ -153,6 +153,8 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
                 onClick={isUneditable ? undefined : () => onSelect(uuid)}
                 fade={!isSelected}
                 size={size}
+                textSize={textSize}
+                showMeta={showMeta}
               />
               <Sublinks
                 numSupportingArticles={numSupportingArticles}
