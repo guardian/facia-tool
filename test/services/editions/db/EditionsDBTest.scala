@@ -237,7 +237,11 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       updatedBrexshit.lastUpdated.value shouldBe futureMillis
 
       // check we are storing some metadata
+      updatedBrexshit.items.find(_.pageCode == "654789").value.addedOn shouldBe future.toInstant.toEpochMilli
       updatedBrexshit.items.find(_.pageCode == "654789").value.metadata.value shouldBe simpleMetadata
+
+      // check that the added time hasn't modified
+      updatedBrexshit.items.find(_.pageCode == "76543").value.addedOn shouldBe now.toInstant.toEpochMilli
     }
 
   }
