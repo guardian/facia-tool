@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import startCase from 'lodash/startCase';
 import { styled } from 'constants/theme';
 import SectionHeaderWithLogo from './layout/SectionHeaderWithLogo';
 import CurrentFrontsList from './CurrentFrontsList';
@@ -19,11 +18,9 @@ import FadeTransition from './transitions/FadeTransition';
 import { MoreIcon } from 'shared/components/icons/Icons';
 import { RouteComponentProps } from 'react-router';
 import { selectEditMode } from 'selectors/pathSelectors';
-import { getEditionIssue, publishEditionIssue } from 'actions/Editions';
-import { EditionsIssue } from 'types/Edition';
-import { selectors as editionsIssueSelectors } from 'bundles/editionsIssueBundle';
+import { getEditionIssue } from 'actions/Editions';
 import { EditMode } from 'types/EditMode';
-import EditModeVisibility from './util/EditModeVisibility';
+import EditionFeedSectionHeader from './EditionFeedSectionHeader';
 
 const FeedbackButton = Button.extend<{
   href: string;
@@ -98,37 +95,12 @@ const CloseButtonInner = styled.div`
   position: relative;
 `;
 
-const EditionIssueInfo = styled.div`
-  height: 100%;
-  display: inline-block;
-  flex-direction: column;
-  justify-content: center;
-  margin-left: 12px;
-  line-height: 1em;
-`;
-
-const EditionTitle = styled.div`
-  font-size: 20px;
-`;
-
-const EditionDate = styled.div`
-  font-size: 16px;
-`;
-
-const EditionPublish = styled.div`
-  float: right;
-  margin: 5px 10px 0 0;
-`;
-
 type ComponentProps = {
   toggleCurrentFrontsMenu: () => void;
   isCurrentFrontsMenuOpen: boolean;
   frontCount: number;
-
   getEditionsIssue: (id: string) => void;
   editMode: EditMode;
-  editionsIssue?: EditionsIssue;
-  publishEditionsIssue: (id: string) => Promise<void>;
 } & RouteComponentProps<{ priority: string }>;
 
 type ContainerProps = RouteComponentProps<{ priority: string }>;
@@ -175,7 +147,7 @@ class FeedSectionHeader extends Component<ComponentProps> {
           </FadeTransition>
           <FadeTransition active={!isCurrentFrontsMenuOpen} direction="right">
             {editMode === 'editions' ? (
-              this.renderEditionsActions()
+              <EditionFeedSectionHeader />
             ) : (
               <FeedbackButton
                 href="https://docs.google.com/forms/d/e/1FAIpQLSc4JF0GxrKoxQgsFE9_tQfjAo1RKRU4M5bJWJRKaVlHbR2rpA/viewform?c=0&w=1"
@@ -189,40 +161,6 @@ class FeedSectionHeader extends Component<ComponentProps> {
       </SectionHeaderWithLogo>
     );
   }
-
-  private renderEditionsActions() {
-    const { editionsIssue, publishEditionsIssue } = this.props;
-
-    if (!editionsIssue) {
-      return null;
-    }
-
-    return (
-      <>
-        <Link to="/v2/manage-editions/daily-edition">
-          <EditionIssueInfo>
-            <EditionTitle>{startCase(editionsIssue.displayName)}</EditionTitle>
-            <EditionDate>
-              {new Date(editionsIssue.issueDate).toDateString()}
-            </EditionDate>
-          </EditionIssueInfo>
-        </Link>
-        <EditionPublish>
-          <EditModeVisibility visibleMode="editions">
-            <Button
-              size="l"
-              priority="primary"
-              onClick={() => publishEditionsIssue(editionsIssue.id)}
-              tabIndex={-1}
-              title="Publish Edition"
-            >
-              Publish
-            </Button>
-          </EditModeVisibility>
-        </EditionPublish>
-      </>
-    );
-  }
 }
 
 const mapStateToProps = () => {
@@ -232,14 +170,12 @@ const mapStateToProps = () => {
     frontCount: selectEditorFrontsByPriority(state, {
       priority: props.match.params.priority
     }).length,
-    editMode: selectEditMode(state),
-    editionsIssue: editionsIssueSelectors.selectAll(state)
+    editMode: selectEditMode(state)
   });
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   getEditionsIssue: (id: string) => dispatch(getEditionIssue(id)),
-  publishEditionsIssue: (id: string) => dispatch(publishEditionIssue(id)),
   toggleCurrentFrontsMenu: (menuState: boolean) =>
     menuState
       ? dispatch(editorShowOpenFrontsMenu())
