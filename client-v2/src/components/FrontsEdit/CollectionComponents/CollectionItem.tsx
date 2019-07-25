@@ -151,7 +151,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
                 {...getNodeProps()}
                 onDelete={this.onDelete}
                 onClick={isUneditable ? undefined : () => onSelect(uuid)}
-                fade={!isSelected}
+                fade={isFaded}
                 size={size}
                 textSize={textSize}
                 showMeta={showMeta}
