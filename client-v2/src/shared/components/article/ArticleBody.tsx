@@ -103,6 +103,7 @@ interface ArticleBodyProps {
   type?: string;
   showBoostedHeadline?: boolean;
   showMeta?: boolean;
+  canDragImage?: boolean;
 }
 
 const renderColouredQuotes = (
@@ -150,7 +151,8 @@ const articleBodyDefault = React.memo(
     type,
     uuid,
     showBoostedHeadline,
-    showMeta = true
+    showMeta = true,
+    canDragImage = true
   }: ArticleBodyProps) => {
     const ArticleHeadingContainer =
       size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
@@ -237,7 +239,7 @@ const articleBodyDefault = React.memo(
           (displayPlaceholders ? (
             <ThumbnailPlaceholder />
           ) : (
-            <DraggableArticleImageContainer id={uuid}>
+            <DraggableArticleImageContainer id={uuid} canDrag={canDragImage}>
               <ThumbnailSmall
                 style={{
                   backgroundImage: `url('${thumbnail}')`,
