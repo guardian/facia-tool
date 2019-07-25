@@ -103,7 +103,11 @@ interface ArticleBodyProps {
   type?: string;
   showBoostedHeadline?: boolean;
   showMeta?: boolean;
+<<<<<<< HEAD
   canDragImage?: boolean;
+=======
+  isDraggingImageOver: boolean;
+>>>>>>> Amend image dragging
 }
 
 const renderColouredQuotes = (
@@ -152,7 +156,11 @@ const articleBodyDefault = React.memo(
     uuid,
     showBoostedHeadline,
     showMeta = true,
+<<<<<<< HEAD
     canDragImage = true
+=======
+    isDraggingImageOver
+>>>>>>> Amend image dragging
   }: ArticleBodyProps) => {
     const ArticleHeadingContainer =
       size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
@@ -241,10 +249,9 @@ const articleBodyDefault = React.memo(
           ) : (
             <DraggableArticleImageContainer id={uuid} canDrag={canDragImage}>
               <ThumbnailSmall
-                style={{
-                  backgroundImage: `url('${thumbnail}')`,
-                  opacity: imageHide ? 0.5 : 1
-                }}
+                imageHide={imageHide}
+                url={thumbnail}
+                isDraggingImageOver={isDraggingImageOver}
               >
                 {cutoutThumbnail ? (
                   <ThumbnailCutout src={cutoutThumbnail} />

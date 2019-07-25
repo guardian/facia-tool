@@ -6,7 +6,6 @@ import {
   selectSharedState,
   selectCollectionItemHasMediaOverrides
 } from 'shared/selectors/shared';
-import imageDragIcon from 'images/icons/image-drag-icon.svg';
 import {
   DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
   DRAG_DATA_GRID_IMAGE_URL
@@ -35,13 +34,20 @@ const DragIntentContainer = styled.div<{
   }`};
 `;
 
-const dragImage = new Image();
-dragImage.src = imageDragIcon;
+// The visual representation of an image as it is being dragged.
+// This needs to be rendered by the DOM before it can be used by the Drag&Drop API, so we pushed it off to the side.
+const DraggingImageContainer = styled('div')`
+  position: absolute;
+  transform: translateX(-9999px);
+`;
 
 class DraggableArticleImageContainer extends React.Component<ComponentProps> {
+  private dragNode: React.RefObject<HTMLDivElement>;
   constructor(props: ComponentProps) {
     super(props);
+    this.dragNode = React.createRef();
   }
+
   public render() {
     const { children } = this.props;
     return (
@@ -51,6 +57,9 @@ class DraggableArticleImageContainer extends React.Component<ComponentProps> {
         canDrag={this.props.canDrag}
         title="Drag this media to add it to other articles"
       >
+        <DraggingImageContainer innerRef={this.dragNode}>
+          <img width="83px" height="50px" src={this.props.activeImageUrl} />
+        </DraggingImageContainer>
         {children}
       </DragIntentContainer>
     );
@@ -70,7 +79,10 @@ class DraggableArticleImageContainer extends React.Component<ComponentProps> {
         this.props.activeImageUrl
       );
     }
-    e.dataTransfer.setDragImage(dragImage, -25, 50);
+    if (this.dragNode.current) {
+      e.dataTransfer.setDragImage(this.dragNode.current, -25, 50);
+    }
+
     this.setState({ isDragging: true });
   };
 }

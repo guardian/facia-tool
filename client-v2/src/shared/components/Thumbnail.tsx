@@ -1,4 +1,5 @@
 import { styled } from 'shared/constants/theme';
+import { theme as theme2 } from 'constants/theme';
 
 const ThumbnailBase = styled('div')`
   background-size: cover;
@@ -6,11 +7,32 @@ const ThumbnailBase = styled('div')`
     theme.shared.base.colors.backgroundColorFocused};
 `;
 
-const ThumbnailSmall = styled(ThumbnailBase)`
+const ThumbnailSmall = styled(ThumbnailBase)<{
+  url?: string;
+  isDraggingImageOver?: boolean;
+  imageHide?: boolean;
+}>`
   position: relative;
   width: 83px;
-  min-width: 83px;
-  height: 50px;
+  min-width: ${theme2.shared.thumbnailImage.width};
+  height: ${theme2.shared.thumbnailImage.height};
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  opacity: ${({imageHide}) => imageHide && imageHide ? '0.5' : '1'};
+  ${({ isDraggingImageOver, url }) =>
+    isDraggingImageOver 
+    ?
+      `background: ${theme2.base.colors.dropZoneActiveStory};
+      :before {
+        content: 'Replace image';
+        position: absolute;
+        top: 18px;
+        left: 9px;
+      }`
+    :
+      `background-image: url('${url}');`
+  };
 `;
 
 const ThumbnailCutout = styled('img')<{
