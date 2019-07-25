@@ -75,7 +75,7 @@ class EditionsController(db: EditionsDB,
   def updateCollection(collectionId: String) = AccessAPIAuthAction(parse.json[EditionsFrontendCollectionWrapper]) { req =>
     val form = req.body
     val collectionToUpdate = EditionsFrontendCollectionWrapper.toCollection(form)
-    val updatedCollection = db.updateCollection(collectionToUpdate)
+    val updatedCollection = db.updateCollection(collectionToUpdate, OffsetDateTime.now())
     for {
       issueId <- db.getIssueIdFromCollectionId(updatedCollection.id)
       issue <- db.getIssue(issueId)
@@ -94,7 +94,7 @@ class EditionsController(db: EditionsDB,
 
   def publishIssue(id: String) = AccessAPIAuthAction { req =>
     db.getIssue(id).map { issue =>
-      publishing.publish(issue, req.user)
+      publishing.publish(issue, req.user, OffsetDateTime.now())
       NoContent
     }.getOrElse(NotFound(s"Issue $id not found"))
   }

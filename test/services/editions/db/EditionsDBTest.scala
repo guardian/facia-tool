@@ -165,6 +165,37 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
     }
 
+    "should allow collections to be filtered by timestamp" taggedAs UsesDatabase in {
+      val id = insertSkeletonIssue(2019, 9, 30,
+        front("news/uk",
+          collection("politics", Some(CapiPrefillQuery("magic-politics-query")),"12345", "23456"),
+          collection("international", None,"34567", "45678", "56789")
+        ),
+        front("comment",
+          collection("opinion", Some(CapiPrefillQuery("magic-opinion-query")),"54321", "65432"),
+          collection("brexshit", None,"76543", "87654"),
+          collection("sigh", None,"98765", "09876")
+        )
+      )
+
+      val retrievedIssue = editionsDB.getIssue(id).value
+      val collectionIds = retrievedIssue.fronts.flatMap(_.collections.map(_.id))
+
+      collectionIds.size shouldBe 5
+
+      // pretend we are a client asking for updates since a time that is older than the creation time
+      val newerCollections = editionsDB.getCollections(
+        collectionIds.map(GetCollectionsFilter(_, Some(now.toInstant.toEpochMilli-1)))
+      )
+      newerCollections.size shouldBe 5
+
+      // pretend we are a client asking for updates since a time that is more recent than the creation time
+      val olderCollections = editionsDB.getCollections(
+        collectionIds.map(GetCollectionsFilter(_, Some(now.toInstant.toEpochMilli+1)))
+      )
+      olderCollections.size shouldBe 0
+    }
+
     "should allow updating of a collection" taggedAs UsesDatabase in {
       val id = insertSkeletonIssue(2019, 9, 30,
         front("news/uk",
@@ -193,7 +224,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
         items = items
       )
 
-      editionsDB.updateCollection(evenMoreBrexshit)
+      editionsDB.updateCollection(evenMoreBrexshit, future)
 
       val collections = editionsDB.getCollections(List(GetCollectionsFilter(brexshit.id, None)))
       collections.size shouldBe 1
@@ -202,8 +233,8 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
       updatedBrexshit.updatedBy.value shouldBe "BoJo"
       updatedBrexshit.updatedEmail.value shouldBe "bojo@piffle.paffle"
-      // this should be added to the test once it passes
-      // updatedBrexshit.lastUpdated.value shouldBe futureMillis
+
+      updatedBrexshit.lastUpdated.value shouldBe futureMillis
 
       // check we are storing some metadata
       updatedBrexshit.items.find(_.pageCode == "654789").value.metadata.value shouldBe simpleMetadata

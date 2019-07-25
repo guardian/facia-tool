@@ -11,23 +11,16 @@ import services.editions.CollectionsHelpers._
 
 trait CollectionsQueries {
   def getCollections(filters : List[GetCollectionsFilter]) = DB readOnly { implicit session =>
-    case class TypedFilters(id: String, updatedAt: Option[ZonedDateTime])
+    case class TypedFilters(id: String, updatedAt: Option[OffsetDateTime])
     case class GetCollectionsRow(collection: EditionsCollection, article: Option[DbEditionsArticle])
 
     val sqlFilters = filters.map { f =>
-      // We add a single millisecond here because the precision in the database is higher than what the client
-      // provides (μs in the DB vs ms from the client) so the clients value is effectively truncated.
-      //
-      // Rather than fiddle with timestamp resolution in the query in the database which would affect our
-      // indexing strategy we can just add a single millisecond here.
       TypedFilters(
         f.id,
-        f.lastUpdated
-          .map(
-            Instant
-              .ofEpochMilli(_)
-              .atZone(ZoneId.of("UTC"))
-              .plus(Duration.ofMillis(1))))
+        f.lastUpdated.map(
+          Instant.ofEpochMilli(_).atOffset(ZoneOffset.UTC)
+        )
+      )
     }
 
     val rows = sql"""
@@ -77,11 +70,13 @@ trait CollectionsQueries {
       }
   }
 
-  def updateCollection(collection: EditionsCollection): EditionsCollection  = DB localTx { implicit session =>
+  def updateCollection(collection: EditionsCollection, now: OffsetDateTime): EditionsCollection  = DB localTx { implicit session =>
+    // always truncate any date times going into the DB to millis
+    val truncatedNow = EditionsDB.truncateDateTime(now)
     sql"""
       UPDATE collections
       SET is_hidden = ${collection.isHidden},
-          updated_on = NOW(),
+          updated_on = $truncatedNow,
           updated_by = ${collection.updatedBy},
           updated_email = ${collection.updatedEmail}
       WHERE id = ${collection.id}
@@ -100,7 +95,7 @@ trait CollectionsQueries {
           index,
           added_on,
           metadata
-          ) VALUES (${collection.id}, ${article.pageCode}, $index, now(), ${article.metadata.map(m => Json.toJson(m).toString)}::JSONB)
+          ) VALUES (${collection.id}, ${article.pageCode}, $index, $truncatedNow, ${article.metadata.map(m => Json.toJson(m).toString)}::JSONB)
        """.execute().apply()
     }
 
