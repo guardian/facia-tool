@@ -4,13 +4,13 @@ import { connect } from 'react-redux';
 import { State } from 'types/State';
 import {
   selectSharedState,
-  selectCollectionItemHasMediaOverrides
+  selectCollectionItemHasMediaOverrides,
+  createSelectArticleFromArticleFragment
 } from 'shared/selectors/shared';
 import {
   DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
   DRAG_DATA_GRID_IMAGE_URL
 } from 'constants/image';
-import { createSelectActiveImageUrl } from 'shared/selectors/collectionItem';
 import { theme } from 'constants/theme';
 
 interface ContainerProps {
@@ -20,7 +20,7 @@ interface ContainerProps {
 
 interface ComponentProps extends ContainerProps {
   canDrag: boolean;
-  activeImageUrl: string | undefined;
+  currentImageUrl: string | undefined;
   hasImageOverrides: boolean;
 }
 
@@ -59,7 +59,11 @@ class DraggableArticleImageContainer extends React.Component<ComponentProps> {
         title="Drag this media to add it to other articles"
       >
         <DraggingImageContainer innerRef={this.dragNode}>
-          <img width={theme.shared.thumbnailImage.width} height={theme.shared.thumbnailImage.height} src={this.props.activeImageUrl} />
+          <img
+            width={theme.shared.thumbnailImage.width}
+            height={theme.shared.thumbnailImage.height}
+            src={this.props.currentImageUrl}
+          />
         </DraggingImageContainer>
         {children}
       </DragIntentContainer>
@@ -74,10 +78,10 @@ class DraggableArticleImageContainer extends React.Component<ComponentProps> {
         this.props.id
       );
     }
-    if (this.props.activeImageUrl) {
+    if (this.props.currentImageUrl) {
       e.dataTransfer.setData(
         DRAG_DATA_GRID_IMAGE_URL,
-        this.props.activeImageUrl
+        this.props.currentImageUrl
       );
     }
     if (this.dragNode.current) {
@@ -89,12 +93,14 @@ class DraggableArticleImageContainer extends React.Component<ComponentProps> {
 }
 
 const mapStateToProps = () => {
-  const selectActiveImageUrl = createSelectActiveImageUrl();
+  const selectArticle = createSelectArticleFromArticleFragment();
+
   return (state: State, { id, canDrag = true }: ContainerProps) => {
-    const activeImageUrl = selectActiveImageUrl(selectSharedState(state), id);
+    const article = selectArticle(selectSharedState(state), id);
+
     return {
-      activeImageUrl,
-      canDrag: !!activeImageUrl && canDrag,
+      currentImageUrl: article && article.thumbnail,
+      canDrag: article ? !!article.thumbnail && canDrag : false,
       hasImageOverrides: selectCollectionItemHasMediaOverrides(
         selectSharedState(state),
         id
