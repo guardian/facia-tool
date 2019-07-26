@@ -16,6 +16,11 @@ interface ComponentProps {
   publishEditionsIssue: (id: string) => Promise<void>;
 }
 
+const ManageLink = styled(Link)`
+  color: white;
+  text-decoration: none;
+`;
+
 const EditionIssueInfo = styled.div`
   height: 100%;
   display: inline-block;
@@ -44,14 +49,14 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
 
     return (
       <>
-        <Link to="/manage-editions/daily-edition">
+        <ManageLink to="/manage-editions/daily-edition">
           <EditionIssueInfo>
             <EditionTitle>{startCase(editionsIssue.displayName)}</EditionTitle>
             <EditionDate>
               {new Date(editionsIssue.issueDate).toDateString()}
             </EditionDate>
           </EditionIssueInfo>
-        </Link>
+        </ManageLink>
         <EditionPublish>
           <EditModeVisibility visibleMode="editions">
             <Button
