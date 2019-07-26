@@ -1,16 +1,33 @@
-import { styled } from 'shared/constants/theme';
+import { theme, styled } from 'constants/theme';
 
 const ThumbnailBase = styled('div')`
   background-size: cover;
-  background-color: ${({ theme }) =>
-    theme.shared.base.colors.backgroundColorFocused};
+  background-color: ${theme.shared.base.colors.backgroundColorFocused};
 `;
 
-const ThumbnailSmall = styled(ThumbnailBase)`
+const ThumbnailSmall = styled(ThumbnailBase)<{
+  url?: string | void;
+  isDraggingImageOver?: boolean;
+  imageHide?: boolean;
+}>`
   position: relative;
-  width: 83px;
-  min-width: 83px;
-  height: 50px;
+  width: ${theme.shared.thumbnailImage.width};
+  min-width: ${theme.shared.thumbnailImage.width};
+  height: ${theme.shared.thumbnailImage.height};
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  opacity: ${({ imageHide }) => (imageHide && imageHide ? '0.5' : '1')};
+  background-image: ${({ url }) => `url('${url}')`};
+  ${({ isDraggingImageOver }) =>
+    isDraggingImageOver &&
+    `background: ${theme.base.colors.dropZoneActiveStory};
+      :before {
+        content: 'Replace image';
+        position: absolute;
+        top: 18px;
+        left: 9px;
+      }`};
 `;
 
 const ThumbnailCutout = styled('img')<{

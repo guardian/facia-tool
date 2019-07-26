@@ -100,6 +100,11 @@ const collectionItem = {
   backgroundHover: colors.whiteMedium
 };
 
+const thumbnailImage = {
+  width: '83px',
+  height: '50px'
+};
+
 export const theme = {
   colors,
   base,
@@ -107,7 +112,8 @@ export const theme = {
   input,
   label,
   collectionItem,
-  collection
+  collection,
+  thumbnailImage
 };
 
 export type Theme = typeof theme;
