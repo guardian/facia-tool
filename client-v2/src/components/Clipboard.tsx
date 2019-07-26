@@ -40,7 +40,7 @@ const ClipboardWrapper = styled<
   'data-testid': 'clipboard-wrapper'
 })`
   width: ${({ theme, clipboardHasOpenForms }) =>
-    clipboardHasOpenForms ? theme.front.minWidth : 200}px;
+    clipboardHasOpenForms ? theme.front.minWidth : 220}px;
   background: ${({ theme }) => theme.shared.collection.background};
   border-top: 1px solid ${({ theme }) => theme.shared.colors.greyLightPinkish};
   overflow-y: scroll;
