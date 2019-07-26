@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import startCase from 'lodash/startCase';
 import { styled } from 'constants/theme';
@@ -170,14 +170,16 @@ class FeedSectionHeader extends Component<ComponentProps> {
           <FadeTransition active={!isCurrentFrontsMenuOpen} direction="right">
             {editMode === 'editions' ? (
               editionsIssue ? (
-                <EditionIssueInfo>
-                  <EditionTitle>
-                    {startCase(editionsIssue.displayName)}
-                  </EditionTitle>
-                  <EditionDate>
-                    {new Date(editionsIssue.issueDate).toDateString()}
-                  </EditionDate>
-                </EditionIssueInfo>
+                <Link to="/v2/manage-editions/daily-edition">
+                  <EditionIssueInfo>
+                    <EditionTitle>
+                      {startCase(editionsIssue.displayName)}
+                    </EditionTitle>
+                    <EditionDate>
+                      {new Date(editionsIssue.issueDate).toDateString()}
+                    </EditionDate>
+                  </EditionIssueInfo>
+                </Link>
               ) : null
             ) : (
               <FeedbackButton
