@@ -22,6 +22,8 @@ import { RubbishBinIcon, AddImageIcon } from '../icons/Icons';
 import imageDragIcon from 'images/icons/image-drag-icon.svg';
 import { DRAG_DATA_GRID_IMAGE_URL } from 'constants/image';
 import ImageDragIntentIndicator from '../ImageDragIntentIndicator';
+import { EditMode } from 'types/EditMode';
+import { selectEditMode } from '../../../selectors/pathSelectors';
 
 const ImageContainer = styled('div')<{
   small?: boolean;
@@ -143,7 +145,7 @@ export interface InputImageContainerProps {
 }
 
 type ComponentProps = InputImageContainerProps &
-  WrappedFieldProps & { gridUrl: string | null };
+  WrappedFieldProps & { gridUrl: string | null; editMode: EditMode };
 
 interface ComponentState {
   isHovering: boolean;
@@ -168,9 +170,11 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       gridUrl,
       useDefault,
       defaultImageUrl,
-      message = 'Add image'
+      message = 'Add image',
+      editMode
     } = this.props;
-    const gridSearchUrl = `${gridUrl}?cropType=landscape`;
+    const gridSearchUrl =
+      editMode === 'editions' ? `${gridUrl}` : `${gridUrl}?cropType=landscape`;
     const hasImage = !useDefault && !!input.value && !!input.value.thumb;
     const imageUrl =
       !useDefault && input.value && input.value.thumb
@@ -362,7 +366,8 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 
 const mapStateToProps = (state: State) => {
   return {
-    gridUrl: selectGridUrl(state)
+    gridUrl: selectGridUrl(state),
+    editMode: selectEditMode(state)
   };
 };
 
