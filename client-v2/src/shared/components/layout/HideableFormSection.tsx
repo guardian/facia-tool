@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { DownCaretIcon } from '../icons/Icons';
-import { styled, theme } from 'shared/constants/theme';
+import { styled } from 'shared/constants/theme';
 import InputLabel from '../input/InputLabel';
 
 interface Props {
   label: string;
 }
 
-const HideableFormSectionContainer = styled.div`
-  border-bottom: 1px solid ${theme.base.colors.borderColor};
-`;
+const HideableFormSectionContainer = styled.div``;
 
 const FormSectionHeader = styled.div`
   padding-top: 6px;
@@ -23,7 +21,7 @@ const CaretContainer = styled.span<{ isOpen: boolean }>`
   vertical-align: middle;
   transition: transform 0.15s;
   ${({ isOpen }) =>
-    isOpen ? `transform: rotate(90deg)` : `transform: rotate(-90deg)`};
+    isOpen ? `transform: rotate(0deg)` : `transform: rotate(-90deg)`};
 `;
 
 const HideableFormSection: React.SFC<Props> = ({ children, label }) => {

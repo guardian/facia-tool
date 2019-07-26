@@ -103,7 +103,9 @@ const SlideshowLabel = styled('div')`
   margin-bottom: 12px;
 `;
 
-const ImageWrapper = styled('div')`
+const ImageCol = styled(Col)`
+  flex: initial;
+  flex-shrink: 0;
   transition: opacity 0.15s;
   opacity: ${(props: { faded: boolean }) => (props.faded ? 0.6 : 1)};
 `;
@@ -121,10 +123,15 @@ const FieldsContainerWrap = styled(Row)`
     ${({ theme }) => theme.shared.base.colors.borderColor};
 `;
 
+const SlideshowCol = styled(Col)`
+  max-width: 100px;
+  min-width: 0;
+`;
+
 const RenderSlideshow = ({ fields, frontId }: RenderSlideshowProps) => (
   <>
     {fields.map((name, index) => (
-      <Col key={`${name}-${index}`}>
+      <SlideshowCol key={`${name}-${index}`}>
         <Field
           name={name}
           component={InputImage}
@@ -132,7 +139,7 @@ const RenderSlideshow = ({ fields, frontId }: RenderSlideshowProps) => (
           criteria={imageCriteria}
           frontId={frontId}
         />
-      </Col>
+      </SlideshowCol>
     ))}
   </>
 );
@@ -159,8 +166,7 @@ const CheckboxFieldsContainer: React.SFC<{
 };
 
 const FieldContainer = styled(Col)<{ isClipboard: boolean }>`
-  flex-basis: calc(100% / 3);
-  max-width: calc(100% / 3);
+  flex-basis: calc(100% / 4);
   min-width: ${({ isClipboard }) => (isClipboard ? '180px' : '125px')}
     /* Prevents labels breaking across lines */;
   margin-bottom: 8px;
@@ -273,8 +279,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       );
     };
 
-    // only one of the image fields can be set to true at any time.
-
     const hasKickerSuggestions = !!(
       kickerOptions.webTitle || kickerOptions.sectionName
     );
@@ -314,7 +318,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               label="Kicker"
               component={InputText}
               placeholder="Add custom kicker"
-              useHeadlineFont
               format={value => {
                 if (showKickerTag) {
                   return kickerOptions.webTitle;
@@ -340,7 +343,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 label="Headline"
                 placeholder={articleCapiFieldValues.headline}
                 component={InputTextArea}
-                useHeadlineFont
                 rows="2"
                 originalValue={articleCapiFieldValues.headline}
                 data-testid="edit-form-headline-field"
@@ -424,26 +426,24 @@ class FormComponent extends React.Component<Props, FormComponentState> {
           </InputGroup>
           <RowContainer>
             <Row flexDirection={isClipboard ? 'column' : 'row'}>
-              <Col>
-                <ImageWrapper faded={imageHide}>
-                  <ConditionalField
-                    permittedFields={editableFields}
-                    name={this.getImageFieldName()}
-                    component={InputImage}
-                    disabled={imageHide}
-                    criteria={imageCriteria}
-                    frontId={frontId}
-                    defaultImageUrl={
-                      imageCutoutReplace
-                        ? cutoutImage
-                        : articleCapiFieldValues.thumbnail
-                    }
-                    useDefault={!imageCutoutReplace && !imageReplace}
-                    message={imageCutoutReplace ? 'Add cutout' : 'Add image'}
-                    onChange={this.handleImageChange}
-                  />
-                </ImageWrapper>
-              </Col>
+              <ImageCol faded={imageHide}>
+                <ConditionalField
+                  permittedFields={editableFields}
+                  name={this.getImageFieldName()}
+                  component={InputImage}
+                  disabled={imageHide}
+                  criteria={imageCriteria}
+                  frontId={frontId}
+                  defaultImageUrl={
+                    imageCutoutReplace
+                      ? cutoutImage
+                      : articleCapiFieldValues.thumbnail
+                  }
+                  useDefault={!imageCutoutReplace && !imageReplace}
+                  message={imageCutoutReplace ? 'Add cutout' : 'Add image'}
+                  onChange={this.handleImageChange}
+                />
+              </ImageCol>
               <Col flex={2}>
                 <InputGroup>
                   <ConditionalField
@@ -481,6 +481,19 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     onChange={_ => this.changeImageField('imageCutoutReplace')}
                   />
                 </InputGroup>
+                <InputGroup>
+                  <ConditionalField
+                    permittedFields={editableFields}
+                    name="imageSlideshowReplace"
+                    component={InputCheckboxToggleInline}
+                    label="Slideshow"
+                    id={getInputId(articleFragmentId, 'slideshow')}
+                    type="checkbox"
+                    onChange={_ =>
+                      this.changeImageField('imageSlideshowReplace')
+                    }
+                  />
+                </InputGroup>
               </Col>
             </Row>
             <ConditionalComponent
@@ -488,17 +501,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               name={['primaryImage', 'imageHide']}
             />
           </RowContainer>
-          <InputGroup>
-            <ConditionalField
-              permittedFields={editableFields}
-              name="imageSlideshowReplace"
-              component={InputCheckboxToggleInline}
-              label="Slideshow"
-              id={getInputId(articleFragmentId, 'slideshow')}
-              type="checkbox"
-              onChange={_ => this.changeImageField('imageSlideshowReplace')}
-            />
-          </InputGroup>
           {imageSlideshowReplace && (
             <RowContainer>
               <SlideshowRow>

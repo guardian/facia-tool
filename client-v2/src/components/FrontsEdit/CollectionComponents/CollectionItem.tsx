@@ -39,7 +39,7 @@ import {
 } from 'bundles/frontsUIBundle';
 import { bindActionCreators } from 'redux';
 import ArticleFragmentFormInline from '../ArticleFragmentFormInline';
-import { updateArticleFragmentMeta as updateArticleFragmentMetaAction } from 'shared/actions/ArticleFragments';
+import { updateArticleFragmentMeta as updateArticleFragmentMetaAction } from 'actions/ArticleFragments';
 import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
 
 const imageDropTypes = [
