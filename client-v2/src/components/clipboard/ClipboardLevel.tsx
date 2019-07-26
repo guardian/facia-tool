@@ -29,7 +29,6 @@ const ClipboardItemContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  width: 200px;
 `;
 
 const ClipboardDropContainer = styled(CollectionDropContainer)<{

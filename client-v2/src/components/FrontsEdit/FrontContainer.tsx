@@ -28,7 +28,6 @@ import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
 import { PreviewEyeIcon, ClearIcon } from 'shared/components/icons/Icons';
 import { createFrontId } from 'util/editUtils';
 import { formMinWidth } from './ArticleFragmentForm';
-import { overviewMinWidth } from './FrontCollectionsOverview';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 
 const FrontHeader = styled(SectionHeader)`
@@ -57,8 +56,6 @@ const StageSelectButtons = styled('div')`
   padding: 0px 15px;
 `;
 
-const singleFrontMinWidth = 380;
-
 const SingleFrontContainer = styled('div')<{
   isOverviewOpen: boolean;
   isFormOpen: boolean;
@@ -70,12 +67,12 @@ const SingleFrontContainer = styled('div')<{
    * of the front container proportionally to keep the collection container the
    * same width.
    */
-  min-width: ${({ isOverviewOpen, isFormOpen }) =>
+  min-width: ${({ isOverviewOpen, isFormOpen, theme }) =>
     isFormOpen
-      ? singleFrontMinWidth + formMinWidth + 10
+      ? theme.front.minWidth + formMinWidth + 10
       : isOverviewOpen
-      ? singleFrontMinWidth + overviewMinWidth + 10
-      : singleFrontMinWidth}px;
+      ? theme.front.minWidth + theme.front.overviewMinWidth + 10
+      : theme.front.minWidth}px;
   flex: 1 1;
   height: 100%;
 `;

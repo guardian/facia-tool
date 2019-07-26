@@ -42,7 +42,9 @@ const capiInterface = {
 const front = {
   frontListBorder: '#5E5E5E',
   frontListLabel: shared.colors.greyMediumLight,
-  frontListButton: shared.colors.greyDark
+  frontListButton: shared.colors.greyDark,
+  minWidth: 380,
+  overviewMinWidth: 160
 };
 
 const form = {
