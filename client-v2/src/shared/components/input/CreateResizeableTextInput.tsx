@@ -14,6 +14,7 @@ type Props = {
   component: React.Component<
     React.HTMLAttributes<HTMLInputElement> & StyledProps<any>
   >;
+  labelContent?: React.Component<{}>;
   type?: string;
 } & WrappedFieldProps;
 
@@ -25,7 +26,7 @@ const RewindButton = styled.button.attrs({
   type: 'button'
 })`
   background: transparent;
-  display: inline-block;
+  align-self: center;
   border: none;
   opacity: 0.5;
   cursor: pointer;
@@ -36,6 +37,11 @@ const RewindButton = styled.button.attrs({
   &:focus {
     outline: none;
   }
+`;
+
+const TextInputLabel = styled(InputLabel)`
+  display: ${props => (props.hidden ? 'none' : 'flex')};
+  align-items: flex-end;
 `;
 
 const InputComponentContainer = styled.div`
@@ -81,18 +87,25 @@ const createResizeableTextInput = (
     }
 
     public render() {
-      const { label, input, originalValue, ...rest } = this.props;
+      const {
+        label,
+        input,
+        originalValue,
+        labelContent: LabelContent,
+        ...rest
+      } = this.props;
       return (
         <InputContainer>
           {label && (
-            <InputLabel htmlFor={label}>
-              {label}
+            <TextInputLabel htmlFor={label}>
+              <span>{label}</span>
               {originalValue && input.value !== originalValue && (
                 <RewindButton onClick={() => input.onChange(originalValue)}>
                   <RewindIcon />
                 </RewindButton>
               )}
-            </InputLabel>
+              {LabelContent}
+            </TextInputLabel>
           )}
           <InputComponentContainer>
             <Component

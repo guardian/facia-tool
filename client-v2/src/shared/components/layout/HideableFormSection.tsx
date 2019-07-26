@@ -10,6 +10,7 @@ interface Props {
 const HideableFormSectionContainer = styled.div``;
 
 const FormSectionHeader = styled.div`
+  display: flex;
   padding-top: 6px;
   margin-bottom: 6px;
   cursor: pointer;
