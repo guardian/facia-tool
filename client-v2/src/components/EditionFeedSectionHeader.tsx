@@ -9,7 +9,7 @@ import { styled } from '../constants/theme';
 import startCase from 'lodash/startCase';
 import EditModeVisibility from './util/EditModeVisibility';
 import Button from '../shared/components/input/ButtonDefault';
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 interface ComponentProps {
   editionsIssue: EditionsIssue;
