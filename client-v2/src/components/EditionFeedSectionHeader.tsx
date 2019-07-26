@@ -10,11 +10,17 @@ import startCase from 'lodash/startCase';
 import EditModeVisibility from './util/EditModeVisibility';
 import Button from '../shared/components/input/ButtonDefault';
 import { Link } from 'react-router-dom';
+import urls from 'constants/urls';
 
 interface ComponentProps {
   editionsIssue: EditionsIssue;
   publishEditionsIssue: (id: string) => Promise<void>;
 }
+
+const ManageLink = styled(Link)`
+  color: white;
+  text-decoration: none;
+`;
 
 const EditionIssueInfo = styled.div`
   height: 100%;
@@ -44,14 +50,14 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
 
     return (
       <>
-        <Link to="/v2/manage-editions/daily-edition">
+        <ManageLink to={urls.manageEditions}>
           <EditionIssueInfo>
             <EditionTitle>{startCase(editionsIssue.displayName)}</EditionTitle>
             <EditionDate>
               {new Date(editionsIssue.issueDate).toDateString()}
             </EditionDate>
           </EditionIssueInfo>
-        </Link>
+        </ManageLink>
         <EditionPublish>
           <EditModeVisibility visibleMode="editions">
             <Button
