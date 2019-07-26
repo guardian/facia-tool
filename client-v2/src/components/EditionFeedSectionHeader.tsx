@@ -44,7 +44,7 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
 
     return (
       <>
-        <Link to="/v2/manage-editions/daily-edition">
+        <Link to="/manage-editions/daily-edition">
           <EditionIssueInfo>
             <EditionTitle>{startCase(editionsIssue.displayName)}</EditionTitle>
             <EditionDate>
