@@ -173,6 +173,15 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       message = 'Add image',
       editMode
     } = this.props;
+
+    if (!gridUrl) {
+      return (
+        <div>
+          <code>gridUrl</code> config value missing
+        </div>
+      );
+    }
+
     const gridSearchUrl =
       editMode === 'editions' ? `${gridUrl}` : `${gridUrl}?cropType=landscape`;
     const hasImage = !useDefault && !!input.value && !!input.value.thumb;
