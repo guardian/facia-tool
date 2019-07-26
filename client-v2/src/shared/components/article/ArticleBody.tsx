@@ -103,11 +103,8 @@ interface ArticleBodyProps {
   type?: string;
   showBoostedHeadline?: boolean;
   showMeta?: boolean;
-<<<<<<< HEAD
   canDragImage?: boolean;
-=======
   isDraggingImageOver: boolean;
->>>>>>> Amend image dragging
 }
 
 const renderColouredQuotes = (
@@ -156,11 +153,8 @@ const articleBodyDefault = React.memo(
     uuid,
     showBoostedHeadline,
     showMeta = true,
-<<<<<<< HEAD
-    canDragImage = true
-=======
+    canDragImage = true,
     isDraggingImageOver
->>>>>>> Amend image dragging
   }: ArticleBodyProps) => {
     const ArticleHeadingContainer =
       size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;

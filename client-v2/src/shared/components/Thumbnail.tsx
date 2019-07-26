@@ -1,38 +1,33 @@
-import { styled } from 'shared/constants/theme';
-import { theme as theme2 } from 'constants/theme';
+import { theme, styled } from 'constants/theme';
 
 const ThumbnailBase = styled('div')`
   background-size: cover;
-  background-color: ${({ theme }) =>
-    theme.shared.base.colors.backgroundColorFocused};
+  background-color: ${theme.shared.base.colors.backgroundColorFocused};
 `;
 
 const ThumbnailSmall = styled(ThumbnailBase)<{
-  url?: string;
+  url?: string | void;
   isDraggingImageOver?: boolean;
   imageHide?: boolean;
 }>`
   position: relative;
-  width: 83px;
-  min-width: ${theme2.shared.thumbnailImage.width};
-  height: ${theme2.shared.thumbnailImage.height};
+  width: ${theme.shared.thumbnailImage.width};
+  min-width: ${theme.shared.thumbnailImage.width};
+  height: ${theme.shared.thumbnailImage.height};
   color: white;
   font-size: 10px;
   font-weight: bold;
-  opacity: ${({imageHide}) => imageHide && imageHide ? '0.5' : '1'};
-  ${({ isDraggingImageOver, url }) =>
-    isDraggingImageOver 
-    ?
-      `background: ${theme2.base.colors.dropZoneActiveStory};
+  opacity: ${({ imageHide }) => (imageHide && imageHide ? '0.5' : '1')};
+  background-image: ${({ url }) => `url('${url}')`};
+  ${({ isDraggingImageOver }) =>
+    isDraggingImageOver &&
+    `background: ${theme.base.colors.dropZoneActiveStory};
       :before {
         content: 'Replace image';
         position: absolute;
         top: 18px;
         left: 9px;
-      }`
-    :
-      `background-image: url('${url}');`
-  };
+      }`};
 `;
 
 const ThumbnailCutout = styled('img')<{

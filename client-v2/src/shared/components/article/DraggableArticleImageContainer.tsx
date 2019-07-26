@@ -11,6 +11,7 @@ import {
   DRAG_DATA_GRID_IMAGE_URL
 } from 'constants/image';
 import { createSelectActiveImageUrl } from 'shared/selectors/collectionItem';
+import { theme } from 'constants/theme';
 
 interface ContainerProps {
   id: string;
@@ -58,7 +59,7 @@ class DraggableArticleImageContainer extends React.Component<ComponentProps> {
         title="Drag this media to add it to other articles"
       >
         <DraggingImageContainer innerRef={this.dragNode}>
-          <img width="83px" height="50px" src={this.props.activeImageUrl} />
+          <img width={theme.shared.thumbnailImage.width} height={theme.shared.thumbnailImage.height} src={this.props.activeImageUrl} />
         </DraggingImageContainer>
         {children}
       </DragIntentContainer>
