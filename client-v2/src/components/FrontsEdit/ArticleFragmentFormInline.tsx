@@ -72,13 +72,11 @@ const FormContainer = styled(ContentContainer.withComponent('form'))`
   display: flex;
   flex-direction: column;
   flex: 1;
-  height: calc(100% - 10px);
   background-color: ${({ theme }) => theme.base.colors.formBackground};
 `;
 
 const FormContent = styled('div')`
   flex: 1;
-  overflow: hidden;
 `;
 
 const RowContainer = styled('div')`
@@ -89,7 +87,6 @@ const ButtonContainer = styled('div')`
   margin-left: auto;
   margin-right: -10px;
   margin-bottom: -10px;
-  line-height: 0;
 `;
 
 const SlideshowRow = styled(Row)`
@@ -147,28 +144,22 @@ const RenderSlideshow = ({ fields, frontId }: RenderSlideshowProps) => (
 const CheckboxFieldsContainer: React.SFC<{
   children: JSX.Element[];
   editableFields: string[];
-  isClipboard: boolean;
-}> = ({ children, editableFields, isClipboard }) => {
+}> = ({ children, editableFields }) => {
   const childrenToRender = children.filter(child =>
     shouldRenderField(child.props.name, editableFields)
   );
   return (
     <FieldsContainerWrap>
       {childrenToRender.map(child => {
-        return (
-          <FieldContainer isClipboard={isClipboard} key={child.props.name}>
-            {child}
-          </FieldContainer>
-        );
+        return <FieldContainer key={child.props.name}>{child}</FieldContainer>;
       })}
     </FieldsContainerWrap>
   );
 };
 
-const FieldContainer = styled(Col)<{ isClipboard: boolean }>`
+const FieldContainer = styled(Col)`
   flex-basis: calc(100% / 4);
-  min-width: ${({ isClipboard }) => (isClipboard ? '180px' : '125px')}
-    /* Prevents labels breaking across lines */;
+  min-width: 125px; /* Prevents labels breaking across lines */
   margin-bottom: 8px;
 `;
 
@@ -177,17 +168,6 @@ const KickerSuggestionsContainer = styled.div`
   right: 10px;
   top: 5px;
   font-size: 12px;
-`;
-
-const KickerSuggestionsContainerClipboard = styled.div`
-  position: relative;
-  top: 5px;
-  font-size: 12px;
-  display: flex;
-  flex-direction: column;
-  button {
-    width: fit-content;
-  }
 `;
 
 const getInputId = (articleFragmentId: string, label: string) =>
@@ -283,8 +263,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       kickerOptions.webTitle || kickerOptions.sectionName
     );
 
-    const isClipboard = frontId === 'clipboard';
-
     return (
       <FormContainer
         data-testid="edit-form"
@@ -303,16 +281,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
         )}
         <FormContent>
           <InputGroup>
-            {hasKickerSuggestions &&
-              (isClipboard ? (
-                <KickerSuggestionsContainerClipboard>
-                  {getKickerContents()}
-                </KickerSuggestionsContainerClipboard>
-              ) : (
-                <KickerSuggestionsContainer>
-                  {getKickerContents()}
-                </KickerSuggestionsContainer>
-              ))}
+            {hasKickerSuggestions && (
+              <KickerSuggestionsContainer>
+                {getKickerContents()}
+              </KickerSuggestionsContainer>
+            )}
             <ConditionalField
               name="customKicker"
               label="Kicker"
@@ -348,10 +321,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 data-testid="edit-form-headline-field"
               />
             )}
-            <CheckboxFieldsContainer
-              isClipboard={isClipboard}
-              editableFields={editableFields}
-            >
+            <CheckboxFieldsContainer editableFields={editableFields}>
               <Field
                 name="isBoosted"
                 component={InputCheckboxToggleInline}
@@ -425,7 +395,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             </HideableFormSection>
           </InputGroup>
           <RowContainer>
-            <Row flexDirection={isClipboard ? 'column' : 'row'}>
+            <Row>
               <ImageCol faded={imageHide}>
                 <ConditionalField
                   permittedFields={editableFields}

@@ -12,7 +12,8 @@ import {
 import {
   editorSelectArticleFragment,
   editorClearArticleFragmentSelection,
-  selectIsClipboardOpen
+  selectIsClipboardOpen,
+  createSelectCollectionIdsWithOpenForms
 } from 'bundles/frontsUIBundle';
 import { clipboardId } from 'constants/fronts';
 import { ArticleFragment as TArticleFragment } from 'shared/types/Collection';
@@ -30,11 +31,16 @@ import FocusWrapper from './FocusWrapper';
 import { bindActionCreators } from 'redux';
 
 const ClipboardWrapper = styled<
-  HTMLProps<HTMLDivElement> & { 'data-testid'?: string },
+  HTMLProps<HTMLDivElement> & {
+    'data-testid'?: string;
+    clipboardHasOpenForms: boolean;
+  },
   'div'
 >('div').attrs({
   'data-testid': 'clipboard-wrapper'
 })`
+  width: ${({ theme, clipboardHasOpenForms }) =>
+    clipboardHasOpenForms ? theme.front.minWidth : 220}px;
   background: ${({ theme }) => theme.shared.collection.background};
   border-top: 1px solid ${({ theme }) => theme.shared.colors.greyLightPinkish};
   overflow-y: scroll;
@@ -62,12 +68,13 @@ interface ClipboardProps {
   clearArticleFragmentSelection: () => void;
   removeCollectionItem: (id: string) => void;
   removeSupportingCollectionItem: (parentId: string, id: string) => void;
-  isClipboardOpen: boolean;
   handleFocus: () => void;
   handleArticleFocus: (articleFragment: TArticleFragment) => void;
   handleBlur: () => void;
   dispatch: Dispatch;
+  isClipboardOpen: boolean;
   isClipboardFocused: boolean;
+  clipboardHasOpenForms: boolean;
 }
 
 // Styled component typings for ref seem to be broken so any refs
@@ -113,17 +120,25 @@ class Clipboard extends React.Component<ClipboardProps> {
   };
 
   public render() {
+    const {
+      isClipboardOpen,
+      clipboardHasOpenForms,
+      selectArticleFragment,
+      removeCollectionItem,
+      removeSupportingCollectionItem
+    } = this.props;
     return (
       <React.Fragment>
-        {this.props.isClipboardOpen && (
+        {isClipboardOpen && (
           <ClipboardWrapper
             tabIndex={0}
             onFocus={this.handleFocus}
             onBlur={this.handleBlur}
             innerRef={this.clipboardWrapper as Ref}
+            clipboardHasOpenForms={clipboardHasOpenForms}
           >
             <StyledDragIntentContainer
-              active={!this.props.isClipboardOpen}
+              active={!isClipboardOpen}
               delay={300}
               onDragIntentStart={() => this.setState({ preActive: true })}
               onDragIntentEnd={() => this.setState({ preActive: false })}
@@ -157,11 +172,9 @@ class Clipboard extends React.Component<ClipboardProps> {
                             showMeta={false}
                             canDragImage={false}
                             textSize="small"
-                            onSelect={this.props.selectArticleFragment}
+                            onSelect={selectArticleFragment}
                             onDelete={() =>
-                              this.props.removeCollectionItem(
-                                articleFragment.uuid
-                              )
+                              removeCollectionItem(articleFragment.uuid)
                             }
                           >
                             <ArticleFragmentLevel
@@ -178,10 +191,10 @@ class Clipboard extends React.Component<ClipboardProps> {
                                   size="small"
                                   showMeta={false}
                                   onSelect={id =>
-                                    this.props.selectArticleFragment(id, true)
+                                    selectArticleFragment(id, true)
                                   }
                                   onDelete={() =>
-                                    this.props.removeSupportingCollectionItem(
+                                    removeSupportingCollectionItem(
                                       articleFragment.uuid,
                                       supporting.uuid
                                     )
@@ -216,10 +229,17 @@ class Clipboard extends React.Component<ClipboardProps> {
   };
 }
 
-const mapStateToProps = (state: State) => ({
-  isClipboardOpen: selectIsClipboardOpen(state),
-  isClipboardFocused: selectIsClipboardFocused(state)
-});
+const mapStateToProps = () => {
+  const selectCollectionIdsWithOpenForms = createSelectCollectionIdsWithOpenForms();
+  return (state: State) => ({
+    isClipboardOpen: selectIsClipboardOpen(state),
+    isClipboardFocused: selectIsClipboardFocused(state),
+    clipboardHasOpenForms: !!selectCollectionIdsWithOpenForms(
+      state,
+      clipboardId
+    ).length
+  });
+};
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   clearArticleFragmentSelection: () =>
@@ -260,7 +280,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   dispatch
 });
 
-type TStateProps = ReturnType<typeof mapStateToProps>;
+type TStateProps = ReturnType<ReturnType<typeof mapStateToProps>>;
 type TDispatchProps = ReturnType<typeof mapDispatchToProps>;
 
 const mergeProps = (
