@@ -185,7 +185,17 @@ class Collection extends React.Component<CollectionProps> {
             </PreviouslyCollectionToggle>
             {isPreviouslyOpen && (
               <PreviouslyGroupsWrapper>
-                {previousGroups.map(group => children(group, true, false))}
+                {previousGroups.map(group => {
+                  const firstFiveArticlesInGroup = group.articleFragments.slice(
+                    0,
+                    5
+                  );
+                  const smallerGroup = {
+                    ...group,
+                    articleFragments: firstFiveArticlesInGroup
+                  };
+                  return children(smallerGroup, true, false);
+                })}
               </PreviouslyGroupsWrapper>
             )}
           </PreviouslyCollectionContainer>
