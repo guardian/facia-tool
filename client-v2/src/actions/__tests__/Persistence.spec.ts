@@ -79,7 +79,8 @@ const init = () => {
         a3: A3,
         a4: A4
       }
-    }
+    },
+    feed: {}
   };
   const reducer = enableBatching(rootReducer);
   const middleware = compose(

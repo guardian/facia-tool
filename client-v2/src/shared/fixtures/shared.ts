@@ -650,7 +650,8 @@ const stateWithCollection: any = {
         uuid: '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d'
       }
     }
-  }
+  },
+  feed: {}
 };
 
 const stateWithCollectionAndSupporting: any = {

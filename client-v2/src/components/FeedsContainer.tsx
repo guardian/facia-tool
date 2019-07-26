@@ -475,7 +475,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch(fetchLive(params, isResource)),
   fetchPreview: (params: object, isResource: boolean) =>
     dispatch(fetchPreview(params, isResource)),
-  hidePrefills: (id: string) => dispatch(hidePrefills())
+  hidePrefills: () => dispatch(hidePrefills())
 });
 
 export default connect(
