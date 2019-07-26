@@ -79,6 +79,11 @@ const PreviouslyGroupsWrapper = styled.div`
   padding-top: 0.25em;
 `;
 
+const PreviouslyCollectionInfo = styled('div')`
+  background: '#c9c9c9';
+  color: #121212;
+`;
+
 class Collection extends React.Component<CollectionProps> {
   public state = {
     isPreviouslyOpen: false
@@ -180,11 +185,16 @@ class Collection extends React.Component<CollectionProps> {
               onClick={this.togglePreviouslyOpen}
               data-testid="previously-toggle"
             >
-              Recently removed
+              Recently removed from launched front
               <ButtonCircularCaret active={isPreviouslyOpen} />
             </PreviouslyCollectionToggle>
             {isPreviouslyOpen && (
               <PreviouslyGroupsWrapper>
+                <PreviouslyCollectionInfo>
+                  You will find 5 most recently deleted articles from live
+                  front. If the deleted articles were never launched they will
+                  not appear here.
+                </PreviouslyCollectionInfo>
                 {previousGroups.map(group => {
                   const firstFiveArticlesInGroup = group.articleFragments.slice(
                     0,
