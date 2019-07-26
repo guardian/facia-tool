@@ -10,6 +10,7 @@ import startCase from 'lodash/startCase';
 import EditModeVisibility from './util/EditModeVisibility';
 import Button from '../shared/components/input/ButtonDefault';
 import { Link } from 'react-router-dom';
+import urls from 'constants/urls';
 
 interface ComponentProps {
   editionsIssue: EditionsIssue;
@@ -49,7 +50,7 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
 
     return (
       <>
-        <ManageLink to="/manage-editions/daily-edition">
+        <ManageLink to={urls.manageEditions}>
           <EditionIssueInfo>
             <EditionTitle>{startCase(editionsIssue.displayName)}</EditionTitle>
             <EditionDate>
