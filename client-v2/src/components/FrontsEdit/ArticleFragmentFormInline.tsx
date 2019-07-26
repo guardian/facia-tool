@@ -164,10 +164,13 @@ const FieldContainer = styled(Col)`
 `;
 
 const KickerSuggestionsContainer = styled.div`
-  position: absolute;
-  right: 10px;
-  top: 5px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  padding-left: 5px;
+  display: flex;
+  margin-left: auto;
   font-size: 12px;
+  font-weight: normal;
 `;
 
 const getInputId = (articleFragmentId: string, label: string) =>
@@ -218,7 +221,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     const getKickerContents = () => {
       return (
         <>
-          {'Suggestions '}
+          <span>Suggestions&nbsp;</span>
           {kickerOptions.webTitle && (
             <Field
               name="showKickerTag"
@@ -236,7 +239,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 }
               }}
             />
-          )}{' '}
+          )}
+          &nbsp;
           {kickerOptions.sectionName && (
             <Field
               name="showKickerSection"
@@ -281,15 +285,19 @@ class FormComponent extends React.Component<Props, FormComponentState> {
         )}
         <FormContent>
           <InputGroup>
-            {hasKickerSuggestions && (
-              <KickerSuggestionsContainer>
-                {getKickerContents()}
-              </KickerSuggestionsContainer>
-            )}
             <ConditionalField
               name="customKicker"
               label="Kicker"
               component={InputText}
+              labelContent={
+                hasKickerSuggestions ? (
+                  <KickerSuggestionsContainer>
+                    {getKickerContents()}
+                  </KickerSuggestionsContainer>
+                ) : (
+                  undefined
+                )
+              }
               placeholder="Add custom kicker"
               format={value => {
                 if (showKickerTag) {
