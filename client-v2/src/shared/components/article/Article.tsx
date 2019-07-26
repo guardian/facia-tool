@@ -57,6 +57,7 @@ interface ArticleComponentProps {
   onAddToClipboard?: () => void;
   isUneditable?: boolean;
   showMeta?: boolean;
+  canDragImage?: boolean;
 }
 
 interface ContainerProps extends ArticleComponentProps {
@@ -109,7 +110,8 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
       isUneditable,
       imageDropTypes = [],
       onImageDrop,
-      showMeta
+      showMeta,
+      canDragImage
     } = this.props;
 
     const dragEventHasImageData = (e: React.DragEvent) =>
@@ -172,6 +174,7 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
                 onAddToClipboard={onAddToClipboard}
                 displayPlaceholders={isLoading}
                 showMeta={showMeta}
+                canDragImage={canDragImage}
               />
               <ImageDragIntentIndicator />
             </ArticleBodyContainer>

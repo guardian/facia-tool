@@ -61,6 +61,7 @@ interface ContainerProps {
   isUneditable?: boolean;
   showMeta?: boolean;
   isSupporting?: boolean;
+  canDragImage?: boolean;
 }
 
 type ArticleContainerProps = ContainerProps & {
@@ -109,7 +110,8 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       clearArticleFragmentSelection,
       parentId,
       showMeta,
-      frontId
+      frontId,
+      canDragImage
     } = this.props;
 
     const getCard = () => {
@@ -129,6 +131,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
               showMeta={showMeta}
               imageDropTypes={imageDropTypes}
               onImageDrop={this.handleImageDrop}
+              canDragImage={canDragImage}
             >
               <Sublinks
                 numSupportingArticles={numSupportingArticles}

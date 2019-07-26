@@ -15,6 +15,7 @@ import { createSelectActiveImageUrl } from 'shared/selectors/collectionItem';
 
 interface ContainerProps {
   id: string;
+  canDrag?: boolean;
 }
 
 interface ComponentProps extends ContainerProps {
@@ -76,11 +77,11 @@ class DraggableArticleImageContainer extends React.Component<ComponentProps> {
 
 const mapStateToProps = () => {
   const selectActiveImageUrl = createSelectActiveImageUrl();
-  return (state: State, { id }: ContainerProps) => {
+  return (state: State, { id, canDrag = true }: ContainerProps) => {
     const activeImageUrl = selectActiveImageUrl(selectSharedState(state), id);
     return {
       activeImageUrl,
-      canDrag: !!activeImageUrl,
+      canDrag: !!activeImageUrl && canDrag,
       hasImageOverrides: selectCollectionItemHasMediaOverrides(
         selectSharedState(state),
         id
