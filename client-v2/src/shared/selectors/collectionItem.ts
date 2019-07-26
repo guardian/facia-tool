@@ -17,33 +17,6 @@ const createSelectCollectionItemType = () =>
     }
   );
 
-const createSelectActiveImageUrl = () =>
-  createSelector(
-    selectArticleFragment,
-    selectExternalArticleFromArticleFragment,
-    (articleFragment, externalArticle): string | undefined => {
-      if (!articleFragment || !articleFragment.meta) {
-        return;
-      }
-      if (articleFragment.meta.imageReplace) {
-        return articleFragment.meta.imageSrcOrigin;
-      }
-      if (articleFragment.meta.imageCutoutReplace) {
-        return articleFragment.meta.imageCutoutSrcOrigin;
-      }
-      if (articleFragment.meta.imageSlideshowReplace) {
-        return (
-          articleFragment.meta.slideshow &&
-          articleFragment.meta.slideshow[0] &&
-          articleFragment.meta.slideshow[0].origin
-        );
-      }
-      return externalArticle && externalArticle.fields.thumbnail
-        ? externalArticle.fields.thumbnail
-        : undefined;
-    }
-  );
-
 const createSelectCutoutUrl = () =>
   createSelector(
     selectExternalArticleFromArticleFragment,
@@ -52,8 +25,4 @@ const createSelectCutoutUrl = () =>
     }
   );
 
-export {
-  createSelectCollectionItemType,
-  createSelectActiveImageUrl,
-  createSelectCutoutUrl
-};
+export { createSelectCollectionItemType, createSelectCutoutUrl };

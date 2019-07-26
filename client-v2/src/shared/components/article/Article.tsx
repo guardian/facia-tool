@@ -18,7 +18,6 @@ import ArticleBody from './ArticleBody';
 import { CollectionItemSizes } from 'shared/types/Collection';
 import { getPillarColor } from 'shared/util/getPillarColor';
 import DragIntentContainer from '../DragIntentContainer';
-import ImageDragIntentIndicator from '../ImageDragIntentIndicator';
 
 const ArticleBodyContainer = styled(CollectionItemBody)<{
   pillarId: string | undefined;
@@ -36,10 +35,6 @@ const ArticleBodyContainer = styled(CollectionItemBody)<{
     ${CollectionItemMetaHeading} {
       color: ${({ theme }) => theme.shared.base.colors.textMuted};
     }
-  }
-  ${ImageDragIntentIndicator} {
-    display: none;
-    ${({ isDraggingImageOver }) => isDraggingImageOver && `display: block;`}
   }
   height: 100%;
 `;
@@ -175,8 +170,8 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
                 displayPlaceholders={isLoading}
                 showMeta={showMeta}
                 canDragImage={canDragImage}
+                isDraggingImageOver={this.state.isDraggingImageOver}
               />
-              <ImageDragIntentIndicator />
             </ArticleBodyContainer>
           </DragIntentContainer>
           {children}
