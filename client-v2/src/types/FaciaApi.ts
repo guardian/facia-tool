@@ -3,6 +3,7 @@ import {
   CollectionFromResponse,
   NestedArticleFragment
 } from 'shared/types/Collection';
+import { EditionsPrefill } from './Edition';
 
 interface FrontConfigResponse {
   collections: string[];
@@ -27,10 +28,6 @@ type Platform = 'Web' | 'Platform';
 
 interface FrontsToolSettings {
   displayEditWarning?: boolean;
-}
-
-interface EditionsPrefill {
-  queryString: string;
 }
 
 interface CollectionConfigResponse {
