@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import startCase from 'lodash/startCase';
 import { styled } from 'constants/theme';
 import SectionHeaderWithLogo from './layout/SectionHeaderWithLogo';
 import CurrentFrontsList from './CurrentFrontsList';
@@ -20,9 +19,8 @@ import { MoreIcon } from 'shared/components/icons/Icons';
 import { RouteComponentProps } from 'react-router';
 import { selectEditMode } from 'selectors/pathSelectors';
 import { getEditionIssue } from 'actions/Editions';
-import { EditionsIssue } from 'types/Edition';
-import { selectors as editionsIssueSelectors } from 'bundles/editionsIssueBundle';
 import { EditMode } from 'types/EditMode';
+import EditionFeedSectionHeader from './EditionFeedSectionHeader';
 
 const FeedbackButton = Button.extend<{
   href: string;
@@ -97,31 +95,12 @@ const CloseButtonInner = styled.div`
   position: relative;
 `;
 
-const EditionIssueInfo = styled.div`
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-left: 12px;
-  line-height: initial;
-`;
-
-const EditionTitle = styled.div`
-  font-size: 20px;
-`;
-
-const EditionDate = styled.div`
-  font-size: 16px;
-`;
-
 type ComponentProps = {
   toggleCurrentFrontsMenu: () => void;
   isCurrentFrontsMenuOpen: boolean;
   frontCount: number;
-
   getEditionsIssue: (id: string) => void;
   editMode: EditMode;
-  editionsIssue?: EditionsIssue;
 } & RouteComponentProps<{ priority: string }>;
 
 type ContainerProps = RouteComponentProps<{ priority: string }>;
@@ -139,8 +118,7 @@ class FeedSectionHeader extends Component<ComponentProps> {
       isCurrentFrontsMenuOpen,
       frontCount,
       match,
-      editMode,
-      editionsIssue
+      editMode
     } = this.props;
     return (
       <SectionHeaderWithLogo includeBorder={!isCurrentFrontsMenuOpen}>
@@ -169,18 +147,7 @@ class FeedSectionHeader extends Component<ComponentProps> {
           </FadeTransition>
           <FadeTransition active={!isCurrentFrontsMenuOpen} direction="right">
             {editMode === 'editions' ? (
-              editionsIssue ? (
-                <Link to="/v2/manage-editions/daily-edition">
-                  <EditionIssueInfo>
-                    <EditionTitle>
-                      {startCase(editionsIssue.displayName)}
-                    </EditionTitle>
-                    <EditionDate>
-                      {new Date(editionsIssue.issueDate).toDateString()}
-                    </EditionDate>
-                  </EditionIssueInfo>
-                </Link>
-              ) : null
+              <EditionFeedSectionHeader />
             ) : (
               <FeedbackButton
                 href="https://docs.google.com/forms/d/e/1FAIpQLSc4JF0GxrKoxQgsFE9_tQfjAo1RKRU4M5bJWJRKaVlHbR2rpA/viewform?c=0&w=1"
@@ -203,8 +170,7 @@ const mapStateToProps = () => {
     frontCount: selectEditorFrontsByPriority(state, {
       priority: props.match.params.priority
     }).length,
-    editMode: selectEditMode(state),
-    editionsIssue: editionsIssueSelectors.selectAll(state)
+    editMode: selectEditMode(state)
   });
 };
 
