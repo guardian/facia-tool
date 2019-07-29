@@ -68,7 +68,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
       .page(1)
       .pageSize(200)
       .showFields(fields.mkString(","))
-      .useDate("newspaperEditionDate")
+      .useDate("newspaper-edition") // deliberately-kebab-case
       .orderBy("newest")
       .fromDate(localDate)
       .toDate(localDate)
