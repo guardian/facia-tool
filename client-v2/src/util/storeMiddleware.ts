@@ -60,14 +60,6 @@ interface PersistMeta {
   applyBeforeReducer?: boolean;
 }
 
-function addPersistMetaToAction<TArgs extends any[]>(
-  actionCreator: (...args: TArgs) => Action,
-  meta: PersistMeta
-): (...args: TArgs) => Action & ActionPersistMeta {
-  return (...args: TArgs): Action & ActionPersistMeta =>
-    Object.assign({}, actionCreator(...args), { meta });
-}
-
 /**
  * Return an array of actions - either a single action,
  * or multiple actions if the action contains batched actions.
@@ -267,12 +259,11 @@ const persistFavouriteFrontsOnEdit: (
   return result;
 };
 
-export { PersistMeta };
 export {
+  PersistMeta,
   persistCollectionOnEdit,
   persistClipboardOnEdit,
   persistOpenFrontsOnEdit,
   persistFavouriteFrontsOnEdit,
-  updateStateFromUrlChange,
-  addPersistMetaToAction
+  updateStateFromUrlChange
 };

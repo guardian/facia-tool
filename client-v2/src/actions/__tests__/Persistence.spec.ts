@@ -1,10 +1,10 @@
 import { createStore, compose, applyMiddleware } from 'redux';
-import { persistCollectionOnEdit } from 'util/storeMiddleware';
+import fetchMock from 'fetch-mock';
 import thunk from 'redux-thunk';
+import { persistCollectionOnEdit } from 'util/storeMiddleware';
 import { enableBatching } from 'redux-batched-actions';
 import { moveArticleFragment } from 'actions/ArticleFragments';
 import { Dispatch } from 'types/Store';
-import fetchMock from 'fetch-mock';
 import rootReducer from 'reducers/rootReducer';
 import { NestedArticleFragment } from 'shared/types/Collection';
 import { updateCollection } from 'actions/Collections';

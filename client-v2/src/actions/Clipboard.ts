@@ -15,7 +15,7 @@ import {
   ClearClipboard
 } from 'types/Action';
 import { State } from 'types/State';
-import { addPersistMetaToAction } from 'util/storeMiddleware';
+import { addPersistMetaToAction } from 'util/action';
 
 export const REMOVE_CLIPBOARD_ARTICLE_FRAGMENT =
   'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT';

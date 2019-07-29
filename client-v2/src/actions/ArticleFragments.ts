@@ -17,7 +17,7 @@ import {
   selectArticleGroup
 } from 'shared/selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
-import { addPersistMetaToAction } from 'util/storeMiddleware';
+import { addPersistMetaToAction } from 'util/action';
 import { cloneFragment } from 'shared/util/articleFragment';
 import {
   getFromGroupIndicesWithRespectToState,
