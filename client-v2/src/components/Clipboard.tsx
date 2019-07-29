@@ -68,27 +68,14 @@ const StyledDragIntentContainer = styled(DragIntentContainer)`
   min-height: 100%;
 `;
 
-const SupportingDivider = styled.hr`
-  border: 0;
-  border-top: 1px solid #ccc;
-  margin: 0.5em 0 0.25em;
-  width: 50%;
-`;
-
-const FullDivider = styled('hr')`
-  border: 0;
-  border-top: 1px solid #ccc;
-  margin: 8px -10px 0px;
-  width: 115%;
-`;
-
 const ClipboardHeader = styled.div`
-  padding-top: 10px;
   display: flex;
+  height: 35px;
+  padding-top: 15px;
 `;
 
 const ClearClipboardButton = styled(ButtonRoundedWithLabel)`
-  width: 100%;
+  margin-left: auto;
 `;
 
 interface ClipboardProps {

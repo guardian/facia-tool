@@ -294,24 +294,6 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                   small={true}
                 />
               </OverviewToggleContainer>
-              <OverviewToggleContainer>
-                <OverviewHeading htmlFor={overviewToggleId}>
-                  {this.props.overviewIsOpen ? 'Hide overview' : 'Overview'}
-                </OverviewHeading>
-                <ButtonCircularCaret
-                  id={overviewToggleId}
-                  style={{
-                    margin: '0'
-                  }}
-                  openDir="right"
-                  active={this.props.overviewIsOpen}
-                  preActive={false}
-                  onClick={() =>
-                    this.props.toggleOverview(!this.props.overviewIsOpen)
-                  }
-                  small={true}
-                />
-              </OverviewToggleContainer>
             </SectionContentMetaContainer>
             <FrontCollectionsContainer
               onScroll={this.handleScroll}
