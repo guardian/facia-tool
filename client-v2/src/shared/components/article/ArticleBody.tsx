@@ -125,7 +125,6 @@ const renderColouredQuotes = (
 
 const articleBodyDefault = React.memo(
   ({
-    newspaperEditionDate,
     firstPublicationDate,
     frontPublicationDate,
     scheduledPublicationDate,
@@ -174,7 +173,7 @@ const articleBodyDefault = React.memo(
                 {size === 'default' && <TextPlaceholder width={25} />}
               </>
             )}
-            {size === 'default' && (isLive || newspaperEditionDate) && (
+            {size === 'default' && isLive && (
               <CollectionItemMetaHeading>
                 {startCase(sectionName)}
               </CollectionItemMetaHeading>
@@ -182,7 +181,7 @@ const articleBodyDefault = React.memo(
             {type === 'liveblog' && (
               <CollectionItemMetaContent>Liveblog</CollectionItemMetaContent>
             )}
-            {!isLive && !newspaperEditionDate && !displayPlaceholders && (
+            {!isLive && !displayPlaceholders && (
               <NotLiveContainer>
                 {firstPublicationDate
                   ? notLiveLabels.takenDown

@@ -107,6 +107,7 @@ class EditionsController(db: EditionsDB,
   def getPrefillForCollection(id: String) = AccessAPIAuthAction.async { req =>
     db.getCollectionPrefillQueryString(id).map { prefillUpdate =>
       capi.getPrefillArticles(prefillUpdate.issueDate, prefillUpdate.prefill, prefillUpdate.currentPageCodes).map { body =>
+        // Need to wrap this in a "response" object because the CAPI client and CAPI API return different JSON
         val json = "{\"response\":" + body.asJson.noSpaces + "}"
         val decorated = rewriteBody(json)
         Ok(decorated).as("application/json")

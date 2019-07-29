@@ -98,7 +98,6 @@ interface CapiArticleFields {
   liveBloggingNow?: CapiBool;
   shortUrl?: string;
   membershipUrl?: string;
-  newspaperEditionDate?: string;
 }
 
 // See https://github.com/guardian/content-api-models/blob/master/models/src/main/thrift/content/v1.thrift#L1431

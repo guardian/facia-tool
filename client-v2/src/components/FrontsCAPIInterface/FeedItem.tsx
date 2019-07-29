@@ -127,11 +127,11 @@ const isLive = (article: CapiArticle) =>
 
 const getArticleLabel = (article: CapiArticle) => {
   const {
-    fields: { firstPublicationDate, newspaperEditionDate },
+    fields: { firstPublicationDate },
     sectionName,
     frontsMeta: { tone }
   } = article;
-  if (!isLive(article) && !newspaperEditionDate) {
+  if (!isLive(article)) {
     if (firstPublicationDate) {
       return notLiveLabels.takenDown;
     }
@@ -175,7 +175,7 @@ class FeedItem extends React.Component<FeedItemProps> {
                 color:
                   getPillarColor(
                     article.pillarId,
-                    isLive(article) || !!article.fields.newspaperEditionDate,
+                    isLive(article),
                     article.frontsMeta.tone === liveBlogTones.dead
                   ) || styleTheme.capiInterface.textLight
               }}
