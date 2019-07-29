@@ -33,6 +33,7 @@ import ButtonRoundedWithLabel, {
   ButtonLabel
 } from 'shared/components/input/ButtonRoundedWithLabel';
 import { clearClipboardWithPersist } from 'actions/Clipboard';
+import { selectClipboardArticles } from 'selectors/clipboardSelectors';
 
 const ClipboardWrapper = styled<
   HTMLProps<HTMLDivElement> & {
@@ -91,6 +92,7 @@ interface ClipboardProps {
   isClipboardOpen: boolean;
   isClipboardFocused: boolean;
   clipboardHasOpenForms: boolean;
+  clipboardHasContent: boolean;
 }
 
 // Styled component typings for ref seem to be broken so any refs
@@ -139,6 +141,7 @@ class Clipboard extends React.Component<ClipboardProps> {
     const {
       isClipboardOpen,
       clipboardHasOpenForms,
+      clipboardHasContent,
       selectArticleFragment,
       removeCollectionItem,
       removeSupportingCollectionItem
@@ -161,7 +164,10 @@ class Clipboard extends React.Component<ClipboardProps> {
             >
               <ClipboardBody>
                 <ClipboardHeader>
-                  <ClearClipboardButton onClick={this.props.clearClipboard}>
+                  <ClearClipboardButton
+                    disabled={!clipboardHasContent}
+                    onClick={this.props.clearClipboard}
+                  >
                     <ButtonLabel>Clear clipboard</ButtonLabel>
                   </ClearClipboardButton>
                 </ClipboardHeader>
@@ -255,6 +261,7 @@ const mapStateToProps = () => {
   return (state: State) => ({
     isClipboardOpen: selectIsClipboardOpen(state),
     isClipboardFocused: selectIsClipboardFocused(state),
+    clipboardHasContent: !!selectClipboardArticles(state).length,
     clipboardHasOpenForms: !!selectCollectionIdsWithOpenForms(
       state,
       clipboardId

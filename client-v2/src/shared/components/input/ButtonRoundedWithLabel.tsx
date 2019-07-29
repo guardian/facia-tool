@@ -14,9 +14,13 @@ export default styled.button`
   & svg {
     vertical-align: middle;
   }
-  :hover {
+  :hover:enabled {
     background-color: ${({ theme }) =>
       theme.shared.base.colors.backgroundColorFocused};
+  }
+  :disabled,
+  :disabled:hover {
+    cursor: not-allowed;
   }
 `;
 
