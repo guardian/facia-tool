@@ -285,11 +285,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
         )}
         <FormContent>
           <InputGroup>
-            {hasKickerSuggestions && (
-              <KickerSuggestionsContainer>
-                {getKickerContents()}
-              </KickerSuggestionsContainer>
-            )}
             <ConditionalField
               name="customKicker"
               label="Kicker"
