@@ -67,7 +67,7 @@ trait CollectionsQueries {
     val updatedCollections = convertRowsToCollections(rows)
 
     // we have filtered on a single id so this list should only contain one collection
-    assert(updatedCollections.size == 1)
+    assert(updatedCollections.size == 1, s"Retrieved ${updatedCollections.size} collections from DB but there should be exactly one. Failing fast.")
 
     updatedCollections.head
   }
