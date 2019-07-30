@@ -110,9 +110,11 @@ type CollectionWithNestedArticles = CollectionFromResponse & {
   id: string;
 };
 
+// previouslyArticleFragmentIds is stored in a separate key to avoid losing ordering information during normalisation.
 interface Collection {
   live?: string[];
   previously?: string[];
+  previouslyArticleFragmentIds?: string[]; // this contains ids for deleted articles on a collection
   draft?: string[];
   id: string;
   lastUpdated?: number;

@@ -13,6 +13,7 @@ import { CollectionConfig } from 'types/FaciaApi';
 import v4 from 'uuid/v4';
 import keyBy from 'lodash/keyBy';
 import sortBy from 'lodash/sortBy';
+import compact from 'lodash/compact';
 
 const createGroup = (
   id: string | null,
@@ -136,12 +137,22 @@ const normaliseCollectionWithNestedArticles = (
     normalisedCollection,
     collectionConfig
   );
+  const previouslyArticleFragmentIds = compact(collection.previously || []).map(
+    nestedArticleFragment => {
+      const maybeArticleFragment = Object.entries(normalisedCollection.entities
+        .articleFragments as {
+        [uuid: string]: ArticleFragment;
+      }).find(([_, article]) => article.id === nestedArticleFragment.id);
+      return maybeArticleFragment ? maybeArticleFragment[0] : undefined;
+    }
+  );
   return {
     normalisedCollection: {
       ...normalisedCollection.result,
       live,
       draft,
-      previously
+      previously,
+      previouslyArticleFragmentIds
     },
     groups: addedGroups,
     articleFragments: normalisedCollection.entities.articleFragments || {}

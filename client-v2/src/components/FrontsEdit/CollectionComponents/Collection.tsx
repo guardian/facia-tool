@@ -54,7 +54,7 @@ type CollectionProps = CollectionPropsBeforeState & {
   hasUnpublishedChanges: boolean;
   canPublish: boolean;
   groups: Group[];
-  previousGroups: Group[];
+  previousGroup: Group;
   displayEditWarning: boolean;
   isCollectionLocked: boolean;
   isEditFormOpen: boolean;
@@ -104,7 +104,7 @@ class Collection extends React.Component<CollectionProps> {
       children,
       alsoOn,
       groups,
-      previousGroups,
+      previousGroup: previousGroup,
       browsingStage,
       hasUnpublishedChanges,
       canPublish = true,
@@ -195,17 +195,7 @@ class Collection extends React.Component<CollectionProps> {
                   front. If the deleted articles were never launched they will
                   not appear here.
                 </PreviouslyCollectionInfo>
-                {previousGroups.map(group => {
-                  const firstFiveArticlesInGroup = group.articleFragments.slice(
-                    0,
-                    5
-                  );
-                  const smallerGroup = {
-                    ...group,
-                    articleFragments: firstFiveArticlesInGroup
-                  };
-                  return children(smallerGroup, true, false);
-                })}
+                {children(previousGroup, true, false)}
               </PreviouslyGroupsWrapper>
             )}
           </PreviouslyCollectionContainer>
@@ -238,7 +228,7 @@ const createMapStateToProps = () => {
         collectionSet: browsingStage,
         collectionId
       }),
-      previousGroups: selectPreviously(selectSharedState(state), {
+      previousGroup: selectPreviously(selectSharedState(state), {
         collectionId
       }),
       displayEditWarning: selectEditWarning(selectSharedState(state), {

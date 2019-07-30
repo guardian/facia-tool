@@ -226,11 +226,15 @@ const createSelectPreviouslyLiveArticlesInCollection = () => {
   const selectCollection = createSelectCollection();
   return createShallowEqualResultSelector(
     selectCollection,
-    selectGroups,
-    (collection: Collection | void, groups: { [id: string]: Group }): Group[] =>
-      ((collection && collection[collectionItemSets.previously]) || []).map(
-        id => groups[id]
-      )
+    (collection: Collection | void): Group => ({
+      id: null,
+      name: null,
+      uuid: 'previously',
+      articleFragments: (
+        (collection && collection.previouslyArticleFragmentIds) ||
+        []
+      ).slice(0, 5)
+    })
   );
 };
 
