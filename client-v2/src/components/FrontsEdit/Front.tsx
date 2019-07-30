@@ -83,7 +83,6 @@ const OverviewHeadingButton = styled(ButtonRoundedWithLabel)`
       theme.shared.base.colors.backgroundColorFocused};
   }
   margin-right: 10px;
-  font-size: 12px;
   margin-bottom: 10px;
   margin-top: 10px;
 `;

@@ -11,15 +11,18 @@ import { normaliseClipboard } from 'util/clipboardUtils';
 import {
   UpdateClipboardContent,
   InsertClipboardArticleFragment,
-  RemoveClipboardArticleFragment
+  RemoveClipboardArticleFragment,
+  ClearClipboard
 } from 'types/Action';
 import { State } from 'types/State';
+import { addPersistMetaToAction } from 'util/action';
 
 export const REMOVE_CLIPBOARD_ARTICLE_FRAGMENT =
   'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT';
 export const UPDATE_CLIPBOARD_CONTENT = 'UPDATE_CLIPBOARD_CONTENT';
 export const INSERT_CLIPBOARD_ARTICLE_FRAGMENT =
   'INSERT_CLIPBOARD_ARTICLE_FRAGMENT';
+export const CLEAR_CLIPBOARD = 'CLEAR_CLIPBOARD';
 
 function updateClipboardContent(
   clipboardContent: string[] = []
@@ -95,10 +98,23 @@ const removeClipboardArticleFragment = (
   }
 });
 
+const clearClipboard = (id: string): ClearClipboard => ({
+  type: CLEAR_CLIPBOARD,
+  payload: {
+    id
+  }
+});
+
+const clearClipboardWithPersist = addPersistMetaToAction(clearClipboard, {
+  persistTo: 'clipboard'
+});
+
 export {
   storeClipboardContent,
   updateClipboard,
   updateClipboardContent,
   insertClipboardArticleFragment,
-  removeClipboardArticleFragment
+  removeClipboardArticleFragment,
+  clearClipboard,
+  clearClipboardWithPersist
 };

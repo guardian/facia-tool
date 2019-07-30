@@ -17,7 +17,7 @@ import {
   selectArticleGroup
 } from 'shared/selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
-import { addPersistMetaToAction } from 'util/storeMiddleware';
+import { addPersistMetaToAction } from 'util/action';
 import { cloneFragment } from 'shared/util/articleFragment';
 import {
   getFromGroupIndicesWithRespectToState,
@@ -262,20 +262,20 @@ const insertArticleFragmentWithCreate = (
 
 const removeArticleFragment = (
   type: string,
-  id: string,
+  collectionId: string,
   articleFragmentId: string,
   persistTo: 'collection' | 'clipboard'
 ): ThunkResult<void> => {
   return (dispatch: Dispatch, getState) => {
     const getGroupIdFromState = () => {
-      if (id === 'clipboard') {
-        return id;
+      if (collectionId === 'clipboard') {
+        return collectionId;
       }
       // The article fragment may belong to an orphaned group -
       // we need to find the actual group the article fragment belongs to
       const idFromState = selectArticleGroup(
         selectSharedState(getState()),
-        id,
+        collectionId,
         articleFragmentId
       );
       if (idFromState) {
@@ -283,7 +283,7 @@ const removeArticleFragment = (
       }
       // If we could not find a group id the article fragment belongs to
       // then this article is a sublink and we don't have to adjust the id
-      return id;
+      return collectionId;
     };
     const groupIdFromState = getGroupIdFromState();
     const removeActionCreator = getRemoveActionCreatorFromType(type, persistTo);

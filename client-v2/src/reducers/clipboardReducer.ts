@@ -5,7 +5,8 @@ import { selectArticleFragments } from 'shared/selectors/shared';
 import {
   INSERT_CLIPBOARD_ARTICLE_FRAGMENT,
   REMOVE_CLIPBOARD_ARTICLE_FRAGMENT,
-  UPDATE_CLIPBOARD_CONTENT
+  UPDATE_CLIPBOARD_CONTENT,
+  CLEAR_CLIPBOARD
 } from 'actions/Clipboard';
 
 type State = string[];
@@ -31,7 +32,9 @@ const clipboard = (
         selectArticleFragments(prevSharedState)
       );
     }
-
+    case CLEAR_CLIPBOARD: {
+      return [];
+    }
     default: {
       return state;
     }

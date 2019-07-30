@@ -239,6 +239,11 @@ interface UpdateClipboardContent {
   payload: string[];
 }
 
+interface ClearClipboard {
+  type: 'CLEAR_CLIPBOARD';
+  payload: { id: string };
+}
+
 interface RecordStaleFronts {
   type: 'RECORD_STALE_FRONTS';
   payload: { [id: string]: boolean };
@@ -289,6 +294,7 @@ type Action =
   | RemoveSupportingArticleFragment
   | RemoveClipboardArticleFragment
   | UpdateClipboardContent
+  | ClearClipboard
   | EditorOpenCurrentFrontsMenu
   | EditorCloseCurrentFrontsMenu
   | EditorAddFront
@@ -340,6 +346,7 @@ export {
   RemoveSupportingArticleFragment,
   RemoveClipboardArticleFragment,
   UpdateClipboardContent,
+  ClearClipboard,
   EditorOpenCurrentFrontsMenu,
   EditorCloseCurrentFrontsMenu,
   EditorAddFront,
