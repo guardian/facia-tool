@@ -2,13 +2,13 @@ package fixtures
 
 import com.whisk.docker.impl.dockerjava.DockerKitDockerJava
 import com.whisk.docker.scalatest.DockerTestKit
-import org.scalatest.{BeforeAndAfterAll, Suite}
+import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, Suite}
 import play.api.db.{Database, Databases}
 import play.api.db.evolutions.Evolutions
 import services.editions.db.EditionsDB
 
 trait EditionsDBService extends DockerTestKit with DockerKitDockerJava with DockerPostgresService
-  with BeforeAndAfterAll { self: Suite =>
+  with BeforeAndAfterAll with BeforeAndAfter { self: Suite =>
 
   var editionsDB: EditionsDB = _
   var database: Database = _
@@ -24,5 +24,11 @@ trait EditionsDBService extends DockerTestKit with DockerKitDockerJava with Dock
     editionsDB = new EditionsDB(dbUrl, dbUser, dbPassword)
   }
 
-  def withEvolutions[T]: (=> T) => T = Evolutions.withEvolutions[T](database)
+  before {
+    Evolutions.applyEvolutions(database)
+  }
+
+  after {
+    Evolutions.cleanupEvolutions(database)
+  }
 }

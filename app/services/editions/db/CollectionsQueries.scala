@@ -7,30 +7,73 @@ import model.forms.GetCollectionsFilter
 import play.api.libs.json.Json
 import scalikejdbc._
 import services.editions.DbEditionsArticle
-import services.editions.CollectionsHelpers._
 
 trait CollectionsQueries {
+
   def getCollections(filters : List[GetCollectionsFilter]) = DB readOnly { implicit session =>
-    case class TypedFilters(id: String, updatedAt: Option[ZonedDateTime])
-    case class GetCollectionsRow(collection: EditionsCollection, article: Option[DbEditionsArticle])
+    case class TypedFilters(id: String, updatedAt: Option[OffsetDateTime])
 
     val sqlFilters = filters.map { f =>
-      // We add a single millisecond here because the precision in the database is higher than what the client
-      // provides (μs in the DB vs ms from the client) so the clients value is effectively truncated.
-      //
-      // Rather than fiddle with timestamp resolution in the query in the database which would affect our
-      // indexing strategy we can just add a single millisecond here.
       TypedFilters(
         f.id,
-        f.lastUpdated
-          .map(
-            Instant
-              .ofEpochMilli(_)
-              .atZone(ZoneId.of("UTC"))
-              .plus(Duration.ofMillis(1))))
+        f.lastUpdated.map(
+          Instant.ofEpochMilli(_).atOffset(ZoneOffset.UTC)
+        )
+      )
     }
 
-    val rows = sql"""
+    val rows = fetchCollectionsSql(where = sqls"""
+      EXISTS (
+        SELECT *
+        FROM (VALUES ${sqlFilters.map(f => sqls"(${f.id}, ${f.updatedAt})")}) AS F(id, updated_on)
+        WHERE collections.id = F.id AND (F.updated_on IS NULL OR collections.updated_on > F.updated_on::TIMESTAMPTZ)
+      )
+    """).apply()
+
+    convertRowsToCollections(rows)
+  }
+
+  def updateCollection(collection: EditionsCollection): EditionsCollection  = DB localTx { implicit session =>
+    val lastUpdated = collection.lastUpdated.map(EditionsDB.dateTimeFromMillis)
+    sql"""
+      UPDATE collections
+      SET is_hidden = ${collection.isHidden},
+          updated_on = $lastUpdated,
+          updated_by = ${collection.updatedBy},
+          updated_email = ${collection.updatedEmail}
+      WHERE id = ${collection.id}
+    """.execute().apply
+
+    // At the moment we don't do partial updates so simply delete all of them and reinsert.
+    sql"""
+          DELETE FROM articles WHERE collection_id = ${collection.id}
+    """.execute().apply()
+
+    collection.items.zipWithIndex.foreach { case (article, index) =>
+      val addedOn = EditionsDB.dateTimeFromMillis(article.addedOn)
+      sql"""
+          INSERT INTO articles (
+          collection_id,
+          page_code,
+          index,
+          added_on,
+          metadata
+          ) VALUES (${collection.id}, ${article.pageCode}, $index, $addedOn, ${article.metadata.map(m => Json.toJson(m).toString)}::JSONB)
+       """.execute().apply()
+    }
+
+    val rows = fetchCollectionsSql(where = sqls"collections.id = ${collection.id}").apply()
+
+    val updatedCollections = convertRowsToCollections(rows)
+
+    // we have filtered on a single id so this list should only contain one collection
+    assert(updatedCollections.size == 1, s"Retrieved ${updatedCollections.size} collections from DB but there should be exactly one. Failing fast.")
+
+    updatedCollections.head
+  }
+
+  private def fetchCollectionsSql(where: SQLSyntax): SQLToList[GetCollectionsRow, HasExtractor] = {
+    val sql = sql"""
       SELECT
         collections.id,
         collections.front_id,
@@ -51,59 +94,23 @@ trait CollectionsQueries {
 
       FROM collections
       LEFT JOIN articles ON (articles.collection_id = collections.id)
-      WHERE EXISTS (
-        SELECT *
-        FROM (VALUES ${sqlFilters.map(f => sqls"(${f.id}, ${f.updatedAt})")}) AS F(id, updated_on)
-        WHERE collections.id = F.id AND (F.updated_on IS NULL OR collections.updated_on > F.updated_on::TIMESTAMPTZ)
-      )
-      """.map { rs =>
+      WHERE ${where}
+      """
+    sql.map { rs =>
       GetCollectionsRow(
         EditionsCollection.fromRow(rs),
-        DbEditionsArticle.fromRowOpt(rs, "articles_"))
-    }
-      .list()
-      .apply()
-
-    rows
-      .map(_.collection)
-      .distinctBy(_.id)
-      .map { collection =>
-          val articles = rows
-            .flatMap(_.article)
-            .filter(_.collectionId == collection.id)
-            .sortBy(_.index)
-            .map(_.article)
-        collection.copy(items = articles)
-      }
+        DbEditionsArticle.fromRowOpt(rs, "articles_")
+      )
+    }.toList()
   }
 
-  def updateCollection(collection: EditionsCollection): EditionsCollection  = DB localTx { implicit session =>
-    sql"""
-      UPDATE collections
-      SET is_hidden = ${collection.isHidden},
-          updated_on = NOW(),
-          updated_by = ${collection.updatedBy},
-          updated_email = ${collection.updatedEmail}
-      WHERE id = ${collection.id}
-    """.execute().apply
-
-    // At the moment we don't do partial updates so simply delete all of them and reinsert.
-    sql"""
-          DELETE FROM articles WHERE collection_id = ${collection.id}
-    """.execute().apply()
-
-    collection.items.zipWithIndex.foreach { case (article, index) =>
-      sql"""
-          INSERT INTO articles (
-          collection_id,
-          page_code,
-          index,
-          added_on,
-          metadata
-          ) VALUES (${collection.id}, ${article.pageCode}, $index, now(), ${article.metadata.map(m => Json.toJson(m).toString)}::JSONB)
-       """.execute().apply()
+  private def convertRowsToCollections(rows: List[GetCollectionsRow]): List[EditionsCollection] = {
+    rows.groupBy(_.collection.id).values.toList.map { rowsWithId =>
+      val articles = rowsWithId.flatMap(_.article).sortBy(_.index).map(_.article)
+      rowsWithId.head.collection.copy(items = articles)
     }
-
-    collection
   }
+
+  private case class GetCollectionsRow(collection: EditionsCollection, article: Option[DbEditionsArticle])
+
 }

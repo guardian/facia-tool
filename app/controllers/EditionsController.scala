@@ -94,7 +94,7 @@ class EditionsController(db: EditionsDB,
 
   def publishIssue(id: String) = AccessAPIAuthAction { req =>
     db.getIssue(id).map { issue =>
-      publishing.publish(issue, req.user)
+      publishing.publish(issue, req.user, OffsetDateTime.now())
       NoContent
     }.getOrElse(NotFound(s"Issue $id not found"))
   }

@@ -17,6 +17,7 @@ trait IssueQueries {
                    now: OffsetDateTime
   ): String  = DB localTx { implicit session =>
     val userName = user.firstName + " " + user.lastName
+    val truncatedNow = EditionsDB.truncateDateTime(now)
 
     val issueId = sql"""
           INSERT INTO edition_issues (
@@ -26,7 +27,7 @@ trait IssueQueries {
             created_on,
             created_by,
             created_email
-          ) VALUES ($name, ${skeleton.issueDate}, ${skeleton.zoneId.toString}, $now, $userName, ${user.email})
+          ) VALUES ($name, ${skeleton.issueDate}, ${skeleton.zoneId.toString}, $truncatedNow, $userName, ${user.email})
           RETURNING id;
        """.map(_.string("id")).single().apply().get
 
@@ -54,7 +55,7 @@ trait IssueQueries {
             updated_on,
             updated_by,
             updated_email
-          ) VALUES ($frontId, $cIndex, ${collection.name}, ${collection.hidden}, NULL, ${collection.prefill.map(_.queryString)}, $now, $userName, ${user.email})
+          ) VALUES ($frontId, $cIndex, ${collection.name}, ${collection.hidden}, NULL, ${collection.prefill.map(_.queryString)}, $truncatedNow, $userName, ${user.email})
           RETURNING id;
           """.map(_.string("id")).single().apply().get
 
@@ -65,7 +66,7 @@ trait IssueQueries {
                     page_code,
                     index,
                     added_on
-                    ) VALUES ($collectionId, $pageCode, $tIndex, $now)
+                    ) VALUES ($collectionId, $pageCode, $tIndex, $truncatedNow)
                  """.execute().apply()
           }
         }
@@ -221,12 +222,13 @@ trait IssueQueries {
       .apply()
   }
 
-  def publishIssue(issueId: String, user: User) = DB localTx { implicit session =>
+  def publishIssue(issueId: String, user: User, now: OffsetDateTime) = DB localTx { implicit session =>
     val userName = user.firstName + " " + user.lastName
+    val truncatedNow = EditionsDB.truncateDateTime(now)
 
     sql"""
     UPDATE edition_issues
-    SET launched_on = now(),
+    SET launched_on = $truncatedNow,
         launched_by = $userName,
         launched_email = ${user.email}
     WHERE id = $issueId

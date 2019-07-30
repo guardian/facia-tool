@@ -138,9 +138,19 @@ lazy val root = (project in file("."))
     )
     .settings(inConfig(UsesDatabaseTest)(Defaults.testTasks): _*)
     .settings(testOptions in UsesDatabaseTest := Seq(
-        Tests.Argument(TestFrameworks.ScalaTest, "-n","fixtures.UsesDatabase"))
-    )
+        Tests.Argument(TestFrameworks.ScalaTest,
+            // only include tests with this tag
+            "-n", "fixtures.UsesDatabase",
+            // show full stack traces when an exception is thrown
+            "-oF"
+        )
+    ))
     // We exclude in other tests
     .settings(testOptions in Test := Seq(
-        Tests.Argument(TestFrameworks.ScalaTest, "-l", "fixtures.UsesDatabase"))
-    )
+        Tests.Argument(TestFrameworks.ScalaTest, 
+            // exclude tests tagged with UsesDatabase
+            "-l", "fixtures.UsesDatabase",
+            // show full stack traces when an exception is thrown
+            "-oF"
+        )
+    ))
