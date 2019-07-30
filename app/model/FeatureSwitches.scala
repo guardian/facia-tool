@@ -18,8 +18,14 @@ object InlineForm extends FeatureSwitch(
   enabled = false
 )
 
+object ObscureFeed extends FeatureSwitch(
+  key = "obscure-feed",
+  title = "Obscure the feed -- it's distracting for developers!",
+  enabled = false
+)
+
 object FeatureSwitches {
-  val all: List[FeatureSwitch] = List(InlineForm)
+  val all: List[FeatureSwitch] = List(InlineForm, ObscureFeed)
 
   def updateFeatureSwitchesForUser(userDataSwitches: Option[List[FeatureSwitch]], switch: FeatureSwitch): List[FeatureSwitch] = {
     userDataSwitches match {

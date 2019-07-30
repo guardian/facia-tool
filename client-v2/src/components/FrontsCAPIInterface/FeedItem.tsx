@@ -15,7 +15,7 @@ import {
   HoverOphanButton,
   HoverAddToClipboardButton
 } from 'shared/components/input/HoverActionButtons';
-
+import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
 import { insertArticleFragment } from 'actions/ArticleFragments';
 import noop from 'lodash/noop';
 import { getPaths } from 'util/paths';
@@ -29,6 +29,8 @@ import {
   dragOffsetY
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import { media } from 'shared/util/mediaQueries';
+import { State } from 'types/State';
+import { selectSharedState } from 'shared/selectors/shared';
 
 const Container = styled('div')`
   display: flex;
@@ -61,7 +63,7 @@ const Title = styled(`h2`)`
   font-weight: normal;
 `;
 
-const VisitedWrapper = styled.a`
+const FeedItemContainer = styled.a<{ blur: boolean }>`
   text-decoration: none;
   display: flex;
   color: inherit;
@@ -70,6 +72,7 @@ const VisitedWrapper = styled.a`
   :visited ${Title} {
     color: ${({ theme }) => theme.capiInterface.textVisited};
   }
+  ${({ blur }) => blur && 'filter: blur(10px);'}
 `;
 
 const MetaContainer = styled('div')`
@@ -115,6 +118,7 @@ const DraggingArticleContainer = styled('div')`
 
 interface FeedItemProps {
   article: CapiArticle;
+  shouldObscureFeed: boolean;
   onAddToClipboard: (article: CapiArticle) => void;
 }
 
@@ -148,7 +152,7 @@ class FeedItem extends React.Component<FeedItemProps> {
     this.dragNode = React.createRef();
   }
   public render() {
-    const { article, onAddToClipboard = noop } = this.props;
+    const { article, onAddToClipboard = noop, shouldObscureFeed } = this.props;
     return (
       <Container
         data-testid="feed-item"
@@ -159,10 +163,11 @@ class FeedItem extends React.Component<FeedItemProps> {
           <DraggingArticleComponent headline={article.webTitle} />
         </DraggingArticleContainer>
 
-        <VisitedWrapper
+        <FeedItemContainer
           href={getPaths(article.id).live}
           onClick={e => e.preventDefault()}
           aria-disabled
+          blur={shouldObscureFeed}
         >
           <MetaContainer>
             <Tone
@@ -206,7 +211,7 @@ class FeedItem extends React.Component<FeedItemProps> {
               )}')`
             }}
           />
-        </VisitedWrapper>
+        </FeedItemContainer>
         <HoverActionsAreaOverlay justify="flex-end" data-testid="hover-overlay">
           <HoverActionsButtonWrapper
             buttons={[
@@ -239,6 +244,13 @@ class FeedItem extends React.Component<FeedItemProps> {
   };
 }
 
+const mapStateToProps = (state: State) => ({
+  shouldObscureFeed: selectFeatureValue(
+    selectSharedState(state),
+    'obscure-feed'
+  )
+});
+
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     onAddToClipboard: (article: CapiArticle) =>
@@ -253,6 +265,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(FeedItem);
