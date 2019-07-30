@@ -1,9 +1,9 @@
 module.exports = {
   id: 'issue-1',
   displayName: 'Daily Edition',
-  publishDate: '2016-06-22 19:10:25-07', // the date for which edition is made for, in format TimestampZ, eg 2016-06-22 19:10:25-07
+  issueDate: 1563987694281, // the date for which edition is made for, in format TimestampZ, eg 2016-06-22 19:10:25-07
   lastPublished: null, // null if not published
-  launchedOn: '2016-06-21 19:10:25-07',
+  launchedOn: 1563577200000,
   launchedBy: 'Richard Beddington',
   launchedEmail: 'r.b@gu.com',
   fronts: [
@@ -23,7 +23,10 @@ module.exports = {
           // lastUpdated?: number,
           // updatedBy?: string,
           // updatedEmail?: string,
-          items: []
+          items: [],
+          prefill: {
+            queryString: 'this-doesnt-matter'
+          }
         },
         {
           id: 'collection-2',

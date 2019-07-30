@@ -10,6 +10,7 @@ const collectionTwo = require('../fixtures/collection2');
 const collectionThree = require('../fixtures/collection3');
 const capiCollection = require('../fixtures/capi-collection');
 const capiSearch = require('../fixtures/capi-search');
+const prefill = require('../fixtures/capi-prefill');
 const snapTag = require('../fixtures/snap-tag');
 const snapTagPage = require('../fixtures/snap-tag-page');
 const snapExternalPage = require('../../src/shared/fixtures/bbcSectionPage');
@@ -118,9 +119,6 @@ module.exports = async () =>
 
     app.get('/config', (_, res) => res.json(config));
 
-    // edition endpoint
-    app.get('/editions-api/*', (_, res) => res.json(edition));
-
     app.post('/collections*', (req, res) => {
       return res.json([
         {
@@ -142,7 +140,14 @@ module.exports = async () =>
       ]);
     });
 
-    app.post('/editions-api/collections*', (req, res) => {
+    app.get('/editions-api/issues/:id', (_, res) => res.json(edition));
+    app.get('/editions-api/issues/:id/summary', (_, res) =>
+      res.json({ ...edition, fronts: undefined })
+    );
+    app.get('/editions-api/collections/:id/prefill', (req, res) => {
+      return res.json(prefill);
+    });
+    app.post('/editions-api/collections', (req, res) => {
       return res.json([
         {
           id: req.body[0].id,

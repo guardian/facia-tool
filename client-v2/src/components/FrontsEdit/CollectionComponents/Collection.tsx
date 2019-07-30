@@ -143,6 +143,7 @@ class Collection extends React.Component<CollectionProps> {
               {hasPrefill && (
                 <EditModeVisibility visibleMode="editions">
                   <Button
+                    data-testid="prefill-button"
                     size="l"
                     priority="default"
                     onClick={() => this.props.fetchPrefill(id)}
