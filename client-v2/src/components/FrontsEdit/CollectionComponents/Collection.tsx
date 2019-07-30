@@ -30,7 +30,7 @@ import { getArticlesForCollections } from 'actions/Collections';
 import { collectionItemSets } from 'constants/fronts';
 import CollectionMetaContainer from 'shared/components/collection/CollectionMetaContainer';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
-import { styled } from 'constants/theme';
+import { theme, styled } from 'constants/theme';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 
 interface CollectionPropsBeforeState {
@@ -80,8 +80,8 @@ const PreviouslyGroupsWrapper = styled.div`
 `;
 
 const PreviouslyCollectionInfo = styled('div')`
-  background: '#c9c9c9';
-  color: #121212;
+  background: ${theme.shared.colors.greyVeryLight};
+  color: ${theme.shared.colors.blackDark};
 `;
 
 class Collection extends React.Component<CollectionProps> {
@@ -191,9 +191,9 @@ class Collection extends React.Component<CollectionProps> {
             {isPreviouslyOpen && (
               <PreviouslyGroupsWrapper>
                 <PreviouslyCollectionInfo>
-                  You will find 5 most recently deleted articles from live
-                  front. If the deleted articles were never launched they will
-                  not appear here.
+                  This contains the 5 most recently deleted articles from the
+                  live front. If the deleted articles were never launched they
+                  will not appear here.
                 </PreviouslyCollectionInfo>
                 {children(previousGroup, true, false)}
               </PreviouslyGroupsWrapper>
