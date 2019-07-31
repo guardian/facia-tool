@@ -122,8 +122,14 @@ interface FeedItemProps {
   onAddToClipboard: (article: CapiArticle) => void;
 }
 
+// The content API drops the isLive flag on live CAPI endpoint, but keeps it in draft and print-sent.
+// We need to assume that if the isLive flag isn't present then it's because we're hitting the live endpoint
+// this makes the query to CAPI quite fragile. If anyone ever removes isLive from show-fields in the draft
+// endpoint then we'll assume *all* content is live.
 const isLive = (article: CapiArticle) =>
-  !article.fields.isLive || article.fields.isLive === 'true';
+  article.fields.isLive === undefined ||
+  article.fields.isLive === 'true' ||
+  article.fields.isLive === true;
 
 const getArticleLabel = (article: CapiArticle) => {
   const {
