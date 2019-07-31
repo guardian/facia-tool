@@ -82,7 +82,7 @@ interface Tag {
   sectionName?: string;
 }
 
-type CapiBool = 'true' | 'false';
+type CapiBool = 'true' | 'false' | boolean;
 
 interface CapiArticleFields {
   headline?: string;
