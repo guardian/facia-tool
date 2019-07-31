@@ -18,7 +18,7 @@ import {
   createSelectCollectionStageGroups,
   createSelectCollectionEditWarning,
   selectSharedState,
-  createSelectFivePreviouslyLiveArticlesInCollection
+  createSelectPreviouslyLiveArticlesInCollection
 } from 'shared/selectors/shared';
 import {
   selectIsCollectionOpen,
@@ -211,7 +211,7 @@ class Collection extends React.Component<CollectionProps> {
 const createMapStateToProps = () => {
   const selectCollectionStageGroups = createSelectCollectionStageGroups();
   const selectEditWarning = createSelectCollectionEditWarning();
-  const selectPreviously = createSelectFivePreviouslyLiveArticlesInCollection();
+  const selectPreviously = createSelectPreviouslyLiveArticlesInCollection();
   return (
     state: State,
     {

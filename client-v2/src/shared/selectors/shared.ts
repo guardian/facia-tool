@@ -222,7 +222,7 @@ const createSelectCollectionStageGroups = () => {
   );
 };
 
-const createSelectFivePreviouslyLiveArticlesInCollection = () => {
+const createSelectPreviouslyLiveArticlesInCollection = () => {
   const selectCollection = createSelectCollection();
   return createShallowEqualResultSelector(
     selectCollection,
@@ -532,7 +532,7 @@ export {
   createSelectSupportingArticles,
   createSelectCollection,
   createSelectCollectionStageGroups,
-  createSelectFivePreviouslyLiveArticlesInCollection,
+  createSelectPreviouslyLiveArticlesInCollection,
   createDemornalisedArticleFragment,
   selectSharedState,
   selectArticleFragment,
