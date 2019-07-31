@@ -124,6 +124,9 @@ const addGroups = (
     { live: [], draft: [], previously: [], addedGroups: {} } as ReduceResult
   );
 
+// To determine the UUIDs of article fragments recently removed from a collection in a way that
+// preserves the overall ordering lost during normalisation (when fragments are assigned to a Group)
+// we need to compare both the pre-normalised and normalised versions of the same collection.
 const createPreviouslyArticleFragmentIds = (
   collection: CollectionWithNestedArticles,
   normalisedCollection: any
