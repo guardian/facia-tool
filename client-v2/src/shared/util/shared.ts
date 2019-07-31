@@ -124,6 +124,18 @@ const addGroups = (
     { live: [], draft: [], previously: [], addedGroups: {} } as ReduceResult
   );
 
+const createPreviouslyArticleFragmentIds = (
+  collection: CollectionWithNestedArticles,
+  normalisedCollection: any
+) =>
+  compact(collection.previously || []).map(nestedArticleFragment => {
+    const maybeArticleFragment = Object.entries(normalisedCollection.entities
+      .articleFragments as {
+      [uuid: string]: ArticleFragment;
+    }).find(([_, article]) => article.id === nestedArticleFragment.id);
+    return maybeArticleFragment ? maybeArticleFragment[0] : undefined;
+  });
+
 const normaliseCollectionWithNestedArticles = (
   collection: CollectionWithNestedArticles,
   collectionConfig: CollectionConfig
@@ -137,14 +149,9 @@ const normaliseCollectionWithNestedArticles = (
     normalisedCollection,
     collectionConfig
   );
-  const previouslyArticleFragmentIds = compact(collection.previously || []).map(
-    nestedArticleFragment => {
-      const maybeArticleFragment = Object.entries(normalisedCollection.entities
-        .articleFragments as {
-        [uuid: string]: ArticleFragment;
-      }).find(([_, article]) => article.id === nestedArticleFragment.id);
-      return maybeArticleFragment ? maybeArticleFragment[0] : undefined;
-    }
+  const previouslyArticleFragmentIds = createPreviouslyArticleFragmentIds(
+    collection,
+    normalisedCollection
   );
   return {
     normalisedCollection: {
@@ -179,4 +186,8 @@ function denormaliseCollection(
   });
 }
 
-export { normaliseCollectionWithNestedArticles, denormaliseCollection };
+export {
+  normaliseCollectionWithNestedArticles,
+  denormaliseCollection,
+  createPreviouslyArticleFragmentIds
+};

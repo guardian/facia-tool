@@ -81,37 +81,6 @@ export const getCollectionsApiResponse = [
   }
 ];
 
-export const getCollectionsApiResponseWithPreviouslyDeletedArticles = [
-  {
-    id: 'testCollection1',
-    collection: {
-      displayName: 'testCollection1',
-      live: ['abc', 'def'],
-      draft: [],
-      lastUpdated: 1547479667115,
-      previously: [
-        {
-          id: 'internal-code/page/qrt',
-          meta: null,
-          frontPublicationDate: 123,
-          publishedBy: 'A Dev'
-        },
-        {
-          id: 'internal-code/page/xyz',
-          meta: null,
-          frontPublicationDate: 124,
-          publishedBy: 'Another Dev'
-        }
-      ],
-      type: 'type'
-    },
-    storiesVisibleByStage: {
-      live: { desktop: 4, mobile: 4 },
-      draft: { desktop: 4, mobile: 4 }
-    }
-  }
-];
-
 export const getCollectionsApiResponseWithoutStoriesVisible = [
   {
     id: 'testCollection1',

@@ -6,8 +6,7 @@ import config from 'fixtures/config';
 import { stateWithCollection, capiArticle } from 'shared/fixtures/shared';
 import {
   getCollectionsApiResponse,
-  getCollectionsApiResponseWithoutStoriesVisible,
-  getCollectionsApiResponseWithPreviouslyDeletedArticles
+  getCollectionsApiResponseWithoutStoriesVisible
 } from 'fixtures/collectionsEndpointResponse';
 import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import {
@@ -202,29 +201,6 @@ describe('Collection actions', () => {
           previouslyArticleFragmentIds: [],
           type: 'type'
         }
-      });
-    });
-
-    it('should extract previously deleted articles to previouslyArticleFragmentIds', async () => {
-      const collectionIds = ['testCollection1'];
-      fetchMock.post(
-        '/collections',
-        getCollectionsApiResponseWithPreviouslyDeletedArticles
-      );
-      await store.dispatch(getCollections(collectionIds) as any);
-      expect(store.getState().shared.collections.data.testCollection1).toEqual({
-        displayName: 'testCollection',
-        draft: ['uuid'],
-        frontsToolSettings: undefined,
-        groups: undefined,
-        id: 'testCollection1',
-        lastUpdated: 1547479667115,
-        live: ['uuid'],
-        metadata: undefined,
-        platform: undefined,
-        previously: ['uuid'],
-        previouslyArticleFragmentIds: ['articleFragId1', 'articleFragId2'],
-        type: 'type'
       });
     });
 

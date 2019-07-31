@@ -1,14 +1,17 @@
 import {
   collection,
+  collectionWithPreviously,
   collectionConfig,
   collectionWithoutGroups,
   collectionWithSupportingArticles,
   stateWithCollection,
-  stateWithCollectionAndSupporting
+  stateWithCollectionAndSupporting,
+  normalisedCollectonWithPreviously
 } from 'shared/fixtures/shared';
 import {
   normaliseCollectionWithNestedArticles,
-  denormaliseCollection
+  denormaliseCollection,
+  createPreviouslyArticleFragmentIds
 } from '../shared';
 
 describe('Shared utilities', () => {
@@ -178,6 +181,16 @@ describe('Shared utilities', () => {
         groups: undefined
       });
       expect(Object.keys(result.groups)).toHaveLength(4);
+    });
+  });
+  describe('createPreviouslyArticleFragmentIds', () => {
+    it('should create an array of article fragment ids of recently removed articles', () => {
+      const result = createPreviouslyArticleFragmentIds(
+        collectionWithPreviously,
+        normalisedCollectonWithPreviously
+      );
+      expect(result).toHaveLength(2);
+      expect(result).toEqual(['uuid1', 'uuid2']);
     });
   });
 });
