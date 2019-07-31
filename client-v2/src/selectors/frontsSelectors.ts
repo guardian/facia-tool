@@ -127,6 +127,9 @@ const selectCollectionConfig = (state: State, id: string): CollectionConfig =>
 const selectCollectionHasPrefill = (state: State, id: string): boolean =>
   !!(selectCollectionConfig(state, id) || { prefill: undefined }).prefill;
 
+const selectCollectionIsHidden = (state: State, id: string): boolean =>
+  !!selectCollectionConfig(state, id).isHidden;
+
 const selectFrontsIds = createSelector(
   [selectFronts],
   (fronts): string[] => {
@@ -344,6 +347,7 @@ export {
   selectFronts,
   selectCollectionConfig,
   selectCollectionHasPrefill,
+  selectCollectionIsHidden,
   selectFrontsConfig,
   selectCollectionConfigs,
   selectFrontsIds,

@@ -50,6 +50,7 @@ interface CollectionConfigResponse {
   platform?: Platform;
   frontsToolSettings?: FrontsToolSettings;
   prefill?: EditionsPrefill;
+  isHidden?: boolean;
 }
 
 interface FrontsConfigResponse {

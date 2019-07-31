@@ -12,7 +12,7 @@ import {
 } from 'actions/Collections';
 import {
   selectHasUnpublishedChanges,
-  selectCollectionHasPrefill
+  selectCollectionHasPrefill, selectCollectionIsHidden
 } from 'selectors/frontsSelectors';
 import { selectIsCollectionLocked } from 'selectors/collectionSelectors';
 import { State } from 'types/State';
@@ -68,6 +68,8 @@ type CollectionProps = CollectionPropsBeforeState & {
   fetchPreviousCollectionArticles: (id: string) => void;
   fetchPrefill: (id: string) => void;
   hasPrefill: boolean;
+  toggleHidden: (id: string) => void;
+  isHidden: boolean;
 };
 
 const PreviouslyCollectionContainer = styled('div')``;
@@ -123,7 +125,8 @@ class Collection extends React.Component<CollectionProps> {
       hasMultipleFrontsOpen,
       isEditFormOpen,
       discardDraftChangesToCollection: discardDraftChanges,
-      hasPrefill
+      hasPrefill,
+      isHidden
     } = this.props;
 
     const { isPreviouslyOpen } = this.state;
@@ -146,8 +149,19 @@ class Collection extends React.Component<CollectionProps> {
           canPublish &&
           !isEditFormOpen && (
             <Fragment>
-              {hasPrefill && (
-                <EditModeVisibility visibleMode="editions">
+              <EditModeVisibility visibleMode="editions">
+                <Button
+                  size="l"
+                  priority="default"
+                  onClick={() => this.props.toggleHidden(id)}
+                  title="Toggle the visibility of this container in this issue."
+                >
+                  {isHidden
+                    ? 'Unhide Container'
+                    : 'Hide Container'
+                  }
+                </Button>
+                {hasPrefill && (
                   <Button
                     data-testid="prefill-button"
                     size="l"
@@ -157,8 +171,8 @@ class Collection extends React.Component<CollectionProps> {
                   >
                     Suggest Articles
                   </Button>
-                </EditModeVisibility>
-              )}
+                )}
+              </EditModeVisibility>
               <EditModeVisibility visibleMode="fronts">
                 <Button
                   size="l"
@@ -245,6 +259,7 @@ const createMapStateToProps = () => {
   ) => {
     const selectDoesCollectionHaveOpenForms = createSelectDoesCollectionHaveOpenForms();
     return {
+      isHidden: selectCollectionIsHidden(state, collectionId),
       hasPrefill: selectCollectionHasPrefill(state, collectionId),
       hasUnpublishedChanges: selectHasUnpublishedChanges(state, {
         collectionId
@@ -272,6 +287,7 @@ const mapDispatchToProps = (
   { browsingStage }: CollectionPropsBeforeState
 ) => ({
   fetchPrefill: (id: string) => dispatch(fetchPrefill(id)),
+  toggleHidden: (id: string) => dispatch(fetchPrefill(id)), // TODO: this obviously needs to toggle whether a collection is hidden or not
   publishCollection: (id: string, frontId: string) =>
     dispatch(publishCollection(id, frontId)),
   discardDraftChangesToCollection: (id: string) =>
