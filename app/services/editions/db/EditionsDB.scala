@@ -5,7 +5,7 @@ import java.time.temporal.ChronoUnit
 
 import scalikejdbc._
 
-class EditionsDB(url: String, user: String, password: String) extends IssueQueries with CollectionsQueries {
+class EditionsDB(url: String, user: String, password: String) extends IssueQueries with FrontsQueries with CollectionsQueries {
   Class.forName("org.postgresql.Driver")
   ConnectionPool.singleton(url, user, password)
 }

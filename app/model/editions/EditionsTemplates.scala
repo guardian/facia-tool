@@ -65,6 +65,7 @@ case class FrontTemplate(
     name: String,
     collections: List[CollectionTemplate],
     presentation: FrontPresentation,
+    canRename: Boolean = false,
     hidden: Boolean = false
 )
 
@@ -86,7 +87,8 @@ case class EditionsFrontSkeleton(
     name: String,
     collections: List[EditionsCollectionSkeleton],
     presentation: FrontPresentation,
-    hidden: Boolean = false
+    hidden: Boolean,
+    canRename: Boolean
 )
 
 case class EditionsCollectionSkeleton(
@@ -94,5 +96,5 @@ case class EditionsCollectionSkeleton(
     items: List[String],
     prefill: Option[CapiPrefillQuery],
     presentation: CollectionPresentation,
-    hidden: Boolean = false
+    hidden: Boolean
 )

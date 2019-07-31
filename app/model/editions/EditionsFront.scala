@@ -3,14 +3,22 @@ package model.editions
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
+case class EditionsFrontMetadata(nameOverride: Option[String])
+
+object EditionsFrontMetadata {
+  implicit val format = Json.format[EditionsFrontMetadata]
+}
+
 case class EditionsFront(
     id: String,
     displayName: String,
     index: Int,
+    canRename: Boolean,
     isHidden: Boolean,
     updatedOn: Option[Long],
     updatedBy: Option[String],
     updatedEmail: Option[String],
+    metadata: Option[EditionsFrontMetadata],
     collections: List[EditionsCollection]
 ) {
   def toPublishedFront: Option[PublishedFront] = {
@@ -33,10 +41,12 @@ object EditionsFront {
       rs.string(prefix + "id"),
       rs.string(prefix + "name"),
       rs.int(prefix + "index"),
+      rs.boolean(prefix + "can_rename"),
       rs.boolean(prefix + "is_hidden"),
       rs.zonedDateTimeOpt(prefix + "updated_on").map(_.toInstant.toEpochMilli),
       rs.stringOpt(prefix + "updated_by"),
       rs.stringOpt(prefix + "updated_email"),
+      rs.stringOpt(prefix + "metadata").map(s => Json.parse(s).validate[EditionsFrontMetadata].get),
       Nil
     )
   }
@@ -46,16 +56,19 @@ object EditionsFront {
       id <- rs.stringOpt(prefix + "id")
       name <- rs.stringOpt(prefix + "name")
       index <- rs.intOpt(prefix + "index")
+      canRename <- rs.booleanOpt(prefix + "can_rename")
       isHidden <- rs.booleanOpt(prefix + "is_hidden")
     } yield
       EditionsFront(
         id,
         name,
         index,
+        canRename,
         isHidden,
         rs.zonedDateTimeOpt(prefix + "updated_on").map(_.toInstant.toEpochMilli),
         rs.stringOpt(prefix + "updated_by"),
         rs.stringOpt(prefix + "updated_email"),
+        rs.stringOpt(prefix + "metadata").map(s => Json.parse(s).validate[EditionsFrontMetadata].get),
         Nil
       )
   }
