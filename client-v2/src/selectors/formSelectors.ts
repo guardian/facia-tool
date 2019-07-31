@@ -68,6 +68,10 @@ export const createSelectFormFieldsForCollectionItem = () => {
       }
       const fields = defaultFields.slice();
 
+      if (derivedArticle.sectionName === 'Sport') {
+        fields.push('sportScore');
+      }
+
       if (isCollectionConfigDynamic(parentCollectionConfig)) {
         fields.push('isBoosted');
       }

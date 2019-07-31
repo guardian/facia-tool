@@ -13,6 +13,7 @@ case class ClientArticleMetadata (
   showQuotedHeadline: Option[Boolean],
   showByline: Option[Boolean],
   byline: Option[String],
+  sportScore: Option[String],
 
   imageHide: Option[Boolean],
 
@@ -54,6 +55,7 @@ case class ClientArticleMetadata (
       showQuotedHeadline,
       showByline,
       byline,
+      sportScore,
       Some(imageOption),
       cutoutImage,
       replaceImage
@@ -75,6 +77,7 @@ object ClientArticleMetadata {
       articleMetadata.showQuotedHeadline,
       articleMetadata.showByline,
       articleMetadata.byline,
+      articleMetadata.sportScore,
 
       articleMetadata.mediaType.collect{ case MediaType.Hide => true },
 

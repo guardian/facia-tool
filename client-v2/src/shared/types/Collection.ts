@@ -34,6 +34,7 @@ interface ArticleFragmentRootMeta {
   headline?: string;
   trailText?: string;
   byline?: string;
+  sportScore?: string;
   customKicker?: string;
   href?: string;
   imageSrc?: string;
