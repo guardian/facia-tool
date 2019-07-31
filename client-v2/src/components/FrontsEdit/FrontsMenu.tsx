@@ -142,6 +142,7 @@ class FrontsMenu extends React.Component<Props, State> {
         <FrontsMenuContainer isOpen={this.state.isOpen}>
           <ButtonOverlayContainer>
             <ButtonOverlay
+              data-testid="fronts-menu-button"
               onClick={this.toggleFrontsMenu}
               active={this.state.isOpen}
             >

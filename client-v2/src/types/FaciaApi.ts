@@ -3,6 +3,7 @@ import {
   CollectionFromResponse,
   NestedArticleFragment
 } from 'shared/types/Collection';
+import { EditionsPrefill } from './Edition';
 
 interface FrontConfigResponse {
   collections: string[];
@@ -48,6 +49,7 @@ interface CollectionConfigResponse {
   hideShowMore?: boolean;
   platform?: Platform;
   frontsToolSettings?: FrontsToolSettings;
+  prefill?: EditionsPrefill;
 }
 
 interface FrontsConfigResponse {

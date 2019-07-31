@@ -1,9 +1,13 @@
 type EditionsArticle = any;
 
+interface EditionsPrefill {
+  queryString: string;
+}
+
 interface EditionsCollection {
   id: string;
   displayName: string;
-  prefill?: string;
+  prefill?: EditionsPrefill;
   isHidden: boolean;
   lastUpdated?: number;
   updatedBy?: string;
@@ -34,4 +38,10 @@ interface EditionsIssue {
   fronts: EditionsFront[];
 }
 
-export { EditionsIssue, EditionsFront, EditionsCollection, EditionsArticle };
+export {
+  EditionsIssue,
+  EditionsFront,
+  EditionsCollection,
+  EditionsArticle,
+  EditionsPrefill
+};

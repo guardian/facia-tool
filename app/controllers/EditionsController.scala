@@ -7,16 +7,21 @@ import services.editions.EditionsTemplating
 import java.time.{LocalDate, OffsetDateTime}
 
 import model.editions.{EditionsFrontendCollectionWrapper, EditionsTemplates}
+import services.Capi
 import services.editions.db.EditionsDB
-import services.editions.publishing.{EditionsPublishing, PublishedIssuesBucket}
+import services.editions.publishing.EditionsPublishing
 import services.editions.publishing.PublishedIssueFormatters._
+import util.ContentUpgrade.rewriteBody
+import com.gu.contentapi.json.CirceEncoders._
+import io.circe.syntax._
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 class EditionsController(db: EditionsDB,
                          templating: EditionsTemplating,
                          publishing: EditionsPublishing,
+                         capi: Capi,
                          val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps)  with Logging {
 
   def postIssue(name: String) = AccessAPIAuthAction(parse.json[CreateIssue]) { req =>
@@ -97,5 +102,16 @@ class EditionsController(db: EditionsDB,
       publishing.publish(issue, req.user, OffsetDateTime.now())
       NoContent
     }.getOrElse(NotFound(s"Issue $id not found"))
+  }
+
+  def getPrefillForCollection(id: String) = AccessAPIAuthAction.async { req =>
+    db.getCollectionPrefillQueryString(id).map { prefillUpdate =>
+      capi.getPrefillArticles(prefillUpdate.issueDate, prefillUpdate.prefill, prefillUpdate.currentPageCodes).map { body =>
+        // Need to wrap this in a "response" object because the CAPI client and CAPI API return different JSON
+        val json = "{\"response\":" + body.asJson.noSpaces + "}"
+        val decorated = rewriteBody(json)
+        Ok(decorated).as("application/json")
+      }
+    }.getOrElse(Future.successful(NotFound("Collection not found")))
   }
 }

@@ -121,6 +121,7 @@ const FrontList = ({
     <ListContainer>
       {frontsToRender.map(front => (
         <ListItem
+          data-testid="fronts-menu-item"
           isActive={!front.isOpen}
           isStarred={!!front.isStarred}
           key={front.id}

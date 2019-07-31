@@ -20,6 +20,10 @@ const EDIT_FORM_HEADLINE_FIELD = 'edit-form-headline-field';
 const EDIT_FORM_SAVE_BUTTON = 'edit-form-save-button';
 const EDIT_FORM_BREAKING_NEWS_TOGGLE = 'edit-form-breaking-news-toggle';
 
+const FRONTS_MENU_BUTTON = 'fronts-menu-button';
+const FRONTS_MENU_ITEM = 'fronts-menu-item';
+const PREFILL_BUTTON = 'prefill-button';
+
 // Html Mocks //
 const GUARDIAN_TAG_ANCHOR = 'guardian-tag';
 const EXTERNAL_LINK_ANCHOR = 'external-link';
@@ -123,6 +127,13 @@ export const frontDropZone = maybeGetNth(
 export const frontItemAddToClipboardHoverButton = maybeGetNth(
   select(FRONT_SELECTOR, ADD_TO_CLIPBOARD_BUTTON)
 );
+
+// Front Menu //
+export const frontsMenuButton = () => select(FRONTS_MENU_BUTTON);
+export const frontsMenuItem = maybeGetNth(select(FRONTS_MENU_ITEM));
+
+// Prefill Button //
+export const prefillButton = maybeGetNth(select(PREFILL_BUTTON));
 
 // Snaps //
 export const guardianSnapLink = maybeGetNth(select(GUARDIAN_TAG_ANCHOR));

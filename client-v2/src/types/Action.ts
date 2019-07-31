@@ -272,6 +272,13 @@ interface EndConfirm {
   type: 'MODAL/END_CONFIRM';
 }
 
+interface IsPrefillMode {
+  type: 'FEED_STATE_IS_PREFILL_MODE';
+  payload: {
+    isPrefillMode: boolean;
+  };
+}
+
 type SetFocusState = ReturnType<typeof setFocusState>;
 type ResetFocusState = ReturnType<typeof resetFocusState>;
 
@@ -322,7 +329,8 @@ type Action =
   | EditorCloseCollection
   | SetFocusState
   | ResetFocusState
-  | ActionSetFeatureValue;
+  | ActionSetFeatureValue
+  | IsPrefillMode;
 
 export {
   ActionError,
@@ -369,5 +377,6 @@ export {
   EditorCloseAllOverviews,
   RecordStaleFronts,
   StartConfirm,
-  EndConfirm
+  EndConfirm,
+  IsPrefillMode
 };

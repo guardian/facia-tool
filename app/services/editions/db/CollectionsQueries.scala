@@ -2,7 +2,8 @@ package services.editions.db
 
 import java.time._
 
-import model.editions.EditionsCollection
+import model.editions.internal.PrefillUpdate
+import model.editions.{CapiPrefillQuery, EditionsCollection}
 import model.forms.GetCollectionsFilter
 import play.api.libs.json.Json
 import scalikejdbc._
@@ -31,6 +32,25 @@ trait CollectionsQueries {
     """).apply()
 
     convertRowsToCollections(rows)
+  }
+
+  def getCollectionPrefillQueryString(id: String) = DB readOnly { implicit session =>
+    val rows = sql"""
+          SELECT collections.prefill,
+                 articles.page_code,
+                 edition_issues.issue_date
+          FROM collections
+          LEFT JOIN articles ON (collections.id = articles.collection_id)
+          JOIN fronts ON (collections.front_id = fronts.id)
+          JOIN edition_issues ON (fronts.issue_id = edition_issues.id)
+          WHERE collections.id = $id
+       """.map { rs =>
+      (rs.zonedDateTime("issue_date"), CapiPrefillQuery(rs.string("prefill")), rs.string("page_code"))
+    }.list().apply()
+
+    rows.headOption.map { case (issueDate, prefill, _) =>
+      PrefillUpdate(issueDate, prefill, rows.map(_._3))
+    }
   }
 
   def updateCollection(collection: EditionsCollection): EditionsCollection  = DB localTx { implicit session =>

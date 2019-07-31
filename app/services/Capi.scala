@@ -9,15 +9,17 @@ import org.apache.http.client.utils.URLEncodedUtils
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
 import com.gu.contentapi.client.model._
-import com.gu.contentapi.client.{GuardianContentClient, IAMSigner, Parameter}
+import com.gu.contentapi.client.model.v1.SearchResponse
+import com.gu.contentapi.client.{GuardianContentClient, IAMEncoder, IAMSigner, Parameter}
 import conf.ApplicationConfiguration
+import logging.Logging
 import model.editions.CapiPrefillQuery
 import okhttp3.{Call, Callback, Request, Response}
 
 import scala.collection.JavaConverters._
 import scala.concurrent.{ExecutionContext, Future, Promise}
 
-class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext) extends GuardianContentClient(config.contentApi.editionsKey) with Capi  {
+class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext) extends GuardianContentClient(config.contentApi.editionsKey) with Capi with Logging {
   override def targetUrl: String = config.contentApi.editionsPrefillHost
 
   override def get(url: String, headers: Map[String, String])(implicit context: ExecutionContext): Future[HttpResponse] = {
@@ -45,7 +47,6 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
       new ProfileCredentialsProvider("capi"),
       new STSAssumeRoleSessionCredentialsProvider.Builder(config.contentApi.previewRole, "capi").build()
     )
-
     new IAMSigner(
       credentialsProvider = capiPreviewCredentials,
       awsRegion = config.aws.region
@@ -54,21 +55,20 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
 
   def getPreviewHeaders(url: String): Seq[(String,String)] = previewSigner.addIAMHeaders(headers = Map.empty, URI.create(url)).toSeq
 
-  def geneneratePrefillQuery(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery) = {
+  // Prefill
+  def geneneratePrefillQuery(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery, fields: List[String]) = {
     val params = URLEncodedUtils
       .parse(new URI(capiPrefillQuery.escapedQueryString()), Charset.forName("UTF-8"))
       .asScala
 
-    // Horrible hack because composer/capi/whoever doesn't worry about timezones in the newspaper-edition date
+    // Hack because composer/capi/whoever doesn't worry about timezones in the newspaper-edition date
     val localDate = issueDate.toLocalDate.atStartOfDay().toInstant(ZoneOffset.UTC)
 
     var query = PrintSentQuery()
       .page(1)
       .pageSize(200)
-      .showFields("newspaper-edition-date")
-      .showFields("newspaper-page-number")
-      .showFields("internal-page-code")
-      .useDate("newspaper-edition")
+      .showFields(fields.mkString(","))
+      .useDate("newspaper-edition") // deliberately-kebab-case
       .orderBy("newest")
       .fromDate(localDate)
       .toDate(localDate)
@@ -88,13 +88,65 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
     query
   }
 
+  // Sadly there's no easy way of converting a CAPI client response into JSON so we'll just proxy - similar to controllers.FaciaContentApiProxy
+  def getPrefillArticles(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery, currentPageCodes: List[String]): Future[SearchResponse] = {
+    val fields = List(
+      "newspaperEditionDate",
+      "newspaperPapeNumber",
+      "internalPageCode",
+      "isLive",
+      "firstPublicationDate",
+      "headline",
+      "trailText",
+      "byline",
+      "thumbnail",
+      "secureThumbnail",
+      "liveBloggingNow",
+      "membershipAccess",
+      "shortUrl"
+    )
+
+    val query = geneneratePrefillQuery(issueDate, capiPrefillQuery, fields)
+      .showElements("images")
+      .showTags("all")
+      .showBlocks("main")
+      .showAtoms("media")
+
+    this.getResponse(query).map { response =>
+      val filteredResults = response.results.filter { result =>
+        (for {
+          fields <- result.fields
+          pageCode <- fields.internalPageCode
+        } yield !currentPageCodes.contains(pageCode.toString))
+          .getOrElse(true)
+      }
+
+      response.copy(
+        total = filteredResults.length,
+        results = filteredResults
+      )
+    }
+  }
+
   def getPrefillArticlePageCodes(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[String]] = {
-    this.getResponse(geneneratePrefillQuery(issueDate, capiPrefillQuery)) map { response =>
-      response.results.flatMap {
-        _.fields
-          .flatMap(field => field.internalPageCode)
-          .map(_.toString)
-      }.toList
+    val fields = List(
+      "newspaperEditionDate",
+      "newspaperPageNumber",
+      "internalPageCode"
+    )
+
+    this.getResponse(geneneratePrefillQuery(issueDate, capiPrefillQuery, fields)) map { response =>
+      response.results
+        .flatMap {
+          _.fields
+            .flatMap(fields => (fields.newspaperPageNumber, fields.internalPageCode) match {
+              case (Some(number), Some(code)) => Some((number, code.toString))
+              case _ => None
+            })
+      }
+        .sortBy(_._1)
+        .map(_._2)
+        .toList
     }
   }
 }
@@ -111,4 +163,5 @@ case class PrintSentQuery(parameterHolder: Map[String, Parameter] = Map.empty)
 trait Capi {
   def getPreviewHeaders(url: String): Seq[(String,String)]
   def getPrefillArticlePageCodes(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[String]]
+  def getPrefillArticles(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery, currentPageCodes: List[String]): Future[SearchResponse]
 }

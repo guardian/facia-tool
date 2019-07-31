@@ -74,6 +74,7 @@ const ImageMetadataContainer = styled('div')`
 `;
 
 interface ArticleBodyProps {
+  newspaperEditionDate?: string;
   firstPublicationDate?: string;
   frontPublicationDate?: number;
   scheduledPublicationDate?: string;

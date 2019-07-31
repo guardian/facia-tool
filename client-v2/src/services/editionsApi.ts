@@ -1,6 +1,7 @@
 import { EditionsIssue } from 'types/Edition';
 import { Moment } from 'moment';
 import pandaFetch from './pandaFetch';
+import { CAPISearchQueryResponse } from './capiQuery';
 
 const dateFormat = 'YYYY-MM-DD';
 
@@ -79,4 +80,13 @@ export const publishIssue = async (id: string): Promise<EditionsIssue> => {
     // TODO publish endpoint returns a 204 No Content, we probably want something...
     return response.json();
   });
+};
+
+export const getPrefills = async (
+  id: string
+): Promise<CAPISearchQueryResponse> => {
+  return pandaFetch(`/editions-api/collections/${id}/prefill`, {
+    method: 'get',
+    credentials: 'same-origin'
+  }).then(response => response.json());
 };
