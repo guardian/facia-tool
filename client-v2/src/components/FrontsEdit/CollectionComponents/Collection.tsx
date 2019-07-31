@@ -64,9 +64,7 @@ type CollectionProps = CollectionPropsBeforeState & {
   fetchPreviousCollectionArticles: (id: string) => void;
 };
 
-const PreviouslyCollectionContainer = styled('div')`
-  opacity: 0.5;
-`;
+const PreviouslyCollectionContainer = styled('div')``;
 
 const PreviouslyCollectionToggle = styled(CollectionMetaContainer)`
   align-items: center;
@@ -77,11 +75,14 @@ const PreviouslyCollectionToggle = styled(CollectionMetaContainer)`
 
 const PreviouslyGroupsWrapper = styled.div`
   padding-top: 0.25em;
+  opacity: 0.5;
 `;
 
 const PreviouslyCollectionInfo = styled('div')`
   background: ${theme.shared.colors.greyVeryLight};
   color: ${theme.shared.colors.blackDark};
+  padding: 4px 6px;
+  font-size: 14px;
 `;
 
 class Collection extends React.Component<CollectionProps> {
@@ -189,14 +190,16 @@ class Collection extends React.Component<CollectionProps> {
               <ButtonCircularCaret active={isPreviouslyOpen} />
             </PreviouslyCollectionToggle>
             {isPreviouslyOpen && (
-              <PreviouslyGroupsWrapper>
+              <>
                 <PreviouslyCollectionInfo>
                   This contains the 5 most recently deleted articles from the
                   live front. If the deleted articles were never launched they
                   will not appear here.
                 </PreviouslyCollectionInfo>
-                {children(previousGroup, true, false)}
-              </PreviouslyGroupsWrapper>
+                <PreviouslyGroupsWrapper>
+                  {children(previousGroup, true, false)}
+                </PreviouslyGroupsWrapper>
+              </>
             )}
           </PreviouslyCollectionContainer>
         </EditModeVisibility>
