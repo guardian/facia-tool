@@ -18,10 +18,11 @@ case class EditionsIssue(
     launchedEmail: Option[String],
     fronts: List[EditionsFront]
 ) {
-  def toPublishedIssue: PublishedIssue = PublishedIssue(
+  def toPublishedIssue(version: Option[String] = None): PublishedIssue = PublishedIssue(
     id,
     displayName,
     OffsetDateTime.ofInstant(Instant.ofEpochMilli(issueDate), ZoneId.of(timezoneId)),
+    version,
     fronts.flatMap(_.toPublishedFront)
   )
 }
