@@ -30,9 +30,7 @@ class EditionsTemplating(capi: Capi) {
                     EditionsCollectionSkeleton(
                       collection.name,
                       collection.prefill.map { prefill =>
-                        Try {
-                          Await.result(capi.getPrefillArticlePageCodes(date, prefill), 10 seconds)
-                        }.getOrElse(Nil)
+                        getPrefillArticles(date, prefill)
                       }.getOrElse(Nil),
                       collection.prefill,
                       collection.presentation,
@@ -48,5 +46,18 @@ class EditionsTemplating(capi: Capi) {
           None
         }
       }
+  }
+
+  // this function fetches articles from CAPI with enough data to resolve the defaults
+  def getPrefillArticles(date: ZonedDateTime, prefillQuery: CapiPrefillQuery): List[EditionsArticleSkeleton] = {
+    val items = Try(Await.result(capi.getPrefillArticleItems(date, prefillQuery), 10 seconds)).getOrElse(Nil)
+    items.map { case (pageCode, capiMetadata) =>
+      val metadata = ArticleMetadata.default.copy(
+        showByline = Some(capiMetadata.showByline),
+        showQuotedHeadline = Some(capiMetadata.showQuotedHeadline),
+        mediaType = if (capiMetadata.imageCutoutReplace) Some(MediaType.Cutout) else None
+      )
+      EditionsArticleSkeleton(pageCode, metadata)
+    }
   }
 }

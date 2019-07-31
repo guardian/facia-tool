@@ -35,6 +35,8 @@ case class ArticleMetadata (
 
 object ArticleMetadata {
   implicit val format = Json.format[ArticleMetadata]
+
+  val default = ArticleMetadata(None, None, None, None, None, None, None, None, None, None)
 }
 
 case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[ArticleMetadata]) {

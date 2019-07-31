@@ -103,8 +103,7 @@ POST        /api/usage                               controllers.GridProxy.addUs
 # Editions
 GET         /editions-api/editions                               controllers.EditionsController.getAvailableEditions
 GET         /editions-api/editions/:name/issues                  controllers.EditionsController.listIssues(name)
-POST        /editions-api/editions/:name/issues                  controllers.EditionsController.postIssue(name)
-
+POST        /editions-api/editions/:name/issues                  controllers.EditionsController.createIssue(name)
 GET         /editions-api/issues/:id                             controllers.EditionsController.getIssue(id)
 GET         /editions-api/issues/:id/summary                     controllers.EditionsController.getIssueSummary(id)
 POST        /editions-api/issues/:id/publish                     controllers.EditionsController.publishIssue(id)

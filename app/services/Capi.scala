@@ -11,6 +11,8 @@ import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCred
 import com.gu.contentapi.client.model._
 import com.gu.contentapi.client.model.v1.SearchResponse
 import com.gu.contentapi.client.{GuardianContentClient, IAMEncoder, IAMSigner, Parameter}
+import com.gu.facia.api.utils.{CardStyle, ResolvedMetaData}
+import com.gu.facia.client.models.TrailMetaData
 import conf.ApplicationConfiguration
 import logging.Logging
 import model.editions.CapiPrefillQuery
@@ -128,7 +130,13 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
     }
   }
 
-  def getPrefillArticlePageCodes(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[String]] = {
+  /**
+    * Get a list of article items in the order they exist according to the newspaper page number
+    * @param issueDate
+    * @param capiPrefillQuery
+    * @return
+    */
+  def getPrefillArticleItems(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[(String, ResolvedMetaData)]] = {
     val fields = List(
       "newspaperEditionDate",
       "newspaperPageNumber",
@@ -137,15 +145,22 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
 
     this.getResponse(geneneratePrefillQuery(issueDate, capiPrefillQuery, fields)) map { response =>
       response.results
-        .flatMap {
-          _.fields
-            .flatMap(fields => (fields.newspaperPageNumber, fields.internalPageCode) match {
-              case (Some(number), Some(code)) => Some((number, code.toString))
-              case _ => None
-            })
-      }
-        .sortBy(_._1)
-        .map(_._2)
+        .map { content =>
+          val newspaperPageNumber = content.fields.flatMap(_.newspaperPageNumber)
+          val internalPageCode = content.fields.flatMap(_.internalPageCode)
+          val cardStyle = CardStyle(content, TrailMetaData.empty)
+          val metadata = ResolvedMetaData.fromContent(content, cardStyle)
+          (newspaperPageNumber, internalPageCode, metadata)
+        }
+        .collect {
+          case (Some(pageNumber), Some(internalPageCode), metadata) => (pageNumber, internalPageCode.toString, metadata)
+        }
+        .sortBy {
+          case (pageNumber, _, _) => pageNumber
+        }
+        .map {
+          case (_, internalPageCode, metaData) => (internalPageCode, metaData)
+        }
         .toList
     }
   }
@@ -162,6 +177,6 @@ case class PrintSentQuery(parameterHolder: Map[String, Parameter] = Map.empty)
 
 trait Capi {
   def getPreviewHeaders(url: String): Seq[(String,String)]
-  def getPrefillArticlePageCodes(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[String]]
+  def getPrefillArticleItems(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[(String, ResolvedMetaData)]]
   def getPrefillArticles(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery, currentPageCodes: List[String]): Future[SearchResponse]
 }
