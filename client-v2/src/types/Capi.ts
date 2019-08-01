@@ -127,7 +127,7 @@ interface CapiArticle {
       imageSlideshowReplace: boolean;
       isBoosted: boolean;
       isBreaking: boolean;
-      showBoostedHeadline: boolean;
+      showLargeHeadline: boolean;
       showByline: boolean;
       showKickerCustom: boolean;
       showKickerSection: boolean;

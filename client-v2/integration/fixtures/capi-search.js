@@ -2910,7 +2910,7 @@ module.exports = {
             imageReplace: false,
             imageCutoutReplace: false,
             showKickerSection: false,
-            showBoostedHeadline: false
+            showLargeHeadline: false
           },
           tone: 'media'
         }
@@ -3249,7 +3249,7 @@ module.exports = {
             imageReplace: false,
             imageCutoutReplace: true,
             showKickerSection: false,
-            showBoostedHeadline: false
+            showLargeHeadline: false
           },
           tone: 'comment'
         }
@@ -3479,7 +3479,7 @@ module.exports = {
             imageReplace: false,
             imageCutoutReplace: false,
             showKickerSection: false,
-            showBoostedHeadline: false
+            showLargeHeadline: false
           },
           tone: 'review'
         }
@@ -3739,7 +3739,7 @@ module.exports = {
             imageReplace: false,
             imageCutoutReplace: false,
             showKickerSection: false,
-            showBoostedHeadline: false
+            showLargeHeadline: false
           },
           tone: 'analysis'
         }
@@ -4006,7 +4006,7 @@ module.exports = {
             imageReplace: false,
             imageCutoutReplace: false,
             showKickerSection: false,
-            showBoostedHeadline: false
+            showLargeHeadline: false
           },
           tone: 'review'
         }
@@ -4310,7 +4310,7 @@ module.exports = {
             imageReplace: false,
             imageCutoutReplace: false,
             showKickerSection: false,
-            showBoostedHeadline: false
+            showLargeHeadline: false
           },
           tone: 'feature'
         }
@@ -4584,7 +4584,7 @@ module.exports = {
             imageReplace: false,
             imageCutoutReplace: false,
             showKickerSection: false,
-            showBoostedHeadline: false
+            showLargeHeadline: false
           },
           tone: 'feature'
         }
@@ -4923,7 +4923,7 @@ module.exports = {
             imageReplace: false,
             imageCutoutReplace: false,
             showKickerSection: false,
-            showBoostedHeadline: false
+            showLargeHeadline: false
           },
           tone: 'media'
         }
@@ -5170,7 +5170,7 @@ module.exports = {
             imageReplace: false,
             imageCutoutReplace: false,
             showKickerSection: false,
-            showBoostedHeadline: false
+            showLargeHeadline: false
           },
           tone: 'feature'
         }
@@ -5447,7 +5447,7 @@ module.exports = {
             imageReplace: false,
             imageCutoutReplace: false,
             showKickerSection: false,
-            showBoostedHeadline: false
+            showLargeHeadline: false
           },
           tone: 'feature'
         }

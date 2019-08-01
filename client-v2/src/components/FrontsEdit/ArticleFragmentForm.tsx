@@ -317,7 +317,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             />
             <ConditionalField
               permittedFields={editableFields}
-              name="showBoostedHeadline"
+              name="showLargeHeadline"
               component={InputCheckboxToggle}
               label="Large headline"
               id={getInputId(articleFragmentId, 'large-headline')}

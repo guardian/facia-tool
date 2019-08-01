@@ -30,7 +30,7 @@ module.exports = {
         byline: 'Jess Zimmerman',
         imageReplace: false,
         imageCutoutReplace: false,
-        showBoostedHeadline: false,
+        showLargeHeadline: false,
         customKicker: ''
       }
     }
@@ -54,7 +54,7 @@ module.exports = {
         supporting: [],
         imageReplace: false,
         imageCutoutReplace: false,
-        showBoostedHeadline: false,
+        showLargeHeadline: false,
         customKicker: ''
       }
     }

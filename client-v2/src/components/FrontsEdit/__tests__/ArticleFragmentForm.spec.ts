@@ -31,7 +31,7 @@ const formValues = {
     thumb: undefined,
     width: undefined
   },
-  showBoostedHeadline: false,
+  showLargeHeadline: false,
   showByline: false,
   showQuotedHeadline: false,
   slideshow: [undefined, undefined, undefined, undefined, undefined],
