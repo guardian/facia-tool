@@ -23,7 +23,6 @@ import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
 import { CollectionItemSizes } from 'shared/types/Collection';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
 import CollectionItemDraftMetaContent from '../collectionItem/CollectionItemDraftMetaContent';
-import ColouredQuote from '../collectionItem/CollectionItemQuote';
 import DraggableArticleImageContainer from './DraggableArticleImageContainer';
 import { media } from 'shared/util/mediaQueries';
 
@@ -40,7 +39,6 @@ const NotLiveContainer = styled(CollectionItemMetaHeading)`
 const KickerHeading = styled(CollectionItemHeading)`
   font-family: TS3TextSans;
   font-weight: bold;
-  padding-left: 0px;
   font-size: ${({ displaySize }) =>
     displaySize === 'small'
       ? globalTheme.shared.collectionItem.fontSizeSmall
@@ -123,21 +121,6 @@ interface ArticleBodyProps {
   isDraggingImageOver: boolean;
   isBoosted?: boolean;
 }
-
-const renderColouredQuotes = (
-  size?: 'small' | 'default',
-  pillarId?: string,
-  isLive?: boolean
-) => {
-  const pillarColour = getPillarColor(pillarId, isLive || true);
-  const height = size === 'small' ? '12px' : '18px';
-  return (
-    <React.Fragment>
-      <ColouredQuote colour={pillarColour} height={height} />
-      <ColouredQuote colour={pillarColour} height={height} />
-    </React.Fragment>
-  );
-};
 
 const articleBodyDefault = React.memo(
   ({
