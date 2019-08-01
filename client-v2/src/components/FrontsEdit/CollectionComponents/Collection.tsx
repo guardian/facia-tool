@@ -10,6 +10,7 @@ import {
   discardDraftChangesToCollection,
   openCollectionsAndFetchTheirArticles
 } from 'actions/Collections';
+import { actions } from 'shared/bundles/collectionsBundle';
 import {
   selectHasUnpublishedChanges,
   selectCollectionHasPrefill, selectCollectionIsHidden
@@ -68,7 +69,7 @@ type CollectionProps = CollectionPropsBeforeState & {
   fetchPreviousCollectionArticles: (id: string) => void;
   fetchPrefill: (id: string) => void;
   hasPrefill: boolean;
-  toggleHidden: (id: string) => void;
+  setHidden: (id: string, isHidden: boolean) => void;
   isHidden: boolean;
 };
 
@@ -153,7 +154,7 @@ class Collection extends React.Component<CollectionProps> {
                 <Button
                   size="l"
                   priority="default"
-                  onClick={() => this.props.toggleHidden(id)}
+                  onClick={() => this.props.setHidden(id, !isHidden)}
                   title="Toggle the visibility of this container in this issue."
                 >
                   {isHidden
@@ -287,7 +288,7 @@ const mapDispatchToProps = (
   { browsingStage }: CollectionPropsBeforeState
 ) => ({
   fetchPrefill: (id: string) => dispatch(fetchPrefill(id)),
-  toggleHidden: (id: string) => dispatch(fetchPrefill(id)), // TODO: this obviously needs to toggle whether a collection is hidden or not
+  setHidden: (id: string, isHidden: boolean) => dispatch(actions.setHidden(id, isHidden)),
   publishCollection: (id: string, frontId: string) =>
     dispatch(publishCollection(id, frontId)),
   discardDraftChangesToCollection: (id: string) =>

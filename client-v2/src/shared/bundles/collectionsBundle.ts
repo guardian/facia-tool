@@ -1,6 +1,8 @@
 import { State as SharedState } from '../types/State';
-import createAsyncResourceBundle from 'lib/createAsyncResourceBundle';
+import createAsyncResourceBundle, {State, Actions} from 'lib/createAsyncResourceBundle';
 import { Collection } from 'shared/types/Collection';
+
+const collectionsEntityName = 'collections';
 
 const {
   actions,
@@ -8,7 +10,7 @@ const {
   reducer,
   selectors,
   initialState
-} = createAsyncResourceBundle<Collection>('collections', { indexById: true });
+} = createAsyncResourceBundle<Collection>(collectionsEntityName, { indexById: true });
 
 const collectionSelectors = {
   ...selectors,
@@ -49,10 +51,59 @@ const collectionSelectors = {
   }
 };
 
+const SET_HIDDEN = 'SET_HIDDEN' as 'SET_HIDDEN'
+
+const setHidden = (collectionId: string, isHidden: boolean) => ({
+  entity: collectionsEntityName,
+  type: SET_HIDDEN,
+  payload: {
+    collectionId,
+    isHidden
+  }
+});
+
+type SetHidden = ReturnType<typeof setHidden>
+
+const collectionActions = {
+  ...actions,
+  setHidden
+};
+
+type CollectionActions = Actions<Collection> | SetHidden
+
+const collectionReducer = (state: State<Collection>, action: CollectionActions): State<Collection> => {
+  const updatedState = reducer(state, action);
+  switch(action.type) {
+    case SET_HIDDEN: {
+      console.log(`Fielding SET_HIDDEN action with payload ${JSON.stringify(action.payload)}`);
+      if (!updatedState.data[action.payload.collectionId]) {
+        console.log('Collection not known');
+        return updatedState;
+      }
+
+      const freshState = {
+        ...updatedState,
+        data: {
+          ...updatedState.data,
+          [action.payload.collectionId]: {
+            ...updatedState.data[action.payload.collectionId],
+            isHidden: action.payload.isHidden
+          }
+        }
+      };
+      console.log(`Whoop! Updated state is now ${freshState}`);
+      return freshState;
+    }
+    default: {
+      return updatedState;
+    }
+  }
+};
+
 export {
-  actions,
+  collectionActions as actions,
   actionNames,
   collectionSelectors as selectors,
-  reducer,
+  collectionReducer as reducer,
   initialState
 };
