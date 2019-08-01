@@ -2,6 +2,7 @@ package services.editions
 
 import java.time.{LocalDate, LocalTime, ZonedDateTime}
 
+import logging.Logging
 import model.editions._
 import services.Capi
 
@@ -9,7 +10,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Try
 
-class EditionsTemplating(capi: Capi) {
+class EditionsTemplating(capi: Capi) extends Logging {
   def generateEditionTemplate(name: String, localDate: LocalDate): Option[EditionsIssueSkeleton] = {
    EditionsTemplates.templates
       .get(name)
@@ -55,7 +56,8 @@ class EditionsTemplating(capi: Capi) {
       val metadata = ArticleMetadata.default.copy(
         showByline = Some(capiMetadata.showByline),
         showQuotedHeadline = Some(capiMetadata.showQuotedHeadline),
-        mediaType = if (capiMetadata.imageCutoutReplace) Some(MediaType.Cutout) else None
+        mediaType = if (capiMetadata.cutout.isDefined) Some(MediaType.Cutout) else None,
+        cutoutImage = capiMetadata.cutout.map(url => Image(0, 0, url, url))
       )
       EditionsArticleSkeleton(pageCode, metadata)
     }

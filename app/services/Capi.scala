@@ -9,7 +9,7 @@ import org.apache.http.client.utils.URLEncodedUtils
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
 import com.gu.contentapi.client.model._
-import com.gu.contentapi.client.model.v1.SearchResponse
+import com.gu.contentapi.client.model.v1.{Content, SearchResponse, TagType}
 import com.gu.contentapi.client.{GuardianContentClient, IAMEncoder, IAMSigner, Parameter}
 import com.gu.facia.api.utils.{CardStyle, ResolvedMetaData}
 import com.gu.facia.client.models.TrailMetaData
@@ -20,6 +20,8 @@ import okhttp3.{Call, Callback, Request, Response}
 
 import scala.collection.JavaConverters._
 import scala.concurrent.{ExecutionContext, Future, Promise}
+
+case class PrefillMetadata(showByline: Boolean, showQuotedHeadline: Boolean, cutout: Option[String])
 
 class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext) extends GuardianContentClient(config.contentApi.editionsKey) with Capi with Logging {
   override def targetUrl: String = config.contentApi.editionsPrefillHost
@@ -136,20 +138,22 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
     * @param capiPrefillQuery
     * @return
     */
-  def getPrefillArticleItems(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[(String, ResolvedMetaData)]] = {
+  def getPrefillArticleItems(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[(String, PrefillMetadata)]] = {
     val fields = List(
       "newspaperEditionDate",
       "newspaperPageNumber",
       "internalPageCode"
     )
 
-    this.getResponse(geneneratePrefillQuery(issueDate, capiPrefillQuery, fields)) map { response =>
+    val query = geneneratePrefillQuery(issueDate, capiPrefillQuery, fields)
+      .showTags("all")
+
+    this.getResponse(query) map { response =>
       response.results
         .map { content =>
           val newspaperPageNumber = content.fields.flatMap(_.newspaperPageNumber)
           val internalPageCode = content.fields.flatMap(_.internalPageCode)
-          val cardStyle = CardStyle(content, TrailMetaData.empty)
-          val metadata = ResolvedMetaData.fromContent(content, cardStyle)
+          val metadata = prefillMetadata(content)
           (newspaperPageNumber, internalPageCode, metadata)
         }
         .collect {
@@ -164,6 +168,18 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
         .toList
     }
   }
+
+  def prefillMetadata(content: Content): PrefillMetadata = {
+    val cardStyle = CardStyle(content, TrailMetaData.empty)
+    val metadata = ResolvedMetaData.fromContent(content, cardStyle)
+    val maybeCutout = if (metadata.imageCutoutReplace) {
+      content.tags
+        .filter(_.`type` == TagType.Contributor)
+        .flatMap(_.bylineLargeImageUrl)
+        .headOption
+    } else None
+    PrefillMetadata(metadata.showByline, metadata.showQuotedHeadline, maybeCutout)
+  }
 }
 
 // Query generator for the print-sent endpoint
@@ -177,6 +193,6 @@ case class PrintSentQuery(parameterHolder: Map[String, Parameter] = Map.empty)
 
 trait Capi {
   def getPreviewHeaders(url: String): Seq[(String,String)]
-  def getPrefillArticleItems(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[(String, ResolvedMetaData)]]
+  def getPrefillArticleItems(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[(String, PrefillMetadata)]]
   def getPrefillArticles(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery, currentPageCodes: List[String]): Future[SearchResponse]
 }
