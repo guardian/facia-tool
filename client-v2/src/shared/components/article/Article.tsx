@@ -11,6 +11,7 @@ import {
 import { selectors } from 'shared/bundles/externalArticlesBundle';
 import { State } from '../../types/State';
 import { DerivedArticle } from '../../types/Article';
+import { PageViewStory } from '../../types/PageViewData';
 import CollectionItemBody from '../collectionItem/CollectionItemBody';
 import CollectionItemContainer from '../collectionItem/CollectionItemContainer';
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
@@ -18,6 +19,7 @@ import ArticleBody from './ArticleBody';
 import { CollectionItemSizes } from 'shared/types/Collection';
 import { getPillarColor } from 'shared/util/getPillarColor';
 import DragIntentContainer from '../DragIntentContainer';
+import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
 
 const ArticleBodyContainer = styled(CollectionItemBody)<{
   pillarId: string | undefined;
@@ -53,13 +55,16 @@ interface ArticleComponentProps {
   isUneditable?: boolean;
   showMeta?: boolean;
   canDragImage?: boolean;
+  canShowPageViewData: boolean;
+  pageViewStory: PageViewStory | undefined;
+  featureFlagPageViewData?: boolean;
 }
 
 interface ContainerProps extends ArticleComponentProps {
   selectSharedState?: (state: any) => State;
 }
 
-type ComponentProps = {
+interface ComponentProps extends ContainerProps {
   article?: DerivedArticle;
   isLoading?: boolean;
   size?: CollectionItemSizes;
@@ -67,7 +72,7 @@ type ComponentProps = {
   children: React.ReactNode;
   imageDropTypes?: string[];
   onImageDrop?: (e: React.DragEvent<HTMLElement>) => void;
-} & ContainerProps;
+}
 
 interface ComponentState {
   isDraggingImageOver: boolean;
@@ -106,7 +111,10 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
       imageDropTypes = [],
       onImageDrop,
       showMeta,
-      canDragImage
+      canDragImage,
+      featureFlagPageViewData,
+      canShowPageViewData = false,
+      pageViewStory
     } = this.props;
 
     const dragEventHasImageData = (e: React.DragEvent) =>
@@ -171,6 +179,9 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
                 showMeta={showMeta}
                 canDragImage={canDragImage}
                 isDraggingImageOver={this.state.isDraggingImageOver}
+                featureFlagPageViewData={featureFlagPageViewData}
+                canShowPageViewData={canShowPageViewData}
+                pageViewStory={pageViewStory}
               />
             </ArticleBodyContainer>
           </DragIntentContainer>
@@ -186,18 +197,29 @@ const createMapStateToProps = () => {
   return (
     state: State,
     props: ContainerProps
-  ): { article?: DerivedArticle; isLoading: boolean } => {
+  ): {
+    article?: DerivedArticle;
+    isLoading: boolean;
+    featureFlagPageViewData: boolean;
+    pageViewStory: PageViewStory | undefined;
+  } => {
     const sharedState = props.selectSharedState
       ? props.selectSharedState(state)
       : selectSharedState(state);
     const article = selectArticle(sharedState, props.id);
     const articleFragment = selectArticleFragment(sharedState, props.id);
+
     return {
       article,
       isLoading: selectors.selectIsLoadingInitialDataById(
         sharedState,
         articleFragment.id
-      )
+      ),
+      featureFlagPageViewData: selectFeatureValue(
+        selectSharedState(state),
+        'page-view-data-visualisation'
+      ),
+      pageViewStory: props.pageViewStory
     };
   };
 };

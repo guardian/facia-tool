@@ -2,6 +2,10 @@ import { fetchStaleOpenCollections } from 'actions/Collections';
 import { Dispatch } from 'types/Store';
 import { Store } from 'types/Store';
 import { selectPriority } from 'selectors/pathSelectors';
+import { matchFrontsEditPath, matchIssuePath } from 'routes/routes';
+import { selectV2SubPath } from 'selectors/pathSelectors';
+import { selectAllCollectionWithArticles } from 'selectors/pageViewDataSelectors';
+import { getPageViewData } from 'actions/PageViewData';
 
 /**
  * TODO: do we want to check if there are any collectionUpdates going out here
@@ -19,4 +23,44 @@ export default (store: Store) =>
       return;
     }
     (store.dispatch as Dispatch)(fetchStaleOpenCollections(priority));
+
+    const openFrontIds = store.getState().editor.frontIdsByPriority.editorial;
+    const openFrontIdsWithCollections = openFrontIds.map(frontId => {
+      return {
+        frontId,
+        collections: store.getState().fronts.frontsConfig.data.fronts[frontId]
+          .collections
+      };
+    });
+
+    const getOpenCollectionsForFront = (
+      allCollectionsInAFront: string[]
+    ): string[] => {
+      return allCollectionsInAFront.filter(collection =>
+        store.getState().editor.collectionIds.includes(collection)
+      );
+    };
+
+    return openFrontIdsWithCollections.map(frontWithItsCollections => {
+      const collectionsWithoutArticles = getOpenCollectionsForFront(
+        frontWithItsCollections.collections
+      );
+
+      const collectionsWithArticles = selectAllCollectionWithArticles(
+        store,
+        collectionsWithoutArticles
+      );
+
+      if (collectionsWithArticles) {
+        collectionsWithArticles.forEach(collection => {
+          (store.dispatch as Dispatch)(
+            getPageViewData(
+              frontWithItsCollections.frontId,
+              collection.articles,
+              collection.id
+            )
+          );
+        });
+      }
+    });
   }, 10000);

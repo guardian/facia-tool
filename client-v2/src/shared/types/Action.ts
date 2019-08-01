@@ -7,6 +7,7 @@ import {
 } from './Collection';
 import { Actions } from 'lib/createAsyncResourceBundle';
 import { copyArticleFragmentImageMeta } from 'shared/actions/ArticleFragments';
+import { PageViewStory } from './PageViewData';
 
 interface ArticleFragmentsReceived {
   type: 'SHARED/ARTICLE_FRAGMENTS_RECEIVED';
@@ -82,6 +83,19 @@ type CopyArticleFragmentImageMeta = ReturnType<
   typeof copyArticleFragmentImageMeta
 >;
 
+interface PageViewDataRequested {
+  type: 'PAGE_VIEW_DATA_REQUESTED';
+}
+
+interface PageViewDataReceived {
+  type: 'PAGE_VIEW_DATA_RECEIVED';
+  payload: {
+    data: PageViewStory[];
+    frontId: string;
+    collectionId: string;
+  };
+}
+
 type Action =
   | GroupsReceived
   | InsertGroupArticleFragment
@@ -95,7 +109,9 @@ type Action =
   | UpdateArticleFragmentMeta
   | MaybeAddFrontPublicationDate
   | CapGroupSiblings
-  | CopyArticleFragmentImageMeta;
+  | CopyArticleFragmentImageMeta
+  | PageViewDataRequested
+  | PageViewDataReceived;
 
 export {
   Action,
@@ -109,5 +125,7 @@ export {
   InsertArticleFragmentPayload,
   RemoveArticleFragmentPayload,
   CapGroupSiblings,
-  MaybeAddFrontPublicationDate
+  MaybeAddFrontPublicationDate,
+  PageViewDataRequested,
+  PageViewDataReceived
 };

@@ -18,6 +18,13 @@ import { connect } from 'react-redux';
 import { State } from 'types/State';
 import { createSelectArticleVisibilityDetails } from 'selectors/frontsSelectors';
 import FocusWrapper from 'components/FocusWrapper';
+import { getPageViewData } from 'actions/PageViewData';
+import { selectPageViewDataForCollection } from 'selectors/pageViewDataSelectors';
+import {
+  PageViewDataPerCollection,
+  PageViewStory,
+  ArticlePathAndId
+} from 'shared/types/PageViewData';
 
 const getArticleNotifications = (
   id: string,
@@ -94,10 +101,10 @@ interface CollectionContextProps {
   size?: 'medium' | 'default';
   handleMove: (move: Move<TArticleFragment>) => void;
   handleInsert: (e: React.DragEvent, to: PosSpec) => void;
-  selectArticleFragment: (id: string, isSupporting: boolean) => void;
+  chooseArticleFragment: (id: string, isSupporting: boolean) => void;
 }
 
-type ConnectedCollectionContextProps = CollectionContextProps & {
+interface ConnectedCollectionContextProps extends CollectionContextProps {
   handleArticleFocus: (
     e: React.FocusEvent<HTMLDivElement>,
     groupId: string,
@@ -109,11 +116,27 @@ type ConnectedCollectionContextProps = CollectionContextProps & {
   handleBlur: () => void;
   lastDesktopArticle?: string;
   lastMobileArticle?: string;
-};
+  pageViewData: PageViewDataPerCollection | undefined;
+  getPageViewDataForCollectionItem?: (
+    articleId: string,
+    pageViewData: PageViewDataPerCollection
+  ) => PageViewStory;
+}
 
 class CollectionContext extends React.Component<
   ConnectedCollectionContextProps
 > {
+  public getPageViewDataForCollectionItem(
+    articleId: string,
+    pageViewData: PageViewDataPerCollection
+  ) {
+    if (pageViewData && pageViewData.stories) {
+      return pageViewData.stories.find(
+        (story: PageViewStory) => story.articleId === articleId
+      );
+    }
+  }
+
   public render() {
     const {
       id,
@@ -126,12 +149,14 @@ class CollectionContext extends React.Component<
       handleMove,
       handleInsert,
       handleArticleFocus,
-      selectArticleFragment,
+      chooseArticleFragment,
       removeCollectionItem,
       removeSupportingCollectionItem,
       lastDesktopArticle,
-      lastMobileArticle
+      lastMobileArticle,
+      pageViewData
     } = this.props;
+
     return (
       <CollectionWrapper data-testid="collection">
         <Collection
@@ -178,13 +203,18 @@ class CollectionContext extends React.Component<
                         parentId={group.uuid}
                         isUneditable={isUneditable}
                         size={size}
+                        canShowPageViewData={true} //should this be hardcoded here or set in a variable !!!!
                         getNodeProps={() => getAfNodeProps(isUneditable)}
                         onSelect={() =>
-                          selectArticleFragment(articleFragment.uuid, false)
+                          chooseArticleFragment(articleFragment.uuid, false)
                         }
                         onDelete={() =>
                           removeCollectionItem(group.uuid, articleFragment.uuid)
                         }
+                        pageViewStory={this.getPageViewDataForCollectionItem(
+                          articleFragment.uuid,
+                          pageViewData
+                        )}
                       >
                         <ArticleFragmentLevel
                           isUneditable={isUneditable}
@@ -197,8 +227,9 @@ class CollectionContext extends React.Component<
                               frontId={frontId}
                               uuid={supporting.uuid}
                               parentId={articleFragment.uuid}
+                              canShowPageViewData={false}
                               onSelect={() =>
-                                selectArticleFragment(supporting.uuid, true)
+                                chooseArticleFragment(supporting.uuid, true)
                               }
                               isUneditable={isUneditable}
                               getNodeProps={() =>
@@ -241,9 +272,13 @@ const createMapStateToProps = () => {
       collectionId: props.id,
       collectionSet: props.browsingStage
     });
+
+    const pageViewData = selectPageViewDataForCollection(state, props.id);
+
     return {
       lastDesktopArticle: articleVisibilityDetails.desktop,
-      lastMobileArticle: articleVisibilityDetails.mobile
+      lastMobileArticle: articleVisibilityDetails.mobile,
+      pageViewData
     };
   };
 };
@@ -257,7 +292,14 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       removeArticleFragment('articleFragment', parentId, uuid, 'collection')
     );
   },
-  handleBlur: () => dispatch(resetFocusState())
+  handleBlur: () => dispatch(resetFocusState()),
+  fetchPageViewData: (
+    frontId: string,
+    articles: ArticlePathAndId[],
+    collectionId: string
+  ) => {
+    dispatch(getPageViewData(frontId, articles, collectionId));
+  }
 });
 
 export default connect(

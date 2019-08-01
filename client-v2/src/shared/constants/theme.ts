@@ -31,7 +31,9 @@ const colors = {
   orangeDark: '#E05E00',
   orangeFaded: '#D08B5A',
   yellow: '#FFE500',
-  green: '#4F9245'
+  green: '#4F9245',
+  greenDark: '#36842A',
+  greenLight: '#ddead9'
 };
 
 const base = {
