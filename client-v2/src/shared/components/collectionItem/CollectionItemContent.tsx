@@ -6,7 +6,6 @@ const CollectionItemContent = styled('div')<{
   textSize?: CollectionItemSizes;
 }>`
   position: relative;
-  padding: 0 8px;
   font-size: ${({ textSize, theme }) =>
     textSize === 'small'
       ? theme.shared.collectionItem.fontSizeSmall

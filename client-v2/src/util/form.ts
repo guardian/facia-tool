@@ -17,7 +17,7 @@ export interface ArticleFragmentFormData {
   headline: string;
   isBoosted: boolean;
   showQuotedHeadline: boolean;
-  showBoostedHeadline: boolean;
+  showLargeHeadline: boolean;
   customKicker: string;
   isBreaking: boolean;
   showLivePlayable: boolean;
@@ -93,7 +93,7 @@ export const getInitialValuesForArticleFragmentForm = (
         headline: article.headline || '',
         isBoosted: article.isBoosted || false,
         showQuotedHeadline: article.showQuotedHeadline || false,
-        showBoostedHeadline: article.showBoostedHeadline || false,
+        showLargeHeadline: article.showLargeHeadline || false,
         showKickerTag: article.showKickerTag || false,
         showKickerSection: article.showKickerSection || false,
         customKicker: article.customKicker || '',

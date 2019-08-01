@@ -646,7 +646,7 @@ const shared = {
             imageReplace: false,
             imageCutoutReplace: false,
             showKickerSection: false,
-            showBoostedHeadline: false
+            showLargeHeadline: false
           },
           tone: 'media'
         },

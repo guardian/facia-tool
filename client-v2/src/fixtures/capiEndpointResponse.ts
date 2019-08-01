@@ -277,7 +277,7 @@ export const articlesForScJohnsonPartnerZone = {
             imageReplace: false,
             imageCutoutReplace: false,
             showKickerSection: false,
-            showBoostedHeadline: false
+            showLargeHeadline: false
           },
           tone: 'feature'
         }
@@ -511,7 +511,7 @@ export const articlesForScJohnsonPartnerZone = {
             imageReplace: false,
             imageCutoutReplace: false,
             showKickerSection: false,
-            showBoostedHeadline: false
+            showLargeHeadline: false
           },
           tone: 'news'
         }

@@ -49,7 +49,7 @@ interface ArticleFragmentRootMeta {
   isBoosted?: boolean;
   showLivePlayable?: boolean;
   showMainVideo?: boolean;
-  showBoostedHeadline?: boolean;
+  showLargeHeadline?: boolean;
   showQuotedHeadline?: boolean;
   showByline?: boolean;
   imageCutoutReplace?: boolean;

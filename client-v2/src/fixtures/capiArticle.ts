@@ -278,7 +278,7 @@ const capiArticleWithElementsThumbnail = {
       imageReplace: false,
       imageCutoutReplace: false,
       showKickerSection: false,
-      showBoostedHeadline: false
+      showLargeHeadline: false
     },
     tone: 'string',
     sectionName: 'news'

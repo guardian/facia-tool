@@ -338,7 +338,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 type="checkbox"
               />
               <Field
-                name="showBoostedHeadline"
+                name="showLargeHeadline"
                 component={InputCheckboxToggleInline}
                 label="Large headline"
                 id={getInputId(articleFragmentId, 'large-headline')}

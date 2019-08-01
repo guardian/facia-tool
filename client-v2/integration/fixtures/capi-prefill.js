@@ -2201,7 +2201,7 @@ module.exports = {
             imageReplace: false,
             imageCutoutReplace: false,
             showKickerSection: false,
-            showBoostedHeadline: false
+            showLargeHeadline: false
           },
           tone: 'news'
         }
@@ -2538,7 +2538,7 @@ module.exports = {
             imageReplace: false,
             imageCutoutReplace: false,
             showKickerSection: false,
-            showBoostedHeadline: false
+            showLargeHeadline: false
           },
           tone: 'news'
         }
@@ -2826,7 +2826,7 @@ module.exports = {
             imageReplace: false,
             imageCutoutReplace: false,
             showKickerSection: false,
-            showBoostedHeadline: false
+            showLargeHeadline: false
           },
           tone: 'news'
         }
@@ -3058,7 +3058,7 @@ module.exports = {
             imageReplace: false,
             imageCutoutReplace: false,
             showKickerSection: false,
-            showBoostedHeadline: false
+            showLargeHeadline: false
           },
           tone: 'news'
         }
@@ -3365,7 +3365,7 @@ module.exports = {
             imageReplace: false,
             imageCutoutReplace: false,
             showKickerSection: false,
-            showBoostedHeadline: false
+            showLargeHeadline: false
           },
           tone: 'analysis'
         }
