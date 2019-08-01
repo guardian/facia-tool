@@ -33,7 +33,7 @@ import { getArticlesForCollections } from 'actions/Collections';
 import { collectionItemSets } from 'constants/fronts';
 import CollectionMetaContainer from 'shared/components/collection/CollectionMetaContainer';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
-import { styled } from 'constants/theme';
+import { theme, styled } from 'constants/theme';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { fetchPrefill } from 'bundles/capiFeedBundle';
 
@@ -58,7 +58,7 @@ type CollectionProps = CollectionPropsBeforeState & {
   hasUnpublishedChanges: boolean;
   canPublish: boolean;
   groups: Group[];
-  previousGroups: Group[];
+  previousGroup: Group;
   displayEditWarning: boolean;
   isCollectionLocked: boolean;
   isEditFormOpen: boolean;
@@ -70,9 +70,7 @@ type CollectionProps = CollectionPropsBeforeState & {
   hasPrefill: boolean;
 };
 
-const PreviouslyCollectionContainer = styled('div')`
-  opacity: 0.5;
-`;
+const PreviouslyCollectionContainer = styled('div')``;
 
 const PreviouslyCollectionToggle = styled(CollectionMetaContainer)`
   align-items: center;
@@ -83,6 +81,14 @@ const PreviouslyCollectionToggle = styled(CollectionMetaContainer)`
 
 const PreviouslyGroupsWrapper = styled.div`
   padding-top: 0.25em;
+  opacity: 0.5;
+`;
+
+const PreviouslyCollectionInfo = styled('div')`
+  background: ${theme.shared.colors.greyVeryLight};
+  color: ${theme.shared.colors.blackDark};
+  padding: 4px 6px;
+  font-size: 14px;
 `;
 
 class Collection extends React.Component<CollectionProps> {
@@ -105,7 +111,7 @@ class Collection extends React.Component<CollectionProps> {
       children,
       alsoOn,
       groups,
-      previousGroups,
+      previousGroup: previousGroup,
       browsingStage,
       hasUnpublishedChanges,
       canPublish = true,
@@ -202,13 +208,20 @@ class Collection extends React.Component<CollectionProps> {
               onClick={this.togglePreviouslyOpen}
               data-testid="previously-toggle"
             >
-              Recently removed
+              Recently removed from launched front
               <ButtonCircularCaret active={isPreviouslyOpen} />
             </PreviouslyCollectionToggle>
             {isPreviouslyOpen && (
-              <PreviouslyGroupsWrapper>
-                {previousGroups.map(group => children(group, true, false))}
-              </PreviouslyGroupsWrapper>
+              <>
+                <PreviouslyCollectionInfo>
+                  This contains the 5 most recently deleted articles from the
+                  live front. If the deleted articles were never launched they
+                  will not appear here.
+                </PreviouslyCollectionInfo>
+                <PreviouslyGroupsWrapper>
+                  {children(previousGroup, true, false)}
+                </PreviouslyGroupsWrapper>
+              </>
             )}
           </PreviouslyCollectionContainer>
         </EditModeVisibility>
@@ -241,7 +254,7 @@ const createMapStateToProps = () => {
         collectionSet: browsingStage,
         collectionId
       }),
-      previousGroups: selectPreviously(selectSharedState(state), {
+      previousGroup: selectPreviously(selectSharedState(state), {
         collectionId
       }),
       displayEditWarning: selectEditWarning(selectSharedState(state), {

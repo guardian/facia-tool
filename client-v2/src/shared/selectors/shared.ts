@@ -226,11 +226,19 @@ const createSelectPreviouslyLiveArticlesInCollection = () => {
   const selectCollection = createSelectCollection();
   return createShallowEqualResultSelector(
     selectCollection,
-    selectGroups,
-    (collection: Collection | void, groups: { [id: string]: Group }): Group[] =>
-      ((collection && collection[collectionItemSets.previously]) || []).map(
-        id => groups[id]
-      )
+    // All components that display articles do so using Groups. As a result, we have to create
+    // a Group here, to be able to render the previously removed articles.
+    // This will return the UUIDs for the 5 most recently removed articles.
+    // TODO: consider how we could change this interface, so we don't need to create this.
+    (collection: Collection | void): Group => ({
+      id: null,
+      name: null,
+      uuid: 'previously',
+      articleFragments: (
+        (collection && collection.previouslyArticleFragmentIds) ||
+        []
+      ).slice(0, 5)
+    })
   );
 };
 
