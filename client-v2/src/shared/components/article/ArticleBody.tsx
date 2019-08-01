@@ -40,7 +40,7 @@ const NotLiveContainer = styled(CollectionItemMetaHeading)`
 const KickerHeading = styled(CollectionItemHeading)`
   font-family: TS3TextSans;
   font-weight: bold;
-  padding-right: 3px;
+  padding-left: 0px;
   font-size: ${({ displaySize }) =>
     displaySize === 'small'
       ? globalTheme.shared.collectionItem.fontSizeSmall
@@ -60,10 +60,6 @@ const ArticleBodyByline = styled('div')`
   padding-top: 5px;
 `;
 
-const ArticleBodyQuoteContainer = styled('span')`
-  margin-right: 0.1rem;
-`;
-
 const FirstPublicationDate = styled(CollectionItemMetaContent)`
   color: ${({ theme }) => theme.shared.colors.green};
 `;
@@ -71,6 +67,25 @@ const FirstPublicationDate = styled(CollectionItemMetaContent)`
 const ImageMetadataContainer = styled('div')`
   font-size: 10px;
   background-color: ${({ theme }) => theme.shared.colors.whiteLight};
+`;
+
+const ArticleMetadataProperties = styled('div')`
+  padding: 0 4px 3px 0;
+  display: flex;
+  flex-direction: row;
+  font-size: 12px;
+  flex-wrap: wrap;
+`;
+
+const ArticleMetadataProperty = styled('div')`
+  background-color: ${({ theme }) => theme.shared.colors.whiteDark};
+  padding: 1px 4px;
+  flex: 0 0 auto;
+  margin: 0 2px 1px 0;
+`;
+
+const ArticleHeadingContainerWrapper = styled('div')`
+  padding: 0 0 0 4px;
 `;
 
 interface ArticleBodyProps {
@@ -102,10 +117,11 @@ interface ArticleBodyProps {
   imageCutoutReplace?: boolean;
   isBreaking?: boolean;
   type?: string;
-  showBoostedHeadline?: boolean;
+  showLargeHeadline?: boolean;
   showMeta?: boolean;
   canDragImage?: boolean;
   isDraggingImageOver: boolean;
+  isBoosted?: boolean;
 }
 
 const renderColouredQuotes = (
@@ -152,15 +168,15 @@ const articleBodyDefault = React.memo(
     isBreaking,
     type,
     uuid,
-    showBoostedHeadline,
+    showLargeHeadline,
     showMeta = true,
     canDragImage = true,
-    isDraggingImageOver
+    isDraggingImageOver,
+    isBoosted
   }: ArticleBodyProps) => {
     const ArticleHeadingContainer =
       size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
     const displayByline = size === 'default' && showByline && byline;
-    const kickerToDisplay = isBreaking ? 'Breaking news' : kicker;
     const now = Date.now();
 
     return (
@@ -206,37 +222,61 @@ const articleBodyDefault = React.memo(
           </CollectionItemMetaContainer>
         )}
         <CollectionItemContent displaySize={size} textSize={textSize}>
-          <ArticleHeadingContainer>
-            {displayPlaceholders && (
-              <>
-                <TextPlaceholder />
-                {size === 'default' && <TextPlaceholder width={25} />}
-              </>
-            )}
-            {kickerToDisplay && (
-              <KickerHeading
+          {(isBreaking ||
+            showByline ||
+            showQuotedHeadline ||
+            showLargeHeadline ||
+            isBoosted) && (
+            <ArticleMetadataProperties>
+              {isBreaking && (
+                <ArticleMetadataProperty>Breaking news</ArticleMetadataProperty>
+              )}
+              {showByline && (
+                <ArticleMetadataProperty>Show byline</ArticleMetadataProperty>
+              )}
+              {showQuotedHeadline && (
+                <ArticleMetadataProperty>
+                  Quote headline
+                </ArticleMetadataProperty>
+              )}
+              {showLargeHeadline && (
+                <ArticleMetadataProperty>
+                  Large headline
+                </ArticleMetadataProperty>
+              )}
+              {isBoosted && (
+                <ArticleMetadataProperty>Boost</ArticleMetadataProperty>
+              )}
+            </ArticleMetadataProperties>
+          )}
+          <ArticleHeadingContainerWrapper>
+            <ArticleHeadingContainer>
+              {displayPlaceholders && (
+                <>
+                  <TextPlaceholder />
+                  {size === 'default' && <TextPlaceholder width={25} />}
+                </>
+              )}
+              {kicker && (
+                <KickerHeading
+                  displaySize={size}
+                  style={{ color: getPillarColor(pillarId, true) }}
+                  data-testid="kicker"
+                >
+                  {`${kicker} `}
+                </KickerHeading>
+              )}
+              <CollectionItemHeading
+                html
+                data-testid="headline"
                 displaySize={size}
-                style={{ color: getPillarColor(pillarId, true) }}
-                data-testid="kicker"
+                showLargeHeadline={showLargeHeadline}
               >
-                {`${kickerToDisplay} `}
-              </KickerHeading>
-            )}
-            {showQuotedHeadline && (
-              <ArticleBodyQuoteContainer>
-                {renderColouredQuotes(size, pillarId, isLive)}
-              </ArticleBodyQuoteContainer>
-            )}
-            <CollectionItemHeading
-              html
-              data-testid="headline"
-              displaySize={size}
-              showBoostedHeadline={showBoostedHeadline}
-            >
-              {headline}
-            </CollectionItemHeading>
-          </ArticleHeadingContainer>
-          {displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
+                {headline}
+              </CollectionItemHeading>
+            </ArticleHeadingContainer>
+            {displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
+          </ArticleHeadingContainerWrapper>
         </CollectionItemContent>
         {size === 'default' &&
           (displayPlaceholders ? (
