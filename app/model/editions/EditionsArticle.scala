@@ -4,8 +4,8 @@ import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
 case class Image (
-  height: Int,
-  width: Int,
+  height: Option[Int],
+  width: Option[Int],
   origin: String,
   src: String,
   thumb: Option[String] = None

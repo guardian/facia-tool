@@ -45,7 +45,7 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         None,
         None,
         Some(MediaType.Hide),
-        Some(Image(100, 100, "file://origin-new-pokemon.gif", "file://new-pokemon.gif")),
+        Some(Image(Some(100), Some(100), "file://origin-new-pokemon.gif", "file://new-pokemon.gif")),
         None,
         None
       )
@@ -77,10 +77,10 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         None,
         Some(MediaType.Image),
         None,
-        Some(Image(100, 100, "file://elephant.jpg", "file://elephant.png")),
+        Some(Image(Some(100), Some(100), "file://elephant.jpg", "file://elephant.png")),
         Some(List(
-          Image(100, 100, "file://elephant-playing-in-mud.jpg", "file://elephant-playing-in-mud.png"),
-          Image(100, 100, "file://elephant-spraying-water.jpg", "file://elephant-spraying-water.png")
+          Image(Some(100), Some(100), "file://elephant-playing-in-mud.jpg", "file://elephant-playing-in-mud.png"),
+          Image(Some(100), Some(100), "file://elephant-spraying-water.jpg", "file://elephant-spraying-water.png")
         ))
       )
 
@@ -99,8 +99,8 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
 
       clientArticleMetadata.imageSlideshowReplace shouldBe Some(false)
       clientArticleMetadata.slideshow shouldBe Some(List(
-        Image(100, 100, "file://elephant-playing-in-mud.jpg", "file://elephant-playing-in-mud.png"),
-        Image(100, 100, "file://elephant-spraying-water.jpg", "file://elephant-spraying-water.png")
+        Image(Some(100), Some(100), "file://elephant-playing-in-mud.jpg", "file://elephant-playing-in-mud.png"),
+        Image(Some(100), Some(100), "file://elephant-spraying-water.jpg", "file://elephant-spraying-water.png")
       ))
     }
 
@@ -158,16 +158,16 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
       articleMetadata.mediaType.isDefined shouldBe true
       articleMetadata.mediaType.get shouldBe MediaType.Image
       articleMetadata.replaceImage shouldBe Some(Image(
-        100,
-        100,
+        Some(100),
+        Some(100),
         "file://lightning.gif",
         "file://lightning.jpg",
         Some("file://lightning.png")
       ))
 
       articleMetadata.cutoutImage shouldBe Some(Image(
-        100,
-        100,
+        Some(100),
+        Some(100),
         "file://broom.gif",
         "file://broom.jpg"
       ))

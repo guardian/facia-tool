@@ -15,7 +15,7 @@ class editionTemplateTest extends FreeSpec with Matchers {
   object TestCapi extends Capi {
     override def getPreviewHeaders(url: String): Seq[(String, String)] = Seq.empty[(String, String)]
     override def getPrefillArticles(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery, currentPageCodes: List[String]): Future[SearchResponse] = Future.successful(null)
-    override def getPrefillArticlePageCodes(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[String]] = Future.successful(Nil)
+    override def getPrefillArticleItems(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[(String, PrefillMetadata)]] = Future.successful(Nil)
   }
   val templating = new EditionsTemplating(TestCapi)
 

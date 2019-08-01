@@ -7,6 +7,7 @@ import fixtures.{EditionsDBService, UsesDatabase}
 import model.editions._
 import model.forms.GetCollectionsFilter
 import org.scalatest.{FreeSpec, Matchers, OptionValues}
+import services.PrefillMetadata
 
 class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with OptionValues {
 
@@ -43,8 +44,10 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   private def front(name: String, collections: EditionsCollectionSkeleton*): EditionsFrontSkeleton =
     EditionsFrontSkeleton(name, collections.toList, FrontPresentation(), hidden = false, canRename = false)
 
-  private def collection(name: String, prefill: Option[CapiPrefillQuery], articles: String*): EditionsCollectionSkeleton =
+  private def collection(name: String, prefill: Option[CapiPrefillQuery], articles: EditionsArticleSkeleton*): EditionsCollectionSkeleton =
     EditionsCollectionSkeleton(name, articles.toList, prefill, CollectionPresentation(), hidden = false)
+
+  private def article(pageCode: String): EditionsArticleSkeleton = EditionsArticleSkeleton(pageCode, ArticleMetadata.default)
 
   "The editions DB" - {
     "should insert an empty issue" taggedAs UsesDatabase in {
@@ -80,13 +83,29 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     "should insert fronts, collections and articles" taggedAs UsesDatabase in {
       val id = insertSkeletonIssue(2019, 9, 30,
         front("news/uk",
-          collection("politics", Some(CapiPrefillQuery("magic-politics-query")),"12345", "23456"),
-          collection("international", None,"34567", "45678", "56789")
+          collection("politics", Some(CapiPrefillQuery("magic-politics-query")),
+            article("12345"),
+            article("23456")
+          ),
+          collection("international", None,
+            article("34567"),
+            article("45678"),
+            article("56789")
+          )
         ),
         front("comment",
-          collection("opinion", Some(CapiPrefillQuery("magic-opinion-query")),"54321", "65432"),
-          collection("brexshit", None,"76543", "87654"),
-          collection("sigh", None,"98765", "09876")
+          collection("opinion", Some(CapiPrefillQuery("magic-opinion-query")),
+            article("54321"),
+            article("65432")
+          ),
+          collection("brexshit", None,
+            article("76543"),
+            article("87654")
+          ),
+          collection("sigh", None,
+            article("98765"),
+            article("09876")
+          )
         )
       )
 
@@ -116,17 +135,26 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     "should allow lookup of issue by collection id" taggedAs UsesDatabase in {
       val id = insertSkeletonIssue(2019, 9, 30,
         front("news/uk",
-          collection("politics", Some(CapiPrefillQuery("magic-politics-query")), "12345", "23456")
+          collection("politics", Some(CapiPrefillQuery("magic-politics-query")),
+            article("12345"),
+            article("23456")
+          )
         )
       )
       insertSkeletonIssue(2019, 9, 29,
         front("news/uk",
-          collection("politics", Some(CapiPrefillQuery("magic-politics-query")), "54321", "65432")
+          collection("politics", Some(CapiPrefillQuery("magic-politics-query")),
+            article("54321"),
+            article("65432")
+          )
         )
       )
       insertSkeletonIssue(2019, 9, 28,
         front("news/uk",
-          collection("politics", None, "14789", "32147")
+          collection("politics", None,
+            article("14789"),
+            article("32147")
+          )
         )
       )
 
@@ -140,13 +168,28 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     "should allow a set of collections to be fetched individually" taggedAs UsesDatabase in {
       val id = insertSkeletonIssue(2019, 9, 30,
         front("news/uk",
-          collection("politics", Some(CapiPrefillQuery("magic-politics-query")),"12345", "23456"),
-          collection("international", None,"34567", "45678", "56789")
+          collection("politics", Some(CapiPrefillQuery("magic-politics-query")),
+            article("12345"),
+            article("23456")
+          ),
+          collection("international", None,article("34567"),
+            article("45678"),
+            article("56789")
+          )
         ),
         front("comment",
-          collection("opinion", Some(CapiPrefillQuery("magic-opinion-query")),"54321", "65432"),
-          collection("brexshit", None,"76543", "87654"),
-          collection("sigh", None,"98765", "09876")
+          collection("opinion", Some(CapiPrefillQuery("magic-opinion-query")),
+            article("54321"),
+            article("65432")
+          ),
+          collection("brexshit", None,
+            article("76543"),
+            article("87654")
+          ),
+          collection("sigh", None,
+            article("98765"),
+            article("09876")
+          )
         )
       )
 
@@ -168,13 +211,29 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     "should allow collections to be filtered by timestamp" taggedAs UsesDatabase in {
       val id = insertSkeletonIssue(2019, 9, 30,
         front("news/uk",
-          collection("politics", Some(CapiPrefillQuery("magic-politics-query")),"12345", "23456"),
-          collection("international", None,"34567", "45678", "56789")
+          collection("politics", Some(CapiPrefillQuery("magic-politics-query")),
+            article("12345"),
+            article("23456")
+          ),
+          collection("international", None,
+            article("34567"),
+            article("45678"),
+            article("56789")
+          )
         ),
         front("comment",
-          collection("opinion", Some(CapiPrefillQuery("magic-opinion-query")),"54321", "65432"),
-          collection("brexshit", None,"76543", "87654"),
-          collection("sigh", None,"98765", "09876")
+          collection("opinion", Some(CapiPrefillQuery("magic-opinion-query")),
+            article("54321"),
+            article("65432")
+          ),
+          collection("brexshit", None,
+            article("76543"),
+            article("87654")
+          ),
+          collection("sigh", None,
+            article("98765"),
+            article("09876")
+          )
         )
       )
 
@@ -199,13 +258,29 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     "should allow updating of a collection" taggedAs UsesDatabase in {
       val id = insertSkeletonIssue(2019, 9, 30,
         front("news/uk",
-          collection("politics", Some(CapiPrefillQuery("magic-politics-query")),"12345", "23456"),
-          collection("international", None,"34567", "45678", "56789")
+          collection("politics", Some(CapiPrefillQuery("magic-politics-query")),
+            article("12345"),
+            article("23456")
+          ),
+          collection("international", None,
+            article("34567"),
+            article("45678"),
+            article("56789")
+          )
         ),
         front("comment",
-          collection("opinion", Some(CapiPrefillQuery("magic-opinion-query")),"54321", "65432"),
-          collection("brexshit", None,"76543", "87654"),
-          collection("sigh", None,"98765", "09876")
+          collection("opinion", Some(CapiPrefillQuery("magic-opinion-query")),
+            article("54321"),
+            article("65432")
+          ),
+          collection("brexshit", None,
+            article("76543"),
+            article("87654")
+          ),
+          collection("sigh", None,
+            article("98765"),
+            article("09876")
+          )
         )
       )
 

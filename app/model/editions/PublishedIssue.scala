@@ -18,7 +18,7 @@ object PublishedMediaType extends PlayEnum[PublishedMediaType] {
   override def values = findValues
 }
 
-case class PublishedImage(height: Int, width: Int, src: String)
+case class PublishedImage(height: Option[Int], width: Option[Int], src: String)
 
 case class PublishedFurniture(
   kicker: Option[String],

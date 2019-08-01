@@ -10,6 +10,8 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Try
 
+import scala.language.postfixOps
+
 class EditionsTemplating(capi: Capi) extends Logging {
   def generateEditionTemplate(name: String, localDate: LocalDate): Option[EditionsIssueSkeleton] = {
    EditionsTemplates.templates
@@ -57,7 +59,7 @@ class EditionsTemplating(capi: Capi) extends Logging {
         showByline = Some(capiMetadata.showByline),
         showQuotedHeadline = Some(capiMetadata.showQuotedHeadline),
         mediaType = if (capiMetadata.cutout.isDefined) Some(MediaType.Cutout) else None,
-        cutoutImage = capiMetadata.cutout.map(url => Image(0, 0, url, url))
+        cutoutImage = capiMetadata.cutout.map(url => Image(None, None, url, url))
       )
       EditionsArticleSkeleton(pageCode, metadata)
     }
