@@ -212,7 +212,9 @@ const articleBodyDefault = React.memo(
             isBoosted) && (
             <ArticleMetadataProperties>
               {isBreaking && (
-                <ArticleMetadataProperty>Breaking news</ArticleMetadataProperty>
+                <ArticleMetadataProperty data-testid="breaking-news">
+                  Breaking news
+                </ArticleMetadataProperty>
               )}
               {showByline && (
                 <ArticleMetadataProperty>Show byline</ArticleMetadataProperty>
