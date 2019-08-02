@@ -21,7 +21,12 @@ import okhttp3.{Call, Callback, Request, Response}
 import scala.collection.JavaConverters._
 import scala.concurrent.{ExecutionContext, Future, Promise}
 
-case class PrefillMetadata(showByline: Boolean, showQuotedHeadline: Boolean, cutout: Option[String])
+case class PrefillMetadata(
+                            showByline: Boolean,
+                            showQuotedHeadline: Boolean,
+                            imageCutoutReplace: Boolean,
+                            cutout: Option[String]
+                          )
 
 class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext) extends GuardianContentClient(config.contentApi.editionsKey) with Capi with Logging {
   override def targetUrl: String = config.contentApi.editionsPrefillHost
@@ -178,7 +183,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
         .flatMap(_.bylineLargeImageUrl)
         .headOption
     } else None
-    PrefillMetadata(metadata.showByline, metadata.showQuotedHeadline, maybeCutout)
+    PrefillMetadata(metadata.showByline, metadata.showQuotedHeadline, metadata.imageCutoutReplace, maybeCutout)
   }
 }
 

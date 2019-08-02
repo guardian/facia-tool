@@ -56,11 +56,19 @@ class EditionsTemplating(templates: Map[String, EditionTemplate], capi: Capi) ex
     // TODO: This being a Try will hide a litany of failures, some of which we might want to surface
     val items = Try(Await.result(capi.getPrefillArticleItems(date, prefillQuery), 10 seconds)).getOrElse(Nil)
     items.map { case (pageCode, capiMetadata) =>
+      val (mediaType, cutoutImage) = (capiMetadata.imageCutoutReplace, capiMetadata.cutout) match {
+        // if cutout desired and a cutout was found then configure cutout
+        case (true, Some(url)) => (Some(MediaType.Cutout), Some(Image(None, None, url, url)))
+        // if no cutout desired then default nothing
+        case (false, _) => (None, None)
+        // finally if a cutout is desired but nothing appropriate was found then explicitly set to use article trail
+        case (true, None) => (Some(MediaType.UseArticleTrail), None)
+      }
       val metadata = ArticleMetadata.default.copy(
         showByline = if (capiMetadata.showByline) Some(true) else None,
         showQuotedHeadline = if (capiMetadata.showQuotedHeadline) Some(true) else None,
-        mediaType = if (capiMetadata.cutout.isDefined) Some(MediaType.Cutout) else None,
-        cutoutImage = capiMetadata.cutout.map(url => Image(None, None, url, url))
+        mediaType = mediaType,
+        cutoutImage = cutoutImage
       )
       EditionsArticleSkeleton(pageCode, metadata)
     }
