@@ -19,6 +19,7 @@ const EDIT_FORM = 'edit-form';
 const EDIT_FORM_HEADLINE_FIELD = 'edit-form-headline-field';
 const EDIT_FORM_SAVE_BUTTON = 'edit-form-save-button';
 const EDIT_FORM_BREAKING_NEWS_TOGGLE = 'edit-form-breaking-news-toggle';
+const BREAKING_NEWS_SELECTOR = 'breaking-news';
 
 const FRONTS_MENU_BUTTON = 'fronts-menu-button';
 const FRONTS_MENU_ITEM = 'fronts-menu-item';
@@ -84,6 +85,11 @@ export const collectionItemHeadline = (collectionIndex, itemIndex = 0) =>
 export const collectionItemKicker = (collectionIndex, itemIndex = 0) =>
   collectionItem(collectionIndex, itemIndex).find(
     `[data-testid="${KICKER_SELECTOR}"]`
+  );
+
+export const collectionItemBreakingNews = (collectionIndex, itemIndex = 0) =>
+  collectionItem(collectionIndex, itemIndex).find(
+    `[data-testid="${BREAKING_NEWS_SELECTOR}"]`
   );
 
 export const collectionDiscardButton = collectionIndex =>

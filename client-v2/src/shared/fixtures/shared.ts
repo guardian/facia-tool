@@ -527,6 +527,68 @@ const collection = {
   type: 'type'
 };
 
+const collectionWithPreviously = {
+  live: [
+    liveArticle,
+    {
+      id: 'article/draft/1',
+      frontPublicationDate: 2,
+      publishedBy: 'Computers',
+      meta: {}
+    },
+    {
+      id: 'a/long/path/2',
+      frontPublicationDate: 2,
+      publishedBy: 'Computers',
+      meta: {}
+    }
+  ],
+  previously: [
+    {
+      id: 'internal-code/page/qrt',
+      meta: {},
+      frontPublicationDate: 123,
+      publishedBy: 'A Dev'
+    },
+    {
+      id: 'internal-code/page/xyz',
+      meta: {},
+      frontPublicationDate: 124,
+      publishedBy: 'Another Dev'
+    }
+  ],
+  id: 'exampleCollection',
+  displayName: 'Example Collection',
+  type: 'type'
+};
+
+const normalisedCollectonWithPreviously = {
+  displayName: 'testCollection',
+  draft: ['uuid'],
+  entities: {
+    articleFragments: {
+      uuid1: {
+        id: 'internal-code/page/qrt',
+        uuid: 'uuid1'
+      },
+      uuid2: {
+        id: 'internal-code/page/xyz',
+        uuid: 'uuid2'
+      }
+    }
+  },
+  frontsToolSettings: undefined,
+  groups: undefined,
+  id: 'testCollection1',
+  lastUpdated: 1547479667115,
+  live: ['uuid'],
+  metadata: undefined,
+  platform: undefined,
+  previously: ['uuid'],
+  previouslyArticleFragmentIds: [],
+  type: 'type'
+};
+
 const collectionConfig = {
   id: 'exampleCollection',
   displayName: 'Example Collection',
@@ -569,6 +631,10 @@ const stateWithCollection: any = {
           },
           automatedCollection: {
             displayName: 'automated',
+            type: 'type'
+          },
+          testCollection5: {
+            displayName: 'testCollection5',
             type: 'type'
           }
         }
@@ -785,6 +851,8 @@ export {
   capiArticle,
   capiArticleWithVideo,
   collection,
+  collectionWithPreviously,
+  normalisedCollectonWithPreviously,
   collectionWithSupportingArticles,
   stateWithCollection,
   stateWithCollectionAndSupporting,

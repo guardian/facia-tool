@@ -12,7 +12,7 @@ import { State } from 'types/State';
 export const defaultFields = [
   'headline',
   'showQuotedHeadline',
-  'showBoostedHeadline',
+  'showLargeHeadline',
   'customKicker',
   'isBreaking',
   'byline',

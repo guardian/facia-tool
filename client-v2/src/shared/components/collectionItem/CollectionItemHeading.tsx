@@ -6,19 +6,12 @@ import { theme } from 'constants/theme';
 
 const Wrapper = styled('span')<{
   displaySize?: 'small' | 'default';
-  showBoostedHeadline?: boolean;
+  showLargeHeadline?: boolean;
 }>`
   font-family: TS3TextSans;
   font-weight: normal;
-  padding-top: 2px;
-  ${({ displaySize, showBoostedHeadline }) => {
-    if (displaySize === 'small') {
-      return `font-size: ${theme.shared.collectionItem.fontSizeSmall}`;
-    }
-    if (showBoostedHeadline) {
-      return `font-size: 18px`;
-    }
-  }};
+  padding: 2px 0 0;
+  font-size: ${theme.shared.collectionItem.fontSizeSmall};
   ${media.large`font-size: 13px;`}
 `;
 
@@ -26,7 +19,7 @@ type CollectionItemHeading = {
   children?: string;
   html?: boolean;
   displaySize?: 'small' | 'default';
-  showBoostedHeadline?: boolean;
+  showLargeHeadline?: boolean;
 } & React.HTMLProps<HTMLSpanElement>;
 
 const CollectionItemHeading = ({

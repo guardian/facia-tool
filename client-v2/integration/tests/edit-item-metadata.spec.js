@@ -7,6 +7,7 @@ import {
   collectionItem,
   collectionItemHeadline,
   collectionItemKicker,
+  collectionItemBreakingNews,
   editFormHeadlineInput,
   editFormSaveButton,
   editFormBreakingNewsToggle,
@@ -51,7 +52,7 @@ test('Metadata edits are persisted in collections- "breaking news" toggle button
     .click(firstCollectionStory)
     .click(breakingNewsToggle)
     .click(editFormSaveButton())
-    .expect(collectionItemKicker(0, 0).textContent)
+    .expect(collectionItemBreakingNews(0, 0).textContent)
     .contains(`Breaking news`);
 });
 
@@ -64,6 +65,6 @@ test('Metadata edits are persisted in clipboard- "breaking news" toggle button',
     .click(breakingNewsToggle)
     .click(editFormSaveButton())
     .dragToElement(clipboardItem(0), firstCollectionFirstDropZone) // Kickers are not visible in clipboard, drag to collection to view
-    .expect(collectionItemKicker(0, 0).textContent)
+    .expect(collectionItemBreakingNews(0, 0).textContent)
     .contains(`Breaking news`);
 });

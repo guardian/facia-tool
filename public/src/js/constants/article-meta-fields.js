@@ -159,7 +159,7 @@ export default Object.freeze([
         type: 'boolean'
     },
     {
-        key: 'showBoostedHeadline',
+        key: 'showLargeHeadline',
         editable: true,
         omitForSupporting: true,
         label: 'large headline',

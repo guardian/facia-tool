@@ -301,7 +301,7 @@ module.exports = {
             "imageReplace": false,
             "imageCutoutReplace": false,
             "showKickerSection": false,
-            "showBoostedHeadline": false
+            "showLargeHeadline": false
           },
           "tone": "feature"
         }
@@ -529,7 +529,7 @@ module.exports = {
             "imageReplace": false,
             "imageCutoutReplace": false,
             "showKickerSection": false,
-            "showBoostedHeadline": false
+            "showLargeHeadline": false
           },
           "tone": "feature"
         }
@@ -820,7 +820,7 @@ module.exports = {
             "imageReplace": false,
             "imageCutoutReplace": false,
             "showKickerSection": false,
-            "showBoostedHeadline": false
+            "showLargeHeadline": false
           },
           "tone": "feature"
         }
@@ -1147,7 +1147,7 @@ module.exports = {
             "imageReplace": false,
             "imageCutoutReplace": false,
             "showKickerSection": false,
-            "showBoostedHeadline": false
+            "showLargeHeadline": false
           },
           "tone": "feature"
         }
@@ -1462,7 +1462,7 @@ module.exports = {
             "imageReplace": false,
             "imageCutoutReplace": false,
             "showKickerSection": false,
-            "showBoostedHeadline": false
+            "showLargeHeadline": false
           },
           "tone": "feature"
         }
@@ -1779,7 +1779,7 @@ module.exports = {
             "imageReplace": false,
             "imageCutoutReplace": false,
             "showKickerSection": false,
-            "showBoostedHeadline": false
+            "showLargeHeadline": false
           },
           "tone": "feature"
         }
@@ -2040,7 +2040,7 @@ module.exports = {
             "imageReplace": false,
             "imageCutoutReplace": false,
             "showKickerSection": false,
-            "showBoostedHeadline": false
+            "showLargeHeadline": false
           },
           "tone": "feature"
         }
@@ -2306,7 +2306,7 @@ module.exports = {
             "imageReplace": false,
             "imageCutoutReplace": false,
             "showKickerSection": false,
-            "showBoostedHeadline": false
+            "showLargeHeadline": false
           },
           "tone": "feature"
         }
@@ -2585,7 +2585,7 @@ module.exports = {
             "imageReplace": false,
             "imageCutoutReplace": false,
             "showKickerSection": false,
-            "showBoostedHeadline": false
+            "showLargeHeadline": false
           },
           "tone": "feature"
         }
@@ -2851,7 +2851,7 @@ module.exports = {
             "imageReplace": false,
             "imageCutoutReplace": false,
             "showKickerSection": false,
-            "showBoostedHeadline": false
+            "showLargeHeadline": false
           },
           "tone": "feature"
         }
@@ -3118,7 +3118,7 @@ module.exports = {
             "imageReplace": false,
             "imageCutoutReplace": false,
             "showKickerSection": false,
-            "showBoostedHeadline": false
+            "showLargeHeadline": false
           },
           "tone": "feature"
         }
@@ -3384,7 +3384,7 @@ module.exports = {
             "imageReplace": false,
             "imageCutoutReplace": false,
             "showKickerSection": false,
-            "showBoostedHeadline": false
+            "showLargeHeadline": false
           },
           "tone": "feature"
         }

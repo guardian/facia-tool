@@ -13,6 +13,7 @@ import { CollectionConfig } from 'types/FaciaApi';
 import v4 from 'uuid/v4';
 import keyBy from 'lodash/keyBy';
 import sortBy from 'lodash/sortBy';
+import compact from 'lodash/compact';
 
 const createGroup = (
   id: string | null,
@@ -123,6 +124,21 @@ const addGroups = (
     { live: [], draft: [], previously: [], addedGroups: {} } as ReduceResult
   );
 
+// To determine the UUIDs of article fragments recently removed from a collection in a way that
+// preserves the overall ordering lost during normalisation (when fragments are assigned to a Group)
+// we need to compare both the pre-normalised and normalised versions of the same collection.
+const createPreviouslyArticleFragmentIds = (
+  collection: CollectionWithNestedArticles,
+  normalisedCollection: any
+) =>
+  compact(collection.previously || []).map(nestedArticleFragment => {
+    const maybeArticleFragment = Object.entries(normalisedCollection.entities
+      .articleFragments as {
+      [uuid: string]: ArticleFragment;
+    }).find(([_, article]) => article.id === nestedArticleFragment.id);
+    return maybeArticleFragment ? maybeArticleFragment[0] : undefined;
+  });
+
 const normaliseCollectionWithNestedArticles = (
   collection: CollectionWithNestedArticles,
   collectionConfig: CollectionConfig
@@ -136,12 +152,17 @@ const normaliseCollectionWithNestedArticles = (
     normalisedCollection,
     collectionConfig
   );
+  const previouslyArticleFragmentIds = createPreviouslyArticleFragmentIds(
+    collection,
+    normalisedCollection
+  );
   return {
     normalisedCollection: {
       ...normalisedCollection.result,
       live,
       draft,
-      previously
+      previously,
+      previouslyArticleFragmentIds
     },
     groups: addedGroups,
     articleFragments: normalisedCollection.entities.articleFragments || {}
@@ -168,4 +189,8 @@ function denormaliseCollection(
   });
 }
 
-export { normaliseCollectionWithNestedArticles, denormaliseCollection };
+export {
+  normaliseCollectionWithNestedArticles,
+  denormaliseCollection,
+  createPreviouslyArticleFragmentIds
+};
