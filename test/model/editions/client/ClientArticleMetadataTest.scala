@@ -122,6 +122,25 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
 
       clientArticleMetadata.imageReplace shouldBe None
     }
+
+    "should explicitly set cutout to false if media type is set but not to a cutout" in {
+      val articleMetadata = ArticleMetadata(
+        Some("Teenage Mutant Ninja Turtles"),
+        None,
+        None,
+        None,
+        None,
+        None,
+        Some(MediaType.UseArticleTrail),
+        None,
+        None,
+        None
+      )
+
+      val clientArticleMetadata = ClientArticleMetadata.fromArticleMetadata(articleMetadata)
+
+      clientArticleMetadata.imageCutoutReplace shouldBe Some(false)
+    }
   }
 
   "ClientArticleMetadata to ArticleMetadata" - {

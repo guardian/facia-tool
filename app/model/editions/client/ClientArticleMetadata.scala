@@ -90,7 +90,7 @@ object ClientArticleMetadata {
       articleMetadata.replaceImage.map(_.origin),
       articleMetadata.replaceImage.flatMap(_.thumb),
 
-      articleMetadata.cutoutImage.map(_ => mediaType == MediaType.Cutout),
+      articleMetadata.mediaType.map(_ == MediaType.Cutout),
       articleMetadata.cutoutImage.map(_.src),
       articleMetadata.cutoutImage.flatMap(_.height).map(_.toString),
       articleMetadata.cutoutImage.flatMap(_.width).map(_.toString),
