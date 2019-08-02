@@ -12,9 +12,9 @@ import scala.util.Try
 
 import scala.language.postfixOps
 
-class EditionsTemplating(capi: Capi) extends Logging {
+class EditionsTemplating(templates: Map[String, EditionTemplate], capi: Capi) extends Logging {
   def generateEditionTemplate(name: String, localDate: LocalDate): Option[EditionsIssueSkeleton] = {
-   EditionsTemplates.templates
+   templates
       .get(name)
       .flatMap { template =>
         // Convert the human understood date of an issue to a timestamp in the correct zone for this issue
@@ -53,11 +53,12 @@ class EditionsTemplating(capi: Capi) extends Logging {
 
   // this function fetches articles from CAPI with enough data to resolve the defaults
   def getPrefillArticles(date: ZonedDateTime, prefillQuery: CapiPrefillQuery): List[EditionsArticleSkeleton] = {
+    // TODO: This being a Try will hide a litany of failures, some of which we might want to surface
     val items = Try(Await.result(capi.getPrefillArticleItems(date, prefillQuery), 10 seconds)).getOrElse(Nil)
     items.map { case (pageCode, capiMetadata) =>
       val metadata = ArticleMetadata.default.copy(
-        showByline = Some(capiMetadata.showByline),
-        showQuotedHeadline = Some(capiMetadata.showQuotedHeadline),
+        showByline = if (capiMetadata.showByline) Some(true) else None,
+        showQuotedHeadline = if (capiMetadata.showQuotedHeadline) Some(true) else None,
         mediaType = if (capiMetadata.cutout.isDefined) Some(MediaType.Cutout) else None,
         cutoutImage = capiMetadata.cutout.map(url => Image(None, None, url, url))
       )

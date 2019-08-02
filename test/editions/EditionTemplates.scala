@@ -3,6 +3,7 @@ package services
 import java.time.{LocalDate, ZonedDateTime}
 
 import com.gu.contentapi.client.model.v1.SearchResponse
+import fixtures.TestEdition
 import org.scalatest.{FreeSpec, Matchers}
 import model.editions._
 import services.editions.EditionsTemplating
@@ -17,7 +18,7 @@ class editionTemplateTest extends FreeSpec with Matchers {
     override def getPrefillArticles(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery, currentPageCodes: List[String]): Future[SearchResponse] = Future.successful(null)
     override def getPrefillArticleItems(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[(String, PrefillMetadata)]] = Future.successful(Nil)
   }
-  val templating = new EditionsTemplating(TestCapi)
+  val templating = new EditionsTemplating(TestEdition.templates, TestCapi)
 
 //  "createEdition" - {
 //    "should return Monday's content for Monday" in {
