@@ -9,8 +9,8 @@ import services.Capi
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Try
-
 import scala.language.postfixOps
+import scala.util.control.NonFatal
 
 class EditionsTemplating(templates: Map[String, EditionTemplate], capi: Capi) extends Logging {
   def generateEditionTemplate(name: String, localDate: LocalDate): Option[EditionsIssueSkeleton] = {
@@ -53,8 +53,15 @@ class EditionsTemplating(templates: Map[String, EditionTemplate], capi: Capi) ex
 
   // this function fetches articles from CAPI with enough data to resolve the defaults
   def getPrefillArticles(date: ZonedDateTime, prefillQuery: CapiPrefillQuery): List[EditionsArticleSkeleton] = {
-    // TODO: This being a Try will hide a litany of failures, some of which we might want to surface
-    val items = Try(Await.result(capi.getPrefillArticleItems(date, prefillQuery), 10 seconds)).getOrElse(Nil)
+    // TODO: This being a try will hide a litany of failures, some of which we might want to surface
+    val items = try {
+      Await.result(capi.getPrefillArticleItems(date, prefillQuery), 10 seconds)
+    } catch {
+      case NonFatal(t) =>
+        // At least log this as a warning so we can trace frequency
+        logger.warn(s"Failed to successfully execute CAPI prefill query $prefillQuery", t)
+        Nil
+    }
     items.map { case (pageCode, capiMetadata) =>
       val (mediaType, cutoutImage) = (capiMetadata.imageCutoutReplace, capiMetadata.cutout) match {
         // if cutout desired and a cutout was found then configure cutout
