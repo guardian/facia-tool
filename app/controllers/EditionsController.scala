@@ -6,7 +6,7 @@ import play.api.libs.json.{JsObject, Json}
 import services.editions.EditionsTemplating
 import java.time.{LocalDate, OffsetDateTime}
 
-import model.editions.{EditionsFrontendCollectionWrapper, EditionsTemplates}
+import model.editions.{EditionsFrontMetadata, EditionsFrontendCollectionWrapper, EditionsTemplates}
 import services.Capi
 import services.editions.db.EditionsDB
 import services.editions.publishing.EditionsPublishing
@@ -113,5 +113,10 @@ class EditionsController(db: EditionsDB,
         Ok(decorated).as("application/json")
       }
     }.getOrElse(Future.successful(NotFound("Collection not found")))
+  }
+
+  def putFrontMetadata(id: String) = AccessAPIAuthAction(parse.json[EditionsFrontMetadata]) { req =>
+    db.updateFrontMetadata(id, req.body)
+    NoContent
   }
 }

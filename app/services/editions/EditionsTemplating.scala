@@ -40,7 +40,8 @@ class EditionsTemplating(capi: Capi) {
                     )
                   },
                   frontTemplate.presentation,
-                  frontTemplate.hidden
+                  frontTemplate.hidden,
+                  frontTemplate.canRename
                 )
             }))
         } else {

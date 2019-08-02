@@ -104,10 +104,14 @@ POST        /api/usage                               controllers.GridProxy.addUs
 GET         /editions-api/editions                               controllers.EditionsController.getAvailableEditions
 GET         /editions-api/editions/:name/issues                  controllers.EditionsController.listIssues(name)
 POST        /editions-api/editions/:name/issues                  controllers.EditionsController.postIssue(name)
+
 GET         /editions-api/issues/:id                             controllers.EditionsController.getIssue(id)
 GET         /editions-api/issues/:id/summary                     controllers.EditionsController.getIssueSummary(id)
 POST        /editions-api/issues/:id/publish                     controllers.EditionsController.publishIssue(id)
 GET         /editions-api/issues/:id/preview                     controllers.EditionsController.getPreviewEdition(id)
+
+PUT         /editions-api/fronts/:frontId/metadata               controllers.EditionsController.putFrontMetadata(frontId)
+
 POST        /editions-api/collections                            controllers.EditionsController.getCollections
 PUT         /editions-api/collections/:collectionId              controllers.EditionsController.updateCollection(collectionId)
 GET         /editions-api/collections/:collectionId/prefill      controllers.EditionsController.getPrefillForCollection(collectionId)

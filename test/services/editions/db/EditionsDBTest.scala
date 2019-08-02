@@ -41,10 +41,10 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   }
 
   private def front(name: String, collections: EditionsCollectionSkeleton*): EditionsFrontSkeleton =
-    EditionsFrontSkeleton(name, collections.toList, FrontPresentation())
+    EditionsFrontSkeleton(name, collections.toList, FrontPresentation(), hidden = false, canRename = false)
 
   private def collection(name: String, prefill: Option[CapiPrefillQuery], articles: String*): EditionsCollectionSkeleton =
-    EditionsCollectionSkeleton(name, articles.toList, prefill, CollectionPresentation())
+    EditionsCollectionSkeleton(name, articles.toList, prefill, CollectionPresentation(), hidden = false)
 
   "The editions DB" - {
     "should insert an empty issue" taggedAs UsesDatabase in {

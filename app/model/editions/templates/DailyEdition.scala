@@ -48,7 +48,8 @@ object FrontSpecialSpecial1 {
     name = "Special 1",
     collections = List(collectionSpecialSpecial1),
     presentation = TemplateDefaults.defaultFrontPresentation,
-    hidden = true
+    hidden = true,
+    canRename = true
   )
 }
 
@@ -627,7 +628,8 @@ object FrontSpecialSpecial2 {
     name = "Special 2",
     collections = List(collectionSpecialSpecial2),
     presentation = TemplateDefaults.defaultFrontPresentation,
-    hidden = true
+    hidden = true,
+    canRename = true
   )
 }
 
