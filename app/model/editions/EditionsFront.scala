@@ -5,17 +5,17 @@ import org.postgresql.util.PGobject
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
+object EditionsFrontMetadata {
+  implicit val format = Json.format[EditionsFrontMetadata]
+}
+
 case class EditionsFrontMetadata(nameOverride: Option[String], swatch: Option[Swatch]) {
-  def toPGobject(): PGobject = {
+  def toPGobject: PGobject = {
     val pgo = new PGobject()
     pgo.setType("json")
     pgo.setValue(Json.toJson(this).toString())
     pgo
   }
-}
-
-object EditionsFrontMetadata {
-  implicit val format = Json.format[EditionsFrontMetadata]
 }
 
 case class EditionsFront(
