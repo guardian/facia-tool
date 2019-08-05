@@ -68,7 +68,10 @@ export const createSelectFormFieldsForCollectionItem = () => {
       }
       const fields = defaultFields.slice();
 
-      if (derivedArticle.sectionName === 'Sport') {
+      if (
+        derivedArticle.sectionName === 'Sport' ||
+        derivedArticle.sectionName === 'Football'
+      ) {
         fields.push('sportScore');
       }
 
