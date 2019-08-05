@@ -73,16 +73,7 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
             |      "height" : 1280,
             |      "width" : 720,
             |      "src" : "https://media.giphy.com/media/yV5iknckcXcc/source.gif"
-            |    },
-            |    "slideshowImages" : [ {
-            |      "height" : 1280,
-            |      "width" : 720,
-            |      "src" : "https://media.giphy.com/media/TLulTJKuyLgMU/source.gif"
-            |    }, {
-            |      "height" : 1280,
-            |      "width" : 720,
-            |      "src" : "https://media.giphy.com/media/GuWSJPF6bEkKs/source.gif"
-            |    } ]
+            |    }
             |  }
             |}""".stripMargin
 
@@ -96,11 +87,7 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
           mediaType = PublishedMediaType.Cutout,
           imageSrcOverride = Some(
             PublishedImage(height = Some(1280), width = Some(720), "https://media.giphy.com/media/yV5iknckcXcc/source.gif")
-          ),
-          slideshowImages = Some(List(
-            PublishedImage(height = Some(1280), width = Some(720), "https://media.giphy.com/media/TLulTJKuyLgMU/source.gif"),
-            PublishedImage(height = Some(1280), width = Some(720), "https://media.giphy.com/media/GuWSJPF6bEkKs/source.gif")
-          ))
+          )
         ))
 
         val json = Json.prettyPrint(Json.toJson(article))

@@ -27,10 +27,7 @@ case class ClientArticleMetadata (
   imageCutoutSrc: Option[String],
   imageCutoutSrcHeight: Option[String],
   imageCutoutSrcWidth: Option[String],
-  imageCutoutSrcOrigin: Option[String],
-
-  imageSlideshowReplace: Option[Boolean],
-  slideshow: Option[List[Image]]
+  imageCutoutSrcOrigin: Option[String]
 ) {
   def toArticleMetadata: ArticleMetadata = {
     val cutoutImage: Option[Image] = (imageCutoutSrcHeight, imageCutoutSrcWidth, imageCutoutSrc, imageCutoutSrcOrigin) match {
@@ -43,11 +40,10 @@ case class ClientArticleMetadata (
       case _ => None
     }
 
-    val imageOption = (imageHide, imageReplace, imageCutoutReplace, imageSlideshowReplace) match {
-      case (Some(true), _, _, _) => MediaType.Hide
-      case (_, Some(true), _, _) => MediaType.Image
-      case (_, _, Some(true), _) => MediaType.Cutout
-      case (_, _, _, Some(true)) => MediaType.Slideshow
+    val imageOption = (imageHide, imageReplace, imageCutoutReplace) match {
+      case (Some(true), _, _) => MediaType.Hide
+      case (_, Some(true), _) => MediaType.Image
+      case (_, _, Some(true)) => MediaType.Cutout
       case _ => MediaType.UseArticleTrail
     }
 
@@ -60,8 +56,7 @@ case class ClientArticleMetadata (
       byline,
       Some(imageOption),
       cutoutImage,
-      replaceImage,
-      slideshow
+      replaceImage
     )
   }
 }
@@ -94,10 +89,7 @@ object ClientArticleMetadata {
       articleMetadata.cutoutImage.map(_.src),
       articleMetadata.cutoutImage.flatMap(_.height).map(_.toString),
       articleMetadata.cutoutImage.flatMap(_.width).map(_.toString),
-      articleMetadata.cutoutImage.map(_.origin),
-
-      articleMetadata.slideshowImages.map(_ => mediaType == MediaType.Slideshow),
-      articleMetadata.slideshowImages
+      articleMetadata.cutoutImage.map(_.origin)
     )
   }
 }
