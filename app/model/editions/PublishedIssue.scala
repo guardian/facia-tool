@@ -38,4 +38,10 @@ case class PublishedCollection(id: String, items: List[PublishedArticle])
 
 case class PublishedFront(id: String, name: String, collections: List[PublishedCollection])
 
-case class PublishedIssue(id: String, name: String, issueDate: OffsetDateTime, fronts: List[PublishedFront])
+case class PublishedIssue(
+  id: String,
+  name: String,
+  issueDate: OffsetDateTime,
+  version: Option[String],
+  fronts: List[PublishedFront]
+)
