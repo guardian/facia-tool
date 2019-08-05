@@ -1,8 +1,7 @@
-package editions
+package model.editions
 
 import java.time.{OffsetDateTime, ZoneOffset}
 
-import model.editions._
 import org.scalatest.{FreeSpec, Matchers}
 
 class PublishedIssueTest extends FreeSpec with Matchers {

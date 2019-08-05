@@ -93,7 +93,7 @@ class EditionsController(db: EditionsDB,
 
   def getPreviewEdition(id: String) = AccessAPIAuthAction { _ =>
     db.getIssue(id).map { issue =>
-      Ok(Json.toJson(issue.toPublishedIssue))
+      Ok(Json.toJson(issue.toPublishedIssue()))
     }.getOrElse(NotFound(s"Issue $id not found"))
   }
 
