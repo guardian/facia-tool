@@ -21,12 +21,13 @@ import okhttp3.{Call, Callback, Request, Response}
 import scala.collection.JavaConverters._
 import scala.concurrent.{ExecutionContext, Future, Promise}
 
-case class PrefillMetadata(
-                            showByline: Boolean,
-                            showQuotedHeadline: Boolean,
-                            imageCutoutReplace: Boolean,
-                            cutout: Option[String]
-                          )
+case class Prefill(
+                    internalPageCode: Int,
+                    showByline: Boolean,
+                    showQuotedHeadline: Boolean,
+                    imageCutoutReplace: Boolean,
+                    cutout: Option[String]
+                  )
 
 class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext) extends GuardianContentClient(config.contentApi.editionsKey) with Capi with Logging {
   override def targetUrl: String = config.contentApi.editionsPrefillHost
@@ -143,7 +144,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
     * @param capiPrefillQuery
     * @return
     */
-  def getPrefillArticleItems(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[(String, PrefillMetadata)]] = {
+  def getPrefillArticleItems(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[Prefill]] = {
     val fields = List(
       "newspaperEditionDate",
       "newspaperPageNumber",
@@ -157,33 +158,35 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
       response.results
         .map { content =>
           val newspaperPageNumber = content.fields.flatMap(_.newspaperPageNumber)
-          val internalPageCode = content.fields.flatMap(_.internalPageCode)
-          val metadata = prefillMetadata(content)
-          (newspaperPageNumber, internalPageCode, metadata)
+          val prefill = prefillMetadata(content)
+          (newspaperPageNumber, prefill)
         }
         .collect {
-          case (Some(pageNumber), Some(internalPageCode), metadata) => (pageNumber, internalPageCode.toString, metadata)
+          case (Some(internalPageCode), Some(metadata)) => (internalPageCode.toString, metadata)
         }
         .sortBy {
-          case (pageNumber, _, _) => pageNumber
+          case (pageNumber, _) => pageNumber
         }
         .map {
-          case (_, internalPageCode, metaData) => (internalPageCode, metaData)
+          case (_, metaData) => metaData
         }
         .toList
     }
   }
 
-  def prefillMetadata(content: Content): PrefillMetadata = {
-    val cardStyle = CardStyle(content, TrailMetaData.empty)
-    val metadata = ResolvedMetaData.fromContent(content, cardStyle)
-    val maybeCutout = if (metadata.imageCutoutReplace) {
-      content.tags
-        .filter(_.`type` == TagType.Contributor)
-        .flatMap(_.bylineLargeImageUrl)
-        .headOption
-    } else None
-    PrefillMetadata(metadata.showByline, metadata.showQuotedHeadline, metadata.imageCutoutReplace, maybeCutout)
+  def prefillMetadata(content: Content): Option[Prefill] = {
+    val maybeInternalPageCode = content.fields.flatMap(_.internalPageCode)
+    maybeInternalPageCode.map { internalPageCode =>
+      val cardStyle = CardStyle(content, TrailMetaData.empty)
+      val metadata = ResolvedMetaData.fromContent(content, cardStyle)
+      val maybeCutout = if (metadata.imageCutoutReplace) {
+        content.tags
+          .filter(_.`type` == TagType.Contributor)
+          .flatMap(_.bylineLargeImageUrl)
+          .headOption
+      } else None
+      Prefill(internalPageCode, metadata.showByline, metadata.showQuotedHeadline, metadata.imageCutoutReplace, maybeCutout)
+    }
   }
 }
 
@@ -198,6 +201,6 @@ case class PrintSentQuery(parameterHolder: Map[String, Parameter] = Map.empty)
 
 trait Capi {
   def getPreviewHeaders(url: String): Seq[(String,String)]
-  def getPrefillArticleItems(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[(String, PrefillMetadata)]]
+  def getPrefillArticleItems(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[Prefill]]
   def getPrefillArticles(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery, currentPageCodes: List[String]): Future[SearchResponse]
 }

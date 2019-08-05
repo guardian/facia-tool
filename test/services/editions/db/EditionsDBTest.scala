@@ -7,7 +7,6 @@ import fixtures.{EditionsDBService, UsesDatabase}
 import model.editions._
 import model.forms.GetCollectionsFilter
 import org.scalatest.{FreeSpec, Matchers, OptionValues}
-import services.PrefillMetadata
 
 class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with OptionValues {
 

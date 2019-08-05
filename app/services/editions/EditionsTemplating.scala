@@ -4,7 +4,7 @@ import java.time.{LocalDate, LocalTime, ZonedDateTime}
 
 import logging.Logging
 import model.editions._
-import services.Capi
+import services.{Capi, Prefill}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -62,8 +62,8 @@ class EditionsTemplating(templates: Map[String, EditionTemplate], capi: Capi) ex
         logger.warn(s"Failed to successfully execute CAPI prefill query $prefillQuery", t)
         Nil
     }
-    items.map { case (pageCode, capiMetadata) =>
-      val (mediaType, cutoutImage) = (capiMetadata.imageCutoutReplace, capiMetadata.cutout) match {
+    items.map { case Prefill(pageCode, showByline, showQuotedHeadline, imageCutoutReplace, maybeCutout) =>
+      val (mediaType, cutoutImage) = (imageCutoutReplace, maybeCutout) match {
         // if cutout desired and a cutout was found then configure cutout
         case (true, Some(url)) => (Some(MediaType.Cutout), Some(Image(None, None, url, url)))
         // if no cutout desired then default nothing
@@ -72,12 +72,12 @@ class EditionsTemplating(templates: Map[String, EditionTemplate], capi: Capi) ex
         case (true, None) => (Some(MediaType.UseArticleTrail), None)
       }
       val metadata = ArticleMetadata.default.copy(
-        showByline = if (capiMetadata.showByline) Some(true) else None,
-        showQuotedHeadline = if (capiMetadata.showQuotedHeadline) Some(true) else None,
+        showByline = if (showByline) Some(true) else None,
+        showQuotedHeadline = if (showQuotedHeadline) Some(true) else None,
         mediaType = mediaType,
         cutoutImage = cutoutImage
       )
-      EditionsArticleSkeleton(pageCode, metadata)
+      EditionsArticleSkeleton(pageCode.toString, metadata)
     }
   }
 }

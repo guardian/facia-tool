@@ -95,11 +95,11 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
           showQuotedHeadline = false,
           mediaType = PublishedMediaType.Cutout,
           imageSrcOverride = Some(
-            PublishedImage(height = 1280, width = 720, "https://media.giphy.com/media/yV5iknckcXcc/source.gif")
+            PublishedImage(height = Some(1280), width = Some(720), "https://media.giphy.com/media/yV5iknckcXcc/source.gif")
           ),
           slideshowImages = Some(List(
-            PublishedImage(height = 1280, width = 720, "https://media.giphy.com/media/TLulTJKuyLgMU/source.gif"),
-            PublishedImage(height = 1280, width = 720, "https://media.giphy.com/media/GuWSJPF6bEkKs/source.gif")
+            PublishedImage(height = Some(1280), width = Some(720), "https://media.giphy.com/media/TLulTJKuyLgMU/source.gif"),
+            PublishedImage(height = Some(1280), width = Some(720), "https://media.giphy.com/media/GuWSJPF6bEkKs/source.gif")
           ))
         ))
 

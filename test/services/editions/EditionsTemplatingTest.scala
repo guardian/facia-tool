@@ -4,9 +4,9 @@ import java.time.{LocalDate, ZonedDateTime}
 
 import com.gu.contentapi.client.model.v1.SearchResponse
 import fixtures.TestEdition
-import model.editions.{ArticleMetadata, CapiPrefillQuery, EditionsArticleSkeleton, Image, MediaType}
+import model.editions.{ArticleMetadata, CapiPrefillQuery, Image, MediaType}
 import org.scalatest.{FreeSpec, Matchers, OptionValues}
-import services.{Capi, PrefillMetadata}
+import services.{Capi, Prefill}
 
 import scala.concurrent.Future
 
@@ -15,14 +15,14 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues {
     "Sets the prefill metadata from CAPI" in {
       val fakeCapi = new Capi {
         def getPreviewHeaders(url: String): Seq[(String, String)] = ???
-        def getPrefillArticleItems(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[(String, PrefillMetadata)]] = {
+        def getPrefillArticleItems(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[Prefill]] = {
           capiPrefillQuery.queryString match {
             case "?tag=theguardian/mainsection/topstories" => Future.successful(List(
-              "123456" -> PrefillMetadata(false, false, false, None)
+              Prefill(123456, false, false, false, None)
             ))
             case "?tag=theguardian/g2/arts" => Future.successful(List(
-              "345678" -> PrefillMetadata(true, true, true, Some("https://media.giphy.com/media/K3PYNk8oh3HGM/source.gif")),
-              "574893" -> PrefillMetadata(true, true, true, None),
+              Prefill(345678, true, true, true, Some("https://media.giphy.com/media/K3PYNk8oh3HGM/source.gif")),
+              Prefill(574893, true, true, true, None),
             ))
           }
         }
