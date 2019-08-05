@@ -3,30 +3,26 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import conf.ApplicationConfiguration
 import config.{CustomGzipFilter, UpdateManager}
 import controllers._
+import filters._
 import frontsapi.model.UpdateActions
 import metrics.CloudWatch
 import play.api.ApplicationLoader.Context
 import play.api.Mode
+import play.api.db.{DBComponents, HikariCPComponents}
+import play.api.db.evolutions.EvolutionsComponents
 import play.api.routing.Router
 import play.filters.cors.CORSConfig
 import play.filters.cors.CORSConfig.Origins
-import filters._
 import router.Routes
-import scalikejdbc.DB
-import scalikejdbc.config.DBs
 import services._
 import services.editions.EditionsTemplating
+import services.editions.db.EditionsDB
+import services.editions.publishing.{EditionsBucket, EditionsPublishing}
 import slices.{Containers, FixedContainers}
 import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
 import updates.{BreakingNewsUpdate, StructuredLogger}
 import util.{Acl, Encryption}
-import scalikejdbc._
-import play.api.db.evolutions.EvolutionsComponents
-import play.api.db.DBComponents
-import play.api.db.HikariCPComponents
-import services.editions.db.EditionsDB
-import services.editions.publishing.{EditionsPublishing, PreviewIssuesBucket, PublishedIssuesBucket}
 
 class AppComponents(context: Context, val config: ApplicationConfiguration)
   extends BaseFaciaControllerComponents(context) with EvolutionsComponents with DBComponents with HikariCPComponents {
@@ -48,8 +44,8 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   // Editions services
   val editionsDb = new EditionsDB(config.postgres.url, config.postgres.user, config.postgres.password)
   val templating = new EditionsTemplating(capi)
-  val publishingBucket = new PublishedIssuesBucket(s3Client, config.aws.publishedEditionsIssuesBucket)
-  val previewBucket = new PreviewIssuesBucket(s3Client, config.aws.previewEditionsIssuesBucket)
+  val publishingBucket = new EditionsBucket(s3Client, config.aws.publishedEditionsIssuesBucket)
+  val previewBucket = new EditionsBucket(s3Client, config.aws.previewEditionsIssuesBucket)
   val editionsPublishing = new EditionsPublishing(publishingBucket, previewBucket, editionsDb)
 
   // Controllers
