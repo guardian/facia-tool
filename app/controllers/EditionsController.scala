@@ -24,7 +24,7 @@ class EditionsController(db: EditionsDB,
                          capi: Capi,
                          val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps)  with Logging {
 
-  def postIssue(name: String) = AccessAPIAuthAction(parse.json[CreateIssue]) { req =>
+  def createIssue(name: String) = AccessAPIAuthAction(parse.json[CreateIssue]) { req =>
     val form = req.body
 
     templating.generateEditionTemplate(name, form.issueDate).map { skeleton =>

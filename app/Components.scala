@@ -13,6 +13,8 @@ import play.api.db.evolutions.EvolutionsComponents
 import play.api.routing.Router
 import play.filters.cors.CORSConfig
 import play.filters.cors.CORSConfig.Origins
+import filters._
+import model.editions.EditionsTemplates
 import router.Routes
 import services._
 import services.editions.EditionsTemplating
@@ -43,7 +45,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
 
   // Editions services
   val editionsDb = new EditionsDB(config.postgres.url, config.postgres.user, config.postgres.password)
-  val templating = new EditionsTemplating(capi)
+  val templating = new EditionsTemplating(EditionsTemplates.templates, capi)
   val publishingBucket = new EditionsBucket(s3Client, config.aws.publishedEditionsIssuesBucket)
   val previewBucket = new EditionsBucket(s3Client, config.aws.previewEditionsIssuesBucket)
   val editionsPublishing = new EditionsPublishing(publishingBucket, previewBucket, editionsDb)

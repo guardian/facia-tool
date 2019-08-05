@@ -34,12 +34,12 @@ case class ClientArticleMetadata (
 ) {
   def toArticleMetadata: ArticleMetadata = {
     val cutoutImage: Option[Image] = (imageCutoutSrcHeight, imageCutoutSrcWidth, imageCutoutSrc, imageCutoutSrcOrigin) match {
-      case (Some(height), Some(width), Some(src), Some(origin)) => Some(Image(height.toInt, width.toInt, origin, src))
+      case (height, width, Some(src), Some(origin)) => Some(Image(height.map(_.toInt), width.map(_.toInt), origin, src))
       case _ => None
     }
 
     val replaceImage: Option[Image] = (imageSrcHeight, imageSrcWidth, imageSrc, imageSrcOrigin, imageSrcThumb) match {
-      case (Some(height), Some(width), Some(src), Some(origin), Some(thumb)) => Some(Image(height.toInt, width.toInt, origin, src, Some(thumb)))
+      case (height, width, Some(src), Some(origin), Some(thumb)) => Some(Image(height.map(_.toInt), width.map(_.toInt), origin, src, Some(thumb)))
       case _ => None
     }
 
@@ -85,15 +85,15 @@ object ClientArticleMetadata {
 
       articleMetadata.replaceImage.map(_ => mediaType == MediaType.Image),
       articleMetadata.replaceImage.map(_.src),
-      articleMetadata.replaceImage.map(_.height.toString),
-      articleMetadata.replaceImage.map(_.width.toString),
+      articleMetadata.replaceImage.flatMap(_.height).map(_.toString),
+      articleMetadata.replaceImage.flatMap(_.width).map(_.toString),
       articleMetadata.replaceImage.map(_.origin),
       articleMetadata.replaceImage.flatMap(_.thumb),
 
-      articleMetadata.cutoutImage.map(_ => mediaType == MediaType.Cutout),
+      articleMetadata.mediaType.map(_ == MediaType.Cutout),
       articleMetadata.cutoutImage.map(_.src),
-      articleMetadata.cutoutImage.map(_.height.toString),
-      articleMetadata.cutoutImage.map(_.width.toString),
+      articleMetadata.cutoutImage.flatMap(_.height).map(_.toString),
+      articleMetadata.cutoutImage.flatMap(_.width).map(_.toString),
       articleMetadata.cutoutImage.map(_.origin),
 
       articleMetadata.slideshowImages.map(_ => mediaType == MediaType.Slideshow),

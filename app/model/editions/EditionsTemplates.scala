@@ -93,8 +93,13 @@ case class EditionsFrontSkeleton(
 
 case class EditionsCollectionSkeleton(
     name: String,
-    items: List[String],
+    items: List[EditionsArticleSkeleton],
     prefill: Option[CapiPrefillQuery],
     presentation: CollectionPresentation,
     hidden: Boolean
+)
+
+case class EditionsArticleSkeleton(
+    pageCode: String,
+    metadata: ArticleMetadata
 )
