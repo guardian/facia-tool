@@ -16,6 +16,7 @@ type DerivedArticle = Partial<
     cutoutThumbnail?: string | undefined;
     kicker?: string;
     isLive: boolean;
+    tone: string | undefined;
   };
 
 export { DerivedArticle };

@@ -7,7 +7,6 @@ import startCase from 'lodash/startCase';
 
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 import { getPillarColor, notLiveColour } from 'shared/util/getPillarColor';
-import { notLiveLabels } from 'constants/fronts';
 import { HoverActionsAreaOverlay } from 'shared/components/CollectionHoverItems';
 import { HoverActionsButtonWrapper } from 'shared/components/input/HoverActionButtonWrapper';
 import {
@@ -19,10 +18,9 @@ import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selecto
 import { insertArticleFragment } from 'actions/ArticleFragments';
 import noop from 'lodash/noop';
 import { getPaths } from 'util/paths';
-import { liveBlogTones } from 'constants/fronts';
 import { ThumbnailSmall } from 'shared/components/Thumbnail';
 import { CapiArticle } from 'types/Capi';
-import { getThumbnail } from 'util/CAPIUtils';
+import { getThumbnail, getArticleLabel, isLive } from 'util/CAPIUtils';
 import {
   DraggingArticleComponent,
   dragOffsetX,
@@ -31,6 +29,7 @@ import {
 import { media } from 'shared/util/mediaQueries';
 import { State } from 'types/State';
 import { selectSharedState } from 'shared/selectors/shared';
+import { liveBlogTones } from 'constants/fronts';
 
 const Container = styled('div')`
   display: flex;
@@ -98,11 +97,15 @@ const ScheduledPublication = styled(FirstPublished)`
   color: ${notLiveColour};
 `;
 
-const Tone = styled('div')`
+const TagInfo = styled('div')`
   padding-top: 2px;
   font-size: 12px;
   font-family: TS3TextSans;
   font-weight: bold;
+`;
+
+const Tone = styled('span')`
+  font-weight: normal;
 `;
 
 const Body = styled('div')`
@@ -121,35 +124,6 @@ interface FeedItemProps {
   shouldObscureFeed: boolean;
   onAddToClipboard: (article: CapiArticle) => void;
 }
-
-// The content API drops the isLive flag on live CAPI endpoint, but keeps it in draft and print-sent.
-// We need to assume that if the isLive flag isn't present then it's because we're hitting the live endpoint
-// this makes the query to CAPI quite fragile. If anyone ever removes isLive from show-fields in the draft
-// endpoint then we'll assume *all* content is live.
-const isLive = (article: CapiArticle) =>
-  article.fields.isLive === undefined ||
-  article.fields.isLive === 'true' ||
-  article.fields.isLive === true;
-
-const getArticleLabel = (article: CapiArticle) => {
-  const {
-    fields: { firstPublicationDate },
-    sectionName,
-    frontsMeta: { tone }
-  } = article;
-  if (!isLive(article)) {
-    if (firstPublicationDate) {
-      return notLiveLabels.takenDown;
-    }
-    return notLiveLabels.draft;
-  }
-
-  if (tone === liveBlogTones.dead || tone === liveBlogTones.live) {
-    return startCase(liveBlogTones.live);
-  }
-
-  return startCase(sectionName);
-};
 
 class FeedItem extends React.Component<FeedItemProps> {
   private dragNode: React.RefObject<HTMLDivElement>;
@@ -176,7 +150,7 @@ class FeedItem extends React.Component<FeedItemProps> {
           blur={shouldObscureFeed}
         >
           <MetaContainer>
-            <Tone
+            <TagInfo
               style={{
                 color:
                   getPillarColor(
@@ -187,7 +161,10 @@ class FeedItem extends React.Component<FeedItemProps> {
               }}
             >
               {getArticleLabel(article)}
-            </Tone>
+              {article.frontsMeta.tone && (
+                <Tone> / {startCase(article.frontsMeta.tone)}</Tone>
+              )}
+            </TagInfo>
             {article.fields.scheduledPublicationDate && (
               <ScheduledPublication>
                 {distanceInWordsStrict(

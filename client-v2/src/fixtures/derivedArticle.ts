@@ -29,5 +29,6 @@ export default {
   publishedBy: 'Philip McMahon',
   uuid: 'fc87955e-fa51-4994-b6cb-bf1c55e0a212',
   supporting: [],
-  kicker: 'News'
+  kicker: 'News',
+  tone: undefined
 } as DerivedArticle;

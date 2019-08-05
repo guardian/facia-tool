@@ -9,8 +9,9 @@ const metaContainerWidthSmall = 60;
 
 const MetaContainer = styled('div')`
   position: relative;
-  min-width: ${metaContainerWidth}px;
-  ${media.large`min-width: ${metaContainerWidthSmall}px;`}
+  flex-shrink: 0;
+  width: ${metaContainerWidth}px;
+  ${media.large`width: ${metaContainerWidthSmall}px;`}
   ${media.large`word-break: break-word`}
   padding: 0 4px;
 `;
