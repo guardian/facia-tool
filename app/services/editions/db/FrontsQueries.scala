@@ -1,14 +1,14 @@
 package services.editions.db
 
-import model.editions.{EditionsFrontMetadata, FrontPresentation}
+import model.editions.EditionsFrontMetadata
 import scalikejdbc._
 import play.api.libs.json._
 
 trait FrontsQueries {
-  def updateFrontMetadata(id: String, metadata: EditionsFrontMetadata) = DB localTx { implicit session =>
+  def updateFrontMetadata(id: String, metadata: EditionsFrontMetadata): Boolean = DB localTx { implicit session =>
     sql"""
           UPDATE fronts
-          SET metadata = ${metadata.toPGobject()}
+          SET metadata = ${metadata.toPGobject}
           WHERE id = $id
       """.execute().apply()
   }
@@ -28,14 +28,14 @@ trait FrontsQueries {
     Json.fromJson[EditionsFrontMetadata](Json.parse(rawJson)).get
   }
 
-  def mergeFrontMetadata(id: String, metadata: EditionsFrontMetadata) = DB localTx { implicit session =>
+  def mergeFrontMetadata(id: String, metadata: EditionsFrontMetadata): Boolean = DB localTx { implicit session =>
     val original = getFrontMetadata(id)
     val mergedMetadata = mergeMetadatas(metadata, original)
     updateFrontMetadata(id, mergedMetadata)
 
   }
 
-  def mergeMetadatas(additionalMetadata: EditionsFrontMetadata, originalMetadata: EditionsFrontMetadata) = {
+  def mergeMetadatas(additionalMetadata: EditionsFrontMetadata, originalMetadata: EditionsFrontMetadata): EditionsFrontMetadata = {
     Json.fromJson[EditionsFrontMetadata](Json.toJson(originalMetadata).as[JsObject] ++ Json.toJson(additionalMetadata).as[JsObject]).get
   }
 
