@@ -1,9 +1,18 @@
 package model.editions
 
+import model.editions.Swatch.Swatch
+import org.postgresql.util.PGobject
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
-case class EditionsFrontMetadata(nameOverride: Option[String])
+case class EditionsFrontMetadata(nameOverride: Option[String], swatch: Option[Swatch]) {
+  def toPGobject(): PGobject = {
+    val pgo = new PGobject()
+    pgo.setType("json")
+    pgo.setValue(Json.toJson(this).toString())
+    pgo
+  }
+}
 
 object EditionsFrontMetadata {
   implicit val format = Json.format[EditionsFrontMetadata]

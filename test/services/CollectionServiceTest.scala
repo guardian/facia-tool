@@ -4,7 +4,7 @@ import com.gu.facia.client.models.{CollectionConfigJson, CollectionJson, ConfigJ
 import conf.ApplicationConfiguration
 import org.joda.time.DateTime
 import org.scalatest.{FreeSpec, Matchers}
-import play.api.{Configuration}
+import play.api.Configuration
 import slices.{Containers, FixedContainers}
 
 class CollectionServiceTest extends FreeSpec with Matchers {

@@ -3,6 +3,7 @@ package model.editions.templates
 import java.time.ZoneId
 
 import model.editions._
+import model.editions.Swatch._
 
 object DailyEdition {
   val template = EditionTemplate(
@@ -63,7 +64,7 @@ object FrontTopStories {
   val front = FrontTemplate(
     name = "Top Stories",
     collections = List(collectionTopStories),
-    presentation = TemplateDefaults.defaultFrontPresentation
+    presentation = FrontPresentation(Neutral),
   )
 }
 
@@ -97,7 +98,7 @@ object FrontNewsUkGuardian {
   val front = FrontTemplate(
     name = "UK News",
     collections = List(collectionNewsFrontPage, collectionNewsSpecial1, collectionNewsUkNewsGuardian, collectionNewsUkFinancial, collectionNewsWeather),
-    presentation = TemplateDefaults.defaultFrontPresentation
+    presentation = FrontPresentation(News)
   )
 }
 
@@ -136,7 +137,7 @@ object FrontNewsUkGuardianSaturday {
   val front = FrontTemplate(
     name = "UK News",
     collections = List(collectionNewsFrontPage, collectionNewsSpecial1, collectionNewsUkNewsGuardian, collectionNewsWeekInReviewGuardian, collectionNewsUkFinancial, collectionNewsWeather),
-    presentation = TemplateDefaults.defaultFrontPresentation
+    presentation = FrontPresentation(News)
   )
 }
 
@@ -161,7 +162,7 @@ object FrontNewsWorldGuardian {
   val front = FrontTemplate(
     name = "World News",
     collections = List(collectionNewsWorldGuardian, collectionNewsWorldFinancialGuardian, collectionNewsWorldSpecial1),
-    presentation = TemplateDefaults.defaultFrontPresentation
+    presentation = FrontPresentation(News)
   )
 }
 
@@ -196,7 +197,7 @@ object FrontNewsUkObserver {
   val front = FrontTemplate(
     name = "UK News",
     collections = List(collectionNewsFrontPageObserver, collectionNewsUkNewsObserver, collectionNewsUkBusinessObserver, collectionNewsUkFocusObserver, collectionNewsUkNewsSpecial2),
-    presentation = TemplateDefaults.defaultFrontPresentation
+    presentation = FrontPresentation(News)
   )
 }
 
@@ -220,7 +221,7 @@ object FrontNewsWorldObserver {
   val front = FrontTemplate(
     name = "World News",
     collections = List(collectionNewsWorldObserver, collectionNewsWorldBusinessObserver, collectionNewsWorldSpecial2),
-    presentation = TemplateDefaults.defaultFrontPresentation
+    presentation = FrontPresentation(News)
   )
 }
 
@@ -254,7 +255,7 @@ object FrontJournal {
   val front = FrontTemplate(
     name = "Opinion",
     collections = List(collectionJournalFeatures, collectionJournalComment, collectionJournalLetters, collectionJournalObits, collectionJournalSpecial1),
-    presentation = TemplateDefaults.defaultFrontPresentation
+    presentation = FrontPresentation(Opinion)
   )
 }
 
@@ -273,7 +274,7 @@ object FrontComment {
   val front = FrontTemplate(
     name = "Opinion",
     collections = List(collectionOpinionComment, collectionOpinionSpecial1),
-    presentation = TemplateDefaults.defaultFrontPresentation
+    presentation = FrontPresentation(Opinion)
   )
 }
 
@@ -297,7 +298,7 @@ object FrontCulture {
   val front = FrontTemplate(
     name = "Culture",
     collections = List(collectionCultureArts, collectionCultureTVandRadio, collectionCultureSpecial1),
-    presentation = TemplateDefaults.defaultFrontPresentation
+    presentation = FrontPresentation(Culture)
   )
 }
 
@@ -330,7 +331,7 @@ object FrontCultureFilmMusic {
   val front = FrontTemplate(
     name = "Culture",
     collections = List(collectionCultureFilm, collectionCultureMusic, collectionCultureArts, collectionCultureTVandRadio, collectionCultureSpecial2),
-    presentation = TemplateDefaults.defaultFrontPresentation
+    presentation = FrontPresentation(Culture)
   )
 }
 
@@ -358,7 +359,7 @@ object FrontCultureGuide {
   val front = FrontTemplate(
     name = "Culture",
     collections = List(collectionCultureFeatures, collectionCulturePreview, collectionCultureTVandRadio, collectionCultureSpecial3),
-    presentation = TemplateDefaults.defaultFrontPresentation
+    presentation = FrontPresentation(Culture)
   )
 }
 
@@ -392,7 +393,7 @@ object FrontCultureNewReview {
   val front = FrontTemplate(
     name = "Culture",
     collections = List(collectionCultureFeatures, collectionCultureScience, collectionCultureAgenda, collectionCultureCritics, collectionCultureSpecial3),
-    presentation = TemplateDefaults.defaultFrontPresentation
+    presentation = FrontPresentation(Culture)
   )
 }
 
@@ -411,7 +412,7 @@ object FrontLife {
   val front = FrontTemplate(
     name = "Lifestyle",
     collections = List(collectionLifeFeatures, collectionLifeSpecial1),
-    presentation = TemplateDefaults.defaultFrontPresentation
+    presentation = FrontPresentation(Lifestyle)
   )
 }
 
@@ -436,7 +437,7 @@ object FrontLifeFashion {
   val front = FrontTemplate(
     name = "The Fashion",
     collections = List(collectionLifeFashion1, collectionLifeFashion2, collectionLifeFashion3),
-    presentation = TemplateDefaults.defaultFrontPresentation,
+    presentation = FrontPresentation(Lifestyle),
     hidden = true
   )
 }
@@ -487,7 +488,7 @@ object FrontLifeWeekend {
   val front = FrontTemplate(
     name = "Lifestyle",
     collections = List(collectionLifeWeekend, collectionLifeFamily, collectionLifeSpace, collectionLifeFashion, collectionLifeBody, collectionLifeTravel, collectionLifeMoney, collectionLifeSpecial2),
-    presentation = TemplateDefaults.defaultFrontPresentation
+    presentation = FrontPresentation(Lifestyle)
   )
 }
 
@@ -512,7 +513,7 @@ object FrontLifeMagazineObserver {
   val front = FrontTemplate(
     name = "Lifestyle",
     collections = List(collectionLifeMagazineFeatures, collectionLifeLifeStyle, collectionLifeSpecial3),
-    presentation = TemplateDefaults.defaultFrontPresentation
+    presentation = FrontPresentation(Lifestyle)
   )
 }
 
@@ -531,7 +532,7 @@ object FrontBooks {
   val front = FrontTemplate(
     name = "Books",
     collections = List(collectionBooks, collectionBooksSpecial1),
-    presentation = TemplateDefaults.defaultFrontPresentation
+    presentation = FrontPresentation(Culture)
   )
 }
 
@@ -550,7 +551,7 @@ object FrontFood {
   val front = FrontTemplate(
     name = "Food",
     collections = List(collectionFeast, collectionFoodSpecial1),
-    presentation = TemplateDefaults.defaultFrontPresentation
+    presentation = FrontPresentation(Lifestyle)
   )
 }
 
@@ -575,7 +576,7 @@ object FrontFoodObserver {
   val front = FrontTemplate(
     name = "Food",
     collections = List(collectionFood, collectionFoodMonthly, collectionFoodSpecial2),
-    presentation = TemplateDefaults.defaultFrontPresentation
+    presentation = FrontPresentation(Lifestyle)
   )
 }
 
@@ -594,7 +595,7 @@ object FrontSportGuardian {
   val front = FrontTemplate(
     name = "Sport",
     collections = List(collectionSport, collectionSportSpecial1),
-    presentation = TemplateDefaults.defaultFrontPresentation
+    presentation = FrontPresentation(Sport)
   )
 }
 
@@ -613,7 +614,7 @@ object FrontSportObserver {
   val front = FrontTemplate(
     name = "Sport",
     collections = List(collectionObsSport, collectionSportSpecial2),
-    presentation = TemplateDefaults.defaultFrontPresentation
+    presentation = FrontPresentation(Sport)
   )
 }
 
@@ -642,6 +643,6 @@ object FrontCrosswords {
   val front = FrontTemplate(
     name = "Crosswords",
     collections = List(collectionCrosswords),
-    presentation = TemplateDefaults.defaultFrontPresentation
+    presentation = FrontPresentation(Neutral)
   )
 }

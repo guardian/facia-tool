@@ -41,7 +41,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   }
 
   private def front(name: String, collections: EditionsCollectionSkeleton*): EditionsFrontSkeleton =
-    EditionsFrontSkeleton(name, collections.toList, FrontPresentation(), hidden = false, canRename = false)
+    EditionsFrontSkeleton(name, collections.toList, FrontPresentation(Swatch.Culture), hidden = false, canRename = false)
 
   private def collection(name: String, prefill: Option[CapiPrefillQuery], articles: String*): EditionsCollectionSkeleton =
     EditionsCollectionSkeleton(name, articles.toList, prefill, CollectionPresentation(), hidden = false)
@@ -97,6 +97,8 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       val newsFront = retrievedIssue.fronts.head
       newsFront.displayName shouldBe "news/uk"
       newsFront.collections.length shouldBe 2
+      newsFront.metadata.get.nameOverride shouldBe None
+      newsFront.metadata.get.swatch shouldBe Some(Swatch.Culture)
 
       val newsPoliticsCollection = newsFront.collections.head
       newsPoliticsCollection.displayName shouldBe "politics"
@@ -111,6 +113,8 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       val commentFront = retrievedIssue.fronts.tail.head
       commentFront.displayName shouldBe "comment"
       commentFront.collections.length shouldBe 3
+      commentFront.metadata.get.nameOverride shouldBe None
+      commentFront.metadata.get.swatch shouldBe Some(Swatch.Culture)
     }
 
     "should allow lookup of issue by collection id" taggedAs UsesDatabase in {
