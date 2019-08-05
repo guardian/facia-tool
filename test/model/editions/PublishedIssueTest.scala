@@ -30,7 +30,7 @@ class PublishedIssueTest extends FreeSpec with Matchers {
         Some(true),
         Some(true),
         Some("byline"),
-        None,
+        Some("sport-score"),
         Some(MediaType.Image),
         None,
         Some(Image(Some(100), Some(100), "file://image-1.gif", "file://image-1.jpg"))
@@ -47,7 +47,7 @@ class PublishedIssueTest extends FreeSpec with Matchers {
         showQuotedHeadline = true,
         mediaType = PublishedMediaType.Image,
         imageSrcOverride = Some(PublishedImage(Some(100), Some(100), "file://image-1.jpg")),
-        sportScore = None
+        sportScore = Some("sport-score")
       )
     }
   }
