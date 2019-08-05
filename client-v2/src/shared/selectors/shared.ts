@@ -3,7 +3,8 @@ import { createSelector } from 'reselect';
 import {
   getThumbnail,
   getPrimaryTag,
-  getContributorImage
+  getContributorImage,
+  getTone
 } from 'util/CAPIUtils';
 import { selectors as externalArticleSelectors } from '../bundles/externalArticlesBundle';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
@@ -156,7 +157,8 @@ const createSelectArticleFromArticleFragment = () =>
         firstPublicationDate: externalArticle
           ? externalArticle.fields.firstPublicationDate
           : undefined,
-        frontPublicationDate: articleFragment.frontPublicationDate
+        frontPublicationDate: articleFragment.frontPublicationDate,
+        tone: externalArticle ? getTone(externalArticle.tags) : undefined
       };
     }
   );

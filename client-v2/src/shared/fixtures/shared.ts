@@ -37,6 +37,15 @@ const capiArticle = {
       webUrl: 'https://www.theguardian.com/world/hurricane-florence',
       apiUrl: 'https://content.guardianapis.com/world/hurricane-florence',
       references: []
+    },
+    {
+      id: 'tone/news',
+      type: 'tone',
+      webTitle: 'News',
+      webUrl: 'https://www.theguardian.com/tone/news',
+      apiUrl: 'https://preview.content.guardianapis.com/tone/news',
+      references: [],
+      internalName: 'News (Tone)'
     }
   ],
   blocks: {
