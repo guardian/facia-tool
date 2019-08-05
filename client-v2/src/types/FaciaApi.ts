@@ -22,6 +22,12 @@ interface FrontConfigResponse {
   title?: string;
   webTitle?: string;
   navSection?: string;
+  canRename?: boolean;
+  metadata?: EditionsFrontMetadata;
+}
+
+interface EditionsFrontMetadata {
+  nameOverride?: string;
 }
 
 type Platform = 'Web' | 'Platform';
@@ -131,5 +137,6 @@ export {
   CollectionResponse,
   EditionCollectionResponse,
   VisibleArticlesResponse,
-  FrontsToolSettings
+  FrontsToolSettings,
+  EditionsFrontMetadata
 };

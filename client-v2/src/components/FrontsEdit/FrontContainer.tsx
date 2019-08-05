@@ -13,7 +13,7 @@ import {
 } from 'bundles/frontsUIBundle';
 import Button from 'shared/components/input/ButtonDefault';
 import { frontStages } from 'constants/fronts';
-import { FrontConfig } from 'types/FaciaApi';
+import { FrontConfig, EditionsFrontMetadata } from 'types/FaciaApi';
 import { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
 import {
@@ -34,6 +34,7 @@ import { PreviewEyeIcon, ClearIcon } from 'shared/components/icons/Icons';
 import { createFrontId } from 'util/editUtils';
 import { formMinWidth } from './ArticleFragmentForm';
 import EditModeVisibility from 'components/util/EditModeVisibility';
+import { updateFrontMetadata } from 'actions/Editions';
 
 const FrontHeader = styled(SectionHeader)`
   display: flex;
@@ -54,6 +55,13 @@ const FrontsHeaderText = styled('span')`
   overflow: hidden;
   text-overflow: ellipsis;
   color: ${({ theme }) => theme.shared.colors.blackDark};
+`;
+
+const FrontsHeaderInput = styled('input')`
+  font-size: 22px;
+  font-family: GHGuardianHeadline;
+  font-weight: bold;
+  width: 20em;
 `;
 
 const StageSelectButtons = styled('div')`
@@ -96,6 +104,10 @@ const FrontHeaderButton = styled(Button)`
   padding: 0 5px;
   display: flex;
   align-items: center;
+
+  &:not(:last-child) {
+    margin-right: 10px;
+  }
 `;
 
 const PreviewButtonText = styled('span')`
@@ -116,16 +128,24 @@ type FrontsComponentProps = FrontsContainerProps & {
     editorCloseFront: (frontId: string) => void;
     updateCollection: (collection: Collection) => void;
     changeBrowsingStage: (frontId: string, browsingState: Stages) => void;
+    updateFrontMetadata: (
+      frontId: string,
+      metadata: EditionsFrontMetadata
+    ) => void;
   };
 };
 
 interface ComponentState {
   collectionSet: CollectionItemSets;
+  frontNameValue: string;
+  editingFrontName: boolean;
 }
 
 class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   public state = {
-    collectionSet: frontStages.draft
+    collectionSet: frontStages.draft,
+    frontNameValue: '',
+    editingFrontName: false
   };
 
   public handleCollectionSetSelect(key: string) {
@@ -143,13 +163,58 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
     this.props.frontsActions.editorCloseFront(this.props.frontId);
   };
 
+  public renameFront = () => {
+    this.setState({
+      frontNameValue: this.getTitle() || '',
+      editingFrontName: true
+    });
+  };
+
+  getTitle = () => {
+    const { selectedFront } = this.props;
+
+    if (selectedFront) {
+      if (selectedFront.metadata && selectedFront.metadata.nameOverride) {
+        return selectedFront.metadata.nameOverride;
+      } else {
+        return startCase(
+          this.props.selectedFront.displayName || this.props.selectedFront.id
+        );
+      }
+    }
+
+    return;
+  };
+
   public render() {
     const { frontId, isFormOpen, isOverviewOpen } = this.props;
-    const title =
-      this.props.selectedFront &&
-      startCase(
-        this.props.selectedFront.displayName || this.props.selectedFront.id
+    const title = this.getTitle();
+
+    const { frontNameValue, editingFrontName } = this.state;
+    const canRename = this.props.selectedFront
+      ? this.props.selectedFront.canRename
+      : false;
+
+    const setName = () => {
+      const metadata =
+        this.state.frontNameValue !== ''
+          ? {
+              ...this.props.selectedFront.metadata,
+              nameOverride: this.state.frontNameValue
+            }
+          : {
+              ...this.props.selectedFront.metadata,
+              nameOverride: undefined
+            };
+
+      this.props.frontsActions.updateFrontMetadata(
+        this.props.selectedFront.id,
+        metadata
       );
+
+      this.setState({ editingFrontName: false });
+    };
+
     return (
       <SingleFrontContainer
         key={frontId}
@@ -159,7 +224,23 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
       >
         <FrontContainer>
           <FrontHeader greyHeader={true}>
-            <FrontsHeaderText title={title}>{title}</FrontsHeaderText>
+            {editingFrontName ? (
+              <FrontsHeaderInput
+                value={frontNameValue}
+                autoFocus
+                onChange={e =>
+                  this.setState({ frontNameValue: e.target.value })
+                }
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    setName();
+                  }
+                }}
+                onBlur={setName}
+              />
+            ) : (
+              <FrontsHeaderText title={title}>{title}</FrontsHeaderText>
+            )}
             <FrontHeaderMeta>
               <EditModeVisibility visibleMode="fronts">
                 <a
@@ -188,6 +269,11 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                   </RadioGroup>
                 </StageSelectButtons>
               </EditModeVisibility>
+              {canRename && (
+                <FrontHeaderButton onClick={this.renameFront} size="l">
+                  Rename
+                </FrontHeaderButton>
+              )}
               <FrontHeaderButton onClick={this.handleRemoveFront} size="l">
                 <ClearIcon size="xl" />
               </FrontHeaderButton>
@@ -226,7 +312,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       dispatch(updateCollection(collection)),
     editorCloseFront: (id: string) => dispatch(editorCloseFront(id)),
     changeBrowsingStage: (id: string, browsingStage: Stages) =>
-      dispatch(changedBrowsingStage(id, browsingStage))
+      dispatch(changedBrowsingStage(id, browsingStage)),
+    updateFrontMetadata: (id: string, metadata: EditionsFrontMetadata) =>
+      dispatch(updateFrontMetadata(id, metadata))
   }
 });
 

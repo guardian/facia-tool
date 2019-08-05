@@ -11,6 +11,15 @@ trait FrontsQueries {
           SET metadata = ${metadata.toPGobject}
           WHERE id = $id
       """.execute().apply()
+
+    sql"""
+        SELECT metadata FROM fronts WHERE id = $id
+      """.map { rs =>
+      rs.stringOpt("metadata").map { metadataString =>
+        // Throw if we can't parse the metadata to signal to the user that something is broken
+        Json.parse(metadataString).validate[EditionsFrontMetadata].get
+      }
+    }.single().apply().flatten
   }
 
   def getFrontMetadata(id: String): EditionsFrontMetadata = DB localTx { implicit session =>

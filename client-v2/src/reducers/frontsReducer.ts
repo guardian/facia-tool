@@ -42,6 +42,13 @@ const reducer = (
     };
   }
   switch (action.type) {
+    case 'FETCH_UPDATE_METADATA_SUCCESS': {
+      return set(
+        ['frontsConfig', 'data', 'fronts', action.payload.frontId, 'metadata'],
+        action.payload.metadata,
+        newState
+      );
+    }
     case 'FETCH_LAST_PRESSED_SUCCESS': {
       return set(
         ['lastPressed', action.payload.frontId],
