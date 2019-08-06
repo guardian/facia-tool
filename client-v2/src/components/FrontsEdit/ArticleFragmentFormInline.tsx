@@ -42,7 +42,6 @@ import { CapiFields } from 'util/form';
 import { Dispatch } from 'types/Store';
 import { articleFragmentImageCriteria as imageCriteria } from 'constants/image';
 import { selectors as collectionSelectors } from 'shared/bundles/collectionsBundle';
-import HideableFormSection from 'shared/components/layout/HideableFormSection';
 import { getContributorImage } from 'util/CAPIUtils';
 
 interface ComponentProps extends ContainerProps {
@@ -392,15 +391,14 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 originalValue={articleCapiFieldValues.byline}
               />
             )}
-            <HideableFormSection label="Trail text">
-              <ConditionalField
-                permittedFields={editableFields}
-                name="trailText"
-                component={InputTextArea}
-                placeholder={articleCapiFieldValues.trailText}
-                originalValue={articleCapiFieldValues.trailText}
-              />
-            </HideableFormSection>
+            <ConditionalField
+              permittedFields={editableFields}
+              name="trailText"
+              component={InputTextArea}
+              placeholder={articleCapiFieldValues.trailText}
+              originalValue={articleCapiFieldValues.trailText}
+              label="Trail text"
+            />
           </InputGroup>
           <RowContainer>
             <Row>
