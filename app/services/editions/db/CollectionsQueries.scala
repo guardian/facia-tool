@@ -38,17 +38,22 @@ trait CollectionsQueries {
     val rows = sql"""
           SELECT collections.prefill,
                  articles.page_code,
-                 edition_issues.issue_date
+                 edition_issues.issue_date,
+                 edition_issues.timezone_id
           FROM collections
           LEFT JOIN articles ON (collections.id = articles.collection_id)
           JOIN fronts ON (collections.front_id = fronts.id)
           JOIN edition_issues ON (fronts.issue_id = edition_issues.id)
           WHERE collections.id = $id
        """.map { rs =>
-      (rs.zonedDateTime("issue_date"), CapiPrefillQuery(rs.string("prefill")), rs.string("page_code"))
+      val time = rs.zonedDateTime("issue_date")
+      val zone = ZoneId.of(rs.string("timezone_id"))
+
+      (time.withZoneSameInstant(zone), CapiPrefillQuery(rs.string("prefill")), rs.string("page_code"))
     }.list().apply()
 
     rows.headOption.map { case (issueDate, prefill, _) =>
+      println(issueDate.toString)
       PrefillUpdate(issueDate, prefill, rows.map(_._3))
     }
   }
