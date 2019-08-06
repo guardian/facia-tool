@@ -53,7 +53,6 @@ trait CollectionsQueries {
     }.list().apply()
 
     rows.headOption.map { case (issueDate, prefill, _) =>
-      println(issueDate.toString)
       PrefillUpdate(issueDate, prefill, rows.map(_._3))
     }
   }
