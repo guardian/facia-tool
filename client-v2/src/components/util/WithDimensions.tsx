@@ -13,6 +13,17 @@ interface Props {
 
 const initialState = { width: undefined, height: undefined } as Dimensions;
 
+/**
+ * Supplies the dimensions of the given element to its children.
+ *
+ * ```
+ * <WithDimensions element={this.someHTMLElement}>
+ *  {({ width, height }) => (
+ *    <p>`The dimensions of the given element are ${width} x ${height}`</p>
+ *  )
+ * </WithDimensions>
+ * ```
+ */
 const WithDimensions = ({ element, children }: Props) => {
   const [dimensions, setDimensions] = useState(initialState);
   useEffect(
