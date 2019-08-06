@@ -79,6 +79,13 @@ export const createSelectFormFieldsForCollectionItem = () => {
       }
 
       if (editMode === 'editions') {
+        if (
+          derivedArticle.sectionName === 'Sport' ||
+          derivedArticle.sectionName === 'Football'
+        ) {
+          fields.push('sportScore');
+        }
+
         return fields.filter(_ => _ !== 'imageSlideshowReplace');
       } else {
         return fields;

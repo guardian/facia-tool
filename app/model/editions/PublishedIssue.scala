@@ -27,7 +27,8 @@ case class PublishedFurniture(
   showByline: Boolean,
   showQuotedHeadline: Boolean,
   mediaType: PublishedMediaType,
-  imageSrcOverride: Option[PublishedImage]
+  imageSrcOverride: Option[PublishedImage],
+  sportScore: Option[String]
 )
 
 case class PublishedArticle(internalPageCode: Long, furniture: PublishedFurniture)

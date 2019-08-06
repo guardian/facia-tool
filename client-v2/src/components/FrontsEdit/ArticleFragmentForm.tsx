@@ -301,6 +301,14 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             />
             <ConditionalField
               permittedFields={editableFields}
+              name="sportScore"
+              label="Sport Score"
+              component={InputText}
+              placeholder=""
+              originalValue={''}
+            />
+            <ConditionalField
+              permittedFields={editableFields}
               name="isBoosted"
               component={InputCheckboxToggle}
               label="Boost"

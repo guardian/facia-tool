@@ -73,7 +73,8 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
             |      "height" : 1280,
             |      "width" : 720,
             |      "src" : "https://media.giphy.com/media/yV5iknckcXcc/source.gif"
-            |    }
+            |    },
+            |    "sportScore" : "Sport Score"
             |  }
             |}""".stripMargin
 
@@ -82,6 +83,7 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
           headlineOverride = Some("a nice headline"),
           trailTextOverride = Some("an even lovelier trail for the article"),
           bylineOverride = Some("Monkey In Charge"),
+          sportScore = Some("Sport Score"),
           showByline = true,
           showQuotedHeadline = false,
           mediaType = PublishedMediaType.Cutout,

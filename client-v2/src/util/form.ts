@@ -22,6 +22,7 @@ export interface ArticleFragmentFormData {
   isBreaking: boolean;
   showLivePlayable: boolean;
   byline: string;
+  sportScore: string;
   showByline: boolean;
   trailText: string;
   imageHide: boolean;
@@ -120,7 +121,8 @@ export const getInitialValuesForArticleFragmentForm = (
           origin: article.imageCutoutSrcOrigin,
           thumb: article.imageCutoutSrc
         },
-        slideshow: slideshow.concat(slideshowBackfill)
+        slideshow: slideshow.concat(slideshowBackfill),
+        sportScore: article.sportScore || ''
       }
     : undefined;
 };
@@ -176,6 +178,7 @@ export const getArticleFragmentMetaFromFormValues = (
       headline: getStringField(values.headline),
       trailText: getStringField(values.trailText),
       byline: getStringField(values.byline),
+      sportScore: getStringField(values.sportScore),
       ...getImageMetaFromValidationResponse(primaryImage),
       imageCutoutSrc: cutoutImage.src,
       imageCutoutSrcWidth: intToStr(cutoutImage.width),
