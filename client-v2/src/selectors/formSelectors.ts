@@ -68,14 +68,6 @@ export const createSelectFormFieldsForCollectionItem = () => {
       }
       const fields = defaultFields.slice();
 
-      if (
-        editMode === 'editions' &&
-        (derivedArticle.sectionName === 'Sport' ||
-          derivedArticle.sectionName === 'Football')
-      ) {
-        fields.push('sportScore');
-      }
-
       if (isCollectionConfigDynamic(parentCollectionConfig)) {
         fields.push('isBoosted');
       }
@@ -87,6 +79,13 @@ export const createSelectFormFieldsForCollectionItem = () => {
       }
 
       if (editMode === 'editions') {
+        if (
+          derivedArticle.sectionName === 'Sport' ||
+          derivedArticle.sectionName === 'Football'
+        ) {
+          fields.push('sportScore');
+        }
+
         return fields.filter(_ => _ !== 'imageSlideshowReplace');
       } else {
         return fields;
