@@ -23,8 +23,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     byline = None,
     mediaType = None,
     cutoutImage = None,
-    replaceImage = None,
-    slideshowImages = None
+    replaceImage = None
   )
 
   private def insertSkeletonIssue(year: Int, month: Int, dom: Int, fronts: EditionsFrontSkeleton*): String = {

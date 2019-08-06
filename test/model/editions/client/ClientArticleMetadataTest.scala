@@ -15,7 +15,6 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         None,
         None,
         None,
-        None,
         None
       )
 
@@ -33,7 +32,6 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
       clientArticleMetadata.imageHide shouldBe None
       clientArticleMetadata.imageReplace shouldBe None
       clientArticleMetadata.imageCutoutReplace shouldBe None
-      clientArticleMetadata.imageSlideshowReplace shouldBe None
     }
 
     "should persist cutout image when selected override is hide image" in {
@@ -46,7 +44,6 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         None,
         Some(MediaType.Hide),
         Some(Image(Some(100), Some(100), "file://origin-new-pokemon.gif", "file://new-pokemon.gif")),
-        None,
         None
       )
 
@@ -64,44 +61,6 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
       clientArticleMetadata.imageCutoutSrcWidth shouldBe Some("100")
 
       clientArticleMetadata.imageReplace shouldBe None
-      clientArticleMetadata.imageSlideshowReplace shouldBe None
-    }
-
-    "should persist slideshow images when selected override is replace image" in {
-      val articleMetadata = ArticleMetadata(
-        Some("Elephants declared best animal"),
-        None,
-        None,
-        None,
-        None,
-        None,
-        Some(MediaType.Image),
-        None,
-        Some(Image(Some(100), Some(100), "file://elephant.jpg", "file://elephant.png")),
-        Some(List(
-          Image(Some(100), Some(100), "file://elephant-playing-in-mud.jpg", "file://elephant-playing-in-mud.png"),
-          Image(Some(100), Some(100), "file://elephant-spraying-water.jpg", "file://elephant-spraying-water.png")
-        ))
-      )
-
-      val clientArticleMetadata = ClientArticleMetadata.fromArticleMetadata(articleMetadata)
-
-      clientArticleMetadata.headline.isDefined shouldBe true
-      clientArticleMetadata.headline.get shouldBe "Elephants declared best animal"
-
-      clientArticleMetadata.imageReplace shouldBe Some(true)
-      clientArticleMetadata.imageSrc shouldBe Some("file://elephant.png")
-      clientArticleMetadata.imageSrcOrigin shouldBe Some("file://elephant.jpg")
-      clientArticleMetadata.imageSrcHeight shouldBe Some("100")
-      clientArticleMetadata.imageSrcWidth shouldBe Some("100")
-
-      clientArticleMetadata.imageHide shouldBe None
-
-      clientArticleMetadata.imageSlideshowReplace shouldBe Some(false)
-      clientArticleMetadata.slideshow shouldBe Some(List(
-        Image(Some(100), Some(100), "file://elephant-playing-in-mud.jpg", "file://elephant-playing-in-mud.png"),
-        Image(Some(100), Some(100), "file://elephant-spraying-water.jpg", "file://elephant-spraying-water.png")
-      ))
     }
 
     "should only set an image override boolean if its fields are also set" in {
@@ -113,7 +72,6 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         None,
         None,
         Some(MediaType.Image),
-        None,
         None,
         None
       )
@@ -132,7 +90,6 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         None,
         None,
         Some(MediaType.UseArticleTrail),
-        None,
         None,
         None
       )
@@ -164,9 +121,7 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         Some("file://broom.jpg"),
         Some("100"),
         Some("100"),
-        Some("file://broom.gif"),
-        None,
-        None
+        Some("file://broom.gif")
       )
 
       val articleMetadata = cam.toArticleMetadata
