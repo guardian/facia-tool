@@ -20,6 +20,9 @@ const EDIT_FORM_HEADLINE_FIELD = 'edit-form-headline-field';
 const EDIT_FORM_SAVE_BUTTON = 'edit-form-save-button';
 const EDIT_FORM_BREAKING_NEWS_TOGGLE = 'edit-form-breaking-news-toggle';
 const BREAKING_NEWS_SELECTOR = 'breaking-news';
+const RENAME_FRONT_BUTTON = 'rename-front-button';
+const RENAME_FRONT_INPUT = 'rename-front-input';
+const FRONT_NAME = 'front-name';
 
 const FRONTS_MENU_BUTTON = 'fronts-menu-button';
 const FRONTS_MENU_ITEM = 'fronts-menu-item';
@@ -133,6 +136,10 @@ export const frontDropZone = maybeGetNth(
 export const frontItemAddToClipboardHoverButton = maybeGetNth(
   select(FRONT_SELECTOR, ADD_TO_CLIPBOARD_BUTTON)
 );
+
+export const renameFrontButton = maybeGetNth(select(RENAME_FRONT_BUTTON));
+export const renameFrontInput = select(RENAME_FRONT_INPUT);
+export const frontName = maybeGetNth(select(FRONT_NAME));
 
 // Front Menu //
 export const frontsMenuButton = () => select(FRONTS_MENU_BUTTON);

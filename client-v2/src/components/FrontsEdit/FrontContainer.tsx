@@ -163,7 +163,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
     this.props.frontsActions.editorCloseFront(this.props.frontId);
   };
 
-  public renameFront = () => {
+  renameFront = () => {
     this.setState({
       frontNameValue: this.getTitle() || '',
       editingFrontName: true
@@ -186,6 +186,26 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
     return;
   };
 
+  setName = () => {
+    const metadata =
+      this.state.frontNameValue !== ''
+        ? {
+            ...this.props.selectedFront.metadata,
+            nameOverride: this.state.frontNameValue
+          }
+        : {
+            ...this.props.selectedFront.metadata,
+            nameOverride: undefined
+          };
+
+    this.props.frontsActions.updateFrontMetadata(
+      this.props.selectedFront.id,
+      metadata
+    );
+
+    this.setState({ editingFrontName: false });
+  };
+
   public render() {
     const { frontId, isFormOpen, isOverviewOpen } = this.props;
     const title = this.getTitle();
@@ -194,26 +214,6 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
     const canRename = this.props.selectedFront
       ? this.props.selectedFront.canRename
       : false;
-
-    const setName = () => {
-      const metadata =
-        this.state.frontNameValue !== ''
-          ? {
-              ...this.props.selectedFront.metadata,
-              nameOverride: this.state.frontNameValue
-            }
-          : {
-              ...this.props.selectedFront.metadata,
-              nameOverride: undefined
-            };
-
-      this.props.frontsActions.updateFrontMetadata(
-        this.props.selectedFront.id,
-        metadata
-      );
-
-      this.setState({ editingFrontName: false });
-    };
 
     return (
       <SingleFrontContainer
@@ -226,6 +226,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
           <FrontHeader greyHeader={true}>
             {editingFrontName ? (
               <FrontsHeaderInput
+                data-testid="rename-front-input"
                 value={frontNameValue}
                 autoFocus
                 onChange={e =>
@@ -233,13 +234,15 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                 }
                 onKeyDown={e => {
                   if (e.key === 'Enter') {
-                    setName();
+                    this.setName();
                   }
                 }}
-                onBlur={setName}
+                onBlur={this.setName}
               />
             ) : (
-              <FrontsHeaderText title={title}>{title}</FrontsHeaderText>
+              <FrontsHeaderText title={title} data-testid="front-name">
+                {title}
+              </FrontsHeaderText>
             )}
             <FrontHeaderMeta>
               <EditModeVisibility visibleMode="fronts">
@@ -270,7 +273,11 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                 </StageSelectButtons>
               </EditModeVisibility>
               {canRename && (
-                <FrontHeaderButton onClick={this.renameFront} size="l">
+                <FrontHeaderButton
+                  data-testid="rename-front-button"
+                  onClick={this.renameFront}
+                  size="l"
+                >
                   Rename
                 </FrontHeaderButton>
               )}
