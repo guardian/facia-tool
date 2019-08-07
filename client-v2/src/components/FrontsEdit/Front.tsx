@@ -39,6 +39,7 @@ import ButtonRoundedWithLabel, {
 import sortBy from 'lodash/sortBy';
 import debounce from 'lodash/debounce';
 import { bindActionCreators } from 'redux';
+import WithDimensions from 'components/util/WithDimensions';
 
 const FrontContainer = styled('div')`
   height: 100%;
@@ -299,40 +300,46 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
               onScroll={this.handleScroll}
               innerRef={ref => (this.collectionContainerElement = ref)}
             >
-              <Root id={this.props.id} data-testid={this.props.id}>
-                {front.collections.map(collectionId => (
-                  <CollectionContainer
-                    key={collectionId}
-                    innerRef={ref =>
-                      (this.collectionElements[collectionId] = ref)
-                    }
-                  >
-                    <Collection
-                      id={collectionId}
-                      frontId={this.props.id}
-                      priority={front.priority}
-                      browsingStage={this.props.browsingStage}
-                      alsoOn={this.props.alsoOn}
-                      handleInsert={this.handleInsert}
-                      handleMove={this.handleMove}
-                      selectArticleFragment={(
-                        articleFragmentId,
-                        isSupporting
-                      ) =>
-                        this.props.selectArticleFragment(
-                          articleFragmentId,
-                          collectionId,
-                          this.props.id,
-                          isSupporting
-                        )
-                      }
-                      handleArticleFocus={this.handleArticleFocus}
-                    />
-                  </CollectionContainer>
-                ))}
-              </Root>
+              <WithDimensions element={this.collectionContainerElement}>
+                {({ width }) => (
+                  <Root id={this.props.id} data-testid={this.props.id}>
+                    {front.collections.map(collectionId => (
+                      <CollectionContainer
+                        key={collectionId}
+                        innerRef={ref =>
+                          (this.collectionElements[collectionId] = ref)
+                        }
+                      >
+                        <Collection
+                          id={collectionId}
+                          frontId={this.props.id}
+                          priority={front.priority}
+                          browsingStage={this.props.browsingStage}
+                          alsoOn={this.props.alsoOn}
+                          handleInsert={this.handleInsert}
+                          handleMove={this.handleMove}
+                          size={width && width > 500 ? 'default' : 'medium'}
+                          selectArticleFragment={(
+                            articleFragmentId,
+                            isSupporting
+                          ) =>
+                            this.props.selectArticleFragment(
+                              articleFragmentId,
+                              collectionId,
+                              this.props.id,
+                              isSupporting
+                            )
+                          }
+                          handleArticleFocus={this.handleArticleFocus}
+                        />
+                      </CollectionContainer>
+                    ))}
+                  </Root>
+                )}
+              </WithDimensions>
             </FrontCollectionsContainer>
           </FrontContentContainer>
+
           {(overviewIsOpen || isFormOpen) && (
             <FrontDetailContainer>
               <FrontDetailView

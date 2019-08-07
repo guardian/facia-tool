@@ -3,9 +3,10 @@ import { styled } from 'shared/constants/theme';
 import { sanitizeHTML } from 'shared/util/sanitizeHTML';
 import { media } from 'shared/util/mediaQueries';
 import { theme } from 'constants/theme';
+import { CollectionItemSizes } from 'shared/types/Collection';
 
 const Wrapper = styled('span')<{
-  displaySize?: 'small' | 'default';
+  displaySize?: CollectionItemSizes;
   showLargeHeadline?: boolean;
 }>`
   font-family: TS3TextSans;
@@ -18,7 +19,7 @@ const Wrapper = styled('span')<{
 type CollectionItemHeading = {
   children?: string;
   html?: boolean;
-  displaySize?: 'small' | 'default';
+  displaySize?: CollectionItemSizes;
   showLargeHeadline?: boolean;
 } & React.HTMLProps<HTMLSpanElement>;
 
