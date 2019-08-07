@@ -163,49 +163,6 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
     this.props.frontsActions.editorCloseFront(this.props.frontId);
   };
 
-  renameFront = () => {
-    this.setState({
-      frontNameValue: this.getTitle() || '',
-      editingFrontName: true
-    });
-  };
-
-  getTitle = () => {
-    const { selectedFront } = this.props;
-
-    if (selectedFront) {
-      if (selectedFront.metadata && selectedFront.metadata.nameOverride) {
-        return selectedFront.metadata.nameOverride;
-      } else {
-        return startCase(
-          this.props.selectedFront.displayName || this.props.selectedFront.id
-        );
-      }
-    }
-
-    return;
-  };
-
-  setName = () => {
-    const metadata =
-      this.state.frontNameValue !== ''
-        ? {
-            ...this.props.selectedFront.metadata,
-            nameOverride: this.state.frontNameValue
-          }
-        : {
-            ...this.props.selectedFront.metadata,
-            nameOverride: undefined
-          };
-
-    this.props.frontsActions.updateFrontMetadata(
-      this.props.selectedFront.id,
-      metadata
-    );
-
-    this.setState({ editingFrontName: false });
-  };
-
   public render() {
     const { frontId, isFormOpen, isOverviewOpen } = this.props;
     const title = this.getTitle();
@@ -300,6 +257,49 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
       </SingleFrontContainer>
     );
   }
+
+  private renameFront = () => {
+    this.setState({
+      frontNameValue: this.getTitle() || '',
+      editingFrontName: true
+    });
+  };
+
+  private getTitle = () => {
+    const { selectedFront } = this.props;
+
+    if (selectedFront) {
+      if (selectedFront.metadata && selectedFront.metadata.nameOverride) {
+        return selectedFront.metadata.nameOverride;
+      } else {
+        return startCase(
+          this.props.selectedFront.displayName || this.props.selectedFront.id
+        );
+      }
+    }
+
+    return;
+  };
+
+  private setName = () => {
+    const metadata =
+      this.state.frontNameValue !== ''
+        ? {
+            ...this.props.selectedFront.metadata,
+            nameOverride: this.state.frontNameValue
+          }
+        : {
+            ...this.props.selectedFront.metadata,
+            nameOverride: undefined
+          };
+
+    this.props.frontsActions.updateFrontMetadata(
+      this.props.selectedFront.id,
+      metadata
+    );
+
+    this.setState({ editingFrontName: false });
+  };
 }
 
 const createMapStateToProps = () => {

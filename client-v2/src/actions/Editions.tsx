@@ -75,6 +75,6 @@ export const updateFrontMetadata = (
       }
     });
   } catch (error) {
-    console.error('failed to put front metadata: ', error);
+    // @todo implement centralised error handling
   }
 };
