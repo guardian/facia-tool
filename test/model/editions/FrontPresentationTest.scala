@@ -5,7 +5,7 @@ import play.api.libs.json.{Format, Json, Reads, Writes}
 
 class FrontPresentationTest extends FreeSpec with Matchers {
 
-  val frontPresentationAsString = "{\"swatch\":\"Culture\"}"
+  val frontPresentationAsString = "{\"swatch\":\"culture\"}"
   val presentation = FrontPresentation(Swatch.Culture)
 
   "FrontPresentation Data" - {

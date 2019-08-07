@@ -1,6 +1,5 @@
 package model.editions
 
-import model.editions.Swatch.Swatch
 import org.postgresql.util.PGobject
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet

@@ -3,7 +3,10 @@ package model.editions
 import java.time.{ZoneId, ZonedDateTime}
 import java.time.temporal.ChronoField
 
-import model.editions.Swatch.Swatch
+import enumeratum.{EnumEntry, PlayEnum}
+import enumeratum.EnumEntry.Uncapitalised
+import model.editions.MediaType.findValues
+import model.editions.Swatch
 import model.editions.templates.DailyEdition
 import org.postgresql.util.PGobject
 import play.api.libs.json.{Format, Json, Reads, Writes}
@@ -25,12 +28,16 @@ case object WeekDay extends Enumeration(1) {
   implicit def WeekDayToInt(weekDay: WeekDay): Int = weekDay.id
 }
 
-object Swatch extends Enumeration {
-  type Swatch = Value
-  val Neutral, News, Opinion, Culture, Lifestyle, Sport = Value
-  implicit val swatchReads = Reads.enumNameReads(Swatch)
-  implicit val swatchWrites = Writes.enumNameWrites
-//  implicit def swatchFormat = Json.formatEnum[Swatch]  - cannot be used until Play 2.7
+sealed abstract class Swatch extends EnumEntry with Uncapitalised
+
+object Swatch extends PlayEnum[Swatch] {
+  case object Neutral extends Swatch
+  case object News extends Swatch
+  case object Opinion extends Swatch
+  case object Culture extends Swatch
+  case object Lifestyle extends Swatch
+  case object Sport extends Swatch
+  override def values = findValues
 }
 
 case class FrontPresentation(swatch: Swatch) {

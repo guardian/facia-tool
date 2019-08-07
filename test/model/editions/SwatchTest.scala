@@ -1,12 +1,11 @@
 package model.editions
 
-import model.editions.Swatch.Swatch
 import org.scalatest.{FreeSpec, Matchers}
 import play.api.libs.json.Json
 
 class SwatchTest extends FreeSpec with Matchers {
 
-  val cultureEnumAsString = "\"Culture\""
+  val cultureEnumAsString = "\"culture\""
   val culture = Swatch.Culture
 
   "Swatch Data" - {

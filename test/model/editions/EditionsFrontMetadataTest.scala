@@ -10,7 +10,7 @@ class EditionsFrontMetadataTest extends FreeSpec with Matchers {
   val editionsFrontMetadata = EditionsFrontMetadata(Some(name), Some(Swatch.Opinion))
 
   "Editions Front Metadata Data to/from Json" - {
-    val editionsFrontMetadataAsString = s"""{"nameOverride":"$name","swatch":"Opinion"}"""
+    val editionsFrontMetadataAsString = s"""{"nameOverride":"$name","swatch":"opinion"}"""
 
     "should serialise correctly" in {
       Json.toJson(editionsFrontMetadata).toString() shouldBe editionsFrontMetadataAsString
