@@ -171,14 +171,14 @@ const articleBodyDefault = React.memo(
     return (
       <>
         {showMeta && (
-          <CollectionItemMetaContainer>
+          <CollectionItemMetaContainer size={size}>
             {displayPlaceholders && (
               <>
                 <TextPlaceholder data-testid="loading-placeholder" />
-                {size === 'default' && <TextPlaceholder width={25} />}
+                {size !== 'small' && <TextPlaceholder width={25} />}
               </>
             )}
-            {size === 'default' && isLive && (
+            {size !== 'small' && isLive && (
               <CollectionItemMetaHeading
                 style={{
                   color: getPillarColor(
@@ -254,7 +254,7 @@ const articleBodyDefault = React.memo(
               {displayPlaceholders && (
                 <>
                   <TextPlaceholder />
-                  {size === 'default' && <TextPlaceholder width={25} />}
+                  {size !== 'small' && <TextPlaceholder width={25} />}
                 </>
               )}
               {kicker && (
@@ -277,7 +277,7 @@ const articleBodyDefault = React.memo(
             {displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
           </ArticleHeadingContainerWrapper>
         </CollectionItemContent>
-        {size === 'default' &&
+        {size !== 'small' &&
           (displayPlaceholders ? (
             <ThumbnailPlaceholder />
           ) : (

@@ -3,21 +3,37 @@ import { styled } from 'shared/constants/theme';
 
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 import { media } from 'shared/util/mediaQueries';
+import { CollectionItemSizes } from 'shared/types/Collection';
 
-const metaContainerWidth = 80;
-const metaContainerWidthSmall = 60;
+const metaContainerSizeWidthMap = {
+  default: 100,
+  medium: 80,
+  small: 60
+} as { [Sizes in CollectionItemSizes]: number };
 
-const MetaContainer = styled('div')`
+const MetaContainer = styled('div')<{ size?: CollectionItemSizes }>`
   position: relative;
   flex-shrink: 0;
-  width: ${metaContainerWidth}px;
-  ${media.large`width: ${metaContainerWidthSmall}px;`}
-  ${media.large`word-break: break-word`}
+  /* If we have a size property, use that. */
+  width: ${({ size }) => size && `${metaContainerSizeWidthMap[size]}px`};
+  /* If we don't, fall back to media queries. */
+  ${({ size }) =>
+    !size &&
+    media.large`
+      width: ${metaContainerSizeWidthMap.small}px;
+      word-break: break-word;
+    `}
   padding: 0 4px;
 `;
 
-export default ({ children }: { children?: React.ReactNode }) => (
-  <MetaContainer>
+export default ({
+  children,
+  size = 'default'
+}: {
+  children?: React.ReactNode;
+  size?: CollectionItemSizes;
+}) => (
+  <MetaContainer size={size}>
     {children}
     <ShortVerticalPinline />
   </MetaContainer>

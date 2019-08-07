@@ -14,7 +14,7 @@ type CollectionItemSets = 'draft' | 'live' | 'previously';
 type Stages = 'draft' | 'live';
 
 type CollectionItemTypes = 'SNAP_LINK' | 'ARTICLE';
-type CollectionItemSizes = 'default' | 'small';
+type CollectionItemSizes = 'default' | 'medium' | 'small';
 
 interface NestedArticleFragmentRootFields {
   id: string;
