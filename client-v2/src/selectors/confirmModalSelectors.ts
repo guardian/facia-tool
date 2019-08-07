@@ -17,3 +17,6 @@ export const selectConfirmModalActions = (
       ? confirmModal.onAccept
       : confirmModal.onReject
     : null;
+
+export const selectConfirmModalShowCancelButton = ({ confirmModal }: State) =>
+  confirmModal ? confirmModal.showCancelButton : true;

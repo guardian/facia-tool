@@ -40,6 +40,7 @@ import {
 } from 'bundles/frontsUIBundle';
 import { setFocusState, resetFocusState } from '../bundles/focusBundle';
 import { ActionSetFeatureValue } from 'shared/redux/modules/featureSwitches';
+import { ReactNode } from 'react';
 
 interface EditorOpenCurrentFrontsMenu {
   type: typeof EDITOR_OPEN_CURRENT_FRONTS_MENU;
@@ -262,9 +263,10 @@ interface StartConfirm {
   type: 'MODAL/START_CONFIRM';
   payload: {
     title: string;
-    description: string;
+    description: string | ReactNode;
     onAccept: Action[];
     onReject: Action[];
+    showCancelButton: boolean;
   };
 }
 

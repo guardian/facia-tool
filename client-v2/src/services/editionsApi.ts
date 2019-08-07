@@ -73,13 +73,10 @@ export const getIssueSummary = async (id: string): Promise<EditionsIssue> => {
   });
 };
 
-export const publishIssue = async (id: string): Promise<EditionsIssue> => {
+export const publishIssue = async (id: string): Promise<void> => {
   return pandaFetch(`/editions-api/issues/${id}/publish`, {
     method: 'POST'
-  }).then(response => {
-    // TODO publish endpoint returns a 204 No Content, we probably want something...
-    return response.json();
-  });
+  }).then(() => {});
 };
 
 export const getPrefills = async (

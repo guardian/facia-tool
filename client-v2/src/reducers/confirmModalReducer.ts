@@ -7,6 +7,7 @@ type ModalState = null | {
   description: string;
   onAccept: Action[];
   onReject: Action[];
+  showCancelButton: boolean;
 };
 
 const confirmModal = (state: ModalState, action: Action) => {
