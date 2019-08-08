@@ -485,7 +485,7 @@ object FrontLifeWeekend {
     hidden = true
   )
   val front = FrontTemplate(
-    name = "Lifestyle",
+    name = "Weekend",
     collections = List(collectionLifeWeekend, collectionLifeFamily, collectionLifeSpace, collectionLifeFashion, collectionLifeBody, collectionLifeTravel, collectionLifeMoney, collectionLifeSpecial2),
     presentation = TemplateDefaults.defaultFrontPresentation
   )
