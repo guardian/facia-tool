@@ -1,7 +1,7 @@
 package services.editions.publishing
 
 import com.amazonaws.services.s3.AmazonS3
-import com.amazonaws.services.s3.model.{ObjectMetadata, PutObjectRequest}
+import com.amazonaws.services.s3.model.{ObjectMetadata, PutObjectRequest, PutObjectResult}
 import com.amazonaws.util.StringInputStream
 import model.editions.PublishedIssue
 import play.api.libs.json.Json
@@ -15,7 +15,7 @@ class EditionsBucket(s3Client: AmazonS3, bucketName: String) {
     s"$keyname.json"
   }
 
-  def putIssue(issue: PublishedIssue) = {
+  def putIssue(issue: PublishedIssue): PutObjectResult = {
     val issueJson = Json.stringify(Json.toJson(issue))
     val metadata = new ObjectMetadata()
     metadata.setContentType("application/json")

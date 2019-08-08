@@ -1,7 +1,7 @@
 package model.editions
 
 import model.editions.client.ClientArticleMetadata
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 // Ideally the frontend can be changed so we don't have this weird modelling!
 
@@ -37,9 +37,9 @@ case class EditionsClientCollection(
 case class EditionsFrontendCollectionWrapper(id: String, collection: EditionsClientCollection)
 
 object EditionsFrontendCollectionWrapper {
-  implicit def articleFormat = Json.format[EditionsClientArticle]
-  implicit def collectionFormat = Json.format[EditionsClientCollection]
-  implicit def collectionWrapperFormat = Json.format[EditionsFrontendCollectionWrapper]
+  implicit def articleFormat: OFormat[EditionsClientArticle] = Json.format[EditionsClientArticle]
+  implicit def collectionFormat: OFormat[EditionsClientCollection] = Json.format[EditionsClientCollection]
+  implicit def collectionWrapperFormat: OFormat[EditionsFrontendCollectionWrapper] = Json.format[EditionsFrontendCollectionWrapper]
 
   def fromCollection(collection: EditionsCollection): EditionsFrontendCollectionWrapper = {
     EditionsFrontendCollectionWrapper(
