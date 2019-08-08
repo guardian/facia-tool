@@ -30,11 +30,11 @@ object UserData {
   */
 case class UserData(
                      email: String,
-                     clipboardArticles: Option[List[Trail]],
-                     editionsClipboardArticles: Option[List[Trail]],
-                     frontIds: Option[List[String]],
-                     frontIdsByPriority: Option[Map[String, List[String]]],
-                     favouriteFrontIdsByPriority: Option[Map[String, List[String]]],
+                     clipboardArticles: Option[List[Trail]] = None,
+                     editionsClipboardArticles: Option[List[Trail]] = None,
+                     frontIds: Option[List[String]] = None,
+                     frontIdsByPriority: Option[Map[String, List[String]]] = None,
+                     favouriteFrontIdsByPriority: Option[Map[String, List[String]]] = None,
                      featureSwitches: Option[List[FeatureSwitch]] = Some(List.empty[FeatureSwitch])
 )
 
