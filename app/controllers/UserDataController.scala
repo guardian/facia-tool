@@ -80,31 +80,6 @@ class UserDataController(frontsApi: FrontsApi, dynamoClient: AmazonDynamoDB, val
     }
   }
 
-  def migrateUserData() = AccessAPIAuthAction.async {
-    val result = frontsApi.amazonClient.config.flatMap { config =>
-      val maybeUserData = Scanamo.exec(dynamoClient)(userDataTable.scan)
-      Future.successful(maybeUserData.filter(_.isRight).map {
-        case Right(userData) =>
-          val frontIds = userData.frontIds.getOrElse(List.empty[String])
-          val frontIdsByPriority = frontIds.foldLeft(Map.empty[String, List[String]])((acc, frontId) => {
-            val maybeAcc = for {
-              front <- config.fronts.get(frontId)
-            } yield {
-              val priority = front.priority.getOrElse("editorial")
-              val frontIdsByCurrentPriority = acc.getOrElse(priority, List.empty[String])
-              acc + (priority -> (frontIdsByCurrentPriority :+ frontId))
-            }
-            maybeAcc.getOrElse(acc)
-          })
-          Scanamo.exec(dynamoClient)(userDataTable.update('email -> userData.email, set('frontIdsByPriority -> frontIdsByPriority)))
-          Map(userData.email -> frontIdsByPriority)
-      })
-    }
-    result.map(data => {
-      Ok
-    })
-  }
-
   def putFeatureSwitch() = APIAuthAction { request =>
     val maybeFeatureSwitch: Option[FeatureSwitch] = request.body.asJson.flatMap(
       _.asOpt[FeatureSwitch])
