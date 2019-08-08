@@ -288,7 +288,7 @@ const mapDispatchToProps = (
   { browsingStage }: CollectionPropsBeforeState
 ) => ({
   fetchPrefill: (id: string) => dispatch(fetchPrefill(id)),
-  setHidden: (id: string, isHidden: boolean) => dispatch(actions.setHidden(id, isHidden)),
+  setHidden: (id: string, isHidden: boolean) => dispatch(actions.setHiddenAndPersist(id, isHidden)),
   publishCollection: (id: string, frontId: string) =>
     dispatch(publishCollection(id, frontId)),
   discardDraftChangesToCollection: (id: string) =>

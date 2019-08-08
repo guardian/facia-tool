@@ -50,7 +50,6 @@ interface CollectionConfigResponse {
   platform?: Platform;
   frontsToolSettings?: FrontsToolSettings;
   prefill?: EditionsPrefill;
-  isHidden?: boolean;
 }
 
 interface FrontsConfigResponse {
@@ -108,6 +107,7 @@ interface EditionCollectionFromResponse {
   groups?: string[];
   metadata?: Array<{ type: string }>;
   uneditable?: boolean;
+  isHidden?: boolean;
 }
 
 interface EditionCollectionResponse {

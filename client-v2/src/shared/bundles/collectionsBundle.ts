@@ -1,6 +1,7 @@
 import { State as SharedState } from '../types/State';
 import createAsyncResourceBundle, {State, Actions} from 'lib/createAsyncResourceBundle';
 import { Collection } from 'shared/types/Collection';
+import { addPersistMetaToAction } from '../../util/action';
 
 const collectionsEntityName = 'collections';
 
@@ -51,7 +52,7 @@ const collectionSelectors = {
   }
 };
 
-const SET_HIDDEN = 'SET_HIDDEN' as 'SET_HIDDEN'
+const SET_HIDDEN = 'SET_HIDDEN' as 'SET_HIDDEN';
 
 const setHidden = (collectionId: string, isHidden: boolean) => ({
   entity: collectionsEntityName,
@@ -62,11 +63,20 @@ const setHidden = (collectionId: string, isHidden: boolean) => ({
   }
 });
 
-type SetHidden = ReturnType<typeof setHidden>
+const setHiddenAndPersist = addPersistMetaToAction(
+  setHidden,
+  {
+    persistTo: 'collection',
+    key: 'collectionId',
+    entity: 'collection'
+  }
+);
+
+export type SetHidden = ReturnType<typeof setHidden>
 
 const collectionActions = {
   ...actions,
-  setHidden
+  setHiddenAndPersist
 };
 
 type CollectionActions = Actions<Collection> | SetHidden

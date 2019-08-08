@@ -45,9 +45,17 @@ const updateStateFromUrlChange: Middleware<{}, State, Dispatch> = ({
   return result;
 };
 
+type PersistTo =
+  | 'collection'
+  | 'clipboard'
+  | 'openFrontIds'
+  | 'favouriteFrontIds';
+
+type Entity = 'collection';
+
 interface PersistMeta {
   // The resource to persist the data to
-  persistTo: 'collection' | 'clipboard' | 'openFrontIds' | 'favouriteFrontIds';
+  persistTo: PersistTo;
   // The id to to search for in this resource
   id?: string;
   // The key to take from the action payload if it is not specified. Defaults to
@@ -58,6 +66,8 @@ interface PersistMeta {
   // occurs - finding the parent collection before a remove operation, for example,
   // or after an add operation.
   applyBeforeReducer?: boolean;
+  // Entity to which the Action id refers to
+  entity?: Entity;
 }
 
 /**
@@ -113,17 +123,25 @@ const persistCollectionOnEdit = (
    *   but it should also listen for edits to collections.
    */
   const getCollectionIdsForActions = (actions: Action[]) => {
-    const articleFragmentIds: string[] = uniq(
-      actions.map(
-        // A sneaky 'any' here, as it's difficult to handle dynamic key
-        // values with static action types.
-        (act: any) =>
+    const idsAndEntities: { id: string; entity: Entity }[] = actions.map(
+      // A sneaky 'any' here, as it's difficult to handle dynamic key
+      // values with static action types.
+      (act: any) => {
+        const id =
           act.meta.id ||
-          (act.meta.key ? act.payload[act.meta.key] : act.payload.id)
-      )
+          (act.meta.key ? act.payload[act.meta.key] : act.payload.id);
+        return {
+          id,
+          entity: act.meta.entity
+        };
+      }
     );
-    const collectionIds: string[] = articleFragmentIds.reduce(
-      (acc, id) => {
+    const collectionIds: string[] = idsAndEntities.reduce(
+      (acc, {id, entity}) => {
+        if (entity === 'collection') {
+          return acc.concat(id);
+        }
+
         const collectionId = selectors.selectParentCollectionOfArticleFragment(
           selectSharedState(store.getState()),
           id
@@ -135,7 +153,7 @@ const persistCollectionOnEdit = (
       },
       [] as string[]
     );
-    return collectionIds;
+    return uniq(collectionIds);
   };
 
   return next => (action: Action) => {
