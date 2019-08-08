@@ -45,7 +45,7 @@ class V2App(isDev: Boolean, val acl: Acl, dynamoClient: AmazonDynamoDB, val deps
     else
       maybeUserData.map(_.clipboardArticles.getOrElse(List()))
 
-    val maybeUserDataForDefaults = UserDataForDefaults.fromUserData(
+    val userDataForDefaults = UserDataForDefaults.fromUserData(
       maybeUserData.getOrElse(UserData(userEmail)),
       clipboardArticles
     )
@@ -69,7 +69,7 @@ class V2App(isDev: Boolean, val acl: Acl, dynamoClient: AmazonDynamoDB, val deps
       Metadata.tags.map {
         case (_, meta) => meta
       },
-      Some(maybeUserDataForDefaults),
+      Some(userDataForDefaults),
       routes.FaciaContentApiProxy.capiLive("").absoluteURL(true),
       routes.FaciaContentApiProxy.capiPreview("").absoluteURL(true)
     )
