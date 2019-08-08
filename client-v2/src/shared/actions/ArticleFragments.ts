@@ -160,54 +160,61 @@ function createArticleFragment(
   drop: MappableDropType
 ): ThunkResult<Promise<ArticleFragment | undefined>> {
   return async (dispatch: Dispatch) => {
-    if (drop.type === 'CAPI') {
-      const article = transformExternalArticle(drop.data);
-      dispatch(externalArticleActions.fetchSuccess([article]));
-      return persistAndReturnFragment(dispatch, createFragment(article.id));
-    }
-    const resourceId = drop.data;
-    const isURL = isValidURL(resourceId);
-    const id = isURL ? getIdFromURL(resourceId) : resourceId;
-    if (isURL && !id) {
-      // If we have a URL from an external site,
-      // create a snap of type 'link'.
-      const fragment = await createLinkSnap(resourceId);
-      return persistAndReturnFragment(dispatch, fragment);
-    }
-    if (!id) {
-      return;
-    }
+    let fragment: ArticleFragment
     try {
-      const {
-        articles: [article, ...rest],
-        title
-      } = await getContent(id);
-      if (rest.length) {
-        // If we have multiple articles returned from a single resource, we're
-        // dealing with a tag or section page, and we should create a snap of
-        // type 'latest' or 'link'.
-        const createLatest = window.confirm(
-          "Should this snap be a 'Latest' snap? \n \n Click OK to confirm or cancel to create a 'Link' snap by default."
-        );
-        const fragment = await (createLatest
-          ? createLatestSnap(resourceId, title || 'Unknown title')
-          : createLinkSnap(resourceId));
-        return persistAndReturnFragment(dispatch, fragment);
-      }
-      if (article) {
-        // We have a single article from CAPI - create an item as usual.
+      if (drop.type === 'CAPI') {
+        const article = transformExternalArticle(drop.data);
         dispatch(externalArticleActions.fetchSuccess([article]));
-        return persistAndReturnFragment(dispatch, createFragment(article.id));
+        fragment = createFragment(article.id)
+      } else {
+        const resourceId = drop.data;
+        const isURL = isValidURL(resourceId);
+        const id = isURL ? getIdFromURL(resourceId) : resourceId;
+        if (isURL && !id) {
+          // If we have a URL from an external site,
+          // create a snap of type 'link'.
+          fragment = await createLinkSnap(resourceId);
+        }
+        if (!id) {
+          throw new Error('No ID found');
+        }
+        try {
+          const {
+            articles: [article, ...rest],
+            title
+          } = await getContent(id);
+          if (rest.length) {
+            // If we have multiple articles returned from a single resource, we're
+            // dealing with a tag or section page, and we should create a snap of
+            // type 'latest' or 'link'.
+            const createLatest = window.confirm(
+              "Should this snap be a 'Latest' snap? \n \n Click OK to confirm or cancel to create a 'Link' snap by default."
+            );
+            fragment = await (createLatest
+              ? createLatestSnap(resourceId, title || 'Unknown title')
+              : createLinkSnap(resourceId));
+          }
+          if (article) {
+            // We have a single article from CAPI - create an item as usual.
+            dispatch(externalArticleActions.fetchSuccess([article]));
+            fragment = createFragment(article.id)
+          }
+          throw new Error('No article found');
+        } catch (e) {
+          if (isURL) {
+            // If there was an error getting content for CAPI, assume the link is valid
+            // and create a link snap as a fallback. This catches cases like non-tag or
+            // section guardian.co.uk URLs, which aren't in CAPI and are sometimes linked.
+            fragment = await createLinkSnap(resourceId);
+          }
+          e.id = id
+          throw e;
+        }
       }
+      return persistAndReturnFragment(dispatch, fragment);
     } catch (e) {
-      if (isURL) {
-        // If there was an error getting content for CAPI, assume the link is valid
-        // and create a link snap as a fallback. This catches cases like non-tag or
-        // section guardian.co.uk URLs, which aren't in CAPI and are sometimes linked.
-        const fragment = await createLinkSnap(resourceId);
-        return persistAndReturnFragment(dispatch, fragment);
-      }
-      dispatch(externalArticleActions.fetchError(e.message, [id]));
+      if (e.id) dispatch(externalArticleActions.fetchError(e.message, [e.id]));
+      else console.error(e.message)
     }
   };
 }
