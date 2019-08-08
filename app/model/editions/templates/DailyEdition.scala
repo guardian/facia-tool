@@ -15,7 +15,9 @@ object DailyEdition {
       FrontNewsUkObserver.front -> WeekDays(List(WeekDay.Sun)),
       FrontNewsWorldObserver.front -> WeekDays(List(WeekDay.Sun)),
       FrontJournal.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
+      FrontSportGuardian.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontComment.front -> WeekDays(List(WeekDay.Sun)),
+      FrontSportObserver.front -> WeekDays(List(WeekDay.Sun)),
       FrontCulture.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
       FrontCultureFilmMusic.front -> WeekDays(List(WeekDay.Fri)),
       FrontCultureGuide.front -> WeekDays(List(WeekDay.Sat)),
@@ -27,10 +29,8 @@ object DailyEdition {
       FrontFood.front -> WeekDays(List(WeekDay.Sat)),
       FrontFoodObserver.front -> WeekDays(List(WeekDay.Sun)),
       FrontLifeFashion.front -> WeekDays(List(WeekDay.Sat)),
-      FrontSportGuardian.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
-      FrontSportObserver.front -> WeekDays(List(WeekDay.Sun)),
       FrontSpecialSpecial2.front -> Daily(),
-      FrontCrosswords.front -> Daily(),
+      FrontCrosswords.front -> Daily()
     ),
     zoneId = ZoneId.of("Europe/London"),
     availability = Daily()
