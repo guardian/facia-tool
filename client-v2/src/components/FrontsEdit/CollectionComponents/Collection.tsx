@@ -13,7 +13,8 @@ import {
 import { actions } from 'shared/bundles/collectionsBundle';
 import {
   selectHasUnpublishedChanges,
-  selectCollectionHasPrefill, selectCollectionIsHidden
+  selectCollectionHasPrefill,
+  selectCollectionIsHidden
 } from 'selectors/frontsSelectors';
 import { selectIsCollectionLocked } from 'selectors/collectionSelectors';
 import { State } from 'types/State';
@@ -157,10 +158,7 @@ class Collection extends React.Component<CollectionProps> {
                   onClick={() => this.props.setHidden(id, !isHidden)}
                   title="Toggle the visibility of this container in this issue."
                 >
-                  {isHidden
-                    ? 'Unhide Container'
-                    : 'Hide Container'
-                  }
+                  {isHidden ? 'Unhide Container' : 'Hide Container'}
                 </Button>
                 {hasPrefill && (
                   <Button
@@ -288,7 +286,8 @@ const mapDispatchToProps = (
   { browsingStage }: CollectionPropsBeforeState
 ) => ({
   fetchPrefill: (id: string) => dispatch(fetchPrefill(id)),
-  setHidden: (id: string, isHidden: boolean) => dispatch(actions.setHiddenAndPersist(id, isHidden)),
+  setHidden: (id: string, isHidden: boolean) =>
+    dispatch(actions.setHiddenAndPersist(id, isHidden)),
   publishCollection: (id: string, frontId: string) =>
     dispatch(publishCollection(id, frontId)),
   discardDraftChangesToCollection: (id: string) =>

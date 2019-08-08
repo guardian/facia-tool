@@ -123,7 +123,7 @@ const persistCollectionOnEdit = (
    *   but it should also listen for edits to collections.
    */
   const getCollectionIdsForActions = (actions: Action[]) => {
-    const idsAndEntities: { id: string; entity: Entity }[] = actions.map(
+    const idsAndEntities: Array<{ id: string; entity: Entity }> = actions.map(
       // A sneaky 'any' here, as it's difficult to handle dynamic key
       // values with static action types.
       (act: any) => {
@@ -137,7 +137,7 @@ const persistCollectionOnEdit = (
       }
     );
     const collectionIds: string[] = idsAndEntities.reduce(
-      (acc, {id, entity}) => {
+      (acc, { id, entity }) => {
         if (entity === 'collection') {
           return acc.concat(id);
         }

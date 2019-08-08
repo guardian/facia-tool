@@ -1,5 +1,5 @@
 import without from 'lodash/without';
-import { Action }from 'types/action';
+import { Action } from 'types/Action';
 
 interface BaseResource {
   id: string;
@@ -278,7 +278,9 @@ function createAsyncResourceBundle<Resource>(
     payload: { error, id, time: Date.now() }
   });
 
-  const isAction = (action: Actions<Resource> | Action): action is Actions<Resource> => {
+  const isAction = (
+    action: Actions<Resource> | Action
+  ): action is Actions<Resource> => {
     return (action as Actions<Resource>).entity !== undefined;
   };
 
@@ -288,7 +290,6 @@ function createAsyncResourceBundle<Resource>(
       state: State<Resource> = initialState,
       action: Actions<Resource> | Action
     ): State<Resource> => {
-
       if (!isAction(action)) {
         return state;
       }

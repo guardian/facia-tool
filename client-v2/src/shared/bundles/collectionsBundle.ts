@@ -1,5 +1,8 @@
 import { State as SharedState } from '../types/State';
-import createAsyncResourceBundle, {State, Actions} from 'lib/createAsyncResourceBundle';
+import createAsyncResourceBundle, {
+  State,
+  Actions
+} from 'lib/createAsyncResourceBundle';
 import { Collection } from 'shared/types/Collection';
 import { addPersistMetaToAction } from '../../util/action';
 
@@ -11,7 +14,9 @@ const {
   reducer,
   selectors,
   initialState
-} = createAsyncResourceBundle<Collection>(collectionsEntityName, { indexById: true });
+} = createAsyncResourceBundle<Collection>(collectionsEntityName, {
+  indexById: true
+});
 
 const collectionSelectors = {
   ...selectors,
@@ -63,31 +68,29 @@ const setHidden = (collectionId: string, isHidden: boolean) => ({
   }
 });
 
-const setHiddenAndPersist = addPersistMetaToAction(
-  setHidden,
-  {
-    persistTo: 'collection',
-    key: 'collectionId',
-    entity: 'collection'
-  }
-);
+const setHiddenAndPersist = addPersistMetaToAction(setHidden, {
+  persistTo: 'collection',
+  key: 'collectionId',
+  entity: 'collection'
+});
 
-export type SetHidden = ReturnType<typeof setHidden>
+export type SetHidden = ReturnType<typeof setHidden>;
 
 const collectionActions = {
   ...actions,
   setHiddenAndPersist
 };
 
-type CollectionActions = Actions<Collection> | SetHidden
+type CollectionActions = Actions<Collection> | SetHidden;
 
-const collectionReducer = (state: State<Collection>, action: CollectionActions): State<Collection> => {
+const collectionReducer = (
+  state: State<Collection>,
+  action: CollectionActions
+): State<Collection> => {
   const updatedState = reducer(state, action);
-  switch(action.type) {
+  switch (action.type) {
     case SET_HIDDEN: {
-      console.log(`Fielding SET_HIDDEN action with payload ${JSON.stringify(action.payload)}`);
       if (!updatedState.data[action.payload.collectionId]) {
-        console.log('Collection not known');
         return updatedState;
       }
 
@@ -101,7 +104,6 @@ const collectionReducer = (state: State<Collection>, action: CollectionActions):
           }
         }
       };
-      console.log(`Whoop! Updated state is now ${freshState}`);
       return freshState;
     }
     default: {
