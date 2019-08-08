@@ -271,7 +271,7 @@ object FrontComment {
     hidden = true
   )
   val front = FrontTemplate(
-    name = "Opinion",
+    name = "Comment",
     collections = List(collectionOpinionComment, collectionOpinionSpecial1),
     presentation = TemplateDefaults.defaultFrontPresentation
   )
