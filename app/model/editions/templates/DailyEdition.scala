@@ -252,7 +252,7 @@ object FrontJournal {
     hidden = true
   )
   val front = FrontTemplate(
-    name = "Opinion",
+    name = "Journal",
     collections = List(collectionJournalFeatures, collectionJournalComment, collectionJournalLetters, collectionJournalObits, collectionJournalSpecial1),
     presentation = TemplateDefaults.defaultFrontPresentation
   )
