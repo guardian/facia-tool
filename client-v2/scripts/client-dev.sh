@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+cd $(dirname $0)/..
+
 NO_DEBUG=false
 for arg in "$@"
 do
