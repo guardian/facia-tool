@@ -15,7 +15,7 @@ case class FeatureSwitch(
 object InlineForm extends FeatureSwitch(
   key = "inline-form",
   title = "Use inline form for card overrides",
-  enabled = false
+  enabled = true
 )
 
 object ObscureFeed extends FeatureSwitch(
