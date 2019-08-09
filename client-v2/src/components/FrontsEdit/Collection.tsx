@@ -101,7 +101,7 @@ interface CollectionContextProps {
   size?: 'medium' | 'default';
   handleMove: (move: Move<TArticleFragment>) => void;
   handleInsert: (e: React.DragEvent, to: PosSpec) => void;
-  chooseArticleFragment: (id: string, isSupporting: boolean) => void;
+  selectArticleFragment: (id: string, isSupporting: boolean) => void;
 }
 
 interface ConnectedCollectionContextProps extends CollectionContextProps {
@@ -149,7 +149,7 @@ class CollectionContext extends React.Component<
       handleMove,
       handleInsert,
       handleArticleFocus,
-      chooseArticleFragment,
+      selectArticleFragment,
       removeCollectionItem,
       removeSupportingCollectionItem,
       lastDesktopArticle,
@@ -206,15 +206,19 @@ class CollectionContext extends React.Component<
                         canShowPageViewData={true} //should this be hardcoded here or set in a variable !!!!
                         getNodeProps={() => getAfNodeProps(isUneditable)}
                         onSelect={() =>
-                          chooseArticleFragment(articleFragment.uuid, false)
+                          selectArticleFragment(articleFragment.uuid, false)
                         }
                         onDelete={() =>
                           removeCollectionItem(group.uuid, articleFragment.uuid)
                         }
-                        pageViewStory={this.getPageViewDataForCollectionItem(
-                          articleFragment.uuid,
+                        pageViewStory={
                           pageViewData
-                        )}
+                            ? this.getPageViewDataForCollectionItem(
+                                articleFragment.uuid,
+                                pageViewData
+                              )
+                            : undefined
+                        }
                       >
                         <ArticleFragmentLevel
                           isUneditable={isUneditable}
@@ -229,7 +233,7 @@ class CollectionContext extends React.Component<
                               parentId={articleFragment.uuid}
                               canShowPageViewData={false}
                               onSelect={() =>
-                                chooseArticleFragment(supporting.uuid, true)
+                                selectArticleFragment(supporting.uuid, true)
                               }
                               isUneditable={isUneditable}
                               getNodeProps={() =>

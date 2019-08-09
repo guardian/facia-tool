@@ -161,11 +161,15 @@ describe('Article component ', () => {
   });
 });
 
-it('should show the page view data graph if 3 conditions are true: canShowPageViewData, featureFlagPageViewData, pageViewData', () => {
+it('should show the page view data graph if 3 conditions are true: canShowPageViewData, featureFlagPageViewData and pageViewData.data has content', () => {
   const pageViewStory: PageViewStory = {
     articleId: 'test',
     articlePath: 'test',
-    totalHits: 100
+    totalHits: 100,
+    data: [
+      { dateTime: 1565356832228, count: 30 },
+      { dateTime: 1565356844167, count: 17 }
+    ]
   };
 
   const { getByTestId } = render(
@@ -175,8 +179,8 @@ it('should show the page view data graph if 3 conditions are true: canShowPageVi
           children={<React.Fragment />}
           article={derivedArticle}
           id="ea1"
-          featureFlagPageViewData={false}
-          canShowPageViewData={false}
+          featureFlagPageViewData={true}
+          canShowPageViewData={true}
           pageViewStory={pageViewStory}
         />
       </ThemeProvider>
