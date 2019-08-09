@@ -3,7 +3,7 @@ import groups from './groupsReducer';
 import { reducer as collections } from '../bundles/collectionsBundle';
 import { reducer as externalArticles } from '../bundles/externalArticlesBundle';
 import { reducer as featureSwitches } from '../redux/modules/featureSwitches';
-import { reducer as pageViewData } from '../../../src/reducers/pageViewDataReducer';
+import { reducer as pageViewData } from '../../redux/modules/pageViewData';
 import { ArticleFragment, Group } from 'shared/types/Collection';
 import { PageViewDataPerFront } from 'shared/types/PageViewData';
 

@@ -40,7 +40,7 @@ import sortBy from 'lodash/sortBy';
 import debounce from 'lodash/debounce';
 import { bindActionCreators } from 'redux';
 import WithDimensions from 'components/util/WithDimensions';
-import { selectPageViewData } from 'selectors/pageViewDataSelectors';
+import { selectPageViewData } from 'redux/modules/pageViewData/selectors';
 
 const FrontContainer = styled('div')`
   height: 100%;

@@ -2,8 +2,8 @@ import { Dispatch, ThunkResult } from 'types/Store';
 import {
   PageViewDataRequested,
   PageViewDataReceived
-} from '../shared/types/Action';
-import { getPageViewDataFromOphan } from '../services/faciaApi';
+} from '../../../shared/types/Action';
+import { getPageViewDataFromOphan } from '../../../services/faciaApi';
 import {
   PageViewDataFromOphan,
   PageViewStory,
@@ -16,7 +16,6 @@ const intervalInMinutes = 10;
 export const PAGE_VIEW_DATA_RECEIVED = 'PAGE_VIEW_DATA_RECEIVED';
 export const PAGE_VIEW_DATA_REQUESTED = 'PAGE_VIEW_DATA_REQUESTED';
 
-// return type correct?
 const getPageViewData = (
   frontId: string,
   articles: ArticlePathAndId[],
@@ -25,7 +24,6 @@ const getPageViewData = (
   return (dispatch: Dispatch) => {
     dispatch(pageViewDataRequestedAction());
     try {
-      console.log('in action try block fired');
       fetchPageViewData(frontId, articles).then(result => {
         result.json().then((data: PageViewDataFromOphan[]) => {
           const dataWithArticleIds = convertToStoriesData(data, articles);
@@ -65,7 +63,7 @@ const addArticleId = (
   ophanData: PageViewDataFromOphan,
   articles: ArticlePathAndId[]
 ): string => {
-  //the path from ophan has a slash at the front, removing below
+  // the path from ophan has a slash at the front, removing below
   const ophanPathClean = ophanData.path.substr(1);
   const matchingArticle = articles.find(a => a.articlePath === ophanPathClean);
   const aId = matchingArticle ? matchingArticle.articleId : '';

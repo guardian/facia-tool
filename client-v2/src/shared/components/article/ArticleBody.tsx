@@ -108,7 +108,7 @@ const ImageAndGraphWrapper = styled('div')<{ size: CollectionItemSizes }>`
   flex-direction: row;
   /* small does not seem to work here? size is always set to default */
   ${props =>
-    props.size === 'small' &&
+    props.size === 'medium' &&
     `flex-wrap: wrap-reverse;
   justify-content: flex-end;`}
 `;

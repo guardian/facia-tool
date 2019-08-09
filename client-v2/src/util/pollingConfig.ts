@@ -4,8 +4,8 @@ import { Store } from 'types/Store';
 import { selectPriority } from 'selectors/pathSelectors';
 import { matchFrontsEditPath, matchIssuePath } from 'routes/routes';
 import { selectV2SubPath } from 'selectors/pathSelectors';
-import { selectAllCollectionWithArticles } from 'selectors/pageViewDataSelectors';
-import { getPageViewData } from 'actions/PageViewData';
+import { selectAllCollectionWithArticles } from '../redux/modules/pageViewData/selectors';
+import { getPageViewData } from '../redux/modules/pageViewData/actions';
 
 /**
  * TODO: do we want to check if there are any collectionUpdates going out here

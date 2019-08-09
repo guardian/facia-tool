@@ -1,4 +1,4 @@
-import { PAGE_VIEW_DATA_RECEIVED } from 'actions/PageViewData';
+import { PAGE_VIEW_DATA_RECEIVED } from './actions';
 import { Action } from 'types/Action';
 import { PageViewDataPerFront } from 'shared/types/PageViewData';
 

@@ -18,8 +18,8 @@ import { connect } from 'react-redux';
 import { State } from 'types/State';
 import { createSelectArticleVisibilityDetails } from 'selectors/frontsSelectors';
 import FocusWrapper from 'components/FocusWrapper';
-import { getPageViewData } from 'actions/PageViewData';
-import { selectPageViewDataForCollection } from 'selectors/pageViewDataSelectors';
+import { getPageViewData } from 'redux/modules/pageViewData/actions';
+import { selectPageViewDataForCollection } from 'redux/modules/pageViewData/selectors';
 import {
   PageViewDataPerCollection,
   PageViewStory,
