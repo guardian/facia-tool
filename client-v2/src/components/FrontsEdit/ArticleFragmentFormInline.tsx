@@ -226,6 +226,32 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
     const isEditionsMode = editMode === 'editions';
 
+    const kickerFields = ['showKickerTag', 'showKickerSection'] as const;
+    type KickerField = typeof kickerFields[number];
+
+    const setCustomKicker = (customKickerValue: string) => {
+      change('customKicker', customKickerValue);
+      change('showKickerCustom', true);
+      kickerFields.forEach(field => change(field, false));
+    };
+
+    const handleKickerChange = (
+      customKickerValue: string,
+      showField: boolean,
+      fieldName: KickerField
+    ) => {
+      if (isEditionsMode) {
+        setCustomKicker(customKickerValue);
+      } else {
+        if (!showField) {
+          kickerFields.forEach(field => change(field, field === fieldName));
+          change('showKickerCustom', false);
+        } else {
+          change(fieldName, false);
+        }
+      }
+    };
+
     const getKickerContents = () => {
       return (
         <>
@@ -237,20 +263,13 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               buttonText={kickerOptions.webTitle}
               selected={showKickerTag}
               size="s"
-              onClick={() => {
-                if (editMode === 'editions') {
-                  change('customKicker', kickerOptions.webTitle);
-                }
-                else {
-                  if (!showKickerTag) {
-                    change('showKickerTag', true);
-                    change('showKickerSection', false);
-                    change('showKickerCustom', false);
-                  } else {
-                    change('showKickerTag', false);
-                  }
-                }
-              }}
+              onClick={() =>
+                handleKickerChange(
+                  kickerOptions.webTitle!,
+                  showKickerTag,
+                  'showKickerTag'
+                )
+              }
             />
           )}
           &nbsp;
@@ -261,20 +280,13 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               selected={showKickerSection}
               size="s"
               buttonText={kickerOptions.sectionName}
-              onClick={() => {
-                if (editMode === 'editions') {
-                  change('customKicker', kickerOptions.sectionName);
-                }
-                else {
-                  if (!showKickerSection) {
-                    change('showKickerSection', true);
-                    change('showKickerTag', false);
-                    change('showKickerCustom', false);
-                  } else {
-                    change('showKickerSection', false);
-                  }
-                }
-              }}
+              onClick={() =>
+                handleKickerChange(
+                  kickerOptions.sectionName!,
+                  showKickerSection,
+                  'showKickerSection'
+                )
+              }
             />
           )}
         </>
@@ -333,11 +345,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 return value;
               }}
               onChange={e => {
-                change('showKickerCustom', true);
-                change('showKickerTag', false);
-                change('showKickerSection', false);
                 if (e) {
-                  change('customKicker', e.target.value);
+                  setCustomKicker(e.target.value);
                 }
               }}
             />
