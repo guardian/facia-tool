@@ -661,7 +661,8 @@ const shared = {
     loading: false,
     loadingIds: [],
     updatingIds: []
-  }
+  },
+  pageViewData: { frontId: '', collections: [] }
 };
 
 const emptyFeedBundle = {

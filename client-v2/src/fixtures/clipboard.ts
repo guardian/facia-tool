@@ -30,7 +30,8 @@ const stateWithClipboard = {
         meta: {},
         uuid: 'article3'
       }
-    }
+    },
+    pageViewData: { frontId: '', collections: [] }
   }
 };
 

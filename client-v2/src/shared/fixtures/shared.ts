@@ -853,7 +853,8 @@ const initialState = {
   },
   groups: {},
   articleFragments: {},
-  featureSwitches: {}
+  featureSwitches: {},
+  pageViewData: { frontId: '', collections: [] }
 } as State;
 
 export {

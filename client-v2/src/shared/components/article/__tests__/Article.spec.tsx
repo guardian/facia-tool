@@ -7,6 +7,7 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from '../../../../constants/theme';
 import { Provider } from 'react-redux';
 import configureStore from 'util/configureStore';
+import { PageViewStory } from 'shared/types/PageViewData';
 
 const takenDownArticle = { ...derivedArticle, ...{ isLive: false } };
 
@@ -34,6 +35,7 @@ describe('Article component ', () => {
             id="ea1"
             featureFlagPageViewData={false}
             canShowPageViewData={false}
+            pageViewStory={undefined}
           />
         </ThemeProvider>
       </Provider>
@@ -54,6 +56,7 @@ describe('Article component ', () => {
             id="ea1"
             featureFlagPageViewData={false}
             canShowPageViewData={false}
+            pageViewStory={undefined}
           />
         </ThemeProvider>
       </Provider>
@@ -72,6 +75,7 @@ describe('Article component ', () => {
             id="ea1"
             featureFlagPageViewData={false}
             canShowPageViewData={false}
+            pageViewStory={undefined}
           />
         </ThemeProvider>
       </Provider>
@@ -91,6 +95,7 @@ describe('Article component ', () => {
             isLoading={true}
             featureFlagPageViewData={false}
             canShowPageViewData={false}
+            pageViewStory={undefined}
           />
         </ThemeProvider>
       </Provider>
@@ -109,6 +114,7 @@ describe('Article component ', () => {
             isLoading={true}
             featureFlagPageViewData={false}
             canShowPageViewData={false}
+            pageViewStory={undefined}
           />
         </ThemeProvider>
       </Provider>
@@ -127,6 +133,7 @@ describe('Article component ', () => {
             isLoading={false}
             featureFlagPageViewData={false}
             canShowPageViewData={false}
+            pageViewStory={undefined}
           />
         </ThemeProvider>
       </Provider>
@@ -143,6 +150,7 @@ describe('Article component ', () => {
             id="ea1"
             featureFlagPageViewData={false}
             canShowPageViewData={false}
+            pageViewStory={undefined}
           />
         </ThemeProvider>
       </Provider>
@@ -153,23 +161,29 @@ describe('Article component ', () => {
   });
 });
 
-it('should only show the page view data graph if 3 conditions are true: canShowPageViewData, featureFlagPageViewData, pageViewData', () => {
+it('should show the page view data graph if 3 conditions are true: canShowPageViewData, featureFlagPageViewData, pageViewData', () => {
+  const pageViewStory: PageViewStory = {
+    articleId: 'test',
+    articlePath: 'test',
+    totalHits: 100
+  };
+
   const { getByTestId } = render(
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <ArticleComponent
           children={<React.Fragment />}
-          article={undefined}
+          article={derivedArticle}
           id="ea1"
-          isLoading={true}
-          featureFlagPageViewData={true}
-          canShowPageViewData={true}
+          featureFlagPageViewData={false}
+          canShowPageViewData={false}
+          pageViewStory={pageViewStory}
         />
       </ThemeProvider>
     </Provider>
   );
   expect(getByTestId('page-view-graph')).toBeTruthy();
-  expect(getByTestId('page-view-graph')).toHaveTextContent('WIBBLE');
+  expect(getByTestId('page-view-graph')).toHaveTextContent('100');
 });
 
 it('should NOT show the page view data graph if any of these conditions are false: canShowPageViewData, featureFlagPageViewData, pageViewData', () => {
@@ -183,6 +197,7 @@ it('should NOT show the page view data graph if any of these conditions are fals
           isLoading={true}
           featureFlagPageViewData={false}
           canShowPageViewData={true}
+          pageViewStory={undefined}
         />
       </ThemeProvider>
     </Provider>
