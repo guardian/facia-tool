@@ -18,12 +18,10 @@ import { connect } from 'react-redux';
 import { State } from 'types/State';
 import { createSelectArticleVisibilityDetails } from 'selectors/frontsSelectors';
 import FocusWrapper from 'components/FocusWrapper';
-import { getPageViewData } from 'redux/modules/pageViewData/actions';
 import { selectPageViewDataForCollection } from 'redux/modules/pageViewData/selectors';
 import {
   PageViewDataPerCollection,
-  PageViewStory,
-  ArticlePathAndId
+  PageViewStory
 } from 'shared/types/PageViewData';
 
 const getArticleNotifications = (
@@ -296,14 +294,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       removeArticleFragment('articleFragment', parentId, uuid, 'collection')
     );
   },
-  handleBlur: () => dispatch(resetFocusState()),
-  fetchPageViewData: (
-    frontId: string,
-    articles: ArticlePathAndId[],
-    collectionId: string
-  ) => {
-    dispatch(getPageViewData(frontId, articles, collectionId));
-  }
+  handleBlur: () => dispatch(resetFocusState())
 });
 
 export default connect(
