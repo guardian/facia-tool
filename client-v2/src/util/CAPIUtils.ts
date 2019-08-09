@@ -3,7 +3,6 @@ import { ExternalArticle } from '../shared/types/ExternalArticle';
 import { ArticleFragmentMeta } from '../shared/types/Collection';
 import { notLiveLabels, liveBlogTones } from 'constants/fronts';
 import startCase from 'lodash/startCase';
-import { hasMainMediaVideoAtom } from 'shared/util/externalArticle';
 
 const getIdFromURL = (url: string): string | null => {
   const [, id = null] =

@@ -267,7 +267,7 @@ describe('Shared selectors', () => {
   describe('createArticleFromArticleFragmentSelector', () => {
     it('should create a selector that returns an article (externalArticle + articleFragment) referenced by the given article fragment', () => {
       const selector = createSelectArticleFromArticleFragment();
-      expect(selector(state, 'af1')).toEqual({
+      expect(selector(state, 'af1')).toMatchObject({
         id: 'ea1',
         pillarName: 'external-pillar',
         frontPublicationDate: 1,
@@ -281,7 +281,7 @@ describe('Shared selectors', () => {
         firstPublicationDate: '2018-10-19T10:30:39Z'
       });
 
-      expect(selector(state, 'af1WithOverrides')).toEqual({
+      expect(selector(state, 'af1WithOverrides')).toMatchObject({
         id: 'ea1',
         customKicker: 'fragment-kicker',
         pillarName: 'external-pillar',
@@ -302,28 +302,13 @@ describe('Shared selectors', () => {
     });
     it('should set isLive property to false if article is not live', () => {
       const selector = createSelectArticleFromArticleFragment();
-      expect(selector(state, 'af2')).toEqual({
-        id: 'ea2',
-        pillarName: 'external-pillar',
-        firstPublicationDate: '2018-10-19T10:30:39Z',
-        uuid: 'af2',
-        headline: 'external-headline',
-        thumbnail: undefined,
-        trailText: 'external-trailText',
-        byline: 'external-byline',
+      expect(selector(state, 'af2')).toMatchObject({
         isLive: false
       });
     });
     it('should set isLive to true if property is missing', () => {
       const selector = createSelectArticleFromArticleFragment();
-      expect(selector(state, 'af3')).toEqual({
-        id: 'ea3',
-        pillarName: 'external-pillar',
-        uuid: 'af3',
-        headline: 'external-headline',
-        thumbnail: undefined,
-        trailText: 'external-trailText',
-        byline: 'external-byline',
+      expect(selector(state, 'af3')).toMatchObject({
         isLive: true
       });
     });
@@ -351,7 +336,14 @@ describe('Shared selectors', () => {
         showKickerTag: false,
         showLivePlayable: false,
         showMainVideo: false,
-        showQuotedHeadline: false
+        showQuotedHeadline: false,
+        hasMainVideo: false,
+        kicker: undefined,
+        pillarId: undefined,
+        tone: undefined,
+        cutoutThumbnail: undefined,
+        firstPublicationDate: undefined,
+        frontPublicationDate: undefined
       });
     });
   });
