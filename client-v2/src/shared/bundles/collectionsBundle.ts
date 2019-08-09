@@ -5,6 +5,7 @@ import createAsyncResourceBundle, {
 } from 'lib/createAsyncResourceBundle';
 import { Collection } from 'shared/types/Collection';
 import { addPersistMetaToAction } from '../../util/action';
+import set from 'lodash/fp/set';
 
 const collectionsEntityName = 'collections';
 
@@ -94,17 +95,11 @@ const collectionReducer = (
         return updatedState;
       }
 
-      const freshState = {
-        ...updatedState,
-        data: {
-          ...updatedState.data,
-          [action.payload.collectionId]: {
-            ...updatedState.data[action.payload.collectionId],
-            isHidden: action.payload.isHidden
-          }
-        }
-      };
-      return freshState;
+      return set(
+        ['data', action.payload.collectionId, 'isHidden'],
+        action.payload.isHidden,
+        updatedState
+      );
     }
     default: {
       return updatedState;
