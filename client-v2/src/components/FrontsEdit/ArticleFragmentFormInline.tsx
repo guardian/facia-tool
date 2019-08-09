@@ -399,6 +399,14 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               originalValue={articleCapiFieldValues.trailText}
               label="Trail text"
             />
+            <ConditionalField
+              permittedFields={editableFields}
+              name="sportScore"
+              label="Sport Score"
+              component={InputText}
+              placeholder=""
+              originalValue={''}
+            />
           </InputGroup>
           <RowContainer>
             <Row>
