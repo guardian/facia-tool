@@ -366,15 +366,12 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
 }
 
 const mapStateToProps = (state: State, { id }: FrontPropsBeforeState) => {
-  return (state: State, props: FrontProps) => {
-    const pageViewData = selectPageViewData(state);
-
-    return {
-      front: selectFront(state, { frontId: id }),
-      overviewIsOpen: selectIsFrontOverviewOpen(state, id),
-      isFormOpen: !!selectSingleArticleFragmentForm(state, id),
-      pageViewData
-    };
+  const pageViewData = selectPageViewData(state);
+  return {
+    front: selectFront(state, { frontId: id }),
+    overviewIsOpen: selectIsFrontOverviewOpen(state, id),
+    isFormOpen: !!selectSingleArticleFragmentForm(state, id),
+    pageViewData
   };
 };
 
