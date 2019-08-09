@@ -34,7 +34,16 @@ const selectPageViewDataForCollection = (
 const selectAllArticleIds = createSelectArticlesInCollection();
 const selectArticle = createSelectArticleFromArticleFragment();
 
-const selectAllCollectionWithArticles = (
+const selectOpenCollectionsForFront = (
+  allCollectionsInAFront: string[],
+  openCollectionIds: string[]
+): string[] => {
+  return allCollectionsInAFront.filter(collection =>
+    openCollectionIds.includes(collection)
+  );
+};
+
+const selectCollectionsWithArticles = (
   store: Store,
   openCollectionIds: string[]
 ): CollectionWithArticles[] => {
@@ -80,5 +89,6 @@ export {
   selectPageViewData,
   selectPageViewDataForArticlePath,
   selectPageViewDataForCollection,
-  selectAllCollectionWithArticles
+  selectCollectionsWithArticles,
+  selectOpenCollectionsForFront
 };

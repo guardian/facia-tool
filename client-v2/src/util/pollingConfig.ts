@@ -4,7 +4,10 @@ import { Store } from 'types/Store';
 import { selectPriority } from 'selectors/pathSelectors';
 import { matchFrontsEditPath, matchIssuePath } from 'routes/routes';
 import { selectV2SubPath } from 'selectors/pathSelectors';
-import { selectAllCollectionWithArticles } from '../redux/modules/pageViewData/selectors';
+import {
+  selectCollectionsWithArticles,
+  selectOpenCollectionsForFront
+} from '../redux/modules/pageViewData/selectors';
 import { getPageViewData } from '../redux/modules/pageViewData/actions';
 
 /**
@@ -24,43 +27,32 @@ export default (store: Store) =>
     }
     (store.dispatch as Dispatch)(fetchStaleOpenCollections(priority));
 
-    const openFrontIds = store.getState().editor.frontIdsByPriority.editorial;
-    const openFrontIdsWithCollections = openFrontIds.map(frontId => {
-      return {
-        frontId,
-        collections: store.getState().fronts.frontsConfig.data.fronts[frontId]
-          .collections
-      };
-    });
+    const openFronts = store.getState().editor.frontIdsByPriority.editorial;
+    const openFrontsWithCollections = openFronts.map(frontId => ({
+      frontId,
+      collections: store.getState().fronts.frontsConfig.data.fronts[frontId]
+        .collections
+    }));
 
-    const getOpenCollectionsForFront = (
-      allCollectionsInAFront: string[]
-    ): string[] => {
-      return allCollectionsInAFront.filter(collection =>
-        store.getState().editor.collectionIds.includes(collection)
-      );
-    };
-
-    return openFrontIdsWithCollections.map(frontWithItsCollections => {
-      const collectionsWithoutArticles = getOpenCollectionsForFront(
-        frontWithItsCollections.collections
+    openFrontsWithCollections.map(front => {
+      const openCollections = selectOpenCollectionsForFront(
+        front.collections,
+        store.getState().editor.collectionIds
       );
 
-      const collectionsWithArticles = selectAllCollectionWithArticles(
+      const collectionsWithArticles = selectCollectionsWithArticles(
         store,
-        collectionsWithoutArticles
+        openCollections
       );
 
-      if (collectionsWithArticles) {
-        collectionsWithArticles.forEach(collection => {
-          (store.dispatch as Dispatch)(
-            getPageViewData(
-              frontWithItsCollections.frontId,
-              collection.articles,
-              collection.id
-            )
-          );
-        });
+      if (!collectionsWithArticles) {
+        return;
       }
+
+      collectionsWithArticles.forEach(collection => {
+        (store.dispatch as Dispatch)(
+          getPageViewData(front.frontId, collection.articles, collection.id)
+        );
+      });
     });
   }, 10000);
