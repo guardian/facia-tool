@@ -1,4 +1,4 @@
-import { buildRequestUrl } from '../../redux/modules/pageViewData';
+import { buildRequestUrl } from '..';
 import { ArticlePathAndId } from 'shared/types/PageViewData';
 
 describe('buildRequestUrl', () => {

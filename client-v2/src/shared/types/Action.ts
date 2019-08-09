@@ -85,6 +85,9 @@ type CopyArticleFragmentImageMeta = ReturnType<
 
 interface PageViewDataRequested {
   type: 'PAGE_VIEW_DATA_REQUESTED';
+  payload: {
+    frontId: string;
+  };
 }
 
 interface PageViewDataReceived {

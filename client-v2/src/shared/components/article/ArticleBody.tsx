@@ -70,7 +70,7 @@ const ImageMetadataContainer = styled('div')`
 `;
 
 const PageViewDataWrapper = styled('div')`
-  width: 40px;
+  width: 45px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -106,11 +106,10 @@ const Tone = styled('span')`
 const ImageAndGraphWrapper = styled('div')<{ size: CollectionItemSizes }>`
   display: flex;
   flex-direction: row;
-  /* small does not seem to work here? size is always set to default */
   ${props =>
     props.size === 'medium' &&
     `flex-wrap: wrap-reverse;
-  justify-content: flex-end;`}
+    justify-content: flex-end;`}
 `;
 
 interface ArticleBodyProps {

@@ -40,7 +40,6 @@ import sortBy from 'lodash/sortBy';
 import debounce from 'lodash/debounce';
 import { bindActionCreators } from 'redux';
 import WithDimensions from 'components/util/WithDimensions';
-import { selectPageViewData } from 'redux/modules/pageViewData/selectors';
 
 const FrontContainer = styled('div')`
   height: 100%;
@@ -366,12 +365,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
 }
 
 const mapStateToProps = (state: State, { id }: FrontPropsBeforeState) => {
-  const pageViewData = selectPageViewData(state);
   return {
     front: selectFront(state, { frontId: id }),
     overviewIsOpen: selectIsFrontOverviewOpen(state, id),
-    isFormOpen: !!selectSingleArticleFragmentForm(state, id),
-    pageViewData
+    isFormOpen: !!selectSingleArticleFragmentForm(state, id)
   };
 };
 

@@ -22,7 +22,7 @@ const getPageViewData = (
   collectionId: string
 ): ThunkResult<void> => {
   return (dispatch: Dispatch) => {
-    dispatch(pageViewDataRequestedAction());
+    dispatch(pageViewDataRequestedAction(frontId));
     try {
       fetchPageViewData(frontId, articles).then(result => {
         result.json().then((data: PageViewDataFromOphan[]) => {
@@ -85,9 +85,14 @@ const pageViewDataReceivedAction = (
   };
 };
 
-const pageViewDataRequestedAction = (): PageViewDataRequested => {
+const pageViewDataRequestedAction = (
+  frontId: string
+): PageViewDataRequested => {
   return {
-    type: PAGE_VIEW_DATA_REQUESTED
+    type: PAGE_VIEW_DATA_REQUESTED,
+    payload: {
+      frontId
+    }
   };
 };
 
@@ -114,4 +119,9 @@ const buildRequestUrl = (
   return `${referringPath}${articlePaths}${timePeriod}`;
 };
 
-export { fetchPageViewData, buildRequestUrl, getPageViewData };
+export {
+  fetchPageViewData,
+  buildRequestUrl,
+  getPageViewData,
+  pageViewDataReceivedAction
+};

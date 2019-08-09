@@ -9,7 +9,6 @@ import {
   selectOpenCollectionsForFront
 } from '../redux/modules/pageViewData/selectors';
 import { getPageViewData } from '../redux/modules/pageViewData/actions';
-import { frontsActions } from 'mocks';
 import { CollectionWithArticles } from 'shared/types/PageViewData';
 
 /**
