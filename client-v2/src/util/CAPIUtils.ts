@@ -96,11 +96,6 @@ const getTags = (externalArticle: ExternalArticle): Tag[] =>
 const getPrimaryTag = (externalArticle: ExternalArticle): Tag | null =>
   getTags(externalArticle)[0] || null;
 
-const getTone = (tags: Tag[] | undefined): string | undefined => {
-  const tag = (tags || []).find(_ => _.type === 'tone');
-  return tag ? tag.webTitle : undefined;
-};
-
 const isLive = (article: CapiArticle) =>
   !article.fields.isLive || article.fields.isLive === 'true';
 
@@ -130,7 +125,6 @@ export {
   getThumbnail,
   getContributorImage,
   getPrimaryTag,
-  getTone,
   getArticleLabel,
   isLive
 };

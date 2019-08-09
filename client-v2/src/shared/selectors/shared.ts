@@ -3,8 +3,7 @@ import { createSelector } from 'reselect';
 import {
   getThumbnail,
   getPrimaryTag,
-  getContributorImage,
-  getTone
+  getContributorImage
 } from 'util/CAPIUtils';
 import { selectors as externalArticleSelectors } from '../bundles/externalArticlesBundle';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
@@ -158,7 +157,7 @@ const createSelectArticleFromArticleFragment = () =>
           ? externalArticle.fields.firstPublicationDate
           : undefined,
         frontPublicationDate: articleFragment.frontPublicationDate,
-        tone: externalArticle ? getTone(externalArticle.tags) : undefined
+        tone: externalArticle ? externalArticle.frontsMeta.tone : undefined
       };
     }
   );
