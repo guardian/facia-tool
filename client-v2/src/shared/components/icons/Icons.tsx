@@ -250,6 +250,24 @@ const PreviewEyeIcon = ({
   </svg>
 );
 
+const VideoIcon = ({}) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    xmlnsXlink="http://www.w3.org/1999/xlink"
+    width="13"
+    height="10"
+    viewBox="0 0 13 9"
+  >
+    <defs>
+      <path
+        id="a"
+        d="M1.2 0L0 1.2v6l1.2 1.2h6.9V0H1.2zM12 .5l-3 3v1.8l3 3h.9V.5H12z"
+      />
+    </defs>
+    <use fill="#333" fillRule="evenodd" xlinkHref="#a" />
+  </svg>
+);
+
 export {
   DownCaretIcon,
   RubbishBinIcon,
@@ -261,5 +279,6 @@ export {
   MagnifyingGlassIcon,
   AddImageIcon,
   StarIcon,
-  PreviewEyeIcon
+  PreviewEyeIcon,
+  VideoIcon
 };
