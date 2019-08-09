@@ -30,5 +30,6 @@ export default {
   uuid: 'fc87955e-fa51-4994-b6cb-bf1c55e0a212',
   supporting: [],
   kicker: 'News',
-  tone: undefined
+  tone: undefined,
+  hasMainVideo: false
 } as DerivedArticle;
