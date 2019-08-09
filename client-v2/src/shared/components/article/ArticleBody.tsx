@@ -189,7 +189,7 @@ const articleBodyDefault = React.memo(
                 }}
               >
                 {startCase(sectionName)}
-                <Tone> / {tone}</Tone>
+                <Tone> / {startCase(tone)}</Tone>
               </CollectionItemMetaHeading>
             )}
             {type === 'liveblog' && (
