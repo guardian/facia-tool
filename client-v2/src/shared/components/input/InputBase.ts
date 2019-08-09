@@ -27,4 +27,8 @@ export default styled('input')<{
     outline: none;
     border: solid 1px ${props => props.theme.shared.input.borderColorFocus};
   }
+  :disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
