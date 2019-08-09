@@ -291,8 +291,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               component={InputText}
               disabled={isBreaking}
               title={
-                isBreaking &&
-                "You cannot edit the kicker if the 'Breaking News' toggle is set."
+                isBreaking
+                  ? "You cannot edit the kicker if the 'Breaking News' toggle is set."
+                  : ''
               }
               labelContent={
                 hasKickerSuggestions ? (
