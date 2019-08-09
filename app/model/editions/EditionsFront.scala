@@ -11,7 +11,7 @@ object EditionsFrontMetadata {
 case class EditionsFrontMetadata(nameOverride: Option[String], swatch: Option[Swatch]) {
   def toPGobject: PGobject = {
     val pgo = new PGobject()
-    pgo.setType("json")
+    pgo.setType("jsonb")
     pgo.setValue(Json.toJson(this).toString())
     pgo
   }

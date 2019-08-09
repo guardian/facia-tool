@@ -5,8 +5,6 @@ import java.time.temporal.ChronoField
 
 import enumeratum.{EnumEntry, PlayEnum}
 import enumeratum.EnumEntry.Uncapitalised
-import model.editions.MediaType.findValues
-import model.editions.Swatch
 import model.editions.templates.DailyEdition
 import org.postgresql.util.PGobject
 import play.api.libs.json.{Format, Json, Reads, Writes}
@@ -116,7 +114,7 @@ case class EditionsFrontSkeleton(
 ) {
   def metadata() = {
     val metadataParam = new PGobject()
-    metadataParam.setType("json")
+    metadataParam.setType("jsonb")
     metadataParam.setValue(Json.toJson(EditionsFrontMetadata(None, Some(presentation.swatch))).toString)
     metadataParam
   }
