@@ -17,7 +17,7 @@ interface State {
   collections: ReturnType<typeof collections>;
   externalArticles: ReturnType<typeof externalArticles>;
   featureSwitches: ReturnType<typeof featureSwitches>;
-  pageViewData: PageViewDataPerFront;
+  pageViewData: PageViewDataPerFront[];
 }
 
 const rootReducer = (state: any = {}, action: any): State => ({

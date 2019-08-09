@@ -18,18 +18,27 @@ import { Store } from 'types/Store';
 const selectPageViewDataForArticlePath = (state: State, url: string) =>
   selectPageViewData(state);
 
-const selectPageViewData = (state: State): PageViewDataPerFront =>
+const selectPageViewData = (state: State): PageViewDataPerFront[] =>
   state.shared.pageViewData;
 
 const selectPageViewDataForCollection = (
   state: State,
-  collectionId: string
-): PageViewDataPerCollection | undefined =>
-  state.shared.pageViewData &&
-  state.shared.pageViewData.collections &&
-  state.shared.pageViewData.collections.find(
-    c => c.collectionId === collectionId
+  collectionId: string,
+  frontId: string
+): PageViewDataPerCollection | undefined => {
+  if (!state.shared.pageViewData) {
+    return;
+  }
+  const possibleFront = state.shared.pageViewData.find(
+    front => front.frontId === frontId
   );
+
+  return (
+    possibleFront &&
+    possibleFront.collections &&
+    possibleFront.collections.find(c => c.collectionId === collectionId)
+  );
+};
 
 const selectAllArticleIds = createSelectArticlesInCollection();
 const selectArticle = createSelectArticleFromArticleFragment();
@@ -54,7 +63,7 @@ const selectCollectionsWithArticles = (
       selectSharedState(state),
       {
         collectionId: cId,
-        collectionSet: 'draft', // need to obtain this from the store
+        collectionSet: 'draft', // TODO:  need to obtain this from the store
         includeSupportingArticles: false
       }
     );

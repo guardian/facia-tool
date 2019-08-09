@@ -22,15 +22,17 @@ describe('Page view data reducer', () => {
       }
     ];
 
-    const expectedState = {
-      frontId: 'frontId',
-      collections: [
-        {
-          collectionId: 'collectionId',
-          stories: data
-        }
-      ]
-    };
+    const expectedState = [
+      {
+        frontId: 'frontId',
+        collections: [
+          {
+            collectionId: 'collectionId',
+            stories: data
+          }
+        ]
+      }
+    ];
 
     const action = pageViewDataReceivedAction(data, 'frontId', 'collectionId');
     const newState = reducer(undefined, action);

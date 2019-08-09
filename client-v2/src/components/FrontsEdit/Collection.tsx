@@ -275,7 +275,11 @@ const createMapStateToProps = () => {
       collectionSet: props.browsingStage
     });
 
-    const pageViewData = selectPageViewDataForCollection(state, props.id);
+    const pageViewData = selectPageViewDataForCollection(
+      state,
+      props.id,
+      props.frontId
+    );
 
     return {
       lastDesktopArticle: articleVisibilityDetails.desktop,
