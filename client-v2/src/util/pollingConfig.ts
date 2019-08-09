@@ -9,6 +9,8 @@ import {
   selectOpenCollectionsForFront
 } from '../redux/modules/pageViewData/selectors';
 import { getPageViewData } from '../redux/modules/pageViewData/actions';
+import { frontsActions } from 'mocks';
+import { CollectionWithArticles } from 'shared/types/PageViewData';
 
 /**
  * TODO: do we want to check if there are any collectionUpdates going out here
@@ -33,23 +35,22 @@ export default (store: Store) =>
       collections: store.getState().fronts.frontsConfig.data.fronts[frontId]
         .collections
     }));
-
-    openFrontsWithCollections.map(front => {
-      const openCollections = selectOpenCollectionsForFront(
-        front.collections,
-        store.getState().editor.collectionIds
-      );
-
-      const collectionsWithArticles = selectCollectionsWithArticles(
-        store,
-        openCollections
-      );
-
-      if (!collectionsWithArticles) {
-        return;
+    const openFrontsWithCollectionsArticles = openFrontsWithCollections.map(
+      front => {
+        const openCollections = selectOpenCollectionsForFront(
+          front.collections,
+          store.getState().editor.collectionIds
+        );
+        const collectionsWithArticles: CollectionWithArticles[] = selectCollectionsWithArticles(
+          store,
+          openCollections
+        );
+        return { frontId: front.frontId, collections: collectionsWithArticles };
       }
+    );
 
-      collectionsWithArticles.forEach(collection => {
+    openFrontsWithCollectionsArticles.forEach(front => {
+      front.collections.forEach(collection => {
         (store.dispatch as Dispatch)(
           getPageViewData(front.frontId, collection.articles, collection.id)
         );
