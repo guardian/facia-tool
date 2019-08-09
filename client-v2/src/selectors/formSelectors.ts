@@ -8,7 +8,9 @@ import { hasMainVideo } from 'shared/util/derivedArticle';
 import { isCollectionConfigDynamic } from '../util/frontsUtils';
 import { createSelector } from 'reselect';
 import { State } from 'types/State';
-import { selectEditMode } from './pathSelectors';
+import { selectEditMode, selectPriority } from './pathSelectors';
+import { FormFields } from 'util/form';
+import without from 'lodash/without';
 
 export const defaultFields = [
   'headline',
@@ -26,7 +28,7 @@ export const defaultFields = [
   'primaryImage',
   'cutoutImage',
   'slideshow'
-];
+] as FormFields[];
 
 export const supportingFields = [
   'headline',
@@ -34,7 +36,16 @@ export const supportingFields = [
   'isBreaking',
   'showKickerSection',
   'showKickerCustom'
-];
+] as FormFields[];
+
+export const emailFieldsToExclude = [
+  'isBreaking',
+  'showLargeHeadline',
+  'slideshow',
+  'cutoutImage',
+  'imageSlideshowReplace',
+  'imageCutoutReplace'
+] as FormFields[];
 
 const selectIsSupporting = (_: unknown, __: unknown, isSupporting: boolean) =>
   isSupporting;
@@ -59,14 +70,21 @@ export const createSelectFormFieldsForCollectionItem = () => {
     selectParentCollectionConfig,
     selectIsSupporting,
     selectEditMode,
-    (derivedArticle, parentCollectionConfig, isSupporting, editMode) => {
+    selectPriority,
+    (
+      derivedArticle,
+      parentCollectionConfig,
+      isSupporting,
+      editMode,
+      priority
+    ) => {
       if (!derivedArticle) {
         return [];
       }
       if (isSupporting) {
         return supportingFields;
       }
-      const fields = defaultFields.slice();
+      let fields = defaultFields.slice();
 
       if (isCollectionConfigDynamic(parentCollectionConfig)) {
         fields.push('isBoosted');
@@ -76,6 +94,10 @@ export const createSelectFormFieldsForCollectionItem = () => {
       }
       if (hasMainVideo(derivedArticle)) {
         fields.push('showMainVideo');
+      }
+
+      if (priority === 'email') {
+        fields = without(fields, ...emailFieldsToExclude);
       }
 
       if (editMode === 'editions') {
