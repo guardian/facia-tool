@@ -27,6 +27,7 @@ import DraggableArticleImageContainer from './DraggableArticleImageContainer';
 import { media } from 'shared/util/mediaQueries';
 import { PageViewStory } from 'shared/types/PageViewData';
 import ArticleGraph from './ArticleGraph';
+import { VideoIcon } from '../icons/Icons';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   flex-shrink: 0;
@@ -103,6 +104,7 @@ const Tone = styled('span')`
   font-weight: normal;
 `;
 
+
 const ImageAndGraphWrapper = styled('div')<{ size: CollectionItemSizes }>`
   display: flex;
   flex-direction: row;
@@ -110,6 +112,19 @@ const ImageAndGraphWrapper = styled('div')<{ size: CollectionItemSizes }>`
     props.size === 'medium' &&
     `flex-wrap: wrap-reverse;
     justify-content: flex-end;`}
+`;
+
+const VideoIconContainer = styled('div')`
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border-radius: 50%;
+  height: 20px;
+  width: 20px;
 `;
 
 interface ArticleBodyProps {
@@ -146,6 +161,8 @@ interface ArticleBodyProps {
   canDragImage?: boolean;
   isDraggingImageOver: boolean;
   isBoosted?: boolean;
+  hasMainVideo?: boolean;
+  showMainVideo?: boolean;
   tone?: string | undefined;
   featureFlagPageViewData?: boolean;
   canShowPageViewData: boolean;
@@ -189,7 +206,9 @@ const articleBodyDefault = React.memo(
     tone,
     featureFlagPageViewData,
     canShowPageViewData,
-    pageViewStory
+    pageViewStory,
+    hasMainVideo,
+    showMainVideo
   }: ArticleBodyProps) => {
     const ArticleHeadingContainer =
       size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
@@ -330,12 +349,18 @@ const articleBodyDefault = React.memo(
                   {cutoutThumbnail ? (
                     <ThumbnailCutout src={cutoutThumbnail} />
                   ) : null}
+                  {hasMainVideo && (
+                  <VideoIconContainer>
+                    <VideoIcon />
+                  </VideoIconContainer>
+                )}
                 </ThumbnailSmall>
                 <ImageMetadataContainer>
-                  {imageSlideshowReplace && 'Slideshow'}
-                  {imageReplace && 'Image replaced'}
-                  {imageCutoutReplace && 'Cutout replaced'}
-                </ImageMetadataContainer>
+                {imageSlideshowReplace && 'Slideshow'}
+                {imageReplace && 'Image replaced'}
+                {imageCutoutReplace && 'Cutout replaced'}
+                {showMainVideo && 'Show video'}
+              </ImageMetadataContainer>
               </DraggableArticleImageContainer>
             ))}
         </ImageAndGraphWrapper>

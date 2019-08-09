@@ -100,6 +100,7 @@ export const getInitialValuesForArticleFragmentForm = (
         showLargeHeadline: article.showLargeHeadline || false,
         showKickerTag: article.showKickerTag || false,
         showKickerSection: article.showKickerSection || false,
+        showMainVideo: article.showMainVideo || false,
         customKicker: article.customKicker || '',
         isBreaking: article.isBreaking || false,
         showLivePlayable: article.showLivePlayable || false,
