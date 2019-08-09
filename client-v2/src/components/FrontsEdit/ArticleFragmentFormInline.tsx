@@ -238,12 +238,17 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               selected={showKickerTag}
               size="s"
               onClick={() => {
-                if (!showKickerTag) {
-                  change('showKickerTag', true);
-                  change('showKickerSection', false);
-                  change('showKickerCustom', false);
-                } else {
-                  change('showKickerTag', false);
+                if (editMode === 'editions') {
+                  change('customKicker', kickerOptions.webTitle);
+                }
+                else {
+                  if (!showKickerTag) {
+                    change('showKickerTag', true);
+                    change('showKickerSection', false);
+                    change('showKickerCustom', false);
+                  } else {
+                    change('showKickerTag', false);
+                  }
                 }
               }}
             />
@@ -257,12 +262,17 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               size="s"
               buttonText={kickerOptions.sectionName}
               onClick={() => {
-                if (!showKickerSection) {
-                  change('showKickerSection', true);
-                  change('showKickerTag', false);
-                  change('showKickerCustom', false);
-                } else {
-                  change('showKickerSection', false);
+                if (editMode === 'editions') {
+                  change('customKicker', kickerOptions.sectionName);
+                }
+                else {
+                  if (!showKickerSection) {
+                    change('showKickerSection', true);
+                    change('showKickerTag', false);
+                    change('showKickerCustom', false);
+                  } else {
+                    change('showKickerSection', false);
+                  }
                 }
               }}
             />
