@@ -41,7 +41,7 @@ trait IssueQueries {
           is_hidden,
           metadata,
           can_rename
-        ) VALUES (${issueId}, ${fIndex}, ${front.name}, ${front.hidden}, NULL, ${front.canRename})
+        ) VALUES (${issueId}, ${fIndex}, ${front.name}, ${front.hidden}, ${front.metadata}, ${front.canRename})
         RETURNING id;
       """.map(_.string("id")).single().apply().get
 
