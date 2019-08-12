@@ -13,9 +13,9 @@ const createFragment = (
   id,
   frontPublicationDate: Date.now(),
   meta: {
-    imageHide,
-    imageReplace,
-    imageCutoutReplace
+    ...(imageHide ? {imageHide} : ''),
+    ...(imageReplace ? {imageReplace} : ''),
+    ...(imageCutoutReplace ? {imageCutoutReplace} : '')
   }
 });
 
