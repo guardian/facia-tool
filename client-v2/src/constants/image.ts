@@ -4,6 +4,10 @@ export const articleFragmentImageCriteria = {
   heightAspectRatio: 3
 };
 
+export const editionsArticleFragmentImageCriteria = {
+  minWidth: 400
+};
+
 export const gridDataTransferTypes = {
   cropsData: 'application/vnd.mediaservice.crops+json',
   gridUrl: 'application/vnd.mediaservice.kahuna.uri',

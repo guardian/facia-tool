@@ -40,9 +40,14 @@ import {
 } from 'util/form';
 import { CapiFields } from 'util/form';
 import { Dispatch } from 'types/Store';
-import { articleFragmentImageCriteria as imageCriteria } from 'constants/image';
+import {
+  articleFragmentImageCriteria,
+  editionsArticleFragmentImageCriteria
+} from 'constants/image';
 import { selectors as collectionSelectors } from 'shared/bundles/collectionsBundle';
 import { getContributorImage } from 'util/CAPIUtils';
+import { EditMode } from 'types/EditMode';
+import { selectEditMode } from 'selectors/pathSelectors';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -129,7 +134,7 @@ const RenderSlideshow = ({ fields, frontId }: RenderSlideshowProps) => (
           name={name}
           component={InputImage}
           small
-          criteria={imageCriteria}
+          criteria={articleFragmentImageCriteria}
           frontId={frontId}
         />
       </Col>
@@ -181,8 +186,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       showKickerTag,
       showKickerSection,
       frontId,
-      articleExists
+      articleExists,
+      editMode
     } = this.props;
+
+    const isEditionsMode = editMode === 'editions';
 
     return (
       <FormContainer onSubmit={handleSubmit} data-testid="edit-form">
@@ -385,7 +393,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     name={this.getImageFieldName()}
                     component={InputImage}
                     disabled={imageHide}
-                    criteria={imageCriteria}
+                    criteria={
+                      isEditionsMode
+                        ? editionsArticleFragmentImageCriteria
+                        : articleFragmentImageCriteria
+                    }
                     frontId={frontId}
                     defaultImageUrl={
                       imageCutoutReplace
@@ -535,6 +547,7 @@ interface ContainerProps {
   showKickerSection: boolean;
   articleCapiFieldValues: CapiFields;
   imageReplace: boolean;
+  editMode: EditMode;
 }
 
 interface InterfaceProps {
@@ -606,7 +619,8 @@ const createMapStateToProps = () => {
       showKickerSection: selectValue(state, 'showKickerSection'),
       cutoutImage: externalArticle
         ? getContributorImage(externalArticle)
-        : undefined
+        : undefined,
+      editMode: selectEditMode(state)
     };
   };
 };

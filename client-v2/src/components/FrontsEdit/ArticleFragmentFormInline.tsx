@@ -40,9 +40,14 @@ import {
 } from 'util/form';
 import { CapiFields } from 'util/form';
 import { Dispatch } from 'types/Store';
-import { articleFragmentImageCriteria as imageCriteria } from 'constants/image';
+import {
+  articleFragmentImageCriteria,
+  editionsArticleFragmentImageCriteria
+} from 'constants/image';
 import { selectors as collectionSelectors } from 'shared/bundles/collectionsBundle';
 import { getContributorImage } from 'util/CAPIUtils';
+import { EditMode } from 'types/EditMode';
+import { selectEditMode } from 'selectors/pathSelectors';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -132,7 +137,7 @@ const RenderSlideshow = ({ fields, frontId }: RenderSlideshowProps) => (
           name={name}
           component={InputImage}
           small
-          criteria={imageCriteria}
+          criteria={articleFragmentImageCriteria}
           frontId={frontId}
         />
       </SlideshowCol>
@@ -215,8 +220,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       imageCutoutReplace,
       cutoutImage,
       imageSlideshowReplace,
-      isBreaking
+      isBreaking,
+      editMode
     } = this.props;
+
+    const isEditionsMode = editMode === 'editions';
 
     const getKickerContents = () => {
       return (
@@ -423,7 +431,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                   name={this.getImageFieldName()}
                   component={InputImage}
                   disabled={imageHide}
-                  criteria={imageCriteria}
+                  criteria={
+                    isEditionsMode
+                      ? editionsArticleFragmentImageCriteria
+                      : articleFragmentImageCriteria
+                  }
                   frontId={frontId}
                   defaultImageUrl={
                     imageCutoutReplace
@@ -603,6 +615,7 @@ interface ContainerProps {
   articleCapiFieldValues: CapiFields;
   imageReplace: boolean;
   isBreaking: boolean;
+  editMode: EditMode;
 }
 
 interface InterfaceProps {
@@ -675,7 +688,8 @@ const createMapStateToProps = () => {
       isBreaking: valueSelector(state, 'isBreaking'),
       cutoutImage: externalArticle
         ? getContributorImage(externalArticle)
-        : undefined
+        : undefined,
+      editMode: selectEditMode(state)
     };
   };
 };
