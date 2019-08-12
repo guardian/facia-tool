@@ -17,6 +17,7 @@ import {
   createSelectArticlesInCollection
 } from 'shared/selectors/shared';
 import EditModeVisibility from 'components/util/EditModeVisibility';
+import { createSelectCollectionIdsWithOpenForms } from 'bundles/frontsUIBundle';
 
 interface FrontCollectionOverviewContainerProps {
   frontId: string;
@@ -30,6 +31,7 @@ type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
   articleCount: number;
   openCollection: (id: string) => void;
   hasUnpublishedChanges: boolean;
+  hasOpenForms: boolean;
 };
 
 const Container = styled.div<{ isSelected: boolean }>`
@@ -106,7 +108,8 @@ const CollectionOverview = ({
   openCollection,
   frontId,
   hasUnpublishedChanges,
-  isSelected
+  isSelected,
+  hasOpenForms
 }: FrontCollectionOverviewProps) =>
   collection ? (
     <Container
@@ -130,6 +133,15 @@ const CollectionOverview = ({
         <ItemCount>({articleCount})</ItemCount>
       </TextContainerLeft>
       <TextContainerRight>
+        {!!hasOpenForms && (
+          <StatusWarning
+            priority="default"
+            size="s"
+            title="This collection has open forms"
+          >
+            !
+          </StatusWarning>
+        )}
         {collection &&
           collection.lastUpdated &&
           (!!hasUnpublishedChanges ? (
@@ -150,19 +162,29 @@ const CollectionOverview = ({
 const mapStateToProps = () => {
   const selectCollection = createSelectCollection();
   const selectArticlesInCollection = createSelectArticlesInCollection();
-
-  return (state: State, props: FrontCollectionOverviewContainerProps) => ({
+  const selectCollectionIdsWithOpenForms = createSelectCollectionIdsWithOpenForms();
+  return (
+    state: State,
+    {
+      frontId,
+      collectionId,
+      browsingStage: collectionSet
+    }: FrontCollectionOverviewContainerProps
+  ) => ({
     collection: selectCollection(selectSharedState(state), {
-      collectionId: props.collectionId
+      collectionId
     }),
     articleCount: selectArticlesInCollection(selectSharedState(state), {
-      collectionSet: props.browsingStage,
-      collectionId: props.collectionId,
+      collectionSet,
+      collectionId,
       includeSupportingArticles: false
     }).length,
     hasUnpublishedChanges: selectHasUnpublishedChanges(state, {
-      collectionId: props.collectionId
-    })
+      collectionId
+    }),
+    hasOpenForms:
+      selectCollectionIdsWithOpenForms(state, frontId).indexOf(collectionId) !==
+      -1
   });
 };
 
