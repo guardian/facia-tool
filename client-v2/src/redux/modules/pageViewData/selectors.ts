@@ -5,7 +5,7 @@ import {
   CollectionWithArticles,
   ArticlePathAndId
 } from 'shared/types/PageViewData';
-import { ArticleFragment } from 'shared/types/Collection';
+import { ArticleFragment, Stages } from 'shared/types/Collection';
 import { DerivedArticle } from 'shared/types/Article';
 import {
   selectArticleFragment,
@@ -54,7 +54,8 @@ const selectOpenCollectionsForFront = (
 
 const selectCollectionsWithArticles = (
   store: Store,
-  openCollectionIds: string[]
+  openCollectionIds: string[],
+  browsingStage: Stages = 'draft'
 ): CollectionWithArticles[] => {
   const state = store.getState();
 
@@ -63,7 +64,7 @@ const selectCollectionsWithArticles = (
       selectSharedState(state),
       {
         collectionId: cId,
-        collectionSet: 'draft', // TODO:  need to obtain this from the store
+        collectionSet: browsingStage,
         includeSupportingArticles: false
       }
     );

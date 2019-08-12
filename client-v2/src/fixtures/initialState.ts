@@ -693,7 +693,8 @@ const state = {
     collectionIds: [],
     selectedArticleFragments: {},
     closedOverviews: [],
-    clipboardOpen: true
+    clipboardOpen: true,
+    frontIdsByBrowsingStage: {}
   },
   staleFronts: {},
   form: {},

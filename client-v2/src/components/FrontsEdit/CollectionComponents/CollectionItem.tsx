@@ -42,12 +42,9 @@ import { bindActionCreators } from 'redux';
 import ArticleFragmentFormInline from '../ArticleFragmentFormInline';
 import { updateArticleFragmentMeta as updateArticleFragmentMetaAction } from 'actions/ArticleFragments';
 import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
-<<<<<<< HEAD
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
-=======
 import { PageViewStory } from 'shared/types/PageViewData';
->>>>>>> Add sparklines
 
 const imageDropTypes = [
   ...gridDropTypes,

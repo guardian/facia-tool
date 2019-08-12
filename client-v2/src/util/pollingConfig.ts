@@ -40,9 +40,14 @@ export default (store: Store) =>
           front.collections,
           store.getState().editor.collectionIds
         );
+
+        const browsingStage = store.getState().editor.frontIdsByBrowsingStage[
+          front.frontId
+        ];
         const collectionsWithArticles: CollectionWithArticles[] = selectCollectionsWithArticles(
           store,
-          openCollections
+          openCollections,
+          browsingStage
         );
         return { frontId: front.frontId, collections: collectionsWithArticles };
       }

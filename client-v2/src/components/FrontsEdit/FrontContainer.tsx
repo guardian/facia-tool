@@ -8,7 +8,8 @@ import { updateCollection } from 'actions/Collections';
 import {
   editorCloseFront,
   selectIsFrontOverviewOpen,
-  selectSingleArticleFragmentForm
+  selectSingleArticleFragmentForm,
+  changedBrowsingStage
 } from 'bundles/frontsUIBundle';
 import Button from 'shared/components/input/ButtonDefault';
 import { frontStages } from 'constants/fronts';
@@ -22,7 +23,11 @@ import {
 import Front from './Front';
 import SectionHeader from '../layout/SectionHeader';
 import SectionContent from '../layout/SectionContent';
-import { CollectionItemSets, Collection } from 'shared/types/Collection';
+import {
+  CollectionItemSets,
+  Collection,
+  Stages
+} from 'shared/types/Collection';
 import { toTitleCase } from 'util/stringUtils';
 import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
 import { PreviewEyeIcon, ClearIcon } from 'shared/components/icons/Icons';
@@ -110,6 +115,7 @@ type FrontsComponentProps = FrontsContainerProps & {
     fetchLastPressed: (frontId: string) => void;
     editorCloseFront: (frontId: string) => void;
     updateCollection: (collection: Collection) => void;
+    changeBrowsingStage: (frontId: string, browsingState: Stages) => void;
   };
 };
 
@@ -123,9 +129,14 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   };
 
   public handleCollectionSetSelect(key: string) {
+    const browsingStage = frontStages[key];
     this.setState({
-      collectionSet: frontStages[key]
+      collectionSet: browsingStage
     });
+    this.props.frontsActions.changeBrowsingStage(
+      this.props.frontId,
+      browsingStage
+    );
   }
 
   public handleRemoveFront = () => {
@@ -152,7 +163,9 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
             <FrontHeaderMeta>
               <EditModeVisibility visibleMode="fronts">
                 <a
-                  href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${this.props.frontId}`}
+                  href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${
+                    this.props.frontId
+                  }`}
                   target="preview"
                 >
                   <FrontHeaderButton size="l">
@@ -206,15 +219,14 @@ const createMapStateToProps = () => {
   });
 };
 
-const mapDispatchToProps = (
-  dispatch: Dispatch,
-  props: FrontsContainerProps
-) => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
   frontsActions: {
     fetchLastPressed: (id: string) => dispatch(fetchLastPressed(id)),
     updateCollection: (collection: Collection) =>
       dispatch(updateCollection(collection)),
-    editorCloseFront: (id: string) => dispatch(editorCloseFront(id))
+    editorCloseFront: (id: string) => dispatch(editorCloseFront(id)),
+    changeBrowsingStage: (id: string, browsingStage: Stages) =>
+      dispatch(changedBrowsingStage(id, browsingStage))
   }
 });
 
