@@ -79,7 +79,7 @@ object ClientArticleMetadata {
       articleMetadata.byline,
       articleMetadata.sportScore,
 
-      articleMetadata.mediaType.map(_ == MediaType.Hide),
+      articleMetadata.mediaType.collect({case MediaType.Hide => true}),
 
       articleMetadata.replaceImage.map(_ => mediaType == MediaType.Image),
       articleMetadata.replaceImage.map(_.src),
