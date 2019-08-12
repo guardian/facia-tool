@@ -167,7 +167,9 @@ function createArticleFragment(
         article.id,
         article.frontsMeta.defaults.imageHide,
         article.frontsMeta.defaults.imageReplace,
-        article.frontsMeta.defaults.imageCutoutReplace
+        article.frontsMeta.defaults.imageCutoutReplace,
+        article.frontsMeta.defaults.showByline,
+        article.frontsMeta.defaults.showQuotedHeadline
       )
       return persistAndReturnFragment(dispatch, fragment);
     }

@@ -7,7 +7,9 @@ const createFragment = (
   id: string,
   imageHide: boolean = false,
   imageReplace: boolean = false,
-  imageCutoutReplace: boolean = false
+  imageCutoutReplace: boolean = false,
+  showByline: boolean = false,
+  showQuotedHeadline: boolean = false
 ) => ({
   uuid: v4(),
   id,
@@ -15,7 +17,9 @@ const createFragment = (
   meta: {
     ...(imageHide ? {imageHide} : ''),
     ...(imageReplace ? {imageReplace} : ''),
-    ...(imageCutoutReplace ? {imageCutoutReplace} : '')
+    ...(imageCutoutReplace ? {imageCutoutReplace} : ''),
+    ...(showByline ? {showByline} : ''),
+    ...(showQuotedHeadline ? {showQuotedHeadline} : '')
   }
 });
 
