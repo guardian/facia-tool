@@ -62,6 +62,11 @@ class ManageEdition extends React.Component<
         <h2>{startCase(this.props.match.params.editionName)}</h2>
         <h4>Select a date to create or edit an issue.</h4>
         <div>
+          {this.state.infoMessage && (
+            <InformationMsg status={this.state.isError ? 'error' : 'info'}>
+              {this.state.infoMessage}
+            </InformationMsg>
+          )}
           <span>
             <SingleDatePicker
               date={this.state.date}
@@ -82,11 +87,6 @@ class ManageEdition extends React.Component<
             </SpinnerContainer>
           )}
         </div>
-        {this.state.infoMessage && (
-          <InformationMsg status={this.state.isError ? 'error' : 'info'}>
-            {this.state.infoMessage}
-          </InformationMsg>
-        )}
         {this.state.date && this.renderIssueData()}
       </>
     );

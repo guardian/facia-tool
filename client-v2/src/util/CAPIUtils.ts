@@ -1,6 +1,8 @@
-import { Element, Tag } from 'types/Capi';
+import { Element, Tag, CapiArticle } from 'types/Capi';
 import { ExternalArticle } from '../shared/types/ExternalArticle';
 import { ArticleFragmentMeta } from '../shared/types/Collection';
+import { notLiveLabels, liveBlogTones } from 'constants/fronts';
+import startCase from 'lodash/startCase';
 
 const getIdFromURL = (url: string): string | null => {
   const [, id = null] =
@@ -94,10 +96,35 @@ const getTags = (externalArticle: ExternalArticle): Tag[] =>
 const getPrimaryTag = (externalArticle: ExternalArticle): Tag | null =>
   getTags(externalArticle)[0] || null;
 
+const isLive = (article: CapiArticle) =>
+  !article.fields.isLive || article.fields.isLive === 'true';
+
+const getArticleLabel = (article: CapiArticle) => {
+  const {
+    fields: { firstPublicationDate },
+    sectionName,
+    frontsMeta: { tone }
+  } = article;
+  if (!isLive(article)) {
+    if (firstPublicationDate) {
+      return notLiveLabels.takenDown;
+    }
+    return notLiveLabels.draft;
+  }
+
+  if (tone === liveBlogTones.dead || tone === liveBlogTones.live) {
+    return startCase(liveBlogTones.live);
+  }
+
+  return startCase(sectionName);
+};
+
 export {
   getIdFromURL,
   getThumbnailFromElements,
   getThumbnail,
   getContributorImage,
-  getPrimaryTag
+  getPrimaryTag,
+  getArticleLabel,
+  isLive
 };

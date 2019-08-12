@@ -214,7 +214,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       imageReplace,
       imageCutoutReplace,
       cutoutImage,
-      imageSlideshowReplace
+      imageSlideshowReplace,
+      isBreaking
     } = this.props;
 
     const getKickerContents = () => {
@@ -288,6 +289,12 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               name="customKicker"
               label="Kicker"
               component={InputText}
+              disabled={isBreaking}
+              title={
+                isBreaking
+                  ? "You cannot edit the kicker if the 'Breaking News' toggle is set."
+                  : ''
+              }
               labelContent={
                 hasKickerSuggestions ? (
                   <KickerSuggestionsContainer>
@@ -398,6 +405,14 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               placeholder={articleCapiFieldValues.trailText}
               originalValue={articleCapiFieldValues.trailText}
               label="Trail text"
+            />
+            <ConditionalField
+              permittedFields={editableFields}
+              name="sportScore"
+              label="Sport Score"
+              component={InputText}
+              placeholder=""
+              originalValue={''}
             />
           </InputGroup>
           <RowContainer>
@@ -587,6 +602,7 @@ interface ContainerProps {
   showKickerSection: boolean;
   articleCapiFieldValues: CapiFields;
   imageReplace: boolean;
+  isBreaking: boolean;
 }
 
 interface InterfaceProps {
@@ -656,6 +672,7 @@ const createMapStateToProps = () => {
       showByline: valueSelector(state, 'showByline'),
       showKickerTag: valueSelector(state, 'showKickerTag'),
       showKickerSection: valueSelector(state, 'showKickerSection'),
+      isBreaking: valueSelector(state, 'isBreaking'),
       cutoutImage: externalArticle
         ? getContributorImage(externalArticle)
         : undefined
