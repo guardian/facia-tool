@@ -226,36 +226,15 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
     const isEditionsMode = editMode === 'editions';
 
-    // const assertion to prevent type widening, necessary to keep `type KickerField` below DRY
-    // see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions
-    const kickerFields = ['showKickerTag', 'showKickerSection'] as const;
-
-    // In an effort to be DRY, create a type of all values from the `kickerFields` array that can be accessed by a number.
-    // That is, a union of the values.
-    // i.e. KickerField = 'showKickerTag' | 'showKickerSection'
-    type KickerField = typeof kickerFields[number];
-
     const setCustomKicker = (customKickerValue: string) => {
       change('customKicker', customKickerValue);
       change('showKickerCustom', true);
-      kickerFields.forEach(field => change(field, false));
-    };
 
-    const handleKickerChange = (
-      customKickerValue: string,
-      showField: boolean,
-      fieldName: KickerField
-    ) => {
-      if (isEditionsMode) {
-        setCustomKicker(customKickerValue);
-      } else {
-        if (!showField) {
-          kickerFields.forEach(field => change(field, field === fieldName));
-          change('showKickerCustom', false);
-        } else {
-          change(fieldName, false);
-        }
-      }
+      // kicker suggestions now set the value of `customKicker` rather than set a flag
+      // set the old flags to false
+      ['showKickerTag', 'showKickerSection'].forEach(field =>
+        change(field, false)
+      );
     };
 
     const getKickerContents = () => {
@@ -269,13 +248,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               buttonText={kickerOptions.webTitle}
               selected={showKickerTag}
               size="s"
-              onClick={() =>
-                handleKickerChange(
-                  kickerOptions.webTitle!,
-                  showKickerTag,
-                  'showKickerTag'
-                )
-              }
+              onClick={() => setCustomKicker(kickerOptions.webTitle!)}
             />
           )}
           &nbsp;
@@ -286,13 +259,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               selected={showKickerSection}
               size="s"
               buttonText={kickerOptions.sectionName}
-              onClick={() =>
-                handleKickerChange(
-                  kickerOptions.sectionName!,
-                  showKickerSection,
-                  'showKickerSection'
-                )
-              }
+              onClick={() => setCustomKicker(kickerOptions.sectionName!)}
             />
           )}
         </>
