@@ -34,7 +34,10 @@ export interface ArticleFragmentFormData {
   showKickerTag: boolean;
   showKickerSection: boolean;
   imageReplace: boolean;
+  showMainVideo: boolean;
 }
+
+export type FormFields = keyof ArticleFragmentFormData;
 
 export interface ImageData {
   src?: string;
@@ -122,7 +125,8 @@ export const getInitialValuesForArticleFragmentForm = (
           thumb: article.imageCutoutSrc
         },
         slideshow: slideshow.concat(slideshowBackfill),
-        sportScore: article.sportScore || ''
+        sportScore: article.sportScore || '',
+        showMainVideo: !!article.showMainVideo
       }
     : undefined;
 };
