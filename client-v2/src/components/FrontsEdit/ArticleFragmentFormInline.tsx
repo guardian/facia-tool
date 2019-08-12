@@ -226,7 +226,13 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
     const isEditionsMode = editMode === 'editions';
 
+    // const assertion to prevent type widening, necessary to keep `type KickerField` below DRY
+    // see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions
     const kickerFields = ['showKickerTag', 'showKickerSection'] as const;
+
+    // In an effort to be DRY, create a type of all values from the `kickerFields` array that can be accessed by a number.
+    // That is, a union of the values.
+    // i.e. KickerField = 'showKickerTag' | 'showKickerSection'
     type KickerField = typeof kickerFields[number];
 
     const setCustomKicker = (customKickerValue: string) => {
