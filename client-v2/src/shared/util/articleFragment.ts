@@ -15,11 +15,11 @@ const createFragment = (
   id,
   frontPublicationDate: Date.now(),
   meta: {
-    ...(imageHide ? {imageHide} : ''),
-    ...(imageReplace ? {imageReplace} : ''),
-    ...(imageCutoutReplace ? {imageCutoutReplace} : ''),
-    ...(showByline ? {showByline} : ''),
-    ...(showQuotedHeadline ? {showQuotedHeadline} : '')
+    ...(imageHide ? { imageHide } : ''),
+    ...(imageReplace ? { imageReplace } : ''),
+    ...(imageCutoutReplace ? { imageCutoutReplace } : ''),
+    ...(showByline ? { showByline } : ''),
+    ...(showQuotedHeadline ? { showQuotedHeadline } : '')
   }
 });
 
