@@ -31,7 +31,7 @@ const stateWithClipboard = {
         uuid: 'article3'
       }
     },
-    pageViewData: { frontId: '', collections: [] }
+    pageViewData: [{ frontId: '', collections: [] }]
   }
 };
 

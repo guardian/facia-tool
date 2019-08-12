@@ -854,7 +854,7 @@ const initialState = {
   groups: {},
   articleFragments: {},
   featureSwitches: {},
-  pageViewData: { frontId: '', collections: [] }
+  pageViewData: [{ frontId: '', collections: [] }]
 } as State;
 
 export {
