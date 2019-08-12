@@ -60,8 +60,6 @@ PUT        /userdata/frontIds                        controllers.UserDataControl
 PUT        /userdata/frontIdsByPriority              controllers.UserDataController.putFrontIdsByPriority()
 PUT        /userdata/favouriteFrontIdsByPriority     controllers.UserDataController.putFavouriteFrontIdsByPriority()
 PUT        /userdata/featureSwitch                   controllers.UserDataController.putFeatureSwitch()
-# For temporary internal use -- migrates user data to a new format
-PUT        /userdata/migrate                         controllers.UserDataController.migrateUserData()
 
 # endpoints for proxying https
 GET         /api/preview/*path                       controllers.FaciaContentApiProxy.capiPreview(path)

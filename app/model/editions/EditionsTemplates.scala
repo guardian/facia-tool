@@ -3,8 +3,11 @@ package model.editions
 import java.time.{ZoneId, ZonedDateTime}
 import java.time.temporal.ChronoField
 
+import enumeratum.{EnumEntry, PlayEnum}
+import enumeratum.EnumEntry.Uncapitalised
 import model.editions.templates.DailyEdition
-import play.api.libs.json.Json
+import org.postgresql.util.PGobject
+import play.api.libs.json.{Format, Json, Reads, Writes}
 
 object EditionsTemplates {
   val templates: Map[String, EditionTemplate] = Map(
@@ -23,7 +26,26 @@ case object WeekDay extends Enumeration(1) {
   implicit def WeekDayToInt(weekDay: WeekDay): Int = weekDay.id
 }
 
-case class FrontPresentation()
+sealed abstract class Swatch extends EnumEntry with Uncapitalised
+
+object Swatch extends PlayEnum[Swatch] {
+  case object Neutral extends Swatch
+  case object News extends Swatch
+  case object Opinion extends Swatch
+  case object Culture extends Swatch
+  case object Lifestyle extends Swatch
+  case object Sport extends Swatch
+  override def values = findValues
+}
+
+case class FrontPresentation(swatch: Swatch) {
+  implicit def frontPresentationFormat = Json.format[FrontPresentation]
+}
+
+object FrontPresentation {
+  implicit def frontPresentationFormat = Json.format[FrontPresentation]
+}
+
 case class CollectionPresentation()
 
 case class CapiPrefillQuery(queryString: String) extends AnyVal {
@@ -89,7 +111,14 @@ case class EditionsFrontSkeleton(
     presentation: FrontPresentation,
     hidden: Boolean,
     canRename: Boolean
-)
+) {
+  def metadata() = {
+    val metadataParam = new PGobject()
+    metadataParam.setType("jsonb")
+    metadataParam.setValue(Json.toJson(EditionsFrontMetadata(None, Some(presentation.swatch))).toString)
+    metadataParam
+  }
+}
 
 case class EditionsCollectionSkeleton(
     name: String,

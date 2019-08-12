@@ -1,12 +1,20 @@
 package model.editions
 
+import org.postgresql.util.PGobject
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
-case class EditionsFrontMetadata(nameOverride: Option[String])
-
 object EditionsFrontMetadata {
   implicit val format = Json.format[EditionsFrontMetadata]
+}
+
+case class EditionsFrontMetadata(nameOverride: Option[String], swatch: Option[Swatch]) {
+  def toPGobject: PGobject = {
+    val pgo = new PGobject()
+    pgo.setType("jsonb")
+    pgo.setValue(Json.toJson(this).toString())
+    pgo
+  }
 }
 
 case class EditionsFront(
