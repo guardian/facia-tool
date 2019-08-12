@@ -52,6 +52,7 @@ const selectOpenCollectionsForFront = (
   );
 };
 
+// this is arguably not a selector so could be moved to a utils file?
 const selectCollectionsWithArticles = (
   store: Store,
   openCollectionIds: string[],
