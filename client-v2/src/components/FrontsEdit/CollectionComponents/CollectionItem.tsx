@@ -26,7 +26,8 @@ import {
   ValidationResponse
 } from 'shared/util/validateImageSrc';
 import {
-  articleFragmentImageCriteria as imageCriteria,
+  articleFragmentImageCriteria,
+  editionsArticleFragmentImageCriteria,
   DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
   DRAG_DATA_GRID_IMAGE_URL
 } from 'constants/image';
@@ -41,6 +42,8 @@ import { bindActionCreators } from 'redux';
 import ArticleFragmentFormInline from '../ArticleFragmentFormInline';
 import { updateArticleFragmentMeta as updateArticleFragmentMetaAction } from 'actions/ArticleFragments';
 import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
+import { EditMode } from 'types/EditMode';
+import { selectEditMode } from 'selectors/pathSelectors';
 
 const imageDropTypes = [
   ...gridDropTypes,
@@ -75,6 +78,7 @@ type ArticleContainerProps = ContainerProps & {
   isFaded: boolean;
   displayInlineForm: boolean;
   numSupportingArticles: number;
+  editMode: EditMode;
 };
 
 class CollectionItem extends React.Component<ArticleContainerProps> {
@@ -214,6 +218,11 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       return;
     }
 
+    const isEditionsMode = this.props.editMode === 'editions';
+    const imageCriteria = isEditionsMode
+      ? editionsArticleFragmentImageCriteria
+      : articleFragmentImageCriteria;
+
     // Our drag contains Grid data
     validateImageEvent(e, this.props.frontId, imageCriteria)
       .then(imageData =>
@@ -239,7 +248,8 @@ const createMapStateToProps = () => {
         selectSharedState(state),
         'inline-form'
       ),
-      numSupportingArticles
+      numSupportingArticles,
+      editMode: selectEditMode(state)
     };
   };
 };
