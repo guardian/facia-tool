@@ -81,7 +81,7 @@ object ClientArticleMetadata {
 
       articleMetadata.mediaType.map(_ == MediaType.Hide),
 
-      articleMetadata.mediaType.map(_ == MediaType.Image),
+      articleMetadata.replaceImage.map(_ => mediaType == MediaType.Image),
       articleMetadata.replaceImage.map(_.src),
       articleMetadata.replaceImage.flatMap(_.height).map(_.toString),
       articleMetadata.replaceImage.flatMap(_.width).map(_.toString),
