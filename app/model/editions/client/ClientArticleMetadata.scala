@@ -13,6 +13,7 @@ case class ClientArticleMetadata (
   showQuotedHeadline: Option[Boolean],
   showByline: Option[Boolean],
   byline: Option[String],
+  sportScore: Option[String],
 
   imageHide: Option[Boolean],
 
@@ -27,27 +28,23 @@ case class ClientArticleMetadata (
   imageCutoutSrc: Option[String],
   imageCutoutSrcHeight: Option[String],
   imageCutoutSrcWidth: Option[String],
-  imageCutoutSrcOrigin: Option[String],
-
-  imageSlideshowReplace: Option[Boolean],
-  slideshow: Option[List[Image]]
+  imageCutoutSrcOrigin: Option[String]
 ) {
   def toArticleMetadata: ArticleMetadata = {
     val cutoutImage: Option[Image] = (imageCutoutSrcHeight, imageCutoutSrcWidth, imageCutoutSrc, imageCutoutSrcOrigin) match {
-      case (Some(height), Some(width), Some(src), Some(origin)) => Some(Image(height.toInt, width.toInt, origin, src))
+      case (height, width, Some(src), Some(origin)) => Some(Image(height.map(_.toInt), width.map(_.toInt), origin, src))
       case _ => None
     }
 
     val replaceImage: Option[Image] = (imageSrcHeight, imageSrcWidth, imageSrc, imageSrcOrigin, imageSrcThumb) match {
-      case (Some(height), Some(width), Some(src), Some(origin), Some(thumb)) => Some(Image(height.toInt, width.toInt, origin, src, Some(thumb)))
+      case (height, width, Some(src), Some(origin), Some(thumb)) => Some(Image(height.map(_.toInt), width.map(_.toInt), origin, src, Some(thumb)))
       case _ => None
     }
 
-    val imageOption = (imageHide, imageReplace, imageCutoutReplace, imageSlideshowReplace) match {
-      case (Some(true), _, _, _) => MediaType.Hide
-      case (_, Some(true), _, _) => MediaType.Image
-      case (_, _, Some(true), _) => MediaType.Cutout
-      case (_, _, _, Some(true)) => MediaType.Slideshow
+    val imageOption = (imageHide, imageReplace, imageCutoutReplace) match {
+      case (Some(true), _, _) => MediaType.Hide
+      case (_, Some(true), _) => MediaType.Image
+      case (_, _, Some(true)) => MediaType.Cutout
       case _ => MediaType.UseArticleTrail
     }
 
@@ -58,10 +55,10 @@ case class ClientArticleMetadata (
       showQuotedHeadline,
       showByline,
       byline,
+      sportScore,
       Some(imageOption),
       cutoutImage,
-      replaceImage,
-      slideshow
+      replaceImage
     )
   }
 }
@@ -80,24 +77,22 @@ object ClientArticleMetadata {
       articleMetadata.showQuotedHeadline,
       articleMetadata.showByline,
       articleMetadata.byline,
+      articleMetadata.sportScore,
 
       articleMetadata.mediaType.collect{ case MediaType.Hide => true },
 
       articleMetadata.replaceImage.map(_ => mediaType == MediaType.Image),
       articleMetadata.replaceImage.map(_.src),
-      articleMetadata.replaceImage.map(_.height.toString),
-      articleMetadata.replaceImage.map(_.width.toString),
+      articleMetadata.replaceImage.flatMap(_.height).map(_.toString),
+      articleMetadata.replaceImage.flatMap(_.width).map(_.toString),
       articleMetadata.replaceImage.map(_.origin),
       articleMetadata.replaceImage.flatMap(_.thumb),
 
-      articleMetadata.cutoutImage.map(_ => mediaType == MediaType.Cutout),
+      articleMetadata.mediaType.map(_ == MediaType.Cutout),
       articleMetadata.cutoutImage.map(_.src),
-      articleMetadata.cutoutImage.map(_.height.toString),
-      articleMetadata.cutoutImage.map(_.width.toString),
-      articleMetadata.cutoutImage.map(_.origin),
-
-      articleMetadata.slideshowImages.map(_ => mediaType == MediaType.Slideshow),
-      articleMetadata.slideshowImages
+      articleMetadata.cutoutImage.flatMap(_.height).map(_.toString),
+      articleMetadata.cutoutImage.flatMap(_.width).map(_.toString),
+      articleMetadata.cutoutImage.map(_.origin)
     )
   }
 }

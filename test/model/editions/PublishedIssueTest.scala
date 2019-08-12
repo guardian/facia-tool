@@ -30,13 +30,10 @@ class PublishedIssueTest extends FreeSpec with Matchers {
         Some(true),
         Some(true),
         Some("byline"),
+        Some("sport-score"),
         Some(MediaType.Image),
         None,
-        Some(Image(100, 100, "file://image-1.gif", "file://image-1.jpg")),
-        Some(List(
-          Image(100, 100, "file://image-2.gif", "file://image-2.jpg"),
-          Image(100, 100, "file://image-3.gif", "file://image-3.jpg")
-        ))
+        Some(Image(Some(100), Some(100), "file://image-1.gif", "file://image-1.jpg"))
       )
       val article = EditionsArticle("123456", 0, Some(furniture))
       val published = article.toPublishedArticle
@@ -49,8 +46,8 @@ class PublishedIssueTest extends FreeSpec with Matchers {
         showByline = true,
         showQuotedHeadline = true,
         mediaType = PublishedMediaType.Image,
-        imageSrcOverride = Some(PublishedImage(100, 100, "file://image-1.jpg")),
-        slideshowImages = None
+        imageSrcOverride = Some(PublishedImage(Some(100), Some(100), "file://image-1.jpg")),
+        sportScore = Some("sport-score")
       )
     }
   }

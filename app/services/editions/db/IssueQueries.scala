@@ -4,6 +4,7 @@ import java.time.{LocalDate, OffsetDateTime}
 
 import com.gu.pandomainauth.model.User
 import model.editions._
+import play.api.libs.json.Json
 import scalikejdbc._
 import services.editions.{DbEditionsArticle, DbEditionsCollection, DbEditionsFront}
 import services.editions.CollectionsHelpers._
@@ -60,14 +61,15 @@ trait IssueQueries {
           RETURNING id;
           """.map(_.string("id")).single().apply().get
 
-          collection.items.zipWithIndex.foreach { case (pageCode, tIndex) =>
+          collection.items.zipWithIndex.foreach { case (article, tIndex) =>
               sql"""
                     INSERT INTO articles (
                     collection_id,
                     page_code,
                     index,
-                    added_on
-                    ) VALUES ($collectionId, $pageCode, $tIndex, $truncatedNow)
+                    added_on,
+                    metadata
+                    ) VALUES ($collectionId, ${article.pageCode}, $tIndex, $truncatedNow, ${Json.toJson(article.metadata).toString}::JSONB)
                  """.execute().apply()
           }
         }

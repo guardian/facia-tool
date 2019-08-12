@@ -4,8 +4,8 @@ import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
 case class Image (
-  height: Int,
-  width: Int,
+  height: Option[Int],
+  width: Option[Int],
   origin: String,
   src: String,
   thumb: Option[String] = None
@@ -24,17 +24,19 @@ case class ArticleMetadata (
   showQuotedHeadline: Option[Boolean],
   showByline: Option[Boolean],
   byline: Option[String],
+  sportScore: Option[String],
 
   mediaType: Option[MediaType],
 
   // keep overrides even if not used so user can switch back w/out needing to re-crop
   cutoutImage: Option[Image],
-  replaceImage: Option[Image],
-  slideshowImages: Option[List[Image]]
+  replaceImage: Option[Image]
 )
 
 object ArticleMetadata {
   implicit val format = Json.format[ArticleMetadata]
+
+  val default = ArticleMetadata(None, None, None, None, None, None, None, None, None, None)
 }
 
 case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[ArticleMetadata]) {
@@ -43,13 +45,6 @@ case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[Art
       meta.mediaType match {
         case Some(MediaType.Image) => meta.replaceImage.map(_.toPublishedImage)
         case Some(MediaType.Cutout) => meta.cutoutImage.map(_.toPublishedImage)
-        case _ => None
-      }
-    })
-
-    val slideshowImages: Option[List[PublishedImage]] = metadata.flatMap(meta => {
-      meta.mediaType match {
-        case Some(MediaType.Slideshow) => meta.slideshowImages.map(_.map(_.toPublishedImage))
         case _ => None
       }
     })
@@ -65,7 +60,7 @@ case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[Art
         showQuotedHeadline = metadata.flatMap(_.showQuotedHeadline).getOrElse(false),
         mediaType = metadata.flatMap(_.mediaType).map(_.toPublishedMediaType).getOrElse(PublishedMediaType.UseArticleTrail),
         imageSrcOverride = imageSrcOverride,
-        slideshowImages = slideshowImages
+        sportScore = metadata.flatMap(_.sportScore)
       )
     )
   }

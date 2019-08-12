@@ -156,7 +156,8 @@ const createSelectArticleFromArticleFragment = () =>
         firstPublicationDate: externalArticle
           ? externalArticle.fields.firstPublicationDate
           : undefined,
-        frontPublicationDate: articleFragment.frontPublicationDate
+        frontPublicationDate: articleFragment.frontPublicationDate,
+        tone: externalArticle ? externalArticle.frontsMeta.tone : undefined
       };
     }
   );

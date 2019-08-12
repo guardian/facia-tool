@@ -189,3 +189,8 @@ We already handle all of our persistence calls for collections in one place -- t
 - Ensure that the latest changes to collections are always persisted for a single client
 - Keep the number of calls to the server low, especially important if we're chaining calls
 
+### Normalise on the server
+
+At the moment, we normalise on the client. This introduces a degree of complexity to the client-side code that, although well encapsulated, seems an unnecessary concern for the client domain -- better to have the server pass data in an ideal format and handle the details of modelling for the persistence domain.
+
+In normalising on the server, we have an additional advantage -- if the persistence model changes, for example if in the future we move to an RDS to store collection data, we can swap out the models without disturbing the client, avoiding concerns with overlapping versions etc.

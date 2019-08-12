@@ -14,7 +14,7 @@ type CollectionItemSets = 'draft' | 'live' | 'previously';
 type Stages = 'draft' | 'live';
 
 type CollectionItemTypes = 'SNAP_LINK' | 'ARTICLE';
-type CollectionItemSizes = 'default' | 'small';
+type CollectionItemSizes = 'default' | 'medium' | 'small';
 
 interface NestedArticleFragmentRootFields {
   id: string;
@@ -34,6 +34,7 @@ interface ArticleFragmentRootMeta {
   headline?: string;
   trailText?: string;
   byline?: string;
+  sportScore?: string;
   customKicker?: string;
   href?: string;
   imageSrc?: string;

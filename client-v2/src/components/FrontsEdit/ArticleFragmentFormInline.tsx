@@ -42,7 +42,6 @@ import { CapiFields } from 'util/form';
 import { Dispatch } from 'types/Store';
 import { articleFragmentImageCriteria as imageCriteria } from 'constants/image';
 import { selectors as collectionSelectors } from 'shared/bundles/collectionsBundle';
-import HideableFormSection from 'shared/components/layout/HideableFormSection';
 import { getContributorImage } from 'util/CAPIUtils';
 
 interface ComponentProps extends ContainerProps {
@@ -215,7 +214,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       imageReplace,
       imageCutoutReplace,
       cutoutImage,
-      imageSlideshowReplace
+      imageSlideshowReplace,
+      isBreaking
     } = this.props;
 
     const getKickerContents = () => {
@@ -289,6 +289,12 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               name="customKicker"
               label="Kicker"
               component={InputText}
+              disabled={isBreaking}
+              title={
+                isBreaking
+                  ? "You cannot edit the kicker if the 'Breaking News' toggle is set."
+                  : ''
+              }
               labelContent={
                 hasKickerSuggestions ? (
                   <KickerSuggestionsContainer>
@@ -392,15 +398,22 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 originalValue={articleCapiFieldValues.byline}
               />
             )}
-            <HideableFormSection label="Trail text">
-              <ConditionalField
-                permittedFields={editableFields}
-                name="trailText"
-                component={InputTextArea}
-                placeholder={articleCapiFieldValues.trailText}
-                originalValue={articleCapiFieldValues.trailText}
-              />
-            </HideableFormSection>
+            <ConditionalField
+              permittedFields={editableFields}
+              name="trailText"
+              component={InputTextArea}
+              placeholder={articleCapiFieldValues.trailText}
+              originalValue={articleCapiFieldValues.trailText}
+              label="Trail text"
+            />
+            <ConditionalField
+              permittedFields={editableFields}
+              name="sportScore"
+              label="Sport Score"
+              component={InputText}
+              placeholder=""
+              originalValue={''}
+            />
           </InputGroup>
           <RowContainer>
             <Row>
@@ -589,6 +602,7 @@ interface ContainerProps {
   showKickerSection: boolean;
   articleCapiFieldValues: CapiFields;
   imageReplace: boolean;
+  isBreaking: boolean;
 }
 
 interface InterfaceProps {
@@ -658,6 +672,7 @@ const createMapStateToProps = () => {
       showByline: valueSelector(state, 'showByline'),
       showKickerTag: valueSelector(state, 'showKickerTag'),
       showKickerSection: valueSelector(state, 'showKickerSection'),
+      isBreaking: valueSelector(state, 'isBreaking'),
       cutoutImage: externalArticle
         ? getContributorImage(externalArticle)
         : undefined

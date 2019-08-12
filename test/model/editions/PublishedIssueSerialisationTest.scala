@@ -74,15 +74,7 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
             |      "width" : 720,
             |      "src" : "https://media.giphy.com/media/yV5iknckcXcc/source.gif"
             |    },
-            |    "slideshowImages" : [ {
-            |      "height" : 1280,
-            |      "width" : 720,
-            |      "src" : "https://media.giphy.com/media/TLulTJKuyLgMU/source.gif"
-            |    }, {
-            |      "height" : 1280,
-            |      "width" : 720,
-            |      "src" : "https://media.giphy.com/media/GuWSJPF6bEkKs/source.gif"
-            |    } ]
+            |    "sportScore" : "Sport Score"
             |  }
             |}""".stripMargin
 
@@ -91,16 +83,13 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
           headlineOverride = Some("a nice headline"),
           trailTextOverride = Some("an even lovelier trail for the article"),
           bylineOverride = Some("Monkey In Charge"),
+          sportScore = Some("Sport Score"),
           showByline = true,
           showQuotedHeadline = false,
           mediaType = PublishedMediaType.Cutout,
           imageSrcOverride = Some(
-            PublishedImage(height = 1280, width = 720, "https://media.giphy.com/media/yV5iknckcXcc/source.gif")
-          ),
-          slideshowImages = Some(List(
-            PublishedImage(height = 1280, width = 720, "https://media.giphy.com/media/TLulTJKuyLgMU/source.gif"),
-            PublishedImage(height = 1280, width = 720, "https://media.giphy.com/media/GuWSJPF6bEkKs/source.gif")
-          ))
+            PublishedImage(height = Some(1280), width = Some(720), "https://media.giphy.com/media/yV5iknckcXcc/source.gif")
+          )
         ))
 
         val json = Json.prettyPrint(Json.toJson(article))

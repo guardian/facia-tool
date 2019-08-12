@@ -8,7 +8,7 @@ import BasePlaceholder from '../BasePlaceholder';
 import { getPillarColor } from 'shared/util/getPillarColor';
 import CollectionItemMetaContainer from '../collectionItem/CollectionItemMetaContainer';
 import CollectionItemContent from '../collectionItem/CollectionItemContent';
-import { notLiveLabels } from 'constants/fronts';
+import { notLiveLabels, liveBlogTones } from 'constants/fronts';
 import TextPlaceholder from 'shared/components/TextPlaceholder';
 import { ThumbnailSmall, ThumbnailCutout } from '../Thumbnail';
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
@@ -86,6 +86,10 @@ const ArticleHeadingContainerWrapper = styled('div')`
   padding: 0 0 0 4px;
 `;
 
+const Tone = styled('span')`
+  font-weight: normal;
+`;
+
 interface ArticleBodyProps {
   newspaperEditionDate?: string;
   firstPublicationDate?: string;
@@ -120,6 +124,7 @@ interface ArticleBodyProps {
   canDragImage?: boolean;
   isDraggingImageOver: boolean;
   isBoosted?: boolean;
+  tone?: string | undefined;
 }
 
 const articleBodyDefault = React.memo(
@@ -155,7 +160,8 @@ const articleBodyDefault = React.memo(
     showMeta = true,
     canDragImage = true,
     isDraggingImageOver,
-    isBoosted
+    isBoosted,
+    tone
   }: ArticleBodyProps) => {
     const ArticleHeadingContainer =
       size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
@@ -165,16 +171,25 @@ const articleBodyDefault = React.memo(
     return (
       <>
         {showMeta && (
-          <CollectionItemMetaContainer>
+          <CollectionItemMetaContainer size={size}>
             {displayPlaceholders && (
               <>
                 <TextPlaceholder data-testid="loading-placeholder" />
-                {size === 'default' && <TextPlaceholder width={25} />}
+                {size !== 'small' && <TextPlaceholder width={25} />}
               </>
             )}
-            {size === 'default' && isLive && (
-              <CollectionItemMetaHeading>
+            {size !== 'small' && isLive && (
+              <CollectionItemMetaHeading
+                style={{
+                  color: getPillarColor(
+                    pillarId,
+                    isLive,
+                    tone === liveBlogTones.dead
+                  )
+                }}
+              >
                 {startCase(sectionName)}
+                <Tone> / {startCase(tone)}</Tone>
               </CollectionItemMetaHeading>
             )}
             {type === 'liveblog' && (
@@ -239,7 +254,7 @@ const articleBodyDefault = React.memo(
               {displayPlaceholders && (
                 <>
                   <TextPlaceholder />
-                  {size === 'default' && <TextPlaceholder width={25} />}
+                  {size !== 'small' && <TextPlaceholder width={25} />}
                 </>
               )}
               {kicker && (
@@ -255,7 +270,6 @@ const articleBodyDefault = React.memo(
                 html
                 data-testid="headline"
                 displaySize={size}
-                showLargeHeadline={showLargeHeadline}
               >
                 {headline}
               </CollectionItemHeading>
@@ -263,7 +277,7 @@ const articleBodyDefault = React.memo(
             {displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
           </ArticleHeadingContainerWrapper>
         </CollectionItemContent>
-        {size === 'default' &&
+        {size !== 'small' &&
           (displayPlaceholders ? (
             <ThumbnailPlaceholder />
           ) : (

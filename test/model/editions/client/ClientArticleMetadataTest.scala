@@ -33,7 +33,6 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
       clientArticleMetadata.imageHide shouldBe None
       clientArticleMetadata.imageReplace shouldBe None
       clientArticleMetadata.imageCutoutReplace shouldBe None
-      clientArticleMetadata.imageSlideshowReplace shouldBe None
     }
 
     "should persist cutout image when selected override is hide image" in {
@@ -44,9 +43,9 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         None,
         None,
         None,
-        Some(MediaType.Hide),
-        Some(Image(100, 100, "file://origin-new-pokemon.gif", "file://new-pokemon.gif")),
         None,
+        Some(MediaType.Hide),
+        Some(Image(Some(100), Some(100), "file://origin-new-pokemon.gif", "file://new-pokemon.gif")),
         None
       )
 
@@ -64,7 +63,6 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
       clientArticleMetadata.imageCutoutSrcWidth shouldBe Some("100")
 
       clientArticleMetadata.imageReplace shouldBe None
-      clientArticleMetadata.imageSlideshowReplace shouldBe None
     }
 
     "should persist slideshow images when selected override is replace image" in {
@@ -75,13 +73,10 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         None,
         None,
         None,
+        None,
         Some(MediaType.Image),
         None,
-        Some(Image(100, 100, "file://elephant.jpg", "file://elephant.png")),
-        Some(List(
-          Image(100, 100, "file://elephant-playing-in-mud.jpg", "file://elephant-playing-in-mud.png"),
-          Image(100, 100, "file://elephant-spraying-water.jpg", "file://elephant-spraying-water.png")
-        ))
+        Some(Image(Some(100), Some(100), "file://elephant.jpg", "file://elephant.png")),
       )
 
       val clientArticleMetadata = ClientArticleMetadata.fromArticleMetadata(articleMetadata)
@@ -96,12 +91,6 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
       clientArticleMetadata.imageSrcWidth shouldBe Some("100")
 
       clientArticleMetadata.imageHide shouldBe None
-
-      clientArticleMetadata.imageSlideshowReplace shouldBe Some(false)
-      clientArticleMetadata.slideshow shouldBe Some(List(
-        Image(100, 100, "file://elephant-playing-in-mud.jpg", "file://elephant-playing-in-mud.png"),
-        Image(100, 100, "file://elephant-spraying-water.jpg", "file://elephant-spraying-water.png")
-      ))
     }
 
     "should only set an image override boolean if its fields are also set" in {
@@ -112,8 +101,8 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         None,
         None,
         None,
-        Some(MediaType.Image),
         None,
+        Some(MediaType.Image),
         None,
         None
       )
@@ -122,12 +111,32 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
 
       clientArticleMetadata.imageReplace shouldBe None
     }
+
+    "should explicitly set cutout to false if media type is set but not to a cutout" in {
+      val articleMetadata = ArticleMetadata(
+        Some("Teenage Mutant Ninja Turtles"),
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        Some(MediaType.UseArticleTrail),
+        None,
+        None
+      )
+
+      val clientArticleMetadata = ClientArticleMetadata.fromArticleMetadata(articleMetadata)
+
+      clientArticleMetadata.imageCutoutReplace shouldBe Some(false)
+    }
   }
 
   "ClientArticleMetadata to ArticleMetadata" - {
     "should convert into ArticleMetadata with multiple image overrides" in {
       val cam = ClientArticleMetadata(
         Some("New Harry Potter book being written"),
+        None,
         None,
         None,
         None,
@@ -145,9 +154,7 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         Some("file://broom.jpg"),
         Some("100"),
         Some("100"),
-        Some("file://broom.gif"),
-        None,
-        None
+        Some("file://broom.gif")
       )
 
       val articleMetadata = cam.toArticleMetadata
@@ -158,16 +165,16 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
       articleMetadata.mediaType.isDefined shouldBe true
       articleMetadata.mediaType.get shouldBe MediaType.Image
       articleMetadata.replaceImage shouldBe Some(Image(
-        100,
-        100,
+        Some(100),
+        Some(100),
         "file://lightning.gif",
         "file://lightning.jpg",
         Some("file://lightning.png")
       ))
 
       articleMetadata.cutoutImage shouldBe Some(Image(
-        100,
-        100,
+        Some(100),
+        Some(100),
         "file://broom.gif",
         "file://broom.jpg"
       ))

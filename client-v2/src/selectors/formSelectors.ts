@@ -8,6 +8,7 @@ import { hasMainVideo } from 'shared/util/derivedArticle';
 import { isCollectionConfigDynamic } from '../util/frontsUtils';
 import { createSelector } from 'reselect';
 import { State } from 'types/State';
+import { selectEditMode } from './pathSelectors';
 
 export const defaultFields = [
   'headline',
@@ -57,7 +58,8 @@ export const createSelectFormFieldsForCollectionItem = () => {
     selectDerivedArticleFromRootState,
     selectParentCollectionConfig,
     selectIsSupporting,
-    (derivedArticle, parentCollectionConfig, isSupporting) => {
+    selectEditMode,
+    (derivedArticle, parentCollectionConfig, isSupporting, editMode) => {
       if (!derivedArticle) {
         return [];
       }
@@ -75,7 +77,19 @@ export const createSelectFormFieldsForCollectionItem = () => {
       if (hasMainVideo(derivedArticle)) {
         fields.push('showMainVideo');
       }
-      return fields;
+
+      if (editMode === 'editions') {
+        if (
+          derivedArticle.sectionName === 'Sport' ||
+          derivedArticle.sectionName === 'Football'
+        ) {
+          fields.push('sportScore');
+        }
+
+        return fields.filter(_ => _ !== 'imageSlideshowReplace');
+      } else {
+        return fields;
+      }
     }
   );
 };

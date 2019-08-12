@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import Modal from 'react-modal';
 import { State } from 'types/State';
 import {
   selectConfirmModalIsOpen,
   selectConfirmModalTitle,
-  selectConfirmModalDescription
+  selectConfirmModalDescription,
+  selectConfirmModalShowCancelButton
 } from 'selectors/confirmModalSelectors';
 import { Dispatch } from 'types/Store';
 import { endConfirmModal } from 'actions/ConfirmModal';
@@ -40,10 +41,11 @@ const Actions = styled.div`
 
 interface ConfirmModalProps {
   title: string;
-  description: string;
+  description: string | ReactNode;
   isOpen: boolean;
   onAccept: () => void;
   onReject: () => void;
+  showCancelButton: boolean;
 }
 
 const ConfirmModal = ({
@@ -51,7 +53,8 @@ const ConfirmModal = ({
   description,
   isOpen,
   onAccept,
-  onReject
+  onReject,
+  showCancelButton
 }: ConfirmModalProps) => (
   <StyledModal
     style={{
@@ -64,11 +67,14 @@ const ConfirmModal = ({
     onRequestClose={onReject}
   >
     <h1>{title}</h1>
-    {description && <p>{description}</p>}
+    {description &&
+      (typeof description === 'string' ? <p>{description}</p> : description)}
     <Actions>
-      <ButtonDefault size="l" inline onClick={onReject}>
-        Cancel
-      </ButtonDefault>
+      {showCancelButton && (
+        <ButtonDefault size="l" inline onClick={onReject}>
+          Cancel
+        </ButtonDefault>
+      )}
       <ButtonDefault size="l" inline priority="primary" onClick={onAccept}>
         Proceed
       </ButtonDefault>
@@ -79,7 +85,8 @@ const ConfirmModal = ({
 const mapStateToProps = (state: State) => ({
   isOpen: selectConfirmModalIsOpen(state),
   title: selectConfirmModalTitle(state),
-  description: selectConfirmModalDescription(state)
+  description: selectConfirmModalDescription(state),
+  showCancelButton: selectConfirmModalShowCancelButton(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
