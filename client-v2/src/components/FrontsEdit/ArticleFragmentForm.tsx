@@ -192,6 +192,17 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
     const isEditionsMode = editMode === 'editions';
 
+    const setCustomKicker = (customKickerValue: string) => {
+      change('customKicker', customKickerValue);
+      change('showKickerCustom', true);
+
+      // kicker suggestions now set the value of `customKicker` rather than set a flag
+      // set the old flags to false
+      ['showKickerTag', 'showKickerSection'].forEach(field =>
+        change(field, false)
+      );
+    };
+
     return (
       <FormContainer onSubmit={handleSubmit} data-testid="edit-form">
         <CollectionHeadingPinline>
@@ -238,11 +249,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 return value;
               }}
               onChange={e => {
-                change('showKickerCustom', true);
-                change('showKickerTag', false);
-                change('showKickerSection', false);
                 if (e) {
-                  change('customKicker', e.target.value);
+                  setCustomKicker(e.target.value);
                 }
               }}
             />
@@ -258,15 +266,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                   buttonText={kickerOptions.webTitle}
                   selected={showKickerTag}
                   size="s"
-                  onClick={() => {
-                    if (!showKickerTag) {
-                      change('showKickerTag', true);
-                      change('showKickerSection', false);
-                      change('showKickerCustom', false);
-                    } else {
-                      change('showKickerTag', false);
-                    }
-                  }}
+                  onClick={() => setCustomKicker(kickerOptions.webTitle!)}
                 />
               )}{' '}
               {kickerOptions.sectionName && (
@@ -277,15 +277,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                   selected={showKickerSection}
                   size="s"
                   buttonText={kickerOptions.sectionName}
-                  onClick={() => {
-                    if (!showKickerSection) {
-                      change('showKickerSection', true);
-                      change('showKickerTag', false);
-                      change('showKickerCustom', false);
-                    } else {
-                      change('showKickerSection', false);
-                    }
-                  }}
+                  onClick={() => setCustomKicker(kickerOptions.sectionName!)}
                 />
               )}
             </ConditionalComponent>
