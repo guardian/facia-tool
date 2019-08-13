@@ -37,7 +37,7 @@ const getPageViewData = (
         });
       });
     } catch (e) {
-      console.log('API request to fetch page view data failed', e);
+      throw new Error(`API request to Ophan for page view data failed: ${e}`);
     }
   };
 };
