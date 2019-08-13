@@ -154,5 +154,41 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       publishedFront.collections.size shouldBe 3
       publishedFront.collections.find(_.id == "special") shouldBe None
     }
+
+    "Fronts should not override name if there's not one defined" in {
+      val front = EditionsFront(
+        "id",
+        "Original Name",
+        0,
+        false,
+        false,
+        None,
+        None,
+        None,
+        Some(EditionsFrontMetadata(None, None)),
+        Nil)
+
+      val published = front.toPublishedFront
+
+      published shouldBe Some(PublishedFront("id", "Original Name", Nil))
+    }
+
+    "Fronts should override name correctly" in {
+      val front = EditionsFront(
+        "id",
+        "Original Name",
+        0,
+        false,
+        false,
+        None,
+        None,
+        None,
+        Some(EditionsFrontMetadata(Some("New Name"), None)),
+        Nil)
+
+      val published = front.toPublishedFront
+
+      published shouldBe Some(PublishedFront("id", "New Name", Nil))
+    }
   }
 }

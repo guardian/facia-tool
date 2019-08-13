@@ -5,7 +5,7 @@ import scalikejdbc._
 import play.api.libs.json._
 
 trait FrontsQueries {
-  def updateFrontMetadata(id: String, metadata: EditionsFrontMetadata): Boolean = DB localTx { implicit session =>
+  def updateFrontMetadata(id: String, metadata: EditionsFrontMetadata): Option[EditionsFrontMetadata] = DB localTx { implicit session =>
     sql"""
           UPDATE fronts
           SET metadata = ${metadata.toPGobject}
@@ -36,16 +36,4 @@ trait FrontsQueries {
       }).single().apply().get
     Json.fromJson[EditionsFrontMetadata](Json.parse(rawJson)).get
   }
-
-  def mergeFrontMetadata(id: String, metadata: EditionsFrontMetadata): Boolean = DB localTx { implicit session =>
-    val original = getFrontMetadata(id)
-    val mergedMetadata = mergeMetadatas(metadata, original)
-    updateFrontMetadata(id, mergedMetadata)
-
-  }
-
-  def mergeMetadatas(additionalMetadata: EditionsFrontMetadata, originalMetadata: EditionsFrontMetadata): EditionsFrontMetadata = {
-    Json.fromJson[EditionsFrontMetadata](Json.toJson(originalMetadata).as[JsObject] ++ Json.toJson(additionalMetadata).as[JsObject]).get
-  }
-
 }

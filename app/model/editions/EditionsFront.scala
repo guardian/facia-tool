@@ -32,7 +32,7 @@ case class EditionsFront(
   def toPublishedFront: PublishedFront = {
     PublishedFront(
       id,
-      displayName,
+      metadata.flatMap(_.nameOverride).getOrElse(displayName),
       collections.filterNot(_.isHidden).map(_.toPublishedCollection)
     )
   }
