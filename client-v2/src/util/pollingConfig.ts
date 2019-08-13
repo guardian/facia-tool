@@ -2,8 +2,6 @@ import { fetchStaleOpenCollections } from 'actions/Collections';
 import { Dispatch } from 'types/Store';
 import { Store } from 'types/Store';
 import { selectPriority } from 'selectors/pathSelectors';
-import { matchFrontsEditPath, matchIssuePath } from 'routes/routes';
-import { selectV2SubPath } from 'selectors/pathSelectors';
 import {
   selectCollectionsWithArticles,
   selectOpenCollectionsForFront
