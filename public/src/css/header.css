@@ -12,7 +12,7 @@ header {
     background: #ffffff;
     border-bottom: 1px solid #dcdcdc;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     flex: 0 0 50px;
 }
 
@@ -53,7 +53,8 @@ main {
 }
 
 .header__logo {
-    flex: 1;
+    flex: auto 0 1;
+    padding-right: 10px;
 }
 
 .header__logo-link {
@@ -180,4 +181,16 @@ main {
 
 .dropdown__trigger__icon {
     margin-left: 7px;
+}
+
+.header__group.v2-popup {
+    flex: auto 1 1;
+    color: red;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+ .header__group.v2-popup a {
+    color: red;
+    text-decoration: underline;
 }
