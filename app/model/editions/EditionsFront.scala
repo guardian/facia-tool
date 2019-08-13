@@ -29,15 +29,12 @@ case class EditionsFront(
     metadata: Option[EditionsFrontMetadata],
     collections: List[EditionsCollection]
 ) {
-  def toPublishedFront: Option[PublishedFront] = {
-    if (isHidden)
-      None
-    else
-      Some(PublishedFront(
-        id,
-        displayName,
-        collections.map(_.toPublishedCollection)
-      ))
+  def toPublishedFront: PublishedFront = {
+    PublishedFront(
+      id,
+      displayName,
+      collections.filterNot(_.isHidden).map(_.toPublishedCollection)
+    )
   }
 }
 
