@@ -170,10 +170,10 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
 
       val published = front.toPublishedFront
 
-      published shouldBe Some(PublishedFront("id", "Original Name", Nil))
+      published shouldBe PublishedFront("id", "Original Name", Nil)
     }
 
-    "Fronts should override name correctly" in {
+    "Front name should be overriden correctly" in {
       val front = EditionsFront(
         "id",
         "Original Name",
@@ -188,7 +188,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
 
       val published = front.toPublishedFront
 
-      published shouldBe Some(PublishedFront("id", "New Name", Nil))
+      published shouldBe PublishedFront("id", "New Name", Nil)
     }
   }
 }
