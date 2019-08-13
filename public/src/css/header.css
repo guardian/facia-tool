@@ -12,7 +12,7 @@ header {
     background: #ffffff;
     border-bottom: 1px solid #dcdcdc;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     flex: 0 0 50px;
 }
 
@@ -53,7 +53,8 @@ main {
 }
 
 .header__logo {
-    flex: 1;
+    flex: auto 0 1;
+    padding-right: 10px;
 }
 
 .header__logo-link {
@@ -76,7 +77,7 @@ main {
     margin: 0;
     width: 100%;
     outline: none;
-    background-color: #FFF;
+    background-color: #fff;
     line-height: 49px;
     height: 49px;
     font-size: 12px;
@@ -138,14 +139,14 @@ main {
 }
 .topAction__dropdown .dropdown__item {
     margin-bottom: 0;
-    border: 1px solid #DCDCDC;
+    border: 1px solid #dcdcdc;
     border-top: 0;
     display: block;
     padding: 1em 0.5em;
-    background-color: #FFF;
+    background-color: #fff;
 }
 .topAction__dropdown .dropdown__item:hover {
-    background-color: #F0F0F0;
+    background-color: #f0f0f0;
 }
 
 .updating {
@@ -167,11 +168,11 @@ main {
 }
 
 .secondary-action__button:hover {
-    background-color: #DCDCDC;
+    background-color: #dcdcdc;
 }
 
 .action__save {
-    background-color: #EF5350;
+    background-color: #ef5350;
 }
 
 .action__save:hover {
@@ -180,4 +181,17 @@ main {
 
 .dropdown__trigger__icon {
     margin-left: 7px;
+}
+
+.header__group.v2-popup {
+    flex: auto 1 1;
+    color: red;
+    padding-left: 10px;
+    padding-right: 10px;
+    justify-self: flex-start;
+}
+
+.header__group.v2-popup a {
+    color: red;
+    text-decoration: underline;
 }
