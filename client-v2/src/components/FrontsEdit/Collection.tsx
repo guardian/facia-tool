@@ -201,7 +201,7 @@ class CollectionContext extends React.Component<
                         parentId={group.uuid}
                         isUneditable={isUneditable}
                         size={size}
-                        canShowPageViewData={true} // should this be hardcoded here or set in a variable !!!!
+                        canShowPageViewData={true}
                         getNodeProps={() => getAfNodeProps(isUneditable)}
                         onSelect={() =>
                           selectArticleFragment(articleFragment.uuid, false)

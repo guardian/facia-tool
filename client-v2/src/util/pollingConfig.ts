@@ -2,10 +2,8 @@ import { fetchStaleOpenCollections } from 'actions/Collections';
 import { Dispatch } from 'types/Store';
 import { Store } from 'types/Store';
 import { selectPriority } from 'selectors/pathSelectors';
-import {
-  selectCollectionsWithArticles,
-  selectOpenCollectionsForFront
-} from '../redux/modules/pageViewData/selectors';
+import { selectOpenCollectionsForFront } from '../redux/modules/pageViewData/selectors';
+import { retrieveCollectionsWithTheirArticles } from '../redux/modules/pageViewData/utils';
 import { getPageViewData } from '../redux/modules/pageViewData/actions';
 import { CollectionWithArticles } from 'shared/types/PageViewData';
 
@@ -42,7 +40,7 @@ export default (store: Store) =>
         const browsingStage = store.getState().editor.frontIdsByBrowsingStage[
           front.frontId
         ];
-        const collectionsWithArticles: CollectionWithArticles[] = selectCollectionsWithArticles(
+        const collectionsWithArticles: CollectionWithArticles[] = retrieveCollectionsWithTheirArticles(
           store,
           openCollections,
           browsingStage
