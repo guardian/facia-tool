@@ -32,12 +32,16 @@ case class EditionsFront(
   def toPublishedFront: Option[PublishedFront] = {
     if (isHidden)
       None
-    else
+    else {
+      val name = metadata.collect { case EditionsFrontMetadata(Some(overrideName), _) => overrideName }.getOrElse(displayName)
+      val swatch = metadata.collect { case EditionsFrontMetadata(_, Some(swatch)) => swatch }.getOrElse(Swatch.Neutral)
       Some(PublishedFront(
         id,
-        displayName,
-        collections.map(_.toPublishedCollection)
+        name,
+        collections.map(_.toPublishedCollection),
+        swatch
       ))
+    }
   }
 }
 
