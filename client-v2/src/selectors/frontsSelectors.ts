@@ -9,6 +9,7 @@ import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
 import { CollectionItemSets, Stages } from 'shared/types/Collection';
 import {
   createSelectArticlesInCollection,
+  createSelectCollection,
   selectSharedState
 } from 'shared/selectors/shared';
 import { createShallowEqualResultSelector } from 'shared/util/selectorUtils';
@@ -126,6 +127,18 @@ const selectCollectionConfig = (state: State, id: string): CollectionConfig =>
 
 const selectCollectionHasPrefill = (state: State, id: string): boolean =>
   !!(selectCollectionConfig(state, id) || { prefill: undefined }).prefill;
+
+const selectCollection = createSelectCollection();
+
+const selectCollectionIsHidden = (
+  state: State,
+  collectionId: string
+): boolean => {
+  const collection = selectCollection(selectSharedState(state), {
+    collectionId
+  });
+  return !!collection && !!collection.isHidden;
+};
 
 const selectFrontsIds = createSelector(
   [selectFronts],
@@ -344,6 +357,7 @@ export {
   selectFronts,
   selectCollectionConfig,
   selectCollectionHasPrefill,
+  selectCollectionIsHidden,
   selectFrontsConfig,
   selectCollectionConfigs,
   selectFrontsIds,

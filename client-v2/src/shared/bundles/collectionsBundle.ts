@@ -1,6 +1,13 @@
 import { State as SharedState } from '../types/State';
-import createAsyncResourceBundle from 'lib/createAsyncResourceBundle';
+import createAsyncResourceBundle, {
+  State,
+  Actions
+} from 'lib/createAsyncResourceBundle';
 import { Collection } from 'shared/types/Collection';
+import { addPersistMetaToAction } from '../../util/action';
+import set from 'lodash/fp/set';
+
+const collectionsEntityName = 'collections';
 
 const {
   actions,
@@ -8,7 +15,9 @@ const {
   reducer,
   selectors,
   initialState
-} = createAsyncResourceBundle<Collection>('collections', { indexById: true });
+} = createAsyncResourceBundle<Collection>(collectionsEntityName, {
+  indexById: true
+});
 
 const collectionSelectors = {
   ...selectors,
@@ -49,10 +58,59 @@ const collectionSelectors = {
   }
 };
 
+const SET_HIDDEN = 'SET_HIDDEN' as 'SET_HIDDEN';
+
+const setHidden = (collectionId: string, isHidden: boolean) => ({
+  entity: collectionsEntityName,
+  type: SET_HIDDEN,
+  payload: {
+    collectionId,
+    isHidden
+  }
+});
+
+const setHiddenAndPersist = addPersistMetaToAction(setHidden, {
+  persistTo: 'collection',
+  key: 'collectionId',
+  entity: 'collection'
+});
+
+export type SetHidden = ReturnType<typeof setHidden>;
+
+const collectionActions = {
+  ...actions,
+  setHiddenAndPersist
+};
+
+type CollectionActions = Actions<Collection> | SetHidden;
+
+const collectionReducer = (
+  state: State<Collection>,
+  action: CollectionActions
+): State<Collection> => {
+  const updatedState = reducer(state, action);
+  switch (action.type) {
+    case SET_HIDDEN: {
+      if (!updatedState.data[action.payload.collectionId]) {
+        return updatedState;
+      }
+
+      return set(
+        ['data', action.payload.collectionId, 'isHidden'],
+        action.payload.isHidden,
+        updatedState
+      );
+    }
+    default: {
+      return updatedState;
+    }
+  }
+};
+
 export {
-  actions,
+  collectionActions as actions,
   actionNames,
   collectionSelectors as selectors,
-  reducer,
+  collectionReducer as reducer,
   initialState
 };

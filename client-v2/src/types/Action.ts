@@ -41,6 +41,7 @@ import {
 import { setFocusState, resetFocusState } from '../bundles/focusBundle';
 import { ActionSetFeatureValue } from 'shared/redux/modules/featureSwitches';
 import { ReactNode } from 'react';
+import { SetHidden } from '../shared/bundles/collectionsBundle';
 
 interface EditorOpenCurrentFrontsMenu {
   type: typeof EDITOR_OPEN_CURRENT_FRONTS_MENU;
@@ -332,7 +333,8 @@ type Action =
   | SetFocusState
   | ResetFocusState
   | ActionSetFeatureValue
-  | IsPrefillMode;
+  | IsPrefillMode
+  | SetHidden;
 
 export {
   ActionError,

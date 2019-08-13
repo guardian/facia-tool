@@ -128,6 +128,7 @@ interface Collection {
   uneditable?: boolean;
   type: string;
   frontsToolSettings?: FrontsToolSettings;
+  isHidden?: boolean;
 }
 
 interface ArticleTag {

@@ -10,9 +10,11 @@ import {
   discardDraftChangesToCollection,
   openCollectionsAndFetchTheirArticles
 } from 'actions/Collections';
+import { actions } from 'shared/bundles/collectionsBundle';
 import {
   selectHasUnpublishedChanges,
-  selectCollectionHasPrefill
+  selectCollectionHasPrefill,
+  selectCollectionIsHidden
 } from 'selectors/frontsSelectors';
 import { selectIsCollectionLocked } from 'selectors/collectionSelectors';
 import { State } from 'types/State';
@@ -68,6 +70,8 @@ type CollectionProps = CollectionPropsBeforeState & {
   fetchPreviousCollectionArticles: (id: string) => void;
   fetchPrefill: (id: string) => void;
   hasPrefill: boolean;
+  setHidden: (id: string, isHidden: boolean) => void;
+  isHidden: boolean;
 };
 
 const PreviouslyCollectionContainer = styled('div')``;
@@ -123,7 +127,8 @@ class Collection extends React.Component<CollectionProps> {
       hasMultipleFrontsOpen,
       isEditFormOpen,
       discardDraftChangesToCollection: discardDraftChanges,
-      hasPrefill
+      hasPrefill,
+      isHidden
     } = this.props;
 
     const { isPreviouslyOpen } = this.state;
@@ -146,8 +151,16 @@ class Collection extends React.Component<CollectionProps> {
           canPublish &&
           !isEditFormOpen && (
             <Fragment>
-              {hasPrefill && (
-                <EditModeVisibility visibleMode="editions">
+              <EditModeVisibility visibleMode="editions">
+                <Button
+                  size="l"
+                  priority="default"
+                  onClick={() => this.props.setHidden(id, !isHidden)}
+                  title="Toggle the visibility of this container in this issue."
+                >
+                  {isHidden ? 'Unhide Container' : 'Hide Container'}
+                </Button>
+                {hasPrefill && (
                   <Button
                     data-testid="prefill-button"
                     size="l"
@@ -157,8 +170,8 @@ class Collection extends React.Component<CollectionProps> {
                   >
                     Suggest Articles
                   </Button>
-                </EditModeVisibility>
-              )}
+                )}
+              </EditModeVisibility>
               <EditModeVisibility visibleMode="fronts">
                 <Button
                   size="l"
@@ -245,6 +258,7 @@ const createMapStateToProps = () => {
   ) => {
     const selectDoesCollectionHaveOpenForms = createSelectDoesCollectionHaveOpenForms();
     return {
+      isHidden: selectCollectionIsHidden(state, collectionId),
       hasPrefill: selectCollectionHasPrefill(state, collectionId),
       hasUnpublishedChanges: selectHasUnpublishedChanges(state, {
         collectionId
@@ -272,6 +286,8 @@ const mapDispatchToProps = (
   { browsingStage }: CollectionPropsBeforeState
 ) => ({
   fetchPrefill: (id: string) => dispatch(fetchPrefill(id)),
+  setHidden: (id: string, isHidden: boolean) =>
+    dispatch(actions.setHiddenAndPersist(id, isHidden)),
   publishCollection: (id: string, frontId: string) =>
     dispatch(publishCollection(id, frontId)),
   discardDraftChangesToCollection: (id: string) =>

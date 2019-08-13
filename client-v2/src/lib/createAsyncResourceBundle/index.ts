@@ -1,4 +1,5 @@
 import without from 'lodash/without';
+import { Action } from 'types/Action';
 
 interface BaseResource {
   id: string;
@@ -277,12 +278,22 @@ function createAsyncResourceBundle<Resource>(
     payload: { error, id, time: Date.now() }
   });
 
+  const isAction = (
+    action: Actions<Resource> | Action
+  ): action is Actions<Resource> => {
+    return (action as Actions<Resource>).entity !== undefined;
+  };
+
   return {
     initialState,
     reducer: (
       state: State<Resource> = initialState,
-      action: Actions<Resource>
+      action: Actions<Resource> | Action
     ): State<Resource> => {
+      if (!isAction(action)) {
+        return state;
+      }
+
       // The entity property lets us scope by module, whilst keeping
       // the 'type' property typed as string literal unions.
       if (action.entity !== entityName) {
