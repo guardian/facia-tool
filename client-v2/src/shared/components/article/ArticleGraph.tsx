@@ -8,7 +8,7 @@ interface ArticleGraphProps {
 }
 
 class ArticleGraph extends React.Component<ArticleGraphProps> {
-  render() {
+  public render() {
     const { data } = this.props;
 
     return (

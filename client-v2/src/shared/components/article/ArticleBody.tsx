@@ -313,7 +313,7 @@ const articleBodyDefault = React.memo(
             pageViewStory.data && (
               <PageViewDataWrapper data-testid="page-view-graph">
                 <span>{pageViewStory.totalHits.toLocaleString()}</span>
-                <ArticleGraph data={pageViewStory.data}></ArticleGraph>
+                <ArticleGraph data={pageViewStory.data} />
               </PageViewDataWrapper>
             )}
 

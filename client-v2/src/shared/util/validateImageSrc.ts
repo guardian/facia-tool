@@ -193,7 +193,9 @@ function stripImplementationDetails(
     } else if (!urlConstants.media.imageCdnDomainExpr.test(src)) {
       reject(
         new Error(
-          `Images must come from ${urlConstants.media.imageCdnDomain} or the Grid`
+          `Images must come from ${
+            urlConstants.media.imageCdnDomain
+          } or the Grid`
         )
       );
     } else {
