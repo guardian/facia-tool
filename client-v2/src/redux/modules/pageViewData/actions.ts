@@ -65,9 +65,8 @@ const addArticleId = (
 ): string => {
   // the path from ophan has a slash at the front, removing below
   const ophanPathClean = ophanData.path.substr(1);
-  const matchingArticle = articles.find(a => a.articlePath === ophanPathClean);
-  const aId = matchingArticle ? matchingArticle.articleId : '';
-  return aId;
+  const matchingArticle = articles.find(a => a.articlePath === ophanPathClean)!;
+  return matchingArticle.articleId;
 };
 
 const pageViewDataReceivedAction = (
