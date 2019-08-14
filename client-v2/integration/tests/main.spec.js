@@ -100,6 +100,7 @@ test('Snap Links - Guardian', async t => {
   await t
     .maximizeWindow() // needed to find DOM elements in headless mode
     .setNativeDialogHandler(() => false)
+    .setTestSpeed(0.5)
     .dragToElement(tagSnap, frontDropZone(1)) //drag tag into parent position (not a sublink)
     .expect(frontDropZone().count)
     .eql(frontDropsCount + 2) // adding a sublink adds 1 dropzone, adding a normal article adds 2
