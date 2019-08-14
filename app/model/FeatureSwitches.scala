@@ -27,7 +27,7 @@ object ObscureFeed extends FeatureSwitch(
 object PageViewDataVisualisation extends FeatureSwitch(
   key = "page-view-data-visualisation",
   title = "Show page view data visualisation (aka spark lines)",
-  enabled = false
+  enabled = true
 )
 
 object FeatureSwitches {
