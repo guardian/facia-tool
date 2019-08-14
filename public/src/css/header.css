@@ -183,14 +183,24 @@ main {
     margin-left: 7px;
 }
 
-.header__group.v2-popup {
+.v2-popup {
     flex: auto 1 1;
-    color: red;
     padding-left: 10px;
     padding-right: 10px;
 }
 
- .header__group.v2-popup a {
-    color: red;
+.v2-popup_text {
+    background-color: #FFE500;
+    padding: 5px 10px;
+}
+
+ .v2-popup_text a {
     text-decoration: underline;
+     color: #235f97;
+}
+
+.v2-popup_logo {
+    background-color: #1C1D27;
+    width: 26px;
+    padding: 5px 7px 1px;
 }
