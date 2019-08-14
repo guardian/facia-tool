@@ -23,7 +23,7 @@ case class EditionsIssue(
     displayName,
     OffsetDateTime.ofInstant(Instant.ofEpochMilli(issueDate), ZoneId.of(timezoneId)),
     version,
-    fronts.flatMap(_.toPublishedFront)
+    fronts.filterNot(_.isHidden).map(_.toPublishedFront)
   )
 }
 
