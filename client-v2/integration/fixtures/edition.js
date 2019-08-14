@@ -8,7 +8,7 @@ module.exports = {
   launchedEmail: 'r.b@gu.com',
   fronts: [
     {
-      id: 'rich/test',
+      id: 'regular_front',
       displayName: 'rich/test',
       isHidden: false,
       // updatedOn?: number,
@@ -37,6 +37,23 @@ module.exports = {
           // updatedBy?: string,
           // updatedEmail?: string,
           items: []
+        }
+      ]
+    },
+    {
+      id: 'special_front',
+      displayName: 'Special 1',
+      canRename: true,
+      isHidden: false,
+      collections: [
+        {
+          id: 'collection-special',
+          displayName: 'Special Collection',
+          isHidden: false,
+          items: [],
+          prefill: {
+            queryString: 'this-doesnt-matter'
+          }
         }
       ]
     }

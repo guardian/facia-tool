@@ -13,7 +13,11 @@ import {
 } from 'shared/types/Action';
 import { PersistMeta } from 'util/storeMiddleware';
 import { Config } from './Config';
-import { FrontsConfig, VisibleArticlesResponse } from './FaciaApi';
+import {
+  FrontsConfig,
+  VisibleArticlesResponse,
+  EditionsFrontMetadata
+} from './FaciaApi';
 import { BatchAction } from 'redux-batched-actions';
 import { Stages } from 'shared/types/Collection';
 import {
@@ -288,6 +292,14 @@ interface IsPrefillMode {
   };
 }
 
+interface EditionsFrontMetadataUpdate {
+  type: 'FETCH_UPDATE_METADATA_SUCCESS';
+  payload: {
+    frontId: string;
+    metadata: EditionsFrontMetadata;
+  };
+}
+
 type SetFocusState = ReturnType<typeof setFocusState>;
 type ResetFocusState = ReturnType<typeof resetFocusState>;
 
@@ -339,6 +351,7 @@ type Action =
   | SetFocusState
   | ResetFocusState
   | ActionSetFeatureValue
+  | EditionsFrontMetadataUpdate
   | IsPrefillMode
   | SetHidden
   | ChangedBrowsingStage;
