@@ -100,11 +100,7 @@ const fetchPageViewData = (
   front: string,
   articlesInFront: ArticlePathAndId[]
 ): Promise<any> => {
-  return getPageViewDataFromOphan(buildRequestUrl(front, articlesInFront)).then(
-    res => {
-      return res;
-    }
-  );
+  return getPageViewDataFromOphan(buildRequestUrl(front, articlesInFront));
 };
 
 const buildRequestUrl = (

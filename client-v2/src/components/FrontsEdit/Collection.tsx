@@ -114,7 +114,7 @@ interface ConnectedCollectionContextProps extends CollectionContextProps {
   handleBlur: () => void;
   lastDesktopArticle?: string;
   lastMobileArticle?: string;
-  pageViewData: PageViewDataPerCollection | undefined;
+  pageViewData?: PageViewDataPerCollection;
   getPageViewDataForCollectionItem?: (
     articleId: string,
     pageViewData: PageViewDataPerCollection
