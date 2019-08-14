@@ -24,6 +24,11 @@ const reducer = (state: State = [], action: Action): State => {
         );
       };
 
+      const collectionBeingChanged = {
+        collectionId: action.payload.collectionId,
+        stories: action.payload.data
+      }
+
       const frontToBeChanged = (): PageViewDataPerFront => {
         if (frontBeingChanged) {
           // if front exists in state, remove the old version and create new one
@@ -31,23 +36,16 @@ const reducer = (state: State = [], action: Action): State => {
             frontId: action.payload.frontId,
             collections: [
               ...getCollectionsNotBeingChanged(frontBeingChanged),
-              {
-                collectionId: action.payload.collectionId,
-                stories: action.payload.data
-              }
+              collectionBeingChanged
             ]
           };
-        } else {
-          // if data for the front does not exist, create it
-          return {
-            frontId: action.payload.frontId,
-            collections: [
-              {
-                collectionId: action.payload.collectionId,
-                stories: action.payload.data
-              }
-            ]
-          };
+        }
+        // if data for the front does not exist, create it
+        return {
+          frontId: action.payload.frontId,
+          collections: [
+            collectionBeingChanged
+          ]
         }
       };
 
