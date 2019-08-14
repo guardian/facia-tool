@@ -34,7 +34,7 @@ case class EditionsFront(
     val swatch = metadata.collect { case EditionsFrontMetadata(_, Some(swatch)) => swatch }.getOrElse(Swatch.Neutral)
     PublishedFront(
       id,
-      displayName,
+      name,
       collections.filterNot(_.isHidden).map(_.toPublishedCollection),
       swatch
     )
