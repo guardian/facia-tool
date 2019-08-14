@@ -36,7 +36,8 @@ import {
   EDITOR_OPEN_OVERVIEW,
   EDITOR_CLOSE_OVERVIEW,
   EDITOR_OPEN_ALL_OVERVIEWS,
-  EDITOR_CLOSE_ALL_OVERVIEWS
+  EDITOR_CLOSE_ALL_OVERVIEWS,
+  CHANGED_BROWSING_STAGE
 } from 'bundles/frontsUIBundle';
 import { setFocusState, resetFocusState } from '../bundles/focusBundle';
 import { ActionSetFeatureValue } from 'shared/redux/modules/featureSwitches';
@@ -67,6 +68,11 @@ interface EditorCloseFront {
   type: typeof EDITOR_CLOSE_FRONT;
   payload: { frontId: string };
   meta: PersistMeta;
+}
+
+interface ChangedBrowsingStage {
+  type: typeof CHANGED_BROWSING_STAGE;
+  payload: { frontId: string; browsingStage: Stages };
 }
 
 interface EditorFavouriteFront {
@@ -334,7 +340,8 @@ type Action =
   | ResetFocusState
   | ActionSetFeatureValue
   | IsPrefillMode
-  | SetHidden;
+  | SetHidden
+  | ChangedBrowsingStage;
 
 export {
   ActionError,
@@ -382,5 +389,6 @@ export {
   RecordStaleFronts,
   StartConfirm,
   EndConfirm,
-  IsPrefillMode
+  IsPrefillMode,
+  ChangedBrowsingStage
 };

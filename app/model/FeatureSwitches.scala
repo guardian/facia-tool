@@ -24,8 +24,14 @@ object ObscureFeed extends FeatureSwitch(
   enabled = false
 )
 
+object PageViewDataVisualisation extends FeatureSwitch(
+  key = "page-view-data-visualisation",
+  title = "Show page view data visualisation (aka spark lines)",
+  enabled = true
+)
+
 object FeatureSwitches {
-  val all: List[FeatureSwitch] = List(InlineForm, ObscureFeed)
+  val all: List[FeatureSwitch] = List(InlineForm, ObscureFeed, PageViewDataVisualisation)
 
   def updateFeatureSwitchesForUser(userDataSwitches: Option[List[FeatureSwitch]], switch: FeatureSwitch): List[FeatureSwitch] = {
     userDataSwitches match {

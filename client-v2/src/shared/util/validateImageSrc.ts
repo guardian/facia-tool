@@ -72,15 +72,17 @@ function getSuitableImageDetails(
       .filter(Boolean)
       .filter(asset =>
         maxWidth
-          ? parseInt(deepGet(asset, ['dimensions', 'width']), 10) <= maxWidth
+          ? parseInt(`${deepGet(asset, ['dimensions', 'width'])}`, 10) <=
+            maxWidth
           : true
       )
       .filter(asset =>
         minWidth
-          ? parseInt(deepGet(asset, ['dimensions', 'width']), 10) >= minWidth
+          ? parseInt(`${deepGet(asset, ['dimensions', 'width'])}`, 10) >=
+            minWidth
           : true
       ),
-    asset => parseInt(deepGet(asset, ['dimensions', 'width']), 10) * -1
+    asset => parseInt(`${deepGet(asset, ['dimensions', 'width'])}`, 10) * -1
   );
 
   if (assets.length) {

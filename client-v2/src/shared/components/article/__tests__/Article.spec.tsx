@@ -7,12 +7,18 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from '../../../../constants/theme';
 import { Provider } from 'react-redux';
 import configureStore from 'util/configureStore';
+import { PageViewStory } from 'shared/types/PageViewData';
 
 const takenDownArticle = { ...derivedArticle, ...{ isLive: false } };
 
 const draftArticle = {
   ...derivedArticle,
-  ...{ isLive: false, firstPublicationDate: undefined }
+  ...{
+    isLive: false,
+    firstPublicationDate: undefined,
+    canShowPageViewData: false,
+    featureFlagPageViewData: false
+  }
 };
 
 const store = configureStore();
@@ -27,6 +33,9 @@ describe('Article component ', () => {
             children={<React.Fragment />}
             article={derivedArticle}
             id="ea1"
+            featureFlagPageViewData={false}
+            canShowPageViewData={false}
+            pageViewStory={undefined}
           />
         </ThemeProvider>
       </Provider>
@@ -45,6 +54,9 @@ describe('Article component ', () => {
             children={<React.Fragment />}
             article={draftArticle}
             id="ea1"
+            featureFlagPageViewData={false}
+            canShowPageViewData={false}
+            pageViewStory={undefined}
           />
         </ThemeProvider>
       </Provider>
@@ -61,6 +73,9 @@ describe('Article component ', () => {
             children={<React.Fragment />}
             article={takenDownArticle}
             id="ea1"
+            featureFlagPageViewData={false}
+            canShowPageViewData={false}
+            pageViewStory={undefined}
           />
         </ThemeProvider>
       </Provider>
@@ -78,6 +93,9 @@ describe('Article component ', () => {
             article={undefined}
             id="ea1"
             isLoading={true}
+            featureFlagPageViewData={false}
+            canShowPageViewData={false}
+            pageViewStory={undefined}
           />
         </ThemeProvider>
       </Provider>
@@ -94,6 +112,9 @@ describe('Article component ', () => {
             article={takenDownArticle}
             id="ea1"
             isLoading={true}
+            featureFlagPageViewData={false}
+            canShowPageViewData={false}
+            pageViewStory={undefined}
           />
         </ThemeProvider>
       </Provider>
@@ -110,6 +131,9 @@ describe('Article component ', () => {
             article={takenDownArticle}
             id="ea1"
             isLoading={false}
+            featureFlagPageViewData={false}
+            canShowPageViewData={false}
+            pageViewStory={undefined}
           />
         </ThemeProvider>
       </Provider>
@@ -124,6 +148,9 @@ describe('Article component ', () => {
             children={<React.Fragment />}
             article={takenDownArticle}
             id="ea1"
+            featureFlagPageViewData={false}
+            canShowPageViewData={false}
+            pageViewStory={undefined}
           />
         </ThemeProvider>
       </Provider>
@@ -132,4 +159,54 @@ describe('Article component ', () => {
       renderResult.getByTestId.bind(renderResult, 'loading-placeholder')
     ).toThrow();
   });
+});
+
+it('should show the page view data graph if 3 conditions are true: canShowPageViewData, featureFlagPageViewData and pageViewData.data has content', () => {
+  const pageViewStory: PageViewStory = {
+    articleId: 'test',
+    articlePath: 'test',
+    totalHits: 100,
+    data: [
+      { dateTime: 1565356832228, count: 30 },
+      { dateTime: 1565356844167, count: 17 }
+    ]
+  };
+
+  const { getByTestId } = render(
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <ArticleComponent
+          children={<React.Fragment />}
+          article={derivedArticle}
+          id="ea1"
+          featureFlagPageViewData={true}
+          canShowPageViewData={true}
+          pageViewStory={pageViewStory}
+        />
+      </ThemeProvider>
+    </Provider>
+  );
+  expect(getByTestId('page-view-graph')).toBeTruthy();
+  expect(getByTestId('page-view-graph')).toHaveTextContent('100');
+});
+
+it('should NOT show the page view data graph if any of these conditions are false: canShowPageViewData, featureFlagPageViewData, pageViewData', () => {
+  const { container } = render(
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <ArticleComponent
+          children={<React.Fragment />}
+          article={undefined}
+          id="ea1"
+          isLoading={true}
+          featureFlagPageViewData={false}
+          canShowPageViewData={true}
+          pageViewStory={undefined}
+        />
+      </ThemeProvider>
+    </Provider>
+  );
+  const graphBox = container.querySelector('[data-testid="page-view-graph"]');
+
+  expect(graphBox).toBeFalsy();
 });

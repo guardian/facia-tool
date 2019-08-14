@@ -25,6 +25,8 @@ import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaConte
 import CollectionItemDraftMetaContent from '../collectionItem/CollectionItemDraftMetaContent';
 import DraggableArticleImageContainer from './DraggableArticleImageContainer';
 import { media } from 'shared/util/mediaQueries';
+import { PageViewStory } from 'shared/types/PageViewData';
+import ArticleGraph from './ArticleGraph';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   flex-shrink: 0;
@@ -67,6 +69,17 @@ const ImageMetadataContainer = styled('div')`
   background-color: ${({ theme }) => theme.shared.colors.whiteLight};
 `;
 
+const PageViewDataWrapper = styled('div')`
+  width: 45px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-right: 5px;
+  font-size: 12px;
+  height: 35px;
+  padding-bottom: 3px;
+`;
+
 const ArticleMetadataProperties = styled('div')`
   padding: 0 4px 3px 0;
   display: flex;
@@ -88,6 +101,15 @@ const ArticleHeadingContainerWrapper = styled('div')`
 
 const Tone = styled('span')`
   font-weight: normal;
+`;
+
+const ImageAndGraphWrapper = styled('div')<{ size: CollectionItemSizes }>`
+  display: flex;
+  flex-direction: row;
+  ${props =>
+    props.size === 'medium' &&
+    `flex-wrap: wrap-reverse;
+    justify-content: flex-end;`}
 `;
 
 interface ArticleBodyProps {
@@ -125,6 +147,9 @@ interface ArticleBodyProps {
   isDraggingImageOver: boolean;
   isBoosted?: boolean;
   tone?: string | undefined;
+  featureFlagPageViewData?: boolean;
+  canShowPageViewData: boolean;
+  pageViewStory?: PageViewStory;
 }
 
 const articleBodyDefault = React.memo(
@@ -161,7 +186,10 @@ const articleBodyDefault = React.memo(
     canDragImage = true,
     isDraggingImageOver,
     isBoosted,
-    tone
+    tone,
+    featureFlagPageViewData,
+    canShowPageViewData,
+    pageViewStory
   }: ArticleBodyProps) => {
     const ArticleHeadingContainer =
       size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
@@ -277,27 +305,40 @@ const articleBodyDefault = React.memo(
             {displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
           </ArticleHeadingContainerWrapper>
         </CollectionItemContent>
-        {size !== 'small' &&
-          (displayPlaceholders ? (
-            <ThumbnailPlaceholder />
-          ) : (
-            <DraggableArticleImageContainer id={uuid} canDrag={canDragImage}>
-              <ThumbnailSmall
-                imageHide={imageHide}
-                url={thumbnail}
-                isDraggingImageOver={isDraggingImageOver}
-              >
-                {cutoutThumbnail ? (
-                  <ThumbnailCutout src={cutoutThumbnail} />
-                ) : null}
-              </ThumbnailSmall>
-              <ImageMetadataContainer>
-                {imageSlideshowReplace && 'Slideshow'}
-                {imageReplace && 'Image replaced'}
-                {imageCutoutReplace && 'Cutout replaced'}
-              </ImageMetadataContainer>
-            </DraggableArticleImageContainer>
-          ))}
+        <ImageAndGraphWrapper size={size}>
+          {featureFlagPageViewData &&
+            canShowPageViewData &&
+            pageViewStory &&
+            pageViewStory.totalHits > 0 &&
+            pageViewStory.data && (
+              <PageViewDataWrapper data-testid="page-view-graph">
+                <span>{pageViewStory.totalHits.toLocaleString()}</span>
+                <ArticleGraph data={pageViewStory.data} />
+              </PageViewDataWrapper>
+            )}
+
+          {size !== 'small' &&
+            (displayPlaceholders ? (
+              <ThumbnailPlaceholder />
+            ) : (
+              <DraggableArticleImageContainer id={uuid} canDrag={canDragImage}>
+                <ThumbnailSmall
+                  imageHide={imageHide}
+                  url={thumbnail}
+                  isDraggingImageOver={isDraggingImageOver}
+                >
+                  {cutoutThumbnail ? (
+                    <ThumbnailCutout src={cutoutThumbnail} />
+                  ) : null}
+                </ThumbnailSmall>
+                <ImageMetadataContainer>
+                  {imageSlideshowReplace && 'Slideshow'}
+                  {imageReplace && 'Image replaced'}
+                  {imageCutoutReplace && 'Cutout replaced'}
+                </ImageMetadataContainer>
+              </DraggableArticleImageContainer>
+            ))}
+        </ImageAndGraphWrapper>
         <HoverActionsAreaOverlay disabled={isUneditable}>
           <HoverActionsButtonWrapper
             buttons={[

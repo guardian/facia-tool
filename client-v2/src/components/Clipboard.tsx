@@ -198,6 +198,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                             getNodeProps={getAfProps}
                             showMeta={false}
                             canDragImage={false}
+                            canShowPageViewData={false}
                             textSize="small"
                             onSelect={selectArticleFragment}
                             onDelete={() =>
@@ -214,6 +215,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                                   uuid={supporting.uuid}
                                   frontId={clipboardId}
                                   parentId={articleFragment.uuid}
+                                  canShowPageViewData={false}
                                   getNodeProps={getSProps}
                                   size="small"
                                   showMeta={false}
