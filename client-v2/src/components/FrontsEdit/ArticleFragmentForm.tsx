@@ -48,7 +48,7 @@ import { selectors as collectionSelectors } from 'shared/bundles/collectionsBund
 import { getContributorImage } from 'util/CAPIUtils';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
-import EditModeVisibility from "../util/EditModeVisibility";
+import EditModeVisibility from '../util/EditModeVisibility';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
