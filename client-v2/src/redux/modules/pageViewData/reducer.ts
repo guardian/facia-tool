@@ -27,7 +27,7 @@ const reducer = (state: State = [], action: Action): State => {
       const collectionBeingChanged = {
         collectionId: action.payload.collectionId,
         stories: action.payload.data
-      }
+      };
 
       const frontToBeChanged = (): PageViewDataPerFront => {
         if (frontBeingChanged) {
@@ -43,10 +43,8 @@ const reducer = (state: State = [], action: Action): State => {
         // if data for the front does not exist, create it
         return {
           frontId: action.payload.frontId,
-          collections: [
-            collectionBeingChanged
-          ]
-        }
+          collections: [collectionBeingChanged]
+        };
       };
 
       return [...frontsNotBeingChanged, frontToBeChanged()];
