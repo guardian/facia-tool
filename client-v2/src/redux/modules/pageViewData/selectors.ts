@@ -1,38 +1,17 @@
+import { createSelector } from 'reselect';
 import { State } from '../../../types/State';
 import {
   PageViewDataPerFront,
   PageViewDataPerCollection,
-  PageViewStory,
   PageViewArticlesOnFront
 } from 'shared/types/PageViewData';
 
-const selectPageViewDataForArticleId = (
-  state: State,
-  articleId: string,
-  frontId: string
-): PageViewStory | undefined => {
-  const dataForFront: PageViewDataPerFront | undefined = selectPageViewData(
-    state
-  ).find(front => front.frontId === frontId);
+const selectArticleId = (state: State, articleId: string, frontId: string) => {
+  return articleId;
+};
 
-  const allArticlesOnFront =
-    dataForFront &&
-    dataForFront.collections.reduce(
-      (acc: PageViewArticlesOnFront, curr: PageViewDataPerCollection) => {
-        return {
-          frontId,
-          stories: acc.stories.concat(curr.stories)
-        } as PageViewArticlesOnFront;
-      },
-      { frontId, stories: [] }
-    );
-
-  return (
-    allArticlesOnFront &&
-    allArticlesOnFront.stories.find(article => {
-      return article.articleId === articleId;
-    })
-  );
+const selectFrontId = (state: State, articleId: string, frontId: string) => {
+  return frontId;
 };
 
 const selectPageViewData = (state: State): PageViewDataPerFront[] =>
@@ -47,8 +26,37 @@ const selectOpenCollectionsForFront = (
   );
 };
 
+const createSelectDataForArticle = () =>
+  createSelector(
+    [selectPageViewData, selectArticleId, selectFrontId],
+    (pageViewData, articleId, frontId) => {
+      const dataForFront: PageViewDataPerFront | undefined = pageViewData.find(
+        front => front.frontId === frontId
+      );
+
+      const allArticlesOnFront =
+        dataForFront &&
+        dataForFront.collections.reduce(
+          (acc: PageViewArticlesOnFront, curr: PageViewDataPerCollection) => {
+            return {
+              frontId,
+              stories: acc.stories.concat(curr.stories)
+            } as PageViewArticlesOnFront;
+          },
+          { frontId, stories: [] }
+        );
+
+      return (
+        allArticlesOnFront &&
+        allArticlesOnFront.stories.find(article => {
+          return article.articleId === articleId;
+        })
+      );
+    }
+  );
+
 export {
   selectPageViewData,
-  selectPageViewDataForArticleId,
-  selectOpenCollectionsForFront
+  selectOpenCollectionsForFront,
+  createSelectDataForArticle
 };
