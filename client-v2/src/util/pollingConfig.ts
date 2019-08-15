@@ -24,6 +24,12 @@ export default (store: Store) =>
     }
     (store.dispatch as Dispatch)(fetchStaleOpenCollections(priority));
 
+    if (
+      !store.getState().featureSwitches['page-view-data-visualisation'].enabled
+    ) {
+      return;
+    }
+
     const openFronts = store.getState().editor.frontIdsByPriority.editorial;
     const openFrontsWithCollections = openFronts.map(frontId => ({
       frontId,

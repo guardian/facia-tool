@@ -11,7 +11,6 @@ import {
 import { selectors } from 'shared/bundles/externalArticlesBundle';
 import { State } from '../../types/State';
 import { DerivedArticle } from '../../types/Article';
-import { PageViewStory } from '../../types/PageViewData';
 import CollectionItemBody from '../collectionItem/CollectionItemBody';
 import CollectionItemContainer from '../collectionItem/CollectionItemContainer';
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
@@ -56,8 +55,8 @@ interface ArticleComponentProps {
   showMeta?: boolean;
   canDragImage?: boolean;
   canShowPageViewData: boolean;
-  pageViewStory: PageViewStory | undefined;
   featureFlagPageViewData?: boolean;
+  frontId: string;
 }
 
 interface ContainerProps extends ArticleComponentProps {
@@ -114,7 +113,7 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
       canDragImage,
       featureFlagPageViewData,
       canShowPageViewData = false,
-      pageViewStory
+      frontId
     } = this.props;
 
     const dragEventHasImageData = (e: React.DragEvent) =>
@@ -170,6 +169,7 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
             >
               <ArticleBody
                 {...getArticleData()}
+                frontId={frontId}
                 size={size}
                 textSize={textSize}
                 isUneditable={!!article && isUneditable}
@@ -181,7 +181,6 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
                 isDraggingImageOver={this.state.isDraggingImageOver}
                 featureFlagPageViewData={featureFlagPageViewData}
                 canShowPageViewData={canShowPageViewData}
-                pageViewStory={pageViewStory}
               />
             </ArticleBodyContainer>
           </DragIntentContainer>
@@ -201,7 +200,6 @@ const createMapStateToProps = () => {
     article?: DerivedArticle;
     isLoading: boolean;
     featureFlagPageViewData: boolean;
-    pageViewStory: PageViewStory | undefined;
   } => {
     const sharedState = props.selectSharedState
       ? props.selectSharedState(state)
@@ -218,8 +216,7 @@ const createMapStateToProps = () => {
       featureFlagPageViewData: selectFeatureValue(
         selectSharedState(state),
         'page-view-data-visualisation'
-      ),
-      pageViewStory: props.pageViewStory
+      )
     };
   };
 };

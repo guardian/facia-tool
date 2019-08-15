@@ -44,7 +44,6 @@ import { updateArticleFragmentMeta as updateArticleFragmentMetaAction } from 'ac
 import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
-import { PageViewStory } from 'shared/types/PageViewData';
 import { events } from 'services/GA';
 
 const imageDropTypes = [
@@ -68,7 +67,6 @@ interface ContainerProps {
   isSupporting?: boolean;
   canDragImage?: boolean;
   canShowPageViewData: boolean;
-  pageViewStory?: PageViewStory | undefined;
 }
 
 type ArticleContainerProps = ContainerProps & {
@@ -120,8 +118,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       showMeta,
       frontId,
       canDragImage,
-      canShowPageViewData = false,
-      pageViewStory
+      canShowPageViewData = false
     } = this.props;
 
     const getCard = () => {
@@ -129,6 +126,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
         case collectionItemTypes.ARTICLE:
           return (
             <Article
+              frontId={frontId}
               id={uuid}
               isUneditable={isUneditable}
               {...getNodeProps()}
@@ -143,7 +141,6 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
               onImageDrop={this.handleImageDrop}
               canDragImage={canDragImage}
               canShowPageViewData={canShowPageViewData}
-              pageViewStory={pageViewStory}
             >
               <Sublinks
                 numSupportingArticles={numSupportingArticles}
