@@ -224,7 +224,7 @@ const articleBodyDefault = React.memo(
                 {size !== 'small' && <TextPlaceholder width={25} />}
               </>
             )}
-            {size !== 'small' && isLive && (
+            {!displayPlaceholders && size !== 'small' && isLive && (
               <CollectionItemMetaHeading
                 style={{
                   color: getPillarColor(
