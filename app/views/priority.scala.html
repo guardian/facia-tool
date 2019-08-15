@@ -1,4 +1,4 @@
-@(identity: Option[com.gu.pandomainauth.model.User] = None, stage: String, isDev: Boolean)
+@(identity: Option[com.gu.pandomainauth.model.User] = None, stage: String, isDev: Boolean, displayV2Message: Boolean = false, priority: String = "")
 
 @import switchboard.SwitchManager
 
@@ -14,7 +14,7 @@
     @if(SwitchManager.getStatus("facia-tool-disable")) {
         <span class="message message--important">Temporarily disabled. Please try again shortly.</span>
     } else {
-        @templates.header(stage, identity, isDev)
+        @templates.header(stage, identity, isDev, displayV2Message, priority)
         <main class="front-priorities">
             <div class="front-priorities--priority">
                 <a href="/editorial">Editorial Fronts</a>
