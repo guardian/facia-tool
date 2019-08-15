@@ -31,6 +31,11 @@ interface PageViewDataPerCollection {
   stories: PageViewStory[];
 }
 
+interface PageViewArticlesOnFront {
+  frontId: string;
+  stories: PageViewStory[];
+}
+
 // models for request
 
 interface ArticlePathAndId {
@@ -51,5 +56,6 @@ export {
   PageViewDataPerCollection,
   PageViewStory,
   ArticlePathAndId,
-  CollectionWithArticles
+  CollectionWithArticles,
+  PageViewArticlesOnFront
 };

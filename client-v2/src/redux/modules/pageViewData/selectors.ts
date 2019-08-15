@@ -1,33 +1,42 @@
 import { State } from '../../../types/State';
 import {
   PageViewDataPerFront,
-  PageViewDataPerCollection
+  PageViewDataPerCollection,
+  PageViewStory,
+  PageViewArticlesOnFront
 } from 'shared/types/PageViewData';
 
-const selectPageViewDataForArticlePath = (state: State, url: string) =>
-  selectPageViewData(state);
+const selectPageViewDataForArticleId = (
+  state: State,
+  articleId: string,
+  frontId: string
+): PageViewStory | undefined => {
+  const dataForFront: PageViewDataPerFront | undefined = selectPageViewData(
+    state
+  ).find(front => front.frontId === frontId);
+
+  const allArticlesOnFront =
+    dataForFront &&
+    dataForFront.collections.reduce(
+      (acc: PageViewArticlesOnFront, curr: PageViewDataPerCollection) => {
+        return {
+          frontId,
+          stories: acc.stories.concat(curr.stories)
+        } as PageViewArticlesOnFront;
+      },
+      { frontId, stories: [] }
+    );
+
+  return (
+    allArticlesOnFront &&
+    allArticlesOnFront.stories.find(article => {
+      return article.articleId === articleId;
+    })
+  );
+};
 
 const selectPageViewData = (state: State): PageViewDataPerFront[] =>
   state.shared.pageViewData;
-
-const selectPageViewDataForCollection = (
-  state: State,
-  collectionId: string,
-  frontId: string
-): PageViewDataPerCollection | undefined => {
-  if (!state.shared.pageViewData) {
-    return;
-  }
-  const possibleFront = state.shared.pageViewData.find(
-    front => front.frontId === frontId
-  );
-
-  return (
-    possibleFront &&
-    possibleFront.collections &&
-    possibleFront.collections.find(c => c.collectionId === collectionId)
-  );
-};
 
 const selectOpenCollectionsForFront = (
   allCollectionsInAFront: string[],
@@ -40,7 +49,6 @@ const selectOpenCollectionsForFront = (
 
 export {
   selectPageViewData,
-  selectPageViewDataForArticlePath,
-  selectPageViewDataForCollection,
+  selectPageViewDataForArticleId,
   selectOpenCollectionsForFront
 };

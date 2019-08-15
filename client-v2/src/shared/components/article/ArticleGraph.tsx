@@ -1,10 +1,15 @@
 import React from 'react';
 import { AreaChart, Area, XAxis, YAxis } from 'recharts';
-import { PageViewDataSeriesDataPoint } from 'shared/types/PageViewData';
+import { PageViewStory } from 'shared/types/PageViewData';
 import { theme } from '../../../constants/theme';
+import { State } from 'types/State';
+import { connect } from 'react-redux';
+import { selectPageViewDataForArticleId } from '../../../redux/modules/pageViewData/selectors';
 
 interface ArticleGraphProps {
-  data?: PageViewDataSeriesDataPoint[];
+  articleId: string;
+  frontId: string;
+  data?: PageViewStory;
 }
 
 class ArticleGraph extends React.Component<ArticleGraphProps> {
@@ -12,24 +17,31 @@ class ArticleGraph extends React.Component<ArticleGraphProps> {
     const { data } = this.props;
 
     return (
-      <AreaChart
-        width={40}
-        height={14}
-        data={data}
-        margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
-      >
-        <XAxis dataKey="dateTime" hide={true} />
-        <YAxis hide={true} />
-        <Area
-          type="monotone"
-          dataKey="count"
-          stroke={theme.shared.colors.greenDark}
-          strokeWidth="1.5"
-          fill={theme.shared.colors.greenLight}
-        />
-      </AreaChart>
+      <>
+        <span>{data && data.totalHits.toLocaleString()}</span>
+        <AreaChart
+          width={40}
+          height={14}
+          data={data && data.data}
+          margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+        >
+          <XAxis dataKey="dateTime" hide={true} />
+          <YAxis hide={true} />
+          <Area
+            type="monotone"
+            dataKey="count"
+            stroke={theme.shared.colors.greenDark}
+            strokeWidth="1.5"
+            fill={theme.shared.colors.greenLight}
+          />
+        </AreaChart>
+      </>
     );
   }
 }
 
-export default ArticleGraph;
+const mapStateToProps = (state: State, props: ArticleGraphProps) => ({
+  data: selectPageViewDataForArticleId(state, props.articleId, props.frontId)
+});
+
+export default connect(mapStateToProps)(ArticleGraph);

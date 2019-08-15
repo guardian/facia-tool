@@ -25,7 +25,6 @@ import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaConte
 import CollectionItemDraftMetaContent from '../collectionItem/CollectionItemDraftMetaContent';
 import DraggableArticleImageContainer from './DraggableArticleImageContainer';
 import { media } from 'shared/util/mediaQueries';
-import { PageViewStory } from 'shared/types/PageViewData';
 import ArticleGraph from './ArticleGraph';
 import { VideoIcon } from '../icons/Icons';
 
@@ -165,7 +164,7 @@ interface ArticleBodyProps {
   tone?: string | undefined;
   featureFlagPageViewData?: boolean;
   canShowPageViewData: boolean;
-  pageViewStory?: PageViewStory;
+  frontId: string;
 }
 
 const articleBodyDefault = React.memo(
@@ -205,9 +204,9 @@ const articleBodyDefault = React.memo(
     tone,
     featureFlagPageViewData,
     canShowPageViewData,
-    pageViewStory,
     hasMainVideo,
-    showMainVideo
+    showMainVideo,
+    frontId
   }: ArticleBodyProps) => {
     const ArticleHeadingContainer =
       size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
@@ -324,16 +323,11 @@ const articleBodyDefault = React.memo(
           </ArticleHeadingContainerWrapper>
         </CollectionItemContent>
         <ImageAndGraphWrapper size={size}>
-          {featureFlagPageViewData &&
-            canShowPageViewData &&
-            pageViewStory &&
-            pageViewStory.totalHits > 0 &&
-            pageViewStory.data && (
-              <PageViewDataWrapper data-testid="page-view-graph">
-                <span>{pageViewStory.totalHits.toLocaleString()}</span>
-                <ArticleGraph data={pageViewStory.data} />
-              </PageViewDataWrapper>
-            )}
+          {featureFlagPageViewData && canShowPageViewData && (
+            <PageViewDataWrapper data-testid="page-view-graph">
+              <ArticleGraph articleId={uuid} frontId={frontId} />
+            </PageViewDataWrapper>
+          )}
 
           {size !== 'small' &&
             (displayPlaceholders ? (
