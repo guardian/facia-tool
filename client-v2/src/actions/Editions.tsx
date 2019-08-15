@@ -1,9 +1,14 @@
 import React from 'react';
-import { getIssueSummary, publishIssue } from 'services/editionsApi';
+import {
+  getIssueSummary,
+  publishIssue,
+  putFrontMetadata
+} from 'services/editionsApi';
 import { ThunkResult } from 'types/Store';
 import { Dispatch } from 'redux';
 import { actions } from 'bundles/editionsIssueBundle';
 import { startConfirmModal } from './ConfirmModal';
+import { EditionsFrontMetadata } from 'types/FaciaApi';
 
 export const getEditionIssue = (
   id: string
@@ -53,5 +58,23 @@ export const publishEditionIssue = (
         false
       )
     );
+  }
+};
+
+export const updateFrontMetadata = (
+  id: string,
+  metadata: EditionsFrontMetadata
+): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
+  try {
+    const serverMetadata = await putFrontMetadata(id, metadata);
+    dispatch({
+      type: 'FETCH_UPDATE_METADATA_SUCCESS',
+      payload: {
+        frontId: id,
+        metadata: serverMetadata
+      }
+    });
+  } catch (error) {
+    // @todo implement centralised error handling
   }
 };

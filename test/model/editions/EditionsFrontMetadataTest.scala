@@ -22,23 +22,6 @@ class EditionsFrontMetadataTest extends FreeSpec with Matchers {
 
   }
 
-
-  "Editions Front Metadata Data merging" - {
-    val editionsFrontMetadataSwatchOnly = EditionsFrontMetadata(None, Some(Swatch.Opinion))
-    val editionsFrontMetadataNewnameOnly = EditionsFrontMetadata(Some(name), None)
-
-    "should merge Name Overrides correctly" in {
-      object DumbObject extends FrontsQueries
-      DumbObject.mergeMetadatas(editionsFrontMetadataSwatchOnly, editionsFrontMetadataNewnameOnly) shouldBe editionsFrontMetadata
-    }
-
-    "should merge Swatches correctly" in {
-      object DumbObject extends FrontsQueries
-      DumbObject.mergeMetadatas(editionsFrontMetadataNewnameOnly, editionsFrontMetadataSwatchOnly) shouldBe editionsFrontMetadata
-    }
-
-  }
-
   "Editions with name overrides are correctly published" - {
 
     val originalTitle = "original title"

@@ -116,7 +116,6 @@ class EditionsController(db: EditionsDB,
   }
 
   def putFrontMetadata(id: String) = AccessAPIAuthAction(parse.json[EditionsFrontMetadata]) { req =>
-    db.updateFrontMetadata(id, req.body)
-    NoContent
+    Ok(Json.toJson(db.updateFrontMetadata(id, req.body)))
   }
 }

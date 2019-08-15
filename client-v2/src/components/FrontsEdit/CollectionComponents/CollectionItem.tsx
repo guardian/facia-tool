@@ -44,6 +44,8 @@ import { updateArticleFragmentMeta as updateArticleFragmentMetaAction } from 'ac
 import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
+import { PageViewStory } from 'shared/types/PageViewData';
+import { events } from 'services/GA';
 
 const imageDropTypes = [
   ...gridDropTypes,
@@ -65,6 +67,8 @@ interface ContainerProps {
   showMeta?: boolean;
   isSupporting?: boolean;
   canDragImage?: boolean;
+  canShowPageViewData: boolean;
+  pageViewStory?: PageViewStory | undefined;
 }
 
 type ArticleContainerProps = ContainerProps & {
@@ -115,7 +119,9 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       parentId,
       showMeta,
       frontId,
-      canDragImage
+      canDragImage,
+      canShowPageViewData = false,
+      pageViewStory
     } = this.props;
 
     const getCard = () => {
@@ -136,6 +142,8 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
               imageDropTypes={imageDropTypes}
               onImageDrop={this.handleImageDrop}
               canDragImage={canDragImage}
+              canShowPageViewData={canShowPageViewData}
+              pageViewStory={pageViewStory}
             >
               <Sublinks
                 numSupportingArticles={numSupportingArticles}
@@ -206,6 +214,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
   };
 
   private handleImageDrop = (e: React.DragEvent<HTMLElement>) => {
+    events.imageAdded(this.props.frontId, 'drop-into-card');
     e.preventDefault();
     e.persist();
 

@@ -1,4 +1,4 @@
-@(stage: String, identity: Option[com.gu.pandomainauth.model.User] = None, isDev: Boolean)
+@(stage: String, identity: Option[com.gu.pandomainauth.model.User] = None, isDev: Boolean, displayV2Message: Boolean, priority: String)
 
 <header>
     <div class="header__group header__logo">
@@ -10,6 +10,13 @@
             </h1>
         </a>
     </div>
+
+     @if(displayV2Message) {
+         <div class="header__group v2-popup">
+             <div class="v2-popup_logo"><img src="/assets/images/logo-v2.svg" /></div>
+             <div class="v2-popup_text"><span>There's a new version of the fronts tool. Please&nbsp;<a href="/v2/@priority">try it by clicking here</a></span>.</div>
+         </div>
+     }
 
     <div class="header__group topAction dropdown closed" data-bind="css: {
         closed: !isMainActionVisible()

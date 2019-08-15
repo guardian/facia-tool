@@ -4,7 +4,10 @@ import {
   frontsMenuButton,
   frontsMenuItem,
   prefillButton,
-  feedItemHeadline
+  feedItemHeadline,
+  frontName,
+  renameFrontButton,
+  renameFrontInput
 } from '../selectors';
 
 fixture`Fronts edit`
@@ -28,4 +31,18 @@ test('Check prefill button renders searches properly.', async t => {
     .click(prefillButton(0))
     .expect(feedItemHeadline(0).textContent)
     .eql('Iran stokes Gulf tensions by seizing two British-linked oil tankers');
+});
+
+test('Check renaming a front works', async t => {
+  await t
+    .click(frontsMenuButton())
+    .click(frontsMenuItem(1))
+    .expect(frontName(0).textContent)
+    .eql('Special 1')
+    .click(renameFrontButton(0))
+    .selectText(renameFrontInput())
+    .typeText(renameFrontInput(), 'Super neat custom front name')
+    .pressKey('enter')
+    .expect(frontName(0).textContent)
+    .eql('Super neat custom front name');
 });
