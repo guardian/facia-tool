@@ -126,8 +126,7 @@ export const getInitialValuesForArticleFragmentForm = (
           thumb: article.imageCutoutSrc
         },
         slideshow: slideshow.concat(slideshowBackfill),
-        sportScore: article.sportScore || '',
-        showMainVideo: !!article.showMainVideo
+        sportScore: article.sportScore || ''
       }
     : undefined;
 };
