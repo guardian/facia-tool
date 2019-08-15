@@ -2,6 +2,10 @@ import { fetchStaleOpenCollections } from 'actions/Collections';
 import { Dispatch } from 'types/Store';
 import { Store } from 'types/Store';
 import { selectPriority } from 'selectors/pathSelectors';
+import { selectOpenCollectionsForFront } from '../redux/modules/pageViewData/selectors';
+import { retrieveCollectionsWithTheirArticles } from '../redux/modules/pageViewData/utils';
+import { getPageViewData } from '../redux/modules/pageViewData/actions';
+import { CollectionWithArticles } from 'shared/types/PageViewData';
 
 /**
  * TODO: do we want to check if there are any collectionUpdates going out here
@@ -19,4 +23,37 @@ export default (store: Store) =>
       return;
     }
     (store.dispatch as Dispatch)(fetchStaleOpenCollections(priority));
+
+    const openFronts = store.getState().editor.frontIdsByPriority.editorial;
+    const openFrontsWithCollections = openFronts.map(frontId => ({
+      frontId,
+      collections: store.getState().fronts.frontsConfig.data.fronts[frontId]
+        .collections
+    }));
+    const openFrontsWithCollectionsArticles = openFrontsWithCollections.map(
+      front => {
+        const openCollections = selectOpenCollectionsForFront(
+          front.collections,
+          store.getState().editor.collectionIds
+        );
+
+        const browsingStage = store.getState().editor.frontIdsByBrowsingStage[
+          front.frontId
+        ];
+        const collectionsWithArticles: CollectionWithArticles[] = retrieveCollectionsWithTheirArticles(
+          store,
+          openCollections,
+          browsingStage
+        );
+        return { frontId: front.frontId, collections: collectionsWithArticles };
+      }
+    );
+
+    openFrontsWithCollectionsArticles.forEach(front => {
+      front.collections.forEach(collection => {
+        (store.dispatch as Dispatch)(
+          getPageViewData(front.frontId, collection.articles, collection.id)
+        );
+      });
+    });
   }, 10000);

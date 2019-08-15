@@ -3,7 +3,9 @@ import groups from './groupsReducer';
 import { reducer as collections } from '../bundles/collectionsBundle';
 import { reducer as externalArticles } from '../bundles/externalArticlesBundle';
 import { reducer as featureSwitches } from '../redux/modules/featureSwitches';
+import { reducer as pageViewData } from '../../redux/modules/pageViewData';
 import { ArticleFragment, Group } from 'shared/types/Collection';
+import { PageViewDataPerFront } from 'shared/types/PageViewData';
 
 interface State {
   articleFragments: {
@@ -15,6 +17,7 @@ interface State {
   collections: ReturnType<typeof collections>;
   externalArticles: ReturnType<typeof externalArticles>;
   featureSwitches: ReturnType<typeof featureSwitches>;
+  pageViewData: PageViewDataPerFront[];
 }
 
 const rootReducer = (state: any = {}, action: any): State => ({
@@ -22,7 +25,8 @@ const rootReducer = (state: any = {}, action: any): State => ({
   groups: groups(state.groups, action, state),
   collections: collections(state.collections, action),
   externalArticles: externalArticles(state.externalArticles, action),
-  featureSwitches: featureSwitches(state.featureSwitches, action)
+  featureSwitches: featureSwitches(state.featureSwitches, action),
+  pageViewData: pageViewData(state.pageViewData, action)
 });
 
 export { State };

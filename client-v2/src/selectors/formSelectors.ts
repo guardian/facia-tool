@@ -4,7 +4,7 @@ import {
   createSelectArticleFromArticleFragment
 } from 'shared/selectors/shared';
 import { selectCollectionConfig } from 'selectors/frontsSelectors';
-import { hasMainVideo } from 'shared/util/derivedArticle';
+import { hasMainVideo } from 'shared/util/externalArticle';
 import { isCollectionConfigDynamic } from '../util/frontsUtils';
 import { createSelector } from 'reselect';
 import { State } from 'types/State';

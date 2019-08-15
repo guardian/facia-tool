@@ -20,6 +20,7 @@ import { State } from '../types/State';
 import { collectionItemSets } from 'constants/fronts';
 import { createShallowEqualResultSelector } from 'shared/util/selectorUtils';
 import { DerivedArticle } from 'shared/types/Article';
+import { hasMainVideo } from 'shared/util/externalArticle';
 
 // Selects the shared part of the application state mounted at its default point, '.shared'.
 const selectSharedState = (rootState: any): State => rootState.shared;
@@ -157,7 +158,9 @@ const createSelectArticleFromArticleFragment = () =>
           ? externalArticle.fields.firstPublicationDate
           : undefined,
         frontPublicationDate: articleFragment.frontPublicationDate,
-        tone: externalArticle ? externalArticle.frontsMeta.tone : undefined
+        tone: externalArticle ? externalArticle.frontsMeta.tone : undefined,
+        hasMainVideo: !!externalArticle && hasMainVideo(externalArticle),
+        showMainVideo: !!articleMeta.showMainVideo
       };
     }
   );

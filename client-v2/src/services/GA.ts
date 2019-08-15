@@ -34,7 +34,11 @@ const init = () => {
   });
 };
 
-type ImageAdditionMethod = 'drop' | 'paste' | 'click to modal';
+type ImageAdditionMethod =
+  | 'drop'
+  | 'drop-into-card'
+  | 'paste'
+  | 'click to modal';
 
 // NOTE: you are unable to set custom dimensions on events, so the final gtag argument {} being passed in below are not currently working.
 const events = {

@@ -215,7 +215,7 @@ class FeedsContainer extends React.Component<
     displaySearchFilters: false,
     inputState: initState,
     displayPrevResults: false,
-    sortByParam: 'first-publication'
+    sortByParam: 'published'
   };
 
   private interval: null | number = null;

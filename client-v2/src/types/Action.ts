@@ -13,7 +13,11 @@ import {
 } from 'shared/types/Action';
 import { PersistMeta } from 'util/storeMiddleware';
 import { Config } from './Config';
-import { FrontsConfig, VisibleArticlesResponse } from './FaciaApi';
+import {
+  FrontsConfig,
+  VisibleArticlesResponse,
+  EditionsFrontMetadata
+} from './FaciaApi';
 import { BatchAction } from 'redux-batched-actions';
 import { Stages } from 'shared/types/Collection';
 import {
@@ -36,7 +40,8 @@ import {
   EDITOR_OPEN_OVERVIEW,
   EDITOR_CLOSE_OVERVIEW,
   EDITOR_OPEN_ALL_OVERVIEWS,
-  EDITOR_CLOSE_ALL_OVERVIEWS
+  EDITOR_CLOSE_ALL_OVERVIEWS,
+  CHANGED_BROWSING_STAGE
 } from 'bundles/frontsUIBundle';
 import { setFocusState, resetFocusState } from '../bundles/focusBundle';
 import { ActionSetFeatureValue } from 'shared/redux/modules/featureSwitches';
@@ -67,6 +72,11 @@ interface EditorCloseFront {
   type: typeof EDITOR_CLOSE_FRONT;
   payload: { frontId: string };
   meta: PersistMeta;
+}
+
+interface ChangedBrowsingStage {
+  type: typeof CHANGED_BROWSING_STAGE;
+  payload: { frontId: string; browsingStage: Stages };
 }
 
 interface EditorFavouriteFront {
@@ -282,6 +292,14 @@ interface IsPrefillMode {
   };
 }
 
+interface EditionsFrontMetadataUpdate {
+  type: 'FETCH_UPDATE_METADATA_SUCCESS';
+  payload: {
+    frontId: string;
+    metadata: EditionsFrontMetadata;
+  };
+}
+
 type SetFocusState = ReturnType<typeof setFocusState>;
 type ResetFocusState = ReturnType<typeof resetFocusState>;
 
@@ -333,8 +351,10 @@ type Action =
   | SetFocusState
   | ResetFocusState
   | ActionSetFeatureValue
+  | EditionsFrontMetadataUpdate
   | IsPrefillMode
-  | SetHidden;
+  | SetHidden
+  | ChangedBrowsingStage;
 
 export {
   ActionError,
@@ -382,5 +402,6 @@ export {
   RecordStaleFronts,
   StartConfirm,
   EndConfirm,
-  IsPrefillMode
+  IsPrefillMode,
+  ChangedBrowsingStage
 };

@@ -144,6 +144,11 @@ module.exports = async () =>
     app.get('/editions-api/issues/:id/summary', (_, res) =>
       res.json({ ...edition, fronts: undefined })
     );
+
+    app.put('/editions-api/fronts/:id/metadata', (req, res) => {
+      return res.json(req.body);
+    });
+
     app.get('/editions-api/collections/:id/prefill', (req, res) => {
       return res.json(prefill);
     });
