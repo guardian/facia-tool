@@ -48,7 +48,6 @@ import { selectors as collectionSelectors } from 'shared/bundles/collectionsBund
 import { getContributorImage } from 'util/CAPIUtils';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
-import EditModeVisibility from '../util/EditModeVisibility';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -324,25 +323,23 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               id={getInputId(articleFragmentId, 'quote-headline')}
               type="checkbox"
             />
-            <EditModeVisibility visibleMode="fronts">
-              <ConditionalField
-                permittedFields={editableFields}
-                name="showLargeHeadline"
-                component={InputCheckboxToggle}
-                label="Large headline"
-                id={getInputId(articleFragmentId, 'large-headline')}
-                type="checkbox"
-              />
-              <ConditionalField
-                permittedFields={editableFields}
-                name="isBreaking"
-                component={InputCheckboxToggle}
-                label="Breaking News"
-                id={getInputId(articleFragmentId, 'breaking-news')}
-                type="checkbox"
-                dataTestId="edit-form-breaking-news-toggle"
-              />
-            </EditModeVisibility>
+            <ConditionalField
+              permittedFields={editableFields}
+              name="showLargeHeadline"
+              component={InputCheckboxToggle}
+              label="Large headline"
+              id={getInputId(articleFragmentId, 'large-headline')}
+              type="checkbox"
+            />
+            <ConditionalField
+              permittedFields={editableFields}
+              name="isBreaking"
+              component={InputCheckboxToggle}
+              label="Breaking News"
+              id={getInputId(articleFragmentId, 'breaking-news')}
+              type="checkbox"
+              dataTestId="edit-form-breaking-news-toggle"
+            />
             <ConditionalField
               permittedFields={editableFields}
               name="showByline"
