@@ -287,8 +287,7 @@ class FeedsContainer extends React.Component<
   };
 
   public renderSearchFixedContent = (displaySearchFilters: boolean) => {
-    const { livePagination, previewPagination } = this.props;
-    const pagination = this.isLive ? livePagination : previewPagination;
+    const pagination = this.getPagination();
     const hasPages = !!(pagination && pagination.totalPages > 1);
     return (
       <React.Fragment>
@@ -335,7 +334,7 @@ class FeedsContainer extends React.Component<
                   {pagination && hasPages && (
                     <PaginationContainer>
                       <Pagination
-                        pageChange={this.pageChange}
+                        pageChange={this.handlePageChange}
                         currentPage={pagination.currentPage}
                         totalPages={pagination.totalPages}
                       />
@@ -400,39 +399,34 @@ class FeedsContainer extends React.Component<
     );
   }
 
-  private pageChange = (requestPage: number) => {
-    const { inputState } = this.state;
-    const searchTerm = inputState.query;
-    const paginationParams = {
-      ...getParams(searchTerm, inputState, false, this.state.sortByParam),
-      page: requestPage
-    };
-    this.isLive
-      ? this.props.fetchLive(paginationParams, false)
-      : this.props.fetchPreview(paginationParams, false);
-    if (requestPage > 1) {
+  private getPagination() {
+    const { livePagination, previewPagination } = this.props;
+    return this.isLive ? livePagination : previewPagination;
+  }
+
+  private handlePageChange = (page: number) => {
+    if (page > 1) {
+      this.runSearch(page);
       this.stopPolling();
     } else {
       this.runSearchAndRestartPolling();
     }
   };
 
-  private runSearch() {
+  private runSearch(page: number = 1) {
     const { inputState } = this.state;
     const { capiFeedIndex } = this.state;
     const maybeArticleId = getIdFromURL(inputState.query);
     const searchTerm = maybeArticleId ? maybeArticleId : inputState.query;
-    if (capiFeedIndex === 0) {
-      this.props.fetchLive(
-        getParams(searchTerm, inputState, false, this.state.sortByParam),
-        !!maybeArticleId
-      );
-    } else {
-      this.props.fetchPreview(
-        getParams(searchTerm, inputState, true, this.state.sortByParam),
-        !!maybeArticleId
-      );
-    }
+    const isLive = capiFeedIndex === 0;
+    const fetch = isLive ? this.props.fetchLive : this.props.fetchPreview;
+    fetch(
+      {
+        ...getParams(searchTerm, inputState, !isLive, this.state.sortByParam),
+        page
+      },
+      !!maybeArticleId
+    );
   }
 
   private runSearchAndRestartPolling() {
