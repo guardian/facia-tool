@@ -1,6 +1,6 @@
 package util
 
-import com.gu.contentapi.client.model.v1.Content
+import com.gu.contentapi.client.model.v1.{Content, TagType}
 import com.gu.contentapi.json.CirceDecoders._
 import com.gu.facia.api.utils.{CardStyle, ResolvedMetaData}
 import com.gu.facia.client.models.TrailMetaData
@@ -30,14 +30,21 @@ object ContentUpgrade {
 
   def upgradeResponse(json: JValue) = {
     json \ "response" match {
+
       case jsObject: JObject =>
-        JObject("response" -> (jsObject ~ JObject(ContentFields flatMap { field =>
-          jsObject \ field match {
-            case JArray(items) => Some(field -> JArray(items.map(upgradeItem)))
-            case item: JObject => Some(field -> upgradeItem(item))
-            case _ => None
+        val newValues:List[JField] = jsObject.values.map { case (key, _) =>
+          if (ContentFields.contains(key)) {
+            jsObject \ key match {
+              case JArray(items) => (key -> JArray(items.map(upgradeItem)))
+              case item: JObject => (key -> upgradeItem(item))
+              case value => (key, value)
+            }
+          } else {
+            (key, jsObject \ key)
           }
-        }: _*)))
+        }.toList
+
+        JObject("response" -> JObject(newValues))
 
       case x => x
     }
@@ -48,20 +55,41 @@ object ContentUpgrade {
       val jsonString = JsonMethods.compact(JsonMethods.render(json))
       val maybeParsedJson: Option[Json] = parser.parse(jsonString).right.toOption
       val maybeCapiContent: Option[Content] = maybeParsedJson.flatMap(json => json.as[Content].right.toOption)
-
       (json, maybeCapiContent) match {
         case (jsObject: JObject, Some(content)) =>
           val cardStyle = CardStyle(content, TrailMetaData.empty)
-          val metaDataMap: Map[String, Boolean] = ResolvedMetaData.toMap(ResolvedMetaData.fromContent(content, cardStyle))
+          val initialMetaDataMap: Map[String, Boolean] = ResolvedMetaData.toMap(ResolvedMetaData.fromContent(content, cardStyle))
+
+          // ResolvedMetaData here has a ton of booleans, but some may have been set naively
+          // If the cutout bool is set, we want to find the cutout values and add them in to a sub-object
+          val (metaDataMap, maybeFirstContributorWithCutout) = initialMetaDataMap.get("imageCutoutReplace") match {
+            case Some(true) => {
+              getBylineLargeImageUrlOption(content)  match {
+                case bylineLargeImageUrlOption@Some(_) => (initialMetaDataMap, bylineLargeImageUrlOption)
+                // If we can't find a cutout value, turn off the cutout bool
+                case None => (initialMetaDataMap + ("imageCutoutReplace" -> false), None)
+              }
+            }
+            case _ => (initialMetaDataMap, None)
+          }
 
           jsObject ~ ("frontsMeta" ->
-            ("defaults" -> metaDataMap) ~
-              ("tone" -> cardStyle.toneString))
+            ("defaults" -> metaDataMap)
+              ~ ("tone" -> cardStyle.toneString)
+              ~ ("cutout" -> maybeFirstContributorWithCutout)
+          )
         case _ => json
       }
     }) match {
       case Success(capiItem) => capiItem
       case Failure(_) => json
     }
+  }
+
+  private def getBylineLargeImageUrlOption(content: Content) = {
+    content.tags
+      .filter(t => t.`type` == TagType.Contributor)
+      .find(t => t.bylineLargeImageUrl.isDefined)
+      .flatMap(t => t.bylineLargeImageUrl)
   }
 }

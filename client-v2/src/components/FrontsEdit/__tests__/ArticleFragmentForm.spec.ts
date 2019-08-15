@@ -18,6 +18,7 @@ const formValues = {
   },
   headline: "Sister of academic's killer warned police he was mentally ill",
   imageCutoutReplace: false,
+  imageCutoutSrc: 'somewhere',
   imageHide: false,
   imageReplace: false,
   imageSlideshowReplace: false,
