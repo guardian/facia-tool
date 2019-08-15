@@ -104,7 +104,6 @@ const Tone = styled('span')`
   font-weight: normal;
 `;
 
-
 const ImageAndGraphWrapper = styled('div')<{ size: CollectionItemSizes }>`
   display: flex;
   flex-direction: row;
@@ -350,17 +349,17 @@ const articleBodyDefault = React.memo(
                     <ThumbnailCutout src={cutoutThumbnail} />
                   ) : null}
                   {hasMainVideo && (
-                  <VideoIconContainer>
-                    <VideoIcon />
-                  </VideoIconContainer>
-                )}
+                    <VideoIconContainer>
+                      <VideoIcon />
+                    </VideoIconContainer>
+                  )}
                 </ThumbnailSmall>
                 <ImageMetadataContainer>
-                {imageSlideshowReplace && 'Slideshow'}
-                {imageReplace && 'Image replaced'}
-                {imageCutoutReplace && 'Cutout replaced'}
-                {showMainVideo && 'Show video'}
-              </ImageMetadataContainer>
+                  {imageSlideshowReplace && 'Slideshow'}
+                  {imageReplace && 'Image replaced'}
+                  {imageCutoutReplace && 'Cutout replaced'}
+                  {showMainVideo && 'Show video'}
+                </ImageMetadataContainer>
               </DraggableArticleImageContainer>
             ))}
         </ImageAndGraphWrapper>
