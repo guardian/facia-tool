@@ -10,7 +10,7 @@ import {
   discardDraftChangesToCollection,
   openCollectionsAndFetchTheirArticles
 } from 'actions/Collections';
-import { actions } from 'shared/bundles/collectionsBundle';
+import { actions, selectors } from 'shared/bundles/collectionsBundle';
 import {
   selectHasUnpublishedChanges,
   selectCollectionHasPrefill,
@@ -65,6 +65,7 @@ type CollectionProps = CollectionPropsBeforeState & {
   isCollectionLocked: boolean;
   isEditFormOpen: boolean;
   isOpen: boolean;
+  hasContent: boolean;
   hasMultipleFrontsOpen: boolean;
   onChangeOpenState: (id: string, isOpen: boolean) => void;
   fetchPreviousCollectionArticles: (id: string) => void;
@@ -128,7 +129,8 @@ class Collection extends React.Component<CollectionProps> {
       isEditFormOpen,
       discardDraftChangesToCollection: discardDraftChanges,
       hasPrefill,
-      isHidden
+      isHidden,
+      hasContent
     } = this.props;
 
     const { isPreviouslyOpen } = this.state;
@@ -214,30 +216,31 @@ class Collection extends React.Component<CollectionProps> {
         }
       >
         {groups.map(group => children(group, isUneditable, true))}
-
-        <EditModeVisibility visibleMode="fronts">
-          <PreviouslyCollectionContainer data-testid="previously">
-            <PreviouslyCollectionToggle
-              onClick={this.togglePreviouslyOpen}
-              data-testid="previously-toggle"
-            >
-              Recently removed from launched front
-              <ButtonCircularCaret active={isPreviouslyOpen} />
-            </PreviouslyCollectionToggle>
-            {isPreviouslyOpen && (
-              <>
-                <PreviouslyCollectionInfo>
-                  This contains the 5 most recently deleted articles from the
-                  live front. If the deleted articles were never launched they
-                  will not appear here.
-                </PreviouslyCollectionInfo>
-                <PreviouslyGroupsWrapper>
-                  {children(previousGroup, true, false)}
-                </PreviouslyGroupsWrapper>
-              </>
-            )}
-          </PreviouslyCollectionContainer>
-        </EditModeVisibility>
+        {hasContent && (
+          <EditModeVisibility visibleMode="fronts">
+            <PreviouslyCollectionContainer data-testid="previously">
+              <PreviouslyCollectionToggle
+                onClick={this.togglePreviouslyOpen}
+                data-testid="previously-toggle"
+              >
+                Recently removed from launched front
+                <ButtonCircularCaret active={isPreviouslyOpen} />
+              </PreviouslyCollectionToggle>
+              {isPreviouslyOpen && (
+                <>
+                  <PreviouslyCollectionInfo>
+                    This contains the 5 most recently deleted articles from the
+                    live front. If the deleted articles were never launched they
+                    will not appear here.
+                  </PreviouslyCollectionInfo>
+                  <PreviouslyGroupsWrapper>
+                    {children(previousGroup, true, false)}
+                  </PreviouslyGroupsWrapper>
+                </>
+              )}
+            </PreviouslyCollectionContainer>
+          </EditModeVisibility>
+        )}
       </CollectionDisplay>
     );
   }
@@ -276,7 +279,8 @@ const createMapStateToProps = () => {
       }),
       isOpen: selectIsCollectionOpen(state, collectionId),
       hasMultipleFrontsOpen: selectHasMultipleFrontsOpen(state, priority),
-      isEditFormOpen: selectDoesCollectionHaveOpenForms(state, collectionId)
+      isEditFormOpen: selectDoesCollectionHaveOpenForms(state, collectionId),
+      hasContent: !!selectors.selectById(selectSharedState(state), collectionId)
     };
   };
 };
