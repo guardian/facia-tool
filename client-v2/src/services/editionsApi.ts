@@ -2,6 +2,7 @@ import { EditionsIssue } from 'types/Edition';
 import { Moment } from 'moment';
 import pandaFetch from './pandaFetch';
 import { CAPISearchQueryResponse } from './capiQuery';
+import { EditionsFrontMetadata } from 'types/FaciaApi';
 
 const dateFormat = 'YYYY-MM-DD';
 
@@ -85,5 +86,18 @@ export const getPrefills = async (
   return pandaFetch(`/editions-api/collections/${id}/prefill`, {
     method: 'get',
     credentials: 'same-origin'
+  }).then(response => response.json());
+};
+
+export const putFrontMetadata = (
+  id: string,
+  metadata: EditionsFrontMetadata
+) => {
+  return pandaFetch(`/editions-api/fronts/${id}/metadata`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(metadata)
   }).then(response => response.json());
 };

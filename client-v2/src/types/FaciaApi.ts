@@ -22,6 +22,12 @@ interface FrontConfigResponse {
   title?: string;
   webTitle?: string;
   navSection?: string;
+  canRename?: boolean;
+  metadata?: EditionsFrontMetadata;
+}
+
+interface EditionsFrontMetadata {
+  nameOverride?: string;
 }
 
 type Platform = 'Web' | 'Platform';
@@ -107,6 +113,7 @@ interface EditionCollectionFromResponse {
   groups?: string[];
   metadata?: Array<{ type: string }>;
   uneditable?: boolean;
+  isHidden?: boolean;
 }
 
 interface EditionCollectionResponse {
@@ -130,5 +137,6 @@ export {
   CollectionResponse,
   EditionCollectionResponse,
   VisibleArticlesResponse,
-  FrontsToolSettings
+  FrontsToolSettings,
+  EditionsFrontMetadata
 };

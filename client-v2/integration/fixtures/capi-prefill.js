@@ -132,7 +132,7 @@ module.exports = {
               'https://preview.content.guardianapis.com/profile/julianborger',
             references: [],
             bio:
-              '<p>Julian Borger is the Guardian\'s world affairs editor. He was previously a correspondent in the US, the Middle East, eastern Europe and the Balkans. His book on the pursuit and capture of the Balkan war criminals, <a href="https://bookshop.theguardian.com/catalog/product/view/id/359254/?utm_source=editoriallink&amp;utm_medium=merch&amp;utm_campaign=article">The Butcher\'s Trail</a>, is published by Other Press. Click <a href="https://pgp.theguardian.com/PublicKeys/Julian%20Borger.pub.txt">here</a> for Julian\'s public key</p>',
+              '<p>Julian Borger is the Guardian\'s world affairs editor. He was previously a correspondent in the US, the Middle East, eastern Europe and the Balkans. His book on the pursuit and capture of the Balkan war criminals, <a href="https://bookshop.theguardian.com/catalog/product/view/id/359254/?utm_source=editoriallink&amp;utm_medium=merch&amp;utm_campaign=article">The Butcher\'s Trail</a>, is published by Other Press. Click <a href="https://www.theguardian.com/pgp/PublicKeys/Julian%20Borger.pub.txt">here</a> for Julian\'s public key</p>',
             bylineImageUrl:
               'https://static.guim.co.uk/sys-images/Guardian/Pix/contributor/2016/1/8/1452247825373/Julian-Borger.jpg',
             bylineLargeImageUrl:
@@ -1270,7 +1270,7 @@ module.exports = {
               'https://preview.content.guardianapis.com/profile/charlie-phillips',
             references: [],
             bio:
-              '<p>Charlie Phillips is head of documentaries at the Guardian.&nbsp;Click <a href="https://pgp.theguardian.com/PublicKeys/Charlie%20Phillips.pub.txt">here</a> for Charlie Phillip\'s public key</p>',
+              '<p>Charlie Phillips is head of documentaries at the Guardian.&nbsp;Click <a href="https://www.theguardian.com/pgp/PublicKeys/Charlie%20Phillips.pub.txt">here</a> for Charlie Phillip\'s public key</p>',
             bylineImageUrl:
               'https://uploads.guim.co.uk/2018/08/22/Charlie-Phillips.jpg',
             bylineLargeImageUrl:
@@ -1766,7 +1766,7 @@ module.exports = {
               'https://preview.content.guardianapis.com/profile/julianborger',
             references: [],
             bio:
-              '<p>Julian Borger is the Guardian\'s world affairs editor. He was previously a correspondent in the US, the Middle East, eastern Europe and the Balkans. His book on the pursuit and capture of the Balkan war criminals, <a href="https://bookshop.theguardian.com/catalog/product/view/id/359254/?utm_source=editoriallink&amp;utm_medium=merch&amp;utm_campaign=article">The Butcher\'s Trail</a>, is published by Other Press. Click <a href="https://pgp.theguardian.com/PublicKeys/Julian%20Borger.pub.txt">here</a> for Julian\'s public key</p>',
+              '<p>Julian Borger is the Guardian\'s world affairs editor. He was previously a correspondent in the US, the Middle East, eastern Europe and the Balkans. His book on the pursuit and capture of the Balkan war criminals, <a href="https://bookshop.theguardian.com/catalog/product/view/id/359254/?utm_source=editoriallink&amp;utm_medium=merch&amp;utm_campaign=article">The Butcher\'s Trail</a>, is published by Other Press. Click <a href="https://www.theguardian.com/pgp/PublicKeys/Julian%20Borger.pub.txt">here</a> for Julian\'s public key</p>',
             bylineImageUrl:
               'https://static.guim.co.uk/sys-images/Guardian/Pix/contributor/2016/1/8/1452247825373/Julian-Borger.jpg',
             bylineLargeImageUrl:
@@ -2961,7 +2961,7 @@ module.exports = {
               'https://preview.content.guardianapis.com/profile/charlie-phillips',
             references: [],
             bio:
-              '<p>Charlie Phillips is head of documentaries at the Guardian.&nbsp;Click <a href="https://pgp.theguardian.com/PublicKeys/Charlie%20Phillips.pub.txt">here</a> for Charlie Phillip\'s public key</p>',
+              '<p>Charlie Phillips is head of documentaries at the Guardian.&nbsp;Click <a href="https://www.theguardian.com/pgp/PublicKeys/Charlie%20Phillips.pub.txt">here</a> for Charlie Phillip\'s public key</p>',
             bylineImageUrl:
               'https://uploads.guim.co.uk/2018/08/22/Charlie-Phillips.jpg',
             bylineLargeImageUrl:

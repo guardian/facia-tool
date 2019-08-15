@@ -23,7 +23,8 @@ import {
   EditorOpenOverview,
   EditorCloseOverview,
   EditorOpenAllOverviews,
-  EditorCloseAllOverviews
+  EditorCloseAllOverviews,
+  ChangedBrowsingStage
 } from 'types/Action';
 import { State as GlobalState } from 'types/State';
 import { State as GlobalSharedState } from 'shared/types/State';
@@ -39,6 +40,7 @@ import {
 } from 'shared/actions/ArticleFragments';
 import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
 import { selectSharedState } from 'shared/selectors/shared';
+import { Stages } from 'shared/types/Collection';
 
 export const EDITOR_OPEN_CURRENT_FRONTS_MENU =
   'EDITOR_OPEN_CURRENT_FRONTS_MENU';
@@ -63,6 +65,7 @@ export const EDITOR_OPEN_OVERVIEW = 'EDITOR_OPEN_OVERVIEW';
 export const EDITOR_CLOSE_OVERVIEW = 'EDITOR_CLOSE_OVERVIEW';
 export const EDITOR_OPEN_ALL_OVERVIEWS = 'EDITOR_OPEN_ALL_OVERVIEWS';
 export const EDITOR_CLOSE_ALL_OVERVIEWS = 'EDITOR_CLOSE_ALL_OVERVIEWS';
+export const CHANGED_BROWSING_STAGE = 'CHANGED_BROWSING_STAGE';
 
 const editorOpenCollections = (
   collectionIds: string | string[]
@@ -122,6 +125,19 @@ const editorCloseFront = (frontId: string): EditorCloseFront => {
     payload: { frontId },
     meta: {
       persistTo: 'openFrontIds'
+    }
+  };
+};
+
+const changedBrowsingStage = (
+  frontId: string,
+  browsingStage: Stages
+): ChangedBrowsingStage => {
+  return {
+    type: CHANGED_BROWSING_STAGE,
+    payload: {
+      frontId,
+      browsingStage
     }
   };
 };
@@ -244,6 +260,9 @@ interface State {
   clipboardOpen: boolean;
   selectedArticleFragments: {
     [frontId: string]: OpenArticleFragmentData[];
+  };
+  frontIdsByBrowsingStage: {
+    [frontId: string]: Stages;
   };
 }
 
@@ -398,7 +417,8 @@ const defaultState = {
   collectionIds: [],
   clipboardOpen: true,
   closedOverviews: [],
-  selectedArticleFragments: {}
+  selectedArticleFragments: {},
+  frontIdsByBrowsingStage: {}
 };
 
 const clearArticleFragmentSelection = (
@@ -482,6 +502,17 @@ const reducer = (
         }
       };
     }
+
+    case CHANGED_BROWSING_STAGE: {
+      return {
+        ...state,
+        frontIdsByBrowsingStage: {
+          ...state.frontIdsByBrowsingStage,
+          [action.payload.frontId]: action.payload.browsingStage
+        }
+      };
+    }
+
     case EDITOR_MOVE_FRONT: {
       const maybeFrontPosition = getFrontPosition(
         action.payload.frontId,
@@ -708,7 +739,8 @@ export {
   selectHasMultipleFrontsOpen,
   createSelectCollectionIdsWithOpenForms,
   createSelectDoesCollectionHaveOpenForms,
-  OpenArticleFragmentData
+  OpenArticleFragmentData,
+  changedBrowsingStage
 };
 
 export default reducer;

@@ -48,6 +48,7 @@ import { selectors as collectionSelectors } from 'shared/bundles/collectionsBund
 import { getContributorImage } from 'util/CAPIUtils';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
+import EditModeVisibility from '../util/EditModeVisibility';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -192,6 +193,17 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
     const isEditionsMode = editMode === 'editions';
 
+    const setCustomKicker = (customKickerValue: string) => {
+      change('customKicker', customKickerValue);
+      change('showKickerCustom', true);
+
+      // kicker suggestions now set the value of `customKicker` rather than set a flag
+      // set the old flags to false
+      ['showKickerTag', 'showKickerSection'].forEach(field =>
+        change(field, false)
+      );
+    };
+
     return (
       <FormContainer onSubmit={handleSubmit} data-testid="edit-form">
         <CollectionHeadingPinline>
@@ -238,11 +250,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 return value;
               }}
               onChange={e => {
-                change('showKickerCustom', true);
-                change('showKickerTag', false);
-                change('showKickerSection', false);
                 if (e) {
-                  change('customKicker', e.target.value);
+                  setCustomKicker(e.target.value);
                 }
               }}
             />
@@ -258,15 +267,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                   buttonText={kickerOptions.webTitle}
                   selected={showKickerTag}
                   size="s"
-                  onClick={() => {
-                    if (!showKickerTag) {
-                      change('showKickerTag', true);
-                      change('showKickerSection', false);
-                      change('showKickerCustom', false);
-                    } else {
-                      change('showKickerTag', false);
-                    }
-                  }}
+                  onClick={() => setCustomKicker(kickerOptions.webTitle!)}
                 />
               )}{' '}
               {kickerOptions.sectionName && (
@@ -277,15 +278,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                   selected={showKickerSection}
                   size="s"
                   buttonText={kickerOptions.sectionName}
-                  onClick={() => {
-                    if (!showKickerSection) {
-                      change('showKickerSection', true);
-                      change('showKickerTag', false);
-                      change('showKickerCustom', false);
-                    } else {
-                      change('showKickerSection', false);
-                    }
-                  }}
+                  onClick={() => setCustomKicker(kickerOptions.sectionName!)}
                 />
               )}
             </ConditionalComponent>
@@ -331,23 +324,25 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               id={getInputId(articleFragmentId, 'quote-headline')}
               type="checkbox"
             />
-            <ConditionalField
-              permittedFields={editableFields}
-              name="showLargeHeadline"
-              component={InputCheckboxToggle}
-              label="Large headline"
-              id={getInputId(articleFragmentId, 'large-headline')}
-              type="checkbox"
-            />
-            <ConditionalField
-              permittedFields={editableFields}
-              name="isBreaking"
-              component={InputCheckboxToggle}
-              label="Breaking News"
-              id={getInputId(articleFragmentId, 'breaking-news')}
-              type="checkbox"
-              dataTestId="edit-form-breaking-news-toggle"
-            />
+            <EditModeVisibility visibleMode="fronts">
+              <ConditionalField
+                permittedFields={editableFields}
+                name="showLargeHeadline"
+                component={InputCheckboxToggle}
+                label="Large headline"
+                id={getInputId(articleFragmentId, 'large-headline')}
+                type="checkbox"
+              />
+              <ConditionalField
+                permittedFields={editableFields}
+                name="isBreaking"
+                component={InputCheckboxToggle}
+                label="Breaking News"
+                id={getInputId(articleFragmentId, 'breaking-news')}
+                type="checkbox"
+                dataTestId="edit-form-breaking-news-toggle"
+              />
+            </EditModeVisibility>
             <ConditionalField
               permittedFields={editableFields}
               name="showByline"

@@ -14,7 +14,7 @@ class ViewsController(val acl: Acl, assetsManager: AssetsManager, isDev: Boolean
   def priorities() = AccessAuthAction { request =>
     val identity = request.user
     Cached(60) {
-      Ok(views.html.priority(Option(identity), config.facia.stage, isDev))
+      Ok(views.html.priority(Option(identity), config.facia.stage, isDev, true))
     }
   }
 
@@ -22,7 +22,7 @@ class ViewsController(val acl: Acl, assetsManager: AssetsManager, isDev: Boolean
     val identity = request.user
     Cached(60) {
       Ok(views.html.admin_main(Option(identity), config.facia.stage, overrideIsDev(request, isDev),
-        assetsManager.pathForCollections, crypto.encrypt(identity.email)))
+        assetsManager.pathForCollections, crypto.encrypt(identity.email), true, priority))
     }
   }
 
@@ -30,7 +30,7 @@ class ViewsController(val acl: Acl, assetsManager: AssetsManager, isDev: Boolean
     val identity = request.user
     Cached(60) {
       Ok(views.html.admin_main(Option(identity), config.facia.stage, overrideIsDev(request, isDev),
-        assetsManager.pathForConfig, crypto.encrypt(identity.email)))
+        assetsManager.pathForConfig, crypto.encrypt(identity.email), false))
     }
   }
 
