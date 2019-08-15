@@ -155,6 +155,28 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       publishedFront.collections.find(_.id == "special") shouldBe None
     }
 
+    "collection displayName should be provided" in {
+      val test = EditionsCollection(
+        "id",
+        "Display Name",
+        isHidden = false,
+        None,
+        None,
+        None,
+        None,
+        Nil
+      )
+      val testFront = front("uk-news",
+        collection("london", None),
+        test
+      )
+
+      val publishedFront = testFront.toPublishedFront
+      publishedFront.collections.size shouldBe 2
+      val publishedTestCollection = publishedFront.collections.find(_.id == "id").value
+      publishedTestCollection.name shouldBe "Display Name"
+    }
+
     "Fronts should not override name if there's not one defined" in {
       val front = EditionsFront(
         "id",
@@ -173,7 +195,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       published shouldBe PublishedFront("id", "Original Name", Nil, Swatch.Neutral)
     }
 
-    "Front name should be overriden correctly" in {
+    "Front name should be overridden correctly" in {
       val front = EditionsFront(
         "id",
         "Original Name",

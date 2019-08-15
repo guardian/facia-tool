@@ -56,6 +56,20 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
       json shouldBe expectedJson
     }
 
+    "test serialisation of a published collection" in {
+      val expectedJson =
+        """{
+          |  "id" : "id",
+          |  "name" : "Display Name",
+          |  "items" : [ ]
+          |}""".stripMargin
+
+      val collection = PublishedCollection("id", "Display Name", Nil)
+      val json = Json.prettyPrint(Json.toJson(collection))
+
+      json shouldBe expectedJson
+    }
+
     "test serialisation of article furniture" - {
       "should output all the fields in the format expected by the editions backend" in {
         val expectedJson =
