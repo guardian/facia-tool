@@ -18,7 +18,9 @@ class ArticleGraph extends React.Component<ArticleGraphProps> {
 
     return (
       <>
-        <span>{data && data.totalHits.toLocaleString()}</span>
+        {data && data.totalHits > 0 && (
+          <span>{data.totalHits.toLocaleString()}</span>
+        )}
         <AreaChart
           width={40}
           height={14}
