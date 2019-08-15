@@ -1,8 +1,9 @@
-import { DerivedArticle } from 'shared/types/Article';
 import { oc } from 'ts-optchain';
 import { Element } from 'types/Capi';
+import { ExternalArticle } from 'shared/types/ExternalArticle';
+import { DerivedArticle } from 'shared/types/Article';
 
-export const hasMainVideo = (article: DerivedArticle) => {
+export const hasMainVideo = (article: ExternalArticle | DerivedArticle) => {
   return (
     hasMainMediaVideoAtom(article) ||
     getArticleMainElementType(article) === 'video'
@@ -10,12 +11,16 @@ export const hasMainVideo = (article: DerivedArticle) => {
 };
 
 // this function probably refers to old-style video pages which have a main element of type video
-export function getArticleMainElementType(article: DerivedArticle) {
+export function getArticleMainElementType(
+  article: ExternalArticle | DerivedArticle
+) {
   const element = (article.elements || []).find(_ => _.relation === 'main');
   return element ? element.type : undefined;
 }
 
-export function hasMainMediaVideoAtom(article: DerivedArticle) {
+export function hasMainMediaVideoAtom(
+  article: ExternalArticle | DerivedArticle
+) {
   const mainBlockElement = oc(article).blocks.main.elements([])[0] || undefined;
 
   function hasMediaAtomMainMedia(blockElement: Element) {

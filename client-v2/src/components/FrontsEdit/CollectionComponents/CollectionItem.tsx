@@ -45,6 +45,7 @@ import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selecto
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
 import { PageViewStory } from 'shared/types/PageViewData';
+import { events } from 'services/GA';
 
 const imageDropTypes = [
   ...gridDropTypes,
@@ -213,6 +214,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
   };
 
   private handleImageDrop = (e: React.DragEvent<HTMLElement>) => {
+    events.imageAdded(this.props.frontId, 'drop-into-card');
     e.preventDefault();
     e.persist();
 

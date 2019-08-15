@@ -17,6 +17,7 @@ type DerivedArticle = Partial<
     kicker?: string;
     isLive: boolean;
     tone: string | undefined;
+    hasMainVideo: boolean;
   };
 
 export { DerivedArticle };
