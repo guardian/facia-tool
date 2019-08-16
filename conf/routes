@@ -108,6 +108,7 @@ POST        /editions-api/issues/:id/publish                     controllers.Edi
 GET         /editions-api/issues/:id/preview                     controllers.EditionsController.getPreviewEdition(id)
 
 PUT         /editions-api/fronts/:frontId/metadata               controllers.EditionsController.putFrontMetadata(frontId)
+PUT         /editions-api/fronts/:frontId/is-hidden/:state       controllers.EditionsController.putFrontHiddenState(frontId, state: Boolean)
 
 POST        /editions-api/collections                            controllers.EditionsController.getCollections
 PUT         /editions-api/collections/:collectionId              controllers.EditionsController.updateCollection(collectionId)

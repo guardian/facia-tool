@@ -118,4 +118,10 @@ class EditionsController(db: EditionsDB,
   def putFrontMetadata(id: String) = AccessAPIAuthAction(parse.json[EditionsFrontMetadata]) { req =>
     Ok(Json.toJson(db.updateFrontMetadata(id, req.body)))
   }
+
+  def putFrontHiddenState(id: String, state: Boolean) = AccessAPIAuthAction { req =>
+    db.updateFrontHiddenState(id, state).map { state =>
+      Ok(Json.toJson(state))
+    } getOrElse NotFound(s"Front $id not found")
+  }
 }
