@@ -2,6 +2,7 @@ import React from 'react';
 import {
   getIssueSummary,
   publishIssue,
+  putFrontHiddenState,
   putFrontMetadata
 } from 'services/editionsApi';
 import { ThunkResult } from 'types/Store';
@@ -72,6 +73,24 @@ export const updateFrontMetadata = (
       payload: {
         frontId: id,
         metadata: serverMetadata
+      }
+    });
+  } catch (error) {
+    // @todo implement centralised error handling
+  }
+};
+
+export const setFrontHiddenState = (
+  id: string,
+  hidden: boolean
+): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
+  try {
+    const serverHidden = await putFrontHiddenState(id, hidden);
+    dispatch({
+      type: 'FETCH_FRONT_HIDDEN_STATE_SUCCESS',
+      payload: {
+        frontId: id,
+        hidden: serverHidden
       }
     });
   } catch (error) {

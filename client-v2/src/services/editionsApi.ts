@@ -101,3 +101,9 @@ export const putFrontMetadata = (
     body: JSON.stringify(metadata)
   }).then(response => response.json());
 };
+
+export const putFrontHiddenState = (id: string, hidden: boolean) => {
+  return pandaFetch(`/editions-api/fronts/${id}/is-hidden/${hidden}`, {
+    method: 'PUT'
+  }).then(response => response.json());
+};
