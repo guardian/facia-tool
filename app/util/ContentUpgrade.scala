@@ -31,18 +31,12 @@ object ContentUpgrade {
   def upgradeResponse(json: JValue) = {
     json \ "response" match {
 
-      case jsObject: JObject =>
-        val newValues:List[JField] = jsObject.values.map { case (key, _) =>
-          if (ContentFields.contains(key)) {
-            jsObject \ key match {
-              case JArray(items) => (key -> JArray(items.map(upgradeItem)))
-              case item: JObject => (key -> upgradeItem(item))
-              case value => (key, value)
-            }
-          } else {
-            (key, jsObject \ key)
-          }
-        }.toList
+      case JObject(fields) =>
+        val newValues:List[JField] = fields.map {
+          case (key, JArray(items)) if ContentFields.contains(key) => key -> JArray(items.map(upgradeItem))
+          case (key, item: JObject) if ContentFields.contains(key) => key -> upgradeItem(item)
+          case ignore => ignore
+        }
 
         JObject("response" -> JObject(newValues))
 
