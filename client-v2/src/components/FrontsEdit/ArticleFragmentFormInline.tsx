@@ -146,7 +146,7 @@ const RenderSlideshow = ({ fields, frontId }: RenderSlideshowProps) => (
 );
 
 const CheckboxFieldsContainer: React.SFC<{
-  children: JSX.Element[];
+  children: Array<React.ReactElement<{ name: string }>>;
   editableFields: string[];
 }> = ({ children, editableFields }) => {
   const childrenToRender = children.filter(child =>
