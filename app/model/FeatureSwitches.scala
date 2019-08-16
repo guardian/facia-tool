@@ -28,11 +28,17 @@ object FeatureSwitches {
   val all: List[FeatureSwitch] = List(ObscureFeed, PageViewDataVisualisation)
 
   def updateFeatureSwitchesForUser(userDataSwitches: Option[List[FeatureSwitch]], switch: FeatureSwitch): List[FeatureSwitch] = {
-    userDataSwitches match {
+    val newSwitches = userDataSwitches match {
       case Some(switches) =>
-        all.diff(switches) ++ switches.filter(_.key != switch.key) ++ List(switch)
+        val defaultSwitches = all.filter(defaultSwitch => !switches.exists(_.key == defaultSwitch.key) && defaultSwitch.key != switch.key)
+        defaultSwitches ++ switches.filter(_.key != switch.key) ++ List(switch)
       case None =>
         all.filter(_.key != switch.key) ++ List(switch)
     }
+    removeUnknownSwitches(newSwitches)
   }
+
+  def removeUnknownSwitches(featureSwitches: List[FeatureSwitch]) = 
+    featureSwitches.filter(featureSwitch =>
+      FeatureSwitches.all.exists(_.key == featureSwitch.key))
 }
