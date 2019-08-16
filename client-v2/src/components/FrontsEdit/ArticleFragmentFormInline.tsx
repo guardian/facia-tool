@@ -435,23 +435,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                       : articleCapiFieldValues.thumbnail
                   }
                   useDefault={!imageCutoutReplace && !imageReplace}
-                  message={imageCutoutReplace ? 'Add cutout' : 'Add image'}
+                  message={imageCutoutReplace ? 'Add cutout' : 'Replace image'}
                   onChange={this.handleImageChange}
                 />
               </ImageCol>
               <Col flex={2}>
-                <InputGroup>
-                  <ConditionalField
-                    permittedFields={editableFields}
-                    name="imageReplace"
-                    component={InputCheckboxToggleInline}
-                    label="Replace media"
-                    id={getInputId(articleFragmentId, 'image-replace')}
-                    type="checkbox"
-                    default={false}
-                    onChange={_ => this.changeImageField('imageReplace')}
-                  />
-                </InputGroup>
                 <InputGroup>
                   <ConditionalField
                     permittedFields={editableFields}
@@ -489,6 +477,20 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     }
                   />
                 </InputGroup>
+                {imageReplace && (
+                  <InputGroup>
+                    <ConditionalField
+                      permittedFields={editableFields}
+                      name="imageReplace"
+                      component={InputCheckboxToggleInline}
+                      label="Use original image"
+                      id={getInputId(articleFragmentId, 'image-replace')}
+                      type="checkbox"
+                      default={false}
+                      onChange={_ => this.changeImageField('imageReplace')}
+                    />
+                  </InputGroup>
+                )}
               </Col>
             </Row>
             <ConditionalComponent

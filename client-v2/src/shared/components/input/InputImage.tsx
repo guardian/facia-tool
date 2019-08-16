@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEventHandler } from 'react';
 import { theme as globalTheme, styled } from 'shared/constants/theme';
 import { connect } from 'react-redux';
 import { WrappedFieldProps } from 'redux-form';
@@ -170,7 +170,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       gridUrl,
       useDefault,
       defaultImageUrl,
-      message = 'Add image',
+      message = 'Replace image',
       editMode
     } = this.props;
 
@@ -243,8 +243,9 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                   name="paste-url"
                   placeholder=" Paste crop url"
                   defaultValue={this.state.imageSrc}
-                  onKeyDown={this.handlePasteImgSrcSubmit(13)}
                   onChange={this.handlePasteImgSrcChange}
+                  onKeyUp={this.handlePasteImgSrcSubmit()}
+                  // onMouseUp={this.handleClickOnImgSrc}
                 />
                 <InputLabel hidden htmlFor="paste-url">
                   Paste crop url
@@ -287,33 +288,44 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       });
   };
 
+  private handleClickOnImgSrc = (
+    e: React.MouseEvent<HTMLInputElement, MouseEvent>
+  ) => {
+    if (this.state.imageSrc !== '') {
+      this.handlePasteImgSrcSubmit();
+    }
+  };
+
   private handlePasteImgSrcChange = (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
     this.setState({ imageSrc: e.currentTarget.value });
+    if (e.currentTarget.value !== '') {
+      this.handlePasteImgSrcSubmit();
+    }
   };
 
-  private handlePasteImgSrcSubmit = (keyCode: number) => (
-    e: React.KeyboardEvent
+  private handlePasteImgSrcSubmit = () => (
+    e: React.FormEvent<HTMLInputElement>
   ) => {
     events.imageAdded(this.props.frontId, 'paste');
     e.persist();
-    if (e.keyCode === keyCode) {
-      e.preventDefault();
-      validateImageSrc(
-        this.state.imageSrc,
-        this.props.frontId,
-        this.props.criteria
-      )
-        .then(mediaItem => {
-          this.props.input.onChange(mediaItem);
-        })
-        .catch(err => {
-          alert(err);
-          // tslint:disable-next-line no-console
-          console.log('@todo:handle error', err);
-        });
-      this.setState({ imageSrc: '' });
-    }
+    // if (e.keyCode === keyCode) {
+    e.preventDefault();
+    validateImageSrc(
+      this.state.imageSrc,
+      this.props.frontId,
+      this.props.criteria
+    )
+      .then(mediaItem => {
+        this.props.input.onChange(mediaItem);
+      })
+      .catch(err => {
+        alert(err);
+        // tslint:disable-next-line no-console
+        console.log('@todo:handle error', err);
+      });
+    this.setState({ imageSrc: '' });
+    // }
   };
 
   private clearField = () => this.props.input.onChange(null);
