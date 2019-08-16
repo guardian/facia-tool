@@ -13,8 +13,7 @@ import {
   editorOpenOverview,
   editorCloseOverview,
   selectIsFrontOverviewOpen,
-  editorCloseCollections,
-  selectSingleArticleFragmentForm
+  editorCloseCollections
 } from 'bundles/frontsUIBundle';
 import {
   CollectionItemSets,
@@ -23,7 +22,6 @@ import {
 import { selectFront } from 'selectors/frontsSelectors';
 import { FrontConfig } from 'types/FaciaApi';
 import { events } from 'services/GA';
-import FrontDetailView from './FrontDetailView';
 import {
   initialiseCollectionsForFront,
   openCollectionsAndFetchTheirArticles
@@ -40,6 +38,7 @@ import sortBy from 'lodash/sortBy';
 import debounce from 'lodash/debounce';
 import { bindActionCreators } from 'redux';
 import WithDimensions from 'components/util/WithDimensions';
+import FrontCollectionsOverview from './FrontCollectionsOverview';
 
 const FrontContainer = styled('div')`
   height: 100%;
@@ -123,7 +122,6 @@ interface FrontPropsBeforeState {
 type FrontProps = FrontPropsBeforeState & {
   dispatch: Dispatch;
   initialiseFront: () => void;
-  isFormOpen: boolean;
   selectArticleFragment: (
     articleFragmentId: string,
     collectionId: string,
@@ -238,7 +236,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
   };
 
   public render() {
-    const { front, overviewIsOpen, isFormOpen } = this.props;
+    const { front, overviewIsOpen } = this.props;
     const overviewToggleId = `btn-overview-toggle-${this.props.id}`;
     return (
       <React.Fragment>
@@ -339,10 +337,9 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
               </WithDimensions>
             </FrontCollectionsContainer>
           </FrontContentContainer>
-
-          {(overviewIsOpen || isFormOpen) && (
+          {overviewIsOpen && (
             <FrontDetailContainer>
-              <FrontDetailView
+              <FrontCollectionsOverview
                 id={this.props.id}
                 browsingStage={this.props.browsingStage}
                 currentCollection={this.state.currentlyScrolledCollectionId}
@@ -367,8 +364,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
 const mapStateToProps = (state: State, { id }: FrontPropsBeforeState) => {
   return {
     front: selectFront(state, { frontId: id }),
-    overviewIsOpen: selectIsFrontOverviewOpen(state, id),
-    isFormOpen: !!selectSingleArticleFragmentForm(state, id)
+    overviewIsOpen: selectIsFrontOverviewOpen(state, id)
   };
 };
 

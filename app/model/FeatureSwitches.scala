@@ -12,12 +12,6 @@ case class FeatureSwitch(
   enabled: Boolean
 )
 
-object InlineForm extends FeatureSwitch(
-  key = "inline-form",
-  title = "Use inline form for card overrides",
-  enabled = true
-)
-
 object ObscureFeed extends FeatureSwitch(
   key = "obscure-feed",
   title = "Obscure the feed -- it's distracting for developers!",
@@ -31,7 +25,7 @@ object PageViewDataVisualisation extends FeatureSwitch(
 )
 
 object FeatureSwitches {
-  val all: List[FeatureSwitch] = List(InlineForm, ObscureFeed, PageViewDataVisualisation)
+  val all: List[FeatureSwitch] = List(ObscureFeed, PageViewDataVisualisation)
 
   def updateFeatureSwitchesForUser(userDataSwitches: Option[List[FeatureSwitch]], switch: FeatureSwitch): List[FeatureSwitch] = {
     userDataSwitches match {

@@ -38,8 +38,6 @@ import {
   REMOVE_GROUP_ARTICLE_FRAGMENT,
   REMOVE_SUPPORTING_ARTICLE_FRAGMENT
 } from 'shared/actions/ArticleFragments';
-import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
-import { selectSharedState } from 'shared/selectors/shared';
 import { Stages } from 'shared/types/Collection';
 
 export const EDITOR_OPEN_CURRENT_FRONTS_MENU =
@@ -351,14 +349,6 @@ const defaultOpenForms = [] as [];
 const selectOpenArticleFragmentForms = (state: GlobalState, frontId: string) =>
   state.editor.selectedArticleFragments[frontId] || defaultOpenForms;
 
-const selectSingleArticleFragmentForm = (
-  state: GlobalState,
-  frontId: string
-): OpenArticleFragmentData | undefined =>
-  !selectFeatureValue(selectSharedState(state), 'inline-form')
-    ? (state.editor.selectedArticleFragments[frontId] || [])[0]
-    : undefined;
-
 const selectIsArticleFragmentFormOpen = (
   state: GlobalState,
   articleFragmentId: string,
@@ -367,30 +357,6 @@ const selectIsArticleFragmentFormOpen = (
   return (selectOpenArticleFragmentForms(state, frontId) || []).some(
     _ => _.id === articleFragmentId
   );
-};
-
-/**
- * An article fragment should be faded out if
- *  - we're in not in inline-form mode
- *  - there's an articleFragment form open
- *  - it's not for the given articleFragment
- */
-const selectIsArticleFragmentFaded = (
-  state: GlobalState,
-  articleFragmentId: string,
-  frontId: string
-) => {
-  if (selectFeatureValue(selectSharedState(state), 'inline-form')) {
-    return false;
-  }
-  const openArticleFragmentData = selectSingleArticleFragmentForm(
-    state,
-    frontId
-  );
-  if (!openArticleFragmentData) {
-    return false;
-  }
-  return openArticleFragmentData.id !== articleFragmentId;
 };
 
 const createSelectCollectionIdsWithOpenForms = () =>
@@ -620,10 +586,8 @@ const reducer = (
       };
     }
     case EDITOR_SELECT_ARTICLE_FRAGMENT: {
-      const allowMultipleForms = selectFeatureValue(sharedState, 'inline-form');
-      const currentlyOpenArticleFragments = allowMultipleForms
-        ? state.selectedArticleFragments[action.payload.frontId] || []
-        : [];
+      const currentlyOpenArticleFragments =
+        state.selectedArticleFragments[action.payload.frontId] || [];
       const {
         frontId,
         collectionId,
@@ -719,8 +683,6 @@ export {
   selectIsCurrentFrontsMenuOpen,
   selectIsArticleFragmentFormOpen,
   selectOpenArticleFragmentForms,
-  selectIsArticleFragmentFaded,
-  selectSingleArticleFragmentForm,
   createSelectEditorFrontsByPriority,
   createSelectFrontIdWithOpenAndStarredStatesByPriority,
   selectEditorFrontIds,
