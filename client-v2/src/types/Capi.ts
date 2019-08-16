@@ -137,6 +137,7 @@ interface CapiArticle {
       showQuotedHeadline: boolean;
     };
     tone?: string;
+    cutout?: string;
   };
 }
 

@@ -2,7 +2,7 @@ import configureStore from 'util/configureStore';
 import fetchMock from 'fetch-mock';
 import initialState from 'fixtures/initialState';
 import { scJohnsonPartnerZoneCollection } from 'fixtures/collectionsEndpointResponse';
-import { articlesForScJohnsonPartnerZone } from 'fixtures/capiEndpointResponse';
+import { articlesForScJohnsonPartnerZone } from 'actions/__tests__/capiEndpointResponse';
 import { selectIsCollectionOpen } from 'bundles/frontsUIBundle';
 import { selectArticlesInCollections } from 'shared/selectors/collection';
 import {

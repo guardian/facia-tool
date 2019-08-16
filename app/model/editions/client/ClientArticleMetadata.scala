@@ -33,6 +33,8 @@ case class ClientArticleMetadata (
   def toArticleMetadata: ArticleMetadata = {
     val cutoutImage: Option[Image] = (imageCutoutSrcHeight, imageCutoutSrcWidth, imageCutoutSrc, imageCutoutSrcOrigin) match {
       case (height, width, Some(src), Some(origin)) => Some(Image(height.map(_.toInt), width.map(_.toInt), origin, src))
+      // If we don't have an origin, duplicate the src into the origin
+      case (height, width, Some(src), None) => Some(Image(height.map(_.toInt), width.map(_.toInt), src, src))
       case _ => None
     }
 
@@ -79,7 +81,7 @@ object ClientArticleMetadata {
       articleMetadata.byline,
       articleMetadata.sportScore,
 
-      articleMetadata.mediaType.collect{ case MediaType.Hide => true },
+      articleMetadata.mediaType.collect({case MediaType.Hide => true}),
 
       articleMetadata.replaceImage.map(_ => mediaType == MediaType.Image),
       articleMetadata.replaceImage.map(_.src),

@@ -163,7 +163,16 @@ function createArticleFragment(
     if (drop.type === 'CAPI') {
       const article = transformExternalArticle(drop.data);
       dispatch(externalArticleActions.fetchSuccess([article]));
-      return persistAndReturnFragment(dispatch, createFragment(article.id));
+      const fragment = createFragment(
+        article.id,
+        article.frontsMeta.defaults.imageHide,
+        article.frontsMeta.defaults.imageReplace,
+        article.frontsMeta.defaults.imageCutoutReplace,
+        article.frontsMeta.cutout,
+        article.frontsMeta.defaults.showByline,
+        article.frontsMeta.defaults.showQuotedHeadline
+      );
+      return persistAndReturnFragment(dispatch, fragment);
     }
     const resourceId = drop.data;
     const isURL = isValidURL(resourceId);

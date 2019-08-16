@@ -3,12 +3,25 @@ import { ArticleFragment, ArticleFragmentMeta } from 'shared/types/Collection';
 import pick from 'lodash/pick';
 import cloneDeep from 'lodash/cloneDeep';
 
-const createFragment = (id: string, supporting: string[] = []) => ({
+const createFragment = (
+  id: string,
+  imageHide: boolean = false,
+  imageReplace: boolean = false,
+  imageCutoutReplace: boolean = false,
+  imageCutoutSrc?: string,
+  showByline: boolean = false,
+  showQuotedHeadline: boolean = false
+) => ({
   uuid: v4(),
   id,
   frontPublicationDate: Date.now(),
   meta: {
-    supporting
+    ...(imageHide ? { imageHide } : ''),
+    ...(imageReplace ? { imageReplace } : ''),
+    // ...(imageCutoutReplace ? { imageCutoutReplace } : ''),
+    ...(imageCutoutReplace ? { imageCutoutReplace, imageCutoutSrc } : ''),
+    ...(showByline ? { showByline } : ''),
+    ...(showQuotedHeadline ? { showQuotedHeadline } : '')
   }
 });
 
