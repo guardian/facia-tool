@@ -8,7 +8,7 @@ const createFragment = (
   imageHide: boolean = false,
   imageReplace: boolean = false,
   imageCutoutReplace: boolean = false,
-  imageCutoutSrc?: String,
+  imageCutoutSrc?: string,
   showByline: boolean = false,
   showQuotedHeadline: boolean = false
 ) => ({
