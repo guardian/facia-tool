@@ -168,6 +168,7 @@ function createArticleFragment(
         article.frontsMeta.defaults.imageHide,
         article.frontsMeta.defaults.imageReplace,
         article.frontsMeta.defaults.imageCutoutReplace,
+        article.frontsMeta.cutout,
         article.frontsMeta.defaults.showByline,
         article.frontsMeta.defaults.showQuotedHeadline
       );

@@ -29,6 +29,7 @@ export interface ArticleFragmentFormData {
   primaryImage: ImageData;
   cutoutImage: ImageData;
   imageCutoutReplace: boolean;
+  imageCutoutSrc: string;
   imageSlideshowReplace: boolean;
   slideshow: Array<ImageData | void> | void;
   showKickerTag: boolean;
@@ -108,6 +109,7 @@ export const getInitialValuesForArticleFragmentForm = (
         showByline: article.showByline || false,
         trailText: article.trailText || '',
         imageCutoutReplace: article.imageCutoutReplace || false,
+        imageCutoutSrc: article.imageCutoutSrc || '',
         imageHide: article.imageHide || false,
         imageReplace: article.imageReplace || false,
         imageSlideshowReplace: article.imageSlideshowReplace || false,

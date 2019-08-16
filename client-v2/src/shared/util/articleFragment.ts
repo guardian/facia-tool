@@ -8,6 +8,7 @@ const createFragment = (
   imageHide: boolean = false,
   imageReplace: boolean = false,
   imageCutoutReplace: boolean = false,
+  imageCutoutSrc?: String,
   showByline: boolean = false,
   showQuotedHeadline: boolean = false
 ) => ({
@@ -17,7 +18,8 @@ const createFragment = (
   meta: {
     ...(imageHide ? { imageHide } : ''),
     ...(imageReplace ? { imageReplace } : ''),
-    ...(imageCutoutReplace ? { imageCutoutReplace } : ''),
+    // ...(imageCutoutReplace ? { imageCutoutReplace } : ''),
+    ...(imageCutoutReplace ? { imageCutoutReplace, imageCutoutSrc } : ''),
     ...(showByline ? { showByline } : ''),
     ...(showQuotedHeadline ? { showQuotedHeadline } : '')
   }

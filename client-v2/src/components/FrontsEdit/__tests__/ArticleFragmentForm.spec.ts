@@ -13,7 +13,8 @@ const formValues = {
   cutoutImage: {
     height: undefined,
     origin: undefined,
-    src: undefined,
+    src: 'somewhere',
+    thumb: 'somewhere',
     width: undefined
   },
   headline: "Sister of academic's killer warned police he was mentally ill",
@@ -120,6 +121,7 @@ describe('ArticleFragmentForm transform functions', () => {
         })
       ).toEqual({
         ...formValues,
+        imageCutoutSrc: 'exampleSrc2',
         primaryImage: {
           src: 'exampleSrc1',
           width: 100,
