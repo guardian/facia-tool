@@ -15,6 +15,7 @@ case class EditionsCollection(
 ) {
   def toPublishedCollection: PublishedCollection = PublishedCollection(
     id,
+    displayName,
     items.map(_.toPublishedArticle)
   )
 }

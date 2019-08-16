@@ -18,11 +18,6 @@ import { connect } from 'react-redux';
 import { State } from 'types/State';
 import { createSelectArticleVisibilityDetails } from 'selectors/frontsSelectors';
 import FocusWrapper from 'components/FocusWrapper';
-import { selectPageViewDataForCollection } from 'redux/modules/pageViewData/selectors';
-import {
-  PageViewDataPerCollection,
-  PageViewStory
-} from 'shared/types/PageViewData';
 
 const getArticleNotifications = (
   id: string,
@@ -114,27 +109,11 @@ interface ConnectedCollectionContextProps extends CollectionContextProps {
   handleBlur: () => void;
   lastDesktopArticle?: string;
   lastMobileArticle?: string;
-  pageViewData?: PageViewDataPerCollection;
-  getPageViewDataForCollectionItem?: (
-    articleId: string,
-    pageViewData: PageViewDataPerCollection
-  ) => PageViewStory;
 }
 
 class CollectionContext extends React.Component<
   ConnectedCollectionContextProps
 > {
-  public getPageViewDataForCollectionItem(
-    articleId: string,
-    pageViewData: PageViewDataPerCollection
-  ) {
-    if (pageViewData && pageViewData.stories) {
-      return pageViewData.stories.find(
-        (story: PageViewStory) => story.articleId === articleId
-      );
-    }
-  }
-
   public render() {
     const {
       id,
@@ -151,8 +130,7 @@ class CollectionContext extends React.Component<
       removeCollectionItem,
       removeSupportingCollectionItem,
       lastDesktopArticle,
-      lastMobileArticle,
-      pageViewData
+      lastMobileArticle
     } = this.props;
 
     return (
@@ -208,14 +186,6 @@ class CollectionContext extends React.Component<
                         }
                         onDelete={() =>
                           removeCollectionItem(group.uuid, articleFragment.uuid)
-                        }
-                        pageViewStory={
-                          pageViewData
-                            ? this.getPageViewDataForCollectionItem(
-                                articleFragment.uuid,
-                                pageViewData
-                              )
-                            : undefined
                         }
                       >
                         <ArticleFragmentLevel
@@ -275,16 +245,9 @@ const createMapStateToProps = () => {
       collectionSet: props.browsingStage
     });
 
-    const pageViewData = selectPageViewDataForCollection(
-      state,
-      props.id,
-      props.frontId
-    );
-
     return {
       lastDesktopArticle: articleVisibilityDetails.desktop,
-      lastMobileArticle: articleVisibilityDetails.mobile,
-      pageViewData
+      lastMobileArticle: articleVisibilityDetails.mobile
     };
   };
 };

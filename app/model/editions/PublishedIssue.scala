@@ -33,7 +33,7 @@ case class PublishedFurniture(
 
 case class PublishedArticle(internalPageCode: Long, furniture: PublishedFurniture)
 
-case class PublishedCollection(id: String, items: List[PublishedArticle])
+case class PublishedCollection(id: String, name: String, items: List[PublishedArticle])
 
 case class PublishedFront(id: String, name: String, collections: List[PublishedCollection], swatch: Swatch)
 

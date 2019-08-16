@@ -24,6 +24,12 @@ export default (store: Store) =>
     }
     (store.dispatch as Dispatch)(fetchStaleOpenCollections(priority));
 
+    if (
+      !store.getState().featureSwitches['page-view-data-visualisation'].enabled
+    ) {
+      return;
+    }
+
     const openFronts = store.getState().editor.frontIdsByPriority.editorial;
     const openFrontsWithCollections = openFronts.map(frontId => ({
       frontId,
@@ -51,9 +57,11 @@ export default (store: Store) =>
 
     openFrontsWithCollectionsArticles.forEach(front => {
       front.collections.forEach(collection => {
-        (store.dispatch as Dispatch)(
-          getPageViewData(front.frontId, collection.articles, collection.id)
-        );
+        if (collection.articles.length > 0) {
+          (store.dispatch as Dispatch)(
+            getPageViewData(front.frontId, collection.articles, collection.id)
+          );
+        }
       });
     });
   }, 10000);

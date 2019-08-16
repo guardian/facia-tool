@@ -48,7 +48,6 @@ import { selectors as collectionSelectors } from 'shared/bundles/collectionsBund
 import { getContributorImage } from 'util/CAPIUtils';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
-import EditModeVisibility from '../util/EditModeVisibility';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -344,15 +343,13 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 id={getInputId(articleFragmentId, 'boost')}
                 type="checkbox"
               />
-              <EditModeVisibility visibleMode="fronts">
-                <Field
-                  name="showLargeHeadline"
-                  component={InputCheckboxToggleInline}
-                  label="Large headline"
-                  id={getInputId(articleFragmentId, 'large-headline')}
-                  type="checkbox"
-                />
-              </EditModeVisibility>
+              <Field
+                name="showLargeHeadline"
+                component={InputCheckboxToggleInline}
+                label="Large headline"
+                id={getInputId(articleFragmentId, 'large-headline')}
+                type="checkbox"
+              />
               <Field
                 name="showQuotedHeadline"
                 component={InputCheckboxToggleInline}
@@ -360,16 +357,14 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 id={getInputId(articleFragmentId, 'quote-headline')}
                 type="checkbox"
               />
-              <EditModeVisibility visibleMode="fronts">
-                <Field
-                  name="isBreaking"
-                  component={InputCheckboxToggleInline}
-                  label="Breaking News"
-                  id={getInputId(articleFragmentId, 'breaking-news')}
-                  type="checkbox"
-                  dataTestId="edit-form-breaking-news-toggle"
-                />
-              </EditModeVisibility>
+              <Field
+                name="isBreaking"
+                component={InputCheckboxToggleInline}
+                label="Breaking News"
+                id={getInputId(articleFragmentId, 'breaking-news')}
+                type="checkbox"
+                dataTestId="edit-form-breaking-news-toggle"
+              />
               <Field
                 name="showByline"
                 component={InputCheckboxToggleInline}

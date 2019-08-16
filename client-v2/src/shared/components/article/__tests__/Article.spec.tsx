@@ -7,7 +7,6 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from '../../../../constants/theme';
 import { Provider } from 'react-redux';
 import configureStore from 'util/configureStore';
-import { PageViewStory } from 'shared/types/PageViewData';
 
 const takenDownArticle = { ...derivedArticle, ...{ isLive: false } };
 
@@ -30,12 +29,12 @@ describe('Article component ', () => {
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <ArticleComponent
+            frontId={'uk'}
             children={<React.Fragment />}
             article={derivedArticle}
             id="ea1"
             featureFlagPageViewData={false}
             canShowPageViewData={false}
-            pageViewStory={undefined}
           />
         </ThemeProvider>
       </Provider>
@@ -51,12 +50,12 @@ describe('Article component ', () => {
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <ArticleComponent
+            frontId={'uk'}
             children={<React.Fragment />}
             article={draftArticle}
             id="ea1"
             featureFlagPageViewData={false}
             canShowPageViewData={false}
-            pageViewStory={undefined}
           />
         </ThemeProvider>
       </Provider>
@@ -70,12 +69,12 @@ describe('Article component ', () => {
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <ArticleComponent
+            frontId={'uk'}
             children={<React.Fragment />}
             article={takenDownArticle}
             id="ea1"
             featureFlagPageViewData={false}
             canShowPageViewData={false}
-            pageViewStory={undefined}
           />
         </ThemeProvider>
       </Provider>
@@ -89,13 +88,13 @@ describe('Article component ', () => {
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <ArticleComponent
+            frontId={'uk'}
             children={<React.Fragment />}
             article={undefined}
             id="ea1"
             isLoading={true}
             featureFlagPageViewData={false}
             canShowPageViewData={false}
-            pageViewStory={undefined}
           />
         </ThemeProvider>
       </Provider>
@@ -108,13 +107,13 @@ describe('Article component ', () => {
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <ArticleComponent
+            frontId={'uk'}
             children={<React.Fragment />}
             article={takenDownArticle}
             id="ea1"
             isLoading={true}
             featureFlagPageViewData={false}
             canShowPageViewData={false}
-            pageViewStory={undefined}
           />
         </ThemeProvider>
       </Provider>
@@ -127,13 +126,13 @@ describe('Article component ', () => {
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <ArticleComponent
+            frontId={'uk'}
             children={<React.Fragment />}
             article={takenDownArticle}
             id="ea1"
             isLoading={false}
             featureFlagPageViewData={false}
             canShowPageViewData={false}
-            pageViewStory={undefined}
           />
         </ThemeProvider>
       </Provider>
@@ -145,12 +144,12 @@ describe('Article component ', () => {
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <ArticleComponent
+            frontId={'uk'}
             children={<React.Fragment />}
             article={takenDownArticle}
             id="ea1"
             featureFlagPageViewData={false}
             canShowPageViewData={false}
-            pageViewStory={undefined}
           />
         </ThemeProvider>
       </Provider>
@@ -162,32 +161,21 @@ describe('Article component ', () => {
 });
 
 it('should show the page view data graph if 3 conditions are true: canShowPageViewData, featureFlagPageViewData and pageViewData.data has content', () => {
-  const pageViewStory: PageViewStory = {
-    articleId: 'test',
-    articlePath: 'test',
-    totalHits: 100,
-    data: [
-      { dateTime: 1565356832228, count: 30 },
-      { dateTime: 1565356844167, count: 17 }
-    ]
-  };
-
   const { getByTestId } = render(
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <ArticleComponent
+          frontId={'uk'}
           children={<React.Fragment />}
           article={derivedArticle}
           id="ea1"
           featureFlagPageViewData={true}
           canShowPageViewData={true}
-          pageViewStory={pageViewStory}
         />
       </ThemeProvider>
     </Provider>
   );
   expect(getByTestId('page-view-graph')).toBeTruthy();
-  expect(getByTestId('page-view-graph')).toHaveTextContent('100');
 });
 
 it('should NOT show the page view data graph if any of these conditions are false: canShowPageViewData, featureFlagPageViewData, pageViewData', () => {
@@ -195,13 +183,13 @@ it('should NOT show the page view data graph if any of these conditions are fals
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <ArticleComponent
+          frontId={'uk'}
           children={<React.Fragment />}
           article={undefined}
           id="ea1"
           isLoading={true}
           featureFlagPageViewData={false}
           canShowPageViewData={true}
-          pageViewStory={undefined}
         />
       </ThemeProvider>
     </Provider>
