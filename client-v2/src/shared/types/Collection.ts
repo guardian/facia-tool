@@ -70,6 +70,7 @@ interface ArticleFragmentRootMeta {
     height?: string;
     origin?: string;
   }>;
+  applyMediaOverrides?: boolean;
 }
 
 type ArticleFragmentRootFields = NestedArticleFragmentRootFields & {

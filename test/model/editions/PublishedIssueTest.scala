@@ -79,7 +79,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
     }
 
     "furniture defaults should be populated correctly" in {
-      val furniture = ArticleMetadata(None, None, None, None, None, None, None, None, None, None)
+      val furniture = ArticleMetadata(None, None, None, None, None, None, None, None, None, None, None)
       val article = EditionsArticle("123456", 0, Some(furniture))
       val published = article.toPublishedArticle
 
@@ -97,7 +97,8 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
         Some("sport-score"),
         Some(MediaType.Image),
         None,
-        Some(Image(Some(100), Some(100), "file://image-1.gif", "file://image-1.jpg"))
+        Some(Image(Some(100), Some(100), "file://image-1.gif", "file://image-1.jpg")),
+        Some(true)
       )
       val article = EditionsArticle("123456", 0, Some(furniture))
       val published = article.toPublishedArticle

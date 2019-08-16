@@ -30,13 +30,15 @@ case class ArticleMetadata (
 
   // keep overrides even if not used so user can switch back w/out needing to re-crop
   cutoutImage: Option[Image],
-  replaceImage: Option[Image]
+
+  replaceImage: Option[Image],
+  applyMediaOverrides: Option[Boolean]
 )
 
 object ArticleMetadata {
   implicit val format = Json.format[ArticleMetadata]
 
-  val default = ArticleMetadata(None, None, None, None, None, None, None, None, None, None)
+  val default = ArticleMetadata(None, None, None, None, None, None, None, None, None, None, None)
 }
 
 case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[ArticleMetadata]) {
