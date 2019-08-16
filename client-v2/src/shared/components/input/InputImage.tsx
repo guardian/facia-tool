@@ -1,4 +1,4 @@
-import React, { MouseEventHandler } from 'react';
+import React from 'react';
 import { theme as globalTheme, styled } from 'shared/constants/theme';
 import { connect } from 'react-redux';
 import { WrappedFieldProps } from 'redux-form';
@@ -142,6 +142,8 @@ export interface InputImageContainerProps {
   defaultImageUrl?: string;
   useDefault?: boolean;
   message?: string;
+  replaceImage: boolean;
+  setDisplayImageReplaceToggle: (display: boolean) => void;
 }
 
 type ComponentProps = InputImageContainerProps &
@@ -184,9 +186,9 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 
     const gridSearchUrl =
       editMode === 'editions' ? `${gridUrl}` : `${gridUrl}?cropType=landscape`;
-    const hasImage = !useDefault && !!input.value && !!input.value.thumb;
+    const hasImage = useDefault && !!input.value && !!input.value.thumb;
     const imageUrl =
-      !useDefault && input.value && input.value.thumb
+      useDefault && input.value && input.value.thumb
         ? input.value.thumb
         : defaultImageUrl;
     return (
@@ -244,8 +246,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                   placeholder=" Paste crop url"
                   defaultValue={this.state.imageSrc}
                   onChange={this.handlePasteImgSrcChange}
-                  onKeyUp={this.handlePasteImgSrcSubmit()}
-                  // onMouseUp={this.handleClickOnImgSrc}
                 />
                 <InputLabel hidden htmlFor="paste-url">
                   Paste crop url
@@ -262,6 +262,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
   private handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     this.clearField();
+    this.props.setDisplayImageReplaceToggle(false);
   };
 
   private handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
@@ -288,29 +289,18 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       });
   };
 
-  private handleClickOnImgSrc = (
-    e: React.MouseEvent<HTMLInputElement, MouseEvent>
-  ) => {
-    if (this.state.imageSrc !== '') {
-      this.handlePasteImgSrcSubmit();
-    }
-  };
-
   private handlePasteImgSrcChange = (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
-    this.setState({ imageSrc: e.currentTarget.value });
-    if (e.currentTarget.value !== '') {
-      this.handlePasteImgSrcSubmit();
-    }
+    e.persist();
+    this.setState(
+      { imageSrc: e.currentTarget.value },
+      this.validateAndGetImage
+    );
   };
 
-  private handlePasteImgSrcSubmit = () => (
-    e: React.FormEvent<HTMLInputElement>
-  ) => {
+  private validateAndGetImage = () => {
     events.imageAdded(this.props.frontId, 'paste');
-    e.persist();
-    // if (e.keyCode === keyCode) {
-    e.preventDefault();
+
     validateImageSrc(
       this.state.imageSrc,
       this.props.frontId,
@@ -318,6 +308,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     )
       .then(mediaItem => {
         this.props.input.onChange(mediaItem);
+        this.props.setDisplayImageReplaceToggle(true);
       })
       .catch(err => {
         alert(err);
@@ -325,7 +316,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
         console.log('@todo:handle error', err);
       });
     this.setState({ imageSrc: '' });
-    // }
   };
 
   private clearField = () => this.props.input.onChange(null);
@@ -366,6 +356,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       .then(mediaItem => {
         events.imageAdded(this.props.frontId, 'click to modal');
         this.props.input.onChange(mediaItem);
+        this.props.setDisplayImageReplaceToggle(true);
       })
       .catch(err => {
         alert(err);
