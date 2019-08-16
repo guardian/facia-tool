@@ -43,7 +43,7 @@ module.exports = {
     {
       id: 'special_front',
       displayName: 'Special 1',
-      canRename: true,
+      isSpecial: true,
       isHidden: false,
       collections: [
         {

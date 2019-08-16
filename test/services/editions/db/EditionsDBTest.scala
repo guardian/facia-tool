@@ -41,7 +41,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   }
 
   private def front(name: String, collections: EditionsCollectionSkeleton*): EditionsFrontSkeleton =
-    EditionsFrontSkeleton(name, collections.toList, FrontPresentation(Swatch.Culture), hidden = false, canRename = false)
+    EditionsFrontSkeleton(name, collections.toList, FrontPresentation(Swatch.Culture), hidden = false, isSpecial = false)
 
   private def collection(name: String, prefill: Option[CapiPrefillQuery], articles: EditionsArticleSkeleton*): EditionsCollectionSkeleton =
     EditionsCollectionSkeleton(name, articles.toList, prefill, CollectionPresentation(), hidden = false)

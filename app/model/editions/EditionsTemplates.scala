@@ -87,7 +87,7 @@ case class FrontTemplate(
     name: String,
     collections: List[CollectionTemplate],
     presentation: FrontPresentation,
-    canRename: Boolean = false,
+    isSpecial: Boolean = false,
     hidden: Boolean = false
 )
 
@@ -110,7 +110,7 @@ case class EditionsFrontSkeleton(
     collections: List[EditionsCollectionSkeleton],
     presentation: FrontPresentation,
     hidden: Boolean,
-    canRename: Boolean
+    isSpecial: Boolean
 ) {
   def metadata() = {
     val metadataParam = new PGobject()

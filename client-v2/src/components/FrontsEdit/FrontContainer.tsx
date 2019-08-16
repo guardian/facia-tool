@@ -162,8 +162,8 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
     const title = this.getTitle();
 
     const { frontNameValue, editingFrontName } = this.state;
-    const canRename = this.props.selectedFront
-      ? this.props.selectedFront.canRename
+    const isSpecial = this.props.selectedFront
+      ? this.props.selectedFront.isSpecial
       : false;
 
     return (
@@ -222,7 +222,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                   </RadioGroup>
                 </StageSelectButtons>
               </EditModeVisibility>
-              {canRename && (
+              {isSpecial && (
                 <FrontHeaderButton
                   data-testid="rename-front-button"
                   onClick={this.renameFront}

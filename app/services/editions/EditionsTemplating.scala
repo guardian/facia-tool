@@ -42,7 +42,7 @@ class EditionsTemplating(templates: Map[String, EditionTemplate], capi: Capi) ex
                   },
                   frontTemplate.presentation,
                   frontTemplate.hidden,
-                  frontTemplate.canRename
+                  frontTemplate.isSpecial
                 )
             }))
         } else {

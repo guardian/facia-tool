@@ -22,7 +22,7 @@ interface FrontConfigResponse {
   title?: string;
   webTitle?: string;
   navSection?: string;
-  canRename?: boolean;
+  isSpecial?: boolean;
   metadata?: EditionsFrontMetadata;
 }
 
