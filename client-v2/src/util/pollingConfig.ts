@@ -57,9 +57,11 @@ export default (store: Store) =>
 
     openFrontsWithCollectionsArticles.forEach(front => {
       front.collections.forEach(collection => {
-        (store.dispatch as Dispatch)(
-          getPageViewData(front.frontId, collection.articles, collection.id)
-        );
+        if (collection.articles.length > 0) {
+          (store.dispatch as Dispatch)(
+            getPageViewData(front.frontId, collection.articles, collection.id)
+          );
+        }
       });
     });
   }, 10000);
