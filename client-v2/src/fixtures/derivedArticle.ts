@@ -19,7 +19,7 @@ export default {
   trailText:
     'Police noted concerns over Femi Nandap, who went on to stab lecturer, but released him',
   byline: 'Caroline Davies',
-  imageCutoutSrc: "somewhere",
+  imageCutoutSrc: 'somewhere',
   firstPublicationDate: '2018-07-03T14:37:48Z',
   internalPageCode: '4784278',
   shortUrl: 'https://gu.com/p/9vxyd',
