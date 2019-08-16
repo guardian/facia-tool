@@ -16,12 +16,11 @@ const createFragment = (
   id,
   frontPublicationDate: Date.now(),
   meta: {
-    ...(imageHide ? { imageHide } : ''),
-    ...(imageReplace ? { imageReplace } : ''),
-    // ...(imageCutoutReplace ? { imageCutoutReplace } : ''),
-    ...(imageCutoutReplace ? { imageCutoutReplace, imageCutoutSrc } : ''),
-    ...(showByline ? { showByline } : ''),
-    ...(showQuotedHeadline ? { showQuotedHeadline } : '')
+    ...(imageHide ? { imageHide } : {}),
+    ...(imageReplace ? { imageReplace } : {}),
+    ...(imageCutoutReplace ? { imageCutoutReplace, imageCutoutSrc } : {}),
+    ...(showByline ? { showByline } : {}),
+    ...(showQuotedHeadline ? { showQuotedHeadline } : {})
   }
 });
 

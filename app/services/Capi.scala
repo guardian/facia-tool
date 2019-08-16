@@ -174,7 +174,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
     }
   }
 
-  def prefillMetadata(content: Content): Option[Prefill] = {
+  private def prefillMetadata(content: Content): Option[Prefill] = {
     val maybeInternalPageCode = content.fields.flatMap(_.internalPageCode)
     maybeInternalPageCode.map { internalPageCode =>
       val cardStyle = CardStyle(content, TrailMetaData.empty)
