@@ -108,7 +108,12 @@ export const createSelectFormFieldsForCollectionItem = () => {
           fields.push('sportScore');
         }
 
-        return fields.filter(_ => _ !== 'imageSlideshowReplace');
+        return without(
+          fields,
+          'imageSlideshowReplace',
+          'isBreaking',
+          'showLargeHeadline'
+        );
       } else {
         return fields;
       }
