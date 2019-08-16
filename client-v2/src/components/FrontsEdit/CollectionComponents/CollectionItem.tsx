@@ -35,13 +35,11 @@ import Sublinks from './Sublinks';
 import { gridDropTypes } from 'constants/fronts';
 import {
   selectIsArticleFragmentFormOpen,
-  selectIsArticleFragmentFaded,
   editorClearArticleFragmentSelection
 } from 'bundles/frontsUIBundle';
 import { bindActionCreators } from 'redux';
 import ArticleFragmentFormInline from '../ArticleFragmentFormInline';
 import { updateArticleFragmentMeta as updateArticleFragmentMetaAction } from 'actions/ArticleFragments';
-import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
 import { events } from 'services/GA';
@@ -77,8 +75,6 @@ type ArticleContainerProps = ContainerProps & {
   clearArticleFragmentSelection: (id: string) => void;
   type: CollectionItemTypes;
   isSelected: boolean;
-  isFaded: boolean;
-  displayInlineForm: boolean;
   numSupportingArticles: number;
   editMode: EditMode;
 };
@@ -100,9 +96,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
     const {
       uuid,
       isSelected,
-      isFaded,
       isSupporting = false,
-      displayInlineForm,
       children,
       getNodeProps,
       onSelect,
@@ -133,7 +127,6 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
               onDelete={this.onDelete}
               onAddToClipboard={onAddToClipboard}
               onClick={isUneditable ? undefined : () => onSelect(uuid)}
-              fade={isFaded}
               size={size}
               textSize={textSize}
               showMeta={showMeta}
@@ -163,7 +156,6 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
                 {...getNodeProps()}
                 onDelete={this.onDelete}
                 onClick={isUneditable ? undefined : () => onSelect(uuid)}
-                fade={isFaded}
                 size={size}
                 textSize={textSize}
                 showMeta={showMeta}
@@ -188,7 +180,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       }
     };
 
-    return isSelected && displayInlineForm ? (
+    return isSelected ? (
       <ArticleFragmentFormInline
         articleFragmentId={uuid}
         isSupporting={isSupporting}
@@ -249,11 +241,6 @@ const createMapStateToProps = () => {
     return {
       type: selectType(selectSharedState(state), uuid),
       isSelected: selectIsArticleFragmentFormOpen(state, uuid, frontId),
-      isFaded: selectIsArticleFragmentFaded(state, uuid, frontId),
-      displayInlineForm: selectFeatureValue(
-        selectSharedState(state),
-        'inline-form'
-      ),
       numSupportingArticles,
       editMode: selectEditMode(state)
     };

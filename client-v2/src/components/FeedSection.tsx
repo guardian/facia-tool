@@ -4,7 +4,6 @@ import { styled } from 'constants/theme';
 import SectionContent from './layout/SectionContent';
 import FeedContainer from './FeedsContainer';
 import Clipboard from './Clipboard';
-import ClipboardForm from './ClipboardForm';
 import FeedSectionHeader from './FeedSectionHeader';
 import { media } from 'shared/util/mediaQueries';
 
@@ -30,11 +29,6 @@ const FeedWrapper = styled('div')<{ isClipboardOpen: boolean }>`
       : null};
 `;
 
-const ClipboardFormContainer = styled.div`
-  background: ${({ theme }) => theme.shared.collection.background};
-  border-top: 1px solid ${({ theme }) => theme.shared.colors.greyLightPinkish};
-`;
-
 export default ({ isClipboardOpen }: Props) => (
   <FeedSectionContainer>
     <FeedSectionHeader />
@@ -43,9 +37,6 @@ export default ({ isClipboardOpen }: Props) => (
         <FeedContainer />
       </FeedWrapper>
       <Clipboard />
-      <ClipboardFormContainer>
-        <ClipboardForm />
-      </ClipboardFormContainer>
     </FeedSectionContent>
   </FeedSectionContainer>
 );

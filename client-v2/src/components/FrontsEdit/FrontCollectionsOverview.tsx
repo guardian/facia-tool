@@ -8,15 +8,19 @@ import CollectionOverview from './CollectionOverview';
 import { CollectionItemSets } from 'shared/types/Collection';
 import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
 import ContentContainer from 'shared/components/layout/ContentContainer';
+import { updateArticleFragmentMeta as updateArticleFragmentMetaAction } from 'actions/ArticleFragments';
+import { editorClearArticleFragmentSelection } from 'bundles/frontsUIBundle';
+import { bindActionCreators } from 'redux';
+import { Dispatch } from 'types/Store';
 
 interface FrontContainerProps {
   id: string;
-  browsingStage: CollectionItemSets;
-  currentCollection: string | undefined;
 }
 
 type FrontCollectionOverviewProps = FrontContainerProps & {
   front: FrontConfig;
+  browsingStage: CollectionItemSets;
+  currentCollection: string | undefined;
 };
 
 interface ContainerProps {
@@ -69,4 +73,16 @@ const mapStateToProps = (state: State, props: FrontContainerProps) => ({
   front: selectFront(state, { frontId: props.id })
 });
 
-export default connect(mapStateToProps)(FrontCollectionsOverview);
+const mapDispatchToProps = (dispatch: Dispatch) =>
+  bindActionCreators(
+    {
+      updateArticleFragmentMeta: updateArticleFragmentMetaAction,
+      clearArticleFragmentSelection: editorClearArticleFragmentSelection
+    },
+    dispatch
+  );
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FrontCollectionsOverview);

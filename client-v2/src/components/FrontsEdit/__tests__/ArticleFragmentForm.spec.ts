@@ -2,7 +2,7 @@ import { reducer, initialize, change } from 'redux-form';
 import {
   getArticleFragmentMetaFromFormValues,
   getInitialValuesForArticleFragmentForm
-} from '../ArticleFragmentForm';
+} from 'util/form';
 import derivedArticle from 'fixtures/derivedArticle';
 import initialState from 'fixtures/initialState';
 import { State } from 'types/State';

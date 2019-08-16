@@ -8,7 +8,6 @@ import { updateCollection } from 'actions/Collections';
 import {
   editorCloseFront,
   selectIsFrontOverviewOpen,
-  selectSingleArticleFragmentForm,
   changedBrowsingStage
 } from 'bundles/frontsUIBundle';
 import Button from 'shared/components/input/ButtonDefault';
@@ -32,7 +31,6 @@ import { toTitleCase } from 'util/stringUtils';
 import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
 import { PreviewEyeIcon, ClearIcon } from 'shared/components/icons/Icons';
 import { createFrontId } from 'util/editUtils';
-import { formMinWidth } from './ArticleFragmentForm';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { updateFrontMetadata } from 'actions/Editions';
 
@@ -71,7 +69,6 @@ const StageSelectButtons = styled('div')`
 
 const SingleFrontContainer = styled('div')<{
   isOverviewOpen: boolean;
-  isFormOpen: boolean;
 }>`
   /**
    * We parameterise the min-width of the fronts container to handle the
@@ -80,10 +77,8 @@ const SingleFrontContainer = styled('div')<{
    * of the front container proportionally to keep the collection container the
    * same width.
    */
-  min-width: ${({ isOverviewOpen, isFormOpen, theme }) =>
-    isFormOpen
-      ? theme.front.minWidth + formMinWidth + 10
-      : isOverviewOpen
+  min-width: ${({ isOverviewOpen, theme }) =>
+    isOverviewOpen
       ? theme.front.minWidth + theme.front.overviewMinWidth + 10
       : theme.front.minWidth}px;
   flex: 1 1;
@@ -122,7 +117,6 @@ type FrontsComponentProps = FrontsContainerProps & {
   selectedFront: FrontConfig;
   alsoOn: { [id: string]: AlsoOnDetail };
   isOverviewOpen: boolean;
-  isFormOpen: boolean;
   frontsActions: {
     fetchLastPressed: (frontId: string) => void;
     editorCloseFront: (frontId: string) => void;
@@ -164,7 +158,7 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
   };
 
   public render() {
-    const { frontId, isFormOpen, isOverviewOpen } = this.props;
+    const { frontId, isOverviewOpen } = this.props;
     const title = this.getTitle();
 
     const { frontNameValue, editingFrontName } = this.state;
@@ -176,7 +170,6 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
       <SingleFrontContainer
         key={frontId}
         id={createFrontId(frontId)}
-        isFormOpen={isFormOpen}
         isOverviewOpen={isOverviewOpen}
       >
         <FrontContainer>
@@ -307,8 +300,7 @@ const createMapStateToProps = () => {
   return (state: State, { frontId }: FrontsContainerProps) => ({
     selectedFront: selectFront(state, { frontId }),
     alsoOn: selectAlsoOnFronts(state, { frontId }),
-    isOverviewOpen: selectIsFrontOverviewOpen(state, frontId),
-    isFormOpen: !!selectSingleArticleFragmentForm(state, frontId)
+    isOverviewOpen: selectIsFrontOverviewOpen(state, frontId)
   });
 };
 
