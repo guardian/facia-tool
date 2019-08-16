@@ -31,7 +31,6 @@ case class ClientArticleMetadata (
   imageCutoutSrcOrigin: Option[String]
 ) {
   def toArticleMetadata: ArticleMetadata = {
-    println(imageCutoutSrcHeight, imageCutoutSrcWidth, imageCutoutSrc, imageCutoutSrcOrigin)
     val cutoutImage: Option[Image] = (imageCutoutSrcHeight, imageCutoutSrcWidth, imageCutoutSrc, imageCutoutSrcOrigin) match {
       case (height, width, Some(src), Some(origin)) => Some(Image(height.map(_.toInt), width.map(_.toInt), origin, src))
       // If we don't have an origin, duplicate the src into the origin
