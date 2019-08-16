@@ -22,7 +22,7 @@ class ViewsController(val acl: Acl, assetsManager: AssetsManager, isDev: Boolean
     val identity = request.user
     Cached(60) {
       Ok(views.html.admin_main(Option(identity), config.facia.stage, overrideIsDev(request, isDev),
-        assetsManager.pathForCollections, crypto.encrypt(identity.email), true, priority))
+        assetsManager.pathForCollections, crypto.encrypt(identity.email), priority != "email", priority))
     }
   }
 
