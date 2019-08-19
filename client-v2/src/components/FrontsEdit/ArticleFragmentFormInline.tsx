@@ -48,7 +48,6 @@ import { selectors as collectionSelectors } from 'shared/bundles/collectionsBund
 import { getContributorImage } from 'util/CAPIUtils';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
-import console = require('console');
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -184,6 +183,7 @@ const getInputId = (articleFragmentId: string, label: string) =>
 interface FormComponentState {
   lastKnownCollectionId: string | null;
   displayImageReplaceToggle: boolean;
+  isImageReplaced: boolean;
 }
 
 class FormComponent extends React.Component<Props, FormComponentState> {
@@ -195,7 +195,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
   public state: FormComponentState = {
     lastKnownCollectionId: null,
-    displayImageReplaceToggle: false
+    displayImageReplaceToggle: false,
+    isImageReplaced: false
   };
 
   private allImageFields = [
@@ -443,6 +444,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                   setDisplayImageReplaceToggle={
                     this.setDisplayImageReplaceToggle
                   }
+                  setImageReplaceToggleValue={this.setImageReplaceToggleValue}
                 />
               </ImageCol>
               <Col flex={2}>
@@ -489,10 +491,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                       permittedFields={editableFields}
                       name="imageReplace"
                       component={InputCheckboxToggleInline}
-                      label="Use original image"
+                      label="Use replacement image"
                       id={getInputId(articleFragmentId, 'image-replace')}
                       type="checkbox"
-                      default={true}
+                      default={this.state.isImageReplaced}
                       onChange={_ => this.changeImageField('imageReplace')}
                     />
                   </InputGroup>
@@ -553,8 +555,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
   };
 
   private setDisplayImageReplaceToggle = (display: boolean) => {
-    console.log('display image replace toggle got hit', display);
     this.setState({ displayImageReplaceToggle: display });
+  };
+
+  private setImageReplaceToggleValue = (value: boolean) => {
+    this.setState({ isImageReplaced: value });
   };
 
   private handleImageChange: EventWithDataHandler<React.ChangeEvent<any>> = (
@@ -572,12 +577,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
   private changeImageField = (fieldToSet: string) => {
     this.allImageFields.forEach(field => {
       if (field === fieldToSet) {
-        if (fieldToSet === 'imageReplace') {
-          // this.setState({ displayImageReplaceToggle: true });
-          this.props.change(field, false);
-        } else {
-          this.props.change(field, true);
-        }
+        this.props.change(field, true);
       } else {
         this.props.change(field, false);
       }

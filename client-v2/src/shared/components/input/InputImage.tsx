@@ -144,6 +144,7 @@ export interface InputImageContainerProps {
   message?: string;
   replaceImage: boolean;
   setDisplayImageReplaceToggle: (display: boolean) => void;
+  setImageReplaceToggleValue: (value: boolean) => void;
 }
 
 type ComponentProps = InputImageContainerProps &
@@ -186,9 +187,9 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 
     const gridSearchUrl =
       editMode === 'editions' ? `${gridUrl}` : `${gridUrl}?cropType=landscape`;
-    const hasImage = useDefault && !!input.value && !!input.value.thumb;
+    const hasImage = !useDefault && !!input.value && !!input.value.thumb;
     const imageUrl =
-      useDefault && input.value && input.value.thumb
+      !useDefault && input.value && input.value.thumb
         ? input.value.thumb
         : defaultImageUrl;
     return (
@@ -262,6 +263,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
   private handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     this.clearField();
+    this.props.setImageReplaceToggleValue(false);
     this.props.setDisplayImageReplaceToggle(false);
   };
 
