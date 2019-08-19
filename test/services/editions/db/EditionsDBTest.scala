@@ -326,7 +326,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       updatedBrexshit.items.find(_.pageCode == "76543").value.addedOn shouldBe now.toInstant.toEpochMilli
     }
 
-    "should allow a special front's hidden status to be changed" in {
+    "should allow a special front's hidden status to be changed" taggedAs UsesDatabase in {
       val id = insertSkeletonIssue(2019, 9, 30,
         front("news/uk",
           collection("politics", Some(CapiPrefillQuery("magic-politics-query")),
@@ -355,7 +355,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       specialFront3.isHidden shouldBe true
     }
 
-    "should now allow a normal front's hidden status to be changed" in {
+    "should now allow a normal front's hidden status to be changed" taggedAs UsesDatabase in {
       val id = insertSkeletonIssue(2019, 9, 30,
         front("news/uk",
           collection("politics", Some(CapiPrefillQuery("magic-politics-query")),
