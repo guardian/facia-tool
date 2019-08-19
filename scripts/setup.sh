@@ -22,7 +22,7 @@ install_yarn() {
 }
 
 set_node_version() {
-  
+
   if ! fileExists "$NVM_DIR/nvm.sh"; then
     node_version=`cat .nvmrc`
     echo -e "${yellow}nvm not found: please ensure you're using node $node_version\r\n"
@@ -35,15 +35,26 @@ set_node_version() {
 }
 
 install_deps_and_build() {
+  cd client-v2
   yarn install
   printf "\nCompiling Javascript... \n\r\n\r"
   yarn build
+  cd ..
 }
 
+setup_ngnix() {
+  brew install guardian/devtools/dev-nginx
+  dev-nginx setup-app nginx/nginx-mapping.yml
+}
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 main() {
+  bash $DIR/fetch-config.sh
   install_yarn
   set_node_version
   install_deps_and_build
+  setup_ngnix
   printf "\n\rDone.\n\r\n\r"
 }
 

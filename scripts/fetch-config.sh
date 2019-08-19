@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo "Fetching confong from S3 for Play App"
+
 set -e
 
 # colours
