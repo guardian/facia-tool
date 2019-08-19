@@ -143,8 +143,6 @@ export interface InputImageContainerProps {
   useDefault?: boolean;
   message?: string;
   replaceImage: boolean;
-  setDisplayImageReplaceToggle: (display: boolean) => void;
-  setImageReplaceToggleValue: (value: boolean) => void;
 }
 
 type ComponentProps = InputImageContainerProps &
@@ -263,8 +261,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
   private handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     this.clearField();
-    this.props.setImageReplaceToggleValue(false);
-    this.props.setDisplayImageReplaceToggle(false);
   };
 
   private handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
@@ -280,8 +276,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
   private handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     events.imageAdded(this.props.frontId, 'drop');
     e.preventDefault();
-    e.persist();
-
     validateImageEvent(e, this.props.frontId, this.props.criteria)
       .then(this.props.input.onChange)
       .catch(err => {
@@ -310,7 +304,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     )
       .then(mediaItem => {
         this.props.input.onChange(mediaItem);
-        this.props.setDisplayImageReplaceToggle(true);
       })
       .catch(err => {
         alert(err);
@@ -358,7 +351,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       .then(mediaItem => {
         events.imageAdded(this.props.frontId, 'click to modal');
         this.props.input.onChange(mediaItem);
-        this.props.setDisplayImageReplaceToggle(true);
       })
       .catch(err => {
         alert(err);
