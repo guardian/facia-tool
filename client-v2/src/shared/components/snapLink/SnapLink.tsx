@@ -24,6 +24,7 @@ import CollectionItemHeading from '../collectionItem/CollectionItemHeading';
 import CollectionItemContent from '../collectionItem/CollectionItemContent';
 import CollectionItemBody from '../collectionItem/CollectionItemBody';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
+import urls from 'shared/constants/url';
 
 const SnapLinkBodyContainer = styled(CollectionItemBody)`
   justify-content: space-between;
@@ -74,7 +75,17 @@ const SnapLink = ({
     (articleFragment.meta.customKicker
       ? `{ ${articleFragment.meta.customKicker} }`
       : 'No headline');
-  const urlPath = articleFragment.meta.href;
+
+  const normaliseSnapUrl = (href: string) => {
+    if (href && !/^https?:\/\//.test(href)) {
+      return 'https://' + urls.base.mainDomain + href;
+    }
+    return href;
+  };
+
+  const urlPath =
+    articleFragment.meta.href && normaliseSnapUrl(articleFragment.meta.href);
+
   return (
     <CollectionItemContainer {...rest}>
       <SnapLinkBodyContainer data-testid="snap" size={size} fade={fade}>
@@ -92,7 +103,7 @@ const SnapLink = ({
           )}
           <CollectionItemHeading html>{headline}</CollectionItemHeading>
           <SnapLinkURL>
-            snap link url: &nbsp;
+            url: &nbsp;
             <a href={urlPath} target="_blank">
               {urlPath}
             </a>
