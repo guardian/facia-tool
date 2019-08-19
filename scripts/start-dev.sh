@@ -11,6 +11,8 @@ done
 
 printf "\n\rStarting Yarn... \n\r\n\r"
 
+cd client-v2
+
 yarn watch &
 
 cd ..
