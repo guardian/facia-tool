@@ -10,7 +10,8 @@ import { ThumbnailSmall } from '../Thumbnail';
 import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
 import {
   HoverDeleteButton,
-  HoverAddToClipboardButton
+  HoverAddToClipboardButton,
+  HoverViewButton
 } from '../input/HoverActionButtons';
 import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
 import { ArticleFragment, CollectionItemSizes } from 'shared/types/Collection';
@@ -69,6 +70,7 @@ const SnapLink = ({
     (articleFragment.meta.customKicker
       ? `{ ${articleFragment.meta.customKicker} }`
       : 'No headline');
+  const urlPath = articleFragment.meta.href;
   return (
     <CollectionItemContainer {...rest}>
       <SnapLinkBodyContainer data-testid="snap" size={size} fade={fade}>
@@ -93,12 +95,16 @@ const SnapLink = ({
         >
           <HoverActionsButtonWrapper
             buttons={[
-              { text: 'Delete', component: HoverDeleteButton },
-              { text: 'Clipboard', component: HoverAddToClipboardButton }
+              { text: 'View', component: HoverViewButton },
+              { text: 'Clipboard', component: HoverAddToClipboardButton },
+              { text: 'Delete', component: HoverDeleteButton }
             ]}
             buttonProps={{
+              isLive: true, // it should not be possible for a snap link to be anything other than live?
+              urlPath,
+              onAddToClipboard,
               onDelete,
-              onAddToClipboard
+              isSnapLink: true
             }}
             size={size}
             toolTipPosition={'top'}
