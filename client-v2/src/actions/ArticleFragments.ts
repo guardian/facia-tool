@@ -368,6 +368,9 @@ const cloneArticleFragmentToTarget = (
   };
 };
 
+const addArticleFragmentToClipboard = (uuid: string) =>
+  cloneArticleFragmentToTarget(uuid, 'clipboard');
+
 const addImageToArticleFragment = (
   uuid: string,
   imageData: ValidationResponse
@@ -391,5 +394,6 @@ export {
   removeArticleFragment,
   addImageToArticleFragment,
   copyArticleFragmentImageMetaWithPersist,
-  cloneArticleFragmentToTarget
+  cloneArticleFragmentToTarget,
+  addArticleFragmentToClipboard
 };
