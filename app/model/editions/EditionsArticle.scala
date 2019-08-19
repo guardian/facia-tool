@@ -62,7 +62,8 @@ case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[Art
         showQuotedHeadline = metadata.flatMap(_.showQuotedHeadline).getOrElse(false),
         mediaType = metadata.flatMap(_.mediaType).map(_.toPublishedMediaType).getOrElse(PublishedMediaType.UseArticleTrail),
         imageSrcOverride = imageSrcOverride,
-        sportScore = metadata.flatMap(_.sportScore)
+        sportScore = metadata.flatMap(_.sportScore),
+        overrideArticleMedia = metadata.flatMap(_.applyMediaOverrides).getOrElse(true)
       )
     )
   }
