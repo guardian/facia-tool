@@ -29,7 +29,7 @@ Ubuntu/Mac: [Follow these instructions](https://github.com/nvm-sh/nvm#installati
 
 #### Dev Setup
 
-1. Get credentials for `composer` and `workflow` from [Janus](https://janus.gutools.co.uk/multi-credentials?&permissionIds=cmsFronts-dev,capi-api-gateway,frontend-dev).
+1. Get credentials from [Janus](https://janus.gutools.co.uk/multi-credentials?&permissionIds=cmsFronts-dev,capi-api-gateway,frontend-dev).
 2. From the project root, run `./scripts/setup.sh`.
 3a. From the project root, run `./scripts/start-dev.sh`.
 3b. From the project root, run without debug `./script/start-dev.sh --no-debug`.
