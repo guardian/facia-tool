@@ -33,7 +33,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       name,
       name,
       0,
-      canRename = false,
+      isSpecial = false,
       isHidden = false,
       None,
       None,

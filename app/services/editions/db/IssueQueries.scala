@@ -40,8 +40,8 @@ trait IssueQueries {
           name,
           is_hidden,
           metadata,
-          can_rename
-        ) VALUES (${issueId}, ${fIndex}, ${front.name}, ${front.hidden}, ${front.metadata}, ${front.canRename})
+          is_special
+        ) VALUES (${issueId}, ${fIndex}, ${front.name}, ${front.hidden}, ${front.metadata}, ${front.isSpecial})
         RETURNING id;
       """.map(_.string("id")).single().apply().get
 
@@ -138,7 +138,7 @@ trait IssueQueries {
         fronts.issue_id      AS fronts_issue_id,
         fronts.index         AS fronts_index,
         fronts.name          AS fronts_name,
-        fronts.can_rename    AS fronts_can_rename,
+        fronts.is_special    AS fronts_is_special,
         fronts.is_hidden     AS fronts_is_hidden,
         fronts.metadata      AS fronts_metadata,
         fronts.updated_on    AS fronts_updated_on,

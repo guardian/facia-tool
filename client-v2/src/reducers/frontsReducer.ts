@@ -49,6 +49,13 @@ const reducer = (
         newState
       );
     }
+    case 'FETCH_FRONT_HIDDEN_STATE_SUCCESS': {
+      return set(
+        ['frontsConfig', 'data', 'fronts', action.payload.frontId, 'isHidden'],
+        action.payload.hidden,
+        newState
+      );
+    }
     case 'FETCH_LAST_PRESSED_SUCCESS': {
       return set(
         ['lastPressed', action.payload.frontId],

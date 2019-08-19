@@ -41,7 +41,11 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   }
 
   private def front(name: String, collections: EditionsCollectionSkeleton*): EditionsFrontSkeleton =
-    EditionsFrontSkeleton(name, collections.toList, FrontPresentation(Swatch.Culture), hidden = false, canRename = false)
+    EditionsFrontSkeleton(name, collections.toList, FrontPresentation(Swatch.Culture), hidden = false, isSpecial = false)
+
+  implicit class RichFrontSkeleton(frontSkel: EditionsFrontSkeleton) {
+    def special() = frontSkel.copy(isSpecial = true, hidden = true)
+  }
 
   private def collection(name: String, prefill: Option[CapiPrefillQuery], articles: EditionsArticleSkeleton*): EditionsCollectionSkeleton =
     EditionsCollectionSkeleton(name, articles.toList, prefill, CollectionPresentation(), hidden = false)
@@ -320,6 +324,57 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
       // check that the added time hasn't modified
       updatedBrexshit.items.find(_.pageCode == "76543").value.addedOn shouldBe now.toInstant.toEpochMilli
+    }
+
+    "should allow a special front's hidden status to be changed" in {
+      val id = insertSkeletonIssue(2019, 9, 30,
+        front("news/uk",
+          collection("politics", Some(CapiPrefillQuery("magic-politics-query")),
+            article("12345"),
+            article("23456")
+          )
+        ).special()
+      )
+      val retrievedIssue = editionsDB.getIssue(id).value
+      val specialFront = retrievedIssue.fronts.head
+      specialFront.isSpecial shouldBe true
+      specialFront.isHidden shouldBe true
+
+      editionsDB.updateFrontHiddenState(specialFront.id, isHidden = false)
+
+      val retrievedIssue2 = editionsDB.getIssue(id).value
+      val specialFront2 = retrievedIssue2.fronts.head
+      specialFront2.isSpecial shouldBe true
+      specialFront2.isHidden shouldBe false
+
+      editionsDB.updateFrontHiddenState(specialFront.id, isHidden = true)
+
+      val retrievedIssue3 = editionsDB.getIssue(id).value
+      val specialFront3 = retrievedIssue3.fronts.head
+      specialFront3.isSpecial shouldBe true
+      specialFront3.isHidden shouldBe true
+    }
+
+    "should now allow a normal front's hidden status to be changed" in {
+      val id = insertSkeletonIssue(2019, 9, 30,
+        front("news/uk",
+          collection("politics", Some(CapiPrefillQuery("magic-politics-query")),
+            article("12345"),
+            article("23456")
+          )
+        )
+      )
+      val retrievedIssue = editionsDB.getIssue(id).value
+      val specialFront = retrievedIssue.fronts.head
+      specialFront.isSpecial shouldBe false
+      specialFront.isHidden shouldBe false
+
+      editionsDB.updateFrontHiddenState(specialFront.id, isHidden = true)
+
+      val retrievedIssue2 = editionsDB.getIssue(id).value
+      val specialFront2 = retrievedIssue2.fronts.head
+      specialFront2.isSpecial shouldBe false
+      specialFront2.isHidden shouldBe false
     }
 
   }

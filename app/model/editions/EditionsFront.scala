@@ -21,7 +21,7 @@ case class EditionsFront(
     id: String,
     displayName: String,
     index: Int,
-    canRename: Boolean,
+    isSpecial: Boolean,
     isHidden: Boolean,
     updatedOn: Option[Long],
     updatedBy: Option[String],
@@ -49,7 +49,7 @@ object EditionsFront {
       rs.string(prefix + "id"),
       rs.string(prefix + "name"),
       rs.int(prefix + "index"),
-      rs.boolean(prefix + "can_rename"),
+      rs.boolean(prefix + "is_special"),
       rs.boolean(prefix + "is_hidden"),
       rs.zonedDateTimeOpt(prefix + "updated_on").map(_.toInstant.toEpochMilli),
       rs.stringOpt(prefix + "updated_by"),
@@ -64,14 +64,14 @@ object EditionsFront {
       id <- rs.stringOpt(prefix + "id")
       name <- rs.stringOpt(prefix + "name")
       index <- rs.intOpt(prefix + "index")
-      canRename <- rs.booleanOpt(prefix + "can_rename")
+      isSpecial <- rs.booleanOpt(prefix + "is_special")
       isHidden <- rs.booleanOpt(prefix + "is_hidden")
     } yield
       EditionsFront(
         id,
         name,
         index,
-        canRename,
+        isSpecial,
         isHidden,
         rs.zonedDateTimeOpt(prefix + "updated_on").map(_.toInstant.toEpochMilli),
         rs.stringOpt(prefix + "updated_by"),

@@ -32,7 +32,7 @@ import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
 import { PreviewEyeIcon, ClearIcon } from 'shared/components/icons/Icons';
 import { createFrontId } from 'util/editUtils';
 import EditModeVisibility from 'components/util/EditModeVisibility';
-import { updateFrontMetadata } from 'actions/Editions';
+import { setFrontHiddenState, updateFrontMetadata } from 'actions/Editions';
 
 const FrontHeader = styled(SectionHeader)`
   display: flex;
@@ -126,6 +126,7 @@ type FrontsComponentProps = FrontsContainerProps & {
       frontId: string,
       metadata: EditionsFrontMetadata
     ) => void;
+    setFrontHiddenState: (id: string, hidden: boolean) => void;
   };
 };
 
@@ -162,8 +163,12 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
     const title = this.getTitle();
 
     const { frontNameValue, editingFrontName } = this.state;
-    const canRename = this.props.selectedFront
-      ? this.props.selectedFront.canRename
+    const isSpecial = this.props.selectedFront
+      ? this.props.selectedFront.isSpecial
+      : false;
+
+    const isHidden = this.props.selectedFront
+      ? this.props.selectedFront.isHidden
       : false;
 
     return (
@@ -222,14 +227,23 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
                   </RadioGroup>
                 </StageSelectButtons>
               </EditModeVisibility>
-              {canRename && (
-                <FrontHeaderButton
-                  data-testid="rename-front-button"
-                  onClick={this.renameFront}
-                  size="l"
-                >
-                  Rename
-                </FrontHeaderButton>
+              {isSpecial && (
+                <>
+                  <FrontHeaderButton
+                    data-testid="toggle-hidden-front-button"
+                    onClick={() => this.setFrontHiddenState(!isHidden)}
+                    size="l"
+                  >
+                    {isHidden ? 'Unhide' : 'Hide'}
+                  </FrontHeaderButton>
+                  <FrontHeaderButton
+                    data-testid="rename-front-button"
+                    onClick={this.renameFront}
+                    size="l"
+                  >
+                    Rename
+                  </FrontHeaderButton>
+                </>
               )}
               <FrontHeaderButton onClick={this.handleRemoveFront} size="l">
                 <ClearIcon size="xl" />
@@ -256,6 +270,13 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
       frontNameValue: this.getTitle() || '',
       editingFrontName: true
     });
+  };
+
+  private setFrontHiddenState = (hidden: boolean) => {
+    this.props.frontsActions.setFrontHiddenState(
+      this.props.selectedFront.id,
+      hidden
+    );
   };
 
   private getTitle = () => {
@@ -313,7 +334,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     changeBrowsingStage: (id: string, browsingStage: Stages) =>
       dispatch(changedBrowsingStage(id, browsingStage)),
     updateFrontMetadata: (id: string, metadata: EditionsFrontMetadata) =>
-      dispatch(updateFrontMetadata(id, metadata))
+      dispatch(updateFrontMetadata(id, metadata)),
+    setFrontHiddenState: (id: string, hidden: boolean) =>
+      dispatch(setFrontHiddenState(id, hidden))
   }
 });
 

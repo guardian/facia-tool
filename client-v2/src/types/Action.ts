@@ -300,6 +300,14 @@ interface EditionsFrontMetadataUpdate {
   };
 }
 
+interface EditionsFrontHiddenStateUpdate {
+  type: 'FETCH_FRONT_HIDDEN_STATE_SUCCESS';
+  payload: {
+    frontId: string;
+    hidden: boolean;
+  };
+}
+
 type SetFocusState = ReturnType<typeof setFocusState>;
 type ResetFocusState = ReturnType<typeof resetFocusState>;
 
@@ -352,6 +360,7 @@ type Action =
   | ResetFocusState
   | ActionSetFeatureValue
   | EditionsFrontMetadataUpdate
+  | EditionsFrontHiddenStateUpdate
   | IsPrefillMode
   | SetHidden
   | ChangedBrowsingStage;
