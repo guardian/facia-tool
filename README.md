@@ -27,13 +27,16 @@ We use [NVM](https://github.com/creationix/nvm) to ensure a given Node version i
 
 Ubuntu/Mac: [Follow these instructions](https://github.com/nvm-sh/nvm#installation-and-update)
 
-#### Dev Setup
+#### Dev Setup (need to be done once)
 
 1. Get credentials from [Janus](https://janus.gutools.co.uk/multi-credentials?&permissionIds=cmsFronts-dev,capi-api-gateway,frontend-dev).
 2. From the project root, run `./scripts/setup.sh`.
-3a. From the project root, run `./scripts/start-dev.sh`.
-3b. From the project root, run without debug `./script/start-dev.sh --no-debug`.
-4. Open `https://fronts.local.dev-gutools.co.uk`.
+
+#### Dev Start
+
+1a. From the project root, run `./scripts/start-dev.sh`.
+1b. From the project root, run without debug `./script/start-dev.sh --no-debug`.
+2. Open `https://fronts.local.dev-gutools.co.uk`.
 
 #### Running postgres
 
