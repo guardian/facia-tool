@@ -559,6 +559,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
   };
 
   private setImageReplaceToggleValue = (value: boolean) => {
+    this.props.change('imageReplace', value);
     this.setState({ isImageReplaced: value });
   };
 
