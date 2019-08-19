@@ -21,44 +21,19 @@ Fronts Client V2 is in Active Development. You'll find it over at [client-v2](/c
 
 Install each of the things listed:
 
-#### Git
-
-Mac:
-
-```bash
-brew install git
-echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.bash_profile
-```
-
-#### [Homebrew](http://brew.sh/)
-
-This is needed on Mac only:
-
-```bash
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-```
-
-#### JDK 8
-
-Ubuntu:
-
-```bash
-sudo apt-get install openjdk-8-jdk
-```
-
-Mac: Install from [Oracle web site](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-
-If you have more than one JDK version running, ensure you run JDK 8 by adding the below to `.bash_profile`:
-
-```
-export JAVA_HOME=`/usr/libexec/java_home -v 1.8
-```
-
 #### NVM
 
 We use [NVM](https://github.com/creationix/nvm) to ensure a given Node version is used and project setup scripts run correctly.
 
 Ubuntu/Mac: [Follow these instructions](https://github.com/nvm-sh/nvm#installation-and-update)
+
+#### Dev Setup
+
+1. Get credentials for `composer` and `workflow` from [Janus](https://janus.gutools.co.uk/multi-credentials?&permissionIds=cmsFronts-dev,capi-api-gateway,frontend-dev).
+2. From the project root, run `./scripts/setup.sh`.
+3a. From the project root, run `./scripts/start-dev.sh`.
+3b. From the project root, run without debug `./script/start-dev.sh --no-debug`.
+4. Open `https://fronts.local.dev-gutools.co.uk`.
 
 #### Running postgres
 

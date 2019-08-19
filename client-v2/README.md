@@ -18,30 +18,13 @@
 
 Fronts Client V2 looks to rebuild the Fronts tool with modern technologies, develop reusable patterns for content curation and build shareable components for across the tools.
 
-## Setup
+## Dev Setup
 
-To setup the Fronts V2 project:
-
-```bash
-./scripts/setup.sh
-```
-
-View [setup.sh](scripts/setup.sh).
-
-## Developing
-
-To start developing, first get [Janus credentials](https://janus.gutools.co.uk/multi-credentials?&permissionIds=cmsFronts-dev,capi-api-gateway,frontend-dev) then run:
-
-```bash
-./scripts/client-dev.sh
-```
-
-The v2 application will be running here:
-[https://fronts.local.dev-gutools.co.uk/v2](https://fronts.local.dev-gutools.co.uk/v2)
-
-View [client-dev.sh](scripts/client-dev.sh).
-
-If you wish to use git grep to search the code base you can use [fronts-find.sh](scripts/fronts-find.sh)
+1. Get credentials for `composer` and `workflow` from [Janus](https://janus.gutools.co.uk/multi-credentials?&permissionIds=cmsFronts-dev,capi-api-gateway,frontend-dev).
+2. From the project root, run `./scripts/setup.sh`.
+3a. From the project root, run `./scripts/start-dev.sh`.
+3b. From the project root, run without debug `./script/start-dev.sh --no-debug`.
+4. Open `https://fronts.local.dev-gutools.co.uk/v2`.
 
 ### Technologies
 
