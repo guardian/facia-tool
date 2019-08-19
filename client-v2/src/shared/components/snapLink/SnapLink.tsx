@@ -30,6 +30,10 @@ const SnapLinkBodyContainer = styled(CollectionItemBody)`
   border-top-color: ${({ theme }) => theme.shared.base.colors.borderColor};
 `;
 
+const SnapLinkURL = styled('p')`
+  font-size: 12px;
+`;
+
 interface ContainerProps {
   selectSharedState?: (state: any) => State;
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -87,6 +91,12 @@ const SnapLink = ({
             <CollectionItemMetaHeading>Snap link </CollectionItemMetaHeading>
           )}
           <CollectionItemHeading html>{headline}</CollectionItemHeading>
+          <SnapLinkURL>
+            snap link url: &nbsp;
+            <a href={urlPath} target="_blank">
+              {urlPath}
+            </a>
+          </SnapLinkURL>
         </CollectionItemContent>
         {size === 'default' && <ThumbnailSmall />}
         <HoverActionsAreaOverlay
