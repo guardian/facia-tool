@@ -155,6 +155,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
                 isUneditable={isUneditable}
                 {...getNodeProps()}
                 onDelete={this.onDelete}
+                onAddToClipboard={onAddToClipboard}
                 onClick={isUneditable ? undefined : () => onSelect(uuid)}
                 size={size}
                 textSize={textSize}

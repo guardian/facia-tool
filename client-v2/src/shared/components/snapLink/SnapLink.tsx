@@ -8,7 +8,10 @@ import CollectionItemMetaContainer from '../collectionItem/CollectionItemMetaCon
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
 import { ThumbnailSmall } from '../Thumbnail';
 import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
-import { HoverDeleteButton } from '../input/HoverActionButtons';
+import {
+  HoverDeleteButton,
+  HoverAddToClipboardButton
+} from '../input/HoverActionButtons';
 import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
 import { ArticleFragment, CollectionItemSizes } from 'shared/types/Collection';
 import {
@@ -32,6 +35,7 @@ interface ContainerProps {
   onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
   onDelete?: (uuid: string) => void;
+  onAddToClipboard?: (uuid: string) => void;
   onClick?: () => void;
   id: string;
   draggable?: boolean;
@@ -54,6 +58,7 @@ const SnapLink = ({
   textSize = 'default',
   showMeta = true,
   onDelete,
+  onAddToClipboard,
   children,
   articleFragment,
   isUneditable,
@@ -87,9 +92,13 @@ const SnapLink = ({
           justify={'space-between'}
         >
           <HoverActionsButtonWrapper
-            buttons={[{ text: 'Delete', component: HoverDeleteButton }]}
+            buttons={[
+              { text: 'Delete', component: HoverDeleteButton },
+              { text: 'Clipboard', component: HoverAddToClipboardButton }
+            ]}
             buttonProps={{
-              onDelete
+              onDelete,
+              onAddToClipboard
             }}
             size={size}
             toolTipPosition={'top'}
