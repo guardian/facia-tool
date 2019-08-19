@@ -16,11 +16,10 @@ import {
 } from 'shared/types/Collection';
 import SnapLink from 'shared/components/snapLink/SnapLink';
 import {
-  cloneArticleFragmentToTarget,
   copyArticleFragmentImageMetaWithPersist,
-  addImageToArticleFragment
+  addImageToArticleFragment,
+  addArticleFragmentToClipboard
 } from 'actions/ArticleFragments';
-import noop from 'lodash/noop';
 import {
   validateImageEvent,
   ValidationResponse
@@ -68,7 +67,7 @@ interface ContainerProps {
 }
 
 type ArticleContainerProps = ContainerProps & {
-  onAddToClipboard: () => void;
+  onAddToClipboard: (uuid: string) => void;
   copyCollectionItemImageMeta: (from: string, to: string) => void;
   addImageToArticleFragment: (id: string, response: ValidationResponse) => void;
   updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) => void;
@@ -100,7 +99,6 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       children,
       getNodeProps,
       onSelect,
-      onAddToClipboard = noop,
       type,
       size,
       textSize,
@@ -125,7 +123,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
               isUneditable={isUneditable}
               {...getNodeProps()}
               onDelete={this.onDelete}
-              onAddToClipboard={onAddToClipboard}
+              onAddToClipboard={this.handleAddToClipboard}
               onClick={isUneditable ? undefined : () => onSelect(uuid)}
               size={size}
               textSize={textSize}
@@ -198,6 +196,10 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
     );
   }
 
+  private handleAddToClipboard = () => {
+    this.props.onAddToClipboard(this.props.uuid);
+  };
+
   private onDelete = () => {
     this.props.onDelete();
   };
@@ -247,21 +249,17 @@ const createMapStateToProps = () => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch, props: ContainerProps) => {
-  return {
-    onAddToClipboard: () => {
-      dispatch(cloneArticleFragmentToTarget(props.uuid, 'clipboard'));
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return bindActionCreators(
+    {
+      onAddToClipboard: addArticleFragmentToClipboard,
+      copyCollectionItemImageMeta: copyArticleFragmentImageMetaWithPersist,
+      addImageToArticleFragment,
+      updateArticleFragmentMeta: updateArticleFragmentMetaAction,
+      clearArticleFragmentSelection: editorClearArticleFragmentSelection
     },
-    ...bindActionCreators(
-      {
-        copyCollectionItemImageMeta: copyArticleFragmentImageMetaWithPersist,
-        addImageToArticleFragment,
-        updateArticleFragmentMeta: updateArticleFragmentMetaAction,
-        clearArticleFragmentSelection: editorClearArticleFragmentSelection
-      },
-      dispatch
-    )
-  };
+    dispatch
+  );
 };
 
 export default connect(

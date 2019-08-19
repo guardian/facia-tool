@@ -104,7 +104,7 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
       onDrop = noop,
       onDelete = noop,
       onClick = noop,
-      onAddToClipboard = noop,
+      onAddToClipboard,
       children,
       isUneditable,
       imageDropTypes = [],
