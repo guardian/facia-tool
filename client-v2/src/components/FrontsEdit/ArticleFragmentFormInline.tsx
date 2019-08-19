@@ -199,7 +199,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     'imageHide',
     'imageCutoutReplace',
     'imageSlideshowReplace',
-    'imageReplace'
+    'imageReplace',
+    'showMainVideo'
   ];
 
   public render() {
@@ -379,13 +380,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 id={getInputId(articleFragmentId, 'show-updates')}
                 type="checkbox"
               />
-              <Field
-                name="showMainVideo"
-                component={InputCheckboxToggleInline}
-                label="Show video"
-                id={getInputId(articleFragmentId, 'show-video')}
-                type="checkbox"
-              />
             </CheckboxFieldsContainer>
             {showByline && (
               <ConditionalField
@@ -474,6 +468,17 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     type="checkbox"
                     default={false}
                     onChange={_ => this.changeImageField('imageCutoutReplace')}
+                  />
+                </InputGroup>
+                <InputGroup>
+                  <ConditionalField
+                    permittedFields={editableFields}
+                    name="showMainVideo"
+                    component={InputCheckboxToggleInline}
+                    label="Show video"
+                    id={getInputId(articleFragmentId, 'show-video')}
+                    type="checkbox"
+                    onChange={_ => this.changeImageField('showMainVideo')}
                   />
                 </InputGroup>
                 <InputGroup>
