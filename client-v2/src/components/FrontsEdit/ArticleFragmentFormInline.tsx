@@ -48,6 +48,7 @@ import { selectors as collectionSelectors } from 'shared/bundles/collectionsBund
 import { getContributorImage } from 'util/CAPIUtils';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
+import { ValidationResponse } from 'shared/util/validateImageSrc';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -58,6 +59,7 @@ interface ComponentProps extends ContainerProps {
   showKickerSection: boolean;
   kickerOptions: ArticleTag;
   cutoutImage?: string;
+  primaryImage: ValidationResponse | null;
 }
 
 type Props = ComponentProps &
@@ -222,7 +224,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       cutoutImage,
       imageSlideshowReplace,
       isBreaking,
-      editMode
+      editMode,
+      primaryImage
     } = this.props;
 
     const isEditionsMode = editMode === 'editions';
@@ -429,23 +432,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                       : articleCapiFieldValues.thumbnail
                   }
                   useDefault={!imageCutoutReplace && !imageReplace}
-                  message={imageCutoutReplace ? 'Add cutout' : 'Add image'}
+                  message={imageCutoutReplace ? 'Add cutout' : 'Replace image'}
                   onChange={this.handleImageChange}
                 />
               </ImageCol>
               <Col flex={2}>
-                <InputGroup>
-                  <ConditionalField
-                    permittedFields={editableFields}
-                    name="imageReplace"
-                    component={InputCheckboxToggleInline}
-                    label="Replace media"
-                    id={getInputId(articleFragmentId, 'image-replace')}
-                    type="checkbox"
-                    default={false}
-                    onChange={_ => this.changeImageField('imageReplace')}
-                  />
-                </InputGroup>
                 <InputGroup>
                   <ConditionalField
                     permittedFields={editableFields}
@@ -494,6 +485,20 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     }
                   />
                 </InputGroup>
+                {primaryImage && !!primaryImage.src && (
+                  <InputGroup>
+                    <ConditionalField
+                      permittedFields={editableFields}
+                      name="imageReplace"
+                      component={InputCheckboxToggleInline}
+                      label="Use replacement image"
+                      id={getInputId(articleFragmentId, 'image-replace')}
+                      type="checkbox"
+                      default={false}
+                      onChange={_ => this.changeImageField('imageReplace')}
+                    />
+                  </InputGroup>
+                )}
               </Col>
             </Row>
             <ConditionalComponent
@@ -550,7 +555,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
   };
 
   private handleImageChange: EventWithDataHandler<React.ChangeEvent<any>> = (
-    e,
+    e: unknown,
     ...args: [any?, any?, string?]
   ) => {
     // If we don't already have an image override enabled, enable the default imageReplace property.
@@ -558,6 +563,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     if (!this.props.imageCutoutReplace && !this.props.imageReplace) {
       this.changeImageField('imageReplace');
     }
+
     this.props.change(this.getImageFieldName(), e);
   };
 
@@ -613,6 +619,7 @@ interface ContainerProps {
   imageReplace: boolean;
   isBreaking: boolean;
   editMode: EditMode;
+  primaryImage: ValidationResponse | null;
 }
 
 interface InterfaceProps {
@@ -686,7 +693,8 @@ const createMapStateToProps = () => {
       cutoutImage: externalArticle
         ? getContributorImage(externalArticle)
         : undefined,
-      editMode: selectEditMode(state)
+      editMode: selectEditMode(state),
+      primaryImage: valueSelector(state, 'primaryImage')
     };
   };
 };
