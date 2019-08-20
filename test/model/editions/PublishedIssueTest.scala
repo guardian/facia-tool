@@ -113,7 +113,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
         mediaType = PublishedMediaType.Image,
         imageSrcOverride = Some(PublishedImage(Some(100), Some(100), "file://image-1.jpg")),
         sportScore = Some("sport-score"),
-        overrideArticleMedia = false
+        overrideArticleMainMedia = false
       )
     }
   }

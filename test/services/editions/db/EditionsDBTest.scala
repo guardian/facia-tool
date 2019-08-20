@@ -24,7 +24,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     mediaType = None,
     cutoutImage = None,
     replaceImage = None,
-    applyMediaOverrides = None,
+    overrideArticleMainMedia = None,
     sportScore = None
   )
 
@@ -141,7 +141,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       editionsArticle.pageCode shouldBe "12345"
 
       val articleMetadata = editionsArticle.metadata.get
-      articleMetadata.applyMediaOverrides shouldBe None
+      articleMetadata.overrideArticleMainMedia shouldBe None
 
       commentFront.metadata.get.nameOverride shouldBe None
       commentFront.metadata.get.swatch shouldBe Some(Swatch.Culture)

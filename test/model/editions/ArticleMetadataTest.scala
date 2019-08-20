@@ -54,7 +54,7 @@ class ArticleMetadataTest extends FreeSpec with Matchers {
       |   "src":"src2",
       |   "thumb":"thumb2"
       | },
-      | "applyMediaOverrides":true}
+      | "overrideArticleMainMedia":true}
     """.stripMargin.split('\n').map(_.trim).mkString //remove leading/trailing whitespace and join into a single string
 
   "Article Metadata Data to/from Json" - {

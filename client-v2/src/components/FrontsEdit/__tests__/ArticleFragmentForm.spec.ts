@@ -8,7 +8,7 @@ import initialState from 'fixtures/initialState';
 import { State } from 'types/State';
 
 const formValues = {
-  applyMediaOverrides: false,
+  overrideArticleMainMedia: false,
   byline: 'Caroline Davies',
   customKicker: '',
   cutoutImage: {

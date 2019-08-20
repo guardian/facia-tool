@@ -32,7 +32,7 @@ case class ArticleMetadata (
   cutoutImage: Option[Image],
 
   replaceImage: Option[Image],
-  applyMediaOverrides: Option[Boolean]
+  overrideArticleMainMedia: Option[Boolean]
 )
 
 object ArticleMetadata {
@@ -63,7 +63,7 @@ case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[Art
         mediaType = metadata.flatMap(_.mediaType).map(_.toPublishedMediaType).getOrElse(PublishedMediaType.UseArticleTrail),
         imageSrcOverride = imageSrcOverride,
         sportScore = metadata.flatMap(_.sportScore),
-        overrideArticleMedia = metadata.flatMap(_.applyMediaOverrides).getOrElse(true)
+        overrideArticleMainMedia = metadata.flatMap(_.overrideArticleMainMedia).getOrElse(true)
       )
     )
   }

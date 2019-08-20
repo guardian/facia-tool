@@ -89,7 +89,7 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
             |      "src" : "https://media.giphy.com/media/yV5iknckcXcc/source.gif"
             |    },
             |    "sportScore" : "Sport Score",
-            |    "overrideArticleMedia" : true
+            |    "overrideArticleMainMedia" : true
             |  }
             |}""".stripMargin
 
@@ -105,7 +105,7 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
           imageSrcOverride = Some(
             PublishedImage(height = Some(1280), width = Some(720), "https://media.giphy.com/media/yV5iknckcXcc/source.gif")
           ),
-          overrideArticleMedia = true
+          overrideArticleMainMedia = true
         ))
 
         val json = Json.prettyPrint(Json.toJson(article))

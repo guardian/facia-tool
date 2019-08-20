@@ -30,7 +30,7 @@ case class ClientArticleMetadata (
   imageCutoutSrcWidth: Option[String],
   imageCutoutSrcOrigin: Option[String],
 
-  applyMediaOverrides: Option[Boolean]
+  overrideArticleMainMedia: Option[Boolean]
 ) {
   def toArticleMetadata: ArticleMetadata = {
     val cutoutImage: Option[Image] = (imageCutoutSrcHeight, imageCutoutSrcWidth, imageCutoutSrc, imageCutoutSrcOrigin) match {
@@ -63,7 +63,7 @@ case class ClientArticleMetadata (
       Some(imageOption),
       cutoutImage,
       replaceImage,
-      applyMediaOverrides
+      overrideArticleMainMedia
     )
   }
 }
@@ -99,7 +99,7 @@ object ClientArticleMetadata {
       articleMetadata.cutoutImage.flatMap(_.width).map(_.toString),
       articleMetadata.cutoutImage.map(_.origin),
 
-      articleMetadata.applyMediaOverrides
+      articleMetadata.overrideArticleMainMedia
     )
   }
 }

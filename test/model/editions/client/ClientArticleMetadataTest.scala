@@ -35,7 +35,7 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
       clientArticleMetadata.imageHide shouldBe None
       clientArticleMetadata.imageReplace shouldBe None
       clientArticleMetadata.imageCutoutReplace shouldBe None
-      clientArticleMetadata.applyMediaOverrides shouldBe None
+      clientArticleMetadata.overrideArticleMainMedia shouldBe None
     }
 
     "should persist cutout image when selected override is hide image" in {
@@ -67,7 +67,7 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
       clientArticleMetadata.imageCutoutSrcWidth shouldBe Some("100")
 
       clientArticleMetadata.imageReplace shouldBe None
-      clientArticleMetadata.applyMediaOverrides shouldBe None
+      clientArticleMetadata.overrideArticleMainMedia shouldBe None
     }
 
     "should persist slideshow images when selected override is replace image" in {
@@ -207,7 +207,7 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         "file://broom.jpg"
       ))
 
-      articleMetadata.applyMediaOverrides shouldBe None
+      articleMetadata.overrideArticleMainMedia shouldBe None
     }
 
     "should convert into ArticleMetadata without all the image information" in {

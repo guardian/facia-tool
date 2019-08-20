@@ -29,7 +29,7 @@ case class PublishedFurniture(
   mediaType: PublishedMediaType,
   imageSrcOverride: Option[PublishedImage],
   sportScore: Option[String],
-  overrideArticleMedia: Boolean
+  overrideArticleMainMedia: Boolean
 )
 
 case class PublishedArticle(internalPageCode: Long, furniture: PublishedFurniture)
