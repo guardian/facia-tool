@@ -27,6 +27,7 @@ import DraggableArticleImageContainer from './DraggableArticleImageContainer';
 import { media } from 'shared/util/mediaQueries';
 import ArticleGraph from './ArticleGraph';
 import { VideoIcon } from '../icons/Icons';
+import CollectionItemHeadingContainer from '../collectionItem/CollectionItemHeadingContainer';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   flex-shrink: 0;
@@ -46,10 +47,6 @@ const KickerHeading = styled(CollectionItemHeading)`
       ? globalTheme.shared.collectionItem.fontSizeSmall
       : globalTheme.shared.collectionItem.fontSizeDefault};
   ${media.large`font-size: 13px;`}
-`;
-
-const ArticleHeadingContainerSmall = styled('div')`
-  width: 100%;
 `;
 
 const ArticleBodyByline = styled('div')`
@@ -93,10 +90,6 @@ const ArticleMetadataProperty = styled('div')`
   padding: 1px 4px;
   flex: 0 0 auto;
   margin: 0 2px 1px 0;
-`;
-
-const ArticleHeadingContainerWrapper = styled('div')`
-  padding: 0 0 0 4px;
 `;
 
 const Tone = styled('span')`
@@ -208,8 +201,6 @@ const articleBodyDefault = React.memo(
     showMainVideo,
     frontId
   }: ArticleBodyProps) => {
-    const ArticleHeadingContainer =
-      size === 'small' ? ArticleHeadingContainerSmall : React.Fragment;
     const displayByline = size === 'default' && showByline && byline;
     const now = Date.now();
 
@@ -294,33 +285,31 @@ const articleBodyDefault = React.memo(
               )}
             </ArticleMetadataProperties>
           )}
-          <ArticleHeadingContainerWrapper>
-            <ArticleHeadingContainer>
-              {displayPlaceholders && (
-                <>
-                  <TextPlaceholder />
-                  {size !== 'small' && <TextPlaceholder width={25} />}
-                </>
-              )}
-              {kicker && (
-                <KickerHeading
-                  displaySize={size}
-                  style={{ color: getPillarColor(pillarId, true) }}
-                  data-testid="kicker"
-                >
-                  {`${kicker} `}
-                </KickerHeading>
-              )}
-              <CollectionItemHeading
-                html
-                data-testid="headline"
+          <CollectionItemHeadingContainer size={size}>
+            {displayPlaceholders && (
+              <>
+                <TextPlaceholder />
+                {size !== 'small' && <TextPlaceholder width={25} />}
+              </>
+            )}
+            {kicker && (
+              <KickerHeading
                 displaySize={size}
+                style={{ color: getPillarColor(pillarId, true) }}
+                data-testid="kicker"
               >
-                {headline}
-              </CollectionItemHeading>
-            </ArticleHeadingContainer>
+                {`${kicker} `}
+              </KickerHeading>
+            )}
+            <CollectionItemHeading
+              html
+              data-testid="headline"
+              displaySize={size}
+            >
+              {headline}
+            </CollectionItemHeading>
             {displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
-          </ArticleHeadingContainerWrapper>
+          </CollectionItemHeadingContainer>
         </CollectionItemContent>
         <ImageAndGraphWrapper size={size}>
           {featureFlagPageViewData && canShowPageViewData && (
