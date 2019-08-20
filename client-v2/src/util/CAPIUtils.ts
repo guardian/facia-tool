@@ -96,8 +96,12 @@ const getTags = (externalArticle: ExternalArticle): Tag[] =>
 const getPrimaryTag = (externalArticle: ExternalArticle): Tag | null =>
   getTags(externalArticle)[0] || null;
 
-const isLive = (article: CapiArticle) =>
-  !article.fields.isLive || article.fields.isLive === 'true';
+const isLive = (article: CapiArticle) => {
+  // `isLive` is `undefined` if item is from Live CAPI, so return `true`
+  // if we're from Preview CAPI, coerce `isLive` (string) field into a Boolean
+  const isLiveField = article.fields.isLive;
+  return isLiveField === undefined || Boolean(isLiveField);
+};
 
 const getArticleLabel = (article: CapiArticle) => {
   const {
