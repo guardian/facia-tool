@@ -142,6 +142,7 @@ export interface InputImageContainerProps {
   defaultImageUrl?: string;
   useDefault?: boolean;
   message?: string;
+  replaceImage: boolean;
 }
 
 type ComponentProps = InputImageContainerProps &
@@ -170,7 +171,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       gridUrl,
       useDefault,
       defaultImageUrl,
-      message = 'Add image',
+      message = 'Replace image',
       editMode
     } = this.props;
 
@@ -243,7 +244,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                   name="paste-url"
                   placeholder=" Paste crop url"
                   defaultValue={this.state.imageSrc}
-                  onKeyDown={this.handlePasteImgSrcSubmit(13)}
                   onChange={this.handlePasteImgSrcChange}
                 />
                 <InputLabel hidden htmlFor="paste-url">
@@ -276,8 +276,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
   private handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     events.imageAdded(this.props.frontId, 'drop');
     e.preventDefault();
-    e.persist();
-
     validateImageEvent(e, this.props.frontId, this.props.criteria)
       .then(this.props.input.onChange)
       .catch(err => {
@@ -289,31 +287,30 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 
   private handlePasteImgSrcChange = (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
-    this.setState({ imageSrc: e.currentTarget.value });
+    e.persist();
+    this.setState(
+      { imageSrc: e.currentTarget.value },
+      this.validateAndGetImage
+    );
   };
 
-  private handlePasteImgSrcSubmit = (keyCode: number) => (
-    e: React.KeyboardEvent
-  ) => {
+  private validateAndGetImage = () => {
     events.imageAdded(this.props.frontId, 'paste');
-    e.persist();
-    if (e.keyCode === keyCode) {
-      e.preventDefault();
-      validateImageSrc(
-        this.state.imageSrc,
-        this.props.frontId,
-        this.props.criteria
-      )
-        .then(mediaItem => {
-          this.props.input.onChange(mediaItem);
-        })
-        .catch(err => {
-          alert(err);
-          // tslint:disable-next-line no-console
-          console.log('@todo:handle error', err);
-        });
-      this.setState({ imageSrc: '' });
-    }
+
+    validateImageSrc(
+      this.state.imageSrc,
+      this.props.frontId,
+      this.props.criteria
+    )
+      .then(mediaItem => {
+        this.props.input.onChange(mediaItem);
+      })
+      .catch(err => {
+        alert(err);
+        // tslint:disable-next-line no-console
+        console.log('@todo:handle error', err);
+      });
+    this.setState({ imageSrc: '' });
   };
 
   private clearField = () => this.props.input.onChange(null);
