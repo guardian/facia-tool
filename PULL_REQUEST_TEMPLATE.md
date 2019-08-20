@@ -1,10 +1,8 @@
 ## What's changed?
-
-_Detail the main feature of this PR and optionally a link to the relevant issue / card_
+<!-- Detail the main feature of this PR and optionally a link to the relevant issue / card -->
 
 ## Implementation notes
-
-_Include any specific areas you want to highlight for review that you feel might be worthy of discussion (i.e. any non-obvious decisions you've made)_
+<!-- Include any specific areas you want to highlight for review that you feel might be worthy of discussion (i.e. any non-obvious decisions you've made) -->
 
 ## Checklist
 
