@@ -25,6 +25,7 @@ import CollectionItemContent from '../collectionItem/CollectionItemContent';
 import CollectionItemBody from '../collectionItem/CollectionItemBody';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
 import urls from 'shared/constants/url';
+import CollectionItemHeadingContainer from '../collectionItem/CollectionItemHeadingContainer';
 
 const SnapLinkBodyContainer = styled(CollectionItemBody)`
   justify-content: space-between;
@@ -90,7 +91,7 @@ const SnapLink = ({
     <CollectionItemContainer {...rest}>
       <SnapLinkBodyContainer data-testid="snap" size={size} fade={fade}>
         {showMeta && (
-          <CollectionItemMetaContainer>
+          <CollectionItemMetaContainer size={size}>
             <CollectionItemMetaHeading>Snap link</CollectionItemMetaHeading>
             <CollectionItemMetaContent>
               {upperFirst(articleFragment.meta.snapType)}
@@ -98,16 +99,18 @@ const SnapLink = ({
           </CollectionItemMetaContainer>
         )}
         <CollectionItemContent textSize={textSize}>
-          {!showMeta && (
-            <CollectionItemMetaHeading>Snap link </CollectionItemMetaHeading>
-          )}
-          <CollectionItemHeading html>{headline}</CollectionItemHeading>
-          <SnapLinkURL>
-            url: &nbsp;
-            <a href={urlPath} target="_blank">
-              {urlPath}
-            </a>
-          </SnapLinkURL>
+          <CollectionItemHeadingContainer size={size}>
+            {!showMeta && (
+              <CollectionItemMetaHeading>Snap link </CollectionItemMetaHeading>
+            )}
+            <CollectionItemHeading html>{headline}</CollectionItemHeading>
+            <SnapLinkURL>
+              url: &nbsp;
+              <a href={urlPath} target="_blank">
+                {urlPath}
+              </a>
+            </SnapLinkURL>
+          </CollectionItemHeadingContainer>
         </CollectionItemContent>
         {size === 'default' && <ThumbnailSmall />}
         <HoverActionsAreaOverlay
