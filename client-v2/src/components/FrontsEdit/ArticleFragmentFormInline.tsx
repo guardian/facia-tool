@@ -59,6 +59,7 @@ interface ComponentProps extends ContainerProps {
   showKickerSection: boolean;
   kickerOptions: ArticleTag;
   cutoutImage?: string;
+  primaryImage: ValidationResponse | null;
 }
 
 type Props = ComponentProps &
@@ -183,7 +184,6 @@ const getInputId = (articleFragmentId: string, label: string) =>
 
 interface FormComponentState {
   lastKnownCollectionId: string | null;
-  displayImageReplaceToggle: boolean;
 }
 
 class FormComponent extends React.Component<Props, FormComponentState> {
@@ -194,8 +194,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
   }
 
   public state: FormComponentState = {
-    lastKnownCollectionId: null,
-    displayImageReplaceToggle: false
+    lastKnownCollectionId: null
   };
 
   private allImageFields = [
@@ -224,7 +223,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       cutoutImage,
       imageSlideshowReplace,
       isBreaking,
-      editMode
+      editMode,
+      primaryImage
     } = this.props;
 
     const isEditionsMode = editMode === 'editions';
@@ -480,7 +480,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     }
                   />
                 </InputGroup>
-                {this.state.displayImageReplaceToggle && (
+                {primaryImage && !!primaryImage.src && (
                   <InputGroup>
                     <ConditionalField
                       permittedFields={editableFields}
@@ -549,8 +549,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     return 'primaryImage';
   };
 
+  // onChange: EventWithDataHandler<React.ChangeEvent<any>> & ((_: React.ChangeEvent<any> | undefined) => void)
+
   private handleImageChange: EventWithDataHandler<React.ChangeEvent<any>> = (
-    e: ValidationResponse | undefined,
+    e: unknown,
     ...args: [any?, any?, string?]
   ) => {
     // If we don't already have an image override enabled, enable the default imageReplace property.
@@ -558,8 +560,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     if (!this.props.imageCutoutReplace && !this.props.imageReplace) {
       this.changeImageField('imageReplace');
     }
-    const replacementImagePresent: boolean = !!e && !!e.src;
-    this.setState({ displayImageReplaceToggle: replacementImagePresent });
 
     this.props.change(this.getImageFieldName(), e);
   };
@@ -616,6 +616,7 @@ interface ContainerProps {
   imageReplace: boolean;
   isBreaking: boolean;
   editMode: EditMode;
+  primaryImage: ValidationResponse | null;
 }
 
 interface InterfaceProps {
@@ -689,7 +690,8 @@ const createMapStateToProps = () => {
       cutoutImage: externalArticle
         ? getContributorImage(externalArticle)
         : undefined,
-      editMode: selectEditMode(state)
+      editMode: selectEditMode(state),
+      primaryImage: valueSelector(state, 'primaryImage')
     };
   };
 };
