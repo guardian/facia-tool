@@ -26,6 +26,7 @@ import CollectionItemBody from '../collectionItem/CollectionItemBody';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
 import urls from 'shared/constants/url';
 import CollectionItemHeadingContainer from '../collectionItem/CollectionItemHeadingContainer';
+import CollectionItemSettingsDisplay from '../collectionItem/CollectionItemSettingsDisplay';
 
 const SnapLinkBodyContainer = styled(CollectionItemBody)`
   justify-content: space-between;
@@ -99,6 +100,13 @@ const SnapLink = ({
           </CollectionItemMetaContainer>
         )}
         <CollectionItemContent textSize={textSize}>
+          <CollectionItemSettingsDisplay
+            isBreaking={articleFragment.meta.isBreaking}
+            showByline={articleFragment.meta.showByline}
+            showQuotedHeadline={articleFragment.meta.showQuotedHeadline}
+            showLargeHeadline={articleFragment.meta.showLargeHeadline}
+            isBoosted={articleFragment.meta.isBoosted}
+          />
           <CollectionItemHeadingContainer size={size}>
             {!showMeta && (
               <CollectionItemMetaHeading>Snap link </CollectionItemMetaHeading>

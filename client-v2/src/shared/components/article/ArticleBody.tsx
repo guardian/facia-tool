@@ -28,6 +28,7 @@ import { media } from 'shared/util/mediaQueries';
 import ArticleGraph from './ArticleGraph';
 import { VideoIcon } from '../icons/Icons';
 import CollectionItemHeadingContainer from '../collectionItem/CollectionItemHeadingContainer';
+import CollectionItemSettingsDisplay from '../collectionItem/CollectionItemSettingsDisplay';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   flex-shrink: 0;
@@ -75,21 +76,6 @@ const PageViewDataWrapper = styled('div')`
   font-size: 12px;
   height: 35px;
   padding-bottom: 3px;
-`;
-
-const ArticleMetadataProperties = styled('div')`
-  padding: 0 4px 3px 0;
-  display: flex;
-  flex-direction: row;
-  font-size: 12px;
-  flex-wrap: wrap;
-`;
-
-const ArticleMetadataProperty = styled('div')`
-  background-color: ${({ theme }) => theme.shared.colors.whiteDark};
-  padding: 1px 4px;
-  flex: 0 0 auto;
-  margin: 0 2px 1px 0;
 `;
 
 const Tone = styled('span')`
@@ -256,35 +242,13 @@ const articleBodyDefault = React.memo(
           </CollectionItemMetaContainer>
         )}
         <CollectionItemContent displaySize={size} textSize={textSize}>
-          {(isBreaking ||
-            showByline ||
-            showQuotedHeadline ||
-            showLargeHeadline ||
-            isBoosted) && (
-            <ArticleMetadataProperties>
-              {isBreaking && (
-                <ArticleMetadataProperty data-testid="breaking-news">
-                  Breaking news
-                </ArticleMetadataProperty>
-              )}
-              {showByline && (
-                <ArticleMetadataProperty>Show byline</ArticleMetadataProperty>
-              )}
-              {showQuotedHeadline && (
-                <ArticleMetadataProperty>
-                  Quote headline
-                </ArticleMetadataProperty>
-              )}
-              {showLargeHeadline && (
-                <ArticleMetadataProperty>
-                  Large headline
-                </ArticleMetadataProperty>
-              )}
-              {isBoosted && (
-                <ArticleMetadataProperty>Boost</ArticleMetadataProperty>
-              )}
-            </ArticleMetadataProperties>
-          )}
+          <CollectionItemSettingsDisplay
+            isBreaking={isBreaking}
+            showByline={showByline}
+            showQuotedHeadline={showQuotedHeadline}
+            showLargeHeadline={showLargeHeadline}
+            isBoosted={isBoosted}
+          />
           <CollectionItemHeadingContainer size={size}>
             {displayPlaceholders && (
               <>
