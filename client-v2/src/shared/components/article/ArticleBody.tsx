@@ -295,7 +295,7 @@ const articleBodyDefault = React.memo(
                   {cutoutThumbnail ? (
                     <ThumbnailCutout src={cutoutThumbnail} />
                   ) : null}
-                  {showMainVideo && (
+                  {hasMainVideo && (
                     <VideoIconContainer>
                       <VideoIcon />
                     </VideoIconContainer>
