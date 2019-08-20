@@ -40,6 +40,7 @@ interface HoverButtonInterface {
 export interface ButtonPropsFromWrapper {
   showToolTip: () => void;
   hideToolTip: () => void;
+  isSnapLink?: boolean;
 }
 interface WrapperProps<ButtonProps> {
   buttons: HoverButtonInterface[];

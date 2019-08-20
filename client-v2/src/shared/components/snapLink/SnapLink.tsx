@@ -8,7 +8,11 @@ import CollectionItemMetaContainer from '../collectionItem/CollectionItemMetaCon
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
 import { ThumbnailSmall } from '../Thumbnail';
 import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
-import { HoverDeleteButton } from '../input/HoverActionButtons';
+import {
+  HoverDeleteButton,
+  HoverAddToClipboardButton,
+  HoverViewButton
+} from '../input/HoverActionButtons';
 import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
 import { ArticleFragment, CollectionItemSizes } from 'shared/types/Collection';
 import {
@@ -20,10 +24,15 @@ import CollectionItemHeading from '../collectionItem/CollectionItemHeading';
 import CollectionItemContent from '../collectionItem/CollectionItemContent';
 import CollectionItemBody from '../collectionItem/CollectionItemBody';
 import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
+import urls from 'shared/constants/url';
 
 const SnapLinkBodyContainer = styled(CollectionItemBody)`
   justify-content: space-between;
   border-top-color: ${({ theme }) => theme.shared.base.colors.borderColor};
+`;
+
+const SnapLinkURL = styled('p')`
+  font-size: 12px;
 `;
 
 interface ContainerProps {
@@ -32,6 +41,7 @@ interface ContainerProps {
   onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
   onDelete?: (uuid: string) => void;
+  onAddToClipboard?: (uuid: string) => void;
   onClick?: () => void;
   id: string;
   draggable?: boolean;
@@ -54,6 +64,7 @@ const SnapLink = ({
   textSize = 'default',
   showMeta = true,
   onDelete,
+  onAddToClipboard,
   children,
   articleFragment,
   isUneditable,
@@ -64,6 +75,17 @@ const SnapLink = ({
     (articleFragment.meta.customKicker
       ? `{ ${articleFragment.meta.customKicker} }`
       : 'No headline');
+
+  const normaliseSnapUrl = (href: string) => {
+    if (href && !/^https?:\/\//.test(href)) {
+      return 'https://' + urls.base.mainDomain + href;
+    }
+    return href;
+  };
+
+  const urlPath =
+    articleFragment.meta.href && normaliseSnapUrl(articleFragment.meta.href);
+
   return (
     <CollectionItemContainer {...rest}>
       <SnapLinkBodyContainer data-testid="snap" size={size} fade={fade}>
@@ -80,6 +102,12 @@ const SnapLink = ({
             <CollectionItemMetaHeading>Snap link </CollectionItemMetaHeading>
           )}
           <CollectionItemHeading html>{headline}</CollectionItemHeading>
+          <SnapLinkURL>
+            url: &nbsp;
+            <a href={urlPath} target="_blank">
+              {urlPath}
+            </a>
+          </SnapLinkURL>
         </CollectionItemContent>
         {size === 'default' && <ThumbnailSmall />}
         <HoverActionsAreaOverlay
@@ -87,9 +115,17 @@ const SnapLink = ({
           justify={'space-between'}
         >
           <HoverActionsButtonWrapper
-            buttons={[{ text: 'Delete', component: HoverDeleteButton }]}
+            buttons={[
+              { text: 'View', component: HoverViewButton },
+              { text: 'Clipboard', component: HoverAddToClipboardButton },
+              { text: 'Delete', component: HoverDeleteButton }
+            ]}
             buttonProps={{
-              onDelete
+              isLive: true, // it should not be possible for a snap link to be anything other than live?
+              urlPath,
+              onAddToClipboard,
+              onDelete,
+              isSnapLink: true
             }}
             size={size}
             toolTipPosition={'top'}

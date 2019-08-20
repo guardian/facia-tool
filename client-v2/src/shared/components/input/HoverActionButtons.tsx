@@ -80,13 +80,20 @@ const HoverViewButton = ({
   isLive,
   urlPath = '',
   showToolTip,
-  hideToolTip
+  hideToolTip,
+  isSnapLink = false
 }: ButtonProps) => (
   <Link
     onClick={e => {
       e.stopPropagation();
     }}
-    href={isLive ? getPaths(urlPath).live : getPaths(urlPath).preview}
+    href={
+      isSnapLink
+        ? urlPath
+        : isLive
+        ? getPaths(urlPath).live
+        : getPaths(urlPath).preview
+    }
   >
     <ActionButton
       tabIndex={-1}
