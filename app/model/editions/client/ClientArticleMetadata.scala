@@ -1,7 +1,7 @@
 package model.editions.client
 
-import model.editions.{ArticleMetadata, Image, MediaType}
-import play.api.libs.json.Json
+import ai.x.play.json.Jsonx
+import model.editions.{ArticleMetadata, CoverCardImages, Image, MediaType}
 
 // This is a subset of the shared model here - https://github.com/guardian/facia-scala-client/blob/master/facia-json/src/main/scala/com/gu/facia/client/models/Collection.scala#L18
 // Why not reuse that model? We only want to surface the fields necessary for editions
@@ -30,7 +30,11 @@ case class ClientArticleMetadata (
   imageCutoutSrcWidth: Option[String],
   imageCutoutSrcOrigin: Option[String],
 
-  overrideArticleMainMedia: Option[Boolean]
+  overrideArticleMainMedia: Option[Boolean],
+
+  coverCardImageReplace: Option[Boolean],
+  coverCardMobileImage: Option[Image],
+  coverCardTabletImage: Option[Image]
 ) {
   def toArticleMetadata: ArticleMetadata = {
     val cutoutImage: Option[Image] = (imageCutoutSrcHeight, imageCutoutSrcWidth, imageCutoutSrc, imageCutoutSrcOrigin) match {
@@ -45,11 +49,17 @@ case class ClientArticleMetadata (
       case _ => None
     }
 
-    val imageOption = (imageHide, imageReplace, imageCutoutReplace) match {
-      case (Some(true), _, _) => MediaType.Hide
-      case (_, Some(true), _) => MediaType.Image
-      case (_, _, Some(true)) => MediaType.Cutout
+    val imageOption = (imageHide, imageReplace, imageCutoutReplace, coverCardImageReplace) match {
+      case (Some(true), _, _, _) => MediaType.Hide
+      case (_, Some(true), _, _) => MediaType.Image
+      case (_, _, Some(true), _) => MediaType.Cutout
+      case (_, _, _, Some(true)) => MediaType.OverrideCoverCard
       case _ => MediaType.UseArticleTrail
+    }
+
+    val coverCardImages = (coverCardMobileImage, coverCardTabletImage) match {
+      case (None, None) => None
+      case _ => Some(CoverCardImages(coverCardMobileImage, coverCardTabletImage))
     }
 
     ArticleMetadata(
@@ -63,13 +73,14 @@ case class ClientArticleMetadata (
       Some(imageOption),
       cutoutImage,
       replaceImage,
-      overrideArticleMainMedia
+      overrideArticleMainMedia,
+      coverCardImages
     )
   }
 }
 
 object ClientArticleMetadata {
-  implicit val format = Json.format[ClientArticleMetadata]
+  implicit val format = Jsonx.formatCaseClassUseDefaults[ClientArticleMetadata]
 
   def fromArticleMetadata(articleMetadata: ArticleMetadata): ClientArticleMetadata = {
     val mediaType: MediaType = articleMetadata.mediaType.getOrElse(MediaType.UseArticleTrail)
@@ -99,7 +110,11 @@ object ClientArticleMetadata {
       articleMetadata.cutoutImage.flatMap(_.width).map(_.toString),
       articleMetadata.cutoutImage.map(_.origin),
 
-      articleMetadata.overrideArticleMainMedia
+      articleMetadata.overrideArticleMainMedia,
+
+      articleMetadata.mediaType.map {_ => mediaType == MediaType.OverrideCoverCard},
+      articleMetadata.coverCardImages.flatMap(_.mobile),
+      articleMetadata.coverCardImages.flatMap(_.tablet),
     )
   }
 }

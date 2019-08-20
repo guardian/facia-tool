@@ -13,11 +13,14 @@ object PublishedMediaType extends PlayEnum[PublishedMediaType] {
   case object Hide extends PublishedMediaType
   case object Cutout extends PublishedMediaType
   case object Image extends PublishedMediaType
+  case object OverrideCard extends PublishedMediaType
 
   override def values = findValues
 }
 
 case class PublishedImage(height: Option[Int], width: Option[Int], src: String)
+
+case class PublishedCardImage(mobile: PublishedImage, tablet: PublishedImage)
 
 case class PublishedFurniture(
   kicker: Option[String],
@@ -29,7 +32,8 @@ case class PublishedFurniture(
   mediaType: PublishedMediaType,
   imageSrcOverride: Option[PublishedImage],
   sportScore: Option[String],
-  overrideArticleMainMedia: Boolean
+  overrideArticleMainMedia: Boolean,
+  coverCardImages: Option[PublishedCardImage]
 )
 
 case class PublishedArticle(internalPageCode: Long, furniture: PublishedFurniture)

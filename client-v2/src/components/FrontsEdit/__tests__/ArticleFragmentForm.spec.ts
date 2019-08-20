@@ -43,7 +43,10 @@ const formValues = {
   trailText:
     'Police noted concerns over Femi Nandap, who went on to stab lecturer, but released him',
   sportScore: '',
-  showMainVideo: false
+  showMainVideo: false,
+  coverCardImageReplace: false,
+  coverCardMobileImage: {},
+  coverCardTabletImage: {}
 };
 
 const createStateWithChangedFormFields = (

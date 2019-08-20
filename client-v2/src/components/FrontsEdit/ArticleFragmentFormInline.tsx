@@ -33,6 +33,7 @@ import ConditionalField from 'components/inputs/ConditionalField';
 import ConditionalComponent from 'components/layout/ConditionalComponent';
 import {
   ArticleFragmentFormData,
+  ImageData,
   getArticleFragmentMetaFromFormValues,
   getInitialValuesForArticleFragmentForm,
   getCapiValuesForArticleFields,
@@ -42,7 +43,9 @@ import { CapiFields } from 'util/form';
 import { Dispatch } from 'types/Store';
 import {
   articleFragmentImageCriteria,
-  editionsArticleFragmentImageCriteria
+  editionsArticleFragmentImageCriteria,
+  editionsMobileCardImageCriteria,
+  editionsTabletCardImageCriteria
 } from 'constants/image';
 import { selectors as collectionSelectors } from 'shared/bundles/collectionsBundle';
 import { getContributorImage } from 'util/CAPIUtils';
@@ -60,6 +63,9 @@ interface ComponentProps extends ContainerProps {
   kickerOptions: ArticleTag;
   cutoutImage?: string;
   primaryImage: ValidationResponse | null;
+  coverCardImageReplace?: boolean;
+  coverCardMobileImage?: ImageData;
+  coverCardTabletImage?: ImageData;
 }
 
 type Props = ComponentProps &
@@ -178,6 +184,9 @@ const KickerSuggestionsContainer = styled.div`
   font-size: 12px;
   font-weight: normal;
 `;
+const CardReplacemnetWarning = styled.div`
+  color: red;
+`;
 
 const KickerSuggestionButton = styled(InputButton)`
   background: transparent;
@@ -206,14 +215,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     lastKnownCollectionId: null
   };
 
-  private allImageFields = [
-    'imageHide',
-    'imageCutoutReplace',
-    'imageSlideshowReplace',
-    'imageReplace',
-    'showMainVideo'
-  ];
-
   public render() {
     const {
       articleFragmentId,
@@ -235,10 +236,20 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       isBreaking,
       editMode,
       primaryImage,
-      hasMainVideo
+      hasMainVideo,
+      coverCardImageReplace,
+      coverCardMobileImage,
+      coverCardTabletImage
     } = this.props;
 
     const isEditionsMode = editMode === 'editions';
+
+    const imageDefined = (img: ImageData | undefined) => img && img.src;
+
+    const invalidCardReplacement = coverCardImageReplace
+      ? !imageDefined(coverCardMobileImage) ||
+        !imageDefined(coverCardTabletImage)
+      : false;
 
     const setCustomKicker = (customKickerValue: string) => {
       change('customKicker', customKickerValue);
@@ -425,12 +436,12 @@ class FormComponent extends React.Component<Props, FormComponentState> {
           </InputGroup>
           <RowContainer>
             <Row>
-              <ImageCol faded={imageHide}>
+              <ImageCol faded={imageHide || !!coverCardImageReplace}>
                 <ConditionalField
                   permittedFields={editableFields}
                   name={this.getImageFieldName()}
                   component={InputImage}
-                  disabled={imageHide}
+                  disabled={imageHide || coverCardImageReplace}
                   criteria={
                     isEditionsMode
                       ? editionsArticleFragmentImageCriteria
@@ -471,6 +482,19 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     type="checkbox"
                     default={false}
                     onChange={_ => this.changeImageField('imageCutoutReplace')}
+                  />
+                </InputGroup>
+                <InputGroup>
+                  <ConditionalField
+                    name="coverCardImageReplace"
+                    id={getInputId(articleFragmentId, 'coverCardImageReplace')}
+                    component={InputCheckboxToggleInline}
+                    label="Replace Cover Card Image"
+                    type="checkbox"
+                    default={false}
+                    onChange={_ =>
+                      this.changeImageField('coverCardImageReplace')
+                    }
                   />
                 </InputGroup>
                 <InputGroup>
@@ -530,6 +554,37 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               <SlideshowLabel>Drag and drop up to five images</SlideshowLabel>
             </RowContainer>
           )}
+          {isEditionsMode && coverCardImageReplace && (
+            <RowContainer>
+              <Row>
+                <ImageCol faded={!coverCardImageReplace}>
+                  <Field
+                    name="coverCardMobileImage"
+                    component={InputImage}
+                    message="Add Mobile Card Image"
+                    criteria={editionsMobileCardImageCriteria}
+                    disabled={!coverCardImageReplace}
+                  />
+                </ImageCol>
+                <ImageCol faded={!coverCardImageReplace}>
+                  <Field
+                    name="coverCardTabletImage"
+                    component={InputImage}
+                    message="Add Tablet Card Image"
+                    criteria={editionsTabletCardImageCriteria}
+                    disabled={!coverCardImageReplace}
+                  />
+                </ImageCol>
+                <Col flex={2}>
+                  {invalidCardReplacement && (
+                    <CardReplacemnetWarning>
+                      You must set both the mobile and tablet card overrides!
+                    </CardReplacemnetWarning>
+                  )}
+                </Col>
+              </Row>
+            </RowContainer>
+          )}
         </FormContent>
         <ButtonContainer>
           <Button onClick={this.handleCancel} type="button" size="l">
@@ -538,7 +593,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
           <Button
             priority="primary"
             onClick={this.handleSubmit}
-            disabled={pristine || !articleExists}
+            disabled={pristine || !articleExists || invalidCardReplacement}
             size="l"
             data-testid="edit-form-save-button"
           >
@@ -578,6 +633,15 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
     this.props.change(this.getImageFieldName(), e);
   };
+
+  private allImageFields = [
+    'imageHide',
+    'imageCutoutReplace',
+    'imageSlideshowReplace',
+    'imageReplace',
+    'showMainVideo',
+    'coverCardImageReplace'
+  ];
 
   private changeImageField = (fieldToSet: string) => {
     this.allImageFields.forEach(field => {
@@ -708,7 +772,10 @@ const createMapStateToProps = () => {
         ? getContributorImage(externalArticle)
         : undefined,
       editMode: selectEditMode(state),
-      primaryImage: valueSelector(state, 'primaryImage')
+      primaryImage: valueSelector(state, 'primaryImage'),
+      coverCardImageReplace: valueSelector(state, 'coverCardImageReplace'),
+      coverCardMobileImage: valueSelector(state, 'coverCardMobileImage'),
+      coverCardTabletImage: valueSelector(state, 'coverCardTabletImage')
     };
   };
 };

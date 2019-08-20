@@ -89,7 +89,19 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
             |      "src" : "https://media.giphy.com/media/yV5iknckcXcc/source.gif"
             |    },
             |    "sportScore" : "Sport Score",
-            |    "overrideArticleMainMedia" : true
+            |    "overrideArticleMainMedia" : true,
+            |    "coverCardImages" : {
+            |      "mobile" : {
+            |        "height" : 1337,
+            |        "width" : 1337,
+            |        "src" : "https://media.giphy.com/media/yV5iknckcXcc/source.gif"
+            |      },
+            |      "tablet" : {
+            |        "height" : 1337,
+            |        "width" : 1337,
+            |        "src" : "https://media.giphy.com/media/yV5iknckcXcc/source.gif"
+            |      }
+            |    }
             |  }
             |}""".stripMargin
 
@@ -105,7 +117,11 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
           imageSrcOverride = Some(
             PublishedImage(height = Some(1280), width = Some(720), "https://media.giphy.com/media/yV5iknckcXcc/source.gif")
           ),
-          overrideArticleMainMedia = true
+          overrideArticleMainMedia = true,
+          coverCardImages = Some(PublishedCardImage(
+            mobile = PublishedImage(height = Some(1337), width = Some(1337), "https://media.giphy.com/media/yV5iknckcXcc/source.gif"),
+            tablet = PublishedImage(height = Some(1337), width = Some(1337), "https://media.giphy.com/media/yV5iknckcXcc/source.gif"))
+          )
         ))
 
         val json = Json.prettyPrint(Json.toJson(article))
