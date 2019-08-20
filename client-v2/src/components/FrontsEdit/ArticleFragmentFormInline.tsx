@@ -549,8 +549,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     return 'primaryImage';
   };
 
-  // onChange: EventWithDataHandler<React.ChangeEvent<any>> & ((_: React.ChangeEvent<any> | undefined) => void)
-
   private handleImageChange: EventWithDataHandler<React.ChangeEvent<any>> = (
     e: unknown,
     ...args: [any?, any?, string?]
