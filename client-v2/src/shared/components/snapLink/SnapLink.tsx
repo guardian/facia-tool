@@ -35,6 +35,7 @@ const SnapLinkBodyContainer = styled(CollectionItemBody)`
 
 const SnapLinkURL = styled('p')`
   font-size: 12px;
+  word-break: break-all;
 `;
 
 interface ContainerProps {
