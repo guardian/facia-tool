@@ -30,13 +30,15 @@ case class ArticleMetadata (
 
   // keep overrides even if not used so user can switch back w/out needing to re-crop
   cutoutImage: Option[Image],
-  replaceImage: Option[Image]
+
+  replaceImage: Option[Image],
+  overrideArticleMainMedia: Option[Boolean]
 )
 
 object ArticleMetadata {
   implicit val format = Json.format[ArticleMetadata]
 
-  val default = ArticleMetadata(None, None, None, None, None, None, None, None, None, None)
+  val default = ArticleMetadata(None, None, None, None, None, None, None, None, None, None, None)
 }
 
 case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[ArticleMetadata]) {
@@ -60,7 +62,8 @@ case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[Art
         showQuotedHeadline = metadata.flatMap(_.showQuotedHeadline).getOrElse(false),
         mediaType = metadata.flatMap(_.mediaType).map(_.toPublishedMediaType).getOrElse(PublishedMediaType.UseArticleTrail),
         imageSrcOverride = imageSrcOverride,
-        sportScore = metadata.flatMap(_.sportScore)
+        sportScore = metadata.flatMap(_.sportScore),
+        overrideArticleMainMedia = metadata.flatMap(_.overrideArticleMainMedia).getOrElse(true)
       )
     )
   }

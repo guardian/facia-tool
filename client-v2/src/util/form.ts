@@ -35,6 +35,7 @@ export interface ArticleFragmentFormData {
   showKickerTag: boolean;
   showKickerSection: boolean;
   imageReplace: boolean;
+  overrideArticleMainMedia: boolean;
   showMainVideo: boolean;
 }
 
@@ -128,6 +129,7 @@ export const getInitialValuesForArticleFragmentForm = (
           thumb: article.imageCutoutSrc
         },
         slideshow: slideshow.concat(slideshowBackfill),
+        overrideArticleMainMedia: article.overrideArticleMainMedia || false,
         sportScore: article.sportScore || ''
       }
     : undefined;

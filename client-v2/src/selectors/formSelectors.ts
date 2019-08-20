@@ -101,6 +101,7 @@ export const createSelectFormFieldsForCollectionItem = () => {
       }
 
       if (editMode === 'editions') {
+        fields.push('overrideArticleMainMedia');
         if (
           derivedArticle.sectionName === 'Sport' ||
           derivedArticle.sectionName === 'Football'

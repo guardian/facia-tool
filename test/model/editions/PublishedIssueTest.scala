@@ -75,15 +75,15 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       val article = EditionsArticle("1234456", now.toInstant.toEpochMilli, None)
       val publishedArticle = article.toPublishedArticle
       publishedArticle.internalPageCode shouldBe 1234456
-      publishedArticle.furniture shouldBe PublishedFurniture(None, None, None, None, false, false, PublishedMediaType.UseArticleTrail, None, None)
+      publishedArticle.furniture shouldBe PublishedFurniture(None, None, None, None, false, false, PublishedMediaType.UseArticleTrail, None, None, true)
     }
 
     "furniture defaults should be populated correctly" in {
-      val furniture = ArticleMetadata(None, None, None, None, None, None, None, None, None, None)
+      val furniture = ArticleMetadata(None, None, None, None, None, None, None, None, None, None, None)
       val article = EditionsArticle("123456", 0, Some(furniture))
       val published = article.toPublishedArticle
 
-      published.furniture shouldBe PublishedFurniture(None, None, None, None, false, false, PublishedMediaType.UseArticleTrail, None, None)
+      published.furniture shouldBe PublishedFurniture(None, None, None, None, false, false, PublishedMediaType.UseArticleTrail, None, None, true)
     }
 
     "furniture should be populated when specified" in {
@@ -97,7 +97,8 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
         Some("sport-score"),
         Some(MediaType.Image),
         None,
-        Some(Image(Some(100), Some(100), "file://image-1.gif", "file://image-1.jpg"))
+        Some(Image(Some(100), Some(100), "file://image-1.gif", "file://image-1.jpg")),
+        Some(false)
       )
       val article = EditionsArticle("123456", 0, Some(furniture))
       val published = article.toPublishedArticle
@@ -111,7 +112,8 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
         showQuotedHeadline = true,
         mediaType = PublishedMediaType.Image,
         imageSrcOverride = Some(PublishedImage(Some(100), Some(100), "file://image-1.jpg")),
-        sportScore = Some("sport-score")
+        sportScore = Some("sport-score"),
+        overrideArticleMainMedia = false
       )
     }
   }
