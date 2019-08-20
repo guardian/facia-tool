@@ -435,7 +435,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                   useDefault={!imageCutoutReplace && !imageReplace}
                   message={imageCutoutReplace ? 'Add cutout' : 'Replace image'}
                   hasVideo={hasMainVideo}
-                  message={imageCutoutReplace ? 'Add cutout' : 'Add image'}
                   onChange={this.handleImageChange}
                 />
               </ImageCol>
