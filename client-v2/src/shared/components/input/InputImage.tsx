@@ -85,6 +85,10 @@ const AddImageViaUrlInput = styled(InputContainer)`
 
 const ImageUrlInput = styled(InputBase)`
   border: none;
+  :focus,
+  :active {
+    border: none;
+  }
   ::placeholder {
     font-size: 12px;
   }
@@ -163,6 +167,8 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     modalOpen: false,
     imageSrc: ''
   };
+
+  private inputRef = React.createRef<HTMLInputElement>();
 
   public render() {
     const {
@@ -243,8 +249,10 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                 <ImageUrlInput
                   name="paste-url"
                   placeholder=" Paste crop url"
-                  defaultValue={this.state.imageSrc}
+                  defaultValue={this.state.imageSrc || input.value.src}
                   onChange={this.handlePasteImgSrcChange}
+                  onFocus={this.handleFocus}
+                  innerRef={this.inputRef}
                 />
                 <InputLabel hidden htmlFor="paste-url">
                   Paste crop url
@@ -257,6 +265,12 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       </InputImageContainer>
     );
   }
+
+  private handleFocus = () => {
+    if (this.inputRef.current) {
+      this.inputRef.current.select();
+    }
+  };
 
   private handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
