@@ -249,7 +249,9 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                 <ImageUrlInput
                   name="paste-url"
                   placeholder=" Paste crop url"
-                  defaultValue={this.state.imageSrc || input.value.src}
+                  defaultValue={
+                    this.state.imageSrc || (input.value && input.value.origin)
+                  }
                   onChange={this.handlePasteImgSrcChange}
                   onFocus={this.handleFocus}
                   innerRef={this.inputRef}
