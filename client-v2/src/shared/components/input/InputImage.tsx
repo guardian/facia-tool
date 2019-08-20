@@ -18,12 +18,13 @@ import {
 import { selectGridUrl } from 'selectors/configSelectors';
 import { State } from 'types/State';
 import { GridData, Criteria } from 'shared/types/Grid';
-import { RubbishBinIcon, AddImageIcon } from '../icons/Icons';
+import { RubbishBinIcon, AddImageIcon, VideoIcon } from '../icons/Icons';
 import imageDragIcon from 'images/icons/image-drag-icon.svg';
 import { DRAG_DATA_GRID_IMAGE_URL } from 'constants/image';
 import ImageDragIntentIndicator from '../ImageDragIntentIndicator';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from '../../../selectors/pathSelectors';
+import CircularIconContainer from '../icons/CircularIconContainer';
 
 const ImageContainer = styled('div')<{
   small?: boolean;
@@ -59,12 +60,13 @@ const AddImageButton = styled(ButtonDefault)<{ small?: boolean }>`
 
 const ImageComponent = styled.div<{ small: boolean }>`
   ${({ small }) =>
-    small &&
-    `position: absolute;
+    small
+      ? `position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;`}
+    height: 100%;`
+      : 'position: relative'}
   background-size: cover;
   flex-grow: 1;
   cursor: grab;
@@ -127,6 +129,12 @@ const IconDelete = styled('div')<{
   left: ${props => (props.small ? '5px' : '9px')};
 `;
 
+const VideoIconContainer = styled(CircularIconContainer)`
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+`;
+
 const InputImageContainer = styled(InputContainer)<{
   small: boolean;
   isHovering?: boolean;
@@ -145,6 +153,7 @@ export interface InputImageContainerProps {
   small?: boolean;
   defaultImageUrl?: string;
   useDefault?: boolean;
+  hasVideo?: boolean;
   message?: string;
   replaceImage: boolean;
 }
@@ -178,7 +187,8 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       useDefault,
       defaultImageUrl,
       message = 'Replace image',
-      editMode
+      editMode,
+      hasVideo
     } = this.props;
 
     if (!gridUrl) {
@@ -242,6 +252,11 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                     {!!small ? null : <Label size="sm">{message}</Label>}
                   </AddImageButton>
                 </AddImageViaGridModalButton>
+              )}
+              {hasVideo && useDefault && (
+                <VideoIconContainer title="This media has video content.">
+                  <VideoIcon />
+                </VideoIconContainer>
               )}
             </ImageComponent>
             {!!small ? null : (
