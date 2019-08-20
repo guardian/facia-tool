@@ -28,7 +28,8 @@ class ArticleMetadataTest extends FreeSpec with Matchers {
       "src2",
       Some("thumb2")
     )),
-    Some(true)
+    Some(true),
+    None
   )
 
   private val articleMetadataAsString =

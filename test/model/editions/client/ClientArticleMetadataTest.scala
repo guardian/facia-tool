@@ -1,6 +1,6 @@
 package model.editions.client
 
-import model.editions.{ArticleMetadata, Image, MediaType}
+import model.editions.{ArticleMetadata, CoverCardImages, Image, MediaType}
 import org.scalatest.{FreeSpec, Matchers}
 
 class ClientArticleMetadataTest extends FreeSpec with Matchers {
@@ -11,6 +11,7 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         Some("Britain has summer!"),
         Some("Breaking News"),
         Some("Goneth the rain, cometh the sun"),
+        None,
         None,
         None,
         None,
@@ -50,6 +51,7 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         Some(MediaType.Hide),
         Some(Image(Some(100), Some(100), "file://origin-new-pokemon.gif", "file://new-pokemon.gif")),
         None,
+        None,
         None
       )
 
@@ -82,6 +84,7 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         Some(MediaType.Image),
         None,
         Some(Image(Some(100), Some(100), "file://elephant.jpg", "file://elephant.png")),
+        None,
         None
       )
 
@@ -111,6 +114,7 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         Some(MediaType.Image),
         None,
         None,
+        None,
         None
       )
 
@@ -131,6 +135,7 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         Some(MediaType.UseArticleTrail),
         None,
         None,
+        None,
         None
       )
 
@@ -143,34 +148,10 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
   "ClientArticleMetadata to ArticleMetadata" - {
 
     def getEmptyClientArticleMetadata = ClientArticleMetadata(
-      None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None
+      None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None
     )
 
     "should convert into ArticleMetadata with multiple image overrides" in {
-      val cam = ClientArticleMetadata(
-        Some("New Harry Potter book being written"),
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        Some("J.K"),
-        None,
-        Some(true),
-        Some("file://lightning.jpg"),
-        Some("100"),
-        Some("100"),
-        Some("file://lightning.gif"),
-        Some("file://lightning.png"),
-        Some(false),
-        Some("file://broom.jpg"),
-        Some("100"),
-        Some("100"),
-        Some("file://broom.gif"),
-        Some(true)
-      )
-
       val articleMetadata = getEmptyClientArticleMetadata
         .copy(headline = Some("New Harry Potter book being written"))
         .copy(sportScore = Some("J.K"))
@@ -211,7 +192,6 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
     }
 
     "should convert into ArticleMetadata without all the image information" in {
-
       val articleMetadata = getEmptyClientArticleMetadata
         .copy(imageReplace = Some(true))
         .copy(imageSrc = Some("file://lightning.jpg"))
@@ -221,6 +201,8 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         .copy(imageSrcThumb = Some("file://lightning.png"))
         .copy(imageCutoutReplace = Some(false))
         .copy(imageCutoutSrc = Some("file://broom.jpg"))
+        .copy(coverCardMobileImage = Some(Image(Some(100), Some(100), "file://origin.png", "file://src.png", Some("file://thumb.png"))))
+        .copy(coverCardTabletImage = Some(Image(Some(100), Some(100), "file://origin.png", "file://src.png", Some("file://thumb.png"))))
         .toArticleMetadata
 
       articleMetadata.mediaType.isDefined shouldBe true
@@ -238,6 +220,11 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         None,
         "file://broom.jpg",
         "file://broom.jpg"
+      ))
+
+      articleMetadata.coverCardImages shouldBe Some(CoverCardImages(
+        mobile = Some(Image(Some(100), Some(100), "file://origin.png", "file://src.png", Some("file://thumb.png"))),
+        tablet = Some(Image(Some(100), Some(100), "file://origin.png", "file://src.png", Some("file://thumb.png")))
       ))
     }
   }

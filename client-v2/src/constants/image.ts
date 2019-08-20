@@ -8,6 +8,14 @@ export const editionsArticleFragmentImageCriteria = {
   minWidth: 400
 };
 
+export const editionsMobileCardImageCriteria = {
+  minWidth: 400
+};
+
+export const editionsTabletCardImageCriteria = {
+  minWidth: 400
+};
+
 export const gridDataTransferTypes = {
   cropsData: 'application/vnd.mediaservice.crops+json',
   gridUrl: 'application/vnd.mediaservice.kahuna.uri',

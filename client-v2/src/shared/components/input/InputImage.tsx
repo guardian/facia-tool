@@ -148,6 +148,7 @@ const InputImageContainer = styled(InputContainer)<{
 `;
 
 export interface InputImageContainerProps {
+  disabled?: boolean;
   frontId: string;
   criteria?: Criteria;
   small?: boolean;
@@ -187,8 +188,9 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       useDefault,
       defaultImageUrl,
       message = 'Replace image',
+      hasVideo,
       editMode,
-      hasVideo
+      disabled
     } = this.props;
 
     if (!gridUrl) {
@@ -236,6 +238,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                   priority="primary"
                   small={small}
                   onClick={this.handleDelete}
+                  disabled={disabled}
                 >
                   <IconDelete small={small}>
                     <RubbishBinIcon size="s" />
@@ -247,6 +250,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                     type="button"
                     onClick={this.openModal}
                     small={small}
+                    disabled={disabled}
                   >
                     <AddImageIcon size="l" />
                     {!!small ? null : <Label size="sm">{message}</Label>}
@@ -270,6 +274,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                   onChange={this.handlePasteImgSrcChange}
                   onFocus={this.handleFocus}
                   innerRef={this.inputRef}
+                  disabled={disabled}
                 />
                 <InputLabel hidden htmlFor="paste-url">
                   Paste crop url

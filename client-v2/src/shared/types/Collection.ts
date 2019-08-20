@@ -71,6 +71,9 @@ interface ArticleFragmentRootMeta {
     origin?: string;
   }>;
   overrideArticleMainMedia?: boolean;
+  coverCardImageReplace?: boolean;
+  coverCardMobileImage?: ImageData;
+  coverCardTabletImage?: ImageData;
 }
 
 type ArticleFragmentRootFields = NestedArticleFragmentRootFields & {

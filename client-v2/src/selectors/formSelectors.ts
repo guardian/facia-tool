@@ -111,6 +111,7 @@ export const createSelectFormFieldsForCollectionItem = () => {
         ) {
           fields.push('sportScore');
         }
+        fields.push('coverCardImageReplace');
 
         return without(
           fields,

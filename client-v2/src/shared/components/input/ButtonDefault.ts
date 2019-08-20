@@ -134,11 +134,11 @@ export default styled(`button`)<ButtonProps>`
   margin: 0 ${({ inline }) => (inline ? '5px' : '0')};
   padding: 0 ${mapSize(paddingMap)};
   border: none;
-  :disabled,
-  :disabled:hover {
+  &:disabled,
+  &:disabled:hover {
     cursor: not-allowed;
   }
-  :hover:enabled {
+  &:hover:enabled {
     background: ${mapAction(backgroundHoverMap)};
     cursor: pointer;
   }

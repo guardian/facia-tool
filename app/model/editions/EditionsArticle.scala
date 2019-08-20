@@ -13,8 +13,23 @@ case class Image (
   def toPublishedImage: PublishedImage = PublishedImage(height,width,src)
 }
 
-object Image{
+object Image {
   implicit val format = Json.format[Image]
+}
+
+case class CoverCardImages(mobile: Option[Image], tablet: Option[Image]) {
+  def toPublishedCardImage: Option[PublishedCardImage] = {
+    (mobile, tablet) match {
+      case (Some(m), Some(t)) => Some(PublishedCardImage(m.toPublishedImage, t.toPublishedImage))
+      case (None, Some(_)) => throw new IllegalStateException("Must define both mobile and tablet images")
+      case (Some(_), None) => throw new IllegalStateException("Must define both mobile and tablet images")
+      case _ => None
+    }
+  }
+}
+
+object CoverCardImages {
+  implicit val format = Json.format[CoverCardImages]
 }
 
 case class ArticleMetadata (
@@ -32,13 +47,14 @@ case class ArticleMetadata (
   cutoutImage: Option[Image],
 
   replaceImage: Option[Image],
-  overrideArticleMainMedia: Option[Boolean]
+  overrideArticleMainMedia: Option[Boolean],
+  coverCardImages: Option[CoverCardImages]
 )
 
 object ArticleMetadata {
   implicit val format = Json.format[ArticleMetadata]
 
-  val default = ArticleMetadata(None, None, None, None, None, None, None, None, None, None, None)
+  val default = ArticleMetadata(None, None, None, None, None, None, None, None, None, None, None, None)
 }
 
 case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[ArticleMetadata]) {
@@ -50,6 +66,13 @@ case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[Art
         case _ => None
       }
     })
+
+    val coverCardImages = metadata.flatMap { meta => {
+      meta.mediaType match {
+        case Some(MediaType.OverrideCoverCard) => meta.coverCardImages.flatMap(_.toPublishedCardImage)
+        case _ => None
+      }
+    }}
 
     PublishedArticle(
       pageCode.toLong,
@@ -63,7 +86,8 @@ case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[Art
         mediaType = metadata.flatMap(_.mediaType).map(_.toPublishedMediaType).getOrElse(PublishedMediaType.UseArticleTrail),
         imageSrcOverride = imageSrcOverride,
         sportScore = metadata.flatMap(_.sportScore),
-        overrideArticleMainMedia = metadata.flatMap(_.overrideArticleMainMedia).getOrElse(true)
+        overrideArticleMainMedia = metadata.flatMap(_.overrideArticleMainMedia).getOrElse(true),
+        coverCardImages = coverCardImages
       )
     )
   }
