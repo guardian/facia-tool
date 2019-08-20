@@ -30,6 +30,9 @@ import { media } from 'shared/util/mediaQueries';
 import { State } from 'types/State';
 import { selectSharedState } from 'shared/selectors/shared';
 import { liveBlogTones } from 'constants/fronts';
+import { hasMainVideo } from 'shared/util/externalArticle';
+import { VideoIcon } from 'shared/components/icons/Icons';
+import CircularIconContainer from 'shared/components/icons/CircularIconContainer';
 
 const Container = styled('div')`
   display: flex;
@@ -119,6 +122,12 @@ const DraggingArticleContainer = styled('div')`
   transform: translateX(-9999px);
 `;
 
+const VideoIconContainer = styled(CircularIconContainer)`
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+`;
+
 interface FeedItemProps {
   article: CapiArticle;
   shouldObscureFeed: boolean;
@@ -193,7 +202,13 @@ class FeedItem extends React.Component<FeedItemProps> {
                 article.frontsMeta.defaults
               )}')`
             }}
-          />
+          >
+            {hasMainVideo(article) && (
+              <VideoIconContainer title="This media has video content.">
+                <VideoIcon />
+              </VideoIconContainer>
+            )}
+          </ArticleThumbnail>
         </FeedItemContainer>
         <HoverActionsAreaOverlay justify="flex-end" data-testid="hover-overlay">
           <HoverActionsButtonWrapper
