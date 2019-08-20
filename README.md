@@ -1,8 +1,6 @@
-# Facia Tool [![Build Status](https://travis-ci.org/guardian/facia-tool.svg?branch=master)](https://travis-ci.org/guardian/facia-tool)
+# Facia Tool
 
 The Guardian front pages editor.
-
-[![Build Status](https://travis-ci.org/guardian/facia-tool.svg?branch=master)](https://travis-ci.org/guardian/facia-tool)
 
 ## Client V2
 
