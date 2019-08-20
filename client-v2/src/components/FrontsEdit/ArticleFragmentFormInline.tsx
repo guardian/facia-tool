@@ -225,7 +225,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       imageSlideshowReplace,
       isBreaking,
       editMode,
-      primaryImage
+      primaryImage,
+      hasMainVideo
     } = this.props;
 
     const isEditionsMode = editMode === 'editions';
@@ -433,6 +434,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                   }
                   useDefault={!imageCutoutReplace && !imageReplace}
                   message={imageCutoutReplace ? 'Add cutout' : 'Replace image'}
+                  hasVideo={hasMainVideo}
+                  message={imageCutoutReplace ? 'Add cutout' : 'Add image'}
                   onChange={this.handleImageChange}
                 />
               </ImageCol>
@@ -620,6 +623,7 @@ interface ContainerProps {
   isBreaking: boolean;
   editMode: EditMode;
   primaryImage: ValidationResponse | null;
+  hasMainVideo: boolean;
 }
 
 interface InterfaceProps {
@@ -673,6 +677,7 @@ const createMapStateToProps = () => {
 
     return {
       articleExists: !!article,
+      hasMainVideo: !!article && !!article.hasMainVideo,
       collectionId: (parentCollection && parentCollection.id) || null,
       getLastUpdatedBy,
       initialValues: getInitialValuesForArticleFragmentForm(article),

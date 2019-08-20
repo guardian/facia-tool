@@ -29,6 +29,7 @@ import ArticleGraph from './ArticleGraph';
 import { VideoIcon } from '../icons/Icons';
 import CollectionItemHeadingContainer from '../collectionItem/CollectionItemHeadingContainer';
 import CollectionItemSettingsDisplay from '../collectionItem/CollectionItemSettingsDisplay';
+import CircularIconContainer from '../icons/CircularIconContainer';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   flex-shrink: 0;
@@ -91,17 +92,10 @@ const ImageAndGraphWrapper = styled('div')<{ size: CollectionItemSizes }>`
     justify-content: flex-end;`}
 `;
 
-const VideoIconContainer = styled('div')`
+const VideoIconContainer = styled(CircularIconContainer)`
   position: absolute;
   bottom: 2px;
   right: 2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: white;
-  border-radius: 50%;
-  height: 20px;
-  width: 20px;
 `;
 
 interface ArticleBodyProps {
@@ -296,7 +290,7 @@ const articleBodyDefault = React.memo(
                     <ThumbnailCutout src={cutoutThumbnail} />
                   ) : null}
                   {hasMainVideo && (
-                    <VideoIconContainer>
+                    <VideoIconContainer title="This media has video content.">
                       <VideoIcon />
                     </VideoIconContainer>
                   )}
