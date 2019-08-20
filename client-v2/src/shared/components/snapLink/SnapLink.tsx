@@ -11,7 +11,8 @@ import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
 import {
   HoverDeleteButton,
   HoverAddToClipboardButton,
-  HoverViewButton
+  HoverViewButton,
+  HoverOphanButton
 } from '../input/HoverActionButtons';
 import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
 import { ArticleFragment, CollectionItemSizes } from 'shared/types/Collection';
@@ -129,6 +130,7 @@ const SnapLink = ({
           <HoverActionsButtonWrapper
             buttons={[
               { text: 'View', component: HoverViewButton },
+              { text: 'Ophan', component: HoverOphanButton },
               { text: 'Clipboard', component: HoverAddToClipboardButton },
               { text: 'Delete', component: HoverDeleteButton }
             ]}
