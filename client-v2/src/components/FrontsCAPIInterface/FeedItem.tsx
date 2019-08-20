@@ -18,7 +18,7 @@ import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selecto
 import { insertArticleFragment } from 'actions/ArticleFragments';
 import noop from 'lodash/noop';
 import { getPaths } from 'util/paths';
-import { ThumbnailSmall } from 'shared/components/Thumbnail';
+import { ThumbnailSmall } from 'shared/components/image/Thumbnail';
 import { CapiArticle } from 'types/Capi';
 import { getThumbnail, getArticleLabel, isLive } from 'util/CAPIUtils';
 import {
