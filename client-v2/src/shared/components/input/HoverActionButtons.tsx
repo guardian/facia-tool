@@ -109,14 +109,19 @@ const HoverOphanButton = ({
   isLive,
   urlPath,
   showToolTip,
-  hideToolTip
+  hideToolTip,
+  isSnapLink = false
 }: ButtonProps) =>
   isLive ? (
     <Link
       onClick={e => {
         e.stopPropagation();
       }}
-      href={getPaths(`https://www.theguardian.com/${urlPath}`).ophan}
+      href={
+        isSnapLink
+          ? urlPath && getPaths(urlPath).ophan
+          : getPaths(`https://www.theguardian.com/${urlPath}`).ophan
+      }
       data-testid={'ophan-hover-button'}
     >
       <ActionButton
