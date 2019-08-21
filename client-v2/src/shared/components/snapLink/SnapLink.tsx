@@ -143,7 +143,7 @@ const SnapLink = ({
         <ImageWrapper>
           <ThumbnailSmall
             imageHide={article && article.imageHide}
-            url={article && article.thumbnail}
+            url={article && article.imageReplace ? article.imageSrcThumb : ''}
           />
           <ImageMetadataContainer
             imageSlideshowReplace={article && article.imageSlideshowReplace}
