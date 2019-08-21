@@ -184,7 +184,7 @@ const KickerSuggestionsContainer = styled.div`
   font-size: 12px;
   font-weight: normal;
 `;
-const CardReplacemnetWarning = styled.div`
+const CardReplacementWarning = styled.div`
   color: red;
 `;
 
@@ -577,9 +577,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 </ImageCol>
                 <Col flex={2}>
                   {invalidCardReplacement && (
-                    <CardReplacemnetWarning>
+                    <CardReplacementWarning>
                       You must set both the mobile and tablet card overrides!
-                    </CardReplacemnetWarning>
+                    </CardReplacementWarning>
                   )}
                 </Col>
               </Row>

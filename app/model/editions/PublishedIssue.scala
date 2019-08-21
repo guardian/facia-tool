@@ -13,7 +13,7 @@ object PublishedMediaType extends PlayEnum[PublishedMediaType] {
   case object Hide extends PublishedMediaType
   case object Cutout extends PublishedMediaType
   case object Image extends PublishedMediaType
-  case object OverrideCard extends PublishedMediaType
+  case object CoverCard extends PublishedMediaType
 
   override def values = findValues
 }

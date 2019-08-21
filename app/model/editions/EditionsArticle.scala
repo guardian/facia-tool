@@ -69,7 +69,7 @@ case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[Art
 
     val coverCardImages = metadata.flatMap { meta => {
       meta.mediaType match {
-        case Some(MediaType.OverrideCoverCard) => meta.coverCardImages.flatMap(_.toPublishedCardImage)
+        case Some(MediaType.CoverCard) => meta.coverCardImages.flatMap(_.toPublishedCardImage)
         case _ => None
       }
     }}

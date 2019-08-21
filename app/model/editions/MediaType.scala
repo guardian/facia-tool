@@ -9,7 +9,7 @@ sealed abstract class MediaType extends EnumEntry with Uncapitalised {
     case MediaType.Hide => PublishedMediaType.Hide
     case MediaType.Cutout => PublishedMediaType.Cutout
     case MediaType.Image => PublishedMediaType.Image
-    case MediaType.OverrideCoverCard => PublishedMediaType.OverrideCard
+    case MediaType.CoverCard => PublishedMediaType.CoverCard
   }
 }
 
@@ -18,7 +18,7 @@ object MediaType extends PlayEnum[MediaType] {
   case object Hide extends MediaType
   case object Cutout extends MediaType
   case object Image extends MediaType
-  case object OverrideCoverCard extends MediaType
+  case object CoverCard extends MediaType
 
   override def values = findValues
 }
