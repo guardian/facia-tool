@@ -3,12 +3,12 @@ package services.editions.db
 import java.time._
 
 import com.gu.pandomainauth.model.User
-import fixtures.{EditionsDBService, UsesDatabase}
+import fixtures.{EditionsDBEvolutions, EditionsDBService, UsesDatabase}
 import model.editions._
 import model.forms.GetCollectionsFilter
 import org.scalatest.{FreeSpec, Matchers, OptionValues}
 
-class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with OptionValues {
+class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with EditionsDBEvolutions with OptionValues {
 
   private val now: OffsetDateTime = OffsetDateTime.of(2019, 7, 16, 17, 23, 23, 123456, ZoneOffset.ofHours(1))
 
@@ -30,7 +30,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
   private def insertSkeletonIssue(year: Int, month: Int, dom: Int, fronts: EditionsFrontSkeleton*): String = {
     val skeleton = EditionsIssueSkeleton(
-      ZonedDateTime.of(year, month, dom, 0, 0, 0, 0, ZoneId.of("Europe/London")),
+      LocalDate.of(year, month, dom),
       ZoneId.of("Europe/London"),
       fronts.toList
     )
@@ -62,8 +62,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       retrievedIssue.createdEmail shouldBe "billy.bragg@justice.example.com"
       retrievedIssue.createdOn shouldBe now.toInstant.toEpochMilli
       retrievedIssue.createdBy shouldBe "Billy Bragg"
-      val issueDate = OffsetDateTime.ofInstant(Instant.ofEpochMilli(retrievedIssue.issueDate), ZoneId.of(retrievedIssue.timezoneId))
-      issueDate.getDayOfWeek shouldBe DayOfWeek.MONDAY
+      retrievedIssue.issueDate.getDayOfWeek shouldBe DayOfWeek.MONDAY
       retrievedIssue.launchedOn.isDefined shouldBe false
       retrievedIssue.launchedBy.isDefined shouldBe false
       retrievedIssue.launchedEmail.isDefined shouldBe false

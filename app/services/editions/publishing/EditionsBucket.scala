@@ -8,7 +8,7 @@ import play.api.libs.json.Json
 import PublishedIssueFormatters._
 
 class EditionsBucket(s3Client: AmazonS3, bucketName: String) {
-  def createIssuePrefix(issue: PublishedIssue): String = s"${issue.name}/${issue.issueDate.toLocalDate.toString}"
+  def createIssuePrefix(issue: PublishedIssue): String = s"${issue.name}/${issue.issueDate.toString}"
 
   def createIssueFilename(issue: PublishedIssue): String = {
     val keyname = issue.version.getOrElse("preview")

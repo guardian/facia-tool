@@ -46,14 +46,14 @@ trait CollectionsQueries {
           JOIN edition_issues ON (fronts.issue_id = edition_issues.id)
           WHERE collections.id = $id
        """.map { rs =>
-      val time = rs.zonedDateTime("issue_date")
+      val date = rs.localDate("issue_date")
       val zone = ZoneId.of(rs.string("timezone_id"))
 
-      (time.withZoneSameInstant(zone), CapiPrefillQuery(rs.string("prefill")), rs.string("page_code"))
+      (date, zone, CapiPrefillQuery(rs.string("prefill")), rs.string("page_code"))
     }.list().apply()
 
-    rows.headOption.map { case (issueDate, prefill, _) =>
-      PrefillUpdate(issueDate, prefill, rows.map(_._3))
+    rows.headOption.map { case (issueDate, zone, prefill, _) =>
+      PrefillUpdate(issueDate, zone, prefill, rows.map(_._4))
     }
   }
 
