@@ -127,7 +127,7 @@ const maybeInsertGroupArticleFragment = (
           // if the user accepts, then remove the moved item (if there was one),
           // remove article fragments past the cap count and finally persist
           () => {
-            let actions = [];
+            const actions = [];
 
             if (removeAction) {
               actions.push(removeAction);
