@@ -7,7 +7,9 @@ import {
   feedItemHeadline,
   frontName,
   renameFrontButton,
-  renameFrontInput
+  renameFrontInput,
+  publishEditionButton,
+  confirmModal
 } from '../selectors';
 
 fixture`Fronts edit`
@@ -45,4 +47,11 @@ test('Check renaming a front works', async t => {
     .pressKey('enter')
     .expect(frontName(0).textContent)
     .eql('Super neat custom front name');
+});
+
+test('Check publish edition button opens modal', async t => {
+  await t
+    .click(publishEditionButton())
+    .expect(confirmModal().exists)
+    .ok();
 });
