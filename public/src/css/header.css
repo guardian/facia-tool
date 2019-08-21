@@ -191,7 +191,10 @@ main {
 
 .v2-popup_text {
     background-color: #FFE500;
+    display: flex;
+    align-items: center;
     padding: 5px 10px;
+    height: 42px;
 }
 
  .v2-popup_text a {
@@ -202,5 +205,6 @@ main {
 .v2-popup_logo {
     background-color: #1C1D27;
     width: 26px;
-    padding: 5px 7px 1px;
+    height: 42px;
+    padding: 12px 7px 1px;
 }
