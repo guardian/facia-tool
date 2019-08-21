@@ -15,18 +15,7 @@ module.exports = {
         showByline: false,
         showQuotedHeadline: false,
         imageSlideshowReplace: false,
-        supporting: [
-          {
-            id: 'internal-code/page/2309422',
-            frontPublicationDate: 1540379258808,
-            meta: {}
-          },
-          {
-            id: 'internal-code/page/5224281',
-            frontPublicationDate: 1540381197498,
-            meta: {}
-          }
-        ],
+        supporting: [],
         byline: 'Jess Zimmerman',
         imageReplace: false,
         imageCutoutReplace: false,
