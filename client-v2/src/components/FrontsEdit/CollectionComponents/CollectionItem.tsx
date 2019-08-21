@@ -183,18 +183,29 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
     };
 
     return isSelected ? (
-      <ArticleFragmentFormInline
-        articleFragmentId={uuid}
-        isSupporting={isSupporting}
-        key={uuid}
-        form={uuid}
-        frontId={frontId}
-        onSave={meta => {
-          updateArticleFragmentMeta(uuid, meta);
-          clearArticleFragmentSelection(uuid);
-        }}
-        onCancel={() => clearArticleFragmentSelection(uuid)}
-      />
+      <>
+        <ArticleFragmentFormInline
+          articleFragmentId={uuid}
+          isSupporting={isSupporting}
+          key={uuid}
+          form={uuid}
+          frontId={frontId}
+          onSave={meta => {
+            updateArticleFragmentMeta(uuid, meta);
+            clearArticleFragmentSelection(uuid);
+          }}
+          onCancel={() => clearArticleFragmentSelection(uuid)}
+        />
+        <Sublinks
+          numSupportingArticles={numSupportingArticles}
+          toggleShowArticleSublinks={this.toggleShowArticleSublinks}
+          showArticleSublinks={this.state.showArticleSublinks}
+          parentId={parentId}
+        />
+        {numSupportingArticles === 0
+          ? children
+          : this.state.showArticleSublinks && children}
+      </>
     ) : (
       getCard()
     );
