@@ -30,7 +30,7 @@ import { VideoIcon } from '../icons/Icons';
 import CollectionItemHeadingContainer from '../collectionItem/CollectionItemHeadingContainer';
 import CollectionItemSettingsDisplay from '../collectionItem/CollectionItemSettingsDisplay';
 import CircularIconContainer from '../icons/CircularIconContainer';
-import { ImageMetadataContainer } from '../image/ImageMetadataContainer';
+import { ImageMetadataContainer } from '../image/ImageMetaDataContainer';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   flex-shrink: 0;
