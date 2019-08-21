@@ -53,7 +53,7 @@ case class ClientArticleMetadata (
       case (Some(true), _, _, _) => MediaType.Hide
       case (_, Some(true), _, _) => MediaType.Image
       case (_, _, Some(true), _) => MediaType.Cutout
-      case (_, _, _, Some(true)) => MediaType.OverrideCoverCard
+      case (_, _, _, Some(true)) => MediaType.CoverCard
       case _ => MediaType.UseArticleTrail
     }
 
@@ -112,7 +112,7 @@ object ClientArticleMetadata {
 
       articleMetadata.overrideArticleMainMedia,
 
-      articleMetadata.mediaType.map {_ => mediaType == MediaType.OverrideCoverCard},
+      articleMetadata.mediaType.map {_ => mediaType == MediaType.CoverCard},
       articleMetadata.coverCardImages.flatMap(_.mobile),
       articleMetadata.coverCardImages.flatMap(_.tablet),
     )

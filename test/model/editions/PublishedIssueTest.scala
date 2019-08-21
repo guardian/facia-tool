@@ -87,22 +87,27 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       published.furniture shouldBe PublishedFurniture(None, None, None, None, false, false, PublishedMediaType.UseArticleTrail, None, None, true, None)
     }
 
-    "furniture should be populated when specified" in {
-      val furniture = ArticleMetadata(
-        Some("headline"),
-        Some("kicker"),
-        Some("trail-text"),
-        Some(true),
-        Some(true),
-        Some("byline"),
-        Some("sport-score"),
-        Some(MediaType.Image),
-        None,
-        Some(Image(Some(100), Some(100), "file://image-1.gif", "file://image-1.jpg")),
-        Some(false),
-        None
-      )
-      val article = EditionsArticle("123456", 0, Some(furniture))
+    val cardImage = Some(Image(Some(100), Some(100), "file://origin.jpg", "file://src.jpg", Some("file://thumb.jpg")))
+    val articleFurniture = ArticleMetadata(
+      Some("headline"),
+      Some("kicker"),
+      Some("trail-text"),
+      Some(true),
+      Some(true),
+      Some("byline"),
+      Some("sport-score"),
+      Some(MediaType.Image),
+      None,
+      Some(Image(Some(100), Some(100), "file://image-1.gif", "file://image-1.jpg")),
+      Some(false),
+      Some(CoverCardImages(
+        mobile = cardImage,
+        tablet = cardImage
+      ))
+    )
+
+    "furniture should be populated when specified, cover cards should be ignored if the media type isn't set to cover card" in {
+      val article = EditionsArticle("123456", 0, Some(articleFurniture))
       val published = article.toPublishedArticle
 
       published.furniture shouldBe PublishedFurniture(
@@ -119,7 +124,52 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
         coverCardImages = None
       )
     }
+
+    "furniture should be populated when specified, cover card should be some if media type is covercard " in {
+      val article = EditionsArticle("123456", 0, Some(articleFurniture.copy(mediaType = Some(MediaType.CoverCard))))
+      val published = article.toPublishedArticle
+
+      val publishedImage = PublishedImage(Some(100), Some(100), "file://src.jpg")
+
+      published.furniture shouldBe PublishedFurniture(
+        Some("kicker"),
+        Some("headline"),
+        Some("trail-text"),
+        Some("byline"),
+        showByline = true,
+        showQuotedHeadline = true,
+        mediaType = PublishedMediaType.CoverCard,
+        imageSrcOverride = None,
+        sportScore = Some("sport-score"),
+        overrideArticleMainMedia = false,
+        coverCardImages = Some(PublishedCardImage(publishedImage, publishedImage))
+      )
+    }
+
+    "furniture should throw if set to media type is covercard but we dont have both mobile and tablet " in {
+      val coverCardFurniture = articleFurniture
+        .copy(mediaType = Some(MediaType.CoverCard))
+        .copy(coverCardImages = Some(CoverCardImages(
+          mobile = cardImage,
+          tablet = None
+        )))
+
+      val swapped = coverCardFurniture.copy(coverCardImages = Some(CoverCardImages(
+        mobile = None,
+        tablet = cardImage
+      )))
+
+      List(
+        EditionsArticle("123456", 0, Some(coverCardFurniture)),
+        EditionsArticle("123456", 0, Some(swapped))
+      ).foreach { a =>
+        assertThrows[IllegalStateException] {
+          a.toPublishedArticle
+        }
+      }
+    }
   }
+
 
   "PublishedIssue" - {
     "fronts should be filtered out when hidden" in {
