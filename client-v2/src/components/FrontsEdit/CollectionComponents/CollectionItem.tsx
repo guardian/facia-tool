@@ -42,6 +42,7 @@ import { updateArticleFragmentMeta as updateArticleFragmentMetaAction } from 'ac
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
 import { events } from 'services/GA';
+import EditModeVisibility from 'components/util/EditModeVisibility';
 
 const imageDropTypes = [
   ...gridDropTypes,
@@ -133,16 +134,18 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
               canDragImage={canDragImage}
               canShowPageViewData={canShowPageViewData}
             >
-              <Sublinks
-                numSupportingArticles={numSupportingArticles}
-                toggleShowArticleSublinks={this.toggleShowArticleSublinks}
-                showArticleSublinks={this.state.showArticleSublinks}
-                parentId={parentId}
-              />
-              {/* If there are no supporting articles, the children still need to be rendered, because the dropzone is a child  */}
-              {numSupportingArticles === 0
-                ? children
-                : this.state.showArticleSublinks && children}
+              <EditModeVisibility visibleMode="fronts">
+                <Sublinks
+                  numSupportingArticles={numSupportingArticles}
+                  toggleShowArticleSublinks={this.toggleShowArticleSublinks}
+                  showArticleSublinks={this.state.showArticleSublinks}
+                  parentId={parentId}
+                />
+                {/* If there are no supporting articles, the children still need to be rendered, because the dropzone is a child  */}
+                {numSupportingArticles === 0
+                  ? children
+                  : this.state.showArticleSublinks && children}
+              </EditModeVisibility>
             </Article>
           );
         case collectionItemTypes.SNAP_LINK:
