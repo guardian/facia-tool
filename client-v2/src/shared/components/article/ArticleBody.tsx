@@ -295,6 +295,7 @@ const articleBodyDefault = React.memo(
                   imageSlideshowReplace={imageSlideshowReplace}
                   imageReplace={imageReplace}
                   imageCutoutReplace={imageCutoutReplace}
+                  showMainVideo={showMainVideo}
                 />
               </DraggableArticleImageContainer>
             ))}

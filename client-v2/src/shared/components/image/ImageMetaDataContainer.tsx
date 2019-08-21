@@ -10,16 +10,19 @@ interface ImageMetadataContainerProps {
   imageSlideshowReplace?: boolean;
   imageReplace?: boolean;
   imageCutoutReplace?: boolean;
+  showMainVideo?: boolean;
 }
 
 export const ImageMetadataContainer = ({
   imageSlideshowReplace,
   imageReplace,
-  imageCutoutReplace
+  imageCutoutReplace,
+  showMainVideo
 }: ImageMetadataContainerProps) => (
   <MetadataContainer>
     {imageSlideshowReplace && 'Slideshow'}
     {imageReplace && 'Image replaced'}
     {imageCutoutReplace && 'Cutout replaced'}
+    {showMainVideo && 'Show video'}
   </MetadataContainer>
 );
