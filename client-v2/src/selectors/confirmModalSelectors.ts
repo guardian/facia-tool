@@ -8,7 +8,7 @@ export const selectConfirmModalTitle = ({ confirmModal }: State) =>
 export const selectConfirmModalDescription = ({ confirmModal }: State) =>
   confirmModal ? confirmModal.description : '';
 
-export const selectConfirmModalActions = (
+export const selectConfirmModalCallback = (
   { confirmModal }: State,
   accept: boolean
 ) =>
@@ -16,7 +16,7 @@ export const selectConfirmModalActions = (
     ? accept
       ? confirmModal.onAccept
       : confirmModal.onReject
-    : null;
+    : () => {};
 
 export const selectConfirmModalShowCancelButton = ({ confirmModal }: State) =>
   confirmModal ? confirmModal.showCancelButton : true;

@@ -124,19 +124,29 @@ const maybeInsertGroupArticleFragment = (
           You can proceed, and the last article in the collection will be
           removed automatically, or you can cancel and remove articles from the
           collection yourself.`,
-          // if the user accepts then remove the moved item (if there was one),
+          // if the user accepts, then remove the moved item (if there was one),
           // remove article fragments past the cap count and finally persist
-          (removeAction ? [removeAction] : []).concat([
-            insertGroupArticleFragment(id, index, articleFragmentId),
-            maybeAddFrontPublicationDate(articleFragmentId),
-            addPersistMetaToAction(capGroupSiblings, {
-              id: articleFragmentId,
-              persistTo,
-              applyBeforeReducer: true
-            })(id, collectionCap)
-          ]),
+          () => {
+            let actions = [];
+
+            if (removeAction) {
+              actions.push(removeAction);
+            }
+
+            actions
+              .concat([
+                insertGroupArticleFragment(id, index, articleFragmentId),
+                maybeAddFrontPublicationDate(articleFragmentId),
+                addPersistMetaToAction(capGroupSiblings, {
+                  id: articleFragmentId,
+                  persistTo,
+                  applyBeforeReducer: true
+                })(id, collectionCap)
+              ])
+              .forEach(action => dispatch(action));
+          },
           // otherwise do nothing
-          []
+          () => {}
         )
       );
     } else {

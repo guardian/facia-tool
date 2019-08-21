@@ -1,14 +1,14 @@
-import { Action, StartConfirm } from 'types/Action';
+import { StartConfirm } from 'types/Action';
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
-import { selectConfirmModalActions } from 'selectors/confirmModalSelectors';
+import { selectConfirmModalCallback } from 'selectors/confirmModalSelectors';
 import { ReactNode } from 'react';
 
 const startConfirmModal = (
   title: string,
   description: string | ReactNode,
-  onAccept: Action[],
-  onReject: Action[] = [],
+  onAccept: () => void,
+  onReject: () => void,
   showCancelButton: boolean = true
 ): StartConfirm => ({
   type: 'MODAL/START_CONFIRM',
@@ -25,8 +25,8 @@ const endConfirmModal = (accept: boolean) => (
   dispatch: Dispatch,
   getState: () => State
 ) => {
-  const actions = selectConfirmModalActions(getState(), accept) || [];
-  actions.forEach(ac => dispatch(ac));
+  const callback = selectConfirmModalCallback(getState(), accept) || (() => {});
+  callback();
   dispatch({
     type: 'MODAL/END_CONFIRM'
   });
