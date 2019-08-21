@@ -6,7 +6,7 @@ import upperFirst from 'lodash/upperFirst';
 import CollectionItemContainer from '../collectionItem/CollectionItemContainer';
 import CollectionItemMetaContainer from '../collectionItem/CollectionItemMetaContainer';
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
-import { ThumbnailSmall, ThumbnailCutout } from '../image/Thumbnail';
+import { ThumbnailSmall } from '../image/Thumbnail';
 import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
 import {
   HoverDeleteButton,
