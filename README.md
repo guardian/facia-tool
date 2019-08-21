@@ -32,8 +32,9 @@ Ubuntu/Mac: [Follow these instructions](https://github.com/nvm-sh/nvm#installati
 
 #### Dev Start
 
-1a. From the project root, run `./scripts/start-dev.sh`.
-1b. From the project root, run without debug `./script/start-dev.sh --no-debug`.
+1. To run the application: 
+   - From the project root, run `./scripts/start-dev.sh`
+   - From the project root, run without debug `./scripts/start-dev.sh --no-debug`
 2. Open `https://fronts.local.dev-gutools.co.uk`.
 
 #### Running postgres
