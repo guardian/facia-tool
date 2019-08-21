@@ -6,8 +6,10 @@ import {
 import {
   getIdFromURL,
   getContributorImage,
-  getThumbnail
+  getThumbnail,
+  isLive
 } from 'util/CAPIUtils';
+import { CapiArticle } from 'types/Capi';
 
 describe('CAPIUtils', () => {
   describe('getIdFromURL', () => {
@@ -201,6 +203,66 @@ describe('CAPIUtils', () => {
           }
         )
       ).toEqual('imageSrcThumb');
+    });
+  });
+
+  describe('isLive', () => {
+    it('should return false for a draft article from preview CAPI and when isLive is a boolean', () => {
+      const article = {
+        ...capiArticleWithElementsThumbnail,
+        fields: {
+          isLive: false
+        }
+      } as CapiArticle;
+
+      expect(article.fields.isLive).toEqual(false);
+      expect(isLive(article)).toEqual(false);
+    });
+
+    it('should return false for a draft article from preview CAPI and when isLive is a string', () => {
+      const article = {
+        ...capiArticleWithElementsThumbnail,
+        fields: {
+          isLive: 'false'
+        }
+      } as CapiArticle;
+
+      expect(article.fields.isLive).toEqual('false');
+      expect(isLive(article)).toEqual(false);
+    });
+
+    it('should return true for a published article from preview CAPI and when isLive is a boolean', () => {
+      const article = {
+        ...capiArticleWithElementsThumbnail,
+        fields: {
+          isLive: true
+        }
+      } as CapiArticle;
+
+      expect(article.fields.isLive).toEqual(true);
+      expect(isLive(article)).toEqual(true);
+    });
+
+    it('should return true for a published article from preview CAPI and when isLive is a string', () => {
+      const article = {
+        ...capiArticleWithElementsThumbnail,
+        fields: {
+          isLive: 'true'
+        }
+      } as CapiArticle;
+
+      expect(article.fields.isLive).toEqual('true');
+      expect(isLive(article)).toEqual(true);
+    });
+
+    it('should return true if a CapiArticle comes from live CAPI (denoted by isLive being undefined)', () => {
+      const article = {
+        ...capiArticleWithElementsThumbnail,
+        fields: {}
+      } as CapiArticle;
+
+      expect(article.fields.isLive).toBeUndefined();
+      expect(isLive(article)).toEqual(true);
     });
   });
 });
