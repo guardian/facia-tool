@@ -634,17 +634,17 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     this.props.change(this.getImageFieldName(), e);
   };
 
-  private allImageFields = [
-    'imageHide',
-    'imageCutoutReplace',
-    'imageSlideshowReplace',
-    'imageReplace',
-    'showMainVideo',
-    'coverCardImageReplace'
-  ];
-
   private changeImageField = (fieldToSet: string) => {
-    this.allImageFields.forEach(field => {
+    const allImageFields = [
+      'imageHide',
+      'imageCutoutReplace',
+      'imageSlideshowReplace',
+      'imageReplace',
+      'showMainVideo',
+      'coverCardImageReplace'
+    ];
+
+    allImageFields.forEach(field => {
       if (field === fieldToSet) {
         this.props.change(field, true);
       } else {
