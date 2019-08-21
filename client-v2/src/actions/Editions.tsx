@@ -41,8 +41,8 @@ export const publishEditionIssue = (
             of the suport team.
           </p>
         </>,
-        [],
-        [],
+        () => {},
+        () => {},
         false
       )
     );
@@ -54,8 +54,8 @@ export const publishEditionIssue = (
           <p>Failed to publish issue!</p>
           <p>If this problem persists, contact the support team.</p>
         </>,
-        [],
-        [],
+        () => {},
+        () => {},
         false
       )
     );

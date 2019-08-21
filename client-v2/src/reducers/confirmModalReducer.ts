@@ -5,8 +5,8 @@ import { Action } from 'types/Action';
 type ModalState = null | {
   title: string;
   description: string;
-  onAccept: Action[];
-  onReject: Action[];
+  onAccept: () => void;
+  onReject: () => void;
   showCancelButton: boolean;
 };
 

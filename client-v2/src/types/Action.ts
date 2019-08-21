@@ -275,8 +275,8 @@ interface StartConfirm {
   payload: {
     title: string;
     description: string | ReactNode;
-    onAccept: Action[];
-    onReject: Action[];
+    onAccept: () => void;
+    onReject: () => void;
     showCancelButton: boolean;
   };
 }
