@@ -28,6 +28,7 @@ import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaConte
 import urls from 'shared/constants/url';
 import CollectionItemHeadingContainer from '../collectionItem/CollectionItemHeadingContainer';
 import CollectionItemSettingsDisplay from '../collectionItem/CollectionItemSettingsDisplay';
+import { distanceInWordsStrict } from 'date-fns';
 
 const SnapLinkBodyContainer = styled(CollectionItemBody)`
   justify-content: space-between;
@@ -90,6 +91,8 @@ const SnapLink = ({
   const urlPath =
     articleFragment.meta.href && normaliseSnapUrl(articleFragment.meta.href);
 
+  const now = Date.now();
+
   return (
     <CollectionItemContainer {...rest}>
       <SnapLinkBodyContainer data-testid="snap" size={size} fade={fade}>
@@ -99,6 +102,14 @@ const SnapLink = ({
             <CollectionItemMetaContent>
               {upperFirst(articleFragment.meta.snapType)}
             </CollectionItemMetaContent>
+            {!!articleFragment.frontPublicationDate && (
+              <CollectionItemMetaContent title="The time elapsed since this card was created in the tool.">
+                {distanceInWordsStrict(
+                  now,
+                  new Date(articleFragment.frontPublicationDate)
+                )}
+              </CollectionItemMetaContent>
+            )}
           </CollectionItemMetaContainer>
         )}
         <CollectionItemContent textSize={textSize}>

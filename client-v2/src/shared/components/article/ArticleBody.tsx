@@ -224,7 +224,7 @@ const articleBodyDefault = React.memo(
               </CollectionItemDraftMetaContent>
             )}
             {!!frontPublicationDate && (
-              <CollectionItemMetaContent title="The time elapsed since this article was added to this front.">
+              <CollectionItemMetaContent title="The time elapsed since this card was created in the tool.">
                 {distanceInWordsStrict(now, new Date(frontPublicationDate))}
               </CollectionItemMetaContent>
             )}
