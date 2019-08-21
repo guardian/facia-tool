@@ -11,9 +11,16 @@ import EditModeVisibility from './util/EditModeVisibility';
 import Button from '../shared/components/input/ButtonDefault';
 import { Link } from 'react-router-dom';
 import urls from 'constants/urls';
+import { startConfirmModal } from 'actions/ConfirmModal';
+import noop from 'lodash/noop';
 
 interface ComponentProps {
   editionsIssue: EditionsIssue;
+  startConfirmPublishModal: (
+    title: string,
+    description: string,
+    onAccept: () => void
+  ) => void;
   publishEditionsIssue: (id: string) => Promise<void>;
 }
 
@@ -46,7 +53,7 @@ const EditionPublish = styled.div`
 
 class EditionFeedSectionHeader extends React.Component<ComponentProps> {
   public render() {
-    const { editionsIssue, publishEditionsIssue } = this.props;
+    const { editionsIssue } = this.props;
 
     return (
       <>
@@ -61,9 +68,10 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
         <EditionPublish>
           <EditModeVisibility visibleMode="editions">
             <Button
+              data-testid="publish-edition-button"
               size="l"
               priority="primary"
-              onClick={() => publishEditionsIssue(editionsIssue.id)}
+              onClick={() => this.confirmPublish()}
               tabIndex={-1}
               title="Publish Edition"
             >
@@ -74,6 +82,20 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
       </>
     );
   }
+
+  private confirmPublish = () => {
+    const {
+      startConfirmPublishModal,
+      editionsIssue,
+      publishEditionsIssue
+    } = this.props;
+
+    startConfirmPublishModal(
+      'Confirm publish',
+      'Are you sure you want to publish?',
+      () => publishEditionsIssue(editionsIssue.id)
+    );
+  };
 }
 
 const mapStateToProps = () => {
@@ -83,6 +105,11 @@ const mapStateToProps = () => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
+  startConfirmPublishModal: (
+    title: string,
+    description: string,
+    onAccept: () => void
+  ) => dispatch(startConfirmModal(title, description, onAccept, noop)),
   publishEditionsIssue: (id: string) => dispatch(publishEditionIssue(id))
 });
 

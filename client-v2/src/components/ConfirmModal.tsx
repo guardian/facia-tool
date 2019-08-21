@@ -66,7 +66,7 @@ const ConfirmModal = ({
     isOpen={isOpen}
     onRequestClose={onReject}
   >
-    <h1>{title}</h1>
+    <h1 data-testid="confirm-modal">{title}</h1>
     {description &&
       (typeof description === 'string' ? <p>{description}</p> : description)}
     <Actions>

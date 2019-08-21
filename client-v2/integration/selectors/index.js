@@ -28,6 +28,9 @@ const FRONTS_MENU_BUTTON = 'fronts-menu-button';
 const FRONTS_MENU_ITEM = 'fronts-menu-item';
 const PREFILL_BUTTON = 'prefill-button';
 
+const PUBLISH_EDITION_BUTTON = 'publish-edition-button';
+const CONFIRM_MODAL = 'confirm-modal';
+
 // Html Mocks //
 const GUARDIAN_TAG_ANCHOR = 'guardian-tag';
 const EXTERNAL_LINK_ANCHOR = 'external-link';
@@ -140,6 +143,8 @@ export const frontItemAddToClipboardHoverButton = maybeGetNth(
 export const renameFrontButton = maybeGetNth(select(RENAME_FRONT_BUTTON));
 export const renameFrontInput = select(RENAME_FRONT_INPUT);
 export const frontName = maybeGetNth(select(FRONT_NAME));
+export const publishEditionButton = select(PUBLISH_EDITION_BUTTON);
+export const confirmModal = select(CONFIRM_MODAL);
 
 // Front Menu //
 export const frontsMenuButton = () => select(FRONTS_MENU_BUTTON);
