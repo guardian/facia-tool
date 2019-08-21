@@ -114,16 +114,14 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       canShowPageViewData = false
     } = this.props;
 
-    const getSublinks = () => {
-      return (
-        <Sublinks
-          numSupportingArticles={numSupportingArticles}
-          toggleShowArticleSublinks={this.toggleShowArticleSublinks}
-          showArticleSublinks={this.state.showArticleSublinks}
-          parentId={parentId}
-        />
-      );
-    };
+    const getSublinks = (
+      <Sublinks
+        numSupportingArticles={numSupportingArticles}
+        toggleShowArticleSublinks={this.toggleShowArticleSublinks}
+        showArticleSublinks={this.state.showArticleSublinks}
+        parentId={parentId}
+      />
+    );
 
     const getCard = () => {
       switch (type) {
@@ -146,7 +144,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
               canShowPageViewData={canShowPageViewData}
             >
               <EditModeVisibility visibleMode="fronts">
-                {getSublinks()}
+                {getSublinks}
                 {/* If there are no supporting articles, the children still need to be rendered, because the dropzone is a child  */}
                 {numSupportingArticles === 0
                   ? children
@@ -168,7 +166,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
                 textSize={textSize}
                 showMeta={showMeta}
               />
-              {getSublinks()}
+              {getSublinks}
               {numSupportingArticles === 0
                 ? children
                 : this.state.showArticleSublinks && children}
@@ -197,7 +195,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
           }}
           onCancel={() => clearArticleFragmentSelection(uuid)}
         />
-        {getSublinks()}
+        {getSublinks}
         {numSupportingArticles === 0
           ? children
           : this.state.showArticleSublinks && children}
