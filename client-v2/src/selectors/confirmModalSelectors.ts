@@ -1,4 +1,5 @@
 import { State } from 'types/State';
+import noop from 'lodash/noop';
 
 export const selectConfirmModalIsOpen = (state: State) => !!state.confirmModal;
 
@@ -16,7 +17,7 @@ export const selectConfirmModalCallback = (
     ? accept
       ? confirmModal.onAccept
       : confirmModal.onReject
-    : () => {};
+    : noop;
 
 export const selectConfirmModalShowCancelButton = ({ confirmModal }: State) =>
   confirmModal ? confirmModal.showCancelButton : true;

@@ -38,6 +38,7 @@ import { ValidationResponse } from 'shared/util/validateImageSrc';
 import { MappableDropType } from 'util/collectionUtils';
 import { selectWillCollectionHitCollectionCap } from 'selectors/collectionSelectors';
 import { batchActions } from 'redux-batched-actions';
+import noop from 'lodash/noop';
 
 type InsertActionCreator = (
   id: string,
@@ -146,7 +147,7 @@ const maybeInsertGroupArticleFragment = (
               .forEach(action => dispatch(action));
           },
           // otherwise do nothing
-          () => {}
+          noop
         )
       );
     } else {

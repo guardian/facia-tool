@@ -10,6 +10,7 @@ import { Dispatch } from 'redux';
 import { actions } from 'bundles/editionsIssueBundle';
 import { startConfirmModal } from './ConfirmModal';
 import { EditionsFrontMetadata } from 'types/FaciaApi';
+import noop from 'lodash/noop';
 
 export const getEditionIssue = (
   id: string
@@ -41,8 +42,8 @@ export const publishEditionIssue = (
             of the suport team.
           </p>
         </>,
-        () => {},
-        () => {},
+        noop,
+        noop,
         false
       )
     );
@@ -54,8 +55,8 @@ export const publishEditionIssue = (
           <p>Failed to publish issue!</p>
           <p>If this problem persists, contact the support team.</p>
         </>,
-        () => {},
-        () => {},
+        noop,
+        noop,
         false
       )
     );
