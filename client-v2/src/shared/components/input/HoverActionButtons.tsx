@@ -9,8 +9,9 @@ import {
   ViewHoverIcon,
   DeleteHoverIcon
 } from '../icons/HoverIcons';
+import styled from 'styled-components';
 
-const ActionButton = ButtonCircular.extend<{ danger?: boolean }>`
+const ActionButton = styled(ButtonCircular)<{ danger?: boolean }>`
   background: ${({ danger, theme }) =>
     danger
       ? theme.shared.button.backgroundColorHighlight

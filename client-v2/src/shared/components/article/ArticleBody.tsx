@@ -43,7 +43,7 @@ const NotLiveContainer = styled(CollectionItemMetaHeading)`
   color: ${({ theme }) => theme.shared.base.colors.highlightColor};
 `;
 
-const KickerHeading = styled(CollectionItemHeading)`
+const KickerHeading = styled(CollectionItemHeading)<{ pillarId?: string }>`
   font-family: TS3TextSans;
   font-weight: bold;
   font-size: ${({ displaySize }) =>
@@ -51,6 +51,7 @@ const KickerHeading = styled(CollectionItemHeading)`
       ? globalTheme.shared.collectionItem.fontSizeSmall
       : globalTheme.shared.collectionItem.fontSizeDefault};
   ${media.large`font-size: 13px;`}
+  color: ${({ pillarId }) => getPillarColor(pillarId, true)};
 `;
 
 const ArticleBodyByline = styled('div')`
@@ -259,7 +260,7 @@ const articleBodyDefault = React.memo(
             {kicker && (
               <KickerHeading
                 displaySize={size}
-                style={{ color: getPillarColor(pillarId, true) }}
+                pillarId={pillarId}
                 data-testid="kicker"
               >
                 {`${kicker} `}

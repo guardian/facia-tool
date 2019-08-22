@@ -1,5 +1,5 @@
 import { Dispatch } from 'types/Store';
-import React, { RefObject, HTMLProps } from 'react';
+import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { Root, Move, PosSpec } from 'lib/dnd';
 import { State } from 'types/State';
@@ -35,15 +35,12 @@ import ButtonRoundedWithLabel, {
 import { clearClipboardWithPersist } from 'actions/Clipboard';
 import { selectClipboardArticles } from 'selectors/clipboardSelectors';
 
-const ClipboardWrapper = styled<
-  HTMLProps<HTMLDivElement> & {
-    'data-testid'?: string;
-    clipboardHasOpenForms: boolean;
-  },
-  'div'
->('div').attrs({
+const ClipboardWrapper = styled('div').attrs({
   'data-testid': 'clipboard-wrapper'
-})`
+})<{
+  'data-testid'?: string;
+  clipboardHasOpenForms: boolean;
+}>`
   width: ${({ theme, clipboardHasOpenForms }) =>
     clipboardHasOpenForms ? theme.front.minWidth : 220}px;
   background: ${({ theme }) => theme.shared.collection.background};
@@ -153,7 +150,7 @@ class Clipboard extends React.Component<ClipboardProps> {
             tabIndex={0}
             onFocus={this.handleFocus}
             onBlur={this.handleBlur}
-            innerRef={this.clipboardWrapper as Ref}
+            ref={this.clipboardWrapper as Ref}
             clipboardHasOpenForms={clipboardHasOpenForms}
           >
             <StyledDragIntentContainer

@@ -297,7 +297,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
             </SectionContentMetaContainer>
             <FrontCollectionsContainer
               onScroll={this.handleScroll}
-              innerRef={ref => (this.collectionContainerElement = ref)}
+              ref={ref => (this.collectionContainerElement = ref)}
             >
               <WithDimensions element={this.collectionContainerElement}>
                 {({ width }) => (
@@ -305,7 +305,7 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                     {front.collections.map(collectionId => (
                       <CollectionContainer
                         key={collectionId}
-                        innerRef={ref =>
+                        ref={ref =>
                           (this.collectionElements[collectionId] = ref)
                         }
                       >

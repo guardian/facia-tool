@@ -22,7 +22,7 @@ import { getEditionIssue } from 'actions/Editions';
 import { EditMode } from 'types/EditMode';
 import EditionFeedSectionHeader from './EditionFeedSectionHeader';
 
-const FeedbackButton = Button.extend<{
+const FeedbackButton = styled(Button)<{
   href: string;
   target: string;
 }>`

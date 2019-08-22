@@ -55,9 +55,7 @@ const InputComponentContainer = styled.div`
 `;
 
 const createResizeableTextInput = (
-  Component: new (props: any) => React.Component<
-    React.HTMLAttributes<HTMLInputElement> & StyledProps<any>
-  >,
+  Component: React.ComponentType<any>,
   type?: string,
   maxAutoResizeHeight: number = 120
 ) => {
@@ -117,12 +115,12 @@ const createResizeableTextInput = (
           )}
           <InputComponentContainer>
             <Component
-              innerRef={this.inputElement}
+              ref={this.inputElement}
               style={{ height: this.state.inputHeight }}
               id={label}
               {...input}
               {...rest}
-              type={type}
+              as={type}
             />
           </InputComponentContainer>
         </InputContainer>

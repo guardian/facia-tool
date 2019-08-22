@@ -82,7 +82,7 @@ class Component extends React.Component<ComponentProps> {
         <Droppable droppableId="front-list" direction="horizontal">
           {(dropProvided, dropSnapshot) => (
             <FrontTabList
-              innerRef={dropProvided.innerRef}
+              ref={dropProvided.innerRef}
               isDraggingOver={dropSnapshot.isDraggingOver}
               {...dropProvided.droppableProps}
             >
@@ -93,7 +93,7 @@ class Component extends React.Component<ComponentProps> {
                     return (
                       <FrontTab
                         title={title}
-                        innerRef={provided.innerRef}
+                        ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                         style={provided.draggableProps.style}

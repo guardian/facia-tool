@@ -4,7 +4,7 @@ import ButtonCircular from './ButtonCircular';
 import { DownCaretIcon } from '../icons/Icons';
 import { theme } from 'constants/theme';
 
-export const ButtonCircularWithTransition = ButtonCircular.extend<{
+export const ButtonCircularWithTransition = styled(ButtonCircular)<{
   highlight?: boolean;
   small?: boolean;
   clear?: boolean;

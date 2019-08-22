@@ -58,7 +58,7 @@ class DraggableArticleImageContainer extends React.Component<ComponentProps> {
         canDrag={this.props.canDrag}
         title="Drag this media to add it to other articles"
       >
-        <DraggingImageContainer innerRef={this.dragNode}>
+        <DraggingImageContainer ref={this.dragNode}>
           <img
             width={theme.shared.thumbnailImage.width}
             height={theme.shared.thumbnailImage.height}
