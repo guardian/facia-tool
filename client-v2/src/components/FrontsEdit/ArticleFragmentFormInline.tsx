@@ -179,6 +179,15 @@ const KickerSuggestionsContainer = styled.div`
   font-weight: normal;
 `;
 
+const KickerSuggestionButton = styled(InputButton)`
+  background: transparent;
+  border: 1px solid ${({ theme }) => theme.shared.colors.greyMediumLight};
+  color: ${({ theme }) => theme.shared.colors.blackDark};
+  &:hover:enabled {
+    background-color: ${({ theme }) => theme.shared.colors.greyLight};
+  }
+`;
+
 const getInputId = (articleFragmentId: string, label: string) =>
   `${articleFragmentId}-${label}`;
 
@@ -249,7 +258,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
           {kickerOptions.webTitle && (
             <Field
               name="showKickerTag"
-              component={InputButton}
+              component={KickerSuggestionButton}
               buttonText={kickerOptions.webTitle}
               selected={showKickerTag}
               size="s"
@@ -260,7 +269,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
           {kickerOptions.sectionName && (
             <Field
               name="showKickerSection"
-              component={InputButton}
+              component={KickerSuggestionButton}
               selected={showKickerSection}
               size="s"
               buttonText={kickerOptions.sectionName}
