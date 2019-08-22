@@ -114,6 +114,15 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       canShowPageViewData = false
     } = this.props;
 
+    const getSublinks = (
+      <Sublinks
+        numSupportingArticles={numSupportingArticles}
+        toggleShowArticleSublinks={this.toggleShowArticleSublinks}
+        showArticleSublinks={this.state.showArticleSublinks}
+        parentId={parentId}
+      />
+    );
+
     const getCard = () => {
       switch (type) {
         case collectionItemTypes.ARTICLE:
@@ -135,12 +144,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
               canShowPageViewData={canShowPageViewData}
             >
               <EditModeVisibility visibleMode="fronts">
-                <Sublinks
-                  numSupportingArticles={numSupportingArticles}
-                  toggleShowArticleSublinks={this.toggleShowArticleSublinks}
-                  showArticleSublinks={this.state.showArticleSublinks}
-                  parentId={parentId}
-                />
+                {getSublinks}
                 {/* If there are no supporting articles, the children still need to be rendered, because the dropzone is a child  */}
                 {numSupportingArticles === 0
                   ? children
@@ -162,12 +166,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
                 textSize={textSize}
                 showMeta={showMeta}
               />
-              <Sublinks
-                numSupportingArticles={numSupportingArticles}
-                toggleShowArticleSublinks={this.toggleShowArticleSublinks}
-                showArticleSublinks={this.state.showArticleSublinks}
-                parentId={parentId}
-              />
+              {getSublinks}
               {numSupportingArticles === 0
                 ? children
                 : this.state.showArticleSublinks && children}
@@ -183,18 +182,24 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
     };
 
     return isSelected ? (
-      <ArticleFragmentFormInline
-        articleFragmentId={uuid}
-        isSupporting={isSupporting}
-        key={uuid}
-        form={uuid}
-        frontId={frontId}
-        onSave={meta => {
-          updateArticleFragmentMeta(uuid, meta);
-          clearArticleFragmentSelection(uuid);
-        }}
-        onCancel={() => clearArticleFragmentSelection(uuid)}
-      />
+      <>
+        <ArticleFragmentFormInline
+          articleFragmentId={uuid}
+          isSupporting={isSupporting}
+          key={uuid}
+          form={uuid}
+          frontId={frontId}
+          onSave={meta => {
+            updateArticleFragmentMeta(uuid, meta);
+            clearArticleFragmentSelection(uuid);
+          }}
+          onCancel={() => clearArticleFragmentSelection(uuid)}
+        />
+        {getSublinks}
+        {numSupportingArticles === 0
+          ? children
+          : this.state.showArticleSublinks && children}
+      </>
     ) : (
       getCard()
     );
