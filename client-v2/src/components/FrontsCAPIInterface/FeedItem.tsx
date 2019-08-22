@@ -198,8 +198,8 @@ class FeedItem extends React.Component<FeedItemProps> {
           <ArticleThumbnail
             style={{
               backgroundImage: `url('${getThumbnail(
-                article,
-                article.frontsMeta.defaults
+                article.frontsMeta.defaults,
+                article
               )}')`
             }}
           >
