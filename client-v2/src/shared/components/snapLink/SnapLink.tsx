@@ -41,6 +41,9 @@ const SnapLinkBodyContainer = styled(CollectionItemBody)`
 const SnapLinkURL = styled('p')`
   font-size: 12px;
   word-break: break-all;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 `;
 
 const ImageWrapper = styled('div')``;
@@ -107,7 +110,9 @@ const SnapLink = ({
           <CollectionItemMetaContainer size={size}>
             <CollectionItemMetaHeading>Snap link</CollectionItemMetaHeading>
             <CollectionItemMetaContent>
-              {upperFirst(articleFragment.meta.snapType)}
+              {upperFirst(
+                articleFragment.meta.snapCss || articleFragment.meta.snapType
+              )}
             </CollectionItemMetaContent>
             {!!articleFragment.frontPublicationDate && (
               <CollectionItemMetaContent title="The time elapsed since this card was created in the tool.">
@@ -133,9 +138,16 @@ const SnapLink = ({
             )}
             <CollectionItemHeading html>{headline}</CollectionItemHeading>
             <SnapLinkURL>
-              url: &nbsp;
+              {articleFragment.meta.snapUri && (
+                <>
+                  <strong>snap uri:&nbsp;</strong>
+                  {articleFragment.meta.snapUri}
+                  &nbsp;
+                </>
+              )}
+              <strong>url:&nbsp;</strong>
               <a href={urlPath} target="_blank">
-                {urlPath}
+                {articleFragment.meta.href}
               </a>
             </SnapLinkURL>
           </CollectionItemHeadingContainer>

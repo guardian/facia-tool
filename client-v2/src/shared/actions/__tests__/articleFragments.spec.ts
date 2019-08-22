@@ -1,5 +1,5 @@
 import {
-  createArticleFragment,
+  createArticleEntitiesFromDrop,
   articleFragmentsReceived
 } from '../ArticleFragments';
 import configureStore from 'redux-mock-store';
@@ -41,16 +41,16 @@ describe('articleFragments actions', () => {
         }
       });
       const store = mockStore({});
-      await store.dispatch(createArticleFragment(
+      await store.dispatch(createArticleEntitiesFromDrop(
         idDrop('internal-code/page/5029528')
       ) as any);
       const actions = store.getActions();
-      expect(actions[0].type).toEqual(externalArticleActionNames.fetchSuccess);
-      expect(actions[1]).toEqual(
+      expect(actions[0]).toEqual(
         articleFragmentsReceived({
           uuid: createFragment('internal-code/page/5029528')
         })
       );
+      expect(actions[1].type).toEqual(externalArticleActionNames.fetchSuccess);
     });
     it('should fetch a link and create a corresponding collection item representing a snap link', async () => {
       fetchMock.once('begin:/api/preview', {
@@ -60,7 +60,7 @@ describe('articleFragments actions', () => {
       });
       fetchMock.mock('/http/proxy/https://bbc.co.uk/some/page', bbcSectionPage);
       const store = mockStore({});
-      await store.dispatch(createArticleFragment(
+      await store.dispatch(createArticleEntitiesFromDrop(
         idDrop('https://bbc.co.uk/some/page')
       ) as any);
       const actions = store.getActions();
@@ -83,7 +83,7 @@ describe('articleFragments actions', () => {
       );
       (window as any).confirm = jest.fn(() => true);
       const store = mockStore({});
-      await store.dispatch(createArticleFragment(
+      await store.dispatch(createArticleEntitiesFromDrop(
         idDrop('https://www.theguardian.com/example/tag/page')
       ) as any);
       const actions = store.getActions();
@@ -109,7 +109,7 @@ describe('articleFragments actions', () => {
       );
       (window as any).confirm = jest.fn(() => false);
       const store = mockStore({});
-      await store.dispatch(createArticleFragment(
+      await store.dispatch(createArticleEntitiesFromDrop(
         idDrop('https://www.theguardian.com/example/tag/page')
       ) as any);
       const actions = store.getActions();
@@ -133,7 +133,7 @@ describe('articleFragments actions', () => {
         guardianTagPage
       );
       const store = mockStore({});
-      await store.dispatch(createArticleFragment(
+      await store.dispatch(createArticleEntitiesFromDrop(
         idDrop('https://www.theguardian.com/example/non/tag/page')
       ) as any);
       const actions = store.getActions();
@@ -142,6 +142,36 @@ describe('articleFragments actions', () => {
           uuid: await createLinkSnap(
             'https://www.theguardian.com/example/non/tag/page'
           )
+        })
+      );
+    });
+    it('should create a snap from url params prefixed with gu- if they are provided in the resource id', async () => {
+      const store = mockStore({});
+      const snapUrl =
+        'https://www.theguardian.com/football/live?gu-snapType=json.html&gu-snapCss=football&gu-snapUri=https%3A%2F%2Fapi.nextgen.guardianapps.co.uk%2Ffootball%2Flive.json&gu-headline=Live+matches&gu-trailText=Today%27s+matches';
+      fetchMock.mock(snapUrl, JSON.stringify({}));
+      await store.dispatch(createArticleEntitiesFromDrop(
+        idDrop(snapUrl)
+      ) as any);
+      const actions = store.getActions();
+      expect(actions[0]).toEqual(
+        articleFragmentsReceived({
+          uuid: {
+            frontPublicationDate: 1487076708000,
+            id: 'snap/1487076708000',
+            meta: {
+              byline: undefined,
+              headline: 'Live matches',
+              href: '/football/live',
+              showByline: false,
+              snapCss: 'football',
+              snapType: 'json.html',
+              snapUri:
+                'https://api.nextgen.guardianapps.co.uk/football/live.json',
+              trailText: "Today's matches"
+            },
+            uuid: 'uuid'
+          }
         })
       );
     });

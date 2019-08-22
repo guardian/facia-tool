@@ -1,6 +1,9 @@
-import { getAbsolutePath, isGuardianUrl, isPreviewUrl } from './url';
+import {
+  getAbsolutePath,
+  isInternalUrl
+} from './url';
 import fetchOpenGraphData from './openGraph';
-import { ArticleFragment } from '../types/Collection';
+import { ArticleFragment, ArticleFragmentMeta } from '../types/Collection';
 import v4 from 'uuid/v4';
 
 function generateId() {
@@ -17,7 +20,7 @@ function validateId(id: string) {
 function convertToSnap({ id, ...rest }: ArticleFragment): ArticleFragment {
   let href;
 
-  if (isGuardianUrl(id) || isPreviewUrl(id)) {
+  if (isInternalUrl(id)) {
     href = '/' + getAbsolutePath(id, true);
   } else {
     href = id;
@@ -33,10 +36,15 @@ function convertToSnap({ id, ...rest }: ArticleFragment): ArticleFragment {
   };
 }
 
-async function createLinkSnap(url: string): Promise<ArticleFragment> {
+async function createLinkSnap(
+  url: string,
+  meta?: ArticleFragmentMeta
+): Promise<ArticleFragment> {
   const uuid = v4();
   try {
-    const { title, description, siteName } = await fetchOpenGraphData(url);
+    const { title, description, siteName } = meta
+      ? ({} as any)
+      : await fetchOpenGraphData(url);
     return convertToSnap({
       uuid,
       id: url,
@@ -46,7 +54,8 @@ async function createLinkSnap(url: string): Promise<ArticleFragment> {
         trailText: description,
         byline: siteName,
         showByline: siteName ? true : false,
-        snapType: 'link'
+        snapType: 'link',
+        ...meta
       }
     });
   } catch (e) {

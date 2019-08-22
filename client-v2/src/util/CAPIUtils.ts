@@ -4,12 +4,18 @@ import { ArticleFragmentMeta } from '../shared/types/Collection';
 import { notLiveLabels, liveBlogTones } from 'constants/fronts';
 import startCase from 'lodash/startCase';
 
-const getIdFromURL = (url: string): string | null => {
+const getIdFromURL = (
+  url: string,
+  ensureLeadingSlash: boolean = false
+): string | undefined => {
   const [, id = null] =
     url.match(
       /^https:\/\/(?:www.theguardian.com\/|viewer.gutools.co.uk(?:\/(?:preview|live))?\/)([^?]*)/
     ) || [];
-  return typeof id !== 'string' ? null : id;
+  if (typeof id !== 'string') {
+    return;
+  }
+  return !ensureLeadingSlash || id[0] === '/' ? id : `/${id}`;
 };
 
 // TODO: get apiKey from context (or speak directly to FrontsAPI)

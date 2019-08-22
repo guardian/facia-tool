@@ -27,22 +27,31 @@ function isValidURL(url: string) {
   return getHostname(url) !== window.location.hostname;
 }
 
-function isGuardianUrl(url: string) {
+function matchHostname(url: string, hostnames: string[]): boolean {
   const host = getHostname(url);
-  return (
-    host === urlConstants.base.mainDomain ||
-    host === urlConstants.base.mainDomainShort
-  );
+  return hostnames.some(_ => _ === host);
 }
 
-function isPreviewUrl(url: string) {
-  return getHostname(url) === urlConstants.base.previewDomain;
+function isGuardianUrl(url: string) {
+  return matchHostname(url, [
+    urlConstants.base.mainDomain,
+    urlConstants.base.mainDomainShort
+  ]);
+}
+
+function isInternalUrl(url: string) {
+  return matchHostname(url, [
+    urlConstants.base.mainDomain,
+    urlConstants.base.mainDomainShort,
+    urlConstants.base.previewDomain,
+    urlConstants.base.frontendDomain
+  ]);
 }
 
 export {
   getAbsolutePath,
   getHostname,
   isGuardianUrl,
-  isPreviewUrl,
+  isInternalUrl,
   isValidURL
 };

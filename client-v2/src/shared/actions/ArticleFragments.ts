@@ -1,8 +1,7 @@
 import keyBy from 'lodash/keyBy';
-import { ArticleFragment, ArticleFragmentMeta } from 'shared/types/Collection';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import { getContent, transformExternalArticle } from 'services/faciaApi';
-import { Dispatch, ThunkResult } from 'types/Store';
+import { ThunkResult } from 'types/Store';
 import {
   ArticleFragmentsReceived,
   InsertGroupArticleFragment,
@@ -18,6 +17,9 @@ import { createLinkSnap, createLatestSnap } from 'shared/util/snap';
 import { getIdFromURL } from 'util/CAPIUtils';
 import { isValidURL } from 'shared/util/url';
 import { MappableDropType } from 'util/collectionUtils';
+import { ExternalArticle } from 'shared/types/ExternalArticle';
+import { CapiArticle } from 'types/Capi';
+import { ArticleFragment, ArticleFragmentMeta } from '../types/Collection';
 
 export const UPDATE_ARTICLE_FRAGMENT_META =
   'SHARED/UPDATE_ARTICLE_FRAGMENT_META';
@@ -135,91 +137,149 @@ const insertSupportingArticleFragment = (
   }
 });
 
+type TArticleEntities = [ArticleFragment?, ExternalArticle?];
+
 /**
- * A helper for createArticleFragment.
+ * Create the appropriate article entities from a MappableDropType,
+ * and add them to the application state.
  */
-const persistAndReturnFragment = (
-  dispatch: Dispatch,
-  fragment: ArticleFragment
-) => {
-  dispatch(
-    articleFragmentsReceived({
-      [fragment.uuid]: fragment
-    })
-  );
-  return fragment;
+const createArticleEntitiesFromDrop = (
+  drop: MappableDropType
+): ThunkResult<Promise<ArticleFragment | undefined>> => {
+  return async dispatch => {
+    const [
+      maybeArticleFragment,
+      maybeExternalArticle
+    ] = await getArticleEntitesFromDrop(drop);
+    if (maybeArticleFragment) {
+      dispatch(articleFragmentsReceived([maybeArticleFragment]));
+    }
+    if (maybeExternalArticle) {
+      dispatch(externalArticleActions.fetchSuccess(maybeExternalArticle));
+    }
+    return maybeArticleFragment;
+  };
 };
 
 /**
- * Given a resource id, create an article fragment and add it to the store.
- * The resource id can be a few different things:
+ * Given a resource id, extract the appropriate entities -- an ArticleFragment
+ * and possibly an ExternalArticle. The resource id can be a few different things:
  *  - a article, tag or section (either the full URL or the ID)
  *  - an external link.
  */
-function createArticleFragment(
+const getArticleEntitesFromDrop = async (
   drop: MappableDropType
-): ThunkResult<Promise<ArticleFragment | undefined>> {
-  return async (dispatch: Dispatch) => {
-    if (drop.type === 'CAPI') {
-      const article = transformExternalArticle(drop.data);
-      dispatch(externalArticleActions.fetchSuccess([article]));
-      const fragment = createFragment(
-        article.id,
-        article.frontsMeta.defaults.imageHide,
-        article.frontsMeta.defaults.imageReplace,
-        article.frontsMeta.defaults.imageCutoutReplace,
-        article.frontsMeta.cutout,
-        article.frontsMeta.defaults.showByline,
-        article.frontsMeta.defaults.showQuotedHeadline
-      );
-      return persistAndReturnFragment(dispatch, fragment);
+): Promise<TArticleEntities> => {
+  if (drop.type === 'CAPI') {
+    return getArticleEntitiesFromFeedDrop(drop.data);
+  }
+  const resourceIdOrUrl = drop.data;
+  const isURL = isValidURL(resourceIdOrUrl);
+  const id = isURL ? getIdFromURL(resourceIdOrUrl, true) : resourceIdOrUrl;
+  const isNonGuLink = isURL && !id;
+  if (isNonGuLink) {
+    const fragment = await createLinkSnap(resourceIdOrUrl);
+    return [fragment];
+  }
+  if (!id) {
+    return [];
+  }
+  try {
+    const meta = getArticleFragmentMetaFromUrlParams(resourceIdOrUrl);
+    if (meta) {
+      // If we have gu params in the url, create a snap with the meta we extract.
+      const fragment = await createLinkSnap(id, meta);
+      return [fragment];
     }
-    const resourceId = drop.data;
-    const isURL = isValidURL(resourceId);
-    const id = isURL ? getIdFromURL(resourceId) : resourceId;
-    if (isURL && !id) {
-      // If we have a URL from an external site,
-      // create a snap of type 'link'.
-      const fragment = await createLinkSnap(resourceId);
-      return persistAndReturnFragment(dispatch, fragment);
+    const {
+      articles: [article, ...rest],
+      title
+    } = await getContent(id);
+    if (rest.length) {
+      // If we have multiple articles returned from a single resource, we're
+      // dealing with a tag or section page.
+      return await getArticleEntitiesFromGuardianPath(resourceIdOrUrl, title);
     }
-    if (!id) {
-      return;
+    if (article) {
+      // We have a single article from CAPI - create an item as usual.
+      return [createFragment(article.id), article];
     }
-    try {
-      const {
-        articles: [article, ...rest],
-        title
-      } = await getContent(id);
-      if (rest.length) {
-        // If we have multiple articles returned from a single resource, we're
-        // dealing with a tag or section page, and we should create a snap of
-        // type 'latest' or 'link'.
-        const createLatest = window.confirm(
-          "Should this snap be a 'Latest' snap? \n \n Click OK to confirm or cancel to create a 'Link' snap by default."
-        );
-        const fragment = await (createLatest
-          ? createLatestSnap(resourceId, title || 'Unknown title')
-          : createLinkSnap(resourceId));
-        return persistAndReturnFragment(dispatch, fragment);
-      }
-      if (article) {
-        // We have a single article from CAPI - create an item as usual.
-        dispatch(externalArticleActions.fetchSuccess([article]));
-        return persistAndReturnFragment(dispatch, createFragment(article.id));
-      }
-    } catch (e) {
-      if (isURL) {
-        // If there was an error getting content for CAPI, assume the link is valid
-        // and create a link snap as a fallback. This catches cases like non-tag or
-        // section guardian.co.uk URLs, which aren't in CAPI and are sometimes linked.
-        const fragment = await createLinkSnap(resourceId);
-        return persistAndReturnFragment(dispatch, fragment);
-      }
-      dispatch(externalArticleActions.fetchError(e.message, [id]));
+  } catch (e) {
+    if (isURL) {
+      // If there was an error getting content for CAPI, assume the link is valid
+      // and create a link snap as a fallback. This catches cases like non-tag or
+      // section guardian.co.uk URLs, which aren't in CAPI and are sometimes linked.
+      const fragment = await createLinkSnap(resourceIdOrUrl);
+      return [fragment];
     }
-  };
-}
+  }
+  return [];
+};
+
+const getArticleEntitiesFromFeedDrop = (
+  capiArticle: CapiArticle
+): TArticleEntities => {
+  const article = transformExternalArticle(capiArticle);
+  const fragment = createFragment(
+    article.id,
+    article.frontsMeta.defaults.imageHide,
+    article.frontsMeta.defaults.imageReplace,
+    article.frontsMeta.defaults.imageCutoutReplace,
+    article.frontsMeta.cutout,
+    article.frontsMeta.defaults.showByline,
+    article.frontsMeta.defaults.showQuotedHeadline
+  );
+  return [fragment, article];
+};
+
+const snapMetaWhitelist = [
+  'snapCss',
+  'snapUri',
+  'snapType',
+  'headline',
+  'trailText'
+];
+const guPrefix = 'gu-';
+
+/**
+ * Given a URL, produce an object with the appropriate meta values.
+ */
+const getArticleFragmentMetaFromUrlParams = (
+  url: string
+): ArticleFragmentMeta | undefined => {
+  let urlObj: URL | undefined;
+  try {
+    urlObj = new URL(url);
+  } catch (e) {
+    // This wasn't a valid URL -- we won't be able to extract values.
+    return undefined;
+  }
+  const guParams = Array.from(urlObj.searchParams).filter(
+    ([key]) =>
+      true ||
+      (key.indexOf(guPrefix) !== -1 &&
+        snapMetaWhitelist.indexOf(key.replace(guPrefix, '')) !== -1)
+  );
+  return guParams.length
+    ? guParams.reduce(
+        (acc, [key, value]) => ({ ...acc, [key.replace('gu-', '')]: value }),
+        {}
+      )
+    : undefined;
+};
+
+const getArticleEntitiesFromGuardianPath = async (
+  resourceId: string,
+  title?: string
+): Promise<TArticleEntities> => {
+  const createLatest = window.confirm(
+    "Should this snap be a 'Latest' snap? \n \n Click OK to confirm or cancel to create a 'Link' snap by default."
+  );
+  const fragment = await (createLatest
+    ? createLatestSnap(resourceId, title || 'Unknown title')
+    : createLinkSnap(resourceId));
+  return [fragment];
+};
 
 const maybeAddFrontPublicationDate = (
   fragmentId: string
@@ -238,7 +298,7 @@ export {
   insertSupportingArticleFragment,
   removeGroupArticleFragment,
   removeSupportingArticleFragment,
-  createArticleFragment,
+  createArticleEntitiesFromDrop,
   clearArticleFragments,
   maybeAddFrontPublicationDate,
   copyArticleFragmentImageMeta

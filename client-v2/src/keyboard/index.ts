@@ -11,7 +11,7 @@ import { ThunkResult } from 'types/Store';
 import Mousetrap from 'mousetrap';
 import { selectFocusState, setFocusState } from 'bundles/focusBundle';
 import { RefDrop } from 'util/collectionUtils';
-import { createArticleFragment } from 'shared/actions/ArticleFragments';
+import { createArticleEntitiesFromDrop } from 'shared/actions/ArticleFragments';
 import { moveUp, moveDown } from './keyboardActionMaps/move';
 import { ArticleFragment } from '../shared/types/Collection';
 import { insertClipboardArticleFragment } from 'actions/Clipboard';
@@ -79,7 +79,7 @@ export const createKeyboardActionMap = (store: Store): KeyboardBindingMap => ({
         }
         const contentData: RefDrop = { type: 'REF', data: content };
         const articleFragment = await dispatch(
-          createArticleFragment(contentData)
+          createArticleEntitiesFromDrop(contentData)
         );
         if (!articleFragment) {
           return;
