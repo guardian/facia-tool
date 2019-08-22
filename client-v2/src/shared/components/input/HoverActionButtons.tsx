@@ -18,7 +18,7 @@ const ActionButton = ButtonCircular.extend<{ danger?: boolean }>`
   color: ${({ theme }) => theme.shared.button.color};
   margin: 0 2px 2px 2px;
   line-height: 1;
-  &:hover {
+  &:hover:enabled {
     background: ${({ danger, theme }) =>
       danger
         ? theme.shared.button.backgroundColorHighlightFocused
