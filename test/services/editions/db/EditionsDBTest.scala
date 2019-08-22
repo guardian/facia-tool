@@ -81,6 +81,10 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
       val someIssues = editionsDB.listIssues("daily-edition", LocalDate.of(2019, 9, 28), LocalDate.of(2019, 10, 3))
       someIssues.length shouldBe 3
+
+      val singleIssue = editionsDB.listIssues("daily-edition", LocalDate.of(2019, 9, 29), LocalDate.of(2019, 9, 29))
+      singleIssue.length shouldBe 1
+      singleIssue.head.issueDate.getDayOfMonth shouldBe 29
     }
 
     "should insert fronts, collections and articles" taggedAs UsesDatabase in {
