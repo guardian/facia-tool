@@ -3,6 +3,7 @@ export default {
   base: {
     mainDomain: 'www.theguardian.com',
     mainDomainShort: 'theguardian.com',
+    frontendDomain: 'frontend.gutools.co.uk',
     previewDomain: 'preview.gutools.co.uk'
   },
   media: {

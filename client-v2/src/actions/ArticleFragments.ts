@@ -4,7 +4,7 @@ import {
   removeGroupArticleFragment,
   removeSupportingArticleFragment,
   updateArticleFragmentMeta,
-  createArticleFragment,
+  createArticleEntitiesFromDrop,
   articleFragmentsReceived,
   maybeAddFrontPublicationDate,
   copyArticleFragmentImageMeta
@@ -234,7 +234,7 @@ const insertArticleFragmentWithCreate = (
   drop: MappableDropType,
   persistTo: 'collection' | 'clipboard',
   // allow the factory to be injected for testing
-  articleFragmentFactory = createArticleFragment
+  articleFragmentFactory = createArticleEntitiesFromDrop
 ): ThunkResult<void> => {
   return (dispatch: Dispatch, getState) => {
     const insertActionCreator = getInsertionActionCreatorFromType(
