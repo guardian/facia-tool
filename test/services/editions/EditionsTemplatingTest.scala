@@ -15,7 +15,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues {
     "Sets the prefill metadata from CAPI" in {
       val fakeCapi = new Capi {
         def getPreviewHeaders(url: String): Seq[(String, String)] = ???
-        def getPrefillArticleItems(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[Prefill]] = {
+        def getPrefillArticleItems(issueDate: LocalDate, capiPrefillQuery: CapiPrefillQuery): Future[List[Prefill]] = {
           capiPrefillQuery.queryString match {
             case "?tag=theguardian/mainsection/topstories" => Future.successful(List(
               Prefill(123456, false, false, false, None)
@@ -26,7 +26,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues {
             ))
           }
         }
-        def getPrefillArticles(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery, currentPageCodes: List[String]): Future[SearchResponse] = ???
+        def getPrefillArticles(issueDate: LocalDate, capiPrefillQuery: CapiPrefillQuery, currentPageCodes: List[String]): Future[SearchResponse] = ???
       }
       val templating = new EditionsTemplating(TestEdition.templates, fakeCapi)
       val issue = templating.generateEditionTemplate("test-edition", LocalDate.of(2019, 9, 30)).value

@@ -17,15 +17,12 @@ class EditionsTemplating(templates: Map[String, EditionTemplate], capi: Capi) ex
    templates
       .get(name)
       .flatMap { template =>
-        // Convert the human understood date of an issue to a timestamp in the correct zone for this issue
-        val date = ZonedDateTime.of(localDate, LocalTime.MIDNIGHT, template.zoneId)
-
-        if (template.availability.isValid(date)) {
+        if (template.availability.isValid(localDate)) {
           Some(EditionsIssueSkeleton(
-            date,
+            localDate,
             template.zoneId,
             template.fronts
-              .filter(_._2.isValid(date))
+              .filter(_._2.isValid(localDate))
               .map { case (frontTemplate, _) =>
                 EditionsFrontSkeleton(
                   frontTemplate.name,
@@ -33,7 +30,7 @@ class EditionsTemplating(templates: Map[String, EditionTemplate], capi: Capi) ex
                     EditionsCollectionSkeleton(
                       collection.name,
                       collection.prefill.map { prefill =>
-                        getPrefillArticles(date, prefill)
+                        getPrefillArticles(localDate, prefill)
                       }.getOrElse(Nil),
                       collection.prefill,
                       collection.presentation,
@@ -52,7 +49,7 @@ class EditionsTemplating(templates: Map[String, EditionTemplate], capi: Capi) ex
   }
 
   // this function fetches articles from CAPI with enough data to resolve the defaults
-  def getPrefillArticles(date: ZonedDateTime, prefillQuery: CapiPrefillQuery): List[EditionsArticleSkeleton] = {
+  def getPrefillArticles(date: LocalDate, prefillQuery: CapiPrefillQuery): List[EditionsArticleSkeleton] = {
     // TODO: This being a try will hide a litany of failures, some of which we might want to surface
     val items = try {
       Await.result(capi.getPrefillArticleItems(date, prefillQuery), 10 seconds)

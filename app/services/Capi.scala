@@ -3,7 +3,7 @@ package services
 import java.io.IOException
 import java.net.{URI, URLEncoder}
 import java.nio.charset.Charset
-import java.time.{Period, ZoneOffset, ZonedDateTime}
+import java.time.{LocalDate, Period, ZoneOffset, ZonedDateTime}
 
 import org.apache.http.client.utils.URLEncodedUtils
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
@@ -66,13 +66,13 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
   def getPreviewHeaders(url: String): Seq[(String,String)] = previewSigner.addIAMHeaders(headers = Map.empty, URI.create(url)).toSeq
 
   // Prefill
-  def geneneratePrefillQuery(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery, fields: List[String]) = {
+  def geneneratePrefillQuery(issueDate: LocalDate, capiPrefillQuery: CapiPrefillQuery, fields: List[String]) = {
     val params = URLEncodedUtils
       .parse(new URI(capiPrefillQuery.escapedQueryString()), Charset.forName("UTF-8"))
       .asScala
 
     // Hack because composer/capi/whoever doesn't worry about timezones in the newspaper-edition date
-    val localDate = issueDate.toLocalDate.atStartOfDay().toInstant(ZoneOffset.UTC)
+    val utcMidnightOnDate = issueDate.atStartOfDay().toInstant(ZoneOffset.UTC)
 
     var query = PrintSentQuery()
       .page(1)
@@ -80,8 +80,8 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
       .showFields(fields.mkString(","))
       .useDate("newspaper-edition") // deliberately-kebab-case
       .orderBy("newest")
-      .fromDate(localDate)
-      .toDate(localDate)
+      .fromDate(utcMidnightOnDate)
+      .toDate(utcMidnightOnDate)
 
     params.filter(pair => pair.getName == "section").foreach { sectionPair =>
       query = query.section(sectionPair.getValue)
@@ -99,7 +99,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
   }
 
   // Sadly there's no easy way of converting a CAPI client response into JSON so we'll just proxy - similar to controllers.FaciaContentApiProxy
-  def getPrefillArticles(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery, currentPageCodes: List[String]): Future[SearchResponse] = {
+  def getPrefillArticles(issueDate: LocalDate, capiPrefillQuery: CapiPrefillQuery, currentPageCodes: List[String]): Future[SearchResponse] = {
     val fields = List(
       "newspaperEditionDate",
       "newspaperPapeNumber",
@@ -144,7 +144,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
     * @param capiPrefillQuery
     * @return
     */
-  def getPrefillArticleItems(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[Prefill]] = {
+  def getPrefillArticleItems(issueDate: LocalDate, capiPrefillQuery: CapiPrefillQuery): Future[List[Prefill]] = {
     val fields = List(
       "newspaperEditionDate",
       "newspaperPageNumber",
@@ -201,6 +201,6 @@ case class PrintSentQuery(parameterHolder: Map[String, Parameter] = Map.empty)
 
 trait Capi {
   def getPreviewHeaders(url: String): Seq[(String,String)]
-  def getPrefillArticleItems(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery): Future[List[Prefill]]
-  def getPrefillArticles(issueDate: ZonedDateTime, capiPrefillQuery: CapiPrefillQuery, currentPageCodes: List[String]): Future[SearchResponse]
+  def getPrefillArticleItems(issueDate: LocalDate, capiPrefillQuery: CapiPrefillQuery): Future[List[Prefill]]
+  def getPrefillArticles(issueDate: LocalDate, capiPrefillQuery: CapiPrefillQuery, currentPageCodes: List[String]): Future[SearchResponse]
 }

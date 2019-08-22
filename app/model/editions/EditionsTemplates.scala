@@ -1,6 +1,6 @@
 package model.editions
 
-import java.time.{ZoneId, ZonedDateTime}
+import java.time.{LocalDate, ZoneId, ZonedDateTime}
 import java.time.temporal.ChronoField
 
 import enumeratum.{EnumEntry, PlayEnum}
@@ -63,14 +63,14 @@ object CapiPrefillQuery {
 
 import WeekDay._
 trait Periodicity {
-  def isValid(date: ZonedDateTime): Boolean
+  def isValid(date: LocalDate): Boolean
 }
 case class Daily() extends Periodicity {
-  def isValid(date: ZonedDateTime) = true
+  def isValid(date: LocalDate) = true
 }
 
 case class WeekDays(days: List[WeekDay]) extends Periodicity {
-  def isValid(date: ZonedDateTime) =
+  def isValid(date: LocalDate) =
     days.exists(
       WeekDayToInt(_) == date.getDayOfWeek.get(ChronoField.DAY_OF_WEEK)
     )
@@ -100,7 +100,7 @@ case class EditionTemplate(
 // Issue skeletons are what is generated when you create a new issue for a given date
 // (Date + Template) => Skeleton
 case class EditionsIssueSkeleton(
-    issueDate: ZonedDateTime,
+    issueDate: LocalDate,
     zoneId: ZoneId,
     fronts: List[EditionsFrontSkeleton]
 )

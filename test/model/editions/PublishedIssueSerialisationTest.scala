@@ -9,13 +9,13 @@ import services.editions.publishing.PublishedIssueFormatters._
 class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
   "EditionsIssueTest" - {
     val midnight = OffsetTime.of(0, 0, 0, 0, ZoneOffset.UTC)
-    val issueDate = LocalDate.of(2019, 9, 30).atTime(midnight)
+    val issueDate = LocalDate.of(2019, 9, 30)
 
     val issue: EditionsIssue = EditionsIssue(
       id = "4290573248905743296789524389623",
       displayName = "Daily Edition",
       timezoneId = "Europe/London",
-      issueDate = issueDate.toInstant.toEpochMilli,
+      issueDate = issueDate,
       createdOn = 0,
       createdBy = "",
       createdEmail = "",
@@ -30,7 +30,7 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
         """{
           |  "id" : "4290573248905743296789524389623",
           |  "name" : "Daily Edition",
-          |  "issueDate" : "2019-09-30T01:00:00+01:00",
+          |  "issueDate" : "2019-09-30",
           |  "fronts" : [ ]
           |}""".stripMargin
 
@@ -45,7 +45,7 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
         """{
           |  "id" : "4290573248905743296789524389623",
           |  "name" : "Daily Edition",
-          |  "issueDate" : "2019-09-30T01:00:00+01:00",
+          |  "issueDate" : "2019-09-30",
           |  "version" : "foo",
           |  "fronts" : [ ]
           |}""".stripMargin

@@ -1,6 +1,6 @@
 package model.editions
 
-import java.time.OffsetDateTime
+import java.time.{LocalDate, OffsetDateTime}
 
 import enumeratum.EnumEntry.Uncapitalised
 import enumeratum.{EnumEntry, PlayEnum}
@@ -41,7 +41,7 @@ case class PublishedFront(id: String, name: String, collections: List[PublishedC
 case class PublishedIssue(
   id: String,
   name: String,
-  issueDate: OffsetDateTime,
+  issueDate: LocalDate,
   version: Option[String],
   fronts: List[PublishedFront]
 )

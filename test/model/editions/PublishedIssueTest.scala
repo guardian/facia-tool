@@ -1,6 +1,6 @@
 package model.editions
 
-import java.time.{OffsetDateTime, ZoneId, ZoneOffset, ZonedDateTime}
+import java.time.{LocalDate, OffsetDateTime, ZoneId, ZoneOffset, ZonedDateTime}
 
 import org.scalatest.{FreeSpec, Matchers, OptionValues}
 
@@ -11,13 +11,14 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
   val nowMilli = nowDateTime.toInstant.toEpochMilli
 
   private def issue(year: Int, month: Int, dom: Int, fronts: EditionsFront*): EditionsIssue = {
-    val dateTime = ZonedDateTime.of(year, month, dom, 0, 0, 0, 0, LondonZone)
+    val date = LocalDate.of(year, month, dom)
+    val dateTime = date.atStartOfDay(LondonZone)
     val dateTimeMilli = dateTime.toInstant.toEpochMilli
     EditionsIssue(
       "test-edition",
       "Test Edition",
       LondonZone.toString,
-      dateTimeMilli,
+      date,
       dateTimeMilli,
       "User",
       "user@example.con",

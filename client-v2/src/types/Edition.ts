@@ -28,7 +28,7 @@ interface EditionsFront {
 interface EditionsIssue {
   id: string;
   displayName: string;
-  issueDate: number; // midnight on the expect publish date
+  issueDate: string; // YYYY-MM-dd
   createdOn: number;
   createdBy: string;
   createdEmail: string;

@@ -8,7 +8,7 @@ import play.api.db.evolutions.Evolutions
 import services.editions.db.EditionsDB
 
 trait EditionsDBService extends DockerTestKit with DockerKitDockerJava with DockerPostgresService
-  with BeforeAndAfterAll with BeforeAndAfter { self: Suite =>
+  with BeforeAndAfterAll  { self: Suite =>
 
   var editionsDB: EditionsDB = _
   var database: Database = _
@@ -22,13 +22,5 @@ trait EditionsDBService extends DockerTestKit with DockerKitDockerJava with Dock
     ))
 
     editionsDB = new EditionsDB(dbUrl, dbUser, dbPassword)
-  }
-
-  before {
-    Evolutions.applyEvolutions(database)
-  }
-
-  after {
-    Evolutions.cleanupEvolutions(database)
   }
 }
