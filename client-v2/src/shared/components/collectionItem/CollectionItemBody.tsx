@@ -11,7 +11,6 @@ export default styled('div')<{
 }>`
   position: relative;
   display: flex;
-  border-top: 1px solid ${theme.shared.base.colors.text};
   min-height: ${({ size }) => (size === 'small' ? '25px' : '50px')};
   cursor: pointer;
   background-color: ${theme.shared.base.colors.backgroundColorLight};

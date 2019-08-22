@@ -16,22 +16,15 @@ import CollectionItemContainer from '../collectionItem/CollectionItemContainer';
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
 import ArticleBody from './ArticleBody';
 import { CollectionItemSizes } from 'shared/types/Collection';
-import { getPillarColor } from 'shared/util/getPillarColor';
 import DragIntentContainer from '../DragIntentContainer';
 import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
 
 const ArticleBodyContainer = styled(CollectionItemBody)<{
   pillarId: string | undefined;
   isLive: boolean;
-  isDraggingImageOver: boolean;
 }>`
   position: relative;
   justify-content: space-between;
-  border-top-color: ${({ size, pillarId, isLive, theme }) =>
-    size === 'default' && pillarId && isLive
-      ? getPillarColor(pillarId, isLive)
-      : theme.shared.base.colors.borderColor};
-
   :hover {
     ${CollectionItemMetaHeading} {
       color: ${({ theme }) => theme.shared.base.colors.textMuted};
@@ -165,7 +158,6 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
               fade={fade}
               pillarId={article && article.pillarId}
               isLive={!!article && article.isLive}
-              isDraggingImageOver={this.state.isDraggingImageOver}
             >
               <ArticleBody
                 {...getArticleData()}
