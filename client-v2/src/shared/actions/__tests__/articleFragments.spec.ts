@@ -162,7 +162,7 @@ describe('articleFragments actions', () => {
             meta: {
               byline: undefined,
               headline: 'Live matches',
-              href: '/football/live',
+              href: 'football/live',
               showByline: false,
               snapCss: 'football',
               snapType: 'json.html',
