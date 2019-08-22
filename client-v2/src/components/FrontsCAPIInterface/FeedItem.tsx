@@ -46,7 +46,6 @@ const Container = styled('div')`
 
   ${HoverActionsAreaOverlay} {
     bottom: 5px;
-    right: 4px;
     position: absolute;
     visibility: hidden;
   }
@@ -210,7 +209,7 @@ class FeedItem extends React.Component<FeedItemProps> {
             )}
           </ArticleThumbnail>
         </FeedItemContainer>
-        <HoverActionsAreaOverlay justify="flex-end" data-testid="hover-overlay">
+        <HoverActionsAreaOverlay data-testid="hover-overlay">
           <HoverActionsButtonWrapper
             buttons={[
               { text: 'View', component: HoverViewButton },
