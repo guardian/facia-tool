@@ -1,7 +1,4 @@
-import {
-  getAbsolutePath,
-  isInternalUrl
-} from './url';
+import { getAbsolutePath, isInternalUrl } from './url';
 import fetchOpenGraphData from './openGraph';
 import { ArticleFragment, ArticleFragmentMeta } from '../types/Collection';
 import v4 from 'uuid/v4';
