@@ -175,7 +175,7 @@ const getArticleEntitiesFromDrop = async (
   }
   const resourceIdOrUrl = drop.data;
   const isURL = isValidURL(resourceIdOrUrl);
-  const id = isURL ? getIdFromURL(resourceIdOrUrl, true) : resourceIdOrUrl;
+  const id = isURL ? getIdFromURL(resourceIdOrUrl) : resourceIdOrUrl;
   const isNonGuLink = isURL && !id;
   if (isNonGuLink) {
     const fragment = await createLinkSnap(resourceIdOrUrl);
