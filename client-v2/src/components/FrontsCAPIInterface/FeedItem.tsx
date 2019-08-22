@@ -147,7 +147,7 @@ class FeedItem extends React.Component<FeedItemProps> {
         draggable={true}
         onDragStart={this.handleDragStart}
       >
-        <DraggingArticleContainer innerRef={this.dragNode}>
+        <DraggingArticleContainer ref={this.dragNode}>
           <DraggingArticleComponent headline={article.webTitle} />
         </DraggingArticleContainer>
 

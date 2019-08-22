@@ -73,7 +73,7 @@ const ListItem = styled('li')<{ isActive?: boolean; isStarred?: boolean }>`
   border-bottom: ${({ theme }) => `solid 1px ${theme.front.frontListBorder}`};
   ${({ isActive }) =>
     isActive &&
-    css`
+    css<{ isStarred?: boolean }>`
       cursor: pointer;
       :hover {
         background-color: ${({ theme }) => theme.front.frontListButton};

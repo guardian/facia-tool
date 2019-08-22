@@ -1,7 +1,8 @@
+import styled from 'styled-components';
 import InputBase from './InputBase';
 import { createResizeableTextInput } from './CreateResizeableTextInput';
 
-const InputTextAreaBase = InputBase.withComponent('textarea').extend<{
+const InputTextAreaBase = styled(InputBase.withComponent('textarea'))<{
   minHeight?: number;
   maxHeight?: number;
 }>`

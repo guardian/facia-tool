@@ -13,7 +13,7 @@ const CheckboxContainer = styled('div')`
   align-items: flex-start;
 `;
 
-const Label = InputLabel.extend`
+const Label = styled(InputLabel)`
   padding-left: 5px;
   color: ${props => props.theme.shared.input.colorLabel};
   line-height: 15px;

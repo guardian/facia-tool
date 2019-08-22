@@ -16,18 +16,17 @@ const Wrapper = styled('span')<{
   ${media.large`font-size: 13px;`}
 `;
 
-type CollectionItemHeading = {
+interface CollectionItemHeading {
   children?: string;
   html?: boolean;
   displaySize?: CollectionItemSizes;
   showLargeHeadline?: boolean;
-} & React.HTMLProps<HTMLSpanElement>;
+}
 
 const CollectionItemHeading = ({
   children = '',
-  size,
+  displaySize,
   html = false,
-  ref, // remove this for TS reasons
   ...props
 }: CollectionItemHeading) =>
   html ? (

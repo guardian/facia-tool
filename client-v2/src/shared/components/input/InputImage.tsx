@@ -273,7 +273,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                   }
                   onChange={this.handlePasteImgSrcChange}
                   onFocus={this.handleFocus}
-                  innerRef={this.inputRef}
+                  ref={this.inputRef}
                   disabled={disabled}
                 />
                 <InputLabel hidden htmlFor="paste-url">

@@ -122,7 +122,7 @@ class CAPITagInput extends React.Component<
                   width: '100%',
                   value: this.state.input,
                   onChange: (input: any) => this.onSearchChange(input)
-                }) as GetInputPropsOptions & { ref: any }}
+                }) as GetInputPropsOptions & { ref: any; as: any }}
               />
             </SearchContainer>
             <TagDropdown {...getMenuProps()}>

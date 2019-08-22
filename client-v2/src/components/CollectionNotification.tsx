@@ -18,7 +18,7 @@ const WarningText = styled('span')`
   color: ${({ theme }) => theme.shared.colors.orangeDark};
 `;
 
-const ToggleDetailsButton = ButtonRoundedWithLabel.extend`
+const ToggleDetailsButton = styled(ButtonRoundedWithLabel)`
   position: relative;
   z-index: 5;
 `;
