@@ -32,14 +32,14 @@ function matchHostname(url: string, hostnames: string[]): boolean {
   return hostnames.some(_ => _ === host);
 }
 
-function isGuardianUrl(url: string) {
+function isGuardianWebsiteUrl(url: string) {
   return matchHostname(url, [
     urlConstants.base.mainDomain,
     urlConstants.base.mainDomainShort
   ]);
 }
 
-function isInternalUrl(url: string) {
+function isGuardianUrl(url: string) {
   return matchHostname(url, [
     urlConstants.base.mainDomain,
     urlConstants.base.mainDomainShort,
@@ -51,7 +51,7 @@ function isInternalUrl(url: string) {
 export {
   getAbsolutePath,
   getHostname,
+  isGuardianWebsiteUrl,
   isGuardianUrl,
-  isInternalUrl,
   isValidURL
 };

@@ -1,4 +1,4 @@
-import { getAbsolutePath, isInternalUrl } from './url';
+import { getAbsolutePath, isGuardianUrl as isGuardianUrl } from './url';
 import fetchOpenGraphData from './openGraph';
 import { ArticleFragment, ArticleFragmentMeta } from '../types/Collection';
 import v4 from 'uuid/v4';
@@ -17,7 +17,7 @@ function validateId(id: string) {
 function convertToSnap({ id, ...rest }: ArticleFragment): ArticleFragment {
   let href;
 
-  if (isInternalUrl(id)) {
+  if (isGuardianUrl(id)) {
     href = '/' + getAbsolutePath(id, true);
   } else {
     href = id;

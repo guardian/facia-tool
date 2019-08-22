@@ -1,5 +1,5 @@
 import pandaFetch from 'services/pandaFetch';
-import { isGuardianUrl, getHostname } from './url';
+import { isGuardianWebsiteUrl, getHostname } from './url';
 
 interface OpenGraphData {
   title: string | undefined;
@@ -8,7 +8,7 @@ interface OpenGraphData {
 }
 
 export default async function(url: string): Promise<OpenGraphData> {
-  const isOnSite = isGuardianUrl(url);
+  const isOnSite = isGuardianWebsiteUrl(url);
   try {
     const response = await pandaFetch(
       '/http/proxy/' + url + (isOnSite ? '?view=mobile' : '')
