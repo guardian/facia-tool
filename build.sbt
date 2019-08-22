@@ -8,7 +8,7 @@ packageSummary := "Facia tool"
 
 packageDescription := "Guardian front pages editor"
 
-scalaVersion in ThisBuild := "2.12.5"
+scalaVersion in ThisBuild := "2.12.9"
 
 import com.gu.riffraff.artifact.BuildInfo
 import sbt.Resolver
@@ -114,7 +114,7 @@ libraryDependencies ++= Seq(
     "io.circe"                 %% "circe-core"                   % circeVersion,
     "io.circe"                 %% "circe-generic"                % circeVersion,
     "io.circe"                 %% "circe-parser"                 % circeVersion,
-    
+
     "com.beachape" %% "enumeratum" % enumeratumPlayVersion,
     "com.beachape" %% "enumeratum-play" % enumeratumPlayVersion,
 
@@ -153,7 +153,7 @@ lazy val root = (project in file("."))
     ))
     // We exclude in other tests
     .settings(testOptions in Test := Seq(
-        Tests.Argument(TestFrameworks.ScalaTest, 
+        Tests.Argument(TestFrameworks.ScalaTest,
             // exclude tests tagged with UsesDatabase
             "-l", "fixtures.UsesDatabase",
             // show full stack traces when an exception is thrown
