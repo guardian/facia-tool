@@ -86,7 +86,10 @@ export const createSelectFormFieldsForCollectionItem = () => {
       }
       let fields = defaultFields.slice();
 
-      if (isCollectionConfigDynamic(parentCollectionConfig)) {
+      if (
+        isCollectionConfigDynamic(parentCollectionConfig) ||
+        derivedArticle.isBoosted
+      ) {
         fields.push('isBoosted');
       }
       if (derivedArticle.liveBloggingNow === 'true') {
