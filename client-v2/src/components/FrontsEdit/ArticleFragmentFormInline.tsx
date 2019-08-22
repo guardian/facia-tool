@@ -287,6 +287,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     return (
       <FormContainer
         data-testid="edit-form"
+        topBorder={false}
         onClick={
           (e: React.MouseEvent) =>
             e.stopPropagation() /* Prevent clicks passing through the form */

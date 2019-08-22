@@ -54,6 +54,14 @@ const selectExternalArticleFromArticleFragment = (
   return externalArticles[articleFragment.id];
 };
 
+const selectSupportingArticleCount = (state: State, uuid: string) => {
+  const maybeArticle = selectArticleFragment(state, uuid);
+  if (maybeArticle && maybeArticle && maybeArticle.meta.supporting) {
+    return maybeArticle.meta.supporting.length;
+  }
+  return 0;
+};
+
 const selectArticleTag = (state: State, id: string): ArticleTag => {
   const externalArticle = selectExternalArticleFromArticleFragment(state, id);
   const emptyTag = {
@@ -114,6 +122,12 @@ const selectCollectionItemHasMediaOverrides = (state: State, id: string) => {
       !!article.meta.imageSlideshowReplace)
   );
 };
+
+const createSelectIsArticleFragmentLive = () =>
+  createSelector(
+    selectExternalArticleFromArticleFragment,
+    externalArticle => !!externalArticle && isLive(externalArticle)
+  );
 
 const createSelectArticleFromArticleFragment = () =>
   createSelector(
@@ -548,5 +562,7 @@ export {
   groupsArticleCount,
   selectExternalArticleIdFromArticleFragment,
   selectCollectionItemHasMediaOverrides,
-  createSelectArticlesFromIds
+  createSelectArticlesFromIds,
+  createSelectIsArticleFragmentLive,
+  selectSupportingArticleCount
 };

@@ -6,7 +6,8 @@ import { State } from 'types/State';
 import { createSelectCollectionItemType } from 'shared/selectors/collectionItem';
 import {
   selectSharedState,
-  selectArticleFragment
+  selectExternalArticleFromArticleFragment,
+  selectSupportingArticleCount
 } from 'shared/selectors/shared';
 import collectionItemTypes from 'shared/constants/collectionItemTypes';
 import {
@@ -43,12 +44,28 @@ import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
 import { events } from 'services/GA';
 import EditModeVisibility from 'components/util/EditModeVisibility';
+import { styled } from 'constants/theme';
+import { getPillarColor } from 'shared/util/getPillarColor';
+import { isLive as isArticleLive } from 'util/CAPIUtils';
 
 const imageDropTypes = [
   ...gridDropTypes,
   DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
   DRAG_DATA_GRID_IMAGE_URL
 ];
+
+const CollectionItemContainer = styled('div')<{
+  pillarId: string | undefined;
+  isLive?: boolean;
+  size?: CollectionItemSizes;
+}>`
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: ${({ size, pillarId, isLive, theme }) =>
+    size !== 'small' && pillarId && isLive
+      ? getPillarColor(pillarId, isLive)
+      : theme.shared.base.colors.borderColor};
+`;
 
 interface ContainerProps {
   uuid: string;
@@ -77,6 +94,8 @@ type ArticleContainerProps = ContainerProps & {
   isSelected: boolean;
   numSupportingArticles: number;
   editMode: EditMode;
+  isLive?: boolean;
+  pillarId?: string;
 };
 
 class CollectionItem extends React.Component<ArticleContainerProps> {
@@ -111,7 +130,9 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       showMeta,
       frontId,
       canDragImage,
-      canShowPageViewData = false
+      canShowPageViewData = false,
+      isLive,
+      pillarId
     } = this.props;
 
     const getSublinks = (
@@ -181,27 +202,31 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       }
     };
 
-    return isSelected ? (
-      <>
-        <ArticleFragmentFormInline
-          articleFragmentId={uuid}
-          isSupporting={isSupporting}
-          key={uuid}
-          form={uuid}
-          frontId={frontId}
-          onSave={meta => {
-            updateArticleFragmentMeta(uuid, meta);
-            clearArticleFragmentSelection(uuid);
-          }}
-          onCancel={() => clearArticleFragmentSelection(uuid)}
-        />
-        {getSublinks}
-        {numSupportingArticles === 0
-          ? children
-          : this.state.showArticleSublinks && children}
-      </>
-    ) : (
-      getCard()
+    return (
+      <CollectionItemContainer size={size} isLive={isLive} pillarId={pillarId}>
+        {isSelected ? (
+          <>
+            <ArticleFragmentFormInline
+              articleFragmentId={uuid}
+              isSupporting={isSupporting}
+              key={uuid}
+              form={uuid}
+              frontId={frontId}
+              onSave={meta => {
+                updateArticleFragmentMeta(uuid, meta);
+                clearArticleFragmentSelection(uuid);
+              }}
+              onCancel={() => clearArticleFragmentSelection(uuid)}
+            />
+            {getSublinks}
+            {numSupportingArticles === 0
+              ? children
+              : this.state.showArticleSublinks && children}
+          </>
+        ) : (
+          getCard()
+        )}
+      </CollectionItemContainer>
     );
   }
 
@@ -244,15 +269,19 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
 const createMapStateToProps = () => {
   const selectType = createSelectCollectionItemType();
   return (state: State, { uuid, frontId }: ContainerProps) => {
-    const maybeArticle = selectArticleFragment(selectSharedState(state), uuid);
-    let numSupportingArticles = 0;
-    if (maybeArticle && maybeArticle.meta && maybeArticle.meta.supporting) {
-      numSupportingArticles = maybeArticle.meta.supporting.length;
-    }
+    const maybeExternalArticle = selectExternalArticleFromArticleFragment(
+      selectSharedState(state),
+      uuid
+    );
     return {
       type: selectType(selectSharedState(state), uuid),
       isSelected: selectIsArticleFragmentFormOpen(state, uuid, frontId),
-      numSupportingArticles,
+      isLive: maybeExternalArticle && isArticleLive(maybeExternalArticle),
+      pillarId: maybeExternalArticle && maybeExternalArticle.pillarId,
+      numSupportingArticles: selectSupportingArticleCount(
+        selectSharedState(state),
+        uuid
+      ),
       editMode: selectEditMode(state)
     };
   };
