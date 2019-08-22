@@ -6,7 +6,7 @@ import upperFirst from 'lodash/upperFirst';
 import CollectionItemContainer from '../collectionItem/CollectionItemContainer';
 import CollectionItemMetaContainer from '../collectionItem/CollectionItemMetaContainer';
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
-import { ThumbnailSmall } from '../Thumbnail';
+import { ThumbnailSmall } from '../image/Thumbnail';
 import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
 import {
   HoverDeleteButton,
@@ -18,7 +18,8 @@ import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
 import { ArticleFragment, CollectionItemSizes } from 'shared/types/Collection';
 import {
   selectSharedState,
-  selectArticleFragment
+  selectArticleFragment,
+  createSelectArticleFromArticleFragment
 } from '../../selectors/shared';
 import { State } from '../../types/State';
 import CollectionItemHeading from '../collectionItem/CollectionItemHeading';
@@ -29,6 +30,8 @@ import urls from 'shared/constants/url';
 import CollectionItemHeadingContainer from '../collectionItem/CollectionItemHeadingContainer';
 import CollectionItemSettingsDisplay from '../collectionItem/CollectionItemSettingsDisplay';
 import { distanceInWordsStrict } from 'date-fns';
+import { DerivedArticle } from 'shared/types/Article';
+import { ImageMetadataContainer } from '../image/ImageMetaDataContainer';
 
 const SnapLinkBodyContainer = styled(CollectionItemBody)`
   justify-content: space-between;
@@ -39,6 +42,8 @@ const SnapLinkURL = styled('p')`
   font-size: 12px;
   word-break: break-all;
 `;
+
+const ImageWrapper = styled('div')``;
 
 interface ContainerProps {
   selectSharedState?: (state: any) => State;
@@ -60,6 +65,7 @@ interface ContainerProps {
 
 interface SnapLinkProps extends ContainerProps {
   articleFragment: ArticleFragment;
+  article: DerivedArticle | undefined;
 }
 
 const SnapLink = ({
@@ -73,6 +79,7 @@ const SnapLink = ({
   children,
   articleFragment,
   isUneditable,
+  article,
   ...rest
 }: SnapLinkProps) => {
   const headline =
@@ -133,7 +140,17 @@ const SnapLink = ({
             </SnapLinkURL>
           </CollectionItemHeadingContainer>
         </CollectionItemContent>
-        {size === 'default' && <ThumbnailSmall />}
+        <ImageWrapper>
+          <ThumbnailSmall
+            imageHide={article && article.imageHide}
+            url={article && article.imageReplace ? article.thumbnail : ''}
+          />
+          <ImageMetadataContainer
+            imageSlideshowReplace={article && article.imageSlideshowReplace}
+            imageReplace={article && article.imageReplace}
+            imageCutoutReplace={article && article.imageCutoutReplace}
+          />
+        </ImageWrapper>
         <HoverActionsAreaOverlay
           disabled={isUneditable}
           justify={'space-between'}
@@ -166,12 +183,18 @@ const SnapLink = ({
 const mapStateToProps = (
   state: State,
   props: ContainerProps
-): { articleFragment: ArticleFragment } => {
+): {
+  articleFragment: ArticleFragment;
+  article: DerivedArticle | undefined;
+} => {
   const sharedState = props.selectSharedState
     ? props.selectSharedState(state)
     : selectSharedState(state);
+  const selectArticle = createSelectArticleFromArticleFragment();
+  const article = selectArticle(sharedState, props.id);
   return {
-    articleFragment: selectArticleFragment(sharedState, props.id)
+    articleFragment: selectArticleFragment(sharedState, props.id),
+    article
   };
 };
 

@@ -45,7 +45,7 @@ const selectArticleFragment = (state: State, id: string): ArticleFragment =>
 const selectExternalArticleFromArticleFragment = (
   state: State,
   id: string
-): ExternalArticle | void => {
+): ExternalArticle | undefined => {
   const articleFragment = selectArticleFragment(state, id);
   const externalArticles = externalArticleSelectors.selectAll(state);
   if (!articleFragment) {
@@ -145,9 +145,7 @@ const createSelectArticleFromArticleFragment = () =>
           (externalArticle ? externalArticle.fields.byline : undefined),
         kicker,
         pillarId: externalArticle ? externalArticle.pillarId : undefined,
-        thumbnail: externalArticle
-          ? getThumbnail(externalArticle, articleMeta)
-          : undefined,
+        thumbnail: getThumbnail(articleMeta, externalArticle),
         cutoutThumbnail: externalArticle
           ? getContributorImage(externalArticle)
           : undefined,

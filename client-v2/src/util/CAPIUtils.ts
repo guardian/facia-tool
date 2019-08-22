@@ -54,10 +54,9 @@ function getContributorImage(externalArticle: ExternalArticle) {
 }
 
 function getThumbnail(
-  externalArticle: ExternalArticle,
-  meta: ArticleFragmentMeta
+  meta: ArticleFragmentMeta,
+  externalArticle?: ExternalArticle
 ): string | undefined {
-  const { fields } = externalArticle;
   const isReplacingImage = meta.imageReplace;
   const metaImageSrcThumb = isReplacingImage && meta.imageSrcThumb;
   const imageSrc = isReplacingImage && meta.imageSrc;
@@ -66,12 +65,12 @@ function getThumbnail(
     return metaImageSrcThumb;
   } else if (imageSrc) {
     return imageSrc;
-  } else if (meta.imageCutoutReplace) {
+  } else if (meta.imageCutoutReplace && externalArticle) {
     return (
       meta.imageCutoutSrc ||
       getContributorImage(externalArticle) ||
-      fields.secureThumbnail ||
-      fields.thumbnail ||
+      externalArticle.fields.secureThumbnail ||
+      externalArticle.fields.thumbnail ||
       undefined
     );
   } else if (
@@ -84,9 +83,9 @@ function getThumbnail(
   }
 
   return (
-    fields.secureThumbnail ||
-    fields.thumbnail ||
-    getThumbnailFromElements(externalArticle.elements)
+    (externalArticle && externalArticle.fields.secureThumbnail) ||
+    (externalArticle && externalArticle.fields.thumbnail) ||
+    (externalArticle && getThumbnailFromElements(externalArticle.elements))
   );
 }
 

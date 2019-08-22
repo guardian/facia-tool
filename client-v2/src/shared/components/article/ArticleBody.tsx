@@ -10,7 +10,7 @@ import CollectionItemMetaContainer from '../collectionItem/CollectionItemMetaCon
 import CollectionItemContent from '../collectionItem/CollectionItemContent';
 import { notLiveLabels, liveBlogTones } from 'constants/fronts';
 import TextPlaceholder from 'shared/components/TextPlaceholder';
-import { ThumbnailSmall, ThumbnailCutout } from '../Thumbnail';
+import { ThumbnailSmall, ThumbnailCutout } from '../image/Thumbnail';
 import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
 import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
 import {
@@ -30,6 +30,7 @@ import { VideoIcon } from '../icons/Icons';
 import CollectionItemHeadingContainer from '../collectionItem/CollectionItemHeadingContainer';
 import CollectionItemSettingsDisplay from '../collectionItem/CollectionItemSettingsDisplay';
 import CircularIconContainer from '../icons/CircularIconContainer';
+import { ImageMetadataContainer } from '../image/ImageMetaDataContainer';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   flex-shrink: 0;
@@ -61,11 +62,6 @@ const ArticleBodyByline = styled('div')`
 
 const FirstPublicationDate = styled(CollectionItemMetaContent)`
   color: ${({ theme }) => theme.shared.colors.green};
-`;
-
-const ImageMetadataContainer = styled('div')`
-  font-size: 10px;
-  background-color: ${({ theme }) => theme.shared.colors.whiteLight};
 `;
 
 const PageViewDataWrapper = styled('div')`
@@ -295,12 +291,12 @@ const articleBodyDefault = React.memo(
                     </VideoIconContainer>
                   )}
                 </ThumbnailSmall>
-                <ImageMetadataContainer>
-                  {imageSlideshowReplace && 'Slideshow'}
-                  {imageReplace && 'Image replaced'}
-                  {imageCutoutReplace && 'Cutout replaced'}
-                  {showMainVideo && 'Show video'}
-                </ImageMetadataContainer>
+                <ImageMetadataContainer
+                  imageSlideshowReplace={imageSlideshowReplace}
+                  imageReplace={imageReplace}
+                  imageCutoutReplace={imageCutoutReplace}
+                  showMainVideo={showMainVideo}
+                />
               </DraggableArticleImageContainer>
             ))}
         </ImageAndGraphWrapper>
