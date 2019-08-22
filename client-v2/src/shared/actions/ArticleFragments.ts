@@ -150,7 +150,7 @@ const createArticleEntitiesFromDrop = (
     const [
       maybeArticleFragment,
       maybeExternalArticle
-    ] = await getArticleEntitesFromDrop(drop);
+    ] = await getArticleEntitiesFromDrop(drop);
     if (maybeArticleFragment) {
       dispatch(articleFragmentsReceived([maybeArticleFragment]));
     }
@@ -167,7 +167,7 @@ const createArticleEntitiesFromDrop = (
  *  - a article, tag or section (either the full URL or the ID)
  *  - an external link.
  */
-const getArticleEntitesFromDrop = async (
+const getArticleEntitiesFromDrop = async (
   drop: MappableDropType
 ): Promise<TArticleEntities> => {
   if (drop.type === 'CAPI') {
