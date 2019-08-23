@@ -18,6 +18,8 @@ import ArticleBody from './ArticleBody';
 import { CollectionItemSizes } from 'shared/types/Collection';
 import DragIntentContainer from '../DragIntentContainer';
 import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
+import { theme } from 'constants/theme';
+import { getPillarColor } from 'shared/util/getPillarColor';
 
 const ArticleBodyContainer = styled(CollectionItemBody)<{
   pillarId: string | undefined;
@@ -25,9 +27,14 @@ const ArticleBodyContainer = styled(CollectionItemBody)<{
 }>`
   position: relative;
   justify-content: space-between;
+  border-top-color: ${({ size, pillarId, isLive }) =>
+    size === 'default' && pillarId && isLive
+      ? getPillarColor(pillarId, isLive)
+      : theme.shared.base.colors.borderColor};
+
   :hover {
     ${CollectionItemMetaHeading} {
-      color: ${({ theme }) => theme.shared.base.colors.textMuted};
+      color: ${theme.shared.base.colors.textMuted};
     }
   }
   height: 100%;

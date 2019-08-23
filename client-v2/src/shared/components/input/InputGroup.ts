@@ -1,7 +1,7 @@
 import { styled } from 'shared/constants/theme';
 import InputContainer from './InputContainer';
 
-export default styled('div')`
+export default styled.div`
   & > ${InputContainer} {
     margin: 6px 0;
   }

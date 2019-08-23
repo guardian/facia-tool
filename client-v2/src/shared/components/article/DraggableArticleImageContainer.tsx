@@ -37,7 +37,7 @@ const DragIntentContainer = styled.div<{
 
 // The visual representation of an image as it is being dragged.
 // This needs to be rendered by the DOM before it can be used by the Drag&Drop API, so we pushed it off to the side.
-const DraggingImageContainer = styled('div')`
+const DraggingImageContainer = styled.div`
   position: absolute;
   transform: translateX(-9999px);
 `;

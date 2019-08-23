@@ -1,6 +1,6 @@
 import { styled } from 'shared/constants/theme';
 
-export default styled('input')<{
+export default styled.input<{
   useHeadlineFont?: boolean;
 }>`
   display: block;

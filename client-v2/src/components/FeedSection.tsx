@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 
 import SectionContent from './layout/SectionContent';
 import FeedContainer from './FeedsContainer';
@@ -11,8 +11,8 @@ interface Props {
   isClipboardOpen: boolean;
 }
 
-const FeedSectionContainer = styled('div')`
-  background-color: ${({ theme }) => theme.shared.base.colors.backgroundColor};
+const FeedSectionContainer = styled.div`
+  background-color: ${theme.shared.base.colors.backgroundColor};
 `;
 
 const FeedSectionContent = styled(SectionContent)`
@@ -20,10 +20,10 @@ const FeedSectionContent = styled(SectionContent)`
   padding-top: 10px;
 `;
 
-const FeedWrapper = styled('div')<{ isClipboardOpen: boolean }>`
+const FeedWrapper = styled.div<{ isClipboardOpen: boolean }>`
   width: 409px;
   ${media.large`width: 335px;`}
-  border-right: ${({ theme, isClipboardOpen }) =>
+  border-right: ${({ isClipboardOpen }) =>
     isClipboardOpen
       ? `solid 1px ${theme.shared.base.colors.borderColor}`
       : null};

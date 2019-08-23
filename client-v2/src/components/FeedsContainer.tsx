@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import SearchInput, {
   SearchInputState,
   initState
@@ -81,7 +81,7 @@ const RefreshButton = styled.button`
   appearance: none;
   border: none;
   background: transparent;
-  color: ${({ theme }) => theme.shared.base.colors.text};
+  color: ${theme.shared.base.colors.text};
   cursor: pointer;
   font-family: inherit;
   font-size: 13px;
@@ -89,19 +89,19 @@ const RefreshButton = styled.button`
   outline: none;
 
   &:hover {
-    color: ${({ theme }) => theme.shared.base.colors.buttonFocused};
+    color: ${theme.shared.base.colors.buttonFocused};
   }
 
   &:disabled {
-    color: ${({ theme }) => theme.shared.base.colors.textMuted};
+    color: ${theme.shared.base.colors.textMuted};
   }
 `;
 
-const FeedsContainerWrapper = styled('div')`
+const FeedsContainerWrapper = styled.div`
   height: 100%;
 `;
 
-const PaginationContainer = styled('div')`
+const PaginationContainer = styled.div`
   margin-left: auto;
 `;
 
@@ -109,8 +109,8 @@ const ResultsContainer = styled.div`
   margin-right: 10px;
 `;
 
-const ResultsHeadingContainer = styled('div')`
-  border-top: 1px solid ${({ theme }) => theme.shared.colors.greyVeryLight};
+const ResultsHeadingContainer = styled.div`
+  border-top: 1px solid ${theme.shared.colors.greyVeryLight};
   align-items: baseline;
   display: flex;
   margin-bottom: 10px;
@@ -121,17 +121,17 @@ const FixedContentContainer = styled.div`
   margin-bottom: 5px;
 `;
 
-const Sorters = styled('div')`
+const Sorters = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-const TopOptions = styled('div')`
+const TopOptions = styled.div`
   display: flex;
   flex-direction: row;
 `;
 
-const SortByContainer = styled('div')`
+const SortByContainer = styled.div`
   flex: 1 0 auto;
   display: flex;
   flex-direction: row;
@@ -142,14 +142,14 @@ const SortByContainer = styled('div')`
   }
 `;
 
-const PrefillNoticeContainer = styled('div')`
+const PrefillNoticeContainer = styled.div`
   margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 `;
 
-const PrefillNotice = styled('div')`
+const PrefillNotice = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;

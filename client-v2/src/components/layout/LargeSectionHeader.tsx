@@ -1,6 +1,6 @@
 import { styled, theme } from 'constants/theme';
 
-export default styled('div')`
+export default styled.div`
   height: 60px;
   padding: 10px;
   font-size: 28px;

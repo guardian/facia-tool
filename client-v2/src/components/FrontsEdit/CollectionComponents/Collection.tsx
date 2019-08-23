@@ -75,7 +75,7 @@ type CollectionProps = CollectionPropsBeforeState & {
   isHidden: boolean;
 };
 
-const PreviouslyCollectionContainer = styled('div')``;
+const PreviouslyCollectionContainer = styled.div``;
 
 const PreviouslyCollectionToggle = styled(CollectionMetaContainer)`
   align-items: center;
@@ -89,7 +89,7 @@ const PreviouslyGroupsWrapper = styled.div`
   opacity: 0.5;
 `;
 
-const PreviouslyCollectionInfo = styled('div')`
+const PreviouslyCollectionInfo = styled.div`
   background: ${theme.shared.colors.greyVeryLight};
   color: ${theme.shared.colors.blackDark};
   padding: 4px 6px;

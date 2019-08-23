@@ -5,7 +5,7 @@ import { media } from 'shared/util/mediaQueries';
 import { theme } from 'constants/theme';
 import { CollectionItemSizes } from 'shared/types/Collection';
 
-const Wrapper = styled('span')<{
+const Wrapper = styled.span<{
   displaySize?: CollectionItemSizes;
   showLargeHeadline?: boolean;
 }>`

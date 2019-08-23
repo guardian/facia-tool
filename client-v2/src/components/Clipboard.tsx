@@ -20,7 +20,7 @@ import { ArticleFragment as TArticleFragment } from 'shared/types/Collection';
 import ClipboardLevel from './clipboard/ClipboardLevel';
 import ArticleFragmentLevel from './clipboard/ArticleFragmentLevel';
 import CollectionItem from './FrontsEdit/CollectionComponents/CollectionItem';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import DragIntentContainer from 'shared/components/DragIntentContainer';
 import {
   setFocusState,
@@ -35,20 +35,20 @@ import ButtonRoundedWithLabel, {
 import { clearClipboardWithPersist } from 'actions/Clipboard';
 import { selectClipboardArticles } from 'selectors/clipboardSelectors';
 
-const ClipboardWrapper = styled('div').attrs({
+const ClipboardWrapper = styled.div.attrs({
   'data-testid': 'clipboard-wrapper'
 })<{
   'data-testid'?: string;
   clipboardHasOpenForms: boolean;
 }>`
-  width: ${({ theme, clipboardHasOpenForms }) =>
+  width: ${({ clipboardHasOpenForms }) =>
     clipboardHasOpenForms ? theme.front.minWidth : 220}px;
-  background: ${({ theme }) => theme.shared.collection.background};
-  border-top: 1px solid ${({ theme }) => theme.shared.colors.greyLightPinkish};
+  background: ${theme.shared.collection.background};
+  border-top: 1px solid ${theme.shared.colors.greyLightPinkish};
   overflow-y: scroll;
   &:focus {
-    border: 1px solid ${({ theme }) => theme.shared.base.colors.focusColor};
-    border-top: 1px solid ${({ theme }) => theme.shared.base.colors.focusColor};
+    border: 1px solid ${theme.shared.base.colors.focusColor};
+    border-top: 1px solid ${theme.shared.base.colors.focusColor};
     outline: none;
   }
 `;

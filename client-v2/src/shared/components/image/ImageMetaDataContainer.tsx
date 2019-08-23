@@ -1,9 +1,10 @@
 import React from 'react';
 import { styled } from '../../constants/theme';
+import { theme } from 'constants/theme';
 
-const MetadataContainer = styled('div')`
+const MetadataContainer = styled.div`
   font-size: 10px;
-  background-color: ${({ theme }) => theme.shared.colors.whiteLight};
+  background-color: ${theme.shared.colors.whiteLight};
 `;
 
 interface ImageMetadataContainerProps {

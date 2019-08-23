@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import SectionHeaderWithLogo from './layout/SectionHeaderWithLogo';
 import CurrentFrontsList from './CurrentFrontsList';
 import FrontsLogo from 'images/icons/fronts-logo.svg';
@@ -22,7 +22,7 @@ import { getEditionIssue } from 'actions/Editions';
 import { EditMode } from 'types/EditMode';
 import EditionFeedSectionHeader from './EditionFeedSectionHeader';
 
-const FeedbackButton = styled(Button)<{
+const FeedbackButton = styled(Button.withComponent('a'))<{
   href: string;
   target: string;
 }>`
@@ -31,36 +31,36 @@ const FeedbackButton = styled(Button)<{
   padding-right: 10px;
   line-height: 60px;
   height: 60px;
-`.withComponent('a');
+`;
 
-const SectionHeaderContent = styled('div')`
+const SectionHeaderContent = styled.div`
   position: relative;
   flex: 1;
 `;
 
-const LogoContainer = styled('div')`
-  background-color: ${({ theme }) => theme.shared.colors.greyMediumDark};
+const LogoContainer = styled.div`
+  background-color: ${theme.shared.colors.greyMediumDark};
   position: relative;
   display: flex;
   vertical-align: top;
   cursor: pointer;
   z-index: 2;
   &:hover {
-    background-color: ${({ theme }) => theme.shared.colors.greyMedium};
+    background-color: ${theme.shared.colors.greyMedium};
   }
 `;
 
-const LogoBackground = styled('div')<{ includeBorder?: boolean }>`
+const LogoBackground = styled.div<{ includeBorder?: boolean }>`
   display: flex;
   flex-direction: row;
   width: 60px;
   height: 60px;
   border-right: 1px solid
-    ${({ theme, includeBorder }) =>
+    ${({ includeBorder }) =>
       includeBorder ? theme.shared.colors.greyMedium : 'transparent'};
 `;
 
-const Logo = styled('img')`
+const Logo = styled.img`
   margin: auto;
   width: 40px;
   height: 35px;
@@ -74,7 +74,7 @@ const FrontCount = styled.div`
   width: 100%;
   top: -6px;
   text-align: center;
-  color: ${({ theme }) => theme.shared.colors.blackDark};
+  color: ${theme.shared.colors.blackDark};
 `;
 
 const CloseButtonOuter = styled.div`

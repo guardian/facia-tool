@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled, theme as styleTheme, css } from 'constants/theme';
+import { styled, css, theme } from 'constants/theme';
 
 import ButtonCircular from 'shared/components/input/ButtonCircular';
 import { MoreIcon, StarIcon } from 'shared/components/icons/Icons';
@@ -20,7 +20,7 @@ interface Props {
 }
 
 const ButtonAdd = styled(ButtonCircular)`
-  background-color: ${({ theme }) => theme.front.frontListButton};
+  background-color: ${theme.front.frontListButton};
   position: absolute;
   top: 8px;
   right: 5px;
@@ -32,17 +32,17 @@ const ButtonFavorite = styled(ButtonCircular)<{ isStarred: boolean }>`
   top: 8px;
   right: 35px;
   cursor: pointer;
-  background-color: ${({ theme }) => theme.shared.colors.blackLight};
+  background-color: ${theme.shared.colors.blackLight};
   :hover {
-    background-color: ${({ theme }) => theme.shared.colors.blackLight};
+    background-color: ${theme.shared.colors.blackLight};
   }
   svg .fill {
-    fill: ${({ theme }) => theme.shared.colors.blackLight};
+    fill: ${theme.shared.colors.blackLight};
   }
   /* Double && needed to override css specificity of ListItem with isActive set */
   &&:hover svg .fill,
   &&:hover svg .outline {
-    fill: ${({ theme }) => theme.shared.colors.greyMedium};
+    fill: ${theme.shared.colors.greyMedium};
   }
 
   ${({ isStarred }) =>
@@ -50,39 +50,39 @@ const ButtonFavorite = styled(ButtonCircular)<{ isStarred: boolean }>`
     css`
       svg .outline,
       svg .fill {
-        fill: ${({ theme }) => `${theme.shared.colors.orangeLight}`};
+        fill: ${`${theme.shared.colors.orangeLight}`};
       }
       &:hover svg .outline {
-        fill: ${({ theme }) => theme.shared.colors.greyMedium};
+        fill: ${theme.shared.colors.greyMedium};
       }
     `}
 `;
 
-const ListContainer = styled('ul')`
+const ListContainer = styled.ul`
   list-style: none;
   margin-top: 0;
   padding-left: 0;
 `;
 
-const ListItem = styled('li')<{ isActive?: boolean; isStarred?: boolean }>`
+const ListItem = styled.li<{ isActive?: boolean; isStarred?: boolean }>`
   position: relative;
   padding: 10px 5px;
   font-family: TS3TextSans;
   font-size: 16px;
   line-height: 20px;
-  border-bottom: ${({ theme }) => `solid 1px ${theme.front.frontListBorder}`};
+  border-bottom: ${`solid 1px ${theme.front.frontListBorder}`};
   ${({ isActive }) =>
     isActive &&
     css<{ isStarred?: boolean }>`
       cursor: pointer;
       :hover {
-        background-color: ${({ theme }) => theme.front.frontListButton};
+        background-color: ${theme.front.frontListButton};
       }
       :hover ${ButtonFavorite} {
-        background-color: ${({ theme }) => theme.front.frontListButton};
+        background-color: ${theme.front.frontListButton};
       }
       :hover svg .fill {
-        fill: ${({ theme, isStarred }) =>
+        fill: ${({ isStarred }) =>
           isStarred
             ? theme.shared.colors.orangeLight
             : theme.front.frontListButton};
@@ -90,14 +90,14 @@ const ListItem = styled('li')<{ isActive?: boolean; isStarred?: boolean }>`
     `};
 `;
 
-const ListLabel = styled('span')<{ isActive?: boolean }>`
+const ListLabel = styled.span<{ isActive?: boolean }>`
   max-width: calc(100% - 60px);
   display: inline-block;
   word-break: break-all;
   ${({ isActive }) =>
     !isActive &&
     css`
-      color: ${({ theme }) => theme.front.frontListLabel};
+      color: ${theme.front.frontListLabel};
     `};
 `;
 
@@ -144,8 +144,8 @@ const FrontList = ({
           >
             <StarIcon
               size="l"
-              fill={styleTheme.shared.colors.blackLight}
-              outline={styleTheme.shared.colors.greyMedium}
+              fill={theme.shared.colors.blackLight}
+              outline={theme.shared.colors.greyMedium}
             />
           </ButtonFavorite>
           {!front.isOpen && (

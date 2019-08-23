@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import { State } from 'types/State';
 import { selectFront } from 'selectors/frontsSelectors';
 import { FrontConfig } from 'types/FaciaApi';
@@ -28,7 +28,7 @@ interface ContainerProps {
 }
 
 const Container = styled(ContentContainer)<ContainerProps>`
-  border: ${({ isClosed, theme }) =>
+  border: ${({ isClosed }) =>
     isClosed ? `1px solid ${theme.shared.base.colors.borderColor}` : 'none'};
   border-top: none;
   display: flex;
@@ -43,7 +43,7 @@ const Container = styled(ContentContainer)<ContainerProps>`
 `;
 
 const ContainerBody = styled.div`
-  width: ${({ theme }) => theme.front.overviewMinWidth}px;
+  width: ${theme.front.overviewMinWidth}px;
   overflow-y: scroll;
   padding-bottom: ${({ theme }) => theme.front.paddingForAddFrontButton}px;
 `;

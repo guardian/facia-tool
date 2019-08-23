@@ -1,6 +1,6 @@
 import { styled } from 'constants/theme';
 
-const Col = styled(`div`)<{
+const Col = styled.div<{
   flex?: number;
   gutter?: number;
 }>`

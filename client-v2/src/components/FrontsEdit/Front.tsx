@@ -40,19 +40,19 @@ import { bindActionCreators } from 'redux';
 import WithDimensions from 'components/util/WithDimensions';
 import FrontCollectionsOverview from './FrontCollectionsOverview';
 
-const FrontContainer = styled('div')`
+const FrontContainer = styled.div`
   height: 100%;
   display: flex;
 `;
 
-const SectionContentMetaContainer = styled('div')`
+const SectionContentMetaContainer = styled.div`
   display: flex;
   flex-shrink: 0;
   justify-content: flex-end;
   margin-right: 5px;
 `;
 
-const OverviewToggleContainer = styled('div')`
+const OverviewToggleContainer = styled.div`
   font-size: 13px;
   font-weight: bold;
   padding-left: 10px;
@@ -62,7 +62,7 @@ const OverviewToggleContainer = styled('div')`
   padding-top: 13px;
 `;
 
-const OverviewHeading = styled('label')`
+const OverviewHeading = styled.label`
   margin-right: 5px;
   cursor: pointer;
 `;
@@ -89,7 +89,7 @@ const OverviewHeadingButton = styled(ButtonRoundedWithLabel)`
 
 // min-height required here to display scrollbar in Firefox:
 // https://stackoverflow.com/questions/28636832/firefox-overflow-y-not-working-with-nested-flexbox
-const BaseFrontContentContainer = styled('div')`
+const BaseFrontContentContainer = styled.div`
   height: 100%;
   min-height: 0;
   /* Min-width is set to allow content within this container to shrink completely */
@@ -105,7 +105,7 @@ const FrontDetailContainer = styled(BaseFrontContentContainer)`
   flex-shrink: 0;
 `;
 
-const FrontCollectionsContainer = styled('div')`
+const FrontCollectionsContainer = styled.div`
   position: relative;
   overflow-y: scroll;
   max-height: calc(100% - 43px);

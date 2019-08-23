@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import startCase from 'lodash/startCase';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import { Dispatch } from 'types/Store';
 import { fetchLastPressed } from 'actions/Fronts';
 import { updateCollection } from 'actions/Collections';
@@ -39,7 +39,7 @@ const FrontHeader = styled(SectionHeader)`
   border-right: 1px solid #767676;
 `;
 
-const FrontHeaderMeta = styled('div')`
+const FrontHeaderMeta = styled.div`
   display: flex;
   position: relative;
   margin-left: auto;
@@ -48,26 +48,26 @@ const FrontHeaderMeta = styled('div')`
   white-space: nowrap;
 `;
 
-const FrontsHeaderText = styled('span')`
+const FrontsHeaderText = styled.span`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: ${({ theme }) => theme.shared.colors.blackDark};
+  color: ${theme.shared.colors.blackDark};
 `;
 
-const FrontsHeaderInput = styled('input')`
+const FrontsHeaderInput = styled.input`
   font-size: 22px;
   font-family: GHGuardianHeadline;
   font-weight: bold;
   width: 20em;
 `;
 
-const StageSelectButtons = styled('div')`
-  color: ${({ theme }) => theme.shared.colors.blackDark};
+const StageSelectButtons = styled.div`
+  color: ${theme.shared.colors.blackDark};
   padding: 0px 15px;
 `;
 
-const SingleFrontContainer = styled('div')<{
+const SingleFrontContainer = styled.div<{
   isOverviewOpen: boolean;
 }>`
   /**
@@ -85,7 +85,7 @@ const SingleFrontContainer = styled('div')<{
   height: 100%;
 `;
 
-const FrontContainer = styled('div')`
+const FrontContainer = styled.div`
   height: 100%;
   transform: translate3d(0, 0, 0);
 `;
@@ -105,7 +105,7 @@ const FrontHeaderButton = styled(Button)`
   }
 `;
 
-const PreviewButtonText = styled('span')`
+const PreviewButtonText = styled.span`
   padding: 0 5px;
   text-decoration: none;
 `;

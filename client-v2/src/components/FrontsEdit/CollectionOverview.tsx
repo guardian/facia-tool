@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import { events } from 'services/GA';
 
 import { State } from 'types/State';
@@ -37,8 +37,8 @@ type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
 const Container = styled.div<{ isSelected: boolean }>`
   align-items: center;
   appearance: none;
-  background-color: ${({ theme }) => theme.shared.base.colors.backgroundColor};
-  border: ${({ theme }) => `solid 1px ${theme.shared.base.colors.borderColor}`};
+  background-color: ${theme.shared.base.colors.backgroundColor};
+  border: solid 1px ${theme.shared.base.colors.borderColor};
   border-radius: 1.25em;
   color: inherit;
   cursor: pointer;
@@ -57,7 +57,7 @@ const Container = styled.div<{ isSelected: boolean }>`
     `background-color: ${props.theme.shared.colors.whiteDark}`}
 
   &:hover {
-    background-color: ${({ theme }) => theme.shared.colors.whiteDark};
+    background-color: ${theme.shared.colors.whiteDark};
   }
 
   &:focus {
@@ -78,7 +78,7 @@ const TextContainerRight = styled.div`
 `;
 
 const Name = styled.span`
-  color: ${({ theme }) => theme.shared.base.colors.text};
+  color: ${theme.shared.base.colors.text};
   font-weight: bold;
   padding-right: 0.25em;
 `;
@@ -92,7 +92,7 @@ const StatusWarning = styled(ButtonDefault)`
   :not(:first-child) {
     margin-left: 5px;
   }
-  color: ${({ theme }) => theme.shared.button.color};
+  color: ${theme.shared.button.color};
   height: 20px;
   width: 20px;
   border-radius: 20px;

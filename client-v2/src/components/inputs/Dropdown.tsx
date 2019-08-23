@@ -12,7 +12,7 @@ interface DropdownProps {
   deselectText?: string;
 }
 
-const Select = styled('select')`
+const Select = styled.select`
   padding: 10px;
   margin-left: 5px;
   margin-top: 10px;

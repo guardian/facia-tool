@@ -120,7 +120,7 @@ const createResizeableTextInput = (
               id={label}
               {...input}
               {...rest}
-              as={type}
+              type={type}
             />
           </InputComponentContainer>
         </InputContainer>

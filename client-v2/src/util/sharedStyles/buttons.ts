@@ -1,6 +1,6 @@
 import { styled } from 'constants/theme';
 
-export const SmallRoundButton = styled('button')`
+export const SmallRoundButton = styled.button`
   appearance: none;
   display: inline-block;
   vertical-align: middle;

@@ -3,7 +3,7 @@ import { styled } from 'shared/constants/theme';
 import ToolTip from './HoverActionToolTip';
 import { CollectionItemSizes } from 'shared/types/Collection';
 
-const HoverActionsWrapper = styled('div')<{
+const HoverActionsWrapper = styled.div<{
   size?: string; // Article Component size
 }>`
   bottom: 0;
@@ -13,7 +13,7 @@ const HoverActionsWrapper = styled('div')<{
   margin: 0 -2px;
 `;
 
-const ToolTipWrapper = styled('div')<{
+const ToolTipWrapper = styled.div<{
   size?: string; // Article Component size
   toolTipPosition: string;
   toolTipAlign: string;

@@ -6,7 +6,7 @@ interface Props {
   staleFronts: { [id: string]: boolean };
 }
 
-const AlertContainer = styled('div')`
+const AlertContainer = styled.div`
   background-color: ${error.primary};
   font-weight: normal;
   padding: 5px;

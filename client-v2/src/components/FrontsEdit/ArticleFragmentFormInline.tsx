@@ -9,7 +9,7 @@ import {
   WrappedFieldArrayProps,
   FieldArray
 } from 'redux-form';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import Button from 'shared/components/input/ButtonDefault';
 import ContentContainer from 'shared/components/layout/ContentContainer';
 import {
@@ -84,18 +84,18 @@ const FormContainer = styled(ContentContainer.withComponent('form'))`
   display: flex;
   flex-direction: column;
   flex: 1;
-  background-color: ${({ theme }) => theme.base.colors.formBackground};
+  background-color: ${theme.base.colors.formBackground};
 `;
 
-const FormContent = styled('div')`
+const FormContent = styled.div`
   flex: 1;
 `;
 
-const RowContainer = styled('div')`
+const RowContainer = styled.div`
   overflow: hidden;
 `;
 
-const ButtonContainer = styled('div')`
+const ButtonContainer = styled.div`
   margin-left: auto;
   margin-right: -10px;
   margin-bottom: -10px;
@@ -106,9 +106,9 @@ const SlideshowRow = styled(Row)`
   margin-bottom: 5px;
 `;
 
-const SlideshowLabel = styled('div')`
+const SlideshowLabel = styled.div`
   font-size: 12px;
-  color: ${({ theme }) => theme.shared.colors.greyMedium};
+  color: ${theme.shared.colors.greyMedium};
   margin-bottom: 12px;
 `;
 
@@ -129,7 +129,7 @@ const FieldsContainerWrap = styled(Row)`
   flex-wrap: wrap;
   padding-bottom: 4px;
   border-bottom: 1px solid
-    ${({ theme }) => theme.shared.base.colors.borderColor};
+    ${theme.shared.base.colors.borderColor};
 `;
 
 const SlideshowCol = styled(Col)`
@@ -190,10 +190,10 @@ const CardReplacementWarning = styled.div`
 
 const KickerSuggestionButton = styled(InputButton)`
   background: transparent;
-  border: 1px solid ${({ theme }) => theme.shared.colors.greyMediumLight};
-  color: ${({ theme }) => theme.shared.colors.blackDark};
+  border: 1px solid ${theme.shared.colors.greyMediumLight};
+  color: ${theme.shared.colors.blackDark};
   &:hover:enabled {
-    background-color: ${({ theme }) => theme.shared.colors.greyLight};
+    background-color: ${theme.shared.colors.greyLight};
   }
 `;
 

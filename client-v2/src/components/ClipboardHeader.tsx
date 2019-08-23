@@ -7,7 +7,7 @@ import {
   editorCloseClipboard
 } from 'bundles/frontsUIBundle';
 import { State } from 'types/State';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import DragIntentContainer from 'shared/components/DragIntentContainer';
 
@@ -25,17 +25,17 @@ const StyledDragIntentContainer = styled(DragIntentContainer)`
 const Header = styled.div<{
   isOpen: boolean;
 }>`
-  background-color: ${({ theme }) => theme.shared.collection.background};
+  background-color: ${theme.shared.collection.background};
   align-items: center;
   justify-content: space-between;
   border-right: none;
-  border: ${({ theme }) => `1px solid ${theme.shared.base.colors.borderColor}`};
+  border: ${`1px solid ${theme.shared.base.colors.borderColor}`};
   border-right: none;
   display: flex;
   padding: 10px;
   height: 52px;
   margin-left: 8px;
-  box-shadow: ${({ theme, isOpen }) =>
+  box-shadow: ${({ isOpen }) =>
     `2px 0 0 -1px ${isOpen ? theme.shared.collection.background : 'none'}`};
 `;
 

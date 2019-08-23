@@ -2,7 +2,7 @@ import React from 'react';
 import { styled } from 'constants/theme';
 import { theme } from 'constants/theme';
 
-export const DefaultDropContainer = styled('div')<{
+export const DefaultDropContainer = styled.div<{
   disabled: boolean;
   doubleHeight?: boolean;
   isActive?: boolean;
@@ -13,7 +13,7 @@ export const DefaultDropContainer = styled('div')<{
   ${({ isActive }) => `z-index: ${isActive ? 1 : 1}`}
 `;
 
-export const DefaultDropIndicator = styled(`div`)<{ isActive?: boolean }>`
+export const DefaultDropIndicator = styled.div<{ isActive?: boolean }>`
   position: relative;
   display: flex;
   flex-direction: row;
@@ -27,7 +27,7 @@ export const DefaultDropIndicator = styled(`div`)<{ isActive?: boolean }>`
   `}
 `;
 
-export const DropIndicatorBar = styled('div')<{
+export const DropIndicatorBar = styled.div<{
   color?: string;
   isActive?: boolean;
 }>`
@@ -41,7 +41,7 @@ export const DropIndicatorBar = styled('div')<{
     } !important`}
 `;
 
-export const DropIndicatorMessage = styled(`div`)<{
+export const DropIndicatorMessage = styled.div<{
   color?: string;
   isActive?: boolean;
 }>`

@@ -34,7 +34,7 @@ const getArticleNotifications = (
   return notifications;
 };
 
-const CollectionWrapper = styled('div')`
+const CollectionWrapper = styled.div`
   & + & {
     margin-top: 10px;
   }

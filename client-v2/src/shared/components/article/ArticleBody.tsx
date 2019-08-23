@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled, theme as globalTheme } from 'constants/theme';
+import { styled, theme as globalTheme, theme } from 'constants/theme';
 import { theme as styleTheme } from 'constants/theme';
 import startCase from 'lodash/startCase';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
@@ -40,7 +40,7 @@ const ThumbnailPlaceholder = styled(BasePlaceholder)`
 `;
 
 const NotLiveContainer = styled(CollectionItemMetaHeading)`
-  color: ${({ theme }) => theme.shared.base.colors.highlightColor};
+  color: ${theme.shared.base.colors.highlightColor};
 `;
 
 const KickerHeading = styled(CollectionItemHeading)<{ pillarId?: string }>`
@@ -54,7 +54,7 @@ const KickerHeading = styled(CollectionItemHeading)<{ pillarId?: string }>`
   color: ${({ pillarId }) => getPillarColor(pillarId, true)};
 `;
 
-const ArticleBodyByline = styled('div')`
+const ArticleBodyByline = styled.div`
   font-family: TS3TextSans;
   font-weight: bold;
   font-size: ${styleTheme.shared.collectionItem.fontSizeDefault};
@@ -63,10 +63,10 @@ const ArticleBodyByline = styled('div')`
 `;
 
 const FirstPublicationDate = styled(CollectionItemMetaContent)`
-  color: ${({ theme }) => theme.shared.colors.green};
+  color: ${theme.shared.colors.green};
 `;
 
-const PageViewDataWrapper = styled('div')`
+const PageViewDataWrapper = styled.div`
   width: 45px;
   display: flex;
   flex-direction: column;
@@ -77,11 +77,11 @@ const PageViewDataWrapper = styled('div')`
   padding-bottom: 3px;
 `;
 
-const Tone = styled('span')`
+const Tone = styled.span`
   font-weight: normal;
 `;
 
-const ImageAndGraphWrapper = styled('div')<{ size: CollectionItemSizes }>`
+const ImageAndGraphWrapper = styled.div<{ size: CollectionItemSizes }>`
   display: flex;
   flex-direction: row;
   ${props =>

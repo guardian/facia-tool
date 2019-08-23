@@ -3,7 +3,7 @@ import { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
 import DropDisabler from './util/DropDisabler';
 
-import { theme as styleTheme, styled } from 'constants/theme';
+import { theme as styleTheme, styled, theme } from 'constants/theme';
 import SectionHeaderWithLogo from './layout/SectionHeaderWithLogo';
 import GHGuardianHeadlineBoldTtf from '../fonts/headline/GHGuardianHeadline-Bold.ttf';
 import GHGuardianHeadlineBoldWoff from '../fonts/headline/GHGuardianHeadline-Bold.woff';
@@ -120,15 +120,14 @@ const AppFonts = createGlobalStyle`
   }
 `;
 
-const AppContainer = styled('div')`
-  background-color: ${({ theme }) =>
-    theme.shared.base.colors.backgroundColorLight};
-  color: ${({ theme }) => theme.shared.base.colors.textDark};
+const AppContainer = styled.div`
+  background-color: ${theme.shared.base.colors.backgroundColorLight};
+  color: ${theme.shared.base.colors.textDark};
   height: 100%;
   width: 100%;
 `;
 
-const BackgroundHeader = styled('div')`
+const BackgroundHeader = styled.div`
   position: absolute;
   top: 0;
   left: 0;

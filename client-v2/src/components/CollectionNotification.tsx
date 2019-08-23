@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 
 import { AlsoOnDetail } from 'types/Collection';
 import ButtonRoundedWithLabel from 'shared/components/input/ButtonRoundedWithLabel';
@@ -13,9 +13,9 @@ interface ComponentState {
   showFrontDetails: boolean;
 }
 
-const WarningText = styled('span')`
+const WarningText = styled.span`
   font-weight: bold;
-  color: ${({ theme }) => theme.shared.colors.orangeDark};
+  color: ${theme.shared.colors.orangeDark};
 `;
 
 const ToggleDetailsButton = styled(ButtonRoundedWithLabel)`
@@ -23,7 +23,7 @@ const ToggleDetailsButton = styled(ButtonRoundedWithLabel)`
   z-index: 5;
 `;
 
-const AlsoOnLinksWrapper = styled('div')`
+const AlsoOnLinksWrapper = styled.div`
   position: relative;
   z-index: 5;
 `;

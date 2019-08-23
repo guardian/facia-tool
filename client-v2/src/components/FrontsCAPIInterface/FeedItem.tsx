@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'types/Store';
-import { styled, theme as styleTheme } from 'constants/theme';
+import { styled, theme as styleTheme, theme } from 'constants/theme';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
 import startCase from 'lodash/startCase';
 
@@ -34,11 +34,11 @@ import { hasMainVideo } from 'shared/util/externalArticle';
 import { VideoIcon } from 'shared/components/icons/Icons';
 import CircularIconContainer from 'shared/components/icons/CircularIconContainer';
 
-const Container = styled('div')`
+const Container = styled.div`
   display: flex;
   position: relative;
-  border-top: ${({ theme }) => `1px solid ${theme.capiInterface.borderLight}`};
-  color: ${({ theme }) => theme.capiInterface.feedItemText};
+  border-top: ${`1px solid ${theme.capiInterface.borderLight}`};
+  color: ${theme.capiInterface.feedItemText};
   display: flex;
   font-weight: normal;
   padding-bottom: 20px;
@@ -55,7 +55,7 @@ const Container = styled('div')`
   }
 `;
 
-const Title = styled(`h2`)`
+const Title = styled.h2`
   margin: 2px 0 0;
   vertical-align: top;
   font-family: TS3TextSans;
@@ -71,12 +71,12 @@ const FeedItemContainer = styled.a<{ blur: boolean }>`
   width: 100%;
   height: 100%;
   :visited ${Title} {
-    color: ${({ theme }) => theme.capiInterface.textVisited};
+    color: ${theme.capiInterface.textVisited};
   }
   ${({ blur }) => blur && 'filter: blur(10px);'}
 `;
 
-const MetaContainer = styled('div')`
+const MetaContainer = styled.div`
   position: relative;
   width: 80px;
   ${media.large`width: 60px;`};
@@ -90,7 +90,7 @@ const ArticleThumbnail = styled(ThumbnailSmall)`
   margin-left: auto;
 `;
 
-const FirstPublished = styled('div')`
+const FirstPublished = styled.div`
   font-size: 11px;
   margin: 2px 0;
 `;
@@ -99,24 +99,24 @@ const ScheduledPublication = styled(FirstPublished)`
   color: ${notLiveColour};
 `;
 
-const TagInfo = styled('div')`
+const TagInfo = styled.div`
   padding-top: 2px;
   font-size: 12px;
   font-family: TS3TextSans;
   font-weight: bold;
 `;
 
-const Tone = styled('span')`
+const Tone = styled.span`
   font-weight: normal;
 `;
 
-const Body = styled('div')`
+const Body = styled.div`
   padding-left: 8px;
 `;
 
 // The visual representation of an article as it is being dragged.
 // This needs to be rendered by the DOM before it can be used by the Drag&Drop API, so we pushed it off to the side.
-const DraggingArticleContainer = styled('div')`
+const DraggingArticleContainer = styled.div`
   position: absolute;
   transform: translateX(-9999px);
 `;

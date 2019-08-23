@@ -26,7 +26,7 @@ import { EditMode } from 'types/EditMode';
 import { selectEditMode } from '../../../selectors/pathSelectors';
 import CircularIconContainer from '../icons/CircularIconContainer';
 
-const ImageContainer = styled('div')<{
+const ImageContainer = styled.div<{
   small?: boolean;
 }>`
   display: flex;
@@ -118,7 +118,7 @@ const ButtonDelete = styled(ButtonDefault)<{
   border-radius: 24px;
 `;
 
-const IconDelete = styled('div')<{
+const IconDelete = styled.div<{
   small?: boolean;
 }>`
   display: block;

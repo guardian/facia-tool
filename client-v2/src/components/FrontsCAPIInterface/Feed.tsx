@@ -16,7 +16,7 @@ interface ErrorDisplayProps {
 const ErrorDisplay = ({ error, children }: ErrorDisplayProps) =>
   error ? <div>{error}</div> : <>{children}</>;
 
-const NoResults = styled('div')`
+const NoResults = styled.div`
   margin: 4px;
 `;
 

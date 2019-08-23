@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import { css } from 'styled-components';
 
 import Button from 'shared/components/input/ButtonDefault';
@@ -11,16 +11,15 @@ const ButtonWithShadow = styled(Button)<{ active?: boolean }>`
   height: 50px;
   padding: 5px;
   border-radius: 100%;
-  background-color: ${({ theme }) => theme.shared.colors.blackDark};
+  background-color: ${theme.shared.colors.blackDark};
   transition: transform 0.15s, background-color 0.15s;
   ${({ active }) =>
     active &&
     css`
       transform: rotate(45deg);
-      background-color: ${({ theme }) =>
-        theme.shared.button.backgroundColorHighlight};
+      background-color: ${theme.shared.button.backgroundColorHighlight};
       &:hover {
-        background-color: ${({ theme }) => theme.shared.colors.orangeDark};
+        background-color: ${theme.shared.colors.orangeDark};
       }
     `};
 `;
