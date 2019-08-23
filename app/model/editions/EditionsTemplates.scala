@@ -76,6 +76,21 @@ case class WeekDays(days: List[WeekDay]) extends Periodicity {
     )
 }
 
+sealed abstract class PathType extends EnumEntry with Uncapitalised {
+  def toPathSegment: String = {
+    this match {
+      case PathType.Search => "search"
+      case PathType.PrintSent => "content/print-sent"
+    }
+  }
+}
+
+object PathType extends PlayEnum[PathType] {
+  case object Search extends PathType
+  case object PrintSent extends PathType
+  override def values = findValues
+}
+
 case class CollectionTemplate(
    name: String,
    prefill: Option[CapiPrefillQuery],
@@ -119,6 +134,7 @@ case class EditionsFrontSkeleton(
     metadataParam
   }
 }
+
 
 case class EditionsCollectionSkeleton(
     name: String,
