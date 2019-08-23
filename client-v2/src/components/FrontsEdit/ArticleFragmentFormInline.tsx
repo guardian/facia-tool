@@ -128,8 +128,7 @@ const CollectionEditedError = styled.div`
 const FieldsContainerWrap = styled(Row)`
   flex-wrap: wrap;
   padding-bottom: 4px;
-  border-bottom: 1px solid
-    ${theme.shared.base.colors.borderColor};
+  border-bottom: 1px solid ${theme.shared.base.colors.borderColor};
 `;
 
 const SlideshowCol = styled(Col)`
