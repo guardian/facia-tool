@@ -26,7 +26,9 @@ import {
   selectEditorFavouriteFrontIds,
   selectEditorFavouriteFrontIdsByPriority,
   editorSelectArticleFragment,
-  selectOpenArticleFragmentForms
+  selectOpenArticleFragmentForms,
+  defaultState,
+  editorCloseFormsForCollection
 } from '../frontsUIBundle';
 import initialState from 'fixtures/initialState';
 import { Action } from 'types/Action';
@@ -134,108 +136,108 @@ describe('frontsUIBundle', () => {
         ).toEqual(['1', '2']);
       });
     });
-  });
-  describe('selectEditorFavouriteFrontIdsByPriority', () => {
-    it('should handle empty priorities', () => {
-      expect(
-        selectEditorFavouriteFrontIdsByPriority(initialState, 'editorial')
-      ).toEqual([]);
+    describe('selectEditorFavouriteFrontIdsByPriority', () => {
+      it('should handle empty priorities', () => {
+        expect(
+          selectEditorFavouriteFrontIdsByPriority(initialState, 'editorial')
+        ).toEqual([]);
+      });
+      it('should select priorities', () => {
+        const stateWithFronts = {
+          editor: {
+            ...initialState.editor,
+            favouriteFrontIdsByPriority: { commercial: ['1', '2'] }
+          }
+        } as any;
+        expect(
+          selectEditorFavouriteFrontIdsByPriority(stateWithFronts, 'commercial')
+        ).toEqual(['1', '2']);
+      });
     });
-    it('should select priorities', () => {
-      const stateWithFronts = {
+    describe('createSelectFrontIdWithOpenAndStarredStatesByPriority', () => {
+      const stateWithEditorFronts = {
+        ...initialState,
         editor: {
           ...initialState.editor,
-          favouriteFrontIdsByPriority: { commercial: ['1', '2'] }
+          frontIdsByPriority: {
+            commercial: ['sc-johnson-partner-zone', 'a-shot-of-sustainability']
+          },
+          favouriteFrontIdsByPriority: {
+            commercial: [
+              'sc-johnson-partner-zone',
+              'un-global-compact-partner-zone'
+            ]
+          }
         }
       } as any;
-      expect(
-        selectEditorFavouriteFrontIdsByPriority(stateWithFronts, 'commercial')
-      ).toEqual(['1', '2']);
-    });
-  });
-  describe('createSelectFrontIdWithOpenAndStarredStatesByPriority', () => {
-    const stateWithEditorFronts = {
-      ...initialState,
-      editor: {
-        ...initialState.editor,
-        frontIdsByPriority: {
-          commercial: ['sc-johnson-partner-zone', 'a-shot-of-sustainability']
-        },
-        favouriteFrontIdsByPriority: {
-          commercial: [
-            'sc-johnson-partner-zone',
-            'un-global-compact-partner-zone'
-          ]
-        }
-      }
-    } as any;
-    const selectFrontIdWithOpenAndStarredStatesByPriority = createSelectFrontIdWithOpenAndStarredStatesByPriority();
-    it('should select all fronts by priority', () => {
-      expect(
-        selectFrontIdWithOpenAndStarredStatesByPriority(
-          initialState,
-          'commercial'
-        )
-      ).toHaveLength(4);
-    });
+      const selectFrontIdWithOpenAndStarredStatesByPriority = createSelectFrontIdWithOpenAndStarredStatesByPriority();
+      it('should select all fronts by priority', () => {
+        expect(
+          selectFrontIdWithOpenAndStarredStatesByPriority(
+            initialState,
+            'commercial'
+          )
+        ).toHaveLength(4);
+      });
 
-    it('should add correct Open State meta data', () => {
-      expect(
-        selectFrontIdWithOpenAndStarredStatesByPriority(
-          stateWithEditorFronts,
-          'commercial'
-        )
-      ).toEqual([
-        {
-          id: 'a-shot-of-sustainability',
-          displayName: undefined,
-          index: 1,
-          isOpen: true,
-          isStarred: false
-        },
-        {
-          id: 'sc-johnson-partner-zone',
-          displayName: undefined,
-          index: 0,
-          isOpen: true,
-          isStarred: true
-        },
-        {
-          id: 'sustainable-business/fairtrade-partner-zone',
-          isOpen: false,
-          isStarred: false,
-          displayName: undefined,
-          index: 2
-        },
-        {
-          id: 'un-global-compact-partner-zone',
-          isOpen: false,
-          isStarred: true,
-          displayName: undefined,
-          index: 3
-        }
-      ]);
-    });
-    it('should sort fronts by id and name', () => {
-      expect(
-        selectFrontIdWithOpenAndStarredStatesByPriority(
-          stateWithEditorFronts,
-          'commercial',
-          'id'
-        ).map(_ => _.id)
-      ).toEqual([
-        'a-shot-of-sustainability',
-        'sc-johnson-partner-zone',
-        'sustainable-business/fairtrade-partner-zone',
-        'un-global-compact-partner-zone'
-      ]);
-      expect(
-        selectFrontIdWithOpenAndStarredStatesByPriority(
-          stateWithEditorFronts,
-          'commercial',
-          'index'
-        ).map(_ => _.index)
-      ).toEqual([0, 1, 2, 3]);
+      it('should add correct Open State meta data', () => {
+        expect(
+          selectFrontIdWithOpenAndStarredStatesByPriority(
+            stateWithEditorFronts,
+            'commercial'
+          )
+        ).toEqual([
+          {
+            id: 'a-shot-of-sustainability',
+            displayName: undefined,
+            index: 1,
+            isOpen: true,
+            isStarred: false
+          },
+          {
+            id: 'sc-johnson-partner-zone',
+            displayName: undefined,
+            index: 0,
+            isOpen: true,
+            isStarred: true
+          },
+          {
+            id: 'sustainable-business/fairtrade-partner-zone',
+            isOpen: false,
+            isStarred: false,
+            displayName: undefined,
+            index: 2
+          },
+          {
+            id: 'un-global-compact-partner-zone',
+            isOpen: false,
+            isStarred: true,
+            displayName: undefined,
+            index: 3
+          }
+        ]);
+      });
+      it('should sort fronts by id and name', () => {
+        expect(
+          selectFrontIdWithOpenAndStarredStatesByPriority(
+            stateWithEditorFronts,
+            'commercial',
+            'id'
+          ).map(_ => _.id)
+        ).toEqual([
+          'a-shot-of-sustainability',
+          'sc-johnson-partner-zone',
+          'sustainable-business/fairtrade-partner-zone',
+          'un-global-compact-partner-zone'
+        ]);
+        expect(
+          selectFrontIdWithOpenAndStarredStatesByPriority(
+            stateWithEditorFronts,
+            'commercial',
+            'index'
+          ).map(_ => _.index)
+        ).toEqual([0, 1, 2, 3]);
+      });
     });
   });
 
@@ -334,6 +336,56 @@ describe('frontsUIBundle', () => {
         removeGroupArticleFragment('collectionId', 'articleFragmentId')
       );
       expect(state.editor.selectedArticleFragments.frontId).toEqual([]);
+    });
+    describe('Editor close forms for collection', () => {
+      it('should do nothing when there is no form for the front', () => {
+        const state = innerReducer(
+          defaultState,
+          editorCloseFormsForCollection('collectionId', 'frontId'),
+          initialSharedState
+        );
+        expect(state.selectedArticleFragments).toEqual(
+          defaultState.selectedArticleFragments
+        );
+      });
+      it('should clear form data for the given collection id', () => {
+        const initial = {
+          ...defaultState,
+          selectedArticleFragments: {
+            frontId: [
+              {
+                id: 'articleId1',
+                isSupporting: true,
+                collectionId: 'collectionId'
+              },
+              {
+                id: 'articleId2',
+                isSupporting: true,
+                collectionId: 'collectionId2'
+              },
+              {
+                id: 'articleId3',
+                isSupporting: true,
+                collectionId: 'collectionId'
+              }
+            ]
+          }
+        };
+        const state = innerReducer(
+          initial,
+          editorCloseFormsForCollection('collectionId', 'frontId'),
+          initialSharedState
+        );
+        expect(state.selectedArticleFragments).toEqual({
+          frontId: [
+            {
+              id: 'articleId2',
+              isSupporting: true,
+              collectionId: 'collectionId2'
+            }
+          ]
+        });
+      });
     });
     describe('Clearing article selection in response to persistence events', () => {
       const stateWithSelectedArticleFragments = {

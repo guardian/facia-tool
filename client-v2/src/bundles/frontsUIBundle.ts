@@ -64,6 +64,7 @@ export const EDITOR_CLOSE_OVERVIEW = 'EDITOR_CLOSE_OVERVIEW';
 export const EDITOR_OPEN_ALL_OVERVIEWS = 'EDITOR_OPEN_ALL_OVERVIEWS';
 export const EDITOR_CLOSE_ALL_OVERVIEWS = 'EDITOR_CLOSE_ALL_OVERVIEWS';
 export const CHANGED_BROWSING_STAGE = 'CHANGED_BROWSING_STAGE';
+export const EDITOR_CLOSE_FORMS_FOR_COLLECTION = 'EDITOR_CLOSE_FORMS_FOR_COLLECTION' as const;
 
 const editorOpenCollections = (
   collectionIds: string | string[]
@@ -207,6 +208,18 @@ const editorClearArticleFragmentSelection = (
   type: EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION,
   payload: { articleFragmentId }
 });
+
+const editorCloseFormsForCollection = (
+  collectionId: string,
+  frontId: string
+) => ({
+  type: EDITOR_CLOSE_FORMS_FOR_COLLECTION,
+  payload: { collectionId, frontId }
+});
+
+type EditorCloseFormsForCollection = ReturnType<
+  typeof editorCloseFormsForCollection
+>;
 
 const editorOpenClipboard = (): EditorOpenClipboard => ({
   type: EDITOR_OPEN_CLIPBOARD
@@ -615,6 +628,21 @@ const reducer = (
         action.payload.articleFragmentId
       );
     }
+    case EDITOR_CLOSE_FORMS_FOR_COLLECTION: {
+      const maybeOpenFormsForFront =
+        state.selectedArticleFragments[action.payload.frontId];
+
+      if (!maybeOpenFormsForFront) {
+        return state;
+      }
+      return maybeOpenFormsForFront.reduce(
+        (acc, formData) =>
+          formData.collectionId === action.payload.collectionId
+            ? clearArticleFragmentSelection(acc, formData.id)
+            : acc,
+        state
+      );
+    }
     case REMOVE_SUPPORTING_ARTICLE_FRAGMENT:
     case REMOVE_GROUP_ARTICLE_FRAGMENT:
     case 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT': {
@@ -702,7 +730,10 @@ export {
   createSelectCollectionIdsWithOpenForms,
   createSelectDoesCollectionHaveOpenForms,
   OpenArticleFragmentData,
-  changedBrowsingStage
+  changedBrowsingStage,
+  EditorCloseFormsForCollection,
+  editorCloseFormsForCollection,
+  defaultState
 };
 
 export default reducer;
