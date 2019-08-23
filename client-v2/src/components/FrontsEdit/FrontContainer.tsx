@@ -77,7 +77,7 @@ const SingleFrontContainer = styled.div<{
    * of the front container proportionally to keep the collection container the
    * same width.
    */
-  min-width: ${({ isOverviewOpen, theme }) =>
+  min-width: ${({ isOverviewOpen }) =>
     isOverviewOpen
       ? theme.front.minWidth + theme.front.overviewMinWidth + 10
       : theme.front.minWidth}px;
