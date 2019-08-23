@@ -41,7 +41,8 @@ import {
   EDITOR_CLOSE_OVERVIEW,
   EDITOR_OPEN_ALL_OVERVIEWS,
   EDITOR_CLOSE_ALL_OVERVIEWS,
-  CHANGED_BROWSING_STAGE
+  CHANGED_BROWSING_STAGE,
+  EditorCloseFormsForCollection
 } from 'bundles/frontsUIBundle';
 import { setFocusState, resetFocusState } from '../bundles/focusBundle';
 import { ActionSetFeatureValue } from 'shared/redux/modules/featureSwitches';
@@ -363,7 +364,8 @@ type Action =
   | EditionsFrontHiddenStateUpdate
   | IsPrefillMode
   | SetHidden
-  | ChangedBrowsingStage;
+  | ChangedBrowsingStage
+  | EditorCloseFormsForCollection;
 
 export {
   ActionError,

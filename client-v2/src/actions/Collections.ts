@@ -57,7 +57,8 @@ import difference from 'lodash/difference';
 import { selectArticlesInCollections } from 'shared/selectors/collection';
 import {
   editorOpenCollections,
-  editorCloseCollections
+  editorCloseCollections,
+  editorCloseFormsForCollection
 } from 'bundles/frontsUIBundle';
 import flatten from 'lodash/flatten';
 import { createSelectCollectionsInOpenFronts } from 'selectors/collectionSelectors';
@@ -424,7 +425,8 @@ function publishCollection(
               collectionId,
               draftVisibleArticles,
               frontStages.live
-            )
+            ),
+            editorCloseFormsForCollection(collectionId, frontId)
           ])
         );
 
