@@ -13,10 +13,11 @@ class ViewsController(val acl: Acl, assetsManager: AssetsManager, isDev: Boolean
                       crypto: Encryption, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
 
   private def shouldRedirectToV2(request: UserRequest[AnyContent]): Boolean = {
-    val shouldRedirectByQs: Boolean = request.queryString.getOrElse("redirect", Seq("true")).contains("true")
+    val shouldRedirectByQs: Boolean = (request.queryString.getOrElse("redirect", Seq("true")).contains("true")
+      && !request.queryString.getOrElse("layout", Seq("")).exists(_.contains("breaking-news")))
 
     // TODO set correct date
-    val redirectDay = DateTime.parse("2019-12-25")
+    val redirectDay = DateTime.parse("2019-08-27T09:30")
     val shouldRedirectByDate: Boolean = DateTime.now().isAfter(redirectDay)
 
     shouldRedirectByQs && (isDev || shouldRedirectByDate)
@@ -34,7 +35,7 @@ class ViewsController(val acl: Acl, assetsManager: AssetsManager, isDev: Boolean
   }
 
   def collectionEditor(priority: String) = getCollectionPermissionFilterByPriority(priority, acl)(ec) { request =>
-    if (shouldRedirectToV2(request)) {
+    if (priority != "breaking-news" && shouldRedirectToV2(request)) {
       PermanentRedirect(s"/v2/$priority")
     } else {
       val identity = request.user
