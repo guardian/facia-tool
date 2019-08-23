@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 // TODO: get apiKey from context (or speak directly to FrontsAPI)
 
 interface ScrollContainerProps {
@@ -7,7 +7,7 @@ interface ScrollContainerProps {
   children: React.ReactNode;
 }
 
-const ScrollOuter = styled(`div`)`
+const ScrollOuter = styled.div`
   position: relative;
   display: flex;
   height: 100%;
@@ -15,15 +15,15 @@ const ScrollOuter = styled(`div`)`
   flex-direction: column;
 `;
 
-const ScrollTitle = styled(`div`)`
+const ScrollTitle = styled.div`
   flex-grow: 0;
 `;
 
-const ScrollInner = styled(`div`)`
+const ScrollInner = styled.div`
   overflow-y: scroll;
   display: block;
   height: 100%;
-  border-top: 1px solid shared.colors.greyLightPinkish;
+  border-top: 1px solid ${theme.shared.colors.greyLightPinkish};
 `;
 
 const ScrollContainer = ({ fixed, children }: ScrollContainerProps) => (

@@ -7,7 +7,7 @@ interface Props {
   error: ActionError;
 }
 
-const ErrorContainer = styled('div')`
+const ErrorContainer = styled.div`
   background-color: ${error.primary};
   font-weight: normal;
   padding: 5px;

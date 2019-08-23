@@ -1,6 +1,6 @@
 import { styled } from 'shared/constants/theme';
 
-export default styled('label')<{
+export default styled.label<{
   size?: 'sm';
   active?: boolean;
   hidden?: boolean;

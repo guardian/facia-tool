@@ -32,13 +32,14 @@ import CollectionItemSettingsDisplay from '../collectionItem/CollectionItemSetti
 import { distanceInWordsStrict } from 'date-fns';
 import { DerivedArticle } from 'shared/types/Article';
 import { ImageMetadataContainer } from '../image/ImageMetaDataContainer';
+import { theme } from 'constants/theme';
 
 const SnapLinkBodyContainer = styled(CollectionItemBody)`
   justify-content: space-between;
-  border-top-color: ${({ theme }) => theme.shared.base.colors.borderColor};
+  border-top-color: ${theme.shared.base.colors.borderColor};
 `;
 
-const SnapLinkURL = styled('p')`
+const SnapLinkURL = styled.p`
   font-size: 12px;
   word-break: break-all;
   text-overflow: ellipsis;
@@ -46,7 +47,7 @@ const SnapLinkURL = styled('p')`
   overflow: hidden;
 `;
 
-const ImageWrapper = styled('div')``;
+const ImageWrapper = styled.div``;
 
 interface ContainerProps {
   selectSharedState?: (state: any) => State;

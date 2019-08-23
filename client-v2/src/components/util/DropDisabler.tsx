@@ -5,7 +5,7 @@ interface DropDisablerChildren {
   children: React.ReactNode;
 }
 
-const DisablerWrapper = styled('div')`
+const DisablerWrapper = styled.div`
   height: 100%;
 `;
 

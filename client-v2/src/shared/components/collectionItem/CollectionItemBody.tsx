@@ -4,7 +4,7 @@ import Thumbnail from '../image/Thumbnail';
 import { CollectionItemSizes } from 'shared/types/Collection';
 import { theme } from 'constants/theme';
 
-export default styled('div')<{
+export default styled.div<{
   fade?: boolean;
   size?: CollectionItemSizes;
   tone?: string | void;

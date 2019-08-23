@@ -44,7 +44,7 @@ const DragContent = styled.div`
   width: 300px;
 `;
 
-const DragContentIcon = styled('div')`
+const DragContentIcon = styled.div`
   width: 28px;
   height: 28px;
   border-radius: 14px;

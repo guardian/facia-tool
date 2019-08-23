@@ -29,6 +29,7 @@ import { events } from 'services/GA';
 import CollectionMetaContainer from './collection/CollectionMetaContainer';
 import { resetFocusState, setFocusState } from 'bundles/focusBundle';
 import { Dispatch } from 'types/Store';
+import { theme } from 'constants/theme';
 
 export const createCollectionId = ({ id }: Collection) => `collection-${id}`;
 
@@ -70,14 +71,14 @@ const CollectionContainer = styled(ContentContainer)<{
   }
 `;
 
-const HeadlineContentContainer = styled('span')`
+const HeadlineContentContainer = styled.span`
   position: relative;
   margin-right: -11px;
   line-height: 0px;
   display: flex;
 `;
 
-const CollectionDisabledTheme = styled('div')`
+const CollectionDisabledTheme = styled.div`
   position: absolute;
   background-color: hsla(0, 0%, 100%, 0.3);
   height: 100%;
@@ -86,17 +87,16 @@ const CollectionDisabledTheme = styled('div')`
   left: 0;
 `;
 
-const LockedCollectionFlag = styled('span')`
+const LockedCollectionFlag = styled.span`
   font-family: GHGuardianHeadline;
   font-size: 22px;
-  color: ${({ theme }) => theme.shared.base.colors.text};
+  color: ${theme.shared.base.colors.text};
   height: 40px;
   line-height: 40px;
-  border-bottom: 1px solid
-    ${({ theme }) => theme.shared.base.colors.borderColor};
+  border-bottom: 1px solid ${theme.shared.base.colors.borderColor};
 `;
 
-const CollectionMetaBase = styled('span')`
+const CollectionMetaBase = styled.span`
   position: relative;
   padding-top: 3px;
   padding-right: 20px;
@@ -112,28 +112,27 @@ const ItemCountMeta = CollectionMetaBase;
 const CollectionHeadingSticky = styled.div`
   position: sticky;
   top: 0;
-  background-color: ${({ theme }) => theme.shared.collection.background};
-  box-shadow: 0 -1px 0 ${({ theme }) => theme.shared.base.colors.text};
+  background-color: ${theme.shared.collection.background};
+  box-shadow: 0 -1px 0 ${theme.shared.base.colors.text};
   z-index: 20;
   margin: 0 -${contentContainerMargin};
   padding: 0 ${contentContainerMargin};
 `;
 
 const CollectionHeadingInner = styled(ContainerHeadingPinline)`
-  border-bottom: 1px solid
-    ${({ theme }) => theme.shared.base.colors.borderColor};
+  border-bottom: 1px solid ${theme.shared.base.colors.borderColor};
 `;
 
-const CollectionHeadlineWithConfigContainer = styled('div')`
+const CollectionHeadlineWithConfigContainer = styled.div`
   flex-grow: 1;
   min-width: 0;
   flex-basis: 100%;
 `;
 
-const CollectionHeadingText = styled('div')<{ isLoading: boolean }>`
+const CollectionHeadingText = styled.div<{ isLoading: boolean }>`
   width: 100%;
   white-space: nowrap;
-  ${({ isLoading, theme }) =>
+  ${({ isLoading }) =>
     isLoading &&
     css`
       color: ${theme.shared.base.colors.textMuted};
@@ -142,7 +141,7 @@ const CollectionHeadingText = styled('div')<{ isLoading: boolean }>`
   text-overflow: ellipsis;
 `;
 
-const CollectionToggleContainer = styled('div')`
+const CollectionToggleContainer = styled.div`
   padding-top: 5px;
   max-width: 130px;
   display: flex;
@@ -150,30 +149,29 @@ const CollectionToggleContainer = styled('div')`
   z-index: 2;
   :hover {
     ${ButtonCircularWithTransition} {
-      background-color: ${({ theme }) =>
-        theme.shared.button.backgroundColorFocused};
+      background-color: ${theme.shared.button.backgroundColorFocused};
     }
   }
 `;
 
-const CollectionConfigContainer = styled('div')`
+const CollectionConfigContainer = styled.div`
   display: inline-block;
   font-family: GHGuardianHeadline;
   font-size: 15px;
-  color: ${({ theme }) => theme.shared.base.colors.text};
+  color: ${theme.shared.base.colors.text};
   white-space: nowrap;
   margin-left: 3px;
   vertical-align: bottom;
 `;
 
-const CollectionConfigText = styled('div')`
+const CollectionConfigText = styled.div`
   display: inline;
   font-weight: normal;
   font-style: normal;
 `;
 
-const CollectionConfigTextPipe = styled('span')`
-  color: ${({ theme }) => theme.shared.base.colors.borderColor};
+const CollectionConfigTextPipe = styled.span`
+  color: ${theme.shared.base.colors.borderColor};
 `;
 
 const CollectionShortVerticalPinline = styled(ShortVerticalPinline)`

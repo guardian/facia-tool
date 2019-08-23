@@ -12,7 +12,7 @@ export const PlaceholderAnimation = createGlobalStyle`
   }
 `;
 
-export default styled('div')`
+export default styled.div`
   background-color: ${({ theme }) =>
     theme.shared.base.colors.backgroundColorFocused};
   position: relative;

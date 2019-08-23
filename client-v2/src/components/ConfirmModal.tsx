@@ -10,7 +10,7 @@ import {
 import { Dispatch } from 'types/Store';
 import { endConfirmModal } from 'actions/ConfirmModal';
 import { connect } from 'react-redux';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import ButtonDefault from 'shared/components/input/ButtonDefault';
 
 type StyledModalProps = Modal.Props & {
@@ -22,7 +22,7 @@ const StyledModal = styled(Modal)`
   top: 40px;
   font-size: 14px;
   left: 50%;
-  background: ${({ theme }) => theme.shared.base.colors.backgroundColorLight};
+  background: ${theme.shared.base.colors.backgroundColorLight};
   overflow: auto;
   outline: none;
   padding: 20px;
@@ -32,8 +32,7 @@ const StyledModal = styled(Modal)`
 `;
 
 const Actions = styled.div`
-  border-top: ${({ theme }) =>
-    `solid 1px ${theme.shared.base.colors.borderColor}`};
+  border-top: solid 1px ${theme.shared.base.colors.borderColor};
   margin-top: 1.5em;
   padding-top: 1.5em;
   text-align: right;

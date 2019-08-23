@@ -27,7 +27,7 @@ interface ContainerProps {
   priority: string;
 }
 
-const FrontTabList = styled('div')<{ isDraggingOver?: boolean }>`
+const FrontTabList = styled.div<{ isDraggingOver?: boolean }>`
   background-color: ${({ isDraggingOver, theme }) =>
     isDraggingOver
       ? theme.shared.colors.greyMedium
@@ -48,7 +48,7 @@ const NoFronts = styled(FrontTabList)`
   font-size: 14px;
 `;
 
-const FrontTab = styled('div')<{ isDragging: boolean }>`
+const FrontTab = styled.div<{ isDragging: boolean }>`
   display: inline-block;
   max-width: 250px;
   vertical-align: top;

@@ -1,6 +1,6 @@
 import { styled } from 'shared/constants/theme';
 
-export default styled('div')<{ noMargin?: boolean }>`
+export default styled.div<{ noMargin?: boolean }>`
   width: 100%;
   height: 1px;
   border-top: ${({ theme }) =>

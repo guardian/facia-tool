@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { CollectionItemSizes } from 'shared/types/Collection';
 
-const CollectionItemContent = styled('div')<{
+const CollectionItemContent = styled.div<{
   displaySize?: CollectionItemSizes;
   textSize?: CollectionItemSizes;
 }>`

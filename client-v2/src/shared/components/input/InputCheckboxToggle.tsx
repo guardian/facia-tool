@@ -5,8 +5,9 @@ import { WrappedFieldMetaProps, WrappedFieldInputProps } from 'redux-form';
 import InputLabel from './InputLabel';
 import InputContainer from './InputContainer';
 import HorizontalRule from '../layout/HorizontalRule';
+import { theme } from 'constants/theme';
 
-const CheckboxContainer = styled('div')`
+const CheckboxContainer = styled.div`
   display: flex;
 `;
 
@@ -16,7 +17,7 @@ const Label = styled(InputLabel)`
   cursor: pointer;
 `;
 
-const Switch = styled('div')`
+const Switch = styled.div`
   position: relative;
   width: 40px;
   margin-left: auto;
@@ -25,16 +26,16 @@ const Switch = styled('div')`
   -ms-user-select: none;
 `;
 
-const CheckboxLabel = styled('label')`
+const CheckboxLabel = styled.label`
   display: block;
   overflow: hidden;
   cursor: pointer;
   height: 24px;
   padding: 0;
   line-height: 24px;
-  border: ${({ theme }) => `2px solid ${theme.shared.input.borderColor}`};
+  border: ${`2px solid ${theme.shared.input.borderColor}`};
   border-radius: 24px;
-  background-color: ${({ theme }) => theme.shared.input.checkboxColorInactive};
+  background-color: ${theme.shared.input.checkboxColorInactive};
   transition: background-color 0.1s ease-in;
   :before {
     content: '';
@@ -42,24 +43,24 @@ const CheckboxLabel = styled('label')`
     width: 24px;
     height: 24px;
     margin: 0px;
-    background: ${({ theme }) => theme.shared.input.checkboxColorInactive};
+    background: ${theme.shared.input.checkboxColorInactive};
     position: absolute;
     top: 0;
     bottom: 0;
     right: 16px;
-    border: ${({ theme }) => `2px solid ${theme.shared.input.borderColor}`};
+    border: ${`2px solid ${theme.shared.input.borderColor}`};
     border-radius: 24px;
     transition: all 0.1s ease-in 0s;
   }
 `;
 
-const Checkbox = styled('input')`
+const Checkbox = styled.input`
   display: none;
   :checked + ${CheckboxLabel} {
-    background-color: ${({ theme }) => theme.shared.input.checkboxColorActive};
+    background-color: ${theme.shared.input.checkboxColorActive};
   }
   &:checked + ${CheckboxLabel}, &:checked + ${CheckboxLabel}:before {
-    border-color: ${({ theme }) => theme.shared.input.checkboxColorActive};
+    border-color: ${theme.shared.input.checkboxColorActive};
     right: 0px;
   }
 `;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import FadeIn from 'shared/components/animation/FadeIn';
 import {
   MoreIcon,
@@ -14,7 +14,7 @@ import FrontsList from '../FrontsListContainer';
 import Row from 'components/Row';
 import Col from 'components/Col';
 
-const FrontsMenuContent = styled('div')`
+const FrontsMenuContent = styled.div`
   flex: 1;
   padding: 0 20px;
 `;
@@ -22,35 +22,35 @@ const FrontsMenuContent = styled('div')`
 const FrontsMenuHeading = styled(LargeSectionHeader)`
   padding: 10px;
   margin: 0 10px 10px;
-  border-bottom: ${({ theme }) => `solid 1px ${theme.front.frontListBorder}`};
+  border-bottom: solid 1px ${theme.front.frontListBorder};
 `;
 
-const FrontsMenuSubHeading = styled('div')`
+const FrontsMenuSubHeading = styled.div`
   position: relative;
   padding: 10px 0;
   font-size: 16px;
   line-height: 30px;
   font-weight: bold;
-  color: ${({ theme }) => theme.shared.colors.orangeLight};
-  border-bottom: ${({ theme }) => `solid 1px ${theme.front.frontListBorder}`};
+  color: ${theme.shared.colors.orangeLight};
+  border-bottom: solid 1px ${theme.front.frontListBorder};
   max-height: 100%;
 `;
 
-const ButtonOverlayContainer = styled('div')`
+const ButtonOverlayContainer = styled.div`
   position: absolute;
   left: -80px;
   bottom: 30px;
 `;
 
-const FrontsMenuContainer = styled('div')<{ isOpen?: boolean }>`
+const FrontsMenuContainer = styled.div<{ isOpen?: boolean }>`
   z-index: 100;
-  background-color: ${({ theme }) => theme.shared.colors.blackLight};
+  background-color: ${theme.shared.colors.blackLight};
   position: fixed;
   height: 100%;
   width: 390px;
   top: 0;
   right: 0;
-  color: ${({ theme }) => theme.shared.base.colors.textLight};
+  color: ${theme.shared.base.colors.textLight};
   transition: transform 0.15s;
   transform: ${({ isOpen }) =>
     isOpen ? 'translate3d(0px, 0, 0)' : 'translate3d(390px, 0, 0)'};
@@ -60,7 +60,7 @@ const FrontsMenuSearchInputContainer = styled(Col)`
   position: relative;
 `;
 
-const FrontsMenuSearchInput = styled('input')`
+const FrontsMenuSearchInput = styled.input`
   background-color: rgba(0, 0, 0, 0.2);
   height: 30px;
   width: 100%;
@@ -76,7 +76,7 @@ const FrontsMenuSearchInput = styled('input')`
   }
 `;
 
-const FrontsMenuSearchImage = styled('div')`
+const FrontsMenuSearchImage = styled.div`
   position: absolute;
   right: 5px;
   top: 0;

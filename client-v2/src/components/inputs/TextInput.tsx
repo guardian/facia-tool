@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import {
   MagnifyingGlassIcon as SearchIcon,
   ClearIcon
@@ -7,16 +7,16 @@ import {
 import { SmallRoundButton } from 'util/sharedStyles/buttons';
 import { theme as globalTheme } from 'shared/constants/theme';
 
-const InputWrapper = styled('div')`
+const InputWrapper = styled.div`
   position: relative;
   width: ${({ width }: { width?: number }) => width || 'auto'};
   display: flex;
-  border: ${({ theme }) => `solid 1px ${theme.shared.input.borderColor}`};
-  background: ${({ theme }) => theme.shared.input.backgroundColor};
+  border: ${`solid 1px ${theme.shared.input.borderColor}`};
+  background: ${theme.shared.input.backgroundColor};
 `;
 
-const Input = styled(`input`)`
-  background: ${({ theme }) => theme.shared.input.backgroundColor};
+const Input = styled.input`
+  background: ${theme.shared.input.backgroundColor};
   border: none;
   width: 100%;
   height: 50px;
@@ -33,30 +33,28 @@ const Input = styled(`input`)`
 `;
 
 const SmallRoundButtonOrange = styled(SmallRoundButton)`
-  background-color: ${({ theme }) =>
-    theme.shared.button.backgroundColorHighlight};
+  background-color: ${theme.shared.button.backgroundColorHighlight};
   margin-right: 4px;
   padding: 4px;
   :hover {
-    background-color: ${({ theme }) =>
-      theme.shared.button.backgroundColorHighlightFocused};
+    background-color: ${theme.shared.button.backgroundColorHighlightFocused};
   }
 `;
 
-const ButtonsContainer = styled('div')`
+const ButtonsContainer = styled.div`
   position: absolute;
   top: 9px;
   right: 8px;
 `;
 
-const SearchButtonIcon = styled('div')`
+const SearchButtonIcon = styled.div`
   display: inline-block;
   height: 32px;
   width: 32px;
   vertical-align: middle;
 `;
 
-const ClearButtonIcon = styled('div')``;
+const ClearButtonIcon = styled.div``;
 
 interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   onClear?: () => void;

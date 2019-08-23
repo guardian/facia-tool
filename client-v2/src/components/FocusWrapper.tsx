@@ -3,7 +3,7 @@ import { selectFocusedArticle } from 'bundles/focusBundle';
 import { connect } from 'react-redux';
 import { State } from 'types/State';
 
-const Wrapper = styled('div')<{ isSelected: boolean }>`
+const Wrapper = styled.div<{ isSelected: boolean }>`
   outline: ${props =>
     props.isSelected
       ? `1px solid ${props.theme.shared.base.colors.focusColor}`

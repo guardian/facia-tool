@@ -37,7 +37,7 @@ interface Props {
   isClipboardOpen: boolean;
 }
 
-const FrontsEditContainer = styled('div')`
+const FrontsEditContainer = styled.div`
   position: relative;
   width: 100%;
   height: 100%;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled, theme } from 'constants/theme';
 
-const ArticleMetadataProperties = styled('div')`
+const ArticleMetadataProperties = styled.div`
   padding: 0 4px 3px 0;
   display: flex;
   flex-direction: row;
@@ -9,7 +9,7 @@ const ArticleMetadataProperties = styled('div')`
   flex-wrap: wrap;
 `;
 
-const ArticleMetadataProperty = styled('div')`
+const ArticleMetadataProperty = styled.div`
   background-color: ${theme.shared.colors.whiteDark};
   padding: 1px 4px;
   flex: 0 0 auto;

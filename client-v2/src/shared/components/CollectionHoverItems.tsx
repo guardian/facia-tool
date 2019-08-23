@@ -1,6 +1,6 @@
 import { styled } from 'shared/constants/theme';
 
-const HoverActionsAreaOverlay = styled('div')<{
+const HoverActionsAreaOverlay = styled.div<{
   justify?: 'space-between' | 'flex-end';
   disabled?: boolean;
 }>`

@@ -11,7 +11,7 @@ const metaContainerSizeWidthMap = {
   small: 60
 } as { [Sizes in CollectionItemSizes]: number };
 
-const MetaContainer = styled('div')<{ size?: CollectionItemSizes }>`
+const MetaContainer = styled.div<{ size?: CollectionItemSizes }>`
   position: relative;
   flex-shrink: 0;
   /* If we have a size property, use that. */

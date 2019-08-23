@@ -29,11 +29,11 @@ interface SearchInputProps {
   rightHandContainer?: React.ReactElement<any>;
 }
 
-const TextInputContainer = styled('div')`
+const TextInputContainer = styled.div`
   flex-grow: 2;
 `;
 
-const InputContainer = styled('div')`
+const InputContainer = styled.div`
   margin-bottom: 10px;
   display: flex;
   justify-content: space-between;

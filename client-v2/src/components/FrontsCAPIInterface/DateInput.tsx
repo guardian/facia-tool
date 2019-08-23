@@ -2,7 +2,7 @@ import React from 'react';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import { DateRangePicker } from 'react-dates';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import moment from 'moment';
 
 interface CAPIDateInputProps {
@@ -18,59 +18,59 @@ interface CAPIDateInputState {
   focusedInput: 'startDate' | 'endDate' | null;
 }
 
-const DatePickerContainer = styled('div')`
+const DatePickerContainer = styled.div`
   padding-top: 20px;
   padding-left: 2px;
   font-size: 14px;
 `;
 
-const SearchTitle = styled('div')`
+const SearchTitle = styled.div`
   font-weight: bold;
   margin-right: 3px;
   margin-bottom: 7px;
 `;
 
-const DatePicker = styled('div')`
+const DatePicker = styled.div`
   .DateInput_input {
     font-size: 14px;
     line-height: 14px;
     font-family: TS3TextSans;
-    color: ${({ theme }) => theme.capiInterface.text};
+    color: ${theme.capiInterface.text};
   }
 
   .DateRangePickerInput__withBorder {
-    border: ${({ theme }) => `1px solid ${theme.capiInterface.borderLight}`};
+    border: ${`1px solid ${theme.capiInterface.borderLight}`};
   }
 
   .CalendarMonth_caption {
-    color: ${({ theme }) => theme.capiInterface.text};
+    color: ${theme.capiInterface.text};
     font-family: TS3TextSans;
   }
 
   .CalendarDay__selected {
-    background: ${({ theme }) => theme.capiInterface.backgroundSelected};
-    border: ${({ theme }) => `1px double ${theme.capiInterface.border}`};
-    color: ${({ theme }) => theme.capiInterface.text};
+    background: ${theme.capiInterface.backgroundSelected};
+    border: ${`1px double ${theme.capiInterface.border}`};
+    color: ${theme.capiInterface.text};
   }
 
   .CalendarDay__selected_span {
-    background: ${({ theme }) => theme.capiInterface.backgroundDark};
-    border: ${({ theme }) => `1px double ${theme.capiInterface.border}`};
-    color: ${({ theme }) => theme.capiInterface.text};
+    background: ${theme.capiInterface.backgroundDark};
+    border: ${`1px double ${theme.capiInterface.border}`};
+    color: ${theme.capiInterface.text};
   }
 
   .CalendarDay__hovered_span,
- .CalendarDay__hovered_span: hover {
-    background: ${({ theme }) => theme.capiInterface.backgroundLight};
-    border: ${({ theme }) => `1px double ${theme.capiInterface.border}`};
-    color: ${({ theme }) => theme.capiInterface.text};
+  .CalendarDay__hovered_span:hover {
+    background: ${theme.capiInterface.backgroundLight};
+    border: ${`1px double ${theme.capiInterface.border}`};
+    color: ${theme.capiInterface.text};
   }
 
-  .CalendarDay__selected: hover,
- .CalendarDay__selected_span: hover {
-    background: ${({ theme }) => theme.capiInterface.backgroundDark};
-    border: ${({ theme }) => `1px double ${theme.capiInterface.border}`};
-    color: ${({ theme }) => theme.capiInterface.text};
+  .CalendarDay__selected:hover,
+  .CalendarDay__selected_span:hover {
+    background: ${theme.capiInterface.backgroundDark};
+    border: ${`1px double ${theme.capiInterface.border}`};
+    color: ${theme.capiInterface.text};
   }
 `;
 

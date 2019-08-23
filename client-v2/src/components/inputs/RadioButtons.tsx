@@ -1,24 +1,24 @@
 import React from 'react';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 
-const RadioGroup = styled('div')`
+const RadioGroup = styled.div`
   text-align: left;
   vertical-align: top;
 `;
 
-const Input = styled('input')`
+const Input = styled.input`
   position: absolute;
   z-index: -1;
   opacity: 0;
 `;
 
-const ControlIndicator = styled('div')`
+const ControlIndicator = styled.div`
   position: absolute;
   top: 2px;
   left: 0;
   width: 18px;
   height: 18px;
-  background: ${({ theme }) => theme.shared.base.colors.backgroundColorFocused};
+  background: ${theme.shared.base.colors.backgroundColorFocused};
   /* Check mark */
   &:after {
     position: absolute;
@@ -27,7 +27,7 @@ const ControlIndicator = styled('div')`
   }
 `;
 
-const ControlRadio = styled('label')<{ inline?: boolean; checked?: boolean }>`
+const ControlRadio = styled.label<{ inline?: boolean; checked?: boolean }>`
   position: relative;
   display: ${({ inline }) => (inline ? 'inline' : 'block')};
   padding: 3px 5px 0 24px;
@@ -42,14 +42,13 @@ const ControlRadio = styled('label')<{ inline?: boolean; checked?: boolean }>`
 
   & > ${ControlIndicator} {
     border-radius: 50%;
-    border:  ${({ theme }) => `solid 1px ${theme.shared.input.borderColor}`};
+    border:  ${`solid 1px ${theme.shared.input.borderColor}`};
   }
 
   /* Checked state */
   & {
     ${Input}:checked ~ ${ControlIndicator} {
-      border:  ${({ theme }) =>
-        `solid 1px ${theme.base.colors.radioButtonSelected}`};
+      border: solid 1px ${theme.base.colors.radioButtonSelected};
     }
   }
 
@@ -58,8 +57,7 @@ const ControlRadio = styled('label')<{ inline?: boolean; checked?: boolean }>`
     ${Input}:disabled ~ ${ControlIndicator} {
       pointer-events: none;
       opacity: 0.6;
-      background:${({ theme }) =>
-        theme.shared.input.radioButtonBackgroundDisabled};
+      background: ${theme.shared.input.radioButtonBackgroundDisabled};
     }
   }
 
@@ -79,19 +77,17 @@ const ControlRadio = styled('label')<{ inline?: boolean; checked?: boolean }>`
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background-color: ${({ theme }) =>
-        theme.shared.base.colors.highlightColor};
+      background-color: ${theme.shared.base.colors.highlightColor};
     }
 
     ${Input}:hover:not(:checked) ~ ${ControlIndicator}:after {
-      background-color: ${({ theme }) =>
-        theme.shared.base.colors.highlightColor};
+      background-color: ${theme.shared.base.colors.highlightColor};
     }
   }
 
   /* Disabled circle colour */
   & ${Input}:disabled ~ ${ControlIndicator}:after {
-    background:${({ theme }) => theme.shared.colors.greyMedium};
+    background: ${theme.shared.colors.greyMedium};
   }
 `;
 

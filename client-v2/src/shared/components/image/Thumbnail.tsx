@@ -1,6 +1,6 @@
 import { theme, styled } from 'constants/theme';
 
-const ThumbnailBase = styled('div')`
+const ThumbnailBase = styled.div`
   background-size: cover;
   background-color: ${theme.shared.base.colors.backgroundColorFocused};
 `;
@@ -30,7 +30,7 @@ const ThumbnailSmall = styled(ThumbnailBase)<{
       }`};
 `;
 
-const ThumbnailCutout = styled('img')<{
+const ThumbnailCutout = styled.img<{
   position?: 'bottomLeft' | 'bottomRight';
 }>`
   position: absolute;

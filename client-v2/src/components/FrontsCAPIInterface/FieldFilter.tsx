@@ -1,7 +1,7 @@
 import React from 'react';
 import Downshift from 'downshift';
 import startCase from 'lodash/startCase';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import ButtonCircularCaret from '../../shared/components/input/ButtonCircularCaret';
 import FadeIn from 'shared/components/animation/FadeIn';
 
@@ -18,43 +18,42 @@ const FilterFieldDropdownMenu = styled(FadeIn)`
   display: ${({ isOpen }: { isOpen: boolean }) => (isOpen ? 'auto' : 'none')};
 `;
 
-const DropdownItem = styled('div')<{ highlighted: boolean }>`
-  background-color: ${({ highlighted, theme }) =>
+const DropdownItem = styled.div<{ highlighted: boolean }>`
+  background-color: ${({ highlighted }) =>
     highlighted
       ? theme.capiInterface.backgroundDark
       : theme.capiInterface.backgroundLight};
   :hover {
-    background-color: ${({ theme }) => theme.capiInterface.backgroundDark};
+    background-color: ${theme.capiInterface.backgroundDark};
   }
   font-size: 14px;
   font-weight: bold;
   padding: 7px 15px 7px 15px;
-  border-left: ${({ theme }) => `1px solid ${theme.capiInterface.borderLight}`};
-  color: ${({ theme }) => theme.capiInterface.text};
+  border-left: ${`1px solid ${theme.capiInterface.borderLight}`};
+  color: ${theme.capiInterface.text};
 `;
 
-const FilterTitle = styled('label')`
+const FilterTitle = styled.label`
   font-size: 16px;
   font-weight: bold;
-  color: ${({ theme }) => theme.capiInterface.text};
+  color: ${theme.capiInterface.text};
   width: min-content;
   white-space: nowrap;
   margin-right: 9px;
 `;
 
-const FilterPlaceHolderText = styled('div')`
+const FilterPlaceHolderText = styled.div`
   display: inline-block;
   background-color: transparent;
-  color: ${({ theme }) => theme.capiInterface.textPlaceholder};
+  color: ${theme.capiInterface.textPlaceholder};
   cursor: pointer;
   border: none;
   padding: 0;
   font-size: 12px;
 `;
 
-const FilterContainer = styled('div')`
-  border-bottom: ${({ theme }) =>
-    `2px solid ${theme.capiInterface.borderLight}`};
+const FilterContainer = styled.div`
+  border-bottom: 2px solid ${theme.capiInterface.borderLight};
   padding: 2px;
   padding-top: 24px;
   margin-right: 19px;

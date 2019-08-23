@@ -10,17 +10,18 @@ import {
   DeleteHoverIcon
 } from '../icons/HoverIcons';
 import styled from 'styled-components';
+import { theme } from 'constants/theme';
 
 const ActionButton = styled(ButtonCircular)<{ danger?: boolean }>`
-  background: ${({ danger, theme }) =>
+  background: ${({ danger }) =>
     danger
       ? theme.shared.button.backgroundColorHighlight
       : theme.shared.button.backgroundColor};
-  color: ${({ theme }) => theme.shared.button.color};
+  color: ${theme.shared.button.color};
   margin: 0 2px 2px 2px;
   line-height: 1;
   &:hover:enabled {
-    background: ${({ danger, theme }) =>
+    background: ${({ danger }) =>
       danger
         ? theme.shared.button.backgroundColorHighlightFocused
         : theme.shared.button.backgroundColorFocused};

@@ -1,6 +1,6 @@
 import { styled } from '../../constants/theme';
 
-export default styled('div')`
+export default styled.div`
   display: flex;
   position: relative;
   font-family: TS3TextSans;

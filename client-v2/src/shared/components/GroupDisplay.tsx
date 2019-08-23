@@ -5,7 +5,7 @@ interface GroupDisplayComponentProps {
   groupName: string | null;
 }
 
-const GroupHeading = styled('div')`
+const GroupHeading = styled.div`
   border-left: 1px solid #ccc;
   border-top: 1px solid #ccc;
   font-size: 14px;
