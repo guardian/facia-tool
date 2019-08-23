@@ -45,6 +45,7 @@ const Container = styled(ContentContainer)<ContainerProps>`
 const ContainerBody = styled.div`
   width: ${({ theme }) => theme.front.overviewMinWidth}px;
   overflow-y: scroll;
+  padding-bottom: ${({ theme }) => theme.front.paddingForAddFrontButton}px;
 `;
 
 const FrontCollectionsOverview = ({

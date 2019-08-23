@@ -44,7 +44,8 @@ const front = {
   frontListLabel: shared.colors.greyMediumLight,
   frontListButton: shared.colors.greyDark,
   minWidth: 380,
-  overviewMinWidth: 160
+  overviewMinWidth: 160,
+  paddingForAddFrontButton: 80
 };
 
 const form = {

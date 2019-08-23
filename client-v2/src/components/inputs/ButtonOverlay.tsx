@@ -5,7 +5,7 @@ import { css } from 'styled-components';
 import Button from 'shared/components/input/ButtonDefault';
 
 const ButtonWithShadow = styled(Button)<{ active?: boolean }>`
-  box-shadow: 0 1px 10px 2px rgba(0, 0, 0, 0.15);
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 1px 10px 2px, rgba(255,255,255, 0.15) 0px 0px 2px 3px;
   width: 50px;
   height: 50px;
   padding: 5px;
