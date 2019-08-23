@@ -2,8 +2,8 @@ package model.editions.templates
 
 import java.time.ZoneId
 
-import model.editions._
 import model.editions.Swatch._
+import model.editions._
 
 object DailyEdition {
   val template = EditionTemplate(
@@ -55,7 +55,7 @@ object FrontSpecialSpecial1 {
 }
 
 object FrontTopStories {
-   val collectionTopStories = CollectionTemplate(
+  val collectionTopStories = CollectionTemplate(
     name = "Top Stories",
     prefill = None,
     presentation = TemplateDefaults.defaultCollectionPresentation
@@ -69,9 +69,9 @@ object FrontTopStories {
 }
 
 object FrontNewsUkGuardian {
-   val collectionNewsFrontPage = CollectionTemplate(
+  val collectionNewsFrontPage = CollectionTemplate(
     name = "Front Page",
-    prefill =  Some(CapiPrefillQuery("?tag=theguardian/mainsection/topstories")),
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/topstories")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
   val collectionNewsSpecial1 = CollectionTemplate(
@@ -103,9 +103,9 @@ object FrontNewsUkGuardian {
 }
 
 object FrontNewsUkGuardianSaturday {
-   val collectionNewsFrontPage = CollectionTemplate(
+  val collectionNewsFrontPage = CollectionTemplate(
     name = "Front Page",
-    prefill =  Some(CapiPrefillQuery("?tag=theguardian/mainsection/topstories")),
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/topstories")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
   val collectionNewsSpecial1 = CollectionTemplate(
@@ -169,7 +169,7 @@ object FrontNewsWorldGuardian {
 object FrontNewsUkObserver {
   val collectionNewsFrontPageObserver = CollectionTemplate(
     name = "Front Page",
-    prefill =  None,
+    prefill = None,
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
   val collectionNewsUkNewsObserver = CollectionTemplate(
@@ -561,7 +561,7 @@ object FrontFoodObserver {
     prefill = Some(CapiPrefillQuery("?tag=theobserver/magazine/life-and-style,food/food")),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
- val collectionFoodMonthly = CollectionTemplate(
+  val collectionFoodMonthly = CollectionTemplate(
     name = "OFM",
     prefill = Some(CapiPrefillQuery("?tag=theobserver/foodmonthly/features|theobserver/foodmonthly")),
     presentation = TemplateDefaults.defaultCollectionPresentation,
@@ -637,7 +637,7 @@ object FrontSpecialSpecial2 {
 object FrontCrosswords {
   val collectionCrosswords = CollectionTemplate(
     name = "Crosswords",
-    prefill = Some(CapiPrefillQuery("?tag=type/crossword")),
+    prefill = Some(CapiPrefillQuery("?tag=type/crossword", PathType.Search)),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
   val front = FrontTemplate(

@@ -48,7 +48,7 @@ object FrontPresentation {
 
 case class CollectionPresentation()
 
-case class CapiPrefillQuery(queryString: String) extends AnyVal {
+case class CapiPrefillQuery(queryString: String, pathType: PathType = PathType.PrintSent) {
   def escapedQueryString(): String =
     queryString
       .replace(",", "%2C")
