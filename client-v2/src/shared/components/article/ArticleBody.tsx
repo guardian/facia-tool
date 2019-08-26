@@ -31,6 +31,7 @@ import CollectionItemHeadingContainer from '../collectionItem/CollectionItemHead
 import CollectionItemSettingsDisplay from '../collectionItem/CollectionItemSettingsDisplay';
 import CircularIconContainer from '../icons/CircularIconContainer';
 import { ImageMetadataContainer } from '../image/ImageMetaDataContainer';
+import EditModeVisibility from 'components/util/EditModeVisibility';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   flex-shrink: 0;
@@ -221,11 +222,13 @@ const articleBodyDefault = React.memo(
                 {distanceInWordsStrict(new Date(scheduledPublicationDate), now)}
               </CollectionItemDraftMetaContent>
             )}
-            {!!newspaperPageNumber && (
-              <CollectionItemMetaContent title="The newspaper page number of this article">
-                Page {newspaperPageNumber}
-              </CollectionItemMetaContent>
-            )}
+            <EditModeVisibility visibleMode="editions">
+              {!!newspaperPageNumber && (
+                <CollectionItemMetaContent title="The newspaper page number of this article">
+                  Page {newspaperPageNumber}
+                </CollectionItemMetaContent>
+              )}
+            </EditModeVisibility>
             {!!frontPublicationDate && (
               <CollectionItemMetaContent title="The time elapsed since this card was created in the tool.">
                 {distanceInWordsStrict(now, new Date(frontPublicationDate))}
