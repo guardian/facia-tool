@@ -320,7 +320,7 @@ const DEFAULT_PARAMS = {
   'show-tags': 'all',
   'show-atoms': 'media',
   'show-fields':
-    'internalPageCode,isLive,firstPublicationDate,scheduledPublicationDate,headline,trailText,byline,thumbnail,secureThumbnail,liveBloggingNow,membershipAccess,shortUrl'
+    'internalPageCode,isLive,firstPublicationDate,scheduledPublicationDate,headline,trailText,byline,thumbnail,secureThumbnail,liveBloggingNow,membershipAccess,shortUrl,newspaperPageNumber'
 };
 
 /**

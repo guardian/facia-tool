@@ -95,6 +95,7 @@ const VideoIconContainer = styled(CircularIconContainer)`
 `;
 
 interface ArticleBodyProps {
+  newspaperPageNumber?: string;
   newspaperEditionDate?: string;
   firstPublicationDate?: string;
   frontPublicationDate?: number;
@@ -175,7 +176,8 @@ const articleBodyDefault = React.memo(
     canShowPageViewData,
     hasMainVideo,
     showMainVideo,
-    frontId
+    frontId,
+    newspaperPageNumber
   }: ArticleBodyProps) => {
     const displayByline = size === 'default' && showByline && byline;
     const now = Date.now();
@@ -218,6 +220,11 @@ const articleBodyDefault = React.memo(
               <CollectionItemDraftMetaContent title="The time until this article is scheduled to be published.">
                 {distanceInWordsStrict(new Date(scheduledPublicationDate), now)}
               </CollectionItemDraftMetaContent>
+            )}
+            {!!newspaperPageNumber && (
+              <CollectionItemMetaContent title="The newspaper page number of this article">
+                Page {newspaperPageNumber}
+              </CollectionItemMetaContent>
             )}
             {!!frontPublicationDate && (
               <CollectionItemMetaContent title="The time elapsed since this card was created in the tool.">
