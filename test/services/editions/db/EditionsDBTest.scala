@@ -14,6 +14,10 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
   private val user: User = User("Billy", "Bragg", "billy.bragg@justice.example.com", None)
 
+  private val olderThenCreationTime = now.toInstant.toEpochMilli - 1
+
+  private val moreRecentThenCreationTime = now.toInstant.toEpochMilli + 1
+
   private val simpleMetadata = ArticleMetadata(
     customKicker = Some("Kicker"),
     headline = None,
@@ -262,13 +266,13 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
       // pretend we are a client asking for updates since a time that is older than the creation time
       val newerCollections = editionsDB.getCollections(
-        collectionIds.map(GetCollectionsFilter(_, Some(now.toInstant.toEpochMilli - 1)))
+        collectionIds.map(GetCollectionsFilter(_, Some(olderThenCreationTime)))
       )
       newerCollections.size shouldBe 5
 
       // pretend we are a client asking for updates since a time that is more recent than the creation time
       val olderCollections = editionsDB.getCollections(
-        collectionIds.map(GetCollectionsFilter(_, Some(now.toInstant.toEpochMilli + 1)))
+        collectionIds.map(GetCollectionsFilter(_, Some(moreRecentThenCreationTime)))
       )
       olderCollections.size shouldBe 0
     }
@@ -414,16 +418,15 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       )
     )
 
-    // pretend we are a client asking for updates since a time that is older than the creation time
     val ukIssue: EditionsIssue = editionsDB.getIssue(newsUkIssueId).value
-    val ukIssueColFilters: List[GetCollectionsFilter] = ukIssue.fronts.flatMap(_.collections.map(_.id)).map(GetCollectionsFilter(_, Some(now.toInstant.toEpochMilli - 1)))
+    val ukIssueColFilters: List[GetCollectionsFilter] = ukIssue.fronts.flatMap(_.collections.map(_.id)).map(GetCollectionsFilter(_, Some(olderThenCreationTime)))
     val collectionFromUKIssue = editionsDB.getCollections(ukIssueColFilters).head
 
     collectionFromUKIssue.prefill should be
     collectionFromUKIssue.prefill.get shouldEqual prefillFromPrintSent
 
     val internationalIssue: EditionsIssue = editionsDB.getIssue(internationalIssueId).value
-    val internationalIssueColFilters: List[GetCollectionsFilter] = internationalIssue.fronts.flatMap(_.collections.map(_.id)).map(GetCollectionsFilter(_, Some(now.toInstant.toEpochMilli - 1)))
+    val internationalIssueColFilters: List[GetCollectionsFilter] = internationalIssue.fronts.flatMap(_.collections.map(_.id)).map(GetCollectionsFilter(_, Some(olderThenCreationTime)))
     val collectionFromInternationalIssue = editionsDB.getCollections(internationalIssueColFilters).head
 
     collectionFromInternationalIssue.prefill should be
