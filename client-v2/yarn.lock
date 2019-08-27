@@ -943,10 +943,10 @@
     "@types/react" "*"
     "@types/recharts-scale" "*"
 
-"@types/redux-form@^8.1.4":
-  version "8.1.4"
-  resolved "https://registry.yarnpkg.com/@types/redux-form/-/redux-form-8.1.4.tgz#bfef3552b9fa5a2e42f2938e484279a035b11807"
-  integrity sha512-HS/H1O0HZWLPHmTbWqCTDPAOhSkcSq4HcsQVFjFEpJmSYRn79Z3sxfSsMYckxhjvCTdcD+RgyxPa5YJQKovnkQ==
+"@types/redux-form@^8.1.5":
+  version "8.1.5"
+  resolved "https://registry.yarnpkg.com/@types/redux-form/-/redux-form-8.1.5.tgz#a29c7c5dd9addb8c4cc99290a024f324a966ce19"
+  integrity sha512-NUVBf90ziBE6TMoPCHbGABB6Y5r6ZGkdF2LnaFzQ0pJZElcn5z/Jlt2YqQzEgwoI1r4y0MIBFxxhnx5n6wRa0A==
   dependencies:
     "@types/react" "*"
     redux "^3.6.0 || ^4.0.0"
@@ -4000,14 +4000,16 @@ eslint-scope@^4.0.0:
     estraverse "^4.1.1"
 
 eslint-utils@^1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/eslint-utils/-/eslint-utils-1.3.1.tgz#9a851ba89ee7c460346f97cf8939c7298827e512"
-  integrity sha512-Z7YjnIldX+2XMcjr7ZkgEsOj/bREONV60qYeB/bjMAqqqZ4zxKyWX+BOUkdmRmA9riiIPVvo5x86m5elviOk0Q==
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/eslint-utils/-/eslint-utils-1.4.2.tgz#166a5180ef6ab7eb462f162fd0e6f2463d7309ab"
+  integrity sha512-eAZS2sEUMlIeCjBeubdj45dmBHQwPHWyBcT1VSYB7o9x9WRRqKxyUoiXlRjyAwzN7YEzHJlYg0NmzDRWx6GP4Q==
+  dependencies:
+    eslint-visitor-keys "^1.0.0"
 
 eslint-visitor-keys@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#3f3180fb2e291017716acb4c9d6d5b5c34a6a81d"
-  integrity sha512-qzm/XxIbxm/FHyH341ZrbnMUpe+5Bocte9xkmFMzPMjRaZMcXww+MpBptFvtU+79L362nqiLhekCxCxDPaUMBQ==
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-1.1.0.tgz#e2a82cea84ff246ad6fb57f9bde5b46621459ec2"
+  integrity sha512-8y9YjtM1JBJU/A9Kc+SbaOV4y29sSWckBwMHa+FGtVj5gN/sbnKDf6xJUl+8g7FAij9LVaP8C24DUiH/f/2Z9A==
 
 eslint@^5.12.0:
   version "5.12.0"
