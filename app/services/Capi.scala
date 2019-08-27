@@ -21,7 +21,7 @@ import okhttp3.{Call, Callback, Request, Response}
 import scala.collection.JavaConverters._
 import scala.concurrent.{ExecutionContext, Future, Promise}
 
-case class Prefill(
+case class  Prefill(
                     internalPageCode: Int,
                     showByline: Boolean,
                     showQuotedHeadline: Boolean,
@@ -29,6 +29,23 @@ case class Prefill(
                     cutout: Option[String]
                   )
 
+object GuardianCapi {
+  private[services] def prefillMetadata(content: Content): Option[Prefill] = {
+    val maybeInternalPageCode = content.fields.flatMap(_.internalPageCode)
+    maybeInternalPageCode.map { internalPageCode =>
+      val cardStyle = CardStyle(content, TrailMetaData.empty)
+      val metadata = ResolvedMetaData.fromContent(content, cardStyle)
+      val maybeCutout = if (metadata.imageCutoutReplace) {
+        content.tags
+          .filter(_.`type` == TagType.Contributor)
+          .flatMap(_.bylineLargeImageUrl)
+          .headOption
+      } else None
+      Prefill(internalPageCode, metadata.showByline, metadata.showQuotedHeadline, metadata.imageCutoutReplace, maybeCutout)
+    }
+  }
+
+}
 class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext) extends GuardianContentClient(config.contentApi.editionsKey) with Capi with Logging {
   override def targetUrl: String = config.contentApi.editionsPrefillHost
 
@@ -158,7 +175,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
       response.results
         .map { content =>
           val newspaperPageNumber = content.fields.flatMap(_.newspaperPageNumber)
-          val prefill = prefillMetadata(content)
+          val prefill = GuardianCapi.prefillMetadata(content)
           (newspaperPageNumber, prefill)
         }
         .collect {
@@ -174,20 +191,6 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
     }
   }
 
-  private def prefillMetadata(content: Content): Option[Prefill] = {
-    val maybeInternalPageCode = content.fields.flatMap(_.internalPageCode)
-    maybeInternalPageCode.map { internalPageCode =>
-      val cardStyle = CardStyle(content, TrailMetaData.empty)
-      val metadata = ResolvedMetaData.fromContent(content, cardStyle)
-      val maybeCutout = if (metadata.imageCutoutReplace) {
-        content.tags
-          .filter(_.`type` == TagType.Contributor)
-          .flatMap(_.bylineLargeImageUrl)
-          .headOption
-      } else None
-      Prefill(internalPageCode, metadata.showByline, metadata.showQuotedHeadline, metadata.imageCutoutReplace, maybeCutout)
-    }
-  }
 }
 
 // Query generator for the print-sent endpoint
