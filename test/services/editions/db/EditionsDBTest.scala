@@ -415,18 +415,16 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     )
 
     // pretend we are a client asking for updates since a time that is older than the creation time
-    val collectionFromUKIssue = editionsDB.getCollections(
-      editionsDB.getIssue(newsUkIssueId).value
-        .fronts.flatMap(_.collections.map(_.id)).map(GetCollectionsFilter(_, Some(now.toInstant.toEpochMilli - 1)))
-    ).head
+    val ukIssue: EditionsIssue = editionsDB.getIssue(newsUkIssueId).value
+    val ukIssueColFilters: List[GetCollectionsFilter] = ukIssue.fronts.flatMap(_.collections.map(_.id)).map(GetCollectionsFilter(_, Some(now.toInstant.toEpochMilli - 1)))
+    val collectionFromUKIssue = editionsDB.getCollections(ukIssueColFilters).head
 
     collectionFromUKIssue.prefill should be
     collectionFromUKIssue.prefill.get shouldEqual prefillFromPrintSent
 
-    val collectionFromInternationalIssue = editionsDB.getCollections(
-      editionsDB.getIssue(internationalIssueId).value
-        .fronts.flatMap(_.collections.map(_.id)).map(GetCollectionsFilter(_, Some(now.toInstant.toEpochMilli - 1)))
-    ).head
+    val internationalIssue: EditionsIssue = editionsDB.getIssue(internationalIssueId).value
+    val internationalIssueColFilters: List[GetCollectionsFilter] = internationalIssue.fronts.flatMap(_.collections.map(_.id)).map(GetCollectionsFilter(_, Some(now.toInstant.toEpochMilli - 1)))
+    val collectionFromInternationalIssue = editionsDB.getCollections(internationalIssueColFilters).head
 
     collectionFromInternationalIssue.prefill should be
     collectionFromInternationalIssue.prefill.get shouldEqual prefillFromSearch

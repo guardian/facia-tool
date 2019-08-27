@@ -4,15 +4,15 @@ import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
 case class EditionsCollection(
-  id: String,
-  displayName: String,
-  isHidden: Boolean,
-  lastUpdated: Option[Long],
-  updatedBy: Option[String],
-  updatedEmail: Option[String],
-  prefill: Option[CapiPrefillQuery],
-  items: List[EditionsArticle],
-) {
+                               id: String,
+                               displayName: String,
+                               isHidden: Boolean,
+                               lastUpdated: Option[Long],
+                               updatedBy: Option[String],
+                               updatedEmail: Option[String],
+                               prefill: Option[CapiPrefillQuery],
+                               items: List[EditionsArticle],
+                             ) {
   def toPublishedCollection: PublishedCollection = PublishedCollection(
     id,
     displayName,

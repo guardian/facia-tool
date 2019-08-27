@@ -51,7 +51,8 @@ trait CollectionsQueries {
        """.map { rs =>
         val date = rs.localDate("issue_date")
         val zone = ZoneId.of(rs.string("timezone_id"))
-        val pathType = PathType.withName(rs.string("path_type"))
+        val pathTypeStr = rs.string("path_type")
+        val pathType = PathType.withName(pathTypeStr)
 
         (date, zone, CapiPrefillQuery(rs.string("prefill"), pathType), rs.string("page_code"))
       }.list().apply()
@@ -114,6 +115,7 @@ trait CollectionsQueries {
         collections.updated_by,
         collections.updated_email,
         collections.prefill,
+        collections.path_type,
 
         articles.collection_id AS articles_collection_id,
         articles.page_code     AS articles_page_code,
