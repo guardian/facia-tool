@@ -29,8 +29,9 @@ case class Prefill(
                     cutout: Option[String]
                   )
 
-class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext) extends GuardianContentClient(config.contentApi.editionsKey) with Capi with Logging {
-  override def targetUrl: String = config.contentApi.editionsPrefillHost
+class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext)
+  extends GuardianContentClient(apiKey = config.contentApi.editionsKey) with Capi with Logging {
+  override def targetUrl: String = config.contentApi.contentApiDraftHost
 
   override def get(url: String, headers: Map[String, String])(implicit context: ExecutionContext): Future[HttpResponse] = {
     val reqBuilder = getPreviewHeaders(headers, url).foldLeft(new Request.Builder().url(url)) { case (builder, headerPair) =>
@@ -63,7 +64,6 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
 
   def getPreviewHeaders(headers: Map[String, String], url: String): Seq[(String, String)] = previewSigner.addIAMHeaders(headers = headers, URI.create(url)).toSeq
 
-  // Prefill
   private def geneneratePrefillQuery(issueDate: LocalDate, capiPrefillQuery: CapiPrefillQuery, fields: List[String]) = {
     val params = URLEncodedUtils
       .parse(new URI(capiPrefillQuery.escapedQueryString()), Charset.forName("UTF-8"))
@@ -72,7 +72,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
     // Hack because composer/capi/whoever doesn't worry about timezones in the newspaper-edition date
     val utcMidnightOnDate = issueDate.atStartOfDay().toInstant(ZoneOffset.UTC)
 
-    var query = CapiQueryBuilder(capiPrefillQuery.pathType)
+    var query = CapiQueryGenerator(capiPrefillQuery.pathType)
       .page(1)
       .pageSize(200)
       .showFields(fields.mkString(","))
@@ -193,9 +193,8 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
   }
 }
 
-// Query generator for the print-sent endpoint
-case class CapiQueryBuilder(pathType: PathType, parameterHolder: Map[String, Parameter] = Map.empty)
-  extends SearchQueryBase[CapiQueryBuilder] {
+case class CapiQueryGenerator(pathType: PathType, parameterHolder: Map[String, Parameter] = Map.empty)
+  extends SearchQueryBase[CapiQueryGenerator] {
 
   def withParameters(parameterMap: Map[String, Parameter]) = copy(pathType, parameterMap)
 

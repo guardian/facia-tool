@@ -202,8 +202,6 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
 
     val contentApiLiveHost: String = getMandatoryString("content.api.host")
     def contentApiDraftHost: String = getMandatoryString("content.api.draft.iam-host")
-
-    val editionsPrefillHost: String = getMandatoryString("content.api.draft.iam-host")
     lazy val editionsKey: String = getMandatoryString("content.api.editions.apiKey")
 
     lazy val key: Option[String] = getString("content.api.key")
