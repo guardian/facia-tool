@@ -22,28 +22,25 @@ import scala.collection.JavaConverters._
 import scala.concurrent.{ExecutionContext, Future, Promise}
 
 case class Prefill(
-  internalPageCode: Int,
-  showByline: Boolean,
-  showQuotedHeadline: Boolean,
-  imageCutoutReplace: Boolean,
-  cutout: Option[String]
-)
+                    internalPageCode: Int,
+                    showByline: Boolean,
+                    showQuotedHeadline: Boolean,
+                    imageCutoutReplace: Boolean,
+                    cutout: Option[String]
+                  )
 
 class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext) extends GuardianContentClient(config.contentApi.editionsKey) with Capi with Logging {
   override def targetUrl: String = config.contentApi.editionsPrefillHost
 
   override def get(url: String, headers: Map[String, String])(implicit context: ExecutionContext): Future[HttpResponse] = {
-    val reqBuilder = this.getPreviewHeaders(url).foldLeft(new Request.Builder().url(url)) { case (builder, headerPair) =>
-      builder.addHeader(headerPair._1, headerPair._2)
-    }
-
-    val req = headers.foldLeft(reqBuilder) {
-      case (r, (name, value)) => r.header(name, value)
+    val reqBuilder = getPreviewHeaders(headers, url).foldLeft(new Request.Builder().url(url)) { case (builder, headerPair) =>
+      val (headerName, headerValue) = headerPair
+      builder.addHeader(headerName, headerValue)
     }
 
     val promise = Promise[HttpResponse]()
 
-    http.newCall(req.build()).enqueue(new Callback() {
+    http.newCall(reqBuilder.build()).enqueue(new Callback() {
       override def onFailure(call: Call, e: IOException): Unit = promise.failure(e)
 
       override def onResponse(call: Call, response: Response): Unit = {
@@ -64,7 +61,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
     )
   }
 
-  def getPreviewHeaders(url: String): Seq[(String, String)] = previewSigner.addIAMHeaders(headers = Map.empty, URI.create(url)).toSeq
+  def getPreviewHeaders(headers: Map[String, String], url: String): Seq[(String, String)] = previewSigner.addIAMHeaders(headers = headers, URI.create(url)).toSeq
 
   // Prefill
   private def geneneratePrefillQuery(issueDate: LocalDate, capiPrefillQuery: CapiPrefillQuery, fields: List[String]) = {
@@ -122,6 +119,10 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
       .showTags("all")
       .showBlocks("main")
       .showAtoms("media")
+
+    import play.api.Logger
+
+    Logger.info(s"prefill query URL generated:\n${query.getUrl(targetUrl)}")
 
     this.getResponse(query).map { response =>
       val filteredResults = response.results.filter { result =>
@@ -202,7 +203,7 @@ case class CapiQueryBuilder(pathType: PathType, parameterHolder: Map[String, Par
 }
 
 trait Capi {
-  def getPreviewHeaders(url: String): Seq[(String, String)]
+  def getPreviewHeaders(headers: Map[String, String], url: String): Seq[(String, String)]
 
   def getPrefillArticleItems(issueDate: LocalDate, capiPrefillQuery: CapiPrefillQuery): Future[List[Prefill]]
 

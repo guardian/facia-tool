@@ -34,7 +34,7 @@ class FaciaContentApiProxy(capi: Capi, val deps: BaseFaciaControllerComponents)(
 
     val url = s"$contentApiHost/$path?$queryString${config.contentApi.key.map(key => s"&api-key=$key").getOrElse("")}"
 
-    wsClient.url(url).withHttpHeaders(capi.getPreviewHeaders(url): _*).get().map { response =>
+    wsClient.url(url).withHttpHeaders(capi.getPreviewHeaders(Map.empty, url): _*).get().map { response =>
 
       if (response.status != OK) {
         logger.error(s"Request to capi preview with url $url failed with response $response, ${response.body}")
@@ -53,9 +53,9 @@ class FaciaContentApiProxy(capi: Capi, val deps: BaseFaciaControllerComponents)(
 
     val contentApiHost = config.contentApi.contentApiLiveHost
 
-    // In the CODE and PROD environments, an api key is not required because we are using an AWS private link endpoint to connect to CAPI. 
-    // Private Link endpoints are inside the AWS account and allow other services in the account access to the API. 
-    // In DEV environments - we use a standard external API for which a key is required, and is passed in via the config. 
+    // In the CODE and PROD environments, an api key is not required because we are using an AWS private link endpoint to connect to CAPI.
+    // Private Link endpoints are inside the AWS account and allow other services in the account access to the API.
+    // In DEV environments - we use a standard external API for which a key is required, and is passed in via the config.
     val url = s"$contentApiHost/$path?$queryString${config.contentApi.key.map(key => s"&api-key=$key").getOrElse("")}"
 
     wsClient.url(url).get().map { response =>
@@ -82,7 +82,7 @@ class FaciaContentApiProxy(capi: Capi, val deps: BaseFaciaControllerComponents)(
   def json(url: String) = AccessAPIAuthAction.async { request =>
     FaciaToolMetrics.ProxyCount.increment()
 
-    wsClient.url(url).withHttpHeaders(capi.getPreviewHeaders(url): _*).get().map { response =>
+    wsClient.url(url).withHttpHeaders(capi.getPreviewHeaders(Map.empty, url): _*).get().map { response =>
       Cached(60) {
         Ok(rewriteBody(response.body)).as("application/json")
       }
