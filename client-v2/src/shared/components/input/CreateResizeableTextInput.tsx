@@ -1,6 +1,7 @@
 import React from 'react';
 import { WrappedFieldProps } from 'redux-form';
 import { StyledProps } from 'styled-components';
+import clamp from 'lodash/clamp';
 
 import InputLabel from './InputLabel';
 import InputContainer from './InputContainer';
@@ -57,7 +58,8 @@ const createResizeableTextInput = (
   Component: new (props: any) => React.Component<
     React.HTMLAttributes<HTMLInputElement> & StyledProps<any>
   >,
-  type?: string
+  type?: string,
+  maxAutoResizeHeight: number = 120
 ) => {
   return class ResizeableTextInput extends React.Component<Props, State> {
     private inputElement: React.RefObject<HTMLInputElement>;
@@ -82,7 +84,13 @@ const createResizeableTextInput = (
         this.inputElement.current &&
         this.inputElement.current.type === 'textarea'
       ) {
-        this.setState({ inputHeight: this.inputElement.current.scrollHeight });
+        this.setState({
+          inputHeight: clamp(
+            this.inputElement.current.scrollHeight,
+            0,
+            maxAutoResizeHeight
+          )
+        });
       }
     }
 
