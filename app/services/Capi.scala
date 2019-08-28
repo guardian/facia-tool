@@ -120,10 +120,6 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
       .showBlocks("main")
       .showAtoms("media")
 
-    import play.api.Logger
-
-    Logger.info(s"prefill query URL generated:\n${query.getUrl(targetUrl)}")
-
     this.getResponse(query).map { response =>
       val filteredResults = response.results.filter { result =>
         (for {
