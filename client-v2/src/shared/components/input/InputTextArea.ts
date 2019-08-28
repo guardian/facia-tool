@@ -7,7 +7,6 @@ const InputTextAreaBase = InputBase.withComponent('textarea').extend<{
 }>`
   resize: vertical;
   min-height: ${({ minHeight = 40 }) => minHeight}px;
-  max-height: ${({ maxHeight = 120 }) => maxHeight}px;
 `;
 
 export default createResizeableTextInput(InputTextAreaBase);
