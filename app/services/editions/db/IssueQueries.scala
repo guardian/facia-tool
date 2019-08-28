@@ -54,10 +54,11 @@ trait IssueQueries {
             is_hidden,
             metadata,
             prefill,
+            path_type,
             updated_on,
             updated_by,
             updated_email
-          ) VALUES ($frontId, $cIndex, ${collection.name}, ${collection.hidden}, NULL, ${collection.prefill.map(_.queryString)}, $truncatedNow, $userName, ${user.email})
+          ) VALUES ($frontId, $cIndex, ${collection.name}, ${collection.hidden}, NULL, ${collection.prefill.map(_.queryString)}, ${collection.prefill.map(_.pathType.entryName)}, $truncatedNow, $userName, ${user.email})
           RETURNING id;
           """.map(_.string("id")).single().apply().get
 
@@ -150,6 +151,7 @@ trait IssueQueries {
         collections.updated_by    AS collections_updated_by,
         collections.updated_email AS collections_updated_email,
         collections.prefill       AS collections_prefill,
+        collections.path_type     AS collections_path_type,
 
         articles.collection_id AS articles_collection_id,
         articles.page_code     AS articles_page_code,

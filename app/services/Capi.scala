@@ -1,22 +1,22 @@
 package services
 
 import java.io.IOException
-import java.net.{URI, URLEncoder}
+import java.net.URI
 import java.nio.charset.Charset
-import java.time.{LocalDate, Period, ZoneOffset, ZonedDateTime}
+import java.time.{LocalDate, ZoneOffset}
 
-import org.apache.http.client.utils.URLEncodedUtils
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
 import com.gu.contentapi.client.model._
 import com.gu.contentapi.client.model.v1.{Content, SearchResponse, TagType}
-import com.gu.contentapi.client.{GuardianContentClient, IAMEncoder, IAMSigner, Parameter}
+import com.gu.contentapi.client.{GuardianContentClient, IAMSigner, Parameter}
 import com.gu.facia.api.utils.{CardStyle, ResolvedMetaData}
 import com.gu.facia.client.models.TrailMetaData
 import conf.ApplicationConfiguration
 import logging.Logging
-import model.editions.CapiPrefillQuery
+import model.editions.{CapiPrefillQuery, PathType}
 import okhttp3.{Call, Callback, Request, Response}
+import org.apache.http.client.utils.URLEncodedUtils
 
 import scala.collection.JavaConverters._
 import scala.concurrent.{ExecutionContext, Future, Promise}
@@ -29,22 +29,21 @@ case class Prefill(
                     cutout: Option[String]
                   )
 
-class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext) extends GuardianContentClient(config.contentApi.editionsKey) with Capi with Logging {
-  override def targetUrl: String = config.contentApi.editionsPrefillHost
+class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext)
+  extends GuardianContentClient(apiKey = config.contentApi.editionsKey) with Capi with Logging {
+  override def targetUrl: String = config.contentApi.contentApiDraftHost
 
   override def get(url: String, headers: Map[String, String])(implicit context: ExecutionContext): Future[HttpResponse] = {
-    val reqBuilder = this.getPreviewHeaders(url).foldLeft(new Request.Builder().url(url)) { case (builder, headerPair) =>
-      builder.addHeader(headerPair._1, headerPair._2)
-    }
-
-    val req = headers.foldLeft(reqBuilder) {
-      case (r, (name, value)) => r.header(name, value)
+    val reqBuilder = getPreviewHeaders(headers, url).foldLeft(new Request.Builder().url(url)) { case (builder, headerPair) =>
+      val (headerName, headerValue) = headerPair
+      builder.addHeader(headerName, headerValue)
     }
 
     val promise = Promise[HttpResponse]()
 
-    http.newCall(req.build()).enqueue(new Callback() {
+    http.newCall(reqBuilder.build()).enqueue(new Callback() {
       override def onFailure(call: Call, e: IOException): Unit = promise.failure(e)
+
       override def onResponse(call: Call, response: Response): Unit = {
         promise.success(HttpResponse(response.body().bytes, response.code(), response.message()))
       }
@@ -63,10 +62,9 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
     )
   }
 
-  def getPreviewHeaders(url: String): Seq[(String,String)] = previewSigner.addIAMHeaders(headers = Map.empty, URI.create(url)).toSeq
+  def getPreviewHeaders(headers: Map[String, String], url: String): Seq[(String, String)] = previewSigner.addIAMHeaders(headers = headers, URI.create(url)).toSeq
 
-  // Prefill
-  def geneneratePrefillQuery(issueDate: LocalDate, capiPrefillQuery: CapiPrefillQuery, fields: List[String]) = {
+  private def geneneratePrefillQuery(issueDate: LocalDate, capiPrefillQuery: CapiPrefillQuery, fields: List[String]) = {
     val params = URLEncodedUtils
       .parse(new URI(capiPrefillQuery.escapedQueryString()), Charset.forName("UTF-8"))
       .asScala
@@ -74,7 +72,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
     // Hack because composer/capi/whoever doesn't worry about timezones in the newspaper-edition date
     val utcMidnightOnDate = issueDate.atStartOfDay().toInstant(ZoneOffset.UTC)
 
-    var query = PrintSentQuery()
+    var query = CapiQueryGenerator(capiPrefillQuery.pathType)
       .page(1)
       .pageSize(200)
       .showFields(fields.mkString(","))
@@ -139,11 +137,12 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
   }
 
   /**
-    * Get a list of article items in the order they exist according to the newspaper page number
-    * @param issueDate
-    * @param capiPrefillQuery
-    * @return
-    */
+   * Get a list of article items in the order they exist according to the newspaper page number
+   *
+   * @param issueDate
+   * @param capiPrefillQuery
+   * @return
+   */
   def getPrefillArticleItems(issueDate: LocalDate, capiPrefillQuery: CapiPrefillQuery): Future[List[Prefill]] = {
     val fields = List(
       "newspaperEditionDate",
@@ -190,17 +189,18 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
   }
 }
 
-// Query generator for the print-sent endpoint
-case class PrintSentQuery(parameterHolder: Map[String, Parameter] = Map.empty)
-  extends SearchQueryBase[PrintSentQuery] {
+case class CapiQueryGenerator(pathType: PathType, parameterHolder: Map[String, Parameter] = Map.empty)
+  extends SearchQueryBase[CapiQueryGenerator] {
 
-  def withParameters(parameterMap: Map[String, Parameter]) = copy(parameterMap)
+  def withParameters(parameterMap: Map[String, Parameter]) = copy(pathType, parameterMap)
 
-  override def pathSegment: String = "content/print-sent"
+  override def pathSegment: String = pathType.toPathSegment
 }
 
 trait Capi {
-  def getPreviewHeaders(url: String): Seq[(String,String)]
+  def getPreviewHeaders(headers: Map[String, String], url: String): Seq[(String, String)]
+
   def getPrefillArticleItems(issueDate: LocalDate, capiPrefillQuery: CapiPrefillQuery): Future[List[Prefill]]
+
   def getPrefillArticles(issueDate: LocalDate, capiPrefillQuery: CapiPrefillQuery, currentPageCodes: List[String]): Future[SearchResponse]
 }

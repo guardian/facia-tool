@@ -12,7 +12,7 @@ case class EditionsCollection(
                                updatedEmail: Option[String],
                                prefill: Option[CapiPrefillQuery],
                                items: List[EditionsArticle],
-) {
+                             ) {
   def toPublishedCollection: PublishedCollection = PublishedCollection(
     id,
     displayName,
@@ -24,6 +24,8 @@ object EditionsCollection {
   implicit val format = Json.format[EditionsCollection]
 
   def fromRow(rs: WrappedResultSet, prefix: String = ""): EditionsCollection = {
+    val capiPrefillQuery: Option[CapiPrefillQuery] =
+      createMaybeCapiPrefillQuery(rs.stringOpt(prefix + "prefill"), rs.stringOpt(prefix + "path_type"))
     EditionsCollection(
       rs.string(prefix + "id"),
       rs.string(prefix + "name"),
@@ -31,9 +33,16 @@ object EditionsCollection {
       rs.zonedDateTimeOpt(prefix + "updated_on").map(_.toInstant.toEpochMilli),
       rs.stringOpt(prefix + "updated_by"),
       rs.stringOpt(prefix + "updated_email"),
-      rs.stringOpt(prefix + "prefill").map(CapiPrefillQuery.apply),
+      capiPrefillQuery,
       Nil
     )
+  }
+
+  private def createMaybeCapiPrefillQuery(maybePrefill: Option[String], maybePathType: Option[String]): Option[CapiPrefillQuery] = {
+    (maybePrefill, maybePathType) match {
+      case (Some(prefill), Some(pathType)) => Some(CapiPrefillQuery(prefill, PathType.withName(pathType)))
+      case _ => None
+    }
   }
 
   def fromRowOpt(rs: WrappedResultSet, prefix: String = ""): Option[EditionsCollection] = {
@@ -41,7 +50,10 @@ object EditionsCollection {
       id <- rs.stringOpt(prefix + "id")
       name <- rs.stringOpt(prefix + "name")
       isHidden <- rs.booleanOpt(prefix + "is_hidden")
-    } yield
+    } yield {
+      val capiPrefillQuery: Option[CapiPrefillQuery] =
+        createMaybeCapiPrefillQuery(rs.stringOpt(prefix + "prefill"), rs.stringOpt(prefix + "path_type"))
+
       EditionsCollection(
         id,
         name,
@@ -49,8 +61,9 @@ object EditionsCollection {
         rs.zonedDateTimeOpt(prefix + "updated_on").map(_.toInstant.toEpochMilli),
         rs.stringOpt(prefix + "updated_by"),
         rs.stringOpt(prefix + "updated_email"),
-        rs.stringOpt(prefix + "prefill").map(CapiPrefillQuery.apply),
+        capiPrefillQuery,
         Nil
       )
+    }
   }
 }
