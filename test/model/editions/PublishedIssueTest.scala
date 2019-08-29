@@ -146,7 +146,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       )
     }
 
-    "furniture should throw if set to media type is covercard but we dont have both mobile and tablet " in {
+    "media type should fall back if there's an invalid cover card" in {
       val coverCardFurniture = articleFurniture
         .copy(mediaType = Some(MediaType.CoverCard))
         .copy(coverCardImages = Some(CoverCardImages(
@@ -163,9 +163,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
         EditionsArticle("123456", 0, Some(coverCardFurniture)),
         EditionsArticle("123456", 0, Some(swapped))
       ).foreach { a =>
-        assertThrows[IllegalStateException] {
-          a.toPublishedArticle
-        }
+        a.toPublishedArticle.furniture.mediaType shouldBe PublishedMediaType.UseArticleTrail
       }
     }
   }
