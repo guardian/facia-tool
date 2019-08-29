@@ -1,5 +1,6 @@
 package model.editions
 
+import logging.Logging
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
@@ -19,12 +20,7 @@ object Image {
 
 case class CoverCardImages(mobile: Option[Image], tablet: Option[Image]) {
   def toPublishedCardImage: Option[PublishedCardImage] = {
-    (mobile, tablet) match {
-      case (Some(m), Some(t)) => Some(PublishedCardImage(m.toPublishedImage, t.toPublishedImage))
-      case (None, Some(_)) => throw new IllegalStateException("Must define both mobile and tablet images")
-      case (Some(_), None) => throw new IllegalStateException("Must define both mobile and tablet images")
-      case _ => None
-    }
+
   }
 }
 
@@ -57,22 +53,34 @@ object ArticleMetadata {
   val default = ArticleMetadata(None, None, None, None, None, None, None, None, None, None, None, None)
 }
 
-case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[ArticleMetadata]) {
+case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[ArticleMetadata]) extends Logging {
   def toPublishedArticle: PublishedArticle = {
-    val imageSrcOverride: Option[PublishedImage] = metadata.flatMap(meta => {
+    var mediaType: Option[MediaType] = metadata.flatMap(_.mediaType)
+
+    val coverCardImages = metadata.flatMap { meta =>
       meta.mediaType match {
+        case Some(MediaType.CoverCard) =>
+          val mobile = meta.coverCardImages.flatMap(_.mobile)
+          val tablet = meta.coverCardImages.flatMap(_.tablet)
+
+          (mobile, tablet) match {
+            case (Some(m), Some(t)) => Some(PublishedCardImage(m.toPublishedImage, t.toPublishedImage))
+            case _ =>
+              logger.warn(s"Failed to convert card images, must define both mobile and tablet images, falling back to use article trail")
+              mediaType = mediaType.map(_ => MediaType.UseArticleTrail)
+              None
+          }
+        case _ => None
+      }
+    }
+
+    val imageSrcOverride: Option[PublishedImage] = metadata.flatMap(meta => {
+      mediaType match {
         case Some(MediaType.Image) => meta.replaceImage.map(_.toPublishedImage)
         case Some(MediaType.Cutout) => meta.cutoutImage.map(_.toPublishedImage)
         case _ => None
       }
     })
-
-    val coverCardImages = metadata.flatMap { meta => {
-      meta.mediaType match {
-        case Some(MediaType.CoverCard) => meta.coverCardImages.flatMap(_.toPublishedCardImage)
-        case _ => None
-      }
-    }}
 
     PublishedArticle(
       pageCode.toLong,
@@ -83,7 +91,7 @@ case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[Art
         bylineOverride = metadata.flatMap(_.byline),
         showByline = metadata.flatMap(_.showByline).getOrElse(false),
         showQuotedHeadline = metadata.flatMap(_.showQuotedHeadline).getOrElse(false),
-        mediaType = metadata.flatMap(_.mediaType).map(_.toPublishedMediaType).getOrElse(PublishedMediaType.UseArticleTrail),
+        mediaType = mediaType.map(_.toPublishedMediaType).getOrElse(PublishedMediaType.UseArticleTrail),
         imageSrcOverride = imageSrcOverride,
         sportScore = metadata.flatMap(_.sportScore),
         overrideArticleMainMedia = metadata.flatMap(_.overrideArticleMainMedia).getOrElse(true),
