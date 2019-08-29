@@ -18,11 +18,7 @@ object Image {
   implicit val format = Json.format[Image]
 }
 
-case class CoverCardImages(mobile: Option[Image], tablet: Option[Image]) {
-  def toPublishedCardImage: Option[PublishedCardImage] = {
-
-  }
-}
+case class CoverCardImages(mobile: Option[Image], tablet: Option[Image])
 
 object CoverCardImages {
   implicit val format = Json.format[CoverCardImages]
