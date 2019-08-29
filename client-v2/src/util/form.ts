@@ -157,20 +157,13 @@ const formToMetaFieldMap: { [fieldName: string]: string } = {
   imageCutoutSrcOrigin: 'cutoutImage'
 };
 
-export const getImageMetaFromValidationResponse = (
-  image: ImageData,
-  prefix: string = ''
-) => {
-  const imageBit = prefix !== '' ? 'Image' : 'image';
-
-  return {
-    [prefix + imageBit + 'Src']: image.src,
-    [prefix + imageBit + 'SrcThumb']: image.thumb,
-    [prefix + imageBit + 'SrcWidth']: intToStr(image.width),
-    [prefix + imageBit + 'SrcHeight']: intToStr(image.height),
-    [prefix + imageBit + 'SrcOrigin']: image.origin
-  };
-};
+export const getImageMetaFromValidationResponse = (image: ImageData) => ({
+  imageSrc: image.src,
+  imageSrcThumb: image.thumb,
+  imageSrcWidth: intToStr(image.width),
+  imageSrcHeight: intToStr(image.height),
+  imageSrcOrigin: image.origin
+});
 
 export const getArticleFragmentMetaFromFormValues = (
   state: State,
