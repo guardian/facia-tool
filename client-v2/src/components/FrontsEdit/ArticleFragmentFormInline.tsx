@@ -486,6 +486,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 </InputGroup>
                 <InputGroup>
                   <ConditionalField
+                    permittedFields={editableFields}
                     name="coverCardImageReplace"
                     id={getInputId(articleFragmentId, 'coverCardImageReplace')}
                     component={InputCheckboxToggleInline}
