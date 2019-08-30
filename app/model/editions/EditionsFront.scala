@@ -35,7 +35,10 @@ case class EditionsFront(
     PublishedFront(
       id,
       name,
-      collections.filterNot(_.isHidden).map(_.toPublishedCollection),
+      collections
+        .filterNot(_.isHidden) // drop hidden collections
+        .map(_.toPublishedCollection) // convert
+        .filterNot(_.items.isEmpty), // drop collections that contain no items
       swatch
     )
   }

@@ -173,15 +173,15 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
     "fronts should be filtered out when hidden" in {
       val testIssue = issue(2019, 9, 30,
         front("uk-news",
-          collection("london", None),
-          collection("financial", None)
+          collection("london", None, article("123")),
+          collection("financial", None, article("123"))
         ),
         front("culture",
-          collection("art", None),
-          collection("theatre", None)
+          collection("art", None, article("123")),
+          collection("theatre", None, article("123"))
         ),
         front("special",
-          collection("magic", None)
+          collection("magic", None, article("123"))
         ).hide
       )
       testIssue.fronts.size shouldBe 3
@@ -189,15 +189,48 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       publishedIssue.fronts.size shouldBe 2
       publishedIssue.fronts.find(_.name == "special") shouldBe None
     }
+
+    "fronts should be filtered out when empty" in {
+      val testIssue = issue(2019, 9, 30,
+        front("uk-news"),
+        front("culture",
+          collection("art", None, article("123")),
+          collection("theatre", None, article("123"))
+        ),
+        front("empty")
+      )
+      testIssue.fronts.size shouldBe 3
+      val publishedIssue = testIssue.toPublishedIssue(None)
+      publishedIssue.fronts.size shouldBe 1
+      publishedIssue.fronts.find(_.name == "culture").value.collections.size shouldBe 2
+    }
+
+    "fronts should be filtered out when it only contains empty collections" in {
+      val testIssue = issue(2019, 9, 30,
+        front("uk-news",
+          collection("london", None),
+          collection("financial", None)
+        ),
+        front("culture",
+          collection("art", None, article("123")),
+          collection("theatre", None, article("123"))
+        ),
+        front("empty")
+      )
+      testIssue.fronts.size shouldBe 3
+      val publishedIssue = testIssue.toPublishedIssue(None)
+      publishedIssue.fronts.size shouldBe 1
+      publishedIssue.fronts.find(_.name == "culture").value.collections.size shouldBe 2
+    }
   }
 
   "PublishedFront" - {
     "collections should be filtered out when hidden" in {
       val testFront = front("uk-news",
-        collection("london", None),
-        collection("financial", None),
-        collection("special", None).hide,
-        collection("weather", None)
+        collection("london", None, article("123")),
+        collection("financial", None, article("123")),
+        collection("special", None, article("123")).hide,
+        collection("weather", None, article("123"))
       )
 
       testFront.collections.size shouldBe 4
@@ -206,6 +239,21 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       val publishedFront = testFront.toPublishedFront
       publishedFront.collections.size shouldBe 3
       publishedFront.collections.find(_.id == "special") shouldBe None
+    }
+
+    "collections should be filtered out when empty" in {
+      val testFront = front("uk-news",
+        collection("london", None, article("123")),
+        collection("financial", None, article("123")),
+        collection("weather", None)
+      )
+
+      testFront.collections.size shouldBe 3
+      testFront.collections.find(_.id == "weather").value
+
+      val publishedFront = testFront.toPublishedFront
+      publishedFront.collections.size shouldBe 2
+      publishedFront.collections.find(_.id == "weather") shouldBe None
     }
 
     "collection displayName should be provided" in {
@@ -217,10 +265,10 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
         None,
         None,
         None,
-        Nil
+        List(article("123"))
       )
       val testFront = front("uk-news",
-        collection("london", None),
+        collection("london", None, article("123")),
         test
       )
 
