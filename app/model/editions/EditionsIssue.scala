@@ -1,6 +1,6 @@
 package model.editions
 
-import java.time.{Instant, LocalDate, OffsetDateTime, ZoneId}
+import java.time.LocalDate
 
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
@@ -23,7 +23,10 @@ case class EditionsIssue(
     displayName,
     issueDate,
     version,
-    fronts.filterNot(_.isHidden).map(_.toPublishedFront)
+    fronts
+      .filterNot(_.isHidden) // drop hidden fronts
+      .map(_.toPublishedFront) // convert
+      .filterNot(_.collections.isEmpty) // drop fronts that contain no collections
   )
 }
 
