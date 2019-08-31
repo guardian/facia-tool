@@ -10,6 +10,7 @@ object DailyEdition {
     List(
       FrontSpecialSpecial1.front -> Daily(),
       FrontTopStories.front -> Daily(),
+      FrontSpecialSpecial2.front -> Daily(),
       FrontNewsUkGuardian.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri)),
       FrontNewsUkGuardianSaturday.front -> WeekDays(List(WeekDay.Sat)),
       FrontNewsWorldGuardian.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
@@ -28,9 +29,10 @@ object DailyEdition {
       FrontFood.front -> WeekDays(List(WeekDay.Sat)),
       FrontFoodObserver.front -> WeekDays(List(WeekDay.Sun)),
       FrontLifeFashion.front -> WeekDays(List(WeekDay.Sat)),
+      FrontSpecialSpecial3.front -> Daily(),
       FrontSportGuardian.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontSportObserver.front -> WeekDays(List(WeekDay.Sun)),
-      FrontSpecialSpecial2.front -> Daily(),
+      FrontSpecialSpecial4.front -> Daily(),
       FrontCrosswords.front -> Daily(),
     ),
     zoneId = ZoneId.of("Europe/London"),
@@ -65,6 +67,22 @@ object FrontTopStories {
     name = "Top Stories",
     collections = List(collectionTopStories),
     presentation = FrontPresentation(Neutral),
+  )
+}
+
+object FrontSpecialSpecial2 {
+  val collectionSpecialSpecial2 = CollectionTemplate(
+    name = "Special",
+    prefill = None,
+    presentation = TemplateDefaults.defaultCollectionPresentation
+  )
+
+  val front = FrontTemplate(
+    name = "Special 2",
+    collections = List(collectionSpecialSpecial2),
+    presentation = TemplateDefaults.defaultFrontPresentation,
+    hidden = true,
+    isSpecial = true
   )
 }
 
@@ -580,6 +598,22 @@ object FrontFoodObserver {
   )
 }
 
+object FrontSpecialSpecial3 {
+  val collectionSpecialSpecial3 = CollectionTemplate(
+    name = "Special",
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/special-supplement/special-supplement|theobserver/special-supplement/special-supplement", PathType.PrintSent)),
+    presentation = TemplateDefaults.defaultCollectionPresentation
+  )
+
+  val front = FrontTemplate(
+    name = "Special 3",
+    collections = List(collectionSpecialSpecial3),
+    presentation = TemplateDefaults.defaultFrontPresentation,
+    hidden = true,
+    isSpecial = true
+  )
+}
+
 object FrontSportGuardian {
   val collectionSport = CollectionTemplate(
     name = "Sport",
@@ -618,16 +652,16 @@ object FrontSportObserver {
   )
 }
 
-object FrontSpecialSpecial2 {
-  val collectionSpecialSpecial2 = CollectionTemplate(
+object FrontSpecialSpecial4 {
+  val collectionSpecialSpecial4 = CollectionTemplate(
     name = "Special",
     prefill = Some(CapiPrefillQuery("?tag=theguardian/special-supplement/special-supplement|theobserver/special-supplement/special-supplement", PathType.PrintSent)),
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
 
   val front = FrontTemplate(
-    name = "Special 2",
-    collections = List(collectionSpecialSpecial2),
+    name = "Special 4",
+    collections = List(collectionSpecialSpecial4),
     presentation = TemplateDefaults.defaultFrontPresentation,
     hidden = true,
     isSpecial = true
