@@ -601,7 +601,7 @@ object FrontFoodObserver {
 object FrontSpecialSpecial3 {
   val collectionSpecialSpecial3 = CollectionTemplate(
     name = "Special",
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/special-supplement/special-supplement|theobserver/special-supplement/special-supplement", PathType.PrintSent)),
+    prefill = None,
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
 
