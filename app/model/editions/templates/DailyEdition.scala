@@ -50,7 +50,7 @@ object FrontSpecialSpecial1 {
   val front = FrontTemplate(
     name = "Special 1",
     collections = List(collectionSpecialSpecial1),
-    presentation = TemplateDefaults.defaultFrontPresentation,
+    presentation = FrontPresentation(Special),
     hidden = true,
     isSpecial = true
   )
@@ -80,7 +80,7 @@ object FrontSpecialSpecial2 {
   val front = FrontTemplate(
     name = "Special 2",
     collections = List(collectionSpecialSpecial2),
-    presentation = TemplateDefaults.defaultFrontPresentation,
+    presentation = FrontPresentation(Special),
     hidden = true,
     isSpecial = true
   )
