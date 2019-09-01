@@ -96,7 +96,7 @@ object FrontNewsUkGuardian {
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
   val front = FrontTemplate(
-    name = "UK News",
+    name = "National",
     collections = List(collectionNewsFrontPage, collectionNewsSpecial1, collectionNewsUkNewsGuardian, collectionNewsUkFinancial, collectionNewsWeather),
     presentation = FrontPresentation(News)
   )
@@ -135,7 +135,7 @@ object FrontNewsUkGuardianSaturday {
     presentation = TemplateDefaults.defaultCollectionPresentation
   )
   val front = FrontTemplate(
-    name = "UK News",
+    name = "National",
     collections = List(collectionNewsFrontPage, collectionNewsSpecial1, collectionNewsUkNewsGuardian, collectionNewsWeekInReviewGuardian, collectionNewsUkFinancial, collectionNewsWeather),
     presentation = FrontPresentation(News)
   )
@@ -160,7 +160,7 @@ object FrontNewsWorldGuardian {
     hidden = true
   )
   val front = FrontTemplate(
-    name = "World News",
+    name = "World",
     collections = List(collectionNewsWorldGuardian, collectionNewsWorldFinancialGuardian, collectionNewsWorldSpecial1),
     presentation = FrontPresentation(News)
   )
@@ -195,7 +195,7 @@ object FrontNewsUkObserver {
     hidden = true
   )
   val front = FrontTemplate(
-    name = "UK News",
+    name = "National",
     collections = List(collectionNewsFrontPageObserver, collectionNewsUkNewsObserver, collectionNewsUkBusinessObserver, collectionNewsUkFocusObserver, collectionNewsUkNewsSpecial2),
     presentation = FrontPresentation(News)
   )
@@ -219,7 +219,7 @@ object FrontNewsWorldObserver {
     hidden = true
   )
   val front = FrontTemplate(
-    name = "World News",
+    name = "World",
     collections = List(collectionNewsWorldObserver, collectionNewsWorldBusinessObserver, collectionNewsWorldSpecial2),
     presentation = FrontPresentation(News)
   )
@@ -253,7 +253,7 @@ object FrontJournal {
     hidden = true
   )
   val front = FrontTemplate(
-    name = "Opinion",
+    name = "Journal",
     collections = List(collectionJournalFeatures, collectionJournalComment, collectionJournalLetters, collectionJournalObits, collectionJournalSpecial1),
     presentation = FrontPresentation(Opinion)
   )
@@ -272,7 +272,7 @@ object FrontComment {
     hidden = true
   )
   val front = FrontTemplate(
-    name = "Opinion",
+    name = "Journal",
     collections = List(collectionOpinionComment, collectionOpinionSpecial1),
     presentation = FrontPresentation(Opinion)
   )
@@ -410,7 +410,7 @@ object FrontLife {
     hidden = true
   )
   val front = FrontTemplate(
-    name = "Lifestyle",
+    name = "Life",
     collections = List(collectionLifeFeatures, collectionLifeSpecial1),
     presentation = FrontPresentation(Lifestyle)
   )
@@ -486,7 +486,7 @@ object FrontLifeWeekend {
     hidden = true
   )
   val front = FrontTemplate(
-    name = "Lifestyle",
+    name = "Life",
     collections = List(collectionLifeWeekend, collectionLifeFamily, collectionLifeSpace, collectionLifeFashion, collectionLifeBody, collectionLifeTravel, collectionLifeMoney, collectionLifeSpecial2),
     presentation = FrontPresentation(Lifestyle)
   )
@@ -511,7 +511,7 @@ object FrontLifeMagazineObserver {
     hidden = true
   )
   val front = FrontTemplate(
-    name = "Lifestyle",
+    name = "Life",
     collections = List(collectionLifeMagazineFeatures, collectionLifeLifeStyle, collectionLifeSpecial3),
     presentation = FrontPresentation(Lifestyle)
   )
