@@ -7,7 +7,7 @@ import startCase from 'lodash/startCase';
 const getIdFromURL = (url: string): string | undefined => {
   const [, id = null] =
     url.match(
-      /^https:\/\/(?:www.theguardian.com\/|viewer.gutools.co.uk(?:\/(?:preview|live))?\/)([^?]*)/
+      /^https:\/\/(?:www.theguardian.com\/|gu.com\/|viewer.gutools.co.uk(?:\/(?:preview|live))?\/)([^?]*)/
     ) || [];
   return typeof id === 'string' ? id : undefined;
 };
