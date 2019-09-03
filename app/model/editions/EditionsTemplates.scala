@@ -42,6 +42,8 @@ object Swatch extends PlayEnum[Swatch] {
   case object Lifestyle extends Swatch
 
   case object Sport extends Swatch
+  
+  case object Special extends Swatch
 
   override def values = findValues
 }
