@@ -2,6 +2,8 @@ import { getAbsolutePath, isGuardianUrl } from './url';
 import fetchOpenGraphData from './openGraph';
 import { ArticleFragment, ArticleFragmentMeta } from '../types/Collection';
 import v4 from 'uuid/v4';
+import set from 'lodash/fp/set';
+import { PartialBy } from 'types/Util';
 
 function generateId() {
   return 'snap/' + new Date().getTime();
@@ -14,34 +16,32 @@ function validateId(id: string) {
   );
 }
 
-function convertToSnap({ id, ...rest }: ArticleFragment): ArticleFragment {
-  let href;
-
-  if (isGuardianUrl(id)) {
-    href = '/' + getAbsolutePath(id, true);
-  } else {
-    href = id;
-  }
-
-  return {
+function convertToSnap({
+  id,
+  ...rest
+}: PartialBy<ArticleFragment, 'id'>): ArticleFragment {
+  const fragment = {
     id: generateId(),
     ...rest,
-    meta: {
-      href,
-      ...rest.meta
-    }
+    meta: rest.meta
   };
+
+  if (!id) {
+    return fragment;
+  }
+
+  const href = isGuardianUrl(id) ? '/' + getAbsolutePath(id, true) : id;
+  return set(['meta', 'href'], href, fragment);
 }
 
 async function createLinkSnap(
-  url: string,
+  url?: string,
   meta?: ArticleFragmentMeta
 ): Promise<ArticleFragment> {
   const uuid = v4();
   try {
-    const { title, description, siteName } = meta
-      ? ({} as any)
-      : await fetchOpenGraphData(url);
+    const { title, description, siteName } =
+      meta || !url ? ({} as any) : await fetchOpenGraphData(url);
     return convertToSnap({
       uuid,
       id: url,

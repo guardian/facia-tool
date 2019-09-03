@@ -177,19 +177,19 @@ const getArticleEntitiesFromDrop = async (
   const isURL = isValidURL(resourceIdOrUrl);
   const id = isURL ? getIdFromURL(resourceIdOrUrl) : resourceIdOrUrl;
   const isNonGuLink = isURL && !id;
-  if (isNonGuLink) {
+  const meta = getArticleFragmentMetaFromUrlParams(resourceIdOrUrl);
+  if (isNonGuLink && !meta) {
     const fragment = await createLinkSnap(resourceIdOrUrl);
     return [fragment];
   }
-  if (!id) {
-    return [];
-  }
   try {
-    const meta = getArticleFragmentMetaFromUrlParams(resourceIdOrUrl);
     if (meta) {
       // If we have gu params in the url, create a snap with the meta we extract.
       const fragment = await createLinkSnap(id, meta);
       return [fragment];
+    }
+    if (!id) {
+      return [];
     }
     const {
       articles: [article, ...rest],
