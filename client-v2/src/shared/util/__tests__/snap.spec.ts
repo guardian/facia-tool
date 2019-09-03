@@ -1,9 +1,4 @@
-import {
-  validateId,
-  generateId,
-  createLatestSnap,
-  createLinkSnap
-} from '../snap';
+import { validateId, generateId, createLatestSnap, createSnap } from '../snap';
 import tagPageHtml from '../../fixtures/guardianTagPage';
 import fetchMock from 'fetch-mock';
 import bbcSectionPage from 'shared/fixtures/bbcSectionPage';
@@ -58,9 +53,7 @@ describe('utils/snap', () => {
         '/http/proxy/https://www.theguardian.com/world/eu?view=mobile',
         tagPageHtml
       );
-      const linkSnap = await createLinkSnap(
-        'https://www.theguardian.com/world/eu'
-      );
+      const linkSnap = await createSnap('https://www.theguardian.com/world/eu');
       expect(linkSnap).toEqual({
         frontPublicationDate: 1487076708000,
         id: 'snap/1487076708000',
@@ -77,7 +70,7 @@ describe('utils/snap', () => {
     });
     it("should create a snap of type 'link' given an external link", async () => {
       fetchMock.once('/http/proxy/https:/www.bbc.co.uk/news', bbcSectionPage);
-      const linkSnap = await createLinkSnap('https:/www.bbc.co.uk/news');
+      const linkSnap = await createSnap('https:/www.bbc.co.uk/news');
       expect(linkSnap).toEqual({
         frontPublicationDate: 1487076708000,
         id: 'snap/1487076708000',

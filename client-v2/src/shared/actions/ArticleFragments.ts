@@ -13,7 +13,7 @@ import {
   MaybeAddFrontPublicationDate
 } from 'shared/types/Action';
 import { createFragment } from 'shared/util/articleFragment';
-import { createLinkSnap, createLatestSnap } from 'shared/util/snap';
+import { createSnap, createLatestSnap } from 'shared/util/snap';
 import { getIdFromURL } from 'util/CAPIUtils';
 import { isValidURL } from 'shared/util/url';
 import { MappableDropType } from 'util/collectionUtils';
@@ -176,16 +176,16 @@ const getArticleEntitiesFromDrop = async (
   const resourceIdOrUrl = drop.data;
   const isURL = isValidURL(resourceIdOrUrl);
   const id = isURL ? getIdFromURL(resourceIdOrUrl) : resourceIdOrUrl;
-  const isNonGuLink = isURL && !id;
   const meta = getArticleFragmentMetaFromUrlParams(resourceIdOrUrl);
-  if (isNonGuLink && !meta) {
-    const fragment = await createLinkSnap(resourceIdOrUrl);
+  const isPlainUrl = isURL && !id && !meta;
+  if (isPlainUrl) {
+    const fragment = await createSnap(resourceIdOrUrl);
     return [fragment];
   }
   try {
     if (meta) {
       // If we have gu params in the url, create a snap with the meta we extract.
-      const fragment = await createLinkSnap(id, meta);
+      const fragment = await createSnap(id, meta);
       return [fragment];
     }
     if (!id) {
@@ -209,7 +209,7 @@ const getArticleEntitiesFromDrop = async (
       // If there was an error getting content for CAPI, assume the link is valid
       // and create a link snap as a fallback. This catches cases like non-tag or
       // section guardian.co.uk URLs, which aren't in CAPI and are sometimes linked.
-      const fragment = await createLinkSnap(resourceIdOrUrl);
+      const fragment = await createSnap(resourceIdOrUrl);
       return [fragment];
     }
   }
@@ -277,7 +277,7 @@ const getArticleEntitiesFromGuardianPath = async (
   );
   const fragment = await (createLatest
     ? createLatestSnap(resourceId, title || 'Unknown title')
-    : createLinkSnap(resourceId));
+    : createSnap(resourceId));
   return [fragment];
 };
 

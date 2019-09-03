@@ -34,7 +34,7 @@ function convertToSnap({
   return set(['meta', 'href'], href, fragment);
 }
 
-async function createLinkSnap(
+async function createSnap(
   url?: string,
   meta?: ArticleFragmentMeta
 ): Promise<ArticleFragment> {
@@ -82,4 +82,4 @@ function createLatestSnap(url: string, kicker: string) {
   });
 }
 
-export { generateId, validateId, createLatestSnap, createLinkSnap };
+export { generateId, validateId, createLatestSnap, createSnap };
