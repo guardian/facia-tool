@@ -8,7 +8,7 @@ import thunk from 'redux-thunk';
 import { capiArticle } from '../../fixtures/shared';
 import { actionNames as externalArticleActionNames } from 'shared/bundles/externalArticlesBundle';
 import { createFragment } from 'shared/util/articleFragment';
-import { createLinkSnap, createLatestSnap } from 'shared/util/snap';
+import { createSnap, createLatestSnap } from 'shared/util/snap';
 import guardianTagPage from 'shared/fixtures/guardianTagPage';
 import bbcSectionPage from 'shared/fixtures/bbcSectionPage';
 import { RefDrop } from 'util/collectionUtils';
@@ -66,7 +66,7 @@ describe('articleFragments actions', () => {
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         articleFragmentsReceived({
-          uuid: await createLinkSnap('https://bbc.co.uk/some/page')
+          uuid: await createSnap('https://bbc.co.uk/some/page')
         })
       );
     });
@@ -115,9 +115,7 @@ describe('articleFragments actions', () => {
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         articleFragmentsReceived({
-          uuid: await createLinkSnap(
-            'https://www.theguardian.com/example/tag/page'
-          )
+          uuid: await createSnap('https://www.theguardian.com/example/tag/page')
         })
       );
     });
@@ -139,7 +137,7 @@ describe('articleFragments actions', () => {
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         articleFragmentsReceived({
-          uuid: await createLinkSnap(
+          uuid: await createSnap(
             'https://www.theguardian.com/example/non/tag/page'
           )
         })
