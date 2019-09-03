@@ -192,18 +192,17 @@ describe('articleFragments actions', () => {
               id: 'snap/1487076708000',
               meta: {
                 byline: undefined,
+                trailText: undefined,
                 showByline: false,
                 snapType: 'json.html',
                 snapUri:
-                  'https://interactive.guim.co.uk/atoms/2019/03/29/unmeaningful-vote/snap/snap.json',
+                  'https://interactive.guim.co.uk/atoms/2019/03/29/unmeaningful-vote/snap/snap.json'
               },
               uuid: 'uuid'
             }
           })
         );
       });
-    })
-
-
+    });
   });
 });
