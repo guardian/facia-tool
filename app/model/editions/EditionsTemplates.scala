@@ -5,6 +5,7 @@ import java.time.{LocalDate, ZoneId}
 
 import enumeratum.EnumEntry.Uncapitalised
 import enumeratum.{EnumEntry, PlayEnum}
+import model.editions.PathType.{PrintSent, Search}
 import model.editions.templates.DailyEdition
 import org.postgresql.util.PGobject
 import play.api.libs.json.Json
@@ -111,7 +112,14 @@ case class CollectionTemplate(
   prefill: Option[CapiPrefillQuery],
   presentation: CollectionPresentation,
   hidden: Boolean = false
-)
+) {
+  def special = copy(hidden = true)
+  def withPresentation(presentation: CollectionPresentation) = copy(presentation = presentation)
+  def printSentPrefill(prefillQuery: String) = copy(prefill = Some(CapiPrefillQuery(prefillQuery, PrintSent)))
+  def printSentAnyTag(tags: String*) = printSentPrefill(s"?tag=${tags.mkString("|")}")
+  def printSentAllTags(tags: String*) = printSentPrefill(s"?tag=${tags.mkString(",")}")
+  def searchPrefill(prefillQuery: String) = copy(prefill = Some(CapiPrefillQuery(prefillQuery, Search)))
+}
 
 case class FrontTemplate(
   name: String,
@@ -119,7 +127,11 @@ case class FrontTemplate(
   presentation: FrontPresentation,
   isSpecial: Boolean = false,
   hidden: Boolean = false
-)
+) {
+  def hide = copy(hidden = true)
+  def special = copy(isSpecial = true, hidden = true)
+  def swatch(swatch: Swatch) = copy(presentation = FrontPresentation(swatch))
+}
 
 case class EditionTemplate(
   fronts: List[(FrontTemplate, Periodicity)],
