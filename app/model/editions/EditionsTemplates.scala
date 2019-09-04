@@ -6,13 +6,13 @@ import java.time.{LocalDate, ZoneId}
 import enumeratum.EnumEntry.Uncapitalised
 import enumeratum.{EnumEntry, PlayEnum}
 import model.editions.PathType.{PrintSent, Search}
-import model.editions.templates.NewDailyEdition
+import model.editions.templates.DailyEdition
 import org.postgresql.util.PGobject
 import play.api.libs.json.Json
 
 object EditionsTemplates {
   val templates: Map[String, EditionTemplate] = Map(
-    "daily-edition" -> NewDailyEdition.template
+    "daily-edition" -> DailyEdition.template
   )
 
   val getAvailableEditions: List[String] = templates.keys.toList

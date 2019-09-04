@@ -7,7 +7,7 @@ import model.editions._
 import TemplateHelpers._
 
 //noinspection TypeAnnotation
-object NewDailyEdition {
+object DailyEdition {
   val template = EditionTemplate(
     List(
       FrontSpecial1 -> Daily(),
