@@ -38,6 +38,10 @@ describe('CAPIUtils', () => {
         'https://viewer.gutools.co.uk/live/live/business/2015/example';
       expect(getIdFromURL(url)).toEqual('live/business/2015/example');
     });
+    it('should return correct path if url is for gu.com', () => {
+      const url = 'https://gu.com/business/2015/example';
+      expect(getIdFromURL(url)).toEqual('business/2015/example');
+    });
   });
 
   describe('getContributorImage', () => {

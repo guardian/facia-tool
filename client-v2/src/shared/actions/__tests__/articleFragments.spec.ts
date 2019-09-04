@@ -8,7 +8,7 @@ import thunk from 'redux-thunk';
 import { capiArticle } from '../../fixtures/shared';
 import { actionNames as externalArticleActionNames } from 'shared/bundles/externalArticlesBundle';
 import { createFragment } from 'shared/util/articleFragment';
-import { createLinkSnap, createLatestSnap } from 'shared/util/snap';
+import { createSnap, createLatestSnap } from 'shared/util/snap';
 import guardianTagPage from 'shared/fixtures/guardianTagPage';
 import bbcSectionPage from 'shared/fixtures/bbcSectionPage';
 import { RefDrop } from 'util/collectionUtils';
@@ -66,7 +66,7 @@ describe('articleFragments actions', () => {
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         articleFragmentsReceived({
-          uuid: await createLinkSnap('https://bbc.co.uk/some/page')
+          uuid: await createSnap('https://bbc.co.uk/some/page')
         })
       );
     });
@@ -115,9 +115,7 @@ describe('articleFragments actions', () => {
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         articleFragmentsReceived({
-          uuid: await createLinkSnap(
-            'https://www.theguardian.com/example/tag/page'
-          )
+          uuid: await createSnap('https://www.theguardian.com/example/tag/page')
         })
       );
     });
@@ -139,41 +137,70 @@ describe('articleFragments actions', () => {
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         articleFragmentsReceived({
-          uuid: await createLinkSnap(
+          uuid: await createSnap(
             'https://www.theguardian.com/example/non/tag/page'
           )
         })
       );
     });
-    it('should create a snap from url params prefixed with gu- if they are provided in the resource id', async () => {
-      const store = mockStore({});
-      const snapUrl =
-        'https://www.theguardian.com/football/live?gu-snapType=json.html&gu-snapCss=football&gu-snapUri=https%3A%2F%2Fapi.nextgen.guardianapps.co.uk%2Ffootball%2Flive.json&gu-headline=Live+matches&gu-trailText=Today%27s+matches';
-      fetchMock.mock(snapUrl, JSON.stringify({}));
-      await store.dispatch(createArticleEntitiesFromDrop(
-        idDrop(snapUrl)
-      ) as any);
-      const actions = store.getActions();
-      expect(actions[0]).toEqual(
-        articleFragmentsReceived({
-          uuid: {
-            frontPublicationDate: 1487076708000,
-            id: 'snap/1487076708000',
-            meta: {
-              byline: undefined,
-              headline: 'Live matches',
-              href: 'football/live',
-              showByline: false,
-              snapCss: 'football',
-              snapType: 'json.html',
-              snapUri:
-                'https://api.nextgen.guardianapps.co.uk/football/live.json',
-              trailText: "Today's matches"
-            },
-            uuid: 'uuid'
-          }
-        })
-      );
+    describe('snaps created from url params prefixed with gu- ', () => {
+      it('should be created if they are provided in the resource id', async () => {
+        const store = mockStore({});
+        const snapUrl =
+          'https://www.theguardian.com/football/live?gu-snapType=json.html&gu-snapCss=football&gu-snapUri=https%3A%2F%2Fapi.nextgen.guardianapps.co.uk%2Ffootball%2Flive.json&gu-headline=Live+matches&gu-trailText=Today%27s+matches';
+        fetchMock.mock(snapUrl, JSON.stringify({}));
+        await store.dispatch(createArticleEntitiesFromDrop(
+          idDrop(snapUrl)
+        ) as any);
+        const actions = store.getActions();
+        expect(actions[0]).toEqual(
+          articleFragmentsReceived({
+            uuid: {
+              frontPublicationDate: 1487076708000,
+              id: 'snap/1487076708000',
+              meta: {
+                byline: undefined,
+                headline: 'Live matches',
+                href: 'football/live',
+                showByline: false,
+                snapCss: 'football',
+                snapType: 'json.html',
+                snapUri:
+                  'https://api.nextgen.guardianapps.co.uk/football/live.json',
+                trailText: "Today's matches"
+              },
+              uuid: 'uuid'
+            }
+          })
+        );
+      });
+      it('should be created if they are provided on the root path', async () => {
+        const store = mockStore({});
+        const snapUrl =
+          'https://gu.com?gu-snapType=json.html&gu-snapUri=https://interactive.guim.co.uk/atoms/2019/03/29/unmeaningful-vote/snap/snap.json';
+        fetchMock.mock(snapUrl, JSON.stringify({}));
+        await store.dispatch(createArticleEntitiesFromDrop(
+          idDrop(snapUrl)
+        ) as any);
+        const actions = store.getActions();
+        expect(actions[0]).toEqual(
+          articleFragmentsReceived({
+            uuid: {
+              frontPublicationDate: 1487076708000,
+              id: 'snap/1487076708000',
+              meta: {
+                byline: undefined,
+                trailText: undefined,
+                showByline: false,
+                snapType: 'json.html',
+                snapUri:
+                  'https://interactive.guim.co.uk/atoms/2019/03/29/unmeaningful-vote/snap/snap.json'
+              },
+              uuid: 'uuid'
+            }
+          })
+        );
+      });
     });
   });
 });
