@@ -41,14 +41,14 @@ object DailyEdition {
     availability = Daily()
   )
 
-  def FrontSpecial1 = specialFront("Special 1", Special)
+  def FrontSpecial1 = specialFront("Special 1", Neutral)
 
   def FrontTopStories = front(
     "Top stories",
     collection("Top stories")
   )
 
-  def FrontSpecial2 = specialFront("Special 2", Special)
+  def FrontSpecial2 = specialFront("Special 2", Neutral)
 
   def FrontNewsUkGuardian = front(
     "National",
