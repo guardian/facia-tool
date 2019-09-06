@@ -1,3 +1,4 @@
+import set from 'lodash/fp/set';
 import {
   default as innerReducer,
   editorOpenFront,
@@ -28,9 +29,13 @@ import {
   editorSelectArticleFragment,
   selectOpenArticleFragmentForms,
   defaultState,
-  editorCloseFormsForCollection
+  editorCloseFormsForCollection,
+  createSelectCollectionsInOpenFronts,
+  selectOpenFrontsCollectionsAndArticles
 } from '../frontsUIBundle';
 import initialState from 'fixtures/initialState';
+import initialStateForOpenFronts from './fixtures/initialStateForOpenFronts';
+import { frontsConfig } from 'fixtures/frontsConfig';
 import { Action } from 'types/Action';
 import {
   removeSupportingArticleFragment,
@@ -97,7 +102,7 @@ describe('frontsUIBundle', () => {
             ...initialState.editor,
             frontIdsByPriority: { commercial: ['1', '2'] }
           },
-          path: 'v2/editorial'
+          path: '/v2/commercial'
         } as any;
         expect(selectEditorFrontsByPriority(stateWithFronts)).toEqual([
           { id: '1', priority: 'commercial' },
@@ -107,7 +112,7 @@ describe('frontsUIBundle', () => {
       it('should memoize editor fronts by priority', () => {
         const state = {
           ...initialState,
-          path: 'v2/commercial'
+          path: '/v2/commercial'
         };
         expect(selectEditorFrontsByPriority(state)).toBe(
           selectEditorFrontsByPriority(state)
@@ -143,7 +148,8 @@ describe('frontsUIBundle', () => {
           editor: {
             ...initialState.editor,
             favouriteFrontIdsByPriority: { commercial: ['1', '2'] }
-          }
+          },
+          path: '/v2/commercial'
         } as any;
         expect(
           selectEditorFavouriteFrontIdsByPriority(stateWithFronts, 'commercial')
@@ -164,7 +170,8 @@ describe('frontsUIBundle', () => {
               'un-global-compact-partner-zone'
             ]
           }
-        }
+        },
+        path: '/v2/commercial'
       } as any;
       const selectFrontIdWithOpenAndStarredStatesByPriority = createSelectFrontIdWithOpenAndStarredStatesByPriority();
       it('should select all fronts by priority', () => {
@@ -526,6 +533,104 @@ describe('frontsUIBundle', () => {
       expect(selectIsClipboardOpen(state)).toBe(false);
       const state2 = reducer(state.editor, editorOpenClipboard());
       expect(selectIsClipboardOpen(state2)).toBe(true);
+    });
+  });
+
+  describe('Selecting collections on all open Fronts', () => {
+    const selectCollectionsInOpenFronts = createSelectCollectionsInOpenFronts();
+    it('return correct collections for one open Front', () => {
+      expect(
+        selectCollectionsInOpenFronts({
+          fronts: {
+            frontsConfig
+          },
+          editor: {
+            frontIdsByPriority: { editorial: ['editorialFront'] }
+          },
+          path: '/v2/editorial'
+        } as any)
+      ).toEqual(['collection1']);
+    });
+    it('return correct collections for multiple open Fronts', () => {
+      expect(
+        selectCollectionsInOpenFronts({
+          fronts: {
+            frontsConfig
+          },
+          editor: {
+            frontIdsByPriority: {
+              editorial: ['editorialFront', 'editorialFront2']
+            }
+          },
+          path: '/v2/editorial'
+        } as any)
+      ).toEqual(['collection1', 'collection6']);
+    });
+    it('return enpty array for no open Fronts', () => {
+      expect(
+        selectCollectionsInOpenFronts({
+          fronts: {
+            frontsConfig
+          },
+          editor: {
+            frontIdsByPriority: {}
+          },
+          path: '/v2/editorial'
+        } as any)
+      ).toEqual([]);
+    });
+  });
+  describe('selectOpenFrontsCollectionsAndArticles', () => {
+    it('should return just fronts if no collections are open', () => {
+      const openEntities = selectOpenFrontsCollectionsAndArticles(
+        initialStateForOpenFronts
+      );
+      expect(openEntities).toEqual([
+        { collections: [], frontId: 'editorialFront' },
+        { collections: [], frontId: 'editorialFront2' }
+      ]);
+    });
+    it('should give an array of fronts, with nested collections and articles, when those fronts and collections are open -- single collection', () => {
+      const state = set(
+        ['editor', 'collectionIds'],
+        ['collection1'],
+        initialStateForOpenFronts
+      );
+      const openEntities = selectOpenFrontsCollectionsAndArticles(state);
+      expect(openEntities.length).toEqual(2); // Two fronts
+      expect(openEntities[0].collections.length).toEqual(1); // First front has one collection
+      expect(openEntities[0].collections[0].articles.map(_ => _.id)).toEqual([
+        'capiArticle1',
+        'capiArticle2',
+        'capiArticle3'
+      ]); // First collection has three articles
+      expect(openEntities[1].collections.length).toEqual(0); // Second front has no collections
+    });
+    it('should give an array of fronts, with nested collections and articles, when those fronts and collections are open -- multiple collections', () => {
+      const state = set(
+        ['editor', 'collectionIds'],
+        ['collection1', 'collection6'],
+        initialStateForOpenFronts
+      );
+      const openEntities = selectOpenFrontsCollectionsAndArticles(state);
+      expect(openEntities.length).toEqual(2); // Two fronts
+      expect(openEntities[0].collections.length).toEqual(1); // First front has one collection
+      expect(openEntities[1].collections.length).toEqual(1); // Second front has one collection
+    });
+    it('should respect the current browsing stage', () => {
+      let state = set(
+        ['editor', 'collectionIds'],
+        ['collection1'],
+        initialStateForOpenFronts
+      );
+      state = set(
+        ['editor', 'frontIdsByBrowsingStage', 'editorialFront'],
+        'live',
+        state
+      );
+      const openEntities = selectOpenFrontsCollectionsAndArticles(state);
+      expect(openEntities[0].collections.length).toEqual(1); // First front has one collection
+      expect(openEntities[0].collections[0].articles.length).toEqual(0); // First collection has no live articles
     });
   });
 });
