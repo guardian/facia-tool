@@ -23,10 +23,6 @@
 - You can drag an image to an article on the fronts tool from the grid [here](https://media.test.dev-gutools.co.uk/search).
 - To use an image you need to make a 5:3 crop of it first using the grid.
 
-## Pressing fronts
-- Before fronts can appear on frontend, they have to be pressed by Facia-Press which lives on the frontend account.
-- The fronts tool sends events to an sqs queue which Facia-Press listens. You can read more about Facia-Press [here](https://github.com/guardian/frontend/blob/ad74a1da567f047b7b824650e6e1be0f0262952b/docs/02-architecture/01-applications-architecture.md).
-
 ## Client side code
 ### Models
 - As explained above, the fronts tool is used to create and edit fronts containing collections that articles can be added to.
