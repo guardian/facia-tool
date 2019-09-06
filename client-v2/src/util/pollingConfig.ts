@@ -35,7 +35,7 @@ export default (store: Store) => {
   );
 
   if (shouldPollOphan) {
-    setInterval(createRefreshOphanData, ophanPollInterval);
+    setInterval(createRefreshOphanData(store), ophanPollInterval);
   }
 };
 
