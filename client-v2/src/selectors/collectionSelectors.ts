@@ -5,8 +5,6 @@ import {
   createSelectCollection,
   groupsArticleCount
 } from 'shared/selectors/shared';
-import flatten from 'lodash/flatten';
-import { createSelectEditorFrontsByPriority } from 'bundles/frontsUIBundle';
 import { getUpdatedSiblingGroupsForInsertion } from 'shared/reducers/groupsReducer';
 
 const selectCollection = createSelectCollection();
@@ -43,14 +41,6 @@ const selectCollectionParams = (
     []
   );
 
-function createSelectCollectionsInOpenFronts() {
-  const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
-  return (state: State): string[] => {
-    const openFrontsForPriority = selectEditorFrontsByPriority(state);
-    return flatten(openFrontsForPriority.map(front => front.collections));
-  };
-}
-
 const selectIsCollectionLocked = (state: State, id: string): boolean =>
   !!selectCollectionConfig(state, id).uneditable;
 
@@ -76,6 +66,5 @@ const selectWillCollectionHitCollectionCap = (
 export {
   selectWillCollectionHitCollectionCap,
   selectCollectionParams,
-  selectIsCollectionLocked,
-  createSelectCollectionsInOpenFronts
+  selectIsCollectionLocked
 };

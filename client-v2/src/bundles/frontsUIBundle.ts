@@ -27,13 +27,15 @@ import {
   ChangedBrowsingStage
 } from 'types/Action';
 import { State as GlobalState } from 'types/State';
+import flatten from 'lodash/flatten';
+import { createSelector } from 'reselect';
+
 import { State as GlobalSharedState } from 'shared/types/State';
 import { events } from 'services/GA';
 import {
   selectFronts,
   selectFrontsWithPriority
 } from 'selectors/frontsSelectors';
-import { createSelector } from 'reselect';
 import {
   REMOVE_GROUP_ARTICLE_FRAGMENT,
   REMOVE_SUPPORTING_ARTICLE_FRAGMENT
@@ -304,20 +306,6 @@ const selectIsFrontOverviewOpen = <T extends { editor: State }>(
   frontId: string
 ) => !state.editor.closedOverviews.includes(frontId);
 
-const createSelectEditorFrontsByPriority = () =>
-  createSelector(
-    selectFronts,
-    selectEditorFrontIds,
-    selectPriority,
-    (fronts, frontIdsByPriority, priority) => {
-      if (!priority) {
-        return [];
-      }
-      const openFrontIds = frontIdsByPriority[priority] || [];
-      return compact(openFrontIds.map(frontId => fronts[frontId]));
-    }
-  );
-
 const createSelectFrontIdWithOpenAndStarredStatesByPriority = () => {
   const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
   return createSelector(
@@ -338,6 +326,14 @@ const createSelectFrontIdWithOpenAndStarredStatesByPriority = () => {
     }
   );
 };
+
+function createSelectCollectionsInOpenFronts() {
+  const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
+  return (state: GlobalState): string[] => {
+    const openFrontsForPriority = selectEditorFrontsByPriority(state);
+    return flatten(openFrontsForPriority.map(front => front.collections));
+  };
+}
 
 const createSelectCurrentlyOpenCollectionsByFront = () => {
   const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
@@ -362,43 +358,6 @@ const createSelectCurrentlyOpenCollectionsByFront = () => {
   );
 };
 
-const selectAllArticleIdsForCollection = createSelectArticlesInCollection();
-const selectArticle = createSelectArticleFromArticleFragment();
-const selectCurrentlyOpenCollectionsByFront = createSelectCurrentlyOpenCollectionsByFront();
-
-const selectOpenFrontsCollectionsAndArticles = (
-  state: GlobalState
-): Array<{ frontId: string; collections: CollectionWithArticles[] }> => {
-  const openCollectionsByFront = selectCurrentlyOpenCollectionsByFront(state);
-  return openCollectionsByFront.map(frontAndCollections => {
-    const browsingStage = selectFrontBrowsingStage(
-      state,
-      frontAndCollections.frontId
-    );
-    const collections = frontAndCollections.collections.map((cId: string) => {
-      const articleIds: string[] = selectAllArticleIdsForCollection(
-        selectSharedState(state),
-        {
-          collectionId: cId,
-          collectionSet: browsingStage,
-          includeSupportingArticles: false
-        }
-      );
-      const articles = articleIds
-        .map(_ => selectArticle(selectSharedState(state), _))
-        .filter(_ => _) as DerivedArticle[];
-      return {
-        id: cId,
-        articles
-      };
-    });
-    return {
-      frontId: frontAndCollections.frontId,
-      collections
-    };
-  });
-};
-
 const selectOpenArticles = (state: GlobalState): DerivedArticle[] => {
   const frontsCollectionsAndArticles = selectOpenFrontsCollectionsAndArticles(
     state
@@ -416,6 +375,20 @@ const selectOpenArticles = (state: GlobalState): DerivedArticle[] => {
 
 const selectEditorFrontIds = (state: GlobalState) =>
   state.editor.frontIdsByPriority;
+
+const createSelectEditorFrontsByPriority = () =>
+  createSelector(
+    selectFronts,
+    selectEditorFrontIds,
+    selectPriority,
+    (fronts, frontIdsByPriority, priority) => {
+      if (!priority) {
+        return [];
+      }
+      const openFrontIds = frontIdsByPriority[priority] || [];
+      return compact(openFrontIds.map(frontId => fronts[frontId]));
+    }
+  );
 
 const selectEditorFavouriteFrontIds = (state: GlobalState) =>
   state.editor.favouriteFrontIdsByPriority;
@@ -472,7 +445,45 @@ const createSelectDoesCollectionHaveOpenForms = () =>
   );
 
 const selectFrontBrowsingStage = (state: GlobalState, frontId: string) =>
-  state.editor.frontIdsByBrowsingStage[frontId];
+  state.editor.frontIdsByBrowsingStage[frontId] || 'draft';
+
+const selectAllArticleIdsForCollection = createSelectArticlesInCollection();
+const selectArticle = createSelectArticleFromArticleFragment();
+const selectCurrentlyOpenCollectionsByFront = createSelectCurrentlyOpenCollectionsByFront();
+
+const selectOpenFrontsCollectionsAndArticles = (
+  state: GlobalState
+): Array<{ frontId: string; collections: CollectionWithArticles[] }> => {
+  const openCollectionsByFront = selectCurrentlyOpenCollectionsByFront(state);
+  return openCollectionsByFront.map(frontAndCollections => {
+    const browsingStage = selectFrontBrowsingStage(
+      state,
+      frontAndCollections.frontId
+    );
+    const collections = frontAndCollections.collections.map((cId: string) => {
+      const articleIds: string[] = selectAllArticleIdsForCollection(
+        selectSharedState(state),
+        {
+          collectionId: cId,
+          collectionSet: browsingStage,
+          includeSupportingArticles: false
+        }
+      );
+      const articles = articleIds
+        .map(_ => selectArticle(selectSharedState(state), _))
+        .filter(_ => _) as DerivedArticle[];
+
+      return {
+        id: cId,
+        articles
+      };
+    });
+    return {
+      frontId: frontAndCollections.frontId,
+      collections
+    };
+  });
+};
 
 const defaultState = {
   showOpenFrontsMenu: false,
@@ -804,6 +815,7 @@ export {
   selectEditorFrontIdsByPriority,
   selectEditorFavouriteFrontIdsByPriority,
   selectOpenFrontsCollectionsAndArticles,
+  createSelectCollectionsInOpenFronts,
   selectOpenArticles,
   selectIsCollectionOpen,
   editorOpenClipboard,
