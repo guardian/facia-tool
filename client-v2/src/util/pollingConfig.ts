@@ -1,4 +1,4 @@
-import { fetchStaleCollections } from 'actions/Collections';
+import { fetchStaleCollections, fetchArticles } from 'actions/Collections';
 import { Dispatch } from 'types/Store';
 import { Store } from 'types/Store';
 import {
@@ -14,8 +14,7 @@ import {
   selectOpenFrontsCollectionsAndArticles,
   selectOpenArticles
 } from 'bundles/frontsUIBundle';
-import { getArticlesBatched } from 'services/faciaApi';
-import { createSelectCollectionsInOpenFronts } from 'selectors/collectionSelectors';
+import { createSelectCollectionsInOpenFronts } from 'bundles/frontsUIBundle';
 
 /**
  * TODO: do we want to check if there are any collectionUpdates going out here
@@ -27,8 +26,8 @@ export default (store: Store) => {
     return;
   }
 
-  setInterval(refreshStaleCollections(store), collectionsPollInterval);
-  setInterval(refreshOpenArticles(store), articlesPollInterval);
+  setInterval(createRefreshStaleCollections(store), collectionsPollInterval);
+  setInterval(createRefreshOpenArticles(store), articlesPollInterval);
 
   const shouldPollOphan = selectFeatureValue(
     selectSharedState(store.getState()),
@@ -36,13 +35,13 @@ export default (store: Store) => {
   );
 
   if (shouldPollOphan) {
-    setInterval(refreshOphanData, ophanPollInterval);
+    setInterval(createRefreshOphanData, ophanPollInterval);
   }
 };
 
 const selectCollectionsInOpenFronts = createSelectCollectionsInOpenFronts();
 
-const refreshStaleCollections = (store: Store) => {
+const createRefreshStaleCollections = (store: Store) => () => {
   const state = store.getState();
   const priority = selectPriority(state);
   if (!priority) {
@@ -53,13 +52,13 @@ const refreshStaleCollections = (store: Store) => {
   (store.dispatch as Dispatch)(fetchStaleCollections(collectionIds));
 };
 
-const refreshOpenArticles = (store: Store) => {
+const createRefreshOpenArticles = (store: Store) => () => {
   const state = store.getState();
   const openArticles = selectOpenArticles(state);
-  getArticlesBatched(openArticles.map(_ => _.id));
+  (store.dispatch as Dispatch)(fetchArticles(openArticles.map(_ => _.id)));
 };
 
-const refreshOphanData = (store: Store) => {
+const createRefreshOphanData = (store: Store) => () => {
   const state = store.getState();
   const openFrontsCollectionAndArticles = selectOpenFrontsCollectionsAndArticles(
     state
