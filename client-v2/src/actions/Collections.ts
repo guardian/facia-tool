@@ -61,7 +61,6 @@ import {
   editorCloseFormsForCollection
 } from 'bundles/frontsUIBundle';
 import flatten from 'lodash/flatten';
-import { createSelectCollectionsInOpenFronts } from 'selectors/collectionSelectors';
 import uniq from 'lodash/uniq';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import { isFrontStale } from 'util/frontsUtils';
@@ -74,13 +73,11 @@ import { fetchCollectionsStrategy } from 'strategies/fetch-collection';
 import { updateCollectionStrategy } from 'strategies/update-collection';
 
 const articlesInCollection = createSelectAllArticlesInCollection();
-const selectCollectionsInOpenFronts = createSelectCollectionsInOpenFronts();
 
-function fetchStaleOpenCollections(
-  priority: string
+function fetchStaleCollections(
+  collectionIds: string[]
 ): ThunkResult<Promise<void>> {
   return async (dispatch: Dispatch, getState: () => State) => {
-    const collectionIds = selectCollectionsInOpenFronts(getState(), priority);
     const prevState = getState();
     const fetchedCollectionIds = await dispatch(
       getCollections(collectionIds, true)
@@ -479,7 +476,7 @@ export {
   getArticlesForCollections,
   openCollectionsAndFetchTheirArticles,
   closeCollections,
-  fetchStaleOpenCollections,
+  fetchStaleCollections,
   fetchArticles,
   updateCollection,
   initialiseCollectionsForFront,
