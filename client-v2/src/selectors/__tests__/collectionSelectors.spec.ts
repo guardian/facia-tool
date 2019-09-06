@@ -33,49 +33,43 @@ describe('Selecting collections on all open Fronts', () => {
   const selectCollectionsInOpenFronts = createSelectCollectionsInOpenFronts();
   it('return correct collections for one open Front', () => {
     expect(
-      selectCollectionsInOpenFronts(
-        {
-          fronts: {
-            frontsConfig
-          },
-          editor: {
-            frontIdsByPriority: { editorial: ['editorialFront'] }
-          }
-        } as any,
-        'editorial'
-      )
+      selectCollectionsInOpenFronts({
+        fronts: {
+          frontsConfig
+        },
+        editor: {
+          frontIdsByPriority: { editorial: ['editorialFront'] }
+        },
+        path: 'v2/editorial'
+      } as any)
     ).toEqual(['collection1']);
   });
   it('return correct collections for multiple open Fronts', () => {
     expect(
-      selectCollectionsInOpenFronts(
-        {
-          fronts: {
-            frontsConfig
-          },
-          editor: {
-            frontIdsByPriority: {
-              editorial: ['editorialFront', 'editorialFront2']
-            }
+      selectCollectionsInOpenFronts({
+        fronts: {
+          frontsConfig
+        },
+        editor: {
+          frontIdsByPriority: {
+            editorial: ['editorialFront', 'editorialFront2']
           }
-        } as any,
-        'editorial'
-      )
+        },
+        path: 'v2/editorial'
+      } as any)
     ).toEqual(['collection1', 'collection6']);
   });
   it('return enpty array for no open Fronts', () => {
     expect(
-      selectCollectionsInOpenFronts(
-        {
-          fronts: {
-            frontsConfig
-          },
-          editor: {
-            frontIdsByPriority: {}
-          }
-        } as any,
-        'editorial'
-      )
+      selectCollectionsInOpenFronts({
+        fronts: {
+          frontsConfig
+        },
+        editor: {
+          frontIdsByPriority: {}
+        },
+        path: 'v2/editorial'
+      } as any)
     ).toEqual([]);
   });
 });

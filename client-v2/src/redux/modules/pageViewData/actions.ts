@@ -6,9 +6,9 @@ import {
 import { getPageViewDataFromOphan } from '../../../services/faciaApi';
 import {
   PageViewDataFromOphan,
-  PageViewStory,
-  ArticlePathAndId
+  PageViewStory
 } from 'shared/types/PageViewData';
+import { DerivedArticle } from 'shared/types/Article';
 
 const totalPeriodInHours = 1;
 const intervalInMinutes = 10;
@@ -18,7 +18,7 @@ export const PAGE_VIEW_DATA_REQUESTED = 'PAGE_VIEW_DATA_REQUESTED';
 
 const getPageViewData = (
   frontId: string,
-  articles: ArticlePathAndId[],
+  articles: DerivedArticle[],
   collectionId: string
 ): ThunkResult<void> => {
   return (dispatch: Dispatch) => {
@@ -44,7 +44,7 @@ const getPageViewData = (
 
 const convertToStoriesData = (
   allStories: PageViewDataFromOphan[],
-  articles: ArticlePathAndId[]
+  articles: DerivedArticle[]
 ): PageViewStory[] => {
   return allStories.map(story => {
     return {
@@ -61,12 +61,12 @@ const convertToStoriesData = (
 
 const addArticleId = (
   ophanData: PageViewDataFromOphan,
-  articles: ArticlePathAndId[]
+  articles: DerivedArticle[]
 ): string => {
   // the path from ophan has a slash at the front, removing below
   const ophanPathClean = ophanData.path.substr(1);
-  const matchingArticle = articles.find(a => a.articlePath === ophanPathClean)!;
-  return matchingArticle.articleId;
+  const matchingArticle = articles.find(a => a.urlPath === ophanPathClean)!;
+  return matchingArticle.id;
 };
 
 const pageViewDataReceivedAction = (
@@ -97,18 +97,18 @@ const pageViewDataRequestedAction = (
 
 const fetchPageViewData = (
   front: string,
-  articlesInFront: ArticlePathAndId[]
+  articlesInFront: DerivedArticle[]
 ): Promise<any> => {
   return getPageViewDataFromOphan(buildRequestUrl(front, articlesInFront));
 };
 
 const buildRequestUrl = (
   frontId: string,
-  articles: ArticlePathAndId[]
+  articles: DerivedArticle[]
 ): string => {
   const referringPath = `?referring-path=/${frontId}&`;
   const articlePaths = articles
-    .map(article => `path=/${article.articlePath}&`)
+    .map(article => `path=/${article.urlPath}&`)
     .join('');
   const timePeriod = `hours=${totalPeriodInHours}&interval=${intervalInMinutes}`;
   return `${referringPath}${articlePaths}${timePeriod}`;

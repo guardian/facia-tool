@@ -45,10 +45,8 @@ const selectCollectionParams = (
 
 function createSelectCollectionsInOpenFronts() {
   const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
-  return (state: State, priority: string): string[] => {
-    const openFrontsForPriority = selectEditorFrontsByPriority(state, {
-      priority
-    });
+  return (state: State): string[] => {
+    const openFrontsForPriority = selectEditorFrontsByPriority(state);
     return flatten(openFrontsForPriority.map(front => front.collections));
   };
 }

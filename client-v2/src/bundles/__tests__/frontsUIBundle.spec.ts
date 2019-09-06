@@ -77,10 +77,7 @@ describe('frontsUIBundle', () => {
     describe('createSelectEditorFrontsByPriority', () => {
       const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
       it('should select nothing if nothing is there', () => {
-        expect(
-          selectEditorFrontsByPriority(initialState, { priority: 'commercial' })
-            .length
-        ).toEqual(0);
+        expect(selectEditorFrontsByPriority(initialState).length).toEqual(0);
       });
       it('should select editor fronts by priority', () => {
         const stateWithFronts = {
@@ -99,22 +96,21 @@ describe('frontsUIBundle', () => {
           editor: {
             ...initialState.editor,
             frontIdsByPriority: { commercial: ['1', '2'] }
-          }
+          },
+          path: 'v2/editorial'
         } as any;
-        expect(
-          selectEditorFrontsByPriority(stateWithFronts, {
-            priority: 'commercial'
-          })
-        ).toEqual([
+        expect(selectEditorFrontsByPriority(stateWithFronts)).toEqual([
           { id: '1', priority: 'commercial' },
           { id: '2', priority: 'commercial' }
         ]);
       });
       it('should memoize editor fronts by priority', () => {
-        expect(
-          selectEditorFrontsByPriority(initialState, { priority: 'commercial' })
-        ).toBe(
-          selectEditorFrontsByPriority(initialState, { priority: 'commercial' })
+        const state = {
+          ...initialState,
+          path: 'v2/commercial'
+        };
+        expect(selectEditorFrontsByPriority(state)).toBe(
+          selectEditorFrontsByPriority(state)
         );
       });
     });

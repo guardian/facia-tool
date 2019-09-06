@@ -23,10 +23,6 @@ interface ComponentProps {
   fronts: FrontConfig[];
 }
 
-interface ContainerProps {
-  priority: string;
-}
-
 const FrontTabList = styled.div<{ isDraggingOver?: boolean }>`
   background-color: ${({ isDraggingOver, theme }) =>
     isDraggingOver
@@ -129,8 +125,8 @@ class Component extends React.Component<ComponentProps> {
 
 const mapStateToProps = () => {
   const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
-  return (state: State, { priority }: ContainerProps) => ({
-    fronts: selectEditorFrontsByPriority(state, { priority })
+  return (state: State) => ({
+    fronts: selectEditorFrontsByPriority(state)
   });
 };
 

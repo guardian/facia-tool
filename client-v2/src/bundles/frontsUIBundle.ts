@@ -39,6 +39,14 @@ import {
   REMOVE_SUPPORTING_ARTICLE_FRAGMENT
 } from 'shared/actions/ArticleFragments';
 import { Stages } from 'shared/types/Collection';
+import { selectPriority } from 'selectors/pathSelectors';
+import { CollectionWithArticles } from 'shared/types/PageViewData';
+import {
+  createSelectArticleFromArticleFragment,
+  createSelectArticlesInCollection,
+  selectSharedState
+} from 'shared/selectors/shared';
+import { DerivedArticle } from 'shared/types/Article';
 
 export const EDITOR_OPEN_CURRENT_FRONTS_MENU =
   'EDITOR_OPEN_CURRENT_FRONTS_MENU';
@@ -285,6 +293,9 @@ const selectIsCollectionOpen = <T extends { editor: State }>(
   collectionId: string
 ) => state.editor.collectionIds.indexOf(collectionId) !== -1;
 
+const selectOpenCollections = <T extends { editor: State }>(state: T) =>
+  state.editor.collectionIds;
+
 const selectIsClipboardOpen = <T extends { editor: State }>(state: T) =>
   state.editor.clipboardOpen;
 
@@ -293,17 +304,15 @@ const selectIsFrontOverviewOpen = <T extends { editor: State }>(
   frontId: string
 ) => !state.editor.closedOverviews.includes(frontId);
 
-const selectPriority = (
-  _: GlobalState,
-  { priority }: { priority: string }
-): string => priority;
-
 const createSelectEditorFrontsByPriority = () =>
   createSelector(
     selectFronts,
     selectEditorFrontIds,
     selectPriority,
     (fronts, frontIdsByPriority, priority) => {
+      if (!priority) {
+        return [];
+      }
       const openFrontIds = frontIdsByPriority[priority] || [];
       return compact(openFrontIds.map(frontId => fronts[frontId]));
     }
@@ -313,8 +322,7 @@ const createSelectFrontIdWithOpenAndStarredStatesByPriority = () => {
   const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
   return createSelector(
     selectFrontsWithPriority,
-    (state, priority: string) =>
-      selectEditorFrontsByPriority(state, { priority }),
+    selectEditorFrontsByPriority,
     (state, priority: string) =>
       selectEditorFavouriteFrontIdsByPriority(state, priority),
     (_, __, sortKey: 'id' | 'index' = 'id') => sortKey,
@@ -329,6 +337,81 @@ const createSelectFrontIdWithOpenAndStarredStatesByPriority = () => {
       return sortBy(fronts, front => front[sortKey]);
     }
   );
+};
+
+const createSelectCurrentlyOpenCollectionsByFront = () => {
+  const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
+  return createSelector(
+    selectEditorFrontsByPriority,
+    selectOpenCollections,
+    (openFronts, openCollectionIds) => {
+      const openFrontsWithCollections = openFronts.map(front => ({
+        id: front.id,
+        collections: front.collections
+      }));
+      return openFrontsWithCollections.map(front => {
+        const collections = front.collections.filter(collection =>
+          openCollectionIds.includes(collection)
+        );
+        return {
+          frontId: front.id,
+          collections
+        };
+      });
+    }
+  );
+};
+
+const selectAllArticleIdsForCollection = createSelectArticlesInCollection();
+const selectArticle = createSelectArticleFromArticleFragment();
+const selectCurrentlyOpenCollectionsByFront = createSelectCurrentlyOpenCollectionsByFront();
+
+const selectOpenFrontsCollectionsAndArticles = (
+  state: GlobalState
+): Array<{ frontId: string; collections: CollectionWithArticles[] }> => {
+  const openCollectionsByFront = selectCurrentlyOpenCollectionsByFront(state);
+  return openCollectionsByFront.map(frontAndCollections => {
+    const browsingStage = selectFrontBrowsingStage(
+      state,
+      frontAndCollections.frontId
+    );
+    const collections = frontAndCollections.collections.map((cId: string) => {
+      const articleIds: string[] = selectAllArticleIdsForCollection(
+        selectSharedState(state),
+        {
+          collectionId: cId,
+          collectionSet: browsingStage,
+          includeSupportingArticles: false
+        }
+      );
+      const articles = articleIds
+        .map(_ => selectArticle(selectSharedState(state), _))
+        .filter(_ => _) as DerivedArticle[];
+      return {
+        id: cId,
+        articles
+      };
+    });
+    return {
+      frontId: frontAndCollections.frontId,
+      collections
+    };
+  });
+};
+
+const selectOpenArticles = (state: GlobalState): DerivedArticle[] => {
+  const frontsCollectionsAndArticles = selectOpenFrontsCollectionsAndArticles(
+    state
+  );
+  const collections = frontsCollectionsAndArticles.reduce(
+    (acc, front) => acc.concat(front.collections),
+    [] as CollectionWithArticles[]
+  );
+  const articles = collections.reduce(
+    (acc, collection) => acc.concat(collection.articles),
+    [] as DerivedArticle[]
+  );
+  return articles;
 };
 
 const selectEditorFrontIds = (state: GlobalState) =>
@@ -387,6 +470,9 @@ const createSelectDoesCollectionHaveOpenForms = () =>
     selectCollectionId,
     (forms, collectionId) => forms.some(_ => _.collectionId === collectionId)
   );
+
+const selectFrontBrowsingStage = (state: GlobalState, frontId: string) =>
+  state.editor.frontIdsByBrowsingStage[frontId];
 
 const defaultState = {
   showOpenFrontsMenu: false,
@@ -717,6 +803,8 @@ export {
   selectEditorFavouriteFrontIds,
   selectEditorFrontIdsByPriority,
   selectEditorFavouriteFrontIdsByPriority,
+  selectOpenFrontsCollectionsAndArticles,
+  selectOpenArticles,
   selectIsCollectionOpen,
   editorOpenClipboard,
   editorCloseClipboard,

@@ -117,7 +117,6 @@ class FeedSectionHeader extends Component<ComponentProps> {
       toggleCurrentFrontsMenu,
       isCurrentFrontsMenuOpen,
       frontCount,
-      match,
       editMode
     } = this.props;
     return (
@@ -143,7 +142,7 @@ class FeedSectionHeader extends Component<ComponentProps> {
         </LogoContainer>
         <SectionHeaderContent>
           <FadeTransition active={isCurrentFrontsMenuOpen} direction="left">
-            <CurrentFrontsList priority={match.params.priority} />
+            <CurrentFrontsList />
           </FadeTransition>
           <FadeTransition active={!isCurrentFrontsMenuOpen} direction="right">
             {editMode === 'editions' ? (
@@ -165,11 +164,9 @@ class FeedSectionHeader extends Component<ComponentProps> {
 
 const mapStateToProps = () => {
   const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
-  return (state: State, props: ContainerProps) => ({
+  return (state: State) => ({
     isCurrentFrontsMenuOpen: selectIsCurrentFrontsMenuOpen(state),
-    frontCount: selectEditorFrontsByPriority(state, {
-      priority: props.match.params.priority
-    }).length,
+    frontCount: selectEditorFrontsByPriority(state).length,
     editMode: selectEditMode(state)
   });
 };
