@@ -189,7 +189,7 @@ object DailyEdition {
   def FrontCultureSpecial = specialFront("Culture Special", Culture) 
 
   def FrontLife = front(
-    "Life",
+    "Lifestyle",
     collection("Features").printSentAnyTag("theguardian/g2/features"),
     collection("Life Special").special,
   )
