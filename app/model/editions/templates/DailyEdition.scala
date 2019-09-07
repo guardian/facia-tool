@@ -10,45 +10,60 @@ import TemplateHelpers._
 object DailyEdition {
   val template = EditionTemplate(
     List(
+      // Top Stories and Nuclear specials
       FrontSpecial1 -> Daily(),
       FrontTopStories -> Daily(),
       FrontSpecial2 -> Daily(),
+      // News fronts then special
       FrontNewsUkGuardian -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri)),
       FrontNewsUkGuardianSaturday -> WeekDays(List(WeekDay.Sat)),
-      FrontNewsWorldGuardian -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontNewsUkObserver -> WeekDays(List(WeekDay.Sun)),
+      FrontNewsSpecial -> Daily(),
+      // World News fronts and special
+      FrontNewsWorldGuardian -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontNewsWorldObserver -> WeekDays(List(WeekDay.Sun)),
+      FrontWorldSpecial -> Daily(),
+      // Journal, Comment, Obituraries and special
       FrontJournal -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontComment -> WeekDays(List(WeekDay.Sun)),
+      FrontObits -> Daily(),
+      FrontOpinionSpecial -> Daily(),
+      // Culture fronts and special
       FrontCulture -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
       FrontCultureFilmMusic -> WeekDays(List(WeekDay.Fri)),
       FrontCultureGuide -> WeekDays(List(WeekDay.Sat)),
       FrontCultureNewReview -> WeekDays(List(WeekDay.Sun)),
-      FrontLife -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
       FrontBooks -> WeekDays(List(WeekDay.Sat, WeekDay.Sun)),
+      FrontCultureSpecial -> Daily(),
+      // Life fronts and special
+      FrontLife -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
       FrontLifeWeekend -> WeekDays(List(WeekDay.Sat)),
       FrontLifeMagazineObserver -> WeekDays(List(WeekDay.Sun)),
       FrontFood -> WeekDays(List(WeekDay.Sat)),
       FrontFoodObserver -> WeekDays(List(WeekDay.Sun)),
       FrontLifeFashion -> WeekDays(List(WeekDay.Sat)),
-      FrontSpecial3 -> Daily(),
+      FrontLifeSpecial -> Daily(),
+      // Sport fronts and special
       FrontSportGuardian -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontSportObserver -> WeekDays(List(WeekDay.Sun)),
-      FrontSpecial4 -> Daily(),
+      FrontSportSpecial -> Daily(),
+      // Special Supplements
+      FrontSupplementSpecial -> Daily(),
+      // Crosswords
       FrontCrosswords -> Daily(),
     ),
     zoneId = ZoneId.of("Europe/London"),
     availability = Daily()
   )
 
-  def FrontSpecial1 = specialFront("Special 1", Neutral)
+  def FrontSpecial1 = specialFront("Top Special 1", Neutral)
 
   def FrontTopStories = front(
     "Top stories",
     collection("Top stories")
   )
 
-  def FrontSpecial2 = specialFront("Special 2", Neutral)
+  def FrontSpecial2 = specialFront("Top Special 2", Neutral)
 
   def FrontNewsUkGuardian = front(
     "National",
@@ -59,7 +74,7 @@ object DailyEdition {
     collection("Weather").printSentAnyTag("theguardian/mainsection/weather2")
   )
   .swatch(News)
-
+  
   def FrontNewsUkGuardianSaturday = front(
     "National",
     collection("Front Page").printSentAnyTag("theguardian/mainsection/topstories"),
@@ -70,7 +85,9 @@ object DailyEdition {
     collection("Weather").printSentAnyTag("theguardian/mainsection/weather2")
   )
   .swatch(News)
-
+  
+  def FrontNewsSpecial = specialFront("News Special", News)
+  
   def FrontNewsWorldGuardian = front(
     "World",
     collection("World News").printSentAnyTag("theguardian/mainsection/international"),
@@ -96,7 +113,9 @@ object DailyEdition {
     collection("World Special").special,
   )
   .swatch(News)
-
+  
+  def FrontWorldSpecial = specialFront("World Special", News)
+  
   def FrontJournal = front(
     "Journal",
     collection("Features").printSentAnyTag("theguardian/journal/the-long-read", "theguardian/journal/features"),
@@ -113,7 +132,16 @@ object DailyEdition {
     collection("Comment Special").special,
   )
   .swatch(Opinion)
-
+    
+  def FrontObits = front(
+    "Obituaries",
+    collection("Obits").printSentAnyTag("theguardian/journal/obituaries"),
+    collection("Obits Special").special,
+  )
+  .swatch(Neutral)
+  
+  def FrontOpinionSpecial = specialFront("Journal Special", Opinion)
+  
   def FrontCulture = front(
     "Culture",
     collection("Arts").printSentAnyTag("theguardian/g2/arts"),
@@ -150,6 +178,15 @@ object DailyEdition {
     collection("Life Special").special,
   )
   .swatch(Culture)
+  
+  def FrontBooks = front(
+    "Books",
+    collection("Books").printSentAnyTag("theguardian/guardianreview/saturdayreviewsfeatres", "theobserver/new-review/books"),
+    collection("Books Special").special,
+  )
+  .swatch(Culture)
+  
+  def FrontCultureSpecial = specialFront("Culture Special", Culture) 
 
   def FrontLife = front(
     "Life",
@@ -187,14 +224,7 @@ object DailyEdition {
     collection("Life Special").printSentAnyTag("theobserver/design/design").special,
   )
   .swatch(Lifestyle)
-
-  def FrontBooks = front(
-    "Books",
-    collection("Books").printSentAnyTag("theguardian/guardianreview/saturdayreviewsfeatres", "theobserver/new-review/books"),
-    collection("Books Special").special,
-  )
-  .swatch(Culture)
-
+  
   def FrontFood = front(
     "Food",
     collection("Food").printSentAnyTag("theguardian/feast/feast"),
@@ -210,7 +240,7 @@ object DailyEdition {
   )
   .swatch(Lifestyle)
 
-  def FrontSpecial3 = specialFront("Special 3", Neutral)
+  def FrontLifeSpecial = specialFront("Life Special", Lifestyle)
 
   def FrontSportGuardian = front(
     "Sport",
@@ -225,9 +255,11 @@ object DailyEdition {
     collection("Sport Special").special,
   )
   .swatch(Sport)
-
-  def FrontSpecial4 = specialFront(
-    "Special 4",
+  
+  def FrontSportSpecial = specialFront("Sport Special", Sport)
+  
+  def FrontSupplementSpecial = specialFront(
+    "Special Supplement",
     swatch = Neutral,
     prefill = Some(CapiPrefillQuery("?tag=theguardian/special-supplement/special-supplement|theobserver/special-supplement/special-supplement", PathType.PrintSent))
   )
