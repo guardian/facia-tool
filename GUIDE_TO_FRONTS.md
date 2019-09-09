@@ -23,21 +23,6 @@
 - You can drag an image to an article on the fronts tool from the grid [here](https://media.test.dev-gutools.co.uk/search).
 - To use an image you need to make a 5:3 crop of it first using the grid.
 
-## Pressing fronts
-- Before fronts can appear on frontend, they have to be pressed by Facia-Press which lives on the frontend account.
-- The fronts tool sends events to an sqs queue which Facia-Press listens. You can read more about Facia-Press [here](https://github.com/guardian/frontend/blob/ad74a1da567f047b7b824650e6e1be0f0262952b/docs/02-architecture/01-applications-architecture.md).
-
-### Developing locally
-- If you are adding a new kind of content to a front or changing the front configuration, you should check that the front can still be pressed.
-
-- To check this, check that a piece of content still appears on frontend. Edit the articles appearing on a front, launch the front and check that your changes are appearing here: `http://m.code.dev-theguardian.com/{name-of-front}`
-
-- If the front that you are trying to view cannot be found, it is probably because the front is hidden.
-- You can remove this property from the front in the fronts config page.
-- Select the front your are trying to view on the config page, click on the edit-metadata link, and deselect the `is hidden`-property.
-
-- If you are developing locally and do not have frontend credentials from janus, the fronts tool won't have permissions to push events to the sqs queue that Facia-Press reads from. To test that a front is pressed, you will have to deploy your changes to code, and test the code from there.
-
 ## Client side code
 ### Models
 - As explained above, the fronts tool is used to create and edit fronts containing collections that articles can be added to.
