@@ -42,13 +42,14 @@ object DailyEdition {
       FrontFood -> WeekDays(List(WeekDay.Sat)),
       FrontFoodObserver -> WeekDays(List(WeekDay.Sun)),
       FrontLifeFashion -> WeekDays(List(WeekDay.Sat)),
-      FrontLifeSpecial -> Daily(),
+      FrontLifeSpecial -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Sat, WeekDay.Sun)),
       // Sport fronts and special
       FrontSportGuardian -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontSportObserver -> WeekDays(List(WeekDay.Sun)),
       FrontSportSpecial -> Daily(),
       // Special Supplements
-      FrontSupplementSpecial -> Daily(),
+      FrontSupplementSpecial1 -> Daily(),
+      FrontSupplementSpecial2 -> Daily(),
       // Crosswords
       FrontCrosswords -> Daily(),
     ),
@@ -258,8 +259,14 @@ object DailyEdition {
   
   def FrontSportSpecial = specialFront("Sport Special", Sport)
   
-  def FrontSupplementSpecial = specialFront(
-    "Special Supplement",
+  def FrontSupplementSpecial1 = specialFront(
+    "Special Supplement 1",
+    swatch = Neutral,
+    prefill = Some(CapiPrefillQuery("?tag=theguardian/special-supplement/special-supplement|theobserver/special-supplement/special-supplement", PathType.PrintSent))
+  )
+  
+  def FrontSupplementSpecial2 = specialFront(
+    "Special Supplement 2",
     swatch = Neutral,
     prefill = Some(CapiPrefillQuery("?tag=theguardian/special-supplement/special-supplement|theobserver/special-supplement/special-supplement", PathType.PrintSent))
   )
