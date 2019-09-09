@@ -265,11 +265,7 @@ object DailyEdition {
     prefill = Some(CapiPrefillQuery("?tag=theguardian/special-supplement/special-supplement|theobserver/special-supplement/special-supplement", PathType.PrintSent))
   )
   
-  def FrontSupplementSpecial2 = specialFront(
-    "Special Supplement 2",
-    swatch = Neutral,
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/special-supplement/special-supplement|theobserver/special-supplement/special-supplement", PathType.PrintSent))
-  )
+  def FrontSupplementSpecial2 = specialFront("Special Supplement 2", Neutral)
 
   def FrontCrosswords = front(
     "Crosswords",
