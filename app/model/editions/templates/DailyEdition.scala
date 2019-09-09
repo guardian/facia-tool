@@ -26,7 +26,7 @@ object DailyEdition {
       // Journal, Comment, Obituraries and special
       FrontJournal -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontComment -> WeekDays(List(WeekDay.Sun)),
-      FrontObits -> Daily(),
+      FrontObits -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontOpinionSpecial -> Daily(),
       // Culture fronts and special
       FrontCulture -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
