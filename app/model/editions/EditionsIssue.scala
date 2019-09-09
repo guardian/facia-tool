@@ -22,6 +22,7 @@ case class EditionsIssue(
 
   def toPublishedIssue(version: String): PublishedIssue = PublishedIssue(
     id,
+    id,
     displayName,
     issueDate,
     version,

@@ -49,7 +49,8 @@ case class PublishedCollection(id: String, name: String, items: List[PublishedAr
 case class PublishedFront(id: String, name: String, collections: List[PublishedCollection], swatch: Swatch)
 
 case class PublishedIssue(
-  id: String,
+  id: String, // TODO: remove this downstream is consuming 'edition'
+  edition: String,
   name: String,
   issueDate: LocalDate,
   version: String,

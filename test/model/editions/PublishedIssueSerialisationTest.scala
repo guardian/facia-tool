@@ -29,6 +29,7 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
       val expectedJson =
         """{
           |  "id" : "4290573248905743296789524389623",
+          |  "edition" : "4290573248905743296789524389623",
           |  "name" : "Daily Edition",
           |  "issueDate" : "2019-09-30",
           |  "version" : "preview",
@@ -45,6 +46,7 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
       val expectedJson =
         """{
           |  "id" : "4290573248905743296789524389623",
+          |  "edition" : "4290573248905743296789524389623",
           |  "name" : "Daily Edition",
           |  "issueDate" : "2019-09-30",
           |  "version" : "foo",
