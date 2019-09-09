@@ -45,6 +45,11 @@
     </div>
     <div id="config"></div>
     <script>
+      // There are certain things that we don't want to interfere with
+      // the timeliness of our integration tests, e.g. polling. We set a flag
+      // here to allow our application code to modify its behaviour.
+      window.IS_INTEGRATION = true;
+
       const config = document.getElementById('config');
 
       config.dataset.value = JSON.stringify({

@@ -15,7 +15,6 @@ import {
 fixture`Fronts edit`
   .page`http://localhost:3456/v2/issues/fake-edition-isssue-id`
   .before(setup)
-  .beforeEach(async t => await t.eval(() => (window.IS_INTEGRATION = true)))
   .after(teardown);
 
 test('Only show prefill button when prefill query is defined', async t => {
