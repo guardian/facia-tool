@@ -12,6 +12,8 @@ export const articlesForScJohnsonPartnerZone = {
       {
         id:
           'football/2019/jan/14/phil-masinga-south-africa-leeds-premier-league-history',
+        urlPath:
+          'football/2019/jan/14/phil-masinga-south-africa-leeds-premier-league-history',
         type: 'article',
         sectionId: 'football',
         sectionName: 'Football',
@@ -284,6 +286,8 @@ export const articlesForScJohnsonPartnerZone = {
       },
       {
         id: 'sport/2019/jan/14/john-isner-reilly-opelka-australia-open-tennis',
+        urlPath:
+          'sport/2019/jan/14/john-isner-reilly-opelka-australia-open-tennis',
         type: 'article',
         sectionId: 'sport',
         sectionName: 'Sport',

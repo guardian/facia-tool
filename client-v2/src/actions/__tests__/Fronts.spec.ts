@@ -14,7 +14,7 @@ import { initialiseCollectionsForFront } from 'actions/Collections';
 describe('Fronts actions', () => {
   describe('initialiseFront', () => {
     afterEach(() => fetchMock.flush());
-    it('should fetch all of the front collections, mark <n> first collections as open, and fetch articles for <n> first collections', async () => {
+    it('should fetch all of the front collections, mark <n> first collections as open, and fetch articles and their analytics data for <n> first collections', async () => {
       fetchMock.postOnce('/collections', scJohnsonPartnerZoneCollection);
       fetchMock.post('begin:/stories-visible', {
         desktop: 2,
@@ -24,6 +24,14 @@ describe('Fronts actions', () => {
         'begin:/api/preview/search?ids=internal-code/page/5607373,internal-code/page/5607569',
         articlesForScJohnsonPartnerZone
       );
+
+      // @todo -- this isn't checking the correct thing -- we'd expect article paths in this string.
+      // See below -- the articles don't end up in the state as expected.
+      fetchMock.get(
+        '/ophan/histogram?referring-path=/sc-johnson-partner-zone&hours=1&interval=10',
+        []
+      );
+
       const store = configureStore(initialState);
 
       await store.dispatch(initialiseCollectionsForFront(
