@@ -40,6 +40,7 @@ object DailyEdition {
       // Life fronts and special
       FrontLife -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
       FrontLifeWeekend -> WeekDays(List(WeekDay.Sat)),
+      FrontTravelGuardian -> WeekDays(List(WeekDay.Sat)),
       FrontLifeMagazineObserver -> WeekDays(List(WeekDay.Sun)),
       FrontFood -> WeekDays(List(WeekDay.Sat)),
       FrontFoodObserver -> WeekDays(List(WeekDay.Sun)),
@@ -224,11 +225,17 @@ object DailyEdition {
     collection("Space").printSentAnyTag("theguardian/weekend/space2"),
     collection("Fashion & Beauty").printSentAnyTag("theguardian/weekend/fashion-and-beauty"),
     collection("Body & Mind").printSentAnyTag("theguardian/weekend/body-and-mind"),
-    collection("Travel").printSentAnyTag("theguardian/travel/travel"),
     collection("Life Special").special,
   )
   .swatch(Lifestyle)
-
+  
+  def FrontTravelGuardian = front(
+    "Travel",
+    collection("Travel").printSentAnyTag("theguardian/travel/travel"),
+    collection("Travel Special").special,
+    )
+  .swatch(Lifestyle);
+  
   def FrontLifeMagazineObserver = front(
     "Life",
     collection("Features").printSentAnyTag("theobserver/magazine/features2"),
