@@ -26,7 +26,6 @@ object DailyEdition {
       // Journal, Comment, Obituraries and special
       FrontJournal -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontComment -> WeekDays(List(WeekDay.Sun)),
-      FrontObits -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontOpinionSpecial -> Daily(),
       // Culture fronts and special
       FrontCulture -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
@@ -133,13 +132,6 @@ object DailyEdition {
     collection("Comment Special").special,
   )
   .swatch(Opinion)
-    
-  def FrontObits = front(
-    "Obituaries",
-    collection("Obits").printSentAnyTag("theguardian/journal/obituaries"),
-    collection("Obits Special").special,
-  )
-  .swatch(Neutral)
   
   def FrontOpinionSpecial = specialFront("Journal Special", Opinion)
   
