@@ -28,7 +28,6 @@ import {
 
 fixture`Fronts edit`.page`http://localhost:3456/v2/editorial`
   .before(setup)
-  .beforeEach(async t => await t.eval(() => (window.IS_INTEGRATION = true)))
   .after(teardown);
 
 // quick and dirty check to see if there are any console errors on page load
