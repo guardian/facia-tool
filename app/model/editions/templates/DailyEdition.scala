@@ -74,7 +74,6 @@ object DailyEdition {
     collection("Front Page").printSentAnyTag("theguardian/mainsection/topstories"),
     collection("News Special").special,
     collection("UK News").printSentAnyTag("theguardian/mainsection/uknews", "theguardian/mainsection/education", "theguardian/mainsection/society", "theguardian/mainsection/media", "theguardian/guardian-members/guardian-members"),
-    collection("UK Financial").printSentAnyTag("theguardian/mainsection/financial3"),
     collection("Weather").printSentAnyTag("theguardian/mainsection/weather2")
   )
   .swatch(News)
@@ -85,7 +84,6 @@ object DailyEdition {
     collection("News Special").special,
     collection("UK News").printSentAnyTag("theguardian/mainsection/uknews", "theguardian/mainsection/education", "theguardian/mainsection/society", "theguardian/mainsection/media", "theguardian/guardian-members/guardian-members"),
     collection("Week in Review").printSentAnyTag("theguardian/mainsection/week-in-review"),
-    collection("UK Financial").printSentAnyTag("theguardian/mainsection/financial3"),
     collection("Weather").printSentAnyTag("theguardian/mainsection/weather2")
   )
   .swatch(News)
@@ -95,7 +93,6 @@ object DailyEdition {
   def FrontNewsWorldGuardian = front(
     "World",
     collection("World News").printSentAnyTag("theguardian/mainsection/international"),
-    collection("World Financial"),
     collection("World Special").special
   )
   .swatch(News)
@@ -112,7 +109,6 @@ object DailyEdition {
   def FrontNewsWorldObserver = front(
     "World",
     collection("World News").printSentAnyTag("theobserver/news/worldnews"),
-    collection("World Business"),
     collection("World Special").special,
   )
   .swatch(News)
@@ -142,7 +138,7 @@ object DailyEdition {
     collection("Features").printSentAnyTag("theguardian/journal/the-long-read", "theguardian/journal/features"),
     collection("Comment").printSentAnyTag("theguardian/journal/opinion"),
     collection("Letters").printSentAnyTag("theguardian/journal/letters"),
-    collection("Obits").printSentAnyTag("theguardian/journal/obituaries"),
+    collection("Obituaries").printSentAnyTag("theguardian/journal/obituaries"),
     collection("Journal Special").special,
   )
   .swatch(Opinion)
@@ -189,7 +185,7 @@ object DailyEdition {
     collection("Agenda").printSentAnyTag("theobserver/new-review/agenda"),
     collection("Science & Technology").printSentAnyTag("theobserver/new-review/discover"),
     collection("Critics").printSentAnyTag("theobserver/new-review/critics"),
-    collection("Life Special").special,
+    collection("Culture Special").special,
   )
   .swatch(Culture)
   
