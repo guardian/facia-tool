@@ -1,4 +1,4 @@
-import { Dispatch, ThunkResult } from 'types/Store';
+import { ThunkResult } from 'types/Store';
 import {
   PageViewDataRequested,
   PageViewDataReceived
@@ -9,6 +9,12 @@ import {
   PageViewStory
 } from 'shared/types/PageViewData';
 import { DerivedArticle } from 'shared/types/Article';
+import {
+  createSelectArticlesInCollection,
+  selectSharedState,
+  createSelectArticleFromArticleFragment
+} from 'shared/selectors/shared';
+import { CollectionItemSets } from 'shared/types/Collection';
 
 const totalPeriodInHours = 1;
 const intervalInMinutes = 10;
@@ -16,25 +22,30 @@ const intervalInMinutes = 10;
 export const PAGE_VIEW_DATA_RECEIVED = 'PAGE_VIEW_DATA_RECEIVED';
 export const PAGE_VIEW_DATA_REQUESTED = 'PAGE_VIEW_DATA_REQUESTED';
 
+const selectArticlesInCollection = createSelectArticlesInCollection();
+const selectArticleFromArticleFragment = createSelectArticleFromArticleFragment();
 const getPageViewData = (
   frontId: string,
-  articles: DerivedArticle[],
-  collectionId: string
+  collectionId: string,
+  collectionSet: CollectionItemSets
 ): ThunkResult<void> => {
-  return (dispatch: Dispatch) => {
+  return async (dispatch, getState) => {
     dispatch(pageViewDataRequestedAction(frontId));
     try {
-      fetchPageViewData(frontId, articles).then(result => {
-        result.json().then((data: PageViewDataFromOphan[]) => {
-          const dataWithArticleIds = convertToStoriesData(data, articles);
-          dispatch(
-            pageViewDataReceivedAction(
-              dataWithArticleIds,
-              frontId,
-              collectionId
-            )
-          );
-        });
+      const state = selectSharedState(getState());
+      const articleIds = selectArticlesInCollection(state, {
+        collectionId,
+        collectionSet
+      });
+      const articles = articleIds
+        .map(_ => selectArticleFromArticleFragment(state, _))
+        .filter(_ => _) as DerivedArticle[];
+      const result = await fetchPageViewData(frontId, articles);
+      result.json().then((data: PageViewDataFromOphan[]) => {
+        const dataWithArticleIds = convertToStoriesData(data, articles);
+        dispatch(
+          pageViewDataReceivedAction(dataWithArticleIds, frontId, collectionId)
+        );
       });
     } catch (e) {
       throw new Error(`API request to Ophan for page view data failed: ${e}`);

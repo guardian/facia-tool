@@ -287,20 +287,21 @@ const createMapStateToProps = () => {
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
-  { browsingStage }: CollectionPropsBeforeState
+  { browsingStage, frontId }: CollectionPropsBeforeState
 ) => ({
   fetchPrefill: (id: string) => dispatch(fetchPrefill(id)),
   setHidden: (id: string, isHidden: boolean) =>
     dispatch(actions.setHiddenAndPersist(id, isHidden)),
-  publishCollection: (id: string, frontId: string) =>
-    dispatch(publishCollection(id, frontId)),
+  publishCollection: (id: string) => dispatch(publishCollection(id, frontId)),
   discardDraftChangesToCollection: (id: string) =>
     dispatch(discardDraftChangesToCollection(id)),
   onChangeOpenState: (id: string, isOpen: boolean) => {
     if (isOpen) {
       dispatch(editorCloseCollections(id));
     } else {
-      dispatch(openCollectionsAndFetchTheirArticles([id], browsingStage));
+      dispatch(
+        openCollectionsAndFetchTheirArticles([id], frontId, browsingStage)
+      );
     }
   },
   fetchPreviousCollectionArticles: (id: string) => {
