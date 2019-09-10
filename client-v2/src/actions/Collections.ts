@@ -362,8 +362,8 @@ const openCollectionsAndFetchTheirArticles = (
   itemSet: CollectionItemSets
 ): ThunkResult<Promise<void>> => async dispatch => {
   dispatch(editorOpenCollections(collectionIds));
-  dispatch(getArticlesForCollections(collectionIds, itemSet));
-  dispatch(getOphanDataForCollections(collectionIds, frontId, itemSet));
+  await dispatch(getArticlesForCollections(collectionIds, itemSet));
+  await dispatch(getOphanDataForCollections(collectionIds, frontId, itemSet));
 };
 
 const closeCollections = (collectionIds: string[]): ThunkResult<void> => {

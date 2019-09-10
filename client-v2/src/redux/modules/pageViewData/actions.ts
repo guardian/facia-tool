@@ -24,6 +24,7 @@ export const PAGE_VIEW_DATA_REQUESTED = 'PAGE_VIEW_DATA_REQUESTED';
 
 const selectArticlesInCollection = createSelectArticlesInCollection();
 const selectArticleFromArticleFragment = createSelectArticleFromArticleFragment();
+
 const getPageViewData = (
   frontId: string,
   collectionId: string,
