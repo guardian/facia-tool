@@ -23,7 +23,10 @@ object DailyEdition {
       FrontNewsWorldGuardian -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontNewsWorldObserver -> WeekDays(List(WeekDay.Sun)),
       FrontWorldSpecial -> Daily(),
-      // Journal, Comment, Obituraries and special
+      // Financial fronts and special
+      FrontFinancialGuardian -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
+      FrontFinancialObserver -> WeekDays(List(WeekDay.Sun)),
+      // Journal, Comment and special
       FrontJournal -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontComment -> WeekDays(List(WeekDay.Sun)),
       FrontOpinionSpecial -> Daily(),
@@ -100,7 +103,6 @@ object DailyEdition {
     "National",
     collection("Front Page"),
     collection("UK News").printSentAnyTag("theobserver/news/uknews"),
-    collection("Business & Cash").printSentAnyTag("theobserver/news/business", "theobserver/news/cash"),
     collection("Focus").printSentAnyTag("theobserver/news/focus").special,
     collection("News Special").special,
   )
@@ -115,6 +117,24 @@ object DailyEdition {
   .swatch(News)
   
   def FrontWorldSpecial = specialFront("World Special", News)
+  
+  // Financial fronts then special
+  
+  def FrontFinancialGuardian = front (
+    "Financial",
+    collection("Financial").printSentAnyTag("theguardian/mainsection/financial3","theguardian/mainsection/money"),
+    collection("Financial Special").special,
+    )
+  .swatch(News)
+  
+  def FrontFinancialObserver = front (
+    "Financial",
+    collection("Financial").printSentAnyTag("theobserver/news/business", "theobserver/news/cash"),
+    collection("Financial Special").special,
+    )
+  .swatch(News)
+  
+  def FrontFinancialSpecial = specialFront("Financial Special", News)
   
   def FrontJournal = front(
     "Journal",
@@ -182,7 +202,7 @@ object DailyEdition {
   def FrontCultureSpecial = specialFront("Culture Special", Culture) 
 
   def FrontLife = front(
-    "Lifestyle",
+    "Life",
     collection("Features").printSentAnyTag("theguardian/g2/features"),
     collection("Life Special").special,
   )
@@ -205,7 +225,6 @@ object DailyEdition {
     collection("Fashion & Beauty").printSentAnyTag("theguardian/weekend/fashion-and-beauty"),
     collection("Body & Mind").printSentAnyTag("theguardian/weekend/body-and-mind"),
     collection("Travel").printSentAnyTag("theguardian/travel/travel"),
-    collection("Money").printSentAnyTag("theguardian/mainsection/money"),
     collection("Life Special").special,
   )
   .swatch(Lifestyle)
