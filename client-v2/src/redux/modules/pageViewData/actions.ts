@@ -57,28 +57,33 @@ const getPageViewData = (
 const convertToStoriesData = (
   allStories: PageViewDataFromOphan[],
   articles: DerivedArticle[]
-): PageViewStory[] => {
-  return allStories.map(story => {
-    return {
-      articleId: addArticleId(story, articles),
-      articlePath: story.path,
-      totalHits: story.totalHits,
-      data:
-        story.series.length > 0 && story.series[0].data
-          ? story.series[0].data
-          : []
-    };
-  });
-};
+): PageViewStory[] =>
+  allStories.reduce(
+    (acc, story) => {
+      const articleId = getArticleIdFromOphanData(story, articles);
+      return articleId
+        ? acc.concat({
+            articleId,
+            articlePath: story.path,
+            totalHits: story.totalHits,
+            data:
+              story.series.length > 0 && story.series[0].data
+                ? story.series[0].data
+                : []
+          })
+        : acc;
+    },
+    [] as PageViewStory[]
+  );
 
-const addArticleId = (
+const getArticleIdFromOphanData = (
   ophanData: PageViewDataFromOphan,
   articles: DerivedArticle[]
-): string => {
+): string | undefined => {
   // the path from ophan has a slash at the front, removing below
   const ophanPathClean = ophanData.path.substr(1);
-  const matchingArticle = articles.find(a => a.urlPath === ophanPathClean)!;
-  return matchingArticle.id;
+  const matchingArticle = articles.find(a => a.urlPath === ophanPathClean);
+  return matchingArticle ? matchingArticle.uuid : undefined;
 };
 
 const pageViewDataReceivedAction = (
