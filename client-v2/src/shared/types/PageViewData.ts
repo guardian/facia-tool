@@ -1,5 +1,3 @@
-import { DerivedArticle } from './Article';
-
 interface PageViewDataFromOphan {
   totalHits: number;
   series: PageViewDataSeriesData[];
@@ -40,7 +38,7 @@ interface PageViewArticlesOnFront {
 
 interface CollectionWithArticles {
   id: string;
-  articles: DerivedArticle[];
+  articleIds: string[];
 }
 
 export {

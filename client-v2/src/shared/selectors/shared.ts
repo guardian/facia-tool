@@ -170,7 +170,8 @@ const createSelectArticleFromArticleFragment = () =>
         frontPublicationDate: articleFragment.frontPublicationDate,
         tone: externalArticle ? externalArticle.frontsMeta.tone : undefined,
         hasMainVideo: !!externalArticle && hasMainVideo(externalArticle),
-        showMainVideo: !!articleMeta.showMainVideo
+        showMainVideo: !!articleMeta.showMainVideo,
+        urlPath: externalArticle && externalArticle.urlPath
       };
     }
   );

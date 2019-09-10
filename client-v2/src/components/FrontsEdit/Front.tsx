@@ -397,7 +397,7 @@ const mapDispatchToProps = (
       dispatch(open ? editorOpenOverview(id) : editorCloseOverview(id)),
     openAllCollections: (collections: string[]) =>
       dispatch(
-        openCollectionsAndFetchTheirArticles(collections, browsingStage)
+        openCollectionsAndFetchTheirArticles(collections, id, browsingStage)
       ),
     ...bindActionCreators(
       {

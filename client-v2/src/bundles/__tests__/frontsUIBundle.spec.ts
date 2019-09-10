@@ -599,10 +599,10 @@ describe('frontsUIBundle', () => {
       const openEntities = selectOpenFrontsCollectionsAndArticles(state);
       expect(openEntities.length).toEqual(2); // Two fronts
       expect(openEntities[0].collections.length).toEqual(1); // First front has one collection
-      expect(openEntities[0].collections[0].articles.map(_ => _.id)).toEqual([
-        'capiArticle1',
-        'capiArticle2',
-        'capiArticle3'
+      expect(openEntities[0].collections[0].articleIds).toEqual([
+        'articleFragment1',
+        'articleFragment2',
+        'articleFragment3'
       ]); // First collection has three articles
       expect(openEntities[1].collections.length).toEqual(0); // Second front has no collections
     });
@@ -630,7 +630,7 @@ describe('frontsUIBundle', () => {
       );
       const openEntities = selectOpenFrontsCollectionsAndArticles(state);
       expect(openEntities[0].collections.length).toEqual(1); // First front has one collection
-      expect(openEntities[0].collections[0].articles.length).toEqual(0); // First collection has no live articles
+      expect(openEntities[0].collections[0].articleIds.length).toEqual(0); // First collection has no live articles
     });
   });
 });

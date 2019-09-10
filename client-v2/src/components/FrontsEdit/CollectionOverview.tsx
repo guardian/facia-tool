@@ -193,7 +193,13 @@ const mapDispatchToProps = (
   props: FrontCollectionOverviewContainerProps
 ) => ({
   openCollection: (id: string) =>
-    dispatch(openCollectionsAndFetchTheirArticles([id], props.browsingStage))
+    dispatch(
+      openCollectionsAndFetchTheirArticles(
+        [id],
+        props.frontId,
+        props.browsingStage
+      )
+    )
 });
 
 export default connect(

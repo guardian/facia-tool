@@ -55,7 +55,7 @@ const createRefreshStaleCollections = (store: Store) => () => {
 const createRefreshOpenArticles = (store: Store) => () => {
   const state = store.getState();
   const openArticles = selectOpenArticles(state);
-  (store.dispatch as Dispatch)(fetchArticles(openArticles.map(_ => _.id)));
+  (store.dispatch as Dispatch)(fetchArticles(openArticles));
 };
 
 const createRefreshOphanData = (store: Store) => () => {
@@ -65,9 +65,9 @@ const createRefreshOphanData = (store: Store) => () => {
   );
   openFrontsCollectionAndArticles.forEach(front => {
     front.collections.forEach(collection => {
-      if (collection.articles.length > 0) {
+      if (collection.articleIds.length > 0) {
         (store.dispatch as Dispatch)(
-          getPageViewData(front.frontId, collection.articles, collection.id)
+          getPageViewData(front.frontId, collection.id, 'draft')
         );
       }
     });

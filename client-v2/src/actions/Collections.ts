@@ -71,6 +71,7 @@ import { events } from 'services/GA';
 import { selectCollectionParams } from 'selectors/collectionSelectors';
 import { fetchCollectionsStrategy } from 'strategies/fetch-collection';
 import { updateCollectionStrategy } from 'strategies/update-collection';
+import { getPageViewData } from 'redux/modules/pageViewData';
 
 const articlesInCollection = createSelectAllArticlesInCollection();
 
@@ -344,12 +345,25 @@ const getArticlesForCollections = (
   await dispatch(fetchArticles(articleIds));
 };
 
+const getOphanDataForCollections = (
+  collectionIds: string[],
+  frontId: string,
+  itemSet: CollectionItemSets
+): ThunkResult<Promise<void[]>> => async dispatch => {
+  const ophanRequests = collectionIds.map(collectionId => {
+    return dispatch(getPageViewData(frontId, collectionId, itemSet));
+  });
+  return Promise.all(ophanRequests);
+};
+
 const openCollectionsAndFetchTheirArticles = (
   collectionIds: string[],
+  frontId: string,
   itemSet: CollectionItemSets
 ): ThunkResult<Promise<void>> => async dispatch => {
   dispatch(editorOpenCollections(collectionIds));
-  return dispatch(getArticlesForCollections(collectionIds, itemSet));
+  dispatch(getArticlesForCollections(collectionIds, itemSet));
+  dispatch(getOphanDataForCollections(collectionIds, frontId, itemSet));
 };
 
 const closeCollections = (collectionIds: string[]): ThunkResult<void> => {
@@ -396,6 +410,13 @@ function initialiseCollectionsForFront(
     await dispatch(getCollections(front.collections));
     await dispatch(
       getArticlesForCollections(collectionsWithArticlesToLoad, browsingStage)
+    );
+    await dispatch(
+      getOphanDataForCollections(
+        collectionsWithArticlesToLoad,
+        frontId,
+        browsingStage
+      )
     );
   };
 }

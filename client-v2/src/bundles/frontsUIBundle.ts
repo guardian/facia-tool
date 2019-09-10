@@ -44,11 +44,9 @@ import { Stages } from 'shared/types/Collection';
 import { selectPriority } from 'selectors/pathSelectors';
 import { CollectionWithArticles } from 'shared/types/PageViewData';
 import {
-  createSelectArticleFromArticleFragment,
   createSelectArticlesInCollection,
   selectSharedState
 } from 'shared/selectors/shared';
-import { DerivedArticle } from 'shared/types/Article';
 
 export const EDITOR_OPEN_CURRENT_FRONTS_MENU =
   'EDITOR_OPEN_CURRENT_FRONTS_MENU';
@@ -358,7 +356,7 @@ const createSelectCurrentlyOpenCollectionsByFront = () => {
   );
 };
 
-const selectOpenArticles = (state: GlobalState): DerivedArticle[] => {
+const selectOpenArticles = (state: GlobalState): string[] => {
   const frontsCollectionsAndArticles = selectOpenFrontsCollectionsAndArticles(
     state
   );
@@ -367,8 +365,8 @@ const selectOpenArticles = (state: GlobalState): DerivedArticle[] => {
     [] as CollectionWithArticles[]
   );
   const articles = collections.reduce(
-    (acc, collection) => acc.concat(collection.articles),
-    [] as DerivedArticle[]
+    (acc, collection) => acc.concat(collection.articleIds),
+    [] as string[]
   );
   return articles;
 };
@@ -448,7 +446,6 @@ const selectFrontBrowsingStage = (state: GlobalState, frontId: string) =>
   state.editor.frontIdsByBrowsingStage[frontId] || 'draft';
 
 const selectAllArticleIdsForCollection = createSelectArticlesInCollection();
-const selectArticle = createSelectArticleFromArticleFragment();
 const selectCurrentlyOpenCollectionsByFront = createSelectCurrentlyOpenCollectionsByFront();
 
 const selectOpenFrontsCollectionsAndArticles = (
@@ -469,13 +466,9 @@ const selectOpenFrontsCollectionsAndArticles = (
           includeSupportingArticles: false
         }
       );
-      const articles = articleIds
-        .map(_ => selectArticle(selectSharedState(state), _))
-        .filter(_ => _) as DerivedArticle[];
-
       return {
         id: cId,
-        articles
+        articleIds
       };
     });
     return {
