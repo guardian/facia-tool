@@ -184,7 +184,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
       ([_, offset]) => offset
     );
 
-    if (sortedIdsAndOffsets.length) {
+    if (
+      sortedIdsAndOffsets.length &&
+      sortedIdsAndOffsets[0][0] !== this.state.currentlyScrolledCollectionId
+    ) {
       this.setState({
         currentlyScrolledCollectionId: sortedIdsAndOffsets[0][0]
       });
