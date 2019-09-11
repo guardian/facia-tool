@@ -193,21 +193,17 @@ const SnapLink = ({
   );
 };
 
-const mapStateToProps = (
-  state: State,
-  props: ContainerProps
-): {
-  articleFragment: ArticleFragment;
-  article: DerivedArticle | undefined;
-} => {
-  const sharedState = props.selectSharedState
-    ? props.selectSharedState(state)
-    : selectSharedState(state);
+const mapStateToProps = () => {
   const selectArticle = createSelectArticleFromArticleFragment();
-  const article = selectArticle(sharedState, props.id);
-  return {
-    articleFragment: selectArticleFragment(sharedState, props.id),
-    article
+  return (state: State, props: ContainerProps) => {
+    const sharedState = props.selectSharedState
+      ? props.selectSharedState(state)
+      : selectSharedState(state);
+    const article = selectArticle(sharedState, props.id);
+    return {
+      articleFragment: selectArticleFragment(sharedState, props.id),
+      article
+    };
   };
 };
 
