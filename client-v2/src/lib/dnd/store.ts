@@ -1,3 +1,5 @@
+import throttle from 'lodash/throttle';
+
 type Key = string | null;
 type Index = number | null;
 
@@ -14,6 +16,14 @@ const createStore = (
 ) => {
   let subs: Sub[] = [];
   let state = initState;
+  const notify = throttle(
+    () => subs.forEach(sub => sub(state.key, state.index)),
+    100,
+    {
+      leading: true,
+      trailing: true
+    }
+  );
 
   return {
     subscribe: (fn: Sub) => (subs = [...subs, fn]),
@@ -27,7 +37,7 @@ const createStore = (
         return;
       }
       state = { key, index, isDraggedOver };
-      subs.forEach(sub => sub(key, index));
+      notify();
     },
     getState: () => state
   };
