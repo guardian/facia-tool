@@ -393,6 +393,21 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       specialFront2.isHidden shouldBe false
     }
 
+    "should delete an issue" taggedAs UsesDatabase in {
+      val issue = insertSkeletonIssue(2019, 9, 1,
+        front("news/uk",
+          collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
+            article("12345"),
+            article("23456")
+          )
+        )
+      )
+
+      val dbIssue: EditionsIssue = editionsDB.getIssue(issue).value
+
+      editionsDB.deleteIssue(dbIssue.id)
+      editionsDB.getIssue(issue) should be
+    }
   }
 
   "should insert path_type and prefill correctly" taggedAs UsesDatabase in {
