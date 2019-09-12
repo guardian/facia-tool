@@ -356,7 +356,7 @@ const createSelectCurrentlyOpenCollectionsByFront = () => {
   );
 };
 
-const selectOpenArticles = (state: GlobalState): string[] => {
+const selectOpenArticleFragmentIds = (state: GlobalState): string[] => {
   const frontsCollectionsAndArticles = selectOpenFrontsCollectionsAndArticles(
     state
   );
@@ -809,7 +809,7 @@ export {
   selectEditorFavouriteFrontIdsByPriority,
   selectOpenFrontsCollectionsAndArticles,
   createSelectCollectionsInOpenFronts,
-  selectOpenArticles,
+  selectOpenArticleFragmentIds,
   selectIsCollectionOpen,
   editorOpenClipboard,
   editorCloseClipboard,

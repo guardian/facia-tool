@@ -9,10 +9,13 @@ import {
 import { selectPriority } from 'selectors/pathSelectors';
 import { getPageViewData } from '../redux/modules/pageViewData/actions';
 import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
-import { selectSharedState } from 'shared/selectors/shared';
+import {
+  selectSharedState,
+  selectExternalArticleIdFromArticleFragment
+} from 'shared/selectors/shared';
 import {
   selectOpenFrontsCollectionsAndArticles,
-  selectOpenArticles
+  selectOpenArticleFragmentIds
 } from 'bundles/frontsUIBundle';
 import { createSelectCollectionsInOpenFronts } from 'bundles/frontsUIBundle';
 
@@ -54,8 +57,13 @@ const createRefreshStaleCollections = (store: Store) => () => {
 
 const createRefreshOpenArticles = (store: Store) => () => {
   const state = store.getState();
-  const openArticles = selectOpenArticles(state);
-  (store.dispatch as Dispatch)(fetchArticles(openArticles));
+  const openArticleFragmentIds = selectOpenArticleFragmentIds(state);
+  const externalArticleIds = openArticleFragmentIds
+    .map(_ =>
+      selectExternalArticleIdFromArticleFragment(selectSharedState(state), _)
+    )
+    .filter(_ => _) as string[];
+  (store.dispatch as Dispatch)(fetchArticles(externalArticleIds));
 };
 
 const createRefreshOphanData = (store: Store) => () => {
