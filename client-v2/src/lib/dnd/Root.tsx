@@ -23,7 +23,7 @@ const classNameDraggedOver = 'DnD__Root--is-dragged-over';
 
 const RootContainer = styled.div`
   display: contents;
-  &.DnD__Root--is-dragged-over {
+  &.${classNameDraggedOver} {
     ${DropZoneContainer} {
       pointer-events: initial;
     }
