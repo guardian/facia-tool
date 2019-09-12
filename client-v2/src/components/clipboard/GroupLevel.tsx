@@ -65,10 +65,9 @@ const GroupLevel = ({
     renderDrop={
       isUneditable
         ? () => <Spacer />
-        : (props, isTarget, isActive, i) => (
+        : (props, isTarget, i) => (
             <DropZone
               {...props}
-              disabled={!isActive}
               override={isTarget}
               dropColor={theme.base.colors.dropZoneActiveStory}
               doubleHeight={!articleFragments.length || i === 0}

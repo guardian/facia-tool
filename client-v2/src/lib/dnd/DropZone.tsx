@@ -2,6 +2,7 @@ import React from 'react';
 import { StoreConsumer } from './Root';
 import { Store, Sub } from './store';
 import { NO_STORE_ERROR } from './constants';
+import styled from 'styled-components';
 
 interface OuterProps {
   parentKey: string;
@@ -19,6 +20,11 @@ interface State {
   isTarget: boolean;
   isActive: boolean;
 }
+
+export const DropZoneContainer = styled.div`
+  /* We don't accept pointer events until our Root parent enables them */
+  pointer-events: none;
+`;
 
 class DropZone extends React.Component<Props, State> {
   public state = { isTarget: false, isActive: false };
@@ -38,15 +44,14 @@ class DropZone extends React.Component<Props, State> {
   }
 
   public render() {
-    return this.props.children(this.state.isTarget, this.state.isActive);
+    return (
+      <DropZoneContainer>
+        {this.props.children(this.state.isTarget, this.state.isActive)}
+      </DropZoneContainer>
+    );
   }
 
   private handleStoreUpdate: Sub = (id, hoverIndex) => {
-    const state = this.props.store && this.props.store.getState();
-    const isActive = state ? state.isDraggedOver : false;
-    if (isActive !== this.state.isActive) {
-      this.setState({ isActive });
-    }
     if (
       id === this.props.parentKey &&
       hoverIndex === this.props.index &&
