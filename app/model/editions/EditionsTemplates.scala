@@ -1,5 +1,7 @@
 package model.editions
 
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.time.temporal.ChronoField
 import java.time.{LocalDate, ZoneId}
 
@@ -43,7 +45,7 @@ object Swatch extends PlayEnum[Swatch] {
   case object Lifestyle extends Swatch
 
   case object Sport extends Swatch
-  
+
   case object Special extends Swatch
 
   override def values = findValues
@@ -60,12 +62,7 @@ object FrontPresentation {
 case class CollectionPresentation()
 
 case class CapiPrefillQuery(queryString: String, pathType: PathType) {
-  def escapedQueryString(): String =
-    queryString
-      .replace(",", "%2C")
-      .replace("|", "%7C")
-      .replace("(", "%28")
-      .replace(")", "%29")
+  def escapedQueryString(): String = URLEncoder.encode(queryString, StandardCharsets.UTF_8.toString)
 }
 
 object CapiPrefillQuery {
