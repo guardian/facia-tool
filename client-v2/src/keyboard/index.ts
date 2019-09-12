@@ -14,7 +14,7 @@ import { RefDrop } from 'util/collectionUtils';
 import { createArticleEntitiesFromDrop } from 'shared/actions/ArticleFragments';
 import { moveUp, moveDown } from './keyboardActionMaps/move';
 import { ArticleFragment } from '../shared/types/Collection';
-import { insertClipboardArticleFragment } from 'actions/Clipboard';
+import { insertClipboardArticleFragmentWithPersist } from 'actions/Clipboard';
 
 type FocusableTypes =
   | 'clipboard'
@@ -85,7 +85,11 @@ export const createKeyboardActionMap = (store: Store): KeyboardBindingMap => ({
           return;
         }
         dispatch(
-          insertClipboardArticleFragment('clipboard', 0, articleFragment.uuid)
+          insertClipboardArticleFragmentWithPersist(
+            'clipboard',
+            0,
+            articleFragment.uuid
+          )
         );
       } catch (e) {
         Raven.captureMessage(`Paste to clipboard failed: ${e.message}`);

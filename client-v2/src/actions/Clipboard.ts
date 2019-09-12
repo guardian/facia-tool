@@ -87,6 +87,14 @@ const insertClipboardArticleFragment = (
   }
 });
 
+const insertClipboardArticleFragmentWithPersist = addPersistMetaToAction(
+  insertClipboardArticleFragment,
+  {
+    persistTo: 'clipboard',
+    key: 'articleFragmentId'
+  }
+);
+
 const removeClipboardArticleFragment = (
   id: string,
   articleFragmentId: string
@@ -114,6 +122,7 @@ export {
   updateClipboard,
   updateClipboardContent,
   insertClipboardArticleFragment,
+  insertClipboardArticleFragmentWithPersist,
   removeClipboardArticleFragment,
   clearClipboard,
   clearClipboardWithPersist
