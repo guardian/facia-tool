@@ -2,7 +2,7 @@ import React from 'react';
 
 type Props = {
   onIntentConfirm?: () => void;
-  onDragIntentStart: () => void;
+  onDragIntentStart: (e: React.DragEvent) => void;
   onDragIntentEnd: () => void;
   active: boolean;
   delay?: number;
@@ -65,7 +65,7 @@ class DragIntentContainer extends React.Component<Props> {
     if (!this.props.active) {
       return;
     }
-    this.props.onDragIntentStart();
+    this.props.onDragIntentStart(e);
     if (typeof delay !== 'undefined') {
       this.dragTimer = window.setTimeout(() => {
         if (this.props.onIntentConfirm) {

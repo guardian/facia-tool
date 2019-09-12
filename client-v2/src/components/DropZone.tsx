@@ -3,13 +3,11 @@ import { styled } from 'constants/theme';
 import { theme } from 'constants/theme';
 
 export const DefaultDropContainer = styled.div<{
-  disabled: boolean;
   doubleHeight?: boolean;
   isActive?: boolean;
 }>`
   position: relative;
   height: ${({ doubleHeight }) => (doubleHeight ? '20px' : '8px')};
-  ${({ disabled }) => disabled && 'pointer-events: none'};
   ${({ isActive }) => `z-index: ${isActive ? 1 : 1}`}
 `;
 
@@ -65,7 +63,6 @@ class DropZone extends React.Component<
   {
     onDrop: (e: React.DragEvent) => void;
     onDragOver: (e: React.DragEvent) => void;
-    disabled?: boolean;
     doubleHeight?: boolean;
     override?: boolean;
     dropColor?: string;
@@ -85,9 +82,7 @@ class DropZone extends React.Component<
   };
 
   get isActive() {
-    return !!this.props.disabled
-      ? false
-      : typeof this.props.override === 'boolean'
+    return typeof this.props.override === 'boolean'
       ? this.props.override
       : this.state.isHoveredOver;
   }
@@ -105,32 +100,23 @@ class DropZone extends React.Component<
     return this.props.onDrop(e);
   };
 
-  public getEventProps = () =>
-    this.props.disabled
-      ? {}
-      : {
-          onDragEnter: this.handleDragEnter,
-          onDragLeave: this.handleDragLeave,
-          onDragExit: this.handleDragLeave,
-          onDrop: this.handleDrop,
-          onDragOver: this.props.onDragOver
-        };
-
   public render() {
     const {
       doubleHeight,
       dropColor,
-      disabled,
       dropMessage,
       dropContainer: DropContainer = DefaultDropContainer,
       dropIndicator: DropIndicator = DefaultDropIndicator
     } = this.props;
     return (
       <DropContainer
-        {...this.getEventProps()}
+        onDragEnter={this.handleDragEnter}
+        onDragLeave={this.handleDragLeave}
+        onDragExit={this.handleDragLeave}
+        onDrop={this.handleDrop}
+        onDragOver={this.props.onDragOver}
         doubleHeight={doubleHeight}
         data-testid="drop-zone"
-        disabled={!!disabled}
         isActive={this.isActive}
       >
         <DropIndicator isActive={this.isActive}>

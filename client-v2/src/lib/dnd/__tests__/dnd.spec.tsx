@@ -91,7 +91,7 @@ describe('Curation', () => {
                   edit = e;
                 }}
                 onDrop={() => null}
-                renderDrop={(getDropProps, _, __, j) => {
+                renderDrop={(getDropProps, _, j) => {
                   if (j === 1) {
                     dropProps = getDropProps;
                   }

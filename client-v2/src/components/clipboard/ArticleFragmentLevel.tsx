@@ -65,10 +65,9 @@ const ArticleFragmentLevel = ({
     renderDrop={
       isUneditable
         ? null
-        : (props, isTarget, isActive) => (
+        : (props, isTarget) => (
             <DropZone
               {...props}
-              disabled={!isActive}
               override={isTarget}
               dropColor={theme.base.colors.dropZoneActiveSublink}
               dropMessage={'Sublink'}

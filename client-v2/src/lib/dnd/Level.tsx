@@ -69,12 +69,7 @@ interface OuterProps<T> {
   onDrop: (e: React.DragEvent, to: PosSpec) => void;
   renderDrag?: (data: T) => React.ReactNode;
   renderDrop?:
-    | ((
-        props: DropProps,
-        isTarget: boolean,
-        isActive: boolean,
-        index: number
-      ) => React.ReactNode)
+    | ((props: DropProps, isTarget: boolean, index: number) => React.ReactNode)
     | null;
   // Any occurence of these in the data transfer will cause all dragging
   // behaviour to be bypassed.
@@ -120,9 +115,8 @@ class Level<T> extends React.Component<Props<T>, State> {
         {arr.map((node, i) => (
           <React.Fragment key={getId(node)}>
             <DropZone parentKey={this.key} index={i}>
-              {(isTarget, isActive) =>
-                renderDrop &&
-                renderDrop(this.getDropProps(i), isTarget, isActive, i)
+              {isTarget =>
+                renderDrop && renderDrop(this.getDropProps(i), isTarget, i)
               }
             </DropZone>
             <Node
@@ -146,14 +140,9 @@ class Level<T> extends React.Component<Props<T>, State> {
           </React.Fragment>
         ))}
         <DropZone parentKey={this.key} index={arr.length}>
-          {(isTarget, isActive) =>
+          {isTarget =>
             renderDrop &&
-            renderDrop(
-              this.getDropProps(arr.length),
-              isTarget,
-              isActive,
-              arr.length
-            )
+            renderDrop(this.getDropProps(arr.length), isTarget, arr.length)
           }
         </DropZone>
       </Container>

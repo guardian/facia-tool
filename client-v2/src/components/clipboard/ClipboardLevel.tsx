@@ -58,11 +58,10 @@ const ClipboardLevel = ({
     onMove={onMove}
     onDrop={onDrop}
     renderDrag={af => <ArticleDrag id={af.uuid} />}
-    renderDrop={(props, isTarget, isActive, index) => (
+    renderDrop={(props, isTarget, index) => (
       <DropZone
         {...props}
         override={isTarget}
-        disabled={!isActive}
         dropColor={theme.base.colors.dropZoneActiveStory}
         dropContainer={dropProps => (
           <ClipboardDropContainer
