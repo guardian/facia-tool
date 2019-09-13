@@ -8,10 +8,9 @@ import ArticleDrag, {
   dragOffsetX,
   dragOffsetY
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
-import DropZone from 'components/DropZone';
+import DropZone, { DefaultDropContainer } from 'components/DropZone';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
 import { styled, theme } from 'constants/theme';
-import { CollectionDropContainer } from './GroupLevel';
 
 interface OuterProps {
   children: LevelChild<ArticleFragment>;
@@ -30,13 +29,16 @@ const ClipboardItemContainer = styled.div`
   flex-direction: column;
   flex: 1;
   width: 100%;
+  /* Offset to align the start of the cards with the clipboard open tab */
+  margin-top: 7px;
 `;
 
-const ClipboardDropContainer = styled(CollectionDropContainer)<{
-  isLast: boolean;
+const ClipboardDropContainer = styled(DefaultDropContainer)<{
+  index: number;
+  length: number;
 }>`
-  flex-basis: 15px;
-  flex-grow: ${({ isLast }) => (isLast ? 1 : 0)};
+  flex-basis: 8px;
+  flex-grow: ${({ index, length }) => (index === length ? 1 : 0)};
 `;
 
 const ClipboardLevel = ({
@@ -58,17 +60,11 @@ const ClipboardLevel = ({
     onMove={onMove}
     onDrop={onDrop}
     renderDrag={af => <ArticleDrag id={af.uuid} />}
-    renderDrop={(props, isTarget, index) => (
+    renderDrop={props => (
       <DropZone
         {...props}
-        isActive={isTarget}
         dropColor={theme.base.colors.dropZoneActiveStory}
-        dropContainer={dropProps => (
-          <ClipboardDropContainer
-            {...dropProps}
-            isLast={articleFragments.length === index}
-          />
-        )}
+        dropContainer={ClipboardDropContainer}
       />
     )}
   >

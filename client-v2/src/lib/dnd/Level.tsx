@@ -39,6 +39,9 @@ interface Move<T> {
 interface DropProps {
   onDragOver: (e: React.DragEvent) => void;
   onDrop: (e: React.DragEvent) => void;
+  index: number;
+  length: number;
+  isTarget: boolean;
 }
 
 type LevelChild<T> = (
@@ -68,9 +71,7 @@ interface OuterProps<T> {
   onMove: (move: Move<T>) => void;
   onDrop: (e: React.DragEvent, to: PosSpec) => void;
   renderDrag?: (data: T) => React.ReactNode;
-  renderDrop?:
-    | ((props: DropProps, isTarget: boolean, index: number) => React.ReactNode)
-    | null;
+  renderDrop?: (props: DropProps) => React.ReactNode | null;
   // Any occurence of these in the data transfer will cause all dragging
   // behaviour to be bypassed.
   blacklistedDataTransferTypes?: string[];
@@ -116,7 +117,7 @@ class Level<T> extends React.Component<Props<T>, State> {
           <React.Fragment key={getId(node)}>
             <DropZone parentKey={this.key} index={i}>
               {isTarget =>
-                renderDrop && renderDrop(this.getDropProps(i), isTarget, i)
+                renderDrop && renderDrop(this.getDropProps(arr, i, isTarget))
               }
             </DropZone>
             <Node
@@ -142,7 +143,7 @@ class Level<T> extends React.Component<Props<T>, State> {
         <DropZone parentKey={this.key} index={arr.length}>
           {isTarget =>
             renderDrop &&
-            renderDrop(this.getDropProps(arr.length), isTarget, arr.length)
+            renderDrop(this.getDropProps(arr, arr.length, isTarget))
           }
         </DropZone>
       </Container>
@@ -205,10 +206,13 @@ class Level<T> extends React.Component<Props<T>, State> {
     }
   };
 
-  private getDropProps(i: number) {
+  private getDropProps(arr: T[], index: number, isTarget: boolean): DropProps {
     return {
-      onDragOver: this.onDragOver(i),
-      onDrop: this.onDrop(i)
+      onDragOver: this.onDragOver(index),
+      onDrop: this.onDrop(index),
+      isTarget,
+      index,
+      length: arr.length
     };
   }
 

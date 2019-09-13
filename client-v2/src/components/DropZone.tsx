@@ -8,7 +8,7 @@ export const DefaultDropContainer = styled.div<{
 }>`
   position: relative;
   height: ${({ doubleHeight }) => (doubleHeight ? '20px' : '8px')};
-  ${({ isActive }) => `z-index: ${isActive ? 1 : 1}`}
+  z-index: 1;
 `;
 
 export const DefaultDropIndicator = styled.div<{ isActive?: boolean }>`
@@ -64,10 +64,14 @@ class DropZone extends React.Component<{
   onDragOver: (e: React.DragEvent) => void;
   disabled?: boolean;
   doubleHeight?: boolean;
-  isActive?: boolean;
+  isTarget?: boolean;
+  index?: number;
+  length?: number;
   dropColor?: string;
   dropMessage?: string;
-  dropContainer?: React.ComponentType<any>;
+  dropContainer?:
+    | React.ComponentType<{ index?: number; length?: number }>
+    | React.ComponentType<any>;
   dropIndicator?: React.ComponentType<any>;
 }> {
   public static defaultProps = {
@@ -84,23 +88,26 @@ class DropZone extends React.Component<{
       doubleHeight,
       dropColor,
       dropMessage,
+      onDragOver,
+      index,
+      length,
+      isTarget,
       dropContainer: DropContainer = DefaultDropContainer,
       dropIndicator: DropIndicator = DefaultDropIndicator
     } = this.props;
     return (
       <DropContainer
         onDrop={this.handleDrop}
-        onDragOver={this.props.onDragOver}
+        onDragOver={onDragOver}
+        index={index}
+        length={length}
         doubleHeight={doubleHeight}
         data-testid="drop-zone"
-        isActive={this.props.isActive}
+        isActive={isTarget}
       >
-        <DropIndicator isActive={this.props.isActive}>
-          <DropIndicatorBar isActive={this.props.isActive} color={dropColor} />
-          <DropIndicatorMessage
-            isActive={this.props.isActive}
-            color={dropColor}
-          >
+        <DropIndicator isActive={isTarget}>
+          <DropIndicatorBar isActive={isTarget} color={dropColor} />
+          <DropIndicatorMessage isActive={isTarget} color={dropColor}>
             <div>{dropMessage}</div>
           </DropIndicatorMessage>
         </DropIndicator>

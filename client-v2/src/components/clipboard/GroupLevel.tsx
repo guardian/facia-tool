@@ -65,14 +65,15 @@ const GroupLevel = ({
     renderDrop={
       isUneditable
         ? () => <Spacer />
-        : (props, isTarget, i) => (
+        : props => (
             <DropZone
               {...props}
-              isActive={isTarget}
               dropColor={theme.base.colors.dropZoneActiveStory}
-              doubleHeight={!articleFragments.length || i === 0}
+              doubleHeight={!articleFragments.length || props.index === 0}
               dropContainer={
-                i === 0 ? OffsetDropContainer : CollectionDropContainer
+                props.index === 0
+                  ? OffsetDropContainer
+                  : CollectionDropContainer
               }
             />
           )

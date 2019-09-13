@@ -52,7 +52,6 @@ const ImageWrapper = styled.div``;
 interface ContainerProps {
   selectSharedState?: (state: any) => State;
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
-  onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
   onDelete?: (uuid: string) => void;
   onAddToClipboard?: (uuid: string) => void;
