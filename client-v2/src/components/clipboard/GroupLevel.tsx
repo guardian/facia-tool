@@ -68,7 +68,7 @@ const GroupLevel = ({
         : (props, isTarget, i) => (
             <DropZone
               {...props}
-              override={isTarget}
+              isActive={isTarget}
               dropColor={theme.base.colors.dropZoneActiveStory}
               doubleHeight={!articleFragments.length || i === 0}
               dropContainer={

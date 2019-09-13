@@ -68,7 +68,7 @@ const ArticleFragmentLevel = ({
         : (props, isTarget) => (
             <DropZone
               {...props}
-              override={isTarget}
+              isActive={isTarget}
               dropColor={theme.base.colors.dropZoneActiveSublink}
               dropMessage={'Sublink'}
               dropContainer={ArticleFragmentDropContainer}
