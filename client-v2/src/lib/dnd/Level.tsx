@@ -111,7 +111,7 @@ class Level<T> extends React.Component<Props<T>, State> {
     } = this.props;
     const Container = this.props.containerElement || DefaultContainer;
     return (
-      <Container onDragOver={this.onDragOver(null, false)}>
+      <Container onDragOver={this.onDragOver(null)}>
         {arr.map((node, i) => (
           <React.Fragment key={getId(node)}>
             <DropZone parentKey={this.key} index={i}>
@@ -149,9 +149,7 @@ class Level<T> extends React.Component<Props<T>, State> {
     );
   }
 
-  private onDragOver = (i: number | null, isNode: boolean) => (
-    e: React.DragEvent
-  ) => {
+  private onDragOver = (i: number | null) => (e: React.DragEvent) => {
     if (!this.props.store) {
       throw new Error(NO_STORE_ERROR);
     }
@@ -209,7 +207,7 @@ class Level<T> extends React.Component<Props<T>, State> {
 
   private getDropProps(i: number) {
     return {
-      onDragOver: this.onDragOver(i, false),
+      onDragOver: this.onDragOver(i),
       onDrop: this.onDrop(i)
     };
   }
@@ -222,7 +220,7 @@ class Level<T> extends React.Component<Props<T>, State> {
     return (forceClone = false) => ({
       ...getNodeDragProps(forceClone),
       ...(canDrop
-        ? { onDragOver: this.onDragOver(i, true), onDrop: this.onDrop(i) }
+        ? { onDragOver: this.onDragOver(i), onDrop: this.onDrop(i) }
         : {})
     });
   }
