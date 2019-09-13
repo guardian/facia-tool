@@ -63,6 +63,7 @@ class DropZone extends React.Component<
   {
     onDrop: (e: React.DragEvent) => void;
     onDragOver: (e: React.DragEvent) => void;
+    disabled?: boolean;
     doubleHeight?: boolean;
     override?: boolean;
     dropColor?: string;
@@ -87,7 +88,7 @@ class DropZone extends React.Component<
       : this.state.isHoveredOver;
   }
 
-  public handleDragEnter = (e: React.DragEvent) => {
+  public handleDragEnter = () => {
     this.setState({ isHoveredOver: true });
   };
 

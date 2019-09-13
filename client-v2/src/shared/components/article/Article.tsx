@@ -46,7 +46,6 @@ interface ArticleComponentProps {
   fade?: boolean;
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
   onDragOver?: (d: React.DragEvent<HTMLElement>) => void;
-  onDragEnter?: (d: React.DragEvent<HTMLElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
   onDelete?: () => void;
   onClick?: () => void;
@@ -99,7 +98,6 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
       fade = false,
       draggable = false,
       onDragStart = noop,
-      onDragEnter = noop,
       onDragOver = noop,
       onDrop = noop,
       onDelete = noop,
@@ -138,7 +136,6 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
           isDraggingArticleOver={this.state.isDraggingArticleOver}
           onDragStart={onDragStart}
           onDragOver={onDragOver}
-          onDragEnter={onDragEnter}
           onDrop={onDrop}
           onClick={e => {
             if (isLoading || !article) {
