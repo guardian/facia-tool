@@ -61,7 +61,7 @@ const ClipboardLevel = ({
     renderDrop={(props, isTarget, index) => (
       <DropZone
         {...props}
-        override={isTarget}
+        isActive={isTarget}
         dropColor={theme.base.colors.dropZoneActiveStory}
         dropContainer={dropProps => (
           <ClipboardDropContainer

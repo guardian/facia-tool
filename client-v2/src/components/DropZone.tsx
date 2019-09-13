@@ -59,45 +59,23 @@ export const DropIndicatorMessage = styled.div<{
     } !important`}
 `;
 
-class DropZone extends React.Component<
-  {
-    onDrop: (e: React.DragEvent) => void;
-    onDragOver: (e: React.DragEvent) => void;
-    disabled?: boolean;
-    doubleHeight?: boolean;
-    override?: boolean;
-    dropColor?: string;
-    dropMessage?: string;
-    dropContainer?: React.ComponentType<any>;
-    dropIndicator?: React.ComponentType<any>;
-  },
-  { isHoveredOver: boolean }
-> {
+class DropZone extends React.Component<{
+  onDrop: (e: React.DragEvent) => void;
+  onDragOver: (e: React.DragEvent) => void;
+  disabled?: boolean;
+  doubleHeight?: boolean;
+  isActive?: boolean;
+  dropColor?: string;
+  dropMessage?: string;
+  dropContainer?: React.ComponentType<any>;
+  dropIndicator?: React.ComponentType<any>;
+}> {
   public static defaultProps = {
     dropColor: theme.base.colors.dropZone,
     dropMessage: 'Place here'
   };
 
-  public state = {
-    isHoveredOver: false
-  };
-
-  get isActive() {
-    return typeof this.props.override === 'boolean'
-      ? this.props.override
-      : this.state.isHoveredOver;
-  }
-
-  public handleDragEnter = () => {
-    this.setState({ isHoveredOver: true });
-  };
-
-  public handleDragLeave = () => {
-    this.setState({ isHoveredOver: false });
-  };
-
   public handleDrop = (e: React.DragEvent<HTMLElement>) => {
-    this.setState({ isHoveredOver: false });
     return this.props.onDrop(e);
   };
 
@@ -111,18 +89,18 @@ class DropZone extends React.Component<
     } = this.props;
     return (
       <DropContainer
-        onDragEnter={this.handleDragEnter}
-        onDragLeave={this.handleDragLeave}
-        onDragExit={this.handleDragLeave}
         onDrop={this.handleDrop}
         onDragOver={this.props.onDragOver}
         doubleHeight={doubleHeight}
         data-testid="drop-zone"
-        isActive={this.isActive}
+        isActive={this.props.isActive}
       >
-        <DropIndicator isActive={this.isActive}>
-          <DropIndicatorBar isActive={this.isActive} color={dropColor} />
-          <DropIndicatorMessage isActive={this.isActive} color={dropColor}>
+        <DropIndicator isActive={this.props.isActive}>
+          <DropIndicatorBar isActive={this.props.isActive} color={dropColor} />
+          <DropIndicatorMessage
+            isActive={this.props.isActive}
+            color={dropColor}
+          >
             <div>{dropMessage}</div>
           </DropIndicatorMessage>
         </DropIndicator>
