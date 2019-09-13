@@ -1,5 +1,4 @@
 import React from 'react';
-import { StoreConsumer } from './Root';
 import { Store, Sub } from './store';
 import { NO_STORE_ERROR } from './constants';
 import styled from 'styled-components';
@@ -27,7 +26,7 @@ export const DropZoneContainer = styled.div`
   display: contents;
 `;
 
-class DropZone extends React.Component<Props, State> {
+export default class DropZone extends React.Component<Props, State> {
   public state = { isTarget: false, isActive: false };
 
   public componentDidMount() {
@@ -67,9 +66,3 @@ class DropZone extends React.Component<Props, State> {
     }
   };
 }
-
-export default (props: OuterProps) => (
-  <StoreConsumer>
-    {store => <DropZone {...props} store={store} />}
-  </StoreConsumer>
-);

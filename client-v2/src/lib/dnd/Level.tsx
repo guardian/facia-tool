@@ -108,14 +108,15 @@ class Level<T> extends React.Component<Props<T>, State> {
       getId,
       type,
       dragImageOffsetX,
-      dragImageOffsetY
+      dragImageOffsetY,
+      store
     } = this.props;
     const Container = this.props.containerElement || DefaultContainer;
     return (
       <Container onDragOver={this.onDragOver(null)}>
         {arr.map((node, i) => (
           <React.Fragment key={getId(node)}>
-            <DropZone parentKey={this.key} index={i}>
+            <DropZone store={store} parentKey={this.key} index={i}>
               {isTarget =>
                 renderDrop && renderDrop(this.getDropProps(arr, i, isTarget))
               }
@@ -140,7 +141,7 @@ class Level<T> extends React.Component<Props<T>, State> {
             </Node>
           </React.Fragment>
         ))}
-        <DropZone parentKey={this.key} index={arr.length}>
+        <DropZone store={store} parentKey={this.key} index={arr.length}>
           {isTarget =>
             renderDrop &&
             renderDrop(this.getDropProps(arr, arr.length, isTarget))
