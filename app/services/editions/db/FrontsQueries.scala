@@ -38,26 +38,6 @@ trait FrontsQueries extends Logging {
     Json.fromJson[EditionsFrontMetadata](Json.parse(rawJson)).get
   }
 
-  def getFrontFromIssueId(issueId: String): Option[EditionsFront] = DB localTx { implicit session =>
-    sql"""
-      SELECT id
-        , issue_id
-        , index
-        , name
-        , is_special
-        , is_hidden
-        , metadata
-        , updated_on
-        , updated_by
-        , updated_email
-      FROM fronts
-      WHERE issue_id = $issueId
-    """
-    .map(result => EditionsFront.fromRow(result))
-    .single()
-    .apply()
-  }
-
   // TODO: sihil this should really escalate an error if this is attempted when is_special is false but we don't
   // have a clean way of doing that right now.
   def updateFrontHiddenState(id: String, isHidden: Boolean): Option[Boolean] = DB localTx { implicit session =>
