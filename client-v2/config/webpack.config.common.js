@@ -22,6 +22,8 @@ module.exports = {
         loader: 'ts-loader',
         exclude: /node_modules/,
         options: {
+          transpileOnly: true,
+          experimentalWatchApi: true,
           getCustomTransformers: () => ({
             before: [styledComponentsTransformer]
           })
