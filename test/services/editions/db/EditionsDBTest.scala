@@ -393,7 +393,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       specialFront2.isHidden shouldBe false
     }
 
-    "should delete an issue" taggedAs UsesDatabase in {
+    "should delete an issue and cascade the deletion to related entities" taggedAs UsesDatabase in {
       val issue = insertSkeletonIssue(2019, 9, 1,
         front("news/uk",
           collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
@@ -404,9 +404,18 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       )
 
       val dbIssue: EditionsIssue = editionsDB.getIssue(issue).value
+      val frontIds = dbIssue.fronts.map(_.id)
+      frontIds.length shouldBe 1
 
+      editionsDB.getFrontFromIssueId(dbIssue.id) shouldNot be
       editionsDB.deleteIssue(dbIssue.id)
+
       editionsDB.getIssue(issue) should be
+      editionsDB.getFrontFromIssueId(dbIssue.id) should be
+    }
+
+    "should not error when trying to delete an issue that doesn't exist" taggedAs UsesDatabase in {
+      editionsDB.deleteIssue("i.do.not.exist") shouldBe false
     }
   }
 
