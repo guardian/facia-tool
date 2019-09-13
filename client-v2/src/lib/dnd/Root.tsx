@@ -56,13 +56,13 @@ export default class Root extends React.Component<Props, State> {
 
   private onDragOverStart = (e: React.DragEvent) => {
     if (!e.defaultPrevented) {
-      this.setClass(true);
+      this.setIsDraggedOver(true);
       this.reset();
     }
   };
 
   private onDragOverEnd = () => {
-    this.setClass(false);
+    this.setIsDraggedOver(false);
     this.reset();
   };
 
@@ -75,7 +75,7 @@ export default class Root extends React.Component<Props, State> {
    * alter a property on the RootContainer. If we used state to handle
    * this attribute, we'd also rerender children when this property changed.
    */
-  private setClass = (isDraggedOver: boolean) => {
+  private setIsDraggedOver = (isDraggedOver: boolean) => {
     if (!this.rootRef.current) {
       return;
     }

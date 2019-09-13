@@ -64,11 +64,10 @@ const ArticleFragmentLevel = ({
     dragImageOffsetY={dragOffsetY}
     renderDrop={
       isUneditable
-        ? null
-        : (props, isTarget) => (
+        ? undefined
+        : props => (
             <DropZone
               {...props}
-              isActive={isTarget}
               dropColor={theme.base.colors.dropZoneActiveSublink}
               dropMessage={'Sublink'}
               dropContainer={ArticleFragmentDropContainer}

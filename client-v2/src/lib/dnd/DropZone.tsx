@@ -24,6 +24,7 @@ interface State {
 export const DropZoneContainer = styled.div`
   /* We don't accept pointer events until our Root parent enables them */
   pointer-events: none;
+  display: contents;
 `;
 
 class DropZone extends React.Component<Props, State> {
