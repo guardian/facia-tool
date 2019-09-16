@@ -1,14 +1,17 @@
 import logging.LogStashConfig
 import metrics.CloudWatchApplicationMetrics
 import play.api.ApplicationLoader.Context
-import play.api.{Application, ApplicationLoader, LoggerConfigurator, Mode, Configuration}
+import play.api.{Application, ApplicationLoader, Configuration, LoggerConfigurator, Mode}
 import switchboard.{SwitchboardConfiguration, Lifecycle => SwitchboardLifecycle}
 import conf.ApplicationConfiguration
+import services.editions.QueueConnectorsFactory
+import services.editions.publishing.IssuePublishEventsListener
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
 class Loader extends ApplicationLoader {
+
   override def load(context: Context): Application = {
     LoggerConfigurator(context.environment.classLoader).foreach {
       _.configure(context.environment)
@@ -48,6 +51,9 @@ class Loader extends ApplicationLoader {
       components.isDev
     )
     new LogStashConfig(components.config)
+
+    val sqsIssuePubEventsConnector = QueueConnectorsFactory.buildSQSConnector(config, config.faciatool.issuePublishedEventsSQSUrl)
+    IssuePublishEventsListener(sqsIssuePubEventsConnector, components.actorSystem.scheduler)
 
     components.application
   }
