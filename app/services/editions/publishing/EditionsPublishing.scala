@@ -15,13 +15,12 @@ class EditionsPublishing(publishedBucket: EditionsBucket, previewBucket: Edition
   }
 
   def publish(issue: EditionsIssue, user: User, now: OffsetDateTime) = {
-    val publishedIssue = issue.toPublishedIssue(Some(now.format(DateTimeFormatter.ISO_DATE_TIME)))
+    // Bump the recently published counters
+    val publishId = db.publishIssue(issue.id, user, now)
+
+    val publishedIssue = issue.toPublishedIssue(Some(publishId))
 
     // Archive a copy
     publishedBucket.putIssue(publishedIssue)
-
-    // Bump the recently published counters
-    db.publishIssue(issue.id, user, now)
   }
 }
-

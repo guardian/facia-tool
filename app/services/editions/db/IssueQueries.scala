@@ -223,7 +223,7 @@ trait IssueQueries {
       .apply()
   }
 
-  def publishIssue(issueId: String, user: User, now: OffsetDateTime) = DB localTx { implicit session =>
+  def publishIssue(issueId: String, user: User, now: OffsetDateTime): String = DB localTx { implicit session =>
     val userName = user.firstName + " " + user.lastName
     val truncatedNow = EditionsDB.truncateDateTime(now)
 
@@ -234,6 +234,27 @@ trait IssueQueries {
         launched_email = ${user.email}
     WHERE id = $issueId
     """.execute().apply()
+
+    sql"""
+      INSERT INTO edition_issues_publication_history (
+        issue_id
+        , status
+        , launched_on
+        , launched_by
+        , launched_email
+      ) VALUES (
+        $issueId
+        , ${PublicationStatus.Pending.toString}
+        , $truncatedNow
+        , $userName
+        , ${user.email}
+      )
+      RETURNING id;
+    """
+      .map(_.string("id"))
+      .single
+      .apply
+      .get
   }
 
   def deleteIssue(issueId: String) = DB localTx { implicit session =>
