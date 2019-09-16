@@ -13,7 +13,12 @@ const DisablerWrapper = styled.div`
 // or its child nodes. When dropping links (perhaps when missing a drop
 // zone), the default behaviour is navigating to the linked document
 const DropDisabler = ({ children }: DropDisablerChildren) => (
-  <DisablerWrapper onDrop={e => e.preventDefault()}>{children}</DisablerWrapper>
+  <DisablerWrapper
+    onDrop={e => e.preventDefault()}
+    onDragOver={e => e.preventDefault()}
+  >
+    {children}
+  </DisablerWrapper>
 );
 
 export default DropDisabler;
