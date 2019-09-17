@@ -14,9 +14,12 @@ import services.editions.publishing.PublishedIssueFormatters._
 import util.ContentUpgrade.rewriteBody
 import com.gu.contentapi.json.CirceEncoders._
 import io.circe.syntax._
+import net.logstash.logback.marker.Markers
+import play.api.Logger
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
+import scala.collection.JavaConverters._
 
 class EditionsController(db: EditionsDB,
                          templating: EditionsTemplating,
@@ -43,6 +46,20 @@ class EditionsController(db: EditionsDB,
       Ok(Json.toJson(issue))
     }.getOrElse(NotFound(s"Issue $id not found"))
   }
+
+  def deleteIssue(id: String) = AccessAPIAuthAction { req => {
+    db.getIssue(id).map { issue => {
+      val markers = Markers.appendEntries(Map (
+        "id" -> id,
+        "issueDate" -> issue.issueDate.toString,
+        "user" -> req.user.email
+      ).asJava)
+
+      Logger.info(s"Deleting issue ${id}")(markers)
+      db.deleteIssue(id)
+      Accepted
+    }}.getOrElse(NotFound(s"Issue $id not found"))
+  }}
 
   def getIssueSummary(id: String)= AccessAPIAuthAction { _ =>
     db.getIssueSummary(id).map { issue =>

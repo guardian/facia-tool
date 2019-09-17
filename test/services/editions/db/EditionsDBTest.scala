@@ -7,6 +7,7 @@ import fixtures.{EditionsDBEvolutions, EditionsDBService, UsesDatabase}
 import model.editions._
 import model.forms.GetCollectionsFilter
 import org.scalatest.{FreeSpec, Matchers, OptionValues}
+import scalikejdbc._
 
 class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with EditionsDBEvolutions with OptionValues {
 
@@ -393,6 +394,58 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       specialFront2.isHidden shouldBe false
     }
 
+    "should delete an issue and cascade the deletion to related entities" taggedAs UsesDatabase in {
+      val issue = insertSkeletonIssue(2019, 9, 1,
+        front("news/uk",
+          collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
+            article("12345"),
+            article("23456")
+          )
+        )
+      )
+
+      val dbIssue: EditionsIssue = editionsDB.getIssue(issue).value
+
+      val frontIds = dbIssue.fronts.map(_.id)
+      frontIds.length shouldBe 1
+      val frontId = frontIds.head
+
+      val collectionIds = dbIssue.fronts.head.collections.map(_.id)
+      collectionIds.length shouldBe 1
+      val collectionId = collectionIds.head
+
+      (DB localTx { implicit session =>
+        sql"""SELECT id from fronts WHERE issue_id = ${dbIssue.id}""".map(_.string("id")).single.apply
+      }) shouldBe Some(frontId)
+
+      (DB localTx { implicit session =>
+        sql"""SELECT id from collections WHERE front_id = $frontId""".map(_.string("id")).single.apply
+      }) shouldBe Some(collectionId)
+
+      (DB localTx { implicit session =>
+        sql"""SELECT page_code from articles WHERE collection_id = $collectionId""".map(_.string("page_code")).list.apply
+      }).length shouldBe 2
+
+      editionsDB.deleteIssue(dbIssue.id)
+      editionsDB.getIssue(issue) should be
+
+      // ensure an issue deletion performs a cascading delete
+      (DB localTx { implicit session =>
+        sql"""SELECT id from fronts WHERE id = $frontId""".map(_.string("id")).single.apply
+      }) should be
+
+      (DB localTx { implicit session =>
+        sql"""SELECT id from collections WHERE front_id = $frontId""".map(_.string("id")).single.apply
+      }) should be
+
+      (DB localTx { implicit session =>
+        sql"""SELECT page_code from articles WHERE collection_id = $collectionId""".map(_.string("page_code")).list.apply
+      }).length shouldBe 0
+    }
+
+    "should not error when trying to delete an issue that doesn't exist" taggedAs UsesDatabase in {
+      editionsDB.deleteIssue("i.do.not.exist") shouldBe false
+    }
   }
 
   "should insert path_type and prefill correctly" taggedAs UsesDatabase in {

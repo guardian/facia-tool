@@ -235,4 +235,11 @@ trait IssueQueries {
     WHERE id = $issueId
     """.execute().apply()
   }
+
+  def deleteIssue(issueId: String) = DB localTx { implicit session =>
+    sql"""
+      DELETE FROM edition_issues
+      WHERE id = $issueId
+    """.execute().apply()
+  }
 }

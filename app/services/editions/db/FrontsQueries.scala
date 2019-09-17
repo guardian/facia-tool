@@ -1,7 +1,7 @@
 package services.editions.db
 
 import logging.Logging
-import model.editions.EditionsFrontMetadata
+import model.editions.{EditionsFront, EditionsFrontMetadata}
 import scalikejdbc._
 import play.api.libs.json._
 
