@@ -229,6 +229,8 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
   object faciatool {
     lazy val breakingNewsFront = "breaking-news"
     lazy val frontPressToolQueue = getString("frontpress.sqs.tool_queue_url")
+    lazy val issuePublishedEventsQueue = getString("publish_events.queue_url")
+      .getOrElse(throw new BadConfigurationException(s"property of type string not configured for `publish_events.queue_url` for stage $stageFromProperties"))
     lazy val showTestContainers = getBoolean("faciatool.show_test_containers").getOrElse(false)
     lazy val stsRoleToAssume = getString("faciatool.sts.role.to.assume").getOrElse(stsRoleToAssumeFromProperties)
     lazy val frontPressUpdateTable = frontPressedDynamoTable
