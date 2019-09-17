@@ -128,7 +128,6 @@ case class FrontTemplate(
   isSpecial: Boolean = false,
   hidden: Boolean = false
 ) {
-  def hide = copy(hidden = true)
   def special = copy(isSpecial = true, hidden = true)
   def swatch(swatch: Swatch) = copy(presentation = FrontPresentation(swatch))
 }
