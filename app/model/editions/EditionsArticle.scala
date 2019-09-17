@@ -85,12 +85,12 @@ case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[Art
         headlineOverride = metadata.flatMap(_.headline),
         trailTextOverride = metadata.flatMap(_.trailText),
         bylineOverride = metadata.flatMap(_.byline),
-        showByline = metadata.flatMap(_.showByline).getOrElse(false),
-        showQuotedHeadline = metadata.flatMap(_.showQuotedHeadline).getOrElse(false),
+        showByline = metadata.flatMap(_.showByline).getOrElse(PublishedArticle.SHOW_BYLINE_DEFAULT),
+        showQuotedHeadline = metadata.flatMap(_.showQuotedHeadline).getOrElse(PublishedArticle.SHOW_QUOTED_HEADLINE_DEFAULT),
         mediaType = mediaType.map(_.toPublishedMediaType).getOrElse(PublishedMediaType.UseArticleTrail),
         imageSrcOverride = imageSrcOverride,
         sportScore = metadata.flatMap(_.sportScore),
-        overrideArticleMainMedia = metadata.flatMap(_.overrideArticleMainMedia).getOrElse(true),
+        overrideArticleMainMedia = metadata.flatMap(_.overrideArticleMainMedia).getOrElse(PublishedArticle.OVERRIDE_ARTICLE_MAIN_MEDIA_DEFAULT),
         coverCardImages = coverCardImages
       )
     )

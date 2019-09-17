@@ -38,6 +38,12 @@ case class PublishedFurniture(
 
 case class PublishedArticle(internalPageCode: Long, furniture: PublishedFurniture)
 
+object PublishedArticle {
+  val SHOW_BYLINE_DEFAULT = false
+  val SHOW_QUOTED_HEADLINE_DEFAULT = false
+  val OVERRIDE_ARTICLE_MAIN_MEDIA_DEFAULT = false
+}
+
 case class PublishedCollection(id: String, name: String, items: List[PublishedArticle])
 
 case class PublishedFront(id: String, name: String, collections: List[PublishedCollection], swatch: Swatch)
