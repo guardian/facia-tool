@@ -263,4 +263,23 @@ trait IssueQueries {
       WHERE id = $issueId
     """.execute().apply()
   }
+
+  def getPublicationHistory(issueId: String): List[EditionsPublicationHistory] = DB localTx { implicit session =>
+    sql"""
+      SELECT
+        id
+        , status
+        , launched_on
+        , launched_by
+        , launched_email
+        , published_on
+        , message
+      FROM edition_issues_publication_history
+      WHERE issue_id = $issueId
+      ORDER BY launched_on DESC
+    """
+      .map(EditionsPublicationHistory.fromRow)
+      .list
+      .apply
+  }
 }
