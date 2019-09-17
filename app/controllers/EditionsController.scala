@@ -67,9 +67,9 @@ class EditionsController(db: EditionsDB,
     }.getOrElse(NotFound(s"Issue $id not found"))
   }
 
-  def getPublicationHistory(id: String) = AccessAPIAuthAction { _ =>
+  def getPublicationEvents(id: String) = AccessAPIAuthAction { _ =>
     db.getIssue(id)
-      .map(_ => Ok(Json.toJson(db.getPublicationHistory(id))))
+      .map(_ => Ok(Json.toJson(db.getPublicationEvents(id))))
       .getOrElse(NotFound(s"Issue $id not found"))
   }
 

@@ -1,6 +1,6 @@
 # --- !Ups
 
-CREATE TABLE edition_issues_publication_history (
+CREATE TABLE publication_events (
     id               TEXT PRIMARY KEY DEFAULT uuid_generate_v4()::TEXT
     , issue_id       TEXT REFERENCES edition_issues(id) ON DELETE CASCADE NOT NULL
     , status         TEXT NOT NULL
@@ -12,4 +12,4 @@ CREATE TABLE edition_issues_publication_history (
 );
 
 # --- !Downs
-DROP TABLE edition_issues_publication_history;
+DROP TABLE publication_events;

@@ -236,7 +236,7 @@ trait IssueQueries {
     """.execute().apply()
 
     sql"""
-      INSERT INTO edition_issues_publication_history (
+      INSERT INTO publication_events (
         issue_id
         , status
         , launched_on
@@ -264,7 +264,7 @@ trait IssueQueries {
     """.execute().apply()
   }
 
-  def getPublicationHistory(issueId: String): List[EditionsPublicationHistory] = DB localTx { implicit session =>
+  def getPublicationEvents(issueId: String): List[PublicationEvent] = DB localTx { implicit session =>
     sql"""
       SELECT
         id
@@ -274,11 +274,11 @@ trait IssueQueries {
         , launched_email
         , published_on
         , message
-      FROM edition_issues_publication_history
+      FROM publication_events
       WHERE issue_id = $issueId
       ORDER BY launched_on DESC
     """
-      .map(EditionsPublicationHistory.fromRow)
+      .map(PublicationEvent.fromRow)
       .list
       .apply
   }
