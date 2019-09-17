@@ -11,7 +11,7 @@ class EditionsBucket(s3Client: AmazonS3, bucketName: String) {
   def createIssuePrefix(issue: PublishedIssue): String = s"${issue.name}/${issue.issueDate.toString}"
 
   def createIssueFilename(issue: PublishedIssue): String = {
-    val keyname = issue.version.getOrElse("preview")
+    val keyname = issue.publicationEventId.getOrElse("preview")
     s"$keyname.json"
   }
 
@@ -19,6 +19,7 @@ class EditionsBucket(s3Client: AmazonS3, bucketName: String) {
     val issueJson = Json.stringify(Json.toJson(issue))
     val metadata = new ObjectMetadata()
     metadata.setContentType("application/json")
+    issue.publicationEventId.foreach(metadata.addUserMetadata("publication-event-id", _))
     val key = s"${createIssuePrefix(issue)}/${createIssueFilename(issue)}"
     val request = new PutObjectRequest(bucketName, key, new StringInputStream(issueJson), metadata)
     s3Client.putObject(request)

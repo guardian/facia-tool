@@ -18,11 +18,11 @@ case class EditionsIssue(
     launchedEmail: Option[String],
     fronts: List[EditionsFront]
 ) {
-  def toPublishedIssue(version: Option[String] = None): PublishedIssue = PublishedIssue(
+  def toPublishedIssue(publicationEventId: Option[String] = None): PublishedIssue = PublishedIssue(
     id,
     displayName,
     issueDate,
-    version,
+    publicationEventId,
     fronts
       .filterNot(_.isHidden) // drop hidden fronts
       .map(_.toPublishedFront) // convert
