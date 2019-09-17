@@ -244,7 +244,7 @@ trait IssueQueries {
         , launched_email
       ) VALUES (
         $issueId
-        , ${PublicationStatus.Pending.toString}
+        , ${PublicationStatus.DEFAULT.toString}
         , $truncatedNow
         , $userName
         , ${user.email}
