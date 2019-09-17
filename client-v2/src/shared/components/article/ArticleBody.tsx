@@ -275,6 +275,25 @@ const articleBodyDefault = React.memo(
             </CollectionItemHeading>
             {displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
           </CollectionItemHeadingContainer>
+          <HoverActionsAreaOverlay disabled={isUneditable}>
+            <HoverActionsButtonWrapper
+              buttons={[
+                { text: 'View', component: HoverViewButton },
+                { text: 'Ophan', component: HoverOphanButton },
+                { text: 'Clipboard', component: HoverAddToClipboardButton },
+                { text: 'Delete', component: HoverDeleteButton }
+              ]}
+              buttonProps={{
+                isLive,
+                urlPath,
+                onDelete,
+                onAddToClipboard
+              }}
+              size={size}
+              toolTipPosition={'top'}
+              toolTipAlign={'left'}
+            />
+          </HoverActionsAreaOverlay>
         </CollectionItemContent>
         <ImageAndGraphWrapper size={size}>
           {featureFlagPageViewData && canShowPageViewData && (
@@ -311,25 +330,6 @@ const articleBodyDefault = React.memo(
               </DraggableArticleImageContainer>
             ))}
         </ImageAndGraphWrapper>
-        <HoverActionsAreaOverlay disabled={isUneditable}>
-          <HoverActionsButtonWrapper
-            buttons={[
-              { text: 'View', component: HoverViewButton },
-              { text: 'Ophan', component: HoverOphanButton },
-              { text: 'Clipboard', component: HoverAddToClipboardButton },
-              { text: 'Delete', component: HoverDeleteButton }
-            ]}
-            buttonProps={{
-              isLive,
-              urlPath,
-              onDelete,
-              onAddToClipboard
-            }}
-            size={size}
-            toolTipPosition={'top'}
-            toolTipAlign={'left'}
-          />
-        </HoverActionsAreaOverlay>
       </>
     );
   }

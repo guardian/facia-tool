@@ -17,9 +17,6 @@ export default styled.div<{
   opacity: ${({ fade }) => (fade ? 0.5 : 1)};
 
   ${HoverActionsAreaOverlay} {
-    bottom: 4px;
-    left: 8px;
-    position: absolute;
     visibility: hidden;
   }
 
