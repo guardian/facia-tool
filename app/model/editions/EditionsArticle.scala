@@ -90,7 +90,7 @@ case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[Art
         mediaType = mediaType.map(_.toPublishedMediaType).getOrElse(PublishedMediaType.UseArticleTrail),
         imageSrcOverride = imageSrcOverride,
         sportScore = metadata.flatMap(_.sportScore),
-        overrideArticleMainMedia = metadata.flatMap(_.overrideArticleMainMedia).getOrElse(true),
+        overrideArticleMainMedia = metadata.flatMap(_.overrideArticleMainMedia).getOrElse(false),
         coverCardImages = coverCardImages
       )
     )

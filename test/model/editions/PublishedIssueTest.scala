@@ -76,7 +76,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       val article = EditionsArticle("1234456", now.toInstant.toEpochMilli, None)
       val publishedArticle = article.toPublishedArticle
       publishedArticle.internalPageCode shouldBe 1234456
-      publishedArticle.furniture shouldBe PublishedFurniture(None, None, None, None, false, false, PublishedMediaType.UseArticleTrail, None, None, true, None)
+      publishedArticle.furniture shouldBe PublishedFurniture(None, None, None, None, false, false, PublishedMediaType.UseArticleTrail, None, None, false, None)
     }
 
     "furniture defaults should be populated correctly" in {
@@ -84,7 +84,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       val article = EditionsArticle("123456", 0, Some(furniture))
       val published = article.toPublishedArticle
 
-      published.furniture shouldBe PublishedFurniture(None, None, None, None, false, false, PublishedMediaType.UseArticleTrail, None, None, true, None)
+      published.furniture shouldBe PublishedFurniture(None, None, None, None, false, false, PublishedMediaType.UseArticleTrail, None, None, false, None)
     }
 
     val cardImage = Some(Image(Some(100), Some(100), "file://origin.jpg", "file://src.jpg", Some("file://thumb.jpg")))
