@@ -18,7 +18,10 @@ import {
   selectSharedState,
   createSelectAllArticlesInCollection
 } from 'shared/selectors/shared';
-import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
+import {
+  actions as externalArticleActions,
+  selectIsExternalArticleStale
+} from 'shared/bundles/externalArticlesBundle';
 import {
   combineCollectionWithConfig,
   populateDraftArticles,
@@ -295,7 +298,9 @@ function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
 /**
  * Fetch articles from CAPI and add them to the store.
  */
-const fetchArticles = (articleIds: string[]) => async (dispatch: Dispatch) => {
+const fetchArticles = (
+  articleIds: string[]
+): ThunkResult<Promise<void>> => async (dispatch, getState) => {
   const articleIdsWithoutSnaps = uniq(
     articleIds.filter(id => !id.match(/^snap/))
   );
@@ -305,7 +310,17 @@ const fetchArticles = (articleIds: string[]) => async (dispatch: Dispatch) => {
   dispatch(externalArticleActions.fetchStart(articleIdsWithoutSnaps));
   try {
     const articles = await getArticlesBatched(articleIdsWithoutSnaps);
-    dispatch(externalArticleActions.fetchSuccess(articles));
+    const freshArticles = articles.filter(article =>
+      selectIsExternalArticleStale(
+        selectSharedState(getState()),
+        article.id,
+        article.fields.lastModified
+      )
+    );
+
+    if (freshArticles.length) {
+      dispatch(externalArticleActions.fetchSuccess(freshArticles));
+    }
     const remainingArticles = difference(
       articleIdsWithoutSnaps,
       articles.map(_ => _.id)
