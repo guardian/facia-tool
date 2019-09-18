@@ -16,7 +16,7 @@ object PublishEventsListener {
 
 private[events] class PublishEventsListener(val config: ApplicationConfiguration) extends Logging {
 
-  private val sqsFacade = IssuePublishEventsSQSFacade(config)
+  private val sqsFacade = PublishEventsSQSFacade(config)
 
   private val issuePublishEventsProcessor = PublishEventsProcessor.apply(sqsFacade)
 
@@ -48,7 +48,7 @@ private[events] class PublishEventsListener(val config: ApplicationConfiguration
 
   /**
    * while(true) here is for SQS long pooling
-   * the wait time between requests when queue gets empty will be set in @IssuePublishEventsSQSFacade.sqsClientLongPoolingWaitTimeSec constant
+   * the wait time between requests when queue gets empty will be set in @PublishEventsSQSFacade.sqsClientLongPoolingWaitTimeSec constant
    */
   private def processPublishEventsInLongPooling(updateEventInDB: List[PublishedEvent] => Boolean): Unit = {
     while (true) {

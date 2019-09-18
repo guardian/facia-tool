@@ -10,18 +10,18 @@ import services.editions.publishing.events.PublishEventSNSMessageParser.parseToE
 import scala.collection.JavaConverters._
 import scala.util.{Failure, Success, Try}
 
-private[events] trait IssuePublishEventsQueueFacade {
+private[events] trait PublishEventsQueueFacade {
   def getPublishEventsFromQueue: List[PublishEventMessage]
 
   def delete(receiptHandle: String)
 }
 
-private[events] object IssuePublishEventsSQSFacade {
-  def apply(config: ApplicationConfiguration): IssuePublishEventsSQSFacade =
-    new IssuePublishEventsSQSFacade(config)
+private[events] object PublishEventsSQSFacade {
+  def apply(config: ApplicationConfiguration): PublishEventsSQSFacade =
+    new PublishEventsSQSFacade(config)
 }
 
-private[events] class IssuePublishEventsSQSFacade(val config: ApplicationConfiguration) extends IssuePublishEventsQueueFacade with Logging {
+private[events] class PublishEventsSQSFacade(val config: ApplicationConfiguration) extends PublishEventsQueueFacade with Logging {
 
   private val maxNumberOfSQSMessagesPerReceiveReq = 1
   private val sqsClientLongPoolingWaitTimeSec = 15

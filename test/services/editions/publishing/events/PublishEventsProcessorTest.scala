@@ -33,7 +33,7 @@ class PublishEventsProcessorTest extends FunSuite with Matchers {
 
 }
 
-class InMemoQueue(initialMessages: List[PublishEventMessage]) extends IssuePublishEventsQueueFacade {
+class InMemoQueue(initialMessages: List[PublishEventMessage]) extends PublishEventsQueueFacade {
   private var queue = initialMessages
 
   override def getPublishEventsFromQueue: List[PublishEventMessage] = queue
