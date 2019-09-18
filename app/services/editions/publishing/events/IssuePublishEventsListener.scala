@@ -1,12 +1,12 @@
-package services.editions.publishing
+package services.editions.publishing.events
 
 import java.util.concurrent.Executors
 
 import conf.ApplicationConfiguration
 import logging.Logging
 
-import scala.concurrent.duration._
 import scala.concurrent._
+import scala.concurrent.duration._
 import scala.util.{Failure, Success, Try}
 
 object IssuePublishEventsListener {
@@ -14,7 +14,7 @@ object IssuePublishEventsListener {
     new IssuePublishEventsListener(config)
 }
 
-private[publishing] class IssuePublishEventsListener(val config: ApplicationConfiguration) extends Logging {
+private[events] class IssuePublishEventsListener(val config: ApplicationConfiguration) extends Logging {
 
   private val sqsFacade = IssuePublishEventsSQSFacade(config)
 
@@ -28,7 +28,7 @@ private[publishing] class IssuePublishEventsListener(val config: ApplicationConf
     false
   }
 
-  def start = {
+  def start: Unit = {
     val delayStart = 5.seconds.fromNow
     val results = Future {
       val tName = Thread.currentThread().getName

@@ -1,4 +1,4 @@
-package services.editions.publishing
+package services.editions.publishing.events
 
 import org.scalatest.{FunSuite, Matchers}
 

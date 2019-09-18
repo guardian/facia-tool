@@ -1,27 +1,27 @@
-package services.editions.publishing
+package services.editions.publishing.events
 
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder
 import com.amazonaws.services.sqs.model.{Message, ReceiveMessageRequest}
 import conf.ApplicationConfiguration
 import logging.Logging
-import services.editions.publishing.IssuePublishedSNSMessageParser.parseToEvent
+import services.editions.publishing.events.IssuePublishedSNSMessageParser.parseToEvent
 
 import scala.collection.JavaConverters._
 import scala.util.{Failure, Success, Try}
 
-private[publishing] trait IssuePublishEventsQueueFacade {
+private[events] trait IssuePublishEventsQueueFacade {
   def getPublishEventsFromQueue: List[PublishEventMessage]
 
   def delete(receiptHandle: String)
 }
 
-private[publishing] object IssuePublishEventsSQSFacade {
+private[events] object IssuePublishEventsSQSFacade {
   def apply(config: ApplicationConfiguration): IssuePublishEventsSQSFacade =
     new IssuePublishEventsSQSFacade(config)
 }
 
-private[publishing] class IssuePublishEventsSQSFacade(val config: ApplicationConfiguration) extends IssuePublishEventsQueueFacade with Logging {
+private[events] class IssuePublishEventsSQSFacade(val config: ApplicationConfiguration) extends IssuePublishEventsQueueFacade with Logging {
 
   private val maxNumberOfSQSMessagesPerReceiveReq = 1
   private val sqsClientLongPoolingWaitTimeSec = 15
@@ -31,9 +31,9 @@ private[publishing] class IssuePublishEventsSQSFacade(val config: ApplicationCon
     .withCredentials(config.aws.cmsFrontsAccountCredentials)
     .withRegion(Regions.EU_WEST_1).build()
 
-  def getPublishEventsFromQueue: List[PublishEventMessage] = receiveMessages.flatMap(parseToEvent(_))
+  def getPublishEventsFromQueue: List[PublishEventMessage] = receiveMessages.flatMap(parseToEvent)
 
-  def delete(receiptHandle: String) = {
+  def delete(receiptHandle: String): Unit = {
     Try {
       SQS.deleteMessageAsync(queueURL, receiptHandle)
     } match {

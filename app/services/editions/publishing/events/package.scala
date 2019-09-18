@@ -1,8 +1,8 @@
-package services.editions
+package services.editions.publishing
 
 import play.api.libs.json.{Format, Json}
 
-package object publishing {
+package object events {
 
   case class PublishedEvent(status: String, message: String)
 

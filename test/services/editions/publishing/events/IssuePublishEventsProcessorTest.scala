@@ -1,4 +1,4 @@
-package services.editions.publishing
+package services.editions.publishing.events
 
 import org.scalatest.{FunSuite, Matchers}
 
@@ -35,7 +35,9 @@ class IssuePublishEventsProcessorTest extends FunSuite with Matchers {
 
 class InMemoQueue(initialMessages: List[PublishEventMessage]) extends IssuePublishEventsQueueFacade {
   private var queue = initialMessages
+
   override def getPublishEventsFromQueue: List[PublishEventMessage] = queue
+
   override def delete(receiptHandle: String): Unit = {
     queue = queue.filter(e => e.receiptHandle == receiptHandle)
   }

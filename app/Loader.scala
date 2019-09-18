@@ -4,7 +4,7 @@ import play.api.ApplicationLoader.Context
 import play.api.{Application, ApplicationLoader, Configuration, LoggerConfigurator, Mode}
 import switchboard.{SwitchboardConfiguration, Lifecycle => SwitchboardLifecycle}
 import conf.ApplicationConfiguration
-import services.editions.publishing.IssuePublishEventsListener
+import services.editions.publishing.events.IssuePublishEventsListener
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
