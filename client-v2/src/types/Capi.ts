@@ -93,6 +93,7 @@ interface CapiArticleFields {
   isLive?: CapiBool;
   firstPublicationDate?: string;
   scheduledPublicationDate?: CapiDate;
+  lastModified?: string;
   secureThumbnail?: string;
   thumbnail?: string | void;
   liveBloggingNow?: CapiBool;
