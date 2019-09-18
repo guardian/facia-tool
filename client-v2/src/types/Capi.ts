@@ -91,9 +91,9 @@ interface CapiArticleFields {
   byline?: string;
   internalPageCode?: string;
   isLive?: CapiBool;
-  firstPublicationDate?: string;
+  firstPublicationDate?: CapiDate;
   scheduledPublicationDate?: CapiDate;
-  lastModified?: string;
+  lastModified?: CapiDate;
   secureThumbnail?: string;
   thumbnail?: string | void;
   liveBloggingNow?: CapiBool;
