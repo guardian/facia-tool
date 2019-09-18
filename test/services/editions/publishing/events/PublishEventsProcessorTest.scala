@@ -2,7 +2,7 @@ package services.editions.publishing.events
 
 import org.scalatest.{FunSuite, Matchers}
 
-class IssuePublishEventsProcessorTest extends FunSuite with Matchers {
+class PublishEventsProcessorTest extends FunSuite with Matchers {
 
   private val initialMessagesInQueue = List(
     PublishEventMessage(receiptHandle = "123", event = PublishedEvent("Published", "issue 123")),
@@ -11,7 +11,7 @@ class IssuePublishEventsProcessorTest extends FunSuite with Matchers {
 
   test("queue messages were deleted after updating events in DB was successful") {
     val queueFacade = new InMemoQueue(initialMessagesInQueue)
-    val processor = new IssuePublishEventsProcessor(queueFacade)
+    val processor = new PublishEventsProcessor(queueFacade)
 
     def stubDBUpdateAlwaysSuccess(events: List[PublishedEvent]): Boolean = true
 
@@ -22,7 +22,7 @@ class IssuePublishEventsProcessorTest extends FunSuite with Matchers {
 
   test("queue messages were NOT deleted after updating events in DB was NOT successful") {
     val queueFacade = new InMemoQueue(initialMessagesInQueue)
-    val processor = new IssuePublishEventsProcessor(queueFacade)
+    val processor = new PublishEventsProcessor(queueFacade)
 
     def stubDBUpdateAlwaysFailure(events: List[PublishedEvent]): Boolean = false
 

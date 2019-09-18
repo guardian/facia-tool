@@ -5,7 +5,7 @@ import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder
 import com.amazonaws.services.sqs.model.{Message, ReceiveMessageRequest}
 import conf.ApplicationConfiguration
 import logging.Logging
-import services.editions.publishing.events.IssuePublishedSNSMessageParser.parseToEvent
+import services.editions.publishing.events.PublishEventSNSMessageParser.parseToEvent
 
 import scala.collection.JavaConverters._
 import scala.util.{Failure, Success, Try}

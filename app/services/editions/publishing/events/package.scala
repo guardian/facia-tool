@@ -8,7 +8,7 @@ package object events {
 
   case class PublishEventMessage(receiptHandle: String, event: PublishedEvent)
 
-  object IssuePublishedSQSMsgFormatter {
+  object PublishEventMessageFormatter {
     implicit val issuePublishedEventFormat: Format[PublishedEvent] = Json.format[PublishedEvent]
   }
 

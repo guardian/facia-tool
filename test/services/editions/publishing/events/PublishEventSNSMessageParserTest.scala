@@ -2,7 +2,7 @@ package services.editions.publishing.events
 
 import org.scalatest.{FunSuite, Matchers}
 
-class IssuePublishedSNSMessageParserTest extends FunSuite with Matchers {
+class PublishEventSNSMessageParserTest extends FunSuite with Matchers {
 
   test("serialise and parse sqs message to IssuePublishedEvent") {
 
@@ -27,7 +27,7 @@ class IssuePublishedSNSMessageParserTest extends FunSuite with Matchers {
         .withReceiptHandle("ReceiptHandle1")
     }
 
-    IssuePublishedSNSMessageParser.parseToEvent(correctSQSMessagefromSNS) shouldEqual Some(
+    PublishEventSNSMessageParser.parseToEvent(correctSQSMessagefromSNS) shouldEqual Some(
       PublishEventMessage("ReceiptHandle1", PublishedEvent("Published", "123")))
   }
 
@@ -53,7 +53,7 @@ class IssuePublishedSNSMessageParserTest extends FunSuite with Matchers {
         .withBody(msg)
     }
 
-    IssuePublishedSNSMessageParser.parseToEvent(incorrectCorrectSQSMessageFromSNS) shouldEqual None
+    PublishEventSNSMessageParser.parseToEvent(incorrectCorrectSQSMessageFromSNS) shouldEqual None
   }
 
 }

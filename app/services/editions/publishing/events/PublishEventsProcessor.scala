@@ -2,12 +2,12 @@ package services.editions.publishing.events
 
 import logging.Logging
 
-private[events] object IssuePublishEventsProcessor {
-  def apply(sqsFacade: IssuePublishEventsQueueFacade): IssuePublishEventsProcessor =
-    new IssuePublishEventsProcessor(sqsFacade)
+private[events] object PublishEventsProcessor {
+  def apply(sqsFacade: IssuePublishEventsQueueFacade): PublishEventsProcessor =
+    new PublishEventsProcessor(sqsFacade)
 }
 
-private[events] class IssuePublishEventsProcessor(sqsFacade: IssuePublishEventsQueueFacade) extends Logging {
+private[events] class PublishEventsProcessor(sqsFacade: IssuePublishEventsQueueFacade) extends Logging {
 
   def processPublishEvents(updateEventInDB: List[PublishedEvent] => Boolean): Unit = {
     val sqsEvents = sqsFacade.getPublishEventsFromQueue

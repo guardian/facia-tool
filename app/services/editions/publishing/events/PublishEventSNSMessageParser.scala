@@ -4,9 +4,9 @@ import com.amazonaws.services.sqs.model.Message
 import logging.Logging
 import play.api.libs.json.Json.parse
 import play.api.libs.json.{JsError, JsSuccess}
-import services.editions.publishing.events.IssuePublishedSQSMsgFormatter._
+import services.editions.publishing.events.PublishEventMessageFormatter._
 
-private[events] object IssuePublishedSNSMessageParser extends Logging {
+private[events] object PublishEventSNSMessageParser extends Logging {
 
   def parseToEvent(snsNotificationFromSQS: Message): Option[PublishEventMessage] = {
     logger.info("read new publish events")

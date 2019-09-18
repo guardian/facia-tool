@@ -9,16 +9,16 @@ import scala.concurrent._
 import scala.concurrent.duration._
 import scala.util.{Failure, Success, Try}
 
-object IssuePublishEventsListener {
-  def apply(config: ApplicationConfiguration): IssuePublishEventsListener =
-    new IssuePublishEventsListener(config)
+object PublishEventsListener {
+  def apply(config: ApplicationConfiguration): PublishEventsListener =
+    new PublishEventsListener(config)
 }
 
-private[events] class IssuePublishEventsListener(val config: ApplicationConfiguration) extends Logging {
+private[events] class PublishEventsListener(val config: ApplicationConfiguration) extends Logging {
 
   private val sqsFacade = IssuePublishEventsSQSFacade(config)
 
-  private val issuePublishEventsProcessor = IssuePublishEventsProcessor.apply(sqsFacade)
+  private val issuePublishEventsProcessor = PublishEventsProcessor.apply(sqsFacade)
 
   private implicit val context: ExecutionContextExecutor = ExecutionContext.fromExecutor(Executors.newSingleThreadExecutor())
 
