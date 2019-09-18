@@ -1,7 +1,8 @@
 import configureMockStore from 'redux-mock-store';
-import configureStore from 'util/configureStore';
 import thunk from 'redux-thunk';
 import fetchMock from 'fetch-mock';
+import set from 'lodash/fp/set';
+import configureStore from 'util/configureStore';
 import config from 'fixtures/config';
 import { stateWithCollection, capiArticle } from 'shared/fixtures/shared';
 import {
@@ -291,6 +292,42 @@ describe('Collection actions', () => {
         externalArticleActions.fetchStart(['internal-code/page/1'])
       );
       expect(actions[1].type).toEqual(externalArticleActionNames.fetchError);
+    });
+    it("should not add articles to the state if they're not stale", async () => {
+      const initialState = {
+        config,
+        ...stateWithCollection
+      };
+      const olderArticle = set(
+        ['fields', 'lastModified'],
+        '2018-10-10T10:10:09Z',
+        capiArticle
+      );
+      const newerArticle = set(
+        ['fields', 'lastModified'],
+        '2018-10-10T10:10:11Z',
+        capiArticle
+      );
+      const state = set(
+        ['shared', 'externalArticles', 'data', 'internal-code/page/5029528'],
+        newerArticle,
+        initialState
+      );
+      const storeWithStaleArticle = mockStore(state);
+      fetchMock.once('begin:/api/preview/internal-code/page/5029528', {
+        response: {
+          results: [olderArticle]
+        }
+      });
+      await storeWithStaleArticle.dispatch(fetchArticles([
+        'internal-code/page/5029528'
+      ]) as any);
+      const actions = storeWithStaleArticle.getActions();
+      expect(actions[0]).toEqual(
+        externalArticleActions.fetchStart(['internal-code/page/5029528'])
+      );
+      // There's nothing to dispatch -- the incoming article is not newer than the one held in the state
+      expect(actions[1]).toEqual(undefined);
     });
     it('should remove snaplinks', async () => {
       fetchMock.once('begin:/api/preview/internal-code/page/5029528', {
