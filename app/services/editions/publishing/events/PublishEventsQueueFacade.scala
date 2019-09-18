@@ -25,7 +25,7 @@ private[events] class PublishEventsSQSFacade(val config: ApplicationConfiguratio
 
   private val maxNumberOfSQSMessagesPerReceiveReq = 1
   private val sqsClientLongPoolingWaitTimeSec = 15
-  private val queueURL = config.faciatool.issuePublishedEventsQueue
+  private val queueURL = config.faciatool.publishEventsQueue
 
   private lazy val SQS = AmazonSQSAsyncClientBuilder.standard()
     .withCredentials(config.aws.cmsFrontsAccountCredentials)
