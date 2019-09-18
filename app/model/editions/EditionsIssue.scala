@@ -18,7 +18,9 @@ case class EditionsIssue(
     launchedEmail: Option[String],
     fronts: List[EditionsFront]
 ) {
-  def toPublishedIssue(publicationEventId: Option[String] = None): PublishedIssue = PublishedIssue(
+  def toPreviewIssue(): PublishedIssue = toPublishedIssue("preview")
+
+  def toPublishedIssue(publicationEventId: String): PublishedIssue = PublishedIssue(
     id,
     displayName,
     issueDate,

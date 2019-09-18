@@ -13,7 +13,7 @@ import scala.collection.JavaConverters._
 class EditionsPublishing(publishedBucket: EditionsBucket, previewBucket: EditionsBucket, db: EditionsDB) {
 
   def updatePreview(issue: EditionsIssue) = {
-    val previewIssue = issue.toPublishedIssue()
+    val previewIssue = issue.toPreviewIssue()
     previewBucket.putIssue(previewIssue)
   }
 
@@ -32,7 +32,7 @@ class EditionsPublishing(publishedBucket: EditionsBucket, previewBucket: Edition
 
     Logger.info(s"Publishing issue ${issue.id}")(markers)
 
-    val publishedIssue = issue.toPublishedIssue(Some(publicationEventId))
+    val publishedIssue = issue.toPublishedIssue(publicationEventId)
 
     // Archive a copy
     publishedBucket.putIssue(publishedIssue)
