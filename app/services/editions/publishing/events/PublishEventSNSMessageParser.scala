@@ -13,7 +13,7 @@ private[events] object PublishEventSNSMessageParser extends Logging {
     val messageBody = (parse(snsNotificationFromSQS.getBody) \ "Message").validate[String]
     messageBody match {
       case JsSuccess(value, _) =>
-        (parse(value) \ "event").validate[PublishedEvent] match {
+        (parse(value) \ "event").validate[PublishEvent] match {
           case JsSuccess(parsedEvent, _) =>
             val messageID = snsNotificationFromSQS.getReceiptHandle
             Some(PublishEventMessage(messageID, parsedEvent))

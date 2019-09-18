@@ -9,7 +9,7 @@ private[events] object PublishEventsProcessor {
 
 private[events] class PublishEventsProcessor(sqsFacade: PublishEventsQueueFacade) extends Logging {
 
-  def processPublishEvents(updateEventInDB: List[PublishedEvent] => Boolean): Unit = {
+  def processPublishEvents(updateEventInDB: List[PublishEvent] => Boolean): Unit = {
     val sqsEvents = sqsFacade.getPublishEventsFromQueue
     val issuePublishEvents = sqsEvents.map(_.event)
     logger.info(s"received publish events from SQS: $issuePublishEvents")

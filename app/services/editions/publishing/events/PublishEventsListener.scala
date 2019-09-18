@@ -23,7 +23,7 @@ private[events] class PublishEventsListener(val config: ApplicationConfiguration
   private implicit val context: ExecutionContextExecutor = ExecutionContext.fromExecutor(Executors.newSingleThreadExecutor())
 
   // will be implemented in next PR
-  def stub(events: List[PublishedEvent]): Boolean = {
+  def stub(events: List[PublishEvent]): Boolean = {
     logger.info("update events in DB")
     false
   }
@@ -50,7 +50,7 @@ private[events] class PublishEventsListener(val config: ApplicationConfiguration
    * while(true) here is for SQS long pooling
    * the wait time between requests when queue gets empty will be set in @PublishEventsSQSFacade.sqsClientLongPoolingWaitTimeSec constant
    */
-  private def processPublishEventsInLongPooling(updateEventInDB: List[PublishedEvent] => Boolean): Unit = {
+  private def processPublishEventsInLongPooling(updateEventInDB: List[PublishEvent] => Boolean): Unit = {
     while (true) {
       issuePublishEventsProcessor.processPublishEvents(updateEventInDB)
     }
