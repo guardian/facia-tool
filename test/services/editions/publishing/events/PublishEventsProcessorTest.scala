@@ -5,15 +5,15 @@ import org.scalatest.{FunSuite, Matchers}
 class PublishEventsProcessorTest extends FunSuite with Matchers {
 
   private val initialMessagesInQueue = List(
-    PublishEventMessage(receiptHandle = "123", event = PublishedEvent("Published", "issue 123")),
-    PublishEventMessage(receiptHandle = "456", event = PublishedEvent("Published", "issue 456"))
+    PublishEventMessage(receiptHandle = "123", event = PublishEvent("Published", "issue 123")),
+    PublishEventMessage(receiptHandle = "456", event = PublishEvent("Published", "issue 456"))
   )
 
   test("queue messages were deleted after updating events in DB was successful") {
     val queueFacade = new InMemoQueue(initialMessagesInQueue)
     val processor = new PublishEventsProcessor(queueFacade)
 
-    def stubDBUpdateAlwaysSuccess(events: List[PublishedEvent]): Boolean = true
+    def stubDBUpdateAlwaysSuccess(events: List[PublishEvent]): Boolean = true
 
     processor.processPublishEvents(stubDBUpdateAlwaysSuccess)
 
@@ -24,7 +24,7 @@ class PublishEventsProcessorTest extends FunSuite with Matchers {
     val queueFacade = new InMemoQueue(initialMessagesInQueue)
     val processor = new PublishEventsProcessor(queueFacade)
 
-    def stubDBUpdateAlwaysFailure(events: List[PublishedEvent]): Boolean = false
+    def stubDBUpdateAlwaysFailure(events: List[PublishEvent]): Boolean = false
 
     processor.processPublishEvents(stubDBUpdateAlwaysFailure)
 

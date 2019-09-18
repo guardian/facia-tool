@@ -28,7 +28,7 @@ class PublishEventSNSMessageParserTest extends FunSuite with Matchers {
     }
 
     PublishEventSNSMessageParser.parseToEvent(correctSQSMessagefromSNS) shouldEqual Some(
-      PublishEventMessage("ReceiptHandle1", PublishedEvent("Published", "123")))
+      PublishEventMessage("ReceiptHandle1", PublishEvent("Published", "123")))
   }
 
   test("indicate if message format was incorrect") {
