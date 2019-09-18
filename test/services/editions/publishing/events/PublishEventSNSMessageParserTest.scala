@@ -1,5 +1,6 @@
 package services.editions.publishing.events
 
+import model.editions.PublicationStatus
 import org.scalatest.{FunSuite, Matchers}
 
 class PublishEventSNSMessageParserTest extends FunSuite with Matchers {
@@ -28,7 +29,7 @@ class PublishEventSNSMessageParserTest extends FunSuite with Matchers {
     }
 
     PublishEventSNSMessageParser.parseToEvent(correctSQSMessagefromSNS) shouldEqual Some(
-      PublishEventMessage("ReceiptHandle1", PublishEvent("Published", "123")))
+      PublishEventMessage("ReceiptHandle1", PublishEvent(PublicationStatus.Published, "123")))
   }
 
   test("indicate if message format was incorrect") {

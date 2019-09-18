@@ -1,12 +1,13 @@
 package services.editions.publishing.events
 
+import model.editions.PublicationStatus
 import org.scalatest.{FunSuite, Matchers}
 
 class PublishEventsProcessorTest extends FunSuite with Matchers {
 
   private val initialMessagesInQueue = List(
-    PublishEventMessage(receiptHandle = "123", event = PublishEvent("Published", "issue 123")),
-    PublishEventMessage(receiptHandle = "456", event = PublishEvent("Published", "issue 456"))
+    PublishEventMessage(receiptHandle = "123", event = PublishEvent(PublicationStatus.Published, "issue 123")),
+    PublishEventMessage(receiptHandle = "456", event = PublishEvent(PublicationStatus.Published, "issue 456"))
   )
 
   test("queue messages were deleted after updating events in DB was successful") {
