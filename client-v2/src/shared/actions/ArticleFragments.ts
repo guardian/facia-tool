@@ -176,6 +176,7 @@ const getArticleEntitiesFromDrop = async (
   const resourceIdOrUrl = drop.data;
   const isURL = isValidURL(resourceIdOrUrl);
   const id = isURL ? getIdFromURL(resourceIdOrUrl) : resourceIdOrUrl;
+  console.log("here resource id is =====>", resourceIdOrUrl)
   const guMeta = isGuardianUrl(resourceIdOrUrl) ? getArticleFragmentMetaFromUrlParams(resourceIdOrUrl) : false;
   const isPlainUrl = isURL && !id && !guMeta;
   if (isPlainUrl) {

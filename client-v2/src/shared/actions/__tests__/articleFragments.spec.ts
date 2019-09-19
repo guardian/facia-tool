@@ -70,6 +70,24 @@ describe('articleFragments actions', () => {
         })
       );
     });
+    it('should fetch a link and create a corresponding collection item representing a snap link - query params in external urls should be preserved', async () => {
+      fetchMock.once('begin:/api/preview', {
+        response: {
+          results: []
+        }
+      });
+      fetchMock.mock('/http/proxy/https://bbc.co.uk/some/page?great=true', bbcSectionPage);
+      const store = mockStore({});
+      await store.dispatch(createArticleEntitiesFromDrop(
+        idDrop('https://bbc.co.uk/some/page?great=true')
+      ) as any);
+      const actions = store.getActions();
+      expect(actions[0]).toEqual(
+        articleFragmentsReceived({
+          uuid: await createSnap('https://bbc.co.uk/some/page?great=true')
+        })
+      );
+    });
     it("should fetch tag articles and create a corresponding collection item representing a snap of type 'latest' given user input", async () => {
       fetchMock.once('begin:/api/preview', {
         response: {
