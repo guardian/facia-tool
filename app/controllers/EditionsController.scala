@@ -27,7 +27,7 @@ class EditionsController(db: EditionsDB,
                          capi: Capi,
                          val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps)  with Logging {
 
-  def createIssue(name: String) = AccessAPIAuthAction(parse.json[CreateIssue]) { req =>
+  def createIssue(name: String) = EditEditionsAuthAction(parse.json[CreateIssue]) { req =>
     val form = req.body
 
     templating.generateEditionTemplate(name, form.issueDate).map { skeleton =>
@@ -41,13 +41,13 @@ class EditionsController(db: EditionsDB,
     }
   }
 
-  def getIssue(id: String)= AccessAPIAuthAction { _ =>
+  def getIssue(id: String)= EditEditionsAuthAction { _ =>
     db.getIssue(id).map { issue =>
       Ok(Json.toJson(issue))
     }.getOrElse(NotFound(s"Issue $id not found"))
   }
 
-  def deleteIssue(id: String) = AccessAPIAuthAction { req => {
+  def deleteIssue(id: String) = EditEditionsAuthAction { req => {
     db.getIssue(id).map { issue => {
       val markers = Markers.appendEntries(Map (
         "id" -> id,
@@ -61,17 +61,17 @@ class EditionsController(db: EditionsDB,
     }}.getOrElse(NotFound(s"Issue $id not found"))
   }}
 
-  def getIssueSummary(id: String)= AccessAPIAuthAction { _ =>
+  def getIssueSummary(id: String)= EditEditionsAuthAction { _ =>
     db.getIssueSummary(id).map { issue =>
       Ok(Json.toJson(issue).as[JsObject] - "fronts")
     }.getOrElse(NotFound(s"Issue $id not found"))
   }
 
-  def getAvailableEditions = AccessAPIAuthAction { _ =>
+  def getAvailableEditions = EditEditionsAuthAction { _ =>
     Ok(Json.toJson(EditionsTemplates.getAvailableEditions))
   }
 
-  def listIssues(name: String) = AccessAPIAuthAction { req =>
+  def listIssues(name: String) = EditEditionsAuthAction { req =>
     Try {
       val dateFrom = req.queryString.get("dateFrom").map(_.head).get
       val dateTo = req.queryString.get("dateTo").map(_.head).get
@@ -84,7 +84,7 @@ class EditionsController(db: EditionsDB,
   }
 
   // Ideally the frontend can be changed so we don't have this bonkers modelling!
-  def getCollections() = AccessAPIAuthAction(parse.json[List[GetCollectionsFilter]]) { req =>
+  def getCollections() = EditEditionsAuthAction(parse.json[List[GetCollectionsFilter]]) { req =>
     val filters = req.body
     if (filters.isEmpty) {
       Ok(Json.toJson(List.empty[EditionsFrontendCollectionWrapper]))
@@ -94,7 +94,7 @@ class EditionsController(db: EditionsDB,
 
   }
 
-  def updateCollection(collectionId: String) = AccessAPIAuthAction(parse.json[EditionsFrontendCollectionWrapper]) { req =>
+  def updateCollection(collectionId: String) = EditEditionsAuthAction(parse.json[EditionsFrontendCollectionWrapper]) { req =>
     val form = req.body
     val collectionToUpdate = EditionsFrontendCollectionWrapper.toCollection(form)
     val updatedCollection = db.updateCollection(collectionToUpdate)
@@ -108,20 +108,20 @@ class EditionsController(db: EditionsDB,
     Ok(Json.toJson(EditionsFrontendCollectionWrapper.fromCollection(updatedCollection)))
   }
 
-  def getPreviewEdition(id: String) = AccessAPIAuthAction { _ =>
+  def getPreviewEdition(id: String) = EditEditionsAuthAction { _ =>
     db.getIssue(id).map { issue =>
       Ok(Json.toJson(issue.toPublishedIssue()))
     }.getOrElse(NotFound(s"Issue $id not found"))
   }
 
-  def publishIssue(id: String) = AccessAPIAuthAction { req =>
+  def publishIssue(id: String) = EditEditionsAuthAction { req =>
     db.getIssue(id).map { issue =>
       publishing.publish(issue, req.user, OffsetDateTime.now())
       NoContent
     }.getOrElse(NotFound(s"Issue $id not found"))
   }
 
-  def getPrefillForCollection(id: String) = AccessAPIAuthAction.async { req =>
+  def getPrefillForCollection(id: String) = EditEditionsAuthAction.async { req =>
     db.getCollectionPrefillQueryString(id).map { prefillUpdate =>
       capi.getPrefillArticles(prefillUpdate.issueDate, prefillUpdate.prefill, prefillUpdate.currentPageCodes).map { body =>
         // Need to wrap this in a "response" object because the CAPI client and CAPI API return different JSON
@@ -132,11 +132,11 @@ class EditionsController(db: EditionsDB,
     }.getOrElse(Future.successful(NotFound("Collection not found")))
   }
 
-  def putFrontMetadata(id: String) = AccessAPIAuthAction(parse.json[EditionsFrontMetadata]) { req =>
+  def putFrontMetadata(id: String) = EditEditionsAuthAction(parse.json[EditionsFrontMetadata]) { req =>
     Ok(Json.toJson(db.updateFrontMetadata(id, req.body)))
   }
 
-  def putFrontHiddenState(id: String, state: Boolean) = AccessAPIAuthAction { req =>
+  def putFrontHiddenState(id: String, state: Boolean) = EditEditionsAuthAction { req =>
     db.updateFrontHiddenState(id, state).map { state =>
       Ok(Json.toJson(state))
     } getOrElse NotFound(s"Front $id not found")

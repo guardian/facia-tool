@@ -83,6 +83,15 @@ class AccessPermissionCheck(client: PermissionsProvider)(implicit ec: ExecutionC
   }
 }
 
+class EditEditionsPermissionCheck(client: PermissionsProvider)(implicit ec: ExecutionContext) extends PermissionActionFilter {
+  val executionContext = ec
+  val restrictedAction = "edit editions"
+  val testAccess: String => Authorization = (email: String) => {
+    val hasPermission = client.hasPermission(Permissions.EditEditions, email)
+    if(hasPermission) { AccessGranted } else { AccessDenied }
+  }
+}
+
 class ConfigPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext) extends PermissionActionFilter {
   val executionContext = ec
   val testAccess: String => Authorization = acl.testUser(Permissions.ConfigureFronts, "facia-tool-allow-config-for-all")
