@@ -44,7 +44,8 @@ function isGuardianUrl(url: string) {
     urlConstants.base.mainDomain,
     urlConstants.base.mainDomainShort,
     urlConstants.base.previewDomain,
-    urlConstants.base.frontendDomain
+    urlConstants.base.frontendDomain,
+    urlConstants.base.shortDomain
   ]);
 }
 
