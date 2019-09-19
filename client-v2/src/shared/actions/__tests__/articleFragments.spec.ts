@@ -76,7 +76,10 @@ describe('articleFragments actions', () => {
           results: []
         }
       });
-      fetchMock.mock('/http/proxy/https://bbc.co.uk/some/page?great=true', bbcSectionPage);
+      fetchMock.mock(
+        '/http/proxy/https://bbc.co.uk/some/page?great=true',
+        bbcSectionPage
+      );
       const store = mockStore({});
       await store.dispatch(createArticleEntitiesFromDrop(
         idDrop('https://bbc.co.uk/some/page?great=true')

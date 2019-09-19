@@ -56,8 +56,8 @@ function updateArticleFragmentMeta(
 function articleFragmentsReceived(
   articleFragments:
     | {
-      [uuid: string]: ArticleFragment;
-    }
+        [uuid: string]: ArticleFragment;
+      }
     | ArticleFragment[]
 ): ArticleFragmentsReceived {
   const payload = Array.isArray(articleFragments)
@@ -176,7 +176,9 @@ const getArticleEntitiesFromDrop = async (
   const resourceIdOrUrl = drop.data;
   const isURL = isValidURL(resourceIdOrUrl);
   const id = isURL ? getIdFromURL(resourceIdOrUrl) : resourceIdOrUrl;
-  const guMeta = isGuardianUrl(resourceIdOrUrl) ? getArticleFragmentMetaFromUrlParams(resourceIdOrUrl) : false;
+  const guMeta = isGuardianUrl(resourceIdOrUrl)
+    ? getArticleFragmentMetaFromUrlParams(resourceIdOrUrl)
+    : false;
   const isPlainUrl = isURL && !id && !guMeta;
   if (isPlainUrl) {
     const fragment = await createSnap(resourceIdOrUrl);
@@ -262,9 +264,9 @@ const getArticleFragmentMetaFromUrlParams = (
   );
   return guParams.length
     ? guParams.reduce(
-      (acc, [key, value]) => ({ ...acc, [key.replace('gu-', '')]: value }),
-      {}
-    )
+        (acc, [key, value]) => ({ ...acc, [key.replace('gu-', '')]: value }),
+        {}
+      )
     : undefined;
 };
 
