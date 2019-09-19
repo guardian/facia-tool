@@ -15,7 +15,7 @@ import {
 import { createFragment } from 'shared/util/articleFragment';
 import { createSnap, createLatestSnap } from 'shared/util/snap';
 import { getIdFromURL } from 'util/CAPIUtils';
-import { isValidURL } from 'shared/util/url';
+import { isValidURL, isGuardianUrl } from 'shared/util/url';
 import { MappableDropType } from 'util/collectionUtils';
 import { ExternalArticle } from 'shared/types/ExternalArticle';
 import { CapiArticle } from 'types/Capi';
@@ -56,8 +56,8 @@ function updateArticleFragmentMeta(
 function articleFragmentsReceived(
   articleFragments:
     | {
-        [uuid: string]: ArticleFragment;
-      }
+      [uuid: string]: ArticleFragment;
+    }
     | ArticleFragment[]
 ): ArticleFragmentsReceived {
   const payload = Array.isArray(articleFragments)
@@ -176,16 +176,16 @@ const getArticleEntitiesFromDrop = async (
   const resourceIdOrUrl = drop.data;
   const isURL = isValidURL(resourceIdOrUrl);
   const id = isURL ? getIdFromURL(resourceIdOrUrl) : resourceIdOrUrl;
-  const meta = getArticleFragmentMetaFromUrlParams(resourceIdOrUrl);
-  const isPlainUrl = isURL && !id && !meta;
+  const guMeta = isGuardianUrl(resourceIdOrUrl) ? getArticleFragmentMetaFromUrlParams(resourceIdOrUrl) : false;
+  const isPlainUrl = isURL && !id && !guMeta;
   if (isPlainUrl) {
     const fragment = await createSnap(resourceIdOrUrl);
     return [fragment];
   }
   try {
-    if (meta) {
+    if (guMeta) {
       // If we have gu params in the url, create a snap with the meta we extract.
-      const fragment = await createSnap(id, meta);
+      const fragment = await createSnap(id, guMeta);
       return [fragment];
     }
     if (!id) {
@@ -262,9 +262,9 @@ const getArticleFragmentMetaFromUrlParams = (
   );
   return guParams.length
     ? guParams.reduce(
-        (acc, [key, value]) => ({ ...acc, [key.replace('gu-', '')]: value }),
-        {}
-      )
+      (acc, [key, value]) => ({ ...acc, [key.replace('gu-', '')]: value }),
+      {}
+    )
     : undefined;
 };
 
