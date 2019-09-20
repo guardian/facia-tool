@@ -724,6 +724,15 @@ const stateWithCollection: any = {
         meta: {},
         uuid: '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d'
       }
+    },
+    externalArticles: {
+      data: {},
+      lastError: null,
+      error: null,
+      lastFetch: null,
+      loading: false,
+      loadingIds: [],
+      updatingIds: []
     }
   },
   feed: {}
@@ -787,6 +796,15 @@ const stateWithCollectionAndSupporting: any = {
         },
         uuid: '322f0527-cf14-43c1-8520-e6732ab01297'
       }
+    },
+    externalArticles: {
+      data: {},
+      lastError: null,
+      error: null,
+      lastFetch: null,
+      loading: false,
+      loadingIds: [],
+      updatingIds: []
     }
   }
 };
