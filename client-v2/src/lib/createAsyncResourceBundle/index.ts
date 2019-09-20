@@ -168,10 +168,10 @@ interface IPagination {
 }
 interface State<Resource> {
   data: Resource | { [id: string]: Resource } | any;
-  pagination: IPagination | null;
-  lastError: string | null;
-  error: string | null;
-  lastFetch: number | null;
+  pagination: IPagination | undefined;
+  lastError: string | undefined;
+  error: string | undefined;
+  lastFetch: number | undefined;
   loadingIds: string[];
   updatingIds: string[];
   // The ids of the resources that were last added to the state, in the order they came in.
@@ -216,6 +216,8 @@ function createAsyncResourceBundle<Resource>(
     ? options.selectLocalState
     : (state: any): State<Resource> => state[entityName];
 
+  const defaultArray = [] as string[];
+
   const selectPagination = (state: RootState) =>
     selectLocalState(state).pagination;
 
@@ -248,10 +250,10 @@ function createAsyncResourceBundle<Resource>(
 
   const initialState: State<Resource> = {
     data: options.initialData || {},
-    pagination: null,
-    lastError: null,
-    error: null,
-    lastFetch: null,
+    pagination: undefined,
+    lastError: undefined,
+    error: undefined,
+    lastFetch: undefined,
     loadingIds: [],
     updatingIds: []
   };
@@ -353,7 +355,7 @@ function createAsyncResourceBundle<Resource>(
               ? state.pagination
               : action.payload.pagination || null,
             lastFetch: action.payload.time,
-            error: null,
+            error: undefined,
             loadingIds: indexById
               ? removeStatusIds(
                   state.loadingIds,
@@ -371,7 +373,7 @@ function createAsyncResourceBundle<Resource>(
         case FETCH_SUCCESS_IGNORE: {
           return {
             ...state,
-            error: null,
+            error: undefined,
             loadingIds: indexById
               ? removeStatusIds(
                   state.loadingIds,
@@ -433,7 +435,7 @@ function createAsyncResourceBundle<Resource>(
             ...state,
             data,
             lastFetch: action.payload.time,
-            error: null,
+            error: undefined,
             updatingIds: removeStatusIds(state.updatingIds, action.payload.id)
           };
         }
