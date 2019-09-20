@@ -5,6 +5,7 @@ case object EditorialPermission extends PermissionsPriority
 case object CommercialPermission extends PermissionsPriority
 case object EmailPermission extends PermissionsPriority
 case object TrainingPermission extends PermissionsPriority
+case object EditionsPermission extends PermissionsPriority
 
 
 object PermissionsPriority {
@@ -14,6 +15,7 @@ object PermissionsPriority {
       case "commercial" => Some(CommercialPermission)
       case "email" => Some(EmailPermission)
       case "training" => Some(TrainingPermission)
+      case "editions" => Some(EditionsPermission)
       case _ => None
     }
   }

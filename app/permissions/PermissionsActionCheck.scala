@@ -74,9 +74,15 @@ class EditEditorialFrontsPermissionCheck(val acl: Acl)(implicit ec: ExecutionCon
   override val restrictedAction: String = "Edit editorial fronts."
 }
 
-class AccessPermissionCheck(client: PermissionsProvider)(implicit ec: ExecutionContext) extends PermissionActionFilter {
+class AccessEditionsPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext) extends PermissionActionFilter {
+  override implicit val executionContext: ExecutionContext = ec
+  override val testAccess: String => Authorization = acl.testUser(Permissions.EditEditorialFronts, "facia-tool-allow-edit-editorial-fronts-for-all")
+  override val restrictedAction: String = "Edit editions fronts."
+}
+
+class AccessEditorialFrontsPermissionCheck(client: PermissionsProvider)(implicit ec: ExecutionContext) extends PermissionActionFilter {
   val executionContext = ec
-  val restrictedAction = "access fronts"
+  val restrictedAction = "access editorial fronts"
   val testAccess: String => Authorization = (email: String) => {
     val hasPermission = client.hasPermission(Permissions.FrontsAccess, email)
     if(hasPermission) { AccessGranted } else { AccessDenied }
