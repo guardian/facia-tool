@@ -216,8 +216,6 @@ function createAsyncResourceBundle<Resource>(
     ? options.selectLocalState
     : (state: any): State<Resource> => state[entityName];
 
-  const defaultArray = [] as string[];
-
   const selectPagination = (state: RootState) =>
     selectLocalState(state).pagination;
 
