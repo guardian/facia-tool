@@ -15,7 +15,7 @@ object PermissionsPriority {
       case "commercial" => Some(CommercialPermission)
       case "email" => Some(EmailPermission)
       case "training" => Some(TrainingPermission)
-      case "editions" => Some(EditionsPermission)
+      case "edition" => Some(EditionsPermission)
       case _ => None
     }
   }
