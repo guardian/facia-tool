@@ -1,15 +1,14 @@
 import React from 'react';
 import { styled } from 'constants/theme';
 import FeedItem from './FeedItem';
-import { CapiArticle } from 'types/Capi';
 
 interface FeedProps {
-  articles?: CapiArticle[];
-  error: string | null;
+  articleIds?: string[];
+  error?: string;
 }
 
 interface ErrorDisplayProps {
-  error: string | null;
+  error?: string;
   children: React.ReactNode;
 }
 
@@ -20,12 +19,10 @@ const NoResults = styled.div`
   margin: 4px;
 `;
 
-const Feed = ({ articles = [], error }: FeedProps) => (
+const Feed = ({ articleIds = [], error }: FeedProps) => (
   <ErrorDisplay error={error}>
-    {articles.length ? (
-      articles
-        .filter(result => result.webTitle)
-        .map(article => <FeedItem key={article.id} article={article} />)
+    {articleIds.length ? (
+      articleIds.map(id => <FeedItem key={id} id={id} />)
     ) : (
       <NoResults>No results found</NoResults>
     )}
