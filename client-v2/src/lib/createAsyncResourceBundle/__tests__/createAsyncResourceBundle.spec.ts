@@ -94,7 +94,9 @@ describe('createAsyncResourceBundle', () => {
       ).toBe(true);
     });
     it('should provide a selector to get the current error', () => {
-      expect(selectors.selectCurrentError({ books: initialState })).toBe(undefined);
+      expect(selectors.selectCurrentError({ books: initialState })).toBe(
+        undefined
+      );
       expect(
         selectors.selectCurrentError({
           books: { ...initialState, error: 'Something went wrong' }
@@ -102,7 +104,9 @@ describe('createAsyncResourceBundle', () => {
       ).toBe('Something went wrong');
     });
     it('should provide a selector to get the last error', () => {
-      expect(selectors.selectLastError({ books: initialState })).toBe(undefined);
+      expect(selectors.selectLastError({ books: initialState })).toBe(
+        undefined
+      );
       expect(
         selectors.selectLastError({
           books: { ...initialState, lastError: 'Something went wrong' }
@@ -110,7 +114,9 @@ describe('createAsyncResourceBundle', () => {
       ).toBe('Something went wrong');
     });
     it('should provide a selector to get the last fetch time', () => {
-      expect(selectors.selectLastFetch({ books: initialState })).toBe(undefined);
+      expect(selectors.selectLastFetch({ books: initialState })).toBe(
+        undefined
+      );
       expect(
         selectors.selectLastFetch({
           books: { ...initialState, lastFetch: 1337 }
