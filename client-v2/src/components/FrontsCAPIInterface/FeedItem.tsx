@@ -34,7 +34,7 @@ import { liveBlogTones } from 'constants/fronts';
 import { hasMainVideo } from 'shared/util/externalArticle';
 import { VideoIcon } from 'shared/components/icons/Icons';
 import CircularIconContainer from 'shared/components/icons/CircularIconContainer';
-import RefreshPeriodically from './RefreshPeriodically';
+import RefreshPeriodically from '../util/RefreshPeriodically';
 import { articlesPollInterval } from 'constants/polling';
 
 const Container = styled.div`
