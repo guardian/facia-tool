@@ -2,6 +2,8 @@ import { oc } from 'ts-optchain';
 import { Element } from 'types/Capi';
 import { ExternalArticle } from 'shared/types/ExternalArticle';
 import { DerivedArticle } from 'shared/types/Article';
+import isAfter from 'date-fns/is_after';
+import isValid from 'date-fns/is_valid';
 
 export const hasMainVideo = (article: ExternalArticle | DerivedArticle) => {
   return (
@@ -48,3 +50,24 @@ export function hasMainMediaVideoAtom(
     isVideo(mainBlockElement)
   );
 }
+
+/**
+ * Create a selector to answer the question -- is the article last modified field older than the given date?
+ * This function is liberal in what it accepts -- if either date is invalid/missing, it returns `true`.
+ */
+export const createSelectIsArticleStale = <State>(selectArticleById: (state: State, id: string) => ExternalArticle | undefined) => (
+  state: State,
+  id: string,
+  dateStr: string | undefined
+): boolean => {
+  const article = selectArticleById(state, id);
+  if (!article || !article.fields.lastModified || !dateStr) {
+    return true;
+  }
+  const articleDate = new Date(article.fields.lastModified);
+  const incomingDate = new Date(dateStr);
+  if (!isValid(articleDate) || !isValid(incomingDate)) {
+    return true;
+  }
+  return isAfter(incomingDate, articleDate);
+};
