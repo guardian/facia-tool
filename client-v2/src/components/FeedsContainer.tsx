@@ -20,7 +20,6 @@ import { getTodayDate } from 'util/getTodayDate';
 import { getIdFromURL } from 'util/CAPIUtils';
 import { Dispatch } from 'types/Store';
 import debounce from 'lodash/debounce';
-import { CapiArticle } from 'types/Capi';
 import Pagination from './FrontsCAPIInterface/Pagination';
 import { IPagination } from 'lib/createAsyncResourceBundle';
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
@@ -38,18 +37,18 @@ interface FeedsContainerProps {
   fetchPreview: (params: object, isResource: boolean) => void;
   hidePrefills: () => void;
   isPrefillMode: boolean;
-  liveArticles: CapiArticle[];
-  previewArticles: CapiArticle[];
-  prefillArticles: CapiArticle[];
+  liveArticleIds: string[];
+  previewArticleIds: string[];
+  prefillArticleIds: string[];
   liveLoading: boolean;
   previewLoading: boolean;
   prefillLoading: boolean;
-  liveError: string | null;
-  previewError: string | null;
-  prefillError: string | null;
-  livePagination: IPagination | null;
-  previewPagination: IPagination | null;
-  prefillPagination: IPagination | null;
+  liveError: string | undefined;
+  previewError: string | undefined;
+  prefillError: string | undefined;
+  livePagination: IPagination | undefined;
+  previewPagination: IPagination | undefined;
+  prefillPagination: IPagination | undefined;
 }
 
 interface FeedsContainerState {
@@ -363,11 +362,11 @@ class FeedsContainer extends React.Component<
   public render() {
     const {
       isPrefillMode,
-      liveArticles,
-      previewArticles,
+      liveArticleIds: liveArticles,
+      previewArticleIds: previewArticles,
       liveError,
       previewError,
-      prefillArticles,
+      prefillArticleIds: prefillArticles,
       prefillError
     } = this.props;
     const error = isPrefillMode
@@ -376,7 +375,7 @@ class FeedsContainer extends React.Component<
       ? liveError
       : previewError;
 
-    const articles = isPrefillMode
+    const articleIds = isPrefillMode
       ? prefillArticles
       : this.isLive
       ? liveArticles
@@ -392,7 +391,7 @@ class FeedsContainer extends React.Component<
           }
         >
           <ResultsContainer>
-            <Feed error={error} articles={articles} />
+            <Feed error={error} articleIds={articleIds} />
           </ResultsContainer>
         </ScrollContainer>
       </FeedsContainerWrapper>
@@ -445,9 +444,9 @@ class FeedsContainer extends React.Component<
 }
 
 const mapStateToProps = (state: State) => ({
-  liveArticles: liveSelectors.selectAll(state),
-  previewArticles: previewSelectors.selectAll(state),
-  prefillArticles: prefillSelectors.selectAll(state),
+  liveArticleIds: liveSelectors.selectLastFetchOrder(state),
+  previewArticleIds: previewSelectors.selectLastFetchOrder(state),
+  prefillArticleIds: prefillSelectors.selectLastFetchOrder(state),
 
   liveLoading: liveSelectors.selectIsLoading(state),
   previewLoading: previewSelectors.selectIsLoading(state),
