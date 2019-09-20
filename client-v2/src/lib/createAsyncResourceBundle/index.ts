@@ -353,7 +353,7 @@ function createAsyncResourceBundle<Resource>(
             // having to rerender when pagination information hasn't changed.
             pagination: isEqual(state.pagination, action.payload.pagination)
               ? state.pagination
-              : action.payload.pagination || null,
+              : action.payload.pagination,
             lastFetch: action.payload.time,
             error: undefined,
             loadingIds: indexById
