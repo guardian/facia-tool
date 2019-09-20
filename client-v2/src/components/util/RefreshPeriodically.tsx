@@ -18,7 +18,7 @@ const refreshPeriodically = ({
     [count]
   );
 
-  return <Child />
+  return <Child />;
 };
 
 export default refreshPeriodically;

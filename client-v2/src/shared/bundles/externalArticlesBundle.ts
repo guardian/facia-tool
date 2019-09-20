@@ -13,4 +13,6 @@ export const {
   indexById: true
 });
 
-export const selectIsExternalArticleStale = createSelectIsArticleStale(selectors.selectById);
+export const selectIsExternalArticleStale = createSelectIsArticleStale(
+  selectors.selectById
+);
