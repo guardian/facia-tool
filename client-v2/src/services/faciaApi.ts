@@ -320,12 +320,12 @@ const DEFAULT_PARAMS = {
   'show-tags': 'all',
   'show-atoms': 'media',
   'show-fields':
-    'internalPageCode,isLive,firstPublicationDate,scheduledPublicationDate,headline,trailText,byline,thumbnail,secureThumbnail,liveBloggingNow,membershipAccess,shortUrl,newspaperPageNumber'
+    'internalPageCode,isLive,firstPublicationDate,scheduledPublicationDate,headline,trailText,byline,thumbnail,secureThumbnail,liveBloggingNow,membershipAccess,shortUrl,newspaperPageNumber,lastModified'
 };
 
-/**
+/*
  * Get a CAPI query string for the given content ids. This could be a single article
- * or tag/section, or a list of articles.
+ * or tag/section, or a list of articles
  */
 const getCapiUriForContentIds = (contentIds: string[]) => {
   const contentIdsStr = contentIds.join(',');
