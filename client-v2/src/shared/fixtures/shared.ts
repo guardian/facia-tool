@@ -853,21 +853,21 @@ const stateWithSnaplinksAndArticles: any = {
 const initialState = {
   collections: {
     data: {},
-    pagination: null,
-    lastError: null,
+    pagination: undefined,
+    lastError: undefined,
     loadingIds: [],
     updatingIds: [],
-    lastFetch: null,
-    error: null
+    lastFetch: undefined,
+    error: undefined
   },
   externalArticles: {
     data: {},
-    pagination: null,
-    lastError: null,
+    pagination: undefined,
+    lastError: undefined,
     loadingIds: [],
     updatingIds: [],
-    lastFetch: null,
-    error: null
+    lastFetch: undefined,
+    error: undefined
   },
   groups: {},
   articleFragments: {},
