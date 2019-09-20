@@ -35,7 +35,7 @@ import { hasMainVideo } from 'shared/util/externalArticle';
 import { VideoIcon } from 'shared/components/icons/Icons';
 import CircularIconContainer from 'shared/components/icons/CircularIconContainer';
 import RefreshPeriodically from '../util/RefreshPeriodically';
-import { articlesPollInterval } from 'constants/polling';
+import { collectionArticlesPollInterval } from 'constants/polling';
 
 const Container = styled.div`
   display: flex;
@@ -188,7 +188,7 @@ class FeedItem extends React.Component<ComponentProps> {
                 <Tone> / {startCase(article.frontsMeta.tone)}</Tone>
               )}
             </TagInfo>
-            <RefreshPeriodically timeMs={articlesPollInterval}>
+            <RefreshPeriodically timeMs={collectionArticlesPollInterval}>
               {() => (
                 <>
                   {article.fields.scheduledPublicationDate && (

@@ -4,7 +4,7 @@ import { Store } from 'types/Store';
 import {
   collectionsPollInterval,
   ophanPollInterval,
-  articlesPollInterval
+  collectionArticlesPollInterval
 } from 'constants/polling';
 import { selectPriority } from 'selectors/pathSelectors';
 import { getPageViewData } from '../redux/modules/pageViewData/actions';
@@ -30,7 +30,7 @@ export default (store: Store) => {
   }
 
   setInterval(createRefreshStaleCollections(store), collectionsPollInterval);
-  setInterval(createRefreshOpenArticles(store), articlesPollInterval);
+  setInterval(createRefreshOpenArticles(store), collectionArticlesPollInterval);
 
   const shouldPollOphan = selectFeatureValue(
     selectSharedState(store.getState()),

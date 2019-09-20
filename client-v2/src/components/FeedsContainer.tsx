@@ -31,24 +31,18 @@ import ContainerHeading from 'shared/components/typography/ContainerHeading';
 import { ClearIcon } from 'shared/components/icons/Icons';
 import Button from 'shared/components/input/ButtonDefault';
 import { selectIsPrefillMode } from 'selectors/feedStateSelectors';
+import { feedArticlesPollInterval } from 'constants/polling';
 
 interface FeedsContainerProps {
   fetchLive: (params: object, isResource: boolean) => void;
   fetchPreview: (params: object, isResource: boolean) => void;
   hidePrefills: () => void;
   isPrefillMode: boolean;
-  liveArticleIds: string[];
-  previewArticleIds: string[];
-  prefillArticleIds: string[];
+  livePagination: IPagination | undefined;
+  previewPagination: IPagination | undefined;
   liveLoading: boolean;
   previewLoading: boolean;
   prefillLoading: boolean;
-  liveError: string | undefined;
-  previewError: string | undefined;
-  prefillError: string | undefined;
-  livePagination: IPagination | undefined;
-  previewPagination: IPagination | undefined;
-  prefillPagination: IPagination | undefined;
 }
 
 interface FeedsContainerState {
@@ -360,26 +354,7 @@ class FeedsContainer extends React.Component<
   };
 
   public render() {
-    const {
-      isPrefillMode,
-      liveArticleIds: liveArticles,
-      previewArticleIds: previewArticles,
-      liveError,
-      previewError,
-      prefillArticleIds: prefillArticles,
-      prefillError
-    } = this.props;
-    const error = isPrefillMode
-      ? prefillError
-      : this.isLive
-      ? liveError
-      : previewError;
-
-    const articleIds = isPrefillMode
-      ? prefillArticles
-      : this.isLive
-      ? liveArticles
-      : previewArticles;
+    const { isPrefillMode } = this.props;
 
     return (
       <FeedsContainerWrapper>
@@ -391,7 +366,7 @@ class FeedsContainer extends React.Component<
           }
         >
           <ResultsContainer>
-            <Feed error={error} articleIds={articleIds} />
+            <Feed isLive={this.isLive} />
           </ResultsContainer>
         </ScrollContainer>
       </FeedsContainerWrapper>
@@ -430,7 +405,10 @@ class FeedsContainer extends React.Component<
 
   private runSearchAndRestartPolling() {
     this.stopPolling();
-    this.interval = window.setInterval(() => this.runSearch(), 30000);
+    this.interval = window.setInterval(
+      () => this.runSearch(),
+      feedArticlesPollInterval
+    );
     this.runSearch();
   }
 
@@ -444,23 +422,13 @@ class FeedsContainer extends React.Component<
 }
 
 const mapStateToProps = (state: State) => ({
-  liveArticleIds: liveSelectors.selectLastFetchOrder(state),
-  previewArticleIds: previewSelectors.selectLastFetchOrder(state),
-  prefillArticleIds: prefillSelectors.selectLastFetchOrder(state),
-
+  isPrefillMode: selectIsPrefillMode(state),
   liveLoading: liveSelectors.selectIsLoading(state),
   previewLoading: previewSelectors.selectIsLoading(state),
   prefillLoading: prefillSelectors.selectIsLoading(state),
-
-  liveError: liveSelectors.selectCurrentError(state),
-  previewError: previewSelectors.selectCurrentError(state),
-  prefillError: prefillSelectors.selectCurrentError(state),
-
   livePagination: liveSelectors.selectPagination(state),
   previewPagination: previewSelectors.selectPagination(state),
-  prefillPagination: prefillSelectors.selectPagination(state),
-
-  isPrefillMode: selectIsPrefillMode(state)
+  prefillPagination: prefillSelectors.selectPagination(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
