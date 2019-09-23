@@ -126,12 +126,10 @@ const fetchPageViewData = async (
 
   const urls: string[] = articlePaths.reduce(
     (acc, path) => {
-      if (acc.length) {
-        const latestUrl = acc[acc.length - 1];
-        if (latestUrl.length + path.length < maxLength) {
-          acc.splice(acc.length - 1, 1, latestUrl + path);
-          return acc;
-        }
+      const latestUrl = acc[acc.length - 1];
+      if (acc.length && latestUrl.length + path.length < maxLength) {
+        acc.splice(acc.length - 1, 1, latestUrl + path);
+        return acc;
       }
       return acc.concat(referringPath + path);
     },
@@ -146,9 +144,7 @@ const fetchPageViewData = async (
   );
 
   const response = await Promise.all(ophanCalls);
-  const parsedResponse = await Promise.all(
-    response.map(r => r.json().then((data: PageViewDataFromOphan) => data))
-  );
+  const parsedResponse = await Promise.all(response.map(r => r.json()));
 
   return ([] as PageViewDataFromOphan[]).concat(...parsedResponse);
 };
