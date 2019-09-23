@@ -194,9 +194,9 @@ const fronts = {
         }
       }
     },
-    pagination: undefined,
-    lastError: undefined,
-    error: undefined,
+    pagination: null,
+    lastError: null,
+    error: null,
     lastFetch: 1547474511048,
     loading: false,
     loadingIds: [],
@@ -296,10 +296,10 @@ const shared = {
         type: 'fixed/small/slow-IV'
       }
     },
-    pagination: undefined,
-    lastError: undefined,
-    error: undefined,
-    lastFetch: undefined,
+    pagination: null,
+    lastError: null,
+    error: null,
+    lastFetch: null,
     loading: false,
     loadingIds: [],
     updatingIds: []
@@ -654,9 +654,9 @@ const shared = {
           'media/video/2019/jan/11/fiona-bruce-makes-debut-as-question-time-host-video'
       }
     },
-    pagination: undefined,
-    lastError: undefined,
-    error: undefined,
+    pagination: null,
+    lastError: null,
+    error: null,
     lastFetch: 1547474510279,
     loading: false,
     loadingIds: [],
@@ -667,9 +667,9 @@ const shared = {
 
 const emptyFeedBundle = {
   data: [],
-  pagination: undefined,
-  lastError: undefined,
-  error: undefined,
+  pagination: null,
+  lastError: null,
+  error: null,
   lastFetch: 1547474573228,
   loading: false,
   loadingIds: [],
@@ -708,10 +708,10 @@ const state = {
   },
   focus: { focusState: undefined },
   editionsIssue: {
-    data: undefined,
-    pagination: undefined,
-    lastError: undefined,
-    error: undefined,
+    data: null,
+    pagination: null,
+    lastError: null,
+    error: null,
     lastFetch: 1547474573363,
     loading: false,
     loadingIds: [],

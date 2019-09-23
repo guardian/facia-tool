@@ -94,9 +94,7 @@ describe('createAsyncResourceBundle', () => {
       ).toBe(true);
     });
     it('should provide a selector to get the current error', () => {
-      expect(selectors.selectCurrentError({ books: initialState })).toBe(
-        undefined
-      );
+      expect(selectors.selectCurrentError({ books: initialState })).toBe(null);
       expect(
         selectors.selectCurrentError({
           books: { ...initialState, error: 'Something went wrong' }
@@ -104,9 +102,7 @@ describe('createAsyncResourceBundle', () => {
       ).toBe('Something went wrong');
     });
     it('should provide a selector to get the last error', () => {
-      expect(selectors.selectLastError({ books: initialState })).toBe(
-        undefined
-      );
+      expect(selectors.selectLastError({ books: initialState })).toBe(null);
       expect(
         selectors.selectLastError({
           books: { ...initialState, lastError: 'Something went wrong' }
@@ -114,9 +110,7 @@ describe('createAsyncResourceBundle', () => {
       ).toBe('Something went wrong');
     });
     it('should provide a selector to get the last fetch time', () => {
-      expect(selectors.selectLastFetch({ books: initialState })).toBe(
-        undefined
-      );
+      expect(selectors.selectLastFetch({ books: initialState })).toBe(null);
       expect(
         selectors.selectLastFetch({
           books: { ...initialState, lastFetch: 1337 }
@@ -302,7 +296,7 @@ describe('createAsyncResourceBundle', () => {
             initialState,
             actions.fetchSuccess({ uuid: { id: 'uuid', author: 'Mark Twain' } })
           );
-          expect(newState.pagination).toEqual(undefined);
+          expect(newState.pagination).toEqual(null);
         });
         it('should return pagination data when supplied by action', () => {
           const newState = reducer(
@@ -450,7 +444,7 @@ describe('createAsyncResourceBundle', () => {
               lastModified: 123456789
             })
           );
-          expect(newState.error).toEqual(undefined);
+          expect(newState.error).toEqual(null);
           expect(newState.lastError).toEqual('There was a problem');
         });
       });
