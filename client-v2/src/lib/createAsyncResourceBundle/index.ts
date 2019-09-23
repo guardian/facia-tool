@@ -168,10 +168,10 @@ interface IPagination {
 }
 interface State<Resource> {
   data: Resource | { [id: string]: Resource } | any;
-  pagination: IPagination | undefined;
-  lastError: string | undefined;
-  error: string | undefined;
-  lastFetch: number | undefined;
+  pagination: IPagination | null;
+  lastError: string | null;
+  error: string | null;
+  lastFetch: number | null;
   loadingIds: string[];
   updatingIds: string[];
   // The ids of the resources that were last added to the state, in the order they came in.
@@ -248,10 +248,10 @@ function createAsyncResourceBundle<Resource>(
 
   const initialState: State<Resource> = {
     data: options.initialData || {},
-    pagination: undefined,
-    lastError: undefined,
-    error: undefined,
-    lastFetch: undefined,
+    pagination: null,
+    lastError: null,
+    error: null,
+    lastFetch: null,
     loadingIds: [],
     updatingIds: []
   };
@@ -351,9 +351,9 @@ function createAsyncResourceBundle<Resource>(
             // having to rerender when pagination information hasn't changed.
             pagination: isEqual(state.pagination, action.payload.pagination)
               ? state.pagination
-              : action.payload.pagination,
+              : action.payload.pagination || null,
             lastFetch: action.payload.time,
-            error: undefined,
+            error: null,
             loadingIds: indexById
               ? removeStatusIds(
                   state.loadingIds,
@@ -371,7 +371,7 @@ function createAsyncResourceBundle<Resource>(
         case FETCH_SUCCESS_IGNORE: {
           return {
             ...state,
-            error: undefined,
+            error: null,
             loadingIds: indexById
               ? removeStatusIds(
                   state.loadingIds,
@@ -433,7 +433,7 @@ function createAsyncResourceBundle<Resource>(
             ...state,
             data,
             lastFetch: action.payload.time,
-            error: undefined,
+            error: null,
             updatingIds: removeStatusIds(state.updatingIds, action.payload.id)
           };
         }

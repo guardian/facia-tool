@@ -38,8 +38,8 @@ interface FeedsContainerProps {
   fetchPreview: (params: object, isResource: boolean) => void;
   hidePrefills: () => void;
   isPrefillMode: boolean;
-  livePagination: IPagination | undefined;
-  previewPagination: IPagination | undefined;
+  livePagination: IPagination | null;
+  previewPagination: IPagination | null;
   liveLoading: boolean;
   previewLoading: boolean;
   prefillLoading: boolean;

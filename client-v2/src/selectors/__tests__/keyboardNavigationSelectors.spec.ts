@@ -137,10 +137,10 @@ describe('nextIndexAndGroupSelector', () => {
         type: 'fixed/small/slow-IV'
       }
     },
-    pagination: undefined,
-    lastError: undefined,
-    error: undefined,
-    lastFetch: undefined,
+    pagination: null,
+    lastError: null,
+    error: null,
+    lastFetch: null,
     loading: false,
     loadingIds: [],
     updatingIds: []

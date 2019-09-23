@@ -20,9 +20,9 @@ interface FeedContainerProps {
   liveArticleIds: string[];
   previewArticleIds: string[];
   prefillArticleIds: string[];
-  liveError: string | undefined;
-  previewError: string | undefined;
-  prefillError: string | undefined;
+  liveError: string | null;
+  previewError: string | null;
+  prefillError: string | null;
 }
 
 interface FeedComponentProps extends FeedContainerProps {
@@ -58,7 +58,7 @@ const Feed = ({
     : previewArticles;
 
   return (
-    <ErrorDisplay error={error}>
+    <ErrorDisplay error={error || undefined}>
       {articleIds.length ? (
         articleIds.map(id => <FeedItem key={id} id={id} />)
       ) : (
