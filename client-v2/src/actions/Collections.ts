@@ -74,7 +74,7 @@ import { events } from 'services/GA';
 import { selectCollectionParams } from 'selectors/collectionSelectors';
 import { fetchCollectionsStrategy } from 'strategies/fetch-collection';
 import { updateCollectionStrategy } from 'strategies/update-collection';
-import { getPageViewData } from 'redux/modules/pageViewData';
+import { getPageViewDataForCollection } from 'redux/modules/pageViewData';
 
 const articlesInCollection = createSelectAllArticlesInCollection();
 
@@ -366,7 +366,9 @@ const getOphanDataForCollections = (
   itemSet: CollectionItemSets
 ): ThunkResult<Promise<void[]>> => async dispatch => {
   const ophanRequests = collectionIds.map(collectionId => {
-    return dispatch(getPageViewData(frontId, collectionId, itemSet));
+    return dispatch(
+      getPageViewDataForCollection(frontId, collectionId, itemSet)
+    );
   });
   return Promise.all(ophanRequests);
 };
