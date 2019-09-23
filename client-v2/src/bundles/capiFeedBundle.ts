@@ -58,7 +58,7 @@ const fetchResourceOrResults = async (
   return {
     results: checkIsContent(response) ? [response.content] : response.results,
     pagination: checkIsContent(response)
-      ? undefined
+      ? null
       : {
           totalPages: response.pages,
           currentPage: response.currentPage,
@@ -96,7 +96,7 @@ export const createFetch = (
     );
     dispatch(
       actions.fetchSuccess(updatedResults, {
-        pagination: resultData.pagination,
+        pagination: resultData.pagination || undefined,
         order: nonCommercialResults.map(_ => _.id)
       })
     );
