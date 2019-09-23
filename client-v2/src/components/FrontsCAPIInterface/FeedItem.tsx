@@ -187,7 +187,7 @@ class FeedItem extends React.Component<ComponentProps> {
                 <Tone> / {startCase(article.frontsMeta.tone)}</Tone>
               )}
             </TagInfo>
-            <RefreshPeriodically timeMs={collectionArticlesPollInterval}>
+            <RefreshPeriodically rateMs={collectionArticlesPollInterval}>
               {() => (
                 <>
                   {article.fields.scheduledPublicationDate && (

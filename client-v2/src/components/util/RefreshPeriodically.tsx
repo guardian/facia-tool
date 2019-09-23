@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
 const refreshPeriodically = ({
-  timeMs,
+  rateMs,
   children: Child
 }: {
-  timeMs: number;
+  rateMs: number;
   children: React.ComponentType;
 }) => {
   const [count, setCount] = useState(0);
@@ -12,7 +12,7 @@ const refreshPeriodically = ({
     () => {
       const interval = setInterval(() => {
         setCount(count + 1);
-      }, timeMs);
+      }, rateMs);
       return () => clearInterval(interval);
     },
     [count]
