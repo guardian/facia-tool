@@ -165,7 +165,6 @@ class FeedItem extends React.Component<ComponentProps> {
         <DraggingArticleContainer ref={this.dragNode}>
           <DraggingArticleComponent headline={article.webTitle} />
         </DraggingArticleContainer>
-
         <FeedItemContainer
           href={getPaths(article.id).live}
           onClick={e => e.preventDefault()}
@@ -252,7 +251,7 @@ class FeedItem extends React.Component<ComponentProps> {
   }
 
   private handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-    event.dataTransfer.setData('capi', JSON.stringify(this.props.id));
+    event.dataTransfer.setData('capi', JSON.stringify(this.props.article));
     if (this.dragNode.current) {
       event.dataTransfer.setDragImage(
         this.dragNode.current,
