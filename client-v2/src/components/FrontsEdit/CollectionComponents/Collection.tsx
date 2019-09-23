@@ -38,6 +38,7 @@ import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import { theme, styled } from 'constants/theme';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { fetchPrefill } from 'bundles/capiFeedBundle';
+import LoadingGif from '../../../images/icons/loading.gif';
 
 interface CollectionPropsBeforeState {
   id: string;
@@ -98,7 +99,8 @@ const PreviouslyCollectionInfo = styled.div`
 
 class Collection extends React.Component<CollectionProps> {
   public state = {
-    isPreviouslyOpen: false
+    isPreviouslyOpen: false,
+    isLaunching: false
   };
 
   public togglePreviouslyOpen = () => {
@@ -133,7 +135,7 @@ class Collection extends React.Component<CollectionProps> {
       hasContent
     } = this.props;
 
-    const { isPreviouslyOpen } = this.state;
+    const { isPreviouslyOpen, isLaunching } = this.state;
 
     const isUneditable =
       isCollectionLocked || browsingStage !== collectionItemSets.draft;
@@ -192,7 +194,12 @@ class Collection extends React.Component<CollectionProps> {
                 <Button
                   size="l"
                   priority="primary"
-                  onClick={() => publish(id, frontId)}
+                  onClick={() => {
+                    this.setState({ isLaunching: true });
+                    publish(id, frontId).then(res =>
+                      this.setState({ isLaunching: false })
+                    );
+                  }}
                   tabIndex={-1}
                   title={
                     isEditFormOpen
@@ -200,7 +207,7 @@ class Collection extends React.Component<CollectionProps> {
                       : undefined
                   }
                 >
-                  Launch
+                  {isLaunching ? <img src={LoadingGif} /> : 'Launch'}
                 </Button>
               </EditModeVisibility>
             </Fragment>

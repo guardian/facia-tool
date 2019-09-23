@@ -30,7 +30,7 @@ module.exports = {
         }
       },
       {
-        test: /\.(eot|svg|ttf|woff|woff2|otf)$/,
+        test: /\.(eot|svg|ttf|woff|woff2|otf|gif)$/,
         loader: 'file-loader',
         options: {
           publicPath: '/assets/client-v2/dist/'
