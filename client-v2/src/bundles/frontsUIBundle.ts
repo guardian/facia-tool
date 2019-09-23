@@ -363,16 +363,27 @@ const createSelectCurrentlyOpenCollectionsByFront = () => {
 const selectOpenParentFrontOfArticleFragment = (
   state: GlobalState,
   articleFragmentId: string
-) => {
+): [string, string] | [] => {
   const openFrontsCollectionsAndArticles = selectOpenFrontsCollectionsAndArticles(
     state
   );
-  const front = openFrontsCollectionsAndArticles.find(frontAndCollections =>
-    frontAndCollections.collections.some(collection =>
-      collection.articleIds.some(articleId => articleId === articleFragmentId)
-    )
-  );
-  return front ? front.frontId : undefined;
+  let frontId;
+  let collectionId;
+
+  // I've used an imperative loop for efficiency's sake here, as it lets us break.
+  for (const front of openFrontsCollectionsAndArticles) {
+    for (const collection of front.collections) {
+      if (collection.articleIds.includes(articleFragmentId)) {
+        frontId = front.frontId;
+        collectionId = collection.id;
+        break;
+      }
+    }
+    if (frontId && collectionId) {
+      break;
+    }
+  }
+  return frontId && collectionId ? [frontId, collectionId] : [];
 };
 
 const selectOpenArticleFragmentIds = (state: GlobalState): string[] => {
