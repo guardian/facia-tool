@@ -3,7 +3,6 @@ import {
   PageViewDataRequested,
   PageViewDataReceived
 } from '../../../shared/types/Action';
-import { getPageViewDataFromOphan } from '../../../services/faciaApi';
 import {
   PageViewDataFromOphan,
   PageViewStory
@@ -15,6 +14,7 @@ import {
   createSelectArticleFromArticleFragment
 } from 'shared/selectors/shared';
 import { CollectionItemSets } from 'shared/types/Collection';
+import pandaFetch from 'services/pandaFetch';
 
 const totalPeriodInHours = 1;
 const intervalInMinutes = 10;
@@ -34,20 +34,21 @@ const getPageViewData = (
     dispatch(pageViewDataRequestedAction(frontId));
     try {
       const state = selectSharedState(getState());
-      const articleIds = selectArticlesInCollection(state, {
+      const articleIds: string[] = selectArticlesInCollection(state, {
         collectionId,
         collectionSet
       });
       const articles = articleIds
         .map(_ => selectArticleFromArticleFragment(state, _))
         .filter(_ => _) as DerivedArticle[];
-      const result = await fetchPageViewData(frontId, articles);
-      result.json().then((data: PageViewDataFromOphan[]) => {
-        const dataWithArticleIds = convertToStoriesData(data, articles);
-        dispatch(
-          pageViewDataReceivedAction(dataWithArticleIds, frontId, collectionId)
-        );
-      });
+      const urlPaths: string[] = articles
+        .map(article => article.urlPath)
+        .filter(_ => _) as string[];
+      const data = await fetchPageViewData(frontId, urlPaths);
+      const dataWithArticleIds = convertToStoriesData(data, articles);
+      dispatch(
+        pageViewDataReceivedAction(dataWithArticleIds, frontId, collectionId)
+      );
     } catch (e) {
       throw new Error(`API request to Ophan for page view data failed: ${e}`);
     }
@@ -112,28 +113,40 @@ const pageViewDataRequestedAction = (
   };
 };
 
-const fetchPageViewData = (
-  front: string,
-  articlesInFront: DerivedArticle[]
-): Promise<any> => {
-  return getPageViewDataFromOphan(buildRequestUrl(front, articlesInFront));
-};
-
-const buildRequestUrl = (
+const fetchPageViewData = async (
   frontId: string,
-  articles: DerivedArticle[]
-): string => {
-  const referringPath = `?referring-path=/${frontId}&`;
-  const articlePaths = articles
-    .map(article => `path=/${article.urlPath}&`)
-    .join('');
+  articlesInFront: string[]
+): Promise<PageViewDataFromOphan[]> => {
+  const base = 'https://fronts.local.dev-gutools.co.uk';
+  const referringPath = `/ophan/histogram?referring-path=/${frontId}&`;
   const timePeriod = `hours=${totalPeriodInHours}&interval=${intervalInMinutes}`;
-  return `${referringPath}${articlePaths}${timePeriod}`;
+  const maxLength = 2048 - timePeriod.length - base.length;
+
+  const articlePaths = articlesInFront.map(article => `path=/${article}&`);
+
+  const urls: string[] = articlePaths.reduce(
+    (acc, path) => {
+      const latestUrl = acc[acc.length - 1];
+      if (acc.length && latestUrl.length + path.length < maxLength) {
+        acc.splice(acc.length - 1, 1, latestUrl + path);
+        return acc;
+      }
+      return acc.concat(referringPath + path);
+    },
+    [] as string[]
+  );
+
+  const ophanCalls = urls.map(url =>
+    pandaFetch(`${url}${timePeriod}`, {
+      method: 'get',
+      credentials: 'same-origin'
+    })
+  );
+
+  const response = await Promise.all(ophanCalls);
+  const parsedResponse = await Promise.all(response.map(r => r.json()));
+
+  return ([] as PageViewDataFromOphan[]).concat(...parsedResponse);
 };
 
-export {
-  fetchPageViewData,
-  buildRequestUrl,
-  getPageViewData,
-  pageViewDataReceivedAction
-};
+export { fetchPageViewData, getPageViewData, pageViewDataReceivedAction };
