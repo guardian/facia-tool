@@ -3,7 +3,7 @@ package model.editions
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
-case class PublicationEvent(
+case class PublishedIssueStatus(
   id: String,
   status: PublicationStatus,
   launchedOn: Long,
@@ -13,10 +13,10 @@ case class PublicationEvent(
   message: Option[String]
 )
 
-object PublicationEvent {
-  implicit val writes = Json.writes[PublicationEvent]
+object PublishedIssueStatus {
+  implicit val writes = Json.writes[PublishedIssueStatus]
 
-  def fromRow(rs: WrappedResultSet): PublicationEvent = PublicationEvent(
+  def fromRow(rs: WrappedResultSet): PublishedIssueStatus = PublishedIssueStatus(
     rs.string("id"),
     PublicationStatus.withName(rs.string("status")),
     rs.zonedDateTime("launched_on").toInstant.toEpochMilli,

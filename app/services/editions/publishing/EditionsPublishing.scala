@@ -19,20 +19,20 @@ class EditionsPublishing(publishedBucket: EditionsBucket, previewBucket: Edition
 
   def publish(issue: EditionsIssue, user: User, now: OffsetDateTime) = {
     // Bump the recently published counters
-    val publicationEventId = db.publishIssue(issue.id, user, now)
+    val versionId = db.publishIssue(issue.id, user, now)
 
     val markers = Markers.appendEntries(
       Map (
         "issue-id" -> issue.id,
         "issue-date" -> issue.issueDate,
-        "publication-event-id" -> publicationEventId,
+        "version" -> versionId,
         "user" -> user.email
       ).asJava
     )
 
     Logger.info(s"Publishing issue ${issue.id}")(markers)
 
-    val publishedIssue = issue.toPublishedIssue(publicationEventId)
+    val publishedIssue = issue.toPublishedIssue(versionId)
 
     // Archive a copy
     publishedBucket.putIssue(publishedIssue)

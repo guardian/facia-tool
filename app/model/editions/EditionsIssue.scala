@@ -20,11 +20,11 @@ case class EditionsIssue(
 ) {
   def toPreviewIssue(): PublishedIssue = toPublishedIssue("preview")
 
-  def toPublishedIssue(publicationEventId: String): PublishedIssue = PublishedIssue(
+  def toPublishedIssue(version: String): PublishedIssue = PublishedIssue(
     id,
     displayName,
     issueDate,
-    publicationEventId,
+    version,
     fronts
       .filterNot(_.isHidden) // drop hidden fronts
       .map(_.toPublishedFront) // convert

@@ -31,7 +31,7 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
           |  "id" : "4290573248905743296789524389623",
           |  "name" : "Daily Edition",
           |  "issueDate" : "2019-09-30",
-          |  "publicationEventId" : "preview",
+          |  "version" : "preview",
           |  "fronts" : [ ]
           |}""".stripMargin
 
@@ -47,7 +47,7 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
           |  "id" : "4290573248905743296789524389623",
           |  "name" : "Daily Edition",
           |  "issueDate" : "2019-09-30",
-          |  "publicationEventId" : "foo",
+          |  "version" : "foo",
           |  "fronts" : [ ]
           |}""".stripMargin
 

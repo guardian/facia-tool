@@ -1,5 +1,6 @@
 package services.editions.db
 
+import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, OffsetDateTime}
 
 import com.gu.pandomainauth.model.User
@@ -227,6 +228,10 @@ trait IssueQueries {
     val userName = user.firstName + " " + user.lastName
     val truncatedNow = EditionsDB.truncateDateTime(now)
 
+    // versionId is a date string as the downstream Archiver lambda assumes it is a date
+    // TODO move to a GUID
+    val versionId = now.format(DateTimeFormatter.ISO_DATE_TIME)
+
     sql"""
     UPDATE edition_issues
     SET launched_on = $truncatedNow,
@@ -236,14 +241,16 @@ trait IssueQueries {
     """.execute().apply()
 
     sql"""
-      INSERT INTO publication_events (
-        issue_id
+      INSERT INTO published_issue_status (
+        id
+        , issue_id
         , status
         , launched_on
         , launched_by
         , launched_email
       ) VALUES (
-        $issueId
+        $versionId
+        , $issueId
         , ${PublicationStatus.DEFAULT.toString}
         , $truncatedNow
         , $userName
@@ -264,7 +271,7 @@ trait IssueQueries {
     """.execute().apply()
   }
 
-  def getPublicationEvents(issueId: String): List[PublicationEvent] = DB localTx { implicit session =>
+  def getPublishedIssueStatuses(issueId: String): List[PublishedIssueStatus] = DB localTx { implicit session =>
     sql"""
       SELECT
         id
@@ -274,11 +281,11 @@ trait IssueQueries {
         , launched_email
         , published_on
         , message
-      FROM publication_events
+      FROM published_issue_status
       WHERE issue_id = $issueId
       ORDER BY launched_on DESC
     """
-      .map(PublicationEvent.fromRow)
+      .map(PublishedIssueStatus.fromRow)
       .list
       .apply
   }
