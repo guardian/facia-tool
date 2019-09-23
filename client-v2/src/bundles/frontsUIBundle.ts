@@ -356,6 +356,25 @@ const createSelectCurrentlyOpenCollectionsByFront = () => {
   );
 };
 
+/**
+ * Select the parent front of an article fragment.
+ * For performance reasons, only considers open fronts and collections.
+ */
+const selectOpenParentFrontOfArticleFragment = (
+  state: GlobalState,
+  articleFragmentId: string
+) => {
+  const openFrontsCollectionsAndArticles = selectOpenFrontsCollectionsAndArticles(
+    state
+  );
+  const front = openFrontsCollectionsAndArticles.find(frontAndCollections =>
+    frontAndCollections.collections.some(collection =>
+      collection.articleIds.some(articleId => articleId === articleFragmentId)
+    )
+  );
+  return front ? front.frontId : undefined;
+};
+
 const selectOpenArticleFragmentIds = (state: GlobalState): string[] => {
   const frontsCollectionsAndArticles = selectOpenFrontsCollectionsAndArticles(
     state
@@ -801,6 +820,7 @@ export {
   selectIsCurrentFrontsMenuOpen,
   selectIsArticleFragmentFormOpen,
   selectOpenArticleFragmentForms,
+  selectOpenParentFrontOfArticleFragment,
   createSelectEditorFrontsByPriority,
   createSelectFrontIdWithOpenAndStarredStatesByPriority,
   selectEditorFrontIds,

@@ -31,7 +31,8 @@ import {
   defaultState,
   editorCloseFormsForCollection,
   createSelectCollectionsInOpenFronts,
-  selectOpenFrontsCollectionsAndArticles
+  selectOpenFrontsCollectionsAndArticles,
+  selectOpenParentFrontOfArticleFragment
 } from '../frontsUIBundle';
 import initialState from 'fixtures/initialState';
 import initialStateForOpenFronts from './fixtures/initialStateForOpenFronts';
@@ -61,6 +62,51 @@ const reducer = (
 
 describe('frontsUIBundle', () => {
   describe('selectors', () => {
+    describe('selectOpenParentFrontOfArticleFragment', () => {
+      const state = set(
+        ['editor', 'collectionIds'],
+        ['collection1', 'collection6'],
+        initialStateForOpenFronts
+      );
+      it('should select the parent front of an article fragment', () => {
+        const parentFrontId = selectOpenParentFrontOfArticleFragment(
+          state,
+          'articleFragment1'
+        );
+        expect(parentFrontId).toEqual('editorialFront');
+      });
+      it("should return undefined if it does't find anything", () => {
+        const parentFrontId = selectOpenParentFrontOfArticleFragment(
+          state,
+          'not-a-thing'
+        );
+        expect(parentFrontId).toEqual(undefined);
+      });
+      it('should not select from fronts that are not open', () => {
+        const stateWithClosedFronts = set(
+          ['editor', 'frontIdsByPriority', 'editorial'],
+          [],
+          state
+        );
+        const parentFrontId = selectOpenParentFrontOfArticleFragment(
+          stateWithClosedFronts,
+          'articleFragment1'
+        );
+        expect(parentFrontId).toEqual(undefined);
+      });
+      it('should not select from collections that are not open', () => {
+        const stateWithClosedCollections = set(
+          ['editor', 'collectionIds'],
+          [],
+          state
+        );
+        const parentFrontId = selectOpenParentFrontOfArticleFragment(
+          stateWithClosedCollections,
+          'articleFragment1'
+        );
+        expect(parentFrontId).toEqual(undefined);
+      });
+    });
     describe('selectEditorFrontIdsByPriority', () => {
       it('should handle empty priorities', () => {
         expect(
