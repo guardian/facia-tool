@@ -8,15 +8,16 @@ object CollectionPermissions {
     case Some(config) => {
       config.fronts.values.flatMap(front =>
         if (front.collections.contains(id))
-        // Will need the permission for this front
+          // Will need the permission for this front
           PermissionsPriority.priorityOptionToPermissionPriority(front.priority)
         else
           None
-      ) match {
+    ) match {
         // If this collection id is not present in any of the fronts, then it must belong to an edition issue
         case Nil => Set[PermissionsPriority](EditionsPermission)
         case permissionsFromFronts => permissionsFromFronts.toSet
       }
     }
   }
+
 }
