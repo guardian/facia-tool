@@ -8,10 +8,10 @@ import play.api.libs.json.Json
 import services._
 import updates._
 import util.Acl
-import permissions.ModifyCollectionsPermissionsCheck
-import org.joda.time.{DateTime}
+import permissions.{CollectionPermissions, ModifyCollectionsPermissionsCheck}
+import org.joda.time.DateTime
 import play.api.mvc._
-import commands.{V2GetCollectionsCommand}
+import commands.V2GetCollectionsCommand
 import tools.FaciaApiIO
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,7 +40,7 @@ class FaciaToolV2Controller(
         val collectionSpecs = request.body.toList
         val collectionIds = collectionSpecs.map(_.id)
         val collectionPriorities = collectionIds
-          .flatMap(configAgent.getFrontsPermissionsPriorityByCollectionId(_))
+          .flatMap({id => CollectionPermissions.getFrontsPermissionsPriorityByCollectionId(configAgent.get, id)})
           .toSet
 
         withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
@@ -59,7 +59,7 @@ class FaciaToolV2Controller(
     v2Update match {
       case Some(update) => {
 
-        val collectionPriorities = configAgent.getFrontsPermissionsPriorityByCollectionId(update.id)
+        val collectionPriorities = CollectionPermissions.getFrontsPermissionsPriorityByCollectionId(configAgent.get, update.id)
 
         withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
 

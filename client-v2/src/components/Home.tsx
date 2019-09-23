@@ -16,7 +16,7 @@ const Home = () => (
     <h3>Manage editions</h3>
     <ul>
       <li>
-        <Link to={`/manage-editions/daily-edition`}>Daily edition</Link>
+        <Link to={`/manage-editions/daily-edition`}>Daily Edition</Link>
       </li>
     </ul>
   </HomeContainer>

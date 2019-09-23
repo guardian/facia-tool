@@ -9,6 +9,9 @@ case object EditionsPermission extends PermissionsPriority
 
 
 object PermissionsPriority {
+  def priorityOptionToPermissionPriority(os: Option[String]): Option[PermissionsPriority] = {
+    stringToPermissionPriority(os.getOrElse("editorial"))
+  }
   def stringToPermissionPriority(s: String): Option[PermissionsPriority] = {
     s.toLowerCase match {
       case "editorial" => Some(EditorialPermission)

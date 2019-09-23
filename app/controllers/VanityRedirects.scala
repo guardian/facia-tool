@@ -12,4 +12,10 @@ class VanityRedirects(val acl: Acl, val deps: BaseFaciaControllerComponents)(imp
 
   def untrail(path: String) = Action { request =>
     NoCache(Redirect("/" + path, 301))}
+
+  def dailyEdition = Action { request =>
+    NoCache(Redirect("/v2/manage-editions/daily-edition", 301))
+  }
+
+
 }

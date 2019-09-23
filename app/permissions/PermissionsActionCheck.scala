@@ -40,7 +40,8 @@ trait ModifyCollectionsPermissionsCheck extends Logging { self: BaseFaciaControl
         Permissions.FrontsAccess, "facia-tool-allow-launch-editorial-fronts-for-all")(email, priorities)
     else
       acl.testUserGroupsAndCollections(
-        Permissions.EditEditorialFronts, Permissions.LaunchCommercialFronts,
+        Permissions.EditEditorialFronts,
+        Permissions.LaunchCommercialFronts,
         Permissions.FrontsAccess, "facia-tool-allow-edit-editorial-fronts-for-all")(email, priorities)
   }
 

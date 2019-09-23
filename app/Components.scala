@@ -102,8 +102,8 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
 
   override lazy val assets: Assets = new controllers.Assets(httpErrorHandler, assetsMetadata)
 
-  val router: Router = new Routes(httpErrorHandler, status, pandaAuth, v2Assets, uncachedAssets, views, faciaTool,
-    pressController, faciaToolV2, defaults, userDataController, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects, troubleshoot, v2App, gridProxy, editions)
+  val router: Router = new Routes(httpErrorHandler, status, pandaAuth, v2Assets, uncachedAssets, views, vanityRedirects, faciaTool,
+    pressController, faciaToolV2, defaults, userDataController, faciaCapiProxy, thumbnail, front, collection, storiesVisible, troubleshoot, v2App, gridProxy, editions)
 
 
   override lazy val httpFilters = Seq(
