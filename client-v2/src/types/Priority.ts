@@ -7,8 +7,8 @@ interface Priorities {
 }
 
 interface EditionPriority {
-  address: String,
-  description: String
+  address: String;
+  description: String;
 }
 
 export {
