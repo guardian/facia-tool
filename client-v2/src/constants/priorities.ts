@@ -1,4 +1,4 @@
-import { Priorities } from 'types/Priority';
+import {EditionPriorities, Priorities} from 'types/Priority';
 
 export const priorities: Priorities = {
   editorial: {},
@@ -6,4 +6,9 @@ export const priorities: Priorities = {
   training: {},
   email: {},
   edition: {}
+};
+
+export const editionPriorities: EditionPriorities = {
+  "daily-edition": {},
+  "training-edition": {},
 };

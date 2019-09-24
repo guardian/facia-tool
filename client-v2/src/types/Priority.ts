@@ -6,4 +6,9 @@ interface Priorities {
   edition: unknown;
 }
 
-export { Priorities };
+interface EditionPriorities {
+  "daily-edition": unknown;
+  "training-edition": unknown;
+}
+
+export { Priorities, EditionPriorities };

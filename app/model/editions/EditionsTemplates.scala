@@ -6,13 +6,14 @@ import java.time.{LocalDate, ZoneId}
 import enumeratum.EnumEntry.Uncapitalised
 import enumeratum.{EnumEntry, PlayEnum}
 import model.editions.PathType.{PrintSent, Search}
-import model.editions.templates.DailyEdition
+import model.editions.templates.{DailyEdition, TrainingEdition}
 import org.postgresql.util.PGobject
 import play.api.libs.json.Json
 
 object EditionsTemplates {
   val templates: Map[String, EditionTemplate] = Map(
-    "daily-edition" -> DailyEdition.template
+    "daily-edition" -> DailyEdition.template,
+    "training-edition" -> TrainingEdition.template
   )
 
   val getAvailableEditions: List[String] = templates.keys.toList
@@ -43,7 +44,7 @@ object Swatch extends PlayEnum[Swatch] {
   case object Lifestyle extends Swatch
 
   case object Sport extends Swatch
-  
+
   case object Special extends Swatch
 
   override def values = findValues
