@@ -58,7 +58,7 @@ const fetchResourceOrResults = async (
   return {
     results: checkIsContent(response) ? [response.content] : response.results,
     pagination: checkIsContent(response)
-      ? null
+      ? undefined
       : {
           totalPages: response.pages,
           currentPage: response.currentPage,
