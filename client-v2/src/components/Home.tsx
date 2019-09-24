@@ -11,7 +11,7 @@ const renderPriority = (priority: string) => (
 );
 const renderEditionPriority = (editionPriority: string) => (
   <li key={editionPriority}>
-    <Link to={`/manage-editions/${editionPriority}`}>{editionPriority}</Link>
+    <Link to={`/manage-editions/${editionPriorities[editionPriority].address}`}>{editionPriorities[editionPriority].description}</Link>
   </li>
 );
 const Home = () => (

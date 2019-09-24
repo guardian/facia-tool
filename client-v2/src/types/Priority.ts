@@ -6,9 +6,6 @@ interface Priorities {
   edition: unknown;
 }
 
-interface EditionPriorities {
-  "daily-edition": unknown;
-  "training-edition": unknown;
-}
+interface EditionPriority {address: String, description: String}
 
-export { Priorities, EditionPriorities };
+export { Priorities, EditionPriority };
