@@ -6,6 +6,9 @@ interface Priorities {
   edition: unknown;
 }
 
-interface EditionPriority { address: String, description: String }
+interface EditionPriority {
+  address: String,
+  description: String
+}
 
 export { Priorities, EditionPriority };
