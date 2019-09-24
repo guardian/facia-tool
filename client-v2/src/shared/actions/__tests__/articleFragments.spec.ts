@@ -58,31 +58,6 @@ describe('articleFragments actions', () => {
         })
       );
     });
-    it('should fetch ophan data if the parent collection and front can be found', async () => {
-      fetchMock.once('begin:/api/preview', {
-        response: {
-          results: [capiArticle]
-        }
-      });
-      const emptyOphanData = [] as PageViewDataFromOphan[];
-      fetchMock.once('begin:/ophan/histogram', emptyOphanData);
-      const state = set(
-        ['editor', 'collectionIds'],
-        ['collection1', 'collection6'],
-        initialStateForOpenFronts
-      );
-
-      const store = configureStore(state, '/v2/editorial');
-      await store.dispatch(createArticleEntitiesFromDrop(
-        idDrop('internal-code/page/5029528')
-      ) as any);
-
-      // Expect the page data to have been added to the state.
-      expect(selectPageViewData(store.getState())).toContainEqual({
-        collections: [{ collectionId: 'collection1', stories: [] }],
-        frontId: 'editorialFront'
-      });
-    });
     it('should fetch a link and create a corresponding collection item representing a snap link', async () => {
       fetchMock.once('begin:/api/preview', {
         response: {
