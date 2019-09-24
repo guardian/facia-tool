@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react';
 
+/**
+ * Periodically forces a rerender on this component's children.
+ * Useful for making sure that e.g. dates-from-now on a page don't become stale.
+ *
+ * Example usage: ```
+ *  <RefreshPeriodically rateMs={1000}>
+ *    <div>{distanceFromNow(date)}</div>
+ *  </RefreshPeriodically>
+ * ```
+ */
 const refreshPeriodically = ({
   rateMs,
   children: Child
