@@ -11,7 +11,4 @@ interface EditionPriority {
   description: String;
 }
 
-export {
-  Priorities,
-  EditionPriority
-};
+export { Priorities, EditionPriority };
