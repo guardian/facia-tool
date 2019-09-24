@@ -8,7 +8,7 @@ export const priorities: Priorities = {
   edition: {}
 };
 
-export const editionPriorities: { [index: string]: EditionPriority} = {
+export const editionPriorities: { [index: string]: EditionPriority } = {
   dailyEdition: {
     description: 'Daily Edition',
     address: 'daily-edition'
