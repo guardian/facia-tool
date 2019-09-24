@@ -38,7 +38,7 @@ import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import { theme, styled } from 'constants/theme';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { fetchPrefill } from 'bundles/capiFeedBundle';
-import LoadingGif from '../../../images/icons/loading.gif';
+import LoadingGif from 'images/icons/loading.gif';
 
 interface CollectionPropsBeforeState {
   id: string;
