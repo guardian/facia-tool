@@ -10,11 +10,11 @@ export const priorities: Priorities = {
 
 export const editionPriorities: { [index: string]: EditionPriority} = {
   dailyEdition: {
-    description: "Daily Edition",
-    address: "daily-edition"
+    description: 'Daily Edition',
+    address: 'daily-edition'
   },
   trainingEdition: {
-    description: "Training Edition",
-    address: "training-edition"
+    description: 'Training Edition',
+    address: 'training-edition'
   },
 };
