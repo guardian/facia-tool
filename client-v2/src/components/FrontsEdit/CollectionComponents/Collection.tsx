@@ -97,11 +97,26 @@ const PreviouslyCollectionInfo = styled.div`
   font-size: 14px;
 `;
 
+const LoadingImageBox = styled.div`
+  min-width: 50px;
+`;
+
 class Collection extends React.Component<CollectionProps> {
   public state = {
     isPreviouslyOpen: false,
     isLaunching: false
   };
+
+  // added to prevent setState call on unmounted component
+  public isMounted = false;
+
+  public componentDidMount() {
+    this.isMounted = true;
+  }
+
+  public componentWillUnmount() {
+    this.isMounted = false;
+  }
 
   public togglePreviouslyOpen = () => {
     const { isPreviouslyOpen } = this.state;
@@ -109,6 +124,15 @@ class Collection extends React.Component<CollectionProps> {
       this.props.fetchPreviousCollectionArticles(this.props.id);
     }
     this.setState({ isPreviouslyOpen: !isPreviouslyOpen });
+  };
+
+  public startPublish = (id: string, frontId: string) => {
+    this.setState({ isLaunching: true });
+    this.props.publishCollection(id, frontId).then(res => {
+      if (this.isMounted) {
+        this.setState({ isLaunching: false });
+      }
+    });
   };
 
   public render() {
@@ -122,7 +146,6 @@ class Collection extends React.Component<CollectionProps> {
       browsingStage,
       hasUnpublishedChanges,
       canPublish = true,
-      publishCollection: publish,
       displayEditWarning,
       isCollectionLocked,
       isOpen,
@@ -194,20 +217,22 @@ class Collection extends React.Component<CollectionProps> {
                 <Button
                   size="l"
                   priority="primary"
-                  onClick={() => {
-                    this.setState({ isLaunching: true });
-                    publish(id, frontId).then(res =>
-                      this.setState({ isLaunching: false })
-                    );
-                  }}
+                  onClick={() => this.startPublish(id, frontId)}
                   tabIndex={-1}
+                  disabled={isLaunching}
                   title={
                     isEditFormOpen
                       ? 'You cannot launch this collection whilst the edit form is open.'
                       : undefined
                   }
                 >
-                  {isLaunching ? <img src={LoadingGif} /> : 'Launch'}
+                  {isLaunching ? (
+                    <LoadingImageBox>
+                      <img src={LoadingGif} />
+                    </LoadingImageBox>
+                  ) : (
+                    'Launch'
+                  )}
                 </Button>
               </EditModeVisibility>
             </Fragment>
