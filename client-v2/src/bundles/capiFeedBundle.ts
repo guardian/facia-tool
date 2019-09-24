@@ -58,7 +58,7 @@ const fetchResourceOrResults = async (
   return {
     results: checkIsContent(response) ? [response.content] : response.results,
     pagination: checkIsContent(response)
-      ? null
+      ? undefined
       : {
           totalPages: response.pages,
           currentPage: response.currentPage,
@@ -84,7 +84,9 @@ export const fetchLive = (
       isNonCommercialArticle
     );
     dispatch(
-      liveActions.fetchSuccess(nonCommercialResults, resultData.pagination)
+      liveActions.fetchSuccess(nonCommercialResults, {
+        pagination: resultData.pagination
+      })
     );
   }
 };
@@ -110,7 +112,9 @@ export const fetchPreview = (
       isNonCommercialArticle
     );
     dispatch(
-      previewActions.fetchSuccess(nonCommercialResults, resultData.pagination)
+      previewActions.fetchSuccess(nonCommercialResults, {
+        pagination: resultData.pagination
+      })
     );
   }
 };
