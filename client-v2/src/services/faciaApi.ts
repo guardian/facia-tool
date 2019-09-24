@@ -424,13 +424,6 @@ async function getArticlesBatched(
   }
 }
 
-async function getPageViewDataFromOphan(query: string): Promise<any> {
-  return await pandaFetch(`/ophan/histogram${query}`, {
-    method: 'get',
-    credentials: 'same-origin'
-  });
-}
-
 export {
   fetchFrontsConfig,
   fetchEditionsIssueAsConfig,
@@ -452,6 +445,5 @@ export {
   fetchVisibleArticles,
   discardDraftChangesToCollection,
   transformExternalArticle,
-  getPageViewDataFromOphan,
   DEFAULT_PARAMS
 };
