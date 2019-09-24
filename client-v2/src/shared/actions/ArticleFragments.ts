@@ -20,8 +20,6 @@ import { MappableDropType } from 'util/collectionUtils';
 import { ExternalArticle } from 'shared/types/ExternalArticle';
 import { CapiArticle } from 'types/Capi';
 import { ArticleFragment, ArticleFragmentMeta } from '../types/Collection';
-import { selectOpenParentFrontOfArticleFragment } from 'bundles/frontsUIBundle';
-import { getPageViewData } from 'redux/modules/pageViewData';
 
 export const UPDATE_ARTICLE_FRAGMENT_META =
   'SHARED/UPDATE_ARTICLE_FRAGMENT_META';
@@ -148,7 +146,7 @@ type TArticleEntities = [ArticleFragment?, ExternalArticle?];
 const createArticleEntitiesFromDrop = (
   drop: MappableDropType
 ): ThunkResult<Promise<ArticleFragment | undefined>> => {
-  return async (dispatch, getState) => {
+  return async dispatch => {
     const [
       maybeArticleFragment,
       maybeExternalArticle
@@ -158,16 +156,6 @@ const createArticleEntitiesFromDrop = (
     }
     if (maybeArticleFragment) {
       dispatch(articleFragmentsReceived([maybeArticleFragment]));
-
-      const [frontId, collectionId] = selectOpenParentFrontOfArticleFragment(
-        getState(),
-        maybeArticleFragment.uuid
-      );
-      if (frontId && collectionId) {
-        await dispatch(
-          getPageViewData(frontId, collectionId, [maybeArticleFragment.uuid])
-        );
-      }
     }
     return maybeArticleFragment;
   };
