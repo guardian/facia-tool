@@ -1,4 +1,5 @@
 import without from 'lodash/without';
+import isEqual from 'lodash/isEqual';
 import { Action } from 'types/Action';
 
 interface BaseResource {
@@ -24,7 +25,8 @@ interface FetchSuccessAction<Resource> {
   type: 'FETCH_SUCCESS';
   payload: {
     data: Resource | Resource[] | any;
-    pagination: IPagination | null;
+    order?: string[];
+    pagination?: IPagination;
     time: number;
   };
 }
@@ -79,6 +81,8 @@ type Actions<Resource> =
   | UpdateSuccessAction<Resource>
   | UpdateErrorAction;
 
+const defaultArray = [] as string[];
+
 const getStatusIdsFromData = (
   data: BaseResource | BaseResource[] | any
 ): string[] | string =>
@@ -99,7 +103,7 @@ const removeStatusIds = (
     ? without(currentIds, ...incomingIds)
     : without<string>(currentIds, incomingIds);
 
-function applyNewData<Resource extends BaseResource>(
+function formatIncomingResourceData<Resource extends BaseResource>(
   data: { [id: string]: Resource } | {},
   newData: Resource | Resource[],
   resourceName: string
@@ -136,6 +140,27 @@ function applyNewData<Resource extends BaseResource>(
   };
 }
 
+function getOrderFromIncomingResourceData<Resource extends BaseResource>(
+  newData: Resource | Resource[],
+  resourceName: string,
+  currentOrder: string[] = defaultArray,
+  newOrder?: string[]
+): string[] {
+  const order =
+    newOrder ||
+    (newData instanceof Array
+      ? (newData as Resource[]).map((model, index) => {
+          if (!model.id) {
+            throw new Error(
+              `[asyncResourceBundle]: Cannot apply new data - incoming resource ${resourceName} is missing ID at index ${index}.`
+            );
+          }
+          return model.id;
+        })
+      : []);
+  return isEqual(currentOrder, order) ? currentOrder : order;
+}
+
 interface IPagination {
   pageSize: number;
   totalPages: number;
@@ -149,6 +174,9 @@ interface State<Resource> {
   lastFetch: number | null;
   loadingIds: string[];
   updatingIds: string[];
+  // The ids of the resources that were last added to the state, in the order they came in.
+  // Used to store order information when indexById is true --  see the resource creation options.
+  lastFetchOrder?: string[];
 }
 
 // @todo -- figure out a way to provide root state definition
@@ -213,6 +241,9 @@ function createAsyncResourceBundle<Resource>(
     !selectById(state, id) &&
     selectLocalState(state).loadingIds.indexOf(id) !== -1;
 
+  const selectLastFetchOrder = (state: RootState): string[] =>
+    selectLocalState(state).lastFetchOrder || defaultArray;
+
   const selectAll = (state: RootState) => selectLocalState(state).data;
 
   const initialState: State<Resource> = {
@@ -233,11 +264,11 @@ function createAsyncResourceBundle<Resource>(
 
   const fetchSuccessAction = (
     data: Resource | Resource[] | any,
-    pagination: IPagination | null = null
+    { pagination, order }: { pagination?: IPagination; order?: string[] } = {}
   ): FetchSuccessAction<Resource> => ({
     entity: entityName,
     type: FETCH_SUCCESS,
-    payload: { data, pagination, time: Date.now() }
+    payload: { data, pagination, order, time: Date.now() }
   });
 
   const fetchSuccessIgnoreAction = (
@@ -311,8 +342,16 @@ function createAsyncResourceBundle<Resource>(
             ...state,
             data: !indexById
               ? action.payload.data
-              : applyNewData(state.data, action.payload.data, entityName),
-            pagination: action.payload.pagination,
+              : formatIncomingResourceData(
+                  state.data,
+                  action.payload.data,
+                  entityName
+                ),
+            // Only update pagination if the values have changed. This saves components
+            // having to rerender when pagination information hasn't changed.
+            pagination: isEqual(state.pagination, action.payload.pagination)
+              ? state.pagination
+              : action.payload.pagination || null,
             lastFetch: action.payload.time,
             error: null,
             loadingIds: indexById
@@ -320,7 +359,13 @@ function createAsyncResourceBundle<Resource>(
                   state.loadingIds,
                   getStatusIdsFromData(action.payload.data)
                 )
-              : []
+              : [],
+            lastFetchOrder: getOrderFromIncomingResourceData(
+              action.payload.data,
+              entityName,
+              state.lastFetchOrder,
+              action.payload.order
+            )
           };
         }
         case FETCH_SUCCESS_IGNORE: {
@@ -360,7 +405,11 @@ function createAsyncResourceBundle<Resource>(
             ...state,
             data: !indexById
               ? action.payload.data
-              : applyNewData(state.data, action.payload.data, entityName),
+              : formatIncomingResourceData(
+                  state.data,
+                  action.payload.data,
+                  entityName
+                ),
             updatingIds: applyStatusIds(
               state.updatingIds,
               indexById ? action.payload.data.id : undefined
@@ -372,7 +421,11 @@ function createAsyncResourceBundle<Resource>(
           if (action.payload.data) {
             data = !indexById
               ? action.payload.data
-              : applyNewData(state.data, action.payload.data, entityName);
+              : formatIncomingResourceData(
+                  state.data,
+                  action.payload.data,
+                  entityName
+                );
           } else {
             data = state.data; // eslint-disable-line prefer-destructuring
           }
@@ -425,6 +478,7 @@ function createAsyncResourceBundle<Resource>(
       selectIsLoadingById,
       selectIsLoadingInitialDataById,
       selectById,
+      selectLastFetchOrder,
       selectAll
     }
   };
