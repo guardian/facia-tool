@@ -16,5 +16,5 @@ export const editionPriorities: { [index: string]: EditionPriority} = {
   trainingEdition: {
     description: 'Training Edition',
     address: 'training-edition'
-  },
+  }
 };
