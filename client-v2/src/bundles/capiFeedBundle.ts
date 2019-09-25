@@ -5,17 +5,18 @@ import { previewCapi, liveCapi } from 'services/frontsCapi';
 import { checkIsContent } from 'services/capiQuery';
 import { getPrefills } from 'services/editionsApi';
 import { Dispatch } from 'redux';
+import { State } from 'types/State';
+import { createSelectIsArticleStale } from 'shared/util/externalArticle';
 
-type FeedState = CapiArticle[];
+type FeedState = CapiArticle;
 
 const {
   actions: liveActions,
   reducer: capiLiveFeed,
   selectors: liveSelectors
 } = createAsyncResourceBundle<FeedState>('capiLiveFeed', {
-  indexById: false,
   selectLocalState: state => state.feed.capiLiveFeed,
-  initialData: []
+  indexById: true
 });
 
 const isNonCommercialArticle = (article: CapiArticle | undefined): boolean => {
@@ -39,9 +40,8 @@ const {
   reducer: capiPreviewFeed,
   selectors: previewSelectors
 } = createAsyncResourceBundle<FeedState>('capiPreviewFeed', {
-  indexById: false,
   selectLocalState: state => state.feed.capiPreviewFeed,
-  initialData: []
+  indexById: true
 });
 
 const fetchResourceOrResults = async (
@@ -58,7 +58,7 @@ const fetchResourceOrResults = async (
   return {
     results: checkIsContent(response) ? [response.content] : response.results,
     pagination: checkIsContent(response)
-      ? null
+      ? undefined
       : {
           totalPages: response.pages,
           currentPage: response.currentPage,
@@ -67,62 +67,59 @@ const fetchResourceOrResults = async (
   };
 };
 
-export const fetchLive = (
-  params: object,
-  isResource: boolean
-): ThunkResult<void> => async dispatch => {
-  dispatch(liveActions.fetchStart('live'));
-  let resultData;
-  try {
-    resultData = await fetchResourceOrResults(liveCapi, params, isResource);
-  } catch (e) {
-    return dispatch(liveActions.fetchError(e.message));
-  }
-
-  if (resultData) {
-    const nonCommercialResults = resultData.results.filter(
-      isNonCommercialArticle
-    );
-    dispatch(
-      liveActions.fetchSuccess(nonCommercialResults, resultData.pagination)
-    );
-  }
-};
-
-export const fetchPreview = (
-  params: object,
-  isResource: boolean
-): ThunkResult<void> => async dispatch => {
-  dispatch(previewActions.fetchStart('preview'));
+export const createFetch = (
+  actions: typeof liveActions,
+  selectIsArticleStale: ReturnType<typeof createSelectIsArticleStale>,
+  isPreview: boolean = false
+) => (params: object, isResource: boolean): ThunkResult<void> => async (
+  dispatch,
+  getState
+) => {
+  dispatch(actions.fetchStart());
   let resultData;
   try {
     resultData = await fetchResourceOrResults(
-      previewCapi,
+      isPreview ? previewCapi : liveCapi,
       params,
       isResource,
-      true
+      isPreview
     );
   } catch (e) {
-    dispatch(previewActions.fetchError(e.message));
+    dispatch(actions.fetchError(e.message));
   }
   if (resultData) {
-    const nonCommercialResults = resultData.results.filter(
-      isNonCommercialArticle
+    const nonCommercialResults = resultData.results.filter(article =>
+      isNonCommercialArticle(article)
+    );
+    const updatedResults = nonCommercialResults.filter(article =>
+      selectIsArticleStale(getState(), article.id, article.fields.lastModified)
     );
     dispatch(
-      previewActions.fetchSuccess(nonCommercialResults, resultData.pagination)
+      actions.fetchSuccess(updatedResults, {
+        pagination: resultData.pagination || undefined,
+        order: nonCommercialResults.map(_ => _.id)
+      })
     );
   }
 };
+
+export const fetchLive = createFetch(
+  liveActions,
+  createSelectIsArticleStale(liveSelectors.selectById)
+);
+export const fetchPreview = createFetch(
+  previewActions,
+  createSelectIsArticleStale(liveSelectors.selectById),
+  true
+);
 
 const {
   actions: prefillActions,
   reducer: prefillFeed,
   selectors: prefillSelectors
 } = createAsyncResourceBundle<FeedState>('prefillFeed', {
-  indexById: false,
   selectLocalState: state => state.feed.prefillFeed,
-  initialData: []
+  indexById: true
 });
 
 export const fetchPrefill = (
@@ -158,6 +155,14 @@ export const hidePrefills = () => (dispatch: Dispatch) => {
     payload: { isPrefillMode: false }
   });
 };
+
+export const selectArticleAcrossResources = (
+  state: State,
+  id: string
+): CapiArticle | undefined =>
+  liveSelectors.selectById(state, id) ||
+  previewSelectors.selectById(state, id) ||
+  prefillSelectors.selectById(state, id);
 
 export {
   liveActions,

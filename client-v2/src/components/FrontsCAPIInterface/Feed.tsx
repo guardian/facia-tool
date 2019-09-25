@@ -1,16 +1,32 @@
 import React from 'react';
 import { styled } from 'constants/theme';
 import FeedItem from './FeedItem';
-import { CapiArticle } from 'types/Capi';
-
-interface FeedProps {
-  articles?: CapiArticle[];
-  error: string | null;
-}
+import {
+  liveSelectors,
+  previewSelectors,
+  prefillSelectors
+} from 'bundles/capiFeedBundle';
+import { selectIsPrefillMode } from 'selectors/feedStateSelectors';
+import { State } from 'types/State';
+import { connect } from 'react-redux';
 
 interface ErrorDisplayProps {
-  error: string | null;
+  error?: string;
   children: React.ReactNode;
+}
+
+interface FeedContainerProps {
+  isPrefillMode: boolean;
+  liveArticleIds: string[];
+  previewArticleIds: string[];
+  prefillArticleIds: string[];
+  liveError: string | null;
+  previewError: string | null;
+  prefillError: string | null;
+}
+
+interface FeedComponentProps extends FeedContainerProps {
+  isLive: boolean;
 }
 
 const ErrorDisplay = ({ error, children }: ErrorDisplayProps) =>
@@ -20,16 +36,46 @@ const NoResults = styled.div`
   margin: 4px;
 `;
 
-const Feed = ({ articles = [], error }: FeedProps) => (
-  <ErrorDisplay error={error}>
-    {articles.length ? (
-      articles
-        .filter(result => result.webTitle)
-        .map(article => <FeedItem key={article.id} article={article} />)
-    ) : (
-      <NoResults>No results found</NoResults>
-    )}
-  </ErrorDisplay>
-);
+const Feed = ({
+  liveArticleIds: liveArticles,
+  previewArticleIds: previewArticles,
+  liveError,
+  previewError,
+  prefillArticleIds: prefillArticles,
+  prefillError,
+  isPrefillMode,
+  isLive
+}: FeedComponentProps) => {
+  const error = isPrefillMode
+    ? prefillError
+    : isLive
+    ? liveError
+    : previewError;
+  const articleIds = isPrefillMode
+    ? prefillArticles
+    : isLive
+    ? liveArticles
+    : previewArticles;
 
-export default Feed;
+  return (
+    <ErrorDisplay error={error || undefined}>
+      {articleIds.length ? (
+        articleIds.map(id => <FeedItem key={id} id={id} />)
+      ) : (
+        <NoResults>No results found</NoResults>
+      )}
+    </ErrorDisplay>
+  );
+};
+
+const mapStateToProps = (state: State) => ({
+  isPrefillMode: selectIsPrefillMode(state),
+  liveArticleIds: liveSelectors.selectLastFetchOrder(state),
+  previewArticleIds: previewSelectors.selectLastFetchOrder(state),
+  prefillArticleIds: prefillSelectors.selectLastFetchOrder(state),
+  liveError: liveSelectors.selectCurrentError(state),
+  previewError: previewSelectors.selectCurrentError(state),
+  prefillError: prefillSelectors.selectCurrentError(state)
+});
+
+export default connect(mapStateToProps)(Feed);
