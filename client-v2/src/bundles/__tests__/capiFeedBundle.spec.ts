@@ -23,11 +23,7 @@ const resources = [
     searchQuery: '/content/scheduled'
   }
 ];
-const createStoreAndFetchMock = (
-  pattern: string,
-  response: any,
-  status = 200
-) => {
+const createStoreAndFetchMock = (pattern: string, response: any) => {
   fetchMock.get(pattern, response, { overwriteRoutes: true });
   return configureStore();
 };
@@ -51,9 +47,9 @@ describe('capiFeedBundle', () => {
           },
           false
         ) as any);
-        expect(resource.selectors.selectAll(store.getState())).toEqual([
-          capiArticle
-        ]);
+        expect(resource.selectors.selectAll(store.getState())).toEqual({
+          'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina': capiArticle
+        });
       })
     );
   });
@@ -74,9 +70,9 @@ describe('capiFeedBundle', () => {
           },
           true
         ) as any);
-        expect(resource.selectors.selectAll(store.getState())).toEqual([
-          capiArticle
-        ]);
+        expect(resource.selectors.selectAll(store.getState())).toEqual({
+          'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina': capiArticle
+        });
       })
     );
   });
@@ -93,7 +89,7 @@ describe('capiFeedBundle', () => {
           },
           false
         ) as any);
-        expect(resource.selectors.selectAll(store.getState())).toEqual([]);
+        expect(resource.selectors.selectAll(store.getState())).toEqual({});
         expect(resource.selectors.selectCurrentError(store.getState())).toMatch(
           /400/
         );
@@ -113,7 +109,7 @@ describe('capiFeedBundle', () => {
           },
           false
         ) as any);
-        expect(resource.selectors.selectAll(store.getState())).toEqual([]);
+        expect(resource.selectors.selectAll(store.getState())).toEqual({});
         expect(resource.selectors.selectCurrentError(store.getState())).toMatch(
           /Error parsing a response/
         );
@@ -133,7 +129,7 @@ describe('capiFeedBundle', () => {
           },
           false
         ) as any);
-        expect(resource.selectors.selectAll(store.getState())).toEqual([]);
+        expect(resource.selectors.selectAll(store.getState())).toEqual({});
         expect(resource.selectors.selectCurrentError(store.getState())).toMatch(
           /CAPI is unwell/
         );

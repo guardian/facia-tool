@@ -20,7 +20,6 @@ import { getTodayDate } from 'util/getTodayDate';
 import { getIdFromURL } from 'util/CAPIUtils';
 import { Dispatch } from 'types/Store';
 import debounce from 'lodash/debounce';
-import { CapiArticle } from 'types/Capi';
 import Pagination from './FrontsCAPIInterface/Pagination';
 import { IPagination } from 'lib/createAsyncResourceBundle';
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
@@ -32,24 +31,18 @@ import ContainerHeading from 'shared/components/typography/ContainerHeading';
 import { ClearIcon } from 'shared/components/icons/Icons';
 import Button from 'shared/components/input/ButtonDefault';
 import { selectIsPrefillMode } from 'selectors/feedStateSelectors';
+import { feedArticlesPollInterval } from 'constants/polling';
 
 interface FeedsContainerProps {
   fetchLive: (params: object, isResource: boolean) => void;
   fetchPreview: (params: object, isResource: boolean) => void;
   hidePrefills: () => void;
   isPrefillMode: boolean;
-  liveArticles: CapiArticle[];
-  previewArticles: CapiArticle[];
-  prefillArticles: CapiArticle[];
+  livePagination: IPagination | null;
+  previewPagination: IPagination | null;
   liveLoading: boolean;
   previewLoading: boolean;
   prefillLoading: boolean;
-  liveError: string | null;
-  previewError: string | null;
-  prefillError: string | null;
-  livePagination: IPagination | null;
-  previewPagination: IPagination | null;
-  prefillPagination: IPagination | null;
 }
 
 interface FeedsContainerState {
@@ -361,26 +354,7 @@ class FeedsContainer extends React.Component<
   };
 
   public render() {
-    const {
-      isPrefillMode,
-      liveArticles,
-      previewArticles,
-      liveError,
-      previewError,
-      prefillArticles,
-      prefillError
-    } = this.props;
-    const error = isPrefillMode
-      ? prefillError
-      : this.isLive
-      ? liveError
-      : previewError;
-
-    const articles = isPrefillMode
-      ? prefillArticles
-      : this.isLive
-      ? liveArticles
-      : previewArticles;
+    const { isPrefillMode } = this.props;
 
     return (
       <FeedsContainerWrapper>
@@ -392,7 +366,7 @@ class FeedsContainer extends React.Component<
           }
         >
           <ResultsContainer>
-            <Feed error={error} articles={articles} />
+            <Feed isLive={this.isLive} />
           </ResultsContainer>
         </ScrollContainer>
       </FeedsContainerWrapper>
@@ -431,7 +405,10 @@ class FeedsContainer extends React.Component<
 
   private runSearchAndRestartPolling() {
     this.stopPolling();
-    this.interval = window.setInterval(() => this.runSearch(), 30000);
+    this.interval = window.setInterval(
+      () => this.runSearch(),
+      feedArticlesPollInterval
+    );
     this.runSearch();
   }
 
@@ -445,23 +422,13 @@ class FeedsContainer extends React.Component<
 }
 
 const mapStateToProps = (state: State) => ({
-  liveArticles: liveSelectors.selectAll(state),
-  previewArticles: previewSelectors.selectAll(state),
-  prefillArticles: prefillSelectors.selectAll(state),
-
+  isPrefillMode: selectIsPrefillMode(state),
   liveLoading: liveSelectors.selectIsLoading(state),
   previewLoading: previewSelectors.selectIsLoading(state),
   prefillLoading: prefillSelectors.selectIsLoading(state),
-
-  liveError: liveSelectors.selectCurrentError(state),
-  previewError: previewSelectors.selectCurrentError(state),
-  prefillError: prefillSelectors.selectCurrentError(state),
-
   livePagination: liveSelectors.selectPagination(state),
   previewPagination: previewSelectors.selectPagination(state),
-  prefillPagination: prefillSelectors.selectPagination(state),
-
-  isPrefillMode: selectIsPrefillMode(state)
+  prefillPagination: prefillSelectors.selectPagination(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

@@ -5,6 +5,7 @@ import { styled, theme as styleTheme, theme } from 'constants/theme';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
 import startCase from 'lodash/startCase';
 
+import { selectArticleAcrossResources } from 'bundles/capiFeedBundle';
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 import { getPillarColor, notLiveColour } from 'shared/util/getPillarColor';
 import { HoverActionsAreaOverlay } from 'shared/components/CollectionHoverItems';
@@ -33,6 +34,8 @@ import { liveBlogTones } from 'constants/fronts';
 import { hasMainVideo } from 'shared/util/externalArticle';
 import { VideoIcon } from 'shared/components/icons/Icons';
 import CircularIconContainer from 'shared/components/icons/CircularIconContainer';
+import RefreshPeriodically from '../util/RefreshPeriodically';
+import { collectionArticlesPollInterval } from 'constants/polling';
 
 const Container = styled.div`
   display: flex;
@@ -127,20 +130,32 @@ const VideoIconContainer = styled(CircularIconContainer)`
   right: 2px;
 `;
 
-interface FeedItemProps {
-  article: CapiArticle;
+interface ContainerProps {
+  id: string;
+}
+
+interface ComponentProps extends ContainerProps {
+  article?: CapiArticle;
   shouldObscureFeed: boolean;
   onAddToClipboard: (article: CapiArticle) => void;
 }
 
-class FeedItem extends React.Component<FeedItemProps> {
+class FeedItem extends React.Component<ComponentProps> {
   private dragNode: React.RefObject<HTMLDivElement>;
-  public constructor(props: FeedItemProps) {
+  public constructor(props: ComponentProps) {
     super(props);
     this.dragNode = React.createRef();
   }
   public render() {
-    const { article, onAddToClipboard = noop, shouldObscureFeed } = this.props;
+    const {
+      id,
+      article,
+      onAddToClipboard = noop,
+      shouldObscureFeed
+    } = this.props;
+    if (!article) {
+      return <p>Article with id {id} not found.</p>;
+    }
     return (
       <Container
         data-testid="feed-item"
@@ -150,7 +165,6 @@ class FeedItem extends React.Component<FeedItemProps> {
         <DraggingArticleContainer ref={this.dragNode}>
           <DraggingArticleComponent headline={article.webTitle} />
         </DraggingArticleContainer>
-
         <FeedItemContainer
           href={getPaths(article.id).live}
           onClick={e => e.preventDefault()}
@@ -173,22 +187,29 @@ class FeedItem extends React.Component<FeedItemProps> {
                 <Tone> / {startCase(article.frontsMeta.tone)}</Tone>
               )}
             </TagInfo>
-            {article.fields.scheduledPublicationDate && (
-              <ScheduledPublication>
-                {distanceInWordsStrict(
-                  new Date(article.fields.scheduledPublicationDate),
-                  Date.now()
-                )}
-              </ScheduledPublication>
-            )}
-            {article.webPublicationDate && (
-              <FirstPublished>
-                {distanceInWordsStrict(
-                  Date.now(),
-                  new Date(article.webPublicationDate)
-                )}
-              </FirstPublished>
-            )}
+            <RefreshPeriodically rateMs={collectionArticlesPollInterval}>
+              {() => (
+                <>
+                  {article.fields.scheduledPublicationDate && (
+                    <ScheduledPublication>
+                      {distanceInWordsStrict(
+                        new Date(article.fields.scheduledPublicationDate),
+                        Date.now()
+                      )}
+                    </ScheduledPublication>
+                  )}
+                  {article.webPublicationDate && (
+                    <FirstPublished>
+                      {distanceInWordsStrict(
+                        Date.now(),
+                        new Date(article.webPublicationDate)
+                      )}
+                    </FirstPublished>
+                  )}
+                </>
+              )}
+            </RefreshPeriodically>
+
             <ShortVerticalPinline />
           </MetaContainer>
           <Body>
@@ -241,11 +262,12 @@ class FeedItem extends React.Component<FeedItemProps> {
   };
 }
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: State, { id }: ContainerProps) => ({
   shouldObscureFeed: selectFeatureValue(
     selectSharedState(state),
     'obscure-feed'
-  )
+  ),
+  article: selectArticleAcrossResources(state, id)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => {

@@ -44,7 +44,11 @@ describe('createAsyncResourceBundle', () => {
       expect(actions.fetchSuccess({ data: 'exampleData' })).toEqual({
         entity: 'books',
         type: 'FETCH_SUCCESS',
-        payload: { data: { data: 'exampleData' }, pagination: null, time: 1337 }
+        payload: {
+          data: { data: 'exampleData' },
+          pagination: undefined,
+          time: 1337
+        }
       });
       expect(actions.fetchSuccessIgnore({ data: 'exampleData' })).toEqual({
         entity: 'books',
@@ -151,6 +155,22 @@ describe('createAsyncResourceBundle', () => {
         true
       );
     });
+    it('should provide a selector to select the current resource order', () => {
+      const bundle = createAsyncResourceBundle('books', {
+        indexById: true
+      });
+      const state = {
+        books: {
+          data: { '1': { id: '1' }, '2': { id: '2' }, '3': { id: '3' } },
+          lastFetchOrder: ['1', '2', '3']
+        }
+      };
+      expect(bundle.selectors.selectLastFetchOrder(state)).toEqual([
+        '1',
+        '2',
+        '3'
+      ]);
+    });
   });
 
   describe('Reducer', () => {
@@ -222,7 +242,56 @@ describe('createAsyncResourceBundle', () => {
             uuid2: { id: 'uuid2', author: 'Elizabeth Gaskell' }
           });
         });
-        it('should return null pagination object when no pagination data in response', () => {
+        it('should keep order information when merging arrays', () => {
+          const bundle = createAsyncResourceBundle('books', {
+            indexById: true
+          });
+          const newState = bundle.reducer(
+            { ...initialState },
+            bundle.actions.fetchSuccess([
+              { id: 'uuid', author: 'Mark Twain' },
+              { id: 'uuid2', author: 'Elizabeth Gaskell' }
+            ])
+          );
+          expect(newState.lastFetchOrder).toEqual(['uuid', 'uuid2']);
+        });
+        it('should use a custom order if provided', () => {
+          const bundle = createAsyncResourceBundle('books', {
+            indexById: true
+          });
+          const newState = bundle.reducer(
+            { ...initialState },
+            bundle.actions.fetchSuccess(
+              [
+                { id: 'uuid', author: 'Mark Twain' },
+                { id: 'uuid2', author: 'Elizabeth Gaskell' }
+              ],
+              { order: ['uuid2', 'uuid'] }
+            )
+          );
+          expect(newState.lastFetchOrder).toEqual(['uuid2', 'uuid']);
+        });
+        it('should not update the order reference if the order is the same by value comparison', () => {
+          const bundle = createAsyncResourceBundle('books', {
+            indexById: true
+          });
+          const firstState = bundle.reducer(
+            { ...initialState },
+            bundle.actions.fetchSuccess(
+              [{ id: 'uuid', author: 'Mark Twain' }],
+              { order: ['uuid2', 'uuid'] }
+            )
+          );
+          const secondState = bundle.reducer(
+            firstState,
+            bundle.actions.fetchSuccess(
+              [{ id: 'uuid', author: 'Mark Twain' }],
+              { order: ['uuid2', 'uuid'] }
+            )
+          );
+          expect(firstState.lastFetchOrder).toBe(secondState.lastFetchOrder);
+        });
+        it('should return undefined pagination object when no pagination data in response', () => {
           const newState = reducer(
             initialState,
             actions.fetchSuccess({ uuid: { id: 'uuid', author: 'Mark Twain' } })
@@ -234,7 +303,7 @@ describe('createAsyncResourceBundle', () => {
             initialState,
             actions.fetchSuccess(
               { uuid: { id: 'uuid', author: 'Mark Twain' } },
-              { pageSize: 20, currentPage: 1, totalPages: 20 }
+              { pagination: { pageSize: 20, currentPage: 1, totalPages: 20 } }
             )
           );
           expect(newState.pagination).toEqual({
@@ -242,6 +311,23 @@ describe('createAsyncResourceBundle', () => {
             currentPage: 1,
             totalPages: 20
           });
+        });
+        it('should not replace identical pagination data', () => {
+          const firstState = reducer(
+            initialState,
+            actions.fetchSuccess(
+              { uuid: { id: 'uuid', author: 'Mark Twain' } },
+              { pagination: { pageSize: 20, currentPage: 1, totalPages: 20 } }
+            )
+          );
+          const secondState = reducer(
+            firstState,
+            actions.fetchSuccess(
+              { uuid: { id: 'uuid', author: 'Mark Twain' } },
+              { pagination: { pageSize: 20, currentPage: 1, totalPages: 20 } }
+            )
+          );
+          expect(firstState.pagination).toEqual(secondState.pagination);
         });
       });
       describe('Success Ignore action handler', () => {

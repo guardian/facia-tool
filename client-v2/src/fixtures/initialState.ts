@@ -708,7 +708,7 @@ const state = {
   },
   focus: { focusState: undefined },
   editionsIssue: {
-    data: undefined,
+    data: null,
     pagination: null,
     lastError: null,
     error: null,
