@@ -1,41 +1,64 @@
+import set from 'lodash/fp/set';
 import { reducer } from '../reducer';
 import { pageViewDataReceivedAction } from '../actions';
 import { PageViewStory } from '../../../../shared/types/PageViewData';
 
+const data = {
+  articleId: 'articleId',
+  articlePath: 'uk/news/a-story',
+  totalHits: 2002,
+  data: [
+    {
+      dateTime: 1238984989,
+      count: 345
+    },
+    {
+      dateTime: 1238985490,
+      count: 895
+    }
+  ]
+};
+
+const state = {
+  frontId: {
+    frontId: 'frontId',
+    collections: {
+      collectionId: {
+        collectionId: 'collectionId',
+        stories: {
+          articleId: data
+        }
+      }
+    }
+  }
+};
+
 describe('Page view data reducer', () => {
-  it('when data is received, it adds it to the store', () => {
-    const data: PageViewStory[] = [
-      {
-        articleId: '123',
-        articlePath: 'uk/news/a-story',
-        totalHits: 2002,
-        data: [
-          {
-            dateTime: 1238984989,
-            count: 345
-          },
-          {
-            dateTime: 1238985490,
-            count: 895
-          }
-        ]
-      }
-    ];
-
-    const expectedState = [
-      {
-        frontId: 'frontId',
-        collections: [
-          {
-            collectionId: 'collectionId',
-            stories: data
-          }
-        ]
-      }
-    ];
-
-    const action = pageViewDataReceivedAction(data, 'frontId', 'collectionId');
+  it('adds data to the store when it is received', () => {
+    const action = pageViewDataReceivedAction(
+      [data],
+      'frontId',
+      'collectionId'
+    );
     const newState = reducer(undefined, action);
+    expect(newState).toEqual(state);
+  });
+  it('clears out previous data when `clearPreviousData` is true', () => {
+    const newData = set(['articleId'], 'articleId2', data);
+    const action = pageViewDataReceivedAction(
+      [newData],
+      'frontId',
+      'collectionId',
+      true
+    );
+    const expectedState = set(
+      ['frontId', 'collections', 'collectionId', 'stories'],
+      {
+        articleId2: newData
+      },
+      state
+    );
+    const newState = reducer(state, action);
     expect(newState).toEqual(expectedState);
   });
 });
