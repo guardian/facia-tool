@@ -90,14 +90,18 @@ const getArticleIdFromOphanData = (
 const pageViewDataReceivedAction = (
   data: PageViewStory[],
   frontId: string,
-  collectionId: string
+  collectionId: string,
+  // Clear out the previous data for this collection. Useful when polling
+  // to prevent an endless accumulation of page view data.
+  clearPreviousData = false
 ): PageViewDataReceived => {
   return {
     type: PAGE_VIEW_DATA_RECEIVED,
     payload: {
       data,
       frontId,
-      collectionId
+      collectionId,
+      clearPreviousData
     }
   };
 };
