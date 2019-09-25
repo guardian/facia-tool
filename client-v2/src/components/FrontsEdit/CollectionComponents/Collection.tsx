@@ -38,6 +38,7 @@ import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import { theme, styled } from 'constants/theme';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { fetchPrefill } from 'bundles/capiFeedBundle';
+import LoadingGif from 'images/icons/loading.gif';
 
 interface CollectionPropsBeforeState {
   id: string;
@@ -96,10 +97,26 @@ const PreviouslyCollectionInfo = styled.div`
   font-size: 14px;
 `;
 
+const LoadingImageBox = styled.div`
+  min-width: 50px;
+`;
+
 class Collection extends React.Component<CollectionProps> {
   public state = {
-    isPreviouslyOpen: false
+    isPreviouslyOpen: false,
+    isLaunching: false
   };
+
+  // added to prevent setState call on unmounted component
+  public isComponentMounted = false;
+
+  public componentDidMount() {
+    this.isComponentMounted = true;
+  }
+
+  public componentWillUnmount() {
+    this.isComponentMounted = false;
+  }
 
   public togglePreviouslyOpen = () => {
     const { isPreviouslyOpen } = this.state;
@@ -107,6 +124,15 @@ class Collection extends React.Component<CollectionProps> {
       this.props.fetchPreviousCollectionArticles(this.props.id);
     }
     this.setState({ isPreviouslyOpen: !isPreviouslyOpen });
+  };
+
+  public startPublish = (id: string, frontId: string) => {
+    this.setState({ isLaunching: true });
+    this.props.publishCollection(id, frontId).then(res => {
+      if (this.isComponentMounted) {
+        this.setState({ isLaunching: false });
+      }
+    });
   };
 
   public render() {
@@ -120,7 +146,6 @@ class Collection extends React.Component<CollectionProps> {
       browsingStage,
       hasUnpublishedChanges,
       canPublish = true,
-      publishCollection: publish,
       displayEditWarning,
       isCollectionLocked,
       isOpen,
@@ -133,7 +158,7 @@ class Collection extends React.Component<CollectionProps> {
       hasContent
     } = this.props;
 
-    const { isPreviouslyOpen } = this.state;
+    const { isPreviouslyOpen, isLaunching } = this.state;
 
     const isUneditable =
       isCollectionLocked || browsingStage !== collectionItemSets.draft;
@@ -192,15 +217,22 @@ class Collection extends React.Component<CollectionProps> {
                 <Button
                   size="l"
                   priority="primary"
-                  onClick={() => publish(id, frontId)}
+                  onClick={() => this.startPublish(id, frontId)}
                   tabIndex={-1}
+                  disabled={isLaunching}
                   title={
                     isEditFormOpen
                       ? 'You cannot launch this collection whilst the edit form is open.'
                       : undefined
                   }
                 >
-                  Launch
+                  {isLaunching ? (
+                    <LoadingImageBox>
+                      <img src={LoadingGif} />
+                    </LoadingImageBox>
+                  ) : (
+                    'Launch'
+                  )}
                 </Button>
               </EditModeVisibility>
             </Fragment>
