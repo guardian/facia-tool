@@ -47,7 +47,12 @@ const getPageViewData = (
       const data = await fetchPageViewData(frontId, urlPaths);
       const dataWithArticleIds = convertToStoriesData(data, articles);
       dispatch(
-        pageViewDataReceivedAction(dataWithArticleIds, frontId, collectionId)
+        pageViewDataReceivedAction(
+          dataWithArticleIds,
+          frontId,
+          collectionId,
+          true
+        )
       );
     } catch (e) {
       throw new Error(`API request to Ophan for page view data failed: ${e}`);
