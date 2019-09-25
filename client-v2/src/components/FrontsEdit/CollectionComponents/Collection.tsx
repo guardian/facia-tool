@@ -108,14 +108,14 @@ class Collection extends React.Component<CollectionProps> {
   };
 
   // added to prevent setState call on unmounted component
-  public isMounted = false;
+  public isComponentMounted = false;
 
   public componentDidMount() {
-    this.isMounted = true;
+    this.isComponentMounted = true;
   }
 
   public componentWillUnmount() {
-    this.isMounted = false;
+    this.isComponentMounted = false;
   }
 
   public togglePreviouslyOpen = () => {
@@ -129,7 +129,7 @@ class Collection extends React.Component<CollectionProps> {
   public startPublish = (id: string, frontId: string) => {
     this.setState({ isLaunching: true });
     this.props.publishCollection(id, frontId).then(res => {
-      if (this.isMounted) {
+      if (this.isComponentMounted) {
         this.setState({ isLaunching: false });
       }
     });
