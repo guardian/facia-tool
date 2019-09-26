@@ -89,32 +89,41 @@ const FormContainer = styled(ContentContainer.withComponent('form'))`
 `;
 
 const FormContent = styled.div`
-  flex: 1;
+  flex: 3;
   display: flex;
   flex-direction: ${(props: { size?: string }) =>
-    props.size === 'medium' ? 'column' : 'row'};
+    props.size !== 'wide' ? 'column' : 'row'};
 `;
 
 const RowContainer = styled.div`
   overflow: hidden;
 `;
 
+const TextOptionsContainer = styled(InputGroup)`
+  flex: 2;
+`;
+
 const ImageOptionsContainer = styled.div`
   display: flex;
-  flex-direction: ${(props: { size?: string }) =>
-    props.size === 'medium' ? 'row' : 'column'};
+  height: fit-content;
+  flex-wrap: wrap;
+  flex: 1;
+  flex-direction: column;
+  margin-top: ${(props: { size?: string }) =>
+    props.size !== 'wide' ? 0 : '10px'};
 `;
 
 const SlideshowRowContainer = styled(RowContainer)`
   flex: 1 1 auto;
+  overflow: visible;
   margin-left: ${(props: { size?: string }) =>
-    props.size === 'medium' ? 0 : '10px'};
+    props.size !== 'wide' ? 0 : '10px'};
 `;
 
 const ImageRowContainer = styled(RowContainer)`
   flex: 1 1 auto;
   margin-left: ${(props: { size?: string }) =>
-    props.size === 'medium' ? 0 : '10px'};
+    props.size !== 'wide' ? 0 : '10px'};
 `;
 
 const ButtonContainer = styled.div`
@@ -334,7 +343,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
           </CollectionEditedError>
         )}
         <FormContent size={this.props.size}>
-          <InputGroup>
+          <TextOptionsContainer>
             <ConditionalField
               name="customKicker"
               label="Kicker"
@@ -454,11 +463,13 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               placeholder=""
               originalValue={''}
             />
-          </InputGroup>
+          </TextOptionsContainer>
           <ImageOptionsContainer size={this.props.size}>
             <ImageRowContainer size={this.props.size}>
               <Row>
                 <ImageCol faded={imageHide || !!coverCardImageReplace}>
+                  {/* TODO: Use existing or create new component to style this text... */}
+                  <span>Trail image</span>
                   <ConditionalField
                     permittedFields={editableFields}
                     name={this.getImageFieldName()}
