@@ -1,37 +1,7 @@
 import set from 'lodash/fp/set';
+import { state, data } from './fixtures';
 import { reducer } from '../reducer';
 import { pageViewDataReceivedAction } from '../actions';
-import { PageViewStory } from '../../../../shared/types/PageViewData';
-
-const data = {
-  articleId: 'articleId',
-  articlePath: 'uk/news/a-story',
-  totalHits: 2002,
-  data: [
-    {
-      dateTime: 1238984989,
-      count: 345
-    },
-    {
-      dateTime: 1238985490,
-      count: 895
-    }
-  ]
-};
-
-const state = {
-  frontId: {
-    frontId: 'frontId',
-    collections: {
-      collectionId: {
-        collectionId: 'collectionId',
-        stories: {
-          articleId: data
-        }
-      }
-    }
-  }
-};
 
 describe('Page view data reducer', () => {
   it('adds data to the store when it is received', () => {
