@@ -175,6 +175,7 @@ class CollectionContext extends React.Component<
                     >
                       <CollectionItem
                         frontId={frontId}
+                        collectionId={id}
                         uuid={articleFragment.uuid}
                         parentId={group.uuid}
                         isUneditable={isUneditable}

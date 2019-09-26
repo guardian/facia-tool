@@ -3,7 +3,7 @@ import { PAGE_VIEW_DATA_RECEIVED } from './actions';
 import { Action } from 'types/Action';
 import { PageViewDataPerFront, PageViewStory } from 'shared/types/PageViewData';
 
-interface State {
+export interface State {
   [id: string]: PageViewDataPerFront;
 }
 
