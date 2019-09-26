@@ -13,11 +13,7 @@ import { createFragment } from 'shared/util/articleFragment';
 import { createSnap, createLatestSnap } from 'shared/util/snap';
 import guardianTagPage from 'shared/fixtures/guardianTagPage';
 import bbcSectionPage from 'shared/fixtures/bbcSectionPage';
-import initialStateForOpenFronts from 'fixtures/initialStateForOpenFronts';
 import { RefDrop } from 'util/collectionUtils';
-import configureStore from 'util/configureStore';
-import { selectPageViewData } from 'redux/modules/pageViewData/selectors';
-import { PageViewDataFromOphan } from 'shared/types/PageViewData';
 
 jest.mock('uuid/v4', () => () => 'articleFragment1');
 const middlewares = [thunk];
