@@ -1,7 +1,6 @@
 import configureMockStore from 'redux-mock-store';
 import fetchMock from 'fetch-mock';
 import thunk from 'redux-thunk';
-import set from 'lodash/fp/set';
 import {
   createArticleEntitiesFromDrop,
   articleFragmentsReceived
