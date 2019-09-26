@@ -16,36 +16,36 @@ describe('selectors', () => {
     it('should select page view data for an article', () => {
       const result = selectDataForArticle(
         state,
-        'frontId',
+        'articleId',
         'collectionId',
-        'articleId'
+        'frontId'
       );
       expect(result).toBe(data);
     });
     it('should handle missing article data', () => {
       const result = selectDataForArticle(
         state,
-        'frontId',
+        'invalidArticleId',
         'collectionId',
-        'invalidArticleId'
+        'frontId'
       );
       expect(result).toBe(undefined);
     });
     it('should handle missing collection data', () => {
       const result = selectDataForArticle(
         state,
-        'frontId',
+        'invalidArticleId',
         'invalidCollectionId',
-        'invalidArticleId'
+        'frontId'
       );
       expect(result).toBe(undefined);
     });
     it('should handle missing front data', () => {
       const result = selectDataForArticle(
         state,
-        'invalidFrontId',
+        'invalidArticleId',
         'invalidCollectionId',
-        'invalidArticleId'
+        'invalidFrontId'
       );
       expect(result).toBe(undefined);
     });
