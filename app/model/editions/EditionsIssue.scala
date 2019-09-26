@@ -7,7 +7,7 @@ import scalikejdbc.WrappedResultSet
 
 case class EditionsIssue(
     id: String,
-    displayName: String,
+    name: String,
     timezoneId: String,
     issueDate: LocalDate,
     createdOn: Long,
@@ -22,8 +22,8 @@ case class EditionsIssue(
 
   def toPublishedIssue(version: String): PublishedIssue = PublishedIssue(
     id,
-    id,
-    displayName,
+    name,
+    name,
     issueDate,
     version,
     fronts

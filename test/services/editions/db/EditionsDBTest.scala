@@ -64,7 +64,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       val id = insertSkeletonIssue(2019, 9, 30)
 
       val retrievedIssue = editionsDB.getIssue(id).value
-      retrievedIssue.displayName shouldBe "daily-edition"
+      retrievedIssue.name shouldBe "daily-edition"
       retrievedIssue.createdEmail shouldBe "billy.bragg@justice.example.com"
       retrievedIssue.createdOn shouldBe now.toInstant.toEpochMilli
       retrievedIssue.createdBy shouldBe "Billy Bragg"
@@ -123,7 +123,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       )
 
       val retrievedIssue = editionsDB.getIssue(id).value
-      retrievedIssue.displayName shouldBe "daily-edition"
+      retrievedIssue.name shouldBe "daily-edition"
       retrievedIssue.fronts.length shouldBe 2
 
       val newsFront = retrievedIssue.fronts.head
