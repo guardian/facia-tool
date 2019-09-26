@@ -15,9 +15,9 @@ const selectOpenCollectionsForFront = (
 
 const selectDataForArticle = (
   state: State,
-  frontId: string,
+  articleId: string,
   collectionId: string,
-  articleId: string
+  frontId: string
 ): PageViewStory | undefined =>
   oc(state).shared.pageViewData[frontId].collections[collectionId].stories[
     articleId
