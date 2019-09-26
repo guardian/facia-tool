@@ -220,6 +220,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
                 clearArticleFragmentSelection(uuid);
               }}
               onCancel={() => clearArticleFragmentSelection(uuid)}
+              size={size}
             />
             {getSublinks}
             {numSupportingArticles === 0
