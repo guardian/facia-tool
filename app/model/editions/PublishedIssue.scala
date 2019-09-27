@@ -50,8 +50,8 @@ case class PublishedFront(id: String, name: String, collections: List[PublishedC
 
 case class PublishedIssue(
   id: String, // TODO: Not sure we should be leaking our internal ID here...
-  name: String, // TODO: remove this once downstream is consuming 'edition'
-  edition: String,
+  name: Edition, // TODO: remove this once downstream is consuming 'edition'
+  edition: Edition,
   issueDate: LocalDate,
   version: String,
   fronts: List[PublishedFront]

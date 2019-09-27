@@ -16,7 +16,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
     val dateTimeMilli = dateTime.toInstant.toEpochMilli
     EditionsIssue(
       "test-edition",
-      "Test Edition",
+      Edition.DailyEdition,
       LondonZone.toString,
       date,
       dateTimeMilli,

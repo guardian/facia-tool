@@ -40,7 +40,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       ZoneId.of("Europe/London"),
       fronts.toList
     )
-    editionsDB.insertIssue("daily-edition",
+    editionsDB.insertIssue(Edition.DailyEdition,
       skeleton,
       user,
       now
@@ -64,7 +64,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       val id = insertSkeletonIssue(2019, 9, 30)
 
       val retrievedIssue = editionsDB.getIssue(id).value
-      retrievedIssue.name shouldBe "daily-edition"
+      retrievedIssue.edition shouldBe Edition.DailyEdition
       retrievedIssue.createdEmail shouldBe "billy.bragg@justice.example.com"
       retrievedIssue.createdOn shouldBe now.toInstant.toEpochMilli
       retrievedIssue.createdBy shouldBe "Billy Bragg"
@@ -81,14 +81,14 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       insertSkeletonIssue(2019, 9, 30)
       insertSkeletonIssue(2019, 10, 10)
 
-      val allIssues = editionsDB.listIssues("daily-edition", LocalDate.of(2019, 9, 28), LocalDate.of(2019, 10, 10))
+      val allIssues = editionsDB.listIssues(Edition.DailyEdition, LocalDate.of(2019, 9, 28), LocalDate.of(2019, 10, 10))
       allIssues.length shouldBe 4
       allIssues.head.createdEmail shouldBe "billy.bragg@justice.example.com"
 
-      val someIssues = editionsDB.listIssues("daily-edition", LocalDate.of(2019, 9, 28), LocalDate.of(2019, 10, 3))
+      val someIssues = editionsDB.listIssues(Edition.DailyEdition, LocalDate.of(2019, 9, 28), LocalDate.of(2019, 10, 3))
       someIssues.length shouldBe 3
 
-      val singleIssue = editionsDB.listIssues("daily-edition", LocalDate.of(2019, 9, 29), LocalDate.of(2019, 9, 29))
+      val singleIssue = editionsDB.listIssues(Edition.DailyEdition, LocalDate.of(2019, 9, 29), LocalDate.of(2019, 9, 29))
       singleIssue.length shouldBe 1
       singleIssue.head.issueDate.getDayOfMonth shouldBe 29
     }
@@ -123,7 +123,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       )
 
       val retrievedIssue = editionsDB.getIssue(id).value
-      retrievedIssue.name shouldBe "daily-edition"
+      retrievedIssue.edition shouldBe Edition.DailyEdition
       retrievedIssue.fronts.length shouldBe 2
 
       val newsFront = retrievedIssue.fronts.head

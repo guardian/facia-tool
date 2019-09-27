@@ -3,7 +3,7 @@ package model.editions
 import java.time.temporal.ChronoField
 import java.time.{LocalDate, ZoneId}
 
-import enumeratum.EnumEntry.Uncapitalised
+import enumeratum.EnumEntry.{Hyphencase, Uncapitalised}
 import enumeratum.{EnumEntry, PlayEnum}
 import model.editions.PathType.{PrintSent, Search}
 import model.editions.templates.{DailyEdition, AmericanEdition, AustralianEdition, TrainingEdition}
@@ -11,15 +11,14 @@ import org.postgresql.util.PGobject
 import play.api.libs.json.Json
 
 object EditionsTemplates {
-  val templates: Map[String, EditionTemplate] = Map(
-    "daily-edition" -> DailyEdition.template,
-    "american-edition" -> AmericanEdition.template,
-    "australian-edition" -> AustralianEdition.template,
-    "training-edition" -> TrainingEdition.template
+  val templates: Map[Edition, EditionTemplate] = Map(
+    Edition.DailyEdition -> DailyEdition.template,
+    Edition.AmericanEdition -> AmericanEdition.template,
+    Edition.AustralianEdition -> AustralianEdition.template,
+    Edition.TrainingEdition -> TrainingEdition.template
   )
 
-  val getAvailableEditions: List[String] = templates.keys.toList
-
+  val getAvailableEditions: List[Edition] = templates.keys.toList
 }
 
 case object WeekDay extends Enumeration(1) {
@@ -51,6 +50,18 @@ object Swatch extends PlayEnum[Swatch] {
 
   override def values = findValues
 }
+
+sealed abstract class Edition extends EnumEntry with Hyphencase
+
+object Edition extends PlayEnum[Edition] {
+  case object DailyEdition extends Edition
+  case object AmericanEdition extends Edition
+  case object AustralianEdition extends Edition
+  case object TrainingEdition extends Edition
+
+  override def values = findValues
+}
+
 
 case class FrontPresentation(swatch: Swatch) {
   implicit def frontPresentationFormat = Json.format[FrontPresentation]
