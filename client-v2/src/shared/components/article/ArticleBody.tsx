@@ -137,6 +137,7 @@ interface ArticleBodyProps {
   featureFlagPageViewData?: boolean;
   canShowPageViewData: boolean;
   frontId: string;
+  collectionId?: string;
 }
 
 const articleBodyDefault = React.memo(
@@ -179,6 +180,7 @@ const articleBodyDefault = React.memo(
     hasMainVideo,
     showMainVideo,
     frontId,
+    collectionId,
     newspaperPageNumber
   }: ArticleBodyProps) => {
     const displayByline = size === 'default' && showByline && byline;
@@ -277,9 +279,13 @@ const articleBodyDefault = React.memo(
           </CollectionItemHeadingContainer>
         </CollectionItemContent>
         <ImageAndGraphWrapper size={size}>
-          {featureFlagPageViewData && canShowPageViewData && (
+          {featureFlagPageViewData && canShowPageViewData && collectionId && (
             <PageViewDataWrapper data-testid="page-view-graph">
-              <ArticleGraph articleId={uuid} frontId={frontId} />
+              <ArticleGraph
+                articleId={uuid}
+                collectionId={collectionId}
+                frontId={frontId}
+              />
             </PageViewDataWrapper>
           )}
 

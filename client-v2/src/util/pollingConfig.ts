@@ -7,7 +7,7 @@ import {
   collectionArticlesPollInterval
 } from 'constants/polling';
 import { selectPriority } from 'selectors/pathSelectors';
-import { getPageViewData } from '../redux/modules/pageViewData/actions';
+import { getPageViewDataForCollection } from '../redux/modules/pageViewData/actions';
 import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
 import {
   selectSharedState,
@@ -75,7 +75,7 @@ const createRefreshOphanData = (store: Store) => () => {
     front.collections.forEach(collection => {
       if (collection.articleIds.length > 0) {
         (store.dispatch as Dispatch)(
-          getPageViewData(front.frontId, collection.id, 'draft')
+          getPageViewDataForCollection(front.frontId, collection.id, 'draft')
         );
       }
     });

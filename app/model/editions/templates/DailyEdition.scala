@@ -211,7 +211,7 @@ object DailyEdition {
     collection("Fashion 2").special,
     collection("Fashion 3").special,
   )
-  .hide
+  .special
   .swatch(Lifestyle)
 
   def FrontLifeWeekend = front(

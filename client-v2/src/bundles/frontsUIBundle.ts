@@ -356,6 +356,36 @@ const createSelectCurrentlyOpenCollectionsByFront = () => {
   );
 };
 
+/**
+ * Select the parent front of an article fragment.
+ * For performance reasons, only considers open fronts and collections.
+ */
+const selectOpenParentFrontOfArticleFragment = (
+  state: GlobalState,
+  articleFragmentId: string
+): [string, string] | [] => {
+  const openFrontsCollectionsAndArticles = selectOpenFrontsCollectionsAndArticles(
+    state
+  );
+  let frontId;
+  let collectionId;
+
+  // I've used an imperative loop for efficiency's sake here, as it lets us break.
+  for (const front of openFrontsCollectionsAndArticles) {
+    for (const collection of front.collections) {
+      if (collection.articleIds.includes(articleFragmentId)) {
+        frontId = front.frontId;
+        collectionId = collection.id;
+        break;
+      }
+    }
+    if (frontId && collectionId) {
+      break;
+    }
+  }
+  return frontId && collectionId ? [frontId, collectionId] : [];
+};
+
 const selectOpenArticleFragmentIds = (state: GlobalState): string[] => {
   const frontsCollectionsAndArticles = selectOpenFrontsCollectionsAndArticles(
     state
@@ -801,6 +831,7 @@ export {
   selectIsCurrentFrontsMenuOpen,
   selectIsArticleFragmentFormOpen,
   selectOpenArticleFragmentForms,
+  selectOpenParentFrontOfArticleFragment,
   createSelectEditorFrontsByPriority,
   createSelectFrontIdWithOpenAndStarredStatesByPriority,
   selectEditorFrontIds,

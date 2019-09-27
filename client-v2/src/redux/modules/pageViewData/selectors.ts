@@ -1,21 +1,8 @@
-import { createSelector } from 'reselect';
+import { oc } from 'ts-optchain';
 import { State } from '../../../types/State';
-import {
-  PageViewDataPerFront,
-  PageViewDataPerCollection,
-  PageViewArticlesOnFront
-} from 'shared/types/PageViewData';
+import { PageViewStory } from 'shared/types/PageViewData';
 
-const selectArticleId = (state: State, articleId: string, frontId: string) => {
-  return articleId;
-};
-
-const selectFrontId = (state: State, articleId: string, frontId: string) => {
-  return frontId;
-};
-
-const selectPageViewData = (state: State): PageViewDataPerFront[] =>
-  state.shared.pageViewData;
+const selectPageViewData = (state: State) => state.shared.pageViewData;
 
 const selectOpenCollectionsForFront = (
   allCollectionsInAFront: string[],
@@ -26,37 +13,18 @@ const selectOpenCollectionsForFront = (
   );
 };
 
-const createSelectDataForArticle = () =>
-  createSelector(
-    [selectPageViewData, selectArticleId, selectFrontId],
-    (pageViewData, articleId, frontId) => {
-      const dataForFront: PageViewDataPerFront | undefined = pageViewData.find(
-        front => front.frontId === frontId
-      );
-
-      const allArticlesOnFront =
-        dataForFront &&
-        dataForFront.collections.reduce(
-          (acc: PageViewArticlesOnFront, curr: PageViewDataPerCollection) => {
-            return {
-              frontId,
-              stories: acc.stories.concat(curr.stories)
-            } as PageViewArticlesOnFront;
-          },
-          { frontId, stories: [] }
-        );
-
-      return (
-        allArticlesOnFront &&
-        allArticlesOnFront.stories.find(article => {
-          return article.articleId === articleId;
-        })
-      );
-    }
-  );
+const selectDataForArticle = (
+  state: State,
+  articleId: string,
+  collectionId: string,
+  frontId: string
+): PageViewStory | undefined =>
+  oc(state).shared.pageViewData[frontId].collections[collectionId].stories[
+    articleId
+  ]();
 
 export {
   selectPageViewData,
   selectOpenCollectionsForFront,
-  createSelectDataForArticle
+  selectDataForArticle
 };

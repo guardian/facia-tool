@@ -39,6 +39,8 @@ import { MappableDropType } from 'util/collectionUtils';
 import { selectWillCollectionHitCollectionCap } from 'selectors/collectionSelectors';
 import { batchActions } from 'redux-batched-actions';
 import noop from 'lodash/noop';
+import { selectOpenParentFrontOfArticleFragment } from 'bundles/frontsUIBundle';
+import { getPageViewData } from 'redux/modules/pageViewData';
 
 type InsertActionCreator = (
   id: string,
@@ -52,7 +54,7 @@ type InsertThunkActionCreator = (
   id: string,
   index: number,
   articleFragmentId: string,
-  removeAction: Action | null
+  removeAction?: Action
 ) => ThunkResult<void>;
 
 // Creates a thunk action creator from a plain action creator that also allows
@@ -69,7 +71,7 @@ const createInsertArticleFragmentThunk = (action: InsertActionCreator) => (
   id: string,
   index: number,
   articleFragmentId: string,
-  removeAction: Action | null
+  removeAction?: Action
 ) => (dispatch: Dispatch) => {
   if (removeAction) {
     dispatch(removeAction);
@@ -99,7 +101,7 @@ const maybeInsertGroupArticleFragment = (
   id: string,
   index: number,
   articleFragmentId: string,
-  removeAction: Action | null
+  removeAction?: Action
 ) => {
   return (dispatch: Dispatch, getState: () => State) => {
     // require a modal!
@@ -235,40 +237,46 @@ const insertArticleFragmentWithCreate = (
   persistTo: 'collection' | 'clipboard',
   // allow the factory to be injected for testing
   articleFragmentFactory = createArticleEntitiesFromDrop
-): ThunkResult<void> => {
-  return (dispatch: Dispatch, getState) => {
-    const insertActionCreator = getInsertionActionCreatorFromType(
-      to.type,
-      persistTo
-    );
-    if (!insertActionCreator) {
-      return;
+): ThunkResult<void> => async (dispatch: Dispatch, getState) => {
+  const insertActionCreator = getInsertionActionCreatorFromType(
+    to.type,
+    persistTo
+  );
+  if (!insertActionCreator) {
+    return;
+  }
+  const sharedState = selectSharedState(getState());
+  const toWithRespectToState = getToGroupIndicesWithRespectToState(
+    to,
+    sharedState,
+    false
+  );
+  if (toWithRespectToState) {
+    try {
+      const fragment = await dispatch(articleFragmentFactory(drop));
+      if (!fragment) {
+        return;
+      }
+      dispatch(
+        insertActionCreator(
+          toWithRespectToState.id,
+          toWithRespectToState.index,
+          fragment.uuid
+        )
+      );
+
+      // Fetch ophan data
+      const [frontId, collectionId] = selectOpenParentFrontOfArticleFragment(
+        getState(),
+        fragment.uuid
+      );
+      if (frontId && collectionId) {
+        await dispatch(getPageViewData(frontId, collectionId, [fragment.uuid]));
+      }
+    } catch (e) {
+      // Insert failed -- @todo handle error
     }
-    const sharedState = selectSharedState(getState());
-    const toWithRespectToState = getToGroupIndicesWithRespectToState(
-      to,
-      sharedState,
-      false
-    );
-    if (toWithRespectToState) {
-      return dispatch(articleFragmentFactory(drop))
-        .then(fragment => {
-          if (fragment) {
-            dispatch(
-              insertActionCreator(
-                toWithRespectToState.id,
-                toWithRespectToState.index,
-                fragment.uuid,
-                null
-              )
-            );
-          }
-        })
-        .catch(() => {
-          // @todo: implement once error handling is done
-        });
-    }
-  };
+  }
 };
 
 const removeArticleFragment = (
@@ -359,7 +367,7 @@ const moveArticleFragment = (
             parent.uuid,
             fromWithRespectToState && removeActionCreator
               ? removeActionCreator(fromWithRespectToState.id, fragment.uuid)
-              : null
+              : undefined
           )
         );
       }
