@@ -242,11 +242,6 @@ interface RecordUnpublishedChanges {
   payload: { [id: string]: boolean };
 }
 
-interface PublishCollectionSuccess {
-  type: 'PUBLISH_COLLECTION_SUCCESS';
-  payload: { collectionId: string };
-}
-
 interface UpdateClipboardContent {
   type: 'UPDATE_CLIPBOARD_CONTENT';
   payload: string[];
@@ -323,7 +318,6 @@ type Action =
   | FrontsUpdateLastPressedAction
   | SharedActions
   | RecordUnpublishedChanges
-  | PublishCollectionSuccess
   | InsertGroupArticleFragment
   | InsertSupportingArticleFragment
   | InsertClipboardArticleFragment
@@ -381,7 +375,6 @@ export {
   FrontsUpdateLastPressedAction,
   SharedActions,
   RecordUnpublishedChanges,
-  PublishCollectionSuccess,
   InsertGroupArticleFragment,
   InsertSupportingArticleFragment,
   InsertClipboardArticleFragment,
