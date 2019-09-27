@@ -464,33 +464,43 @@ function publishCollection(
         );
 
         dispatch(getCollections([collectionId]));
+        dispatch(pollForCollectionPublished(collectionId, frontId));
 
-        return new Promise(resolve => setTimeout(resolve, 10000))
-          .then(() => {
-            const [params] = selectCollectionParams(getState(), [collectionId]);
-            return Promise.all([
-              getCollectionApi(params),
-              fetchLastPressedApi(frontId)
-            ]);
-          })
-          .then(([collectionResponse, lastPressed]) => {
-            const lastPressedInMilliseconds = new Date(lastPressed).getTime();
-            dispatch(
-              batchActions([
-                recordStaleFronts(
-                  frontId,
-                  isFrontStale(
-                    collectionResponse.collection.lastUpdated,
-                    lastPressedInMilliseconds
-                  )
-                ),
-                fetchLastPressedSuccess(frontId, lastPressed)
-              ])
-            );
-          });
+        return;
       })
       .catch(() => {
         // @todo: implement once error handling is done
+      });
+  };
+}
+
+function pollForCollectionPublished(
+  collectionId: string,
+  frontId: string
+): ThunkResult<Promise<void>> {
+  return (dispatch, getState) => {
+    return new Promise(resolve => setTimeout(resolve, 10000))
+      .then(() => {
+        const [params] = selectCollectionParams(getState(), [collectionId]);
+        return Promise.all([
+          getCollectionApi(params),
+          fetchLastPressedApi(frontId)
+        ]);
+      })
+      .then(([collectionResponse, lastPressed]) => {
+        const lastPressedInMilliseconds = new Date(lastPressed).getTime();
+        dispatch(
+          batchActions([
+            recordStaleFronts(
+              frontId,
+              isFrontStale(
+                collectionResponse.collection.lastUpdated,
+                lastPressedInMilliseconds
+              )
+            ),
+            fetchLastPressedSuccess(frontId, lastPressed)
+          ])
+        );
       });
   };
 }
