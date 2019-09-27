@@ -18,15 +18,6 @@ function fetchLastPressedSuccess(frontId: string, datePressed: string): Action {
   };
 }
 
-function publishCollectionSuccess(collectionId: string): Action {
-  return {
-    type: 'PUBLISH_COLLECTION_SUCCESS',
-    payload: {
-      collectionId
-    }
-  };
-}
-
 function recordStaleFronts(frontId: string, frontIsStale: boolean): Action {
   return {
     type: 'RECORD_STALE_FRONTS',
@@ -66,7 +57,6 @@ export {
   fetchLastPressed,
   fetchLastPressedSuccess,
   recordVisibleArticles,
-  publishCollectionSuccess,
   recordStaleFronts
 };
 
