@@ -156,7 +156,7 @@ class Fronts extends React.Component<FrontProps, FrontState> {
         onScroll={this.handleScroll}
         ref={ref => (this.collectionContainerElement = ref)}
       >
-        <WithDimensions element={this.collectionContainerElement}>
+        <WithDimensions>
           {({ width }) => (
             <Root id={this.props.id} data-testid={this.props.id}>
               {front.collections.map(collectionId => (
