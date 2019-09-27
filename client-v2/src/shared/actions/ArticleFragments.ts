@@ -151,11 +151,11 @@ const createArticleEntitiesFromDrop = (
       maybeArticleFragment,
       maybeExternalArticle
     ] = await getArticleEntitiesFromDrop(drop);
-    if (maybeArticleFragment) {
-      dispatch(articleFragmentsReceived([maybeArticleFragment]));
-    }
     if (maybeExternalArticle) {
       dispatch(externalArticleActions.fetchSuccess(maybeExternalArticle));
+    }
+    if (maybeArticleFragment) {
+      dispatch(articleFragmentsReceived([maybeArticleFragment]));
     }
     return maybeArticleFragment;
   };

@@ -23,12 +23,16 @@ interface PageViewStory {
 
 interface PageViewDataPerFront {
   frontId: string;
-  collections: PageViewDataPerCollection[];
+  collections: {
+    [id: string]: PageViewDataPerCollection;
+  };
 }
 
 interface PageViewDataPerCollection {
   collectionId: string;
-  stories: PageViewStory[];
+  stories: {
+    [id: string]: PageViewStory;
+  };
 }
 
 interface PageViewArticlesOnFront {

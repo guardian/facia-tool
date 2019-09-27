@@ -166,6 +166,7 @@ it('should show the page view data graph if 3 conditions are true: canShowPageVi
       <ThemeProvider theme={theme}>
         <ArticleComponent
           frontId={'uk'}
+          collectionId={'collectionId'}
           children={<React.Fragment />}
           article={derivedArticle}
           id="ea1"
@@ -184,6 +185,7 @@ it('should NOT show the page view data graph if any of these conditions are fals
       <ThemeProvider theme={theme}>
         <ArticleComponent
           frontId={'uk'}
+          collectionId={'collectionId'}
           children={<React.Fragment />}
           article={undefined}
           id="ea1"

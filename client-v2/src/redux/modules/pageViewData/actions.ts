@@ -25,7 +25,7 @@ export const PAGE_VIEW_DATA_REQUESTED = 'PAGE_VIEW_DATA_REQUESTED';
 const selectArticlesInCollection = createSelectArticlesInCollection();
 const selectArticleFromArticleFragment = createSelectArticleFromArticleFragment();
 
-const getPageViewData = (
+const getPageViewDataForCollection = (
   frontId: string,
   collectionId: string,
   collectionSet: CollectionItemSets
@@ -38,21 +38,30 @@ const getPageViewData = (
         collectionId,
         collectionSet
       });
-      const articles = articleIds
-        .map(_ => selectArticleFromArticleFragment(state, _))
-        .filter(_ => _) as DerivedArticle[];
-      const urlPaths: string[] = articles
-        .map(article => article.urlPath)
-        .filter(_ => _) as string[];
-      const data = await fetchPageViewData(frontId, urlPaths);
-      const dataWithArticleIds = convertToStoriesData(data, articles);
-      dispatch(
-        pageViewDataReceivedAction(dataWithArticleIds, frontId, collectionId)
-      );
+      dispatch(getPageViewData(frontId, collectionId, articleIds));
     } catch (e) {
       throw new Error(`API request to Ophan for page view data failed: ${e}`);
     }
   };
+};
+
+const getPageViewData = (
+  frontId: string,
+  collectionId: string,
+  articleIds: string[]
+): ThunkResult<void> => async (dispatch, getState) => {
+  const state = selectSharedState(getState());
+  const articles = articleIds
+    .map(_ => selectArticleFromArticleFragment(state, _))
+    .filter(_ => _) as DerivedArticle[];
+  const urlPaths: string[] = articles
+    .map(article => article.urlPath)
+    .filter(_ => _) as string[];
+  const data = await fetchPageViewData(frontId, urlPaths);
+  const dataWithArticleIds = convertToStoriesData(data, articles);
+  dispatch(
+    pageViewDataReceivedAction(dataWithArticleIds, frontId, collectionId)
+  );
 };
 
 const convertToStoriesData = (
@@ -90,14 +99,18 @@ const getArticleIdFromOphanData = (
 const pageViewDataReceivedAction = (
   data: PageViewStory[],
   frontId: string,
-  collectionId: string
+  collectionId: string,
+  // Clear out the previous data for this collection. Useful when polling
+  // to prevent an endless accumulation of page view data.
+  clearPreviousData = false
 ): PageViewDataReceived => {
   return {
     type: PAGE_VIEW_DATA_RECEIVED,
     payload: {
       data,
       frontId,
-      collectionId
+      collectionId,
+      clearPreviousData
     }
   };
 };
@@ -149,4 +162,9 @@ const fetchPageViewData = async (
   return ([] as PageViewDataFromOphan[]).concat(...parsedResponse);
 };
 
-export { fetchPageViewData, getPageViewData, pageViewDataReceivedAction };
+export {
+  fetchPageViewData,
+  getPageViewData,
+  getPageViewDataForCollection,
+  pageViewDataReceivedAction
+};
