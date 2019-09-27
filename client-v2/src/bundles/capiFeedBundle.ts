@@ -100,6 +100,8 @@ export const createFetch = (
         order: nonCommercialResults.map(_ => _.id)
       })
     );
+  } else {
+    dispatch(actions.fetchSuccessIgnore([]));
   }
 };
 

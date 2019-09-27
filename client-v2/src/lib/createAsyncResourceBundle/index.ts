@@ -82,6 +82,7 @@ type Actions<Resource> =
   | UpdateErrorAction;
 
 const defaultArray = [] as string[];
+const globalLoadingIndicator = '@@ALL';
 
 const getStatusIdsFromData = (
   data: BaseResource | BaseResource[] | any
@@ -93,14 +94,14 @@ const getStatusIdsFromData = (
 const applyStatusIds = (
   currentIds: string[],
   incomingIds?: string | string[]
-) => currentIds.concat(incomingIds || '@@ALL');
+) => currentIds.concat(incomingIds || globalLoadingIndicator);
 
 const removeStatusIds = (
   currentIds: string[],
   incomingIds: string[] | string = ''
 ): string[] =>
   incomingIds instanceof Array
-    ? without(currentIds, ...incomingIds)
+    ? without(currentIds, ...incomingIds, globalLoadingIndicator)
     : without<string>(currentIds, incomingIds);
 
 function formatIncomingResourceData<Resource extends BaseResource>(
@@ -484,5 +485,5 @@ function createAsyncResourceBundle<Resource>(
   };
 }
 
-export { Actions, State, IPagination };
+export { Actions, State, IPagination, globalLoadingIndicator };
 export default createAsyncResourceBundle;
