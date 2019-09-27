@@ -39,7 +39,6 @@ import {
 import { groupsReceived } from 'shared/actions/Groups';
 import {
   recordVisibleArticles,
-  publishCollectionSuccess,
   recordStaleFronts,
   fetchLastPressedSuccess
 } from 'actions/Fronts';
@@ -443,33 +442,36 @@ function publishCollection(
   events.collectionPublished(frontId, collectionId);
 
   return (dispatch: Dispatch, getState: () => State) => {
-    const draftVisibleArticles = selectVisibleArticles(getState(), {
-      collectionId,
-      stage: frontStages.draft
-    });
-
     return publishCollectionApi(collectionId)
       .then(() => {
-        dispatch(
-          batchActions([
-            publishCollectionSuccess(collectionId),
-            recordUnpublishedChanges(collectionId, false),
+        const batchedActions = [
+          recordUnpublishedChanges(collectionId, false),
+          editorCloseFormsForCollection(collectionId, frontId)
+        ];
+
+        const draftVisibleArticles = selectVisibleArticles(getState(), {
+          collectionId,
+          stage: frontStages.draft
+        });
+        // some collections don't have visible articles (the property which shows where articles cut off on mobile/desktop) eg, those with a 'fast' layout
+        if (draftVisibleArticles) {
+          batchedActions.push(
             recordVisibleArticles(
               collectionId,
               draftVisibleArticles,
               frontStages.live
-            ),
-            editorCloseFormsForCollection(collectionId, frontId)
-          ])
-        );
+            )
+          );
+        }
 
+        dispatch(batchActions(batchedActions));
         dispatch(getCollections([collectionId]));
         dispatch(pollForCollectionPublished(collectionId, frontId));
 
         return;
       })
-      .catch(() => {
-        // @todo: implement once error handling is done
+      .catch(e => {
+        console.error('Error during publishing collection:', e);
       });
   };
 }
