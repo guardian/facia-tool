@@ -14,12 +14,7 @@ import Button from 'shared/components/input/ButtonDefault';
 import { frontStages } from 'constants/fronts';
 import { FrontConfig, EditionsFrontMetadata } from 'types/FaciaApi';
 import { State } from 'types/State';
-import { AlsoOnDetail } from 'types/Collection';
-import {
-  selectFront,
-  createSelectAlsoOnFronts
-} from 'selectors/frontsSelectors';
-import Front from './Front';
+import { selectFront } from 'selectors/frontsSelectors';
 import SectionHeader from '../layout/SectionHeader';
 import SectionContent from '../layout/SectionContent';
 import {
@@ -33,6 +28,7 @@ import { PreviewEyeIcon, ClearIcon } from 'shared/components/icons/Icons';
 import { createFrontId } from 'util/editUtils';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { setFrontHiddenState, updateFrontMetadata } from 'actions/Editions';
+import FrontsContainer from './FrontsContainer';
 
 const FrontHeader = styled(SectionHeader)`
   display: flex;
@@ -115,7 +111,6 @@ interface FrontsContainerProps {
 
 type FrontsComponentProps = FrontsContainerProps & {
   selectedFront: FrontConfig;
-  alsoOn: { [id: string]: AlsoOnDetail };
   isOverviewOpen: boolean;
   frontsActions: {
     fetchLastPressed: (frontId: string) => void;
@@ -252,10 +247,8 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
           </FrontHeader>
           <FrontSectionContent direction="column">
             {this.props.selectedFront && (
-              <Front
+              <FrontsContainer
                 id={this.props.frontId}
-                alsoOn={this.props.alsoOn}
-                collectionIds={this.props.selectedFront.collections}
                 browsingStage={this.state.collectionSet}
               />
             )}
@@ -317,10 +310,8 @@ class Fronts extends React.Component<FrontsComponentProps, ComponentState> {
 }
 
 const createMapStateToProps = () => {
-  const selectAlsoOnFronts = createSelectAlsoOnFronts();
   return (state: State, { frontId }: FrontsContainerProps) => ({
     selectedFront: selectFront(state, { frontId }),
-    alsoOn: selectAlsoOnFronts(state, { frontId }),
     isOverviewOpen: selectIsFrontOverviewOpen(state, frontId)
   });
 };
