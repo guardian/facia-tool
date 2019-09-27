@@ -34,7 +34,8 @@ import { State as GlobalSharedState } from 'shared/types/State';
 import { events } from 'services/GA';
 import {
   selectFronts,
-  selectFrontsWithPriority
+  selectFrontsWithPriority,
+  selectFront
 } from 'selectors/frontsSelectors';
 import {
   REMOVE_GROUP_ARTICLE_FRAGMENT,
@@ -47,6 +48,7 @@ import {
   createSelectArticlesInCollection,
   selectSharedState
 } from 'shared/selectors/shared';
+import { ThunkResult } from 'types/Store';
 
 export const EDITOR_OPEN_CURRENT_FRONTS_MENU =
   'EDITOR_OPEN_CURRENT_FRONTS_MENU';
@@ -87,6 +89,20 @@ const editorCloseCollections = (
   type: EDITOR_CLOSE_COLLECTION,
   payload: { collectionIds }
 });
+
+const editorOpenAllCollectionsForFront = (
+  frontId: string
+): ThunkResult<void> => (dispatch, getState) => {
+  const front = selectFront(getState(), { frontId });
+  dispatch(editorOpenCollections(front.collections));
+};
+
+const editorCloseAllCollectionsForFront = (
+  frontId: string
+): ThunkResult<void> => (dispatch, getState) => {
+  const front = selectFront(getState(), { frontId });
+  dispatch(editorCloseCollections(front.collections));
+};
 
 const editorOpenCurrentFrontsMenu = (): EditorOpenCurrentFrontsMenu => ({
   type: EDITOR_OPEN_CURRENT_FRONTS_MENU
@@ -848,6 +864,8 @@ export {
   editorCloseOverview,
   editorOpenAllOverviews,
   editorCloseAllOverviews,
+  editorOpenAllCollectionsForFront,
+  editorCloseAllCollectionsForFront,
   selectIsClipboardOpen,
   selectIsFrontOverviewOpen,
   selectHasMultipleFrontsOpen,
