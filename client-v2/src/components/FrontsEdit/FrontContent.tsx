@@ -71,7 +71,7 @@ interface FrontState {
   currentlyScrolledCollectionId: string | undefined;
 }
 
-class Fronts extends React.Component<FrontProps, FrontState> {
+class FrontContent extends React.Component<FrontProps, FrontState> {
   public state = {
     currentlyScrolledCollectionId: undefined
   };
@@ -223,4 +223,4 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Fronts);
+)(FrontContent);
