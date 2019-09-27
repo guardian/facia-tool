@@ -16,10 +16,7 @@ import {
   CollectionItemSets,
   ArticleFragment as TArticleFragment
 } from 'shared/types/Collection';
-import {
-  initialiseCollectionsForFront,
-  openCollectionsAndFetchTheirArticles
-} from 'actions/Collections';
+import { initialiseCollectionsForFront } from 'actions/Collections';
 import { setFocusState } from 'bundles/focusBundle';
 import { theme as sharedTheme } from 'shared/constants/theme';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
@@ -200,7 +197,10 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
 
   private handleOpenCollections = (e: React.MouseEvent) => {
     e.preventDefault();
-    this.props.editorOpenAllCollectionsForFront(this.props.id);
+    this.props.editorOpenAllCollectionsForFront(
+      this.props.id,
+      this.props.browsingStage
+    );
   };
 
   private handleCloseCollections = (e: React.MouseEvent) => {
@@ -251,10 +251,6 @@ const mapDispatchToProps = (
       ),
     toggleOverview: (open: boolean) =>
       dispatch(open ? editorOpenOverview(id) : editorCloseOverview(id)),
-    openAllCollections: (collections: string[]) =>
-      dispatch(
-        openCollectionsAndFetchTheirArticles(collections, id, browsingStage)
-      ),
     ...bindActionCreators(
       {
         selectArticleFragment: editorSelectArticleFragment,
