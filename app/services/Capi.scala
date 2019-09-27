@@ -10,11 +10,11 @@ import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCred
 import com.gu.contentapi.client.model._
 import com.gu.contentapi.client.model.v1.{Content, SearchResponse, TagType}
 import com.gu.contentapi.client.{GuardianContentClient, IAMSigner, Parameter}
-import com.gu.facia.api.utils.{CardStyle, ResolvedMetaData}
-import com.gu.facia.client.models.TrailMetaData
+import com.gu.facia.api.utils.ResolvedMetaData
 import conf.ApplicationConfiguration
 import logging.Logging
-import model.editions.{CapiPrefillQuery, PathType}
+import logic.CapiPrefiller
+import model.editions.{CapiPrefillQuery, Image, MediaType, PathType}
 import okhttp3.{Call, Callback, Request, Response}
 import org.apache.http.client.utils.URLEncodedUtils
 
@@ -23,10 +23,11 @@ import scala.concurrent.{ExecutionContext, Future, Promise}
 
 case class Prefill(
                     internalPageCode: Int,
-                    showByline: Boolean,
-                    showQuotedHeadline: Boolean,
-                    imageCutoutReplace: Boolean,
-                    cutout: Option[String]
+                    metaData: ResolvedMetaData,
+                    cutout: Option[Image],
+                    tone: String,
+                    mediaType: Option[MediaType],
+                    pickedKicker: Option[String] // Note: algorithmically-picked, not human-picked.
                   )
 
 class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext)
@@ -161,10 +162,10 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
           (newspaperPageNumber, prefill)
         }
         .collect {
-          case (Some(internalPageCode), Some(metadata)) => (internalPageCode.toString, metadata)
+          case (Some(newspaperPageNumber), Some(metadata)) => (newspaperPageNumber, metadata)
         }
         .sortBy {
-          case (pageNumber, _) => pageNumber
+          case (newspaperPageNumber, _) => newspaperPageNumber
         }
         .map {
           case (_, metaData) => metaData
@@ -174,18 +175,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
   }
 
   private def prefillMetadata(content: Content): Option[Prefill] = {
-    val maybeInternalPageCode = content.fields.flatMap(_.internalPageCode)
-    maybeInternalPageCode.map { internalPageCode =>
-      val cardStyle = CardStyle(content, TrailMetaData.empty)
-      val metadata = ResolvedMetaData.fromContent(content, cardStyle)
-      val maybeCutout = if (metadata.imageCutoutReplace) {
-        content.tags
-          .filter(_.`type` == TagType.Contributor)
-          .flatMap(_.bylineLargeImageUrl)
-          .headOption
-      } else None
-      Prefill(internalPageCode, metadata.showByline, metadata.showQuotedHeadline, metadata.imageCutoutReplace, maybeCutout)
-    }
+    content.fields.flatMap(_.internalPageCode).map { internalPageCode => CapiPrefiller.prefill(content) }
   }
 }
 
