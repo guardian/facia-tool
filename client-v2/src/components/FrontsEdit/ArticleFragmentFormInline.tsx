@@ -110,6 +110,7 @@ const ImageOptionsContainer = styled.div`
   flex-wrap: wrap;
   flex: 1;
   flex-direction: column;
+  min-width: 300px;
   margin-top: ${(props: { size?: string }) =>
     props.size !== 'wide' ? 0 : '10px'};
 `;
@@ -168,6 +169,10 @@ const SlideshowCol = styled(Col)`
   min-width: 0;
 `;
 
+const ToggleCol = styled(Col)`
+  margin-top: 24px;
+`;
+
 const RenderSlideshow = ({ fields, frontId }: RenderSlideshowProps) => (
   <>
     {fields.map((name, index) => (
@@ -187,23 +192,33 @@ const RenderSlideshow = ({ fields, frontId }: RenderSlideshowProps) => (
 const CheckboxFieldsContainer: React.SFC<{
   children: Array<React.ReactElement<{ name: string }>>;
   editableFields: string[];
-}> = ({ children, editableFields }) => {
+  size?: string;
+}> = ({ children, editableFields, size }) => {
   const childrenToRender = children.filter(child =>
     shouldRenderField(child.props.name, editableFields)
   );
   return (
     <FieldsContainerWrap>
       {childrenToRender.map(child => {
-        return <FieldContainer key={child.props.name}>{child}</FieldContainer>;
+        return (
+          <FieldContainer key={child.props.name} size={size}>
+            {child}
+          </FieldContainer>
+        );
       })}
     </FieldsContainerWrap>
   );
 };
 
 const FieldContainer = styled(Col)`
-  flex-basis: calc(100% / 4);
-  min-width: 125px; /* Prevents labels breaking across lines */
+  flex: ${(props: { size?: string }) =>
+    props.size === 'wide' ? '0 0 auto' : 1};
   margin-bottom: 8px;
+  white-space: nowrap;
+  & label {
+    padding-left: 3px;
+    padding-right: 5px;
+  }
 `;
 
 const KickerSuggestionsContainer = styled.div`
@@ -392,7 +407,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 data-testid="edit-form-headline-field"
               />
             )}
-            <CheckboxFieldsContainer editableFields={editableFields}>
+            <CheckboxFieldsContainer
+              editableFields={editableFields}
+              size={this.props.size}
+            >
               <Field
                 name="isBoosted"
                 component={InputCheckboxToggleInline}
@@ -469,7 +487,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             <ImageRowContainer size={this.props.size}>
               <Row>
                 <ImageCol faded={imageHide || !!coverCardImageReplace}>
-                  <InputLabel for={this.getImageFieldName()}>
+                  <InputLabel htmlFor={this.getImageFieldName()}>
                     Trail image
                   </InputLabel>
                   <ConditionalField
@@ -496,7 +514,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     onChange={this.handleImageChange}
                   />
                 </ImageCol>
-                <Col flex={2}>
+                <ToggleCol flex={2}>
                   <InputGroup>
                     <ConditionalField
                       permittedFields={editableFields}
@@ -578,7 +596,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                       />
                     </InputGroup>
                   )}
-                </Col>
+                </ToggleCol>
               </Row>
               <ConditionalComponent
                 permittedNames={editableFields}
