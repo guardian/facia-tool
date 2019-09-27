@@ -41,7 +41,7 @@ import {
   REMOVE_GROUP_ARTICLE_FRAGMENT,
   REMOVE_SUPPORTING_ARTICLE_FRAGMENT
 } from 'shared/actions/ArticleFragments';
-import { Stages } from 'shared/types/Collection';
+import { Stages, CollectionItemSets } from 'shared/types/Collection';
 import { selectPriority } from 'selectors/pathSelectors';
 import { CollectionWithArticles } from 'shared/types/PageViewData';
 import {
@@ -49,6 +49,7 @@ import {
   selectSharedState
 } from 'shared/selectors/shared';
 import { ThunkResult } from 'types/Store';
+import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 
 export const EDITOR_OPEN_CURRENT_FRONTS_MENU =
   'EDITOR_OPEN_CURRENT_FRONTS_MENU';
@@ -91,10 +92,17 @@ const editorCloseCollections = (
 });
 
 const editorOpenAllCollectionsForFront = (
-  frontId: string
+  frontId: string,
+  browsingStage: CollectionItemSets
 ): ThunkResult<void> => (dispatch, getState) => {
   const front = selectFront(getState(), { frontId });
-  dispatch(editorOpenCollections(front.collections));
+  dispatch(
+    openCollectionsAndFetchTheirArticles(
+      front.collections,
+      front.id,
+      browsingStage
+    )
+  );
 };
 
 const editorCloseAllCollectionsForFront = (
