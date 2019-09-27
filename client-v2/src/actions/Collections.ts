@@ -471,6 +471,7 @@ function publishCollection(
         return;
       })
       .catch(e => {
+        // tslint:disable-next-line
         console.error('Error during publishing collection:', e);
       });
   };
