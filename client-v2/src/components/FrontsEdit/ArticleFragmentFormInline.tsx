@@ -52,6 +52,7 @@ import { getContributorImage } from 'util/CAPIUtils';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
 import { ValidationResponse } from 'shared/util/validateImageSrc';
+import InputLabel from 'shared/components/input/InputLabel';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -468,8 +469,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             <ImageRowContainer size={this.props.size}>
               <Row>
                 <ImageCol faded={imageHide || !!coverCardImageReplace}>
-                  {/* TODO: Use existing or create new component to style this text... */}
-                  <span>Trail image</span>
+                  <InputLabel for={this.getImageFieldName()}>
+                    Trail image
+                  </InputLabel>
                   <ConditionalField
                     permittedFields={editableFields}
                     name={this.getImageFieldName()}
