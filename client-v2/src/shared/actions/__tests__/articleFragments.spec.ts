@@ -1,10 +1,11 @@
+import configureMockStore from 'redux-mock-store';
+import fetchMock from 'fetch-mock';
+import thunk from 'redux-thunk';
 import {
   createArticleEntitiesFromDrop,
   articleFragmentsReceived
 } from '../ArticleFragments';
-import configureStore from 'redux-mock-store';
-import fetchMock from 'fetch-mock';
-import thunk from 'redux-thunk';
+import initialState from 'fixtures/initialState';
 import { capiArticle } from '../../fixtures/shared';
 import { actionNames as externalArticleActionNames } from 'shared/bundles/externalArticlesBundle';
 import { createFragment } from 'shared/util/articleFragment';
@@ -13,9 +14,9 @@ import guardianTagPage from 'shared/fixtures/guardianTagPage';
 import bbcSectionPage from 'shared/fixtures/bbcSectionPage';
 import { RefDrop } from 'util/collectionUtils';
 
-jest.mock('uuid/v4', () => () => 'uuid');
+jest.mock('uuid/v4', () => () => 'articleFragment1');
 const middlewares = [thunk];
-const mockStore = configureStore(middlewares);
+const mockStore = configureMockStore(middlewares);
 const idDrop = (id: string): RefDrop => ({ type: 'REF', data: id });
 
 describe('articleFragments actions', () => {
@@ -40,17 +41,17 @@ describe('articleFragments actions', () => {
           results: [capiArticle]
         }
       });
-      const store = mockStore({});
+      const store = mockStore(initialState);
       await store.dispatch(createArticleEntitiesFromDrop(
         idDrop('internal-code/page/5029528')
       ) as any);
       const actions = store.getActions();
-      expect(actions[0]).toEqual(
+      expect(actions[0].type).toEqual(externalArticleActionNames.fetchSuccess);
+      expect(actions[1]).toEqual(
         articleFragmentsReceived({
-          uuid: createFragment('internal-code/page/5029528')
+          articleFragment1: createFragment('internal-code/page/5029528')
         })
       );
-      expect(actions[1].type).toEqual(externalArticleActionNames.fetchSuccess);
     });
     it('should fetch a link and create a corresponding collection item representing a snap link', async () => {
       fetchMock.once('begin:/api/preview', {
@@ -59,14 +60,14 @@ describe('articleFragments actions', () => {
         }
       });
       fetchMock.mock('/http/proxy/https://bbc.co.uk/some/page', bbcSectionPage);
-      const store = mockStore({});
+      const store = mockStore(initialState);
       await store.dispatch(createArticleEntitiesFromDrop(
         idDrop('https://bbc.co.uk/some/page')
       ) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         articleFragmentsReceived({
-          uuid: await createSnap('https://bbc.co.uk/some/page')
+          articleFragment1: await createSnap('https://bbc.co.uk/some/page')
         })
       );
     });
@@ -80,14 +81,16 @@ describe('articleFragments actions', () => {
         '/http/proxy/https://bbc.co.uk/some/page?great=true',
         bbcSectionPage
       );
-      const store = mockStore({});
+      const store = mockStore(initialState);
       await store.dispatch(createArticleEntitiesFromDrop(
         idDrop('https://bbc.co.uk/some/page?great=true')
       ) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         articleFragmentsReceived({
-          uuid: await createSnap('https://bbc.co.uk/some/page?great=true')
+          articleFragment1: await createSnap(
+            'https://bbc.co.uk/some/page?great=true'
+          )
         })
       );
     });
@@ -103,14 +106,14 @@ describe('articleFragments actions', () => {
         guardianTagPage
       );
       (window as any).confirm = jest.fn(() => true);
-      const store = mockStore({});
+      const store = mockStore(initialState);
       await store.dispatch(createArticleEntitiesFromDrop(
         idDrop('https://www.theguardian.com/example/tag/page')
       ) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         articleFragmentsReceived({
-          uuid: await createLatestSnap(
+          articleFragment1: await createLatestSnap(
             'https://www.theguardian.com/example/tag/page',
             'Example title'
           )
@@ -129,14 +132,16 @@ describe('articleFragments actions', () => {
         guardianTagPage
       );
       (window as any).confirm = jest.fn(() => false);
-      const store = mockStore({});
+      const store = mockStore(initialState);
       await store.dispatch(createArticleEntitiesFromDrop(
         idDrop('https://www.theguardian.com/example/tag/page')
       ) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         articleFragmentsReceived({
-          uuid: await createSnap('https://www.theguardian.com/example/tag/page')
+          articleFragment1: await createSnap(
+            'https://www.theguardian.com/example/tag/page'
+          )
         })
       );
     });
@@ -151,14 +156,14 @@ describe('articleFragments actions', () => {
         '/http/proxy/https://www.theguardian.com/example/non/tag/page?view=mobile',
         guardianTagPage
       );
-      const store = mockStore({});
+      const store = mockStore(initialState);
       await store.dispatch(createArticleEntitiesFromDrop(
         idDrop('https://www.theguardian.com/example/non/tag/page')
       ) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         articleFragmentsReceived({
-          uuid: await createSnap(
+          articleFragment1: await createSnap(
             'https://www.theguardian.com/example/non/tag/page'
           )
         })
@@ -166,7 +171,7 @@ describe('articleFragments actions', () => {
     });
     describe('snaps created from url params prefixed with gu- ', () => {
       it('should be created if they are provided in the resource id', async () => {
-        const store = mockStore({});
+        const store = mockStore(initialState);
         const snapUrl =
           'https://www.theguardian.com/football/live?gu-snapType=json.html&gu-snapCss=football&gu-snapUri=https%3A%2F%2Fapi.nextgen.guardianapps.co.uk%2Ffootball%2Flive.json&gu-headline=Live+matches&gu-trailText=Today%27s+matches';
         fetchMock.mock(snapUrl, JSON.stringify({}));
@@ -176,7 +181,7 @@ describe('articleFragments actions', () => {
         const actions = store.getActions();
         expect(actions[0]).toEqual(
           articleFragmentsReceived({
-            uuid: {
+            articleFragment1: {
               frontPublicationDate: 1487076708000,
               id: 'snap/1487076708000',
               meta: {
@@ -190,13 +195,13 @@ describe('articleFragments actions', () => {
                   'https://api.nextgen.guardianapps.co.uk/football/live.json',
                 trailText: "Today's matches"
               },
-              uuid: 'uuid'
+              uuid: 'articleFragment1'
             }
           })
         );
       });
       it('should be created if they are provided on the root path', async () => {
-        const store = mockStore({});
+        const store = mockStore(initialState);
         const snapUrl =
           'https://gu.com?gu-snapType=json.html&gu-snapUri=https://interactive.guim.co.uk/atoms/2019/03/29/unmeaningful-vote/snap/snap.json';
         fetchMock.mock(snapUrl, JSON.stringify({}));
@@ -206,7 +211,7 @@ describe('articleFragments actions', () => {
         const actions = store.getActions();
         expect(actions[0]).toEqual(
           articleFragmentsReceived({
-            uuid: {
+            articleFragment1: {
               frontPublicationDate: 1487076708000,
               id: 'snap/1487076708000',
               meta: {
@@ -217,7 +222,7 @@ describe('articleFragments actions', () => {
                 snapUri:
                   'https://interactive.guim.co.uk/atoms/2019/03/29/unmeaningful-vote/snap/snap.json'
               },
-              uuid: 'uuid'
+              uuid: 'articleFragment1'
             }
           })
         );
