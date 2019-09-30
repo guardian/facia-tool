@@ -112,7 +112,7 @@ const ImageOptionsContainer = styled.div`
   flex-direction: column;
   min-width: 300px;
   margin-top: ${(props: { size?: string }) =>
-    props.size !== 'wide' ? 0 : '10px'};
+    props.size !== 'wide' ? 0 : '6px'};
 `;
 
 const SlideshowRowContainer = styled(RowContainer)`
