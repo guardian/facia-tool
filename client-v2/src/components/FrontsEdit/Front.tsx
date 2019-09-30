@@ -320,7 +320,13 @@ class FrontComponent extends React.Component<FrontProps, FrontState> {
                           alsoOn={this.props.alsoOn}
                           handleInsert={this.handleInsert}
                           handleMove={this.handleMove}
-                          size={width && width > 500 ? 'default' : 'medium'}
+                          size={
+                            width && width > 750
+                              ? 'wide'
+                              : width && width > 500
+                              ? 'default'
+                              : 'medium'
+                          }
                           selectArticleFragment={(
                             articleFragmentId,
                             isSupporting
