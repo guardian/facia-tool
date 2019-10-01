@@ -80,9 +80,11 @@ const PreviouslyCollectionContainer = styled.div``;
 
 const PreviouslyCollectionToggle = styled(CollectionMetaContainer)`
   align-items: center;
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 14px;
+  font-weight: normal;
   padding-top: 0.25em;
+  justify-content: unset;
+  border-top: 1px solid ${theme.shared.colors.greyMediumLight};
 `;
 
 const PreviouslyGroupsWrapper = styled.div`
@@ -99,6 +101,17 @@ const PreviouslyCollectionInfo = styled.div`
 
 const LoadingImageBox = styled.div`
   min-width: 50px;
+`;
+
+const PreviouslyCircularCaret = styled(ButtonCircularCaret)`
+  height: 15px;
+  width: 15px;
+  background-color: ${theme.shared.colors.greyMediumLight};
+  margin-left: 6px;
+  svg {
+    height: 15px;
+    width: 15px;
+  }
 `;
 
 class Collection extends React.Component<CollectionProps> {
@@ -256,7 +269,7 @@ class Collection extends React.Component<CollectionProps> {
                 data-testid="previously-toggle"
               >
                 Recently removed from launched front
-                <ButtonCircularCaret active={isPreviouslyOpen} />
+                <PreviouslyCircularCaret active={isPreviouslyOpen} />
               </PreviouslyCollectionToggle>
               {isPreviouslyOpen && (
                 <>

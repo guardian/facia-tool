@@ -69,6 +69,7 @@ const CollectionContainer = styled(ContentContainer)<{
     border-top: none;
     outline: none;
   }
+  padding-bottom: 0;
 `;
 
 const HeadlineContentContainer = styled.span`

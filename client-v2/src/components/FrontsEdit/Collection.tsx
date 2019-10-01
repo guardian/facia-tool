@@ -91,7 +91,7 @@ interface CollectionContextProps {
     [id: string]: AlsoOnDetail;
   };
   browsingStage: CollectionItemSets;
-  size?: 'medium' | 'default';
+  size?: 'medium' | 'default' | 'wide';
   handleMove: (move: Move<TArticleFragment>) => void;
   handleInsert: (e: React.DragEvent, to: PosSpec) => void;
   selectArticleFragment: (id: string, isSupporting: boolean) => void;

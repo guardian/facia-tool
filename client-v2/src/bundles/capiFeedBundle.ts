@@ -76,30 +76,35 @@ export const createFetch = (
   getState
 ) => {
   dispatch(actions.fetchStart());
-  let resultData;
   try {
-    resultData = await fetchResourceOrResults(
+    const resultData = await fetchResourceOrResults(
       isPreview ? previewCapi : liveCapi,
       params,
       isResource,
       isPreview
     );
+    if (resultData) {
+      const nonCommercialResults = resultData.results.filter(article =>
+        isNonCommercialArticle(article)
+      );
+      const updatedResults = nonCommercialResults.filter(article =>
+        selectIsArticleStale(
+          getState(),
+          article.id,
+          article.fields.lastModified
+        )
+      );
+      dispatch(
+        actions.fetchSuccess(updatedResults, {
+          pagination: resultData.pagination || undefined,
+          order: nonCommercialResults.map(_ => _.id)
+        })
+      );
+    } else {
+      dispatch(actions.fetchSuccessIgnore([]));
+    }
   } catch (e) {
     dispatch(actions.fetchError(e.message));
-  }
-  if (resultData) {
-    const nonCommercialResults = resultData.results.filter(article =>
-      isNonCommercialArticle(article)
-    );
-    const updatedResults = nonCommercialResults.filter(article =>
-      selectIsArticleStale(getState(), article.id, article.fields.lastModified)
-    );
-    dispatch(
-      actions.fetchSuccess(updatedResults, {
-        pagination: resultData.pagination || undefined,
-        order: nonCommercialResults.map(_ => _.id)
-      })
-    );
   }
 };
 
