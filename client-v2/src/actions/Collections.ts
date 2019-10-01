@@ -39,7 +39,6 @@ import {
 import { groupsReceived } from 'shared/actions/Groups';
 import {
   recordVisibleArticles,
-  publishCollectionSuccess,
   recordStaleFronts,
   fetchLastPressedSuccess
 } from 'actions/Fronts';
@@ -74,7 +73,7 @@ import { events } from 'services/GA';
 import { selectCollectionParams } from 'selectors/collectionSelectors';
 import { fetchCollectionsStrategy } from 'strategies/fetch-collection';
 import { updateCollectionStrategy } from 'strategies/update-collection';
-import { getPageViewData } from 'redux/modules/pageViewData';
+import { getPageViewDataForCollection } from 'redux/modules/pageViewData';
 
 const articlesInCollection = createSelectAllArticlesInCollection();
 
@@ -366,7 +365,9 @@ const getOphanDataForCollections = (
   itemSet: CollectionItemSets
 ): ThunkResult<Promise<void[]>> => async dispatch => {
   const ophanRequests = collectionIds.map(collectionId => {
-    return dispatch(getPageViewData(frontId, collectionId, itemSet));
+    return dispatch(
+      getPageViewDataForCollection(frontId, collectionId, itemSet)
+    );
   });
   return Promise.all(ophanRequests);
 };
@@ -443,54 +444,68 @@ function publishCollection(
   events.collectionPublished(frontId, collectionId);
 
   return (dispatch: Dispatch, getState: () => State) => {
-    const draftVisibleArticles = selectVisibleArticles(getState(), {
-      collectionId,
-      stage: frontStages.draft
-    });
-
     return publishCollectionApi(collectionId)
       .then(() => {
-        dispatch(
-          batchActions([
-            publishCollectionSuccess(collectionId),
-            recordUnpublishedChanges(collectionId, false),
+        const batchedActions = [
+          recordUnpublishedChanges(collectionId, false),
+          editorCloseFormsForCollection(collectionId, frontId)
+        ];
+
+        const draftVisibleArticles = selectVisibleArticles(getState(), {
+          collectionId,
+          stage: frontStages.draft
+        });
+        // some collections don't have visible articles (the property which shows where articles cut off on mobile/desktop) eg, those with a 'fast' layout
+        if (draftVisibleArticles) {
+          batchedActions.push(
             recordVisibleArticles(
               collectionId,
               draftVisibleArticles,
               frontStages.live
+            )
+          );
+        }
+
+        dispatch(batchActions(batchedActions));
+        dispatch(getCollections([collectionId]));
+        dispatch(pollForCollectionPublished(collectionId, frontId));
+
+        return;
+      })
+      .catch(e => {
+        // tslint:disable-next-line
+        console.error('Error during publishing collection:', e);
+      });
+  };
+}
+
+function pollForCollectionPublished(
+  collectionId: string,
+  frontId: string
+): ThunkResult<Promise<void>> {
+  return (dispatch, getState) => {
+    return new Promise(resolve => setTimeout(resolve, 10000))
+      .then(() => {
+        const [params] = selectCollectionParams(getState(), [collectionId]);
+        return Promise.all([
+          getCollectionApi(params),
+          fetchLastPressedApi(frontId)
+        ]);
+      })
+      .then(([collectionResponse, lastPressed]) => {
+        const lastPressedInMilliseconds = new Date(lastPressed).getTime();
+        dispatch(
+          batchActions([
+            recordStaleFronts(
+              frontId,
+              isFrontStale(
+                collectionResponse.collection.lastUpdated,
+                lastPressedInMilliseconds
+              )
             ),
-            editorCloseFormsForCollection(collectionId, frontId)
+            fetchLastPressedSuccess(frontId, lastPressed)
           ])
         );
-
-        dispatch(getCollections([collectionId]));
-
-        return new Promise(resolve => setTimeout(resolve, 10000))
-          .then(() => {
-            const [params] = selectCollectionParams(getState(), [collectionId]);
-            return Promise.all([
-              getCollectionApi(params),
-              fetchLastPressedApi(frontId)
-            ]);
-          })
-          .then(([collectionResponse, lastPressed]) => {
-            const lastPressedInMilliseconds = new Date(lastPressed).getTime();
-            dispatch(
-              batchActions([
-                recordStaleFronts(
-                  frontId,
-                  isFrontStale(
-                    collectionResponse.collection.lastUpdated,
-                    lastPressedInMilliseconds
-                  )
-                ),
-                fetchLastPressedSuccess(frontId, lastPressed)
-              ])
-            );
-          });
-      })
-      .catch(() => {
-        // @todo: implement once error handling is done
       });
   };
 }

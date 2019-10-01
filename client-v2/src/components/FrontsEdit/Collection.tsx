@@ -91,7 +91,7 @@ interface CollectionContextProps {
     [id: string]: AlsoOnDetail;
   };
   browsingStage: CollectionItemSets;
-  size?: 'medium' | 'default';
+  size?: 'medium' | 'default' | 'wide';
   handleMove: (move: Move<TArticleFragment>) => void;
   handleInsert: (e: React.DragEvent, to: PosSpec) => void;
   selectArticleFragment: (id: string, isSupporting: boolean) => void;
@@ -175,6 +175,7 @@ class CollectionContext extends React.Component<
                     >
                       <CollectionItem
                         frontId={frontId}
+                        collectionId={id}
                         uuid={articleFragment.uuid}
                         parentId={group.uuid}
                         isUneditable={isUneditable}

@@ -4,15 +4,19 @@ import { PageViewStory } from 'shared/types/PageViewData';
 import { theme } from '../../../constants/theme';
 import { State } from 'types/State';
 import { connect } from 'react-redux';
-import { createSelectDataForArticle } from '../../../redux/modules/pageViewData/selectors';
+import { selectDataForArticle } from '../../../redux/modules/pageViewData/selectors';
 
-interface ArticleGraphProps {
+interface ArticleGraphContainerProps {
   articleId: string;
+  collectionId: string;
   frontId: string;
+}
+
+interface ArticleGraphComponentProps extends ArticleGraphContainerProps {
   data?: PageViewStory;
 }
 
-class ArticleGraph extends React.Component<ArticleGraphProps> {
+class ArticleGraph extends React.Component<ArticleGraphComponentProps> {
   public render() {
     const { data } = this.props;
 
@@ -43,9 +47,13 @@ class ArticleGraph extends React.Component<ArticleGraphProps> {
 }
 
 const mapStateToProps = () => {
-  const selectPageViewDataForArticleId = createSelectDataForArticle();
-  return (state: State, props: ArticleGraphProps) => ({
-    data: selectPageViewDataForArticleId(state, props.articleId, props.frontId)
+  return (state: State, props: ArticleGraphContainerProps) => ({
+    data: selectDataForArticle(
+      state,
+      props.articleId,
+      props.collectionId,
+      props.frontId
+    )
   });
 };
 

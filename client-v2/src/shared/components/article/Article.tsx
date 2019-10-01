@@ -56,6 +56,7 @@ interface ArticleComponentProps {
   canShowPageViewData: boolean;
   featureFlagPageViewData?: boolean;
   frontId: string;
+  collectionId?: string;
 }
 
 interface ContainerProps extends ArticleComponentProps {
@@ -111,7 +112,8 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
       canDragImage,
       featureFlagPageViewData,
       canShowPageViewData = false,
-      frontId
+      frontId,
+      collectionId
     } = this.props;
 
     const dragEventHasImageData = (e: React.DragEvent) =>
@@ -166,6 +168,7 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
               <ArticleBody
                 {...getArticleData()}
                 frontId={frontId}
+                collectionId={collectionId}
                 size={size}
                 textSize={textSize}
                 isUneditable={!!article && isUneditable}

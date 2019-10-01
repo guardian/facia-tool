@@ -1,6 +1,10 @@
 import uniq from 'lodash/uniq';
 import { createSelector } from 'reselect';
-import { FrontConfig, CollectionConfig } from 'types/FaciaApi';
+import {
+  FrontConfig,
+  CollectionConfig,
+  VisibleArticlesResponse
+} from 'types/FaciaApi';
 import { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
@@ -303,7 +307,10 @@ const selectClipboard = (state: State) => state.clipboard;
 
 const selectVisibleArticles = createSelector(
   [selectCollectionVisibilities, selectCollectionIdAndStage],
-  (collectionVisibilities, { collectionId, stage }) => {
+  (
+    collectionVisibilities,
+    { collectionId, stage }
+  ): VisibleArticlesResponse | undefined => {
     return collectionVisibilities[stage][collectionId];
   }
 );

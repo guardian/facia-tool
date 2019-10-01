@@ -97,7 +97,6 @@ test('Snap Links - Guardian', async t => {
   const frontDropsCount = await frontDropZone().count;
   const tagSnap = await guardianSnapLink();
   await t
-    .maximizeWindow() // needed to find DOM elements in headless mode
     .setNativeDialogHandler(() => false)
     .dragToElement(tagSnap, frontDropZone(1)) //drag tag into parent position (not a sublink)
     .expect(frontDropZone().count)
@@ -112,7 +111,6 @@ test('Snap Links - Guardian Latest', async t => {
   const frontDropsCount = await frontDropZone().count;
   const tagSnap = await guardianSnapLink();
   await t
-    .maximizeWindow() // needed to find DOM elements in headless mode
     .setNativeDialogHandler(() => true)
     .dragToElement(tagSnap, frontDropZone(1))
     .expect(frontDropZone().count)
@@ -127,7 +125,6 @@ test('Snap Links - External', async t => {
   const frontDropsCount = await frontDropZone().count;
   const externalSnap = await externalSnapLink();
   await t
-    .maximizeWindow() // needed to find DOM elements in headless mode
     .setNativeDialogHandler(() => false)
     .dragToElement(externalSnap, frontDropZone(1))
     .expect(frontDropZone().count)
@@ -161,7 +158,6 @@ test('Previously', async t => {
 test('Clipboard - drop depth', async t => {
   const prevCount = await clipboardItem().count;
   await t
-    .maximizeWindow()
     // drag to a position in the UI wrapper - NOT the clipboard itself
     // this checks that the clipboard drop area extends to the bottom of the visual clipboard wrapper
     .dragToElement(feedItem(0), clipboardWrapper(), {

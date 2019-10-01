@@ -52,6 +52,7 @@ import { getContributorImage } from 'util/CAPIUtils';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
 import { ValidationResponse } from 'shared/util/validateImageSrc';
+import InputLabel from 'shared/components/input/InputLabel';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -66,6 +67,7 @@ interface ComponentProps extends ContainerProps {
   coverCardImageReplace?: boolean;
   coverCardMobileImage?: ImageData;
   coverCardTabletImage?: ImageData;
+  size?: string;
 }
 
 type Props = ComponentProps &
@@ -88,11 +90,42 @@ const FormContainer = styled(ContentContainer.withComponent('form'))`
 `;
 
 const FormContent = styled.div`
-  flex: 1;
+  flex: 3;
+  display: flex;
+  flex-direction: ${(props: { size?: string }) =>
+    props.size !== 'wide' ? 'column' : 'row'};
 `;
 
 const RowContainer = styled.div`
   overflow: hidden;
+`;
+
+const TextOptionsContainer = styled(InputGroup)`
+  flex: 2;
+`;
+
+const ImageOptionsContainer = styled.div`
+  display: flex;
+  height: fit-content;
+  flex-wrap: wrap;
+  flex: 1;
+  flex-direction: column;
+  min-width: 300px;
+  margin-top: ${(props: { size?: string }) =>
+    props.size !== 'wide' ? 0 : '6px'};
+`;
+
+const SlideshowRowContainer = styled(RowContainer)`
+  flex: 1 1 auto;
+  overflow: visible;
+  margin-left: ${(props: { size?: string }) =>
+    props.size !== 'wide' ? 0 : '10px'};
+`;
+
+const ImageRowContainer = styled(RowContainer)`
+  flex: 1 1 auto;
+  margin-left: ${(props: { size?: string }) =>
+    props.size !== 'wide' ? 0 : '10px'};
 `;
 
 const ButtonContainer = styled.div`
@@ -136,6 +169,10 @@ const SlideshowCol = styled(Col)`
   min-width: 0;
 `;
 
+const ToggleCol = styled(Col)`
+  margin-top: 24px;
+`;
+
 const RenderSlideshow = ({ fields, frontId }: RenderSlideshowProps) => (
   <>
     {fields.map((name, index) => (
@@ -155,23 +192,33 @@ const RenderSlideshow = ({ fields, frontId }: RenderSlideshowProps) => (
 const CheckboxFieldsContainer: React.SFC<{
   children: Array<React.ReactElement<{ name: string }>>;
   editableFields: string[];
-}> = ({ children, editableFields }) => {
+  size?: string;
+}> = ({ children, editableFields, size }) => {
   const childrenToRender = children.filter(child =>
     shouldRenderField(child.props.name, editableFields)
   );
   return (
     <FieldsContainerWrap>
       {childrenToRender.map(child => {
-        return <FieldContainer key={child.props.name}>{child}</FieldContainer>;
+        return (
+          <FieldContainer key={child.props.name} size={size}>
+            {child}
+          </FieldContainer>
+        );
       })}
     </FieldsContainerWrap>
   );
 };
 
 const FieldContainer = styled(Col)`
-  flex-basis: calc(100% / 4);
-  min-width: 125px; /* Prevents labels breaking across lines */
+  flex: ${(props: { size?: string }) =>
+    props.size === 'wide' ? '0 0 auto' : 1};
   margin-bottom: 8px;
+  white-space: nowrap;
+  & label {
+    padding-left: 3px;
+    padding-right: 5px;
+  }
 `;
 
 const KickerSuggestionsContainer = styled.div`
@@ -311,8 +358,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               )} since you started editing this article. Your changes have not been saved.`}
           </CollectionEditedError>
         )}
-        <FormContent>
-          <InputGroup>
+        <FormContent size={this.props.size}>
+          <TextOptionsContainer>
             <ConditionalField
               name="customKicker"
               label="Kicker"
@@ -360,7 +407,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 data-testid="edit-form-headline-field"
               />
             )}
-            <CheckboxFieldsContainer editableFields={editableFields}>
+            <CheckboxFieldsContainer
+              editableFields={editableFields}
+              size={this.props.size}
+            >
               <Field
                 name="isBoosted"
                 component={InputCheckboxToggleInline}
@@ -432,128 +482,140 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               placeholder=""
               originalValue={''}
             />
-          </InputGroup>
-          <RowContainer>
-            <Row>
-              <ImageCol faded={imageHide || !!coverCardImageReplace}>
-                <ConditionalField
-                  permittedFields={editableFields}
-                  name={this.getImageFieldName()}
-                  component={InputImage}
-                  disabled={imageHide || coverCardImageReplace}
-                  criteria={
-                    isEditionsMode
-                      ? editionsArticleFragmentImageCriteria
-                      : articleFragmentImageCriteria
-                  }
-                  frontId={frontId}
-                  defaultImageUrl={
-                    imageCutoutReplace
-                      ? cutoutImage
-                      : articleCapiFieldValues.thumbnail
-                  }
-                  useDefault={!imageCutoutReplace && !imageReplace}
-                  message={imageCutoutReplace ? 'Add cutout' : 'Replace image'}
-                  hasVideo={hasMainVideo}
-                  onChange={this.handleImageChange}
-                />
-              </ImageCol>
-              <Col flex={2}>
-                <InputGroup>
+          </TextOptionsContainer>
+          <ImageOptionsContainer size={this.props.size}>
+            <ImageRowContainer size={this.props.size}>
+              <Row>
+                <ImageCol faded={imageHide || !!coverCardImageReplace}>
+                  <InputLabel htmlFor={this.getImageFieldName()}>
+                    Trail image
+                  </InputLabel>
                   <ConditionalField
                     permittedFields={editableFields}
-                    name="imageHide"
-                    component={InputCheckboxToggleInline}
-                    label="Hide media"
-                    id={getInputId(articleFragmentId, 'hide-media')}
-                    type="checkbox"
-                    default={false}
-                    onChange={_ => this.changeImageField('imageHide')}
-                  />
-                </InputGroup>
-                <InputGroup>
-                  <ConditionalField
-                    permittedFields={editableFields}
-                    name="imageCutoutReplace"
-                    component={InputCheckboxToggleInline}
-                    label="Use cutout"
-                    id={getInputId(articleFragmentId, 'use-cutout')}
-                    type="checkbox"
-                    default={false}
-                    onChange={_ => this.changeImageField('imageCutoutReplace')}
-                  />
-                </InputGroup>
-                <InputGroup>
-                  <ConditionalField
-                    permittedFields={editableFields}
-                    name="coverCardImageReplace"
-                    id={getInputId(articleFragmentId, 'coverCardImageReplace')}
-                    component={InputCheckboxToggleInline}
-                    label="Replace Cover Card Image"
-                    type="checkbox"
-                    default={false}
-                    onChange={_ =>
-                      this.changeImageField('coverCardImageReplace')
+                    name={this.getImageFieldName()}
+                    component={InputImage}
+                    disabled={imageHide || coverCardImageReplace}
+                    criteria={
+                      isEditionsMode
+                        ? editionsArticleFragmentImageCriteria
+                        : articleFragmentImageCriteria
                     }
-                  />
-                </InputGroup>
-                <InputGroup>
-                  <ConditionalField
-                    permittedFields={editableFields}
-                    name="showMainVideo"
-                    component={InputCheckboxToggleInline}
-                    label="Show video"
-                    id={getInputId(articleFragmentId, 'show-video')}
-                    type="checkbox"
-                    onChange={_ => this.changeImageField('showMainVideo')}
-                  />
-                </InputGroup>
-                <InputGroup>
-                  <ConditionalField
-                    permittedFields={editableFields}
-                    name="imageSlideshowReplace"
-                    component={InputCheckboxToggleInline}
-                    label="Slideshow"
-                    id={getInputId(articleFragmentId, 'slideshow')}
-                    type="checkbox"
-                    onChange={_ =>
-                      this.changeImageField('imageSlideshowReplace')
+                    frontId={frontId}
+                    defaultImageUrl={
+                      imageCutoutReplace
+                        ? cutoutImage
+                        : articleCapiFieldValues.thumbnail
                     }
+                    useDefault={!imageCutoutReplace && !imageReplace}
+                    message={
+                      imageCutoutReplace ? 'Add cutout' : 'Replace image'
+                    }
+                    hasVideo={hasMainVideo}
+                    onChange={this.handleImageChange}
                   />
-                </InputGroup>
-                {primaryImage && !!primaryImage.src && (
+                </ImageCol>
+                <ToggleCol flex={2}>
                   <InputGroup>
                     <ConditionalField
                       permittedFields={editableFields}
-                      name="imageReplace"
+                      name="imageHide"
                       component={InputCheckboxToggleInline}
-                      label="Use replacement image"
-                      id={getInputId(articleFragmentId, 'image-replace')}
+                      label="Hide media"
+                      id={getInputId(articleFragmentId, 'hide-media')}
                       type="checkbox"
                       default={false}
-                      onChange={_ => this.changeImageField('imageReplace')}
+                      onChange={_ => this.changeImageField('imageHide')}
                     />
                   </InputGroup>
-                )}
-              </Col>
-            </Row>
-            <ConditionalComponent
-              permittedNames={editableFields}
-              name={['primaryImage', 'imageHide']}
-            />
-          </RowContainer>
-          {imageSlideshowReplace && (
-            <RowContainer>
-              <SlideshowRow>
-                <FieldArray
-                  name="slideshow"
-                  frontId={frontId}
-                  component={RenderSlideshow}
-                />
-              </SlideshowRow>
-              <SlideshowLabel>Drag and drop up to five images</SlideshowLabel>
-            </RowContainer>
-          )}
+                  <InputGroup>
+                    <ConditionalField
+                      permittedFields={editableFields}
+                      name="imageCutoutReplace"
+                      component={InputCheckboxToggleInline}
+                      label="Use cutout"
+                      id={getInputId(articleFragmentId, 'use-cutout')}
+                      type="checkbox"
+                      default={false}
+                      onChange={_ =>
+                        this.changeImageField('imageCutoutReplace')
+                      }
+                    />
+                  </InputGroup>
+                  <InputGroup>
+                    <ConditionalField
+                      permittedFields={editableFields}
+                      name="coverCardImageReplace"
+                      id={getInputId(
+                        articleFragmentId,
+                        'coverCardImageReplace'
+                      )}
+                      component={InputCheckboxToggleInline}
+                      label="Replace Cover Card Image"
+                      type="checkbox"
+                      default={false}
+                      onChange={_ =>
+                        this.changeImageField('coverCardImageReplace')
+                      }
+                    />
+                  </InputGroup>
+                  <InputGroup>
+                    <ConditionalField
+                      permittedFields={editableFields}
+                      name="showMainVideo"
+                      component={InputCheckboxToggleInline}
+                      label="Show video"
+                      id={getInputId(articleFragmentId, 'show-video')}
+                      type="checkbox"
+                      onChange={_ => this.changeImageField('showMainVideo')}
+                    />
+                  </InputGroup>
+                  <InputGroup>
+                    <ConditionalField
+                      permittedFields={editableFields}
+                      name="imageSlideshowReplace"
+                      component={InputCheckboxToggleInline}
+                      label="Slideshow"
+                      id={getInputId(articleFragmentId, 'slideshow')}
+                      type="checkbox"
+                      onChange={_ =>
+                        this.changeImageField('imageSlideshowReplace')
+                      }
+                    />
+                  </InputGroup>
+                  {primaryImage && !!primaryImage.src && (
+                    <InputGroup>
+                      <ConditionalField
+                        permittedFields={editableFields}
+                        name="imageReplace"
+                        component={InputCheckboxToggleInline}
+                        label="Use replacement image"
+                        id={getInputId(articleFragmentId, 'image-replace')}
+                        type="checkbox"
+                        default={false}
+                        onChange={_ => this.changeImageField('imageReplace')}
+                      />
+                    </InputGroup>
+                  )}
+                </ToggleCol>
+              </Row>
+              <ConditionalComponent
+                permittedNames={editableFields}
+                name={['primaryImage', 'imageHide']}
+              />
+            </ImageRowContainer>
+            {imageSlideshowReplace && (
+              <SlideshowRowContainer size={this.props.size}>
+                <SlideshowRow>
+                  <FieldArray
+                    name="slideshow"
+                    frontId={frontId}
+                    component={RenderSlideshow}
+                  />
+                </SlideshowRow>
+                <SlideshowLabel>Drag and drop up to five images</SlideshowLabel>
+              </SlideshowRowContainer>
+            )}
+          </ImageOptionsContainer>
           {isEditionsMode && coverCardImageReplace && (
             <RowContainer>
               <Row>
@@ -706,6 +768,7 @@ interface InterfaceProps {
   onCancel: () => void;
   onSave: (meta: ArticleFragmentMeta) => void;
   frontId: string;
+  size?: string;
 }
 
 const formContainer: React.SFC<ContainerProps & InterfaceProps> = props => (
