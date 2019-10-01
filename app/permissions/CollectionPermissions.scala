@@ -13,7 +13,7 @@ object CollectionPermissions {
       } match {
         // If this collection id is not present in any of the fronts, then it must belong to an edition issue
         case Nil => Set[PermissionsPriority](EditionsPermission)
-        case permissionsFromFronts => permissionsFromFronts.toSet
+        case permissionsFromFronts => permissionsFromFronts.toSet[PermissionsPriority]
       }
     }
   }
