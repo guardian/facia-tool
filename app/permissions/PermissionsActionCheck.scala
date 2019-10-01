@@ -1,7 +1,7 @@
 package permissions
 
 import com.gu.pandomainauth.action.UserRequest
-import com.gu.permissions.PermissionsProvider
+import com.gu.permissions.{PermissionDefinition, PermissionsProvider}
 import controllers.BaseFaciaController
 import play.api.mvc._
 import services.ConfigAgent
@@ -16,6 +16,16 @@ trait PermissionActionFilter extends ActionFilter[UserRequest] with Logging {
   val testAccess: String => Authorization
   val restrictedAction: String
 
+  def testUserPermission(client: PermissionsProvider, permission: PermissionDefinition) = {
+    (email: String) => {
+      val hasPermission = client.hasPermission(permission, email)
+      if (hasPermission) {
+        AccessGranted
+      } else {
+        AccessDenied
+      }
+    }
+  }
 
   override def filter[A](request: UserRequest[A]): Future[Option[Result]] = Future.successful {
     testAccess(request.user.email) match {
@@ -40,7 +50,8 @@ trait ModifyCollectionsPermissionsCheck extends Logging { self: BaseFaciaControl
         Permissions.FrontsAccess, "facia-tool-allow-launch-editorial-fronts-for-all")(email, priorities)
     else
       acl.testUserGroupsAndCollections(
-        Permissions.EditEditorialFronts, Permissions.LaunchCommercialFronts,
+        Permissions.EditEditorialFronts,
+        Permissions.LaunchCommercialFronts,
         Permissions.FrontsAccess, "facia-tool-allow-edit-editorial-fronts-for-all")(email, priorities)
   }
 
@@ -74,13 +85,23 @@ class EditEditorialFrontsPermissionCheck(val acl: Acl)(implicit ec: ExecutionCon
   override val restrictedAction: String = "Edit editorial fronts."
 }
 
-class AccessPermissionCheck(client: PermissionsProvider)(implicit ec: ExecutionContext) extends PermissionActionFilter {
+class AccessEditionsPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext) extends PermissionActionFilter {
+  override implicit val executionContext: ExecutionContext = ec
+  override val testAccess: String => Authorization = acl.testUser(Permissions.EditEditorialFronts, "facia-tool-allow-edit-editorial-fronts-for-all")
+  override val restrictedAction: String = "Edit editions fronts."
+}
+
+class AccessEditorialFrontsPermissionCheck(client: PermissionsProvider)(implicit ec: ExecutionContext) extends PermissionActionFilter {
   val executionContext = ec
-  val restrictedAction = "access fronts"
-  val testAccess: String => Authorization = (email: String) => {
-    val hasPermission = client.hasPermission(Permissions.FrontsAccess, email)
-    if(hasPermission) { AccessGranted } else { AccessDenied }
-  }
+  val restrictedAction = "access editorial fronts"
+  val testAccess: String => Authorization = testUserPermission(client, Permissions.FrontsAccess)
+}
+
+
+class EditEditionsPermissionCheck(client: PermissionsProvider)(implicit ec: ExecutionContext) extends PermissionActionFilter {
+  val executionContext = ec
+  val restrictedAction = "edit editions"
+  val testAccess: String => Authorization = testUserPermission(client, Permissions.EditEditions)
 }
 
 class ConfigPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext) extends PermissionActionFilter {

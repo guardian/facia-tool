@@ -44,9 +44,12 @@ abstract class BaseFaciaController(deps: BaseFaciaControllerComponents) extends 
 
   override def authCallbackUrl: String = config.pandomain.host  + "/oauthCallback"
 
-  private val accessPermissionCheck = new AccessPermissionCheck(deps.permissions)(deps.executionContext)
+  private val accessPermissionCheck = new AccessEditorialFrontsPermissionCheck(deps.permissions)(deps.executionContext)
+  private val editEditionsPermissionCheck = new EditEditionsPermissionCheck(deps.permissions)(deps.executionContext)
+
   final def AccessAuthAction = AuthAction andThen accessPermissionCheck
   final def AccessAPIAuthAction = APIAuthAction andThen accessPermissionCheck
+  final def EditEditionsAuthAction = APIAuthAction andThen editEditionsPermissionCheck
 
   def getCollectionPermissionFilterByPriority(priority: String, acl: Acl)(implicit ec: ExecutionContext): ActionBuilder[UserRequest, AnyContent] = {
     val permissionsPriority = PermissionsPriority.stringToPermissionPriority(priority)
@@ -54,6 +57,7 @@ abstract class BaseFaciaController(deps: BaseFaciaControllerComponents) extends 
       case Some(EditorialPermission) => AccessAuthAction andThen new EditEditorialFrontsPermissionCheck(acl)
       case Some(CommercialPermission) => AccessAuthAction andThen new LaunchCommercialFrontsPermissionCheck(acl)
       case Some(EmailPermission) => AccessAuthAction andThen new EditEditorialFrontsPermissionCheck(acl)
+      case Some(EditionsPermission) => AccessAuthAction andThen new AccessEditionsPermissionCheck(acl)
       case _ => AccessAuthAction
     }
   }

@@ -4,8 +4,7 @@ export const priorities: Priorities = {
   editorial: {},
   commercial: {},
   training: {},
-  email: {},
-  edition: {}
+  email: {}
 };
 
 export const editionPriorities: { [index: string]: EditionPriority } = {

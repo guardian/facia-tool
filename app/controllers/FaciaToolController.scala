@@ -17,6 +17,7 @@ import updates._
 import logging.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
+import permissions.CollectionPermissions
 
 class FaciaToolController(
                            val acl: Acl,
@@ -34,6 +35,8 @@ class FaciaToolController(
                          )(implicit ec: ExecutionContext)
   extends BaseFaciaController(deps) with BreakingNewsEditCollectionsCheck with ModifyCollectionsPermissionsCheck with Logging {
 
+  private val collectionPermissions = CollectionPermissions(configAgent.get)
+
   def getConfig = AccessAPIAuthAction.async { request =>
     FaciaToolMetrics.ApiUsageCount.increment()
     frontsApi.amazonClient.config.map { configJson =>
@@ -41,7 +44,7 @@ class FaciaToolController(
         Ok(Json.toJson(configJson)).as("application/json")}}}
 
   def getCollection(collectionId: String): Action[AnyContent] = AccessAPIAuthAction.async { implicit request =>
-    val collectionPriorities = configAgent.getFrontsPermissionsPriorityByCollectionId(collectionId)
+    val collectionPriorities = collectionPermissions.getFrontsPermissionsPriorityByCollectionId(collectionId)
 
     withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
       val collectionsFuture = collectionService.fetchCollection(collectionId)
@@ -61,7 +64,7 @@ class FaciaToolController(
 
     withModifyPermissionForCollections(Set(collectionId)) {
 
-      val collectionPriorities = configAgent.getFrontsPermissionsPriorityByCollectionId(collectionId)
+      val collectionPriorities = collectionPermissions.getFrontsPermissionsPriorityByCollectionId(collectionId)
 
       withModifyGroupPermissionForCollections(collectionPriorities, Set(), true) {
         val identity = request.user
@@ -111,7 +114,7 @@ class FaciaToolController(
 
   def treatEdits(collectionId: String) = AccessAPIAuthAction.async { implicit request =>
 
-    val collectionPriorities = configAgent.getFrontsPermissionsPriorityByCollectionId(collectionId)
+    val collectionPriorities = collectionPermissions.getFrontsPermissionsPriorityByCollectionId(collectionId)
 
     withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
 
@@ -158,7 +161,7 @@ class FaciaToolController(
         case update: Update =>
           withModifyPermissionForCollections(Set(update.update.id)) {
 
-            val collectionPriorities = configAgent.getFrontsPermissionsPriorityByCollectionId(update.update.id)
+            val collectionPriorities = collectionPermissions.getFrontsPermissionsPriorityByCollectionId(update.update.id)
 
             withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
 
@@ -189,7 +192,7 @@ class FaciaToolController(
         case remove: Remove =>
           withModifyPermissionForCollections(Set(remove.remove.id)) {
 
-            val collectionPriorities = configAgent.getFrontsPermissionsPriorityByCollectionId(remove.remove.id)
+            val collectionPriorities = collectionPermissions.getFrontsPermissionsPriorityByCollectionId(remove.remove.id)
 
             withModifyGroupPermissionForCollections(collectionPriorities, Set()) {
 
@@ -211,8 +214,8 @@ class FaciaToolController(
         case updateAndRemove: UpdateAndRemove =>
           withModifyPermissionForCollections(Set(updateAndRemove.update.id, updateAndRemove.remove.id)) {
 
-            val fromCollectionPriorities = configAgent.getFrontsPermissionsPriorityByCollectionId(updateAndRemove.update.id)
-            val toCollectionPriorities = configAgent.getFrontsPermissionsPriorityByCollectionId(updateAndRemove.remove.id)
+            val fromCollectionPriorities = collectionPermissions.getFrontsPermissionsPriorityByCollectionId(updateAndRemove.update.id)
+            val toCollectionPriorities = collectionPermissions.getFrontsPermissionsPriorityByCollectionId(updateAndRemove.remove.id)
 
             withModifyGroupPermissionForCollections(fromCollectionPriorities, toCollectionPriorities) {
               val identity = request.user

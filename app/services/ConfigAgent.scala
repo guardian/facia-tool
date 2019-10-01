@@ -2,10 +2,10 @@ package services
 
 import akka.agent.Agent
 import com.gu.facia.api.models.CollectionConfig
-import com.gu.facia.client.models.{ConfigJson => Config}
+import com.gu.facia.client.models.{FrontJson, ConfigJson => Config}
 import conf.ApplicationConfiguration
 import logging.Logging
-import permissions.PermissionsPriority
+import permissions.{EditionsPermission, PermissionsPriority}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -15,6 +15,8 @@ case class CollectionConfigWithId(id: String, config: CollectionConfig)
 
 class ConfigAgent(val config: ApplicationConfiguration, val frontsApi: FrontsApi) extends Logging {
   private lazy val configAgent = Agent[Option[Config]](None)
+
+  def get = configAgent.get()
 
   def refresh() = {
     val futureConfig = frontsApi.amazonClient.config
@@ -54,18 +56,4 @@ class ConfigAgent(val config: ApplicationConfiguration, val frontsApi: FrontsApi
   }
 
   def getConfig(id: String): Option[CollectionConfig] = configAgent.get().flatMap(_.collections.get(id).map(CollectionConfig.fromCollectionJson))
-
-  def getFrontsPermissionsPriorityByCollectionId(id: String): Set[PermissionsPriority] = configAgent.get().map(config => {
-    val fronts = config.fronts
-    fronts.foldLeft(Set.empty[PermissionsPriority]) { case (acc, (_, front)) => {
-      if (front.collections.contains(id)) {
-        val priority = PermissionsPriority.stringToPermissionPriority(front.priority.getOrElse("editorial"))
-        priority match {
-          case Some(p) => acc + p
-          case _ => acc
-        }
-      } else acc
-    }}
-  }).getOrElse(Set.empty)
-
 }
