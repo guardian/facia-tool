@@ -3,7 +3,6 @@ interface Priorities {
   commercial: unknown;
   training: unknown;
   email: unknown;
-  edition: unknown;
 }
 
 export { Priorities };
