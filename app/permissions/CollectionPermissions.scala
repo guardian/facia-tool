@@ -2,8 +2,8 @@ package permissions
 
 import com.gu.facia.client.models.ConfigJson
 
-object CollectionPermissions {
-  def getFrontsPermissionsPriorityByCollectionId(config: Option[ConfigJson], id: String): Set[PermissionsPriority] = config match {
+case class CollectionPermissions(val config: Option[ConfigJson]) {
+  def getFrontsPermissionsPriorityByCollectionId(id: String): Set[PermissionsPriority] = config match {
     case None => Set.empty[PermissionsPriority] // if there are no fronts in config, there can be no permissions....?
     case Some(config) => {
       config.fronts.values.collect {

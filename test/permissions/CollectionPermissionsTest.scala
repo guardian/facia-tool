@@ -28,59 +28,59 @@ class CollectionPermissionsTest extends FreeSpec with Matchers {
 
   "Collection Permission correctly inferred" - {
     "a commercial collection" in {
-      CollectionPermissions.getFrontsPermissionsPriorityByCollectionId(Some(configJson), "a") should contain (CommercialPermission)
+      CollectionPermissions(Some(configJson)).getFrontsPermissionsPriorityByCollectionId("a") should contain (CommercialPermission)
     }
     "a non commercial collection" in {
-      CollectionPermissions.getFrontsPermissionsPriorityByCollectionId(Some(configJson), "c") should not contain (CommercialPermission)
+      CollectionPermissions(Some(configJson)).getFrontsPermissionsPriorityByCollectionId("c") should not contain (CommercialPermission)
     }
     "a non editions collection" in {
-      CollectionPermissions.getFrontsPermissionsPriorityByCollectionId(Some(configJson), "a") should not contain (EditionsPermission)
+      CollectionPermissions(Some(configJson)).getFrontsPermissionsPriorityByCollectionId("a") should not contain (EditionsPermission)
     }
 
   }
 
   "Editorial Permission correctly inferred" - {
     "an editorial collection" in {
-      CollectionPermissions.getFrontsPermissionsPriorityByCollectionId(Some(configJson), "c") should contain (EditorialPermission)
+      CollectionPermissions(Some(configJson)).getFrontsPermissionsPriorityByCollectionId("c") should contain (EditorialPermission)
     }
     "a non editorial collection" in {
-      CollectionPermissions.getFrontsPermissionsPriorityByCollectionId(Some(configJson), "a") should not contain (EditorialPermission)
+      CollectionPermissions(Some(configJson)).getFrontsPermissionsPriorityByCollectionId("a") should not contain (EditorialPermission)
     }
     "a non editions collection" in {
-      CollectionPermissions.getFrontsPermissionsPriorityByCollectionId(Some(configJson), "c") should not contain (EditionsPermission)
+      CollectionPermissions(Some(configJson)).getFrontsPermissionsPriorityByCollectionId("c") should not contain (EditionsPermission)
     }
 
   }
 
   "Email Permission correctly inferred" - {
     "an email collection" in {
-      CollectionPermissions.getFrontsPermissionsPriorityByCollectionId(Some(configJson), "e") should contain (EmailPermission)
+      CollectionPermissions(Some(configJson)).getFrontsPermissionsPriorityByCollectionId("e") should contain (EmailPermission)
     }
     "a non email collection" in {
-      CollectionPermissions.getFrontsPermissionsPriorityByCollectionId(Some(configJson), "a") should not contain (EmailPermission)
+      CollectionPermissions(Some(configJson)).getFrontsPermissionsPriorityByCollectionId("a") should not contain (EmailPermission)
     }
     "a non editions collection" in {
-      CollectionPermissions.getFrontsPermissionsPriorityByCollectionId(Some(configJson), "e") should not contain (EditionsPermission)
+      CollectionPermissions(Some(configJson)).getFrontsPermissionsPriorityByCollectionId("e") should not contain (EditionsPermission)
     }
 
   }
 
   "Training Permission correctly inferred" - {
     "an training collection" in {
-      CollectionPermissions.getFrontsPermissionsPriorityByCollectionId(Some(configJson), "g") should contain (TrainingPermission)
+      CollectionPermissions(Some(configJson)).getFrontsPermissionsPriorityByCollectionId("g") should contain (TrainingPermission)
     }
     "a non training collection" in {
-      CollectionPermissions.getFrontsPermissionsPriorityByCollectionId(Some(configJson), "a") should not contain (TrainingPermission)
+      CollectionPermissions(Some(configJson)).getFrontsPermissionsPriorityByCollectionId("a") should not contain (TrainingPermission)
     }
     "a non editions collection" in {
-      CollectionPermissions.getFrontsPermissionsPriorityByCollectionId(Some(configJson), "g") should not contain (EditionsPermission)
+      CollectionPermissions(Some(configJson)).getFrontsPermissionsPriorityByCollectionId("g") should not contain (EditionsPermission)
     }
 
   }
 
   "Dual Permissions correctly inferred" - {
     "an commercial AND email collection" in {
-      val s = CollectionPermissions.getFrontsPermissionsPriorityByCollectionId(Some(configJson), "x")
+      val s = CollectionPermissions(Some(configJson)).getFrontsPermissionsPriorityByCollectionId("x")
       s should contain (CommercialPermission)
       s should contain (EmailPermission)
       s should not contain (EditionsPermission)
@@ -89,19 +89,19 @@ class CollectionPermissionsTest extends FreeSpec with Matchers {
 
   "Editions Permission correctly inferred" - {
     "an editions collection" in {
-      CollectionPermissions.getFrontsPermissionsPriorityByCollectionId(Some(configJson), "z") should contain (EditionsPermission)
+      CollectionPermissions(Some(configJson)).getFrontsPermissionsPriorityByCollectionId("z") should contain (EditionsPermission)
     }
     "a non commercial collection" in {
-      CollectionPermissions.getFrontsPermissionsPriorityByCollectionId(Some(configJson), "z") should not contain (CommercialPermission)
+      CollectionPermissions(Some(configJson)).getFrontsPermissionsPriorityByCollectionId("z") should not contain (CommercialPermission)
     }
     "a non editorial collection" in {
-      CollectionPermissions.getFrontsPermissionsPriorityByCollectionId(Some(configJson), "z") should not contain (EditorialPermission)
+      CollectionPermissions(Some(configJson)).getFrontsPermissionsPriorityByCollectionId("z") should not contain (EditorialPermission)
     }
     "a non training collection" in {
-      CollectionPermissions.getFrontsPermissionsPriorityByCollectionId(Some(configJson), "z") should not contain (TrainingPermission)
+      CollectionPermissions(Some(configJson)).getFrontsPermissionsPriorityByCollectionId("z") should not contain (TrainingPermission)
     }
     "a non email collection" in {
-      CollectionPermissions.getFrontsPermissionsPriorityByCollectionId(Some(configJson), "z") should not contain (EmailPermission)
+      CollectionPermissions(Some(configJson)).getFrontsPermissionsPriorityByCollectionId("z") should not contain (EmailPermission)
     }
 
 
