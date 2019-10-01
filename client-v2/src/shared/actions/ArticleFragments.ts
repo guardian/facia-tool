@@ -151,11 +151,11 @@ const createArticleEntitiesFromDrop = (
       maybeArticleFragment,
       maybeExternalArticle
     ] = await getArticleEntitiesFromDrop(drop);
-    if (maybeArticleFragment) {
-      dispatch(articleFragmentsReceived([maybeArticleFragment]));
-    }
     if (maybeExternalArticle) {
       dispatch(externalArticleActions.fetchSuccess(maybeExternalArticle));
+    }
+    if (maybeArticleFragment) {
+      dispatch(articleFragmentsReceived([maybeArticleFragment]));
     }
     return maybeArticleFragment;
   };
@@ -173,7 +173,7 @@ const getArticleEntitiesFromDrop = async (
   if (drop.type === 'CAPI') {
     return getArticleEntitiesFromFeedDrop(drop.data);
   }
-  const resourceIdOrUrl = drop.data;
+  const resourceIdOrUrl = drop.data.trim();
   const isURL = isValidURL(resourceIdOrUrl);
   const id = isURL ? getIdFromURL(resourceIdOrUrl) : resourceIdOrUrl;
   const guMeta = isGuardianUrl(resourceIdOrUrl)

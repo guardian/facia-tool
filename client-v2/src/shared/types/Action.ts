@@ -96,6 +96,7 @@ interface PageViewDataReceived {
     data: PageViewStory[];
     frontId: string;
     collectionId: string;
+    clearPreviousData: boolean;
   };
 }
 

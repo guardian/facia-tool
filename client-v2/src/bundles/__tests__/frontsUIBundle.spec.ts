@@ -31,10 +31,11 @@ import {
   defaultState,
   editorCloseFormsForCollection,
   createSelectCollectionsInOpenFronts,
-  selectOpenFrontsCollectionsAndArticles
+  selectOpenFrontsCollectionsAndArticles,
+  selectOpenParentFrontOfArticleFragment
 } from '../frontsUIBundle';
 import initialState from 'fixtures/initialState';
-import initialStateForOpenFronts from './fixtures/initialStateForOpenFronts';
+import initialStateForOpenFronts from '../../fixtures/initialStateForOpenFronts';
 import { frontsConfig } from 'fixtures/frontsConfig';
 import { Action } from 'types/Action';
 import {
@@ -61,6 +62,51 @@ const reducer = (
 
 describe('frontsUIBundle', () => {
   describe('selectors', () => {
+    describe('selectOpenParentFrontOfArticleFragment', () => {
+      const state = set(
+        ['editor', 'collectionIds'],
+        ['collection1', 'collection6'],
+        initialStateForOpenFronts
+      );
+      it('should select the parent front of an article fragment', () => {
+        const result = selectOpenParentFrontOfArticleFragment(
+          state,
+          'articleFragment1'
+        );
+        expect(result).toEqual(['editorialFront', 'collection1']);
+      });
+      it("should return undefined if it does't find anything", () => {
+        const result = selectOpenParentFrontOfArticleFragment(
+          state,
+          'not-a-thing'
+        );
+        expect(result).toEqual([]);
+      });
+      it('should not select from fronts that are not open', () => {
+        const stateWithClosedFronts = set(
+          ['editor', 'frontIdsByPriority', 'editorial'],
+          [],
+          state
+        );
+        const result = selectOpenParentFrontOfArticleFragment(
+          stateWithClosedFronts,
+          'articleFragment1'
+        );
+        expect(result).toEqual([]);
+      });
+      it('should not select from collections that are not open', () => {
+        const stateWithClosedCollections = set(
+          ['editor', 'collectionIds'],
+          [],
+          state
+        );
+        const result = selectOpenParentFrontOfArticleFragment(
+          stateWithClosedCollections,
+          'articleFragment1'
+        );
+        expect(result).toEqual([]);
+      });
+    });
     describe('selectEditorFrontIdsByPriority', () => {
       it('should handle empty priorities', () => {
         expect(

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
 
 interface Dimensions {
@@ -7,7 +7,6 @@ interface Dimensions {
 }
 
 interface Props {
-  element: HTMLElement | null | undefined;
   children: ({ width, height }: Dimensions) => JSX.Element;
 }
 
@@ -24,28 +23,26 @@ const initialState = { width: undefined, height: undefined } as Dimensions;
  * </WithDimensions>
  * ```
  */
-const WithDimensions = ({ element, children }: Props) => {
+const WithDimensions = ({ children }: Props) => {
   const [dimensions, setDimensions] = useState(initialState);
-  useEffect(
-    () => {
-      if (!element) {
+  const ref: React.RefObject<HTMLDivElement> = React.createRef();
+  useLayoutEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+    const observer = new ResizeObserver(([firstEntry]) => {
+      if (!firstEntry) {
         return;
       }
-      const observer = new ResizeObserver(([firstEntry]) => {
-        if (!firstEntry) {
-          return;
-        }
-        const { width, height } = firstEntry.contentRect;
-        setDimensions({ width, height });
-      });
+      const { width, height } = firstEntry.contentRect;
+      setDimensions({ width, height });
+    });
 
-      observer.observe(element);
+    observer.observe(ref.current);
 
-      return () => observer.disconnect();
-    },
-    [element]
-  );
-  return children(dimensions);
+    return () => observer.disconnect();
+  }, []);
+  return <div ref={ref}>{children(dimensions)}</div>;
 };
 
 export default WithDimensions;

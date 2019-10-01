@@ -5,7 +5,6 @@ import { reducer as externalArticles } from '../bundles/externalArticlesBundle';
 import { reducer as featureSwitches } from '../redux/modules/featureSwitches';
 import { reducer as pageViewData } from '../../redux/modules/pageViewData';
 import { ArticleFragment, Group } from 'shared/types/Collection';
-import { PageViewDataPerFront } from 'shared/types/PageViewData';
 
 interface State {
   articleFragments: {
@@ -17,7 +16,7 @@ interface State {
   collections: ReturnType<typeof collections>;
   externalArticles: ReturnType<typeof externalArticles>;
   featureSwitches: ReturnType<typeof featureSwitches>;
-  pageViewData: PageViewDataPerFront[];
+  pageViewData: ReturnType<typeof pageViewData>;
 }
 
 const rootReducer = (state: any = {}, action: any): State => ({

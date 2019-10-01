@@ -70,6 +70,7 @@ const CollectionItemContainer = styled('div')<{
 interface ContainerProps {
   uuid: string;
   frontId: string;
+  collectionId?: string;
   children?: React.ReactNode;
   getNodeProps: () => object;
   onSelect: (uuid: string) => void;
@@ -129,6 +130,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       parentId,
       showMeta,
       frontId,
+      collectionId,
       canDragImage,
       canShowPageViewData = false,
       isLive,
@@ -150,6 +152,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
           return (
             <Article
               frontId={frontId}
+              collectionId={collectionId}
               id={uuid}
               isUneditable={isUneditable}
               {...getNodeProps()}
@@ -217,6 +220,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
                 clearArticleFragmentSelection(uuid);
               }}
               onCancel={() => clearArticleFragmentSelection(uuid)}
+              size={size}
             />
             {getSublinks}
             {numSupportingArticles === 0
