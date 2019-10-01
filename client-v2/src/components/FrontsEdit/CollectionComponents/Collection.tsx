@@ -28,8 +28,7 @@ import {
 import {
   selectIsCollectionOpen,
   editorCloseCollections,
-  selectHasMultipleFrontsOpen,
-  createSelectDoesCollectionHaveOpenForms
+  selectHasMultipleFrontsOpen
 } from 'bundles/frontsUIBundle';
 import { getArticlesForCollections } from 'actions/Collections';
 import { collectionItemSets } from 'constants/fronts';
@@ -64,7 +63,6 @@ type CollectionProps = CollectionPropsBeforeState & {
   previousGroup: Group;
   displayEditWarning: boolean;
   isCollectionLocked: boolean;
-  isEditFormOpen: boolean;
   isOpen: boolean;
   hasContent: boolean;
   hasMultipleFrontsOpen: boolean;
@@ -164,7 +162,6 @@ class Collection extends React.Component<CollectionProps> {
       isOpen,
       onChangeOpenState,
       hasMultipleFrontsOpen,
-      isEditFormOpen,
       discardDraftChangesToCollection: discardDraftChanges,
       hasPrefill,
       isHidden,
@@ -188,8 +185,7 @@ class Collection extends React.Component<CollectionProps> {
         onChangeOpenState={() => onChangeOpenState(id, isOpen)}
         headlineContent={
           hasUnpublishedChanges &&
-          canPublish &&
-          !isEditFormOpen && (
+          canPublish && (
             <Fragment>
               <EditModeVisibility visibleMode="editions">
                 <Button
@@ -219,11 +215,6 @@ class Collection extends React.Component<CollectionProps> {
                   onClick={() => discardDraftChanges(id)}
                   tabIndex={-1}
                   data-testid="collection-discard-button"
-                  title={
-                    isEditFormOpen
-                      ? 'You cannot discard changes to this collection whilst the edit form is open.'
-                      : undefined
-                  }
                 >
                   Discard
                 </Button>
@@ -233,11 +224,6 @@ class Collection extends React.Component<CollectionProps> {
                   onClick={() => this.startPublish(id, frontId)}
                   tabIndex={-1}
                   disabled={isLaunching}
-                  title={
-                    isEditFormOpen
-                      ? 'You cannot launch this collection whilst the edit form is open.'
-                      : undefined
-                  }
                 >
                   {isLaunching ? (
                     <LoadingImageBox>
@@ -303,31 +289,27 @@ const createMapStateToProps = () => {
       priority,
       frontId
     }: CollectionPropsBeforeState
-  ) => {
-    const selectDoesCollectionHaveOpenForms = createSelectDoesCollectionHaveOpenForms();
-    return {
-      isHidden: selectCollectionIsHidden(state, collectionId),
-      hasPrefill: selectCollectionHasPrefill(state, collectionId),
-      hasUnpublishedChanges: selectHasUnpublishedChanges(state, {
-        collectionId
-      }),
-      isCollectionLocked: selectIsCollectionLocked(state, collectionId),
-      groups: selectCollectionStageGroups(selectSharedState(state), {
-        collectionSet: browsingStage,
-        collectionId
-      }),
-      previousGroup: selectPreviously(selectSharedState(state), {
-        collectionId
-      }),
-      displayEditWarning: selectEditWarning(selectSharedState(state), {
-        collectionId
-      }),
-      isOpen: selectIsCollectionOpen(state, collectionId),
-      hasMultipleFrontsOpen: selectHasMultipleFrontsOpen(state, priority),
-      isEditFormOpen: selectDoesCollectionHaveOpenForms(state, collectionId),
-      hasContent: !!selectors.selectById(selectSharedState(state), collectionId)
-    };
-  };
+  ) => ({
+    isHidden: selectCollectionIsHidden(state, collectionId),
+    hasPrefill: selectCollectionHasPrefill(state, collectionId),
+    hasUnpublishedChanges: selectHasUnpublishedChanges(state, {
+      collectionId
+    }),
+    isCollectionLocked: selectIsCollectionLocked(state, collectionId),
+    groups: selectCollectionStageGroups(selectSharedState(state), {
+      collectionSet: browsingStage,
+      collectionId
+    }),
+    previousGroup: selectPreviously(selectSharedState(state), {
+      collectionId
+    }),
+    displayEditWarning: selectEditWarning(selectSharedState(state), {
+      collectionId
+    }),
+    isOpen: selectIsCollectionOpen(state, collectionId),
+    hasMultipleFrontsOpen: selectHasMultipleFrontsOpen(state, priority),
+    hasContent: !!selectors.selectById(selectSharedState(state), collectionId)
+  });
 };
 
 const mapDispatchToProps = (
