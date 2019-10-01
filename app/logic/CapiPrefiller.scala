@@ -45,7 +45,7 @@ object CapiPrefiller {
     val pickedKicker = pickKicker(content)
 
     Prefill(
-      internalPageCode.toInt,
+      internalPageCode,
       newMetadata,
       cutoutImage,
       cardStyle.toneString,
