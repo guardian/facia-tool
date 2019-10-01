@@ -8,7 +8,6 @@ import services.{Capi, Prefill}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
-import scala.util.Try
 import scala.language.postfixOps
 import scala.util.control.NonFatal
 
@@ -59,22 +58,14 @@ class EditionsTemplating(templates: Map[String, EditionTemplate], capi: Capi) ex
         logger.warn(s"Failed to successfully execute CAPI prefill query $prefillQuery", t)
         Nil
     }
-    items.map { case Prefill(pageCode, showByline, showQuotedHeadline, imageCutoutReplace, maybeCutout) =>
-      val (mediaType, cutoutImage) = (imageCutoutReplace, maybeCutout) match {
-        // if cutout desired and a cutout was found then configure cutout
-        case (true, Some(url)) => (Some(MediaType.Cutout), Some(Image(None, None, url, url)))
-        // if no cutout desired then default nothing
-        case (false, _) => (None, None)
-        // finally if a cutout is desired but nothing appropriate was found then explicitly set to use article trail
-        case (true, None) => (Some(MediaType.UseArticleTrail), None)
-      }
-      val metadata = ArticleMetadata.default.copy(
-        showByline = if (showByline) Some(true) else None,
-        showQuotedHeadline = if (showQuotedHeadline) Some(true) else None,
+    items.map { case Prefill(pageCode, metaData, cutoutImage, tone, mediaType, customKicker) =>
+      val articleMetadata = ArticleMetadata.default.copy(
+        showByline = if (metaData.showByline) Some(true) else None,
+        showQuotedHeadline = if (metaData.showQuotedHeadline) Some(true) else None,
         mediaType = mediaType,
         cutoutImage = cutoutImage
       )
-      EditionsArticleSkeleton(pageCode.toString, metadata)
+      EditionsArticleSkeleton(pageCode.toString, articleMetadata)
     }
   }
 }
