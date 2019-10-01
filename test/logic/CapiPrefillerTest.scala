@@ -117,23 +117,23 @@ class CapiPrefillerTest extends FreeSpec with Matchers {
 
   "Prefill can find first contributor with a cutout" - {
     "Can handle empty list" in {
-      CapiPrefiller.getFirstContributorWithCutoutOption(emptyContent.copy(tags = Seq()), Some(true)) shouldBe (Some(false), None)
+      CapiPrefiller.getFirstContributorWithCutoutOption(emptyContent.copy(tags = Seq())) shouldBe (None)
     }
 
     "Can handle single list" in {
       val nothingUseful = emptyTag.copy(`type` = TagType.Tone)
-      CapiPrefiller.getFirstContributorWithCutoutOption(emptyContent.copy(tags = Seq(nothingUseful)), Some(true)) shouldBe (Some(false), None)
+      CapiPrefiller.getFirstContributorWithCutoutOption(emptyContent.copy(tags = Seq(nothingUseful))) shouldBe (None)
     }
 
     "Can handle multiple list with single contributor" in {
       val somethingUseful = emptyTag.copy(`type` = TagType.Contributor).copy(bylineLargeImageUrl = Some("string"))
-      CapiPrefiller.getFirstContributorWithCutoutOption(emptyContent.copy(tags = Seq(somethingUseful)), Some(true)) shouldBe (None, Some("string"))
+      CapiPrefiller.getFirstContributorWithCutoutOption(emptyContent.copy(tags = Seq(somethingUseful))) shouldBe (Some("string"))
     }
 
     "Can handle multiple list with multiple contributor" in {
       val somethingUseful = emptyTag.copy(`type` = TagType.Contributor).copy(bylineLargeImageUrl = Some("string1"))
       val somethingIrrelevant = emptyTag.copy(`type` = TagType.Contributor).copy(bylineLargeImageUrl = Some("string2"))
-      CapiPrefiller.getFirstContributorWithCutoutOption(emptyContent.copy(tags = Seq(somethingUseful, somethingIrrelevant)), Some(true)) shouldBe (None, Some("string1"))
+      CapiPrefiller.getFirstContributorWithCutoutOption(emptyContent.copy(tags = Seq(somethingUseful, somethingIrrelevant))) shouldBe (Some("string1"))
     }
   }
 

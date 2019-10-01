@@ -30,7 +30,9 @@ object CapiPrefiller {
 
     // ResolvedMetaData here has a ton of booleans, but some may have been set naively
     // If the cutout bool is set, we want to find the cutout values and add them in to a sub-object
-    val (_, maybeCutout) = CapiPrefiller.getFirstContributorWithCutoutOption(content, Some(metadata.imageCutoutReplace))
+    val maybeCutout =
+      if (metadata.imageCutoutReplace) CapiPrefiller.getFirstContributorWithCutoutOption(content)
+      else None
 
     val (mediaType, cutoutImage) = (metadata.imageCutoutReplace, maybeCutout) match {
       // if cutout desired and a cutout was found then configure cutout
@@ -53,18 +55,14 @@ object CapiPrefiller {
       pickedKicker)
   }
 
-  def getFirstContributorWithCutoutOption(content: Content, maybeImageCutoutReplace: Option[Boolean]): (Option[Boolean], Option[String]) =
-    maybeImageCutoutReplace match {
-      case Some(true) =>
-        content.tags
-          .filter(_.`type` == TagType.Contributor)
-          .flatMap(_.bylineLargeImageUrl)
-          .headOption match {
-          case found@Some(_) => (None, found)
-          case _ => (Some(false), None)
-        }
-      case _ => (None, None)
-  }
+  def getFirstContributorWithCutoutOption(content: Content): Option[String] =
+    content.tags
+      .filter(_.`type` == TagType.Contributor)
+      .flatMap(_.bylineLargeImageUrl)
+      .headOption match {
+      case found@Some(_) => found
+      case _ => None
+    }
 
   private[logic] def pickKicker(content: Content): Option[String] =
     content.tags.find(tag => tag.`type` == TagType.Series) match {

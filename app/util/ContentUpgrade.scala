@@ -1,12 +1,13 @@
 package util
 
 import com.gu.contentapi.client.model.v1.Content
-import com.gu.facia.api.utils.{CardStyle, ResolvedMetaData}
+import com.gu.facia.api.utils.ResolvedMetaData
 import logic.CapiPrefiller
 import org.json4s.JsonAST._
 import org.json4s.JsonAST.JObject
 import com.gu.contentapi.json.CirceDecoders._
 import io.circe.{Json, parser}
+import logging.Logging
 import org.json4s.JValue
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods
@@ -14,7 +15,7 @@ import org.json4s.jackson.JsonMethods
 import scala.util.{Failure, Success, Try}
 
 /** Helper for Facia tool - passes over the JSON that is proxied, adding in defaults */
-object ContentUpgrade {
+object ContentUpgrade extends Logging {
   val ContentFields = Seq(
     "content",
     "results",
@@ -46,7 +47,10 @@ object ContentUpgrade {
   def upgradeItem(json: JValue): JValue = {
     Try(getUpgradedItem(json)) match {
       case Success(capiItem) => capiItem
-      case Failure(_) => json
+      case Failure(_) => {
+        logger.warn(s"Unable to upgrade provided json: ${json}")
+        json
+      }
     }
   }
 
@@ -69,7 +73,10 @@ object ContentUpgrade {
             )
           )
       }
-      case _ => json
+      case _ => {
+        logger.warn(s"Unable to prefill provided json: ${json}")
+        json
+      }
     }
   }
 
