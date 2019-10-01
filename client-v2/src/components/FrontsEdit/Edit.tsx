@@ -14,7 +14,7 @@ import {
 } from 'bundles/frontsUIBundle';
 import { State } from 'types/State';
 import { ActionError } from 'types/Action';
-import FrontContainer from './FrontContainer';
+import FrontContainer from './FrontSection';
 import FeedSection from '../FeedSection';
 import ErrorBannner from '../ErrorBanner';
 import SectionContainer from '../layout/SectionContainer';

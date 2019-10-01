@@ -1,4 +1,4 @@
-import createAsyncResourceBundle from '../';
+import createAsyncResourceBundle, { globalLoadingIndicator } from '../';
 
 const { actions, reducer, selectors, initialState } = createAsyncResourceBundle(
   'books'
@@ -204,7 +204,7 @@ describe('createAsyncResourceBundle', () => {
       describe('Success action handler', () => {
         it('should merge data and mark the state as not loading when a success action is dispatched', () => {
           const newState = reducer(
-            { ...initialState },
+            { ...initialState, loadingIds: ['@@ALL@@'] },
             actions.fetchSuccess({ uuid: { id: 'uuid', author: 'Mark Twain' } })
           );
           expect(newState.loadingIds).toEqual([]);
@@ -240,6 +240,22 @@ describe('createAsyncResourceBundle', () => {
           expect(newState.data).toEqual({
             uuid: { id: 'uuid', author: 'Mark Twain' },
             uuid2: { id: 'uuid2', author: 'Elizabeth Gaskell' }
+          });
+        });
+        it('should remove global loading indicators when merging arrays', () => {
+          const { reducer: indexedReducer } = createAsyncResourceBundle(
+            'books',
+            {
+              indexById: true
+            }
+          );
+          const newState = indexedReducer(
+            { ...initialState, loadingIds: [globalLoadingIndicator] },
+            actions.fetchSuccess([{ id: 'uuid', author: 'Mark Twain' }])
+          );
+          expect(newState.loadingIds).toEqual([]);
+          expect(newState.data).toEqual({
+            uuid: { id: 'uuid', author: 'Mark Twain' }
           });
         });
         it('should keep order information when merging arrays', () => {
