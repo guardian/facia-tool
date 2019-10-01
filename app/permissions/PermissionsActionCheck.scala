@@ -1,7 +1,7 @@
 package permissions
 
 import com.gu.pandomainauth.action.UserRequest
-import com.gu.permissions.PermissionsProvider
+import com.gu.permissions.{PermissionDefinition, PermissionsProvider}
 import controllers.BaseFaciaController
 import play.api.mvc._
 import services.ConfigAgent
@@ -16,6 +16,16 @@ trait PermissionActionFilter extends ActionFilter[UserRequest] with Logging {
   val testAccess: String => Authorization
   val restrictedAction: String
 
+  def testUserPermission(client: PermissionsProvider, permission: PermissionDefinition) = {
+    (email: String) => {
+      val hasPermission = client.hasPermission(permission, email)
+      if (hasPermission) {
+        AccessGranted
+      } else {
+        AccessDenied
+      }
+    }
+  }
 
   override def filter[A](request: UserRequest[A]): Future[Option[Result]] = Future.successful {
     testAccess(request.user.email) match {
@@ -84,19 +94,14 @@ class AccessEditionsPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext)
 class AccessEditorialFrontsPermissionCheck(client: PermissionsProvider)(implicit ec: ExecutionContext) extends PermissionActionFilter {
   val executionContext = ec
   val restrictedAction = "access editorial fronts"
-  val testAccess: String => Authorization = (email: String) => {
-    val hasPermission = client.hasPermission(Permissions.FrontsAccess, email)
-    if(hasPermission) { AccessGranted } else { AccessDenied }
-  }
+  val testAccess: String => Authorization = testUserPermission(client, Permissions.FrontsAccess)
 }
+
 
 class EditEditionsPermissionCheck(client: PermissionsProvider)(implicit ec: ExecutionContext) extends PermissionActionFilter {
   val executionContext = ec
   val restrictedAction = "edit editions"
-  val testAccess: String => Authorization = (email: String) => {
-    val hasPermission = client.hasPermission(Permissions.EditEditions, email)
-    if(hasPermission) { AccessGranted } else { AccessDenied }
-  }
+  val testAccess: String => Authorization = testUserPermission(client, Permissions.EditEditions)
 }
 
 class ConfigPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext) extends PermissionActionFilter {
