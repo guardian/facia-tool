@@ -9,4 +9,5 @@ object Permissions {
   val LaunchCommercialFronts = PermissionDefinition("launch_commercial_fronts", "fronts")
   val LaunchEditorialFronts = PermissionDefinition("launch_editorial_fronts", "fronts")
   val EditEditorialFronts = PermissionDefinition("edit_editorial_fronts", "fronts")
+  val EditEditions = PermissionDefinition("edit_editions", "fronts")
 }

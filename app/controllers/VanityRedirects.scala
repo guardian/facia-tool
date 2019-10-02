@@ -12,4 +12,5 @@ class VanityRedirects(val acl: Acl, val deps: BaseFaciaControllerComponents)(imp
 
   def untrail(path: String) = Action { request =>
     NoCache(Redirect("/" + path, 301))}
+
 }
