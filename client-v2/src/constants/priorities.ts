@@ -12,6 +12,14 @@ export const editionPriorities: { [index: string]: EditionPriority } = {
     description: 'Daily Edition',
     address: 'daily-edition'
   },
+  americanEdition: {
+    description: 'American Edition',
+    address: 'american-edition'
+  },
+  australianEdition: {
+    description: 'Australian Edition',
+    address: 'australian-edition'
+  },
   trainingEdition: {
     description: 'Training Edition',
     address: 'training-edition'
