@@ -5,4 +5,9 @@ interface Priorities {
   email: unknown;
 }
 
-export { Priorities };
+interface EditionPriority {
+  address: string;
+  description: string;
+}
+
+export { Priorities, EditionPriority };
