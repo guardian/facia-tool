@@ -10,12 +10,12 @@ import services.editions.db.EditionsDB
 class EditionsPublishing(publishedBucket: EditionsBucket, previewBucket: EditionsBucket, db: EditionsDB) {
 
   def updatePreview(issue: EditionsIssue) = {
-    val previewIssue = issue.toPublishedIssue()
+    val previewIssue = issue.toPreviewIssue
     previewBucket.putIssue(previewIssue)
   }
 
   def publish(issue: EditionsIssue, user: User, now: OffsetDateTime) = {
-    val publishedIssue = issue.toPublishedIssue(Some(now.format(DateTimeFormatter.ISO_DATE_TIME)))
+    val publishedIssue = issue.toPublishedIssue(now.format(DateTimeFormatter.ISO_DATE_TIME))
 
     // Archive a copy
     publishedBucket.putIssue(publishedIssue)
