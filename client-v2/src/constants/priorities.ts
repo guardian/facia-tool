@@ -19,5 +19,9 @@ export const editionPriorities: { [index: string]: EditionPriority } = {
   australianEdition: {
     description: 'Australian Edition',
     address: 'australian-edition'
+  },
+  trainingEdition: {
+    description: 'Training Edition',
+    address: 'training-edition'
   }
 };
