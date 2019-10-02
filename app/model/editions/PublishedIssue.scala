@@ -52,6 +52,6 @@ case class PublishedIssue(
   id: String,
   name: String,
   issueDate: LocalDate,
-  version: Option[String],
+  version: String,
   fronts: List[PublishedFront]
 )

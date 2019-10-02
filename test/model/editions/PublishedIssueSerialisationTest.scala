@@ -31,10 +31,11 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
           |  "id" : "4290573248905743296789524389623",
           |  "name" : "Daily Edition",
           |  "issueDate" : "2019-09-30",
+          |  "version" : "preview",
           |  "fronts" : [ ]
           |}""".stripMargin
 
-      val previewIssue = issue.toPublishedIssue()
+      val previewIssue = issue.toPreviewIssue
       val json = Json.prettyPrint(Json.toJson(previewIssue))
 
       json shouldBe expectedJson
@@ -50,7 +51,7 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
           |  "fronts" : [ ]
           |}""".stripMargin
 
-      val publishedIssue = issue.toPublishedIssue(Some("foo"))
+      val publishedIssue = issue.toPublishedIssue("foo")
       val json = Json.prettyPrint(Json.toJson(publishedIssue))
 
       json shouldBe expectedJson

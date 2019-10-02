@@ -185,7 +185,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
         ).hide
       )
       testIssue.fronts.size shouldBe 3
-      val publishedIssue = testIssue.toPublishedIssue(None)
+      val publishedIssue = testIssue.toPublishedIssue("foo")
       publishedIssue.fronts.size shouldBe 2
       publishedIssue.fronts.find(_.name == "special") shouldBe None
     }
@@ -200,7 +200,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
         front("empty")
       )
       testIssue.fronts.size shouldBe 3
-      val publishedIssue = testIssue.toPublishedIssue(None)
+      val publishedIssue = testIssue.toPublishedIssue("foo")
       publishedIssue.fronts.size shouldBe 1
       publishedIssue.fronts.find(_.name == "culture").value.collections.size shouldBe 2
     }
@@ -218,7 +218,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
         front("empty")
       )
       testIssue.fronts.size shouldBe 3
-      val publishedIssue = testIssue.toPublishedIssue(None)
+      val publishedIssue = testIssue.toPublishedIssue("foo")
       publishedIssue.fronts.size shouldBe 1
       publishedIssue.fronts.find(_.name == "culture").value.collections.size shouldBe 2
     }
