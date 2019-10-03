@@ -226,7 +226,7 @@ trait IssueQueries {
       .apply()
   }
 
-  def publishIssue(issueId: String, user: User, now: OffsetDateTime): String = DB localTx { implicit session =>
+  def createIssueVersion(issueId: String, user: User, now: OffsetDateTime): EditionIssueVersionId = DB localTx { implicit session =>
     val userName = user.firstName + " " + user.lastName
     val truncatedNow = EditionsDB.truncateDateTime(now)
 

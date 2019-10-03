@@ -19,7 +19,7 @@ class EditionsPublishing(publishedBucket: EditionsBucket, previewBucket: Edition
 
   def publish(issue: EditionsIssue, user: User, now: OffsetDateTime) = {
     // Bump the recently published counters
-    val versionId = db.publishIssue(issue.id, user, now)
+    val versionId = db.createIssueVersion(issue.id, user, now)
 
     val markers = Markers.appendEntries(
       Map (

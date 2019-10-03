@@ -36,7 +36,7 @@ object IssueVersionEvent {
 }
 
 case class IssueVersion(
-  id: String,
+  id: EditionIssueVersionId,
   launchedOn: Long,
   launchedBy: String,
   launchedEmail: String,
