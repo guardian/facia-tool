@@ -46,7 +46,8 @@ const formValues = {
   showMainVideo: false,
   coverCardImageReplace: false,
   coverCardMobileImage: {},
-  coverCardTabletImage: {}
+  coverCardTabletImage: {},
+  pickedKicker: "kick"
 };
 
 const createStateWithChangedFormFields = (
@@ -179,13 +180,15 @@ describe('ArticleFragmentForm transform functions', () => {
         "Sister of academic's killer warned police he was mentally ill edited";
       const trailText =
         'Police noted concerns over Femi Nandap, who went on to stab lecturer, but released him edited';
+      const pickedKicker = "kick"
       const state = createStateWithChangedFormFields(
         initialState,
         'exampleId',
         {
           byline,
           headline,
-          trailText
+          trailText,
+          pickedKicker
         }
       );
       expect(
@@ -200,7 +203,8 @@ describe('ArticleFragmentForm transform functions', () => {
         headline:
           "Sister of academic's killer warned police he was mentally ill edited",
         trailText:
-          'Police noted concerns over Femi Nandap, who went on to stab lecturer, but released him edited'
+          'Police noted concerns over Femi Nandap, who went on to stab lecturer, but released him edited',
+        pickedKicker: "kick"
       });
     });
     it('should derive values, setting the imageReplace value if necessary', () => {

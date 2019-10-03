@@ -61,7 +61,7 @@ interface ComponentProps extends ContainerProps {
   articleFragmentId: string;
   showKickerTag: boolean;
   showKickerSection: boolean;
-  pickedKicker: string;
+  pickedKicker: string | undefined;
   kickerOptions: ArticleTag;
   cutoutImage?: string;
   primaryImage: ValidationResponse | null;
@@ -328,7 +328,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     const getKickerContents = () => {
       const uniqueKickerSuggestions = [
         ...new Set([
-          pickedKicker,
+          pickedKicker || '',
           kickerOptions.webTitle || '',
           kickerOptions.sectionName || ''
         ])
@@ -336,7 +336,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       return (
         <>
           <span>Suggested:&nbsp;</span>
-          {uniqueKickerSuggestions.map(renderKickerSuggestion)}
+          {uniqueKickerSuggestions.filter( value => !!value ).map(renderKickerSuggestion)}
           <span>&nbsp;&nbsp;&nbsp;</span>
           <Field
             name={'clearKickerSuggestion'}
@@ -755,6 +755,7 @@ interface ContainerProps {
   imageCutoutReplace: boolean;
   imageHide: boolean;
   kickerOptions: ArticleTag;
+  pickedKicker: string | undefined;
   showByline: boolean;
   editableFields?: string[];
   showKickerTag: boolean;
@@ -845,7 +846,7 @@ const createMapStateToProps = () => {
       coverCardImageReplace: valueSelector(state, 'coverCardImageReplace'),
       coverCardMobileImage: valueSelector(state, 'coverCardMobileImage'),
       coverCardTabletImage: valueSelector(state, 'coverCardTabletImage'),
-      pickedKicker: !!article && article.pickedKicker
+      pickedKicker: !!article ? article.pickedKicker : undefined
     };
   };
 };

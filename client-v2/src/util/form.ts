@@ -19,6 +19,7 @@ export interface ArticleFragmentFormData {
   showQuotedHeadline: boolean;
   showLargeHeadline: boolean;
   customKicker: string;
+  pickedKicker: string;
   isBreaking: boolean;
   showLivePlayable: boolean;
   byline: string;
@@ -34,7 +35,6 @@ export interface ArticleFragmentFormData {
   slideshow: Array<ImageData | void> | void;
   showKickerTag: boolean;
   showKickerSection: boolean;
-  pickedKicker: string;
   imageReplace: boolean;
   overrideArticleMainMedia: boolean;
   showMainVideo: boolean;
