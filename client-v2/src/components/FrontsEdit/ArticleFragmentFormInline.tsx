@@ -61,7 +61,7 @@ interface ComponentProps extends ContainerProps {
   articleFragmentId: string;
   showKickerTag: boolean;
   showKickerSection: boolean;
-  pickedKicker: string,
+  pickedKicker: string;
   kickerOptions: ArticleTag;
   cutoutImage?: string;
   primaryImage: ValidationResponse | null;
@@ -310,35 +310,45 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       );
     };
 
-    const renderKickerSuggestion = (value: string, index: number, array: (string)[]) => (
+    const renderKickerSuggestion = (
+      value: string,
+      index: number,
+      array: Array<string>
+    ) => (
       <Field
-        name={"kickerSuggestion"+value}
-        key={"kickerSuggestion"+value}
+        name={'kickerSuggestion' + value}
+        key={'kickerSuggestion' + value}
         component={KickerSuggestionButton}
         buttonText={value}
         size="s"
         onClick={() => setCustomKicker(value)}
       />
-    )
+    );
 
     const getKickerContents = () => {
-      const uniqueKickerSuggestions = [...new Set([pickedKicker, kickerOptions.webTitle || '', kickerOptions.sectionName || ''])];
+      const uniqueKickerSuggestions = [
+        ...new Set([
+          pickedKicker,
+          kickerOptions.webTitle || '',
+          kickerOptions.sectionName || ''
+        ])
+      ];
       return (
         <>
           <span>Suggested:&nbsp;</span>
-        {uniqueKickerSuggestions.map(renderKickerSuggestion)}
-        <span>&nbsp;&nbsp;&nbsp;</span>
-        <Field
-          name={"clearKickerSuggestion"}
-          key={"clearKickerSuggestion"}
-          component={KickerSuggestionButton}
-          buttonText={"Clear"}
-          style={{fontStyle: 'italic'}}
-          size="s"
-          onClick={() => setCustomKicker("")}
-        />
+          {uniqueKickerSuggestions.map(renderKickerSuggestion)}
+          <span>&nbsp;&nbsp;&nbsp;</span>
+          <Field
+            name={'clearKickerSuggestion'}
+            key={'clearKickerSuggestion'}
+            component={KickerSuggestionButton}
+            buttonText={'Clear'}
+            style={{ fontStyle: 'italic' }}
+            size="s"
+            onClick={() => setCustomKicker('')}
+          />
         </>
-      )
+      );
     };
 
     return (
@@ -835,7 +845,7 @@ const createMapStateToProps = () => {
       coverCardImageReplace: valueSelector(state, 'coverCardImageReplace'),
       coverCardMobileImage: valueSelector(state, 'coverCardMobileImage'),
       coverCardTabletImage: valueSelector(state, 'coverCardTabletImage'),
-      pickedKicker: !!article && article.pickedKicker,
+      pickedKicker: !!article && article.pickedKicker
     };
   };
 };
