@@ -313,7 +313,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     const renderKickerSuggestion = (
       value: string,
       index: number,
-      array: Array<string>
+      array: string[]
     ) => (
       <Field
         name={'kickerSuggestion' + value}
