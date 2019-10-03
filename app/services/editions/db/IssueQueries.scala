@@ -1,5 +1,6 @@
 package services.editions.db
 
+import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, OffsetDateTime}
 
 import com.gu.pandomainauth.model.User
@@ -8,6 +9,8 @@ import play.api.libs.json.Json
 import scalikejdbc._
 import services.editions.{DbEditionsArticle, DbEditionsCollection, DbEditionsFront}
 import services.editions.CollectionsHelpers._
+
+import scala.collection.immutable
 
 trait IssueQueries {
 
@@ -223,9 +226,13 @@ trait IssueQueries {
       .apply()
   }
 
-  def publishIssue(issueId: String, user: User, now: OffsetDateTime) = DB localTx { implicit session =>
+  def createIssueVersion(issueId: String, user: User, now: OffsetDateTime): EditionIssueVersionId = DB localTx { implicit session =>
     val userName = user.firstName + " " + user.lastName
     val truncatedNow = EditionsDB.truncateDateTime(now)
+
+    // versionId is a date string as the downstream Archiver lambda assumes it is a date
+    // TODO move to a GUID
+    val versionId = now.format(DateTimeFormatter.ISO_DATE_TIME)
 
     sql"""
     UPDATE edition_issues
@@ -234,6 +241,35 @@ trait IssueQueries {
         launched_email = ${user.email}
     WHERE id = $issueId
     """.execute().apply()
+
+    sql"""
+    INSERT INTO issue_versions (
+      id
+      , issue_id
+      , launched_on
+      , launched_by
+      , launched_email
+    ) VALUES (
+      $versionId
+      , $issueId
+      , $truncatedNow
+      , $userName
+      , ${user.email}
+    );
+    """.execute().apply()
+
+    sql"""
+    INSERT INTO issue_versions_events (
+      version_id
+      , event_time
+      , status
+    ) VALUES (
+      $versionId
+      , $truncatedNow
+      , ${IssueVersionStatus.Started.toString}
+    )
+    RETURNING version_id;
+    """.map(_.string("version_id")).single.apply.get
   }
 
   def deleteIssue(issueId: String) = DB localTx { implicit session =>
@@ -241,5 +277,31 @@ trait IssueQueries {
       DELETE FROM edition_issues
       WHERE id = $issueId
     """.execute().apply()
+  }
+
+  def getIssueVersions(issueId: String): List[IssueVersion] = DB localTx { implicit session =>
+    case class Row(version: IssueVersion, event: IssueVersionEvent)
+
+    val rows: List[Row] = sql"""
+      SELECT
+        v.id                AS version_id
+        , v.launched_on     AS version_launched_on
+        , v.launched_by     AS version_launched_by
+        , v.launched_email  AS version_launched_email
+        , e.event_time      AS event_time
+        , e.status          AS event_status
+        , e.message         AS event_message
+      FROM issue_versions v
+      LEFT JOIN issue_versions_events e
+        ON v.id = e.version_id
+      WHERE v.issue_id = $issueId
+      ORDER BY launched_on DESC
+    """.map(rs => Row(IssueVersion.fromRow(rs), IssueVersionEvent.fromRow(rs)))
+      .list()
+      .apply()
+
+    (rows.groupBy(_.version) map {
+      case (version, rows) => version.copy(events = rows.map(_.event))
+    }).toList
   }
 }

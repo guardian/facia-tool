@@ -104,6 +104,7 @@ POST        /editions-api/editions/:name/issues                  controllers.Edi
 GET         /editions-api/issues/:id                             controllers.EditionsController.getIssue(id)
 DELETE      /editions-api/issues/:id                             controllers.EditionsController.deleteIssue(id)
 GET         /editions-api/issues/:id/summary                     controllers.EditionsController.getIssueSummary(id)
+GET         /editions-api/issues/:id/versions                    controllers.EditionsController.getVersions(id)
 POST        /editions-api/issues/:id/publish                     controllers.EditionsController.publishIssue(id)
 GET         /editions-api/issues/:id/preview                     controllers.EditionsController.getPreviewEdition(id)
 
