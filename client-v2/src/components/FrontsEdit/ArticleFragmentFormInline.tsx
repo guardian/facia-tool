@@ -336,7 +336,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       return (
         <>
           <span>Suggested:&nbsp;</span>
-          {uniqueKickerSuggestions.filter( value => !!value ).map(renderKickerSuggestion)}
+          {uniqueKickerSuggestions
+            .filter(value => !!value)
+            .map(renderKickerSuggestion)}
           <span>&nbsp;&nbsp;&nbsp;</span>
           <Field
             name={'clearKickerSuggestion'}

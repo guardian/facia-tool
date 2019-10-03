@@ -33,5 +33,5 @@ export default {
   kicker: 'News',
   tone: undefined,
   hasMainVideo: false,
-  pickedKicker: "kick"
+  pickedKicker: 'kick'
 } as DerivedArticle;
