@@ -34,6 +34,7 @@ export interface ArticleFragmentFormData {
   slideshow: Array<ImageData | void> | void;
   showKickerTag: boolean;
   showKickerSection: boolean;
+  pickedKicker: string;
   imageReplace: boolean;
   overrideArticleMainMedia: boolean;
   showMainVideo: boolean;
@@ -106,6 +107,7 @@ export const getInitialValuesForArticleFragmentForm = (
         showKickerTag: article.showKickerTag || false,
         showKickerSection: article.showKickerSection || false,
         customKicker: article.customKicker || '',
+        pickedKicker: article.pickedKicker || '',
         isBreaking: article.isBreaking || false,
         showLivePlayable: article.showLivePlayable || false,
         byline: article.byline || '',

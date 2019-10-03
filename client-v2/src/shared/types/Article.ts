@@ -15,6 +15,7 @@ type DerivedArticle = Partial<
     thumbnail?: string | undefined;
     cutoutThumbnail?: string | undefined;
     kicker?: string;
+    pickedKicker?: string;
     isLive: boolean;
     tone: string | undefined;
     hasMainVideo: boolean;
