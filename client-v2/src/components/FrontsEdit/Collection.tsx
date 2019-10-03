@@ -76,7 +76,7 @@ const VisibilityDividerEl = styled.div`
 
 const VisibilityDivider = ({ notifications }: { notifications: string[] }) =>
   notifications.length ? (
-    <VisibilityDividerEl>
+    <VisibilityDividerEl className="visibility-divider">
       {notifications.map(notification => (
         <Notification key={notification}>{notification}</Notification>
       ))}

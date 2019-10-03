@@ -27,6 +27,9 @@ const RootContainer = styled.div`
     ${DropZoneContainer} {
       pointer-events: initial;
     }
+    .visibility-divider {
+      opacity: 0;
+    }
   }
 `;
 
