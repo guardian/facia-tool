@@ -118,6 +118,10 @@ const AppFonts = createGlobalStyle`
   input, textarea {
     font-family: TS3TextSans, 'Helvetica Neue', Helvetica, Arial;
   }
+
+  a {
+    color: ${theme.shared.base.colors.text}
+  }
 `;
 
 const AppContainer = styled.div`
