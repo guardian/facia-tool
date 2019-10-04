@@ -33,6 +33,8 @@ import { distanceInWordsStrict } from 'date-fns';
 import { DerivedArticle } from 'shared/types/Article';
 import { ImageMetadataContainer } from '../image/ImageMetaDataContainer';
 import { theme } from 'constants/theme';
+import ArticleGraph from '../article/ArticleGraph';
+import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
 
 const SnapLinkBodyContainer = styled(CollectionItemBody)`
   justify-content: space-between;
@@ -47,7 +49,25 @@ const SnapLinkURL = styled.p`
   overflow: hidden;
 `;
 
-const ImageWrapper = styled.div``;
+const PageViewDataWrapper = styled.div`
+  width: 45px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-right: 5px;
+  font-size: 12px;
+  height: 35px;
+  padding-bottom: 3px;
+`;
+
+const ImageAndGraphWrapper = styled.div<{ size: CollectionItemSizes }>`
+  display: flex;
+  flex-direction: row;
+  ${props =>
+    props.size === 'medium' &&
+    `flex-wrap: wrap-reverse;
+    justify-content: flex-end;`}
+`;
 
 interface ContainerProps {
   selectSharedState?: (state: any) => State;
@@ -57,6 +77,8 @@ interface ContainerProps {
   onAddToClipboard?: (uuid: string) => void;
   onClick?: () => void;
   id: string;
+  collectionId?: string;
+  frontId: string;
   draggable?: boolean;
   size?: CollectionItemSizes;
   textSize?: CollectionItemSizes;
@@ -64,11 +86,13 @@ interface ContainerProps {
   fade?: boolean;
   children?: React.ReactNode;
   isUneditable?: boolean;
+  canShowPageViewData: boolean;
 }
 
 interface SnapLinkProps extends ContainerProps {
   articleFragment: ArticleFragment;
   article: DerivedArticle | undefined;
+  featureFlagPageViewData: boolean;
 }
 
 const SnapLink = ({
@@ -83,6 +107,10 @@ const SnapLink = ({
   articleFragment,
   isUneditable,
   article,
+  collectionId,
+  frontId,
+  canShowPageViewData = true,
+  featureFlagPageViewData,
   ...rest
 }: SnapLinkProps) => {
   const headline =
@@ -152,7 +180,17 @@ const SnapLink = ({
             </SnapLinkURL>
           </CollectionItemHeadingContainer>
         </CollectionItemContent>
-        <ImageWrapper>
+        <ImageAndGraphWrapper size={size}>
+          {featureFlagPageViewData && canShowPageViewData && collectionId && (
+            <PageViewDataWrapper data-testid="page-view-graph">
+              <ArticleGraph
+                articleId={id}
+                collectionId={collectionId}
+                frontId={frontId}
+              />
+            </PageViewDataWrapper>
+          )}
+          {/* )} */}
           <ThumbnailSmall
             imageHide={article && article.imageHide}
             url={article && article.imageReplace ? article.thumbnail : ''}
@@ -162,7 +200,7 @@ const SnapLink = ({
             imageReplace={article && article.imageReplace}
             imageCutoutReplace={article && article.imageCutoutReplace}
           />
-        </ImageWrapper>
+        </ImageAndGraphWrapper>
         <HoverActionsAreaOverlay
           disabled={isUneditable}
           justify={'space-between'}
@@ -201,7 +239,11 @@ const mapStateToProps = () => {
     const article = selectArticle(sharedState, props.id);
     return {
       articleFragment: selectArticleFragment(sharedState, props.id),
-      article
+      article,
+      featureFlagPageViewData: selectFeatureValue(
+        selectSharedState(state),
+        'page-view-data-visualisation'
+      )
     };
   };
 };

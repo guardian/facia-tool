@@ -54,8 +54,11 @@ const getPageViewData = (
   const articles = articleIds
     .map(_ => selectArticleFromArticleFragment(state, _))
     .filter(_ => _) as DerivedArticle[];
+  // the url path is either the urlPath value, for articles, or the href for snaplink
   const urlPaths: string[] = articles
-    .map(article => article.urlPath)
+    .map(article =>
+      article.urlPath ? article.urlPath : article.href && article.href.substr(1)
+    )
     .filter(_ => _) as string[];
   const data = await fetchPageViewData(frontId, urlPaths);
   const dataWithArticleIds = convertToStoriesData(data, articles);
@@ -90,9 +93,11 @@ const getArticleIdFromOphanData = (
   ophanData: PageViewDataFromOphan,
   articles: DerivedArticle[]
 ): string | undefined => {
-  // the path from ophan has a slash at the front, removing below
-  const ophanPathClean = ophanData.path.substr(1);
-  const matchingArticle = articles.find(a => a.urlPath === ophanPathClean);
+  // if we have a urlPath, we need to trim the Ophan data path to make the comparison
+  // if we have an href - because the article is a snap link - we don't need to trim
+  const matchingArticle = articles.find(
+    a => a.urlPath === ophanData.path.substr(1) || a.href === ophanData.path
+  );
   return matchingArticle ? matchingArticle.uuid : undefined;
 };
 
