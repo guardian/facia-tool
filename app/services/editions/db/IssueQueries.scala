@@ -15,7 +15,7 @@ import scala.collection.immutable
 trait IssueQueries {
 
   def insertIssue(
-                   name: String,
+                   edition: Edition,
                    skeleton: EditionsIssueSkeleton,
                    user: User,
                    now: OffsetDateTime
@@ -31,7 +31,7 @@ trait IssueQueries {
             created_on,
             created_by,
             created_email
-          ) VALUES ($name, ${skeleton.issueDate}, ${skeleton.zoneId.toString}, $truncatedNow, $userName, ${user.email})
+          ) VALUES (${edition.entryName}, ${skeleton.issueDate}, ${skeleton.zoneId.toString}, $truncatedNow, $userName, ${user.email})
           RETURNING id;
        """.map(_.string("id")).single().apply().get
 
@@ -82,7 +82,7 @@ trait IssueQueries {
     issueId
   }
 
-  def listIssues(editionName: String, dateFrom: LocalDate, dateTo: LocalDate) = DB readOnly { implicit session =>
+  def listIssues(edition: Edition, dateFrom: LocalDate, dateTo: LocalDate) = DB readOnly { implicit session =>
     sql"""
     SELECT
       id,
@@ -96,7 +96,7 @@ trait IssueQueries {
       launched_by,
       launched_email
     FROM edition_issues
-    WHERE issue_date BETWEEN $dateFrom AND $dateTo AND name = $editionName
+    WHERE issue_date BETWEEN $dateFrom AND $dateTo AND name = ${edition.entryName}
     """.map(EditionsIssue.fromRow(_)).list().apply()
   }
 
