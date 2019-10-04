@@ -35,6 +35,8 @@ import { ImageMetadataContainer } from '../image/ImageMetaDataContainer';
 import { theme } from 'constants/theme';
 import ArticleGraph from '../article/ArticleGraph';
 import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
+import PageViewDataWrapper from '../PageViewDataWrapper';
+import ImageAndGraphWrapper from '../image/ImageAndGraphWrapper';
 
 const SnapLinkBodyContainer = styled(CollectionItemBody)`
   justify-content: space-between;
@@ -47,26 +49,6 @@ const SnapLinkURL = styled.p`
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-`;
-
-const PageViewDataWrapper = styled.div`
-  width: 45px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  padding-right: 5px;
-  font-size: 12px;
-  height: 35px;
-  padding-bottom: 3px;
-`;
-
-const ImageAndGraphWrapper = styled.div<{ size: CollectionItemSizes }>`
-  display: flex;
-  flex-direction: row;
-  ${props =>
-    props.size === 'medium' &&
-    `flex-wrap: wrap-reverse;
-    justify-content: flex-end;`}
 `;
 
 interface ContainerProps {
@@ -190,7 +172,6 @@ const SnapLink = ({
               />
             </PageViewDataWrapper>
           )}
-          {/* )} */}
           <ThumbnailSmall
             imageHide={article && article.imageHide}
             url={article && article.imageReplace ? article.thumbnail : ''}
