@@ -15,6 +15,7 @@ import {
 } from 'shared/selectors/shared';
 import { CollectionItemSets } from 'shared/types/Collection';
 import pandaFetch from 'services/pandaFetch';
+import { isValidURL } from 'shared/util/url';
 
 const totalPeriodInHours = 1;
 const intervalInMinutes = 10;
@@ -54,10 +55,12 @@ const getPageViewData = (
   const articles = articleIds
     .map(_ => selectArticleFromArticleFragment(state, _))
     .filter(_ => _) as DerivedArticle[];
-  // the url path is either the urlPath value, for articles, or the href for snaplink
   const urlPaths: string[] = articles
-    .map(article =>
-      article.urlPath ? article.urlPath : article.href && article.href.substr(1)
+    .map(
+      article =>
+        article.urlPath
+          ? article.urlPath // it's an article
+          : article.href && !isValidURL(article.href) && article.href.substr(1) // it's a snaplink
     )
     .filter(_ => _) as string[];
   const data = await fetchPageViewData(frontId, urlPaths);
