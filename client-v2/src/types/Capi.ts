@@ -139,6 +139,7 @@ interface CapiArticle {
     };
     tone?: string;
     cutout?: string;
+    pickedKicker?: string;
   };
 }
 

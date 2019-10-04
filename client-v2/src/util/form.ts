@@ -19,6 +19,7 @@ export interface ArticleFragmentFormData {
   showQuotedHeadline: boolean;
   showLargeHeadline: boolean;
   customKicker: string;
+  pickedKicker: string;
   isBreaking: boolean;
   showLivePlayable: boolean;
   byline: string;
