@@ -46,7 +46,8 @@ import { selectPriority } from 'selectors/pathSelectors';
 import { CollectionWithArticles } from 'shared/types/PageViewData';
 import {
   createSelectArticlesInCollection,
-  selectSharedState
+  selectSharedState,
+  createSelectArticleFromArticleFragment
 } from 'shared/selectors/shared';
 import { ThunkResult } from 'types/Store';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
@@ -467,15 +468,17 @@ const selectHasMultipleFrontsOpen = createSelector(
 
 const defaultOpenForms = [] as [];
 
-const selectOpenArticleFragmentForms = (state: GlobalState, frontId: string) =>
-  state.editor.selectedArticleFragments[frontId] || defaultOpenForms;
+const selectOpenArticleFragmentForms = (
+  state: GlobalState,
+  { frontId }: { frontId: string }
+) => state.editor.selectedArticleFragments[frontId] || defaultOpenForms;
 
 const selectIsArticleFragmentFormOpen = (
   state: GlobalState,
   articleFragmentId: string,
   frontId: string
 ) => {
-  return (selectOpenArticleFragmentForms(state, frontId) || []).some(
+  return (selectOpenArticleFragmentForms(state, { frontId }) || []).some(
     _ => _.id === articleFragmentId
   );
 };
@@ -486,15 +489,59 @@ const createSelectCollectionIdsWithOpenForms = () =>
     forms => uniq(forms.map(_ => _.collectionId))
   );
 
-const selectCollectionId = (_: GlobalState, collectionId: string) =>
-  collectionId;
-
 const createSelectDoesCollectionHaveOpenForms = () =>
   createSelector(
     selectOpenArticleFragmentForms,
-    selectCollectionId,
-    (forms, collectionId) => forms.some(_ => _.collectionId === collectionId)
+    (
+      _: unknown,
+      { frontId, collectionId }: { frontId: string; collectionId: string }
+    ) => ({ frontId, collectionId }),
+    (forms, { collectionId }) =>
+      forms.some(form => form.collectionId === collectionId)
   );
+
+const selectCollectionId = (
+  _: GlobalState,
+  { collectionId }: { collectionId: string }
+) => collectionId;
+
+const createSelectOpenArticleFragmentIdsForCollection = () =>
+  createSelector(
+    selectOpenArticleFragmentForms,
+    selectCollectionId,
+    (forms, collectionId) =>
+      forms.filter(_ => _.collectionId === collectionId).map(_ => _.id)
+  );
+
+// NB: This selector is not memoized.
+const createSelectOpenCollectionItemTitlesForCollection = () => {
+  const selectOpenArticleFragmentIdsForCollection = createSelectOpenArticleFragmentIdsForCollection();
+  const selectArticleFromArticleFragment = createSelectArticleFromArticleFragment();
+  return (
+    state: GlobalState,
+    { frontId, collectionId }: { frontId: string; collectionId: string }
+  ): Array<{ uuid: string; title: string }> => {
+    const articleFragmentIds = selectOpenArticleFragmentIdsForCollection(
+      state,
+      { collectionId, frontId }
+    );
+    return compact(
+      articleFragmentIds
+        .map(id =>
+          selectArticleFromArticleFragment(selectSharedState(state), id)
+        )
+        .filter(_ => _)
+        .map(
+          derivedArticle =>
+            derivedArticle &&
+            derivedArticle.headline && {
+              uuid: derivedArticle.uuid,
+              title: derivedArticle.headline
+            }
+        )
+    );
+  };
+};
 
 const selectFrontBrowsingStage = (state: GlobalState, frontId: string) =>
   state.editor.frontIdsByBrowsingStage[frontId] || 'draft';
@@ -856,6 +903,8 @@ export {
   selectIsArticleFragmentFormOpen,
   selectOpenArticleFragmentForms,
   selectOpenParentFrontOfArticleFragment,
+  createSelectDoesCollectionHaveOpenForms,
+  createSelectOpenCollectionItemTitlesForCollection,
   createSelectEditorFrontsByPriority,
   createSelectFrontIdWithOpenAndStarredStatesByPriority,
   selectEditorFrontIds,
@@ -878,7 +927,7 @@ export {
   selectIsFrontOverviewOpen,
   selectHasMultipleFrontsOpen,
   createSelectCollectionIdsWithOpenForms,
-  createSelectDoesCollectionHaveOpenForms,
+  createSelectOpenArticleFragmentIdsForCollection,
   OpenArticleFragmentData,
   changedBrowsingStage,
   EditorCloseFormsForCollection,
