@@ -5,13 +5,13 @@ import java.time.{LocalDate, ZonedDateTime}
 import com.gu.contentapi.client.model.v1.SearchResponse
 import com.gu.facia.api.utils.ResolvedMetaData
 import fixtures.TestEdition
-import model.editions.{ArticleMetadata, CapiPrefillQuery, Image, MediaType}
-import org.scalatest.{FreeSpec, Matchers, OptionValues}
+import model.editions.{ArticleMetadata, CapiPrefillQuery, Edition, Image, MediaType}
+import org.scalatest.{EitherValues, FreeSpec, Matchers, OptionValues}
 import services.{Capi, Prefill}
 
 import scala.concurrent.Future
 
-class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues {
+class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues with EitherValues {
 
   val allFalseMetadata = ResolvedMetaData(false, false, false, false, false, false, false, false, false, false, false, false, false, false)
   val imageUrl = "https://media.giphy.com/media/K3PYNk8oh3HGM/source.gif"
@@ -65,7 +65,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues {
   "Creating a template" - {
     "Sets the prefill metadata from CAPI for Culture 1" in {
       val templating = new EditionsTemplating(TestEdition.templates, fakeCapi)
-      val issue = templating.generateEditionTemplate("test-edition", LocalDate.of(2019, 9, 30)).value
+      val issue = templating.generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2019, 9, 30)).right.value
       issue.fronts.size shouldBe 4
       val arts = issue.fronts.find(_.name == "Culture").value.collections.find(_.name == "Arts").value
       arts.items.size shouldBe 2
@@ -89,7 +89,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues {
     }
     "Sets the prefill metadata from CAPI for Culture 2" in {
       val templating = new EditionsTemplating(TestEdition.templates, fakeCapi)
-      val issue = templating.generateEditionTemplate("test-edition", LocalDate.of(2019, 9, 30)).value
+      val issue = templating.generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2019, 9, 30)).right.value
       issue.fronts.size shouldBe 4
       val arts = issue.fronts.find(_.name == "Culture").value.collections.find(_.name == "Arts").value
       arts.items.size shouldBe 2
@@ -112,7 +112,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues {
 
     "Sets the prefill metadata from CAPI for UK News" in {
       val templating = new EditionsTemplating(TestEdition.templates, fakeCapi)
-      val issue = templating.generateEditionTemplate("test-edition", LocalDate.of(2019, 9, 30)).value
+      val issue = templating.generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2019, 9, 30)).right.value
       issue.fronts.size shouldBe 4
       val frontPage = issue.fronts.find(_.name == "UK News").value.collections.find(_.name == "Front Page").value
       frontPage.items.size shouldBe 1

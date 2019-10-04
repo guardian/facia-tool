@@ -18,7 +18,7 @@ object TestEdition {
     availability = Daily()
   )
 
-  val templates: Map[String, EditionTemplate] = Map("test-edition" -> template)
+  val templates: Map[Edition, EditionTemplate] = Map(Edition.TrainingEdition -> template)
 }
 
 object FrontTopStories {
