@@ -6,7 +6,7 @@ import play.api.libs.json.{JsObject, Json}
 import services.editions.EditionsTemplating
 import java.time.{LocalDate, OffsetDateTime}
 
-import model.editions.{EditionsFrontMetadata, EditionsFrontendCollectionWrapper, EditionsTemplates}
+import model.editions.{Edition, EditionsFrontMetadata, EditionsFrontendCollectionWrapper, EditionsTemplates}
 import services.Capi
 import services.editions.db.EditionsDB
 import services.editions.publishing.EditionsPublishing
@@ -20,6 +20,8 @@ import play.api.Logger
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 import scala.collection.JavaConverters._
+import cats.syntax.either._
+import play.api.mvc.Result
 
 class EditionsController(db: EditionsDB,
                          templating: EditionsTemplating,
@@ -30,15 +32,14 @@ class EditionsController(db: EditionsDB,
   def createIssue(name: String) = EditEditionsAuthAction(parse.json[CreateIssue]) { req =>
     val form = req.body
 
-    templating.generateEditionTemplate(name, form.issueDate).map { skeleton =>
-      val issueId = db.insertIssue(name, skeleton, req.user, OffsetDateTime.now())
+    val result = for {
+      edition <- Either.fromOption[Result, Edition](Edition.withNameOption(name), NotFound(s"Edition $name not found"))
+      skeleton <- templating.generateEditionTemplate(edition, form.issueDate)
+      issueId = db.insertIssue(edition, skeleton, req.user, OffsetDateTime.now())
+      issue <- Either.fromOption(db.getIssue(issueId), NotFound("Issue created but could not retrieve it from the database"))
+    } yield issue
 
-      db.getIssue(issueId).map { issue =>
-        Created(Json.toJson(issue))
-      }.getOrElse(NotFound("Issue created but could not retrieve it from the database"))
-    }.getOrElse {
-      NotFound(s"Edition $name not found")
-    }
+    result.fold(identity, issue => Created(Json.toJson(issue)))
   }
 
   def getIssue(id: String)= EditEditionsAuthAction { _ =>
@@ -67,18 +68,24 @@ class EditionsController(db: EditionsDB,
     }.getOrElse(NotFound(s"Issue $id not found"))
   }
 
+  def getVersions(id: String) = AccessAPIAuthAction { _ =>
+    db.getIssue(id)
+      .map(_ => Ok(Json.toJson(db.getIssueVersions(id))))
+      .getOrElse(NotFound(s"Issue $id not found"))
+  }
+
   def getAvailableEditions = EditEditionsAuthAction { _ =>
     Ok(Json.toJson(EditionsTemplates.getAvailableEditions))
   }
 
-  def listIssues(name: String) = EditEditionsAuthAction { req =>
+  def listIssues(edition: Edition) = EditEditionsAuthAction { req =>
     Try {
       val dateFrom = req.queryString.get("dateFrom").map(_.head).get
       val dateTo = req.queryString.get("dateTo").map(_.head).get
       (LocalDate.parse(dateFrom), LocalDate.parse(dateTo))
     }.map {
       case (localDateFrom, localDateTo) => {
-        Ok(Json.toJson(db.listIssues(name, localDateFrom, localDateTo)))
+        Ok(Json.toJson(db.listIssues(edition, localDateFrom, localDateTo)))
       }
     }.getOrElse(BadRequest("Invalid or missing date"))
   }

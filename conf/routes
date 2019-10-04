@@ -99,11 +99,12 @@ POST        /api/usage                               controllers.GridProxy.addUs
 
 # Editions
 GET         /editions-api/editions                               controllers.EditionsController.getAvailableEditions
-GET         /editions-api/editions/:name/issues                  controllers.EditionsController.listIssues(name)
+GET         /editions-api/editions/:edition/issues               controllers.EditionsController.listIssues(edition: Edition)
 POST        /editions-api/editions/:name/issues                  controllers.EditionsController.createIssue(name)
 GET         /editions-api/issues/:id                             controllers.EditionsController.getIssue(id)
 DELETE      /editions-api/issues/:id                             controllers.EditionsController.deleteIssue(id)
 GET         /editions-api/issues/:id/summary                     controllers.EditionsController.getIssueSummary(id)
+GET         /editions-api/issues/:id/versions                    controllers.EditionsController.getVersions(id)
 POST        /editions-api/issues/:id/publish                     controllers.EditionsController.publishIssue(id)
 GET         /editions-api/issues/:id/preview                     controllers.EditionsController.getPreviewEdition(id)
 

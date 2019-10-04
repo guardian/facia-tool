@@ -57,6 +57,9 @@ TwirlKeys.templateImports ++= Seq(
     "play.api.Play.current"
 )
 
+// include the enum path bindables
+routesImport += "model.editions._"
+
 val awsVersion = "1.11.293"
 val capiModelsVersion = "14.1"
 val capiClientVersion = "14.3"

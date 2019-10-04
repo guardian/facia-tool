@@ -7,7 +7,7 @@ import scalikejdbc.WrappedResultSet
 
 case class EditionsIssue(
     id: String,
-    displayName: String,
+    edition: Edition,
     timezoneId: String,
     issueDate: LocalDate,
     createdOn: Long,
@@ -22,7 +22,8 @@ case class EditionsIssue(
 
   def toPublishedIssue(version: String): PublishedIssue = PublishedIssue(
     id,
-    displayName,
+    edition,
+    edition,
     issueDate,
     version,
     fronts
@@ -38,7 +39,7 @@ object EditionsIssue {
   def fromRow(rs: WrappedResultSet, prefix: String = ""): EditionsIssue = {
     EditionsIssue(
       rs.string(prefix + "id"),
-      rs.string(prefix + "name"),
+      Edition.withName(rs.string(prefix + "name")),
       rs.string(prefix + "timezone_id"),
       rs.localDate(prefix + "issue_date"),
       rs.zonedDateTime(prefix + "created_on").toInstant.toEpochMilli,
