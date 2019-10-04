@@ -28,7 +28,8 @@ import {
 import {
   selectIsCollectionOpen,
   editorCloseCollections,
-  selectHasMultipleFrontsOpen
+  selectHasMultipleFrontsOpen,
+  createSelectDoesCollectionHaveOpenForms
 } from 'bundles/frontsUIBundle';
 import { getArticlesForCollections } from 'actions/Collections';
 import { collectionItemSets } from 'constants/fronts';
@@ -38,6 +39,7 @@ import { theme, styled } from 'constants/theme';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { fetchPrefill } from 'bundles/capiFeedBundle';
 import LoadingGif from 'images/icons/loading.gif';
+import OpenFormsWarning from './OpenFormsWarning';
 
 interface CollectionPropsBeforeState {
   id: string;
@@ -64,6 +66,7 @@ type CollectionProps = CollectionPropsBeforeState & {
   displayEditWarning: boolean;
   isCollectionLocked: boolean;
   isOpen: boolean;
+  hasOpenForms: boolean;
   hasContent: boolean;
   hasMultipleFrontsOpen: boolean;
   onChangeOpenState: (id: string, isOpen: boolean) => void;
@@ -73,6 +76,12 @@ type CollectionProps = CollectionPropsBeforeState & {
   setHidden: (id: string, isHidden: boolean) => void;
   isHidden: boolean;
 };
+
+interface CollectionState {
+  showOpenFormsWarning: boolean;
+  isPreviouslyOpen: boolean;
+  isLaunching: boolean;
+}
 
 const PreviouslyCollectionContainer = styled.div``;
 
@@ -112,10 +121,28 @@ const PreviouslyCircularCaret = styled(ButtonCircularCaret)`
   }
 `;
 
-class Collection extends React.Component<CollectionProps> {
+const OpenFormsWarningContainer = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  border: 1px solid ${theme.shared.base.colors.brandColor};
+  background-color: ${theme.shared.base.colors.brandColorLight};
+  padding: 10px;
+  font-family: TS3TextSans;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 14px;
+`;
+
+const ActionButtonsContainer = styled.div`
+  display: flex;
+`;
+
+class Collection extends React.Component<CollectionProps, CollectionState> {
   public state = {
     isPreviouslyOpen: false,
-    isLaunching: false
+    isLaunching: false,
+    showOpenFormsWarning: false
   };
 
   // added to prevent setState call on unmounted component
@@ -165,7 +192,8 @@ class Collection extends React.Component<CollectionProps> {
       discardDraftChangesToCollection: discardDraftChanges,
       hasPrefill,
       isHidden,
-      hasContent
+      hasContent,
+      hasOpenForms
     } = this.props;
 
     const { isPreviouslyOpen, isLaunching } = this.state;
@@ -208,32 +236,42 @@ class Collection extends React.Component<CollectionProps> {
                   </Button>
                 )}
               </EditModeVisibility>
-              <EditModeVisibility visibleMode="fronts">
-                <Button
-                  size="l"
-                  priority="default"
-                  onClick={() => discardDraftChanges(id)}
-                  tabIndex={-1}
-                  data-testid="collection-discard-button"
-                >
-                  Discard
-                </Button>
-                <Button
-                  size="l"
-                  priority="primary"
-                  onClick={() => this.startPublish(id, frontId)}
-                  tabIndex={-1}
-                  disabled={isLaunching}
-                >
-                  {isLaunching ? (
-                    <LoadingImageBox>
-                      <img src={LoadingGif} />
-                    </LoadingImageBox>
-                  ) : (
-                    'Launch'
-                  )}
-                </Button>
-              </EditModeVisibility>
+              <ActionButtonsContainer
+                onMouseEnter={this.showOpenFormsWarning}
+                onMouseLeave={this.hideOpenFormsWarning}
+              >
+                {hasOpenForms && this.state.showOpenFormsWarning && (
+                  <OpenFormsWarningContainer>
+                    <OpenFormsWarning collectionId={id} frontId={frontId} />
+                  </OpenFormsWarningContainer>
+                )}
+                <EditModeVisibility visibleMode="fronts">
+                  <Button
+                    size="l"
+                    priority="default"
+                    onClick={() => discardDraftChanges(id)}
+                    tabIndex={-1}
+                    data-testid="collection-discard-button"
+                  >
+                    Discard
+                  </Button>
+                  <Button
+                    size="l"
+                    priority="primary"
+                    onClick={() => this.startPublish(id, frontId)}
+                    tabIndex={-1}
+                    disabled={isLaunching}
+                  >
+                    {isLaunching ? (
+                      <LoadingImageBox>
+                        <img src={LoadingGif} />
+                      </LoadingImageBox>
+                    ) : (
+                      'Launch'
+                    )}
+                  </Button>
+                </EditModeVisibility>
+              </ActionButtonsContainer>
             </Fragment>
           )
         }
@@ -275,12 +313,18 @@ class Collection extends React.Component<CollectionProps> {
       </CollectionDisplay>
     );
   }
+
+  private showOpenFormsWarning = () =>
+    this.setState({ showOpenFormsWarning: true });
+  private hideOpenFormsWarning = () =>
+    this.setState({ showOpenFormsWarning: false });
 }
 
 const createMapStateToProps = () => {
   const selectCollectionStageGroups = createSelectCollectionStageGroups();
   const selectEditWarning = createSelectCollectionEditWarning();
   const selectPreviously = createSelectPreviouslyLiveArticlesInCollection();
+  const selectHasOpenForms = createSelectDoesCollectionHaveOpenForms();
   return (
     state: State,
     {
@@ -308,7 +352,8 @@ const createMapStateToProps = () => {
     }),
     isOpen: selectIsCollectionOpen(state, collectionId),
     hasMultipleFrontsOpen: selectHasMultipleFrontsOpen(state, priority),
-    hasContent: !!selectors.selectById(selectSharedState(state), collectionId)
+    hasContent: !!selectors.selectById(selectSharedState(state), collectionId),
+    hasOpenForms: selectHasOpenForms(state, { collectionId, frontId })
   });
 };
 
