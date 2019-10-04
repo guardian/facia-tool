@@ -183,8 +183,9 @@ const mapStateToProps = () => {
       collectionId
     }),
     hasOpenForms:
-      selectCollectionIdsWithOpenForms(state, frontId).indexOf(collectionId) !==
-      -1
+      selectCollectionIdsWithOpenForms(state, { frontId }).indexOf(
+        collectionId
+      ) !== -1
   });
 };
 
