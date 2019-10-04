@@ -291,71 +291,64 @@ class FeedsContainer extends React.Component<
           showReviewSearch={false}
           rightHandContainer={<ClipboardHeader />}
         />
-        <FixedContentContainer>
-          <ResultsHeadingContainer>
-            <div>
-              {displaySearchFilters ? (
+        {!displaySearchFilters && (
+          <FixedContentContainer>
+            <ResultsHeadingContainer>
+              <div>
                 <Title>
-                  {'Results'}
+                  Latest
                   <ShortVerticalPinline />
                 </Title>
-              ) : (
-                <>
-                  <Title>
-                    {'Latest'}
-                    <ShortVerticalPinline />
-                  </Title>
-                  <RefreshButton
-                    disabled={this.isLoading}
-                    onClick={() => this.runSearchAndRestartPolling()}
-                  >
-                    {this.isLoading ? 'Loading' : 'Refresh'}
-                  </RefreshButton>
-                </>
-              )}
-            </div>
-            <Sorters>
-              <TopOptions>
-                <RadioGroup>
-                  <RadioButton
-                    checked={this.state.capiFeedIndex === 0}
-                    onChange={() => this.handleFeedClick(0)}
-                    label="Live"
-                    inline
-                    name="capiFeed"
-                  />
-                  <RadioButton
-                    checked={this.state.capiFeedIndex === 1}
-                    onChange={() => this.handleFeedClick(1)}
-                    label="Draft"
-                    inline
-                    name="capiFeed"
-                  />
-                </RadioGroup>
-                {pagination && hasPages && (
-                  <PaginationContainer>
-                    <Pagination
-                      pageChange={this.handlePageChange}
-                      currentPage={pagination.currentPage}
-                      totalPages={pagination.totalPages}
-                    />
-                  </PaginationContainer>
-                )}
-              </TopOptions>
-              <SortByContainer>
-                <label htmlFor="sort-results">Sort by:</label>
-                <select
-                  id="sort-results"
-                  onChange={this.sortResultsBy}
-                  value={this.state.sortByParam}
+                <RefreshButton
+                  disabled={this.isLoading}
+                  onClick={() => this.runSearchAndRestartPolling()}
                 >
-                  <option value="first-publication">First published</option>
-                  <option value="published">Latest published</option>
-                </select>
-              </SortByContainer>
-            </Sorters>
-          </ResultsHeadingContainer>
-        </FixedContentContainer>
+                  {this.isLoading ? 'Loading' : 'Refresh'}
+                </RefreshButton>
+              </div>
+              <Sorters>
+                <TopOptions>
+                  <RadioGroup>
+                    <RadioButton
+                      checked={this.state.capiFeedIndex === 0}
+                      onChange={() => this.handleFeedClick(0)}
+                      label="Live"
+                      inline
+                      name="capiFeed"
+                    />
+                    <RadioButton
+                      checked={this.state.capiFeedIndex === 1}
+                      onChange={() => this.handleFeedClick(1)}
+                      label="Draft"
+                      inline
+                      name="capiFeed"
+                    />
+                  </RadioGroup>
+                  {pagination && hasPages && (
+                    <PaginationContainer>
+                      <Pagination
+                        pageChange={this.handlePageChange}
+                        currentPage={pagination.currentPage}
+                        totalPages={pagination.totalPages}
+                      />
+                    </PaginationContainer>
+                  )}
+                </TopOptions>
+                <SortByContainer>
+                  <label htmlFor="sort-results">Sort by:</label>
+                  <select
+                    id="sort-results"
+                    onChange={this.sortResultsBy}
+                    value={this.state.sortByParam}
+                  >
+                    <option value="first-publication">First published</option>
+                    <option value="published">Latest published</option>
+                  </select>
+                </SortByContainer>
+              </Sorters>
+            </ResultsHeadingContainer>
+          </FixedContentContainer>
+        )}
       </React.Fragment>
     );
   };
