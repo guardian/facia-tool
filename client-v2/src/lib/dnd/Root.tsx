@@ -4,6 +4,7 @@ import createStore, { Store } from './store';
 import DragIntentContainer from 'shared/components/DragIntentContainer';
 import styled from 'styled-components';
 import { DropZoneContainer } from './DropZone';
+import { VisibilityDividerEl } from 'components/FrontsEdit/Collection';
 
 const { Provider: StoreProvider, Consumer: StoreConsumer } = createContext(
   null as Store | null
@@ -27,7 +28,7 @@ const RootContainer = styled.div`
     ${DropZoneContainer} {
       pointer-events: initial;
     }
-    .visibility-divider {
+    ${VisibilityDividerEl} {
       opacity: 0;
     }
   }

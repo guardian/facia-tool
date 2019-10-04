@@ -48,7 +48,7 @@ const Notification = styled.span`
 const selectGrey = ({ theme }: { theme: Theme }) =>
   theme.shared.colors.greyMediumLight;
 
-const VisibilityDividerEl = styled.div`
+export const VisibilityDividerEl = styled.div`
   display: flex;
   font-weight: bold;
   font-size: 12px;
@@ -76,7 +76,7 @@ const VisibilityDividerEl = styled.div`
 
 const VisibilityDivider = ({ notifications }: { notifications: string[] }) =>
   notifications.length ? (
-    <VisibilityDividerEl className="visibility-divider">
+    <VisibilityDividerEl>
       {notifications.map(notification => (
         <Notification key={notification}>{notification}</Notification>
       ))}
