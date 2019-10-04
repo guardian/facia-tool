@@ -59,12 +59,13 @@ class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], c
         logger.warn(s"Failed to successfully execute CAPI prefill query $prefillQuery", t)
         Nil
     }
-    items.map { case Prefill(pageCode, metaData, cutoutImage, tone, mediaType, customKicker) =>
+    items.map { case Prefill(pageCode, metaData, cutoutImage, _, mediaType, pickedKicker) =>
       val articleMetadata = ArticleMetadata.default.copy(
         showByline = if (metaData.showByline) Some(true) else None,
         showQuotedHeadline = if (metaData.showQuotedHeadline) Some(true) else None,
         mediaType = mediaType,
-        cutoutImage = cutoutImage
+        cutoutImage = cutoutImage,
+        customKicker = pickedKicker
       )
       EditionsArticleSkeleton(pageCode.toString, articleMetadata)
     }
