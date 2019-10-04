@@ -75,7 +75,6 @@ const CollectionContainer = styled(ContentContainer)<{
 const HeadlineContentContainer = styled.span`
   position: relative;
   margin-right: -11px;
-  line-height: 0px;
   display: flex;
 `;
 
