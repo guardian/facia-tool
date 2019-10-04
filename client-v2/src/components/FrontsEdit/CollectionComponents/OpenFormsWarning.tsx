@@ -36,7 +36,7 @@ const OpenFormsWarning = ({ openArticleTitles }: ComponentProps) => (
                 element.scrollIntoView({
                   behavior: 'smooth',
                   inline: 'start',
-                  block: 'start'
+                  block: 'end'
                 });
               }
             }}
