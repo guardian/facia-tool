@@ -27,6 +27,7 @@ const colors = {
   whiteLight: '#F6F6F6',
   white: '#FFF', // lightest
   orange: '#FF7F0F',
+  orangeVeryLight: '#FFE9D6',
   orangeLight: '#FD8A2E',
   orangeDark: '#E05E00',
   orangeFaded: '#D08B5A',
@@ -42,6 +43,8 @@ const base = {
     textMuted: colors.greyMediumLight,
     textLight: colors.white,
     textDark: colors.blackDark,
+    brandColor: colors.orange,
+    brandColorLight: colors.orangeVeryLight,
     highlightColor: colors.orange,
     highlightColorFocused: colors.orangeLight,
     button: colors.blackLight,
