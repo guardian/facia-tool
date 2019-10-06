@@ -1,13 +1,29 @@
 package services.editions.publishing.events
 
-import model.editions.IssueVersionStatus
+import java.time.{LocalDate, LocalDateTime}
+
+import model.editions.{Edition, IssueVersionStatus}
 import org.scalatest.{FunSuite, Matchers}
 
 class PublishEventsProcessorTest extends FunSuite with Matchers {
 
   private val initialMessagesInQueue = List(
-    PublishEventMessage(receiptHandle = "123", event = PublishEvent(IssueVersionStatus.Published, "issue 123")),
-    PublishEventMessage(receiptHandle = "456", event = PublishEvent(IssueVersionStatus.Published, "issue 456"))
+    PublishEventMessage(receiptHandle = "123", event = PublishEvent(
+      edition = Edition.DailyEdition,
+      version = "2019-01-01T13:05:01.000Z",
+      issueDate = LocalDate.of(2019, 1, 1),
+      status = IssueVersionStatus.Published,
+      message = "Publication processing complete",
+      timestamp = LocalDateTime.of(2019, 1, 1, 13, 5, 1, 0)
+    )),
+    PublishEventMessage(receiptHandle = "456", event = PublishEvent(
+      edition = Edition.DailyEdition,
+      version = "2019-01-01T13:05:01.000Z",
+      issueDate = LocalDate.of(2019, 1, 1),
+      status = IssueVersionStatus.Published,
+      message = "Publication processing complete",
+      timestamp = LocalDateTime.of(2019, 1, 1, 13, 5, 1, 0)
+    ))
   )
 
   test("queue messages were deleted after updating events in DB was successful") {
