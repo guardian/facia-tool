@@ -35,7 +35,6 @@ const Container = styled(ContentContainer)<ContainerProps>`
   flex-direction: column;
   flex: 1;
   margin-left: 10px;
-  margin-top: 43px;
   max-height: calc(100% - 43px);
   overflow-y: scroll;
   padding: 0;
@@ -48,6 +47,14 @@ const ContainerBody = styled.div`
   padding-bottom: ${theme.front.paddingForAddFrontButton}px;
 `;
 
+const OverviewContainerHeadingPinline = styled(ContainerHeadingPinline)`
+  font-family: TS3TextSans;
+  font-size: 15px;
+  font-weight: bold;
+  line-height: normal;
+  padding-bottom: 5px;
+`;
+
 const FrontCollectionsOverview = ({
   id,
   front,
@@ -55,7 +62,7 @@ const FrontCollectionsOverview = ({
   currentCollection
 }: FrontCollectionOverviewProps) => (
   <Container setBack isClosed={false}>
-    <ContainerHeadingPinline>Overview</ContainerHeadingPinline>
+    <OverviewContainerHeadingPinline>Overview</OverviewContainerHeadingPinline>
     <ContainerBody>
       {front.collections.map(collectionId => (
         <CollectionOverview
