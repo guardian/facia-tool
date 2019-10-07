@@ -145,7 +145,6 @@ There are a few areas that we'd like to address in the medium to long term for t
 
 There are plenty of inconsistencies with the way we name things. This is a little manifesto for cleaning some of them up.
 
-- The types `Card` and `Card` refer to the same thing. The latter is preferred as this type refers to either an article or a snap link, and in other curation context this list could grow. We should rename instances of `Card` in favor of `Card`.
 - We confuse terminology for actions, selectors and API calls -- terms like `get`, `select` and `fetch` are easily confused, and prefixes and suffixes are used interchangably, when they're used at all. For precision's sake, we should rely on the following -
  - Actions should be prefixed with `action`.
  - Selectors be prefixed with `select`. Selector factories should use `createSelect`
