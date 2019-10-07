@@ -255,10 +255,9 @@ const mapStateToProps = () => {
     isClipboardOpen: selectIsClipboardOpen(state),
     isClipboardFocused: selectIsClipboardFocused(state),
     clipboardHasContent: !!selectClipboardArticles(state).length,
-    clipboardHasOpenForms: !!selectCollectionIdsWithOpenForms(
-      state,
-      clipboardId
-    ).length
+    clipboardHasOpenForms: !!selectCollectionIdsWithOpenForms(state, {
+      frontId: clipboardId
+    }).length
   });
 };
 

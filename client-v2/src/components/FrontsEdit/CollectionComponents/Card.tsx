@@ -44,6 +44,8 @@ import { styled } from 'constants/theme';
 import { getPillarColor } from 'shared/util/getPillarColor';
 import { isLive as isArticleLive } from 'util/CAPIUtils';
 
+export const createCollectionItemId = (id: string) => `collection-item-${id}`;
+
 const imageDropTypes = [
   ...gridDropTypes,
   DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
@@ -205,7 +207,12 @@ class Card extends React.Component<ArticleContainerProps> {
     };
 
     return (
-      <CardContainer size={size} isLive={isLive} pillarId={pillarId}>
+      <CardContainer
+        id={createCollectionItemId(uuid)}
+        size={size}
+        isLive={isLive}
+        pillarId={pillarId}
+      >
         {isSelected ? (
           <>
             <CardFormInline

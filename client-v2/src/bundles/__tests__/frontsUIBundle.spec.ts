@@ -32,7 +32,8 @@ import {
   editorCloseFormsForCollection,
   createSelectCollectionsInOpenFronts,
   selectOpenFrontsCollectionsAndArticles,
-  selectOpenParentFrontOfCard
+  selectOpenParentFrontOfCard,
+  createSelectDoesCollectionHaveOpenForms
 } from '../frontsUIBundle';
 import initialState from 'fixtures/initialState';
 import initialStateForOpenFronts from '../../fixtures/initialStateForOpenFronts';
@@ -277,6 +278,129 @@ describe('frontsUIBundle', () => {
             'index'
           ).map(_ => _.index)
         ).toEqual([0, 1, 2, 3]);
+      });
+    });
+    describe('selectOpenFrontsCollectionsAndArticles', () => {
+      it('should return just fronts if no collections are open', () => {
+        const openEntities = selectOpenFrontsCollectionsAndArticles(
+          initialStateForOpenFronts
+        );
+        expect(openEntities).toEqual([
+          { collections: [], frontId: 'editorialFront' },
+          { collections: [], frontId: 'editorialFront2' }
+        ]);
+      });
+      it('should give an array of fronts, with nested collections and articles, when those fronts and collections are open -- single collection', () => {
+        const state = set(
+          ['editor', 'collectionIds'],
+          ['collection1'],
+          initialStateForOpenFronts
+        );
+        const openEntities = selectOpenFrontsCollectionsAndArticles(state);
+        expect(openEntities.length).toEqual(2); // Two fronts
+        expect(openEntities[0].collections.length).toEqual(1); // First front has one collection
+        expect(openEntities[0].collections[0].articleIds).toEqual([
+          'articleFragment1',
+          'articleFragment2',
+          'articleFragment3'
+        ]); // First collection has three articles
+        expect(openEntities[1].collections.length).toEqual(0); // Second front has no collections
+      });
+      it('should give an array of fronts, with nested collections and articles, when those fronts and collections are open -- multiple collections', () => {
+        const state = set(
+          ['editor', 'collectionIds'],
+          ['collection1', 'collection6'],
+          initialStateForOpenFronts
+        );
+        const openEntities = selectOpenFrontsCollectionsAndArticles(state);
+        expect(openEntities.length).toEqual(2); // Two fronts
+        expect(openEntities[0].collections.length).toEqual(1); // First front has one collection
+        expect(openEntities[1].collections.length).toEqual(1); // Second front has one collection
+      });
+      it('should respect the current browsing stage', () => {
+        let state = set(
+          ['editor', 'collectionIds'],
+          ['collection1'],
+          initialStateForOpenFronts
+        );
+        state = set(
+          ['editor', 'frontIdsByBrowsingStage', 'editorialFront'],
+          'live',
+          state
+        );
+        const openEntities = selectOpenFrontsCollectionsAndArticles(state);
+        expect(openEntities[0].collections.length).toEqual(1); // First front has one collection
+        expect(openEntities[0].collections[0].articleIds.length).toEqual(0); // First collection has no live articles
+      });
+    });
+    describe('Selecting collections on all open Fronts', () => {
+      const selectCollectionsInOpenFronts = createSelectCollectionsInOpenFronts();
+      it('return correct collections for one open Front', () => {
+        expect(
+          selectCollectionsInOpenFronts({
+            fronts: {
+              frontsConfig
+            },
+            editor: {
+              frontIdsByPriority: { editorial: ['editorialFront'] }
+            },
+            path: '/v2/editorial'
+          } as any)
+        ).toEqual(['collection1']);
+      });
+      it('return correct collections for multiple open Fronts', () => {
+        expect(
+          selectCollectionsInOpenFronts({
+            fronts: {
+              frontsConfig
+            },
+            editor: {
+              frontIdsByPriority: {
+                editorial: ['editorialFront', 'editorialFront2']
+              }
+            },
+            path: '/v2/editorial'
+          } as any)
+        ).toEqual(['collection1', 'collection6']);
+      });
+      it('return enpty array for no open Fronts', () => {
+        expect(
+          selectCollectionsInOpenFronts({
+            fronts: {
+              frontsConfig
+            },
+            editor: {
+              frontIdsByPriority: {}
+            },
+            path: '/v2/editorial'
+          } as any)
+        ).toEqual([]);
+      });
+    });
+    describe('selectDoesCollectionHaveOpenForms', () => {
+      it('should return false when the collection has no forms open', () => {
+        const selectDoesCollectionHaveOpenForms = createSelectDoesCollectionHaveOpenForms();
+        const state = initialState;
+        expect(
+          selectDoesCollectionHaveOpenForms(state, {
+            frontId: 'exampleFront',
+            collectionId: 'collection-id'
+          })
+        ).toBe(false);
+      });
+      it('should return true when the collection has a form open', () => {
+        const selectDoesCollectionHaveOpenForms = createSelectDoesCollectionHaveOpenForms();
+        const state = set(
+          ['editor', 'selectedArticleFragments', 'exampleFront'],
+          [{ id: 'id', collectionId: 'collection-id', isSupporting: false }],
+          initialState
+        );
+        expect(
+          selectDoesCollectionHaveOpenForms(state, {
+            frontId: 'exampleFront',
+            collectionId: 'collection-id'
+          })
+        ).toBe(true);
       });
     });
   });
@@ -530,7 +654,7 @@ describe('frontsUIBundle', () => {
           undefined,
           editorSelectCard('exampleCard', 'exampleCollection', 'front1')
         );
-        expect(selectOpenCardForms(state, 'front1')).toEqual([
+        expect(selectOpenCardForms(state, { frontId: 'front1' })).toEqual([
           {
             id: 'exampleCard',
             isSupporting: false,
@@ -560,7 +684,6 @@ describe('frontsUIBundle', () => {
       expect(selectIsClipboardOpen(state2)).toBe(true);
     });
   });
-
   describe('Selecting collections on all open Fronts', () => {
     const selectCollectionsInOpenFronts = createSelectCollectionsInOpenFronts();
     it('return correct collections for one open Front', () => {
