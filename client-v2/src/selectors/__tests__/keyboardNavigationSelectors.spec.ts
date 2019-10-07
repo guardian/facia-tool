@@ -48,65 +48,65 @@ describe('nextIndexAndGroupSelector', () => {
       id: 'group1',
       name: 'groupname',
       uuid: 'group1',
-      cards: ['fragment-1', 'fragment-2', 'fragment-3']
+      cards: ['card-1', 'card-2', 'card-3']
     },
     group2: {
       id: 'group2',
       name: 'groupname',
       uuid: 'group2',
-      cards: ['fragment-4', 'fragment-5', 'fragment-6']
+      cards: ['card-4', 'card-5', 'card-6']
     },
     group3: {
       id: 'group3',
       name: 'groupname',
       uuid: 'group3',
-      cards: ['fragment-7', 'fragment-8']
+      cards: ['card-7', 'card-8']
     }
   };
-  const artFragments = {
-    'fragment-1': {
+  const cards = {
+    'card-1': {
       id: 'internal-code/page/123',
       frontPublicationDate: 1547204861924,
       meta: { supporting: [] },
       uuid: 'id-1'
     },
-    'fragment-2': {
+    'card-2': {
       id: 'internal-code/page/123',
       frontPublicationDate: 1547204861924,
       meta: { supporting: [] },
       uuid: 'id-2'
     },
-    'fragment-3': {
+    'card-3': {
       id: 'internal-code/page/123',
       frontPublicationDate: 1547204861924,
       meta: { supporting: [] },
       uuid: 'id-3'
     },
-    'fragment-4': {
+    'card-4': {
       id: 'internal-code/page/123',
       frontPublicationDate: 1547204861924,
       meta: { supporting: [] },
       uuid: 'id-4'
     },
-    'fragment-5': {
+    'card-5': {
       id: 'internal-code/page/123',
       frontPublicationDate: 1547204861924,
       meta: { supporting: [] },
       uuid: 'id-5'
     },
-    'fragment-6': {
+    'card-6': {
       id: 'internal-code/page/123',
       frontPublicationDate: 1547204861924,
       meta: { supporting: [] },
       uuid: 'id-6'
     },
-    'fragment-7': {
+    'card-7': {
       id: 'internal-code/page/123',
       frontPublicationDate: 1547204861924,
       meta: { supporting: [] },
       uuid: 'id-7'
     },
-    'fragment-8': {
+    'card-8': {
       id: 'internal-code/page/123',
       frontPublicationDate: 1547204861924,
       meta: { supporting: [] },
@@ -150,7 +150,7 @@ describe('nextIndexAndGroupSelector', () => {
     shared: {
       ...state.shared,
       groups: groupsWithCards,
-      cards: artFragments,
+      cards,
       collections
     }
   };
@@ -187,7 +187,7 @@ describe('nextIndexAndGroupSelector', () => {
       selectNextIndexAndGroup(
         stateWithGroups,
         'group1',
-        'fragment-1',
+        'card-1',
         'up',
         'sc-johnson-partner-zone'
       )
@@ -199,7 +199,7 @@ describe('nextIndexAndGroupSelector', () => {
       selectNextIndexAndGroup(
         stateWithGroups,
         'group1',
-        'fragment-2',
+        'card-2',
         'up',
         'sc-johnson-partner-zone'
       )
@@ -211,7 +211,7 @@ describe('nextIndexAndGroupSelector', () => {
       selectNextIndexAndGroup(
         stateWithGroups,
         'group3',
-        'fragment-8',
+        'card-8',
         'down',
         'sc-johnson-partner-zone'
       )
@@ -223,7 +223,7 @@ describe('nextIndexAndGroupSelector', () => {
       selectNextIndexAndGroup(
         stateWithGroups,
         'group1',
-        'fragment-2',
+        'card-2',
         'down',
         'sc-johnson-partner-zone'
       )
@@ -235,7 +235,7 @@ describe('nextIndexAndGroupSelector', () => {
       selectNextIndexAndGroup(
         stateWithGroups,
         'group1',
-        'fragment-3',
+        'card-3',
         'down',
         'sc-johnson-partner-zone'
       )
@@ -247,7 +247,7 @@ describe('nextIndexAndGroupSelector', () => {
       selectNextIndexAndGroup(
         stateWithGroups,
         'group2',
-        'fragment-4',
+        'card-4',
         'up',
         'sc-johnson-partner-zone'
       )
@@ -259,7 +259,7 @@ describe('nextIndexAndGroupSelector', () => {
       selectNextIndexAndGroup(
         stateWithGroups,
         'group3',
-        'fragment-7',
+        'card-7',
         'up',
         'sc-johnson-partner-zone'
       )
@@ -275,7 +275,7 @@ describe('nextIndexAndGroupSelector', () => {
       selectNextIndexAndGroup(
         stateWithGroups,
         'group2',
-        'fragment-6',
+        'card-6',
         'down',
         'sc-johnson-partner-zone'
       )

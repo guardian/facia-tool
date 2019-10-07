@@ -3,7 +3,7 @@ import { Card, CardMeta } from 'shared/types/Collection';
 import pick from 'lodash/pick';
 import cloneDeep from 'lodash/cloneDeep';
 
-const createFragment = (
+const createCard = (
   id: string,
   imageHide: boolean = false,
   imageReplace: boolean = false,
@@ -25,30 +25,30 @@ const createFragment = (
 });
 
 // only go one deep
-const cloneFragment = (
-  fragment: Card,
-  fragments: { [id: string]: Card } // all the cards to enable nested rebuilds
+const cloneCard = (
+  card: Card,
+  cards: { [id: string]: Card } // all the cards to enable nested rebuilds
 ): { parent: Card; supporting: Card[] } => {
-  const sup = (fragment.meta.supporting || [])
+  const sup = (card.meta.supporting || [])
     .map(id => {
-      const supportingFragment = fragments[id];
-      const { supporting, ...meta } = supportingFragment.meta;
-      return cloneFragment(
+      const supportingCard = cards[id];
+      const { supporting, ...meta } = supportingCard.meta;
+      return cloneCard(
         {
-          ...supportingFragment,
+          ...supportingCard,
           meta
         },
-        fragments
+        cards
       ).parent;
     })
     .filter((s: Card): s is Card => !!s);
 
   return {
     parent: {
-      ...fragment,
+      ...card,
       uuid: v4(),
       meta: {
-        ...fragment.meta,
+        ...card.meta,
         supporting: sup.map(({ uuid }) => uuid)
       }
     },
@@ -97,4 +97,4 @@ const cloneActiveImageMeta = ({ meta }: Card): CardMeta => {
   return {};
 };
 
-export { createFragment, cloneFragment, cloneActiveImageMeta };
+export { createCard, cloneCard, cloneActiveImageMeta };

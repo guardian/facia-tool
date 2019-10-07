@@ -120,7 +120,7 @@ const addGroups = (
   );
 
 // To determine the UUIDs of cards recently removed from a collection in a way that
-// preserves the overall ordering lost during normalisation (when fragments are assigned to a Group)
+// preserves the overall ordering lost during normalisation (when cards are assigned to a Group)
 // we need to compare both the pre-normalised and normalised versions of the same collection.
 const createPreviouslyCardIds = (
   collection: CollectionWithNestedArticles,

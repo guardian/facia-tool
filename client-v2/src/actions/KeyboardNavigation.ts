@@ -13,17 +13,17 @@ import { editorOpenCollections } from 'bundles/frontsUIBundle';
 const keyboardCardMove = (
   action: 'up' | 'down',
   persistTo: 'collection' | 'clipboard',
-  fragment?: Card,
+  card?: Card,
   groupId?: string,
   frontId?: string
 ): ThunkResult<void> => {
   return (dispatch: Dispatch, getState) => {
-    if (!fragment) {
+    if (!card) {
       return;
     }
 
     const state = getState();
-    const id = fragment.uuid;
+    const id = card.uuid;
     if (persistTo === 'collection') {
       const fromIndex = selectIndexInGroup(
         selectSharedState(state),
@@ -51,12 +51,12 @@ const keyboardCardMove = (
         }
 
         const to: PosSpec = { type, index: toIndex, id: nextGroupId };
-        dispatch(moveCard(to, fragment, from, persistTo));
+        dispatch(moveCard(to, card, from, persistTo));
         dispatch(
           setFocusState({
             type: 'collectionArticle',
             groupId: nextGroupId,
-            card: fragment,
+            card,
             frontId
           })
         );
@@ -72,7 +72,7 @@ const keyboardCardMove = (
         const type = 'clipboard';
         const from = { type, index: fromIndex, id: 'clipboard' };
         const to = { type, index: toIndex, id: 'clipboard' };
-        dispatch(moveCard(to, fragment, from, persistTo));
+        dispatch(moveCard(to, card, from, persistTo));
       }
     }
   };

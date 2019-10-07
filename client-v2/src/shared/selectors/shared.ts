@@ -216,7 +216,7 @@ const createSelectCollectionStageGroups = () => {
       // Groups without names and ids are groups which no longer exist in the config because
       // the collection layout has changed. We need to collect the cards in these
       // groups and display them in the top group.
-      const orphanedFragments: string[] = grps
+      const orphanedCards: string[] = grps
         .filter(grp => !grp.name && grp.id)
         .reduce((frags: string[], g) => frags.concat(g.cards), []);
 
@@ -224,13 +224,11 @@ const createSelectCollectionStageGroups = () => {
       // are filtered out as these groups no longer exist in the config of the collection.
       const finalGroups = grps.filter(grp => grp.name || !grp.id);
       if (finalGroups.length > 0) {
-        const originalFirstGroupFragments = finalGroups[0].cards;
-        const firstGroupFragments = orphanedFragments.concat(
-          originalFirstGroupFragments
-        );
+        const originalFirstGroupCards = finalGroups[0].cards;
+        const firstGroupCards = orphanedCards.concat(originalFirstGroupCards);
         const firstGroup = {
           ...finalGroups[0],
-          ...{ cards: firstGroupFragments }
+          ...{ cards: firstGroupCards }
         };
         finalGroups[0] = firstGroup;
       }
@@ -417,7 +415,7 @@ const createDemornalisedCard = (
           supporting:
             cards[cardId].meta.supporting &&
             cards[cardId].meta.supporting!.map(
-              (supportingFragmentId: string) => cards[supportingFragmentId]
+              (supportingCardId: string) => cards[supportingCardId]
             )
         }
       }
@@ -476,19 +474,19 @@ const selectGroupSiblings = (state: State, groupId: string) => {
 const selectArticleGroup = (
   state: State,
   groupIdFromAction: string,
-  fragmentId: string
+  cardId: string
 ) => {
   const groups = selectGroups(state);
   const groupInAction = groups[groupIdFromAction];
-  if (groupInAction && groupInAction.cards.includes(fragmentId)) {
+  if (groupInAction && groupInAction.cards.includes(cardId)) {
     return groupIdFromAction;
   }
 
-  const actualFragmentGroup = Object.values(groups).find(
-    group => group && group.cards.includes(fragmentId)
+  const actualCardGroup = Object.values(groups).find(
+    group => group && group.cards.includes(cardId)
   );
 
-  return actualFragmentGroup && actualFragmentGroup.uuid;
+  return actualCardGroup && actualCardGroup.uuid;
 };
 
 const groupsArticleCount = (groups: Group[]) =>

@@ -14,11 +14,9 @@ import {
 import { State } from 'types/State';
 import { addPersistMetaToAction } from 'util/action';
 
-export const REMOVE_CLIPBOARD_CARD =
-  'REMOVE_CLIPBOARD_CARD';
+export const REMOVE_CLIPBOARD_CARD = 'REMOVE_CLIPBOARD_CARD';
 export const UPDATE_CLIPBOARD_CONTENT = 'UPDATE_CLIPBOARD_CONTENT';
-export const INSERT_CLIPBOARD_CARD =
-  'INSERT_CLIPBOARD_CARD';
+export const INSERT_CLIPBOARD_CARD = 'INSERT_CLIPBOARD_CARD';
 export const CLEAR_CLIPBOARD = 'CLEAR_CLIPBOARD';
 
 function updateClipboardContent(
@@ -48,8 +46,8 @@ function storeClipboardContent(clipboardContent: NestedCard[]) {
       ])
     );
 
-    const fragmentIds = Object.values(cards).map(fragment => fragment.id);
-    return dispatch(fetchArticles(fragmentIds));
+    const cardIds = Object.values(cards).map(card => card.id);
+    return dispatch(fetchArticles(cardIds));
   };
 }
 

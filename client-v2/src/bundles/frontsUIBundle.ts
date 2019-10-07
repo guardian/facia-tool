@@ -67,8 +67,7 @@ export const EDITOR_SET_OPEN_FRONTS = 'EDITOR_SET_OPEN_FRONTS';
 export const EDITOR_OPEN_COLLECTION = 'EDITOR_OPEN_COLLECTION';
 export const EDITOR_CLOSE_COLLECTION = 'EDITOR_CLOSE_COLLECTION';
 export const EDITOR_SELECT_CARD = 'EDITOR_SELECT_CARD';
-export const EDITOR_CLEAR_CARD_SELECTION =
-  'EDITOR_CLEAR_CARD_SELECTION';
+export const EDITOR_CLEAR_CARD_SELECTION = 'EDITOR_CLEAR_CARD_SELECTION';
 export const EDITOR_OPEN_CLIPBOARD = 'EDITOR_OPEN_CLIPBOARD';
 export const EDITOR_CLOSE_CLIPBOARD = 'EDITOR_CLOSE_CLIPBOARD';
 export const EDITOR_OPEN_OVERVIEW = 'EDITOR_OPEN_OVERVIEW';
@@ -521,12 +520,12 @@ const createSelectOpenCardTitlesForCollection = () => {
     state: GlobalState,
     { frontId, collectionId }: { frontId: string; collectionId: string }
   ): Array<{ uuid: string; title: string | undefined }> => {
-    const articleFragmentIds = selectOpenCardIdsForCollection(state, {
+    const cardIds = selectOpenCardIdsForCollection(state, {
       collectionId,
       frontId
     });
     return compact(
-      articleFragmentIds
+      cardIds
         .map(id => selectArticleFromCard(selectSharedState(state), id))
         .filter(_ => _)
         .map(
@@ -591,11 +590,9 @@ const defaultState = {
 const clearCardSelection = (state: State, cardId: string): State => {
   let frontId: string | null = null;
   for (const entry of Object.entries(state.selectedCards)) {
-    const [currentFrontId, fragmentDatas] = entry;
-    const currentFragmentDataIndex = fragmentDatas.findIndex(
-      _ => _.id === cardId
-    );
-    if (currentFragmentDataIndex !== -1) {
+    const [currentFrontId, cardDatas] = entry;
+    const currentCardDataIndex = cardDatas.findIndex(_ => _.id === cardId);
+    if (currentCardDataIndex !== -1) {
       frontId = currentFrontId;
       break;
     }

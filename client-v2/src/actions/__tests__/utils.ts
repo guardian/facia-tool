@@ -15,7 +15,7 @@ export type CardSpec = [
   CardMeta? // metadata changes
 ];
 
-export const specToFragment = ([uuid, id, supporting, meta]: CardSpec) => ({
+export const specToCard = ([uuid, id, supporting, meta]: CardSpec) => ({
   uuid,
   id,
   frontPublicationDate: 0,
@@ -29,7 +29,7 @@ export const createCardStateFromSpec = (specs: CardSpec[]) =>
   specs.reduce(
     (acc, [uuid, id, supporting, meta]) => ({
       ...acc,
-      [uuid]: specToFragment([uuid, id, supporting, meta]),
+      [uuid]: specToCard([uuid, id, supporting, meta]),
       ...(supporting
         ? supporting.reduce(
             (sacc, [suuid, sid]) => ({

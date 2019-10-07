@@ -97,16 +97,16 @@ const cards = (
     // dates. The new fronts tool adds these to sublinks always.
     case 'SHARED/MAYBE_ADD_FRONT_PUBLICATION': {
       const { id, date } = action.payload;
-      const fragment = state[id];
+      const card = state[id];
 
-      if (fragment.frontPublicationDate) {
+      if (card.frontPublicationDate) {
         return state;
       }
 
-      const newFragment = { ...fragment, frontPublicationDate: date };
+      const newCard = { ...card, frontPublicationDate: date };
       return {
         ...state,
-        [id]: newFragment
+        [id]: newCard
       };
     }
     case COPY_CARD_IMAGE_META: {

@@ -17,18 +17,18 @@ function validateId(id: string) {
 }
 
 function convertToSnap({ id, ...rest }: PartialBy<Card, 'id'>): Card {
-  const fragment = {
+  const card = {
     id: generateId(),
     ...rest,
     meta: rest.meta
   };
 
   if (!id) {
-    return fragment;
+    return card;
   }
 
   const href = isGuardianUrl(id) ? '/' + getAbsolutePath(id, true) : id;
-  return set(['meta', 'href'], href, fragment);
+  return set(['meta', 'href'], href, card);
 }
 
 async function createSnap(url?: string, meta?: CardMeta): Promise<Card> {

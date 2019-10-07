@@ -12,7 +12,7 @@ import {
   ClearCards,
   MaybeAddFrontPublicationDate
 } from 'shared/types/Action';
-import { createFragment } from 'shared/util/card';
+import { createCard } from 'shared/util/card';
 import { createSnap, createLatestSnap } from 'shared/util/snap';
 import { getIdFromURL } from 'util/CAPIUtils';
 import { isValidURL, isGuardianUrl } from 'shared/util/url';
@@ -21,20 +21,14 @@ import { ExternalArticle } from 'shared/types/ExternalArticle';
 import { CapiArticle } from 'types/Capi';
 import { Card, CardMeta } from '../types/Collection';
 
-export const UPDATE_CARD_META =
-  'SHARED/UPDATE_CARD_META';
+export const UPDATE_CARD_META = 'SHARED/UPDATE_CARD_META';
 export const CARDS_RECEIVED = 'SHARED/CARDS_RECEIVED';
 export const CLEAR_CARDS = 'SHARED/CLEAR_CARDS';
-export const REMOVE_GROUP_CARD =
-  'SHARED/REMOVE_GROUP_CARD';
-export const REMOVE_SUPPORTING_CARD =
-  'SHARED/REMOVE_SUPPORTING_CARD';
-export const INSERT_GROUP_CARD =
-  'SHARED/INSERT_GROUP_CARD';
-export const INSERT_SUPPORTING_CARD =
-  'SHARED/INSERT_SUPPORTING_CARD';
-export const COPY_CARD_IMAGE_META =
-  'SHARED/COPY_CARD_IMAGE_META';
+export const REMOVE_GROUP_CARD = 'SHARED/REMOVE_GROUP_CARD';
+export const REMOVE_SUPPORTING_CARD = 'SHARED/REMOVE_SUPPORTING_CARD';
+export const INSERT_GROUP_CARD = 'SHARED/INSERT_GROUP_CARD';
+export const INSERT_SUPPORTING_CARD = 'SHARED/INSERT_SUPPORTING_CARD';
+export const COPY_CARD_IMAGE_META = 'SHARED/COPY_CARD_IMAGE_META';
 
 function updateCardMeta(
   id: string,
@@ -177,14 +171,14 @@ const getArticleEntitiesFromDrop = async (
     : false;
   const isPlainUrl = isURL && !id && !guMeta;
   if (isPlainUrl) {
-    const fragment = await createSnap(resourceIdOrUrl);
-    return [fragment];
+    const card = await createSnap(resourceIdOrUrl);
+    return [card];
   }
   try {
     if (guMeta) {
       // If we have gu params in the url, create a snap with the meta we extract.
-      const fragment = await createSnap(id, guMeta);
-      return [fragment];
+      const card = await createSnap(id, guMeta);
+      return [card];
     }
     if (!id) {
       return [];
@@ -200,15 +194,15 @@ const getArticleEntitiesFromDrop = async (
     }
     if (article) {
       // We have a single article from CAPI - create an item as usual.
-      return [createFragment(article.id), article];
+      return [createCard(article.id), article];
     }
   } catch (e) {
     if (isURL) {
       // If there was an error getting content for CAPI, assume the link is valid
       // and create a link snap as a fallback. This catches cases like non-tag or
       // section guardian.co.uk URLs, which aren't in CAPI and are sometimes linked.
-      const fragment = await createSnap(resourceIdOrUrl);
-      return [fragment];
+      const card = await createSnap(resourceIdOrUrl);
+      return [card];
     }
   }
   return [];
@@ -218,7 +212,7 @@ const getArticleEntitiesFromFeedDrop = (
   capiArticle: CapiArticle
 ): TArticleEntities => {
   const article = transformExternalArticle(capiArticle);
-  const fragment = createFragment(
+  const card = createCard(
     article.id,
     article.frontsMeta.defaults.imageHide,
     article.frontsMeta.defaults.imageReplace,
@@ -227,7 +221,7 @@ const getArticleEntitiesFromFeedDrop = (
     article.frontsMeta.defaults.showByline,
     article.frontsMeta.defaults.showQuotedHeadline
   );
-  return [fragment, article];
+  return [card, article];
 };
 
 const snapMetaWhitelist = [
@@ -271,18 +265,18 @@ const getArticleEntitiesFromGuardianPath = async (
   const createLatest = window.confirm(
     "Should this snap be a 'Latest' snap? \n \n Click OK to confirm or cancel to create a 'Link' snap by default."
   );
-  const fragment = await (createLatest
+  const card = await (createLatest
     ? createLatestSnap(resourceId, title || 'Unknown title')
     : createSnap(resourceId));
-  return [fragment];
+  return [card];
 };
 
 const maybeAddFrontPublicationDate = (
-  fragmentId: string
+  cardId: string
 ): MaybeAddFrontPublicationDate => ({
   type: 'SHARED/MAYBE_ADD_FRONT_PUBLICATION',
   payload: {
-    id: fragmentId,
+    id: cardId,
     date: Date.now()
   }
 });

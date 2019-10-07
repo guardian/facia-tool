@@ -18,7 +18,7 @@ import {
 } from 'shared/selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/action';
-import { cloneFragment } from 'shared/util/card';
+import { cloneCard } from 'shared/util/card';
 import {
   getFromGroupIndicesWithRespectToState,
   getToGroupIndicesWithRespectToState
@@ -61,7 +61,7 @@ type InsertThunkActionCreator = (
 // this so we can make a thunk instead
 // the persistence stuff needs to be dynamic as we sometimes need to insert an
 // card and save to clipboard and sometimes save to collection
-// depending on the location of that articlefragment
+// depending on the location of that card
 const createInsertCardThunk = (action: InsertActionCreator) => (
   persistTo: 'collection' | 'clipboard'
 ) => (id: string, index: number, cardId: string, removeAction?: Action) => (
@@ -107,7 +107,7 @@ const maybeInsertGroupCard = (persistTo: 'collection' | 'clipboard') => (
     );
 
     if (willCollectionHitCollectionCap) {
-      // if there are too many fragments now then launch a modal to ask the user
+      // if there are too many cards now then launch a modal to ask the user
       // what action to take
       dispatch(
         startConfirmModal(
@@ -237,25 +237,25 @@ const insertCardWithCreate = (
   );
   if (toWithRespectToState) {
     try {
-      const fragment = await dispatch(cardFactory(drop));
-      if (!fragment) {
+      const card = await dispatch(cardFactory(drop));
+      if (!card) {
         return;
       }
       dispatch(
         insertActionCreator(
           toWithRespectToState.id,
           toWithRespectToState.index,
-          fragment.uuid
+          card.uuid
         )
       );
 
       // Fetch ophan data
       const [frontId, collectionId] = selectOpenParentFrontOfCard(
         getState(),
-        fragment.uuid
+        card.uuid
       );
       if (frontId && collectionId) {
-        await dispatch(getPageViewData(frontId, collectionId, [fragment.uuid]));
+        await dispatch(getPageViewData(frontId, collectionId, [card.uuid]));
       }
     } catch (e) {
       // Insert failed -- @todo handle error
@@ -299,7 +299,7 @@ const removeCard = (
 
 const moveCard = (
   to: PosSpec,
-  fragment: Card,
+  card: Card,
   from: PosSpec | null,
   persistTo: 'collection' | 'clipboard'
 ): ThunkResult<void> => {
@@ -336,8 +336,8 @@ const moveCard = (
       // if from is not null then assume we're copying a moved card
       // into this new position
       const { parent, supporting } = !fromWithRespectToState
-        ? cloneFragment(fragment, selectCards(sharedState))
-        : { parent: fragment, supporting: [] };
+        ? cloneCard(card, selectCards(sharedState))
+        : { parent: card, supporting: [] };
 
       if (toWithRespectToState) {
         if (!fromWithRespectToState) {
@@ -350,7 +350,7 @@ const moveCard = (
             toWithRespectToState.index,
             parent.uuid,
             fromWithRespectToState && removeActionCreator
-              ? removeActionCreator(fromWithRespectToState.id, fragment.uuid)
+              ? removeActionCreator(fromWithRespectToState.id, card.uuid)
               : undefined
           )
         );
@@ -365,9 +365,9 @@ const cloneCardToTarget = (
 ): ThunkResult<void> => {
   return (dispatch, getState) => {
     const to = { id: toType, type: toType, index: 0 };
-    const fragment = selectCard(selectSharedState(getState()), uuid);
+    const card = selectCard(selectSharedState(getState()), uuid);
     const from = null;
-    dispatch(moveCard(to, fragment, from, toType));
+    dispatch(moveCard(to, card, from, toType));
   };
 };
 

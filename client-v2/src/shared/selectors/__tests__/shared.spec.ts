@@ -172,10 +172,10 @@ const state: any = {
       frontPublicationDate: 1,
       publishedBy: 'A. N. Author',
       meta: {
-        headline: 'fragment-headline',
-        trailText: 'fragment-trailText',
-        byline: 'fragment-byline',
-        customKicker: 'fragment-kicker',
+        headline: 'card-headline',
+        trailText: 'card-trailText',
+        byline: 'card-byline',
+        customKicker: 'card-kicker',
         showKickerCustom: true
       }
     },
@@ -211,9 +211,9 @@ const state: any = {
       frontPublicationDate: 1,
       publishedBy: 'A. N. Author',
       meta: {
-        headline: 'fragment-headline',
-        trailText: 'fragment-trailText',
-        byline: 'fragment-byline',
+        headline: 'card-headline',
+        trailText: 'card-trailText',
+        byline: 'card-byline',
         showKickerTag: true
       }
     },
@@ -223,9 +223,9 @@ const state: any = {
       frontPublicationDate: 1,
       publishedBy: 'A. N. Author',
       meta: {
-        headline: 'fragment-headline',
-        trailText: 'fragment-trailText',
-        byline: 'fragment-byline',
+        headline: 'card-headline',
+        trailText: 'card-trailText',
+        byline: 'card-byline',
         showKickerSection: true
       }
     },
@@ -283,16 +283,16 @@ describe('Shared selectors', () => {
 
       expect(selector(state, 'af1WithOverrides')).toMatchObject({
         id: 'ea1',
-        customKicker: 'fragment-kicker',
+        customKicker: 'card-kicker',
         pillarName: 'external-pillar',
         frontPublicationDate: 1,
         publishedBy: 'A. N. Author',
         uuid: 'af1',
-        headline: 'fragment-headline',
+        headline: 'card-headline',
         thumbnail: undefined,
-        trailText: 'fragment-trailText',
-        kicker: 'fragment-kicker',
-        byline: 'fragment-byline',
+        trailText: 'card-trailText',
+        kicker: 'card-kicker',
+        byline: 'card-byline',
         isLive: true,
         firstPublicationDate: '2018-10-19T10:30:39Z',
         pillarId: undefined,

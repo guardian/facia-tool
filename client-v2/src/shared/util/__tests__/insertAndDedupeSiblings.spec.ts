@@ -34,7 +34,7 @@ const cardMap = {
 };
 
 describe('insertAndDedupeSiblings', () => {
-  it('inserts a fragments', () => {
+  it('inserts a card', () => {
     expect(insertAndDedupeSiblings(['a', 'b'], ['c'], 0, cardMap)).toEqual([
       'c',
       'a',

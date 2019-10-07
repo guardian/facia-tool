@@ -300,9 +300,9 @@ describe('frontsUIBundle', () => {
         expect(openEntities.length).toEqual(2); // Two fronts
         expect(openEntities[0].collections.length).toEqual(1); // First front has one collection
         expect(openEntities[0].collections[0].articleIds).toEqual([
-          'articleFragment1',
-          'articleFragment2',
-          'articleFragment3'
+          'card1',
+          'card2',
+          'card3'
         ]); // First collection has three articles
         expect(openEntities[1].collections.length).toEqual(0); // Second front has no collections
       });
@@ -391,7 +391,7 @@ describe('frontsUIBundle', () => {
       it('should return true when the collection has a form open', () => {
         const selectDoesCollectionHaveOpenForms = createSelectDoesCollectionHaveOpenForms();
         const state = set(
-          ['editor', 'selectedArticleFragments', 'exampleFront'],
+          ['editor', 'selectedCards', 'exampleFront'],
           [{ id: 'id', collectionId: 'collection-id', isSupporting: false }],
           initialState
         );

@@ -10,7 +10,7 @@ import {
   selectSharedState
 } from '../../shared/selectors/shared';
 import { selectClipboard as innerClipboardSelector } from '../../selectors/frontsSelectors';
-import { createCardStateFromSpec, CardSpec, specToFragment } from './utils';
+import { createCardStateFromSpec, CardSpec, specToCard } from './utils';
 import {
   moveCard,
   removeCard,
@@ -150,7 +150,7 @@ const move = (
       id: toId,
       index
     },
-    specToFragment([uuid, id, undefined]),
+    specToCard([uuid, id, undefined]),
     {
       id: fromId,
       type: fromType,

@@ -5,7 +5,7 @@ import { createArticleEntitiesFromDrop, cardsReceived } from '../Cards';
 import initialState from 'fixtures/initialState';
 import { capiArticle } from '../../fixtures/shared';
 import { actionNames as externalArticleActionNames } from 'shared/bundles/externalArticlesBundle';
-import { createFragment } from 'shared/util/card';
+import { createCard } from 'shared/util/card';
 import { createSnap, createLatestSnap } from 'shared/util/snap';
 import guardianTagPage from 'shared/fixtures/guardianTagPage';
 import bbcSectionPage from 'shared/fixtures/bbcSectionPage';
@@ -46,7 +46,7 @@ describe('cards actions', () => {
       expect(actions[0].type).toEqual(externalArticleActionNames.fetchSuccess);
       expect(actions[1]).toEqual(
         cardsReceived({
-          card1: createFragment('internal-code/page/5029528')
+          card1: createCard('internal-code/page/5029528')
         })
       );
     });
