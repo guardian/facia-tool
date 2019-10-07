@@ -520,7 +520,7 @@ const createSelectOpenCollectionItemTitlesForCollection = () => {
   return (
     state: GlobalState,
     { frontId, collectionId }: { frontId: string; collectionId: string }
-  ): Array<{ uuid: string; title: string }> => {
+  ): Array<{ uuid: string; title: string | undefined }> => {
     const articleFragmentIds = selectOpenArticleFragmentIdsForCollection(
       state,
       { collectionId, frontId }
@@ -533,10 +533,9 @@ const createSelectOpenCollectionItemTitlesForCollection = () => {
         .filter(_ => _)
         .map(
           derivedArticle =>
-            derivedArticle &&
-            derivedArticle.headline && {
+            derivedArticle && {
               uuid: derivedArticle.uuid,
-              title: derivedArticle.headline
+              title: derivedArticle.headline || derivedArticle.customKicker
             }
         )
     );

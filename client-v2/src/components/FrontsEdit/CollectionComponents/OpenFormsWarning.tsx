@@ -12,7 +12,7 @@ interface ContainerProps {
 }
 
 interface ComponentProps extends ContainerProps {
-  openArticleTitles: Array<{ uuid: string; title: string }>;
+  openArticleTitles: Array<{ uuid: string; title?: string }>;
 }
 
 const OpenArticleLi = styled.li`
@@ -41,7 +41,7 @@ const OpenFormsWarning = ({ openArticleTitles }: ComponentProps) => (
               }
             }}
           >
-            {title}
+            {title || 'No title'}
           </a>
         </OpenArticleLi>
       ))}
